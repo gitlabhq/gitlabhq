@@ -4,6 +4,10 @@ module Gitlab
   module Gpg
     extend self
 
+    CleanupError = Class.new(StandardError)
+    BG_CLEANUP_RUNTIME_S = 2
+    FG_CLEANUP_RUNTIME_S = 0.5
+
     MUTEX = Mutex.new
 
     module CurrentKeyChain
@@ -94,16 +98,55 @@ module Gitlab
       previous_dir = current_home_dir
       tmp_dir = Dir.mktmpdir
       GPGME::Engine.home_dir = tmp_dir
+      tmp_keychains_created.increment
+
       yield
     ensure
-      # Ignore any errors when removing the tmp directory, as we may run into a
+      GPGME::Engine.home_dir = previous_dir
+
+      begin
+        cleanup_tmp_dir(tmp_dir)
+      rescue CleanupError => e
+        # This means we left a GPG-agent process hanging. Logging the problem in
+        # sentry will make this more visible.
+        Gitlab::Sentry.track_exception(e,
+                                       issue_url: 'https://gitlab.com/gitlab-org/gitlab/issues/20918',
+                                       extra: { tmp_dir: tmp_dir })
+      end
+
+      tmp_keychains_removed.increment unless File.exist?(tmp_dir)
+    end
+
+    def cleanup_tmp_dir(tmp_dir)
+      return FileUtils.remove_entry(tmp_dir, true) if Feature.disabled?(:gpg_cleanup_retries)
+
+      # Retry when removing the tmp directory failed, as we may run into a
       # race condition:
       # The `gpg-agent` agent process may clean up some files as well while
       # `FileUtils.remove_entry` is iterating the directory and removing all
       # its contained files and directories recursively, which could raise an
       # error.
-      FileUtils.remove_entry(tmp_dir, true)
-      GPGME::Engine.home_dir = previous_dir
+      # Failing to remove the tmp directory could leave the `gpg-agent` process
+      # running forever.
+      Retriable.retriable(max_elapsed_time: cleanup_time, base_interval: 0.1) do
+        FileUtils.remove_entry(tmp_dir) if File.exist?(tmp_dir)
+      end
+    rescue => e
+      raise CleanupError, e
+    end
+
+    def cleanup_time
+      Sidekiq.server? ? BG_CLEANUP_RUNTIME_S : FG_CLEANUP_RUNTIME_S
+    end
+
+    def tmp_keychains_created
+      @tmp_keychains_created ||= Gitlab::Metrics.counter(:gpg_tmp_keychains_created_total,
+                                                         'The number of temporary GPG keychains created')
+    end
+
+    def tmp_keychains_removed
+      @tmp_keychains_removed ||= Gitlab::Metrics.counter(:gpg_tmp_keychains_removed_total,
+                                                         'The number of temporary GPG keychains removed')
     end
   end
 end

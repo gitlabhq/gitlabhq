@@ -139,6 +139,96 @@ describe Gitlab::Gpg do
         end
       end.not_to raise_error
     end
+
+    it 'keeps track of created and removed keychains in counters' do
+      created = Gitlab::Metrics.counter(:gpg_tmp_keychains_created_total, 'The number of temporary GPG keychains')
+      removed = Gitlab::Metrics.counter(:gpg_tmp_keychains_removed_total, 'The number of temporary GPG keychains')
+
+      initial_created = created.get
+      initial_removed = removed.get
+
+      described_class.using_tmp_keychain do
+        expect(created.get).to eq(initial_created + 1)
+        expect(removed.get).to eq(initial_removed)
+      end
+
+      expect(removed.get).to eq(initial_removed + 1)
+    end
+
+    it 'cleans up the tmp directory after finishing' do
+      tmp_directory = nil
+
+      described_class.using_tmp_keychain do
+        tmp_directory = described_class.current_home_dir
+        expect(File.exist?(tmp_directory)).to be true
+      end
+
+      expect(tmp_directory).not_to be_nil
+      expect(File.exist?(tmp_directory)).to be false
+    end
+
+    it 'does not fail if the homedir was deleted while running' do
+      expect do
+        described_class.using_tmp_keychain do
+          FileUtils.remove_entry(described_class.current_home_dir)
+        end
+      end.not_to raise_error
+    end
+
+    shared_examples 'multiple deletion attempts of the tmp-dir' do |seconds|
+      let(:tmp_dir) do
+        tmp_dir = Dir.mktmpdir
+        allow(Dir).to receive(:mktmpdir).and_return(tmp_dir)
+        tmp_dir
+      end
+
+      before do
+        # Stub all the other calls for `remove_entry`
+        allow(FileUtils).to receive(:remove_entry).with(any_args).and_call_original
+      end
+
+      it "tries for #{seconds}" do
+        expect(Retriable).to receive(:retriable).with(a_hash_including(max_elapsed_time: seconds))
+
+        described_class.using_tmp_keychain {}
+      end
+
+      it 'tries at least 2 times to remove the tmp dir before raising', :aggregate_failures do
+        expect(Retriable).to receive(:sleep).at_least(2).times
+        expect(FileUtils).to receive(:remove_entry).with(tmp_dir).at_least(2).times.and_raise('Deletion failed')
+
+        expect { described_class.using_tmp_keychain { } }.to raise_error(described_class::CleanupError)
+      end
+
+      it 'does not attempt multiple times when the deletion succeeds' do
+        expect(Retriable).to receive(:sleep).once
+        expect(FileUtils).to receive(:remove_entry).with(tmp_dir).once.and_raise('Deletion failed')
+        expect(FileUtils).to receive(:remove_entry).with(tmp_dir).and_call_original
+
+        expect { described_class.using_tmp_keychain { } }.not_to raise_error
+
+        expect(File.exist?(tmp_dir)).to be false
+      end
+
+      it 'does not retry when the feature flag is disabled' do
+        stub_feature_flags(gpg_cleanup_retries: false)
+
+        expect(FileUtils).to receive(:remove_entry).with(tmp_dir, true).and_call_original
+        expect(Retriable).not_to receive(:retriable)
+
+        described_class.using_tmp_keychain {}
+      end
+    end
+
+    it_behaves_like 'multiple deletion attempts of the tmp-dir', described_class::FG_CLEANUP_RUNTIME_S
+
+    context 'when running in Sidekiq' do
+      before do
+        allow(Sidekiq).to receive(:server?).and_return(true)
+      end
+
+      it_behaves_like 'multiple deletion attempts of the tmp-dir', described_class::BG_CLEANUP_RUNTIME_S
+    end
   end
 end
 
