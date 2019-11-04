@@ -13,6 +13,7 @@ import ClustersService from './services/clusters_service';
 import ClustersStore from './stores/clusters_store';
 import Applications from './components/applications.vue';
 import setupToggleButtons from '../toggle_buttons';
+import initProjectSelectDropdown from '~/project_select';
 
 const Environments = () => import('ee_component/clusters/components/environments.vue');
 
@@ -110,8 +111,10 @@ export default class Clusters {
       this.ingressDomainHelpText &&
       this.ingressDomainHelpText.querySelector('.js-ingress-domain-snippet');
 
+    initProjectSelectDropdown();
     Clusters.initDismissableCallout();
     initSettingsPanels();
+
     const toggleButtonsContainer = document.querySelector('.js-cluster-enable-toggle-area');
     if (toggleButtonsContainer) {
       setupToggleButtons(toggleButtonsContainer);

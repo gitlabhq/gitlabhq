@@ -13,6 +13,10 @@ describe Projects::Serverless::FunctionsController do
   let(:environment) { create(:environment, project: project) }
   let!(:deployment) { create(:deployment, :success, environment: environment, cluster: cluster) }
   let(:knative_services_finder) { environment.knative_services_finder }
+  let(:function_description) { 'A serverless function' }
+  let(:knative_stub_options) do
+    { namespace: namespace.namespace, name: cluster.project.name, description: function_description }
+  end
 
   let(:namespace) do
     create(:cluster_kubernetes_namespace,
@@ -114,40 +118,33 @@ describe Projects::Serverless::FunctionsController do
           expect(response).to have_gitlab_http_status(200)
 
           expect(json_response).to include(
-            "name" => project.name,
-            "url" => "http://#{project.name}.#{namespace.namespace}.example.com",
-            "podcount" => 1
+            'name' => project.name,
+            'url' => "http://#{project.name}.#{namespace.namespace}.example.com",
+            'description' => function_description,
+            'podcount' => 1
           )
         end
       end
 
-      context 'on Knative 0.5' do
+      context 'on Knative 0.5.0' do
         before do
-          stub_kubeclient_service_pods
-          stub_reactive_cache(knative_services_finder,
-                              {
-                                services: kube_knative_services_body(
-                                  legacy_knative: true,
-                                  namespace: namespace.namespace,
-                                  name: cluster.project.name
-                                )["items"],
-                                pods: kube_knative_pods_body(cluster.project.name, namespace.namespace)["items"]
-                              },
-                              *knative_services_finder.cache_args)
+          prepare_knative_stubs(knative_05_service(knative_stub_options))
         end
 
         include_examples 'GET #show with valid data'
       end
 
-      context 'on Knative 0.6 or 0.7' do
+      context 'on Knative 0.6.0' do
         before do
-          stub_kubeclient_service_pods
-          stub_reactive_cache(knative_services_finder,
-            {
-              services: kube_knative_services_body(namespace: namespace.namespace, name: cluster.project.name)["items"],
-              pods: kube_knative_pods_body(cluster.project.name, namespace.namespace)["items"]
-            },
-            *knative_services_finder.cache_args)
+          prepare_knative_stubs(knative_06_service(knative_stub_options))
+        end
+
+        include_examples 'GET #show with valid data'
+      end
+
+      context 'on Knative 0.7.0' do
+        before do
+          prepare_knative_stubs(knative_07_service(knative_stub_options))
         end
 
         include_examples 'GET #show with valid data'
@@ -172,11 +169,12 @@ describe Projects::Serverless::FunctionsController do
         expect(response).to have_gitlab_http_status(200)
 
         expect(json_response).to match({
-                                         "knative_installed" => "checking",
-                                         "functions" => [
+                                         'knative_installed' => 'checking',
+                                         'functions' => [
                                            a_hash_including(
-                                             "name" => project.name,
-                                             "url" => "http://#{project.name}.#{namespace.namespace}.example.com"
+                                             'name' => project.name,
+                                             'url' => "http://#{project.name}.#{namespace.namespace}.example.com",
+                                             'description' => function_description
                                            )
                                          ]
                                        })
@@ -189,36 +187,38 @@ describe Projects::Serverless::FunctionsController do
       end
     end
 
-    context 'on Knative 0.5' do
+    context 'on Knative 0.5.0' do
       before do
-        stub_kubeclient_service_pods
-        stub_reactive_cache(knative_services_finder,
-                            {
-                              services: kube_knative_services_body(
-                                legacy_knative: true,
-                                namespace: namespace.namespace,
-                                name: cluster.project.name
-                              )["items"],
-                              pods: kube_knative_pods_body(cluster.project.name, namespace.namespace)["items"]
-                            },
-                            *knative_services_finder.cache_args)
+        prepare_knative_stubs(knative_05_service(knative_stub_options))
       end
 
       include_examples 'GET #index with data'
     end
 
-    context 'on Knative 0.6 or 0.7' do
+    context 'on Knative 0.6.0' do
       before do
-        stub_kubeclient_service_pods
-        stub_reactive_cache(knative_services_finder,
-          {
-            services: kube_knative_services_body(namespace: namespace.namespace, name: cluster.project.name)["items"],
-            pods: kube_knative_pods_body(cluster.project.name, namespace.namespace)["items"]
-          },
-          *knative_services_finder.cache_args)
+        prepare_knative_stubs(knative_06_service(knative_stub_options))
       end
 
       include_examples 'GET #index with data'
     end
+
+    context 'on Knative 0.7.0' do
+      before do
+        prepare_knative_stubs(knative_07_service(knative_stub_options))
+      end
+
+      include_examples 'GET #index with data'
+    end
+  end
+
+  def prepare_knative_stubs(knative_service)
+    stub_kubeclient_service_pods
+    stub_reactive_cache(knative_services_finder,
+                        {
+                          services: [knative_service],
+                          pods: kube_knative_pods_body(cluster.project.name, namespace.namespace)["items"]
+                        },
+                        *knative_services_finder.cache_args)
   end
 end

@@ -433,6 +433,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
           Gitlab.ee do
             get :logs
+            get '/pods/(:pod_name)/containers/(:container_name)/logs', to: 'environments#k8s_pod_logs', as: :k8s_pod_logs
           end
         end
 

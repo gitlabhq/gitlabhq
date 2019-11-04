@@ -291,9 +291,9 @@ describe('Monitoring store actions', () => {
     it('dispatches fetchPrometheusMetric for each panel query', done => {
       const params = {};
       const state = storeState();
-      state.groups = metricsDashboardResponse.dashboard.panel_groups;
+      state.dashboard.panel_groups = metricsDashboardResponse.dashboard.panel_groups;
 
-      const metric = state.groups[0].panels[0].metrics[0];
+      const metric = state.dashboard.panel_groups[0].panels[0].metrics[0];
 
       fetchPrometheusMetrics({ state, commit, dispatch }, params)
         .then(() => {

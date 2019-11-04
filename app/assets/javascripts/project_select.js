@@ -9,7 +9,9 @@ const projectSelect = () => {
   $('.ajax-project-select').each(function(i, select) {
     var placeholder;
     const simpleFilter = $(select).data('simpleFilter') || false;
+    const isInstantiated = $(select).data('select2');
     this.groupId = $(select).data('groupId');
+    this.userId = $(select).data('userId');
     this.includeGroups = $(select).data('includeGroups');
     this.allProjects = $(select).data('allProjects') || false;
     this.orderBy = $(select).data('orderBy') || 'id';
@@ -63,6 +65,18 @@ const projectSelect = () => {
               },
               projectsCallback,
             );
+          } else if (_this.userId) {
+            return Api.userProjects(
+              _this.userId,
+              query.term,
+              {
+                with_issues_enabled: _this.withIssuesEnabled,
+                with_merge_requests_enabled: _this.withMergeRequestsEnabled,
+                with_shared: _this.withShared,
+                include_subgroups: _this.includeProjectsInSubgroups,
+              },
+              projectsCallback,
+            );
           } else {
             return Api.projects(
               query.term,
@@ -96,7 +110,7 @@ const projectSelect = () => {
 
       dropdownCssClass: 'ajax-project-dropdown',
     });
-    if (simpleFilter) return select;
+    if (isInstantiated || simpleFilter) return select;
     return new ProjectSelectComboButton(select);
   });
 };

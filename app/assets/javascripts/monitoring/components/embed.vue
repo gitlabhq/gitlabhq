@@ -35,9 +35,9 @@ export default {
     };
   },
   computed: {
-    ...mapState('monitoringDashboard', ['groups', 'metricsWithData']),
+    ...mapState('monitoringDashboard', ['dashboard', 'metricsWithData']),
     charts() {
-      const groupWithMetrics = this.groups.find(group =>
+      const groupWithMetrics = this.dashboard.panel_groups.find(group =>
         group.metrics.find(chart => this.chartHasData(chart)),
       ) || { metrics: [] };
 

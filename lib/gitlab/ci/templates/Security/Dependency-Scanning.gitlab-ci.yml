@@ -4,6 +4,12 @@
 # List of the variables: https://gitlab.com/gitlab-org/security-products/dependency-scanning#settings
 # How to set: https://docs.gitlab.com/ee/ci/yaml/#variables
 
+variables:
+  DS_ANALYZER_IMAGE_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
+  DS_DEFAULT_ANALYZERS: "gemnasium, retire.js, gemnasium-python, gemnasium-maven, bundler-audit"
+  DS_MAJOR_VERSION: 2
+  DS_DISABLE_DIND: "false"
+
 dependency_scanning:
   stage: test
   image: docker:stable
@@ -61,3 +67,63 @@ dependency_scanning:
   except:
     variables:
       - $DEPENDENCY_SCANNING_DISABLED
+      - $DS_DISABLE_DIND == 'true'
+
+.analyzer:
+  extends: dependency_scanning
+  services: []
+  except:
+    variables:
+      - $DS_DISABLE_DIND == 'false'
+  script:
+    - /analyzer run
+
+gemnasium-dependency_scanning:
+  extends: .analyzer
+  image:
+    name: "$DS_ANALYZER_IMAGE_PREFIX/gemnasium:$DS_MAJOR_VERSION"
+  only:
+    variables:
+      - $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
+        $DS_DEFAULT_ANALYZERS =~ /gemnasium/ &&
+        $CI_PROJECT_REPOSITORY_LANGUAGES =~ /ruby|javascript|php/
+
+gemnasium-maven-dependency_scanning:
+  extends: .analyzer
+  image:
+    name: "$DS_ANALYZER_IMAGE_PREFIX/gemnasium-maven:$DS_MAJOR_VERSION"
+  only:
+    variables:
+      - $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
+        $DS_DEFAULT_ANALYZERS =~ /gemnasium-maven/ &&
+        $CI_PROJECT_REPOSITORY_LANGUAGES =~ /\bjava\b/
+
+gemnasium-python-dependency_scanning:
+  extends: .analyzer
+  image:
+    name: "$DS_ANALYZER_IMAGE_PREFIX/gemnasium-python:$DS_MAJOR_VERSION"
+  only:
+    variables:
+      - $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
+        $DS_DEFAULT_ANALYZERS =~ /gemnasium-python/ &&
+        $CI_PROJECT_REPOSITORY_LANGUAGES =~ /python/
+
+bundler-audit-dependency_scanning:
+  extends: .analyzer
+  image:
+    name: "$DS_ANALYZER_IMAGE_PREFIX/bundler-audit:$DS_MAJOR_VERSION"
+  only:
+    variables:
+      - $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
+        $DS_DEFAULT_ANALYZERS =~ /bundler-audit/ &&
+        $CI_PROJECT_REPOSITORY_LANGUAGES =~ /ruby/
+
+retire-js-dependency_scanning:
+  extends: .analyzer
+  image:
+    name: "$DS_ANALYZER_IMAGE_PREFIX/retire.js:$DS_MAJOR_VERSION"
+  only:
+    variables:
+      - $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
+        $DS_DEFAULT_ANALYZERS =~ /retire.js/ &&
+        $CI_PROJECT_REPOSITORY_LANGUAGES =~ /javascript/

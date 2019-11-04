@@ -174,7 +174,7 @@ export default {
       return this.customMetricsAvailable && this.customMetricsPath.length;
     },
     ...mapState('monitoringDashboard', [
-      'groups',
+      'dashboard',
       'emptyState',
       'showEmptyState',
       'environments',
@@ -238,6 +238,7 @@ export default {
       'setGettingStartedEmptyState',
       'setEndpoints',
       'setDashboardEnabled',
+      'setPanelGroupMetrics',
     ]),
     chartsWithData(charts) {
       if (!this.useDashboardEndpoint) {
@@ -274,10 +275,17 @@ export default {
       this.$toast.show(__('Link copied'));
     },
     // TODO: END
-    removeGraph(metrics, graphIndex) {
-      // At present graphs will not be removed, they should removed using the vuex store
-      // See https://gitlab.com/gitlab-org/gitlab/issues/27835
-      metrics.splice(graphIndex, 1);
+    updateMetrics(key, metrics) {
+      this.setPanelGroupMetrics({
+        metrics,
+        key,
+      });
+    },
+    removeMetric(key, metrics, graphIndex) {
+      this.setPanelGroupMetrics({
+        metrics: metrics.filter((v, i) => i !== graphIndex),
+        key,
+      });
     },
     showInvalidDateError() {
       createFlash(s__('Metrics|Link contains an invalid time window.'));
@@ -447,7 +455,7 @@ export default {
 
     <div v-if="!showEmptyState">
       <graph-group
-        v-for="(groupData, index) in groups"
+        v-for="(groupData, index) in dashboard.panel_groups"
         :key="`${groupData.group}.${groupData.priority}`"
         :name="groupData.group"
         :show-panels="showPanels"
@@ -455,10 +463,11 @@ export default {
       >
         <template v-if="additionalPanelTypesEnabled">
           <vue-draggable
-            :list="groupData.metrics"
+            :value="groupData.metrics"
             group="metrics-dashboard"
             :component-data="{ attrs: { class: 'row mx-0 w-100' } }"
             :disabled="!isRearrangingPanels"
+            @input="updateMetrics(groupData.key, $event)"
           >
             <div
               v-for="(graphData, graphIndex) in groupData.metrics"
@@ -470,7 +479,7 @@ export default {
                 <div
                   v-if="isRearrangingPanels"
                   class="draggable-remove js-draggable-remove p-2 w-100 position-absolute d-flex justify-content-end"
-                  @click="removeGraph(groupData.metrics, graphIndex)"
+                  @click="removeMetric(groupData.key, groupData.metrics, graphIndex)"
                 >
                   <a class="mx-2 p-2 draggable-remove-link" :aria-label="__('Remove')"
                     ><icon name="close"

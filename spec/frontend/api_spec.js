@@ -467,6 +467,26 @@ describe('Api', () => {
     });
   });
 
+  describe('user projects', () => {
+    it('fetches all projects that belong to a particular user', done => {
+      const query = 'dummy query';
+      const options = { unused: 'option' };
+      const userId = '123456';
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/users/${userId}/projects`;
+      mock.onGet(expectedUrl).reply(200, [
+        {
+          name: 'test',
+        },
+      ]);
+
+      Api.userProjects(userId, query, options, response => {
+        expect(response.length).toBe(1);
+        expect(response[0].name).toBe('test');
+        done();
+      });
+    });
+  });
+
   describe('commitPipelines', () => {
     it('fetches pipelines for a given commit', done => {
       const projectId = 'example/foobar';

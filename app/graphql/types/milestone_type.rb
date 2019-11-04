@@ -6,6 +6,8 @@ module Types
 
     authorize :read_milestone
 
+    field :id, GraphQL::ID_TYPE, null: false,
+          description: 'ID of the milestone'
     field :description, GraphQL::STRING_TYPE, null: true,
           description: 'Description of the milestone'
     field :title, GraphQL::STRING_TYPE, null: false,

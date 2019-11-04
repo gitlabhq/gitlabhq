@@ -23,7 +23,7 @@ describe('Time series component', () => {
     store = createStore();
     store.commit(`monitoringDashboard/${types.RECEIVE_METRICS_DATA_SUCCESS}`, MonitoringMock.data);
     store.commit(`monitoringDashboard/${types.RECEIVE_DEPLOYMENTS_DATA_SUCCESS}`, deploymentData);
-    [mockGraphData] = store.state.monitoringDashboard.groups[0].metrics;
+    [, mockGraphData] = store.state.monitoringDashboard.dashboard.panel_groups[0].metrics;
 
     makeTimeSeriesChart = (graphData, type) =>
       shallowMount(TimeSeries, {

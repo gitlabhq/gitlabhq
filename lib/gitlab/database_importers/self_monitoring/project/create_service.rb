@@ -176,19 +176,11 @@ module Gitlab
           end
 
           def prometheus_enabled?
-            Gitlab.config.prometheus.enable if Gitlab.config.prometheus
-          rescue Settingslogic::MissingSetting
-            log_error('prometheus.enable is not present in config/gitlab.yml')
-
-            false
+            ::Gitlab::Prometheus::Internal.prometheus_enabled?
           end
 
           def prometheus_listen_address
-            Gitlab.config.prometheus.listen_address.to_s if Gitlab.config.prometheus
-          rescue Settingslogic::MissingSetting
-            log_error('Prometheus listen_address is not present in config/gitlab.yml')
-
-            nil
+            ::Gitlab::Prometheus::Internal.listen_address
           end
 
           def instance_admins
@@ -231,23 +223,7 @@ module Gitlab
           end
 
           def internal_prometheus_listen_address_uri
-            if prometheus_listen_address.starts_with?('0.0.0.0:')
-              # 0.0.0.0:9090
-              port = ':' + prometheus_listen_address.split(':').second
-              'http://localhost' + port
-
-            elsif prometheus_listen_address.starts_with?(':')
-              # :9090
-              'http://localhost' + prometheus_listen_address
-
-            elsif prometheus_listen_address.starts_with?('http')
-              # https://localhost:9090
-              prometheus_listen_address
-
-            else
-              # localhost:9090
-              'http://' + prometheus_listen_address
-            end
+            ::Gitlab::Prometheus::Internal.uri
           end
 
           def prometheus_service_attributes

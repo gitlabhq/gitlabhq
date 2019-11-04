@@ -44,18 +44,11 @@ module Projects
       end
 
       expose :url do |service|
-        service.dig('status', 'url') || "http://#{service.dig('status', 'domain')}"
+        knative_06_07_url(service) || knative_05_url(service)
       end
 
       expose :description do |service|
-        service.dig(
-          'spec',
-          'runLatest',
-          'configuration',
-          'revisionTemplate',
-          'metadata',
-          'annotations',
-          'Description')
+        knative_07_description(service) || knative_05_06_description(service)
       end
 
       expose :image do |service|
@@ -66,6 +59,37 @@ module Projects
           'build',
           'template',
           'name')
+      end
+
+      private
+
+      def knative_07_description(service)
+        service.dig(
+          'spec',
+          'template',
+          'metadata',
+          'annotations',
+          'Description'
+        )
+      end
+
+      def knative_05_url(service)
+        "http://#{service.dig('status', 'domain')}"
+      end
+
+      def knative_06_07_url(service)
+        service.dig('status', 'url')
+      end
+
+      def knative_05_06_description(service)
+        service.dig(
+          'spec',
+          'runLatest',
+          'configuration',
+          'revisionTemplate',
+          'metadata',
+          'annotations',
+          'Description')
       end
     end
   end

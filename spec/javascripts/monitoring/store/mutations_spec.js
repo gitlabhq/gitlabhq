@@ -20,16 +20,26 @@ describe('Monitoring mutations', () => {
     let groups;
 
     beforeEach(() => {
-      stateCopy.groups = [];
+      stateCopy.dashboard.panel_groups = [];
       groups = metricsGroupsAPIResponse.data;
+    });
+
+    it('adds a key to the group', () => {
+      mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, groups);
+
+      expect(stateCopy.dashboard.panel_groups[0].key).toBe('kubernetes-0');
+      expect(stateCopy.dashboard.panel_groups[1].key).toBe('nginx-1');
     });
 
     it('normalizes values', () => {
       mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, groups);
 
       const expectedTimestamp = '2017-05-25T08:22:34.925Z';
-      const expectedValue = 0.0010794445585559514;
-      const [timestamp, value] = stateCopy.groups[0].metrics[0].queries[0].result[0].values[0];
+      const expectedValue = 8.0390625;
+      const [
+        timestamp,
+        value,
+      ] = stateCopy.dashboard.panel_groups[0].metrics[0].queries[0].result[0].values[0];
 
       expect(timestamp).toEqual(expectedTimestamp);
       expect(value).toEqual(expectedValue);
@@ -38,25 +48,25 @@ describe('Monitoring mutations', () => {
     it('contains two groups that contains, one of which has two queries sorted by priority', () => {
       mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, groups);
 
-      expect(stateCopy.groups).toBeDefined();
-      expect(stateCopy.groups.length).toEqual(2);
-      expect(stateCopy.groups[0].metrics.length).toEqual(2);
+      expect(stateCopy.dashboard.panel_groups).toBeDefined();
+      expect(stateCopy.dashboard.panel_groups.length).toEqual(2);
+      expect(stateCopy.dashboard.panel_groups[0].metrics.length).toEqual(2);
     });
 
     it('assigns queries a metric id', () => {
       mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, groups);
 
-      expect(stateCopy.groups[1].metrics[0].queries[0].metricId).toEqual('100');
+      expect(stateCopy.dashboard.panel_groups[1].metrics[0].queries[0].metricId).toEqual('100');
     });
 
     it('removes the data if all the values from a query are not defined', () => {
       mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, groups);
 
-      expect(stateCopy.groups[1].metrics[0].queries[0].result.length).toEqual(0);
+      expect(stateCopy.dashboard.panel_groups[1].metrics[0].queries[0].result.length).toEqual(0);
     });
 
     it('assigns metric id of null if metric has no id', () => {
-      stateCopy.groups = [];
+      stateCopy.dashboard.panel_groups = [];
       const noId = groups.map(group => ({
         ...group,
         ...{
@@ -70,7 +80,7 @@ describe('Monitoring mutations', () => {
 
       mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, noId);
 
-      stateCopy.groups.forEach(group => {
+      stateCopy.dashboard.panel_groups.forEach(group => {
         group.metrics.forEach(metric => {
           expect(metric.queries.every(query => query.metricId === null)).toBe(true);
         });
@@ -87,13 +97,13 @@ describe('Monitoring mutations', () => {
       it('aliases group panels to metrics for backwards compatibility', () => {
         mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, dashboardGroups);
 
-        expect(stateCopy.groups[0].metrics[0]).toBeDefined();
+        expect(stateCopy.dashboard.panel_groups[0].metrics[0]).toBeDefined();
       });
 
       it('aliases panel metrics to queries for backwards compatibility', () => {
         mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, dashboardGroups);
 
-        expect(stateCopy.groups[0].metrics[0].queries).toBeDefined();
+        expect(stateCopy.dashboard.panel_groups[0].metrics[0].queries).toBeDefined();
       });
     });
   });

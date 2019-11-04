@@ -2,6 +2,8 @@ import $ from 'jquery';
 import _ from 'underscore';
 import axios from './lib/utils/axios_utils';
 import { joinPaths } from './lib/utils/url_utility';
+import flash from '~/flash';
+import { __ } from '~/locale';
 
 const Api = {
   groupsPath: '/api/:version/groups.json',
@@ -29,6 +31,7 @@ const Api = {
   usersPath: '/api/:version/users.json',
   userPath: '/api/:version/users/:id',
   userStatusPath: '/api/:version/users/:id/status',
+  userProjectsPath: '/api/:version/users/:id/projects',
   userPostStatusPath: '/api/:version/user/status',
   commitPath: '/api/:version/projects/:id/repository/commits',
   applySuggestionPath: '/api/:version/suggestions/:id/apply',
@@ -239,7 +242,8 @@ const Api = {
       .get(url, {
         params: Object.assign({}, defaults, options),
       })
-      .then(({ data }) => callback(data));
+      .then(({ data }) => callback(data))
+      .catch(() => flash(__('Something went wrong while fetching projects')));
   },
 
   commitMultiple(id, data) {
@@ -346,6 +350,20 @@ const Api = {
     return axios.get(url, {
       params: options,
     });
+  },
+
+  userProjects(userId, query, options, callback) {
+    const url = Api.buildUrl(Api.userProjectsPath).replace(':id', userId);
+    const defaults = {
+      search: query,
+      per_page: 20,
+    };
+    return axios
+      .get(url, {
+        params: Object.assign({}, defaults, options),
+      })
+      .then(({ data }) => callback(data))
+      .catch(() => flash(__('Something went wrong while fetching projects')));
   },
 
   branches(id, query = '', options = {}) {

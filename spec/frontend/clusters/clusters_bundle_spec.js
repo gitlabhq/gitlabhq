@@ -10,8 +10,10 @@ import axios from '~/lib/utils/axios_utils';
 import { loadHTMLFixture } from 'helpers/fixtures';
 import { setTestTimeout } from 'helpers/timeout';
 import $ from 'jquery';
+import initProjectSelectDropdown from '~/project_select';
 
 jest.mock('~/lib/utils/poll');
+jest.mock('~/project_select');
 
 const { INSTALLING, INSTALLABLE, INSTALLED, UNINSTALLING } = APPLICATION_STATUS;
 
@@ -44,6 +46,7 @@ describe('Clusters', () => {
   afterEach(() => {
     cluster.destroy();
     mock.restore();
+    jest.clearAllMocks();
   });
 
   describe('class constructor', () => {
@@ -54,6 +57,10 @@ describe('Clusters', () => {
 
     it('should call initPolling on construct', () => {
       expect(cluster.initPolling).toHaveBeenCalled();
+    });
+
+    it('should call initProjectSelectDropdown on construct', () => {
+      expect(initProjectSelectDropdown).toHaveBeenCalled();
     });
   });
 

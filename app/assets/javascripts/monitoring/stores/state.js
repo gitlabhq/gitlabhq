@@ -12,7 +12,9 @@ export default () => ({
   emptyState: 'gettingStarted',
   showEmptyState: true,
   showErrorBanner: true,
-  groups: [],
+  dashboard: {
+    panel_groups: [],
+  },
   deploymentData: [],
   environments: [],
   metricsWithData: [],

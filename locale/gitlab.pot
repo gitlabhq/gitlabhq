@@ -3399,6 +3399,9 @@ msgstr ""
 msgid "ClusterIntegration|%{title} updated successfully."
 msgstr ""
 
+msgid "ClusterIntegration|A cluster management project can be used to run deployment jobs with Kubernetes <code>cluster-admin</code> privileges."
+msgstr ""
+
 msgid "ClusterIntegration|A service token scoped to %{code}kube-system%{end_code} with %{code}cluster-admin%{end_code} privileges."
 msgstr ""
 
@@ -3505,6 +3508,9 @@ msgid "ClusterIntegration|Cloud Run"
 msgstr ""
 
 msgid "ClusterIntegration|Cluster health"
+msgstr ""
+
+msgid "ClusterIntegration|Cluster management project (alpha)"
 msgstr ""
 
 msgid "ClusterIntegration|Cluster name is required."
@@ -15585,6 +15591,9 @@ msgid "Something went wrong while fetching group member contributions"
 msgstr ""
 
 msgid "Something went wrong while fetching latest comments."
+msgstr ""
+
+msgid "Something went wrong while fetching projects"
 msgstr ""
 
 msgid "Something went wrong while fetching related merge requests."

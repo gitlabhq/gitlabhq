@@ -76,8 +76,7 @@ graphql-reference-verify:
     - .default-only
     - .default-before_script
     - .only:changes-graphql
-  variables:
-    SETUP_DB: "false"
+    - .use-pg9
   stage: test
   needs: ["setup-test-env"]
   script:
