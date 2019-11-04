@@ -2,6 +2,27 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.4.2
+
+### Fixed (10 changes)
+
+- Increase timeout for FetchInternalRemote RPC call. !18908
+- Clean up duplicate indexes on ci_trigger_requests. !19053
+- Fix project imports not working with serialized data. !19124
+- Fixed welcome screen icons not showing. !19148
+- Disable protected path throttling by default. !19185
+- Fix Prometheus duplicate metrics. !19327
+- Fix ref switcher not working on Microsoft Edge. !19335
+- Extend gRPC timeouts for Rake tasks. !19461
+- Disable upload HTTP caching to fix case when object storage is enabled and proxy_download is disabled. !19494
+- Removes arrow icons for old collapsible sections.
+
+### Changed (2 changes)
+
+- Increased deactivation threshold to 180 days. !18902
+- Add extra sentence about registry to AutoDevOps popup. !19092
+
+
 ## 12.4.1
 
 ### Security (14 changes)

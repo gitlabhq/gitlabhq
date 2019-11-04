@@ -1,5 +1,0 @@
----
-title: Fix project imports not working with serialized data
-merge_request: 19124
-author:
-type: fixed

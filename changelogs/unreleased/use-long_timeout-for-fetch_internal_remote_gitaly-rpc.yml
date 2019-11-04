@@ -1,5 +1,0 @@
----
-title: Increase timeout for FetchInternalRemote RPC call
-merge_request: 18908
-author:
-type: fixed
