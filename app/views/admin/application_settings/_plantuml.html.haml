@@ -1,18 +1,27 @@
-= form_for @application_setting, url: integrations_admin_application_settings_path(anchor: 'js-plantuml-settings'), html: { class: 'fieldset-form' } do |f|
-  = form_errors(@application_setting)
+- expanded = integration_expanded?('plantuml_')
+%section.settings.as-plantuml.no-animate#js-plantuml-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('PlantUML')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Allow rendering of PlantUML diagrams in Asciidoc documents.')
+  .settings-content
+    = form_for @application_setting, url: integrations_admin_application_settings_path(anchor: 'js-plantuml-settings'), html: { class: 'fieldset-form' } do |f|
+      = form_errors(@application_setting) if expanded
 
-  %fieldset
-    .form-group
-      .form-check
-        = f.check_box :plantuml_enabled, class: 'form-check-input'
-        = f.label :plantuml_enabled, class: 'form-check-label' do
-          Enable PlantUML
-    .form-group
-      = f.label :plantuml_url, 'PlantUML URL', class: 'label-bold'
-      = f.text_field :plantuml_url, class: 'form-control', placeholder: 'http://gitlab.your-plantuml-instance.com:8080'
-      .form-text.text-muted
-        Allow rendering of
-        = link_to "PlantUML", "http://plantuml.com"
-        diagrams in Asciidoc documents using an external PlantUML service.
+      %fieldset
+        .form-group
+          .form-check
+            = f.check_box :plantuml_enabled, class: 'form-check-input'
+            = f.label :plantuml_enabled, _('Enable PlantUML'), class: 'form-check-label'
+        .form-group
+          = f.label :plantuml_url, 'PlantUML URL', class: 'label-bold'
+          = f.text_field :plantuml_url, class: 'form-control', placeholder: 'http://gitlab.your-plantuml-instance.com:8080'
+          .form-text.text-muted
+            Allow rendering of
+            = link_to "PlantUML", "http://plantuml.com"
+            diagrams in Asciidoc documents using an external PlantUML service.
 
-  = f.submit 'Save changes', class: "btn btn-success"
+      = f.submit _('Save changes'), class: "btn btn-success"

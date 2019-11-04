@@ -3,11 +3,11 @@
 module ApplicationSettingsHelper
   extend self
 
-  delegate  :allow_signup?,
-            :gravatar_enabled?,
-            :password_authentication_enabled_for_web?,
-            :akismet_enabled?,
-            to: :'Gitlab::CurrentSettings.current_application_settings'
+  delegate :allow_signup?,
+           :gravatar_enabled?,
+           :password_authentication_enabled_for_web?,
+           :akismet_enabled?,
+           to: :'Gitlab::CurrentSettings.current_application_settings'
 
   def user_oauth_applications?
     Gitlab::CurrentSettings.user_oauth_applications
@@ -313,6 +313,10 @@ module ApplicationSettingsHelper
 
   def expanded_by_default?
     Rails.env.test?
+  end
+
+  def integration_expanded?(substring)
+    @application_setting.errors.any? { |k| k.to_s.start_with?(substring) }
   end
 
   def instance_clusters_enabled?

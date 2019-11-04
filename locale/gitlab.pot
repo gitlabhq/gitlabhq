@@ -704,6 +704,18 @@ msgstr ""
 msgid "API Token"
 msgstr ""
 
+msgid "AWS Access Key"
+msgstr ""
+
+msgid "AWS Access Key.  Only required if not using role instance credentials"
+msgstr ""
+
+msgid "AWS Secret Access Key"
+msgstr ""
+
+msgid "AWS Secret Access Key.  Only required if not using role instance credentials"
+msgstr ""
+
 msgid "Abort"
 msgstr ""
 
@@ -5739,6 +5751,9 @@ msgstr ""
 msgid "Display name"
 msgstr ""
 
+msgid "Do not display offers from third parties within GitLab"
+msgstr ""
+
 msgid "Do you want to customize how Google Code email addresses and usernames are imported into GitLab?"
 msgstr ""
 
@@ -5925,6 +5940,9 @@ msgstr ""
 msgid "Elasticsearch"
 msgstr ""
 
+msgid "Elasticsearch AWS IAM credentials"
+msgstr ""
+
 msgid "Elasticsearch indexing restrictions"
 msgstr ""
 
@@ -6031,6 +6049,9 @@ msgid "Enable HTML emails"
 msgstr ""
 
 msgid "Enable Incident Management inbound alert limit"
+msgstr ""
+
+msgid "Enable PlantUML"
 msgstr ""
 
 msgid "Enable Pseudonymizer data collection"
@@ -13709,6 +13730,9 @@ msgstr ""
 msgid "Regex pattern"
 msgstr ""
 
+msgid "Region that Elasticsearch is configured"
+msgstr ""
+
 msgid "Register"
 msgstr ""
 
@@ -16501,6 +16525,9 @@ msgstr ""
 msgid "The Issue Tracker is the place to add things that need to be improved or solved in a project. You can register or sign in to create issues for this project."
 msgstr ""
 
+msgid "The URL to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., \"http://localhost:9200, http://localhost:9201\")."
+msgstr ""
+
 msgid "The X509 Certificate to use when mutual TLS is required to communicate with the external authorization service. If left blank, the server certificate is still validated when accessing over HTTPS."
 msgstr ""
 
@@ -17129,6 +17156,9 @@ msgid "This namespace has already been taken! Please choose another one."
 msgstr ""
 
 msgid "This option is disabled as you don't have write permissions for the current branch"
+msgstr ""
+
+msgid "This option is only available on GitLab.com"
 msgstr ""
 
 msgid "This page is unavailable because you are not allowed to read information across multiple projects."

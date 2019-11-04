@@ -38,7 +38,26 @@ describe ApplicationSettingsHelper do
   it_behaves_like 'when HTTP protocol is in use', 'http'
 
   context 'with tracking parameters' do
-    it { expect(visible_attributes).to include(*%i(snowplow_collector_hostname snowplow_cookie_domain snowplow_enabled snowplow_site_id))}
-    it { expect(visible_attributes).to include(*%i(pendo_enabled pendo_url))}
+    it { expect(visible_attributes).to include(*%i(snowplow_collector_hostname snowplow_cookie_domain snowplow_enabled snowplow_site_id)) }
+    it { expect(visible_attributes).to include(*%i(pendo_enabled pendo_url)) }
+  end
+
+  describe '.integration_expanded?' do
+    let(:application_setting) { build(:application_setting) }
+
+    it 'is expanded' do
+      application_setting.plantuml_enabled = true
+      application_setting.valid?
+      helper.instance_variable_set(:@application_setting, application_setting)
+
+      expect(helper.integration_expanded?('plantuml_')).to be_truthy
+    end
+
+    it 'is not expanded' do
+      application_setting.valid?
+      helper.instance_variable_set(:@application_setting, application_setting)
+
+      expect(helper.integration_expanded?('plantuml_')).to be_falsey
+    end
   end
 end

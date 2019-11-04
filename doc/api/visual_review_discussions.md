@@ -1,4 +1,4 @@
-# Visual Review discussions API **(STARTER**)
+# Visual Review discussions API **(STARTER)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/18710) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.5.
 

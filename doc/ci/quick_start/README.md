@@ -50,7 +50,7 @@ project's **Pipelines** page.
 
 This guide assumes that you have:
 
-- A working GitLab instance of version 8.0+r or are using
+- A working GitLab instance of version 8.0+ or are using
   [GitLab.com](https://gitlab.com).
 - A project in GitLab that you would like to use CI for.
 - Maintainer or owner access to the project
