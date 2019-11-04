@@ -58,16 +58,11 @@ module Gitlab
         # wrong answer. We handle that by querying the full list - which fills
         # the cache - and using it directly to answer the question.
         define_method("#{name}_include?") do |value|
-          return __send__(name).include?(value) if strong_memoized?(name) # rubocop:disable GitlabSecurity/PublicSend
+          if strong_memoized?(name) || !redis_set_cache.exist?(name)
+            return __send__(name).include?(value) # rubocop:disable GitlabSecurity/PublicSend
+          end
 
-          # If the member exists in the set, return as such early.
-          return true if redis_set_cache.include?(name, value)
-
-          # If it did not, make sure the collection exists.
-          # If the collection exists, then item does not.
-          return false if redis_set_cache.exist?(name)
-
-          __send__(name).include?(value) # rubocop:disable GitlabSecurity/PublicSend
+          redis_set_cache.include?(name, value)
         end
       end
 

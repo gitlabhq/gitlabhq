@@ -40,10 +40,9 @@ to perform audits for your Docker-based apps.
 To enable Container Scanning in your pipeline, you need:
 
 - A GitLab Runner with the
-  [`docker`](https://docs.gitlab.com/runner/executors/docker.html#use-docker-in-docker-with-privileged-mode) or
-  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html#running-privileged-containers-for-the-runners)
-  executor running in privileged mode. If you're using the shared Runners on GitLab.com,
-  this is enabled by default.
+  [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
+  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html)
+  executor.
 - Docker `18.09.03` or higher installed on the machine where the Runners are
   running. If you're using the shared Runners on GitLab.com, this is already
   the case.

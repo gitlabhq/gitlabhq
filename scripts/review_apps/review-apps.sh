@@ -179,6 +179,17 @@ function create_application_secret() {
     "${CI_ENVIRONMENT_SLUG}-gitlab-initial-root-password" \
     --from-literal="password=${REVIEW_APPS_ROOT_PASSWORD}" \
     --dry-run -o json | kubectl apply -f -
+
+  if [ -z "${REVIEW_APPS_EE_LICENSE}" ]; then echo "License not found" && return; fi
+
+  echoinfo "Creating the ${CI_ENVIRONMENT_SLUG}-gitlab-license secret in the ${KUBE_NAMESPACE} namespace..." true
+
+  echo "${REVIEW_APPS_EE_LICENSE}" > /tmp/license.gitlab
+
+  kubectl create secret generic -n "$KUBE_NAMESPACE" \
+    "${CI_ENVIRONMENT_SLUG}-gitlab-license" \
+    --from-file=license=/tmp/license.gitlab \
+    --dry-run -o json | kubectl apply -f -
 }
 
 function download_chart() {
@@ -252,6 +263,14 @@ HELM_CMD=$(cat << EOF
 EOF
 )
 
+if [ -n "${REVIEW_APPS_EE_LICENSE}" ]; then
+HELM_CMD=$(cat << EOF
+  ${HELM_CMD} \
+  --set global.gitlab.license.secret="${CI_ENVIRONMENT_SLUG}-gitlab-license"
+EOF
+)
+fi
+
 HELM_CMD=$(cat << EOF
   ${HELM_CMD} \
   --namespace="$KUBE_NAMESPACE" \
@@ -275,35 +294,4 @@ function display_deployment_debug() {
   # Get all non-completed jobs
   echoinfo "Unsuccessful Jobs for release ${CI_ENVIRONMENT_SLUG}"
   kubectl get jobs -n "$KUBE_NAMESPACE" -lrelease=${CI_ENVIRONMENT_SLUG} --field-selector=status.successful!=1
-}
-
-function add_license() {
-  if [ -z "${REVIEW_APPS_EE_LICENSE}" ]; then echo "License not found" && return; fi
-
-  task_runner_pod=$(get_pod "task-runner");
-  if [ -z "${task_runner_pod}" ]; then echo "Task runner pod not found" && return; fi
-
-  echoinfo "Installing license..." true
-
-  echo "${REVIEW_APPS_EE_LICENSE}" > /tmp/license.gitlab
-  kubectl -n "$KUBE_NAMESPACE" cp /tmp/license.gitlab "${task_runner_pod}":/tmp/license.gitlab
-  rm /tmp/license.gitlab
-
-  kubectl -n "$KUBE_NAMESPACE" exec -it "${task_runner_pod}" -- /srv/gitlab/bin/rails runner -e production \
-    '
-    content = File.read("/tmp/license.gitlab").strip;
-    FileUtils.rm_f("/tmp/license.gitlab");
-
-    unless License.where(data:content).empty?
-      puts "License already exists";
-      Kernel.exit 0;
-    end
-
-    unless License.new(data: content).save
-      puts "Could not add license";
-      Kernel.exit 0;
-    end
-
-    puts "License added";
-    '
 }

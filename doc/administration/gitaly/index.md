@@ -407,11 +407,11 @@ To configure Gitaly with TLS:
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) on client node(s).
-1. Create the `/etc/gitlab/ssl` directory and copy your key and certificate there:
+1. On the Gitaly server, create the `/etc/gitlab/ssl` directory and copy your key and certificate there:
 
    ```sh
    sudo mkdir -p /etc/gitlab/ssl
-   sudo chmod 700 /etc/gitlab/ssl
+   sudo chmod 755 /etc/gitlab/ssl
    sudo cp key.pem cert.pem /etc/gitlab/ssl/
    ```
 

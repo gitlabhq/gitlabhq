@@ -94,7 +94,10 @@ schedule:review-build-cng:
   variables:
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
     DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"
-    GITLAB_HELM_CHART_REF: "v2.4.4"
+    # v2.4.4 + two improvements:
+    # - Allow to pass an EE license when installing the chart: https://gitlab.com/gitlab-org/charts/gitlab/merge_requests/1008
+    # - Allow to customize the livenessProbe for `gitlab-shell`: https://gitlab.com/gitlab-org/charts/gitlab/merge_requests/1021
+    GITLAB_HELM_CHART_REF: "6c655ed77e60f1f7f533afb97bef8c9cb7dc61eb"
     GITLAB_EDITION: "ce"
   environment:
     name: review/${CI_COMMIT_REF_NAME}
@@ -116,21 +119,13 @@ schedule:review-build-cng:
     - source scripts/review_apps/review-apps.sh
     - export REVIEW_APP_CONFIG_CHANGED=$(base_config_changed)
   script:
-    - date
     - check_kube_domain
-    - date
     - ensure_namespace
-    - date
     - install_tiller
-    - date
     - install_external_dns
-    - date
     - download_chart
     - date
     - deploy || (display_deployment_debug && exit 1)
-    - date
-    - add_license
-    - date
   artifacts:
     paths: [review_app_url.txt]
     expire_in: 2 days
