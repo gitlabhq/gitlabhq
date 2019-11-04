@@ -4,7 +4,7 @@
 
   = link_to new_project_path, class: "blank-state blank-state-link" do
     .blank-state-icon
-      = image_tag("illustrations/welcome/add_new_project")
+      = custom_icon("add_new_project", size: 50)
     .blank-state-body
       %h3.blank-state-title
         Create a project
@@ -14,7 +14,7 @@
   - if current_user.can_create_group?
     = link_to new_group_path, class: "blank-state blank-state-link" do
       .blank-state-icon
-        = image_tag("illustrations/welcome/add_new_group")
+        = custom_icon("add_new_group", size: 50)
       .blank-state-body
         %h3.blank-state-title
           Create a group
@@ -23,7 +23,7 @@
 
     = link_to new_admin_user_path, class: "blank-state blank-state-link" do
       .blank-state-icon
-        = image_tag("illustrations/welcome/add_new_user")
+        = custom_icon("add_new_user", size: 50)
       .blank-state-body
         %h3.blank-state-title
           Add people
@@ -32,7 +32,7 @@
 
   = link_to admin_root_path, class: "blank-state blank-state-link" do
     .blank-state-icon
-      = image_tag("illustrations/welcome/configure_server")
+      = custom_icon("configure_server", size: 50)
     .blank-state-body
       %h3.blank-state-title
         Configure GitLab

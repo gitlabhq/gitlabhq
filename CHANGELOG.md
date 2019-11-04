@@ -4,10 +4,11 @@ entry.
 
 ## 12.4.1
 
-### Security (12 changes)
+### Security (14 changes)
 
 - Standardize error response when route is missing.
 - Do not display project labels that are not visible for user accessing group labels.
+- Show cross-referenced label and milestones in issues' activities only to authorized users.
 - Show cross-referenced label and milestones in issues' activities only to authorized users.
 - Analyze incoming GraphQL queries and check for recursion.
 - Disallow unprivileged users from commenting on private repository commits.
@@ -17,6 +18,7 @@ entry.
 - Return 404 on LFS request if project doesn't exist.
 - Mask sentry auth token in Error Tracking dashboard.
 - Fixes a Open Redirect issue in `InternalRedirect`.
+- Remove deploy access level when project/group link is deleted.
 - Sanitize all wiki markup formats with GitLab sanitization pipelines.
 
 

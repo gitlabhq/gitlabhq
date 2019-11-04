@@ -6226,7 +6226,9 @@
               "job_id": null,
               "name": "test build 1",
               "deploy": false,
-              "options": null,
+              "options": {
+                "image": "busybox:latest"
+              },
               "allow_failure": false,
               "stage": "test",
               "trigger_request_id": null,

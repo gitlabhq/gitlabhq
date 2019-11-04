@@ -32,11 +32,10 @@ to protect trigger tokens.
 You can use the `CI_JOB_TOKEN` [variable][predef] (used to authenticate
 with the [GitLab Container Registry][registry]) in the following cases.
 
-#### When used with multi-project pipelines **(PREMIUM)**
+#### When used with multi-project pipelines
 
-> **Note**:
-The use of `CI_JOB_TOKEN` for multi-project pipelines was [introduced][ee-2017]
-in [GitLab Premium][ee] 9.3.
+> - Use of `CI_JOB_TOKEN` for multi-project pipelines was [introduced][ee-2017] in [GitLab Premium][ee] 9.3.
+> - Use of `CI_JOB_TOKEN` for multi-project pipelines was [made available](https://gitlab.com/gitlab-org/gitlab/issues/31573) in all tiers in GitLab 12.4.
 
 This way of triggering can only be used when invoked inside `.gitlab-ci.yml`,
 and it creates a dependent pipeline relation visible on the

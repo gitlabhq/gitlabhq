@@ -283,6 +283,10 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         it 'correctly restores association between a pipeline and a job' do
           expect(CommitStatus.all).to all(have_attributes(pipeline_id: a_value > 0))
         end
+
+        it 'restores a Hash for CommitStatus options' do
+          expect(CommitStatus.all.map(&:options).compact).to all(be_a(Hash))
+        end
       end
     end
   end

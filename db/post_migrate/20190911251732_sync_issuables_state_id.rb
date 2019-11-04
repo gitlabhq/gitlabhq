@@ -62,6 +62,7 @@ class SyncIssuablesStateId < ActiveRecord::Migration[5.2]
       CASE state
       WHEN 'opened' THEN 1
       WHEN 'closed' THEN 2
+      ELSE 2
       END
     SQL
   end
@@ -73,6 +74,7 @@ class SyncIssuablesStateId < ActiveRecord::Migration[5.2]
       WHEN 'closed' THEN 2
       WHEN 'merged' THEN 3
       WHEN 'locked' THEN 4
+      ELSE 2
       END
     SQL
   end

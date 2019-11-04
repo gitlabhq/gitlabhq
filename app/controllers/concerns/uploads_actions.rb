@@ -34,7 +34,7 @@ module UploadsActions
     headers['Pragma'] = ''
 
     ttl, directives = *cache_settings
-    ttl ||= 6.months
+    ttl ||= 0
     directives ||= { private: true, must_revalidate: true }
 
     expires_in ttl, directives

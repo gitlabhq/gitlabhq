@@ -1172,7 +1172,7 @@ Returns:
 - `404 User Not Found` if user cannot be found.
 - `403 Forbidden` when trying to deactivate a user:
   - Blocked by admin or by LDAP synchronization.
-  - That has any activity in past 14 days. These cannot be deactivated.
+  - That has any activity in past 180 days. These users cannot be deactivated.
 
 ## Activate user
 

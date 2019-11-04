@@ -70,5 +70,27 @@ describe('lib/utils/forms', () => {
         bar: ['bar-value2', 'bar-value1'],
       });
     });
+
+    it('handles Microsoft Edge FormData.getAll() bug', () => {
+      const formData = [
+        { type: 'checkbox', name: 'foo', value: 'foo-value1' },
+        { type: 'text', name: 'bar', value: 'bar-value2' },
+      ];
+
+      const form = createDummyForm(formData);
+
+      jest
+        .spyOn(FormData.prototype, 'getAll')
+        .mockImplementation(name =>
+          formData.map(elem => (elem.name === name ? elem.value : undefined)),
+        );
+
+      const data = serializeForm(form);
+
+      expect(data).toEqual({
+        foo: 'foo-value1',
+        bar: 'bar-value2',
+      });
+    });
   });
 });

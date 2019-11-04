@@ -41,7 +41,7 @@ export const isValidDate = dateString => {
       return true;
     }
     return false;
-  } catch {
+  } catch (e) {
     return false;
   }
 };

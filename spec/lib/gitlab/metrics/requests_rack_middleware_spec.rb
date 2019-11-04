@@ -69,7 +69,7 @@ describe Gitlab::Metrics::RequestsRackMiddleware do
         expected_labels = []
         described_class::HTTP_METHODS.each do |method, statuses|
           statuses.each do |status|
-            expected_labels << { method: method, status: status }
+            expected_labels << { method: method, status: status.to_i }
           end
         end
 

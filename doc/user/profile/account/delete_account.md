@@ -71,7 +71,7 @@ To do this:
 Please note that for the deactivation option to be visible to an admin, the user:
 
 - Must be currently active.
-- Should not have any activity in the last 14 days.
+- Should not have any activity in the last 180 days.
 
 ### Activating a user
 
