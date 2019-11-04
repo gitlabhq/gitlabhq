@@ -54,7 +54,7 @@ describe Clusters::Applications::CertManager do
         'kubectl label --overwrite namespace gitlab-managed-apps certmanager.k8s.io/disable-validation=true'
       ])
       expect(subject.postinstall).to eq([
-        "for i in $(seq 1 30); do kubectl apply -f /data/helm/certmanager/config/cluster_issuer.yaml && s=0 && break || s=$?; sleep 1s; echo \"Retrying ($i)...\"; done; (exit $s)"
+        "for i in $(seq 1 90); do kubectl apply -f /data/helm/certmanager/config/cluster_issuer.yaml && s=0 && break || s=$?; sleep 1s; echo \"Retrying ($i)...\"; done; (exit $s)"
       ])
     end
 
