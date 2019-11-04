@@ -467,6 +467,13 @@ production: &base
       # enabled: true
       # primary_api_url: http://localhost:5000/ # internal address to the primary registry, will be used by GitLab to directly communicate with primary registry API
 
+  ## Feature Flag https://docs.gitlab.com/ee/user/project/operations/feature_flags.html
+  feature_flags:
+    unleash:
+      # enabled: false
+      # url: https://gitlab.com/api/v4/feature_flags/unleash/<project_id>
+      # app_name: gitlab.com # Environment name of your GitLab instance
+      # instance_id: INSTANCE_ID
 
   #
   # 2. GitLab CI settings

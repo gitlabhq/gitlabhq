@@ -235,4 +235,36 @@ describe ContainerRepository do
       expect(repository).not_to be_persisted
     end
   end
+
+  describe '.for_group_and_its_subgroups' do
+    subject { described_class.for_group_and_its_subgroups(test_group) }
+
+    context 'in a group' do
+      let(:test_group) { group }
+
+      it { is_expected.to contain_exactly(repository) }
+    end
+
+    context 'with a subgroup' do
+      let(:test_group) { create(:group) }
+      let(:another_project) { create(:project, path: 'test', group: test_group) }
+
+      let(:another_repository) do
+        create(:container_repository, name: 'my_image', project: another_project)
+      end
+
+      before do
+        group.parent = test_group
+        group.save
+      end
+
+      it { is_expected.to contain_exactly(repository, another_repository) }
+    end
+
+    context 'group without container_repositories' do
+      let(:test_group) { create(:group) }
+
+      it { is_expected.to eq([]) }
+    end
+  end
 end

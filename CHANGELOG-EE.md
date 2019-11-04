@@ -1,5 +1,12 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.4.2
+
+### Fixed (1 change)
+
+- Fix feature flag check for productivity analytics. !19025
+
+
 ## 12.4.1
 
 ### Security (6 changes)

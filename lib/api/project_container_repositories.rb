@@ -24,7 +24,7 @@ module API
       end
       get ':id/registry/repositories' do
         repositories = ContainerRepositoriesFinder.new(
-          id: user_project.id, container_type: :project
+          user: current_user, subject: user_project
         ).execute
 
         present paginate(repositories), with: Entities::ContainerRegistry::Repository, tags: params[:tags]

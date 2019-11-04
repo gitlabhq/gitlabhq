@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 describe API::GroupContainerRepositories do
-  set(:group) { create(:group, :private) }
-  set(:project) { create(:project, :private, group: group) }
-  let(:reporter) { create(:user) }
-  let(:guest) { create(:user) }
+  let_it_be(:group) { create(:group, :private) }
+  let_it_be(:project) { create(:project, :private, group: group) }
+  let_it_be(:reporter) { create(:user) }
+  let_it_be(:guest) { create(:user) }
 
   let(:root_repository) { create(:container_repository, :root, project: project) }
   let(:test_repository) { create(:container_repository, project: project) }

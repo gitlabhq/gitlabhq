@@ -309,6 +309,13 @@ Gitlab.ee do
 end
 
 #
+# Unleash
+#
+Settings['feature_flags'] ||= Settingslogic.new({})
+Settings.feature_flags['unleash'] ||= Settingslogic.new({})
+Settings.feature_flags.unleash['enabled'] = false if Settings.feature_flags.unleash['enabled'].nil?
+
+#
 # External merge request diffs
 #
 Settings['external_diffs'] ||= Settingslogic.new({})

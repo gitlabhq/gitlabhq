@@ -24,3 +24,8 @@
           = n_('Hide value', 'Hide values', @variables.size)
         - else
           = n_('Reveal value', 'Reveal values', @variables.size)
+    - if !@group && @project.group
+      .settings-header.border-top.prepend-top-20
+        = render 'ci/group_variables/header'
+      .settings-content.pr-0
+        = render 'ci/group_variables/index'

@@ -170,6 +170,15 @@ module MilestonesHelper
     content.join('<br />').html_safe
   end
 
+  def recent_releases_with_counts(milestone)
+    total_count = milestone.releases.size
+    return [[], 0, 0] if total_count == 0
+
+    recent_releases = milestone.releases.recent.to_a
+    more_count = total_count - recent_releases.size
+    [recent_releases, total_count, more_count]
+  end
+
   def milestone_tooltip_due_date(milestone)
     if milestone.due_date
       "#{milestone.due_date.to_s(:medium)} (#{remaining_days_in_words(milestone.due_date, milestone.start_date)})"
