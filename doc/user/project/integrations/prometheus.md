@@ -139,7 +139,7 @@ GitLab supports a limited set of [CI variables](../../../ci/variables/README.htm
 - CI_ENVIRONMENT_SLUG
 - KUBE_NAMESPACE
 
-To specify a variable in a query, enclose it in curly braces with a leading percent. For example: `%{ci_environment_slug}`.
+To specify a variable in a query, enclose it in quotation marks with curly braces with a leading percent. For example: `"%{ci_environment_slug}"`.
 
 ### Defining custom dashboards per project
 

@@ -7,7 +7,7 @@ import { s__, __ } from '../../locale';
 
 const MAX_REQUESTS = 3;
 
-function backOffRequest(makeRequestCallback) {
+export function backOffRequest(makeRequestCallback) {
   let requestCounter = 0;
   return backOff((next, stop) => {
     makeRequestCallback()
@@ -111,8 +111,7 @@ export const fetchDashboard = ({ state, dispatch }, params) => {
     params.dashboard = state.currentDashboard;
   }
 
-  return axios
-    .get(state.dashboardEndpoint, { params })
+  return backOffRequest(() => axios.get(state.dashboardEndpoint, { params }))
     .then(resp => resp.data)
     .then(response => {
       dispatch('receiveMetricsDashboardSuccess', { response, params });

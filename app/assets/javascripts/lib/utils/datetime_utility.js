@@ -553,14 +553,10 @@ export const calculateRemainingMilliseconds = endDate => {
  *
  * @param {Date} date the date that we will substract days from
  * @param {number} daysInPast number of days that are subtracted from a given date
- * @returns {String} Date string in ISO format
+ * @returns {Date} Date in past as Date object
  */
-export const getDateInPast = (date, daysInPast) => {
-  const dateClone = newDate(date);
-  return new Date(
-    dateClone.setTime(dateClone.getTime() - daysInPast * 24 * 60 * 60 * 1000),
-  ).toISOString();
-};
+export const getDateInPast = (date, daysInPast) =>
+  new Date(newDate(date).setDate(date.getDate() - daysInPast));
 
 export const beginOfDayTime = 'T00:00:00Z';
 export const endOfDayTime = 'T23:59:59Z';

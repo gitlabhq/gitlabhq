@@ -4,6 +4,7 @@ module Gitlab
   module SidekiqDaemon
     class Monitor < Daemon
       include ::Gitlab::Utils::StrongMemoize
+      extend ::Gitlab::Utils::Override
 
       NOTIFICATION_CHANNEL = 'sidekiq:cancel:notifications'
       CANCEL_DEADLINE = 24.hours.seconds
@@ -22,6 +23,11 @@ module Gitlab
 
         @jobs = {}
         @jobs_mutex = Mutex.new
+      end
+
+      override :thread_name
+      def thread_name
+        "job_monitor"
       end
 
       def within_job(worker_class, jid, queue)

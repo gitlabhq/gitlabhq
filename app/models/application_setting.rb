@@ -18,12 +18,6 @@ class ApplicationSetting < ApplicationRecord
   # fix a lot of tests using allow_any_instance_of
   include ApplicationSettingImplementation
 
-  attr_encrypted :asset_proxy_secret_key,
-                 mode: :per_attribute_iv,
-                 insecure_mode: true,
-                 key: Settings.attr_encrypted_db_key_base_truncated,
-                 algorithm: 'aes-256-cbc'
-
   serialize :restricted_visibility_levels # rubocop:disable Cop/ActiveRecordSerialize
   serialize :import_sources # rubocop:disable Cop/ActiveRecordSerialize
   serialize :disabled_oauth_sign_in_sources, Array # rubocop:disable Cop/ActiveRecordSerialize
@@ -285,6 +279,12 @@ class ApplicationSetting < ApplicationRecord
                  pkey: :external_auth_client_key,
                  pass: :external_auth_client_key_pass,
                  if: -> (setting) { setting.external_auth_client_cert.present? }
+
+  attr_encrypted :asset_proxy_secret_key,
+                 mode: :per_attribute_iv,
+                 key: Settings.attr_encrypted_db_key_base_truncated,
+                 algorithm: 'aes-256-cbc',
+                 insecure_mode: true
 
   attr_encrypted :external_auth_client_key,
                  mode: :per_attribute_iv,

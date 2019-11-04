@@ -41,5 +41,76 @@ describe('monitor helper', () => {
         ),
       ).toEqual([{ ...expectedDataSeries[0], data: [[1, 1]] }]);
     });
+
+    it('updates series name from templates', () => {
+      const config = {
+        ...defaultConfig,
+        name: '{{cmd}}',
+      };
+
+      const [result] = monitorHelper.makeDataSeries(
+        [{ metric: { cmd: 'brpop' }, values: series }],
+        config,
+      );
+
+      expect(result.name).toEqual('brpop');
+    });
+
+    it('supports space-padded template expressions', () => {
+      const config = {
+        ...defaultConfig,
+        name: 'backend: {{ backend }}',
+      };
+
+      const [result] = monitorHelper.makeDataSeries(
+        [{ metric: { backend: 'HA Server' }, values: series }],
+        config,
+      );
+
+      expect(result.name).toEqual('backend: HA Server');
+    });
+
+    it('supports repeated template variables', () => {
+      const config = { ...defaultConfig, name: '{{cmd}}, {{cmd}}' };
+
+      const [result] = monitorHelper.makeDataSeries(
+        [{ metric: { cmd: 'brpop' }, values: series }],
+        config,
+      );
+
+      expect(result.name).toEqual('brpop, brpop');
+    });
+
+    it('updates multiple series names from templates', () => {
+      const config = {
+        ...defaultConfig,
+        name: '{{job}}: {{cmd}}',
+      };
+
+      const [result] = monitorHelper.makeDataSeries(
+        [{ metric: { cmd: 'brpop', job: 'redis' }, values: series }],
+        config,
+      );
+
+      expect(result.name).toEqual('redis: brpop');
+    });
+
+    it('updates name for each series', () => {
+      const config = {
+        ...defaultConfig,
+        name: '{{cmd}}',
+      };
+
+      const [firstSeries, secondSeries] = monitorHelper.makeDataSeries(
+        [
+          { metric: { cmd: 'brpop' }, values: series },
+          { metric: { cmd: 'zrangebyscore' }, values: series },
+        ],
+        config,
+      );
+
+      expect(firstSeries.name).toEqual('brpop');
+      expect(secondSeries.name).toEqual('zrangebyscore');
+    });
   });
 });
