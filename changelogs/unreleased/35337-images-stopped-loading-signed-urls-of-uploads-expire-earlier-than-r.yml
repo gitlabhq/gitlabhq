@@ -1,6 +1,0 @@
----
-title: Disable upload HTTP caching to fix case when object storage is enabled and
-  proxy_download is disabled
-merge_request: 19494
-author:
-type: fixed

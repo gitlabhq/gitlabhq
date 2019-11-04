@@ -1,5 +1,0 @@
----
-title: Disable protected path throttling by default
-merge_request: 19185
-author:
-type: fixed

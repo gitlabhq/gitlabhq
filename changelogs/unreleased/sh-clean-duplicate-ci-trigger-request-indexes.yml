@@ -1,5 +1,0 @@
----
-title: Clean up duplicate indexes on ci_trigger_requests
-merge_request: 19053
-author:
-type: fixed
