@@ -8,6 +8,11 @@ GitLab can integrate with the following Kubernetes providers:
 GitLab is more deeply integrated with GKE, but deeper integration with EKS
 [is planned](https://gitlab.com/gitlab-org/gitlab/issues/22392).
 
+TIP: **Tip:**
+Every new Google Cloud Platform (GCP) account receives [$300 in credit upon sign up](https://console.cloud.google.com/freetrial),
+and in partnership with Google, GitLab is able to offer an additional $200 for new GCP accounts to get started with GitLab's
+Google Kubernetes Engine Integration. All you have to do is [follow this link](https://cloud.google.com/partners/partnercredit/?pcn_code=0014M00001h35gDQAQ#contact-form) and apply for credit.
+
 ## Access controls
 
 When creating a cluster in GitLab, you will be asked if you would like to create either:
@@ -44,6 +49,15 @@ ensure the token of the account has administrator privileges for the cluster.
 
 The resources created by GitLab differ depending on the type of cluster.
 
+### Important notes
+
+Note the following about access controls:
+
+- Environment-specific resources are only created if your cluster is
+  [managed by GitLab](index.md#gitlab-managed-clusters).
+- If your cluster was created before GitLab 12.2, it will use a single namespace for all project
+  environments.
+
 ### RBAC cluster resources
 
 GitLab creates the following resources for RBAC clusters.
@@ -74,12 +88,6 @@ GitLab creates the following resources for ABAC clusters.
 | Environment namespace | `ServiceAccount`     | Uses namespace of environment               | Deploying to a cluster     |
 | Environment namespace | `Secret`             | Token for environment ServiceAccount        | Deploying to a cluster     |
 
-NOTE: **Note:**
-Environment-specific resources are only created if your cluster is [managed by GitLab](index.md#gitlab-managed-clusters).
-
-NOTE: **Note:**
-If your cluster was created before GitLab 12.2, it will use a single namespace for all project environments.
-
 ### Security of GitLab Runners
 
 GitLab Runners have the [privileged mode](https://docs.gitlab.com/runner/executors/docker.html#the-privileged-mode)
@@ -106,15 +114,10 @@ If you don't want to use GitLab Runner in privileged mode, either:
 
 ## Add new GKE cluster
 
-GitLab support creating a new GKE cluster using the GitLab UI.
+GitLab supports:
 
-You can also provide credentials to add an
-[existing Kubernetes cluster](#add-existing-cluster).
-
-TIP: **Tip:**
-Every new Google Cloud Platform (GCP) account receives [$300 in credit upon sign up](https://console.cloud.google.com/freetrial),
-and in partnership with Google, GitLab is able to offer an additional $200 for new GCP accounts to get started with GitLab's
-Google Kubernetes Engine Integration. All you have to do is [follow this link](https://cloud.google.com/partners/partnercredit/?PCN=a0n60000006Vpz4AAC) and apply for credit.
+- Creating a new GKE cluster using the GitLab UI.
+- Providing credentials to add an [existing Kubernetes cluster](#add-existing-cluster).
 
 NOTE: **Note:**
 The [Google authentication integration](../../../integration/google.md) must
@@ -130,6 +133,21 @@ integration, make sure the following requirements are met:
   is set up and you have permissions to access it.
 - The Kubernetes Engine API and related service are enabled. It should work immediately but may take up to 10 minutes after you create a project. For more information see the
   ["Before you begin" section of the Kubernetes Engine docs](https://cloud.google.com/kubernetes-engine/docs/quickstart#before-you-begin).
+
+Also note the following:
+
+- Starting from [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-foss/issues/55902), all GKE clusters
+  created by GitLab are RBAC-enabled. Take a look at the [RBAC section](#rbac-cluster-resources) for
+  more information.
+- Starting from [GitLab 12.5](https://gitlab.com/gitlab-org/gitlab/merge_requests/18341), the
+  cluster's pod address IP range will be set to /16 instead of the regular /14. /16 is a CIDR
+  notation.
+
+NOTE: **Note:**
+GitLab requires basic authentication enabled and a client certificate issued for the cluster in
+order to setup an [initial service account](#access-controls). Starting from [GitLab
+11.10](https://gitlab.com/gitlab-org/gitlab-foss/issues/58208), the cluster creation process will
+explicitly request that basic authentication and client certificate is enabled.
 
 ### Creating the cluster
 
@@ -164,19 +182,6 @@ new Kubernetes cluster to your project:
 
 After a couple of minutes, your cluster will be ready to go. You can now proceed
 to install some [pre-defined applications](index.md#installing-applications).
-
-NOTE: **Note:**
-GitLab requires basic authentication enabled and a client certificate issued for the cluster in
-order to setup an [initial service account](#access-controls). Starting from [GitLab
-11.10](https://gitlab.com/gitlab-org/gitlab-foss/issues/58208), the cluster creation process will
-explicitly request that basic authentication and client certificate is enabled.
-
-NOTE: **Note:**
-Starting from [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-foss/issues/55902), all GKE clusters
-created by GitLab are RBAC-enabled. Take a look at the [RBAC section](#rbac-cluster-resources) for more information.
-
-NOTE: **Note:**
-Starting from [GitLab 12.5](https://gitlab.com/gitlab-org/gitlab/merge_requests/18341), the cluster's pod address IP range will be set to /16 instead of the regular /14. (/16 is a CIDR notation)
 
 ### Cloud Run on GKE
 
@@ -541,17 +546,16 @@ To disable the Kubernetes cluster integration, follow the same procedure.
 
 ## Removing integration
 
-NOTE: **Note:**
-You need Maintainer [permissions](../../permissions.md) and above to remove a Kubernetes cluster integration.
-
-NOTE: **Note:**
-When you remove a cluster, you only remove its relation to GitLab, not the
-cluster itself. To remove the cluster, you can do so by visiting the GKE
-dashboard or using `kubectl`.
-
 To remove the Kubernetes cluster integration from your project, simply click the
 **Remove integration** button. You will then be able to follow the procedure
 and add a Kubernetes cluster again.
+
+When removing the cluster integration, note:
+
+- You need Maintainer [permissions](../../permissions.md) and above to remove a Kubernetes cluster
+  integration.
+- When you remove a cluster, you only remove its relationship to GitLab, not the cluster itself. To
+  remove the cluster, you can do so by visiting the GKE dashboard or using `kubectl`.
 
 ## Learn more
 
