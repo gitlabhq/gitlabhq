@@ -286,6 +286,35 @@ Note the following properties:
 
 ![single stat panel type](img/prometheus_dashboard_single_stat_panel_type.png)
 
+##### Heatmaps
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/30581) in GitLab 12.5.
+
+To add a heatmap panel type to a dashboard, look at the following sample dashboard file:
+
+```yaml
+dashboard: 'Dashboard Title'
+panel_groups:
+  - group: 'Group Title'
+    panels:
+      - title: "Heatmap"
+        type: "heatmap"
+        metrics:
+        - id: 10
+          query: 'sum(rate(nginx_upstream_responses_total{upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"}[60m])) by (status_code)'
+          unit: req/sec
+          label: "Status code"
+```
+
+Note the following properties:
+
+| Property | Type | Required | Description |
+| ------ | ------ | ------ | ------ |
+| type | string | yes | Type of panel to be rendered. For heatmap panel types, set to `heatmap` |
+| query_range | yes | yes | For area panel types, you must use a [range query](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries) |
+
+![heatmap panel type](img/heatmap_panel_type.png)
+
 ### Downloading data as CSV
 
 Data from Prometheus charts on the metrics dashboard can be downloaded as CSV.

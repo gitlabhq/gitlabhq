@@ -456,6 +456,9 @@ Jobs will run on your own Runners in parallel only if:
 
 ### `only`/`except` (basic)
 
+NOTE: **Note:**
+These parameters will soon be [deprecated](https://gitlab.com/gitlab-org/gitlab/issues/27449) in favor of [`rules`](#rules) as it offers a more powerful syntax.
+
 `only` and `except` are two parameters that set a job policy to limit when
 jobs are created:
 
