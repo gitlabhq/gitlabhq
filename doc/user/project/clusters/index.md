@@ -247,7 +247,7 @@ GitLab CI/CD build environment.
 | -------- | ----------- |
 | `KUBE_URL` | Equal to the API URL. |
 | `KUBE_TOKEN` | The Kubernetes token of the [environment service account](add_remove_clusters.md#access-controls). |
-| `KUBE_NAMESPACE` | The Kubernetes namespace is auto-generated if not specified. The default value is `<project_name>-<project_id>-<environment>`. You can overwrite it to use different one if needed, otherwise the `KUBE_NAMESPACE` variable will receive the default value. |
+| `KUBE_NAMESPACE` | The namespace associated with the project's deployment service account. In the format `<project_name>-<project_id>-<environment>`. For GitLab-managed clusters, a matching namespace is automatically created by GitLab in the cluster. |
 | `KUBE_CA_PEM_FILE` | Path to a file containing PEM data. Only present if a custom CA bundle was specified. |
 | `KUBE_CA_PEM` | (**deprecated**) Raw PEM data. Only if a custom CA bundle was specified. |
 | `KUBECONFIG` | Path to a file containing `kubeconfig` for this deployment. CA bundle would be embedded if specified. This config also embeds the same token defined in `KUBE_TOKEN` so you likely will only need this variable. This variable name is also automatically picked up by `kubectl` so you won't actually need to reference it explicitly if using `kubectl`. |
@@ -259,6 +259,16 @@ service account of the cluster integration.
 
 NOTE: **Note:**
 If your cluster was created before GitLab 12.2, default `KUBE_NAMESPACE` will be set to `<project_name>-<project_id>`.
+
+When deploying a custom namespace:
+
+- The custom namespace must exist in your cluster.
+- The project's deployment service account must have permission to deploy to the namespace.
+- `KUBECONFIG` must be updated to use the custom namespace instead of the GitLab-provided default (this is [not automatic](https://gitlab.com/gitlab-org/gitlab/issues/31519)).
+- If deploying with Auto DevOps, you must *also* override `KUBE_NAMESPACE` with the custom namespace.
+
+CAUTION: **Caution:**
+GitLab does not save custom namespaces in the database. So while deployments work with custom namespaces, GitLab's integration for already-deployed environments will not pick up the customized values. For example, [Deploy Boards](../deploy_boards.md) will not work as intended for those deployments. For more information, see the [related issue](https://gitlab.com/gitlab-org/gitlab/issues/27630).
 
 ### Troubleshooting
 

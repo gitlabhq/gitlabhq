@@ -259,34 +259,26 @@ For more information, see see [Available settings for `services`](../docker/usin
 
 > Introduced in GitLab 8.7 and requires GitLab Runner v1.2.
 
-`before_script` is used to define the command that should be run before all
-jobs, including deploy jobs, but after the restoration of [artifacts](#artifacts).
+`before_script` is used to define a command that should be run before each
+job, including deploy jobs, but after the restoration of any [artifacts](#artifacts).
 This must be an an array.
 
-`after_script` is used to define the command that will be run after all
-jobs, including failed ones. This must be an an array.
+Scripts specified in `before_script` are concatenated with any scripts specified
+in the main [`script`](#script), and executed together in a single shell.
 
-Scripts specified in `before_script` are:
+`after_script` is used to define the command that will be run after each
+job, including failed ones. This must be an an array.
 
-- Concatenated with scripts specified in the main `script`. Job-level
-  `before_script` definition override global-level `before_script` definition
-  when concatenated with `script` definition.
-- Executed together with main `script` script as one script in a single shell
-  context.
-
-Scripts specified in `after_script`:
+Scripts specified in `after_script` are executed in a new shell, separate from any
+`before_script` or `script` scripts. As a result, they:
 
 - Have a current working directory set back to the default.
-- Are executed in a shell context separated from `before_script` and `script`
-  scripts.
-- Because of separated context, cannot see changes done by scripts defined
-  in `before_script` or `script` scripts, either:
-  - In shell. For example, command aliases and variables exported in `script`
-    scripts.
-  - Outside of the working tree (depending on the Runner executor). For example,
-    software installed by a `before_script` or `script` scripts.
+- Have no access to changes done by scripts defined in `before_script` or `script`, including:
+  - Command aliases and variables exported in `script` scripts.
+  - Changes outside of the working tree (depending on the Runner executor), like
+    software installed by a `before_script` or `script` script.
 
-It's possible to overwrite the globally defined `before_script` and `after_script`
+It's possible to overwrite a globally defined `before_script` or `after_script`
 if you set it per-job:
 
 ```yaml

@@ -27,7 +27,7 @@ New utility classes should be added to [`utilities.scss`](https://gitlab.com/git
 | Font size | `.text-{size}` | `.text-2` |
 
 - `{variant}` is one of 'primary', 'secondary', 'success', 'warning', 'error'
-- `{shade}` is on of the shades listed on [colors](https://design.gitlab.com/product-foundations/colors/)
+- `{shade}` is one of the shades listed on [colors](https://design.gitlab.com/product-foundations/colors/)
 - `{size}` is a number from 1-6 from our [Type scale](https://design.gitlab.com/product-foundations/typography)
 
 #### When should I create component classes?

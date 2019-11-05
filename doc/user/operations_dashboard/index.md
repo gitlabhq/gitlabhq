@@ -5,10 +5,7 @@
 The Operations Dashboard provides a summary of each project's operational health,
 including pipeline and alert status.
 
-The dashboard can be accessed via the top bar, by clicking on the new
-dashboard icon:
-
-![Operations Dashboard icon in top bar](img/index_operations_dashboard_top_bar_icon.png)
+The dashboard can be accessed via the top bar, by clicking **More > Operations**.
 
 ## Adding a project to the dashboard
 
