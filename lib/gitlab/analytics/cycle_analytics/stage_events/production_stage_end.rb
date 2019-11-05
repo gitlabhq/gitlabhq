@@ -4,7 +4,7 @@ module Gitlab
   module Analytics
     module CycleAnalytics
       module StageEvents
-        class ProductionStageEnd < SimpleStageEvent
+        class ProductionStageEnd < StageEvent
           def self.name
             PlanStageStart.name
           end

@@ -4,7 +4,7 @@ module Gitlab
   module Analytics
     module CycleAnalytics
       module StageEvents
-        class PlanStageStart < SimpleStageEvent
+        class PlanStageStart < MetricsBasedStageEvent
           def self.name
             s_("CycleAnalyticsEvent|Issue first associated with a milestone or issue first added to a board")
           end
@@ -26,8 +26,7 @@ module Gitlab
 
           # rubocop: disable CodeReuse/ActiveRecord
           def apply_query_customization(query)
-            query
-              .joins(:metrics)
+            super
               .where(issue_metrics_table[:first_added_to_board_at].not_eq(nil).or(issue_metrics_table[:first_associated_with_milestone_at].not_eq(nil)))
               .where(issue_metrics_table[:first_mentioned_in_commit_at].not_eq(nil))
           end

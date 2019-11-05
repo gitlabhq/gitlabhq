@@ -1,16 +1,30 @@
 import { shallowMount } from '@vue/test-utils';
+import AxiosMockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import PanelType from '~/monitoring/components/panel_type.vue';
 import EmptyChart from '~/monitoring/components/charts/empty_chart.vue';
 import TimeSeriesChart from '~/monitoring/components/charts/time_series.vue';
 import AnomalyChart from '~/monitoring/components/charts/anomaly.vue';
-import { graphDataPrometheusQueryRange } from './mock_data';
+import { graphDataPrometheusQueryRange } from '../../javascripts/monitoring/mock_data';
 import { anomalyMockGraphData } from '../../frontend/monitoring/mock_data';
 import { createStore } from '~/monitoring/stores';
 
+global.IS_EE = true;
+global.URL.createObjectURL = jest.fn(() => {});
+
 describe('Panel Type component', () => {
+  let axiosMock;
   let store;
   let panelType;
   const dashboardWidth = 100;
+
+  beforeEach(() => {
+    axiosMock = new AxiosMockAdapter(axios);
+  });
+
+  afterEach(() => {
+    axiosMock.reset();
+  });
 
   describe('When no graphData is available', () => {
     let glEmptyChart;
@@ -25,6 +39,7 @@ describe('Panel Type component', () => {
           dashboardWidth,
           graphData: graphDataNoResult,
         },
+        sync: false,
       });
     });
 
@@ -57,14 +72,14 @@ describe('Panel Type component', () => {
       graphData: graphDataPrometheusQueryRange,
     };
 
-    beforeEach(done => {
+    beforeEach(() => {
       store = createStore();
       panelType = shallowMount(PanelType, {
         propsData,
-        sync: false,
         store,
+        sync: false,
+        attachToDocument: true,
       });
-      panelType.vm.$nextTick(done);
     });
 
     describe('Time Series Chart panel type', () => {

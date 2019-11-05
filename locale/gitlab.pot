@@ -4995,13 +4995,28 @@ msgstr ""
 msgid "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project."
 msgstr ""
 
+msgid "CycleAnalyticsEvent|Issue closed"
+msgstr ""
+
 msgid "CycleAnalyticsEvent|Issue created"
+msgstr ""
+
+msgid "CycleAnalyticsEvent|Issue first added to a board"
+msgstr ""
+
+msgid "CycleAnalyticsEvent|Issue first associated with a milestone"
 msgstr ""
 
 msgid "CycleAnalyticsEvent|Issue first associated with a milestone or issue first added to a board"
 msgstr ""
 
 msgid "CycleAnalyticsEvent|Issue first mentioned in a commit"
+msgstr ""
+
+msgid "CycleAnalyticsEvent|Issue last edited"
+msgstr ""
+
+msgid "CycleAnalyticsEvent|Merge request closed"
 msgstr ""
 
 msgid "CycleAnalyticsEvent|Merge request created"
@@ -5014,6 +5029,9 @@ msgid "CycleAnalyticsEvent|Merge request last build finish time"
 msgstr ""
 
 msgid "CycleAnalyticsEvent|Merge request last build start time"
+msgstr ""
+
+msgid "CycleAnalyticsEvent|Merge request last edited"
 msgstr ""
 
 msgid "CycleAnalyticsEvent|Merge request merged"

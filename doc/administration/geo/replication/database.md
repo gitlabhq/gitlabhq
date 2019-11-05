@@ -425,6 +425,9 @@ data before running `pg_basebackup`.
       --host=<primary_node_ip>
    ```
 
+   NOTE: **Note:**
+   Replication slot names must only contain lowercase letters, numbers, and the underscore character.
+
    When prompted, enter the _plaintext_ password you set up for the `gitlab_replicator`
    user in the first step.
 

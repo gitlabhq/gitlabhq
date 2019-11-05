@@ -1,11 +1,8 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require 'rspec-parameterized'
 
 describe Gitlab::SidekiqMiddleware::Metrics do
-  using RSpec::Parameterized::TableSyntax
-
   let(:middleware) { described_class.new }
   let(:concurrency_metric) { double('concurrency metric') }
 
@@ -48,7 +45,7 @@ describe Gitlab::SidekiqMiddleware::Metrics do
     let(:job) { {} }
     let(:job_status) { :done }
     let(:labels) { { queue: :test } }
-    let(:labels_with_job_status) { labels.merge(job_status: job_status) }
+    let(:labels_with_job_status) { { queue: :test, job_status: job_status } }
 
     let(:thread_cputime_before) { 1 }
     let(:thread_cputime_after) { 2 }
@@ -60,75 +57,52 @@ describe Gitlab::SidekiqMiddleware::Metrics do
 
     let(:queue_duration_for_job) { 0.01 }
 
-    where(:worker_has_attributes, :worker_is_latency_sensitive, :worker_has_external_dependencies, :worker_feature_category, :worker_resource_boundary, :labels) do
-      false | false | false | nil             | nil      | { queue: :test }
-      true  | false | false | nil             | nil      | { queue: :test }
-      true  | true  | false | nil             | nil      | { queue: :test, latency_sensitive: true }
-      true  | false | true  | nil             | nil      | { queue: :test, external_deps: true }
-      true  | false | false | :authentication | nil      | { queue: :test, feat_cat: :authentication }
-      true  | false | false | nil             | :cpu     | { queue: :test, boundary: :cpu }
-      true  | false | false | nil             | :memory  | { queue: :test, boundary: :memory }
-      true  | false | false | nil             | :unknown | { queue: :test }
-      true  | true  | true  | :authentication | :cpu     | { queue: :test, latency_sensitive: true, external_deps: true, feat_cat: :authentication, boundary: :cpu }
+    before do
+      allow(middleware).to receive(:get_thread_cputime).and_return(thread_cputime_before, thread_cputime_after)
+      allow(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(monotonic_time_before, monotonic_time_after)
+      allow(Gitlab::InstrumentationHelper).to receive(:queue_duration_for_job).with(job).and_return(queue_duration_for_job)
+
+      expect(running_jobs_metric).to receive(:increment).with(labels, 1)
+      expect(running_jobs_metric).to receive(:increment).with(labels, -1)
+
+      expect(queue_duration_seconds).to receive(:observe).with(labels, queue_duration_for_job) if queue_duration_for_job
+      expect(user_execution_seconds_metric).to receive(:observe).with(labels_with_job_status, thread_cputime_duration)
+      expect(completion_seconds_metric).to receive(:observe).with(labels_with_job_status, monotonic_time_duration)
     end
 
-    with_them do
-      before do
-        allow(middleware).to receive(:get_thread_cputime).and_return(thread_cputime_before, thread_cputime_after)
-        allow(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(monotonic_time_before, monotonic_time_after)
-        allow(Gitlab::InstrumentationHelper).to receive(:queue_duration_for_job).with(job).and_return(queue_duration_for_job)
+    it 'yields block' do
+      expect { |b| middleware.call(worker, job, :test, &b) }.to yield_control.once
+    end
 
-        # Attributes
-        allow(worker).to receive(:include?).with(WorkerAttributes).and_return(worker_has_attributes)
-        allow(worker).to receive(:latency_sensitive_worker?).and_return(worker_is_latency_sensitive)
-        allow(worker).to receive(:worker_has_external_dependencies?).and_return(worker_has_external_dependencies)
-        allow(worker).to receive(:get_worker_resource_boundary).and_return(worker_resource_boundary)
-        allow(worker).to receive(:get_feature_category).and_return(worker_feature_category)
+    it 'sets queue specific metrics' do
+      middleware.call(worker, job, :test) { nil }
+    end
 
-        expect(running_jobs_metric).to receive(:increment).with(labels, 1)
-        expect(running_jobs_metric).to receive(:increment).with(labels, -1)
+    context 'when job_duration is not available' do
+      let(:queue_duration_for_job) { nil }
 
-        expect(queue_duration_seconds).to receive(:observe).with(labels, queue_duration_for_job) if queue_duration_for_job
-        expect(user_execution_seconds_metric).to receive(:observe).with(labels_with_job_status, thread_cputime_duration)
-        expect(completion_seconds_metric).to receive(:observe).with(labels_with_job_status, monotonic_time_duration)
-      end
-
-      it 'yields block' do
-        expect { |b| middleware.call(worker, job, :test, &b) }.to yield_control.once
-      end
-
-      it 'sets queue specific metrics' do
+      it 'does not set the queue_duration_seconds histogram' do
         middleware.call(worker, job, :test) { nil }
       end
+    end
 
-      context 'when job_duration is not available' do
-        let(:queue_duration_for_job) { nil }
+    context 'when job is retried' do
+      let(:job) { { 'retry_count' => 1 } }
 
-        it 'does not set the queue_duration_seconds histogram' do
-          expect(queue_duration_seconds).not_to receive(:observe)
+      it 'sets sidekiq_jobs_retried_total metric' do
+        expect(retried_total_metric).to receive(:increment)
 
-          middleware.call(worker, job, :test) { nil }
-        end
+        middleware.call(worker, job, :test) { nil }
       end
+    end
 
-      context 'when job is retried' do
-        let(:job) { { 'retry_count' => 1 } }
+    context 'when error is raised' do
+      let(:job_status) { :fail }
 
-        it 'sets sidekiq_jobs_retried_total metric' do
-          expect(retried_total_metric).to receive(:increment)
+      it 'sets sidekiq_jobs_failed_total and reraises' do
+        expect(failed_total_metric).to receive(:increment).with(labels, 1)
 
-          middleware.call(worker, job, :test) { nil }
-        end
-      end
-
-      context 'when error is raised' do
-        let(:job_status) { :fail }
-
-        it 'sets sidekiq_jobs_failed_total and reraises' do
-          expect(failed_total_metric).to receive(:increment).with(labels, 1)
-
-          expect { middleware.call(worker, job, :test) { raise StandardError, "Failed" } }.to raise_error(StandardError, "Failed")
-        end
+        expect { middleware.call(worker, job, :test) { raise StandardError, "Failed" } }.to raise_error(StandardError, "Failed")
       end
     end
   end

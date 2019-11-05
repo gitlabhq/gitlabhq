@@ -60,7 +60,7 @@ module.exports = {
   cacheDirectory: '<rootDir>/tmp/cache/jest',
   modulePathIgnorePatterns: ['<rootDir>/.yarn-cache/'],
   reporters,
-  setupFilesAfterEnv: ['<rootDir>/spec/frontend/test_setup.js'],
+  setupFilesAfterEnv: ['<rootDir>/spec/frontend/test_setup.js', 'jest-canvas-mock'],
   restoreMocks: true,
   transform: {
     '^.+\\.(gql|graphql)$': 'jest-transform-graphql',
