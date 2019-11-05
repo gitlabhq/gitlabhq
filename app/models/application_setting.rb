@@ -313,29 +313,25 @@ class ApplicationSetting < ApplicationRecord
                  algorithm: 'aes-256-cbc',
                  insecure_mode: true
 
-  attr_encrypted :external_auth_client_key,
-                 mode: :per_attribute_iv,
-                 key: Settings.attr_encrypted_db_key_base_truncated,
-                 algorithm: 'aes-256-gcm',
-                 encode: true
+  private_class_method def self.encryption_options_base_truncated_aes_256_gcm
+    {
+      mode: :per_attribute_iv,
+      key: Settings.attr_encrypted_db_key_base_truncated,
+      algorithm: 'aes-256-gcm',
+      encode: true
+    }
+  end
 
-  attr_encrypted :external_auth_client_key_pass,
-                 mode: :per_attribute_iv,
-                 key: Settings.attr_encrypted_db_key_base_truncated,
-                 algorithm: 'aes-256-gcm',
-                 encode: true
-
-  attr_encrypted :lets_encrypt_private_key,
-                 mode: :per_attribute_iv,
-                 key: Settings.attr_encrypted_db_key_base_truncated,
-                 algorithm: 'aes-256-gcm',
-                 encode: true
-
-  attr_encrypted :eks_secret_access_key,
-                 mode: :per_attribute_iv,
-                 key: Settings.attr_encrypted_db_key_base_truncated,
-                 algorithm: 'aes-256-gcm',
-                 encode: true
+  attr_encrypted :external_auth_client_key, encryption_options_base_truncated_aes_256_gcm
+  attr_encrypted :external_auth_client_key_pass, encryption_options_base_truncated_aes_256_gcm
+  attr_encrypted :lets_encrypt_private_key, encryption_options_base_truncated_aes_256_gcm
+  attr_encrypted :eks_secret_access_key, encryption_options_base_truncated_aes_256_gcm
+  attr_encrypted :akismet_api_key, encryption_options_base_truncated_aes_256_gcm
+  attr_encrypted :elasticsearch_aws_secret_access_key, encryption_options_base_truncated_aes_256_gcm
+  attr_encrypted :recaptcha_private_key, encryption_options_base_truncated_aes_256_gcm
+  attr_encrypted :recaptcha_site_key, encryption_options_base_truncated_aes_256_gcm
+  attr_encrypted :slack_app_secret, encryption_options_base_truncated_aes_256_gcm
+  attr_encrypted :slack_app_verification_token, encryption_options_base_truncated_aes_256_gcm
 
   before_validation :ensure_uuid!
 
@@ -366,6 +362,30 @@ class ApplicationSetting < ApplicationRecord
   # memory.
   def self.cache_backend
     Gitlab::ThreadMemoryCache.cache_backend
+  end
+
+  def akismet_api_key
+    decrypt(:akismet_api_key, self[:encrypted_akismet_api_key]) || self[:akismet_api_key]
+  end
+
+  def elasticsearch_aws_secret_access_key
+    decrypt(:elasticsearch_aws_secret_access_key, self[:encrypted_elasticsearch_aws_secret_access_key]) || self[:elasticsearch_aws_secret_access_key]
+  end
+
+  def recaptcha_private_key
+    decrypt(:recaptcha_private_key, self[:encrypted_recaptcha_private_key]) || self[:recaptcha_private_key]
+  end
+
+  def recaptcha_site_key
+    decrypt(:recaptcha_site_key, self[:encrypted_recaptcha_site_key]) || self[:recaptcha_site_key]
+  end
+
+  def slack_app_secret
+    decrypt(:slack_app_secret, self[:encrypted_slack_app_secret]) || self[:slack_app_secret]
+  end
+
+  def slack_app_verification_token
+    decrypt(:slack_app_verification_token, self[:encrypted_slack_app_verification_token]) || self[:slack_app_verification_token]
   end
 
   def recaptcha_or_login_protection_enabled

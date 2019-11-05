@@ -15,6 +15,50 @@ describe ApplicationSetting do
   it { expect(setting.uuid).to be_present }
   it { expect(setting).to have_db_column(:auto_devops_enabled) }
 
+  context "with existing plaintext attributes" do
+    before do
+      setting.update_columns(
+        akismet_api_key: "akismet_api_key",
+        elasticsearch_aws_secret_access_key: "elasticsearch_aws_secret_access_key",
+        recaptcha_private_key: "recaptcha_private_key",
+        recaptcha_site_key: "recaptcha_site_key",
+        slack_app_secret: "slack_app_secret",
+        slack_app_verification_token: "slack_app_verification_token"
+      )
+    end
+
+    it "returns the attributes" do
+      expect(setting.akismet_api_key).to eq("akismet_api_key")
+      expect(setting.elasticsearch_aws_secret_access_key).to eq("elasticsearch_aws_secret_access_key")
+      expect(setting.recaptcha_private_key).to eq("recaptcha_private_key")
+      expect(setting.recaptcha_site_key).to eq("recaptcha_site_key")
+      expect(setting.slack_app_secret).to eq("slack_app_secret")
+      expect(setting.slack_app_verification_token).to eq("slack_app_verification_token")
+    end
+  end
+
+  context "with encrypted attributes" do
+    before do
+      setting.update(
+        akismet_api_key: "akismet_api_key",
+        elasticsearch_aws_secret_access_key: "elasticsearch_aws_secret_access_key",
+        recaptcha_private_key: "recaptcha_private_key",
+        recaptcha_site_key: "recaptcha_site_key",
+        slack_app_secret: "slack_app_secret",
+        slack_app_verification_token: "slack_app_verification_token"
+      )
+    end
+
+    it "returns the attributes" do
+      expect(setting.akismet_api_key).to eq("akismet_api_key")
+      expect(setting.elasticsearch_aws_secret_access_key).to eq("elasticsearch_aws_secret_access_key")
+      expect(setting.recaptcha_private_key).to eq("recaptcha_private_key")
+      expect(setting.recaptcha_site_key).to eq("recaptcha_site_key")
+      expect(setting.slack_app_secret).to eq("slack_app_secret")
+      expect(setting.slack_app_verification_token).to eq("slack_app_verification_token")
+    end
+  end
+
   describe 'validations' do
     let(:http)  { 'http://example.com' }
     let(:https) { 'https://example.com' }
