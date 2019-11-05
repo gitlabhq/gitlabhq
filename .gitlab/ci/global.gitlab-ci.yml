@@ -114,6 +114,7 @@
 .graphql-patterns: &graphql-patterns
   - "{,ee/}app/graphql/**/*"
   - "{,ee/}lib/gitlab/graphql/**/*"
+  - "doc/api/graphql/**/*"
 
 .only:changes-code:
   only:
