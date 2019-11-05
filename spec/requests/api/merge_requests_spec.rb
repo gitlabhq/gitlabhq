@@ -1637,6 +1637,21 @@ describe API::MergeRequests do
         expect(source_repository.branch_exists?(source_branch)).to be_falsy
       end
     end
+
+    context "performing a ff-merge with squash" do
+      let(:merge_request) { create(:merge_request, :rebased, source_project: project, squash: true) }
+
+      before do
+        project.update(merge_requests_ff_only_enabled: true)
+      end
+
+      it "records the squash commit SHA and returns it in the response" do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['squash_commit_sha'].length).to eq(40)
+      end
+    end
   end
 
   describe "GET /projects/:id/merge_requests/:merge_request_iid/merge_ref", :clean_gitlab_redis_shared_state do

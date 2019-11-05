@@ -73,7 +73,7 @@ function generateEntries() {
 
   const manualEntries = {
     default: defaultEntries,
-    raven: './raven/index.js',
+    sentry: './sentry/index.js',
   };
 
   return Object.assign(manualEntries, autoEntries);

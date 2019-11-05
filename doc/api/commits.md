@@ -670,6 +670,7 @@ Example response:
       "merge_status":"can_be_merged",
       "sha":"af5b13261899fb2c0db30abdd0af8b07cb44fdc5",
       "merge_commit_sha":null,
+      "squash_commit_sha":null,
       "user_notes_count":0,
       "discussion_locked":null,
       "should_remove_source_branch":null,

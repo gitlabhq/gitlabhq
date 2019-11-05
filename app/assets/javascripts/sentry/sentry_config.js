@@ -1,4 +1,4 @@
-import Raven from 'raven-js';
+import * as Sentry from '@sentry/browser';
 import $ from 'jquery';
 import { __ } from '~/locale';
 
@@ -26,7 +26,7 @@ const IGNORE_ERRORS = [
   'conduitPage',
 ];
 
-const IGNORE_URLS = [
+const BLACKLIST_URLS = [
   // Facebook flakiness
   /graph\.facebook\.com/i,
   // Facebook blocked
@@ -43,62 +43,62 @@ const IGNORE_URLS = [
   /metrics\.itunes\.apple\.com\.edgesuite\.net\//i,
 ];
 
-const SAMPLE_RATE = 95;
+const SAMPLE_RATE = 0.95;
 
-const RavenConfig = {
+const SentryConfig = {
   IGNORE_ERRORS,
-  IGNORE_URLS,
+  BLACKLIST_URLS,
   SAMPLE_RATE,
   init(options = {}) {
     this.options = options;
 
     this.configure();
-    this.bindRavenErrors();
+    this.bindSentryErrors();
     if (this.options.currentUserId) this.setUser();
   },
 
   configure() {
-    Raven.config(this.options.sentryDsn, {
-      release: this.options.release,
-      tags: this.options.tags,
-      whitelistUrls: this.options.whitelistUrls,
-      environment: this.options.environment,
-      ignoreErrors: this.IGNORE_ERRORS,
-      ignoreUrls: this.IGNORE_URLS,
-      shouldSendCallback: this.shouldSendSample.bind(this),
-    }).install();
+    const { dsn, release, tags, whitelistUrls, environment } = this.options;
+    Sentry.init({
+      dsn,
+      release,
+      tags,
+      whitelistUrls,
+      environment,
+      ignoreErrors: this.IGNORE_ERRORS, // TODO: Remove in favor of https://gitlab.com/gitlab-org/gitlab/issues/35144
+      blacklistUrls: this.BLACKLIST_URLS,
+      sampleRate: SAMPLE_RATE,
+    });
   },
 
   setUser() {
-    Raven.setUserContext({
+    Sentry.setUser({
       id: this.options.currentUserId,
     });
   },
 
-  bindRavenErrors() {
-    $(document).on('ajaxError.raven', this.handleRavenErrors);
+  bindSentryErrors() {
+    $(document).on('ajaxError.sentry', this.handleSentryErrors);
   },
 
-  handleRavenErrors(event, req, config, err) {
+  handleSentryErrors(event, req, config, err) {
     const error = err || req.statusText;
-    const responseText = req.responseText || __('Unknown response text');
+    const { responseText = __('Unknown response text') } = req;
+    const { type, url, data } = config;
+    const { status } = req;
 
-    Raven.captureMessage(error, {
+    Sentry.captureMessage(error, {
       extra: {
-        type: config.type,
-        url: config.url,
-        data: config.data,
-        status: req.status,
+        type,
+        url,
+        data,
+        status,
         response: responseText,
         error,
         event,
       },
     });
   },
-
-  shouldSendSample() {
-    return Math.random() * 100 <= this.SAMPLE_RATE;
-  },
 };
 
-export default RavenConfig;
+export default SentryConfig;

@@ -1,8 +1,8 @@
-import RavenConfig from './raven_config';
+import SentryConfig from './sentry_config';
 
 const index = function index() {
-  RavenConfig.init({
-    sentryDsn: gon.sentry_dsn,
+  SentryConfig.init({
+    dsn: gon.sentry_dsn,
     currentUserId: gon.current_user_id,
     whitelistUrls:
       process.env.NODE_ENV === 'production'
@@ -15,7 +15,7 @@ const index = function index() {
     },
   });
 
-  return RavenConfig;
+  return SentryConfig;
 };
 
 index();

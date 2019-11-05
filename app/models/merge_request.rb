@@ -16,6 +16,9 @@ class MergeRequest < ApplicationRecord
   include ReactiveCaching
   include FromUnion
   include DeprecatedAssignee
+  include ShaAttribute
+
+  sha_attribute :squash_commit_sha
 
   self.reactive_cache_key = ->(model) { [model.project.id, model.iid] }
   self.reactive_cache_refresh_interval = 10.minutes

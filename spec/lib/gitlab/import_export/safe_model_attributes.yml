@@ -185,6 +185,7 @@ MergeRequest:
 - merge_when_pipeline_succeeds
 - merge_user_id
 - merge_commit_sha
+- squash_commit_sha
 - in_progress_merge_commit_sha
 - lock_version
 - milestone_id

@@ -1,8 +1,8 @@
-import RavenConfig from '~/raven/raven_config';
-import index from '~/raven/index';
+import SentryConfig from '~/sentry/sentry_config';
+import index from '~/sentry/index';
 
-describe('RavenConfig options', () => {
-  const sentryDsn = 'sentryDsn';
+describe('SentryConfig options', () => {
+  const dsn = 'https://123@sentry.gitlab.test/123';
   const currentUserId = 'currentUserId';
   const gitlabUrl = 'gitlabUrl';
   const environment = 'test';
@@ -11,7 +11,7 @@ describe('RavenConfig options', () => {
 
   beforeEach(() => {
     window.gon = {
-      sentry_dsn: sentryDsn,
+      sentry_dsn: dsn,
       sentry_environment: environment,
       current_user_id: currentUserId,
       gitlab_url: gitlabUrl,
@@ -20,14 +20,14 @@ describe('RavenConfig options', () => {
 
     process.env.HEAD_COMMIT_SHA = revision;
 
-    spyOn(RavenConfig, 'init');
+    jest.spyOn(SentryConfig, 'init').mockImplementation();
 
     indexReturnValue = index();
   });
 
   it('should init with .sentryDsn, .currentUserId, .whitelistUrls and environment', () => {
-    expect(RavenConfig.init).toHaveBeenCalledWith({
-      sentryDsn,
+    expect(SentryConfig.init).toHaveBeenCalledWith({
+      dsn,
       currentUserId,
       whitelistUrls: [gitlabUrl, 'webpack-internal://'],
       environment,
@@ -38,7 +38,7 @@ describe('RavenConfig options', () => {
     });
   });
 
-  it('should return RavenConfig', () => {
-    expect(indexReturnValue).toBe(RavenConfig);
+  it('should return SentryConfig', () => {
+    expect(indexReturnValue).toBe(SentryConfig);
   });
 });
