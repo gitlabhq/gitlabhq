@@ -224,17 +224,17 @@ describe Gitlab::Ci::Ansi2json do
         end
       end
 
-      it 'prevents XSS injection' do
-        trace = "#{section_start}section_end:1:2<script>alert('XSS Hack!');</script>#{section_end}"
+      it 'prints HTML tags as is' do
+        trace = "#{section_start}section_end:1:2<div>hello</div>#{section_end}"
         expect(convert_json(trace)).to eq([
           {
             offset: 0,
-            content: [{ text: "section_end:1:2&lt;script>alert('XSS Hack!');&lt;/script>" }],
+            content: [{ text: "section_end:1:2<div>hello</div>" }],
             section: 'prepare-script',
             section_header: true
           },
           {
-            offset: 95,
+            offset: 75,
             content: [],
             section: 'prepare-script',
             section_duration: '01:03'

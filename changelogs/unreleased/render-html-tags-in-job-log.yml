@@ -1,0 +1,5 @@
+---
+title: Do not escape HTML tags in Ansi2json as they are escaped in the frontend
+merge_request: 19610
+author:
+type: fixed

@@ -56,9 +56,6 @@ class User < ApplicationRecord
   BLOCKED_MESSAGE = "Your account has been blocked. Please contact your GitLab " \
                     "administrator if you think this is an error."
 
-  # Removed in GitLab 12.3. Keep until after 2019-09-22.
-  self.ignored_columns += %i[support_bot]
-
   MINIMUM_INACTIVE_DAYS = 180
 
   # Override Devise::Models::Trackable#update_tracked_fields!

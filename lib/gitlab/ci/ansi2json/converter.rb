@@ -66,14 +66,12 @@ module Gitlab
           elsif scan_token(scanner, /\e(([@-_])(.*?)?)?$/)
             # stop scanning
             scanner.terminate
-          elsif scan_token(scanner, /</)
-            @state.current_line << '&lt;'
           elsif scan_token(scanner, /\r?\n/)
             flush_current_line
           elsif scan_token(scanner, /\r/)
             # drop last line
             @state.current_line.clear!
-          elsif scan_token(scanner, /.[^\e<\r\ns]*/m)
+          elsif scan_token(scanner, /.[^\e\r\ns]*/m)
             # this is a join from all previous tokens and first letters
             # it always matches at least one character `.`
             # it matches everything that is not start of:

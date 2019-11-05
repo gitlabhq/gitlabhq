@@ -181,7 +181,7 @@ module NotificationRecipientService
       def add_subscribed_users
         return unless target.respond_to? :subscribers
 
-        add_recipients(target.subscribers(project), :subscription, nil)
+        add_recipients(target.subscribers(project), :subscription, NotificationReason::SUBSCRIBED)
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
@@ -240,7 +240,7 @@ module NotificationRecipientService
         return unless target.respond_to? :labels
 
         (labels || target.labels).each do |label|
-          add_recipients(label.subscribers(project), :subscription, nil)
+          add_recipients(label.subscribers(project), :subscription, NotificationReason::SUBSCRIBED)
         end
       end
     end

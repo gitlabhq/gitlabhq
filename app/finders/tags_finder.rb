@@ -1,31 +1,13 @@
 # frozen_string_literal: true
 
-class TagsFinder
+class TagsFinder < GitRefsFinder
   def initialize(repository, params)
-    @repository = repository
-    @params = params
+    super(repository, params)
   end
 
   def execute
-    tags = @repository.tags_sorted_by(sort)
-    filter_by_name(tags)
-  end
-
-  private
-
-  def sort
-    @params[:sort].presence
-  end
-
-  def search
-    @params[:search].presence
-  end
-
-  def filter_by_name(tags)
-    if search
-      tags.select { |tag| tag.name.include?(search) }
-    else
-      tags
-    end
+    tags = repository.tags_sorted_by(sort)
+    tags = by_search(tags)
+    tags
   end
 end
