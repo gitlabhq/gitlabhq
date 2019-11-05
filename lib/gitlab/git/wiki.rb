@@ -133,14 +133,6 @@ module Gitlab
         GollumSlug.generate(title, format)
       end
 
-      def page_formatted_data(title:, dir: nil, version: nil)
-        version = version&.id
-
-        wrapped_gitaly_errors do
-          gitaly_wiki_client.get_formatted_data(title: title, dir: dir, version: version)
-        end
-      end
-
       private
 
       def gitaly_wiki_client

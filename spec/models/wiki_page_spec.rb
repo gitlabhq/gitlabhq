@@ -563,17 +563,6 @@ describe WikiPage do
     end
   end
 
-  describe '#formatted_content' do
-    it 'returns processed content of the page' do
-      subject.create({ title: "RDoc", content: "*bold*", format: "rdoc" })
-      page = wiki.find_page('RDoc')
-
-      expect(page.formatted_content).to eq("\n<p><strong>bold</strong></p>\n")
-
-      destroy_page('RDoc')
-    end
-  end
-
   describe '#hook_attrs' do
     it 'adds absolute urls for images in the content' do
       create_page("test page", "test![WikiPage_Image](/uploads/abc/WikiPage_Image.png)")

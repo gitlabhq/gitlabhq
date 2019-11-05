@@ -22,7 +22,7 @@ describe JobArtifactReportEntity do
     end
 
     it 'exposes download path' do
-      expect(subject[:download_path]).to include("jobs/#{report.job.id}/artifacts/download")
+      expect(subject[:download_path]).to include("jobs/#{report.job.id}/artifacts/download?file_type=#{report.file_type}")
     end
   end
 end

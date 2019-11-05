@@ -179,18 +179,6 @@ module Gitlab
         wiki_file
       end
 
-      def get_formatted_data(title:, dir: nil, version: nil)
-        request = Gitaly::WikiGetFormattedDataRequest.new(
-          repository: @gitaly_repo,
-          title: encode_binary(title),
-          revision: encode_binary(version),
-          directory: encode_binary(dir)
-        )
-
-        response = GitalyClient.call(@repository.storage, :wiki_service, :wiki_get_formatted_data, request, timeout: GitalyClient.medium_timeout)
-        response.reduce([]) { |memo, msg| memo << msg.data }.join
-      end
-
       private
 
       # If a block is given and the yielded value is truthy, iteration will be

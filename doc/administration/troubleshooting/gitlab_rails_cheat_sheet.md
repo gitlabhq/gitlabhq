@@ -715,7 +715,7 @@ For more information, see the [confidential issue](../../user/project/issues/con
 
 ```ruby
 Ci::Pipeline.where(project_id: p.id).where(status: 'pending').count
-Ci::Pipeline.where(project_id: p.id).where(status: 'pending').each {|p| p.cancel}
+Ci::Pipeline.where(project_id: p.id).where(status: 'pending').each {|p| p.cancel if p.stuck?}
 Ci::Pipeline.where(project_id: p.id).where(status: 'pending').count
 ```
 

@@ -81,7 +81,7 @@ export default {
 
 <template>
   <div class="info-well d-none d-sm-flex project-last-commit commit p-3">
-    <gl-loading-icon v-if="isLoading" size="md" class="mx-auto" />
+    <gl-loading-icon v-if="isLoading" size="md" class="m-auto" />
     <template v-else>
       <user-avatar-link
         v-if="commit.author"
@@ -155,3 +155,9 @@ export default {
     </template>
   </div>
 </template>
+
+<style scoped>
+.commit {
+  min-height: 4.75rem;
+}
+</style>

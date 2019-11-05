@@ -160,12 +160,6 @@ class ProjectWiki
     update_project_activity
   end
 
-  def page_formatted_data(page)
-    page_title, page_dir = page_title_and_dir(page.title)
-
-    wiki.page_formatted_data(title: page_title, dir: page_dir, version: page.version)
-  end
-
   def page_title_and_dir(title)
     return unless title
 
