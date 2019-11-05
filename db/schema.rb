@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_18_104222) do
+ActiveRecord::Schema.define(version: 2019_11_20_115530) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -307,6 +307,18 @@ ActiveRecord::Schema.define(version: 2019_09_18_104222) do
     t.string "encrypted_asset_proxy_secret_key_iv"
     t.string "static_objects_external_storage_url", limit: 255
     t.string "static_objects_external_storage_auth_token", limit: 255
+    t.text "encrypted_akismet_api_key"
+    t.string "encrypted_akismet_api_key_iv", limit: 255
+    t.text "encrypted_elasticsearch_aws_secret_access_key"
+    t.string "encrypted_elasticsearch_aws_secret_access_key_iv", limit: 255
+    t.text "encrypted_recaptcha_private_key"
+    t.string "encrypted_recaptcha_private_key_iv", limit: 255
+    t.text "encrypted_recaptcha_site_key"
+    t.string "encrypted_recaptcha_site_key_iv", limit: 255
+    t.text "encrypted_slack_app_secret"
+    t.string "encrypted_slack_app_secret_iv", limit: 255
+    t.text "encrypted_slack_app_verification_token"
+    t.string "encrypted_slack_app_verification_token_iv", limit: 255
     t.index ["custom_project_templates_group_id"], name: "index_application_settings_on_custom_project_templates_group_id"
     t.index ["file_template_project_id"], name: "index_application_settings_on_file_template_project_id"
     t.index ["instance_administration_project_id"], name: "index_applicationsettings_on_instance_administration_project_id"
