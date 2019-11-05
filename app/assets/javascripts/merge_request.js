@@ -17,14 +17,7 @@ function MergeRequest(opts) {
   this.opts = opts != null ? opts : {};
   this.submitNoteForm = this.submitNoteForm.bind(this);
   this.$el = $('.merge-request');
-  this.$('.show-all-commits').on(
-    'click',
-    (function(_this) {
-      return function() {
-        return _this.showAllCommits();
-      };
-    })(this),
-  );
+  this.$('.show-all-commits').on('click', () => this.showAllCommits());
 
   this.initTabs();
   this.initMRBtnListeners();

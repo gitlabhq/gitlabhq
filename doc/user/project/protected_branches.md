@@ -118,10 +118,11 @@ all matching branches:
 
 When a protected branch or wildcard protected branches are set to
 [**No one** is **Allowed to push**](#using-the-allowed-to-merge-and-allowed-to-push-settings),
-Developers (and users with higher [permission levels](../permissions.md)) are allowed
-to create a new protected branch, but only via the UI or through the API (to avoid
-creating protected branches accidentally from the command line or from a Git
-client application).
+Developers (and users with higher [permission levels](../permissions.md)) are
+allowed to create a new protected branch as long as they are
+[**Allowed to merge**](#using-the-allowed-to-merge-and-allowed-to-push-settings).
+This can only be done via the UI or through the API (to avoid creating protected
+branches accidentally from the command line or from a Git client application).
 
 To create a new branch through the user interface:
 

@@ -21,7 +21,6 @@ module Gitlab
             :create_project,
             :save_project_id,
             :add_group_members,
-            :add_to_whitelist,
             :add_prometheus_manual_configuration
 
           def initialize
@@ -123,28 +122,6 @@ module Gitlab
               error(_('Could not add admins as members'))
             else
               success(result)
-            end
-          end
-
-          def add_to_whitelist(result)
-            return success(result) unless prometheus_enabled?
-            return success(result) unless prometheus_listen_address.present?
-
-            uri = parse_url(internal_prometheus_listen_address_uri)
-            return error(_('Prometheus listen_address in config/gitlab.yml is not a valid URI')) unless uri
-
-            application_settings.add_to_outbound_local_requests_whitelist([uri.normalized_host])
-            response = application_settings.save
-
-            if response
-              # Expire the Gitlab::CurrentSettings cache after updating the whitelist.
-              # This happens automatically in an after_commit hook, but in migrations,
-              # the after_commit hook only runs at the end of the migration.
-              Gitlab::CurrentSettings.expire_current_application_settings
-              success(result)
-            else
-              log_error("Could not add prometheus URL to whitelist, errors: %{errors}" % { errors: application_settings.errors.full_messages })
-              error(_('Could not add prometheus URL to whitelist'))
             end
           end
 

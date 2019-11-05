@@ -128,7 +128,7 @@ export default {
           <div class="ci-status-link">
             <gl-link
               v-if="commit.latestPipeline"
-              v-gl-tooltip
+              v-gl-tooltip.left
               :href="commit.latestPipeline.detailedStatus.detailsPath"
               :title="statusTitle"
               class="js-commit-pipeline"

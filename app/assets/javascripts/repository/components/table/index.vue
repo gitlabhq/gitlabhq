@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlSkeletonLoading } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { sprintf, __ } from '../../../locale';
 import getRefMixin from '../../mixins/get_ref';
@@ -13,7 +13,7 @@ const PAGE_SIZE = 100;
 
 export default {
   components: {
-    GlLoadingIcon,
+    GlSkeletonLoading,
     TableHeader,
     TableRow,
     ParentRow,
@@ -44,6 +44,15 @@ export default {
   },
   computed: {
     tableCaption() {
+      if (this.isLoadingFiles) {
+        return sprintf(
+          __(
+            'Loading files, directories, and submodules in the path %{path} for commit reference %{ref}',
+          ),
+          { path: this.path, ref: this.ref },
+        );
+      }
+
       return sprintf(
         __('Files, directories, and submodules in the path %{path} for commit reference %{ref}'),
         { path: this.path, ref: this.ref },
@@ -117,12 +126,7 @@ export default {
 <template>
   <div class="tree-content-holder">
     <div class="table-holder bordered-box">
-      <table class="table tree-table qa-file-tree" aria-live="polite">
-        <caption class="sr-only">
-          {{
-            tableCaption
-          }}
-        </caption>
+      <table :aria-label="tableCaption" class="table tree-table qa-file-tree" aria-live="polite">
         <table-header v-once />
         <tbody>
           <parent-row v-show="showParentRow" :commit-ref="ref" :path="path" />
@@ -141,9 +145,15 @@ export default {
               :lfs-oid="entry.lfsOid"
             />
           </template>
+          <template v-if="isLoadingFiles">
+            <tr v-for="i in 5" :key="i" aria-hidden="true">
+              <td><gl-skeleton-loading :lines="1" class="h-auto" /></td>
+              <td><gl-skeleton-loading :lines="1" class="h-auto" /></td>
+              <td><gl-skeleton-loading :lines="1" class="ml-auto h-auto w-50" /></td>
+            </tr>
+          </template>
         </tbody>
       </table>
-      <gl-loading-icon v-show="isLoadingFiles" class="my-3" size="md" />
     </div>
   </div>
 </template>

@@ -59,10 +59,10 @@ graph TB
   Unicorn --> Gitaly
   Sidekiq --> Redis
   Sidekiq --> PgBouncer
+  Sidekiq --> Gitaly
   GitLabWorkhorse[GitLab Workhorse] --> Unicorn
   GitLabWorkhorse --> Redis
   GitLabWorkhorse --> Gitaly
-  Gitaly --> Redis
   NGINX --> GitLabWorkhorse
   NGINX -- TCP 8090 --> GitLabPages[GitLab Pages]
   NGINX --> Grafana[Grafana]

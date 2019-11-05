@@ -164,15 +164,6 @@ describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService do
         end
 
         it_behaves_like 'has prometheus service', 'http://localhost:9090'
-
-        it 'does not overwrite the existing whitelist' do
-          application_setting.outbound_local_requests_whitelist = ['example.com']
-
-          expect(result[:status]).to eq(:success)
-          expect(application_setting.outbound_local_requests_whitelist).to contain_exactly(
-            'example.com', 'localhost'
-          )
-        end
       end
 
       context 'with non default prometheus address' do

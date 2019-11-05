@@ -65,6 +65,37 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
           end
         end
       end
+
+      context 'with self-monitoring project and internal Prometheus' do
+        before do
+          service.api_url = 'http://localhost:9090'
+
+          stub_application_setting(instance_administration_project_id: project.id)
+          stub_config(prometheus: { enable: true, listen_address: 'localhost:9090' })
+        end
+
+        it 'allows self-monitoring project to connect to internal Prometheus' do
+          aggregate_failures do
+            ['127.0.0.1', '192.168.2.3'].each do |url|
+              allow(Addrinfo).to receive(:getaddrinfo).with(domain, any_args).and_return([Addrinfo.tcp(url, 80)])
+
+              expect(service.can_query?).to be true
+            end
+          end
+        end
+
+        it 'does not allow self-monitoring project to connect to other local URLs' do
+          service.api_url = 'http://localhost:8000'
+
+          aggregate_failures do
+            ['127.0.0.1', '192.168.2.3'].each do |url|
+              allow(Addrinfo).to receive(:getaddrinfo).with(domain, any_args).and_return([Addrinfo.tcp(url, 80)])
+
+              expect(service.can_query?).to be false
+            end
+          end
+        end
+      end
     end
   end
 

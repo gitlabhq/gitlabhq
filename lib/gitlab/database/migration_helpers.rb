@@ -108,9 +108,7 @@ module Gitlab
             'in the body of your migration class'
         end
 
-        if supports_drop_index_concurrently?
-          options = options.merge({ algorithm: :concurrently })
-        end
+        options = options.merge({ algorithm: :concurrently })
 
         unless index_exists?(table_name, column_name, options)
           Rails.logger.warn "Index not removed because it does not exist (this may be due to an aborted migration or similar): table_name: #{table_name}, column_name: #{column_name}" # rubocop:disable Gitlab/RailsLogger
@@ -136,9 +134,7 @@ module Gitlab
             'in the body of your migration class'
         end
 
-        if supports_drop_index_concurrently?
-          options = options.merge({ algorithm: :concurrently })
-        end
+        options = options.merge({ algorithm: :concurrently })
 
         unless index_exists_by_name?(table_name, index_name)
           Rails.logger.warn "Index not removed because it does not exist (this may be due to an aborted migration or similar): table_name: #{table_name}, index_name: #{index_name}" # rubocop:disable Gitlab/RailsLogger
@@ -148,13 +144,6 @@ module Gitlab
         disable_statement_timeout do
           remove_index(table_name, options.merge({ name: index_name }))
         end
-      end
-
-      # Only available on Postgresql >= 9.2
-      def supports_drop_index_concurrently?
-        version = select_one("SELECT current_setting('server_version_num') AS v")['v'].to_i
-
-        version >= 90200
       end
 
       # Adds a foreign key with only minimal locking on the tables involved.

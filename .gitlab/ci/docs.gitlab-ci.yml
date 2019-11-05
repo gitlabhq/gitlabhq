@@ -75,7 +75,7 @@ graphql-reference-verify:
     - .default-cache
     - .default-only
     - .default-before_script
-    - .only:changes-graphql
+    - .only:changes-code-backstage-qa
     - .use-pg9
   stage: test
   needs: ["setup-test-env"]

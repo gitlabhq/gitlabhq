@@ -12,6 +12,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
   before_action do
     push_frontend_feature_flag(:hide_dismissed_vulnerabilities)
+    push_frontend_feature_flag(:junit_pipeline_view)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show]

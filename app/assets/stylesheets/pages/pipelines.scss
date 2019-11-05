@@ -1082,3 +1082,25 @@ button.mini-pipeline-graph-dropdown-toggle {
 .legend-success {
   color: $green-500;
 }
+
+.test-reports-table {
+  color: $gray-700;
+
+  .test-reports-summary-row {
+    &:hover {
+      background-color: $gray-light;
+
+      .test-reports-summary-suite {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .build-trace {
+    @include build-trace();
+  }
+}
+
+.progress-bar.bg-primary {
+  background-color: $blue-500 !important;
+}

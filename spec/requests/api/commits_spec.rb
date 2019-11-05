@@ -1089,6 +1089,20 @@ describe API::Commits do
         expect(json_response.first.keys).to include 'diff'
       end
 
+      context 'when hard limits are lower than the number of files' do
+        before do
+          allow(Commit).to receive(:max_diff_options).and_return(max_files: 1)
+        end
+
+        it 'respects the limit' do
+          get api(route, current_user)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to include_pagination_headers
+          expect(json_response.size).to be <= 1
+        end
+      end
+
       context 'when ref does not exist' do
         let(:commit_id) { 'unknown' }
 

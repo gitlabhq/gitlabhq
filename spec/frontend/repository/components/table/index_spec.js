@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlSkeletonLoading } from '@gitlab/ui';
 import Table from '~/repository/components/table/index.vue';
 
 let vm;
@@ -35,7 +35,7 @@ describe('Repository table component', () => {
 
     vm.setData({ ref });
 
-    expect(vm.find('caption').text()).toEqual(
+    expect(vm.find('.table').attributes('aria-label')).toEqual(
       `Files, directories, and submodules in the path ${path} for commit reference ${ref}`,
     );
   });
@@ -45,7 +45,7 @@ describe('Repository table component', () => {
 
     vm.setData({ isLoadingFiles: true });
 
-    expect(vm.find(GlLoadingIcon).isVisible()).toBe(true);
+    expect(vm.find(GlSkeletonLoading).exists()).toBe(true);
   });
 
   describe('normalizeData', () => {

@@ -93,6 +93,7 @@
   - "config.ru"
   - "{package.json,yarn.lock}"
   - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+  - "doc/api/graphql/**/*"
 
 .backstage-patterns: &backstage-patterns
   - "Dangerfile"
@@ -111,11 +112,6 @@
   - "doc/**/*"
   - ".markdownlint.json"
 
-.graphql-patterns: &graphql-patterns
-  - "{,ee/}app/graphql/**/*"
-  - "{,ee/}lib/gitlab/graphql/**/*"
-  - "doc/api/graphql/**/*"
-
 .only:changes-code:
   only:
     changes: *code-patterns
@@ -127,10 +123,6 @@
 .only:changes-docs:
   only:
     changes: *docs-patterns
-
-.only:changes-graphql:
-  only:
-    changes: *graphql-patterns
 
 .only:changes-code-backstage:
   only:
@@ -147,6 +139,7 @@
       - "config.ru"
       - "{package.json,yarn.lock}"
       - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+      - "doc/api/graphql/**/*"
       # Backstage changes
       - "Dangerfile"
       - "danger/**/*"
@@ -170,6 +163,7 @@
       - "config.ru"
       - "{package.json,yarn.lock}"
       - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+      - "doc/api/graphql/**/*"
       # QA changes
       - ".dockerignore"
       - "qa/**/*"
@@ -189,6 +183,7 @@
       - "config.ru"
       - "{package.json,yarn.lock}"
       - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+      - "doc/api/graphql/**/*"
       # Backstage changes
       - "Dangerfile"
       - "danger/**/*"
