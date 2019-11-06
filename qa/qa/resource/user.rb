@@ -17,6 +17,10 @@ module QA
         @unique_id = SecureRandom.hex(8)
       end
 
+      def admin?
+        api_resource&.dig(:is_admin) || false
+      end
+
       def username
         @username || "qa-user-#{unique_id}"
       end

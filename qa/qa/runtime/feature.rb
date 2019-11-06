@@ -7,6 +7,7 @@ module QA
       extend Support::Api
 
       SetFeatureError = Class.new(RuntimeError)
+      AuthorizationError = Class.new(RuntimeError)
 
       def enable(key)
         QA::Runtime::Logger.info("Enabling feature: #{key}")
@@ -26,7 +27,22 @@ module QA
       private
 
       def api_client
-        @api_client ||= Runtime::API::Client.new(:gitlab)
+        @api_client ||= begin
+          if Runtime::Env.admin_personal_access_token
+            Runtime::API::Client.new(:gitlab, personal_access_token: Runtime::Env.admin_personal_access_token)
+          else
+            user = Resource::User.fabricate_via_api! do |user|
+              user.username = Runtime::User.admin_username
+              user.password = Runtime::User.admin_password
+            end
+
+            unless user.admin?
+              raise AuthorizationError, "Administrator access is required to enable/disable feature flags. User '#{user.username}' is not an administrator."
+            end
+
+            Runtime::API::Client.new(:gitlab, user: user)
+          end
+        end
       end
 
       def set_feature(key, value)

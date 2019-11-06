@@ -324,6 +324,11 @@ msgstr ""
 msgid "%{percent}%% complete"
 msgstr ""
 
+msgid "%{releases} release"
+msgid_plural "%{releases} releases"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{service_title} activated."
 msgstr ""
 

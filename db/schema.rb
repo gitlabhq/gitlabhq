@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_29_191901) do
+ActiveRecord::Schema.define(version: 2019_11_05_094625) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -3915,6 +3915,7 @@ ActiveRecord::Schema.define(version: 2019_10_29_191901) do
     t.boolean "severity_overridden", default: false
     t.integer "confidence", limit: 2, null: false
     t.boolean "confidence_overridden", default: false
+    t.integer "report_type", limit: 2, null: false
     t.index ["author_id"], name: "index_vulnerabilities_on_author_id"
     t.index ["closed_by_id"], name: "index_vulnerabilities_on_closed_by_id"
     t.index ["due_date_sourcing_milestone_id"], name: "index_vulnerabilities_on_due_date_sourcing_milestone_id"

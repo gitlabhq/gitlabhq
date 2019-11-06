@@ -531,13 +531,13 @@ describe Group do
       let(:group_user) { create(:user) }
       let(:child_group_user) { create(:user) }
 
-      set(:group_parent) { create(:group, :private) }
-      set(:group) { create(:group, :private, parent: group_parent) }
-      set(:group_child) { create(:group, :private, parent: group) }
+      let_it_be(:group_parent) { create(:group, :private) }
+      let_it_be(:group) { create(:group, :private, parent: group_parent) }
+      let_it_be(:group_child) { create(:group, :private, parent: group) }
 
-      set(:shared_group_parent) { create(:group, :private) }
-      set(:shared_group) { create(:group, :private, parent: shared_group_parent) }
-      set(:shared_group_child) { create(:group, :private, parent: shared_group) }
+      let_it_be(:shared_group_parent) { create(:group, :private) }
+      let_it_be(:shared_group) { create(:group, :private, parent: shared_group_parent) }
+      let_it_be(:shared_group_child) { create(:group, :private, parent: shared_group) }
 
       before do
         group_parent.add_owner(parent_group_user)

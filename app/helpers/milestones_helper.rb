@@ -170,6 +170,14 @@ module MilestonesHelper
     content.join('<br />').html_safe
   end
 
+  def milestone_releases_tooltip_text(milestone)
+    count = milestone.releases.count
+
+    return _("Releases") if count.zero?
+
+    n_("%{releases} release", "%{releases} releases", count) % { releases: count }
+  end
+
   def recent_releases_with_counts(milestone)
     total_count = milestone.releases.size
     return [[], 0, 0] if total_count == 0
