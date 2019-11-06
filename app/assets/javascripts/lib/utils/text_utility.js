@@ -139,6 +139,14 @@ export const stripHtml = (string, replace = '') => {
 export const convertToCamelCase = string => string.replace(/(_\w)/g, s => s[1].toUpperCase());
 
 /**
+ * Converts camelCase string to snake_case
+ *
+ * @param {*} string
+ */
+export const convertToSnakeCase = string =>
+  slugifyWithUnderscore(string.match(/([a-zA-Z][^A-Z]*)/g).join(' '));
+
+/**
  * Converts a sentence to lower case from the second word onwards
  * e.g. Hello World => Hello world
  *

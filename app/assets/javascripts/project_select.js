@@ -30,67 +30,65 @@ const projectSelect = () => {
     $(select).select2({
       placeholder,
       minimumInputLength: 0,
-      query: (function(_this) {
-        return function(query) {
-          var finalCallback, projectsCallback;
-          finalCallback = function(projects) {
-            var data;
-            data = {
-              results: projects,
-            };
-            return query.callback(data);
+      query: query => {
+        var finalCallback, projectsCallback;
+        finalCallback = function(projects) {
+          var data;
+          data = {
+            results: projects,
           };
-          if (_this.includeGroups) {
-            projectsCallback = function(projects) {
-              var groupsCallback;
-              groupsCallback = function(groups) {
-                var data;
-                data = groups.concat(projects);
-                return finalCallback(data);
-              };
-              return Api.groups(query.term, {}, groupsCallback);
-            };
-          } else {
-            projectsCallback = finalCallback;
-          }
-          if (_this.groupId) {
-            return Api.groupProjects(
-              _this.groupId,
-              query.term,
-              {
-                with_issues_enabled: _this.withIssuesEnabled,
-                with_merge_requests_enabled: _this.withMergeRequestsEnabled,
-                with_shared: _this.withShared,
-                include_subgroups: _this.includeProjectsInSubgroups,
-              },
-              projectsCallback,
-            );
-          } else if (_this.userId) {
-            return Api.userProjects(
-              _this.userId,
-              query.term,
-              {
-                with_issues_enabled: _this.withIssuesEnabled,
-                with_merge_requests_enabled: _this.withMergeRequestsEnabled,
-                with_shared: _this.withShared,
-                include_subgroups: _this.includeProjectsInSubgroups,
-              },
-              projectsCallback,
-            );
-          } else {
-            return Api.projects(
-              query.term,
-              {
-                order_by: _this.orderBy,
-                with_issues_enabled: _this.withIssuesEnabled,
-                with_merge_requests_enabled: _this.withMergeRequestsEnabled,
-                membership: !_this.allProjects,
-              },
-              projectsCallback,
-            );
-          }
+          return query.callback(data);
         };
-      })(this),
+        if (this.includeGroups) {
+          projectsCallback = function(projects) {
+            var groupsCallback;
+            groupsCallback = function(groups) {
+              var data;
+              data = groups.concat(projects);
+              return finalCallback(data);
+            };
+            return Api.groups(query.term, {}, groupsCallback);
+          };
+        } else {
+          projectsCallback = finalCallback;
+        }
+        if (this.groupId) {
+          return Api.groupProjects(
+            this.groupId,
+            query.term,
+            {
+              with_issues_enabled: this.withIssuesEnabled,
+              with_merge_requests_enabled: this.withMergeRequestsEnabled,
+              with_shared: this.withShared,
+              include_subgroups: this.includeProjectsInSubgroups,
+            },
+            projectsCallback,
+          );
+        } else if (this.userId) {
+          return Api.userProjects(
+            this.userId,
+            query.term,
+            {
+              with_issues_enabled: this.withIssuesEnabled,
+              with_merge_requests_enabled: this.withMergeRequestsEnabled,
+              with_shared: this.withShared,
+              include_subgroups: this.includeProjectsInSubgroups,
+            },
+            projectsCallback,
+          );
+        } else {
+          return Api.projects(
+            query.term,
+            {
+              order_by: this.orderBy,
+              with_issues_enabled: this.withIssuesEnabled,
+              with_merge_requests_enabled: this.withMergeRequestsEnabled,
+              membership: !this.allProjects,
+            },
+            projectsCallback,
+          );
+        }
+      },
       id(project) {
         if (simpleFilter) return project.id;
         return JSON.stringify({
