@@ -6,6 +6,11 @@ describe Gitlab::CycleAnalytics::StageSummary do
   let(:project) { create(:project, :repository) }
   let(:options) { { from: 1.day.ago, current_user: user } }
   let(:user) { create(:user, :admin) }
+
+  before do
+    project.add_maintainer(user)
+  end
+
   let(:stage_summary) { described_class.new(project, options).data }
 
   describe "#new_issues" do
@@ -84,6 +89,24 @@ describe Gitlab::CycleAnalytics::StageSummary do
         options[:to] = 10.days.from_now
 
         expect(subject).to eq(2)
+      end
+    end
+
+    context 'when a guest user is signed in' do
+      let(:guest_user) { create(:user) }
+
+      before do
+        project.add_guest(guest_user)
+        options.merge!({ current_user: guest_user })
+      end
+
+      it 'does not include commit stats' do
+        data = described_class.new(project, options).data
+        expect(includes_commits?(data)).to be_falsy
+      end
+
+      def includes_commits?(data)
+        data.any? { |h| h["title"] == 'Commits' }
       end
     end
   end
