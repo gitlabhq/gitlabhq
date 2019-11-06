@@ -24,6 +24,9 @@ describe('IDE clientside preview', () => {
     getFileData: jest.fn().mockReturnValue(Promise.resolve({})),
     getRawFileData: jest.fn().mockReturnValue(Promise.resolve('')),
   };
+  const storeClientsideActions = {
+    pingUsage: jest.fn().mockReturnValue(Promise.resolve({})),
+  };
 
   const waitForCalls = () => new Promise(setImmediate);
 
@@ -42,6 +45,12 @@ describe('IDE clientside preview', () => {
         ...getters,
       },
       actions: storeActions,
+      modules: {
+        clientside: {
+          namespaced: true,
+          actions: storeClientsideActions,
+        },
+      },
     });
 
     wrapper = shallowMount(Clientside, {
@@ -76,7 +85,8 @@ describe('IDE clientside preview', () => {
   describe('with main entry', () => {
     beforeEach(() => {
       createComponent({ getters: { packageJson: dummyPackageJson } });
-      return wrapper.vm.initPreview();
+
+      return waitForCalls();
     });
 
     it('creates sandpack manager', () => {
@@ -94,6 +104,10 @@ describe('IDE clientside preview', () => {
           },
         },
       );
+    });
+
+    it('pings usage', () => {
+      expect(storeClientsideActions.pingUsage).toHaveBeenCalledTimes(1);
     });
   });
 

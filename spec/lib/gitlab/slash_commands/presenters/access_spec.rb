@@ -22,6 +22,16 @@ describe Gitlab::SlashCommands::Presenters::Access do
     end
   end
 
+  describe '#generic_access_denied' do
+    subject { described_class.new.generic_access_denied }
+
+    it { is_expected.to be_a(Hash) }
+
+    it_behaves_like 'displays an error message' do
+      let(:error_message) { 'You are not allowed to perform the given chatops command.' }
+    end
+  end
+
   describe '#deactivated' do
     subject { described_class.new.deactivated }
 

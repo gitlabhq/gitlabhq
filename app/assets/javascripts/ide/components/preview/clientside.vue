@@ -92,6 +92,7 @@ export default {
   },
   methods: {
     ...mapActions(['getFileData', 'getRawFileData']),
+    ...mapActions('clientside', ['pingUsage']),
     loadFileContent(path) {
       return this.getFileData({ path, makeFileActive: false }).then(() =>
         this.getRawFileData({ path }),
@@ -99,6 +100,8 @@ export default {
     },
     initPreview() {
       if (!this.mainEntry) return null;
+
+      this.pingUsage();
 
       return this.loadFileContent(this.mainEntry)
         .then(() => this.$nextTick())

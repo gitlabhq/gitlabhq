@@ -788,4 +788,10 @@ describe 'project routing' do
       expect(put("/gitlab/gitlabhq/-/deploy_tokens/1/revoke")).to route_to("projects/deploy_tokens#revoke", namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1')
     end
   end
+
+  describe Projects::UsagePingController, 'routing' do
+    it 'routes to usage_ping#web_ide_clientside_preview' do
+      expect(post('/gitlab/gitlabhq/usage_ping/web_ide_clientside_preview')).to route_to('projects/usage_ping#web_ide_clientside_preview', namespace_id: 'gitlab', project_id: 'gitlabhq')
+    end
+  end
 end

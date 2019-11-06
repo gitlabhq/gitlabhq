@@ -131,7 +131,8 @@ module Gitlab
           omniauth_enabled: Gitlab::Auth.omniauth_enabled?,
           prometheus_metrics_enabled: Gitlab::Metrics.prometheus_metrics_enabled?,
           reply_by_email_enabled: Gitlab::IncomingEmail.enabled?,
-          signup_enabled: Gitlab::CurrentSettings.allow_signup?
+          signup_enabled: Gitlab::CurrentSettings.allow_signup?,
+          web_ide_clientside_preview_enabled: Gitlab::CurrentSettings.web_ide_clientside_preview_enabled?
         }
       end
 

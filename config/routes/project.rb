@@ -617,6 +617,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
+      scope :usage_ping, controller: :usage_ping do
+        post :web_ide_clientside_preview
+      end
+
       # Since both wiki and repository routing contains wildcard characters
       # its preferable to keep it below all other project routes
       draw :wiki

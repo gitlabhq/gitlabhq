@@ -55,7 +55,7 @@ module Storage
 
     def move_repositories
       # Move the namespace directory in all storages used by member projects
-      repository_storages.each do |repository_storage|
+      repository_storages(legacy_only: true).each do |repository_storage|
         # Ensure old directory exists before moving it
         gitlab_shell.add_namespace(repository_storage, full_path_before_last_save)
 
@@ -77,12 +77,14 @@ module Storage
       @old_repository_storage_paths ||= repository_storages
     end
 
-    def repository_storages
+    def repository_storages(legacy_only: false)
       # We need to get the storage paths for all the projects, even the ones that are
       # pending delete. Unscoping also get rids of the default order, which causes
       # problems with SELECT DISTINCT.
       Project.unscoped do
-        all_projects.select('distinct(repository_storage)').to_a.map(&:repository_storage)
+        namespace_projects = all_projects
+        namespace_projects = namespace_projects.without_storage_feature(:repository) if legacy_only
+        namespace_projects.pluck(Arel.sql('distinct(repository_storage)'))
       end
     end
 

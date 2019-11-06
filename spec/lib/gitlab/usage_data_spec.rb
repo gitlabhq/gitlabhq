@@ -76,6 +76,7 @@ describe Gitlab::UsageData do
         avg_cycle_analytics
         influxdb_metrics_enabled
         prometheus_metrics_enabled
+        web_ide_clientside_preview_enabled
       ))
     end
 
@@ -93,6 +94,7 @@ describe Gitlab::UsageData do
         web_ide_views
         web_ide_commits
         web_ide_merge_requests
+        web_ide_previews
         navbar_searches
         cycle_analytics_views
         productivity_analytics_views
@@ -252,6 +254,7 @@ describe Gitlab::UsageData do
       expect(subject[:container_registry_enabled]).to eq(Gitlab.config.registry.enabled)
       expect(subject[:dependency_proxy_enabled]).to eq(Gitlab.config.dependency_proxy.enabled)
       expect(subject[:gitlab_shared_runners_enabled]).to eq(Gitlab.config.gitlab_ci.shared_runners_enabled)
+      expect(subject[:web_ide_clientside_preview_enabled]).to eq(Gitlab::CurrentSettings.web_ide_clientside_preview_enabled?)
     end
   end
 

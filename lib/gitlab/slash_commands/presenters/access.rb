@@ -15,6 +15,10 @@ module Gitlab
           MESSAGE
         end
 
+        def generic_access_denied
+          ephemeral_response(text: 'You are not allowed to perform the given chatops command.')
+        end
+
         def deactivated
           ephemeral_response(text: <<~MESSAGE)
             You are not allowed to perform the given chatops command since
