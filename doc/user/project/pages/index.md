@@ -83,7 +83,7 @@ to build your site and publish it to the GitLab Pages server. The sequence of
 scripts that GitLab CI/CD runs to accomplish this task is created from a file named
 `.gitlab-ci.yml`, which you can [create and modify](getting_started_part_four.md) at will. A specific `job` called `pages` in the configuration file will make GitLab aware that you are deploying a GitLab Pages website.
 
-You can either use GitLab's [default domain for GitLab Pages websites](getting_started_part_one.md#gitlab-pages-domain-names),
+You can either use GitLab's [default domain for GitLab Pages websites](getting_started_part_one.md#gitlab-pages-default-domain-names),
 `*.gitlab.io`, or your own domain (`example.com`). In that case, you'll
 need admin access to your domain's registrar (or control panel) to set it up with Pages.
 

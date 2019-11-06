@@ -37,12 +37,12 @@ Example request:
 ```sh
 curl --request POST \
   --data '{"title": "Incident title"}' \
-  --header "Authorization: Bearer <autorization_key>" \
+  --header "Authorization: Bearer <authorization_key>" \
   --header "Content-Type: application/json" \
   <url>
 ```
 
-The `<autorization_key>` and `<url>` values can be found when [setting up generic alerts](#setting-up-generic-alerts).
+The `<authorization_key>` and `<url>` values can be found when [setting up generic alerts](#setting-up-generic-alerts).
 
 Example payload:
 

@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-describe ProjectsFinder do
+describe ProjectsFinder, :do_not_mock_admin_mode do
+  include AdminModeHelper
+
   describe '#execute' do
     let(:user) { create(:user) }
     let(:group) { create(:group, :public) }
@@ -187,6 +189,22 @@ describe ProjectsFinder do
       let(:params) { { sort: 'name_asc' } }
 
       it { is_expected.to eq([internal_project, public_project]) }
+    end
+
+    describe 'with admin user' do
+      let(:user) { create(:admin) }
+
+      context 'admin mode enabled' do
+        before do
+          enable_admin_mode!(current_user)
+        end
+
+        it { is_expected.to match_array([public_project, internal_project, private_project, shared_project]) }
+      end
+
+      context 'admin mode disabled' do
+        it { is_expected.to match_array([public_project, internal_project]) }
+      end
     end
   end
 end

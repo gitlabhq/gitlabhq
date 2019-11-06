@@ -2,8 +2,9 @@
 
 require 'spec_helper'
 
-describe BasePolicy do
+describe BasePolicy, :do_not_mock_admin_mode do
   include ExternalAuthorizationServiceHelpers
+  include AdminModeHelper
 
   describe '.class_for' do
     it 'detects policy class based on the subject ancestors' do
@@ -36,8 +37,42 @@ describe BasePolicy do
 
       it { is_expected.not_to be_allowed(:read_cross_project) }
 
-      it 'allows admins' do
-        expect(described_class.new(build(:admin), nil)).to be_allowed(:read_cross_project)
+      context 'for admins' do
+        let(:current_user) { build(:admin) }
+
+        subject { described_class.new(current_user, nil) }
+
+        it 'allowed when in admin mode' do
+          enable_admin_mode!(current_user)
+
+          is_expected.to be_allowed(:read_cross_project)
+        end
+
+        it 'prevented when not in admin mode' do
+          is_expected.not_to be_allowed(:read_cross_project)
+        end
+      end
+    end
+  end
+
+  describe 'full private access' do
+    let(:current_user) { create(:user) }
+
+    subject { described_class.new(current_user, nil) }
+
+    it { is_expected.not_to be_allowed(:read_all_resources) }
+
+    context 'for admins' do
+      let(:current_user) { build(:admin) }
+
+      it 'allowed when in admin mode' do
+        enable_admin_mode!(current_user)
+
+        is_expected.to be_allowed(:read_all_resources)
+      end
+
+      it 'prevented when not in admin mode' do
+        is_expected.not_to be_allowed(:read_all_resources)
       end
     end
   end

@@ -2290,7 +2290,7 @@ ActiveRecord::Schema.define(version: 2019_11_05_094625) do
     t.index ["latest_closed_by_id"], name: "index_merge_request_metrics_on_latest_closed_by_id"
     t.index ["merge_request_id", "merged_at"], name: "index_merge_request_metrics_on_merge_request_id_and_merged_at", where: "(merged_at IS NOT NULL)"
     t.index ["merge_request_id"], name: "index_merge_request_metrics"
-    t.index ["merged_at", "id"], name: "index_merge_request_metrics_on_merged_at_and_id"
+    t.index ["merged_at"], name: "index_merge_request_metrics_on_merged_at"
     t.index ["merged_by_id"], name: "index_merge_request_metrics_on_merged_by_id"
     t.index ["pipeline_id"], name: "index_merge_request_metrics_on_pipeline_id"
   end

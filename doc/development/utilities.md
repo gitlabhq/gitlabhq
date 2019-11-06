@@ -184,3 +184,83 @@ class Commit
   request_cache(:author) { author_email }
 end
 ```
+
+## `ReactiveCaching`
+
+The `ReactiveCaching` concern is used to fetch some data in the background and
+store it in the Rails cache, keeping it up-to-date for as long as it is being
+requested.  If the data hasn't been requested for `reactive_cache_lifetime`,
+it will stop being refreshed, and then be removed.
+
+Example of use:
+
+```ruby
+class Foo < ApplicationRecord
+  include ReactiveCaching
+
+  after_save :clear_reactive_cache!
+
+  def calculate_reactive_cache
+    # Expensive operation here. The return value of this method is cached
+  end
+
+  def result
+    with_reactive_cache do |data|
+      # ...
+    end
+  end
+end
+```
+
+In this example, the first time `#result` is called, it will return `nil`.
+However, it will enqueue a background worker to call `#calculate_reactive_cache`
+and set an initial cache lifetime of ten minutes.
+
+The background worker needs to find or generate the object on which
+`with_reactive_cache` was called.
+The default behaviour can be overridden by defining a custom
+`reactive_cache_worker_finder`.
+Otherwise, the background worker will use the class name and primary key to get
+the object using the ActiveRecord `find_by` method.
+
+```ruby
+class Bar
+  include ReactiveCaching
+
+  self.reactive_cache_key = ->() { ["bar", "thing"] }
+  self.reactive_cache_worker_finder = ->(_id, *args) { from_cache(*args) }
+
+  def self.from_cache(var1, var2)
+    # This method will be called by the background worker with "bar1" and
+    # "bar2" as arguments.
+    new(var1, var2)
+  end
+
+  def initialize(var1, var2)
+    # ...
+  end
+
+  def calculate_reactive_cache
+    # Expensive operation here. The return value of this method is cached
+  end
+
+  def result
+    with_reactive_cache("bar1", "bar2") do |data|
+      # ...
+    end
+  end
+end
+```
+
+Each time the background job completes, it stores the return value of
+`#calculate_reactive_cache`. It is also re-enqueued to run again after
+`reactive_cache_refresh_interval`, therefore, it will keep the stored value up to date.
+Calculations are never run concurrently.
+
+Calling `#result` while a value is cached will call the block given to
+`#with_reactive_cache`, yielding the cached value. It will also extend the
+lifetime by the `reactive_cache_lifetime` value.
+
+Once the lifetime has expired, no more background jobs will be enqueued and
+calling `#result` will again return `nil` - starting the process all over
+again.

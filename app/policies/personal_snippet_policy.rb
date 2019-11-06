@@ -30,5 +30,5 @@ class PersonalSnippetPolicy < BasePolicy
 
   rule { can?(:create_note) }.enable :award_emoji
 
-  rule { full_private_access }.enable :read_personal_snippet
+  rule { can?(:read_all_resources) }.enable :read_personal_snippet
 end

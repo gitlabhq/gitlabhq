@@ -8,10 +8,15 @@
 # https://coderwall.com/p/lkcaag/pagination-you-re-probably-doing-it-wrong
 #
 # It currently supports sorting on two columns, but the last column must
-# be the primary key. For example
+# be the primary key. If it's not already included, an order on the
+# primary key will be added automatically, like `order(id: :desc)`
 #
 #   Issue.order(created_at: :asc).order(:id)
-#   Issue.order(due_date: :asc).order(:id)
+#   Issue.order(due_date: :asc)
+#
+# You can also use `Gitlab::Database.nulls_last_order`:
+#
+#   Issue.reorder(::Gitlab::Database.nulls_last_order('due_date', 'DESC'))
 #
 # It will tolerate non-attribute ordering, but only attributes determine the cursor.
 # For example, this is legitimate:

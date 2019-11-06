@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe User do
+describe User, :do_not_mock_admin_mode do
   include ProjectForksHelper
   include TermsHelper
 
@@ -2797,10 +2797,26 @@ describe User do
       expect(user.full_private_access?).to be_falsy
     end
 
-    it 'returns true for admin user' do
-      user = build(:user, :admin)
+    context 'for admin user' do
+      include_context 'custom session'
 
-      expect(user.full_private_access?).to be_truthy
+      let(:user) { build(:user, :admin) }
+
+      context 'when admin mode is disabled' do
+        it 'returns false' do
+          expect(user.full_private_access?).to be_falsy
+        end
+      end
+
+      context 'when admin mode is enabled' do
+        before do
+          Gitlab::Auth::CurrentUserMode.new(user).enable_admin_mode!(password: user.password)
+        end
+
+        it 'returns true' do
+          expect(user.full_private_access?).to be_truthy
+        end
+      end
     end
   end
 

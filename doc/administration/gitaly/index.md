@@ -89,6 +89,10 @@ your GitLab installation has three repository storages: `default`,
 `storage1` and `storage2`. You can use as little as just one server with one
 repository storage if desired.
 
+Note: **Note:** The token referred to throughout the Gitaly documentation is
+just an arbitrary password selected by the administrator. It is unrelated to
+tokens created for the GitLab API or other similar web API tokens.
+
 ### 1. Installation
 
 First install Gitaly on each Gitaly server using either

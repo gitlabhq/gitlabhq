@@ -21,10 +21,6 @@ class BasePolicy < DeclarativePolicy::Base
   with_options scope: :user, score: 0
   condition(:deactivated) { @user&.deactivated? }
 
-  desc "User has access to all private groups & projects"
-  with_options scope: :user, score: 0
-  condition(:full_private_access) { @user&.full_private_access? }
-
   with_options scope: :user, score: 0
   condition(:external_user) { @user.nil? || @user.external? }
 
@@ -40,9 +36,11 @@ class BasePolicy < DeclarativePolicy::Base
     ::Gitlab::ExternalAuthorization.perform_check?
   end
 
-  rule { external_authorization_enabled & ~full_private_access }.policy do
+  rule { external_authorization_enabled & ~can?(:read_all_resources) }.policy do
     prevent :read_cross_project
   end
+
+  rule { admin }.enable :read_all_resources
 
   rule { default }.enable :read_cross_project
 end

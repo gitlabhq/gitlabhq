@@ -17,6 +17,26 @@ describe Gitlab::Graphql::Connections::Keyset::OrderInfo do
         expect(order_list.last.operator_for(:after)).to eq '>'
       end
     end
+
+    context 'when order contains NULLS LAST' do
+      let(:relation) { Project.order(Arel.sql('projects.updated_at Asc Nulls Last')).order(:id) }
+
+      it 'does not ignore the SQL order' do
+        expect(order_list.count).to eq 2
+        expect(order_list.first.attribute_name).to eq 'projects.updated_at'
+        expect(order_list.first.operator_for(:after)).to eq '>'
+        expect(order_list.last.attribute_name).to eq 'id'
+        expect(order_list.last.operator_for(:after)).to eq '>'
+      end
+    end
+
+    context 'when order contains invalid formatted NULLS LAST ' do
+      let(:relation) { Project.order(Arel.sql('projects.updated_at created_at Asc Nulls Last')).order(:id) }
+
+      it 'ignores the SQL order' do
+        expect(order_list.count).to eq 1
+      end
+    end
   end
 
   describe '#validate_ordering' do

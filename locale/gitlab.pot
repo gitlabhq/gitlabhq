@@ -6271,6 +6271,12 @@ msgstr ""
 msgid "Environment:"
 msgstr ""
 
+msgid "EnvironmentDashboard|API"
+msgstr ""
+
+msgid "EnvironmentDashboard|Created through the Deployment API"
+msgstr ""
+
 msgid "Environments"
 msgstr ""
 

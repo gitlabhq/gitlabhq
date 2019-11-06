@@ -8,7 +8,7 @@ type: concepts, reference
 On this document, learn how to name your project for GitLab Pages
 according to your intended website's URL.
 
-## GitLab Pages domain names
+## GitLab Pages default domain names
 
 >**Note:**
 If you use your own GitLab instance to deploy your
@@ -80,7 +80,7 @@ To understand Pages domains clearly, read the examples below.
 - On your GitLab instance, replace `gitlab.io` above with your
   Pages server domain. Ask your sysadmin for this information.
 
-## URLs and Baseurls
+## URLs and baseurls
 
 Every Static Site Generator (SSG) default configuration expects
 to find your website under a (sub)domain (`example.com`), not
@@ -108,7 +108,7 @@ example we've just mentioned, you'd have to change Jekyll's `_config.yml` to:
 baseurl: ""
 ```
 
-## Custom Domains
+## Custom domains
 
 GitLab Pages supports custom domains and subdomains, served under HTTP or HTTPS.
 See [GitLab Pages custom domains and SSL/TLS Certificates](custom_domains_ssl_tls_certification/index.md) for more information.

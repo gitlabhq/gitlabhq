@@ -6,7 +6,7 @@ class ScheduleProductivityAnalyticsBackfill < ActiveRecord::Migration[5.2]
   DOWNTIME = false
 
   def up
-    # no-op since the scheduling times out on GitLab.com
+    # no-op since the migration was removed
   end
 
   def down
