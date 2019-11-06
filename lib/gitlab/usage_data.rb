@@ -66,6 +66,7 @@ module Gitlab
             clusters_disabled: count(::Clusters::Cluster.disabled),
             project_clusters_disabled: count(::Clusters::Cluster.disabled.project_type),
             group_clusters_disabled: count(::Clusters::Cluster.disabled.group_type),
+            clusters_platforms_eks: count(::Clusters::Cluster.aws_installed.enabled),
             clusters_platforms_gke: count(::Clusters::Cluster.gcp_installed.enabled),
             clusters_platforms_user: count(::Clusters::Cluster.user_provided.enabled),
             clusters_applications_helm: count(::Clusters::Applications::Helm.available),

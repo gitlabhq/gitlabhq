@@ -5293,6 +5293,9 @@ msgstr ""
 msgid "Dependencies"
 msgstr ""
 
+msgid "Dependencies help page link"
+msgstr ""
+
 msgid "Dependencies|%d additional vulnerability not shown"
 msgid_plural "Dependencies|%d additional vulnerabilities not shown"
 msgstr[0] ""
@@ -5787,6 +5790,9 @@ msgid "Dismissed on pipeline %{pipelineLink} at %{projectLink}"
 msgstr ""
 
 msgid "Display name"
+msgstr ""
+
+msgid "Displays dependencies and known vulnerabilities, based on the %{linkStart}latest pipeline%{linkEnd} scan"
 msgstr ""
 
 msgid "Do not display offers from third parties within GitLab"

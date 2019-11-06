@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :cluster_platform_kubernetes, class: Clusters::Platforms::Kubernetes do
-    cluster
+    association :cluster, platform_type: :kubernetes, provider_type: :user
     namespace { nil }
     api_url { 'https://kubernetes.example.com' }
     token { 'a' * 40 }

@@ -3,8 +3,7 @@
 require 'pathname'
 
 module QA
-  # Issue: https://gitlab.com/gitlab-org/gitlab/issues/35156
-  context 'Configure', :quarantine do
+  context 'Configure' do
     def login
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.perform(&:sign_in_using_credentials)
@@ -56,7 +55,8 @@ module QA
       end
     end
 
-    describe 'Auto DevOps support', :orchestrated, :kubernetes do
+    # https://gitlab.com/gitlab-org/gitlab/issues/35156
+    describe 'Auto DevOps support', :orchestrated, :kubernetes, :quarantine do
       context 'when rbac is enabled' do
         before(:all) do
           @cluster = Service::KubernetesCluster.new.create!

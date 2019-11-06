@@ -55,7 +55,7 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     let!(:cluster) { create(:cluster, enabled: true) }
 
     before do
-      create(:cluster, enabled: false)
+      create(:cluster, :disabled)
     end
 
     it { is_expected.to contain_exactly(cluster) }
@@ -64,7 +64,7 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
   describe '.disabled' do
     subject { described_class.disabled }
 
-    let!(:cluster) { create(:cluster, enabled: false) }
+    let!(:cluster) { create(:cluster, :disabled) }
 
     before do
       create(:cluster, enabled: true)
@@ -76,10 +76,10 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
   describe '.user_provided' do
     subject { described_class.user_provided }
 
-    let!(:cluster) { create(:cluster, :provided_by_user) }
+    let!(:cluster) { create(:cluster_platform_kubernetes).cluster }
 
     before do
-      create(:cluster, :provided_by_gcp)
+      create(:cluster_provider_gcp, :created)
     end
 
     it { is_expected.to contain_exactly(cluster) }
@@ -88,7 +88,7 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
   describe '.gcp_provided' do
     subject { described_class.gcp_provided }
 
-    let!(:cluster) { create(:cluster, :provided_by_gcp) }
+    let!(:cluster) { create(:cluster_provider_gcp, :created).cluster }
 
     before do
       create(:cluster, :provided_by_user)
@@ -100,7 +100,7 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
   describe '.gcp_installed' do
     subject { described_class.gcp_installed }
 
-    let!(:cluster) { create(:cluster, :provided_by_gcp) }
+    let!(:cluster) { create(:cluster_provider_gcp, :created).cluster }
 
     before do
       create(:cluster, :providing_by_gcp)
@@ -112,7 +112,7 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
   describe '.aws_provided' do
     subject { described_class.aws_provided }
 
-    let!(:cluster) { create(:cluster, :provided_by_aws) }
+    let!(:cluster) { create(:cluster_provider_aws, :created).cluster }
 
     before do
       create(:cluster, :provided_by_user)
@@ -124,11 +124,11 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
   describe '.aws_installed' do
     subject { described_class.aws_installed }
 
-    let!(:cluster) { create(:cluster, :provided_by_aws) }
+    let!(:cluster) { create(:cluster_provider_aws, :created).cluster }
 
     before do
-      errored_cluster = create(:cluster, :provided_by_aws)
-      errored_cluster.provider.make_errored!("Error message")
+      errored_provider = create(:cluster_provider_aws)
+      errored_provider.make_errored!("Error message")
     end
 
     it { is_expected.to contain_exactly(cluster) }

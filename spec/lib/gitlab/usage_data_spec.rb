@@ -24,12 +24,19 @@ describe Gitlab::UsageData do
       create_list(:zoom_meeting, 2, project: projects[0], issue: projects[0].issues[1], issue_status: :removed)
       create(:zoom_meeting, project: projects[0], issue: projects[0].issues[2], issue_status: :added)
       create_list(:zoom_meeting, 2, project: projects[0], issue: projects[0].issues[2], issue_status: :removed)
-      gcp_cluster = create(:cluster, :provided_by_gcp)
-      create(:cluster, :provided_by_user)
-      create(:cluster, :provided_by_user, :disabled)
+
+      # Enabled clusters
+      gcp_cluster = create(:cluster_provider_gcp, :created).cluster
+      create(:cluster_provider_aws, :created)
+      create(:cluster_platform_kubernetes)
       create(:cluster, :group)
+
+      # Disabled clusters
+      create(:cluster, :disabled)
       create(:cluster, :group, :disabled)
       create(:cluster, :group, :disabled)
+
+      # Applications
       create(:clusters_applications_helm, :installed, cluster: gcp_cluster)
       create(:clusters_applications_ingress, :installed, cluster: gcp_cluster)
       create(:clusters_applications_cert_manager, :installed, cluster: gcp_cluster)
@@ -117,6 +124,7 @@ describe Gitlab::UsageData do
         clusters_disabled
         project_clusters_disabled
         group_clusters_disabled
+        clusters_platforms_eks
         clusters_platforms_gke
         clusters_platforms_user
         clusters_applications_helm
@@ -185,13 +193,14 @@ describe Gitlab::UsageData do
       expect(count_data[:issues_with_associated_zoom_link]).to eq(2)
       expect(count_data[:issues_using_zoom_quick_actions]).to eq(3)
 
-      expect(count_data[:clusters_enabled]).to eq(7)
-      expect(count_data[:project_clusters_enabled]).to eq(6)
+      expect(count_data[:clusters_enabled]).to eq(4)
+      expect(count_data[:project_clusters_enabled]).to eq(3)
       expect(count_data[:group_clusters_enabled]).to eq(1)
       expect(count_data[:clusters_disabled]).to eq(3)
       expect(count_data[:project_clusters_disabled]).to eq(1)
       expect(count_data[:group_clusters_disabled]).to eq(2)
       expect(count_data[:group_clusters_enabled]).to eq(1)
+      expect(count_data[:clusters_platforms_eks]).to eq(1)
       expect(count_data[:clusters_platforms_gke]).to eq(1)
       expect(count_data[:clusters_platforms_user]).to eq(1)
       expect(count_data[:clusters_applications_helm]).to eq(1)

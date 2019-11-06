@@ -17,7 +17,7 @@ sidebar.
 
 ## Viewing dependencies
 
-![Dependency List](img/dependency_list_v12_3.png)
+![Dependency List](img/dependency_list_v12_4.png)
 
 Dependencies are displayed with the following information:
 
