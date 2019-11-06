@@ -1420,14 +1420,13 @@ class User < ApplicationRecord
   # flow means we don't call that automatically (and can't conveniently do so).
   #
   # See:
-  #   <https://github.com/plataformatec/devise/blob/v4.0.0/lib/devise/models/lockable.rb#L92>
+  #   <https://github.com/plataformatec/devise/blob/v4.7.1/lib/devise/models/lockable.rb#L104>
   #
   # rubocop: disable CodeReuse/ServiceClass
   def increment_failed_attempts!
     return if ::Gitlab::Database.read_only?
 
-    self.failed_attempts ||= 0
-    self.failed_attempts += 1
+    increment_failed_attempts
 
     if attempts_exceeded?
       lock_access! unless access_locked?
