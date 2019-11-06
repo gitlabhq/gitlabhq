@@ -78,11 +78,11 @@ export const getDayName = date =>
  * @param {date} datetime
  * @returns {String}
  */
-export const formatDate = datetime => {
+export const formatDate = (datetime, format = 'mmm d, yyyy h:MMtt Z') => {
   if (_.isString(datetime) && datetime.match(/\d+-\d+\d+ /)) {
     throw new Error(__('Invalid date'));
   }
-  return dateFormat(datetime, 'mmm d, yyyy h:MMtt Z');
+  return dateFormat(datetime, format);
 };
 
 /**
@@ -557,6 +557,17 @@ export const calculateRemainingMilliseconds = endDate => {
  */
 export const getDateInPast = (date, daysInPast) =>
   new Date(newDate(date).setDate(date.getDate() - daysInPast));
+
+/*
+ * Appending T00:00:00 makes JS assume local time and prevents it from shifting the date
+ * to match the user's time zone. We want to display the date in server time for now, to
+ * be consistent with the "edit issue -> due date" UI.
+ */
+
+export const newDateAsLocaleTime = date => {
+  const suffix = 'T00:00:00';
+  return new Date(`${date}${suffix}`);
+};
 
 export const beginOfDayTime = 'T00:00:00Z';
 export const endOfDayTime = 'T23:59:59Z';

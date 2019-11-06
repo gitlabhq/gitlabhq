@@ -324,6 +324,9 @@ msgstr ""
 msgid "%{percent}%% complete"
 msgstr ""
 
+msgid "%{primary} (%{secondary})"
+msgstr ""
+
 msgid "%{releases} release"
 msgid_plural "%{releases} releases"
 msgstr[0] ""
@@ -1625,6 +1628,9 @@ msgid "An error occurred while loading diff"
 msgstr ""
 
 msgid "An error occurred while loading filenames"
+msgstr ""
+
+msgid "An error occurred while loading issues"
 msgstr ""
 
 msgid "An error occurred while loading the file"
@@ -20648,6 +20654,9 @@ msgid "nounSeries|%{item}, %{nextItem}"
 msgstr ""
 
 msgid "nounSeries|%{item}, and %{lastItem}"
+msgstr ""
+
+msgid "opened %{timeAgoString} by %{user}"
 msgstr ""
 
 msgid "or %{link_start}create a new Google account%{link_end}"

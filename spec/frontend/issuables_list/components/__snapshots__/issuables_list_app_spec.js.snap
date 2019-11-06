@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Issuables list component with empty issues response with all state should display a catch-all if there are no issues to show 1`] = `
+<glemptystate-stub
+  description="The Issue Tracker is the place to add things that need to be improved or solved in a project. You can register or sign in to create issues for this project."
+  svgpath="/emptySvg"
+  title="There are no issues to show"
+/>
+`;
+
+exports[`Issuables list component with empty issues response with closed state should display a message "There are no closed issues" if there are no closed issues 1`] = `"There are no closed issues"`;
+
+exports[`Issuables list component with empty issues response with empty query should display the message "There are no open issues" 1`] = `"There are no open issues"`;
+
+exports[`Issuables list component with empty issues response with query in window location should display "Sorry, your filter produced no results" if filters are too specific 1`] = `"Sorry, your filter produced no results"`;

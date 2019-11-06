@@ -25,6 +25,10 @@ class GroupsController < Groups::ApplicationController
 
   before_action :user_actions, only: [:show]
 
+  before_action do
+    push_frontend_feature_flag(:vue_issuables_list, @group)
+  end
+
   skip_cross_project_access_check :index, :new, :create, :edit, :update,
                                   :destroy, :projects
   # When loading show as an atom feed, we render events that could leak cross

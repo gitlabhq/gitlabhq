@@ -1,3 +1,4 @@
+import initIssuablesList from '~/issuables_list';
 import projectSelect from '~/project_select';
 import initFilteredSearch from '~/pages/search/init_filtered_search';
 import issuableInitBulkUpdateSidebar from '~/issuable_init_bulk_update_sidebar';
@@ -10,6 +11,8 @@ const ISSUE_BULK_UPDATE_PREFIX = 'issue_';
 document.addEventListener('DOMContentLoaded', () => {
   IssuableFilteredSearchTokenKeys.addExtraTokensForIssues();
   issuableInitBulkUpdateSidebar.init(ISSUE_BULK_UPDATE_PREFIX);
+
+  initIssuablesList();
 
   initFilteredSearch({
     page: FILTERED_SEARCH.ISSUES,
