@@ -581,6 +581,18 @@ Please check this [rules][eslint-plugin-vue-rules] for more documentation.
    <component />
    ```
 
+#### Component usage within templates
+
+1. Prefer a component's kebab-cased name over other styles when using it in a template
+
+   ```javascript
+   // bad
+   <MyComponent />
+
+   // good
+   <my-component />
+   ```
+
 #### Ordering
 
 1. Tag order in `.vue` file

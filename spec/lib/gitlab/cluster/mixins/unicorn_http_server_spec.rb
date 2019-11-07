@@ -75,7 +75,7 @@ describe Gitlab::Cluster::Mixins::UnicornHttpServer do
 
         mutex = Mutex.new
 
-        Gitlab::Cluster::LifecycleEvents.on_before_graceful_shutdown do
+        Gitlab::Cluster::LifecycleEvents.on_before_blackout_period do
           mutex.synchronize do
             exit(140)
           end

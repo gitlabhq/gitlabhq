@@ -297,3 +297,6 @@ Graphql/Descriptions:
   Include:
     - 'app/graphql/**/*'
     - 'ee/app/graphql/**/*'
+
+RSpec/AnyInstanceOf:
+  Enabled: false

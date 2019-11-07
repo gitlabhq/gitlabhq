@@ -44,6 +44,7 @@ class GroupPolicy < BasePolicy
 
   rule { public_group }.policy do
     enable :read_group
+    enable :read_package
   end
 
   rule { logged_in_viewable }.enable :read_group
@@ -70,7 +71,10 @@ class GroupPolicy < BasePolicy
 
   rule { has_access }.enable :read_namespace
 
-  rule { developer }.enable :admin_milestone
+  rule { developer }.policy do
+    enable :admin_milestone
+    enable :read_package
+  end
 
   rule { reporter }.policy do
     enable :read_container_image

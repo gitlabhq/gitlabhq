@@ -364,7 +364,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     when :error
       render json: { status_reason: report_comparison[:status_reason] }, status: :bad_request
     else
-      render json: { status_reason: 'Unknown error' }, status: :internal_server_error
+      raise "Failed to build comparison response as comparison yielded unknown status '#{report_comparison[:status]}'"
     end
   end
 

@@ -889,23 +889,6 @@ describe Projects::MergeRequestsController do
         end
       end
 
-      context 'when something went wrong on our system' do
-        let(:report) { {} }
-
-        it 'does not send polling interval' do
-          expect(Gitlab::PollingInterval).not_to receive(:set_header)
-
-          subject
-        end
-
-        it 'returns 500 HTTP status' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:internal_server_error)
-          expect(json_response).to eq({ 'status_reason' => 'Unknown error' })
-        end
-      end
-
       context 'when feature flag :ci_expose_arbitrary_artifacts_in_mr is disabled' do
         let(:job_options) do
           {
@@ -1061,23 +1044,6 @@ describe Projects::MergeRequestsController do
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response).to eq({ 'status_reason' => 'Failed to parse test reports' })
-      end
-    end
-
-    context 'when something went wrong on our system' do
-      let(:comparison_status) { {} }
-
-      it 'does not send polling interval' do
-        expect(Gitlab::PollingInterval).not_to receive(:set_header)
-
-        subject
-      end
-
-      it 'returns 500 HTTP status' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:internal_server_error)
-        expect(json_response).to eq({ 'status_reason' => 'Unknown error' })
       end
     end
   end

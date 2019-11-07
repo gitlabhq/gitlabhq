@@ -49,7 +49,9 @@ describe AbuseReportsController do
       end
 
       it 'calls notify' do
-        expect_any_instance_of(AbuseReport).to receive(:notify)
+        expect_next_instance_of(AbuseReport) do |instance|
+          expect(instance).to receive(:notify)
+        end
 
         post :create, params: { abuse_report: attrs }
       end

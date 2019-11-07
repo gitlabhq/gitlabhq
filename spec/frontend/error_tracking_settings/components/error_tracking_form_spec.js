@@ -2,6 +2,7 @@ import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { GlButton, GlFormInput } from '@gitlab/ui';
 import ErrorTrackingForm from '~/error_tracking_settings/components/error_tracking_form.vue';
+import createStore from '~/error_tracking_settings/store';
 import { defaultProps } from '../mock';
 
 const localVue = createLocalVue();
@@ -9,15 +10,18 @@ localVue.use(Vuex);
 
 describe('error tracking settings form', () => {
   let wrapper;
+  let store;
 
   function mountComponent() {
     wrapper = shallowMount(ErrorTrackingForm, {
       localVue,
+      store,
       propsData: defaultProps,
     });
   }
 
   beforeEach(() => {
+    store = createStore();
     mountComponent();
   });
 
@@ -61,7 +65,7 @@ describe('error tracking settings form', () => {
 
   describe('after a successful connection', () => {
     beforeEach(() => {
-      wrapper.setProps({ connectSuccessful: true });
+      store.state.connectSuccessful = true;
     });
 
     it('shows the success checkmark', () => {
@@ -77,7 +81,7 @@ describe('error tracking settings form', () => {
 
   describe('after an unsuccessful connection', () => {
     beforeEach(() => {
-      wrapper.setProps({ connectError: true });
+      store.state.connectError = true;
     });
 
     it('does not show the check mark', () => {

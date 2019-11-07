@@ -5,6 +5,11 @@ class HealthController < ActionController::Base
   include RequiresWhitelistedMonitoringClient
 
   CHECKS = [
+    Gitlab::HealthChecks::MasterCheck
+  ].freeze
+
+  ALL_CHECKS = [
+    *CHECKS,
     Gitlab::HealthChecks::DbCheck,
     Gitlab::HealthChecks::Redis::RedisCheck,
     Gitlab::HealthChecks::Redis::CacheCheck,
@@ -14,8 +19,9 @@ class HealthController < ActionController::Base
   ].freeze
 
   def readiness
-    # readiness check is a collection with all above application-level checks
-    render_checks(*CHECKS)
+    # readiness check is a collection of application-level checks
+    # and optionally all service checks
+    render_checks(params[:all] ? ALL_CHECKS : CHECKS)
   end
 
   def liveness
@@ -25,7 +31,7 @@ class HealthController < ActionController::Base
 
   private
 
-  def render_checks(*checks)
+  def render_checks(checks = [])
     result = Gitlab::HealthChecks::Probes::Collection
       .new(*checks)
       .execute

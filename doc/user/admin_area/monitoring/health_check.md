@@ -39,7 +39,11 @@ GET http://localhost/-/liveness
 
 ## Health
 
-Checks whether the application server is running. It does not verify the database or other services are running.
+Checks whether the application server is running.
+It does not verify the database or other services
+are running. This endpoint circumvents Rails Controllers
+and is implemented as additional middleware `BasicHealthCheck`
+very early into the request processing lifecycle.
 
 ```text
 GET /-/health
@@ -59,10 +63,17 @@ GitLab OK
 
 ## Readiness
 
-The readiness probe checks whether the GitLab instance is ready to use. It checks the dependent services (Database, Redis, Gitaly etc.) and gives a status for each.
+The readiness probe checks whether the GitLab instance is ready
+to accept traffic via Rails Controllers. The check by default
+does validate only instance-checks.
+
+If the `all=1` parameter is specified, the check will also validate
+the dependent services (Database, Redis, Gitaly etc.)
+and gives a status for each.
 
 ```text
 GET /-/readiness
+GET /-/readiness?all=1
 ```
 
 Example request:
@@ -75,37 +86,30 @@ Example response:
 
 ```json
 {
-   "db_check":{
+   "master_check":[{
       "status":"failed",
-      "message": "unexpected Db check result: 0"
-   },
-   "redis_check":{
-      "status":"ok"
-   },
-   "cache_check":{
-      "status":"ok"
-   },
-   "queues_check":{
-      "status":"ok"
-   },
-   "shared_state_check":{
-      "status":"ok"
-   },
-   "gitaly_check":{
-      "status":"ok",
-      "labels":{
-         "shard":"default"
-         }
-      }
-   }
+      "message": "unexpected Master check result: false"
+   }],
+   ...
+}
 ```
+
+On failure, the endpoint will return a `503` HTTP status code.
+
+This check does hit the database and Redis if authenticated via `token`.
+
+This check is being exempt from Rack Attack.
 
 ## Liveness
 
 DANGER: **Warning:**
-In Gitlab [12.4](https://about.gitlab.com/upcoming-releases/) the response body of the Liveness check will change to match the example below.
+In Gitlab [12.4](https://about.gitlab.com/upcoming-releases/)
+the response body of the Liveness check was changed
+to match the example below.
 
-The liveness probe checks whether the application server is alive. Unlike the [`health`](#health) check, this check hits the database.
+Checks whether the application server is running.
+This probe is used to know if Rails Controllers
+are not deadlocked due to a multi-threading.
 
 ```text
 GET /-/liveness
@@ -127,7 +131,9 @@ On success, the endpoint will return a `200` HTTP status code, and a response li
 }
 ```
 
-On failure, the endpoint will return a `500` HTTP status code.
+On failure, the endpoint will return a `503` HTTP status code.
+
+This check is being exempt from Rack Attack.
 
 ## Access token (Deprecated)
 

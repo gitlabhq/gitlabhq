@@ -387,6 +387,10 @@ span.idiff {
     float: none;
   }
 
+  .file-actions .ide-edit-button {
+    z-index: 2;
+  }
+
   @include media-breakpoint-down(xs) {
     display: block;
 

@@ -23,7 +23,9 @@ describe MetricsController do
     allow(Prometheus::Client.configuration).to receive(:multiprocess_files_dir).and_return(metrics_multiproc_dir)
     allow(Gitlab::Metrics).to receive(:prometheus_metrics_enabled?).and_return(true)
     allow(Settings.monitoring).to receive(:ip_whitelist).and_return([whitelisted_ip, whitelisted_ip_range])
-    allow_any_instance_of(MetricsService).to receive(:metrics_text).and_return("prometheus_counter 1")
+    allow_next_instance_of(MetricsService) do |instance|
+      allow(instance).to receive(:metrics_text).and_return("prometheus_counter 1")
+    end
   end
 
   describe '#index' do

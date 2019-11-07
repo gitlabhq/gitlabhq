@@ -35,14 +35,17 @@ gitlab:
   gitlab-shell:
     resources:
       requests:
-        cpu: 230m
+        cpu: 500m
         memory: 25M
       limits:
-        cpu: 345m
+        cpu: 750m
         memory: 37.5M
     maxReplicas: 3
     hpa:
       targetAverageValue: 130m
+    deployment:
+      livenessProbe:
+        timeoutSeconds: 5
   sidekiq:
     resources:
       requests:

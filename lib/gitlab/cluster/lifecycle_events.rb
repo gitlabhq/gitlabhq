@@ -10,15 +10,7 @@ module Gitlab
     #
     # We have the following lifecycle events.
     #
-    # - on_master_start:
-    #
-    #     Unicorn/Puma Cluster: This will be called exactly once,
-    #       on startup, before the workers are forked. This is
-    #       called in the PARENT/MASTER process.
-    #
-    #     Sidekiq/Puma Single: This is called immediately.
-    #
-    # - on_before_fork:
+    # - on_before_fork (on master process):
     #
     #     Unicorn/Puma Cluster: This will be called exactly once,
     #       on startup, before the workers are forked. This is
@@ -26,22 +18,31 @@ module Gitlab
     #
     #     Sidekiq/Puma Single: This is not called.
     #
-    # - on_worker_start:
+    # - on_master_start (on master process):
     #
-    #     Unicorn/Puma Cluster: This is called in the worker process
-    #       exactly once before processing requests.
+    #     Unicorn/Puma Cluster: This will be called exactly once,
+    #       on startup, before the workers are forked. This is
+    #       called in the PARENT/MASTER process.
     #
     #     Sidekiq/Puma Single: This is called immediately.
     #
-    # - on_before_graceful_shutdown:
+    # - on_before_blackout_period (on master process):
     #
-    #     Unicorn/Puma Cluster: This will be called before a graceful
-    #       shutdown of workers starts happening.
+    #     Unicorn/Puma Cluster: This will be called before a blackout
+    #       period when performing graceful shutdown of master.
     #       This is called on `master` process.
     #
     #     Sidekiq/Puma Single: This is not called.
     #
-    # - on_before_master_restart:
+    # - on_before_graceful_shutdown (on master process):
+    #
+    #     Unicorn/Puma Cluster: This will be called before a graceful
+    #       shutdown  of workers starts happening, but after blackout period.
+    #       This is called on `master` process.
+    #
+    #     Sidekiq/Puma Single: This is not called.
+    #
+    # - on_before_master_restart (on master process):
     #
     #     Unicorn: This will be called before a new master is spun up.
     #       This is called on forked master before `execve` to become
@@ -52,6 +53,13 @@ module Gitlab
     #       This is called on `master` process.
     #
     #     Sidekiq/Puma Single: This is not called.
+    #
+    # - on_worker_start (on worker process):
+    #
+    #     Unicorn/Puma Cluster: This is called in the worker process
+    #       exactly once before processing requests.
+    #
+    #     Sidekiq/Puma Single: This is called immediately.
     #
     # Blocks will be executed in the order in which they are registered.
     #
@@ -72,6 +80,12 @@ module Gitlab
         def on_before_fork(&block)
           # Defer block execution
           (@before_fork_hooks ||= []) << block
+        end
+
+        # Read the config/initializers/cluster_events_before_phased_restart.rb
+        def on_before_blackout_period(&block)
+          # Defer block execution
+          (@master_blackout_period ||= []) << block
         end
 
         # Read the config/initializers/cluster_events_before_phased_restart.rb
@@ -97,27 +111,24 @@ module Gitlab
         # Lifecycle integration methods (called from unicorn.rb, puma.rb, etc.)
         #
         def do_worker_start
-          @worker_start_hooks&.each do |block|
-            block.call
-          end
+          call(@worker_start_hooks)
         end
 
         def do_before_fork
-          @before_fork_hooks&.each do |block|
-            block.call
-          end
+          call(@before_fork_hooks)
         end
 
         def do_before_graceful_shutdown
-          @master_graceful_shutdown&.each do |block|
-            block.call
-          end
+          call(@master_blackout_period)
+
+          blackout_seconds = ::Settings.shutdown.blackout_seconds.to_i
+          sleep(blackout_seconds) if blackout_seconds > 0
+
+          call(@master_graceful_shutdown)
         end
 
         def do_before_master_restart
-          @master_restart_hooks&.each do |block|
-            block.call
-          end
+          call(@master_restart_hooks)
         end
 
         # DEPRECATED
@@ -131,6 +142,10 @@ module Gitlab
         end
 
         private
+
+        def call(hooks)
+          hooks&.each(&:call)
+        end
 
         def in_clustered_environment?
           # Sidekiq doesn't fork

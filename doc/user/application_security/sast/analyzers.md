@@ -111,6 +111,9 @@ This configuration doesn't benefit from the integrated detection step.
 SAST has to fetch and spawn each Docker image to establish whether the
 custom analyzer can scan the source code.
 
+CAUTION: **Caution:**
+Custom analyzers are not spawned automatically when [Docker In Docker](index.md#disabling-docker-in-docker-for-sast) is disabled.
+
 ## Analyzers Data
 
 | Property \ Tool                         | Apex                 | Bandit               | Brakeman             | ESLint security      | Find Sec Bugs        | Flawfinder           | Go AST Scanner       | NodeJsScan           | Php CS Security Audit   | Security code Scan (.NET)   | TSLint Security    | Sobelow            |

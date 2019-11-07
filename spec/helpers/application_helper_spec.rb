@@ -210,7 +210,9 @@ describe ApplicationHelper do
       let(:user) { create(:user, static_object_token: 'hunter1') }
 
       before do
-        allow_any_instance_of(ApplicationSetting).to receive(:static_objects_external_storage_url).and_return('https://cdn.gitlab.com')
+        allow_next_instance_of(ApplicationSetting) do |instance|
+          allow(instance).to receive(:static_objects_external_storage_url).and_return('https://cdn.gitlab.com')
+        end
         allow(helper).to receive(:current_user).and_return(user)
       end
 

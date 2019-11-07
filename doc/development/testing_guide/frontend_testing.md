@@ -501,6 +501,39 @@ it('waits for an event', () => {
 });
 ```
 
+#### Ensuring that tests are isolated
+
+Tests are normally architected in a pattern which requires a recurring setup and breakdown of the component under test. This is done by making use of the `beforeEach` and `afterEach` hooks.
+
+Example
+
+```javascript
+  let wrapper;
+
+  beforeEach(() => {
+    wrapper = mount(Component);
+  });
+
+  afterEach(() => {
+    wrapper.destroy();
+  });
+```
+
+When looking at this initially you'd suspect that the component is setup before each test and then broken down afterwards, providing isolation between tests.
+
+This is however not entirely true as the `destroy` method does not remove everything which has been mutated on the `wrapper` object. For functional components, destroy only removes the rendered DOM elements from the document.
+
+In order to ensure that a clean wrapper object and DOM are being used in each test, the breakdown of the component should rather be performed as follows:
+
+```javascript
+  afterEach(() => {
+    wrapper.destroy();
+    wrapper = null;
+  });
+```
+
+See also the [Vue Test Utils documention on `destroy`](https://vue-test-utils.vuejs.org/api/wrapper/#destroy).
+
 #### Migrating flaky Karma tests to Jest
 
 Some of our Karma tests are flaky because they access the properties of a shared scope.
