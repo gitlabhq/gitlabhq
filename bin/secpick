@@ -103,7 +103,7 @@ module Secpick
             options[:branch] = branch
           end
 
-          opts.on('-s', '--sha abcd', 'SHA to cherry pick') do |sha|
+          opts.on('-s', '--sha abcd', 'SHA or SHA range to cherry pick') do |sha|
             options[:sha] = sha
           end
 

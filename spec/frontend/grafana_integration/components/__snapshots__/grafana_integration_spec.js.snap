@@ -51,7 +51,7 @@ exports[`grafana integration component default state to match the default snapsh
       >
         <glforminput-stub
           id="grafana-url"
-          placeholder="https://my-url.grafana.net/my-dashboard"
+          placeholder="https://my-url.grafana.net/"
           value="http://test.host"
         />
       </glformgroup-stub>

@@ -13,7 +13,7 @@ export default {
     Icon,
   },
   data() {
-    return { placeholderUrl: 'https://my-url.grafana.net/my-dashboard' };
+    return { placeholderUrl: 'https://my-url.grafana.net/' };
   },
   computed: {
     ...mapState(['operationsSettingsEndpoint', 'grafanaToken', 'grafanaUrl', 'grafanaEnabled']),
