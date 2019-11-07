@@ -94,12 +94,12 @@ the provisioning actions. The following resources must be present:
 - A service account with permissions to assume the provisioning
   role in the `Customer` account above.
 - Credentials for this service account configured in GitLab via
-  the `kubernetes` section of `gitlab.yml`
+  the `kubernetes` section of `gitlab.yml`.
 
 The process for creating a cluster is as follows:
 
-1. Using the :provision_role_external_id, GitLab assumes the role provided
-   by :provision_role_arn and stores a set of temporary credentials on the
+1. Using the `:provision_role_external_id`, GitLab assumes the role provided
+   by `:provision_role_arn` and stores a set of temporary credentials on the
    provider record. By default these credentials are valid for one hour.
 1. A CloudFormation stack is created, based on the
    [`AWS CloudFormation EKS template`](https://gitlab.com/gitlab-org/gitlab/blob/master/vendor/aws/cloudformation/eks_cluster.yaml).
@@ -114,9 +114,9 @@ The process for creating a cluster is as follows:
 1. Credentials that are no longer required are removed. This deletes the following
    attributes:
 
-- `access_key_id`
-- `secret_access_key`
-- `session_token`
+   - `access_key_id`
+   - `secret_access_key`
+   - `session_token`
 
 ## Security
 

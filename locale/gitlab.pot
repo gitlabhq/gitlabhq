@@ -20300,6 +20300,9 @@ msgstr ""
 msgid "leave %{group_name}"
 msgstr ""
 
+msgid "limit of %{project_limit} reached"
+msgstr ""
+
 msgid "locked by %{path_lock_user_name} %{created_at}"
 msgstr ""
 

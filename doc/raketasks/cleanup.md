@@ -88,7 +88,7 @@ gitlab-rake gitlab:cleanup:orphan_job_artifact_files DRY_RUN=false
 You can also limit the number of files to delete with `LIMIT`:
 
 ```shell
-gitlab-rake gitlab:cleanup:orphan_job_artifact_files LIMIT=100`
+gitlab-rake gitlab:cleanup:orphan_job_artifact_files LIMIT=100
 ```
 
 This will only delete up to 100 files from disk. You can use this to

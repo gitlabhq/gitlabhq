@@ -3888,6 +3888,13 @@ ActiveRecord::Schema.define(version: 2019_11_05_094625) do
     t.index ["user_id", "project_id"], name: "index_users_ops_dashboard_projects_on_user_id_and_project_id", unique: true
   end
 
+  create_table "users_security_dashboard_projects", id: false, force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "project_id", null: false
+    t.index ["project_id", "user_id"], name: "users_security_dashboard_projects_unique_index", unique: true
+    t.index ["user_id"], name: "index_users_security_dashboard_projects_on_user_id"
+  end
+
   create_table "users_star_projects", id: :serial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.integer "user_id", null: false
@@ -4472,6 +4479,8 @@ ActiveRecord::Schema.define(version: 2019_11_05_094625) do
   add_foreign_key "users", "namespaces", column: "managing_group_id", name: "fk_a4b8fefe3e", on_delete: :nullify
   add_foreign_key "users_ops_dashboard_projects", "projects", on_delete: :cascade
   add_foreign_key "users_ops_dashboard_projects", "users", on_delete: :cascade
+  add_foreign_key "users_security_dashboard_projects", "projects", on_delete: :cascade
+  add_foreign_key "users_security_dashboard_projects", "users", on_delete: :cascade
   add_foreign_key "users_star_projects", "projects", name: "fk_22cd27ddfc", on_delete: :cascade
   add_foreign_key "vulnerabilities", "epics", name: "fk_1d37cddf91", on_delete: :nullify
   add_foreign_key "vulnerabilities", "milestones", column: "due_date_sourcing_milestone_id", name: "fk_7c5bb22a22", on_delete: :nullify
