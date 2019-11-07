@@ -66,8 +66,13 @@ You can then test the connection by clicking on **Test Connection**. If the conn
 1. Click **Delete** next to the `mail` mapping.
 1. Map `userPrincipalName` to `emails[type eq "work"].value` and change it's **Matching precedence** to `2`.
 1. Map `mailNickname` to `userName`.
-1. Create a new mapping by clicking **Add New Mapping** then set **Source attribute** to `objectId`, **Target attribute** to `id`, **Match objects using this attribute** to `Yes`, and **Matching precedence** to `1`.
-1. Create a new mapping by clicking **Add New Mapping** then set **Source attribute** to `objectId`, and **Target attribute** to `externalId`.
+1. Determine how GitLab will uniquely identify users.
+
+    - Use `objectId` unless users already have SAML linked for your group.
+    - If you already have users with SAML linked then use the `Name ID` value from the [SAML configuration](#azure). Using a different value will likely cause duplicate users and prevent users from accessing the GitLab group.
+
+1. Create a new mapping by clicking **Add New Mapping** then set **Source attribute** to the unique identifier determined above, **Target attribute** to `id`, **Match objects using this attribute** to `Yes`, and **Matching precedence** to `1`.
+1. Create a new mapping by clicking **Add New Mapping** then set **Source attribute** to the unique identifier determined above, and **Target attribute** to `externalId`.
 1. Click the `userPrincipalName` mapping and change **Match objects using this attribute** to `No`.
 
    Save your changes and you should have the following configuration:
@@ -98,6 +103,9 @@ You can then test the connection by clicking on **Test Connection**. If the conn
 
 Once enabled, the synchronization details and any errors will appear on the
 bottom of the **Provisioning** screen, together with a link to the audit logs.
+
+CAUTION: **Warning:**
+Once synchronized, changing the field mapped to `id` and `externalId` will likely cause provisioning errors, duplicate users, and prevent existing users from accessing the GitLab group.
 
 ## Troubleshooting
 

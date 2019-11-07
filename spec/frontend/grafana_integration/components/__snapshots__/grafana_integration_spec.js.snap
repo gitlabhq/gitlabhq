@@ -35,6 +35,15 @@ exports[`grafana integration component default state to match the default snapsh
     class="settings-content"
   >
     <form>
+      <glformcheckbox-stub
+        class="mb-4"
+        id="grafana-integration-enabled"
+      >
+        
+        Active
+      
+      </glformcheckbox-stub>
+       
       <glformgroup-stub
         description="Enter the base URL of the Grafana instance."
         label="Grafana URL"

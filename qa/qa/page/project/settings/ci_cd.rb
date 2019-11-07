@@ -35,3 +35,5 @@ module QA
     end
   end
 end
+
+QA::Page::Project::Settings::CICD.prepend_if_ee('QA::EE::Page::Project::Settings::CICD')

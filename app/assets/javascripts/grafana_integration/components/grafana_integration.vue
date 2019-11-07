@@ -1,11 +1,12 @@
 <script>
-import { GlButton, GlFormGroup, GlFormInput, GlLink } from '@gitlab/ui';
+import { GlButton, GlFormGroup, GlFormInput, GlFormCheckbox, GlLink } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
 import { mapState, mapActions } from 'vuex';
 
 export default {
   components: {
     GlButton,
+    GlFormCheckbox,
     GlFormGroup,
     GlFormInput,
     GlLink,
@@ -15,7 +16,15 @@ export default {
     return { placeholderUrl: 'https://my-url.grafana.net/my-dashboard' };
   },
   computed: {
-    ...mapState(['operationsSettingsEndpoint', 'grafanaToken', 'grafanaUrl']),
+    ...mapState(['operationsSettingsEndpoint', 'grafanaToken', 'grafanaUrl', 'grafanaEnabled']),
+    integrationEnabled: {
+      get() {
+        return this.grafanaEnabled;
+      },
+      set(grafanaEnabled) {
+        this.setGrafanaEnabled(grafanaEnabled);
+      },
+    },
     localGrafanaToken: {
       get() {
         return this.grafanaToken;
@@ -34,7 +43,12 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['setGrafanaUrl', 'setGrafanaToken', 'updateGrafanaIntegration']),
+    ...mapActions([
+      'setGrafanaUrl',
+      'setGrafanaToken',
+      'setGrafanaEnabled',
+      'updateGrafanaIntegration',
+    ]),
   },
 };
 </script>
@@ -52,6 +66,13 @@ export default {
     </div>
     <div class="settings-content">
       <form>
+        <gl-form-checkbox
+          id="grafana-integration-enabled"
+          v-model="integrationEnabled"
+          class="mb-4"
+        >
+          {{ s__('GrafanaIntegration|Active') }}
+        </gl-form-checkbox>
         <gl-form-group
           :label="s__('GrafanaIntegration|Grafana URL')"
           label-for="grafana-url"

@@ -18,6 +18,10 @@ module QA
           '/'
         end
 
+        def clear_project_filter
+          fill_element(:project_filter_form, "")
+        end
+
         private
 
         def filter_by_name(name)

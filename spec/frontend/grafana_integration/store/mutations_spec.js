@@ -25,4 +25,11 @@ describe('grafana integration mutations', () => {
       expect(localState.grafanaToken).toBe(mockToken);
     });
   });
+  describe('SET_GRAFANA_ENABLED', () => {
+    it('updates grafanaEnabled for integration', () => {
+      mutations.SET_GRAFANA_ENABLED(localState, true);
+
+      expect(localState.grafanaEnabled).toBe(true);
+    });
+  });
 });

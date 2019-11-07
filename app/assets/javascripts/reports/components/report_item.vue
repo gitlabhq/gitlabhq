@@ -46,6 +46,7 @@ export default {
   <li
     :class="{ 'is-dismissed': issue.isDismissed }"
     class="report-block-list-issue align-items-center"
+    data-qa-selector="report_item_row"
   >
     <issue-status-icon
       v-if="showReportSectionStatusIcon"

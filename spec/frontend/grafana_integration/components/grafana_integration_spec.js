@@ -86,6 +86,7 @@ describe('grafana integration component', () => {
             grafana_integration_attributes: {
               grafana_url: grafanaIntegrationUrl,
               token: grafanaIntegrationToken,
+              enabled: false,
             },
           },
         },

@@ -33,6 +33,10 @@ to be enabled:
   project level, navigate to your project's **Settings > General**, expand **Visibility, project features, permissions**
   and enable **Git Large File Storage**.
 
+Design Management requires that projects are using
+[hashed storage](../../../administration/repository_storage_types.html#hashed-storage)
+(the default storage type since v10.0).
+
 ## Limitations
 
 - Files uploaded must have a file extension of either `png`, `jpg`, `jpeg`, `gif`, `bmp`, `tiff` or `ico`.

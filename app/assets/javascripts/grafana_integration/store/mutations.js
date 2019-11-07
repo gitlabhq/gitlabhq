@@ -7,4 +7,7 @@ export default {
   [types.SET_GRAFANA_TOKEN](state, token) {
     state.grafanaToken = token;
   },
+  [types.SET_GRAFANA_ENABLED](state, enabled) {
+    state.grafanaEnabled = enabled;
+  },
 };

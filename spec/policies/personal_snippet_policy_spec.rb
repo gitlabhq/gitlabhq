@@ -20,6 +20,19 @@ describe PersonalSnippetPolicy do
     described_class.new(user, snippet)
   end
 
+  shared_examples 'admin access' do
+    context 'admin user' do
+      subject { permissions(admin_user) }
+
+      it do
+        is_expected.to be_allowed(:read_personal_snippet)
+        is_expected.to be_allowed(:create_note)
+        is_expected.to be_allowed(:award_emoji)
+        is_expected.to be_allowed(*author_permissions)
+      end
+    end
+  end
+
   context 'public snippet' do
     let(:snippet) { create(:personal_snippet, :public) }
 
@@ -55,6 +68,8 @@ describe PersonalSnippetPolicy do
         is_expected.to be_allowed(*author_permissions)
       end
     end
+
+    it_behaves_like 'admin access'
   end
 
   context 'internal snippet' do
@@ -103,6 +118,8 @@ describe PersonalSnippetPolicy do
         is_expected.to be_allowed(*author_permissions)
       end
     end
+
+    it_behaves_like 'admin access'
   end
 
   context 'private snippet' do
@@ -130,17 +147,6 @@ describe PersonalSnippetPolicy do
       end
     end
 
-    context 'admin user' do
-      subject { permissions(admin_user) }
-
-      it do
-        is_expected.to be_allowed(:read_personal_snippet)
-        is_expected.to be_disallowed(:create_note)
-        is_expected.to be_disallowed(:award_emoji)
-        is_expected.to be_disallowed(*author_permissions)
-      end
-    end
-
     context 'external user' do
       subject { permissions(external_user) }
 
@@ -162,5 +168,7 @@ describe PersonalSnippetPolicy do
         is_expected.to be_allowed(*author_permissions)
       end
     end
+
+    it_behaves_like 'admin access'
   end
 end

@@ -9,6 +9,9 @@ export const setGrafanaUrl = ({ commit }, url) => commit(mutationTypes.SET_GRAFA
 export const setGrafanaToken = ({ commit }, token) =>
   commit(mutationTypes.SET_GRAFANA_TOKEN, token);
 
+export const setGrafanaEnabled = ({ commit }, enabled) =>
+  commit(mutationTypes.SET_GRAFANA_ENABLED, enabled);
+
 export const updateGrafanaIntegration = ({ state, dispatch }) =>
   axios
     .patch(state.operationsSettingsEndpoint, {
@@ -16,6 +19,7 @@ export const updateGrafanaIntegration = ({ state, dispatch }) =>
         grafana_integration_attributes: {
           grafana_url: state.grafanaUrl,
           token: state.grafanaToken,
+          enabled: state.grafanaEnabled,
         },
       },
     })

@@ -10,7 +10,7 @@ class PersonalSnippetPolicy < BasePolicy
     enable :create_note
   end
 
-  rule { is_author }.policy do
+  rule { is_author | admin }.policy do
     enable :read_personal_snippet
     enable :update_personal_snippet
     enable :destroy_personal_snippet

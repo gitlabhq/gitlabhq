@@ -26,6 +26,23 @@ SAML SSO for GitLab.com groups does not sync users between providers without usi
 
 ![Issuer and callback for configuring SAML identity provider with GitLab.com](img/group_saml_configuration_information.png)
 
+### NameID
+
+GitLab.com uses the SAML NameID to identify users. The NameID element:
+
+- Is a required field in the SAML response.
+- Must be unique to each user.
+- Must be a persistent value that will never change, such as a randomly generated unique user ID.
+- Is case sensitive. The NameID must match exactly on subsequent login attempts, so should not rely on user input that could change between upper and lower case.
+- Should not be an email address or username. We strongly recommend against these as it is hard to guarantee they will never change, for example when a person's name changes. Email addresses are also case-insensitive, which can result in users being unable to sign in.
+
+CAUTION: **Warning:**
+Once users have signed into GitLab using the SSO SAML setup, changing the `NameID` will break the configuration and potentially lock users out of the GitLab group.
+
+#### NameID Format
+
+We recommend setting the NameID format to `Persistent` unless using a field (such as email) that requires a different format.
+
 ### SSO enforcement
 
 SSO enforcement was:
@@ -58,25 +75,16 @@ Since use of the group managed account requires the use of SSO, users of group m
 - The user will be unable to access the group (their credentials will no longer work on the identity provider when prompted to SSO).
 - Contributions in the group (e.g. issues, merge requests) will remain intact.
 
-### NameID
+#### Assertions
 
-GitLab.com uses the SAML NameID to identify users. The NameID element:
+When using Group Manged Accounts, the following user details need to be passed to GitLab as SAML Assertions in order for us to be able to create a user:
 
-- Is a required field in the SAML response.
-- Must be unique to each user.
-- Must be a persistent value that will never change, such as a randomly generated unique user ID.
-- Is case sensitive. The NameID must match exactly on subsequent login attempts, so should not rely on user input that could change between upper and lower case.
-
-We strongly recommend against using Email as the NameID as it is hard to guarantee it will never change, for example when a person's name changes. Similarly usernames should be avoided if possible.
-
-### Assertions
-
-| Field | Supported keys |
-|-------|----------------|
+| Field           | Supported keys |
+|-----------------|----------------|
 | Email (required)| `email`, `mail` |
-| Full Name | `name` |
-| First Name | `first_name`, `firstname`, `firstName` |
-| Last Name | `last_name`, `lastname`, `lastName` |
+| Full Name       | `name` |
+| First Name      | `first_name`, `firstname`, `firstName` |
+| Last Name       | `last_name`, `lastname`, `lastName` |
 
 ## Metadata configuration
 

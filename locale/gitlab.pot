@@ -2917,9 +2917,6 @@ msgstr ""
 msgid "Certificate (PEM)"
 msgstr ""
 
-msgid "Change Weight"
-msgstr ""
-
 msgid "Change assignee"
 msgstr ""
 
@@ -8307,6 +8304,9 @@ msgstr ""
 msgid "GrafanaIntegration|API Token"
 msgstr ""
 
+msgid "GrafanaIntegration|Active"
+msgstr ""
+
 msgid "GrafanaIntegration|Embed Grafana charts in GitLab issues."
 msgstr ""
 
@@ -13483,10 +13483,22 @@ msgstr ""
 msgid "Promotions|Epics let you manage your portfolio of projects more efficiently and with less effort by tracking groups of issues that share a theme, across projects and milestones."
 msgstr ""
 
+msgid "Promotions|Learn more"
+msgstr ""
+
+msgid "Promotions|See the other features in the %{subscription_link_start}bronze plan%{subscriptions_link_end}"
+msgstr ""
+
 msgid "Promotions|This feature is locked."
 msgstr ""
 
 msgid "Promotions|Upgrade plan"
+msgstr ""
+
+msgid "Promotions|Weighting your issue"
+msgstr ""
+
+msgid "Promotions|When you have a lot of issues, it can be hard to get an overview. By adding a weight to your issues, you can get a better idea of the effort, cost, required time, or value of each, and so better manage them."
 msgstr ""
 
 msgid "Prompt users to upload SSH keys"
@@ -18225,9 +18237,6 @@ msgid "Upgrade your plan to activate Contribution Analytics."
 msgstr ""
 
 msgid "Upgrade your plan to activate Group Webhooks."
-msgstr ""
-
-msgid "Upgrade your plan to activate Issue weight."
 msgstr ""
 
 msgid "Upgrade your plan to improve Issue boards."
