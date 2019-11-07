@@ -51,7 +51,7 @@ export default {
 </script>
 
 <template>
-  <gl-popover :target="target" boundary="viewport" placement="top" show>
+  <gl-popover :target="target" boundary="viewport" placement="top" offset="0, 1" show>
     <div class="user-popover d-flex">
       <div class="p-1 flex-shrink-1">
         <user-avatar-image :img-src="user.avatarUrl" :size="60" css-classes="mr-2" />
@@ -90,7 +90,7 @@ export default {
             name="location"
             class="category-icon flex-shrink-0"
           />
-          <span class="ml-1">{{ user.location }}</span>
+          <span v-if="user.location" class="ml-1">{{ user.location }}</span>
           <gl-skeleton-loading
             v-if="locationIsLoading"
             :lines="1"

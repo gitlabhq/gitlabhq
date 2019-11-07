@@ -39,16 +39,20 @@ Follow [Git for enormous repositories](https://gitlab.com/groups/gitlab-org/-/ep
 
 ## Enabling partial clone
 
-GitLab 12.1 uses Git 2.21.0 which has an arbitrary file access security
-vulnerability when `uploadpack.allowFilter` is enabled, and should not be
-enabled in production environments.
+> [Introduced](https://gitlab.com/gitlab-org/gitaly/issues/1553) in GitLab 12.4.
 
-A feature flag is planned to enable `uploadpack.allowFilter` and
-`uploadpack.allowAnySHA1InWant` once the version of Git used by GitLab has been
-updated to Git 2.22.0.
+To enable partial clone, use the [feature flags API](../../api/features.md).
+For example:
 
-Follow [this issue](https://gitlab.com/gitlab-org/gitaly/issues/1553) for
-updated.
+```sh
+curl --data "value=true" --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/features/gitaly_upload_pack_filter
+```
+
+Alternatively, flip the switch and enable the feature flag:
+
+```ruby
+Feature.enable(:gitaly_upload_pack_filter)
+```
 
 ## Excluding objects by size
 

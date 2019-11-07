@@ -1396,6 +1396,9 @@ msgstr ""
 msgid "All groups and projects"
 msgstr ""
 
+msgid "All issues for this milestone are closed."
+msgstr ""
+
 msgid "All issues for this milestone are closed. You may close this milestone now."
 msgstr ""
 
@@ -10941,6 +10944,9 @@ msgstr ""
 msgid "Naming, visibility"
 msgstr ""
 
+msgid "Navigate to the project to close the milestone."
+msgstr ""
+
 msgid "Nav|Help"
 msgstr ""
 
@@ -11780,6 +11786,9 @@ msgid "Parent epic is not present."
 msgstr ""
 
 msgid "Part of merge request changes"
+msgstr ""
+
+msgid "Participants"
 msgstr ""
 
 msgid "Passed"
@@ -19495,6 +19504,9 @@ msgid "You left the \"%{membershipable_human_name}\" %{source_type}."
 msgstr ""
 
 msgid "You may also add variables that are made available to the running application by prepending the variable key with <code>K8S_SECRET_</code>."
+msgstr ""
+
+msgid "You may close the milestone now."
 msgstr ""
 
 msgid "You must accept our Terms of Service and privacy policy in order to register an account"

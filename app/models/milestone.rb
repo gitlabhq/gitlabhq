@@ -330,6 +330,6 @@ class Milestone < ApplicationRecord
   end
 
   def issues_finder_params
-    { project_id: project_id }
+    { project_id: project_id, group_id: group_id }.compact
   end
 end

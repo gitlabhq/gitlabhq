@@ -51,6 +51,7 @@ dependency_scanning:
           DS_PIP_DEPENDENCY_PATH \
           PIP_INDEX_URL \
           PIP_EXTRA_INDEX_URL \
+          MAVEN_CLI_OPTS \
         ) \
         --volume "$PWD:/code" \
         --volume /var/run/docker.sock:/var/run/docker.sock \

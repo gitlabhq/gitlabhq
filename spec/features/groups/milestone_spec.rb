@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 describe 'Group milestones' do
-  let(:group) { create(:group) }
-  let!(:project) { create(:project_empty_repo, group: group) }
-  let(:user) { create(:group_member, :maintainer, user: create(:user), group: group ).user }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project_empty_repo, group: group) }
+  let_it_be(:user) { create(:group_member, :maintainer, user: create(:user), group: group ).user }
 
   around do |example|
     Timecop.freeze { example.run }
@@ -71,9 +71,9 @@ describe 'Group milestones' do
     end
 
     context 'when milestones exists' do
-      let!(:other_project) { create(:project_empty_repo, group: group) }
+      let_it_be(:other_project) { create(:project_empty_repo, group: group) }
 
-      let!(:active_project_milestone1) do
+      let_it_be(:active_project_milestone1) do
         create(
           :milestone,
           project: project,
@@ -83,12 +83,12 @@ describe 'Group milestones' do
           description: 'Lorem Ipsum is simply dummy text'
         )
       end
-      let!(:active_project_milestone2) { create(:milestone, project: other_project, state: 'active', title: 'v1.1') }
-      let!(:closed_project_milestone1) { create(:milestone, project: project, state: 'closed', title: 'v2.0') }
-      let!(:closed_project_milestone2) { create(:milestone, project: other_project, state: 'closed', title: 'v2.0') }
-      let!(:active_group_milestone) { create(:milestone, group: group, state: 'active', title: 'GL-113') }
-      let!(:closed_group_milestone) { create(:milestone, group: group, state: 'closed') }
-      let!(:issue) do
+      let_it_be(:active_project_milestone2) { create(:milestone, project: other_project, state: 'active', title: 'v1.1') }
+      let_it_be(:closed_project_milestone1) { create(:milestone, project: project, state: 'closed', title: 'v2.0') }
+      let_it_be(:closed_project_milestone2) { create(:milestone, project: other_project, state: 'closed', title: 'v2.0') }
+      let_it_be(:active_group_milestone) { create(:milestone, group: group, state: 'active', title: 'GL-113') }
+      let_it_be(:closed_group_milestone) { create(:milestone, group: group, state: 'closed') }
+      let_it_be(:issue) do
         create :issue, project: project, assignees: [user], author: user, milestone: active_project_milestone1
       end
 
@@ -143,38 +143,111 @@ describe 'Group milestones' do
         expect(page).to have_content('Issues 1 Open: 1 Closed: 0')
         expect(page).to have_link(issue.title, href: project_issue_path(issue.project, issue))
       end
+    end
+  end
 
-      describe 'labels' do
-        before do
-          create(:label, project: project, title: 'bug') do |label|
-            issue.labels << label
-          end
+  describe 'milestone tabs', :js do
+    context 'for a legacy group milestone' do
+      let_it_be(:milestone) { create(:milestone, project: project) }
+      let_it_be(:label)     { create(:label, project: project) }
+      let_it_be(:issue)     { create(:labeled_issue, project: project, milestone: milestone, labels: [label], assignees: [create(:user)]) }
+      let_it_be(:mr)        { create(:merge_request, source_project: project, milestone: milestone) }
 
-          create(:label, project: project, title: 'feature') do |label|
-            issue.labels << label
-          end
+      before do
+        visit group_milestone_path(group, milestone.title, title: milestone.title)
+      end
+
+      it 'renders the issues tab' do
+        within('#tab-issues') do
+          expect(page).to have_content issue.title
+        end
+      end
+
+      it 'renders the merge requests tab' do
+        within('.js-milestone-tabs') do
+          click_link('Merge Requests')
         end
 
-        it 'renders labels' do
-          click_link 'v1.0'
+        within('#tab-merge-requests') do
+          expect(page).to have_content mr.title
+        end
+      end
 
-          page.within('#tab-issues') do
-            expect(page).to have_content 'bug'
-            expect(page).to have_content 'feature'
-          end
+      it 'renders the participants tab' do
+        within('.js-milestone-tabs') do
+          click_link('Participants')
         end
 
-        it 'renders labels list', :js do
-          click_link 'v1.0'
+        within('#tab-participants') do
+          expect(page).to have_content issue.assignees.first.name
+        end
+      end
 
-          page.within('.content .nav-links') do
-            page.find(:xpath, "//a[@href='#tab-labels']").click
-          end
+      it 'renders the labels tab' do
+        within('.js-milestone-tabs') do
+          click_link('Labels')
+        end
 
-          page.within('#tab-labels') do
-            expect(page).to have_content 'bug'
-            expect(page).to have_content 'feature'
-          end
+        within('#tab-labels') do
+          expect(page).to have_content label.title
+        end
+      end
+    end
+
+    context 'for a group milestone' do
+      let_it_be(:other_project) { create(:project_empty_repo, group: group) }
+      let_it_be(:milestone) { create(:milestone, group: group) }
+
+      let_it_be(:project_label) { create(:label, project: project) }
+      let_it_be(:other_project_label) { create(:label, project: other_project) }
+
+      let_it_be(:project_issue) { create(:labeled_issue, project: project, milestone: milestone, labels: [project_label], assignees: [create(:user)]) }
+      let_it_be(:other_project_issue) { create(:labeled_issue, project: other_project, milestone: milestone, labels: [other_project_label], assignees: [create(:user)]) }
+
+      let_it_be(:project_mr) { create(:merge_request, source_project: project, milestone: milestone) }
+      let_it_be(:other_project_mr) { create(:merge_request, source_project: other_project, milestone: milestone) }
+
+      before do
+        visit group_milestone_path(group, milestone)
+      end
+
+      it 'renders the issues tab' do
+        within('#tab-issues') do
+          expect(page).to have_content project_issue.title
+          expect(page).to have_content other_project_issue.title
+        end
+      end
+
+      it 'renders the merge requests tab' do
+        within('.js-milestone-tabs') do
+          click_link('Merge Requests')
+        end
+
+        within('#tab-merge-requests') do
+          expect(page).to have_content project_mr.title
+          expect(page).to have_content other_project_mr.title
+        end
+      end
+
+      it 'renders the participants tab' do
+        within('.js-milestone-tabs') do
+          click_link('Participants')
+        end
+
+        within('#tab-participants') do
+          expect(page).to have_content project_issue.assignees.first.name
+          expect(page).to have_content other_project_issue.assignees.first.name
+        end
+      end
+
+      it 'renders the labels tab' do
+        within('.js-milestone-tabs') do
+          click_link('Labels')
+        end
+
+        within('#tab-labels') do
+          expect(page).to have_content project_label.title
+          expect(page).to have_content other_project_label.title
         end
       end
     end

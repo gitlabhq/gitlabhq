@@ -103,30 +103,18 @@ When filtering by milestone, in addition to choosing a specific project mileston
 
 ## Milestone view
 
-Not all features in the project milestone view are available in the group milestone view. This table summarizes the differences:
-
-| Feature                              | Project milestone view | Group milestone view |
-|--------------------------------------|:----------------------:|:--------------------:|
-| Title and description                | ✓                      | ✓                    |
-| Issues assigned to milestone         | ✓                      |                      |
-| Merge requests assigned to milestone | ✓                      |                      |
-| Participants and labels used         | ✓                      |                      |
-| Percentage complete                  | ✓                      | ✓                    |
-| Start date and due date              | ✓                      | ✓                    |
-| Total issue time spent               | ✓                      | ✓                    |
-| Total issue weight                   | ✓                      |                      |
-| Burndown chart **[STARTER}**         | ✓                      | ✓                    |
-
 The milestone view shows the title and description.
 
-### Project milestone features
+There are also tabs below these that show the following:
 
-These features are only available for project milestones and not group milestones.
-
-- Issues assigned to the milestone are displayed in three columns: Unstarted issues, ongoing issues, and completed issues.
-- Merge requests assigned to the milestone are displayed in four columns: Work in progress merge requests, waiting for merge, rejected, and closed.
-- Participants and labels that are used in issues and merge requests that have the milestone assigned are displayed.
-- [Burndown chart](#project-burndown-charts-starter).
+- Issues
+  Shows all issues assigned to the milestone. These are displayed in three columns: Unstarted issues, ongoing issues, and completed issues.
+- Merge requests
+  Shows all merge requests assigned to the milestone. These are displayed in four columns: Work in progress merge requests, waiting for merge, rejected, and closed.
+- Participants
+  Shows all assignees of issues assigned to the milestone.
+- Labels
+  Shows all labels that are used in issues assigned to the milestone.
 
 ### Project Burndown Charts **(STARTER)**
 
@@ -144,9 +132,8 @@ The milestone sidebar on the milestone view shows the following:
 
 - Percentage complete, which is calculated as number of closed issues divided by total number of issues.
 - The start date and due date.
-- The total time spent on all issues that have the milestone assigned.
-
-For project milestones only, the milestone sidebar shows the total issue weight of all issues that have the milestone assigned.
+- The total time spent on all issues assigned to the milestone.
+- The total issue weight of all issues assigned to the milestone.
 
 ![Project milestone page](img/milestones_project_milestone_page.png)
 

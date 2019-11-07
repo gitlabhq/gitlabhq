@@ -51,15 +51,16 @@ describe 'Project milestone' do
 
   context 'when project has disabled issues' do
     before do
+      create(:issue, project: project, milestone: milestone)
       project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
+
       visit project_milestone_path(project, milestone)
     end
 
-    it 'hides issues tab' do
+    it 'does not show any issues under the issues tab' do
       within('#content-body') do
-        expect(page).not_to have_link 'Issues', href: '#tab-issues'
-        expect(page).to have_selector '.nav-links li a.active', count: 1
-        expect(find('.nav-links li a.active')).to have_content 'Merge Requests'
+        expect(find('.nav-links li a.active')).to have_content 'Issues'
+        expect(page).not_to have_selector '.issuable-row'
       end
     end
 

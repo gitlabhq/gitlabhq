@@ -1,0 +1,8 @@
+.detail-page-description.milestone-detail
+  %h2.title
+    = markdown_field(milestone, :title)
+
+  - if milestone.try(:description).present?
+    %div
+      .description.md
+        = markdown_field(milestone, :description)

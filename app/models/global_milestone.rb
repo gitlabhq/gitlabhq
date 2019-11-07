@@ -100,4 +100,8 @@ class GlobalMilestone
   def labels
     @labels ||= GlobalLabel.build_collection(milestone.labels).sort_by!(&:title)
   end
+
+  def global_milestone?
+    true
+  end
 end

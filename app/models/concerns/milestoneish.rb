@@ -101,6 +101,10 @@ module Milestoneish
     false
   end
 
+  def global_milestone?
+    false
+  end
+
   def total_issue_time_spent
     @total_issue_time_spent ||= issues.joins(:timelogs).sum(:time_spent)
   end
