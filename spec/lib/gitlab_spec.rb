@@ -96,6 +96,48 @@ describe Gitlab do
     end
   end
 
+  describe '.canary?' do
+    it 'is true when CANARY env var is set to true' do
+      stub_env('CANARY', '1')
+
+      expect(described_class.canary?).to eq true
+    end
+
+    it 'is false when CANARY env var is set to false' do
+      stub_env('CANARY', '0')
+
+      expect(described_class.canary?).to eq false
+    end
+  end
+
+  describe '.com_and_canary?' do
+    it 'is true when on .com and canary' do
+      allow(described_class).to receive_messages(com?: true, canary?: true)
+
+      expect(described_class.com_and_canary?).to eq true
+    end
+
+    it 'is false when on .com but not on canary' do
+      allow(described_class).to receive_messages(com?: true, canary?: false)
+
+      expect(described_class.com_and_canary?).to eq false
+    end
+  end
+
+  describe '.com_but_not_canary?' do
+    it 'is false when on .com and canary' do
+      allow(described_class).to receive_messages(com?: true, canary?: true)
+
+      expect(described_class.com_but_not_canary?).to eq false
+    end
+
+    it 'is true when on .com but not on canary' do
+      allow(described_class).to receive_messages(com?: true, canary?: false)
+
+      expect(described_class.com_but_not_canary?).to eq true
+    end
+  end
+
   describe '.dev_env_org_or_com?' do
     it 'is true when on .com' do
       allow(described_class).to receive_messages(com?: true, org?: false)

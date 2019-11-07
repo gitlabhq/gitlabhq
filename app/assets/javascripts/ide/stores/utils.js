@@ -269,3 +269,7 @@ export const pathsAreEqual = (a, b) => {
 
   return cleanA === cleanB;
 };
+
+// if the contents of a file dont end with a newline, this function adds a newline
+export const addFinalNewlineIfNeeded = content =>
+  content.charAt(content.length - 1) !== '\n' ? `${content}\n` : content;

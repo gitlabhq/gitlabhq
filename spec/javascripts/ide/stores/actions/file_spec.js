@@ -455,6 +455,8 @@ describe('IDE store file actions', () => {
 
     beforeEach(() => {
       tmpFile = file('tmpFile');
+      tmpFile.content = '\n';
+      tmpFile.raw = '\n';
       store.state.entries[tmpFile.path] = tmpFile;
     });
 
@@ -462,10 +464,24 @@ describe('IDE store file actions', () => {
       store
         .dispatch('changeFileContent', {
           path: tmpFile.path,
+          content: 'content\n',
+        })
+        .then(() => {
+          expect(tmpFile.content).toBe('content\n');
+
+          done();
+        })
+        .catch(done.fail);
+    });
+
+    it('adds a newline to the end of the file if it doesnt already exist', done => {
+      store
+        .dispatch('changeFileContent', {
+          path: tmpFile.path,
           content: 'content',
         })
         .then(() => {
-          expect(tmpFile.content).toBe('content');
+          expect(tmpFile.content).toBe('content\n');
 
           done();
         })
@@ -510,12 +526,12 @@ describe('IDE store file actions', () => {
       store
         .dispatch('changeFileContent', {
           path: tmpFile.path,
-          content: 'content',
+          content: 'content\n',
         })
         .then(() =>
           store.dispatch('changeFileContent', {
             path: tmpFile.path,
-            content: '',
+            content: '\n',
           }),
         )
         .then(() => {

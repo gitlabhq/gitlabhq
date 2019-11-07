@@ -292,6 +292,8 @@ describe('IDE commit module actions', () => {
         type: 'blob',
         active: true,
         lastCommitSha: TEST_COMMIT_SHA,
+        content: '\n',
+        raw: '\n',
       };
 
       Object.assign(store.state, {
@@ -359,7 +361,7 @@ describe('IDE commit module actions', () => {
                 {
                   action: commitActionTypes.update,
                   file_path: jasmine.anything(),
-                  content: undefined,
+                  content: '\n',
                   encoding: jasmine.anything(),
                   last_commit_id: undefined,
                   previous_path: undefined,
@@ -386,7 +388,7 @@ describe('IDE commit module actions', () => {
                 {
                   action: commitActionTypes.update,
                   file_path: jasmine.anything(),
-                  content: undefined,
+                  content: '\n',
                   encoding: jasmine.anything(),
                   last_commit_id: TEST_COMMIT_SHA,
                   previous_path: undefined,

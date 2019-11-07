@@ -5,7 +5,7 @@ import eventHub from '../../eventhub';
 import service from '../../services';
 import * as types from '../mutation_types';
 import router from '../../ide_router';
-import { setPageTitle, replaceFileUrl } from '../utils';
+import { setPageTitle, replaceFileUrl, addFinalNewlineIfNeeded } from '../utils';
 import { viewerTypes, stageKeys } from '../../constants';
 
 export const closeFile = ({ commit, state, dispatch }, file) => {
@@ -140,7 +140,10 @@ export const getRawFileData = ({ state, commit, dispatch, getters }, { path }) =
 
 export const changeFileContent = ({ commit, dispatch, state }, { path, content }) => {
   const file = state.entries[path];
-  commit(types.UPDATE_FILE_CONTENT, { path, content });
+  commit(types.UPDATE_FILE_CONTENT, {
+    path,
+    content: addFinalNewlineIfNeeded(content),
+  });
 
   const indexOfChangedFile = state.changedFiles.findIndex(f => f.path === path);
 

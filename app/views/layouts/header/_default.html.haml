@@ -18,8 +18,8 @@
             - if logo_text.present?
               %span.logo-text.d-none.d-lg-block.prepend-left-8
                 = logo_text
-          - if Gitlab.com?
-            = link_to 'https://next.gitlab.com', class: 'label-link js-canary-badge canary-badge bg-transparent hidden', target: :_blank do
+          - if Gitlab.com_and_canary?
+            = link_to 'https://next.gitlab.com', class: 'label-link canary-badge bg-transparent', target: :_blank do
               %span.color-label.has-tooltip.badge.badge-pill.green-badge
                 = _('Next')
 

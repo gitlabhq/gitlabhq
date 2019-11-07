@@ -339,3 +339,33 @@ questions that you know someone might ask.
 Each scenario can be a third-level heading, e.g. `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->
+
+## Troubleshooting
+
+### Running out of memory
+
+By default, ZAProxy, which DAST relies on, is allocated memory that sums to 25%
+of the total memory on the host.
+Since it keeps most of its information in memory during a scan,
+it is possible for DAST to run out of memory while scanning large applications.
+This results in the following error:
+
+```
+[zap.out] java.lang.OutOfMemoryError: Java heap space
+```
+
+Fortunately, it is straightforward to increase the amount of memory available
+for DAST by overwriting the `script` key in the DAST template:
+
+```yaml
+include:
+  template: DAST.gitlab-ci.yml
+
+dast:
+  script:
+    - export DAST_WEBSITE=${DAST_WEBSITE:-$(cat environment_url.txt)}
+    - /analyze -t $DAST_WEBSITE -z"-Xmx3072m"
+```
+
+Here, DAST is being allocated 3072 MB.
+Change the number after `-Xmx` to the required memory amount.

@@ -597,4 +597,17 @@ describe('Multi-file store utils', () => {
       });
     });
   });
+
+  describe('addFinalNewlineIfNeeded', () => {
+    it('adds a newline if it doesnt already exist', () => {
+      [
+        { input: 'some text', output: 'some text\n' },
+        { input: 'some text\n', output: 'some text\n' },
+        { input: 'some text\n\n', output: 'some text\n\n' },
+        { input: 'some\n text', output: 'some\n text\n' },
+      ].forEach(({ input, output }) => {
+        expect(utils.addFinalNewlineIfNeeded(input)).toEqual(output);
+      });
+    });
+  });
 });

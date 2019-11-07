@@ -7,7 +7,7 @@ module Gitlab
         image_name =
           if appearance.favicon.exists?
             appearance.favicon_path
-          elsif Gitlab::Utils.to_boolean(ENV['CANARY'])
+          elsif Gitlab.canary?
             'favicon-yellow.png'
           elsif Rails.env.development?
             development_favicon
