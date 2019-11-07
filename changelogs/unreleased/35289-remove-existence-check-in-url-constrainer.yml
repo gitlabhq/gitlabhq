@@ -1,0 +1,5 @@
+---
+title: Fix JSON responses returning 302 instead of 401
+merge_request: 19412
+author:
+type: fixed

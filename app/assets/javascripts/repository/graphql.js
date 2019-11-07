@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { IntrospectionFragmentMatcher } from 'apollo-cache-inmemory';
+import axios from '~/lib/utils/axios_utils';
 import createDefaultClient from '~/lib/graphql';
 import introspectionQueryResultData from './fragmentTypes.json';
 import { fetchLogsTree } from './log_tree';
@@ -26,6 +27,11 @@ const defaultClient = createDefaultClient(
             },
           });
         });
+      },
+      readme(_, { url }) {
+        return axios
+          .get(url, { params: { viewer: 'rich', format: 'json' } })
+          .then(({ data }) => ({ ...data, __typename: 'ReadmeFile' }));
       },
     },
   },

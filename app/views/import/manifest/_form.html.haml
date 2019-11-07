@@ -13,7 +13,7 @@
   .form-group
     = label_tag :manifest, class: 'label-bold' do
       = _('Manifest')
-    = file_field_tag :manifest, class: 'form-control-file', required: true
+    = file_field_tag :manifest, class: 'form-control-file w-auto', required: true
     .form-text.text-muted
       = _('Import multiple repositories by uploading a manifest file.')
       = link_to icon('question-circle'), help_page_path('user/project/import/manifest')

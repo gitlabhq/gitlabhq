@@ -90,18 +90,16 @@ describe ApplicationController do
       let(:format) { :html }
 
       it_behaves_like 'setting gon variables'
-
-      context 'for peek requests' do
-        before do
-          request.path = '/-/peek'
-        end
-
-        it_behaves_like 'not setting gon variables'
-      end
     end
 
     context 'with json format' do
       let(:format) { :json }
+
+      it_behaves_like 'not setting gon variables'
+    end
+
+    context 'with atom format' do
+      let(:format) { :atom }
 
       it_behaves_like 'not setting gon variables'
     end
@@ -186,7 +184,7 @@ describe ApplicationController do
       expect(response).to have_gitlab_http_status(404)
     end
 
-    it 'redirects to login page if not authenticated' do
+    it 'redirects to login page via authenticate_user! if not authenticated' do
       get :index
 
       expect(response).to redirect_to new_user_session_path

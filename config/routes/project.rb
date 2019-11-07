@@ -245,12 +245,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             post :validate_query, on: :collection
           end
         end
-
-        Gitlab.ee do
-          resources :alerts, constraints: { id: /\d+/ }, only: [:index, :create, :show, :update, :destroy] do
-            post :notify, on: :collection
-          end
-        end
       end
 
       resources :merge_requests, concerns: :awardable, except: [:new, :create, :show], constraints: { id: /\d+/ } do
@@ -353,17 +347,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
-      Gitlab.ee do
-        resources :path_locks, only: [:index, :destroy] do
-          collection do
-            post :toggle
-          end
-        end
-
-        get '/service_desk' => 'service_desk#show', as: :service_desk
-        put '/service_desk' => 'service_desk#update', as: :service_desk_refresh
-      end
-
       resource :variables, only: [:show, :update]
 
       resources :triggers, only: [:index, :create, :edit, :update, :destroy]
@@ -397,11 +380,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get :failures
           get :status
           get :test_report
-
-          Gitlab.ee do
-            get :security
-            get :licenses
-          end
         end
 
         member do
@@ -536,24 +514,11 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get :realtime_changes
           post :create_merge_request
           get :discussions, format: :json
-
-          Gitlab.ee do
-            get 'designs(/*vueroute)', to: 'issues#designs', as: :designs, format: false
-          end
         end
 
         collection do
           post :bulk_update
           post :import_csv
-
-          Gitlab.ee do
-            post :export_csv
-            get :service_desk
-          end
-        end
-
-        Gitlab.ee do
-          resources :issue_links, only: [:index, :create, :destroy], as: 'links', path: 'links'
         end
       end
 
@@ -629,6 +594,15 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       Gitlab.ee do
         resources :managed_licenses, only: [:index, :show, :new, :create, :edit, :update, :destroy]
       end
+
+      # Legacy routes.
+      # Introduced in 12.0.
+      # Should be removed after 12.1
+      Gitlab::Routing.redirect_legacy_paths(self, :settings, :branches, :tags,
+                                            :network, :graphs, :autocomplete_sources,
+                                            :project_members, :deploy_keys, :deploy_tokens,
+                                            :labels, :milestones, :services, :boards, :releases,
+                                            :forks, :group_links, :import, :avatar)
     end
 
     resources(:projects,
@@ -651,24 +625,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         get :refs
         put :new_issuable_address
       end
-    end
-  end
-
-  # Legacy routes.
-  # Introduced in 12.0.
-  # Should be removed after 12.1
-  scope(path: '*namespace_id',
-        as: :namespace,
-        namespace_id: Gitlab::PathRegex.full_namespace_route_regex) do
-    scope(path: ':project_id',
-          constraints: { project_id: Gitlab::PathRegex.project_route_regex },
-          module: :projects,
-          as: :project) do
-      Gitlab::Routing.redirect_legacy_paths(self, :settings, :branches, :tags,
-                                            :network, :graphs, :autocomplete_sources,
-                                            :project_members, :deploy_keys, :deploy_tokens,
-                                            :labels, :milestones, :services, :boards, :releases,
-                                            :forks, :group_links, :import, :avatar)
     end
   end
 end

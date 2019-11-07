@@ -1,18 +1,13 @@
 <script>
-import FileTable from '../components/table/index.vue';
+import TreeContent from '../components/tree_content.vue';
 
 export default {
   components: {
-    FileTable,
-  },
-  data() {
-    return {
-      ref: '',
-    };
+    TreeContent,
   },
 };
 </script>
 
 <template>
-  <file-table path="/" />
+  <tree-content />
 </template>
