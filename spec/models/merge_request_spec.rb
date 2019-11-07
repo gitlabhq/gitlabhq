@@ -283,6 +283,16 @@ describe MergeRequest do
     end
   end
 
+  describe '.by_merge_commit_sha' do
+    it 'returns merge requests that match the given merge commit' do
+      mr = create(:merge_request, :merged, merge_commit_sha: '123abc')
+
+      create(:merge_request, :merged, merge_commit_sha: '123def')
+
+      expect(described_class.by_merge_commit_sha('123abc')).to eq([mr])
+    end
+  end
+
   describe '.in_projects' do
     it 'returns the merge requests for a set of projects' do
       expect(described_class.in_projects(Project.all)).to eq([subject])

@@ -137,14 +137,42 @@ describe API::Deployments do
 
         expect(response).to have_gitlab_http_status(500)
       end
+
+      it 'links any merged merge requests to the deployment' do
+        mr = create(
+          :merge_request,
+          :merged,
+          target_project: project,
+          source_project: project,
+          target_branch: 'master',
+          source_branch: 'foo'
+        )
+
+        post(
+          api("/projects/#{project.id}/deployments", user),
+          params: {
+            environment: 'production',
+            sha: sha,
+            ref: 'master',
+            tag: false,
+            status: 'success'
+          }
+        )
+
+        deploy = project.deployments.last
+
+        expect(deploy.merge_requests).to eq([mr])
+      end
     end
 
     context 'as a developer' do
-      it 'creates a new deployment' do
-        developer = create(:user)
+      let(:developer) { create(:user) }
 
+      before do
         project.add_developer(developer)
+      end
 
+      it 'creates a new deployment' do
         post(
           api("/projects/#{project.id}/deployments", developer),
           params: {
@@ -160,6 +188,32 @@ describe API::Deployments do
 
         expect(json_response['sha']).to eq(sha)
         expect(json_response['ref']).to eq('master')
+      end
+
+      it 'links any merged merge requests to the deployment' do
+        mr = create(
+          :merge_request,
+          :merged,
+          target_project: project,
+          source_project: project,
+          target_branch: 'master',
+          source_branch: 'foo'
+        )
+
+        post(
+          api("/projects/#{project.id}/deployments", developer),
+          params: {
+            environment: 'production',
+            sha: sha,
+            ref: 'master',
+            tag: false,
+            status: 'success'
+          }
+        )
+
+        deploy = project.deployments.last
+
+        expect(deploy.merge_requests).to eq([mr])
       end
     end
 
@@ -182,7 +236,7 @@ describe API::Deployments do
   end
 
   describe 'PUT /projects/:id/deployments/:deployment_id' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:build) { create(:ci_build, :failed, project: project) }
     let(:environment) { create(:environment, project: project) }
     let(:deploy) do
@@ -191,7 +245,8 @@ describe API::Deployments do
         :failed,
         project: project,
         environment: environment,
-        deployable: nil
+        deployable: nil,
+        sha: project.commit.sha
       )
     end
 
@@ -215,6 +270,26 @@ describe API::Deployments do
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['status']).to eq('success')
+      end
+
+      it 'links merge requests when the deployment status changes to success', :sidekiq_inline do
+        mr = create(
+          :merge_request,
+          :merged,
+          target_project: project,
+          source_project: project,
+          target_branch: 'master',
+          source_branch: 'foo'
+        )
+
+        put(
+          api("/projects/#{project.id}/deployments/#{deploy.id}", user),
+          params: { status: 'success' }
+        )
+
+        deploy = project.deployments.last
+
+        expect(deploy.merge_requests).to eq([mr])
       end
     end
 

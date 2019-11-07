@@ -1257,6 +1257,13 @@ ActiveRecord::Schema.define(version: 2019_11_05_094625) do
     t.index ["token_encrypted"], name: "index_deploy_tokens_on_token_encrypted", unique: true
   end
 
+  create_table "deployment_merge_requests", id: false, force: :cascade do |t|
+    t.integer "deployment_id", null: false
+    t.integer "merge_request_id", null: false
+    t.index ["deployment_id", "merge_request_id"], name: "idx_deployment_merge_requests_unique_index", unique: true
+    t.index ["merge_request_id"], name: "index_deployment_merge_requests_on_merge_request_id"
+  end
+
   create_table "deployments", id: :serial, force: :cascade do |t|
     t.integer "iid", null: false
     t.integer "project_id", null: false
@@ -4191,6 +4198,8 @@ ActiveRecord::Schema.define(version: 2019_11_05_094625) do
   add_foreign_key "dependency_proxy_blobs", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "dependency_proxy_group_settings", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "deploy_keys_projects", "projects", name: "fk_58a901ca7e", on_delete: :cascade
+  add_foreign_key "deployment_merge_requests", "deployments", on_delete: :cascade
+  add_foreign_key "deployment_merge_requests", "merge_requests", on_delete: :cascade
   add_foreign_key "deployments", "clusters", name: "fk_289bba3222", on_delete: :nullify
   add_foreign_key "deployments", "projects", name: "fk_b9a3851b82", on_delete: :cascade
   add_foreign_key "description_versions", "epics", on_delete: :cascade

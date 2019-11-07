@@ -5,6 +5,7 @@ require 'spec_helper'
 describe Environment, :use_clean_rails_memory_store_caching do
   include ReactiveCachingHelpers
   using RSpec::Parameterized::TableSyntax
+  include RepoHelpers
 
   let(:project) { create(:project, :stubbed_repository) }
   subject(:environment) { create(:environment, project: project) }
@@ -505,6 +506,14 @@ describe Environment, :use_clean_rails_memory_store_caching do
         end
       end
 
+      context 'when there is a deployment record with failed status' do
+        let!(:deployment) { create(:deployment, :failed, environment: environment) }
+
+        it 'returns the previous deployment' do
+          is_expected.to eq(previous_deployment)
+        end
+      end
+
       context 'when there is a deployment record with success status' do
         let!(:deployment) { create(:deployment, :success, environment: environment) }
 
@@ -553,6 +562,89 @@ describe Environment, :use_clean_rails_memory_store_caching do
         let!(:deployment) { create(:deployment, :canceled, environment: environment) }
 
         it { is_expected.to eq(deployment) }
+      end
+    end
+  end
+
+  describe '#last_visible_pipeline' do
+    let(:user) { create(:user) }
+    let_it_be(:project) { create(:project, :repository) }
+    let(:environment) { create(:environment, project: project) }
+    let(:commit) { project.commit }
+
+    let(:success_pipeline) do
+      create(:ci_pipeline, :success, project: project, user: user, sha: commit.sha)
+    end
+
+    let(:failed_pipeline) do
+      create(:ci_pipeline, :failed, project: project, user: user, sha: commit.sha)
+    end
+
+    it 'uses the last deployment even if it failed' do
+      pipeline = create(:ci_pipeline, project: project, user: user, sha: commit.sha)
+      ci_build = create(:ci_build, project: project, pipeline: pipeline)
+      create(:deployment, :failed, project: project, environment: environment, deployable: ci_build, sha: commit.sha)
+
+      last_pipeline = environment.last_visible_pipeline
+
+      expect(last_pipeline).to eq(pipeline)
+    end
+
+    it 'returns nil if there is no deployment' do
+      create(:ci_build, project: project, pipeline: success_pipeline)
+
+      expect(environment.last_visible_pipeline).to be_nil
+    end
+
+    it 'does not return an invisible pipeline' do
+      failed_pipeline = create(:ci_pipeline, project: project, user: user, sha: commit.sha)
+      ci_build_a = create(:ci_build, project: project, pipeline: failed_pipeline)
+      create(:deployment, :failed, project: project, environment: environment, deployable: ci_build_a, sha: commit.sha)
+      pipeline = create(:ci_pipeline, project: project, user: user, sha: commit.sha)
+      ci_build_b = create(:ci_build, project: project, pipeline: pipeline)
+      create(:deployment, :created, project: project, environment: environment, deployable: ci_build_b, sha: commit.sha)
+
+      last_pipeline = environment.last_visible_pipeline
+
+      expect(last_pipeline).to eq(failed_pipeline)
+    end
+
+    context 'for the environment' do
+      it 'returns the last pipeline' do
+        pipeline = create(:ci_pipeline, project: project, user: user, sha: commit.sha)
+        ci_build = create(:ci_build, project: project, pipeline: pipeline)
+        create(:deployment, :success, project: project, environment: environment, deployable: ci_build, sha: commit.sha)
+
+        last_pipeline = environment.last_visible_pipeline
+
+        expect(last_pipeline).to eq(pipeline)
+      end
+
+      context 'with multiple deployments' do
+        it 'returns the last pipeline' do
+          pipeline_a = create(:ci_pipeline, project: project, user: user)
+          pipeline_b = create(:ci_pipeline, project: project, user: user)
+          ci_build_a = create(:ci_build, project: project, pipeline: pipeline_a)
+          ci_build_b = create(:ci_build, project: project, pipeline: pipeline_b)
+          create(:deployment, :success, project: project, environment: environment, deployable: ci_build_a)
+          create(:deployment, :success, project: project, environment: environment, deployable: ci_build_b)
+
+          last_pipeline = environment.last_visible_pipeline
+
+          expect(last_pipeline).to eq(pipeline_b)
+        end
+      end
+
+      context 'with multiple pipelines' do
+        it 'returns the last pipeline' do
+          create(:ci_build, project: project, pipeline: success_pipeline)
+          ci_build_b = create(:ci_build, project: project, pipeline: failed_pipeline)
+          create(:deployment, :failed, project: project, environment: environment, deployable: ci_build_b, sha: commit.sha)
+
+          last_pipeline = environment.last_visible_pipeline
+
+          expect(last_pipeline).to eq(failed_pipeline)
+        end
       end
     end
   end
