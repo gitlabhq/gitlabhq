@@ -74,7 +74,7 @@ shared_examples_for 'rate-limited token-authenticated requests' do
         expect(response).to have_http_status 200
       end
 
-      expect_any_instance_of(Rack::Attack::Request).to receive(:ip).and_return('1.2.3.4')
+      expect_any_instance_of(Rack::Attack::Request).to receive(:ip).at_least(:once).and_return('1.2.3.4')
 
       expect_rejection { get(*get_args) }
     end
@@ -194,7 +194,7 @@ shared_examples_for 'rate-limited web authenticated requests' do
         expect(response).to have_http_status 200
       end
 
-      expect_any_instance_of(Rack::Attack::Request).to receive(:ip).and_return('1.2.3.4')
+      expect_any_instance_of(Rack::Attack::Request).to receive(:ip).at_least(:once).and_return('1.2.3.4')
 
       expect_rejection { get url_that_requires_authentication }
     end

@@ -83,7 +83,7 @@ describe 'Rack Attack global throttles' do
           expect(response).to have_http_status 200
         end
 
-        expect_any_instance_of(Rack::Attack::Request).to receive(:ip).and_return('1.2.3.4')
+        expect_any_instance_of(Rack::Attack::Request).to receive(:ip).at_least(:once).and_return('1.2.3.4')
 
         # would be over limit for the same IP
         get url_that_does_not_require_authentication

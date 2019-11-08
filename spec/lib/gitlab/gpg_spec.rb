@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Gitlab::Gpg do
@@ -63,7 +65,7 @@ describe Gitlab::Gpg do
     it 'downcases the email' do
       public_key = double(:key)
       fingerprints = double(:fingerprints)
-      uid = double(:uid, name: 'Nannie Bernhard', email: 'NANNIE.BERNHARD@EXAMPLE.COM')
+      uid = double(:uid, name: +'Nannie Bernhard', email: +'NANNIE.BERNHARD@EXAMPLE.COM')
       raw_key = double(:raw_key, uids: [uid])
       allow(Gitlab::Gpg::CurrentKeyChain).to receive(:fingerprints_from_key).with(public_key).and_return(fingerprints)
       allow(GPGME::Key).to receive(:find).with(:public, anything).and_return([raw_key])
@@ -78,8 +80,8 @@ describe Gitlab::Gpg do
     it 'rejects non UTF-8 names and addresses' do
       public_key = double(:key)
       fingerprints = double(:fingerprints)
-      email = "\xEEch@test.com".force_encoding('ASCII-8BIT')
-      uid = double(:uid, name: 'Test User', email: email)
+      email = (+"\xEEch@test.com").force_encoding('ASCII-8BIT')
+      uid = double(:uid, name: +'Test User', email: email)
       raw_key = double(:raw_key, uids: [uid])
       allow(Gitlab::Gpg::CurrentKeyChain).to receive(:fingerprints_from_key).with(public_key).and_return(fingerprints)
       allow(GPGME::Key).to receive(:find).with(:public, anything).and_return([raw_key])

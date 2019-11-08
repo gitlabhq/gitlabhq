@@ -119,6 +119,8 @@ GitLab supports:
 - Creating a new GKE cluster using the GitLab UI.
 - Providing credentials to add an [existing Kubernetes cluster](#add-existing-cluster).
 
+Starting from [GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/issues/25925), all the GKE clusters provisioned by GitLab are [VPC-Native](https://cloud.google.com/kubernetes-engine/docs/how-to/alias-ips).
+
 NOTE: **Note:**
 The [Google authentication integration](../../../integration/google.md) must
 be enabled in GitLab at the instance level. If that's not the case, ask your
