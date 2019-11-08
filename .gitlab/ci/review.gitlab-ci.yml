@@ -117,7 +117,6 @@ schedule:review-build-cng:
     - source scripts/utils.sh
     - install_api_client_dependencies_with_apk
     - source scripts/review_apps/review-apps.sh
-    - export REVIEW_APP_CONFIG_CHANGED=$(base_config_changed)
   script:
     - check_kube_domain
     - ensure_namespace

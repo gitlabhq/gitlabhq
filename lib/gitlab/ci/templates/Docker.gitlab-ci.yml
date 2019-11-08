@@ -10,7 +10,8 @@ docker-build-master:
     - docker build --pull -t "$CI_REGISTRY_IMAGE" .
     - docker push "$CI_REGISTRY_IMAGE"
   only:
-    - master
+    variables:
+      - $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
 
 docker-build:
   # Official docker image.
@@ -24,4 +25,5 @@ docker-build:
     - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" .
     - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
   except:
-    - master
+    variables:
+      - $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME

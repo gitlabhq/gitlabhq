@@ -1293,7 +1293,7 @@ module Gitlab
         end
       end
 
-      describe "Needs" do
+      describe "Job Needs" do
         let(:needs) { }
         let(:dependencies) { }
 
@@ -1301,6 +1301,7 @@ module Gitlab
           {
             build1: { stage: 'build', script: 'test' },
             build2: { stage: 'build', script: 'test' },
+            parallel: { stage: 'build', script: 'test', parallel: 2 },
             test1: { stage: 'test', script: 'test', needs: needs, dependencies: dependencies },
             test2: { stage: 'test', script: 'test' },
             deploy: { stage: 'test', script: 'test' }
@@ -1317,7 +1318,7 @@ module Gitlab
           let(:needs) { %w(build1 build2) }
 
           it "does create jobs with valid specification" do
-            expect(subject.builds.size).to eq(5)
+            expect(subject.builds.size).to eq(7)
             expect(subject.builds[0]).to eq(
               stage: "build",
               stage_idx: 1,
@@ -1329,16 +1330,11 @@ module Gitlab
               allow_failure: false,
               yaml_variables: []
             )
-            expect(subject.builds[2]).to eq(
+            expect(subject.builds[4]).to eq(
               stage: "test",
               stage_idx: 2,
               name: "test1",
-              options: {
-                script: ["test"],
-                # This does not make sense, there is a follow-up:
-                # https://gitlab.com/gitlab-org/gitlab-foss/issues/65569
-                bridge_needs: %w[build1 build2]
-              },
+              options: { script: ["test"] },
               needs_attributes: [
                 { name: "build1" },
                 { name: "build2" }
@@ -1350,10 +1346,25 @@ module Gitlab
           end
         end
 
-        context 'needs two builds defined as symbols' do
-          let(:needs) { [:build1, :build2] }
+        context 'needs parallel job' do
+          let(:needs) { %w(parallel) }
 
-          it { expect { subject }.not_to raise_error }
+          it "does create jobs with valid specification" do
+            expect(subject.builds.size).to eq(7)
+            expect(subject.builds[4]).to eq(
+              stage: "test",
+              stage_idx: 2,
+              name: "test1",
+              options: { script: ["test"] },
+              needs_attributes: [
+                { name: "parallel 1/2" },
+                { name: "parallel 2/2" }
+              ],
+              when: "on_success",
+              allow_failure: false,
+              yaml_variables: []
+            )
+          end
         end
 
         context 'undefined need' do

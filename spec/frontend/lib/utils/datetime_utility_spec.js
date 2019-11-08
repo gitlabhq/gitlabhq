@@ -474,3 +474,11 @@ describe('getDatesInRange', () => {
     });
   });
 });
+
+describe('secondsToMilliseconds', () => {
+  it('converts seconds to milliseconds correctly', () => {
+    expect(datetimeUtility.secondsToMilliseconds(0)).toBe(0);
+    expect(datetimeUtility.secondsToMilliseconds(60)).toBe(60000);
+    expect(datetimeUtility.secondsToMilliseconds(123)).toBe(123000);
+  });
+});

@@ -541,7 +541,7 @@ export const stringifyTime = (timeObject, fullNameFormat = false) => {
  * The result cannot become negative.
  *
  * @param endDate date string that the time difference is calculated for
- * @return {number} number of milliseconds remaining until the given date
+ * @return {Number} number of milliseconds remaining until the given date
  */
 export const calculateRemainingMilliseconds = endDate => {
   const remainingMilliseconds = new Date(endDate).getTime() - Date.now();
@@ -552,7 +552,7 @@ export const calculateRemainingMilliseconds = endDate => {
  * Subtracts a given number of days from a given date and returns the new date.
  *
  * @param {Date} date the date that we will substract days from
- * @param {number} daysInPast number of days that are subtracted from a given date
+ * @param {Number} daysInPast number of days that are subtracted from a given date
  * @returns {Date} Date in past as Date object
  */
 export const getDateInPast = (date, daysInPast) =>
@@ -594,3 +594,11 @@ export const getDatesInRange = (d1, d2, formatter = x => x) => {
 
   return range.map(formatter);
 };
+
+/**
+ * Converts the supplied number of seconds to milliseconds.
+ *
+ * @param {Number} seconds
+ * @return {Number} number of milliseconds
+ */
+export const secondsToMilliseconds = seconds => seconds * 1000;

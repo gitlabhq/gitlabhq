@@ -25,4 +25,5 @@ build:
     - find . -maxdepth 1 -name '*.json' -print0 | xargs -t0n1 packer build
   when: manual
   only:
-    - master
+    variables:
+      - $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME

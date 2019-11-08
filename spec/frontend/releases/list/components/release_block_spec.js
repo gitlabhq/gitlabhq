@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 import ReleaseBlock from '~/releases/list/components/release_block.vue';
+import ReleaseBlockFooter from '~/releases/list/components/release_block_footer.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { first } from 'underscore';
 import { release } from '../../mock_data';
@@ -21,14 +22,16 @@ describe('Release block', () => {
   let wrapper;
   let releaseClone;
 
-  const factory = (releaseProp, releaseEditPageFeatureFlag = true) => {
+  const factory = (releaseProp, featureFlags = {}) => {
     wrapper = mount(ReleaseBlock, {
       propsData: {
         release: releaseProp,
       },
       provide: {
         glFeatures: {
-          releaseEditPage: releaseEditPageFeatureFlag,
+          releaseEditPage: true,
+          releaseIssueSummary: true,
+          ...featureFlags,
         },
       },
       sync: false,
@@ -142,6 +145,10 @@ describe('Release block', () => {
 
       expect(milestoneLink.attributes('data-original-title')).toBe(milestone.description);
     });
+
+    it('renders the footer', () => {
+      expect(wrapper.find(ReleaseBlockFooter).exists()).toBe(true);
+    });
   });
 
   it('renders commit sha', () => {
@@ -173,7 +180,7 @@ describe('Release block', () => {
   });
 
   it('does not render an edit button if the releaseEditPage feature flag is disabled', () =>
-    factory(releaseClone, false).then(() => {
+    factory(releaseClone, { releaseEditPage: false }).then(() => {
       expect(editButton().exists()).toBe(false);
     }));
 

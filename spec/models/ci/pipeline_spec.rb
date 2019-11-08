@@ -2893,6 +2893,25 @@ describe Ci::Pipeline, :mailer do
 
       it 'contains yaml errors' do
         expect(pipeline).to have_yaml_errors
+        expect(pipeline.yaml_errors).to include('contains unknown keys')
+      end
+    end
+
+    context 'when pipeline has undefined error' do
+      let(:pipeline) do
+        create(:ci_pipeline, config: {})
+      end
+
+      it 'contains yaml errors' do
+        expect(::Gitlab::Ci::YamlProcessor).to receive(:new)
+          .and_raise(RuntimeError, 'undefined failure')
+
+        expect(Gitlab::Sentry).to receive(:track_acceptable_exception)
+          .with(be_a(RuntimeError), anything)
+          .and_call_original
+
+        expect(pipeline).to have_yaml_errors
+        expect(pipeline.yaml_errors).to include('Undefined error')
       end
     end
 

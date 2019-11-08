@@ -207,19 +207,16 @@ function download_chart() {
 }
 
 function base_config_changed() {
-  git fetch origin master --depth=50
+  if [ -z "${CI_MERGE_REQUEST_IID}" ]; then return; fi
 
-  [ -n "$(git diff origin/master... --name-only -- scripts/review_apps/base-config.yaml)" ]
+  curl "${CI_API_V4_URL}/projects/${CI_MERGE_REQUEST_PROJECT_ID}/merge_requests/${CI_MERGE_REQUEST_IID}/changes" | jq '.changes | any(.old_path == "scripts/review_apps/base-config.yaml")'
 }
 
 function deploy() {
   local name="$CI_ENVIRONMENT_SLUG"
   local edition="${GITLAB_EDITION-ce}"
   local base_config_file_ref="master"
-  echo "REVIEW_APP_CONFIG_CHANGED: ${REVIEW_APP_CONFIG_CHANGED}"
-  if [ -n "${REVIEW_APP_CONFIG_CHANGED}" ]; then
-    base_config_file_ref="$CI_COMMIT_SHA"
-  fi
+  if [[ "$(base_config_changed)" == "true" ]]; then base_config_file_ref="$CI_COMMIT_SHA"; fi
   local base_config_file="https://gitlab.com/gitlab-org/gitlab/raw/${base_config_file_ref}/scripts/review_apps/base-config.yaml"
 
   echoinfo "Deploying ${name}..." true

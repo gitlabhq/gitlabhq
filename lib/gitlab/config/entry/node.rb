@@ -112,6 +112,10 @@ module Gitlab
           @aspects ||= []
         end
 
+        def self.with_aspect(blk)
+          self.aspects.append(blk)
+        end
+
         private
 
         attr_reader :entries

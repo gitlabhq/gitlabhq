@@ -24,9 +24,8 @@ review:
       - tags
     kubernetes: active
   except:
-    refs:
-      - master
     variables:
+      - $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
       - $REVIEW_DISABLED
 
 stop_review:
@@ -48,9 +47,8 @@ stop_review:
       - tags
     kubernetes: active
   except:
-    refs:
-      - master
     variables:
+      - $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
       - $REVIEW_DISABLED
 
 # Staging deploys are disabled by default since
@@ -73,10 +71,9 @@ staging:
     name: staging
     url: http://$CI_PROJECT_PATH_SLUG-staging.$KUBE_INGRESS_BASE_DOMAIN
   only:
-    refs:
-      - master
     kubernetes: active
     variables:
+      - $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
       - $STAGING_ENABLED
 
 # Canaries are disabled by default, but if you want them,
@@ -98,10 +95,9 @@ canary:
     url: http://$CI_PROJECT_PATH_SLUG.$KUBE_INGRESS_BASE_DOMAIN
   when: manual
   only:
-    refs:
-      - master
     kubernetes: active
     variables:
+      - $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
       - $CANARY_ENABLED
 
 .production: &production_template
@@ -126,9 +122,9 @@ canary:
 production:
   <<: *production_template
   only:
-    refs:
-      - master
     kubernetes: active
+    variables:
+      - $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
   except:
     variables:
       - $STAGING_ENABLED
@@ -141,10 +137,9 @@ production_manual:
   when: manual
   allow_failure: false
   only:
-    refs:
-      - master
     kubernetes: active
     variables:
+      - $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
       - $STAGING_ENABLED
       - $CANARY_ENABLED
   except:
@@ -152,7 +147,7 @@ production_manual:
       - $INCREMENTAL_ROLLOUT_ENABLED
       - $INCREMENTAL_ROLLOUT_MODE
 
-# This job implements incremental rollout on for every push to `master`.
+# This job implements incremental rollout for every push to the default branch.
 
 .rollout: &rollout_template
   extends: .auto-deploy
@@ -178,10 +173,9 @@ production_manual:
   when: manual
   # This selectors are backward compatible mode with $INCREMENTAL_ROLLOUT_ENABLED (before 11.4)
   only:
-    refs:
-      - master
     kubernetes: active
     variables:
+      - $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
       - $INCREMENTAL_ROLLOUT_MODE == "manual"
       - $INCREMENTAL_ROLLOUT_ENABLED
   except:
@@ -193,10 +187,9 @@ production_manual:
   when: delayed
   start_in: 5 minutes
   only:
-    refs:
-      - master
     kubernetes: active
     variables:
+      - $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
       - $INCREMENTAL_ROLLOUT_MODE == "timed"
 
 timed rollout 10%:

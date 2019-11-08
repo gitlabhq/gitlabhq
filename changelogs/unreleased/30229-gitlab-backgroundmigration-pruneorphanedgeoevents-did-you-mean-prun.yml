@@ -1,0 +1,5 @@
+---
+title: "[Geo] Fix: undefined Gitlab::BackgroundMigration::PruneOrphanedGeoEvents"
+merge_request: 19638
+author:
+type: fixed

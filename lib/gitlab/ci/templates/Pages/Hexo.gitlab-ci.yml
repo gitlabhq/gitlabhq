@@ -14,4 +14,5 @@ pages:
       - node_modules
     key: project
   only:
-    - master
+    variables:
+      - $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME

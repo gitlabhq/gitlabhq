@@ -10,6 +10,7 @@ import { slugify } from '~/lib/utils/text_utility';
 import { getLocationHash } from '~/lib/utils/url_utility';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import ReleaseBlockFooter from './release_block_footer.vue';
 
 export default {
   name: 'ReleaseBlock',
@@ -19,6 +20,7 @@ export default {
     GlButton,
     Icon,
     UserAvatarLink,
+    ReleaseBlockFooter,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -78,6 +80,9 @@ export default {
       return Boolean(
         this.glFeatures.releaseEditPage && this.release._links && this.release._links.edit_url,
       );
+    },
+    shouldShowFooter() {
+      return this.glFeatures.releaseIssueSummary;
     },
   },
   mounted() {
@@ -164,7 +169,7 @@ export default {
           by
           <user-avatar-link
             class="prepend-left-4"
-            :link-href="author.path"
+            :link-href="author.web_url"
             :img-src="author.avatar_url"
             :img-alt="userImageAltDescription"
             :tooltip-text="author.username"
@@ -216,5 +221,16 @@ export default {
         <div v-html="release.description_html"></div>
       </div>
     </div>
+
+    <release-block-footer
+      v-if="shouldShowFooter"
+      class="card-footer"
+      :commit="release.commit"
+      :commit-path="release.commit_path"
+      :tag-name="release.tag_name"
+      :tag-path="release.tag_path"
+      :author="release.author"
+      :released-at="release.released_at"
+    />
   </div>
 </template>

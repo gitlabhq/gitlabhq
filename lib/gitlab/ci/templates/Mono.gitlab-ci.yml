@@ -25,7 +25,8 @@ before_script:
 release:
   stage: deploy
   only:
-    - master
+    variables:
+      - $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
   artifacts:
     paths:
       - build/release/MyProject.exe

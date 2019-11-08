@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlLink, GlProgressBar } from '@gitlab/ui';
 import { __ } from '~/locale';
-import { formatTime } from '~/lib/utils/datetime_utility';
+import { formatTime, secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
@@ -31,7 +31,7 @@ export default {
       return Math.round((this.report.success_count / this.report.total_count) * 100) || 0;
     },
     formattedDuration() {
-      return formatTime(this.report.total_time * 1000);
+      return formatTime(secondsToMilliseconds(this.report.total_time));
     },
     progressBarVariant() {
       if (this.successPercentage < 33) {

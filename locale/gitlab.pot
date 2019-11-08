@@ -4958,6 +4958,9 @@ msgstr ""
 msgid "CurrentUser|Settings"
 msgstr ""
 
+msgid "CurrentUser|Start a trial"
+msgstr ""
+
 msgid "Custom CI configuration path"
 msgstr ""
 
@@ -9676,7 +9679,7 @@ msgstr ""
 msgid "Kubernetes cluster creation time exceeds timeout; %{timeout}"
 msgstr ""
 
-msgid "Kubernetes cluster integration was not removed."
+msgid "Kubernetes cluster integration and resources are being removed."
 msgstr ""
 
 msgid "Kubernetes cluster integration was successfully removed."
@@ -11285,7 +11288,7 @@ msgstr ""
 msgid "No preview for this file type"
 msgstr ""
 
-msgid "No prioritised labels with such name or description"
+msgid "No prioritized labels with such name or description"
 msgstr ""
 
 msgid "No public groups"

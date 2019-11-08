@@ -29,22 +29,24 @@ module Gitlab
         def compose!(deps = nil)
           return unless valid?
 
-          self.class.nodes.each do |key, factory|
-            # If we override the config type validation
-            # we can end with different config types like String
-            next unless config.is_a?(Hash)
+          super do
+            self.class.nodes.each do |key, factory|
+              # If we override the config type validation
+              # we can end with different config types like String
+              next unless config.is_a?(Hash)
 
-            factory
-              .value(config[key])
-              .with(key: key, parent: self)
+              factory
+                .value(config[key])
+                .with(key: key, parent: self)
 
-            entries[key] = factory.create!
-          end
+              entries[key] = factory.create!
+            end
 
-          yield if block_given?
+            yield if block_given?
 
-          entries.each_value do |entry|
-            entry.compose!(deps)
+            entries.each_value do |entry|
+              entry.compose!(deps)
+            end
           end
         end
         # rubocop: enable CodeReuse/ActiveRecord
@@ -67,12 +69,13 @@ module Gitlab
           private
 
           # rubocop: disable CodeReuse/ActiveRecord
-          def entry(key, entry, description: nil, default: nil, inherit: nil, reserved: nil)
+          def entry(key, entry, description: nil, default: nil, inherit: nil, reserved: nil, metadata: {})
             factory = ::Gitlab::Config::Entry::Factory.new(entry)
               .with(description: description)
               .with(default: default)
               .with(inherit: inherit)
               .with(reserved: reserved)
+              .metadata(metadata)
 
             (@nodes ||= {}).merge!(key.to_sym => factory)
           end

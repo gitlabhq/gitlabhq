@@ -1,7 +1,6 @@
 import dateformat from 'dateformat';
 import { secondsIn, dateTimePickerRegex, dateFormats } from './constants';
-
-const secondsToMilliseconds = seconds => seconds * 1000;
+import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 
 export const getTimeDiff = timeWindow => {
   const end = Math.floor(Date.now() / 1000); // convert milliseconds to seconds

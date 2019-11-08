@@ -607,8 +607,14 @@ module Ci
       rescue Gitlab::Ci::YamlProcessor::ValidationError => e
         self.yaml_errors = e.message
         nil
-      rescue
-        self.yaml_errors = 'Undefined error'
+      rescue => ex
+        self.yaml_errors = "Undefined error (#{Labkit::Correlation::CorrelationId.current_id})"
+
+        Gitlab::Sentry.track_acceptable_exception(ex, extra: {
+          project_id: project.id,
+          sha: sha,
+          ci_yaml_file: ci_yaml_file_path
+        })
         nil
       end
     end
