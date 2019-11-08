@@ -2,46 +2,70 @@
 comments: false
 ---
 
-# GitLab Integration
+# GitLab integrations
 
-GitLab integrates with multiple third-party services to allow external issue
-trackers and external authentication.
+GitLab can be integrated with external services for enhanced functionality.
 
-See the documentation below for details on how to configure these services.
+## Issue trackers
 
-- [Akismet](akismet.md) Configure Akismet to stop spam
-- [Auth0 OmniAuth](auth0.md) Enable the Auth0 OmniAuth provider
-- [Bitbucket](bitbucket.md) Import projects from Bitbucket.org and login to your GitLab instance with your Bitbucket.org account
-- [CAS](cas.md) Configure GitLab to sign in using CAS
-- [External issue tracker](external-issue-tracker.md) Redmine, Jira, etc.
-- [Gmail actions buttons](gmail_action_buttons_for_gitlab.md) Adds GitLab actions to messages
-- [Jenkins](jenkins.md) Integrate with the Jenkins CI
-- [Jira](../user/project/integrations/jira.md) Integrate with the Jira issue tracker
-- [Kerberos](kerberos.md) Integrate with Kerberos
-- [LDAP](ldap.md) Set up sign in via LDAP
-- [OAuth2 provider](oauth_provider.md) OAuth2 application creation
-- [OmniAuth](omniauth.md) Sign in via Twitter, GitHub, GitLab.com, Google, Bitbucket, Facebook, Shibboleth, SAML, Crowd, Azure and Authentiq ID
-- [OpenID Connect](openid_connect_provider.md) Use GitLab as an identity provider
-- [PlantUML](../administration/integration/plantuml.md) Configure PlantUML to use diagrams in AsciiDoc documents.
-- [reCAPTCHA](recaptcha.md) Configure GitLab to use Google reCAPTCHA for new users
-- [SAML](saml.md) Configure GitLab as a SAML 2.0 Service Provider
-- [Sentry](../user/project/operations/error_tracking.md#sentry-error-tracking) Enable issue linking from Sentry and view Sentry crash reports in GitLab
-- [Trello](trello_power_up.md) Integrate Trello with GitLab
+You can use an [external issue tracker](external-issue-tracker.md) at the same time as the GitLab issue tracker, or use only the external issue tracker.
 
-> GitLab Enterprise Edition contains [advanced Jenkins support](jenkins.md).
+GitLab can be integrated with the following external issue trackers:
+
+- Jira
+- Redmine
+- Bugzilla
+- YouTrack
+
+## Authentication sources
+
+GitLab can be configured to authenticate access requests with the following authentication sources:
+
+- Enable the [Auth0 OmniAuth](auth0.md) provider.
+- Enable sign in with [Bitbucket](bitbucket.md) accounts.
+- Configure GitLab to sign in using [CAS](cas.md).
+- Integrate with [Kerberos](kerberos.md).
+- Enable sign in via [LDAP](ldap.md).
+- Enable [OAuth2 provider](oauth_provider.md) application creation.
+- Use [OmniAuth](omniauth.md) to enable sign in via Twitter, GitHub, GitLab.com, Google,
+Bitbucket, Facebook, Shibboleth, SAML, Crowd, Azure or Authentiq ID.
+- Use GitLab as an [OpenID Connect](openid_connect_provider.md) identity provider.
+- Configure GitLab as a [SAML](saml.md) 2.0 Service Provider.
+
+## Security enhancements
+
+GitLab can be integrated with the following external services to enhance security:
+
+- [Akismet](akismet.md) helps reduce spam.
+- Google [reCAPTCHA](recaptcha.md) helps verify new users.
+
+GitLab also provides features to improve the security of your own application. For more details see [GitLab Secure](../user/application_security/index.md).
+
+## Continuous integration
+
+GitLab can be integrated with the following external service for continuous integration:
+
+- [Jenkins](jenkins.md) CI. **(STARTER)**
+
+## Feature enhancements
+
+GitLab can be integrated with the following enhancements:
+
+- Add GitLab actions to [Gmail actions buttons](gmail_action_buttons_for_gitlab.md).
+- Configure [PlantUML](../administration/integration/plantuml.md) to use diagrams in AsciiDoc documents.
+- Attach merge requests to [Trello](trello_power_up.md) cards.
 
 ## Project services
 
-Integration with services such as Campfire, Flowdock, HipChat,
-Pivotal Tracker, and Slack are available in the form of a [Project Service][].
+Integration with services such as Campfire, Flowdock, HipChat, Pivotal Tracker, and Slack are available as [Project Services](../user/project/integrations/project_services.md).
 
-[Project Service]: ../user/project/integrations/project_services.md
+## Troubleshooting
 
-## SSL certificate errors
+### SSL certificate errors
 
-When trying to integrate GitLab with services that are using self-signed certificates,
-it is very likely that SSL certificate errors will occur on different parts of the
-application, most likely Sidekiq. There are 2 approaches you can take to solve this:
+When trying to integrate GitLab with services that are using self-signed certificates, it is very likely that SSL certificate errors will occur in different parts of the application, most likely Sidekiq.
+
+There are two approaches you can take to solve this:
 
 1. Add the root certificate to the trusted chain of the OS.
 1. If using Omnibus, you can add the certificate to GitLab's trusted certificates.
@@ -62,12 +86,12 @@ in to GitLab Omnibus.
 It is enough to concatenate the certificate to the main trusted certificate
 however it may be overwritten during upgrades:
 
-```bash
+```shell
 cat jira.pem >> /opt/gitlab/embedded/ssl/certs/cacert.pem
 ```
 
 After that restart GitLab with:
 
-```bash
+```shell
 sudo gitlab-ctl restart
 ```

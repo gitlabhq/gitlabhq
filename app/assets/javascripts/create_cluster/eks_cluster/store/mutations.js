@@ -31,4 +31,19 @@ export default {
   [types.SET_GITLAB_MANAGED_CLUSTER](state, { gitlabManagedCluster }) {
     state.gitlabManagedCluster = gitlabManagedCluster;
   },
+  [types.REQUEST_CREATE_ROLE](state) {
+    state.isCreatingRole = true;
+    state.createRoleError = null;
+    state.hasCredentials = false;
+  },
+  [types.CREATE_ROLE_SUCCESS](state) {
+    state.isCreatingRole = false;
+    state.createRoleError = null;
+    state.hasCredentials = true;
+  },
+  [types.CREATE_ROLE_ERROR](state, { error }) {
+    state.isCreatingRole = false;
+    state.createRoleError = error;
+    state.hasCredentials = false;
+  },
 };

@@ -345,6 +345,11 @@ ActiveRecord::Schema.define(version: 2019_11_05_094625) do
     t.boolean "pendo_enabled", default: false, null: false
     t.string "pendo_url", limit: 255
     t.integer "deletion_adjourned_period", default: 7, null: false
+    t.boolean "eks_integration_enabled", default: false, null: false
+    t.string "eks_account_id", limit: 128
+    t.string "eks_access_key_id", limit: 128
+    t.string "encrypted_eks_secret_access_key_iv", limit: 255
+    t.text "encrypted_eks_secret_access_key"
     t.index ["custom_project_templates_group_id"], name: "index_application_settings_on_custom_project_templates_group_id"
     t.index ["file_template_project_id"], name: "index_application_settings_on_file_template_project_id"
     t.index ["instance_administration_project_id"], name: "index_applicationsettings_on_instance_administration_project_id"

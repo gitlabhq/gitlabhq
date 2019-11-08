@@ -13,15 +13,6 @@ describe Clusters::Aws::FetchCredentialsService do
     let(:sts_client) { Aws::STS::Client.new(credentials: gitlab_credentials, region: provider.region) }
     let(:assumed_role) { instance_double(Aws::AssumeRoleCredentials, credentials: assumed_role_credentials) }
 
-    let(:kubernetes_provisioner_settings) do
-      {
-        aws: {
-          access_key_id: gitlab_access_key_id,
-          secret_access_key: gitlab_secret_access_key
-        }
-      }
-    end
-
     let(:assumed_role_credentials) { double }
 
     subject { described_class.new(provider).execute }
@@ -30,7 +21,8 @@ describe Clusters::Aws::FetchCredentialsService do
       let(:provision_role) { create(:aws_role, user: provider.created_by_user) }
 
       before do
-        stub_config(kubernetes: { provisioners: kubernetes_provisioner_settings })
+        stub_application_setting(eks_access_key_id: gitlab_access_key_id)
+        stub_application_setting(eks_secret_access_key: gitlab_secret_access_key)
 
         expect(Aws::Credentials).to receive(:new)
           .with(gitlab_access_key_id, gitlab_secret_access_key)

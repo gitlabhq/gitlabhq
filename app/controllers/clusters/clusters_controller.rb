@@ -3,12 +3,12 @@
 class Clusters::ClustersController < Clusters::BaseController
   include RoutableActions
 
-  before_action :cluster, except: [:index, :new, :create_gcp, :create_user]
+  before_action :cluster, except: [:index, :new, :create_gcp, :create_user, :authorize_aws_role]
   before_action :generate_gcp_authorize_url, only: [:new]
   before_action :validate_gcp_token, only: [:new]
   before_action :gcp_cluster, only: [:new]
   before_action :user_cluster, only: [:new]
-  before_action :authorize_create_cluster!, only: [:new]
+  before_action :authorize_create_cluster!, only: [:new, :authorize_aws_role]
   before_action :authorize_update_cluster!, only: [:update]
   before_action :authorize_admin_cluster!, only: [:destroy]
   before_action :update_applications_status, only: [:cluster_status]
@@ -43,10 +43,13 @@ class Clusters::ClustersController < Clusters::BaseController
   def new
     return unless Feature.enabled?(:create_eks_clusters)
 
-    @gke_selected = params[:provider] == 'gke'
-    @eks_selected = params[:provider] == 'eks'
+    if params[:provider] == 'aws'
+      @aws_role = current_user.aws_role || Aws::Role.new
+      @aws_role.ensure_role_external_id!
 
-    return redirect_to @authorize_url if @gke_selected && @authorize_url && !@valid_gcp_token
+    elsif params[:provider] == 'gcp'
+      redirect_to @authorize_url if @authorize_url && !@valid_gcp_token
+    end
   end
 
   # Overridding ActionController::Metal#status is NOT a good idea
@@ -132,6 +135,12 @@ class Clusters::ClustersController < Clusters::BaseController
     end
   end
 
+  def authorize_aws_role
+    role = current_user.build_aws_role(create_role_params)
+
+    role.save ? respond_201 : respond_422
+  end
+
   private
 
   def update_params
@@ -201,6 +210,10 @@ class Clusters::ClustersController < Clusters::BaseController
         platform_type: :kubernetes,
         clusterable: clusterable.subject
       )
+  end
+
+  def create_role_params
+    params.require(:cluster).permit(:role_arn, :role_external_id)
   end
 
   def generate_gcp_authorize_url

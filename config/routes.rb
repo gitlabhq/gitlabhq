@@ -142,6 +142,7 @@ Rails.application.routes.draw do
       collection do
         post :create_user
         post :create_gcp
+        post :authorize_aws_role
       end
 
       member do

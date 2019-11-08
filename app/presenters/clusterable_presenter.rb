@@ -29,6 +29,10 @@ class ClusterablePresenter < Gitlab::View::Presenter::Delegated
     new_polymorphic_path([clusterable, :cluster], options)
   end
 
+  def authorize_aws_role_path
+    polymorphic_path([clusterable, :clusters], action: :authorize_aws_role)
+  end
+
   def create_user_clusters_path
     polymorphic_path([clusterable, :clusters], action: :create_user)
   end

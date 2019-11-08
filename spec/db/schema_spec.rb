@@ -13,7 +13,7 @@ describe 'Database schema' do
   # EE: edit the ee/spec/db/schema_support.rb
   IGNORED_FK_COLUMNS = {
     abuse_reports: %w[reporter_id user_id],
-    application_settings: %w[performance_bar_allowed_group_id slack_app_id snowplow_site_id],
+    application_settings: %w[performance_bar_allowed_group_id slack_app_id snowplow_site_id eks_account_id eks_access_key_id],
     approvers: %w[target_id user_id],
     approvals: %w[user_id],
     approver_groups: %w[target_id],

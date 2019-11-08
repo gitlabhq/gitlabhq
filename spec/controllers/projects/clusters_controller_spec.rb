@@ -79,7 +79,7 @@ describe Projects::ClustersController do
   end
 
   describe 'GET new' do
-    def go(provider: 'gke')
+    def go(provider: 'gcp')
       get :new, params: {
         namespace_id: project.namespace,
         project_id: project,
@@ -362,6 +362,56 @@ describe Projects::ClustersController do
         stub_kubeclient_get_namespace('https://kubernetes.example.com', namespace: 'my-namespace')
       end
 
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_allowed_for(:owner).of(project) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
+      it { expect { go }.to be_denied_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
+    end
+  end
+
+  describe 'POST authorize AWS role for EKS cluster' do
+    let(:role_arn) { 'arn:aws:iam::123456789012:role/role-name' }
+    let(:role_external_id) { '12345' }
+
+    let(:params) do
+      {
+        cluster: {
+          role_arn: role_arn,
+          role_external_id: role_external_id
+        }
+      }
+    end
+
+    def go
+      post :authorize_aws_role, params: params.merge(namespace_id: project.namespace, project_id: project)
+    end
+
+    it 'creates an Aws::Role record' do
+      expect { go }.to change { Aws::Role.count }
+
+      expect(response.status).to eq 201
+
+      role = Aws::Role.last
+      expect(role.user).to eq user
+      expect(role.role_arn).to eq role_arn
+      expect(role.role_external_id).to eq role_external_id
+    end
+
+    context 'role cannot be created' do
+      let(:role_arn) { 'invalid-role' }
+
+      it 'does not create a record' do
+        expect { go }.not_to change { Aws::Role.count }
+
+        expect(response.status).to eq 422
+      end
+    end
+
+    describe 'security' do
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }
       it { expect { go }.to be_allowed_for(:maintainer).of(project) }

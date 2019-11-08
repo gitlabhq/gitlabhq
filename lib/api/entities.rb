@@ -1254,6 +1254,7 @@ module API
 
         # let's not expose the secret key in a response
         attributes.delete(:asset_proxy_secret_key)
+        attributes.delete(:eks_secret_access_key)
 
         attributes
       end

@@ -66,6 +66,15 @@ describe Gitlab::Regex do
   end
 
   describe '.aws_account_id_regex' do
+    subject { described_class.aws_account_id_regex }
+
+    it { is_expected.to match('123456789012') }
+    it { is_expected.not_to match('12345678901') }
+    it { is_expected.not_to match('1234567890123') }
+    it { is_expected.not_to match('12345678901a') }
+  end
+
+  describe '.aws_arn_regex' do
     subject { described_class.aws_arn_regex }
 
     it { is_expected.to match('arn:aws:iam::123456789012:role/role-name') }

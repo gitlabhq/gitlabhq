@@ -36,20 +36,12 @@ module Clusters
         ::Aws::Credentials.new(access_key_id, secret_access_key)
       end
 
-      ##
-      # This setting is not yet configurable or documented as these
-      # services are not currently used. This will be addressed in
-      # https://gitlab.com/gitlab-org/gitlab/merge_requests/18307
       def access_key_id
-        Gitlab.config.kubernetes.provisioners.aws.access_key_id
+        Gitlab::CurrentSettings.eks_access_key_id
       end
 
-      ##
-      # This setting is not yet configurable or documented as these
-      # services are not currently used. This will be addressed in
-      # https://gitlab.com/gitlab-org/gitlab/merge_requests/18307
       def secret_access_key
-        Gitlab.config.kubernetes.provisioners.aws.secret_access_key
+        Gitlab::CurrentSettings.eks_secret_access_key
       end
 
       def session_name

@@ -214,6 +214,10 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def respond_201
+    head :created
+  end
+
   def respond_422
     head :unprocessable_entity
   end

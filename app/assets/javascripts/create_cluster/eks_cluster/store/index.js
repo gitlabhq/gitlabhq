@@ -8,12 +8,12 @@ import clusterDropdownStore from './cluster_dropdown';
 
 import * as awsServices from '../services/aws_services_facade';
 
-const createStore = () =>
+const createStore = ({ initialState }) =>
   new Vuex.Store({
     actions,
     getters,
     mutations,
-    state: state(),
+    state: Object.assign(state(), initialState),
     modules: {
       roles: {
         namespaced: true,

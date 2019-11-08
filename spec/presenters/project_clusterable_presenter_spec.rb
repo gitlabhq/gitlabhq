@@ -43,6 +43,12 @@ describe ProjectClusterablePresenter do
     it { is_expected.to eq(new_project_cluster_path(project)) }
   end
 
+  describe '#authorize_aws_role_path' do
+    subject { presenter.authorize_aws_role_path }
+
+    it { is_expected.to eq(authorize_aws_role_project_clusters_path(project)) }
+  end
+
   describe '#create_user_clusters_path' do
     subject { presenter.create_user_clusters_path }
 

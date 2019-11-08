@@ -9,6 +9,9 @@ import {
   SET_ROLE,
   SET_SECURITY_GROUP,
   SET_GITLAB_MANAGED_CLUSTER,
+  REQUEST_CREATE_ROLE,
+  CREATE_ROLE_SUCCESS,
+  CREATE_ROLE_ERROR,
 } from '~/create_cluster/eks_cluster/store/mutation_types';
 import createState from '~/create_cluster/eks_cluster/store/state';
 import mutations from '~/create_cluster/eks_cluster/store/mutations';
@@ -58,5 +61,61 @@ describe('Create EKS cluster store mutations', () => {
 
     mutations[mutation](state, payload);
     expect(state[mutatedProperty]).toBe(expectedValue);
+  });
+
+  describe(`mutation ${REQUEST_CREATE_ROLE}`, () => {
+    beforeEach(() => {
+      mutations[REQUEST_CREATE_ROLE](state);
+    });
+
+    it('sets isCreatingRole to true', () => {
+      expect(state.isCreatingRole).toBe(true);
+    });
+
+    it('sets createRoleError to null', () => {
+      expect(state.createRoleError).toBe(null);
+    });
+
+    it('sets hasCredentials to false', () => {
+      expect(state.hasCredentials).toBe(false);
+    });
+  });
+
+  describe(`mutation ${CREATE_ROLE_SUCCESS}`, () => {
+    beforeEach(() => {
+      mutations[CREATE_ROLE_SUCCESS](state);
+    });
+
+    it('sets isCreatingRole to false', () => {
+      expect(state.isCreatingRole).toBe(false);
+    });
+
+    it('sets createRoleError to null', () => {
+      expect(state.createRoleError).toBe(null);
+    });
+
+    it('sets hasCredentials to false', () => {
+      expect(state.hasCredentials).toBe(true);
+    });
+  });
+
+  describe(`mutation ${CREATE_ROLE_ERROR}`, () => {
+    const error = new Error();
+
+    beforeEach(() => {
+      mutations[CREATE_ROLE_ERROR](state, { error });
+    });
+
+    it('sets isCreatingRole to false', () => {
+      expect(state.isCreatingRole).toBe(false);
+    });
+
+    it('sets createRoleError to the error object', () => {
+      expect(state.createRoleError).toBe(error);
+    });
+
+    it('sets hasCredentials to false', () => {
+      expect(state.hasCredentials).toBe(false);
+    });
   });
 });

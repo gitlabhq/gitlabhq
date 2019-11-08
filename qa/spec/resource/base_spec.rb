@@ -269,6 +269,8 @@ describe QA::Resource::Base do
     end
 
     it 'calls #visit with the underlying #web_url' do
+      allow(resource).to receive(:current_url).and_return(subject.current_url)
+
       resource.web_url = subject.current_url
       resource.visit!
 

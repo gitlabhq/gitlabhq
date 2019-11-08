@@ -13,7 +13,12 @@ import {
   SET_ROLE,
   SET_SECURITY_GROUP,
   SET_GITLAB_MANAGED_CLUSTER,
+  REQUEST_CREATE_ROLE,
+  CREATE_ROLE_SUCCESS,
+  CREATE_ROLE_ERROR,
 } from '~/create_cluster/eks_cluster/store/mutation_types';
+import axios from '~/lib/utils/axios_utils';
+import MockAdapter from 'axios-mock-adapter';
 
 describe('EKS Cluster Store Actions', () => {
   let clusterName;
@@ -26,6 +31,8 @@ describe('EKS Cluster Store Actions', () => {
   let keyPair;
   let securityGroup;
   let gitlabManagedCluster;
+  let mock;
+  let state;
 
   beforeEach(() => {
     clusterName = 'my cluster';
@@ -38,6 +45,19 @@ describe('EKS Cluster Store Actions', () => {
     keyPair = { name: 'key-pair-1' };
     securityGroup = { name: 'default group' };
     gitlabManagedCluster = true;
+
+    state = {
+      ...createState(),
+      createRolePath: '/clusters/roles/',
+    };
+  });
+
+  beforeEach(() => {
+    mock = new MockAdapter(axios);
+  });
+
+  afterEach(() => {
+    mock.restore();
   });
 
   it.each`
@@ -55,6 +75,78 @@ describe('EKS Cluster Store Actions', () => {
   `(`$action commits $mutation with $payloadDescription payload`, data => {
     const { action, mutation, payload } = data;
 
-    testAction(actions[action], payload, createState(), [{ type: mutation, payload }]);
+    testAction(actions[action], payload, state, [{ type: mutation, payload }]);
+  });
+
+  describe('createRole', () => {
+    const payload = {
+      roleArn: 'role_arn',
+      externalId: 'externalId',
+    };
+
+    describe('when request succeeds', () => {
+      beforeEach(() => {
+        mock
+          .onPost(state.createRolePath, {
+            role_arn: payload.roleArn,
+            role_external_id: payload.externalId,
+          })
+          .reply(201);
+      });
+
+      it('dispatches createRoleSuccess action', () =>
+        testAction(
+          actions.createRole,
+          payload,
+          state,
+          [],
+          [{ type: 'requestCreateRole' }, { type: 'createRoleSuccess' }],
+        ));
+    });
+
+    describe('when request fails', () => {
+      let error;
+
+      beforeEach(() => {
+        error = new Error('Request failed with status code 400');
+        mock
+          .onPost(state.createRolePath, {
+            role_arn: payload.roleArn,
+            role_external_id: payload.externalId,
+          })
+          .reply(400, error);
+      });
+
+      it('dispatches createRoleError action', () =>
+        testAction(
+          actions.createRole,
+          payload,
+          state,
+          [],
+          [{ type: 'requestCreateRole' }, { type: 'createRoleError', payload: { error } }],
+        ));
+    });
+  });
+
+  describe('requestCreateRole', () => {
+    it('commits requestCreaterole mutation', () => {
+      testAction(actions.requestCreateRole, null, state, [{ type: REQUEST_CREATE_ROLE }]);
+    });
+  });
+
+  describe('createRoleSuccess', () => {
+    it('commits createRoleSuccess mutation', () => {
+      testAction(actions.createRoleSuccess, null, state, [{ type: CREATE_ROLE_SUCCESS }]);
+    });
+  });
+
+  describe('createRoleError', () => {
+    it('commits createRoleError mutation', () => {
+      const payload = {
+        error: new Error(),
+      };
+
+      testAction(actions.createRoleError, payload, state, [{ type: CREATE_ROLE_ERROR, payload }]);
+    });
   });
 });

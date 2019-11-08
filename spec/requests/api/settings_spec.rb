@@ -271,6 +271,61 @@ describe API::Settings, 'Settings' do
       end
     end
 
+    context 'EKS integration settings' do
+      let(:attribute_names) { settings.keys.map(&:to_s) }
+      let(:sensitive_attributes) { %w(eks_secret_access_key) }
+      let(:exposed_attributes) { attribute_names - sensitive_attributes }
+
+      let(:settings) do
+        {
+          eks_integration_enabled: true,
+          eks_account_id: '123456789012',
+          eks_access_key_id: 'access-key-id-12',
+          eks_secret_access_key: 'secret-access-key'
+        }
+      end
+
+      it 'includes attributes in the API' do
+        get api("/application/settings", admin)
+
+        expect(response).to have_gitlab_http_status(200)
+        exposed_attributes.each do |attribute|
+          expect(json_response.keys).to include(attribute)
+        end
+      end
+
+      it 'does not include sensitive attributes in the API' do
+        get api("/application/settings", admin)
+
+        expect(response).to have_gitlab_http_status(200)
+        sensitive_attributes.each do |attribute|
+          expect(json_response.keys).not_to include(attribute)
+        end
+      end
+
+      it 'allows updating the settings' do
+        put api("/application/settings", admin), params: settings
+
+        expect(response).to have_gitlab_http_status(200)
+        settings.each do |attribute, value|
+          expect(ApplicationSetting.current.public_send(attribute)).to eq(value)
+        end
+      end
+
+      context 'EKS integration is enabled but params are blank' do
+        let(:settings) { Hash[eks_integration_enabled: true] }
+
+        it 'does not update the settings' do
+          put api("/application/settings", admin), params: settings
+
+          expect(response).to have_gitlab_http_status(400)
+          expect(json_response['error']).to include('eks_account_id is missing')
+          expect(json_response['error']).to include('eks_access_key_id is missing')
+          expect(json_response['error']).to include('eks_secret_access_key is missing')
+        end
+      end
+    end
+
     context "missing plantuml_url value when plantuml_enabled is true" do
       it "returns a blank parameter error message" do
         put api("/application/settings", admin), params: { plantuml_enabled: true }

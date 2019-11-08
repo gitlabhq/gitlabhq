@@ -28,3 +28,6 @@
 .border-color-blue-300 { border-color: $blue-300; }
 .border-color-default { border-color: $border-color; }
 .box-shadow-default { box-shadow: 0 2px 4px 0 $black-transparent; }
+
+.gl-w-64 { width: px-to-rem($grid-size * 8); }
+.gl-h-64 { height: px-to-rem($grid-size * 8); }

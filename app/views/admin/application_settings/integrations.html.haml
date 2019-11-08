@@ -8,4 +8,4 @@
 = render 'admin/application_settings/third_party_offers'
 = render 'admin/application_settings/snowplow'
 = render_if_exists 'admin/application_settings/pendo'
-
+= render 'admin/application_settings/eks' if Feature.enabled?(:create_eks_clusters)

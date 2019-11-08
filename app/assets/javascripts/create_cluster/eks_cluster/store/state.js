@@ -1,8 +1,14 @@
 import { KUBERNETES_VERSIONS } from '../constants';
 
 export default () => ({
-  isValidatingCredentials: false,
-  validCredentials: false,
+  createRolePath: null,
+
+  isCreatingRole: false,
+  roleCreated: false,
+  createRoleError: false,
+
+  accountId: '',
+  externalId: '',
 
   clusterName: '',
   environmentScope: '*',

@@ -1,8 +1,10 @@
 - provider = local_assigns.fetch(:provider)
 - logo_path = local_assigns.fetch(:logo_path)
 - label = local_assigns.fetch(:label)
+- last = local_assigns.fetch(:last, false)
+- classes = ['btn btn-light btn-outline flex-fill d-inline-flex flex-column justify-content-center align-items-center', ('mr-3' unless last)]
 
-= link_to clusterable.new_path(provider: provider), class: 'btn gl-button btn-outline flex-fill d-inline-flex flex-column mr-3 justify-content-center align-items-center' do
-  .svg-content= image_tag logo_path, alt: label, class: 'gl-w-13 gl-h-13'
+= link_to clusterable.new_path(provider: provider), class: classes do
+  .svg-content.p-2= image_tag logo_path, alt: label, class: 'gl-w-64 gl-h-64'
   %span
     = label

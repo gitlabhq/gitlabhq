@@ -274,6 +274,22 @@ class ApplicationSetting < ApplicationRecord
             presence: true,
             if: :lets_encrypt_terms_of_service_accepted?
 
+  validates :eks_integration_enabled,
+            inclusion: { in: [true, false] }
+
+  validates :eks_account_id,
+            format: { with: Gitlab::Regex.aws_account_id_regex,
+                      message: Gitlab::Regex.aws_account_id_message },
+            if: :eks_integration_enabled?
+
+  validates :eks_access_key_id,
+            length: { in: 16..128 },
+            if: :eks_integration_enabled?
+
+  validates :eks_secret_access_key,
+            presence: true,
+            if: :eks_integration_enabled?
+
   validates_with X509CertificateCredentialsValidator,
                  certificate: :external_auth_client_cert,
                  pkey: :external_auth_client_key,
@@ -299,6 +315,12 @@ class ApplicationSetting < ApplicationRecord
                  encode: true
 
   attr_encrypted :lets_encrypt_private_key,
+                 mode: :per_attribute_iv,
+                 key: Settings.attr_encrypted_db_key_base_truncated,
+                 algorithm: 'aes-256-gcm',
+                 encode: true
+
+  attr_encrypted :eks_secret_access_key,
                  mode: :per_attribute_iv,
                  key: Settings.attr_encrypted_db_key_base_truncated,
                  algorithm: 'aes-256-gcm',

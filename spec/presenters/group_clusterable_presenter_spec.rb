@@ -43,6 +43,12 @@ describe GroupClusterablePresenter do
     it { is_expected.to eq(new_group_cluster_path(group)) }
   end
 
+  describe '#authorize_aws_role_path' do
+    subject { presenter.authorize_aws_role_path }
+
+    it { is_expected.to eq(authorize_aws_role_group_clusters_path(group)) }
+  end
+
   describe '#create_user_clusters_path' do
     subject { presenter.create_user_clusters_path }
 
