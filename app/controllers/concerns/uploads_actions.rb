@@ -1,15 +1,10 @@
 # frozen_string_literal: true
 
 module UploadsActions
-  extend ActiveSupport::Concern
   include Gitlab::Utils::StrongMemoize
   include SendFileUpload
 
   UPLOAD_MOUNTS = %w(avatar attachment file logo header_logo favicon).freeze
-
-  included do
-    prepend_before_action :set_request_format_from_path_extension
-  end
 
   def create
     uploader = UploadService.new(model, params[:file], uploader_class).execute
@@ -68,18 +63,6 @@ module UploadsActions
   end
 
   private
-
-  # From ActionDispatch::Http::MimeNegotiation. We have an initializer that
-  # monkey-patches this method out (so that repository paths don't guess a
-  # format based on extension), but we do want this behaviour when serving
-  # uploads.
-  def set_request_format_from_path_extension
-    path = request.headers['action_dispatch.original_path'] || request.headers['PATH_INFO']
-
-    if match = path&.match(/\.(\w+)\z/)
-      request.format = match.captures.first
-    end
-  end
 
   def uploader_class
     raise NotImplementedError

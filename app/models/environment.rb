@@ -65,6 +65,7 @@ class Environment < ApplicationRecord
 
   scope :for_project, -> (project) { where(project_id: project) }
   scope :with_deployment, -> (sha) { where('EXISTS (?)', Deployment.select(1).where('deployments.environment_id = environments.id').where(sha: sha)) }
+  scope :unfoldered, -> { where(environment_type: nil) }
 
   state_machine :state, initial: :available do
     event :start do

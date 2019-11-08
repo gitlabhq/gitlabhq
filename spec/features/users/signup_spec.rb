@@ -222,7 +222,7 @@ shared_examples 'Signup' do
             expect(current_path).to eq users_sign_up_welcome_path
           else
             expect(current_path).to eq dashboard_projects_path
-            expect(page).to have_content("Please check your email (#{new_user.email}) to verify that you own this address.")
+            expect(page).to have_content("Please check your email (#{new_user.email}) to verify that you own this address and unlock the power of CI/CD.")
           end
         end
       end

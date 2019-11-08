@@ -228,10 +228,10 @@ describe UploadsController do
             user.block
           end
 
-          it "responds with status 401" do
+          it "redirects to the sign in page" do
             get :show, params: { model: "user", mounted_as: "avatar", id: user.id, filename: "dk.png" }
 
-            expect(response).to have_gitlab_http_status(401)
+            expect(response).to redirect_to(new_user_session_path)
           end
         end
 
@@ -320,10 +320,10 @@ describe UploadsController do
         end
 
         context "when not signed in" do
-          it "responds with status 401" do
+          it "redirects to the sign in page" do
             get :show, params: { model: "project", mounted_as: "avatar", id: project.id, filename: "dk.png" }
 
-            expect(response).to have_gitlab_http_status(401)
+            expect(response).to redirect_to(new_user_session_path)
           end
         end
 
@@ -343,10 +343,10 @@ describe UploadsController do
                 project.add_maintainer(user)
               end
 
-              it "responds with status 401" do
+              it "redirects to the sign in page" do
                 get :show, params: { model: "project", mounted_as: "avatar", id: project.id, filename: "dk.png" }
 
-                expect(response).to have_gitlab_http_status(401)
+                expect(response).to redirect_to(new_user_session_path)
               end
             end
 
@@ -439,10 +439,10 @@ describe UploadsController do
                 user.block
               end
 
-              it "responds with status 401" do
+              it "redirects to the sign in page" do
                 get :show, params: { model: "group", mounted_as: "avatar", id: group.id, filename: "dk.png" }
 
-                expect(response).to have_gitlab_http_status(401)
+                expect(response).to redirect_to(new_user_session_path)
               end
             end
 
@@ -526,10 +526,10 @@ describe UploadsController do
         end
 
         context "when not signed in" do
-          it "responds with status 401" do
+          it "redirects to the sign in page" do
             get :show, params: { model: "note", mounted_as: "attachment", id: note.id, filename: "dk.png" }
 
-            expect(response).to have_gitlab_http_status(401)
+            expect(response).to redirect_to(new_user_session_path)
           end
         end
 
@@ -549,10 +549,10 @@ describe UploadsController do
                 project.add_maintainer(user)
               end
 
-              it "responds with status 401" do
+              it "redirects to the sign in page" do
                 get :show, params: { model: "note", mounted_as: "attachment", id: note.id, filename: "dk.png" }
 
-                expect(response).to have_gitlab_http_status(401)
+                expect(response).to redirect_to(new_user_session_path)
               end
             end
 

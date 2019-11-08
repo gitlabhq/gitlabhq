@@ -339,6 +339,7 @@ project:
 - triggers
 - pipeline_schedules
 - environments
+- unfoldered_environments
 - deployments
 - project_feature
 - auto_devops
