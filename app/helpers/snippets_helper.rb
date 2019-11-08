@@ -11,20 +11,38 @@ module SnippetsHelper
     end
   end
 
-  def reliable_snippet_path(snippet, opts = nil)
+  def reliable_snippet_path(snippet, opts = {})
+    reliable_snippet_url(snippet, opts.merge(only_path: true))
+  end
+
+  def reliable_raw_snippet_path(snippet, opts = {})
+    reliable_raw_snippet_url(snippet, opts.merge(only_path: true))
+  end
+
+  def reliable_snippet_url(snippet, opts = {})
     if snippet.project_id?
-      project_snippet_path(snippet.project, snippet, opts)
+      project_snippet_url(snippet.project, snippet, nil, opts)
     else
-      snippet_path(snippet, opts)
+      snippet_url(snippet, nil, opts)
     end
   end
 
-  def download_snippet_path(snippet)
-    if snippet.project_id
-      raw_project_snippet_path(@project, snippet, inline: false)
+  def reliable_raw_snippet_url(snippet, opts = {})
+    if snippet.project_id?
+      raw_project_snippet_url(snippet.project, snippet, nil, opts)
     else
-      raw_snippet_path(snippet, inline: false)
+      raw_snippet_url(snippet, nil, opts)
     end
+  end
+
+  def download_raw_snippet_button(snippet)
+    link_to(icon('download'),
+            reliable_raw_snippet_path(snippet, inline: false),
+            target: '_blank',
+            rel: 'noopener noreferrer',
+            class: "btn btn-sm has-tooltip",
+            title: 'Download',
+            data: { container: 'body' })
   end
 
   # Return the path of a snippets index for a user or for a project
@@ -114,30 +132,45 @@ module SnippetsHelper
     { snippet_object: snippet, snippet_chunks: snippet_chunks }
   end
 
-  def snippet_embed
-    "<script src=\"#{url_for(only_path: false, overwrite_params: nil)}.js\"></script>"
+  def snippet_embed_tag(snippet)
+    content_tag(:script, nil, src: reliable_snippet_url(snippet, format: :js, only_path: false))
   end
 
-  def embedded_snippet_raw_button
+  def snippet_badge(snippet)
+    return unless attrs = snippet_badge_attributes(snippet)
+
+    css_class, text = attrs
+    tag.span(class: ['badge', 'badge-gray']) do
+      concat(tag.i(class: ['fa', css_class]))
+      concat(' ')
+      concat(text)
+    end
+  end
+
+  def snippet_badge_attributes(snippet)
+    if snippet.private?
+      ['fa-lock', _('private')]
+    end
+  end
+
+  def embedded_raw_snippet_button
     blob = @snippet.blob
     return if blob.empty? || blob.binary? || blob.stored_externally?
 
-    snippet_raw_url = if @snippet.is_a?(PersonalSnippet)
-                        raw_snippet_url(@snippet)
-                      else
-                        raw_project_snippet_url(@snippet.project, @snippet)
-                      end
-
-    link_to external_snippet_icon('doc-code'), snippet_raw_url, class: 'btn', target: '_blank', rel: 'noopener noreferrer', title: 'Open raw'
+    link_to(external_snippet_icon('doc-code'),
+            reliable_raw_snippet_url(@snippet),
+            class: 'btn',
+            target: '_blank',
+            rel: 'noopener noreferrer',
+            title: 'Open raw')
   end
 
   def embedded_snippet_download_button
-    download_url = if @snippet.is_a?(PersonalSnippet)
-                     raw_snippet_url(@snippet, inline: false)
-                   else
-                     raw_project_snippet_url(@snippet.project, @snippet, inline: false)
-                   end
-
-    link_to external_snippet_icon('download'), download_url, class: 'btn', target: '_blank', title: 'Download', rel: 'noopener noreferrer'
+    link_to(external_snippet_icon('download'),
+            reliable_raw_snippet_url(@snippet, inline: false),
+            class: 'btn',
+            target: '_blank',
+            title: 'Download',
+            rel: 'noopener noreferrer')
   end
 end

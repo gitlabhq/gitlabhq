@@ -263,8 +263,8 @@ class Group < Namespace
     members_with_parents.maintainers.exists?(user_id: user)
   end
 
-  def has_container_repositories?
-    container_repositories.exists?
+  def has_container_repository_including_subgroups?
+    ::ContainerRepository.for_group_and_its_subgroups(self).exists?
   end
 
   # @deprecated

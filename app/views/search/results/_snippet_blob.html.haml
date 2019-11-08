@@ -1,6 +1,7 @@
 - snippet_blob = chunk_snippet(snippet_blob, @search_term)
 - snippet = snippet_blob[:snippet_object]
 - snippet_chunks = snippet_blob[:snippet_chunks]
+- snippet_path = reliable_snippet_path(snippet)
 
 .search-result-row
   %span
@@ -11,7 +12,6 @@
       = snippet.author_name
     %span.light= time_ago_with_tooltip(snippet.created_at)
   %h4.snippet-title
-  - snippet_path = reliable_snippet_path(snippet)
   .file-holder
     .js-file-title.file-title
       = link_to snippet_path do

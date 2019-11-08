@@ -8,7 +8,7 @@ describe ContainerRepositoriesFinder do
 
   let(:group) { create(:group) }
   let(:project) { create(:project, group: group) }
-  let(:project_repository) { create(:container_repository, project: project) }
+  let!(:project_repository) { create(:container_repository, project: project) }
 
   before do
     group.add_reporter(reporter)

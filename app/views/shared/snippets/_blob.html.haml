@@ -8,7 +8,6 @@
     .btn-group{ role: "group" }<
       = copy_blob_source_button(blob)
       = open_raw_blob_button(blob)
-
-      = link_to icon('download'), download_snippet_path(@snippet), target: '_blank', class: "btn btn-sm has-tooltip", title: 'Download', data: { container: 'body' }
+      = download_raw_snippet_button(@snippet)
 
 = render 'projects/blob/content', blob: blob

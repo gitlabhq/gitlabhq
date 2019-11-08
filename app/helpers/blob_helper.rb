@@ -141,11 +141,7 @@ module BlobHelper
     if @build && @entry
       raw_project_job_artifacts_url(@project, @build, path: @entry.path, **kwargs)
     elsif @snippet
-      if @snippet.project_id
-        raw_project_snippet_url(@project, @snippet, **kwargs)
-      else
-        raw_snippet_url(@snippet, **kwargs)
-      end
+      reliable_raw_snippet_url(@snippet)
     elsif @blob
       project_raw_url(@project, @id, **kwargs)
     end

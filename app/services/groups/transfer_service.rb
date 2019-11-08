@@ -75,7 +75,7 @@ module Groups
     # rubocop: enable CodeReuse/ActiveRecord
 
     def group_projects_contain_registry_images?
-      @group.has_container_repositories?
+      @group.has_container_repository_including_subgroups?
     end
 
     def update_group_attributes
