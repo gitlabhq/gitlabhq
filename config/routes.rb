@@ -57,7 +57,7 @@ Rails.application.routes.draw do
 
   # Sign up
   get 'users/sign_up/welcome' => 'registrations#welcome'
-  patch 'users/sign_up/update_role' => 'registrations#update_role'
+  patch 'users/sign_up/update_registration' => 'registrations#update_registration'
 
   # Search
   get 'search' => 'search#show'

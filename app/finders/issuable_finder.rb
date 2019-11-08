@@ -385,6 +385,9 @@ class IssuableFinder
   end
 
   def count_key(value)
+    # value may be an array if the finder used in `count_by_state` added an
+    # additional `group by`. Anyway we are sure that state will be always the
+    # last item because it's added as the last one to the query.
     value = Array(value).last
     klass.available_states.key(value)
   end

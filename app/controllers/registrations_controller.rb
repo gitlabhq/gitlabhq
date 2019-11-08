@@ -8,7 +8,7 @@ class RegistrationsController < Devise::RegistrationsController
 
   layout :choose_layout
 
-  skip_before_action :require_role, only: [:welcome, :update_role]
+  skip_before_action :required_signup_info, only: [:welcome, :update_registration]
   prepend_before_action :check_captcha, only: :create
   before_action :whitelist_query_limiting, only: [:destroy]
   before_action :ensure_terms_accepted,
@@ -53,22 +53,22 @@ class RegistrationsController < Devise::RegistrationsController
 
   def welcome
     return redirect_to new_user_registration_path unless current_user
-    return redirect_to stored_location_or_dashboard_or_almost_there_path(current_user) if current_user.role.present?
+    return redirect_to stored_location_or_dashboard_or_almost_there_path(current_user) if current_user.role.present? && !current_user.setup_for_company.nil?
 
-    current_user.name = nil
+    current_user.name = nil if current_user.name == current_user.username
     render layout: 'devise_experimental_separate_sign_up_flow'
   end
 
-  def update_role
-    user_params = params.require(:user).permit(:name, :role)
-    result = ::Users::UpdateService.new(current_user, user_params.merge(user: current_user)).execute
+  def update_registration
+    user_params = params.require(:user).permit(:name, :role, :setup_for_company)
+    result = ::Users::SignupService.new(current_user, user_params).execute
 
     if result[:status] == :success
       track_experiment_event(:signup_flow, 'end') # We want this event to be tracked when the user is _in_ the experimental group
       set_flash_message! :notice, :signed_up
       redirect_to stored_location_or_dashboard_or_almost_there_path(current_user)
     else
-      redirect_to users_sign_up_welcome_path, alert: result[:message]
+      render :welcome, layout: 'devise_experimental_separate_sign_up_flow'
     end
   end
 

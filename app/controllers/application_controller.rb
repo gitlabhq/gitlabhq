@@ -17,7 +17,7 @@ class ApplicationController < ActionController::Base
   include Gitlab::Tracking::ControllerConcern
   include Gitlab::Experimentation::ControllerConcern
 
-  before_action :authenticate_user!
+  before_action :authenticate_user!, except: [:route_not_found]
   before_action :enforce_terms!, if: :should_enforce_terms?
   before_action :validate_user_service_ticket!
   before_action :check_password_expiration
@@ -30,7 +30,7 @@ class ApplicationController < ActionController::Base
   before_action :active_user_check, unless: :devise_controller?
   before_action :set_usage_stats_consent_flag
   before_action :check_impersonation_availability
-  before_action :require_role
+  before_action :required_signup_info
 
   around_action :set_locale
   around_action :set_session_storage
@@ -95,11 +95,13 @@ class ApplicationController < ActionController::Base
   end
 
   def route_not_found
-    # We need to call #authenticate_user! here because sometimes this is called from another action
-    # and not from our wildcard fallback route
-    authenticate_user!
+    if current_user
+      not_found
+    else
+      store_location_for(:user, request.fullpath) unless request.xhr?
 
-    not_found
+      redirect_to new_user_session_path, alert: I18n.t('devise.failure.unauthenticated')
+    end
   end
 
   def render(*args)
@@ -536,10 +538,13 @@ class ApplicationController < ActionController::Base
     @current_user_mode ||= Gitlab::Auth::CurrentUserMode.new(current_user)
   end
 
-  # A user requires a role when they are part of the experimental signup flow (executed by the Growth team). Users
-  # are redirected to the welcome page when their role is required and the experiment is enabled for the current user.
-  def require_role
-    return unless current_user && current_user.role_required? && experiment_enabled?(:signup_flow)
+  # A user requires a role and have the setup_for_company attribute set when they are part of the experimental signup
+  # flow (executed by the Growth team). Users are redirected to the welcome page when their role is required and the
+  # experiment is enabled for the current user.
+  def required_signup_info
+    return unless current_user
+    return unless current_user.role_required?
+    return unless experiment_enabled?(:signup_flow)
 
     store_location_for :user, request.fullpath
 

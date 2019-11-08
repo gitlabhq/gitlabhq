@@ -1947,6 +1947,9 @@ msgstr ""
 msgid "Archiving the project will make it entirely read-only. It is hidden from the dashboard and doesn't show up in searches. <strong>The repository cannot be committed to, and no issues, comments or other entities can be created.</strong>"
 msgstr ""
 
+msgid "Are you setting up GitLab for a company?"
+msgstr ""
+
 msgid "Are you sure that you want to archive this project?"
 msgstr ""
 
@@ -9143,7 +9146,7 @@ msgstr ""
 msgid "In order to gather accurate feature usage data, it can take 1 to 2 weeks to see your index."
 msgstr ""
 
-msgid "In order to tailor your experience with GitLab<br>we would like to know a bit more about you."
+msgid "In order to tailor your experience with GitLab we<br>would like to know a bit more about you."
 msgstr ""
 
 msgid "In the next step, you'll be able to select the projects you want to import."
@@ -19090,7 +19093,7 @@ msgstr ""
 msgid "Welcome to GitLab"
 msgstr ""
 
-msgid "Welcome to GitLab %{username}!"
+msgid "Welcome to GitLab @%{username}!"
 msgstr ""
 
 msgid "Welcome to the Guided GitLab Tour"

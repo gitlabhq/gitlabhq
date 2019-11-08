@@ -1,10 +1,10 @@
-- content_for(:page_title, _('Welcome to GitLab %{username}!') % { username: current_user.username })
+- content_for(:page_title, _('Welcome to GitLab @%{username}!') % { username: current_user.username })
 - max_name_length = 128
 .text-center.mb-3
-  = _('In order to tailor your experience with GitLab<br>we would like to know a bit more about you.').html_safe
+  = _('In order to tailor your experience with GitLab we<br>would like to know a bit more about you.').html_safe
 .signup-box.p-3.mb-2
   .signup-body
-    = form_for(current_user, url: users_sign_up_update_role_path, html: { class: 'new_new_user gl-show-field-errors', 'aria-live' => 'assertive' }) do |f|
+    = form_for(current_user, url: users_sign_up_update_registration_path, html: { class: 'new_new_user gl-show-field-errors', 'aria-live' => 'assertive' }) do |f|
       .devise-errors.mt-0
         = render 'devise/shared/error_messages', resource: current_user
       .name.form-group
@@ -13,5 +13,14 @@
       .form-group
         = f.label :role, _('Role'), class: 'label-bold'
         = f.select :role, ::User.roles.keys.map { |role| [role.titleize, role] }, {}, class: 'form-control'
+      .form-group
+        = f.label :setup_for_company, _('Are you setting up GitLab for a company?'), class: 'label-bold'
+        .d-flex.justify-content-center
+          .w-25
+            = f.radio_button :setup_for_company, true
+            = f.label :setup_for_company, _('Yes'), value: 'true'
+          .w-25
+            = f.radio_button :setup_for_company, false
+            = f.label :setup_for_company, _('No'), value: 'false'
       .submit-container.mt-3
         = f.submit _('Get started!'), class: 'btn-register btn btn-block mb-0 p-2'

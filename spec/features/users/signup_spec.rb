@@ -441,11 +441,13 @@ describe 'With experimental flow' do
 
       fill_in 'user_name', with: 'New name'
       select 'Software Developer', from: 'user_role'
+      choose 'user_setup_for_company_true'
       click_button 'Get started!'
       new_user = User.find_by_username(new_user.username)
 
       expect(new_user.name).to eq 'New name'
       expect(new_user.software_developer_role?).to be_truthy
+      expect(new_user.setup_for_company).to be_truthy
       expect(page).to have_current_path(new_project_path)
     end
   end
