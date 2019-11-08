@@ -135,6 +135,7 @@ The following job parameters can be defined inside a `default:` block:
 - [`before_script`](#before_script-and-after_script)
 - [`after_script`](#before_script-and-after_script)
 - [`cache`](#cache)
+- [`interruptible`](#interruptible)
 
 In the following example, the `ruby:2.5` image is set as the default for all
 jobs except the `rspec 2.6` job, which uses the `ruby:2.6` image:

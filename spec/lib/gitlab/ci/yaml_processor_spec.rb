@@ -108,6 +108,25 @@ module Gitlab
 
             it { expect(subject[:interruptible]).to be_falsy }
           end
+
+          it "returns interruptible when overridden for job" do
+            config = YAML.dump({ default: { interruptible: true },
+                                 rspec: { script: "rspec" } })
+
+            config_processor = Gitlab::Ci::YamlProcessor.new(config)
+
+            expect(config_processor.stage_builds_attributes("test").size).to eq(1)
+            expect(config_processor.stage_builds_attributes("test").first).to eq({
+              stage: "test",
+              stage_idx: 2,
+              name: "rspec",
+              options: { script: ["rspec"] },
+              interruptible: true,
+              allow_failure: false,
+              when: "on_success",
+              yaml_variables: []
+            })
+          end
         end
 
         describe 'retry entry' do

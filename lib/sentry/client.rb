@@ -12,6 +12,18 @@ module Sentry
       @token = token
     end
 
+    def issue_details(issue_id:)
+      issue = get_issue(issue_id: issue_id)
+
+      map_to_detailed_error(issue)
+    end
+
+    def issue_latest_event(issue_id:)
+      latest_event = get_issue_latest_event(issue_id: issue_id)
+
+      map_to_event(latest_event)
+    end
+
     def list_issues(issue_status:, limit:)
       issues = get_issues(issue_status: issue_status, limit: limit)
 
@@ -61,6 +73,14 @@ module Sentry
       })
     end
 
+    def get_issue(issue_id:)
+      http_get(issue_api_url(issue_id))
+    end
+
+    def get_issue_latest_event(issue_id:)
+      http_get(issue_latest_event_api_url(issue_id))
+    end
+
     def get_projects
       http_get(projects_api_url)
     end
@@ -102,6 +122,20 @@ module Sentry
       projects_url
     end
 
+    def issue_api_url(issue_id)
+      issue_url = URI(@url)
+      issue_url.path = "/api/0/issues/#{issue_id}/"
+
+      issue_url
+    end
+
+    def issue_latest_event_api_url(issue_id)
+      latest_event_url = URI(@url)
+      latest_event_url.path = "/api/0/issues/#{issue_id}/events/latest/"
+
+      latest_event_url
+    end
+
     def issues_api_url
       issues_url = URI(@url + '/issues/')
       issues_url.path.squeeze!('/')
@@ -119,38 +153,87 @@ module Sentry
 
     def issue_url(id)
       issues_url = @url + "/issues/#{id}"
-      issues_url = ErrorTracking::ProjectErrorTrackingSetting.extract_sentry_external_url(issues_url)
 
-      uri = URI(issues_url)
-      uri.path.squeeze!('/')
-
-      uri.to_s
+      parse_sentry_url(issues_url)
     end
 
-    def map_to_error(issue)
-      id = issue.fetch('id')
+    def project_url
+      parse_sentry_url(@url)
+    end
 
-      count = issue.fetch('count', nil)
+    def parse_sentry_url(api_url)
+      url = ErrorTracking::ProjectErrorTrackingSetting.extract_sentry_external_url(api_url)
 
-      frequency = issue.dig('stats', '24h')
-      message = issue.dig('metadata', 'value')
+      uri = URI(url)
+      uri.path.squeeze!('/')
+      # Remove trailing spaces
+      uri = uri.to_s.gsub(/\/\z/, '')
 
-      external_url = issue_url(id)
+      uri
+    end
 
-      Gitlab::ErrorTracking::Error.new(
-        id: id,
+    def map_to_event(event)
+      stack_trace = parse_stack_trace(event)
+
+      Gitlab::ErrorTracking::ErrorEvent.new(
+        issue_id: event.dig('groupID'),
+        date_received: event.dig('dateReceived'),
+        stack_trace_entries: stack_trace
+      )
+    end
+
+    def parse_stack_trace(event)
+      exception_entry = event.dig('entries')&.detect { |h| h['type'] == 'exception' }
+      return unless exception_entry
+
+      exception_values = exception_entry.dig('data', 'values')
+      stack_trace_entry = exception_values&.detect { |h| h['stacktrace'].present? }
+      return unless stack_trace_entry
+
+      stack_trace_entry.dig('stacktrace', 'frames')
+    end
+
+    def map_to_detailed_error(issue)
+      Gitlab::ErrorTracking::DetailedError.new(
+        id: issue.fetch('id'),
         first_seen: issue.fetch('firstSeen', nil),
         last_seen: issue.fetch('lastSeen', nil),
         title: issue.fetch('title', nil),
         type: issue.fetch('type', nil),
         user_count: issue.fetch('userCount', nil),
-        count: count,
-        message: message,
+        count: issue.fetch('count', nil),
+        message: issue.dig('metadata', 'value'),
         culprit: issue.fetch('culprit', nil),
-        external_url: external_url,
+        external_url: issue_url(issue.fetch('id')),
+        external_base_url: project_url,
         short_id: issue.fetch('shortId', nil),
         status: issue.fetch('status', nil),
-        frequency: frequency,
+        frequency: issue.dig('stats', '24h'),
+        project_id: issue.dig('project', 'id'),
+        project_name: issue.dig('project', 'name'),
+        project_slug: issue.dig('project', 'slug'),
+        first_release_last_commit: issue.dig('firstRelease', 'lastCommit'),
+        last_release_last_commit: issue.dig('lastRelease', 'lastCommit'),
+        first_release_short_version: issue.dig('firstRelease', 'shortVersion'),
+        last_release_short_version: issue.dig('lastRelease', 'shortVersion')
+      )
+    end
+
+    def map_to_error(issue)
+      Gitlab::ErrorTracking::Error.new(
+        id: issue.fetch('id'),
+        first_seen: issue.fetch('firstSeen', nil),
+        last_seen: issue.fetch('lastSeen', nil),
+        title: issue.fetch('title', nil),
+        type: issue.fetch('type', nil),
+        user_count: issue.fetch('userCount', nil),
+        count: issue.fetch('count', nil),
+        message: issue.dig('metadata', 'value'),
+        culprit: issue.fetch('culprit', nil),
+        external_url: issue_url(issue.fetch('id')),
+        short_id: issue.fetch('shortId', nil),
+        status: issue.fetch('status', nil),
+        frequency: issue.dig('stats', '24h'),
         project_id: issue.dig('project', 'id'),
         project_name: issue.dig('project', 'name'),
         project_slug: issue.dig('project', 'slug')

@@ -1798,6 +1798,9 @@ msgstr ""
 msgid "Any user"
 msgstr ""
 
+msgid "App ID"
+msgstr ""
+
 msgid "Appearance"
 msgstr ""
 
@@ -6406,10 +6409,16 @@ msgstr ""
 msgid "Environments|Job"
 msgstr ""
 
+msgid "Environments|Learn about environments"
+msgstr ""
+
 msgid "Environments|Learn more about stopping environments"
 msgstr ""
 
 msgid "Environments|New environment"
+msgstr ""
+
+msgid "Environments|No deployed environments"
 msgstr ""
 
 msgid "Environments|No deployments yet"
@@ -6578,6 +6587,9 @@ msgid "Epics|start"
 msgstr ""
 
 msgid "Error"
+msgstr ""
+
+msgid "Error Details"
 msgstr ""
 
 msgid "Error Tracking"
@@ -10177,6 +10189,9 @@ msgstr ""
 msgid "Logs"
 msgstr ""
 
+msgid "Logs|To see the pod logs, deploy your code to an environment."
+msgstr ""
+
 msgid "MD5"
 msgstr ""
 
@@ -10678,9 +10693,6 @@ msgstr ""
 msgid "Metrics|Label of the y-axis (usually the unit). The x-axis always represents time."
 msgstr ""
 
-msgid "Metrics|Learn about environments"
-msgstr ""
-
 msgid "Metrics|Legend label (optional)"
 msgstr ""
 
@@ -10694,9 +10706,6 @@ msgid "Metrics|Must be a valid PromQL query."
 msgstr ""
 
 msgid "Metrics|New metric"
-msgstr ""
-
-msgid "Metrics|No deployed environments"
 msgstr ""
 
 msgid "Metrics|PromQL query is valid"
@@ -12353,6 +12362,9 @@ msgid "Please wait while we connect to your repository. Refresh at will."
 msgstr ""
 
 msgid "Please wait while we import the repository for you. Refresh at will."
+msgstr ""
+
+msgid "Pod logs"
 msgstr ""
 
 msgid "Pod not found"
@@ -15597,9 +15609,6 @@ msgid "Similar issues"
 msgstr ""
 
 msgid "Single or combined queries"
-msgstr ""
-
-msgid "Site ID"
 msgstr ""
 
 msgid "Size"

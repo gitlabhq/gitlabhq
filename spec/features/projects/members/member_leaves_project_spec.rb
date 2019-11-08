@@ -20,7 +20,7 @@ describe 'Projects > Members > Member leaves project' do
     expect(project.users.exists?(user.id)).to be_falsey
   end
 
-  it 'user leaves project by url param', :js do
+  it 'user leaves project by url param', :js, :quarantine do
     visit project_path(project, leave: 1)
 
     page.accept_confirm

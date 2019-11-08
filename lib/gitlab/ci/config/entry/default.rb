@@ -14,7 +14,7 @@ module Gitlab
           include ::Gitlab::Config::Entry::Inheritable
 
           ALLOWED_KEYS = %i[before_script image services
-                            after_script cache].freeze
+                            after_script cache interruptible].freeze
 
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS
@@ -40,7 +40,11 @@ module Gitlab
             description: 'Configure caching between build jobs.',
             inherit: true
 
-          helpers :before_script, :image, :services, :after_script, :cache
+          entry :interruptible, Entry::Boolean,
+            description: 'Set jobs interruptible default value.',
+            inherit: false
+
+          helpers :before_script, :image, :services, :after_script, :cache, :interruptible
 
           private
 

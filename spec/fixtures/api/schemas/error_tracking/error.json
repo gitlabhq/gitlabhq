@@ -4,7 +4,14 @@
     "external_url",
     "last_seen",
     "message",
-    "type"
+    "type",
+    "title",
+    "project_id",
+    "project_name",
+    "project_slug",
+    "short_id",
+    "status",
+    "frequency"
   ],
   "properties" : {
     "id": { "type": "string"},
@@ -15,7 +22,14 @@
     "culprit": { "type": "string" },
     "count": { "type": "integer"},
     "external_url": { "type": "string" },
-    "user_count": { "type": "integer"}
+    "user_count": { "type": "integer"},
+    "title": { "type": "string"},
+    "project_id": { "type": "string"},
+    "project_name": { "type": "string"},
+    "project_slug": { "type": "string"},
+    "short_id": { "type": "string"},
+    "status": { "type": "string"},
+    "frequency": { "type": "array"}
   },
-  "additionalProperties": true
+  "additionalProperties": false
 }

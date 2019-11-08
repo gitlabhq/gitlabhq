@@ -133,7 +133,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     if environment
       redirect_to environment_metrics_path(environment)
     else
-      render :empty
+      render :empty_metrics
     end
   end
 

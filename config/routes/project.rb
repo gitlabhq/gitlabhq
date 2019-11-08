@@ -441,6 +441,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get :metrics, action: :metrics_redirect
           get :folder, path: 'folders/*id', constraints: { format: /(html|json)/ }
           get :search
+
+          Gitlab.ee do
+            get :logs, action: :logs_redirect
+          end
         end
 
         resources :deployments, only: [:index] do
@@ -613,6 +617,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
       resources :error_tracking, only: [:index], controller: :error_tracking do
         collection do
+          get ':issue_id/details',
+              to: 'error_tracking#details',
+              as: 'details'
+          get ':issue_id/stack_trace',
+              to: 'error_tracking#stack_trace',
+              as: 'stack_trace'
           post :list_projects
         end
       end

@@ -296,9 +296,12 @@ module API
       end
       get ':id/merge_requests/:merge_request_iid/commits' do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
-        commits = ::Kaminari.paginate_array(merge_request.commits)
 
-        present paginate(commits), with: Entities::Commit
+        commits =
+          paginate(merge_request.merge_request_diff.merge_request_diff_commits)
+            .map { |commit| Commit.from_hash(commit.to_hash, merge_request.project) }
+
+        present commits, with: Entities::Commit
       end
 
       desc 'Show the merge request changes' do

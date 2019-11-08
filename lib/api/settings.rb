@@ -145,7 +145,7 @@ module API
       given snowplow_enabled: ->(val) { val } do
         requires :snowplow_collector_hostname, type: String, desc: 'The Snowplow collector hostname'
         optional :snowplow_cookie_domain, type: String, desc: 'The Snowplow cookie domain'
-        optional :snowplow_site_id, type: String, desc: 'The Snowplow site name / application ic'
+        optional :snowplow_app_id, type: String, desc: 'The Snowplow site name / application id'
       end
       optional :pendo_enabled, type: Grape::API::Boolean, desc: 'Enable Pendo tracking'
       given pendo_enabled: ->(val) { val } do

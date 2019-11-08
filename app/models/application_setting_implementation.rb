@@ -132,11 +132,12 @@ module ApplicationSettingImplementation
         snowplow_collector_hostname: nil,
         snowplow_cookie_domain: nil,
         snowplow_enabled: false,
-        snowplow_site_id: nil,
+        snowplow_app_id: nil,
         snowplow_iglu_registry_url: nil,
         custom_http_clone_url_root: nil,
         pendo_enabled: false,
-        pendo_url: nil
+        pendo_url: nil,
+        productivity_analytics_start_date: Time.now
       }
     end
 

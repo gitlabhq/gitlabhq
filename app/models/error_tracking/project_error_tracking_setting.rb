@@ -87,10 +87,30 @@ module ErrorTracking
       { projects: sentry_client.list_projects }
     end
 
+    def issue_details(opts = {})
+      with_reactive_cache('issue_details', opts.stringify_keys) do |result|
+        result
+      end
+    end
+
+    def issue_latest_event(opts = {})
+      with_reactive_cache('issue_latest_event', opts.stringify_keys) do |result|
+        result
+      end
+    end
+
     def calculate_reactive_cache(request, opts)
       case request
       when 'list_issues'
         { issues: sentry_client.list_issues(**opts.symbolize_keys) }
+      when 'issue_details'
+        {
+          issue: sentry_client.issue_details(**opts.symbolize_keys)
+        }
+      when 'issue_latest_event'
+        {
+          latest_event: sentry_client.issue_latest_event(**opts.symbolize_keys)
+        }
       end
     rescue Sentry::Client::Error => e
       { error: e.message, error_type: SENTRY_API_ERROR_TYPE_NON_20X_RESPONSE }
