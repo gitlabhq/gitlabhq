@@ -153,6 +153,8 @@ excluded_attributes:
   namespaces:
     - :runners_token
     - :runners_token_encrypted
+    - :marked_for_deletion_at
+    - :marked_for_deletion_by_user_id
   project_import_state:
     - :last_error
     - :jid

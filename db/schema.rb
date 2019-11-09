@@ -2492,11 +2492,15 @@ ActiveRecord::Schema.define(version: 2019_11_05_094625) do
     t.boolean "emails_disabled"
     t.integer "max_pages_size"
     t.integer "max_artifacts_size"
+    t.date "marked_for_deletion_at"
+    t.integer "marked_for_deletion_by_user_id"
     t.index ["created_at"], name: "index_namespaces_on_created_at"
     t.index ["custom_project_templates_group_id", "type"], name: "index_namespaces_on_custom_project_templates_group_id_and_type", where: "(custom_project_templates_group_id IS NOT NULL)"
     t.index ["file_template_project_id"], name: "index_namespaces_on_file_template_project_id"
     t.index ["ldap_sync_last_successful_update_at"], name: "index_namespaces_on_ldap_sync_last_successful_update_at"
     t.index ["ldap_sync_last_update_at"], name: "index_namespaces_on_ldap_sync_last_update_at"
+    t.index ["marked_for_deletion_at"], name: "index_namespaces_on_marked_for_deletion_at", where: "(marked_for_deletion_at IS NOT NULL)"
+    t.index ["marked_for_deletion_by_user_id"], name: "index_namespaces_on_marked_for_deletion_by_user_id", where: "(marked_for_deletion_by_user_id IS NOT NULL)"
     t.index ["name", "parent_id"], name: "index_namespaces_on_name_and_parent_id", unique: true
     t.index ["name"], name: "index_namespaces_on_name_trigram", opclass: :gin_trgm_ops, using: :gin
     t.index ["owner_id"], name: "index_namespaces_on_owner_id"
@@ -4363,6 +4367,7 @@ ActiveRecord::Schema.define(version: 2019_11_05_094625) do
   add_foreign_key "namespaces", "namespaces", column: "custom_project_templates_group_id", name: "fk_e7a0b20a6b", on_delete: :nullify
   add_foreign_key "namespaces", "plans", name: "fk_fdd12e5b80", on_delete: :nullify
   add_foreign_key "namespaces", "projects", column: "file_template_project_id", name: "fk_319256d87a", on_delete: :nullify
+  add_foreign_key "namespaces", "users", column: "marked_for_deletion_by_user_id", name: "fk_9ff61b4c22", on_delete: :nullify
   add_foreign_key "note_diff_files", "notes", column: "diff_note_id", on_delete: :cascade
   add_foreign_key "notes", "projects", name: "fk_99e097b079", on_delete: :cascade
   add_foreign_key "notes", "reviews", name: "fk_2e82291620", on_delete: :nullify
