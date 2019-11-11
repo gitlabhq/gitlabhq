@@ -1,23 +1,27 @@
 - page_title 'Pages'
 
-%h3.page-title.with-button
-  = s_('GitLabPages|Pages')
+- if @project.pages_enabled?
+  %h3.page-title.with-button
+    = s_('GitLabPages|Pages')
 
-  - if can?(current_user, :update_pages, @project) && (Gitlab.config.pages.external_http || Gitlab.config.pages.external_https)
-    = link_to new_project_pages_domain_path(@project), class: 'btn btn-success float-right', title: s_('GitLabPages|New Domain') do
-      = s_('GitLabPages|New Domain')
+    - if can?(current_user, :update_pages, @project) && (Gitlab.config.pages.external_http || Gitlab.config.pages.external_https)
+      = link_to new_project_pages_domain_path(@project), class: 'btn btn-success float-right', title: s_('GitLabPages|New Domain') do
+        = s_('GitLabPages|New Domain')
 
-%p.light
-  = s_('GitLabPages|With GitLab Pages you can host your static websites on GitLab.  Combined with the power of GitLab CI and the help of GitLab Runner you can deploy static pages for your individual projects, your user or your group.')
-- if Gitlab.config.pages.external_https
-  = render 'https_only'
+  %p.light
+    = s_('GitLabPages|With GitLab Pages you can host your static websites on GitLab.  Combined with the power of GitLab CI and the help of GitLab Runner you can deploy static pages for your individual projects, your user or your group.')
+  - if Gitlab.config.pages.external_https
+    = render 'https_only'
 
-%hr.clearfix
+  %hr.clearfix
 
-= render 'access'
-= render 'use'
-- if Gitlab.config.pages.external_http || Gitlab.config.pages.external_https
-  = render 'list'
+  = render 'access'
+  = render 'use'
+  - if Gitlab.config.pages.external_http || Gitlab.config.pages.external_https
+    = render 'list'
+  - else
+    = render 'no_domains'
+  = render 'destroy'
 - else
-  = render 'no_domains'
-= render 'destroy'
+  .bs-callout.bs-callout-warning
+    = s_('GitLabPages|GitLab Pages are disabled for this project. You can enable them on your project\'s %{strong_start}Settings > General > Visibility%{strong_end} page.').html_safe % { strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }

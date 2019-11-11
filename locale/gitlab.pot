@@ -7407,6 +7407,9 @@ msgstr ""
 msgid "Filter by two-factor authentication"
 msgstr ""
 
+msgid "Filter by user"
+msgstr ""
+
 msgid "Filter projects"
 msgstr ""
 
@@ -8160,6 +8163,9 @@ msgstr ""
 msgid "GitLabPages|%{domain} is not verified. To learn how to verify ownership, visit your %{link_start}domain details%{link_end}."
 msgstr ""
 
+msgid "GitLabPages|Access Control is enabled for this Pages website; only authorized users will be able to access it. To make your website publicly available, navigate to your project's %{strong_start}Settings > General > Visibility%{strong_end} and select %{strong_start}Everyone%{strong_end} in pages section. Read the %{link_start}documentation%{link_end} for more information."
+msgstr ""
+
 msgid "GitLabPages|Access pages"
 msgstr ""
 
@@ -8182,6 +8188,9 @@ msgid "GitLabPages|Expired"
 msgstr ""
 
 msgid "GitLabPages|Force HTTPS (requires valid certificates)"
+msgstr ""
+
+msgid "GitLabPages|GitLab Pages are disabled for this project. You can enable them on your project's %{strong_start}Settings > General > Visibility%{strong_end} page."
 msgstr ""
 
 msgid "GitLabPages|It may take up to 30 minutes before the site is available after the first deployment."
@@ -10098,6 +10107,27 @@ msgid "Licensed to"
 msgstr ""
 
 msgid "Licenses"
+msgstr ""
+
+msgid "License|Buy license"
+msgstr ""
+
+msgid "License|License"
+msgstr ""
+
+msgid "License|You can restore access to the Gold features at any time by upgrading."
+msgstr ""
+
+msgid "License|You can start a free trial of GitLab Ultimate without any obligation or payment details."
+msgstr ""
+
+msgid "License|You do not have a license."
+msgstr ""
+
+msgid "License|Your License"
+msgstr ""
+
+msgid "License|Your free trial of GitLab Ultimate expired on %{trial_ends_on}."
 msgstr ""
 
 msgid "Limit display of time tracking units to hours."
@@ -12995,6 +13025,9 @@ msgid "Project members"
 msgstr ""
 
 msgid "Project name"
+msgstr ""
+
+msgid "Project order will not be saved as local storage is not available."
 msgstr ""
 
 msgid "Project overview"

@@ -30,10 +30,50 @@ shared_examples 'pages settings editing' do
         expect(page).to have_content('Access pages')
       end
 
+      context 'when pages are disabled in the project settings' do
+        it 'renders disabled warning' do
+          project.project_feature.update!(pages_access_level: ProjectFeature::DISABLED)
+
+          visit project_pages_path(project)
+
+          expect(page).to have_content('GitLab Pages are disabled for this project')
+        end
+      end
+
       it 'renders first deployment warning' do
         visit project_pages_path(project)
 
         expect(page).to have_content('It may take up to 30 minutes before the site is available after the first deployment.')
+      end
+
+      shared_examples 'does not render access control warning' do
+        it 'does not render access control warning' do
+          visit project_pages_path(project)
+
+          expect(page).not_to have_content('Access Control is enabled for this Pages website')
+        end
+      end
+
+      include_examples 'does not render access control warning'
+
+      context 'when access control is enabled in gitlab settings' do
+        before do
+          stub_pages_setting(access_control: true)
+        end
+
+        it 'renders access control warning' do
+          visit project_pages_path(project)
+
+          expect(page).to have_content('Access Control is enabled for this Pages website')
+        end
+
+        context 'when pages are public' do
+          before do
+            project.project_feature.update!(pages_access_level: ProjectFeature::PUBLIC)
+          end
+
+          include_examples 'does not render access control warning'
+        end
       end
 
       context 'when support for external domains is disabled' do

@@ -13,5 +13,11 @@
       - @project.pages_domains.each do |domain|
         %p
           = external_link(domain.url, domain.url)
+    - unless @project.public_pages?
+      .card-footer.alert-warning
+        - help_page = help_page_path('/user/project/pages/pages_access_control')
+        - link_start = '<a href="%{url}" target="_blank" class="alert-link" rel="noopener noreferrer">'.html_safe % { url: help_page }
+        - link_end = '</a>'.html_safe
+        = s_('GitLabPages|Access Control is enabled for this Pages website; only authorized users will be able to access it. To make your website publicly available, navigate to your project\'s %{strong_start}Settings > General > Visibility%{strong_end} and select %{strong_start}Everyone%{strong_end} in pages section. Read the %{link_start}documentation%{link_end} for more information.').html_safe % { link_start: link_start, link_end: link_end, strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }
     .card-footer.alert-primary
       = s_('GitLabPages|It may take up to 30 minutes before the site is available after the first deployment.')

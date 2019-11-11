@@ -25,6 +25,10 @@ last commit, pipeline status, and when it was last deployed.
 
 ![Operations Dashboard with projects](img/index_operations_dashboard_with_projects.png)
 
+## Arranging projects on a dashboard
+
+You can drag project cards to change their order. The card order is currently only saved to your browser, so will not change the dashboard for other people.
+
 ## Making it the default dashboard when you sign in
 
 The Operations Dashboard can also be made the default GitLab dashboard shown when

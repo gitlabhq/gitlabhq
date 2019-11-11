@@ -345,6 +345,7 @@ ActiveRecord::Schema.define(version: 2019_11_05_140942) do
     t.boolean "pendo_enabled", default: false, null: false
     t.string "pendo_url", limit: 255
     t.integer "deletion_adjourned_period", default: 7, null: false
+    t.date "license_trial_ends_on"
     t.boolean "eks_integration_enabled", default: false, null: false
     t.string "eks_account_id", limit: 128
     t.string "eks_access_key_id", limit: 128

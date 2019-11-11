@@ -210,6 +210,16 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         expect(@project.project_badges.count).to eq(2)
       end
 
+      it 'has snippets' do
+        expect(@project.snippets.count).to eq(1)
+      end
+
+      it 'has award emoji for a snippet' do
+        award_emoji = @project.snippets.first.award_emoji
+
+        expect(award_emoji.map(&:name)).to contain_exactly('thumbsup', 'coffee')
+      end
+
       it 'restores the correct service' do
         expect(CustomIssueTrackerService.first).not_to be_nil
       end
