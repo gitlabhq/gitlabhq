@@ -1,0 +1,5 @@
+---
+title: Disable pull mirror if repository is in read-only state
+merge_request: 19182
+author:
+type: fixed

@@ -10,6 +10,11 @@ shared_examples_for 'cycle analytics stage' do
     }
   end
 
+  describe 'associations' do
+    it { is_expected.to belong_to(:end_event_label) }
+    it { is_expected.to belong_to(:start_event_label) }
+  end
+
   describe 'validation' do
     it 'is valid' do
       expect(described_class.new(valid_params)).to be_valid
@@ -18,22 +23,22 @@ shared_examples_for 'cycle analytics stage' do
     it 'validates presence of parent' do
       stage = described_class.new(valid_params.except(:parent))
 
-      expect(stage).not_to be_valid
-      expect(stage.errors.details[parent_name]).to eq([{ error: :blank }])
+      expect(stage).to be_invalid
+      expect(stage.errors[parent_name]).to include("can't be blank")
     end
 
     it 'validates presence of start_event_identifier' do
       stage = described_class.new(valid_params.except(:start_event_identifier))
 
-      expect(stage).not_to be_valid
-      expect(stage.errors.details[:start_event_identifier]).to eq([{ error: :blank }])
+      expect(stage).to be_invalid
+      expect(stage.errors[:start_event_identifier]).to include("can't be blank")
     end
 
     it 'validates presence of end_event_identifier' do
       stage = described_class.new(valid_params.except(:end_event_identifier))
 
-      expect(stage).not_to be_valid
-      expect(stage.errors.details[:end_event_identifier]).to eq([{ error: :blank }])
+      expect(stage).to be_invalid
+      expect(stage.errors[:end_event_identifier]).to include("can't be blank")
     end
 
     it 'is invalid when end_event is not allowed for the given start_event' do
@@ -43,8 +48,8 @@ shared_examples_for 'cycle analytics stage' do
       )
       stage = described_class.new(invalid_params)
 
-      expect(stage).not_to be_valid
-      expect(stage.errors.details[:end_event]).to eq([{ error: :not_allowed_for_the_given_start_event }])
+      expect(stage).to be_invalid
+      expect(stage.errors[:end_event]).to include(s_('CycleAnalytics|not allowed for the given start event'))
     end
 
     context 'disallows default stage names when creating custom stage' do
@@ -102,6 +107,122 @@ shared_examples_for 'cycle analytics stage' do
       stage = described_class.new(parent: parent)
 
       expect(stage.parent_id).to eq(parent.id)
+    end
+  end
+end
+
+shared_examples_for 'cycle analytics label based stage' do
+  context 'when creating label based event' do
+    context 'when the label id is not passed' do
+      it 'returns validation error when `start_event_label_id` is missing' do
+        stage = described_class.new({
+          name: 'My Stage',
+          parent: parent,
+          start_event_identifier: :issue_label_added,
+          end_event_identifier: :issue_closed
+        })
+
+        expect(stage).to be_invalid
+        expect(stage.errors[:start_event_label]).to include("can't be blank")
+      end
+
+      it 'returns validation error when `end_event_label_id` is missing' do
+        stage = described_class.new({
+          name: 'My Stage',
+          parent: parent,
+          start_event_identifier: :issue_closed,
+          end_event_identifier: :issue_label_added
+        })
+
+        expect(stage).to be_invalid
+        expect(stage.errors[:end_event_label]).to include("can't be blank")
+      end
+    end
+
+    context 'when group label is defined on the root group' do
+      it 'succeeds' do
+        stage = described_class.new({
+          name: 'My Stage',
+          parent: parent,
+          start_event_identifier: :issue_label_added,
+          start_event_label: group_label,
+          end_event_identifier: :issue_closed
+        })
+
+        expect(stage).to be_valid
+      end
+    end
+
+    context 'when subgroup is given' do
+      it 'succeeds' do
+        stage = described_class.new({
+          name: 'My Stage',
+          parent: parent_in_subgroup,
+          start_event_identifier: :issue_label_added,
+          start_event_label: group_label,
+          end_event_identifier: :issue_closed
+        })
+
+        expect(stage).to be_valid
+      end
+    end
+
+    context 'when label is defined for a different group' do
+      let(:error_message) { s_('CycleAnalyticsStage|is not available for the selected group') }
+
+      it 'returns validation for `start_event_label`' do
+        stage = described_class.new({
+          name: 'My Stage',
+          parent: parent_outside_of_group_label_scope,
+          start_event_identifier: :issue_label_added,
+          start_event_label: group_label,
+          end_event_identifier: :issue_closed
+        })
+
+        expect(stage).to be_invalid
+        expect(stage.errors[:start_event_label]).to include(error_message)
+      end
+
+      it 'returns validation for `end_event_label`' do
+        stage = described_class.new({
+          name: 'My Stage',
+          parent: parent_outside_of_group_label_scope,
+          start_event_identifier: :issue_closed,
+          end_event_identifier: :issue_label_added,
+          end_event_label: group_label
+        })
+
+        expect(stage).to be_invalid
+        expect(stage.errors[:end_event_label]).to include(error_message)
+      end
+    end
+
+    context 'when `ProjectLabel is given' do
+      let_it_be(:label) { create(:label) }
+
+      it 'raises error when `ProjectLabel` is given for `start_event_label`' do
+        params = {
+          name: 'My Stage',
+          parent: parent,
+          start_event_identifier: :issue_label_added,
+          start_event_label: label,
+          end_event_identifier: :issue_closed
+        }
+
+        expect { described_class.new(params) }.to raise_error(ActiveRecord::AssociationTypeMismatch)
+      end
+
+      it 'raises error when `ProjectLabel` is given for `end_event_label`' do
+        params = {
+          name: 'My Stage',
+          parent: parent,
+          start_event_identifier: :issue_closed,
+          end_event_identifier: :issue_label_added,
+          end_event_label: label
+        }
+
+        expect { described_class.new(params) }.to raise_error(ActiveRecord::AssociationTypeMismatch)
+      end
     end
   end
 end

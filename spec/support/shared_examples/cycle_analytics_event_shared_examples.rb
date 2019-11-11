@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 shared_examples_for 'cycle analytics event' do
-  let(:instance) { described_class.new({}) }
+  let(:params) { {} }
+  let(:instance) { described_class.new(params) }
 
   it { expect(described_class.name).to be_a_kind_of(String) }
   it { expect(described_class.identifier).to be_a_kind_of(Symbol) }

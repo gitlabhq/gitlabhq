@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'fast_spec_helper'
 require 'gitlab_chronic_duration'
 require 'support/helpers/stub_feature_flags'
