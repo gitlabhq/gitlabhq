@@ -99,8 +99,8 @@ describe ContainerRegistry::Client do
         stub_upload('path', 'content', 'sha256:123', 400)
       end
 
-      it 'returns nil' do
-        expect(subject).to be nil
+      it 'returns a failure' do
+        expect(subject).not_to be_success
       end
     end
   end
@@ -124,6 +124,14 @@ describe ContainerRegistry::Client do
       stub_upload('path', "{\n  \"config\": {\n  }\n}", 'sha256:4435000728ee66e6a80e55637fc22725c256b61de344a2ecdeaac6bdb36e8bc3')
 
       expect(subject).to eq(result_manifest)
+    end
+
+    context 'when upload fails' do
+      before do
+        stub_upload('path', "{\n  \"config\": {\n  }\n}", 'sha256:4435000728ee66e6a80e55637fc22725c256b61de344a2ecdeaac6bdb36e8bc3', 500)
+      end
+
+      it { is_expected.to be nil }
     end
   end
 

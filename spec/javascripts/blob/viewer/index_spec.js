@@ -176,36 +176,19 @@ describe('Blob viewer', () => {
     });
   });
 
-  describe('linkifyURLs', () => {
-    it('renders a plain url as a link in simple view', done => {
+  describe('a URL inside the blob content', () => {
+    beforeEach(() => {
       mock.onGet('http://test.host/snippets/1.json?viewer=simple').reply(200, {
         html:
           '<div class="js-blob-content"><pre class="code"><code><span class="line" lang="yaml"><span class="c1">To install gitlab-shell you also need a Go compiler version 1.8 or newer. https://golang.org/dl/</span></span></code></pre></div>',
       });
+    });
 
+    it('is rendered as a link in simple view', done => {
       asyncClick()
         .then(() => {
           expect(document.querySelector('.blob-viewer[data-type="simple"]').innerHTML).toContain(
             '<a href="https://golang.org/dl/">https://golang.org/dl/</a>',
-          );
-          done();
-        })
-        .catch(() => {
-          fail();
-          done();
-        });
-    });
-
-    it('leaves an unescaped url untouched', done => {
-      mock.onGet('http://test.host/snippets/1.json?viewer=simple').reply(200, {
-        html:
-          '<div class="js-blob-content"><pre class="code"><code><span class="line" lang="yaml"><a href="https://golang.org/dl/">golang</a></span></span></code></pre></div>',
-      });
-
-      asyncClick()
-        .then(() => {
-          expect(document.querySelector('.blob-viewer[data-type="simple"]').innerHTML).toContain(
-            '<a href="https://golang.org/dl/">golang</a>',
           );
           done();
         })

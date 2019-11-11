@@ -88,6 +88,33 @@ describe Projects::ContainerRepository::DeleteTagsService do
 
           is_expected.to include(status: :success)
         end
+
+        context 'with failures' do
+          context 'when the dummy manifest generation fails' do
+            before do
+              stub_upload("{\n  \"config\": {\n  }\n}", 'sha256:4435000728ee66e6a80e55637fc22725c256b61de344a2ecdeaac6bdb36e8bc3', success: false)
+            end
+
+            it { is_expected.to include(status: :error) }
+          end
+
+          context 'when updating the tags fails' do
+            before do
+              stub_upload("{\n  \"config\": {\n  }\n}", 'sha256:4435000728ee66e6a80e55637fc22725c256b61de344a2ecdeaac6bdb36e8bc3')
+
+              stub_request(:put, "http://registry.gitlab/v2/#{repository.path}/manifests/A")
+                .to_return(status: 500, body: "", headers: { 'docker-content-digest' => 'sha256:dummy' })
+
+              stub_request(:put, "http://registry.gitlab/v2/#{repository.path}/manifests/Ba")
+                .to_return(status: 500, body: "", headers: { 'docker-content-digest' => 'sha256:dummy' })
+
+              stub_request(:delete, "http://registry.gitlab/v2/#{repository.path}/manifests/sha256:4435000728ee66e6a80e55637fc22725c256b61de344a2ecdeaac6bdb36e8bc3")
+                .to_return(status: 200, body: "", headers: {})
+            end
+
+            it { is_expected.to include(status: :error) }
+          end
+        end
       end
     end
   end
@@ -107,10 +134,10 @@ describe Projects::ContainerRepository::DeleteTagsService do
     end
   end
 
-  def stub_upload(content, digest)
+  def stub_upload(content, digest, success: true)
     expect_any_instance_of(ContainerRegistry::Client)
       .to receive(:upload_blob)
-      .with(repository.path, content, digest) { double(success?: true ) }
+      .with(repository.path, content, digest) { double(success?: success ) }
   end
 
   def expect_delete_tag(digest)

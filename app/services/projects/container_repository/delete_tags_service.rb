@@ -22,10 +22,18 @@ module Projects
       def smart_delete(container_repository, tag_names)
         # generates the blobs for the dummy image
         dummy_manifest = container_repository.client.generate_empty_manifest(container_repository.path)
+        return error('could not generate manifest') if dummy_manifest.nil?
 
         # update the manifests of the tags with the new dummy image
-        tag_digests = tag_names.map do |name|
-          container_repository.client.put_tag(container_repository.path, name, dummy_manifest)
+        deleted_tags = []
+        tag_digests = []
+
+        tag_names.each do |name|
+          digest = container_repository.client.put_tag(container_repository.path, name, dummy_manifest)
+          next unless digest
+
+          deleted_tags << name
+          tag_digests << digest
         end
 
         # make sure the digests are the same (it should always be)
@@ -37,8 +45,8 @@ module Projects
         # Deletes the dummy image
         # All created tag digests are the same since they all have the same dummy image.
         # a single delete is sufficient to remove all tags with it
-        if container_repository.delete_tag_by_digest(tag_digests.first)
-          success(deleted: tag_names)
+        if tag_digests.any? && container_repository.delete_tag_by_digest(tag_digests.first)
+          success(deleted: deleted_tags)
         else
           error('could not delete tags')
         end
