@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_05_140942) do
+ActiveRecord::Schema.define(version: 2019_11_11_115431) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -1874,6 +1874,8 @@ ActiveRecord::Schema.define(version: 2019_11_05_140942) do
     t.integer "project_id"
     t.text "import_file"
     t.text "export_file"
+    t.bigint "group_id"
+    t.index ["group_id"], name: "index_import_export_uploads_on_group_id", unique: true, where: "(group_id IS NOT NULL)"
     t.index ["project_id"], name: "index_import_export_uploads_on_project_id"
     t.index ["updated_at"], name: "index_import_export_uploads_on_updated_at"
   end
@@ -4288,6 +4290,7 @@ ActiveRecord::Schema.define(version: 2019_11_05_140942) do
   add_foreign_key "group_group_links", "namespaces", column: "shared_group_id", on_delete: :cascade
   add_foreign_key "group_group_links", "namespaces", column: "shared_with_group_id", on_delete: :cascade
   add_foreign_key "identities", "saml_providers", name: "fk_aade90f0fc", on_delete: :cascade
+  add_foreign_key "import_export_uploads", "namespaces", column: "group_id", name: "fk_83319d9721", on_delete: :cascade
   add_foreign_key "import_export_uploads", "projects", on_delete: :cascade
   add_foreign_key "index_statuses", "projects", name: "fk_74b2492545", on_delete: :cascade
   add_foreign_key "insights", "namespaces", on_delete: :cascade

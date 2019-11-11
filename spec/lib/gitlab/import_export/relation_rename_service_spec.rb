@@ -96,15 +96,20 @@ describe Gitlab::ImportExport::RelationRenameService do
     let(:export_content_path) { project_tree_saver.full_path }
     let(:export_content_hash) { ActiveSupport::JSON.decode(File.read(export_content_path)) }
     let(:injected_hash) { renames.values.product([{}]).to_h }
+    let(:relation_tree_saver) { Gitlab::ImportExport::RelationTreeSaver.new }
 
     let(:project_tree_saver) do
       Gitlab::ImportExport::ProjectTreeSaver.new(
         project: project, current_user: user, shared: shared)
     end
 
+    before do
+      allow(project_tree_saver).to receive(:tree_saver).and_return(relation_tree_saver)
+    end
+
     it 'adds old relationships to the exported file' do
       # we inject relations with new names that should be rewritten
-      expect(project_tree_saver).to receive(:serialize_project_tree).and_wrap_original do |method, *args|
+      expect(relation_tree_saver).to receive(:serialize).and_wrap_original do |method, *args|
         method.call(*args).merge(injected_hash)
       end
 

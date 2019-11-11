@@ -24,7 +24,7 @@ module Projects
 
       def save_all!
         if save_exporters
-          Gitlab::ImportExport::Saver.save(project: project, shared: shared)
+          Gitlab::ImportExport::Saver.save(exportable: project, shared: shared)
           notify_success
         else
           cleanup_and_notify_error!

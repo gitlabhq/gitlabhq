@@ -55,6 +55,8 @@ class Group < Namespace
 
   has_many :todos
 
+  has_one :import_export_upload
+
   accepts_nested_attributes_for :variables, allow_destroy: true
 
   validate :visibility_level_allowed_by_projects

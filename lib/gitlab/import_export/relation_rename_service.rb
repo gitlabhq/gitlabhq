@@ -8,7 +8,7 @@
 # The behavior of these renamed relationships should be transient and it should
 # only last one release until you completely remove the renaming from the list.
 #
-# When importing, this class will check the project hash and:
+# When importing, this class will check the hash and:
 # - if only the old relationship name is found, it will rename it with the new one
 # - if only the new relationship name is found, it will do nothing
 # - if it finds both, it will use the new relationship data

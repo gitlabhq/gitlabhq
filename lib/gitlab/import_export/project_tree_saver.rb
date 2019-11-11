@@ -3,25 +3,20 @@
 module Gitlab
   module ImportExport
     class ProjectTreeSaver
-      include Gitlab::ImportExport::CommandLineUtil
-
       attr_reader :full_path
 
       def initialize(project:, current_user:, shared:, params: {})
-        @params = params
-        @project = project
+        @params       = params
+        @project      = project
         @current_user = current_user
-        @shared = shared
-        @full_path = File.join(@shared.export_path, ImportExport.project_filename)
+        @shared       = shared
+        @full_path    = File.join(@shared.export_path, ImportExport.project_filename)
       end
 
       def save
-        mkdir_p(@shared.export_path)
-
-        project_tree = serialize_project_tree
+        project_tree = tree_saver.serialize(@project, reader.project_tree)
         fix_project_tree(project_tree)
-        project_tree_json = JSON.generate(project_tree)
-        File.write(full_path, project_tree_json)
+        tree_saver.save(project_tree, @shared.export_path, ImportExport.project_filename)
 
         true
       rescue => e
@@ -41,16 +36,6 @@ module Gitlab
         project_tree['project_members'] += group_members_array
 
         RelationRenameService.add_new_associations(project_tree)
-      end
-
-      def serialize_project_tree
-        if Feature.enabled?(:export_fast_serialize, default_enabled: true)
-          Gitlab::ImportExport::FastHashSerializer
-            .new(@project, reader.project_tree)
-            .execute
-        else
-          @project.as_json(reader.project_tree)
-        end
       end
 
       def reader
@@ -73,6 +58,10 @@ module Gitlab
         non_null_user_ids = @project.project_members.where.not(user_id: nil).select(:user_id)
 
         GroupMembersFinder.new(@project.group).execute.where.not(user_id: non_null_user_ids)
+      end
+
+      def tree_saver
+        @tree_saver ||= RelationTreeSaver.new
       end
     end
   end

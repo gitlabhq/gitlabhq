@@ -234,6 +234,19 @@ describe TodosFinder do
     end
   end
 
+  describe '.todo_types' do
+    it 'returns the expected types' do
+      expected_result =
+        if Gitlab.ee?
+          %w[Epic Issue MergeRequest]
+        else
+          %w[Issue MergeRequest]
+        end
+
+      expect(described_class.todo_types).to contain_exactly(*expected_result)
+    end
+  end
+
   describe '#any_for_target?' do
     it 'returns true if there are any todos for the given target' do
       todo = create(:todo, :pending)

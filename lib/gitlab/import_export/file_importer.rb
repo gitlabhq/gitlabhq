@@ -60,7 +60,7 @@ module Gitlab
       def copy_archive
         return if @archive_file
 
-        @archive_file = File.join(@shared.archive_path, Gitlab::ImportExport.export_filename(project: @project))
+        @archive_file = File.join(@shared.archive_path, Gitlab::ImportExport.export_filename(exportable: @project))
 
         download_or_copy_upload(@project.import_export_upload.import_file, @archive_file)
       end

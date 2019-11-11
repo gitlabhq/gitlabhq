@@ -1,0 +1,36 @@
+# Model relationships to be included in the group import/export
+#
+# This list _must_ only contain relationships that are available to both FOSS and
+# Enterprise editions. EE specific relationships must be defined in the `ee` section further
+# down below.
+tree:
+  group:
+    - :milestones
+    - :badges
+    - labels:
+        - :priorities
+    - :boards
+    - members:
+        - :user
+
+included_attributes:
+
+excluded_attributes:
+  group:
+    - :runners_token
+    - :runners_token_encrypted
+
+methods:
+  labels:
+    - :type
+  badges:
+    - :type
+
+preloads:
+
+# EE specific relationships and settings to include. All of this will be merged
+# into the previous structures if EE is used.
+ee:
+  tree:
+    group:
+      - :epics

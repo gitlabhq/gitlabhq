@@ -6,7 +6,7 @@ describe ImportExportCleanUpService do
   describe '#execute' do
     let(:service) { described_class.new }
 
-    let(:tmp_import_export_folder) { 'tmp/project_exports' }
+    let(:tmp_import_export_folder) { 'tmp/gitlab_exports' }
 
     context 'when the import/export directory does not exist' do
       it 'does not remove any archives' do

@@ -98,6 +98,7 @@
   - [update_namespace_statistics, 1]
   - [chaos, 2]
   - [create_evidence, 2]
+  - [group_export, 1]
 
   # EE-specific queues
   - [analytics, 1]
