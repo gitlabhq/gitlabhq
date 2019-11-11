@@ -20,7 +20,7 @@ Instead of moving your entire project to GitLab, you can connect your
 external repository to get the benefits of GitLab CI/CD.
 
 Connecting an external repository will set up [repository mirroring][mirroring]
-and create a lightweight project where issues, merge requests, wiki, and
+and create a lightweight project with issues, merge requests, wiki, and
 snippets disabled. These features
 [can be re-enabled later][settings].
 
