@@ -31,13 +31,42 @@ shared_examples 'diff file entity' do
 
   it 'exposes correct attributes' do
     expect(subject).to include(:added_lines, :removed_lines,
-                               :context_lines_path, :highlighted_diff_lines,
-                               :parallel_diff_lines)
+                               :context_lines_path)
   end
 
   it 'includes viewer' do
     expect(subject[:viewer].with_indifferent_access)
         .to match_schema('entities/diff_viewer')
+  end
+
+  context 'diff files' do
+    context 'when diff_view is parallel' do
+      let(:options) { { diff_view: :parallel } }
+
+      it 'contains only the parallel diff lines', :aggregate_failures do
+        expect(subject).to include(:parallel_diff_lines)
+        expect(subject).not_to include(:highlighted_diff_lines)
+      end
+    end
+
+    context 'when diff_view is parallel' do
+      let(:options) { { diff_view: :inline } }
+
+      it 'contains only the inline diff lines', :aggregate_failures do
+        expect(subject).not_to include(:parallel_diff_lines)
+        expect(subject).to include(:highlighted_diff_lines)
+      end
+    end
+
+    context 'when the `single_mr_diff_view` feature is disabled' do
+      before do
+        stub_feature_flags(single_mr_diff_view: false)
+      end
+
+      it 'contains both kinds of diffs' do
+        expect(subject).to include(:highlighted_diff_lines, :parallel_diff_lines)
+      end
+    end
   end
 end
 

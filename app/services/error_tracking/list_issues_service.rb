@@ -5,6 +5,10 @@ module ErrorTracking
     DEFAULT_ISSUE_STATUS = 'unresolved'
     DEFAULT_LIMIT = 20
 
+    def external_url
+      project_error_tracking_setting&.sentry_external_url
+    end
+
     private
 
     def fetch
@@ -13,10 +17,6 @@ module ErrorTracking
 
     def parse_response(response)
       { issues: response[:issues] }
-    end
-
-    def external_url
-      project_error_tracking_setting&.sentry_external_url
     end
 
     def issue_status

@@ -19,6 +19,12 @@ describe 'Merge request > User resolves diff notes and threads', :js do
     )
   end
 
+  before do
+    stub_feature_flags(single_mr_diff_view: false)
+  end
+
+  it_behaves_like 'rendering a single diff version'
+
   context 'no threads' do
     before do
       project.add_maintainer(user)

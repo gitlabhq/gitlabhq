@@ -31,6 +31,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
 
     options = {
       merge_request: @merge_request,
+      diff_view: diff_view,
       pagination_data: diffs.pagination_data
     }
 
@@ -60,7 +61,9 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
       render: ->(partial, locals) { view_to_html_string(partial, locals) }
     }
 
-    render json: DiffsSerializer.new(request).represent(@diffs, additional_attributes)
+    options = additional_attributes.merge(diff_view: diff_view)
+
+    render json: DiffsSerializer.new(request).represent(@diffs, options)
   end
 
   def define_diff_vars

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Gitlab::Auth::LDAP::Person do
@@ -135,7 +137,7 @@ describe Gitlab::Auth::LDAP::Person do
       let(:username_attribute) { 'uid' }
 
       before do
-        entry[username_attribute] = 'JOHN'
+        entry[username_attribute] = +'JOHN'
         @person = described_class.new(entry, 'ldapmain')
       end
 

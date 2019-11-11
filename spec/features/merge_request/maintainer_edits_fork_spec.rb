@@ -20,7 +20,7 @@ describe 'a maintainer edits files on a source-branch of an MR from a fork', :js
   end
 
   before do
-    stub_feature_flags(web_ide_default: false)
+    stub_feature_flags(web_ide_default: false, single_mr_diff_view: false)
 
     target_project.add_maintainer(user)
     sign_in(user)
@@ -31,6 +31,8 @@ describe 'a maintainer edits files on a source-branch of an MR from a fork', :js
     first('.js-file-title').find('.js-edit-blob').click
     wait_for_requests
   end
+
+  it_behaves_like 'rendering a single diff version'
 
   it 'mentions commits will go to the source branch' do
     expect(page).to have_content('Your changes can be committed to fix because a merge request is open.')
