@@ -353,7 +353,7 @@ content.
 Restriction currently applies to:
 
 - UI.
-- API access.
+- [From GitLab 12.3](https://gitlab.com/gitlab-org/gitlab/issues/12874), API access.
 - [From GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/issues/32113), Git actions via SSH.
 
 To avoid accidental lock-out, admins and group owners are are able to access

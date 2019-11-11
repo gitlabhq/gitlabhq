@@ -294,8 +294,8 @@ For the value of:
   We have used `$CI_ENVIRONMENT_SLUG` here because it is guaranteed to be unique. If
   you're using a workflow like [GitLab Flow](../topics/gitlab_flow.md), collisions
   are unlikely and you may prefer environment names to be more closely based on the
-  branch name. In that case, you could use `$CI_COMMIT_REF_SLUG` in `environment:url` in
-  the example above: `https://$CI_COMMIT_REF_SLUG.example.com`, which would give a URL
+  branch name. In that case, you could use `$CI_COMMIT_REF_NAME` in `environment:url` in
+  the example above: `https://$CI_COMMIT_REF_NAME.example.com`, which would give a URL
   of `https://100-do-the-thing.example.com`.
 
 NOTE: **Note:**

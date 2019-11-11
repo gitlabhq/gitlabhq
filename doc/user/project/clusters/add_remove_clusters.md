@@ -119,7 +119,7 @@ GitLab supports:
 - Creating a new GKE cluster using the GitLab UI.
 - Providing credentials to add an [existing Kubernetes cluster](#add-existing-cluster).
 
-Starting from [GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/issues/25925), all the GKE clusters provisioned by GitLab are [VPC-Native](https://cloud.google.com/kubernetes-engine/docs/how-to/alias-ips).
+Starting from [GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/issues/25925), all the GKE clusters provisioned by GitLab are [VPC-native](https://cloud.google.com/kubernetes-engine/docs/how-to/alias-ips).
 
 NOTE: **Note:**
 The [Google authentication integration](../../../integration/google.md) must
@@ -280,6 +280,19 @@ To add an existing Kubernetes cluster to your project:
         ```bash
         kubectl apply -f gitlab-admin-service-account.yaml
         ```
+
+        You will need the `container.clusterRoleBindings.create` permission
+        to create cluster-level roles. If you do not have this permission,
+        you can alternatively enable Basic Authentication and then run the
+        `kubectl apply` command as an admin:
+
+        ```bash
+        kubectl apply -f gitlab-admin-service-account.yaml --username=admin --password=<password>
+        ```
+
+        NOTE: **Note:**
+        Basic Authentication can be turned on and the password credentials
+        can be obtained using the Google Cloud Console.
 
         Output:
 

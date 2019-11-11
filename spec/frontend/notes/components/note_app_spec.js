@@ -9,7 +9,7 @@ import createStore from '~/notes/stores';
 import '~/behaviors/markdown/render_gfm';
 import { setTestTimeout } from 'helpers/timeout';
 // TODO: use generated fixture (https://gitlab.com/gitlab-org/gitlab-foss/issues/62491)
-import * as mockData from '../../../javascripts/notes/mock_data';
+import * as mockData from '../../notes/mock_data';
 
 setTestTimeout(1000);
 

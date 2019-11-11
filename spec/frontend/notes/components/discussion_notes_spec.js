@@ -8,11 +8,7 @@ import PlaceholderSystemNote from '~/vue_shared/components/notes/placeholder_sys
 import SystemNote from '~/vue_shared/components/notes/system_note.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import createStore from '~/notes/stores';
-import {
-  noteableDataMock,
-  discussionMock,
-  notesDataMock,
-} from '../../../javascripts/notes/mock_data';
+import { noteableDataMock, discussionMock, notesDataMock } from '../../notes/mock_data';
 
 const localVue = createLocalVue();
 
