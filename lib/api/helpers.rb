@@ -9,6 +9,7 @@ module API
     GITLAB_SHARED_SECRET_HEADER = "Gitlab-Shared-Secret"
     SUDO_PARAM = :sudo
     API_USER_ENV = 'gitlab.api.user'
+    API_EXCEPTION_ENV = 'gitlab.api.exception'
 
     def declared_params(options = {})
       options = { include_parent_namespaces: false }.merge(options)
@@ -386,6 +387,9 @@ module API
         Gitlab::Sentry.context(current_user)
         Gitlab::Sentry.track_acceptable_exception(exception, extra: params)
       end
+
+      # This is used with GrapeLogging::Loggers::ExceptionLogger
+      env[API_EXCEPTION_ENV] = exception
 
       # lifted from https://github.com/rails/rails/blob/master/actionpack/lib/action_dispatch/middleware/debug_exceptions.rb#L60
       trace = exception.backtrace

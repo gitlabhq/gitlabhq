@@ -8,11 +8,12 @@ import {
   GlTable,
   GlSearchBoxByType,
 } from '@gitlab/ui';
+import { visitUrl } from '~/lib/utils/url_utility';
 import Icon from '~/vue_shared/components/icon.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { __ } from '~/locale';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
-import { trackViewInSentryOptions, trackClickErrorLinkToSentryOptions } from '../utils';
+import { trackViewInSentryOptions } from '../utils';
 
 export default {
   fields: [
@@ -62,8 +63,8 @@ export default {
     };
   },
   computed: {
-    ...mapState(['errors', 'externalUrl', 'loading']),
-    ...mapGetters(['filterErrorsByTitle']),
+    ...mapState('list', ['errors', 'externalUrl', 'loading']),
+    ...mapGetters('list', ['filterErrorsByTitle']),
     filteredErrors() {
       return this.errorSearchQuery ? this.filterErrorsByTitle(this.errorSearchQuery) : this.errors;
     },
@@ -74,9 +75,11 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['startPolling', 'restartPolling']),
+    ...mapActions('list', ['startPolling', 'restartPolling']),
     trackViewInSentryOptions,
-    trackClickErrorLinkToSentryOptions,
+    viewDetails(errorId) {
+      visitUrl(`error_tracking/${errorId}/details`);
+    },
   },
 };
 </script>
@@ -125,13 +128,11 @@ export default {
           <template slot="error" slot-scope="errors">
             <div class="d-flex flex-column">
               <gl-link
-                v-track-event="trackClickErrorLinkToSentryOptions(errors.item.externalUrl)"
-                :href="errors.item.externalUrl"
                 class="d-flex text-dark"
                 target="_blank"
+                @click="viewDetails(errors.item.id)"
               >
                 <strong class="text-truncate">{{ errors.item.title.trim() }}</strong>
-                <icon name="external-link" class="ml-1 flex-shrink-0" />
               </gl-link>
               <span class="text-secondary text-truncate">
                 {{ errors.item.culprit }}

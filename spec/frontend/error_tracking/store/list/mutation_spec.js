@@ -1,5 +1,5 @@
-import mutations from '~/error_tracking/store/mutations';
-import * as types from '~/error_tracking/store/mutation_types';
+import mutations from '~/error_tracking/store/list/mutations';
+import * as types from '~/error_tracking/store/list/mutation_types';
 
 describe('Error tracking mutations', () => {
   describe('SET_ERRORS', () => {

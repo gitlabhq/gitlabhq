@@ -1,21 +1,36 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import * as actions from './actions';
-import * as getters from './getters';
-import mutations from './mutations';
+
+import * as listActions from './list/actions';
+import listMutations from './list/mutations';
+import listState from './list/state';
+import * as listGetters from './list/getters';
+
+import * as detailsActions from './details/actions';
+import detailsMutations from './details/mutations';
+import detailsState from './details/state';
+import * as detailsGetters from './details/getters';
 
 Vue.use(Vuex);
 
 export const createStore = () =>
   new Vuex.Store({
-    state: {
-      errors: [],
-      externalUrl: '',
-      loading: true,
+    modules: {
+      list: {
+        namespaced: true,
+        state: listState(),
+        actions: listActions,
+        mutations: listMutations,
+        getters: listGetters,
+      },
+      details: {
+        namespaced: true,
+        state: detailsState(),
+        actions: detailsActions,
+        mutations: detailsMutations,
+        getters: detailsGetters,
+      },
     },
-    actions,
-    mutations,
-    getters,
   });
 
 export default createStore();

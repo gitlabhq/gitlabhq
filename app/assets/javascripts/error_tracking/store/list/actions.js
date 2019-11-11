@@ -1,4 +1,4 @@
-import Service from '../services';
+import Service from '../../services';
 import * as types from './mutation_types';
 import createFlash from '~/flash';
 import Poll from '~/lib/utils/poll';
@@ -9,7 +9,7 @@ let eTagPoll;
 export function startPolling({ commit, dispatch }, endpoint) {
   eTagPoll = new Poll({
     resource: Service,
-    method: 'getErrorList',
+    method: 'getSentryData',
     data: { endpoint },
     successCallback: ({ data }) => {
       if (!data) {

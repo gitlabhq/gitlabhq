@@ -6625,6 +6625,9 @@ msgstr ""
 msgid "Error deleting  %{issuableType}"
 msgstr ""
 
+msgid "Error details"
+msgstr ""
+
 msgid "Error fetching diverging counts for branches. Please try again."
 msgstr ""
 
@@ -7057,6 +7060,9 @@ msgstr ""
 msgid "Failed to load emoji list."
 msgstr ""
 
+msgid "Failed to load error details from Sentry."
+msgstr ""
+
 msgid "Failed to load errors from Sentry. Error message: %{errorMessage}"
 msgstr ""
 
@@ -7064,6 +7070,9 @@ msgid "Failed to load groups & users."
 msgstr ""
 
 msgid "Failed to load related branches"
+msgstr ""
+
+msgid "Failed to load stacktrace."
 msgstr ""
 
 msgid "Failed to mark this issue as a duplicate because referenced issue was not found."
@@ -7453,6 +7462,9 @@ msgid "First day of the week"
 msgstr ""
 
 msgid "First name"
+msgstr ""
+
+msgid "First seen"
 msgstr ""
 
 msgid "Fixed date"
@@ -14222,6 +14234,9 @@ msgstr ""
 msgid "Report abuse to admin"
 msgstr ""
 
+msgid "Reported %{timeAgo} by %{reportedBy}"
+msgstr ""
+
 msgid "Reporting"
 msgstr ""
 
@@ -15198,6 +15213,9 @@ msgstr ""
 msgid "Sentry API URL"
 msgstr ""
 
+msgid "Sentry event"
+msgstr ""
+
 msgid "Sep"
 msgstr ""
 
@@ -16020,6 +16038,9 @@ msgid "Squash commit message"
 msgstr ""
 
 msgid "Squash commits"
+msgstr ""
+
+msgid "Stack trace"
 msgstr ""
 
 msgid "Stage"

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_05_094625) do
+ActiveRecord::Schema.define(version: 2019_11_05_140942) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(version: 2019_11_05_094625) do
     t.datetime "updated_at"
     t.text "message_html"
     t.integer "cached_markdown_version"
+    t.index ["user_id"], name: "index_abuse_reports_on_user_id"
   end
 
   create_table "alerts_service_data", force: :cascade do |t|

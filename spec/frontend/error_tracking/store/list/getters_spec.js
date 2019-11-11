@@ -1,4 +1,4 @@
-import * as getters from '~/error_tracking/store/getters';
+import * as getters from '~/error_tracking/store/list/getters';
 
 describe('Error Tracking getters', () => {
   let state;

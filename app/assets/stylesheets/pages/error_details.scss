@@ -1,0 +1,18 @@
+.error-details {
+  li {
+    @include gl-line-height-32;
+  }
+}
+
+.stacktrace {
+  .file-title {
+    svg {
+      vertical-align: middle;
+      top: -1px;
+    }
+  }
+
+  .line_content.old::before {
+    content: none !important;
+  }
+}
