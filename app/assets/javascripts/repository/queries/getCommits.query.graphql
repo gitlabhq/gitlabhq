@@ -6,5 +6,6 @@ query getCommits {
     commitPath
     fileName
     type
+    lockLabel
   }
 }

@@ -14,6 +14,7 @@ export function normalizeData(data) {
     commitPath: d.commit_path,
     fileName: d.file_name,
     type: d.type,
+    lockLabel: d.lock_label,
     __typename: 'LogTreeCommit',
   }));
 }

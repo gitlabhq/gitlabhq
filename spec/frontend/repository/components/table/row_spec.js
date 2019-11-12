@@ -2,6 +2,7 @@ import { shallowMount, RouterLinkStub } from '@vue/test-utils';
 import { GlBadge, GlLink } from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
 import TableRow from '~/repository/components/table/row.vue';
+import Icon from '~/vue_shared/components/icon.vue';
 
 jest.mock('~/lib/utils/url_utility');
 
@@ -155,5 +156,18 @@ describe('Repository table row component', () => {
 
     expect(vm.find('a').attributes('href')).toEqual('https://test.com');
     expect(vm.find(GlLink).attributes('href')).toEqual('https://test.com/commit');
+  });
+
+  it('renders lock icon', () => {
+    factory({
+      id: '1',
+      path: 'test',
+      type: 'tree',
+      currentPath: '/',
+    });
+
+    vm.setData({ commit: { lockLabel: 'Locked by Root', committedDate: '2019-01-01' } });
+
+    expect(vm.find(Icon).exists()).toBe(true);
   });
 });

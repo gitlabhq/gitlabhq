@@ -169,6 +169,22 @@ from the GitLab project.
   in place: your domain will be periodically reverified, and may be
   disabled if the record is removed.
 
+##### Troubleshooting Pages domain verification
+
+To manually verify that you have properly configured the domain verification
+`TXT` DNS entry, you can run the following command in your terminal:
+
+```
+dig _gitlab-pages-verification-code.<YOUR-PAGES-DOMAIN> TXT
+```
+
+Expect the output:
+
+```
+;; ANSWER SECTION:
+_gitlab-pages-verification-code.<YOUR-PAGES-DOMAIN>. 300 IN TXT "gitlab-pages-verification-code=<YOUR-VERIFICATION-CODE>"
+```
+
 ### Adding more domain aliases
 
 You can add more than one alias (custom domains and subdomains) to the same project.

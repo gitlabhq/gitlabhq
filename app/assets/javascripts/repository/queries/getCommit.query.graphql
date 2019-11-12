@@ -6,5 +6,6 @@ query getCommit($fileName: String!, $type: String!, $path: String!) {
     commitPath
     fileName
     type
+    lockLabel
   }
 }
