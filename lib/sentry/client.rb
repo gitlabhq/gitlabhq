@@ -4,6 +4,7 @@ module Sentry
   class Client
     Error = Class.new(StandardError)
     MissingKeysError = Class.new(StandardError)
+    ResponseInvalidSizeError = Class.new(StandardError)
 
     attr_accessor :url, :token
 
@@ -27,6 +28,8 @@ module Sentry
     def list_issues(issue_status:, limit:)
       issues = get_issues(issue_status: issue_status, limit: limit)
 
+      validate_size(issues)
+
       handle_mapping_exceptions do
         map_to_errors(issues)
       end
@@ -41,6 +44,16 @@ module Sentry
     end
 
     private
+
+    def validate_size(issues)
+      return if Gitlab::Utils::DeepSize.new(issues).valid?
+
+      raise Client::ResponseInvalidSizeError, "Sentry API response is too big. Limit is #{Gitlab::Utils::DeepSize.human_default_max_size}."
+    end
+
+    def valid_size?(issues)
+      Gitlab::Utils::DeepSize.new(issues).valid?
+    end
 
     def handle_mapping_exceptions(&block)
       yield
@@ -108,7 +121,7 @@ module Sentry
         raise_error "Sentry response status code: #{response.code}"
       end
 
-      response
+      response.parsed_response
     end
 
     def raise_error(message)

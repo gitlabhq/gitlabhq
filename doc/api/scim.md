@@ -21,7 +21,7 @@ Parameters:
 
 | Attribute | Type    | Required | Description                                                                                                                             |
 |:----------|:--------|:---------|:----------------------------------------------------------------------------------------------------------------------------------------|
-| `filter`   | string  | yes     | A [filter](#available-filters) expression. |
+| `filter`   | string  | no     | A [filter](#available-filters) expression. |
 | `group_path` | string | yes    | Full path to the group. |
 | `startIndex` | integer | no    | The 1-based index indicating where to start returning results from. A value of less than one will be interpreted as 1. |
 | `count` | integer | no    | Desired maximum number of query results. |

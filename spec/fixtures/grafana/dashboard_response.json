@@ -424,7 +424,7 @@
             "format": "time_series",
             "interval": "1m",
             "intervalFactor": 2,
-            "legendFormat": "expired",
+            "legendFormat": "expired - {{ test_attribute }}",
             "metric": "",
             "refId": "A",
             "step": 240,

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe 'Metrics rendering', :js, :use_clean_rails_memory_store_caching, :sidekiq_might_not_need_inline do
   include PrometheusHelpers
+  include GrafanaApiHelpers
 
   let(:user) { create(:user) }
   let(:project) { create(:prometheus_project) }
@@ -14,11 +15,7 @@ describe 'Metrics rendering', :js, :use_clean_rails_memory_store_caching, :sidek
 
   before do
     configure_host
-    import_common_metrics
-    stub_any_prometheus_request_with_response
-
     project.add_developer(user)
-
     sign_in(user)
   end
 
@@ -26,31 +23,58 @@ describe 'Metrics rendering', :js, :use_clean_rails_memory_store_caching, :sidek
     restore_host
   end
 
-  it 'shows embedded metrics' do
-    visit project_issue_path(project, issue)
-
-    expect(page).to have_css('div.prometheus-graph')
-    expect(page).to have_text('Memory Usage (Total)')
-    expect(page).to have_text('Core Usage (Total)')
-  end
-
-  context 'when dashboard params are in included the url' do
-    let(:metrics_url) { metrics_project_environment_url(project, environment, **chart_params) }
-
-    let(:chart_params) do
-      {
-        group: 'System metrics (Kubernetes)',
-        title: 'Memory Usage (Pod average)',
-        y_label: 'Memory Used per Pod (MB)'
-      }
+  context 'internal metrics embeds' do
+    before do
+      import_common_metrics
+      stub_any_prometheus_request_with_response
     end
 
-    it 'shows embedded metrics for the specifiec chart' do
+    it 'shows embedded metrics' do
       visit project_issue_path(project, issue)
 
       expect(page).to have_css('div.prometheus-graph')
-      expect(page).to have_text(chart_params[:title])
-      expect(page).to have_text(chart_params[:y_label])
+      expect(page).to have_text('Memory Usage (Total)')
+      expect(page).to have_text('Core Usage (Total)')
+    end
+
+    context 'when dashboard params are in included the url' do
+      let(:metrics_url) { metrics_project_environment_url(project, environment, **chart_params) }
+
+      let(:chart_params) do
+        {
+          group: 'System metrics (Kubernetes)',
+          title: 'Memory Usage (Pod average)',
+          y_label: 'Memory Used per Pod (MB)'
+        }
+      end
+
+      it 'shows embedded metrics for the specific chart' do
+        visit project_issue_path(project, issue)
+
+        expect(page).to have_css('div.prometheus-graph')
+        expect(page).to have_text(chart_params[:title])
+        expect(page).to have_text(chart_params[:y_label])
+      end
+    end
+  end
+
+  context 'grafana metrics embeds' do
+    let(:grafana_integration) { create(:grafana_integration, project: project) }
+    let(:grafana_base_url) { grafana_integration.grafana_url }
+    let(:metrics_url) { valid_grafana_dashboard_link(grafana_base_url) }
+
+    before do
+      stub_dashboard_request(grafana_base_url)
+      stub_datasource_request(grafana_base_url)
+      stub_all_grafana_proxy_requests(grafana_base_url)
+    end
+
+    it 'shows embedded metrics' do
+      visit project_issue_path(project, issue)
+
+      expect(page).to have_css('div.prometheus-graph')
+      expect(page).to have_text('Expired / Evicted')
+      expect(page).to have_text('expired - test-attribute-value')
     end
   end
 

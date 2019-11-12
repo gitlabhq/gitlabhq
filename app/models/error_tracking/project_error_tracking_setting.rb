@@ -7,6 +7,7 @@ module ErrorTracking
 
     SENTRY_API_ERROR_TYPE_MISSING_KEYS = 'missing_keys_in_sentry_response'
     SENTRY_API_ERROR_TYPE_NON_20X_RESPONSE = 'non_20x_response_from_sentry'
+    SENTRY_API_ERROR_INVALID_SIZE = 'invalid_size_of_sentry_response'
 
     API_URL_PATH_REGEXP = %r{
       \A
@@ -116,6 +117,8 @@ module ErrorTracking
       { error: e.message, error_type: SENTRY_API_ERROR_TYPE_NON_20X_RESPONSE }
     rescue Sentry::Client::MissingKeysError => e
       { error: e.message, error_type: SENTRY_API_ERROR_TYPE_MISSING_KEYS }
+    rescue Sentry::Client::ResponseInvalidSizeError => e
+      { error: e.message, error_type: SENTRY_API_ERROR_INVALID_SIZE }
     end
 
     # http://HOST/api/0/projects/ORG/PROJECT

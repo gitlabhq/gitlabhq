@@ -192,6 +192,15 @@ describe Sentry::Client do
       end
     end
 
+    context 'sentry api response too large' do
+      it 'raises exception' do
+        deep_size = double('Gitlab::Utils::DeepSize', valid?: false)
+        allow(Gitlab::Utils::DeepSize).to receive(:new).with(sentry_api_response).and_return(deep_size)
+
+        expect { subject }.to raise_error(Sentry::Client::ResponseInvalidSizeError, 'Sentry API response is too big. Limit is 1 MB.')
+      end
+    end
+
     it_behaves_like 'maps exceptions'
   end
 

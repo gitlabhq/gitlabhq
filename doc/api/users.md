@@ -1124,7 +1124,7 @@ Parameters:
 
 ## Block user
 
-Blocks the specified user.  Available only for admin.
+Blocks the specified user. Available only for admin.
 
 ```
 POST /users/:id/block
@@ -1139,7 +1139,7 @@ Will return `201 OK` on success, `404 User Not Found` is user cannot be found or
 
 ## Unblock user
 
-Unblocks the specified user.  Available only for admin.
+Unblocks the specified user. Available only for admin.
 
 ```
 POST /users/:id/unblock

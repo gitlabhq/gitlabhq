@@ -352,10 +352,7 @@ bottom of the screen with two buttons:
   Clicking **Submit review** will publish all comments. Any quick actions
   submitted are performed at this time.
 
-Alternatively, to finish the entire review from a pending comment:
-
-- Click the **Finish review** button on the comment.
-- Use the `/submit_review` [quick action](../project/quick_actions.md) in the text of the comment.
+Alternatively, every pending comment has a button to finish the entire review.
 
 ![Review submission](img/review_preview.png)
 
