@@ -25,7 +25,7 @@ SAST supports the following official analyzers:
 - [`security-code-scan`](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan) (Security Code Scan (.NET))
 - [`sobelow`](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow) (Sobelow (Elixir Phoenix))
 - [`spotbugs`](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) (SpotBugs with the Find Sec Bugs plugin (Ant, Gradle and wrapper, Grails, Maven and wrapper, SBT))
-- [`tslint`](https://gitlab.com/gitlab-org/security-products/analyzers/tslint) (TSLint (Typescript))
+- [`tslint`](https://gitlab.com/gitlab-org/security-products/analyzers/tslint) (TSLint (TypeScript))
 
 The analyzers are published as Docker images that SAST will use to launch
 dedicated containers for each analysis.

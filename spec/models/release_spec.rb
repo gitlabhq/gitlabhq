@@ -34,7 +34,7 @@ RSpec.describe Release do
 
         expect(existing_release_without_name).to be_valid
         expect(existing_release_without_name.description).to eq("change")
-        expect(existing_release_without_name.name).to be_nil
+        expect(existing_release_without_name.name).not_to be_nil
       end
     end
 
@@ -126,6 +126,18 @@ RSpec.describe Release do
         expect(NewReleaseWorker).not_to receive(:perform_async)
 
         release.update!(description: 'new description')
+      end
+    end
+  end
+
+  describe '#name' do
+    context 'name is nil' do
+      before do
+        release.update(name: nil)
+      end
+
+      it 'returns tag' do
+        expect(release.name).to eq(release.tag)
       end
     end
   end

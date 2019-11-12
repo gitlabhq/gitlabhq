@@ -21,7 +21,13 @@ module Emails
     private
 
     def release_email_subject
-      release_info = [@release.name, @release.tag].select(&:presence).join(' - ')
+      release_info =
+        if @release.name == @release.tag
+          @release.tag
+        else
+          [@release.name, @release.tag].select(&:presence).join(' - ')
+        end
+
       "New release: #{release_info}"
     end
   end

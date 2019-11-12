@@ -1299,7 +1299,9 @@ module API
     class Release < Grape::Entity
       include ::API::Helpers::Presentable
 
-      expose :name
+      expose :name do |release, _|
+        can_download_code? ? release.name : "Release-#{release.id}"
+      end
       expose :tag, as: :tag_name, if: ->(_, _) { can_download_code? }
       expose :description
       expose :description_html do |entity|

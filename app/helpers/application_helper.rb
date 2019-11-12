@@ -324,6 +324,15 @@ module ApplicationHelper
     }
   end
 
+  def asset_to_string(name)
+    app = Rails.application
+    if Rails.configuration.assets.compile
+      app.assets.find_asset(name).to_s
+    else
+      controller.view_context.render(file: File.join('public/assets', app.assets_manifest.assets[name]))
+    end
+  end
+
   private
 
   def appearance

@@ -1,0 +1,65 @@
+/* CLIENT-SPECIFIC STYLES */
+
+// These are client-specific rules, ignore some linting rules
+//
+// stylelint-disable property-no-vendor-prefix, property-no-unknown, length-zero-no-unit
+// scss-lint:disable PropertySpelling, ZeroUnit
+
+body,
+table,
+td,
+a {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+table,
+td {
+  mso-table-lspace: 0pt;
+  mso-table-rspace: 0pt;
+}
+
+img {
+  -ms-interpolation-mode: bicubic;
+}
+
+.hidden {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* iOS BLUE LINKS */
+a[x-apple-data-detectors] {
+  color: inherit !important;
+  text-decoration: none !important;
+  font-size: inherit !important;
+  font-family: inherit !important;
+  font-weight: inherit !important;
+  line-height: inherit !important;
+}
+
+/* ANDROID MARGIN HACK */
+div[style*='margin: 16px 0'] {
+  margin: 0 !important;
+}
+
+@media only screen and (max-width: 639px) {
+  body,
+  #body {
+    min-width: 320px !important;
+  }
+
+  table.wrapper {
+    width: 100% !important;
+    min-width: 320px !important;
+  }
+
+  table.wrapper td.wrapper-cell {
+    border-left: 0 !important;
+    border-right: 0 !important;
+    border-radius: 0 !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+}
+

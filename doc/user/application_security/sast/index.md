@@ -78,7 +78,7 @@ The following table shows which languages, package managers and frameworks are s
 | Python ([pip](https://pip.pypa.io/en/stable/))                              | [bandit](https://github.com/PyCQA/bandit)                                              | 10.3                         |
 | Ruby on Rails                                                               | [brakeman](https://brakemanscanner.org)                                                | 10.3                         |
 | Scala ([Ant](https://ant.apache.org/), [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/) and [SBT](https://www.scala-sbt.org/)) | [SpotBugs](https://spotbugs.github.io/) with the [find-sec-bugs](https://find-sec-bugs.github.io/) plugin | 11.0 (SBT) & 11.9 (Ant, Gradle, Maven) |
-| Typescript                                                                  | [TSLint config security](https://github.com/webschik/tslint-config-security/)          | 11.9                         |
+| TypeScript                                                                  | [TSLint config security](https://github.com/webschik/tslint-config-security/)          | 11.9                         |
 
 NOTE: **Note:**
 The Java analyzers can also be used for variants like the

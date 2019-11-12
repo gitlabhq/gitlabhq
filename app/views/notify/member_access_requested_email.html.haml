@@ -1,3 +1,6 @@
-%p
-  #{link_to member.user.name, member.user} requested #{member.human_access}
-  access to the #{link_to member_source.human_name, polymorphic_url([member_source, :members])} #{member_source.model_name.singular}.
+%tr
+  %td.text-content
+    %p
+      #{link_to member.user.name, member.user, class: :highlight} requested #{content_tag :span, member.human_access, class: :highlight}
+      access to the #{link_to member_source.human_name, polymorphic_url([member_source, :members]), class: :highlight} #{member_source.model_name.singular}.
+

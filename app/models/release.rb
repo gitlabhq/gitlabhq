@@ -69,6 +69,10 @@ class Release < ApplicationRecord
     released_at.present? && released_at > Time.zone.now
   end
 
+  def name
+    self.read_attribute(:name) || tag
+  end
+
   private
 
   def actual_sha

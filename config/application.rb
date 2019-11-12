@@ -157,6 +157,8 @@ module Gitlab
     config.assets.paths << "#{config.root}/vendor/assets/fonts"
 
     config.assets.precompile << "print.css"
+    config.assets.precompile << "mailer.css"
+    config.assets.precompile << "mailer_client_specific.css"
     config.assets.precompile << "notify.css"
     config.assets.precompile << "mailers/*.css"
     config.assets.precompile << "page_bundles/ide.css"

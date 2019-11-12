@@ -268,7 +268,7 @@ Each issue scheduled for the current milestone should be labeled ~Deliverable
 or ~"Stretch". Any open issue for a previous milestone should be labeled
 ~"Next Patch Release", or otherwise rescheduled to a different milestone.
 
-#### Priority labels
+### Priority labels
 
 Priority labels help us define the time a ~bug fix should be completed. Priority determines how quickly the defect turnaround time must be.
 If there are multiple defects, the priority decides which defect has to be fixed immediately versus later.

@@ -1,4 +1,7 @@
-%p
-  Your request to join the
-  #{link_to member_source.human_name, member_source.web_url} #{member_source.model_name.singular}
-  has been denied.
+%tr
+  %td.text-content
+    %p
+      Your request to join the
+      #{link_to member_source.human_name, member_source.web_url, class: :highlight} #{member_source.model_name.singular}
+      has been #{content_tag :span, 'denied', class: :highlight}.
+

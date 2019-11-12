@@ -38,7 +38,7 @@ that's tested and deployed on every push to the `master` branch of the [codebase
 This will also provide
 boilerplate code for starting a browser-based game with the following components:
 
-- Written in [Typescript](https://www.typescriptlang.org/) and [PhaserJs](https://phaser.io)
+- Written in [TypeScript](https://www.typescriptlang.org/) and [PhaserJs](https://phaser.io)
 - Building, running, and testing with [Gulp](https://gulpjs.com)
 - Unit tests with [Chai](https://www.chaijs.com) and [Mocha](https://mochajs.org/)
 - CI/CD with GitLab
@@ -508,7 +508,7 @@ deploy:
 ## Conclusion
 
 Within the [demo repository](https://gitlab.com/blitzgren/gitlab-game-demo) you can also find a handful of boilerplate code to get
-[Typescript](https://www.typescriptlang.org/), [Mocha](https://mochajs.org/), [Gulp](https://gulpjs.com/) and [Phaser](https://phaser.io) all playing
+[TypeScript](https://www.typescriptlang.org/), [Mocha](https://mochajs.org/), [Gulp](https://gulpjs.com/) and [Phaser](https://phaser.io) all playing
 together nicely with GitLab CI/CD, which is the result of lessons learned while making [Dark Nova](https://www.darknova.io).
 Using a combination of free and open source software, we have a full CI/CD pipeline, a game foundation,
 and unit tests, all running and deployed at every push to master - with shockingly little code.
