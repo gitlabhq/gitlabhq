@@ -2177,6 +2177,50 @@ describe MergeRequest do
     end
   end
 
+  describe '#check_mergeability' do
+    let(:mergeability_service) { double }
+
+    before do
+      allow(MergeRequests::MergeabilityCheckService).to receive(:new) do
+        mergeability_service
+      end
+    end
+
+    context 'if the merge status is unchecked' do
+      before do
+        subject.mark_as_unchecked!
+      end
+
+      it 'executes MergeabilityCheckService' do
+        expect(mergeability_service).to receive(:execute)
+
+        subject.check_mergeability
+      end
+    end
+
+    context 'if the merge status is checked' do
+      context 'and feature flag is enabled' do
+        it 'executes MergeabilityCheckService' do
+          expect(mergeability_service).not_to receive(:execute)
+
+          subject.check_mergeability
+        end
+      end
+
+      context 'and feature flag is disabled' do
+        before do
+          stub_feature_flags(merge_requests_conditional_mergeability_check: false)
+        end
+
+        it 'does not execute MergeabilityCheckService' do
+          expect(mergeability_service).to receive(:execute)
+
+          subject.check_mergeability
+        end
+      end
+    end
+  end
+
   describe '#mergeable_state?' do
     let(:project) { create(:project, :repository) }
 

@@ -193,6 +193,11 @@ $monokai-gi: #a6e22e;
     color: $black !important;
   }
 
+  // Links to URLs, emails, or dependencies
+  .line a {
+    color: $monokai-k;
+  }
+
   .hll { background-color: $monokai-hll; }
   .c { color: $monokai-c; } /* Comment */
   .err { color: $monokai-err-color; background-color: $monokai-err-bg; } /* Error */

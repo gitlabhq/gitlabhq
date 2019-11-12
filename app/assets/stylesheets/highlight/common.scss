@@ -29,12 +29,3 @@
     color: $link;
   }
 }
-
-// Links to URLs, emails, or dependencies
-.code .line a {
-  color: inherit;
-
-  &:hover {
-    text-decoration: underline;
-  }
-}

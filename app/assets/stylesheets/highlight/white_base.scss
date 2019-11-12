@@ -209,6 +209,11 @@ span.highlight_word {
   background-color: $white-highlight !important;
 }
 
+// Links to URLs, emails, or dependencies
+.line a {
+  color: $white-nb;
+}
+
 .hll { background-color: $white-hll-bg; }
 
 .c { color: $white-c;

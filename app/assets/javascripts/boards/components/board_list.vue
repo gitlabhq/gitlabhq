@@ -84,7 +84,8 @@ export default {
       this.$nextTick(() => {
         if (
           this.scrollHeight() <= this.listHeight() &&
-          this.list.issuesSize > this.list.issues.length
+          this.list.issuesSize > this.list.issues.length &&
+          this.list.isExpanded
         ) {
           this.list.page += 1;
           this.list.getIssues(false).catch(() => {

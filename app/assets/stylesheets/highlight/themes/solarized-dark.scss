@@ -196,6 +196,11 @@ $solarized-dark-il: #2aa198;
     background-color: $solarized-dark-highlight !important;
   }
 
+  // Links to URLs, emails, or dependencies
+  .line a {
+    color: $solarized-dark-kd;
+  }
+
   /* Solarized Dark
 
   For use with Jekyll and Pygments

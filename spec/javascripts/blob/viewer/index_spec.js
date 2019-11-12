@@ -11,13 +11,6 @@ describe('Blob viewer', () => {
 
   preloadFixtures('snippets/show.html');
 
-  const asyncClick = () =>
-    new Promise(resolve => {
-      document.querySelector('.js-blob-viewer-switch-btn[data-viewer="simple"]').click();
-
-      setTimeout(resolve);
-    });
-
   beforeEach(() => {
     mock = new MockAdapter(axios);
 
@@ -73,12 +66,19 @@ describe('Blob viewer', () => {
   });
 
   it('doesnt reload file if already loaded', done => {
+    const asyncClick = () =>
+      new Promise(resolve => {
+        document.querySelector('.js-blob-viewer-switch-btn[data-viewer="simple"]').click();
+
+        setTimeout(resolve);
+      });
+
     asyncClick()
       .then(() => asyncClick())
       .then(() => {
-        expect(document.querySelector('.blob-viewer[data-type="simple"]').dataset.loaded).toBe(
-          'true',
-        );
+        expect(
+          document.querySelector('.blob-viewer[data-type="simple"]').getAttribute('data-loaded'),
+        ).toBe('true');
 
         done();
       })
@@ -100,7 +100,9 @@ describe('Blob viewer', () => {
     });
 
     it('has tooltip when disabled', () => {
-      expect(copyButton.dataset.title).toBe('Switch to the source to copy the file contents');
+      expect(copyButton.getAttribute('data-original-title')).toBe(
+        'Switch to the source to copy the file contents',
+      );
     });
 
     it('is blurred when clicked and disabled', () => {
@@ -134,7 +136,7 @@ describe('Blob viewer', () => {
       document.querySelector('.js-blob-viewer-switch-btn[data-viewer="simple"]').click();
 
       setTimeout(() => {
-        expect(copyButton.dataset.title).toBe('Copy file contents');
+        expect(copyButton.getAttribute('data-original-title')).toBe('Copy file contents');
 
         done();
       });
@@ -173,29 +175,6 @@ describe('Blob viewer', () => {
       blob.switchToViewer('rich');
 
       expect(axios.get.calls.count()).toBe(1);
-    });
-  });
-
-  describe('a URL inside the blob content', () => {
-    beforeEach(() => {
-      mock.onGet('http://test.host/snippets/1.json?viewer=simple').reply(200, {
-        html:
-          '<div class="js-blob-content"><pre class="code"><code><span class="line" lang="yaml"><span class="c1">To install gitlab-shell you also need a Go compiler version 1.8 or newer. https://golang.org/dl/</span></span></code></pre></div>',
-      });
-    });
-
-    it('is rendered as a link in simple view', done => {
-      asyncClick()
-        .then(() => {
-          expect(document.querySelector('.blob-viewer[data-type="simple"]').innerHTML).toContain(
-            '<a href="https://golang.org/dl/">https://golang.org/dl/</a>',
-          );
-          done();
-        })
-        .catch(() => {
-          fail();
-          done();
-        });
     });
   });
 });

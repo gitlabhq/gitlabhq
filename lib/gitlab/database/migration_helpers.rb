@@ -955,7 +955,7 @@ into similar problems in the future (e.g. when new tables are created).
         table_name = model_class.quoted_table_name
 
         model_class.each_batch(of: batch_size) do |relation|
-          start_id, end_id = relation.pluck("MIN(#{table_name}.id), MAX(#{table_name}.id)").first
+          start_id, end_id = relation.pluck("MIN(#{table_name}.id)", "MAX(#{table_name}.id)").first
 
           if jobs.length >= BACKGROUND_MIGRATION_JOB_BUFFER_SIZE
             # Note: This code path generally only helps with many millions of rows

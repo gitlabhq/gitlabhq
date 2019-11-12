@@ -1918,7 +1918,7 @@ class Project < ApplicationRecord
   end
 
   def default_environment
-    production_first = "(CASE WHEN name = 'production' THEN 0 ELSE 1 END), id ASC"
+    production_first = Arel.sql("(CASE WHEN name = 'production' THEN 0 ELSE 1 END), id ASC")
 
     environments
       .with_state(:available)

@@ -10,7 +10,7 @@
         %a.diff-line-num{ href: "#{link}#L#{i}", id: "L#{i}", 'data-line-number' => i }
           = link_icon
           = i
-  .blob-content.js-blob-content{ data: { blob_id: blob.id } }
+  .blob-content{ data: { blob_id: blob.id } }
     %pre.code.highlight
       %code
         = blob.present.highlight

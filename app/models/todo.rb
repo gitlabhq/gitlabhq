@@ -160,6 +160,10 @@ class Todo < ApplicationRecord
     action == ASSIGNED
   end
 
+  def done?
+    state == 'done'
+  end
+
   def action_name
     ACTION_NAMES[action]
   end

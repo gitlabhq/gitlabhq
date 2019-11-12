@@ -126,7 +126,7 @@ class Group < Namespace
 
     def visible_to_user_arel(user)
       groups_table = self.arel_table
-      authorized_groups = user.authorized_groups.as('authorized')
+      authorized_groups = user.authorized_groups.arel.as('authorized')
 
       groups_table.project(1)
         .from(authorized_groups)

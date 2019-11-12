@@ -405,7 +405,7 @@ module Ci
         .where('stage=sg.stage').failed_but_allowed.to_sql
 
       stages_with_statuses = CommitStatus.from(stages_query, :sg)
-        .pluck('sg.stage', status_sql, "(#{warnings_sql})")
+        .pluck('sg.stage', Arel.sql(status_sql), Arel.sql("(#{warnings_sql})"))
 
       stages_with_statuses.map do |stage|
         Ci::LegacyStage.new(self, Hash[%i[name status warnings].zip(stage)])

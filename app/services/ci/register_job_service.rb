@@ -149,7 +149,7 @@ module Ci
       # this returns builds that are ordered by number of running builds
       # we prefer projects that don't use shared runners at all
       joins("LEFT JOIN (#{running_builds_for_shared_runners.to_sql}) AS project_builds ON ci_builds.project_id=project_builds.project_id")
-        .order('COALESCE(project_builds.running_builds, 0) ASC', 'ci_builds.id ASC')
+        .order(Arel.sql('COALESCE(project_builds.running_builds, 0) ASC'), 'ci_builds.id ASC')
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

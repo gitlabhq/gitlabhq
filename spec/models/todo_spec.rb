@@ -150,6 +150,19 @@ describe Todo do
     end
   end
 
+  describe '#done?' do
+    let_it_be(:todo1) { create(:todo, state: :pending) }
+    let_it_be(:todo2) { create(:todo, state: :done) }
+
+    it 'returns true for todos with done state' do
+      expect(todo2.done?).to be_truthy
+    end
+
+    it 'returns false for todos with state pending' do
+      expect(todo1.done?).to be_falsey
+    end
+  end
+
   describe '#self_assigned?' do
     let(:user_1) { build(:user) }
 

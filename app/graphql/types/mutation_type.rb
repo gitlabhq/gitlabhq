@@ -16,6 +16,7 @@ module Types
     mount_mutation Mutations::Notes::Create::ImageDiffNote, calls_gitaly: true
     mount_mutation Mutations::Notes::Update
     mount_mutation Mutations::Notes::Destroy
+    mount_mutation Mutations::Todos::MarkDone
   end
 end
 

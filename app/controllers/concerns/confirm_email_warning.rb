@@ -4,18 +4,15 @@ module ConfirmEmailWarning
   extend ActiveSupport::Concern
 
   included do
-    before_action :set_confirm_warning, if: :show_confirm_warning?
+    before_action :set_confirm_warning, if: -> { Feature.enabled?(:soft_email_confirmation) }
   end
 
   protected
 
-  def show_confirm_warning?
-    html_request? && request.get? && Feature.enabled?(:soft_email_confirmation)
-  end
-
   def set_confirm_warning
     return unless current_user
     return if current_user.confirmed?
+    return if peek_request? || json_request? || !request.get?
 
     email = current_user.unconfirmed_email || current_user.email
 

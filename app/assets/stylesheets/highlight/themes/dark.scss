@@ -193,6 +193,11 @@ $dark-il: #de935f;
     color: $dark-highlight-color !important;
   }
 
+  // Links to URLs, emails, or dependencies
+  .line a {
+    color: $dark-na;
+  }
+
   .hll { background-color: $dark-hll-bg; }
   .c { color: $dark-c; } /* Comment */
   .err { color: $dark-err; } /* Error */

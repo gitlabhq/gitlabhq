@@ -7,4 +7,5 @@ class TodoPolicy < BasePolicy
   end
 
   rule { own_todo }.enable :read_todo
+  rule { own_todo }.enable :update_todo
 end

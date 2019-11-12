@@ -15,7 +15,12 @@ import boardsStore from '~/boards/stores/boards_store';
 
 window.Sortable = Sortable;
 
-export default function createComponent({ done, listIssueProps = {}, componentProps = {} }) {
+export default function createComponent({
+  done,
+  listIssueProps = {},
+  componentProps = {},
+  listProps = {},
+}) {
   const el = document.createElement('div');
 
   document.body.appendChild(el);
@@ -25,7 +30,7 @@ export default function createComponent({ done, listIssueProps = {}, componentPr
   boardsStore.create();
 
   const BoardListComp = Vue.extend(BoardList);
-  const list = new List(listObj);
+  const list = new List({ ...listObj, ...listProps });
   const issue = new ListIssue({
     title: 'Testing',
     id: 1,
@@ -35,7 +40,9 @@ export default function createComponent({ done, listIssueProps = {}, componentPr
     assignees: [],
     ...listIssueProps,
   });
-  list.issuesSize = 1;
+  if (!Object.prototype.hasOwnProperty.call(listProps, 'issuesSize')) {
+    list.issuesSize = 1;
+  }
   list.issues.push(issue);
 
   const component = new BoardListComp({
