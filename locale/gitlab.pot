@@ -11842,13 +11842,28 @@ msgstr ""
 msgid "Package was removed"
 msgstr ""
 
+msgid "PackageRegistry|Delete Package"
+msgstr ""
+
 msgid "PackageRegistry|Delete Package Version"
+msgstr ""
+
+msgid "PackageRegistry|Learn how to %{noPackagesLinkStart}publish and share your packages%{noPackagesLinkEnd} with GitLab."
+msgstr ""
+
+msgid "PackageRegistry|Remove package"
+msgstr ""
+
+msgid "PackageRegistry|There are no packages yet"
 msgstr ""
 
 msgid "PackageRegistry|There was a problem fetching the details for this package."
 msgstr ""
 
 msgid "PackageRegistry|Unable to load package"
+msgstr ""
+
+msgid "PackageRegistry|You are about to delete <b>%{packageName}</b>, this operation is irreversible, are you sure?"
 msgstr ""
 
 msgid "PackageRegistry|You are about to delete version %{boldStart}%{version}%{boldEnd} of %{boldStart}%{name}%{boldEnd}. Are you sure?"

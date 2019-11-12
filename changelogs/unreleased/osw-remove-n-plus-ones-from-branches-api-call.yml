@@ -1,0 +1,5 @@
+---
+title: Remove N+1 DB calls from branches API
+merge_request: 19661
+author:
+type: performance

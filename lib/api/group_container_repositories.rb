@@ -26,6 +26,8 @@ module API
           user: current_user, subject: user_group
         ).execute
 
+        track_event('list_repositories')
+
         present paginate(repositories), with: Entities::ContainerRegistry::Repository, tags: params[:tags]
       end
     end

@@ -489,11 +489,11 @@ module API
       end
 
       expose :developers_can_push do |repo_branch, options|
-        options[:project].protected_branches.developers_can?(:push, repo_branch.name)
+        ::ProtectedBranch.developers_can?(:push, repo_branch.name, protected_refs: options[:project].protected_branches)
       end
 
       expose :developers_can_merge do |repo_branch, options|
-        options[:project].protected_branches.developers_can?(:merge, repo_branch.name)
+        ::ProtectedBranch.developers_can?(:merge, repo_branch.name, protected_refs: options[:project].protected_branches)
       end
 
       expose :can_push do |repo_branch, options|

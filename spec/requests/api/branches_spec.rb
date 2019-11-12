@@ -119,6 +119,25 @@ describe API::Branches do
 
         it_behaves_like 'repository branches'
       end
+
+      it 'does not submit N+1 DB queries', :request_store do
+        create(:protected_branch, name: 'master', project: project)
+
+        # Make sure no setup step query is recorded.
+        get api(route, current_user), params: { per_page: 100 }
+
+        control = ActiveRecord::QueryRecorder.new do
+          get api(route, current_user), params: { per_page: 100 }
+        end
+
+        new_branch_name = 'protected-branch'
+        CreateBranchService.new(project, current_user).execute(new_branch_name, 'master')
+        create(:protected_branch, name: new_branch_name, project: project)
+
+        expect do
+          get api(route, current_user), params: { per_page: 100 }
+        end.not_to exceed_query_limit(control)
+      end
     end
 
     context 'when authenticated', 'as a guest' do

@@ -455,6 +455,17 @@ module API
       end
     end
 
+    def track_event(action = action_name, **args)
+      category = args.delete(:category) || self.options[:for].name
+      raise "invalid category" unless category
+
+      ::Gitlab::Tracking.event(category, action.to_s, **args)
+    rescue => error
+      Rails.logger.warn( # rubocop:disable Gitlab/RailsLogger
+        "Tracking event failed for action: #{action}, category: #{category}, message: #{error.message}"
+      )
+    end
+
     protected
 
     def project_finder_params_ce

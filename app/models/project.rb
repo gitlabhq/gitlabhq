@@ -663,6 +663,11 @@ class Project < ApplicationRecord
     end
   end
 
+  def preload_protected_branches
+    preloader = ActiveRecord::Associations::Preloader.new
+    preloader.preload(self, protected_branches: [:push_access_levels, :merge_access_levels])
+  end
+
   # returns all ancestor-groups upto but excluding the given namespace
   # when no namespace is given, all ancestors upto the top are returned
   def ancestors_upto(top = nil, hierarchy_order: nil)
