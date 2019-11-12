@@ -4,7 +4,7 @@ type: reference
 
 # Working with the bundle PgBouncer service
 
-As part of its High Availability stack, GitLab Premium includes a bundled version of [PgBouncer](https://pgbouncer.github.io/) that can be managed through `/etc/gitlab/gitlab.rb`.
+As part of its High Availability stack, GitLab Premium includes a bundled version of [PgBouncer](https://www.pgbouncer.org/) that can be managed through `/etc/gitlab/gitlab.rb`.
 
 In a High Availability setup, PgBouncer is used to seamlessly migrate database connections between servers in a failover scenario.
 
@@ -177,7 +177,7 @@ If you enable Monitoring, it must be enabled on **all** PgBouncer servers.
 
 #### Administrative console
 
-As part of Omnibus GitLab, we provide a command `gitlab-ctl pgb-console` to automatically connect to the PgBouncer administrative console. Please see the [PgBouncer documentation](https://pgbouncer.github.io/usage.html#admin-console) for detailed instructions on how to interact with the console.
+As part of Omnibus GitLab, we provide a command `gitlab-ctl pgb-console` to automatically connect to the PgBouncer administrative console. Please see the [PgBouncer documentation](https://www.pgbouncer.org/usage.html#admin-console) for detailed instructions on how to interact with the console.
 
 To start a session, run
 

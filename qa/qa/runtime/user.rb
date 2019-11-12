@@ -5,6 +5,10 @@ module QA
     module User
       extend self
 
+      def admin
+        Struct.new(:username, :password).new(admin_username, admin_password)
+      end
+
       def default_username
         'root'
       end

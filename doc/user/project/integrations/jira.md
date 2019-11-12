@@ -59,7 +59,7 @@ When connecting to **Jira Cloud**, which supports authentication via API token, 
 >   higher is required.
 > - GitLab 8.14 introduced a new way to integrate with Jira which greatly simplified
 >   the configuration options you have to enter. If you are using an older version,
->   [follow this documentation][jira-repo-old-docs].
+>   [follow this documentation](https://gitlab.com/gitlab-org/gitlab/blob/8-13-stable-ee/doc/project_services/jira.md).
 > - In order to support Oracle's Access Manager, GitLab will send additional cookies
 >   to enable Basic Auth. The cookie being added to each request is `OBBasicAuth` with
 >   a value of `fromDialog`.
@@ -205,4 +205,3 @@ authenticate with the Jira site. You will need to log in to your Jira instance
 and complete the CAPTCHA.
 
 [services-templates]: services_templates.md
-[jira-repo-old-docs]: https://gitlab.com/gitlab-org/gitlab/blob/8-13-stable/doc/project_services/jira.md

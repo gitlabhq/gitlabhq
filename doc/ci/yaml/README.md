@@ -999,12 +999,11 @@ docker build:
       when: delayed
       start_in: '3 hours'
     - when: on_success # Otherwise include the job and set to run normally
-
 ```
 
 Additional job configuration may be added to rules in the future. If something
 useful isn't available, please
-[open an issue](https://www.gitlab.com/gitlab-org/gitlab/issues).
+[open an issue](https://gitlab.com/gitlab-org/gitlab/issues).
 
 ### `tags`
 

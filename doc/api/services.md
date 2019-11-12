@@ -605,7 +605,7 @@ Set Jira service for a project.
 
 > Starting with GitLab 8.14, `api_url`, `issues_url`, `new_issue_url` and
 > `project_url` are replaced by `url`. If you are using an
-> older version, [follow this documentation][old-jira-api].
+> older version, [follow this documentation](https://gitlab.com/gitlab-org/gitlab/blob/8-13-stable-ee/doc/api/services.md#jira).
 
 ```
 PUT /projects/:id/services/jira
@@ -1223,9 +1223,6 @@ Get Jenkins CI (Deprecated) service settings for a project.
 ```
 GET /projects/:id/services/jenkins-deprecated
 ```
-
-[jira-doc]: ../user/project/integrations/jira.md
-[old-jira-api]: https://gitlab.com/gitlab-org/gitlab/blob/8-13-stable/doc/api/services.md#jira
 
 ## MockCI
 

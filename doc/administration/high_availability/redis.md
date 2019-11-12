@@ -491,7 +491,7 @@ multiple machines with the Sentinel daemon.
 1. **You can omit this step if the Sentinels will be hosted in the same node as
    the other Redis instances.**
 
-   [Download/install](https://about.gitlab.com/downloads-ee) the
+   [Download/install](https://about.gitlab.com/install/) the
    Omnibus GitLab Enterprise Edition package using **steps 1 and 2** from the
    GitLab downloads page.
    - Make sure you select the correct Omnibus package, with the same version

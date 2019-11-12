@@ -112,8 +112,8 @@ To list users matching a specific criteria, click on one of the following tabs o
 - **2FA Enabled**
 - **2FA Disabled**
 - **External**
-- **[Blocked](../profile/account/blocking_unblocking_users.md)**
-- **[Deactivated](../profile/account/activating_deactivating_users.md)**
+- **[Blocked](blocking_unblocking_users.md)**
+- **[Deactivated](activating_deactivating_users.md)**
 - **Without projects**
 
 For each user, their username, email address, are listed, also the date their account was

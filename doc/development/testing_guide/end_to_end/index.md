@@ -131,6 +131,7 @@ Continued reading:
 - [Style Guide](style_guide.md)
 - [Best Practices](best_practices.md)
 - [Testing with feature flags](feature_flags.md)
+- [Flows](flows.md)
 
 ## Where can I ask for help?
 

@@ -457,7 +457,7 @@ The replication process is now complete.
 
 ## PgBouncer support (optional)
 
-[PgBouncer](http://pgbouncer.github.io/) may be used with GitLab Geo to pool
+[PgBouncer](https://www.pgbouncer.org/) may be used with GitLab Geo to pool
 PostgreSQL connections. We recommend using PgBouncer if you use GitLab in a
 high-availability configuration with a cluster of nodes supporting a Geo
 **primary** node and another cluster of nodes supporting a Geo **secondary** node. For more

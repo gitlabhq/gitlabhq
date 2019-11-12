@@ -34,8 +34,10 @@ Management projects are restricted to the following:
 
 ### Selecting a cluster management project
 
-This will be implemented as part of [this
-issue](https://gitlab.com/gitlab-org/gitlab/issues/32810).
+You can select a management project for the cluster under **Advanced
+settings**.
+
+![Selecting a cluster management project under Advanced settings](img/advanced-settings-cluster-management-project-v12_5.png)
 
 ### Configuring your pipeline
 

@@ -174,7 +174,7 @@ support this.
    The above command will register a new Runner to use the special
    `docker:19.03.1` image, which is provided by Docker. **Notice that it's
    using the `privileged` mode to start the build and service
-   containers.** If you want to use [docker-in-docker] mode, you always
+   containers.** If you want to use [docker-in-docker](https://www.docker.com/blog/docker-can-now-run-within-docker/) mode, you always
    have to use `privileged = true` in your Docker containers.
 
    This will also mount `/certs/client` for the service and build
@@ -723,7 +723,6 @@ or [Kubernetes](https://docs.gitlab.com/runner/executors/kubernetes.html) execut
 make sure that [`pull_policy`](https://docs.gitlab.com/runner/executors/docker.html#how-pull-policies-work)
 is set to `always`.
 
-[docker-in-docker]: https://blog.docker.com/2013/09/docker-can-now-run-within-docker/
 [docker-cap]: https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities
 [2fa]: ../../user/profile/account/two_factor_authentication.md
 [pat]: ../../user/profile/personal_access_tokens.md

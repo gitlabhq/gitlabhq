@@ -13,7 +13,7 @@ type: concepts, howto
 GitLab provides liveness and readiness probes to indicate service health and
 reachability to required services. These probes report on the status of the
 database connection, Redis connection, and access to the filesystem. These
-endpoints [can be provided to schedulers like Kubernetes][kubernetes] to hold
+endpoints [can be provided to schedulers like Kubernetes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) to hold
 traffic until the system is ready or restart the container as needed.
 
 ## IP whitelist
@@ -169,4 +169,3 @@ but commented out to help encourage others to add to it in the future. -->
 [pingdom]: https://www.pingdom.com
 [nagios-health]: https://nagios-plugins.org/doc/man/check_http.html
 [newrelic-health]: https://docs.newrelic.com/docs/alerts/alert-policies/downtime-alerts/availability-monitoring
-[kubernetes]: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/

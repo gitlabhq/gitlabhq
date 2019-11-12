@@ -10,6 +10,14 @@ require_relative '../config/initializers/0_inject_enterprise_edition_module'
 
 module QA
   ##
+  # Helper classes to represent frequently used sequences of actions
+  # (e.g., login)
+  #
+  module Flow
+    autoload :Login, 'qa/flow/login'
+  end
+
+  ##
   # GitLab QA runtime classes, mostly singletons.
   #
   module Runtime
