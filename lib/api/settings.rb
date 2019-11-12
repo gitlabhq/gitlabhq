@@ -147,10 +147,6 @@ module API
         optional :snowplow_cookie_domain, type: String, desc: 'The Snowplow cookie domain'
         optional :snowplow_app_id, type: String, desc: 'The Snowplow site name / application id'
       end
-      optional :pendo_enabled, type: Grape::API::Boolean, desc: 'Enable Pendo tracking'
-      given pendo_enabled: ->(val) { val } do
-        requires :pendo_url, type: String, desc: 'The Pendo url endpoint'
-      end
 
       ApplicationSetting::SUPPORTED_KEY_TYPES.each do |type|
         optional :"#{type}_key_restriction",

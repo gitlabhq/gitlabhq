@@ -47,7 +47,8 @@ export default {
       hasSearchQuery: true,
     });
   },
-  [types.RECEIVE_SEARCHED_ITEMS_SUCCESS](state, rawItems) {
+  [types.RECEIVE_SEARCHED_ITEMS_SUCCESS](state, results) {
+    const rawItems = results.data;
     Object.assign(state, {
       items: rawItems.map(rawItem => ({
         id: rawItem.id,

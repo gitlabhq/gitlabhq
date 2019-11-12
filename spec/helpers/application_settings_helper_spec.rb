@@ -39,7 +39,6 @@ describe ApplicationSettingsHelper do
 
   context 'with tracking parameters' do
     it { expect(visible_attributes).to include(*%i(snowplow_collector_hostname snowplow_cookie_domain snowplow_enabled snowplow_app_id)) }
-    it { expect(visible_attributes).to include(*%i(pendo_enabled pendo_url)) }
   end
 
   describe '.integration_expanded?' do

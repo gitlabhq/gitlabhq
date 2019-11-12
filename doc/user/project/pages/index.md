@@ -19,38 +19,7 @@ You can use it either for personal or business websites, such as
 portfolios, documentation, manifestos, and business presentations.
 You can also attribute any license to your content.
 
-<table class="borderless-table center fixed-table">
-  <tr>
-    <td style="width: 22%"><img src="img/icons/cogs.png" alt="SSGs" class="image-noshadow half-width"></td>
-    <td style="width: 4%">
-      <strong>
-        <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-      </strong>
-    </td>
-    <td style="width: 22%"><img src="img/icons/monitor.png" alt="Websites" class="image-noshadow half-width"></td>
-    <td style="width: 4%">
-      <strong>
-        <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-      </strong>
-    </td>
-    <td style="width: 22%"><img src="img/icons/free.png" alt="Pages is free" class="image-noshadow half-width"></td>
-    <td style="width: 4%">
-      <strong>
-        <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-      </strong>
-    </td>
-    <td style="width: 22%"><img src="img/icons/lock.png" alt="Secure your website" class="image-noshadow half-width"></td>
-  </tr>
-  <tr>
-    <td><em>Use any static website generator or plain HTML</em></td>
-    <td></td>
-    <td><em>Create websites for your projects, groups, or user account</em></td>
-    <td></td>
-    <td><em>Host on GitLab.com for free, or on your own GitLab instance</em></td>
-    <td></td>
-    <td><em>Connect your custom domain(s) and TLS certificates</em></td>
-  </tr>
-</table>
+<img src="img/pages_workflow_v12_5.png" alt="Pages websites workflow" class="image-noshadow">
 
 Pages is available for free for all GitLab.com users as well as for self-managed
 instances (GitLab Core, Starter, Premium, and Ultimate).
@@ -94,6 +63,8 @@ To get started with GitLab Pages, you can either:
 - [Use a bundled website template ready to go](getting_started/pages_bundled_template.md).
 - [Copy an existing sample](getting_started/fork_sample_project.md).
 - [Create a website from scratch or deploy an existing one](getting_started/new_or_existing_website.md).
+
+<img src="img/new_project_for_pages_v12_5.png" alt="New projects for GitLab Pages" class="image-noshadow">
 
 Optional features:
 

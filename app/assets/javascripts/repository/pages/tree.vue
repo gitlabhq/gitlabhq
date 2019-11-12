@@ -1,5 +1,6 @@
 <script>
 import TreeContent from '../components/tree_content.vue';
+import { updateElementsVisibility } from '../utils/dom';
 
 export default {
   components: {
@@ -10,6 +11,23 @@ export default {
       type: String,
       required: false,
       default: '/',
+    },
+  },
+  computed: {
+    isRoot() {
+      return this.path === '/';
+    },
+  },
+  watch: {
+    isRoot: {
+      immediate: true,
+      handler: 'updateElements',
+    },
+  },
+  methods: {
+    updateElements(isRoot) {
+      updateElementsVisibility('.js-show-on-root', isRoot);
+      updateElementsVisibility('.js-hide-on-root', !isRoot);
     },
   },
 };

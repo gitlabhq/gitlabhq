@@ -342,8 +342,6 @@ ActiveRecord::Schema.define(version: 2019_11_12_115317) do
     t.integer "push_event_hooks_limit", default: 3, null: false
     t.integer "push_event_activities_limit", default: 3, null: false
     t.string "custom_http_clone_url_root", limit: 511
-    t.boolean "pendo_enabled", default: false, null: false
-    t.string "pendo_url", limit: 255
     t.integer "deletion_adjourned_period", default: 7, null: false
     t.date "license_trial_ends_on"
     t.boolean "eks_integration_enabled", default: false, null: false
@@ -2802,14 +2800,19 @@ ActiveRecord::Schema.define(version: 2019_11_12_115317) do
     t.index ["user_id"], name: "index_personal_access_tokens_on_user_id"
   end
 
+  create_table "plan_limits", force: :cascade do |t|
+    t.bigint "plan_id", null: false
+    t.integer "ci_active_pipelines", default: 0, null: false
+    t.integer "ci_pipeline_size", default: 0, null: false
+    t.integer "ci_active_jobs", default: 0, null: false
+    t.index ["plan_id"], name: "index_plan_limits_on_plan_id", unique: true
+  end
+
   create_table "plans", id: :serial, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "name"
     t.string "title"
-    t.integer "active_pipelines_limit"
-    t.integer "pipeline_size_limit"
-    t.integer "active_jobs_limit", default: 0
     t.index ["name"], name: "index_plans_on_name"
   end
 
@@ -4389,6 +4392,7 @@ ActiveRecord::Schema.define(version: 2019_11_12_115317) do
   add_foreign_key "path_locks", "projects", name: "fk_5265c98f24", on_delete: :cascade
   add_foreign_key "path_locks", "users"
   add_foreign_key "personal_access_tokens", "users"
+  add_foreign_key "plan_limits", "plans", on_delete: :cascade
   add_foreign_key "pool_repositories", "projects", column: "source_project_id", on_delete: :nullify
   add_foreign_key "pool_repositories", "shards", on_delete: :restrict
   add_foreign_key "project_alerting_settings", "projects", on_delete: :cascade

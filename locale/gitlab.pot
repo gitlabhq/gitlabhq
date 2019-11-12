@@ -3016,6 +3016,9 @@ msgstr ""
 msgid "Changes won't take place until the index is %{link_start}recreated%{link_end}."
 msgstr ""
 
+msgid "Changing a Release tag is only supported via Releases API. %{linkStart}More information%{linkEnd}"
+msgstr ""
+
 msgid "Changing group path can have unintended side effects."
 msgstr ""
 
@@ -3140,9 +3143,6 @@ msgid "Choose a template..."
 msgstr ""
 
 msgid "Choose a type..."
-msgstr ""
-
-msgid "Choose an existing tag, or create a new one"
 msgstr ""
 
 msgid "Choose any color."
@@ -6227,9 +6227,6 @@ msgid "Enable or disable the Pseudonymizer data collection."
 msgstr ""
 
 msgid "Enable or disable version check and usage ping."
-msgstr ""
-
-msgid "Enable pendo tracking"
 msgstr ""
 
 msgid "Enable protected paths rate limit"
@@ -10660,10 +10657,10 @@ msgstr ""
 msgid "MergeRequests|started a thread on %{linkStart}the diff%{linkEnd}"
 msgstr ""
 
-msgid "MergeRequests|started a thread on an outdated change in commit %{linkStart}%{commitId}%{linkEnd}"
+msgid "MergeRequests|started a thread on an outdated change in commit %{linkStart}%{commitDisplay}%{linkEnd}"
 msgstr ""
 
-msgid "MergeRequests|started a thread on commit %{linkStart}%{commitId}%{linkEnd}"
+msgid "MergeRequests|started a thread on commit %{linkStart}%{commitDisplay}%{linkEnd}"
 msgstr ""
 
 msgid "MergeRequest| %{paragraphStart}changed the description %{descriptionChangedTimes} times %{timeDifferenceMinutes}%{paragraphEnd}"
@@ -11984,12 +11981,6 @@ msgid "Paused Runners don't accept new jobs"
 msgstr ""
 
 msgid "Pending"
-msgstr ""
-
-msgid "Pendo"
-msgstr ""
-
-msgid "Pendo endpoint"
 msgstr ""
 
 msgid "People without permission will never get a notification and won't be able to comment."

@@ -113,10 +113,9 @@ const Api = {
       .get(url, {
         params: Object.assign(defaults, options),
       })
-      .then(({ data }) => {
+      .then(({ data, headers }) => {
         callback(data);
-
-        return data;
+        return { data, headers };
       });
   },
 

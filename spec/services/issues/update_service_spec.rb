@@ -606,6 +606,24 @@ describe Issues::UpdateService, :mailer do
         end
       end
 
+      context 'when same id is passed as add_label_ids and remove_label_ids' do
+        let(:params) { { add_label_ids: [label.id], remove_label_ids: [label.id] } }
+
+        context 'for a label assigned to an issue' do
+          it 'removes the label' do
+            issue.update(labels: [label])
+
+            expect(result.label_ids).to be_empty
+          end
+        end
+
+        context 'for a label not assigned to an issue' do
+          it 'does not add the label' do
+            expect(result.label_ids).to be_empty
+          end
+        end
+      end
+
       context 'when duplicate label titles are given' do
         let(:params) do
           { labels: [label3.title, label3.title] }

@@ -82,22 +82,6 @@ describe ApplicationSetting do
       it { is_expected.to allow_value(nil).for(:snowplow_iglu_registry_url) }
     end
 
-    context 'when pendo is enabled' do
-      before do
-        setting.pendo_enabled = true
-      end
-
-      it { is_expected.not_to allow_value(nil).for(:pendo_url) }
-      it { is_expected.to allow_value(http).for(:pendo_url) }
-      it { is_expected.to allow_value(https).for(:pendo_url) }
-      it { is_expected.not_to allow_value(ftp).for(:pendo_url) }
-      it { is_expected.not_to allow_value('http://127.0.0.1').for(:pendo_url) }
-    end
-
-    context 'when pendo is not enabled' do
-      it { is_expected.to allow_value(nil).for(:pendo_url) }
-    end
-
     context "when user accepted let's encrypt terms of service" do
       before do
         setting.update(lets_encrypt_terms_of_service_accepted: true)

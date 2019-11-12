@@ -1,18 +1,15 @@
 <script>
-import _ from 'underscore';
 import { mapActions, mapGetters } from 'vuex';
 import { GlTooltipDirective } from '@gitlab/ui';
-import { truncateSha } from '~/lib/utils/text_utility';
-import { s__, __, sprintf } from '~/locale';
+import { s__, __ } from '~/locale';
 import { clearDraft, getDiscussionReplyKey } from '~/lib/utils/autosave';
 import icon from '~/vue_shared/components/icon.vue';
 import diffLineNoteFormMixin from 'ee_else_ce/notes/mixins/diff_line_note_form';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import Flash from '../../flash';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
-import noteHeader from './note_header.vue';
+import diffDiscussionHeader from './diff_discussion_header.vue';
 import noteSignedOutWidget from './note_signed_out_widget.vue';
-import noteEditedText from './note_edited_text.vue';
 import noteForm from './note_form.vue';
 import diffWithNote from './diff_with_note.vue';
 import noteable from '../mixins/noteable';
@@ -27,9 +24,8 @@ export default {
   components: {
     icon,
     userAvatarLink,
-    noteHeader,
+    diffDiscussionHeader,
     noteSignedOutWidget,
-    noteEditedText,
     noteForm,
     DraftNote: () => import('ee_component/batch_comments/components/draft_note.vue'),
     TimelineEntryItem,
@@ -92,9 +88,6 @@ export default {
     currentUser() {
       return this.getUserData;
     },
-    author() {
-      return this.firstNote.author;
-    },
     autosaveKey() {
       return getDiscussionReplyKey(this.firstNote.noteable_type, this.discussion.id);
     },
@@ -103,27 +96,6 @@ export default {
     },
     firstNote() {
       return this.discussion.notes.slice(0, 1)[0];
-    },
-    lastUpdatedBy() {
-      const { notes } = this.discussion;
-
-      if (notes.length > 1) {
-        return notes[notes.length - 1].author;
-      }
-
-      return null;
-    },
-    lastUpdatedAt() {
-      const { notes } = this.discussion;
-
-      if (notes.length > 1) {
-        return notes[notes.length - 1].created_at;
-      }
-
-      return null;
-    },
-    resolvedText() {
-      return this.discussion.resolved_by_push ? __('Automatically resolved') : __('Resolved');
     },
     shouldShowJumpToNextDiscussion() {
       return this.showJumpToNextDiscussion(this.discussionsByDiffOrder ? 'diff' : 'discussion');
@@ -150,40 +122,6 @@ export default {
     shouldHideDiscussionBody() {
       return this.shouldRenderDiffs && !this.isExpanded;
     },
-    actionText() {
-      const linkStart = `<a href="${_.escape(this.discussion.discussion_path)}">`;
-      const linkEnd = '</a>';
-
-      let { commit_id: commitId } = this.discussion;
-      if (commitId) {
-        commitId = `<span class="commit-sha">${truncateSha(commitId)}</span>`;
-      }
-
-      const {
-        for_commit: isForCommit,
-        diff_discussion: isDiffDiscussion,
-        active: isActive,
-      } = this.discussion;
-
-      let text = s__('MergeRequests|started a thread');
-      if (isForCommit) {
-        text = s__('MergeRequests|started a thread on commit %{linkStart}%{commitId}%{linkEnd}');
-      } else if (isDiffDiscussion && commitId) {
-        text = isActive
-          ? s__('MergeRequests|started a thread on commit %{linkStart}%{commitId}%{linkEnd}')
-          : s__(
-              'MergeRequests|started a thread on an outdated change in commit %{linkStart}%{commitId}%{linkEnd}',
-            );
-      } else if (isDiffDiscussion) {
-        text = isActive
-          ? s__('MergeRequests|started a thread on %{linkStart}the diff%{linkEnd}')
-          : s__(
-              'MergeRequests|started a thread on %{linkStart}an old version of the diff%{linkEnd}',
-            );
-      }
-
-      return sprintf(text, { commitId, linkStart, linkEnd }, false);
-    },
     diffLine() {
       if (this.line) {
         return this.line;
@@ -208,16 +146,11 @@ export default {
   methods: {
     ...mapActions([
       'saveNote',
-      'toggleDiscussion',
       'removePlaceholderNotes',
       'toggleResolveNote',
       'expandDiscussion',
       'removeConvertedDiscussion',
     ]),
-    truncateSha,
-    toggleDiscussionHandler() {
-      this.toggleDiscussion({ discussionId: this.discussion.id });
-    },
     showReplyForm() {
       this.isReplying = true;
     },
@@ -311,43 +244,7 @@ export default {
         class="discussion js-discussion-container"
         data-qa-selector="discussion_content"
       >
-        <div v-if="shouldRenderDiffs" class="discussion-header note-wrapper">
-          <div v-once class="timeline-icon align-self-start flex-shrink-0">
-            <user-avatar-link
-              v-if="author"
-              :link-href="author.path"
-              :img-src="author.avatar_url"
-              :img-alt="author.name"
-              :img-size="40"
-            />
-          </div>
-          <div class="timeline-content w-100">
-            <note-header
-              :author="author"
-              :created-at="firstNote.created_at"
-              :note-id="firstNote.id"
-              :include-toggle="true"
-              :expanded="discussion.expanded"
-              @toggleHandler="toggleDiscussionHandler"
-            >
-              <span v-html="actionText"></span>
-            </note-header>
-            <note-edited-text
-              v-if="discussion.resolved"
-              :edited-at="discussion.resolved_at"
-              :edited-by="discussion.resolved_by"
-              :action-text="resolvedText"
-              class-name="discussion-headline-light js-discussion-headline"
-            />
-            <note-edited-text
-              v-else-if="lastUpdatedAt"
-              :edited-at="lastUpdatedAt"
-              :edited-by="lastUpdatedBy"
-              action-text="Last updated"
-              class-name="discussion-headline-light js-discussion-headline"
-            />
-          </div>
-        </div>
+        <diff-discussion-header v-if="shouldRenderDiffs" :discussion="discussion" />
         <div v-if="!shouldHideDiscussionBody" class="discussion-body">
           <component
             :is="wrapperComponent"

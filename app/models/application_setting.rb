@@ -6,6 +6,12 @@ class ApplicationSetting < ApplicationRecord
   include TokenAuthenticatable
   include ChronicDurationAttribute
 
+  # Only remove this >= %12.6 and >= 2019-12-01
+  self.ignored_columns += %i[
+      pendo_enabled
+      pendo_url
+    ]
+
   add_authentication_token_field :runners_registration_token, encrypted: -> { Feature.enabled?(:application_settings_tokens_optional_encryption, default_enabled: true) ? :optional : :required }
   add_authentication_token_field :health_check_access_token
   add_authentication_token_field :static_objects_external_storage_auth_token
@@ -102,11 +108,6 @@ class ApplicationSetting < ApplicationRecord
             addressable_url: true,
             allow_blank: true,
             if: :snowplow_enabled
-
-  validates :pendo_url,
-            presence: true,
-            public_url: true,
-            if: :pendo_enabled
 
   validates :max_attachment_size,
             presence: true,

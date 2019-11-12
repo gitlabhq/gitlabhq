@@ -16,7 +16,6 @@ export default function setupVueRepositoryList() {
   const { dataset } = el;
   const { projectPath, projectShortPath, ref, fullName } = dataset;
   const router = createRouter(projectPath, ref);
-  const hideOnRootEls = document.querySelectorAll('.js-hide-on-root');
 
   apolloProvider.clients.defaultClient.cache.writeData({
     data: {
@@ -28,20 +27,7 @@ export default function setupVueRepositoryList() {
   });
 
   router.afterEach(({ params: { pathMatch } }) => {
-    const isRoot = pathMatch === undefined || pathMatch === '/';
-
     setTitle(pathMatch, ref, fullName);
-
-    if (!isRoot) {
-      document
-        .querySelectorAll('.js-keep-hidden-on-navigation')
-        .forEach(elem => elem.classList.add('hidden'));
-    }
-
-    document
-      .querySelectorAll('.js-hide-on-navigation')
-      .forEach(elem => elem.classList.toggle('hidden', !isRoot));
-    hideOnRootEls.forEach(elem => elem.classList.toggle('hidden', isRoot));
   });
 
   const breadcrumbEl = document.getElementById('js-repo-breadcrumb');
