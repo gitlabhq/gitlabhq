@@ -701,16 +701,20 @@ describe API::MergeRequests do
       expect(json_response.first['id']).to eq merge_request_closed.id
     end
 
-    it 'avoids N+1 queries' do
-      control = ActiveRecord::QueryRecorder.new do
-        get api("/projects/#{project.id}/merge_requests", user)
-      end.count
+    context 'a project which enforces all discussions to be resolved' do
+      let!(:project) { create(:project, :repository, only_allow_merge_if_all_discussions_are_resolved: true) }
 
-      create(:merge_request, author: user, assignees: [user], source_project: project, target_project: project, created_at: base_time)
+      it 'avoids N+1 queries' do
+        control = ActiveRecord::QueryRecorder.new do
+          get api("/projects/#{project.id}/merge_requests", user)
+        end.count
 
-      expect do
-        get api("/projects/#{project.id}/merge_requests", user)
-      end.not_to exceed_query_limit(control)
+        create(:merge_request, author: user, assignees: [user], source_project: project, target_project: project, created_at: base_time)
+
+        expect do
+          get api("/projects/#{project.id}/merge_requests", user)
+        end.not_to exceed_query_limit(control)
+      end
     end
   end
 

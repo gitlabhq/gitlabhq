@@ -5241,6 +5241,9 @@ msgstr ""
 msgid "Default Branch"
 msgstr ""
 
+msgid "Default CI configuration path"
+msgstr ""
+
 msgid "Default artifacts expiration"
 msgstr ""
 
@@ -16838,6 +16841,9 @@ msgid "The connection will time out after %{timeout}. For repositories that take
 msgstr ""
 
 msgid "The content of this page is not encoded in UTF-8. Edits can only be made via the Git repository."
+msgstr ""
+
+msgid "The default CI configuration path for new projects."
 msgstr ""
 
 msgid "The dependency list details information about the components used within your project."

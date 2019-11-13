@@ -263,7 +263,7 @@ This feature:
   For example:
 
   ```sh
-  kubectl -n gitlab-managed-apps exec -it $(kubectl get pods -n gitlab-managed-apps | grep 'ingress-controller' | awk '{print $1}') -- tail -f /var/log/modsec_audit.log
+  kubectl -n gitlab-managed-apps exec -it $(kubectl get pods -n gitlab-managed-apps | grep 'ingress-controller' | awk '{print $1}') -- tail -f /var/log/modsec/audit.log
   ```
 
 There is a small performance overhead by enabling `modsecurity`. However, if this is

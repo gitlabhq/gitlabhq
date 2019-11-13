@@ -34,7 +34,7 @@ The MemoryKiller is controlled using environment variables.
   In _daemon_ mode, the MemoryKiller checks the Sidekiq process RSS every 3 seconds
   (defined by `SIDEKIQ_MEMORY_KILLER_CHECK_INTERVAL`).
 
-- `SIDEKIQ_MEMORY_KILLER_MAX_RSS`: if this variable is set, and its value is greater
+- `SIDEKIQ_MEMORY_KILLER_MAX_RSS` (KB): if this variable is set, and its value is greater
   than 0, the MemoryKiller is enabled. Otherwise the MemoryKiller is disabled.
 
   `SIDEKIQ_MEMORY_KILLER_MAX_RSS` defines the Sidekiq process allowed RSS.
@@ -52,7 +52,7 @@ The MemoryKiller is controlled using environment variables.
   [in the Omnibus GitLab
   repository](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-cookbooks/gitlab/attributes/default.rb).
 
-- `SIDEKIQ_MEMORY_KILLER_HARD_LIMIT_RSS`: is used by _daemon_ mode. If the Sidekiq
+- `SIDEKIQ_MEMORY_KILLER_HARD_LIMIT_RSS` (KB): is used by _daemon_ mode. If the Sidekiq
   process RSS (expressed in kilobytes) exceeds `SIDEKIQ_MEMORY_KILLER_HARD_LIMIT_RSS`,
   an immediate graceful restart of Sidekiq is triggered.
 

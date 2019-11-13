@@ -2023,8 +2023,6 @@ Defining an empty array will skip downloading any artifacts for that job.
 The status of the previous job is not considered when using `dependencies`, so
 if it failed or it is a manual job that was not run, no error occurs.
 
----
-
 In the following example, we define two jobs with artifacts, `build:osx` and
 `build:linux`. When the `test:osx` is executed, the artifacts from `build:osx`
 will be downloaded and extracted in the context of the build. The same happens

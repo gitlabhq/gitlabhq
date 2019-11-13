@@ -219,8 +219,6 @@ and the project level approvers are changed after a merge request is created,
 the merge request retains the previous approvers.
 However, the approvers can be changed by [editing the merge request](#overriding-the-merge-request-approvals-default-settings).
 
----
-
 The default approval settings can now be overridden when creating a
 [merge request](index.md) or by editing it after it's been created:
 

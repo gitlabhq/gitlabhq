@@ -120,6 +120,7 @@ merge_requests:
 - pipelines_for_merge_request
 - merge_request_assignees
 - suggestions
+- unresolved_notes
 - assignees
 - reviews
 - approval_rules

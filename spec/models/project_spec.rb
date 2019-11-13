@@ -2029,24 +2029,37 @@ describe Project do
   end
 
   describe '#ci_config_path=' do
+    using RSpec::Parameterized::TableSyntax
+
     let(:project) { create(:project) }
 
-    it 'sets nil' do
-      project.update!(ci_config_path: nil)
-
-      expect(project.ci_config_path).to be_nil
+    where(:default_ci_config_path, :project_ci_config_path, :expected_ci_config_path) do
+      nil           | :notset            | :default
+      nil           | nil                | :default
+      nil           | ''                 | :default
+      nil           | "cust\0om/\0/path" | 'custom//path'
+      ''            | :notset            | :default
+      ''            | nil                | :default
+      ''            | ''                 | :default
+      ''            | "cust\0om/\0/path" | 'custom//path'
+      'global/path' | :notset            | 'global/path'
+      'global/path' | nil                | :default
+      'global/path' | ''                 | :default
+      'global/path' | "cust\0om/\0/path" | 'custom//path'
     end
 
-    it 'sets a string' do
-      project.update!(ci_config_path: 'foo/.gitlab_ci.yml')
+    with_them do
+      before do
+        stub_application_setting(default_ci_config_path: default_ci_config_path)
 
-      expect(project.ci_config_path).to eq('foo/.gitlab_ci.yml')
-    end
+        if project_ci_config_path != :notset
+          project.ci_config_path = project_ci_config_path
+        end
+      end
 
-    it 'sets a string but removes all null characters' do
-      project.update!(ci_config_path: "f\0oo/\0/.gitlab_ci.yml")
-
-      expect(project.ci_config_path).to eq('foo//.gitlab_ci.yml')
+      it 'returns the correct path' do
+        expect(project.ci_config_path.presence || :default).to eq(expected_ci_config_path)
+      end
     end
   end
 

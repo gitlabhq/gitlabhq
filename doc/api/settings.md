@@ -40,6 +40,7 @@ Example response:
    "domain_blacklist_enabled" : false,
    "domain_blacklist" : [],
    "created_at" : "2016-01-04T15:44:55.176Z",
+   "default_ci_config_path" : null,
    "default_project_visibility" : "private",
    "default_group_visibility" : "private",
    "gravatar_enabled" : true,
@@ -113,6 +114,7 @@ Example response:
   "restricted_visibility_levels": [],
   "max_attachment_size": 10,
   "session_expire_delay": 10080,
+  "default_ci_config_path" : null,
   "default_project_visibility": "internal",
   "default_snippet_visibility": "private",
   "default_group_visibility": "private",
@@ -198,6 +200,7 @@ are listed in the descriptions of the relevant settings.
 | `container_registry_token_expire_delay`  | integer          | no                                   | Container Registry token duration in minutes. |
 | `default_artifacts_expire_in`            | string           | no                                   | Set the default expiration time for each job's artifacts. |
 | `default_branch_protection`              | integer          | no                                   | Determine if developers can push to master. Can take: `0` _(not protected, both developers and maintainers can push new commits, force push, or delete the branch)_, `1` _(partially protected, developers and maintainers can push new commits, but cannot force push or delete the branch)_ or `2` _(fully protected, developers cannot push new commits, but maintainers can; no-one can force push or delete the branch)_ as a parameter. Default is `2`. |
+| `default_ci_config_path`                 | string           | no                                   | Default CI configuration path for new projects (`.gitlab-ci.yml` if not set). |
 | `default_group_visibility`               | string           | no                                   | What visibility level new groups receive. Can take `private`, `internal` and `public` as a parameter. Default is `private`. |
 | `default_project_creation`               | integer          | no                                   | Default project creation protection. Can take: `0` _(No one)_, `1` _(Maintainers)_ or `2` _(Developers + Maintainers)_|
 | `default_projects_limit`                 | integer          | no                                   | Project limit per user. Default is `100000`. |

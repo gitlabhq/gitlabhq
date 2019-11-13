@@ -68,6 +68,7 @@ class MergeRequest < ApplicationRecord
   has_many :cached_closes_issues, through: :merge_requests_closing_issues, source: :issue
   has_many :pipelines_for_merge_request, foreign_key: 'merge_request_id', class_name: 'Ci::Pipeline'
   has_many :suggestions, through: :notes
+  has_many :unresolved_notes, -> { unresolved }, as: :noteable, class_name: 'Note'
 
   has_many :merge_request_assignees
   has_many :assignees, class_name: "User", through: :merge_request_assignees
@@ -211,7 +212,7 @@ class MergeRequest < ApplicationRecord
   scope :join_project, -> { joins(:target_project) }
   scope :references_project, -> { references(:target_project) }
   scope :with_api_entity_associations, -> {
-    preload(:assignees, :author, :notes, :labels, :milestone, :timelogs,
+    preload(:assignees, :author, :unresolved_notes, :labels, :milestone, :timelogs,
             latest_merge_request_diff: [:merge_request_diff_commits],
             metrics: [:latest_closed_by, :merged_by],
             target_project: [:route, { namespace: :route }],
@@ -923,7 +924,7 @@ class MergeRequest < ApplicationRecord
   def mergeable_discussions_state?
     return true unless project.only_allow_merge_if_all_discussions_are_resolved?
 
-    !discussions_to_be_resolved?
+    unresolved_notes.none?(&:to_be_resolved?)
   end
 
   def for_fork?

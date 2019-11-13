@@ -297,6 +297,12 @@ class ApplicationSetting < ApplicationRecord
                  pass: :external_auth_client_key_pass,
                  if: -> (setting) { setting.external_auth_client_cert.present? }
 
+  validates :default_ci_config_path,
+    format: { without: %r{(\.{2}|\A/)},
+              message: N_('cannot include leading slash or directory traversal.') },
+    length: { maximum: 255 },
+    allow_blank: true
+
   attr_encrypted :asset_proxy_secret_key,
                  mode: :per_attribute_iv,
                  key: Settings.attr_encrypted_db_key_base_truncated,

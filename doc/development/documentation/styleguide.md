@@ -604,9 +604,6 @@ Inside the document:
 - Always use a proper description for what the image is about. That way, when a
   browser fails to show the image, this text will be used as an alternative
   description.
-- If there are consecutive images with little text between them, always add
-  three dashes (`---`) between the image and the text to create a horizontal
-  line for better clarity.
 - If a heading is placed right after an image, always add three dashes (`---`)
   between the image and the heading.
 

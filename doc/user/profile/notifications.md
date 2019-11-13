@@ -77,7 +77,7 @@ To select a notification level for a project, use either of these methods:
 1. Locate the project in the **Projects** section.
 1. Select the desired [notification level](#notification-levels).
 
----
+Or:
 
 1. Navigate to the project's page.
 1. Click the notification dropdown, marked with a bell icon.

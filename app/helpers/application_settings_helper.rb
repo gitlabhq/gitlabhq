@@ -176,6 +176,7 @@ module ApplicationSettingsHelper
       :container_registry_token_expire_delay,
       :default_artifacts_expire_in,
       :default_branch_protection,
+      :default_ci_config_path,
       :default_group_visibility,
       :default_project_creation,
       :default_project_visibility,

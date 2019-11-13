@@ -21,6 +21,7 @@ module Clusters
       }
 
       FETCH_IP_ADDRESS_DELAY = 30.seconds
+      MODSEC_SIDECAR_INITIAL_DELAY_SECONDS = 10
 
       state_machine :status do
         after_transition any => [:installed] do |application|
@@ -81,11 +82,39 @@ module Clusters
               "enable-owasp-modsecurity-crs" => "true",
               "modsecurity.conf" => modsecurity_config_content
             },
+            "extraContainers" => [
+              {
+                "name" => "modsecurity-log",
+                "image" => "busybox",
+                "args" => [
+                  "/bin/sh",
+                  "-c",
+                  "tail -f /var/log/modsec/audit.log"
+                ],
+                "volumeMounts" => [
+                  {
+                    "name" => "modsecurity-log-volume",
+                    "mountPath" => "/var/log/modsec",
+                    "readOnly" => true
+                  }
+                ],
+                "startupProbe" => {
+                  "exec" => {
+                    "command" => ["ls", "/var/log/modsec"]
+                  },
+                  "initialDelaySeconds" => MODSEC_SIDECAR_INITIAL_DELAY_SECONDS
+                }
+              }
+            ],
             "extraVolumeMounts" => [
               {
                 "name" => "modsecurity-template-volume",
                 "mountPath" => "/etc/nginx/modsecurity/modsecurity.conf",
                 "subPath" => "modsecurity.conf"
+              },
+              {
+                "name" => "modsecurity-log-volume",
+                "mountPath" => "/var/log/modsec"
               }
             ],
             "extraVolumes" => [
@@ -100,6 +129,10 @@ module Clusters
                     }
                   ]
                 }
+              },
+              {
+                "name" => "modsecurity-log-volume",
+                "emptyDir" => {}
               }
             ]
           }

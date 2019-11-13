@@ -165,6 +165,12 @@ describe Clusters::Applications::Ingress do
         expect(subject.values).to include('extraVolumes')
         expect(subject.values).to include('extraVolumeMounts')
       end
+
+      it 'includes modsecurity sidecar container' do
+        expect(subject.values).to include('modsecurity-log-volume')
+
+        expect(subject.values).to include('extraContainers')
+      end
     end
 
     context 'when ingress_modsecurity is disabled' do
@@ -189,6 +195,12 @@ describe Clusters::Applications::Ingress do
 
         expect(subject.values).not_to include('extraVolumes')
         expect(subject.values).not_to include('extraVolumeMounts')
+      end
+
+      it 'excludes modsecurity sidecar container' do
+        expect(subject.values).not_to include('modsecurity-log-volume')
+
+        expect(subject.values).not_to include('extraContainers')
       end
     end
   end

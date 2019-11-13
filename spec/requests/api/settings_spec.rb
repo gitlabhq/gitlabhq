@@ -18,6 +18,7 @@ describe API::Settings, 'Settings' do
       expect(json_response['password_authentication_enabled']).to be_truthy
       expect(json_response['plantuml_enabled']).to be_falsey
       expect(json_response['plantuml_url']).to be_nil
+      expect(json_response['default_ci_config_path']).to be_nil
       expect(json_response['default_project_visibility']).to be_a String
       expect(json_response['default_snippet_visibility']).to be_a String
       expect(json_response['default_group_visibility']).to be_a String
@@ -49,6 +50,7 @@ describe API::Settings, 'Settings' do
       it "updates application settings" do
         put api("/application/settings", admin),
           params: {
+            default_ci_config_path: 'debian/salsa-ci.yml',
             default_projects_limit: 3,
             default_project_creation: 2,
             password_authentication_enabled_for_web: false,
@@ -80,6 +82,7 @@ describe API::Settings, 'Settings' do
           }
 
         expect(response).to have_gitlab_http_status(200)
+        expect(json_response['default_ci_config_path']).to eq('debian/salsa-ci.yml')
         expect(json_response['default_projects_limit']).to eq(3)
         expect(json_response['default_project_creation']).to eq(::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS)
         expect(json_response['password_authentication_enabled_for_web']).to be_falsey

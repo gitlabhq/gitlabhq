@@ -67,8 +67,6 @@ This document was moved to [another location](path/to/new_doc.md).
 
 where `path/to/new_doc.md` is the relative path to the root directory `doc/`.
 
----
-
 For example, if you move `doc/workflow/lfs/lfs_administration.md` to
 `doc/administration/lfs.md`, then the steps would be:
 

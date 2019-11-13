@@ -75,7 +75,5 @@ You also can:
 
 ![Gitea importer page](img/import_projects_from_gitea_importer_v12_3.png)
 
----
-
 You can also choose a different name for the project and a different namespace,
 if you have the privileges to do so.
