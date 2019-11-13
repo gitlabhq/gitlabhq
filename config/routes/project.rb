@@ -666,7 +666,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
   # Legacy routes.
   # Introduced in 12.0.
-  # Should be removed after 12.1
+  # Should be removed with https://gitlab.com/gitlab-org/gitlab/issues/28848.
   scope(path: '*namespace_id',
         as: :namespace,
         namespace_id: Gitlab::PathRegex.full_namespace_route_regex) do

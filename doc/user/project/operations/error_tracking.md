@@ -44,3 +44,14 @@ The Error Tracking list may be found at **Operations > Error Tracking** in your 
 Errors can be filtered by title.
 
 ![Error Tracking list](img/error_tracking_list.png)
+
+## Error Details
+
+From error list, users can navigate to the error details page by clicking the title of any error.
+
+This page has:
+
+- A link to Sentry issue.
+- A full stack trace along with other details.
+
+![Error Details](img/error_details_v12_5.png)

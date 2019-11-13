@@ -44,7 +44,8 @@ describe Metrics::Dashboard::SystemDashboardService, :use_clean_rails_memory_sto
         [{
           path: described_class::SYSTEM_DASHBOARD_PATH,
           display_name: described_class::SYSTEM_DASHBOARD_NAME,
-          default: true
+          default: true,
+          system_dashboard: true
         }]
       )
     end

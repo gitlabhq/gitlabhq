@@ -4,6 +4,8 @@
 # to the parameters specified by the controller.
 module MetricsDashboard
   include RenderServiceResults
+  include ChecksCollaboration
+
   extend ActiveSupport::Concern
 
   def metrics_dashboard
@@ -14,7 +16,7 @@ module MetricsDashboard
     )
 
     if include_all_dashboards? && result
-      result[:all_dashboards] = dashboard_finder.find_all_paths(project_for_dashboard)
+      result[:all_dashboards] = all_dashboards
     end
 
     respond_to do |format|
@@ -29,6 +31,30 @@ module MetricsDashboard
   end
 
   private
+
+  def all_dashboards
+    dashboards = dashboard_finder.find_all_paths(project_for_dashboard)
+    dashboards.map do |dashboard|
+      amend_dashboard(dashboard)
+    end
+  end
+
+  def amend_dashboard(dashboard)
+    project_dashboard = project_for_dashboard && !dashboard[:system_dashboard]
+
+    dashboard[:can_edit] = project_dashboard ? can_edit?(dashboard) : false
+    dashboard[:project_blob_path] = project_dashboard ? dashboard_project_blob_path(dashboard) : nil
+
+    dashboard
+  end
+
+  def dashboard_project_blob_path(dashboard)
+    project_blob_path(project_for_dashboard, File.join(project_for_dashboard.default_branch, dashboard.fetch(:path, "")))
+  end
+
+  def can_edit?(dashboard)
+    can_collaborate_with_project?(project_for_dashboard, ref: project_for_dashboard.default_branch)
+  end
 
   # Override in class to provide arguments to the finder.
   def metrics_dashboard_params

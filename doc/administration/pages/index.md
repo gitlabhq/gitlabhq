@@ -271,7 +271,7 @@ sites served under a custom domain.
 
 To enable it, you'll need to:
 
-1. Choose an email on which you will recieve notifications about expiring domains.
+1. Choose an email on which you will receive notifications about expiring domains.
 1. Navigate to your instance's **Admin Area > Settings > Preferences** and expand **Pages** settings.
 1. Enter the email for receiving notifications and accept Let's Encrypt's Terms of Service as shown below.
 1. Click **Save changes**.
