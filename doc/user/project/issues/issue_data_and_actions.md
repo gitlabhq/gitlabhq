@@ -257,4 +257,4 @@ You can attach and remove Zoom meetings to issues using the `/zoom` and `/remove
 Attaching a [Zoom](https://zoom.us) call an issue
 results in a **Join Zoom meeting** button at the top of the issue, just under the header.
 
-![Link Zoom Call in Issue](img/zoom-quickaction-button.png)
+Read more how to [add or remove a zoom meeting](associate_zoom_meeting.md).

@@ -1,8 +1,8 @@
-/* eslint-disable no-restricted-properties, func-names, no-var, camelcase,
+/* eslint-disable no-restricted-properties, no-var, camelcase,
 no-unused-expressions, one-var, default-case,
-consistent-return, no-alert, no-return-assign,
-no-param-reassign, no-else-return, vars-on-top,
-no-shadow, no-useless-escape, class-methods-use-this */
+consistent-return, no-alert, no-param-reassign, no-else-return,
+vars-on-top, no-shadow, no-useless-escape,
+class-methods-use-this */
 
 /* global ResolveService */
 
@@ -281,14 +281,7 @@ export default class Notes {
     if (Notes.interval) {
       clearInterval(Notes.interval);
     }
-    return (Notes.interval = setInterval(
-      (function(_this) {
-        return function() {
-          return _this.refresh();
-        };
-      })(this),
-      this.pollingInterval,
-    ));
+    Notes.interval = setInterval(() => this.refresh(), this.pollingInterval);
   }
 
   refresh() {
@@ -847,57 +840,52 @@ export default class Notes {
     var noteElId, $note;
     $note = $(e.currentTarget).closest('.note');
     noteElId = $note.attr('id');
-    $(`.note[id="${noteElId}"]`).each(
-      (function() {
-        // A same note appears in the "Discussion" and in the "Changes" tab, we have
-        // to remove all. Using $('.note[id='noteId']') ensure we get all the notes,
-        // where $('#noteId') would return only one.
-        return function(i, el) {
-          var $note, $notes;
-          $note = $(el);
-          $notes = $note.closest('.discussion-notes');
-          const discussionId = $('.notes', $notes).data('discussionId');
+    $(`.note[id="${noteElId}"]`).each((i, el) => {
+      // A same note appears in the "Discussion" and in the "Changes" tab, we have
+      // to remove all. Using $('.note[id='noteId']') ensure we get all the notes,
+      // where $('#noteId') would return only one.
+      const $note = $(el);
+      const $notes = $note.closest('.discussion-notes');
+      const discussionId = $('.notes', $notes).data('discussionId');
 
-          if (typeof gl.diffNotesCompileComponents !== 'undefined') {
-            if (gl.diffNoteApps[noteElId]) {
-              gl.diffNoteApps[noteElId].$destroy();
-            }
+      if (typeof gl.diffNotesCompileComponents !== 'undefined') {
+        if (gl.diffNoteApps[noteElId]) {
+          gl.diffNoteApps[noteElId].$destroy();
+        }
+      }
+
+      $note.remove();
+
+      // check if this is the last note for this line
+      if ($notes.find('.note').length === 0) {
+        const notesTr = $notes.closest('tr');
+
+        // "Discussions" tab
+        $notes.closest('.timeline-entry').remove();
+
+        $(`.js-diff-avatars-${discussionId}`).trigger('remove.vue');
+
+        // The notes tr can contain multiple lists of notes, like on the parallel diff
+        // notesTr does not exist for image diffs
+        if (notesTr.find('.discussion-notes').length > 1 || notesTr.length === 0) {
+          const $diffFile = $notes.closest('.diff-file');
+          if ($diffFile.length > 0) {
+            const removeBadgeEvent = new CustomEvent('removeBadge.imageDiff', {
+              detail: {
+                // badgeNumber's start with 1 and index starts with 0
+                badgeNumber: $notes.index() + 1,
+              },
+            });
+
+            $diffFile[0].dispatchEvent(removeBadgeEvent);
           }
 
-          $note.remove();
-
-          // check if this is the last note for this line
-          if ($notes.find('.note').length === 0) {
-            var notesTr = $notes.closest('tr');
-
-            // "Discussions" tab
-            $notes.closest('.timeline-entry').remove();
-
-            $(`.js-diff-avatars-${discussionId}`).trigger('remove.vue');
-
-            // The notes tr can contain multiple lists of notes, like on the parallel diff
-            // notesTr does not exist for image diffs
-            if (notesTr.find('.discussion-notes').length > 1 || notesTr.length === 0) {
-              const $diffFile = $notes.closest('.diff-file');
-              if ($diffFile.length > 0) {
-                const removeBadgeEvent = new CustomEvent('removeBadge.imageDiff', {
-                  detail: {
-                    // badgeNumber's start with 1 and index starts with 0
-                    badgeNumber: $notes.index() + 1,
-                  },
-                });
-
-                $diffFile[0].dispatchEvent(removeBadgeEvent);
-              }
-
-              $notes.remove();
-            } else if (notesTr.length > 0) {
-              notesTr.remove();
-            }
-          }
-        };
-      })(this),
-    );
+          $notes.remove();
+        } else if (notesTr.length > 0) {
+          notesTr.remove();
+        }
+      }
+    });
 
     Notes.checkMergeRequestStatus();
     return this.updateNotesCount(-1);

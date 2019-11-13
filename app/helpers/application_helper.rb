@@ -329,7 +329,7 @@ module ApplicationHelper
     if Rails.configuration.assets.compile
       app.assets.find_asset(name).to_s
     else
-      controller.view_context.render(file: File.join('public/assets', app.assets_manifest.assets[name]))
+      controller.view_context.render(file: Rails.root.join('public/assets', app.assets_manifest.assets[name]).to_s)
     end
   end
 

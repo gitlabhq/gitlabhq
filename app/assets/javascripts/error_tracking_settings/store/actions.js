@@ -6,17 +6,20 @@ import { transformFrontendSettings } from '../utils';
 import * as types from './mutation_types';
 
 export const requestProjects = ({ commit }) => {
+  commit(types.SET_PROJECTS_LOADING, true);
   commit(types.RESET_CONNECT);
 };
 
 export const receiveProjectsSuccess = ({ commit }, projects) => {
   commit(types.UPDATE_CONNECT_SUCCESS);
   commit(types.RECEIVE_PROJECTS, projects);
+  commit(types.SET_PROJECTS_LOADING, false);
 };
 
 export const receiveProjectsError = ({ commit }) => {
   commit(types.UPDATE_CONNECT_ERROR);
   commit(types.CLEAR_PROJECTS);
+  commit(types.SET_PROJECTS_LOADING, false);
 };
 
 export const fetchProjects = ({ dispatch, state }) => {

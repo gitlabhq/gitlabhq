@@ -11,8 +11,7 @@ test:
     - pip install hyde
     - hyde gen
   except:
-    variables:
-      - $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+    - master
 
 pages:
   stage: deploy
@@ -23,5 +22,4 @@ pages:
     paths:
       - public
   only:
-    variables:
-      - $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+    - master

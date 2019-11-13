@@ -78,6 +78,31 @@ To change the address/port that Prometheus listens on:
 1. Save the file and [reconfigure GitLab][reconfigure] for the changes to
    take effect
 
+### Adding custom scrape configs
+
+You can configure additional scrape targets for the GitLab Omnibus-bundled
+Prometheus by editing `prometheus['scrape_configs']` in `/etc/gitlab/gitlab.rb`
+using the [Prometheus scrape target configuration](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#%3Cscrape_config%3E)
+syntax.
+
+Here is an example configuration to scrape `http://1.1.1.1:8060/probe?param_a=test&param_b=additional_test`:
+
+```ruby
+prometheus['scrape_configs'] = [
+  {
+    'job_name': 'custom-scrape',
+    'metrics_path': '/probe',
+    'params' => {
+      'param_a' => ['test'],
+      'param_b' => ['additional_test']
+    },
+    'static_configs' => [
+      'targets' => ['1.1.1.1:8060'],
+    ],
+  },
+]
+```
+
 ### Using an external Prometheus server
 
 NOTE: **Note:**

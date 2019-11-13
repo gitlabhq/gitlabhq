@@ -141,6 +141,8 @@ have a [start or due date](#start-date-and-due-date), a
 
 ## Reordering issues and child epics
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9367) in GitLab 12.5.
+
 New issues and child epics are added to the top of their respective lists in the **Epics and Issues** tab. You can reorder the list of issues and the list of child epics. Issues and child epics cannot be intermingled.
 
 To reorder issues assigned to an epic:

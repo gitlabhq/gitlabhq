@@ -3,6 +3,7 @@ export default () => ({
   enabled: false,
   token: '',
   projects: [],
+  isLoadingProjects: false,
   selectedProject: null,
   settingsLoading: false,
   connectSuccessful: false,

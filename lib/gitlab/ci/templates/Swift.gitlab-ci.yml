@@ -22,8 +22,7 @@ archive_project:
     - xcodebuild clean archive -archivePath build/ProjectName -scheme SchemeName
     - xcodebuild -exportArchive -exportFormat ipa -archivePath "build/ProjectName.xcarchive" -exportPath "build/ProjectName.ipa" -exportProvisioningProfile "ProvisioningProfileName"
   only:
-    variables:
-      - $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+    - master
   artifacts:
     paths:
       - build/ProjectName.ipa

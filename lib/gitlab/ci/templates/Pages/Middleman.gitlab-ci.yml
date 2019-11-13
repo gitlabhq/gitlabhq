@@ -12,8 +12,7 @@ test:
     - bundle install --path vendor
     - bundle exec middleman build
   except:
-    variables:
-      - $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+    - master
 
 pages:
   script:
@@ -25,5 +24,4 @@ pages:
     paths:
       - public
   only:
-    variables:
-      - $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+    - master

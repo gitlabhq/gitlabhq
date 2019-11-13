@@ -4452,6 +4452,9 @@ msgstr ""
 msgid "Connect your external repositories, and CI/CD pipelines will run for new commits. A GitLab project will be created with only CI/CD features enabled."
 msgstr ""
 
+msgid "Connecting"
+msgstr ""
+
 msgid "Connecting to terminal sync service"
 msgstr ""
 
@@ -7683,7 +7686,13 @@ msgstr ""
 msgid "GeoNodeSyncStatus|Node is slow, overloaded, or it just recovered after an outage."
 msgstr ""
 
+msgid "GeoNodes|Attachments"
+msgstr ""
+
 msgid "GeoNodes|Checksummed"
+msgstr ""
+
+msgid "GeoNodes|Container repositories"
 msgstr ""
 
 msgid "GeoNodes|Data is out of date from %{timeago}"
@@ -7716,6 +7725,12 @@ msgstr ""
 msgid "GeoNodes|Internal URL"
 msgstr ""
 
+msgid "GeoNodes|Job artifacts"
+msgstr ""
+
+msgid "GeoNodes|LFS objects"
+msgstr ""
+
 msgid "GeoNodes|Last event ID processed by cursor"
 msgstr ""
 
@@ -7735,18 +7750,6 @@ msgid "GeoNodes|Learn more about Wiki verification"
 msgstr ""
 
 msgid "GeoNodes|Loading nodes"
-msgstr ""
-
-msgid "GeoNodes|Local LFS objects"
-msgstr ""
-
-msgid "GeoNodes|Local attachments"
-msgstr ""
-
-msgid "GeoNodes|Local container repositories"
-msgstr ""
-
-msgid "GeoNodes|Local job artifacts"
 msgstr ""
 
 msgid "GeoNodes|New node"

@@ -31,7 +31,7 @@ describe Gitlab::Metrics::RequestsRackMiddleware do
       end
 
       it 'measures execution time' do
-        expect(described_class).to receive_message_chain(:http_request_duration_seconds, :observe).with({ status: 200, method: 'get' }, a_positive_execution_time)
+        expect(described_class).to receive_message_chain(:http_request_duration_seconds, :observe).with({ status: '200', method: 'get' }, a_positive_execution_time)
 
         Timecop.scale(3600) { subject.call(env) }
       end
@@ -69,7 +69,7 @@ describe Gitlab::Metrics::RequestsRackMiddleware do
         expected_labels = []
         described_class::HTTP_METHODS.each do |method, statuses|
           statuses.each do |status|
-            expected_labels << { method: method, status: status.to_i }
+            expected_labels << { method: method, status: status.to_s }
           end
         end
 

@@ -403,9 +403,12 @@ receivers:
   ...
 ```
 
+In order for GitLab to associate your alerts with an [environment](../../../ci/environments.md), you need to configure a `gitlab_environment_name` label on the alerts you set up in Prometheus. The value of this should match the name of your Environment in GitLab.
+
 ### Taking action on incidents **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/4925) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.11.
+>- [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/4925) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.11.
+>- [From GitLab Ultimate 12.5](https://gitlab.com/gitlab-org/gitlab/issues/13401), when GitLab receives a recovery alert, it will automatically close the associated issue.
 
 Alerts can be used to trigger actions, like open an issue automatically (enabled by default since `12.1`). To configure the actions:
 
@@ -426,7 +429,7 @@ Once enabled, an issue will be opened automatically when an alert is triggered w
   - Optional list of attached annotations extracted from `annotations/*`
 - Alert [GFM](../../markdown.md): GitLab Flavored Markdown from `annotations/gitlab_incident_markdown`
 
-When GitLab recieves a **Recovery Alert**, it will automatically close the associated issue. This action will be recorded as a system message on the issue indicated that it was closed automatically by the GitLab Alert bot.
+When GitLab receives a **Recovery Alert**, it will automatically close the associated issue. This action will be recorded as a system message on the issue indicated that it was closed automatically by the GitLab Alert bot.
 
 To further customize the issue, you can add labels, mentions, or any other supported [quick action](../quick_actions.md) in the selected issue template, which will apply to all incidents. To limit quick actions or other information to only specific types of alerts, use the `annotations/gitlab_incident_markdown` field.
 
@@ -486,6 +489,12 @@ The following requirements must be met for the metric to unfurl:
  If all of the above are true, then the metric will unfurl as seen below:
 
 ![Embedded Metrics](img/embed_metrics.png)
+
+### Embedding metrics in issue templates
+
+It is also possible to embed either a dashboard or individual metrics in issue templates. The entire dashboard can be embedded as well as individual metrics, separated by either a comma or a space.
+
+![Embedded Metrics in issue templates](img/embed_metrics_issue_template.png)
 
 ### Embedding live Grafana charts
 

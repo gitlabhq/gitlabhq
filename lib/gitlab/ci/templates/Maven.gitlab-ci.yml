@@ -6,7 +6,7 @@
 # This template will build and test your projects
 # * Caches downloaded dependencies and plugins between invocation.
 # * Verify but don't deploy merge requests.
-# * Deploy built artifacts from the default branch only.
+# * Deploy built artifacts from master branch only.
 
 variables:
   # This will suppress any download for dependencies and plugins or upload messages which would clutter the console log.
@@ -33,8 +33,7 @@ cache:
   script:
     - 'mvn $MAVEN_CLI_OPTS verify'
   except:
-    variables:
-      - $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+    - master
 
 # Verify merge requests using JDK8
 verify:jdk8:
@@ -43,7 +42,7 @@ verify:jdk8:
 # To deploy packages from CI, create a ci_settings.xml file
 # For deploying packages to GitLab's Maven Repository: See https://docs.gitlab.com/ee/user/project/packages/maven_repository.html#creating-maven-packages-with-gitlab-cicd for more details.
 # Please note: The GitLab Maven Repository is currently only available in GitLab Premium / Ultimate.
-# For the default branch run `mvn deploy` automatically.
+# For `master` branch run `mvn deploy` automatically.
 deploy:jdk8:
   stage: deploy
   script:
@@ -52,5 +51,4 @@ deploy:jdk8:
       fi
     - 'mvn $MAVEN_CLI_OPTS deploy -s ci_settings.xml'
   only:
-    variables:
-      - $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+    - master

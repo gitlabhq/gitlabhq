@@ -108,30 +108,12 @@ module TabHelper
     current_controller?(c) && current_action?(a)
   end
 
-  def project_tab_class
-    if controller.controller_path.start_with?('projects')
-      return 'active'
-    end
-
-    if %w(services hooks deploy_keys protected_branches).include? controller.controller_name
-      "active"
-    end
-  end
-
   def branches_tab_class
     if current_controller?(:protected_branches) ||
         current_controller?(:branches) ||
         current_page?(project_repository_path(@project))
       'active'
     end
-  end
-
-  def profile_tab_class
-    if controller.controller_path.start_with?('profiles')
-      return 'active'
-    end
-
-    'active' if current_controller?('oauth/applications')
   end
 end
 

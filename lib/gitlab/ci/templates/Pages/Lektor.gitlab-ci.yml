@@ -9,5 +9,4 @@ pages:
     paths:
       - public
   only:
-    variables:
-      - $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+    - master

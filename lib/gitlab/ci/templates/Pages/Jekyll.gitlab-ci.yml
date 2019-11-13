@@ -17,8 +17,7 @@ test:
     paths:
       - test
   except:
-    variables:
-      - $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+    - master
 
 pages:
   stage: deploy
@@ -28,5 +27,4 @@ pages:
     paths:
       - public
   only:
-    variables:
-      - $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+    - master

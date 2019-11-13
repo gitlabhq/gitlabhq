@@ -49,8 +49,7 @@ review:
   only:
     - branches
   except:
-    variables:
-      - $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+    - master
 
 stop-review:
   <<: *deploy
@@ -67,8 +66,7 @@ stop-review:
   only:
     - branches
   except:
-    variables:
-      - $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+    - master
 
 staging:
   <<: *deploy
@@ -80,8 +78,7 @@ staging:
     name: staging
     url: http://$CI_PROJECT_NAME-staging.$OPENSHIFT_DOMAIN
   only:
-    variables:
-      - $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+    - master
 
 production:
   <<: *deploy
@@ -94,5 +91,4 @@ production:
     name: production
     url: http://$CI_PROJECT_NAME.$OPENSHIFT_DOMAIN
   only:
-    variables:
-      - $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+    - master
