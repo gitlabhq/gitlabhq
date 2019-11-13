@@ -51,10 +51,6 @@ module Sentry
       raise Client::ResponseInvalidSizeError, "Sentry API response is too big. Limit is #{Gitlab::Utils::DeepSize.human_default_max_size}."
     end
 
-    def valid_size?(issues)
-      Gitlab::Utils::DeepSize.new(issues).valid?
-    end
-
     def handle_mapping_exceptions(&block)
       yield
     rescue KeyError => e

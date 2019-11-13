@@ -138,8 +138,8 @@ class Issue < ApplicationRecord
   def self.sort_by_attribute(method, excluded_labels: [])
     case method.to_s
     when 'closest_future_date', 'closest_future_date_asc' then order_closest_future_date
-    when 'due_date', 'due_date_asc'                       then order_due_date_asc
-    when 'due_date_desc'                                  then order_due_date_desc
+    when 'due_date', 'due_date_asc'                       then order_due_date_asc.with_order_id_desc
+    when 'due_date_desc'                                  then order_due_date_desc.with_order_id_desc
     when 'relative_position', 'relative_position_asc'     then order_relative_position_asc.with_order_id_desc
     else
       super

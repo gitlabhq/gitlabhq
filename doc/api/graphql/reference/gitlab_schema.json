@@ -13406,6 +13406,18 @@
               "description": "Created at ascending order",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "DUE_DATE_ASC",
+              "description": "Due date by ascending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DUE_DATE_DESC",
+              "description": "Due date by descending order",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null

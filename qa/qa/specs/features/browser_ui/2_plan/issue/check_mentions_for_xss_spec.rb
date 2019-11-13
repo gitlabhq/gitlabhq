@@ -2,7 +2,7 @@
 
 module QA
   context 'Plan' do
-    describe 'check xss occurence in @mentions in issues' do
+    describe 'check xss occurence in @mentions in issues', :requires_admin do
       it 'user mentions a user in comment' do
         QA::Runtime::Env.personal_access_token = QA::Runtime::Env.admin_personal_access_token
 

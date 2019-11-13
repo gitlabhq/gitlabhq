@@ -2677,6 +2677,16 @@ Values for sorting issues
 """
 enum IssueSort {
   """
+  Due date by ascending order
+  """
+  DUE_DATE_ASC
+
+  """
+  Due date by descending order
+  """
+  DUE_DATE_DESC
+
+  """
   Created at ascending order
   """
   created_asc

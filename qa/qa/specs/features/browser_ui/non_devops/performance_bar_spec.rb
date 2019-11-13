@@ -2,7 +2,7 @@
 
 module QA
   context 'Performance bar' do
-    context 'when logged in as an admin user' do
+    context 'when logged in as an admin user', :requires_admin do
       before do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_admin_credentials)
