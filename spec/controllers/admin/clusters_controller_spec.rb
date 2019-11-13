@@ -248,6 +248,69 @@ describe Admin::ClustersController do
     end
   end
 
+  describe 'POST #create_aws' do
+    let(:params) do
+      {
+        cluster: {
+          name: 'new-cluster',
+          provider_aws_attributes: {
+            key_name: 'key',
+            role_arn: 'arn:role',
+            region: 'region',
+            vpc_id: 'vpc',
+            instance_type: 'instance type',
+            num_nodes: 3,
+            security_group_id: 'security group',
+            subnet_ids: %w(subnet1 subnet2)
+          }
+        }
+      }
+    end
+
+    def post_create_aws
+      post :create_aws, params: params
+    end
+
+    it 'creates a new cluster' do
+      expect(ClusterProvisionWorker).to receive(:perform_async)
+      expect { post_create_aws }.to change { Clusters::Cluster.count }
+        .and change { Clusters::Providers::Aws.count }
+
+      cluster = Clusters::Cluster.instance_type.first
+
+      expect(response.status).to eq(201)
+      expect(response.location).to eq(admin_cluster_path(cluster))
+      expect(cluster).to be_aws
+      expect(cluster).to be_kubernetes
+    end
+
+    context 'params are invalid' do
+      let(:params) do
+        {
+          cluster: { name: '' }
+        }
+      end
+
+      it 'does not create a cluster' do
+        expect { post_create_aws }.not_to change { Clusters::Cluster.count }
+
+        expect(response.status).to eq(422)
+        expect(response.content_type).to eq('application/json')
+        expect(response.body).to include('is invalid')
+      end
+    end
+
+    describe 'security' do
+      before do
+        allow(WaitForClusterCreationWorker).to receive(:perform_in)
+      end
+
+      it { expect { post_create_aws }.to be_allowed_for(:admin) }
+      it { expect { post_create_aws }.to be_denied_for(:user) }
+      it { expect { post_create_aws }.to be_denied_for(:external) }
+    end
+  end
+
   describe 'POST #create_user' do
     let(:params) do
       {
@@ -354,6 +417,27 @@ describe Admin::ClustersController do
 
         expect(response.status).to eq 422
       end
+    end
+
+    describe 'security' do
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
+    end
+  end
+
+  describe 'DELETE revoke AWS role for EKS cluster' do
+    let!(:role) { create(:aws_role, user: admin) }
+
+    def go
+      delete :revoke_aws_role
+    end
+
+    it 'deletes the Aws::Role record' do
+      expect { go }.to change { Aws::Role.count }
+
+      expect(response.status).to eq 204
+      expect(admin.reload_aws_role).to be_nil
     end
 
     describe 'security' do

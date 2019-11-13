@@ -21,7 +21,7 @@ module Clusters
         end
       rescue Clusters::Aws::FetchCredentialsService::MissingRoleError
         provider.make_errored!('Amazon role is not configured')
-      rescue ::Aws::Errors::MissingCredentialsError, Settingslogic::MissingSetting
+      rescue ::Aws::Errors::MissingCredentialsError
         provider.make_errored!('Amazon credentials are not configured')
       rescue ::Aws::STS::Errors::ServiceError => e
         provider.make_errored!("Amazon authentication failed; #{e.message}")
@@ -31,8 +31,16 @@ module Clusters
 
       private
 
+      def provision_role
+        provider.created_by_user&.aws_role
+      end
+
       def credentials
-        @credentials ||= Clusters::Aws::FetchCredentialsService.new(provider).execute
+        @credentials ||= Clusters::Aws::FetchCredentialsService.new(
+          provision_role,
+          provider: provider,
+          region: provider.region
+        ).execute
       end
 
       def configure_provider_credentials

@@ -56,6 +56,7 @@ module Clusters
     has_many :kubernetes_namespaces
 
     accepts_nested_attributes_for :provider_gcp, update_only: true
+    accepts_nested_attributes_for :provider_aws, update_only: true
     accepts_nested_attributes_for :platform_kubernetes, update_only: true
 
     validates :name, cluster_name: true
@@ -73,6 +74,7 @@ module Clusters
     delegate :status, to: :provider, allow_nil: true
     delegate :status_reason, to: :provider, allow_nil: true
     delegate :on_creation?, to: :provider, allow_nil: true
+    delegate :knative_pre_installed?, to: :provider, allow_nil: true
 
     delegate :active?, to: :platform_kubernetes, prefix: true, allow_nil: true
     delegate :rbac?, to: :platform_kubernetes, prefix: true, allow_nil: true
@@ -256,10 +258,6 @@ module Clusters
 
         variables.append(key: KUBE_INGRESS_BASE_DOMAIN, value: kube_ingress_domain)
       end
-    end
-
-    def knative_pre_installed?
-      provider&.knative_pre_installed?
     end
 
     private

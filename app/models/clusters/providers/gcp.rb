@@ -54,6 +54,10 @@ module Clusters
         assign_attributes(operation_id: operation_id)
       end
 
+      def has_rbac_enabled?
+        !legacy_abac
+      end
+
       def knative_pre_installed?
         cloud_run?
       end

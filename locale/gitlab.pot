@@ -3790,13 +3790,13 @@ msgstr ""
 msgid "ClusterIntegration|Kubernetes cluster details"
 msgstr ""
 
-msgid "ClusterIntegration|Kubernetes cluster is being created on Google Kubernetes Engine..."
+msgid "ClusterIntegration|Kubernetes cluster is being created..."
 msgstr ""
 
 msgid "ClusterIntegration|Kubernetes cluster name"
 msgstr ""
 
-msgid "ClusterIntegration|Kubernetes cluster was successfully created on Google Kubernetes Engine."
+msgid "ClusterIntegration|Kubernetes cluster was successfully created."
 msgstr ""
 
 msgid "ClusterIntegration|Kubernetes clusters allow you to use review apps, deploy your applications, run your pipelines, and much more in an easy way."
@@ -4039,7 +4039,7 @@ msgstr ""
 msgid "ClusterIntegration|Something went wrong on our end."
 msgstr ""
 
-msgid "ClusterIntegration|Something went wrong while creating your Kubernetes cluster on Google Kubernetes Engine"
+msgid "ClusterIntegration|Something went wrong while creating your Kubernetes cluster"
 msgstr ""
 
 msgid "ClusterIntegration|Something went wrong while installing %{title}"

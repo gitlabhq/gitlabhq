@@ -3,7 +3,6 @@
 FactoryBot.define do
   factory :cluster_provider_aws, class: Clusters::Providers::Aws do
     association :cluster, platform_type: :kubernetes, provider_type: :aws
-    created_by_user factory: :user
 
     role_arn { 'arn:aws:iam::123456789012:role/role-name' }
     vpc_id { 'vpc-00000000000000000' }

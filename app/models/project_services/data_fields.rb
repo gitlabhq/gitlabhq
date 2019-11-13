@@ -50,7 +50,7 @@ module DataFields
     end
 
     def data_fields_present?
-      data_fields.persisted?
+      data_fields.present?
     rescue NotImplementedError
       false
     end

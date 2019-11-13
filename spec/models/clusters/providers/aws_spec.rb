@@ -4,7 +4,6 @@ require 'spec_helper'
 
 describe Clusters::Providers::Aws do
   it { is_expected.to belong_to(:cluster) }
-  it { is_expected.to belong_to(:created_by_user) }
 
   it { is_expected.to validate_length_of(:key_name).is_at_least(1).is_at_most(255) }
   it { is_expected.to validate_length_of(:region).is_at_least(1).is_at_most(255) }
@@ -107,5 +106,29 @@ describe Clusters::Providers::Aws do
     end
 
     it { is_expected.to eq credentials }
+  end
+
+  describe '#created_by_user' do
+    let(:provider) { create(:cluster_provider_aws) }
+
+    subject { provider.created_by_user }
+
+    it { is_expected.to eq provider.cluster.user }
+  end
+
+  describe '#has_rbac_enabled?' do
+    let(:provider) { create(:cluster_provider_aws) }
+
+    subject { provider.has_rbac_enabled? }
+
+    it { is_expected.to be_truthy }
+  end
+
+  describe '#knative_pre_installed?' do
+    let(:provider) { create(:cluster_provider_aws) }
+
+    subject { provider.knative_pre_installed? }
+
+    it { is_expected.to be_falsey }
   end
 end

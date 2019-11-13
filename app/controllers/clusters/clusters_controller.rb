@@ -3,12 +3,12 @@
 class Clusters::ClustersController < Clusters::BaseController
   include RoutableActions
 
-  before_action :cluster, except: [:index, :new, :create_gcp, :create_user, :authorize_aws_role]
+  before_action :cluster, only: [:cluster_status, :show, :update, :destroy]
   before_action :generate_gcp_authorize_url, only: [:new]
   before_action :validate_gcp_token, only: [:new]
   before_action :gcp_cluster, only: [:new]
   before_action :user_cluster, only: [:new]
-  before_action :authorize_create_cluster!, only: [:new, :authorize_aws_role]
+  before_action :authorize_create_cluster!, only: [:new, :authorize_aws_role, :revoke_aws_role, :aws_proxy]
   before_action :authorize_update_cluster!, only: [:update]
   before_action :authorize_admin_cluster!, only: [:destroy]
   before_action :update_applications_status, only: [:cluster_status]
@@ -117,6 +117,19 @@ class Clusters::ClustersController < Clusters::BaseController
     end
   end
 
+  def create_aws
+    @aws_cluster = ::Clusters::CreateService
+      .new(current_user, create_aws_cluster_params)
+      .execute
+      .present(current_user: current_user)
+
+    if @aws_cluster.persisted?
+      head :created, location: @aws_cluster.show_path
+    else
+      render status: :unprocessable_entity, json: @aws_cluster.errors
+    end
+  end
+
   def create_user
     @user_cluster = ::Clusters::CreateService
       .new(current_user, create_user_cluster_params)
@@ -138,6 +151,21 @@ class Clusters::ClustersController < Clusters::BaseController
     role = current_user.build_aws_role(create_role_params)
 
     role.save ? respond_201 : respond_422
+  end
+
+  def revoke_aws_role
+    current_user.aws_role&.destroy
+
+    head :no_content
+  end
+
+  def aws_proxy
+    response = Clusters::Aws::ProxyService.new(
+      current_user.aws_role,
+      params: params
+    ).execute
+
+    render json: response.body, status: response.status
   end
 
   private
@@ -195,6 +223,28 @@ class Clusters::ClustersController < Clusters::BaseController
         :legacy_abac
       ]).merge(
         provider_type: :gcp,
+        platform_type: :kubernetes,
+        clusterable: clusterable.subject
+      )
+  end
+
+  def create_aws_cluster_params
+    params.require(:cluster).permit(
+      :enabled,
+      :name,
+      :environment_scope,
+      :managed,
+      provider_aws_attributes: [
+        :key_name,
+        :role_arn,
+        :region,
+        :vpc_id,
+        :instance_type,
+        :num_nodes,
+        :security_group_id,
+        subnet_ids: []
+      ]).merge(
+        provider_type: :aws,
         platform_type: :kubernetes,
         clusterable: clusterable.subject
       )

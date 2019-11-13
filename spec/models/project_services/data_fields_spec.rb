@@ -74,6 +74,12 @@ describe DataFields do
         expect(service.url_changed?).to be_falsy
       end
     end
+
+    describe 'data_fields_present?' do
+      it 'returns true from the issue tracker service' do
+        expect(service.data_fields_present?).to be true
+      end
+    end
   end
 
   context 'when data are stored in data_fields' do
@@ -88,6 +94,18 @@ describe DataFields do
         service.url = 'http://example.com'
         service.validate
         expect(service.url_was).to be_nil
+      end
+    end
+  end
+
+  context 'when service and data_fields are not persisted' do
+    let(:service) do
+      JiraService.new
+    end
+
+    describe 'data_fields_present?' do
+      it 'returns true' do
+        expect(service.data_fields_present?).to be true
       end
     end
   end
