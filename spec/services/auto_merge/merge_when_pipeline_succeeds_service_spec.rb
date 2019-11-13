@@ -13,8 +13,7 @@ describe AutoMerge::MergeWhenPipelineSucceedsService do
   end
 
   let(:pipeline) do
-    create(:ci_pipeline_with_one_job, ref: mr_merge_if_green_enabled.source_branch,
-                                      project: project)
+    create(:ci_pipeline, ref: mr_merge_if_green_enabled.source_branch, project: project)
   end
 
   let(:service) do

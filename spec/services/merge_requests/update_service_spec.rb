@@ -190,7 +190,7 @@ describe MergeRequests::UpdateService, :mailer do
 
       context 'with finished pipeline' do
         before do
-          create(:ci_pipeline_with_one_job,
+          create(:ci_pipeline,
             project: project,
             ref:     merge_request.source_branch,
             sha:     merge_request.diff_head_sha,
@@ -212,7 +212,7 @@ describe MergeRequests::UpdateService, :mailer do
         before do
           service_mock = double
           create(
-            :ci_pipeline_with_one_job,
+            :ci_pipeline,
             project: project,
             ref: merge_request.source_branch,
             sha: merge_request.diff_head_sha,

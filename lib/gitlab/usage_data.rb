@@ -13,7 +13,8 @@ module Gitlab
       end
 
       def uncached_data
-        license_usage_data.merge(system_usage_data)
+        license_usage_data
+          .merge(system_usage_data)
           .merge(features_usage_data)
           .merge(components_usage_data)
           .merge(cycle_analytics_usage_data)
@@ -170,10 +171,13 @@ module Gitlab
         types = {
           SlackService: :projects_slack_notifications_active,
           SlackSlashCommandsService: :projects_slack_slash_active,
-          PrometheusService: :projects_prometheus_active
+          PrometheusService: :projects_prometheus_active,
+          CustomIssueTrackerService: :projects_custom_issue_tracker_active,
+          JenkinsService: :projects_jenkins_active,
+          MattermostService: :projects_mattermost_active
         }
 
-        results = count(Service.unscoped.where(type: types.keys, active: true).group(:type), fallback: Hash.new(-1))
+        results = count(Service.active.by_type(types.keys).group(:type), fallback: Hash.new(-1))
         types.each_with_object({}) { |(klass, key), response| response[key] = results[klass.to_s] || 0 }
           .merge(jira_usage)
       end
@@ -188,8 +192,8 @@ module Gitlab
           projects_jira_active: -1
         }
 
-        Service.unscoped
-          .where(type: :JiraService, active: true)
+        Service.active
+          .by_type(:JiraService)
           .includes(:jira_tracker_data)
           .find_in_batches(batch_size: BATCH_SIZE) do |services|
 

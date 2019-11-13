@@ -11,7 +11,7 @@ describe 'Merge request > User sees deployment widget', :js do
     let(:role) { :developer }
     let(:ref) { merge_request.target_branch }
     let(:sha) { project.commit(ref).id }
-    let(:pipeline) { create(:ci_pipeline_without_jobs, sha: sha, project: project, ref: ref) }
+    let(:pipeline) { create(:ci_pipeline, sha: sha, project: project, ref: ref) }
     let!(:manual) { }
 
     before do
@@ -33,7 +33,7 @@ describe 'Merge request > User sees deployment widget', :js do
       end
 
       context 'when a user created a new merge request with the same SHA' do
-        let(:pipeline2) { create(:ci_pipeline_without_jobs, sha: sha, project: project, ref: 'new-patch-1') }
+        let(:pipeline2) { create(:ci_pipeline, sha: sha, project: project, ref: 'new-patch-1') }
         let(:build2) { create(:ci_build, :success, pipeline: pipeline2) }
         let(:environment2) { create(:environment, project: project) }
         let!(:deployment2) { create(:deployment, environment: environment2, sha: sha, ref: 'new-patch-1', deployable: build2) }

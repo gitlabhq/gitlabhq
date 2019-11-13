@@ -7,9 +7,7 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
   set(:user) { create(:user) }
 
   let(:pipeline) do
-    build(:ci_pipeline_with_one_job, project: project,
-                                     ref: 'master',
-                                     user: user)
+    build(:ci_pipeline, project: project, ref: 'master', user: user)
   end
 
   let(:command) do
@@ -21,6 +19,14 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
   end
 
   let(:step) { described_class.new(pipeline, command) }
+
+  let(:config) do
+    { rspec: { script: 'rspec' } }
+  end
+
+  before do
+    stub_ci_pipeline_yaml_file(YAML.dump(config))
+  end
 
   context 'when pipeline doesn not have seeds block' do
     before do
@@ -57,10 +63,6 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
           script: 'ls',
           only: ['something']
       } }
-    end
-
-    let(:pipeline) do
-      build(:ci_pipeline, project: project, config: config)
     end
 
     before do
@@ -200,10 +202,6 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
       let(:config) do
         { rspec: { script: 'rspec', stage: 'test', only: ['master'] },
           prod: { script: 'cap prod', stage: 'deploy', only: ['tags'] } }
-      end
-
-      let(:pipeline) do
-        build(:ci_pipeline, ref: 'master', project: project, config: config)
       end
 
       it_behaves_like 'a correct pipeline'

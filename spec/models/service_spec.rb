@@ -15,6 +15,26 @@ describe Service do
   end
 
   describe 'Scopes' do
+    describe '.by_type' do
+      let!(:service1) { create(:jira_service) }
+      let!(:service2) { create(:jira_service) }
+      let!(:service3) { create(:redmine_service) }
+
+      subject { described_class.by_type(type) }
+
+      context 'when type is "JiraService"' do
+        let(:type) { 'JiraService' }
+
+        it { is_expected.to match_array([service1, service2]) }
+      end
+
+      context 'when type is "RedmineService"' do
+        let(:type) { 'RedmineService' }
+
+        it { is_expected.to match_array([service3]) }
+      end
+    end
+
     describe '.confidential_note_hooks' do
       it 'includes services where confidential_note_events is true' do
         create(:service, active: true, confidential_note_events: true)

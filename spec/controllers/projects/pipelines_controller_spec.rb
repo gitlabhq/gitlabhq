@@ -149,7 +149,7 @@ describe Projects::PipelinesController do
   end
 
   describe 'GET show.json' do
-    let(:pipeline) { create(:ci_pipeline_with_one_job, project: project) }
+    let(:pipeline) { create(:ci_pipeline, project: project) }
 
     it 'returns the pipeline' do
       get_pipeline_json

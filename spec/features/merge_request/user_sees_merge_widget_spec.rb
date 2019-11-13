@@ -44,7 +44,7 @@ describe 'Merge request > User sees merge widget', :js do
   context 'view merge request' do
     let!(:environment) { create(:environment, project: project) }
     let(:sha)          { project.commit(merge_request.source_branch).sha }
-    let(:pipeline)     { create(:ci_pipeline_without_jobs, status: 'success', sha: sha, project: project, ref: merge_request.source_branch) }
+    let(:pipeline)     { create(:ci_pipeline, status: 'success', sha: sha, project: project, ref: merge_request.source_branch) }
     let(:build)        { create(:ci_build, :success, pipeline: pipeline) }
 
     let!(:deployment) do
@@ -745,7 +745,7 @@ describe 'Merge request > User sees merge widget', :js do
 
   context 'when MR has pipeline but user does not have permission' do
     let(:sha) { project.commit(merge_request.source_branch).sha }
-    let!(:pipeline) { create(:ci_pipeline_without_jobs, status: 'success', sha: sha, project: project, ref: merge_request.source_branch) }
+    let!(:pipeline) { create(:ci_pipeline, status: 'success', sha: sha, project: project, ref: merge_request.source_branch) }
 
     before do
       project.update(

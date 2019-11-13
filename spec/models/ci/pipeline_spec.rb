@@ -980,7 +980,11 @@ describe Ci::Pipeline, :mailer do
 
   describe 'pipeline stages' do
     describe '#stage_seeds' do
-      let(:pipeline) { build(:ci_pipeline, config: config) }
+      before do
+        stub_ci_pipeline_yaml_file(YAML.dump(config))
+      end
+
+      let(:pipeline) { build(:ci_pipeline) }
       let(:config) { { rspec: { script: 'rake' } } }
 
       it 'returns preseeded stage seeds object' do
@@ -1010,7 +1014,7 @@ describe Ci::Pipeline, :mailer do
 
       context 'when refs policy is specified' do
         let(:pipeline) do
-          build(:ci_pipeline, ref: 'feature', tag: true, config: config)
+          build(:ci_pipeline, ref: 'feature', tag: true)
         end
 
         let(:config) do
@@ -1028,7 +1032,7 @@ describe Ci::Pipeline, :mailer do
       end
 
       context 'when source policy is specified' do
-        let(:pipeline) { build(:ci_pipeline, source: :schedule, config: config) }
+        let(:pipeline) { build(:ci_pipeline, source: :schedule) }
 
         let(:config) do
           { production: { stage: 'deploy', script: 'cap prod', only: ['triggers'] },
@@ -1060,7 +1064,7 @@ describe Ci::Pipeline, :mailer do
           context 'when user configured kubernetes from CI/CD > Clusters' do
             let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
             let(:project) { cluster.project }
-            let(:pipeline) { build(:ci_pipeline, project: project, config: config) }
+            let(:pipeline) { build(:ci_pipeline, project: project) }
 
             it 'returns seeds for kubernetes dependent job' do
               seeds = pipeline.stage_seeds
@@ -1098,6 +1102,10 @@ describe Ci::Pipeline, :mailer do
     end
 
     describe '#seeds_size' do
+      before do
+        stub_ci_pipeline_yaml_file(YAML.dump(config))
+      end
+
       context 'when refs policy is specified' do
         let(:config) do
           { production: { stage: 'deploy', script: 'cap prod', only: ['master'] },
@@ -1105,7 +1113,7 @@ describe Ci::Pipeline, :mailer do
         end
 
         let(:pipeline) do
-          build(:ci_pipeline, ref: 'feature', tag: true, config: config)
+          build(:ci_pipeline, ref: 'feature', tag: true)
         end
 
         it 'returns real seeds size' do
@@ -2886,21 +2894,25 @@ describe Ci::Pipeline, :mailer do
   end
 
   describe '#has_yaml_errors?' do
+    before do
+      stub_ci_pipeline_yaml_file(YAML.dump(config))
+    end
+
+    let(:pipeline) { create(:ci_pipeline) }
+
     context 'when pipeline has errors' do
-      let(:pipeline) do
-        create(:ci_pipeline, config: { rspec: nil })
-      end
+      let(:config) { { rspec: nil } }
 
       it 'contains yaml errors' do
+        pipeline.config_processor
+
         expect(pipeline).to have_yaml_errors
         expect(pipeline.yaml_errors).to include('contains unknown keys')
       end
     end
 
     context 'when pipeline has undefined error' do
-      let(:pipeline) do
-        create(:ci_pipeline, config: {})
-      end
+      let(:config) { double(:config) }
 
       it 'contains yaml errors' do
         expect(::Gitlab::Ci::YamlProcessor).to receive(:new)
@@ -2910,14 +2922,16 @@ describe Ci::Pipeline, :mailer do
           .with(be_a(RuntimeError), anything)
           .and_call_original
 
+        pipeline.config_processor
+
         expect(pipeline).to have_yaml_errors
         expect(pipeline.yaml_errors).to include('Undefined error')
       end
     end
 
     context 'when pipeline does not have errors' do
-      let(:pipeline) do
-        create(:ci_pipeline, config: { rspec: { script: 'rake test' } })
+      let(:config) do
+        { rspec: { script: 'rake test' } }
       end
 
       it 'does not contain yaml errors' do

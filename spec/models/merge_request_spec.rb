@@ -2807,7 +2807,7 @@ describe MergeRequest do
 
   describe '#mergeable_with_quick_action?' do
     def create_pipeline(status)
-      pipeline = create(:ci_pipeline_with_one_job,
+      pipeline = create(:ci_pipeline,
         project: project,
         ref:     merge_request.source_branch,
         sha:     merge_request.diff_head_sha,
@@ -2922,9 +2922,9 @@ describe MergeRequest do
     let(:project) { create(:project, :public, :repository) }
     let(:merge_request) { create(:merge_request, source_project: project) }
 
-    let!(:first_pipeline) { create(:ci_pipeline_without_jobs, pipeline_arguments) }
-    let!(:last_pipeline) { create(:ci_pipeline_without_jobs, pipeline_arguments) }
-    let!(:last_pipeline_with_other_ref) { create(:ci_pipeline_without_jobs, pipeline_arguments.merge(ref: 'other')) }
+    let!(:first_pipeline) { create(:ci_pipeline, pipeline_arguments) }
+    let!(:last_pipeline) { create(:ci_pipeline, pipeline_arguments) }
+    let!(:last_pipeline_with_other_ref) { create(:ci_pipeline, pipeline_arguments.merge(ref: 'other')) }
 
     it 'returns latest pipeline for the target branch' do
       expect(merge_request.base_pipeline).to eq(last_pipeline)

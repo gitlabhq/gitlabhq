@@ -124,7 +124,7 @@ export default {
               :cursor-offset="4"
               :tag-content="lineContent"
               icon="doc-code"
-              class="qa-suggestion-btn js-suggestion-btn"
+              class="js-suggestion-btn"
               @click="handleSuggestDismissed"
             />
             <gl-popover

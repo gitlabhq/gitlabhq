@@ -12,7 +12,7 @@ describe API::MergeRequests do
   let(:project)     { create(:project, :public, :repository, creator: user, namespace: user.namespace, only_allow_merge_if_pipeline_succeeds: false) }
   let(:milestone)   { create(:milestone, title: '1.0.0', project: project) }
   let(:milestone1)  { create(:milestone, title: '0.9', project: project) }
-  let!(:merge_request) { create(:merge_request, :simple, milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, title: "Test", created_at: base_time) }
+  let!(:merge_request) { create(:merge_request, :simple, milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, source_branch: 'markdown', title: "Test", created_at: base_time) }
   let!(:merge_request_closed) { create(:merge_request, state: "closed", milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, title: "Closed test", created_at: base_time + 1.second) }
   let!(:merge_request_merged) { create(:merge_request, state: "merged", author: user, assignees: [user], source_project: project, target_project: project, title: "Merged test", created_at: base_time + 2.seconds, merge_commit_sha: '9999999999999999999999999999999999999999') }
   let!(:merge_request_locked) { create(:merge_request, state: "locked", milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, title: "Locked test", created_at: base_time + 1.second) }
@@ -1330,7 +1330,7 @@ describe API::MergeRequests do
       context 'accepts remove_source_branch parameter' do
         let(:params) do
           { title: 'Test merge_request',
-            source_branch: 'markdown',
+            source_branch: 'feature_conflict',
             target_branch: 'master',
             author: user }
         end
@@ -1490,7 +1490,7 @@ describe API::MergeRequests do
   end
 
   describe "PUT /projects/:id/merge_requests/:merge_request_iid/merge" do
-    let(:pipeline) { create(:ci_pipeline_without_jobs) }
+    let(:pipeline) { create(:ci_pipeline) }
 
     it "returns merge_request in case of success" do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)

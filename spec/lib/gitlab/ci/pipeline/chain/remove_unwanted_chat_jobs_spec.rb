@@ -6,11 +6,15 @@ describe Gitlab::Ci::Pipeline::Chain::RemoveUnwantedChatJobs do
   let(:project) { create(:project, :repository) }
 
   let(:pipeline) do
-    build(:ci_pipeline_with_one_job, project: project, ref: 'master')
+    build(:ci_pipeline, project: project)
   end
 
   let(:command) do
     double(:command, project: project, chat_data: { command: 'echo' })
+  end
+
+  before do
+    stub_ci_pipeline_yaml_file(YAML.dump(rspec: { script: 'rspec' }))
   end
 
   describe '#perform!' do

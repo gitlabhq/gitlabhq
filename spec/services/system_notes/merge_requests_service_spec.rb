@@ -14,7 +14,7 @@ describe ::SystemNotes::MergeRequestsService do
   let(:service) { described_class.new(noteable: noteable, project: project, author: author) }
 
   describe '.merge_when_pipeline_succeeds' do
-    let(:pipeline) { build(:ci_pipeline_without_jobs )}
+    let(:pipeline) { build(:ci_pipeline) }
 
     subject { service.merge_when_pipeline_succeeds(pipeline.sha) }
 

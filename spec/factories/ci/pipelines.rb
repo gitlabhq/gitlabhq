@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
+  # TODO: we can remove this factory in favour of :ci_pipeline
   factory :ci_empty_pipeline, class: Ci::Pipeline do
     source { :push }
     ref { 'master' }
@@ -9,20 +10,6 @@ FactoryBot.define do
     add_attribute(:protected) { false }
 
     project
-
-    factory :ci_pipeline_without_jobs do
-      after(:build) do |pipeline|
-        pipeline.instance_variable_set(:@ci_yaml_file, YAML.dump({}))
-      end
-    end
-
-    factory :ci_pipeline_with_one_job do
-      after(:build) do |pipeline|
-        allow(pipeline).to receive(:ci_yaml_file) do
-          pipeline.instance_variable_set(:@ci_yaml_file, YAML.dump({ rspec: { script: "ls" } }))
-        end
-      end
-    end
 
     # Persist merge request head_pipeline_id
     # on pipeline factories to avoid circular references
@@ -34,24 +21,8 @@ FactoryBot.define do
     end
 
     factory :ci_pipeline do
-      transient { config { nil } }
-
-      after(:build) do |pipeline, evaluator|
-        if evaluator.config
-          pipeline.instance_variable_set(:@ci_yaml_file, YAML.dump(evaluator.config))
-
-          # Populates pipeline with errors
-          pipeline.config_processor if evaluator.config
-        else
-          pipeline.instance_variable_set(:@ci_yaml_file, File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml')))
-        end
-      end
-
       trait :invalid do
-        config do
-          { rspec: nil }
-        end
-
+        yaml_errors { 'invalid YAML' }
         failure_reason { :config_error }
       end
 

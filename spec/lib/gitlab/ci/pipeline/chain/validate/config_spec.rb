@@ -13,11 +13,13 @@ describe Gitlab::Ci::Pipeline::Chain::Validate::Config do
       save_incompleted: true)
   end
 
+  let(:pipeline) do
+    build(:ci_pipeline, project: project)
+  end
+
   let!(:step) { described_class.new(pipeline, command) }
 
-  before do
-    step.perform!
-  end
+  subject { step.perform! }
 
   context 'when pipeline has no YAML configuration' do
     let(:pipeline) do
@@ -25,18 +27,23 @@ describe Gitlab::Ci::Pipeline::Chain::Validate::Config do
     end
 
     it 'appends errors about missing configuration' do
+      subject
+
       expect(pipeline.errors.to_a)
         .to include 'Missing .gitlab-ci.yml file'
     end
 
     it 'breaks the chain' do
+      subject
+
       expect(step.break?).to be true
     end
   end
 
   context 'when YAML configuration contains errors' do
-    let(:pipeline) do
-      build(:ci_pipeline, project: project, config: 'invalid YAML')
+    before do
+      stub_ci_pipeline_yaml_file('invalid YAML')
+      subject
     end
 
     it 'appends errors about YAML errors' do
@@ -56,10 +63,14 @@ describe Gitlab::Ci::Pipeline::Chain::Validate::Config do
       end
 
       it 'fails the pipeline' do
+        subject
+
         expect(pipeline.reload).to be_failed
       end
 
       it 'sets a config error failure reason' do
+        subject
+
         expect(pipeline.reload.config_error?).to eq true
       end
     end
@@ -72,6 +83,8 @@ describe Gitlab::Ci::Pipeline::Chain::Validate::Config do
       end
 
       it 'does not drop pipeline' do
+        subject
+
         expect(pipeline).not_to be_failed
         expect(pipeline).not_to be_persisted
       end
@@ -79,17 +92,15 @@ describe Gitlab::Ci::Pipeline::Chain::Validate::Config do
   end
 
   context 'when pipeline contains configuration validation errors' do
-    let(:config) do
-      {
+    before do
+      stub_ci_pipeline_yaml_file(YAML.dump({
         rspec: {
           before_script: 10,
           script: 'ls -al'
         }
-      }
-    end
+      }))
 
-    let(:pipeline) do
-      build(:ci_pipeline, project: project, config: config)
+      subject
     end
 
     it 'appends configuration validation errors to pipeline errors' do
@@ -103,8 +114,13 @@ describe Gitlab::Ci::Pipeline::Chain::Validate::Config do
   end
 
   context 'when pipeline is correct and complete' do
-    let(:pipeline) do
-      build(:ci_pipeline_with_one_job, project: project)
+    before do
+      stub_ci_pipeline_yaml_file(YAML.dump({
+        rspec: {
+          script: 'rspec'
+        }
+      }))
+      subject
     end
 
     it 'does not invalidate the pipeline' do
@@ -119,6 +135,7 @@ describe Gitlab::Ci::Pipeline::Chain::Validate::Config do
   context 'when pipeline source is merge request' do
     before do
       stub_ci_pipeline_yaml_file(YAML.dump(config))
+      subject
     end
 
     let(:pipeline) { build_stubbed(:ci_pipeline, project: project) }

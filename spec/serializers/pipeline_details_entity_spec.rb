@@ -115,7 +115,7 @@ describe PipelineDetailsEntity do
 
     context 'when pipeline has YAML errors' do
       let(:pipeline) do
-        create(:ci_pipeline, config: { rspec: { invalid: :value } })
+        create(:ci_pipeline, yaml_errors: 'Some error occurred')
       end
 
       it 'contains information about error' do
