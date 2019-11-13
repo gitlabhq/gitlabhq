@@ -6022,6 +6022,9 @@ msgstr ""
 msgid "Edit comment"
 msgstr ""
 
+msgid "Edit dashboard"
+msgstr ""
+
 msgid "Edit description"
 msgstr ""
 
@@ -6440,6 +6443,9 @@ msgid "Environments|No deployed environments"
 msgstr ""
 
 msgid "Environments|No deployments yet"
+msgstr ""
+
+msgid "Environments|No pods to display"
 msgstr ""
 
 msgid "Environments|Note that this action will stop the environment, but it will %{emphasisStart}not%{emphasisEnd} have an effect on any existing deployment due to no “stop environment action” being defined in the %{ciConfigLinkStart}.gitlab-ci.yml%{ciConfigLinkEnd} file."
@@ -16145,7 +16151,7 @@ msgstr ""
 msgid "Start a %{new_merge_request} with these changes"
 msgstr ""
 
-msgid "Start a Free Trial"
+msgid "Start a Free Gold Trial"
 msgstr ""
 
 msgid "Start a new discussion..."

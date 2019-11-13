@@ -164,17 +164,5 @@ describe Projects::GrafanaApiController do
         it_behaves_like 'error response', :bad_request
       end
     end
-
-    context 'when grafana embeds are not enabled' do
-      before do
-        stub_feature_flags(gfm_grafana_integration: false)
-      end
-
-      it 'returns 403 immediately' do
-        get :metrics_dashboard, params: params
-
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
-    end
   end
 end

@@ -104,17 +104,7 @@ describe 'Projects > Settings > For a forked project', :js do
     end
 
     context 'grafana integration settings form' do
-      it 'is not present when the feature flag is disabled' do
-        stub_feature_flags(gfm_grafana_integration: false)
-
-        visit project_settings_operations_path(project)
-
-        wait_for_requests
-
-        expect(page).to have_no_css('.js-grafana-integration')
-      end
-
-      it 'is present when the feature flag is enabled' do
+      it 'successfully fills and completes the form' do
         visit project_settings_operations_path(project)
 
         wait_for_requests

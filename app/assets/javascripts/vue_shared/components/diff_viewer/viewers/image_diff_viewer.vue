@@ -22,6 +22,16 @@ export default {
       type: String,
       required: true,
     },
+    newSize: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
+    oldSize: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
   },
   data() {
     return {

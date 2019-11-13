@@ -41,7 +41,7 @@
     "@gitlab/ui": "7.5.0",
     "@gitlab/visual-review-tools": "1.0.3",
     "@sentry/browser": "^5.7.1",
-    "apollo-cache-inmemory": "^1.5.1",
+    "apollo-cache-inmemory": "^1.6.3",
     "apollo-client": "^2.6.4",
     "apollo-link": "^1.2.11",
     "apollo-link-batch-http": "^1.2.11",

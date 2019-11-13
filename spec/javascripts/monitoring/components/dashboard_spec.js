@@ -623,6 +623,49 @@ describe('Dashboard', () => {
     });
   });
 
+  describe('dashboard edit link', () => {
+    let wrapper;
+    const findEditLink = () => wrapper.find('.js-edit-link');
+
+    beforeEach(done => {
+      mock.onGet(mockApiEndpoint).reply(200, metricsGroupsAPIResponse);
+
+      wrapper = shallowMount(DashboardComponent, {
+        localVue,
+        sync: false,
+        attachToDocument: true,
+        propsData: { ...propsData, hasMetrics: true },
+        store,
+      });
+
+      wrapper.vm.$store.commit(
+        `monitoringDashboard/${types.SET_ALL_DASHBOARDS}`,
+        dashboardGitResponse,
+      );
+      wrapper.vm.$nextTick(done);
+    });
+
+    afterEach(() => {
+      wrapper.destroy();
+    });
+
+    it('is not present for the default dashboard', () => {
+      expect(findEditLink().exists()).toBe(false);
+    });
+
+    it('is present for a custom dashboard, and links to its edit_path', done => {
+      const dashboard = dashboardGitResponse[1]; // non-default dashboard
+      const currentDashboard = dashboard.path;
+
+      wrapper.setProps({ currentDashboard });
+      wrapper.vm.$nextTick(() => {
+        expect(findEditLink().exists()).toBe(true);
+        expect(findEditLink().attributes('href')).toBe(dashboard.project_blob_path);
+        done();
+      });
+    });
+  });
+
   describe('external dashboard link', () => {
     beforeEach(() => {
       mock.onGet(mockApiEndpoint).reply(200, metricsGroupsAPIResponse);

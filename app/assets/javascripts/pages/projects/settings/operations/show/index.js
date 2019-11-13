@@ -6,8 +6,6 @@ import initSettingsPanels from '~/settings_panels';
 document.addEventListener('DOMContentLoaded', () => {
   mountErrorTrackingForm();
   mountOperationSettings();
-  if (gon.features.gfmGrafanaIntegration) {
-    mountGrafanaIntegration();
-  }
+  mountGrafanaIntegration();
   initSettingsPanels();
 });

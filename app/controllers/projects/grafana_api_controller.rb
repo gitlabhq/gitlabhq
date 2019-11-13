@@ -4,8 +4,6 @@ class Projects::GrafanaApiController < Projects::ApplicationController
   include RenderServiceResults
   include MetricsDashboard
 
-  before_action :validate_feature_enabled!, only: [:metrics_dashboard]
-
   def proxy
     result = ::Grafana::ProxyService.new(
       project,
@@ -24,10 +22,6 @@ class Projects::GrafanaApiController < Projects::ApplicationController
 
   def metrics_dashboard_params
     params.permit(:embedded, :grafana_url)
-  end
-
-  def validate_feature_enabled!
-    render_403 unless Feature.enabled?(:gfm_grafana_integration)
   end
 
   def query_params

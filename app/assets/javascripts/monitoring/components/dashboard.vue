@@ -187,8 +187,11 @@ export default {
     firstDashboard() {
       return this.allDashboards[0] || {};
     },
+    selectedDashboard() {
+      return this.allDashboards.find(d => d.path === this.currentDashboard) || this.firstDashboard;
+    },
     selectedDashboardText() {
-      return this.currentDashboard || this.firstDashboard.display_name;
+      return this.selectedDashboard.display_name;
     },
     showRearrangePanelsBtn() {
       return !this.showEmptyState && this.rearrangePanelsAvailable;
@@ -198,6 +201,14 @@ export default {
     },
     alertWidgetAvailable() {
       return IS_EE && this.prometheusAlertsAvailable && this.alertsEndpoint;
+    },
+    hasHeaderButtons() {
+      return (
+        this.addingMetricsAvailable ||
+        this.showRearrangePanelsBtn ||
+        this.selectedDashboard.can_edit ||
+        this.externalDashboardUrl.length
+      );
     },
   },
   created() {
@@ -390,7 +401,7 @@ export default {
         </template>
 
         <gl-form-group
-          v-if="addingMetricsAvailable || showRearrangePanelsBtn || externalDashboardUrl.length"
+          v-if="hasHeaderButtons"
           label-for="prometheus-graphs-dropdown-buttons"
           class="dropdown-buttons col-md d-md-flex col-lg d-lg-flex align-items-end"
         >
@@ -436,6 +447,14 @@ export default {
                 </gl-button>
               </div>
             </gl-modal>
+
+            <gl-button
+              v-if="selectedDashboard.can_edit"
+              class="mt-1 js-edit-link"
+              :href="selectedDashboard.project_blob_path"
+            >
+              {{ __('Edit dashboard') }}
+            </gl-button>
 
             <gl-button
               v-if="externalDashboardUrl.length"

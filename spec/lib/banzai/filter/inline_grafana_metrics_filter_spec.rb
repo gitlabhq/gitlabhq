@@ -18,16 +18,6 @@ describe Banzai::Filter::InlineGrafanaMetricsFilter do
     '&var-instance=All&panelId=14'
   end
 
-  context 'when feature flag is disabled' do
-    before do
-      stub_feature_flags(gfm_grafana_integration: false)
-    end
-
-    it 'leaves the markdown unchanged' do
-      expect(unescape(doc.to_s)).to eq(input)
-    end
-  end
-
   it 'appends a metrics charts placeholder with dashboard url after metrics links' do
     node = doc.at_css('.js-render-metrics')
     expect(node).to be_present

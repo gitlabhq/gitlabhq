@@ -18,8 +18,6 @@ module Banzai
       end
 
       def embed_params(node)
-        return unless Feature.enabled?(:gfm_grafana_integration)
-
         query_params = Gitlab::Metrics::Dashboard::Url.parse_query(node['href'])
         return unless [:panelId, :from, :to].all? do |param|
           query_params.include?(param)
