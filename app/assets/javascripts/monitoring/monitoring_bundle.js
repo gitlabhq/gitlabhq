@@ -11,13 +11,6 @@ export default (props = {}) => {
   const el = document.getElementById('prometheus-graphs');
 
   if (el && el.dataset) {
-    if (gon.features) {
-      store.dispatch('monitoringDashboard/setFeatureFlags', {
-        prometheusEndpointEnabled: gon.features.environmentMetricsUsePrometheusEndpoint,
-        additionalPanelTypesEnabled: gon.features.environmentMetricsAdditionalPanelTypes,
-      });
-    }
-
     const [currentDashboard] = getParameterValues('dashboard');
 
     // eslint-disable-next-line no-new

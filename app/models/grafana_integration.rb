@@ -16,6 +16,8 @@ class GrafanaIntegration < ApplicationRecord
 
   validates :enabled, inclusion: { in: [true, false] }
 
+  scope :enabled, -> { where(enabled: true) }
+
   def client
     return unless enabled?
 

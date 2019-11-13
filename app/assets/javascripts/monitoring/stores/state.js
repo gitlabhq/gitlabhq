@@ -7,8 +7,6 @@ export default () => ({
   environmentsEndpoint: null,
   deploymentsEndpoint: null,
   dashboardEndpoint: invalidUrl,
-  useDashboardEndpoint: false,
-  additionalPanelTypesEnabled: false,
   emptyState: 'gettingStarted',
   showEmptyState: true,
   showErrorBanner: true,

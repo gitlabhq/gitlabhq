@@ -78,9 +78,6 @@ export default {
       }, sidebarAnimationDuration);
     },
     setInitialState() {
-      this.setFeatureFlags({
-        prometheusEndpointEnabled: true,
-      });
       this.setEndpoints({
         dashboardEndpoint: removeParams(['start', 'end'], this.dashboardUrl),
       });

@@ -1,22 +1,23 @@
 import { shallowMount } from '@vue/test-utils';
+import { setTestTimeout } from 'helpers/timeout';
 import { createStore } from '~/monitoring/stores';
 import { GlLink } from '@gitlab/ui';
 import { GlAreaChart, GlLineChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import { shallowWrapperContainsSlotText } from 'helpers/vue_test_utils_helper';
 import TimeSeries from '~/monitoring/components/charts/time_series.vue';
 import * as types from '~/monitoring/stores/mutation_types';
-import { TEST_HOST } from 'spec/test_constants';
-import MonitoringMock, {
+import {
   deploymentData,
-  mockProjectPath,
-} from '../../../javascripts/monitoring/mock_data';
+  metricsGroupsAPIResponse,
+  mockedQueryResultPayload,
+  mockProjectDir,
+  mockHost,
+} from '../mock_data';
+
 import * as iconUtils from '~/lib/utils/icon_utils';
 
 const mockSvgPathContent = 'mockSvgPathContent';
-const mockSha = 'mockSha';
 const mockWidgets = 'mockWidgets';
-const projectPath = `${TEST_HOST}${mockProjectPath}`;
-const commitUrl = `${projectPath}/commit/${mockSha}`;
 
 jest.mock('~/lib/utils/icon_utils', () => ({
   getSvgIconPathContent: jest.fn().mockImplementation(
@@ -33,32 +34,44 @@ describe('Time series component', () => {
   let store;
 
   beforeEach(() => {
+    setTestTimeout(1000);
+
     store = createStore();
-    store.commit(`monitoringDashboard/${types.RECEIVE_METRICS_DATA_SUCCESS}`, MonitoringMock.data);
+
+    store.commit(
+      `monitoringDashboard/${types.RECEIVE_METRICS_DATA_SUCCESS}`,
+      metricsGroupsAPIResponse,
+    );
+
     store.commit(`monitoringDashboard/${types.RECEIVE_DEPLOYMENTS_DATA_SUCCESS}`, deploymentData);
-    [, mockGraphData] = store.state.monitoringDashboard.dashboard.panel_groups[0].metrics;
+
+    // Mock data contains 2 panels, pick the first one
+    store.commit(`monitoringDashboard/${types.SET_QUERY_RESULT}`, mockedQueryResultPayload);
+
+    [mockGraphData] = store.state.monitoringDashboard.dashboard.panel_groups[0].metrics;
 
     makeTimeSeriesChart = (graphData, type) =>
       shallowMount(TimeSeries, {
-        attachToDocument: true,
         propsData: {
           graphData: { ...graphData, type },
           deploymentData: store.state.monitoringDashboard.deploymentData,
-          projectPath,
+          projectPath: `${mockHost}${mockProjectDir}`,
         },
         slots: {
           default: mockWidgets,
         },
         sync: false,
         store,
+        attachToDocument: true,
       });
   });
 
   describe('general functions', () => {
     let timeSeriesChart;
 
-    beforeEach(() => {
+    beforeEach(done => {
       timeSeriesChart = makeTimeSeriesChart(mockGraphData, 'area-chart');
+      timeSeriesChart.vm.$nextTick(done);
     });
 
     it('renders chart title', () => {
@@ -83,18 +96,24 @@ describe('Time series component', () => {
 
     describe('methods', () => {
       describe('formatTooltipText', () => {
-        const mockDate = deploymentData[0].created_at;
-        const mockCommitUrl = deploymentData[0].commitUrl;
-        const generateSeriesData = type => ({
-          seriesData: [
-            {
-              seriesName: timeSeriesChart.vm.chartData[0].name,
-              componentSubType: type,
-              value: [mockDate, 5.55555],
-              dataIndex: 0,
-            },
-          ],
-          value: mockDate,
+        let mockDate;
+        let mockCommitUrl;
+        let generateSeriesData;
+
+        beforeEach(() => {
+          mockDate = deploymentData[0].created_at;
+          mockCommitUrl = deploymentData[0].commitUrl;
+          generateSeriesData = type => ({
+            seriesData: [
+              {
+                seriesName: timeSeriesChart.vm.chartData[0].name,
+                componentSubType: type,
+                value: [mockDate, 5.55555],
+                dataIndex: 0,
+              },
+            ],
+            value: mockDate,
+          });
         });
 
         describe('when series is of line type', () => {
@@ -104,11 +123,11 @@ describe('Time series component', () => {
           });
 
           it('formats tooltip title', () => {
-            expect(timeSeriesChart.vm.tooltip.title).toBe('31 May 2017, 9:23PM');
+            expect(timeSeriesChart.vm.tooltip.title).toBe('16 Jul 2019, 10:14AM');
           });
 
           it('formats tooltip content', () => {
-            const name = 'Core Usage';
+            const name = 'Pod average';
             const value = '5.556';
             const dataIndex = 0;
             const seriesLabel = timeSeriesChart.find(GlChartSeriesLabel);
@@ -129,13 +148,13 @@ describe('Time series component', () => {
           });
         });
 
-        describe('when series is of scatter type', () => {
+        describe('when series is of scatter type, for deployments', () => {
           beforeEach(() => {
             timeSeriesChart.vm.formatTooltipText(generateSeriesData('scatter'));
           });
 
           it('formats tooltip title', () => {
-            expect(timeSeriesChart.vm.tooltip.title).toBe('31 May 2017, 9:23PM');
+            expect(timeSeriesChart.vm.tooltip.title).toBe('16 Jul 2019, 10:14AM');
           });
 
           it('formats tooltip sha', () => {
@@ -274,9 +293,9 @@ describe('Time series component', () => {
       describe('scatterSeries', () => {
         it('utilizes deployment data', () => {
           expect(timeSeriesChart.vm.scatterSeries.data).toEqual([
-            ['2017-05-31T21:23:37.881Z', 0],
-            ['2017-05-30T20:08:04.629Z', 0],
-            ['2017-05-30T17:42:38.409Z', 0],
+            ['2019-07-16T10:14:25.589Z', 0],
+            ['2019-07-16T11:14:25.589Z', 0],
+            ['2019-07-16T12:14:25.589Z', 0],
           ]);
 
           expect(timeSeriesChart.vm.scatterSeries.symbolSize).toBe(14);
@@ -285,7 +304,7 @@ describe('Time series component', () => {
 
       describe('yAxisLabel', () => {
         it('constructs a label for the chart y-axis', () => {
-          expect(timeSeriesChart.vm.yAxisLabel).toBe('CPU');
+          expect(timeSeriesChart.vm.yAxisLabel).toBe('Memory Used per Pod');
         });
       });
     });
@@ -318,6 +337,10 @@ describe('Time series component', () => {
           timeSeriesAreaChart.vm.$nextTick(done);
         });
 
+        afterEach(() => {
+          timeSeriesAreaChart.destroy();
+        });
+
         it('is a Vue instance', () => {
           expect(glChart.exists()).toBe(true);
           expect(glChart.isVueInstance()).toBe(true);
@@ -343,6 +366,9 @@ describe('Time series component', () => {
         });
 
         describe('when tooltip is showing deployment data', () => {
+          const mockSha = 'mockSha';
+          const commitUrl = `${mockProjectDir}/commit/${mockSha}`;
+
           beforeEach(done => {
             timeSeriesAreaChart.vm.tooltip.isDeployment = true;
             timeSeriesAreaChart.vm.$nextTick(done);

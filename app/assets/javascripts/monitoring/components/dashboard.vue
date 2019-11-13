@@ -11,7 +11,7 @@ import {
   GlModalDirective,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import { __, s__ } from '~/locale';
+import { s__ } from '~/locale';
 import createFlash from '~/flash';
 import Icon from '~/vue_shared/components/icon.vue';
 import { getParameterValues, mergeUrlParams, redirectTo } from '~/lib/utils/url_utility';
@@ -167,6 +167,7 @@ export default {
       formIsValid: null,
       selectedTimeWindow: {},
       isRearrangingPanels: false,
+      hasValidDates: true,
     };
   },
   computed: {
@@ -185,7 +186,9 @@ export default {
       'additionalPanelTypesEnabled',
     ]),
     firstDashboard() {
-      return this.allDashboards[0] || {};
+      return this.environmentsEndpoint.length > 0 && this.allDashboards.length > 0
+        ? this.allDashboards[0]
+        : {};
     },
     selectedDashboard() {
       return this.allDashboards.find(d => d.path === this.currentDashboard) || this.firstDashboard;
@@ -198,9 +201,6 @@ export default {
     },
     addingMetricsAvailable() {
       return IS_EE && this.canAddMetrics && !this.showEmptyState;
-    },
-    alertWidgetAvailable() {
-      return IS_EE && this.prometheusAlertsAvailable && this.alertsEndpoint;
     },
     hasHeaderButtons() {
       return (
@@ -237,8 +237,10 @@ export default {
       this.selectedTimeWindow = range;
 
       if (!isValidDate(start) || !isValidDate(end)) {
+        this.hasValidDates = false;
         this.showInvalidDateError();
       } else {
+        this.hasValidDates = true;
         this.fetchData(range);
       }
     }
@@ -248,44 +250,13 @@ export default {
       'fetchData',
       'setGettingStartedEmptyState',
       'setEndpoints',
-      'setDashboardEnabled',
       'setPanelGroupMetrics',
     ]),
     chartsWithData(charts) {
-      if (!this.useDashboardEndpoint) {
-        return charts;
-      }
       return charts.filter(chart =>
         chart.metrics.some(metric => this.metricsWithData.includes(metric.metric_id)),
       );
     },
-    csvText(graphData) {
-      const chartData = graphData.queries[0].result[0].values;
-      const yLabel = graphData.y_label;
-      const header = `timestamp,${yLabel}\r\n`; // eslint-disable-line @gitlab/i18n/no-non-i18n-strings
-      return chartData.reduce((csv, data) => {
-        const row = data.join(',');
-        return `${csv}${row}\r\n`;
-      }, header);
-    },
-    downloadCsv(graphData) {
-      const data = new Blob([this.csvText(graphData)], { type: 'text/plain' });
-      return window.URL.createObjectURL(data);
-    },
-    // TODO: BEGIN, Duplicated code with panel_type until feature flag is removed
-    // Issue number: https://gitlab.com/gitlab-org/gitlab-foss/issues/63845
-    getGraphAlerts(queries) {
-      if (!this.allAlerts) return {};
-      const metricIdsForChart = queries.map(q => q.metricId);
-      return _.pick(this.allAlerts, alert => metricIdsForChart.includes(alert.metricId));
-    },
-    getGraphAlertValues(queries) {
-      return Object.values(this.getGraphAlerts(queries));
-    },
-    showToast() {
-      this.$toast.show(__('Link copied'));
-    },
-    // TODO: END
     updateMetrics(key, metrics) {
       this.setPanelGroupMetrics({
         metrics,
@@ -297,6 +268,11 @@ export default {
         metrics: metrics.filter((v, i) => i !== graphIndex),
         key,
       });
+    },
+    removeGraph(metrics, graphIndex) {
+      // At present graphs will not be removed, they should removed using the vuex store
+      // See https://gitlab.com/gitlab-org/gitlab/issues/27835
+      metrics.splice(graphIndex, 1);
     },
     showInvalidDateError() {
       createFlash(s__('Metrics|Link contains an invalid time window.'));
@@ -387,7 +363,7 @@ export default {
           </gl-form-group>
 
           <gl-form-group
-            v-if="!showEmptyState"
+            v-if="hasValidDates"
             :label="s__('Metrics|Show last')"
             label-size="sm"
             label-for="monitor-time-window-dropdown"
@@ -480,109 +456,40 @@ export default {
         :show-panels="showPanels"
         :collapse-group="groupHasData(groupData)"
       >
-        <template v-if="additionalPanelTypesEnabled">
-          <vue-draggable
-            :value="groupData.metrics"
-            group="metrics-dashboard"
-            :component-data="{ attrs: { class: 'row mx-0 w-100' } }"
-            :disabled="!isRearrangingPanels"
-            @input="updateMetrics(groupData.key, $event)"
+        <vue-draggable
+          :value="groupData.metrics"
+          group="metrics-dashboard"
+          :component-data="{ attrs: { class: 'row mx-0 w-100' } }"
+          :disabled="!isRearrangingPanels"
+          @input="updateMetrics(groupData.key, $event)"
+        >
+          <div
+            v-for="(graphData, graphIndex) in groupData.metrics"
+            :key="`panel-type-${graphIndex}`"
+            class="col-12 col-lg-6 px-2 mb-2 draggable"
+            :class="{ 'draggable-enabled': isRearrangingPanels }"
           >
-            <div
-              v-for="(graphData, graphIndex) in groupData.metrics"
-              :key="`panel-type-${graphIndex}`"
-              class="col-12 col-lg-6 px-2 mb-2 draggable"
-              :class="{ 'draggable-enabled': isRearrangingPanels }"
-            >
-              <div class="position-relative draggable-panel js-draggable-panel">
-                <div
-                  v-if="isRearrangingPanels"
-                  class="draggable-remove js-draggable-remove p-2 w-100 position-absolute d-flex justify-content-end"
-                  @click="removeMetric(groupData.key, groupData.metrics, graphIndex)"
-                >
-                  <a class="mx-2 p-2 draggable-remove-link" :aria-label="__('Remove')"
-                    ><icon name="close"
-                  /></a>
-                </div>
-
-                <panel-type
-                  :clipboard-text="
-                    generateLink(groupData.group, graphData.title, graphData.y_label)
-                  "
-                  :graph-data="graphData"
-                  :alerts-endpoint="alertsEndpoint"
-                  :prometheus-alerts-available="prometheusAlertsAvailable"
-                  :index="`${index}-${graphIndex}`"
-                />
-              </div>
-            </div>
-          </vue-draggable>
-        </template>
-        <template v-else>
-          <monitor-time-series-chart
-            v-for="(graphData, graphIndex) in chartsWithData(groupData.metrics)"
-            :key="graphIndex"
-            class="col-12 col-lg-6 pb-3"
-            :graph-data="graphData"
-            :deployment-data="deploymentData"
-            :thresholds="getGraphAlertValues(graphData.queries)"
-            :project-path="projectPath"
-            group-id="monitor-time-series-chart"
-          >
-            <div
-              class="d-flex align-items-center"
-              :class="alertWidgetAvailable ? 'justify-content-between' : 'justify-content-end'"
-            >
-              <alert-widget
-                v-if="alertWidgetAvailable && graphData"
-                :modal-id="`alert-modal-${index}-${graphIndex}`"
-                :alerts-endpoint="alertsEndpoint"
-                :relevant-queries="graphData.queries"
-                :alerts-to-manage="getGraphAlerts(graphData.queries)"
-                @setAlerts="setAlerts"
-              />
-              <gl-dropdown
-                v-gl-tooltip
-                class="ml-2 mr-3"
-                toggle-class="btn btn-transparent border-0"
-                :right="true"
-                :no-caret="true"
-                :title="__('More actions')"
+            <div class="position-relative draggable-panel js-draggable-panel">
+              <div
+                v-if="isRearrangingPanels"
+                class="draggable-remove js-draggable-remove p-2 w-100 position-absolute d-flex justify-content-end"
+                @click="removeGraph(groupData.metrics, graphIndex)"
               >
-                <template slot="button-content">
-                  <icon name="ellipsis_v" class="text-secondary" />
-                </template>
-                <gl-dropdown-item
-                  v-track-event="downloadCSVOptions(graphData.title)"
-                  :href="downloadCsv(graphData)"
-                  download="chart_metrics.csv"
-                >
-                  {{ __('Download CSV') }}
-                </gl-dropdown-item>
-                <gl-dropdown-item
-                  v-track-event="
-                    generateLinkToChartOptions(
-                      generateLink(groupData.group, graphData.title, graphData.y_label),
-                    )
-                  "
-                  class="js-chart-link"
-                  :data-clipboard-text="
-                    generateLink(groupData.group, graphData.title, graphData.y_label)
-                  "
-                  @click="showToast"
-                >
-                  {{ __('Generate link to chart') }}
-                </gl-dropdown-item>
-                <gl-dropdown-item
-                  v-if="alertWidgetAvailable"
-                  v-gl-modal="`alert-modal-${index}-${graphIndex}`"
-                >
-                  {{ __('Alerts') }}
-                </gl-dropdown-item>
-              </gl-dropdown>
+                <a class="mx-2 p-2 draggable-remove-link" :aria-label="__('Remove')"
+                  ><icon name="close"
+                /></a>
+              </div>
+
+              <panel-type
+                :clipboard-text="generateLink(groupData.group, graphData.title, graphData.y_label)"
+                :graph-data="graphData"
+                :alerts-endpoint="alertsEndpoint"
+                :prometheus-alerts-available="prometheusAlertsAvailable"
+                :index="`${index}-${graphIndex}`"
+              />
             </div>
-          </monitor-time-series-chart>
-        </template>
+          </div>
+        </vue-draggable>
       </graph-group>
     </div>
     <empty-state

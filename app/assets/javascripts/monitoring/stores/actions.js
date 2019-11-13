@@ -35,14 +35,6 @@ export const setEndpoints = ({ commit }, endpoints) => {
   commit(types.SET_ENDPOINTS, endpoints);
 };
 
-export const setFeatureFlags = (
-  { commit },
-  { prometheusEndpointEnabled, additionalPanelTypesEnabled },
-) => {
-  commit(types.SET_DASHBOARD_ENABLED, prometheusEndpointEnabled);
-  commit(types.SET_ADDITIONAL_PANEL_TYPES_ENABLED, additionalPanelTypesEnabled);
-};
-
 export const setShowErrorBanner = ({ commit }, enabled) => {
   commit(types.SET_SHOW_ERROR_BANNER, enabled);
 };
@@ -79,29 +71,7 @@ export const fetchData = ({ dispatch }, params) => {
   dispatch('fetchEnvironmentsData');
 };
 
-export const fetchMetricsData = ({ state, dispatch }, params) => {
-  if (state.useDashboardEndpoint) {
-    return dispatch('fetchDashboard', params);
-  }
-
-  dispatch('requestMetricsData');
-
-  return backOffRequest(() => axios.get(state.metricsEndpoint, { params }))
-    .then(resp => resp.data)
-    .then(response => {
-      if (!response || !response.data || !response.success) {
-        dispatch('receiveMetricsDataFailure', null);
-        createFlash(s__('Metrics|Unexpected metrics data response from prometheus endpoint'));
-      }
-      dispatch('receiveMetricsDataSuccess', response.data);
-    })
-    .catch(error => {
-      dispatch('receiveMetricsDataFailure', error);
-      if (state.setShowErrorBanner) {
-        createFlash(s__('Metrics|There was an error while retrieving metrics'));
-      }
-    });
-};
+export const fetchMetricsData = ({ dispatch }, params) => dispatch('fetchDashboard', params);
 
 export const fetchDashboard = ({ state, dispatch }, params) => {
   dispatch('requestMetricsDashboard');

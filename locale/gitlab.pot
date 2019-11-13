@@ -10810,9 +10810,6 @@ msgstr ""
 msgid "Metrics|Unexpected deployment data response from prometheus endpoint"
 msgstr ""
 
-msgid "Metrics|Unexpected metrics data response from prometheus endpoint"
-msgstr ""
-
 msgid "Metrics|Unit label"
 msgstr ""
 

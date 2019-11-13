@@ -123,7 +123,7 @@ For more details on creating groups, watch the video [GitLab Namespaces (users, 
 ## Add users to a group
 
 A benefit of putting multiple projects in one group is that you can
-give a user to access to all projects in the group with one action.
+give a user access to all projects in the group with one action.
 
 Add members to a group by navigating to the group's dashboard and clicking **Members**.
 
@@ -135,14 +135,14 @@ Consider a group with two projects:
 
 - On the **Group Members** page, you can now add a new user to the group.
 - Now, because this user is a **Developer** member of the group, they automatically
-  gets **Developer** access to **all projects** within that group.
+  get **Developer** access to **all projects** within that group.
 
 To increase the access level of an existing user for a specific project,
 add them again as a new member to the project with the desired permission level.
 
 ## Request access to a group
 
-As a group owner, you can enable or disable the ability for non members to request access to
+As a group owner, you can enable or disable the ability for non-members to request access to
 your group. Go to the group settings, and click **Allow users to request access**.
 
 As a user, you can request to be a member of a group, if that setting is enabled. Go to the group for which you'd like to be a member, and click the **Request Access** button on the right
@@ -356,7 +356,7 @@ Restriction currently applies to:
 - [From GitLab 12.3](https://gitlab.com/gitlab-org/gitlab/issues/12874), API access.
 - [From GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/issues/32113), Git actions via SSH.
 
-To avoid accidental lock-out, admins and group owners are are able to access
+To avoid accidental lock-out, admins and group owners are able to access
 the group regardless of the IP restriction.
 
 #### Allowed domain restriction **(PREMIUM)**
@@ -385,7 +385,7 @@ Some domains cannot be restricted. These are the most popular public email domai
 To enable this feature:
 
 1. Navigate to the group's **Settings > General** page.
-1. Expand the **Permissions, LFS, 2FA** section, and enter domain name into **Restrict membership by email** field.
+1. Expand the **Permissions, LFS, 2FA** section, and enter the domain name into **Restrict membership by email** field.
 1. Click **Save changes**.
 
 This will enable the domain-checking for all new users added to the group from this moment on.
@@ -445,7 +445,7 @@ To enable this feature:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/13294) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.0.
 
-A group owner can check the aggregated storage usage for all the project in a group, sub-groups included, in the **Storage** tab of the **Usage Quotas** page available to the group page settings list.
+A group owner can check the aggregated storage usage for all the projects in a group, sub-groups included, in the **Storage** tab of the **Usage Quotas** page available to the group page settings list.
 
 ![Group storage usage quota](img/group_storage_usage_quota.png)
 

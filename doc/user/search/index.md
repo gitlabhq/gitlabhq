@@ -32,13 +32,14 @@ on the search field on the top-right of your screen:
 If you want to search for issues present in a specific project, navigate to
 a project's **Issues** tab, and click on the field **Search or filter results...**. It will
 display a dropdown menu, from which you can add filters per author, assignee, milestone,
-label, weight, and 'my-reaction' (based on your emoji votes). When done, press **Enter** on your keyboard to filter the issues.
+release, label, weight, confidentiality, and "my-reaction" (based on your emoji votes).
+When done, press **Enter** on your keyboard to filter the issues.
 
-![filter issues in a project](img/issue_search_filter.png)
+![filter issues in a project](img/issue_search_filter_v12_5.png)
 
 The same process is valid for merge requests. Navigate to your project's **Merge Requests** tab,
 and click **Search or filter results...**. Merge requests can be filtered by author, assignee,
-milestone, and label.
+approver, milestone, release, label, "my-reaction", "work in progess" status, and target branch.
 
 ### Filtering by **None** / **Any**
 

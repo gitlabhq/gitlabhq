@@ -48,6 +48,10 @@ describe Gitlab::UsageData do
       create(:clusters_applications_knative, :installed, cluster: gcp_cluster)
       create(:clusters_applications_elastic_stack, :installed, cluster: gcp_cluster)
 
+      create(:grafana_integration, project: projects[0], enabled: true)
+      create(:grafana_integration, project: projects[1], enabled: true)
+      create(:grafana_integration, project: projects[2], enabled: false)
+
       ProjectFeature.first.update_attribute('repository_access_level', 0)
     end
 
@@ -140,6 +144,7 @@ describe Gitlab::UsageData do
         clusters_applications_knative
         clusters_applications_elastic_stack
         in_review_folder
+        grafana_integrated_projects
         groups
         issues
         issues_with_associated_zoom_link
@@ -221,6 +226,7 @@ describe Gitlab::UsageData do
       expect(count_data[:clusters_applications_runner]).to eq(1)
       expect(count_data[:clusters_applications_knative]).to eq(1)
       expect(count_data[:clusters_applications_elastic_stack]).to eq(1)
+      expect(count_data[:grafana_integrated_projects]).to eq(2)
     end
 
     it 'works when queries time out' do

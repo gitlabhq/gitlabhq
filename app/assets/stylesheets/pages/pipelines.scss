@@ -871,7 +871,7 @@ button.mini-pipeline-graph-dropdown-toggle {
         height: $ci-action-dropdown-svg-size;
         fill: $gl-text-color-secondary;
         position: relative;
-        top: 1px;
+        top: auto;
         vertical-align: initial;
       }
     }

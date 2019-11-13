@@ -7,11 +7,12 @@ import Dashboard from '~/monitoring/components/dashboard.vue';
 import * as types from '~/monitoring/stores/mutation_types';
 import { createStore } from '~/monitoring/stores';
 import axios from '~/lib/utils/axios_utils';
-import MonitoringMock, {
+import {
   metricsGroupsAPIResponse,
+  mockedQueryResultPayload,
+  mockedQueryResultPayloadCoresTotal,
   mockApiEndpoint,
   environmentData,
-  singleGroupResponse,
   dashboardGitResponse,
 } from '../mock_data';
 
@@ -44,12 +45,33 @@ const resetSpy = spy => {
 
 export default propsData;
 
+function setupComponentStore(component) {
+  component.$store.commit(
+    `monitoringDashboard/${types.RECEIVE_METRICS_DATA_SUCCESS}`,
+    metricsGroupsAPIResponse,
+  );
+
+  // Load 2 panels to the dashboard
+  component.$store.commit(
+    `monitoringDashboard/${types.SET_QUERY_RESULT}`,
+    mockedQueryResultPayload,
+  );
+  component.$store.commit(
+    `monitoringDashboard/${types.SET_QUERY_RESULT}`,
+    mockedQueryResultPayloadCoresTotal,
+  );
+
+  component.$store.commit(
+    `monitoringDashboard/${types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS}`,
+    environmentData,
+  );
+}
+
 describe('Dashboard', () => {
   let DashboardComponent;
   let mock;
   let store;
   let component;
-  let mockGraphData;
 
   beforeEach(() => {
     setFixtures(`
@@ -123,25 +145,6 @@ describe('Dashboard', () => {
       });
     });
 
-    it('hides the legend when showLegend is false', done => {
-      component = new DashboardComponent({
-        el: document.querySelector('.prometheus-graphs'),
-        propsData: {
-          ...propsData,
-          hasMetrics: true,
-          showLegend: false,
-        },
-        store,
-      });
-
-      setTimeout(() => {
-        expect(component.showEmptyState).toEqual(false);
-        expect(component.$el.querySelector('.legend-group')).toEqual(null);
-        expect(component.$el.querySelector('.prometheus-graph-group')).toBeTruthy();
-        done();
-      });
-    });
-
     it('hides the group panels when showPanels is false', done => {
       component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
@@ -153,52 +156,66 @@ describe('Dashboard', () => {
         store,
       });
 
-      setTimeout(() => {
-        expect(component.showEmptyState).toEqual(false);
-        expect(component.$el.querySelector('.prometheus-panel')).toEqual(null);
-        expect(component.$el.querySelector('.prometheus-graph-group')).toBeTruthy();
-        done();
-      });
-    });
-
-    it('renders the environments dropdown with a number of environments', done => {
-      component = new DashboardComponent({
-        el: document.querySelector('.prometheus-graphs'),
-        propsData: {
-          ...propsData,
-          hasMetrics: true,
-          showPanels: false,
-        },
-        store,
-      });
-
-      component.$store.commit(
-        `monitoringDashboard/${types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS}`,
-        environmentData,
-      );
-      component.$store.commit(
-        `monitoringDashboard/${types.RECEIVE_METRICS_DATA_SUCCESS}`,
-        singleGroupResponse,
-      );
+      setupComponentStore(component);
 
       Vue.nextTick()
         .then(() => {
-          const dropdownMenuEnvironments = component.$el.querySelectorAll(
-            '.js-environments-dropdown .dropdown-item',
-          );
-
-          expect(component.environments.length).toEqual(environmentData.length);
-          expect(dropdownMenuEnvironments.length).toEqual(component.environments.length);
-
-          Array.from(dropdownMenuEnvironments).forEach((value, index) => {
-            if (environmentData[index].metrics_path) {
-              expect(value).toHaveAttr('href', environmentData[index].metrics_path);
-            }
-          });
+          expect(component.showEmptyState).toEqual(false);
+          expect(component.$el.querySelector('.prometheus-panel')).toEqual(null);
+          expect(component.$el.querySelector('.prometheus-graph-group')).toBeTruthy();
 
           done();
         })
         .catch(done.fail);
+    });
+
+    describe('when all the requests have been commited by the store', () => {
+      beforeEach(() => {
+        component = new DashboardComponent({
+          el: document.querySelector('.prometheus-graphs'),
+          propsData: {
+            ...propsData,
+            hasMetrics: true,
+          },
+          store,
+        });
+
+        setupComponentStore(component);
+      });
+
+      it('renders the environments dropdown with a number of environments', done => {
+        Vue.nextTick()
+          .then(() => {
+            const dropdownMenuEnvironments = component.$el.querySelectorAll(
+              '.js-environments-dropdown .dropdown-item',
+            );
+
+            expect(component.environments.length).toEqual(environmentData.length);
+            expect(dropdownMenuEnvironments.length).toEqual(component.environments.length);
+
+            Array.from(dropdownMenuEnvironments).forEach((value, index) => {
+              if (environmentData[index].metrics_path) {
+                expect(value).toHaveAttr('href', environmentData[index].metrics_path);
+              }
+            });
+
+            done();
+          })
+          .catch(done.fail);
+      });
+
+      it('renders the environments dropdown with a single active element', done => {
+        Vue.nextTick()
+          .then(() => {
+            const dropdownItems = component.$el.querySelectorAll(
+              '.js-environments-dropdown .dropdown-item.active',
+            );
+
+            expect(dropdownItems.length).toEqual(1);
+            done();
+          })
+          .catch(done.fail);
+      });
     });
 
     it('hides the environments dropdown list when there is no environments', done => {
@@ -207,15 +224,17 @@ describe('Dashboard', () => {
         propsData: {
           ...propsData,
           hasMetrics: true,
-          showPanels: false,
         },
         store,
       });
 
-      component.$store.commit(`monitoringDashboard/${types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS}`, []);
       component.$store.commit(
         `monitoringDashboard/${types.RECEIVE_METRICS_DATA_SUCCESS}`,
-        singleGroupResponse,
+        metricsGroupsAPIResponse,
+      );
+      component.$store.commit(
+        `monitoringDashboard/${types.SET_QUERY_RESULT}`,
+        mockedQueryResultPayload,
       );
 
       Vue.nextTick()
@@ -230,58 +249,6 @@ describe('Dashboard', () => {
         .catch(done.fail);
     });
 
-    it('renders the environments dropdown with a single active element', done => {
-      component = new DashboardComponent({
-        el: document.querySelector('.prometheus-graphs'),
-        propsData: {
-          ...propsData,
-          hasMetrics: true,
-          showPanels: false,
-        },
-        store,
-      });
-
-      component.$store.commit(
-        `monitoringDashboard/${types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS}`,
-        environmentData,
-      );
-      component.$store.commit(
-        `monitoringDashboard/${types.RECEIVE_METRICS_DATA_SUCCESS}`,
-        singleGroupResponse,
-      );
-
-      Vue.nextTick()
-        .then(() => {
-          const dropdownItems = component.$el.querySelectorAll(
-            '.js-environments-dropdown .dropdown-item.active',
-          );
-
-          expect(dropdownItems.length).toEqual(1);
-          done();
-        })
-        .catch(done.fail);
-    });
-
-    it('hides the dropdown', done => {
-      component = new DashboardComponent({
-        el: document.querySelector('.prometheus-graphs'),
-        propsData: {
-          ...propsData,
-          hasMetrics: true,
-          showPanels: false,
-          environmentsEndpoint: '',
-        },
-        store,
-      });
-
-      Vue.nextTick(() => {
-        const dropdownIsActiveElement = component.$el.querySelectorAll('.environments');
-
-        expect(dropdownIsActiveElement.length).toEqual(0);
-        done();
-      });
-    });
-
     it('renders the datetimepicker dropdown', done => {
       component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
@@ -293,10 +260,14 @@ describe('Dashboard', () => {
         store,
       });
 
-      setTimeout(() => {
-        expect(component.$el.querySelector('.js-time-window-dropdown')).not.toBeNull();
-        done();
-      });
+      setupComponentStore(component);
+
+      Vue.nextTick()
+        .then(() => {
+          expect(component.$el.querySelector('.js-time-window-dropdown')).not.toBeNull();
+          done();
+        })
+        .catch(done.fail);
     });
 
     it('fetches the metrics data with proper time window', done => {
@@ -347,14 +318,21 @@ describe('Dashboard', () => {
         el: document.querySelector('.prometheus-graphs'),
         propsData: { ...propsData, hasMetrics: true },
         store,
+        sync: false,
       });
 
-      setTimeout(() => {
-        const selectedTimeWindow = component.$el.querySelector('.js-time-window-dropdown .active');
+      setupComponentStore(component);
 
-        expect(selectedTimeWindow.textContent.trim()).toEqual('30 minutes');
-        done();
-      });
+      Vue.nextTick()
+        .then(() => {
+          const selectedTimeWindow = component.$el.querySelector(
+            '.js-time-window-dropdown .active',
+          );
+
+          expect(selectedTimeWindow.textContent.trim()).toEqual('30 minutes');
+          done();
+        })
+        .catch(done.fail);
     });
 
     it('shows an error message if invalid url parameters are passed', done => {
@@ -381,29 +359,36 @@ describe('Dashboard', () => {
   describe('drag and drop function', () => {
     let wrapper;
     let expectedPanelCount; // also called metrics, naming to be improved: https://gitlab.com/gitlab-org/gitlab/issues/31565
+
     const findDraggables = () => wrapper.findAll(VueDraggable);
     const findEnabledDraggables = () => findDraggables().filter(f => !f.attributes('disabled'));
     const findDraggablePanels = () => wrapper.findAll('.js-draggable-panel');
     const findRearrangeButton = () => wrapper.find('.js-rearrange-button');
 
-    beforeEach(done => {
+    beforeEach(() => {
       mock.onGet(mockApiEndpoint).reply(200, metricsGroupsAPIResponse);
-      expectedPanelCount = metricsGroupsAPIResponse.data.reduce(
-        (acc, d) => d.metrics.length + acc,
+      expectedPanelCount = metricsGroupsAPIResponse.reduce(
+        (acc, group) => group.panels.length + acc,
         0,
       );
-      store.dispatch('monitoringDashboard/setFeatureFlags', { additionalPanelTypesEnabled: true });
+    });
 
+    beforeEach(done => {
       wrapper = shallowMount(DashboardComponent, {
         localVue,
         sync: false,
         propsData: { ...propsData, hasMetrics: true },
         store,
+        attachToDocument: true,
       });
 
-      // not using $nextTicket becuase we must wait for the dashboard
-      // to be populated with the mock data results.
-      setTimeout(done);
+      setupComponentStore(wrapper.vm);
+
+      wrapper.vm.$nextTick(done);
+    });
+
+    afterEach(() => {
+      wrapper.destroy();
     });
 
     it('wraps vuedraggable', () => {
@@ -444,7 +429,7 @@ describe('Dashboard', () => {
 
         it('metrics can be swapped', done => {
           const firstDraggable = findDraggables().at(0);
-          const mockMetrics = [...metricsGroupsAPIResponse.data[0].metrics];
+          const mockMetrics = [...metricsGroupsAPIResponse[0].panels];
           const value = () => firstDraggable.props('value');
 
           expect(value().length).toBe(mockMetrics.length);
@@ -485,10 +470,6 @@ describe('Dashboard', () => {
           });
         });
       });
-    });
-
-    afterEach(() => {
-      wrapper.destroy();
     });
   });
 
@@ -577,24 +558,7 @@ describe('Dashboard', () => {
         store,
       });
 
-      component.$store.dispatch('monitoringDashboard/setFeatureFlags', {
-        prometheusEndpoint: false,
-      });
-
-      component.$store.commit(
-        `monitoringDashboard/${types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS}`,
-        environmentData,
-      );
-
-      component.$store.commit(
-        `monitoringDashboard/${types.RECEIVE_METRICS_DATA_SUCCESS}`,
-        singleGroupResponse,
-      );
-
-      component.$store.commit(
-        `monitoringDashboard/${types.SET_ALL_DASHBOARDS}`,
-        dashboardGitResponse,
-      );
+      setupComponentStore(component);
 
       return Vue.nextTick().then(() => {
         promPanel = component.$el.querySelector('.prometheus-panel');
@@ -707,20 +671,6 @@ describe('Dashboard', () => {
         store,
       });
 
-      component.$store.dispatch('monitoringDashboard/setFeatureFlags', {
-        prometheusEndpoint: false,
-      });
-
-      component.$store.commit(
-        `monitoringDashboard/${types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS}`,
-        environmentData,
-      );
-
-      component.$store.commit(
-        `monitoringDashboard/${types.RECEIVE_METRICS_DATA_SUCCESS}`,
-        singleGroupResponse,
-      );
-
       component.$store.commit(
         `monitoringDashboard/${types.SET_ALL_DASHBOARDS}`,
         dashboardGitResponse,
@@ -733,40 +683,6 @@ describe('Dashboard', () => {
 
         expect(dashboardDropdown).not.toEqual(null);
         done();
-      });
-    });
-  });
-
-  describe('when downloading metrics data as CSV', () => {
-    beforeEach(() => {
-      component = new DashboardComponent({
-        propsData: {
-          ...propsData,
-        },
-        store,
-      });
-      store.commit(
-        `monitoringDashboard/${types.RECEIVE_METRICS_DATA_SUCCESS}`,
-        MonitoringMock.data,
-      );
-      [
-        mockGraphData,
-      ] = component.$store.state.monitoringDashboard.dashboard.panel_groups[0].metrics;
-    });
-
-    describe('csvText', () => {
-      it('converts metrics data from json to csv', () => {
-        const header = `timestamp,${mockGraphData.y_label}`;
-        const data = mockGraphData.queries[0].result[0].values;
-        const firstRow = `${data[0][0]},${data[0][1]}`;
-
-        expect(component.csvText(mockGraphData)).toMatch(`^${header}\r\n${firstRow}`);
-      });
-    });
-
-    describe('downloadCsv', () => {
-      it('produces a link with a Blob', () => {
-        expect(component.downloadCsv(mockGraphData)).toContain(`blob:`);
       });
     });
   });

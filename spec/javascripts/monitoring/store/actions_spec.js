@@ -317,7 +317,7 @@ describe('Monitoring store actions', () => {
       const metric = metricsDashboardResponse.dashboard.panel_groups[0].panels[0].metrics[0];
       const state = storeState();
 
-      const data = metricsGroupsAPIResponse.data[0].metrics[0].queries[0];
+      const data = metricsGroupsAPIResponse[0].panels[0].metrics[0];
       const response = { data };
       mock.onGet('http://test').reply(200, response);
 
