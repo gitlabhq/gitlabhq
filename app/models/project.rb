@@ -517,13 +517,11 @@ class Project < ApplicationRecord
 
   # This scope returns projects where user has access to both the project and the feature.
   def self.filter_by_feature_visibility(feature, user)
-    scope = with_feature_available_for_user(feature, user)
-
-    if ProjectFeature.guest_allowed_on_private_project?(feature)
-      scope.public_or_visible_to_user(user)
-    else
-      scope.public_or_visible_to_user(user, Gitlab::Access::REPORTER)
-    end
+    with_feature_available_for_user(feature, user)
+      .public_or_visible_to_user(
+        user,
+        ProjectFeature.required_minimum_access_level_for_private_project(feature)
+      )
   end
 
   scope :active, -> { joins(:issues, :notes, :merge_requests).order('issues.created_at, notes.created_at, merge_requests.created_at DESC') }
