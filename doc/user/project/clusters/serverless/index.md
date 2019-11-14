@@ -313,6 +313,41 @@ The sample function can now be triggered from any HTTP client using a simple `PO
 
      ![function execution](img/function-execution.png)
 
+### Running functions locally
+
+Running a function locally is a good way to quickly verify behavior during development.
+
+Running functions locally requires:
+
+- Go 1.12 or newer installed.
+- Docker Engine installed and running.
+- `gitlabktl` installed using the Go package manager:
+  
+  ```shell
+  GO111MODULE=on go get gitlab.com/gitlab-org/gitlabktl
+  ```
+
+To run a function locally:
+
+1. Navigate to the root of your GitLab serverless project.
+1. Build your function into a Docker image:
+
+   ```shell
+   gitlabktl serverless build
+   ```
+
+1. Run your function in Docker:
+
+   ```shell
+   docker run -itp 8080:8080 <your_function_name>
+   ```
+
+1. Invoke your function:
+
+   ```shell
+   curl http://localhost:8080
+   ```
+
 ## Deploying Serverless applications
 
 > Introduced in GitLab 11.5.

@@ -13,6 +13,14 @@ describe Resolvers::BaseResolver do
     end
   end
 
+  let(:last_resolver) do
+    Class.new(described_class) do
+      def resolve(**args)
+        [1, 2]
+      end
+    end
+  end
+
   describe '.single' do
     it 'returns a subclass from the resolver' do
       expect(resolver.single.superclass).to eq(resolver)
@@ -26,6 +34,22 @@ describe Resolvers::BaseResolver do
       result = resolve(resolver.single, args: { test: 1 })
 
       expect(result).to eq(test: 1)
+    end
+  end
+
+  describe '.last' do
+    it 'returns a subclass from the resolver' do
+      expect(last_resolver.last.superclass).to eq(last_resolver)
+    end
+
+    it 'returns the same subclass every time' do
+      expect(last_resolver.last.object_id).to eq(last_resolver.last.object_id)
+    end
+
+    it 'returns a resolver that gives the last result from the original resolver' do
+      result = resolve(last_resolver.last)
+
+      expect(result).to eq(2)
     end
   end
 

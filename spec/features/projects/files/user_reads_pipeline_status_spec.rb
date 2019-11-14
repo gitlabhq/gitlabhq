@@ -9,8 +9,6 @@ describe 'user reads pipeline status', :js do
   let(:x110_pipeline) { create_pipeline('x1.1.0', 'failed') }
 
   before do
-    stub_feature_flags(vue_file_list: false)
-
     project.add_maintainer(user)
 
     project.repository.add_tag(user, 'x1.1.0', 'v1.1.0')
@@ -25,7 +23,7 @@ describe 'user reads pipeline status', :js do
       visit project_tree_path(project, expected_pipeline.ref)
       wait_for_requests
 
-      page.within('.blob-commit-info') do
+      page.within('.commit-detail') do
         expect(page).to have_link('', href: project_pipeline_path(project, expected_pipeline))
         expect(page).to have_selector(".ci-status-icon-#{expected_pipeline.status}")
       end

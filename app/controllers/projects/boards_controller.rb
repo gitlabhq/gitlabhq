@@ -8,7 +8,7 @@ class Projects::BoardsController < Projects::ApplicationController
   before_action :authorize_read_board!, only: [:index, :show]
   before_action :assign_endpoint_vars
   before_action do
-    push_frontend_feature_flag(:multi_select_board)
+    push_frontend_feature_flag(:multi_select_board, default_enabled: true)
   end
 
   private

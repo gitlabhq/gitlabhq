@@ -185,18 +185,39 @@ Container Scanning can be executed on an offline air-gapped GitLab Ultimate inst
 1. Host the following Docker images on a [local Docker container registry](../../packages/container_registry/index.md):
    - [arminc/clair-db vulnerabilities database](https://hub.docker.com/r/arminc/clair-db)
    - [GitLab klar analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/klar)
-1. [Override the container scanning template](#overriding-the-container-scanning-template) in your `.gitlab-ci.yml` file to refer to the Docker
-   images hosted on your local Docker container registry:
+1. [Override the container scanning template](#overriding-the-container-scanning-template) in your `.gitlab-ci.yml` file to refer to the Docker images hosted on your local Docker container registry:
 
    ```yaml
    include:
      - template: Container-Scanning.gitlab-ci.yml
 
    container_scanning:
-     image: your.local.registry:5000/gitlab-klar-analyzer
+     image: $CI_REGISTRY/namespace/gitlab-klar-analyzer
      variables:
-       CLAIR_DB_IMAGE: your.local.registry:5000/clair-vulnerabilities-db
+       CLAIR_DB_IMAGE: $CI_REGISTRY/namespace/clair-vulnerabilities-db
    ```
+
+It may be worthwhile to set up a [scheduled pipeline](../../project/pipelines/schedules.md) to automatically build a new version of the vulnerabilities database on a preset schedule.  You can use the following `.gitlab-yml.ci` as a template:
+
+```yaml
+image: docker:stable
+
+services:
+  - docker:stable-dind
+
+stages:
+  - build
+
+build_latest_vulnerabilities:
+  stage: build
+  script:
+    - docker pull arminc/clair-db:latest
+    - docker tag arminc/clair-db:latest $CI_REGISTRY/namespace/clair-vulnerabilities-db
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker push $CI_REGISTRY/namespace/clair-vulnerabilities-db
+```
+
+The above template will work for a GitLab Docker registry running on a local installation, however, if you're using a non-GitLab Docker registry, you'll need to change the `$CI_REGISTRY` value and the `docker login` credentials to match the details of your local registry.
 
 ## Troubleshooting
 

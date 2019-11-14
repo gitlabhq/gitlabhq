@@ -6,7 +6,7 @@ class Groups::BoardsController < Groups::ApplicationController
 
   before_action :assign_endpoint_vars
   before_action do
-    push_frontend_feature_flag(:multi_select_board)
+    push_frontend_feature_flag(:multi_select_board, default_enabled: true)
   end
 
   private

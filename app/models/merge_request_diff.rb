@@ -218,7 +218,7 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def last_commit_sha
-    commit_shas.first
+    commit_shas(limit: 1).first
   end
 
   def first_commit
@@ -247,8 +247,8 @@ class MergeRequestDiff < ApplicationRecord
     project.commit_by(oid: head_commit_sha)
   end
 
-  def commit_shas
-    merge_request_diff_commits.map(&:sha)
+  def commit_shas(limit: nil)
+    merge_request_diff_commits.limit(limit).pluck(:sha)
   end
 
   def commits_by_shas(shas)

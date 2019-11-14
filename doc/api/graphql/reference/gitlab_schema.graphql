@@ -139,12 +139,67 @@ type Commit {
   """
   Latest pipeline of the commit
   """
-  latestPipeline: Pipeline
+  latestPipeline(
+    """
+    Filter pipelines by the ref they are run for
+    """
+    ref: String
+
+    """
+    Filter pipelines by the sha of the commit they are run for
+    """
+    sha: String
+
+    """
+    Filter pipelines by their status
+    """
+    status: PipelineStatusEnum
+  ): Pipeline @deprecated(reason: "use pipelines")
 
   """
   Raw commit message
   """
   message: String
+
+  """
+  Pipelines of the commit ordered latest first
+  """
+  pipelines(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Filter pipelines by the ref they are run for
+    """
+    ref: String
+
+    """
+    Filter pipelines by the sha of the commit they are run for
+    """
+    sha: String
+
+    """
+    Filter pipelines by their status
+    """
+    status: PipelineStatusEnum
+  ): PipelineConnection
 
   """
   SHA1 ID of the commit

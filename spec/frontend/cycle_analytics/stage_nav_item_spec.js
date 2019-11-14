@@ -133,45 +133,19 @@ describe('StageNavItem', () => {
       hasStageName();
     });
 
-    it('renders options menu', () => {
-      expect(wrapper.find('.more-actions-toggle').exists()).toBe(true);
+    it('does not render options menu', () => {
+      expect(wrapper.find('.more-actions-toggle').exists()).toBe(false);
     });
 
-    describe('Default stages', () => {
-      beforeEach(() => {
-        wrapper = createComponent(
-          { canEdit: true, isUserAllowed: true, isDefaultStage: true },
-          false,
-        );
-      });
-      it('can hide the stage', () => {
-        expect(wrapper.text()).toContain('Hide stage');
-      });
-      it('can not edit the stage', () => {
-        expect(wrapper.text()).not.toContain('Edit stage');
-      });
-      it('can not remove the stage', () => {
-        expect(wrapper.text()).not.toContain('Remove stage');
-      });
+    it('can not edit the stage', () => {
+      expect(wrapper.text()).not.toContain('Edit stage');
+    });
+    it('can not remove the stage', () => {
+      expect(wrapper.text()).not.toContain('Remove stage');
     });
 
-    describe('Custom stages', () => {
-      beforeEach(() => {
-        wrapper = createComponent(
-          { canEdit: true, isUserAllowed: true, isDefaultStage: false },
-          false,
-        );
-      });
-      it('can edit the stage', () => {
-        expect(wrapper.text()).toContain('Edit stage');
-      });
-      it('can remove the stage', () => {
-        expect(wrapper.text()).toContain('Remove stage');
-      });
-
-      it('can not hide the stage', () => {
-        expect(wrapper.text()).not.toContain('Hide stage');
-      });
+    it('can not hide the stage', () => {
+      expect(wrapper.text()).not.toContain('Hide stage');
     });
   });
 });

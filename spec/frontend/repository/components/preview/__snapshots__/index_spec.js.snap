@@ -2,7 +2,7 @@
 
 exports[`Repository file preview component renders file HTML 1`] = `
 <article
-  class="file-holder js-hide-on-navigation limited-width-container readme-holder"
+  class="file-holder limited-width-container readme-holder"
 >
   <div
     class="file-title"

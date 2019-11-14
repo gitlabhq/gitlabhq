@@ -14,13 +14,17 @@ query pathLastCommit($projectPath: ID!, $path: String, $ref: String!) {
             webUrl
           }
           signatureHtml
-          latestPipeline {
-            detailedStatus {
-              detailsPath
-              icon
-              tooltip
-              text
-              group
+          pipelines(ref: $ref, first: 1) {
+            edges {
+              node {
+                detailedStatus {
+                  detailsPath
+                  icon
+                  tooltip
+                  text
+                  group
+                }
+              }
             }
           }
         }

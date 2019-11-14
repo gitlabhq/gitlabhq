@@ -113,6 +113,7 @@ module API
     mount ::API::Files
     mount ::API::GroupBoards
     mount ::API::GroupClusters
+    mount ::API::GroupExport
     mount ::API::GroupLabels
     mount ::API::GroupMilestones
     mount ::API::Groups

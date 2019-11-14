@@ -451,6 +451,14 @@ class Group < Namespace
     false
   end
 
+  def export_file_exists?
+    export_file&.file
+  end
+
+  def export_file
+    import_export_upload&.export_file
+  end
+
   private
 
   def update_two_factor_requirement

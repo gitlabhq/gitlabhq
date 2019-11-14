@@ -34,7 +34,7 @@ export default {
 </script>
 
 <template>
-  <article class="file-holder js-hide-on-navigation limited-width-container readme-holder">
+  <article class="file-holder limited-width-container readme-holder">
     <div class="file-title">
       <i aria-hidden="true" class="fa fa-file-text-o fa-fw"></i>
       <gl-link :href="blob.webUrl">

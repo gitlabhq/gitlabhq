@@ -5000,7 +5000,7 @@ msgstr ""
 msgid "CurrentUser|Settings"
 msgstr ""
 
-msgid "CurrentUser|Start a trial"
+msgid "CurrentUser|Start a Gold trial"
 msgstr ""
 
 msgid "Custom CI configuration path"
@@ -7304,9 +7304,6 @@ msgid "FeatureFlags|Inactive"
 msgstr ""
 
 msgid "FeatureFlags|Inactive flag for %{scope}"
-msgstr ""
-
-msgid "FeatureFlags|Include additional user IDs"
 msgstr ""
 
 msgid "FeatureFlags|Install a %{docs_link_anchored_start}compatible client library%{docs_link_anchored_end} and specify the API URL, application name, and instance ID during the configuration setup. %{docs_link_start}More Information%{docs_link_end}"

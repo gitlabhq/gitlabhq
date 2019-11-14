@@ -148,7 +148,7 @@ module IssuableCollections
                                 when 'Issue'
                                   common_attributes + [:project, project: :namespace]
                                 when 'MergeRequest'
-                                  common_attributes + [:target_project, source_project: :route, head_pipeline: :project, target_project: :namespace, latest_merge_request_diff: :merge_request_diff_commits]
+                                  common_attributes + [:target_project, :latest_merge_request_diff, source_project: :route, head_pipeline: :project, target_project: :namespace]
                                 end
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables

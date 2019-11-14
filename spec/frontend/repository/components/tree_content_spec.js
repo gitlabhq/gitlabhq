@@ -28,7 +28,7 @@ describe('Repository table component', () => {
   it('renders file preview', () => {
     factory('/');
 
-    vm.setData({ entries: { blobs: [{ name: 'README.md ' }] } });
+    vm.setData({ entries: { blobs: [{ name: 'README.md' }] } });
 
     expect(vm.find(FilePreview).exists()).toBe(true);
   });

@@ -378,6 +378,14 @@ describe MergeRequestDiff do
       expect(diff_with_commits.commit_shas).not_to be_empty
       expect(diff_with_commits.commit_shas).to all(match(/\h{40}/))
     end
+
+    context 'with limit attribute' do
+      it 'returns limited number of shas' do
+        expect(diff_with_commits.commit_shas(limit: 2).size).to eq(2)
+        expect(diff_with_commits.commit_shas(limit: 100).size).to eq(29)
+        expect(diff_with_commits.commit_shas.size).to eq(29)
+      end
+    end
   end
 
   describe '#compare_with' do

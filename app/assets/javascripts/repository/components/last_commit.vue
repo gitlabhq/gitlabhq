@@ -38,7 +38,14 @@ export default {
           path: this.currentPath.replace(/^\//, ''),
         };
       },
-      update: data => data.project.repository.tree.lastCommit,
+      update: data => {
+        const pipelines = data.project.repository.tree.lastCommit.pipelines.edges;
+
+        return {
+          ...data.project.repository.tree.lastCommit,
+          pipeline: pipelines.length && pipelines[0].node,
+        };
+      },
       context: {
         isSingleRequest: true,
       },
@@ -61,7 +68,7 @@ export default {
   computed: {
     statusTitle() {
       return sprintf(s__('Commits|Commit: %{commitText}'), {
-        commitText: this.commit.latestPipeline.detailedStatus.text,
+        commitText: this.commit.pipeline.detailedStatus.text,
       });
     },
     isLoading() {
@@ -127,14 +134,14 @@ export default {
           <div v-if="commit.signatureHtml" v-html="commit.signatureHtml"></div>
           <div class="ci-status-link">
             <gl-link
-              v-if="commit.latestPipeline"
+              v-if="commit.pipeline"
               v-gl-tooltip.left
-              :href="commit.latestPipeline.detailedStatus.detailsPath"
+              :href="commit.pipeline.detailedStatus.detailsPath"
               :title="statusTitle"
               class="js-commit-pipeline"
             >
               <ci-icon
-                :status="commit.latestPipeline.detailedStatus"
+                :status="commit.pipeline.detailedStatus"
                 :size="24"
                 :aria-label="statusTitle"
               />

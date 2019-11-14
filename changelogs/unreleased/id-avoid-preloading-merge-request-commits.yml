@@ -1,0 +1,5 @@
+---
+title: Execute limited request for diff commits instead of preloading
+merge_request: 19485
+author:
+type: performance

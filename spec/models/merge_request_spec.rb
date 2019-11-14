@@ -1261,13 +1261,49 @@ describe MergeRequest do
   end
 
   describe '#commit_shas' do
-    before do
-      allow(subject.merge_request_diff).to receive(:commit_shas)
-        .and_return(['sha1'])
+    context 'persisted merge request' do
+      context 'with a limit' do
+        it 'returns a limited number of commit shas' do
+          expect(subject.commit_shas(limit: 2)).to eq(%w[
+            b83d6e391c22777fca1ed3012fce84f633d7fed0 498214de67004b1da3d820901307bed2a68a8ef6
+          ])
+        end
+      end
+
+      context 'without a limit' do
+        it 'returns all commit shas of the merge request diff' do
+          expect(subject.commit_shas.size).to eq(29)
+        end
+      end
     end
 
-    it 'delegates to merge request diff' do
-      expect(subject.commit_shas).to eq ['sha1']
+    context 'new merge request' do
+      subject { build(:merge_request) }
+
+      context 'compare commits' do
+        before do
+          subject.compare_commits = [
+            double(sha: 'sha1'), double(sha: 'sha2')
+          ]
+        end
+
+        context 'without a limit' do
+          it 'returns all shas of compare commits' do
+            expect(subject.commit_shas).to eq(%w[sha2 sha1])
+          end
+        end
+
+        context 'with a limit' do
+          it 'returns a limited number of shas' do
+            expect(subject.commit_shas(limit: 1)).to eq(['sha2'])
+          end
+        end
+      end
+
+      it 'returns diff_head_sha as an array' do
+        expect(subject.commit_shas).to eq([subject.diff_head_sha])
+        expect(subject.commit_shas(limit: 2)).to eq([subject.diff_head_sha])
+      end
     end
   end
 
