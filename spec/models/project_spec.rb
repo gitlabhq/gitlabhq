@@ -2924,7 +2924,7 @@ describe Project do
   end
 
   describe '#any_lfs_file_locks?', :request_store do
-    set(:project) { create(:project) }
+    let_it_be(:project) { create(:project) }
 
     it 'returns false when there are no LFS file locks' do
       expect(project.any_lfs_file_locks?).to be_falsey
@@ -3553,7 +3553,7 @@ describe Project do
     include ProjectHelpers
     using RSpec::Parameterized::TableSyntax
 
-    set(:group) { create(:group) }
+    let_it_be(:group) { create(:group) }
     let!(:project) { create(:project, project_level, namespace: group ) }
     let(:user) { create_user_from_membership(project, membership) }
 
