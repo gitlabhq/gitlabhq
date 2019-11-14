@@ -1124,6 +1124,11 @@ type Epic implements Noteable {
   ): EpicConnection
   closedAt: Time
   createdAt: Time
+
+  """
+  Number of open and closed descendant epics and issues
+  """
+  descendantCounts: EpicDescendantCount
   description: String
 
   """
@@ -1302,6 +1307,28 @@ type EpicConnection {
   Information to aid in pagination.
   """
   pageInfo: PageInfo!
+}
+
+type EpicDescendantCount {
+  """
+  Number of closed sub-epics
+  """
+  closedEpics: Int
+
+  """
+  Number of closed epic issues
+  """
+  closedIssues: Int
+
+  """
+  Number of opened sub-epics
+  """
+  openedEpics: Int
+
+  """
+  Number of opened epic issues
+  """
+  openedIssues: Int
 }
 
 """

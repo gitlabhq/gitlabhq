@@ -220,6 +220,16 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `relationPath` | String |  |
 | `reference` | String! |  |
 | `subscribed` | Boolean! | Boolean flag for whether the currently logged in user is subscribed to this epic |
+| `descendantCounts` | EpicDescendantCount | Number of open and closed descendant epics and issues |
+
+### EpicDescendantCount
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `openedEpics` | Int | Number of opened sub-epics |
+| `closedEpics` | Int | Number of closed sub-epics |
+| `openedIssues` | Int | Number of opened epic issues |
+| `closedIssues` | Int | Number of closed epic issues |
 
 ### EpicIssue
 

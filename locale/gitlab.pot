@@ -1417,6 +1417,9 @@ msgstr ""
 msgid "All projects"
 msgstr ""
 
+msgid "All security scans are enabled because %{linkStart}Auto DevOps%{linkEnd} is enabled on this project"
+msgstr ""
+
 msgid "All users"
 msgstr ""
 
@@ -4420,6 +4423,9 @@ msgid "Configure Let's Encrypt"
 msgstr ""
 
 msgid "Configure Prometheus"
+msgstr ""
+
+msgid "Configure Security %{wordBreakOpportunity}and Compliance"
 msgstr ""
 
 msgid "Configure Tracing"
@@ -15081,7 +15087,28 @@ msgstr ""
 msgid "Security Reports|While it's rare to have no vulnerabilities for your group, it can happen. In any event, we ask that you please double check your settings to make sure you've set up your dashboard correctly."
 msgstr ""
 
+msgid "Security configuration help link"
+msgstr ""
+
 msgid "Security dashboard"
+msgstr ""
+
+msgid "SecurityConfiguration|Configured"
+msgstr ""
+
+msgid "SecurityConfiguration|Feature"
+msgstr ""
+
+msgid "SecurityConfiguration|Feature documentation"
+msgstr ""
+
+msgid "SecurityConfiguration|Not yet configured"
+msgstr ""
+
+msgid "SecurityConfiguration|Secure features"
+msgstr ""
+
+msgid "SecurityConfiguration|Status"
 msgstr ""
 
 msgid "SecurityDashboard| The security dashboard displays the latest security report. Use it to find and fix vulnerabilities."
@@ -16376,6 +16403,15 @@ msgstr ""
 msgid "Subscription"
 msgstr ""
 
+msgid "Subscription deletion failed."
+msgstr ""
+
+msgid "Subscription successfully created."
+msgstr ""
+
+msgid "Subscription successfully deleted."
+msgstr ""
+
 msgid "SubscriptionTable|Billing"
 msgstr ""
 
@@ -16871,6 +16907,9 @@ msgid "The coding stage shows the time from the first commit to creating the mer
 msgstr ""
 
 msgid "The collection of events added to the data gathered for that stage."
+msgstr ""
+
+msgid "The configuration status of the table below only applies to the default branch and is based on the %{linkStart}latest pipeline%{linkEnd}. Once you've configured a scan for the default branch, any subsequent feature branch you create will include the scan."
 msgstr ""
 
 msgid "The connection will time out after %{timeout}. For repositories that take longer, use a clone/push combination."
@@ -17525,6 +17564,9 @@ msgid "This project does not have a wiki homepage yet"
 msgstr ""
 
 msgid "This project does not have billing enabled. To create a cluster, <a href=%{linkToBilling} target=\"_blank\" rel=\"noopener noreferrer\">enable billing <i class=\"fa fa-external-link\" aria-hidden=\"true\"></i></a> and try again."
+msgstr ""
+
+msgid "This project path either does not exist or is private."
 msgstr ""
 
 msgid "This repository"

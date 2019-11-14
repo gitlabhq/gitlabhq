@@ -3519,6 +3519,20 @@
               "deprecationReason": null
             },
             {
+              "name": "descendantCounts",
+              "description": "Number of open and closed descendant epics and issues",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "EpicDescendantCount",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "description",
               "description": null,
               "args": [
@@ -9607,6 +9621,75 @@
                   "name": "ID",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "EpicDescendantCount",
+          "description": null,
+          "fields": [
+            {
+              "name": "closedEpics",
+              "description": "Number of closed sub-epics",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "closedIssues",
+              "description": "Number of closed epic issues",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "openedEpics",
+              "description": "Number of opened sub-epics",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "openedIssues",
+              "description": "Number of opened epic issues",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null

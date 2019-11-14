@@ -426,6 +426,10 @@ project:
 - grafana_integration
 - remove_source_branch_after_merge
 - deleting_user
+- upstream_projects
+- downstream_projects
+- upstream_project_subscriptions
+- downstream_project_subscriptions
 award_emoji:
 - awardable
 - user

@@ -924,6 +924,13 @@ ActiveRecord::Schema.define(version: 2019_11_12_221821) do
     t.index ["project_id"], name: "index_ci_stages_on_project_id"
   end
 
+  create_table "ci_subscriptions_projects", force: :cascade do |t|
+    t.bigint "downstream_project_id", null: false
+    t.bigint "upstream_project_id", null: false
+    t.index ["downstream_project_id", "upstream_project_id"], name: "index_ci_subscriptions_projects_unique_subscription", unique: true
+    t.index ["upstream_project_id"], name: "index_ci_subscriptions_projects_on_upstream_project_id"
+  end
+
   create_table "ci_trigger_requests", id: :serial, force: :cascade do |t|
     t.integer "trigger_id", null: false
     t.text "variables"
@@ -4190,6 +4197,8 @@ ActiveRecord::Schema.define(version: 2019_11_12_221821) do
   add_foreign_key "ci_sources_pipelines", "projects", name: "fk_1e53c97c0a", on_delete: :cascade
   add_foreign_key "ci_stages", "ci_pipelines", column: "pipeline_id", name: "fk_fb57e6cc56", on_delete: :cascade
   add_foreign_key "ci_stages", "projects", name: "fk_2360681d1d", on_delete: :cascade
+  add_foreign_key "ci_subscriptions_projects", "projects", column: "downstream_project_id", on_delete: :cascade
+  add_foreign_key "ci_subscriptions_projects", "projects", column: "upstream_project_id", on_delete: :cascade
   add_foreign_key "ci_trigger_requests", "ci_triggers", column: "trigger_id", name: "fk_b8ec8b7245", on_delete: :cascade
   add_foreign_key "ci_triggers", "projects", name: "fk_e3e63f966e", on_delete: :cascade
   add_foreign_key "ci_triggers", "users", column: "owner_id", name: "fk_e8e10d1964", on_delete: :cascade
