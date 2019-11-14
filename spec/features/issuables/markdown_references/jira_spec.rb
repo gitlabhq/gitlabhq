@@ -17,7 +17,9 @@ describe "Jira", :js do
 
       stub_request(:get, "https://jira.example.com/rest/api/2/issue/JIRA-5")
       stub_request(:post, "https://jira.example.com/rest/api/2/issue/JIRA-5/comment")
-      allow_any_instance_of(JIRA::Resource::Issue).to receive(:remotelink).and_return(remotelink)
+      allow_next_instance_of(JIRA::Resource::Issue) do |instance|
+        allow(instance).to receive(:remotelink).and_return(remotelink)
+      end
 
       sign_in(user)
 

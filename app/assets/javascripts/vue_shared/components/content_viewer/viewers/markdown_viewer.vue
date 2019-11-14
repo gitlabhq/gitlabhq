@@ -16,6 +16,11 @@ export default {
       type: String,
       required: true,
     },
+    filePath: {
+      type: String,
+      required: false,
+      default: '',
+    },
     projectPath: {
       type: String,
       required: true,
@@ -48,6 +53,7 @@ export default {
         this.isLoading = true;
         const postBody = {
           text: this.content,
+          path: this.filePath,
         };
         const postOptions = {
           cancelToken: axiosSource.token,

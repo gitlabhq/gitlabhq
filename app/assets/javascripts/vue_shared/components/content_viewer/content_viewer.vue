@@ -18,6 +18,11 @@ export default {
       required: false,
       default: 0,
     },
+    filePath: {
+      type: String,
+      required: false,
+      default: '',
+    },
     projectPath: {
       type: String,
       required: false,
@@ -52,6 +57,7 @@ export default {
     <component
       :is="viewer"
       :path="path"
+      :file-path="filePath"
       :file-size="fileSize"
       :project-path="projectPath"
       :content="content"

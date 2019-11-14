@@ -71,7 +71,9 @@ describe 'Environments page', :js do
         let!(:application_prometheus) { create(:clusters_applications_prometheus, :installed, cluster: cluster) }
 
         before do
-          allow_any_instance_of(Kubeclient::Client).to receive(:proxy_url).and_raise(Kubeclient::HttpError.new(401, 'Unauthorized', nil))
+          allow_next_instance_of(Kubeclient::Client) do |instance|
+            allow(instance).to receive(:proxy_url).and_raise(Kubeclient::HttpError.new(401, 'Unauthorized', nil))
+          end
         end
 
         it 'shows one environment without error' do

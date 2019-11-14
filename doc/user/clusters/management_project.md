@@ -32,10 +32,23 @@ Management projects are restricted to the following:
 
 ## Usage
 
+To use a cluster management project for a cluster:
+
+1. Select the project.
+1. Configure your pipelines.
+1. Set an environment scope.
+
 ### Selecting a cluster management project
 
-You can select a management project for the cluster under **Advanced
-settings**.
+To select a cluster management project to use:
+
+1. Navigate to the appropriate configuration page. For a:
+   - [Project-level cluster](../project/clusters/index.md), navigate to your project's
+     **Operations > Kubernetes** page.
+   - [Group-level cluster](../group/clusters/index.md), navigate to your group's **Kubernetes**
+     page.
+1. Select the project using **Cluster management project field** in the **Advanced settings**
+   section.
 
 ![Selecting a cluster management project under Advanced settings](img/advanced-settings-cluster-management-project-v12_5.png)
 

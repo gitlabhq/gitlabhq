@@ -175,8 +175,9 @@ describe 'Environment' do
                     #
                     # In EE we have to stub EE::Environment since it overwrites
                     # the "terminals" method.
-                    allow_any_instance_of(Gitlab.ee? ? EE::Environment : Environment)
-                      .to receive(:terminals) { nil }
+                    allow_next_instance_of(Gitlab.ee? ? EE::Environment : Environment) do |instance|
+                      allow(instance).to receive(:terminals) { nil }
+                    end
 
                     visit terminal_project_environment_path(project, environment)
                   end

@@ -174,7 +174,9 @@ describe UsersController do
     let(:user) { create(:user) }
 
     before do
-      allow_any_instance_of(User).to receive(:contributed_projects_ids).and_return([project.id])
+      allow_next_instance_of(User) do |instance|
+        allow(instance).to receive(:contributed_projects_ids).and_return([project.id])
+      end
 
       sign_in(user)
       project.add_developer(user)

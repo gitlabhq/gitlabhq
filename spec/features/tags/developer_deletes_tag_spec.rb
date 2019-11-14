@@ -39,8 +39,10 @@ describe 'Developer deletes tag' do
 
   context 'when pre-receive hook fails', :js do
     before do
-      allow_any_instance_of(Gitlab::GitalyClient::OperationService).to receive(:rm_tag)
-        .and_raise(Gitlab::Git::PreReceiveError, 'GitLab: Do not delete tags')
+      allow_next_instance_of(Gitlab::GitalyClient::OperationService) do |instance|
+        allow(instance).to receive(:rm_tag)
+          .and_raise(Gitlab::Git::PreReceiveError, 'GitLab: Do not delete tags')
+      end
     end
 
     it 'shows the error message' do

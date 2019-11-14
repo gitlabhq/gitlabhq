@@ -39,7 +39,9 @@ describe Admin::SpamLogsController do
 
   describe '#mark_as_ham' do
     before do
-      allow_any_instance_of(AkismetService).to receive(:submit_ham).and_return(true)
+      allow_next_instance_of(AkismetService) do |instance|
+        allow(instance).to receive(:submit_ham).and_return(true)
+      end
     end
     it 'submits the log as ham' do
       post :mark_as_ham, params: { id: first_spam.id }

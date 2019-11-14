@@ -227,16 +227,17 @@ describe Admin::ClustersController do
 
     describe 'security' do
       before do
-        allow_any_instance_of(described_class)
-          .to receive(:token_in_session).and_return('token')
-        allow_any_instance_of(described_class)
-          .to receive(:expires_at_in_session).and_return(1.hour.since.to_i.to_s)
-        allow_any_instance_of(GoogleApi::CloudPlatform::Client)
-          .to receive(:projects_zones_clusters_create) do
-          OpenStruct.new(
-            self_link: 'projects/gcp-project-12345/zones/us-central1-a/operations/ope-123',
-            status: 'RUNNING'
-          )
+        allow_next_instance_of(described_class) do |instance|
+          allow(instance).to receive(:token_in_session).and_return('token')
+          allow(instance).to receive(:expires_at_in_session).and_return(1.hour.since.to_i.to_s)
+        end
+        allow_next_instance_of(GoogleApi::CloudPlatform::Client) do |instance|
+          allow(instance).to receive(:projects_zones_clusters_create) do
+            OpenStruct.new(
+              self_link: 'projects/gcp-project-12345/zones/us-central1-a/operations/ope-123',
+              status: 'RUNNING'
+            )
+          end
         end
 
         allow(WaitForClusterCreationWorker).to receive(:perform_in).and_return(nil)
@@ -467,7 +468,9 @@ describe Admin::ClustersController do
       end
 
       it 'invokes schedule_status_update on each application' do
-        expect_any_instance_of(Clusters::Applications::Ingress).to receive(:schedule_status_update)
+        expect_next_instance_of(Clusters::Applications::Ingress) do |instance|
+          expect(instance).to receive(:schedule_status_update)
+        end
 
         get_cluster_status
       end

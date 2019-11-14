@@ -73,8 +73,9 @@ describe "Admin::Projects" do
     before do
       create(:group, name: 'Web')
 
-      allow_any_instance_of(Projects::TransferService)
-        .to receive(:move_uploads_to_new_namespace).and_return(true)
+      allow_next_instance_of(Projects::TransferService) do |instance|
+        allow(instance).to receive(:move_uploads_to_new_namespace).and_return(true)
+      end
     end
 
     it 'transfers project to group web', :js do

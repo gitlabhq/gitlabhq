@@ -60,6 +60,24 @@ module Clusters
           # Override if your application needs any action after
           # being uninstalled by Helm
         end
+
+        def logger
+          @logger ||= Gitlab::Kubernetes::Logger.build
+        end
+
+        def log_exception(error, event)
+          logger.error({
+            exception: error.class.name,
+            status_code: error.error_code,
+            cluster_id: cluster&.id,
+            application_id: id,
+            class_name: self.class.name,
+            event: event,
+            message: error.message
+          })
+
+          Gitlab::Sentry.track_acceptable_exception(error, extra: { cluster_id: cluster&.id, application_id: id })
+        end
       end
     end
   end

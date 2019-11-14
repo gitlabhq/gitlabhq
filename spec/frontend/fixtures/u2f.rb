@@ -34,7 +34,9 @@ context 'U2F' do
 
     before do
       sign_in(user)
-      allow_any_instance_of(Profiles::TwoFactorAuthsController).to receive(:build_qr_code).and_return('qrcode:blackandwhitesquares')
+      allow_next_instance_of(Profiles::TwoFactorAuthsController) do |instance|
+        allow(instance).to receive(:build_qr_code).and_return('qrcode:blackandwhitesquares')
+      end
     end
 
     it 'u2f/register.html' do

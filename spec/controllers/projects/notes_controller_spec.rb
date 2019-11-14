@@ -785,7 +785,9 @@ describe Projects::NotesController do
           end
 
           it "sends notifications if all discussions are resolved" do
-            expect_any_instance_of(MergeRequests::ResolvedDiscussionNotificationService).to receive(:execute).with(merge_request)
+            expect_next_instance_of(MergeRequests::ResolvedDiscussionNotificationService) do |instance|
+              expect(instance).to receive(:execute).with(merge_request)
+            end
 
             post :resolve, params: request_params
           end

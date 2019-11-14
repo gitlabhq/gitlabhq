@@ -11,7 +11,9 @@ describe 'Import/Export - project import integration test', :js do
 
   before do
     stub_uploads_object_storage(FileUploader)
-    allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
+    allow_next_instance_of(Gitlab::ImportExport) do |instance|
+      allow(instance).to receive(:storage_path).and_return(export_path)
+    end
     gitlab_sign_in(user)
   end
 

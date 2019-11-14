@@ -86,7 +86,9 @@ describe Projects::MergeRequests::DiffsController do
         end
 
         it 'serializes merge request diff collection' do
-          expect_any_instance_of(DiffsSerializer).to receive(:represent).with(an_instance_of(Gitlab::Diff::FileCollection::MergeRequestDiff), an_instance_of(Hash))
+          expect_next_instance_of(DiffsSerializer) do |instance|
+            expect(instance).to receive(:represent).with(an_instance_of(Gitlab::Diff::FileCollection::MergeRequestDiff), an_instance_of(Hash))
+          end
 
           go
         end
@@ -98,7 +100,9 @@ describe Projects::MergeRequests::DiffsController do
         end
 
         it 'serializes merge request diff collection' do
-          expect_any_instance_of(DiffsSerializer).to receive(:represent).with(an_instance_of(Gitlab::Diff::FileCollection::MergeRequestDiff), an_instance_of(Hash))
+          expect_next_instance_of(DiffsSerializer) do |instance|
+            expect(instance).to receive(:represent).with(an_instance_of(Gitlab::Diff::FileCollection::MergeRequestDiff), an_instance_of(Hash))
+          end
 
           go
         end

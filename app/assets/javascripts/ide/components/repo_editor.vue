@@ -301,6 +301,7 @@ export default {
       v-if="showContentViewer"
       :content="file.content || file.raw"
       :path="file.rawPath || file.path"
+      :file-path="file.path"
       :file-size="file.size"
       :project-path="file.projectId"
       :type="fileType"

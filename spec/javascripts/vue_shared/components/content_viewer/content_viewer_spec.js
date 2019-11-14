@@ -70,4 +70,30 @@ describe('ContentViewer', () => {
       done();
     });
   });
+
+  it('markdown preview receives the file path as a parameter', done => {
+    mock = new MockAdapter(axios);
+    spyOn(axios, 'post').and.callThrough();
+    mock.onPost(`${gon.relative_url_root}/testproject/preview_markdown`).reply(200, {
+      body: '<b>testing</b>',
+    });
+
+    createComponent({
+      path: 'test.md',
+      content: '*  Test',
+      projectPath: 'testproject',
+      type: 'markdown',
+      filePath: 'foo/test.md',
+    });
+
+    setTimeout(() => {
+      expect(axios.post).toHaveBeenCalledWith(
+        `${gon.relative_url_root}/testproject/preview_markdown`,
+        { path: 'foo/test.md', text: '*  Test' },
+        jasmine.any(Object),
+      );
+
+      done();
+    });
+  });
 });

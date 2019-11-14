@@ -57,7 +57,9 @@ describe 'User browses commits' do
 
       create(:ci_build, pipeline: pipeline)
 
-      allow_any_instance_of(Ci::Pipeline).to receive(:ci_yaml_file).and_return('')
+      allow_next_instance_of(Ci::Pipeline) do |instance|
+        allow(instance).to receive(:ci_yaml_file).and_return('')
+      end
     end
 
     it 'renders commit ci info' do
@@ -94,8 +96,12 @@ describe 'User browses commits' do
     let(:commit) { create(:commit, project: project) }
 
     it 'renders successfully' do
-      allow_any_instance_of(Gitlab::Diff::File).to receive(:blob).and_return(nil)
-      allow_any_instance_of(Gitlab::Diff::File).to receive(:binary?).and_return(true)
+      allow_next_instance_of(Gitlab::Diff::File) do |instance|
+        allow(instance).to receive(:blob).and_return(nil)
+      end
+      allow_next_instance_of(Gitlab::Diff::File) do |instance|
+        allow(instance).to receive(:binary?).and_return(true)
+      end
 
       visit(project_commit_path(project, commit))
 

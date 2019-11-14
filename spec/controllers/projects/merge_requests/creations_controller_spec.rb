@@ -85,7 +85,9 @@ describe Projects::MergeRequests::CreationsController do
   describe 'GET diffs' do
     context 'when merge request cannot be created' do
       it 'does not assign diffs var' do
-        allow_any_instance_of(MergeRequest).to receive(:can_be_created).and_return(false)
+        allow_next_instance_of(MergeRequest) do |instance|
+          allow(instance).to receive(:can_be_created).and_return(false)
+        end
 
         get :diffs, params: get_diff_params.merge(format: 'json')
 

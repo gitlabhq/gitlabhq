@@ -3,7 +3,12 @@
 module Gitlab
   module Cluster
     class PumaWorkerKillerInitializer
-      def self.start(puma_options, puma_per_worker_max_memory_mb: 850, puma_master_max_memory_mb: 550)
+      def self.start(
+        puma_options,
+          puma_per_worker_max_memory_mb: 850,
+          puma_master_max_memory_mb: 550,
+          additional_puma_dev_max_memory_mb: 200
+      )
         require 'puma_worker_killer'
 
         PumaWorkerKiller.config do |config|
@@ -14,7 +19,11 @@ module Gitlab
           # The Puma Worker Killer checks the total RAM used by both the master
           # and worker processes.
           # https://github.com/schneems/puma_worker_killer/blob/v0.1.0/lib/puma_worker_killer/puma_memory.rb#L57
-          config.ram = puma_master_max_memory_mb + (worker_count * puma_per_worker_max_memory_mb)
+          #
+          # Additional memory is added when running in `development`
+          config.ram = puma_master_max_memory_mb +
+            (worker_count * puma_per_worker_max_memory_mb) +
+            (Rails.env.development? ? (1 + worker_count) * additional_puma_dev_max_memory_mb : 0)
 
           config.frequency = 20 # seconds
 

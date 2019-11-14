@@ -50,16 +50,24 @@ class BaseService
 
   private
 
-  def error(message, http_status = nil)
+  # Return a Hash with an `error` status
+  #
+  # message     - Error message to include in the Hash
+  # http_status - Optional HTTP status code override (default: nil)
+  # pass_back   - Additional attributes to be included in the resulting Hash
+  def error(message, http_status = nil, pass_back: {})
     result = {
       message: message,
       status: :error
-    }
+    }.reverse_merge(pass_back)
 
     result[:http_status] = http_status if http_status
     result
   end
 
+  # Return a Hash with a `success` status
+  #
+  # pass_back - Additional attributes to be included in the resulting Hash
   def success(pass_back = {})
     pass_back[:status] = :success
     pass_back

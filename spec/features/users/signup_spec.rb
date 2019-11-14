@@ -379,7 +379,9 @@ shared_examples 'Signup' do
     before do
       InvisibleCaptcha.timestamp_enabled = true
       stub_application_setting(recaptcha_enabled: true)
-      allow_any_instance_of(RegistrationsController).to receive(:verify_recaptcha).and_return(false)
+      allow_next_instance_of(RegistrationsController) do |instance|
+        allow(instance).to receive(:verify_recaptcha).and_return(false)
+      end
     end
 
     after do

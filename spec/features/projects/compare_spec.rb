@@ -107,7 +107,9 @@ describe "Compare", :js do
         visit project_compare_index_path(project, from: "feature", to: "master")
 
         allow(Commit).to receive(:max_diff_options).and_return(max_files: 3)
-        allow_any_instance_of(DiffHelper).to receive(:render_overflow_warning?).and_return(true)
+        allow_next_instance_of(DiffHelper) do |instance|
+          allow(instance).to receive(:render_overflow_warning?).and_return(true)
+        end
 
         click_button('Compare')
 

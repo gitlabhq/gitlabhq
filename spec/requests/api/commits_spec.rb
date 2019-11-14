@@ -1376,6 +1376,12 @@ describe API::Commits do
         it_behaves_like '400 response' do
           let(:request) { post api(route, current_user), params: { branch: 'markdown' } }
         end
+
+        it 'includes an error_code in the response' do
+          post api(route, current_user), params: { branch: 'markdown' }
+
+          expect(json_response['error_code']).to eq 'empty'
+        end
       end
 
       context 'when ref contains a dot' do
@@ -1533,6 +1539,19 @@ describe API::Commits do
 
         it_behaves_like '400 response' do
           let(:request) { post api(route, current_user) }
+        end
+      end
+
+      context 'when commit is already reverted in the target branch' do
+        it 'includes an error_code in the response' do
+          # First one actually reverts
+          post api(route, current_user), params: { branch: 'markdown' }
+
+          # Second one is redundant and should be empty
+          post api(route, current_user), params: { branch: 'markdown' }
+
+          expect(response).to have_gitlab_http_status(400)
+          expect(json_response['error_code']).to eq 'empty'
         end
       end
     end

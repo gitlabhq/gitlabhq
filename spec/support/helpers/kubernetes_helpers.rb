@@ -16,7 +16,7 @@ module KubernetesHelpers
   end
 
   def kube_logs_response
-    kube_response(kube_logs_body)
+    { body: kube_logs_body }
   end
 
   def kube_deployments_response

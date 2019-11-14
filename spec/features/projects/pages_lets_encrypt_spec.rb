@@ -18,7 +18,9 @@ describe "Pages with Let's Encrypt", :https_pages_enabled do
     project.add_role(user, role)
     sign_in(user)
     project.namespace.update(owner: user)
-    allow_any_instance_of(Project).to receive(:pages_deployed?) { true }
+    allow_next_instance_of(Project) do |instance|
+      allow(instance).to receive(:pages_deployed?) { true }
+    end
   end
 
   context 'when the auto SSL management is initially disabled' do

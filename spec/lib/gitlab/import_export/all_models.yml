@@ -340,7 +340,7 @@ project:
 - triggers
 - pipeline_schedules
 - environments
-- unfoldered_environments
+- environments_for_dashboard
 - deployments
 - project_feature
 - auto_devops
