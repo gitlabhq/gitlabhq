@@ -61,7 +61,7 @@ GET /groups/:id/packages
 | `exclude_subgroups` | boolean | false | If the param is included as true, packages from projects from subgroups are not listed. Default is `false`. |
 
 ```bash
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/group/:id/packages?exclude_subgroups=true
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/packages?exclude_subgroups=true
 ```
 
 Example response:

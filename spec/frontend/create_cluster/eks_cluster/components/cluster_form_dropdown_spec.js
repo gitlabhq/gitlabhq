@@ -3,7 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import ClusterFormDropdown from '~/create_cluster/eks_cluster/components/cluster_form_dropdown.vue';
 import DropdownButton from '~/vue_shared/components/dropdown/dropdown_button.vue';
 import DropdownSearchInput from '~/vue_shared/components/dropdown/dropdown_search_input.vue';
-import DropdownHiddenInput from '~/vue_shared/components/dropdown/dropdown_hidden_input.vue';
+import { GlIcon } from '@gitlab/ui';
 
 describe('ClusterFormDropdown', () => {
   let vm;
@@ -41,24 +41,50 @@ describe('ClusterFormDropdown', () => {
         .trigger('click');
     });
 
-    it('displays selected item label', () => {
-      expect(vm.find(DropdownButton).props('toggleText')).toEqual(secondItem.name);
+    it('emits input event with selected item', () => {
+      expect(vm.emitted('input')[0]).toEqual([secondItem.value]);
+    });
+  });
+
+  describe('when multiple items are selected', () => {
+    const value = [1];
+
+    beforeEach(() => {
+      vm.setProps({ items, multiple: true, value });
+      vm.findAll('.js-dropdown-item')
+        .at(0)
+        .trigger('click');
+      vm.findAll('.js-dropdown-item')
+        .at(1)
+        .trigger('click');
     });
 
-    it('sets selected value to dropdown hidden input', () => {
-      expect(vm.find(DropdownHiddenInput).props('value')).toEqual(secondItem.value);
+    it('emits input event with an array of selected items', () => {
+      expect(vm.emitted('input')[1]).toEqual([[firstItem.value, secondItem.value]]);
+    });
+  });
+
+  describe('when multiple items can be selected', () => {
+    beforeEach(() => {
+      vm.setProps({ items, multiple: true, value: firstItem.value });
+    });
+
+    it('displays a checked GlIcon next to the item', () => {
+      expect(vm.find(GlIcon).is('.invisible')).toBe(false);
+      expect(vm.find(GlIcon).props('name')).toBe('mobile-issue-close');
     });
   });
 
   describe('when an item is selected and has a custom label property', () => {
     it('displays selected item custom label', () => {
       const labelProperty = 'customLabel';
-      const selectedItem = { [labelProperty]: 'Name' };
+      const label = 'Name';
+      const currentValue = 1;
+      const customLabelItems = [{ [labelProperty]: label, value: currentValue }];
 
-      vm.setProps({ labelProperty });
-      vm.setData({ selectedItem });
+      vm.setProps({ labelProperty, items: customLabelItems, value: currentValue });
 
-      expect(vm.find(DropdownButton).props('toggleText')).toEqual(selectedItem[labelProperty]);
+      expect(vm.find(DropdownButton).props('toggleText')).toEqual(label);
     });
   });
 

@@ -29,6 +29,8 @@ module Gitlab
               .fabricate(attributes.delete(:except))
             @rules = Gitlab::Ci::Build::Rules
               .new(attributes.delete(:rules))
+            @cache = Seed::Build::Cache
+              .new(pipeline, attributes.delete(:cache))
           end
 
           def name
@@ -59,6 +61,7 @@ module Gitlab
             @seed_attributes
               .deep_merge(pipeline_attributes)
               .deep_merge(rules_attributes)
+              .deep_merge(cache_attributes)
           end
 
           def bridge?
@@ -148,6 +151,12 @@ module Gitlab
           def rules_attributes
             strong_memoize(:rules_attributes) do
               @using_rules ? @rules.evaluate(@pipeline, self).build_attributes : {}
+            end
+          end
+
+          def cache_attributes
+            strong_memoize(:cache_attributes) do
+              @cache.build_attributes
             end
           end
         end

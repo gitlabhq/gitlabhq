@@ -23,6 +23,7 @@ describe 'User edit profile' do
     fill_in 'user_location', with: 'Ukraine'
     fill_in 'user_bio', with: 'I <3 GitLab'
     fill_in 'user_organization', with: 'GitLab'
+    select 'Data Analyst', from: 'user_role'
     submit_settings
 
     expect(user.reload).to have_attributes(
@@ -31,7 +32,8 @@ describe 'User edit profile' do
       twitter: 'testtwitter',
       website_url: 'testurl',
       bio: 'I <3 GitLab',
-      organization: 'GitLab'
+      organization: 'GitLab',
+      role: 'data_analyst'
     )
 
     expect(find('#user_location').value).to eq 'Ukraine'
@@ -63,34 +65,6 @@ describe 'User edit profile' do
       user.reload
       expect(user.confirmation_token).not_to be_nil
       expect(user.reset_password_token?).to be false
-    end
-  end
-
-  describe 'when I change my role' do
-    context 'experiment enabled' do
-      before do
-        stub_experiment_for_user(signup_flow: true)
-        visit(profile_path)
-      end
-
-      it 'changes my role' do
-        expect(page).to have_content 'Role'
-        select 'Data Analyst', from: 'user_role'
-        submit_settings
-        user.reload
-        expect(user.role).to eq 'data_analyst'
-      end
-    end
-
-    context 'experiment disabled' do
-      before do
-        stub_experiment_for_user(signup_flow: false)
-        visit(profile_path)
-      end
-
-      it 'does not show the role picker' do
-        expect(page).not_to have_content 'Role'
-      end
     end
   end
 

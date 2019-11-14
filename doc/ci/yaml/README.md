@@ -1535,6 +1535,50 @@ cache:
     - binaries/
 ```
 
+##### `cache:key:files`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/18986) in GitLab v12.5.
+
+If `cache:key:files` is added, the cache `key` will use the SHA of the most recent commit
+that changed either of the given files. If neither file was changed in any commits, the key will be `default`.
+A maximum of two files are allowed.
+
+```yaml
+cache:
+  key:
+    files:
+      - Gemfile.lock
+      - package.json
+  paths:
+    - vendor/ruby
+    - node_modules
+```
+
+##### `cache:key:prefix`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/18986) in GitLab v12.5.
+
+The `prefix` parameter adds extra functionality to `key:files` by allowing the key to
+be composed of the given `prefix` combined with the SHA of the most recent commit
+that changed either of the files. For example, adding a `prefix` of `rspec`, will
+cause keys to look like: `rspec-feef9576d21ee9b6a32e30c5c79d0a0ceb68d1e5`. If neither
+file was changed in any commits, the prefix is added to `default`, so the key in the
+example would be `rspec-default`.
+
+`prefix` follows the same restrictions as `key`, so it can use any of the
+[predefined variables](../variables/README.md). Similarly, the `/` character or the
+equivalent URI-encoded `%2F`, or a value made only of `.` or `%2E`, is not allowed.
+
+```yaml
+cache:
+  key:
+    files:
+      - Gemfile.lock
+    prefix: ${CI_JOB_NAME}
+  paths:
+    - vendor/ruby
+```
+
 #### `cache:untracked`
 
 Set `untracked: true` to cache all files that are untracked in your Git

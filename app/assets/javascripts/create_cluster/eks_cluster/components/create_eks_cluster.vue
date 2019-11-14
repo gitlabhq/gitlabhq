@@ -41,6 +41,7 @@ export default {
       v-if="hasCredentials"
       :gitlab-managed-cluster-help-path="gitlabManagedClusterHelpPath"
       :kubernetes-integration-help-path="kubernetesIntegrationHelpPath"
+      :external-link-icon="externalLinkIcon"
     />
     <service-credentials-form
       v-else

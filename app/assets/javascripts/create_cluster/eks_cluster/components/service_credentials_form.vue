@@ -131,7 +131,7 @@ export default {
       <p class="form-text text-muted" v-html="provisionRoleArnHelpText"></p>
     </div>
     <loading-button
-      class="js-submit-service-credentials"
+      class="js-submit-service-credentials btn-success"
       type="submit"
       :disabled="submitButtonDisabled"
       :loading="isCreatingRole"

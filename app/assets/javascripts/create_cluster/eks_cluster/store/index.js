@@ -6,10 +6,12 @@ import state from './state';
 
 import clusterDropdownStore from './cluster_dropdown';
 
-import * as awsServices from '../services/aws_services_facade';
+import awsServicesFactory from '../services/aws_services_facade';
 
-const createStore = ({ initialState }) =>
-  new Vuex.Store({
+const createStore = ({ initialState, apiPaths }) => {
+  const awsServices = awsServicesFactory(apiPaths);
+
+  return new Vuex.Store({
     actions,
     getters,
     mutations,
@@ -39,7 +41,12 @@ const createStore = ({ initialState }) =>
         namespaced: true,
         ...clusterDropdownStore(awsServices.fetchSecurityGroups),
       },
+      instanceTypes: {
+        namespaced: true,
+        ...clusterDropdownStore(awsServices.fetchInstanceTypes),
+      },
     },
   });
+};
 
 export default createStore;

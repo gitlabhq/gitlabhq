@@ -43,11 +43,11 @@ module Gitlab
           needs_attributes: job.dig(:needs, :job),
           interruptible: job[:interruptible],
           rules: job[:rules],
+          cache: job[:cache],
           options: {
             image: job[:image],
             services: job[:services],
             artifacts: job[:artifacts],
-            cache: job[:cache],
             dependencies: job[:dependencies],
             job_timeout: job[:timeout],
             before_script: job[:before_script],

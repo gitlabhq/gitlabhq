@@ -52,20 +52,16 @@ isn't gated by a License or Plan.
 [namespace-fa]: https://gitlab.com/gitlab-org/gitlab/blob/4cc1c62918aa4c31750cb21dfb1a6c3492d71080/ee/app/models/ee/namespace.rb#L71-85
 [license-fa]: https://gitlab.com/gitlab-org/gitlab/blob/4cc1c62918aa4c31750cb21dfb1a6c3492d71080/ee/app/models/license.rb#L293-300
 
-An important side-effect of the implicit feature flags mentioned above is that
+**An important side-effect of the implicit feature flags mentioned above is that
 unless the feature is explicitly disabled or limited to a percentage of users,
-the feature flag check will default to `true`.
+the feature flag check will default to `true`.**
 
 As an example, if you were to ship the backend half of a feature behind a flag,
 you'd want to explicitly disable that flag until the frontend half is also ready
-to be shipped. [You can do this via Chatops](controls.md):
-
-```
-/chatops run feature set some_feature 0
-```
-
-Note that you can do this at any time, even before the merge request using the
-flag has been merged!
+to be shipped. To make sure this feature is disabled for both GitLab.com and
+self-managed instances you'd need to explicitly call `Feature.enabled?` method
+before the `feature_available` method. This ensures the feature_flag is defaulting
+to `true`.
 
 ## Feature groups
 

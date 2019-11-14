@@ -94,8 +94,7 @@
         - else
           = f.text_field :name, label: s_('Profiles|Full name'), required: true, title: s_("Profiles|Using emojis in names seems fun, but please try to set a status message instead"), wrapper: { class: 'col-md-9 qa-full-name rspec-full-name' }, help: s_("Profiles|Enter your name, so people you know can recognize you")
         = f.text_field :id, readonly: true, label: s_('Profiles|User ID'), wrapper: { class: 'col-md-3' }
-      - if experiment_enabled?(:signup_flow)
-        = f.select :role, ::User.roles.keys.map { |role| [role.titleize, role] }, { prompt: _('Select your role') }, class: 'input-md'
+      = f.select :role, ::User.roles.keys.map { |role| [role.titleize, role] }, { prompt: _('Select your role') }, required: true, class: 'input-md'
 
       = render_if_exists 'profiles/email_settings', form: f
       = f.text_field :skype, class: 'input-md', placeholder: s_("Profiles|username")
