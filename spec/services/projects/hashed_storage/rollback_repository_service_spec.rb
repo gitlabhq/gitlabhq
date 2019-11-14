@@ -10,7 +10,7 @@ describe Projects::HashedStorage::RollbackRepositoryService, :clean_gitlab_redis
   let(:legacy_storage) { Storage::LegacyProject.new(project) }
   let(:hashed_storage) { Storage::HashedProject.new(project) }
 
-  subject(:service) { described_class.new(project, project.disk_path) }
+  subject(:service) { described_class.new(project: project, old_disk_path: project.disk_path) }
 
   describe '#execute' do
     let(:old_disk_path) { hashed_storage.disk_path }

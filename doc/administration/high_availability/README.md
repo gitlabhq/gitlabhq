@@ -229,7 +229,7 @@ users are, how much automation you use, mirroring, and repo/change size.
 | 3 GitLab Rails <br> - Puma workers on each node set to 90% of available CPUs with 16 threads | 32 vCPU, 28.8GB Memory | n1-highcpu-32 |
 | 3 PostgreSQL                  | 4 vCPU, 15GB Memory     | n1-standard-4  |
 | 1 PgBouncer                   | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
-| X Gitaly[^1] <br> - Gitaly Ruby workers on each node set to 90% of available CPUs with 16 threads | 16 vCPU, 60GB Memory   | n1-standard-16 |
+| X Gitaly[^1] <br> - Gitaly Ruby workers on each node set to 20% of available CPUs | 16 vCPU, 60GB Memory   | n1-standard-16 |
 | 3 Redis Cache + Sentinel <br> - Cache maxmemory set to 90% of available memory | 4 vCPU, 15GB Memory | n1-standard-4 |
 | 3 Redis Persistent + Sentinel | 4 vCPU, 15GB Memory     | n1-standard-4  |
 | 4 Sidekiq                     | 4 vCPU, 15GB Memory     | n1-standard-4  |
@@ -256,7 +256,7 @@ vendors a best effort like for like can be used.
 | 7 GitLab Rails <br> - Puma workers on each node set to 90% of available CPUs with 16 threads | 32 vCPU, 28.8GB Memory | n1-highcpu-32 |
 | 3 PostgreSQL                  | 8 vCPU, 30GB Memory     | n1-standard-8  |
 | 1 PgBouncer                   | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
-| X Gitaly[^1] <br> - Gitaly Ruby workers on each node set to 90% of available CPUs with 16 threads | 32 vCPU, 120GB Memory   | n1-standard-32 |
+| X Gitaly[^1] <br> - Gitaly Ruby workers on each node set to 20% of available CPUs | 32 vCPU, 120GB Memory   | n1-standard-32 |
 | 3 Redis Cache + Sentinel <br> - Cache maxmemory set to 90% of available memory | 4 vCPU, 15GB Memory | n1-standard-4 |
 | 3 Redis Persistent + Sentinel | 4 vCPU, 15GB Memory     | n1-standard-4  |
 | 4 Sidekiq                     | 4 vCPU, 15GB Memory     | n1-standard-4  |
@@ -285,7 +285,7 @@ may be adjusted prior to certification based on performance testing.
 | 15 GitLab Rails <br> - Puma workers on each node set to 90% of available CPUs with 16 threads | 32 vCPU, 28.8GB Memory | n1-highcpu-32 |
 | 3 PostgreSQL                  | 8 vCPU, 30GB Memory     | n1-standard-8  |
 | 1 PgBouncer                   | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
-| X Gitaly[^1] <br> - Gitaly Ruby workers on each node set to 90% of available CPUs with 16 threads | 64 vCPU, 240GB Memory   | n1-standard-64 |
+| X Gitaly[^1] <br> - Gitaly Ruby workers on each node set to 20% of available CPUs | 64 vCPU, 240GB Memory   | n1-standard-64 |
 | 3 Redis Cache + Sentinel <br> - Cache maxmemory set to 90% of available memory | 4 vCPU, 15GB Memory | n1-standard-4 |
 | 3 Redis Persistent + Sentinel | 4 vCPU, 15GB Memory     | n1-standard-4  |
 | 4 Sidekiq                     | 4 vCPU, 15GB Memory     | n1-standard-4  |

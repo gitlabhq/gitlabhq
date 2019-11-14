@@ -10,7 +10,7 @@ module Projects
 
       attr_reader :old_disk_path, :new_disk_path, :old_wiki_disk_path, :old_storage_version, :logger, :move_wiki
 
-      def initialize(project, old_disk_path, logger: nil)
+      def initialize(project:, old_disk_path:, logger: nil)
         @project = project
         @logger = logger || Gitlab::AppLogger
         @old_disk_path = old_disk_path

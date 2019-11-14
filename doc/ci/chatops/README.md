@@ -58,6 +58,11 @@ ls:
     - echo -e "section_start:$( date +%s ):chat_reply\r\033[0K\n$( ls -la )\nsection_end:$( date +%s ):chat_reply\r\033[0K"
 ```
 
+## GitLab ChatOps Examples
+
+The GitLab.com team created a repository of [common ChatOps scripts they use to interact with our Production instance of GitLab](https://gitlab.com/gitlab-com/chatops). They are likely useful
+to other adminstrators of GitLab instances and can serve as inspiration for ChatOps scripts you can write to interact with your own applications.
+
 ## GitLab ChatOps icon
 
 Say Hi to our ChatOps bot.

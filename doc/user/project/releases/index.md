@@ -58,6 +58,31 @@ links from your GitLab instance.
 NOTE: **NOTE**
 You can manipulate links of each release entry with [Release Links API](../../../api/releases/links.md)
 
+#### Releases associated with milestones
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/29020) in GitLab 12.5.
+
+Releases can optionally be associated with one or more
+[project milestones](../milestones/index.md#project-milestones-and-group-milestones)
+by including a `milestones` array in your requests to the
+[Releases API](../../../api/releases/index.md#create-a-release).
+
+Releases display this association with the **Milestone** indicator near
+the top of the Release block on the **Project overview > Releases** page.
+
+![A Release with one associated milestone](img/release_with_milestone_v12_5.png)
+
+Below is an example of milestones with no Releases, one Release, and two
+Releases, respectively.
+
+![Milestones with and without Release associations](img/milestone_list_with_releases_v12_5.png)
+
+This relationship is also visible in the **Releases** section of the sidebar
+when viewing a specific milestone. Below is an example of a milestone
+associated with a large number of Releases.
+
+![Milestone with lots of associated Releases](img/milestone_with_releases_v12_5.png)
+
 ## Releases list
 
 Navigate to **Project > Releases** in order to see the list of releases for a given

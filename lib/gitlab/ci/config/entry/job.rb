@@ -114,7 +114,10 @@ module Gitlab
 
           entry :rules, Entry::Rules,
             description: 'List of evaluable Rules to determine job inclusion.',
-            inherit: false
+            inherit: false,
+            metadata: {
+              allowed_when: %w[on_success on_failure always never manual delayed].freeze
+            }
 
           entry :needs, Entry::Needs,
             description: 'Needs configuration for this job.',

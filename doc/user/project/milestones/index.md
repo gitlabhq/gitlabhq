@@ -12,23 +12,21 @@ Milestones allow you to organize issues and merge requests into a cohesive group
 
 ## Milestones as Agile sprints
 
-Milestones can be used as Agile sprints.
-Set the milestone start date and due date to represent
-the start and end of your Agile sprint.
-Set the milestone title to the name of your Agile sprint,
-such as `November 2018 sprint`.
-Add an issue to your Agile sprint by associating
-the milestone to the issue.
+Milestones can be used as Agile sprints so that you can track all issues and merge requests related to a particular sprint. To do so:
+
+1. Set the milestone start date and due date to represent the start and end of your Agile sprint.
+1. Set the milestone title to the name of your Agile sprint, such as `November 2018 sprint`.
+1. Add an issue to your Agile sprint by associating the desired milestone from the issue's right-hand sidebar.
 
 ## Milestones as releases
 
-Milestones can be used as releases.
-Set the milestone due date to represent the release date of your release.
-(And leave the milestone start date blank.)
-Set the milestone title to the version of your release,
-such as `Version 9.4`.
-Add an issue to your release by associating
-the milestone to the issue.
+Similarily, milestones can be used as releases. To do so:
+
+1. Set the milestone due date to represent the release date of your release and leave the milestone start date blank.
+1. Set the milestone title to the version of your release, such as `Version 9.4`.
+1. Add an issue to your release by associating the desired milestone from the issue's right-hand sidebar.
+
+Additionally, you can integrate milestones with GitLab's [Releases feature](../releases/index.md#releases-associated-with-milestones).
 
 ## Project milestones and group milestones
 

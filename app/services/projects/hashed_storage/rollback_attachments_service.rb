@@ -3,14 +3,9 @@
 module Projects
   module HashedStorage
     class RollbackAttachmentsService < BaseAttachmentService
-      def initialize(project, logger: nil)
-        @project = project
-        @logger = logger || Rails.logger # rubocop:disable Gitlab/RailsLogger
-        @old_disk_path = project.disk_path
-      end
-
       def execute
         origin = FileUploader.absolute_base_dir(project)
+
         project.storage_version = ::Project::HASHED_STORAGE_FEATURES[:repository]
         target = FileUploader.absolute_base_dir(project)
 

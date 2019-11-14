@@ -21,3 +21,6 @@ Keep your GitLab instance up and running smoothly.
   performance can have a big impact on GitLab performance, especially for actions
   that read or write Git repositories. This information will help benchmark
   filesystem performance against known good and bad real-world systems.
+- [ChatOps Scripts](https://gitlab.com/gitlab-com/chatops): The GitLab.com Infrastructure team uses this repository to house
+  common ChatOps scripts they use to troubleshoot and maintain the production instance of GitLab.com.
+  These scripts are likely useful to administrators of GitLab instances of all sizes.
