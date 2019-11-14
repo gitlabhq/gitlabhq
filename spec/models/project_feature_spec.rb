@@ -6,6 +6,16 @@ describe ProjectFeature do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 
+  describe 'PRIVATE_FEATURES_MIN_ACCESS_LEVEL_FOR_PRIVATE_PROJECT' do
+    it 'has higher level than that of PRIVATE_FEATURES_MIN_ACCESS_LEVEL' do
+      described_class::PRIVATE_FEATURES_MIN_ACCESS_LEVEL_FOR_PRIVATE_PROJECT.each do |feature, level|
+        if generic_level = described_class::PRIVATE_FEATURES_MIN_ACCESS_LEVEL[feature]
+          expect(level).to be >= generic_level
+        end
+      end
+    end
+  end
+
   describe '.quoted_access_level_column' do
     it 'returns the table name and quoted column name for a feature' do
       expected = '"project_features"."issues_access_level"'
@@ -246,10 +256,24 @@ describe ProjectFeature do
       expect(described_class.required_minimum_access_level('merge_requests')).to eq(Gitlab::Access::REPORTER)
     end
 
+    it 'handles repository' do
+      expect(described_class.required_minimum_access_level(:repository)).to eq(Gitlab::Access::GUEST)
+    end
+
     it 'raises error if feature is invalid' do
       expect do
         described_class.required_minimum_access_level(:foos)
       end.to raise_error
+    end
+  end
+
+  describe '.required_minimum_access_level_for_private_project' do
+    it 'returns higher permission for repository' do
+      expect(described_class.required_minimum_access_level_for_private_project(:repository)).to eq(Gitlab::Access::REPORTER)
+    end
+
+    it 'returns normal permission for issues' do
+      expect(described_class.required_minimum_access_level_for_private_project(:issues)).to eq(Gitlab::Access::GUEST)
     end
   end
 end
