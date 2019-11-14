@@ -559,6 +559,9 @@ a few things that you need to do:
    including [incremental logging](../job_logs.md#new-incremental-logging-architecture).
 1. Configure [object storage for LFS objects](../lfs/lfs_administration.md#storing-lfs-objects-in-remote-object-storage).
 1. Configure [object storage for uploads](../uploads.md#using-object-storage-core-only).
+1. Configure [object storage for Merge Request Diffs](../merge_request_diffs.md#using-object-storage).
+1. Configure [object storage for Packages](../packages/index.md#using-object-storage) (Optional Feature).
+1. Configure [object storage for Dependency Proxy](../packages/dependency_proxy.md#using-object-storage) (Optional Feature).
 
 NOTE: **Note:**
 One current feature of GitLab that still requires a shared directory (NFS) is

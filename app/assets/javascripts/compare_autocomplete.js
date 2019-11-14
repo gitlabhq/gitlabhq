@@ -1,4 +1,4 @@
-/* eslint-disable func-names, one-var, no-var, no-else-return */
+/* eslint-disable func-names, no-else-return */
 
 import $ from 'jquery';
 import { __ } from './locale';
@@ -8,9 +8,8 @@ import { capitalizeFirstCharacter } from './lib/utils/text_utility';
 
 export default function initCompareAutocomplete(limitTo = null, clickHandler = () => {}) {
   $('.js-compare-dropdown').each(function() {
-    var $dropdown, selected;
-    $dropdown = $(this);
-    selected = $dropdown.data('selected');
+    const $dropdown = $(this);
+    const selected = $dropdown.data('selected');
     const $dropdownContainer = $dropdown.closest('.dropdown');
     const $fieldInput = $(`input[name="${$dropdown.data('fieldName')}"]`, $dropdownContainer);
     const $filterInput = $('input[type="search"]', $dropdownContainer);
@@ -44,17 +43,16 @@ export default function initCompareAutocomplete(limitTo = null, clickHandler = (
       fieldName: $dropdown.data('fieldName'),
       filterInput: 'input[type="search"]',
       renderRow(ref) {
-        var link;
+        const link = $('<a />')
+          .attr('href', '#')
+          .addClass(ref === selected ? 'is-active' : '')
+          .text(ref)
+          .attr('data-ref', ref);
         if (ref.header != null) {
           return $('<li />')
             .addClass('dropdown-header')
             .text(ref.header);
         } else {
-          link = $('<a />')
-            .attr('href', '#')
-            .addClass(ref === selected ? 'is-active' : '')
-            .text(ref)
-            .attr('data-ref', ref);
           return $('<li />').append(link);
         }
       },

@@ -1,4 +1,4 @@
-/* eslint-disable no-var, no-return-assign */
+/* eslint-disable no-return-assign */
 export default class NewCommitForm {
   constructor(form) {
     this.form = form;
@@ -11,8 +11,7 @@ export default class NewCommitForm {
     this.renderDestination();
   }
   renderDestination() {
-    var different;
-    different = this.branchName.val() !== this.originalBranch.val();
+    const different = this.branchName.val() !== this.originalBranch.val();
     if (different) {
       this.createMergeRequestContainer.show();
       if (!this.wasDifferent) {

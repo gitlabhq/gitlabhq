@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var */
+/* eslint-disable func-names */
 
 import $ from 'jquery';
 import axios from '~/lib/utils/axios_utils';
@@ -12,11 +12,8 @@ import { __ } from '~/locale';
 // more than `x` users are referenced.
 //
 
-var lastTextareaPreviewed;
-var lastTextareaHeight = null;
-var markdownPreview;
-var previewButtonSelector;
-var writeButtonSelector;
+let lastTextareaHeight;
+let lastTextareaPreviewed;
 
 function MarkdownPreview() {}
 
@@ -27,14 +24,13 @@ MarkdownPreview.prototype.emptyMessage = __('Nothing to preview.');
 MarkdownPreview.prototype.ajaxCache = {};
 
 MarkdownPreview.prototype.showPreview = function($form) {
-  var mdText;
-  var preview = $form.find('.js-md-preview');
-  var url = preview.data('url');
+  const preview = $form.find('.js-md-preview');
+  const url = preview.data('url');
   if (preview.hasClass('md-preview-loading')) {
     return;
   }
 
-  mdText = $form.find('textarea.markdown-area').val();
+  const mdText = $form.find('textarea.markdown-area').val();
 
   if (mdText === undefined) {
     return;
@@ -46,7 +42,7 @@ MarkdownPreview.prototype.showPreview = function($form) {
   } else {
     preview.addClass('md-preview-loading').text(__('Loading...'));
     this.fetchMarkdownPreview(mdText, url, response => {
-      var body;
+      let body;
       if (response.body.length > 0) {
         ({ body } = response);
       } else {
@@ -91,8 +87,7 @@ MarkdownPreview.prototype.hideReferencedUsers = function($form) {
 };
 
 MarkdownPreview.prototype.renderReferencedUsers = function(users, $form) {
-  var referencedUsers;
-  referencedUsers = $form.find('.referenced-users');
+  const referencedUsers = $form.find('.referenced-users');
   if (referencedUsers.length) {
     if (users.length >= this.referenceThreshold) {
       referencedUsers.show();
@@ -108,8 +103,7 @@ MarkdownPreview.prototype.hideReferencedCommands = function($form) {
 };
 
 MarkdownPreview.prototype.renderReferencedCommands = function(commands, $form) {
-  var referencedCommands;
-  referencedCommands = $form.find('.referenced-commands');
+  const referencedCommands = $form.find('.referenced-commands');
   if (commands.length > 0) {
     referencedCommands.html(commands);
     referencedCommands.show();
@@ -119,15 +113,15 @@ MarkdownPreview.prototype.renderReferencedCommands = function(commands, $form) {
   }
 };
 
-markdownPreview = new MarkdownPreview();
+const markdownPreview = new MarkdownPreview();
 
-previewButtonSelector = '.js-md-preview-button';
-writeButtonSelector = '.js-md-write-button';
+const previewButtonSelector = '.js-md-preview-button';
+const writeButtonSelector = '.js-md-write-button';
 lastTextareaPreviewed = null;
 const markdownToolbar = $('.md-header-toolbar');
 
 $.fn.setupMarkdownPreview = function() {
-  var $form = $(this);
+  const $form = $(this);
   $form.find('textarea.markdown-area').on('input', () => {
     markdownPreview.hideReferencedUsers($form);
   });
@@ -188,7 +182,7 @@ $(document).on('markdown-preview:hide', (e, $form) => {
 });
 
 $(document).on('markdown-preview:toggle', (e, keyboardEvent) => {
-  var $target;
+  let $target;
   $target = $(keyboardEvent.target);
   if ($target.is('textarea.markdown-area')) {
     $(document).triggerHandler('markdown-preview:show', [$target.closest('form')]);
@@ -201,16 +195,14 @@ $(document).on('markdown-preview:toggle', (e, keyboardEvent) => {
 });
 
 $(document).on('click', previewButtonSelector, function(e) {
-  var $form;
   e.preventDefault();
-  $form = $(this).closest('form');
+  const $form = $(this).closest('form');
   $(document).triggerHandler('markdown-preview:show', [$form]);
 });
 
 $(document).on('click', writeButtonSelector, function(e) {
-  var $form;
   e.preventDefault();
-  $form = $(this).closest('form');
+  const $form = $(this).closest('form');
   $(document).triggerHandler('markdown-preview:hide', [$form]);
 });
 
