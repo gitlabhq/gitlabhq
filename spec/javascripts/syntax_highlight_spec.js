@@ -1,11 +1,10 @@
-/* eslint-disable no-var, no-return-assign */
+/* eslint-disable no-return-assign */
 
 import $ from 'jquery';
 import syntaxHighlight from '~/syntax_highlight';
 
 describe('Syntax Highlighter', function() {
-  var stubUserColorScheme;
-  stubUserColorScheme = function(value) {
+  const stubUserColorScheme = function(value) {
     if (window.gon == null) {
       window.gon = {};
     }
@@ -40,9 +39,8 @@ describe('Syntax Highlighter', function() {
     });
 
     it('prevents an infinite loop when no matches exist', function() {
-      var highlight;
       setFixtures('<div></div>');
-      highlight = function() {
+      const highlight = function() {
         return syntaxHighlight($('div'));
       };
 

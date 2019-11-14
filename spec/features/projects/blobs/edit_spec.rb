@@ -62,6 +62,13 @@ describe 'Editing file blob', :js do
       expect(page).to have_content 'NextFeature'
     end
 
+    it 'editing a template file in a sub directory does not change path' do
+      project.repository.create_file(user, 'ci/.gitlab-ci.yml', 'test', message: 'testing', branch_name: branch)
+      visit project_edit_blob_path(project, tree_join(branch, 'ci/.gitlab-ci.yml'))
+
+      expect(find_by_id('file_path').value).to eq('ci/.gitlab-ci.yml')
+    end
+
     context 'from blob file path' do
       before do
         visit project_blob_path(project, tree_join(branch, file_path))
