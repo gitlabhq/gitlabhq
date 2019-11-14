@@ -7,16 +7,17 @@ describe NewNoteWorker do
     let(:note) { create(:note) }
 
     it "calls NotificationService#new_note" do
-      expect_any_instance_of(NotificationService).to receive(:new_note).with(note)
+      expect_next_instance_of(NotificationService) do |service|
+        expect(service).to receive(:new_note).with(note)
+      end
 
       described_class.new.perform(note.id)
     end
 
     it "calls Notes::PostProcessService#execute" do
-      notes_post_process_service = double(Notes::PostProcessService)
-      allow(Notes::PostProcessService).to receive(:new).with(note) { notes_post_process_service }
-
-      expect(notes_post_process_service).to receive(:execute)
+      expect_next_instance_of(Notes::PostProcessService) do |service|
+        expect(service).to receive(:execute)
+      end
 
       described_class.new.perform(note.id)
     end
@@ -36,14 +37,14 @@ describe NewNoteWorker do
       expect { described_class.new.perform(unexistent_note_id) }.not_to raise_error
     end
 
-    it "does not call NotificationService#new_note" do
-      expect_any_instance_of(NotificationService).not_to receive(:new_note)
+    it "does not call NotificationService" do
+      expect(NotificationService).not_to receive(:new)
 
       described_class.new.perform(unexistent_note_id)
     end
 
-    it "does not call Notes::PostProcessService#execute" do
-      expect_any_instance_of(Notes::PostProcessService).not_to receive(:execute)
+    it "does not call Notes::PostProcessService" do
+      expect(Notes::PostProcessService).not_to receive(:new)
 
       described_class.new.perform(unexistent_note_id)
     end

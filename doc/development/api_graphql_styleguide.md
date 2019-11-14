@@ -240,6 +240,47 @@ end
 
 ```
 
+## Descriptions
+
+All fields and arguments
+[must have descriptions](https://gitlab.com/gitlab-org/gitlab/merge_requests/16438).
+
+A description of a field or argument is given using the `description:`
+keyword. For example:
+
+```ruby
+field :id, GraphQL::ID_TYPE, description: 'ID of the resource'
+```
+
+Descriptions of fields and arguments are viewable to users through:
+
+- The [GraphiQL explorer](../api/graphql/#graphiql).
+- The [static GraphQL API reference](../api/graphql/#reference).
+
+### Description styleguide
+
+To ensure consistency, the following should be followed whenever adding or updating
+descriptions:
+
+- Mention the name of the resource in the description. Example:
+  `'Labels of the issue'` (issue being the resource).
+- Use `"{x} of the {y}"` where possible. Example: `'Title of the issue'`.
+  Do not start descriptions with `The`.
+- Descriptions of `GraphQL::BOOLEAN_TYPE` fields should answer the question: "What does
+  this field do?". Example: `'Indicates project has a Git repository'`.
+- Always include the word `"timestamp"` when describing an argument or
+  field of type `Types::TimeType`. This lets the reader know that the
+  format of the property will be `Time`, rather than just `Date`.
+- No `.` at end of strings.
+
+Example:
+
+```ruby
+field :id, GraphQL::ID_TYPE, description: 'ID of the Issue'
+field :confidential, GraphQL::BOOLEAN_TYPE, description: 'Indicates the issue is confidential'
+field :closed_at, Types::TimeType, description: 'Timestamp of when the issue was closed'
+```
+
 ## Authorization
 
 Authorizations can be applied to both types and fields using the same

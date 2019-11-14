@@ -15848,6 +15848,9 @@ msgstr ""
 msgid "Something went wrong while closing the %{issuable}. Please try again later"
 msgstr ""
 
+msgid "Something went wrong while deleting the package."
+msgstr ""
+
 msgid "Something went wrong while deleting the source branch. Please try again."
 msgstr ""
 
@@ -15876,6 +15879,12 @@ msgid "Something went wrong while fetching related merge requests."
 msgstr ""
 
 msgid "Something went wrong while fetching the environments for this merge request. Please try again."
+msgstr ""
+
+msgid "Something went wrong while fetching the package."
+msgstr ""
+
+msgid "Something went wrong while fetching the packages list."
 msgstr ""
 
 msgid "Something went wrong while fetching the projects."
@@ -20991,6 +21000,9 @@ msgid "spendCommand|%{slash_command} will update the sum of the time spent."
 msgstr ""
 
 msgid "started"
+msgstr ""
+
+msgid "started a discussion on %{design_link}"
 msgstr ""
 
 msgid "started on %{milestone_start_date}"

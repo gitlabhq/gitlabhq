@@ -2,7 +2,6 @@ source 'https://rubygems.org'
 
 gem 'gitlab-qa'
 gem 'activesupport', '5.2.3' # This should stay in sync with the root's Gemfile
-gem 'pry-byebug', '~> 3.5.1', platform: :mri
 gem 'capybara', '~> 2.16.1'
 gem 'capybara-screenshot', '~> 1.0.18'
 gem 'rake', '~> 12.3.0'
@@ -15,3 +14,9 @@ gem 'rspec_junit_formatter', '~> 0.4.1'
 gem 'faker', '~> 1.6', '>= 1.6.6'
 gem 'knapsack', '~> 1.17'
 gem 'parallel_tests', '~> 2.29'
+
+group :test do
+  gem 'pry-byebug', '~> 3.5.1', platform: :mri
+  gem "ruby-debug-ide", "~> 0.7.0"
+  gem "debase", "~> 0.2.4.1"
+end

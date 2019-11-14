@@ -42,7 +42,7 @@ module QA
 
         Page::Project::Issue::Show.perform do |show|
           show.select_all_activities_filter
-          show.comment('cc-ing you here @eve')
+          show.comment("cc-ing you here @#{user.username}")
 
           expect do
             expect(show).to have_content("cc-ing you here")

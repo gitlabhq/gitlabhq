@@ -13,7 +13,7 @@ If you want to install on RHEL/CentOS, we recommend using the
 [Omnibus packages](https://about.gitlab.com/install/).
 
 This guide is long because it covers many cases and includes all commands you
-need, this is [one of the few installation scripts that actually works out of the box](https://twitter.com/robinvdvleuten/status/424163226532986880).
+need, this is [one of the few installation scripts that actually work out of the box](https://twitter.com/robinvdvleuten/status/424163226532986880).
 The following steps have been known to work. **Use caution when you deviate**
 from this guide. Make sure you don't violate any assumptions GitLab makes about
 its environment. For example, many people run into permission problems because
@@ -35,7 +35,7 @@ After this termination runit will detect Sidekiq is not running and will start i
 Since installations from source don't use runit for process supervision, Sidekiq
 can't be terminated and its memory usage will grow over time.
 
-## Select version to install
+## Select a version to install
 
 Make sure you view [this installation guide](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/install/installation.md) from the branch (version) of GitLab you would like to install (e.g., `11-7-stable`).
 You can select the branch in the version dropdown in the top left corner of GitLab (below the menu bar).
@@ -56,7 +56,7 @@ of this page:
 |       |-- repositories
 ```
 
-- `/home/git/.ssh` - Contains OpenSSH settings. Specifically the `authorized_keys`
+- `/home/git/.ssh` - Contains OpenSSH settings. Specifically, the `authorized_keys`
   file managed by GitLab Shell.
 - `/home/git/gitlab` - GitLab core software.
 - `/home/git/gitlab-shell` - Core add-on component of GitLab. Maintains SSH
@@ -315,7 +315,7 @@ use of extensions and concurrent index removal, you need at least PostgreSQL 9.2
    sudo -u postgres psql -d template1 -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
    ```
 
-1. Create the GitLab production database and grant all privileges on database:
+1. Create the GitLab production database and grant all privileges on the database:
 
    ```sh
    sudo -u postgres psql -d template1 -c "CREATE DATABASE gitlabhq_production OWNER git;"
@@ -397,7 +397,7 @@ sudo usermod -aG redis git
 ## 8. GitLab
 
 ```sh
-# We'll install GitLab into home directory of the user "git"
+# We'll install GitLab into the home directory of the user "git"
 cd /home/git
 ```
 
@@ -424,7 +424,7 @@ cd /home/git/gitlab
 # Copy the example GitLab config
 sudo -u git -H cp config/gitlab.yml.example config/gitlab.yml
 
-# Update GitLab config file, follow the directions at top of file
+# Update GitLab config file, follow the directions at top of the file
 sudo -u git -H editor config/gitlab.yml
 
 # Copy the example secrets file
@@ -465,7 +465,7 @@ nproc
 
 # Enable cluster mode if you expect to have a high load instance
 # Set the number of workers to at least the number of cores
-# Ex. change amount of workers to 3 for 2GB RAM server
+# Ex. change the amount of workers to 3 for 2GB RAM server
 sudo -u git -H editor config/unicorn.rb
 
 # Copy the example Rack attack config
@@ -670,7 +670,7 @@ sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production
 # or you can skip the question by adding force=yes
 sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production force=yes
 
-# When done you see 'Administrator account created:'
+# When done, you see 'Administrator account created:'
 ```
 
 NOTE: **Note:**
@@ -684,7 +684,7 @@ sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production GITLAB_ROOT_PA
 
 The `secrets.yml` file stores encryption keys for sessions and secure variables.
 Backup `secrets.yml` someplace safe, but don't store it in the same place as your database backups.
-Otherwise your secrets are exposed if one of your backups is compromised.
+Otherwise, your secrets are exposed if one of your backups is compromised.
 
 ### Install Init Script
 
@@ -835,7 +835,7 @@ initial administrator account. Enter your desired password and you'll be
 redirected back to the login screen.
 
 The default account's username is **root**. Provide the password you created
-earlier and login. After login you can change the username if you wish.
+earlier and login. After login, you can change the username if you wish.
 
 **Enjoy!**
 
@@ -905,7 +905,7 @@ for the changes to take effect.
 
 ### Custom Redis Connection
 
-If you'd like to connect to a Redis server on a non-standard port or on a different host, you can configure its connection string via the `config/resque.yml` file.
+If you'd like to connect to a Redis server on a non-standard port or a different host, you can configure its connection string via the `config/resque.yml` file.
 
 ```
 # example
@@ -921,7 +921,7 @@ production:
   url: unix:/path/to/redis/socket
 ```
 
-Also you can use environment variables in the `config/resque.yml` file:
+Also, you can use environment variables in the `config/resque.yml` file:
 
 ```
 # example

@@ -35,3 +35,5 @@ module Notes
     end
   end
 end
+
+Notes::PostProcessService.prepend_if_ee('EE::Notes::PostProcessService')
