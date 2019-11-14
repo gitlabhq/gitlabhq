@@ -10,6 +10,8 @@ module ProjectHelpers
       nil
     when :non_member
       create(:user, name: membership)
+    when :admin
+      create(:user, :admin, name: 'admin')
     else
       create(:user, name: membership).tap { |u| target.add_user(u, membership) }
     end
