@@ -13,10 +13,10 @@
       .content-block
         .container-fluid
           .row
-            .col-sm-3.col-12.column{ "v-for" => "item in state.summary" }
+            .col-12.column{ "v-for" => "item in state.summary", ":class" => "summaryTableColumnClass" }
               %h3.header {{ item.value }}
               %p.text {{ item.title }}
-            .col-sm-3.col-12.column
+            .col-12.column{ ":class" => "summaryTableColumnClass" }
               .dropdown.inline.js-ca-dropdown
                 %button.dropdown-menu-toggle{ "data-toggle" => "dropdown", :type => "button" }
                   %span.dropdown-label {{ n__('Last %d day', 'Last %d days', 30) }}
