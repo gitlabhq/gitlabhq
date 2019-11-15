@@ -4,7 +4,7 @@ require 'spec_helper'
 describe "Pages with Let's Encrypt", :https_pages_enabled do
   include LetsEncryptHelpers
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, pages_https_only: false) }
   let(:user) { create(:user) }
   let(:role) { :maintainer }
   let(:certificate_pem) { attributes_for(:pages_domain)[:certificate] }
@@ -34,14 +34,14 @@ describe "Pages with Let's Encrypt", :https_pages_enabled do
       expect(domain.auto_ssl_enabled).to eq false
 
       expect(find("#pages_domain_auto_ssl_enabled", visible: false).value).to eq 'false'
-      expect(page).to have_field 'Certificate (PEM)', type: 'textarea'
-      expect(page).to have_field 'Key (PEM)', type: 'textarea'
+      expect(page).to have_selector '.card-header', text: 'Certificate'
+      expect(page).to have_text domain.subject
 
       find('.js-auto-ssl-toggle-container .project-feature-toggle').click
 
       expect(find("#pages_domain_auto_ssl_enabled", visible: false).value).to eq 'true'
-      expect(page).not_to have_field 'Certificate (PEM)', type: 'textarea'
-      expect(page).not_to have_field 'Key (PEM)', type: 'textarea'
+      expect(page).not_to have_selector '.card-header', text: 'Certificate'
+      expect(page).not_to have_text domain.subject
 
       click_on 'Save Changes'
 
@@ -67,9 +67,6 @@ describe "Pages with Let's Encrypt", :https_pages_enabled do
       expect(page).to have_field 'Certificate (PEM)', type: 'textarea'
       expect(page).to have_field 'Key (PEM)', type: 'textarea'
 
-      fill_in 'Certificate (PEM)', with: certificate_pem
-      fill_in 'Key (PEM)', with: certificate_key
-
       click_on 'Save Changes'
 
       expect(domain.reload.auto_ssl_enabled).to eq false
@@ -81,7 +78,8 @@ describe "Pages with Let's Encrypt", :https_pages_enabled do
       it 'user do not see private key' do
         visit edit_project_pages_domain_path(project, domain)
 
-        expect(find_field('Key (PEM)', visible: :all, disabled: :all).value).to be_blank
+        expect(page).not_to have_selector '.card-header', text: 'Certificate'
+        expect(page).not_to have_text domain.subject
       end
     end
 
@@ -100,10 +98,21 @@ describe "Pages with Let's Encrypt", :https_pages_enabled do
     context 'when certificate is provided by user' do
       let(:domain) { create(:pages_domain, project: project) }
 
-      it 'user sees private key' do
+      it 'user sees certificate subject' do
         visit edit_project_pages_domain_path(project, domain)
 
-        expect(find_field('Key (PEM)').value).not_to be_blank
+        expect(page).to have_selector '.card-header', text: 'Certificate'
+        expect(page).to have_text domain.subject
+      end
+
+      it 'user can delete the certificate', :js do
+        visit edit_project_pages_domain_path(project, domain)
+
+        expect(page).to have_selector '.card-header', text: 'Certificate'
+        expect(page).to have_text domain.subject
+        within('.card') { accept_confirm { click_on 'Remove' } }
+        expect(page).to have_field 'Certificate (PEM)', with: ''
+        expect(page).to have_field 'Key (PEM)', with: ''
       end
     end
   end

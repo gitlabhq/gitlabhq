@@ -8,6 +8,8 @@ class Projects::BlobController < Projects::ApplicationController
   include NotesHelper
   include ActionView::Helpers::SanitizeHelper
   include RedirectsForMissingPathOnTree
+  include SourcegraphGon
+
   prepend_before_action :authenticate_user!, only: [:edit]
 
   around_action :allow_gitaly_ref_name_caching, only: [:show]

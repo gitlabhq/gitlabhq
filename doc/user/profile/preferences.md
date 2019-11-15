@@ -128,6 +128,19 @@ You can choose one of the following options as the first day of the week:
 
 If you select **System Default**, the system-wide default setting will be used.
 
+## Integrations
+
+Configure your preferences with third-party services which provide enhancements to your GitLab experience.
+
+### Sourcegraph
+
+NOTE: **Note:**
+This setting is only visible if Sourcegraph has been enabled by a GitLab administrator.
+
+Manage the availability of integrated code intelligence features powered by
+Sourcegraph. View [the Sourcegraph feature documentation](../../integration/sourcegraph.md#enable-sourcegraph-in-user-preferences)
+for more information.
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

@@ -109,7 +109,7 @@ export default {
             class="text-expander"
             @click="toggleShowDescription"
           >
-            <icon name="ellipsis_h" />
+            <icon name="ellipsis_h" :size="10" />
           </gl-button>
           <div class="committer">
             <gl-link
@@ -124,7 +124,7 @@ export default {
           </div>
           <pre
             v-if="commit.description"
-            v-show="showDescription"
+            :class="{ 'd-block': showDescription }"
             class="commit-row-description append-bottom-8"
           >
             {{ commit.description }}

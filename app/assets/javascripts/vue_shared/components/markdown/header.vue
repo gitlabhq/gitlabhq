@@ -168,7 +168,7 @@ export default {
             :prepend="true"
             tag="* [ ] "
             :button-title="__('Add a task list')"
-            icon="task-done"
+            icon="list-task"
           />
           <toolbar-button
             :tag="mdTable"

@@ -61,7 +61,7 @@ you'd want to explicitly disable that flag until the frontend half is also ready
 to be shipped. To make sure this feature is disabled for both GitLab.com and
 self-managed instances you'd need to explicitly call `Feature.enabled?` method
 before the `feature_available` method. This ensures the feature_flag is defaulting
-to `true`.
+to `false`.
 
 ## Feature groups
 

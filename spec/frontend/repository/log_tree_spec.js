@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import { normalizeData, resolveCommit, fetchLogsTree } from '~/repository/log_tree';
+import { resolveCommit, fetchLogsTree } from '~/repository/log_tree';
 
 const mockData = [
   {
@@ -14,22 +14,6 @@ const mockData = [
     type: 'blob',
   },
 ];
-
-describe('normalizeData', () => {
-  it('normalizes data into LogTreeCommit object', () => {
-    expect(normalizeData(mockData)).toEqual([
-      {
-        sha: '123',
-        message: 'testing message',
-        committedDate: '2019-01-01',
-        commitPath: 'https://test.com',
-        fileName: 'index.js',
-        type: 'blob',
-        __typename: 'LogTreeCommit',
-      },
-    ]);
-  });
-});
 
 describe('resolveCommit', () => {
   it('calls resolve when commit found', () => {

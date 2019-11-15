@@ -1084,18 +1084,6 @@ button.mini-pipeline-graph-dropdown-toggle {
 }
 
 .test-reports-table {
-  color: $gray-700;
-
-  .test-reports-summary-row {
-    &:hover {
-      background-color: $gray-light;
-
-      .test-reports-summary-suite {
-        text-decoration: underline;
-      }
-    }
-  }
-
   .build-trace {
     @include build-trace();
   }

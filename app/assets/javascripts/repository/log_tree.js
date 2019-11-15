@@ -1,23 +1,11 @@
 import axios from '~/lib/utils/axios_utils';
+import { normalizeData } from 'ee_else_ce/repository/utils/commit';
 import getCommits from './queries/getCommits.query.graphql';
 import getProjectPath from './queries/getProjectPath.query.graphql';
 import getRef from './queries/getRef.query.graphql';
 
 let fetchpromise;
 let resolvers = [];
-
-export function normalizeData(data) {
-  return data.map(d => ({
-    sha: d.commit.id,
-    message: d.commit.message,
-    committedDate: d.commit.committed_date,
-    commitPath: d.commit_path,
-    fileName: d.file_name,
-    type: d.type,
-    lockLabel: d.lock_label,
-    __typename: 'LogTreeCommit',
-  }));
-}
 
 export function resolveCommit(commits, { resolve, entry }) {
   const commit = commits.find(c => c.fileName === entry.name && c.type === entry.type);

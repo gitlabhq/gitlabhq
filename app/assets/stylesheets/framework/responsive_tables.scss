@@ -20,6 +20,17 @@
   @extend .gl-responsive-table-row-layout;
   margin-top: 10px;
   border: 1px solid $border-color;
+  color: $gray-700;
+
+  &.gl-responsive-table-row-clickable {
+    &:hover {
+      background-color: $gray-light;
+
+      .underline {
+        text-decoration: underline;
+      }
+    }
+  }
 
   @include media-breakpoint-up(md) {
     margin: 0;

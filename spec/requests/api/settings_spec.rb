@@ -19,6 +19,9 @@ describe API::Settings, 'Settings' do
       expect(json_response['plantuml_enabled']).to be_falsey
       expect(json_response['plantuml_url']).to be_nil
       expect(json_response['default_ci_config_path']).to be_nil
+      expect(json_response['sourcegraph_enabled']).to be_falsey
+      expect(json_response['sourcegraph_url']).to be_nil
+      expect(json_response['sourcegraph_public_only']).to be_truthy
       expect(json_response['default_project_visibility']).to be_a String
       expect(json_response['default_snippet_visibility']).to be_a String
       expect(json_response['default_group_visibility']).to be_a String
@@ -45,6 +48,7 @@ describe API::Settings, 'Settings' do
         storages = Gitlab.config.repositories.storages
                      .merge({ 'custom' => 'tmp/tests/custom_repositories' })
         allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
+        Feature.get(:sourcegraph).enable
       end
 
       it "updates application settings" do
@@ -57,6 +61,9 @@ describe API::Settings, 'Settings' do
             repository_storages: ['custom'],
             plantuml_enabled: true,
             plantuml_url: 'http://plantuml.example.com',
+            sourcegraph_enabled: true,
+            sourcegraph_url: 'https://sourcegraph.com',
+            sourcegraph_public_only: false,
             default_snippet_visibility: 'internal',
             restricted_visibility_levels: ['public'],
             default_artifacts_expire_in: '2 days',
@@ -89,6 +96,9 @@ describe API::Settings, 'Settings' do
         expect(json_response['repository_storages']).to eq(['custom'])
         expect(json_response['plantuml_enabled']).to be_truthy
         expect(json_response['plantuml_url']).to eq('http://plantuml.example.com')
+        expect(json_response['sourcegraph_enabled']).to be_truthy
+        expect(json_response['sourcegraph_url']).to eq('https://sourcegraph.com')
+        expect(json_response['sourcegraph_public_only']).to eq(false)
         expect(json_response['default_snippet_visibility']).to eq('internal')
         expect(json_response['restricted_visibility_levels']).to eq(['public'])
         expect(json_response['default_artifacts_expire_in']).to eq('2 days')
@@ -353,6 +363,15 @@ describe API::Settings, 'Settings' do
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['domain_blacklist_enabled']).to be(true)
         expect(json_response['domain_blacklist']).to eq(['domain3.com', '*.domain4.com'])
+      end
+    end
+
+    context "missing sourcegraph_url value when sourcegraph_enabled is true" do
+      it "returns a blank parameter error message" do
+        put api("/application/settings", admin), params: { sourcegraph_enabled: true }
+
+        expect(response).to have_gitlab_http_status(400)
+        expect(json_response['error']).to eq('sourcegraph_url is missing')
       end
     end
   end

@@ -64,14 +64,14 @@ export default {
         v-for="(testSuite, index) in getTestSuites"
         :key="index"
         role="row"
-        class="gl-responsive-table-row test-reports-summary-row rounded cursor-pointer js-suite-row"
+        class="gl-responsive-table-row gl-responsive-table-row-clickable test-reports-summary-row rounded cursor-pointer js-suite-row"
         @click="tableRowClick(testSuite)"
       >
         <div class="table-section section-25">
           <div role="rowheader" class="table-mobile-header font-weight-bold">
             {{ __('Suite') }}
           </div>
-          <div class="table-mobile-content test-reports-summary-suite cgray pl-3">
+          <div class="table-mobile-content underline cgray pl-3">
             {{ testSuite.name }}
           </div>
         </div>

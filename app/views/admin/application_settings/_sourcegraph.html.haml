@@ -1,0 +1,38 @@
+- return unless Gitlab::Sourcegraph.feature_available?
+- expanded = integration_expanded?('sourcegraph_')
+
+%section.settings.as-sourcegraph.no-animate#js-sourcegraph-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Sourcegraph')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: 'https://sourcegraph.com/' }
+      - link_end = "#{sprite_icon('external-link', size: 12, css_class: 'ml-1 vertical-align-center')}</a>".html_safe
+      = s_('SourcegraphAdmin|Enable code intelligence powered by %{link_start}Sourcegraph%{link_end} on your GitLab instance\'s code views and merge requests.').html_safe % { link_start: link_start, link_end: link_end }
+      %span
+        = link_to s_('SourcegraphAdmin|More information'), help_page_path('integration/sourcegraph.md'), target: '_blank'
+
+
+  .settings-content
+    = form_for @application_setting, url: integrations_admin_application_settings_path(anchor: 'js-sourcegraph-settings'), html: { class: 'fieldset-form' } do |f|
+      = form_errors(@application_setting)
+
+      %fieldset
+        .form-group
+          .form-check
+            = f.check_box :sourcegraph_enabled, class: 'form-check-input'
+            = f.label :sourcegraph_enabled, s_('SourcegraphAdmin|Enable Sourcegraph'), class: 'form-check-label'
+        .form-group
+          .form-check
+            = f.check_box :sourcegraph_public_only, class: 'form-check-input'
+            = f.label :sourcegraph_public_only, s_('SourcegraphAdmin|Block on private and internal projects'), class: 'form-check-label'
+            .form-text.text-muted
+              = s_('SourcegraphAdmin|If checked, only public projects will have code intelligence and communicate with Sourcegraph.')
+        .form-group
+          = f.label :sourcegraph_url, s_('SourcegraphAdmin|Sourcegraph URL'), class: 'label-bold'
+          = f.text_field :sourcegraph_url, class: 'form-control', placeholder: s_('SourcegraphAdmin|e.g. https://sourcegraph.example.com')
+          .form-text.text-muted
+            = s_('SourcegraphAdmin|Configure the URL to a Sourcegraph instance which can read your GitLab projects.')
+      = f.submit s_('SourcegraphAdmin|Save changes'), class: 'btn btn-success'

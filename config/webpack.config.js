@@ -300,6 +300,11 @@ module.exports = {
         to: path.join(ROOT_PATH, 'public/assets/webpack/cmaps/'),
       },
       {
+        from: path.join(ROOT_PATH, 'node_modules/@sourcegraph/code-host-integration/'),
+        to: path.join(ROOT_PATH, 'public/assets/webpack/sourcegraph/'),
+        ignore: ['package.json'],
+      },
+      {
         from: path.join(
           ROOT_PATH,
           'node_modules/@gitlab/visual-review-tools/dist/visual_review_toolbar.js',

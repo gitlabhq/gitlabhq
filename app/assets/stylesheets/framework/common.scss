@@ -572,3 +572,10 @@ img.emoji {
 .gl-font-size-20 { font-size: $gl-font-size-20; }
 .gl-font-size-28 { font-size: $gl-font-size-28; }
 .gl-font-size-42 { font-size: $gl-font-size-42; }
+
+.border-section {
+  @include gl-py-6;
+  @include gl-m-0;
+
+  border-top: 1px solid $border-color;
+}

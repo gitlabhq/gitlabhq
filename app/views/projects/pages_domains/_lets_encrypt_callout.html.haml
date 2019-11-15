@@ -1,0 +1,13 @@
+- if @domain.enabled?
+  - if @domain.auto_ssl_enabled && !@domain.certificate
+    .form-group.border-section.js-shown-if-auto-ssl{ class: ("d-none" unless auto_ssl_available_and_enabled) }
+      .row
+        .col-sm-10.offset-sm-2
+          .bs-callout.bs-callout-info.mt-0
+            = _("GitLab is obtaining a Let's Encrypt SSL certificate for this domain. This process can take some time. Please try again later.")
+- else
+  .form-group.border-section.js-shown-if-auto-ssl{ class: ("d-none" unless auto_ssl_available_and_enabled) }
+    .row
+      .col-sm-10.offset-sm-2
+        .bs-callout.bs-callout-warning.mt-0
+          = _("A Let's Encrypt SSL certificate can not be obtained until your domain is verified.")

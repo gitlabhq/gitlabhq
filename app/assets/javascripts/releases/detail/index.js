@@ -5,7 +5,7 @@ import createStore from './store';
 export default () => {
   const el = document.getElementById('js-edit-release-page');
 
-  const store = createStore(el.dataset);
+  const store = createStore();
   store.dispatch('setInitialState', el.dataset);
 
   return new Vue({

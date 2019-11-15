@@ -54,6 +54,7 @@ GitLab can be integrated with the following enhancements:
 - Add GitLab actions to [Gmail actions buttons](gmail_action_buttons_for_gitlab.md).
 - Configure [PlantUML](../administration/integration/plantuml.md) to use diagrams in AsciiDoc documents.
 - Attach merge requests to [Trello](trello_power_up.md) cards.
+- Enable integrated code intelligence powered by [Sourcegraph](sourcegraph.md).
 
 ## Project services
 

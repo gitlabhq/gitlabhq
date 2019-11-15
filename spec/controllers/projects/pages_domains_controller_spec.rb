@@ -32,10 +32,10 @@ describe Projects::PagesDomainsController do
       get(:show, params: request_params.merge(id: pages_domain.domain))
     end
 
-    it "displays the 'show' page" do
+    it "redirects to the 'edit' page" do
       make_request
-      expect(response).to have_gitlab_http_status(200)
-      expect(response).to render_template('show')
+
+      expect(response).to redirect_to(edit_project_pages_domain_path(project, pages_domain.domain))
     end
 
     context 'when user is developer' do
@@ -69,7 +69,7 @@ describe Projects::PagesDomainsController do
       created_domain = PagesDomain.reorder(:id).last
 
       expect(created_domain).to be_present
-      expect(response).to redirect_to(project_pages_domain_path(project, created_domain))
+      expect(response).to redirect_to(edit_project_pages_domain_path(project, created_domain))
     end
   end
 
@@ -160,7 +160,7 @@ describe Projects::PagesDomainsController do
 
       post :verify, params: params
 
-      expect(response).to redirect_to project_pages_domain_path(project, pages_domain)
+      expect(response).to redirect_to edit_project_pages_domain_path(project, pages_domain)
       expect(flash[:notice]).to eq('Successfully verified domain ownership')
     end
 
@@ -169,7 +169,7 @@ describe Projects::PagesDomainsController do
 
       post :verify, params: params
 
-      expect(response).to redirect_to project_pages_domain_path(project, pages_domain)
+      expect(response).to redirect_to edit_project_pages_domain_path(project, pages_domain)
       expect(flash[:alert]).to eq('Failed to verify domain ownership')
     end
 

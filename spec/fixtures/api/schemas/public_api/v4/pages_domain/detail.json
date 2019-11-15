@@ -6,6 +6,7 @@
     "verified": { "type": "boolean" },
     "verification_code": { "type": ["string", "null"] },
     "enabled_until": { "type": ["date", "null"] },
+    "auto_ssl_enabled": { "type": "boolean" },
     "certificate": {
       "type": "object",
       "properties": {
@@ -18,6 +19,6 @@
       "additionalProperties": false
     }
   },
-  "required": ["domain", "url", "verified", "verification_code", "enabled_until"],
+  "required": ["domain", "url", "verified", "verification_code", "enabled_until", "auto_ssl_enabled"],
   "additionalProperties": false
 }

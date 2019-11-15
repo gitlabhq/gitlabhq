@@ -25,6 +25,8 @@ module Gitlab
           if Sidekiq.server?
             # the pool will be used in a multi-threaded context
             size += Sidekiq.options[:concurrency]
+          elsif defined?(::Puma)
+            size += Puma.cli_config.options[:max_threads]
           end
 
           size

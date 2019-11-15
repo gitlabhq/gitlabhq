@@ -1,0 +1,26 @@
+- return unless Gitlab::Sourcegraph::feature_available? && Gitlab::CurrentSettings.sourcegraph_enabled
+- sourcegraph_url = Gitlab::CurrentSettings.sourcegraph_url
+
+.col-sm-12
+  %hr
+
+.col-lg-4.profile-settings-sidebar
+  %h4.prepend-top-0
+    = s_('Preferences|Integrations')
+  %p
+    = s_('Preferences|Customize integrations with third party services.')
+    = succeed '.' do
+      = link_to _('Learn more'), help_page_path('user/profile/preferences.md', anchor: 'integrations'), target: '_blank'
+.col-lg-8
+  %label.label-bold
+    = s_('Preferences|Sourcegraph')
+  = link_to icon('question-circle'), help_page_path('user/profile/preferences.md', anchor: 'sourcegraph'), target: '_blank', class: 'has-tooltip', title: _('More information')
+  .form-group.form-check
+    = f.check_box :sourcegraph_enabled, class: 'form-check-input'
+    = f.label :sourcegraph_enabled, class: 'form-check-label' do
+      - link_start = '<a href="%{url}">'.html_safe % { url: sourcegraph_url }
+      - link_end = '</a>'.html_safe
+      = s_('Preferences|Enable integrated code intelligence on code views').html_safe % { link_start: link_start, link_end: link_end }
+    .form-text.text-muted
+      = sourcegraph_url_message
+      = sourcegraph_experimental_message

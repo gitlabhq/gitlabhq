@@ -255,8 +255,8 @@ module Gitlab
     caching_config_hash[:compress] = false
     caching_config_hash[:namespace] = Gitlab::Redis::Cache::CACHE_NAMESPACE
     caching_config_hash[:expires_in] = 2.weeks # Cache should not grow forever
-    if Sidekiq.server? # threaded context
-      caching_config_hash[:pool_size] = Sidekiq.options[:concurrency] + 5
+    if Sidekiq.server? || defined?(::Puma) # threaded context
+      caching_config_hash[:pool_size] = Gitlab::Redis::Cache.pool_size
       caching_config_hash[:pool_timeout] = 1
     end
 
