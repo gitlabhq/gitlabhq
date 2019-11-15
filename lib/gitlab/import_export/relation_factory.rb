@@ -329,8 +329,6 @@ module Gitlab
       def find_or_create_object!
         return relation_class.find_or_create_by(project_id: @project.id) if UNIQUE_RELATIONS.include?(@relation_name)
 
-        return find_or_create_merge_request! if @relation_name == :merge_request
-
         # Can't use IDs as validation exists calling `group` or `project` attributes
         finder_hash = parsed_relation_hash.tap do |hash|
           hash['group'] = @project.group if relation_class.attribute_method?('group_id')
@@ -339,11 +337,6 @@ module Gitlab
         end
 
         GroupProjectObjectBuilder.build(relation_class, finder_hash)
-      end
-
-      def find_or_create_merge_request!
-        @project.merge_requests.find_by(iid: parsed_relation_hash['iid']) ||
-          relation_class.new(parsed_relation_hash)
       end
     end
   end

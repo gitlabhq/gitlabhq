@@ -49,11 +49,12 @@ module Gitlab
         ].compact
       end
 
-      # Returns Arel clause `"{table_name}"."project_id" = {project.id}`
+      # Returns Arel clause `"{table_name}"."project_id" = {project.id}` if project is present
+      # For example: merge_request has :target_project_id, and we are searching by :iid
       # or, if group is present:
       # `"{table_name}"."project_id" = {project.id} OR "{table_name}"."group_id" = {group.id}`
       def where_clause_base
-        clause = table[:project_id].eq(project.id)
+        clause = table[:project_id].eq(project.id) if project
         clause = clause.or(table[:group_id].eq(group.id)) if group
 
         clause
@@ -103,6 +104,10 @@ module Gitlab
         klass == Milestone
       end
 
+      def merge_request?
+        klass == MergeRequest
+      end
+
       # If an existing group milestone used the IID
       # claim the IID back and set the group milestone to use one available
       # This is necessary to fix situations like the following:
@@ -124,7 +129,7 @@ module Gitlab
 
       # Returns Arel clause for a particular model or `nil`.
       def where_clause_for_klass
-        # no-op
+        return attrs_to_arel(attributes.slice('iid')) if merge_request?
       end
     end
   end

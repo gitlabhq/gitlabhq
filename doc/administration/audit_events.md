@@ -59,6 +59,8 @@ From there, you can see the following actions:
 - 2FA enforcement/grace period changed
 - Roles allowed to create project changed
 
+Group events can also be accessed via the [Group Audit Events API](../api/audit_events.md#group-audit-events-starter)
+
 ### Project events **(STARTER)**
 
 NOTE: **Note:**
@@ -106,6 +108,8 @@ the filter drop-down. You can further filter by specific group, project or user
 (for authentication events).
 
 ![audit log](img/audit_log.png)
+
+Instance events can also be accessed via the [Instance Audit Events API](../api/audit_events.md#instance-audit-events-premium-only)
 
 ### Missing events
 

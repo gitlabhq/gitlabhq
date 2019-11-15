@@ -611,6 +611,10 @@ GET /groups?search=foobar
 ]
 ```
 
+## Group Audit Events **(STARTER)**
+
+Group audit events can be accessed via the [Group Audit Events API](audit_events.md#group-audit-events-starter)
+
 ## Sync group with LDAP **(CORE ONLY)**
 
 Syncs the group with its linked LDAP group. Only available to group owners and administrators.
