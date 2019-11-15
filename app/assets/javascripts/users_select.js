@@ -7,6 +7,7 @@ import _ from 'underscore';
 import axios from './lib/utils/axios_utils';
 import { s__, __, sprintf } from './locale';
 import ModalStore from './boards/stores/modal_store';
+import { parseBoolean } from './lib/utils/common_utils';
 
 // TODO: remove eventHub hack after code splitting refactor
 window.emitSidebarEvent = window.emitSidebarEvent || $.noop;
@@ -279,12 +280,13 @@ function UsersSelect(currentUser, els, options = {}) {
                 })
                 .map(input => {
                   const userId = parseInt(input.value, 10);
-                  const { avatarUrl, avatar_url, name, username } = input.dataset;
+                  const { avatarUrl, avatar_url, name, username, canMerge } = input.dataset;
                   return {
                     avatar_url: avatarUrl || avatar_url,
                     id: userId,
                     name,
                     username,
+                    can_merge: parseBoolean(canMerge),
                   };
                 });
 

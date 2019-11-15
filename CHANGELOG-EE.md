@@ -1,5 +1,46 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.3.6
+
+### Security (4 changes)
+
+- Do not index system notes for issue update.
+- Redact search results based on Ability.allowed?.
+- Do not show private cross references in epic notes.
+- Filter out packages the user does'nt have permission to see at group level.
+
+
+## 12.3.5
+
+- No changes.
+
+## 12.3.4
+
+### Fixed (2 changes)
+
+- Fix replies to service desk emails for projects with issue access as Only Project Members. !17401
+- Geo: LFS not being synced. !17633
+
+
+## 12.3.3
+
+### Security (1 change)
+
+- Restrict access for security reports in MR widget.
+
+
+## 12.3.2
+
+### Security (2 changes)
+
+- Hide approvers if a rule has any hidden groups.
+- Prevent IDOR when adding groups to protected environments.
+
+
+## 12.3.1
+
+- No changes.
+
 ## 12.3.0
 
 ### Security (3 changes)

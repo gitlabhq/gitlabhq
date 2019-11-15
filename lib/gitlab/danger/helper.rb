@@ -35,7 +35,8 @@ module Gitlab
       end
 
       def ee?
-        ENV['CI_PROJECT_NAME'] == 'gitlab-ee' || File.exist?('../../CHANGELOG-EE.md')
+        # Support former project name for `dev` and support local Danger run
+        %w[gitlab gitlab-ee].include?(ENV['CI_PROJECT_NAME']) || Dir.exist?('../../ee')
       end
 
       def gitlab_helper
@@ -52,7 +53,7 @@ module Gitlab
       end
 
       def project_name
-        ee? ? 'gitlab-ee' : 'gitlab-ce'
+        ee? ? 'gitlab' : 'gitlab-foss'
       end
 
       def markdown_list(items)

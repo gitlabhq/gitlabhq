@@ -337,6 +337,16 @@ of your security team when a vulnerability would be introduced by a merge reques
 For more information, see
 [Security approvals in merge requests](../../application_security/index.md#security-approvals-in-merge-requests-ultimate).
 
+## License compliance approvals in merge requests **(ULTIMATE)**
+
+> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing) 12.3.
+
+Merge Request Approvals can be configured to require approval from a member
+of your security team when a blacklisted software license would be introduced by a merge request.
+
+For more information, see
+[Security approvals in merge requests](../../application_security/index.md#security-approvals-in-merge-requests-ultimate).
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

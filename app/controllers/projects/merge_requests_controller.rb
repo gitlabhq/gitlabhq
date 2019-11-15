@@ -5,6 +5,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   include IssuableActions
   include RendersNotes
   include RendersCommits
+  include RendersAssignees
   include ToggleAwardEmoji
   include IssuableCollections
   include RecordUserLastActivity
@@ -40,6 +41,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       format.html do
         # use next to appease Rubocop
         next render('invalid') if target_branch_missing?
+
+        preload_assignees_for_render(@merge_request)
 
         # Build a note object for comment form
         @note = @project.notes.new(noteable: @merge_request)

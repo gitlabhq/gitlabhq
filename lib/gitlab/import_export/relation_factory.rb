@@ -38,7 +38,7 @@ module Gitlab
 
       IMPORTED_OBJECT_MAX_RETRIES = 5.freeze
 
-      EXISTING_OBJECT_CHECK = %i[milestone milestones label labels project_label project_labels group_label group_labels project_feature].freeze
+      EXISTING_OBJECT_CHECK = %i[milestone milestones label labels project_label project_labels group_label group_labels project_feature merge_request].freeze
 
       TOKEN_RESET_MODELS = %w[Project Namespace Ci::Trigger Ci::Build Ci::Runner ProjectHook].freeze
 
@@ -289,6 +289,7 @@ module Gitlab
 
       def find_or_create_object!
         return relation_class.find_or_create_by(project_id: @project.id) if @relation_name == :project_feature
+        return find_or_create_merge_request! if @relation_name == :merge_request
 
         # Can't use IDs as validation exists calling `group` or `project` attributes
         finder_hash = parsed_relation_hash.tap do |hash|
@@ -298,6 +299,11 @@ module Gitlab
         end
 
         GroupProjectObjectBuilder.build(relation_class, finder_hash)
+      end
+
+      def find_or_create_merge_request!
+        @project.merge_requests.find_by(iid: parsed_relation_hash['iid']) ||
+          relation_class.new(parsed_relation_hash)
       end
     end
   end

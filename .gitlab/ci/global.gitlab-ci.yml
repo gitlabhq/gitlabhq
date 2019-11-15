@@ -121,5 +121,5 @@
 .only-ee:
   only:
     variables:
-      - $CI_PROJECT_NAME == "gitlab-ee"
-      - $CI_PROJECT_NAME == "gitlab"  # New name of gitlab-ee after the single codebase migration
+      - $CI_PROJECT_NAME == "gitlab"
+      - $CI_PROJECT_NAME == "gitlab-ee"  # Support former project name for forks/mirrors
