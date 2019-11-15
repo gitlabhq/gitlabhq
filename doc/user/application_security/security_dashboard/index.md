@@ -76,7 +76,7 @@ To the right of the filters, you should see a **Hide dismissed** toggle button (
 NOTE: **Note:**
 The dashboard only shows projects with [security reports](#supported-reports) enabled in a group.
 
-![dashboard with action buttons and metrics](img/group_security_dashboard_v12_3.png)
+![dashboard with action buttons and metrics](img/group_security_dashboard_v12_4.png)
 
 Selecting one or more filters will filter the results in this page. Disabling the **Hide dismissed**
 toggle button will let you also see vulnerabilities that have been dismissed.

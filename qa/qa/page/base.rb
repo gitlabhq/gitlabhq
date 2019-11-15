@@ -135,6 +135,40 @@ module QA
         has_no_css?('.fa-spinner.block-loading', wait: Capybara.default_max_wait_time)
       end
 
+      def has_loaded_all_images?
+        # I don't know of a foolproof way to wait for all images to load
+        # This loop gives time for the img tags to be rendered and for
+        # images to start loading.
+        previous_total_images = 0
+        wait(interval: 1) do
+          current_total_images = all("img").size
+          result = previous_total_images == current_total_images
+          previous_total_images = current_total_images
+          result
+        end
+
+        # Retry until all images found can be fetched via HTTP, and
+        # check that the image has a non-zero natural width (a broken
+        # img tag could have a width, but wouldn't have a natural width)
+
+        # Unfortunately, this doesn't account for SVGs. They're rendered
+        # as HTML, so there doesn't seem to be a way to check that they
+        # display properly via Selenium. However, if the SVG couldn't be
+        # rendered (e.g., because the file doesn't exist), the whole page
+        # won't display properly, so we should catch that with the test
+        # this method is called from.
+
+        # The user's avatar is an img, which could be a gravatar image,
+        # so we skip that by only checking for images hosted internally
+        retry_until(sleep_interval: 1) do
+          all("img").all? do |image|
+            next true unless URI(image['src']).host == URI(page.current_url).host
+
+            asset_exists?(image['src']) && image['naturalWidth'].to_i > 0
+          end
+        end
+      end
+
       def wait_for_animated_element(name)
         # It would be ideal if we could detect when the animation is complete
         # but in some cases there's nothing we can easily access via capybara

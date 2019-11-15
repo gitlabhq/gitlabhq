@@ -4994,6 +4994,9 @@ msgstr ""
 msgid "Current password"
 msgstr ""
 
+msgid "Current vulnerabilities count"
+msgstr ""
+
 msgid "CurrentUser|Profile"
 msgstr ""
 
@@ -5789,6 +5792,9 @@ msgid "Diff content limits"
 msgstr ""
 
 msgid "Diff limits"
+msgstr ""
+
+msgid "Difference between start date and now"
 msgstr ""
 
 msgid "DiffsCompareBaseBranch|(base)"
@@ -19178,6 +19184,9 @@ msgid "Vulnerability-Check"
 msgstr ""
 
 msgid "VulnerabilityChart|%{formattedStartDate} to today"
+msgstr ""
+
+msgid "VulnerabilityChart|Severity"
 msgstr ""
 
 msgid "Vulnerability|Class"

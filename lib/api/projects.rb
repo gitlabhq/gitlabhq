@@ -61,6 +61,8 @@ module API
         optional :with_merge_requests_enabled, type: Boolean, default: false, desc: 'Limit by enabled merge requests feature'
         optional :with_programming_language, type: String, desc: 'Limit to repositories which use the given programming language'
         optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Limit by minimum access level of authenticated user'
+        optional :id_after, type: Integer, desc: 'Limit results to projects with IDs greater than the specified ID'
+        optional :id_before, type: Integer, desc: 'Limit results to projects with IDs less than the specified ID'
 
         use :optional_filter_params_ee
       end

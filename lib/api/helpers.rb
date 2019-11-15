@@ -479,6 +479,8 @@ module API
       finder_params[:user] = params.delete(:user) if params[:user]
       finder_params[:custom_attributes] = params[:custom_attributes] if params[:custom_attributes]
       finder_params[:min_access_level] = params[:min_access_level] if params[:min_access_level]
+      finder_params[:id_after] = params[:id_after] if params[:id_after]
+      finder_params[:id_before] = params[:id_before] if params[:id_before]
       finder_params
     end
 

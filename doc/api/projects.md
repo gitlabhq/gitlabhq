@@ -58,6 +58,8 @@ GET /projects
 | `wiki_checksum_failed`        | boolean | no | **(PREMIUM)** Limit projects where the wiki checksum calculation has failed ([Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/6137) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.2) |
 | `repository_checksum_failed`  | boolean | no | **(PREMIUM)** Limit projects where the repository checksum calculation has failed ([Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/6137) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.2) |
 | `min_access_level`            | integer | no | Limit by current user minimal [access level](members.md) |
+| `id_after`                    | integer | no | Limit results to projects with IDs greater than the specified ID |
+| `id_before`                   | integer | no | Limit results to projects with IDs less than the specified ID |
 
 When `simple=true` or the user is unauthenticated this returns something like:
 
@@ -304,6 +306,8 @@ GET /users/:user_id/projects
 | `with_merge_requests_enabled` | boolean | no | Limit by enabled merge requests feature |
 | `with_programming_language` | string | no | Limit by projects which use the given programming language |
 | `min_access_level` | integer | no | Limit by current user minimal [access level](members.md) |
+| `id_after`                    | integer | no | Limit results to projects with IDs greater than the specified ID |
+| `id_before`                   | integer | no | Limit results to projects with IDs less than the specified ID |
 
 ```json
 [

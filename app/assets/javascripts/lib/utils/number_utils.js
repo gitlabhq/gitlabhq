@@ -117,3 +117,36 @@ export const median = arr => {
   const sorted = arr.sort((a, b) => a - b);
   return arr.length % 2 !== 0 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
 };
+
+/**
+ * Computes the change from one value to the other as a percentage.
+ * @param {Number} firstY
+ * @param {Number} lastY
+ * @returns {Number}
+ */
+export const changeInPercent = (firstY, lastY) => {
+  if (firstY === lastY) {
+    return 0;
+  }
+
+  return Math.round(((lastY - firstY) / Math.abs(firstY)) * 100);
+};
+
+/**
+ * Computes and formats the change from one value to the other as a percentage.
+ * Prepends the computed percentage with either "+" or "-" to indicate an in- or decrease and
+ * returns a given string if the result is not finite (for example, if the first value is "0").
+ * @param firstY
+ * @param lastY
+ * @param nonFiniteResult
+ * @returns {String}
+ */
+export const formattedChangeInPercent = (firstY, lastY, { nonFiniteResult = '-' } = {}) => {
+  const change = changeInPercent(firstY, lastY);
+
+  if (!Number.isFinite(change)) {
+    return nonFiniteResult;
+  }
+
+  return `${change >= 0 ? '+' : ''}${change}%`;
+};
