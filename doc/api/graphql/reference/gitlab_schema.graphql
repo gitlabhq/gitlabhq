@@ -1219,6 +1219,10 @@ type Epic implements Noteable {
   hasIssues: Boolean!
   id: ID!
   iid: ID!
+
+  """
+  A list of issues associated with the epic
+  """
   issues(
     """
     Returns the elements in the list that come after the specified cursor.

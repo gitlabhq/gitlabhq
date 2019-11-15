@@ -1,4 +1,4 @@
-/* eslint-disable no-useless-return, func-names, no-var, no-underscore-dangle, one-var, no-new, consistent-return, no-shadow, no-param-reassign, vars-on-top, no-lonely-if, no-else-return, dot-notation, no-empty */
+/* eslint-disable no-useless-return, func-names, no-underscore-dangle, no-new, consistent-return, no-shadow, no-param-reassign, no-lonely-if, no-else-return, dot-notation, no-empty */
 /* global Issuable */
 /* global ListLabel */
 
@@ -15,63 +15,39 @@ import { isScopedLabel } from '~/lib/utils/common_utils';
 
 export default class LabelsSelect {
   constructor(els, options = {}) {
-    var _this, $els;
-    _this = this;
+    const _this = this;
 
-    $els = $(els);
+    let $els = $(els);
 
     if (!els) {
       $els = $('.js-label-select');
     }
 
     $els.each((i, dropdown) => {
-      var $block,
-        $dropdown,
-        $form,
-        $loading,
-        $selectbox,
-        $sidebarCollapsedValue,
-        $value,
-        $dropdownMenu,
-        abilityName,
-        defaultLabel,
-        issueUpdateURL,
-        labelUrl,
-        namespacePath,
-        projectPath,
-        saveLabelData,
-        selectedLabel,
-        showAny,
-        showNo,
-        $sidebarLabelTooltip,
-        initialSelected,
-        fieldName,
-        showMenuAbove,
-        $dropdownContainer;
-      $dropdown = $(dropdown);
-      $dropdownContainer = $dropdown.closest('.labels-filter');
-      namespacePath = $dropdown.data('namespacePath');
-      projectPath = $dropdown.data('projectPath');
-      issueUpdateURL = $dropdown.data('issueUpdate');
-      selectedLabel = $dropdown.data('selected');
+      const $dropdown = $(dropdown);
+      const $dropdownContainer = $dropdown.closest('.labels-filter');
+      const namespacePath = $dropdown.data('namespacePath');
+      const projectPath = $dropdown.data('projectPath');
+      const issueUpdateURL = $dropdown.data('issueUpdate');
+      let selectedLabel = $dropdown.data('selected');
       if (selectedLabel != null && !$dropdown.hasClass('js-multiselect')) {
         selectedLabel = selectedLabel.split(',');
       }
-      showNo = $dropdown.data('showNo');
-      showAny = $dropdown.data('showAny');
-      showMenuAbove = $dropdown.data('showMenuAbove');
-      defaultLabel = $dropdown.data('defaultLabel') || __('Label');
-      abilityName = $dropdown.data('abilityName');
-      $selectbox = $dropdown.closest('.selectbox');
-      $block = $selectbox.closest('.block');
-      $form = $dropdown.closest('form, .js-issuable-update');
-      $sidebarCollapsedValue = $block.find('.sidebar-collapsed-icon span');
-      $sidebarLabelTooltip = $block.find('.js-sidebar-labels-tooltip');
-      $value = $block.find('.value');
-      $dropdownMenu = $dropdown.parent().find('.dropdown-menu');
-      $loading = $block.find('.block-loading').fadeOut();
-      fieldName = $dropdown.data('fieldName');
-      initialSelected = $selectbox
+      const showNo = $dropdown.data('showNo');
+      const showAny = $dropdown.data('showAny');
+      const showMenuAbove = $dropdown.data('showMenuAbove');
+      const defaultLabel = $dropdown.data('defaultLabel') || __('Label');
+      const abilityName = $dropdown.data('abilityName');
+      const $selectbox = $dropdown.closest('.selectbox');
+      const $block = $selectbox.closest('.block');
+      const $form = $dropdown.closest('form, .js-issuable-update');
+      const $sidebarCollapsedValue = $block.find('.sidebar-collapsed-icon span');
+      const $sidebarLabelTooltip = $block.find('.js-sidebar-labels-tooltip');
+      const $value = $block.find('.value');
+      const $dropdownMenu = $dropdown.parent().find('.dropdown-menu');
+      const $loading = $block.find('.block-loading').fadeOut();
+      const fieldName = $dropdown.data('fieldName');
+      let initialSelected = $selectbox
         .find(`input[name="${$dropdown.data('fieldName')}"]`)
         .map(function() {
           return this.value;
@@ -90,9 +66,8 @@ export default class LabelsSelect {
         );
       }
 
-      saveLabelData = function() {
-        var data, selected;
-        selected = $dropdown
+      const saveLabelData = function() {
+        const selected = $dropdown
           .closest('.selectbox')
           .find(`input[name='${fieldName}']`)
           .map(function() {
@@ -103,7 +78,7 @@ export default class LabelsSelect {
         if (_.isEqual(initialSelected, selected)) return;
         initialSelected = selected;
 
-        data = {};
+        const data = {};
         data[abilityName] = {};
         data[abilityName].label_ids = selected;
         if (!selected.length) {
@@ -114,12 +89,13 @@ export default class LabelsSelect {
         axios
           .put(issueUpdateURL, data)
           .then(({ data }) => {
-            var labelCount, template, labelTooltipTitle, labelTitles;
+            let labelTooltipTitle;
+            let template;
             $loading.fadeOut();
             $dropdown.trigger('loaded.gl.dropdown');
             $selectbox.hide();
             data.issueUpdateURL = issueUpdateURL;
-            labelCount = 0;
+            let labelCount = 0;
             if (data.labels.length && issueUpdateURL) {
               template = LabelsSelect.getLabelTemplate({
                 labels: _.sortBy(data.labels, 'title'),
@@ -174,7 +150,7 @@ export default class LabelsSelect {
             $sidebarCollapsedValue.text(labelCount);
 
             if (data.labels.length) {
-              labelTitles = data.labels.map(label => label.title);
+              let labelTitles = data.labels.map(label => label.title);
 
               if (labelTitles.length > 5) {
                 labelTitles = labelTitles.slice(0, 5);
@@ -199,13 +175,13 @@ export default class LabelsSelect {
       $dropdown.glDropdown({
         showMenuAbove,
         data(term, callback) {
-          labelUrl = $dropdown.attr('data-labels');
+          const labelUrl = $dropdown.attr('data-labels');
           axios
             .get(labelUrl)
             .then(res => {
               let { data } = res;
               if ($dropdown.hasClass('js-extra-options')) {
-                var extraData = [];
+                const extraData = [];
                 if (showNo) {
                   extraData.unshift({
                     id: 0,
@@ -232,22 +208,14 @@ export default class LabelsSelect {
             .catch(() => flash(__('Error fetching labels.')));
         },
         renderRow(label) {
-          var linkEl,
-            listItemEl,
-            colorEl,
-            indeterminate,
-            removesAll,
-            selectedClass,
-            i,
-            marked,
-            dropdownValue;
+          let colorEl;
 
-          selectedClass = [];
-          removesAll = label.id <= 0 || label.id == null;
+          const selectedClass = [];
+          const removesAll = label.id <= 0 || label.id == null;
 
           if ($dropdown.hasClass('js-filter-bulk-update')) {
-            indeterminate = $dropdown.data('indeterminate') || [];
-            marked = $dropdown.data('marked') || [];
+            const indeterminate = $dropdown.data('indeterminate') || [];
+            const marked = $dropdown.data('marked') || [];
 
             if (indeterminate.indexOf(label.id) !== -1) {
               selectedClass.push('is-indeterminate');
@@ -255,7 +223,7 @@ export default class LabelsSelect {
 
             if (marked.indexOf(label.id) !== -1) {
               // Remove is-indeterminate class if the item will be marked as active
-              i = selectedClass.indexOf('is-indeterminate');
+              const i = selectedClass.indexOf('is-indeterminate');
               if (i !== -1) {
                 selectedClass.splice(i, 1);
               }
@@ -263,7 +231,7 @@ export default class LabelsSelect {
             }
           } else {
             if (this.id(label)) {
-              dropdownValue = this.id(label)
+              const dropdownValue = this.id(label)
                 .toString()
                 .replace(/'/g, "\\'");
 
@@ -287,7 +255,7 @@ export default class LabelsSelect {
             colorEl = '';
           }
 
-          linkEl = document.createElement('a');
+          const linkEl = document.createElement('a');
           linkEl.href = '#';
 
           // We need to identify which items are actually labels
@@ -300,7 +268,7 @@ export default class LabelsSelect {
           linkEl.className = selectedClass.join(' ');
           linkEl.innerHTML = `${colorEl} ${_.escape(label.title)}`;
 
-          listItemEl = document.createElement('li');
+          const listItemEl = document.createElement('li');
           listItemEl.appendChild(linkEl);
 
           return listItemEl;
@@ -312,12 +280,12 @@ export default class LabelsSelect {
         filterable: true,
         selected: $dropdown.data('selected') || [],
         toggleLabel(selected, el) {
-          var $dropdownParent = $dropdown.parent();
-          var $dropdownInputField = $dropdownParent.find('.dropdown-input-field');
-          var isSelected = el !== null ? el.hasClass('is-active') : false;
+          const $dropdownParent = $dropdown.parent();
+          const $dropdownInputField = $dropdownParent.find('.dropdown-input-field');
+          const isSelected = el !== null ? el.hasClass('is-active') : false;
 
-          var title = selected ? selected.title : null;
-          var selectedLabels = this.selected;
+          const title = selected ? selected.title : null;
+          const selectedLabels = this.selected;
 
           if ($dropdownInputField.length && $dropdownInputField.val().length) {
             $dropdownParent.find('.dropdown-input-clear').trigger('click');
@@ -329,7 +297,7 @@ export default class LabelsSelect {
           } else if (isSelected) {
             this.selected.push(title);
           } else if (!isSelected && title) {
-            var index = this.selected.indexOf(title);
+            const index = this.selected.indexOf(title);
             this.selected.splice(index, 1);
           }
 
@@ -359,10 +327,9 @@ export default class LabelsSelect {
           }
         },
         hidden() {
-          var isIssueIndex, isMRIndex, page;
-          page = $('body').attr('data-page');
-          isIssueIndex = page === 'projects:issues:index';
-          isMRIndex = page === 'projects:merge_requests:index';
+          const page = $('body').attr('data-page');
+          const isIssueIndex = page === 'projects:issues:index';
+          const isMRIndex = page === 'projects:merge_requests:index';
           $selectbox.hide();
           // display:block overrides the hide-collapse rule
           $value.removeAttr('style');
@@ -393,14 +360,13 @@ export default class LabelsSelect {
           const { $el, e, isMarking } = clickEvent;
           const label = clickEvent.selectedObj;
 
-          var isIssueIndex, isMRIndex, page, boardsModel;
-          var fadeOutLoader = () => {
+          const fadeOutLoader = () => {
             $loading.fadeOut();
           };
 
-          page = $('body').attr('data-page');
-          isIssueIndex = page === 'projects:issues:index';
-          isMRIndex = page === 'projects:merge_requests:index';
+          const page = $('body').attr('data-page');
+          const isIssueIndex = page === 'projects:issues:index';
+          const isMRIndex = page === 'projects:merge_requests:index';
 
           if ($dropdown.parent().find('.is-active:not(.dropdown-clear-active)').length) {
             $dropdown
@@ -419,6 +385,7 @@ export default class LabelsSelect {
             return;
           }
 
+          let boardsModel;
           if ($dropdown.closest('.add-issues-modal').length) {
             boardsModel = ModalStore.store.filter;
           }
@@ -450,7 +417,7 @@ export default class LabelsSelect {
                 }),
               );
             } else {
-              var { labels } = boardsStore.detail.issue;
+              let { labels } = boardsStore.detail.issue;
               labels = labels.filter(selectedLabel => selectedLabel.id !== label.id);
               boardsStore.detail.issue.labels = labels;
             }
@@ -578,16 +545,14 @@ export default class LabelsSelect {
   }
   // eslint-disable-next-line class-methods-use-this
   setDropdownData($dropdown, isMarking, value) {
-    var i, markedIds, unmarkedIds, indeterminateIds;
-
-    markedIds = $dropdown.data('marked') || [];
-    unmarkedIds = $dropdown.data('unmarked') || [];
-    indeterminateIds = $dropdown.data('indeterminate') || [];
+    const markedIds = $dropdown.data('marked') || [];
+    const unmarkedIds = $dropdown.data('unmarked') || [];
+    const indeterminateIds = $dropdown.data('indeterminate') || [];
 
     if (isMarking) {
       markedIds.push(value);
 
-      i = indeterminateIds.indexOf(value);
+      let i = indeterminateIds.indexOf(value);
       if (i > -1) {
         indeterminateIds.splice(i, 1);
       }
@@ -598,7 +563,7 @@ export default class LabelsSelect {
       }
     } else {
       // If marked item (not common) is unmarked
-      i = markedIds.indexOf(value);
+      const i = markedIds.indexOf(value);
       if (i > -1) {
         markedIds.splice(i, 1);
       }

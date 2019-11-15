@@ -43,7 +43,7 @@ Gitlab::Seeder.quiet do
   end
 
   puts "\nGenerating project labels"
-  Project.all.find_each do |project|
+  Project.not_mass_generated.find_each do |project|
     Gitlab::Seeder::ProjectLabels.new(project).seed!
   end
 end

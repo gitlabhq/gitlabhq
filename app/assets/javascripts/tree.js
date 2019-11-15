@@ -1,4 +1,4 @@
-/* eslint-disable func-names, consistent-return, no-var, one-var, no-else-return, class-methods-use-this */
+/* eslint-disable func-names, consistent-return, one-var, no-else-return, class-methods-use-this */
 
 import $ from 'jquery';
 import { visitUrl } from './lib/utils/url_utility';
@@ -9,9 +9,8 @@ export default class TreeView {
     // Code browser tree slider
     // Make the entire tree-item row clickable, but not if clicking another link (like a commit message)
     $('.tree-content-holder .tree-item').on('click', function(e) {
-      var $clickedEl, path;
-      $clickedEl = $(e.target);
-      path = $('.tree-item-file-name a', this).attr('href');
+      const $clickedEl = $(e.target);
+      const path = $('.tree-item-file-name a', this).attr('href');
       if (!$clickedEl.is('a') && !$clickedEl.is('.str-truncated')) {
         if (e.metaKey || e.which === 2) {
           e.preventDefault();
@@ -26,11 +25,10 @@ export default class TreeView {
   }
 
   initKeyNav() {
-    var li, liSelected;
-    li = $('tr.tree-item');
-    liSelected = null;
+    const li = $('tr.tree-item');
+    let liSelected = null;
     return $('body').keydown(e => {
-      var next, path;
+      let next, path;
       if ($('input:focus').length > 0 && (e.which === 38 || e.which === 40)) {
         return false;
       }

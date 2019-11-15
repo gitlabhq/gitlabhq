@@ -1,9 +1,13 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import tableRegistry from '~/registry/components/table_registry.vue';
 import { mount, createLocalVue } from '@vue/test-utils';
+import createFlash from '~/flash';
+import Tracking from '~/tracking';
+import tableRegistry from '~/registry/components/table_registry.vue';
 import { repoPropsData } from '../mock_data';
 import * as getters from '~/registry/stores/getters';
+
+jest.mock('~/flash');
 
 const [firstImage, secondImage] = repoPropsData.list;
 
@@ -15,11 +19,12 @@ describe('table registry', () => {
   let wrapper;
   let store;
 
-  const findSelectAllCheckbox = w => w.find('.js-select-all-checkbox > input');
-  const findSelectCheckboxes = w => w.findAll('.js-select-checkbox > input');
-  const findDeleteButton = w => w.find('.js-delete-registry');
-  const findDeleteButtonsRow = w => w.findAll('.js-delete-registry-row');
-  const findPagination = w => w.find('.js-registry-pagination');
+  const findSelectAllCheckbox = (w = wrapper) => w.find('.js-select-all-checkbox > input');
+  const findSelectCheckboxes = (w = wrapper) => w.findAll('.js-select-checkbox > input');
+  const findDeleteButton = (w = wrapper) => w.find({ ref: 'bulkDeleteButton' });
+  const findDeleteButtonsRow = (w = wrapper) => w.findAll('.js-delete-registry-row');
+  const findPagination = (w = wrapper) => w.find('.js-registry-pagination');
+  const findDeleteModal = (w = wrapper) => w.find({ ref: 'deleteModal' });
   const bulkDeletePath = 'path';
 
   const mountWithStore = config => mount(tableRegistry, { ...config, store, localVue });
@@ -139,7 +144,7 @@ describe('table registry', () => {
         },
       });
       wrapper.vm.handleMultipleDelete();
-      expect(wrapper.vm.showError).toHaveBeenCalled();
+      expect(createFlash).toHaveBeenCalled();
     });
   });
 
@@ -166,6 +171,27 @@ describe('table registry', () => {
       expect(wrapper.vm.deleteSingleItem).toHaveBeenCalledWith(0);
       wrapper.vm.handleSingleDelete(1);
       expect(wrapper.vm.deleteItem).toHaveBeenCalledWith(1);
+    });
+  });
+
+  describe('modal event handlers', () => {
+    beforeEach(() => {
+      wrapper.vm.handleSingleDelete = jest.fn();
+      wrapper.vm.handleMultipleDelete = jest.fn();
+    });
+    it('on ok when one item is selected should call singleDelete', () => {
+      wrapper.setData({ itemsToBeDeleted: [0] });
+      wrapper.vm.onDeletionConfirmed();
+
+      expect(wrapper.vm.handleSingleDelete).toHaveBeenCalledWith(repoPropsData.list[0]);
+      expect(wrapper.vm.handleMultipleDelete).not.toHaveBeenCalled();
+    });
+    it('on ok when multiple items are selected should call muultiDelete', () => {
+      wrapper.setData({ itemsToBeDeleted: [0, 1, 2] });
+      wrapper.vm.onDeletionConfirmed();
+
+      expect(wrapper.vm.handleMultipleDelete).toHaveBeenCalled();
+      expect(wrapper.vm.handleSingleDelete).not.toHaveBeenCalled();
     });
   });
 
@@ -263,6 +289,85 @@ describe('table registry', () => {
     it('should not render delete row button', () => {
       const deleteBtns = findDeleteButtonsRow(wrapper);
       expect(deleteBtns.length).toBe(0);
+    });
+  });
+
+  describe('event tracking', () => {
+    const mockPageName = 'mock_page';
+
+    beforeEach(() => {
+      jest.spyOn(Tracking, 'event');
+      wrapper.vm.handleSingleDelete = jest.fn();
+      wrapper.vm.handleMultipleDelete = jest.fn();
+      document.body.dataset.page = mockPageName;
+    });
+
+    afterEach(() => {
+      document.body.dataset.page = null;
+    });
+
+    describe('single tag delete', () => {
+      beforeEach(() => {
+        wrapper.setData({ itemsToBeDeleted: [0] });
+      });
+
+      it('send an event when delete button is clicked', () => {
+        const deleteBtn = findDeleteButtonsRow();
+        deleteBtn.at(0).trigger('click');
+        expect(Tracking.event).toHaveBeenCalledWith(mockPageName, 'click_button', {
+          label: 'registry_tag_delete',
+          property: 'foo',
+        });
+      });
+      it('send an event when cancel is pressed on modal', () => {
+        const deleteModal = findDeleteModal();
+        deleteModal.vm.$emit('cancel');
+        expect(Tracking.event).toHaveBeenCalledWith(mockPageName, 'cancel_delete', {
+          label: 'registry_tag_delete',
+          property: 'foo',
+        });
+      });
+      it('send an event when confirm is clicked on modal', () => {
+        const deleteModal = findDeleteModal();
+        deleteModal.vm.$emit('ok');
+
+        expect(Tracking.event).toHaveBeenCalledWith(mockPageName, 'confirm_delete', {
+          label: 'registry_tag_delete',
+          property: 'foo',
+        });
+      });
+    });
+    describe('bulk tag delete', () => {
+      beforeEach(() => {
+        const items = [0, 1, 2];
+        wrapper.setData({ itemsToBeDeleted: items, selectedItems: items });
+      });
+
+      it('send an event when delete button is clicked', () => {
+        const deleteBtn = findDeleteButton();
+        deleteBtn.vm.$emit('click');
+        expect(Tracking.event).toHaveBeenCalledWith(mockPageName, 'click_button', {
+          label: 'bulk_registry_tag_delete',
+          property: 'foo',
+        });
+      });
+      it('send an event when cancel is pressed on modal', () => {
+        const deleteModal = findDeleteModal();
+        deleteModal.vm.$emit('cancel');
+        expect(Tracking.event).toHaveBeenCalledWith(mockPageName, 'cancel_delete', {
+          label: 'bulk_registry_tag_delete',
+          property: 'foo',
+        });
+      });
+      it('send an event when confirm is clicked on modal', () => {
+        const deleteModal = findDeleteModal();
+        deleteModal.vm.$emit('ok');
+
+        expect(Tracking.event).toHaveBeenCalledWith(mockPageName, 'confirm_delete', {
+          label: 'bulk_registry_tag_delete',
+          property: 'foo',
+        });
+      });
     });
   });
 });

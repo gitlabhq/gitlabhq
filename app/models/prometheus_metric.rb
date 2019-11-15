@@ -14,7 +14,13 @@ class PrometheusMetric < ApplicationRecord
   validates :project, presence: true, unless: :common?
   validates :project, absence: true, if: :common?
 
+  scope :for_project, -> (project) { where(project: project) }
+  scope :for_group, -> (group) { where(group: group) }
+  scope :for_title, -> (title) { where(title: title) }
+  scope :for_y_label, -> (y_label) { where(y_label: y_label) }
+  scope :for_identifier, -> (identifier) { where(identifier: identifier) }
   scope :common, -> { where(common: true) }
+  scope :ordered, -> { reorder(created_at: :asc) }
 
   def priority
     group_details(group).fetch(:priority)

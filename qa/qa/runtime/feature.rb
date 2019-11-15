@@ -19,6 +19,28 @@ module QA
         set_feature(key, false)
       end
 
+      def remove(key)
+        request = Runtime::API::Request.new(api_client, "/features/#{key}")
+        response = delete(request.url)
+        unless response.code == QA::Support::Api::HTTP_STATUS_NO_CONTENT
+          raise SetFeatureError, "Deleting feature flag #{key} failed with `#{response}`."
+        end
+      end
+
+      def enable_and_verify(key)
+        Support::Retrier.retry_on_exception(sleep_interval: 2) do
+          enable(key)
+
+          is_enabled = false
+
+          QA::Support::Waiter.wait(interval: 1) do
+            is_enabled = enabled?(key)
+          end
+
+          raise SetFeatureError, "#{key} was not enabled!" unless is_enabled
+        end
+      end
+
       def enabled?(key)
         feature = JSON.parse(get_features).find { |flag| flag["name"] == key }
         feature && feature["state"] == "on"

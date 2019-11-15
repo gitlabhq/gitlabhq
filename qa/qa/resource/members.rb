@@ -11,6 +11,10 @@ module QA
         post Runtime::API::Request.new(api_client, api_members_path).url, { user_id: user.id, access_level: access_level }
       end
 
+      def list_members
+        JSON.parse(get(Runtime::API::Request.new(api_client, api_members_path).url).body)
+      end
+
       def api_members_path
         "#{api_get_path}/members"
       end

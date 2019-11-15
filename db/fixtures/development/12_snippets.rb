@@ -25,7 +25,7 @@ end
 eos
 
   50.times do |i|
-    user = User.all.sample
+    user = User.not_mass_generated.sample
 
     PersonalSnippet.seed(:id, [{
       id: i,

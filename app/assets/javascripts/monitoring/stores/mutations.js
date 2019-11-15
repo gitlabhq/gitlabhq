@@ -94,7 +94,7 @@ export default {
     state.emptyState = 'noData';
   },
   [types.SET_ALL_DASHBOARDS](state, dashboards) {
-    state.allDashboards = dashboards;
+    state.allDashboards = dashboards || [];
   },
   [types.SET_SHOW_ERROR_BANNER](state, enabled) {
     state.showErrorBanner = enabled;

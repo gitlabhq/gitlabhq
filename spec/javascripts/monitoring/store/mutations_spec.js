@@ -144,7 +144,19 @@ describe('Monitoring mutations', () => {
   });
 
   describe('SET_ALL_DASHBOARDS', () => {
-    it('stores the dashboards loaded from the git repository', () => {
+    it('stores `undefined` dashboards as an empty array', () => {
+      mutations[types.SET_ALL_DASHBOARDS](stateCopy, undefined);
+
+      expect(stateCopy.allDashboards).toEqual([]);
+    });
+
+    it('stores `null` dashboards as an empty array', () => {
+      mutations[types.SET_ALL_DASHBOARDS](stateCopy, null);
+
+      expect(stateCopy.allDashboards).toEqual([]);
+    });
+
+    it('stores dashboards loaded from the git repository', () => {
       mutations[types.SET_ALL_DASHBOARDS](stateCopy, dashboardGitResponse);
 
       expect(stateCopy.allDashboards).toEqual(dashboardGitResponse);

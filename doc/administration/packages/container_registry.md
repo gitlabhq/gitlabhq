@@ -18,7 +18,9 @@ You can read more about the Docker Registry at
 
 **Omnibus GitLab installations**
 
-All you have to do is configure the domain name under which the Container
+If you are using the Omnibus GitLab built in [Let's Encrypt integration](https://docs.gitlab.com/omnibus/settings/ssl.html#lets-encrypt-integration), as of GitLab 12.5, the Container Registry will be automatically enabled on port 5050 of the default domain.
+
+If you would like to use a separate domain, all you have to do is configure the domain name under which the Container
 Registry will listen to. Read
 [#container-registry-domain-configuration](#container-registry-domain-configuration)
 and pick one of the two options that fits your case.

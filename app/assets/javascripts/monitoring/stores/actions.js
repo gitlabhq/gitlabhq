@@ -84,7 +84,10 @@ export const fetchDashboard = ({ state, dispatch }, params) => {
   return backOffRequest(() => axios.get(state.dashboardEndpoint, { params }))
     .then(resp => resp.data)
     .then(response => {
-      dispatch('receiveMetricsDashboardSuccess', { response, params });
+      dispatch('receiveMetricsDashboardSuccess', {
+        response,
+        params,
+      });
     })
     .catch(error => {
       dispatch('receiveMetricsDashboardFailure', error);

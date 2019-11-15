@@ -10,6 +10,10 @@ class DescriptionVersion < ApplicationRecord
     %i(issue merge_request).freeze
   end
 
+  def issuable
+    issue || merge_request
+  end
+
   private
 
   def exactly_one_issuable

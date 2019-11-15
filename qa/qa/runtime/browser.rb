@@ -57,13 +57,13 @@ module QA
 
         Capybara.register_driver QA::Runtime::Env.browser do |app|
           capabilities = Selenium::WebDriver::Remote::Capabilities.send(QA::Runtime::Env.browser,
-             # This enables access to logs with `page.driver.manage.get_log(:browser)`
-             loggingPrefs: {
-               browser: "ALL",
-               client: "ALL",
-               driver: "ALL",
-               server: "ALL"
-             })
+            # This enables access to logs with `page.driver.manage.get_log(:browser)`
+            loggingPrefs: {
+              browser: "ALL",
+              client: "ALL",
+              driver: "ALL",
+              server: "ALL"
+            })
 
           if QA::Runtime::Env.accept_insecure_certs?
             capabilities['acceptInsecureCerts'] = true

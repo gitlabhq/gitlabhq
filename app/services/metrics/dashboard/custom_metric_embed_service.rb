@@ -77,15 +77,14 @@ module Metrics
       # There may be multiple metrics, but they should be
       # displayed in a single panel/chart.
       # @return [ActiveRecord::AssociationRelation<PromtheusMetric>]
-      # rubocop: disable CodeReuse/ActiveRecord
       def metrics
-        project.prometheus_metrics.where(
+        PrometheusMetricsFinder.new(
+          project: project,
           group: group_key,
           title: title,
           y_label: y_label
-        )
+        ).execute
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       # Returns a symbol representing the group that
       # the dashboard's group title belongs to.

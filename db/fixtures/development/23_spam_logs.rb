@@ -22,7 +22,7 @@ module Db
         end
 
         def self.random_user
-          User.find(User.pluck(:id).sample)
+          User.find(User.not_mass_generated.pluck(:id).sample)
         end
       end
     end

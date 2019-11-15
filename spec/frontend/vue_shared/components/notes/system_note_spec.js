@@ -57,7 +57,7 @@ describe('system note component', () => {
   // we need to strip them because they break layout of commit lists in system notes:
   // https://gitlab.com/gitlab-org/gitlab-foss/uploads/b07a10670919254f0220d3ff5c1aa110/jqzI.png
   it('removes wrapping paragraph from note HTML', () => {
-    expect(vm.$el.querySelector('.system-note-message').innerHTML).toEqual('<span>closed</span>');
+    expect(vm.$el.querySelector('.system-note-message').innerHTML).toContain('<span>closed</span>');
   });
 
   it('should initMRPopovers onMount', () => {

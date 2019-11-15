@@ -81,6 +81,17 @@ describe('monitor helper', () => {
       expect(result.name).toEqual('brpop, brpop');
     });
 
+    it('supports hyphenated template variables', () => {
+      const config = { ...defaultConfig, name: 'expired - {{ test-attribute }}' };
+
+      const [result] = monitorHelper.makeDataSeries(
+        [{ metric: { 'test-attribute': 'test-attribute-value' }, values: series }],
+        config,
+      );
+
+      expect(result.name).toEqual('expired - test-attribute-value');
+    });
+
     it('updates multiple series names from templates', () => {
       const config = {
         ...defaultConfig,

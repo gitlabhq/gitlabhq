@@ -1,11 +1,9 @@
-/* eslint-disable import/prefer-default-export */
-import _ from 'underscore';
-
 /**
  * @param {Array} queryResults - Array of Result objects
  * @param {Object} defaultConfig - Default chart config values (e.g. lineStyle, name)
  * @returns {Array} The formatted values
  */
+// eslint-disable-next-line import/prefer-default-export
 export const makeDataSeries = (queryResults, defaultConfig) =>
   queryResults
     .map(result => {
@@ -19,10 +17,13 @@ export const makeDataSeries = (queryResults, defaultConfig) =>
       if (name) {
         series.name = `${defaultConfig.name}: ${name}`;
       } else {
-        const template = _.template(defaultConfig.name, {
-          interpolate: /\{\{(.+?)\}\}/g,
+        series.name = defaultConfig.name;
+        Object.keys(result.metric).forEach(templateVar => {
+          const value = result.metric[templateVar];
+          const regex = new RegExp(`{{\\s*${templateVar}\\s*}}`, 'g');
+
+          series.name = series.name.replace(regex, value);
         });
-        series.name = template(result.metric);
       }
 
       return { ...defaultConfig, ...series };

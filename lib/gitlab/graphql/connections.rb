@@ -8,6 +8,10 @@ module Gitlab
           ActiveRecord::Relation,
           Gitlab::Graphql::Connections::Keyset::Connection
         )
+        GraphQL::Relay::BaseConnection.register_connection_implementation(
+          Gitlab::Graphql::FilterableArray,
+          Gitlab::Graphql::Connections::FilterableArrayConnection
+        )
       end
     end
   end

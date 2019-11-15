@@ -3751,7 +3751,7 @@
             },
             {
               "name": "issues",
-              "description": null,
+              "description": "A list of issues associated with the epic",
               "args": [
                 {
                   "name": "after",

@@ -8,7 +8,9 @@ module QA
 
         Page::Main::Login.perform(&:sign_in_with_saml)
 
-        Vendor::SAMLIdp::Page::Login.perform(&:login)
+        Vendor::SAMLIdp::Page::Login.perform do |login_page|
+          login_page.login('user1', 'user1pass')
+        end
 
         expect(page).to have_content('Welcome to GitLab')
       end

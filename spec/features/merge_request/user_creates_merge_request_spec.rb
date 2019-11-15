@@ -25,6 +25,11 @@ describe "User creates a merge request", :js do
 
     click_button("Compare branches")
 
+    page.within('.merge-request-form') do
+      expect(page.find('#merge_request_title')['placeholder']).to eq 'Title'
+      expect(page.find('#merge_request_description')['placeholder']).to eq 'Describe the goal of the changes and what reviewers should be aware of.'
+    end
+
     fill_in("Title", with: title)
     click_button("Submit merge request")
 

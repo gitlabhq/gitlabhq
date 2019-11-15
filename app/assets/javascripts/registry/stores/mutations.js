@@ -1,33 +1,31 @@
 import * as types from './mutation_types';
-import { parseIntPagination, normalizeHeaders } from '../../lib/utils/common_utils';
+import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
 
 export default {
   [types.SET_MAIN_ENDPOINT](state, endpoint) {
-    Object.assign(state, { endpoint });
+    state.endpoint = endpoint;
   },
 
   [types.SET_IS_DELETE_DISABLED](state, isDeleteDisabled) {
-    Object.assign(state, { isDeleteDisabled });
+    state.isDeleteDisabled = isDeleteDisabled;
   },
 
   [types.SET_REPOS_LIST](state, list) {
-    Object.assign(state, {
-      repos: list.map(el => ({
-        canDelete: Boolean(el.destroy_path),
-        destroyPath: el.destroy_path,
-        id: el.id,
-        isLoading: false,
-        list: [],
-        location: el.location,
-        name: el.path,
-        tagsPath: el.tags_path,
-        projectId: el.project_id,
-      })),
-    });
+    state.repos = list.map(el => ({
+      canDelete: Boolean(el.destroy_path),
+      destroyPath: el.destroy_path,
+      id: el.id,
+      isLoading: false,
+      list: [],
+      location: el.location,
+      name: el.path,
+      tagsPath: el.tags_path,
+      projectId: el.project_id,
+    }));
   },
 
   [types.TOGGLE_MAIN_LOADING](state) {
-    Object.assign(state, { isLoading: !state.isLoading });
+    state.isLoading = !state.isLoading;
   },
 
   [types.SET_REGISTRY_LIST](state, { repo, resp, headers }) {

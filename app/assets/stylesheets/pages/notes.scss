@@ -310,6 +310,17 @@ $note-form-margin-left: 72px;
     .note-body {
       overflow: hidden;
 
+      .description-version {
+        pre {
+          max-height: $dropdown-max-height-lg;
+          white-space: pre-wrap;
+
+          &.loading-state {
+            height: 94px;
+          }
+        }
+      }
+
       .system-note-commit-list-toggler {
         color: $blue-600;
         padding: 10px 0 0;

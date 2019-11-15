@@ -79,3 +79,5 @@ class NoteEntity < API::Entities::Note
     request.current_user
   end
 end
+
+NoteEntity.prepend_if_ee('EE::NoteEntity')

@@ -101,6 +101,7 @@ export default {
           <time-ago-tooltip :time="createdAt" tooltip-placement="bottom" />
         </a>
       </template>
+      <slot name="extra-controls"></slot>
       <i
         class="fa fa-spinner fa-spin editing-spinner"
         :aria-label="__('Comment is being updated')"

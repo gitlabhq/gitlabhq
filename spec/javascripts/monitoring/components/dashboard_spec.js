@@ -122,6 +122,32 @@ describe('Dashboard', () => {
     });
   });
 
+  describe('cluster health', () => {
+    let wrapper;
+
+    beforeEach(done => {
+      wrapper = shallowMount(DashboardComponent, {
+        localVue,
+        sync: false,
+        propsData: { ...propsData, hasMetrics: true },
+        store,
+      });
+
+      // all_dashboards is not defined in health dashboards
+      wrapper.vm.$store.commit(`monitoringDashboard/${types.SET_ALL_DASHBOARDS}`, undefined);
+      wrapper.vm.$nextTick(done);
+    });
+
+    afterEach(() => {
+      wrapper.destroy();
+    });
+
+    it('renders correctly', () => {
+      expect(wrapper.isVueInstance()).toBe(true);
+      expect(wrapper.exists()).toBe(true);
+    });
+  });
+
   describe('requests information to the server', () => {
     let spy;
     beforeEach(() => {

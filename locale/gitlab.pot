@@ -4386,6 +4386,9 @@ msgstr ""
 msgid "Compare changes with the merge request target branch"
 msgstr ""
 
+msgid "Compare with previous version"
+msgstr ""
+
 msgid "CompareBranches|%{source_branch} and %{target_branch} are the same."
 msgstr ""
 
@@ -5681,6 +5684,9 @@ msgid "Deprioritize label"
 msgstr ""
 
 msgid "Descending"
+msgstr ""
+
+msgid "Describe the goal of the changes and what reviewers should be aware of."
 msgstr ""
 
 msgid "Description"
@@ -10711,9 +10717,6 @@ msgstr ""
 msgid "MergeRequests|started a thread on commit %{linkStart}%{commitDisplay}%{linkEnd}"
 msgstr ""
 
-msgid "MergeRequest| %{paragraphStart}changed the description %{descriptionChangedTimes} times %{timeDifferenceMinutes}%{paragraphEnd}"
-msgstr ""
-
 msgid "MergeRequest|Error dismissing suggestion popover. Please try again."
 msgstr ""
 
@@ -10856,6 +10859,9 @@ msgid "Metrics|Used as a title for the chart"
 msgstr ""
 
 msgid "Metrics|Used if the query returns a single series. If it returns multiple series, their legend labels will be picked up from the response."
+msgstr ""
+
+msgid "Metrics|Validating query"
 msgstr ""
 
 msgid "Metrics|Y-axis label"
@@ -15924,6 +15930,9 @@ msgid "Something went wrong while fetching %{listType} list"
 msgstr ""
 
 msgid "Something went wrong while fetching comments. Please try again."
+msgstr ""
+
+msgid "Something went wrong while fetching description changes. Please try again."
 msgstr ""
 
 msgid "Something went wrong while fetching group member contributions"
@@ -21192,11 +21201,6 @@ msgstr ""
 
 msgid "with %{additions} additions, %{deletions} deletions."
 msgstr ""
-
-msgid "within %d minute "
-msgid_plural "within %d minutes "
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "yaml invalid"
 msgstr ""

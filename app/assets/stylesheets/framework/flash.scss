@@ -1,7 +1,7 @@
 $notification-box-shadow-color: rgba(0, 0, 0, 0.25);
 
 .flash-container {
-  margin-top: 10px;
+  margin: 0;
   margin-bottom: $gl-padding;
   font-size: 14px;
   position: relative;
@@ -41,6 +41,7 @@ $notification-box-shadow-color: rgba(0, 0, 0, 0.25);
   .flash-success,
   .flash-warning {
     padding: $gl-padding $gl-padding-32 $gl-padding ($gl-padding + $gl-padding-4);
+    margin-top: 10px;
 
     .container-fluid,
     .container-fluid.container-limited {

@@ -64,12 +64,11 @@ module QA
       end
 
       def visit!
-        Runtime::Logger.debug("Visiting #{web_url}")
+        Runtime::Logger.debug(%Q[Visiting #{self.class.name} at "#{web_url}"]) if Runtime::Env.debug?
 
         Support::Retrier.retry_until do
           visit(web_url)
-
-          wait { current_url == web_url }
+          wait { current_url.include?(URI.parse(web_url).path.split('/').last || web_url) }
         end
       end
 

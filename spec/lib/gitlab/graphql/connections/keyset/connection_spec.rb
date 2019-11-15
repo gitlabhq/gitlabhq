@@ -240,38 +240,16 @@ describe Gitlab::Graphql::Connections::Keyset::Connection do
   end
 
   describe '#paged_nodes' do
-    let!(:projects) { create_list(:project, 5) }
+    let_it_be(:all_nodes) { create_list(:project, 5) }
+    let(:paged_nodes) { subject.paged_nodes }
 
-    it 'returns the collection limited to max page size' do
-      expect(subject.paged_nodes.size).to eq(3)
-    end
-
-    it 'is a loaded memoized array' do
-      expect(subject.paged_nodes).to be_an(Array)
-      expect(subject.paged_nodes.object_id).to eq(subject.paged_nodes.object_id)
-    end
-
-    context 'when `first` is passed' do
-      let(:arguments) { { first: 2 } }
-
-      it 'returns only the first elements' do
-        expect(subject.paged_nodes).to contain_exactly(projects.first, projects.second)
-      end
-    end
-
-    context 'when `last` is passed' do
-      let(:arguments) { { last: 2 } }
-
-      it 'returns only the last elements' do
-        expect(subject.paged_nodes).to contain_exactly(projects[3], projects[4])
-      end
-    end
+    it_behaves_like "connection with paged nodes"
 
     context 'when both are passed' do
       let(:arguments) { { first: 2, last: 2 } }
 
       it 'raises an error' do
-        expect { subject.paged_nodes }.to raise_error(Gitlab::Graphql::Errors::ArgumentError)
+        expect { paged_nodes }.to raise_error(Gitlab::Graphql::Errors::ArgumentError)
       end
     end
 

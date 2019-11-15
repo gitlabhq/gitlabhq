@@ -1,7 +1,7 @@
 import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';
 import * as types from './mutation_types';
-import { errorMessages, errorMessagesTypes } from '../constants';
+import { FETCH_REPOS_ERROR_MESSAGE, FETCH_REGISTRY_ERROR_MESSAGE } from '../constants';
 
 export const fetchRepos = ({ commit, state }) => {
   commit(types.TOGGLE_MAIN_LOADING);
@@ -14,7 +14,7 @@ export const fetchRepos = ({ commit, state }) => {
     })
     .catch(() => {
       commit(types.TOGGLE_MAIN_LOADING);
-      createFlash(errorMessages[errorMessagesTypes.FETCH_REPOS]);
+      createFlash(FETCH_REPOS_ERROR_MESSAGE);
     });
 };
 
@@ -30,7 +30,7 @@ export const fetchList = ({ commit }, { repo, page }) => {
     })
     .catch(() => {
       commit(types.TOGGLE_REGISTRY_LIST_LOADING, repo);
-      createFlash(errorMessages[errorMessagesTypes.FETCH_REGISTRY]);
+      createFlash(FETCH_REGISTRY_ERROR_MESSAGE);
     });
 };
 

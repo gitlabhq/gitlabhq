@@ -1,34 +1,9 @@
-import { n__, s__, sprintf } from '~/locale';
 import { DESCRIPTION_TYPE } from '../constants';
-
-/**
- * Changes the description from a note, returns 'changed the description n number of times'
- */
-export const changeDescriptionNote = (note, descriptionChangedTimes, timeDifferenceMinutes) => {
-  const descriptionNote = Object.assign({}, note);
-
-  descriptionNote.note_html = sprintf(
-    s__(`MergeRequest|
-  %{paragraphStart}changed the description %{descriptionChangedTimes} times %{timeDifferenceMinutes}%{paragraphEnd}`),
-    {
-      paragraphStart: '<p dir="auto">',
-      paragraphEnd: '</p>',
-      descriptionChangedTimes,
-      timeDifferenceMinutes: n__('within %d minute ', 'within %d minutes ', timeDifferenceMinutes),
-    },
-    false,
-  );
-
-  descriptionNote.times_updated = descriptionChangedTimes;
-
-  return descriptionNote;
-};
 
 /**
  * Checks the time difference between two notes from their 'created_at' dates
  * returns an integer
  */
-
 export const getTimeDifferenceMinutes = (noteBeggining, noteEnd) => {
   const descriptionNoteBegin = new Date(noteBeggining.created_at);
   const descriptionNoteEnd = new Date(noteEnd.created_at);
@@ -57,7 +32,6 @@ export const isDescriptionSystemNote = note => note.system && note.note === DESC
 export const collapseSystemNotes = notes => {
   let lastDescriptionSystemNote = null;
   let lastDescriptionSystemNoteIndex = -1;
-  let descriptionChangedTimes = 1;
 
   return notes.slice(0).reduce((acc, currentNote) => {
     const note = currentNote.notes[0];
@@ -70,32 +44,24 @@ export const collapseSystemNotes = notes => {
       } else if (lastDescriptionSystemNote) {
         const timeDifferenceMinutes = getTimeDifferenceMinutes(lastDescriptionSystemNote, note);
 
-        // are they less than 10 minutes apart?
-        if (timeDifferenceMinutes > 10) {
-          // reset counter
-          descriptionChangedTimes = 1;
+        // are they less than 10 minutes apart from the same user?
+        if (timeDifferenceMinutes > 10 || note.author.id !== lastDescriptionSystemNote.author.id) {
           // update the previous system note
           lastDescriptionSystemNote = note;
           lastDescriptionSystemNoteIndex = acc.length;
         } else {
-          // increase counter
-          descriptionChangedTimes += 1;
+          // set the first version to fetch grouped system note versions
+          note.start_description_version_id = lastDescriptionSystemNote.description_version_id;
 
           // delete the previous one
           acc.splice(lastDescriptionSystemNoteIndex, 1);
-
-          // replace the text of the current system note with the collapsed note.
-          currentNote.notes.splice(
-            0,
-            1,
-            changeDescriptionNote(note, descriptionChangedTimes, timeDifferenceMinutes),
-          );
 
           // update the previous system note index
           lastDescriptionSystemNoteIndex = acc.length;
         }
       }
     }
+
     acc.push(currentNote);
     return acc;
   }, []);

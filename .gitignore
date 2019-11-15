@@ -82,3 +82,4 @@ jsdoc/
 **/tmp/rubocop_cache/**
 .overcommit.yml
 .projections.json
+/qa/.rakeTasks
