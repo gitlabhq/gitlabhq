@@ -133,7 +133,7 @@ shared_examples 'pages settings editing' do
         end
       end
 
-      context 'when pages are exposed on external HTTPS address', :https_pages_enabled do
+      context 'when pages are exposed on external HTTPS address', :https_pages_enabled, :js do
         let(:certificate_pem) do
           <<~PEM
           -----BEGIN CERTIFICATE-----
@@ -178,6 +178,11 @@ shared_examples 'pages settings editing' do
           visit new_project_pages_domain_path(project)
 
           fill_in 'Domain', with: 'my.test.domain.com'
+
+          if ::Gitlab::LetsEncrypt.enabled?
+            find('.js-auto-ssl-toggle-container .project-feature-toggle').click
+          end
+
           fill_in 'Certificate (PEM)', with: certificate_pem
           fill_in 'Key (PEM)', with: certificate_key
           click_button 'Create New Domain'
@@ -202,7 +207,7 @@ shared_examples 'pages settings editing' do
 
         describe 'updating the certificate for an existing domain' do
           let!(:domain) do
-            create(:pages_domain, project: project)
+            create(:pages_domain, project: project, auto_ssl_enabled: false)
           end
 
           it 'allows the certificate to be updated' do
@@ -215,7 +220,7 @@ shared_examples 'pages settings editing' do
           end
 
           context 'when the certificate is invalid' do
-            let_it_be(:domain) do
+            let!(:domain) do
               create(:pages_domain, :without_certificate, :without_key, project: project)
             end
 
@@ -223,6 +228,10 @@ shared_examples 'pages settings editing' do
               visit project_pages_path(project)
 
               within('#content-body') { click_link 'Edit' }
+
+              if ::Gitlab::LetsEncrypt.enabled?
+                find('.js-auto-ssl-toggle-container .project-feature-toggle').click
+              end
 
               fill_in 'Certificate (PEM)', with: 'invalid data'
               click_button 'Save Changes'

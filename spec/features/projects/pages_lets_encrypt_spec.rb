@@ -23,6 +23,18 @@ describe "Pages with Let's Encrypt", :https_pages_enabled do
     end
   end
 
+  it "creates new domain with Let's Encrypt enabled by default" do
+    visit new_project_pages_domain_path(project)
+
+    fill_in 'Domain', with: 'my.test.domain.com'
+
+    expect(find("#pages_domain_auto_ssl_enabled", visible: false).value).to eq 'true'
+    click_button 'Create New Domain'
+
+    expect(page).to have_content('my.test.domain.com')
+    expect(PagesDomain.find_by_domain('my.test.domain.com').auto_ssl_enabled).to eq(true)
+  end
+
   context 'when the auto SSL management is initially disabled' do
     let(:domain) do
       create(:pages_domain, auto_ssl_enabled: false, project: project)
@@ -96,7 +108,7 @@ describe "Pages with Let's Encrypt", :https_pages_enabled do
     end
 
     context 'when certificate is provided by user' do
-      let(:domain) { create(:pages_domain, project: project) }
+      let(:domain) { create(:pages_domain, project: project, auto_ssl_enabled: false) }
 
       it 'user sees certificate subject' do
         visit edit_project_pages_domain_path(project, domain)

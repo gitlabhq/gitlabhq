@@ -14082,9 +14082,6 @@ msgstr ""
 msgid "Register and see your runners for this group."
 msgstr ""
 
-msgid "Register and see your runners for this project."
-msgstr ""
-
 msgid "Register for GitLab"
 msgstr ""
 
@@ -14718,6 +14715,9 @@ msgid "Runners API"
 msgstr ""
 
 msgid "Runners activated for this project"
+msgstr ""
+
+msgid "Runners are processes that pick up and execute jobs for GitLab. Here you can register and see your Runners for this project."
 msgstr ""
 
 msgid "Runners can be placed on separate users, servers, and even on your local machine."
@@ -19720,6 +19720,9 @@ msgid "You can resolve the merge conflict using either the Interactive mode, by 
 msgstr ""
 
 msgid "You can see your chat accounts."
+msgstr ""
+
+msgid "You can set up as many Runners as you need to run your jobs."
 msgstr ""
 
 msgid "You can set up jobs to only use Runners with specific tags. Separate tags with commas."
