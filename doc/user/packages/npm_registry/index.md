@@ -108,6 +108,21 @@ Then, you could run `npm publish` either locally or via GitLab CI/CD:
 
 - **GitLab CI/CD:** Set an `NPM_TOKEN` [variable](../../../ci/variables/README.md)
   under your project's **Settings > CI/CD > Variables**.
+  
+### Authenticating with a CI job token
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9104) in GitLab Premium 12.5.
+
+If you’re using NPM with GitLab CI/CD, a CI job token can be used instead of a personal access token.
+The token will inherit the permissions of the user that generates the pipeline.
+
+Add a corresponding section to your `.npmrc` file:  
+
+```ini
+@foo:registry=https://gitlab.com/api/v4/packages/npm/
+//gitlab.com/api/v4/packages/npm/:_authToken=${env.CI_JOB_TOKEN}
+//gitlab.com/api/v4/projects/{env.CI_PROJECT_ID>/packages/npm/:_authToken=${env.CI_JOB_TOKEN}
+```
 
 ## Uploading packages
 

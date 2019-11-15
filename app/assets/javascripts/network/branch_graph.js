@@ -1,12 +1,12 @@
-/* eslint-disable func-names, no-var, one-var, no-loop-func, consistent-return, camelcase */
+/* eslint-disable func-names, no-var, one-var, consistent-return, camelcase */
 
 import $ from 'jquery';
 import { __ } from '../locale';
 import axios from '../lib/utils/axios_utils';
 import Raphael from './raphael';
 
-export default (function() {
-  function BranchGraph(element1, options1) {
+export default class BranchGraph {
+  constructor(element1, options1) {
     this.element = element1;
     this.options = options1;
     this.scrollTop = this.scrollTop.bind(this);
@@ -28,7 +28,7 @@ export default (function() {
     this.load();
   }
 
-  BranchGraph.prototype.load = function() {
+  load() {
     axios
       .get(this.options.url)
       .then(({ data }) => {
@@ -37,9 +37,9 @@ export default (function() {
         this.buildGraph();
       })
       .catch(() => __('Error fetching network graph.'));
-  };
+  }
 
-  BranchGraph.prototype.prepareData = function(days, commits) {
+  prepareData(days, commits) {
     var c, ch, cw, j, len, ref;
     this.days = days;
     this.commits = commits;
@@ -61,34 +61,30 @@ export default (function() {
       this.markCommit(c);
     }
     return this.collectColors();
-  };
+  }
 
-  BranchGraph.prototype.collectParents = function() {
+  collectParents() {
     var c, j, len, p, ref, results;
+    var l, len1, ref1, results1;
     ref = this.commits;
     results = [];
     for (j = 0, len = ref.length; j < len; j += 1) {
       c = ref[j];
       this.mtime = Math.max(this.mtime, c.time);
       this.mspace = Math.max(this.mspace, c.space);
-      results.push(
-        function() {
-          var l, len1, ref1, results1;
-          ref1 = c.parents;
-          results1 = [];
-          for (l = 0, len1 = ref1.length; l < len1; l += 1) {
-            p = ref1[l];
-            this.parents[p[0]] = true;
-            results1.push((this.mspace = Math.max(this.mspace, p[1])));
-          }
-          return results1;
-        }.call(this),
-      );
+      ref1 = c.parents;
+      results1 = [];
+      for (l = 0, len1 = ref1.length; l < len1; l += 1) {
+        p = ref1[l];
+        this.parents[p[0]] = true;
+        results1.push((this.mspace = Math.max(this.mspace, p[1])));
+      }
+      results.push(results1);
     }
     return results;
-  };
+  }
 
-  BranchGraph.prototype.collectColors = function() {
+  collectColors() {
     var k, results;
     k = 0;
     results = [];
@@ -100,9 +96,9 @@ export default (function() {
       results.push((k += 1));
     }
     return results;
-  };
+  }
 
-  BranchGraph.prototype.buildGraph = function() {
+  buildGraph() {
     var cuday, cumonth, day, len, mm, ref;
     const { r } = this;
     cuday = 0;
@@ -138,9 +134,9 @@ export default (function() {
     }
     this.renderPartialGraph();
     return this.bindEvents();
-  };
+  }
 
-  BranchGraph.prototype.renderPartialGraph = function() {
+  renderPartialGraph() {
     var commit, end, i, isGraphEdge, start, x, y;
     start = Math.floor((this.element.scrollTop() - this.offsetY) / this.unitTime) - 10;
     if (start < 0) {
@@ -170,49 +166,43 @@ export default (function() {
       }
       return this.top.toFront();
     }
-  };
+  }
 
-  BranchGraph.prototype.bindEvents = function() {
+  bindEvents() {
     const { element } = this;
 
-    return $(element).scroll(
-      (function(_this) {
-        return function() {
-          return _this.renderPartialGraph();
-        };
-      })(this),
-    );
-  };
+    return $(element).scroll(() => this.renderPartialGraph());
+  }
 
-  BranchGraph.prototype.scrollDown = function() {
+  scrollDown() {
     this.element.scrollTop(this.element.scrollTop() + 50);
     return this.renderPartialGraph();
-  };
+  }
 
-  BranchGraph.prototype.scrollUp = function() {
+  scrollUp() {
     this.element.scrollTop(this.element.scrollTop() - 50);
     return this.renderPartialGraph();
-  };
+  }
 
-  BranchGraph.prototype.scrollLeft = function() {
+  scrollLeft() {
     this.element.scrollLeft(this.element.scrollLeft() - 50);
     return this.renderPartialGraph();
-  };
+  }
 
-  BranchGraph.prototype.scrollRight = function() {
+  scrollRight() {
     this.element.scrollLeft(this.element.scrollLeft() + 50);
     return this.renderPartialGraph();
-  };
+  }
 
-  BranchGraph.prototype.scrollBottom = function() {
+  scrollBottom() {
     return this.element.scrollTop(this.element.find('svg').height());
-  };
+  }
 
-  BranchGraph.prototype.scrollTop = function() {
+  scrollTop() {
     return this.element.scrollTop(0);
-  };
+  }
 
-  BranchGraph.prototype.appendLabel = function(x, y, commit) {
+  appendLabel(x, y, commit) {
     var label, rect, shortrefs, text, textbox;
 
     if (!commit.refs) {
@@ -248,9 +238,9 @@ export default (function() {
     label.transform(['t', -rect.getBBox().width - 15, 0]);
     // Set text to front
     return text.toFront();
-  };
+  }
 
-  BranchGraph.prototype.appendAnchor = function(x, y, commit) {
+  appendAnchor(x, y, commit) {
     const { r, top, options } = this;
     const anchor = r
       .circle(x, y, 10)
@@ -270,9 +260,9 @@ export default (function() {
         },
       );
     return top.push(anchor);
-  };
+  }
 
-  BranchGraph.prototype.drawDot = function(x, y, commit) {
+  drawDot(x, y, commit) {
     const { r } = this;
     r.circle(x, y, 3).attr({
       fill: this.colors[commit.space],
@@ -293,9 +283,9 @@ export default (function() {
         'text-anchor': 'start',
         font: '14px Monaco, monospace',
       });
-  };
+  }
 
-  BranchGraph.prototype.drawLines = function(x, y, commit) {
+  drawLines(x, y, commit) {
     var arrow, color, i, len, offset, parent, parentCommit, parentX1, parentX2, parentY, route;
     const { r } = this;
     const ref = commit.parents;
@@ -344,9 +334,9 @@ export default (function() {
       );
     }
     return results;
-  };
+  }
 
-  BranchGraph.prototype.markCommit = function(commit) {
+  markCommit(commit) {
     if (commit.id === this.options.commit_id) {
       const { r } = this;
       const x = this.offsetX + this.unitSpace * (this.mspace - commit.space);
@@ -359,7 +349,5 @@ export default (function() {
       // Displayed in the center
       return this.element.scrollTop(y - this.graphHeight / 2);
     }
-  };
-
-  return BranchGraph;
-})();
+  }
+}

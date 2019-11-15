@@ -1,8 +1,7 @@
-/* eslint-disable no-var, consistent-return, no-return-assign */
+/* eslint-disable consistent-return, no-return-assign */
 
 function notificationGranted(message, opts, onclick) {
-  var notification;
-  notification = new Notification(message, opts);
+  const notification = new Notification(message, opts);
   setTimeout(
     () =>
       // Hide the notification after X amount of seconds
@@ -21,8 +20,7 @@ function notifyPermissions() {
 }
 
 function notifyMe(message, body, icon, onclick) {
-  var opts;
-  opts = {
+  const opts = {
     body,
     icon,
   };

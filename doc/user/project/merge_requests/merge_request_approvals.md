@@ -75,9 +75,9 @@ request approval rules:
 1. Click **Add approvers** to create a new approval rule.
 1. Just like in [GitLab Starter](#editing-approvals), select the approval members and approvals required.
 1. Give the approval rule a name that describes the set of approvers selected.
-1. Click **Add approvers** to submit the new rule.
+1. Click **Add approval rule** to submit the new rule.
 
-   ![Approvals premium project edit](img/approvals_premium_project_edit_v12_3.png)
+   ![Approvals premium project edit](img/approvals_premium_project_edit_v12_5.png)
 
 ## Multiple approval rules **(PREMIUM)**
 

@@ -17260,6 +17260,9 @@ msgstr ""
 msgid "There was a problem communicating with your device."
 msgstr ""
 
+msgid "There was a problem saving your custom stage, please try again"
+msgstr ""
+
 msgid "There was a problem sending the confirmation email"
 msgstr ""
 
