@@ -63,9 +63,15 @@ export default () => {
         service: this.createCycleAnalyticsService(cycleAnalyticsEl.dataset.requestPath),
       };
     },
+    defaultNumberOfSummaryItems: 3,
     computed: {
       currentStage() {
         return this.store.currentActiveStage();
+      },
+      summaryTableColumnClass() {
+        return this.state.summary.length === this.$options.defaultNumberOfSummaryItems
+          ? 'col-sm-3'
+          : 'col-sm-4';
       },
     },
     created() {
