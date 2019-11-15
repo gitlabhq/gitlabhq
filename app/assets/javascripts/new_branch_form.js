@@ -72,16 +72,14 @@ export default class NewBranchForm {
       });
       return `${restriction.prefix} ${formatted.join(restriction.conjunction)}`;
     };
-    const validator = (function(_this) {
-      return function(errors, restriction) {
-        const matched = _this.name.val().match(restriction.pattern);
-        if (matched) {
-          return errors.concat(formatter(matched.reduce(unique, []), restriction));
-        } else {
-          return errors;
-        }
-      };
-    })(this);
+    const validator = (errors, restriction) => {
+      const matched = this.name.val().match(restriction.pattern);
+      if (matched) {
+        return errors.concat(formatter(matched.reduce(unique, []), restriction));
+      } else {
+        return errors;
+      }
+    };
     const errors = this.restrictions.reduce(validator, []);
     if (errors.length > 0) {
       const errorMessage = $('<span/>').text(errors.join(', '));

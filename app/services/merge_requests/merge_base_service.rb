@@ -19,10 +19,12 @@ module MergeRequests
     end
 
     def source
-      if merge_request.squash
-        squash_sha!
-      else
-        merge_request.diff_head_sha
+      strong_memoize(:source) do
+        if merge_request.squash
+          squash_sha!
+        else
+          merge_request.diff_head_sha
+        end
       end
     end
 
@@ -58,16 +60,14 @@ module MergeRequests
     end
 
     def squash_sha!
-      strong_memoize(:squash_sha) do
-        params[:merge_request] = merge_request
-        squash_result = ::MergeRequests::SquashService.new(project, current_user, params).execute
+      params[:merge_request] = merge_request
+      squash_result = ::MergeRequests::SquashService.new(project, current_user, params).execute
 
-        case squash_result[:status]
-        when :success
-          squash_result[:squash_sha]
-        when :error
-          raise ::MergeRequests::MergeService::MergeError, squash_result[:message]
-        end
+      case squash_result[:status]
+      when :success
+        squash_result[:squash_sha]
+      when :error
+        raise ::MergeRequests::MergeService::MergeError, squash_result[:message]
       end
     end
   end

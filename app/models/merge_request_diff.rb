@@ -213,8 +213,10 @@ class MergeRequestDiff < ApplicationRecord
     end
   end
 
-  def commits
-    @commits ||= load_commits
+  def commits(limit: nil)
+    strong_memoize(:"commits_#{limit || 'all'}") do
+      load_commits(limit: limit)
+    end
   end
 
   def last_commit_sha
@@ -529,8 +531,9 @@ class MergeRequestDiff < ApplicationRecord
     end
   end
 
-  def load_commits
-    commits = merge_request_diff_commits.map { |commit| Commit.from_hash(commit.to_hash, project) }
+  def load_commits(limit: nil)
+    commits = merge_request_diff_commits.limit(limit)
+      .map { |commit| Commit.from_hash(commit.to_hash, project) }
 
     CommitCollection
       .new(merge_request.source_project, commits, merge_request.source_branch)

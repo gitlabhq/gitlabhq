@@ -36,25 +36,26 @@ export const humanize = string =>
 export const dasherize = str => str.replace(/[_\s]+/g, '-');
 
 /**
- * Replaces whitespaces with hyphens, convert to lower case and remove non-allowed special characters
- * @param {String} str
+ * Replaces whitespace and non-sluggish characters with a given separator
+ * @param {String} str - The string to slugify
+ * @param {String=} separator - The separator used to separate words (defaults to "-")
  * @returns {String}
  */
-export const slugify = str => {
+export const slugify = (str, separator = '-') => {
   const slug = str
     .trim()
     .toLowerCase()
-    .replace(/[^a-zA-Z0-9_.-]+/g, '-');
+    .replace(/[^a-zA-Z0-9_.-]+/g, separator);
 
-  return slug === '-' ? '' : slug;
+  return slug === separator ? '' : slug;
 };
 
 /**
- * Replaces whitespaces with underscore and converts to lower case
+ * Replaces whitespace and non-sluggish characters with underscores
  * @param {String} str
  * @returns {String}
  */
-export const slugifyWithUnderscore = str => str.toLowerCase().replace(/\s+/g, '_');
+export const slugifyWithUnderscore = str => slugify(str, '_');
 
 /**
  * Truncates given text

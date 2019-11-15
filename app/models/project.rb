@@ -464,13 +464,6 @@ class Project < ApplicationRecord
   # Used by Projects::CleanupService to hold a map of rewritten object IDs
   mount_uploader :bfg_object_map, AttachmentUploader
 
-  # Returns a project, if it is not about to be removed.
-  #
-  # id - The ID of the project to retrieve.
-  def self.find_without_deleted(id)
-    without_deleted.find_by_id(id)
-  end
-
   def self.eager_load_namespace_and_owner
     includes(namespace: :owner)
   end

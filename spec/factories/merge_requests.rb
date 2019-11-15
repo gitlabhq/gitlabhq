@@ -100,6 +100,7 @@ FactoryBot.define do
       auto_merge_enabled { true }
       auto_merge_strategy { AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS }
       merge_user { author }
+      merge_params { { sha: diff_head_sha } }
     end
 
     trait :remove_source_branch do

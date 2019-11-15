@@ -1179,12 +1179,12 @@ Rendered example:
 - Prefer to use examples using the personal access token and don't pass data of
   username and password.
 
-| Methods                                    | Description                                           |
-|:-------------------------------------------|:------------------------------------------------------|
-| `-H "PRIVATE-TOKEN: <your_access_token>"`  | Use this method as is, whenever authentication needed |
-| `-X POST`                                  | Use this method when creating new objects             |
-| `-X PUT`                                   | Use this method when updating existing objects        |
-| `-X DELETE`                                | Use this method when removing existing objects        |
+| Methods                                         | Description                                           |
+|:-------------------------------------------     |:------------------------------------------------------|
+| `--header "PRIVATE-TOKEN: <your_access_token>"` | Use this method as is, whenever authentication needed |
+| `--request POST`                                | Use this method when creating new objects             |
+| `--request PUT`                                 | Use this method when updating existing objects        |
+| `--request DELETE`                              | Use this method when removing existing objects        |
 
 ### cURL Examples
 
@@ -1206,9 +1206,9 @@ Create a new project under the authenticated user's namespace:
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects?name=foo"
 ```
 
-#### Post data using cURL's --data
+#### Post data using cURL's `--data`
 
-Instead of using `-X POST` and appending the parameters to the URI, you can use
+Instead of using `--request POST` and appending the parameters to the URI, you can use
 cURL's `--data` option. The example below will create a new project `foo` under
 the authenticated user's namespace.
 

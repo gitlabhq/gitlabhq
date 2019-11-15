@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 module RendersCommits
-  def limited_commits(commits)
-    if commits.size > MergeRequestDiff::COMMITS_SAFE_SIZE
+  def limited_commits(commits, commits_count)
+    if commits_count > MergeRequestDiff::COMMITS_SAFE_SIZE
       [
         commits.first(MergeRequestDiff::COMMITS_SAFE_SIZE),
-        commits.size - MergeRequestDiff::COMMITS_SAFE_SIZE
+        commits_count - MergeRequestDiff::COMMITS_SAFE_SIZE
       ]
     else
       [commits, 0]
@@ -14,9 +14,10 @@ module RendersCommits
 
   # This is used as a helper method in a controller.
   # rubocop: disable Gitlab/ModuleWithInstanceVariables
-  def set_commits_for_rendering(commits)
-    @total_commit_count = commits.size
-    limited, @hidden_commit_count = limited_commits(commits)
+  def set_commits_for_rendering(commits, commits_count: nil)
+    @total_commit_count = commits_count || commits.size
+    limited, @hidden_commit_count = limited_commits(commits, @total_commit_count)
+    commits.each(&:lazy_author) # preload authors
     prepare_commits_for_rendering(limited)
   end
   # rubocop: enable Gitlab/ModuleWithInstanceVariables

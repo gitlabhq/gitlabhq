@@ -405,7 +405,7 @@ describe Projects::MergeRequestsController do
       end
 
       it 'starts the merge immediately with permitted params' do
-        expect(MergeWorker).to receive(:perform_async).with(merge_request.id, anything, { 'squash' => false })
+        expect(MergeWorker).to receive(:perform_async).with(merge_request.id, anything, { 'sha' => merge_request.diff_head_sha })
 
         merge_with_sha
       end
@@ -432,9 +432,14 @@ describe Projects::MergeRequestsController do
         let(:message) { 'My custom squash commit message' }
 
         it 'passes the same message to SquashService', :sidekiq_might_not_need_inline do
-          params = { squash: '1', squash_commit_message: message }
+          params = { squash: '1',
+                     squash_commit_message: message,
+                     sha: merge_request.diff_head_sha }
+          expected_squash_params = { squash_commit_message: message,
+                                     sha: merge_request.diff_head_sha,
+                                     merge_request: merge_request }
 
-          expect_next_instance_of(MergeRequests::SquashService, project, user, params.merge(merge_request: merge_request)) do |squash_service|
+          expect_next_instance_of(MergeRequests::SquashService, project, user, expected_squash_params) do |squash_service|
             expect(squash_service).to receive(:execute).and_return({
               status: :success,
               squash_sha: SecureRandom.hex(20)

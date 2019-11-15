@@ -21,11 +21,10 @@ describe Gitlab::Cleanup::OrphanJobArtifactFiles do
   end
 
   it 'errors when invalid niceness is given' do
+    allow(Gitlab::Utils).to receive(:which).with('ionice').and_return('/fake/ionice')
     cleanup = described_class.new(logger: null_logger, niceness: 'FooBar')
 
-    expect(null_logger).to receive(:error).with(/FooBar/)
-
-    cleanup.run!
+    expect { cleanup.run! }.to raise_error('Invalid niceness')
   end
 
   it 'finds artifacts on disk' do
@@ -63,6 +62,8 @@ describe Gitlab::Cleanup::OrphanJobArtifactFiles do
   def mock_artifacts_found(cleanup, *files)
     mock = allow(cleanup).to receive(:find_artifacts)
 
-    files.each { |file| mock.and_yield(file) }
+    # Because we shell out to run `find -L ...`, each file actually
+    # contains a trailing newline
+    files.each { |file| mock.and_yield("#{file}\n") }
   end
 end

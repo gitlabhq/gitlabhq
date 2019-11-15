@@ -1,5 +1,3 @@
-/* eslint-disable no-return-assign */
-
 import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
@@ -22,7 +20,8 @@ describe('MergeRequest', function() {
         .onPatch(`${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`)
         .reply(200, {});
 
-      return (this.merge = new MergeRequest());
+      this.merge = new MergeRequest();
+      return this.merge;
     });
 
     afterEach(() => {
@@ -34,10 +33,30 @@ describe('MergeRequest', function() {
       const changeEvent = document.createEvent('HTMLEvents');
       changeEvent.initEvent('change', true, true);
       $('input[type=checkbox]')
+        .first()
         .attr('checked', true)[0]
         .dispatchEvent(changeEvent);
       setTimeout(() => {
-        expect($('.js-task-list-field').val()).toBe('- [x] Task List Item');
+        expect($('.js-task-list-field').val()).toBe(
+          '- [x] Task List Item\n- [ ]   \n- [ ] Task List Item 2\n',
+        );
+        done();
+      });
+    });
+
+    it('ensure that task with only spaces does not get checked incorrectly', done => {
+      // fixed in 'deckar01-task_list', '2.2.1' gem
+      spyOn($, 'ajax').and.stub();
+      const changeEvent = document.createEvent('HTMLEvents');
+      changeEvent.initEvent('change', true, true);
+      $('input[type=checkbox]')
+        .last()
+        .attr('checked', true)[0]
+        .dispatchEvent(changeEvent);
+      setTimeout(() => {
+        expect($('.js-task-list-field').val()).toBe(
+          '- [ ] Task List Item\n- [ ]   \n- [x] Task List Item 2\n',
+        );
         done();
       });
     });
@@ -59,7 +78,7 @@ describe('MergeRequest', function() {
             `${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`,
             {
               merge_request: {
-                description: '- [ ] Task List Item',
+                description: '- [ ] Task List Item\n- [ ]   \n- [ ] Task List Item 2\n',
                 lock_version: 0,
                 update_task: { line_number: lineNumber, line_source: lineSource, index, checked },
               },

@@ -4899,20 +4899,6 @@ describe Project do
     end
   end
 
-  describe '.find_without_deleted' do
-    it 'returns nil if the project is about to be removed' do
-      project = create(:project, pending_delete: true)
-
-      expect(described_class.find_without_deleted(project.id)).to be_nil
-    end
-
-    it 'returns a project when it is not about to be removed' do
-      project = create(:project)
-
-      expect(described_class.find_without_deleted(project.id)).to eq(project)
-    end
-  end
-
   describe '.for_group' do
     it 'returns the projects for a given group' do
       group = create(:group)

@@ -1934,7 +1934,7 @@ describe MergeRequest do
     context 'when the MR has been merged' do
       before do
         MergeRequests::MergeService
-          .new(subject.target_project, subject.author)
+          .new(subject.target_project, subject.author, { sha: subject.diff_head_sha })
           .execute(subject)
       end
 
@@ -3484,4 +3484,67 @@ describe MergeRequest do
   end
 
   it_behaves_like 'versioned description'
+
+  describe '#commits' do
+    context 'persisted merge request' do
+      context 'with a limit' do
+        it 'returns a limited number of commits' do
+          expect(subject.commits(limit: 2).map(&:sha)).to eq(%w[
+            b83d6e391c22777fca1ed3012fce84f633d7fed0
+            498214de67004b1da3d820901307bed2a68a8ef6
+          ])
+          expect(subject.commits(limit: 3).map(&:sha)).to eq(%w[
+            b83d6e391c22777fca1ed3012fce84f633d7fed0
+            498214de67004b1da3d820901307bed2a68a8ef6
+            1b12f15a11fc6e62177bef08f47bc7b5ce50b141
+          ])
+        end
+      end
+
+      context 'without a limit' do
+        it 'returns all commits of the merge request diff' do
+          expect(subject.commits.size).to eq(29)
+        end
+      end
+    end
+
+    context 'new merge request' do
+      subject { build(:merge_request) }
+
+      context 'compare commits' do
+        let(:first_commit) { double }
+        let(:second_commit) { double }
+
+        before do
+          subject.compare_commits = [
+            first_commit, second_commit
+          ]
+        end
+
+        context 'without a limit' do
+          it 'returns all the compare commits' do
+            expect(subject.commits.to_a).to eq([second_commit, first_commit])
+          end
+        end
+
+        context 'with a limit' do
+          it 'returns a limited number of commits' do
+            expect(subject.commits(limit: 1).to_a).to eq([second_commit])
+          end
+        end
+      end
+    end
+  end
+
+  describe '#recent_commits' do
+    before do
+      stub_const("#{MergeRequestDiff}::COMMITS_SAFE_SIZE", 2)
+    end
+
+    it 'returns the safe number of commits' do
+      expect(subject.recent_commits.map(&:sha)).to eq(%w[
+        b83d6e391c22777fca1ed3012fce84f633d7fed0 498214de67004b1da3d820901307bed2a68a8ef6
+      ])
+    end
+  end
 end

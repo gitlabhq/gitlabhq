@@ -13,6 +13,7 @@ describe MergeRequests::FfMergeService do
            author: create(:user))
   end
   let(:project) { merge_request.project }
+  let(:valid_merge_params) { { sha: merge_request.diff_head_sha } }
 
   before do
     project.add_maintainer(user)
@@ -21,7 +22,7 @@ describe MergeRequests::FfMergeService do
 
   describe '#execute' do
     context 'valid params' do
-      let(:service) { described_class.new(project, user, {}) }
+      let(:service) { described_class.new(project, user, valid_merge_params) }
 
       before do
         allow(service).to receive(:execute_hooks)
@@ -52,8 +53,8 @@ describe MergeRequests::FfMergeService do
       end
     end
 
-    context "error handling" do
-      let(:service) { described_class.new(project, user, commit_message: 'Awesome message') }
+    context 'error handling' do
+      let(:service) { described_class.new(project, user, valid_merge_params.merge(commit_message: 'Awesome message')) }
 
       before do
         allow(Rails.logger).to receive(:error)

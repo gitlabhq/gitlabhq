@@ -88,9 +88,9 @@ module MergeRequests
       merge_request.update(merge_error: nil)
 
       if merge_request.head_pipeline && merge_request.head_pipeline.active?
-        AutoMergeService.new(project, current_user).execute(merge_request, AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
+        AutoMergeService.new(project, current_user, { sha: last_diff_sha }).execute(merge_request, AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
       else
-        merge_request.merge_async(current_user.id, {})
+        merge_request.merge_async(current_user.id, { sha: last_diff_sha })
       end
     end
 

@@ -221,6 +221,40 @@ describe Todo do
 
       expect(described_class.for_project(project1)).to eq([todo])
     end
+
+    it 'returns the todos for many projects' do
+      project1 = create(:project)
+      project2 = create(:project)
+      project3 = create(:project)
+
+      todo1 = create(:todo, project: project1)
+      todo2 = create(:todo, project: project2)
+      create(:todo, project: project3)
+
+      expect(described_class.for_project([project2, project1])).to contain_exactly(todo2, todo1)
+    end
+  end
+
+  describe '.for_undeleted_projects' do
+    let(:project1) { create(:project) }
+    let(:project2) { create(:project) }
+    let(:project3) { create(:project) }
+
+    let!(:todo1) { create(:todo, project: project1) }
+    let!(:todo2) { create(:todo, project: project2) }
+    let!(:todo3) { create(:todo, project: project3) }
+
+    it 'returns the todos for a given project' do
+      expect(described_class.for_undeleted_projects).to contain_exactly(todo1, todo2, todo3)
+    end
+
+    context 'when todo belongs to deleted project' do
+      let(:project2) { create(:project, pending_delete: true) }
+
+      it 'excludes todos of deleted projects' do
+        expect(described_class.for_undeleted_projects).to contain_exactly(todo1, todo3)
+      end
+    end
   end
 
   describe '.for_group' do

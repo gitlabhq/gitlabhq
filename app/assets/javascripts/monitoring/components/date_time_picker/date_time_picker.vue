@@ -55,10 +55,12 @@ export default {
       };
     },
   },
-  mounted() {
-    this.verifyTimeRange();
+  watch: {
+    selectedTimeWindow() {
+      this.verifyTimeRange();
+    },
   },
-  updated() {
+  mounted() {
     this.verifyTimeRange();
   },
   methods: {

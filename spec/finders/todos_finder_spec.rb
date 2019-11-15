@@ -163,6 +163,28 @@ describe TodosFinder do
             expect(todos).to match_array([todo1, todo2])
           end
         end
+
+        context 'by project' do
+          let_it_be(:project1) { create(:project) }
+          let_it_be(:project2) { create(:project) }
+          let_it_be(:project3) { create(:project) }
+
+          let!(:todo1) { create(:todo, user: user, project: project1, state: :pending) }
+          let!(:todo2) { create(:todo, user: user, project: project2, state: :pending) }
+          let!(:todo3) { create(:todo, user: user, project: project3, state: :pending) }
+
+          it 'returns the expected todos for one project' do
+            todos = finder.new(user, { project_id: project2.id }).execute
+
+            expect(todos).to match_array([todo2])
+          end
+
+          it 'returns the expected todos for many projects' do
+            todos = finder.new(user, { project_id: [project2.id, project1.id] }).execute
+
+            expect(todos).to match_array([todo2, todo1])
+          end
+        end
       end
 
       context 'external authorization' do

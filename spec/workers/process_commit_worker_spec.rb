@@ -81,9 +81,10 @@ describe ProcessCommitWorker do
 
       let(:commit) do
         project.repository.create_branch('feature-merged', 'feature')
+        project.repository.after_create_branch
 
         MergeRequests::MergeService
-          .new(project, merge_request.author)
+          .new(project, merge_request.author, { sha: merge_request.diff_head_sha })
           .execute(merge_request)
 
         merge_request.reload.merge_commit

@@ -117,12 +117,6 @@ class TodosFinder
     params[:group_id].present?
   end
 
-  def project
-    strong_memoize(:project) do
-      Project.find_without_deleted(params[:project_id]) if project?
-    end
-  end
-
   def group
     strong_memoize(:group) do
       Group.find(params[:group_id])
@@ -181,7 +175,7 @@ class TodosFinder
 
   def by_project(items)
     if project?
-      items.for_project(project)
+      items.for_undeleted_projects.for_project(params[:project_id])
     else
       items
     end

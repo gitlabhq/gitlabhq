@@ -374,16 +374,21 @@ class MergeRequest < ApplicationRecord
     "#{project.to_reference(from, full: full)}#{reference}"
   end
 
-  def commits
-    return merge_request_diff.commits if persisted?
+  def commits(limit: nil)
+    return merge_request_diff.commits(limit: limit) if persisted?
 
     commits_arr = if compare_commits
-                    compare_commits.reverse
+                    reversed_commits = compare_commits.reverse
+                    limit ? reversed_commits.take(limit) : reversed_commits
                   else
                     []
                   end
 
     CommitCollection.new(source_project, commits_arr, source_branch)
+  end
+
+  def recent_commits
+    commits(limit: MergeRequestDiff::COMMITS_SAFE_SIZE)
   end
 
   def commits_count

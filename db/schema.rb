@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_12_232338) do
+ActiveRecord::Schema.define(version: 2019_11_14_173624) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -3952,6 +3952,8 @@ ActiveRecord::Schema.define(version: 2019_11_12_232338) do
     t.boolean "severity_overridden", default: false
     t.integer "confidence", limit: 2, null: false
     t.boolean "confidence_overridden", default: false
+    t.bigint "resolved_by_id"
+    t.datetime_with_timezone "resolved_at"
     t.integer "report_type", limit: 2, null: false
     t.integer "cached_markdown_version"
     t.index ["author_id"], name: "index_vulnerabilities_on_author_id"
@@ -3961,6 +3963,7 @@ ActiveRecord::Schema.define(version: 2019_11_12_232338) do
     t.index ["last_edited_by_id"], name: "index_vulnerabilities_on_last_edited_by_id"
     t.index ["milestone_id"], name: "index_vulnerabilities_on_milestone_id"
     t.index ["project_id"], name: "index_vulnerabilities_on_project_id"
+    t.index ["resolved_by_id"], name: "index_vulnerabilities_on_resolved_by_id"
     t.index ["start_date_sourcing_milestone_id"], name: "index_vulnerabilities_on_start_date_sourcing_milestone_id"
     t.index ["updated_by_id"], name: "index_vulnerabilities_on_updated_by_id"
   end
@@ -4518,6 +4521,7 @@ ActiveRecord::Schema.define(version: 2019_11_12_232338) do
   add_foreign_key "vulnerabilities", "users", column: "author_id", name: "fk_b1de915a15", on_delete: :nullify
   add_foreign_key "vulnerabilities", "users", column: "closed_by_id", name: "fk_cf5c60acbf", on_delete: :nullify
   add_foreign_key "vulnerabilities", "users", column: "last_edited_by_id", name: "fk_1302949740", on_delete: :nullify
+  add_foreign_key "vulnerabilities", "users", column: "resolved_by_id", name: "fk_76bc5f5455", on_delete: :nullify
   add_foreign_key "vulnerabilities", "users", column: "updated_by_id", name: "fk_7ac31eacb9", on_delete: :nullify
   add_foreign_key "vulnerability_feedback", "ci_pipelines", column: "pipeline_id", on_delete: :nullify
   add_foreign_key "vulnerability_feedback", "issues", on_delete: :nullify
