@@ -483,6 +483,14 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `cherryPickOnCurrentMergeRequest` | Boolean! | Whether or not a user can perform `cherry_pick_on_current_merge_request` on this resource |
 | `revertOnCurrentMergeRequest` | Boolean! | Whether or not a user can perform `revert_on_current_merge_request` on this resource |
 
+### MergeRequestSetAssigneesPayload
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `clientMutationId` | String | A unique identifier for the client performing the mutation. |
+| `errors` | String! => Array | Reasons why the mutation failed. |
+| `mergeRequest` | MergeRequest | The merge request after mutation |
+
 ### MergeRequestSetMilestonePayload
 
 | Name  | Type  | Description |
