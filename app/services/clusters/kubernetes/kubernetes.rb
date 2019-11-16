@@ -10,5 +10,7 @@ module Clusters
     PROJECT_CLUSTER_ROLE_NAME = 'edit'
     GITLAB_KNATIVE_SERVING_ROLE_NAME = 'gitlab-knative-serving-role'
     GITLAB_KNATIVE_SERVING_ROLE_BINDING_NAME = 'gitlab-knative-serving-rolebinding'
+    GITLAB_CROSSPLANE_DATABASE_ROLE_NAME = 'gitlab-crossplane-database-role'
+    GITLAB_CROSSPLANE_DATABASE_ROLE_BINDING_NAME = 'gitlab-crossplane-database-rolebinding'
   end
 end
