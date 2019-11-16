@@ -82,12 +82,12 @@ Complete the following installation steps in order. A link at the end of each
 section will bring you back to the Scalable Architecture Examples section so
 you can continue with the next step.
 
-1. [PostgreSQL](database.md#postgresql-in-a-scaled-environment)
+1. [PostgreSQL](database.md#postgresql-in-a-scaled-environment) with [PGBouncer](https://docs.gitlab.com/ee/administration/high_availability/pgbouncer.html)
 1. [Redis](redis.md#redis-in-a-scaled-environment)
 1. [Gitaly](gitaly.md) (recommended) and / or [NFS](nfs.md)[^4]
 1. [GitLab application nodes](gitlab.md)
     - With [Object Storage service enabled](../gitaly/index.md#eliminating-nfs-altogether)[^3]
-1. [Load Balancer](load_balancer.md)[^2]
+1. [Load Balancer(s)](load_balancer.md)[^2]
 1. [Monitoring node (Prometheus and Grafana)](monitoring_node.md)
 
 ### Full Scaling
@@ -98,8 +98,8 @@ is split into separate Sidekiq and Unicorn/Workhorse nodes. One indication that
 this architecture is required is if Sidekiq queues begin to periodically increase
 in size, indicating that there is contention or there are not enough resources.
 
-- 1 or more PostgreSQL node
-- 1 or more Redis node
+- 1 or more PostgreSQL nodes
+- 1 or more Redis nodes
 - 1 or more Gitaly storage servers
 - 1 or more Object Storage services[^3] and / or NFS storage server[^4]
 - 2 or more Sidekiq nodes
@@ -182,6 +182,7 @@ the basis of the GitLab.com architecture. While this scales well it also comes
 with the added complexity of many more nodes to configure, manage, and monitor.
 
 - 3 PostgreSQL nodes
+- 1 or more PgBouncer nodes (with associated internal load balancers)
 - 4 or more Redis nodes (2 separate clusters for persistent and cache data)
 - 3 Consul nodes
 - 3 Sentinel nodes
@@ -228,16 +229,17 @@ users are, how much automation you use, mirroring, and repo/change size.
 | ----------------------------|-------|-----------------------|---------------|
 | GitLab Rails <br> - Puma workers on each node set to 90% of available CPUs with 16 threads | 3 | 32 vCPU, 28.8GB Memory | n1-highcpu-32 |
 | PostgreSQL                  | 3     | 4 vCPU, 15GB Memory   | n1-standard-4 |
-| PgBouncer                   | 1     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
+| PgBouncer                   | 3     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
 | Gitaly <br> - Gitaly Ruby workers on each node set to 20% of available CPUs | X[^1] . | 16 vCPU, 60GB Memory   | n1-standard-16 |
 | Redis Cache + Sentinel <br> - Cache maxmemory set to 90% of available memory | 3 | 4 vCPU, 15GB Memory | n1-standard-4 |
 | Redis Persistent + Sentinel | 3     | 4 vCPU, 15GB Memory   | n1-standard-4 |
 | Sidekiq                     | 4     | 4 vCPU, 15GB Memory   | n1-standard-4 |
 | Consul                      | 3     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
-| NFS Server[^4] .            | 1     | 4 CPU, 3.6GB Memory   | n1-highcpu-4  |
+| NFS Server[^4] .            | 1     | 4 vCPU, 3.6GB Memory  | n1-highcpu-4  |
 | S3 Object Storage[^3] .     | -     | -                     | -             |
-| Monitoring node             | 1     | 4 CPU, 3.6GB Memory   | n1-highcpu-4  |
-| Load Balancing node[^2] .   | 1     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
+| Monitoring node             | 1     | 4 vCPU, 3.6GB Memory  | n1-highcpu-4  |
+| External load balancing node[^2] . | 1 | 2 vCPU, 1.8GB Memory | n1-highcpu-2 |
+| Internal load balancing node[^2] . | 1 | 2 vCPU, 1.8GB Memory | n1-highcpu-2 |
 
 NOTE: **Note:** Memory values are given directly by GCP machine sizes. On different cloud
 vendors a best effort like for like can be used.
@@ -255,16 +257,17 @@ vendors a best effort like for like can be used.
 | ----------------------------|-------|-----------------------|---------------|
 | GitLab Rails <br> - Puma workers on each node set to 90% of available CPUs with 16 threads | 7 | 32 vCPU, 28.8GB Memory | n1-highcpu-32 |
 | PostgreSQL                  | 3     | 8 vCPU, 30GB Memory   | n1-standard-8 |
-| PgBouncer                   | 1     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
+| PgBouncer                   | 3     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
 | Gitaly <br> - Gitaly Ruby workers on each node set to 20% of available CPUs | X[^1] . | 32 vCPU, 120GB Memory | n1-standard-32 |
 | Redis Cache + Sentinel <br> - Cache maxmemory set to 90% of available memory | 3 | 4 vCPU, 15GB Memory | n1-standard-4 |
 | Redis Persistent + Sentinel | 3     | 4 vCPU, 15GB Memory   | n1-standard-4 |
 | Sidekiq                     | 4     | 4 vCPU, 15GB Memory   | n1-standard-4 |
 | Consul                      | 3     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
-| NFS Server[^4] .            | 1     | 4 CPU, 3.6GB Memory   | n1-highcpu-4  |
+| NFS Server[^4] .            | 1     | 4 vCPU, 3.6GB Memory  | n1-highcpu-4  |
 | S3 Object Storage[^3] .     | -     | -                     | -             |
-| Monitoring node             | 1     | 4 CPU, 3.6GB Memory   | n1-highcpu-4  |
-| Load Balancing node[^2] .   | 1     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
+| Monitoring node             | 1     | 4 vCPU, 3.6GB Memory  | n1-highcpu-4  |
+| External load balancing node[^2] . | 1 | 2 vCPU, 1.8GB Memory | n1-highcpu-2 |
+| Internal load balancing node[^2] . | 1 | 4 vCPU, 3.6GB Memory | n1-highcpu-4 |
 
 NOTE: **Note:** Memory values are given directly by GCP machine sizes. On different cloud
 vendors a best effort like for like can be used.
@@ -284,16 +287,17 @@ may be adjusted prior to certification based on performance testing.
 | ----------------------------|-------|-----------------------|---------------|
 | GitLab Rails <br> - Puma workers on each node set to 90% of available CPUs with 16 threads | 15 | 32 vCPU, 28.8GB Memory | n1-highcpu-32 |
 | PostgreSQL                  | 3     | 8 vCPU, 30GB Memory   | n1-standard-8 |
-| PgBouncer                   | 1     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
+| PgBouncer                   | 3     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
 | Gitaly <br> - Gitaly Ruby workers on each node set to 20% of available CPUs | X[^1] . | 64 vCPU, 240GB Memory   | n1-standard-64 |
 | Redis Cache + Sentinel <br> - Cache maxmemory set to 90% of available memory | 3 | 4 vCPU, 15GB Memory | n1-standard-4 |
 | Redis Persistent + Sentinel | 3     | 4 vCPU, 15GB Memory   | n1-standard-4 |
 | Sidekiq                     | 4     | 4 vCPU, 15GB Memory   | n1-standard-4 |
 | Consul                      | 3     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
-| NFS Server[^4] .            | 1     | 4 CPU, 3.6GB Memory   | n1-highcpu-4  |
+| NFS Server[^4] .            | 1     | 4 vCPU, 3.6GB Memory  | n1-highcpu-4  |
 | S3 Object Storage[^3] .     | -     | -                     | -             |
-| Monitoring node             | 1     | 4 CPU, 3.6GB Memory   | n1-highcpu-4  |
-| Load Balancing node[^2] .   | 1     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
+| Monitoring node             | 1     | 4 vCPU, 3.6GB Memory  | n1-highcpu-4  |
+| External load balancing node[^2] . | 1 | 2 vCPU, 1.8GB Memory | n1-highcpu-2 |
+| Internal load balancing node[^2] . | 1 | 8 vCPU, 7.2GB Memory | n1-highcpu-8 |
 
 NOTE: **Note:** Memory values are given directly by GCP machine sizes. On different cloud
 vendors a best effort like for like can be used.
@@ -305,18 +309,18 @@ vendors a best effort like for like can be used.
       project counts and sizes.
 
 [^2]: Our architectures have been tested and validated with [HAProxy](https://www.haproxy.org/)
-as the load balancer. However other reputable load balancers with similar feature sets
-should also work here but be aware these aren't validated.
+      as the load balancer. However other reputable load balancers with similar feature sets
+          should also work here but be aware these aren't validated.
 
 [^3]: For data objects such as LFS, Uploads, Artifacts, etc... We recommend a S3 Object Storage
-where possible over NFS due to better performance and availability. Several types of objects
-are supported for S3 storage - [Job artifacts](../job_artifacts.md#using-object-storage),
-[LFS](../lfs/lfs_administration.md#storing-lfs-objects-in-remote-object-storage),
-[Uploads](../uploads.md#using-object-storage-core-only),
-[Merge Request Diffs](../merge_request_diffs.md#using-object-storage),
-[Packages](../packages/index.md#using-object-storage) (Optional Feature),
-[Dependency Proxy](../packages/dependency_proxy.md#using-object-storage) (Optional Feature).
+      where possible over NFS due to better performance and availability. Several types of objects
+      are supported for S3 storage - [Job artifacts](../job_artifacts.md#using-object-storage),
+      [LFS](../lfs/lfs_administration.md#storing-lfs-objects-in-remote-object-storage),
+      [Uploads](../uploads.md#using-object-storage-core-only),
+      [Merge Request Diffs](../merge_request_diffs.md#using-object-storage),
+      [Packages](../packages/index.md#using-object-storage) (Optional Feature),
+      [Dependency Proxy](../packages/dependency_proxy.md#using-object-storage) (Optional Feature).
 
 [^4]: NFS storage server is still required for [GitLab Pages](https://gitlab.com/gitlab-org/gitlab-pages/issues/196)
-and optionally for CI Job Incremental Logging
-([can be switched to use Redis instead](https://docs.gitlab.com/ee/administration/job_logs.html#new-incremental-logging-architecture)).
+      and optionally for CI Job Incremental Logging
+      ([can be switched to use Redis instead](https://docs.gitlab.com/ee/administration/job_logs.html#new-incremental-logging-architecture)).

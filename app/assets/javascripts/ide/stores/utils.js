@@ -113,6 +113,11 @@ export const setPageTitle = title => {
   document.title = title;
 };
 
+export const setPageTitleForFile = (state, file) => {
+  const title = [file.path, state.currentBranchId, state.currentProjectId, 'GitLab'].join(' · ');
+  setPageTitle(title);
+};
+
 export const commitActionForFile = file => {
   if (file.prevPath) {
     return commitActionTypes.move;

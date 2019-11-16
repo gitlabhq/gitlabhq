@@ -135,7 +135,8 @@ The recommended configuration for a PostgreSQL HA requires:
     - `repmgrd` - A service to monitor, and handle failover in case of a failure
     - `Consul` agent - Used for service discovery, to alert other nodes when failover occurs
 - A minimum of three `Consul` server nodes
-- A minimum of one `pgbouncer` service node
+- A minimum of one `pgbouncer` service node, but it's recommended to have one per database node
+  - An internal load balancer (TCP) is required when there is more than one `pgbouncer` service node
 
 You also need to take into consideration the underlying network topology,
 making sure you have redundant connectivity between all Database and GitLab instances,
@@ -155,13 +156,13 @@ Database nodes run two services with PostgreSQL:
   On failure, the old master node is automatically evicted from the cluster, and should be rejoined manually once recovered.
 - Consul. Monitors the status of each node in the database cluster and tracks its health in a service definition on the Consul cluster.
 
-Alongside PgBouncer, there is a Consul agent that watches the status of the PostgreSQL service. If that status changes, Consul runs a script which updates the configuration and reloads PgBouncer
+Alongside each PgBouncer, there is a Consul agent that watches the status of the PostgreSQL service. If that status changes, Consul runs a script which updates the configuration and reloads PgBouncer
 
 ##### Connection flow
 
 Each service in the package comes with a set of [default ports](https://docs.gitlab.com/omnibus/package-information/defaults.html#ports). You may need to make specific firewall rules for the connections listed below:
 
-- Application servers connect to [PgBouncer default port](https://docs.gitlab.com/omnibus/package-information/defaults.html#pgbouncer)
+- Application servers connect to either PgBouncer directly via its [default port](https://docs.gitlab.com/omnibus/package-information/defaults.html#pgbouncer) or via a configured Internal Load Balancer (TCP) that serves multiple PgBouncers.
 - PgBouncer connects to the primary database servers [PostgreSQL default port](https://docs.gitlab.com/omnibus/package-information/defaults.html#postgresql)
 - Repmgr connects to the database servers [PostgreSQL default port](https://docs.gitlab.com/omnibus/package-information/defaults.html#postgresql)
 - Postgres secondaries connect to the primary database servers [PostgreSQL default port](https://docs.gitlab.com/omnibus/package-information/defaults.html#postgresql)
@@ -499,7 +500,7 @@ attributes set, but the following need to be set.
    # Disable PostgreSQL on the application node
    postgresql['enable'] = false
 
-   gitlab_rails['db_host'] = 'PGBOUNCER_NODE'
+   gitlab_rails['db_host'] = 'PGBOUNCER_NODE' or 'INTERNAL_LOAD_BALANCER'
    gitlab_rails['db_port'] = 6432
    gitlab_rails['db_password'] = 'POSTGRESQL_USER_PASSWORD'
    gitlab_rails['auto_migrate'] = false
@@ -533,7 +534,8 @@ Here we'll show you some fully expanded example configurations.
 
 ##### Example recommended setup
 
-This example uses 3 Consul servers, 3 PostgreSQL servers, and 1 application node.
+This example uses 3 Consul servers, 3 PgBouncer servers (with associated internal load balancer),
+3 PostgreSQL servers, and 1 application node.
 
 We start with all servers on the same 10.6.0.0/16 private network range, they
 can connect to each freely other on those addresses.
@@ -543,14 +545,16 @@ Here is a list and description of each machine and the assigned IP:
 - `10.6.0.11`: Consul 1
 - `10.6.0.12`: Consul 2
 - `10.6.0.13`: Consul 3
-- `10.6.0.21`: PostgreSQL master
-- `10.6.0.22`: PostgreSQL secondary
-- `10.6.0.23`: PostgreSQL secondary
-- `10.6.0.31`: GitLab application
+- `10.6.0.20`: Internal Load Balancer
+- `10.6.0.21`: PgBouncer 1
+- `10.6.0.22`: PgBouncer 2
+- `10.6.0.23`: PgBouncer 3
+- `10.6.0.31`: PostgreSQL master
+- `10.6.0.32`: PostgreSQL secondary
+- `10.6.0.33`: PostgreSQL secondary
+- `10.6.0.41`: GitLab application
 
-All passwords are set to `toomanysecrets`, please do not use this password or derived hashes.
-
-The external_url for GitLab is `http://gitlab.example.com`
+All passwords are set to `toomanysecrets`, please do not use this password or derived hashes and the external_url for GitLab is `http://gitlab.example.com`.
 
 Please note that after the initial configuration, if a failover occurs, the PostgresSQL master will change to one of the available secondaries until it is failed back.
 
@@ -566,9 +570,44 @@ consul['configuration'] = {
   server: true,
   retry_join: %w(10.6.0.11 10.6.0.12 10.6.0.13)
 }
+consul['monitoring_service_discovery'] =  true
 ```
 
 [Reconfigure Omnibus GitLab][reconfigure GitLab] for the changes to take effect.
+
+##### Example recommended setup for PgBouncer servers
+
+On each server edit `/etc/gitlab/gitlab.rb`:
+
+```ruby
+# Disable all components except Pgbouncer and Consul agent
+roles ['pgbouncer_role']
+
+# Configure PgBouncer
+pgbouncer['admin_users'] = %w(pgbouncer gitlab-consul)
+
+pgbouncer['users'] = {
+  'gitlab-consul': {
+    password: '5e0e3263571e3704ad655076301d6ebe'
+  },
+  'pgbouncer': {
+    password: '771a8625958a529132abe6f1a4acb19c'
+  }
+}
+
+consul['watchers'] = %w(postgresql)
+consul['enable'] = true
+consul['configuration'] = {
+  retry_join: %w(10.6.0.11 10.6.0.12 10.6.0.13)
+}
+consul['monitoring_service_discovery'] =  true
+```
+
+[Reconfigure Omnibus GitLab][reconfigure GitLab] for the changes to take effect.
+
+##### Internal load balancer setup
+
+An internal load balancer (TCP) is then required to be setup to serve each PgBouncer node (in this example on the IP of `10.6.0.20`). An example of how to do this can be found in the [PgBouncer Configure Internal Load Balancer](pgbouncer.md#configure-the-internal-load-balancer) section.
 
 ##### Example recommended setup for PostgreSQL servers
 
@@ -589,9 +628,6 @@ postgresql['shared_preload_libraries'] = 'repmgr_funcs'
 # Disable automatic database migrations
 gitlab_rails['auto_migrate'] = false
 
-# Configure the Consul agent
-consul['services'] = %w(postgresql)
-
 postgresql['pgbouncer_user_password'] = '771a8625958a529132abe6f1a4acb19c'
 postgresql['sql_user_password'] = '450409b85a0223a214b5fb1484f34d0f'
 postgresql['max_wal_senders'] = 4
@@ -599,9 +635,13 @@ postgresql['max_wal_senders'] = 4
 postgresql['trust_auth_cidr_addresses'] = %w(10.6.0.0/16)
 repmgr['trust_auth_cidr_addresses'] = %w(10.6.0.0/16)
 
+# Configure the Consul agent
+consul['services'] = %w(postgresql)
+consul['enable'] = true
 consul['configuration'] = {
   retry_join: %w(10.6.0.11 10.6.0.12 10.6.0.13)
 }
+consul['monitoring_service_discovery'] =  true
 ```
 
 [Reconfigure Omnibus GitLab][reconfigure GitLab] for the changes to take effect.
@@ -626,17 +666,14 @@ On the server edit `/etc/gitlab/gitlab.rb`:
 ```ruby
 external_url 'http://gitlab.example.com'
 
-gitlab_rails['db_host'] = '127.0.0.1'
+gitlab_rails['db_host'] = '10.6.0.20' # Internal Load Balancer for PgBouncer nodes
 gitlab_rails['db_port'] = 6432
 gitlab_rails['db_password'] = 'toomanysecrets'
 gitlab_rails['auto_migrate'] = false
 
 postgresql['enable'] = false
-pgbouncer['enable'] = true
+pgbouncer['enable'] = false
 consul['enable'] = true
-
-# Configure PgBouncer
-pgbouncer['admin_users'] = %w(pgbouncer gitlab-consul)
 
 # Configure Consul agent
 consul['watchers'] = %w(postgresql)
@@ -661,7 +698,7 @@ consul['configuration'] = {
 
 After deploying the configuration follow these steps:
 
-1. On `10.6.0.21`, our primary database
+1. On `10.6.0.31`, our primary database
 
    Enable the `pg_trgm` extension
 
@@ -673,7 +710,7 @@ After deploying the configuration follow these steps:
    CREATE EXTENSION pg_trgm;
    ```
 
-1. On `10.6.0.22`, our first standby database
+1. On `10.6.0.32`, our first standby database
 
    Make this node a standby of the primary
 
@@ -681,7 +718,7 @@ After deploying the configuration follow these steps:
    gitlab-ctl repmgr standby setup 10.6.0.21
    ```
 
-1. On `10.6.0.23`, our second standby database
+1. On `10.6.0.33`, our second standby database
 
    Make this node a standby of the primary
 
@@ -689,7 +726,7 @@ After deploying the configuration follow these steps:
    gitlab-ctl repmgr standby setup 10.6.0.21
    ```
 
-1. On `10.6.0.31`, our application server
+1. On `10.6.0.41`, our application server
 
    Set `gitlab-consul` user's PgBouncer password to `toomanysecrets`
 
@@ -705,7 +742,7 @@ After deploying the configuration follow these steps:
 
 #### Example minimal setup
 
-This example uses 3 PostgreSQL servers, and 1 application node.
+This example uses 3 PostgreSQL servers, and 1 application node (with PgBouncer setup alongside).
 
 It differs from the [recommended setup](#example-recommended-setup) by moving the Consul servers into the same servers we use for PostgreSQL.
 The trade-off is between reducing server counts, against the increased operational complexity of needing to deal with PostgreSQL [failover](#failover-procedure) and [restore](#restore-procedure) procedures in addition to [Consul outage recovery](consul.md#outage-recovery) on the same set of machines.

@@ -182,13 +182,25 @@ describe('IDE store file actions', () => {
       spyOn(service, 'getFileData').and.callThrough();
 
       localFile = file(`newCreate-${Math.random()}`);
-      localFile.url = `project/getFileDataURL`;
       store.state.entries[localFile.path] = localFile;
+
+      store.state.currentProjectId = 'test/test';
+      store.state.currentBranchId = 'master';
+
+      store.state.projects['test/test'] = {
+        branches: {
+          master: {
+            commit: {
+              id: '7297abc',
+            },
+          },
+        },
+      };
     });
 
     describe('success', () => {
       beforeEach(() => {
-        mock.onGet(`${RELATIVE_URL_ROOT}/project/getFileDataURL`).replyOnce(
+        mock.onGet(`${RELATIVE_URL_ROOT}/test/test/7297abc/${localFile.path}`).replyOnce(
           200,
           {
             blame_path: 'blame_path',
@@ -210,7 +222,7 @@ describe('IDE store file actions', () => {
           .dispatch('getFileData', { path: localFile.path })
           .then(() => {
             expect(service.getFileData).toHaveBeenCalledWith(
-              `${RELATIVE_URL_ROOT}/project/getFileDataURL`,
+              `${RELATIVE_URL_ROOT}/test/test/7297abc/${localFile.path}`,
             );
 
             done();
@@ -229,12 +241,11 @@ describe('IDE store file actions', () => {
           .catch(done.fail);
       });
 
-      it('sets document title', done => {
+      it('sets document title with the branchId', done => {
         store
           .dispatch('getFileData', { path: localFile.path })
           .then(() => {
-            expect(document.title).toBe('testing getFileData');
-
+            expect(document.title).toBe(`${localFile.path} · master · test/test · GitLab`);
             done();
           })
           .catch(done.fail);
@@ -283,7 +294,7 @@ describe('IDE store file actions', () => {
         localFile.path = 'new-shiny-file';
         store.state.entries[localFile.path] = localFile;
 
-        mock.onGet(`${RELATIVE_URL_ROOT}/project/getFileDataURL`).replyOnce(
+        mock.onGet(`${RELATIVE_URL_ROOT}/test/test/7297abc/old-dull-file`).replyOnce(
           200,
           {
             blame_path: 'blame_path',
@@ -304,7 +315,7 @@ describe('IDE store file actions', () => {
         store
           .dispatch('getFileData', { path: localFile.path })
           .then(() => {
-            expect(document.title).toBe('testing new-shiny-file');
+            expect(document.title).toBe(`new-shiny-file · master · test/test · GitLab`);
 
             done();
           })
@@ -314,14 +325,17 @@ describe('IDE store file actions', () => {
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onGet(`project/getFileDataURL`).networkError();
+        mock.onGet(`${RELATIVE_URL_ROOT}/test/test/7297abc/${localFile.path}`).networkError();
       });
 
       it('dispatches error action', done => {
         const dispatch = jasmine.createSpy('dispatch');
 
         actions
-          .getFileData({ state: store.state, commit() {}, dispatch }, { path: localFile.path })
+          .getFileData(
+            { state: store.state, commit() {}, dispatch, getters: store.getters },
+            { path: localFile.path },
+          )
           .then(() => {
             expect(dispatch).toHaveBeenCalledWith('setErrorMessage', {
               text: 'An error occurred whilst loading the file.',

@@ -163,20 +163,57 @@ describe('IDE store getters', () => {
 
   describe('currentBranch', () => {
     it('returns current projects branch', () => {
-      const localGetters = {
-        currentProject: {
-          branches: {
-            master: {
-              name: 'master',
-            },
+      localState.currentProjectId = 'abcproject';
+      localState.currentBranchId = 'master';
+      localState.projects.abcproject = {
+        name: 'abcproject',
+        branches: {
+          master: {
+            name: 'master',
           },
         },
       };
-      localState.currentBranchId = 'master';
+      const localGetters = {
+        findBranch: jasmine.createSpy('findBranchSpy'),
+      };
+      getters.currentBranch(localState, localGetters);
 
-      expect(getters.currentBranch(localState, localGetters)).toEqual({
-        name: 'master',
-      });
+      expect(localGetters.findBranch).toHaveBeenCalledWith('abcproject', 'master');
+    });
+  });
+
+  describe('findProject', () => {
+    it('returns the project matching the id', () => {
+      localState.currentProjectId = 'abcproject';
+      localState.projects.abcproject = {
+        name: 'abcproject',
+      };
+
+      expect(getters.findProject(localState)('abcproject').name).toBe('abcproject');
+    });
+  });
+
+  describe('findBranch', () => {
+    let result;
+
+    it('returns the selected branch from a project', () => {
+      localState.currentProjectId = 'abcproject';
+      localState.currentBranchId = 'master';
+      localState.projects.abcproject = {
+        name: 'abcproject',
+        branches: {
+          master: {
+            name: 'master',
+          },
+        },
+      };
+      const localGetters = {
+        findProject: () => localState.projects.abcproject,
+      };
+
+      result = getters.findBranch(localState, localGetters)('abcproject', 'master');
+
+      expect(result.name).toBe('master');
     });
   });
 

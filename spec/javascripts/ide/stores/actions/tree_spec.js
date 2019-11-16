@@ -31,7 +31,10 @@ describe('Multi-file store tree actions', () => {
       web_url: '',
       branches: {
         master: {
-          workingReference: '1',
+          workingReference: '12345678',
+          commit: {
+            id: '12345678',
+          },
         },
       },
     };
@@ -61,7 +64,7 @@ describe('Multi-file store tree actions', () => {
         store
           .dispatch('getFiles', basicCallParameters)
           .then(() => {
-            expect(service.getFiles).toHaveBeenCalledWith('', 'master');
+            expect(service.getFiles).toHaveBeenCalledWith('', '12345678');
 
             done();
           })
@@ -99,7 +102,17 @@ describe('Multi-file store tree actions', () => {
         store.state.projects = {
           'abc/def': {
             web_url: `${gl.TEST_HOST}/files`,
+            branches: {
+              'master-testing': {
+                commit: {
+                  id: '12345',
+                },
+              },
+            },
           },
+        };
+        const getters = {
+          findBranch: () => store.state.projects['abc/def'].branches['master-testing'],
         };
 
         mock.onGet(/(.*)/).replyOnce(500);
@@ -109,6 +122,7 @@ describe('Multi-file store tree actions', () => {
             commit() {},
             dispatch,
             state: store.state,
+            getters,
           },
           {
             projectId: 'abc/def',

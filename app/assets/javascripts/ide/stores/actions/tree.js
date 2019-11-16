@@ -46,7 +46,7 @@ export const setDirectoryData = ({ state, commit }, { projectId, branchId, treeL
   });
 };
 
-export const getFiles = ({ state, commit, dispatch }, { projectId, branchId } = {}) =>
+export const getFiles = ({ state, commit, dispatch, getters }, { projectId, branchId } = {}) =>
   new Promise((resolve, reject) => {
     if (
       !state.trees[`${projectId}/${branchId}`] ||
@@ -54,10 +54,11 @@ export const getFiles = ({ state, commit, dispatch }, { projectId, branchId } = 
         state.trees[`${projectId}/${branchId}`].tree.length === 0)
     ) {
       const selectedProject = state.projects[projectId];
-      commit(types.CREATE_TREE, { treePath: `${projectId}/${branchId}` });
+      const selectedBranch = getters.findBranch(projectId, branchId);
 
+      commit(types.CREATE_TREE, { treePath: `${projectId}/${branchId}` });
       service
-        .getFiles(selectedProject.web_url, branchId)
+        .getFiles(selectedProject.web_url, selectedBranch.commit.id)
         .then(({ data }) => {
           const { entries, treeList } = decorateFiles({
             data,
