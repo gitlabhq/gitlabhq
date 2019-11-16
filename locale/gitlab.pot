@@ -14079,9 +14079,6 @@ msgstr ""
 msgid "Register Universal Two-Factor (U2F) Device"
 msgstr ""
 
-msgid "Register and see your runners for this group."
-msgstr ""
-
 msgid "Register for GitLab"
 msgstr ""
 
