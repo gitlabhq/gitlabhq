@@ -224,20 +224,20 @@ users are, how much automation you use, mirroring, and repo/change size.
   were discovered. For details, see the related issues list in
   [this issue](https://gitlab.com/gitlab-org/gitlab-foss/issues/64335).
 
-| Service                       | Configuration           | GCP type       |
-| ------------------------------|-------------------------|----------------|
-| 3 GitLab Rails <br> - Puma workers on each node set to 90% of available CPUs with 16 threads | 32 vCPU, 28.8GB Memory | n1-highcpu-32 |
-| 3 PostgreSQL                  | 4 vCPU, 15GB Memory     | n1-standard-4  |
-| 1 PgBouncer                   | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
-| X Gitaly[^1] <br> - Gitaly Ruby workers on each node set to 20% of available CPUs | 16 vCPU, 60GB Memory   | n1-standard-16 |
-| 3 Redis Cache + Sentinel <br> - Cache maxmemory set to 90% of available memory | 4 vCPU, 15GB Memory | n1-standard-4 |
-| 3 Redis Persistent + Sentinel | 4 vCPU, 15GB Memory     | n1-standard-4  |
-| 4 Sidekiq                     | 4 vCPU, 15GB Memory     | n1-standard-4  |
-| 3 Consul                      | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
-| 1 NFS Server                  | 4 CPU, 3.6GB Memory     | n1-highcpu-4   |
-| X S3 Object Storage[^3]       | -                       | -              |
-| 1 Monitoring node             | 4 CPU, 3.6GB Memory     | n1-highcpu-4   |
-| 1 Load Balancing node[^2]     | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
+| Service                     | Nodes | Configuration         | GCP type      |
+| ----------------------------|-------|-----------------------|---------------|
+| GitLab Rails <br> - Puma workers on each node set to 90% of available CPUs with 16 threads | 3 | 32 vCPU, 28.8GB Memory | n1-highcpu-32 |
+| PostgreSQL                  | 3     | 4 vCPU, 15GB Memory   | n1-standard-4 |
+| PgBouncer                   | 1     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
+| Gitaly <br> - Gitaly Ruby workers on each node set to 20% of available CPUs | X[^1] . | 16 vCPU, 60GB Memory   | n1-standard-16 |
+| Redis Cache + Sentinel <br> - Cache maxmemory set to 90% of available memory | 3 | 4 vCPU, 15GB Memory | n1-standard-4 |
+| Redis Persistent + Sentinel | 3     | 4 vCPU, 15GB Memory   | n1-standard-4 |
+| Sidekiq                     | 4     | 4 vCPU, 15GB Memory   | n1-standard-4 |
+| Consul                      | 3     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
+| NFS Server[^4] .            | 1     | 4 CPU, 3.6GB Memory   | n1-highcpu-4  |
+| S3 Object Storage[^3] .     | -     | -                     | -             |
+| Monitoring node             | 1     | 4 CPU, 3.6GB Memory   | n1-highcpu-4  |
+| Load Balancing node[^2] .   | 1     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
 
 NOTE: **Note:** Memory values are given directly by GCP machine sizes. On different cloud
 vendors a best effort like for like can be used.
@@ -251,20 +251,20 @@ vendors a best effort like for like can be used.
   details, see the related issues list in
   [this issue](https://gitlab.com/gitlab-org/gitlab-foss/issues/64335).
 
-| Service                       | Configuration           | GCP type       |
-| ------------------------------|-------------------------|----------------|
-| 7 GitLab Rails <br> - Puma workers on each node set to 90% of available CPUs with 16 threads | 32 vCPU, 28.8GB Memory | n1-highcpu-32 |
-| 3 PostgreSQL                  | 8 vCPU, 30GB Memory     | n1-standard-8  |
-| 1 PgBouncer                   | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
-| X Gitaly[^1] <br> - Gitaly Ruby workers on each node set to 20% of available CPUs | 32 vCPU, 120GB Memory   | n1-standard-32 |
-| 3 Redis Cache + Sentinel <br> - Cache maxmemory set to 90% of available memory | 4 vCPU, 15GB Memory | n1-standard-4 |
-| 3 Redis Persistent + Sentinel | 4 vCPU, 15GB Memory     | n1-standard-4  |
-| 4 Sidekiq                     | 4 vCPU, 15GB Memory     | n1-standard-4  |
-| 3 Consul                      | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
-| 1 NFS Server                  | 4 CPU, 3.6GB Memory     | n1-highcpu-4   |
-| X S3 Object Storage[^4]       | -                       | -              |
-| 1 Monitoring node             | 4 CPU, 3.6GB Memory     | n1-highcpu-4   |
-| 1 Load Balancing node[^2]     | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
+| Service                     | Nodes | Configuration         | GCP type      |
+| ----------------------------|-------|-----------------------|---------------|
+| GitLab Rails <br> - Puma workers on each node set to 90% of available CPUs with 16 threads | 7 | 32 vCPU, 28.8GB Memory | n1-highcpu-32 |
+| PostgreSQL                  | 3     | 8 vCPU, 30GB Memory   | n1-standard-8 |
+| PgBouncer                   | 1     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
+| Gitaly <br> - Gitaly Ruby workers on each node set to 20% of available CPUs | X[^1] . | 32 vCPU, 120GB Memory | n1-standard-32 |
+| Redis Cache + Sentinel <br> - Cache maxmemory set to 90% of available memory | 3 | 4 vCPU, 15GB Memory | n1-standard-4 |
+| Redis Persistent + Sentinel | 3     | 4 vCPU, 15GB Memory   | n1-standard-4 |
+| Sidekiq                     | 4     | 4 vCPU, 15GB Memory   | n1-standard-4 |
+| Consul                      | 3     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
+| NFS Server[^4] .            | 1     | 4 CPU, 3.6GB Memory   | n1-highcpu-4  |
+| S3 Object Storage[^3] .     | -     | -                     | -             |
+| Monitoring node             | 1     | 4 CPU, 3.6GB Memory   | n1-highcpu-4  |
+| Load Balancing node[^2] .   | 1     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
 
 NOTE: **Note:** Memory values are given directly by GCP machine sizes. On different cloud
 vendors a best effort like for like can be used.
@@ -280,20 +280,20 @@ NOTE: **Note:**  This architecture is a work-in-progress of the work so far. The
 Quality team will be certifying this environment in late 2019. The specifications
 may be adjusted prior to certification based on performance testing.
 
-| Service                       | Configuration           | GCP type       |
-| ------------------------------|-------------------------|----------------|
-| 15 GitLab Rails <br> - Puma workers on each node set to 90% of available CPUs with 16 threads | 32 vCPU, 28.8GB Memory | n1-highcpu-32 |
-| 3 PostgreSQL                  | 8 vCPU, 30GB Memory     | n1-standard-8  |
-| 1 PgBouncer                   | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
-| X Gitaly[^1] <br> - Gitaly Ruby workers on each node set to 20% of available CPUs | 64 vCPU, 240GB Memory   | n1-standard-64 |
-| 3 Redis Cache + Sentinel <br> - Cache maxmemory set to 90% of available memory | 4 vCPU, 15GB Memory | n1-standard-4 |
-| 3 Redis Persistent + Sentinel | 4 vCPU, 15GB Memory     | n1-standard-4  |
-| 4 Sidekiq                     | 4 vCPU, 15GB Memory     | n1-standard-4  |
-| 3 Consul                      | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
-| 1 NFS Server                  | 4 CPU, 3.6GB Memory     | n1-highcpu-4   |
-| X S3 Object Storage[^3]       | -                       | -              |
-| 1 Monitoring node             | 4 CPU, 3.6GB Memory     | n1-highcpu-4   |
-| 1 Load Balancing node[^2]     | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
+| Service                     | Nodes | Configuration         | GCP type      |
+| ----------------------------|-------|-----------------------|---------------|
+| GitLab Rails <br> - Puma workers on each node set to 90% of available CPUs with 16 threads | 15 | 32 vCPU, 28.8GB Memory | n1-highcpu-32 |
+| PostgreSQL                  | 3     | 8 vCPU, 30GB Memory   | n1-standard-8 |
+| PgBouncer                   | 1     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
+| Gitaly <br> - Gitaly Ruby workers on each node set to 20% of available CPUs | X[^1] . | 64 vCPU, 240GB Memory   | n1-standard-64 |
+| Redis Cache + Sentinel <br> - Cache maxmemory set to 90% of available memory | 3 | 4 vCPU, 15GB Memory | n1-standard-4 |
+| Redis Persistent + Sentinel | 3     | 4 vCPU, 15GB Memory   | n1-standard-4 |
+| Sidekiq                     | 4     | 4 vCPU, 15GB Memory   | n1-standard-4 |
+| Consul                      | 3     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
+| NFS Server[^4] .            | 1     | 4 CPU, 3.6GB Memory   | n1-highcpu-4  |
+| S3 Object Storage[^3] .     | -     | -                     | -             |
+| Monitoring node             | 1     | 4 CPU, 3.6GB Memory   | n1-highcpu-4  |
+| Load Balancing node[^2] .   | 1     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
 
 NOTE: **Note:** Memory values are given directly by GCP machine sizes. On different cloud
 vendors a best effort like for like can be used.

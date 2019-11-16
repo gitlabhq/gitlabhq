@@ -114,12 +114,16 @@ viewed by browsing previous versions.
 
 ## Adding annotations to designs
 
-When a design image is displayed, you can add annotations to it by clicking on
-the image. A badge is added to the image and a form is displayed to start a new
-discussion. For example:
+When a design is uploaded, you can add annotations by clicking on
+the image on the exact location you'd like to add the note to.
+A badge is added to the image identifying the annotation, from
+which you can start a new discussion:
 
 ![Starting a new discussion on design](img/adding_note_to_design_1.png)
 
-When submitted, the form saves a badge linked to the discussion on the image. Different discussions have different badge numbers. For example:
+Different discussions have different badge numbers:
 
 ![Discussions on design annotations](img/adding_note_to_design_2.png)
+
+From GitLab 12.5 on, new annotations will be outputted to the issue activity,
+so that everyone involved can participate in the discussion.

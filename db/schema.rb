@@ -1307,6 +1307,7 @@ ActiveRecord::Schema.define(version: 2019_11_14_173624) do
     t.index ["project_id", "iid"], name: "index_deployments_on_project_id_and_iid", unique: true
     t.index ["project_id", "status", "created_at"], name: "index_deployments_on_project_id_and_status_and_created_at"
     t.index ["project_id", "status"], name: "index_deployments_on_project_id_and_status"
+    t.index ["project_id", "updated_at"], name: "index_deployments_on_project_id_and_updated_at"
   end
 
   create_table "description_versions", force: :cascade do |t|

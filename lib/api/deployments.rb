@@ -17,7 +17,7 @@ module API
       end
       params do
         use :pagination
-        optional :order_by, type: String, values: %w[id iid created_at ref], default: 'id', desc: 'Return deployments ordered by `id` or `iid` or `created_at` or `ref`'
+        optional :order_by, type: String, values: %w[id iid created_at updated_at ref], default: 'id', desc: 'Return deployments ordered by `id` or `iid` or `created_at` or `updated_at` or `ref`'
         optional :sort, type: String, values: %w[asc desc], default: 'asc', desc: 'Sort by asc (ascending) or desc (descending)'
       end
       # rubocop: disable CodeReuse/ActiveRecord
