@@ -401,13 +401,6 @@ Rails/FilePath:
 Rails/HasManyOrHasOneDependent:
   Enabled: false
 
-# Offense count: 40
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: numeric, symbolic
-Rails/HttpStatus:
-  Enabled: false
-
 # Offense count: 2
 # Configuration parameters: Include.
 # Include: app/controllers/**/*.rb

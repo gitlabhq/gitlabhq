@@ -41,7 +41,7 @@ class Admin::ProjectsController < Admin::ApplicationController
 
     redirect_to admin_projects_path, status: :found
   rescue Projects::DestroyService::DestroyError => ex
-    redirect_to admin_projects_path, status: 302, alert: ex.message
+    redirect_to admin_projects_path, status: :found, alert: ex.message
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

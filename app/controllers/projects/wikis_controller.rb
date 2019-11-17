@@ -110,7 +110,7 @@ class Projects::WikisController < Projects::ApplicationController
     WikiPages::DestroyService.new(@project, current_user).execute(@page)
 
     redirect_to project_wiki_path(@project, :home),
-                status: 302,
+                status: :found,
                 notice: _("Page was successfully deleted")
   rescue Gitlab::Git::Wiki::OperationError => e
     @error = e

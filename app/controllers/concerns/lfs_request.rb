@@ -56,7 +56,7 @@ module LfsRequest
         documentation_url: help_url
       },
       content_type: CONTENT_TYPE,
-      status: 403
+      status: :forbidden
     )
   end
 
@@ -67,7 +67,7 @@ module LfsRequest
         documentation_url: help_url
       },
       content_type: CONTENT_TYPE,
-      status: 404
+      status: :not_found
     )
   end
 

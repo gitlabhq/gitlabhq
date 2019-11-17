@@ -47,7 +47,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def omniauth_error
     @provider = params[:provider]
     @error = params[:error]
-    render 'errors/omniauth_error', layout: "oauth_error", status: 422
+    render 'errors/omniauth_error', layout: "oauth_error", status: :unprocessable_entity
   end
 
   def cas3

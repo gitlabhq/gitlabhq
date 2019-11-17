@@ -154,7 +154,7 @@ class ProjectsController < Projects::ApplicationController
 
     redirect_to dashboard_projects_path, status: :found
   rescue Projects::DestroyService::DestroyError => ex
-    redirect_to edit_project_path(@project), status: 302, alert: ex.message
+    redirect_to edit_project_path(@project), status: :found, alert: ex.message
   end
 
   def new_issuable_address

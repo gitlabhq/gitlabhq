@@ -36,7 +36,7 @@ class HelpController < ApplicationController
           render 'show.html.haml'
         else
           # Force template to Haml
-          render 'errors/not_found.html.haml', layout: 'errors', status: 404
+          render 'errors/not_found.html.haml', layout: 'errors', status: :not_found
         end
       end
 

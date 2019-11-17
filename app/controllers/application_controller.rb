@@ -58,7 +58,7 @@ class ApplicationController < ActionController::Base
 
   rescue_from Encoding::CompatibilityError do |exception|
     log_exception(exception)
-    render "errors/encoding", layout: "errors", status: 500
+    render "errors/encoding", layout: "errors", status: :internal_server_error
   end
 
   rescue_from ActiveRecord::RecordNotFound do |exception|
@@ -197,19 +197,19 @@ class ApplicationController < ActionController::Base
   end
 
   def git_not_found!
-    render "errors/git_not_found.html", layout: "errors", status: 404
+    render "errors/git_not_found.html", layout: "errors", status: :not_found
   end
 
   def render_403
     respond_to do |format|
       format.any { head :forbidden }
-      format.html { render "errors/access_denied", layout: "errors", status: 403 }
+      format.html { render "errors/access_denied", layout: "errors", status: :forbidden }
     end
   end
 
   def render_404
     respond_to do |format|
-      format.html { render "errors/not_found", layout: "errors", status: 404 }
+      format.html { render "errors/not_found", layout: "errors", status: :not_found }
       # Prevent the Rails CSRF protector from thinking a missing .js file is a JavaScript file
       format.js { render json: '', status: :not_found, content_type: 'application/json' }
       format.any { head :not_found }

@@ -637,7 +637,7 @@ describe ApplicationController do
     context 'given a 422 error page' do
       controller do
         def index
-          render 'errors/omniauth_error', layout: 'errors', status: 422
+          render 'errors/omniauth_error', layout: 'errors', status: :unprocessable_entity
         end
       end
 
@@ -651,7 +651,7 @@ describe ApplicationController do
     context 'given a 500 error page' do
       controller do
         def index
-          render 'errors/omniauth_error', layout: 'errors', status: 500
+          render 'errors/omniauth_error', layout: 'errors', status: :internal_server_error
         end
       end
 
@@ -665,7 +665,7 @@ describe ApplicationController do
     context 'given a 200 success page' do
       controller do
         def index
-          render 'errors/omniauth_error', layout: 'errors', status: 200
+          render 'errors/omniauth_error', layout: 'errors', status: :ok
         end
       end
 

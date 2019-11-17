@@ -169,7 +169,7 @@ class Admin::UsersController < Admin::ApplicationController
     user.delete_async(deleted_by: current_user, params: params.permit(:hard_delete))
 
     respond_to do |format|
-      format.html { redirect_to admin_users_path, status: 302, notice: _("The user is being deleted.") }
+      format.html { redirect_to admin_users_path, status: :found, notice: _("The user is being deleted.") }
       format.json { head :ok }
     end
   end

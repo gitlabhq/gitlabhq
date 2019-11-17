@@ -76,7 +76,7 @@ class Projects::LabelsController < Projects::ApplicationController
     @labels = find_labels
 
     redirect_to project_labels_path(@project),
-                status: 302,
+                status: :found,
                 notice: 'Label was removed'
   end
 

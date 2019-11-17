@@ -84,7 +84,7 @@ class Projects::TagsController < Projects::ApplicationController
 
         format.html do
           redirect_to project_tags_path(@project),
-            alert: @error, status: 303
+            alert: @error, status: :see_other
         end
 
         format.js do
