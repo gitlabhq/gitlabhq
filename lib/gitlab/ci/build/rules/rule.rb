@@ -23,8 +23,8 @@ module Gitlab
           end
         end
 
-        def matches?(pipeline, build)
-          @clauses.all? { |clause| clause.satisfied_by?(pipeline, build) }
+        def matches?(pipeline, context)
+          @clauses.all? { |clause| clause.satisfied_by?(pipeline, context) }
         end
       end
     end

@@ -12,7 +12,7 @@ module Gitlab
           include ::Gitlab::Config::Entry::Configurable
 
           ALLOWED_KEYS = %i[default include before_script image services
-                            after_script variables stages types cache].freeze
+                            after_script variables stages types cache workflow].freeze
 
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS
@@ -63,6 +63,9 @@ module Gitlab
           entry :cache, Entry::Cache,
             description: 'Configure caching between build jobs.',
             reserved: true
+
+          entry :workflow, Entry::Workflow,
+            description: 'List of evaluable rules to determine Pipeline status'
 
           helpers :default, :jobs, :stages, :types, :variables
 

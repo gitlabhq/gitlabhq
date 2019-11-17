@@ -8,10 +8,9 @@ module Gitlab
           @expression = expression
         end
 
-        def satisfied_by?(pipeline, seed)
-          variables = seed.scoped_variables_hash
-
-          ::Gitlab::Ci::Pipeline::Expression::Statement.new(@expression, variables).truthful?
+        def satisfied_by?(pipeline, context)
+          ::Gitlab::Ci::Pipeline::Expression::Statement.new(
+            @expression, context.variables).truthful?
         end
       end
     end

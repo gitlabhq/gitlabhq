@@ -268,6 +268,108 @@ module Gitlab
         end
       end
 
+      describe '#workflow_attributes' do
+        context 'with disallowed workflow:variables' do
+          let(:config) do
+            <<-EOYML
+              workflow:
+                rules:
+                  - if: $VAR == "value"
+                variables:
+                  UNSUPPORTED: "unparsed"
+            EOYML
+          end
+
+          it 'parses the workflow:rules configuration' do
+            expect { subject }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, 'workflow config contains unknown keys: variables')
+          end
+        end
+
+        context 'with rules and variables' do
+          let(:config) do
+            <<-EOYML
+              variables:
+                SUPPORTED: "parsed"
+
+              workflow:
+                rules:
+                  - if: $VAR == "value"
+
+              hello:
+                script: echo world
+            EOYML
+          end
+
+          it 'parses the workflow:rules configuration' do
+            expect(subject.workflow_attributes[:rules]).to contain_exactly({ if: '$VAR == "value"' })
+          end
+
+          it 'parses the root:variables as yaml_variables:' do
+            expect(subject.workflow_attributes[:yaml_variables])
+              .to contain_exactly({ key: 'SUPPORTED', value: 'parsed', public: true })
+          end
+        end
+
+        context 'with rules and no variables' do
+          let(:config) do
+            <<-EOYML
+              workflow:
+                rules:
+                  - if: $VAR == "value"
+
+              hello:
+                script: echo world
+            EOYML
+          end
+
+          it 'parses the workflow:rules configuration' do
+            expect(subject.workflow_attributes[:rules]).to contain_exactly({ if: '$VAR == "value"' })
+          end
+
+          it 'parses the root:variables as yaml_variables:' do
+            expect(subject.workflow_attributes[:yaml_variables]).to eq([])
+          end
+        end
+
+        context 'with variables and no rules' do
+          let(:config) do
+            <<-EOYML
+              variables:
+                SUPPORTED: "parsed"
+
+              hello:
+                script: echo world
+            EOYML
+          end
+
+          it 'parses the workflow:rules configuration' do
+            expect(subject.workflow_attributes[:rules]).to be_nil
+          end
+
+          it 'parses the root:variables as yaml_variables:' do
+            expect(subject.workflow_attributes[:yaml_variables])
+              .to contain_exactly({ key: 'SUPPORTED', value: 'parsed', public: true })
+          end
+        end
+
+        context 'with no rules and no variables' do
+          let(:config) do
+            <<-EOYML
+              hello:
+                script: echo world
+            EOYML
+          end
+
+          it 'parses the workflow:rules configuration' do
+            expect(subject.workflow_attributes[:rules]).to be_nil
+          end
+
+          it 'parses the root:variables as yaml_variables:' do
+            expect(subject.workflow_attributes[:yaml_variables]).to eq([])
+          end
+        end
+      end
+
       describe 'only / except policies validations' do
         context 'when `only` has an invalid value' do
           let(:config) { { rspec: { script: "rspec", type: "test", only: only } } }

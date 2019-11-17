@@ -18,9 +18,8 @@ describe Gitlab::Ci::Config::Entry::Root do
         #
         # The purpose of `Root` is have only globally defined configuration.
         expect(described_class.nodes.keys)
-          .to match_array(%i[before_script image services
-                             after_script variables cache
-                             stages types include default])
+          .to match_array(%i[before_script image services after_script
+                             variables cache stages types include default workflow])
       end
     end
   end
@@ -50,7 +49,7 @@ describe Gitlab::Ci::Config::Entry::Root do
         end
 
         it 'creates node object for each entry' do
-          expect(root.descendants.count).to eq 10
+          expect(root.descendants.count).to eq 11
         end
 
         it 'creates node object using valid class' do
@@ -203,7 +202,7 @@ describe Gitlab::Ci::Config::Entry::Root do
 
       describe '#nodes' do
         it 'instantizes all nodes' do
-          expect(root.descendants.count).to eq 10
+          expect(root.descendants.count).to eq 11
         end
 
         it 'contains unspecified nodes' do

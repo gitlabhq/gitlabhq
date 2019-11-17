@@ -13,7 +13,7 @@ describe Gitlab::Ci::Config::Entry::Default do
     # that we know that we don't want to inherit
     # as they do not have sense in context of Default
     let(:ignored_inheritable_columns) do
-      %i[default include variables stages types]
+      %i[default include variables stages types workflow]
     end
   end
 

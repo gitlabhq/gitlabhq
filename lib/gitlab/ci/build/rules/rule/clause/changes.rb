@@ -8,7 +8,7 @@ module Gitlab
           @globs = Array(globs)
         end
 
-        def satisfied_by?(pipeline, seed)
+        def satisfied_by?(pipeline, context)
           return true if pipeline.modified_paths.nil?
 
           pipeline.modified_paths.any? do |path|

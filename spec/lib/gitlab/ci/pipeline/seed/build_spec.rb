@@ -869,10 +869,4 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
       end
     end
   end
-
-  describe '#scoped_variables_hash' do
-    subject { seed_build.scoped_variables_hash }
-
-    it { is_expected.to eq(seed_build.to_resource.scoped_variables_hash) }
-  end
 end
