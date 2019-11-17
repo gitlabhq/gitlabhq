@@ -103,7 +103,7 @@ old job definitions are still maintained they have been deprecated and may be re
 in the next major release, GitLab 12.0. You are advised to update your current `.gitlab-ci.yml`
 configuration to reflect that change.
 
-For GitLab 11.5 and earlier, the job should look like:
+For GitLab 11.5 and later, the job should look like:
 
 ```yaml
 code_quality:
