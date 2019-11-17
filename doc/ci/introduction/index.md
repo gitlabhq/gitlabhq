@@ -5,7 +5,7 @@ type: concepts
 
 # Introduction to CI/CD with GitLab
 
-In this document we'll present an overview of the concepts of Continuous Integration,
+In this document, we'll present an overview of the concepts of Continuous Integration,
 Continuous Delivery, and Continuous Deployment, as well as an introduction to
 GitLab CI/CD.
 
@@ -31,7 +31,7 @@ to be applied according to what best suits your strategy.
 
 ### Continuous Integration
 
-Consider an application which has its code stored in a Git
+Consider an application that has its code stored in a Git
 repository in GitLab. Developers push code changes every day,
 multiple times a day. For every push to the repository, you
 can create a set of scripts to build and test your application
@@ -94,7 +94,7 @@ To add scripts to that file, you'll need to organize them in a
 sequence that suits your application and are in accordance with
 the tests you wish to perform. To visualize the process, imagine
 that all the scripts you add to the configuration file are the
-same as the commands you run on a terminal in your computer.
+same as the commands you run on a terminal on your computer.
 
 Once you've added your `.gitlab-ci.yml` configuration file to your
 repository, GitLab will detect it and run your scripts with the
@@ -121,7 +121,7 @@ Both of them compose a **pipeline** triggered at every push
 to any branch of the repository.
 
 GitLab CI/CD not only executes the jobs you've
-set, but also shows you what's happening during execution, as you
+set but also shows you what's happening during execution, as you
 would see in your terminal:
 
 ![job running](img/job_running.png)
@@ -164,7 +164,7 @@ Once you're happy with your implementation:
 
 GitLab CI/CD is capable of doing a lot more, but this workflow
 exemplifies GitLab's ability to track the entire process,
-without the need of any external tool to deliver your software.
+without the need for an external tool to deliver your software.
 And, most usefully, you can visualize all the steps through
 the GitLab UI.
 
@@ -172,7 +172,7 @@ the GitLab UI.
 
 If we take a deeper look into the basic workflow, we can see
 the features available in GitLab at each stage of the DevOps
-lifecycle, as shown on the illustration below.
+lifecycle, as shown in the illustration below.
 
 ![Deeper look into the basic CI/CD workflow](img/gitlab_workflow_example_extended_v12_3.png)
 
