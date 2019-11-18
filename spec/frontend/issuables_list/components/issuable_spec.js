@@ -196,6 +196,13 @@ describe('Issuable component', () => {
         `${formatDate(dueDate, DATE_FORMAT)} (${expectedTooltipPart})`,
       );
     });
+
+    it('renders milestone with the correct href', () => {
+      const { title } = issuable.milestone;
+      const expected = mergeUrlParams({ milestone_title: title }, TEST_BASE_URL);
+
+      expect(findMilestone().attributes('href')).toBe(expected);
+    });
   });
 
   describe.each`

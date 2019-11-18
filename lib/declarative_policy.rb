@@ -74,7 +74,14 @@ module DeclarativePolicy
         next unless klass.name
 
         begin
-          policy_class = "#{klass.name}Policy".constantize
+          klass_name =
+            if subject_class.respond_to?(:declarative_policy_class)
+              subject_class.declarative_policy_class
+            else
+              "#{klass.name}Policy"
+            end
+
+          policy_class = klass_name.constantize
 
           # NOTE: the < operator here tests whether policy_class
           # inherits from Base. We can't use #is_a? because that

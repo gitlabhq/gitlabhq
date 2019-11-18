@@ -66,3 +66,4 @@ schedule:package-and-qa:
     - .default-only
     - .only:variables_refs-canonical-dot-com-schedules
   needs: ["build-qa-image", "gitlab:assets:compile pull-cache"]
+  allow_failure: true

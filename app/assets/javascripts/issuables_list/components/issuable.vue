@@ -54,6 +54,11 @@ export default {
     },
   },
   computed: {
+    milestoneLink() {
+      const { title } = this.issuable.milestone;
+
+      return this.issuableLink({ milestone_title: title });
+    },
     hasLabels() {
       return Boolean(this.issuable.labels && this.issuable.labels.length);
     },
@@ -167,8 +172,11 @@ export default {
         color: label.text_color,
       };
     },
+    issuableLink(params) {
+      return mergeUrlParams(params, this.baseUrl);
+    },
     labelHref({ name }) {
-      return mergeUrlParams({ 'label_name[]': name }, this.baseUrl);
+      return this.issuableLink({ 'label_name[]': name });
     },
     onSelect(ev) {
       this.$emit('select', {
@@ -216,9 +224,9 @@ export default {
             ></i>
             <gl-link :href="issuable.web_url">{{ issuable.title }}</gl-link>
           </span>
-          <span v-if="issuable.has_tasks" class="ml-1 task-status d-none d-sm-inline-block">
-            {{ issuable.task_status }}
-          </span>
+          <span v-if="issuable.has_tasks" class="ml-1 task-status d-none d-sm-inline-block">{{
+            issuable.task_status
+          }}</span>
         </div>
 
         <div class="issuable-info">
@@ -233,7 +241,7 @@ export default {
             v-if="issuable.milestone"
             v-gl-tooltip
             class="d-none d-sm-inline-block mr-1 js-milestone"
-            :href="issuable.milestone.web_url"
+            :href="milestoneLink"
             :title="milestoneTooltipText"
           >
             <i class="fa fa-clock-o"></i>

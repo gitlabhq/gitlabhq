@@ -1,0 +1,5 @@
+---
+title: Add dead jobs to Sidekiq metrics API
+merge_request: 19350
+author: Marco Peterseil
+type: added

@@ -28,9 +28,9 @@ module Gitlab
       def serialize(group, relations_tree)
         group_tree = tree_saver.serialize(group, relations_tree)
 
-        group.descendants.each do |descendant|
-          group_tree['descendants'] = [] unless group_tree['descendants']
-          group_tree['descendants'] << serialize(descendant, relations_tree)
+        group.children.each do |child|
+          group_tree['children'] ||= []
+          group_tree['children'] << serialize(child, relations_tree)
         end
 
         group_tree

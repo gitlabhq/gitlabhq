@@ -357,6 +357,13 @@ Note the following properties:
 
 ![heatmap panel type](img/heatmap_panel_type.png)
 
+### View and edit the source file of a custom dashboard
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/34779) in GitLab 12.5.
+
+When viewing a custom dashboard of a project, you can view the original
+`.yml` file by clicking on **Edit dashboard** button.
+
 ### Downloading data as CSV
 
 Data from Prometheus charts on the metrics dashboard can be downloaded as CSV.
@@ -465,6 +472,8 @@ Prometheus server.
 
 ## Embedding metric charts within GitLab Flavored Markdown
 
+### Embedding GitLab-managed Kubernetes metrics
+
 > [Introduced][ce-29691] in GitLab 12.2.
 
 It is possible to display metrics charts within [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm).
@@ -492,13 +501,17 @@ The following requirements must be met for the metric to unfurl:
 
 ### Embedding metrics in issue templates
 
-It is also possible to embed either a dashboard or individual metrics in issue templates. The entire dashboard can be embedded as well as individual metrics, separated by either a comma or a space.
+It is also possible to embed either the default dashboard metrics or individual metrics in issue templates. For charts to render side-by-side, links to the entire metrics dashboard or individual metrics should be separated by either a comma or a space.
 
 ![Embedded Metrics in issue templates](img/embed_metrics_issue_template.png)
 
-### Embedding live Grafana charts
+### Embedding Grafana charts
 
-It is also possible to embed live [Grafana](https://docs.gitlab.com/omnibus/settings/grafana.html) charts within issues, as a [Direct Linked Rendered Image](https://grafana.com/docs/reference/sharing/#direct-link-rendered-image).
+Grafana metrics can be embedded in [GitLab Flavored Markdown](../../markdown.md).
+
+#### Embedding charts via Grafana Rendered Images
+
+It is possible to embed live [Grafana](https://docs.gitlab.com/omnibus/settings/grafana.html) charts in issues, as a [direct linked rendered image](https://grafana.com/docs/reference/sharing/#direct-link-rendered-image).
 
 The sharing dialog within Grafana provides the link, as highlighted below.
 
@@ -516,6 +529,41 @@ Copy the link and add an image tag as [inline HTML](../../markdown.md#inline-htm
 This will render like so:
 
 <img src="https://dashboards.gitlab.com/render/d-solo/RZmbBr7mk/gitlab-triage?orgId=1&refresh=30s&var-env=gprd&var-environment=gprd&var-prometheus=prometheus-01-inf-gprd&var-prometheus_app=prometheus-app-01-inf-gprd&var-backend=All&var-type=All&var-stage=main&panelId=1247&width=1000&height=300"/>
+
+#### Embedding charts via integration with Grafana HTTP API
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/31376) in GitLab 12.5.
+
+Each project can support integration with one Grafana instance. This configuration allows a user to copy a link to a panel in Grafana, then paste it into a GitLab markdown field. The chart will be rendered in the GitLab chart format.
+
+Prerequisites for embedding from a Grafana instance:
+
+1. The datasource must be a Prometheus instance.
+1. The datasource must be proxyable, so the HTTP Access setting should be set to `Server`.
+
+![HTTP Proxy Access](img/http_proxy_access_v12_5.png)
+
+##### Setting up the Grafana integration
+
+1. [Generate an Admin-level API Token in Grafana.](https://grafana.com/docs/http_api/auth/#create-api-token)
+1. In your GitLab project, navigate to **Settings > Operations > Grafana Authentication**.
+1. To enable the integration, check the "Active" checkbox.
+1. For "Grafana URL", enter the base URL of the Grafana instance.
+1. For "API Token", enter the Admin API Token you just generated.
+1. Click **Save Changes**.
+
+##### Generating a link to a chart
+
+1. In Grafana, navigate to the dashboard you wish to embed a panel from.
+   ![Grafana Metric Panel](img/grafana_panel_v12_5.png)
+1. In the upper-left corner of the page, select a specific value for each variable required for the queries in the chart.
+   ![Select Query Variables](img/select_query_variables_v12_5.png)
+1. In Grafana, click on a panel's title, then click **Share** to open the panel's sharing dialog to the **Link** tab.
+1. If your Prometheus queries use Grafana's custom template variables, ensure that "Template variables" and "Current time range" options are toggled to **On**. Of Grafana global template variables, only `$__interval`, `$__from`, and `$__to` are currently supported.
+   ![Grafana Sharing Dialog](img/grafana_sharing_dialog_v12_5.png)
+1. Click **Copy** to copy the URL to the clipboard.
+1. In GitLab, paste the URL into a markdown field and save. The chart will take a few moments to render.
+   ![GitLab Rendered Grafana Panel](img/rendered_grafana_embed_v12_5.png)
 
 ## Troubleshooting
 

@@ -11,7 +11,31 @@ Everything you need to build, test, deploy, and run your app at scale.
 
 ## Overview
 
-[Kubernetes](https://kubernetes.io) pod logs can be viewed directly within GitLab. Logs can be displayed by clicking on a specific pod from [Deploy Boards](../deploy_boards.md):
+[Kubernetes](https://kubernetes.io) pod logs can be viewed directly within GitLab.
+
+![Pod logs](img/kubernetes_pod_logs_v12_5.png)
+
+## Requirements
+
+[Deploying to a Kubernetes environment](../deploy_boards.md#enabling-deploy-boards) is required in order to be able to use Pod Logs.
+
+## Usage
+
+To access pod logs, you must have the right [permissions](../../permissions.md#project-members-permissions).
+
+You can access them in two ways.
+
+### From the project sidebar
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22011) in GitLab 12.5.
+
+Go to **Operations > Pod logs** on the sidebar menu.
+
+![Sidebar menu](img/sidebar_menu_pod_logs_v12_5.png)
+
+### From Deploy Boards
+
+Logs can be displayed by clicking on a specific pod from [Deploy Boards](../deploy_boards.md):
 
 1. Go to **Operations > Environments** and find the environment which contains the desired pod, like `production`.
 1. On the **Environments** page, you should see the status of the environment's pods with [Deploy Boards](../deploy_boards.md).
@@ -23,9 +47,3 @@ Everything you need to build, test, deploy, and run your app at scale.
    - [From GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/issues/5769), environments.
 
    Support for pods with multiple containers is coming [in a future release](https://gitlab.com/gitlab-org/gitlab/issues/6502).
-
-   ![Deploy Boards pod list](img/kubernetes_pod_logs_v12_4.png)
-
-## Requirements
-
-[Enabling Deploy Boards](../deploy_boards.md#enabling-deploy-boards) is required in order to be able to use Pod Logs.

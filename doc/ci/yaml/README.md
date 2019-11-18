@@ -1539,9 +1539,9 @@ cache:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/18986) in GitLab v12.5.
 
-If `cache:key:files` is added, the cache `key` will use the SHA of the most recent commit
-that changed either of the given files. If neither file was changed in any commits, the key will be `default`.
-A maximum of two files are allowed.
+If `cache:key:files` is added, one or two files must be defined with it. The cache `key`
+will be a SHA computed from the most recent commits (one or two) that changed the
+given files. If neither file was changed in any commits, the key will be `default`.
 
 ```yaml
 cache:
@@ -1559,8 +1559,8 @@ cache:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/18986) in GitLab v12.5.
 
 The `prefix` parameter adds extra functionality to `key:files` by allowing the key to
-be composed of the given `prefix` combined with the SHA of the most recent commit
-that changed either of the files. For example, adding a `prefix` of `rspec`, will
+be composed of the given `prefix` combined with the SHA computed for `cache:key:files`.
+For example, adding a `prefix` of `rspec`, will
 cause keys to look like: `rspec-feef9576d21ee9b6a32e30c5c79d0a0ceb68d1e5`. If neither
 file was changed in any commits, the prefix is added to `default`, so the key in the
 example would be `rspec-default`.

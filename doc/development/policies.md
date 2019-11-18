@@ -157,3 +157,18 @@ end
 ```
 
 will include all rules from `ProjectPolicy`. The delegated conditions will be evaluated with the correct delegated subject, and will be sorted along with the regular rules in the policy. Note that only the relevant rules for a particular ability will actually be considered.
+
+## Specifying Policy Class
+
+You can also override the Policy used for a given subject:
+
+```ruby
+class Foo
+
+  def self.declarative_policy_class
+    'SomeOtherPolicy'
+  end
+end
+```
+
+This will use & check permissions on the `SomeOtherPolicy` class rather than the usual calculated `FooPolicy` class.

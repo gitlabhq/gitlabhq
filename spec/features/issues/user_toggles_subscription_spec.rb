@@ -33,7 +33,6 @@ describe "User toggles subscription", :js do
 
     it 'is disabled' do
       expect(page).to have_content('Notifications have been disabled by the project or group owner')
-      expect(page).to have_selector('.js-emails-disabled', visible: true)
       expect(page).not_to have_selector('.js-issuable-subscribe-button')
     end
   end

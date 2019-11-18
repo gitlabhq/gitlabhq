@@ -66,6 +66,11 @@ RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
   config.full_backtrace = !!ENV['CI']
 
+  unless ENV['CI']
+    # Re-run failures locally with `--only-failures`
+    config.example_status_persistence_file_path = './spec/examples.txt'
+  end
+
   config.define_derived_metadata(file_path: %r{(ee)?/spec/.+_spec\.rb\z}) do |metadata|
     location = metadata[:location]
 

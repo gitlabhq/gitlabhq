@@ -64,7 +64,7 @@ gem 'u2f', '~> 0.2.1'
 
 # GitLab Pages
 gem 'validates_hostname', '~> 1.0.6'
-gem 'rubyzip', '~> 1.2.2', require: 'zip'
+gem 'rubyzip', '~> 1.3.0', require: 'zip'
 # GitLab Pages letsencrypt support
 gem 'acme-client', '~> 2.0.2'
 
@@ -72,7 +72,7 @@ gem 'acme-client', '~> 2.0.2'
 gem 'browser', '~> 2.5'
 
 # GPG
-gem 'gpgme', '~> 2.0.18'
+gem 'gpgme', '~> 2.0.19'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -151,7 +151,7 @@ gem 'asciidoctor-plantuml', '0.0.9'
 gem 'rouge', '~> 3.11.0'
 gem 'truncato', '~> 0.7.11'
 gem 'bootstrap_form', '~> 4.2.0'
-gem 'nokogiri', '~> 1.10.4'
+gem 'nokogiri', '~> 1.10.5'
 gem 'escape_utils', '~> 1.1'
 
 # Calendar rendering

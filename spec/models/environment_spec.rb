@@ -744,6 +744,12 @@ describe Environment, :use_clean_rails_memory_store_caching do
       allow(environment).to receive(:deployment_platform).and_return(double)
     end
 
+    context 'reactive cache configuration' do
+      it 'does not continue to spawn jobs' do
+        expect(described_class.reactive_cache_lifetime).to be < described_class.reactive_cache_refresh_interval
+      end
+    end
+
     context 'reactive cache is empty' do
       before do
         stub_reactive_cache(environment, nil)

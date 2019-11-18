@@ -4682,6 +4682,9 @@ msgstr ""
 msgid "Copy"
 msgstr ""
 
+msgid "Copy %{field}"
+msgstr ""
+
 msgid "Copy %{http_label} clone URL"
 msgstr ""
 
@@ -8634,6 +8637,9 @@ msgstr ""
 msgid "GroupSAML|Configuration"
 msgstr ""
 
+msgid "GroupSAML|Copy SAML Response XML"
+msgstr ""
+
 msgid "GroupSAML|Enable SAML authentication for this group."
 msgstr ""
 
@@ -8667,6 +8673,18 @@ msgstr ""
 msgid "GroupSAML|Members will be forwarded here when signing in to your group. Get this from your identity provider, where it can also be called \"SSO Service Location\", \"SAML Token Issuance Endpoint\", or \"SAML 2.0/W-Federation URL\"."
 msgstr ""
 
+msgid "GroupSAML|NameID"
+msgstr ""
+
+msgid "GroupSAML|NameID Format"
+msgstr ""
+
+msgid "GroupSAML|SAML Response Output"
+msgstr ""
+
+msgid "GroupSAML|SAML Response XML"
+msgstr ""
+
 msgid "GroupSAML|SAML Single Sign On"
 msgstr ""
 
@@ -8694,10 +8712,22 @@ msgstr ""
 msgid "GroupSAML|Toggle SAML authentication"
 msgstr ""
 
+msgid "GroupSAML|Valid SAML Response"
+msgstr ""
+
 msgid "GroupSAML|With group managed accounts enabled, all the users without a group managed account will be excluded from the group."
 msgstr ""
 
 msgid "GroupSAML|Your SCIM token"
+msgstr ""
+
+msgid "GroupSAML|must match stored NameID of \"%{extern_uid}\" as we use this to identify users. If the NameID changes users will be unable to sign in."
+msgstr ""
+
+msgid "GroupSAML|should be \"persistent\""
+msgstr ""
+
+msgid "GroupSAML|should be a random persistent ID, emails are discouraged"
 msgstr ""
 
 msgid "GroupSettings|Auto DevOps pipeline was updated for the group"
@@ -16922,9 +16952,6 @@ msgstr ""
 msgid "Terms of Service and Privacy Policy"
 msgstr ""
 
-msgid "Test SAML SSO"
-msgstr ""
-
 msgid "Test coverage parsing"
 msgstr ""
 
@@ -19134,6 +19161,9 @@ msgid "Verification status"
 msgstr ""
 
 msgid "Verified"
+msgstr ""
+
+msgid "Verify SAML Configuration"
 msgstr ""
 
 msgid "Version"

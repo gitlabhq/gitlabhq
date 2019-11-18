@@ -39,12 +39,16 @@ describe Gitlab::ImportExport::GroupTreeSaver do
       end
 
       context 'when :export_fast_serialize feature is enabled' do
+        let(:serializer) { instance_double(Gitlab::ImportExport::FastHashSerializer) }
+
         before do
           stub_feature_flags(export_fast_serialize: true)
+
+          expect(Gitlab::ImportExport::FastHashSerializer).to receive(:new).with(group, group_tree).and_return(serializer)
         end
 
         it 'uses FastHashSerializer' do
-          expect_any_instance_of(Gitlab::ImportExport::FastHashSerializer).to receive(:execute).and_call_original
+          expect(serializer).to receive(:execute)
 
           group_tree_saver.save
         end
@@ -103,6 +107,18 @@ describe Gitlab::ImportExport::GroupTreeSaver do
         expect(saved_group_json['badges']).not_to be_empty
       end
 
+      context 'group children' do
+        let(:children) { group.children }
+
+        it 'exports group children' do
+          expect(saved_group_json['children'].length).to eq(children.count)
+        end
+
+        it 'exports group children of children' do
+          expect(saved_group_json['children'].first['children'].length).to eq(children.first.children.count)
+        end
+      end
+
       context 'group members' do
         let(:user2) { create(:user, email: 'group@member.com') }
         let(:member_emails) do
@@ -146,6 +162,8 @@ describe Gitlab::ImportExport::GroupTreeSaver do
 
   def setup_group
     group = create(:group, description: 'description')
+    sub_group = create(:group, description: 'description', parent: group)
+    create(:group, description: 'description', parent: sub_group)
     create(:milestone, group: group)
     create(:group_badge, group: group)
     group_label = create(:group_label, group: group)

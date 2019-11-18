@@ -75,7 +75,7 @@ Learn how to embed [GitLab hosted metric charts](../project/integrations/prometh
 
 ### Grafana metrics
 
-Learn how to embed [Grafana hosted metric charts](../project/integrations/prometheus.md#embedding-live-grafana-charts).
+Learn how to embed [Grafana hosted metric charts](../project/integrations/prometheus.md#embedding-grafana-charts).
 
 ## Slack integration
 

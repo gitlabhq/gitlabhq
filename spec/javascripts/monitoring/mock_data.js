@@ -1,19 +1,16 @@
 import {
   anomalyMockGraphData as importedAnomalyMockGraphData,
-  deploymentData as importedDeploymentData,
-  metricsNewGroupsAPIResponse as importedMetricsNewGroupsAPIResponse,
   metricsGroupsAPIResponse as importedMetricsGroupsAPIResponse,
+  environmentData as importedEnvironmentData,
+  dashboardGitResponse as importedDashboardGitResponse,
 } from '../../frontend/monitoring/mock_data';
 
-// TODO Check if these exports are still needed
 export const anomalyMockGraphData = importedAnomalyMockGraphData;
-export const deploymentData = importedDeploymentData;
-export const metricsNewGroupsAPIResponse = importedMetricsNewGroupsAPIResponse;
 export const metricsGroupsAPIResponse = importedMetricsGroupsAPIResponse;
+export const environmentData = importedEnvironmentData;
+export const dashboardGitResponse = importedDashboardGitResponse;
 
 export const mockApiEndpoint = `${gl.TEST_HOST}/monitoring/mock`;
-
-export const mockProjectPath = '/frontend-fixtures/environments-project';
 
 export const mockedQueryResultPayload = {
   metricId: '17_system_metrics_kubernetes_container_memory_average',
@@ -100,141 +97,6 @@ export const mockedQueryResultPayloadCoresTotal = {
     },
   ],
 };
-
-export const environmentData = [
-  {
-    id: 34,
-    name: 'production',
-    state: 'available',
-    external_url: 'http://root-autodevops-deploy.my-fake-domain.com',
-    environment_type: null,
-    stop_action: false,
-    metrics_path: '/root/hello-prometheus/environments/34/metrics',
-    environment_path: '/root/hello-prometheus/environments/34',
-    stop_path: '/root/hello-prometheus/environments/34/stop',
-    terminal_path: '/root/hello-prometheus/environments/34/terminal',
-    folder_path: '/root/hello-prometheus/environments/folders/production',
-    created_at: '2018-06-29T16:53:38.301Z',
-    updated_at: '2018-06-29T16:57:09.825Z',
-    last_deployment: {
-      id: 127,
-    },
-  },
-  {
-    id: 35,
-    name: 'review/noop-branch',
-    state: 'available',
-    external_url: 'http://root-autodevops-deploy-review-noop-branc-die93w.my-fake-domain.com',
-    environment_type: 'review',
-    stop_action: true,
-    metrics_path: '/root/hello-prometheus/environments/35/metrics',
-    environment_path: '/root/hello-prometheus/environments/35',
-    stop_path: '/root/hello-prometheus/environments/35/stop',
-    terminal_path: '/root/hello-prometheus/environments/35/terminal',
-    folder_path: '/root/hello-prometheus/environments/folders/review',
-    created_at: '2018-07-03T18:39:41.702Z',
-    updated_at: '2018-07-03T18:44:54.010Z',
-    last_deployment: {
-      id: 128,
-    },
-  },
-  {
-    id: 36,
-    name: 'no-deployment/noop-branch',
-    state: 'available',
-    created_at: '2018-07-04T18:39:41.702Z',
-    updated_at: '2018-07-04T18:44:54.010Z',
-  },
-];
-
-export const metricsDashboardResponse = {
-  dashboard: {
-    dashboard: 'Environment metrics',
-    priority: 1,
-    panel_groups: [
-      {
-        group: 'System metrics (Kubernetes)',
-        priority: 5,
-        panels: [
-          {
-            title: 'Memory Usage (Total)',
-            type: 'area-chart',
-            y_label: 'Total Memory Used',
-            weight: 4,
-            metrics: [
-              {
-                id: 'system_metrics_kubernetes_container_memory_total',
-                query_range:
-                  'avg(sum(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}) by (job)) without (job)  /1024/1024/1024',
-                label: 'Total',
-                unit: 'GB',
-                metric_id: 12,
-                prometheus_endpoint_path: 'http://test',
-              },
-            ],
-          },
-          {
-            title: 'Core Usage (Total)',
-            type: 'area-chart',
-            y_label: 'Total Cores',
-            weight: 3,
-            metrics: [
-              {
-                id: 'system_metrics_kubernetes_container_cores_total',
-                query_range:
-                  'avg(sum(rate(container_cpu_usage_seconds_total{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}[15m])) by (job)) without (job)',
-                label: 'Total',
-                unit: 'cores',
-                metric_id: 13,
-              },
-            ],
-          },
-          {
-            title: 'Memory Usage (Pod average)',
-            type: 'line-chart',
-            y_label: 'Memory Used per Pod',
-            weight: 2,
-            metrics: [
-              {
-                id: 'system_metrics_kubernetes_container_memory_average',
-                query_range:
-                  'avg(sum(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}) by (job)) without (job) / count(avg(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}) without (job)) /1024/1024',
-                label: 'Pod average',
-                unit: 'MB',
-                metric_id: 14,
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  },
-  status: 'success',
-};
-
-export const dashboardGitResponse = [
-  {
-    default: true,
-    display_name: 'Default',
-    can_edit: false,
-    project_blob_path: null,
-    path: 'config/prometheus/common_metrics.yml',
-  },
-  {
-    default: false,
-    display_name: 'Custom Dashboard 1',
-    can_edit: true,
-    project_blob_path: `${mockProjectPath}/blob/master/dashboards/.gitlab/dashboards/dashboard_1.yml`,
-    path: '.gitlab/dashboards/dashboard_1.yml',
-  },
-  {
-    default: false,
-    display_name: 'Custom Dashboard 2',
-    can_edit: true,
-    project_blob_path: `${mockProjectPath}/blob/master/dashboards/.gitlab/dashboards/dashboard_2.yml`,
-    path: '.gitlab/dashboards/dashboard_2.yml',
-  },
-];
 
 export const graphDataPrometheusQuery = {
   title: 'Super Chart A2',

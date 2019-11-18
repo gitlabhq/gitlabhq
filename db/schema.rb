@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_14_173624) do
+ActiveRecord::Schema.define(version: 2019_11_15_091425) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -4018,6 +4018,17 @@ ActiveRecord::Schema.define(version: 2019_11_14_173624) do
     t.index ["project_id", "fingerprint"], name: "index_vulnerability_identifiers_on_project_id_and_fingerprint", unique: true
   end
 
+  create_table "vulnerability_issue_links", force: :cascade do |t|
+    t.bigint "vulnerability_id", null: false
+    t.bigint "issue_id", null: false
+    t.integer "link_type", limit: 2, default: 1, null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.index ["issue_id"], name: "index_vulnerability_issue_links_on_issue_id"
+    t.index ["vulnerability_id", "issue_id"], name: "idx_vulnerability_issue_links_on_vulnerability_id_and_issue_id", unique: true
+    t.index ["vulnerability_id", "link_type"], name: "idx_vulnerability_issue_links_on_vulnerability_id_and_link_type", unique: true, where: "(link_type = 2)"
+  end
+
   create_table "vulnerability_occurrence_identifiers", force: :cascade do |t|
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
@@ -4547,6 +4558,8 @@ ActiveRecord::Schema.define(version: 2019_11_14_173624) do
   add_foreign_key "vulnerability_feedback", "users", column: "author_id", on_delete: :cascade
   add_foreign_key "vulnerability_feedback", "users", column: "comment_author_id", name: "fk_94f7c8a81e", on_delete: :nullify
   add_foreign_key "vulnerability_identifiers", "projects", on_delete: :cascade
+  add_foreign_key "vulnerability_issue_links", "issues", on_delete: :cascade
+  add_foreign_key "vulnerability_issue_links", "vulnerabilities", on_delete: :cascade
   add_foreign_key "vulnerability_occurrence_identifiers", "vulnerability_identifiers", column: "identifier_id", on_delete: :cascade
   add_foreign_key "vulnerability_occurrence_identifiers", "vulnerability_occurrences", column: "occurrence_id", on_delete: :cascade
   add_foreign_key "vulnerability_occurrence_pipelines", "ci_pipelines", column: "pipeline_id", on_delete: :cascade

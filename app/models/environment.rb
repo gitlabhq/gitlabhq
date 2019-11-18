@@ -4,6 +4,9 @@ class Environment < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
   include ReactiveCaching
 
+  self.reactive_cache_refresh_interval = 1.minute
+  self.reactive_cache_lifetime = 55.seconds
+
   belongs_to :project, required: true
 
   has_many :deployments, -> { visible }, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
