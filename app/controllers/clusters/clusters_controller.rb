@@ -17,6 +17,7 @@ class Clusters::ClustersController < Clusters::BaseController
   end
   before_action only: [:show] do
     push_frontend_feature_flag(:enable_cluster_application_elastic_stack)
+    push_frontend_feature_flag(:enable_cluster_application_crossplane)
   end
 
   helper_method :token_in_session

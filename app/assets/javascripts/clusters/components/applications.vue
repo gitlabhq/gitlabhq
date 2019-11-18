@@ -9,6 +9,7 @@ import jeagerLogo from 'images/cluster_app_logos/jeager.png';
 import jupyterhubLogo from 'images/cluster_app_logos/jupyterhub.png';
 import kubernetesLogo from 'images/cluster_app_logos/kubernetes.png';
 import certManagerLogo from 'images/cluster_app_logos/cert_manager.png';
+import crossplaneLogo from 'images/cluster_app_logos/crossplane.png';
 import knativeLogo from 'images/cluster_app_logos/knative.png';
 import meltanoLogo from 'images/cluster_app_logos/meltano.png';
 import prometheusLogo from 'images/cluster_app_logos/prometheus.png';
@@ -20,6 +21,7 @@ import KnativeDomainEditor from './knative_domain_editor.vue';
 import { CLUSTER_TYPE, PROVIDER_TYPE, APPLICATION_STATUS, INGRESS } from '../constants';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import eventHub from '~/clusters/event_hub';
+import CrossplaneProviderStack from './crossplane_provider_stack.vue';
 
 export default {
   components: {
@@ -28,6 +30,7 @@ export default {
     LoadingButton,
     GlLoadingIcon,
     KnativeDomainEditor,
+    CrossplaneProviderStack,
   },
   props: {
     type: {
@@ -89,6 +92,7 @@ export default {
     jupyterhubLogo,
     kubernetesLogo,
     certManagerLogo,
+    crossplaneLogo,
     knativeLogo,
     meltanoLogo,
     prometheusLogo,
@@ -115,6 +119,12 @@ export default {
     },
     certManagerInstalled() {
       return this.applications.cert_manager.status === APPLICATION_STATUS.INSTALLED;
+    },
+    crossplaneInstalled() {
+      return this.applications.crossplane.status === APPLICATION_STATUS.INSTALLED;
+    },
+    enableClusterApplicationCrossplane() {
+      return gon.features && gon.features.enableClusterApplicationCrossplane;
     },
     enableClusterApplicationElasticStack() {
       return gon.features && gon.features.enableClusterApplicationElasticStack;
@@ -151,6 +161,24 @@ export default {
         false,
       );
     },
+    crossplaneDescription() {
+      return sprintf(
+        _.escape(
+          s__(
+            `ClusterIntegration|Crossplane enables declarative provisioning of managed services from your cloud of choice using %{kubectl} or %{gitlabIntegrationLink}.
+Crossplane runs inside your Kubernetes cluster and supports secure connectivity and secrets management between app containers and the cloud services they depend on.`,
+          ),
+        ),
+        {
+          gitlabIntegrationLink: `<a href="https://docs.gitlab.com/ce/user/project/integrations/crossplane.html"
+          target="_blank" rel="noopener noreferrer">
+          ${_.escape(s__('ClusterIntegration|Gitlab Integration'))}</a>`,
+          kubectl: `<code>kubectl</code>`,
+        },
+        false,
+      );
+    },
+
     prometheusDescription() {
       return sprintf(
         _.escape(
@@ -181,6 +209,9 @@ export default {
     },
     knative() {
       return this.applications.knative;
+    },
+    crossplane() {
+      return this.applications.crossplane;
     },
     cloudRun() {
       return this.providerType === PROVIDER_TYPE.GCP && this.preInstalledKnative;
@@ -218,6 +249,12 @@ export default {
         hostname,
       });
     },
+    setCrossplaneProviderStack(stack) {
+      eventHub.$emit('setCrossplaneProviderStack', {
+        id: 'crossplane',
+        stack,
+      });
+    },
   },
 };
 </script>
@@ -228,7 +265,7 @@ export default {
     <p class="append-bottom-0">
       {{
         s__(`ClusterIntegration|Choose which applications to install on your Kubernetes cluster.
-      Helm Tiller is required to install any of the following applications.`)
+            Helm Tiller is required to install any of the following applications.`)
       }}
       <a :href="helpPath">{{ __('More information') }}</a>
     </p>
@@ -253,9 +290,9 @@ export default {
         <div slot="description">
           {{
             s__(`ClusterIntegration|Helm streamlines installing
-          and managing Kubernetes applications.
-          Tiller runs inside of your Kubernetes Cluster,
-          and manages releases of your charts.`)
+                    and managing Kubernetes applications.
+                    Tiller runs inside of your Kubernetes Cluster,
+                    and manages releases of your charts.`)
           }}
         </div>
       </application-row>
@@ -263,7 +300,7 @@ export default {
         <div class="svg-container" v-html="helmInstallIllustration"></div>
         {{
           s__(`ClusterIntegration|You must first install Helm Tiller before
-        installing the applications below`)
+                installing the applications below`)
         }}
       </div>
       <application-row
@@ -286,8 +323,8 @@ export default {
           <p>
             {{
               s__(`ClusterIntegration|Ingress gives you a way to route
-            requests to services based on the request host or path,
-            centralizing a number of services into a single entrypoint.`)
+                        requests to services based on the request host or path,
+                        centralizing a number of services into a single entrypoint.`)
             }}
           </p>
 
@@ -319,8 +356,8 @@ export default {
               <p class="form-text text-muted">
                 {{
                   s__(`ClusterIntegration|Point a wildcard DNS to this
-                generated endpoint in order to access
-                your application after it has been deployed.`)
+                                generated endpoint in order to access
+                                your application after it has been deployed.`)
                 }}
                 <a :href="ingressDnsHelpPath" target="_blank" rel="noopener noreferrer">
                   {{ __('More information') }}
@@ -331,8 +368,8 @@ export default {
             <p v-if="!ingressExternalEndpoint" class="settings-message js-no-endpoint-message">
               {{
                 s__(`ClusterIntegration|The endpoint is in
-              the process of being assigned. Please check your Kubernetes
-              cluster or Quotas on Google Kubernetes Engine if it takes a long time.`)
+                            the process of being assigned. Please check your Kubernetes
+                            cluster or Quotas on Google Kubernetes Engine if it takes a long time.`)
               }}
               <a :href="ingressDnsHelpPath" target="_blank" rel="noopener noreferrer">
                 {{ __('More information') }}
@@ -379,7 +416,7 @@ export default {
               <p class="form-text text-muted">
                 {{
                   s__(`ClusterIntegration|Issuers represent a certificate authority.
-                You must provide an email address for your Issuer. `)
+                                You must provide an email address for your Issuer. `)
                 }}
                 <a
                   href="http://docs.cert-manager.io/en/latest/reference/issuers.html?highlight=email"
@@ -435,12 +472,40 @@ export default {
         <div slot="description">
           {{
             s__(`ClusterIntegration|GitLab Runner connects to the
-          repository and executes CI/CD jobs,
-          pushing results back and deploying
-          applications to production.`)
+                    repository and executes CI/CD jobs,
+                    pushing results back and deploying
+                    applications to production.`)
           }}
         </div>
       </application-row>
+      <application-row
+        v-if="enableClusterApplicationCrossplane"
+        id="crossplane"
+        :logo-url="crossplaneLogo"
+        :title="applications.crossplane.title"
+        :status="applications.crossplane.status"
+        :status-reason="applications.crossplane.statusReason"
+        :request-status="applications.crossplane.requestStatus"
+        :request-reason="applications.crossplane.requestReason"
+        :installed="applications.crossplane.installed"
+        :install-failed="applications.crossplane.installFailed"
+        :uninstallable="applications.crossplane.uninstallable"
+        :uninstall-successful="applications.crossplane.uninstallSuccessful"
+        :uninstall-failed="applications.crossplane.uninstallFailed"
+        :install-application-request-params="{ stack: applications.crossplane.stack }"
+        :disabled="!helmInstalled"
+        title-link="https://crossplane.io"
+      >
+        <template>
+          <div slot="description">
+            <p v-html="crossplaneDescription"></p>
+            <div class="form-group">
+              <CrossplaneProviderStack :crossplane="crossplane" @set="setCrossplaneProviderStack" />
+            </div>
+          </div>
+        </template>
+      </application-row>
+
       <application-row
         id="jupyter"
         :logo-url="jupyterhubLogo"
@@ -462,10 +527,10 @@ export default {
           <p>
             {{
               s__(`ClusterIntegration|JupyterHub, a multi-user Hub, spawns,
-            manages, and proxies multiple instances of the single-user
-            Jupyter notebook server. JupyterHub can be used to serve
-            notebooks to a class of students, a corporate data science group,
-            or a scientific research group.`)
+                        manages, and proxies multiple instances of the single-user
+                        Jupyter notebook server. JupyterHub can be used to serve
+                        notebooks to a class of students, a corporate data science group,
+                        or a scientific research group.`)
             }}
           </p>
 
@@ -492,7 +557,7 @@ export default {
               <p v-if="ingressInstalled" class="form-text text-muted">
                 {{
                   s__(`ClusterIntegration|Replace this with your own hostname if you want.
-                If you do so, point hostname to Ingress IP Address from above.`)
+                                If you do so, point hostname to Ingress IP Address from above.`)
                 }}
                 <a :href="ingressDnsHelpPath" target="_blank" rel="noopener noreferrer">
                   {{ __('More information') }}
@@ -538,9 +603,9 @@ export default {
           <p>
             {{
               s__(`ClusterIntegration|Knative extends Kubernetes to provide
-            a set of middleware components that are essential to build modern,
-            source-centric, and container-based applications that can run
-            anywhere: on premises, in the cloud, or even in a third-party data center.`)
+                        a set of middleware components that are essential to build modern,
+                        source-centric, and container-based applications that can run
+                        anywhere: on premises, in the cloud, or even in a third-party data center.`)
             }}
           </p>
 
@@ -612,7 +677,7 @@ export default {
               <p v-if="ingressInstalled" class="form-text text-muted">
                 {{
                   s__(`ClusterIntegration|Replace this with your own hostname if you want.
-                If you do so, point hostname to Ingress IP Address from above.`)
+                                If you do so, point hostname to Ingress IP Address from above.`)
                 }}
                 <a :href="ingressDnsHelpPath" target="_blank" rel="noopener noreferrer">
                   {{ __('More information') }}

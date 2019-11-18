@@ -6,6 +6,7 @@ import { APPLICATIONS_MOCK_STATE } from '../services/mock_data';
 import eventHub from '~/clusters/event_hub';
 import { shallowMount } from '@vue/test-utils';
 import KnativeDomainEditor from '~/clusters/components/knative_domain_editor.vue';
+import CrossplaneProviderStack from '~/clusters/components/crossplane_provider_stack.vue';
 
 describe('Applications', () => {
   let vm;
@@ -16,6 +17,7 @@ describe('Applications', () => {
 
     gon.features = gon.features || {};
     gon.features.enableClusterApplicationElasticStack = true;
+    gon.features.enableClusterApplicationCrossplane = true;
   });
 
   afterEach(() => {
@@ -40,6 +42,10 @@ describe('Applications', () => {
 
     it('renders a row for Cert-Manager', () => {
       expect(vm.$el.querySelector('.js-cluster-application-row-cert_manager')).not.toBeNull();
+    });
+
+    it('renders a row for Crossplane', () => {
+      expect(vm.$el.querySelector('.js-cluster-application-row-crossplane')).not.toBeNull();
     });
 
     it('renders a row for Prometheus', () => {
@@ -83,6 +89,10 @@ describe('Applications', () => {
       expect(vm.$el.querySelector('.js-cluster-application-row-cert_manager')).not.toBeNull();
     });
 
+    it('renders a row for Crossplane', () => {
+      expect(vm.$el.querySelector('.js-cluster-application-row-crossplane')).not.toBeNull();
+    });
+
     it('renders a row for Prometheus', () => {
       expect(vm.$el.querySelector('.js-cluster-application-row-prometheus')).not.toBeNull();
     });
@@ -122,6 +132,10 @@ describe('Applications', () => {
 
     it('renders a row for Cert-Manager', () => {
       expect(vm.$el.querySelector('.js-cluster-application-row-cert_manager')).not.toBeNull();
+    });
+
+    it('renders a row for Crossplane', () => {
+      expect(vm.$el.querySelector('.js-cluster-application-row-crossplane')).not.toBeNull();
     });
 
     it('renders a row for Prometheus', () => {
@@ -179,6 +193,7 @@ describe('Applications', () => {
               },
               helm: { title: 'Helm Tiller' },
               cert_manager: { title: 'Cert-Manager' },
+              crossplane: { title: 'Crossplane', stack: '' },
               runner: { title: 'GitLab Runner' },
               prometheus: { title: 'Prometheus' },
               jupyter: { title: 'JupyterHub', hostname: '' },
@@ -387,6 +402,32 @@ describe('Applications', () => {
         id: 'knative',
         hostname: newHostname,
       });
+    });
+  });
+
+  describe('Crossplane application', () => {
+    const propsData = {
+      applications: {
+        ...APPLICATIONS_MOCK_STATE,
+        crossplane: {
+          title: 'Crossplane',
+          stack: {
+            code: '',
+          },
+        },
+      },
+    };
+
+    let wrapper;
+    beforeEach(() => {
+      wrapper = shallowMount(Applications, { propsData });
+    });
+    afterEach(() => {
+      wrapper.destroy();
+    });
+    it('renders the correct Component', () => {
+      const crossplane = wrapper.find(CrossplaneProviderStack);
+      expect(crossplane.exists()).toBe(true);
     });
   });
 

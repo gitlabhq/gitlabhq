@@ -14,6 +14,7 @@ module Clusters
       Applications::Helm.application_name => Applications::Helm,
       Applications::Ingress.application_name => Applications::Ingress,
       Applications::CertManager.application_name => Applications::CertManager,
+      Applications::Crossplane.application_name => Applications::Crossplane,
       Applications::Prometheus.application_name => Applications::Prometheus,
       Applications::Runner.application_name => Applications::Runner,
       Applications::Jupyter.application_name => Applications::Jupyter,
@@ -47,6 +48,7 @@ module Clusters
     has_one_cluster_application :helm
     has_one_cluster_application :ingress
     has_one_cluster_application :cert_manager
+    has_one_cluster_application :crossplane
     has_one_cluster_application :prometheus
     has_one_cluster_application :runner
     has_one_cluster_application :jupyter

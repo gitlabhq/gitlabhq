@@ -27,6 +27,10 @@ module Clusters
             application.email = params[:email]
           end
 
+          if application.has_attribute?(:stack)
+            application.stack = params[:stack]
+          end
+
           if application.respond_to?(:oauth_application)
             application.oauth_application = create_oauth_application(application, request)
           end
@@ -64,7 +68,7 @@ module Clusters
       end
 
       def invalid_application?
-        unknown_application? || (application_name == Applications::ElasticStack.application_name && !Feature.enabled?(:enable_cluster_application_elastic_stack))
+        unknown_application? || (application_name == Applications::ElasticStack.application_name && !Feature.enabled?(:enable_cluster_application_elastic_stack)) || (application_name == Applications::Crossplane.application_name && !Feature.enabled?(:enable_cluster_application_crossplane))
       end
 
       def unknown_application?

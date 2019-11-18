@@ -50,6 +50,7 @@ export const JUPYTER = 'jupyter';
 export const KNATIVE = 'knative';
 export const RUNNER = 'runner';
 export const CERT_MANAGER = 'cert_manager';
+export const CROSSPLANE = 'crossplane';
 export const PROMETHEUS = 'prometheus';
 export const ELASTIC_STACK = 'elastic_stack';
 

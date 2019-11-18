@@ -37,6 +37,7 @@
         "hostname": { "type": ["string", "null"] },
         "kibana_hostname": { "type": ["string", "null"] },
         "email": { "type": ["string", "null"] },
+        "stack": { "type": ["string", "null"] },
         "update_available": { "type": ["boolean", "null"] },
         "can_uninstall": { "type": "boolean" }
       },

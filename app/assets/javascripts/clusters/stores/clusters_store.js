@@ -6,6 +6,7 @@ import {
   KNATIVE,
   CERT_MANAGER,
   ELASTIC_STACK,
+  CROSSPLANE,
   RUNNER,
   APPLICATION_INSTALLED_STATUSES,
   APPLICATION_STATUS,
@@ -26,6 +27,7 @@ const applicationInitialState = {
   uninstallable: false,
   uninstallFailed: false,
   uninstallSuccessful: false,
+  validationError: null,
 };
 
 export default class ClusterStore {
@@ -57,6 +59,11 @@ export default class ClusterStore {
           ...applicationInitialState,
           title: s__('ClusterIntegration|Cert-Manager'),
           email: null,
+        },
+        crossplane: {
+          ...applicationInitialState,
+          title: s__('ClusterIntegration|Crossplane'),
+          stack: null,
         },
         runner: {
           ...applicationInitialState,
@@ -203,6 +210,9 @@ export default class ClusterStore {
       } else if (appId === CERT_MANAGER) {
         this.state.applications.cert_manager.email =
           this.state.applications.cert_manager.email || serverAppEntry.email;
+      } else if (appId === CROSSPLANE) {
+        this.state.applications.crossplane.stack =
+          this.state.applications.crossplane.stack || serverAppEntry.stack;
       } else if (appId === JUPYTER) {
         this.state.applications.jupyter.hostname = this.updateHostnameIfUnset(
           this.state.applications.jupyter.hostname,

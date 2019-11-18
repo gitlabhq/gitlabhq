@@ -7,6 +7,7 @@ export default class ClusterService {
       helm: this.options.installHelmEndpoint,
       ingress: this.options.installIngressEndpoint,
       cert_manager: this.options.installCertManagerEndpoint,
+      crossplane: this.options.installCrossplaneEndpoint,
       runner: this.options.installRunnerEndpoint,
       prometheus: this.options.installPrometheusEndpoint,
       jupyter: this.options.installJupyterEndpoint,

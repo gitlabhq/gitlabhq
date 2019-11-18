@@ -5,9 +5,6 @@ GitLab can integrate with the following Kubernetes providers:
 - Google Kubernetes Engine (GKE).
 - Amazon Elastic Kubernetes Service (EKS).
 
-GitLab is more deeply integrated with GKE, but deeper integration with EKS
-[is planned](https://gitlab.com/gitlab-org/gitlab/issues/22392).
-
 TIP: **Tip:**
 Every new Google Cloud Platform (GCP) account receives [$300 in credit upon sign up](https://console.cloud.google.com/freetrial),
 and in partnership with Google, GitLab is able to offer an additional $200 for new GCP accounts to get started with GitLab's
@@ -62,17 +59,17 @@ Note the following about access controls:
 
 GitLab creates the following resources for RBAC clusters.
 
-| Name                  | Type                 | Details                                                                                                    | Created when               |
-|:----------------------|:---------------------|:-----------------------------------------------------------------------------------------------------------|:---------------------------|
-| `gitlab`              | `ServiceAccount`     | `default` namespace                                                                                        | Creating a new GKE Cluster |
-| `gitlab-admin`        | `ClusterRoleBinding` | [`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles) roleRef | Creating a new GKE Cluster |
-| `gitlab-token`        | `Secret`             | Token for `gitlab` ServiceAccount                                                                          | Creating a new GKE Cluster |
-| `tiller`              | `ServiceAccount`     | `gitlab-managed-apps` namespace                                                                            | Installing Helm Tiller     |
-| `tiller-admin`        | `ClusterRoleBinding` | `cluster-admin` roleRef                                                                                    | Installing Helm Tiller     |
-| Environment namespace | `Namespace`          | Contains all environment-specific resources                                                                | Deploying to a cluster     |
-| Environment namespace | `ServiceAccount`     | Uses namespace of environment                                                                              | Deploying to a cluster     |
-| Environment namespace | `Secret`             | Token for environment ServiceAccount                                                                       | Deploying to a cluster     |
-| Environment namespace | `RoleBinding`        | [`edit`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles) roleRef          | Deploying to a cluster     |
+| Name                  | Type                 | Details                                                                                                    | Created when           |
+|:----------------------|:---------------------|:-----------------------------------------------------------------------------------------------------------|:-----------------------|
+| `gitlab`              | `ServiceAccount`     | `default` namespace                                                                                        | Creating a new cluster |
+| `gitlab-admin`        | `ClusterRoleBinding` | [`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles) roleRef | Creating a new cluster |
+| `gitlab-token`        | `Secret`             | Token for `gitlab` ServiceAccount                                                                          | Creating a new cluster |
+| `tiller`              | `ServiceAccount`     | `gitlab-managed-apps` namespace                                                                            | Installing Helm Tiller |
+| `tiller-admin`        | `ClusterRoleBinding` | `cluster-admin` roleRef                                                                                    | Installing Helm Tiller |
+| Environment namespace | `Namespace`          | Contains all environment-specific resources                                                                | Deploying to a cluster |
+| Environment namespace | `ServiceAccount`     | Uses namespace of environment                                                                              | Deploying to a cluster |
+| Environment namespace | `Secret`             | Token for environment ServiceAccount                                                                       | Deploying to a cluster |
+| Environment namespace | `RoleBinding`        | [`edit`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles) roleRef          | Deploying to a cluster |
 
 ### ABAC cluster resources
 
@@ -80,13 +77,13 @@ GitLab creates the following resources for ABAC clusters.
 
 | Name                  | Type                 | Details                              | Created when               |
 |:----------------------|:---------------------|:-------------------------------------|:---------------------------|
-| `gitlab`              | `ServiceAccount`     | `default` namespace                         | Creating a new GKE Cluster |
-| `gitlab-token`        | `Secret`             | Token for `gitlab` ServiceAccount           | Creating a new GKE Cluster |
-| `tiller`              | `ServiceAccount`     | `gitlab-managed-apps` namespace             | Installing Helm Tiller     |
-| `tiller-admin`        | `ClusterRoleBinding` | `cluster-admin` roleRef                     | Installing Helm Tiller     |
-| Environment namespace | `Namespace`          | Contains all environment-specific resources | Deploying to a cluster     |
-| Environment namespace | `ServiceAccount`     | Uses namespace of environment               | Deploying to a cluster     |
-| Environment namespace | `Secret`             | Token for environment ServiceAccount        | Deploying to a cluster     |
+| `gitlab`              | `ServiceAccount`     | `default` namespace                         | Creating a new cluster |
+| `gitlab-token`        | `Secret`             | Token for `gitlab` ServiceAccount           | Creating a new cluster |
+| `tiller`              | `ServiceAccount`     | `gitlab-managed-apps` namespace             | Installing Helm Tiller |
+| `tiller-admin`        | `ClusterRoleBinding` | `cluster-admin` roleRef                     | Installing Helm Tiller |
+| Environment namespace | `Namespace`          | Contains all environment-specific resources | Deploying to a cluster |
+| Environment namespace | `ServiceAccount`     | Uses namespace of environment               | Deploying to a cluster |
+| Environment namespace | `Secret`             | Token for environment ServiceAccount        | Deploying to a cluster |
 
 ### Security of GitLab Runners
 
@@ -112,7 +109,9 @@ If you don't want to use GitLab Runner in privileged mode, either:
   1. Installing a Runner
      [using `docker+machine`](https://docs.gitlab.com/runner/executors/docker_machine.html).
 
-## Add new GKE cluster
+## Add new cluster
+
+### GKE cluster
 
 GitLab supports:
 
@@ -126,7 +125,7 @@ The [Google authentication integration](../../../integration/google.md) must
 be enabled in GitLab at the instance level. If that's not the case, ask your
 GitLab administrator to enable it. On GitLab.com, this is enabled.
 
-### Requirements
+#### GKE Requirements
 
 Before creating your first cluster on Google Kubernetes Engine with GitLab's
 integration, make sure the following requirements are met:
@@ -151,7 +150,7 @@ order to setup an [initial service account](#access-controls). Starting from [Gi
 11.10](https://gitlab.com/gitlab-org/gitlab-foss/issues/58208), the cluster creation process will
 explicitly request that basic authentication and client certificate is enabled.
 
-### Creating the cluster
+#### Creating the cluster on GKE
 
 If all of the above requirements are met, you can proceed to create and add a
 new Kubernetes cluster to your project:
@@ -185,7 +184,7 @@ new Kubernetes cluster to your project:
 After a couple of minutes, your cluster will be ready to go. You can now proceed
 to install some [pre-defined applications](index.md#installing-applications).
 
-### Cloud Run on GKE
+#### Cloud Run on GKE
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/16566) in GitLab 12.4.
 
@@ -193,6 +192,159 @@ You can choose to use Cloud Run on GKE in place of installing Knative and Istio
 separately after the cluster has been created. This means that Cloud Run
 (Knative), Istio, and HTTP Load Balancing will be enabled on the cluster at
 create time and cannot be [installed or uninstalled](../../clusters/applications.md) separately.
+
+### EKS Cluster
+
+GitLab supports:
+
+- Creating a new EKS cluster using the GitLab UI
+  ([Introduced](https://gitlab.com/gitlab-org/gitlab/issues/22392) in GitLab 12.5).
+- Providing credentials to add an [existing Kubernetes cluster](#add-existing-cluster).
+
+#### EKS Requirements
+
+Before creating your first cluster on Amazon EKS with GitLab's integration,
+make sure the following requirements are met:
+
+- An [Amazon Web Services](https://aws.amazon.com/) account is set up and you are able to log in.
+- You have permissions to manage IAM resources.
+
+##### Additional requirements for self-managed instances
+
+If you are using a self-managed GitLab instance, GitLab must first
+be configured with a set of Amazon credentials. These credentials
+will be used to assume an Amazon IAM role provided by the user
+creating the cluster. Create an IAM user and ensure it has permissions
+to assume the role(s) that your users will use to create EKS clusters.
+
+For example, the following policy document allows assuming a role whose name starts with
+`gitlab-eks-` in account `123456789012`:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": {
+    "Effect": "Allow",
+    "Action": "sts:AssumeRole",
+    "Resource": "arn:aws:iam::123456789012:role/gitlab-eks-*"
+  }
+}
+```
+
+Generate an access key for the IAM user, and configure GitLab with the credentials:
+
+1. Navigate to **Admin Area > Settings > Integrations** and expand the **Amazon EKS** section.
+1. Check **Enable Amazon EKS integration**.
+1. Enter the account ID and access key credentials into the respective
+   `Account ID`, `Access key ID` and `Secret access key` fields.
+1. Click **Save changes**.
+
+#### Creating the cluster on EKS
+
+If all of the above requirements are met, you can proceed to create and add a
+new Kubernetes cluster to your project:
+
+1. Navigate to your project's **Operations > Kubernetes** page.
+
+   NOTE: **Note:**
+   You need Maintainer [permissions](../../permissions.md) and above to access the Kubernetes page.
+
+1. Click **Add Kubernetes cluster**.
+1. Click **Amazon EKS**. You will be provided with an `Account ID` and `External ID` to use in the next step.
+1. In the [IAM Management Console](https://console.aws.amazon.com/iam/home), create an IAM role:
+   1. From the left panel, select **Roles**.
+   1. Click **Create role**.
+   1. Under `Select type of trusted entity`, select **Another AWS account**.
+   1. Enter the Account ID from GitLab into the `Account ID` field.
+   1. Check **Require external ID**.
+   1. Enter the External ID from GitLab into the `External ID` field.
+   1. Click **Next: Permissions**.
+   1. Click **Create Policy**, which will open a new window.
+   1. Select the **JSON** tab, and paste in the following snippet in place of the existing content:
+
+    ```json
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Action": [
+                    "autoscaling:CreateAutoScalingGroup",
+                    "autoscaling:DescribeAutoScalingGroups",
+                    "autoscaling:DescribeScalingActivities",
+                    "autoscaling:UpdateAutoScalingGroup",
+                    "autoscaling:CreateLaunchConfiguration",
+                    "autoscaling:DescribeLaunchConfigurations",
+                    "cloudformation:CreateStack",
+                    "cloudformation:DescribeStacks",
+                    "ec2:AuthorizeSecurityGroupEgress",
+                    "ec2:AuthorizeSecurityGroupIngress",
+                    "ec2:RevokeSecurityGroupEgress",
+                    "ec2:RevokeSecurityGroupIngress",
+                    "ec2:CreateSecurityGroup",
+                    "ec2:createTags",
+                    "ec2:DescribeImages",
+                    "ec2:DescribeKeyPairs",
+                    "ec2:DescribeRegions",
+                    "ec2:DescribeSecurityGroups",
+                    "ec2:DescribeSubnets",
+                    "ec2:DescribeVpcs",
+                    "eks:CreateCluster",
+                    "eks:DescribeCluster",
+                    "iam:AddRoleToInstanceProfile",
+                    "iam:AttachRolePolicy",
+                    "iam:CreateRole",
+                    "iam:CreateInstanceProfile",
+                    "iam:GetRole",
+                    "iam:ListRoles",
+                    "iam:PassRole",
+                    "ssm:GetParameters"
+                ],
+                "Resource": "*"
+            }
+        ]
+    }
+    ```
+
+    NOTE: **Note:**
+    These permissions give GitLab the ability to create resources, but not delete them.
+    This means that if an error is encountered during the creation process, changes will
+    not be rolled back and you must remove resources manually. You can do this by deleting
+    the relevant [CloudFormation stack](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-console-delete-stack.html)
+
+   1. Click **Review policy**.
+   1. Enter a suitable name for this policy, and click **Create Policy**. You can now close this window.
+   1. Switch back to the "Create role" window, and select the policy you just created.
+   1. Click **Next: Tags**, and optionally enter any tags you wish to associate with this role.
+   1. Click **Next: Review**.
+   1. Enter a role name and optional description into the fields provided.
+   1. Click **Create role**, the new role name will appear at the top. Click on its name and copy the `Role ARN` from the newly created role.
+1. In GitLab, enter the copied role ARN into the `Role ARN` field.
+1. Click **Authenticate with AWS**.
+1. Choose your cluster's settings:
+   - **Kubernetes cluster name** - The name you wish to give the cluster.
+   - **Environment scope** - The [associated environment](index.md#setting-the-environment-scope-premium) to this cluster.
+   - **Kubernetes version** - The Kubernetes version to use. Currently the only version supported is 1.14.
+   - **Role name** - Select the [IAM role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html)
+     to allow Amazon EKS and the Kubernetes control plane to manage AWS resources on your behalf.
+   - **Region** - The [region](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html)
+     in which the cluster will be created.
+   - **Key pair name** - Select the [key pair](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html)
+     that you can use to connect to your worker nodes if required.
+   - **VPC** - Select a [VPC](https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html)
+     to use for your EKS Cluster resources.
+   - **Subnets** - Choose the [subnets](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Subnets.html)
+     in your VPC where your worker nodes will run.
+   - **Security group** - Choose the [security group](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html)
+     to apply to the EKS-managed Elastic Network Interfaces that are created in your worker node subnets.
+   - **Instance type** - The [instance type](https://aws.amazon.com/ec2/instance-types/) of your worker nodes.
+   - **Node count** - The number of worker nodes.
+   - **GitLab-managed cluster** - Leave this checked if you want GitLab to manage namespaces and service accounts for this cluster.
+     See the [Managed clusters section](index.md#gitlab-managed-clusters) for more information.
+1. Finally, click the **Create Kubernetes cluster** button.
+
+After about 10 minutes, your cluster will be ready to go. You can now proceed
+to install some [pre-defined applications](index.md#installing-applications).
 
 ## Add existing cluster
 

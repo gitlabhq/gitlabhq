@@ -73,6 +73,7 @@ module Gitlab
             clusters_applications_helm: count(::Clusters::Applications::Helm.available),
             clusters_applications_ingress: count(::Clusters::Applications::Ingress.available),
             clusters_applications_cert_managers: count(::Clusters::Applications::CertManager.available),
+            clusters_applications_crossplane: count(::Clusters::Applications::Crossplane.available),
             clusters_applications_prometheus: count(::Clusters::Applications::Prometheus.available),
             clusters_applications_runner: count(::Clusters::Applications::Runner.available),
             clusters_applications_knative: count(::Clusters::Applications::Knative.available),

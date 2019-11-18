@@ -8,7 +8,7 @@ import Flash from '../flash';
 import Poll from '../lib/utils/poll';
 import initSettingsPanels from '../settings_panels';
 import eventHub from './event_hub';
-import { APPLICATION_STATUS, INGRESS, INGRESS_DOMAIN_SUFFIX } from './constants';
+import { APPLICATION_STATUS, INGRESS, INGRESS_DOMAIN_SUFFIX, CROSSPLANE } from './constants';
 import ClustersService from './services/clusters_service';
 import ClustersStore from './stores/clusters_store';
 import Applications from './components/applications.vue';
@@ -39,6 +39,7 @@ export default class Clusters {
       installKnativePath,
       updateKnativePath,
       installElasticStackPath,
+      installCrossplanePath,
       installPrometheusPath,
       managePrometheusPath,
       clusterEnvironmentsPath,
@@ -83,6 +84,7 @@ export default class Clusters {
       installHelmEndpoint: installHelmPath,
       installIngressEndpoint: installIngressPath,
       installCertManagerEndpoint: installCertManagerPath,
+      installCrossplaneEndpoint: installCrossplanePath,
       installRunnerEndpoint: installRunnerPath,
       installPrometheusEndpoint: installPrometheusPath,
       installJupyterEndpoint: installJupyterPath,
@@ -227,6 +229,7 @@ export default class Clusters {
     eventHub.$on('saveKnativeDomain', data => this.saveKnativeDomain(data));
     eventHub.$on('setKnativeHostname', data => this.setKnativeHostname(data));
     eventHub.$on('uninstallApplication', data => this.uninstallApplication(data));
+    eventHub.$on('setCrossplaneProviderStack', data => this.setCrossplaneProviderStack(data));
     // Add event listener to all the banner close buttons
     this.addBannerCloseHandler(this.unreachableContainer, 'unreachable');
     this.addBannerCloseHandler(this.authenticationFailureContainer, 'authentication_failure');
@@ -238,6 +241,7 @@ export default class Clusters {
     eventHub.$off('updateApplication', this.updateApplication);
     eventHub.$off('saveKnativeDomain');
     eventHub.$off('setKnativeHostname');
+    eventHub.$off('setCrossplaneProviderStack');
     eventHub.$off('uninstallApplication');
   }
 
@@ -404,18 +408,33 @@ export default class Clusters {
   }
 
   installApplication({ id: appId, params }) {
-    this.store.updateAppProperty(appId, 'requestReason', null);
-    this.store.updateAppProperty(appId, 'statusReason', null);
+    return Clusters.validateInstallation(appId, params)
+      .then(() => {
+        this.store.updateAppProperty(appId, 'requestReason', null);
+        this.store.updateAppProperty(appId, 'statusReason', null);
+        this.store.installApplication(appId);
 
-    this.store.installApplication(appId);
+        // eslint-disable-next-line promise/no-nesting
+        this.service.installApplication(appId, params).catch(() => {
+          this.store.notifyInstallFailure(appId);
+          this.store.updateAppProperty(
+            appId,
+            'requestReason',
+            s__('ClusterIntegration|Request to begin installing failed'),
+          );
+        });
+      })
+      .catch(error => this.store.updateAppProperty(appId, 'validationError', error));
+  }
 
-    return this.service.installApplication(appId, params).catch(() => {
-      this.store.notifyInstallFailure(appId);
-      this.store.updateAppProperty(
-        appId,
-        'requestReason',
-        s__('ClusterIntegration|Request to begin installing failed'),
-      );
+  static validateInstallation(appId, params) {
+    return new Promise((resolve, reject) => {
+      if (appId === CROSSPLANE && !params.stack) {
+        reject(s__('ClusterIntegration|Select a stack to install Crossplane.'));
+        return;
+      }
+
+      resolve();
     });
   }
 
@@ -461,6 +480,12 @@ export default class Clusters {
     const appId = data.id;
     this.store.updateAppProperty(appId, 'isEditingHostName', true);
     this.store.updateAppProperty(appId, 'hostname', data.hostname);
+  }
+
+  setCrossplaneProviderStack(data) {
+    const appId = data.id;
+    this.store.updateAppProperty(appId, 'stack', data.stack.code);
+    this.store.updateAppProperty(appId, 'validationError', null);
   }
 
   destroy() {
