@@ -83,7 +83,7 @@ to a management project:
 | Staging     | `staging`         |
 | Production  | `production`      |
 
-The the following environments set in
+The following environments set in
 [`.gitlab-ci.yml`](../../ci/yaml/README.md) will deploy to the
 Development, Staging, and Production cluster respectively.
 
@@ -108,17 +108,4 @@ configure production cluster:
   script: kubectl get namespaces
   environment:
     name: production
-```
-
-## Enabling this feature
-
-This feature is disabled by default. To enable this feature, enable the
-feature flag `:cluster_management_project`.
-
-To check if the feature flag is enabled on your GitLab instance,
-please ask an administrator to execute the following in a Rails console:
-
-```ruby
-Feature.enabled?(:cluster_management_project)     # Check if it's enabled or not.
-Feature.disable(:cluster_management_project)      # Disable the feature flag.
 ```

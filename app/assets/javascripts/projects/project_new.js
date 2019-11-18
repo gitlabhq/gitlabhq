@@ -182,6 +182,10 @@ const bindEvents = () => {
         text: s__('ProjectTemplates|Netlify/Hexo'),
         icon: '.template-option .icon-netlify',
       },
+      serverless_framework: {
+        text: s__('ProjectTemplates|Serverless Framework/JS'),
+        icon: '.template-option .icon-serverless_framework',
+      },
     };
 
     const selectedTemplate = templates[value];

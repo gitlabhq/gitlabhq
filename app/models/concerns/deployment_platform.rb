@@ -12,7 +12,7 @@ module DeploymentPlatform
   private
 
   def cluster_management_project_enabled?
-    Feature.enabled?(:cluster_management_project, self)
+    Feature.enabled?(:cluster_management_project, self, default_enabled: true)
   end
 
   def find_deployment_platform(environment)

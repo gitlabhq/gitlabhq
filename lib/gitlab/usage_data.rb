@@ -135,7 +135,8 @@ module Gitlab
           prometheus_metrics_enabled: Gitlab::Metrics.prometheus_metrics_enabled?,
           reply_by_email_enabled: Gitlab::IncomingEmail.enabled?,
           signup_enabled: Gitlab::CurrentSettings.allow_signup?,
-          web_ide_clientside_preview_enabled: Gitlab::CurrentSettings.web_ide_clientside_preview_enabled?
+          web_ide_clientside_preview_enabled: Gitlab::CurrentSettings.web_ide_clientside_preview_enabled?,
+          ingress_modsecurity_enabled: Feature.enabled?(:ingress_modsecurity)
         }
       end
 

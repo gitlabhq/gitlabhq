@@ -85,6 +85,7 @@ describe Gitlab::UsageData do
         influxdb_metrics_enabled
         prometheus_metrics_enabled
         web_ide_clientside_preview_enabled
+        ingress_modsecurity_enabled
       ))
     end
 
