@@ -2,36 +2,38 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Pipeline::Chain::RemoveUnwantedChatJobs do
-  let(:project) { create(:project, :repository) }
+describe ::Gitlab::Ci::Pipeline::Chain::RemoveUnwantedChatJobs do
+  let(:project) { create(:project) }
 
   let(:pipeline) do
     build(:ci_pipeline, project: project)
   end
 
   let(:command) do
-    double(:command, project: project, chat_data: { command: 'echo' })
-  end
-
-  before do
-    stub_ci_pipeline_yaml_file(YAML.dump(rspec: { script: 'rspec' }))
+    double(:command,
+      config_processor: double(:processor,
+        jobs: { echo: double(:job_echo), rspec: double(:job_rspec) }),
+      project: project,
+      chat_data: { command: 'echo' })
   end
 
   describe '#perform!' do
+    subject { described_class.new(pipeline, command).perform! }
+
     it 'removes unwanted jobs for chat pipelines' do
-      allow(pipeline).to receive(:chat?).and_return(true)
+      expect(pipeline).to receive(:chat?).and_return(true)
 
-      pipeline.config_processor.jobs[:echo] = double(:job)
+      subject
 
-      described_class.new(pipeline, command).perform!
-
-      expect(pipeline.config_processor.jobs.keys).to eq([:echo])
+      expect(command.config_processor.jobs.keys).to eq([:echo])
     end
-  end
 
-  it 'does not remove any jobs for non-chat pipelines' do
-    described_class.new(pipeline, command).perform!
+    it 'does not remove any jobs for non chat-pipelines' do
+      expect(pipeline).to receive(:chat?).and_return(false)
 
-    expect(pipeline.config_processor.jobs.keys).to eq([:rspec])
+      subject
+
+      expect(command.config_processor.jobs.keys).to eq([:echo, :rspec])
+    end
   end
 end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Files > User creates files' do
+describe 'Projects > Files > User creates files', :js do
   let(:fork_message) do
     "You're not allowed to make changes to this project directly. "\
     "A fork of this project has been created that you can make changes in, so you can submit a merge request."
@@ -14,7 +14,6 @@ describe 'Projects > Files > User creates files' do
   let(:user) { create(:user) }
 
   before do
-    stub_feature_flags(vue_file_list: false)
     stub_feature_flags(web_ide_default: false)
 
     project.add_maintainer(user)
@@ -68,8 +67,7 @@ describe 'Projects > Files > User creates files' do
         file_name = find('#file_name')
         file_name.set options[:file_name] || 'README.md'
 
-        file_content = find('#file-content', visible: false)
-        file_content.set options[:file_content] || 'Some content'
+        find('.ace_text-input', visible: false).send_keys.native.send_keys options[:file_content] || 'Some content'
 
         click_button 'Commit changes'
       end
@@ -89,7 +87,7 @@ describe 'Projects > Files > User creates files' do
         expect(page).to have_content 'Path cannot include directory traversal'
       end
 
-      it 'creates and commit a new file', :js do
+      it 'creates and commit a new file' do
         find('#editor')
         execute_script("ace.edit('editor').setValue('*.rbca')")
         fill_in(:file_name, with: 'not_a_file.md')
@@ -105,7 +103,7 @@ describe 'Projects > Files > User creates files' do
         expect(page).to have_content('*.rbca')
       end
 
-      it 'creates and commit a new file with new lines at the end of file', :js do
+      it 'creates and commit a new file with new lines at the end of file' do
         find('#editor')
         execute_script('ace.edit("editor").setValue("Sample\n\n\n")')
         fill_in(:file_name, with: 'not_a_file.md')
@@ -122,7 +120,7 @@ describe 'Projects > Files > User creates files' do
         expect(evaluate_script('ace.edit("editor").getValue()')).to eq("Sample\n\n\n")
       end
 
-      it 'creates and commit a new file with a directory name', :js do
+      it 'creates and commit a new file with a directory name' do
         fill_in(:file_name, with: 'foo/bar/baz.txt')
 
         expect(page).to have_selector('.file-editor')
@@ -139,7 +137,7 @@ describe 'Projects > Files > User creates files' do
         expect(page).to have_content('*.rbca')
       end
 
-      it 'creates and commit a new file specifying a new branch', :js do
+      it 'creates and commit a new file specifying a new branch' do
         expect(page).to have_selector('.file-editor')
 
         find('#editor')
@@ -174,7 +172,7 @@ describe 'Projects > Files > User creates files' do
         expect(page).to have_content(message)
       end
 
-      it 'creates and commit new file in forked project', :js do
+      it 'creates and commit new file in forked project' do
         expect(page).to have_selector('.file-editor')
 
         find('#editor')

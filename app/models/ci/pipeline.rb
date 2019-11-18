@@ -551,23 +551,6 @@ module Ci
       end
     end
 
-    def stage_seeds
-      return [] unless config_processor
-
-      strong_memoize(:stage_seeds) do
-        seeds = config_processor.stages_attributes.inject([]) do |previous_stages, attributes|
-          seed = Gitlab::Ci::Pipeline::Seed::Stage.new(self, attributes, previous_stages)
-          previous_stages + [seed]
-        end
-
-        seeds.select(&:included?)
-      end
-    end
-
-    def seeds_size
-      stage_seeds.sum(&:size)
-    end
-
     def has_kubernetes_active?
       project.deployment_platform&.active?
     end
@@ -587,60 +570,12 @@ module Ci
       end
     end
 
-    def set_config_source
-      if ci_yaml_from_repo
-        self.config_source = :repository_source
-      elsif implied_ci_yaml_file
-        self.config_source = :auto_devops_source
-      end
-    end
-
-    ##
-    # TODO, setting yaml_errors should be moved to the pipeline creation chain.
-    #
-    def config_processor
-      return unless ci_yaml_file
-      return @config_processor if defined?(@config_processor)
-
-      @config_processor ||= begin
-        ::Gitlab::Ci::YamlProcessor.new(ci_yaml_file, { project: project, sha: sha, user: user })
-      rescue Gitlab::Ci::YamlProcessor::ValidationError => e
-        self.yaml_errors = e.message
-        nil
-      rescue => ex
-        self.yaml_errors = "Undefined error (#{Labkit::Correlation::CorrelationId.current_id})"
-
-        Gitlab::Sentry.track_acceptable_exception(ex, extra: {
-          project_id: project.id,
-          sha: sha,
-          ci_yaml_file: ci_yaml_file_path
-        })
-        nil
-      end
-    end
-
-    def ci_yaml_file_path
+    # TODO: this logic is duplicate with Pipeline::Chain::Config::Content
+    # we should persist this is `ci_pipelines.config_path`
+    def config_path
       return unless repository_source? || unknown_source?
 
       project.ci_config_path.presence || '.gitlab-ci.yml'
-    end
-
-    def ci_yaml_file
-      return @ci_yaml_file if defined?(@ci_yaml_file)
-
-      @ci_yaml_file =
-        if auto_devops_source?
-          implied_ci_yaml_file
-        else
-          ci_yaml_from_repo
-        end
-
-      if @ci_yaml_file
-        @ci_yaml_file
-      else
-        self.yaml_errors = "Failed to load CI/CD config file for #{sha}"
-        nil
-      end
     end
 
     def has_yaml_errors?
@@ -711,7 +646,7 @@ module Ci
     def predefined_variables
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         variables.append(key: 'CI_PIPELINE_IID', value: iid.to_s)
-        variables.append(key: 'CI_CONFIG_PATH', value: ci_yaml_file_path)
+        variables.append(key: 'CI_CONFIG_PATH', value: config_path)
         variables.append(key: 'CI_PIPELINE_SOURCE', value: source.to_s)
         variables.append(key: 'CI_COMMIT_MESSAGE', value: git_commit_message.to_s)
         variables.append(key: 'CI_COMMIT_TITLE', value: git_commit_full_title.to_s)
@@ -905,24 +840,6 @@ module Ci
     end
 
     private
-
-    def ci_yaml_from_repo
-      return unless project
-      return unless sha
-      return unless ci_yaml_file_path
-
-      project.repository.gitlab_ci_yml_for(sha, ci_yaml_file_path)
-    rescue GRPC::NotFound, GRPC::Internal
-      nil
-    end
-
-    def implied_ci_yaml_file
-      return unless project
-
-      if project.auto_devops_enabled?
-        Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps').content
-      end
-    end
 
     def pipeline_data
       Gitlab::DataBuilder::Pipeline.build(self)

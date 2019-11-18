@@ -200,6 +200,52 @@ describe 'getting an issue list for a project' do
         end
       end
     end
+
+    context 'when sorting by relative position' do
+      let(:sort_project) { create(:project, :public) }
+
+      let!(:relative_issue1) { create(:issue, project: sort_project, relative_position: 2000) }
+      let!(:relative_issue2) { create(:issue, project: sort_project, relative_position: nil) }
+      let!(:relative_issue3) { create(:issue, project: sort_project, relative_position: 1000) }
+      let!(:relative_issue4) { create(:issue, project: sort_project, relative_position: nil) }
+      let!(:relative_issue5) { create(:issue, project: sort_project, relative_position: 500) }
+
+      let(:params) { 'sort: RELATIVE_POSITION_ASC' }
+
+      def query(issue_params = params)
+        graphql_query_for(
+          'project',
+          { 'fullPath' => sort_project.full_path },
+          "issues(#{issue_params}) { pageInfo { endCursor} edges { node { iid dueDate } } }"
+        )
+      end
+
+      before do
+        post_graphql(query, current_user: current_user)
+      end
+
+      it_behaves_like 'a working graphql query'
+
+      context 'when ascending' do
+        it 'sorts issues' do
+          expect(grab_iids).to eq [relative_issue5.iid, relative_issue3.iid, relative_issue1.iid, relative_issue4.iid, relative_issue2.iid]
+        end
+
+        context 'when paginating' do
+          let(:params) { 'sort: RELATIVE_POSITION_ASC, first: 2' }
+
+          it 'sorts issues' do
+            expect(grab_iids).to eq [relative_issue5.iid, relative_issue3.iid]
+
+            cursored_query = query("sort: RELATIVE_POSITION_ASC, after: \"#{end_cursor}\"")
+            post_graphql(cursored_query, current_user: current_user)
+            response_data = JSON.parse(response.body)['data']['project']['issues']['edges']
+
+            expect(grab_iids(response_data)).to eq [relative_issue1.iid, relative_issue4.iid, relative_issue2.iid]
+          end
+        end
+      end
+    end
   end
 
   def grab_iids(data = issues_data)

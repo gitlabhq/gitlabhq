@@ -357,12 +357,18 @@
     }
   }
 
-  .filter-dropdown-container > div {
-    margin: 0;
+  .filter-dropdown-container {
+    > div {
+      margin: 0;
 
-    > .btn {
-      margin: 0 0 10px;
-      width: 100%;
+      > .btn {
+        margin: 0 0 10px;
+        width: 100%;
+      }
+    }
+
+    .board-labels-toggle-wrapper {
+      margin-bottom: $gl-input-padding;
     }
   }
 

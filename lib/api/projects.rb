@@ -71,7 +71,8 @@ module API
         optional :namespace_id, type: Integer, desc: 'Namespace ID for the new project. Default to the user namespace.'
         optional :import_url, type: String, desc: 'URL from which the project is imported'
         optional :template_name, type: String, desc: "Name of template from which to create project"
-        mutually_exclusive :import_url, :template_name
+        optional :template_project_id, type: Integer, desc: "Project ID of template from which to create project"
+        mutually_exclusive :import_url, :template_name, :template_project_id
       end
 
       def load_projects

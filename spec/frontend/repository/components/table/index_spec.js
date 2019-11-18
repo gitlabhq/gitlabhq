@@ -9,6 +9,7 @@ let $apollo;
 const MOCK_BLOBS = [
   {
     id: '123abc',
+    sha: '123abc',
     flatPath: 'blob',
     name: 'blob.md',
     type: 'blob',
@@ -16,6 +17,7 @@ const MOCK_BLOBS = [
   },
   {
     id: '124abc',
+    sha: '124abc',
     flatPath: 'blob2',
     name: 'blob2.md',
     type: 'blob',

@@ -99,6 +99,19 @@ describe Resolvers::IssuesResolver do
             expect(resolve_issues(sort: :due_date_desc)).to eq [due_issue1, due_issue3, due_issue4, due_issue2]
           end
         end
+
+        context 'when sorting by relative position' do
+          let(:project) { create(:project) }
+
+          let!(:relative_issue1) { create(:issue, project: project, relative_position: 2000) }
+          let!(:relative_issue2) { create(:issue, project: project, relative_position: nil) }
+          let!(:relative_issue3) { create(:issue, project: project, relative_position: 1000) }
+          let!(:relative_issue4) { create(:issue, project: project, relative_position: nil) }
+
+          it 'sorts issues ascending' do
+            expect(resolve_issues(sort: :relative_position_asc)).to eq [relative_issue3, relative_issue1, relative_issue4, relative_issue2]
+          end
+        end
       end
 
       it 'returns issues user can see' do

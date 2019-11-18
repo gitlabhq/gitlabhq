@@ -3,7 +3,22 @@
 module Gitlab
   module GitalyClient
     class NamespaceService
+      extend Gitlab::TemporarilyAllow
+
+      NamespaceServiceAccessError = Class.new(StandardError)
+      ALLOW_KEY = :allow_namespace
+
+      def self.allow
+        temporarily_allow(ALLOW_KEY) { yield }
+      end
+
+      def self.denied?
+        !temporarily_allowed?(ALLOW_KEY)
+      end
+
       def initialize(storage)
+        raise NamespaceServiceAccessError if self.class.denied?
+
         @storage = storage
       end
 

@@ -75,6 +75,7 @@ export default {
               v-for="entry in val"
               :id="entry.id"
               :key="`${entry.flatPath}-${entry.id}`"
+              :sha="entry.sha"
               :project-path="projectPath"
               :current-path="path"
               :name="entry.name"

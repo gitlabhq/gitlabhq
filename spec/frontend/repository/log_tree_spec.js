@@ -41,7 +41,7 @@ describe('fetchLogsTree', () => {
 
     jest.spyOn(axios, 'get');
 
-    global.gon = { gitlab_url: 'https://test.com' };
+    global.gon = { relative_url_root: '' };
 
     client = {
       readQuery: () => ({
@@ -64,10 +64,9 @@ describe('fetchLogsTree', () => {
 
   it('calls axios get', () =>
     fetchLogsTree(client, '', '0', resolver).then(() => {
-      expect(axios.get).toHaveBeenCalledWith(
-        'https://test.com/gitlab-org/gitlab-foss/refs/master/logs_tree/',
-        { params: { format: 'json', offset: '0' } },
-      );
+      expect(axios.get).toHaveBeenCalledWith('/gitlab-org/gitlab-foss/refs/master/logs_tree/', {
+        params: { format: 'json', offset: '0' },
+      });
     }));
 
   it('calls axios get once', () =>

@@ -13,8 +13,6 @@ describe 'projects/tree/show' do
   let(:tree) { repository.tree(commit.id, path) }
 
   before do
-    stub_feature_flags(vue_file_list: false)
-
     assign(:project, project)
     assign(:repository, repository)
     assign(:lfs_blob_ids, [])
@@ -39,12 +37,15 @@ describe 'projects/tree/show' do
       render
 
       expect(rendered).to have_css('.js-project-refs-dropdown .dropdown-toggle-text', text: ref)
-      expect(rendered).to have_css('.readme-holder')
     end
   end
 
   context 'commit signatures' do
     context 'with vue tree view disabled' do
+      before do
+        stub_feature_flags(vue_file_list: false)
+      end
+
       it 'rendered via js-signature-container' do
         render
 
@@ -53,10 +54,6 @@ describe 'projects/tree/show' do
     end
 
     context 'with vue tree view enabled' do
-      before do
-        stub_feature_flags(vue_file_list: true)
-      end
-
       it 'are not rendered via js-signature-container' do
         render
 

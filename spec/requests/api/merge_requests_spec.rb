@@ -1043,14 +1043,12 @@ describe API::MergeRequests do
 
   describe 'POST /projects/:id/merge_requests/:merge_request_iid/pipelines' do
     before do
-      allow_any_instance_of(Ci::Pipeline)
-        .to receive(:ci_yaml_file)
-        .and_return(YAML.dump({
-          rspec: {
-            script: 'ls',
-            only: ['merge_requests']
-          }
-        }))
+      stub_ci_pipeline_yaml_file(YAML.dump({
+        rspec: {
+          script: 'ls',
+          only: ['merge_requests']
+        }
+      }))
     end
 
     let(:project) do

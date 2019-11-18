@@ -21,7 +21,6 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   def statistics_anchors(show_auto_devops_callout:)
     [
-      license_anchor_data,
       commits_anchor_data,
       branches_anchor_data,
       tags_anchor_data,
@@ -32,6 +31,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   def statistics_buttons(show_auto_devops_callout:)
     [
       readme_anchor_data,
+      license_anchor_data,
       changelog_anchor_data,
       contribution_guide_anchor_data,
       autodevops_anchor_data(show_auto_devops_callout: show_auto_devops_callout),
@@ -41,15 +41,14 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def empty_repo_statistics_anchors
-    [
-      license_anchor_data
-    ].compact.select { |item| item.is_link }
+    []
   end
 
   def empty_repo_statistics_buttons
     [
       new_file_anchor_data,
       readme_anchor_data,
+      license_anchor_data,
       changelog_anchor_data,
       contribution_guide_anchor_data,
       gitlab_ci_anchor_data
@@ -227,17 +226,18 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     icon = statistic_icon('scale')
 
     if repository.license_blob.present?
-      AnchorData.new(true,
-                     icon + content_tag(:strong, license_short_name, class: 'project-stat-value'),
-                     license_path)
+      AnchorData.new(false,
+                     icon + content_tag(:span, license_short_name, class: 'project-stat-value'),
+                     license_path,
+                     'default')
     else
       if current_user && can_current_user_push_to_default_branch?
-        AnchorData.new(true,
-                       content_tag(:span, icon + _('Add license'), class: 'add-license-link d-flex'),
+        AnchorData.new(false,
+                       content_tag(:span, statistic_icon + _('Add LICENSE'), class: 'add-license-link d-flex'),
                        add_license_path)
       else
-        AnchorData.new(true,
-                       icon + content_tag(:strong, _('No license. All rights reserved'), class: 'project-stat-value'),
+        AnchorData.new(false,
+                       icon + content_tag(:span, _('No license. All rights reserved'), class: 'project-stat-value'),
                        nil)
       end
     end

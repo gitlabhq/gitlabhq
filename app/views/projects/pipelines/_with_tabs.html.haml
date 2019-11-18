@@ -39,10 +39,6 @@
               %th
           = render partial: "projects/stage/stage", collection: pipeline.legacy_stages, as: :stage
 
-    - elsif pipeline.project.builds_enabled? && !pipeline.ci_yaml_file
-      .bs-callout.bs-callout-warning
-        = _("%{gitlab_ci_yml} not found in this commit") % { gitlab_ci_yml: ".gitlab-ci.yml" }
-
   - if @pipeline.failed_builds.present?
     #js-tab-failures.build-failures.tab-pane.build-page
       %table.table.responsive-table.ci-table.responsive-table-sm-rounded

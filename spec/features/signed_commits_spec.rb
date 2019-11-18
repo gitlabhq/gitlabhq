@@ -173,13 +173,5 @@ describe 'GPG signed commits' do
     context 'with vue tree view enabled' do
       it_behaves_like 'a commit with a signature'
     end
-
-    context 'with vue tree view disabled' do
-      before do
-        stub_feature_flags(vue_file_list: false)
-      end
-
-      it_behaves_like 'a commit with a signature'
-    end
   end
 end

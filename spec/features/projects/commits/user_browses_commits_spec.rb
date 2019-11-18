@@ -56,10 +56,6 @@ describe 'User browses commits' do
       project.enable_ci
 
       create(:ci_build, pipeline: pipeline)
-
-      allow_next_instance_of(Ci::Pipeline) do |instance|
-        allow(instance).to receive(:ci_yaml_file).and_return('')
-      end
     end
 
     it 'renders commit ci info' do

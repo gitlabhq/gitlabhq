@@ -261,9 +261,6 @@ msgstr ""
 msgid "%{from} to %{to}"
 msgstr ""
 
-msgid "%{gitlab_ci_yml} not found in this commit"
-msgstr ""
-
 msgid "%{group_docs_link_start}Groups%{group_docs_link_end} allow you to manage and collaborate across multiple projects. Members of a group have access to all of its projects."
 msgstr ""
 
@@ -906,6 +903,9 @@ msgid "Add Jaeger URL"
 msgstr ""
 
 msgid "Add Kubernetes cluster"
+msgstr ""
+
+msgid "Add LICENSE"
 msgstr ""
 
 msgid "Add README"
@@ -11947,6 +11947,9 @@ msgstr ""
 msgid "Owner"
 msgstr ""
 
+msgid "Package deleted successfully"
+msgstr ""
+
 msgid "Package information"
 msgstr ""
 
@@ -11965,10 +11968,10 @@ msgstr ""
 msgid "PackageRegistry|Copy yarn setup command"
 msgstr ""
 
-msgid "PackageRegistry|Delete Package"
+msgid "PackageRegistry|Delete Package Version"
 msgstr ""
 
-msgid "PackageRegistry|Delete Package Version"
+msgid "PackageRegistry|Delete package"
 msgstr ""
 
 msgid "PackageRegistry|Installation"

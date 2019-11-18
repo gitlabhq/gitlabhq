@@ -11,6 +11,7 @@ describe Gitlab::Ci::Pipeline::Chain::Build do
     [{ key: 'first', secret_value: 'world' },
      { key: 'second', secret_value: 'second_world' }]
   end
+
   let(:command) do
     Gitlab::Ci::Pipeline::Chain::Command.new(
       source: :push,
@@ -49,12 +50,6 @@ describe Gitlab::Ci::Pipeline::Chain::Build do
     expect(pipeline.project).to eq project
     expect(pipeline.variables.map { |var| var.slice(:key, :secret_value) })
       .to eq variables_attributes.map(&:with_indifferent_access)
-  end
-
-  it 'sets a valid config source' do
-    step.perform!
-
-    expect(pipeline.repository_source?).to be true
   end
 
   it 'returns a valid pipeline' do

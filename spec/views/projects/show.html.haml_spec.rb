@@ -18,6 +18,14 @@ describe 'projects/show' do
   end
 
   context 'commit signatures' do
+    context 'with vue tree view enabled' do
+      it 'are not rendered via js-signature-container' do
+        render
+
+        expect(rendered).not_to have_css('.js-signature-container')
+      end
+    end
+
     context 'with vue tree view disabled' do
       before do
         stub_feature_flags(vue_file_list: false)
@@ -27,14 +35,6 @@ describe 'projects/show' do
         render
 
         expect(rendered).to have_css('.js-signature-container')
-      end
-    end
-
-    context 'with vue tree view enabled' do
-      it 'are not rendered via js-signature-container' do
-        render
-
-        expect(rendered).not_to have_css('.js-signature-container')
       end
     end
   end

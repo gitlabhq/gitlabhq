@@ -5,7 +5,7 @@ module Gitlab
     module Pipeline
       module Chain
         class Base
-          attr_reader :pipeline, :command
+          attr_reader :pipeline, :command, :config
 
           delegate :project, :current_user, to: :command
 

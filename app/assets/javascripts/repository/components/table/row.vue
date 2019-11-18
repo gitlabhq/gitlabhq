@@ -37,6 +37,10 @@ export default {
       type: String,
       required: true,
     },
+    sha: {
+      type: String,
+      required: true,
+    },
     projectPath: {
       type: String,
       required: true,
@@ -98,7 +102,7 @@ export default {
       return this.path.replace(new RegExp(`^${this.currentPath}/`), '');
     },
     shortSha() {
-      return this.id.slice(0, 8);
+      return this.sha.slice(0, 8);
     },
     hasLockLabel() {
       return this.commit && this.commit.lockLabel;

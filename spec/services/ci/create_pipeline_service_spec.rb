@@ -65,6 +65,7 @@ describe Ci::CreatePipelineService do
         expect(pipeline.iid).not_to be_nil
         expect(pipeline.repository_source?).to be true
         expect(pipeline.builds.first).to be_kind_of(Ci::Build)
+        expect(pipeline.yaml_errors).not_to be_present
       end
 
       it 'increments the prometheus counter' do
@@ -474,6 +475,66 @@ describe Ci::CreatePipelineService do
       end
     end
 
+    context 'config evaluation' do
+      context 'when config is in a file in repository' do
+        before do
+          content = YAML.dump(rspec: { script: 'echo' })
+          stub_ci_pipeline_yaml_file(content)
+        end
+
+        it 'pull it from the repository' do
+          pipeline = execute_service
+          expect(pipeline).to be_repository_source
+          expect(pipeline.builds.map(&:name)).to eq ['rspec']
+        end
+      end
+
+      context 'when config is from Auto-DevOps' do
+        before do
+          stub_ci_pipeline_yaml_file(nil)
+          allow_any_instance_of(Project).to receive(:auto_devops_enabled?).and_return(true)
+        end
+
+        it 'pull it from Auto-DevOps' do
+          pipeline = execute_service
+          expect(pipeline).to be_auto_devops_source
+          expect(pipeline.builds.map(&:name)).to eq %w[test code_quality build]
+        end
+      end
+
+      context 'when config is not found' do
+        before do
+          stub_ci_pipeline_yaml_file(nil)
+        end
+
+        it 'attaches errors to the pipeline' do
+          pipeline = execute_service
+
+          expect(pipeline.errors.full_messages).to eq ['Missing .gitlab-ci.yml file']
+          expect(pipeline).not_to be_persisted
+        end
+      end
+
+      context 'when an unexpected error is raised' do
+        before do
+          expect(Gitlab::Ci::YamlProcessor).to receive(:new)
+            .and_raise(RuntimeError, 'undefined failure')
+        end
+
+        it 'saves error in pipeline' do
+          pipeline = execute_service
+
+          expect(pipeline.yaml_errors).to include('Undefined error')
+        end
+
+        it 'logs error' do
+          expect(Gitlab::Sentry).to receive(:track_acceptable_exception).and_call_original
+
+          execute_service
+        end
+      end
+    end
+
     context 'when yaml is invalid' do
       let(:ci_yaml) { 'invalid: file: fiile' }
       let(:message) { 'Message' }
@@ -536,6 +597,25 @@ describe Ci::CreatePipelineService do
 
           it_behaves_like 'a failed pipeline'
         end
+      end
+    end
+
+    context 'when an unexpected error is raised' do
+      before do
+        expect(Gitlab::Ci::YamlProcessor).to receive(:new)
+          .and_raise(RuntimeError, 'undefined failure')
+      end
+
+      it 'saves error in pipeline' do
+        pipeline = execute_service
+
+        expect(pipeline.yaml_errors).to include('Undefined error')
+      end
+
+      it 'logs error' do
+        expect(Gitlab::Sentry).to receive(:track_acceptable_exception).and_call_original
+
+        execute_service
       end
     end
 

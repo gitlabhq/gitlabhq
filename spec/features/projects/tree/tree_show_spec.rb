@@ -10,7 +10,6 @@ describe 'Projects tree', :js do
   let(:test_sha) { '7975be0116940bf2ad4321f79d02a55c5f7779aa' }
 
   before do
-    stub_feature_flags(vue_file_list: false)
     project.add_maintainer(user)
     sign_in(user)
   end

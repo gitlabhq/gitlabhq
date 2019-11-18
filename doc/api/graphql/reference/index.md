@@ -36,6 +36,7 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
 | `id` | ID! |  |
+| `sha` | String! | Last commit sha for entry |
 | `name` | String! |  |
 | `type` | EntryType! |  |
 | `path` | String! |  |
@@ -55,6 +56,7 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `authoredDate` | Time | Timestamp of when the commit was authored |
 | `webUrl` | String! | Web URL of the commit |
 | `signatureHtml` | String | Rendered HTML of the commit signature |
+| `authorName` | String | Commit authors name |
 | `author` | User | Author of the commit |
 | `latestPipeline` | Pipeline | Latest pipeline of the commit |
 
@@ -738,6 +740,7 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
 | `id` | ID! |  |
+| `sha` | String! | Last commit sha for entry |
 | `name` | String! |  |
 | `type` | EntryType! |  |
 | `path` | String! |  |
@@ -794,6 +797,7 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
 | `id` | ID! |  |
+| `sha` | String! | Last commit sha for entry |
 | `name` | String! |  |
 | `type` | EntryType! |  |
 | `path` | String! |  |

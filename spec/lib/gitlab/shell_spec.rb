@@ -401,7 +401,7 @@ describe Gitlab::Shell do
 
     describe '#add_namespace' do
       it 'creates a namespace' do
-        subject.add_namespace(storage, "mepmep")
+        Gitlab::GitalyClient::NamespaceService.allow { subject.add_namespace(storage, "mepmep") }
 
         expect(TestEnv.storage_dir_exists?(storage, "mepmep")).to be(true)
       end
@@ -425,8 +425,10 @@ describe Gitlab::Shell do
 
     describe '#remove' do
       it 'removes the namespace' do
-        subject.add_namespace(storage, "mepmep")
-        subject.rm_namespace(storage, "mepmep")
+        Gitlab::GitalyClient::NamespaceService.allow do
+          subject.add_namespace(storage, "mepmep")
+          subject.rm_namespace(storage, "mepmep")
+        end
 
         expect(TestEnv.storage_dir_exists?(storage, "mepmep")).to be(false)
       end
@@ -434,8 +436,10 @@ describe Gitlab::Shell do
 
     describe '#mv_namespace' do
       it 'renames the namespace' do
-        subject.add_namespace(storage, "mepmep")
-        subject.mv_namespace(storage, "mepmep", "2mep")
+        Gitlab::GitalyClient::NamespaceService.allow do
+          subject.add_namespace(storage, "mepmep")
+          subject.mv_namespace(storage, "mepmep", "2mep")
+        end
 
         expect(TestEnv.storage_dir_exists?(storage, "mepmep")).to be(false)
         expect(TestEnv.storage_dir_exists?(storage, "2mep")).to be(true)

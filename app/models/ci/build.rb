@@ -898,12 +898,6 @@ module Ci
         value.with_indifferent_access
       end
     end
-
-    def build_attributes_from_config
-      return {} unless pipeline.config_processor
-
-      pipeline.config_processor.build_attributes(name)
-    end
   end
 end
 

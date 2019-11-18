@@ -1,5 +1,6 @@
 <script>
 import { GlTooltipDirective, GlLink, GlButton, GlLoadingIcon } from '@gitlab/ui';
+import defaultAvatarUrl from 'images/no_avatar.png';
 import { sprintf, s__ } from '~/locale';
 import Icon from '../../vue_shared/components/icon.vue';
 import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
@@ -83,6 +84,7 @@ export default {
       this.showDescription = !this.showDescription;
     },
   },
+  defaultAvatarUrl,
 };
 </script>
 
@@ -97,6 +99,9 @@ export default {
         :img-size="40"
         class="avatar-cell"
       />
+      <span v-else class="avatar-cell user-avatar-link">
+        <img :src="$options.defaultAvatarUrl" width="40" height="40" class="avatar s40" />
+      </span>
       <div class="commit-detail flex-list">
         <div class="commit-content qa-commit-content">
           <gl-link :href="commit.webUrl" class="commit-row-message item-title">
@@ -119,6 +124,9 @@ export default {
             >
               {{ commit.author.name }}
             </gl-link>
+            <template v-else>
+              {{ commit.authorName }}
+            </template>
             {{ s__('LastCommit|authored') }}
             <timeago-tooltip :time="commit.authoredDate" tooltip-placement="bottom" />
           </div>
@@ -132,9 +140,8 @@ export default {
         </div>
         <div class="commit-actions flex-row">
           <div v-if="commit.signatureHtml" v-html="commit.signatureHtml"></div>
-          <div class="ci-status-link">
+          <div v-if="commit.pipeline" class="ci-status-link">
             <gl-link
-              v-if="commit.pipeline"
               v-gl-tooltip.left
               :href="commit.pipeline.detailedStatus.detailsPath"
               :title="statusTitle"

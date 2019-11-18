@@ -2,12 +2,11 @@
 
 require 'spec_helper'
 
-describe 'Projects > Show > Collaboration links' do
+describe 'Projects > Show > Collaboration links', :js do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 
   before do
-    stub_feature_flags(vue_file_list: false)
     project.add_developer(user)
     sign_in(user)
   end
@@ -17,15 +16,21 @@ describe 'Projects > Show > Collaboration links' do
 
     # The navigation bar
     page.within('.header-new') do
+      find('.qa-new-menu-toggle').click
+
       aggregate_failures 'dropdown links in the navigation bar' do
         expect(page).to have_link('New issue')
         expect(page).to have_link('New merge request')
         expect(page).to have_link('New snippet', href: new_project_snippet_path(project))
       end
+
+      find('.qa-new-menu-toggle').click
     end
 
     # The dropdown above the tree
     page.within('.repo-breadcrumb') do
+      find('.qa-add-to-tree').click
+
       aggregate_failures 'dropdown links above the repo tree' do
         expect(page).to have_link('New file')
         expect(page).to have_link('Upload file')
@@ -45,22 +50,18 @@ describe 'Projects > Show > Collaboration links' do
     visit project_path(project)
 
     page.within('.header-new') do
+      find('.qa-new-menu-toggle').click
+
       aggregate_failures 'dropdown links' do
         expect(page).not_to have_link('New issue')
         expect(page).not_to have_link('New merge request')
         expect(page).not_to have_link('New snippet', href: new_project_snippet_path(project))
       end
+
+      find('.qa-new-menu-toggle').click
     end
 
-    page.within('.repo-breadcrumb') do
-      aggregate_failures 'dropdown links' do
-        expect(page).not_to have_link('New file')
-        expect(page).not_to have_link('Upload file')
-        expect(page).not_to have_link('New directory')
-        expect(page).not_to have_link('New branch')
-        expect(page).not_to have_link('New tag')
-      end
-    end
+    expect(page).not_to have_selector('.qa-add-to-tree')
 
     expect(page).not_to have_link('Web IDE')
   end

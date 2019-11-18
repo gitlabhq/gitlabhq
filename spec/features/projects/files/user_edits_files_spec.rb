@@ -12,7 +12,6 @@ describe 'Projects > Files > User edits files', :js do
 
   before do
     stub_feature_flags(web_ide_default: false)
-    stub_feature_flags(vue_file_list: false)
 
     sign_in(user)
   end

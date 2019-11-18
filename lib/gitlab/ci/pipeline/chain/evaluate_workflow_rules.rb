@@ -41,7 +41,7 @@ module Gitlab
           end
 
           def workflow_config
-            @pipeline.config_processor.workflow_attributes || {}
+            @command.config_processor.workflow_attributes || {}
           end
         end
       end

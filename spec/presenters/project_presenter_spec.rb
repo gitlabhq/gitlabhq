@@ -312,8 +312,8 @@ describe ProjectPresenter do
           project.add_developer(user)
           allow(project.repository).to receive(:license_blob).and_return(nil)
 
-          expect(presenter.license_anchor_data).to have_attributes(is_link: true,
-                                                                   label: a_string_including('Add license'),
+          expect(presenter.license_anchor_data).to have_attributes(is_link: false,
+                                                                   label: a_string_including('Add LICENSE'),
                                                                    link: presenter.add_license_path)
         end
       end
@@ -322,7 +322,7 @@ describe ProjectPresenter do
         it 'returns anchor data' do
           allow(project.repository).to receive(:license_blob).and_return(double(name: 'foo'))
 
-          expect(presenter.license_anchor_data).to have_attributes(is_link: true,
+          expect(presenter.license_anchor_data).to have_attributes(is_link: false,
                                                                    label: a_string_including(presenter.license_short_name),
                                                                    link: presenter.license_path)
         end
@@ -420,6 +420,7 @@ describe ProjectPresenter do
 
     it 'orders the items correctly' do
       allow(project.repository).to receive(:readme).and_return(double(name: 'readme'))
+      allow(project.repository).to receive(:license_blob).and_return(nil)
       allow(project.repository).to receive(:changelog).and_return(nil)
       allow(project.repository).to receive(:contribution_guide).and_return(double(name: 'foo'))
       allow(presenter).to receive(:filename_path).and_return('fake/path')
@@ -433,25 +434,54 @@ describe ProjectPresenter do
     end
   end
 
-  describe '#empty_repo_statistics_buttons' do
-    let(:project) { create(:project, :repository) }
+  describe '#repo_statistics_buttons' do
     let(:presenter) { described_class.new(project, current_user: user) }
-
     subject(:empty_repo_statistics_buttons) { presenter.empty_repo_statistics_buttons }
 
     before do
-      project.add_developer(user)
       allow(project).to receive(:auto_devops_enabled?).and_return(false)
     end
 
-    it 'orders the items correctly in an empty project' do
-      expect(empty_repo_statistics_buttons.map(&:label)).to start_with(
-        a_string_including('New'),
-        a_string_including('README'),
-        a_string_including('CHANGELOG'),
-        a_string_including('CONTRIBUTING'),
-        a_string_including('CI/CD')
-      )
+    context 'empty repo' do
+      let(:project) { create(:project, :stubbed_repository)}
+
+      context 'for a guest user' do
+        it 'orders the items correctly' do
+          expect(empty_repo_statistics_buttons.map(&:label)).to start_with(
+            a_string_including('No license')
+          )
+        end
+      end
+
+      context 'for a developer' do
+        before do
+          project.add_developer(user)
+        end
+
+        it 'orders the items correctly' do
+          expect(empty_repo_statistics_buttons.map(&:label)).to start_with(
+            a_string_including('New'),
+            a_string_including('README'),
+            a_string_including('LICENSE'),
+            a_string_including('CHANGELOG'),
+            a_string_including('CONTRIBUTING'),
+            a_string_including('CI/CD')
+          )
+        end
+      end
+    end
+
+    context 'initialized repo' do
+      let(:project) { create(:project, :repository) }
+
+      it 'orders the items correctly' do
+        expect(empty_repo_statistics_buttons.map(&:label)).to start_with(
+          a_string_including('README'),
+          a_string_including('License'),
+          a_string_including('CHANGELOG'),
+          a_string_including('CONTRIBUTING')
+        )
+      end
     end
   end
 end

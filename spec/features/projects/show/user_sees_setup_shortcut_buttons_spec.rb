@@ -59,8 +59,8 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
       end
 
       it '"Add license" button linked to new file populated for a license' do
-        page.within('.project-stats') do
-          expect(page).to have_link('Add license', href: presenter.add_license_path)
+        page.within('.project-buttons') do
+          expect(page).to have_link('Add LICENSE', href: presenter.add_license_path)
         end
       end
     end
@@ -175,7 +175,7 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
         expect(project.repository.license_blob).not_to be_nil
 
         page.within('.project-buttons') do
-          expect(page).not_to have_link('Add license')
+          expect(page).not_to have_link('Add LICENSE')
         end
       end
 

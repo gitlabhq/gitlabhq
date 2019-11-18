@@ -57,18 +57,20 @@ module Storage
       # Move the namespace directory in all storages used by member projects
       repository_storages(legacy_only: true).each do |repository_storage|
         # Ensure old directory exists before moving it
-        gitlab_shell.add_namespace(repository_storage, full_path_before_last_save)
+        Gitlab::GitalyClient::NamespaceService.allow do
+          gitlab_shell.add_namespace(repository_storage, full_path_before_last_save)
 
-        # Ensure new directory exists before moving it (if there's a parent)
-        gitlab_shell.add_namespace(repository_storage, parent.full_path) if parent
+          # Ensure new directory exists before moving it (if there's a parent)
+          gitlab_shell.add_namespace(repository_storage, parent.full_path) if parent
 
-        unless gitlab_shell.mv_namespace(repository_storage, full_path_before_last_save, full_path)
+          unless gitlab_shell.mv_namespace(repository_storage, full_path_before_last_save, full_path)
 
-          Rails.logger.error "Exception moving path #{repository_storage} from #{full_path_before_last_save} to #{full_path}" # rubocop:disable Gitlab/RailsLogger
+            Rails.logger.error "Exception moving path #{repository_storage} from #{full_path_before_last_save} to #{full_path}" # rubocop:disable Gitlab/RailsLogger
 
-          # if we cannot move namespace directory we should rollback
-          # db changes in order to prevent out of sync between db and fs
-          raise Gitlab::UpdatePathError.new('namespace directory cannot be moved')
+            # if we cannot move namespace directory we should rollback
+            # db changes in order to prevent out of sync between db and fs
+            raise Gitlab::UpdatePathError.new('namespace directory cannot be moved')
+          end
         end
       end
     end
@@ -95,13 +97,15 @@ module Storage
         # We will remove it later async
         new_path = "#{full_path}+#{id}+deleted"
 
-        if gitlab_shell.mv_namespace(repository_storage, full_path, new_path)
-          Gitlab::AppLogger.info %Q(Namespace directory "#{full_path}" moved to "#{new_path}")
+        Gitlab::GitalyClient::NamespaceService.allow do
+          if gitlab_shell.mv_namespace(repository_storage, full_path, new_path)
+            Gitlab::AppLogger.info %Q(Namespace directory "#{full_path}" moved to "#{new_path}")
 
-          # Remove namespace directory async with delay so
-          # GitLab has time to remove all projects first
-          run_after_commit do
-            GitlabShellWorker.perform_in(5.minutes, :rm_namespace, repository_storage, new_path)
+            # Remove namespace directory async with delay so
+            # GitLab has time to remove all projects first
+            run_after_commit do
+              GitlabShellWorker.perform_in(5.minutes, :rm_namespace, repository_storage, new_path)
+            end
           end
         end
       end

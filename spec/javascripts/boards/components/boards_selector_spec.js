@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import BoardService from '~/boards/services/board_service';
 import BoardsSelector from '~/boards/components/boards_selector.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { TEST_HOST } from 'spec/test_constants';
@@ -37,7 +36,6 @@ describe('BoardsSelector', () => {
       bulkUpdatePath: '',
       boardId: '',
     });
-    window.gl.boardService = new BoardService();
 
     allBoardsResponse = Promise.resolve({
       data: boards,
@@ -46,8 +44,8 @@ describe('BoardsSelector', () => {
       data: recentBoards,
     });
 
-    spyOn(BoardService.prototype, 'allBoards').and.returnValue(allBoardsResponse);
-    spyOn(BoardService.prototype, 'recentBoards').and.returnValue(recentBoardsResponse);
+    spyOn(boardsStore, 'allBoards').and.returnValue(allBoardsResponse);
+    spyOn(boardsStore, 'recentBoards').and.returnValue(recentBoardsResponse);
 
     const Component = Vue.extend(BoardsSelector);
     vm = mountComponent(
@@ -94,7 +92,6 @@ describe('BoardsSelector', () => {
 
   afterEach(() => {
     vm.$destroy();
-    window.gl.boardService = undefined;
   });
 
   describe('filtering', () => {

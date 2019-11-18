@@ -218,7 +218,7 @@ export default {
   display: inline-block;
   flex: 1;
   max-width: inherit;
-  height: 18px;
+  height: 19px;
   line-height: 16px;
   text-overflow: ellipsis;
   white-space: nowrap;

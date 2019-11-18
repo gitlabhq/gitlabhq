@@ -26,9 +26,12 @@ export function fetchLogsTree(client, path, offset, resolver = null) {
   const { ref } = client.readQuery({ query: getRef });
 
   fetchpromise = axios
-    .get(`${gon.gitlab_url}/${projectPath}/refs/${ref}/logs_tree/${path.replace(/^\//, '')}`, {
-      params: { format: 'json', offset },
-    })
+    .get(
+      `${gon.relative_url_root}/${projectPath}/refs/${ref}/logs_tree/${path.replace(/^\//, '')}`,
+      {
+        params: { format: 'json', offset },
+      },
+    )
     .then(({ data, headers }) => {
       const headerLogsOffset = headers['more-logs-offset'];
       const { commits } = client.readQuery({ query: getCommits });

@@ -157,39 +157,6 @@ describe 'Commits' do
         end
       end
     end
-
-    describe '.gitlab-ci.yml not found warning' do
-      before do
-        project.add_reporter(user)
-      end
-
-      context 'ci builds enabled' do
-        it 'does not show warning' do
-          visit pipeline_path(pipeline)
-
-          expect(page).not_to have_content '.gitlab-ci.yml not found in this commit'
-        end
-
-        it 'shows warning' do
-          stub_ci_pipeline_yaml_file(nil)
-
-          visit pipeline_path(pipeline)
-
-          expect(page).to have_content '.gitlab-ci.yml not found in this commit'
-        end
-      end
-
-      context 'ci builds disabled' do
-        it 'does not show warning' do
-          stub_ci_builds_disabled
-          stub_ci_pipeline_yaml_file(nil)
-
-          visit pipeline_path(pipeline)
-
-          expect(page).not_to have_content '.gitlab-ci.yml not found in this commit'
-        end
-      end
-    end
   end
 
   context 'viewing commits for a branch' do

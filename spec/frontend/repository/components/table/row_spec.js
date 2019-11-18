@@ -41,6 +41,7 @@ describe('Repository table row component', () => {
   it('renders table row', () => {
     factory({
       id: '1',
+      sha: '123',
       path: 'test',
       type: 'file',
       currentPath: '/',
@@ -57,6 +58,7 @@ describe('Repository table row component', () => {
   `('renders a $componentName for type $type', ({ type, component }) => {
     factory({
       id: '1',
+      sha: '123',
       path: 'test',
       type,
       currentPath: '/',
@@ -73,6 +75,7 @@ describe('Repository table row component', () => {
   `('pushes new router if type $type is tree', ({ type, pushes }) => {
     factory({
       id: '1',
+      sha: '123',
       path: 'test',
       type,
       currentPath: '/',
@@ -95,6 +98,7 @@ describe('Repository table row component', () => {
   `('calls visitUrl if $type is not tree', ({ type, pushes }) => {
     factory({
       id: '1',
+      sha: '123',
       path: 'test',
       type,
       currentPath: '/',
@@ -112,6 +116,7 @@ describe('Repository table row component', () => {
   it('renders commit ID for submodule', () => {
     factory({
       id: '1',
+      sha: '123',
       path: 'test',
       type: 'commit',
       currentPath: '/',
@@ -123,6 +128,7 @@ describe('Repository table row component', () => {
   it('renders link with href', () => {
     factory({
       id: '1',
+      sha: '123',
       path: 'test',
       type: 'blob',
       url: 'https://test.com',
@@ -135,6 +141,7 @@ describe('Repository table row component', () => {
   it('renders LFS badge', () => {
     factory({
       id: '1',
+      sha: '123',
       path: 'test',
       type: 'commit',
       currentPath: '/',
@@ -147,6 +154,7 @@ describe('Repository table row component', () => {
   it('renders commit and web links with href for submodule', () => {
     factory({
       id: '1',
+      sha: '123',
       path: 'test',
       type: 'commit',
       url: 'https://test.com',
@@ -161,6 +169,7 @@ describe('Repository table row component', () => {
   it('renders lock icon', () => {
     factory({
       id: '1',
+      sha: '123',
       path: 'test',
       type: 'tree',
       currentPath: '/',

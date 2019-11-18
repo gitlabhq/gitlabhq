@@ -18,10 +18,23 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
       seeds_block: nil)
   end
 
+  let(:dependencies) do
+    [
+      Gitlab::Ci::Pipeline::Chain::Config::Content.new(pipeline, command),
+      Gitlab::Ci::Pipeline::Chain::Config::Process.new(pipeline, command),
+      Gitlab::Ci::Pipeline::Chain::Seed.new(pipeline, command)
+    ]
+  end
+
   let(:step) { described_class.new(pipeline, command) }
 
   let(:config) do
     { rspec: { script: 'rspec' } }
+  end
+
+  def run_chain
+    dependencies.map(&:perform!)
+    step.perform!
   end
 
   before do
@@ -30,7 +43,7 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
 
   context 'when pipeline doesn not have seeds block' do
     before do
-      step.perform!
+      run_chain
     end
 
     it 'does not persist the pipeline' do
@@ -66,7 +79,7 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
     end
 
     before do
-      step.perform!
+      run_chain
     end
 
     it 'breaks the chain' do
@@ -84,16 +97,16 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
   end
 
   describe 'pipeline protect' do
-    subject { step.perform! }
-
     context 'when ref is protected' do
       before do
         allow(project).to receive(:protected_for?).with('master').and_return(true)
         allow(project).to receive(:protected_for?).with('refs/heads/master').and_return(true)
+
+        dependencies.map(&:perform!)
       end
 
       it 'does not protect the pipeline' do
-        subject
+        run_chain
 
         expect(pipeline.protected).to eq(true)
       end
@@ -101,7 +114,7 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
 
     context 'when ref is not protected' do
       it 'does not protect the pipeline' do
-        subject
+        run_chain
 
         expect(pipeline.protected).to eq(false)
       end
@@ -114,7 +127,7 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
     end
 
     before do
-      step.perform!
+      run_chain
     end
 
     it 'breaks the chain' do
@@ -146,7 +159,7 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
       end
 
       it 'populates pipeline with resources described in the seeds block' do
-        step.perform!
+        run_chain
 
         expect(pipeline).not_to be_persisted
         expect(pipeline.variables).not_to be_empty
@@ -156,7 +169,7 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
       end
 
       it 'has pipeline iid' do
-        step.perform!
+        run_chain
 
         expect(pipeline.iid).to be > 0
       end
@@ -168,7 +181,7 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
       end
 
       it 'wastes pipeline iid' do
-        expect { step.perform! }.to raise_error(ActiveRecord::RecordNotSaved)
+        expect { run_chain }.to raise_error(ActiveRecord::RecordNotSaved)
 
         last_iid = InternalId.ci_pipelines
           .where(project_id: project.id)
@@ -183,14 +196,14 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
     let(:pipeline) { create(:ci_pipeline, project: project) }
 
     it 'raises error' do
-      expect { step.perform! }.to raise_error(described_class::PopulateError)
+      expect { run_chain }.to raise_error(described_class::PopulateError)
     end
   end
 
   context 'when variables policy is specified' do
     shared_examples_for 'a correct pipeline' do
       it 'populates pipeline according to used policies' do
-        step.perform!
+        run_chain
 
         expect(pipeline.stages.size).to eq 1
         expect(pipeline.stages.first.statuses.size).to eq 1

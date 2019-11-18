@@ -76,6 +76,11 @@ type Blob implements Entry {
   lfsOid: String
   name: String!
   path: String!
+
+  """
+  Last commit sha for entry
+  """
+  sha: String!
   type: EntryType!
   webUrl: String
 }
@@ -120,6 +125,11 @@ type Commit {
   Author of the commit
   """
   author: User
+
+  """
+  Commit authors name
+  """
+  authorName: String
 
   """
   Timestamp of when the commit was authored
@@ -1100,6 +1110,11 @@ interface Entry {
   id: ID!
   name: String!
   path: String!
+
+  """
+  Last commit sha for entry
+  """
+  sha: String!
   type: EntryType!
 }
 
@@ -2516,6 +2531,11 @@ enum IssueSort {
   Due date by descending order
   """
   DUE_DATE_DESC
+
+  """
+  Relative position by ascending order
+  """
+  RELATIVE_POSITION_ASC
 
   """
   Created at ascending order
@@ -4767,6 +4787,11 @@ type Submodule implements Entry {
   id: ID!
   name: String!
   path: String!
+
+  """
+  Last commit sha for entry
+  """
+  sha: String!
   treeUrl: String
   type: EntryType!
   webUrl: String
@@ -5113,6 +5138,11 @@ type TreeEntry implements Entry {
   id: ID!
   name: String!
   path: String!
+
+  """
+  Last commit sha for entry
+  """
+  sha: String!
   type: EntryType!
   webUrl: String
 }

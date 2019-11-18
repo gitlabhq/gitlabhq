@@ -24,6 +24,8 @@ module Types
           description: 'Web URL of the commit'
     field :signature_html, type: GraphQL::STRING_TYPE, null: true, calls_gitaly: true,
           description: 'Rendered HTML of the commit signature'
+    field :author_name, type: GraphQL::STRING_TYPE, null: true,
+          description: 'Commit authors name'
 
     # models/commit lazy loads the author by email
     field :author, type: Types::UserType, null: true,
