@@ -5800,6 +5800,9 @@ msgstr ""
 msgid "DesignManagement|Upload and view the latest designs for this issue. Consistent and easy to find, so everyone is up to date."
 msgstr ""
 
+msgid "DesignManagement|We could not delete %{design}. Please try again."
+msgstr ""
+
 msgid "DesignManagement|We could not delete design(s). Please try again."
 msgstr ""
 
@@ -20127,6 +20130,9 @@ msgstr ""
 msgid "a deleted user"
 msgstr ""
 
+msgid "a design"
+msgstr ""
+
 msgid "added %{created_at_timeago}"
 msgstr ""
 
@@ -20519,6 +20525,9 @@ msgid "deploy"
 msgstr ""
 
 msgid "design"
+msgstr ""
+
+msgid "designs"
 msgstr ""
 
 msgid "detached"

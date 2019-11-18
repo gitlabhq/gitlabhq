@@ -548,6 +548,32 @@ found, we should raise a
 `Gitlab::Graphql::Errors::ResourceNotAvailable` error. Which will be
 correctly rendered to the clients.
 
+## Gitlab's custom scalars
+
+### `Types::TimeType`
+
+[`Types::TimeType`](https://gitlab.com/gitlab-org/gitlab/blob/master/app%2Fgraphql%2Ftypes%2Ftime_type.rb)
+must be used as the type for all fields and arguments that deal with Ruby
+`Time` and `DateTime` objects.
+
+The type is
+[a custom scalar](https://github.com/rmosolgo/graphql-ruby/blob/master/guides/type_definitions/scalars.md#custom-scalars)
+that:
+
+- Converts Ruby's `Time` and `DateTime` objects into standardized
+  ISO-8601 formatted strings, when used as the type for our GraphQL fields.
+- Converts ISO-8601 formatted time strings into Ruby `Time` objects,
+  when used as the type for our GraphQL arguments.
+
+This allows our GraphQL API to have a standardized way that it presents time
+and handles time inputs.
+
+Example:
+
+```ruby
+field :created_at, Types::TimeType, null: false, description: 'Timestamp of when the issue was created'
+```
+
 ## Testing
 
 _full stack_ tests for a graphql query or mutation live in

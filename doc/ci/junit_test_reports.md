@@ -187,7 +187,7 @@ If JUnit XML files are generated and uploaded as part of a pipeline, these repor
 can be viewed inside the pipelines details page. The **Tests** tab on this page will
 display a list of test suites and cases reported from the XML file.
 
-![Test Reports Widget](img/junit_test_report_ui.png)
+![Test Reports Widget](img/pipelines_junit_test_report_ui_v12_5.png)
 
 You can view all the known test suites and click on each of these to see further
 details, including the cases that makeup the suite. Cases are ordered by status,

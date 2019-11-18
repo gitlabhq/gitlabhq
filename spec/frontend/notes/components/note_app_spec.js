@@ -10,6 +10,7 @@ import '~/behaviors/markdown/render_gfm';
 import { setTestTimeout } from 'helpers/timeout';
 // TODO: use generated fixture (https://gitlab.com/gitlab-org/gitlab-foss/issues/62491)
 import * as mockData from '../../notes/mock_data';
+import * as urlUtility from '~/lib/utils/url_utility';
 
 setTestTimeout(1000);
 
@@ -54,7 +55,9 @@ describe('note_app', () => {
           components: {
             NotesApp,
           },
-          template: '<div class="js-vue-notes-event"><notes-app v-bind="$attrs" /></div>',
+          template: `<div class="js-vue-notes-event">
+            <notes-app ref="notesApp" v-bind="$attrs" />
+          </div>`,
         },
         {
           attachToDocument: true,
@@ -311,6 +314,25 @@ describe('note_app', () => {
         awardName: 'test',
         noteId: 1,
       });
+    });
+  });
+
+  describe('mounted', () => {
+    beforeEach(() => {
+      axiosMock.onAny().reply(mockData.getIndividualNoteResponse);
+      wrapper = mountComponent();
+      return waitForDiscussionsRequest();
+    });
+
+    it('should listen hashchange event', () => {
+      const notesApp = wrapper.find(NotesApp);
+      const hash = 'some dummy hash';
+      jest.spyOn(urlUtility, 'getLocationHash').mockReturnValueOnce(hash);
+      const setTargetNoteHash = jest.spyOn(notesApp.vm, 'setTargetNoteHash');
+
+      window.dispatchEvent(new Event('hashchange'), hash);
+
+      expect(setTargetNoteHash).toHaveBeenCalled();
     });
   });
 });

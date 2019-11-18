@@ -539,7 +539,7 @@ type DesignCollection {
 
     """
     Filters designs to only those that existed at the version. If argument is
-    omitted or nil then all designs will reflect the latest version.
+    omitted or nil then all designs will reflect the latest version
     """
     atVersion: ID
 
@@ -549,12 +549,17 @@ type DesignCollection {
     before: String
 
     """
+    Filters designs by their filename
+    """
+    filenames: [String!]
+
+    """
     Returns the first _n_ elements from the list.
     """
     first: Int
 
     """
-    The list of IDs of designs.
+    Filters designs by their ID
     """
     ids: [ID!]
 

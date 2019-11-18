@@ -1,4 +1,4 @@
-/* eslint-disable no-var, one-var, no-unused-expressions, consistent-return, no-param-reassign, default-case, no-return-assign, vars-on-top */
+/* eslint-disable no-unused-expressions, consistent-return, no-param-reassign, default-case, no-return-assign */
 
 import $ from 'jquery';
 import '~/gl_dropdown';
@@ -6,41 +6,27 @@ import initSearchAutocomplete from '~/search_autocomplete';
 import '~/lib/utils/common_utils';
 
 describe('Search autocomplete dropdown', () => {
-  var assertLinks,
-    dashboardIssuesPath,
-    dashboardMRsPath,
-    groupIssuesPath,
-    groupMRsPath,
-    groupName,
-    mockDashboardOptions,
-    mockGroupOptions,
-    mockProjectOptions,
-    projectIssuesPath,
-    projectMRsPath,
-    projectName,
-    userId,
-    widget;
-  var userName = 'root';
+  let widget = null;
 
-  widget = null;
+  const userName = 'root';
 
-  userId = 1;
+  const userId = 1;
 
-  dashboardIssuesPath = '/dashboard/issues';
+  const dashboardIssuesPath = '/dashboard/issues';
 
-  dashboardMRsPath = '/dashboard/merge_requests';
+  const dashboardMRsPath = '/dashboard/merge_requests';
 
-  projectIssuesPath = '/gitlab-org/gitlab-foss/issues';
+  const projectIssuesPath = '/gitlab-org/gitlab-foss/issues';
 
-  projectMRsPath = '/gitlab-org/gitlab-foss/merge_requests';
+  const projectMRsPath = '/gitlab-org/gitlab-foss/merge_requests';
 
-  groupIssuesPath = '/groups/gitlab-org/issues';
+  const groupIssuesPath = '/groups/gitlab-org/issues';
 
-  groupMRsPath = '/groups/gitlab-org/merge_requests';
+  const groupMRsPath = '/groups/gitlab-org/merge_requests';
 
-  projectName = 'GitLab Community Edition';
+  const projectName = 'GitLab Community Edition';
 
-  groupName = 'Gitlab Org';
+  const groupName = 'Gitlab Org';
 
   const removeBodyAttributes = function() {
     const $body = $('body');
@@ -76,7 +62,7 @@ describe('Search autocomplete dropdown', () => {
   };
 
   // Mock `gl` object in window for dashboard specific page. App code will need it.
-  mockDashboardOptions = function() {
+  const mockDashboardOptions = function() {
     window.gl || (window.gl = {});
     return (window.gl.dashboardOptions = {
       issuesPath: dashboardIssuesPath,
@@ -85,7 +71,7 @@ describe('Search autocomplete dropdown', () => {
   };
 
   // Mock `gl` object in window for project specific page. App code will need it.
-  mockProjectOptions = function() {
+  const mockProjectOptions = function() {
     window.gl || (window.gl = {});
     return (window.gl.projectOptions = {
       'gitlab-ce': {
@@ -96,7 +82,7 @@ describe('Search autocomplete dropdown', () => {
     });
   };
 
-  mockGroupOptions = function() {
+  const mockGroupOptions = function() {
     window.gl || (window.gl = {});
     return (window.gl.groupOptions = {
       'gitlab-org': {
@@ -107,7 +93,7 @@ describe('Search autocomplete dropdown', () => {
     });
   };
 
-  assertLinks = function(list, issuesPath, mrsPath) {
+  const assertLinks = function(list, issuesPath, mrsPath) {
     if (issuesPath) {
       const issuesAssignedToMeLink = `a[href="${issuesPath}/?assignee_username=${userName}"]`;
       const issuesIHaveCreatedLink = `a[href="${issuesPath}/?author_username=${userName}"]`;
@@ -144,29 +130,26 @@ describe('Search autocomplete dropdown', () => {
   });
 
   it('should show Dashboard specific dropdown menu', function() {
-    var list;
     addBodyAttributes();
     mockDashboardOptions();
     widget.searchInput.triggerHandler('focus');
-    list = widget.wrap.find('.dropdown-menu').find('ul');
+    const list = widget.wrap.find('.dropdown-menu').find('ul');
     return assertLinks(list, dashboardIssuesPath, dashboardMRsPath);
   });
 
   it('should show Group specific dropdown menu', function() {
-    var list;
     addBodyAttributes('group');
     mockGroupOptions();
     widget.searchInput.triggerHandler('focus');
-    list = widget.wrap.find('.dropdown-menu').find('ul');
+    const list = widget.wrap.find('.dropdown-menu').find('ul');
     return assertLinks(list, groupIssuesPath, groupMRsPath);
   });
 
   it('should show Project specific dropdown menu', function() {
-    var list;
     addBodyAttributes('project');
     mockProjectOptions();
     widget.searchInput.triggerHandler('focus');
-    list = widget.wrap.find('.dropdown-menu').find('ul');
+    const list = widget.wrap.find('.dropdown-menu').find('ul');
     return assertLinks(list, projectIssuesPath, projectMRsPath);
   });
 
@@ -180,26 +163,25 @@ describe('Search autocomplete dropdown', () => {
   });
 
   it('should not show category related menu if there is text in the input', function() {
-    var link, list;
     addBodyAttributes('project');
     mockProjectOptions();
     widget.searchInput.val('help');
     widget.searchInput.triggerHandler('focus');
-    list = widget.wrap.find('.dropdown-menu').find('ul');
-    link = `a[href='${projectIssuesPath}/?assignee_username=${userName}']`;
+    const list = widget.wrap.find('.dropdown-menu').find('ul');
+    const link = `a[href='${projectIssuesPath}/?assignee_username=${userName}']`;
 
     expect(list.find(link).length).toBe(0);
   });
 
   it('should not submit the search form when selecting an autocomplete row with the keyboard', function() {
-    var ENTER = 13;
-    var DOWN = 40;
+    const ENTER = 13;
+    const DOWN = 40;
     addBodyAttributes();
     mockDashboardOptions(true);
-    var submitSpy = spyOnEvent('form', 'submit');
+    const submitSpy = spyOnEvent('form', 'submit');
     widget.searchInput.triggerHandler('focus');
     widget.wrap.trigger($.Event('keydown', { which: DOWN }));
-    var enterKeyEvent = $.Event('keydown', { which: ENTER });
+    const enterKeyEvent = $.Event('keydown', { which: ENTER });
     widget.searchInput.trigger(enterKeyEvent);
     // This does not currently catch failing behavior. For security reasons,
     // browsers will not trigger default behavior (form submit, in this

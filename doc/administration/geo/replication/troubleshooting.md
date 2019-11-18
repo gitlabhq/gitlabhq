@@ -366,7 +366,7 @@ to start again from scratch, there are a few steps that can help you:
    gitlab-ctl tail sidekiq
    ```
 
-1. Rename repository storage folders and create new ones
+1. Rename repository storage folders and create new ones. If you are not concerned about possible orphaned directories and files, then you can simply skip this step.
 
    ```sh
    mv /var/opt/gitlab/git-data/repositories /var/opt/gitlab/git-data/repositories.old
@@ -413,7 +413,9 @@ to start again from scratch, there are a few steps that can help you:
 1. Reset the Tracking Database
 
    ```sh
-   gitlab-rake geo:db:reset
+   gitlab-rake geo:db:drop
+   gitlab-ctl reconfigure
+   gitlab-rake geo:db:setup
    ```
 
 1. Restart previously stopped services
@@ -652,13 +654,6 @@ Geo cannot reuse an existing tracking database.
 
 It is safest to use a fresh secondary, or reset the whole secondary by following
 [Resetting Geo secondary node replication](#resetting-geo-secondary-node-replication).
-
-If you are not concerned about possible orphaned directories and files, then you
-can simply reset the existing tracking database with:
-
-```sh
-sudo gitlab-rake geo:db:reset
-```
 
 ### Geo node has a database that is writable which is an indication it is not configured for replication with the primary node
 

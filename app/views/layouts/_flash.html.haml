@@ -3,7 +3,7 @@
   - flash.each do |key, value|
     -# Don't show a flash message if the message is nil
     - if value
-      %div{ class: "flash-#{key}" }
+      %div{ class: "flash-#{key} mb-2" }
         %span= value
         %div{ class: "close-icon-wrapper js-close-icon" }
           = sprite_icon('close', size: 16, css_class: 'close-icon')

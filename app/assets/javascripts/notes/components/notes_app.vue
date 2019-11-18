@@ -122,6 +122,8 @@ export default {
         this.toggleAward({ awardName, noteId });
       });
     }
+
+    window.addEventListener('hashchange', this.handleHashChanged);
   },
   updated() {
     this.$nextTick(() => {
@@ -131,6 +133,7 @@ export default {
   },
   beforeDestroy() {
     this.stopPolling();
+    window.removeEventListener('hashchange', this.handleHashChanged);
   },
   methods: {
     ...mapActions([
@@ -138,7 +141,6 @@ export default {
       'fetchDiscussions',
       'poll',
       'toggleAward',
-      'scrollToNoteIfNeeded',
       'setNotesData',
       'setNoteableData',
       'setUserData',
@@ -151,6 +153,13 @@ export default {
       'convertToDiscussion',
       'stopPolling',
     ]),
+    handleHashChanged() {
+      const noteId = this.checkLocationHash();
+
+      if (noteId) {
+        this.setTargetNoteHash(getLocationHash());
+      }
+    },
     fetchNotes() {
       if (this.isFetching) return null;
 
@@ -194,6 +203,8 @@ export default {
           this.expandDiscussion({ discussionId: discussion.id });
         }
       }
+
+      return noteId;
     },
     startReplying(discussionId) {
       return this.convertToDiscussion(discussionId)

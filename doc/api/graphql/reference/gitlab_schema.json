@@ -7979,7 +7979,7 @@
               "args": [
                 {
                   "name": "ids",
-                  "description": "The list of IDs of designs.",
+                  "description": "Filters designs by their ID",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -7996,8 +7996,26 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "filenames",
+                  "description": "Filters designs by their filename",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "atVersion",
-                  "description": "Filters designs to only those that existed at the version. If argument is omitted or nil then all designs will reflect the latest version.",
+                  "description": "Filters designs to only those that existed at the version. If argument is omitted or nil then all designs will reflect the latest version",
                   "type": {
                     "kind": "SCALAR",
                     "name": "ID",
