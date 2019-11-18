@@ -254,6 +254,7 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `webPath` | String! | Web path of the issue |
 | `webUrl` | String! | Web URL of the issue |
 | `relativePosition` | Int | Relative position of the issue (used for positioning in epic tree and issue boards) |
+| `subscribed` | Boolean! | Boolean flag for whether the currently logged in user is subscribed to this issue |
 | `timeEstimate` | Int! | Time estimate of the issue |
 | `totalTimeSpent` | Int! | Total time reported as spent on the issue |
 | `closedAt` | Time | Timestamp of when the issue was closed |
@@ -295,41 +296,6 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | ---   |  ---- | ----------  |
 | `clientMutationId` | String | A unique identifier for the client performing the mutation. |
 | `errors` | String! => Array | Reasons why the mutation failed. |
-
-### ExtendedIssue
-
-| Name  | Type  | Description |
-| ---   |  ---- | ----------  |
-| `userPermissions` | IssuePermissions! | Permissions for the current user on the resource |
-| `iid` | ID! | Internal ID of the issue |
-| `title` | String! | Title of the issue |
-| `titleHtml` | String | The GitLab Flavored Markdown rendering of `title` |
-| `description` | String | Description of the issue |
-| `descriptionHtml` | String | The GitLab Flavored Markdown rendering of `description` |
-| `state` | IssueState! | State of the issue |
-| `reference` | String! | Internal reference of the issue. Returned in shortened format by default |
-| `author` | User! | User that created the issue |
-| `milestone` | Milestone | Milestone of the issue |
-| `dueDate` | Time | Due date of the issue |
-| `confidential` | Boolean! | Indicates the issue is confidential |
-| `discussionLocked` | Boolean! | Indicates discussion is locked on the issue |
-| `upvotes` | Int! | Number of upvotes the issue has received |
-| `downvotes` | Int! | Number of downvotes the issue has received |
-| `userNotesCount` | Int! | Number of user notes of the issue |
-| `webPath` | String! | Web path of the issue |
-| `webUrl` | String! | Web URL of the issue |
-| `relativePosition` | Int | Relative position of the issue (used for positioning in epic tree and issue boards) |
-| `timeEstimate` | Int! | Time estimate of the issue |
-| `totalTimeSpent` | Int! | Total time reported as spent on the issue |
-| `closedAt` | Time | Timestamp of when the issue was closed |
-| `createdAt` | Time! | Timestamp of when the issue was created |
-| `updatedAt` | Time! | Timestamp of when the issue was last updated |
-| `taskCompletionStatus` | TaskCompletionStatus! | Task completion status of the issue |
-| `epic` | Epic | The epic to which issue belongs |
-| `weight` | Int |  |
-| `designs` | DesignCollection |  |
-| `designCollection` | DesignCollection |  |
-| `subscribed` | Boolean! | Boolean flag for whether the currently logged in user is subscribed to this issue |
 
 ### Group
 
@@ -382,6 +348,7 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `webPath` | String! | Web path of the issue |
 | `webUrl` | String! | Web URL of the issue |
 | `relativePosition` | Int | Relative position of the issue (used for positioning in epic tree and issue boards) |
+| `subscribed` | Boolean! | Boolean flag for whether the currently logged in user is subscribed to this issue |
 | `timeEstimate` | Int! | Time estimate of the issue |
 | `totalTimeSpent` | Int! | Total time reported as spent on the issue |
 | `closedAt` | Time | Timestamp of when the issue was closed |
@@ -678,7 +645,7 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `statistics` | ProjectStatistics | Statistics of the project |
 | `repository` | Repository | Git repository of the project |
 | `mergeRequest` | MergeRequest | A single merge request of the project |
-| `issue` | ExtendedIssue | A single issue of the project |
+| `issue` | Issue | A single issue of the project |
 
 ### ProjectPermissions
 

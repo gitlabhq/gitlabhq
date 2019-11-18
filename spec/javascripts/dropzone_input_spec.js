@@ -13,54 +13,68 @@ const TEMPLATE = `<form class="gfm-form" data-uploads-path="${TEST_UPLOAD_PATH}"
 </form>`;
 
 describe('dropzone_input', () => {
-  let form;
-  let dropzone;
-  let xhr;
-  let oldXMLHttpRequest;
+  it('returns null when failed to initialize', () => {
+    const dropzone = dropzoneInput($('<form class="gfm-form"></form>'));
 
-  beforeEach(() => {
-    form = $(TEMPLATE);
-
-    dropzone = dropzoneInput(form);
-
-    xhr = jasmine.createSpyObj(Object.keys(XMLHttpRequest.prototype));
-    oldXMLHttpRequest = window.XMLHttpRequest;
-    window.XMLHttpRequest = () => xhr;
+    expect(dropzone).toBeNull();
   });
 
-  afterEach(() => {
-    window.XMLHttpRequest = oldXMLHttpRequest;
+  it('returns valid dropzone when successfully initialize', () => {
+    const dropzone = dropzoneInput($(TEMPLATE));
+
+    expect(dropzone.version).toBeTruthy();
   });
 
-  it('shows error message, when AJAX fails with json', () => {
-    xhr = {
-      ...xhr,
-      statusCode: 400,
-      readyState: 4,
-      responseText: JSON.stringify({ message: TEST_ERROR_MESSAGE }),
-      getResponseHeader: () => 'application/json',
-    };
+  describe('shows error message', () => {
+    let form;
+    let dropzone;
+    let xhr;
+    let oldXMLHttpRequest;
 
-    dropzone.processFile(TEST_FILE);
+    beforeEach(() => {
+      form = $(TEMPLATE);
 
-    xhr.onload();
+      dropzone = dropzoneInput(form);
 
-    expect(form.find('.uploading-error-message').text()).toEqual(TEST_ERROR_MESSAGE);
-  });
+      xhr = jasmine.createSpyObj(Object.keys(XMLHttpRequest.prototype));
+      oldXMLHttpRequest = window.XMLHttpRequest;
+      window.XMLHttpRequest = () => xhr;
+    });
 
-  it('shows error message, when AJAX fails with text', () => {
-    xhr = {
-      ...xhr,
-      statusCode: 400,
-      readyState: 4,
-      responseText: TEST_ERROR_MESSAGE,
-      getResponseHeader: () => 'text/plain',
-    };
+    afterEach(() => {
+      window.XMLHttpRequest = oldXMLHttpRequest;
+    });
 
-    dropzone.processFile(TEST_FILE);
+    it('when AJAX fails with json', () => {
+      xhr = {
+        ...xhr,
+        statusCode: 400,
+        readyState: 4,
+        responseText: JSON.stringify({ message: TEST_ERROR_MESSAGE }),
+        getResponseHeader: () => 'application/json',
+      };
 
-    xhr.onload();
+      dropzone.processFile(TEST_FILE);
 
-    expect(form.find('.uploading-error-message').text()).toEqual(TEST_ERROR_MESSAGE);
+      xhr.onload();
+
+      expect(form.find('.uploading-error-message').text()).toEqual(TEST_ERROR_MESSAGE);
+    });
+
+    it('when AJAX fails with text', () => {
+      xhr = {
+        ...xhr,
+        statusCode: 400,
+        readyState: 4,
+        responseText: TEST_ERROR_MESSAGE,
+        getResponseHeader: () => 'text/plain',
+      };
+
+      dropzone.processFile(TEST_FILE);
+
+      xhr.onload();
+
+      expect(form.find('.uploading-error-message').text()).toEqual(TEST_ERROR_MESSAGE);
+    });
   });
 });

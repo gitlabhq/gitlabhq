@@ -16,6 +16,7 @@ describe('CollapsedAssigneeList component', () => {
     };
 
     wrapper = shallowMount(CollapsedAssigneeList, {
+      attachToDocument: true,
       propsData,
       sync: false,
     });

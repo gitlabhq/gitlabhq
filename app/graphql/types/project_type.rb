@@ -135,7 +135,7 @@ module Types
           resolver: Resolvers::IssuesResolver
 
     field :issue,
-          Types::ExtendedIssueType,
+          Types::IssueType,
           null: true,
           description: 'A single issue of the project',
           resolver: Resolvers::IssuesResolver.single

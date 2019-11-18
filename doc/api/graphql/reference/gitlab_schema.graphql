@@ -1626,6 +1626,11 @@ type EpicIssue implements Noteable {
   state: IssueState!
 
   """
+  Boolean flag for whether the currently logged in user is subscribed to this issue
+  """
+  subscribed: Boolean!
+
+  """
   Task completion status of the issue
   """
   taskCompletionStatus: TaskCompletionStatus!
@@ -1906,276 +1911,6 @@ type EpicTreeReorderPayload {
   Reasons why the mutation failed.
   """
   errors: [String!]!
-}
-
-type ExtendedIssue implements Noteable {
-  """
-  Assignees of the issue
-  """
-  assignees(
-    """
-    Returns the elements in the list that come after the specified cursor.
-    """
-    after: String
-
-    """
-    Returns the elements in the list that come before the specified cursor.
-    """
-    before: String
-
-    """
-    Returns the first _n_ elements from the list.
-    """
-    first: Int
-
-    """
-    Returns the last _n_ elements from the list.
-    """
-    last: Int
-  ): UserConnection
-
-  """
-  User that created the issue
-  """
-  author: User!
-
-  """
-  Timestamp of when the issue was closed
-  """
-  closedAt: Time
-
-  """
-  Indicates the issue is confidential
-  """
-  confidential: Boolean!
-
-  """
-  Timestamp of when the issue was created
-  """
-  createdAt: Time!
-
-  """
-  Description of the issue
-  """
-  description: String
-
-  """
-  The GitLab Flavored Markdown rendering of `description`
-  """
-  descriptionHtml: String
-  designCollection: DesignCollection
-  designs: DesignCollection @deprecated(reason: "use design_collection")
-
-  """
-  Indicates discussion is locked on the issue
-  """
-  discussionLocked: Boolean!
-
-  """
-  All discussions on this noteable
-  """
-  discussions(
-    """
-    Returns the elements in the list that come after the specified cursor.
-    """
-    after: String
-
-    """
-    Returns the elements in the list that come before the specified cursor.
-    """
-    before: String
-
-    """
-    Returns the first _n_ elements from the list.
-    """
-    first: Int
-
-    """
-    Returns the last _n_ elements from the list.
-    """
-    last: Int
-  ): DiscussionConnection!
-
-  """
-  Number of downvotes the issue has received
-  """
-  downvotes: Int!
-
-  """
-  Due date of the issue
-  """
-  dueDate: Time
-
-  """
-  The epic to which issue belongs
-  """
-  epic: Epic
-
-  """
-  Internal ID of the issue
-  """
-  iid: ID!
-
-  """
-  Labels of the issue
-  """
-  labels(
-    """
-    Returns the elements in the list that come after the specified cursor.
-    """
-    after: String
-
-    """
-    Returns the elements in the list that come before the specified cursor.
-    """
-    before: String
-
-    """
-    Returns the first _n_ elements from the list.
-    """
-    first: Int
-
-    """
-    Returns the last _n_ elements from the list.
-    """
-    last: Int
-  ): LabelConnection
-
-  """
-  Milestone of the issue
-  """
-  milestone: Milestone
-
-  """
-  All notes on this noteable
-  """
-  notes(
-    """
-    Returns the elements in the list that come after the specified cursor.
-    """
-    after: String
-
-    """
-    Returns the elements in the list that come before the specified cursor.
-    """
-    before: String
-
-    """
-    Returns the first _n_ elements from the list.
-    """
-    first: Int
-
-    """
-    Returns the last _n_ elements from the list.
-    """
-    last: Int
-  ): NoteConnection!
-
-  """
-  List of participants in the issue
-  """
-  participants(
-    """
-    Returns the elements in the list that come after the specified cursor.
-    """
-    after: String
-
-    """
-    Returns the elements in the list that come before the specified cursor.
-    """
-    before: String
-
-    """
-    Returns the first _n_ elements from the list.
-    """
-    first: Int
-
-    """
-    Returns the last _n_ elements from the list.
-    """
-    last: Int
-  ): UserConnection
-
-  """
-  Internal reference of the issue. Returned in shortened format by default
-  """
-  reference(
-    """
-    Boolean option specifying whether the reference should be returned in full
-    """
-    full: Boolean = false
-  ): String!
-
-  """
-  Relative position of the issue (used for positioning in epic tree and issue boards)
-  """
-  relativePosition: Int
-
-  """
-  State of the issue
-  """
-  state: IssueState!
-
-  """
-  Boolean flag for whether the currently logged in user is subscribed to this issue
-  """
-  subscribed: Boolean!
-
-  """
-  Task completion status of the issue
-  """
-  taskCompletionStatus: TaskCompletionStatus!
-
-  """
-  Time estimate of the issue
-  """
-  timeEstimate: Int!
-
-  """
-  Title of the issue
-  """
-  title: String!
-
-  """
-  The GitLab Flavored Markdown rendering of `title`
-  """
-  titleHtml: String
-
-  """
-  Total time reported as spent on the issue
-  """
-  totalTimeSpent: Int!
-
-  """
-  Timestamp of when the issue was last updated
-  """
-  updatedAt: Time!
-
-  """
-  Number of upvotes the issue has received
-  """
-  upvotes: Int!
-
-  """
-  Number of user notes of the issue
-  """
-  userNotesCount: Int!
-
-  """
-  Permissions for the current user on the resource
-  """
-  userPermissions: IssuePermissions!
-
-  """
-  Web path of the issue
-  """
-  webPath: String!
-
-  """
-  Web URL of the issue
-  """
-  webUrl: String!
-  weight: Int
 }
 
 type Group {
@@ -2625,6 +2360,11 @@ type Issue implements Noteable {
   State of the issue
   """
   state: IssueState!
+
+  """
+  Boolean flag for whether the currently logged in user is subscribed to this issue
+  """
+  subscribed: Boolean!
 
   """
   Task completion status of the issue
@@ -4270,7 +4010,7 @@ type Project {
     Issues updated before this date
     """
     updatedBefore: Time
-  ): ExtendedIssue
+  ): Issue
 
   """
   Issues of the project

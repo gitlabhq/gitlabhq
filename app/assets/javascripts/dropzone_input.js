@@ -290,5 +290,5 @@ export default function dropzoneInput(form) {
     formTextarea.focus();
   });
 
-  return Dropzone.forElement($formDropzone.get(0));
+  return $formDropzone.get(0) ? Dropzone.forElement($formDropzone.get(0)) : null;
 }

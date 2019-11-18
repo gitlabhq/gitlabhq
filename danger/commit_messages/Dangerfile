@@ -240,7 +240,7 @@ def lint_commit(commit) # rubocop:disable Metrics/AbcSize
     fail_commit(
       commit,
       'Use full URLs instead of short references ' \
-        '(`gitlab-org/gitlab-ce#123` or `!123`), as short references are ' \
+        '(`gitlab-org/gitlab#123` or `!123`), as short references are ' \
         'displayed as plain text outside of GitLab'
     )
 

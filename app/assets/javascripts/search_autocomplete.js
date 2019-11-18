@@ -1,4 +1,4 @@
-/* eslint-disable no-return-assign, one-var, no-var, consistent-return, class-methods-use-this, vars-on-top */
+/* eslint-disable no-return-assign, consistent-return, class-methods-use-this */
 
 import $ from 'jquery';
 import { escape, throttle } from 'underscore';
@@ -29,14 +29,14 @@ const KEYCODE = {
 };
 
 function setSearchOptions() {
-  var $projectOptionsDataEl = $('.js-search-project-options');
-  var $groupOptionsDataEl = $('.js-search-group-options');
-  var $dashboardOptionsDataEl = $('.js-search-dashboard-options');
+  const $projectOptionsDataEl = $('.js-search-project-options');
+  const $groupOptionsDataEl = $('.js-search-group-options');
+  const $dashboardOptionsDataEl = $('.js-search-dashboard-options');
 
   if ($projectOptionsDataEl.length) {
     gl.projectOptions = gl.projectOptions || {};
 
-    var projectPath = $projectOptionsDataEl.data('projectPath');
+    const projectPath = $projectOptionsDataEl.data('projectPath');
 
     gl.projectOptions[projectPath] = {
       name: $projectOptionsDataEl.data('name'),
@@ -49,7 +49,7 @@ function setSearchOptions() {
   if ($groupOptionsDataEl.length) {
     gl.groupOptions = gl.groupOptions || {};
 
-    var groupPath = $groupOptionsDataEl.data('groupPath');
+    const groupPath = $groupOptionsDataEl.data('groupPath');
 
     gl.groupOptions[groupPath] = {
       name: $groupOptionsDataEl.data('name'),
@@ -387,20 +387,18 @@ export class SearchAutocomplete {
   }
 
   restoreOriginalState() {
-    var i, input, inputs, len;
-    inputs = Object.keys(this.originalState);
-    for (i = 0, len = inputs.length; i < len; i += 1) {
-      input = inputs[i];
+    const inputs = Object.keys(this.originalState);
+    for (let i = 0, len = inputs.length; i < len; i += 1) {
+      const input = inputs[i];
       this.getElement(`#${input}`).val(this.originalState[input]);
     }
   }
 
   resetSearchState() {
-    var i, input, inputs, len, results;
-    inputs = Object.keys(this.originalState);
-    results = [];
-    for (i = 0, len = inputs.length; i < len; i += 1) {
-      input = inputs[i];
+    const inputs = Object.keys(this.originalState);
+    const results = [];
+    for (let i = 0, len = inputs.length; i < len; i += 1) {
+      const input = inputs[i];
       results.push(this.getElement(`#${input}`).val(''));
     }
     return results;
@@ -415,8 +413,7 @@ export class SearchAutocomplete {
   }
 
   restoreMenu() {
-    var html;
-    html = `<ul><li class="dropdown-menu-empty-item"><a>${__('Loading...')}</a></li></ul>`;
+    const html = `<ul><li class="dropdown-menu-empty-item"><a>${__('Loading...')}</a></li></ul>`;
     return this.dropdownContent.html(html);
   }
 

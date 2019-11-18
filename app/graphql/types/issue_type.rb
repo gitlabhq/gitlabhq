@@ -68,6 +68,8 @@ module Types
 
     field :participants, Types::UserType.connection_type, null: true, complexity: 5,
           description: 'List of participants in the issue'
+    field :subscribed, GraphQL::BOOLEAN_TYPE, method: :subscribed?, null: false, complexity: 5,
+          description: 'Boolean flag for whether the currently logged in user is subscribed to this issue'
     field :time_estimate, GraphQL::INT_TYPE, null: false,
           description: 'Time estimate of the issue'
     field :total_time_spent, GraphQL::INT_TYPE, null: false,

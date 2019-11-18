@@ -15,7 +15,7 @@ module Banzai
       end
 
       def extra_element_attrs
-        { width: "100%" }
+        { width: "400" }
       end
     end
   end

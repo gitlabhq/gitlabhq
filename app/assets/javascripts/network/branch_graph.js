@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, one-var, consistent-return, camelcase */
+/* eslint-disable func-names, consistent-return, camelcase */
 
 import $ from 'jquery';
 import { __ } from '../locale';
@@ -40,18 +40,20 @@ export default class BranchGraph {
   }
 
   prepareData(days, commits) {
-    var c, ch, cw, j, len, ref;
+    let c = 0;
+    let j = 0;
+    let len = 0;
     this.days = days;
     this.commits = commits;
     this.collectParents();
     this.graphHeight = $(this.element).height();
     this.graphWidth = $(this.element).width();
-    ch = Math.max(this.graphHeight, this.offsetY + this.unitTime * this.mtime + 150);
-    cw = Math.max(this.graphWidth, this.offsetX + this.unitSpace * this.mspace + 300);
+    const ch = Math.max(this.graphHeight, this.offsetY + this.unitTime * this.mtime + 150);
+    const cw = Math.max(this.graphWidth, this.offsetX + this.unitSpace * this.mspace + 300);
     this.r = Raphael(this.element.get(0), cw, ch);
     this.top = this.r.set();
     this.barHeight = Math.max(this.graphHeight, this.unitTime * this.days.length + 320);
-    ref = this.commits;
+    const ref = this.commits;
     for (j = 0, len = ref.length; j < len; j += 1) {
       c = ref[j];
       if (c.id in this.parents) {
@@ -64,18 +66,20 @@ export default class BranchGraph {
   }
 
   collectParents() {
-    var c, j, len, p, ref, results;
-    var l, len1, ref1, results1;
-    ref = this.commits;
-    results = [];
+    let j = 0;
+    let l = 0;
+    let len = 0;
+    let len1 = 0;
+    const ref = this.commits;
+    const results = [];
     for (j = 0, len = ref.length; j < len; j += 1) {
-      c = ref[j];
+      const c = ref[j];
       this.mtime = Math.max(this.mtime, c.time);
       this.mspace = Math.max(this.mspace, c.space);
-      ref1 = c.parents;
-      results1 = [];
+      const ref1 = c.parents;
+      const results1 = [];
       for (l = 0, len1 = ref1.length; l < len1; l += 1) {
-        p = ref1[l];
+        const p = ref1[l];
         this.parents[p[0]] = true;
         results1.push((this.mspace = Math.max(this.mspace, p[1])));
       }
@@ -85,9 +89,8 @@ export default class BranchGraph {
   }
 
   collectColors() {
-    var k, results;
-    k = 0;
-    results = [];
+    let k = 0;
+    const results = [];
     while (k < this.mspace) {
       this.colors.push(Raphael.getColor(0.8));
       // Skipping a few colors in the spectrum to get more contrast between colors
@@ -99,20 +102,21 @@ export default class BranchGraph {
   }
 
   buildGraph() {
-    var cuday, cumonth, day, len, mm, ref;
+    let mm = 0;
+    let len = 0;
+    let cuday = 0;
+    let cumonth = '';
     const { r } = this;
-    cuday = 0;
-    cumonth = '';
     r.rect(0, 0, 40, this.barHeight).attr({
       fill: '#222',
     });
     r.rect(40, 0, 30, this.barHeight).attr({
       fill: '#444',
     });
-    ref = this.days;
+    const ref = this.days;
 
     for (mm = 0, len = ref.length; mm < len; mm += 1) {
-      day = ref[mm];
+      const day = ref[mm];
       if (cuday !== day[0] || cumonth !== day[1]) {
         // Dates
         r.text(55, this.offsetY + this.unitTime * mm, day[0]).attr({
@@ -137,26 +141,25 @@ export default class BranchGraph {
   }
 
   renderPartialGraph() {
-    var commit, end, i, isGraphEdge, start, x, y;
-    start = Math.floor((this.element.scrollTop() - this.offsetY) / this.unitTime) - 10;
+    const isGraphEdge = true;
+    let i = 0;
+    let start = Math.floor((this.element.scrollTop() - this.offsetY) / this.unitTime) - 10;
     if (start < 0) {
-      isGraphEdge = true;
       start = 0;
     }
-    end = start + 40;
+    let end = start + 40;
     if (this.commits.length < end) {
-      isGraphEdge = true;
       end = this.commits.length;
     }
     if (this.prev_start === -1 || Math.abs(this.prev_start - start) > 10 || isGraphEdge) {
       i = start;
       this.prev_start = start;
       while (i < end) {
-        commit = this.commits[i];
+        const commit = this.commits[i];
         i += 1;
         if (commit.hasDrawn !== true) {
-          x = this.offsetX + this.unitSpace * (this.mspace - commit.space);
-          y = this.offsetY + this.unitTime * commit.time;
+          const x = this.offsetX + this.unitSpace * (this.mspace - commit.space);
+          const y = this.offsetY + this.unitTime * commit.time;
           this.drawDot(x, y, commit);
           this.drawLines(x, y, commit);
           this.appendLabel(x, y, commit);
@@ -203,27 +206,25 @@ export default class BranchGraph {
   }
 
   appendLabel(x, y, commit) {
-    var label, rect, shortrefs, text, textbox;
-
     if (!commit.refs) {
       return;
     }
 
     const { r } = this;
-    shortrefs = commit.refs;
+    let shortrefs = commit.refs;
     // Truncate if longer than 15 chars
     if (shortrefs.length > 17) {
       shortrefs = `${shortrefs.substr(0, 15)}…`;
     }
-    text = r.text(x + 4, y, shortrefs).attr({
+    const text = r.text(x + 4, y, shortrefs).attr({
       'text-anchor': 'start',
       font: '10px Monaco, monospace',
       fill: '#FFF',
       title: commit.refs,
     });
-    textbox = text.getBBox();
+    const textbox = text.getBBox();
     // Create rectangle based on the size of the textbox
-    rect = r.rect(x, y - 7, textbox.width + 5, textbox.height + 5, 4).attr({
+    const rect = r.rect(x, y - 7, textbox.width + 5, textbox.height + 5, 4).attr({
       fill: '#000',
       'fill-opacity': 0.5,
       stroke: 'none',
@@ -234,7 +235,7 @@ export default class BranchGraph {
       'fill-opacity': 0.5,
       stroke: 'none',
     });
-    label = r.set(rect, text);
+    const label = r.set(rect, text);
     label.transform(['t', -rect.getBBox().width - 15, 0]);
     // Set text to front
     return text.toFront();
@@ -286,17 +287,21 @@ export default class BranchGraph {
   }
 
   drawLines(x, y, commit) {
-    var arrow, color, i, len, offset, parent, parentCommit, parentX1, parentX2, parentY, route;
+    let i = 0;
+    let len = 0;
+    let arrow = '';
+    let offset = [];
+    let color = [];
     const { r } = this;
     const ref = commit.parents;
     const results = [];
 
     for (i = 0, len = ref.length; i < len; i += 1) {
-      parent = ref[i];
-      parentCommit = this.preparedCommits[parent[0]];
-      parentY = this.offsetY + this.unitTime * parentCommit.time;
-      parentX1 = this.offsetX + this.unitSpace * (this.mspace - parentCommit.space);
-      parentX2 = this.offsetX + this.unitSpace * (this.mspace - parent[1]);
+      const parent = ref[i];
+      const parentCommit = this.preparedCommits[parent[0]];
+      const parentY = this.offsetY + this.unitTime * parentCommit.time;
+      const parentX1 = this.offsetX + this.unitSpace * (this.mspace - parentCommit.space);
+      const parentX2 = this.offsetX + this.unitSpace * (this.mspace - parent[1]);
       // Set line color
       if (parentCommit.space <= commit.space) {
         color = this.colors[commit.space];
@@ -315,7 +320,7 @@ export default class BranchGraph {
         arrow = 'l-5,0,2,4,3,-4,-4,2';
       }
       // Start point
-      route = ['M', x + offset[0], y + offset[1]];
+      const route = ['M', x + offset[0], y + offset[1]];
       // Add arrow if not first parent
       if (i > 0) {
         route.push(arrow);

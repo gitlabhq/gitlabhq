@@ -25,6 +25,10 @@ describe API::SidekiqMetrics do
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_a Hash
+      expect(json_response['jobs']).to be_a Hash
+      expect(json_response['jobs'].keys)
+        .to contain_exactly(*%w[processed failed enqueued dead])
+      expect(json_response['jobs'].values).to all(be_an(Integer))
     end
 
     it 'defines the `compound_metrics` endpoint' do
