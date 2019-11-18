@@ -1,5 +1,5 @@
 -# DANGER: Any changes to this file need to be reflected in issuables_list/components/issuable.vue!
-%li{ id: dom_id(issue), class: issue_css_classes(issue), url: issue_path(issue), data: { labels: issue.label_ids, id: issue.id } }
+%li{ id: dom_id(issue), class: issue_css_classes(issue), url: issue_path(issue), data: { labels: issue.label_ids, id: issue.id, qa_selector: 'issue', qa_issue_title: issue.title } }
   .issue-box
     - if @can_bulk_update
       .issue-check.hidden

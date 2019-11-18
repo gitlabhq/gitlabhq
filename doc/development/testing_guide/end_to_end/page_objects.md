@@ -167,6 +167,65 @@ There are two supported methods of defining elements within a view.
 Any existing `.qa-selector` class should be considered deprecated
 and we should prefer the `data-qa-selector` method of definition.
 
+### Dynamic element selection
+
+> Introduced in GitLab 12.5
+
+A common occurrence in automated testing is selecting a single "one-of-many" element.  
+In a list of several items, how do you differentiate what you are selecting on?  
+The most common workaround for this is via text matching.  Instead, a better practice is
+by matching on that specific element by a unique identifier, rather than by text.
+
+We got around this by adding the `data-qa-*` extensible selection mechanism.
+
+#### Examples
+
+**Example 1**
+
+Given the following Rails view (using GitLab Issues as an example):
+
+```haml
+%ul.issues-list
+ - @issues.each do |issue|
+   %li.issue{data: { qa_selector: 'issue', qa_issue_title: issue.title } }= link_to issue
+```
+
+We can select on that specific issue by matching on the Rails model.
+
+```ruby
+class Page::Project::Issues::Index < Page::Base
+  def has_issue?(issue)
+    has_element? :issue, issue_title: issue
+  end
+end
+```
+
+In our test, we can validate that this particular issue exists.
+
+```ruby
+describe 'Issue' do
+  it 'has an issue titled "hello"' do
+    Page::Project::Issues::Index.perform do |index|
+      expect(index).to have_issue('hello')
+    end
+  end
+end
+```
+
+**Example 2**
+
+*By an index...*
+
+```haml
+%ol
+  - @some_model.each_with_index do |model, idx|
+    %li.model{ data: { qa_selector: 'model', qa_index: idx } }
+```
+
+```ruby
+expect(the_page).to have_element(:model, index: 1) #=> select on the first model that appears in the list
+```
+
 ### Exceptions
 
 In some cases it might not be possible or worthwhile to add a selector.

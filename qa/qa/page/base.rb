@@ -111,12 +111,18 @@ module QA
         element.select value
       end
 
-      def has_element?(name, text: nil, wait: Capybara.default_max_wait_time)
-        has_css?(element_selector_css(name), wait: wait, text: text)
+      def has_element?(name, **kwargs)
+        wait = kwargs[:wait] ? kwargs[:wait] && kwargs.delete(:wait) : Capybara.default_max_wait_time
+        text = kwargs[:text] ? kwargs[:text] && kwargs.delete(:text) : nil
+
+        has_css?(element_selector_css(name, kwargs), text: text, wait: wait)
       end
 
-      def has_no_element?(name, text: nil, wait: Capybara.default_max_wait_time)
-        has_no_css?(element_selector_css(name), wait: wait, text: text)
+      def has_no_element?(name, **kwargs)
+        wait = kwargs[:wait] ? kwargs[:wait] && kwargs.delete(:wait) : Capybara.default_max_wait_time
+        text = kwargs[:text] ? kwargs[:text] && kwargs.delete(:text) : nil
+
+        has_no_css?(element_selector_css(name, kwargs), wait: wait, text: text)
       end
 
       def has_text?(text)
@@ -199,8 +205,8 @@ module QA
         scroll_to(element_selector_css(name), *args)
       end
 
-      def element_selector_css(name)
-        Page::Element.new(name).selector_css
+      def element_selector_css(name, *attributes)
+        Page::Element.new(name, *attributes).selector_css
       end
 
       def click_link_with_text(text)

@@ -411,6 +411,7 @@ group :test do
   gem 'concurrent-ruby', '~> 1.1'
   gem 'test-prof', '~> 0.10.0'
   gem 'rspec_junit_formatter'
+  gem 'guard-rspec'
 end
 
 gem 'octokit', '~> 4.9'

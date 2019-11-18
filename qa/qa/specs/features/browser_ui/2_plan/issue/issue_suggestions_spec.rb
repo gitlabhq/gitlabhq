@@ -6,8 +6,7 @@ module QA
       let(:issue_title) { 'Issue Lists are awesome' }
 
       before do
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.perform(&:sign_in_using_credentials)
+        Flow::Login.sign_in
 
         project = Resource::Project.fabricate_via_api! do |resource|
           resource.name = 'project-for-issue-suggestions'

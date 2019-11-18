@@ -7,8 +7,7 @@ module QA
         QA::Runtime::Env.personal_access_token = QA::Runtime::Env.admin_personal_access_token
 
         unless QA::Runtime::Env.personal_access_token
-          Runtime::Browser.visit(:gitlab, Page::Main::Login)
-          Page::Main::Login.perform(&:sign_in_using_admin_credentials)
+          Flow::Login.sign_in_as_admin
         end
 
         user = Resource::User.fabricate_via_api! do |user|
@@ -20,9 +19,7 @@ module QA
 
         Page::Main::Menu.perform(&:sign_out) if Page::Main::Menu.perform { |p| p.has_personal_area?(wait: 0) }
 
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-
-        Page::Main::Login.perform(&:sign_in_using_credentials)
+        Flow::Login.sign_in
 
         project = Resource::Project.fabricate_via_api! do |resource|
           resource.name = 'xss-test-for-mentions-project'
