@@ -11,11 +11,10 @@ module Gitlab
         #
         class Default < ::Gitlab::Config::Entry::Node
           include ::Gitlab::Config::Entry::Configurable
-
-          DuplicateError = Class.new(Gitlab::Config::Loader::FormatError)
+          include ::Gitlab::Config::Entry::Inheritable
 
           ALLOWED_KEYS = %i[before_script image services
-                            after_script cache].freeze
+                            after_script cache interruptible].freeze
 
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS
@@ -41,31 +40,22 @@ module Gitlab
             description: 'Configure caching between build jobs.',
             inherit: true
 
-          helpers :before_script, :image, :services, :after_script, :cache
+          entry :interruptible, Entry::Boolean,
+            description: 'Set jobs interruptible default value.',
+            inherit: false
 
-          def compose!(deps = nil)
-            super(self)
-
-            inherit!(deps)
-          end
+          helpers :before_script, :image, :services, :after_script, :cache, :interruptible
 
           private
 
-          def inherit!(deps)
-            return unless deps
+          def overwrite_entry(deps, key, current_entry)
+            inherited_entry = deps[key]
 
-            self.class.nodes.each do |key, factory|
-              next unless factory.inheritable?
-
-              root_entry = deps[key]
-              next unless root_entry.specified?
-
-              if self[key].specified?
-                raise DuplicateError, "#{key} is defined in top-level and `default:` entry"
-              end
-
-              @entries[key] = root_entry
+            if inherited_entry.specified? && current_entry.specified?
+              raise InheritError, "#{key} is defined in top-level and `default:` entry"
             end
+
+            inherited_entry unless current_entry.specified?
           end
         end
       end

@@ -7,7 +7,7 @@ describe Gitlab::ImportExport::Shared do
 
   context 'with a repository on disk' do
     let(:project) { create(:project, :repository) }
-    let(:base_path) { %(/tmp/project_exports/#{project.disk_path}/) }
+    let(:base_path) { %(/tmp/gitlab_exports/#{project.disk_path}/) }
 
     describe '#archive_path' do
       it 'uses a random hash to avoid conflicts' do

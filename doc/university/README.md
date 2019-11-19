@@ -129,7 +129,7 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 1. [GitLab Flow vs Forking in GitLab - Video](https://www.youtube.com/watch?v=UGotqAUACZA)
 1. [GitLab Flow Overview](https://about.gitlab.com/blog/2014/09/29/gitlab-flow/)
 1. [Always Start with an Issue](https://about.gitlab.com/blog/2016/03/03/start-with-an-issue/)
-1. [GitLab Flow Documentation](../workflow/gitlab_flow.md)
+1. [GitLab Flow Documentation](../topics/gitlab_flow.md)
 
 ### 2.5. GitLab Comparisons
 

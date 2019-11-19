@@ -66,24 +66,22 @@ module QA
         expect(page).to have_content(commit_message_of_second_branch)
         expect(page).to have_content(commit_message_of_third_branch)
 
-        Page::Project::Branches::Show.perform do |branches|
-          expect(branches).to have_branch_with_badge(second_branch, 'merged')
-        end
+        Page::Project::Branches::Show.perform do |branches_page|
+          expect(branches_page).to have_branch_with_badge(second_branch, 'merged')
 
-        Page::Project::Branches::Show.perform do |branches_view|
-          branches_view.delete_branch(third_branch)
-          expect(branches_view).to have_no_branch(third_branch)
-        end
+          branches_page.delete_branch(third_branch)
 
-        Page::Project::Branches::Show.perform(&:delete_merged_branches)
+          expect(branches_page).to have_no_branch(third_branch)
 
-        expect(page).to have_content(
-          'Merged branches are being deleted. This can take some time depending on the number of branches. Please refresh the page to see changes.'
-        )
+          branches_page.delete_merged_branches
 
-        page.refresh
-        Page::Project::Branches::Show.perform do |branches_view|
-          expect(branches_view).to have_no_branch(second_branch, reload: true)
+          expect(branches_page).to have_content(
+            'Merged branches are being deleted. This can take some time depending on the number of branches. Please refresh the page to see changes.'
+          )
+
+          branches_page.refresh
+
+          expect(branches_page).to have_no_branch(second_branch, reload: true)
         end
       end
     end

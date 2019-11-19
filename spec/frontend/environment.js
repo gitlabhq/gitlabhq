@@ -41,6 +41,12 @@ class CustomEnvironment extends JSDOMEnvironment {
     this.global.fixturesBasePath = `${ROOT_PATH}/tmp/tests/frontend/fixtures${IS_EE ? '-ee' : ''}`;
     this.global.staticFixturesBasePath = `${ROOT_PATH}/spec/frontend/fixtures`;
 
+    /**
+     * window.fetch() is required by the apollo-upload-client library otherwise
+     * a ReferenceError is generated: https://github.com/jaydenseric/apollo-upload-client/issues/100
+     */
+    this.global.fetch = () => {};
+
     // Not yet supported by JSDOM: https://github.com/jsdom/jsdom/issues/317
     this.global.document.createRange = () => ({
       setStart: () => {},

@@ -7,14 +7,27 @@ module Gitlab
         extend ActiveSupport::Concern
 
         def self.included(node)
-          node.aspects.append -> do
-            @validator = self.class.validator.new(self)
-            @validator.validate(:new)
+          node.with_aspect -> do
+            validate(:new)
           end
         end
 
+        def validator
+          @validator ||= self.class.validator.new(self)
+        end
+
+        def validate(context = nil)
+          validator.validate(context)
+        end
+
+        def compose!(deps = nil, &blk)
+          super(deps, &blk)
+
+          validate(:composed)
+        end
+
         def errors
-          @validator.messages + descendants.flat_map(&:errors) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+          validator.messages + descendants.flat_map(&:errors)
         end
 
         class_methods do

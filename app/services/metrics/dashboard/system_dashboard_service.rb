@@ -20,7 +20,8 @@ module Metrics
           [{
             path: SYSTEM_DASHBOARD_PATH,
             display_name: SYSTEM_DASHBOARD_NAME,
-            default: true
+            default: true,
+            system_dashboard: true
           }]
         end
 

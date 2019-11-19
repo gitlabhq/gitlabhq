@@ -28,7 +28,7 @@ describe PipelineScheduleWorker do
 
     context 'when there is a scheduled pipeline within next_run_at' do
       shared_examples 'successful scheduling' do
-        it 'creates a new pipeline' do
+        it 'creates a new pipeline', :sidekiq_might_not_need_inline do
           expect { subject }.to change { project.ci_pipelines.count }.by(1)
           expect(Ci::Pipeline.last).to be_schedule
 

@@ -10,6 +10,8 @@ shared_context 'Ldap::OmniauthCallbacksController' do
   let(:provider) { 'ldapmain' }
   let(:valid_login?) { true }
   let(:user) { create(:omniauth_user, extern_uid: uid, provider: provider) }
+  let(:ldap_setting_defaults) { { enabled: true, servers: ldap_server_config } }
+  let(:ldap_settings) { ldap_setting_defaults }
   let(:ldap_server_config) do
     { main: ldap_config_defaults(:main) }
   end
@@ -23,7 +25,7 @@ shared_context 'Ldap::OmniauthCallbacksController' do
   end
 
   before do
-    stub_ldap_setting(enabled: true, servers: ldap_server_config)
+    stub_ldap_setting(ldap_settings)
     described_class.define_providers!
     Rails.application.reload_routes!
 
@@ -35,5 +37,9 @@ shared_context 'Ldap::OmniauthCallbacksController' do
 
   after do
     Rails.application.env_config['omniauth.auth'] = @original_env_config_omniauth_auth
+  end
+
+  after(:all) do
+    Rails.application.reload_routes!
   end
 end

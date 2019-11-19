@@ -93,8 +93,8 @@ module Gitlab
         docs: "~documentation", # Docs are reviewed along DevOps stages, so don't need roulette for now.
         none: "",
         qa: "~QA",
-        test: "~test for `spec/features/*`",
-        engineering_productivity: "Engineering Productivity for CI config review"
+        test: "~test ~Quality for `spec/features/*`",
+        engineering_productivity: '~"Engineering Productivity" for CI, Danger'
       }.freeze
       CATEGORIES = {
         %r{\Adoc/} => :none, # To reinstate roulette for documentation, set to `:docs`.
@@ -104,7 +104,7 @@ module Gitlab
         %r{\A(ee/)?public/} => :frontend,
         %r{\A(ee/)?spec/(javascripts|frontend)/} => :frontend,
         %r{\A(ee/)?vendor/assets/} => :frontend,
-        %r{\Ascripts/frontend/} => :frontend,
+        %r{\A(ee/)?scripts/frontend/} => :frontend,
         %r{(\A|/)(
           \.babelrc |
           \.eslintignore |
@@ -130,14 +130,18 @@ module Gitlab
         %r{\A(app/models/project_authorization|app/services/users/refresh_authorized_projects_service)(/|\.rb)} => :database,
         %r{\Arubocop/cop/migration(/|\.rb)} => :database,
 
+        %r{\A(\.gitlab-ci\.yml\z|\.gitlab\/ci)} => :engineering_productivity,
+        %r{Dangerfile\z} => :engineering_productivity,
+        %r{\A(ee/)?(danger/|lib/gitlab/danger/)} => :engineering_productivity,
+        %r{\A(ee/)?scripts/} => :engineering_productivity,
+
         %r{\A(ee/)?app/(?!assets|views)[^/]+} => :backend,
-        %r{\A(ee/)?(bin|config|danger|generator_templates|lib|rubocop|scripts)/} => :backend,
+        %r{\A(ee/)?(bin|config|generator_templates|lib|rubocop)/} => :backend,
         %r{\A(ee/)?spec/features/} => :test,
         %r{\A(ee/)?spec/(?!javascripts|frontend)[^/]+} => :backend,
         %r{\A(ee/)?vendor/(?!assets)[^/]+} => :backend,
         %r{\A(ee/)?vendor/(languages\.yml|licenses\.csv)\z} => :backend,
-        %r{\A(\.gitlab-ci\.yml\z|\.gitlab\/ci)} => :engineering_productivity,
-        %r{\A(Dangerfile|Gemfile|Gemfile.lock|Procfile|Rakefile)\z} => :backend,
+        %r{\A(Gemfile|Gemfile.lock|Procfile|Rakefile)\z} => :backend,
         %r{\A[A-Z_]+_VERSION\z} => :backend,
         %r{\A\.rubocop(_todo)?\.yml\z} => :backend,
 

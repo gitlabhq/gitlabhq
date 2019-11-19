@@ -37,6 +37,7 @@ module MergeRequests
     def validate!
       authorization_check!
       error_check!
+      updated_check!
     end
 
     def authorization_check!
@@ -58,6 +59,15 @@ module MergeRequests
         end
 
       raise_error(error) if error
+    end
+
+    def updated_check!
+      return unless Feature.enabled?(:validate_merge_sha, merge_request.target_project, default_enabled: false)
+
+      unless source_matches?
+        raise_error('Branch has been updated since the merge was requested. '\
+                    'Please review the changes.')
+      end
     end
 
     def commit
@@ -124,6 +134,12 @@ module MergeRequests
 
     def merge_request_info
       merge_request.to_reference(full: true)
+    end
+
+    def source_matches?
+      # params-keys are symbols coming from the controller, but when they get
+      # loaded from the database they're strings
+      params.with_indifferent_access[:sha] == merge_request.diff_head_sha
     end
   end
 end

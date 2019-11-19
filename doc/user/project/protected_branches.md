@@ -55,7 +55,7 @@ the actions that different roles can perform with the protected branch.
 For example, you could set "Allowed to push" to "No one", and "Allowed to merge"
 to "Developers + Maintainers", to require _everyone_ to submit a merge request for
 changes going into the protected branch. This is compatible with workflows like
-the [GitLab workflow](../../workflow/gitlab_flow.md).
+the [GitLab workflow](../../topics/gitlab_flow.md).
 
 However, there are workflows where that is not needed, and only protecting from
 force pushes and branch removal is useful. For those workflows, you can allow
@@ -118,10 +118,11 @@ all matching branches:
 
 When a protected branch or wildcard protected branches are set to
 [**No one** is **Allowed to push**](#using-the-allowed-to-merge-and-allowed-to-push-settings),
-Developers (and users with higher [permission levels](../permissions.md)) are allowed
-to create a new protected branch, but only via the UI or through the API (to avoid
-creating protected branches accidentally from the command line or from a Git
-client application).
+Developers (and users with higher [permission levels](../permissions.md)) are
+allowed to create a new protected branch as long as they are
+[**Allowed to merge**](#using-the-allowed-to-merge-and-allowed-to-push-settings).
+This can only be done via the UI or through the API (to avoid creating protected
+branches accidentally from the command line or from a Git client application).
 
 To create a new branch through the user interface:
 

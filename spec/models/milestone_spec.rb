@@ -55,6 +55,17 @@ describe Milestone do
       end
     end
 
+    describe 'title' do
+      it { is_expected.to validate_presence_of(:title) }
+
+      it 'is invalid if title would be empty after sanitation' do
+        milestone = build(:milestone, project: project, title: '<img src=x onerror=prompt(1)>')
+
+        expect(milestone).not_to be_valid
+        expect(milestone.errors[:title]).to include("can't be blank")
+      end
+    end
+
     describe 'milestone_releases' do
       let(:milestone) { build(:milestone, project: project) }
 

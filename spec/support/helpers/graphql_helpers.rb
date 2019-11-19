@@ -37,9 +37,12 @@ module GraphqlHelpers
   # BatchLoader::GraphQL returns a wrapper, so we need to :sync in order
   # to get the actual values
   def batch_sync(max_queries: nil, &blk)
-    result = batch(max_queries: nil, &blk)
+    wrapper = proc do
+      lazy_vals = yield
+      lazy_vals.is_a?(Array) ? lazy_vals.map(&:sync) : lazy_vals&.sync
+    end
 
-    result.is_a?(Array) ? result.map(&:sync) : result&.sync
+    batch(max_queries: max_queries, &wrapper)
   end
 
   def graphql_query_for(name, attributes = {}, fields = nil)
@@ -157,7 +160,13 @@ module GraphqlHelpers
 
   def attributes_to_graphql(attributes)
     attributes.map do |name, value|
-      "#{GraphqlHelpers.fieldnamerize(name.to_s)}: \"#{value}\""
+      value_str = if value.is_a?(Array)
+                    '["' + value.join('","') + '"]'
+                  else
+                    "\"#{value}\""
+                  end
+
+      "#{GraphqlHelpers.fieldnamerize(name.to_s)}: #{value_str}"
     end.join(", ")
   end
 
@@ -281,6 +290,12 @@ module GraphqlHelpers
 
   def allow_high_graphql_recursion
     allow_any_instance_of(Gitlab::Graphql::QueryAnalyzers::RecursionAnalyzer).to receive(:recursion_threshold).and_return 1000
+  end
+
+  def node_array(data, extract_attribute = nil)
+    data.map do |item|
+      extract_attribute ? item['node'][extract_attribute] : item['node']
+    end
   end
 end
 

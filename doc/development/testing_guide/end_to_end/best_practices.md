@@ -65,3 +65,31 @@ This library [saves the screenshots in the RSpec's `after` hook](https://github.
 
 Given this fact, we should limit the use of `before(:all)` to only those operations where a screenshot is not
 necessary in case of failure and QA logs would be enough for debugging.
+
+## Ensure tests do not leave the browser logged in
+
+All QA tests expect to be able to log in at the start of the test.
+
+That's not possible if a test leaves the browser logged in when it finishes. Normally this isn't a problem because [Capybara resets the session after each test](https://github.com/teamcapybara/capybara/blob/9ebc5033282d40c73b0286e60217515fd1bb0b5d/lib/capybara/rspec.rb#L18). But Capybara does that in an `after` block, so when a test logs in in an `after(:context)` block, the browser returns to a logged in state *after* Capybara had logged it out. And so the next test will fail.
+
+For an example see: <https://gitlab.com/gitlab-org/gitlab/issues/34736>
+
+Ideally, any actions peformed in an `after(:context)` (or [`before(:context)`](#limit-the-use-of-beforeall-hook)) block would be performed via the API. But if it's necessary to do so via the UI (e.g., if API functionality doesn't exist), make sure to log out at the end of the block.
+
+```ruby
+after(:all) do
+  login unless Page::Main::Menu.perform(&:signed_in?)
+
+  # Do something while logged in
+
+  Page::Main::Menu.perform(&:sign_out)
+end
+```
+
+## Tag tests that require Administrator access
+
+We don't run tests that require Administrator access against our Production environments.
+
+When you add a new test that requires Administrator access, apply the RSpec metadata `:requires_admin` so that the test will not be included in the test suites executed against Production and other environments on which we don't want to run those tests.
+
+Note: When running tests locally or configuring a pipeline, the environment variable `QA_CAN_TEST_ADMIN_FEATURES` can be set to `false` to skip tests that have the `:requires_admin` tag.

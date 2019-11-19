@@ -64,7 +64,7 @@ describe "Internal references", :js do
             visit(project_issue_path(public_project, public_project_issue))
           end
 
-          it "shows references" do
+          it "shows references", :sidekiq_might_not_need_inline do
             page.within("#merge-requests .merge-requests-title") do
               expect(page).to have_content("Related merge requests")
               expect(page).to have_css(".mr-count-badge")
@@ -133,7 +133,7 @@ describe "Internal references", :js do
             visit(project_merge_request_path(public_project, public_project_merge_request))
           end
 
-          it "shows references" do
+          it "shows references", :sidekiq_might_not_need_inline do
             expect(page).to have_content("mentioned in merge request #{private_project_merge_request.to_reference(public_project)}")
                        .and have_content(private_project_user.name)
           end

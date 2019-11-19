@@ -265,7 +265,11 @@ export default {
     <div class="table-section section-10 commit-link">
       <div class="table-mobile-header" role="rowheader">{{ s__('Pipeline|Status') }}</div>
       <div class="table-mobile-content">
-        <ci-badge :status="pipelineStatus" :show-text="!isChildView" />
+        <ci-badge
+          :status="pipelineStatus"
+          :show-text="!isChildView"
+          data-qa-selector="pipeline_commit_status"
+        />
       </div>
     </div>
 

@@ -871,7 +871,7 @@ button.mini-pipeline-graph-dropdown-toggle {
         height: $ci-action-dropdown-svg-size;
         fill: $gl-text-color-secondary;
         position: relative;
-        top: 1px;
+        top: auto;
         vertical-align: initial;
       }
     }
@@ -1081,4 +1081,14 @@ button.mini-pipeline-graph-dropdown-toggle {
 
 .legend-success {
   color: $green-500;
+}
+
+.test-reports-table {
+  .build-trace {
+    @include build-trace();
+  }
+}
+
+.progress-bar.bg-primary {
+  background-color: $blue-500 !important;
 }

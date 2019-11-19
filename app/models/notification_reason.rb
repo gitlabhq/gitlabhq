@@ -6,12 +6,14 @@ class NotificationReason
   OWN_ACTIVITY = 'own_activity'
   ASSIGNED = 'assigned'
   MENTIONED = 'mentioned'
+  SUBSCRIBED = 'subscribed'
 
   # Priority list for selecting which reason to return in the notification
   REASON_PRIORITY = [
     OWN_ACTIVITY,
     ASSIGNED,
-    MENTIONED
+    MENTIONED,
+    SUBSCRIBED
   ].freeze
 
   # returns the priority of a reason as an integer

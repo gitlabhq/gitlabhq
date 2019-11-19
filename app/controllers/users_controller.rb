@@ -16,7 +16,7 @@ class UsersController < ApplicationController
 
   skip_before_action :authenticate_user!
   prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss) }
-  before_action :user, except: [:exists]
+  before_action :user, except: [:exists, :suggests]
   before_action :authorize_read_user_profile!,
                 only: [:calendar, :calendar_activities, :groups, :projects, :contributed_projects, :starred_projects, :snippets]
 
@@ -112,6 +112,14 @@ class UsersController < ApplicationController
 
   def exists
     render json: { exists: !!Namespace.find_by_path_or_name(params[:username]) }
+  end
+
+  def suggests
+    namespace_path = params[:username]
+    exists = !!Namespace.find_by_path_or_name(namespace_path)
+    suggestions = exists ? [Namespace.clean_path(namespace_path)] : []
+
+    render json: { exists: exists, suggests: suggestions }
   end
 
   private

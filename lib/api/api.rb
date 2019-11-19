@@ -21,6 +21,7 @@ module API
                     Gitlab::GrapeLogging::Loggers::ClientEnvLogger.new,
                     Gitlab::GrapeLogging::Loggers::RouteLogger.new,
                     Gitlab::GrapeLogging::Loggers::UserLogger.new,
+                    Gitlab::GrapeLogging::Loggers::ExceptionLogger.new,
                     Gitlab::GrapeLogging::Loggers::QueueDurationLogger.new,
                     Gitlab::GrapeLogging::Loggers::PerfLogger.new,
                     Gitlab::GrapeLogging::Loggers::CorrelationIdLogger.new
@@ -112,6 +113,7 @@ module API
     mount ::API::Files
     mount ::API::GroupBoards
     mount ::API::GroupClusters
+    mount ::API::GroupExport
     mount ::API::GroupLabels
     mount ::API::GroupMilestones
     mount ::API::Groups

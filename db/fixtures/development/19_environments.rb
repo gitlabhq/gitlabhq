@@ -67,7 +67,7 @@ class Gitlab::Seeder::Environments
 end
 
 Gitlab::Seeder.quiet do
-  Project.all.sample(5).each do |project|
+  Project.not_mass_generated.sample(5).each do |project|
     project_environments = Gitlab::Seeder::Environments.new(project)
     project_environments.seed!
   end

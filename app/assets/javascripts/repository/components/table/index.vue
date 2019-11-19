@@ -1,19 +1,15 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { GlSkeletonLoading } from '@gitlab/ui';
 import { sprintf, __ } from '../../../locale';
 import getRefMixin from '../../mixins/get_ref';
-import getFiles from '../../queries/getFiles.query.graphql';
 import getProjectPath from '../../queries/getProjectPath.query.graphql';
 import TableHeader from './header.vue';
 import TableRow from './row.vue';
 import ParentRow from './parent_row.vue';
 
-const PAGE_SIZE = 100;
-
 export default {
   components: {
-    GlLoadingIcon,
+    GlSkeletonLoading,
     TableHeader,
     TableRow,
     ParentRow,
@@ -29,86 +25,39 @@ export default {
       type: String,
       required: true,
     },
+    entries: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+    isLoading: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
       projectPath: '',
-      nextPageCursor: '',
-      entries: {
-        trees: [],
-        submodules: [],
-        blobs: [],
-      },
-      isLoadingFiles: false,
     };
   },
   computed: {
     tableCaption() {
+      if (this.isLoading) {
+        return sprintf(
+          __(
+            'Loading files, directories, and submodules in the path %{path} for commit reference %{ref}',
+          ),
+          { path: this.path, ref: this.ref },
+        );
+      }
+
       return sprintf(
         __('Files, directories, and submodules in the path %{path} for commit reference %{ref}'),
         { path: this.path, ref: this.ref },
       );
     },
     showParentRow() {
-      return !this.isLoadingFiles && ['', '/'].indexOf(this.path) === -1;
-    },
-  },
-  watch: {
-    $route: function routeChange() {
-      this.entries.trees = [];
-      this.entries.submodules = [];
-      this.entries.blobs = [];
-      this.nextPageCursor = '';
-      this.fetchFiles();
-    },
-  },
-  mounted() {
-    // We need to wait for `ref` and `projectPath` to be set
-    this.$nextTick(() => this.fetchFiles());
-  },
-  methods: {
-    fetchFiles() {
-      this.isLoadingFiles = true;
-
-      return this.$apollo
-        .query({
-          query: getFiles,
-          variables: {
-            projectPath: this.projectPath,
-            ref: this.ref,
-            path: this.path || '/',
-            nextPageCursor: this.nextPageCursor,
-            pageSize: PAGE_SIZE,
-          },
-        })
-        .then(({ data }) => {
-          if (!data) return;
-
-          const pageInfo = this.hasNextPage(data.project.repository.tree);
-
-          this.isLoadingFiles = false;
-          this.entries = Object.keys(this.entries).reduce(
-            (acc, key) => ({
-              ...acc,
-              [key]: this.normalizeData(key, data.project.repository.tree[key].edges),
-            }),
-            {},
-          );
-
-          if (pageInfo && pageInfo.hasNextPage) {
-            this.nextPageCursor = pageInfo.endCursor;
-            this.fetchFiles();
-          }
-        })
-        .catch(() => createFlash(__('An error occurred while fetching folder content.')));
-    },
-    normalizeData(key, data) {
-      return this.entries[key].concat(data.map(({ node }) => node));
-    },
-    hasNextPage(data) {
-      return []
-        .concat(data.trees.pageInfo, data.submodules.pageInfo, data.blobs.pageInfo)
-        .find(({ hasNextPage }) => hasNextPage);
+      return !this.isLoading && ['', '/'].indexOf(this.path) === -1;
     },
   },
 };
@@ -117,12 +66,7 @@ export default {
 <template>
   <div class="tree-content-holder">
     <div class="table-holder bordered-box">
-      <table class="table tree-table qa-file-tree" aria-live="polite">
-        <caption class="sr-only">
-          {{
-            tableCaption
-          }}
-        </caption>
+      <table :aria-label="tableCaption" class="table tree-table qa-file-tree" aria-live="polite">
         <table-header v-once />
         <tbody>
           <parent-row v-show="showParentRow" :commit-ref="ref" :path="path" />
@@ -131,6 +75,7 @@ export default {
               v-for="entry in val"
               :id="entry.id"
               :key="`${entry.flatPath}-${entry.id}`"
+              :sha="entry.sha"
               :project-path="projectPath"
               :current-path="path"
               :name="entry.name"
@@ -141,9 +86,15 @@ export default {
               :lfs-oid="entry.lfsOid"
             />
           </template>
+          <template v-if="isLoading">
+            <tr v-for="i in 5" :key="i" aria-hidden="true">
+              <td><gl-skeleton-loading :lines="1" class="h-auto" /></td>
+              <td><gl-skeleton-loading :lines="1" class="h-auto" /></td>
+              <td><gl-skeleton-loading :lines="1" class="ml-auto h-auto w-50" /></td>
+            </tr>
+          </template>
         </tbody>
       </table>
-      <gl-loading-icon v-show="isLoadingFiles" class="my-3" size="md" />
     </div>
   </div>
 </template>

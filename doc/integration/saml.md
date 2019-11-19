@@ -572,7 +572,7 @@ installations from source. Restart Unicorn using the `sudo gitlab-ctl restart un
 command on Omnibus installations and `sudo service gitlab restart` on installations
 from source.
 
-You may also find the [SSO Tracer](https://addons.mozilla.org/en-US/firefox/addon/sso-tracer/)
+You may also find the [SAML Tracer](https://addons.mozilla.org/en-US/firefox/addon/saml-tracer/)
 (Firefox) and [SAML Chrome Panel](https://chrome.google.com/webstore/detail/saml-chrome-panel/paijfdbeoenhembfhkhllainmocckace)
 (Chrome) browser extensions useful in your debugging.
 

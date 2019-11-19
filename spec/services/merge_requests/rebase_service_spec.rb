@@ -174,7 +174,7 @@ describe MergeRequests::RebaseService do
                   target_branch: 'master', target_project: project)
           end
 
-          it 'rebases source branch' do
+          it 'rebases source branch', :sidekiq_might_not_need_inline do
             parent_sha = forked_project.repository.commit(merge_request_from_fork.source_branch).parents.first.sha
             target_branch_sha = project.repository.commit(merge_request_from_fork.target_branch).sha
             expect(parent_sha).to eq(target_branch_sha)

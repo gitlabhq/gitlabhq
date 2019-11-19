@@ -6,9 +6,11 @@ class ReleasesFinder
     @current_user = current_user
   end
 
-  def execute
+  def execute(preload: true)
     return Release.none unless Ability.allowed?(@current_user, :read_release, @project)
 
-    @project.releases.sorted
+    releases = @project.releases
+    releases = releases.preloaded if preload
+    releases.sorted
   end
 end

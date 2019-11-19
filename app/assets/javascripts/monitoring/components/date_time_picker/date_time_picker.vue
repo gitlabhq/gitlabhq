@@ -55,17 +55,13 @@ export default {
       };
     },
   },
+  watch: {
+    selectedTimeWindow() {
+      this.verifyTimeRange();
+    },
+  },
   mounted() {
-    const range = getTimeWindow(this.selectedTimeWindow);
-    if (range) {
-      this.selectedTimeWindowText = this.timeWindows[range];
-    } else {
-      this.customTime = {
-        from: truncateZerosInDateTime(ISODateToString(this.selectedTimeWindow.start)),
-        to: truncateZerosInDateTime(ISODateToString(this.selectedTimeWindow.end)),
-      };
-      this.selectedTimeWindowText = sprintf(s__('%{from} to %{to}'), this.customTime);
-    }
+    this.verifyTimeRange();
   },
   methods: {
     activeTimeWindow(key) {
@@ -86,6 +82,18 @@ export default {
     },
     closeDropdown() {
       this.$refs.dropdown.hide();
+    },
+    verifyTimeRange() {
+      const range = getTimeWindow(this.selectedTimeWindow);
+      if (range) {
+        this.selectedTimeWindowText = this.timeWindows[range];
+      } else {
+        this.customTime = {
+          from: truncateZerosInDateTime(ISODateToString(this.selectedTimeWindow.start)),
+          to: truncateZerosInDateTime(ISODateToString(this.selectedTimeWindow.end)),
+        };
+        this.selectedTimeWindowText = sprintf(s__('%{from} to %{to}'), this.customTime);
+      }
     },
   },
 };

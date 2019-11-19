@@ -1,0 +1,5 @@
+---
+title: Expose prometheus status to monitor dashboard
+merge_request: 18289
+author:
+type: fixed

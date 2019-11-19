@@ -68,7 +68,3 @@ Once enabled, tracking events can be inspected locally by either:
 
 - Looking at the network panel of the browser's development tools
 - Using the [Snowplow Chrome Extension](https://chrome.google.com/webstore/detail/snowplow-inspector/maplkdomeamdlngconidoefjpogkmljm).
-
-## Additional libraries
-
-Session tracking is handled by [Pendo](https://www.pendo.io/), which is a purely client library and is a relatively minor development concern but is worth including in this documentation.

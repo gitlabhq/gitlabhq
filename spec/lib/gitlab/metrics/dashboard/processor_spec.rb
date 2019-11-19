@@ -25,6 +25,14 @@ describe Gitlab::Metrics::Dashboard::Processor do
       end
     end
 
+    context 'when the dashboard is not present' do
+      let(:dashboard_yml) { nil }
+
+      it 'returns nil' do
+        expect(dashboard).to be_nil
+      end
+    end
+
     context 'when dashboard config corresponds to common metrics' do
       let!(:common_metric) { create(:prometheus_metric, :common, identifier: 'metric_a1') }
 

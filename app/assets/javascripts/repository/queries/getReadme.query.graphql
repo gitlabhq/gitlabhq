@@ -1,0 +1,5 @@
+query getReadme($url: String!) {
+  readme(url: $url) @client {
+    html
+  }
+}

@@ -28,7 +28,7 @@ If all the jobs in a stage:
 - Fail, the next stage is not (usually) executed and the pipeline ends early.
 
 NOTE: **Note:**
-If you have a [mirrored repository that GitLab pulls from](../workflow/repository_mirroring.md#pulling-from-a-remote-repository-starter),
+If you have a [mirrored repository that GitLab pulls from](../user/project/repository/repository_mirroring.md#pulling-from-a-remote-repository-starter),
 you may need to enable pipeline triggering in your project's
 **Settings > Repository > Pull from a remote repository > Trigger pipelines for mirror updates**.
 
@@ -268,6 +268,38 @@ To execute a pipeline manually:
     1. Click the **Create pipeline** button.
 
 The pipeline will execute the jobs as configured.
+
+#### Using a query string
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/24146) in GitLab 12.5.
+
+Variables on the **Run Pipeline** page can be pre-populated by passing variable keys and values
+in a query string appended to the `pipelines/new` URL. The format is:
+
+```plaintext
+.../pipelines/new?ref=<branch>&var[<variable_key>]=<value>&file_var[<file_key>]=<value>
+```
+
+The following parameters are supported:
+
+- `ref`: specify the branch to populate the **Run for** field with.
+- `var`: specify a `Variable` variable.
+- `file_var`: specify a `File` variable.
+
+For each `var` or `file_var`, a key and value are required.
+
+For example, the query string
+`.../pipelines/new?ref=my_branch&var[foo]=bar&file_var[file_foo]=file_bar` will pre-populate the
+**Run Pipeline** page as follows:
+
+- **Run for** field: `my_branch`.
+- **Variables** section:
+  - Variable:
+    - Key: `foo`
+    - Value: `bar`
+  - File:
+    - Key: `file_foo`
+    - Value: `file_bar`
 
 ### Accessing pipelines
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 
 describe API::MergeRequests do
@@ -10,7 +12,7 @@ describe API::MergeRequests do
   let(:project)     { create(:project, :public, :repository, creator: user, namespace: user.namespace, only_allow_merge_if_pipeline_succeeds: false) }
   let(:milestone)   { create(:milestone, title: '1.0.0', project: project) }
   let(:milestone1)  { create(:milestone, title: '0.9', project: project) }
-  let!(:merge_request) { create(:merge_request, :simple, milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, title: "Test", created_at: base_time) }
+  let!(:merge_request) { create(:merge_request, :simple, milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, source_branch: 'markdown', title: "Test", created_at: base_time) }
   let!(:merge_request_closed) { create(:merge_request, state: "closed", milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, title: "Closed test", created_at: base_time + 1.second) }
   let!(:merge_request_merged) { create(:merge_request, state: "merged", author: user, assignees: [user], source_project: project, target_project: project, title: "Merged test", created_at: base_time + 2.seconds, merge_commit_sha: '9999999999999999999999999999999999999999') }
   let!(:merge_request_locked) { create(:merge_request, state: "locked", milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, title: "Locked test", created_at: base_time + 1.second) }
@@ -699,16 +701,20 @@ describe API::MergeRequests do
       expect(json_response.first['id']).to eq merge_request_closed.id
     end
 
-    it 'avoids N+1 queries' do
-      control = ActiveRecord::QueryRecorder.new do
-        get api("/projects/#{project.id}/merge_requests", user)
-      end.count
+    context 'a project which enforces all discussions to be resolved' do
+      let!(:project) { create(:project, :repository, only_allow_merge_if_all_discussions_are_resolved: true) }
 
-      create(:merge_request, author: user, assignees: [user], source_project: project, target_project: project, created_at: base_time)
+      it 'avoids N+1 queries' do
+        control = ActiveRecord::QueryRecorder.new do
+          get api("/projects/#{project.id}/merge_requests", user)
+        end.count
 
-      expect do
-        get api("/projects/#{project.id}/merge_requests", user)
-      end.not_to exceed_query_limit(control)
+        create(:merge_request, author: user, assignees: [user], source_project: project, target_project: project, created_at: base_time)
+
+        expect do
+          get api("/projects/#{project.id}/merge_requests", user)
+        end.not_to exceed_query_limit(control)
+      end
     end
   end
 
@@ -775,6 +781,8 @@ describe API::MergeRequests do
       expect(json_response['merge_error']).to eq(merge_request.merge_error)
       expect(json_response['user']['can_merge']).to be_truthy
       expect(json_response).not_to include('rebase_in_progress')
+      expect(json_response['has_conflicts']).to be_falsy
+      expect(json_response['blocking_discussions_resolved']).to be_truthy
     end
 
     it 'exposes description and title html when render_html is true' do
@@ -921,7 +929,7 @@ describe API::MergeRequests do
                allow_collaboration: true)
       end
 
-      it 'includes the `allow_collaboration` field' do
+      it 'includes the `allow_collaboration` field', :sidekiq_might_not_need_inline do
         get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user)
 
         expect(json_response['allow_collaboration']).to be_truthy
@@ -1035,14 +1043,12 @@ describe API::MergeRequests do
 
   describe 'POST /projects/:id/merge_requests/:merge_request_iid/pipelines' do
     before do
-      allow_any_instance_of(Ci::Pipeline)
-        .to receive(:ci_yaml_file)
-        .and_return(YAML.dump({
-          rspec: {
-            script: 'ls',
-            only: ['merge_requests']
-          }
-        }))
+      stub_ci_pipeline_yaml_file(YAML.dump({
+        rspec: {
+          script: 'ls',
+          only: ['merge_requests']
+        }
+      }))
     end
 
     let(:project) do
@@ -1326,7 +1332,7 @@ describe API::MergeRequests do
       context 'accepts remove_source_branch parameter' do
         let(:params) do
           { title: 'Test merge_request',
-            source_branch: 'markdown',
+            source_branch: 'feature_conflict',
             target_branch: 'master',
             author: user }
         end
@@ -1406,7 +1412,7 @@ describe API::MergeRequests do
         expect(response).to have_gitlab_http_status(400)
       end
 
-      it 'allows setting `allow_collaboration`' do
+      it 'allows setting `allow_collaboration`', :sidekiq_might_not_need_inline do
         post api("/projects/#{forked_project.id}/merge_requests", user2),
              params: { title: 'Test merge_request', source_branch: "feature_conflict", target_branch: "master", author: user2, target_project_id: project.id, allow_collaboration: true }
         expect(response).to have_gitlab_http_status(201)
@@ -1438,7 +1444,7 @@ describe API::MergeRequests do
         end
       end
 
-      it "returns 201 when target_branch is specified and for the same project" do
+      it "returns 201 when target_branch is specified and for the same project", :sidekiq_might_not_need_inline do
         post api("/projects/#{forked_project.id}/merge_requests", user2),
         params: { title: 'Test merge_request', target_branch: 'master', source_branch: 'markdown', author: user2, target_project_id: forked_project.id }
         expect(response).to have_gitlab_http_status(201)
@@ -1486,7 +1492,7 @@ describe API::MergeRequests do
   end
 
   describe "PUT /projects/:id/merge_requests/:merge_request_iid/merge" do
-    let(:pipeline) { create(:ci_pipeline_without_jobs) }
+    let(:pipeline) { create(:ci_pipeline) }
 
     it "returns merge_request in case of success" do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)
@@ -1631,6 +1637,21 @@ describe API::MergeRequests do
 
         expect(response).to have_gitlab_http_status(200)
         expect(source_repository.branch_exists?(source_branch)).to be_falsy
+      end
+    end
+
+    context "performing a ff-merge with squash" do
+      let(:merge_request) { create(:merge_request, :rebased, source_project: project, squash: true) }
+
+      before do
+        project.update(merge_requests_ff_only_enabled: true)
+      end
+
+      it "records the squash commit SHA and returns it in the response" do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['squash_commit_sha'].length).to eq(40)
       end
     end
   end
@@ -2151,6 +2172,16 @@ describe API::MergeRequests do
       end
 
       expect(response).to have_gitlab_http_status(409)
+    end
+
+    it "returns 409 if rebase can't lock the row" do
+      allow_any_instance_of(MergeRequest).to receive(:with_lock).and_raise(ActiveRecord::LockWaitTimeout)
+      expect(RebaseWorker).not_to receive(:perform_async)
+
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/rebase", user)
+
+      expect(response).to have_gitlab_http_status(409)
+      expect(json_response['message']).to eq(MergeRequest::REBASE_LOCK_MESSAGE)
     end
   end
 

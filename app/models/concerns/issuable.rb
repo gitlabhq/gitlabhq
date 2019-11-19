@@ -118,8 +118,8 @@ module Issuable
     # rubocop:enable GitlabSecurity/SqlInjection
 
     scope :left_joins_milestones,    -> { joins("LEFT OUTER JOIN milestones ON #{table_name}.milestone_id = milestones.id") }
-    scope :order_milestone_due_desc, -> { left_joins_milestones.reorder('milestones.due_date IS NULL, milestones.id IS NULL, milestones.due_date DESC') }
-    scope :order_milestone_due_asc,  -> { left_joins_milestones.reorder('milestones.due_date IS NULL, milestones.id IS NULL, milestones.due_date ASC') }
+    scope :order_milestone_due_desc, -> { left_joins_milestones.reorder(Arel.sql('milestones.due_date IS NULL, milestones.id IS NULL, milestones.due_date DESC')) }
+    scope :order_milestone_due_asc,  -> { left_joins_milestones.reorder(Arel.sql('milestones.due_date IS NULL, milestones.id IS NULL, milestones.due_date ASC')) }
 
     scope :without_label, -> { joins("LEFT OUTER JOIN label_links ON label_links.target_type = '#{name}' AND label_links.target_id = #{table_name}.id").where(label_links: { id: nil }) }
     scope :any_label, -> { joins(:label_links).group(:id) }
@@ -136,6 +136,26 @@ module Issuable
     participant :assignees
 
     strip_attributes :title
+
+    # The state_machine gem will reset the value of state_id unless it
+    # is a raw attribute passed in here:
+    # https://gitlab.com/gitlab-org/gitlab/issues/35746#note_241148787
+    #
+    # This assumes another initialize isn't defined. Otherwise this
+    # method may need to be prepended.
+    def initialize(attributes = nil)
+      if attributes.is_a?(Hash)
+        attr = attributes.symbolize_keys
+
+        if attr.key?(:state) && !attr.key?(:state_id)
+          value = attr.delete(:state)
+          state_id = self.class.available_states[value]
+          attributes[:state_id] = state_id if state_id
+        end
+      end
+
+      super(attributes)
+    end
 
     # We want to use optimistic lock for cases when only title or description are involved
     # http://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html

@@ -20,6 +20,10 @@ module Gitlab
         def initialize
           super
 
+          # DEPRECATED:
+          # these `readiness_checks` are deprecated
+          # as presenting no value in a way how we run
+          # application: https://gitlab.com/gitlab-org/gitlab/issues/35343
           self.readiness_checks = [
             WebExporter::ExporterCheck.new(self),
             Gitlab::HealthChecks::PumaCheck,
@@ -35,6 +39,10 @@ module Gitlab
           File.join(Rails.root, 'log', 'web_exporter.log')
         end
 
+        def mark_as_not_running!
+          @running = false
+        end
+
         private
 
         def start_working
@@ -43,23 +51,8 @@ module Gitlab
         end
 
         def stop_working
-          @running = false
-          wait_in_blackout_period if server && thread.alive?
+          mark_as_not_running!
           super
-        end
-
-        def wait_in_blackout_period
-          return unless blackout_seconds > 0
-
-          @server.logger.info(
-            message: 'starting blackout...',
-            duration_s: blackout_seconds)
-
-          sleep(blackout_seconds)
-        end
-
-        def blackout_seconds
-          settings['blackout_seconds'].to_i
         end
       end
     end

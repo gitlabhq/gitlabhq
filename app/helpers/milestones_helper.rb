@@ -4,6 +4,18 @@ module MilestonesHelper
   include EntityDateHelper
   include Gitlab::Utils::StrongMemoize
 
+  def milestone_status_string(milestone)
+    if milestone.closed?
+      _('Closed')
+    elsif milestone.expired?
+      _('Past due')
+    elsif milestone.upcoming?
+      _('Upcoming')
+    else
+      _('Open')
+    end
+  end
+
   def milestones_filter_path(opts = {})
     if @project
       project_milestones_path(@project, opts)
@@ -170,6 +182,23 @@ module MilestonesHelper
     content.join('<br />').html_safe
   end
 
+  def milestone_releases_tooltip_text(milestone)
+    count = milestone.releases.count
+
+    return _("Releases") if count.zero?
+
+    n_("%{releases} release", "%{releases} releases", count) % { releases: count }
+  end
+
+  def recent_releases_with_counts(milestone)
+    total_count = milestone.releases.size
+    return [[], 0, 0] if total_count == 0
+
+    recent_releases = milestone.releases.recent.to_a
+    more_count = total_count - recent_releases.size
+    [recent_releases, total_count, more_count]
+  end
+
   def milestone_tooltip_due_date(milestone)
     if milestone.due_date
       "#{milestone.due_date.to_s(:medium)} (#{remaining_days_in_words(milestone.due_date, milestone.start_date)})"
@@ -196,33 +225,19 @@ module MilestonesHelper
     end
   end
 
-  def milestone_merge_request_tab_path(milestone)
-    if @project
-      merge_requests_project_milestone_path(@project, milestone, format: :json)
-    elsif @group
-      merge_requests_group_milestone_path(@group, milestone.safe_title, title: milestone.title, format: :json)
+  def milestone_tab_path(milestone, tab)
+    if milestone.global_milestone?
+      url_for(action: tab, title: milestone.title, format: :json)
     else
-      merge_requests_dashboard_milestone_path(milestone, title: milestone.title, format: :json)
+      url_for(action: tab, format: :json)
     end
   end
 
-  def milestone_participants_tab_path(milestone)
-    if @project
-      participants_project_milestone_path(@project, milestone, format: :json)
-    elsif @group
-      participants_group_milestone_path(@group, milestone.safe_title, title: milestone.title, format: :json)
+  def update_milestone_path(milestone, params = {})
+    if milestone.project_milestone?
+      project_milestone_path(milestone.project, milestone, milestone: params)
     else
-      participants_dashboard_milestone_path(milestone, title: milestone.title, format: :json)
-    end
-  end
-
-  def milestone_labels_tab_path(milestone)
-    if @project
-      labels_project_milestone_path(@project, milestone, format: :json)
-    elsif @group
-      labels_group_milestone_path(@group, milestone.safe_title, title: milestone.title, format: :json)
-    else
-      labels_dashboard_milestone_path(milestone, title: milestone.title, format: :json)
+      group_milestone_route(milestone, params)
     end
   end
 
@@ -245,6 +260,14 @@ module MilestonesHelper
       end
 
     milestone_path(milestone.milestone, params)
+  end
+
+  def edit_milestone_path(milestone)
+    if milestone.group_milestone?
+      edit_group_milestone_path(milestone.group, milestone)
+    elsif milestone.project_milestone?
+      edit_project_milestone_path(milestone.project, milestone)
+    end
   end
 
   def can_admin_project_milestones?

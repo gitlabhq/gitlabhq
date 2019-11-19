@@ -1,7 +1,6 @@
 import dateformat from 'dateformat';
 import { secondsIn, dateTimePickerRegex, dateFormats } from './constants';
-
-const secondsToMilliseconds = seconds => seconds * 1000;
+import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 
 export const getTimeDiff = timeWindow => {
   const end = Math.floor(Date.now() / 1000); // convert milliseconds to seconds
@@ -129,6 +128,22 @@ export const downloadCSVOptions = title => {
     : 'download_csv_of_metrics_dashboard_chart';
 
   return { category, action, label: 'Chart title', property: title };
+};
+
+/**
+ * This function validates the graph data contains exactly 3 queries plus
+ * value validations from graphDataValidatorForValues.
+ * @param {Object} isValues
+ * @param {Object} graphData  the graph data response from a prometheus request
+ * @returns {boolean} true if the data is valid
+ */
+export const graphDataValidatorForAnomalyValues = graphData => {
+  const anomalySeriesCount = 3; // metric, upper, lower
+  return (
+    graphData.queries &&
+    graphData.queries.length === anomalySeriesCount &&
+    graphDataValidatorForValues(false, graphData)
+  );
 };
 
 export default {};

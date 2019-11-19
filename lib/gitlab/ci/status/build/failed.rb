@@ -16,7 +16,9 @@ module Gitlab
             stale_schedule: 'stale schedule',
             job_execution_timeout: 'job execution timeout',
             archived_failure: 'archived failure',
-            unmet_prerequisites: 'unmet prerequisites'
+            unmet_prerequisites: 'unmet prerequisites',
+            scheduler_failure: 'scheduler failure',
+            data_integrity_failure: 'data integrity failure'
           }.freeze
 
           private_constant :REASONS

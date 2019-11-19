@@ -1,7 +1,6 @@
 <script>
 import { GlTooltipDirective } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
-
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 
 export default {
@@ -16,44 +15,47 @@ export default {
       type: Array,
       required: true,
     },
+    iconSize: {
+      type: Number,
+      required: false,
+      default: 24,
+    },
+    imgCssClasses: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    maxVisible: {
+      type: Number,
+      required: false,
+      default: 3,
+    },
   },
   data() {
     return {
-      maxVisibleAssignees: 2,
-      maxAssigneeAvatars: 3,
       maxAssignees: 99,
     };
   },
   computed: {
-    countOverLimit() {
-      return this.assignees.length - this.maxVisibleAssignees;
-    },
     assigneesToShow() {
-      if (this.assignees.length > this.maxAssigneeAvatars) {
-        return this.assignees.slice(0, this.maxVisibleAssignees);
-      }
-      return this.assignees;
+      const numShownAssignees = this.assignees.length - this.numHiddenAssignees;
+      return this.assignees.slice(0, numShownAssignees);
     },
     assigneesCounterTooltip() {
-      const { countOverLimit, maxAssignees } = this;
-      const count = countOverLimit > maxAssignees ? maxAssignees : countOverLimit;
-
-      return sprintf(__('%{count} more assignees'), { count });
+      return sprintf(__('%{count} more assignees'), { count: this.numHiddenAssignees });
     },
-    shouldRenderAssigneesCounter() {
-      const assigneesCount = this.assignees.length;
-      if (assigneesCount <= this.maxAssigneeAvatars) {
-        return false;
+    numHiddenAssignees() {
+      if (this.assignees.length > this.maxVisible) {
+        return this.assignees.length - this.maxVisible + 1;
       }
-
-      return assigneesCount > this.countOverLimit;
+      return 0;
     },
     assigneeCounterLabel() {
-      if (this.countOverLimit > this.maxAssignees) {
+      if (this.numHiddenAssignees > this.maxAssignees) {
         return `${this.maxAssignees}+`;
       }
 
-      return `+${this.countOverLimit}`;
+      return `+${this.numHiddenAssignees}`;
     },
   },
   methods: {
@@ -81,8 +83,9 @@ export default {
       :key="assignee.id"
       :link-href="webUrl(assignee)"
       :img-alt="avatarUrlTitle(assignee)"
+      :img-css-classes="imgCssClasses"
       :img-src="avatarUrl(assignee)"
-      :img-size="24"
+      :img-size="iconSize"
       class="js-no-trigger"
       tooltip-placement="bottom"
     >
@@ -92,7 +95,7 @@ export default {
       </span>
     </user-avatar-link>
     <span
-      v-if="shouldRenderAssigneesCounter"
+      v-if="numHiddenAssignees > 0"
       v-gl-tooltip
       :title="assigneesCounterTooltip"
       class="avatar-counter"

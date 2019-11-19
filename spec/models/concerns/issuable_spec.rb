@@ -111,6 +111,34 @@ describe Issuable do
     end
   end
 
+  describe '.initialize' do
+    it 'maps the state to the right state_id' do
+      described_class::STATE_ID_MAP.each do |key, value|
+        issuable = MergeRequest.new(state: key)
+
+        expect(issuable.state).to eq(key)
+        expect(issuable.state_id).to eq(value)
+      end
+    end
+
+    it 'maps a string version of the state to the right state_id' do
+      described_class::STATE_ID_MAP.each do |key, value|
+        issuable = MergeRequest.new('state' => key)
+
+        expect(issuable.state).to eq(key)
+        expect(issuable.state_id).to eq(value)
+      end
+    end
+
+    it 'gives preference to state_id if present' do
+      issuable = MergeRequest.new('state' => 'opened',
+                                  'state_id' => described_class::STATE_ID_MAP['merged'])
+
+      expect(issuable.state).to eq('merged')
+      expect(issuable.state_id).to eq(described_class::STATE_ID_MAP['merged'])
+    end
+  end
+
   describe '#milestone_available?' do
     let(:group) { create(:group) }
     let(:project) { create(:project, group: group) }

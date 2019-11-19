@@ -4,7 +4,7 @@ module Gitlab
   module Analytics
     module CycleAnalytics
       module StageEvents
-        class MergeRequestCreated < SimpleStageEvent
+        class MergeRequestCreated < StageEvent
           def self.name
             s_("CycleAnalyticsEvent|Merge request created")
           end

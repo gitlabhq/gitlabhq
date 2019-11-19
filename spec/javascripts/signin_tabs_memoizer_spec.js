@@ -1,5 +1,7 @@
 import AccessorUtilities from '~/lib/utils/accessor';
 import SigninTabsMemoizer from '~/pages/sessions/new/signin_tabs_memoizer';
+import trackData from '~/pages/sessions/new/index';
+import Tracking from '~/tracking';
 
 describe('SigninTabsMemoizer', () => {
   const fixtureTemplate = 'static/signin_tabs.html';
@@ -90,6 +92,50 @@ describe('SigninTabsMemoizer', () => {
     it('should set .isLocalStorageAvailable', () => {
       expect(AccessorUtilities.isLocalStorageAccessSafe).toHaveBeenCalled();
       expect(memo.isLocalStorageAvailable).toBe(true);
+    });
+  });
+
+  describe('trackData', () => {
+    beforeEach(() => {
+      spyOn(Tracking, 'event');
+    });
+
+    describe('with tracking data', () => {
+      beforeEach(() => {
+        gon.tracking_data = {
+          category: 'Growth::Acquisition::Experiment::SignUpFlow',
+          action: 'start',
+          label: 'uuid',
+          property: 'control_group',
+        };
+        trackData();
+      });
+
+      it('should track data when the "click" event of the register tab is triggered', () => {
+        document.querySelector('a[href="#register-pane"]').click();
+
+        expect(Tracking.event).toHaveBeenCalledWith(
+          'Growth::Acquisition::Experiment::SignUpFlow',
+          'start',
+          {
+            label: 'uuid',
+            property: 'control_group',
+          },
+        );
+      });
+    });
+
+    describe('without tracking data', () => {
+      beforeEach(() => {
+        gon.tracking_data = undefined;
+        trackData();
+      });
+
+      it('should not track data when the "click" event of the register tab is triggered', () => {
+        document.querySelector('a[href="#register-pane"]').click();
+
+        expect(Tracking.event).not.toHaveBeenCalled();
+      });
     });
   });
 

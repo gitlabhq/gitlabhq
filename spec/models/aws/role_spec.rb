@@ -31,4 +31,56 @@ describe Aws::Role do
       end
     end
   end
+
+  describe 'callbacks' do
+    describe '#ensure_role_external_id!' do
+      subject { role.validate }
+
+      context 'for a new record' do
+        let(:role) { build(:aws_role, role_external_id: nil) }
+
+        it 'calls #ensure_role_external_id!' do
+          expect(role).to receive(:ensure_role_external_id!)
+
+          subject
+        end
+      end
+
+      context 'for an existing record' do
+        let(:role) { create(:aws_role) }
+
+        it 'does not call #ensure_role_external_id!' do
+          expect(role).not_to receive(:ensure_role_external_id!)
+
+          subject
+        end
+      end
+    end
+  end
+
+  describe '#ensure_role_external_id!' do
+    let(:role) { build(:aws_role, role_external_id: external_id) }
+
+    subject { role.ensure_role_external_id! }
+
+    context 'role_external_id is blank' do
+      let(:external_id) { nil }
+
+      it 'generates an external ID and assigns it to the record' do
+        subject
+
+        expect(role.role_external_id).to be_present
+      end
+    end
+
+    context 'role_external_id is already set' do
+      let(:external_id) { 'external-id' }
+
+      it 'does not change the existing external id' do
+        subject
+
+        expect(role.role_external_id).to eq external_id
+      end
+    end
+  end
 end

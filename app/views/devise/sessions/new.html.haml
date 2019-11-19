@@ -1,13 +1,13 @@
 - page_title "Sign in"
 
 #signin-container
-  - if form_based_providers.any?
+  - if any_form_based_providers_enabled?
     = render 'devise/shared/tabs_ldap'
   - else
     - unless experiment_enabled?(:signup_flow)
       = render 'devise/shared/tabs_normal'
   .tab-content
-    - if password_authentication_enabled_for_web? || ldap_enabled? || crowd_enabled?
+    - if password_authentication_enabled_for_web? || ldap_sign_in_enabled? || crowd_enabled?
       = render 'devise/shared/signin_box'
 
     -# Signup only makes sense if you can also sign-in
@@ -15,7 +15,7 @@
       = render 'devise/shared/signup_box'
 
   -# Show a message if none of the mechanisms above are enabled
-  - if !password_authentication_enabled_for_web? && !ldap_enabled? && !(omniauth_enabled? && devise_mapping.omniauthable?)
+  - if !password_authentication_enabled_for_web? && !ldap_sign_in_enabled? && !(omniauth_enabled? && devise_mapping.omniauthable?)
     %div
       No authentication methods configured.
 

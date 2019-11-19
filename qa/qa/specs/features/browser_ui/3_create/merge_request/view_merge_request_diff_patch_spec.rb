@@ -4,9 +4,6 @@ module QA
   context 'Create' do
     describe 'Download merge request patch and diff' do
       before(:context) do
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.perform(&:sign_in_using_credentials)
-
         project = Resource::Project.fabricate_via_api! do |project|
           project.name = 'project'
         end
@@ -19,6 +16,8 @@ module QA
       end
 
       it 'views the merge request email patches' do
+        Flow::Login.sign_in
+
         @merge_request.visit!
         Page::MergeRequest::Show.perform(&:view_email_patches)
 
@@ -28,6 +27,8 @@ module QA
       end
 
       it 'views the merge request plain diff' do
+        Flow::Login.sign_in
+
         @merge_request.visit!
         Page::MergeRequest::Show.perform(&:view_plain_diff)
 

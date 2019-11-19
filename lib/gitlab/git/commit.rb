@@ -155,10 +155,6 @@ module Gitlab
           end
         end
 
-        def extract_signature(repository, commit_id)
-          repository.gitaly_commit_client.extract_signature(commit_id)
-        end
-
         def extract_signature_lazily(repository, commit_id)
           BatchLoader.for(commit_id).batch(key: repository) do |commit_ids, loader, args|
             batch_signature_extraction(args[:key], commit_ids).each do |commit_id, signature_data|

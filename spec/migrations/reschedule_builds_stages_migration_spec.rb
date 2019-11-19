@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20180405101928_reschedule_builds_stages_migration')
 

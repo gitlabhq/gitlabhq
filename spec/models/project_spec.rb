@@ -2029,24 +2029,37 @@ describe Project do
   end
 
   describe '#ci_config_path=' do
+    using RSpec::Parameterized::TableSyntax
+
     let(:project) { create(:project) }
 
-    it 'sets nil' do
-      project.update!(ci_config_path: nil)
-
-      expect(project.ci_config_path).to be_nil
+    where(:default_ci_config_path, :project_ci_config_path, :expected_ci_config_path) do
+      nil           | :notset            | :default
+      nil           | nil                | :default
+      nil           | ''                 | :default
+      nil           | "cust\0om/\0/path" | 'custom//path'
+      ''            | :notset            | :default
+      ''            | nil                | :default
+      ''            | ''                 | :default
+      ''            | "cust\0om/\0/path" | 'custom//path'
+      'global/path' | :notset            | 'global/path'
+      'global/path' | nil                | :default
+      'global/path' | ''                 | :default
+      'global/path' | "cust\0om/\0/path" | 'custom//path'
     end
 
-    it 'sets a string' do
-      project.update!(ci_config_path: 'foo/.gitlab_ci.yml')
+    with_them do
+      before do
+        stub_application_setting(default_ci_config_path: default_ci_config_path)
 
-      expect(project.ci_config_path).to eq('foo/.gitlab_ci.yml')
-    end
+        if project_ci_config_path != :notset
+          project.ci_config_path = project_ci_config_path
+        end
+      end
 
-    it 'sets a string but removes all null characters' do
-      project.update!(ci_config_path: "f\0oo/\0/.gitlab_ci.yml")
-
-      expect(project.ci_config_path).to eq('foo//.gitlab_ci.yml')
+      it 'returns the correct path' do
+        expect(project.ci_config_path.presence || :default).to eq(expected_ci_config_path)
+      end
     end
   end
 
@@ -3342,22 +3355,6 @@ describe Project do
     end
   end
 
-  describe '#append_or_update_attribute' do
-    let(:project) { create(:project) }
-
-    it 'shows full error updating an invalid MR' do
-      expect { project.append_or_update_attribute(:merge_requests, [create(:merge_request)]) }
-        .to raise_error(ActiveRecord::RecordInvalid, /Failed to set merge_requests:/)
-    end
-
-    it 'updates the project successfully' do
-      merge_request = create(:merge_request, target_project: project, source_project: project)
-
-      expect { project.append_or_update_attribute(:merge_requests, [merge_request]) }
-        .not_to raise_error
-    end
-  end
-
   describe '#update' do
     let(:project) { create(:project) }
 
@@ -4284,22 +4281,25 @@ describe Project do
 
   describe '#check_repository_path_availability' do
     let(:project) { build(:project, :repository, :legacy_storage) }
-    subject { project.check_repository_path_availability }
 
     context 'when the repository already exists' do
       let(:project) { create(:project, :repository, :legacy_storage) }
 
-      it { is_expected.to be_falsey }
+      it 'returns false when repository already exists' do
+        expect(project.check_repository_path_availability).to be_falsey
+      end
     end
 
     context 'when the repository does not exist' do
-      it { is_expected.to be_truthy }
+      it 'returns false when repository already exists' do
+        expect(project.check_repository_path_availability).to be_truthy
+      end
 
       it 'skips gitlab-shell exists?' do
         project.skip_disk_validation = true
 
         expect(project.gitlab_shell).not_to receive(:repository_exists?)
-        is_expected.to be_truthy
+        expect(project.check_repository_path_availability).to be_truthy
       end
     end
   end
@@ -4631,7 +4631,7 @@ describe Project do
     end
 
     describe '#any_branch_allows_collaboration?' do
-      it 'allows access when there are merge requests open allowing collaboration' do
+      it 'allows access when there are merge requests open allowing collaboration', :sidekiq_might_not_need_inline do
         expect(project.any_branch_allows_collaboration?(user))
           .to be_truthy
       end
@@ -4645,7 +4645,7 @@ describe Project do
     end
 
     describe '#branch_allows_collaboration?' do
-      it 'allows access if the user can merge the merge request' do
+      it 'allows access if the user can merge the merge request', :sidekiq_might_not_need_inline do
         expect(project.branch_allows_collaboration?(user, 'awesome-feature-1'))
           .to be_truthy
       end
@@ -4896,20 +4896,6 @@ describe Project do
       allow(subject).to receive(:disabled_services).and_return(%w(prometheus))
 
       expect(subject.find_or_initialize_service('prometheus')).to be_nil
-    end
-  end
-
-  describe '.find_without_deleted' do
-    it 'returns nil if the project is about to be removed' do
-      project = create(:project, pending_delete: true)
-
-      expect(described_class.find_without_deleted(project.id)).to be_nil
-    end
-
-    it 'returns a project when it is not about to be removed' do
-      project = create(:project)
-
-      expect(described_class.find_without_deleted(project.id)).to eq(project)
     end
   end
 

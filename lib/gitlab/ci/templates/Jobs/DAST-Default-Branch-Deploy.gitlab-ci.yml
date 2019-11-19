@@ -1,8 +1,8 @@
-.auto-deploy:
-  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image:v0.1.0"
+.dast-auto-deploy:
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image:v0.6.0"
 
 dast_environment_deploy:
-  extends: .auto-deploy
+  extends: .dast-auto-deploy
   stage: review
   script:
     - auto-deploy check_kube_domain
@@ -28,10 +28,10 @@ dast_environment_deploy:
     variables:
       - $CI_DEFAULT_BRANCH != $CI_COMMIT_REF_NAME
       - $DAST_DISABLED || $DAST_DISABLED_FOR_DEFAULT_BRANCH
-      - $DAST_WEBSITE # we don't need to create a review app if a URL is already given
+      - $DAST_WEBSITE  # we don't need to create a review app if a URL is already given
 
 stop_dast_environment:
-  extends: .auto-deploy
+  extends: .dast-auto-deploy
   stage: cleanup
   variables:
     GIT_STRATEGY: none

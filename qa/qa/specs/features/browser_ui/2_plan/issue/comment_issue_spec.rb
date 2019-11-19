@@ -4,8 +4,7 @@ module QA
   context 'Plan' do
     describe 'Issue comments' do
       before do
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.perform(&:sign_in_using_credentials)
+        Flow::Login.sign_in
 
         issue = Resource::Issue.fabricate_via_api! do |issue|
           issue.title = 'issue title'

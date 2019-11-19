@@ -12,8 +12,20 @@
 
       - if @project || milestone.is_a?(GlobalMilestone) || milestone.group_milestone?
         - if milestone.due_date || milestone.start_date
-          .milestone-range.append-bottom-5
+          .text-tertiary.append-bottom-5
             = milestone_date_range(milestone)
+        - recent_releases, total_count, more_count = recent_releases_with_counts(milestone)
+        - unless total_count.zero?
+          .text-tertiary.append-bottom-5.milestone-release-links
+            = icon('rocket')
+            = n_('Release', 'Releases', total_count)
+            - recent_releases.each do |release|
+              = link_to release.name, project_releases_path(release.project, anchor: release.tag)
+              - unless release == recent_releases.last
+                &bull;
+            - if total_count > recent_releases.count
+              &bull;
+              = link_to n_('%{count} more release', '%{count} more releases', more_count) % { count: more_count }, project_releases_path(milestone.project)
         %div
           = render('shared/milestone_expired', milestone: milestone)
           - if milestone.group_milestone?

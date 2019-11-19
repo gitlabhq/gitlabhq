@@ -11,6 +11,18 @@ module Grafana
       @token = token
     end
 
+    # @param uid [String] Unique identifier for a Grafana dashboard
+    def get_dashboard(uid:)
+      http_get("#{@api_url}/api/dashboards/uid/#{uid}")
+    end
+
+    # @param name [String] Unique identifier for a Grafana datasource
+    def get_datasource(name:)
+      # CGI#escape formats strings such that the Grafana endpoint
+      # will not recognize the dashboard name. Preferring URI#escape.
+      http_get("#{@api_url}/api/datasources/name/#{URI.escape(name)}") # rubocop:disable Lint/UriEscapeUnescape
+    end
+
     # @param datasource_id [String] Grafana ID for the datasource
     # @param proxy_path [String] Path to proxy - ex) 'api/v1/query_range'
     def proxy_datasource(datasource_id:, proxy_path:, query: {})
@@ -57,7 +69,7 @@ module Grafana
     def handle_response(response)
       return response if response.code == 200
 
-      raise_error "Grafana response status code: #{response.code}"
+      raise_error "Grafana response status code: #{response.code}, Message: #{response.body}"
     end
 
     def raise_error(message)

@@ -78,11 +78,11 @@ export const getDayName = date =>
  * @param {date} datetime
  * @returns {String}
  */
-export const formatDate = datetime => {
+export const formatDate = (datetime, format = 'mmm d, yyyy h:MMtt Z') => {
   if (_.isString(datetime) && datetime.match(/\d+-\d+\d+ /)) {
     throw new Error(__('Invalid date'));
   }
-  return dateFormat(datetime, 'mmm d, yyyy h:MMtt Z');
+  return dateFormat(datetime, format);
 };
 
 /**
@@ -541,7 +541,7 @@ export const stringifyTime = (timeObject, fullNameFormat = false) => {
  * The result cannot become negative.
  *
  * @param endDate date string that the time difference is calculated for
- * @return {number} number of milliseconds remaining until the given date
+ * @return {Number} number of milliseconds remaining until the given date
  */
 export const calculateRemainingMilliseconds = endDate => {
   const remainingMilliseconds = new Date(endDate).getTime() - Date.now();
@@ -552,15 +552,53 @@ export const calculateRemainingMilliseconds = endDate => {
  * Subtracts a given number of days from a given date and returns the new date.
  *
  * @param {Date} date the date that we will substract days from
- * @param {number} daysInPast number of days that are subtracted from a given date
- * @returns {String} Date string in ISO format
+ * @param {Number} daysInPast number of days that are subtracted from a given date
+ * @returns {Date} Date in past as Date object
  */
-export const getDateInPast = (date, daysInPast) => {
-  const dateClone = newDate(date);
-  return new Date(
-    dateClone.setTime(dateClone.getTime() - daysInPast * 24 * 60 * 60 * 1000),
-  ).toISOString();
+export const getDateInPast = (date, daysInPast) =>
+  new Date(newDate(date).setDate(date.getDate() - daysInPast));
+
+/*
+ * Appending T00:00:00 makes JS assume local time and prevents it from shifting the date
+ * to match the user's time zone. We want to display the date in server time for now, to
+ * be consistent with the "edit issue -> due date" UI.
+ */
+
+export const newDateAsLocaleTime = date => {
+  const suffix = 'T00:00:00';
+  return new Date(`${date}${suffix}`);
 };
 
 export const beginOfDayTime = 'T00:00:00Z';
 export const endOfDayTime = 'T23:59:59Z';
+
+/**
+ * @param {Date} d1
+ * @param {Date} d2
+ * @param {Function} formatter
+ * @return {Any[]} an array of formatted dates between 2 given dates (including start&end date)
+ */
+export const getDatesInRange = (d1, d2, formatter = x => x) => {
+  if (!(d1 instanceof Date) || !(d2 instanceof Date)) {
+    return [];
+  }
+  let startDate = d1.getTime();
+  const endDate = d2.getTime();
+  const oneDay = 24 * 3600 * 1000;
+  const range = [d1];
+
+  while (startDate < endDate) {
+    startDate += oneDay;
+    range.push(new Date(startDate));
+  }
+
+  return range.map(formatter);
+};
+
+/**
+ * Converts the supplied number of seconds to milliseconds.
+ *
+ * @param {Number} seconds
+ * @return {Number} number of milliseconds
+ */
+export const secondsToMilliseconds = seconds => seconds * 1000;

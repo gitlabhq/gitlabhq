@@ -447,7 +447,7 @@ module Gitlab
         elsif response.commit_error.presence
           raise Gitlab::Git::CommitError, response.commit_error
         elsif response.create_tree_error.presence
-          raise Gitlab::Git::Repository::CreateTreeError, response.create_tree_error
+          raise Gitlab::Git::Repository::CreateTreeError, response.create_tree_error_code
         end
 
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)

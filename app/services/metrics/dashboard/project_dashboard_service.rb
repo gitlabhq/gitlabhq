@@ -16,7 +16,8 @@ module Metrics
               {
                 path: filepath,
                 display_name: name_for_path(filepath),
-                default: false
+                default: false,
+                system_dashboard: false
               }
             end
         end

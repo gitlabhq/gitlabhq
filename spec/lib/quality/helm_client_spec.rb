@@ -107,5 +107,25 @@ RSpec.describe Quality::HelmClient do
 
       expect(subject.delete(release_name: release_name)).to eq('')
     end
+
+    context 'with multiple release names' do
+      let(:release_name) { ['my-release', 'my-release-2'] }
+
+      it 'raises an error if the Helm command fails' do
+        expect(Gitlab::Popen).to receive(:popen_with_detail)
+                                   .with([%(helm delete --tiller-namespace "#{namespace}" --purge #{release_name.join(' ')})])
+                                   .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: false)))
+
+        expect { subject.delete(release_name: release_name) }.to raise_error(described_class::CommandFailedError)
+      end
+
+      it 'calls helm delete with multiple release names' do
+        expect(Gitlab::Popen).to receive(:popen_with_detail)
+                                   .with([%(helm delete --tiller-namespace "#{namespace}" --purge #{release_name.join(' ')})])
+                                   .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: true)))
+
+        expect(subject.delete(release_name: release_name)).to eq('')
+      end
+    end
   end
 end

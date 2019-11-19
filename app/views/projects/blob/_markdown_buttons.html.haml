@@ -6,7 +6,7 @@
   = markdown_toolbar_button({ icon: "link", data: { "md-tag" => "[{text}](url)", "md-select" => "url" }, title: _("Add a link") })
   = markdown_toolbar_button({ icon: "list-bulleted", data: { "md-tag" => "* ", "md-prepend" => true }, title: _("Add a bullet list") })
   = markdown_toolbar_button({ icon: "list-numbered", data: { "md-tag" => "1. ", "md-prepend" => true }, title: _("Add a numbered list") })
-  = markdown_toolbar_button({ icon: "task-done", data: { "md-tag" => "* [ ] ", "md-prepend" => true }, title: _("Add a task list") })
+  = markdown_toolbar_button({ icon: "list-task", data: { "md-tag" => "* [ ] ", "md-prepend" => true }, title: _("Add a task list") })
   = markdown_toolbar_button({ icon: "table", data: { "md-tag" => "| header | header |\n| ------ | ------ |\n| cell | cell |\n| cell | cell |", "md-prepend" => true }, title: _("Add a table") })
   - if show_fullscreen_button
     %button.toolbar-btn.toolbar-fullscreen-btn.js-zen-enter.has-tooltip{ type: "button", tabindex: -1, "aria-label": "Go full screen", title: _("Go full screen"), data: { container: "body" } }

@@ -57,7 +57,7 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   end
 
   rescue_from ActiveRecord::RecordNotFound do |exception|
-    render "errors/not_found", layout: "errors", status: 404
+    render "errors/not_found", layout: "errors", status: :not_found
   end
 
   def create_application_params

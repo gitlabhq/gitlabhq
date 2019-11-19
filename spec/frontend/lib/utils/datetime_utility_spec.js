@@ -428,16 +428,57 @@ describe('newDate', () => {
 });
 
 describe('getDateInPast', () => {
-  const date = new Date(1563235200000); // 2019-07-16T00:00:00.000Z;
+  const date = new Date('2019-07-16T00:00:00.000Z');
   const daysInPast = 90;
 
   it('returns the correct date in the past', () => {
     const dateInPast = datetimeUtility.getDateInPast(date, daysInPast);
-    expect(dateInPast).toBe('2019-04-17T00:00:00.000Z');
+    const expectedDateInPast = new Date('2019-04-17T00:00:00.000Z');
+
+    expect(dateInPast).toStrictEqual(expectedDateInPast);
   });
 
   it('does not modifiy the original date', () => {
     datetimeUtility.getDateInPast(date, daysInPast);
-    expect(date).toStrictEqual(new Date(1563235200000));
+    expect(date).toStrictEqual(new Date('2019-07-16T00:00:00.000Z'));
+  });
+});
+
+describe('getDatesInRange', () => {
+  it('returns an empty array if 1st or 2nd argument is not a Date object', () => {
+    const d1 = new Date('2019-01-01');
+    const d2 = 90;
+    const range = datetimeUtility.getDatesInRange(d1, d2);
+
+    expect(range).toEqual([]);
+  });
+
+  it('returns a range of dates between two given dates', () => {
+    const d1 = new Date('2019-01-01');
+    const d2 = new Date('2019-01-31');
+
+    const range = datetimeUtility.getDatesInRange(d1, d2);
+
+    expect(range.length).toEqual(31);
+  });
+
+  it('applies mapper function if provided fro each item in range', () => {
+    const d1 = new Date('2019-01-01');
+    const d2 = new Date('2019-01-31');
+    const formatter = date => date.getDate();
+
+    const range = datetimeUtility.getDatesInRange(d1, d2, formatter);
+
+    range.forEach((formattedItem, index) => {
+      expect(formattedItem).toEqual(index + 1);
+    });
+  });
+});
+
+describe('secondsToMilliseconds', () => {
+  it('converts seconds to milliseconds correctly', () => {
+    expect(datetimeUtility.secondsToMilliseconds(0)).toBe(0);
+    expect(datetimeUtility.secondsToMilliseconds(60)).toBe(60000);
+    expect(datetimeUtility.secondsToMilliseconds(123)).toBe(123000);
   });
 });

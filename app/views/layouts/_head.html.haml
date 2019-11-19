@@ -57,7 +57,7 @@
     = yield :library_javascripts
 
   = javascript_include_tag locale_path unless I18n.locale == :en
-  = webpack_bundle_tag "raven" if Gitlab.config.sentry.enabled
+  = webpack_bundle_tag "sentry" if Gitlab.config.sentry.enabled
 
   - if content_for?(:page_specific_javascripts)
     = yield :page_specific_javascripts
@@ -89,4 +89,4 @@
 
   = render 'layouts/google_analytics' if extra_config.has_key?('google_analytics_id')
   = render 'layouts/piwik' if extra_config.has_key?('piwik_url') && extra_config.has_key?('piwik_site_id')
-  = render_if_exists 'layouts/snowplow'
+  = render 'layouts/snowplow'

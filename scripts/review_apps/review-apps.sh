@@ -1,5 +1,4 @@
 [[ "$TRACE" ]] && set -x
-export TILLER_NAMESPACE="$KUBE_NAMESPACE"
 
 function deploy_exists() {
   local namespace="${1}"
@@ -14,16 +13,18 @@ function deploy_exists() {
 }
 
 function previous_deploy_failed() {
-  local deploy="${1}"
+  local namespace="${1}"
+  local deploy="${2}"
+
   echoinfo "Checking for previous deployment of ${deploy}" true
 
-  helm status "${deploy}" >/dev/null 2>&1
+  helm status --tiller-namespace "${namespace}" "${deploy}" >/dev/null 2>&1
   local status=$?
 
   # if `status` is `0`, deployment exists, has a status
   if [ $status -eq 0 ]; then
     echoinfo "Previous deployment found, checking status..."
-    deployment_status=$(helm status "${deploy}" | grep ^STATUS | cut -d' ' -f2)
+    deployment_status=$(helm status --tiller-namespace "${namespace}" "${deploy}" | grep ^STATUS | cut -d' ' -f2)
     echoinfo "Previous deployment state: ${deployment_status}"
     if [[ "$deployment_status" == "FAILED" || "$deployment_status" == "PENDING_UPGRADE" || "$deployment_status" == "PENDING_INSTALL" ]]; then
       status=0;
@@ -37,16 +38,17 @@ function previous_deploy_failed() {
 }
 
 function delete_release() {
-  if [ -z "$CI_ENVIRONMENT_SLUG" ]; then
+  local namespace="${KUBE_NAMESPACE}"
+  local deploy="${CI_ENVIRONMENT_SLUG}"
+
+  if [ -z "$deploy" ]; then
     echoerr "No release given, aborting the delete!"
     return
   fi
 
-  local name="$CI_ENVIRONMENT_SLUG"
+  echoinfo "Deleting release '$deploy'..." true
 
-  echoinfo "Deleting release '$name'..." true
-
-  helm delete --purge "$name"
+  helm delete --purge --tiller-namespace "${namespace}" "${deploy}"
 }
 
 function delete_failed_release() {
@@ -59,7 +61,7 @@ function delete_failed_release() {
     echoinfo "No Review App with ${CI_ENVIRONMENT_SLUG} is currently deployed."
   else
     # Cleanup and previous installs, as FAILED and PENDING_UPGRADE will cause errors with `upgrade`
-    if previous_deploy_failed "$CI_ENVIRONMENT_SLUG" ; then
+    if previous_deploy_failed "${KUBE_NAMESPACE}" "$CI_ENVIRONMENT_SLUG" ; then
       echoinfo "Review App deployment in bad state, cleaning up $CI_ENVIRONMENT_SLUG"
       delete_release
     else
@@ -117,6 +119,7 @@ function ensure_namespace() {
 }
 
 function install_tiller() {
+  local TILLER_NAMESPACE="$KUBE_NAMESPACE"
   echoinfo "Checking deployment/tiller-deploy status in the ${TILLER_NAMESPACE} namespace..." true
 
   echoinfo "Initiating the Helm client..."
@@ -131,11 +134,12 @@ function install_tiller() {
     --override "spec.template.spec.tolerations[0].key"="dedicated" \
     --override "spec.template.spec.tolerations[0].operator"="Equal" \
     --override "spec.template.spec.tolerations[0].value"="helm" \
-    --override "spec.template.spec.tolerations[0].effect"="NoSchedule"
+    --override "spec.template.spec.tolerations[0].effect"="NoSchedule" \
+    --tiller-namespace "${TILLER_NAMESPACE}"
 
   kubectl rollout status -n "$TILLER_NAMESPACE" -w "deployment/tiller-deploy"
 
-  if ! helm version --debug; then
+  if ! helm version --debug --tiller-namespace "${TILLER_NAMESPACE}"; then
     echo "Failed to init Tiller."
     return 1
   fi
@@ -147,7 +151,7 @@ function install_external_dns() {
   domain=$(echo "${REVIEW_APPS_DOMAIN}" | awk -F. '{printf "%s.%s", $(NF-1), $NF}')
   echoinfo "Installing external DNS for domain ${domain}..." true
 
-  if ! deploy_exists "${KUBE_NAMESPACE}" "${release_name}" || previous_deploy_failed "${release_name}" ; then
+  if ! deploy_exists "${KUBE_NAMESPACE}" "${release_name}" || previous_deploy_failed "${KUBE_NAMESPACE}" "${release_name}" ; then
     echoinfo "Installing external-dns Helm chart"
     helm repo update
     # Default requested: CPU => 0, memory => 0
@@ -179,6 +183,17 @@ function create_application_secret() {
     "${CI_ENVIRONMENT_SLUG}-gitlab-initial-root-password" \
     --from-literal="password=${REVIEW_APPS_ROOT_PASSWORD}" \
     --dry-run -o json | kubectl apply -f -
+
+  if [ -z "${REVIEW_APPS_EE_LICENSE}" ]; then echo "License not found" && return; fi
+
+  echoinfo "Creating the ${CI_ENVIRONMENT_SLUG}-gitlab-license secret in the ${KUBE_NAMESPACE} namespace..." true
+
+  echo "${REVIEW_APPS_EE_LICENSE}" > /tmp/license.gitlab
+
+  kubectl create secret generic -n "$KUBE_NAMESPACE" \
+    "${CI_ENVIRONMENT_SLUG}-gitlab-license" \
+    --from-file=license=/tmp/license.gitlab \
+    --dry-run -o json | kubectl apply -f -
 }
 
 function download_chart() {
@@ -195,9 +210,19 @@ function download_chart() {
   helm dependency build .
 }
 
+function base_config_changed() {
+  if [ -z "${CI_MERGE_REQUEST_IID}" ]; then return; fi
+
+  curl "${CI_API_V4_URL}/projects/${CI_MERGE_REQUEST_PROJECT_ID}/merge_requests/${CI_MERGE_REQUEST_IID}/changes" | jq '.changes | any(.old_path == "scripts/review_apps/base-config.yaml")'
+}
+
 function deploy() {
   local name="$CI_ENVIRONMENT_SLUG"
   local edition="${GITLAB_EDITION-ce}"
+  local base_config_file_ref="master"
+  if [[ "$(base_config_changed)" == "true" ]]; then base_config_file_ref="$CI_COMMIT_SHA"; fi
+  local base_config_file="https://gitlab.com/gitlab-org/gitlab/raw/${base_config_file_ref}/scripts/review_apps/base-config.yaml"
+
   echoinfo "Deploying ${name}..." true
 
   IMAGE_REPOSITORY="registry.gitlab.com/gitlab-org/build/cng-mirror"
@@ -239,12 +264,20 @@ HELM_CMD=$(cat << EOF
 EOF
 )
 
+if [ -n "${REVIEW_APPS_EE_LICENSE}" ]; then
 HELM_CMD=$(cat << EOF
-  $HELM_CMD \
+  ${HELM_CMD} \
+  --set global.gitlab.license.secret="${CI_ENVIRONMENT_SLUG}-gitlab-license"
+EOF
+)
+fi
+
+HELM_CMD=$(cat << EOF
+  ${HELM_CMD} \
   --namespace="$KUBE_NAMESPACE" \
-  --version="$CI_PIPELINE_ID-$CI_JOB_ID" \
-  -f "../scripts/review_apps/base-config.yaml" \
-  "$name" .
+  --version="${CI_PIPELINE_ID}-${CI_JOB_ID}" \
+  -f "${base_config_file}" \
+  "${name}" .
 EOF
 )
 
@@ -262,35 +295,4 @@ function display_deployment_debug() {
   # Get all non-completed jobs
   echoinfo "Unsuccessful Jobs for release ${CI_ENVIRONMENT_SLUG}"
   kubectl get jobs -n "$KUBE_NAMESPACE" -lrelease=${CI_ENVIRONMENT_SLUG} --field-selector=status.successful!=1
-}
-
-function add_license() {
-  if [ -z "${REVIEW_APPS_EE_LICENSE}" ]; then echo "License not found" && return; fi
-
-  task_runner_pod=$(get_pod "task-runner");
-  if [ -z "${task_runner_pod}" ]; then echo "Task runner pod not found" && return; fi
-
-  echoinfo "Installing license..." true
-
-  echo "${REVIEW_APPS_EE_LICENSE}" > /tmp/license.gitlab
-  kubectl -n "$KUBE_NAMESPACE" cp /tmp/license.gitlab "${task_runner_pod}":/tmp/license.gitlab
-  rm /tmp/license.gitlab
-
-  kubectl -n "$KUBE_NAMESPACE" exec -it "${task_runner_pod}" -- /srv/gitlab/bin/rails runner -e production \
-    '
-    content = File.read("/tmp/license.gitlab").strip;
-    FileUtils.rm_f("/tmp/license.gitlab");
-
-    unless License.where(data:content).empty?
-      puts "License already exists";
-      Kernel.exit 0;
-    end
-
-    unless License.new(data: content).save
-      puts "Could not add license";
-      Kernel.exit 0;
-    end
-
-    puts "License added";
-    '
 }

@@ -151,7 +151,7 @@ describe Projects::UpdateService do
 
     context 'when we update project but not enabling a wiki' do
       it 'does not try to create an empty wiki' do
-        Gitlab::Shell.new.rm_directory(project.repository_storage, project.wiki.path)
+        TestEnv.rm_storage_dir(project.repository_storage, project.wiki.path)
 
         result = update_project(project, user, { name: 'test1' })
 
@@ -172,7 +172,7 @@ describe Projects::UpdateService do
     context 'when enabling a wiki' do
       it 'creates a wiki' do
         project.project_feature.update(wiki_access_level: ProjectFeature::DISABLED)
-        Gitlab::Shell.new.rm_directory(project.repository_storage, project.wiki.path)
+        TestEnv.rm_storage_dir(project.repository_storage, project.wiki.path)
 
         result = update_project(project, user, project_feature_attributes: { wiki_access_level: ProjectFeature::ENABLED })
 

@@ -1,114 +1,129 @@
-import Vue from 'vue';
-
+import { shallowMount } from '@vue/test-utils';
+import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import IssueAssignees from '~/vue_shared/components/issue/issue_assignees.vue';
-
-import mountComponent from 'helpers/vue_mount_component_helper';
 import { mockAssigneesList } from '../../../../javascripts/boards/mock_data';
 
-const createComponent = (assignees = mockAssigneesList, cssClass = '') => {
-  const Component = Vue.extend(IssueAssignees);
-
-  return mountComponent(Component, {
-    assignees,
-    cssClass,
-  });
-};
+const TEST_CSS_CLASSES = 'test-classes';
+const TEST_MAX_VISIBLE = 4;
+const TEST_ICON_SIZE = 16;
 
 describe('IssueAssigneesComponent', () => {
+  let wrapper;
   let vm;
 
-  beforeEach(() => {
-    vm = createComponent();
+  const factory = props => {
+    wrapper = shallowMount(IssueAssignees, {
+      propsData: {
+        assignees: mockAssigneesList,
+        ...props,
+      },
+      sync: false,
+    });
+    vm = wrapper.vm; // eslint-disable-line
+  };
+
+  const findTooltipText = () => wrapper.find('.js-assignee-tooltip').text();
+  const findAvatars = () => wrapper.findAll(UserAvatarLink);
+  const findOverflowCounter = () => wrapper.find('.avatar-counter');
+
+  it('returns default data props', () => {
+    factory({ assignees: mockAssigneesList });
+    expect(vm.iconSize).toBe(24);
+    expect(vm.maxVisible).toBe(3);
+    expect(vm.maxAssignees).toBe(99);
   });
 
-  afterEach(() => {
-    vm.$destroy();
-  });
+  describe.each`
+    numAssignees | maxVisible | expectedShown | expectedHidden
+    ${0}         | ${3}       | ${0}          | ${''}
+    ${1}         | ${3}       | ${1}          | ${''}
+    ${2}         | ${3}       | ${2}          | ${''}
+    ${3}         | ${3}       | ${3}          | ${''}
+    ${4}         | ${3}       | ${2}          | ${'+2'}
+    ${5}         | ${2}       | ${1}          | ${'+4'}
+    ${1000}      | ${5}       | ${4}          | ${'99+'}
+  `(
+    'with assignees ($numAssignees) and maxVisible ($maxVisible)',
+    ({ numAssignees, maxVisible, expectedShown, expectedHidden }) => {
+      beforeEach(() => {
+        factory({ assignees: Array(numAssignees).fill({}), maxVisible });
+      });
 
-  describe('data', () => {
-    it('returns default data props', () => {
-      expect(vm.maxVisibleAssignees).toBe(2);
-      expect(vm.maxAssigneeAvatars).toBe(3);
-      expect(vm.maxAssignees).toBe(99);
-    });
-  });
+      if (expectedShown) {
+        it('shows assignee avatars', () => {
+          expect(findAvatars().length).toEqual(expectedShown);
+        });
+      } else {
+        it('does not show assignee avatars', () => {
+          expect(findAvatars().length).toEqual(0);
+        });
+      }
 
-  describe('computed', () => {
-    describe('countOverLimit', () => {
-      it('should return difference between assignees count and maxVisibleAssignees', () => {
-        expect(vm.countOverLimit).toBe(mockAssigneesList.length - vm.maxVisibleAssignees);
+      if (expectedHidden) {
+        it('shows overflow counter', () => {
+          const hiddenCount = numAssignees - expectedShown;
+
+          expect(findOverflowCounter().exists()).toBe(true);
+          expect(findOverflowCounter().text()).toEqual(expectedHidden.toString());
+          expect(findOverflowCounter().attributes('data-original-title')).toEqual(
+            `${hiddenCount} more assignees`,
+          );
+        });
+      } else {
+        it('does not show overflow counter', () => {
+          expect(findOverflowCounter().exists()).toBe(false);
+        });
+      }
+    },
+  );
+
+  describe('when mounted', () => {
+    beforeEach(() => {
+      factory({
+        imgCssClasses: TEST_CSS_CLASSES,
+        maxVisible: TEST_MAX_VISIBLE,
+        iconSize: TEST_ICON_SIZE,
       });
     });
 
-    describe('assigneesToShow', () => {
-      it('should return assignees containing only 2 items when count more than maxAssigneeAvatars', () => {
-        expect(vm.assigneesToShow.length).toBe(2);
-      });
-
-      it('should return all assignees as it is when count less than maxAssigneeAvatars', () => {
-        vm.assignees = mockAssigneesList.slice(0, 3); // Set 3 Assignees
-
-        expect(vm.assigneesToShow.length).toBe(3);
-      });
+    it('computes alt text for assignee avatar', () => {
+      expect(vm.avatarUrlTitle(mockAssigneesList[0])).toBe('Avatar for Terrell Graham');
     });
 
-    describe('assigneesCounterTooltip', () => {
-      it('should return string containing count of remaining assignees when count more than maxAssigneeAvatars', () => {
-        expect(vm.assigneesCounterTooltip).toBe('3 more assignees');
-      });
-    });
-
-    describe('shouldRenderAssigneesCounter', () => {
-      it('should return `false` when assignees count less than maxAssigneeAvatars', () => {
-        vm.assignees = mockAssigneesList.slice(0, 3); // Set 3 Assignees
-
-        expect(vm.shouldRenderAssigneesCounter).toBe(false);
-      });
-
-      it('should return `true` when assignees count more than maxAssigneeAvatars', () => {
-        expect(vm.shouldRenderAssigneesCounter).toBe(true);
-      });
-    });
-
-    describe('assigneeCounterLabel', () => {
-      it('should return count of additional assignees total assignees count more than maxAssigneeAvatars', () => {
-        expect(vm.assigneeCounterLabel).toBe('+3');
-      });
-    });
-  });
-
-  describe('methods', () => {
-    describe('avatarUrlTitle', () => {
-      it('returns string containing alt text for assignee avatar', () => {
-        expect(vm.avatarUrlTitle(mockAssigneesList[0])).toBe('Avatar for Terrell Graham');
-      });
-    });
-  });
-
-  describe('template', () => {
     it('renders component root element with class `issue-assignees`', () => {
-      expect(vm.$el.classList.contains('issue-assignees')).toBe(true);
+      expect(wrapper.element.classList.contains('issue-assignees')).toBe(true);
     });
 
-    it('renders assignee avatars', () => {
-      expect(vm.$el.querySelectorAll('.user-avatar-link').length).toBe(2);
+    it('renders assignee', () => {
+      const data = findAvatars().wrappers.map(x => ({
+        ...x.props(),
+      }));
+
+      const expected = mockAssigneesList.slice(0, TEST_MAX_VISIBLE - 1).map(x =>
+        expect.objectContaining({
+          linkHref: x.web_url,
+          imgAlt: `Avatar for ${x.name}`,
+          imgCssClasses: TEST_CSS_CLASSES,
+          imgSrc: x.avatar_url,
+          imgSize: TEST_ICON_SIZE,
+        }),
+      );
+
+      expect(data).toEqual(expected);
     });
 
-    it('renders assignee tooltips', () => {
-      const tooltipText = vm.$el
-        .querySelectorAll('.user-avatar-link')[0]
-        .querySelector('.js-assignee-tooltip').innerText;
+    describe('assignee tooltips', () => {
+      it('renders "Assignee" header', () => {
+        expect(findTooltipText()).toContain('Assignee');
+      });
 
-      expect(tooltipText).toContain('Assignee');
-      expect(tooltipText).toContain('Terrell Graham');
-      expect(tooltipText).toContain('@monserrate.gleichner');
-    });
+      it('renders assignee name', () => {
+        expect(findTooltipText()).toContain('Terrell Graham');
+      });
 
-    it('renders additional assignees count', () => {
-      const avatarCounterEl = vm.$el.querySelector('.avatar-counter');
-
-      expect(avatarCounterEl.innerText.trim()).toBe('+3');
-      expect(avatarCounterEl.getAttribute('data-original-title')).toBe('3 more assignees');
+      it('renders assignee @username', () => {
+        expect(findTooltipText()).toContain('@monserrate.gleichner');
+      });
     });
   });
 });

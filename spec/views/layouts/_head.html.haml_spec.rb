@@ -84,7 +84,7 @@ describe 'layouts/_head' do
       allow(Gitlab::CurrentSettings).to receive(:snowplow_collector_hostname).and_return('www.snow.plow')
     end
 
-    it 'add a snowplow script tag with asset host' do
+    it 'adds a snowplow script tag with asset host' do
       render
       expect(rendered).to match('http://test.host/assets/snowplow/')
       expect(rendered).to match('window.snowplow')

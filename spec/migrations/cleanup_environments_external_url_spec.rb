@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20181108091549_cleanup_environments_external_url.rb')
 

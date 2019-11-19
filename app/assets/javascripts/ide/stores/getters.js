@@ -34,7 +34,9 @@ export const currentMergeRequest = state => {
   return null;
 };
 
-export const currentProject = state => state.projects[state.currentProjectId];
+export const findProject = state => projectId => state.projects[projectId];
+
+export const currentProject = (state, getters) => getters.findProject(state.currentProjectId);
 
 export const emptyRepo = state =>
   state.projects[state.currentProjectId] && state.projects[state.currentProjectId].empty_repo;
@@ -94,8 +96,14 @@ export const lastCommit = (state, getters) => {
   return branch ? branch.commit : null;
 };
 
+export const findBranch = (state, getters) => (projectId, branchId) => {
+  const project = getters.findProject(projectId);
+
+  return project && project.branches[branchId];
+};
+
 export const currentBranch = (state, getters) =>
-  getters.currentProject && getters.currentProject.branches[state.currentBranchId];
+  getters.findBranch(state.currentProjectId, state.currentBranchId);
 
 export const branchName = (_state, getters) => getters.currentBranch && getters.currentBranch.name;
 

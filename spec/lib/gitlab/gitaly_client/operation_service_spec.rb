@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Gitlab::GitalyClient::OperationService do
@@ -209,10 +211,12 @@ describe Gitlab::GitalyClient::OperationService do
     end
 
     context 'when a create_tree_error is present' do
-      let(:response) { response_class.new(create_tree_error: "something failed") }
+      let(:response) { response_class.new(create_tree_error: "something failed", create_tree_error_code: 'EMPTY') }
 
       it 'raises a CreateTreeError' do
-        expect { subject }.to raise_error(Gitlab::Git::Repository::CreateTreeError, "something failed")
+        expect { subject }.to raise_error(Gitlab::Git::Repository::CreateTreeError) do |error|
+          expect(error.error_code).to eq(:empty)
+        end
       end
     end
 

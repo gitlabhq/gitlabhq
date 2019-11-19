@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "required": [
+    "error"
+  ],
+  "properties": {
+    "error": { "$ref": "error_detailed.json" }
+  },
+  "additionalProperties": false
+}
+

@@ -14,9 +14,12 @@ describe MergeRequests::MergeService do
   end
 
   describe '#execute' do
-    context 'valid params' do
-      let(:service) { described_class.new(project, user, commit_message: 'Awesome message') }
+    let(:service) { described_class.new(project, user, merge_params) }
+    let(:merge_params) do
+      { commit_message: 'Awesome message', sha: merge_request.diff_head_sha }
+    end
 
+    context 'valid params' do
       before do
         allow(service).to receive(:execute_hooks)
 
@@ -38,11 +41,80 @@ describe MergeRequests::MergeService do
         note = merge_request.notes.last
         expect(note.note).to include 'merged'
       end
+
+      context 'when squashing' do
+        let(:merge_params) do
+          { commit_message: 'Merge commit message',
+            squash_commit_message: 'Squash commit message',
+            sha: merge_request.diff_head_sha }
+        end
+
+        let(:merge_request) do
+          # A merge reqeust with 5 commits
+          create(:merge_request, :simple,
+                 author: user2,
+                 assignees: [user2],
+                 squash: true,
+                 source_branch: 'improve/awesome',
+                 target_branch: 'fix')
+        end
+
+        it 'merges the merge request with squashed commits' do
+          expect(merge_request).to be_merged
+
+          merge_commit = merge_request.merge_commit
+          squash_commit = merge_request.merge_commit.parents.last
+
+          expect(merge_commit.message).to eq('Merge commit message')
+          expect(squash_commit.message).to eq("Squash commit message\n")
+        end
+      end
+    end
+
+    context 'when an invalid sha is passed' do
+      let(:merge_request) do
+        create(:merge_request, :simple,
+               author: user2,
+               assignees: [user2],
+               squash: true,
+               source_branch: 'improve/awesome',
+               target_branch: 'fix')
+      end
+
+      let(:merge_params) do
+        { sha: merge_request.commits.second.sha }
+      end
+
+      it 'does not merge the MR' do
+        service.execute(merge_request)
+
+        expect(merge_request).not_to be_merged
+        expect(merge_request.merge_error).to match(/Branch has been updated/)
+      end
+    end
+
+    context 'when the `sha` param is missing' do
+      let(:merge_params) { {} }
+
+      it 'returns the error' do
+        merge_error = 'Branch has been updated since the merge was requested. '\
+                      'Please review the changes.'
+
+        expect { service.execute(merge_request) }
+          .to change { merge_request.merge_error }
+                .from(nil).to(merge_error)
+      end
+
+      it 'merges the MR when the feature is disabled' do
+        stub_feature_flags(validate_merge_sha: false)
+
+        service.execute(merge_request)
+
+        expect(merge_request).to be_merged
+      end
     end
 
     context 'closes related issues' do
-      let(:service) { described_class.new(project, user, commit_message: 'Awesome message') }
-
       before do
         allow(project).to receive(:default_branch).and_return(merge_request.target_branch)
       end
@@ -83,12 +155,12 @@ describe MergeRequests::MergeService do
           service.execute(merge_request)
         end
 
-        context "when jira_issue_transition_id is not present" do
+        context 'when jira_issue_transition_id is not present' do
           before do
             allow_any_instance_of(JIRA::Resource::Issue).to receive(:resolution).and_return(nil)
           end
 
-          it "does not close issue" do
+          it 'does not close issue' do
             allow(jira_tracker).to receive_messages(jira_issue_transition_id: nil)
 
             expect_any_instance_of(JiraService).not_to receive(:transition_issue)
@@ -97,7 +169,7 @@ describe MergeRequests::MergeService do
           end
         end
 
-        context "wrong issue markdown" do
+        context 'wrong issue markdown' do
           it 'does not close issues on Jira issue tracker' do
             jira_issue = ExternalIssue.new('#JIRA-123', project)
             stub_jira_urls(jira_issue)
@@ -115,7 +187,7 @@ describe MergeRequests::MergeService do
     context 'closes related todos' do
       let(:merge_request) { create(:merge_request, assignees: [user], author: user) }
       let(:project) { merge_request.project }
-      let(:service) { described_class.new(project, user, commit_message: 'Awesome message') }
+
       let!(:todo) do
         create(:todo, :assigned,
           project: project,
@@ -139,7 +211,7 @@ describe MergeRequests::MergeService do
     context 'source branch removal' do
       context 'when the source branch is protected' do
         let(:service) do
-          described_class.new(project, user, 'should_remove_source_branch' => true)
+          described_class.new(project, user, merge_params.merge('should_remove_source_branch' => true))
         end
 
         before do
@@ -154,7 +226,7 @@ describe MergeRequests::MergeService do
 
       context 'when the source branch is the default branch' do
         let(:service) do
-          described_class.new(project, user, 'should_remove_source_branch' => true)
+          described_class.new(project, user, merge_params.merge('should_remove_source_branch' => true))
         end
 
         before do
@@ -169,8 +241,6 @@ describe MergeRequests::MergeService do
 
       context 'when the source branch can be removed' do
         context 'when MR author set the source branch to be removed' do
-          let(:service) { described_class.new(project, user, commit_message: 'Awesome message') }
-
           before do
             merge_request.update_attribute(:merge_params, { 'force_remove_source_branch' => '1' })
           end
@@ -183,7 +253,7 @@ describe MergeRequests::MergeService do
           end
 
           context 'when the merger set the source branch not to be removed' do
-            let(:service) { described_class.new(project, user, commit_message: 'Awesome message', 'should_remove_source_branch' => false) }
+            let(:service) { described_class.new(project, user, merge_params.merge('should_remove_source_branch' => false)) }
 
             it 'does not delete the source branch' do
               expect(DeleteBranchService).not_to receive(:new)
@@ -194,7 +264,7 @@ describe MergeRequests::MergeService do
 
         context 'when MR merger set the source branch to be removed' do
           let(:service) do
-            described_class.new(project, user, commit_message: 'Awesome message', 'should_remove_source_branch' => true)
+            described_class.new(project, user, merge_params.merge('should_remove_source_branch' => true))
           end
 
           it 'removes the source branch using the current user' do
@@ -207,9 +277,7 @@ describe MergeRequests::MergeService do
       end
     end
 
-    context "error handling" do
-      let(:service) { described_class.new(project, user, commit_message: 'Awesome message') }
-
+    context 'error handling' do
       before do
         allow(Rails.logger).to receive(:error)
       end
@@ -230,7 +298,7 @@ describe MergeRequests::MergeService do
       it 'logs and saves error if there is an exception' do
         error_message = 'error message'
 
-        allow(service).to receive(:repository).and_raise("error message")
+        allow(service).to receive(:repository).and_raise('error message')
         allow(service).to receive(:execute_hooks)
 
         service.execute(merge_request)
@@ -310,7 +378,7 @@ describe MergeRequests::MergeService do
           expect(Rails.logger).to have_received(:error).with(a_string_matching(error_message))
         end
 
-        context "when fast-forward merge is not allowed" do
+        context 'when fast-forward merge is not allowed' do
           before do
             allow_any_instance_of(Repository).to receive(:ancestor?).and_return(nil)
           end

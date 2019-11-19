@@ -20,8 +20,9 @@ describe Import::GitlabController do
 
   describe "GET callback" do
     it "updates access token" do
-      allow_any_instance_of(Gitlab::GitlabImport::Client)
-        .to receive(:get_token).and_return(token)
+      allow_next_instance_of(Gitlab::GitlabImport::Client) do |instance|
+        allow(instance).to receive(:get_token).and_return(token)
+      end
       stub_omniauth_provider('gitlab')
 
       get :callback

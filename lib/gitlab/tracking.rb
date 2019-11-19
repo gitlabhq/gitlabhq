@@ -45,9 +45,10 @@ module Gitlab
           namespace: SNOWPLOW_NAMESPACE,
           hostname: Gitlab::CurrentSettings.snowplow_collector_hostname,
           cookie_domain: Gitlab::CurrentSettings.snowplow_cookie_domain,
-          app_id: Gitlab::CurrentSettings.snowplow_site_id,
+          app_id: Gitlab::CurrentSettings.snowplow_app_id,
           form_tracking: additional_features,
-          link_click_tracking: additional_features
+          link_click_tracking: additional_features,
+          iglu_registry_url: Gitlab::CurrentSettings.snowplow_iglu_registry_url
         }.transform_keys! { |key| key.to_s.camelize(:lower).to_sym }
       end
 
@@ -58,7 +59,7 @@ module Gitlab
           SnowplowTracker::AsyncEmitter.new(Gitlab::CurrentSettings.snowplow_collector_hostname, protocol: 'https'),
           SnowplowTracker::Subject.new,
           SNOWPLOW_NAMESPACE,
-          Gitlab::CurrentSettings.snowplow_site_id
+          Gitlab::CurrentSettings.snowplow_app_id
         )
       end
     end

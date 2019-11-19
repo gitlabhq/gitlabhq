@@ -104,7 +104,8 @@ describe GoogleApi::CloudPlatform::Client do
             enabled: legacy_abac
           },
           ip_allocation_policy: {
-            use_ip_aliases: true
+            use_ip_aliases: true,
+            cluster_ipv4_cidr_block: '/16'
           },
           addons_config: addons_config
         }

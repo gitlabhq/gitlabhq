@@ -37,7 +37,7 @@ const createAction = config => `
 `;
 
 const createFlashEl = (message, type) => `
-  <div class="flash-content flash-${type} rounded">
+  <div class="flash-${type}">
     <div class="flash-text">
       ${_.escape(message)}
       <div class="close-icon-wrapper js-close-icon">

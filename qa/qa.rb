@@ -10,6 +10,14 @@ require_relative '../config/initializers/0_inject_enterprise_edition_module'
 
 module QA
   ##
+  # Helper classes to represent frequently used sequences of actions
+  # (e.g., login)
+  #
+  module Flow
+    autoload :Login, 'qa/flow/login'
+  end
+
+  ##
   # GitLab QA runtime classes, mostly singletons.
   #
   module Runtime
@@ -157,6 +165,7 @@ module QA
     module Dashboard
       autoload :Projects, 'qa/page/dashboard/projects'
       autoload :Groups, 'qa/page/dashboard/groups'
+      autoload :Welcome, 'qa/page/dashboard/welcome'
 
       module Snippet
         autoload :New, 'qa/page/dashboard/snippet/new'
@@ -331,6 +340,7 @@ module QA
 
         module Component
           autoload :IpLimits, 'qa/page/admin/settings/component/ip_limits'
+          autoload :OutboundRequests, 'qa/page/admin/settings/component/outbound_requests'
           autoload :RepositoryStorage, 'qa/page/admin/settings/component/repository_storage'
           autoload :AccountAndLimit, 'qa/page/admin/settings/component/account_and_limit'
           autoload :PerformanceBar, 'qa/page/admin/settings/component/performance_bar'
@@ -406,7 +416,9 @@ module QA
 
     module DockerRun
       autoload :Base, 'qa/service/docker_run/base'
+      autoload :Jenkins, 'qa/service/docker_run/jenkins'
       autoload :LDAP, 'qa/service/docker_run/ldap'
+      autoload :Maven, 'qa/service/docker_run/maven'
       autoload :NodeJs, 'qa/service/docker_run/node_js'
       autoload :GitlabRunner, 'qa/service/docker_run/gitlab_runner'
     end
@@ -419,6 +431,7 @@ module QA
     autoload :Config, 'qa/specs/config'
     autoload :Runner, 'qa/specs/runner'
     autoload :ParallelRunner, 'qa/specs/parallel_runner'
+    autoload :LoopRunner, 'qa/specs/loop_runner'
 
     module Helpers
       autoload :Quarantine, 'qa/specs/helpers/quarantine'
@@ -433,6 +446,17 @@ module QA
       module Page
         autoload :Base, 'qa/vendor/saml_idp/page/base'
         autoload :Login, 'qa/vendor/saml_idp/page/login'
+      end
+    end
+
+    module Jenkins
+      module Page
+        autoload :Base, 'qa/vendor/jenkins/page/base'
+        autoload :Login, 'qa/vendor/jenkins/page/login'
+        autoload :Configure, 'qa/vendor/jenkins/page/configure'
+        autoload :NewCredentials, 'qa/vendor/jenkins/page/new_credentials'
+        autoload :NewJob, 'qa/vendor/jenkins/page/new_job'
+        autoload :ConfigureJob, 'qa/vendor/jenkins/page/configure_job'
       end
     end
 

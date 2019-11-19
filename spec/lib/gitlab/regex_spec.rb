@@ -66,6 +66,15 @@ describe Gitlab::Regex do
   end
 
   describe '.aws_account_id_regex' do
+    subject { described_class.aws_account_id_regex }
+
+    it { is_expected.to match('123456789012') }
+    it { is_expected.not_to match('12345678901') }
+    it { is_expected.not_to match('1234567890123') }
+    it { is_expected.not_to match('12345678901a') }
+  end
+
+  describe '.aws_arn_regex' do
     subject { described_class.aws_arn_regex }
 
     it { is_expected.to match('arn:aws:iam::123456789012:role/role-name') }
@@ -74,5 +83,15 @@ describe Gitlab::Regex do
     it { is_expected.to match('arn:aws:rds:us-east-1:123456789012:pg:prod') }
     it { is_expected.not_to match('123456789012') }
     it { is_expected.not_to match('role/role-name') }
+  end
+
+  describe '.utc_date_regex' do
+    subject { described_class.utc_date_regex }
+
+    it { is_expected.to match('2019-10-20') }
+    it { is_expected.to match('1990-01-01') }
+    it { is_expected.not_to match('11-1234-90') }
+    it { is_expected.not_to match('aa-1234-cc') }
+    it { is_expected.not_to match('9/9/2018') }
   end
 end

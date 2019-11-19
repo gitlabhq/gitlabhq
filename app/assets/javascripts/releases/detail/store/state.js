@@ -4,6 +4,7 @@ export default () => ({
   releasesPagePath: null,
   markdownDocsPath: null,
   markdownPreviewPath: null,
+  updateReleaseApiDocsPath: null,
 
   release: null,
 

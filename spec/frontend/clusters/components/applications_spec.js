@@ -6,6 +6,7 @@ import { APPLICATIONS_MOCK_STATE } from '../services/mock_data';
 import eventHub from '~/clusters/event_hub';
 import { shallowMount } from '@vue/test-utils';
 import KnativeDomainEditor from '~/clusters/components/knative_domain_editor.vue';
+import CrossplaneProviderStack from '~/clusters/components/crossplane_provider_stack.vue';
 
 describe('Applications', () => {
   let vm;
@@ -13,6 +14,10 @@ describe('Applications', () => {
 
   beforeEach(() => {
     Applications = Vue.extend(applications);
+
+    gon.features = gon.features || {};
+    gon.features.enableClusterApplicationElasticStack = true;
+    gon.features.enableClusterApplicationCrossplane = true;
   });
 
   afterEach(() => {
@@ -39,6 +44,10 @@ describe('Applications', () => {
       expect(vm.$el.querySelector('.js-cluster-application-row-cert_manager')).not.toBeNull();
     });
 
+    it('renders a row for Crossplane', () => {
+      expect(vm.$el.querySelector('.js-cluster-application-row-crossplane')).not.toBeNull();
+    });
+
     it('renders a row for Prometheus', () => {
       expect(vm.$el.querySelector('.js-cluster-application-row-prometheus')).not.toBeNull();
     });
@@ -53,6 +62,10 @@ describe('Applications', () => {
 
     it('renders a row for Knative', () => {
       expect(vm.$el.querySelector('.js-cluster-application-row-knative')).not.toBeNull();
+    });
+
+    it('renders a row for Elastic Stack', () => {
+      expect(vm.$el.querySelector('.js-cluster-application-row-elastic_stack')).not.toBeNull();
     });
   });
 
@@ -76,6 +89,10 @@ describe('Applications', () => {
       expect(vm.$el.querySelector('.js-cluster-application-row-cert_manager')).not.toBeNull();
     });
 
+    it('renders a row for Crossplane', () => {
+      expect(vm.$el.querySelector('.js-cluster-application-row-crossplane')).not.toBeNull();
+    });
+
     it('renders a row for Prometheus', () => {
       expect(vm.$el.querySelector('.js-cluster-application-row-prometheus')).not.toBeNull();
     });
@@ -90,6 +107,10 @@ describe('Applications', () => {
 
     it('renders a row for Knative', () => {
       expect(vm.$el.querySelector('.js-cluster-application-row-knative')).not.toBeNull();
+    });
+
+    it('renders a row for Elastic Stack', () => {
+      expect(vm.$el.querySelector('.js-cluster-application-row-elastic_stack')).not.toBeNull();
     });
   });
 
@@ -113,6 +134,10 @@ describe('Applications', () => {
       expect(vm.$el.querySelector('.js-cluster-application-row-cert_manager')).not.toBeNull();
     });
 
+    it('renders a row for Crossplane', () => {
+      expect(vm.$el.querySelector('.js-cluster-application-row-crossplane')).not.toBeNull();
+    });
+
     it('renders a row for Prometheus', () => {
       expect(vm.$el.querySelector('.js-cluster-application-row-prometheus')).not.toBeNull();
     });
@@ -127,6 +152,10 @@ describe('Applications', () => {
 
     it('renders a row for Knative', () => {
       expect(vm.$el.querySelector('.js-cluster-application-row-knative')).not.toBeNull();
+    });
+
+    it('renders a row for Elastic Stack', () => {
+      expect(vm.$el.querySelector('.js-cluster-application-row-elastic_stack')).not.toBeNull();
     });
   });
 
@@ -164,10 +193,12 @@ describe('Applications', () => {
               },
               helm: { title: 'Helm Tiller' },
               cert_manager: { title: 'Cert-Manager' },
+              crossplane: { title: 'Crossplane', stack: '' },
               runner: { title: 'GitLab Runner' },
               prometheus: { title: 'Prometheus' },
               jupyter: { title: 'JupyterHub', hostname: '' },
               knative: { title: 'Knative', hostname: '' },
+              elastic_stack: { title: 'Elastic Stack', kibana_hostname: '' },
             },
           });
 
@@ -260,7 +291,11 @@ describe('Applications', () => {
             },
           });
 
-          expect(vm.$el.querySelector('.js-hostname').getAttribute('readonly')).toEqual(null);
+          expect(
+            vm.$el
+              .querySelector('.js-cluster-application-row-jupyter .js-hostname')
+              .getAttribute('readonly'),
+          ).toEqual(null);
         });
       });
 
@@ -273,7 +308,9 @@ describe('Applications', () => {
             },
           });
 
-          expect(vm.$el.querySelector('.js-hostname')).toBe(null);
+          expect(vm.$el.querySelector('.js-cluster-application-row-jupyter .js-hostname')).toBe(
+            null,
+          );
         });
       });
 
@@ -287,7 +324,11 @@ describe('Applications', () => {
             },
           });
 
-          expect(vm.$el.querySelector('.js-hostname').getAttribute('readonly')).toEqual('readonly');
+          expect(
+            vm.$el
+              .querySelector('.js-cluster-application-row-jupyter .js-hostname')
+              .getAttribute('readonly'),
+          ).toEqual('readonly');
         });
       });
 
@@ -299,7 +340,9 @@ describe('Applications', () => {
         });
 
         it('does not render input', () => {
-          expect(vm.$el.querySelector('.js-hostname')).toBe(null);
+          expect(vm.$el.querySelector('.js-cluster-application-row-jupyter .js-hostname')).toBe(
+            null,
+          );
         });
 
         it('renders disabled install button', () => {
@@ -358,6 +401,112 @@ describe('Applications', () => {
       expect(eventHub.$emit).toHaveBeenCalledWith('setKnativeHostname', {
         id: 'knative',
         hostname: newHostname,
+      });
+    });
+  });
+
+  describe('Crossplane application', () => {
+    const propsData = {
+      applications: {
+        ...APPLICATIONS_MOCK_STATE,
+        crossplane: {
+          title: 'Crossplane',
+          stack: {
+            code: '',
+          },
+        },
+      },
+    };
+
+    let wrapper;
+    beforeEach(() => {
+      wrapper = shallowMount(Applications, { propsData });
+    });
+    afterEach(() => {
+      wrapper.destroy();
+    });
+    it('renders the correct Component', () => {
+      const crossplane = wrapper.find(CrossplaneProviderStack);
+      expect(crossplane.exists()).toBe(true);
+    });
+  });
+
+  describe('Elastic Stack application', () => {
+    describe('with ingress installed with ip & elastic stack installable', () => {
+      it('renders hostname active input', () => {
+        vm = mountComponent(Applications, {
+          applications: {
+            ...APPLICATIONS_MOCK_STATE,
+            ingress: {
+              title: 'Ingress',
+              status: 'installed',
+              externalIp: '1.1.1.1',
+            },
+          },
+        });
+
+        expect(
+          vm.$el
+            .querySelector('.js-cluster-application-row-elastic_stack .js-hostname')
+            .getAttribute('readonly'),
+        ).toEqual(null);
+      });
+    });
+
+    describe('with ingress installed without external ip', () => {
+      it('does not render hostname input', () => {
+        vm = mountComponent(Applications, {
+          applications: {
+            ...APPLICATIONS_MOCK_STATE,
+            ingress: { title: 'Ingress', status: 'installed' },
+          },
+        });
+
+        expect(vm.$el.querySelector('.js-cluster-application-row-elastic_stack .js-hostname')).toBe(
+          null,
+        );
+      });
+    });
+
+    describe('with ingress & elastic stack installed', () => {
+      it('renders readonly input', () => {
+        vm = mountComponent(Applications, {
+          applications: {
+            ...APPLICATIONS_MOCK_STATE,
+            ingress: { title: 'Ingress', status: 'installed', externalIp: '1.1.1.1' },
+            elastic_stack: { title: 'Elastic Stack', status: 'installed', kibana_hostname: '' },
+          },
+        });
+
+        expect(
+          vm.$el
+            .querySelector('.js-cluster-application-row-elastic_stack .js-hostname')
+            .getAttribute('readonly'),
+        ).toEqual('readonly');
+      });
+    });
+
+    describe('without ingress installed', () => {
+      beforeEach(() => {
+        vm = mountComponent(Applications, {
+          applications: APPLICATIONS_MOCK_STATE,
+        });
+      });
+
+      it('does not render input', () => {
+        expect(vm.$el.querySelector('.js-cluster-application-row-elastic_stack .js-hostname')).toBe(
+          null,
+        );
+      });
+
+      it('renders disabled install button', () => {
+        expect(
+          vm.$el
+            .querySelector(
+              '.js-cluster-application-row-elastic_stack .js-cluster-application-install-button',
+            )
+            .getAttribute('disabled'),
+        ).toEqual('disabled');
       });
     });
   });

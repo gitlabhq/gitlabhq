@@ -1,5 +1,3 @@
-/* eslint-disable no-var */
-
 import $ from 'jquery';
 import '~/commons/bootstrap';
 
@@ -10,15 +8,13 @@ describe('Bootstrap jQuery extensions', function() {
     });
 
     it('adds the disabled attribute', function() {
-      var $input;
-      $input = $('input').first();
+      const $input = $('input').first();
       $input.disable();
 
       expect($input).toHaveAttr('disabled', 'disabled');
     });
     return it('adds the disabled class', function() {
-      var $input;
-      $input = $('input').first();
+      const $input = $('input').first();
       $input.disable();
 
       expect($input).toHaveClass('disabled');
@@ -30,15 +26,13 @@ describe('Bootstrap jQuery extensions', function() {
     });
 
     it('removes the disabled attribute', function() {
-      var $input;
-      $input = $('input').first();
+      const $input = $('input').first();
       $input.enable();
 
       expect($input).not.toHaveAttr('disabled');
     });
     return it('removes the disabled class', function() {
-      var $input;
-      $input = $('input').first();
+      const $input = $('input').first();
       $input.enable();
 
       expect($input).not.toHaveClass('disabled');

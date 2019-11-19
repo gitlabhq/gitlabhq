@@ -86,6 +86,12 @@ def unicode_emoji_regex
   ))x
 end
 
+def count_filtered_commits(commits)
+  commits.count do |commit|
+    !commit.message.start_with?('fixup!', 'squash!')
+  end
+end
+
 def lint_commit(commit) # rubocop:disable Metrics/AbcSize
   # For now we'll ignore merge commits, as getting rid of those is a problem
   # separate from enforcing good commit messages.
@@ -234,7 +240,7 @@ def lint_commit(commit) # rubocop:disable Metrics/AbcSize
     fail_commit(
       commit,
       'Use full URLs instead of short references ' \
-        '(`gitlab-org/gitlab-ce#123` or `!123`), as short references are ' \
+        '(`gitlab-org/gitlab#123` or `!123`), as short references are ' \
         'displayed as plain text outside of GitLab'
     )
 
@@ -285,7 +291,7 @@ def lint_commits(commits)
   end
 end
 
-if git.commits.length > 10 && !ce_upstream?
+if count_filtered_commits(git.commits) > 10 && !ce_upstream?
   warn(
     'This merge request includes more than 10 commits. ' \
       'Please rebase these commits into a smaller number of commits.'

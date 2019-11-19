@@ -5,6 +5,7 @@ require 'spec_helper'
 describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_not_mock_admin_mode do
   include StubENV
   include TermsHelper
+  include MobileHelpers
 
   let(:admin) { create(:admin) }
 
@@ -450,6 +451,32 @@ describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_not_moc
           expect(page).to have_link(text: 'Support', href: new_support_url)
         end
       end
+
+      it 'Shows admin dashboard links on bigger screen' do
+        visit root_dashboard_path
+
+        page.within '.navbar' do
+          expect(page).to have_link(text: 'Admin Area', href: admin_root_path, visible: true)
+          expect(page).to have_link(text: 'Leave Admin Mode', href: destroy_admin_session_path, visible: true)
+        end
+      end
+
+      it 'Relocates admin dashboard links to dropdown list on smaller screen', :js do
+        resize_screen_xs
+        visit root_dashboard_path
+
+        page.within '.navbar' do
+          expect(page).not_to have_link(text: 'Admin Area', href: admin_root_path, visible: true)
+          expect(page).not_to have_link(text: 'Leave Admin Mode', href: destroy_admin_session_path, visible: true)
+        end
+
+        find('.header-more').click
+
+        page.within '.navbar' do
+          expect(page).to have_link(text: 'Admin Area', href: admin_root_path, visible: true)
+          expect(page).to have_link(text: 'Leave Admin Mode', href: destroy_admin_session_path, visible: true)
+        end
+      end
     end
 
     context 'when in admin_mode' do
@@ -462,7 +489,7 @@ describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_not_moc
       it 'can leave admin mode' do
         page.within('.navbar-sub-nav') do
           # Select first, link is also included in mobile view list
-          click_on 'Leave admin mode', match: :first
+          click_on 'Leave Admin Mode', match: :first
 
           expect(page).to have_link(href: new_admin_session_path)
         end
@@ -481,7 +508,7 @@ describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_not_moc
       before do
         page.within('.navbar-sub-nav') do
           # Select first, link is also included in mobile view list
-          click_on 'Leave admin mode', match: :first
+          click_on 'Leave Admin Mode', match: :first
         end
       end
 

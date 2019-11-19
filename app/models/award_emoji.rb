@@ -6,11 +6,14 @@ class AwardEmoji < ApplicationRecord
 
   include Participable
   include GhostUser
+  include Importable
 
   belongs_to :awardable, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
   belongs_to :user
 
-  validates :awardable, :user, presence: true
+  validates :user, presence: true
+  validates :awardable, presence: true, unless: :importing?
+
   validates :name, presence: true, inclusion: { in: Gitlab::Emoji.emojis_names }
   validates :name, uniqueness: { scope: [:user, :awardable_type, :awardable_id] }, unless: :ghost_user?
 

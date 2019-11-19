@@ -16,8 +16,18 @@
   }
 }
 
+@each $index, $size in $size-scale {
+  #{'.mw-#{$index}'} {
+    max-width: $size;
+  }
+}
+
 .border-width-1px { border-width: 1px; }
 .border-style-dashed { border-style: dashed; }
 .border-style-solid { border-style: solid; }
 .border-color-blue-300 { border-color: $blue-300; }
 .border-color-default { border-color: $border-color; }
+.box-shadow-default { box-shadow: 0 2px 4px 0 $black-transparent; }
+
+.gl-w-64 { width: px-to-rem($grid-size * 8); }
+.gl-h-64 { height: px-to-rem($grid-size * 8); }

@@ -75,6 +75,12 @@ describe GitlabRoutingHelper do
       expect(preview_markdown_path(group)).to eq("/groups/#{group.path}/preview_markdown")
     end
 
+    it 'returns group preview markdown path for a group parent with args' do
+      group = create(:group)
+
+      expect(preview_markdown_path(group, { type_id: 5 })).to eq("/groups/#{group.path}/preview_markdown?type_id=5")
+    end
+
     it 'returns project preview markdown path for a project parent' do
       expect(preview_markdown_path(project)).to eq("/#{project.full_path}/preview_markdown")
     end

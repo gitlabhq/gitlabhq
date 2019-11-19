@@ -1,6 +1,7 @@
 <script>
 /* global ListIssue */
 import { urlParamsToObject } from '~/lib/utils/common_utils';
+import boardsStore from '~/boards/stores/boards_store';
 import ModalHeader from './header.vue';
 import ModalList from './list.vue';
 import ModalFooter from './footer.vue';
@@ -109,7 +110,7 @@ export default {
     loadIssues(clearIssues = false) {
       if (!this.showAddIssuesModal) return false;
 
-      return gl.boardService
+      return boardsStore
         .getBacklog({
           ...urlParamsToObject(this.filter.path),
           page: this.page,

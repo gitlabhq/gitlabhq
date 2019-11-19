@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe API::Runner, :clean_gitlab_redis_shared_state do
@@ -312,7 +314,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
     let(:root_namespace) { create(:namespace) }
     let(:namespace) { create(:namespace, parent: root_namespace) }
     let(:project) { create(:project, namespace: namespace, shared_runners_enabled: false) }
-    let(:pipeline) { create(:ci_pipeline_without_jobs, project: project, ref: 'master') }
+    let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master') }
     let(:runner) { create(:ci_runner, :project, projects: [project]) }
     let(:job) do
       create(:ci_build, :artifacts, :extended_options,
@@ -610,7 +612,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           end
 
           context 'when job is made for merge request' do
-            let(:pipeline) { create(:ci_pipeline_without_jobs, source: :merge_request_event, project: project, ref: 'feature', merge_request: merge_request) }
+            let(:pipeline) { create(:ci_pipeline, source: :merge_request_event, project: project, ref: 'feature', merge_request: merge_request) }
             let!(:job) { create(:ci_build, pipeline: pipeline, name: 'spinach', ref: 'feature', stage: 'test', stage_idx: 0) }
             let(:merge_request) { create(:merge_request) }
 

@@ -14,9 +14,13 @@ The [epic issues API](epic_issues.md) allows you to interact with issues associa
 
 > [Introduced][ee-6448] in GitLab 11.3.
 
-Since start date and due date can be dynamically sourced from related issue milestones, when user has edit permission, additional fields will be shown. These include two boolean fields `start_date_is_fixed` and `due_date_is_fixed`, and four date fields `start_date_fixed`, `start_date_from_milestones`, `due_date_fixed` and `due_date_from_milestones`.
+Since start date and due date can be dynamically sourced from related issue milestones, when user has edit permission,
+additional fields will be shown. These include two boolean fields `start_date_is_fixed` and `due_date_is_fixed`,
+and four date fields `start_date_fixed`, `start_date_from_inherited_source`, `due_date_fixed` and `due_date_from_inherited_source`.
 
-`end_date` has been deprecated in favor of `due_date`.
+- `end_date` has been deprecated in favor of `due_date`.
+- `start_date_from_milestones` has been deprecated in favor of `start_date_from_inherited_source`
+- `due_date_from_milestones` has been deprecated in favor of `due_date_from_inherited_source`
 
 ## Epics pagination
 
@@ -80,12 +84,14 @@ Example response:
   "start_date": null,
   "start_date_is_fixed": false,
   "start_date_fixed": null,
-  "start_date_from_milestones": null,
-  "end_date": "2018-07-31",
+  "start_date_from_milestones": null,       //deprecated in favor of start_date_from_inherited_source
+  "start_date_from_inherited_source": null,
+  "end_date": "2018-07-31",                 //deprecated in favor of due_date
   "due_date": "2018-07-31",
   "due_date_is_fixed": false,
   "due_date_fixed": null,
-  "due_date_from_milestones": "2018-07-31",
+  "due_date_from_milestones": "2018-07-31", //deprecated in favor of start_date_from_inherited_source
+  "due_date_from_inherited_source": "2018-07-31",
   "created_at": "2018-07-17T13:36:22.770Z",
   "updated_at": "2018-07-18T12:22:05.239Z",
   "closed_at": "2018-08-18T12:22:05.239Z",
@@ -136,12 +142,14 @@ Example response:
   "start_date": null,
   "start_date_is_fixed": false,
   "start_date_fixed": null,
-  "start_date_from_milestones": null,
-  "end_date": "2018-07-31",
+  "start_date_from_milestones": null,       //deprecated in favor of start_date_from_inherited_source
+  "start_date_from_inherited_source": null,
+  "end_date": "2018-07-31",                 //deprecated in favor of due_date
   "due_date": "2018-07-31",
   "due_date_is_fixed": false,
   "due_date_fixed": null,
-  "due_date_from_milestones": "2018-07-31",
+  "due_date_from_milestones": "2018-07-31", //deprecated in favor of start_date_from_inherited_source
+  "due_date_from_inherited_source": "2018-07-31",
   "created_at": "2018-07-17T13:36:22.770Z",
   "updated_at": "2018-07-18T12:22:05.239Z",
   "closed_at": "2018-08-18T12:22:05.239Z",
@@ -204,12 +212,14 @@ Example response:
   "start_date": null,
   "start_date_is_fixed": false,
   "start_date_fixed": null,
-  "start_date_from_milestones": null,
-  "end_date": "2018-07-31",
+  "start_date_from_milestones": null,       //deprecated in favor of start_date_from_inherited_source
+  "start_date_from_inherited_source": null,
+  "end_date": "2018-07-31",                 //deprecated in favor of due_date
   "due_date": "2018-07-31",
   "due_date_is_fixed": false,
   "due_date_fixed": null,
-  "due_date_from_milestones": "2018-07-31",
+  "due_date_from_milestones": "2018-07-31", //deprecated in favor of start_date_from_inherited_source
+  "due_date_from_inherited_source": "2018-07-31",
   "created_at": "2018-07-17T13:36:22.770Z",
   "updated_at": "2018-07-18T12:22:05.239Z",
   "closed_at": "2018-08-18T12:22:05.239Z",
@@ -272,12 +282,14 @@ Example response:
   "start_date": null,
   "start_date_is_fixed": false,
   "start_date_fixed": null,
-  "start_date_from_milestones": null,
-  "end_date": "2018-07-31",
+  "start_date_from_milestones": null,       //deprecated in favor of start_date_from_inherited_source
+  "start_date_from_inherited_source": null,
+  "end_date": "2018-07-31",                 //deprecated in favor of due_date
   "due_date": "2018-07-31",
   "due_date_is_fixed": false,
   "due_date_fixed": null,
-  "due_date_from_milestones": "2018-07-31",
+  "due_date_from_milestones": "2018-07-31", //deprecated in favor of start_date_from_inherited_source
+  "due_date_from_inherited_source": "2018-07-31",
   "created_at": "2018-07-17T13:36:22.770Z",
   "updated_at": "2018-07-18T12:22:05.239Z",
   "closed_at": "2018-08-18T12:22:05.239Z",

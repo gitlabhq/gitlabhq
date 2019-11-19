@@ -7547,7 +7547,7 @@ msgstr ""
 msgid "Go back"
 msgstr "Enrere"
 
-msgid "Go back (while searching for files"
+msgid "Go back (while searching for files)"
 msgstr ""
 
 msgid "Go back to %{startTag}Open issues%{endTag} and select some issues to add to your board."
@@ -16382,7 +16382,7 @@ msgstr ""
 msgid "To preserve performance only <strong>%{display_size} of %{real_size}</strong> files are displayed."
 msgstr ""
 
-msgid "To protect this issue's confidentiality, %{link_start}fork the project%{link_end} and set the forks visiblity to private."
+msgid "To protect this issue's confidentiality, %{link_start}fork the project%{link_end} and set the forks visibility to private."
 msgstr ""
 
 msgid "To protect this issue's confidentiality, a private fork of this project was selected."

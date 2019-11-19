@@ -3,25 +3,12 @@ last_updated: 2018-06-04
 type: concepts, reference
 ---
 
-# Static sites and GitLab Pages domains
+# GitLab Pages domain names, URLs, and baseurls
 
 On this document, learn how to name your project for GitLab Pages
 according to your intended website's URL.
 
-## Static sites
-
-GitLab Pages only supports static websites, meaning,
-your output files must be HTML, CSS, and JavaScript only.
-
-To create your static site, you can either hardcode in HTML,
-CSS, and JS, or use a [Static Site Generator (SSG)](https://www.staticgen.com/)
-to simplify your code and build the static site for you,
-which is highly recommendable and much faster than hardcoding.
-
-See the [further reading](#further-reading) section below for
-references on static site concepts.
-
-## GitLab Pages domain names
+## GitLab Pages default domain names
 
 >**Note:**
 If you use your own GitLab instance to deploy your
@@ -93,11 +80,35 @@ To understand Pages domains clearly, read the examples below.
 - On your GitLab instance, replace `gitlab.io` above with your
   Pages server domain. Ask your sysadmin for this information.
 
-_Read on about [Projects for GitLab Pages and URL structure](getting_started_part_two.md)._
+## URLs and baseurls
 
-### Further reading
+Every Static Site Generator (SSG) default configuration expects
+to find your website under a (sub)domain (`example.com`), not
+in a subdirectory of that domain (`example.com/subdir`). Therefore,
+whenever you publish a project website (`namespace.gitlab.io/project-name`),
+you'll have to look for this configuration (base URL) on your SSG's
+documentation and set it up to reflect this pattern.
 
-- Read through this technical overview on [Static versus Dynamic Websites](https://about.gitlab.com/blog/2016/06/03/ssg-overview-gitlab-pages-part-1-dynamic-x-static/)
-- Understand [how modern Static Site Generators work](https://about.gitlab.com/blog/2016/06/10/ssg-overview-gitlab-pages-part-2/) and what you can add to your static site
-- You can use [any SSG with GitLab Pages](https://about.gitlab.com/blog/2016/06/17/ssg-overview-gitlab-pages-part-3-examples-ci/)
-- Fork an [example project](https://gitlab.com/pages) to build your website based upon
+For example, for a Jekyll site, the `baseurl` is defined in the Jekyll
+configuration file, `_config.yml`. If your website URL is
+`https://john.gitlab.io/blog/`, you need to add this line to `_config.yml`:
+
+```yaml
+baseurl: "/blog"
+```
+
+On the contrary, if you deploy your website after forking one of
+our [default examples](https://gitlab.com/pages), the baseurl will
+already be configured this way, as all examples there are project
+websites. If you decide to make yours a user or group website, you'll
+have to remove this configuration from your project. For the Jekyll
+example we've just mentioned, you'd have to change Jekyll's `_config.yml` to:
+
+```yaml
+baseurl: ""
+```
+
+## Custom domains
+
+GitLab Pages supports custom domains and subdomains, served under HTTP or HTTPS.
+See [GitLab Pages custom domains and SSL/TLS Certificates](custom_domains_ssl_tls_certification/index.md) for more information.

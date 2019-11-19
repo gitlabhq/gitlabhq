@@ -3,14 +3,23 @@
 module Gitlab
   module GitalyClient
     class NamespaceService
-      def initialize(storage)
-        @storage = storage
+      extend Gitlab::TemporarilyAllow
+
+      NamespaceServiceAccessError = Class.new(StandardError)
+      ALLOW_KEY = :allow_namespace
+
+      def self.allow
+        temporarily_allow(ALLOW_KEY) { yield }
       end
 
-      def exists?(name)
-        request = Gitaly::NamespaceExistsRequest.new(storage_name: @storage, name: name)
+      def self.denied?
+        !temporarily_allowed?(ALLOW_KEY)
+      end
 
-        gitaly_client_call(:namespace_exists, request, timeout: GitalyClient.fast_timeout).exists
+      def initialize(storage)
+        raise NamespaceServiceAccessError if self.class.denied?
+
+        @storage = storage
       end
 
       def add(name)

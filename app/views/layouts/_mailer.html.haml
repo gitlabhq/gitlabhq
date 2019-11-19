@@ -1,80 +1,48 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 %html{ lang: "en" }
   %head
     %meta{ content: "text/html; charset=UTF-8", "http-equiv" => "Content-Type" }/
     %meta{ content: "width=device-width, initial-scale=1", name: "viewport" }/
     %meta{ content: "IE=edge", "http-equiv" => "X-UA-Compatible" }/
     %title= message.subject
-    :css
-      /* CLIENT-SPECIFIC STYLES */
-      body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
-      table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
-      img { -ms-interpolation-mode: bicubic; }
-      .hidden {
-          display: none !important;
-          visibility: hidden !important;
-      }
 
-      /* iOS BLUE LINKS */
-      a[x-apple-data-detectors] {
-          color: inherit !important;
-          text-decoration: none !important;
-          font-size: inherit !important;
-          font-family: inherit !important;
-          font-weight: inherit !important;
-          line-height: inherit !important;
-      }
+    -# Avoid premailer processing of client-specific styles (@media tag not supported)
+    -# We need to inline the contents here because mail clients (e.g. iOS Mail, Outlook)
+    -# do not support linked stylesheets.
+    %style{ type: 'text/css', 'data-premailer': 'ignore' }
+      = asset_to_string('mailer_client_specific.css').html_safe
 
-      /* ANDROID MARGIN HACK */
-      body { margin:0 !important; }
-      div[style*="margin: 16px 0"] { margin:0 !important; }
-
-      @media only screen and (max-width: 639px) {
-          body, #body {
-              min-width: 320px !important;
-          }
-          table.wrapper {
-              width: 100% !important;
-              min-width: 320px !important;
-          }
-          table.wrapper > tbody > tr > td {
-              border-left: 0 !important;
-              border-right: 0 !important;
-              border-radius: 0 !important;
-              padding-left: 10px !important;
-              padding-right: 10px !important;
-          }
-      }
-  %body{ style: "background-color:#fafafa;margin:0;padding:0;text-align:center;min-width:640px;width:100%;height:100%;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;" }
-    %table#body{ border: "0", cellpadding: "0", cellspacing: "0", style: "background-color:#fafafa;margin:0;padding:0;text-align:center;min-width:640px;width:100%;" }
+    = stylesheet_link_tag 'mailer.css'
+  %body
+    %table#body{ border: "0", cellpadding: "0", cellspacing: "0" }
       %tbody
         %tr.line
-          %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background-color:#6b4fbb;height:4px;font-size:4px;line-height:4px;" }
+          %td
         %tr.header
-          %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;padding:25px 0;font-size:13px;line-height:1.6;color:#5c5c5c;" }
+          %td
             = html_header_message
             = header_logo
         %tr
-          %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;" }
-            %table.wrapper{ border: "0", cellpadding: "0", cellspacing: "0", style: "width:640px;margin:0 auto;border-collapse:separate;border-spacing:0;" }
+          %td
+            %table.wrapper{ border: "0", cellpadding: "0", cellspacing: "0" }
               %tbody
                 %tr
-                  %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background-color:#ffffff;text-align:left;padding:18px 25px;border:1px solid #ededed;border-radius:3px;overflow:hidden;" }
-                    %table.content{ border: "0", cellpadding: "0", cellspacing: "0", style: "width:100%;border-collapse:separate;border-spacing:0;" }
+                  %td.wrapper-cell
+                    %table.content{ border: "0", cellpadding: "0", cellspacing: "0" }
                       %tbody
                         = yield
 
         = render_if_exists 'layouts/mailer/additional_text'
 
         %tr.footer
-          %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;padding:25px 0;font-size:13px;line-height:1.6;color:#5c5c5c;" }
-            %img{ alt: "GitLab", height: "33", src: image_url('mailers/gitlab_footer_logo.gif'), style: "display:block;margin:0 auto 1em;", width: "90" }/
+          %td
+            %img{ alt: "GitLab", height: "33", width: "90", src: image_url('mailers/gitlab_footer_logo.gif') }
             %div
-              - manage_notifications_link = link_to(_("Manage all notifications"), profile_notifications_url, style: "color:#3777b0;text-decoration:none;")
-              - help_link = link_to(_("Help"), help_url, style: "color:#3777b0;text-decoration:none;")
+              - manage_notifications_link = link_to(_("Manage all notifications"), profile_notifications_url, class: 'mng-notif-link')
+              - help_link = link_to(_("Help"), help_url, class: 'help-link')
               = _("You're receiving this email because of your account on %{host}. %{manage_notifications_link} &middot; %{help_link}").html_safe % { host: Gitlab.config.gitlab.host, manage_notifications_link: manage_notifications_link, help_link: help_link }
 
         = yield :additional_footer
         %tr
-          %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;padding:25px 0;font-size:13px;line-height:1.6;color:#5c5c5c;" }
+          %td.footer-message
             = html_footer_message

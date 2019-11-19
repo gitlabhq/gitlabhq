@@ -108,6 +108,10 @@ module QA
             find_element(:more_assignees_link)
           end
 
+          def noteable_note_item
+            find_element(:noteable_note_item)
+          end
+
           def select_all_activities_filter
             select_filter_with_text('Show all activity')
           end
@@ -161,7 +165,15 @@ module QA
 
           def select_user(username)
             find("#{element_selector_css(:assignee_block)} input").set(username)
-            find('.dropdown-menu-user-link', text: "@#{username}").click
+
+            dropdown_menu_user_link_selector = '.dropdown-menu-user-link'
+            at_username = "@#{username}"
+            ten_seconds = 10
+
+            wait(reload: false, max: ten_seconds, interval: 1) do
+              has_css?(dropdown_menu_user_link_selector, wait: ten_seconds, text: at_username)
+            end
+            find(dropdown_menu_user_link_selector, text: at_username).click
           end
 
           def wait_assignees_block_finish_loading

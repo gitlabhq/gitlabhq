@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Gitlab::ExternalAuthorization::Cache, :clean_gitlab_redis_cache do

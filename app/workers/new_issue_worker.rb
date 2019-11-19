@@ -5,6 +5,8 @@ class NewIssueWorker
   include NewIssuable
 
   feature_category :issue_tracking
+  latency_sensitive_worker!
+  worker_resource_boundary :cpu
 
   def perform(issue_id, user_id)
     return unless objects_found?(issue_id, user_id)

@@ -21,7 +21,7 @@ class Projects::PagesController < Projects::ApplicationController
     respond_to do |format|
       format.html do
         redirect_to project_pages_path(@project),
-                    status: 302,
+                    status: :found,
                     notice: 'Pages were removed'
       end
     end

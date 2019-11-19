@@ -8,7 +8,8 @@ module Gitlab
       ABSOLUTE_ARTIFACT_DIR = ::JobArtifactUploader.root.freeze
       LOST_AND_FOUND = File.join(ABSOLUTE_ARTIFACT_DIR, '-', 'lost+found').freeze
       BATCH_SIZE = 500
-      DEFAULT_NICENESS = 'Best-effort'
+      DEFAULT_NICENESS = 'best-effort'
+      VALID_NICENESS_LEVELS = %w{none realtime best-effort idle}.freeze
 
       attr_accessor :batch, :total_found, :total_cleaned
       attr_reader :limit, :dry_run, :niceness, :logger
@@ -16,7 +17,7 @@ module Gitlab
       def initialize(limit: nil, dry_run: true, niceness: nil, logger: nil)
         @limit = limit
         @dry_run = dry_run
-        @niceness = niceness || DEFAULT_NICENESS
+        @niceness = (niceness || DEFAULT_NICENESS).downcase
         @logger = logger || Rails.logger # rubocop:disable Gitlab/RailsLogger
         @total_found = @total_cleaned = 0
 
@@ -35,7 +36,7 @@ module Gitlab
 
         clean_batch!
 
-        log_info("Processed #{total_found} job artifacts to find and clean #{total_cleaned} orphans.")
+        log_info("Processed #{total_found} job artifact(s) to find and cleaned #{total_cleaned} orphan(s).")
       end
 
       private
@@ -75,7 +76,7 @@ module Gitlab
       def find_artifacts
         Open3.popen3(*find_command) do |stdin, stdout, stderr, status_thread|
           stdout.each_line do |line|
-            yield line
+            yield line.chomp
           end
 
           log_error(stderr.read.color(:red)) unless status_thread.value.success?
@@ -99,7 +100,7 @@ module Gitlab
           cmd += %w[-type d]
 
           if ionice
-            raise ArgumentError, 'Invalid niceness' unless niceness.match?(/^\w[\w\-]*$/)
+            raise ArgumentError, 'Invalid niceness' unless VALID_NICENESS_LEVELS.include?(niceness)
 
             cmd.unshift(*%W[#{ionice} --class #{niceness}])
           end

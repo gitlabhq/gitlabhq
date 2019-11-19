@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
@@ -100,7 +102,7 @@ describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
   describe '#append' do
     shared_examples_for 'appends' do
       it "truncates and append content" do
-        stream.append("89", 4)
+        stream.append(+"89", 4)
         stream.seek(0)
 
         expect(stream.size).to eq(6)
@@ -108,7 +110,7 @@ describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
       end
 
       it 'appends in binary mode' do
-        '😺'.force_encoding('ASCII-8BIT').each_char.with_index do |byte, offset|
+        (+'😺').force_encoding('ASCII-8BIT').each_char.with_index do |byte, offset|
           stream.append(byte, offset)
         end
 
@@ -154,7 +156,7 @@ describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
   describe '#set' do
     shared_examples_for 'sets' do
       before do
-        stream.set("8901")
+        stream.set(+"8901")
       end
 
       it "overwrite content" do
@@ -168,7 +170,7 @@ describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
     context 'when stream is StringIO' do
       let(:stream) do
         described_class.new do
-          StringIO.new("12345678")
+          StringIO.new(+"12345678")
         end
       end
 

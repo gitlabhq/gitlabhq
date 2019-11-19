@@ -1,18 +1,25 @@
 <script>
-import FileTable from '../components/table/index.vue';
+import TreePage from './tree.vue';
+import { updateElementsVisibility } from '../utils/dom';
 
 export default {
   components: {
-    FileTable,
+    TreePage,
   },
-  data() {
-    return {
-      ref: '',
-    };
+  mounted() {
+    this.updateProjectElements(true);
+  },
+  beforeDestroy() {
+    this.updateProjectElements(false);
+  },
+  methods: {
+    updateProjectElements(isShow) {
+      updateElementsVisibility('.js-show-on-project-root', isShow);
+    },
   },
 };
 </script>
 
 <template>
-  <file-table path="/" />
+  <tree-page path="/" />
 </template>

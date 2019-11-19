@@ -42,7 +42,7 @@ describe 'Container Registry', :js do
       expect(page).to have_content('my/image')
     end
 
-    it 'user removes entire container repository' do
+    it 'user removes entire container repository', :sidekiq_might_not_need_inline do
       visit_container_registry
 
       expect_any_instance_of(ContainerRepository).to receive(:delete_tags!).and_return(true)

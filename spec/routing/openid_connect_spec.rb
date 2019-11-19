@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 # oauth_discovery_keys      GET /oauth/discovery/keys(.:format)             doorkeeper/openid_connect/discovery#keys

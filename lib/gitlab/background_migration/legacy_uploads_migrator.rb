@@ -14,7 +14,7 @@ module Gitlab
       include Database::MigrationHelpers
 
       def perform(start_id, end_id)
-        Upload.where(id: start_id..end_id, uploader: 'AttachmentUploader').find_each do |upload|
+        Upload.where(id: start_id..end_id, uploader: 'AttachmentUploader', model_type: 'Note').find_each do |upload|
           LegacyUploadMover.new(upload).execute
         end
       end

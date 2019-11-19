@@ -3,42 +3,50 @@
 require 'spec_helper'
 
 describe ContainerRepositoriesFinder do
+  let_it_be(:reporter) { create(:user) }
+  let_it_be(:guest) { create(:user) }
+
   let(:group) { create(:group) }
   let(:project) { create(:project, group: group) }
-  let(:project_repository) { create(:container_repository, project: project) }
+  let!(:project_repository) { create(:container_repository, project: project) }
+
+  before do
+    group.add_reporter(reporter)
+    project.add_reporter(reporter)
+  end
 
   describe '#execute' do
-    let(:id) { nil }
+    context 'with authorized user' do
+      subject { described_class.new(user: reporter, subject: subject_object).execute }
 
-    subject { described_class.new(id: id, container_type: container_type).execute }
+      context 'when subject_type is group' do
+        let(:subject_object) { group }
+        let(:other_project) { create(:project, group: group) }
 
-    context 'when container_type is group' do
-      let(:other_project) { create(:project, group: group) }
+        let(:other_repository) do
+          create(:container_repository, name: 'test_repository2', project: other_project)
+        end
 
-      let(:other_repository) do
-        create(:container_repository, name: 'test_repository2', project: other_project)
+        it { is_expected.to match_array([project_repository, other_repository]) }
       end
 
-      let(:container_type) { :group }
-      let(:id) { group.id }
+      context 'when subject_type is project' do
+        let(:subject_object) { project }
 
-      it { is_expected.to match_array([project_repository, other_repository]) }
-    end
-
-    context 'when container_type is project' do
-      let(:container_type) { :project }
-      let(:id) { project.id }
-
-      it { is_expected.to match_array([project_repository]) }
-    end
-
-    context 'with invalid id' do
-      let(:container_type) { :project }
-      let(:id) { 123456789 }
-
-      it 'raises an error' do
-        expect { subject.execute }.to raise_error(ActiveRecord::RecordNotFound)
+        it { is_expected.to match_array([project_repository]) }
       end
+
+      context 'with invalid subject_type' do
+        let(:subject_object) { "invalid type" }
+
+        it { expect { subject }.to raise_exception('invalid subject_type') }
+      end
+    end
+
+    context 'with unauthorized user' do
+      subject { described_class.new(user: guest, subject: group).execute }
+
+      it { is_expected.to be nil }
     end
   end
 end

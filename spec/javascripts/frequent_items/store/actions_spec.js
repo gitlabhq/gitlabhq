@@ -169,7 +169,7 @@ describe('Frequent Items Dropdown Store Actions', () => {
     });
 
     it('should dispatch `receiveSearchedItemsSuccess`', done => {
-      mock.onGet(/\/api\/v4\/projects.json(.*)$/).replyOnce(200, mockSearchedProjects);
+      mock.onGet(/\/api\/v4\/projects.json(.*)$/).replyOnce(200, mockSearchedProjects, {});
 
       testAction(
         actions.fetchSearchedItems,
@@ -178,7 +178,10 @@ describe('Frequent Items Dropdown Store Actions', () => {
         [],
         [
           { type: 'requestSearchedItems' },
-          { type: 'receiveSearchedItemsSuccess', payload: mockSearchedProjects },
+          {
+            type: 'receiveSearchedItemsSuccess',
+            payload: { data: mockSearchedProjects, headers: {} },
+          },
         ],
         done,
       );

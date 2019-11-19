@@ -10,6 +10,11 @@ unless Sidekiq.server?
     # unmaintained gem that monkey patches `Time`
     config.lograge.formatter = Lograge::Formatters::Json.new
     config.lograge.logger = ActiveSupport::Logger.new(filename)
+    config.lograge.before_format = lambda do |data, payload|
+      data.delete(:error)
+      data
+    end
+
     # Add request parameters to log output
     config.lograge.custom_options = lambda do |event|
       params = event.payload[:params]
@@ -34,6 +39,20 @@ unless Sidekiq.server?
 
       if cpu_s = Gitlab::Metrics::System.thread_cpu_duration(::Gitlab::RequestContext.start_thread_cpu_time)
         payload[:cpu_s] = cpu_s
+      end
+
+      # https://github.com/roidrage/lograge#logging-errors--exceptions
+      exception = event.payload[:exception_object]
+
+      if exception
+        payload[:exception] = {
+          class: exception.class.name,
+          message: exception.message
+        }
+
+        if exception.backtrace
+          payload[:exception][:backtrace] = Gitlab::Profiler.clean_backtrace(exception.backtrace)
+        end
       end
 
       payload

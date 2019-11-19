@@ -60,6 +60,7 @@ class Milestone < ApplicationRecord
 
   validates :group, presence: true, unless: :project
   validates :project, presence: true, unless: :group
+  validates :title, presence: true
 
   validate :uniqueness_of_title, if: :title_changed?
   validate :milestone_type_check
@@ -330,6 +331,6 @@ class Milestone < ApplicationRecord
   end
 
   def issues_finder_params
-    { project_id: project_id }
+    { project_id: project_id, group_id: group_id }.compact
   end
 end

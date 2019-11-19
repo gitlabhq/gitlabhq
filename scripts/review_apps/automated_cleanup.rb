@@ -58,10 +58,16 @@ class AutomatedCleanup
     checked_environments = []
     delete_threshold = threshold_time(days: days_for_delete)
     stop_threshold = threshold_time(days: days_for_stop)
+    deployments_look_back_threshold = threshold_time(days: days_for_delete * 5)
 
-    gitlab.deployments(project_path, per_page: DEPLOYMENTS_PER_PAGE).auto_paginate do |deployment|
+    releases_to_delete = []
+
+    gitlab.deployments(project_path, per_page: DEPLOYMENTS_PER_PAGE, sort: 'desc').auto_paginate do |deployment|
+      break if Time.parse(deployment.created_at) < deployments_look_back_threshold
+
       environment = deployment.environment
 
+      next unless environment
       next unless environment.name.start_with?('review/')
       next if checked_environments.include?(environment.slug)
 
@@ -71,7 +77,7 @@ class AutomatedCleanup
       if deployed_at < delete_threshold
         delete_environment(environment, deployment)
         release = Quality::HelmClient::Release.new(environment.slug, 1, deployed_at.to_s, nil, nil, review_apps_namespace)
-        delete_helm_release(release)
+        releases_to_delete << release
       elsif deployed_at < stop_threshold
         stop_environment(environment, deployment)
       else
@@ -80,6 +86,8 @@ class AutomatedCleanup
 
       checked_environments << environment.slug
     end
+
+    delete_helm_releases(releases_to_delete)
   end
 
   def perform_helm_releases_cleanup!(days:)
@@ -87,13 +95,20 @@ class AutomatedCleanup
 
     threshold_day = threshold_time(days: days)
 
+    releases_to_delete = []
+
     helm_releases.each do |release|
+      # Prevents deleting `dns-gitlab-review-app` releases or other unrelated releases
+      next unless release.name.start_with?('review-')
+
       if release.status == 'FAILED' || release.last_update < threshold_day
-        delete_helm_release(release)
+        releases_to_delete << release
       else
         print_release_state(subject: 'Release', release_name: release.name, release_date: release.last_update, action: 'leaving')
       end
     end
+
+    delete_helm_releases(releases_to_delete)
   end
 
   private
@@ -114,10 +129,17 @@ class AutomatedCleanup
     helm.releases(args: args)
   end
 
-  def delete_helm_release(release)
-    print_release_state(subject: 'Release', release_name: release.name, release_status: release.status, release_date: release.last_update, action: 'cleaning')
-    helm.delete(release_name: release.name)
-    kubernetes.cleanup(release_name: release.name)
+  def delete_helm_releases(releases)
+    return if releases.empty?
+
+    releases.each do |release|
+      print_release_state(subject: 'Release', release_name: release.name, release_status: release.status, release_date: release.last_update, action: 'cleaning')
+    end
+
+    releases_names = releases.map(&:name)
+    helm.delete(release_name: releases_names)
+    kubernetes.cleanup(release_name: releases_names, wait: false)
+
   rescue Quality::HelmClient::CommandFailedError => ex
     raise ex unless ignore_exception?(ex.message, IGNORED_HELM_ERRORS)
 

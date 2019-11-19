@@ -67,17 +67,17 @@ describe 'Gcp Cluster', :js do
         it 'user sees a cluster details page and creation status' do
           subject
 
-          expect(page).to have_content('Kubernetes cluster is being created on Google Kubernetes Engine...')
+          expect(page).to have_content('Kubernetes cluster is being created...')
 
           Clusters::Cluster.last.provider.make_created!
 
-          expect(page).to have_content('Kubernetes cluster was successfully created on Google Kubernetes Engine')
+          expect(page).to have_content('Kubernetes cluster was successfully created')
         end
 
         it 'user sees a error if something wrong during creation' do
           subject
 
-          expect(page).to have_content('Kubernetes cluster is being created on Google Kubernetes Engine...')
+          expect(page).to have_content('Kubernetes cluster is being created...')
 
           Clusters::Cluster.last.provider.make_errored!('Something wrong!')
 

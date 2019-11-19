@@ -3,7 +3,15 @@
 module Commits
   class CreateService < ::BaseService
     ValidationError = Class.new(StandardError)
-    ChangeError = Class.new(StandardError)
+    class ChangeError < StandardError
+      attr_reader :error_code
+
+      def initialize(message, error_code = nil)
+        super(message)
+
+        @error_code = error_code
+      end
+    end
 
     def initialize(*args)
       super
@@ -21,8 +29,9 @@ module Commits
       new_commit = create_commit!
 
       success(result: new_commit)
+    rescue ChangeError => ex
+      error(ex.message, pass_back: { error_code: ex.error_code })
     rescue ValidationError,
-           ChangeError,
            Gitlab::Git::Index::IndexError,
            Gitlab::Git::CommitError,
            Gitlab::Git::PreReceiveError,

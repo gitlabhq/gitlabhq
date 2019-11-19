@@ -1,7 +1,6 @@
 {
   "type": "object",
   "required": [
-    "unit",
     "label",
     "prometheus_endpoint_path"
   ],

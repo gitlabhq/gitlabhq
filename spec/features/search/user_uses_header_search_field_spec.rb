@@ -26,10 +26,20 @@ describe 'User uses header search field', :js do
       end
     end
 
+    context 'when using the keyboard shortcut' do
+      before do
+        find('#search.js-autocomplete-disabled')
+        find('body').native.send_keys('s')
+      end
+
+      it 'shows the category search dropdown' do
+        expect(page).to have_selector('.dropdown-header', text: /#{scope_name}/i)
+      end
+    end
+
     context 'when clicking the search field' do
       before do
-        page.find('#search').click
-        wait_for_all_requests
+        page.find('#search.js-autocomplete-disabled').click
       end
 
       it 'shows category search dropdown' do
@@ -78,14 +88,20 @@ describe 'User uses header search field', :js do
     end
 
     context 'when entering text into the search field' do
-      before do
+      it 'does not display the category search dropdown' do
         page.within('.search-input-wrap') do
           fill_in('search', with: scope_name.first(4))
         end
+
+        expect(page).not_to have_selector('.dropdown-header', text: /#{scope_name}/i)
       end
 
-      it 'does not display the category search dropdown' do
-        expect(page).not_to have_selector('.dropdown-header', text: /#{scope_name}/i)
+      it 'hides the dropdown when there are no results' do
+        page.within('.search-input-wrap') do
+          fill_in('search', with: 'a_search_term_with_no_results')
+        end
+
+        expect(page).not_to have_selector('.dropdown-menu')
       end
     end
   end

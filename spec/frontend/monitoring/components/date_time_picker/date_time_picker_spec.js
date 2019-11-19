@@ -51,6 +51,16 @@ describe('DateTimePicker', () => {
     });
   });
 
+  it('renders dropdown without a selectedTimeWindow set', done => {
+    createComponent({
+      selectedTimeWindow: {},
+    });
+    dateTimePicker.vm.$nextTick(() => {
+      expect(dateTimePicker.findAll('input').length).toBe(2);
+      done();
+    });
+  });
+
   it('renders inputs with h/m/s truncated if its all 0s', done => {
     createComponent({
       selectedTimeWindow: {

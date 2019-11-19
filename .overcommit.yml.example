@@ -16,10 +16,25 @@
 # Uncomment the following lines to make the configuration take effect.
 
 PreCommit:
+  AuthorName:
+    enabled: false
+  EsLint:
+    enabled: true
+    # https://github.com/sds/overcommit/issues/338
+    command: './node_modules/eslint/bin/eslint.js'
+  HamlLint:
+    enabled: true
+  MergeConflicts:
+    enabled: true
+    exclude:
+      - '**/conflict/file_spec.rb'
+      - '**/git/conflict/parser_spec.rb'
+  # prettier? https://github.com/sds/overcommit/issues/614 https://github.com/sds/overcommit/issues/390#issuecomment-495703284
   RuboCop:
     enabled: true
 #    on_warn: fail # Treat all warnings as failures
-#
+  ScssLint:
+    enabled: true
 #PostCheckout:
 #  ALL: # Special hook name that customizes all hooks of this type
 #    quiet: true # Change all post-checkout hooks to only display output on failure

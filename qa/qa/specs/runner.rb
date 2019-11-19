@@ -63,6 +63,8 @@ module QA
 
         if Runtime::Scenario.attributes[:parallel]
           ParallelRunner.run(args.flatten)
+        elsif Runtime::Scenario.attributes[:loop]
+          LoopRunner.run(args.flatten)
         else
           RSpec::Core::Runner.run(args.flatten, $stderr, $stdout).tap do |status|
             abort if status.nonzero?

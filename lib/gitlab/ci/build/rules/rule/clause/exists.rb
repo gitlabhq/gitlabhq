@@ -15,7 +15,7 @@ module Gitlab
           @exact_globs, @pattern_globs = globs.partition(&method(:exact_glob?))
         end
 
-        def satisfied_by?(pipeline, seed)
+        def satisfied_by?(pipeline, context)
           paths = worktree_paths(pipeline)
 
           exact_matches?(paths) || pattern_matches?(paths)

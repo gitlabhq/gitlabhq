@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'mime/types'
 
@@ -369,7 +371,7 @@ describe API::Commits do
                   valid_c_params[:start_project] = public_project.id
                 end
 
-                it 'adds a new commit to forked_project and returns a 201' do
+                it 'adds a new commit to forked_project and returns a 201', :sidekiq_might_not_need_inline do
                   expect_request_with_status(201) { post api(url, guest), params: valid_c_params }
                     .to change { last_commit_id(forked_project, valid_c_params[:branch]) }
                     .and not_change { last_commit_id(public_project, valid_c_params[:start_branch]) }
@@ -381,14 +383,14 @@ describe API::Commits do
                   valid_c_params[:start_project] = public_project.full_path
                 end
 
-                it 'adds a new commit to forked_project and returns a 201' do
+                it 'adds a new commit to forked_project and returns a 201', :sidekiq_might_not_need_inline do
                   expect_request_with_status(201) { post api(url, guest), params: valid_c_params }
                     .to change { last_commit_id(forked_project, valid_c_params[:branch]) }
                     .and not_change { last_commit_id(public_project, valid_c_params[:start_branch]) }
                 end
               end
 
-              context 'when branch already exists' do
+              context 'when branch already exists', :sidekiq_might_not_need_inline do
                 before do
                   valid_c_params.delete(:start_branch)
                   valid_c_params[:branch] = 'master'
@@ -835,7 +837,7 @@ describe API::Commits do
         }
       end
 
-      it 'allows pushing to the source branch of the merge request' do
+      it 'allows pushing to the source branch of the merge request', :sidekiq_might_not_need_inline do
         post api(url, user), params: push_params('feature')
 
         expect(response).to have_gitlab_http_status(:created)
@@ -1085,6 +1087,20 @@ describe API::Commits do
         expect(response).to include_pagination_headers
         expect(json_response.size).to be >= 1
         expect(json_response.first.keys).to include 'diff'
+      end
+
+      context 'when hard limits are lower than the number of files' do
+        before do
+          allow(Commit).to receive(:max_diff_options).and_return(max_files: 1)
+        end
+
+        it 'respects the limit' do
+          get api(route, current_user)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to include_pagination_headers
+          expect(json_response.size).to be <= 1
+        end
       end
 
       context 'when ref does not exist' do
@@ -1360,6 +1376,12 @@ describe API::Commits do
         it_behaves_like '400 response' do
           let(:request) { post api(route, current_user), params: { branch: 'markdown' } }
         end
+
+        it 'includes an error_code in the response' do
+          post api(route, current_user), params: { branch: 'markdown' }
+
+          expect(json_response['error_code']).to eq 'empty'
+        end
       end
 
       context 'when ref contains a dot' do
@@ -1417,7 +1439,7 @@ describe API::Commits do
 
       let(:project_id) { forked_project.id }
 
-      it 'allows access from a maintainer that to the source branch' do
+      it 'allows access from a maintainer that to the source branch', :sidekiq_might_not_need_inline do
         post api(route, user), params: { branch: 'feature' }
 
         expect(response).to have_gitlab_http_status(:created)
@@ -1517,6 +1539,19 @@ describe API::Commits do
 
         it_behaves_like '400 response' do
           let(:request) { post api(route, current_user) }
+        end
+      end
+
+      context 'when commit is already reverted in the target branch' do
+        it 'includes an error_code in the response' do
+          # First one actually reverts
+          post api(route, current_user), params: { branch: 'markdown' }
+
+          # Second one is redundant and should be empty
+          post api(route, current_user), params: { branch: 'markdown' }
+
+          expect(response).to have_gitlab_http_status(400)
+          expect(json_response['error_code']).to eq 'empty'
         end
       end
     end

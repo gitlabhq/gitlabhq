@@ -1,12 +1,12 @@
-/* eslint-disable func-names, no-var, one-var, no-loop-func, consistent-return, camelcase */
+/* eslint-disable func-names, consistent-return, camelcase */
 
 import $ from 'jquery';
 import { __ } from '../locale';
 import axios from '../lib/utils/axios_utils';
 import Raphael from './raphael';
 
-export default (function() {
-  function BranchGraph(element1, options1) {
+export default class BranchGraph {
+  constructor(element1, options1) {
     this.element = element1;
     this.options = options1;
     this.scrollTop = this.scrollTop.bind(this);
@@ -28,7 +28,7 @@ export default (function() {
     this.load();
   }
 
-  BranchGraph.prototype.load = function() {
+  load() {
     axios
       .get(this.options.url)
       .then(({ data }) => {
@@ -37,21 +37,23 @@ export default (function() {
         this.buildGraph();
       })
       .catch(() => __('Error fetching network graph.'));
-  };
+  }
 
-  BranchGraph.prototype.prepareData = function(days, commits) {
-    var c, ch, cw, j, len, ref;
+  prepareData(days, commits) {
+    let c = 0;
+    let j = 0;
+    let len = 0;
     this.days = days;
     this.commits = commits;
     this.collectParents();
     this.graphHeight = $(this.element).height();
     this.graphWidth = $(this.element).width();
-    ch = Math.max(this.graphHeight, this.offsetY + this.unitTime * this.mtime + 150);
-    cw = Math.max(this.graphWidth, this.offsetX + this.unitSpace * this.mspace + 300);
+    const ch = Math.max(this.graphHeight, this.offsetY + this.unitTime * this.mtime + 150);
+    const cw = Math.max(this.graphWidth, this.offsetX + this.unitSpace * this.mspace + 300);
     this.r = Raphael(this.element.get(0), cw, ch);
     this.top = this.r.set();
     this.barHeight = Math.max(this.graphHeight, this.unitTime * this.days.length + 320);
-    ref = this.commits;
+    const ref = this.commits;
     for (j = 0, len = ref.length; j < len; j += 1) {
       c = ref[j];
       if (c.id in this.parents) {
@@ -61,37 +63,34 @@ export default (function() {
       this.markCommit(c);
     }
     return this.collectColors();
-  };
+  }
 
-  BranchGraph.prototype.collectParents = function() {
-    var c, j, len, p, ref, results;
-    ref = this.commits;
-    results = [];
+  collectParents() {
+    let j = 0;
+    let l = 0;
+    let len = 0;
+    let len1 = 0;
+    const ref = this.commits;
+    const results = [];
     for (j = 0, len = ref.length; j < len; j += 1) {
-      c = ref[j];
+      const c = ref[j];
       this.mtime = Math.max(this.mtime, c.time);
       this.mspace = Math.max(this.mspace, c.space);
-      results.push(
-        function() {
-          var l, len1, ref1, results1;
-          ref1 = c.parents;
-          results1 = [];
-          for (l = 0, len1 = ref1.length; l < len1; l += 1) {
-            p = ref1[l];
-            this.parents[p[0]] = true;
-            results1.push((this.mspace = Math.max(this.mspace, p[1])));
-          }
-          return results1;
-        }.call(this),
-      );
+      const ref1 = c.parents;
+      const results1 = [];
+      for (l = 0, len1 = ref1.length; l < len1; l += 1) {
+        const p = ref1[l];
+        this.parents[p[0]] = true;
+        results1.push((this.mspace = Math.max(this.mspace, p[1])));
+      }
+      results.push(results1);
     }
     return results;
-  };
+  }
 
-  BranchGraph.prototype.collectColors = function() {
-    var k, results;
-    k = 0;
-    results = [];
+  collectColors() {
+    let k = 0;
+    const results = [];
     while (k < this.mspace) {
       this.colors.push(Raphael.getColor(0.8));
       // Skipping a few colors in the spectrum to get more contrast between colors
@@ -100,23 +99,24 @@ export default (function() {
       results.push((k += 1));
     }
     return results;
-  };
+  }
 
-  BranchGraph.prototype.buildGraph = function() {
-    var cuday, cumonth, day, len, mm, ref;
+  buildGraph() {
+    let mm = 0;
+    let len = 0;
+    let cuday = 0;
+    let cumonth = '';
     const { r } = this;
-    cuday = 0;
-    cumonth = '';
     r.rect(0, 0, 40, this.barHeight).attr({
       fill: '#222',
     });
     r.rect(40, 0, 30, this.barHeight).attr({
       fill: '#444',
     });
-    ref = this.days;
+    const ref = this.days;
 
     for (mm = 0, len = ref.length; mm < len; mm += 1) {
-      day = ref[mm];
+      const day = ref[mm];
       if (cuday !== day[0] || cumonth !== day[1]) {
         // Dates
         r.text(55, this.offsetY + this.unitTime * mm, day[0]).attr({
@@ -138,29 +138,28 @@ export default (function() {
     }
     this.renderPartialGraph();
     return this.bindEvents();
-  };
+  }
 
-  BranchGraph.prototype.renderPartialGraph = function() {
-    var commit, end, i, isGraphEdge, start, x, y;
-    start = Math.floor((this.element.scrollTop() - this.offsetY) / this.unitTime) - 10;
+  renderPartialGraph() {
+    const isGraphEdge = true;
+    let i = 0;
+    let start = Math.floor((this.element.scrollTop() - this.offsetY) / this.unitTime) - 10;
     if (start < 0) {
-      isGraphEdge = true;
       start = 0;
     }
-    end = start + 40;
+    let end = start + 40;
     if (this.commits.length < end) {
-      isGraphEdge = true;
       end = this.commits.length;
     }
     if (this.prev_start === -1 || Math.abs(this.prev_start - start) > 10 || isGraphEdge) {
       i = start;
       this.prev_start = start;
       while (i < end) {
-        commit = this.commits[i];
+        const commit = this.commits[i];
         i += 1;
         if (commit.hasDrawn !== true) {
-          x = this.offsetX + this.unitSpace * (this.mspace - commit.space);
-          y = this.offsetY + this.unitTime * commit.time;
+          const x = this.offsetX + this.unitSpace * (this.mspace - commit.space);
+          const y = this.offsetY + this.unitTime * commit.time;
           this.drawDot(x, y, commit);
           this.drawLines(x, y, commit);
           this.appendLabel(x, y, commit);
@@ -170,70 +169,62 @@ export default (function() {
       }
       return this.top.toFront();
     }
-  };
+  }
 
-  BranchGraph.prototype.bindEvents = function() {
+  bindEvents() {
     const { element } = this;
 
-    return $(element).scroll(
-      (function(_this) {
-        return function() {
-          return _this.renderPartialGraph();
-        };
-      })(this),
-    );
-  };
+    return $(element).scroll(() => this.renderPartialGraph());
+  }
 
-  BranchGraph.prototype.scrollDown = function() {
+  scrollDown() {
     this.element.scrollTop(this.element.scrollTop() + 50);
     return this.renderPartialGraph();
-  };
+  }
 
-  BranchGraph.prototype.scrollUp = function() {
+  scrollUp() {
     this.element.scrollTop(this.element.scrollTop() - 50);
     return this.renderPartialGraph();
-  };
+  }
 
-  BranchGraph.prototype.scrollLeft = function() {
+  scrollLeft() {
     this.element.scrollLeft(this.element.scrollLeft() - 50);
     return this.renderPartialGraph();
-  };
+  }
 
-  BranchGraph.prototype.scrollRight = function() {
+  scrollRight() {
     this.element.scrollLeft(this.element.scrollLeft() + 50);
     return this.renderPartialGraph();
-  };
+  }
 
-  BranchGraph.prototype.scrollBottom = function() {
+  scrollBottom() {
     return this.element.scrollTop(this.element.find('svg').height());
-  };
+  }
 
-  BranchGraph.prototype.scrollTop = function() {
+  scrollTop() {
     return this.element.scrollTop(0);
-  };
+  }
 
-  BranchGraph.prototype.appendLabel = function(x, y, commit) {
-    var label, rect, shortrefs, text, textbox;
-
+  appendLabel(x, y, commit) {
     if (!commit.refs) {
       return;
     }
 
     const { r } = this;
-    shortrefs = commit.refs;
+    let shortrefs = commit.refs;
     // Truncate if longer than 15 chars
     if (shortrefs.length > 17) {
       shortrefs = `${shortrefs.substr(0, 15)}…`;
     }
-    text = r.text(x + 4, y, shortrefs).attr({
+    const text = r.text(x + 4, y, shortrefs).attr({
       'text-anchor': 'start',
       font: '10px Monaco, monospace',
       fill: '#FFF',
       title: commit.refs,
     });
-    textbox = text.getBBox();
+    const textbox = text.getBBox();
     // Create rectangle based on the size of the textbox
-    rect = r.rect(x, y - 7, textbox.width + 5, textbox.height + 5, 4).attr({
+    const rect = r.rect(x, y - 7, textbox.width + 5, textbox.height + 5, 4).attr({
       fill: '#000',
       'fill-opacity': 0.5,
       stroke: 'none',
@@ -244,13 +235,13 @@ export default (function() {
       'fill-opacity': 0.5,
       stroke: 'none',
     });
-    label = r.set(rect, text);
+    const label = r.set(rect, text);
     label.transform(['t', -rect.getBBox().width - 15, 0]);
     // Set text to front
     return text.toFront();
-  };
+  }
 
-  BranchGraph.prototype.appendAnchor = function(x, y, commit) {
+  appendAnchor(x, y, commit) {
     const { r, top, options } = this;
     const anchor = r
       .circle(x, y, 10)
@@ -270,9 +261,9 @@ export default (function() {
         },
       );
     return top.push(anchor);
-  };
+  }
 
-  BranchGraph.prototype.drawDot = function(x, y, commit) {
+  drawDot(x, y, commit) {
     const { r } = this;
     r.circle(x, y, 3).attr({
       fill: this.colors[commit.space],
@@ -293,20 +284,24 @@ export default (function() {
         'text-anchor': 'start',
         font: '14px Monaco, monospace',
       });
-  };
+  }
 
-  BranchGraph.prototype.drawLines = function(x, y, commit) {
-    var arrow, color, i, len, offset, parent, parentCommit, parentX1, parentX2, parentY, route;
+  drawLines(x, y, commit) {
+    let i = 0;
+    let len = 0;
+    let arrow = '';
+    let offset = [];
+    let color = [];
     const { r } = this;
     const ref = commit.parents;
     const results = [];
 
     for (i = 0, len = ref.length; i < len; i += 1) {
-      parent = ref[i];
-      parentCommit = this.preparedCommits[parent[0]];
-      parentY = this.offsetY + this.unitTime * parentCommit.time;
-      parentX1 = this.offsetX + this.unitSpace * (this.mspace - parentCommit.space);
-      parentX2 = this.offsetX + this.unitSpace * (this.mspace - parent[1]);
+      const parent = ref[i];
+      const parentCommit = this.preparedCommits[parent[0]];
+      const parentY = this.offsetY + this.unitTime * parentCommit.time;
+      const parentX1 = this.offsetX + this.unitSpace * (this.mspace - parentCommit.space);
+      const parentX2 = this.offsetX + this.unitSpace * (this.mspace - parent[1]);
       // Set line color
       if (parentCommit.space <= commit.space) {
         color = this.colors[commit.space];
@@ -325,7 +320,7 @@ export default (function() {
         arrow = 'l-5,0,2,4,3,-4,-4,2';
       }
       // Start point
-      route = ['M', x + offset[0], y + offset[1]];
+      const route = ['M', x + offset[0], y + offset[1]];
       // Add arrow if not first parent
       if (i > 0) {
         route.push(arrow);
@@ -344,9 +339,9 @@ export default (function() {
       );
     }
     return results;
-  };
+  }
 
-  BranchGraph.prototype.markCommit = function(commit) {
+  markCommit(commit) {
     if (commit.id === this.options.commit_id) {
       const { r } = this;
       const x = this.offsetX + this.unitSpace * (this.mspace - commit.space);
@@ -359,7 +354,5 @@ export default (function() {
       // Displayed in the center
       return this.element.scrollTop(y - this.graphHeight / 2);
     }
-  };
-
-  return BranchGraph;
-})();
+  }
+}

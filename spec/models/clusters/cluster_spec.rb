@@ -29,6 +29,7 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
   it { is_expected.to delegate_method(:status).to(:provider) }
   it { is_expected.to delegate_method(:status_reason).to(:provider) }
   it { is_expected.to delegate_method(:on_creation?).to(:provider) }
+  it { is_expected.to delegate_method(:knative_pre_installed?).to(:provider) }
   it { is_expected.to delegate_method(:active?).to(:platform_kubernetes).with_prefix }
   it { is_expected.to delegate_method(:rbac?).to(:platform_kubernetes).with_prefix }
   it { is_expected.to delegate_method(:available?).to(:application_helm).with_prefix }
@@ -55,7 +56,7 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     let!(:cluster) { create(:cluster, enabled: true) }
 
     before do
-      create(:cluster, enabled: false)
+      create(:cluster, :disabled)
     end
 
     it { is_expected.to contain_exactly(cluster) }
@@ -64,7 +65,7 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
   describe '.disabled' do
     subject { described_class.disabled }
 
-    let!(:cluster) { create(:cluster, enabled: false) }
+    let!(:cluster) { create(:cluster, :disabled) }
 
     before do
       create(:cluster, enabled: true)
@@ -76,10 +77,10 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
   describe '.user_provided' do
     subject { described_class.user_provided }
 
-    let!(:cluster) { create(:cluster, :provided_by_user) }
+    let!(:cluster) { create(:cluster_platform_kubernetes).cluster }
 
     before do
-      create(:cluster, :provided_by_gcp)
+      create(:cluster_provider_gcp, :created)
     end
 
     it { is_expected.to contain_exactly(cluster) }
@@ -88,7 +89,7 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
   describe '.gcp_provided' do
     subject { described_class.gcp_provided }
 
-    let!(:cluster) { create(:cluster, :provided_by_gcp) }
+    let!(:cluster) { create(:cluster_provider_gcp, :created).cluster }
 
     before do
       create(:cluster, :provided_by_user)
@@ -100,7 +101,7 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
   describe '.gcp_installed' do
     subject { described_class.gcp_installed }
 
-    let!(:cluster) { create(:cluster, :provided_by_gcp) }
+    let!(:cluster) { create(:cluster_provider_gcp, :created).cluster }
 
     before do
       create(:cluster, :providing_by_gcp)
@@ -112,7 +113,7 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
   describe '.aws_provided' do
     subject { described_class.aws_provided }
 
-    let!(:cluster) { create(:cluster, :provided_by_aws) }
+    let!(:cluster) { create(:cluster_provider_aws, :created).cluster }
 
     before do
       create(:cluster, :provided_by_user)
@@ -124,11 +125,11 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
   describe '.aws_installed' do
     subject { described_class.aws_installed }
 
-    let!(:cluster) { create(:cluster, :provided_by_aws) }
+    let!(:cluster) { create(:cluster_provider_aws, :created).cluster }
 
     before do
-      errored_cluster = create(:cluster, :provided_by_aws)
-      errored_cluster.provider.make_errored!("Error message")
+      errored_provider = create(:cluster_provider_aws)
+      errored_provider.make_errored!("Error message")
     end
 
     it { is_expected.to contain_exactly(cluster) }
@@ -150,6 +151,16 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
 
       it { is_expected.to include(cluster) }
     end
+  end
+
+  describe '.for_project_namespace' do
+    subject { described_class.for_project_namespace(namespace_id) }
+
+    let!(:cluster) { create(:cluster, :project) }
+    let!(:another_cluster) { create(:cluster, :project) }
+    let(:namespace_id) { cluster.first_project.namespace_id }
+
+    it { is_expected.to contain_exactly(cluster) }
   end
 
   describe 'validations' do
@@ -504,13 +515,15 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
       let!(:helm) { create(:clusters_applications_helm, cluster: cluster) }
       let!(:ingress) { create(:clusters_applications_ingress, cluster: cluster) }
       let!(:cert_manager) { create(:clusters_applications_cert_manager, cluster: cluster) }
+      let!(:crossplane) { create(:clusters_applications_crossplane, cluster: cluster) }
       let!(:prometheus) { create(:clusters_applications_prometheus, cluster: cluster) }
       let!(:runner) { create(:clusters_applications_runner, cluster: cluster) }
       let!(:jupyter) { create(:clusters_applications_jupyter, cluster: cluster) }
       let!(:knative) { create(:clusters_applications_knative, cluster: cluster) }
+      let!(:elastic_stack) { create(:clusters_applications_elastic_stack, cluster: cluster) }
 
       it 'returns a list of created applications' do
-        is_expected.to contain_exactly(helm, ingress, cert_manager, prometheus, runner, jupyter, knative)
+        is_expected.to contain_exactly(helm, ingress, cert_manager, crossplane, prometheus, runner, jupyter, knative, elastic_stack)
       end
     end
   end
@@ -675,12 +688,36 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
 
     context 'the cluster has a provider' do
       let(:cluster) { create(:cluster, :provided_by_gcp) }
+      let(:provider_status) { :errored }
 
       before do
         cluster.provider.make_errored!
       end
 
-      it { is_expected.to eq :errored }
+      it { is_expected.to eq provider_status }
+
+      context 'when cluster cleanup is ongoing' do
+        using RSpec::Parameterized::TableSyntax
+
+        where(:status_name, :cleanup_status) do
+          provider_status  | :cleanup_not_started
+          :cleanup_ongoing | :cleanup_uninstalling_applications
+          :cleanup_ongoing | :cleanup_removing_project_namespaces
+          :cleanup_ongoing | :cleanup_removing_service_account
+          :cleanup_errored | :cleanup_errored
+        end
+
+        with_them do
+          it 'returns cleanup_ongoing when uninstalling applications' do
+            cluster.cleanup_status = described_class
+              .state_machines[:cleanup_status]
+              .states[cleanup_status]
+              .value
+
+            is_expected.to eq status_name
+          end
+        end
+      end
     end
 
     context 'there is a cached connection status' do
@@ -701,6 +738,83 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
       end
 
       it { is_expected.to eq :created }
+    end
+  end
+
+  describe 'cleanup_status state_machine' do
+    shared_examples 'cleanup_status transition' do
+      let(:cluster) { create(:cluster, from_state) }
+
+      it 'transitions cleanup_status correctly' do
+        expect { subject }.to change { cluster.cleanup_status_name }
+          .from(from_state).to(to_state)
+      end
+
+      it 'schedules a Clusters::Cleanup::*Worker' do
+        expect(expected_worker_class).to receive(:perform_async).with(cluster.id)
+        subject
+      end
+    end
+
+    describe '#start_cleanup!' do
+      let(:expected_worker_class) { Clusters::Cleanup::AppWorker }
+      let(:to_state) { :cleanup_uninstalling_applications }
+
+      subject { cluster.start_cleanup! }
+
+      context 'when cleanup_status is cleanup_not_started' do
+        let(:from_state) { :cleanup_not_started }
+
+        it_behaves_like 'cleanup_status transition'
+      end
+
+      context 'when cleanup_status is errored' do
+        let(:from_state) { :cleanup_errored }
+
+        it_behaves_like 'cleanup_status transition'
+      end
+    end
+
+    describe '#make_cleanup_errored!' do
+      NON_ERRORED_STATES = Clusters::Cluster.state_machines[:cleanup_status].states.keys - [:cleanup_errored]
+
+      NON_ERRORED_STATES.each do |state|
+        it "transitions cleanup_status from #{state} to cleanup_errored" do
+          cluster = create(:cluster, state)
+
+          expect { cluster.make_cleanup_errored! }.to change { cluster.cleanup_status_name }
+            .from(state).to(:cleanup_errored)
+        end
+
+        it "sets error message" do
+          cluster = create(:cluster, state)
+
+          expect { cluster.make_cleanup_errored!("Error Message") }.to change { cluster.cleanup_status_reason }
+            .from(nil).to("Error Message")
+        end
+      end
+    end
+
+    describe '#continue_cleanup!' do
+      context 'when cleanup_status is cleanup_uninstalling_applications' do
+        let(:expected_worker_class) { Clusters::Cleanup::ProjectNamespaceWorker }
+        let(:from_state) { :cleanup_uninstalling_applications }
+        let(:to_state) { :cleanup_removing_project_namespaces }
+
+        subject { cluster.continue_cleanup! }
+
+        it_behaves_like 'cleanup_status transition'
+      end
+
+      context 'when cleanup_status is cleanup_removing_project_namespaces' do
+        let(:expected_worker_class) { Clusters::Cleanup::ServiceAccountWorker }
+        let(:from_state) { :cleanup_removing_project_namespaces }
+        let(:to_state) { :cleanup_removing_service_account }
+
+        subject { cluster.continue_cleanup! }
+
+        it_behaves_like 'cleanup_status transition'
+      end
     end
   end
 
@@ -802,28 +916,6 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
           subject
         end
       end
-    end
-  end
-
-  describe '#knative_pre_installed?' do
-    subject { cluster.knative_pre_installed? }
-
-    context 'with a GCP provider without cloud_run' do
-      let(:cluster) { create(:cluster, :provided_by_gcp) }
-
-      it { is_expected.to be_falsey }
-    end
-
-    context 'with a GCP provider with cloud_run' do
-      let(:cluster) { create(:cluster, :provided_by_gcp, :cloud_run_enabled) }
-
-      it { is_expected.to be_truthy }
-    end
-
-    context 'with a user provider' do
-      let(:cluster) { create(:cluster, :provided_by_user) }
-
-      it { is_expected.to be_falsey }
     end
   end
 end

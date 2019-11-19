@@ -30,6 +30,10 @@ class Group < Namespace
   has_many :members_and_requesters, as: :source, class_name: 'GroupMember'
 
   has_many :milestones
+  has_many :shared_group_links, foreign_key: :shared_with_group_id, class_name: 'GroupGroupLink'
+  has_many :shared_with_group_links, foreign_key: :shared_group_id, class_name: 'GroupGroupLink'
+  has_many :shared_groups, through: :shared_group_links, source: :shared_group
+  has_many :shared_with_groups, through: :shared_with_group_links, source: :shared_with_group
   has_many :project_group_links, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :shared_projects, through: :project_group_links, source: :project
 
@@ -50,6 +54,8 @@ class Group < Namespace
   has_many :container_repositories, through: :projects
 
   has_many :todos
+
+  has_one :import_export_upload
 
   accepts_nested_attributes_for :variables, allow_destroy: true
 
@@ -120,7 +126,7 @@ class Group < Namespace
 
     def visible_to_user_arel(user)
       groups_table = self.arel_table
-      authorized_groups = user.authorized_groups.as('authorized')
+      authorized_groups = user.authorized_groups.arel.as('authorized')
 
       groups_table.project(1)
         .from(authorized_groups)
@@ -259,8 +265,8 @@ class Group < Namespace
     members_with_parents.maintainers.exists?(user_id: user)
   end
 
-  def has_container_repositories?
-    container_repositories.exists?
+  def has_container_repository_including_subgroups?
+    ::ContainerRepository.for_group_and_its_subgroups(self).exists?
   end
 
   # @deprecated
@@ -376,11 +382,12 @@ class Group < Namespace
 
     return GroupMember::OWNER if user.admin?
 
-    members_with_parents
-      .where(user_id: user)
-      .reorder(access_level: :desc)
-      .first&.
-      access_level || GroupMember::NO_ACCESS
+    max_member_access = members_with_parents.where(user_id: user)
+                                            .reorder(access_level: :desc)
+                                            .first
+                                            &.access_level
+
+    max_member_access || max_member_access_for_user_from_shared_groups(user) || GroupMember::NO_ACCESS
   end
 
   def mattermost_team_params
@@ -444,6 +451,14 @@ class Group < Namespace
     false
   end
 
+  def export_file_exists?
+    export_file&.file
+  end
+
+  def export_file
+    import_export_upload&.export_file
+  end
+
   private
 
   def update_two_factor_requirement
@@ -472,6 +487,26 @@ class Group < Namespace
     return if visibility_level_allowed_by_sub_groups?
 
     errors.add(:visibility_level, "#{visibility} is not allowed since there are sub-groups with higher visibility.")
+  end
+
+  def max_member_access_for_user_from_shared_groups(user)
+    return unless Feature.enabled?(:share_group_with_group)
+
+    group_group_link_table = GroupGroupLink.arel_table
+    group_member_table = GroupMember.arel_table
+
+    group_group_links_query = GroupGroupLink.where(shared_group_id: self_and_ancestors_ids)
+    cte = Gitlab::SQL::CTE.new(:group_group_links_cte, group_group_links_query)
+
+    link = GroupGroupLink
+             .with(cte.to_arel)
+             .from([group_member_table, cte.alias_to(group_group_link_table)])
+             .where(group_member_table[:user_id].eq(user.id))
+             .where(group_member_table[:source_id].eq(group_group_link_table[:shared_with_group_id]))
+             .reorder(Arel::Nodes::Descending.new(group_group_link_table[:group_access]))
+             .first
+
+    link&.group_access
   end
 
   def self.groups_including_descendants_by(group_ids)

@@ -26,8 +26,6 @@ module QA
       end
 
       attribute :target do
-        project.visit!
-
         Repository::ProjectPush.fabricate! do |resource|
           resource.project = project
           resource.branch_name = 'master'

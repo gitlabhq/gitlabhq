@@ -120,7 +120,7 @@ The Pages daemon doesn't listen to the outside world.
 
 1. Set the external URL for GitLab Pages in `/etc/gitlab/gitlab.rb`:
 
-   ```shell
+   ```ruby
    pages_external_url 'http://example.io'
    ```
 
@@ -145,7 +145,7 @@ outside world.
 1. Place the certificate and key inside `/etc/gitlab/ssl`
 1. In `/etc/gitlab/gitlab.rb` specify the following configuration:
 
-   ```shell
+   ```ruby
    pages_external_url 'https://example.io'
 
    pages_nginx['redirect_http_to_https'] = true
@@ -167,7 +167,7 @@ behavior:
 1. Edit `/etc/gitlab/gitlab.rb`.
 1. Set the `inplace_chroot` to `true` for GitLab Pages:
 
-   ```shell
+   ```ruby
    gitlab_pages['inplace_chroot'] = true
    ```
 
@@ -202,7 +202,7 @@ world. Custom domains are supported, but no TLS.
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-   ```shell
+   ```ruby
    pages_external_url "http://example.io"
    nginx['listen_addresses'] = ['192.0.2.1']
    pages_nginx['enable'] = false
@@ -233,7 +233,7 @@ world. Custom domains and TLS are supported.
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-   ```shell
+   ```ruby
    pages_external_url "https://example.io"
    nginx['listen_addresses'] = ['192.0.2.1']
    pages_nginx['enable'] = false
@@ -271,7 +271,7 @@ sites served under a custom domain.
 
 To enable it, you'll need to:
 
-1. Choose an email on which you will recieve notifications about expiring domains.
+1. Choose an email on which you will receive notifications about expiring domains.
 1. Navigate to your instance's **Admin Area > Settings > Preferences** and expand **Pages** settings.
 1. Enter the email for receiving notifications and accept Let's Encrypt's Terms of Service as shown below.
 1. Click **Save changes**.
@@ -332,7 +332,7 @@ Follow the steps below to configure verbose logging of GitLab Pages daemon.
    If you wish to make it log events with level `DEBUG` you must configure this in
    `/etc/gitlab/gitlab.rb`:
 
-   ```shell
+   ```ruby
    gitlab_pages['log_verbose'] = true
    ```
 
@@ -347,7 +347,7 @@ are stored.
    If you wish to store them in another location you must set it up in
    `/etc/gitlab/gitlab.rb`:
 
-   ```shell
+   ```ruby
    gitlab_rails['pages_path'] = "/mnt/storage/pages"
    ```
 
@@ -363,14 +363,14 @@ Omnibus GitLab 11.1.
    If you wish to disable it you must configure this in
    `/etc/gitlab/gitlab.rb`:
 
-   ```shell
+   ```ruby
    gitlab_pages['listen_proxy'] = nil
    ```
 
    If you wish to make it listen on a different port you must configure this also in
    `/etc/gitlab/gitlab.rb`:
 
-   ```shell
+   ```ruby
    gitlab_pages['listen_proxy'] = "localhost:10080"
    ```
 
@@ -382,21 +382,26 @@ The maximum size of the unpacked archive per project can be configured in the
 Admin area under the Application settings in the **Maximum size of pages (MB)**.
 The default is 100MB.
 
-## Running GitLab Pages in a separate server
+## Running GitLab Pages on a separate server
 
-You may want to run GitLab Pages daemon on a separate server in order to decrease the load on your main application server.
-Follow the steps below to configure GitLab Pages in a separate server.
+You can run the GitLab Pages daemon on a separate server in order to decrease the load on your main application server.
 
-1. Suppose you have the main GitLab application server named `app1`. Prepare
-   new Linux server (let's call it `app2`), create NFS share there and configure access to
-   this share from `app1`. Let's use the default GitLab Pages folder `/var/opt/gitlab/gitlab-rails/shared/pages`
-   as the shared folder on `app2` and mount it to `/mnt/pages` on `app1`.
+To configure GitLab Pages on a separate server:
 
-1. On `app2` install GitLab omnibus and modify `/etc/gitlab/gitlab.rb` this way:
+1. Set up a new server. This will become the **Pages server**.
 
-   ```shell
+1. Create an NFS share on the new server and configure this share to
+   allow access from your main **GitLab server**. For this example, we use the
+   default GitLab Pages folder `/var/opt/gitlab/gitlab-rails/shared/pages`
+   as the shared folder on the new server and we will mount it to `/mnt/pages`
+   on the **GitLab server**.
+
+1. On the **Pages server**, install Omnibus GitLab and modify `/etc/gitlab/gitlab.rb`
+   to include:
+
+   ```ruby
    external_url 'http://<ip-address-of-the-server>'
-   pages_external_url "http://<your-pages-domain>"
+   pages_external_url "http://<your-pages-server-URL>"
    postgresql['enable'] = false
    redis['enable'] = false
    prometheus['enable'] = false
@@ -409,20 +414,82 @@ Follow the steps below to configure GitLab Pages in a separate server.
    gitlab_rails['auto_migrate'] = false
    ```
 
-1. Run `sudo gitlab-ctl reconfigure`.
-1. On `app1` apply the following changes to `/etc/gitlab/gitlab.rb`:
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
-   ```shell
+1. On the **GitLab server**, make the following changes to `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
    gitlab_pages['enable'] = false
-   pages_external_url "http://<your-pages-domain>"
+   pages_external_url "http://<your-pages-server-URL>"
    gitlab_rails['pages_path'] = "/mnt/pages"
    ```
 
-1. Run `sudo gitlab-ctl reconfigure`.
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+
+It is possible to run GitLab Pages on multiple servers if you wish to distribute
+the load. You can do this through standard load balancing practices such as
+configuring your DNS server to return multiple IPs for your Pages server,
+configuring a load balancer to work at the IP level, and so on. If you wish to
+set up GitLab Pages on multiple servers, perform the above procedure for each
+Pages server.
+
+### Access control when running GitLab Pages on a separate server
+
+If you are [running GitLab Pages on a separate server](#running-gitlab-pages-on-a-separate-server),
+then you must use the following procedure to configure [access control](#access-control):
+
+1. On the **GitLab server**, add the following to `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_pages['enable'] = true
+   gitlab_pages['access_control'] = true
+   ```
+
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the
+   changes to take effect. The `gitlab-secrets.json` file is now updated with the
+   new configuration.
+
+   DANGER: **Danger:**
+   The `gitlab-secrets.json` file contains secrets that control database encryption.
+   Do not edit or replace this file on the **GitLab server** or you might
+   experience permanent data loss. Make a backup copy of this file before proceeding,
+   as explained in the following steps.
+
+1. Create a backup of the secrets file on the **GitLab server**:
+
+   ```shell
+   cp /etc/gitlab/gitlab-secrets.json /etc/gitlab/gitlab-secrets.json.bak
+   ```
+
+1. Create a backup of the secrets file on the **Pages server**:
+
+   ```shell
+   cp /etc/gitlab/gitlab-secrets.json /etc/gitlab/gitlab-secrets.json.bak
+   ```
+
+1. Disable Pages on the **GitLab server** by setting the following in
+   `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_pages['enable'] = false
+   ```
+
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+
+1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the **GitLab server**
+   to the **Pages server**.
+
+1. On your **Pages server**, add the following to `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_pages['gitlab_server'] = "https://<your-gitlab-server-URL>"
+   ```
+
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
 ## Backup
 
-Pages are part of the [regular backup][backup] so there is nothing to configure.
+GitLab Pages are part of the [regular backup][backup], so there is no separate backup to configure.
 
 ## Security
 

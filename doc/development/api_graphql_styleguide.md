@@ -43,14 +43,14 @@ a new presenter specifically for GraphQL.
 The presenter is initialized using the object resolved by a field, and
 the context.
 
-### Exposing Global ids
+### Exposing Global IDs
 
-When exposing an `id` field on a type, we will by default try to
-expose a global id by calling `to_global_id` on the resource being
+When exposing an `ID` field on a type, we will by default try to
+expose a global ID by calling `to_global_id` on the resource being
 rendered.
 
 To override this behaviour, you can implement an `id` method on the
-type for which you are exposing an id. Please make sure that when
+type for which you are exposing an ID. Please make sure that when
 exposing a `GraphQL::ID_TYPE` using a custom method that it is
 globally unique.
 
@@ -146,6 +146,10 @@ query($project_path: ID!) {
 }
 ```
 
+To ensure that we get consistent ordering, we will append an ordering on the primary
+key, in descending order.  This is usually `id`, so basically we will add `order(id: :desc)`
+to the end of the relation.  A primary key _must_ be available on the underlying table.
+
 ### Exposing permissions for a type
 
 To expose permissions the current user has on a resource, you can call
@@ -234,6 +238,47 @@ module Types
   end
 end
 
+```
+
+## Descriptions
+
+All fields and arguments
+[must have descriptions](https://gitlab.com/gitlab-org/gitlab/merge_requests/16438).
+
+A description of a field or argument is given using the `description:`
+keyword. For example:
+
+```ruby
+field :id, GraphQL::ID_TYPE, description: 'ID of the resource'
+```
+
+Descriptions of fields and arguments are viewable to users through:
+
+- The [GraphiQL explorer](../api/graphql/#graphiql).
+- The [static GraphQL API reference](../api/graphql/#reference).
+
+### Description styleguide
+
+To ensure consistency, the following should be followed whenever adding or updating
+descriptions:
+
+- Mention the name of the resource in the description. Example:
+  `'Labels of the issue'` (issue being the resource).
+- Use `"{x} of the {y}"` where possible. Example: `'Title of the issue'`.
+  Do not start descriptions with `The`.
+- Descriptions of `GraphQL::BOOLEAN_TYPE` fields should answer the question: "What does
+  this field do?". Example: `'Indicates project has a Git repository'`.
+- Always include the word `"timestamp"` when describing an argument or
+  field of type `Types::TimeType`. This lets the reader know that the
+  format of the property will be `Time`, rather than just `Date`.
+- No `.` at end of strings.
+
+Example:
+
+```ruby
+field :id, GraphQL::ID_TYPE, description: 'ID of the Issue'
+field :confidential, GraphQL::BOOLEAN_TYPE, description: 'Indicates the issue is confidential'
+field :closed_at, Types::TimeType, description: 'Timestamp of when the issue was closed'
 ```
 
 ## Authorization
@@ -350,7 +395,10 @@ To find objects to display in a field, we can add resolvers to
 `app/graphql/resolvers`.
 
 Arguments can be defined within the resolver, those arguments will be
-made available to the fields using the resolver.
+made available to the fields using the resolver. When exposing a model
+that had an internal ID (`iid`), prefer using that in combination with
+the namespace path as arguments in a resolver over a database
+ID. Othewise use a [globally unique ID](#exposing-global-ids).
 
 We already have a `FullPathLoader` that can be included in other
 resolvers to quickly find Projects and Namespaces which will have a
@@ -364,6 +412,10 @@ Mutations are used to change any stored values, or to trigger
 actions. In the same way a GET-request should not modify data, we
 cannot modify data in a regular GraphQL-query. We can however in a
 mutation.
+
+To find objects for a mutation, arguments need to be specified. As with
+[resolvers](#resolvers), prefer using internal ID or, if needed, a
+global ID rather than the database ID.
 
 ### Fields
 
@@ -496,6 +548,32 @@ found, we should raise a
 `Gitlab::Graphql::Errors::ResourceNotAvailable` error. Which will be
 correctly rendered to the clients.
 
+## Gitlab's custom scalars
+
+### `Types::TimeType`
+
+[`Types::TimeType`](https://gitlab.com/gitlab-org/gitlab/blob/master/app%2Fgraphql%2Ftypes%2Ftime_type.rb)
+must be used as the type for all fields and arguments that deal with Ruby
+`Time` and `DateTime` objects.
+
+The type is
+[a custom scalar](https://github.com/rmosolgo/graphql-ruby/blob/master/guides/type_definitions/scalars.md#custom-scalars)
+that:
+
+- Converts Ruby's `Time` and `DateTime` objects into standardized
+  ISO-8601 formatted strings, when used as the type for our GraphQL fields.
+- Converts ISO-8601 formatted time strings into Ruby `Time` objects,
+  when used as the type for our GraphQL arguments.
+
+This allows our GraphQL API to have a standardized way that it presents time
+and handles time inputs.
+
+Example:
+
+```ruby
+field :created_at, Types::TimeType, null: false, description: 'Timestamp of when the issue was created'
+```
+
 ## Testing
 
 _full stack_ tests for a graphql query or mutation live in
@@ -540,7 +618,7 @@ it 'returns a successful response' do
 end
 ```
 
-## Documentation
+## Documentation and Schema
 
-For information on generating GraphQL documentation, see
-[Rake tasks related to GraphQL](rake_tasks.md#update-graphql-documentation).
+For information on generating GraphQL documentation and schema files, see
+[Rake tasks related to GraphQL](rake_tasks.md#update-graphql-documentation-and-schema-definitions).

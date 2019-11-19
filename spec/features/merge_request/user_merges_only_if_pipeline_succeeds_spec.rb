@@ -89,12 +89,12 @@ describe 'Merge request > User merges only if pipeline succeeds', :js do
       context 'when CI skipped' do
         let(:status) { :skipped }
 
-        it 'allows MR to be merged' do
+        it 'does not allow MR to be merged' do
           visit project_merge_request_path(project, merge_request)
 
           wait_for_requests
 
-          expect(page).to have_button 'Merge'
+          expect(page).not_to have_button 'Merge'
         end
       end
     end

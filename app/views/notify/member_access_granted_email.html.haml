@@ -1,10 +1,14 @@
 - link_end = '</a>'.html_safe
 - source_type = member_source.model_name.singular
 - leave_link = polymorphic_url([member_source], leave: 1)
-- source_link = link_to(member_source.human_name, member_source.web_url, target: '_blank', rel: 'noopener noreferrer')
+- source_link = link_to(member_source.human_name, member_source.web_url, target: '_blank', rel: 'noopener noreferrer', class: :highlight)
+- access_level = content_tag(:span, member.human_access, class: :highlight)
 
-%p
-  = _('You have been granted %{access_level} access to the %{source_link} %{source_type}.').html_safe % { access_level: member.human_access, source_link: source_link, source_type: source_type }
-%p
-  - leave_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: leave_link }
-  = _('If this was a mistake you can %{leave_link_start}leave the %{source_type}%{link_end}.').html_safe % { source_type: source_type, leave_link_start: leave_link_start, link_end: link_end }
+%tr
+  %td.text-content
+    %p
+      = _('You have been granted %{access_level} access to the %{source_link} %{source_type}.').html_safe % { access_level: access_level, source_link: source_link, source_type: source_type }
+    %p
+      - leave_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: leave_link }
+      = _('If this was a mistake you can %{leave_link_start}leave the %{source_type}%{link_end}.').html_safe % { source_type: source_type, leave_link_start: leave_link_start, link_end: link_end }
+

@@ -31,7 +31,8 @@
     %button.btn.btn-default.js-settings-toggle{ type: "button" }
       = expanded ? _('Collapse') : _('Expand')
     %p
-      = _('Register and see your runners for this group.')
+      = _("Runners are processes that pick up and execute jobs for GitLab. Here you can register and see your Runners for this project.")
+      = link_to s_('More information'), help_page_path('ci/runners/README')
   .settings-content
     = render 'groups/runners/index'
 

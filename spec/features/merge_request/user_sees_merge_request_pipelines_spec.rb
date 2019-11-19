@@ -67,13 +67,13 @@ describe 'Merge request > User sees pipelines triggered by merge request', :js d
       end
     end
 
-    it 'sees the latest detached merge request pipeline as the head pipeline' do
+    it 'sees the latest detached merge request pipeline as the head pipeline', :sidekiq_might_not_need_inline do
       page.within('.ci-widget-content') do
         expect(page).to have_content("##{detached_merge_request_pipeline.id}")
       end
     end
 
-    context 'when a user updated a merge request in the parent project' do
+    context 'when a user updated a merge request in the parent project', :sidekiq_might_not_need_inline do
       let!(:push_pipeline_2) do
         Ci::CreatePipelineService.new(project, user, ref: 'feature')
                                   .execute(:push)
@@ -133,7 +133,7 @@ describe 'Merge request > User sees pipelines triggered by merge request', :js d
       end
     end
 
-    context 'when a user merges a merge request in the parent project' do
+    context 'when a user merges a merge request in the parent project', :sidekiq_might_not_need_inline do
       before do
         click_button 'Merge when pipeline succeeds'
 
@@ -196,7 +196,7 @@ describe 'Merge request > User sees pipelines triggered by merge request', :js d
         end
       end
 
-      it 'sees the latest branch pipeline as the head pipeline' do
+      it 'sees the latest branch pipeline as the head pipeline', :sidekiq_might_not_need_inline do
         page.within('.ci-widget-content') do
           expect(page).to have_content("##{push_pipeline.id}")
         end
@@ -204,7 +204,7 @@ describe 'Merge request > User sees pipelines triggered by merge request', :js d
     end
   end
 
-  context 'when a user created a merge request from a forked project to the parent project' do
+  context 'when a user created a merge request from a forked project to the parent project', :sidekiq_might_not_need_inline do
     let(:merge_request) do
       create(:merge_request,
               source_project: forked_project,

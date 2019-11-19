@@ -78,12 +78,20 @@ describe Clusters::Providers::Gcp do
     end
   end
 
-  describe '#legacy_abac?' do
-    let(:gcp) { build(:cluster_provider_gcp) }
+  describe '#has_rbac_enabled?' do
+    subject { gcp.has_rbac_enabled? }
 
-    subject { gcp }
+    context 'when cluster is legacy_abac' do
+      let(:gcp) { create(:cluster_provider_gcp, :abac_enabled) }
 
-    it { is_expected.not_to be_legacy_abac }
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when cluster is not legacy_abac' do
+      let(:gcp) { create(:cluster_provider_gcp) }
+
+      it { is_expected.to be_truthy }
+    end
   end
 
   describe '#knative_pre_installed?' do

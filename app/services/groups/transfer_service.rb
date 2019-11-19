@@ -13,7 +13,7 @@ module Groups
 
     TransferError = Class.new(StandardError)
 
-    attr_reader :error
+    attr_reader :error, :new_parent_group
 
     def initialize(group, user, params = {})
       super
@@ -75,7 +75,7 @@ module Groups
     # rubocop: enable CodeReuse/ActiveRecord
 
     def group_projects_contain_registry_images?
-      @group.has_container_repositories?
+      @group.has_container_repository_including_subgroups?
     end
 
     def update_group_attributes
@@ -115,3 +115,5 @@ module Groups
     end
   end
 end
+
+Groups::TransferService.prepend_if_ee('EE::Groups::TransferService')

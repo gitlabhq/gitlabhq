@@ -169,7 +169,7 @@ module API
 
         not_found! 'Commit' unless commit
 
-        raw_diffs = ::Kaminari.paginate_array(commit.raw_diffs.to_a)
+        raw_diffs = ::Kaminari.paginate_array(commit.diffs(expanded: true).diffs.to_a)
 
         present paginate(raw_diffs), with: Entities::Diff
       end
@@ -223,7 +223,7 @@ module API
           present user_project.repository.commit(result[:result]),
             with: Entities::Commit
         else
-          render_api_error!(result[:message], 400)
+          error!(result.slice(:message, :error_code), 400, header)
         end
       end
 
@@ -257,7 +257,7 @@ module API
           present user_project.repository.commit(result[:result]),
             with: Entities::Commit
         else
-          render_api_error!(result[:message], 400)
+          error!(result.slice(:message, :error_code), 400, header)
         end
       end
 

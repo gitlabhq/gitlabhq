@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module SearchHelper
+  SEARCH_PERMITTED_PARAMS = [:search, :scope, :project_id, :group_id, :repository_ref, :snippets].freeze
+
   def search_autocomplete_opts(term)
     return unless current_user
 
@@ -96,8 +98,9 @@ module SearchHelper
     result
   end
 
-  def search_blob_title(project, filename)
-    filename
+  # Overriden in EE
+  def search_blob_title(project, path)
+    path
   end
 
   def search_service
@@ -199,7 +202,7 @@ module SearchHelper
     search_params = params
       .merge(search)
       .merge({ scope: scope })
-      .permit(:search, :scope, :project_id, :group_id, :repository_ref, :snippets)
+      .permit(SEARCH_PERMITTED_PARAMS)
 
     if @scope == scope
       li_class = 'active'
@@ -235,6 +238,7 @@ module SearchHelper
       opts[:data]['project-id'] = @project.id
       opts[:data]['labels-endpoint'] = project_labels_path(@project)
       opts[:data]['milestones-endpoint'] = project_milestones_path(@project)
+      opts[:data]['releases-endpoint'] = project_releases_path(@project)
     elsif @group.present?
       opts[:data]['group-id'] = @group.id
       opts[:data]['labels-endpoint'] = group_labels_path(@group)
@@ -272,7 +276,7 @@ module SearchHelper
     sanitize(html, tags: %w(a p ol ul li pre code))
   end
 
-  def search_tabs?(tab)
+  def show_user_search_tab?
     return false if Feature.disabled?(:users_search, default_enabled: true)
 
     if @project

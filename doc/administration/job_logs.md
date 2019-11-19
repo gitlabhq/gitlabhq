@@ -1,8 +1,8 @@
 # Job logs
 
-> [Renamed from Job Traces to Job logs](https://gitlab.com/gitlab-org/gitlab/issues/29121) in 12.4.
+> [Renamed from job traces to job logs](https://gitlab.com/gitlab-org/gitlab/issues/29121) in GitLab 12.5.
 
-Job logs (traces) are sent by GitLab Runner while it's processing a job. You can see
+Job logs are sent by GitLab Runner while it's processing a job. You can see
 logs in job pages, pipelines, email notifications, etc.
 
 ## Data flow
@@ -33,9 +33,8 @@ To change the location where the job logs will be stored, follow the steps below
    gitlab_ci['builds_directory'] = '/mnt/to/gitlab-ci/builds'
    ```
 
-1. Save the file and [reconfigure GitLab][] for the changes to take effect.
-
----
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the
+   changes to take effect.
 
 **In installations from source:**
 
@@ -48,10 +47,8 @@ To change the location where the job logs will be stored, follow the steps below
      builds_path: path/to/builds/
    ```
 
-1. Save the file and [restart GitLab][] for the changes to take effect.
-
-[reconfigure gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"
-[restart gitlab]: restart_gitlab.md#installations-from-source "How to restart GitLab"
+1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes
+   to take effect.
 
 ## Uploading logs to object storage
 
@@ -69,8 +66,8 @@ job output in the UI will be empty.
 
 ## New incremental logging architecture
 
-> [Introduced][ce-18169] in GitLab 10.4.
-> [Announced as General availability][ce-46097] in GitLab 11.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/18169) in GitLab 10.4.
+> - [Announced as generally available](https://gitlab.com/gitlab-org/gitlab-foss/issues/46097) in GitLab 11.0.
 
 NOTE: **Note:**
 This feature is off by default. See below for how to [enable or disable](#enabling-incremental-logging) it.
@@ -83,7 +80,7 @@ The data flow is the same as described in the [data flow section](#data-flow)
 with one change: _the stored path of the first two phases is different_. This incremental
 log architecture stores chunks of logs in Redis and a persistent store (object storage or database) instead of
 file storage. Redis is used as first-class storage, and it stores up-to 128KB
-of data. Once the full chunk is sent, it is flushed to a persistent store, either object storage(temporary directory) or database.
+of data. Once the full chunk is sent, it is flushed to a persistent store, either object storage (temporary directory) or database.
 After a while, the data in Redis and a persitent store will be archived to [object storage](#uploading-logs-to-object-storage).
 
 The data are stored in the following Redis namespace: `Gitlab::Redis::SharedState`.
@@ -163,7 +160,3 @@ instance. If the number of jobs is 1000, 128MB (128KB * 1000) is consumed.
 Also, it could pressure the database replication lag. `INSERT`s are generated to
 indicate that we have log chunk. `UPDATE`s with 128KB of data is issued once we
 receive multiple chunks.
-
-[ce-18169]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/18169
-[ce-21193]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/21193
-[ce-46097]: https://gitlab.com/gitlab-org/gitlab-foss/issues/46097

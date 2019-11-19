@@ -110,7 +110,10 @@ class ProjectsFinder < UnionFinder
 
   # rubocop: disable CodeReuse/ActiveRecord
   def by_ids(items)
-    project_ids_relation ? items.where(id: project_ids_relation) : items
+    items = items.where(id: project_ids_relation) if project_ids_relation
+    items = items.where('id > ?', params[:id_after]) if params[:id_after]
+    items = items.where('id < ?', params[:id_before]) if params[:id_before]
+    items
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

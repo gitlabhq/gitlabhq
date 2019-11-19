@@ -74,6 +74,50 @@ We have some Webmock stubs in
 [`KubernetesHelpers`](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/support/helpers/kubernetes_helpers.rb)
 which can help with mocking out calls to Kubernetes API in your tests.
 
+### Amazon EKS integration
+
+This section outlines the process for allowing a GitLab instance to create EKS clusters.
+
+The following prerequisites are required:
+
+A `Customer` AWS account. This is the account in which the
+EKS cluster will be created. The following resources must be present:
+
+- A provisioning role that has permissions to create the cluster
+  and associated resources. It must list the `GitLab` AWS account
+  as a trusted entity.
+- A VPC, management role, security group, and subnets for use by the cluster.
+
+A `GitLab` AWS account. This is the account which performs
+the provisioning actions. The following resources must be present:
+
+- A service account with permissions to assume the provisioning
+  role in the `Customer` account above.
+- Credentials for this service account configured in GitLab via
+  the `kubernetes` section of `gitlab.yml`.
+
+The process for creating a cluster is as follows:
+
+1. Using the `:provision_role_external_id`, GitLab assumes the role provided
+   by `:provision_role_arn` and stores a set of temporary credentials on the
+   provider record. By default these credentials are valid for one hour.
+1. A CloudFormation stack is created, based on the
+   [`AWS CloudFormation EKS template`](https://gitlab.com/gitlab-org/gitlab/blob/master/vendor/aws/cloudformation/eks_cluster.yaml).
+   This triggers creation of all resources required for an EKS cluster.
+1. GitLab polls the status of the stack until all resources are ready,
+   which takes somewhere between 10 and 15 minutes in most cases.
+1. When the stack is ready, GitLab stores the cluster details and generates
+   another set of temporary credentials, this time to allow connecting to
+   the cluster via Kubeclient. These credentials are valid for one minute.
+1. GitLab configures the worker nodes so that they are able to authenticate
+   to the cluster, and creates a service account for itself for future operations.
+1. Credentials that are no longer required are removed. This deletes the following
+   attributes:
+
+   - `access_key_id`
+   - `secret_access_key`
+   - `session_token`
+
 ## Security
 
 ### SSRF
@@ -123,3 +167,10 @@ they are written:
 ```bash
 kubectl logs <pod_name> --follow -n gitlab-managed-apps
 ```
+
+## GitLab Managed Apps
+
+GitLab provides [GitLab Managed Apps](../user/clusters/applications.html), a one-click install for various applications which can be added directly to your configured cluster.
+
+**<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview of how to add a new GitLab-mananged app, see [How to add GitLab-managed-apps to Kubernetes integration](https://youtu.be/mKm-jkranEk).**

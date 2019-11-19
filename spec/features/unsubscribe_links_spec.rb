@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Unsubscribe links' do
+describe 'Unsubscribe links', :sidekiq_might_not_need_inline do
   include Warden::Test::Helpers
 
   let(:recipient) { create(:user) }

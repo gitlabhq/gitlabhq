@@ -44,6 +44,14 @@ bundle exec rspec
 bundle exec rspec spec/[path]/[to]/[spec].rb
 ```
 
+Use [guard](https://github.com/guard/guard) to continuously monitor for changes and only run matching tests:
+
+```sh
+bundle exec guard
+```
+
+When using spring and guard together, use `SPRING=1 bundle exec guard` instead to make use of spring.
+
 ### General guidelines
 
 - Use a single, top-level `describe ClassName` block.
@@ -61,6 +69,7 @@ bundle exec rspec spec/[path]/[to]/[spec].rb
 - When using `evaluate_script("$('.js-foo').testSomething()")` (or `execute_script`) which acts on a given element,
   use a Capyabara matcher beforehand (e.g. `find('.js-foo')`) to ensure the element actually exists.
 - Use `focus: true` to isolate parts of the specs you want to run.
+- Use [`:aggregate_failures`](https://relishapp.com/rspec/rspec-core/docs/expectation-framework-integration/aggregating-failures) when there is more than one expectation in a test.
 
 ### System / Feature tests
 
@@ -356,10 +365,22 @@ However, if a spec makes direct Redis calls, it should mark itself with the
 `:clean_gitlab_redis_cache`, `:clean_gitlab_redis_shared_state` or
 `:clean_gitlab_redis_queues` traits as appropriate.
 
-Sidekiq jobs are typically not run in specs, but this behaviour can be altered
-in each spec through the use of `perform_enqueued_jobs` blocks. Any spec that
-causes Sidekiq jobs to be pushed to Redis should use the `:sidekiq` trait, to
-ensure that they are removed once the spec completes.
+#### Background jobs / Sidekiq
+
+By default, Sidekiq jobs are enqueued into a jobs array and aren't processed.
+If a test enqueues Sidekiq jobs and need them to be processed, the
+`:sidekiq_inline` trait can be used.
+
+The `:sidekiq_might_not_need_inline` trait was added when [Sidekiq inline mode was
+changed to fake mode](https://gitlab.com/gitlab-org/gitlab/merge_requests/15479)
+to all the tests that needed Sidekiq to actually process jobs. Tests with
+this trait should be either fixed to not rely on Sidekiq processing jobs, or their
+`:sidekiq_might_not_need_inline` trait should be updated to `:sidekiq_inline` if
+the processing of background jobs is needed/expected.
+
+NOTE: **Note:**
+The usage of `perform_enqueued_jobs` is currently useless since our
+workers aren't inheriting from `ApplicationJob` / `ActiveJob::Base`.
 
 #### Filesystem
 

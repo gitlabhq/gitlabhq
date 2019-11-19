@@ -23,7 +23,7 @@ We have complete examples of configuring pipelines:
 - To see a large `.gitlab-ci.yml` file used in an enterprise, see the [`.gitlab-ci.yml` file for `gitlab`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab-ci.yml).
 
 NOTE: **Note:**
-If you have a [mirrored repository where GitLab pulls from](../../workflow/repository_mirroring.md#pulling-from-a-remote-repository-starter),
+If you have a [mirrored repository where GitLab pulls from](../../user/project/repository/repository_mirroring.md#pulling-from-a-remote-repository-starter),
 you may need to enable pipeline triggering in your project's
 **Settings > Repository > Pull from a remote repository > Trigger pipelines for mirror updates**.
 
@@ -106,7 +106,7 @@ The following table lists available parameters for jobs:
 | [`when`](#when)                                    | When to run job. Also available: `when:manual` and `when:delayed`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | [`environment`](#environment)                      | Name of an environment to which the job deploys. Also available: `environment:name`, `environment:url`, `environment:on_stop`, and `environment:action`.                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | [`cache`](#cache)                                  | List of files that should be cached between subsequent runs. Also available: `cache:paths`, `cache:key`, `cache:untracked`, and `cache:policy`.                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| [`artifacts`](#artifacts)                          | List of files and directories to attach to a job on success. Also available: `artifacts:paths`, `artifacts:name`, `artifacts:untracked`, `artifacts:when`, `artifacts:expire_in`, `artifacts:reports`, and `artifacts:reports:junit`.<br><br>In GitLab [Enterprise Edition](https://about.gitlab.com/pricing/), these are available: `artifacts:reports:codequality`, `artifacts:reports:sast`, `artifacts:reports:dependency_scanning`, `artifacts:reports:container_scanning`, `artifacts:reports:dast`, `artifacts:reports:license_management`, `artifacts:reports:performance` and `artifacts:reports:metrics`. |
+| [`artifacts`](#artifacts)                          | List of files and directories to attach to a job on success. Also available: `artifacts:paths`, `artifacts:expose_as`, `artifacts:name`, `artifacts:untracked`, `artifacts:when`, `artifacts:expire_in`, `artifacts:reports`, and `artifacts:reports:junit`.<br><br>In GitLab [Enterprise Edition](https://about.gitlab.com/pricing/), these are available: `artifacts:reports:codequality`, `artifacts:reports:sast`, `artifacts:reports:dependency_scanning`, `artifacts:reports:container_scanning`, `artifacts:reports:dast`, `artifacts:reports:license_management`, `artifacts:reports:performance` and `artifacts:reports:metrics`. |
 | [`dependencies`](#dependencies)                    | Restrict which artifacts are passed to a specific job by providing a list of jobs to fetch artifacts from.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | [`coverage`](#coverage)                            | Code coverage settings for a given job.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | [`retry`](#retry)                                  | When and how many times a job can be auto-retried in case of a failure.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
@@ -135,6 +135,7 @@ The following job parameters can be defined inside a `default:` block:
 - [`before_script`](#before_script-and-after_script)
 - [`after_script`](#before_script-and-after_script)
 - [`cache`](#cache)
+- [`interruptible`](#interruptible)
 
 In the following example, the `ruby:2.5` image is set as the default for all
 jobs except the `rspec 2.6` job, which uses the `ruby:2.6` image:
@@ -180,6 +181,25 @@ For example, commands that contain a colon (`:`) need to be wrapped in quotes so
 that the YAML parser knows to interpret the whole thing as a string rather than
 a "key: value" pair. Be careful when using special characters:
 `:`, `{`, `}`, `[`, `]`, `,`, `&`, `*`, `#`, `?`, `|`, `-`, `<`, `>`, `=`, `!`, `%`, `@`, `` ` ``.
+
+#### YAML anchors for `script`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/23005) in GitLab 12.5.
+
+You can use [YAML anchors](#anchors) with scripts, which makes it possible to
+include a predefined list of commands in multiple jobs.
+
+Example:
+
+```yaml
+.something: &something
+- echo 'something'
+
+job_name:
+  script:
+    - *something
+    - echo 'this is the script'
+```
 
 ### `image`
 
@@ -240,34 +260,26 @@ For more information, see see [Available settings for `services`](../docker/usin
 
 > Introduced in GitLab 8.7 and requires GitLab Runner v1.2.
 
-`before_script` is used to define the command that should be run before all
-jobs, including deploy jobs, but after the restoration of [artifacts](#artifacts).
+`before_script` is used to define a command that should be run before each
+job, including deploy jobs, but after the restoration of any [artifacts](#artifacts).
 This must be an an array.
 
-`after_script` is used to define the command that will be run after all
-jobs, including failed ones. This must be an an array.
+Scripts specified in `before_script` are concatenated with any scripts specified
+in the main [`script`](#script), and executed together in a single shell.
 
-Scripts specified in `before_script` are:
+`after_script` is used to define the command that will be run after each
+job, including failed ones. This must be an an array.
 
-- Concatenated with scripts specified in the main `script`. Job-level
-  `before_script` definition override global-level `before_script` definition
-  when concatenated with `script` definition.
-- Executed together with main `script` script as one script in a single shell
-  context.
-
-Scripts specified in `after_script`:
+Scripts specified in `after_script` are executed in a new shell, separate from any
+`before_script` or `script` scripts. As a result, they:
 
 - Have a current working directory set back to the default.
-- Are executed in a shell context separated from `before_script` and `script`
-  scripts.
-- Because of separated context, cannot see changes done by scripts defined
-  in `before_script` or `script` scripts, either:
-  - In shell. For example, command aliases and variables exported in `script`
-    scripts.
-  - Outside of the working tree (depending on the Runner executor). For example,
-    software installed by a `before_script` or `script` scripts.
+- Have no access to changes done by scripts defined in `before_script` or `script`, including:
+  - Command aliases and variables exported in `script` scripts.
+  - Changes outside of the working tree (depending on the Runner executor), like
+    software installed by a `before_script` or `script` script.
 
-It's possible to overwrite the globally defined `before_script` and `after_script`
+It's possible to overwrite a globally defined `before_script` or `after_script`
 if you set it per-job:
 
 ```yaml
@@ -282,6 +294,33 @@ job:
     - my command
   after_script:
     - execute this after my script
+```
+
+#### YAML anchors for `before_script` and `after_script`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/23005) in GitLab 12.5.
+
+You can use [YAML anchors](#anchors) with `before_script` and `after_script`,
+which makes it possible to include a predefined list of commands in multiple
+jobs.
+
+Example:
+
+```yaml
+.something_before: &something_before
+- echo 'something before'
+
+.something_after: &something_after
+- echo 'something after'
+
+
+job_name:
+  before_script:
+    - *something_before
+  script:
+    - echo 'this is the script'
+  after_script:
+    - *something_after
 ```
 
 ### `stages`
@@ -328,6 +367,37 @@ The following stages are available to every pipeline:
 - `.post`, which is guaranteed to always be the last stage in a pipeline.
 
 User-defined stages are executed after `.pre` and before `.post`.
+
+The order of `.pre` and `.post` cannot be changed, even if defined out of order in `.gitlab-ci.yml`.
+For example, the following are equivalent configuration:
+
+- Configured in order:
+
+  ```yml
+  stages:
+    - .pre
+    - a
+    - b
+    - .post
+  ```
+
+- Configured out of order:
+
+  ```yml
+  stages:
+    - a
+    - .pre
+    - b
+    - .post
+  ```
+
+- Not explicitly configured:
+
+  ```yml
+  stages:
+    - a
+    - b
+  ```
 
 ### `stage`
 
@@ -378,6 +448,9 @@ Jobs will run on your own Runners in parallel only if:
 - The Runner's `concurrent` setting has been changed.
 
 ### `only`/`except` (basic)
+
+NOTE: **Note:**
+These parameters will soon be [deprecated](https://gitlab.com/gitlab-org/gitlab/issues/27449) in favor of [`rules`](#rules) as it offers a more powerful syntax.
 
 `only` and `except` are two parameters that set a job policy to limit when
 jobs are created:
@@ -926,12 +999,11 @@ docker build:
       when: delayed
       start_in: '3 hours'
     - when: on_success # Otherwise include the job and set to run normally
-
 ```
 
 Additional job configuration may be added to rules in the future. If something
 useful isn't available, please
-[open an issue](https://www.gitlab.com/gitlab-org/gitlab/issues).
+[open an issue](https://gitlab.com/gitlab-org/gitlab/issues).
 
 ### `tags`
 
@@ -1463,6 +1535,50 @@ cache:
     - binaries/
 ```
 
+##### `cache:key:files`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/18986) in GitLab v12.5.
+
+If `cache:key:files` is added, one or two files must be defined with it. The cache `key`
+will be a SHA computed from the most recent commits (one or two) that changed the
+given files. If neither file was changed in any commits, the key will be `default`.
+
+```yaml
+cache:
+  key:
+    files:
+      - Gemfile.lock
+      - package.json
+  paths:
+    - vendor/ruby
+    - node_modules
+```
+
+##### `cache:key:prefix`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/18986) in GitLab v12.5.
+
+The `prefix` parameter adds extra functionality to `key:files` by allowing the key to
+be composed of the given `prefix` combined with the SHA computed for `cache:key:files`.
+For example, adding a `prefix` of `rspec`, will
+cause keys to look like: `rspec-feef9576d21ee9b6a32e30c5c79d0a0ceb68d1e5`. If neither
+file was changed in any commits, the prefix is added to `default`, so the key in the
+example would be `rspec-default`.
+
+`prefix` follows the same restrictions as `key`, so it can use any of the
+[predefined variables](../variables/README.md). Similarly, the `/` character or the
+equivalent URI-encoded `%2F`, or a value made only of `.` or `%2E`, is not allowed.
+
+```yaml
+cache:
+  key:
+    files:
+      - Gemfile.lock
+    prefix: ${CI_JOB_NAME}
+  paths:
+    - vendor/ruby
+```
+
 #### `cache:untracked`
 
 Set `untracked: true` to cache all files that are untracked in your Git
@@ -1595,6 +1711,47 @@ release-job:
   only:
     - tags
 ```
+
+#### `artifacts:expose_as`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/15018) in GitLab 12.5.
+
+The `expose_as` keyword can be used to expose [job artifacts](../../user/project/pipelines/job_artifacts.md)
+in the [merge request](../../user/project/merge_requests/index.md) UI.
+
+For example, to match a single file:
+
+```yml
+test:
+  script: [ 'echo 1' ]
+  artifacts:
+    expose_as: 'artifact 1'
+    paths: ['path/to/file.txt']
+```
+
+With this configuration, GitLab will add a link **artifact 1** to the relevant merge request
+that points to `file1.txt`.
+
+An example that will match an entire directory:
+
+```yml
+test:
+  script: [ 'echo 1' ]
+  artifacts:
+    expose_as: 'artifact 1'
+    paths: ['path/to/directory/']
+```
+
+Note the following:
+
+- A maximum of 10 job artifacts per merge request can be exposed.
+- Glob patterns are unsupported.
+- If a directory is specified, the link will be to the job [artifacts browser](../../user/project/pipelines/job_artifacts.md#browsing-artifacts) if there is more than
+  one file in the directory.
+- For exposed single file artifacts with `.html`, `.htm`, `.txt`, `.json`, `.xml`,
+  and `.log` extensions, if [GitLab Pages](../../administration/pages/index.md) is:
+  - Enabled, GitLab will automatically render the artifact.
+  - Not enabled, you will see the file in the artifacts browser.
 
 #### `artifacts:name`
 
@@ -1909,8 +2066,6 @@ An error will be shown if you define jobs from the current stage or next ones.
 Defining an empty array will skip downloading any artifacts for that job.
 The status of the previous job is not considered when using `dependencies`, so
 if it failed or it is a manual job that was not run, no error occurs.
-
----
 
 In the following example, we define two jobs with artifacts, `build:osx` and
 `build:linux`. When the `test:osx` is executed, the artifacts from `build:osx`
@@ -2247,6 +2402,24 @@ staging:
   trigger:
     project: my/deployment
     branch: stable
+```
+
+It is possible to mirror the status from a triggered pipeline:
+
+```
+trigger_job:
+  trigger:
+    project: my/project
+    strategy: depend
+```
+
+It is possible to mirror the status from an upstream pipeline:
+
+```
+upstream_bridge:
+  stage: test
+  needs:
+    pipeline: other/project
 ```
 
 ### `interruptible`

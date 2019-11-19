@@ -6,6 +6,10 @@ module QA
   context 'Release', :docker do
     describe 'Git clone using a deploy key' do
       before do
+        # Handle WIP Job Logs flag - https://gitlab.com/gitlab-org/gitlab/issues/31162
+        @job_log_json_flag_enabled = Runtime::Feature.enabled?('job_log_json')
+        Runtime::Feature.disable('job_log_json') if @job_log_json_flag_enabled
+
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_credentials)
 
@@ -26,6 +30,7 @@ module QA
       end
 
       after do
+        Runtime::Feature.enable('job_log_json') if @job_log_json_flag_enabled
         Service::DockerRun::GitlabRunner.new(@runner_name).remove!
       end
 

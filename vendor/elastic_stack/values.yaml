@@ -1,0 +1,47 @@
+elasticsearch:
+  enabled: true
+  cluster:
+    env:
+      MINIMUM_MASTER_NODES: "1"
+  master:
+    replicas: 2
+  client:
+    replicas: 1
+  data:
+    replicas: 1
+
+kibana:
+  enabled: true
+  env:
+    ELASTICSEARCH_HOSTS: http://elastic-stack-elasticsearch-client:9200
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: "nginx"
+      kubernetes.io/tls-acme: "true"
+
+logstash:
+  enabled: false
+
+filebeat:
+  enabled: true
+  config:
+    output.file.enabled: false
+    output.elasticsearch:
+      enabled: true
+      hosts: ["http://elastic-stack-elasticsearch-client:9200"]
+
+fluentd:
+  enabled: false
+
+fluent-bit:
+  enabled: false
+
+nginx-ldapauth-proxy:
+  enabled: false
+
+elasticsearch-curator:
+  enabled: false
+
+elasticsearch-exporter:
+  enabled: false

@@ -26,7 +26,9 @@ describe 'Import/Export - project export integration test', :js do
   let(:project) { setup_project }
 
   before do
-    allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
+    allow_next_instance_of(Gitlab::ImportExport) do |instance|
+      allow(instance).to receive(:storage_path).and_return(export_path)
+    end
   end
 
   after do
@@ -38,7 +40,7 @@ describe 'Import/Export - project export integration test', :js do
       sign_in(user)
     end
 
-    it 'exports a project successfully' do
+    it 'exports a project successfully', :sidekiq_might_not_need_inline do
       visit edit_project_path(project)
 
       expect(page).to have_content('Export project')

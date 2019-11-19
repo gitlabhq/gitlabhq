@@ -5,7 +5,7 @@ require 'spec_helper'
 describe 'GPG signed commits' do
   let(:project) { create(:project, :public, :repository) }
 
-  it 'changes from unverified to verified when the user changes his email to match the gpg key' do
+  it 'changes from unverified to verified when the user changes his email to match the gpg key', :sidekiq_might_not_need_inline do
     ref = GpgHelpers::SIGNED_AND_AUTHORED_SHA
     user = create(:user, email: 'unrelated.user@example.org')
 
@@ -30,7 +30,7 @@ describe 'GPG signed commits' do
     expect(page).to have_button 'Verified'
   end
 
-  it 'changes from unverified to verified when the user adds the missing gpg key' do
+  it 'changes from unverified to verified when the user adds the missing gpg key', :sidekiq_might_not_need_inline do
     ref = GpgHelpers::SIGNED_AND_AUTHORED_SHA
     user = create(:user, email: GpgHelpers::User1.emails.first)
 
@@ -150,6 +150,28 @@ describe 'GPG signed commits' do
         expect(page).to have_content 'nannie.bernhard@example.com'
         expect(page).to have_content "GPG Key ID: #{GpgHelpers::User1.primary_keyid}"
       end
+    end
+  end
+
+  context 'view signed commit on the tree view', :js do
+    shared_examples 'a commit with a signature' do
+      before do
+        visit project_tree_path(project, 'signed-commits')
+      end
+
+      it 'displays commit signature' do
+        expect(page).to have_button 'Unverified'
+
+        click_on 'Unverified'
+
+        within '.popover' do
+          expect(page).to have_content 'This commit was signed with an unverified signature'
+        end
+      end
+    end
+
+    context 'with vue tree view enabled' do
+      it_behaves_like 'a commit with a signature'
     end
   end
 end

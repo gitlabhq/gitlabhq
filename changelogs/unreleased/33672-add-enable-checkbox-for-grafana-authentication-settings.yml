@@ -1,0 +1,5 @@
+---
+title: Migrate enabled flag on grafana_integrations table
+merge_request: 19234
+author:
+type: changed

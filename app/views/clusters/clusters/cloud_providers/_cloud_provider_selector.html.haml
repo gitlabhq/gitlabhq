@@ -2,10 +2,10 @@
 - eks_label = s_('ClusterIntegration|Amazon EKS')
 - create_cluster_label = s_('ClusterIntegration|Create cluster on')
 .d-flex.flex-column
-  %h5
+  %h5.mb-3
     = create_cluster_label
   .d-flex
     = render partial: 'clusters/clusters/cloud_providers/cloud_provider_button',
-      locals: { provider: 'eks', label: eks_label, logo_path: 'illustrations/logos/amazon_eks.svg' }
+      locals: { provider: 'aws', label: eks_label, logo_path: 'illustrations/logos/amazon_eks.svg' }
     = render partial: 'clusters/clusters/cloud_providers/cloud_provider_button',
-      locals: { provider: 'gke', label: gke_label, logo_path: 'illustrations/logos/google_gke.svg' }
+      locals: { provider: 'gcp', label: gke_label, logo_path: 'illustrations/logos/google_gke.svg', last: true }

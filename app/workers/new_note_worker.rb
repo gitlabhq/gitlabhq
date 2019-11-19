@@ -4,6 +4,8 @@ class NewNoteWorker
   include ApplicationWorker
 
   feature_category :issue_tracking
+  latency_sensitive_worker!
+  worker_resource_boundary :cpu
 
   # Keep extra parameter to preserve backwards compatibility with
   # old `NewNoteWorker` jobs (can remove later)

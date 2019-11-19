@@ -28,7 +28,7 @@ module QA
       end
 
       def selector_css
-        %Q([data-qa-selector="#{@name}"],.#{selector})
+        %Q([data-qa-selector="#{@name}"]#{additional_selectors},.#{selector})
       end
 
       def expression
@@ -41,6 +41,14 @@ module QA
 
       def matches?(line)
         !!(line =~ /["']#{name}['"]|#{expression}/)
+      end
+
+      private
+
+      def additional_selectors
+        @attributes.dup.delete_if { |attr| attr == :pattern || attr == :required }.map do |key, value|
+          %Q([data-qa-#{key.to_s.tr('_', '-')}="#{value}"])
+        end.join
       end
     end
   end

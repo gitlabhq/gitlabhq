@@ -425,6 +425,9 @@ data before running `pg_basebackup`.
       --host=<primary_node_ip>
    ```
 
+   NOTE: **Note:**
+   Replication slot names must only contain lowercase letters, numbers, and the underscore character.
+
    When prompted, enter the _plaintext_ password you set up for the `gitlab_replicator`
    user in the first step.
 
@@ -454,7 +457,7 @@ The replication process is now complete.
 
 ## PgBouncer support (optional)
 
-[PgBouncer](http://pgbouncer.github.io/) may be used with GitLab Geo to pool
+[PgBouncer](https://www.pgbouncer.org/) may be used with GitLab Geo to pool
 PostgreSQL connections. We recommend using PgBouncer if you use GitLab in a
 high-availability configuration with a cluster of nodes supporting a Geo
 **primary** node and another cluster of nodes supporting a Geo **secondary** node. For more

@@ -58,6 +58,7 @@ export default {
 <template>
   <div class="ide-stage card prepend-top-default">
     <div
+      ref="cardHeader"
       :class="{
         'border-bottom-0': stage.isCollapsed,
       }"
@@ -79,7 +80,7 @@ export default {
       </div>
       <icon :name="collapseIcon" class="ide-stage-collapse-icon" />
     </div>
-    <div v-show="!stage.isCollapsed" class="card-body">
+    <div v-show="!stage.isCollapsed" ref="jobList" class="card-body">
       <gl-loading-icon v-if="showLoadingIcon" />
       <template v-else>
         <item v-for="job in stage.jobs" :key="job.id" :job="job" @clickViewLog="clickViewLog" />

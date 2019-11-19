@@ -7,7 +7,7 @@
 variables:
   SAST_ANALYZER_IMAGE_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
   SAST_DEFAULT_ANALYZERS: "bandit, brakeman, gosec, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, tslint, secrets, sobelow, pmd-apex"
-  SAST_MAJOR_VERSION: 2
+  SAST_ANALYZER_IMAGE_TAG: 2
   SAST_DISABLE_DIND: "false"
 
 sast:
@@ -35,45 +35,12 @@ sast:
           export DOCKER_HOST='tcp://localhost:2375'
         fi
       fi
-    - | # this is required to avoid undesirable reset of Docker image ENV variables being set on build stage
-      function propagate_env_vars() {
-        CURRENT_ENV=$(printenv)
-
-        for VAR_NAME; do
-          echo $CURRENT_ENV | grep "${VAR_NAME}=" > /dev/null && echo "--env $VAR_NAME "
-        done
-      }
+    - |
+      printenv | grep -E '^(DOCKER_|CI|GITLAB_|FF_|HOME|PWD|OLDPWD|PATH|SHLVL|HOSTNAME)' | cut -d'=' -f1 | \
+        (while IFS='\\n' read -r VAR; do unset -v "$VAR"; done; /bin/printenv > .env)
     - |
       docker run \
-        $(propagate_env_vars \
-          SAST_BANDIT_EXCLUDED_PATHS \
-          SAST_ANALYZER_IMAGES \
-          SAST_ANALYZER_IMAGE_PREFIX \
-          SAST_ANALYZER_IMAGE_TAG \
-          SAST_DEFAULT_ANALYZERS \
-          SAST_PULL_ANALYZER_IMAGES \
-          SAST_BRAKEMAN_LEVEL \
-          SAST_FLAWFINDER_LEVEL \
-          SAST_GITLEAKS_ENTROPY_LEVEL \
-          SAST_GOSEC_LEVEL \
-          SAST_EXCLUDED_PATHS \
-          SAST_DOCKER_CLIENT_NEGOTIATION_TIMEOUT \
-          SAST_PULL_ANALYZER_IMAGE_TIMEOUT \
-          SAST_RUN_ANALYZER_TIMEOUT \
-          SAST_JAVA_VERSION \
-          ANT_HOME \
-          ANT_PATH \
-          GRADLE_PATH \
-          JAVA_OPTS \
-          JAVA_PATH \
-          JAVA_8_VERSION \
-          JAVA_11_VERSION \
-          MAVEN_CLI_OPTS \
-          MAVEN_PATH \
-          MAVEN_REPO_PATH \
-          SBT_PATH \
-          FAIL_NEVER \
-        ) \
+        --env-file .env \
         --volume "$PWD:/code" \
         --volume /var/run/docker.sock:/var/run/docker.sock \
         "registry.gitlab.com/gitlab-org/security-products/sast:$SAST_VERSION" /app/bin/run /code
@@ -94,7 +61,7 @@ sast:
 bandit-sast:
   extends: .analyzer
   image:
-    name: "$SAST_ANALYZER_IMAGE_PREFIX/bandit:$SAST_MAJOR_VERSION"
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/bandit:$SAST_ANALYZER_IMAGE_TAG"
   only:
     variables:
       - $GITLAB_FEATURES =~ /\bsast\b/ &&
@@ -104,7 +71,7 @@ bandit-sast:
 brakeman-sast:
   extends: .analyzer
   image:
-    name: "$SAST_ANALYZER_IMAGE_PREFIX/brakeman:$SAST_MAJOR_VERSION"
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/brakeman:$SAST_ANALYZER_IMAGE_TAG"
   only:
     variables:
       - $GITLAB_FEATURES =~ /\bsast\b/ &&
@@ -114,7 +81,7 @@ brakeman-sast:
 eslint-sast:
   extends: .analyzer
   image:
-    name: "$SAST_ANALYZER_IMAGE_PREFIX/eslint:$SAST_MAJOR_VERSION"
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/eslint:$SAST_ANALYZER_IMAGE_TAG"
   only:
     variables:
       - $GITLAB_FEATURES =~ /\bsast\b/ &&
@@ -124,7 +91,7 @@ eslint-sast:
 flawfinder-sast:
   extends: .analyzer
   image:
-    name: "$SAST_ANALYZER_IMAGE_PREFIX/flawfinder:$SAST_MAJOR_VERSION"
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/flawfinder:$SAST_ANALYZER_IMAGE_TAG"
   only:
     variables:
       - $GITLAB_FEATURES =~ /\bsast\b/ &&
@@ -134,7 +101,7 @@ flawfinder-sast:
 gosec-sast:
   extends: .analyzer
   image:
-    name: "$SAST_ANALYZER_IMAGE_PREFIX/gosec:$SAST_MAJOR_VERSION"
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/gosec:$SAST_ANALYZER_IMAGE_TAG"
   only:
     variables:
       - $GITLAB_FEATURES =~ /\bsast\b/ &&
@@ -144,7 +111,7 @@ gosec-sast:
 nodejs-scan-sast:
   extends: .analyzer
   image:
-    name: "$SAST_ANALYZER_IMAGE_PREFIX/nodejs-scan:$SAST_MAJOR_VERSION"
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/nodejs-scan:$SAST_ANALYZER_IMAGE_TAG"
   only:
     variables:
       - $GITLAB_FEATURES =~ /\bsast\b/ &&
@@ -154,7 +121,7 @@ nodejs-scan-sast:
 phpcs-security-audit-sast:
   extends: .analyzer
   image:
-    name: "$SAST_ANALYZER_IMAGE_PREFIX/phpcs-security-audit:$SAST_MAJOR_VERSION"
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/phpcs-security-audit:$SAST_ANALYZER_IMAGE_TAG"
   only:
     variables:
       - $GITLAB_FEATURES =~ /\bsast\b/ &&
@@ -164,7 +131,7 @@ phpcs-security-audit-sast:
 pmd-apex-sast:
   extends: .analyzer
   image:
-    name: "$SAST_ANALYZER_IMAGE_PREFIX/pmd-apex:$SAST_MAJOR_VERSION"
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/pmd-apex:$SAST_ANALYZER_IMAGE_TAG"
   only:
     variables:
       - $GITLAB_FEATURES =~ /\bsast\b/ &&
@@ -174,7 +141,7 @@ pmd-apex-sast:
 secrets-sast:
   extends: .analyzer
   image:
-    name: "$SAST_ANALYZER_IMAGE_PREFIX/secrets:$SAST_MAJOR_VERSION"
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/secrets:$SAST_ANALYZER_IMAGE_TAG"
   only:
     variables:
       - $GITLAB_FEATURES =~ /\bsast\b/ &&
@@ -183,7 +150,7 @@ secrets-sast:
 security-code-scan-sast:
   extends: .analyzer
   image:
-    name: "$SAST_ANALYZER_IMAGE_PREFIX/security-code-scan:$SAST_MAJOR_VERSION"
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/security-code-scan:$SAST_ANALYZER_IMAGE_TAG"
   only:
     variables:
       - $GITLAB_FEATURES =~ /\bsast\b/ &&
@@ -193,7 +160,7 @@ security-code-scan-sast:
 sobelow-sast:
   extends: .analyzer
   image:
-    name: "$SAST_ANALYZER_IMAGE_PREFIX/sobelow:$SAST_MAJOR_VERSION"
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/sobelow:$SAST_ANALYZER_IMAGE_TAG"
   only:
     variables:
       - $GITLAB_FEATURES =~ /\bsast\b/ &&
@@ -203,7 +170,7 @@ sobelow-sast:
 spotbugs-sast:
   extends: .analyzer
   image:
-    name: "$SAST_ANALYZER_IMAGE_PREFIX/spotbugs:$SAST_MAJOR_VERSION"
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/spotbugs:$SAST_ANALYZER_IMAGE_TAG"
   only:
     variables:
       - $GITLAB_FEATURES =~ /\bsast\b/ &&
@@ -213,7 +180,7 @@ spotbugs-sast:
 tslint-sast:
   extends: .analyzer
   image:
-    name: "$SAST_ANALYZER_IMAGE_PREFIX/tslint:$SAST_MAJOR_VERSION"
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/tslint:$SAST_ANALYZER_IMAGE_TAG"
   only:
     variables:
       - $GITLAB_FEATURES =~ /\bsast\b/ &&

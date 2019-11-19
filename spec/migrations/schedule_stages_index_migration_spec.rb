@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20180420080616_schedule_stages_index_migration')
 

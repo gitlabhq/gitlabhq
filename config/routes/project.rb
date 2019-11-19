@@ -179,7 +179,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        resources :releases, only: [:index]
+        resources :releases, only: [:index, :edit], param: :tag, constraints: { tag: %r{[^/]+} }
         resources :starrers, only: [:index]
         resources :forks, only: [:index, :new, :create]
         resources :group_links, only: [:index, :create, :update, :destroy], constraints: { id: /\d+/ }
@@ -187,9 +187,35 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         resource :import, only: [:new, :create, :show]
         resource :avatar, only: [:show, :destroy]
 
-        get 'grafana/proxy/:datasource_id/*proxy_path',
-            to: 'grafana_api#proxy',
-            as: :grafana_api
+        scope :grafana, as: :grafana_api do
+          get 'proxy/:datasource_id/*proxy_path', to: 'grafana_api#proxy'
+          get :metrics_dashboard, to: 'grafana_api#metrics_dashboard'
+        end
+
+        resource :mattermost, only: [:new, :create]
+        resource :variables, only: [:show, :update]
+        resources :triggers, only: [:index, :create, :edit, :update, :destroy]
+
+        resource :mirror, only: [:show, :update] do
+          member do
+            get :ssh_host_keys, constraints: { format: :json }
+            post :update_now
+          end
+        end
+
+        resource :cycle_analytics, only: [:show]
+
+        namespace :cycle_analytics do
+          scope :events, controller: 'events' do
+            get :issue
+            get :plan
+            get :code
+            get :test
+            get :review
+            get :staging
+            get :production
+          end
+        end
       end
       # End of the /-/ scope.
 
@@ -222,6 +248,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         resources :domains, except: :index, controller: 'pages_domains', constraints: { id: %r{[^/]+} } do
           member do
             post :verify
+            delete :clean_certificate
           end
         end
       end
@@ -232,8 +259,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           post :mark_as_spam
         end
       end
-
-      resource :mattermost, only: [:new, :create]
 
       namespace :prometheus do
         resources :metrics, constraints: { id: %r{[^\/]+} }, only: [:index, :new, :create, :edit, :update, :destroy] do
@@ -274,6 +299,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get :discussions, format: :json
           post :rebase
           get :test_reports
+          get :exposed_artifacts
 
           scope constraints: { format: nil }, action: :show do
             get :commits, defaults: { tab: 'commits' }
@@ -361,17 +387,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         put '/service_desk' => 'service_desk#update', as: :service_desk_refresh
       end
 
-      resource :variables, only: [:show, :update]
-
-      resources :triggers, only: [:index, :create, :edit, :update, :destroy]
-
-      resource :mirror, only: [:show, :update] do
-        member do
-          get :ssh_host_keys, constraints: { format: :json }
-          post :update_now
-        end
-      end
-
       Gitlab.ee do
         resources :push_rules, constraints: { id: /\d+/ }, only: [:update]
       end
@@ -430,6 +445,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
           Gitlab.ee do
             get :logs
+            get '/pods/(:pod_name)/containers/(:container_name)/logs', to: 'environments#k8s_pod_logs', as: :k8s_pod_logs
           end
         end
 
@@ -437,6 +453,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get :metrics, action: :metrics_redirect
           get :folder, path: 'folders/*id', constraints: { format: /(html|json)/ }
           get :search
+
+          Gitlab.ee do
+            get :logs, action: :logs_redirect
+          end
         end
 
         resources :deployments, only: [:index] do
@@ -452,20 +472,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           collection do
             get 'search'
           end
-        end
-      end
-
-      resource :cycle_analytics, only: [:show]
-
-      namespace :cycle_analytics do
-        scope :events, controller: 'events' do
-          get :issue
-          get :plan
-          get :code
-          get :test
-          get :review
-          get :staging
-          get :production
         end
       end
 
@@ -609,8 +615,18 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
       resources :error_tracking, only: [:index], controller: :error_tracking do
         collection do
+          get ':issue_id/details',
+              to: 'error_tracking#details',
+              as: 'details'
+          get ':issue_id/stack_trace',
+              to: 'error_tracking#stack_trace',
+              as: 'stack_trace'
           post :list_projects
         end
+      end
+
+      scope :usage_ping, controller: :usage_ping do
+        post :web_ide_clientside_preview
       end
 
       # Since both wiki and repository routing contains wildcard characters
@@ -648,7 +664,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
   # Legacy routes.
   # Introduced in 12.0.
-  # Should be removed after 12.1
+  # Should be removed with https://gitlab.com/gitlab-org/gitlab/issues/28848.
   scope(path: '*namespace_id',
         as: :namespace,
         namespace_id: Gitlab::PathRegex.full_namespace_route_regex) do
@@ -660,7 +676,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
                                             :network, :graphs, :autocomplete_sources,
                                             :project_members, :deploy_keys, :deploy_tokens,
                                             :labels, :milestones, :services, :boards, :releases,
-                                            :forks, :group_links, :import, :avatar)
+                                            :forks, :group_links, :import, :avatar, :mirror,
+                                            :cycle_analytics, :mattermost, :variables, :triggers)
     end
   end
 end

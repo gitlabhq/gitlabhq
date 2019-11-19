@@ -8,14 +8,17 @@ activated, it looks as follows:
 It allows you to see (from left to right):
 
 - the current host serving the page
-- time taken and number of DB queries, click through for details of these queries
+- time taken and number of DB queries; click through for details of these queries
   ![SQL profiling using the Performance Bar](img/performance_bar_sql_queries.png)
-- time taken and number of [Gitaly] calls, click through for details of these calls
+- time taken and number of [Gitaly] calls; click through for details of these calls
   ![Gitaly profiling using the Performance Bar](img/performance_bar_gitaly_calls.png)
-- time taken and number of [Rugged] calls, click through for details of these calls
+- time taken and number of [Rugged] calls; click through for details of these calls
   ![Rugged profiling using the Performance Bar](img/performance_bar_rugged_calls.png)
-- time taken and number of Redis calls, click through for details of these calls
+- time taken and number of Redis calls; click through for details of these calls
   ![Redis profiling using the Performance Bar](img/performance_bar_redis_calls.png)
+- a link to add a request's details to the performance bar; the request can be
+  added by its full URL (authenticated as the current user), or by the value of
+  its `X-Request-Id` header
 
 On the far right is a request selector that allows you to view the same metrics
 (excluding the page timing and line profiler) for any requests made while the
@@ -51,7 +54,7 @@ Make sure _Enable the Performance Bar_ is checked and hit
 **Save** to save the changes.
 
 Once the Performance Bar is enabled, you will need to press the [<kbd>p</kbd> +
-<kbd>b</kbd> keyboard shortcut](../../../workflow/shortcuts.md) to actually
+<kbd>b</kbd> keyboard shortcut](../../../user/shortcuts.md) to actually
 display it.
 
 You can toggle the Bar using the same shortcut.

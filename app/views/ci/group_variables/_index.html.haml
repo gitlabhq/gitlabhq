@@ -1,0 +1,13 @@
+- variables = @project.group.self_and_ancestors.map(&:variables).flatten
+
+.row
+  .col-lg-12
+    .group-variable-list
+      = render 'ci/group_variables/variable_header'
+      - variables.each do |variable|
+        .group-variable-row.d-flex.w-100.border-bottom.pt-2.pb-2
+          .table-section.section-40.append-right-10.key
+            = variable.key
+          .table-section.section-40.append-right-10
+            %a.group-origin-link{ href: group_settings_ci_cd_path(variable.group) }
+              = variable.group.name

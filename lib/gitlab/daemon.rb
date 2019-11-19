@@ -28,6 +28,10 @@ module Gitlab
       true
     end
 
+    def thread_name
+      self.class.name.demodulize.underscore
+    end
+
     def start
       return unless enabled?
 
@@ -35,7 +39,10 @@ module Gitlab
         break thread if thread?
 
         if start_working
-          @thread = Thread.new { run_thread }
+          @thread = Thread.new do
+            Thread.current.name = thread_name
+            run_thread
+          end
         end
       end
     end

@@ -18,6 +18,7 @@ Taking the trigger term as `project-name`, the commands are:
 | `/project-name issue close <id>` | Closes the issue with id `<id>` |
 | `/project-name issue search <query>` | Shows up to 5 issues matching `<query>` |
 | `/project-name issue move <id> to <project>` | Moves issue ID `<id>` to `<project>` |
+| `/project-name issue comment <id> <shift+return> <comment>` | Adds a new comment to an issue with id `<id>` and comment body `<comment>` |
 | `/project-name deploy <from> to <to>` | Deploy from the `<from>` environment to the `<to>` environment |
 | `/project-name run <job name> <arguments>` | Execute [ChatOps](../ci/chatops/README.md) job `<job name>` on `master` |
 

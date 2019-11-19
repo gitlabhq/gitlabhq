@@ -4,7 +4,7 @@ module RepositoryLanguagesHelper
   def repository_languages_bar(languages)
     return if languages.none?
 
-    content_tag :div, class: 'progress repository-languages-bar' do
+    content_tag :div, class: 'progress repository-languages-bar js-show-on-project-root' do
       safe_join(languages.map { |lang| language_progress(lang) })
     end
   end

@@ -4,6 +4,24 @@ Check this document if it includes instructions for the version you are updating
 These steps go together with the [general steps](updating_the_geo_nodes.md#general-update-steps)
 for updating Geo nodes.
 
+## Updating to GitLab 12.2
+
+GitLab 12.2 includes the following minor PostgreSQL updates:
+
+- To version `9.6.14` if you run PostgreSQL 9.6.
+- To version `10.9` if you run PostgreSQL 10.
+
+This update will occur even if major PostgreSQL updates are disabled.
+
+Before [refreshing Foreign Data Wrapper during a Geo HA upgrade](https://docs.gitlab.com/omnibus/update/README.html#run-post-deployment-migrations-and-checks),
+restart the Geo tracking database:
+
+```sh
+sudo gitlab-ctl restart geo-postgresql
+```
+
+The restart avoids a version mismatch when PostgreSQL tries to load the FDW extension.
+
 ## Updating to GitLab 12.1
 
 By default, GitLab 12.1 will attempt to automatically update the

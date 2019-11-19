@@ -34,7 +34,7 @@ describe('ErrorTrackingList', () => {
 
   beforeEach(() => {
     actions = {
-      getErrorList: () => {},
+      getSentryData: () => {},
       startPolling: () => {},
       restartPolling: jest.fn().mockName('restartPolling'),
     };
@@ -45,8 +45,13 @@ describe('ErrorTrackingList', () => {
     };
 
     store = new Vuex.Store({
-      actions,
-      state,
+      modules: {
+        list: {
+          namespaced: true,
+          actions,
+          state,
+        },
+      },
     });
   });
 
@@ -70,7 +75,7 @@ describe('ErrorTrackingList', () => {
 
   describe('results', () => {
     beforeEach(() => {
-      store.state.loading = false;
+      store.state.list.loading = false;
 
       mountComponent();
     });
@@ -84,7 +89,7 @@ describe('ErrorTrackingList', () => {
 
   describe('no results', () => {
     beforeEach(() => {
-      store.state.loading = false;
+      store.state.list.loading = false;
 
       mountComponent();
     });

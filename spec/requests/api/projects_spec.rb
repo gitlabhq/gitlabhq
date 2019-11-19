@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 shared_examples 'languages and percentages JSON response' do
@@ -15,7 +17,7 @@ shared_examples 'languages and percentages JSON response' do
   end
 
   context "when the languages haven't been detected yet" do
-    it 'returns expected language values' do
+    it 'returns expected language values', :sidekiq_might_not_need_inline do
       get api("/projects/#{project.id}/languages", user)
 
       expect(response).to have_gitlab_http_status(:ok)
@@ -360,6 +362,30 @@ describe API::Projects do
         end
       end
 
+      context 'and using id_after' do
+        it_behaves_like 'projects response' do
+          let(:filter) { { id_after: project2.id } }
+          let(:current_user) { user }
+          let(:projects) { [public_project, project, project2, project3].select { |p| p.id > project2.id } }
+        end
+      end
+
+      context 'and using id_before' do
+        it_behaves_like 'projects response' do
+          let(:filter) { { id_before: project2.id } }
+          let(:current_user) { user }
+          let(:projects) { [public_project, project, project2, project3].select { |p| p.id < project2.id } }
+        end
+      end
+
+      context 'and using both id_after and id_before' do
+        it_behaves_like 'projects response' do
+          let(:filter) { { id_before: project2.id, id_after: public_project.id } }
+          let(:current_user) { user }
+          let(:projects) { [public_project, project, project2, project3].select { |p| p.id < project2.id && p.id > public_project.id } }
+        end
+      end
+
       context 'and membership=true' do
         it_behaves_like 'projects response' do
           let(:filter) { { membership: true } }
@@ -606,6 +632,7 @@ describe API::Projects do
         merge_requests_enabled: false,
         wiki_enabled: false,
         resolve_outdated_diff_discussions: false,
+        remove_source_branch_after_merge: true,
         only_allow_merge_if_pipeline_succeeds: false,
         request_access_enabled: true,
         only_allow_merge_if_all_discussions_are_resolved: false,
@@ -722,6 +749,22 @@ describe API::Projects do
       expect(json_response['resolve_outdated_diff_discussions']).to be_truthy
     end
 
+    it 'sets a project as not removing source branches' do
+      project = attributes_for(:project, remove_source_branch_after_merge: false)
+
+      post api('/projects', user), params: project
+
+      expect(json_response['remove_source_branch_after_merge']).to be_falsey
+    end
+
+    it 'sets a project as removing source branches' do
+      project = attributes_for(:project, remove_source_branch_after_merge: true)
+
+      post api('/projects', user), params: project
+
+      expect(json_response['remove_source_branch_after_merge']).to be_truthy
+    end
+
     it 'sets a project as allowing merge even if build fails' do
       project = attributes_for(:project, only_allow_merge_if_pipeline_succeeds: false)
 
@@ -827,6 +870,63 @@ describe API::Projects do
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.map { |project| project['id'] }).to contain_exactly(public_project.id)
+    end
+
+    context 'and using id_after' do
+      let!(:another_public_project) { create(:project, :public, name: 'another_public_project', creator_id: user4.id, namespace: user4.namespace) }
+
+      it 'only returns projects with id_after filter given' do
+        get api("/users/#{user4.id}/projects?id_after=#{public_project.id}", user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.map { |project| project['id'] }).to contain_exactly(another_public_project.id)
+      end
+
+      it 'returns both projects without a id_after filter' do
+        get api("/users/#{user4.id}/projects", user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.map { |project| project['id'] }).to contain_exactly(public_project.id, another_public_project.id)
+      end
+    end
+
+    context 'and using id_before' do
+      let!(:another_public_project) { create(:project, :public, name: 'another_public_project', creator_id: user4.id, namespace: user4.namespace) }
+
+      it 'only returns projects with id_before filter given' do
+        get api("/users/#{user4.id}/projects?id_before=#{another_public_project.id}", user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.map { |project| project['id'] }).to contain_exactly(public_project.id)
+      end
+
+      it 'returns both projects without a id_before filter' do
+        get api("/users/#{user4.id}/projects", user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.map { |project| project['id'] }).to contain_exactly(public_project.id, another_public_project.id)
+      end
+    end
+
+    context 'and using both id_before and id_after' do
+      let!(:more_projects) { create_list(:project, 5, :public, creator_id: user4.id, namespace: user4.namespace) }
+
+      it 'only returns projects with id matching the range' do
+        get api("/users/#{user4.id}/projects?id_after=#{more_projects.first.id}&id_before=#{more_projects.last.id}", user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.map { |project| project['id'] }).to contain_exactly(*more_projects[1..-2].map(&:id))
+      end
     end
 
     it 'returns projects filtered by username' do
@@ -978,6 +1078,22 @@ describe API::Projects do
       post api("/projects/user/#{user.id}", admin), params: project
 
       expect(json_response['resolve_outdated_diff_discussions']).to be_truthy
+    end
+
+    it 'sets a project as not removing source branches' do
+      project = attributes_for(:project, remove_source_branch_after_merge: false)
+
+      post api("/projects/user/#{user.id}", admin), params: project
+
+      expect(json_response['remove_source_branch_after_merge']).to be_falsey
+    end
+
+    it 'sets a project as removing source branches' do
+      project = attributes_for(:project, remove_source_branch_after_merge: true)
+
+      post api("/projects/user/#{user.id}", admin), params: project
+
+      expect(json_response['remove_source_branch_after_merge']).to be_truthy
     end
 
     it 'sets a project as allowing merge even if build fails' do
@@ -1157,6 +1273,7 @@ describe API::Projects do
         expect(json_response['wiki_access_level']).to be_present
         expect(json_response['builds_access_level']).to be_present
         expect(json_response['resolve_outdated_diff_discussions']).to eq(project.resolve_outdated_diff_discussions)
+        expect(json_response['remove_source_branch_after_merge']).to be_truthy
         expect(json_response['container_registry_enabled']).to be_present
         expect(json_response['created_at']).to be_present
         expect(json_response['last_activity_at']).to be_present

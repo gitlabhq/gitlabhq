@@ -4,7 +4,7 @@ module Gitlab
   module Analytics
     module CycleAnalytics
       module StageEvents
-        class IssueStageEnd < SimpleStageEvent
+        class IssueStageEnd < MetricsBasedStageEvent
           def self.name
             PlanStageStart.name
           end
@@ -26,7 +26,7 @@ module Gitlab
 
           # rubocop: disable CodeReuse/ActiveRecord
           def apply_query_customization(query)
-            query.joins(:metrics).where(issue_metrics_table[:first_added_to_board_at].not_eq(nil).or(issue_metrics_table[:first_associated_with_milestone_at].not_eq(nil)))
+            super.where(issue_metrics_table[:first_added_to_board_at].not_eq(nil).or(issue_metrics_table[:first_associated_with_milestone_at].not_eq(nil)))
           end
           # rubocop: enable CodeReuse/ActiveRecord
         end

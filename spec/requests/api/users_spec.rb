@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe API::Users do
@@ -633,32 +635,6 @@ describe API::Users do
     end
   end
 
-  describe "GET /users/sign_up" do
-    context 'when experimental signup_flow is active' do
-      before do
-        stub_experiment(signup_flow: true)
-      end
-
-      it "shows sign up page" do
-        get "/users/sign_up"
-        expect(response).to have_gitlab_http_status(200)
-        expect(response).to render_template(:new)
-      end
-    end
-
-    context 'when experimental signup_flow is not active' do
-      before do
-        stub_experiment(signup_flow: false)
-      end
-
-      it "redirects to sign in page" do
-        get "/users/sign_up"
-        expect(response).to have_gitlab_http_status(302)
-        expect(response).to redirect_to(new_user_session_path(anchor: 'register-pane'))
-      end
-    end
-  end
-
   describe "PUT /users/:id" do
     let!(:admin_user) { create(:admin) }
 
@@ -1277,7 +1253,7 @@ describe API::Users do
       admin
     end
 
-    it "deletes user" do
+    it "deletes user", :sidekiq_might_not_need_inline do
       perform_enqueued_jobs { delete api("/users/#{user.id}", admin) }
 
       expect(response).to have_gitlab_http_status(204)
@@ -1312,7 +1288,7 @@ describe API::Users do
     end
 
     context "hard delete disabled" do
-      it "moves contributions to the ghost user" do
+      it "moves contributions to the ghost user", :sidekiq_might_not_need_inline do
         perform_enqueued_jobs { delete api("/users/#{user.id}", admin) }
 
         expect(response).to have_gitlab_http_status(204)
@@ -1322,7 +1298,7 @@ describe API::Users do
     end
 
     context "hard delete enabled" do
-      it "removes contributions" do
+      it "removes contributions", :sidekiq_might_not_need_inline do
         perform_enqueued_jobs { delete api("/users/#{user.id}?hard_delete=true", admin) }
 
         expect(response).to have_gitlab_http_status(204)

@@ -34,7 +34,7 @@ RSpec.describe Release do
 
         expect(existing_release_without_name).to be_valid
         expect(existing_release_without_name.description).to eq("change")
-        expect(existing_release_without_name.name).to be_nil
+        expect(existing_release_without_name.name).not_to be_nil
       end
     end
 
@@ -57,14 +57,14 @@ RSpec.describe Release do
     subject { release.assets_count }
 
     it 'returns the number of sources' do
-      is_expected.to eq(Releases::Source::FORMATS.count)
+      is_expected.to eq(Gitlab::Workhorse::ARCHIVE_FORMATS.count)
     end
 
     context 'when a links exists' do
       let!(:link) { create(:release_link, release: release) }
 
       it 'counts the link as an asset' do
-        is_expected.to eq(1 + Releases::Source::FORMATS.count)
+        is_expected.to eq(1 + Gitlab::Workhorse::ARCHIVE_FORMATS.count)
       end
 
       it "excludes sources count when asked" do
@@ -92,7 +92,7 @@ RSpec.describe Release do
     end
   end
 
-  describe 'evidence' do
+  describe 'evidence', :sidekiq_might_not_need_inline do
     describe '#create_evidence!' do
       context 'when a release is created' do
         it 'creates one Evidence object too' do
@@ -126,6 +126,18 @@ RSpec.describe Release do
         expect(NewReleaseWorker).not_to receive(:perform_async)
 
         release.update!(description: 'new description')
+      end
+    end
+  end
+
+  describe '#name' do
+    context 'name is nil' do
+      before do
+        release.update(name: nil)
+      end
+
+      it 'returns tag' do
+        expect(release.name).to eq(release.tag)
       end
     end
   end

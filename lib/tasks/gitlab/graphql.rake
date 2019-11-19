@@ -2,9 +2,23 @@
 
 return if Rails.env.production?
 
+require 'graphql/rake_task'
+
 namespace :gitlab do
   OUTPUT_DIR = Rails.root.join("doc/api/graphql/reference")
   TEMPLATES_DIR = 'lib/gitlab/graphql/docs/templates/'
+
+  # Defines tasks for dumping the GraphQL schema:
+  # - gitlab:graphql:schema:dump
+  # - gitlab:graphql:schema:idl
+  # - gitlab:graphql:schema:json
+  GraphQL::RakeTask.new(
+    schema_name: 'GitlabSchema',
+    dependencies: [:environment],
+    directory: OUTPUT_DIR,
+    idl_outfile: "gitlab_schema.graphql",
+    json_outfile: "gitlab_schema.json"
+  )
 
   namespace :graphql do
     desc 'GitLab | Generate GraphQL docs'
@@ -25,11 +39,20 @@ namespace :gitlab do
       if doc == renderer.contents
         puts "GraphQL documentation is up to date"
       else
-        puts '#' * 10
-        puts '#'
-        puts '# GraphQL documentation is outdated! Please update it by running `bundle exec rake gitlab:graphql:compile_docs`.'
-        puts '#'
-        puts '#' * 10
+        format_output('GraphQL documentation is outdated! Please update it by running `bundle exec rake gitlab:graphql:compile_docs`.')
+        abort
+      end
+    end
+
+    desc 'GitLab | Check if GraphQL schemas are up to date'
+    task check_schema: :environment do
+      idl_doc = File.read(Rails.root.join(OUTPUT_DIR, 'gitlab_schema.graphql'))
+      json_doc = File.read(Rails.root.join(OUTPUT_DIR, 'gitlab_schema.json'))
+
+      if idl_doc == GitlabSchema.to_definition && json_doc == GitlabSchema.to_json
+        puts "GraphQL schema is up to date"
+      else
+        format_output('GraphQL schema is outdated! Please update it by running `bundle exec rake gitlab:graphql:schema:dump`.')
         abort
       end
     end
@@ -41,4 +64,13 @@ def render_options
     output_dir: OUTPUT_DIR,
     template: Rails.root.join(TEMPLATES_DIR, 'default.md.haml')
   }
+end
+
+def format_output(str)
+  heading = '#' * 10
+  puts heading
+  puts '#'
+  puts "# #{str}"
+  puts '#'
+  puts heading
 end

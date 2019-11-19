@@ -113,6 +113,11 @@ export const setPageTitle = title => {
   document.title = title;
 };
 
+export const setPageTitleForFile = (state, file) => {
+  const title = [file.path, state.currentBranchId, state.currentProjectId, 'GitLab'].join(' · ');
+  setPageTitle(title);
+};
+
 export const commitActionForFile = file => {
   if (file.prevPath) {
     return commitActionTypes.move;
@@ -269,3 +274,7 @@ export const pathsAreEqual = (a, b) => {
 
   return cleanA === cleanB;
 };
+
+// if the contents of a file dont end with a newline, this function adds a newline
+export const addFinalNewlineIfNeeded = content =>
+  content.charAt(content.length - 1) !== '\n' ? `${content}\n` : content;

@@ -19,7 +19,7 @@ describe Gitlab::SidekiqMiddleware::CorrelationLogger do
     end
   end
 
-  it 'injects into payload the correlation id' do
+  it 'injects into payload the correlation id', :sidekiq_might_not_need_inline do
     expect_any_instance_of(described_class).to receive(:call).and_call_original
 
     expect_any_instance_of(TestWorker).to receive(:perform).with(1234) do

@@ -23,6 +23,11 @@ export default {
       type: String,
       required: true,
     },
+    newSize: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
     oldPath: {
       type: String,
       required: true,
@@ -30,6 +35,11 @@ export default {
     oldSha: {
       type: String,
       required: true,
+    },
+    oldSize: {
+      type: Number,
+      required: false,
+      default: 0,
     },
     projectPath: {
       type: String,
@@ -85,6 +95,8 @@ export default {
       :diff-mode="diffMode"
       :new-path="fullNewPath"
       :old-path="fullOldPath"
+      :old-size="oldSize"
+      :new-size="newSize"
       :project-path="projectPath"
       :a-mode="aMode"
       :b-mode="bMode"

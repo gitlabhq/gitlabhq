@@ -9,11 +9,12 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   include ToggleAwardEmoji
   include IssuableCollections
   include RecordUserLastActivity
+  include SourcegraphGon
 
   skip_before_action :merge_request, only: [:index, :bulk_update]
   before_action :whitelist_query_limiting, only: [:assign_related_issues, :update]
   before_action :authorize_update_issuable!, only: [:close, :edit, :update, :remove_wip, :sort]
-  before_action :authorize_test_reports!, only: [:test_reports]
+  before_action :authorize_read_actual_head_pipeline!, only: [:test_reports, :exposed_artifacts]
   before_action :set_issuables_index, only: [:index]
   before_action :authenticate_user!, only: [:assign_related_issues]
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
@@ -23,6 +24,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   before_action do
     push_frontend_feature_flag(:vue_issuable_sidebar, @project.group)
+    push_frontend_feature_flag(:release_search_filter, @project)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :discussions]
@@ -89,7 +91,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     # Get commits from repository
     # or from cache if already merged
     @commits =
-      set_commits_for_rendering(@merge_request.commits.with_latest_pipeline)
+      set_commits_for_rendering(
+        @merge_request.recent_commits.with_latest_pipeline(@merge_request.source_branch),
+          commits_count: @merge_request.commits_count
+      )
 
     render json: { html: view_to_html_string('projects/merge_requests/_commits') }
   end
@@ -113,6 +118,14 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   def test_reports
     reports_response(@merge_request.compare_test_reports)
+  end
+
+  def exposed_artifacts
+    if @merge_request.has_exposed_artifacts?
+      reports_response(@merge_request.find_exposed_artifacts)
+    else
+      head :no_content
+    end
   end
 
   def edit
@@ -218,6 +231,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     @merge_request.rebase_async(current_user.id)
 
     head :ok
+  rescue MergeRequest::RebaseLockTimeout => e
+    render json: { merge_error: e.message }, status: :conflict
   end
 
   def discussions
@@ -241,7 +256,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def merge_params_attributes
-    [:should_remove_source_branch, :commit_message, :squash_commit_message, :squash, :auto_merge_strategy]
+    MergeRequest::KNOWN_MERGE_PARAMS
   end
 
   def auto_merge_requested?
@@ -281,7 +296,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
     return :sha_mismatch if params[:sha] != @merge_request.diff_head_sha
 
-    @merge_request.update(merge_error: nil, squash: merge_params.fetch(:squash, false))
+    @merge_request.update(merge_error: nil, squash: params.fetch(:squash, false))
 
     if auto_merge_requested?
       if merge_request.auto_merge_enabled?
@@ -353,12 +368,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     when :error
       render json: { status_reason: report_comparison[:status_reason] }, status: :bad_request
     else
-      render json: { status_reason: 'Unknown error' }, status: :internal_server_error
+      raise "Failed to build comparison response as comparison yielded unknown status '#{report_comparison[:status]}'"
     end
   end
 
-  def authorize_test_reports!
-    # MergeRequest#actual_head_pipeline is the pipeline accessed in MergeRequest#compare_reports.
+  def authorize_read_actual_head_pipeline!
     return render_404 unless can?(current_user, :read_build, merge_request.actual_head_pipeline)
   end
 end

@@ -7,6 +7,7 @@ module QA
       extend Support::Api
 
       SetFeatureError = Class.new(RuntimeError)
+      AuthorizationError = Class.new(RuntimeError)
 
       def enable(key)
         QA::Runtime::Logger.info("Enabling feature: #{key}")
@@ -18,6 +19,28 @@ module QA
         set_feature(key, false)
       end
 
+      def remove(key)
+        request = Runtime::API::Request.new(api_client, "/features/#{key}")
+        response = delete(request.url)
+        unless response.code == QA::Support::Api::HTTP_STATUS_NO_CONTENT
+          raise SetFeatureError, "Deleting feature flag #{key} failed with `#{response}`."
+        end
+      end
+
+      def enable_and_verify(key)
+        Support::Retrier.retry_on_exception(sleep_interval: 2) do
+          enable(key)
+
+          is_enabled = false
+
+          QA::Support::Waiter.wait(interval: 1) do
+            is_enabled = enabled?(key)
+          end
+
+          raise SetFeatureError, "#{key} was not enabled!" unless is_enabled
+        end
+      end
+
       def enabled?(key)
         feature = JSON.parse(get_features).find { |flag| flag["name"] == key }
         feature && feature["state"] == "on"
@@ -26,7 +49,22 @@ module QA
       private
 
       def api_client
-        @api_client ||= Runtime::API::Client.new(:gitlab)
+        @api_client ||= begin
+          if Runtime::Env.admin_personal_access_token
+            Runtime::API::Client.new(:gitlab, personal_access_token: Runtime::Env.admin_personal_access_token)
+          else
+            user = Resource::User.fabricate_via_api! do |user|
+              user.username = Runtime::User.admin_username
+              user.password = Runtime::User.admin_password
+            end
+
+            unless user.admin?
+              raise AuthorizationError, "Administrator access is required to enable/disable feature flags. User '#{user.username}' is not an administrator."
+            end
+
+            Runtime::API::Client.new(:gitlab, user: user)
+          end
+        end
       end
 
       def set_feature(key, value)

@@ -13,8 +13,9 @@ describe GoogleApi::AuthorizationsController do
     before do
       sign_in(user)
 
-      allow_any_instance_of(GoogleApi::CloudPlatform::Client)
-        .to receive(:get_token).and_return([token, expires_at])
+      allow_next_instance_of(GoogleApi::CloudPlatform::Client) do |instance|
+        allow(instance).to receive(:get_token).and_return([token, expires_at])
+      end
     end
 
     shared_examples_for 'access denied' do

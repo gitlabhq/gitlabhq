@@ -83,7 +83,7 @@ Therefore "create a new user" would translate into "Benutzer(in) anlegen".
 ### Updating the glossary
 
 To propose additions to the glossary please
-[open an issue](https://gitlab.com/gitlab-org/gitlab-foss/issues).
+[open an issue](https://gitlab.com/gitlab-org/gitlab/issues?scope=all&utf8=✓&state=all&label_name[]=Category%3AInternationalization).
 
 ## French Translation Guidelines
 

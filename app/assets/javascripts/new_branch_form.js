@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, one-var, consistent-return, no-return-assign, no-shadow, no-else-return, @gitlab/i18n/no-non-i18n-strings */
+/* eslint-disable func-names, consistent-return, no-return-assign, no-else-return, @gitlab/i18n/no-non-i18n-strings */
 
 import $ from 'jquery';
 import RefSelectDropdown from './ref_select_dropdown';
@@ -26,23 +26,22 @@ export default class NewBranchForm {
   }
 
   setupRestrictions() {
-    var endsWith, invalid, single, startsWith;
-    startsWith = {
+    const startsWith = {
       pattern: /^(\/|\.)/g,
       prefix: "can't start with",
       conjunction: 'or',
     };
-    endsWith = {
+    const endsWith = {
       pattern: /(\/|\.|\.lock)$/g,
       prefix: "can't end in",
       conjunction: 'or',
     };
-    invalid = {
+    const invalid = {
       pattern: /(\s|~|\^|:|\?|\*|\[|\\|\.\.|@\{|\/{2,}){1}/g,
       prefix: "can't contain",
       conjunction: ', ',
     };
-    single = {
+    const single = {
       pattern: /^@+$/g,
       prefix: "can't be",
       conjunction: 'or',
@@ -51,19 +50,17 @@ export default class NewBranchForm {
   }
 
   validate() {
-    var errorMessage, errors, formatter, unique, validator;
     const { indexOf } = [];
 
     this.branchNameError.empty();
-    unique = function(values, value) {
+    const unique = function(values, value) {
       if (indexOf.call(values, value) === -1) {
         values.push(value);
       }
       return values;
     };
-    formatter = function(values, restriction) {
-      var formatted;
-      formatted = values.map(value => {
+    const formatter = function(values, restriction) {
+      const formatted = values.map(value => {
         switch (false) {
           case !/\s/.test(value):
             return 'spaces';
@@ -75,20 +72,17 @@ export default class NewBranchForm {
       });
       return `${restriction.prefix} ${formatted.join(restriction.conjunction)}`;
     };
-    validator = (function(_this) {
-      return function(errors, restriction) {
-        var matched;
-        matched = _this.name.val().match(restriction.pattern);
-        if (matched) {
-          return errors.concat(formatter(matched.reduce(unique, []), restriction));
-        } else {
-          return errors;
-        }
-      };
-    })(this);
-    errors = this.restrictions.reduce(validator, []);
+    const validator = (errors, restriction) => {
+      const matched = this.name.val().match(restriction.pattern);
+      if (matched) {
+        return errors.concat(formatter(matched.reduce(unique, []), restriction));
+      } else {
+        return errors;
+      }
+    };
+    const errors = this.restrictions.reduce(validator, []);
     if (errors.length > 0) {
-      errorMessage = $('<span/>').text(errors.join(', '));
+      const errorMessage = $('<span/>').text(errors.join(', '));
       return this.branchNameError.append(errorMessage);
     }
   }

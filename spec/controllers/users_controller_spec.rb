@@ -174,7 +174,9 @@ describe UsersController do
     let(:user) { create(:user) }
 
     before do
-      allow_any_instance_of(User).to receive(:contributed_projects_ids).and_return([project.id])
+      allow_next_instance_of(User) do |instance|
+        allow(instance).to receive(:contributed_projects_ids).and_return([project.id])
+      end
 
       sign_in(user)
       project.add_developer(user)
@@ -342,6 +344,48 @@ describe UsersController do
           get :exists, params: { username: 'old-username' }
 
           expected_json = { exists: false }.to_json
+          expect(response.body).to eq(expected_json)
+        end
+      end
+    end
+  end
+
+  describe 'GET #suggests' do
+    context 'when user exists' do
+      it 'returns JSON indicating the user exists and a suggestion' do
+        get :suggests, params: { username: user.username }
+
+        expected_json = { exists: true, suggests: ["#{user.username}1"] }.to_json
+        expect(response.body).to eq(expected_json)
+      end
+
+      context 'when the casing is different' do
+        let(:user) { create(:user, username: 'CamelCaseUser') }
+
+        it 'returns JSON indicating the user exists and a suggestion' do
+          get :suggests, params: { username: user.username.downcase }
+
+          expected_json = { exists: true, suggests: ["#{user.username.downcase}1"] }.to_json
+          expect(response.body).to eq(expected_json)
+        end
+      end
+    end
+
+    context 'when the user does not exist' do
+      it 'returns JSON indicating the user does not exist' do
+        get :suggests, params: { username: 'foo' }
+
+        expected_json = { exists: false, suggests: [] }.to_json
+        expect(response.body).to eq(expected_json)
+      end
+
+      context 'when a user changed their username' do
+        let(:redirect_route) { user.namespace.redirect_routes.create(path: 'old-username') }
+
+        it 'returns JSON indicating a user by that username does not exist' do
+          get :suggests, params: { username: 'old-username' }
+
+          expected_json = { exists: false, suggests: [] }.to_json
           expect(response.body).to eq(expected_json)
         end
       end

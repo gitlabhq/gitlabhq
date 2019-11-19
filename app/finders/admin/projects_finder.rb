@@ -12,7 +12,7 @@ class Admin::ProjectsFinder
   def execute
     items = Project.without_deleted.with_statistics.with_route
     items = by_namespace_id(items)
-    items = by_visibilty_level(items)
+    items = by_visibility_level(items)
     items = by_with_push(items)
     items = by_abandoned(items)
     items = by_last_repository_check_failed(items)
@@ -31,7 +31,7 @@ class Admin::ProjectsFinder
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
-  def by_visibilty_level(items)
+  def by_visibility_level(items)
     params[:visibility_level].present? ? items.where(visibility_level: params[:visibility_level]) : items
   end
   # rubocop: enable CodeReuse/ActiveRecord

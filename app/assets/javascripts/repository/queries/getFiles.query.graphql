@@ -2,6 +2,7 @@
 
 fragment TreeEntry on Entry {
   id
+  sha
   name
   flatPath
   type

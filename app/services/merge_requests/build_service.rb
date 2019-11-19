@@ -16,6 +16,14 @@ module MergeRequests
       merge_request.source_project = find_source_project
       merge_request.target_project = find_target_project
 
+      # Source project sets the default source branch removal setting
+      merge_request.merge_params['force_remove_source_branch'] =
+        if params.key?(:force_remove_source_branch)
+          params.delete(:force_remove_source_branch)
+        else
+          merge_request.source_project.remove_source_branch_after_merge?
+        end
+
       self.params = assign_allowed_merge_params(merge_request, params)
 
       filter_params(merge_request)

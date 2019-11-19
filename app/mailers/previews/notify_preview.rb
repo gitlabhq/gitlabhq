@@ -77,7 +77,7 @@ class NotifyPreview < ActionMailer::Preview
   end
 
   def import_issues_csv_email
-    Notify.import_issues_csv_email(user, project, { success: 3, errors: [5, 6, 7], valid_file: true })
+    Notify.import_issues_csv_email(user.id, project.id, { success: 3, errors: [5, 6, 7], valid_file: true })
   end
 
   def closed_merge_request_email
@@ -109,11 +109,11 @@ class NotifyPreview < ActionMailer::Preview
   end
 
   def member_access_requested_email
-    Notify.member_access_requested_email('group', user.id, user.id).message
+    Notify.member_access_requested_email(member.source_type, member.id, user.id).message
   end
 
   def member_invite_accepted_email
-    Notify.member_invite_accepted_email('project', user.id).message
+    Notify.member_invite_accepted_email(member.source_type, member.id).message
   end
 
   def member_invite_declined_email

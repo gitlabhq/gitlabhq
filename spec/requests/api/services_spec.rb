@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 
 describe API::Services do
@@ -100,7 +102,7 @@ describe API::Services do
         expect(json_response['properties'].keys).to match_array(service_instance.api_field_names)
       end
 
-      it "returns empty hash if properties and data fields are empty" do
+      it "returns empty hash or nil values if properties and data fields are empty" do
         # deprecated services are not valid for update
         initialized_service.update_attribute(:properties, {})
 
@@ -112,7 +114,7 @@ describe API::Services do
         get api("/projects/#{project.id}/services/#{dashed_service}", user)
 
         expect(response).to have_gitlab_http_status(200)
-        expect(json_response['properties'].keys).to be_empty
+        expect(json_response['properties'].values.compact).to be_empty
       end
 
       it "returns error when authenticated but not a project owner" do

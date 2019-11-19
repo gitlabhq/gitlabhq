@@ -26,6 +26,16 @@ export default {
       required: false,
       default: false,
     },
+    projectEmailsDisabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    subscribeDisabledDescription: {
+      type: String,
+      required: false,
+      default: '',
+    },
     subscribed: {
       type: Boolean,
       required: false,
@@ -42,10 +52,22 @@ export default {
       return this.subscribed === null;
     },
     notificationIcon() {
+      if (this.projectEmailsDisabled) {
+        return ICON_OFF;
+      }
       return this.subscribed ? ICON_ON : ICON_OFF;
     },
     notificationTooltip() {
+      if (this.projectEmailsDisabled) {
+        return this.subscribeDisabledDescription;
+      }
       return this.subscribed ? LABEL_ON : LABEL_OFF;
+    },
+    notificationText() {
+      if (this.projectEmailsDisabled) {
+        return this.subscribeDisabledDescription;
+      }
+      return __('Notifications');
     },
   },
   methods: {
@@ -81,6 +103,7 @@ export default {
 <template>
   <div>
     <span
+      ref="tooltip"
       v-tooltip
       class="sidebar-collapsed-icon"
       :title="notificationTooltip"
@@ -96,8 +119,9 @@ export default {
         class="sidebar-item-icon is-active"
       />
     </span>
-    <span class="issuable-header-text hide-collapsed float-left"> {{ __('Notifications') }} </span>
+    <span class="issuable-header-text hide-collapsed float-left"> {{ notificationText }} </span>
     <toggle-button
+      v-if="!projectEmailsDisabled"
       ref="toggleButton"
       :is-loading="showLoadingState"
       :value="subscribed"

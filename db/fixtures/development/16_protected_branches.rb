@@ -3,7 +3,7 @@ require './spec/support/sidekiq'
 Gitlab::Seeder.quiet do
   admin_user = User.find(1)
 
-  Project.all.each do |project|
+  Project.not_mass_generated.each do |project|
     params = {
       name: 'master'
     }

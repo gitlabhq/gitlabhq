@@ -58,13 +58,18 @@ differentiate the new cluster from the rest.
 
 You can choose to allow GitLab to manage your cluster for you. If your cluster is
 managed by GitLab, resources for your projects will be automatically created. See the
-[Access controls](../../project/clusters/index.md#access-controls) section for details on which resources will
+[Access controls](../../project/clusters/add_remove_clusters.md#access-controls) section for details on which resources will
 be created.
 
-If you choose to manage your own cluster, project-specific resources will not be created
-automatically. If you are using [Auto DevOps](../../../topics/autodevops/index.md), you will
-need to explicitly provide the `KUBE_NAMESPACE` [deployment variable](../../project/clusters/index.md#deployment-variables)
-that will be used by your deployment jobs.
+For clusters not managed by GitLab, project-specific resources will not be created
+automatically. If you are using [Auto DevOps](../../../topics/autodevops/index.md)
+for deployments with a cluster not managed by GitLab, you must ensure:
+
+- The project's deployment service account has permissions to deploy to
+  [`KUBE_NAMESPACE`](../../project/clusters/index.md#deployment-variables).
+- `KUBECONFIG` correctly reflects any changes to `KUBE_NAMESPACE`
+  (this is [not automatic](https://gitlab.com/gitlab-org/gitlab/issues/31519)). Editing
+  `KUBE_NAMESPACE` directly is discouraged.
 
 NOTE: **Note:**
 If you [install applications](#installing-applications) on your cluster, GitLab will create
@@ -147,7 +152,7 @@ are deployed to the Kubernetes cluster, see the documentation for
 
 For important information about securely configuring GitLab Runners, see
 [Security of
-Runners](../../project/clusters/index.md#security-of-gitlab-runners)
+Runners](../../project/clusters/add_remove_clusters.md#security-of-gitlab-runners)
 documentation for project-level clusters.
 
 <!-- ## Troubleshooting

@@ -18,6 +18,11 @@
   - if current_user_menu?(:profile)
     %li
       = link_to s_("CurrentUser|Profile"), current_user, class: 'profile-link', data: { user: current_user.username }
+  - if current_user_menu?(:start_trial)
+    %li
+      %a.profile-link{ href: trials_link_url }
+        = s_("CurrentUser|Start a Gold trial")
+        = emoji_icon('rocket')
   - if current_user_menu?(:settings)
     %li
       = link_to s_("CurrentUser|Settings"), profile_path, data: { qa_selector: 'settings_link' }
@@ -35,8 +40,8 @@
     %li.d-md-none
       = render 'shared/user_dropdown_contributing_link'
   = render_if_exists 'shared/user_dropdown_instance_review'
-  - if Gitlab.com?
-    %li.js-canary-link.d-md-none
+  - if Gitlab.com_but_not_canary?
+    %li.d-md-none
       = link_to _("Switch to GitLab Next"), "https://next.gitlab.com/"
 
   - if current_user_menu?(:sign_out)

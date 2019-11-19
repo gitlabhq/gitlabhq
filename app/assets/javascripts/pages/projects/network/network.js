@@ -1,22 +1,19 @@
-/* eslint-disable func-names, no-var */
-
 import $ from 'jquery';
 import BranchGraph from '../../../network/branch_graph';
 
-export default (function() {
-  function Network(opts) {
-    var vph;
-    $('#filter_ref').click(function() {
-      return $(this)
-        .closest('form')
-        .submit();
-    });
-    this.branch_graph = new BranchGraph($('.network-graph'), opts);
-    vph = $(window).height() - 250;
-    $('.network-graph').css({
-      height: `${vph}px`,
-    });
+const vph = $(window).height() - 250;
+
+export default class Network {
+  constructor(opts) {
+    this.opts = opts;
+    this.filter_ref = $('#filter_ref');
+    this.network_graph = $('.network-graph');
+    this.filter_ref.click(() => this.submit());
+    this.branch_graph = new BranchGraph(this.network_graph, this.opts);
+    this.network_graph.css({ height: `${vph}px` });
   }
 
-  return Network;
-})();
+  submit() {
+    return this.filter_ref.closest('form').submit();
+  }
+}

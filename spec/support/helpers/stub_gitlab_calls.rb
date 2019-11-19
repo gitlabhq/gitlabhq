@@ -18,8 +18,13 @@ module StubGitlabCalls
     stub_ci_pipeline_yaml_file(gitlab_ci_yaml)
   end
 
-  def stub_ci_pipeline_yaml_file(ci_yaml)
-    allow_any_instance_of(Ci::Pipeline).to receive(:ci_yaml_file) { ci_yaml }
+  def stub_ci_pipeline_yaml_file(ci_yaml_content)
+    allow_any_instance_of(Repository).to receive(:gitlab_ci_yml_for).and_return(ci_yaml_content)
+
+    # Ensure we don't hit auto-devops when config not found in repository
+    unless ci_yaml_content
+      allow_any_instance_of(Project).to receive(:auto_devops_enabled?).and_return(false)
+    end
   end
 
   def stub_pipeline_modified_paths(pipeline, modified_paths)

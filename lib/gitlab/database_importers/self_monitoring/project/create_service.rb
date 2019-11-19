@@ -21,7 +21,6 @@ module Gitlab
             :create_project,
             :save_project_id,
             :add_group_members,
-            :add_to_whitelist,
             :add_prometheus_manual_configuration
 
           def initialize
@@ -126,28 +125,6 @@ module Gitlab
             end
           end
 
-          def add_to_whitelist(result)
-            return success(result) unless prometheus_enabled?
-            return success(result) unless prometheus_listen_address.present?
-
-            uri = parse_url(internal_prometheus_listen_address_uri)
-            return error(_('Prometheus listen_address in config/gitlab.yml is not a valid URI')) unless uri
-
-            application_settings.add_to_outbound_local_requests_whitelist([uri.normalized_host])
-            response = application_settings.save
-
-            if response
-              # Expire the Gitlab::CurrentSettings cache after updating the whitelist.
-              # This happens automatically in an after_commit hook, but in migrations,
-              # the after_commit hook only runs at the end of the migration.
-              Gitlab::CurrentSettings.expire_current_application_settings
-              success(result)
-            else
-              log_error("Could not add prometheus URL to whitelist, errors: %{errors}" % { errors: application_settings.errors.full_messages })
-              error(_('Could not add prometheus URL to whitelist'))
-            end
-          end
-
           def add_prometheus_manual_configuration(result)
             return success(result) unless prometheus_enabled?
             return success(result) unless prometheus_listen_address.present?
@@ -176,19 +153,11 @@ module Gitlab
           end
 
           def prometheus_enabled?
-            Gitlab.config.prometheus.enable if Gitlab.config.prometheus
-          rescue Settingslogic::MissingSetting
-            log_error('prometheus.enable is not present in config/gitlab.yml')
-
-            false
+            ::Gitlab::Prometheus::Internal.prometheus_enabled?
           end
 
           def prometheus_listen_address
-            Gitlab.config.prometheus.listen_address.to_s if Gitlab.config.prometheus
-          rescue Settingslogic::MissingSetting
-            log_error('Prometheus listen_address is not present in config/gitlab.yml')
-
-            nil
+            ::Gitlab::Prometheus::Internal.listen_address
           end
 
           def instance_admins
@@ -231,23 +200,7 @@ module Gitlab
           end
 
           def internal_prometheus_listen_address_uri
-            if prometheus_listen_address.starts_with?('0.0.0.0:')
-              # 0.0.0.0:9090
-              port = ':' + prometheus_listen_address.split(':').second
-              'http://localhost' + port
-
-            elsif prometheus_listen_address.starts_with?(':')
-              # :9090
-              'http://localhost' + prometheus_listen_address
-
-            elsif prometheus_listen_address.starts_with?('http')
-              # https://localhost:9090
-              prometheus_listen_address
-
-            else
-              # localhost:9090
-              'http://' + prometheus_listen_address
-            end
+            ::Gitlab::Prometheus::Internal.uri
           end
 
           def prometheus_service_attributes

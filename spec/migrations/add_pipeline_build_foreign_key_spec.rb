@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20180420010016_add_pipeline_build_foreign_key.rb')
 

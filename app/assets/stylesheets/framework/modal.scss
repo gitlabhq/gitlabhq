@@ -49,7 +49,7 @@
   line-height: $line-height-base;
   position: relative;
   min-height: $modal-body-height;
-  padding: #{2 * $grid-size} #{6 * $grid-size} #{2 * $grid-size} #{2 * $grid-size};
+  padding: #{2 * $grid-size};
   text-align: left;
   white-space: normal;
 
@@ -70,9 +70,9 @@
     margin: 0;
   }
 
-  .btn + .btn:not(.dropdown-toggle-split),
   .btn + .btn-group,
-  .btn-group + .btn {
+  .btn-group + .btn,
+  .btn-group + .btn-group {
     margin-left: $grid-size;
   }
 
@@ -82,13 +82,6 @@
 
   @include media-breakpoint-down(xs) {
     flex-direction: column;
-
-    .btn + .btn:not(.dropdown-toggle-split),
-    .btn + .btn-group,
-    .btn-group + .btn {
-      margin-left: 0;
-      margin-top: $grid-size;
-    }
 
     .btn-group .btn + .btn {
       margin-left: -1px;

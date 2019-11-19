@@ -42,6 +42,28 @@ describe Clusters::ClustersHierarchy do
       it 'returns clusters for project' do
         expect(base_and_ancestors(cluster.project)).to eq([cluster])
       end
+
+      context 'cluster has management project' do
+        let(:management_project) { create(:project, namespace: cluster.first_project.namespace) }
+
+        before do
+          cluster.update!(management_project: management_project)
+        end
+
+        context 'management_project is in same namespace as cluster' do
+          it 'returns cluster for management_project' do
+            expect(base_and_ancestors(management_project)).to eq([cluster])
+          end
+        end
+
+        context 'management_project is in a different namespace from cluster' do
+          let(:management_project) { create(:project) }
+
+          it 'returns nothing' do
+            expect(base_and_ancestors(management_project)).to be_empty
+          end
+        end
+      end
     end
 
     context 'cluster has management project' do
@@ -50,14 +72,10 @@ describe Clusters::ClustersHierarchy do
 
       let(:group) { create(:group) }
       let(:project) { create(:project, group: group) }
-      let(:management_project) { create(:project) }
+      let(:management_project) { create(:project, group: group) }
 
       it 'returns clusters for management_project' do
         expect(base_and_ancestors(management_project)).to eq([group_cluster])
-      end
-
-      it 'returns nothing if include_management_project is false' do
-        expect(base_and_ancestors(management_project, include_management_project: false)).to be_empty
       end
 
       it 'returns clusters for project' do
@@ -70,17 +88,21 @@ describe Clusters::ClustersHierarchy do
     end
 
     context 'project in nested group with clusters at some levels' do
-      let!(:child) { create(:cluster, :group, groups: [child_group], management_project: management_project) }
-      let!(:ancestor) { create(:cluster, :group, groups: [ancestor_group]) }
+      let!(:child) { create(:cluster, :group, groups: [child_group]) }
+      let!(:ancestor) { create(:cluster, :group, groups: [ancestor_group], management_project: management_project) }
 
       let(:ancestor_group) { create(:group) }
       let(:parent_group) { create(:group, parent: ancestor_group) }
       let(:child_group) { create(:group, parent: parent_group) }
       let(:project) { create(:project, group: child_group) }
-      let(:management_project) { create(:project) }
+      let(:management_project) { create(:project, group: child_group) }
 
       it 'returns clusters for management_project' do
-        expect(base_and_ancestors(management_project)).to eq([child])
+        expect(base_and_ancestors(management_project)).to eq([ancestor, child])
+      end
+
+      it 'returns clusters for management_project' do
+        expect(base_and_ancestors(management_project, include_management_project: false)).to eq([child, ancestor])
       end
 
       it 'returns clusters for project' do

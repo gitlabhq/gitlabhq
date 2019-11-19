@@ -56,7 +56,7 @@ Style/FrozenStringLiteralComment:
     - 'qa/**/*'
     - 'rubocop/**/*'
     - 'scripts/**/*'
-    - 'spec/**/*'
+    - 'spec/lib/gitlab/**/*'
 
 RSpec/FilePath:
   Exclude:
@@ -297,3 +297,6 @@ Graphql/Descriptions:
   Include:
     - 'app/graphql/**/*'
     - 'ee/app/graphql/**/*'
+
+RSpec/AnyInstanceOf:
+  Enabled: false

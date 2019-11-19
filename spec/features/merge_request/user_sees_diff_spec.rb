@@ -9,6 +9,12 @@ describe 'Merge request > User sees diff', :js do
   let(:project) { create(:project, :public, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project) }
 
+  before do
+    stub_feature_flags(single_mr_diff_view: false)
+  end
+
+  it_behaves_like 'rendering a single diff version'
+
   context 'when linking to note' do
     describe 'with unresolved note' do
       let(:note) { create :diff_note_on_merge_request, project: project, noteable: merge_request }
@@ -62,7 +68,7 @@ describe 'Merge request > User sees diff', :js do
     end
 
     context 'as author' do
-      it 'shows direct edit link' do
+      it 'shows direct edit link', :sidekiq_might_not_need_inline do
         sign_in(author_user)
         visit diffs_project_merge_request_path(project, merge_request)
 
@@ -72,7 +78,7 @@ describe 'Merge request > User sees diff', :js do
     end
 
     context 'as user who needs to fork' do
-      it 'shows fork/cancel confirmation' do
+      it 'shows fork/cancel confirmation', :sidekiq_might_not_need_inline do
         sign_in(user)
         visit diffs_project_merge_request_path(project, merge_request)
 

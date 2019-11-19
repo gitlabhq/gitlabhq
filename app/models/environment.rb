@@ -4,12 +4,20 @@ class Environment < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
   include ReactiveCaching
 
+  self.reactive_cache_refresh_interval = 1.minute
+  self.reactive_cache_lifetime = 55.seconds
+
   belongs_to :project, required: true
 
   has_many :deployments, -> { visible }, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :successful_deployments, -> { success }, class_name: 'Deployment'
 
   has_one :last_deployment, -> { success.order('deployments.id DESC') }, class_name: 'Deployment'
+  has_one :last_deployable, through: :last_deployment, source: 'deployable', source_type: 'CommitStatus'
+  has_one :last_pipeline, through: :last_deployable, source: 'pipeline'
+  has_one :last_visible_deployment, -> { visible.distinct_on_environment }, inverse_of: :environment, class_name: 'Deployment'
+  has_one :last_visible_deployable, through: :last_visible_deployment, source: 'deployable', source_type: 'CommitStatus'
+  has_one :last_visible_pipeline, through: :last_visible_deployable, source: 'pipeline'
 
   before_validation :nullify_external_url
   before_validation :generate_slug, if: ->(env) { env.slug.blank? }
@@ -60,6 +68,10 @@ class Environment < ApplicationRecord
 
   scope :for_project, -> (project) { where(project_id: project) }
   scope :with_deployment, -> (sha) { where('EXISTS (?)', Deployment.select(1).where('deployments.environment_id = environments.id').where(sha: sha)) }
+  scope :unfoldered, -> { where(environment_type: nil) }
+  scope :with_rank, -> do
+    select('environments.*, rank() OVER (PARTITION BY project_id ORDER BY id DESC)')
+  end
 
   state_machine :state, initial: :available do
     event :start do
@@ -186,6 +198,10 @@ class Environment < ApplicationRecord
 
   def metrics
     prometheus_adapter.query(:environment, self) if has_metrics?
+  end
+
+  def prometheus_status
+    deployment_platform&.cluster&.application_prometheus&.status_name
   end
 
   def additional_metrics(*args)

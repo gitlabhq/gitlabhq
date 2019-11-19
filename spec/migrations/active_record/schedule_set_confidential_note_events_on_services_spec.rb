@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20180122154930_schedule_set_confidential_note_events_on_services.rb')
 
@@ -30,7 +32,7 @@ describe ScheduleSetConfidentialNoteEventsOnServices, :migration, :sidekiq do
     end
   end
 
-  it 'correctly processes services' do
+  it 'correctly processes services', :sidekiq_might_not_need_inline do
     perform_enqueued_jobs do
       expect(services_table.where(confidential_note_events: nil).count).to eq 4
       expect(services_table.where(confidential_note_events: true).count).to eq 1

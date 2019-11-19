@@ -1,9 +1,10 @@
 <script>
-import FileTable from '../components/table/index.vue';
+import TreeContent from '../components/tree_content.vue';
+import { updateElementsVisibility } from '../utils/dom';
 
 export default {
   components: {
-    FileTable,
+    TreeContent,
   },
   props: {
     path: {
@@ -12,9 +13,26 @@ export default {
       default: '/',
     },
   },
+  computed: {
+    isRoot() {
+      return this.path === '/';
+    },
+  },
+  watch: {
+    isRoot: {
+      immediate: true,
+      handler: 'updateElements',
+    },
+  },
+  methods: {
+    updateElements(isRoot) {
+      updateElementsVisibility('.js-show-on-root', isRoot);
+      updateElementsVisibility('.js-hide-on-root', !isRoot);
+    },
+  },
 };
 </script>
 
 <template>
-  <file-table :path="path" />
+  <tree-content :path="path" />
 </template>

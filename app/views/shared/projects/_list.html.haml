@@ -32,7 +32,7 @@
 - explore_groups_button_label = _('Explore groups')
 - explore_groups_button_link = explore_groups_path
 
-.js-projects-list-holder
+.js-projects-list-holder{ data: { qa_selector: 'projects_list' } }
   - if any_projects?(projects)
     - load_pipeline_status(projects) if pipeline_status
     %ul.projects-list{ class: css_classes }

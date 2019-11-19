@@ -125,7 +125,9 @@ describe Projects::Settings::CiCdController do
 
       context 'when run_auto_devops_pipeline is true' do
         before do
-          expect_any_instance_of(Projects::UpdateService).to receive(:run_auto_devops_pipeline?).and_return(true)
+          expect_next_instance_of(Projects::UpdateService) do |instance|
+            expect(instance).to receive(:run_auto_devops_pipeline?).and_return(true)
+          end
         end
 
         context 'when the project repository is empty' do
@@ -159,7 +161,9 @@ describe Projects::Settings::CiCdController do
 
       context 'when run_auto_devops_pipeline is not true' do
         before do
-          expect_any_instance_of(Projects::UpdateService).to receive(:run_auto_devops_pipeline?).and_return(false)
+          expect_next_instance_of(Projects::UpdateService) do |instance|
+            expect(instance).to receive(:run_auto_devops_pipeline?).and_return(false)
+          end
         end
 
         it 'does not queue a CreatePipelineWorker' do

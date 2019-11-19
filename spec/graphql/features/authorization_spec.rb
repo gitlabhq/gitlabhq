@@ -259,7 +259,8 @@ describe 'Gitlab::Graphql::Authorization' do
     let(:project_type) do |type|
       type_factory do |type|
         type.graphql_name 'FakeProjectType'
-        type.field :test_issues, issue_type.connection_type, null: false, resolve: -> (_, _, _) { Issue.where(project: [visible_project, other_project]) }
+        type.field :test_issues, issue_type.connection_type, null: false,
+                   resolve: -> (_, _, _) { Issue.where(project: [visible_project, other_project]).order(id: :asc) }
       end
     end
     let(:query_type) do

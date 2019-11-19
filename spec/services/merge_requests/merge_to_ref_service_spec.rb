@@ -76,7 +76,7 @@ describe MergeRequests::MergeToRefService do
       described_class.new(project, user, **params)
     end
 
-    let(:params) { { commit_message: 'Awesome message', should_remove_source_branch: true } }
+    let(:params) { { commit_message: 'Awesome message', should_remove_source_branch: true, sha: merge_request.diff_head_sha } }
 
     def process_merge_to_ref
       perform_enqueued_jobs do
@@ -103,7 +103,7 @@ describe MergeRequests::MergeToRefService do
       end
 
       let(:merge_service) do
-        MergeRequests::MergeService.new(project, user, {})
+        MergeRequests::MergeService.new(project, user, { sha: merge_request.diff_head_sha })
       end
 
       context 'when merge commit' do
@@ -205,7 +205,7 @@ describe MergeRequests::MergeToRefService do
     end
 
     context 'when target ref is passed as a parameter' do
-      let(:params) { { commit_message: 'merge train', target_ref: target_ref } }
+      let(:params) { { commit_message: 'merge train', target_ref: target_ref, sha: merge_request.diff_head_sha } }
 
       it_behaves_like 'successfully merges to ref with merge method' do
         let(:first_parent_ref) { 'refs/heads/master' }
@@ -215,7 +215,7 @@ describe MergeRequests::MergeToRefService do
 
     describe 'cascading merge refs' do
       set(:project) { create(:project, :repository) }
-      let(:params) { { commit_message: 'Cascading merge', first_parent_ref: first_parent_ref, target_ref: target_ref } }
+      let(:params) { { commit_message: 'Cascading merge', first_parent_ref: first_parent_ref, target_ref: target_ref, sha: merge_request.diff_head_sha } }
 
       context 'when first merge happens' do
         let(:merge_request) do

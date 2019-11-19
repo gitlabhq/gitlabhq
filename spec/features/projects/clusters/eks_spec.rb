@@ -10,6 +10,7 @@ describe 'AWS EKS Cluster', :js do
     project.add_maintainer(user)
     gitlab_sign_in(user)
     allow(Projects::ClustersController).to receive(:STATUS_POLLING_INTERVAL) { 100 }
+    stub_application_setting(eks_integration_enabled: true)
   end
 
   context 'when user does not have a cluster and visits cluster index page' do
@@ -27,7 +28,7 @@ describe 'AWS EKS Cluster', :js do
       end
 
       it 'user sees a form to create an EKS cluster' do
-        expect(page).to have_selector(:css, '.js-create-eks-cluster')
+        expect(page).to have_content('Create new Cluster on EKS')
       end
     end
   end

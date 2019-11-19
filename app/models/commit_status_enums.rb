@@ -15,7 +15,9 @@ module CommitStatusEnums
       stale_schedule: 7,
       job_execution_timeout: 8,
       archived_failure: 9,
-      unmet_prerequisites: 10
+      unmet_prerequisites: 10,
+      scheduler_failure: 11,
+      data_integrity_failure: 12
     }
   end
 end

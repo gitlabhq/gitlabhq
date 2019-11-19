@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 describe API::GroupContainerRepositories do
-  set(:group) { create(:group, :private) }
-  set(:project) { create(:project, :private, group: group) }
-  let(:reporter) { create(:user) }
-  let(:guest) { create(:user) }
+  let_it_be(:group) { create(:group, :private) }
+  let_it_be(:project) { create(:project, :private, group: group) }
+  let_it_be(:reporter) { create(:user) }
+  let_it_be(:guest) { create(:user) }
 
   let(:root_repository) { create(:container_repository, :root, project: project) }
   let(:test_repository) { create(:container_repository, project: project) }
@@ -43,6 +43,8 @@ describe API::GroupContainerRepositories do
     it_behaves_like 'returns repositories for allowed users', :reporter, 'group' do
       let(:object) { group }
     end
+
+    it_behaves_like 'a gitlab tracking event', described_class.name, 'list_repositories'
 
     context 'with invalid group id' do
       let(:url) { '/groups/123412341234/registry/repositories' }

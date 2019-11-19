@@ -1,0 +1,5 @@
+---
+title: Fix errors in GraphQL Todos API due to missing TargetTypeEnum values
+merge_request: 19052
+author:
+type: fixed

@@ -1,0 +1,21 @@
+{
+  "id": 1,
+  "orgId": 1,
+  "name": "GitLab Omnibus",
+  "type": "prometheus",
+  "typeLogoUrl": "",
+  "access": "proxy",
+  "url": "http://localhost:9090",
+  "password": "",
+  "user": "",
+  "database": "",
+  "basicAuth": false,
+  "basicAuthUser": "",
+  "basicAuthPassword": "",
+  "withCredentials": false,
+  "isDefault": true,
+  "jsonData": {},
+  "secureJsonFields": {},
+  "version": 1,
+  "readOnly": true
+}

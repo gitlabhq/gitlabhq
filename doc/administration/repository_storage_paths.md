@@ -2,8 +2,8 @@
 
 > [Introduced][ce-4578] in GitLab 8.10.
 
-GitLab allows you to define multiple repository storage paths to distribute the
-storage load between several mount points.
+GitLab allows you to define multiple repository storage paths (sometimes called
+storage shards) to distribute the storage load between several mount points.
 
 > **Notes:**
 >

@@ -9,8 +9,8 @@ module Gitlab
             @expressions = Array(expressions)
           end
 
-          def satisfied_by?(pipeline, seed)
-            variables = seed.scoped_variables_hash
+          def satisfied_by?(pipeline, context)
+            variables = context.variables
 
             statements = @expressions.map do |statement|
               ::Gitlab::Ci::Pipeline::Expression::Statement

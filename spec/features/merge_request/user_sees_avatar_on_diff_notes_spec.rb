@@ -7,8 +7,8 @@ describe 'Merge request > User sees avatars on diff notes', :js do
 
   let(:project)       { create(:project, :public, :repository) }
   let(:user)          { project.creator }
-  let(:merge_request) { create(:merge_request_with_diffs, source_project: project, author: user, title: "Bug NS-04") }
-  let(:path)          { "files/ruby/popen.rb" }
+  let(:merge_request) { create(:merge_request_with_diffs, source_project: project, author: user, title: 'Bug NS-04') }
+  let(:path)          { 'files/ruby/popen.rb' }
   let(:position) do
     Gitlab::Diff::Position.new(
       old_path: path,
@@ -21,11 +21,14 @@ describe 'Merge request > User sees avatars on diff notes', :js do
   let!(:note) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, position: position) }
 
   before do
+    stub_feature_flags(single_mr_diff_view: false)
     project.add_maintainer(user)
     sign_in user
 
     set_cookie('sidebar_collapsed', 'true')
   end
+
+  it_behaves_like 'rendering a single diff version'
 
   context 'discussion tab' do
     before do

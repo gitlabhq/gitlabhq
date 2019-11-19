@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20180420010616_cleanup_build_stage_migration.rb')
 

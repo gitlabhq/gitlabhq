@@ -1,6 +1,18 @@
-- page_title 'Abuse Reports'
-%h3.page-title Abuse Reports
-%hr
+- page_title _('Abuse Reports')
+
+%h3.page-title= _('Abuse Reports')
+
+.row-content-block.second-block
+  = form_tag admin_abuse_reports_path, method: :get, class: 'filter-form' do
+    .filter-categories.flex-fill
+      .filter-item.inline
+        = dropdown_tag(user_dropdown_label(params[:user_id], 'User'),
+          options: { toggle_class: 'js-filter-submit js-user-search',
+          title: _('Filter by user'), filter: true, filterInput: 'input#user-search',
+          dropdown_class: 'dropdown-menu-selectable dropdown-menu-user js-filter-submit',
+          placeholder: _('Search users'),
+          data: { current_user: true, field_name: 'user_id' }})
+
 .abuse-reports
   - if @abuse_reports.present?
     .table-holder

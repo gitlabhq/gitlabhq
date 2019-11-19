@@ -27,7 +27,7 @@ RSpec.shared_examples 'updating mentions' do |service_class|
         update_mentionable(title: "For #{mentioned_user.to_reference}")
       end
 
-      it 'emails only the newly-mentioned user' do
+      it 'emails only the newly-mentioned user', :sidekiq_might_not_need_inline do
         should_only_email(mentioned_user)
       end
     end
@@ -37,7 +37,7 @@ RSpec.shared_examples 'updating mentions' do |service_class|
         update_mentionable(description: "For #{mentioned_user.to_reference}")
       end
 
-      it 'emails only the newly-mentioned user' do
+      it 'emails only the newly-mentioned user', :sidekiq_might_not_need_inline do
         should_only_email(mentioned_user)
       end
     end
@@ -51,16 +51,32 @@ RSpec.shared_examples 'updating mentions' do |service_class|
         )
       end
 
-      it 'emails group members' do
+      it 'emails group members', :sidekiq_might_not_need_inline do
         should_email(mentioned_user)
         should_email(group_member1)
         should_email(group_member2)
       end
     end
 
+    shared_examples 'updating attribute with existing group mention' do |attribute|
+      before do
+        mentionable.update!({ attribute => "FYI: #{group.to_reference}" })
+      end
+
+      it 'creates todos for only newly mentioned users' do
+        expect do
+          update_mentionable(
+            { attribute => "For #{group.to_reference}, cc: #{mentioned_user.to_reference}" }
+          )
+        end.to change { Todo.count }.by(1)
+      end
+    end
+
     context 'when group is public' do
       it_behaves_like 'updating attribute with allowed mentions', :title
       it_behaves_like 'updating attribute with allowed mentions', :description
+      it_behaves_like 'updating attribute with existing group mention', :title
+      it_behaves_like 'updating attribute with existing group mention', :description
     end
 
     context 'when the group is private' do
@@ -70,6 +86,8 @@ RSpec.shared_examples 'updating mentions' do |service_class|
 
       it_behaves_like 'updating attribute with allowed mentions', :title
       it_behaves_like 'updating attribute with allowed mentions', :description
+      it_behaves_like 'updating attribute with existing group mention', :title
+      it_behaves_like 'updating attribute with existing group mention', :description
     end
   end
 
@@ -81,7 +99,7 @@ RSpec.shared_examples 'updating mentions' do |service_class|
         )
       end
 
-      it 'emails mentioned user' do
+      it 'emails mentioned user', :sidekiq_might_not_need_inline do
         should_only_email(mentioned_user)
       end
     end

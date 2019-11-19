@@ -10,7 +10,7 @@ class PersonalSnippetPolicy < BasePolicy
     enable :create_note
   end
 
-  rule { is_author }.policy do
+  rule { is_author | admin }.policy do
     enable :read_personal_snippet
     enable :update_personal_snippet
     enable :destroy_personal_snippet
@@ -30,5 +30,5 @@ class PersonalSnippetPolicy < BasePolicy
 
   rule { can?(:create_note) }.enable :award_emoji
 
-  rule { full_private_access }.enable :read_personal_snippet
+  rule { can?(:read_all_resources) }.enable :read_personal_snippet
 end

@@ -25,6 +25,10 @@ module Gitlab
         !too_big? && !too_deep?
       end
 
+      def self.human_default_max_size
+        ActiveSupport::NumberHelper.number_to_human_size(DEFAULT_MAX_SIZE)
+      end
+
       private
 
       def evaluate

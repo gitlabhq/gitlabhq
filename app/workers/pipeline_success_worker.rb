@@ -5,6 +5,7 @@ class PipelineSuccessWorker
   include PipelineQueue
 
   queue_namespace :pipeline_processing
+  latency_sensitive_worker!
 
   def perform(pipeline_id)
     # no-op

@@ -68,4 +68,52 @@ describe 'lograge', type: :request do
       subject
     end
   end
+
+  context 'with a log subscriber' do
+    let(:subscriber) { Lograge::RequestLogSubscriber.new }
+
+    let(:event) do
+      ActiveSupport::Notifications::Event.new(
+        'process_action.action_controller',
+        Time.now,
+        Time.now,
+        2,
+        status: 200,
+        controller: 'HomeController',
+        action: 'index',
+        format: 'application/json',
+        method: 'GET',
+        path: '/home?foo=bar',
+        params: {},
+        db_runtime: 0.02,
+        view_runtime: 0.01
+      )
+    end
+
+    let(:log_output) { StringIO.new }
+    let(:logger) do
+      Logger.new(log_output).tap { |logger| logger.formatter = ->(_, _, _, msg) { msg } }
+    end
+
+    describe 'with an exception' do
+      let(:exception) { RuntimeError.new('bad request') }
+      let(:backtrace) { caller }
+
+      before do
+        allow(exception).to receive(:backtrace).and_return(backtrace)
+        event.payload[:exception_object] = exception
+        Lograge.logger = logger
+      end
+
+      it 'adds exception data to log' do
+        subscriber.process_action(event)
+
+        log_data = JSON.parse(log_output.string)
+
+        expect(log_data['exception']['class']).to eq('RuntimeError')
+        expect(log_data['exception']['message']).to eq('bad request')
+        expect(log_data['exception']['backtrace']).to eq(Gitlab::Profiler.clean_backtrace(backtrace))
+      end
+    end
+  end
 end

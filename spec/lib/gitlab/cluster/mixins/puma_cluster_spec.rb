@@ -8,15 +8,28 @@ describe Gitlab::Cluster::Mixins::PumaCluster do
   PUMA_STARTUP_TIMEOUT = 30
 
   context 'when running Puma in Cluster-mode' do
-    %i[USR1 USR2 INT HUP].each do |signal|
-      it "for #{signal} does execute phased restart block" do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:signal, :exitstatus, :termsig) do
+      # executes phased restart block
+      :USR1 | 140 | nil
+      :USR2 | 140 | nil
+      :INT | 140 | nil
+      :HUP | 140 | nil
+
+      # does not execute phased restart block
+      :TERM | nil | 15
+    end
+
+    with_them do
+      it 'properly handles process lifecycle' do
         with_puma(workers: 1) do |pid|
           Process.kill(signal, pid)
 
           child_pid, child_status = Process.wait2(pid)
           expect(child_pid).to eq(pid)
-          expect(child_status).to be_exited
-          expect(child_status.exitstatus).to eq(140)
+          expect(child_status.exitstatus).to eq(exitstatus)
+          expect(child_status.termsig).to eq(termsig)
         end
       end
     end
@@ -62,8 +75,12 @@ describe Gitlab::Cluster::Mixins::PumaCluster do
 
         Puma::Cluster.prepend(#{described_class})
 
-        Gitlab::Cluster::LifecycleEvents.on_before_phased_restart do
-          exit(140)
+        mutex = Mutex.new
+
+        Gitlab::Cluster::LifecycleEvents.on_before_blackout_period do
+          mutex.synchronize do
+            exit(140)
+          end
         end
 
         # redirect stderr to stdout

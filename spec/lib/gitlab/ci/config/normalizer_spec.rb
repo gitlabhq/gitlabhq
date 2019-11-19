@@ -7,6 +7,16 @@ describe Gitlab::Ci::Config::Normalizer do
   let(:job_config) { { script: 'rspec', parallel: 5, name: 'rspec' } }
   let(:config) { { job_name => job_config } }
 
+  let(:expanded_job_names) do
+    [
+      "rspec 1/5",
+      "rspec 2/5",
+      "rspec 3/5",
+      "rspec 4/5",
+      "rspec 5/5"
+    ]
+  end
+
   describe '.normalize_jobs' do
     subject { described_class.new(config).normalize_jobs }
 
@@ -15,9 +25,7 @@ describe Gitlab::Ci::Config::Normalizer do
     end
 
     it 'has parallelized jobs' do
-      job_names = [:"rspec 1/5", :"rspec 2/5", :"rspec 3/5", :"rspec 4/5", :"rspec 5/5"]
-
-      is_expected.to include(*job_names)
+      is_expected.to include(*expanded_job_names.map(&:to_sym))
     end
 
     it 'sets job instance in options' do
@@ -43,49 +51,109 @@ describe Gitlab::Ci::Config::Normalizer do
       let(:job_name) { :"rspec 35/2" }
 
       it 'properly parallelizes job names' do
-        job_names = [:"rspec 35/2 1/5", :"rspec 35/2 2/5", :"rspec 35/2 3/5", :"rspec 35/2 4/5", :"rspec 35/2 5/5"]
+        job_names = [
+          :"rspec 35/2 1/5",
+          :"rspec 35/2 2/5",
+          :"rspec 35/2 3/5",
+          :"rspec 35/2 4/5",
+          :"rspec 35/2 5/5"
+        ]
 
         is_expected.to include(*job_names)
       end
     end
 
-    %i[dependencies needs].each do |context|
-      context "when job has #{context} on parallelized jobs" do
+    context 'for dependencies' do
+      context "when job has dependencies on parallelized jobs" do
         let(:config) do
           {
             job_name => job_config,
-            other_job: { script: 'echo 1', context => [job_name.to_s] }
+            other_job: { script: 'echo 1', dependencies: [job_name.to_s] }
           }
         end
 
-        it "parallelizes #{context}" do
-          job_names = ["rspec 1/5", "rspec 2/5", "rspec 3/5", "rspec 4/5", "rspec 5/5"]
-
-          expect(subject[:other_job][context]).to include(*job_names)
+        it "parallelizes dependencies" do
+          expect(subject[:other_job][:dependencies]).to eq(expanded_job_names)
         end
 
         it "does not include original job name in #{context}" do
-          expect(subject[:other_job][context]).not_to include(job_name)
+          expect(subject[:other_job][:dependencies]).not_to include(job_name)
         end
       end
 
-      context "when there are #{context} which are both parallelized and not" do
+      context "when there are dependencies which are both parallelized and not" do
         let(:config) do
           {
             job_name => job_config,
             other_job: { script: 'echo 1' },
-            final_job: { script: 'echo 1', context => [job_name.to_s, "other_job"] }
+            final_job: { script: 'echo 1', dependencies: [job_name.to_s, "other_job"] }
           }
         end
 
-        it "parallelizes #{context}" do
+        it "parallelizes dependencies" do
           job_names = ["rspec 1/5", "rspec 2/5", "rspec 3/5", "rspec 4/5", "rspec 5/5"]
 
-          expect(subject[:final_job][context]).to include(*job_names)
+          expect(subject[:final_job][:dependencies]).to include(*job_names)
         end
 
-        it "includes the regular job in #{context}" do
-          expect(subject[:final_job][context]).to include('other_job')
+        it "includes the regular job in dependencies" do
+          expect(subject[:final_job][:dependencies]).to include('other_job')
+        end
+      end
+    end
+
+    context 'for needs' do
+      let(:expanded_job_attributes) do
+        expanded_job_names.map do |job_name|
+          { name: job_name }
+        end
+      end
+
+      context "when job has needs on parallelized jobs" do
+        let(:config) do
+          {
+            job_name => job_config,
+            other_job: {
+              script: 'echo 1',
+              needs: {
+                job: [
+                  { name: job_name.to_s }
+                ]
+              }
+            }
+          }
+        end
+
+        it "parallelizes needs" do
+          expect(subject.dig(:other_job, :needs, :job)).to eq(expanded_job_attributes)
+        end
+      end
+
+      context "when there are dependencies which are both parallelized and not" do
+        let(:config) do
+          {
+            job_name => job_config,
+            other_job: {
+              script: 'echo 1'
+            },
+            final_job: {
+              script: 'echo 1',
+              needs: {
+                job: [
+                  { name: job_name.to_s },
+                  { name: "other_job" }
+                ]
+              }
+            }
+          }
+        end
+
+        it "parallelizes dependencies" do
+          expect(subject.dig(:final_job, :needs, :job)).to include(*expanded_job_attributes)
+        end
+
+        it "includes the regular job in dependencies" do
+          expect(subject.dig(:final_job, :needs, :job)).to include(name: 'other_job')
         end
       end
     end

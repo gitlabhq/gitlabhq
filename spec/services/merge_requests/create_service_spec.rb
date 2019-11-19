@@ -57,7 +57,7 @@ describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
         expect(Todo.where(attributes).count).to be_zero
       end
 
-      it 'creates exactly 1 create MR event' do
+      it 'creates exactly 1 create MR event', :sidekiq_might_not_need_inline do
         attributes = {
           action: Event::CREATED,
           target_id: merge_request.id,
@@ -216,7 +216,7 @@ describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
               target_project.add_maintainer(user)
             end
 
-            it 'create legacy detached merge request pipeline for fork merge request' do
+            it 'create legacy detached merge request pipeline for fork merge request', :sidekiq_might_not_need_inline do
               expect(merge_request.actual_head_pipeline)
                 .to be_legacy_detached_merge_request_pipeline
             end
@@ -477,7 +477,7 @@ describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
           project.add_developer(user)
         end
 
-        it 'creates the merge request' do
+        it 'creates the merge request', :sidekiq_might_not_need_inline do
           merge_request = described_class.new(project, user, opts).execute
 
           expect(merge_request).to be_persisted

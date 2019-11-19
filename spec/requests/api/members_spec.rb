@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe API::Members do
@@ -24,7 +26,7 @@ describe API::Members do
 
   shared_examples 'GET /:source_type/:id/members/(all)' do |source_type, all|
     let(:members_url) do
-      "/#{source_type.pluralize}/#{source.id}/members".tap do |url|
+      (+"/#{source_type.pluralize}/#{source.id}/members").tap do |url|
         url << "/all" if all
       end
     end
@@ -149,9 +151,15 @@ describe API::Members do
       expect(response).to have_gitlab_http_status(200)
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
-      expect(json_response.map { |u| u['id'] }).to eq [developer.id, maintainer.id, nested_user.id, project_user.id, linked_group_user.id]
-      expect(json_response.map { |u| u['access_level'] }).to eq [Gitlab::Access::DEVELOPER, Gitlab::Access::OWNER, Gitlab::Access::DEVELOPER,
-                                                                 Gitlab::Access::DEVELOPER, Gitlab::Access::DEVELOPER]
+
+      expected_users_and_access_levels = [
+        [developer.id, Gitlab::Access::DEVELOPER],
+        [maintainer.id, Gitlab::Access::OWNER],
+        [nested_user.id, Gitlab::Access::DEVELOPER],
+        [project_user.id, Gitlab::Access::DEVELOPER],
+        [linked_group_user.id, Gitlab::Access::DEVELOPER]
+      ]
+      expect(json_response.map { |u| [u['id'], u['access_level']] }).to match_array(expected_users_and_access_levels)
     end
 
     it 'finds all group members including inherited members' do

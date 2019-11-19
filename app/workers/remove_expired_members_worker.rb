@@ -5,6 +5,7 @@ class RemoveExpiredMembersWorker
   include CronjobQueue
 
   feature_category :authentication_and_authorization
+  worker_resource_boundary :cpu
 
   def perform
     Member.expired.find_each do |member|

@@ -133,4 +133,60 @@ describe Subscribable, 'Subscribable' do
       end
     end
   end
+
+  describe '#set_subscription' do
+    shared_examples 'setting subscriptions' do
+      context 'when desired_state is set to true' do
+        context 'when a user is subscribed to the resource' do
+          it 'keeps the user subscribed' do
+            resource.subscriptions.create(user: user_1, subscribed: true, project: resource_project)
+
+            resource.set_subscription(user_1, true, resource_project)
+
+            expect(resource.subscribed?(user_1, resource_project)).to be_truthy
+          end
+        end
+
+        context 'when a user is not subscribed to the resource' do
+          it 'subscribes the user to the resource' do
+            expect { resource.set_subscription(user_1, true, resource_project) }
+              .to change { resource.subscribed?(user_1, resource_project) }
+              .from(false).to(true)
+          end
+        end
+      end
+
+      context 'when desired_state is set to false' do
+        context 'when a user is subscribed to the resource' do
+          it 'unsubscribes the user from the resource' do
+            resource.subscriptions.create(user: user_1, subscribed: true, project: resource_project)
+
+            expect { resource.set_subscription(user_1, false, resource_project) }
+              .to change { resource.subscribed?(user_1, resource_project) }
+              .from(true).to(false)
+          end
+        end
+
+        context 'when a user is not subscribed to the resource' do
+          it 'keeps the user unsubscribed' do
+            resource.set_subscription(user_1, false, resource_project)
+
+            expect(resource.subscribed?(user_1, resource_project)).to be_falsey
+          end
+        end
+      end
+    end
+
+    context 'without project' do
+      let(:resource_project) { nil }
+
+      it_behaves_like 'setting subscriptions'
+    end
+
+    context 'with project' do
+      let(:resource_project) { project }
+
+      it_behaves_like 'setting subscriptions'
+    end
+  end
 end

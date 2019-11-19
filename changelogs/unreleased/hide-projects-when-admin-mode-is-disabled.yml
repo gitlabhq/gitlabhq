@@ -1,0 +1,5 @@
+---
+title: Hide projects without access to admin user when admin mode is disabled
+merge_request: 18530
+author: Diego Louzán
+type: changed

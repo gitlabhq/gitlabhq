@@ -41,7 +41,7 @@ after it is closed.
 
 #### 2. To Do
 
-You can add issues to and remove issues from your [GitLab To-Do List](../../../workflow/todos.md).
+You can add issues to and remove issues from your [GitLab To-Do List](../../todos.md).
 
 The button to do this has a different label depending on whether the issue is already on your To-Do List or not. If the issue is:
 
@@ -83,9 +83,9 @@ Select a [milestone](../milestones/index.md) to attribute that issue to.
 
 #### 6. Time Tracking
 
-Use [GitLab Quick Actions](../quick_actions.md) to [track estimates and time spent on issues](../../../workflow/time_tracking.md).
-You can add an [estimate of the time it will take](../../../workflow/time_tracking.md#estimates)
-to resolve the issue, and also add [the time spent](../../../workflow/time_tracking.md#time-spent)
+Use [GitLab Quick Actions](../quick_actions.md) to [track estimates and time spent on issues](../time_tracking.md).
+You can add an [estimate of the time it will take](../time_tracking.md#estimates)
+to resolve the issue, and also add [the time spent](../time_tracking.md#time-spent)
 on the resolution of the issue.
 
 #### 7. Due date
@@ -109,7 +109,7 @@ from which you can select **Create new label**.
 
 #### 9. Weight **(STARTER)**
 
-[Assign a weight](../../../workflow/issue_weight.md) to an issue.
+[Assign a weight](issue_weight.md) to an issue.
 Larger values are used to indicate more effort is required to complete the issue. Only
 positive values or zero are allowed.
 
@@ -131,7 +131,7 @@ or were mentioned in the description or threads.
 
 #### 13. Notifications
 
-Click on the icon to enable/disable [notifications](../../../workflow/notifications.md#issue--epics--merge-request-events)
+Click on the icon to enable/disable [notifications](../../profile/notifications.md#issue--epics--merge-request-events)
 for the issue. This will automatically enable if you participate in the issue in any way.
 
 - **Enable**: If you are not a participant in the discussion on that issue, but
@@ -162,7 +162,7 @@ allowing many formatting options.
 You can mention a user or a group present in your GitLab instance with `@username` or
 `@groupname` and they will be notified via todos and email, unless they have disabled
 all notifications in their profile settings. This is controlled in the
-[notification settings](../../../workflow/notifications.md).
+[notification settings](../../profile/notifications.md).
 
 Mentions for yourself (the current logged in user), will be highlighted in a different
 color, allowing you to easily see which comments involve you, helping you focus on
@@ -257,4 +257,4 @@ You can attach and remove Zoom meetings to issues using the `/zoom` and `/remove
 Attaching a [Zoom](https://zoom.us) call an issue
 results in a **Join Zoom meeting** button at the top of the issue, just under the header.
 
-![Link Zoom Call in Issue](img/zoom-quickaction-button.png)
+Read more how to [add or remove a zoom meeting](associate_zoom_meeting.md).

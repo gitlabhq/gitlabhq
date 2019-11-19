@@ -66,7 +66,7 @@ module GitlabRoutingHelper
   end
 
   def preview_markdown_path(parent, *args)
-    return group_preview_markdown_path(parent) if parent.is_a?(Group)
+    return group_preview_markdown_path(parent, *args) if parent.is_a?(Group)
 
     if @snippet.is_a?(PersonalSnippet)
       preview_markdown_snippets_path

@@ -5,6 +5,10 @@ namespace :dev do
   task setup: :environment do
     ENV['force'] = 'yes'
     Rake::Task["gitlab:setup"].invoke
+
+    # Make sure DB statistics are up to date.
+    ActiveRecord::Base.connection.execute('ANALYZE')
+
     Rake::Task["gitlab:shell:setup"].invoke
   end
 

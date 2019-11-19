@@ -102,7 +102,7 @@ describe 'Commits' do
         end
 
         describe 'Cancel all builds' do
-          it 'cancels commit', :js do
+          it 'cancels commit', :js, :sidekiq_might_not_need_inline do
             visit pipeline_path(pipeline)
             click_on 'Cancel running'
             expect(page).to have_content 'canceled'
@@ -110,7 +110,7 @@ describe 'Commits' do
         end
 
         describe 'Cancel build' do
-          it 'cancels build', :js do
+          it 'cancels build', :js, :sidekiq_might_not_need_inline do
             visit pipeline_path(pipeline)
             find('.js-btn-cancel-pipeline').click
             expect(page).to have_content 'canceled'
@@ -154,39 +154,6 @@ describe 'Commits' do
 
           expect(page).not_to have_link('Cancel running')
           expect(page).not_to have_link('Retry')
-        end
-      end
-    end
-
-    describe '.gitlab-ci.yml not found warning' do
-      before do
-        project.add_reporter(user)
-      end
-
-      context 'ci builds enabled' do
-        it 'does not show warning' do
-          visit pipeline_path(pipeline)
-
-          expect(page).not_to have_content '.gitlab-ci.yml not found in this commit'
-        end
-
-        it 'shows warning' do
-          stub_ci_pipeline_yaml_file(nil)
-
-          visit pipeline_path(pipeline)
-
-          expect(page).to have_content '.gitlab-ci.yml not found in this commit'
-        end
-      end
-
-      context 'ci builds disabled' do
-        it 'does not show warning' do
-          stub_ci_builds_disabled
-          stub_ci_pipeline_yaml_file(nil)
-
-          visit pipeline_path(pipeline)
-
-          expect(page).not_to have_content '.gitlab-ci.yml not found in this commit'
         end
       end
     end

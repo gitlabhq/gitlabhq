@@ -4,7 +4,7 @@
 
 .btn-group.mobile-git-clone.js-mobile-git-clone.btn-block
   = clipboard_button(button_text: default_clone_label, text: default_url_to_repo(project), hide_button_icon: true, class: "btn-primary flex-fill bold justify-content-center input-group-text clone-dropdown-btn js-clone-dropdown-label")
-  %button.btn.btn-primary.dropdown-toggle.js-dropdown-toggle{ type: "button", data: { toggle: "dropdown" } }
+  %button.btn.btn-primary.dropdown-toggle.js-dropdown-toggle.flex-grow-0.d-flex-center{ type: "button", data: { toggle: "dropdown" } }
     = sprite_icon("arrow-down", css_class: "dropdown-btn-icon icon")
   %ul.dropdown-menu.dropdown-menu-selectable.dropdown-menu-right.clone-options-dropdown{ data: { dropdown: true } }
     - if ssh_enabled?

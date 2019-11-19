@@ -18,6 +18,11 @@ class LfsObject < ApplicationRecord
 
   after_save :update_file_store, if: :saved_change_to_file?
 
+  def self.not_linked_to_project(project)
+    where('NOT EXISTS (?)',
+          project.lfs_objects_projects.select(1).where('lfs_objects_projects.lfs_object_id = lfs_objects.id'))
+  end
+
   def update_file_store
     # The file.object_store is set during `uploader.store!`
     # which happens after object is inserted/updated

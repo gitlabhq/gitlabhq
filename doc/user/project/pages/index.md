@@ -19,38 +19,7 @@ You can use it either for personal or business websites, such as
 portfolios, documentation, manifestos, and business presentations.
 You can also attribute any license to your content.
 
-<table class="borderless-table center fixed-table">
-  <tr>
-    <td style="width: 22%"><img src="img/icons/cogs.png" alt="SSGs" class="image-noshadow half-width"></td>
-    <td style="width: 4%">
-      <strong>
-        <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-      </strong>
-    </td>
-    <td style="width: 22%"><img src="img/icons/monitor.png" alt="Websites" class="image-noshadow half-width"></td>
-    <td style="width: 4%">
-      <strong>
-        <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-      </strong>
-    </td>
-    <td style="width: 22%"><img src="img/icons/free.png" alt="Pages is free" class="image-noshadow half-width"></td>
-    <td style="width: 4%">
-      <strong>
-        <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-      </strong>
-    </td>
-    <td style="width: 22%"><img src="img/icons/lock.png" alt="Secure your website" class="image-noshadow half-width"></td>
-  </tr>
-  <tr>
-    <td><em>Use any static website generator or plain HTML</em></td>
-    <td></td>
-    <td><em>Create websites for your projects, groups, or user account</em></td>
-    <td></td>
-    <td><em>Host on GitLab.com for free, or on your own GitLab instance</em></td>
-    <td></td>
-    <td><em>Connect your custom domain(s) and TLS certificates</em></td>
-  </tr>
-</table>
+<img src="img/pages_workflow_v12_5.png" alt="Pages websites workflow" class="image-noshadow">
 
 Pages is available for free for all GitLab.com users as well as for self-managed
 instances (GitLab Core, Starter, Premium, and Ultimate).
@@ -73,6 +42,7 @@ publish any website written directly in plain HTML, CSS, and JavaScript.</p>
 
 To use GitLab Pages, first you need to create a project in GitLab to upload your website's
 files to. These projects can be either public, internal, or private, at your own choice.
+
 GitLab will always deploy your website from a very specific folder called `public` in your
 repository. Note that when you create a new project in GitLab, a [repository](../repository/index.md)
 becomes available automatically.
@@ -80,58 +50,42 @@ becomes available automatically.
 To deploy your site, GitLab will use its built-in tool called [GitLab CI/CD](../../../ci/README.md),
 to build your site and publish it to the GitLab Pages server. The sequence of
 scripts that GitLab CI/CD runs to accomplish this task is created from a file named
-`.gitlab-ci.yml`, which you can [create and modify](getting_started_part_four.md) at will.
+`.gitlab-ci.yml`, which you can [create and modify](getting_started_part_four.md) at will. A specific `job` called `pages` in the configuration file will make GitLab aware that you are deploying a GitLab Pages website.
 
-You can either use GitLab's [default domain for GitLab Pages websites](getting_started_part_one.md#gitlab-pages-domain-names),
+You can either use GitLab's [default domain for GitLab Pages websites](getting_started_part_one.md#gitlab-pages-default-domain-names),
 `*.gitlab.io`, or your own domain (`example.com`). In that case, you'll
 need admin access to your domain's registrar (or control panel) to set it up with Pages.
-
-Optionally, when adding your own domain, you can add an SSL/TLS certificate to secure your
-site under the HTTPS protocol.
 
 ### Getting started
 
 To get started with GitLab Pages, you can either:
 
-- [Create a project from scratch](getting_started_part_two.md#create-a-project-from-scratch).
-- [Copy an existing example project](getting_started_part_two.md#fork-a-project-to-get-started-from).
-- Use a bundled project template ready to go:
+- [Use a bundled website template ready to go](getting_started/pages_bundled_template.md).
+- [Copy an existing sample](getting_started/fork_sample_project.md).
+- [Create a website from scratch or deploy an existing one](getting_started/new_or_existing_website.md).
 
-1. From the top navigation, click the **+** button and select **New project**.
-1. Select **Create from Template**.
-1. Choose one of the templates starting with **Pages**:
+<img src="img/new_project_for_pages_v12_5.png" alt="New projects for GitLab Pages" class="image-noshadow">
 
-   ![Project templates for Pages](img/pages_project_templates_v11_8.png)
+Optional features:
 
-1. From the left sidebar, navigate to your project's **CI/CD > Pipelines**
-   and click **Run pipeline** to trigger GitLab CI/CD to build and deploy your
-   site to the server.
-1. After the pipeline has finished successfully, wait approximately 30 minutes
-   for your website to be visible. After waiting 30 minutes, find the link to
-   visit your website from your project's **Settings > Pages**. If the link
-   leads to a 404 page, wait a few minutes and try again.
-
-Your website is then visible on your domain and you can modify your files
-as you wish. For every modification pushed to your repository, GitLab CI/CD
-will run a new pipeline to immediately publish your changes to the server.
-
-_Advanced options:_
-
-- [Use a custom domain](custom_domains_ssl_tls_certification/index.md#set-up-pages-with-a-custom-domain)
-- Apply [SSL/TLS certification](custom_domains_ssl_tls_certification/index.md#adding-an-ssltls-certificate-to-pages) to your custom domain
-
-## Availability
-
-If you're using GitLab.com, your website will be publicly available to the internet.
-If you're using self-managed instances (Core, Starter, Premium, or Ultimate),
-your websites will be published on your own server, according to the
-[Pages admin settings](../../../administration/pages/index.md) chosen by your sysadmin,
-who can opt for making them public or internal to your server.
+- Use a [custom domain or subdomain](custom_domains_ssl_tls_certification/index.md#set-up-pages-with-a-custom-domain).
+- Add an [SSL/TLS certificate to secure your site under the HTTPS protocol](custom_domains_ssl_tls_certification/index.md#adding-an-ssltls-certificate-to-pages).
 
 Note that, if you're using GitLab Pages default domain (`.gitlab.io`),
 your website will be automatically secure and available under
 HTTPS. If you're using your own custom domain, you can
 optionally secure it with SSL/TLS certificates.
+
+## Availability
+
+If you're using GitLab.com, your website will be publicly available to the internet.
+
+To restrict access to your website, enable [GitLab Pages Access Control](pages_access_control.md).
+
+If you're using self-managed instances (Core, Starter, Premium, or Ultimate),
+your websites will be published on your own server, according to the
+[Pages admin settings](../../../administration/pages/index.md) chosen by your sysadmin,
+who can opt for making them public or internal to your server.
 
 ## Explore GitLab Pages
 
@@ -139,8 +93,7 @@ To learn more about configuration options for GitLab Pages, read the following:
 
 | Document | Description |
 | --- | --- |
-| [Static websites and Pages domains](getting_started_part_one.md) | Understand what is a static website, and how GitLab Pages default domains work. |
-| [Projects and URL structure](getting_started_part_two.md) | Forking projects and creating new ones from scratch, understanding URLs structure and baseurls. |
+| [GitLab Pages domain names, URLs, and baseurls](getting_started_part_one.md) | Understand how GitLab Pages default domains work. |
 | [GitLab CI/CD for GitLab Pages](getting_started_part_four.md) | Understand how to create your own `.gitlab-ci.yml` for your site. |
 | [Exploring GitLab Pages](introduction.md) | Requirements, technical aspects, specific GitLab CI's configuration options, Access Control, custom 404 pages, limitations, FAQ. |
 |---+---|

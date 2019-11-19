@@ -38,7 +38,7 @@ class ProtectedBranch < ApplicationRecord
   end
 
   def self.protected_refs(project)
-    project.protected_branches.select(:name)
+    project.protected_branches
   end
 
   def self.branch_requires_code_owner_approval?(project, branch_name)

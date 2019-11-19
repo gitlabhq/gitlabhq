@@ -21,6 +21,27 @@ $spacing-scale: (
 );
 
 /*
+ * Why another sizing scale???
+ * Great question, friend!
+ * This size scale is a "backport" of the equivalent set of "named" sizes
+ * (e.g. `xl` versus `70`) that came from the following design document as of 2019-10-23:
+ *
+ * https://gitlab-org.gitlab.io/gitlab-design/hosted/design-gitlab-specs/forms-spec-previews/
+ *
+ * (See `input-` items at the bottom)
+ *
+ * The presumption here is that these sizes will be standardized in GitLab UI and thus will be
+ * broadly useful here in the GitLab product when not using the GitLab UI components.
+ */
+$size-scale: (
+  'xs': #{10 * $grid-size},
+  's': #{20 * $grid-size},
+  'm': #{30 * $grid-size},
+  'l': #{40 * $grid-size},
+  'xl': #{70 * $grid-size}
+);
+
+/*
  * Color schema
  */
 $darken-normal-factor: 7%;
@@ -304,6 +325,12 @@ $gl-grayish-blue: #7f8fa4;
 $gl-gray-dark: #313236;
 $gl-gray-light: #5c5c5c;
 $gl-header-color: #4c4e54;
+$gl-font-size-12: 12px;
+$gl-font-size-14: 14px;
+$gl-font-size-16: 16px;
+$gl-font-size-20: 20px;
+$gl-font-size-28: 28px;
+$gl-font-size-42: 42px;
 
 $type-scale: (
   1: 12px,

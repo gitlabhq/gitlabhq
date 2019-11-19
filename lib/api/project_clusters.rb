@@ -88,6 +88,7 @@ module API
         requires :cluster_id, type: Integer, desc: 'The cluster ID'
         optional :name, type: String, desc: 'Cluster name'
         optional :domain, type: String, desc: 'Cluster base domain'
+        optional :management_project_id, type: Integer, desc: 'The ID of the management project'
         optional :platform_kubernetes_attributes, type: Hash, desc: %q(Platform Kubernetes data) do
           optional :api_url, type: String, desc: 'URL to access the Kubernetes API'
           optional :token, type: String, desc: 'Token to authenticate against Kubernetes'

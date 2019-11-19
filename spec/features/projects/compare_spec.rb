@@ -107,7 +107,9 @@ describe "Compare", :js do
         visit project_compare_index_path(project, from: "feature", to: "master")
 
         allow(Commit).to receive(:max_diff_options).and_return(max_files: 3)
-        allow_any_instance_of(DiffHelper).to receive(:render_overflow_warning?).and_return(true)
+        allow_next_instance_of(DiffHelper) do |instance|
+          allow(instance).to receive(:render_overflow_warning?).and_return(true)
+        end
 
         click_button('Compare')
 
@@ -136,7 +138,7 @@ describe "Compare", :js do
   def select_using_dropdown(dropdown_type, selection, commit: false)
     dropdown = find(".js-compare-#{dropdown_type}-dropdown")
     dropdown.find(".compare-dropdown-toggle").click
-    # find input before using to wait for the inputs visiblity
+    # find input before using to wait for the inputs visibility
     dropdown.find('.dropdown-menu')
     dropdown.fill_in("Filter by Git revision", with: selection)
     wait_for_requests
@@ -144,7 +146,7 @@ describe "Compare", :js do
     if commit
       dropdown.find('input[type="search"]').send_keys(:return)
     else
-      # find before all to wait for the items visiblity
+      # find before all to wait for the items visibility
       dropdown.find("a[data-ref=\"#{selection}\"]", match: :first)
       dropdown.all("a[data-ref=\"#{selection}\"]").last.click
     end

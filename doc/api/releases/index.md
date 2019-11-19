@@ -303,7 +303,7 @@ POST /projects/:id/releases
 | Attribute          | Type            | Required                    | Description                                                                                                                      |
 | -------------------| --------------- | --------                    | -------------------------------------------------------------------------------------------------------------------------------- |
 | `id`               | integer/string  | yes                         | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding).                                              |
-| `name`             | string          | yes                         | The release name.                                                                                                                |
+| `name`             | string          | no                          | The release name.                                                                                                                |
 | `tag_name`         | string          | yes                         | The tag where the release will be created from.                                                                                  |
 | `description`      | string          | yes                         | The description of the release. You can use [markdown](../../user/markdown.md).                                                  |
 | `ref`              | string          | yes, if `tag_name` doesn't exist | If `tag_name` doesn't exist, the release will be created from `ref`. It can be a commit SHA, another tag name, or a branch name. |

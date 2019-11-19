@@ -115,5 +115,10 @@ describe Gitlab::SlashCommands::Command do
       let(:params) { { text: 'issue move #78291 to gitlab/gitlab-ci' } }
       it { is_expected.to eq(Gitlab::SlashCommands::IssueMove) }
     end
+
+    context 'IssueComment is triggered' do
+      let(:params) { { text: "issue comment #503\ncomment body" } }
+      it { is_expected.to eq(Gitlab::SlashCommands::IssueComment) }
+    end
   end
 end

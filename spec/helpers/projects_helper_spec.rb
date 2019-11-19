@@ -938,4 +938,22 @@ describe ProjectsHelper do
       it { is_expected.to eq(grafana_integration.token) }
     end
   end
+
+  describe '#grafana_integration_enabled?' do
+    let(:project) { create(:project) }
+
+    before do
+      helper.instance_variable_set(:@project, project)
+    end
+
+    subject { helper.grafana_integration_enabled? }
+
+    it { is_expected.to eq(nil) }
+
+    context 'grafana integration exists' do
+      let!(:grafana_integration) { create(:grafana_integration, project: project) }
+
+      it { is_expected.to eq(grafana_integration.enabled) }
+    end
+  end
 end

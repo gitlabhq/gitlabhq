@@ -11,7 +11,8 @@ describe DiffFileEntity do
   let(:diff_refs) { commit.diff_refs }
   let(:diff) { commit.raw_diffs.first }
   let(:diff_file) { Gitlab::Diff::File.new(diff, diff_refs: diff_refs, repository: repository) }
-  let(:entity) { described_class.new(diff_file, request: {}) }
+  let(:options) { {} }
+  let(:entity) { described_class.new(diff_file, options.reverse_merge(request: {})) }
 
   subject { entity.as_json }
 
@@ -23,7 +24,7 @@ describe DiffFileEntity do
     let(:user) { create(:user) }
     let(:request) { EntityRequest.new(project: project, current_user: user) }
     let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
-    let(:entity) { described_class.new(diff_file, request: request, merge_request: merge_request) }
+    let(:entity) { described_class.new(diff_file, options.merge(request: request, merge_request: merge_request)) }
     let(:exposed_urls) { %i(edit_path view_path context_lines_path) }
 
     it_behaves_like 'diff file entity'
@@ -49,6 +50,8 @@ describe DiffFileEntity do
   end
 
   context '#parallel_diff_lines' do
+    let(:options) { { diff_view: :parallel } }
+
     it 'exposes parallel diff lines correctly' do
       response = subject
 

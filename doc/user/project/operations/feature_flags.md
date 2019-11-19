@@ -81,7 +81,14 @@ NOTE: **NOTE**
 We'd highly recommend you to use the [Environment](../../../ci/environments.md)
 feature in order to quickly assess which flag is enabled per environment.
 
-## Rollout strategy
+## Feature Flag strategies
+
+GitLab Feature Flag adopts [Unleash](https://unleash.github.io)
+as the feature flag engine. In unleash, there is a concept of rulesets for granular feature flag controls,
+called [strategies](https://unleash.github.io/docs/activation_strategy).
+Supported strategies for GitLab Feature Flags are described below.
+
+### Rollout strategy
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/8240) in GitLab 12.2.
 
@@ -91,13 +98,13 @@ The status of an environment spec ultimately determines whether or not a feature
 For instance, a feature will always be disabled for every user if the matching environment spec has a disabled status, regardless of the chosen rollout strategy.
 However, a feature will be enabled for 50% of logged-in users if the matching environment spec has an enabled status along with a **Percent rollout (logged in users)** strategy set to 50%.
 
-### All users
+#### All users
 
 Enables the feature for all users. It is implemented using the Unleash
 [`default`](https://unleash.github.io/docs/activation_strategy#default)
 activation strategy.
 
-### Percent rollout (logged in users)
+#### Percent rollout (logged in users)
 
 Enables the feature for a percentage of authenticated users. It is
 implemented using the Unleash
@@ -112,7 +119,7 @@ CAUTION: **Caution:**
 If this strategy is selected, then the Unleash client **must** be given a user
 ID for the feature to be enabled. See the [Ruby example](#ruby-application-example) below.
 
-## Target users
+### Target users strategy
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/8240) in GitLab 12.2.
 
@@ -134,7 +141,7 @@ In order to use Feature Flags, you need to first
 [get the access credentials](#configuring-feature-flags) from GitLab and then
 prepare your application and hook it with a [client library](#client-libraries).
 
-### Configuring Feature Flags
+## Configuring Feature Flags
 
 To get the access credentials that your application will need to talk to GitLab:
 
@@ -153,7 +160,7 @@ if **Instance ID** will be single token or multiple tokens, assigned to the
 **Environment**. Also, **Application name** could describe the version of
 application instead of the running environment.
 
-### Client libraries
+## Client libraries
 
 GitLab currently implements a single backend that is compatible with
 [Unleash](https://github.com/Unleash/unleash#client-implementations) clients.
@@ -178,7 +185,7 @@ Community contributed clients:
 - [Unofficial .Net Core Unleash client](https://github.com/onybo/unleash-client-core)
 - [Unleash client for Python 3](https://github.com/aes/unleash-client-python)
 
-### Golang application example
+## Golang application example
 
 Here's an example of how to integrate the feature flags in a Golang application:
 
@@ -219,7 +226,7 @@ func main() {
 }
 ```
 
-### Ruby application example
+## Ruby application example
 
 Here's an example of how to integrate the feature flags in a Ruby application.
 
@@ -249,3 +256,11 @@ else
   puts "hello, world!"
 end
 ```
+
+## Feature Flags API
+
+You can create, update, read, and delete Feature Flags via API
+to control them in an automated flow:
+
+- [Feature Flags API](../../../api/feature_flags.md)
+- [Feature Flag Specs API](../../../api/feature_flag_specs.md)

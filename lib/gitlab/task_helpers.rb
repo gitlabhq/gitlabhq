@@ -158,15 +158,17 @@ module Gitlab
     end
 
     def checkout_or_clone_version(version:, repo:, target_dir:)
-      version =
-        if version.starts_with?("=")
-          version.sub(/\A=/, '') # tag or branch
-        else
-          "v#{version}" # tag
-        end
-
       clone_repo(repo, target_dir) unless Dir.exist?(target_dir)
-      checkout_version(version, target_dir)
+      checkout_version(get_version(version), target_dir)
+    end
+
+    # this function implements the same logic we have in omnibus for dealing with components version
+    def get_version(component_version)
+      # If not a valid version string following SemVer it is probably a branch name or a SHA
+      # commit of one of our own component so it doesn't need `v` prepended
+      return component_version unless /^\d+\.\d+\.\d+(-rc\d+)?$/.match?(component_version)
+
+      "v#{component_version}"
     end
 
     def clone_repo(repo, target_dir)

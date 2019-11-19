@@ -13,7 +13,11 @@ describe DeploymentPlatform do
     end
 
     context 'when project is the cluster\'s management project ' do
-      let!(:cluster_with_management_project) { create(:cluster, :provided_by_user, management_project: project) }
+      let(:another_project) { create(:project, namespace: project.namespace) }
+
+      let!(:cluster_with_management_project) do
+        create(:cluster, :provided_by_user, projects: [another_project], management_project: project)
+      end
 
       context 'cluster_management_project feature is enabled' do
         it 'returns the cluster with management project' do
@@ -66,7 +70,11 @@ describe DeploymentPlatform do
       end
 
       context 'when project is the cluster\'s management project ' do
-        let!(:cluster_with_management_project) { create(:cluster, :provided_by_user, management_project: project) }
+        let(:another_project) { create(:project, namespace: project.namespace) }
+
+        let!(:cluster_with_management_project) do
+          create(:cluster, :provided_by_user, projects: [another_project], management_project: project)
+        end
 
         context 'cluster_management_project feature is enabled' do
           it 'returns the cluster with management project' do
@@ -128,6 +136,14 @@ describe DeploymentPlatform do
             end
           end
         end
+      end
+    end
+
+    context 'when instance has configured kubernetes cluster' do
+      let!(:instance_cluster) { create(:cluster, :provided_by_user, :instance) }
+
+      it 'returns the Kubernetes platform' do
+        is_expected.to eq(instance_cluster.platform_kubernetes)
       end
     end
   end

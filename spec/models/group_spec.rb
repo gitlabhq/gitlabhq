@@ -525,6 +525,128 @@ describe Group do
     it { expect(subject.parent).to be_kind_of(described_class) }
   end
 
+  describe '#max_member_access_for_user' do
+    context 'group shared with another group' do
+      let(:parent_group_user) { create(:user) }
+      let(:group_user) { create(:user) }
+      let(:child_group_user) { create(:user) }
+
+      let_it_be(:group_parent) { create(:group, :private) }
+      let_it_be(:group) { create(:group, :private, parent: group_parent) }
+      let_it_be(:group_child) { create(:group, :private, parent: group) }
+
+      let_it_be(:shared_group_parent) { create(:group, :private) }
+      let_it_be(:shared_group) { create(:group, :private, parent: shared_group_parent) }
+      let_it_be(:shared_group_child) { create(:group, :private, parent: shared_group) }
+
+      before do
+        group_parent.add_owner(parent_group_user)
+        group.add_owner(group_user)
+        group_child.add_owner(child_group_user)
+
+        create(:group_group_link, { shared_with_group: group,
+                                    shared_group: shared_group,
+                                    group_access: GroupMember::DEVELOPER })
+      end
+
+      context 'when feature flag share_group_with_group is enabled' do
+        before do
+          stub_feature_flags(share_group_with_group: true)
+        end
+
+        context 'with user in the group' do
+          let(:user) { group_user }
+
+          it 'returns correct access level' do
+            expect(shared_group_parent.max_member_access_for_user(user)).to eq(Gitlab::Access::NO_ACCESS)
+            expect(shared_group.max_member_access_for_user(user)).to eq(Gitlab::Access::DEVELOPER)
+            expect(shared_group_child.max_member_access_for_user(user)).to eq(Gitlab::Access::DEVELOPER)
+          end
+        end
+
+        context 'with user in the parent group' do
+          let(:user) { parent_group_user }
+
+          it 'returns correct access level' do
+            expect(shared_group_parent.max_member_access_for_user(user)).to eq(Gitlab::Access::NO_ACCESS)
+            expect(shared_group.max_member_access_for_user(user)).to eq(Gitlab::Access::NO_ACCESS)
+            expect(shared_group_child.max_member_access_for_user(user)).to eq(Gitlab::Access::NO_ACCESS)
+          end
+        end
+
+        context 'with user in the child group' do
+          let(:user) { child_group_user }
+
+          it 'returns correct access level' do
+            expect(shared_group_parent.max_member_access_for_user(user)).to eq(Gitlab::Access::NO_ACCESS)
+            expect(shared_group.max_member_access_for_user(user)).to eq(Gitlab::Access::NO_ACCESS)
+            expect(shared_group_child.max_member_access_for_user(user)).to eq(Gitlab::Access::NO_ACCESS)
+          end
+        end
+      end
+
+      context 'when feature flag share_group_with_group is disabled' do
+        before do
+          stub_feature_flags(share_group_with_group: false)
+        end
+
+        context 'with user in the group' do
+          let(:user) { group_user }
+
+          it 'returns correct access level' do
+            expect(shared_group_parent.max_member_access_for_user(user)).to eq(Gitlab::Access::NO_ACCESS)
+            expect(shared_group.max_member_access_for_user(user)).to eq(Gitlab::Access::NO_ACCESS)
+            expect(shared_group_child.max_member_access_for_user(user)).to eq(Gitlab::Access::NO_ACCESS)
+          end
+        end
+
+        context 'with user in the parent group' do
+          let(:user) { parent_group_user }
+
+          it 'returns correct access level' do
+            expect(shared_group_parent.max_member_access_for_user(user)).to eq(Gitlab::Access::NO_ACCESS)
+            expect(shared_group.max_member_access_for_user(user)).to eq(Gitlab::Access::NO_ACCESS)
+            expect(shared_group_child.max_member_access_for_user(user)).to eq(Gitlab::Access::NO_ACCESS)
+          end
+        end
+
+        context 'with user in the child group' do
+          let(:user) { child_group_user }
+
+          it 'returns correct access level' do
+            expect(shared_group_parent.max_member_access_for_user(user)).to eq(Gitlab::Access::NO_ACCESS)
+            expect(shared_group.max_member_access_for_user(user)).to eq(Gitlab::Access::NO_ACCESS)
+            expect(shared_group_child.max_member_access_for_user(user)).to eq(Gitlab::Access::NO_ACCESS)
+          end
+        end
+      end
+    end
+
+    context 'multiple groups shared with group' do
+      let(:user) { create(:user) }
+      let(:group) { create(:group, :private) }
+      let(:shared_group_parent) { create(:group, :private) }
+      let(:shared_group) { create(:group, :private, parent: shared_group_parent) }
+
+      before do
+        stub_feature_flags(share_group_with_group: true)
+
+        group.add_owner(user)
+
+        create(:group_group_link, { shared_with_group: group,
+                                    shared_group: shared_group,
+                                    group_access: GroupMember::DEVELOPER })
+        create(:group_group_link, { shared_with_group: group,
+                                    shared_group: shared_group_parent,
+                                    group_access: GroupMember::MAINTAINER })
+      end
+
+      it 'returns correct access level' do
+        expect(shared_group.max_member_access_for_user(user)).to eq(Gitlab::Access::MAINTAINER)
+      end
+    end
+  end
+
   describe '#members_with_parents' do
     let!(:group) { create(:group, :nested) }
     let!(:maintainer) { group.parent.add_user(create(:user), GroupMember::MAINTAINER) }

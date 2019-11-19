@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 module MergeRequests
-  class SquashService < MergeRequests::WorkingCopyBaseService
+  class SquashService < MergeRequests::BaseService
+    include Git::Logger
+
     def execute
       # If performing a squash would result in no change, then
       # immediately return a success message without performing a squash

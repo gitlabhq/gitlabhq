@@ -22,7 +22,7 @@ describe 'Profile account page', :js do
       expect(User.exists?(user.id)).to be_truthy
     end
 
-    it 'deletes user', :js do
+    it 'deletes user', :js, :sidekiq_might_not_need_inline do
       click_button 'Delete account'
 
       fill_in 'password', with: '12345678'

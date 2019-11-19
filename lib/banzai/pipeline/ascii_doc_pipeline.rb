@@ -10,6 +10,9 @@ module Banzai
           Filter::SyntaxHighlightFilter,
           Filter::ExternalLinkFilter,
           Filter::PlantumlFilter,
+          Filter::ColorFilter,
+          Filter::ImageLazyLoadFilter,
+          Filter::ImageLinkFilter,
           Filter::AsciiDocPostProcessingFilter
         ]
       end

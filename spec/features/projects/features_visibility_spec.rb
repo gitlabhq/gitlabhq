@@ -42,7 +42,9 @@ describe 'Edit Project Settings' do
 
     context 'When external issue tracker is enabled and issues enabled on project settings' do
       it 'does not hide issues tab' do
-        allow_any_instance_of(Project).to receive(:external_issue_tracker).and_return(JiraService.new)
+        allow_next_instance_of(Project) do |instance|
+          allow(instance).to receive(:external_issue_tracker).and_return(JiraService.new)
+        end
 
         visit project_path(project)
 
@@ -54,7 +56,9 @@ describe 'Edit Project Settings' do
       it 'hides issues tab' do
         project.issues_enabled = false
         project.save!
-        allow_any_instance_of(Project).to receive(:external_issue_tracker).and_return(JiraService.new)
+        allow_next_instance_of(Project) do |instance|
+          allow(instance).to receive(:external_issue_tracker).and_return(JiraService.new)
+        end
 
         visit project_path(project)
 

@@ -154,7 +154,7 @@ class ProjectsController < Projects::ApplicationController
 
     redirect_to dashboard_projects_path, status: :found
   rescue Projects::DestroyService::DestroyError => ex
-    redirect_to edit_project_path(@project), status: 302, alert: ex.message
+    redirect_to edit_project_path(@project), status: :found, alert: ex.message
   end
 
   def new_issuable_address
@@ -371,6 +371,7 @@ class ProjectsController < Projects::ApplicationController
       :path,
       :printing_merge_request_link_enabled,
       :public_builds,
+      :remove_source_branch_after_merge,
       :request_access_enabled,
       :runners_token,
       :tag_list,

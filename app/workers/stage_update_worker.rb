@@ -5,6 +5,7 @@ class StageUpdateWorker
   include PipelineQueue
 
   queue_namespace :pipeline_processing
+  latency_sensitive_worker!
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(stage_id)

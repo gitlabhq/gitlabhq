@@ -216,8 +216,7 @@ describe 'Dashboard Projects' do
       expect(page).to have_selector('.merge-request-form')
       expect(current_path).to eq project_new_merge_request_path(project)
       expect(find('#merge_request_target_project_id', visible: false).value).to eq project.id.to_s
-      expect(find('input#merge_request_source_branch', visible: false).value).to eq 'feature'
-      expect(find('input#merge_request_target_branch', visible: false).value).to eq 'master'
+      expect(page).to have_content "From feature into master"
     end
   end
 

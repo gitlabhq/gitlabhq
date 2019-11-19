@@ -174,4 +174,18 @@ describe API::Helpers do
       end
     end
   end
+
+  describe '#track_event' do
+    it "creates a gitlab tracking event" do
+      expect(Gitlab::Tracking).to receive(:event).with('foo', 'my_event', {})
+
+      subject.track_event('my_event', category: 'foo')
+    end
+
+    it "logs an exception" do
+      expect(Rails.logger).to receive(:warn).with(/Tracking event failed/)
+
+      subject.track_event('my_event', category: nil)
+    end
+  end
 end

@@ -8,7 +8,10 @@ module QA
       attr_accessor :path, :description
 
       attribute :sandbox do
-        Sandbox.fabricate!
+        Sandbox.fabricate_via_api! do |sandbox|
+          sandbox.user = user
+          sandbox.api_client = api_client
+        end
       end
 
       attribute :id

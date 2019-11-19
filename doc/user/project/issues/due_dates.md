@@ -33,7 +33,7 @@ the icon and the date colored red. You can sort issues by those that are
 
 ![Issues with due dates in the issues index page](img/due_dates_issues_index_page.png)
 
-Due dates also appear in your [todos list](../../../workflow/todos.md).
+Due dates also appear in your [todos list](../../todos.md).
 
 ![Issues with due dates in the todos](img/due_dates_todos.png)
 

@@ -3,7 +3,8 @@
 module Gitlab
   module ImportExport
     class Config
-      def initialize
+      def initialize(config: Gitlab::ImportExport.config_file)
+        @config = config
         @hash = parse_yaml
         @hash.deep_symbolize_keys!
         @ee_hash = @hash.delete(:ee) || {}
@@ -50,7 +51,7 @@ module Gitlab
       end
 
       def parse_yaml
-        YAML.load_file(Gitlab::ImportExport.config_file)
+        YAML.load_file(@config)
       end
     end
   end

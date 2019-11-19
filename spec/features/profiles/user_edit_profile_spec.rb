@@ -23,6 +23,7 @@ describe 'User edit profile' do
     fill_in 'user_location', with: 'Ukraine'
     fill_in 'user_bio', with: 'I <3 GitLab'
     fill_in 'user_organization', with: 'GitLab'
+    select 'Data Analyst', from: 'user_role'
     submit_settings
 
     expect(user.reload).to have_attributes(
@@ -31,7 +32,8 @@ describe 'User edit profile' do
       twitter: 'testtwitter',
       website_url: 'testurl',
       bio: 'I <3 GitLab',
-      organization: 'GitLab'
+      organization: 'GitLab',
+      role: 'data_analyst'
     )
 
     expect(find('#user_location').value).to eq 'Ukraine'

@@ -9,6 +9,7 @@ describe 'Merge request > User creates image diff notes', :js do
   let(:user) { project.creator }
 
   before do
+    stub_feature_flags(single_mr_diff_view: false)
     sign_in(user)
 
     # Stub helper to return any blob file as image from public app folder.
@@ -16,6 +17,8 @@ describe 'Merge request > User creates image diff notes', :js do
     allow_any_instance_of(DiffHelper).to receive(:diff_file_blob_raw_url).and_return('/apple-touch-icon.png')
     allow_any_instance_of(DiffHelper).to receive(:diff_file_old_blob_raw_url).and_return('/favicon.png')
   end
+
+  it_behaves_like 'rendering a single diff version'
 
   context 'create commit diff notes' do
     commit_id = '2f63565e7aac07bcdadb654e253078b727143ec4'

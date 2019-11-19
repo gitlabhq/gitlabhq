@@ -1,0 +1,31 @@
+- expanded = integration_expanded?('eks_')
+%section.settings.as-eks.no-animate#js-eks-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Amazon EKS')
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = _('Amazon EKS integration allows you to provision EKS clusters from GitLab.')
+
+  .settings-content
+    = form_for @application_setting, url: integrations_admin_application_settings_path(anchor: 'js-eks-settings'), html: { class: 'fieldset-form' } do |f|
+      = form_errors(@application_setting)
+
+      %fieldset
+        .form-group
+          .form-check
+            = f.check_box :eks_integration_enabled, class: 'form-check-input'
+            = f.label :eks_integration_enabled, class: 'form-check-label' do
+              Enable Amazon EKS integration
+        .form-group
+          = f.label :eks_account_id, 'Account ID', class: 'label-bold'
+          = f.text_field :eks_account_id, class: 'form-control'
+        .form-group
+          = f.label :eks_access_key_id, 'Access key ID', class: 'label-bold'
+          = f.text_field :eks_access_key_id, class: 'form-control'
+        .form-group
+          = f.label :eks_secret_access_key, 'Secret access key', class: 'label-bold'
+          = f.password_field :eks_secret_access_key, value: @application_setting.eks_secret_access_key, class: 'form-control'
+
+      = f.submit 'Save changes', class: "btn btn-success"

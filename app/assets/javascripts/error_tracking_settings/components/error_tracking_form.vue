@@ -1,31 +1,19 @@
 <script>
-import { GlButton, GlFormInput } from '@gitlab/ui';
+import { mapActions, mapState } from 'vuex';
+import { GlFormInput } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
+import LoadingButton from '~/vue_shared/components/loading_button.vue';
 
 export default {
-  components: { GlButton, GlFormInput, Icon },
-  props: {
-    apiHost: {
-      type: String,
-      required: true,
-    },
-    connectError: {
-      type: Boolean,
-      required: true,
-    },
-    connectSuccessful: {
-      type: Boolean,
-      required: true,
-    },
-    token: {
-      type: String,
-      required: true,
-    },
-  },
+  components: { GlFormInput, Icon, LoadingButton },
   computed: {
+    ...mapState(['apiHost', 'connectError', 'connectSuccessful', 'isLoadingProjects', 'token']),
     tokenInputState() {
       return this.connectError ? false : null;
     },
+  },
+  methods: {
+    ...mapActions(['fetchProjects', 'updateApiHost', 'updateToken']),
   },
 };
 </script>
@@ -40,8 +28,9 @@ export default {
           <gl-form-input
             id="error-tracking-api-host"
             :value="apiHost"
+            :disabled="isLoadingProjects"
             placeholder="https://mysentryserver.com"
-            @input="$emit('update-api-host', $event)"
+            @input="updateApiHost"
           />
           <!-- eslint-enable @gitlab/vue-i18n/no-bare-attribute-strings -->
         </div>
@@ -60,15 +49,17 @@ export default {
             id="error-tracking-token"
             :value="token"
             :state="tokenInputState"
-            @input="$emit('update-token', $event)"
+            :disabled="isLoadingProjects"
+            @input="updateToken"
           />
         </div>
         <div class="col-4 col-md-3 gl-pl-0">
-          <gl-button
-            class="js-error-tracking-connect prepend-left-5"
-            @click="$emit('handle-connect')"
-            >{{ __('Connect') }}</gl-button
-          >
+          <loading-button
+            class="js-error-tracking-connect prepend-left-5 d-inline-flex"
+            :label="isLoadingProjects ? __('Connecting') : __('Connect')"
+            :loading="isLoadingProjects"
+            @click="fetchProjects"
+          />
           <icon
             v-show="connectSuccessful"
             class="js-error-tracking-connect-success prepend-left-5 text-success align-middle"

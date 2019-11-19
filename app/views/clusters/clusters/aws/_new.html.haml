@@ -1,0 +1,20 @@
+- if !Gitlab::CurrentSettings.eks_integration_enabled?
+  - documentation_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path("integration/amazon") }
+  = s_('Amazon authentication is not %{link_start}correctly configured%{link_end}. Ask your GitLab administrator if you want to use this service.').html_safe % { link_start: documentation_link_start, link_end: '<a/>'.html_safe }
+- else
+  .js-create-eks-cluster-form-container{ data: { 'gitlab-managed-cluster-help-path' => help_page_path('user/project/clusters/index.md', anchor: 'gitlab-managed-clusters'),
+    'create-role-path' => clusterable.authorize_aws_role_path,
+    'sign-out-path' => clusterable.revoke_aws_role_path,
+    'create-cluster-path' => clusterable.create_aws_clusters_path,
+    'get-roles-path' => clusterable.aws_api_proxy_path('roles'),
+    'get-regions-path' => clusterable.aws_api_proxy_path('regions'),
+    'get-key-pairs-path' => clusterable.aws_api_proxy_path('key_pairs'),
+    'get-vpcs-path' => clusterable.aws_api_proxy_path('vpcs'),
+    'get-subnets-path' => clusterable.aws_api_proxy_path('subnets'),
+    'get-security-groups-path' => clusterable.aws_api_proxy_path('security_groups'),
+    'get-instance-types-path' => clusterable.aws_api_proxy_path('instance_types'),
+    'account-id' => Gitlab::CurrentSettings.eks_account_id,
+    'external-id' => @aws_role.role_external_id,
+    'kubernetes-integration-help-path' => help_page_path('user/project/clusters/index'),
+    'external-link-icon' => icon('external-link'),
+    'has-credentials' => @aws_role.role_arn.present?.to_s } }

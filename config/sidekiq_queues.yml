@@ -98,8 +98,10 @@
   - [update_namespace_statistics, 1]
   - [chaos, 2]
   - [create_evidence, 2]
+  - [group_export, 1]
 
   # EE-specific queues
+  - [analytics, 1]
   - [ldap_group_sync, 2]
   - [create_github_webhook, 2]
   - [geo, 1]
@@ -120,3 +122,4 @@
   - [update_external_pull_requests, 3]
   - [refresh_license_compliance_checks, 2]
   - [design_management_new_version, 1]
+  - [epics, 2]

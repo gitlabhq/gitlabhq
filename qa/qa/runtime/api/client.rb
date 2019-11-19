@@ -46,19 +46,24 @@ module QA
         end
 
         def create_personal_access_token
-          Page::Main::Menu.perform(&:sign_out) if @is_new_session && Page::Main::Menu.perform { |p| p.has_personal_area?(wait: 0) }
+          signed_in_initially = Page::Main::Menu.perform(&:signed_in?)
 
-          unless Page::Main::Menu.perform { |p| p.has_personal_area?(wait: 0) }
-            Runtime::Browser.visit(@address, Page::Main::Login)
-            Page::Main::Login.perform { |login| login.sign_in_using_credentials(user: @user) }
-          end
+          Page::Main::Menu.perform(&:sign_out) if @is_new_session && signed_in_initially
+
+          Flow::Login.sign_in_unless_signed_in(as: @user)
 
           token = Resource::PersonalAccessToken.fabricate!.access_token
 
           # If this is a new session, that tests that follow could fail if they
-          # try to sign in without starting a new session
+          # try to sign in without starting a new session.
+          # Also, if the browser wasn't already signed in, leaving it
+          # signed in could cause tests to fail when they try to sign
+          # in again. For example, that would happen if a test has a
+          # before(:context) block that fabricates via the API, and
+          # it's the first test to run so it creates an access token
+          #
           # Sign out so the tests can successfully sign in
-          Page::Main::Menu.perform(&:sign_out) if @is_new_session
+          Page::Main::Menu.perform(&:sign_out) if @is_new_session || !signed_in_initially
 
           token
         end

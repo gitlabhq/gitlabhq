@@ -34,7 +34,7 @@ All reviewers can help ensure accuracy, clarity, completeness, and adherence to 
 **3. Maintainer**
 
 1. [ ] Review by assigned maintainer, who can always request/require the above reviews. Maintainer's review can occur before or after a technical writer review.
-1. [ ] Ensure a release milestone is set and that you merge the equivalent EE MR before the CE MR if both exist.
+1. [ ] Ensure a release milestone is set.
 1. [ ] If there has not been a technical writer review, [create an issue for one using the Doc Review template](https://gitlab.com/gitlab-org/gitlab/issues/new?issuable_template=Doc%20Review).
 
 /label ~documentation

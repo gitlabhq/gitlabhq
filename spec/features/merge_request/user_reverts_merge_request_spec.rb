@@ -20,7 +20,7 @@ describe 'User reverts a merge request', :js do
     visit(merge_request_path(merge_request))
   end
 
-  it 'reverts a merge request' do
+  it 'reverts a merge request', :sidekiq_might_not_need_inline do
     find("a[href='#modal-revert-commit']").click
 
     page.within('#modal-revert-commit') do
@@ -33,7 +33,7 @@ describe 'User reverts a merge request', :js do
     wait_for_requests
   end
 
-  it 'does not revert a merge request that was previously reverted' do
+  it 'does not revert a merge request that was previously reverted', :sidekiq_might_not_need_inline do
     find("a[href='#modal-revert-commit']").click
 
     page.within('#modal-revert-commit') do
@@ -51,7 +51,7 @@ describe 'User reverts a merge request', :js do
     expect(page).to have_content('Sorry, we cannot revert this merge request automatically.')
   end
 
-  it 'reverts a merge request in a new merge request' do
+  it 'reverts a merge request in a new merge request', :sidekiq_might_not_need_inline do
     find("a[href='#modal-revert-commit']").click
 
     page.within('#modal-revert-commit') do

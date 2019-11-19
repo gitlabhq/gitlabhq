@@ -12,8 +12,10 @@ describe 'Editing file blob', :js do
   let(:readme_file_path) { 'README.md' }
 
   before do
-    stub_feature_flags(web_ide_default: false)
+    stub_feature_flags(web_ide_default: false, single_mr_diff_view: false)
   end
+
+  it_behaves_like 'rendering a single diff version'
 
   context 'as a developer' do
     let(:user) { create(:user) }
@@ -27,14 +29,14 @@ describe 'Editing file blob', :js do
     def edit_and_commit(commit_changes: true)
       wait_for_requests
       find('.js-edit-blob').click
-      fill_editor(content: "class NextFeature\\nend\\n")
+      fill_editor(content: 'class NextFeature\\nend\\n')
 
       if commit_changes
         click_button 'Commit changes'
       end
     end
 
-    def fill_editor(content: "class NextFeature\\nend\\n")
+    def fill_editor(content: 'class NextFeature\\nend\\n')
       wait_for_requests
       find('#editor')
       execute_script("ace.edit('editor').setValue('#{content}')")
@@ -58,6 +60,13 @@ describe 'Editing file blob', :js do
       edit_and_commit
 
       expect(page).to have_content 'NextFeature'
+    end
+
+    it 'editing a template file in a sub directory does not change path' do
+      project.repository.create_file(user, 'ci/.gitlab-ci.yml', 'test', message: 'testing', branch_name: branch)
+      visit project_edit_blob_path(project, tree_join(branch, 'ci/.gitlab-ci.yml'))
+
+      expect(find_by_id('file_path').value).to eq('ci/.gitlab-ci.yml')
     end
 
     context 'from blob file path' do
@@ -88,13 +97,13 @@ describe 'Editing file blob', :js do
     context 'when rendering the preview' do
       it 'renders content with CommonMark' do
         visit project_edit_blob_path(project, tree_join(branch, readme_file_path))
-        fill_editor(content: "1. one\\n  - sublist\\n")
+        fill_editor(content: '1. one\\n  - sublist\\n')
         click_link 'Preview'
         wait_for_requests
 
         # the above generates two separate lists (not embedded) in CommonMark
-        expect(page).to have_content("sublist")
-        expect(page).not_to have_xpath("//ol//li//ul")
+        expect(page).to have_content('sublist')
+        expect(page).not_to have_xpath('//ol//li//ul')
       end
     end
   end

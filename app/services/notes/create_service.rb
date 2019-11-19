@@ -42,6 +42,10 @@ module Notes
         clear_noteable_diffs_cache(note)
         Suggestions::CreateService.new(note).execute
         increment_usage_counter(note)
+
+        if Feature.enabled?(:notes_create_service_tracking, project)
+          Gitlab::Tracking.event('Notes::CreateService', 'execute', tracking_data_for(note))
+        end
       end
 
       if quick_actions_service.commands_executed_count.to_i > 0
@@ -58,6 +62,17 @@ module Notes
       end
 
       note
+    end
+
+    private
+
+    def tracking_data_for(note)
+      label = Gitlab.ee? && note.author == User.visual_review_bot ? 'anonymous_visual_review_note' : 'note'
+
+      {
+        label: label,
+        value: note.id
+      }
     end
   end
 end

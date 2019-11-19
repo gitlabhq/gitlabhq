@@ -20,7 +20,8 @@ module Gitlab
           def find_deployments
             deployments = Deployment.joins(:project).merge(Project.inside_path(group.full_path))
             deployments = deployments.where(projects: { id: options[:projects] }) if options[:projects]
-            deployments = deployments.where("deployments.created_at > ?", from)
+            deployments = deployments.where("deployments.created_at > ?", options[:from])
+            deployments = deployments.where("deployments.created_at < ?", options[:to]) if options[:to]
             deployments.success.count
           end
         end

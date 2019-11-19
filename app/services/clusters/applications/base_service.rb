@@ -19,8 +19,16 @@ module Clusters
             application.hostname = params[:hostname]
           end
 
+          if application.has_attribute?(:kibana_hostname)
+            application.kibana_hostname = params[:kibana_hostname]
+          end
+
           if application.has_attribute?(:email)
             application.email = params[:email]
+          end
+
+          if application.has_attribute?(:stack)
+            application.stack = params[:stack]
           end
 
           if application.respond_to?(:oauth_application)
@@ -60,17 +68,11 @@ module Clusters
       end
 
       def invalid_application?
-        unknown_application? || (!cluster.project_type? && project_only_application?)
+        unknown_application? || (application_name == Applications::ElasticStack.application_name && !Feature.enabled?(:enable_cluster_application_elastic_stack)) || (application_name == Applications::Crossplane.application_name && !Feature.enabled?(:enable_cluster_application_crossplane))
       end
 
       def unknown_application?
         Clusters::Cluster::APPLICATIONS.keys.exclude?(application_name)
-      end
-
-      # These applications will need extra configuration to enable them to work
-      # with groups of projects
-      def project_only_application?
-        Clusters::Cluster::PROJECT_ONLY_APPLICATIONS.include?(application_name)
       end
 
       def application_name

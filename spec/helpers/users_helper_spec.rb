@@ -76,6 +76,10 @@ describe UsersHelper do
       allow(helper).to receive(:can?).and_return(false)
     end
 
+    after do
+      expect(items).not_to include(:start_trial)
+    end
+
     it 'includes all default items' do
       expect(items).to include(:help, :sign_out)
     end

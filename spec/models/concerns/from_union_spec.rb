@@ -15,7 +15,7 @@ describe FromUnion do
     it 'selects from the results of the UNION' do
       query = model.from_union([model.where(id: 1), model.where(id: 2)])
 
-      expect(query.to_sql).to match(/FROM \(SELECT.+UNION.+SELECT.+\) users/m)
+      expect(query.to_sql).to match(/FROM \(\(SELECT.+\)\nUNION\n\(SELECT.+\)\) users/m)
     end
 
     it 'supports the use of a custom alias for the sub query' do
@@ -24,7 +24,7 @@ describe FromUnion do
         alias_as: 'kittens'
       )
 
-      expect(query.to_sql).to match(/FROM \(SELECT.+UNION.+SELECT.+\) kittens/m)
+      expect(query.to_sql).to match(/FROM \(\(SELECT.+\)\nUNION\n\(SELECT.+\)\) kittens/m)
     end
 
     it 'supports keeping duplicate rows' do
@@ -34,7 +34,7 @@ describe FromUnion do
       )
 
       expect(query.to_sql)
-        .to match(/FROM \(SELECT.+UNION ALL.+SELECT.+\) users/m)
+        .to match(/FROM \(\(SELECT.+\)\nUNION ALL\n\(SELECT.+\)\) users/m)
     end
   end
 end

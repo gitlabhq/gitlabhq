@@ -68,7 +68,7 @@ describe RepositoryCheck::SingleRepositoryWorker do
 
   it 'creates missing wikis' do
     project = create(:project, :wiki_enabled)
-    Gitlab::Shell.new.rm_directory(project.repository_storage, project.wiki.path)
+    TestEnv.rm_storage_dir(project.repository_storage, project.wiki.path)
 
     subject.perform(project.id)
 
@@ -77,12 +77,12 @@ describe RepositoryCheck::SingleRepositoryWorker do
 
   it 'does not create a wiki if the main repo does not exist at all' do
     project = create(:project, :repository)
-    Gitlab::Shell.new.rm_directory(project.repository_storage, project.path)
-    Gitlab::Shell.new.rm_directory(project.repository_storage, project.wiki.path)
+    TestEnv.rm_storage_dir(project.repository_storage, project.path)
+    TestEnv.rm_storage_dir(project.repository_storage, project.wiki.path)
 
     subject.perform(project.id)
 
-    expect(Gitlab::Shell.new.exists?(project.repository_storage, project.wiki.path)).to eq(false)
+    expect(TestEnv.storage_dir_exists?(project.repository_storage, project.wiki.path)).to eq(false)
   end
 
   def create_push_event(project)

@@ -7,6 +7,9 @@ class Projects::BlobController < Projects::ApplicationController
   include RendersBlob
   include NotesHelper
   include ActionView::Helpers::SanitizeHelper
+  include RedirectsForMissingPathOnTree
+  include SourcegraphGon
+
   prepend_before_action :authenticate_user!, only: [:edit]
 
   around_action :allow_gitaly_ref_name_caching, only: [:show]
@@ -119,7 +122,7 @@ class Projects::BlobController < Projects::ApplicationController
         end
       end
 
-      return render_404
+      return redirect_to_tree_root_for_missing_path(@project, @ref, @path)
     end
   end
 

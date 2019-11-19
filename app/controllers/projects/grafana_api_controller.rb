@@ -2,6 +2,7 @@
 
 class Projects::GrafanaApiController < Projects::ApplicationController
   include RenderServiceResults
+  include MetricsDashboard
 
   def proxy
     result = ::Grafana::ProxyService.new(
@@ -18,6 +19,10 @@ class Projects::GrafanaApiController < Projects::ApplicationController
   end
 
   private
+
+  def metrics_dashboard_params
+    params.permit(:embedded, :grafana_url)
+  end
 
   def query_params
     params.permit(:query, :start, :end, :step)

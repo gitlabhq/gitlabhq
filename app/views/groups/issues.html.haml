@@ -22,4 +22,10 @@
   - if @can_bulk_update
     = render_if_exists 'shared/issuable/group_bulk_update_sidebar', group: @group, type: :issues
 
-  = render 'shared/issues'
+  - if Feature.enabled?(:vue_issuables_list, @group)
+    .js-issuables-list{ data: { endpoint: expose_url(api_v4_groups_issues_path(id: @group.id)),
+      'can-bulk-edit': @can_bulk_update.to_json,
+      'empty-svg-path': image_path('illustrations/issues.svg'),
+      'sort-key': @sort } }
+  - else
+    = render 'shared/issues'

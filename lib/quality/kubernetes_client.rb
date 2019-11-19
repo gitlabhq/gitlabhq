@@ -12,7 +12,16 @@ module Quality
       @namespace = namespace
     end
 
-    def cleanup(release_name:)
+    def cleanup(release_name:, wait: true)
+      selector = case release_name
+                 when String
+                   %(-l release="#{release_name}")
+                 when Array
+                   %(-l 'release in (#{release_name.join(', ')})')
+                 else
+                   raise ArgumentError, 'release_name must be a string or an array'
+                 end
+
       command = [
         %(--namespace "#{namespace}"),
         'delete',
@@ -20,7 +29,8 @@ module Quality
         '--now',
         '--ignore-not-found',
         '--include-uninitialized',
-        %(-l release="#{release_name}")
+        %(--wait=#{wait}),
+        selector
       ]
 
       run_command(command)

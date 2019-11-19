@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe ApplicationSetting do
+  using RSpec::Parameterized::TableSyntax
+
   subject(:setting) { described_class.create_from_defaults }
 
   it { include(CacheableAttributes) }
@@ -64,12 +66,61 @@ describe ApplicationSetting do
     it { is_expected.not_to allow_value('three').for(:push_event_activities_limit) }
     it { is_expected.not_to allow_value(nil).for(:push_event_activities_limit) }
 
+    context 'when snowplow is enabled' do
+      before do
+        setting.snowplow_enabled = true
+      end
+
+      it { is_expected.not_to allow_value(nil).for(:snowplow_collector_hostname) }
+      it { is_expected.to allow_value("snowplow.gitlab.com").for(:snowplow_collector_hostname) }
+      it { is_expected.not_to allow_value('/example').for(:snowplow_collector_hostname) }
+      it { is_expected.to allow_value('https://example.org').for(:snowplow_iglu_registry_url) }
+      it { is_expected.not_to allow_value('not-a-url').for(:snowplow_iglu_registry_url) }
+      it { is_expected.to allow_value(nil).for(:snowplow_iglu_registry_url) }
+    end
+
+    context 'when snowplow is not enabled' do
+      it { is_expected.to allow_value(nil).for(:snowplow_collector_hostname) }
+      it { is_expected.to allow_value(nil).for(:snowplow_iglu_registry_url) }
+    end
+
     context "when user accepted let's encrypt terms of service" do
       before do
         setting.update(lets_encrypt_terms_of_service_accepted: true)
       end
 
       it { is_expected.not_to allow_value(nil).for(:lets_encrypt_notification_email) }
+    end
+
+    describe 'EKS integration' do
+      before do
+        setting.eks_integration_enabled = eks_enabled
+      end
+
+      context 'integration is disabled' do
+        let(:eks_enabled) { false }
+
+        it { is_expected.to allow_value(nil).for(:eks_account_id) }
+        it { is_expected.to allow_value(nil).for(:eks_access_key_id) }
+        it { is_expected.to allow_value(nil).for(:eks_secret_access_key) }
+      end
+
+      context 'integration is enabled' do
+        let(:eks_enabled) { true }
+
+        it { is_expected.to allow_value('123456789012').for(:eks_account_id) }
+        it { is_expected.not_to allow_value(nil).for(:eks_account_id) }
+        it { is_expected.not_to allow_value('123').for(:eks_account_id) }
+        it { is_expected.not_to allow_value('12345678901a').for(:eks_account_id) }
+
+        it { is_expected.to allow_value('access-key-id-12').for(:eks_access_key_id) }
+        it { is_expected.not_to allow_value('a' * 129).for(:eks_access_key_id) }
+        it { is_expected.not_to allow_value('short-key').for(:eks_access_key_id) }
+        it { is_expected.not_to allow_value(nil).for(:eks_access_key_id) }
+
+        it { is_expected.to allow_value('secret-access-key').for(:eks_secret_access_key) }
+        it { is_expected.not_to allow_value(nil).for(:eks_secret_access_key) }
+      end
     end
 
     describe 'default_artifacts_expire_in' do
@@ -446,6 +497,15 @@ describe ApplicationSetting do
         it { is_expected.not_to allow_value(nil).for(:static_objects_external_storage_auth_token) }
       end
     end
+
+    context 'sourcegraph settings' do
+      it 'is invalid if sourcegraph is enabled and no url is provided' do
+        allow(subject).to receive(:sourcegraph_enabled).and_return(true)
+
+        expect(subject.sourcegraph_url).to be_nil
+        is_expected.to be_invalid
+      end
+    end
   end
 
   context 'restrict creating duplicates' do
@@ -530,6 +590,25 @@ describe ApplicationSetting do
           .is_greater_than_or_equal_to(Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES)
           .is_less_than_or_equal_to(Gitlab::Git::Diff::MAX_PATCH_BYTES_UPPER_BOUND)
         end
+      end
+    end
+  end
+
+  describe '#sourcegraph_url_is_com?' do
+    where(:url, :is_com) do
+      'https://sourcegraph.com' | true
+      'https://sourcegraph.com/' | true
+      'https://www.sourcegraph.com' | true
+      'shttps://www.sourcegraph.com' | false
+      'https://sourcegraph.example.com/' | false
+      'https://sourcegraph.org/' | false
+    end
+
+    with_them do
+      it 'matches the url with sourcegraph.com' do
+        setting.sourcegraph_url = url
+
+        expect(setting.sourcegraph_url_is_com?).to eq(is_com)
       end
     end
   end

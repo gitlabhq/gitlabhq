@@ -43,16 +43,7 @@ export default {
       'isProjectInvalid',
       'projectSelectionLabel',
     ]),
-    ...mapState([
-      'apiHost',
-      'connectError',
-      'connectSuccessful',
-      'enabled',
-      'projects',
-      'selectedProject',
-      'settingsLoading',
-      'token',
-    ]),
+    ...mapState(['enabled', 'projects', 'selectedProject', 'settingsLoading', 'token']),
   },
   created() {
     this.setInitialState({
@@ -65,15 +56,7 @@ export default {
     });
   },
   methods: {
-    ...mapActions([
-      'fetchProjects',
-      'setInitialState',
-      'updateApiHost',
-      'updateEnabled',
-      'updateSelectedProject',
-      'updateSettings',
-      'updateToken',
-    ]),
+    ...mapActions(['setInitialState', 'updateEnabled', 'updateSelectedProject', 'updateSettings']),
     handleSubmit() {
       this.updateSettings();
     },
@@ -95,15 +78,7 @@ export default {
         s__('ErrorTracking|Active')
       }}</label>
     </div>
-    <error-tracking-form
-      :api-host="apiHost"
-      :connect-error="connectError"
-      :connect-successful="connectSuccessful"
-      :token="token"
-      @handle-connect="fetchProjects"
-      @update-api-host="updateApiHost"
-      @update-token="updateToken"
-    />
+    <error-tracking-form />
     <div class="form-group">
       <project-dropdown
         :has-projects="hasProjects"

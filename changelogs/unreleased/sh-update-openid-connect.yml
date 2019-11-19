@@ -1,0 +1,5 @@
+---
+title: Update omniauth_openid_connect to v0.3.3
+merge_request: 19525
+author:
+type: fixed

@@ -40,7 +40,7 @@ module Gitlab
         private
 
         def repository_update_command
-          'helm repo update' if repository
+          'helm repo update'
         end
 
         # Uses `helm upgrade --install` which means we can use this for both

@@ -51,10 +51,6 @@ describe Projects::MirrorsController do
       sign_in(project.owner)
     end
 
-    around do |example|
-      Sidekiq::Testing.fake! { example.run }
-    end
-
     context 'With valid URL for a push' do
       let(:remote_mirror_attributes) do
         { "0" => { "enabled" => "0", url: 'https://updated.example.com' } }

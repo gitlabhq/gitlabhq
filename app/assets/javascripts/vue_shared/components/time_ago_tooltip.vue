@@ -32,7 +32,7 @@ export default {
 </script>
 <template>
   <time
-    v-gl-tooltip="{ placement: tooltipPlacement }"
+    v-gl-tooltip.viewport="{ placement: tooltipPlacement }"
     :class="cssClass"
     :title="tooltipTitle(time)"
     v-text="timeFormated(time)"

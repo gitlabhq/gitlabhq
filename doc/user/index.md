@@ -50,15 +50,15 @@ GitLab is a Git-based platform that integrates a great number of essential tools
 With GitLab Enterprise Edition, you can also:
 
 - Provide support with [Service Desk](project/service_desk.md).
-- Improve collaboration with
-  [Merge Request Approvals](project/merge_requests/index.md#merge-request-approvals-starter),
-  [Multiple Assignees for Issues](project/issues/multiple_assignees_for_issues.md),
-  and [Multiple Issue Boards](project/issue_board.md#multiple-issue-boards).
+- Improve collaboration with:
+  - [Merge Request Approvals](project/merge_requests/merge_request_approvals.md). **(STARTER)**
+  - [Multiple Assignees for Issues](project/issues/multiple_assignees_for_issues.md). **(STARTER)**
+  - [Multiple Issue Boards](project/issue_board.md#multiple-issue-boards).
 - Create formal relationships between issues with [Related Issues](project/issues/related_issues.md).
 - Use [Burndown Charts](project/milestones/burndown_charts.md) to track progress during a sprint or while working on a new version of their software.
 - Leverage [Elasticsearch](../integration/elasticsearch.md) with [Advanced Global Search](search/advanced_global_search.md) and [Advanced Syntax Search](search/advanced_search_syntax.md) for faster, more advanced code search across your entire GitLab instance.
 - [Authenticate users with Kerberos](../integration/kerberos.md).
-- [Mirror a repository](../workflow/repository_mirroring.md) from elsewhere on your local server.
+- [Mirror a repository](project/repository/repository_mirroring.md) from elsewhere on your local server.
 - [Export issues as CSV](project/issues/csv_export.md).
 - View your entire CI/CD pipeline involving more than one project with [Multiple-Project Pipelines](../ci/multi_project_pipeline_graphs.md).
 - [Lock files](project/file_lock.md) to prevent conflicts.
@@ -130,12 +130,12 @@ gather feedback through [resolvable threads](discussions/index.md#resolvable-com
 
 Read through the [GFM documentation](markdown.md) to learn how to apply
 the best of GitLab Flavored Markdown in your threads, comments,
-issues and merge requests descriptions, and everywhere else GMF is
+issues and merge requests descriptions, and everywhere else GFM is
 supported.
 
 ## Todos
 
-Never forget to reply to your collaborators. [GitLab Todos](../workflow/todos.md)
+Never forget to reply to your collaborators. [GitLab Todos](todos.md)
 are a tool for working faster and more effectively with your team,
 by listing all user or group mentions, as well as issues and merge
 requests you're assigned to.
@@ -149,6 +149,11 @@ requests you're assigned to.
 [Snippets](snippets.md) are code blocks that you want to store in GitLab, from which
 you have quick access to. You can also gather feedback on them through
 [Discussions](#Discussions).
+
+## Keyboard shortcuts
+
+There are many [keyboard shortcuts](shortcuts.md) in GitLab to help you navigate between
+pages and accomplish tasks faster.
 
 ## Integrations
 

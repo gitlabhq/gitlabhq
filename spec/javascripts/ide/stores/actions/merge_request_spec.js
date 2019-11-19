@@ -356,8 +356,30 @@ describe('IDE store merge request actions', () => {
         changes: [],
       };
       store.state.entries = {
-        foo: {},
-        bar: {},
+        foo: {
+          type: 'blob',
+        },
+        bar: {
+          type: 'blob',
+        },
+      };
+
+      store.state.currentProjectId = 'test/test';
+      store.state.currentBranchId = 'master';
+
+      store.state.projects['test/test'] = {
+        branches: {
+          master: {
+            commit: {
+              id: '7297abc',
+            },
+          },
+          abcbranch: {
+            commit: {
+              id: '29020fc',
+            },
+          },
+        },
       };
 
       const originalDispatch = store.dispatch;
@@ -415,9 +437,11 @@ describe('IDE store merge request actions', () => {
     it('updates activity bar view and gets file data, if changes are found', done => {
       store.state.entries.foo = {
         url: 'test',
+        type: 'blob',
       };
       store.state.entries.bar = {
         url: 'test',
+        type: 'blob',
       };
 
       testMergeRequestChanges.changes = [

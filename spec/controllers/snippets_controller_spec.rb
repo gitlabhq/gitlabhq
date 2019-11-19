@@ -251,7 +251,9 @@ describe SnippetsController do
 
     context 'when the snippet is spam' do
       before do
-        allow_any_instance_of(AkismetService).to receive(:spam?).and_return(true)
+        allow_next_instance_of(AkismetService) do |instance|
+          allow(instance).to receive(:spam?).and_return(true)
+        end
       end
 
       context 'when the snippet is private' do
@@ -323,7 +325,9 @@ describe SnippetsController do
 
     context 'when the snippet is spam' do
       before do
-        allow_any_instance_of(AkismetService).to receive(:spam?).and_return(true)
+        allow_next_instance_of(AkismetService) do |instance|
+          allow(instance).to receive(:spam?).and_return(true)
+        end
       end
 
       context 'when the snippet is private' do
@@ -431,7 +435,9 @@ describe SnippetsController do
     let(:snippet) { create(:personal_snippet, :public, author: user) }
 
     before do
-      allow_any_instance_of(AkismetService).to receive_messages(submit_spam: true)
+      allow_next_instance_of(AkismetService) do |instance|
+        allow(instance).to receive_messages(submit_spam: true)
+      end
       stub_application_setting(akismet_enabled: true)
     end
 

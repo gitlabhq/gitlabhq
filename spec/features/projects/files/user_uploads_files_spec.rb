@@ -16,8 +16,6 @@ describe 'Projects > Files > User uploads files' do
   let(:project2_tree_path_root_ref) { project_tree_path(project2, project2.repository.root_ref) }
 
   before do
-    stub_feature_flags(vue_file_list: false)
-
     project.add_maintainer(user)
     sign_in(user)
   end
@@ -76,7 +74,7 @@ describe 'Projects > Files > User uploads files' do
       visit(project2_tree_path_root_ref)
     end
 
-    it 'uploads and commit a new file to a forked project', :js do
+    it 'uploads and commit a new file to a forked project', :js, :sidekiq_might_not_need_inline do
       find('.add-to-tree').click
       click_link('Upload file')
 

@@ -186,6 +186,24 @@ module TreeHelper
 
     attrs
   end
+
+  def vue_file_list_data(project, ref)
+    {
+      project_path: project.full_path,
+      project_short_path: project.path,
+      ref: ref,
+      full_name: project.name_with_namespace
+    }
+  end
+
+  def directory_download_links(project, ref, archive_prefix)
+    Gitlab::Workhorse::ARCHIVE_FORMATS.map do |fmt|
+      {
+        text: fmt,
+        path: project_archive_path(project, id: tree_join(ref, archive_prefix), format: fmt)
+      }
+    end
+  end
 end
 
 TreeHelper.prepend_if_ee('::EE::TreeHelper')

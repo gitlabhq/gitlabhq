@@ -1,9 +1,18 @@
+# frozen_string_literal: true
+
 require 'fast_spec_helper'
 require 'support/helpers/stub_feature_flags'
 require_dependency 'active_model'
 
 describe Gitlab::Ci::Config::Entry::Rules do
-  let(:entry) { described_class.new(config) }
+  let(:factory) do
+    Gitlab::Config::Entry::Factory.new(described_class)
+      .metadata(metadata)
+      .value(config)
+  end
+
+  let(:metadata) { { allowed_when: %w[always never] } }
+  let(:entry)    { factory.create! }
 
   describe '.new' do
     subject { entry }
@@ -16,7 +25,7 @@ describe Gitlab::Ci::Config::Entry::Rules do
       it { is_expected.to be_a(described_class) }
       it { is_expected.to be_valid }
 
-      context 'after #compose!' do
+      context 'when composed' do
         before do
           subject.compose!
         end
@@ -36,7 +45,7 @@ describe Gitlab::Ci::Config::Entry::Rules do
       it { is_expected.to be_a(described_class) }
       it { is_expected.to be_valid }
 
-      context 'after #compose!' do
+      context 'when composed' do
         before do
           subject.compose!
         end
@@ -51,48 +60,6 @@ describe Gitlab::Ci::Config::Entry::Rules do
       end
 
       it { is_expected.not_to be_valid }
-    end
-
-    context 'with an invalid boolean when:' do
-      let(:config) do
-        [{ if: '$THIS == "that"', when: false }]
-      end
-
-      it { is_expected.to be_a(described_class) }
-      it { is_expected.to be_valid }
-
-      context 'after #compose!' do
-        before do
-          subject.compose!
-        end
-
-        it { is_expected.not_to be_valid }
-
-        it 'returns an error about invalid when:' do
-          expect(subject.errors).to include(/when unknown value: false/)
-        end
-      end
-    end
-
-    context 'with an invalid string when:' do
-      let(:config) do
-        [{ if: '$THIS == "that"', when: 'explode' }]
-      end
-
-      it { is_expected.to be_a(described_class) }
-      it { is_expected.to be_valid }
-
-      context 'after #compose!' do
-        before do
-          subject.compose!
-        end
-
-        it { is_expected.not_to be_valid }
-
-        it 'returns an error about invalid when:' do
-          expect(subject.errors).to include(/when unknown value: explode/)
-        end
-      end
     end
   end
 

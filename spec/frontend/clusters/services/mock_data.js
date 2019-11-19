@@ -52,6 +52,18 @@ const CLUSTERS_MOCK_DATA = {
             email: 'test@example.com',
             can_uninstall: false,
           },
+          {
+            name: 'crossplane',
+            status: APPLICATION_STATUS.ERROR,
+            status_reason: 'Cannot connect',
+            can_uninstall: false,
+          },
+          {
+            name: 'elastic_stack',
+            status: APPLICATION_STATUS.ERROR,
+            status_reason: 'Cannot connect',
+            can_uninstall: false,
+          },
         ],
       },
     },
@@ -98,6 +110,17 @@ const CLUSTERS_MOCK_DATA = {
             status_reason: 'Cannot connect',
             email: 'test@example.com',
           },
+          {
+            name: 'crossplane',
+            status: APPLICATION_STATUS.ERROR,
+            status_reason: 'Cannot connect',
+            stack: 'gcp',
+          },
+          {
+            name: 'elastic_stack',
+            status: APPLICATION_STATUS.ERROR,
+            status_reason: 'Cannot connect',
+          },
         ],
       },
     },
@@ -105,11 +128,13 @@ const CLUSTERS_MOCK_DATA = {
   POST: {
     '/gitlab-org/gitlab-shell/clusters/1/applications/helm': {},
     '/gitlab-org/gitlab-shell/clusters/1/applications/ingress': {},
+    '/gitlab-org/gitlab-shell/clusters/1/applications/crossplane': {},
     '/gitlab-org/gitlab-shell/clusters/1/applications/cert_manager': {},
     '/gitlab-org/gitlab-shell/clusters/1/applications/runner': {},
     '/gitlab-org/gitlab-shell/clusters/1/applications/prometheus': {},
     '/gitlab-org/gitlab-shell/clusters/1/applications/jupyter': {},
     '/gitlab-org/gitlab-shell/clusters/1/applications/knative': {},
+    '/gitlab-org/gitlab-shell/clusters/1/applications/elastic_stack': {},
   },
 };
 
@@ -126,11 +151,13 @@ const DEFAULT_APPLICATION_STATE = {
 const APPLICATIONS_MOCK_STATE = {
   helm: { title: 'Helm Tiller', status: 'installable' },
   ingress: { title: 'Ingress', status: 'installable' },
+  crossplane: { title: 'Crossplane', status: 'installable', stack: '' },
   cert_manager: { title: 'Cert-Manager', status: 'installable' },
   runner: { title: 'GitLab Runner' },
   prometheus: { title: 'Prometheus' },
   jupyter: { title: 'JupyterHub', status: 'installable', hostname: '' },
   knative: { title: 'Knative ', status: 'installable', hostname: '' },
+  elastic_stack: { title: 'Elastic Stack', status: 'installable', kibana_hostname: '' },
 };
 
 export { CLUSTERS_MOCK_DATA, DEFAULT_APPLICATION_STATE, APPLICATIONS_MOCK_STATE };

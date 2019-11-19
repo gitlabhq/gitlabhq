@@ -31,7 +31,7 @@ integration settings.
 
 Keep in mind that you need to have the appropriate permissions for your Slack
 team in order to be able to install a new application, read more in Slack's
-docs on [Adding an app to your team][slack-docs].
+docs on [Adding an app to your team](https://slack.com/help/articles/202035138).
 
 To enable GitLab's service for your Slack team:
 
@@ -60,6 +60,5 @@ project, you would do:
 /gitlab gitlab-org/gitlab issue show 1001
 ```
 
-[slack-docs]: https://get.slack.help/hc/en-us/articles/202035138-Adding-apps-to-your-team
 [slash commands]: ../../../integration/slash_commands.md
 [slack-manual]: slack_slash_commands.md

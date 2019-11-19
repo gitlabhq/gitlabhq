@@ -2,53 +2,10 @@
 comments: false
 ---
 
-# Workflow
+# Workflow (Deprecated)
 
-- [Automatic issue closing](../user/project/issues/managing_issues.md#closing-issues-automatically)
-- [Change your time zone](timezone.md)
-- [Cycle Analytics](../user/project/cycle_analytics.md)
-- [Description templates](../user/project/description_templates.md)
-- [Feature branch workflow](workflow.md)
-- [GitLab Flow](gitlab_flow.md)
-- [Groups](../user/group/index.md)
-- Issues - The GitLab Issue Tracker is an advanced and complete tool for
-  tracking the evolution of a new idea or the process of solving a problem.
-  - [Exporting Issues](../user/project/issues/csv_export.md) **(STARTER)** Export issues as a CSV, emailed as an attachment.
-  - [Confidential issues](../user/project/issues/confidential_issues.md)
-  - [Due date for issues](../user/project/issues/due_dates.md)
-- [Issue Board](../user/project/issue_board.md)
-- [Keyboard shortcuts](shortcuts.md)
-- [File finder](file_finder.md)
-- [File lock](../user/project/file_lock.md) **(PREMIUM)**
-- [Labels](../user/project/labels.md)
-- [Issue weight](issue_weight.md) **(STARTER)**
-- [Notification emails](notifications.md)
-- [Projects](../user/project/index.md)
-- [Project forking workflow](forking_workflow.md)
-- [Project users](../user/project/members/index.md)
-- [Protected branches](../user/project/protected_branches.md)
-- [Protected tags](../user/project/protected_tags.md)
-- [Quick Actions](../user/project/quick_actions.md)
-- [Sharing projects with groups](../user/project/members/share_project_with_groups.md)
-- [Time tracking](time_tracking.md)
-- [Web Editor](../user/project/repository/web_editor.md)
-- [Releases](releases.md)
-- [Milestones](../user/project/milestones/index.md)
-- [Merge Requests](../user/project/merge_requests/index.md)
-  - [Authorization for merge requests](../user/project/merge_requests/authorization_for_merge_requests.md)
-  - [Cherry-pick changes](../user/project/merge_requests/cherry_pick_changes.md)
-  - [Merge when pipeline succeeds](../user/project/merge_requests/merge_when_pipeline_succeeds.md)
-  - [Resolve threads in merge requests reviews](../user/discussions/index.md)
-  - [Resolve merge conflicts in the UI](../user/project/merge_requests/resolve_conflicts.md)
-  - [Revert changes in the UI](../user/project/merge_requests/revert_changes.md)
-  - [Merge requests versions](../user/project/merge_requests/versions.md)
-  - ["Work In Progress" merge requests](../user/project/merge_requests/work_in_progress_merge_requests.md)
-  - [Fast-forward merge requests](../user/project/merge_requests/fast_forward_merge.md)
-  - [Merge request approvals](../user/project/merge_requests/merge_request_approvals.md) **(STARTER)**
-- [Repository mirroring](repository_mirroring.md) **(STARTER)**
-- [Service Desk](../user/project/service_desk.md) **(PREMIUM)**
-- [Manage large binaries with Git LFS](lfs/manage_large_binaries_with_git_lfs.md)
-- [Importing from SVN, GitHub, Bitbucket, etc](importing/README.md)
-- [Todos](todos.md)
-- [Snippets](../user/snippets.md)
-- [Subgroups](../user/group/subgroups/index.md)
+This page was deprecated, with all content previously stored under the `/workflow` path moved
+to other locations in the documentation site, organized by topic. You can use the search
+box to find the content you are looking for, browse the main [GitLab Documentation page](../README.md),
+or view the [issue that deprecated this page](https://gitlab.com/gitlab-org/gitlab/issues/32940)
+for more details.

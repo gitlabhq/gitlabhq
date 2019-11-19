@@ -57,7 +57,7 @@ Rails.application.routes.draw do
 
   # Sign up
   get 'users/sign_up/welcome' => 'registrations#welcome'
-  patch 'users/sign_up/update_role' => 'registrations#update_role'
+  patch 'users/sign_up/update_registration' => 'registrations#update_registration'
 
   # Search
   get 'search' => 'search#show'
@@ -142,6 +142,13 @@ Rails.application.routes.draw do
       collection do
         post :create_user
         post :create_gcp
+        post :create_aws
+        post :authorize_aws_role
+        delete :revoke_aws_role
+
+        scope :aws do
+          get 'api/:resource', to: 'clusters#aws_proxy', as: :aws_proxy
+        end
       end
 
       member do

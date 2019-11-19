@@ -47,12 +47,17 @@ module Gitlab
           @current_segment.text << data
         end
 
+        def clear!
+          @segments.clear
+          @current_segment = Segment.new(style: style)
+        end
+
         def style
           @current_segment.style
         end
 
         def empty?
-          @segments.empty? && @current_segment.empty?
+          @segments.empty? && @current_segment.empty? && @section_duration.nil?
         end
 
         def update_style(ansi_commands)

@@ -12,6 +12,7 @@ import service from '../services/notes_service';
 import loadAwardsHandler from '../../awards_handler';
 import sidebarTimeTrackingEventHub from '../../sidebar/event_hub';
 import { isInViewport, scrollToElement, isInMRPage } from '../../lib/utils/common_utils';
+import { mergeUrlParams } from '../../lib/utils/url_utility';
 import mrWidgetEventHub from '../../vue_merge_request_widget/event_hub';
 import { __ } from '~/locale';
 import Api from '~/api';
@@ -474,6 +475,21 @@ export const convertToDiscussion = ({ commit }, noteId) =>
 
 export const removeConvertedDiscussion = ({ commit }, noteId) =>
   commit(types.REMOVE_CONVERTED_DISCUSSION, noteId);
+
+export const fetchDescriptionVersion = (_, { endpoint, startingVersion }) => {
+  let requestUrl = endpoint;
+
+  if (startingVersion) {
+    requestUrl = mergeUrlParams({ start_version_id: startingVersion }, requestUrl);
+  }
+
+  return axios
+    .get(requestUrl)
+    .then(res => res.data)
+    .catch(() => {
+      Flash(__('Something went wrong while fetching description changes. Please try again.'));
+    });
+};
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

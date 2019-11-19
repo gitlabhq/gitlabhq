@@ -1,13 +1,16 @@
-%p
-  You have been invited
-  - if member.created_by
-    by
-    = link_to member.created_by.name, user_url(member.created_by)
-  to join the
-  = link_to member_source.human_name, member_source.public? ? member_source.web_url : invite_url(@token)
-  #{member_source.model_name.singular} as #{member.human_access}.
+%tr
+  %td.text-content
+    %p
+      You have been invited
+      - if member.created_by
+        by
+        = link_to member.created_by.name, user_url(member.created_by)
+      to join the
+      = link_to member_source.human_name, member_source.public? ? member_source.web_url : invite_url(@token), class: :highlight
+      #{member_source.model_name.singular} as #{content_tag :span, member.human_access, class: :highlight}.
 
-%p
-  = link_to 'Accept invitation', invite_url(@token)
-  or
-  = link_to 'decline', decline_invite_url(@token)
+    %p
+      = link_to 'Accept invitation', invite_url(@token)
+      or
+      = link_to 'decline', decline_invite_url(@token)
+

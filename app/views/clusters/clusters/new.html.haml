@@ -2,9 +2,6 @@
 - page_title _('Kubernetes Cluster')
 - create_eks_enabled = Feature.enabled?(:create_eks_clusters)
 - active_tab = local_assigns.fetch(:active_tab, 'create')
-- create_on_gke_tab_label = s_('ClusterIntegration|Create new Cluster on GKE')
-- create_on_eks_tab_label = s_('ClusterIntegration|Create new Cluster on EKS')
-- create_new_cluster_label = s_('ClusterIntegration|Create new Cluster')
 = javascript_include_tag 'https://apis.google.com/js/api.js'
 
 = render_gcp_signup_offer
@@ -18,14 +15,9 @@
         %a.nav-link{ href: '#create-cluster-pane', id: 'create-cluster-tab', class: active_when(active_tab == 'create'), data: { toggle: 'tab' }, role: 'tab' }
           %span
             - if create_eks_enabled
-              - if @gke_selected
-                = create_on_gke_tab_label
-              - elsif @eks_selected
-                = create_on_eks_tab_label
-              - else
-                = create_new_cluster_label
+              = create_new_cluster_label(provider: params[:provider])
             - else
-              = create_on_gke_tab_label
+              = create_new_cluster_label(provider: 'gcp')
       %li.nav-item{ role: 'presentation' }
         %a.nav-link{ href: '#add-cluster-pane', id: 'add-cluster-tab', class: active_when(active_tab == 'add'), data: { toggle: 'tab' }, role: 'tab' }
           %span Add existing cluster
@@ -33,27 +25,10 @@
     .tab-content.gitlab-tab-content
       - if create_eks_enabled
         .tab-pane{ id: 'create-cluster-pane', class: active_when(active_tab == 'create'), role: 'tabpanel' }
-          - if @gke_selected
-            = render 'clusters/clusters/gcp/header'
-            - if @valid_gcp_token
-              = render 'clusters/clusters/gcp/form'
-            - elsif @authorize_url
-              = render 'clusters/clusters/gcp/signin_with_google_button'
-            - else
-              = render 'clusters/clusters/gcp/gcp_not_configured'
-          - elsif @eks_selected
-            = render 'clusters/clusters/eks/index'
-          - else
-            = render 'clusters/clusters/cloud_providers/cloud_provider_selector'
+          = render new_cluster_partial(provider: params[:provider])
       - else
         .tab-pane{ id: 'create-cluster-pane', class: active_when(active_tab == 'create'), role: 'tabpanel' }
-          = render 'clusters/clusters/gcp/header'
-          - if @valid_gcp_token
-            = render 'clusters/clusters/gcp/form'
-          - elsif @authorize_url
-            = render 'clusters/clusters/gcp/signin_with_google_button'
-          - else
-            = render 'clusters/clusters/gcp/gcp_not_configured'
+          = render new_cluster_partial(provider: 'gcp')
 
       .tab-pane{ id: 'add-cluster-pane', class: active_when(active_tab == 'add'), role: 'tabpanel' }
         = render 'clusters/clusters/user/header'

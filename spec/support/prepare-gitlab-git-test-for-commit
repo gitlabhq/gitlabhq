@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 abort unless [
   system('spec/support/generate-seed-repo-rb', out: 'spec/support/helpers/seed_repo.rb'),

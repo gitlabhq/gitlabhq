@@ -13,6 +13,7 @@ export default class AvailableDropdownMappings {
     runnerTagsEndpoint,
     labelsEndpoint,
     milestonesEndpoint,
+    releasesEndpoint,
     groupsOnly,
     includeAncestorGroups,
     includeDescendantGroups,
@@ -21,6 +22,7 @@ export default class AvailableDropdownMappings {
     this.runnerTagsEndpoint = runnerTagsEndpoint;
     this.labelsEndpoint = labelsEndpoint;
     this.milestonesEndpoint = milestonesEndpoint;
+    this.releasesEndpoint = releasesEndpoint;
     this.groupsOnly = groupsOnly;
     this.includeAncestorGroups = includeAncestorGroups;
     this.includeDescendantGroups = includeDescendantGroups;
@@ -69,6 +71,19 @@ export default class AvailableDropdownMappings {
           symbol: '%',
         },
         element: this.container.querySelector('#js-dropdown-milestone'),
+      },
+      release: {
+        reference: null,
+        gl: DropdownNonUser,
+        extraArguments: {
+          endpoint: this.getReleasesEndpoint(),
+          symbol: '',
+
+          // The DropdownNonUser class is hardcoded to look for and display a
+          // "title" property, so we need to add this property to each release object
+          preprocessing: releases => releases.map(r => ({ ...r, title: r.tag })),
+        },
+        element: this.container.querySelector('#js-dropdown-release'),
       },
       label: {
         reference: null,
@@ -128,6 +143,10 @@ export default class AvailableDropdownMappings {
 
   getMilestoneEndpoint() {
     return `${this.milestonesEndpoint}.json`;
+  }
+
+  getReleasesEndpoint() {
+    return `${this.releasesEndpoint}.json`;
   }
 
   getLabelsEndpoint() {

@@ -1,9 +1,10 @@
 {
   "type": "object",
-  "required": ["name", "tag_name"],
+  "required": ["tag_name", "description"],
   "properties": {
     "name": { "type": "string" },
     "tag_name": { "type": "string" },
+    "ref": { "type": "string "},
     "description": { "type": "string" },
     "description_html": { "type": "string" },
     "created_at": { "type": "date" },

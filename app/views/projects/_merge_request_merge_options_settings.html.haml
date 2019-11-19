@@ -12,3 +12,9 @@
     = form.check_box :printing_merge_request_link_enabled, class: 'form-check-input'
     = form.label :printing_merge_request_link_enabled, class: 'form-check-label' do
       = s_('ProjectSettings|Show link to create/view merge request when pushing from the command line')
+  .form-check.mb-2
+    = form.check_box :remove_source_branch_after_merge, class: 'form-check-input'
+    = form.label :remove_source_branch_after_merge, class: 'form-check-label' do
+      = s_("ProjectSettings|Enable 'Delete source branch' option by default")
+      .descr.text-secondary
+        = s_('ProjectSettings|Existing merge requests and protected branches are not affected')

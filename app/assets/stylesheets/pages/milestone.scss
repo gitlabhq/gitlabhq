@@ -30,7 +30,8 @@ $status-box-line-height: 26px;
       margin-bottom: $gl-padding-4;
     }
 
-    .milestone-progress {
+    .milestone-progress,
+    .milestone-release-links {
       a {
         color: $blue-600;
       }
@@ -236,10 +237,6 @@ $status-box-line-height: 26px;
   > li {
     padding-left: 1em;
   }
-}
-
-.milestone-range {
-  color: $gl-text-color-tertiary;
 }
 
 @include media-breakpoint-down(xs) {

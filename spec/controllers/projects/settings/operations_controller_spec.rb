@@ -186,7 +186,8 @@ describe Projects::Settings::OperationsController do
         {
           grafana_integration_attributes: {
             grafana_url: 'https://grafana.gitlab.com',
-            token: 'eyJrIjoicDRlRTREdjhhOEZ5WjZPWXUzazJOSW0zZHJUejVOd3IiLCJuIjoiVGVzdCBLZXkiLCJpZCI6MX0='
+            token: 'eyJrIjoicDRlRTREdjhhOEZ5WjZPWXUzazJOSW0zZHJUejVOd3IiLCJuIjoiVGVzdCBLZXkiLCJpZCI6MX0=',
+            enabled: 'true'
           }
         }
       end

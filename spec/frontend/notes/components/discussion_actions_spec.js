@@ -1,6 +1,6 @@
 import createStore from '~/notes/stores';
 import { shallowMount, mount, createLocalVue } from '@vue/test-utils';
-import { discussionMock } from '../../../javascripts/notes/mock_data';
+import { discussionMock } from '../../notes/mock_data';
 import DiscussionActions from '~/notes/components/discussion_actions.vue';
 import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import ResolveDiscussionButton from '~/notes/components/discussion_resolve_button.vue';

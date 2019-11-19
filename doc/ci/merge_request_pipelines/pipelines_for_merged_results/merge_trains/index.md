@@ -32,8 +32,8 @@ Merge trains have the following requirements and limitations:
 - This feature requires that
   [pipelines for merged results](../index.md#pipelines-for-merged-results-premium) are
   **configured properly**.
-- Each merge train can run a maximum of **four** pipelines in parallel.
-  If more than four merge requests are added to the merge train, the merge requests
+- Each merge train can run a maximum of **twenty** pipelines in parallel.
+  If more than twenty merge requests are added to the merge train, the merge requests
   will be queued until a slot in the merge train is free. There is no limit to the
   number of merge requests that can be queued.
 - This feature does not support [squash and merge](../../../../user/project/merge_requests/squash_and_merge.md).

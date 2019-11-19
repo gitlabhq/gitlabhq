@@ -35,7 +35,7 @@ Please see the [installation from source guide](installation.md) and the [instal
 ### Microsoft Windows
 
 GitLab is developed for Linux-based operating systems.
-It does **not** run on Microsoft Windows, and we have no plans to support it in the near future. For the latest development status view this [issue](https://gitlab.com/gitlab-org/gitlab-foss/issues/46567).
+It does **not** run on Microsoft Windows, and we have no plans to support it in the near future. For the latest development status view this [issue](https://gitlab.com/gitlab-org/gitlab/issues/22337).
 Please consider using a virtual machine to run GitLab.
 
 ## Ruby versions

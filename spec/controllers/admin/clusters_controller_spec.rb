@@ -73,7 +73,7 @@ describe Admin::ClustersController do
   end
 
   describe 'GET #new' do
-    def get_new(provider: 'gke')
+    def get_new(provider: 'gcp')
       get :new, params: { provider: provider }
     end
 
@@ -227,16 +227,17 @@ describe Admin::ClustersController do
 
     describe 'security' do
       before do
-        allow_any_instance_of(described_class)
-          .to receive(:token_in_session).and_return('token')
-        allow_any_instance_of(described_class)
-          .to receive(:expires_at_in_session).and_return(1.hour.since.to_i.to_s)
-        allow_any_instance_of(GoogleApi::CloudPlatform::Client)
-          .to receive(:projects_zones_clusters_create) do
-          OpenStruct.new(
-            self_link: 'projects/gcp-project-12345/zones/us-central1-a/operations/ope-123',
-            status: 'RUNNING'
-          )
+        allow_next_instance_of(described_class) do |instance|
+          allow(instance).to receive(:token_in_session).and_return('token')
+          allow(instance).to receive(:expires_at_in_session).and_return(1.hour.since.to_i.to_s)
+        end
+        allow_next_instance_of(GoogleApi::CloudPlatform::Client) do |instance|
+          allow(instance).to receive(:projects_zones_clusters_create) do
+            OpenStruct.new(
+              self_link: 'projects/gcp-project-12345/zones/us-central1-a/operations/ope-123',
+              status: 'RUNNING'
+            )
+          end
         end
 
         allow(WaitForClusterCreationWorker).to receive(:perform_in).and_return(nil)
@@ -245,6 +246,69 @@ describe Admin::ClustersController do
       it { expect { post_create_gcp }.to be_allowed_for(:admin) }
       it { expect { post_create_gcp }.to be_denied_for(:user) }
       it { expect { post_create_gcp }.to be_denied_for(:external) }
+    end
+  end
+
+  describe 'POST #create_aws' do
+    let(:params) do
+      {
+        cluster: {
+          name: 'new-cluster',
+          provider_aws_attributes: {
+            key_name: 'key',
+            role_arn: 'arn:role',
+            region: 'region',
+            vpc_id: 'vpc',
+            instance_type: 'instance type',
+            num_nodes: 3,
+            security_group_id: 'security group',
+            subnet_ids: %w(subnet1 subnet2)
+          }
+        }
+      }
+    end
+
+    def post_create_aws
+      post :create_aws, params: params
+    end
+
+    it 'creates a new cluster' do
+      expect(ClusterProvisionWorker).to receive(:perform_async)
+      expect { post_create_aws }.to change { Clusters::Cluster.count }
+        .and change { Clusters::Providers::Aws.count }
+
+      cluster = Clusters::Cluster.instance_type.first
+
+      expect(response.status).to eq(201)
+      expect(response.location).to eq(admin_cluster_path(cluster))
+      expect(cluster).to be_aws
+      expect(cluster).to be_kubernetes
+    end
+
+    context 'params are invalid' do
+      let(:params) do
+        {
+          cluster: { name: '' }
+        }
+      end
+
+      it 'does not create a cluster' do
+        expect { post_create_aws }.not_to change { Clusters::Cluster.count }
+
+        expect(response.status).to eq(422)
+        expect(response.content_type).to eq('application/json')
+        expect(response.body).to include('is invalid')
+      end
+    end
+
+    describe 'security' do
+      before do
+        allow(WaitForClusterCreationWorker).to receive(:perform_in)
+      end
+
+      it { expect { post_create_aws }.to be_allowed_for(:admin) }
+      it { expect { post_create_aws }.to be_denied_for(:user) }
+      it { expect { post_create_aws }.to be_denied_for(:external) }
     end
   end
 
@@ -318,6 +382,72 @@ describe Admin::ClustersController do
     end
   end
 
+  describe 'POST authorize AWS role for EKS cluster' do
+    let(:role_arn) { 'arn:aws:iam::123456789012:role/role-name' }
+    let(:role_external_id) { '12345' }
+
+    let(:params) do
+      {
+        cluster: {
+          role_arn: role_arn,
+          role_external_id: role_external_id
+        }
+      }
+    end
+
+    def go
+      post :authorize_aws_role, params: params
+    end
+
+    it 'creates an Aws::Role record' do
+      expect { go }.to change { Aws::Role.count }
+
+      expect(response.status).to eq 201
+
+      role = Aws::Role.last
+      expect(role.user).to eq admin
+      expect(role.role_arn).to eq role_arn
+      expect(role.role_external_id).to eq role_external_id
+    end
+
+    context 'role cannot be created' do
+      let(:role_arn) { 'invalid-role' }
+
+      it 'does not create a record' do
+        expect { go }.not_to change { Aws::Role.count }
+
+        expect(response.status).to eq 422
+      end
+    end
+
+    describe 'security' do
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
+    end
+  end
+
+  describe 'DELETE revoke AWS role for EKS cluster' do
+    let!(:role) { create(:aws_role, user: admin) }
+
+    def go
+      delete :revoke_aws_role
+    end
+
+    it 'deletes the Aws::Role record' do
+      expect { go }.to change { Aws::Role.count }
+
+      expect(response.status).to eq 204
+      expect(admin.reload_aws_role).to be_nil
+    end
+
+    describe 'security' do
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
+    end
+  end
+
   describe 'GET #cluster_status' do
     let(:cluster) { create(:cluster, :providing_by_gcp, :instance) }
 
@@ -338,7 +468,9 @@ describe Admin::ClustersController do
       end
 
       it 'invokes schedule_status_update on each application' do
-        expect_any_instance_of(Clusters::Applications::Ingress).to receive(:schedule_status_update)
+        expect_next_instance_of(Clusters::Applications::Ingress) do |instance|
+          expect(instance).to receive(:schedule_status_update)
+        end
 
         get_cluster_status
       end

@@ -7,11 +7,14 @@ module Gitlab
         include QueryAdditionalMetrics
 
         def query(serverless_function_id)
-          PrometheusMetric
-            .find_by_identifier(:system_metrics_knative_function_invocation_count)
-            .to_query_metric.tap do |q|
-            q.queries[0][:result] = run_query(q.queries[0][:query_range], context(serverless_function_id))
-          end
+          PrometheusMetricsFinder
+            .new(identifier: :system_metrics_knative_function_invocation_count, common: true)
+            .execute
+            .first
+            .to_query_metric
+            .tap do |q|
+              q.queries[0][:result] = run_query(q.queries[0][:query_range], context(serverless_function_id))
+            end
         end
 
         protected

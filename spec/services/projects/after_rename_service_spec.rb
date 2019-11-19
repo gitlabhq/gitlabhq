@@ -222,7 +222,7 @@ describe Projects::AfterRenameService do
 
   def expect_repository_exist(full_path_with_extension)
     expect(
-      gitlab_shell.exists?(
+      TestEnv.storage_dir_exists?(
         project.repository_storage,
         full_path_with_extension
       )

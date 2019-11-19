@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "required": [
+    "error"
+  ],
+  "properties": {
+    "error": { "$ref": "error_stack_trace.json" }
+  },
+  "additionalProperties": false
+}
+

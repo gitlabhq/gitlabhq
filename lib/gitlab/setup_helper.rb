@@ -40,6 +40,11 @@ module Gitlab
 
         config = { socket_path: address.sub(/\Aunix:/, ''), storage: storages }
         config[:auth] = { token: 'secret' } if Rails.env.test?
+
+        internal_socket_dir = File.join(gitaly_dir, 'internal_sockets')
+        FileUtils.mkdir(internal_socket_dir) unless File.exist?(internal_socket_dir)
+        config[:internal_socket_dir] = internal_socket_dir
+
         config[:'gitaly-ruby'] = { dir: File.join(gitaly_dir, 'ruby') } if gitaly_ruby
         config[:'gitlab-shell'] = { dir: Gitlab.config.gitlab_shell.path }
         config[:bin_dir] = Gitlab.config.gitaly.client_path

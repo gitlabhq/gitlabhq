@@ -26,7 +26,11 @@ export default (resolvers = {}, config = {}) => {
       createUploadLink(httpOptions),
       new BatchHttpLink(httpOptions),
     ),
-    cache: new InMemoryCache(config.cacheConfig),
+    cache: new InMemoryCache({
+      ...config.cacheConfig,
+      freezeResults: config.assumeImmutableResults,
+    }),
     resolvers,
+    assumeImmutableResults: config.assumeImmutableResults,
   });
 };

@@ -20,4 +20,5 @@
   - else
     = render "projects/pipelines/with_tabs", pipeline: @pipeline
 
-.js-pipeline-details-vue{ data: { endpoint: project_pipeline_path(@project, @pipeline, format: :json) } }
+.js-pipeline-details-vue{ data: { endpoint: project_pipeline_path(@project, @pipeline, format: :json),
+  test_report_endpoint: test_report_project_pipeline_path(@project, @pipeline, format: :json) } }

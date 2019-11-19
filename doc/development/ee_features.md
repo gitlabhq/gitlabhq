@@ -245,46 +245,28 @@ end
 
 #### Use self-descriptive wrapper methods
 
-When it's not possible/logical to modify the implementation of a
-method. Wrap it in a self-descriptive method and use that method.
+When it's not possible/logical to modify the implementation of a method, then
+wrap it in a self-descriptive method and use that method.
 
-For example, in CE only an `admin` is allowed to access all private
-projects/groups, but in EE also an `auditor` has full private
-access. It would be incorrect to override the implementation of
-`User#admin?`, so instead add a method `full_private_access?` to
-`app/models/users.rb`. The implementation in CE will be:
+For example, in GitLab-FOSS, the only user created by the system is `User.ghost`
+but in EE there are several types of bot-users that aren't really users. It would
+be incorrect to override the implementation of `User#ghost?`, so instead we add
+a method `#internal?` to `app/models/user.rb`. The implementation will be:
 
 ```ruby
-def full_private_access?
-  admin?
+def internal?
+  ghost?
 end
 ```
 
 In EE, the implementation `ee/app/models/ee/users.rb` would be:
 
 ```ruby
-override :full_private_access?
-def full_private_access?
-  super || auditor?
+override :internal?
+def internal?
+  super || bot?
 end
 ```
-
-In `lib/gitlab/visibility_level.rb` this method is used to return the
-allowed visibility levels:
-
-```ruby
-def levels_for_user(user = nil)
-  if user.full_private_access?
-    [PRIVATE, INTERNAL, PUBLIC]
-  elsif # ...
-end
-```
-
-See [CE MR][ce-mr-full-private] and [EE MR][ee-mr-full-private] for
-full implementation details.
-
-[ce-mr-full-private]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/12373
-[ee-mr-full-private]: https://gitlab.com/gitlab-org/gitlab/merge_requests/2199
 
 ### Code in `config/routes`
 

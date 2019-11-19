@@ -13,7 +13,7 @@ class Oauth::AuthorizedApplicationsController < Doorkeeper::AuthorizedApplicatio
     end
 
     redirect_to applications_profile_url,
-                status: 302,
+                status: :found,
                 notice: I18n.t(:notice, scope: [:doorkeeper, :flash, :authorized_applications, :destroy])
   end
 end

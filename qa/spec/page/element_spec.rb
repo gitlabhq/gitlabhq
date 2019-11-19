@@ -117,5 +117,23 @@ describe QA::Page::Element do
     it 'properly translates to a data-qa-selector' do
       expect(subject.selector_css).to include(%q([data-qa-selector="my_element"]))
     end
+
+    context 'additional selectors' do
+      let(:element) { described_class.new(:my_element, index: 3, another_match: 'something') }
+      let(:required_element) { described_class.new(:my_element, required: true, index: 3) }
+
+      it 'matches on additional data-qa properties' do
+        expect(element.selector_css).to include(%q([data-qa-selector="my_element"][data-qa-index="3"]))
+      end
+
+      it 'doesnt conflict with element requirement' do
+        expect(required_element).to be_required
+        expect(required_element.selector_css).not_to include(%q(data-qa-required))
+      end
+
+      it 'translates snake_case to kebab-case' do
+        expect(element.selector_css).to include(%q(data-qa-another-match))
+      end
+    end
   end
 end

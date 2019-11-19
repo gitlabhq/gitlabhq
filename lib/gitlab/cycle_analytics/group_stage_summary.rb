@@ -3,18 +3,17 @@
 module Gitlab
   module CycleAnalytics
     class GroupStageSummary
-      attr_reader :group, :from, :current_user, :options
+      attr_reader :group, :current_user, :options
 
       def initialize(group, options:)
         @group = group
-        @from = options[:from]
         @current_user = options[:current_user]
         @options = options
       end
 
       def data
-        [serialize(Summary::Group::Issue.new(group: group, from: from, current_user: current_user, options: options)),
-         serialize(Summary::Group::Deploy.new(group: group, from: from, options: options))]
+        [serialize(Summary::Group::Issue.new(group: group, current_user: current_user, options: options)),
+         serialize(Summary::Group::Deploy.new(group: group, options: options))]
       end
 
       private

@@ -152,7 +152,7 @@
               - email = " (#{@user.unconfirmed_email})"
             %p This user has an unconfirmed email address#{email}. You may force a confirmation.
             %br
-            = link_to 'Confirm user', confirm_admin_user_path(@user), method: :put, class: "btn btn-info", data: { confirm: 'Are you sure?' }
+            = link_to 'Confirm user', confirm_admin_user_path(@user), method: :put, class: "btn btn-info", data: { confirm: 'Are you sure?', qa_selector: 'confirm_user_button' }
 
       = render_if_exists 'admin/users/user_detail_note'
 

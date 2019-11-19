@@ -26,6 +26,23 @@ SAML SSO for GitLab.com groups does not sync users between providers without usi
 
 ![Issuer and callback for configuring SAML identity provider with GitLab.com](img/group_saml_configuration_information.png)
 
+### NameID
+
+GitLab.com uses the SAML NameID to identify users. The NameID element:
+
+- Is a required field in the SAML response.
+- Must be unique to each user.
+- Must be a persistent value that will never change, such as a randomly generated unique user ID.
+- Is case sensitive. The NameID must match exactly on subsequent login attempts, so should not rely on user input that could change between upper and lower case.
+- Should not be an email address or username. We strongly recommend against these as it is hard to guarantee they will never change, for example when a person's name changes. Email addresses are also case-insensitive, which can result in users being unable to sign in.
+
+CAUTION: **Warning:**
+Once users have signed into GitLab using the SSO SAML setup, changing the `NameID` will break the configuration and potentially lock users out of the GitLab group.
+
+#### NameID Format
+
+We recommend setting the NameID format to `Persistent` unless using a field (such as email) that requires a different format.
+
 ### SSO enforcement
 
 SSO enforcement was:
@@ -58,25 +75,16 @@ Since use of the group managed account requires the use of SSO, users of group m
 - The user will be unable to access the group (their credentials will no longer work on the identity provider when prompted to SSO).
 - Contributions in the group (e.g. issues, merge requests) will remain intact.
 
-### NameID
+#### Assertions
 
-GitLab.com uses the SAML NameID to identify users. The NameID element:
+When using Group Manged Accounts, the following user details need to be passed to GitLab as SAML Assertions in order for us to be able to create a user:
 
-- Is a required field in the SAML response.
-- Must be unique to each user.
-- Must be a persistent value that will never change, such as a randomly generated unique user ID.
-- Is case sensitive. The NameID must match exactly on subsequent login attempts, so should not rely on user input that could change between upper and lower case.
-
-We strongly recommend against using Email as the NameID as it is hard to guarantee it will never change, for example when a person's name changes. Similarly usernames should be avoided if possible.
-
-### Assertions
-
-| Field | Supported keys |
-|-------|----------------|
+| Field           | Supported keys |
+|-----------------|----------------|
 | Email (required)| `email`, `mail` |
-| Full Name | `name` |
-| First Name | `first_name`, `firstname`, `firstName` |
-| Last Name | `last_name`, `lastname`, `lastName` |
+| Full Name       | `name` |
+| First Name      | `first_name`, `firstname`, `firstName` |
+| Last Name       | `last_name`, `lastname`, `lastName` |
 
 ## Metadata configuration
 
@@ -108,17 +116,28 @@ NOTE: **Note:** GitLab is unable to provide support for IdPs that are not listed
 | Azure | [Configuring single sign-on to applications](https://docs.microsoft.com/en-us/azure/active-directory/manage-apps/configure-single-sign-on-non-gallery-applications) |
 | Auth0 | [Auth0 as Identity Provider](https://auth0.com/docs/protocols/saml/saml-idp-generic) |
 | G Suite | [Set up your own custom SAML application](https://support.google.com/a/answer/6087519?hl=en) |
-| JumpCloud | [Single Sign On (SSO) with GitLab](https://support.jumpcloud.com/customer/en/portal/articles/2810701-single-sign-on-sso-with-gitlab) |
+| JumpCloud | [Single Sign On (SSO) with GitLab](https://support.jumpcloud.com/support/s/article/single-sign-on-sso-with-gitlab-2019-08-21-10-36-47) |
 | Okta | [Setting up a SAML application in Okta](https://developer.okta.com/docs/guides/saml-application-setup/overview/) |
 | OneLogin | [Use the OneLogin SAML Test Connector](https://onelogin.service-now.com/support?id=kb_article&sys_id=93f95543db109700d5505eea4b96198f) |
 | Ping Identity | [Add and configure a new SAML application](https://support.pingidentity.com/s/document-item?bundleId=pingone&topicId=xsh1564020480660-1.html) |
 
 When [configuring your identify provider](#configuring-your-identity-provider), please consider the notes below for specific providers to help avoid common issues and as a guide for terminology used.
 
+### Okta setup notes
+
+| GitLab Setting | Okta Field |
+|--------------|----------------|
+| Identifier | Audience URI |
+| Assertion consumer service URL | Single sign on URL |
+
+Under Okta's **Single sign on URL** field, check the option **Use this for Recipient URL and Destination URL**.
+
+Set attribute statements according to the [assertions table](#assertions).
+
 ### OneLogin setup notes
 
-NOTE: **Note:**
-The GitLab app listed in the directory is for self-managed GitLab instances. Please use a generic SAML Test Connector.
+The GitLab app listed in the OneLogin app catalog is for self-managed GitLab instances.
+For GitLab.com, use a generic SAML Test Connector such as the SAML Test Connector (Advanced).
 
 | GitLab Setting | OneLogin Field |
 |--------------|----------------|

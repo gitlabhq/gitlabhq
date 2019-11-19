@@ -36,6 +36,10 @@ module QA
           def click_closed_issues_link
             click_element :closed_issues_link
           end
+
+          def has_issue?(issue)
+            has_element? :issue, issue_title: issue.to_s
+          end
         end
       end
     end

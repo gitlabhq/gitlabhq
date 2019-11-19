@@ -107,4 +107,27 @@ describe 'Projects > Settings > User manages merge request settings' do
       expect(project.printing_merge_request_link_enabled).to be(false)
     end
   end
+
+  describe 'Checkbox to remove source branch after merge', :js do
+    it 'is initially checked' do
+      checkbox = find_field('project_remove_source_branch_after_merge')
+      expect(checkbox).to be_checked
+    end
+
+    it 'when unchecked sets :remove_source_branch_after_merge to false' do
+      uncheck('project_remove_source_branch_after_merge')
+      within('.merge-request-settings-form') do
+        find('.qa-save-merge-request-changes')
+        click_on('Save changes')
+      end
+
+      find('.flash-notice')
+      checkbox = find_field('project_remove_source_branch_after_merge')
+
+      expect(checkbox).not_to be_checked
+
+      project.reload
+      expect(project.remove_source_branch_after_merge).to be(false)
+    end
+  end
 end

@@ -52,6 +52,26 @@ class InstanceClusterablePresenter < ClusterablePresenter
     create_gcp_admin_clusters_path
   end
 
+  override :create_aws_clusters_path
+  def create_aws_clusters_path
+    create_aws_admin_clusters_path
+  end
+
+  override :authorize_aws_role_path
+  def authorize_aws_role_path
+    authorize_aws_role_admin_clusters_path
+  end
+
+  override :revoke_aws_role_path
+  def revoke_aws_role_path
+    revoke_aws_role_admin_clusters_path
+  end
+
+  override :aws_api_proxy_path
+  def aws_api_proxy_path(resource)
+    aws_proxy_admin_clusters_path(resource: resource)
+  end
+
   override :empty_state_help_text
   def empty_state_help_text
     s_('ClusterIntegration|Adding an integration will share the cluster across all projects.')

@@ -24,6 +24,7 @@ class SessionsController < Devise::SessionsController
   before_action :store_unauthenticated_sessions, only: [:new]
   before_action :save_failed_login, if: :action_new_and_failed_login?
   before_action :load_recaptcha
+  before_action :frontend_tracking_data, only: [:new]
 
   after_action :log_failed_login, if: :action_new_and_failed_login?
 
@@ -269,7 +270,13 @@ class SessionsController < Devise::SessionsController
   end
 
   def ldap_servers
-    @ldap_servers ||= Gitlab::Auth::LDAP::Config.available_servers
+    @ldap_servers ||= begin
+      if Gitlab::Auth::LDAP::Config.sign_in_enabled?
+        Gitlab::Auth::LDAP::Config.available_servers
+      else
+        []
+      end
+    end
   end
 
   def unverified_anonymous_user?
@@ -292,6 +299,11 @@ class SessionsController < Devise::SessionsController
     else
       "standard"
     end
+  end
+
+  def frontend_tracking_data
+    # We want tracking data pushed to the frontend when the user is _in_ the control group
+    frontend_experimentation_tracking_data(:signup_flow, 'start') unless experiment_enabled?(:signup_flow)
   end
 end
 

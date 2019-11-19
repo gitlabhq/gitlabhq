@@ -87,10 +87,9 @@ not be found, or a user does not have access rights to create pipeline there,
 the `staging` job is going to be marked as _failed_.
 
 CAUTION: **Caution:**
-`staging` will succeed as soon as a downstream pipeline gets created.
-GitLab does not support status attribution yet, however adding first-class
-`trigger` configuration syntax is ground work for implementing
-[status attribution](https://gitlab.com/gitlab-org/gitlab-foss/issues/39640).
+In the example, `staging` will be marked as succeeded as soon as a downstream pipeline
+gets created. If you want to display the downstream pipeline's status instead, see
+[Mirroring status from triggered pipeline](#mirroring-status-from-triggered-pipeline).
 
 NOTE: **Note:**
 Bridge jobs do not support every configuration entry that a user can use

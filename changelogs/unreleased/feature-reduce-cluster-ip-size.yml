@@ -1,0 +1,5 @@
+---
+title: Reduce the allocated IP for Cluster and Services
+merge_request: 18341
+author:
+type: changed

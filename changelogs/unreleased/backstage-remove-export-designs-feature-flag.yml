@@ -1,0 +1,5 @@
+---
+title: Removes `export_designs` feature flag
+merge_request: 18507
+author: nate geslin
+type: other

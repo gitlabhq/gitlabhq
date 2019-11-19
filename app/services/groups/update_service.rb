@@ -43,8 +43,9 @@ module Groups
     def renaming_group_with_container_registry_images?
       new_path = params[:path]
 
-      new_path && new_path != group.path &&
-        group.has_container_repositories?
+      new_path &&
+        new_path != group.path &&
+        group.has_container_repository_including_subgroups?
     end
 
     def container_images_error

@@ -53,7 +53,7 @@ module LoginHelpers
 
     fill_in 'password', with: user.password
 
-    click_button 'Enter admin mode'
+    click_button 'Enter Admin Mode'
   end
 
   def gitlab_sign_in_via(provider, user, uid, saml_response = nil)

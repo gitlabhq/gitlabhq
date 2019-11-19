@@ -15,7 +15,7 @@ describe Gitlab::WikiFileFinder do
     it_behaves_like 'file finder' do
       subject { described_class.new(project, project.wiki.default_branch) }
 
-      let(:expected_file_by_name) { 'Files/Title.md' }
+      let(:expected_file_by_path) { 'Files/Title.md' }
       let(:expected_file_by_content) { 'CHANGELOG.md' }
     end
   end

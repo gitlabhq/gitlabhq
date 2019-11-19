@@ -3,7 +3,7 @@ import _ from 'underscore';
 import ProjectSelector from '~/vue_shared/components/project_selector/project_selector.vue';
 import ProjectListItem from '~/vue_shared/components/project_selector/project_list_item.vue';
 
-import { GlSearchBoxByType } from '@gitlab/ui';
+import { GlSearchBoxByType, GlInfiniteScroll } from '@gitlab/ui';
 import { mount, createLocalVue } from '@vue/test-utils';
 import { trimText } from 'spec/helpers/text_helper';
 
@@ -89,6 +89,13 @@ describe('ProjectSelector component', () => {
     const searchInput = findSearchInput();
 
     expect(searchInput.attributes('placeholder')).toBe('Search your projects');
+  });
+
+  it(`triggers a "bottomReached" event when user has scrolled to the bottom of the list`, () => {
+    spyOn(vm, '$emit');
+    wrapper.find(GlInfiniteScroll).vm.$emit('bottomReached');
+
+    expect(vm.$emit).toHaveBeenCalledWith('bottomReached');
   });
 
   it(`triggers a "projectClicked" event when a project is clicked`, () => {

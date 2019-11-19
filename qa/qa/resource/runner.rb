@@ -36,7 +36,6 @@ module QA
           runner.tags = tags
           runner.image = image
           runner.config = config if config
-          runner.run_untagged = true
           runner.register!
         end
       end

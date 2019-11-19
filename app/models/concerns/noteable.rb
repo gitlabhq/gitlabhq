@@ -108,10 +108,6 @@ module Noteable
     discussions_resolvable? && resolvable_discussions.none?(&:to_be_resolved?)
   end
 
-  def discussions_to_be_resolved?
-    discussions_resolvable? && !discussions_resolved?
-  end
-
   def discussions_to_be_resolved
     @discussions_to_be_resolved ||= resolvable_discussions.select(&:to_be_resolved?)
   end

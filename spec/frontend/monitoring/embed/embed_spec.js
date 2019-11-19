@@ -61,8 +61,8 @@ describe('Embed', () => {
 
   describe('metrics are available', () => {
     beforeEach(() => {
-      store.state.monitoringDashboard.groups = groups;
-      store.state.monitoringDashboard.groups[0].metrics = metricsData;
+      store.state.monitoringDashboard.dashboard.panel_groups = groups;
+      store.state.monitoringDashboard.dashboard.panel_groups[0].metrics = metricsData;
       store.state.monitoringDashboard.metricsWithData = metricsWithData;
 
       mountComponent();

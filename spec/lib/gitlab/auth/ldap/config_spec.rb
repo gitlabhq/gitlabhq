@@ -535,4 +535,23 @@ AtlErSqafbECNDSwS5BX8yDpu5yRBJ4xegO/rNlmb8ICRYkuJapD1xXicFOsmfUK
       end
     end
   end
+
+  describe 'sign_in_enabled?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:enabled, :prevent_ldap_sign_in, :result) do
+      true | false | true
+      'true' | false | true
+      true | true | false
+      false | nil | false
+    end
+
+    with_them do
+      it do
+        stub_ldap_setting(enabled: enabled, prevent_ldap_sign_in: prevent_ldap_sign_in)
+
+        expect(described_class.sign_in_enabled?).to eq(result)
+      end
+    end
+  end
 end

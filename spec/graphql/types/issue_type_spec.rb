@@ -14,7 +14,7 @@ describe GitlabSchema.types['Issue'] do
   it 'has specific fields' do
     fields = %i[iid title description state reference author assignees participants labels milestone due_date
                 confidential discussion_locked upvotes downvotes user_notes_count web_path web_url relative_position
-                time_estimate total_time_spent closed_at created_at updated_at task_completion_status]
+                subscribed time_estimate total_time_spent closed_at created_at updated_at task_completion_status]
 
     fields.each do |field_name|
       expect(described_class).to have_graphql_field(field_name)

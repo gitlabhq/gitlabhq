@@ -10,7 +10,7 @@ describe GitlabSchema.types['Commit'] do
   it 'contains attributes related to commit' do
     expect(described_class).to have_graphql_fields(
       :id, :sha, :title, :description, :message, :authored_date,
-      :author, :web_url, :latest_pipeline, :signature_html
+      :author_name, :author, :web_url, :latest_pipeline, :pipelines, :signature_html
     )
   end
 end

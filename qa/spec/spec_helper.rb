@@ -20,7 +20,25 @@ RSpec.configure do |config|
   QA::Specs::Helpers::Quarantine.configure_rspec
 
   config.before do |example|
-    QA::Runtime::Logger.debug("Starting test: #{example.full_description}") if QA::Runtime::Env.debug?
+    QA::Runtime::Logger.debug("\nStarting test: #{example.full_description}\n") if QA::Runtime::Env.debug?
+  end
+
+  config.after(:context) do
+    if !QA::Runtime::Browser.blank_page? && QA::Page::Main::Menu.perform(&:signed_in?)
+      QA::Page::Main::Menu.perform(&:sign_out)
+      raise(
+        <<~ERROR
+          The test left the browser signed in.
+
+          Usually, Capybara prevents this from happening but some things can
+          interfere. For example, if it has an `after(:context)` block that logs
+          in, the browser will stay logged in and this will cause the next test
+          to fail.
+
+          Please make sure the test does not leave the browser signed in.
+        ERROR
+      )
+    end
   end
 
   config.expect_with :rspec do |expectations|

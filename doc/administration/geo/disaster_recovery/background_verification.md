@@ -11,9 +11,8 @@ calculated checksum. If the checksum of the data on the **primary** node matches
 data on the **secondary** node, the data transferred successfully. Following a planned failover,
 any corrupted data may be **lost**, depending on the extent of the corruption.
 
-If verification fails on the **primary** node, this indicates that Geo is
-successfully replicating a corrupted object; restore it from backup or remove it
-it from the **primary** node to resolve the issue.
+If verification fails on the **primary** node, this indicates Geo is replicating a corrupted object.
+You can restore it from backup or remove it from the **primary** node to resolve the issue.
 
 If verification succeeds on the **primary** node but fails on the **secondary** node,
 this indicates that the object was corrupted during the replication process.

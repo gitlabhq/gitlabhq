@@ -8,12 +8,13 @@ import {
   GlModalDirective,
   GlEmptyState,
 } from '@gitlab/ui';
-import createFlash from '../../flash';
-import ClipboardButton from '../../vue_shared/components/clipboard_button.vue';
-import Icon from '../../vue_shared/components/icon.vue';
+import createFlash from '~/flash';
+import Tracking from '~/tracking';
+import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import Icon from '~/vue_shared/components/icon.vue';
 import TableRegistry from './table_registry.vue';
-import { errorMessages, errorMessagesTypes } from '../constants';
-import { __ } from '../../locale';
+import { DELETE_REPO_ERROR_MESSAGE } from '../constants';
+import { __ } from '~/locale';
 
 export default {
   name: 'CollapsibeContainerRegisty',
@@ -30,6 +31,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     GlModal: GlModalDirective,
   },
+  mixins: [Tracking.mixin({})],
   props: {
     repo: {
       type: Object,
@@ -40,6 +42,10 @@ export default {
     return {
       isOpen: false,
       modalId: `confirm-repo-deletion-modal-${this.repo.id}`,
+      tracking: {
+        category: document.body.dataset.page,
+        label: 'registry_repository_delete',
+      },
     };
   },
   computed: {
@@ -61,15 +67,13 @@ export default {
       }
     },
     handleDeleteRepository() {
+      this.track('confirm_delete', {});
       return this.deleteItem(this.repo)
         .then(() => {
           createFlash(__('This container registry has been scheduled for deletion.'), 'notice');
           this.fetchRepos();
         })
-        .catch(() => this.showError(errorMessagesTypes.DELETE_REPO));
-    },
-    showError(message) {
-      createFlash(errorMessages[message]);
+        .catch(() => createFlash(DELETE_REPO_ERROR_MESSAGE));
     },
   },
 };
@@ -97,10 +101,9 @@ export default {
           v-gl-modal="modalId"
           :title="s__('ContainerRegistry|Remove repository')"
           :aria-label="s__('ContainerRegistry|Remove repository')"
-          data-track-event="click_button"
-          data-track-label="registry_repository_delete"
           class="js-remove-repo btn-inverted"
           variant="danger"
+          @click="track('click_button', {})"
         >
           <icon name="remove" />
         </gl-button>
@@ -124,7 +127,13 @@ export default {
         class="mx-auto my-0"
       />
     </div>
-    <gl-modal :modal-id="modalId" ok-variant="danger" @ok="handleDeleteRepository">
+    <gl-modal
+      ref="deleteModal"
+      :modal-id="modalId"
+      ok-variant="danger"
+      @ok="handleDeleteRepository"
+      @cancel="track('cancel_delete', {})"
+    >
       <template v-slot:modal-title>{{ s__('ContainerRegistry|Remove repository') }}</template>
       <p
         v-html="

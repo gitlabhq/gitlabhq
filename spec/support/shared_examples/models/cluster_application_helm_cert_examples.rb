@@ -8,10 +8,6 @@ shared_examples 'cluster application helm specs' do |application_name|
 
     it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::DeleteCommand) }
 
-    it 'has the application name' do
-      expect(subject.name).to eq(application.name)
-    end
-
     it 'has files' do
       expect(subject.files).to eq(application.files)
     end

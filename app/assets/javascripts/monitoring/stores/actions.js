@@ -7,7 +7,7 @@ import { s__, __ } from '../../locale';
 
 const MAX_REQUESTS = 3;
 
-function backOffRequest(makeRequestCallback) {
+export function backOffRequest(makeRequestCallback) {
   let requestCounter = 0;
   return backOff((next, stop) => {
     makeRequestCallback()
@@ -33,14 +33,6 @@ export const setGettingStartedEmptyState = ({ commit }) => {
 
 export const setEndpoints = ({ commit }, endpoints) => {
   commit(types.SET_ENDPOINTS, endpoints);
-};
-
-export const setFeatureFlags = (
-  { commit },
-  { prometheusEndpointEnabled, additionalPanelTypesEnabled },
-) => {
-  commit(types.SET_DASHBOARD_ENABLED, prometheusEndpointEnabled);
-  commit(types.SET_ADDITIONAL_PANEL_TYPES_ENABLED, additionalPanelTypesEnabled);
 };
 
 export const setShowErrorBanner = ({ commit }, enabled) => {
@@ -79,29 +71,7 @@ export const fetchData = ({ dispatch }, params) => {
   dispatch('fetchEnvironmentsData');
 };
 
-export const fetchMetricsData = ({ state, dispatch }, params) => {
-  if (state.useDashboardEndpoint) {
-    return dispatch('fetchDashboard', params);
-  }
-
-  dispatch('requestMetricsData');
-
-  return backOffRequest(() => axios.get(state.metricsEndpoint, { params }))
-    .then(resp => resp.data)
-    .then(response => {
-      if (!response || !response.data || !response.success) {
-        dispatch('receiveMetricsDataFailure', null);
-        createFlash(s__('Metrics|Unexpected metrics data response from prometheus endpoint'));
-      }
-      dispatch('receiveMetricsDataSuccess', response.data);
-    })
-    .catch(error => {
-      dispatch('receiveMetricsDataFailure', error);
-      if (state.setShowErrorBanner) {
-        createFlash(s__('Metrics|There was an error while retrieving metrics'));
-      }
-    });
-};
+export const fetchMetricsData = ({ dispatch }, params) => dispatch('fetchDashboard', params);
 
 export const fetchDashboard = ({ state, dispatch }, params) => {
   dispatch('requestMetricsDashboard');
@@ -111,11 +81,13 @@ export const fetchDashboard = ({ state, dispatch }, params) => {
     params.dashboard = state.currentDashboard;
   }
 
-  return axios
-    .get(state.dashboardEndpoint, { params })
+  return backOffRequest(() => axios.get(state.dashboardEndpoint, { params }))
     .then(resp => resp.data)
     .then(response => {
-      dispatch('receiveMetricsDashboardSuccess', { response, params });
+      dispatch('receiveMetricsDashboardSuccess', {
+        response,
+        params,
+      });
     })
     .catch(error => {
       dispatch('receiveMetricsDashboardFailure', error);
@@ -166,7 +138,7 @@ export const fetchPrometheusMetrics = ({ state, commit, dispatch }, params) => {
   commit(types.REQUEST_METRICS_DATA);
 
   const promises = [];
-  state.groups.forEach(group => {
+  state.dashboard.panel_groups.forEach(group => {
     group.panels.forEach(panel => {
       panel.metrics.forEach(metric => {
         promises.push(dispatch('fetchPrometheusMetric', { metric, params }));
@@ -219,6 +191,16 @@ export const fetchEnvironmentsData = ({ state, dispatch }) => {
       dispatch('receiveEnvironmentsDataFailure');
       createFlash(s__('Metrics|There was an error getting environments information.'));
     });
+};
+
+/**
+ * Set a new array of metrics to a panel group
+ * @param {*} data An object containing
+ *   - `key` with a unique panel key
+ *   - `metrics` with the metrics array
+ */
+export const setPanelGroupMetrics = ({ commit }, data) => {
+  commit(types.SET_PANEL_GROUP_METRICS, data);
 };
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests

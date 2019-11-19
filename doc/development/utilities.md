@@ -1,6 +1,6 @@
 # GitLab utilities
 
-We developed a number of utilities to ease development.
+We have developed a number of utilities to help ease development:
 
 ## `MergeHash`
 
@@ -51,15 +51,15 @@ Refer to: <https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/utils/mer
 
 Refer to <https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/utils/override.rb>:
 
-- This utility could help us check if a particular method would override
-  another method or not. It has the same idea of Java's `@Override` annotation
-  or Scala's `override` keyword. However we only do this check when
+- This utility can help you check if one method would override
+  another or not. It is the same concept as Java's `@Override` annotation
+  or Scala's `override` keyword. However, you should only do this check when
   `ENV['STATIC_VERIFICATION']` is set to avoid production runtime overhead.
-  This is useful to check:
+  This is useful for checking:
 
-  - If we have typos in overriding methods.
-  - If we renamed the overridden methods, making original overriding methods
-    overrides nothing.
+  - If you have typos in overriding methods.
+  - If you renamed the overridden methods, which make the original override methods
+    irrelevant.
 
     Here's a simple example:
 
@@ -100,11 +100,11 @@ Refer to <https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/utils/stro
 
 - Memoize the value even if it is `nil` or `false`.
 
-  We often do `@value ||= compute`, however this doesn't work well if
-  `compute` might eventually give `nil` and we don't want to compute again.
-  Instead we could use `defined?` to check if the value is set or not.
-  However it's tedious to write such pattern, and `StrongMemoize` would
-  help us use such pattern.
+  We often do `@value ||= compute`. However, this doesn't work well if
+  `compute` might eventually give `nil` and you don't want to compute again.
+  Instead you could use `defined?` to check if the value is set or not.
+  It's tedious to write such pattern, and `StrongMemoize` would
+  help you use such pattern.
 
   Instead of writing patterns like this:
 
@@ -118,7 +118,7 @@ Refer to <https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/utils/stro
   end
   ```
 
-  We could write it like:
+  You could write it like:
 
   ``` ruby
   class Find
@@ -151,7 +151,7 @@ and the cache key would be based on the class name, method name,
 optionally customized instance level values, optionally customized
 method level values, and optional method arguments.
 
-A simple example that only uses the instance level customised values:
+A simple example that only uses the instance level customised values is:
 
 ``` ruby
 class UserAccess
@@ -169,8 +169,8 @@ end
 
 This way, the result of `can_push_to_branch?` would be cached in
 `RequestStore.store` based on the cache key. If `RequestStore` is not
-currently active, then it would be stored in a hash saved in an
-instance variable, so the cache logic would be the same.
+currently active, then it would be stored in a hash, and saved in an
+instance variable so the cache logic would be the same.
 
 We can also set different strategies for different methods:
 
@@ -184,3 +184,83 @@ class Commit
   request_cache(:author) { author_email }
 end
 ```
+
+## `ReactiveCaching`
+
+The `ReactiveCaching` concern is used to fetch some data in the background and
+store it in the Rails cache, keeping it up-to-date for as long as it is being
+requested.  If the data hasn't been requested for `reactive_cache_lifetime`,
+it will stop being refreshed, and then be removed.
+
+Example of use:
+
+```ruby
+class Foo < ApplicationRecord
+  include ReactiveCaching
+
+  after_save :clear_reactive_cache!
+
+  def calculate_reactive_cache
+    # Expensive operation here. The return value of this method is cached
+  end
+
+  def result
+    with_reactive_cache do |data|
+      # ...
+    end
+  end
+end
+```
+
+In this example, the first time `#result` is called, it will return `nil`.
+However, it will enqueue a background worker to call `#calculate_reactive_cache`
+and set an initial cache lifetime of ten minutes.
+
+The background worker needs to find or generate the object on which
+`with_reactive_cache` was called.
+The default behaviour can be overridden by defining a custom
+`reactive_cache_worker_finder`.
+Otherwise, the background worker will use the class name and primary key to get
+the object using the ActiveRecord `find_by` method.
+
+```ruby
+class Bar
+  include ReactiveCaching
+
+  self.reactive_cache_key = ->() { ["bar", "thing"] }
+  self.reactive_cache_worker_finder = ->(_id, *args) { from_cache(*args) }
+
+  def self.from_cache(var1, var2)
+    # This method will be called by the background worker with "bar1" and
+    # "bar2" as arguments.
+    new(var1, var2)
+  end
+
+  def initialize(var1, var2)
+    # ...
+  end
+
+  def calculate_reactive_cache
+    # Expensive operation here. The return value of this method is cached
+  end
+
+  def result
+    with_reactive_cache("bar1", "bar2") do |data|
+      # ...
+    end
+  end
+end
+```
+
+Each time the background job completes, it stores the return value of
+`#calculate_reactive_cache`. It is also re-enqueued to run again after
+`reactive_cache_refresh_interval`, therefore, it will keep the stored value up to date.
+Calculations are never run concurrently.
+
+Calling `#result` while a value is cached will call the block given to
+`#with_reactive_cache`, yielding the cached value. It will also extend the
+lifetime by the `reactive_cache_lifetime` value.
+
+Once the lifetime has expired, no more background jobs will be enqueued and
+calling `#result` will again return `nil` - starting the process all over
+again.

@@ -37,7 +37,7 @@ The results are sorted by the severity of the vulnerability:
 
 ## Requirements
 
-To run a Dependency Scanning job, you need GitLab Runner with the
+To run a Dependency Scanning job, by default, you need GitLab Runner with the
 [`docker`](https://docs.gitlab.com/runner/executors/docker.html#use-docker-in-docker-with-privileged-mode) or
 [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html#running-privileged-containers-for-the-runners)
 executor running in privileged mode. If you're using the shared Runners on GitLab.com,
@@ -46,6 +46,8 @@ this is enabled by default.
 CAUTION: **Caution:**
 If you use your own Runners, make sure that the Docker version you have installed
 is **not** `19.03.00`. See [troubleshooting information](#error-response-from-daemon-error-processing-tar-file-docker-tar-relocation-error) for details.
+
+Privileged mode is not necessary if you've [disabled Docker in Docker for Dependency Scanning](#disabling-docker-in-docker-for-dependency-scanning)
 
 ## Supported languages and package managers
 
@@ -59,26 +61,9 @@ The following languages and dependency managers are supported.
 | Go ([Golang](https://golang.org/)) | not currently ([issue](https://gitlab.com/gitlab-org/gitlab/issues/7132 "Dependency Scanning for Go")) | not available |
 | PHP ([Composer](https://getcomposer.org/))  | yes | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
 | Python ([pip](https://pip.pypa.io/en/stable/)) | yes | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
-| Python ([Pipfile](https://docs.pipenv.org/en/latest/basics/)) | not currently ([issue](https://gitlab.com/gitlab-org/gitlab/issues/11756 "Pipfile.lock support for Dependency Scanning"))| not available |
+| Python ([Pipfile](https://pipenv.kennethreitz.org/en/latest/basics/)) | not currently ([issue](https://gitlab.com/gitlab-org/gitlab/issues/11756 "Pipfile.lock support for Dependency Scanning"))| not available |
 | Python ([poetry](https://poetry.eustace.io/)) | not currently ([issue](https://gitlab.com/gitlab-org/gitlab/issues/7006 "Support Poetry in Dependency Scanning")) | not available |
 | Ruby ([gem](https://rubygems.org/)) | yes | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium), [bundler-audit](https://github.com/rubysec/bundler-audit) |
-
-## Remote checks
-
-While some tools pull a local database to check vulnerabilities, some others
-like Gemnasium require sending data to GitLab central servers to analyze them:
-
-1. Gemnasium scans the dependencies of your project locally and sends a list of
-   packages to GitLab central servers.
-1. The servers return the list of known vulnerabilities for all versions of
-   these packages.
-1. The client picks up the relevant vulnerabilities by comparing with the versions
-   of the packages that are used by the project.
-
-The Gemnasium client does **NOT** send the exact package versions your project relies on.
-
-You can disable the remote checks by [using](#customizing-the-dependency-scanning-settings)
-the `DS_DISABLE_REMOTE_CHECKS` environment variable and setting it to `"true"`.
 
 ## Configuration
 
@@ -116,7 +101,7 @@ include:
   template: Dependency-Scanning.gitlab-ci.yml
 
 variables:
-  DS_DISABLE_REMOTE_CHECKS: "true"
+  DS_PYTHON_VERSION: 2
 ```
 
 Because template is [evaluated before](../../../ci/yaml/README.md#include) the pipeline
@@ -150,7 +135,7 @@ using environment variables.
 | `DS_PYTHON_VERSION`                     | Version of Python. If set to 2, dependencies are installed using Python 2.7 instead of Python 3.6. ([Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12296) in GitLab 12.1)| |
 | `DS_PIP_DEPENDENCY_PATH`                | Path to load Python pip dependencies from. ([Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12412) in GitLab 12.2) | |
 | `DS_DEFAULT_ANALYZERS`                  | Override the names of the official default images. Read more about [customizing analyzers](analyzers.md). | |
-| `DS_DISABLE_REMOTE_CHECKS`              | Do not send any data to GitLab. Used in the [Gemnasium analyzer](#remote-checks). | |
+| `DS_DISABLE_DIND`                       | Disable Docker in Docker and run analyzers [individually](#disabling-docker-in-docker-for-dependency-scanning).| |
 | `DS_PULL_ANALYZER_IMAGES`               | Pull the images from the Docker registry (set to `0` to disable). | |
 | `DS_EXCLUDED_PATHS`                     | Exclude vulnerabilities from output based on the paths. A comma-separated list of patterns. Patterns can be globs, file or folder paths. Parent directories will also match patterns. | `DS_EXCLUDED_PATHS=doc,spec` |
 | `DS_DOCKER_CLIENT_NEGOTIATION_TIMEOUT`  | Time limit for Docker client negotiation. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, `h`. For example, `300ms`, `1.5h`, or `2h45m`. | |
@@ -158,6 +143,50 @@ using environment variables.
 | `DS_RUN_ANALYZER_TIMEOUT`               | Time limit when running an analyzer. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, `h`. For example, `300ms`, `1.5h`, or `2h45m`. | |
 | `PIP_INDEX_URL`                         | Base URL of Python Package Index (default `https://pypi.org/simple`). | |
 | `PIP_EXTRA_INDEX_URL`                   | Array of [extra URLs](https://pip.pypa.io/en/stable/reference/pip_install/#cmdoption-extra-index-url) of package indexes to use in addition to `PIP_INDEX_URL`. Comma separated. | |
+| `MAVEN_CLI_OPTS`                        | List of command line arguments that will be passed to the maven analyzer during the project's build phase (see example for [using private repos](#using-private-maven-repos)). | |
+
+### Using private Maven repos
+
+If you have a private Maven repository which requires login credentials,
+you can use the `MAVEN_CLI_OPTS` environment variable to pass variables
+specified in your settings (e.g., username, password, etc.).
+
+For example, if you have a settings file in your project source (e.g., `mysettings.xml`)
+that looks like the following, you can specify the variables
+[by adding an entry under your project's settings](../../../ci/variables/README.md#via-the-ui),
+so that you don't have to expose your private data in `.gitlab-ci.yml` (e.g., adding
+`MAVEN_CLI_OPTS` with value `--settings mysettings.xml -Dprivate.username=foo -Dprivate.password=bar`).
+
+```xml
+<!-- mysettings.xml -->
+<settings>
+    ...
+    <servers>
+        <server>
+            <id>private_server</id>
+            <username>${private.username}</username>
+            <password>${private.password}</password>
+        </server>
+    </servers>
+</settings>
+```
+
+### Disabling Docker in Docker for Dependency Scanning
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12487) in GitLab Ultimate 12.5.
+
+You can avoid the need for Docker in Docker by running the individual analyzers.
+This does not require running the executor in privileged mode. For example:
+
+```yaml
+include:
+  template: Dependency-Scanning.gitlab-ci.yml
+
+variables:
+  DS_DISABLE_DIND: "true"
+```
+
+This will create individual `<analyzer-name>-dependency_scanning` jobs for each analyzer that runs in your CI/CD pipeline.
 
 ## Interacting with the vulnerabilities
 

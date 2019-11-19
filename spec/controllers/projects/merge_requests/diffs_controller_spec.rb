@@ -34,6 +34,16 @@ describe Projects::MergeRequests::DiffsController do
       it 'saves the preferred diff view in a cookie' do
         expect(response.cookies['diff_view']).to eq('parallel')
       end
+
+      it 'only renders the required view', :aggregate_failures do
+        diff_files_without_deletions = json_response['diff_files'].reject { |f| f['deleted_file'] }
+        have_no_inline_diff_lines = satisfy('have no inline diff lines') do |diff_file|
+          !diff_file.has_key?('highlighted_diff_lines')
+        end
+
+        expect(diff_files_without_deletions).to all(have_key('parallel_diff_lines'))
+        expect(diff_files_without_deletions).to all(have_no_inline_diff_lines)
+      end
     end
 
     context 'when the user cannot view the merge request' do
@@ -76,7 +86,9 @@ describe Projects::MergeRequests::DiffsController do
         end
 
         it 'serializes merge request diff collection' do
-          expect_any_instance_of(DiffsSerializer).to receive(:represent).with(an_instance_of(Gitlab::Diff::FileCollection::MergeRequestDiff), an_instance_of(Hash))
+          expect_next_instance_of(DiffsSerializer) do |instance|
+            expect(instance).to receive(:represent).with(an_instance_of(Gitlab::Diff::FileCollection::MergeRequestDiff), an_instance_of(Hash))
+          end
 
           go
         end
@@ -88,7 +100,9 @@ describe Projects::MergeRequests::DiffsController do
         end
 
         it 'serializes merge request diff collection' do
-          expect_any_instance_of(DiffsSerializer).to receive(:represent).with(an_instance_of(Gitlab::Diff::FileCollection::MergeRequestDiff), an_instance_of(Hash))
+          expect_next_instance_of(DiffsSerializer) do |instance|
+            expect(instance).to receive(:represent).with(an_instance_of(Gitlab::Diff::FileCollection::MergeRequestDiff), an_instance_of(Hash))
+          end
 
           go
         end
@@ -259,7 +273,7 @@ describe Projects::MergeRequests::DiffsController do
           it 'only renders the diffs for the path given' do
             diff_for_path(old_path: existing_path, new_path: existing_path)
 
-            paths = json_response["diff_files"].map { |file| file['new_path'] }
+            paths = json_response['diff_files'].map { |file| file['new_path'] }
 
             expect(paths).to include(existing_path)
           end
@@ -344,6 +358,7 @@ describe Projects::MergeRequests::DiffsController do
       let(:expected_options) do
         {
           merge_request: merge_request,
+          diff_view: :inline,
           pagination_data: {
             current_page: 1,
             next_page: nil,
@@ -367,6 +382,7 @@ describe Projects::MergeRequests::DiffsController do
       let(:expected_options) do
         {
           merge_request: merge_request,
+          diff_view: :inline,
           pagination_data: {
             current_page: 2,
             next_page: 3,

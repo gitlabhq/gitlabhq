@@ -114,6 +114,10 @@ module FilteredSearchHelpers
     create_token('Milestone', milestone_name, symbol)
   end
 
+  def release_token(release_tag = nil)
+    create_token('Release', release_tag)
+  end
+
   def label_token(label_name = nil, has_symbol = true)
     symbol = has_symbol ? '~' : nil
     create_token('Label', label_name, symbol)

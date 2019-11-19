@@ -11,13 +11,15 @@ module Gitlab
       validates :name, :priority, :metrics, presence: true
 
       def self.common_metrics
-        all_groups = ::PrometheusMetric.common.group_by(&:group_title).map do |name, metrics|
-          MetricGroup.new(
-            name: name,
-            priority: metrics.map(&:priority).max,
-            metrics: metrics.map(&:to_query_metric)
-          )
-        end
+        all_groups = ::PrometheusMetricsFinder.new(common: true).execute
+          .group_by(&:group_title)
+          .map do |name, metrics|
+            MetricGroup.new(
+              name: name,
+              priority: metrics.map(&:priority).max,
+              metrics: metrics.map(&:to_query_metric)
+            )
+          end
 
         all_groups.sort_by(&:priority).reverse
       end

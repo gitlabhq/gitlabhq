@@ -1,0 +1,5 @@
+---
+title: Improve performance of linking LFS objects during import
+merge_request: 19709
+author:
+type: performance

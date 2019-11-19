@@ -1,6 +1,7 @@
 import Vue from 'vue';
+import { slugify } from '~/lib/utils/text_utility';
 import * as types from './mutation_types';
-import { normalizeMetrics, sortMetrics, normalizeMetric, normalizeQueryResult } from './utils';
+import { normalizeMetrics, normalizeMetric, normalizeQueryResult } from './utils';
 
 const normalizePanel = panel => panel.metrics.map(normalizeMetric);
 
@@ -10,10 +11,12 @@ export default {
     state.showEmptyState = true;
   },
   [types.RECEIVE_METRICS_DATA_SUCCESS](state, groupData) {
-    state.groups = groupData.map(group => {
+    state.dashboard.panel_groups = groupData.map((group, i) => {
+      const key = `${slugify(group.group || 'default')}-${i}`;
       let { metrics = [], panels = [] } = group;
 
       // each panel has metric information that needs to be normalized
+
       panels = panels.map(panel => ({
         ...panel,
         metrics: normalizePanel(panel),
@@ -22,24 +25,21 @@ export default {
       // for backwards compatibility, and to limit Vue template changes:
       // for each group alias panels to metrics
       // for each panel alias metrics to queries
-      if (state.useDashboardEndpoint) {
-        metrics = panels.map(panel => ({
-          ...panel,
-          queries: panel.metrics,
-        }));
-      }
+      metrics = panels.map(panel => ({
+        ...panel,
+        queries: panel.metrics,
+      }));
 
       return {
         ...group,
         panels,
-        metrics: normalizeMetrics(sortMetrics(metrics)),
+        key,
+        metrics: normalizeMetrics(metrics),
       };
     });
 
-    if (!state.groups.length) {
+    if (!state.dashboard.panel_groups.length) {
       state.emptyState = 'noData';
-    } else {
-      state.showEmptyState = false;
     }
   },
   [types.RECEIVE_METRICS_DATA_FAILURE](state, error) {
@@ -65,7 +65,7 @@ export default {
 
     state.showEmptyState = false;
 
-    state.groups.forEach(group => {
+    state.dashboard.panel_groups.forEach(group => {
       group.metrics.forEach(metric => {
         metric.queries.forEach(query => {
           if (query.metric_id === metricId) {
@@ -86,9 +86,6 @@ export default {
     state.currentDashboard = endpoints.currentDashboard;
     state.projectPath = endpoints.projectPath;
   },
-  [types.SET_DASHBOARD_ENABLED](state, enabled) {
-    state.useDashboardEndpoint = enabled;
-  },
   [types.SET_GETTING_STARTED_EMPTY_STATE](state) {
     state.emptyState = 'gettingStarted';
   },
@@ -97,12 +94,13 @@ export default {
     state.emptyState = 'noData';
   },
   [types.SET_ALL_DASHBOARDS](state, dashboards) {
-    state.allDashboards = dashboards;
-  },
-  [types.SET_ADDITIONAL_PANEL_TYPES_ENABLED](state, enabled) {
-    state.additionalPanelTypesEnabled = enabled;
+    state.allDashboards = dashboards || [];
   },
   [types.SET_SHOW_ERROR_BANNER](state, enabled) {
     state.showErrorBanner = enabled;
+  },
+  [types.SET_PANEL_GROUP_METRICS](state, payload) {
+    const panelGroup = state.dashboard.panel_groups.find(pg => payload.key === pg.key);
+    panelGroup.metrics = payload.metrics;
   },
 };

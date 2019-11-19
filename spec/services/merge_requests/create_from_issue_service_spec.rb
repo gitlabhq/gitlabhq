@@ -36,25 +36,25 @@ describe MergeRequests::CreateFromIssueService do
         expect(result[:message]).to eq('Invalid issue iid')
       end
 
-      it 'creates a branch based on issue title' do
+      it 'creates a branch based on issue title', :sidekiq_might_not_need_inline do
         service.execute
 
         expect(target_project.repository.branch_exists?(issue.to_branch_name)).to be_truthy
       end
 
-      it 'creates a branch using passed name' do
+      it 'creates a branch using passed name', :sidekiq_might_not_need_inline do
         service_with_custom_source_branch.execute
 
         expect(target_project.repository.branch_exists?(custom_source_branch)).to be_truthy
       end
 
-      it 'creates the new_merge_request system note' do
+      it 'creates the new_merge_request system note', :sidekiq_might_not_need_inline do
         expect(SystemNoteService).to receive(:new_merge_request).with(issue, project, user, instance_of(MergeRequest))
 
         service.execute
       end
 
-      it 'creates the new_issue_branch system note when the branch could be created but the merge_request cannot be created' do
+      it 'creates the new_issue_branch system note when the branch could be created but the merge_request cannot be created', :sidekiq_might_not_need_inline do
         expect_any_instance_of(MergeRequest).to receive(:valid?).at_least(:once).and_return(false)
 
         expect(SystemNoteService).to receive(:new_issue_branch).with(issue, project, user, issue.to_branch_name, branch_project: target_project)
@@ -62,35 +62,35 @@ describe MergeRequests::CreateFromIssueService do
         service.execute
       end
 
-      it 'creates a merge request' do
+      it 'creates a merge request', :sidekiq_might_not_need_inline do
         expect { service.execute }.to change(target_project.merge_requests, :count).by(1)
       end
 
-      it 'sets the merge request author to current user' do
+      it 'sets the merge request author to current user', :sidekiq_might_not_need_inline do
         result = service.execute
 
         expect(result[:merge_request].author).to eq(user)
       end
 
-      it 'sets the merge request source branch to the new issue branch' do
+      it 'sets the merge request source branch to the new issue branch', :sidekiq_might_not_need_inline do
         result = service.execute
 
         expect(result[:merge_request].source_branch).to eq(issue.to_branch_name)
       end
 
-      it 'sets the merge request source branch to the passed branch name' do
+      it 'sets the merge request source branch to the passed branch name', :sidekiq_might_not_need_inline do
         result = service_with_custom_source_branch.execute
 
         expect(result[:merge_request].source_branch).to eq(custom_source_branch)
       end
 
-      it 'sets the merge request target branch to the project default branch' do
+      it 'sets the merge request target branch to the project default branch', :sidekiq_might_not_need_inline do
         result = service.execute
 
         expect(result[:merge_request].target_branch).to eq(target_project.default_branch)
       end
 
-      it 'executes quick actions if the build service sets them in the description' do
+      it 'executes quick actions if the build service sets them in the description', :sidekiq_might_not_need_inline do
         allow(service).to receive(:merge_request).and_wrap_original do |m, *args|
           m.call(*args).tap do |merge_request|
             merge_request.description = "/assign #{user.to_reference}"
@@ -102,7 +102,7 @@ describe MergeRequests::CreateFromIssueService do
         expect(result[:merge_request].assignees).to eq([user])
       end
 
-      context 'when ref branch is set' do
+      context 'when ref branch is set', :sidekiq_might_not_need_inline do
         subject { described_class.new(project, user, ref: 'feature', **service_params).execute }
 
         it 'sets the merge request source branch to the new issue branch' do
@@ -193,7 +193,7 @@ describe MergeRequests::CreateFromIssueService do
 
         it_behaves_like 'a service that creates a merge request from an issue'
 
-        it 'sets the merge request title to: "WIP: $issue-branch-name' do
+        it 'sets the merge request title to: "WIP: $issue-branch-name', :sidekiq_might_not_need_inline do
           result = service.execute
 
           expect(result[:merge_request].title).to eq("WIP: #{issue.to_branch_name.titleize.humanize}")

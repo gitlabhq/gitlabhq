@@ -17,7 +17,7 @@ function createCommitData(data = {}) {
       avatarUrl: 'https://test.com',
       webUrl: 'https://test.com/test',
     },
-    latestPipeline: {
+    pipeline: {
       detailedStatus: {
         detailsPath: 'https://test.com/pipeline',
         icon: 'failed',
@@ -74,7 +74,7 @@ describe('Repository last commit component', () => {
   });
 
   it('hides pipeline components when pipeline does not exist', () => {
-    factory(createCommitData({ latestPipeline: null }));
+    factory(createCommitData({ pipeline: null }));
 
     expect(vm.find('.js-commit-pipeline').exists()).toBe(false);
   });

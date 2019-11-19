@@ -6,6 +6,7 @@ class GroupsController < Groups::ApplicationController
   include ParamsBackwardCompatibility
   include PreviewMarkdown
   include RecordUserLastActivity
+  extend ::Gitlab::Utils::Override
 
   respond_to :html
 
@@ -23,6 +24,10 @@ class GroupsController < Groups::ApplicationController
   before_action :event_filter, only: [:activity]
 
   before_action :user_actions, only: [:show]
+
+  before_action do
+    push_frontend_feature_flag(:vue_issuables_list, @group)
+  end
 
   skip_cross_project_access_check :index, :new, :create, :edit, :update,
                                   :destroy, :projects
@@ -111,7 +116,7 @@ class GroupsController < Groups::ApplicationController
   def destroy
     Groups::DestroyService.new(@group, current_user).async_execute
 
-    redirect_to root_path, status: 302, alert: "Group '#{@group.name}' was scheduled for deletion."
+    redirect_to root_path, status: :found, alert: "Group '#{@group.name}' was scheduled for deletion."
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
@@ -232,6 +237,11 @@ class GroupsController < Groups::ApplicationController
     if @group.supports_events?
       @group.self_and_descendants.public_or_visible_to_user(current_user)
     end
+  end
+
+  override :markdown_service_params
+  def markdown_service_params
+    params.merge(group: group)
   end
 end
 

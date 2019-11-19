@@ -5,6 +5,7 @@ class ImportExportUpload < ApplicationRecord
   include ObjectStorage::BackgroundMove
 
   belongs_to :project
+  belongs_to :group
 
   # These hold the project Import/Export archives (.tar.gz files)
   mount_uploader :import_file, ImportExportUploader

@@ -442,7 +442,7 @@ personal_access_token = User.find(123).personal_access_tokens.create(
   scopes: [:api]
 )
 
-personal_access_token.token
+puts personal_access_token.token
 ```
 
 You might also want to manually set the token string:
@@ -715,7 +715,7 @@ For more information, see the [confidential issue](../../user/project/issues/con
 
 ```ruby
 Ci::Pipeline.where(project_id: p.id).where(status: 'pending').count
-Ci::Pipeline.where(project_id: p.id).where(status: 'pending').each {|p| p.cancel}
+Ci::Pipeline.where(project_id: p.id).where(status: 'pending').each {|p| p.cancel if p.stuck?}
 Ci::Pipeline.where(project_id: p.id).where(status: 'pending').count
 ```
 

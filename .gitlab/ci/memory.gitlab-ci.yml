@@ -5,7 +5,7 @@
     - .default-cache
     - .default-only
     - .default-before_script
-    - .only-code-changes
+    - .only:changes-code
 
 memory-static:
   extends: .only-code-memory-job-base

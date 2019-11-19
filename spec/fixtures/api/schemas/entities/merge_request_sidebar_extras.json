@@ -3,6 +3,8 @@
   "properties" : {
     "id": { "type": "integer" },
     "iid": { "type": "integer" },
+    "project_emails_disabled": { "type": "boolean" },
+    "subscribe_disabled_description": { "type": "string" },
     "subscribed": { "type": "boolean" },
     "time_estimate": { "type": "integer" },
     "total_time_spent": { "type": "integer" },

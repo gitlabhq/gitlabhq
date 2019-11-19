@@ -158,6 +158,7 @@ describe Gitlab::BitbucketImport::Importer do
       expect { subject.execute }.to change { MergeRequest.count }.by(1)
 
       merge_request = MergeRequest.first
+      expect(merge_request.state).to eq('merged')
       expect(merge_request.notes.count).to eq(2)
       expect(merge_request.notes.map(&:discussion_id).uniq.count).to eq(1)
 

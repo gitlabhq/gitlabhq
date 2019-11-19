@@ -3,62 +3,25 @@
     - @domain.errors.full_messages.each do |msg|
       = msg
 
-.form-group.row
-  .col-sm-2.col-form-label
-    = f.label :domain, _("Domain")
-  .col-sm-10
-    = f.text_field :domain, required: true, autocomplete: "off", class: "form-control", disabled: @domain.persisted?
+.form-group.border-section
+  .row
+    - if @domain.persisted?
+      .col-sm-2
+        = _("Domain")
+      .col-sm-10
+        = external_link(@domain.url, @domain.url)
+    - else
+      .col-sm-2
+        = f.label :domain, _("Domain")
+      .col-sm-10
+        .input-group
+          = f.text_field :domain, required: true, autocomplete: "off", class: "form-control"
+
+- if @domain.persisted?
+  = render 'dns'
 
 - if Gitlab.config.pages.external_https
-
-  - auto_ssl_available = ::Gitlab::LetsEncrypt.enabled?
-  - auto_ssl_enabled = @domain.auto_ssl_enabled?
-  - auto_ssl_available_and_enabled = auto_ssl_available && auto_ssl_enabled
-
-  - if auto_ssl_available
-    .form-group.row
-      .col-sm-2.col-form-label
-        %label{ for: "pages_domain_auto_ssl_enabled_button" }
-          - lets_encrypt_link_url = "https://letsencrypt.org/"
-          - lets_encrypt_link_start = "<a href=\"%{lets_encrypt_link_url}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-nowrap\">".html_safe % { lets_encrypt_link_url: lets_encrypt_link_url }
-          - lets_encrypt_link_end = "</a>".html_safe
-          = _("Automatic certificate management using %{lets_encrypt_link_start}Let's Encrypt%{lets_encrypt_link_end}").html_safe % { lets_encrypt_link_start: lets_encrypt_link_start, lets_encrypt_link_end: lets_encrypt_link_end }
-
-      .col-sm-10.js-auto-ssl-toggle-container
-        %button{ type: "button", id: "pages_domain_auto_ssl_enabled_button",
-          class: "js-project-feature-toggle project-feature-toggle mt-2 #{"is-checked" if auto_ssl_available_and_enabled}",
-          "aria-label": _("Automatic certificate management using Let's Encrypt") }
-          = f.hidden_field :auto_ssl_enabled?, class: "js-project-feature-toggle-input"
-          %span.toggle-icon
-            = sprite_icon("status_success_borderless", size: 16, css_class: "toggle-icon-svg toggle-status-checked")
-            = sprite_icon("status_failed_borderless", size: 16, css_class: "toggle-icon-svg toggle-status-unchecked")
-        %p.text-secondary.mt-3
-          - docs_link_url = help_page_path("user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration.md")
-          - docs_link_start = "<a href=\"%{docs_link_url}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-nowrap\">".html_safe % { docs_link_url: docs_link_url }
-          - docs_link_end = "</a>".html_safe
-          = _("Let's Encrypt is a free, automated, and open certificate authority (CA) that gives digital certificates in order to enable HTTPS (SSL/TLS) for websites. Learn more about Let's Encrypt configuration by following the %{docs_link_start}documentation on GitLab Pages%{docs_link_end}.").html_safe % { docs_link_url: docs_link_url, docs_link_start: docs_link_start, docs_link_end: docs_link_end }
-
-  .js-shown-unless-auto-ssl{ class: ("d-none" if auto_ssl_available_and_enabled) }
-    .form-group.row
-      .col-sm-2.col-form-label
-        = f.label :user_provided_certificate, _("Certificate (PEM)")
-      .col-sm-10
-        = f.text_area :user_provided_certificate,
-          rows: 5,
-          class: "form-control js-enabled-unless-auto-ssl",
-          disabled: auto_ssl_available_and_enabled
-        %span.help-inline.text-muted= _("Upload a certificate for your domain with all intermediates")
-
-    .form-group.row
-      .col-sm-2.col-form-label
-        = f.label :user_provided_key, _("Key (PEM)")
-      .col-sm-10
-        = f.text_area :user_provided_key,
-          rows: 5,
-          class: "form-control js-enabled-unless-auto-ssl",
-          disabled: auto_ssl_available_and_enabled
-        %span.help-inline.text-muted= _("Upload a private key for your certificate")
-
+  = render 'certificate', f: f
 - else
-  .nothing-here-block
+  .border-section.nothing-here-block
     = _("Support for custom certificates is disabled. Ask your system's administrator to enable it.")

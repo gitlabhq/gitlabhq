@@ -1,3 +1,5 @@
+- test_reports_enabled = Feature.enabled?(:junit_pipeline_view)
+
 .tabs-holder
   %ul.pipelines-tabs.nav-links.no-top.no-bottom.mobile-separator.nav.nav-tabs
     %li.js-pipeline-tab-link
@@ -12,6 +14,11 @@
         = link_to failures_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-failures', action: 'failures', toggle: 'tab' }, class: 'failures-tab' do
           = _('Failed Jobs')
           %span.badge.badge-pill.js-failures-counter= @pipeline.failed_builds.count
+    - if test_reports_enabled
+      %li.js-tests-tab-link
+        = link_to test_report_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-tests', action: 'test_report', toggle: 'tab' }, class: 'test-tab' do
+          = s_('TestReports|Tests')
+          %span.badge.badge-pill= pipeline.test_reports.total_count
     = render_if_exists "projects/pipelines/tabs_holder", pipeline: @pipeline, project: @project
 
 .tab-content
@@ -31,10 +38,6 @@
               %th= _('Coverage')
               %th
           = render partial: "projects/stage/stage", collection: pipeline.legacy_stages, as: :stage
-
-    - elsif pipeline.project.builds_enabled? && !pipeline.ci_yaml_file
-      .bs-callout.bs-callout-warning
-        = _("%{gitlab_ci_yml} not found in this commit") % { gitlab_ci_yml: ".gitlab-ci.yml" }
 
   - if @pipeline.failed_builds.present?
     #js-tab-failures.build-failures.tab-pane.build-page
@@ -71,4 +74,7 @@
                   %pre.build-trace.build-trace-rounded
                     %code.bash.js-build-output
                       = build_summary(build)
+
+  #js-tab-tests.tab-pane
+    #js-pipeline-tests-detail
   = render_if_exists "projects/pipelines/tabs_content", pipeline: @pipeline, project: @project

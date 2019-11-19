@@ -19,6 +19,14 @@ To save duplicated clients getting created in different apps, we have a
 [default client][default-client] that should be used. This setups the
 Apollo client with the correct URL and also sets the CSRF headers.
 
+Default client accepts two parameters: `resolvers` and `config`.
+
+- `resolvers` parameter is created to accept an object of resolvers for [local state management](#local-state-with-apollo) queries and mutations
+- `config` parameter takes an object of configuration settings:
+  - `cacheConfig` field accepts an optional object of settings to [customize Apollo cache](https://github.com/apollographql/apollo-client/tree/master/packages/apollo-cache-inmemory#configuration)
+  - `baseUrl` allows us to pass a URL for GraphQL endpoint different from our main endpoint (i.e.`${gon.relative_url_root}/api/graphql`)
+  - `assumeImmutableResults` (set to `false` by default) - this setting, when set to `true`, will assume that every single operation on updating Apollo Cache is immutable. It also sets `freezeResults` to `true`, so any attempt on mutating Apollo Cache will throw a console warning in development environment. Please ensure you're following the immutability pattern on cache update operations before setting this option to `true`.
+
 ## GraphQL Queries
 
 To save query compilation at runtime, webpack can directly import `.graphql`

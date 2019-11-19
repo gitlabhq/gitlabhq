@@ -66,11 +66,13 @@ module Gitlab
           def move_repositories(namespace, old_full_path, new_full_path)
             repo_shards_for_namespace(namespace).each do |repository_storage|
               # Ensure old directory exists before moving it
-              gitlab_shell.add_namespace(repository_storage, old_full_path)
+              Gitlab::GitalyClient::NamespaceService.allow do
+                gitlab_shell.add_namespace(repository_storage, old_full_path)
 
-              unless gitlab_shell.mv_namespace(repository_storage, old_full_path, new_full_path)
-                message = "Exception moving on shard #{repository_storage} from #{old_full_path} to #{new_full_path}"
-                Rails.logger.error message # rubocop:disable Gitlab/RailsLogger
+                unless gitlab_shell.mv_namespace(repository_storage, old_full_path, new_full_path)
+                  message = "Exception moving on shard #{repository_storage} from #{old_full_path} to #{new_full_path}"
+                  Rails.logger.error message # rubocop:disable Gitlab/RailsLogger
+                end
               end
             end
           end

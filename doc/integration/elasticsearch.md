@@ -583,3 +583,12 @@ Here are some common pitfalls and how to overcome them:
   AWS has [fixed limits](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-limits.html)
   for this setting ("Maximum Size of HTTP Request Payloads"), based on the size of
   the underlying instance.
+
+### Reverting to basic search
+
+Sometimes there may be issues with your Elasticsearch index data and as such
+GitLab will allow you to revert to "basic search" when there are no search
+results and assuming that basic search is supported in that scope. This "basic
+search" will behave as though you don't have Elasticsearch enabled at all for
+your instance and search using other data sources (ie. Postgres data and Git
+data).

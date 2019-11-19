@@ -1,6 +1,6 @@
 <script>
 import _ from 'underscore';
-import { GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
+import { GlLoadingIcon, GlSearchBoxByType, GlInfiniteScroll } from '@gitlab/ui';
 import ProjectListItem from './project_list_item.vue';
 
 const SEARCH_INPUT_TIMEOUT_MS = 500;
@@ -10,6 +10,7 @@ export default {
   components: {
     GlLoadingIcon,
     GlSearchBoxByType,
+    GlInfiniteScroll,
     ProjectListItem,
   },
   props: {
@@ -41,6 +42,11 @@ export default {
       required: false,
       default: false,
     },
+    totalResults: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
   },
   data() {
     return {
@@ -50,6 +56,9 @@ export default {
   methods: {
     projectClicked(project) {
       this.$emit('projectClicked', project);
+    },
+    bottomReached() {
+      this.$emit('bottomReached');
     },
     isSelected(project) {
       return Boolean(_.find(this.selectedProjects, { id: project.id }));
@@ -71,18 +80,25 @@ export default {
       @input="onInput"
     />
     <div class="d-flex flex-column">
-      <gl-loading-icon v-if="showLoadingIndicator" :size="2" class="py-2 px-4" />
-      <div v-if="!showLoadingIndicator" class="d-flex flex-column">
-        <project-list-item
-          v-for="project in projectSearchResults"
-          :key="project.id"
-          :selected="isSelected(project)"
-          :project="project"
-          :matcher="searchQuery"
-          class="js-project-list-item"
-          @click="projectClicked(project)"
-        />
-      </div>
+      <gl-loading-icon v-if="showLoadingIndicator" :size="1" class="py-2 px-4" />
+      <gl-infinite-scroll
+        :max-list-height="402"
+        :fetched-items="projectSearchResults.length"
+        :total-items="totalResults"
+        @bottomReached="bottomReached"
+      >
+        <div v-if="!showLoadingIndicator" slot="items" class="d-flex flex-column">
+          <project-list-item
+            v-for="project in projectSearchResults"
+            :key="project.id"
+            :selected="isSelected(project)"
+            :project="project"
+            :matcher="searchQuery"
+            class="js-project-list-item"
+            @click="projectClicked(project)"
+          />
+        </div>
+      </gl-infinite-scroll>
       <div v-if="showNoResultsMessage" class="text-muted ml-2 js-no-results-message">
         {{ __('Sorry, no projects matched your search') }}
       </div>

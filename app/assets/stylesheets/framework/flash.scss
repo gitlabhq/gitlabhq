@@ -12,17 +12,22 @@ $notification-box-shadow-color: rgba(0, 0, 0, 0.25);
     position: -webkit-sticky;
     top: $flash-container-top;
     z-index: 251;
+  }
 
-    .flash-content {
-      box-shadow: 0 2px 4px 0 $notification-box-shadow-color;
-    }
+  &.flash-container-page {
+    margin-bottom: 0;
+  }
+
+  &:empty {
+    margin: 0;
   }
 
   .close-icon-wrapper {
-    padding: ($gl-btn-padding + $gl-padding-4) $gl-padding $gl-btn-padding;
+    padding: ($gl-padding + $gl-padding-4) $gl-padding $gl-padding;
     position: absolute;
     right: 0;
     top: 0;
+    bottom: 0;
     cursor: pointer;
 
     .close-icon {
@@ -31,13 +36,12 @@ $notification-box-shadow-color: rgba(0, 0, 0, 0.25);
     }
   }
 
-  .flash-notice,
   .flash-alert,
+  .flash-notice,
   .flash-success,
   .flash-warning {
-    border-radius: $border-radius-default;
-    color: $white-light;
-    padding-right: $gl-padding * 2;
+    padding: $gl-padding $gl-padding-32 $gl-padding ($gl-padding + $gl-padding-4);
+    margin-top: 10px;
 
     .container-fluid,
     .container-fluid.container-limited {
@@ -45,74 +49,30 @@ $notification-box-shadow-color: rgba(0, 0, 0, 0.25);
     }
   }
 
+  .flash-alert {
+    background-color: $red-100;
+    color: $red-700;
+  }
+
   .flash-notice {
-    @extend .alert;
-    background-color: $blue-500;
-    margin: 0;
+    background-color: $blue-100;
+    color: $blue-700;
+  }
 
-    &.flash-notice-persistent {
-      background-color: $blue-100;
-      color: $gl-text-color;
-
-      a {
-        color: $blue-600;
-
-        &:hover {
-          color: $blue-800;
-          text-decoration: none;
-        }
-      }
-    }
+  .flash-success {
+    background-color: $theme-green-100;
+    color: $green-700;
   }
 
   .flash-warning {
-    @extend .alert;
     background-color: $orange-100;
-    color: $orange-900;
+    color: $orange-800;
     cursor: default;
-    margin: 0;
   }
 
   .flash-text,
   .flash-action {
     display: inline-block;
-  }
-
-  .flash-alert {
-    @extend .alert;
-    background-color: $red-500;
-    margin: 0;
-
-    .flash-action {
-      margin-left: 5px;
-      text-decoration: none;
-      font-weight: $gl-font-weight-normal;
-      border-bottom: 1px solid;
-
-      &:hover {
-        border-color: transparent;
-      }
-    }
-  }
-
-  .flash-success {
-    @extend .alert;
-    background-color: $green-500;
-    margin: 0;
-  }
-
-  &.flash-container-page {
-    margin-bottom: 0;
-
-    .flash-notice,
-    .flash-alert,
-    .flash-success {
-      border-radius: 0;
-    }
-  }
-
-  &:empty {
-    margin: 0;
   }
 }
 

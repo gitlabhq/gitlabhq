@@ -39,45 +39,65 @@ module Gitlab::Throttle
 end
 
 class Rack::Attack
+  # Order conditions by how expensive they are:
+  # 1. The most expensive is the `req.unauthenticated?` and
+  #    `req.authenticated_user_id` as it performs an expensive
+  #    DB/Redis query to validate the request
+  # 2. Slightly less expensive is the need to query DB/Redis
+  #    to unmarshal settings (`Gitlab::Throttle.settings`)
+  #
+  # We deliberately skip `/-/health|liveness|readiness`
+  # from Rack Attack as they need to always be accessible
+  # by Load Balancer and additional measure is implemented
+  # (token and whitelisting) to prevent abuse.
   throttle('throttle_unauthenticated', Gitlab::Throttle.unauthenticated_options) do |req|
-    Gitlab::Throttle.settings.throttle_unauthenticated_enabled &&
-      req.unauthenticated? &&
-      !req.should_be_skipped? &&
+    if !req.should_be_skipped? &&
+        Gitlab::Throttle.settings.throttle_unauthenticated_enabled &&
+        req.unauthenticated?
       req.ip
+    end
   end
 
   throttle('throttle_authenticated_api', Gitlab::Throttle.authenticated_api_options) do |req|
-    Gitlab::Throttle.settings.throttle_authenticated_api_enabled &&
-      req.api_request? &&
+    if req.api_request? &&
+        Gitlab::Throttle.settings.throttle_authenticated_api_enabled
       req.authenticated_user_id([:api])
+    end
   end
 
   throttle('throttle_authenticated_web', Gitlab::Throttle.authenticated_web_options) do |req|
-    Gitlab::Throttle.settings.throttle_authenticated_web_enabled &&
-      req.web_request? &&
+    if req.web_request? &&
+        Gitlab::Throttle.settings.throttle_authenticated_web_enabled
       req.authenticated_user_id([:api, :rss, :ics])
+    end
   end
 
   throttle('throttle_unauthenticated_protected_paths', Gitlab::Throttle.protected_paths_options) do |req|
-    Gitlab::Throttle.protected_paths_enabled? &&
-      req.unauthenticated? &&
-      !req.should_be_skipped? &&
-      req.protected_path? &&
+    if req.post? &&
+        !req.should_be_skipped? &&
+        req.protected_path? &&
+        Gitlab::Throttle.protected_paths_enabled? &&
+        req.unauthenticated?
       req.ip
+    end
   end
 
   throttle('throttle_authenticated_protected_paths_api', Gitlab::Throttle.protected_paths_options) do |req|
-    Gitlab::Throttle.protected_paths_enabled? &&
-      req.api_request? &&
-      req.protected_path? &&
+    if req.post? &&
+        req.api_request? &&
+        req.protected_path? &&
+        Gitlab::Throttle.protected_paths_enabled?
       req.authenticated_user_id([:api])
+    end
   end
 
   throttle('throttle_authenticated_protected_paths_web', Gitlab::Throttle.protected_paths_options) do |req|
-    Gitlab::Throttle.protected_paths_enabled? &&
-      req.web_request? &&
-      req.protected_path? &&
+    if req.post? &&
+        req.web_request? &&
+        req.protected_path? &&
+        Gitlab::Throttle.protected_paths_enabled?
       req.authenticated_user_id([:api, :rss, :ics])
+    end
   end
 
   class Request
@@ -97,12 +117,16 @@ class Rack::Attack
       path =~ %r{^/api/v\d+/internal/}
     end
 
+    def health_check_request?
+      path =~ %r{^/-/(health|liveness|readiness)}
+    end
+
     def should_be_skipped?
-      api_internal_request?
+      api_internal_request? || health_check_request?
     end
 
     def web_request?
-      !api_request?
+      !api_request? && !health_check_request?
     end
 
     def protected_path?

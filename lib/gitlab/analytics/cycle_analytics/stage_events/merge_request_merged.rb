@@ -4,7 +4,7 @@ module Gitlab
   module Analytics
     module CycleAnalytics
       module StageEvents
-        class MergeRequestMerged < SimpleStageEvent
+        class MergeRequestMerged < MetricsBasedStageEvent
           def self.name
             s_("CycleAnalyticsEvent|Merge request merged")
           end
@@ -20,12 +20,6 @@ module Gitlab
           def timestamp_projection
             mr_metrics_table[:merged_at]
           end
-
-          # rubocop: disable CodeReuse/ActiveRecord
-          def apply_query_customization(query)
-            query.joins(:metrics)
-          end
-          # rubocop: enable CodeReuse/ActiveRecord
         end
       end
     end

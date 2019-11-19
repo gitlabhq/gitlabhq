@@ -167,6 +167,7 @@ describe SearchHelper do
         expect(search_filter_input_options('')[:data]['runner-tags-endpoint']).to eq(tag_list_admin_runners_path)
         expect(search_filter_input_options('')[:data]['labels-endpoint']).to eq(project_labels_path(@project))
         expect(search_filter_input_options('')[:data]['milestones-endpoint']).to eq(project_milestones_path(@project))
+        expect(search_filter_input_options('')[:data]['releases-endpoint']).to eq(project_releases_path(@project))
       end
 
       it 'includes autocomplete=off flag' do
@@ -269,6 +270,52 @@ describe SearchHelper do
       link = search_filter_link('projects', 'Projects', data: { foo: 'bar' })
 
       expect(link).to have_css('li[data-foo="bar"]')
+    end
+  end
+
+  describe '#show_user_search_tab?' do
+    subject { show_user_search_tab? }
+
+    context 'when users_search feature is disabled' do
+      before do
+        stub_feature_flags(users_search: false)
+      end
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when project search' do
+      before do
+        @project = :some_project
+
+        expect(self).to receive(:project_search_tabs?)
+          .with(:members)
+          .and_return(:value)
+      end
+
+      it 'delegates to project_search_tabs?' do
+        expect(subject).to eq(:value)
+      end
+    end
+
+    context 'when not project search' do
+      context 'when current_user can read_users_list' do
+        before do
+          allow(self).to receive(:current_user).and_return(:the_current_user)
+          allow(self).to receive(:can?).with(:the_current_user, :read_users_list).and_return(true)
+        end
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'when current_user cannot read_users_list' do
+        before do
+          allow(self).to receive(:current_user).and_return(:the_current_user)
+          allow(self).to receive(:can?).with(:the_current_user, :read_users_list).and_return(false)
+        end
+
+        it { is_expected.to eq(false) }
+      end
     end
   end
 end

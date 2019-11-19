@@ -6,6 +6,8 @@ class RepositoryUpdateRemoteMirrorWorker
   include ApplicationWorker
   include Gitlab::ExclusiveLeaseHelpers
 
+  worker_has_external_dependencies!
+
   sidekiq_options retry: 3, dead: false
   feature_category :source_code_management
 

@@ -620,3 +620,9 @@
     :why: https://github.com/hexorx/countries/blob/master/LICENSE
     :versions: []
     :when: 2019-09-11 13:08:28.431132000 Z
+- - :whitelist
+  - "(MIT OR CC0-1.0)"
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2019-11-08 10:03:31.787226000 Z

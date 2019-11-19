@@ -69,7 +69,14 @@ describe('error tracking settings actions', () => {
     });
 
     it('should request projects correctly', done => {
-      testAction(actions.requestProjects, null, state, [{ type: types.RESET_CONNECT }], [], done);
+      testAction(
+        actions.requestProjects,
+        null,
+        state,
+        [{ type: types.SET_PROJECTS_LOADING, payload: true }, { type: types.RESET_CONNECT }],
+        [],
+        done,
+      );
     });
 
     it('should receive projects correctly', done => {
@@ -81,6 +88,7 @@ describe('error tracking settings actions', () => {
         [
           { type: types.UPDATE_CONNECT_SUCCESS },
           { type: types.RECEIVE_PROJECTS, payload: testPayload },
+          { type: types.SET_PROJECTS_LOADING, payload: false },
         ],
         [],
         done,
@@ -93,7 +101,11 @@ describe('error tracking settings actions', () => {
         actions.receiveProjectsError,
         testPayload,
         state,
-        [{ type: types.UPDATE_CONNECT_ERROR }, { type: types.CLEAR_PROJECTS }],
+        [
+          { type: types.UPDATE_CONNECT_ERROR },
+          { type: types.CLEAR_PROJECTS },
+          { type: types.SET_PROJECTS_LOADING, payload: false },
+        ],
         [],
         done,
       );

@@ -176,7 +176,7 @@ module Gitlab
         self.table_name = 'projects'
 
         def self.find_by_full_path(path)
-          order_sql = "(CASE WHEN routes.path = #{connection.quote(path)} THEN 0 ELSE 1 END)"
+          order_sql = Arel.sql("(CASE WHEN routes.path = #{connection.quote(path)} THEN 0 ELSE 1 END)")
           where_full_path_in(path).reorder(order_sql).take
         end
 

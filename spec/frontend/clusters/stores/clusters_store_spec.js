@@ -71,6 +71,7 @@ describe('Clusters Store', () => {
             uninstallable: false,
             uninstallSuccessful: false,
             uninstallFailed: false,
+            validationError: null,
           },
           ingress: {
             title: 'Ingress',
@@ -84,6 +85,7 @@ describe('Clusters Store', () => {
             uninstallable: false,
             uninstallSuccessful: false,
             uninstallFailed: false,
+            validationError: null,
           },
           runner: {
             title: 'GitLab Runner',
@@ -100,6 +102,7 @@ describe('Clusters Store', () => {
             uninstallable: false,
             uninstallSuccessful: false,
             uninstallFailed: false,
+            validationError: null,
           },
           prometheus: {
             title: 'Prometheus',
@@ -111,6 +114,7 @@ describe('Clusters Store', () => {
             uninstallable: false,
             uninstallSuccessful: false,
             uninstallFailed: false,
+            validationError: null,
           },
           jupyter: {
             title: 'JupyterHub',
@@ -123,6 +127,7 @@ describe('Clusters Store', () => {
             uninstallable: false,
             uninstallSuccessful: false,
             uninstallFailed: false,
+            validationError: null,
           },
           knative: {
             title: 'Knative',
@@ -140,6 +145,7 @@ describe('Clusters Store', () => {
             uninstallFailed: false,
             updateSuccessful: false,
             updateFailed: false,
+            validationError: null,
           },
           cert_manager: {
             title: 'Cert-Manager',
@@ -152,6 +158,32 @@ describe('Clusters Store', () => {
             uninstallable: false,
             uninstallSuccessful: false,
             uninstallFailed: false,
+            validationError: null,
+          },
+          elastic_stack: {
+            title: 'Elastic Stack',
+            status: APPLICATION_STATUS.INSTALLABLE,
+            installFailed: true,
+            statusReason: mockResponseData.applications[7].status_reason,
+            requestReason: null,
+            kibana_hostname: '',
+            installed: false,
+            uninstallable: false,
+            uninstallSuccessful: false,
+            uninstallFailed: false,
+            validationError: null,
+          },
+          crossplane: {
+            title: 'Crossplane',
+            status: APPLICATION_STATUS.INSTALLABLE,
+            installFailed: true,
+            statusReason: mockResponseData.applications[8].status_reason,
+            requestReason: null,
+            installed: false,
+            uninstallable: false,
+            uninstallSuccessful: false,
+            uninstallFailed: false,
+            validationError: null,
           },
         },
         environments: [],
@@ -181,6 +213,17 @@ describe('Clusters Store', () => {
 
       expect(store.state.applications.jupyter.hostname).toEqual(
         `jupyter.${store.state.applications.ingress.externalIp}.nip.io`,
+      );
+    });
+
+    it('sets default hostname for elastic stack when ingress has a ip address', () => {
+      const mockResponseData =
+        CLUSTERS_MOCK_DATA.GET['/gitlab-org/gitlab-shell/clusters/2/status.json'].data;
+
+      store.updateStateFromServer(mockResponseData);
+
+      expect(store.state.applications.elastic_stack.kibana_hostname).toEqual(
+        `kibana.${store.state.applications.ingress.externalIp}.nip.io`,
       );
     });
   });

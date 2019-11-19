@@ -127,7 +127,7 @@ describe ErrorTracking::ListProjectsService do
       end
 
       it 'returns error' do
-        expect(result).to include(status: :error, message: 'access denied')
+        expect(result).to include(status: :error, message: 'Access denied', http_status: :unauthorized)
       end
     end
 

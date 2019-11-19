@@ -92,7 +92,8 @@ Example response:
   "jobs": {
     "processed": 2,
     "failed": 0,
-    "enqueued": 0
+    "enqueued": 0,
+    "dead": 0
   }
 }
 ```
@@ -145,7 +146,8 @@ Example response:
   "jobs": {
     "processed": 2,
     "failed": 0,
-    "enqueued": 0
+    "enqueued": 0,
+    "dead": 0
   }
 }
 ```

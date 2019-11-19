@@ -11,3 +11,27 @@
 .fade-leave-to {
   opacity: 0;
 }
+
+.slide-enter-from-element {
+  &.slide-enter,
+  &.slide-leave-to {
+    transform: translateX(-150%);
+  }
+}
+
+.slide-enter-to-element {
+  &.slide-enter,
+  &.slide-leave-to {
+    transform: translateX(150%);
+  }
+}
+
+.slide-enter-active,
+.slide-leave-active {
+  transition: transform 300ms ease-out;
+}
+
+.slide-enter-to,
+.slide-leave {
+  transform: translateX(0);
+}

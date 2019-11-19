@@ -1,4 +1,6 @@
 import Vue from 'vue';
+import axios from '~/lib/utils/axios_utils';
+
 import PerformanceBarService from './services/performance_bar_service';
 import PerformanceBarStore from './stores/performance_bar_store';
 
@@ -32,6 +34,15 @@ export default ({ container }) =>
       PerformanceBarService.removeInterceptor(this.interceptor);
     },
     methods: {
+      addRequestManually(urlOrRequestId) {
+        if (urlOrRequestId.startsWith('https://') || urlOrRequestId.startsWith('http://')) {
+          // We don't need to do anything with the response, we just
+          // want to trace the request.
+          axios.get(urlOrRequestId);
+        } else {
+          this.loadRequestDetails(urlOrRequestId, urlOrRequestId);
+        }
+      },
       loadRequestDetails(requestId, requestUrl) {
         if (!this.store.canTrackRequest(requestUrl)) {
           return;
@@ -57,6 +68,9 @@ export default ({ container }) =>
           requestId: this.requestId,
           peekUrl: this.peekUrl,
           profileUrl: this.profileUrl,
+        },
+        on: {
+          'add-request': this.addRequestManually,
         },
       });
     },

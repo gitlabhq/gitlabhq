@@ -3,7 +3,7 @@
     .container.section-body
       .row
         .blank-state-welcome.w-100
-          %h2.blank-state-welcome-title
+          %h2.blank-state-welcome-title{ data: { qa_selector: 'welcome_title_content' } }
             = _('Welcome to GitLab')
           %p.blank-state-text
             = _('Faster releases. Better code. Less pain.')

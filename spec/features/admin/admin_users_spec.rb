@@ -179,7 +179,9 @@ describe "Admin::Users" do
     end
 
     it "calls send mail" do
-      expect_any_instance_of(NotificationService).to receive(:new_user)
+      expect_next_instance_of(NotificationService) do |instance|
+        expect(instance).to receive(:new_user)
+      end
 
       click_button "Create user"
     end

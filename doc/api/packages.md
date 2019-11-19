@@ -2,7 +2,9 @@
 
 This is the API docs of [GitLab Packages](../administration/packages/index.md).
 
-## List project packages
+## List packages
+
+### Within a project
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/9259) in GitLab 11.8.
 
@@ -19,6 +21,47 @@ GET /projects/:id/packages
 
 ```bash
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:id/packages
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 1,
+    "name": "com/mycompany/my-app",
+    "version": "1.0-SNAPSHOT",
+    "package_type": "maven"
+  },
+  {
+    "id": 2,
+    "name": "@foo/bar",
+    "version": "1.0.3",
+    "package_type": "npm"
+  }
+]
+```
+
+By default, the `GET` request will return 20 results, since the API is [paginated](README.md#pagination).
+
+### Within a group
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/18871) in GitLab 12.5.
+
+Get a list of project packages at the group level.
+When accessed without authentication, only packages of public projects are returned.
+
+```
+GET /groups/:id/packages
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer/string | yes | ID or [URL-encoded path of the group](README.md#namespaced-path-encoding). |
+| `exclude_subgroups` | boolean | false | If the param is included as true, packages from projects from subgroups are not listed. Default is `false`. |
+
+```bash
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/packages?exclude_subgroups=true
 ```
 
 Example response:

@@ -22,5 +22,20 @@ describe CreateBranchService do
         expect(project.repository.branch_exists?('my-feature')).to be_truthy
       end
     end
+
+    context 'when creating a branch fails' do
+      let(:project) { create(:project_empty_repo) }
+
+      before do
+        allow(project.repository).to receive(:add_branch).and_return(false)
+      end
+
+      it 'retruns an error with the branch name' do
+        result = service.execute('my-feature', 'master')
+
+        expect(result[:status]).to eq(:error)
+        expect(result[:message]).to eq("Invalid reference name: my-feature")
+      end
+    end
   end
 end

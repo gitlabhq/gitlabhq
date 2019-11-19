@@ -11,7 +11,7 @@ code_quality:
   extends:
     - .default-retry
     - .default-only
-    - .only-code-changes
+    - .only:changes-code-backstage
   stage: test
   image: docker:stable
   allow_failure: true
@@ -50,7 +50,7 @@ sast:
   extends:
     - .default-retry
     - .default-only
-    - .only-code-changes
+    - .only:changes-code-backstage-qa
   stage: test
   image: docker:stable
   variables:
@@ -132,7 +132,7 @@ dependency_scanning:
   extends:
     - .default-retry
     - .default-only
-    - .only-code-changes
+    - .only:changes-code-backstage-qa
   stage: test
   image: docker:stable
   variables:
@@ -195,7 +195,7 @@ dast:
   extends:
     - .default-retry
     - .default-only
-    - .only-code-qa-changes
+    - .only:changes-code-qa
     - .only-review
   stage: qa
   needs: ["review-deploy"]

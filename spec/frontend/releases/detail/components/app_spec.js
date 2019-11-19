@@ -8,15 +8,17 @@ describe('Release detail component', () => {
   let wrapper;
   let releaseClone;
   let actions;
+  let state;
 
   beforeEach(() => {
     gon.api_version = 'v4';
 
     releaseClone = JSON.parse(JSON.stringify(convertObjectPropsToCamelCase(release)));
 
-    const state = {
+    state = {
       release: releaseClone,
       markdownDocsPath: 'path/to/markdown/docs',
+      updateReleaseApiDocsPath: 'path/to/update/release/api/docs',
     };
 
     actions = {
@@ -44,6 +46,21 @@ describe('Release detail component', () => {
 
   it('renders the correct tag name in the "Tag name" field', () => {
     expect(wrapper.find('#git-ref').element.value).toBe(releaseClone.tagName);
+  });
+
+  it('renders the correct help text under the "Tag name" field', () => {
+    const helperText = wrapper.find('#tag-name-help');
+    const helperTextLink = helperText.find('a');
+    const helperTextLinkAttrs = helperTextLink.attributes();
+
+    expect(helperText.text()).toBe(
+      'Changing a Release tag is only supported via Releases API. More information',
+    );
+    expect(helperTextLink.text()).toBe('More information');
+    expect(helperTextLinkAttrs.href).toBe(state.updateReleaseApiDocsPath);
+    expect(helperTextLinkAttrs.rel).toContain('noopener');
+    expect(helperTextLinkAttrs.rel).toContain('noreferrer');
+    expect(helperTextLinkAttrs.target).toBe('_blank');
   });
 
   it('renders the correct release title in the "Release title" field', () => {

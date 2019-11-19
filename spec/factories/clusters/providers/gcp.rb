@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :cluster_provider_gcp, class: Clusters::Providers::Gcp do
-    cluster
+    association :cluster, platform_type: :kubernetes, provider_type: :gcp
     gcp_project_id { 'test-gcp-project' }
 
     trait :scheduled do

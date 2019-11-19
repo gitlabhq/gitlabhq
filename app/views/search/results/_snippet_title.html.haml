@@ -2,10 +2,7 @@
   %h4.snippet-title.term
     = link_to reliable_snippet_path(snippet_title) do
       = truncate(snippet_title.title, length: 60)
-      - if snippet_title.private?
-        %span.badge.badge-gray
-          %i.fa.fa-lock
-          = _("private")
+      = snippet_badge(snippet_title)
     %span.cgray.monospace.tiny.float-right.term
       = snippet_title.file_name
 

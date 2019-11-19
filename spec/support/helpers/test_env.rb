@@ -148,8 +148,6 @@ module TestEnv
   end
 
   def setup_gitaly
-    socket_path = Gitlab::GitalyClient.address('default').sub(/\Aunix:/, '')
-    gitaly_dir = File.dirname(socket_path)
     install_gitaly_args = [gitaly_dir, repos_path, gitaly_url].compact.join(',')
 
     component_timed_setup('Gitaly',
@@ -162,8 +160,16 @@ module TestEnv
       end
   end
 
+  def gitaly_socket_path
+    Gitlab::GitalyClient.address('default').sub(/\Aunix:/, '')
+  end
+
+  def gitaly_dir
+    File.dirname(gitaly_socket_path)
+  end
+
   def start_gitaly(gitaly_dir)
-    if ENV['CI'].present?
+    if ci?
       # Gitaly has been spawned outside this process already
       return
     end
@@ -172,8 +178,13 @@ module TestEnv
 
     spawn_script = Rails.root.join('scripts/gitaly-test-spawn').to_s
     Bundler.with_original_env do
-      raise "gitaly spawn failed" unless system(spawn_script)
+      unless system(spawn_script)
+        message = 'gitaly spawn failed'
+        message += " (try `rm -rf #{gitaly_dir}` ?)" unless ci?
+        raise message
+      end
     end
+
     @gitaly_pid = Integer(File.read('tmp/tests/gitaly.pid'))
 
     Kernel.at_exit { stop_gitaly }
@@ -241,6 +252,22 @@ module TestEnv
     FileUtils.mkdir_p(target_repo_path)
     FileUtils.cp_r("#{File.expand_path(bare_repo)}/.", target_repo_path)
     FileUtils.chmod_R 0755, target_repo_path
+  end
+
+  def rm_storage_dir(storage, dir)
+    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      repos_path = Gitlab.config.repositories.storages[storage].legacy_disk_path
+      target_repo_refs_path = File.join(repos_path, dir)
+      FileUtils.remove_dir(target_repo_refs_path)
+    end
+  rescue Errno::ENOENT
+  end
+
+  def storage_dir_exists?(storage, dir)
+    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      repos_path = Gitlab.config.repositories.storages[storage].legacy_disk_path
+      File.exist?(File.join(repos_path, dir))
+    end
   end
 
   def create_bare_repository(path)
@@ -370,7 +397,7 @@ module TestEnv
     ensure_component_dir_name_is_correct!(component, install_dir)
 
     # On CI, once installed, components never need update
-    return if File.exist?(install_dir) && ENV['CI']
+    return if File.exist?(install_dir) && ci?
 
     if component_needs_update?(install_dir, version)
       # Cleanup the component entirely to ensure we start fresh
@@ -389,6 +416,10 @@ module TestEnv
     exit 1
   ensure
     puts "    #{component} set up in #{Time.now - start} seconds...\n"
+  end
+
+  def ci?
+    ENV['CI'].present?
   end
 
   def ensure_component_dir_name_is_correct!(component, path)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 # user                       GET    /users/:username/
@@ -274,6 +276,33 @@ describe "Authentication", "routing" do
 
   it "PUT /users/password" do
     expect(put("/users/password")).to route_to('passwords#update')
+  end
+
+  context 'with LDAP configured' do
+    include LdapHelpers
+
+    let(:ldap_settings) { { enabled: true } }
+
+    before do
+      stub_ldap_setting(ldap_settings)
+      Rails.application.reload_routes!
+    end
+
+    after(:all) do
+      Rails.application.reload_routes!
+    end
+
+    it 'POST /users/auth/ldapmain/callback' do
+      expect(post("/users/auth/ldapmain/callback")).to route_to('ldap/omniauth_callbacks#ldapmain')
+    end
+
+    context 'with LDAP sign-in disabled' do
+      let(:ldap_settings) { { enabled: true, prevent_ldap_sign_in: true } }
+
+      it 'prevents POST /users/auth/ldapmain/callback' do
+        expect(post("/users/auth/ldapmain/callback")).not_to be_routable
+      end
+    end
   end
 end
 

@@ -93,7 +93,7 @@ describe Projects::PipelinesController do
     end
 
     context 'when performing gitaly calls', :request_store do
-      it 'limits the Gitaly requests' do
+      it 'limits the Gitaly requests', :sidekiq_might_not_need_inline do
         # Isolate from test preparation (Repository#exists? is also cached in RequestStore)
         RequestStore.end!
         RequestStore.clear!
@@ -149,7 +149,7 @@ describe Projects::PipelinesController do
   end
 
   describe 'GET show.json' do
-    let(:pipeline) { create(:ci_pipeline_with_one_job, project: project) }
+    let(:pipeline) { create(:ci_pipeline, project: project) }
 
     it 'returns the pipeline' do
       get_pipeline_json
@@ -571,7 +571,7 @@ describe Projects::PipelinesController do
                     format: :json
     end
 
-    it 'cancels a pipeline without returning any content' do
+    it 'cancels a pipeline without returning any content', :sidekiq_might_not_need_inline do
       expect(response).to have_gitlab_http_status(:no_content)
       expect(pipeline.reload).to be_canceled
     end

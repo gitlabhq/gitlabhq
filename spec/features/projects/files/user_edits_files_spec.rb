@@ -12,7 +12,6 @@ describe 'Projects > Files > User edits files', :js do
 
   before do
     stub_feature_flags(web_ide_default: false)
-    stub_feature_flags(vue_file_list: false)
 
     sign_in(user)
   end
@@ -136,7 +135,7 @@ describe 'Projects > Files > User edits files', :js do
       )
     end
 
-    it 'inserts a content of a file in a forked project' do
+    it 'inserts a content of a file in a forked project', :sidekiq_might_not_need_inline do
       click_link('.gitignore')
       click_button('Edit')
 
@@ -154,7 +153,7 @@ describe 'Projects > Files > User edits files', :js do
       expect(evaluate_script('ace.edit("editor").getValue()')).to eq('*.rbca')
     end
 
-    it 'opens the Web IDE in a forked project' do
+    it 'opens the Web IDE in a forked project', :sidekiq_might_not_need_inline do
       click_link('.gitignore')
       click_button('Web IDE')
 
@@ -168,7 +167,7 @@ describe 'Projects > Files > User edits files', :js do
       expect(page).to have_css('.ide .multi-file-tab', text: '.gitignore')
     end
 
-    it 'commits an edited file in a forked project' do
+    it 'commits an edited file in a forked project', :sidekiq_might_not_need_inline do
       click_link('.gitignore')
       find('.js-edit-blob').click
 
@@ -199,7 +198,7 @@ describe 'Projects > Files > User edits files', :js do
         wait_for_requests
       end
 
-      it 'links to the forked project for editing' do
+      it 'links to the forked project for editing', :sidekiq_might_not_need_inline do
         click_link('.gitignore')
         find('.js-edit-blob').click
 

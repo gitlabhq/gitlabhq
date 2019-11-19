@@ -98,7 +98,7 @@ describe MergeRequests::UpdateService, :mailer do
           )
       end
 
-      it 'sends email to user2 about assign of new merge request and email to user3 about merge request unassignment' do
+      it 'sends email to user2 about assign of new merge request and email to user3 about merge request unassignment', :sidekiq_might_not_need_inline do
         deliveries = ActionMailer::Base.deliveries
         email = deliveries.last
         recipients = deliveries.last(2).flat_map(&:to)
@@ -181,7 +181,7 @@ describe MergeRequests::UpdateService, :mailer do
           end
         end
 
-        it 'merges the MR' do
+        it 'merges the MR', :sidekiq_might_not_need_inline do
           expect(@merge_request).to be_valid
           expect(@merge_request.state).to eq('merged')
           expect(@merge_request.merge_error).to be_nil
@@ -190,7 +190,7 @@ describe MergeRequests::UpdateService, :mailer do
 
       context 'with finished pipeline' do
         before do
-          create(:ci_pipeline_with_one_job,
+          create(:ci_pipeline,
             project: project,
             ref:     merge_request.source_branch,
             sha:     merge_request.diff_head_sha,
@@ -202,7 +202,7 @@ describe MergeRequests::UpdateService, :mailer do
           end
         end
 
-        it 'merges the MR' do
+        it 'merges the MR', :sidekiq_might_not_need_inline do
           expect(@merge_request).to be_valid
           expect(@merge_request.state).to eq('merged')
         end
@@ -212,14 +212,14 @@ describe MergeRequests::UpdateService, :mailer do
         before do
           service_mock = double
           create(
-            :ci_pipeline_with_one_job,
+            :ci_pipeline,
             project: project,
             ref: merge_request.source_branch,
             sha: merge_request.diff_head_sha,
             head_pipeline_of: merge_request
           )
 
-          expect(AutoMerge::MergeWhenPipelineSucceedsService).to receive(:new).with(project, user, {})
+          expect(AutoMerge::MergeWhenPipelineSucceedsService).to receive(:new).with(project, user, { sha: merge_request.diff_head_sha })
             .and_return(service_mock)
           allow(service_mock).to receive(:available_for?) { true }
           expect(service_mock).to receive(:execute).with(merge_request)
@@ -332,7 +332,7 @@ describe MergeRequests::UpdateService, :mailer do
 
         it_behaves_like 'system notes for milestones'
 
-        it 'sends notifications for subscribers of changed milestone' do
+        it 'sends notifications for subscribers of changed milestone', :sidekiq_might_not_need_inline do
           merge_request.milestone = create(:milestone, project: project)
 
           merge_request.save
@@ -364,7 +364,7 @@ describe MergeRequests::UpdateService, :mailer do
 
         it_behaves_like 'system notes for milestones'
 
-        it 'sends notifications for subscribers of changed milestone' do
+        it 'sends notifications for subscribers of changed milestone', :sidekiq_might_not_need_inline do
           perform_enqueued_jobs do
             update_merge_request(milestone: create(:milestone, project: project))
           end
@@ -411,7 +411,7 @@ describe MergeRequests::UpdateService, :mailer do
 
       context 'when auto merge is enabled and target branch changed' do
         before do
-          AutoMergeService.new(project, user).execute(merge_request, AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
+          AutoMergeService.new(project, user, { sha: merge_request.diff_head_sha }).execute(merge_request, AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
 
           update_merge_request({ target_branch: 'target' })
         end
@@ -431,7 +431,7 @@ describe MergeRequests::UpdateService, :mailer do
         project.add_developer(subscriber)
       end
 
-      it 'sends notifications for subscribers of newly added labels' do
+      it 'sends notifications for subscribers of newly added labels', :sidekiq_might_not_need_inline do
         opts = { label_ids: [label.id] }
 
         perform_enqueued_jobs do

@@ -43,7 +43,7 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater do
           verification_status: 'verified'
       end
 
-      it 'assigns the gpg key to the signature when the missing gpg key is added' do
+      it 'assigns the gpg key to the signature when the missing gpg key is added', :sidekiq_might_not_need_inline do
         # InvalidGpgSignatureUpdater is called by the after_create hook
         gpg_key = create :gpg_key,
           key: GpgHelpers::User1.public_key,
@@ -86,7 +86,7 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater do
           verification_status: 'unknown_key'
       end
 
-      it 'updates the signature to being valid when the missing gpg key is added' do
+      it 'updates the signature to being valid when the missing gpg key is added', :sidekiq_might_not_need_inline do
         # InvalidGpgSignatureUpdater is called by the after_create hook
         gpg_key = create :gpg_key,
           key: GpgHelpers::User1.public_key,
@@ -133,7 +133,7 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater do
           verification_status: 'unknown_key'
       end
 
-      it 'updates the signature to being valid when the user updates the email address' do
+      it 'updates the signature to being valid when the user updates the email address', :sidekiq_might_not_need_inline do
         gpg_key = create :gpg_key,
           key: GpgHelpers::User1.public_key,
           user: user
@@ -152,7 +152,7 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater do
         )
       end
 
-      it 'keeps the signature at being invalid when the changed email address is still unrelated' do
+      it 'keeps the signature at being invalid when the changed email address is still unrelated', :sidekiq_might_not_need_inline do
         gpg_key = create :gpg_key,
           key: GpgHelpers::User1.public_key,
           user: user
@@ -192,7 +192,7 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater do
           verification_status: 'unknown_key'
       end
 
-      it 'updates the signature to being valid when the missing gpg key is added' do
+      it 'updates the signature to being valid when the missing gpg key is added', :sidekiq_might_not_need_inline do
         # InvalidGpgSignatureUpdater is called by the after_create hook
         gpg_key = create(:gpg_key, key: GpgHelpers::User3.public_key, user: user)
         subkey = gpg_key.subkeys.last

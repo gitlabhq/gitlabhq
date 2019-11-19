@@ -117,6 +117,29 @@ shared_examples 'discussions API' do |parent_type, noteable_type, id_name, can_r
       expect(response).to have_gitlab_http_status(401)
     end
 
+    it 'tracks a Notes::CreateService event' do
+      expect(Gitlab::Tracking).to receive(:event) do |category, action, data|
+        expect(category).to eq('Notes::CreateService')
+        expect(action).to eq('execute')
+        expect(data[:label]).to eq('note')
+        expect(data[:value]).to be_an(Integer)
+      end
+
+      post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions", user), params: { body: 'hi!' }
+    end
+
+    context 'with notes_create_service_tracking feature flag disabled' do
+      before do
+        stub_feature_flags(notes_create_service_tracking: false)
+      end
+
+      it 'does not track any events' do
+        expect(Gitlab::Tracking).not_to receive(:event)
+
+        post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions"), params: { body: 'hi!' }
+      end
+    end
+
     context 'when an admin or owner makes the request' do
       it 'accepts the creation date to be set' do
         creation_time = 2.weeks.ago

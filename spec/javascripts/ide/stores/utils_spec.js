@@ -11,6 +11,23 @@ describe('Multi-file store utils', () => {
     });
   });
 
+  describe('setPageTitleForFile', () => {
+    it('sets the document page title for the file passed', () => {
+      const f = {
+        path: 'README.md',
+      };
+
+      const state = {
+        currentBranchId: 'master',
+        currentProjectId: 'test/test',
+      };
+
+      utils.setPageTitleForFile(state, f);
+
+      expect(document.title).toBe('README.md · master · test/test · GitLab');
+    });
+  });
+
   describe('findIndexOfFile', () => {
     let localState;
 
@@ -594,6 +611,19 @@ describe('Multi-file store utils', () => {
     ].forEach(({ args, output }) => {
       it(`cleans and tests equality (${JSON.stringify(args)})`, () => {
         expect(utils.pathsAreEqual(...args)).toEqual(output);
+      });
+    });
+  });
+
+  describe('addFinalNewlineIfNeeded', () => {
+    it('adds a newline if it doesnt already exist', () => {
+      [
+        { input: 'some text', output: 'some text\n' },
+        { input: 'some text\n', output: 'some text\n' },
+        { input: 'some text\n\n', output: 'some text\n\n' },
+        { input: 'some\n text', output: 'some\n text\n' },
+      ].forEach(({ input, output }) => {
+        expect(utils.addFinalNewlineIfNeeded(input)).toEqual(output);
       });
     });
   });

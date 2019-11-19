@@ -314,6 +314,24 @@ describe Groups::MilestonesController do
           expect(controller).to set_flash[:notice].to(group_moved_message(redirect_route, group))
         end
 
+        context 'with an AJAX request' do
+          it 'redirects to the canonical path but does not set flash message' do
+            get :merge_requests, params: { group_id: redirect_route.path, id: title }, xhr: true
+
+            expect(response).to redirect_to(merge_requests_group_milestone_path(group.to_param, title))
+            expect(controller).not_to set_flash[:notice]
+          end
+        end
+
+        context 'with JSON format' do
+          it 'redirects to the canonical path but does not set flash message' do
+            get :merge_requests, params: { group_id: redirect_route.path, id: title }, format: :json
+
+            expect(response).to redirect_to(merge_requests_group_milestone_path(group.to_param, title, format: :json))
+            expect(controller).not_to set_flash[:notice]
+          end
+        end
+
         context 'when the old group path is a substring of the scheme or host' do
           let(:redirect_route) { group.redirect_routes.create(path: 'http') }
 

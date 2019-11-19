@@ -36,7 +36,8 @@ module API
         {
           processed: stats.processed,
           failed: stats.failed,
-          enqueued: stats.enqueued
+          enqueued: stats.enqueued,
+          dead: stats.dead_size
         }
       end
     end

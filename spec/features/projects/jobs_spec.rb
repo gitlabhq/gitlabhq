@@ -166,7 +166,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
           let(:source_project) { fork_project(project, user, repository: true) }
           let(:target_project) { project }
 
-          it 'shows merge request iid and source branch' do
+          it 'shows merge request iid and source branch', :sidekiq_might_not_need_inline do
             visit project_job_path(source_project, job)
 
             within '.js-pipeline-info' do
@@ -214,7 +214,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
           let(:source_project) { fork_project(project, user, repository: true) }
           let(:target_project) { project }
 
-          it 'shows merge request iid and source branch' do
+          it 'shows merge request iid and source branch', :sidekiq_might_not_need_inline do
             visit project_job_path(source_project, job)
 
             within '.js-pipeline-info' do

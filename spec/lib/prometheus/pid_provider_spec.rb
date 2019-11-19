@@ -18,7 +18,17 @@ describe Prometheus::PidProvider do
         expect(Sidekiq).to receive(:server?).and_return(true)
       end
 
-      it { is_expected.to eq 'sidekiq' }
+      context 'in a clustered setup' do
+        before do
+          stub_env('SIDEKIQ_WORKER_ID', '123')
+        end
+
+        it { is_expected.to eq 'sidekiq_123' }
+      end
+
+      context 'in a single process setup' do
+        it { is_expected.to eq 'sidekiq' }
+      end
     end
 
     context 'when running in Unicorn mode' do

@@ -70,7 +70,7 @@ describe Backup::Repository do
     end
 
     context 'restoring object pools' do
-      it 'schedules restoring of the pool' do
+      it 'schedules restoring of the pool', :sidekiq_might_not_need_inline do
         pool_repository = create(:pool_repository, :failed)
         pool_repository.delete_object_pool
 

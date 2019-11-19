@@ -51,6 +51,10 @@ FactoryBot.define do
       finished_at { Time.now }
     end
 
+    trait :created do
+      status { :created }
+    end
+
     # This trait hooks the state maechine's events
     trait :succeed do
       after(:create) do |deployment, evaluator|

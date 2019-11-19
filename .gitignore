@@ -59,6 +59,7 @@ eslint-report.html
 /public/uploads.*
 /public/uploads/
 /shared/artifacts/
+/spec/examples.txt
 /rails_best_practices_output.html
 /tags
 /vendor/bundle/*
@@ -82,3 +83,4 @@ jsdoc/
 **/tmp/rubocop_cache/**
 .overcommit.yml
 .projections.json
+/qa/.rakeTasks

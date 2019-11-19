@@ -1,5 +1,8 @@
-%p
-  #{member.invite_email}, now known as
-  #{link_to member.user.name, user_url(member.user)},
-  has accepted your invitation to join the
-  #{link_to member_source.human_name, member_source.web_url} #{member_source.model_name.singular}.
+%tr
+  %td.text-content
+    %p
+      #{content_tag :span, member.invite_email, class: :highlight}, now known as
+      #{link_to member.user.name, user_url(member.user)},
+      has accepted your invitation to join the
+      #{link_to member_source.human_name, member_source.web_url, class: :highlight} #{member_source.model_name.singular}.
+

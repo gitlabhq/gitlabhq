@@ -10,7 +10,7 @@ describe 'User squashes a merge request', :js do
   let!(:original_head) { project.repository.commit('master') }
 
   shared_examples 'squash' do
-    it 'squashes the commits into a single commit, and adds a merge commit' do
+    it 'squashes the commits into a single commit, and adds a merge commit', :sidekiq_might_not_need_inline do
       expect(page).to have_content('Merged')
 
       latest_master_commits = project.repository.commits_between(original_head.sha, 'master').map(&:raw)
@@ -31,7 +31,7 @@ describe 'User squashes a merge request', :js do
   end
 
   shared_examples 'no squash' do
-    it 'accepts the merge request without squashing' do
+    it 'accepts the merge request without squashing', :sidekiq_might_not_need_inline do
       expect(page).to have_content('Merged')
       expect(project.repository).to be_merged_to_root_ref(source_branch)
     end
@@ -47,7 +47,9 @@ describe 'User squashes a merge request', :js do
   before do
     # Prevent source branch from being removed so we can use be_merged_to_root_ref
     # method to check if squash was performed or not
-    allow_any_instance_of(MergeRequest).to receive(:force_remove_source_branch?).and_return(false)
+    allow_next_instance_of(MergeRequest) do |instance|
+      allow(instance).to receive(:force_remove_source_branch?).and_return(false)
+    end
     project.add_maintainer(user)
 
     sign_in user

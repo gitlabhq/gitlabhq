@@ -13,11 +13,14 @@ describe 'User comments on a diff', :js do
   let(:user) { create(:user) }
 
   before do
+    stub_feature_flags(single_mr_diff_view: false)
     project.add_maintainer(user)
     sign_in(user)
 
     visit(diffs_project_merge_request_path(project, merge_request))
   end
+
+  it_behaves_like 'rendering a single diff version'
 
   context 'when viewing comments' do
     context 'when toggling inline comments' do

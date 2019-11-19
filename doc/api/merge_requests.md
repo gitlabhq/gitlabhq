@@ -126,6 +126,7 @@ Parameters:
     "merge_status": "can_be_merged",
     "sha": "8888888888888888888888888888888888888888",
     "merge_commit_sha": null,
+    "squash_commit_sha": null,
     "user_notes_count": 1,
     "discussion_locked": null,
     "should_remove_source_branch": true,
@@ -287,6 +288,7 @@ Parameters:
     "merge_status": "can_be_merged",
     "sha": "8888888888888888888888888888888888888888",
     "merge_commit_sha": null,
+    "squash_commit_sha": null,
     "user_notes_count": 1,
     "discussion_locked": null,
     "should_remove_source_branch": true,
@@ -304,7 +306,9 @@ Parameters:
     "task_completion_status":{
       "count":0,
       "completed_count":0
-    }
+    },
+    "has_conflicts": false,
+    "blocking_discussions_resolved": true
   }
 ]
 ```
@@ -438,6 +442,7 @@ Parameters:
     "merge_status": "can_be_merged",
     "sha": "8888888888888888888888888888888888888888",
     "merge_commit_sha": null,
+    "squash_commit_sha": null,
     "user_notes_count": 1,
     "discussion_locked": null,
     "should_remove_source_branch": true,
@@ -453,7 +458,9 @@ Parameters:
     "task_completion_status":{
       "count":0,
       "completed_count":0
-    }
+    },
+    "has_conflicts": false,
+    "blocking_discussions_resolved": true
   }
 ]
 ```
@@ -559,6 +566,7 @@ Parameters:
   "merge_error": null,
   "sha": "8888888888888888888888888888888888888888",
   "merge_commit_sha": null,
+  "squash_commit_sha": null,
   "user_notes_count": 1,
   "discussion_locked": null,
   "should_remove_source_branch": true,
@@ -606,7 +614,9 @@ Parameters:
   "task_completion_status":{
     "count":0,
     "completed_count":0
-  }
+  },
+  "has_conflicts": false,
+  "blocking_discussions_resolved": true
 }
 ```
 
@@ -763,6 +773,7 @@ Parameters:
   "subscribed" : true,
   "sha": "8888888888888888888888888888888888888888",
   "merge_commit_sha": null,
+  "squash_commit_sha": null,
   "user_notes_count": 1,
   "changes_count": "1",
   "should_remove_source_branch": true,
@@ -970,6 +981,7 @@ order for it to take effect:
   "merge_error": null,
   "sha": "8888888888888888888888888888888888888888",
   "merge_commit_sha": null,
+  "squash_commit_sha": null,
   "user_notes_count": 1,
   "discussion_locked": null,
   "should_remove_source_branch": true,
@@ -1123,6 +1135,7 @@ Must include at least one non-required attribute from above.
   "merge_error": null,
   "sha": "8888888888888888888888888888888888888888",
   "merge_commit_sha": null,
+  "squash_commit_sha": null,
   "user_notes_count": 1,
   "discussion_locked": null,
   "should_remove_source_branch": true,
@@ -1292,6 +1305,7 @@ Parameters:
   "merge_error": null,
   "sha": "8888888888888888888888888888888888888888",
   "merge_commit_sha": null,
+  "squash_commit_sha": null,
   "user_notes_count": 1,
   "discussion_locked": null,
   "should_remove_source_branch": true,
@@ -1464,6 +1478,7 @@ Parameters:
   "merge_error": null,
   "sha": "8888888888888888888888888888888888888888",
   "merge_commit_sha": null,
+  "squash_commit_sha": null,
   "user_notes_count": 1,
   "discussion_locked": null,
   "should_remove_source_branch": true,
@@ -1749,6 +1764,7 @@ Example response:
   "merge_status": "can_be_merged",
   "sha": "8888888888888888888888888888888888888888",
   "merge_commit_sha": null,
+  "squash_commit_sha": null,
   "user_notes_count": 1,
   "discussion_locked": null,
   "should_remove_source_branch": true,
@@ -1894,6 +1910,7 @@ Example response:
   "merge_status": "can_be_merged",
   "sha": "8888888888888888888888888888888888888888",
   "merge_commit_sha": null,
+  "squash_commit_sha": null,
   "user_notes_count": 1,
   "discussion_locked": null,
   "should_remove_source_branch": true,
@@ -2055,6 +2072,7 @@ Example response:
     "subscribed": true,
     "sha": "8888888888888888888888888888888888888888",
     "merge_commit_sha": null,
+    "squash_commit_sha": null,
     "user_notes_count": 7,
     "changes_count": "1",
     "should_remove_source_branch": true,

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20180531220618_change_default_value_for_dsa_key_restriction.rb')
 

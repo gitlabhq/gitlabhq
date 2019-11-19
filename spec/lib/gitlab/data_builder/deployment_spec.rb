@@ -35,5 +35,12 @@ describe Gitlab::DataBuilder::Deployment do
       expect(data[:commit_url]).to eq(expected_commit_url)
       expect(data[:commit_title]).to eq(commit.title)
     end
+
+    it 'does not include the deployable URL when there is no deployable' do
+      deployment = create(:deployment, status: :failed, deployable: nil)
+      data = described_class.build(deployment)
+
+      expect(data[:deployable_url]).to be_nil
+    end
   end
 end

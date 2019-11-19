@@ -285,18 +285,6 @@ module Gitlab
       end
     end
 
-    # Check if such directory exists in repositories.
-    #
-    # Usage:
-    #   exists?(storage, 'gitlab')
-    #   exists?(storage, 'gitlab/cookies.git')
-    #
-    # rubocop: disable CodeReuse/ActiveRecord
-    def exists?(storage, dir_name)
-      Gitlab::GitalyClient::NamespaceService.new(storage).exists?(dir_name)
-    end
-    # rubocop: enable CodeReuse/ActiveRecord
-
     def repository_exists?(storage, dir_name)
       Gitlab::Git::Repository.new(storage, dir_name, nil, nil).exists?
     rescue GRPC::Internal

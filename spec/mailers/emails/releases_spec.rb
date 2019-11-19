@@ -18,6 +18,7 @@ describe Emails::Releases do
 
     context 'when the release has a name' do
       it 'shows the correct subject' do
+        release.name = 'beta-1'
         expected_subject = "#{release.project.name} | New release: #{release.name} - #{release.tag}"
         is_expected.to have_subject(expected_subject)
       end

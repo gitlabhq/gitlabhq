@@ -18,13 +18,13 @@ Create issues, labels, milestones, cast your vote, and review issues.
 - [Create an issue](../user/project/issues/managing_issues.md#create-a-new-issue)
 - [Assign labels to issues](../user/project/labels.md)
 - [Use milestones as an overview of your project's tracker](../user/project/milestones/index.md)
-- [Use voting to express your like/dislike to issues and merge requests](../workflow/award_emoji.md)
+- [Use voting to express your like/dislike to issues and merge requests](../user/award_emojis.md)
 
 ## Collaborate
 
 Create merge requests and review code.
 
-- [Fork a project and contribute to it](../workflow/forking_workflow.md)
+- [Fork a project and contribute to it](../user/project/repository/forking_workflow.md)
 - [Create a new merge request](../gitlab-basics/add-merge-request.md)
 - [Automatically close issues from merge requests](../user/project/issues/managing_issues.md#closing-issues-automatically)
 - [Automatically merge when pipeline succeeds](../user/project/merge_requests/merge_when_pipeline_succeeds.md)

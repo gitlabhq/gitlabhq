@@ -1,7 +1,7 @@
 require './spec/support/sidekiq'
 
 Gitlab::Seeder.quiet do
-  Project.all.each do |project|
+  Project.not_mass_generated.each do |project|
     5.times do |i|
       milestone_params = {
         title: "v#{i}.0",

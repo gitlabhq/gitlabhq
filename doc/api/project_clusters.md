@@ -1,7 +1,6 @@
 # Project clusters API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/23922)
-in GitLab 11.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/23922) in GitLab 11.7.
 
 NOTE: **Note:**
 User will need at least maintainer access to use these endpoints.
@@ -54,6 +53,16 @@ Example response:
       "namespace":"cluster-1-namespace",
       "authorization_type":"rbac",
       "ca_cert":"-----BEGIN CERTIFICATE-----\r\nhFiK1L61owwDQYJKoZIhvcNAQELBQAw\r\nLzEtMCsGA1UEAxMkZDA1YzQ1YjctNzdiMS00NDY0LThjNmEtMTQ0ZDJkZjM4ZDBj\r\nMB4XDTE4MTIyNzIwMDM1MVoXDTIzMTIyNjIxMDM1MVowLzEtMCsGA1UEAxMkZDA1\r\nYzQ1YjctNzdiMS00NDY0LThjNmEtMTQ0ZDJkZjM.......-----END CERTIFICATE-----"
+    },
+    "management_project":
+    {
+      "id":2,
+      "description":null,
+      "name":"project2",
+      "name_with_namespace":"John Doe8 / project2",
+      "path":"project2",
+      "path_with_namespace":"namespace2/project2",
+      "created_at":"2019-10-11T02:55:54.138Z"
     }
   },
   {
@@ -112,6 +121,16 @@ Example response:
     "namespace":"cluster-1-namespace",
     "authorization_type":"rbac",
     "ca_cert":"-----BEGIN CERTIFICATE-----\r\nhFiK1L61owwDQYJKoZIhvcNAQELBQAw\r\nLzEtMCsGA1UEAxMkZDA1YzQ1YjctNzdiMS00NDY0LThjNmEtMTQ0ZDJkZjM4ZDBj\r\nMB4XDTE4MTIyNzIwMDM1MVoXDTIzMTIyNjIxMDM1MVowLzEtMCsGA1UEAxMkZDA1\r\nYzQ1YjctNzdiMS00NDY0LThjNmEtMTQ0ZDJkZjM.......-----END CERTIFICATE-----"
+  },
+  "management_project":
+  {
+    "id":2,
+    "description":null,
+    "name":"project2",
+    "name_with_namespace":"John Doe8 / project2",
+    "path":"project2",
+    "path_with_namespace":"namespace2/project2",
+    "created_at":"2019-10-11T02:55:54.138Z"
   },
   "project":
   {
@@ -205,6 +224,7 @@ Example response:
     "authorization_type":"rbac",
     "ca_cert":"-----BEGIN CERTIFICATE-----\r\nhFiK1L61owwDQYJKoZIhvcNAQELBQAw\r\nLzEtMCsGA1UEAxMkZDA1YzQ1YjctNzdiMS00NDY0LThjNmEtMTQ0ZDJkZjM4ZDBj\r\nMB4XDTE4MTIyNzIwMDM1MVoXDTIzMTIyNjIxMDM1MVowLzEtMCsGA1UEAxMkZDA1\r\nYzQ1YjctNzdiMS00NDY0LThjNmEtMTQ0ZDJkZjM.......-----END CERTIFICATE-----"
   },
+  "management_project":null,
   "project":
   {
     "id":26,
@@ -253,6 +273,7 @@ Parameters:
 | `cluster_id` | integer | yes | The ID of the cluster |
 | `name` | String | no | The name of the cluster |
 | `domain` | String | no | The [base domain](../user/project/clusters/index.md#base-domain) of the cluster |
+| `management_project_id` | integer | no | The ID of the [management project](../user/clusters/management_project.md) for the cluster |
 | `platform_kubernetes_attributes[api_url]` | String | no | The URL to access the Kubernetes API |
 | `platform_kubernetes_attributes[token]` | String | no | The token to authenticate against Kubernetes |
 | `platform_kubernetes_attributes[ca_cert]` | String | no | TLS certificate (needed if API is using a self-signed TLS certificate |
@@ -261,7 +282,7 @@ Parameters:
 
 NOTE: **Note:**
 `name`, `api_url`, `ca_cert` and `token` can only be updated if the cluster was added
-through the ["Add existing Kubernetes cluster"](../user/project/clusters/index.md#add-existing-kubernetes-cluster) option or
+through the ["Add existing Kubernetes cluster"](../user/project/clusters/add_remove_clusters.md#add-existing-cluster) option or
 through the ["Add existing cluster to project"](#add-existing-cluster-to-project) endpoint.
 
 Example request:
@@ -299,6 +320,16 @@ Example response:
     "namespace":"cluster-5-namespace",
     "authorization_type":"rbac",
     "ca_cert":null
+  },
+  "management_project":
+  {
+    "id":2,
+    "description":null,
+    "name":"project2",
+    "name_with_namespace":"John Doe8 / project2",
+    "path":"project2",
+    "path_with_namespace":"namespace2/project2",
+    "created_at":"2019-10-11T02:55:54.138Z"
   },
   "project":
   {
@@ -351,5 +382,5 @@ Parameters:
 Example request:
 
 ```bash
-curl --header 'Private-Token: <your_access_token>' https://gitlab.example.com/api/v4/projects/26/clusters/23'
+curl --request DELETE --header 'Private-Token: <your_access_token>' https://gitlab.example.com/api/v4/projects/26/clusters/23
 ```

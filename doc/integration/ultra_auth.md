@@ -8,7 +8,7 @@ To enable UltraAuth OmniAuth provider, you must use UltraAuth's credentials for 
 To get the credentials (a pair of Client ID and Client Secret), you must register an application on UltraAuth.
 
 1. Sign in to [UltraAuth](https://ultraauth.com).
-1. Navigate to [Create an App](https://ultraauth.com/select-strategy) and click on "Ruby on Rails".
+1. Navigate to **Create an App** and click on **Ruby on Rails**.
 1. Scroll down the page that is displayed to locate the **Client ID** and **Client Secret**.
    Keep this page open as you continue configuration.
 

@@ -57,7 +57,7 @@ describe 'Sort Issuable List' do
         it 'is "last updated"' do
           visit_merge_requests_with_state(project, 'merged')
 
-          expect(find('.issues-other-filters')).to have_content('Last updated')
+          expect(find('.filter-dropdown-container')).to have_content('Last updated')
           expect(first_merge_request).to include(last_updated_issuable.title)
           expect(last_merge_request).to include(first_updated_issuable.title)
         end
@@ -69,7 +69,7 @@ describe 'Sort Issuable List' do
         it 'is "last updated"' do
           visit_merge_requests_with_state(project, 'closed')
 
-          expect(find('.issues-other-filters')).to have_content('Last updated')
+          expect(find('.filter-dropdown-container')).to have_content('Last updated')
           expect(first_merge_request).to include(last_updated_issuable.title)
           expect(last_merge_request).to include(first_updated_issuable.title)
         end
@@ -81,7 +81,7 @@ describe 'Sort Issuable List' do
         it 'is "created date"' do
           visit_merge_requests_with_state(project, 'all')
 
-          expect(find('.issues-other-filters')).to have_content('Created date')
+          expect(find('.filter-dropdown-container')).to have_content('Created date')
           expect(first_merge_request).to include(last_created_issuable.title)
           expect(last_merge_request).to include(first_created_issuable.title)
         end
@@ -94,7 +94,7 @@ describe 'Sort Issuable List' do
       it 'supports sorting in asc and desc order' do
         visit_merge_requests_with_state(project, 'open')
 
-        page.within('.issues-other-filters') do
+        page.within('.filter-dropdown-container') do
           click_button('Created date')
           click_link('Last updated')
         end
@@ -102,7 +102,7 @@ describe 'Sort Issuable List' do
         expect(first_merge_request).to include(last_updated_issuable.title)
         expect(last_merge_request).to include(first_updated_issuable.title)
 
-        find('.issues-other-filters .filter-dropdown-container .rspec-reverse-sort').click
+        find('.filter-dropdown-container .rspec-reverse-sort').click
 
         expect(first_merge_request).to include(first_updated_issuable.title)
         expect(last_merge_request).to include(last_updated_issuable.title)
@@ -133,7 +133,7 @@ describe 'Sort Issuable List' do
         it 'is "created date"' do
           visit_issues project
 
-          expect(find('.issues-other-filters')).to have_content('Created date')
+          expect(find('.filter-dropdown-container')).to have_content('Created date')
           expect(first_issue).to include(last_created_issuable.title)
           expect(last_issue).to include(first_created_issuable.title)
         end
@@ -145,7 +145,7 @@ describe 'Sort Issuable List' do
         it 'is "created date"' do
           visit_issues_with_state(project, 'open')
 
-          expect(find('.issues-other-filters')).to have_content('Created date')
+          expect(find('.filter-dropdown-container')).to have_content('Created date')
           expect(first_issue).to include(last_created_issuable.title)
           expect(last_issue).to include(first_created_issuable.title)
         end
@@ -157,7 +157,7 @@ describe 'Sort Issuable List' do
         it 'is "last updated"' do
           visit_issues_with_state(project, 'closed')
 
-          expect(find('.issues-other-filters')).to have_content('Last updated')
+          expect(find('.filter-dropdown-container')).to have_content('Last updated')
           expect(first_issue).to include(last_updated_issuable.title)
           expect(last_issue).to include(first_updated_issuable.title)
         end
@@ -169,7 +169,7 @@ describe 'Sort Issuable List' do
         it 'is "created date"' do
           visit_issues_with_state(project, 'all')
 
-          expect(find('.issues-other-filters')).to have_content('Created date')
+          expect(find('.filter-dropdown-container')).to have_content('Created date')
           expect(first_issue).to include(last_created_issuable.title)
           expect(last_issue).to include(first_created_issuable.title)
         end
@@ -183,7 +183,7 @@ describe 'Sort Issuable List' do
         end
 
         it 'shows the sort order as created date' do
-          expect(find('.issues-other-filters')).to have_content('Created date')
+          expect(find('.filter-dropdown-container')).to have_content('Created date')
           expect(first_issue).to include(last_created_issuable.title)
           expect(last_issue).to include(first_created_issuable.title)
         end
@@ -196,7 +196,7 @@ describe 'Sort Issuable List' do
       it 'supports sorting in asc and desc order' do
         visit_issues_with_state(project, 'open')
 
-        page.within('.issues-other-filters') do
+        page.within('.filter-dropdown-container') do
           click_button('Created date')
           click_link('Last updated')
         end
@@ -204,7 +204,7 @@ describe 'Sort Issuable List' do
         expect(first_issue).to include(last_updated_issuable.title)
         expect(last_issue).to include(first_updated_issuable.title)
 
-        find('.issues-other-filters .filter-dropdown-container .rspec-reverse-sort').click
+        find('.filter-dropdown-container .rspec-reverse-sort').click
 
         expect(first_issue).to include(first_updated_issuable.title)
         expect(last_issue).to include(last_updated_issuable.title)

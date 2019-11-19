@@ -29,7 +29,7 @@ module Gitlab
         end
 
         if fragments.any?
-          fragments.join("\n#{union_keyword}\n")
+          "(" + fragments.join(")\n#{union_keyword}\n(") + ")"
         else
           'NULL'
         end

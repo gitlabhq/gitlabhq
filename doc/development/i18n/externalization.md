@@ -326,9 +326,8 @@ file in. Once the changes are on master, they will be picked up by
 [Crowdin](https://translate.gitlab.com) and be presented for
 translation.
 
-We don't need to check in any changes to the
-`locale/[language]/gitlab.po` files. Those will be updated in a [when
-translations from Crowdin are merged](merging_translations.md).
+We don't need to check in any changes to the `locale/[language]/gitlab.po` files.
+They are updated automatically when [translations from Crowdin are merged](merging_translations.md).
 
 If there are merge conflicts in the `gitlab.pot` file, you can delete the file
 and regenerate it using the same command.

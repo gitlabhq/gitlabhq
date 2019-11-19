@@ -18,6 +18,10 @@ module QA
           element :no_result_text, 'No groups or projects matched your search' # rubocop:disable QA/ElementWithPattern
         end
 
+        view 'app/views/shared/members/_access_request_links.html.haml' do
+          element :leave_group_link
+        end
+
         def click_subgroup(name)
           click_link name
         end
@@ -40,6 +44,12 @@ module QA
           select_kind :new_project_option
 
           click_element :new_in_group_button
+        end
+
+        def leave_group
+          accept_alert do
+            click_element :leave_group_link
+          end
         end
 
         private

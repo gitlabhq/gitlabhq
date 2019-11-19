@@ -42,6 +42,9 @@ it is not possible due to a naming collision. For example:
 | `gitlab-org/gitlab`    | `@gitlab-org/gitlab`    | Yes       |
 | `gitlab-org/gitlab`    | `@foo/bar`              | No        |
 
+CAUTION: **When updating the path of a user/group or transferring a (sub)group/project:**
+If you update the root namespace of a project with NPM packages, your changes will be rejected. To be allowed to do that, make sure to remove any NPM package first. Don't forget to update your `.npmrc` files to follow the above naming convention and run `npm publish` if necessary.
+
 Now, you can configure your project to authenticate with the GitLab NPM
 Registry.
 
@@ -105,6 +108,21 @@ Then, you could run `npm publish` either locally or via GitLab CI/CD:
 
 - **GitLab CI/CD:** Set an `NPM_TOKEN` [variable](../../../ci/variables/README.md)
   under your project's **Settings > CI/CD > Variables**.
+  
+### Authenticating with a CI job token
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9104) in GitLab Premium 12.5.
+
+If you’re using NPM with GitLab CI/CD, a CI job token can be used instead of a personal access token.
+The token will inherit the permissions of the user that generates the pipeline.
+
+Add a corresponding section to your `.npmrc` file:  
+
+```ini
+@foo:registry=https://gitlab.com/api/v4/packages/npm/
+//gitlab.com/api/v4/packages/npm/:_authToken=${env.CI_JOB_TOKEN}
+//gitlab.com/api/v4/projects/{env.CI_PROJECT_ID>/packages/npm/:_authToken=${env.CI_JOB_TOKEN}
+```
 
 ## Uploading packages
 

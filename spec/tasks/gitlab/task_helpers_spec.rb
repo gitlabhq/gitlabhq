@@ -20,20 +20,10 @@ describe Gitlab::TaskHelpers do
     end
 
     it 'checkout the version and reset to it' do
+      expect(subject).to receive(:get_version).with(version).and_call_original
       expect(subject).to receive(:checkout_version).with(tag, clone_path)
 
       subject.checkout_or_clone_version(version: version, repo: repo, target_dir: clone_path)
-    end
-
-    context 'with a branch version' do
-      let(:version) { '=branch_name' }
-      let(:branch) { 'branch_name' }
-
-      it 'checkout the version and reset to it with a branch name' do
-        expect(subject).to receive(:checkout_version).with(branch, clone_path)
-
-        subject.checkout_or_clone_version(version: version, repo: repo, target_dir: clone_path)
-      end
     end
 
     context "target_dir doesn't exist" do
@@ -94,6 +84,21 @@ describe Gitlab::TaskHelpers do
 
     it 'returns and exception when command exit with non zero code' do
       expect { subject.run_command!(['bash', '-c', 'exit 1']) }.to raise_error Gitlab::TaskFailedError
+    end
+  end
+
+  describe '#get_version' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:version, :result) do
+      '1.1.1'                                    | 'v1.1.1'
+      'master'                                   | 'master'
+      '12.4.0-rc7'                               | 'v12.4.0-rc7'
+      '594c3ea3e0e5540e5915bd1c49713a0381459dd6' | '594c3ea3e0e5540e5915bd1c49713a0381459dd6'
+    end
+
+    with_them do
+      it { expect(subject.get_version(version)).to eq(result) }
     end
   end
 end

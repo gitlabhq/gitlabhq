@@ -18,7 +18,9 @@ You can read more about the Docker Registry at
 
 **Omnibus GitLab installations**
 
-All you have to do is configure the domain name under which the Container
+If you are using the Omnibus GitLab built in [Let's Encrypt integration](https://docs.gitlab.com/omnibus/settings/ssl.html#lets-encrypt-integration), as of GitLab 12.5, the Container Registry will be automatically enabled on port 5050 of the default domain.
+
+If you would like to use a separate domain, all you have to do is configure the domain name under which the Container
 Registry will listen to. Read
 [#container-registry-domain-configuration](#container-registry-domain-configuration)
 and pick one of the two options that fits your case.
@@ -353,7 +355,7 @@ configuration.
 
 NOTE: **Note:** Enabling a storage driver other than `filesystem` would mean
 that your Docker client needs to be able to access the storage backend directly.
-In that case, you must use an address that resolves and is accessible outside GitLab server.
+In that case, you must use an address that resolves and is accessible outside GitLab server. The Docker client will continue to authenticate via GitLab but data transfer will be direct to and from the storage backend.
 
 The different supported drivers are:
 
@@ -877,6 +879,6 @@ The above image shows:
 - The HEAD request to the AWS bucket reported a 403 Unauthorized.
 
 What does this mean? This strongly suggests that the S3 user does not have the right
-[permissions to perform a HEAD request](https://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectHEAD.html).
+[permissions to perform a HEAD request](https://docs.aws.amazon.com/AmazonS3/latest/API/API_HeadObject.html).
 The solution: check the [IAM permissions again](https://docs.docker.com/registry/storage-drivers/s3/).
 Once the right permissions were set, the error will go away.

@@ -13,8 +13,7 @@ describe AutoMerge::MergeWhenPipelineSucceedsService do
   end
 
   let(:pipeline) do
-    create(:ci_pipeline_with_one_job, ref: mr_merge_if_green_enabled.source_branch,
-                                      project: project)
+    create(:ci_pipeline, ref: mr_merge_if_green_enabled.source_branch, project: project)
   end
 
   let(:service) do
@@ -226,7 +225,7 @@ describe AutoMerge::MergeWhenPipelineSucceedsService do
         test.drop
       end
 
-      it 'merges when all stages succeeded' do
+      it 'merges when all stages succeeded', :sidekiq_might_not_need_inline do
         expect(MergeWorker).to receive(:perform_async)
 
         build.success

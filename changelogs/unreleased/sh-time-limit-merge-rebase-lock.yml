@@ -1,0 +1,5 @@
+---
+title: Time limit the database lock when rebasing a merge request
+merge_request: 18481
+author:
+type: fixed

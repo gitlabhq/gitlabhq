@@ -185,6 +185,7 @@ MergeRequest:
 - merge_when_pipeline_succeeds
 - merge_user_id
 - merge_commit_sha
+- squash_commit_sha
 - in_progress_merge_commit_sha
 - lock_version
 - milestone_id
@@ -512,6 +513,7 @@ Project:
 - request_access_enabled
 - has_external_wiki
 - only_allow_merge_if_all_discussions_are_resolved
+- remove_source_branch_after_merge
 - auto_cancel_pending_pipelines
 - printing_merge_request_link_enabled
 - resolve_outdated_diff_discussions
@@ -537,7 +539,6 @@ Project:
 - external_webhook_token
 - pages_https_only
 - merge_requests_disable_committers_approval
-- merge_requests_require_code_owner_approval
 - require_password_to_approve
 ProjectTracingSetting:
 - external_url
@@ -752,4 +753,12 @@ DesignManagement::Version:
 - created_at
 - sha
 - issue_id
-- user_id
+- author_id
+ZoomMeeting:
+- id
+- issue_id
+- project_id
+- issue_status
+- url
+- created_at
+- updated_at

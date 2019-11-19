@@ -11,6 +11,7 @@ export default class FilteredSearchDropdownManager {
     runnerTagsEndpoint = '',
     labelsEndpoint = '',
     milestonesEndpoint = '',
+    releasesEndpoint = '',
     tokenizer,
     page,
     isGroup,
@@ -18,10 +19,13 @@ export default class FilteredSearchDropdownManager {
     isGroupDecendent,
     filteredSearchTokenKeys,
   }) {
+    const removeTrailingSlash = url => url.replace(/\/$/, '');
+
     this.container = FilteredSearchContainer.container;
-    this.runnerTagsEndpoint = runnerTagsEndpoint.replace(/\/$/, '');
-    this.labelsEndpoint = labelsEndpoint.replace(/\/$/, '');
-    this.milestonesEndpoint = milestonesEndpoint.replace(/\/$/, '');
+    this.runnerTagsEndpoint = removeTrailingSlash(runnerTagsEndpoint);
+    this.labelsEndpoint = removeTrailingSlash(labelsEndpoint);
+    this.milestonesEndpoint = removeTrailingSlash(milestonesEndpoint);
+    this.releasesEndpoint = removeTrailingSlash(releasesEndpoint);
     this.tokenizer = tokenizer;
     this.filteredSearchTokenKeys = filteredSearchTokenKeys || FilteredSearchTokenKeys;
     this.filteredSearchInput = this.container.querySelector('.filtered-search');
@@ -54,6 +58,7 @@ export default class FilteredSearchDropdownManager {
       this.runnerTagsEndpoint,
       this.labelsEndpoint,
       this.milestonesEndpoint,
+      this.releasesEndpoint,
       this.groupsOnly,
       this.includeAncestorGroups,
       this.includeDescendantGroups,

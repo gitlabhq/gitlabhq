@@ -13,13 +13,13 @@
           .nav-icon-container
             = sprite_icon('home')
           %span.nav-item-name
-            = _('Project')
+            = _('Project overview')
 
         %ul.sidebar-sub-level-items
           = nav_link(path: 'projects#show', html_options: { class: "fly-out-top-item" } ) do
             = link_to project_path(@project) do
               %strong.fly-out-top-item-name
-                = _('Project')
+                = _('Project overview')
           %li.divider.fly-out-top-item
           = nav_link(path: 'projects#show') do
             = link_to project_path(@project), title: _('Project details'), class: 'shortcuts-project' do
@@ -163,7 +163,7 @@
 
       - if project_nav_tab? :pipelines
         = nav_link(controller: [:pipelines, :builds, :jobs, :pipeline_schedules, :artifacts]) do
-          = link_to project_pipelines_path(@project), class: 'shortcuts-pipelines qa-link-pipelines rspec-link-pipelines' do
+          = link_to project_pipelines_path(@project), class: 'shortcuts-pipelines qa-link-pipelines rspec-link-pipelines', data: { qa_selector: 'ci_cd_link' } do
             .nav-icon-container
               = sprite_icon('rocket')
             %span.nav-item-name#js-onboarding-pipelines-link
@@ -247,6 +247,8 @@
                   %span
                     = _('Serverless')
 
+            = render_if_exists 'layouts/nav/sidebar/pod_logs_link' # EE-specific
+
             - if project_nav_tab? :clusters
               - show_cluster_hint = show_gke_cluster_integration_callout?(@project)
               = nav_link(controller: [:clusters, :user, :gcp]) do
@@ -264,7 +266,7 @@
                         dismiss_endpoint: user_callouts_path } }
                 - if show_cluster_hint
                   .feature-highlight-popover-content
-                    = image_tag 'illustrations/cluster_popover.svg', class: 'feature-highlight-illustration'
+                    = image_tag 'illustrations/cluster_popover.svg', class: 'feature-highlight-illustration', lazy: false, alt: _('Kubernetes popover')
                     .feature-highlight-popover-sub-content
                       %p= _('Allows you to add and manage Kubernetes clusters.')
                       %p
@@ -347,7 +349,7 @@
                   = _('Members')
             - if can_edit
               = nav_link(controller: [:integrations, :services, :hooks, :hook_logs]) do
-                = link_to project_settings_integrations_path(@project), title: _('Integrations') do
+                = link_to project_settings_integrations_path(@project), title: _('Integrations'), data: { qa_selector: 'integrations_settings_link' } do
                   %span
                     = _('Integrations')
               = nav_link(controller: :repository) do

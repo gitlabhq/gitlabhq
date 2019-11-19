@@ -42,9 +42,18 @@ The following metrics and visualizations are available on a project or group lev
   - Number of lines of code per commit.
   - Number of files touched.
 - Scatterplot showing all MRs merged on a certain date, together with the days it took to complete the action and a 30 day rolling median.
-  - Users can zoom in and out on specific days of interest.
 - Table showing the list of merge requests with their respective time duration metrics.
   - Users can sort by any of the above metrics.
+
+## Date ranges
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/13188) in GitLab 12.4.
+
+GitLab has the ability to filter analytics based on a date range. To filter results:
+
+1. Select a group.
+1. Optionally select a project.
+1. Select a date range using the available date pickers.
 
 ## Permissions
 

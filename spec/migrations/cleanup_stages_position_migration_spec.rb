@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20180604123514_cleanup_stages_position_migration.rb')
 

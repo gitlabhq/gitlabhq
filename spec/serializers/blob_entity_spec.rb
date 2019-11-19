@@ -15,8 +15,16 @@ describe BlobEntity do
   context 'as json' do
     subject { entity.as_json }
 
-    it 'exposes needed attributes' do
-      expect(subject).to include(:readable_text, :url)
+    it 'contains needed attributes' do
+      expect(subject).to include({
+        id: blob.id,
+        path: blob.path,
+        name: blob.name,
+        mode: "100644",
+        readable_text: true,
+        icon: "file-text-o",
+        url: "/#{project.full_path}/blob/master/bar/branch-test.txt"
+      })
     end
   end
 end

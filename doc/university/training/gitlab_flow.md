@@ -38,7 +38,7 @@ type: reference
 
 ## More details
 
-For more information, read through the [GitLab Flow](../../workflow/gitlab_flow.md)
+For more information, read through the [GitLab Flow](../../topics/gitlab_flow.md)
 documentation.
 
 <!-- ## Troubleshooting

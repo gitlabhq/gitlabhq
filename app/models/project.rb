@@ -76,6 +76,10 @@ class Project < ApplicationRecord
 
   delegate :no_import?, to: :import_state, allow_nil: true
 
+  # TODO: remove once GitLab 12.5 is released
+  # https://gitlab.com/gitlab-org/gitlab/issues/34638
+  self.ignored_columns += %i[merge_requests_require_code_owner_approval]
+
   default_value_for :archived, false
   default_value_for :resolve_outdated_diff_discussions, false
   default_value_for :container_registry_enabled, gitlab_config_features.container_registry
@@ -87,6 +91,8 @@ class Project < ApplicationRecord
   default_value_for :wiki_enabled, gitlab_config_features.wiki
   default_value_for :snippets_enabled, gitlab_config_features.snippets
   default_value_for :only_allow_merge_if_all_discussions_are_resolved, false
+  default_value_for :remove_source_branch_after_merge, true
+  default_value_for(:ci_config_path) { Gitlab::CurrentSettings.default_ci_config_path }
 
   add_authentication_token_field :runners_token, encrypted: -> { Feature.enabled?(:projects_tokens_optional_encryption, default_enabled: true) ? :optional : :required }
 
@@ -281,6 +287,7 @@ class Project < ApplicationRecord
   has_many :variables, class_name: 'Ci::Variable'
   has_many :triggers, class_name: 'Ci::Trigger'
   has_many :environments
+  has_many :environments_for_dashboard, -> { from(with_rank.unfoldered.available, :environments).where('rank <= 3') }, class_name: 'Environment'
   has_many :deployments
   has_many :pipeline_schedules, class_name: 'Ci::PipelineSchedule'
   has_many :project_deploy_tokens
@@ -390,6 +397,7 @@ class Project < ApplicationRecord
   scope :with_project_feature, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id') }
   scope :with_statistics, -> { includes(:statistics) }
   scope :with_shared_runners, -> { where(shared_runners_enabled: true) }
+  scope :with_container_registry, -> { where(container_registry_enabled: true) }
   scope :inside_path, ->(path) do
     # We need routes alias rs for JOIN so it does not conflict with
     # includes(:route) which we use in ProjectsFinder.
@@ -455,13 +463,6 @@ class Project < ApplicationRecord
 
   # Used by Projects::CleanupService to hold a map of rewritten object IDs
   mount_uploader :bfg_object_map, AttachmentUploader
-
-  # Returns a project, if it is not about to be removed.
-  #
-  # id - The ID of the project to retrieve.
-  def self.find_without_deleted(id)
-    without_deleted.find_by_id(id)
-  end
 
   def self.eager_load_namespace_and_owner
     includes(namespace: :owner)
@@ -654,6 +655,11 @@ class Project < ApplicationRecord
     else
       super.external
     end
+  end
+
+  def preload_protected_branches
+    preloader = ActiveRecord::Associations::Preloader.new
+    preloader.preload(self, protected_branches: [:push_access_levels, :merge_access_levels])
   end
 
   # returns all ancestor-groups upto but excluding the given namespace
@@ -1906,7 +1912,7 @@ class Project < ApplicationRecord
   end
 
   def default_environment
-    production_first = "(CASE WHEN name = 'production' THEN 0 ELSE 1 END), id ASC"
+    production_first = Arel.sql("(CASE WHEN name = 'production' THEN 0 ELSE 1 END), id ASC")
 
     environments
       .with_state(:available)
@@ -1959,27 +1965,6 @@ class Project < ApplicationRecord
     return [] unless auto_devops_enabled?
 
     (auto_devops || build_auto_devops)&.predefined_variables
-  end
-
-  def append_or_update_attribute(name, value)
-    if Project.reflect_on_association(name).try(:macro) == :has_many
-      # if this is 1-to-N relation, update the parent object
-      value.each do |item|
-        item.update!(
-          Project.reflect_on_association(name).foreign_key => id)
-      end
-
-      # force to drop relation cache
-      public_send(name).reset # rubocop:disable GitlabSecurity/PublicSend
-
-      # succeeded
-      true
-    else
-      # if this is another relation or attribute, update just object
-      update_attribute(name, value)
-    end
-  rescue ActiveRecord::RecordInvalid => e
-    raise e, "Failed to set #{name}: #{e.message}"
   end
 
   # Tries to set repository as read_only, checking for existing Git transfers in progress beforehand

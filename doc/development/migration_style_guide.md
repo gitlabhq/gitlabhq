@@ -211,7 +211,7 @@ class MyMigration < ActiveRecord::Migration[4.2]
   end
 
   def down
-    remove_index :table, :column if index_exists?(:table, :column)
+    remove_concurrent_index :table, :column
   end
 end
 ```

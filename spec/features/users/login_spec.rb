@@ -806,7 +806,7 @@ describe 'Login' do
       gitlab_sign_in(user)
 
       expect(current_path).to eq root_path
-      expect(page).to have_content("Please check your email (#{user.email}) to verify that you own this address.")
+      expect(page).to have_content("Please check your email (#{user.email}) to verify that you own this address and unlock the power of CI/CD.")
     end
 
     context "when not having confirmed within Devise's allow_unconfirmed_access_for time" do

@@ -58,7 +58,7 @@ describe Gitlab::Checks::LfsIntegrity do
       end
     end
 
-    context 'for forked project' do
+    context 'for forked project', :sidekiq_might_not_need_inline do
       let(:parent_project) { create(:project, :repository) }
       let(:project) { fork_project(parent_project, nil, repository: true) }
 

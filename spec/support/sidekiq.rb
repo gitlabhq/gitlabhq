@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'sidekiq/testing/inline'
+require 'sidekiq/testing'
 
 # If Sidekiq::Testing.inline! is used, SQL transactions done inside
 # Sidekiq worker are included in the SQL query limit (in a real
@@ -27,7 +27,9 @@ Sidekiq::Testing.server_middleware do |chain|
 end
 
 RSpec.configure do |config|
-  config.after(:each, :sidekiq) do
+  config.around(:each, :sidekiq) do |example|
+    Sidekiq::Worker.clear_all
+    example.run
     Sidekiq::Worker.clear_all
   end
 
@@ -35,5 +37,20 @@ RSpec.configure do |config|
     Sidekiq.redis do |connection|
       connection.redis.flushdb
     end
+  end
+
+  # As we'll review the examples with this tag, we should either:
+  # - fix the example to not require Sidekiq inline mode (and remove this tag)
+  # - explicitly keep the inline mode and change the tag for `:sidekiq_inline` instead
+  config.around(:example, :sidekiq_might_not_need_inline) do |example|
+    Sidekiq::Worker.clear_all
+    Sidekiq::Testing.inline! { example.run }
+    Sidekiq::Worker.clear_all
+  end
+
+  config.around(:example, :sidekiq_inline) do |example|
+    Sidekiq::Worker.clear_all
+    Sidekiq::Testing.inline! { example.run }
+    Sidekiq::Worker.clear_all
   end
 end

@@ -27,7 +27,7 @@ describe Admin::SpamLogsController do
       expect(response).to have_gitlab_http_status(200)
     end
 
-    it 'removes user and his spam logs when removing the user' do
+    it 'removes user and his spam logs when removing the user', :sidekiq_might_not_need_inline do
       delete :destroy, params: { id: first_spam.id, remove_user: true }
 
       expect(flash[:notice]).to eq "User #{user.username} was successfully removed."
@@ -39,7 +39,9 @@ describe Admin::SpamLogsController do
 
   describe '#mark_as_ham' do
     before do
-      allow_any_instance_of(AkismetService).to receive(:submit_ham).and_return(true)
+      allow_next_instance_of(AkismetService) do |instance|
+        allow(instance).to receive(:submit_ham).and_return(true)
+      end
     end
     it 'submits the log as ham' do
       post :mark_as_ham, params: { id: first_spam.id }

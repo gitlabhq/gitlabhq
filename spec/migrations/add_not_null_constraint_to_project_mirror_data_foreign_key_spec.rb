@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20180508100222_add_not_null_constraint_to_project_mirror_data_foreign_key.rb')
 

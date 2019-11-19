@@ -118,6 +118,7 @@ LDAP users must have an email address set, regardless of whether it is used to l
 
 ```ruby
 gitlab_rails['ldap_enabled'] = true
+gitlab_rails['prevent_ldap_sign_in'] = false
 gitlab_rails['ldap_servers'] = YAML.load <<-EOS # remember to close this block with 'EOS' below
 ##
 ## 'main' is the GitLab 'provider ID' of this LDAP server
@@ -357,6 +358,7 @@ production:
   # snip...
   ldap:
     enabled: false
+    prevent_ldap_sign_in: false
     servers:
       ##
       ## 'main' is the GitLab 'provider ID' of this LDAP server
@@ -489,6 +491,38 @@ the configuration option `lowercase_usernames`. By default, this configuration o
          main:
            # snip...
            lowercase_usernames: true
+   ```
+
+1. [Restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
+
+## Disable LDAP web sign in
+
+It can be be useful to prevent using LDAP credentials through the web UI when
+an alternative such as SAML is preferred. This allows LDAP to be used for group
+sync, while also allowing your SAML identity provider to handle additional
+checks like custom 2FA.
+
+When LDAP web sign in is disabled, users will not see a **LDAP** tab on the sign in page.
+This does not disable [using LDAP credentials for Git access](#git-password-authentication).
+
+**Omnibus configuration**
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['prevent_ldap_sign_in'] = true
+   ```
+
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+
+**Source configuration**
+
+1. Edit `config/gitlab.yaml`:
+
+   ```yaml
+   production:
+     ldap:
+       prevent_ldap_sign_in: true
    ```
 
 1. [Restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.

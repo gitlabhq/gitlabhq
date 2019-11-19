@@ -17,7 +17,10 @@ module Gitlab
 
         # Returns a new dashboard hash with the results of
         # running transforms on the dashboard.
+        # @return [Hash, nil]
         def process
+          return unless @dashboard
+
           @dashboard.deep_symbolize_keys.tap do |dashboard|
             @sequence.each do |stage|
               stage.new(@project, dashboard, @params).transform!

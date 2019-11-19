@@ -46,7 +46,7 @@ class GitlabSchema < GraphQL::Schema
       super(query_str, **kwargs)
     end
 
-    def id_from_object(object)
+    def id_from_object(object, _type = nil, _ctx = nil)
       unless object.respond_to?(:to_global_id)
         # This is an error in our schema and needs to be solved. So raise a
         # more meaningful error message
@@ -57,7 +57,7 @@ class GitlabSchema < GraphQL::Schema
       object.to_global_id
     end
 
-    def object_from_id(global_id)
+    def object_from_id(global_id, _ctx = nil)
       gid = GlobalID.parse(global_id)
 
       unless gid

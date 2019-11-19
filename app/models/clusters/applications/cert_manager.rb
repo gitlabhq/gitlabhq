@@ -65,7 +65,7 @@ module Clusters
       end
 
       def retry_command(command)
-        "for i in $(seq 1 30); do #{command} && s=0 && break || s=$?; sleep 1s; echo \"Retrying ($i)...\"; done; (exit $s)"
+        "for i in $(seq 1 90); do #{command} && s=0 && break || s=$?; sleep 1s; echo \"Retrying ($i)...\"; done; (exit $s)"
       end
 
       def post_delete_script

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20181219145520_migrate_cluster_configure_worker_sidekiq_queue.rb')
 

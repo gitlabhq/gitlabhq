@@ -25,7 +25,7 @@ Google account (for example, one that you use to access Gmail, Drive, etc.) or c
 TIP: **Tip:**
 Every new Google Cloud Platform (GCP) account receives [$300 in credit](https://console.cloud.google.com/freetrial),
 and in partnership with Google, GitLab is able to offer an additional $200 for new GCP accounts to get started with GitLab's
-Google Kubernetes Engine Integration. All you have to do is [follow this link](https://cloud.google.com/partners/partnercredit/?PCN=a0n60000006Vpz4AAC) and apply for credit.
+Google Kubernetes Engine Integration. All you have to do is [follow this link](https://cloud.google.com/partners/partnercredit/?pcn_code=0014M00001h35gDQAQ#contact-form) and apply for credit.
 
 ## Creating a new project from a template
 
@@ -212,7 +212,7 @@ under **Settings > CI/CD > Environment variables**.
 
 ### Working with branches
 
-Following the [GitLab flow](../../workflow/gitlab_flow.md#working-with-feature-branches),
+Following the [GitLab flow](../gitlab_flow.md#working-with-feature-branches),
 let's create a feature branch that will add some content to the application.
 
 Under your repository, navigate to the following file: `app/views/welcome/index.html.erb`.
@@ -280,6 +280,6 @@ and customized to fit your workflow. Here are some helpful resources for further
 1. [Multiple Kubernetes clusters](index.md#using-multiple-kubernetes-clusters-premium) **(PREMIUM)**
 1. [Incremental rollout to production](index.md#incremental-rollout-to-production-premium) **(PREMIUM)**
 1. [Disable jobs you don't need with environment variables](index.md#environment-variables)
-1. [Use a static IP for your cluster](../../user/project/clusters/index.md#using-a-static-ip)
+1. [Use a static IP for your cluster](../../user/clusters/applications.md#using-a-static-ip)
 1. [Use your own buildpacks to build your application](index.md#custom-buildpacks)
 1. [Prometheus monitoring](../../user/project/integrations/prometheus.md)

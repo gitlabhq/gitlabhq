@@ -42,4 +42,10 @@ describe Gitlab::Utils::DeepSize do
       end
     end
   end
+
+  describe '.human_default_max_size' do
+    it 'returns 1 MB' do
+      expect(described_class.human_default_max_size).to eq('1 MB')
+    end
+  end
 end

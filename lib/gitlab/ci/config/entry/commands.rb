@@ -11,11 +11,11 @@ module Gitlab
           include ::Gitlab::Config::Entry::Validatable
 
           validations do
-            validates :config, array_of_strings_or_string: true
+            validates :config, string_or_nested_array_of_strings: true
           end
 
           def value
-            Array(@config)
+            Array(@config).flatten(1)
           end
         end
       end

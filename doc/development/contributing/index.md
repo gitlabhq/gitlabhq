@@ -118,6 +118,10 @@ This [documentation](merge_request_workflow.md) outlines the current merge reque
 
 This [documentation](style_guides.md) outlines the current style guidelines.
 
+## Getting an Enterprise Edition License
+
+If you need a license for contributing to an EE-feature, please [follow these instructions](https://about.gitlab.com/handbook/marketing/community-relations/code-contributor-program/#for-contributors-to-the-gitlab-enterprise-edition-ee).
+
 ---
 
 [Return to Development documentation](../README.md)

@@ -31,7 +31,7 @@ patches will need to be backported, making sure active GitLab instances remain
 secure.
 
 If you disable version check, this information will not be collected.  Enable or
-disable the version check at **Admin area > Settings > Usage statistics**.
+disable the version check at **Admin area > Settings > Metrics and profiling > Usage statistics**.
 
 ## Usage ping **(CORE ONLY)**
 
@@ -85,7 +85,7 @@ will be able to show [usage statistics](../../instance_statistics/index.md)
 of your instance to your users.
 
 This can be restricted to admins by selecting "Only admins" in the Instance
-Statistics visibility section under **Admin area > Settings > Usage statistics**.
+Statistics visibility section under **Admin area > Settings > Metrics and profiling > Usage statistics**.
 
 <!-- ## Troubleshooting
 

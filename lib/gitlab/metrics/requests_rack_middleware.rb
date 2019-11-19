@@ -35,7 +35,7 @@ module Gitlab
       def self.initialize_http_request_duration_seconds
         HTTP_METHODS.each do |method, statuses|
           statuses.each do |status|
-            http_request_duration_seconds.get({ method: method, status: status.to_i })
+            http_request_duration_seconds.get({ method: method, status: status.to_s })
           end
         end
       end
@@ -49,7 +49,7 @@ module Gitlab
           status, headers, body = @app.call(env)
 
           elapsed = Time.now.to_f - started
-          RequestsRackMiddleware.http_request_duration_seconds.observe({ method: method, status: status }, elapsed)
+          RequestsRackMiddleware.http_request_duration_seconds.observe({ method: method, status: status.to_s }, elapsed)
 
           [status, headers, body]
         rescue

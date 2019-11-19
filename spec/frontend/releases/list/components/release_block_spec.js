@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 import ReleaseBlock from '~/releases/list/components/release_block.vue';
+import ReleaseBlockFooter from '~/releases/list/components/release_block_footer.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { first } from 'underscore';
 import { release } from '../../mock_data';
@@ -21,14 +22,16 @@ describe('Release block', () => {
   let wrapper;
   let releaseClone;
 
-  const factory = (releaseProp, releaseEditPageFeatureFlag = true) => {
+  const factory = (releaseProp, featureFlags = {}) => {
     wrapper = mount(ReleaseBlock, {
       propsData: {
         release: releaseProp,
       },
       provide: {
         glFeatures: {
-          releaseEditPage: releaseEditPageFeatureFlag,
+          releaseEditPage: true,
+          releaseIssueSummary: true,
+          ...featureFlags,
         },
       },
       sync: false,
@@ -39,33 +42,17 @@ describe('Release block', () => {
 
   const milestoneListLabel = () => wrapper.find('.js-milestone-list-label');
   const editButton = () => wrapper.find('.js-edit-button');
-  const RealDate = Date;
 
   beforeEach(() => {
-    // timeago.js calls Date(), so let's mock that case to avoid time-dependent test failures.
-    const constantDate = new Date('2019-10-25T00:12:00');
-
-    /* eslint no-global-assign:off */
-    global.Date = jest.fn((...props) =>
-      props.length ? new RealDate(...props) : new RealDate(constantDate),
-    );
-
-    Object.assign(Date, RealDate);
-
     releaseClone = JSON.parse(JSON.stringify(release));
   });
 
   afterEach(() => {
     wrapper.destroy();
-    global.Date = RealDate;
   });
 
   describe('with default props', () => {
     beforeEach(() => factory(release));
-
-    it('matches the snapshot', () => {
-      expect(wrapper.element).toMatchSnapshot();
-    });
 
     it("renders the block with an id equal to the release's tag name", () => {
       expect(wrapper.attributes().id).toBe('v0.3');
@@ -73,7 +60,7 @@ describe('Release block', () => {
 
     it('renders an edit button that links to the "Edit release" page', () => {
       expect(editButton().exists()).toBe(true);
-      expect(editButton().attributes('href')).toBe(release._links.edit);
+      expect(editButton().attributes('href')).toBe(release._links.edit_url);
     });
 
     it('renders release name', () => {
@@ -158,6 +145,10 @@ describe('Release block', () => {
 
       expect(milestoneLink.attributes('data-original-title')).toBe(milestone.description);
     });
+
+    it('renders the footer', () => {
+      expect(wrapper.find(ReleaseBlockFooter).exists()).toBe(true);
+    });
   });
 
   it('renders commit sha', () => {
@@ -180,7 +171,7 @@ describe('Release block', () => {
     });
   });
 
-  it("does not render an edit button if release._links.edit isn't a string", () => {
+  it("does not render an edit button if release._links.edit_url isn't a string", () => {
     delete releaseClone._links;
 
     return factory(releaseClone).then(() => {
@@ -189,7 +180,7 @@ describe('Release block', () => {
   });
 
   it('does not render an edit button if the releaseEditPage feature flag is disabled', () =>
-    factory(releaseClone, false).then(() => {
+    factory(releaseClone, { releaseEditPage: false }).then(() => {
       expect(editButton().exists()).toBe(false);
     }));
 

@@ -64,7 +64,12 @@ module QA
       end
 
       def visit!
-        visit(web_url)
+        Runtime::Logger.debug(%Q[Visiting #{self.class.name} at "#{web_url}"]) if Runtime::Env.debug?
+
+        Support::Retrier.retry_until do
+          visit(web_url)
+          wait { current_url.include?(URI.parse(web_url).path.split('/').last || web_url) }
+        end
       end
 
       def populate(*attributes)
@@ -72,7 +77,9 @@ module QA
       end
 
       def wait(max: 60, interval: 0.1)
-        QA::Support::Waiter.wait(max: max, interval: interval)
+        QA::Support::Waiter.wait(max: max, interval: interval) do
+          yield
+        end
       end
 
       private

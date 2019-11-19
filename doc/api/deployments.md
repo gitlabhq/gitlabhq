@@ -11,7 +11,7 @@ GET /projects/:id/deployments
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `order_by`| string  | no       | Return deployments ordered by `id` or `iid` or `created_at` or `ref` fields. Default is `id` |
+| `order_by`| string  | no       | Return deployments ordered by `id` or `iid` or `created_at` or `updated_at` or `ref` fields. Default is `id` |
 | `sort`    | string  | no       | Return deployments sorted in `asc` or `desc` order. Default is `asc` |
 
 ```bash
@@ -62,6 +62,15 @@ Example of response
         "twitter": "",
         "website_url": "",
         "organization": ""
+      },
+      "pipeline": {
+        "created_at": "2016-08-11T02:12:10.222Z",
+        "id": 36,
+        "ref": "master",
+        "sha": "99d03678b90d914dbb1b109132516d71a4a03ea8",
+        "status": "success",
+        "updated_at": "2016-08-11T02:12:10.222Z",
+        "web_url": "http://gitlab.dev/root/project/pipelines/12"
       }
     },
     "environment": {
@@ -122,6 +131,15 @@ Example of response
         "twitter": "",
         "website_url": "",
         "organization": ""
+      },
+      "pipeline": {
+        "created_at": "2016-08-11T07:43:52.143Z",
+        "id": 37,
+        "ref": "master",
+        "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
+        "status": "success",
+        "updated_at": "2016-08-11T07:43:52.143Z",
+        "web_url": "http://gitlab.dev/root/project/pipelines/13"
       }
     },
     "environment": {
@@ -219,6 +237,15 @@ Example of response
       "created_at": "2016-08-11T13:28:26.000+02:00",
       "message": "Merge branch 'rename-readme' into 'master'\r\n\r\nRename README\r\n\r\n\r\n\r\nSee merge request !2"
     },
+    "pipeline": {
+      "created_at": "2016-08-11T07:43:52.143Z",
+      "id": 42,
+      "ref": "master",
+      "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
+      "status": "success",
+      "updated_at": "2016-08-11T07:43:52.143Z",
+      "web_url": "http://gitlab.dev/root/project/pipelines/5"
+    }
     "runner": null
   }
 }

@@ -90,6 +90,19 @@ describe('text_utility', () => {
     });
   });
 
+  describe('convertToSnakeCase', () => {
+    it.each`
+      txt                      | result
+      ${'snakeCase'}           | ${'snake_case'}
+      ${'snake Case'}          | ${'snake_case'}
+      ${'snake case'}          | ${'snake_case'}
+      ${'snake_case'}          | ${'snake_case'}
+      ${'snakeCasesnake Case'} | ${'snake_casesnake_case'}
+    `('converts string $txt to $result string', ({ txt, result }) => {
+      expect(textUtils.convertToSnakeCase(txt)).toEqual(result);
+    });
+  });
+
   describe('convertToSentenceCase', () => {
     it('converts Sentence Case to Sentence case', () => {
       expect(textUtils.convertToSentenceCase('Hello World')).toBe('Hello world');

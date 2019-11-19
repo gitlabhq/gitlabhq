@@ -1,18 +1,36 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlSkeletonLoading } from '@gitlab/ui';
 import Table from '~/repository/components/table/index.vue';
+import TableRow from '~/repository/components/table/row.vue';
 
 let vm;
 let $apollo;
 
-function factory(path, data = () => ({})) {
-  $apollo = {
-    query: jest.fn().mockReturnValue(Promise.resolve({ data: data() })),
-  };
+const MOCK_BLOBS = [
+  {
+    id: '123abc',
+    sha: '123abc',
+    flatPath: 'blob',
+    name: 'blob.md',
+    type: 'blob',
+    webUrl: 'http://test.com',
+  },
+  {
+    id: '124abc',
+    sha: '124abc',
+    flatPath: 'blob2',
+    name: 'blob2.md',
+    type: 'blob',
+    webUrl: 'http://test.com',
+  },
+];
 
+function factory({ path, isLoading = false, entries = {} }) {
   vm = shallowMount(Table, {
     propsData: {
       path,
+      isLoading,
+      entries,
     },
     mocks: {
       $apollo,
@@ -31,50 +49,30 @@ describe('Repository table component', () => {
     ${'app/assets'} | ${'master'}
     ${'/'}          | ${'test'}
   `('renders table caption for $ref in $path', ({ path, ref }) => {
-    factory(path);
+    factory({ path });
 
     vm.setData({ ref });
 
-    expect(vm.find('caption').text()).toEqual(
+    expect(vm.find('.table').attributes('aria-label')).toEqual(
       `Files, directories, and submodules in the path ${path} for commit reference ${ref}`,
     );
   });
 
   it('shows loading icon', () => {
-    factory('/');
+    factory({ path: '/', isLoading: true });
 
-    vm.setData({ isLoadingFiles: true });
-
-    expect(vm.find(GlLoadingIcon).isVisible()).toBe(true);
+    expect(vm.find(GlSkeletonLoading).exists()).toBe(true);
   });
 
-  describe('normalizeData', () => {
-    it('normalizes edge nodes', () => {
-      const output = vm.vm.normalizeData('blobs', [{ node: '1' }, { node: '2' }]);
-
-      expect(output).toEqual(['1', '2']);
-    });
-  });
-
-  describe('hasNextPage', () => {
-    it('returns undefined when hasNextPage is false', () => {
-      const output = vm.vm.hasNextPage({
-        trees: { pageInfo: { hasNextPage: false } },
-        submodules: { pageInfo: { hasNextPage: false } },
-        blobs: { pageInfo: { hasNextPage: false } },
-      });
-
-      expect(output).toBe(undefined);
+  it('renders table rows', () => {
+    factory({
+      path: '/',
+      entries: {
+        blobs: MOCK_BLOBS,
+      },
     });
 
-    it('returns pageInfo object when hasNextPage is true', () => {
-      const output = vm.vm.hasNextPage({
-        trees: { pageInfo: { hasNextPage: false } },
-        submodules: { pageInfo: { hasNextPage: false } },
-        blobs: { pageInfo: { hasNextPage: true, nextCursor: 'test' } },
-      });
-
-      expect(output).toEqual({ hasNextPage: true, nextCursor: 'test' });
-    });
+    expect(vm.find(TableRow).exists()).toBe(true);
+    expect(vm.findAll(TableRow).length).toBe(2);
   });
 });

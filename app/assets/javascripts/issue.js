@@ -1,4 +1,4 @@
-/* eslint-disable no-var, one-var, consistent-return */
+/* eslint-disable consistent-return */
 
 import $ from 'jquery';
 import axios from './lib/utils/axios_utils';
@@ -91,18 +91,17 @@ export default class Issue {
       'click',
       '.js-issuable-actions a.btn-close, .js-issuable-actions a.btn-reopen',
       e => {
-        var $button, shouldSubmit, url;
         e.preventDefault();
         e.stopImmediatePropagation();
-        $button = $(e.currentTarget);
-        shouldSubmit = $button.hasClass('btn-comment');
+        const $button = $(e.currentTarget);
+        const shouldSubmit = $button.hasClass('btn-comment');
         if (shouldSubmit) {
           Issue.submitNoteForm($button.closest('form'));
         }
 
         this.disableCloseReopenButton($button);
 
-        url = $button.attr('href');
+        const url = $button.attr('href');
         return axios
           .put(url)
           .then(({ data }) => {
@@ -139,16 +138,14 @@ export default class Issue {
   }
 
   static submitNoteForm(form) {
-    var noteText;
-    noteText = form.find('textarea.js-note-text').val();
+    const noteText = form.find('textarea.js-note-text').val();
     if (noteText && noteText.trim().length > 0) {
       return form.submit();
     }
   }
 
   static initRelatedBranches() {
-    var $container;
-    $container = $('#related-branches');
+    const $container = $('#related-branches');
     return axios
       .get($container.data('url'))
       .then(({ data }) => {

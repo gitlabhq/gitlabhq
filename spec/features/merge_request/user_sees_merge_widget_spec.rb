@@ -5,6 +5,7 @@ require 'spec_helper'
 describe 'Merge request > User sees merge widget', :js do
   include ProjectForksHelper
   include TestReportsHelper
+  include ReactiveCachingHelpers
 
   let(:project) { create(:project, :repository) }
   let(:project_only_mwps) { create(:project, :repository, only_allow_merge_if_pipeline_succeeds: true) }
@@ -43,7 +44,7 @@ describe 'Merge request > User sees merge widget', :js do
   context 'view merge request' do
     let!(:environment) { create(:environment, project: project) }
     let(:sha)          { project.commit(merge_request.source_branch).sha }
-    let(:pipeline)     { create(:ci_pipeline_without_jobs, status: 'success', sha: sha, project: project, ref: merge_request.source_branch) }
+    let(:pipeline)     { create(:ci_pipeline, status: 'success', sha: sha, project: project, ref: merge_request.source_branch) }
     let(:build)        { create(:ci_build, :success, pipeline: pipeline) }
 
     let!(:deployment) do
@@ -75,7 +76,7 @@ describe 'Merge request > User sees merge widget', :js do
       expect(find('.accept-merge-request')['disabled']).not_to be(true)
     end
 
-    it 'allows me to merge, see cherry-pick modal and load branches list' do
+    it 'allows me to merge, see cherry-pick modal and load branches list', :sidekiq_might_not_need_inline do
       wait_for_requests
       click_button 'Merge'
 
@@ -190,7 +191,7 @@ describe 'Merge request > User sees merge widget', :js do
     end
 
     shared_examples 'pipeline widget' do
-      it 'shows head pipeline information' do
+      it 'shows head pipeline information', :sidekiq_might_not_need_inline do
         within '.ci-widget-content' do
           expect(page).to have_content("Detached merge request pipeline ##{pipeline.id} pending for #{pipeline.short_sha}")
         end
@@ -229,7 +230,7 @@ describe 'Merge request > User sees merge widget', :js do
     end
 
     shared_examples 'pipeline widget' do
-      it 'shows head pipeline information' do
+      it 'shows head pipeline information', :sidekiq_might_not_need_inline do
         within '.ci-widget-content' do
           expect(page).to have_content("Merged result pipeline ##{pipeline.id} pending for #{pipeline.short_sha}")
         end
@@ -370,7 +371,7 @@ describe 'Merge request > User sees merge widget', :js do
       visit project_merge_request_path(project, merge_request)
     end
 
-    it 'updates the MR widget' do
+    it 'updates the MR widget', :sidekiq_might_not_need_inline do
       click_button 'Merge'
 
       page.within('.mr-widget-body') do
@@ -416,7 +417,7 @@ describe 'Merge request > User sees merge widget', :js do
       visit project_merge_request_path(project, merge_request)
     end
 
-    it 'user cannot remove source branch' do
+    it 'user cannot remove source branch', :sidekiq_might_not_need_inline do
       expect(page).not_to have_field('remove-source-branch-input')
       expect(page).to have_content('Deletes source branch')
     end
@@ -432,6 +433,54 @@ describe 'Merge request > User sees merge widget', :js do
 
       expect(page).not_to have_button('Merge')
       expect(page).to have_content('This merge request is in the process of being merged')
+    end
+  end
+
+  context 'exposed artifacts' do
+    subject { visit project_merge_request_path(project, merge_request) }
+
+    context 'when merge request has exposed artifacts' do
+      let(:merge_request) { create(:merge_request, :with_exposed_artifacts, source_project: project) }
+      let(:job) { merge_request.head_pipeline.builds.last }
+      let!(:artifacts_metadata) { create(:ci_job_artifact, :metadata, job: job) }
+
+      context 'when result has not been parsed yet' do
+        it 'shows parsing status' do
+          subject
+
+          expect(page).to have_content('Loading artifacts')
+        end
+      end
+
+      context 'when result has been parsed' do
+        before do
+          allow_any_instance_of(MergeRequest).to receive(:find_exposed_artifacts).and_return(
+            status: :parsed, data: [
+              {
+                text: "the artifact",
+                url: "/namespace1/project1/-/jobs/1/artifacts/file/ci_artifacts.txt",
+                job_path: "/namespace1/project1/-/jobs/1",
+                job_name: "test"
+              }
+            ])
+        end
+
+        it 'shows the parsed results' do
+          subject
+
+          expect(page).to have_content('View exposed artifact')
+        end
+      end
+    end
+
+    context 'when merge request does not have exposed artifacts' do
+      let(:merge_request) { create(:merge_request, source_project: project) }
+
+      it 'does not show parsing status' do
+        subject
+
+        expect(page).not_to have_content('Loading artifacts')
+      end
     end
   end
 
@@ -696,7 +745,7 @@ describe 'Merge request > User sees merge widget', :js do
 
   context 'when MR has pipeline but user does not have permission' do
     let(:sha) { project.commit(merge_request.source_branch).sha }
-    let!(:pipeline) { create(:ci_pipeline_without_jobs, status: 'success', sha: sha, project: project, ref: merge_request.source_branch) }
+    let!(:pipeline) { create(:ci_pipeline, status: 'success', sha: sha, project: project, ref: merge_request.source_branch) }
 
     before do
       project.update(

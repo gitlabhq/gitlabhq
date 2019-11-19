@@ -1,0 +1,5 @@
+---
+title: Users can verify SAML configuration and view SamlResponse XML
+merge_request: 18362
+author:
+type: added

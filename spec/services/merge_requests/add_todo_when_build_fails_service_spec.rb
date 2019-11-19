@@ -10,9 +10,7 @@ describe MergeRequests::AddTodoWhenBuildFailsService do
   let(:ref) { merge_request.source_branch }
 
   let(:pipeline) do
-    create(:ci_pipeline_with_one_job, ref: ref,
-                                      project: project,
-                                      sha: sha)
+    create(:ci_pipeline, ref: ref, project: project, sha: sha)
   end
 
   let(:service) do

@@ -2,12 +2,11 @@
   extends:
     - .default-tags
     - .default-retry
-    - .only-docs-changes
+    - .only:variables-canonical-dot-com
+    - .only:changes-docs
   only:
     refs:
       - merge_requests
-    variables:
-      - $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org"
   image: ruby:2.6-alpine
   stage: review
   dependencies: []
@@ -50,7 +49,7 @@ docs lint:
     - .default-tags
     - .default-retry
     - .default-only
-    - .only-docs-changes
+    - .only:changes-docs
   image: "registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-docs-lint"
   stage: test
   dependencies: []
@@ -68,7 +67,7 @@ docs lint:
     # Check the internal anchor links
     - bundle exec nanoc check internal_anchors
 
-graphql-docs-verify:
+graphql-reference-verify:
   extends:
     - .only-ee
     - .default-tags
@@ -76,10 +75,10 @@ graphql-docs-verify:
     - .default-cache
     - .default-only
     - .default-before_script
-    - .only-graphql-changes
-  variables:
-    SETUP_DB: "false"
+    - .only:changes-code-backstage-qa
+    - .use-pg9
   stage: test
   needs: ["setup-test-env"]
   script:
     - bundle exec rake gitlab:graphql:check_docs
+    - bundle exec rake gitlab:graphql:check_schema

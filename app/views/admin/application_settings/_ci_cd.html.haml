@@ -53,5 +53,11 @@
           = s_('AdminSettings|Environment variables are protected by default')
       .form-text.text-muted
         = s_('AdminSettings|When creating a new environment variable it will be protected by default.')
+    .form-group
+      = f.label :ci_config_path, _('Default CI configuration path'), class: 'label-bold'
+      = f.text_field :default_ci_config_path, class: 'form-control', placeholder: '.gitlab-ci.yml'
+      %p.form-text.text-muted
+        = _("The default CI configuration path for new projects.").html_safe
+        = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'custom-ci-config-path'), target: '_blank'
 
   = f.submit _('Save changes'), class: "btn btn-success"

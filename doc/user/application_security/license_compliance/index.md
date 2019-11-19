@@ -94,8 +94,20 @@ always take the latest License Compliance artifact available. Behind the scenes,
 [GitLab License Compliance Docker image](https://gitlab.com/gitlab-org/security-products/license-management)
 is used to detect the languages/frameworks and in turn analyzes the licenses.
 
-The License Compliance settings can be changed through environment variables by using the
-[`variables`](../../../ci/yaml/README.md#variables) parameter in `.gitlab-ci.yml`. These variables are documented in the [License Compliance documentation](https://gitlab.com/gitlab-org/security-products/license-management#settings).
+The License Compliance settings can be changed through [environment variables](#available-variables) by using the
+[`variables`](../../../ci/yaml/README.md#variables) parameter in `.gitlab-ci.yml`.
+
+### Available variables
+
+License Compliance can be configured using environment variables.
+
+| Environment variable  | Required | Description |
+|-----------------------|----------|-------------|
+| `MAVEN_CLI_OPTS`       | no | Additional arguments for the mvn executable. If not supplied, defaults to `-DskipTests`. |
+| `LICENSE_FINDER_CLI_OPTS` | no | Additional arguments for the `license_finder` executable. For example, if your project has both Golang and Ruby code stored in different directories and you want to only scan the Ruby code, you can update your `.gitlab-ci-yml` template to specify which project directories to scan, like `LICENSE_FINDER_CLI_OPTS: '--debug --aggregate-paths=. ruby'`. |
+| `LM_JAVA_VERSION`      | no | Version of Java. If set to `11`, Maven and Gradle use Java 11 instead of Java 8. |
+| `LM_PYTHON_VERSION`    | no | Version of Python. If set to `3`, dependencies are installed using Python 3 instead of Python 2.7. |
+| `SETUP_CMD`            | no | Custom setup for the dependency installation. (experimental) |
 
 ### Installing custom dependencies
 

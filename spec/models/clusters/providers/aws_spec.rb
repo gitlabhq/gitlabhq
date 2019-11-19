@@ -4,7 +4,6 @@ require 'spec_helper'
 
 describe Clusters::Providers::Aws do
   it { is_expected.to belong_to(:cluster) }
-  it { is_expected.to belong_to(:created_by_user) }
 
   it { is_expected.to validate_length_of(:key_name).is_at_least(1).is_at_most(255) }
   it { is_expected.to validate_length_of(:region).is_at_least(1).is_at_most(255) }
@@ -64,13 +63,72 @@ describe Clusters::Providers::Aws do
     before do
       expect(provider.access_key_id).to be_present
       expect(provider.secret_access_key).to be_present
+      expect(provider.session_token).to be_present
     end
 
-    it 'removes access_key_id and secret_access_key' do
+    it 'removes access_key_id, secret_access_key and session_token' do
       subject
 
       expect(provider.access_key_id).to be_nil
       expect(provider.secret_access_key).to be_nil
+      expect(provider.session_token).to be_nil
     end
+  end
+
+  describe '#api_client' do
+    let(:provider) { create(:cluster_provider_aws) }
+    let(:credentials) { double }
+    let(:client) { double }
+
+    subject { provider.api_client }
+
+    before do
+      allow(provider).to receive(:credentials).and_return(credentials)
+
+      expect(Aws::CloudFormation::Client).to receive(:new)
+        .with(credentials: credentials, region: provider.region)
+        .and_return(client)
+    end
+
+    it { is_expected.to eq client }
+  end
+
+  describe '#credentials' do
+    let(:provider) { create(:cluster_provider_aws) }
+    let(:credentials) { double }
+
+    subject { provider.credentials }
+
+    before do
+      expect(Aws::Credentials).to receive(:new)
+        .with(provider.access_key_id, provider.secret_access_key, provider.session_token)
+        .and_return(credentials)
+    end
+
+    it { is_expected.to eq credentials }
+  end
+
+  describe '#created_by_user' do
+    let(:provider) { create(:cluster_provider_aws) }
+
+    subject { provider.created_by_user }
+
+    it { is_expected.to eq provider.cluster.user }
+  end
+
+  describe '#has_rbac_enabled?' do
+    let(:provider) { create(:cluster_provider_aws) }
+
+    subject { provider.has_rbac_enabled? }
+
+    it { is_expected.to be_truthy }
+  end
+
+  describe '#knative_pre_installed?' do
+    let(:provider) { create(:cluster_provider_aws) }
+
+    subject { provider.knative_pre_installed? }
+
+    it { is_expected.to be_falsey }
   end
 end

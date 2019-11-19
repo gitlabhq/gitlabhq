@@ -1,13 +1,12 @@
 # Merging translations from Crowdin
 
-Crowdin automatically syncs the `gitlab.pot` file presenting newly
-added translations to the community of translators.
+Crowdin automatically syncs the `gitlab.pot` file with the Crowdin service, presenting
+newly added externalized strings to the community of translators.
 
-At the same time, it creates a merge request to merge all newly added
-& approved translations. Find the [merge request created by
-`gitlab-crowdin-bot`](https://gitlab.com/gitlab-org/gitlab/merge_requests?scope=all&utf8=%E2%9C%93&state=opened&author_username=gitlab-crowdin-bot)
-to see new and merged merge requests. They are created in EE and need
-to be ported to CE manually.
+[GitLab Crowdin Bot](https://gitlab.com/gitlab-crowdin-bot) also creates merge requests
+to take newly approved translation submissions and merge them into the `locale/<language>/gitlab.po`
+files. Check the [merge requests created by `gitlab-crowdin-bot`](https://gitlab.com/gitlab-org/gitlab/merge_requests?scope=all&utf8=%E2%9C%93&state=opened&author_username=gitlab-crowdin-bot)
+to see new and merged merge requests.
 
 ## Validation
 
@@ -21,7 +20,7 @@ doesn't do. Create a new pipeline at `https://gitlab.com/gitlab-org/gitlab/pipel
 If there are validation errors, the easiest solution is to disapprove
 the offending string in Crowdin, leaving a comment with what is
 required to fix the offense. There is an
-[issue](https://gitlab.com/gitlab-org/gitlab-foss/issues/49208)
+[issue](https://gitlab.com/gitlab-org/gitlab/issues/23256)
 suggesting to automate this process. Disapproving will exclude the
 invalid translation, the merge request will be updated within a few
 minutes.
@@ -32,19 +31,16 @@ clicking `Pause sync` on the [Crowdin integration settings
 page](https://translate.gitlab.com/project/gitlab-ee/settings#integration).
 
 When all failures are resolved, the translations need to be double
-checked once more as discussed in [confidential issue](../../user/project/issues/confidential_issues.md) `https://gitlab.com/gitlab-org/gitlab-foss/issues/37850`.
+checked once more as discussed in [confidential issue](../../user/project/issues/confidential_issues.md) `https://gitlab.com/gitlab-org/gitlab/issues/19485`.
 
 ## Merging translations
 
 When all translations are found good and pipelines pass the
-translations can be merged into the master branch. After that is done,
-create a new merge request cherry-picking the translations from EE to
-CE. When merging the translations, make sure to check the `Remove
-source branch` checkbox, so Crowdin recreates the `master-i18n` from
-master after the new translation was merged.
+translations can be merged into the master branch. When merging the translations,
+make sure to check the **Remove source branch** checkbox, so Crowdin recreates the
+`master-i18n` from master after the new translation was merged.
 
-We are discussing automating this entire process
-[here](https://gitlab.com/gitlab-org/gitlab-foss/issues/39309).
+We are discussing [automating this entire process](https://gitlab.com/gitlab-org/gitlab/issues/19896).
 
 ## Recreate the merge request
 

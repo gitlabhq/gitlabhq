@@ -6,14 +6,23 @@ module Types
 
     authorize :read_milestone
 
-    field :description, GraphQL::STRING_TYPE, null: true # rubocop:disable Graphql/Descriptions
-    field :title, GraphQL::STRING_TYPE, null: false # rubocop:disable Graphql/Descriptions
-    field :state, GraphQL::STRING_TYPE, null: false # rubocop:disable Graphql/Descriptions
+    field :id, GraphQL::ID_TYPE, null: false,
+          description: 'ID of the milestone'
+    field :description, GraphQL::STRING_TYPE, null: true,
+          description: 'Description of the milestone'
+    field :title, GraphQL::STRING_TYPE, null: false,
+          description: 'Title of the milestone'
+    field :state, GraphQL::STRING_TYPE, null: false,
+          description: 'State of the milestone'
 
-    field :due_date, Types::TimeType, null: true # rubocop:disable Graphql/Descriptions
-    field :start_date, Types::TimeType, null: true # rubocop:disable Graphql/Descriptions
+    field :due_date, Types::TimeType, null: true,
+          description: 'Timestamp of the milestone due date'
+    field :start_date, Types::TimeType, null: true,
+          description: 'Timestamp of the milestone start date'
 
-    field :created_at, Types::TimeType, null: false # rubocop:disable Graphql/Descriptions
-    field :updated_at, Types::TimeType, null: false # rubocop:disable Graphql/Descriptions
+    field :created_at, Types::TimeType, null: false,
+          description: 'Timestamp of milestone creation'
+    field :updated_at, Types::TimeType, null: false,
+          description: 'Timestamp of last milestone update'
   end
 end

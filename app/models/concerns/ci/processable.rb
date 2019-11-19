@@ -8,6 +8,14 @@ module Ci
   #
   #
   module Processable
+    extend ActiveSupport::Concern
+
+    included do
+      has_many :needs, class_name: 'Ci::BuildNeed', foreign_key: :build_id, inverse_of: :build
+
+      accepts_nested_attributes_for :needs
+    end
+
     def schedulable?
       raise NotImplementedError
     end

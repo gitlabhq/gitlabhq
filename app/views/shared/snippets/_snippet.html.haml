@@ -7,8 +7,9 @@
   .title
     = link_to reliable_snippet_path(snippet) do
       = snippet.title
-    - if snippet.file_name
-      %span.snippet-filename.monospace.d-none.d-sm-inline-block
+    - if snippet.file_name.present?
+      %span.snippet-filename.d-none.d-sm-inline-block.ml-2
+        = sprite_icon('doc-code', size: 16, css_class: 'file-icon align-text-bottom')
         = snippet.file_name
 
     %ul.controls

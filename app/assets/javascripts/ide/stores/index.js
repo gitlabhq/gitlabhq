@@ -10,6 +10,7 @@ import mergeRequests from './modules/merge_requests';
 import branches from './modules/branches';
 import fileTemplates from './modules/file_templates';
 import paneModule from './modules/pane';
+import clientsideModule from './modules/clientside';
 
 Vue.use(Vuex);
 
@@ -26,6 +27,7 @@ export const createStore = () =>
       branches,
       fileTemplates: fileTemplates(),
       rightPane: paneModule(),
+      clientside: clientsideModule(),
     },
   });
 

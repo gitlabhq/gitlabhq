@@ -11,7 +11,9 @@ describe 'Import/Export - project import integration test', :js do
 
   before do
     stub_uploads_object_storage(FileUploader)
-    allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
+    allow_next_instance_of(Gitlab::ImportExport) do |instance|
+      allow(instance).to receive(:storage_path).and_return(export_path)
+    end
     gitlab_sign_in(user)
   end
 
@@ -27,7 +29,7 @@ describe 'Import/Export - project import integration test', :js do
     let(:project_path) { 'test-project-name' + randomHex }
 
     context 'prefilled the path' do
-      it 'user imports an exported project successfully' do
+      it 'user imports an exported project successfully', :sidekiq_might_not_need_inline do
         visit new_project_path
 
         fill_in :project_name, with: project_name, visible: true
@@ -53,7 +55,7 @@ describe 'Import/Export - project import integration test', :js do
     end
 
     context 'path is not prefilled' do
-      it 'user imports an exported project successfully' do
+      it 'user imports an exported project successfully', :sidekiq_might_not_need_inline do
         visit new_project_path
         click_import_project_tab
         click_link 'GitLab export'

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe ProjectPolicy do
@@ -310,6 +312,31 @@ describe ProjectPolicy do
     it 'disallows the guest from reading the merge request and merge request iid' do
       expect_disallowed(:read_merge_request)
       expect_disallowed(:read_merge_request_iid)
+    end
+  end
+
+  context 'pipeline feature' do
+    let(:project) { create(:project) }
+
+    describe 'for unconfirmed user' do
+      let(:unconfirmed_user) { create(:user, confirmed_at: nil) }
+      subject { described_class.new(unconfirmed_user, project) }
+
+      it 'disallows to modify pipelines' do
+        expect_disallowed(:create_pipeline)
+        expect_disallowed(:update_pipeline)
+        expect_disallowed(:create_pipeline_schedule)
+      end
+    end
+
+    describe 'for confirmed user' do
+      subject { described_class.new(developer, project) }
+
+      it 'allows modify pipelines' do
+        expect_allowed(:create_pipeline)
+        expect_allowed(:update_pipeline)
+        expect_allowed(:create_pipeline_schedule)
+      end
     end
   end
 

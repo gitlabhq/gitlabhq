@@ -6,6 +6,7 @@ class PipelineProcessWorker
 
   queue_namespace :pipeline_processing
   feature_category :continuous_integration
+  latency_sensitive_worker!
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(pipeline_id, build_ids = nil)

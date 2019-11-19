@@ -89,6 +89,35 @@ describe MarkupHelper do
         end
       end
     end
+
+    context 'when text contains a relative link to an image in the repository' do
+      let(:image_file) { "logo-white.png" }
+      let(:text_with_relative_path) { "![](./#{image_file})\n" }
+      let(:generated_html) { helper.markdown(text_with_relative_path, requested_path: requested_path) }
+
+      subject { Nokogiri::HTML.parse(generated_html) }
+
+      context 'when requested_path is provided in the context' do
+        let(:requested_path) { 'files/images/README.md' }
+
+        it 'returns the correct HTML for the image' do
+          expanded_path = "/#{project.full_path}/raw/master/files/images/#{image_file}"
+
+          expect(subject.css('a')[0].attr('href')).to eq(expanded_path)
+          expect(subject.css('img')[0].attr('data-src')).to eq(expanded_path)
+        end
+      end
+
+      context 'when requested_path parameter is not provided' do
+        let(:requested_path) { nil }
+
+        it 'returns the link to the image path as a relative path' do
+          expanded_path = "/#{project.full_path}/master/./#{image_file}"
+
+          expect(subject.css('a')[0].attr('href')).to eq(expanded_path)
+        end
+      end
+    end
   end
 
   describe '#markdown_field' do
@@ -210,7 +239,7 @@ describe MarkupHelper do
     it 'replaces commit message with emoji to link' do
       actual = link_to_markdown(':book: Book', '/foo')
       expect(actual)
-        .to eq '<gl-emoji title="open book" data-name="book" data-unicode-version="6.0">📖</gl-emoji><a href="/foo"> Book</a>'
+        .to eq '<a href="/foo"><gl-emoji title="open book" data-name="book" data-unicode-version="6.0">📖</gl-emoji></a><a href="/foo"> Book</a>'
     end
   end
 
@@ -231,6 +260,12 @@ describe MarkupHelper do
 
       expect(doc.css('a')[0].attr('href')).to eq link
       expect(doc.css('a')[0].text).to eq 'This should finally fix '
+    end
+
+    it "escapes HTML passed as an emoji" do
+      rendered = '<gl-emoji>&lt;div class="test"&gt;test&lt;/div&gt;</gl-emoji>'
+      expect(helper.link_to_html(rendered, '/foo'))
+        .to eq '<a href="/foo"><gl-emoji>&lt;div class="test"&gt;test&lt;/div&gt;</gl-emoji></a>'
     end
   end
 

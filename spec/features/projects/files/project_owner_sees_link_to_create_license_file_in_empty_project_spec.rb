@@ -12,7 +12,7 @@ describe 'Projects > Files > Project owner sees a link to create a license file 
 
   it 'project maintainer creates a license file from a template' do
     visit project_path(project)
-    click_on 'Add license'
+    click_on 'Add LICENSE'
     expect(page).to have_content('New file')
 
     expect(current_path).to eq(

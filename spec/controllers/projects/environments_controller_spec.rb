@@ -330,11 +330,11 @@ describe Projects::EnvironmentsController do
       expect(response).to redirect_to(environment_metrics_path(environment))
     end
 
-    it 'redirects to empty page if no environment exists' do
+    it 'redirects to empty metrics page if no environment exists' do
       get :metrics_redirect, params: { namespace_id: project.namespace, project_id: project }
 
       expect(response).to be_ok
-      expect(response).to render_template 'empty'
+      expect(response).to render_template 'empty_metrics'
     end
   end
 

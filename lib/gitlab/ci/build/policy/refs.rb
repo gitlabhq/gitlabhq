@@ -9,7 +9,7 @@ module Gitlab
             @patterns = Array(refs)
           end
 
-          def satisfied_by?(pipeline, seed = nil)
+          def satisfied_by?(pipeline, context = nil)
             @patterns.any? do |pattern|
               pattern, path = pattern.split('@', 2)
 

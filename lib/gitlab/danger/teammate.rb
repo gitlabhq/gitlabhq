@@ -67,7 +67,10 @@ module Gitlab
 
           area && labels.any?("devops::#{area.downcase}") if kind == :reviewer
         when :engineering_productivity
-          role[/Engineering Productivity/] if kind == :reviewer
+          return false unless role[/Engineering Productivity/]
+          return true if kind == :reviewer
+
+          capabilities(project).include?("#{kind} backend")
         else
           capabilities(project).include?("#{kind} #{category}")
         end

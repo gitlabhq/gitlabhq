@@ -11,7 +11,8 @@ A repository is part of a [project](../index.md), which has a lot of other featu
 ## Create a repository
 
 To create a new repository, all you need to do is
-[create a new project](../../../gitlab-basics/create-project.md).
+[create a new project](../../../gitlab-basics/create-project.md) or
+[fork an existing project](forking_workflow.md).
 
 Once you create a new project, you can add new files via UI
 (read the section below) or via command line.
@@ -55,7 +56,7 @@ To get started with the command line, please read through the
 
 ### Find files
 
-Use GitLab's [file finder](../../../workflow/file_finder.md) to search for files in a repository.
+Use GitLab's [file finder](file_finder.md) to search for files in a repository.
 
 ### Supported markup languages and extensions
 

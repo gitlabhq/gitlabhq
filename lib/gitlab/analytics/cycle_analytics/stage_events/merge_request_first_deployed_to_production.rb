@@ -4,7 +4,7 @@ module Gitlab
   module Analytics
     module CycleAnalytics
       module StageEvents
-        class MergeRequestFirstDeployedToProduction < SimpleStageEvent
+        class MergeRequestFirstDeployedToProduction < MetricsBasedStageEvent
           def self.name
             s_("CycleAnalyticsEvent|Merge request first deployed to production")
           end
@@ -23,7 +23,7 @@ module Gitlab
 
           # rubocop: disable CodeReuse/ActiveRecord
           def apply_query_customization(query)
-            query.joins(:metrics).where(timestamp_projection.gteq(mr_table[:created_at]))
+            super.where(timestamp_projection.gteq(mr_table[:created_at]))
           end
           # rubocop: enable CodeReuse/ActiveRecord
         end

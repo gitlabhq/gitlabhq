@@ -178,6 +178,7 @@ describe Gitlab::Danger::Helper do
       'app/assets/foo'       | :frontend
       'app/views/foo'        | :frontend
       'public/foo'           | :frontend
+      'scripts/frontend/foo' | :frontend
       'spec/javascripts/foo' | :frontend
       'spec/frontend/bar'    | :frontend
       'vendor/assets/foo'    | :frontend
@@ -193,10 +194,8 @@ describe Gitlab::Danger::Helper do
       'app/models/foo' | :backend
       'bin/foo'        | :backend
       'config/foo'     | :backend
-      'danger/foo'     | :backend
       'lib/foo'        | :backend
       'rubocop/foo'    | :backend
-      'scripts/foo'    | :backend
       'spec/foo'       | :backend
       'spec/foo/bar'   | :backend
 
@@ -209,16 +208,24 @@ describe Gitlab::Danger::Helper do
       'vendor/languages.yml'    | :backend
       'vendor/licenses.csv'     | :backend
 
-      'Dangerfile'     | :backend
       'Gemfile'        | :backend
       'Gemfile.lock'   | :backend
       'Procfile'       | :backend
       'Rakefile'       | :backend
       'FOO_VERSION'    | :backend
 
+      'Dangerfile'                                            | :engineering_productivity
+      'danger/commit_messages/Dangerfile'                     | :engineering_productivity
+      'ee/danger/commit_messages/Dangerfile'                  | :engineering_productivity
+      'danger/commit_messages/'                               | :engineering_productivity
+      'ee/danger/commit_messages/'                            | :engineering_productivity
       '.gitlab-ci.yml'                                        | :engineering_productivity
       '.gitlab/ci/cng.gitlab-ci.yml'                          | :engineering_productivity
       '.gitlab/ci/ee-specific-checks.gitlab-ci.yml'           | :engineering_productivity
+      'scripts/foo'                                           | :engineering_productivity
+      'lib/gitlab/danger/foo'                                 | :engineering_productivity
+      'ee/lib/gitlab/danger/foo'                              | :engineering_productivity
+
       'lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml'   | :backend
 
       'ee/FOO_VERSION' | :unknown

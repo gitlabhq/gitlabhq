@@ -65,9 +65,13 @@ export default {
           simplePoll(this.checkRebaseStatus);
         })
         .catch(error => {
-          this.rebasingError = error.merge_error;
           this.isMakingRequest = false;
-          Flash(__('Something went wrong. Please try again.'));
+
+          if (error.response && error.response.data && error.response.data.merge_error) {
+            this.rebasingError = error.response.data.merge_error;
+          } else {
+            Flash(__('Something went wrong. Please try again.'));
+          }
         });
     },
     checkRebaseStatus(continuePolling, stopPolling) {

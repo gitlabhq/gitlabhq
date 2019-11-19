@@ -139,7 +139,7 @@ shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
       expect(response).to have_gitlab_http_status(401)
     end
 
-    it "creates an activity event when a note is created" do
+    it "creates an activity event when a note is created", :sidekiq_might_not_need_inline do
       expect(Event).to receive(:create!)
 
       post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user), params: { body: 'hi!' }

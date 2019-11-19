@@ -1,10 +1,10 @@
 .hidden.js-cluster-error.bs-callout.bs-callout-danger{ role: 'alert' }
-  = s_('ClusterIntegration|Something went wrong while creating your Kubernetes cluster on Google Kubernetes Engine')
+  = s_('ClusterIntegration|Something went wrong while creating your Kubernetes cluster')
   %p.js-error-reason
 
 .hidden.js-cluster-creating.bs-callout.bs-callout-info{ role: 'alert' }
   %span.spinner.spinner-dark.spinner-sm{ 'aria-label': 'Loading' }
-  %span.prepend-left-4= s_('ClusterIntegration|Kubernetes cluster is being created on Google Kubernetes Engine...')
+  %span.prepend-left-4= s_('ClusterIntegration|Kubernetes cluster is being created...')
 
 .hidden.row.js-cluster-api-unreachable.bs-callout.bs-callout-warning{ role: 'alert' }
   .col-11
@@ -19,4 +19,4 @@
     %button.js-close-banner.close.cluster-application-banner-close.h-100.m-0= "×"
 
 .hidden.js-cluster-success.bs-callout.bs-callout-success{ role: 'alert' }
-  = s_("ClusterIntegration|Kubernetes cluster was successfully created on Google Kubernetes Engine.")
+  = s_("ClusterIntegration|Kubernetes cluster was successfully created.")

@@ -53,6 +53,16 @@ Example response:
       "api_url":"https://104.197.68.152",
       "authorization_type":"rbac",
       "ca_cert":"-----BEGIN CERTIFICATE-----\r\nhFiK1L61owwDQYJKoZIhvcNAQELBQAw\r\nLzEtMCsGA1UEAxMkZDA1YzQ1YjctNzdiMS00NDY0LThjNmEtMTQ0ZDJkZjM4ZDBj\r\nMB4XDTE4MTIyNzIwMDM1MVoXDTIzMTIyNjIxMDM1MVowLzEtMCsGA1UEAxMkZDA1\r\nYzQ1YjctNzdiMS00NDY0LThjNmEtMTQ0ZDJkZjM.......-----END CERTIFICATE-----"
+    },
+    "management_project":
+    {
+      "id":2,
+      "description":null,
+      "name":"project2",
+      "name_with_namespace":"John Doe8 / project2",
+      "path":"project2",
+      "path_with_namespace":"namespace2/project2",
+      "created_at":"2019-10-11T02:55:54.138Z"
     }
   },
   {
@@ -111,6 +121,16 @@ Example response:
     "authorization_type":"rbac",
     "ca_cert":"-----BEGIN CERTIFICATE-----\r\nhFiK1L61owwDQYJKoZIhvcNAQELBQAw\r\nLzEtMCsGA1UEAxMkZDA1YzQ1YjctNzdiMS00NDY0LThjNmEtMTQ0ZDJkZjM4ZDBj\r\nMB4XDTE4MTIyNzIwMDM1MVoXDTIzMTIyNjIxMDM1MVowLzEtMCsGA1UEAxMkZDA1\r\nYzQ1YjctNzdiMS00NDY0LThjNmEtMTQ0ZDJkZjM.......-----END CERTIFICATE-----"
   },
+  "management_project":
+  {
+    "id":2,
+    "description":null,
+    "name":"project2",
+    "name_with_namespace":"John Doe8 / project2",
+    "path":"project2",
+    "path_with_namespace":"namespace2/project2",
+    "created_at":"2019-10-11T02:55:54.138Z"
+  },
   "group":
   {
     "id":26,
@@ -135,6 +155,7 @@ Parameters:
 | `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
 | `name` | String | yes | The name of the cluster |
 | `domain` | String | no | The [base domain](../user/group/clusters/index.md#base-domain) of the cluster |
+| `management_project_id` | integer | no | The ID of the [management project](../user/clusters/management_project.md) for the cluster |
 | `enabled` | Boolean | no | Determines if cluster is active or not, defaults to true |
 | `managed` | Boolean | no | Determines if GitLab will manage namespaces and service accounts for this cluster, defaults to true |
 | `platform_kubernetes_attributes[api_url]` | String | yes | The URL to access the Kubernetes API |
@@ -178,6 +199,7 @@ Example response:
     "authorization_type":"rbac",
     "ca_cert":"-----BEGIN CERTIFICATE-----\r\nhFiK1L61owwDQYJKoZIhvcNAQELBQAw\r\nLzEtMCsGA1UEAxMkZDA1YzQ1YjctNzdiMS00NDY0LThjNmEtMTQ0ZDJkZjM4ZDBj\r\nMB4XDTE4MTIyNzIwMDM1MVoXDTIzMTIyNjIxMDM1MVowLzEtMCsGA1UEAxMkZDA1\r\nYzQ1YjctNzdiMS00NDY0LThjNmEtMTQ0ZDJkZjM.......-----END CERTIFICATE-----"
   },
+  "management_project":null,
   "group":
   {
     "id":26,
@@ -210,7 +232,7 @@ Parameters:
 
 NOTE: **Note:**
 `name`, `api_url`, `ca_cert` and `token` can only be updated if the cluster was added
-through the ["Add existing Kubernetes cluster"](../user/project/clusters/index.md#add-existing-kubernetes-cluster) option or
+through the ["Add existing Kubernetes cluster"](../user/project/clusters/add_remove_clusters.md#add-existing-cluster) option or
 through the ["Add existing cluster to group"](#add-existing-cluster-to-group) endpoint.
 
 Example request:
@@ -247,6 +269,16 @@ Example response:
     "api_url":"https://new-api-url.com",
     "authorization_type":"rbac",
     "ca_cert":null
+  },
+  "management_project":
+  {
+    "id":2,
+    "description":null,
+    "name":"project2",
+    "name_with_namespace":"John Doe8 / project2",
+    "path":"project2",
+    "path_with_namespace":"namespace2/project2",
+    "created_at":"2019-10-11T02:55:54.138Z"
   },
   "group":
   {

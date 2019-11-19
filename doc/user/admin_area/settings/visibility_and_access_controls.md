@@ -177,7 +177,7 @@ For more details, see [SSH key restrictions](../../../security/ssh_keys_restrict
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3586) in GitLab 10.3.
 
-This option is enabled by default. By disabling it, both [pull and push mirroring](../../../workflow/repository_mirroring.md) will no longer
+This option is enabled by default. By disabling it, both [pull and push mirroring](../../project/repository/repository_mirroring.md) will no longer
 work in every repository and can only be re-enabled by an admin on a per-project basis.
 
 ![Mirror settings](img/mirror_settings.png)

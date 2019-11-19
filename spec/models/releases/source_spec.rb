@@ -11,7 +11,7 @@ describe Releases::Source do
 
     it 'returns all formats of sources' do
       expect(subject.map(&:format))
-        .to match_array(described_class::FORMATS)
+        .to match_array(Gitlab::Workhorse::ARCHIVE_FORMATS)
     end
   end
 

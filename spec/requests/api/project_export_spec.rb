@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe API::ProjectExport do
@@ -370,7 +372,7 @@ describe API::ProjectExport do
       end
 
       context 'when overriding description' do
-        it 'starts' do
+        it 'starts', :sidekiq_might_not_need_inline do
           params = { description: "Foo" }
 
           expect_any_instance_of(Projects::ImportExport::ExportService).to receive(:execute)

@@ -214,7 +214,7 @@ class Gitlab::Seeder::Pipelines
 end
 
 Gitlab::Seeder.quiet do
-  Project.all.sample(5).each do |project|
+  Project.not_mass_generated.sample(5).each do |project|
     project_builds = Gitlab::Seeder::Pipelines.new(project)
     project_builds.seed!
   end

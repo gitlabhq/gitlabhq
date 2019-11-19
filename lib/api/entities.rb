@@ -307,6 +307,7 @@ module API
       expose :only_allow_merge_if_pipeline_succeeds
       expose :request_access_enabled
       expose :only_allow_merge_if_all_discussions_are_resolved
+      expose :remove_source_branch_after_merge
       expose :printing_merge_request_link_enabled
       expose :merge_method
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: -> (project, options) {
@@ -488,11 +489,11 @@ module API
       end
 
       expose :developers_can_push do |repo_branch, options|
-        options[:project].protected_branches.developers_can?(:push, repo_branch.name)
+        ::ProtectedBranch.developers_can?(:push, repo_branch.name, protected_refs: options[:project].protected_branches)
       end
 
       expose :developers_can_merge do |repo_branch, options|
-        options[:project].protected_branches.developers_can?(:merge, repo_branch.name)
+        ::ProtectedBranch.developers_can?(:merge, repo_branch.name, protected_refs: options[:project].protected_branches)
       end
 
       expose :can_push do |repo_branch, options|
@@ -754,6 +755,7 @@ module API
       end
       expose :diff_head_sha, as: :sha
       expose :merge_commit_sha
+      expose :squash_commit_sha
       expose :discussion_locked
       expose :should_remove_source_branch?, as: :should_remove_source_branch
       expose :force_remove_source_branch?, as: :force_remove_source_branch
@@ -776,6 +778,10 @@ module API
       expose :squash
 
       expose :task_completion_status
+
+      expose :cannot_be_merged?, as: :has_conflicts
+
+      expose :mergeable_discussions_state?, as: :blocking_discussions_resolved
     end
 
     class MergeRequest < MergeRequestBasic
@@ -1248,6 +1254,7 @@ module API
 
         # let's not expose the secret key in a response
         attributes.delete(:asset_proxy_secret_key)
+        attributes.delete(:eks_secret_access_key)
 
         attributes
       end
@@ -1290,7 +1297,11 @@ module API
     end
 
     class Release < Grape::Entity
-      expose :name
+      include ::API::Helpers::Presentable
+
+      expose :name do |release, _|
+        can_download_code? ? release.name : "Release-#{release.id}"
+      end
       expose :tag, as: :tag_name, if: ->(_, _) { can_download_code? }
       expose :description
       expose :description_html do |entity|
@@ -1302,8 +1313,8 @@ module API
       expose :commit, using: Entities::Commit, if: ->(_, _) { can_download_code? }
       expose :upcoming_release?, as: :upcoming_release
       expose :milestones, using: Entities::Milestone, if: -> (release, _) { release.milestones.present? }
-      expose :commit_path, if: ->(_, _) { can_download_code? }
-      expose :tag_path, if: ->(_, _) { can_download_code? }
+      expose :commit_path, expose_nil: false
+      expose :tag_path, expose_nil: false
       expose :assets do
         expose :assets_count, as: :count do |release, _|
           assets_to_exclude = can_download_code? ? [] : [:sources]
@@ -1315,44 +1326,15 @@ module API
         end
       end
       expose :_links do
-        expose :merge_requests_url, if: -> (_) { release_mr_issue_urls_available? }
-        expose :issues_url, if: -> (_) { release_mr_issue_urls_available? }
+        expose :merge_requests_url, expose_nil: false
+        expose :issues_url, expose_nil: false
+        expose :edit_url, expose_nil: false
       end
 
       private
 
       def can_download_code?
         Ability.allowed?(options[:current_user], :download_code, object.project)
-      end
-
-      def commit_path
-        return unless object.commit
-
-        Gitlab::Routing.url_helpers.project_commit_path(project, object.commit.id)
-      end
-
-      def tag_path
-        Gitlab::Routing.url_helpers.project_tag_path(project, object.tag)
-      end
-
-      def merge_requests_url
-        Gitlab::Routing.url_helpers.project_merge_requests_url(project, params_for_issues_and_mrs)
-      end
-
-      def issues_url
-        Gitlab::Routing.url_helpers.project_issues_url(project, params_for_issues_and_mrs)
-      end
-
-      def params_for_issues_and_mrs
-        { scope: 'all', state: 'opened', release_tag: object.tag }
-      end
-
-      def release_mr_issue_urls_available?
-        ::Feature.enabled?(:release_mr_issue_urls, project)
-      end
-
-      def project
-        @project ||= object.project
       end
     end
 
@@ -1699,6 +1681,7 @@ module API
       expose :verified?, as: :verified
       expose :verification_code, as: :verification_code
       expose :enabled_until
+      expose :auto_ssl_enabled
 
       expose :certificate,
         as: :certificate_expiration,
@@ -1714,6 +1697,7 @@ module API
       expose :verified?, as: :verified
       expose :verification_code, as: :verification_code
       expose :enabled_until
+      expose :auto_ssl_enabled
 
       expose :certificate,
         if: ->(pages_domain, _) { pages_domain.certificate? },
@@ -1737,7 +1721,12 @@ module API
     class Blob < Grape::Entity
       expose :basename
       expose :data
-      expose :filename
+      expose :path
+      # TODO: :filename was renamed to :path but both still return the full path,
+      # in the future we can only return the filename here without the leading
+      # directory path.
+      # https://gitlab.com/gitlab-org/gitlab/issues/34521
+      expose :filename, &:path
       expose :id
       expose :ref
       expose :startline
@@ -1813,6 +1802,7 @@ module API
       expose :user, using: Entities::UserBasic
       expose :platform_kubernetes, using: Entities::Platform::Kubernetes
       expose :provider_gcp, using: Entities::Provider::Gcp
+      expose :management_project, using: Entities::ProjectIdentity
     end
 
     class ClusterProject < Cluster

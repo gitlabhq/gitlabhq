@@ -23,9 +23,15 @@ class TodosFinder
 
   NONE = '0'
 
-  TODO_TYPES = Set.new(%w(Issue MergeRequest Epic)).freeze
+  TODO_TYPES = Set.new(%w(Issue MergeRequest)).freeze
 
   attr_accessor :current_user, :params
+
+  class << self
+    def todo_types
+      TODO_TYPES
+    end
+  end
 
   def initialize(current_user, params = {})
     @current_user = current_user
@@ -111,12 +117,6 @@ class TodosFinder
     params[:group_id].present?
   end
 
-  def project
-    strong_memoize(:project) do
-      Project.find_without_deleted(params[:project_id]) if project?
-    end
-  end
-
   def group
     strong_memoize(:group) do
       Group.find(params[:group_id])
@@ -124,7 +124,7 @@ class TodosFinder
   end
 
   def type?
-    type.present? && TODO_TYPES.include?(type)
+    type.present? && self.class.todo_types.include?(type)
   end
 
   def type
@@ -175,7 +175,7 @@ class TodosFinder
 
   def by_project(items)
     if project?
-      items.for_project(project)
+      items.for_undeleted_projects.for_project(params[:project_id])
     else
       items
     end
@@ -188,11 +188,9 @@ class TodosFinder
   end
 
   def by_state(items)
-    if params[:state].to_s == 'done'
-      items.done
-    else
-      items.pending
-    end
+    return items.pending if params[:state].blank?
+
+    items.with_states(params[:state])
   end
 
   def by_type(items)
@@ -203,3 +201,5 @@ class TodosFinder
     end
   end
 end
+
+TodosFinder.prepend_if_ee('EE::TodosFinder')

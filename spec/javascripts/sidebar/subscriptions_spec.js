@@ -76,4 +76,25 @@ describe('Subscriptions', function() {
 
     expect(vm.$emit).toHaveBeenCalledWith('toggleSidebar');
   });
+
+  describe('given project emails are disabled', () => {
+    const subscribeDisabledDescription = 'Notifications have been disabled';
+
+    beforeEach(() => {
+      vm = mountComponent(Subscriptions, {
+        subscribed: false,
+        projectEmailsDisabled: true,
+        subscribeDisabledDescription,
+      });
+    });
+
+    it('sets the correct display text', () => {
+      expect(vm.$el.textContent).toContain(subscribeDisabledDescription);
+      expect(vm.$refs.tooltip.dataset.originalTitle).toBe(subscribeDisabledDescription);
+    });
+
+    it('does not render the toggle button', () => {
+      expect(vm.$refs.toggleButton).toBeUndefined();
+    });
+  });
 });

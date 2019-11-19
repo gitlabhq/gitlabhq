@@ -1,20 +1,15 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import {
-  GlButton,
-  GlFormCheckbox,
-  GlTooltipDirective,
-  GlModal,
-  GlModalDirective,
-} from '@gitlab/ui';
-import { n__, s__, sprintf } from '../../locale';
-import createFlash from '../../flash';
-import ClipboardButton from '../../vue_shared/components/clipboard_button.vue';
-import TablePagination from '../../vue_shared/components/pagination/table_pagination.vue';
-import Icon from '../../vue_shared/components/icon.vue';
-import timeagoMixin from '../../vue_shared/mixins/timeago';
-import { errorMessages, errorMessagesTypes } from '../constants';
-import { numberToHumanSize } from '../../lib/utils/number_utils';
+import { GlButton, GlFormCheckbox, GlTooltipDirective, GlModal } from '@gitlab/ui';
+import Tracking from '~/tracking';
+import { n__, s__, sprintf } from '~/locale';
+import createFlash from '~/flash';
+import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
+import Icon from '~/vue_shared/components/icon.vue';
+import timeagoMixin from '~/vue_shared/mixins/timeago';
+import { numberToHumanSize } from '~/lib/utils/number_utils';
+import { FETCH_REGISTRY_ERROR_MESSAGE, DELETE_REGISTRY_ERROR_MESSAGE } from '../constants';
 
 export default {
   components: {
@@ -27,7 +22,6 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
-    GlModal: GlModalDirective,
   },
   mixins: [timeagoMixin],
   props: {
@@ -65,12 +59,21 @@ export default {
         this.itemsToBeDeleted.length === 0 ? 1 : this.itemsToBeDeleted.length,
       );
     },
-  },
-  mounted() {
-    this.$refs.deleteModal.$refs.modal.$on('hide', this.removeModalEvents);
+    isMultiDelete() {
+      return this.itemsToBeDeleted.length > 1;
+    },
+    tracking() {
+      return {
+        property: this.repo.name,
+        label: this.isMultiDelete ? 'bulk_registry_tag_delete' : 'registry_tag_delete',
+      };
+    },
   },
   methods: {
     ...mapActions(['fetchList', 'deleteItem', 'multiDeleteItems']),
+    track(action) {
+      Tracking.event(document.body.dataset.page, action, this.tracking);
+    },
     setModalDescription(itemIndex = -1) {
       if (itemIndex === -1) {
         this.modalDescription = sprintf(
@@ -92,17 +95,11 @@ export default {
     formatSize(size) {
       return numberToHumanSize(size);
     },
-    removeModalEvents() {
-      this.$refs.deleteModal.$refs.modal.$off('ok');
-    },
     deleteSingleItem(index) {
       this.setModalDescription(index);
       this.itemsToBeDeleted = [index];
-
-      this.$refs.deleteModal.$refs.modal.$once('ok', () => {
-        this.removeModalEvents();
-        this.handleSingleDelete(this.repo.list[index]);
-      });
+      this.track('click_button');
+      this.$refs.deleteModal.show();
     },
     deleteMultipleItems() {
       this.itemsToBeDeleted = [...this.selectedItems];
@@ -111,17 +108,14 @@ export default {
       } else if (this.selectedItems.length > 1) {
         this.setModalDescription();
       }
-
-      this.$refs.deleteModal.$refs.modal.$once('ok', () => {
-        this.removeModalEvents();
-        this.handleMultipleDelete();
-      });
+      this.track('click_button');
+      this.$refs.deleteModal.show();
     },
     handleSingleDelete(itemToDelete) {
       this.itemsToBeDeleted = [];
       this.deleteItem(itemToDelete)
         .then(() => this.fetchList({ repo: this.repo }))
-        .catch(() => this.showError(errorMessagesTypes.DELETE_REGISTRY));
+        .catch(() => createFlash(DELETE_REGISTRY_ERROR_MESSAGE));
     },
     handleMultipleDelete() {
       const { itemsToBeDeleted } = this;
@@ -134,18 +128,15 @@ export default {
           items: itemsToBeDeleted.map(x => this.repo.list[x].tag),
         })
           .then(() => this.fetchList({ repo: this.repo }))
-          .catch(() => this.showError(errorMessagesTypes.DELETE_REGISTRY));
+          .catch(() => createFlash(DELETE_REGISTRY_ERROR_MESSAGE));
       } else {
-        this.showError(errorMessagesTypes.DELETE_REGISTRY);
+        createFlash(DELETE_REGISTRY_ERROR_MESSAGE);
       }
     },
     onPageChange(pageNumber) {
       this.fetchList({ repo: this.repo, page: pageNumber }).catch(() =>
-        this.showError(errorMessagesTypes.FETCH_REGISTRY),
+        createFlash(FETCH_REGISTRY_ERROR_MESSAGE),
       );
-    },
-    showError(message) {
-      createFlash(errorMessages[message]);
     },
     onSelectAllChange() {
       if (this.selectAllChecked) {
@@ -179,6 +170,15 @@ export default {
     canDeleteRow(item) {
       return item && item.canDelete && !this.isDeleteDisabled;
     },
+    onDeletionConfirmed() {
+      this.track('confirm_delete');
+      if (this.isMultiDelete) {
+        this.handleMultipleDelete();
+      } else {
+        const index = this.itemsToBeDeleted[0];
+        this.handleSingleDelete(this.repo.list[index]);
+      }
+    },
   },
 };
 </script>
@@ -202,12 +202,10 @@ export default {
           <th>
             <gl-button
               v-if="canDeleteRepo"
+              ref="bulkDeleteButton"
               v-gl-tooltip
-              v-gl-modal="modalId"
               :disabled="!selectedItems || selectedItems.length === 0"
-              class="js-delete-registry float-right"
-              data-track-event="click_button"
-              data-track-label="bulk_registry_tag_delete"
+              class="float-right"
               variant="danger"
               :title="s__('ContainerRegistry|Remove selected tags')"
               :aria-label="s__('ContainerRegistry|Remove selected tags')"
@@ -259,11 +257,8 @@ export default {
           <td class="content action-buttons">
             <gl-button
               v-if="canDeleteRow(item)"
-              v-gl-modal="modalId"
               :title="s__('ContainerRegistry|Remove tag')"
               :aria-label="s__('ContainerRegistry|Remove tag')"
-              data-track-event="click_button"
-              data-track-label="registry_tag_delete"
               variant="danger"
               class="js-delete-registry-row float-right btn-inverted btn-border-color btn-icon"
               @click="deleteSingleItem(index)"
@@ -282,7 +277,13 @@ export default {
       class="js-registry-pagination"
     />
 
-    <gl-modal ref="deleteModal" :modal-id="modalId" ok-variant="danger">
+    <gl-modal
+      ref="deleteModal"
+      :modal-id="modalId"
+      ok-variant="danger"
+      @ok="onDeletionConfirmed"
+      @cancel="track('cancel_delete')"
+    >
       <template v-slot:modal-title>{{ modalAction }}</template>
       <template v-slot:modal-ok>{{ modalAction }}</template>
       <p v-html="modalDescription"></p>

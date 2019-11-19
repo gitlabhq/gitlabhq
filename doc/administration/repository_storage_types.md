@@ -5,8 +5,8 @@
 Two different storage layouts can be used
 to store the repositories on disk and their characteristics.
 
-GitLab can be configured to use one or multiple repository shard locations
-that can be:
+GitLab can be configured to use one or multiple repository storage paths/shard
+locations that can be:
 
 - Mounted to the local disk
 - Exposed as an NFS shared volume
@@ -34,8 +34,8 @@ easy for Administrators to find where the repository is stored.
 On the other hand this has some drawbacks:
 
 Storage location will concentrate huge amount of top-level namespaces. The
-impact can be reduced by the introduction of [multiple storage
-paths][storage-paths].
+impact can be reduced by the introduction of
+[multiple storage paths](repository_storage_paths.md).
 
 Because backups are a snapshot of the same URL mapping, if you try to recover a
 very old backup, you need to verify whether any project has taken the place of
@@ -183,7 +183,8 @@ CI Artifacts are S3 compatible since **9.4** (GitLab Premium), and available in 
 
 ##### LFS Objects
 
-LFS Objects implements a similar storage pattern using 2 chars, 2 level folders, following Git own implementation:
+[LFS Objects in GitLab](lfs/manage_large_binaries_with_git_lfs.md) implement a similar
+storage pattern using 2 chars, 2 level folders, following Git's own implementation:
 
 ```ruby
 "shared/lfs-objects/#{oid[0..1}/#{oid[2..3]}/#{oid[4..-1]}"
@@ -192,10 +193,9 @@ LFS Objects implements a similar storage pattern using 2 chars, 2 level folders,
 "shared/lfs-objects/89/09/029eb962194cfb326259411b22ae3f4a814b5be4f80651735aeef9f3229c"
 ```
 
-They are also S3 compatible since **10.0** (GitLab Premium), and available in GitLab Core since **10.7**.
+LFS objects are also [S3 compatible](lfs/lfs_administration.md#storing-lfs-objects-in-remote-object-storage).
 
 [ce-2821]: https://gitlab.com/gitlab-com/infrastructure/issues/2821
 [ce-28283]: https://gitlab.com/gitlab-org/gitlab-foss/issues/28283
 [rake/migrate-to-hashed]: raketasks/storage.md#migrate-existing-projects-to-hashed-storage
-[storage-paths]: repository_storage_types.md
 [gitaly]: gitaly/index.md

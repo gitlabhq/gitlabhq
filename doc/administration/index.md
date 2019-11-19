@@ -43,7 +43,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 ### Configuring GitLab
 
-- [Adjust your instance's timezone](../workflow/timezone.md): Customize the default time zone of GitLab.
+- [Adjust your instance's timezone](timezone.md): Customize the default time zone of GitLab.
 - [System hooks](../system_hooks/system_hooks.md): Notifications when users, projects and keys are changed.
 - [Security](../security/README.md): Learn what you can do to further secure your GitLab instance.
 - [Usage statistics, version check, and usage ping](../user/admin_area/settings/usage_statistics.md): Enable or disable information about your instance to be sent to GitLab, Inc.
@@ -51,7 +51,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Polling](polling.md): Configure how often the GitLab UI polls for updates.
 - [GitLab Pages configuration](pages/index.md): Enable and configure GitLab Pages.
 - [GitLab Pages configuration for GitLab source installations](pages/source.md): Enable and configure GitLab Pages on [source installations](../install/installation.md#installation-from-source).
-- [Uploads configuration](uploads.md): Configure GitLab uploads storage.
+- [Uploads administration](uploads.md): Configure GitLab uploads storage.
 - [Environment variables](environment_variables.md): Supported environment variables that can be used to override their defaults values in order to configure GitLab.
 - [Plugins](plugins.md): With custom plugins, GitLab administrators can introduce custom integrations without modifying GitLab's source code.
 - [Enforcing Terms of Service](../user/admin_area/settings/terms.md)
@@ -68,11 +68,10 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 #### Customizing GitLab's appearance
 
-- [Header logo](../customization/branded_page_and_email_header.md): Change the logo on all pages and email headers.
-- [Favicon](../customization/favicon.md): Change the default favicon to your own logo.
-- [Branded login page](../customization/branded_login_page.md): Customize the login page with your own logo, title, and description.
-- [Welcome message](../customization/welcome_message.md): Add a custom welcome message to the sign-in page.
-- ["New Project" page](../customization/new_project_page.md): Customize the text to be displayed on the page that opens whenever your users create a new project.
+- [Header logo](../user/admin_area/appearance.md#navigation-bar): Change the logo on all pages and email headers.
+- [Favicon](../user/admin_area/appearance.md#favicon): Change the default favicon to your own logo.
+- [Branded login page](../user/admin_area/appearance.md#sign-in--sign-up-pages): Customize the login page with your own logo, title, and description.
+- ["New Project" page](../user/admin_area/appearance.md#new-project-pages): Customize the text to be displayed on the page that opens whenever your users create a new project.
 - [Additional custom email text](../user/admin_area/settings/email.md#custom-additional-text-premium-only): Add additional custom text to emails sent from GitLab. **(PREMIUM ONLY)**
 
 ### Maintaining GitLab
@@ -105,7 +104,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 ## User settings and permissions
 
 - [Creating users](../user/profile/account/create_accounts.md): Create users manually or through authentication integrations.
-- [Libravatar](../customization/libravatar.md): Use Libravatar instead of Gravatar for user avatars.
+- [Libravatar](libravatar.md): Use Libravatar instead of Gravatar for user avatars.
 - [Sign-up restrictions](../user/admin_area/settings/sign_up_restrictions.md): block email addresses of specific domains, or whitelist only specific domains.
 - [Access restrictions](../user/admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols): Define which Git access protocols can be used to talk to GitLab (SSH, HTTP, HTTPS).
 - [Authentication and Authorization](auth/README.md): Configure external authentication with LDAP, SAML, CAS and additional providers.
@@ -120,7 +119,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Auditor users](auditor_users.md): Users with read-only access to all projects, groups, and other resources on the GitLab instance. **(PREMIUM ONLY)**
 - [Incoming email](incoming_email.md): Configure incoming emails to allow
   users to [reply by email](reply_by_email.md), create [issues by email](../user/project/issues/managing_issues.md#new-issue-via-email) and
-  [merge requests by email](../user/project/merge_requests/index.md#create-new-merge-requests-by-email), and to enable [Service Desk](../user/project/service_desk.md).
+  [merge requests by email](../user/project/merge_requests/creating_merge_requests.md#create-new-merge-requests-by-email), and to enable [Service Desk](../user/project/service_desk.md).
   - [Postfix for incoming email](reply_by_email_postfix_setup.md): Set up a
   basic Postfix mail server with IMAP authentication on Ubuntu for incoming
   emails.
@@ -162,9 +161,10 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 ## Git configuration options
 
 - [Custom Git hooks](custom_hooks.md): Custom Git hooks (on the filesystem) for when webhooks aren't enough.
-- [Git LFS configuration](../workflow/lfs/lfs_administration.md): Learn how to configure LFS for GitLab.
+- [Git LFS configuration](lfs/lfs_administration.md): Learn how to configure LFS for GitLab.
 - [Housekeeping](housekeeping.md): Keep your Git repositories tidy and fast.
 - [Configuring Git Protocol v2](git_protocol.md): Git protocol version 2 support.
+- [Manage large files with `git-annex` (Deprecated)](git_annex.md)
 
 ## Monitoring GitLab
 

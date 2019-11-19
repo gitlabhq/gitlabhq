@@ -12,6 +12,7 @@ class ApplicationController < ActionController::Base
   include EnforcesTwoFactorAuthentication
   include WithPerformanceBar
   include SessionlessAuthentication
+  include SessionsHelper
   include ConfirmEmailWarning
   include Gitlab::Tracking::ControllerConcern
   include Gitlab::Experimentation::ControllerConcern
@@ -29,13 +30,13 @@ class ApplicationController < ActionController::Base
   before_action :active_user_check, unless: :devise_controller?
   before_action :set_usage_stats_consent_flag
   before_action :check_impersonation_availability
-  before_action :require_role
+  before_action :required_signup_info
 
   around_action :set_locale
   around_action :set_session_storage
 
   after_action :set_page_title_header, if: :json_request?
-  after_action :limit_unauthenticated_session_times
+  after_action :limit_session_time, if: -> { !current_user }
 
   protect_from_forgery with: :exception, prepend: true
 
@@ -57,7 +58,7 @@ class ApplicationController < ActionController::Base
 
   rescue_from Encoding::CompatibilityError do |exception|
     log_exception(exception)
-    render "errors/encoding", layout: "errors", status: 500
+    render "errors/encoding", layout: "errors", status: :internal_server_error
   end
 
   rescue_from ActiveRecord::RecordNotFound do |exception|
@@ -101,24 +102,6 @@ class ApplicationController < ActionController::Base
 
       redirect_to new_user_session_path, alert: I18n.t('devise.failure.unauthenticated')
     end
-  end
-
-  # By default, all sessions are given the same expiration time configured in
-  # the session store (e.g. 1 week). However, unauthenticated users can
-  # generate a lot of sessions, primarily for CSRF verification. It makes
-  # sense to reduce the TTL for unauthenticated to something much lower than
-  # the default (e.g. 1 hour) to limit Redis memory. In addition, Rails
-  # creates a new session after login, so the short TTL doesn't even need to
-  # be extended.
-  def limit_unauthenticated_session_times
-    return if current_user
-
-    # Rack sets this header, but not all tests may have it: https://github.com/rack/rack/blob/fdcd03a3c5a1c51d1f96fc97f9dfa1a9deac0c77/lib/rack/session/abstract/id.rb#L251-L259
-    return unless request.env['rack.session.options']
-
-    # This works because Rack uses these options every time a request is handled:
-    # https://github.com/rack/rack/blob/fdcd03a3c5a1c51d1f96fc97f9dfa1a9deac0c77/lib/rack/session/abstract/id.rb#L342
-    request.env['rack.session.options'][:expire_after] = Settings.gitlab['unauthenticated_session_expire_delay']
   end
 
   def render(*args)
@@ -214,23 +197,27 @@ class ApplicationController < ActionController::Base
   end
 
   def git_not_found!
-    render "errors/git_not_found.html", layout: "errors", status: 404
+    render "errors/git_not_found.html", layout: "errors", status: :not_found
   end
 
   def render_403
     respond_to do |format|
       format.any { head :forbidden }
-      format.html { render "errors/access_denied", layout: "errors", status: 403 }
+      format.html { render "errors/access_denied", layout: "errors", status: :forbidden }
     end
   end
 
   def render_404
     respond_to do |format|
-      format.html { render "errors/not_found", layout: "errors", status: 404 }
+      format.html { render "errors/not_found", layout: "errors", status: :not_found }
       # Prevent the Rails CSRF protector from thinking a missing .js file is a JavaScript file
       format.js { render json: '', status: :not_found, content_type: 'application/json' }
       format.any { head :not_found }
     end
+  end
+
+  def respond_201
+    head :created
   end
 
   def respond_422
@@ -551,10 +538,13 @@ class ApplicationController < ActionController::Base
     @current_user_mode ||= Gitlab::Auth::CurrentUserMode.new(current_user)
   end
 
-  # A user requires a role when they are part of the experimental signup flow (executed by the Growth team). Users
-  # are redirected to the welcome page when their role is required and the experiment is enabled for the current user.
-  def require_role
-    return unless current_user && current_user.role_required? && experiment_enabled?(:signup_flow)
+  # A user requires a role and have the setup_for_company attribute set when they are part of the experimental signup
+  # flow (executed by the Growth team). Users are redirected to the welcome page when their role is required and the
+  # experiment is enabled for the current user.
+  def required_signup_info
+    return unless current_user
+    return unless current_user.role_required?
+    return unless experiment_enabled?(:signup_flow)
 
     store_location_for :user, request.fullpath
 

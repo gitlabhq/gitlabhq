@@ -14,8 +14,6 @@ describe 'Projects > Files > User deletes files', :js do
   let(:user) { create(:user) }
 
   before do
-    stub_feature_flags(vue_file_list: false)
-
     sign_in(user)
   end
 
@@ -47,7 +45,7 @@ describe 'Projects > Files > User deletes files', :js do
       wait_for_requests
     end
 
-    it 'deletes the file in a forked project', :js do
+    it 'deletes the file in a forked project', :js, :sidekiq_might_not_need_inline do
       click_link('.gitignore')
 
       expect(page).to have_content('.gitignore')

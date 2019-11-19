@@ -10,6 +10,7 @@ import eventHub from '~/boards/eventhub';
 import '~/boards/models/label';
 import '~/boards/models/assignee';
 import '~/boards/models/list';
+import store from '~/boards/stores';
 import boardsStore from '~/boards/stores/boards_store';
 import boardCard from '~/boards/components/board_card.vue';
 import { listObj, boardsMockInterceptor, mockBoardService } from './mock_data';
@@ -40,6 +41,7 @@ describe('Board card', () => {
       list.issues[0].labels.push(label1);
 
       vm = new BoardCardComp({
+        store,
         propsData: {
           list,
           issue: list.issues[0],

@@ -261,10 +261,10 @@ describe('RepoEditor', () => {
     });
 
     it('updates state when model content changed', done => {
-      vm.model.setValue('testing 123');
+      vm.model.setValue('testing 123\n');
 
       setTimeout(() => {
-        expect(vm.file.content).toBe('testing 123');
+        expect(vm.file.content).toBe('testing 123\n');
 
         done();
       });

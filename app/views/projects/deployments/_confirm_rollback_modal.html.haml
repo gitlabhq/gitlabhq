@@ -13,7 +13,7 @@
           %p= s_('Environments|This action will relaunch the job for commit %{commit_id}, putting the environment in a previous version. Are you sure you want to continue?').html_safe % {commit_id: commit_sha}
         - else
           %p
-            = s_('Environments|This action will run the job defined by staging for commit %{commit_id}, putting the environment in a previous version. You can revert it by re-deploying the latest version of your application. Are you sure you want to continue?').html_safe % {commit_id: commit_sha}
+            = s_('Environments|This action will run the job defined by %{environment_name} for commit %{commit_id}, putting the environment in a previous version. You can revert it by re-deploying the latest version of your application. Are you sure you want to continue?').html_safe % {commit_id: commit_sha, environment_name: @environment.name}
       .modal-footer
         = button_tag _('Cancel'), type: 'button', class: 'btn btn-cancel', data: { dismiss: 'modal' }
         = link_to [:retry, @project.namespace.becomes(Namespace), @project, deployment.deployable], method: :post, class: 'btn btn-danger' do

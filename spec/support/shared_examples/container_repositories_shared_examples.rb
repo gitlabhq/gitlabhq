@@ -56,3 +56,11 @@ shared_examples 'returns repositories for allowed users' do |user_type, scope|
     end
   end
 end
+
+shared_examples 'a gitlab tracking event' do |category, action|
+  it "creates a gitlab tracking event #{action}" do
+    expect(Gitlab::Tracking).to receive(:event).with(category, action, {})
+
+    subject
+  end
+end

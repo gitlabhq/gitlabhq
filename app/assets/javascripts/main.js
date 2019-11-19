@@ -37,7 +37,6 @@ import GlFieldErrors from './gl_field_errors';
 import initUserPopovers from './user_popovers';
 import { initUserTracking } from './tracking';
 import { __ } from './locale';
-import initPrivacyPolicyUpdateCallout from './privacy_policy_update_callout';
 
 import 'ee_else_ce/main_ee';
 
@@ -97,7 +96,6 @@ function deferredInitialisation() {
   initUsagePingConsent();
   initUserPopovers();
   initUserTracking();
-  initPrivacyPolicyUpdateCallout();
 
   if (document.querySelector('.search')) initSearchAutocomplete();
 
@@ -162,24 +160,6 @@ function deferredInitialisation() {
   });
 
   loadAwardsHandler();
-
-  /**
-   * Toggle Canary Badge
-   *
-   * For GitLab.com only, when the user is using canary
-   * we render a Next badge and hide the option to switch
-   * to canay
-   */
-  if (Cookies.get('gitlab_canary') && Cookies.get('gitlab_canary') === 'true') {
-    const canaryBadge = document.querySelector('.js-canary-badge');
-    const canaryLink = document.querySelector('.js-canary-link');
-    if (canaryBadge) {
-      canaryBadge.classList.remove('hidden');
-    }
-    if (canaryLink) {
-      canaryLink.classList.add('hidden');
-    }
-  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {

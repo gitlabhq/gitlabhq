@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe SessionsController do
   include DeviseHelpers
+  include LdapHelpers
 
   describe '#new' do
     before do
@@ -31,6 +32,63 @@ describe SessionsController do
           get(:new, params: { auto_sign_in: 'false' })
 
           expect(response).to have_gitlab_http_status(200)
+        end
+      end
+    end
+
+    context 'with LDAP enabled' do
+      before do
+        stub_ldap_setting(enabled: true)
+      end
+
+      it 'assigns ldap_servers' do
+        get(:new)
+
+        expect(assigns[:ldap_servers].first.to_h).to include('label' => 'ldap', 'provider_name' => 'ldapmain')
+      end
+
+      context 'with sign_in disabled' do
+        before do
+          stub_ldap_setting(prevent_ldap_sign_in: true)
+        end
+
+        it 'assigns no ldap_servers' do
+          get(:new)
+
+          expect(assigns[:ldap_servers]).to eq []
+        end
+      end
+    end
+
+    describe 'tracking data' do
+      context 'when the user is part of the experimental group' do
+        before do
+          stub_experiment_for_user(signup_flow: true)
+        end
+
+        it 'doesn\'t pass tracking parameters to the frontend' do
+          get(:new)
+          expect(Gon.tracking_data).to be_nil
+        end
+      end
+
+      context 'with the experimental signup flow enabled and the user is part of the control group' do
+        before do
+          stub_experiment(signup_flow: true)
+          stub_experiment_for_user(signup_flow: false)
+          allow_any_instance_of(described_class).to receive(:experimentation_subject_id).and_return('uuid')
+        end
+
+        it 'passes the right tracking parameters to the frontend' do
+          get(:new)
+          expect(Gon.tracking_data).to eq(
+            {
+              category: 'Growth::Acquisition::Experiment::SignUpFlow',
+              action: 'start',
+              label: 'uuid',
+              property: 'control_group'
+            }
+          )
         end
       end
     end

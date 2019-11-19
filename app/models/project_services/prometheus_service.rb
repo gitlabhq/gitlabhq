@@ -7,8 +7,15 @@ class PrometheusService < MonitoringService
   prop_accessor :api_url
   boolean_accessor :manual_configuration
 
+  # We need to allow the self-monitoring project to connect to the internal
+  # Prometheus instance.
+  # Since the internal Prometheus instance is usually a localhost URL, we need
+  # to allow localhost URLs when the following conditions are true:
+  # 1. project is the self-monitoring project.
+  # 2. api_url is the internal Prometheus URL.
   with_options presence: true, if: :manual_configuration? do
-    validates :api_url, public_url: true
+    validates :api_url, public_url: true, unless: proc { |object| object.allow_local_api_url? }
+    validates :api_url, url: true, if: proc { |object| object.allow_local_api_url? }
   end
 
   before_save :synchronize_service_state
@@ -82,10 +89,26 @@ class PrometheusService < MonitoringService
     project.clusters.enabled.any? { |cluster| cluster.application_prometheus_available? }
   end
 
+  def allow_local_api_url?
+    self_monitoring_project? && internal_prometheus_url?
+  end
+
   private
+
+  def self_monitoring_project?
+    project && project.id == current_settings.instance_administration_project_id
+  end
+
+  def internal_prometheus_url?
+    api_url.present? && api_url == ::Gitlab::Prometheus::Internal.uri
+  end
 
   def should_return_client?
     api_url.present? && manual_configuration? && active? && valid?
+  end
+
+  def current_settings
+    Gitlab::CurrentSettings.current_application_settings
   end
 
   def synchronize_service_state

@@ -13,6 +13,8 @@ module Projects
     include Gitlab::ShellAdapter
     TransferError = Class.new(StandardError)
 
+    attr_reader :new_namespace
+
     def execute(new_namespace)
       @new_namespace = new_namespace
 

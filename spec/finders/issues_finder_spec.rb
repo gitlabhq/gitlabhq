@@ -163,6 +163,20 @@ describe IssuesFinder do
         end
       end
 
+      context 'filtering by nonexistent author ID and issue term using CTE for search' do
+        let(:params) do
+          {
+            author_id: 'does-not-exist',
+            search: 'git',
+            attempt_group_search_optimizations: true
+          }
+        end
+
+        it 'returns no results' do
+          expect(issues).to be_empty
+        end
+      end
+
       context 'filtering by milestone' do
         let(:params) { { milestone_title: milestone.title } }
 

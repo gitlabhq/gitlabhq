@@ -112,11 +112,6 @@ class WikiPage
     wiki.page_title_and_dir(slug)&.last.to_s
   end
 
-  # The processed/formatted content of this page.
-  def formatted_content
-    @attributes[:formatted_content] ||= @wiki.page_formatted_data(@page)
-  end
-
   # The markup format for the page.
   def format
     @attributes[:format] || :markdown

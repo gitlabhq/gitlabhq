@@ -78,7 +78,7 @@ The following table shows which languages, package managers and frameworks are s
 | Python ([pip](https://pip.pypa.io/en/stable/))                              | [bandit](https://github.com/PyCQA/bandit)                                              | 10.3                         |
 | Ruby on Rails                                                               | [brakeman](https://brakemanscanner.org)                                                | 10.3                         |
 | Scala ([Ant](https://ant.apache.org/), [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/) and [SBT](https://www.scala-sbt.org/)) | [SpotBugs](https://spotbugs.github.io/) with the [find-sec-bugs](https://find-sec-bugs.github.io/) plugin | 11.0 (SBT) & 11.9 (Ant, Gradle, Maven) |
-| Typescript                                                                  | [TSLint config security](https://github.com/webschik/tslint-config-security/)          | 11.9                         |
+| TypeScript                                                                  | [TSLint config security](https://github.com/webschik/tslint-config-security/)          | 11.9                         |
 
 NOTE: **Note:**
 The Java analyzers can also be used for variants like the
@@ -146,7 +146,15 @@ sast:
     CI_DEBUG_TRACE: "true"
 ```
 
-### Using a variable to pass username and password to a private Maven repository
+### Using environment variables to pass credentials for private repositories
+
+Some analyzers require downloading the project's dependencies in order to
+perform the analysis. In turn, such dependencies may live in private Git
+repositories and thus require credentials like username and password to download them.
+Depending on the analyzer, such credentials can be provided to
+it via [custom environment variables](#custom-environment-variables).
+
+#### Using a variable to pass username and password to a private Maven repository
 
 If you have a private Apache Maven repository that requires login credentials,
 you can use the `MAVEN_CLI_OPTS` [environment variable](#available-variables)
@@ -184,14 +192,14 @@ SAST can be [configured](#customizing-the-sast-settings) using environment varia
 
 The following are Docker image-related variables.
 
-| Environment variable          | Description                                                                    |
-|-------------------------------|--------------------------------------------------------------------------------|
-| `SAST_ANALYZER_IMAGES`        | Comma separated list of custom images. Default images are still enabled. Read more about [customizing analyzers](analyzers.md).       |
-| `SAST_ANALYZER_IMAGE_PREFIX`  | Override the name of the Docker registry providing the default images (proxy). Read more about [customizing analyzers](analyzers.md). |
-| `SAST_ANALYZER_IMAGE_TAG`     | Override the Docker tag of the default images. Read more about [customizing analyzers](analyzers.md).                                 |
-| `SAST_DEFAULT_ANALYZERS`      | Override the names of default images. Read more about [customizing analyzers](analyzers.md).                                          |
-| `SAST_DISABLE_DIND`           | Disable Docker in Docker and run analyzers [individually](#disabling-docker-in-docker-for-sast).                                      |
-| `SAST_PULL_ANALYZER_IMAGES`   | Pull the images from the Docker registry (set to 0 to disable). Read more about [customizing analyzers](analyzers.md).                 |
+| Environment variable         | Description                                                                                                                                                                                                              |
+|------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `SAST_ANALYZER_IMAGES`       | Comma separated list of custom images. Default images are still enabled. Read more about [customizing analyzers](analyzers.md). Not available when [Docker in Docker is disabled](#disabling-docker-in-docker-for-sast). |
+| `SAST_ANALYZER_IMAGE_PREFIX` | Override the name of the Docker registry providing the default images (proxy). Read more about [customizing analyzers](analyzers.md).                                                                                    |
+| `SAST_ANALYZER_IMAGE_TAG`    | Override the Docker tag of the default images. Read more about [customizing analyzers](analyzers.md).                                                                                                                    |
+| `SAST_DEFAULT_ANALYZERS`     | Override the names of default images. Read more about [customizing analyzers](analyzers.md).                                                                                                                             |
+| `SAST_DISABLE_DIND`          | Disable Docker in Docker and run analyzers [individually](#disabling-docker-in-docker-for-sast).                                                                                                                         |
+| `SAST_PULL_ANALYZER_IMAGES`  | Pull the images from the Docker registry (set to 0 to disable). Read more about [customizing analyzers](analyzers.md). Not available when [Docker in Docker is disabled](#disabling-docker-in-docker-for-sast).          |
 
 #### Vulnerability filters
 
@@ -216,6 +224,9 @@ The following variables configure timeouts.
 | `SAST_PULL_ANALYZER_IMAGE_TIMEOUT`       |      5m | Time limit when pulling the image of an analyzer. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h". For example, "300ms", "1.5h" or "2h45m". |
 | `SAST_RUN_ANALYZER_TIMEOUT`              |     20m | Time limit when running an analyzer. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h". For example, "300ms", "1.5h" or "2h45m".|
 
+NOTE: **Note:**
+Timeout variables are not applicable for setups with [disabled Docker In Docker](index.md#disabling-docker-in-docker-for-sast).
+
 #### Analyzer settings
 
 Some analyzers can be customized with environment variables.
@@ -233,6 +244,19 @@ Some analyzers can be customized with environment variables.
 | `MAVEN_REPO_PATH`       | spotbugs | Path to the Maven local repository (shortcut for the `maven.repo.local` property). |
 | `SBT_PATH`              | spotbugs | Path to the `sbt` executable. |
 | `FAIL_NEVER`            | spotbugs | Set to `1` to ignore compilation failure. |
+
+#### Custom environment variables
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/18193) in GitLab Ultimate 12.5.
+
+In addition to the aforementioned SAST configuration variables,
+all [custom environment variables](../../../ci/variables/README.md#creating-a-custom-environment-variable) are propagated
+to the underlying SAST analyzer images if
+[the SAST vendored template](#configuration) is used.
+
+CAUTION: **Caution:**
+Variables having names starting with these prefixes will **not** be propagated to the SAST Docker container and/or
+analyzer containers: `DOCKER_`, `CI`, `GITLAB_`, `FF_`, `HOME`, `PWD`, `OLDPWD`, `PATH`, `SHLVL`, `HOSTNAME`.
 
 ## Reports JSON format
 

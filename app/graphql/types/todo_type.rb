@@ -40,7 +40,8 @@ module Types
 
     field :body, GraphQL::STRING_TYPE,
           description: 'Body of the todo',
-          null: false
+          null: false,
+          calls_gitaly: true # TODO This is only true when `target_type` is `Commit`. See https://gitlab.com/gitlab-org/gitlab/issues/34757#note_234752665
 
     field :state, Types::TodoStateEnum,
           description: 'State of the todo',

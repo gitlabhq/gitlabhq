@@ -22,7 +22,7 @@ describe 'Pipeline Badge' do
     let!(:job) { create(:ci_build, pipeline: pipeline) }
 
     context 'when the pipeline was successful' do
-      it 'displays so on the badge' do
+      it 'displays so on the badge', :sidekiq_might_not_need_inline do
         job.success
 
         visit pipeline_project_badges_path(project, ref: ref, format: :svg)
@@ -33,7 +33,7 @@ describe 'Pipeline Badge' do
     end
 
     context 'when the pipeline failed' do
-      it 'shows displays so on the badge' do
+      it 'shows displays so on the badge', :sidekiq_might_not_need_inline do
         job.drop
 
         visit pipeline_project_badges_path(project, ref: ref, format: :svg)
@@ -52,7 +52,7 @@ describe 'Pipeline Badge' do
         allow(job).to receive(:prerequisites).and_return([double])
       end
 
-      it 'displays the preparing badge' do
+      it 'displays the preparing badge', :sidekiq_might_not_need_inline do
         job.enqueue
 
         visit pipeline_project_badges_path(project, ref: ref, format: :svg)
@@ -63,7 +63,7 @@ describe 'Pipeline Badge' do
     end
 
     context 'when the pipeline is running' do
-      it 'shows displays so on the badge' do
+      it 'shows displays so on the badge', :sidekiq_might_not_need_inline do
         create(:ci_build, pipeline: pipeline, name: 'second build', status_event: 'run')
 
         visit pipeline_project_badges_path(project, ref: ref, format: :svg)

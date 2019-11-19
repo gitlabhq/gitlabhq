@@ -133,14 +133,14 @@ describe 'Pipelines', :js do
             wait_for_requests
           end
 
-          it 'indicated that pipelines was canceled' do
+          it 'indicated that pipelines was canceled', :sidekiq_might_not_need_inline do
             expect(page).not_to have_selector('.js-pipelines-cancel-button')
             expect(page).to have_selector('.ci-canceled')
           end
         end
       end
 
-      context 'when pipeline is retryable' do
+      context 'when pipeline is retryable', :sidekiq_might_not_need_inline do
         let!(:build) do
           create(:ci_build, pipeline: pipeline,
                             stage: 'test')
@@ -185,33 +185,29 @@ describe 'Pipelines', :js do
           visit project_pipelines_path(source_project)
         end
 
-        shared_examples_for 'showing detached merge request pipeline information' do
-          it 'shows detached tag for the pipeline' do
+        shared_examples_for 'detached merge request pipeline' do
+          it 'shows pipeline information without pipeline ref', :sidekiq_might_not_need_inline do
             within '.pipeline-tags' do
               expect(page).to have_content('detached')
             end
-          end
 
-          it 'shows the link of the merge request' do
             within '.branch-commit' do
               expect(page).to have_link(merge_request.iid,
                 href: project_merge_request_path(project, merge_request))
             end
-          end
 
-          it 'does not show the ref of the pipeline' do
             within '.branch-commit' do
               expect(page).not_to have_link(pipeline.ref)
             end
           end
         end
 
-        it_behaves_like 'showing detached merge request pipeline information'
+        it_behaves_like 'detached merge request pipeline'
 
         context 'when source project is a forked project' do
           let(:source_project) { fork_project(project, user, repository: true) }
 
-          it_behaves_like 'showing detached merge request pipeline information'
+          it_behaves_like 'detached merge request pipeline'
         end
       end
 
@@ -233,20 +229,16 @@ describe 'Pipelines', :js do
         end
 
         shared_examples_for 'Correct merge request pipeline information' do
-          it 'does not show detached tag for the pipeline' do
+          it 'does not show detached tag for the pipeline, and shows the link of the merge request, and does not show the ref of the pipeline', :sidekiq_might_not_need_inline do
             within '.pipeline-tags' do
               expect(page).not_to have_content('detached')
             end
-          end
 
-          it 'shows the link of the merge request' do
             within '.branch-commit' do
               expect(page).to have_link(merge_request.iid,
                 href: project_merge_request_path(project, merge_request))
             end
-          end
 
-          it 'does not show the ref of the pipeline' do
             within '.branch-commit' do
               expect(page).not_to have_link(pipeline.ref)
             end
@@ -429,7 +421,7 @@ describe 'Pipelines', :js do
               find('.js-modal-primary-action').click
             end
 
-            it 'indicates that pipeline was canceled' do
+            it 'indicates that pipeline was canceled', :sidekiq_might_not_need_inline do
               expect(page).not_to have_selector('.js-pipelines-cancel-button')
               expect(page).to have_selector('.ci-canceled')
             end
@@ -452,7 +444,7 @@ describe 'Pipelines', :js do
             expect(page).not_to have_selector('.js-pipelines-retry-button')
           end
 
-          it 'has failed pipeline' do
+          it 'has failed pipeline', :sidekiq_might_not_need_inline do
             expect(page).to have_selector('.ci-failed')
           end
         end

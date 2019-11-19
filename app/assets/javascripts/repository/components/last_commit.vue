@@ -1,5 +1,6 @@
 <script>
 import { GlTooltipDirective, GlLink, GlButton, GlLoadingIcon } from '@gitlab/ui';
+import defaultAvatarUrl from 'images/no_avatar.png';
 import { sprintf, s__ } from '~/locale';
 import Icon from '../../vue_shared/components/icon.vue';
 import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
@@ -38,7 +39,14 @@ export default {
           path: this.currentPath.replace(/^\//, ''),
         };
       },
-      update: data => data.project.repository.tree.lastCommit,
+      update: data => {
+        const pipelines = data.project.repository.tree.lastCommit.pipelines.edges;
+
+        return {
+          ...data.project.repository.tree.lastCommit,
+          pipeline: pipelines.length && pipelines[0].node,
+        };
+      },
       context: {
         isSingleRequest: true,
       },
@@ -61,7 +69,7 @@ export default {
   computed: {
     statusTitle() {
       return sprintf(s__('Commits|Commit: %{commitText}'), {
-        commitText: this.commit.latestPipeline.detailedStatus.text,
+        commitText: this.commit.pipeline.detailedStatus.text,
       });
     },
     isLoading() {
@@ -76,12 +84,13 @@ export default {
       this.showDescription = !this.showDescription;
     },
   },
+  defaultAvatarUrl,
 };
 </script>
 
 <template>
   <div class="info-well d-none d-sm-flex project-last-commit commit p-3">
-    <gl-loading-icon v-if="isLoading" size="md" class="mx-auto" />
+    <gl-loading-icon v-if="isLoading" size="md" class="m-auto" />
     <template v-else>
       <user-avatar-link
         v-if="commit.author"
@@ -90,6 +99,9 @@ export default {
         :img-size="40"
         class="avatar-cell"
       />
+      <span v-else class="avatar-cell user-avatar-link">
+        <img :src="$options.defaultAvatarUrl" width="40" height="40" class="avatar s40" />
+      </span>
       <div class="commit-detail flex-list">
         <div class="commit-content qa-commit-content">
           <gl-link :href="commit.webUrl" class="commit-row-message item-title">
@@ -102,7 +114,7 @@ export default {
             class="text-expander"
             @click="toggleShowDescription"
           >
-            <icon name="ellipsis_h" />
+            <icon name="ellipsis_h" :size="10" />
           </gl-button>
           <div class="committer">
             <gl-link
@@ -112,12 +124,15 @@ export default {
             >
               {{ commit.author.name }}
             </gl-link>
+            <template v-else>
+              {{ commit.authorName }}
+            </template>
             {{ s__('LastCommit|authored') }}
             <timeago-tooltip :time="commit.authoredDate" tooltip-placement="bottom" />
           </div>
           <pre
             v-if="commit.description"
-            v-show="showDescription"
+            :class="{ 'd-block': showDescription }"
             class="commit-row-description append-bottom-8"
           >
             {{ commit.description }}
@@ -125,19 +140,20 @@ export default {
         </div>
         <div class="commit-actions flex-row">
           <div v-if="commit.signatureHtml" v-html="commit.signatureHtml"></div>
-          <gl-link
-            v-if="commit.latestPipeline"
-            v-gl-tooltip
-            :href="commit.latestPipeline.detailedStatus.detailsPath"
-            :title="statusTitle"
-            class="js-commit-pipeline"
-          >
-            <ci-icon
-              :status="commit.latestPipeline.detailedStatus"
-              :size="24"
-              :aria-label="statusTitle"
-            />
-          </gl-link>
+          <div v-if="commit.pipeline" class="ci-status-link">
+            <gl-link
+              v-gl-tooltip.left
+              :href="commit.pipeline.detailedStatus.detailsPath"
+              :title="statusTitle"
+              class="js-commit-pipeline"
+            >
+              <ci-icon
+                :status="commit.pipeline.detailedStatus"
+                :size="24"
+                :aria-label="statusTitle"
+              />
+            </gl-link>
+          </div>
           <div class="commit-sha-group d-flex">
             <div class="label label-monospace monospace">
               {{ showCommitId }}
@@ -153,3 +169,9 @@ export default {
     </template>
   </div>
 </template>
+
+<style scoped>
+.commit {
+  min-height: 4.75rem;
+}
+</style>

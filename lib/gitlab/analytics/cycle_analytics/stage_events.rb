@@ -47,27 +47,29 @@ module Gitlab
           ]
         }.freeze
 
-        def [](identifier)
+        def self.[](identifier)
           events.find { |e| e.identifier.to_s.eql?(identifier.to_s) } || raise(KeyError)
         end
 
         # hash for defining ActiveRecord enum: identifier => number
-        def to_enum
-          ENUM_MAPPING.each_with_object({}) { |(k, v), hash| hash[k.identifier] = v }
+        def self.to_enum
+          enum_mapping.each_with_object({}) { |(k, v), hash| hash[k.identifier] = v }
         end
 
-        # will be overridden in EE with custom events
-        def pairing_rules
+        def self.pairing_rules
           PAIRING_RULES
         end
 
-        # will be overridden in EE with custom events
-        def events
+        def self.events
           EVENTS
         end
 
-        module_function :[], :to_enum, :pairing_rules, :events
+        def self.enum_mapping
+          ENUM_MAPPING
+        end
       end
     end
   end
 end
+
+Gitlab::Analytics::CycleAnalytics::StageEvents.prepend_if_ee('::EE::Gitlab::Analytics::CycleAnalytics::StageEvents')

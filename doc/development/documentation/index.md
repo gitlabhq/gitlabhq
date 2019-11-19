@@ -16,7 +16,7 @@ In addition to this page, the following resources can help you craft and contrib
 
 ## Source files and rendered web locations
 
-Documentation for GitLab, GitLab Runner, Omnibus GitLab and Charts are published to <https://docs.gitlab.com>. Documentation for GitLab is also published within the application at `/help` on the domain of the GitLab instance.
+Documentation for GitLab, GitLab Runner, Omnibus GitLab and Charts is published to <https://docs.gitlab.com>. Documentation for GitLab is also published within the application at `/help` on the domain of the GitLab instance.
 At `/help`, only help for your current edition and version is included. Help for other versions is available at <https://docs.gitlab.com/archives/>.
 
 The source of the documentation exists within the codebase of each GitLab application in the following repository locations:
@@ -66,8 +66,6 @@ This document was moved to [another location](path/to/new_doc.md).
 ```
 
 where `path/to/new_doc.md` is the relative path to the root directory `doc/`.
-
----
 
 For example, if you move `doc/workflow/lfs/lfs_administration.md` to
 `doc/administration/lfs.md`, then the steps would be:

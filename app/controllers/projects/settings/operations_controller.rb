@@ -70,7 +70,7 @@ module Projects
             project: [:slug, :name, :organization_slug, :organization_name]
           ],
 
-          grafana_integration_attributes: [:token, :grafana_url]
+          grafana_integration_attributes: [:token, :grafana_url, :enabled]
         }
       end
     end

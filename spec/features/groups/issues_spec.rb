@@ -11,6 +11,10 @@ describe 'Group issues page' do
   let(:project_with_issues_disabled) { create(:project, :issues_disabled, group: group) }
   let(:path) { issues_group_path(group) }
 
+  before do
+    stub_feature_flags({ vue_issuables_list: { enabled: false, thing: group } })
+  end
+
   context 'with shared examples' do
     let(:issuable) { create(:issue, project: project, title: "this is my created issuable")}
 

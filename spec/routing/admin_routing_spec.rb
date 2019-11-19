@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 #       block_admin_user PUT    /admin/users/:id/block(.:format)       admin/users#block

@@ -1,27 +1,17 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create' do
+  # Failure issue: https://gitlab.com/gitlab-org/gitlab/issues/34551
+  context 'Create', :quarantine do
     describe 'File templates' do
       include Runtime::Fixtures
 
-      def login
-        unless Page::Main::Menu.perform(&:signed_in?)
-          Runtime::Browser.visit(:gitlab, Page::Main::Login)
-          Page::Main::Login.perform(&:sign_in_using_credentials)
-        end
-      end
-
       before(:all) do
-        login
-
-        @project = Resource::Project.fabricate! do |project|
+        @project = Resource::Project.fabricate_via_api! do |project|
           project.name = 'file-template-project'
           project.description = 'Add file templates via the Files view'
           project.initialize_with_readme = true
         end
-
-        Page::Main::Menu.perform(&:sign_out)
       end
 
       templates = [
@@ -55,7 +45,8 @@ module QA
         it "user adds #{template[:file_name]} via file template #{template[:name]}" do
           content = fetch_template_from_api(template[:api_path], template[:api_key])
 
-          login
+          Flow::Login.sign_in
+
           @project.visit!
 
           Page::Project::Show.perform(&:create_new_file!)

@@ -13,6 +13,7 @@ module QA
                 element :settings_item
                 element :link_members_settings
                 element :general_settings_link
+                element :integrations_settings_link
               end
             end
           end
@@ -52,6 +53,14 @@ module QA
           def click_settings
             within_sidebar do
               click_on 'Settings'
+            end
+          end
+
+          def go_to_integrations_settings
+            hover_settings do
+              within_submenu do
+                click_element :integrations_settings_link
+              end
             end
           end
 

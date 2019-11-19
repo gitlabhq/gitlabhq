@@ -38,14 +38,17 @@ The following components need to be considered for a scaled or highly-available
 environment. In many cases, components can be combined on the same nodes to reduce
 complexity.
 
-- Unicorn/Workhorse - Web-requests (UI, API, Git over HTTP)
+- GitLab application nodes (Unicorn / Puma, Workhorse) - Web-requests (UI, API, Git over HTTP)
 - Sidekiq - Asynchronous/Background jobs
 - PostgreSQL - Database
   - Consul - Database service discovery and health checks/failover
   - PgBouncer - Database pool manager
 - Redis - Key/Value store (User sessions, cache, queue for Sidekiq)
   - Sentinel - Redis health check/failover manager
-- Gitaly - Provides high-level RPC access to Git repositories
+- Gitaly - Provides high-level storage and RPC access to Git repositories
+- S3 Object Storage service[^3] and / or NFS storage servers[^4] for entities such as Uploads, Artifacts, LFS Objects, etc...
+- Load Balancer[^2] - Main entry point and handles load balancing for the GitLab application nodes.
+- Monitor - Prometheus and Grafana monitoring with auto discovery.
 
 ## Scalable Architecture Examples
 
@@ -67,8 +70,10 @@ larger one.
 
 - 1 PostgreSQL node
 - 1 Redis node
-- 1 NFS/Gitaly storage server
-- 2 or more GitLab application nodes (Unicorn, Workhorse, Sidekiq)
+- 1 Gitaly node
+- 1 or more Object Storage services[^3] and / or NFS storage server[^4]
+- 2 or more GitLab application nodes (Unicorn / Puma, Workhorse, Sidekiq)
+- 1 or more Load Balancer nodes[^2]
 - 1 Monitoring node (Prometheus, Grafana)
 
 #### Installation Instructions
@@ -77,10 +82,12 @@ Complete the following installation steps in order. A link at the end of each
 section will bring you back to the Scalable Architecture Examples section so
 you can continue with the next step.
 
-1. [PostgreSQL](database.md#postgresql-in-a-scaled-environment)
+1. [PostgreSQL](database.md#postgresql-in-a-scaled-environment) with [PGBouncer](https://docs.gitlab.com/ee/administration/high_availability/pgbouncer.html)
 1. [Redis](redis.md#redis-in-a-scaled-environment)
-1. [Gitaly](gitaly.md) (recommended) or [NFS](nfs.md)
+1. [Gitaly](gitaly.md) (recommended) and / or [NFS](nfs.md)[^4]
 1. [GitLab application nodes](gitlab.md)
+    - With [Object Storage service enabled](../gitaly/index.md#eliminating-nfs-altogether)[^3]
+1. [Load Balancer(s)](load_balancer.md)[^2]
 1. [Monitoring node (Prometheus and Grafana)](monitoring_node.md)
 
 ### Full Scaling
@@ -91,11 +98,13 @@ is split into separate Sidekiq and Unicorn/Workhorse nodes. One indication that
 this architecture is required is if Sidekiq queues begin to periodically increase
 in size, indicating that there is contention or there are not enough resources.
 
-- 1 PostgreSQL node
-- 1 Redis node
-- 2 or more NFS/Gitaly storage servers
+- 1 or more PostgreSQL nodes
+- 1 or more Redis nodes
+- 1 or more Gitaly storage servers
+- 1 or more Object Storage services[^3] and / or NFS storage server[^4]
 - 2 or more Sidekiq nodes
-- 2 or more GitLab application nodes (Unicorn, Workhorse)
+- 2 or more GitLab application nodes (Unicorn / Puma, Workhorse, Sidekiq)
+- 1 or more Load Balancer nodes[^2]
 - 1 Monitoring node (Prometheus, Grafana)
 
 ## High Availability Architecture Examples
@@ -114,10 +123,10 @@ This may lead to the other nodes believing a failure has occurred and initiating
 automated failover. Isolating Redis and Consul from the services they monitor
 reduces the chances of a false positive that a failure has occurred.
 
-The examples below do not really address high availability of NFS. Some enterprises
-have access to NFS appliances that manage availability. This is the best case
-scenario. In the future, GitLab may offer a more user-friendly solution to
-[GitLab HA Storage](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/2472).
+The examples below do not address high availability of NFS for objects. We recommend a
+S3 Object Storage service[^3] is used where possible over NFS but it's still required in
+certain cases[^4]. Where NFS is to be used some enterprises have access to NFS appliances
+that manage availability and this would be best case scenario.
 
 There are many options in between each of these examples. Work with GitLab Support
 to understand the best starting point for your workload and adapt from there.
@@ -138,8 +147,10 @@ the contention.
 - 3 PostgreSQL nodes
 - 2 Redis nodes
 - 3 Consul/Sentinel nodes
-- 2 or more GitLab application nodes (Unicorn, Workhorse, Sidekiq, PgBouncer)
-- 1 NFS/Gitaly server
+- 2 or more GitLab application nodes (Unicorn / Puma, Workhorse, Sidekiq)
+- 1 Gitaly storage servers
+- 1 Object Storage service[^3] and / or NFS storage server[^4]
+- 1 or more Load Balancer nodes[^2]
 - 1 Monitoring node (Prometheus, Grafana)
 
 ![Horizontal architecture diagram](img/horizontal.png)
@@ -156,8 +167,10 @@ contention due to certain workloads.
 - 2 Redis nodes
 - 3 Consul/Sentinel nodes
 - 2 or more Sidekiq nodes
-- 2 or more GitLab application nodes (Unicorn, Workhorse)
-- 1 or more NFS/Gitaly servers
+- 2 or more GitLab application nodes (Unicorn / Puma, Workhorse, Sidekiq)
+- 1 Gitaly storage servers
+- 1 Object Storage service[^3] and / or NFS storage server[^4]
+- 1 or more Load Balancer nodes[^2]
 - 1 Monitoring node (Prometheus, Grafana)
 
 ![Hybrid architecture diagram](img/hybrid.png)
@@ -169,6 +182,7 @@ the basis of the GitLab.com architecture. While this scales well it also comes
 with the added complexity of many more nodes to configure, manage, and monitor.
 
 - 3 PostgreSQL nodes
+- 1 or more PgBouncer nodes (with associated internal load balancers)
 - 4 or more Redis nodes (2 separate clusters for persistent and cache data)
 - 3 Consul nodes
 - 3 Sentinel nodes
@@ -177,120 +191,116 @@ with the added complexity of many more nodes to configure, manage, and monitor.
 - 2 or more Git nodes (Git over SSH/Git over HTTP)
 - 2 or more API nodes (All requests to `/api`)
 - 2 or more Web nodes (All other web requests)
-- 2 or more NFS/Gitaly servers
+- 2 or more Gitaly storage servers
+- 1 or more Object Storage services[^3] and / or NFS storage servers[^4]
+- 1 or more Load Balancer nodes[^2]
 - 1 Monitoring node (Prometheus, Grafana)
 
 ![Fully Distributed architecture diagram](img/fully-distributed.png)
 
-The following pages outline the steps necessary to configure each component
-separately:
-
-1. [Configure the database](database.md)
-1. [Configure Redis](redis.md)
-   1. [Configure Redis for GitLab source installations](redis_source.md)
-1. [Configure NFS](nfs.md)
-   1. [NFS Client and Host setup](nfs_host_client_setup.md)
-1. [Configure the GitLab application servers](gitlab.md)
-1. [Configure the load balancers](load_balancer.md)
-1. [Monitoring node (Prometheus and Grafana)](monitoring_node.md)
-
 ## Reference Architecture Examples
 
-These reference architecture examples rely on the general rule that approximately 2 requests per second (RPS) of load is generated for every 100 users.
+The Support and Quality teams build, performance test, and validate Reference
+Architectures that support set large numbers of users. The specifications below are a
+representation of this work so far and may be adjusted in the future based on
+additional testing and iteration.
 
-The specifications here were performance tested against a specific coded
-workload. Your exact needs may be more, depending on your workload. Your
+The architectures have been tested with specific coded workloads. The throughputs
+used for testing are calculated based on sample customer data. We test each endpoint
+type with the following number of requests per second (RPS) per 1000 users:
+
+- API: 20 RPS
+- Web: 2 RPS
+- Git: 2 RPS
+
+Note that your exact needs may be more, depending on your workload. Your
 workload is influenced by factors such as - but not limited to - how active your
 users are, how much automation you use, mirroring, and repo/change size.
 
 ### 10,000 User Configuration
 
 - **Supported Users (approximate):** 10,000
-- **RPS:** 200 requests per second
+- **Test RPS Rates:** API: 200 RPS, Web: 20 RPS, Git: 20 RPS
 - **Known Issues:** While validating the reference architecture, slow API endpoints
   were discovered. For details, see the related issues list in
   [this issue](https://gitlab.com/gitlab-org/gitlab-foss/issues/64335).
 
-The Support and Quality teams built, performance tested, and validated an
-environment that supports about 10,000 users. The specifications below are a
-representation of the work so far. The specifications may be adjusted in the
-future based on additional testing and iteration.
+| Service                     | Nodes | Configuration         | GCP type      |
+| ----------------------------|-------|-----------------------|---------------|
+| GitLab Rails <br> - Puma workers on each node set to 90% of available CPUs with 16 threads | 3 | 32 vCPU, 28.8GB Memory | n1-highcpu-32 |
+| PostgreSQL                  | 3     | 4 vCPU, 15GB Memory   | n1-standard-4 |
+| PgBouncer                   | 3     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
+| Gitaly <br> - Gitaly Ruby workers on each node set to 20% of available CPUs | X[^1] . | 16 vCPU, 60GB Memory   | n1-standard-16 |
+| Redis Cache + Sentinel <br> - Cache maxmemory set to 90% of available memory | 3 | 4 vCPU, 15GB Memory | n1-standard-4 |
+| Redis Persistent + Sentinel | 3     | 4 vCPU, 15GB Memory   | n1-standard-4 |
+| Sidekiq                     | 4     | 4 vCPU, 15GB Memory   | n1-standard-4 |
+| Consul                      | 3     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
+| NFS Server[^4] .            | 1     | 4 vCPU, 3.6GB Memory  | n1-highcpu-4  |
+| S3 Object Storage[^3] .     | -     | -                     | -             |
+| Monitoring node             | 1     | 4 vCPU, 3.6GB Memory  | n1-highcpu-4  |
+| External load balancing node[^2] . | 1 | 2 vCPU, 1.8GB Memory | n1-highcpu-2 |
+| Internal load balancing node[^2] . | 1 | 2 vCPU, 1.8GB Memory | n1-highcpu-2 |
 
-| Service                       | Configuration           | GCP type       |
-| ------------------------------|-------------------------|----------------|
-| 3 GitLab Rails <br> - Puma workers on each node set to 90% of available CPUs with 16 threads | 32 vCPU, 28.8GB Memory | n1-highcpu-32 |
-| 3 PostgreSQL                  | 4 vCPU, 15GB Memory     | n1-standard-4  |
-| 1 PgBouncer                   | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
-| X Gitaly[^1] <br> - Gitaly Ruby workers on each node set to 90% of available CPUs with 16 threads | 16 vCPU, 60GB Memory   | n1-standard-16 |
-| 3 Redis Cache + Sentinel <br> - Cache maxmemory set to 90% of available memory | 4 vCPU, 15GB Memory | n1-standard-4 |
-| 3 Redis Persistent + Sentinel | 4 vCPU, 15GB Memory     | n1-standard-4  |
-| 4 Sidekiq                     | 4 vCPU, 15GB Memory     | n1-standard-4  |
-| 3 Consul                      | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
-| 1 NFS Server                  | 16 vCPU, 14.4GB Memory  | n1-highcpu-16  |
-| 1 Monitoring node             | 4 CPU, 3.6GB Memory     | n1-highcpu-4   |
-| 1 Load Balancing node[^2] .   | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
+NOTE: **Note:** Memory values are given directly by GCP machine sizes. On different cloud
+vendors a best effort like for like can be used.
 
 ### 25,000 User Configuration
 
 - **Supported Users (approximate):** 25,000
-- **RPS:** 500 requests per second
+- **Test RPS Rates:** API: 500 RPS, Web: 50 RPS, Git: 50 RPS
 - **Known Issues:** The slow API endpoints that were discovered during testing
   the 10,000 user architecture also affect the 25,000 user architecture. For
   details, see the related issues list in
   [this issue](https://gitlab.com/gitlab-org/gitlab-foss/issues/64335).
 
-The GitLab Support and Quality teams built, performance tested, and validated an
-environment that supports around 25,000 users. The specifications below are a
-representation of the work so far. The specifications may be adjusted in the
-future based on additional testing and iteration.
+| Service                     | Nodes | Configuration         | GCP type      |
+| ----------------------------|-------|-----------------------|---------------|
+| GitLab Rails <br> - Puma workers on each node set to 90% of available CPUs with 16 threads | 7 | 32 vCPU, 28.8GB Memory | n1-highcpu-32 |
+| PostgreSQL                  | 3     | 8 vCPU, 30GB Memory   | n1-standard-8 |
+| PgBouncer                   | 3     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
+| Gitaly <br> - Gitaly Ruby workers on each node set to 20% of available CPUs | X[^1] . | 32 vCPU, 120GB Memory | n1-standard-32 |
+| Redis Cache + Sentinel <br> - Cache maxmemory set to 90% of available memory | 3 | 4 vCPU, 15GB Memory | n1-standard-4 |
+| Redis Persistent + Sentinel | 3     | 4 vCPU, 15GB Memory   | n1-standard-4 |
+| Sidekiq                     | 4     | 4 vCPU, 15GB Memory   | n1-standard-4 |
+| Consul                      | 3     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
+| NFS Server[^4] .            | 1     | 4 vCPU, 3.6GB Memory  | n1-highcpu-4  |
+| S3 Object Storage[^3] .     | -     | -                     | -             |
+| Monitoring node             | 1     | 4 vCPU, 3.6GB Memory  | n1-highcpu-4  |
+| External load balancing node[^2] . | 1 | 2 vCPU, 1.8GB Memory | n1-highcpu-2 |
+| Internal load balancing node[^2] . | 1 | 4 vCPU, 3.6GB Memory | n1-highcpu-4 |
 
-NOTE: **Note:** The specifications here were performance tested against a
-specific coded workload. Your exact needs may be more, depending on your
-workload. Your workload is influenced by factors such as - but not limited to -
-how active your users are, how much automation you use, mirroring, and
-repo/change size.
-
-| Service                       | Configuration           | GCP type       |
-| ------------------------------|-------------------------|----------------|
-| 7 GitLab Rails <br> - Puma workers on each node set to 90% of available CPUs with 16 threads | 32 vCPU, 28.8GB Memory | n1-highcpu-32 |
-| 3 PostgreSQL                  | 8 vCPU, 30GB Memory     | n1-standard-8  |
-| 1 PgBouncer                   | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
-| X Gitaly[^1] <br> - Gitaly Ruby workers on each node set to 90% of available CPUs with 16 threads | 32 vCPU, 120GB Memory   | n1-standard-32 |
-| 3 Redis Cache + Sentinel <br> - Cache maxmemory set to 90% of available memory | 4 vCPU, 15GB Memory | n1-standard-4 |
-| 3 Redis Persistent + Sentinel | 4 vCPU, 15GB Memory     | n1-standard-4  |
-| 4 Sidekiq                     | 4 vCPU, 15GB Memory     | n1-standard-4  |
-| 3 Consul                      | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
-| 1 NFS Server                  | 16 vCPU, 14.4GB Memory  | n1-highcpu-16  |
-| 1 Monitoring node             | 4 CPU, 3.6GB Memory     | n1-highcpu-4   |
-| 1 Load Balancing node[^2] .   | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
+NOTE: **Note:** Memory values are given directly by GCP machine sizes. On different cloud
+vendors a best effort like for like can be used.
 
 ### 50,000 User Configuration
 
 - **Supported Users (approximate):** 50,000
-- **RPS:** 1,000 requests per second
+- **Test RPS Rates:** API: 1000 RPS, Web: 100 RPS, Git: 100 RPS
 - **Status:** Work-in-progress
 - **Related Issue:** See the [related issue](https://gitlab.com/gitlab-org/quality/performance/issues/66) for more information.
 
-The Support and Quality teams are in the process of building and performance
-testing an environment that will support around 50,000 users. The specifications
-below are a very rough work-in-progress representation of the work so far. The
-Quality team will be certifying this environment in late 2019. The
-specifications may be adjusted prior to certification based on performance
-testing.
+NOTE: **Note:**  This architecture is a work-in-progress of the work so far. The
+Quality team will be certifying this environment in late 2019. The specifications
+may be adjusted prior to certification based on performance testing.
 
-| Service                       | Configuration           | GCP type       |
-| ------------------------------|-------------------------|----------------|
-| 15 GitLab Rails <br> - Puma workers on each node set to 90% of available CPUs with 16 threads | 32 vCPU, 28.8GB Memory | n1-highcpu-32 |
-| 3 PostgreSQL                  | 8 vCPU, 30GB Memory     | n1-standard-8  |
-| 1 PgBouncer                   | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
-| X Gitaly[^1] <br> - Gitaly Ruby workers on each node set to 90% of available CPUs with 16 threads | 64 vCPU, 240GB Memory   | n1-standard-64 |
-| 3 Redis Cache + Sentinel <br> - Cache maxmemory set to 90% of available memory | 4 vCPU, 15GB Memory | n1-standard-4 |
-| 3 Redis Persistent + Sentinel | 4 vCPU, 15GB Memory     | n1-standard-4  |
-| 4 Sidekiq                     | 4 vCPU, 15GB Memory     | n1-standard-4  |
-| 3 Consul                      | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
-| 1 NFS Server                  | 16 vCPU, 14.4GB Memory  | n1-highcpu-16  |
-| 1 Monitoring node             | 4 CPU, 3.6GB Memory     | n1-highcpu-4   |
-| 1 Load Balancing node[^2] .   | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
+| Service                     | Nodes | Configuration         | GCP type      |
+| ----------------------------|-------|-----------------------|---------------|
+| GitLab Rails <br> - Puma workers on each node set to 90% of available CPUs with 16 threads | 15 | 32 vCPU, 28.8GB Memory | n1-highcpu-32 |
+| PostgreSQL                  | 3     | 8 vCPU, 30GB Memory   | n1-standard-8 |
+| PgBouncer                   | 3     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
+| Gitaly <br> - Gitaly Ruby workers on each node set to 20% of available CPUs | X[^1] . | 64 vCPU, 240GB Memory   | n1-standard-64 |
+| Redis Cache + Sentinel <br> - Cache maxmemory set to 90% of available memory | 3 | 4 vCPU, 15GB Memory | n1-standard-4 |
+| Redis Persistent + Sentinel | 3     | 4 vCPU, 15GB Memory   | n1-standard-4 |
+| Sidekiq                     | 4     | 4 vCPU, 15GB Memory   | n1-standard-4 |
+| Consul                      | 3     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
+| NFS Server[^4] .            | 1     | 4 vCPU, 3.6GB Memory  | n1-highcpu-4  |
+| S3 Object Storage[^3] .     | -     | -                     | -             |
+| Monitoring node             | 1     | 4 vCPU, 3.6GB Memory  | n1-highcpu-4  |
+| External load balancing node[^2] . | 1 | 2 vCPU, 1.8GB Memory | n1-highcpu-2 |
+| Internal load balancing node[^2] . | 1 | 8 vCPU, 7.2GB Memory | n1-highcpu-8 |
+
+NOTE: **Note:** Memory values are given directly by GCP machine sizes. On different cloud
+vendors a best effort like for like can be used.
 
 [^1]: Gitaly node requirements are dependent on customer data. We recommend 2
       nodes as an absolute minimum for performance at the 10,000 and 25,000 user
@@ -298,5 +308,19 @@ testing.
       additional nodes should be considered in conjunction with a review of
       project counts and sizes.
 
-[^2]: HAProxy is the only tested and recommended load balancer. Additional
-      options may be supported in the future.
+[^2]: Our architectures have been tested and validated with [HAProxy](https://www.haproxy.org/)
+      as the load balancer. However other reputable load balancers with similar feature sets
+          should also work here but be aware these aren't validated.
+
+[^3]: For data objects such as LFS, Uploads, Artifacts, etc... We recommend a S3 Object Storage
+      where possible over NFS due to better performance and availability. Several types of objects
+      are supported for S3 storage - [Job artifacts](../job_artifacts.md#using-object-storage),
+      [LFS](../lfs/lfs_administration.md#storing-lfs-objects-in-remote-object-storage),
+      [Uploads](../uploads.md#using-object-storage-core-only),
+      [Merge Request Diffs](../merge_request_diffs.md#using-object-storage),
+      [Packages](../packages/index.md#using-object-storage) (Optional Feature),
+      [Dependency Proxy](../packages/dependency_proxy.md#using-object-storage) (Optional Feature).
+
+[^4]: NFS storage server is still required for [GitLab Pages](https://gitlab.com/gitlab-org/gitlab-pages/issues/196)
+      and optionally for CI Job Incremental Logging
+      ([can be switched to use Redis instead](https://docs.gitlab.com/ee/administration/job_logs.html#new-incremental-logging-architecture)).

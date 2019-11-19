@@ -148,7 +148,7 @@ describe Gitlab::UserAccess do
         )
       end
 
-      it 'allows users that have push access to the canonical project to push to the MR branch' do
+      it 'allows users that have push access to the canonical project to push to the MR branch', :sidekiq_might_not_need_inline do
         canonical_project.add_developer(user)
 
         expect(access.can_push_to_branch?('awesome-feature')).to be_truthy

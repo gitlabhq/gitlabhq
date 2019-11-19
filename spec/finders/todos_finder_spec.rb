@@ -36,10 +36,18 @@ describe TodosFinder do
           expect(todos).to match_array([todo1, todo2])
         end
 
-        it 'returns correct todos when filtered by a type' do
-          todos = finder.new(user, { type: 'Issue' }).execute
+        context 'when filtering by type' do
+          it 'returns correct todos when filtered by a type' do
+            todos = finder.new(user, { type: 'Issue' }).execute
 
-          expect(todos).to match_array([todo1])
+            expect(todos).to match_array([todo1])
+          end
+
+          it 'returns the correct todos when filtering for multiple types' do
+            todos = finder.new(user, { type: %w[Issue MergeRequest] }).execute
+
+            expect(todos).to match_array([todo1, todo2])
+          end
         end
 
         context 'when filtering for actions' do
@@ -53,12 +61,10 @@ describe TodosFinder do
               expect(todos).to match_array([todo2])
             end
 
-            context 'multiple actions' do
-              it 'returns the expected todos' do
-                todos = finder.new(user, { action_id: [Todo::DIRECTLY_ADDRESSED, Todo::ASSIGNED] }).execute
+            it 'returns the expected todos when filtering for multiple action ids' do
+              todos = finder.new(user, { action_id: [Todo::DIRECTLY_ADDRESSED, Todo::ASSIGNED] }).execute
 
-                expect(todos).to match_array([todo2, todo1])
-              end
+              expect(todos).to match_array([todo2, todo1])
             end
           end
 
@@ -69,12 +75,10 @@ describe TodosFinder do
               expect(todos).to match_array([todo2])
             end
 
-            context 'multiple actions' do
-              it 'returns the expected todos' do
-                todos = finder.new(user, { action: [:directly_addressed, :assigned] }).execute
+            it 'returns the expected todos when filtering for multiple action names' do
+              todos = finder.new(user, { action: [:directly_addressed, :assigned] }).execute
 
-                expect(todos).to match_array([todo2, todo1])
-              end
+              expect(todos).to match_array([todo2, todo1])
             end
           end
         end
@@ -134,6 +138,51 @@ describe TodosFinder do
 
               expect(todos).to match_array([todo1, todo2, todo3, todo4, todo5])
             end
+          end
+        end
+
+        context 'by state' do
+          let!(:todo1) { create(:todo, user: user, group: group, target: issue, state: :done) }
+          let!(:todo2) { create(:todo, user: user, group: group, target: issue, state: :pending) }
+
+          it 'returns the expected items when no state is provided' do
+            todos = finder.new(user, {}).execute
+
+            expect(todos).to match_array([todo2])
+          end
+
+          it 'returns the expected items when a state is provided' do
+            todos = finder.new(user, { state: :done }).execute
+
+            expect(todos).to match_array([todo1])
+          end
+
+          it 'returns the expected items when multiple states are provided' do
+            todos = finder.new(user, { state: [:pending, :done] }).execute
+
+            expect(todos).to match_array([todo1, todo2])
+          end
+        end
+
+        context 'by project' do
+          let_it_be(:project1) { create(:project) }
+          let_it_be(:project2) { create(:project) }
+          let_it_be(:project3) { create(:project) }
+
+          let!(:todo1) { create(:todo, user: user, project: project1, state: :pending) }
+          let!(:todo2) { create(:todo, user: user, project: project2, state: :pending) }
+          let!(:todo3) { create(:todo, user: user, project: project3, state: :pending) }
+
+          it 'returns the expected todos for one project' do
+            todos = finder.new(user, { project_id: project2.id }).execute
+
+            expect(todos).to match_array([todo2])
+          end
+
+          it 'returns the expected todos for many projects' do
+            todos = finder.new(user, { project_id: [project2.id, project1.id] }).execute
+
+            expect(todos).to match_array([todo2, todo1])
           end
         end
       end
@@ -204,6 +253,19 @@ describe TodosFinder do
 
         expect(todos).to eq([todo_3, todo_5, todo_4, todo_2, todo_1])
       end
+    end
+  end
+
+  describe '.todo_types' do
+    it 'returns the expected types' do
+      expected_result =
+        if Gitlab.ee?
+          %w[Epic Issue MergeRequest]
+        else
+          %w[Issue MergeRequest]
+        end
+
+      expect(described_class.todo_types).to contain_exactly(*expected_result)
     end
   end
 

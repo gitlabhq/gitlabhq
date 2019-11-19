@@ -1,0 +1,5 @@
+---
+title: Make Bitbucket Cloud superseded pull requests as closed
+merge_request: 19193
+author:
+type: fixed

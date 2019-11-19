@@ -261,6 +261,10 @@ module QA
         ENV['QA_RUNTIME_SCENARIO_ATTRIBUTES']
       end
 
+      def gitlab_qa_loop_runner_minutes
+        ENV.fetch('GITLAB_QA_LOOP_RUNNER_MINUTES', 1).to_i
+      end
+
       private
 
       def remote_grid_credentials

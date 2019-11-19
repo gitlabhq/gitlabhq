@@ -9,7 +9,7 @@ module Gitlab
           # find a corresponding database record. If found,
           # includes the record's id in the dashboard config.
           def transform!
-            common_metrics = ::PrometheusMetric.common
+            common_metrics = ::PrometheusMetricsFinder.new(common: true).execute
 
             for_metrics do |metric|
               metric_record = common_metrics.find { |m| m.identifier == metric[:id] }

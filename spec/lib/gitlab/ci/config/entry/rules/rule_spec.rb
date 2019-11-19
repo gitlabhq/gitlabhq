@@ -1,10 +1,22 @@
+# frozen_string_literal: true
+
 require 'fast_spec_helper'
 require 'gitlab_chronic_duration'
 require 'support/helpers/stub_feature_flags'
 require_dependency 'active_model'
 
 describe Gitlab::Ci::Config::Entry::Rules::Rule do
-  let(:entry) { described_class.new(config) }
+  let(:factory) do
+    Gitlab::Config::Entry::Factory.new(described_class)
+      .metadata(metadata)
+      .value(config)
+  end
+
+  let(:metadata) do
+    { allowed_when: %w[on_success on_failure always never manual delayed] }
+  end
+
+  let(:entry) { factory.create! }
 
   describe '.new' do
     subject { entry }
@@ -208,6 +220,112 @@ describe Gitlab::Ci::Config::Entry::Rules::Rule do
       it 'returns information about errors' do
         expect(entry.errors)
           .to include(/should be a hash/)
+      end
+    end
+
+    context 'when: validation' do
+      context 'with an invalid boolean when:' do
+        let(:config) do
+          { if: '$THIS == "that"', when: false }
+        end
+
+        it { is_expected.to be_a(described_class) }
+        it { is_expected.not_to be_valid }
+
+        it 'returns an error about invalid when:' do
+          expect(subject.errors).to include(/when unknown value: false/)
+        end
+
+        context 'when composed' do
+          before do
+            subject.compose!
+          end
+
+          it { is_expected.not_to be_valid }
+
+          it 'returns an error about invalid when:' do
+            expect(subject.errors).to include(/when unknown value: false/)
+          end
+        end
+      end
+
+      context 'with an invalid string when:' do
+        let(:config) do
+          { if: '$THIS == "that"', when: 'explode' }
+        end
+
+        it { is_expected.to be_a(described_class) }
+        it { is_expected.not_to be_valid }
+
+        it 'returns an error about invalid when:' do
+          expect(subject.errors).to include(/when unknown value: explode/)
+        end
+
+        context 'when composed' do
+          before do
+            subject.compose!
+          end
+
+          it { is_expected.not_to be_valid }
+
+          it 'returns an error about invalid when:' do
+            expect(subject.errors).to include(/when unknown value: explode/)
+          end
+        end
+      end
+
+      context 'with a string passed in metadata but not allowed in the class' do
+        let(:metadata) { { allowed_when: %w[explode] } }
+
+        let(:config) do
+          { if: '$THIS == "that"', when: 'explode' }
+        end
+
+        it { is_expected.to be_a(described_class) }
+        it { is_expected.not_to be_valid }
+
+        it 'returns an error about invalid when:' do
+          expect(subject.errors).to include(/when unknown value: explode/)
+        end
+
+        context 'when composed' do
+          before do
+            subject.compose!
+          end
+
+          it { is_expected.not_to be_valid }
+
+          it 'returns an error about invalid when:' do
+            expect(subject.errors).to include(/when unknown value: explode/)
+          end
+        end
+      end
+
+      context 'with a string allowed in the class but not passed in metadata' do
+        let(:metadata) { { allowed_when: %w[always never] } }
+
+        let(:config) do
+          { if: '$THIS == "that"', when: 'on_success' }
+        end
+
+        it { is_expected.to be_a(described_class) }
+        it { is_expected.not_to be_valid }
+
+        it 'returns an error about invalid when:' do
+          expect(subject.errors).to include(/when unknown value: on_success/)
+        end
+
+        context 'when composed' do
+          before do
+            subject.compose!
+          end
+
+          it { is_expected.not_to be_valid }
+
+          it 'returns an error about invalid when:' do
+            expect(subject.errors).to include(/when unknown value: on_success/)
+          end
+        end
       end
     end
   end

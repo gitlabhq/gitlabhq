@@ -32,10 +32,10 @@ describe Projects::PagesDomainsController do
       get(:show, params: request_params.merge(id: pages_domain.domain))
     end
 
-    it "displays the 'show' page" do
+    it "redirects to the 'edit' page" do
       make_request
-      expect(response).to have_gitlab_http_status(200)
-      expect(response).to render_template('show')
+
+      expect(response).to redirect_to(edit_project_pages_domain_path(project, pages_domain.domain))
     end
 
     context 'when user is developer' do
@@ -69,7 +69,7 @@ describe Projects::PagesDomainsController do
       created_domain = PagesDomain.reorder(:id).last
 
       expect(created_domain).to be_present
-      expect(response).to redirect_to(project_pages_domain_path(project, created_domain))
+      expect(response).to redirect_to(edit_project_pages_domain_path(project, created_domain))
     end
   end
 
@@ -160,7 +160,7 @@ describe Projects::PagesDomainsController do
 
       post :verify, params: params
 
-      expect(response).to redirect_to project_pages_domain_path(project, pages_domain)
+      expect(response).to redirect_to edit_project_pages_domain_path(project, pages_domain)
       expect(flash[:notice]).to eq('Successfully verified domain ownership')
     end
 
@@ -169,7 +169,7 @@ describe Projects::PagesDomainsController do
 
       post :verify, params: params
 
-      expect(response).to redirect_to project_pages_domain_path(project, pages_domain)
+      expect(response).to redirect_to edit_project_pages_domain_path(project, pages_domain)
       expect(flash[:alert]).to eq('Failed to verify domain ownership')
     end
 
@@ -187,6 +187,56 @@ describe Projects::PagesDomainsController do
       end.to change { PagesDomain.count }.by(-1)
 
       expect(response).to redirect_to(project_pages_path(project))
+    end
+  end
+
+  describe 'DELETE #clean_certificate' do
+    subject do
+      delete(:clean_certificate, params: request_params.merge(id: pages_domain.domain))
+    end
+
+    it 'redirects to edit page' do
+      subject
+
+      expect(response).to redirect_to(edit_project_pages_domain_path(project, pages_domain))
+    end
+
+    it 'removes certificate' do
+      expect do
+        subject
+      end.to change { pages_domain.reload.certificate }.to(nil)
+        .and change { pages_domain.reload.key }.to(nil)
+    end
+
+    it 'sets certificate source to user_provided' do
+      pages_domain.update!(certificate_source: :gitlab_provided)
+
+      expect do
+        subject
+      end.to change { pages_domain.reload.certificate_source }.from("gitlab_provided").to("user_provided")
+    end
+
+    context 'when pages_https_only is set' do
+      before do
+        project.update!(pages_https_only: true)
+        stub_pages_setting(external_https: '127.0.0.1')
+      end
+
+      it 'does not remove certificate' do
+        subject
+
+        pages_domain.reload
+        expect(pages_domain.certificate).to be_present
+        expect(pages_domain.key).to be_present
+      end
+
+      it 'redirects to edit page with a flash message' do
+        subject
+
+        expect(flash[:alert]).to include('Certificate')
+        expect(flash[:alert]).to include('Key')
+        expect(response).to redirect_to(edit_project_pages_domain_path(project, pages_domain))
+      end
     end
   end
 

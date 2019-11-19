@@ -24,7 +24,7 @@
   .settings-content
     = render 'ip_limits'
 
-%section.settings.as-outbound.no-animate#js-outbound-settings{ class: ('expanded' if expanded_by_default?) }
+%section.settings.as-outbound.no-animate#js-outbound-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'outbound_requests_section' } }
   .settings-header
     %h4
       = _('Outbound requests')

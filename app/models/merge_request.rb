@@ -16,6 +16,9 @@ class MergeRequest < ApplicationRecord
   include ReactiveCaching
   include FromUnion
   include DeprecatedAssignee
+  include ShaAttribute
+
+  sha_attribute :squash_commit_sha
 
   self.reactive_cache_key = ->(model) { [model.project.id, model.iid] }
   self.reactive_cache_refresh_interval = 10.minutes
@@ -65,6 +68,7 @@ class MergeRequest < ApplicationRecord
   has_many :cached_closes_issues, through: :merge_requests_closing_issues, source: :issue
   has_many :pipelines_for_merge_request, foreign_key: 'merge_request_id', class_name: 'Ci::Pipeline'
   has_many :suggestions, through: :notes
+  has_many :unresolved_notes, -> { unresolved }, as: :noteable, class_name: 'Note'
 
   has_many :merge_request_assignees
   has_many :assignees, class_name: "User", through: :merge_request_assignees
@@ -202,11 +206,14 @@ class MergeRequest < ApplicationRecord
   scope :by_commit_sha, ->(sha) do
     where('EXISTS (?)', MergeRequestDiff.select(1).where('merge_requests.latest_merge_request_diff_id = merge_request_diffs.id').by_commit_sha(sha)).reorder(nil)
   end
+  scope :by_merge_commit_sha, -> (sha) do
+    where(merge_commit_sha: sha)
+  end
   scope :join_project, -> { joins(:target_project) }
   scope :references_project, -> { references(:target_project) }
   scope :with_api_entity_associations, -> {
-    preload(:assignees, :author, :notes, :labels, :milestone, :timelogs,
-            latest_merge_request_diff: [:merge_request_diff_commits],
+    preload(:assignees, :author, :unresolved_notes, :labels, :milestone,
+            :timelogs, :latest_merge_request_diff,
             metrics: [:latest_closed_by, :merged_by],
             target_project: [:route, { namespace: :route }],
             source_project: [:route, { namespace: :route }])
@@ -217,16 +224,26 @@ class MergeRequest < ApplicationRecord
   scope :by_target_branch, ->(branch_name) { where(target_branch: branch_name) }
   scope :preload_source_project, -> { preload(:source_project) }
 
-  scope :with_open_merge_when_pipeline_succeeds, -> do
-    with_state(:opened).where(merge_when_pipeline_succeeds: true)
+  scope :with_auto_merge_enabled, -> do
+    with_state(:opened).where(auto_merge_enabled: true)
   end
 
   after_save :keep_around_commit
 
   alias_attribute :project, :target_project
   alias_attribute :project_id, :target_project_id
+
+  # Currently, `merge_when_pipeline_succeeds` column is used as a flag
+  # to check if _any_ auto merge strategy is activated on the merge request.
+  # Today, we have multiple strategies and MWPS is one of them.
+  # we'd eventually rename the column for avoiding confusions, but in the mean time
+  # please use `auto_merge_enabled` alias instead of `merge_when_pipeline_succeeds`.
   alias_attribute :auto_merge_enabled, :merge_when_pipeline_succeeds
   alias_method :issuing_parent, :target_project
+
+  RebaseLockTimeout = Class.new(StandardError)
+
+  REBASE_LOCK_MESSAGE = _("Failed to enqueue the rebase operation, possibly due to a long-lived transaction. Try again later.")
 
   def self.reference_prefix
     '!'
@@ -357,16 +374,21 @@ class MergeRequest < ApplicationRecord
     "#{project.to_reference(from, full: full)}#{reference}"
   end
 
-  def commits
-    return merge_request_diff.commits if persisted?
+  def commits(limit: nil)
+    return merge_request_diff.commits(limit: limit) if persisted?
 
     commits_arr = if compare_commits
-                    compare_commits.reverse
+                    reversed_commits = compare_commits.reverse
+                    limit ? reversed_commits.take(limit) : reversed_commits
                   else
                     []
                   end
 
     CommitCollection.new(source_project, commits_arr, source_branch)
+  end
+
+  def recent_commits
+    commits(limit: MergeRequestDiff::COMMITS_SAFE_SIZE)
   end
 
   def commits_count
@@ -379,14 +401,17 @@ class MergeRequest < ApplicationRecord
     end
   end
 
-  def commit_shas
-    if persisted?
-      merge_request_diff.commit_shas
-    elsif compare_commits
-      compare_commits.to_a.reverse.map(&:sha)
-    else
-      Array(diff_head_sha)
-    end
+  def commit_shas(limit: nil)
+    return merge_request_diff.commit_shas(limit: limit) if persisted?
+
+    shas =
+      if compare_commits
+        compare_commits.to_a.reverse.map(&:sha)
+      else
+        Array(diff_head_sha)
+      end
+
+    limit ? shas.take(limit) : shas
   end
 
   # Returns true if there are commits that match at least one commit SHA.
@@ -417,9 +442,7 @@ class MergeRequest < ApplicationRecord
   # Set off a rebase asynchronously, atomically updating the `rebase_jid` of
   # the MR so that the status of the operation can be tracked.
   def rebase_async(user_id)
-    transaction do
-      lock!
-
+    with_rebase_lock do
       raise ActiveRecord::StaleObjectError if !open? || rebase_in_progress?
 
       # Although there is a race between setting rebase_jid here and clearing it
@@ -782,6 +805,8 @@ class MergeRequest < ApplicationRecord
   end
 
   def check_mergeability
+    return if Feature.enabled?(:merge_requests_conditional_mergeability_check, default_enabled: true) && !recheck_merge_status?
+
     MergeRequests::MergeabilityCheckService.new(self).execute(retry_lease: false)
   end
   # rubocop: enable CodeReuse/ServiceClass
@@ -896,7 +921,7 @@ class MergeRequest < ApplicationRecord
 
   def commit_notes
     # Fetch comments only from last 100 commits
-    commit_ids = commit_shas.take(100)
+    commit_ids = commit_shas(limit: 100)
 
     Note
       .user
@@ -907,7 +932,7 @@ class MergeRequest < ApplicationRecord
   def mergeable_discussions_state?
     return true unless project.only_allow_merge_if_all_discussions_are_resolved?
 
-    !discussions_to_be_resolved?
+    unresolved_notes.none?(&:to_be_resolved?)
   end
 
   def for_fork?
@@ -1087,7 +1112,7 @@ class MergeRequest < ApplicationRecord
     return true unless project.only_allow_merge_if_pipeline_succeeds?
     return false unless actual_head_pipeline
 
-    actual_head_pipeline.success? || actual_head_pipeline.skipped?
+    actual_head_pipeline.success?
   end
 
   def environments_for(current_user)
@@ -1263,6 +1288,27 @@ class MergeRequest < ApplicationRecord
     compare_reports(Ci::CompareTestReportsService)
   end
 
+  def has_exposed_artifacts?
+    return false unless Feature.enabled?(:ci_expose_arbitrary_artifacts_in_mr, default_enabled: true)
+
+    actual_head_pipeline&.has_exposed_artifacts?
+  end
+
+  # TODO: this method and compare_test_reports use the same
+  # result type, which is handled by the controller's #reports_response.
+  # we should minimize mistakes by isolating the common parts.
+  # issue: https://gitlab.com/gitlab-org/gitlab/issues/34224
+  def find_exposed_artifacts
+    unless has_exposed_artifacts?
+      return { status: :error, status_reason: 'This merge request does not have exposed artifacts' }
+    end
+
+    compare_reports(Ci::GenerateExposedArtifactsReportService)
+  end
+
+  # TODO: consider renaming this as with exposed artifacts we generate reports,
+  # not always compare
+  # issue: https://gitlab.com/gitlab-org/gitlab/issues/34224
   def compare_reports(service_class, current_user = nil)
     with_reactive_cache(service_class.name, current_user&.id) do |data|
       unless service_class.new(project, current_user)
@@ -1277,6 +1323,8 @@ class MergeRequest < ApplicationRecord
   def calculate_reactive_cache(identifier, current_user_id = nil, *args)
     service_class = identifier.constantize
 
+    # TODO: the type check should change to something that includes exposed artifacts service
+    # issue: https://gitlab.com/gitlab-org/gitlab/issues/34224
     raise NameError, service_class unless service_class < Ci::CompareReportsBaseService
 
     current_user = User.find_by(id: current_user_id)
@@ -1452,6 +1500,30 @@ class MergeRequest < ApplicationRecord
   end
 
   private
+
+  def with_rebase_lock
+    if Feature.enabled?(:merge_request_rebase_nowait_lock, default_enabled: true)
+      with_retried_nowait_lock { yield }
+    else
+      with_lock(true) { yield }
+    end
+  end
+
+  # If the merge request is idle in transaction or has a SELECT FOR
+  # UPDATE, we don't want to block indefinitely or this could cause a
+  # queue of SELECT FOR UPDATE calls. Instead, try to get the lock for
+  # 5 s before raising an error to the user.
+  def with_retried_nowait_lock
+    # Try at most 0.25 + (1.5 * .25) + (1.5^2 * .25) ... (1.5^5 * .25) = 5.2 s to get the lock
+    Retriable.retriable(on: ActiveRecord::LockWaitTimeout, tries: 6, base_interval: 0.25) do
+      with_lock('FOR UPDATE NOWAIT') do
+        yield
+      end
+    end
+  rescue ActiveRecord::LockWaitTimeout => e
+    Gitlab::Sentry.track_acceptable_exception(e)
+    raise RebaseLockTimeout, REBASE_LOCK_MESSAGE
+  end
 
   def source_project_variables
     Gitlab::Ci::Variables::Collection.new.tap do |variables|

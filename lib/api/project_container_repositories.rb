@@ -24,8 +24,10 @@ module API
       end
       get ':id/registry/repositories' do
         repositories = ContainerRepositoriesFinder.new(
-          id: user_project.id, container_type: :project
+          user: current_user, subject: user_project
         ).execute
+
+        track_event( 'list_repositories')
 
         present paginate(repositories), with: Entities::ContainerRegistry::Repository, tags: params[:tags]
       end
@@ -40,6 +42,7 @@ module API
         authorize_admin_container_image!
 
         DeleteContainerRepositoryWorker.perform_async(current_user.id, repository.id)
+        track_event('delete_repository')
 
         status :accepted
       end
@@ -56,6 +59,8 @@ module API
         authorize_read_container_image!
 
         tags = Kaminari.paginate_array(repository.tags)
+        track_event('list_tags')
+
         present paginate(tags), with: Entities::ContainerRegistry::Tag
       end
 
@@ -76,6 +81,8 @@ module API
 
         CleanupContainerRepositoryWorker.perform_async(current_user.id, repository.id,
           declared_params.except(:repository_id))
+
+        track_event('delete_tag_bulk')
 
         status :accepted
       end
@@ -111,6 +118,8 @@ module API
           .execute(repository)
 
         if result[:status] == :success
+          track_event('delete_tag')
+
           status :ok
         else
           status :bad_request

@@ -4,7 +4,7 @@
   - link_text = source.is_a?(Group) ? _('Leave group') : _('Leave project')
   = link_to link_text, polymorphic_path([:leave, source, :members]),
             method: :delete,
-            data: { confirm: leave_confirmation_message(source) },
+            data: { confirm: leave_confirmation_message(source), qa_selector: 'leave_group_link' },
             class: 'access-request-link js-leave-link'
 - elsif requester = source.requesters.find_by(user_id: current_user.id) # rubocop: disable CodeReuse/ActiveRecord
   = link_to _('Withdraw Access Request'), polymorphic_path([:leave, source, :members]),

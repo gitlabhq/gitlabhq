@@ -9,19 +9,24 @@ local network, these may be vulnerable to exploitation via Webhooks.
 
 With [Webhooks](../user/project/integrations/webhooks.md), you and your project
 maintainers and owners can set up URLs to be triggered when specific changes
-occur in your projects. Normally, these requests are sent to external web services
-specifically set up for this purpose, that process the request and its attached
-data in some appropriate way.
+occur in your projects. Normally, these requests are sent to external web
+services specifically set up for this purpose, that process the request and its
+attached data in some appropriate way.
 
 Things get hairy, however, when a Webhook is set up with a URL that doesn't
 point to an external, but to an internal service, that may do something
 completely unintended when the webhook is triggered and the POST request is
 sent.
 
-Because Webhook requests are made by the GitLab server itself, these have
-complete access to everything running on the server (`http://localhost:123`) or
-within the server's local network (`http://192.168.1.12:345`), even if these
-services are otherwise protected and inaccessible from the outside world.
+Webhook requests are made by the GitLab server itself and use a single
+(optional) secret token per hook for authorization (instead of a user or
+repo-specific token). As a result, these may have broader access than
+intended to everything running on the server hosting the webhook (which
+may include the GitLab server or API itself, e.g., `http://localhost:123`).
+Depending on the called webhook, this may also result in network access
+to other servers within that webhook server's local network (e.g.,
+`http://192.168.1.12:345`), even if these services are otherwise protected
+and inaccessible from the outside world.
 
 If a web service does not require authentication, Webhooks can be used to
 trigger destructive commands by getting the GitLab server to make POST requests

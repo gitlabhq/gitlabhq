@@ -88,7 +88,7 @@ class CohortsService
         User
           .where('created_at > ?', MONTHS_INCLUDED.months.ago.end_of_month)
           .group(created_at_month, last_activity_on_month)
-          .reorder("#{created_at_month} ASC", "#{last_activity_on_month} ASC")
+          .reorder(Arel.sql("#{created_at_month} ASC, #{last_activity_on_month} ASC"))
           .count
       end
   end

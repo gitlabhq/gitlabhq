@@ -15,7 +15,7 @@ describe 'listing forks of a project' do
     sign_in(user)
   end
 
-  it 'shows the forked project in the list with commit as description' do
+  it 'shows the forked project in the list with commit as description', :sidekiq_might_not_need_inline do
     visit project_forks_path(source)
 
     page.within('li.project-row') do

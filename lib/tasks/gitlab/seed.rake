@@ -22,7 +22,7 @@ namespace :gitlab do
 
           [project]
         else
-          Project.find_each
+          Project.not_mass_generated.find_each
         end
 
       projects.each do |project|

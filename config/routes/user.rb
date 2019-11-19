@@ -13,7 +13,7 @@ def override_omniauth(provider, controller, path_prefix = '/users/auth')
 end
 
 # Use custom controller for LDAP omniauth callback
-if Gitlab::Auth::LDAP::Config.enabled?
+if Gitlab::Auth::LDAP::Config.sign_in_enabled?
   devise_scope :user do
     Gitlab::Auth::LDAP::Config.available_servers.each do |server|
       override_omniauth(server['provider_name'], 'ldap/omniauth_callbacks')
@@ -55,6 +55,7 @@ scope(constraints: { username: Gitlab::PathRegex.root_namespace_route_regex }) d
     get :starred, as: :starred_projects
     get :snippets
     get :exists
+    get :suggests
     get :activity
     get '/', to: redirect('%{username}'), as: nil
   end

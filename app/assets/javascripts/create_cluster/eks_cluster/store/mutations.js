@@ -28,7 +28,39 @@ export default {
   [types.SET_SECURITY_GROUP](state, { securityGroup }) {
     state.selectedSecurityGroup = securityGroup;
   },
+  [types.SET_INSTANCE_TYPE](state, { instanceType }) {
+    state.selectedInstanceType = instanceType;
+  },
+  [types.SET_NODE_COUNT](state, { nodeCount }) {
+    state.nodeCount = nodeCount;
+  },
   [types.SET_GITLAB_MANAGED_CLUSTER](state, { gitlabManagedCluster }) {
     state.gitlabManagedCluster = gitlabManagedCluster;
+  },
+  [types.REQUEST_CREATE_ROLE](state) {
+    state.isCreatingRole = true;
+    state.createRoleError = null;
+    state.hasCredentials = false;
+  },
+  [types.CREATE_ROLE_SUCCESS](state) {
+    state.isCreatingRole = false;
+    state.createRoleError = null;
+    state.hasCredentials = true;
+  },
+  [types.CREATE_ROLE_ERROR](state, { error }) {
+    state.isCreatingRole = false;
+    state.createRoleError = error;
+    state.hasCredentials = false;
+  },
+  [types.REQUEST_CREATE_CLUSTER](state) {
+    state.isCreatingCluster = true;
+    state.createClusterError = null;
+  },
+  [types.CREATE_CLUSTER_ERROR](state, { error }) {
+    state.isCreatingCluster = false;
+    state.createClusterError = error;
+  },
+  [types.SIGN_OUT](state) {
+    state.hasCredentials = false;
   },
 };

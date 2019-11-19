@@ -44,7 +44,7 @@ class Admin::ApplicationsController < Admin::ApplicationController
 
   def destroy
     @application.destroy
-    redirect_to admin_applications_url, status: 302, notice: _('Application was successfully destroyed.')
+    redirect_to admin_applications_url, status: :found, notice: _('Application was successfully destroyed.')
   end
 
   private

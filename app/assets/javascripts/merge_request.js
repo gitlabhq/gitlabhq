@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, no-underscore-dangle, one-var, consistent-return */
+/* eslint-disable func-names, no-underscore-dangle, consistent-return */
 
 import $ from 'jquery';
 import { __ } from '~/locale';
@@ -17,14 +17,7 @@ function MergeRequest(opts) {
   this.opts = opts != null ? opts : {};
   this.submitNoteForm = this.submitNoteForm.bind(this);
   this.$el = $('.merge-request');
-  this.$('.show-all-commits').on(
-    'click',
-    (function(_this) {
-      return function() {
-        return _this.showAllCommits();
-      };
-    })(this),
-  );
+  this.$('.show-all-commits').on('click', () => this.showAllCommits());
 
   this.initTabs();
   this.initMRBtnListeners();
@@ -71,12 +64,10 @@ MergeRequest.prototype.showAllCommits = function() {
 };
 
 MergeRequest.prototype.initMRBtnListeners = function() {
-  var _this;
-  _this = this;
+  const _this = this;
   return $('a.btn-close, a.btn-reopen').on('click', function(e) {
-    var $this, shouldSubmit;
-    $this = $(this);
-    shouldSubmit = $this.hasClass('btn-comment');
+    const $this = $(this);
+    const shouldSubmit = $this.hasClass('btn-comment');
     if (shouldSubmit && $this.data('submitted')) {
       return;
     }
@@ -95,8 +86,7 @@ MergeRequest.prototype.initMRBtnListeners = function() {
 };
 
 MergeRequest.prototype.submitNoteForm = function(form, $button) {
-  var noteText;
-  noteText = form.find('textarea.js-note-text').val();
+  const noteText = form.find('textarea.js-note-text').val();
   if (noteText.trim().length > 0) {
     form.submit();
     $button.data('submitted', true);
@@ -106,7 +96,7 @@ MergeRequest.prototype.submitNoteForm = function(form, $button) {
 
 MergeRequest.prototype.initCommitMessageListeners = function() {
   $(document).on('click', 'a.js-with-description-link', e => {
-    var textarea = $('textarea.js-commit-message');
+    const textarea = $('textarea.js-commit-message');
     e.preventDefault();
 
     textarea.val(textarea.data('messageWithDescription'));
@@ -115,7 +105,7 @@ MergeRequest.prototype.initCommitMessageListeners = function() {
   });
 
   $(document).on('click', 'a.js-without-description-link', e => {
-    var textarea = $('textarea.js-commit-message');
+    const textarea = $('textarea.js-commit-message');
     e.preventDefault();
 
     textarea.val(textarea.data('messageWithoutDescription'));

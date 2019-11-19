@@ -1,84 +1,58 @@
-import EC2 from 'aws-sdk/clients/ec2';
-import IAM from 'aws-sdk/clients/iam';
+import axios from '~/lib/utils/axios_utils';
 
-export const fetchRoles = () => {
-  const iam = new IAM();
-
-  return iam
-    .listRoles()
-    .promise()
-    .then(({ Roles: roles }) => roles.map(({ RoleName: name }) => ({ name })));
-};
-
-export const fetchKeyPairs = () => {
-  const ec2 = new EC2();
-
-  return ec2
-    .describeKeyPairs()
-    .promise()
-    .then(({ KeyPairs: keyPairs }) => keyPairs.map(({ RegionName: name }) => ({ name })));
-};
-
-export const fetchRegions = () => {
-  const ec2 = new EC2();
-
-  return ec2
-    .describeRegions()
-    .promise()
-    .then(({ Regions: regions }) =>
-      regions.map(({ RegionName: name }) => ({
-        name,
-        value: name,
+export default apiPaths => ({
+  fetchRoles() {
+    return axios
+      .get(apiPaths.getRolesPath)
+      .then(({ data: { roles } }) =>
+        roles.map(({ role_name: name, arn: value }) => ({ name, value })),
+      );
+  },
+  fetchKeyPairs({ region }) {
+    return axios
+      .get(apiPaths.getKeyPairsPath, { params: { region } })
+      .then(({ data: { key_pairs: keyPairs } }) =>
+        keyPairs.map(({ key_name }) => ({ name: key_name, value: key_name })),
+      );
+  },
+  fetchRegions() {
+    return axios.get(apiPaths.getRegionsPath).then(({ data: { regions } }) =>
+      regions.map(({ region_name }) => ({
+        name: region_name,
+        value: region_name,
       })),
     );
-};
-
-export const fetchVpcs = () => {
-  const ec2 = new EC2();
-
-  return ec2
-    .describeVpcs()
-    .promise()
-    .then(({ Vpcs: vpcs }) =>
-      vpcs.map(({ VpcId: id }) => ({
-        value: id,
-        name: id,
+  },
+  fetchVpcs({ region }) {
+    return axios.get(apiPaths.getVpcsPath, { params: { region } }).then(({ data: { vpcs } }) =>
+      vpcs.map(({ vpc_id }) => ({
+        value: vpc_id,
+        name: vpc_id,
       })),
     );
-};
-
-export const fetchSubnets = ({ vpc }) => {
-  const ec2 = new EC2();
-
-  return ec2
-    .describeSubnets({
-      Filters: [
-        {
-          Name: 'vpc-id',
-          Values: [vpc],
-        },
-      ],
-    })
-    .promise()
-    .then(({ Subnets: subnets }) => subnets.map(({ SubnetId: id }) => ({ id, name: id })));
-};
-
-export const fetchSecurityGroups = ({ vpc }) => {
-  const ec2 = new EC2();
-
-  return ec2
-    .describeSecurityGroups({
-      Filters: [
-        {
-          Name: 'vpc-id',
-          Values: [vpc],
-        },
-      ],
-    })
-    .promise()
-    .then(({ SecurityGroups: securityGroups }) =>
-      securityGroups.map(({ GroupName: name, GroupId: value }) => ({ name, value })),
-    );
-};
-
-export default () => {};
+  },
+  fetchSubnets({ vpc, region }) {
+    return axios
+      .get(apiPaths.getSubnetsPath, { params: { vpc_id: vpc, region } })
+      .then(({ data: { subnets } }) =>
+        subnets.map(({ subnet_id }) => ({ name: subnet_id, value: subnet_id })),
+      );
+  },
+  fetchSecurityGroups({ vpc, region }) {
+    return axios
+      .get(apiPaths.getSecurityGroupsPath, { params: { vpc_id: vpc, region } })
+      .then(({ data: { security_groups: securityGroups } }) =>
+        securityGroups.map(({ group_name: name, group_id: value }) => ({ name, value })),
+      );
+  },
+  fetchInstanceTypes() {
+    return axios
+      .get(apiPaths.getInstanceTypesPath)
+      .then(({ data: { instance_types: instanceTypes } }) =>
+        instanceTypes.map(({ instance_type_name }) => ({
+          name: instance_type_name,
+          value: instance_type_name,
+        })),
+      );
+  },
+});

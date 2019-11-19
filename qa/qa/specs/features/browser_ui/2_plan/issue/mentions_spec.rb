@@ -4,8 +4,7 @@ module QA
   context 'Plan', :smoke do
     describe 'mention' do
       before do
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.perform(&:sign_in_using_credentials)
+        Flow::Login.sign_in
 
         @user = Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1)
 

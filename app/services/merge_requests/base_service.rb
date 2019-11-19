@@ -29,6 +29,19 @@ module MergeRequests
                                  .execute_for_merge_request(merge_request)
     end
 
+    def source_project
+      @source_project ||= merge_request.source_project
+    end
+
+    def target_project
+      @target_project ||= merge_request.target_project
+    end
+
+    # Don't try to print expensive instance variables.
+    def inspect
+      "#<#{self.class} #{merge_request.to_reference(full: true)}>"
+    end
+
     private
 
     def create(merge_request)

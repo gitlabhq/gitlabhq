@@ -7486,7 +7486,7 @@ msgstr "Go Micro是一个微服务开发的框架。"
 msgid "Go back"
 msgstr "返回"
 
-msgid "Go back (while searching for files"
+msgid "Go back (while searching for files)"
 msgstr ""
 
 msgid "Go back to %{startTag}Open issues%{endTag} and select some issues to add to your board."
@@ -16294,7 +16294,7 @@ msgstr "请将%{link} 页面连接到您的 Jaeger 服务器，以便在 GitLab 
 msgid "To preserve performance only <strong>%{display_size} of %{real_size}</strong> files are displayed."
 msgstr "为了保持性能，仅显示文件中的 <strong>%{display_size}/%{real_size}</strong>。"
 
-msgid "To protect this issue's confidentiality, %{link_start}fork the project%{link_end} and set the forks visiblity to private."
+msgid "To protect this issue's confidentiality, %{link_start}fork the project%{link_end} and set the forks visibility to private."
 msgstr ""
 
 msgid "To protect this issue's confidentiality, a private fork of this project was selected."

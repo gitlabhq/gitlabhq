@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
@@ -63,7 +65,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
       let(:data_store) { :redis }
 
       before do
-        build_trace_chunk.send(:unsafe_set_data!, 'Sample data in redis')
+        build_trace_chunk.send(:unsafe_set_data!, +'Sample data in redis')
       end
 
       it { is_expected.to eq('Sample data in redis') }
@@ -71,7 +73,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
 
     context 'when data_store is database' do
       let(:data_store) { :database }
-      let(:raw_data) { 'Sample data in database' }
+      let(:raw_data) { +'Sample data in database' }
 
       it { is_expected.to eq('Sample data in database') }
     end
@@ -80,7 +82,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
       let(:data_store) { :fog }
 
       before do
-        build_trace_chunk.send(:unsafe_set_data!, 'Sample data in fog')
+        build_trace_chunk.send(:unsafe_set_data!, +'Sample data in fog')
       end
 
       it { is_expected.to eq('Sample data in fog') }
@@ -90,7 +92,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
   describe '#append' do
     subject { build_trace_chunk.append(new_data, offset) }
 
-    let(:new_data) { 'Sample new data' }
+    let(:new_data) { +'Sample new data' }
     let(:offset) { 0 }
     let(:merged_data) { data + new_data.to_s }
 
@@ -143,7 +145,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
         end
 
         context 'when new_data is empty' do
-          let(:new_data) { '' }
+          let(:new_data) { +'' }
 
           it 'does not append' do
             subject
@@ -172,7 +174,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
 
     shared_examples_for 'Scheduling sidekiq worker to flush data to persist store' do
       context 'when new data fulfilled chunk size' do
-        let(:new_data) { 'a' * described_class::CHUNK_SIZE }
+        let(:new_data) { +'a' * described_class::CHUNK_SIZE }
 
         it 'schedules trace chunk flush worker' do
           expect(Ci::BuildTraceChunkFlushWorker).to receive(:perform_async).once
@@ -180,7 +182,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
           subject
         end
 
-        it 'migrates data to object storage' do
+        it 'migrates data to object storage', :sidekiq_might_not_need_inline do
           perform_enqueued_jobs do
             subject
 
@@ -194,7 +196,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
 
     shared_examples_for 'Scheduling no sidekiq worker' do
       context 'when new data fulfilled chunk size' do
-        let(:new_data) { 'a' * described_class::CHUNK_SIZE }
+        let(:new_data) { +'a' * described_class::CHUNK_SIZE }
 
         it 'does not schedule trace chunk flush worker' do
           expect(Ci::BuildTraceChunkFlushWorker).not_to receive(:perform_async)
@@ -219,7 +221,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
       let(:data_store) { :redis }
 
       context 'when there are no data' do
-        let(:data) { '' }
+        let(:data) { +'' }
 
         it 'has no data' do
           expect(build_trace_chunk.data).to be_empty
@@ -230,7 +232,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
       end
 
       context 'when there are some data' do
-        let(:data) { 'Sample data in redis' }
+        let(:data) { +'Sample data in redis' }
 
         before do
           build_trace_chunk.send(:unsafe_set_data!, data)
@@ -249,7 +251,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
       let(:data_store) { :database }
 
       context 'when there are no data' do
-        let(:data) { '' }
+        let(:data) { +'' }
 
         it 'has no data' do
           expect(build_trace_chunk.data).to be_empty
@@ -260,7 +262,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
       end
 
       context 'when there are some data' do
-        let(:raw_data) { 'Sample data in database' }
+        let(:raw_data) { +'Sample data in database' }
         let(:data) { raw_data }
 
         it 'has data' do
@@ -276,7 +278,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
       let(:data_store) { :fog }
 
       context 'when there are no data' do
-        let(:data) { '' }
+        let(:data) { +'' }
 
         it 'has no data' do
           expect(build_trace_chunk.data).to be_empty
@@ -287,7 +289,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
       end
 
       context 'when there are some data' do
-        let(:data) { 'Sample data in fog' }
+        let(:data) { +'Sample data in fog' }
 
         before do
           build_trace_chunk.send(:unsafe_set_data!, data)
@@ -332,7 +334,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
 
     context 'when data_store is redis' do
       let(:data_store) { :redis }
-      let(:data) { 'Sample data in redis' }
+      let(:data) { +'Sample data in redis' }
 
       before do
         build_trace_chunk.send(:unsafe_set_data!, data)
@@ -343,7 +345,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
 
     context 'when data_store is database' do
       let(:data_store) { :database }
-      let(:raw_data) { 'Sample data in database' }
+      let(:raw_data) { +'Sample data in database' }
       let(:data) { raw_data }
 
       it_behaves_like 'truncates'
@@ -351,7 +353,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
 
     context 'when data_store is fog' do
       let(:data_store) { :fog }
-      let(:data) { 'Sample data in fog' }
+      let(:data) { +'Sample data in fog' }
 
       before do
         build_trace_chunk.send(:unsafe_set_data!, data)
@@ -368,7 +370,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
       let(:data_store) { :redis }
 
       context 'when data exists' do
-        let(:data) { 'Sample data in redis' }
+        let(:data) { +'Sample data in redis' }
 
         before do
           build_trace_chunk.send(:unsafe_set_data!, data)
@@ -386,7 +388,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
       let(:data_store) { :database }
 
       context 'when data exists' do
-        let(:raw_data) { 'Sample data in database' }
+        let(:raw_data) { +'Sample data in database' }
         let(:data) { raw_data }
 
         it { is_expected.to eq(data.bytesize) }
@@ -401,7 +403,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
       let(:data_store) { :fog }
 
       context 'when data exists' do
-        let(:data) { 'Sample data in fog' }
+        let(:data) { +'Sample data in fog' }
         let(:key) { "tmp/builds/#{build.id}/chunks/#{chunk_index}.log" }
 
         before do
@@ -443,7 +445,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
         end
 
         context 'when data size reached CHUNK_SIZE' do
-          let(:data) { 'a' * described_class::CHUNK_SIZE }
+          let(:data) { +'a' * described_class::CHUNK_SIZE }
 
           it 'persists the data' do
             expect(build_trace_chunk.redis?).to be_truthy
@@ -463,7 +465,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
         end
 
         context 'when data size has not reached CHUNK_SIZE' do
-          let(:data) { 'Sample data in redis' }
+          let(:data) { +'Sample data in redis' }
 
           it 'does not persist the data and the orignal data is intact' do
             expect { subject }.to raise_error(described_class::FailedToPersistDataError)
@@ -492,7 +494,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
         end
 
         context 'when data size reached CHUNK_SIZE' do
-          let(:data) { 'a' * described_class::CHUNK_SIZE }
+          let(:data) { +'a' * described_class::CHUNK_SIZE }
 
           it 'persists the data' do
             expect(build_trace_chunk.database?).to be_truthy
@@ -512,7 +514,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
         end
 
         context 'when data size has not reached CHUNK_SIZE' do
-          let(:data) { 'Sample data in database' }
+          let(:data) { +'Sample data in database' }
 
           it 'does not persist the data and the orignal data is intact' do
             expect { subject }.to raise_error(described_class::FailedToPersistDataError)
@@ -561,7 +563,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
         end
 
         context 'when data size has not reached CHUNK_SIZE' do
-          let(:data) { 'Sample data in fog' }
+          let(:data) { +'Sample data in fog' }
 
           it 'does not raise error' do
             expect { subject }.not_to raise_error
@@ -582,7 +584,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
     end
 
     shared_examples_for 'deletes all build_trace_chunk and data in redis' do
-      it do
+      it 'deletes all build_trace_chunk and data in redis', :sidekiq_might_not_need_inline do
         Gitlab::Redis::SharedState.with do |redis|
           expect(redis.scan_each(match: "gitlab:ci:trace:*:chunks:*").to_a.size).to eq(3)
         end

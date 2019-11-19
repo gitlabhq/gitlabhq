@@ -18,8 +18,8 @@ module Gitlab
               config[:dependencies] = expand_names(config[:dependencies])
             end
 
-            if config[:needs]
-              config[:needs] = expand_names(config[:needs])
+            if job_needs = config.dig(:needs, :job)
+              config[:needs][:job] = expand_needs(job_needs)
             end
 
             config
@@ -33,6 +33,22 @@ module Gitlab
 
           job_names.flat_map do |job_name|
             parallelized_jobs[job_name.to_sym] || job_name
+          end
+        end
+
+        def expand_needs(job_needs)
+          return unless job_needs
+
+          job_needs.flat_map do |job_need|
+            job_need_name = job_need[:name].to_sym
+
+            if all_job_names = parallelized_jobs[job_need_name]
+              all_job_names.map do |job_name|
+                { name: job_name }
+              end
+            else
+              job_need
+            end
           end
         end
 

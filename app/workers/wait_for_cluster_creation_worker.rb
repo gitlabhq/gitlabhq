@@ -4,10 +4,16 @@ class WaitForClusterCreationWorker
   include ApplicationWorker
   include ClusterQueue
 
+  worker_has_external_dependencies!
+
   def perform(cluster_id)
     Clusters::Cluster.find_by_id(cluster_id).try do |cluster|
       cluster.provider.try do |provider|
-        Clusters::Gcp::VerifyProvisionStatusService.new.execute(provider) if cluster.gcp?
+        if cluster.gcp?
+          Clusters::Gcp::VerifyProvisionStatusService.new.execute(provider)
+        elsif cluster.aws?
+          Clusters::Aws::VerifyProvisionStatusService.new.execute(provider)
+        end
       end
     end
   end

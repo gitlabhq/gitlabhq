@@ -7,7 +7,6 @@ class Feature
     # Server feature flags should use '_' to separate words.
     SERVER_FEATURE_FLAGS =
       %w[
-        cache_invalidator
         inforef_uploadpack_cache
         get_all_lfs_pointers_go
       ].freeze
@@ -20,7 +19,7 @@ class Feature
 
         default_on = DEFAULT_ON_FLAGS.include?(feature_flag)
         Feature.enabled?("gitaly_#{feature_flag}", default_enabled: default_on)
-      rescue ActiveRecord::NoDatabaseError
+      rescue ActiveRecord::NoDatabaseError, PG::ConnectionBad
         false
       end
 

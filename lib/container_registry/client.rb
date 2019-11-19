@@ -51,7 +51,7 @@ module ContainerRegistry
 
     def upload_blob(name, content, digest)
       upload = faraday.post("/v2/#{name}/blobs/uploads/")
-      return unless upload.success?
+      return upload unless upload.success?
 
       location = URI(upload.headers['location'])
 

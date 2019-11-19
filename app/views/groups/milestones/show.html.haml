@@ -1,4 +1,4 @@
 = render "header_title"
 = render 'shared/milestones/top', milestone: @milestone, group: @group
-= render 'shared/milestones/tabs', milestone: @milestone, show_project_name: true if @milestone.legacy_group_milestone?
+= render 'shared/milestones/tabs', milestone: @milestone, show_project_name: true
 = render 'shared/milestones/sidebar', milestone: @milestone, affix_offset: 102

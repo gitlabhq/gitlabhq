@@ -1,6 +1,5 @@
 import {
   isDescriptionSystemNote,
-  changeDescriptionNote,
   getTimeDifferenceMinutes,
   collapseSystemNotes,
 } from '~/notes/stores/collapse_utils';
@@ -21,15 +20,6 @@ describe('Collapse utils', () => {
   it('returns false when a system note is not a description type', () => {
     expect(isDescriptionSystemNote(Object.assign({}, mockSystemNote, { note: 'foo' }))).toEqual(
       false,
-    );
-  });
-
-  it('changes the description to contain the number of changed times', () => {
-    const changedNote = changeDescriptionNote(mockSystemNote, 3, 5);
-
-    expect(changedNote.times_updated).toEqual(3);
-    expect(changedNote.note_html.trim()).toContain(
-      '<p dir="auto">changed the description 3 times within 5 minutes </p>',
     );
   });
 

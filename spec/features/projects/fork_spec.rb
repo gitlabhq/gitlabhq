@@ -27,7 +27,7 @@ describe 'Project fork' do
     expect(page).to have_css('a.disabled', text: 'Fork')
   end
 
-  it 'forks the project' do
+  it 'forks the project', :sidekiq_might_not_need_inline do
     visit project_path(project)
 
     click_link 'Fork'
@@ -174,7 +174,7 @@ describe 'Project fork' do
       expect(page).to have_css('.fork-thumbnail.disabled')
     end
 
-    it 'links to the fork if the project was already forked within that namespace' do
+    it 'links to the fork if the project was already forked within that namespace', :sidekiq_might_not_need_inline do
       forked_project = fork_project(project, user, namespace: group, repository: true)
 
       visit new_project_fork_path(project)

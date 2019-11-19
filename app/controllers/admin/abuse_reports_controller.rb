@@ -1,12 +1,9 @@
 # frozen_string_literal: true
 
 class Admin::AbuseReportsController < Admin::ApplicationController
-  # rubocop: disable CodeReuse/ActiveRecord
   def index
-    @abuse_reports = AbuseReport.order(id: :desc).page(params[:page])
-    @abuse_reports.includes(:reporter, :user)
+    @abuse_reports = AbuseReportsFinder.new(params).execute
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def destroy
     abuse_report = AbuseReport.find(params[:id])

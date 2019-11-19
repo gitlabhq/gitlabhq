@@ -80,7 +80,7 @@ class GroupDescendantsFinder
     if current_user
       authorized_groups = GroupsFinder.new(current_user,
                                            all_available: false)
-                            .execute.as('authorized')
+                            .execute.arel.as('authorized')
       authorized_to_user = groups_table.project(1).from(authorized_groups)
                              .where(authorized_groups[:id].eq(groups_table[:id]))
                              .exists

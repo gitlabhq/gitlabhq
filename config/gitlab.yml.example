@@ -8,7 +8,7 @@
 # If a setting requires an application restart say so in that screen.  #
 # If you change this file in a Merge Request, please also create       #
 # a MR on https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests. #
-# For more details see https://gitlab.com/gitlab-org/omnibus-gitlab/blob/0928cfb09f43993fd9454b0b14dbd1924b1407bc/doc/settings/gitlab.yml.md #
+# For more details see https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/gitlab.yml.md #
 ########################################################################
 #
 #
@@ -467,6 +467,13 @@ production: &base
       # enabled: true
       # primary_api_url: http://localhost:5000/ # internal address to the primary registry, will be used by GitLab to directly communicate with primary registry API
 
+  ## Feature Flag https://docs.gitlab.com/ee/user/project/operations/feature_flags.html
+  feature_flags:
+    unleash:
+      # enabled: false
+      # url: https://gitlab.com/api/v4/feature_flags/unleash/<project_id>
+      # app_name: gitlab.com # Environment name of your GitLab instance
+      # instance_id: INSTANCE_ID
 
   #
   # 2. GitLab CI settings
@@ -494,6 +501,7 @@ production: &base
   #   bundle exec rake gitlab:ldap:check RAILS_ENV=production
   ldap:
     enabled: false
+    prevent_ldap_sign_in: false
 
     # This setting controls the number of seconds between LDAP permission checks
     # for each user. After this time has expired for a given user, their next
@@ -1024,12 +1032,6 @@ production: &base
     #  enabled: true
     #  address: localhost
     #  port: 8083
-    #  # blackout_seconds:
-    #  #   defines an interval to block healthcheck,
-    #  #   but continue accepting application requests
-    #  #   this allows Load Balancer to notice service
-    #  #   being shutdown and not interrupt any of the clients
-    #  blackout_seconds: 10
 
   ## Prometheus settings
   # Do not modify these settings here. They should be modified in /etc/gitlab/gitlab.rb
@@ -1040,6 +1042,14 @@ production: &base
   prometheus:
     # enable: true
     # listen_address: 'localhost:9090'
+
+  shutdown:
+    #  # blackout_seconds:
+    #  #   defines an interval to block healthcheck,
+    #  #   but continue accepting application requests
+    #  #   this allows Load Balancer to notice service
+    #  #   being shutdown and not interrupt any of the clients
+    #  blackout_seconds: 10
 
   #
   # 5. Extra customization

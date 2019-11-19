@@ -2,7 +2,6 @@
 
 class IssueBoardEntity < Grape::Entity
   include RequestAwareEntity
-  include TimeTrackableEntity
 
   expose :id
   expose :iid

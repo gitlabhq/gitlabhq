@@ -69,7 +69,13 @@ before continuing the upgrading procedure. While this won't require downtime
 between upgrading major/minor releases, allowing the background migrations to
 finish. The time necessary to complete these migrations can be reduced by
 increasing the number of Sidekiq workers that can process jobs in the
-`background_migration` queue.
+`background_migration` queue. To check the size of this queue,
+[start a Rails console session](https://docs.gitlab.com/omnibus/maintenance/#starting-a-rails-console-session)
+and run the command below:
+
+```ruby
+Sidekiq::Queue.new('background_migration').size
+```
 
 As a rule of thumb, any database smaller than 10 GB won't take too much time to
 upgrade; perhaps an hour at most per minor release. Larger databases however may

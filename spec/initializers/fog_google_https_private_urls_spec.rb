@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'Fog::Storage::GoogleXML::File', :fog_requests do

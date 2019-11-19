@@ -40,6 +40,7 @@ Example response:
    "domain_blacklist_enabled" : false,
    "domain_blacklist" : [],
    "created_at" : "2016-01-04T15:44:55.176Z",
+   "default_ci_config_path" : null,
    "default_project_visibility" : "private",
    "default_group_visibility" : "private",
    "gravatar_enabled" : true,
@@ -113,6 +114,7 @@ Example response:
   "restricted_visibility_levels": [],
   "max_attachment_size": 10,
   "session_expire_delay": 10080,
+  "default_ci_config_path" : null,
   "default_project_visibility": "internal",
   "default_snippet_visibility": "private",
   "default_group_visibility": "private",
@@ -198,6 +200,7 @@ are listed in the descriptions of the relevant settings.
 | `container_registry_token_expire_delay`  | integer          | no                                   | Container Registry token duration in minutes. |
 | `default_artifacts_expire_in`            | string           | no                                   | Set the default expiration time for each job's artifacts. |
 | `default_branch_protection`              | integer          | no                                   | Determine if developers can push to master. Can take: `0` _(not protected, both developers and maintainers can push new commits, force push, or delete the branch)_, `1` _(partially protected, developers and maintainers can push new commits, but cannot force push or delete the branch)_ or `2` _(fully protected, developers cannot push new commits, but maintainers can; no-one can force push or delete the branch)_ as a parameter. Default is `2`. |
+| `default_ci_config_path`                 | string           | no                                   | Default CI configuration path for new projects (`.gitlab-ci.yml` if not set). |
 | `default_group_visibility`               | string           | no                                   | What visibility level new groups receive. Can take `private`, `internal` and `public` as a parameter. Default is `private`. |
 | `default_project_creation`               | integer          | no                                   | Default project creation protection. Can take: `0` _(No one)_, `1` _(Maintainers)_ or `2` _(Developers + Maintainers)_|
 | `default_projects_limit`                 | integer          | no                                   | Project limit per user. Default is `100000`. |
@@ -212,6 +215,10 @@ are listed in the descriptions of the relevant settings.
 | `dsa_key_restriction`                    | integer          | no                                   | The minimum allowed bit length of an uploaded DSA key. Default is `0` (no restriction). `-1` disables DSA keys. |
 | `ecdsa_key_restriction`                  | integer          | no                                   | The minimum allowed curve size (in bits) of an uploaded ECDSA key. Default is `0` (no restriction). `-1` disables ECDSA keys. |
 | `ed25519_key_restriction`                | integer          | no                                   | The minimum allowed curve size (in bits) of an uploaded ED25519 key. Default is `0` (no restriction). `-1` disables ED25519 keys. |
+| `eks_integration_enabled`                | boolean          | no                                   | Enable integration with Amazon EKS |
+| `eks_account_id`                         | string           | no                                   | Amazon account ID |
+| `eks_access_key_id`                      | string           | no                                   | AWS IAM access key ID |
+| `eks_secret_access_key`                  | string           | no                                   | AWS IAM secret access key |
 | `elasticsearch_aws_access_key`           | string           | no                                   | **(PREMIUM)** AWS IAM access key |
 | `elasticsearch_aws`                      | boolean          | no                                   | **(PREMIUM)** Enable the use of AWS hosted Elasticsearch |
 | `elasticsearch_aws_region`               | string           | no                                   | **(PREMIUM)** The AWS region the Elasticsearch domain is configured |
@@ -257,7 +264,6 @@ are listed in the descriptions of the relevant settings.
 | `housekeeping_incremental_repack_period` | integer          | required by: `housekeeping_enabled`  | Number of Git pushes after which an incremental `git repack` is run. |
 | `html_emails_enabled`                    | boolean          | no                                   | Enable HTML emails. |
 | `import_sources`                         | array of strings | no                                   | Sources to allow project import from, possible values: `github`, `bitbucket`, `bitbucket_server`, `gitlab`, `google_code`, `fogbugz`, `git`, `gitlab_project`, `gitea`, `manifest`, and `phabricator`. |
-
 | `instance_statistics_visibility_private` | boolean          | no                                   | When set to `true` Instance statistics will only be available to admins. |
 | `local_markdown_version`                 | integer          | no                                   | Increase this value when any cached markdown should be invalidated. |
 | `max_artifacts_size`                     | integer          | no                                   | Maximum artifacts size in MB |
@@ -271,7 +277,7 @@ are listed in the descriptions of the relevant settings.
 | `metrics_port`                           | integer          | required by: `metrics_enabled`       | The UDP port to use for connecting to InfluxDB. |
 | `metrics_sample_interval`                | integer          | required by: `metrics_enabled`       | The sampling interval in seconds. |
 | `metrics_timeout`                        | integer          | required by: `metrics_enabled`       | The amount of seconds after which InfluxDB will time out. |
-| `mirror_available`                       | boolean          | no                                   | Allow mirrors to be set up for projects. If disabled, only admins will be able to set up mirrors in projects. |
+| `mirror_available`                       | boolean          | no                                   | Allow repository mirroring to configured by project Maintainers. If disabled, only Admins will be able to configure repository mirroring. |
 | `mirror_capacity_threshold`              | integer          | no                                   | **(PREMIUM)** Minimum capacity to be available before scheduling more mirrors preemptively |
 | `mirror_max_capacity`                    | integer          | no                                   | **(PREMIUM)** Maximum number of mirrors that can be synchronizing at the same time. |
 | `mirror_max_delay`                       | integer          | no                                   | **(PREMIUM)** Maximum time (in minutes) between updates that a mirror can have when scheduled to synchronize. |
@@ -316,7 +322,11 @@ are listed in the descriptions of the relevant settings.
 | `snowplow_collector_hostname`            | string           | required by: `snowplow_enabled`      | The Snowplow collector hostname. (e.g. `snowplow.trx.gitlab.net`) |
 | `snowplow_cookie_domain`                 | string           | no                                   | The Snowplow cookie domain. (e.g. `.gitlab.com`) |
 | `snowplow_enabled`                       | boolean          | no                                   | Enable snowplow tracking. |
-| `snowplow_site_id`                       | string           | no                                   | The Snowplow site name / application id. (e.g. `gitlab`) |
+| `snowplow_app_id`                        | string           | no                                   | The Snowplow site name / application id. (e.g. `gitlab`) |
+| `snowplow_iglu_registry_url`             | string           | no                                   | The Snowplow base Iglu Schema Registry URL to use for custom context and self describing events'|
+| `sourcegraph_enabled`                    | boolean          | no                                    | Enables Sourcegraph integration. Default is `false`. **If enabled, requires** `sourcegraph_url`. |
+| `sourcegraph_url`                        | string           | required by: `sourcegraph_enabled`    | The Sourcegraph instance URL for integration. |
+| `sourcegraph_public_only`                | boolean          | no                                   | Blocks Sourcegraph from being loaded on private and internal projects. Defaul is `true`. |
 | `terminal_max_session_time`              | integer          | no                                   | Maximum time for web terminal websocket connection (in seconds). Set to `0` for unlimited time. |
 | `terms`                                  | text             | required by: `enforce_terms`         | (**Required by:** `enforce_terms`) Markdown content for the ToS. |
 | `throttle_authenticated_api_enabled`     | boolean          | no                                   | (**If enabled, requires:** `throttle_authenticated_api_period_in_seconds` and `throttle_authenticated_api_requests_per_period`) Enable authenticated API request rate limit. Helps reduce request volume (e.g. from crawlers or abusive bots). |

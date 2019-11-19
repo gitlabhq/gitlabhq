@@ -13,8 +13,6 @@ describe 'Projects > Files > User creates a directory', :js do
   let(:user) { create(:user) }
 
   before do
-    stub_feature_flags(vue_file_list: false)
-
     project.add_developer(user)
     sign_in(user)
     visit project_tree_path(project, 'master')
@@ -71,7 +69,7 @@ describe 'Projects > Files > User creates a directory', :js do
       visit(project2_tree_path_root_ref)
     end
 
-    it 'creates a directory in a forked project' do
+    it 'creates a directory in a forked project', :sidekiq_might_not_need_inline do
       find('.add-to-tree').click
       click_link('New directory')
 

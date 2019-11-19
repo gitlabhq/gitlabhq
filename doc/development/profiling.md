@@ -42,6 +42,10 @@ Passing a `logger:` keyword argument to `Gitlab::Profiler.profile` will send
 ActiveRecord and ActionController log output to that logger. Further options are
 documented with the method source.
 
+```ruby
+Gitlab::Profiler.profile('/gitlab-org/gitlab-test', user: User.first, logger: Logger.new(STDOUT))
+```
+
 There is also a RubyProf printer available:
 `Gitlab::Profiler::TotalTimeFlatPrinter`. This acts like
 `RubyProf::FlatPrinter`, but its `min_percent` option works on the method's

@@ -5,6 +5,7 @@
     "properties" : {
       "basename": { "type": "string" },
       "data": { "type": "string" },
+      "path": { "type": ["string"] },
       "filename": { "type": ["string"] },
       "id": { "type": ["string", "null"] },
       "project_id": { "type": "integer" },
@@ -12,7 +13,7 @@
       "startline": { "type": "integer" }
     },
     "required": [
-      "basename", "data", "filename", "id", "ref", "startline", "project_id"
+      "basename", "data", "path", "filename", "id", "ref", "startline", "project_id"
     ],
     "additionalProperties": false
   }

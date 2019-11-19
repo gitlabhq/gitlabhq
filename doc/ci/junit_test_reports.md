@@ -178,3 +178,27 @@ Currently, the following tools might not work because their XML formats are unsu
 |Case|Tool|Issue|
 |---|---|---|
 |`<testcase>` does not have `classname` attribute|ESlint, sass-lint|<https://gitlab.com/gitlab-org/gitlab-foss/issues/50964>|
+
+## Viewing JUnit test reports on GitLab
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/24792) in GitLab 12.5.
+
+If JUnit XML files are generated and uploaded as part of a pipeline, these reports
+can be viewed inside the pipelines details page. The **Tests** tab on this page will
+display a list of test suites and cases reported from the XML file.
+
+![Test Reports Widget](img/pipelines_junit_test_report_ui_v12_5.png)
+
+You can view all the known test suites and click on each of these to see further
+details, including the cases that makeup the suite. Cases are ordered by status,
+with failed showing at the top, skipped next and successful cases last.
+
+### Enabling the feature
+
+This feature comes with the `:junit_pipeline_view` feature flag disabled by default.
+To enable this feature, ask a GitLab administrator with Rails console access to run the
+following command:
+
+```ruby
+Feature.enable(:junit_pipeline_view)
+```

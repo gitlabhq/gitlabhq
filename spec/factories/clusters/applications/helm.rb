@@ -79,6 +79,15 @@ FactoryBot.define do
       cluster factory: %i(cluster with_installed_helm provided_by_gcp)
     end
 
+    factory :clusters_applications_elastic_stack, class: Clusters::Applications::ElasticStack do
+      cluster factory: %i(cluster with_installed_helm provided_by_gcp)
+    end
+
+    factory :clusters_applications_crossplane, class: Clusters::Applications::Crossplane do
+      stack { 'gcp' }
+      cluster factory: %i(cluster with_installed_helm provided_by_gcp)
+    end
+
     factory :clusters_applications_prometheus, class: Clusters::Applications::Prometheus do
       cluster factory: %i(cluster with_installed_helm provided_by_gcp)
     end

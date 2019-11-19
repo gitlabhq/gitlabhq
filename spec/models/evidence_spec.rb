@@ -27,7 +27,7 @@ describe Evidence do
       let(:release) { create(:release, project: project, name: nil) }
 
       it 'creates a valid JSON object' do
-        expect(release.name).to be_nil
+        expect(release.name).to eq(release.tag)
         expect(summary_json).to match_schema(schema_file)
       end
     end

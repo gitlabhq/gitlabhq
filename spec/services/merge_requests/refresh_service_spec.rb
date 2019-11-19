@@ -137,7 +137,7 @@ describe MergeRequests::RefreshService do
 
       subject { service.new(@project, @user).execute(@oldrev, @newrev, 'refs/heads/master') }
 
-      it 'updates the head_pipeline_id for @merge_request' do
+      it 'updates the head_pipeline_id for @merge_request', :sidekiq_might_not_need_inline do
         expect { subject }.to change { @merge_request.reload.head_pipeline_id }.from(nil).to(pipeline.id)
       end
 
@@ -200,7 +200,7 @@ describe MergeRequests::RefreshService do
         context 'when service runs on forked project' do
           let(:project) { @fork_project }
 
-          it 'creates legacy detached merge request pipeline for fork merge request' do
+          it 'creates legacy detached merge request pipeline for fork merge request', :sidekiq_might_not_need_inline do
             expect { subject }
               .to change { @fork_merge_request.pipelines_for_merge_request.count }.by(1)
 
@@ -232,7 +232,7 @@ describe MergeRequests::RefreshService do
             subject
           end
 
-          it 'sets the latest detached merge request pipeline as a head pipeline' do
+          it 'sets the latest detached merge request pipeline as a head pipeline', :sidekiq_might_not_need_inline do
             @merge_request.reload
             expect(@merge_request.actual_head_pipeline).to be_merge_request_event
           end
@@ -304,7 +304,7 @@ describe MergeRequests::RefreshService do
       end
     end
 
-    context 'push to origin repo target branch' do
+    context 'push to origin repo target branch', :sidekiq_might_not_need_inline do
       context 'when all MRs to the target branch had diffs' do
         before do
           service.new(@project, @user).execute(@oldrev, @newrev, 'refs/heads/feature')
@@ -354,7 +354,7 @@ describe MergeRequests::RefreshService do
       end
     end
 
-    context 'manual merge of source branch' do
+    context 'manual merge of source branch', :sidekiq_might_not_need_inline do
       before do
         # Merge master -> feature branch
         @project.repository.merge(@user, @merge_request.diff_head_sha, @merge_request, 'Test message')
@@ -374,7 +374,7 @@ describe MergeRequests::RefreshService do
       end
     end
 
-    context 'push to fork repo source branch' do
+    context 'push to fork repo source branch', :sidekiq_might_not_need_inline do
       let(:refresh_service) { service.new(@fork_project, @user) }
 
       def refresh
@@ -431,7 +431,7 @@ describe MergeRequests::RefreshService do
       end
     end
 
-    context 'push to fork repo target branch' do
+    context 'push to fork repo target branch', :sidekiq_might_not_need_inline do
       describe 'changes to merge requests' do
         before do
           service.new(@fork_project, @user).execute(@oldrev, @newrev, 'refs/heads/feature')
@@ -457,7 +457,7 @@ describe MergeRequests::RefreshService do
       end
     end
 
-    context 'forked projects with the same source branch name as target branch' do
+    context 'forked projects with the same source branch name as target branch', :sidekiq_might_not_need_inline do
       let!(:first_commit) do
         @fork_project.repository.create_file(@user, 'test1.txt', 'Test data',
                                              message: 'Test commit',
@@ -537,7 +537,7 @@ describe MergeRequests::RefreshService do
     context 'push new branch that exists in a merge request' do
       let(:refresh_service) { service.new(@fork_project, @user) }
 
-      it 'refreshes the merge request' do
+      it 'refreshes the merge request', :sidekiq_might_not_need_inline do
         expect(refresh_service).to receive(:execute_hooks)
                                        .with(@fork_merge_request, 'update', old_rev: Gitlab::Git::BLANK_SHA)
         allow_any_instance_of(Repository).to receive(:merge_base).and_return(@oldrev)
@@ -769,7 +769,7 @@ describe MergeRequests::RefreshService do
       fork_project(target_project, author, repository: true)
     end
 
-    let_it_be(:merge_request) do
+    let_it_be(:merge_request, refind: true) do
       create(:merge_request,
              author: author,
              source_project: source_project,
@@ -795,88 +795,58 @@ describe MergeRequests::RefreshService do
         .parent_id
     end
 
+    let(:auto_merge_strategy) { AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS }
     let(:refresh_service) { service.new(project, user) }
 
     before do
       target_project.merge_method = merge_method
       target_project.save!
+      merge_request.auto_merge_strategy = auto_merge_strategy
+      merge_request.save!
 
       refresh_service.execute(oldrev, newrev, 'refs/heads/master')
       merge_request.reload
     end
 
-    let(:aborted_message) do
-      /aborted the automatic merge because target branch was updated/
-    end
-
-    shared_examples 'aborted MWPS' do
-      it 'aborts auto_merge' do
-        expect(merge_request.auto_merge_enabled?).to be_falsey
-        expect(merge_request.notes.last.note).to match(aborted_message)
-      end
-
-      it 'removes merge_user' do
-        expect(merge_request.merge_user).to be_nil
-      end
-
-      it 'does not add todos for merge user' do
-        expect(user.todos.for_target(merge_request)).to be_empty
-      end
-
-      it 'adds todos for merge author' do
-        expect(author.todos.for_target(merge_request)).to be_present.and be_all(&:pending?)
-      end
-    end
-
     context 'when Project#merge_method is set to FF' do
       let(:merge_method) { :ff }
 
-      it_behaves_like 'aborted MWPS'
+      it_behaves_like 'aborted merge requests for MWPS'
 
       context 'with forked project' do
         let(:source_project) { forked_project }
 
-        it_behaves_like 'aborted MWPS'
+        it_behaves_like 'aborted merge requests for MWPS'
+      end
+
+      context 'with bogus auto merge strategy' do
+        let(:auto_merge_strategy) { 'bogus' }
+
+        it_behaves_like 'maintained merge requests for MWPS'
       end
     end
 
     context 'when Project#merge_method is set to rebase_merge' do
       let(:merge_method) { :rebase_merge }
 
-      it_behaves_like 'aborted MWPS'
+      it_behaves_like 'aborted merge requests for MWPS'
 
       context 'with forked project' do
         let(:source_project) { forked_project }
 
-        it_behaves_like 'aborted MWPS'
+        it_behaves_like 'aborted merge requests for MWPS'
       end
     end
 
     context 'when Project#merge_method is set to merge' do
       let(:merge_method) { :merge }
 
-      shared_examples 'maintained MWPS' do
-        it 'does not cancel auto merge' do
-          expect(merge_request.auto_merge_enabled?).to be_truthy
-          expect(merge_request.notes).to be_empty
-        end
-
-        it 'does not change merge_user' do
-          expect(merge_request.merge_user).to eq(user)
-        end
-
-        it 'does not add todos' do
-          expect(author.todos.for_target(merge_request)).to be_empty
-          expect(user.todos.for_target(merge_request)).to be_empty
-        end
-      end
-
-      it_behaves_like 'maintained MWPS'
+      it_behaves_like 'maintained merge requests for MWPS'
 
       context 'with forked project' do
         let(:source_project) { forked_project }
 
-        it_behaves_like 'maintained MWPS'
+        it_behaves_like 'maintained merge requests for MWPS'
       end
     end
   end

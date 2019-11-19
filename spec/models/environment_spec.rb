@@ -5,6 +5,7 @@ require 'spec_helper'
 describe Environment, :use_clean_rails_memory_store_caching do
   include ReactiveCachingHelpers
   using RSpec::Parameterized::TableSyntax
+  include RepoHelpers
 
   let(:project) { create(:project, :stubbed_repository) }
   subject(:environment) { create(:environment, project: project) }
@@ -259,7 +260,7 @@ describe Environment, :use_clean_rails_memory_store_caching do
     let(:head_commit)   { project.commit }
     let(:commit)        { project.commit.parent }
 
-    it 'returns deployment id for the environment' do
+    it 'returns deployment id for the environment', :sidekiq_might_not_need_inline do
       expect(environment.first_deployment_for(commit.id)).to eq deployment1
     end
 
@@ -267,7 +268,7 @@ describe Environment, :use_clean_rails_memory_store_caching do
       expect(environment.first_deployment_for(head_commit.id)).to eq nil
     end
 
-    it 'returns a UTF-8 ref' do
+    it 'returns a UTF-8 ref', :sidekiq_might_not_need_inline do
       expect(environment.first_deployment_for(commit.id).ref).to be_utf8
     end
   end
@@ -505,11 +506,144 @@ describe Environment, :use_clean_rails_memory_store_caching do
         end
       end
 
+      context 'when there is a deployment record with failed status' do
+        let!(:deployment) { create(:deployment, :failed, environment: environment) }
+
+        it 'returns the previous deployment' do
+          is_expected.to eq(previous_deployment)
+        end
+      end
+
       context 'when there is a deployment record with success status' do
         let!(:deployment) { create(:deployment, :success, environment: environment) }
 
         it 'returns the latest successful deployment' do
           is_expected.to eq(deployment)
+        end
+      end
+    end
+  end
+
+  describe '#last_visible_deployment' do
+    subject { environment.last_visible_deployment }
+
+    before do
+      allow_any_instance_of(Deployment).to receive(:create_ref)
+    end
+
+    context 'when there is an old deployment record' do
+      let!(:previous_deployment) { create(:deployment, :success, environment: environment) }
+
+      context 'when there is a deployment record with created status' do
+        let!(:deployment) { create(:deployment, environment: environment) }
+
+        it { is_expected.to eq(previous_deployment) }
+      end
+
+      context 'when there is a deployment record with running status' do
+        let!(:deployment) { create(:deployment, :running, environment: environment) }
+
+        it { is_expected.to eq(deployment) }
+      end
+
+      context 'when there is a deployment record with success status' do
+        let!(:deployment) { create(:deployment, :success, environment: environment) }
+
+        it { is_expected.to eq(deployment) }
+      end
+
+      context 'when there is a deployment record with failed status' do
+        let!(:deployment) { create(:deployment, :failed, environment: environment) }
+
+        it { is_expected.to eq(deployment) }
+      end
+
+      context 'when there is a deployment record with canceled status' do
+        let!(:deployment) { create(:deployment, :canceled, environment: environment) }
+
+        it { is_expected.to eq(deployment) }
+      end
+    end
+  end
+
+  describe '#last_visible_pipeline' do
+    let(:user) { create(:user) }
+    let_it_be(:project) { create(:project, :repository) }
+    let(:environment) { create(:environment, project: project) }
+    let(:commit) { project.commit }
+
+    let(:success_pipeline) do
+      create(:ci_pipeline, :success, project: project, user: user, sha: commit.sha)
+    end
+
+    let(:failed_pipeline) do
+      create(:ci_pipeline, :failed, project: project, user: user, sha: commit.sha)
+    end
+
+    it 'uses the last deployment even if it failed' do
+      pipeline = create(:ci_pipeline, project: project, user: user, sha: commit.sha)
+      ci_build = create(:ci_build, project: project, pipeline: pipeline)
+      create(:deployment, :failed, project: project, environment: environment, deployable: ci_build, sha: commit.sha)
+
+      last_pipeline = environment.last_visible_pipeline
+
+      expect(last_pipeline).to eq(pipeline)
+    end
+
+    it 'returns nil if there is no deployment' do
+      create(:ci_build, project: project, pipeline: success_pipeline)
+
+      expect(environment.last_visible_pipeline).to be_nil
+    end
+
+    it 'does not return an invisible pipeline' do
+      failed_pipeline = create(:ci_pipeline, project: project, user: user, sha: commit.sha)
+      ci_build_a = create(:ci_build, project: project, pipeline: failed_pipeline)
+      create(:deployment, :failed, project: project, environment: environment, deployable: ci_build_a, sha: commit.sha)
+      pipeline = create(:ci_pipeline, project: project, user: user, sha: commit.sha)
+      ci_build_b = create(:ci_build, project: project, pipeline: pipeline)
+      create(:deployment, :created, project: project, environment: environment, deployable: ci_build_b, sha: commit.sha)
+
+      last_pipeline = environment.last_visible_pipeline
+
+      expect(last_pipeline).to eq(failed_pipeline)
+    end
+
+    context 'for the environment' do
+      it 'returns the last pipeline' do
+        pipeline = create(:ci_pipeline, project: project, user: user, sha: commit.sha)
+        ci_build = create(:ci_build, project: project, pipeline: pipeline)
+        create(:deployment, :success, project: project, environment: environment, deployable: ci_build, sha: commit.sha)
+
+        last_pipeline = environment.last_visible_pipeline
+
+        expect(last_pipeline).to eq(pipeline)
+      end
+
+      context 'with multiple deployments' do
+        it 'returns the last pipeline' do
+          pipeline_a = create(:ci_pipeline, project: project, user: user)
+          pipeline_b = create(:ci_pipeline, project: project, user: user)
+          ci_build_a = create(:ci_build, project: project, pipeline: pipeline_a)
+          ci_build_b = create(:ci_build, project: project, pipeline: pipeline_b)
+          create(:deployment, :success, project: project, environment: environment, deployable: ci_build_a)
+          create(:deployment, :success, project: project, environment: environment, deployable: ci_build_b)
+
+          last_pipeline = environment.last_visible_pipeline
+
+          expect(last_pipeline).to eq(pipeline_b)
+        end
+      end
+
+      context 'with multiple pipelines' do
+        it 'returns the last pipeline' do
+          create(:ci_build, project: project, pipeline: success_pipeline)
+          ci_build_b = create(:ci_build, project: project, pipeline: failed_pipeline)
+          create(:deployment, :failed, project: project, environment: environment, deployable: ci_build_b, sha: commit.sha)
+
+          last_pipeline = environment.last_visible_pipeline
+
+          expect(last_pipeline).to eq(failed_pipeline)
         end
       end
     end
@@ -608,6 +742,12 @@ describe Environment, :use_clean_rails_memory_store_caching do
 
     before do
       allow(environment).to receive(:deployment_platform).and_return(double)
+    end
+
+    context 'reactive cache configuration' do
+      it 'does not continue to spawn jobs' do
+        expect(described_class.reactive_cache_lifetime).to be < described_class.reactive_cache_refresh_interval
+      end
     end
 
     context 'reactive cache is empty' do
@@ -722,6 +862,51 @@ describe Environment, :use_clean_rails_memory_store_caching do
       before do
         allow(environment).to receive(:has_metrics?).and_return(false)
       end
+
+      it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#prometheus_status' do
+    context 'when a cluster is present' do
+      context 'when a deployment platform is present' do
+        let(:cluster) { create(:cluster, :provided_by_user, :project) }
+        let(:environment) { create(:environment, project: cluster.project) }
+
+        subject { environment.prometheus_status }
+
+        context 'when the prometheus application status is :updating' do
+          let!(:prometheus) { create(:clusters_applications_prometheus, :updating, cluster: cluster) }
+
+          it { is_expected.to eq(:updating) }
+        end
+
+        context 'when the prometheus application state is :updated' do
+          let!(:prometheus) { create(:clusters_applications_prometheus, :updated, cluster: cluster) }
+
+          it { is_expected.to eq(:updated) }
+        end
+
+        context 'when the prometheus application is not installed' do
+          it { is_expected.to be_nil }
+        end
+      end
+
+      context 'when a deployment platform is not present' do
+        let(:cluster) { create(:cluster, :project) }
+        let(:environment) { create(:environment, project: cluster.project) }
+
+        subject { environment.prometheus_status }
+
+        it { is_expected.to be_nil }
+      end
+    end
+
+    context 'when a cluster is not present' do
+      let(:project) { create(:project, :stubbed_repository) }
+      let(:environment) { create(:environment, project: project) }
+
+      subject { environment.prometheus_status }
 
       it { is_expected.to be_nil }
     end

@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-describe ProjectsFinder do
+describe ProjectsFinder, :do_not_mock_admin_mode do
+  include AdminModeHelper
+
   describe '#execute' do
     let(:user) { create(:user) }
     let(:group) { create(:group, :public) }
@@ -54,6 +56,31 @@ describe ProjectsFinder do
       let(:project_ids_relation) { Project.where(id: internal_project.id) }
 
       it { is_expected.to eq([internal_project]) }
+    end
+
+    describe 'with id_after' do
+      context 'only returns projects with a project id greater than given' do
+        let(:params) { { id_after: internal_project.id }}
+
+        it { is_expected.to eq([public_project]) }
+      end
+    end
+
+    describe 'with id_before' do
+      context 'only returns projects with a project id less than given' do
+        let(:params) { { id_before: public_project.id }}
+
+        it { is_expected.to eq([internal_project]) }
+      end
+    end
+
+    describe 'with both id_before and id_after' do
+      context 'only returns projects with a project id less than given' do
+        let!(:projects) { create_list(:project, 5, :public) }
+        let(:params) { { id_after: projects.first.id, id_before: projects.last.id }}
+
+        it { is_expected.to contain_exactly(*projects[1..-2]) }
+      end
     end
 
     describe 'filter by visibility_level' do
@@ -187,6 +214,22 @@ describe ProjectsFinder do
       let(:params) { { sort: 'name_asc' } }
 
       it { is_expected.to eq([internal_project, public_project]) }
+    end
+
+    describe 'with admin user' do
+      let(:user) { create(:admin) }
+
+      context 'admin mode enabled' do
+        before do
+          enable_admin_mode!(current_user)
+        end
+
+        it { is_expected.to match_array([public_project, internal_project, private_project, shared_project]) }
+      end
+
+      context 'admin mode disabled' do
+        it { is_expected.to match_array([public_project, internal_project]) }
+      end
     end
   end
 end

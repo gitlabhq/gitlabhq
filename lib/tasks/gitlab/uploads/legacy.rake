@@ -15,7 +15,7 @@ namespace :gitlab do
         batch_size = 5000
         delay_interval = 5.minutes.to_i
 
-        Upload.where(uploader: 'AttachmentUploader').each_batch(of: batch_size) do |relation, index|
+        Upload.where(uploader: 'AttachmentUploader', model_type: 'Note').each_batch(of: batch_size) do |relation, index|
           start_id, end_id = relation.pluck('MIN(id), MAX(id)').first
           delay = index * delay_interval
 

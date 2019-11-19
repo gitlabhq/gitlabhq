@@ -77,7 +77,7 @@ module API
 
             response_with_status(**payload)
           when ::Gitlab::GitAccessResult::CustomAction
-            response_with_status(code: 300, message: check_result.message, payload: check_result.payload)
+            response_with_status(code: 300, payload: check_result.payload, gl_console_messages: check_result.console_messages)
           else
             response_with_status(code: 500, success: false, message: UNKNOWN_CHECK_RESULT_ERROR)
           end

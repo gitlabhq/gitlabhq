@@ -5,6 +5,7 @@ require_relative '../smime_signature_settings'
 # Default settings
 Settings['ldap'] ||= Settingslogic.new({})
 Settings.ldap['enabled'] = false if Settings.ldap['enabled'].nil?
+Settings.ldap['prevent_ldap_sign_in'] = false if Settings.ldap['prevent_ldap_sign_in'].blank?
 
 Gitlab.ee do
   Settings.ldap['sync_time'] = 3600 if Settings.ldap['sync_time'].nil?
@@ -306,6 +307,13 @@ Gitlab.ee do
   Settings.geo['registry_replication'] ||= Settingslogic.new({})
   Settings.geo.registry_replication['enabled'] ||= false
 end
+
+#
+# Unleash
+#
+Settings['feature_flags'] ||= Settingslogic.new({})
+Settings.feature_flags['unleash'] ||= Settingslogic.new({})
+Settings.feature_flags.unleash['enabled'] = false if Settings.feature_flags.unleash['enabled'].nil?
 
 #
 # External merge request diffs
@@ -668,7 +676,12 @@ Settings.monitoring['web_exporter'] ||= Settingslogic.new({})
 Settings.monitoring.web_exporter['enabled'] ||= false
 Settings.monitoring.web_exporter['address'] ||= 'localhost'
 Settings.monitoring.web_exporter['port'] ||= 8083
-Settings.monitoring.web_exporter['blackout_seconds'] ||= 10
+
+#
+# Shutdown settings
+#
+Settings['shutdown'] ||= Settingslogic.new({})
+Settings.shutdown['blackout_seconds'] ||= 10
 
 #
 # Testing settings

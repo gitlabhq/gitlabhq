@@ -13,8 +13,12 @@ describe 'User Cluster', :js do
     gitlab_sign_in(user)
 
     allow(Projects::ClustersController).to receive(:STATUS_POLLING_INTERVAL) { 100 }
-    allow_any_instance_of(Clusters::Kubernetes::CreateOrUpdateNamespaceService).to receive(:execute)
-    allow_any_instance_of(Clusters::Cluster).to receive(:retrieve_connection_status).and_return(:connected)
+    allow_next_instance_of(Clusters::Kubernetes::CreateOrUpdateNamespaceService) do |instance|
+      allow(instance).to receive(:execute)
+    end
+    allow_next_instance_of(Clusters::Cluster) do |instance|
+      allow(instance).to receive(:retrieve_connection_status).and_return(:connected)
+    end
   end
 
   context 'when user does not have a cluster and visits cluster index page' do

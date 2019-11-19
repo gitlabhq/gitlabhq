@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`IDE pipeline stage renders stage details & icon 1`] = `
+<div
+  class="ide-stage card prepend-top-default"
+>
+  <div
+    class="card-header"
+  >
+    <ciicon-stub
+      cssclasses=""
+      size="24"
+      status="[object Object]"
+    />
+     
+    <strong
+      class="prepend-left-8 ide-stage-title"
+      data-container="body"
+      data-original-title=""
+      title=""
+    >
+      
+      build
+    
+    </strong>
+     
+    <div
+      class="append-right-8 prepend-left-4"
+    >
+      <span
+        class="badge badge-pill"
+      >
+         4 
+      </span>
+    </div>
+     
+    <icon-stub
+      class="ide-stage-collapse-icon"
+      name="angle-down"
+      size="16"
+    />
+  </div>
+   
+  <div
+    class="card-body"
+  >
+    <item-stub
+      job="[object Object]"
+    />
+    <item-stub
+      job="[object Object]"
+    />
+    <item-stub
+      job="[object Object]"
+    />
+    <item-stub
+      job="[object Object]"
+    />
+  </div>
+</div>
+`;

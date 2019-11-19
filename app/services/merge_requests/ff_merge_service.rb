@@ -11,10 +11,16 @@ module MergeRequests
     private
 
     def commit
-      repository.ff_merge(current_user,
-                          source,
-                          merge_request.target_branch,
-                          merge_request: merge_request)
+      ff_merge = repository.ff_merge(current_user,
+                                     source,
+                                     merge_request.target_branch,
+                                     merge_request: merge_request)
+
+      if merge_request.squash
+        merge_request.update_column(:squash_commit_sha, merge_request.in_progress_merge_commit_sha)
+      end
+
+      ff_merge
     rescue Gitlab::Git::PreReceiveError => e
       raise MergeError, e.message
     rescue StandardError => e

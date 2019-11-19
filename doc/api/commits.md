@@ -317,6 +317,21 @@ Example response:
 }
 ```
 
+In the event of a failed cherry-pick, the response will provide context about
+why:
+
+```json
+{
+  "message": "Sorry, we cannot cherry-pick this commit automatically. This commit may already have been cherry-picked, or a more recent commit may have updated some of its content.",
+  "error_code": "empty"
+}
+```
+
+In this case, the cherry-pick failed because the changeset was empty and likely
+indicates that the commit already exists in the target branch. The other
+possible error code is `conflict`, which indicates that there was a merge
+conflict.
+
 ## Revert a commit
 
 > [Introduced][ce-22919] in GitLab 11.5.
@@ -357,6 +372,19 @@ Example response:
   "committed_date":"2018-11-08T15:55:26.000Z"
 }
 ```
+
+In the event of a failed revert, the response will provide context about why:
+
+```json
+{
+  "message": "Sorry, we cannot revert this commit automatically. This commit may already have been reverted, or a more recent commit may have updated some of its content.",
+  "error_code": "conflict"
+}
+```
+
+In this case, the revert failed because the attempted revert generated a merge
+conflict. The other possible error code is `empty`, which indicates that the
+changeset was empty, likely due to the change having already been reverted.
 
 ## Get the diff of a commit
 
@@ -670,6 +698,7 @@ Example response:
       "merge_status":"can_be_merged",
       "sha":"af5b13261899fb2c0db30abdd0af8b07cb44fdc5",
       "merge_commit_sha":null,
+      "squash_commit_sha":null,
       "user_notes_count":0,
       "discussion_locked":null,
       "should_remove_source_branch":null,

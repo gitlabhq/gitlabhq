@@ -48,7 +48,7 @@ describe 'projects/deployments/_confirm_rollback_modal' do
       render
 
       expect(rendered).to have_selector('h4', text: "Rollback environment #{environment.name}?")
-      expect(rendered).to have_selector('p', text: "This action will run the job defined by staging for commit #{deployment.short_sha}, putting the environment in a previous version. You can revert it by re-deploying the latest version of your application. Are you sure you want to continue?")
+      expect(rendered).to have_selector('p', text: "This action will run the job defined by #{environment.name} for commit #{deployment.short_sha}, putting the environment in a previous version. You can revert it by re-deploying the latest version of your application. Are you sure you want to continue?")
       expect(rendered).to have_selector('a.btn-danger', text: 'Rollback')
     end
 

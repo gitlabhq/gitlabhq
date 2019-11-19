@@ -8,19 +8,23 @@ describe Gitlab::Tracking do
     stub_application_setting(snowplow_enabled: true)
     stub_application_setting(snowplow_collector_hostname: 'gitfoo.com')
     stub_application_setting(snowplow_cookie_domain: '.gitfoo.com')
-    stub_application_setting(snowplow_site_id: '_abc123_')
+    stub_application_setting(snowplow_app_id: '_abc123_')
+    stub_application_setting(snowplow_iglu_registry_url: 'https://example.org')
   end
 
   describe '.snowplow_options' do
     it 'returns useful client options' do
-      expect(described_class.snowplow_options(nil)).to eq(
+      expected_fields = {
         namespace: 'gl',
         hostname: 'gitfoo.com',
         cookieDomain: '.gitfoo.com',
         appId: '_abc123_',
         formTracking: true,
-        linkClickTracking: true
-      )
+        linkClickTracking: true,
+        igluRegistryUrl: 'https://example.org'
+      }
+
+      expect(subject.snowplow_options(nil)).to match(expected_fields)
     end
 
     it 'enables features using feature flags' do
@@ -29,11 +33,12 @@ describe Gitlab::Tracking do
         :additional_snowplow_tracking,
         '_group_'
       ).and_return(false)
-
-      expect(described_class.snowplow_options('_group_')).to include(
+      addition_feature_fields = {
         formTracking: false,
         linkClickTracking: false
-      )
+      }
+
+      expect(subject.snowplow_options('_group_')).to include(addition_feature_fields)
     end
   end
 

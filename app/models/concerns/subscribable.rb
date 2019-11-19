@@ -59,6 +59,14 @@ module Subscribable
       .update(subscribed: false)
   end
 
+  def set_subscription(user, desired_state, project = nil)
+    if desired_state
+      subscribe(user, project)
+    else
+      unsubscribe(user, project)
+    end
+  end
+
   private
 
   def unsubscribe_from_other_levels(user, project)

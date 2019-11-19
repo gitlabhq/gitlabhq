@@ -32,7 +32,7 @@ For instance, consider the following workflow:
 
 1. Your team develops apps which require large files to be stored in
    the application repository.
-1. Although you have enabled [Git LFS](../../../workflow/lfs/manage_large_binaries_with_git_lfs.md#git-lfs)
+1. Although you have enabled [Git LFS](../../../administration/lfs/manage_large_binaries_with_git_lfs.md#git-lfs)
    to your project, your storage has grown significantly.
 1. Before you exceed available storage, you set up a limit of 10 GB
    per repository.

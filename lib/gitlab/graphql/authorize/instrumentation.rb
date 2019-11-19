@@ -9,11 +9,15 @@ module Gitlab
         def instrument(_type, field)
           service = AuthorizeFieldService.new(field)
 
-          if service.authorizations?
+          if service.authorizations? && !resolver_skips_authorizations?(field)
             field.redefine { resolve(service.authorized_resolve) }
           else
             field
           end
+        end
+
+        def resolver_skips_authorizations?(field)
+          field.metadata[:resolver].try(:skip_authorizations?)
         end
       end
     end

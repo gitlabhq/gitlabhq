@@ -6,6 +6,12 @@ class ApplicationSetting < ApplicationRecord
   include TokenAuthenticatable
   include ChronicDurationAttribute
 
+  # Only remove this >= %12.6 and >= 2019-12-01
+  self.ignored_columns += %i[
+      pendo_enabled
+      pendo_url
+    ]
+
   add_authentication_token_field :runners_registration_token, encrypted: -> { Feature.enabled?(:application_settings_tokens_optional_encryption, default_enabled: true) ? :optional : :required }
   add_authentication_token_field :health_check_access_token
   add_authentication_token_field :static_objects_external_storage_auth_token
@@ -17,12 +23,6 @@ class ApplicationSetting < ApplicationRecord
   # We don't prepend for now because otherwise we'll need to
   # fix a lot of tests using allow_any_instance_of
   include ApplicationSettingImplementation
-
-  attr_encrypted :asset_proxy_secret_key,
-                 mode: :per_attribute_iv,
-                 insecure_mode: true,
-                 key: Settings.attr_encrypted_db_key_base_truncated,
-                 algorithm: 'aes-256-cbc'
 
   serialize :restricted_visibility_levels # rubocop:disable Cop/ActiveRecordSerialize
   serialize :import_sources # rubocop:disable Cop/ActiveRecordSerialize
@@ -99,9 +99,18 @@ class ApplicationSetting < ApplicationRecord
             presence: true,
             if: :plantuml_enabled
 
+  validates :sourcegraph_url,
+            presence: true,
+            if: :sourcegraph_enabled
+
   validates :snowplow_collector_hostname,
             presence: true,
             hostname: true,
+            if: :snowplow_enabled
+
+  validates :snowplow_iglu_registry_url,
+            addressable_url: true,
+            allow_blank: true,
             if: :snowplow_enabled
 
   validates :max_attachment_size,
@@ -270,11 +279,39 @@ class ApplicationSetting < ApplicationRecord
             presence: true,
             if: :lets_encrypt_terms_of_service_accepted?
 
+  validates :eks_integration_enabled,
+            inclusion: { in: [true, false] }
+
+  validates :eks_account_id,
+            format: { with: Gitlab::Regex.aws_account_id_regex,
+                      message: Gitlab::Regex.aws_account_id_message },
+            if: :eks_integration_enabled?
+
+  validates :eks_access_key_id,
+            length: { in: 16..128 },
+            if: :eks_integration_enabled?
+
+  validates :eks_secret_access_key,
+            presence: true,
+            if: :eks_integration_enabled?
+
   validates_with X509CertificateCredentialsValidator,
                  certificate: :external_auth_client_cert,
                  pkey: :external_auth_client_key,
                  pass: :external_auth_client_key_pass,
                  if: -> (setting) { setting.external_auth_client_cert.present? }
+
+  validates :default_ci_config_path,
+    format: { without: %r{(\.{2}|\A/)},
+              message: N_('cannot include leading slash or directory traversal.') },
+    length: { maximum: 255 },
+    allow_blank: true
+
+  attr_encrypted :asset_proxy_secret_key,
+                 mode: :per_attribute_iv,
+                 key: Settings.attr_encrypted_db_key_base_truncated,
+                 algorithm: 'aes-256-cbc',
+                 insecure_mode: true
 
   attr_encrypted :external_auth_client_key,
                  mode: :per_attribute_iv,
@@ -294,6 +331,12 @@ class ApplicationSetting < ApplicationRecord
                  algorithm: 'aes-256-gcm',
                  encode: true
 
+  attr_encrypted :eks_secret_access_key,
+                 mode: :per_attribute_iv,
+                 key: Settings.attr_encrypted_db_key_base_truncated,
+                 algorithm: 'aes-256-gcm',
+                 encode: true
+
   before_validation :ensure_uuid!
 
   before_save :ensure_runners_registration_token
@@ -303,6 +346,10 @@ class ApplicationSetting < ApplicationRecord
     reset_memoized_terms
   end
   after_commit :expire_performance_bar_allowed_user_ids_cache, if: -> { previous_changes.key?('performance_bar_allowed_group_id') }
+
+  def sourcegraph_url_is_com?
+    !!(sourcegraph_url =~ /\Ahttps:\/\/(www\.)?sourcegraph\.com/)
+  end
 
   def self.create_from_defaults
     transaction(requires_new: true) do

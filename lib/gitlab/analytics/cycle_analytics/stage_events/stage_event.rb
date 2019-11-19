@@ -35,6 +35,10 @@ module Gitlab
             query
           end
 
+          def label_based?
+            false
+          end
+
           private
 
           attr_reader :params

@@ -1,0 +1,27 @@
+{
+  "panel_groups": [
+    {
+      "panels": [
+        {
+          "title": "Network I/O",
+          "type": "area-chart",
+          "y_label": "",
+          "metrics": [
+            {
+              "id": "In_0",
+              "query_range": "sum(  rate(redis_net_input_bytes_total{instance=~\"localhost:9121\"}[1m]))",
+              "label": "In",
+              "prometheus_endpoint_path": "/foo/bar/-/grafana/proxy/1/api/v1/query_range?query=sum%28++rate%28redis_net_input_bytes_total%7Binstance%3D~%22localhost%3A9121%22%7D%5B1m%5D%29%29"
+            },
+            {
+              "id": "Out_1",
+              "query_range": "sum(  rate(redis_net_output_bytes_total{instance=~\"localhost:9121\"}[1m]))",
+              "label": "Out",
+              "prometheus_endpoint_path": "/foo/bar/-/grafana/proxy/1/api/v1/query_range?query=sum%28++rate%28redis_net_output_bytes_total%7Binstance%3D~%22localhost%3A9121%22%7D%5B1m%5D%29%29"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

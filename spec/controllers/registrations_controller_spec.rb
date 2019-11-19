@@ -9,6 +9,51 @@ describe RegistrationsController do
     stub_feature_flags(invisible_captcha: false)
   end
 
+  describe '#new' do
+    subject { get :new }
+
+    context 'with the experimental signup flow enabled and the user is part of the experimental group' do
+      before do
+        stub_experiment(signup_flow: true)
+        stub_experiment_for_user(signup_flow: true)
+      end
+
+      it 'tracks the event with the right parameters' do
+        expect(Gitlab::Tracking).to receive(:event).with(
+          'Growth::Acquisition::Experiment::SignUpFlow',
+          'start',
+          label: anything,
+          property: 'experimental_group'
+        )
+        subject
+      end
+
+      it 'renders new template and sets the resource variable' do
+        expect(subject).to render_template(:new)
+        expect(response).to have_gitlab_http_status(200)
+        expect(assigns(:resource)).to be_a(User)
+      end
+    end
+
+    context 'with the experimental signup flow enabled and the user is part of the control group' do
+      before do
+        stub_experiment(signup_flow: true)
+        stub_experiment_for_user(signup_flow: false)
+      end
+
+      it 'does not track the event' do
+        expect(Gitlab::Tracking).not_to receive(:event)
+        subject
+      end
+
+      it 'renders new template and sets the resource variable' do
+        subject
+        expect(response).to have_gitlab_http_status(302)
+        expect(response).to redirect_to(new_user_session_path(anchor: 'register-pane'))
+      end
+    end
+  end
+
   describe '#create' do
     let(:base_user_params) { { name: 'new_user', username: 'new_username', email: 'new@user.com', password: 'Any_password' } }
     let(:user_params) { { user: base_user_params } }
@@ -217,6 +262,37 @@ describe RegistrationsController do
       end
     end
 
+    describe 'tracking data' do
+      context 'with the experimental signup flow enabled and the user is part of the control group' do
+        before do
+          stub_experiment(signup_flow: true)
+          stub_experiment_for_user(signup_flow: false)
+        end
+
+        it 'tracks the event with the right parameters' do
+          expect(Gitlab::Tracking).to receive(:event).with(
+            'Growth::Acquisition::Experiment::SignUpFlow',
+            'end',
+            label: anything,
+            property: 'control_group'
+          )
+          post :create, params: user_params
+        end
+      end
+
+      context 'with the experimental signup flow enabled and the user is part of the experimental group' do
+        before do
+          stub_experiment(signup_flow: true)
+          stub_experiment_for_user(signup_flow: true)
+        end
+
+        it 'does not track the event' do
+          expect(Gitlab::Tracking).not_to receive(:event)
+          post :create, params: user_params
+        end
+      end
+    end
+
     it "logs a 'User Created' message" do
       stub_feature_flags(registrations_recaptcha: false)
 
@@ -302,6 +378,24 @@ describe RegistrationsController do
 
         expect_success
       end
+    end
+  end
+
+  describe '#update_registration' do
+    before do
+      stub_experiment(signup_flow: true)
+      stub_experiment_for_user(signup_flow: true)
+      sign_in(create(:user))
+    end
+
+    it 'tracks the event with the right parameters' do
+      expect(Gitlab::Tracking).to receive(:event).with(
+        'Growth::Acquisition::Experiment::SignUpFlow',
+        'end',
+        label: anything,
+        property: 'experimental_group'
+      )
+      patch :update_registration, params: { user: { name: 'New name', role: 'software_developer', setup_for_company: 'false' } }
     end
   end
 end

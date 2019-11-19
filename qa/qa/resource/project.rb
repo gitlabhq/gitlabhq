@@ -9,6 +9,7 @@ module QA
       include Members
 
       attr_writer :initialize_with_readme
+      attr_writer :auto_devops_enabled
       attr_writer :visibility
 
       attribute :id
@@ -47,6 +48,7 @@ module QA
         @standalone = false
         @description = 'My awesome project'
         @initialize_with_readme = false
+        @auto_devops_enabled = true
         @visibility = 'public'
       end
 
@@ -101,7 +103,8 @@ module QA
           name: name,
           description: description,
           visibility: @visibility,
-          initialize_with_readme: @initialize_with_readme
+          initialize_with_readme: @initialize_with_readme,
+          auto_devops_enabled: @auto_devops_enabled
         }
 
         unless @standalone

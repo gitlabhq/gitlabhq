@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 shared_examples 'pages settings editing' do
-  let(:project) { create(:project) }
+  let_it_be(:project) { create(:project, pages_https_only: false) }
   let(:user) { create(:user) }
   let(:role) { :maintainer }
 
@@ -30,10 +30,50 @@ shared_examples 'pages settings editing' do
         expect(page).to have_content('Access pages')
       end
 
+      context 'when pages are disabled in the project settings' do
+        it 'renders disabled warning' do
+          project.project_feature.update!(pages_access_level: ProjectFeature::DISABLED)
+
+          visit project_pages_path(project)
+
+          expect(page).to have_content('GitLab Pages are disabled for this project')
+        end
+      end
+
       it 'renders first deployment warning' do
         visit project_pages_path(project)
 
         expect(page).to have_content('It may take up to 30 minutes before the site is available after the first deployment.')
+      end
+
+      shared_examples 'does not render access control warning' do
+        it 'does not render access control warning' do
+          visit project_pages_path(project)
+
+          expect(page).not_to have_content('Access Control is enabled for this Pages website')
+        end
+      end
+
+      include_examples 'does not render access control warning'
+
+      context 'when access control is enabled in gitlab settings' do
+        before do
+          stub_pages_setting(access_control: true)
+        end
+
+        it 'renders access control warning' do
+          visit project_pages_path(project)
+
+          expect(page).to have_content('Access Control is enabled for this Pages website')
+        end
+
+        context 'when pages are public' do
+          before do
+            project.project_feature.update!(pages_access_level: ProjectFeature::PUBLIC)
+          end
+
+          include_examples 'does not render access control warning'
+        end
       end
 
       context 'when support for external domains is disabled' do
@@ -93,7 +133,7 @@ shared_examples 'pages settings editing' do
         end
       end
 
-      context 'when pages are exposed on external HTTPS address', :https_pages_enabled do
+      context 'when pages are exposed on external HTTPS address', :https_pages_enabled, :js do
         let(:certificate_pem) do
           <<~PEM
           -----BEGIN CERTIFICATE-----
@@ -138,6 +178,11 @@ shared_examples 'pages settings editing' do
           visit new_project_pages_domain_path(project)
 
           fill_in 'Domain', with: 'my.test.domain.com'
+
+          if ::Gitlab::LetsEncrypt.enabled?
+            find('.js-auto-ssl-toggle-container .project-feature-toggle').click
+          end
+
           fill_in 'Certificate (PEM)', with: certificate_pem
           fill_in 'Key (PEM)', with: certificate_key
           click_button 'Create New Domain'
@@ -145,27 +190,49 @@ shared_examples 'pages settings editing' do
           expect(page).to have_content('my.test.domain.com')
         end
 
+        describe 'with dns verification enabled' do
+          before do
+            stub_application_setting(pages_domain_verification_enabled: true)
+          end
+
+          it 'shows the DNS verification record' do
+            domain = create(:pages_domain, project: project)
+
+            visit project_pages_path(project)
+
+            within('#content-body') { click_link 'Edit' }
+            expect(page).to have_field :domain_verification, with: "#{domain.verification_domain} TXT #{domain.keyed_verification_code}"
+          end
+        end
+
         describe 'updating the certificate for an existing domain' do
           let!(:domain) do
-            create(:pages_domain, project: project)
+            create(:pages_domain, project: project, auto_ssl_enabled: false)
           end
 
           it 'allows the certificate to be updated' do
             visit project_pages_path(project)
 
-            within('#content-body') { click_link 'Details' }
-            click_link 'Edit'
+            within('#content-body') { click_link 'Edit' }
             click_button 'Save Changes'
 
             expect(page).to have_content('Domain was updated')
           end
 
           context 'when the certificate is invalid' do
+            let!(:domain) do
+              create(:pages_domain, :without_certificate, :without_key, project: project)
+            end
+
             it 'tells the user what the problem is' do
               visit project_pages_path(project)
 
-              within('#content-body') { click_link 'Details' }
-              click_link 'Edit'
+              within('#content-body') { click_link 'Edit' }
+
+              if ::Gitlab::LetsEncrypt.enabled?
+                find('.js-auto-ssl-toggle-container .project-feature-toggle').click
+              end
+
               fill_in 'Certificate (PEM)', with: 'invalid data'
               click_button 'Save Changes'
 
@@ -173,6 +240,27 @@ shared_examples 'pages settings editing' do
               expect(page).to have_content('Certificate misses intermediates')
               expect(page).to have_content("Key doesn't match the certificate")
             end
+          end
+
+          it 'allows the certificate to be removed', :js do
+            visit project_pages_path(project)
+
+            within('#content-body') { click_link 'Edit' }
+
+            accept_confirm { click_link 'Remove' }
+
+            expect(page).to have_field('Certificate (PEM)', with: '')
+            expect(page).to have_field('Key (PEM)', with: '')
+            domain.reload
+            expect(domain.certificate).to be_nil
+            expect(domain.key).to be_nil
+          end
+
+          it 'shows the DNS CNAME record' do
+            visit project_pages_path(project)
+
+            within('#content-body') { click_link 'Edit' }
+            expect(page).to have_field :domain_dns, with: "#{domain.domain} CNAME #{domain.project.pages_subdomain}.#{Settings.pages.host}."
           end
         end
       end
@@ -210,7 +298,7 @@ shared_examples 'pages settings editing' do
     end
   end
 
-  describe 'HTTPS settings', :js, :https_pages_enabled do
+  describe 'HTTPS settings', :https_pages_enabled do
     before do
       project.namespace.update(owner: user)
 
@@ -318,18 +406,21 @@ shared_examples 'pages settings editing' do
 
         expect(page).to have_link('Remove pages')
 
-        click_link 'Remove pages'
+        accept_confirm { click_link 'Remove pages' }
 
-        expect(project.pages_deployed?).to be_falsey
+        expect(page).to have_content('Pages were removed')
+        expect(project.reload.pages_deployed?).to be_falsey
       end
     end
   end
 end
 
-describe 'Pages' do
+describe 'Pages', :js do
   include LetsEncryptHelpers
 
-  include_examples 'pages settings editing'
+  context 'when editing normally' do
+    include_examples 'pages settings editing'
+  end
 
   context 'when letsencrypt support is enabled' do
     before do

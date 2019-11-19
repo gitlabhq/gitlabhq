@@ -1,4 +1,4 @@
-- if form_based_providers.any?
+- if any_form_based_providers_enabled?
   - if crowd_enabled?
     .login-box.tab-pane{ id: "crowd", role: 'tabpanel', class: active_when(form_based_auth_provider_has_active_class?(:crowd)) }
       .login-body

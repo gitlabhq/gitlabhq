@@ -282,8 +282,7 @@ pre code {
   white-space: pre-wrap;
 }
 
-.alert,
-.flash-notice {
+.alert {
   border-radius: 0;
 }
 
@@ -310,12 +309,10 @@ pre code {
 .alert-success,
 .alert-info,
 .alert-warning,
-.alert-danger,
-.flash-notice {
+.alert-danger {
   color: $white-light;
 
   h4,
-  a:not(.btn),
   .alert-link {
     color: $white-light;
   }

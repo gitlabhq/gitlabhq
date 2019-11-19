@@ -12,6 +12,6 @@
     %li
       = render 'shared/user_dropdown_contributing_link'
   = render_if_exists 'shared/user_dropdown_instance_review'
-  - if Gitlab.com?
-    %li.js-canary-link
+  - if Gitlab.com_but_not_canary?
+    %li
       = link_to _("Switch to GitLab Next"), "https://next.gitlab.com/"

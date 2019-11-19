@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 
 module MergeRequests
-  class RebaseService < MergeRequests::WorkingCopyBaseService
+  class RebaseService < MergeRequests::BaseService
+    include Git::Logger
+
     REBASE_ERROR = 'Rebase failed. Please rebase locally'
+
+    attr_reader :merge_request
 
     def execute(merge_request)
       @merge_request = merge_request

@@ -502,6 +502,57 @@ module Ci
         end
       end
 
+      context 'when build has data integrity problem' do
+        let!(:pending_job) do
+          create(:ci_build, :pending, pipeline: pipeline)
+        end
+
+        before do
+          pending_job.update_columns(options: "string")
+        end
+
+        subject { execute(specific_runner, {}) }
+
+        it 'does drop the build and logs both failures' do
+          expect(Gitlab::Sentry).to receive(:track_acceptable_exception)
+            .with(anything, a_hash_including(extra: a_hash_including(build_id: pending_job.id)))
+            .twice
+            .and_call_original
+
+          expect(subject).to be_nil
+
+          pending_job.reload
+          expect(pending_job).to be_failed
+          expect(pending_job).to be_data_integrity_failure
+        end
+      end
+
+      context 'when build fails to be run!' do
+        let!(:pending_job) do
+          create(:ci_build, :pending, pipeline: pipeline)
+        end
+
+        before do
+          expect_any_instance_of(Ci::Build).to receive(:run!)
+            .and_raise(RuntimeError, 'scheduler error')
+        end
+
+        subject { execute(specific_runner, {}) }
+
+        it 'does drop the build and logs failure' do
+          expect(Gitlab::Sentry).to receive(:track_acceptable_exception)
+            .with(anything, a_hash_including(extra: a_hash_including(build_id: pending_job.id)))
+            .once
+            .and_call_original
+
+          expect(subject).to be_nil
+
+          pending_job.reload
+          expect(pending_job).to be_failed
+          expect(pending_job).to be_scheduler_failure
+        end
+      end
+
       context 'when an exception is raised during a persistent ref creation' do
         before do
           allow_any_instance_of(Ci::PersistentRef).to receive(:exist?) { false }

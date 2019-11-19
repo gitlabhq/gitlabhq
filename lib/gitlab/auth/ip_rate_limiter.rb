@@ -21,11 +21,12 @@ module Gitlab
       end
 
       def register_fail!
+        return false if trusted_ip?
+
         # Allow2Ban.filter will return false if this IP has not failed too often yet
         @banned = Rack::Attack::Allow2Ban.filter(ip, config) do
-          # If we return false here, the failure for this IP is ignored by Allow2Ban
-          # If we return true here, the count for the IP is incremented.
-          ip_can_be_banned?
+          # We return true to increment the count for this IP
+          true
         end
       end
 
@@ -33,18 +34,14 @@ module Gitlab
         @banned
       end
 
+      def trusted_ip?
+        trusted_ips.any? { |netmask| netmask.include?(ip) }
+      end
+
       private
 
       def config
         Gitlab.config.rack_attack.git_basic_auth
-      end
-
-      def ip_can_be_banned?
-        !trusted_ip?
-      end
-
-      def trusted_ip?
-        trusted_ips.any? { |netmask| netmask.include?(ip) }
       end
 
       def trusted_ips

@@ -1,7 +1,8 @@
 <script>
-import { GlBadge, GlLink, GlSkeletonLoading } from '@gitlab/ui';
+import { GlBadge, GlLink, GlSkeletonLoading, GlTooltipDirective } from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import Icon from '~/vue_shared/components/icon.vue';
 import { getIconName } from '../../utils/icon';
 import getRefMixin from '../../mixins/get_ref';
 import getCommit from '../../queries/getCommit.query.graphql';
@@ -12,6 +13,10 @@ export default {
     GlLink,
     GlSkeletonLoading,
     TimeagoTooltip,
+    Icon,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   apollo: {
     commit: {
@@ -29,6 +34,10 @@ export default {
   mixins: [getRefMixin],
   props: {
     id: {
+      type: String,
+      required: true,
+    },
+    sha: {
       type: String,
       required: true,
     },
@@ -93,15 +102,20 @@ export default {
       return this.path.replace(new RegExp(`^${this.currentPath}/`), '');
     },
     shortSha() {
-      return this.id.slice(0, 8);
+      return this.sha.slice(0, 8);
+    },
+    hasLockLabel() {
+      return this.commit && this.commit.lockLabel;
     },
   },
   methods: {
-    openRow() {
-      if (this.isFolder) {
+    openRow(e) {
+      if (e.target.tagName === 'A') return;
+
+      if (this.isFolder && !e.metaKey) {
         this.$router.push(this.routerLinkTo);
       } else {
-        visitUrl(this.url);
+        visitUrl(this.url, e.metaKey);
       }
     },
   },
@@ -120,15 +134,28 @@ export default {
       <template v-if="isSubmodule">
         @ <gl-link :href="submoduleTreeUrl" class="commit-sha">{{ shortSha }}</gl-link>
       </template>
+      <icon
+        v-if="hasLockLabel"
+        v-gl-tooltip
+        :title="commit.lockLabel"
+        name="lock"
+        :size="12"
+        class="ml-2 vertical-align-middle"
+      />
     </td>
     <td class="d-none d-sm-table-cell tree-commit">
-      <gl-link v-if="commit" :href="commit.commitPath" class="str-truncated-100 tree-commit-link">
+      <gl-link
+        v-if="commit"
+        :href="commit.commitPath"
+        :title="commit.message"
+        class="str-truncated-100 tree-commit-link"
+      >
         {{ commit.message }}
       </gl-link>
       <gl-skeleton-loading v-else :lines="1" class="h-auto" />
     </td>
     <td class="tree-time-ago text-right">
-      <timeago-tooltip v-if="commit" :time="commit.committedDate" tooltip-placement="bottom" />
+      <timeago-tooltip v-if="commit" :time="commit.committedDate" />
       <gl-skeleton-loading v-else :lines="1" class="ml-auto h-auto w-50" />
     </td>
   </tr>

@@ -10,8 +10,12 @@ Example of the output you will see when pushing to a **secondary** node:
 
 ```bash
 $ git push
-> GitLab: You're pushing to a Geo secondary.
-> GitLab: We'll help you by proxying this request to the primary: ssh://git@primary.geo/user/repo.git
+remote:
+remote: You're pushing to a Geo secondary. We'll help you by proxying this
+remote: request to the primary:
+remote:
+remote:   ssh://git@primary.geo/user/repo.git
+remote:
 Everything up-to-date
 ```
 

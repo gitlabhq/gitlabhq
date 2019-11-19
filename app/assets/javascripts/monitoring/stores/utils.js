@@ -82,12 +82,6 @@ export const normalizeMetric = (metric = {}) =>
     'id',
   );
 
-export const sortMetrics = metrics =>
-  _.chain(metrics)
-    .sortBy('title')
-    .sortBy('weight')
-    .value();
-
 export const normalizeQueryResult = timeSeries => {
   let normalizedResult = {};
 

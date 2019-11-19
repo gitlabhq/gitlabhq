@@ -39,15 +39,15 @@ module Gitlab
           when: job[:when] || 'on_success',
           environment: job[:environment_name],
           coverage_regex: job[:coverage],
-          yaml_variables: yaml_variables(name),
-          needs_attributes: job[:needs]&.map { |need| { name: need } },
+          yaml_variables: transform_to_yaml_variables(job_variables(name)),
+          needs_attributes: job.dig(:needs, :job),
           interruptible: job[:interruptible],
           rules: job[:rules],
+          cache: job[:cache],
           options: {
             image: job[:image],
             services: job[:services],
             artifacts: job[:artifacts],
-            cache: job[:cache],
             dependencies: job[:dependencies],
             job_timeout: job[:timeout],
             before_script: job[:before_script],
@@ -59,7 +59,7 @@ module Gitlab
             instance: job[:instance],
             start_in: job[:start_in],
             trigger: job[:trigger],
-            bridge_needs: job[:needs]
+            bridge_needs: job.dig(:needs, :bridge)&.first
           }.compact }.compact
       end
 
@@ -81,6 +81,13 @@ module Gitlab
 
           { name: stage, index: @stages.index(stage), builds: seeds }
         end
+      end
+
+      def workflow_attributes
+        {
+          rules: @config.dig(:workflow, :rules),
+          yaml_variables: transform_to_yaml_variables(@variables)
+        }
       end
 
       def self.validation_message(content, opts = {})
@@ -118,20 +125,17 @@ module Gitlab
         end
       end
 
-      def yaml_variables(name)
-        variables = (@variables || {})
-          .merge(job_variables(name))
+      def job_variables(name)
+        job_variables = @jobs.dig(name.to_sym, :variables)
 
-        variables.map do |key, value|
-          { key: key.to_s, value: value, public: true }
-        end
+        @variables.to_h
+          .merge(job_variables.to_h)
       end
 
-      def job_variables(name)
-        job = @jobs[name.to_sym]
-        return {} unless job
-
-        job[:variables] || {}
+      def transform_to_yaml_variables(variables)
+        variables.to_h.map do |key, value|
+          { key: key.to_s, value: value, public: true }
+        end
       end
 
       def validate_job_stage!(name, job)
@@ -159,17 +163,19 @@ module Gitlab
       end
 
       def validate_job_needs!(name, job)
-        return unless job[:needs]
+        return unless job.dig(:needs, :job)
 
         stage_index = @stages.index(job[:stage])
 
-        job[:needs].each do |need|
-          raise ValidationError, "#{name} job: undefined need: #{need}" unless @jobs[need.to_sym]
+        job.dig(:needs, :job).each do |need|
+          need_job_name = need[:name]
 
-          needs_stage_index = @stages.index(@jobs[need.to_sym][:stage])
+          raise ValidationError, "#{name} job: undefined need: #{need_job_name}" unless @jobs[need_job_name.to_sym]
+
+          needs_stage_index = @stages.index(@jobs[need_job_name.to_sym][:stage])
 
           unless needs_stage_index.present? && needs_stage_index < stage_index
-            raise ValidationError, "#{name} job: need #{need} is not defined in prior stages"
+            raise ValidationError, "#{name} job: need #{need_job_name} is not defined in prior stages"
           end
         end
       end

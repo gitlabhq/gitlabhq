@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe Projects::MergeRequestsController do
   include ProjectForksHelper
+  include Gitlab::Routing
 
   let(:project) { create(:project, :repository) }
   let(:user)    { project.owner }
@@ -206,7 +207,7 @@ describe Projects::MergeRequestsController do
       it 'redirects to last_page if page number is larger than number of pages' do
         get_merge_requests(last_page + 1)
 
-        expect(response).to redirect_to(namespace_project_merge_requests_path(page: last_page, state: controller.params[:state], scope: controller.params[:scope]))
+        expect(response).to redirect_to(project_merge_requests_path(project, page: last_page, state: controller.params[:state], scope: controller.params[:scope]))
       end
 
       it 'redirects to specified page' do
@@ -227,7 +228,7 @@ describe Projects::MergeRequestsController do
             host: external_host
           }
 
-        expect(response).to redirect_to(namespace_project_merge_requests_path(page: last_page, state: controller.params[:state], scope: controller.params[:scope]))
+        expect(response).to redirect_to(project_merge_requests_path(project, page: last_page, state: controller.params[:state], scope: controller.params[:scope]))
       end
     end
 
@@ -404,7 +405,7 @@ describe Projects::MergeRequestsController do
       end
 
       it 'starts the merge immediately with permitted params' do
-        expect(MergeWorker).to receive(:perform_async).with(merge_request.id, anything, { 'squash' => false })
+        expect(MergeWorker).to receive(:perform_async).with(merge_request.id, anything, { 'sha' => merge_request.diff_head_sha })
 
         merge_with_sha
       end
@@ -430,10 +431,15 @@ describe Projects::MergeRequestsController do
       context 'when a squash commit message is passed' do
         let(:message) { 'My custom squash commit message' }
 
-        it 'passes the same message to SquashService' do
-          params = { squash: '1', squash_commit_message: message }
+        it 'passes the same message to SquashService', :sidekiq_might_not_need_inline do
+          params = { squash: '1',
+                     squash_commit_message: message,
+                     sha: merge_request.diff_head_sha }
+          expected_squash_params = { squash_commit_message: message,
+                                     sha: merge_request.diff_head_sha,
+                                     merge_request: merge_request }
 
-          expect_next_instance_of(MergeRequests::SquashService, project, user, params.merge(merge_request: merge_request)) do |squash_service|
+          expect_next_instance_of(MergeRequests::SquashService, project, user, expected_squash_params) do |squash_service|
             expect(squash_service).to receive(:execute).and_return({
               status: :success,
               squash_sha: SecureRandom.hex(20)
@@ -723,7 +729,7 @@ describe Projects::MergeRequestsController do
 
         context 'with private builds' do
           context 'for the target project member' do
-            it 'does not respond with serialized pipelines' do
+            it 'does not respond with serialized pipelines', :sidekiq_might_not_need_inline do
               expect(json_response['pipelines']).to be_empty
               expect(json_response['count']['all']).to eq(0)
               expect(response).to include_pagination_headers
@@ -733,7 +739,7 @@ describe Projects::MergeRequestsController do
           context 'for the source project member' do
             let(:user) { fork_user }
 
-            it 'responds with serialized pipelines' do
+            it 'responds with serialized pipelines', :sidekiq_might_not_need_inline do
               expect(json_response['pipelines']).to be_present
               expect(json_response['count']['all']).to eq(1)
               expect(response).to include_pagination_headers
@@ -749,7 +755,7 @@ describe Projects::MergeRequestsController do
           end
 
           context 'for the target project member' do
-            it 'does not respond with serialized pipelines' do
+            it 'does not respond with serialized pipelines', :sidekiq_might_not_need_inline do
               expect(json_response['pipelines']).to be_present
               expect(json_response['count']['all']).to eq(1)
               expect(response).to include_pagination_headers
@@ -759,13 +765,179 @@ describe Projects::MergeRequestsController do
           context 'for the source project member' do
             let(:user) { fork_user }
 
-            it 'responds with serialized pipelines' do
+            it 'responds with serialized pipelines', :sidekiq_might_not_need_inline do
               expect(json_response['pipelines']).to be_present
               expect(json_response['count']['all']).to eq(1)
               expect(response).to include_pagination_headers
             end
           end
         end
+      end
+    end
+  end
+
+  describe 'GET exposed_artifacts' do
+    let(:merge_request) do
+      create(:merge_request,
+        :with_merge_request_pipeline,
+        target_project: project,
+        source_project: project)
+    end
+
+    let(:pipeline) do
+      create(:ci_pipeline,
+        :success,
+        project: merge_request.source_project,
+        ref: merge_request.source_branch,
+        sha: merge_request.diff_head_sha)
+    end
+
+    let!(:job) { create(:ci_build, pipeline: pipeline, options: job_options) }
+    let!(:job_metadata) { create(:ci_job_artifact, :metadata, job: job) }
+
+    before do
+      allow_any_instance_of(MergeRequest)
+        .to receive(:find_exposed_artifacts)
+        .and_return(report)
+
+      allow_any_instance_of(MergeRequest)
+        .to receive(:actual_head_pipeline)
+        .and_return(pipeline)
+    end
+
+    subject do
+      get :exposed_artifacts, params: {
+        namespace_id: project.namespace.to_param,
+        project_id: project,
+        id: merge_request.iid
+      },
+      format: :json
+    end
+
+    describe 'permissions on a public project with private CI/CD' do
+      let(:project) { create :project, :repository, :public, :builds_private }
+      let(:report) { { status: :parsed, data: [] } }
+      let(:job_options) { {} }
+
+      context 'while signed out' do
+        before do
+          sign_out(user)
+        end
+
+        it 'responds with a 404' do
+          subject
+
+          expect(response).to have_gitlab_http_status(404)
+          expect(response.body).to be_blank
+        end
+      end
+
+      context 'while signed in as an unrelated user' do
+        before do
+          sign_in(create(:user))
+        end
+
+        it 'responds with a 404' do
+          subject
+
+          expect(response).to have_gitlab_http_status(404)
+          expect(response.body).to be_blank
+        end
+      end
+    end
+
+    context 'when pipeline has jobs with exposed artifacts' do
+      let(:job_options) do
+        {
+          artifacts: {
+            paths: ['ci_artifacts.txt'],
+            expose_as: 'Exposed artifact'
+          }
+        }
+      end
+
+      context 'when fetching exposed artifacts is in progress' do
+        let(:report) { { status: :parsing } }
+
+        it 'sends polling interval' do
+          expect(Gitlab::PollingInterval).to receive(:set_header)
+
+          subject
+        end
+
+        it 'returns 204 HTTP status' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:no_content)
+        end
+      end
+
+      context 'when fetching exposed artifacts is completed' do
+        let(:data) do
+          Ci::GenerateExposedArtifactsReportService.new(project, user)
+            .execute(nil, pipeline)
+        end
+
+        let(:report) { { status: :parsed, data: data } }
+
+        it 'returns exposed artifacts' do
+          subject
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response['status']).to eq('parsed')
+          expect(json_response['data']).to eq([{
+            'job_name' => 'test',
+            'job_path' => project_job_path(project, job),
+            'url' => file_project_job_artifacts_path(project, job, 'ci_artifacts.txt'),
+            'text' => 'Exposed artifact'
+          }])
+        end
+      end
+
+      context 'when feature flag :ci_expose_arbitrary_artifacts_in_mr is disabled' do
+        let(:job_options) do
+          {
+            artifacts: {
+              paths: ['ci_artifacts.txt'],
+              expose_as: 'Exposed artifact'
+            }
+          }
+        end
+        let(:report) { double }
+
+        before do
+          stub_feature_flags(ci_expose_arbitrary_artifacts_in_mr: false)
+        end
+
+        it 'does not send polling interval' do
+          expect(Gitlab::PollingInterval).not_to receive(:set_header)
+
+          subject
+        end
+
+        it 'returns 204 HTTP status' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:no_content)
+        end
+      end
+    end
+
+    context 'when pipeline does not have jobs with exposed artifacts' do
+      let(:report) { double }
+      let(:job_options) do
+        {
+          artifacts: {
+            paths: ['ci_artifacts.txt']
+          }
+        }
+      end
+
+      it 'returns no content' do
+        subject
+
+        expect(response).to have_gitlab_http_status(204)
+        expect(response.body).to be_empty
       end
     end
   end
@@ -877,23 +1049,6 @@ describe Projects::MergeRequestsController do
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response).to eq({ 'status_reason' => 'Failed to parse test reports' })
-      end
-    end
-
-    context 'when something went wrong on our system' do
-      let(:comparison_status) { {} }
-
-      it 'does not send polling interval' do
-        expect(Gitlab::PollingInterval).not_to receive(:set_header)
-
-        subject
-      end
-
-      it 'returns 500 HTTP status' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:internal_server_error)
-        expect(json_response).to eq({ 'status_reason' => 'Unknown error' })
       end
     end
   end
@@ -1019,13 +1174,13 @@ describe Projects::MergeRequestsController do
         create(:merge_request, source_project: forked, target_project: project, target_branch: 'master', head_pipeline: pipeline)
       end
 
-      it 'links to the environment on that project' do
+      it 'links to the environment on that project', :sidekiq_might_not_need_inline do
         get_ci_environments_status
 
         expect(json_response.first['url']).to match /#{forked.full_path}/
       end
 
-      context "when environment_target is 'merge_commit'" do
+      context "when environment_target is 'merge_commit'", :sidekiq_might_not_need_inline do
         it 'returns nothing' do
           get_ci_environments_status(environment_target: 'merge_commit')
 
@@ -1056,13 +1211,13 @@ describe Projects::MergeRequestsController do
 
       # we're trying to reduce the overall number of queries for this method.
       # set a hard limit for now. https://gitlab.com/gitlab-org/gitlab-foss/issues/52287
-      it 'keeps queries in check' do
+      it 'keeps queries in check', :sidekiq_might_not_need_inline do
         control_count = ActiveRecord::QueryRecorder.new { get_ci_environments_status }.count
 
         expect(control_count).to be <= 137
       end
 
-      it 'has no N+1 SQL issues for environments', :request_store, retry: 0 do
+      it 'has no N+1 SQL issues for environments', :request_store, :sidekiq_might_not_need_inline, retry: 0 do
         # First run to insert test data from lets, which does take up some 30 queries
         get_ci_environments_status
 
@@ -1225,6 +1380,33 @@ describe Projects::MergeRequestsController do
       end
     end
 
+    context 'with SELECT FOR UPDATE lock' do
+      before do
+        stub_feature_flags(merge_request_rebase_nowait_lock: false)
+      end
+
+      it 'executes rebase' do
+        allow_any_instance_of(MergeRequest).to receive(:with_lock).with(true).and_call_original
+        expect(RebaseWorker).to receive(:perform_async)
+
+        post_rebase
+
+        expect(response.status).to eq(200)
+      end
+    end
+
+    context 'with NOWAIT lock' do
+      it 'returns a 409' do
+        allow_any_instance_of(MergeRequest).to receive(:with_lock).with('FOR UPDATE NOWAIT').and_raise(ActiveRecord::LockWaitTimeout)
+        expect(RebaseWorker).not_to receive(:perform_async)
+
+        post_rebase
+
+        expect(response.status).to eq(409)
+        expect(json_response['merge_error']).to eq(MergeRequest::REBASE_LOCK_MESSAGE)
+      end
+    end
+
     context 'with a forked project' do
       let(:forked_project) { fork_project(project, fork_owner, repository: true) }
       let(:fork_owner) { create(:user) }
@@ -1253,7 +1435,7 @@ describe Projects::MergeRequestsController do
           sign_in(fork_owner)
         end
 
-        it 'returns 200' do
+        it 'returns 200', :sidekiq_might_not_need_inline do
           expect_rebase_worker_for(fork_owner)
 
           post_rebase

@@ -66,7 +66,7 @@ describe Projects::ImportExport::ExportService do
       end
 
       it 'saves the project in the file system' do
-        expect(Gitlab::ImportExport::Saver).to receive(:save).with(project: project, shared: shared)
+        expect(Gitlab::ImportExport::Saver).to receive(:save).with(exportable: project, shared: shared)
 
         service.execute
       end

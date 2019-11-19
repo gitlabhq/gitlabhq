@@ -1,0 +1,5 @@
+---
+title: Add modsecurity template for ingress-controller
+merge_request: 18485
+author:
+type: changed

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe API::Features do
@@ -118,14 +120,13 @@ describe API::Features do
           post api("/features/#{feature_name}", admin), params: { value: 'true', user: user.username, feature_group: 'perf_team' }
 
           expect(response).to have_gitlab_http_status(201)
-          expect(json_response).to eq(
-            'name' => 'my_feature',
-            'state' => 'conditional',
-            'gates' => [
-              { 'key' => 'boolean', 'value' => false },
-              { 'key' => 'groups', 'value' => ['perf_team'] },
-              { 'key' => 'actors', 'value' => ["User:#{user.id}"] }
-            ])
+          expect(json_response['name']).to eq('my_feature')
+          expect(json_response['state']).to eq('conditional')
+          expect(json_response['gates']).to contain_exactly(
+            { 'key' => 'boolean', 'value' => false },
+            { 'key' => 'groups', 'value' => ['perf_team'] },
+            { 'key' => 'actors', 'value' => ["User:#{user.id}"] }
+          )
         end
       end
 

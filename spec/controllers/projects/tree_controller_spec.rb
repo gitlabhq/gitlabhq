@@ -30,46 +30,61 @@ describe Projects::TreeController do
 
     context "valid branch, no path" do
       let(:id) { 'master' }
+
       it { is_expected.to respond_with(:success) }
     end
 
     context "valid branch, valid path" do
       let(:id) { 'master/encoding/' }
+
       it { is_expected.to respond_with(:success) }
     end
 
     context "valid branch, invalid path" do
       let(:id) { 'master/invalid-path/' }
-      it { is_expected.to respond_with(:not_found) }
+
+      it 'redirects' do
+        expect(subject)
+            .to redirect_to("/#{project.full_path}/tree/master")
+      end
     end
 
     context "invalid branch, valid path" do
       let(:id) { 'invalid-branch/encoding/' }
+
       it { is_expected.to respond_with(:not_found) }
     end
 
     context "valid empty branch, invalid path" do
       let(:id) { 'empty-branch/invalid-path/' }
-      it { is_expected.to respond_with(:not_found) }
+
+      it 'redirects' do
+        expect(subject)
+            .to redirect_to("/#{project.full_path}/tree/empty-branch")
+      end
     end
 
     context "valid empty branch" do
       let(:id) { 'empty-branch' }
+
       it { is_expected.to respond_with(:success) }
     end
 
     context "invalid SHA commit ID" do
       let(:id) { 'ff39438/.gitignore' }
+
       it { is_expected.to respond_with(:not_found) }
     end
 
     context "valid SHA commit ID" do
       let(:id) { '6d39438' }
+
       it { is_expected.to respond_with(:success) }
     end
 
     context "valid SHA commit ID with path" do
       let(:id) { '6d39438/.gitignore' }
+
       it { expect(response).to have_gitlab_http_status(302) }
     end
   end
@@ -108,6 +123,7 @@ describe Projects::TreeController do
 
     context 'redirect to blob' do
       let(:id) { 'master/README.md' }
+
       it 'redirects' do
         redirect_url = "/#{project.full_path}/blob/master/README.md"
         expect(subject)

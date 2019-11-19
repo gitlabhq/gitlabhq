@@ -30,4 +30,60 @@ describe ClustersHelper do
       end
     end
   end
+
+  describe '#create_new_cluster_label' do
+    subject { helper.create_new_cluster_label(provider: provider) }
+
+    context 'GCP provider' do
+      let(:provider) { 'gcp' }
+
+      it { is_expected.to eq('Create new Cluster on GKE') }
+    end
+
+    context 'AWS provider' do
+      let(:provider) { 'aws' }
+
+      it { is_expected.to eq('Create new Cluster on EKS') }
+    end
+
+    context 'other provider' do
+      let(:provider) { 'other' }
+
+      it { is_expected.to eq('Create new Cluster') }
+    end
+
+    context 'no provider' do
+      let(:provider) { nil }
+
+      it { is_expected.to eq('Create new Cluster') }
+    end
+  end
+
+  describe '#render_new_provider_form' do
+    subject { helper.new_cluster_partial(provider: provider) }
+
+    context 'GCP provider' do
+      let(:provider) { 'gcp' }
+
+      it { is_expected.to eq('clusters/clusters/gcp/new') }
+    end
+
+    context 'AWS provider' do
+      let(:provider) { 'aws' }
+
+      it { is_expected.to eq('clusters/clusters/aws/new') }
+    end
+
+    context 'other provider' do
+      let(:provider) { 'other' }
+
+      it { is_expected.to eq('clusters/clusters/cloud_providers/cloud_provider_selector') }
+    end
+
+    context 'no provider' do
+      let(:provider) { nil }
+
+      it { is_expected.to eq('clusters/clusters/cloud_providers/cloud_provider_selector') }
+    end
+  end
 end

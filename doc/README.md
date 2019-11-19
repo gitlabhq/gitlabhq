@@ -119,8 +119,8 @@ The following documentation relates to the DevOps **Plan** stage:
 | [Related Issues](user/project/issues/related_issues.md) **(STARTER)**                                                                                                                                                                                              | Create a relationship between issues.                                                                                                            |
 | [Roadmap](user/group/roadmap/index.md) **(ULTIMATE)**                                                                                                                                                                                                              | Visualize epic timelines.                                                                                                                        |
 | [Service Desk](user/project/service_desk.md) **(PREMIUM)**                                                                                                                                                                                                         | A simple way to allow people to create issues in your GitLab instance without needing their own user account.                                    |
-| [Time Tracking](workflow/time_tracking.md)                                                                                                                                                                                                                         | Track time spent on issues and merge requests.                                                                                                   |
-| [Todos](workflow/todos.md)                                                                                                                                                                                                                                         | Keep track of work requiring attention with a chronological list displayed on a simple dashboard.                                                |
+| [Time Tracking](user/project/time_tracking.md)                                                                                                                                                                                                                         | Track time spent on issues and merge requests.                                                                                                   |
+| [Todos](user/todos.md)                                                                                                                                                                                                                                         | Keep track of work requiring attention with a chronological list displayed on a simple dashboard.                                                |
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#overview">
@@ -177,7 +177,7 @@ The following documentation relates to the DevOps **Create** stage:
 | [Protected branches](user/project/protected_branches.md)                                                                                                                                                                                                                                                    | Use protected branches.                                                         |
 | [Push rules](push_rules/push_rules.md) **(STARTER)**                                                                                                                                                                                                                                                        | Additional control over pushes to your projects.                                |
 | [Repositories](user/project/repository/index.md)                                                                                                                                                                                                                                                            | Manage source code repositories in GitLab's user interface.                     |
-| [Repository mirroring](workflow/repository_mirroring.md) **(STARTER)**                                                                                                                                                                                                                                      | Push to or pull from repositories outside of GitLab                             |
+| [Repository mirroring](user/project/repository/repository_mirroring.md) **(STARTER)**                                                                                                                                                                                                                                      | Push to or pull from repositories outside of GitLab                             |
 | [Start a merge request](user/project/repository/web_editor.md#tips)                                                                                                                                                                                                                                         | Start merge request when committing via GitLab's user interface.                |
 
 <div align="right">
@@ -188,13 +188,13 @@ The following documentation relates to the DevOps **Create** stage:
 
 #### Merge Requests
 
-| Create Topics - Merge Requests                                                                              | Description                                                                                                                                       |
-|:------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------|
-| [Checking out merge requests locally](user/project/merge_requests/index.md#checkout-merge-requests-locally) | Tips for working with merge requests locally.                                                                                                     |
-| [Cherry-picking](user/project/merge_requests/cherry_pick_changes.md)                                        | Use GitLab for cherry-picking changes.                                                                                                            |
-| [Merge request thread resolution](user/discussions/index.md#moving-a-single-thread-to-a-new-issue)          | Resolve threads, move threads in a merge request to an issue, and only allow merge requests to be merged if all threads are resolved. |
-| [Merge requests](user/project/merge_requests/index.md)                                                      | Merge request management.                                                                                                                         |
-| [Work In Progress "WIP" merge requests](user/project/merge_requests/work_in_progress_merge_requests.md)     | Prevent merges of work-in-progress merge requests.                                                                                                |
+| Create Topics - Merge Requests                                                                                                              | Description                                                                                                                           |
+|:--------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------|
+| [Checking out merge requests locally](user/project/merge_requests/reviewing_and_managing_merge_requests.md#checkout-merge-requests-locally) | Tips for working with merge requests locally.                                                                                         |
+| [Cherry-picking](user/project/merge_requests/cherry_pick_changes.md)                                                                        | Use GitLab for cherry-picking changes.                                                                                                |
+| [Merge request thread resolution](user/discussions/index.md#moving-a-single-thread-to-a-new-issue)                                          | Resolve threads, move threads in a merge request to an issue, and only allow merge requests to be merged if all threads are resolved. |
+| [Merge requests](user/project/merge_requests/index.md)                                                                                      | Merge request management.                                                                                                             |
+| [Work In Progress "WIP" merge requests](user/project/merge_requests/work_in_progress_merge_requests.md)                                     | Prevent merges of work-in-progress merge requests.                                                                                    |
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#overview">
@@ -305,7 +305,7 @@ The following documentation relates to the DevOps **Configure** stage:
 | Configure Topics                                                                                                                   | Description                                                               |
 |:-----------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------|
 | [Auto DevOps](topics/autodevops/index.md)                                                                                          | Automatically employ a complete DevOps lifecycle.                         |
-| [Create Kubernetes clusters on GKE](user/project/clusters/index.md#add-new-gke-cluster) | Use Google Kubernetes Engine and GitLab.                                  |
+| [Create Kubernetes clusters](user/project/clusters/add_remove_clusters.md#add-new-cluster)                                         | Use Kubernetes and GitLab.                                                |
 | [Executable Runbooks](user/project/clusters/runbooks/index.md)                                                                     | Documented procedures that explain how to carry out particular processes. |
 | [GitLab ChatOps](ci/chatops/README.md)                                                                                             | Interact with CI/CD jobs through chat services.                           |
 | [Installing Applications](user/project/clusters/index.md#installing-applications)                                                  | Deploy Helm, Ingress, and Prometheus on Kubernetes.                       |
@@ -336,7 +336,8 @@ The following documentation relates to the DevOps **Monitor** stage:
 | [GitLab Prometheus](administration/monitoring/prometheus/index.md) **(CORE ONLY)**              | Configure the bundled Prometheus to collect various metrics from your GitLab instance.                                                   |
 | [Health check](user/admin_area/monitoring/health_check.md)                                      | GitLab provides liveness and readiness probes to indicate service health and reachability to required services.                          |
 | [Prometheus project integration](user/project/integrations/prometheus.md)                       | Configure the Prometheus integration per project and monitor your CI/CD environments.                                                    |
-| [Prometheus metrics](user/project/integrations/prometheus_library/index.md)                     | Let Prometheus collect metrics from various services, like Kubernetes, NGINX, NGINX ingress controller, HAProxy, and Amazon Cloud Watch. |
+| [Prometheus metrics](user/project/integrations/prometheus_library/index.md)                     | Let Prometheus collect metrics from various services, like Kubernetes, NGINX, NGINX Ingress controller, HAProxy, and Amazon Cloud Watch. |
+| [Incident management](user/incident_management/index.md)                     | Use GitLab to help you better respond to incidents that may occur in your systems. |
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#overview">
@@ -375,7 +376,7 @@ We have the following documentation to rapidly uplift your GitLab knowledge:
 | Topic                                                                                                                  | Description                                                    |
 |:-----------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------|
 | [GitLab basics guides](gitlab-basics/README.md)                                                                        | Start working on the command line and with GitLab.             |
-| [GitLab Workflow](workflow/README.md) and [overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/) | Enhance your workflow with the best of GitLab Workflow.        |
+| [GitLab workflow overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/)                           | Enhance your workflow with the best of GitLab Workflow.        |
 | [Get started with GitLab CI/CD](ci/quick_start/README.md)                                                              | Quickly implement GitLab CI/CD.                                |
 | [Auto DevOps](topics/autodevops/index.md)                                                                              | Learn more about GitLab's Auto DevOps.                         |
 | [GitLab Markdown](user/markdown.md)                                                                                    | GitLab's advanced formatting system (GitLab Flavored Markdown) |
@@ -393,7 +394,7 @@ Learn more about GitLab account management:
 | Topic                                                      | Description                                                                                                                |
 |:-----------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------|
 | [User account](user/profile/index.md)                      | Manage your account.                                                                                                       |
-| [Authentication](topics/authentication/index.md)           | Account security with two-factor authentication, set up your ssh keys, and deploy keys for secure access to your projects. |
+| [Authentication](topics/authentication/index.md)           | Account security with two-factor authentication, set up your SSH keys, and deploy keys for secure access to your projects. |
 | [Profile settings](user/profile/index.md#profile-settings) | Manage your profile settings, two factor authentication, and more.                                                         |
 | [User permissions](user/permissions.md)                    | Learn what each role in a project can do.                                                                                  |
 
@@ -411,7 +412,7 @@ Learn more about using Git, and using Git with GitLab:
 |:----------------------------------------------------------------------------|:---------------------------------------------------------------------------|
 | [Git](topics/git/index.md)                                                  | Getting started with Git, branching strategies, Git LFS, and advanced use. |
 | [Git cheatsheet](https://about.gitlab.com/images/press/git-cheat-sheet.pdf) | Download a PDF describing the most used Git operations.                    |
-| [GitLab Flow](workflow/gitlab_flow.md)                                      | Explore the best of Git with the GitLab Flow strategy.                     |
+| [GitLab Flow](topics/gitlab_flow.md)                                      | Explore the best of Git with the GitLab Flow strategy.                     |
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#overview">
@@ -426,7 +427,7 @@ If you are coming to GitLab from another platform, you'll find the following inf
 | Topic                                                          | Description                                                                            |
 |:---------------------------------------------------------------|:---------------------------------------------------------------------------------------|
 | [Importing to GitLab](user/project/import/index.md)            | Import your projects from GitHub, Bitbucket, GitLab.com, FogBugz, and SVN into GitLab. |
-| [Migrating from SVN](workflow/importing/migrating_from_svn.md) | Convert a SVN repository to Git and GitLab.                                            |
+| [Migrating from SVN](user/project/import/svn.md) | Convert a SVN repository to Git and GitLab.                                            |
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#overview">

@@ -17,9 +17,11 @@
  *   />
  */
 import $ from 'jquery';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
+import { GlSkeletonLoading } from '@gitlab/ui';
 import noteHeader from '~/notes/components/note_header.vue';
 import Icon from '~/vue_shared/components/icon.vue';
+import descriptionVersionHistoryMixin from 'ee_else_ce/notes/mixins/description_version_history';
 import TimelineEntryItem from './timeline_entry_item.vue';
 import { spriteIcon } from '../../../lib/utils/common_utils';
 import initMRPopovers from '~/mr_popover/';
@@ -32,7 +34,9 @@ export default {
     Icon,
     noteHeader,
     TimelineEntryItem,
+    GlSkeletonLoading,
   },
+  mixins: [descriptionVersionHistoryMixin],
   props: {
     note: {
       type: Object,
@@ -75,13 +79,16 @@ export default {
   mounted() {
     initMRPopovers(this.$el.querySelectorAll('.gfm-merge_request'));
   },
+  methods: {
+    ...mapActions(['fetchDescriptionVersion']),
+  },
 };
 </script>
 
 <template>
   <timeline-entry-item
     :id="noteAnchorId"
-    :class="{ target: isTargetNote }"
+    :class="{ target: isTargetNote, 'pr-0': shouldShowDescriptionVersion }"
     class="note system-note note-wrapper"
   >
     <div class="timeline-icon" v-html="iconHtml"></div>
@@ -89,14 +96,18 @@ export default {
       <div class="note-header">
         <note-header :author="note.author" :created-at="note.created_at" :note-id="note.id">
           <span v-html="actionTextHtml"></span>
+          <template v-if="canSeeDescriptionVersion" slot="extra-controls">
+            &middot;
+            <button type="button" class="btn-blank btn-link" @click="toggleDescriptionVersion">
+              {{ __('Compare with previous version') }}
+              <icon :name="descriptionVersionToggleIcon" :size="12" class="append-left-5" />
+            </button>
+          </template>
         </note-header>
       </div>
       <div class="note-body">
         <div
-          :class="{
-            'system-note-commit-list': hasMoreCommits,
-            'hide-shade': expanded,
-          }"
+          :class="{ 'system-note-commit-list': hasMoreCommits, 'hide-shade': expanded }"
           class="note-text md"
           v-html="note.note_html"
         ></div>
@@ -105,6 +116,12 @@ export default {
             <icon :name="toggleIcon" :size="8" class="append-right-5" />
             <span>{{ __('Toggle commit list') }}</span>
           </div>
+        </div>
+        <div v-if="shouldShowDescriptionVersion" class="description-version pt-2">
+          <pre v-if="isLoadingDescriptionVersion" class="loading-state">
+            <gl-skeleton-loading />
+          </pre>
+          <pre v-else class="wrapper mt-2" v-html="descriptionVersion"></pre>
         </div>
       </div>
     </div>

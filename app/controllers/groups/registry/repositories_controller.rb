@@ -16,7 +16,7 @@ module Groups
 
             render json: ContainerRepositoriesSerializer
               .new(current_user: current_user)
-              .represent(@images)
+              .represent_read_only(@images)
           end
         end
       end

@@ -38,7 +38,7 @@ describe MergeRequests::CloseService do
                                .with(@merge_request, 'close')
       end
 
-      it 'sends email to user2 about assign of new merge_request' do
+      it 'sends email to user2 about assign of new merge_request', :sidekiq_might_not_need_inline do
         email = ActionMailer::Base.deliveries.last
         expect(email.to.first).to eq(user2.email)
         expect(email.subject).to include(merge_request.title)

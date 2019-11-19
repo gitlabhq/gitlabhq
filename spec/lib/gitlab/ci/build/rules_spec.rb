@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Gitlab::Ci::Build::Rules do
@@ -7,11 +9,11 @@ describe Gitlab::Ci::Build::Rules do
   let(:seed) do
     double('build seed',
       to_resource: ci_build,
-      scoped_variables_hash: ci_build.scoped_variables_hash
+      variables: ci_build.scoped_variables_hash
     )
   end
 
-  let(:rules) { described_class.new(rule_list) }
+  let(:rules) { described_class.new(rule_list, default_when: 'on_success') }
 
   describe '.new' do
     let(:rules_ivar)   { rules.instance_variable_get :@rule_list }
@@ -60,7 +62,7 @@ describe Gitlab::Ci::Build::Rules do
 
     context 'with a specified default when:' do
       let(:rule_list) { [{ if: '$VAR == null', when: 'always' }] }
-      let(:rules)     { described_class.new(rule_list, 'manual') }
+      let(:rules)     { described_class.new(rule_list, default_when: 'manual') }
 
       it 'sets @rule_list to an array of a single rule' do
         expect(rules_ivar).to be_an(Array)
@@ -81,7 +83,7 @@ describe Gitlab::Ci::Build::Rules do
       it { is_expected.to eq(described_class::Result.new('on_success')) }
 
       context 'and when:manual set as the default' do
-        let(:rules) { described_class.new(rule_list, 'manual') }
+        let(:rules) { described_class.new(rule_list, default_when: 'manual') }
 
         it { is_expected.to eq(described_class::Result.new('manual')) }
       end
@@ -93,7 +95,7 @@ describe Gitlab::Ci::Build::Rules do
       it { is_expected.to eq(described_class::Result.new('never')) }
 
       context 'and when:manual set as the default' do
-        let(:rules) { described_class.new(rule_list, 'manual') }
+        let(:rules) { described_class.new(rule_list, default_when: 'manual') }
 
         it { is_expected.to eq(described_class::Result.new('never')) }
       end
@@ -157,7 +159,7 @@ describe Gitlab::Ci::Build::Rules do
       it { is_expected.to eq(described_class::Result.new('never')) }
 
       context 'and when:manual set as the default' do
-        let(:rules) { described_class.new(rule_list, 'manual') }
+        let(:rules) { described_class.new(rule_list, default_when: 'manual') }
 
         it 'does not return the default when:' do
           expect(subject).to eq(described_class::Result.new('never'))

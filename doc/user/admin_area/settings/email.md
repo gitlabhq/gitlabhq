@@ -8,7 +8,7 @@ You can customize some of the content in emails sent from your GitLab instance.
 
 ## Custom logo
 
-The logo in the header of some emails can be customized, see the [logo customization section](../../../customization/branded_page_and_email_header.md).
+The logo in the header of some emails can be customized, see the [logo customization section](../appearance.md#navigation-bar).
 
 ## Custom additional text **(PREMIUM ONLY)**
 

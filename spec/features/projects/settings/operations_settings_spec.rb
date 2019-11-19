@@ -102,5 +102,30 @@ describe 'Projects > Settings > For a forked project', :js do
         end
       end
     end
+
+    context 'grafana integration settings form' do
+      it 'successfully fills and completes the form' do
+        visit project_settings_operations_path(project)
+
+        wait_for_requests
+
+        within '.js-grafana-integration' do
+          click_button('Expand')
+        end
+
+        expect(page).to have_content('Grafana URL')
+        expect(page).to have_content('API Token')
+        expect(page).to have_button('Save Changes')
+
+        fill_in('grafana-url', with: 'http://gitlab-test.grafana.net')
+        fill_in('grafana-token', with: 'token')
+
+        click_button('Save Changes')
+
+        wait_for_requests
+
+        assert_text('Your changes have been saved')
+      end
+    end
   end
 end

@@ -41,17 +41,38 @@
       .info-well
         .well-segment.admin-well.admin-well-features
           %h4 Features
-          = feature_entry(_('Sign up'), href: admin_application_settings_path(anchor: 'js-signup-settings'), enabled: allow_signup?)
-          = feature_entry(_('LDAP'), enabled: Gitlab.config.ldap.enabled)
-          = feature_entry(_('Gravatar'), href: admin_application_settings_path(anchor: 'js-account-settings'), enabled: gravatar_enabled?)
-          = feature_entry(_('OmniAuth'), href: admin_application_settings_path(anchor: 'js-signin-settings'), enabled: Gitlab::Auth.omniauth_enabled?)
-          = feature_entry(_('Reply by email'), enabled: Gitlab::IncomingEmail.enabled?)
+          = feature_entry(_('Sign up'),
+            href: admin_application_settings_path(anchor: 'js-signup-settings'),
+            enabled: allow_signup?)
+
+          = feature_entry(_('LDAP'),
+            enabled: Gitlab.config.ldap.enabled)
+
+          = feature_entry(_('Gravatar'),
+            href: admin_application_settings_path(anchor: 'js-account-settings'),
+            enabled: gravatar_enabled?)
+
+          = feature_entry(_('OmniAuth'),
+            href: admin_application_settings_path(anchor: 'js-signin-settings'),
+            enabled: Gitlab::Auth.omniauth_enabled?)
+
+          = feature_entry(_('Reply by email'),
+            enabled: Gitlab::IncomingEmail.enabled?)
 
           = render_if_exists 'admin/dashboard/elastic_and_geo'
 
-          = feature_entry(_('Container Registry'), href: ci_cd_admin_application_settings_path(anchor: 'js-registry-settings'), enabled: Gitlab.config.registry.enabled)
-          = feature_entry(_('Gitlab Pages'), href: help_instance_configuration_url, enabled: Gitlab.config.pages.enabled)
-          = feature_entry(_('Shared Runners'), href: admin_runners_path, enabled: Gitlab.config.gitlab_ci.shared_runners_enabled)
+          = feature_entry(_('Container Registry'),
+            href: ci_cd_admin_application_settings_path(anchor: 'js-registry-settings'),
+            enabled: Gitlab.config.registry.enabled,
+            doc_href: help_page_path('user/packages/container_registry/index'))
+
+          = feature_entry(_('Gitlab Pages'),
+            enabled: Gitlab.config.pages.enabled,
+            doc_href: help_instance_configuration_url)
+
+          = feature_entry(_('Shared Runners'),
+            href: admin_runners_path,
+            enabled: Gitlab.config.gitlab_ci.shared_runners_enabled)
     .col-md-4
       .info-well
         .well-segment.admin-well

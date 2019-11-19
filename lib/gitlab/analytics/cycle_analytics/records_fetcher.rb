@@ -130,3 +130,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Analytics::CycleAnalytics::RecordsFetcher.prepend_if_ee('EE::Gitlab::Analytics::CycleAnalytics::RecordsFetcher')

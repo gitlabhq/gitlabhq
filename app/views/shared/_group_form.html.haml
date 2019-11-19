@@ -22,11 +22,16 @@
           - if parent
             %strong= parent.full_path + '/'
       = f.hidden_field :parent_id
-      = f.text_field :path, placeholder: 'my-awesome-group', class: 'form-control',
+      = f.text_field :path, placeholder: 'my-awesome-group', class: 'form-control js-validate-group-path',
         autofocus: local_assigns[:autofocus] || false, required: true,
         pattern: Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS,
         title: _('Please choose a group URL with no special characters.'),
         "data-bind-in" => "#{'create_chat_team' if Gitlab.config.mattermost.enabled}"
+    %p.validation-error.gl-field-error.field-validation.hide
+      = _('Group path is already taken. Suggestions: ')
+      %span.gl-path-suggestions
+    %p.validation-success.gl-field-success.field-validation.hide= _('Group path is available.')
+    %p.validation-pending.gl-field-error-ignore.field-validation.hide= _('Checking group path availability...')
 
     - if @group.persisted?
       .alert.alert-warning.prepend-top-10

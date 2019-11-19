@@ -3,12 +3,12 @@
 module Clusters
   module Providers
     class Aws < ApplicationRecord
+      include Gitlab::Utils::StrongMemoize
       include Clusters::Concerns::ProviderStatus
 
       self.table_name = 'cluster_providers_aws'
 
       belongs_to :cluster, inverse_of: :provider_aws, class_name: 'Clusters::Cluster'
-      belongs_to :created_by_user, class_name: 'User'
 
       default_value_for :region, 'us-east-1'
       default_value_for :num_nodes, 3
@@ -41,6 +41,30 @@ module Clusters
           secret_access_key: nil,
           session_token: nil
         )
+      end
+
+      def api_client
+        strong_memoize(:api_client) do
+          ::Aws::CloudFormation::Client.new(credentials: credentials, region: region)
+        end
+      end
+
+      def credentials
+        strong_memoize(:credentials) do
+          ::Aws::Credentials.new(access_key_id, secret_access_key, session_token)
+        end
+      end
+
+      def has_rbac_enabled?
+        true
+      end
+
+      def knative_pre_installed?
+        false
+      end
+
+      def created_by_user
+        cluster.user
       end
     end
   end

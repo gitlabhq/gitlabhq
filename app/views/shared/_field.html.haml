@@ -16,7 +16,7 @@
     = form.label name, title, class: "col-form-label col-sm-2"
   .col-sm-10
     - if type == 'text'
-      = form.text_field name, class: "form-control", placeholder: placeholder, required: required, disabled: disabled
+      = form.text_field name, class: "form-control", placeholder: placeholder, required: required, disabled: disabled, data: { qa_selector: "#{name.downcase.gsub('\s', '')}_field" }
     - elsif type == 'textarea'
       = form.text_area name, rows: 5, class: "form-control", placeholder: placeholder, required: required, disabled: disabled
     - elsif type == 'checkbox'
@@ -24,6 +24,6 @@
     - elsif type == 'select'
       = form.select name, options_for_select(choices, value ? value : default_choice), {}, { class: "form-control", disabled: disabled}
     - elsif type == 'password'
-      = form.password_field name, autocomplete: "new-password", placeholder: placeholder, class: "form-control", required: value.blank? && required, disabled: disabled
+      = form.password_field name, autocomplete: "new-password", placeholder: placeholder, class: "form-control", required: value.blank? && required, disabled: disabled, data: { qa_selector: "#{name.downcase.gsub('\s', '')}_field" }
     - if help
       %span.form-text.text-muted= help

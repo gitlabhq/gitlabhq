@@ -6,6 +6,7 @@ FactoryBot.define do
     project
     author { project.creator }
     updated_by { author }
+    relative_position { RelativePositioning::START_POSITION }
 
     trait :confidential do
       confidential { true }

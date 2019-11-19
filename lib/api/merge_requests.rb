@@ -296,9 +296,12 @@ module API
       end
       get ':id/merge_requests/:merge_request_iid/commits' do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
-        commits = ::Kaminari.paginate_array(merge_request.commits)
 
-        present paginate(commits), with: Entities::Commit
+        commits =
+          paginate(merge_request.merge_request_diff.merge_request_diff_commits)
+            .map { |commit| Commit.from_hash(commit.to_hash, merge_request.project) }
+
+        present commits, with: Entities::Commit
       end
 
       desc 'Show the merge request changes' do
@@ -404,7 +407,8 @@ module API
         merge_params = HashWithIndifferentAccess.new(
           commit_message: params[:merge_commit_message],
           squash_commit_message: params[:squash_commit_message],
-          should_remove_source_branch: params[:should_remove_source_branch]
+          should_remove_source_branch: params[:should_remove_source_branch],
+          sha: params[:sha] || merge_request.diff_head_sha
         )
 
         if merge_when_pipeline_succeeds && merge_request.head_pipeline && merge_request.head_pipeline.active?
@@ -455,6 +459,8 @@ module API
 
         status :accepted
         present rebase_in_progress: merge_request.rebase_in_progress?
+      rescue ::MergeRequest::RebaseLockTimeout => e
+        render_api_error!(e.message, 409)
       end
 
       desc 'List issues that will be closed on merge' do

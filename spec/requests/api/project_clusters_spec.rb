@@ -281,11 +281,14 @@ describe API::ProjectClusters do
     let(:api_url) { 'https://kubernetes.example.com' }
     let(:namespace) { 'new-namespace' }
     let(:platform_kubernetes_attributes) { { namespace: namespace } }
+    let(:management_project) { create(:project, namespace: project.namespace) }
+    let(:management_project_id) { management_project.id }
 
     let(:update_params) do
       {
         domain: 'new-domain.com',
-        platform_kubernetes_attributes: platform_kubernetes_attributes
+        platform_kubernetes_attributes: platform_kubernetes_attributes,
+        management_project_id: management_project_id
       }
     end
 
@@ -310,6 +313,8 @@ describe API::ProjectClusters do
 
     context 'authorized user' do
       before do
+        management_project.add_maintainer(current_user)
+
         put api("/projects/#{project.id}/clusters/#{cluster.id}", current_user), params: update_params
 
         cluster.reload
@@ -323,6 +328,7 @@ describe API::ProjectClusters do
         it 'updates cluster attributes' do
           expect(cluster.domain).to eq('new-domain.com')
           expect(cluster.platform_kubernetes.namespace).to eq('new-namespace')
+          expect(cluster.management_project).to eq(management_project)
         end
       end
 
@@ -336,10 +342,23 @@ describe API::ProjectClusters do
         it 'does not update cluster attributes' do
           expect(cluster.domain).not_to eq('new_domain.com')
           expect(cluster.platform_kubernetes.namespace).not_to eq('invalid_namespace')
+          expect(cluster.management_project).not_to eq(management_project)
         end
 
         it 'returns validation errors' do
           expect(json_response['message']['platform_kubernetes.namespace'].first).to match('can contain only lowercase letters')
+        end
+      end
+
+      context 'current user does not have access to management_project_id' do
+        let(:management_project_id) { create(:project).id }
+
+        it 'responds with 400' do
+          expect(response).to have_gitlab_http_status(400)
+        end
+
+        it 'returns validation errors' do
+          expect(json_response['message']['management_project_id'].first).to match('don\'t have permission')
         end
       end
 

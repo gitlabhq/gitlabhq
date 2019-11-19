@@ -10,6 +10,8 @@ describe Deployment do
   it { is_expected.to belong_to(:cluster).class_name('Clusters::Cluster') }
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:deployable) }
+  it { is_expected.to have_many(:deployment_merge_requests) }
+  it { is_expected.to have_many(:merge_requests).through(:deployment_merge_requests) }
 
   it { is_expected.to delegate_method(:name).to(:environment).with_prefix }
   it { is_expected.to delegate_method(:commit).to(:project) }
@@ -359,6 +361,84 @@ describe Deployment do
     it 'raises when no deployment is found' do
       expect { described_class.find_successful_deployment!(-1) }
         .to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
+
+  describe '#previous_deployment' do
+    it 'returns the previous deployment' do
+      deploy1 = create(:deployment)
+      deploy2 = create(
+        :deployment,
+        project: deploy1.project,
+        environment: deploy1.environment
+      )
+
+      expect(deploy2.previous_deployment).to eq(deploy1)
+    end
+  end
+
+  describe '#link_merge_requests' do
+    it 'links merge requests with a deployment' do
+      deploy = create(:deployment)
+      mr1 = create(
+        :merge_request,
+        :merged,
+        target_project: deploy.project,
+        source_project: deploy.project
+      )
+
+      mr2 = create(
+        :merge_request,
+        :merged,
+        target_project: deploy.project,
+        source_project: deploy.project
+      )
+
+      deploy.link_merge_requests(deploy.project.merge_requests)
+
+      expect(deploy.merge_requests).to include(mr1, mr2)
+    end
+  end
+
+  describe '#previous_environment_deployment' do
+    it 'returns the previous deployment of the same environment' do
+      deploy1 = create(:deployment, :success, ref: 'v1.0.0')
+      deploy2 = create(
+        :deployment,
+        :success,
+        project: deploy1.project,
+        environment: deploy1.environment,
+        ref: 'v1.0.1'
+      )
+
+      expect(deploy2.previous_environment_deployment).to eq(deploy1)
+    end
+
+    it 'ignores deployments that were not successful' do
+      deploy1 = create(:deployment, :failed, ref: 'v1.0.0')
+      deploy2 = create(
+        :deployment,
+        :success,
+        project: deploy1.project,
+        environment: deploy1.environment,
+        ref: 'v1.0.1'
+      )
+
+      expect(deploy2.previous_environment_deployment).to be_nil
+    end
+
+    it 'ignores deployments for different environments' do
+      deploy1 = create(:deployment, :success, ref: 'v1.0.0')
+      preprod = create(:environment, project: deploy1.project, name: 'preprod')
+      deploy2 = create(
+        :deployment,
+        :success,
+        project: deploy1.project,
+        environment: preprod,
+        ref: 'v1.0.1'
+      )
+
+      expect(deploy2.previous_environment_deployment).to be_nil
     end
   end
 end

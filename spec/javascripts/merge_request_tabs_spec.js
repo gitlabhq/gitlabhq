@@ -1,4 +1,3 @@
-/* eslint-disable no-var */
 import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
@@ -11,9 +10,9 @@ import initMrPage from './helpers/init_vue_mr_page_helper';
 
 describe('MergeRequestTabs', function() {
   let mrPageMock;
-  var stubLocation = {};
-  var setLocation = function(stubs) {
-    var defaults = {
+  const stubLocation = {};
+  const setLocation = function(stubs) {
+    const defaults = {
       pathname: '',
       search: '',
       hash: '',
@@ -44,9 +43,9 @@ describe('MergeRequestTabs', function() {
   });
 
   describe('opensInNewTab', function() {
-    var tabUrl;
-    var windowTarget = '_blank';
+    const windowTarget = '_blank';
     let clickTabParams;
+    let tabUrl;
 
     beforeEach(function() {
       loadFixtures('merge_requests/merge_request_with_task_list.html');
@@ -193,11 +192,10 @@ describe('MergeRequestTabs', function() {
     });
 
     it('replaces the current history state', function() {
-      var newState;
       setLocation({
         pathname: '/foo/bar/merge_requests/1',
       });
-      newState = this.subject('commits');
+      const newState = this.subject('commits');
 
       expect(this.spies.history).toHaveBeenCalledWith(
         {

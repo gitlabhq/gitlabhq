@@ -140,7 +140,8 @@ module API
         {
           repository: repository.gitaly_repository,
           address: Gitlab::GitalyClient.address(project.repository_storage),
-          token: Gitlab::GitalyClient.token(project.repository_storage)
+          token: Gitlab::GitalyClient.token(project.repository_storage),
+          features: Feature::Gitaly.server_feature_flags
         }
       end
     end

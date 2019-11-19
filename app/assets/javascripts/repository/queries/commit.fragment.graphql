@@ -1,0 +1,8 @@
+fragment TreeEntryCommit on LogTreeCommit {
+  sha
+  message
+  committedDate
+  commitPath
+  fileName
+  type
+}

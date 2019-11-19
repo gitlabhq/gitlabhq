@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Ci::BuildPresenter do
@@ -267,7 +269,7 @@ describe Ci::BuildPresenter do
     let(:build) { create(:ci_build, :failed, :script_failure) }
 
     context 'when is a script or missing dependency failure' do
-      let(:failure_reasons) { %w(script_failure missing_dependency_failure archived_failure) }
+      let(:failure_reasons) { %w(script_failure missing_dependency_failure archived_failure scheduler_failure data_integrity_failure) }
 
       it 'returns false' do
         failure_reasons.each do |failure_reason|

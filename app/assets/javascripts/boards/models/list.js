@@ -50,8 +50,8 @@ class List {
     this.page = 1;
     this.loading = true;
     this.loadingMore = false;
-    this.issues = [];
-    this.issuesSize = 0;
+    this.issues = obj.issues || [];
+    this.issuesSize = obj.issuesSize ? obj.issuesSize : 0;
     this.defaultAvatar = defaultAvatar;
 
     if (obj.label) {

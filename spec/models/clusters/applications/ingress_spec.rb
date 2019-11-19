@@ -21,7 +21,7 @@ describe Clusters::Applications::Ingress do
   describe '#can_uninstall?' do
     subject { ingress.can_uninstall? }
 
-    it 'returns true if application_jupyter_nil_or_installable? AND external_ip_or_hostname? are true' do
+    it 'returns true if external ip is set and no application exists' do
       ingress.external_ip = 'IP'
 
       is_expected.to be_truthy
@@ -29,6 +29,12 @@ describe Clusters::Applications::Ingress do
 
     it 'returns false if application_jupyter_nil_or_installable? is false' do
       create(:clusters_applications_jupyter, :installed, cluster: ingress.cluster)
+
+      is_expected.to be_falsey
+    end
+
+    it 'returns false if application_elastic_stack_nil_or_installable? is false' do
+      create(:clusters_applications_elastic_stack, :installed, cluster: ingress.cluster)
 
       is_expected.to be_falsey
     end
@@ -150,6 +156,21 @@ describe Clusters::Applications::Ingress do
       it 'includes modsecurity core ruleset enablement' do
         expect(subject.values).to include("enable-owasp-modsecurity-crs: 'true'")
       end
+
+      it 'includes modsecurity.conf content' do
+        expect(subject.values).to include('modsecurity.conf')
+        # Includes file content from Ingress#modsecurity_config_content
+        expect(subject.values).to include('SecAuditLog')
+
+        expect(subject.values).to include('extraVolumes')
+        expect(subject.values).to include('extraVolumeMounts')
+      end
+
+      it 'includes modsecurity sidecar container' do
+        expect(subject.values).to include('modsecurity-log-volume')
+
+        expect(subject.values).to include('extraContainers')
+      end
     end
 
     context 'when ingress_modsecurity is disabled' do
@@ -165,6 +186,21 @@ describe Clusters::Applications::Ingress do
 
       it 'excludes modsecurity core ruleset enablement' do
         expect(subject.values).not_to include('enable-owasp-modsecurity-crs')
+      end
+
+      it 'excludes modsecurity.conf content' do
+        expect(subject.values).not_to include('modsecurity.conf')
+        # Excludes file content from Ingress#modsecurity_config_content
+        expect(subject.values).not_to include('SecAuditLog')
+
+        expect(subject.values).not_to include('extraVolumes')
+        expect(subject.values).not_to include('extraVolumeMounts')
+      end
+
+      it 'excludes modsecurity sidecar container' do
+        expect(subject.values).not_to include('modsecurity-log-volume')
+
+        expect(subject.values).not_to include('extraContainers')
       end
     end
   end

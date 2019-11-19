@@ -30,7 +30,7 @@ module QA
 
         yield dir
       ensure
-        FileUtils.remove_entry(dir)
+        FileUtils.remove_entry(dir, true)
       end
 
       private

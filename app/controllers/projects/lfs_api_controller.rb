@@ -109,7 +109,7 @@ class Projects::LfsApiController < Projects::GitHttpClientController
           message: lfs_read_only_message
         },
         content_type: LfsRequest::CONTENT_TYPE,
-        status: 403
+        status: :forbidden
       )
     end
   end

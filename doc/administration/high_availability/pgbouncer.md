@@ -4,13 +4,9 @@ type: reference
 
 # Working with the bundle PgBouncer service
 
-As part of its High Availability stack, GitLab Premium includes a bundled version of [PgBouncer](https://pgbouncer.github.io/) that can be managed through `/etc/gitlab/gitlab.rb`.
+As part of its High Availability stack, GitLab Premium includes a bundled version of [PgBouncer](https://pgbouncer.github.io/) that can be managed through `/etc/gitlab/gitlab.rb`. PgBouncer is used to seamlessly migrate database connections between servers in a failover scenario. Additionally, it can be used in a non-HA setup to pool connections, speeding up response time while reducing resource usage.
 
-In a High Availability setup, PgBouncer is used to seamlessly migrate database connections between servers in a failover scenario.
-
-Additionally, it can be used in a non-HA setup to pool connections, speeding up response time while reducing resource usage.
-
-It is recommended to run PgBouncer alongside the `gitlab-rails` service, or on its own dedicated node in a cluster.
+In a HA setup, it's recommended to run a PgBouncer node separately for each database node with an internal load balancer (TCP) serving each accordingly.
 
 ## Operations
 
@@ -18,7 +14,7 @@ It is recommended to run PgBouncer alongside the `gitlab-rails` service, or on i
 
 1. Make sure you collect [`CONSUL_SERVER_NODES`](database.md#consul-information), [`CONSUL_PASSWORD_HASH`](database.md#consul-information), and [`PGBOUNCER_PASSWORD_HASH`](database.md#pgbouncer-information) before executing the next step.
 
-1. Edit `/etc/gitlab/gitlab.rb` replacing values noted in the `# START user configuration` section:
+1. One each node, edit the `/etc/gitlab/gitlab.rb` config file and replace values noted in the `# START user configuration` section as below:
 
    ```ruby
    # Disable all components except PgBouncer and Consul agent
@@ -67,7 +63,7 @@ It is recommended to run PgBouncer alongside the `gitlab-rails` service, or on i
 
 #### PgBouncer Checkpoint
 
-1. Ensure the node is talking to the current master:
+1. Ensure each node is talking to the current master:
 
    ```sh
    gitlab-ctl pgb-console # You will be prompted for PGBOUNCER_PASSWORD
@@ -99,6 +95,41 @@ It is recommended to run PgBouncer alongside the `gitlab-rails` service, or on i
     C    | pgbouncer | pgbouncer           | active  | 127.0.0.1      | 56846 | 127.0.0.1  |       6432 | 2017-08-21 18:09:59 | 2017-08-21 18:10:48 | 0x22b3880 |      |          0 |
    (2 rows)
    ```
+
+#### Configure the internal load balancer
+
+If you're running more than one PgBouncer node as recommended, then at this time you'll need to set up a TCP internal load balancer to serve each correctly. This can be done with any reputable TCP load balancer.
+
+As an example here's how you could do it with [HAProxy](https://www.haproxy.org/):
+
+```
+global
+    log /dev/log local0
+    log localhost local1 notice
+    log stdout format raw local0
+
+defaults
+    log global
+    default-server inter 10s fall 3 rise 2
+    balance leastconn
+
+frontend internal-pgbouncer-tcp-in
+    bind *:6432
+    mode tcp
+    option tcplog
+
+    default_backend pgbouncer
+
+backend pgbouncer
+    mode tcp
+    option tcp-check
+
+    server pgbouncer1 <ip>:6432 check
+    server pgbouncer2 <ip>:6432 check
+    server pgbouncer3 <ip>:6432 check
+```
+
+Refer to your preferred Load Balancer's documentation for further guidance.
 
 ### Running PgBouncer as part of a non-HA GitLab installation
 
@@ -177,7 +208,7 @@ If you enable Monitoring, it must be enabled on **all** PgBouncer servers.
 
 #### Administrative console
 
-As part of Omnibus GitLab, we provide a command `gitlab-ctl pgb-console` to automatically connect to the PgBouncer administrative console. Please see the [PgBouncer documentation](https://pgbouncer.github.io/usage.html#admin-console) for detailed instructions on how to interact with the console.
+As part of Omnibus GitLab, we provide a command `gitlab-ctl pgb-console` to automatically connect to the PgBouncer administrative console. Please see the [PgBouncer documentation](https://www.pgbouncer.org/usage.html#admin-console) for detailed instructions on how to interact with the console.
 
 To start a session, run
 

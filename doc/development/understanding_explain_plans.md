@@ -705,6 +705,43 @@ For more information about the available options, run:
 /chatops run explain --help
 ```
 
+### `#database-lab`
+
+Another tool GitLab employees can use is a chatbot powered by [Joe](https://gitlab.com/postgres-ai/joe), available in the [`#database-lab`](https://gitlab.slack.com/archives/CLJMDRD8C) channel on Slack.
+Unlike chatops, it gives you a way to execute DDL statements (like creating indexes and tables) and get query plan not only for `SELECT` but also `UPDATE` and `DELETE`.
+
+For example, in order to test new index you can do the following:
+
+Create the index:
+
+```
+exec CREATE INDEX index_projects_marked_for_deletion ON projects (marked_for_deletion_at) WHERE marked_for_deletion_at IS NOT NULL
+```
+
+Analyze the table to update its statistics:
+
+```
+exec ANALYZE projects
+```
+
+Get the query plan:
+
+```
+explain SELECT * FROM projects WHERE marked_for_deletion_at < CURRENT_DATE
+```
+
+Once done you can rollback your changes:
+
+```
+reset
+```
+
+For more information about the available options, run:
+
+```
+help
+```
+
 ## Further reading
 
 A more extensive guide on understanding query plans can be found in

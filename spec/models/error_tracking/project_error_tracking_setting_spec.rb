@@ -208,6 +208,28 @@ describe ErrorTracking::ProjectErrorTrackingSetting do
         expect(sentry_client).to have_received(:list_issues)
       end
     end
+
+    context 'when sentry client raises Sentry::Client::ResponseInvalidSizeError' do
+      let(:sentry_client) { spy(:sentry_client) }
+      let(:error_msg) {"Sentry API response is too big. Limit is #{Gitlab::Utils::DeepSize.human_default_max_size}."}
+
+      before do
+        synchronous_reactive_cache(subject)
+
+        allow(subject).to receive(:sentry_client).and_return(sentry_client)
+        allow(sentry_client).to receive(:list_issues).with(opts)
+          .and_raise(Sentry::Client::ResponseInvalidSizeError, error_msg)
+      end
+
+      it 'returns error' do
+        expect(result).to eq(
+          error: error_msg,
+          error_type: ErrorTracking::ProjectErrorTrackingSetting::SENTRY_API_ERROR_INVALID_SIZE
+        )
+        expect(subject).to have_received(:sentry_client)
+        expect(sentry_client).to have_received(:list_issues)
+      end
+    end
   end
 
   describe '#list_sentry_projects' do

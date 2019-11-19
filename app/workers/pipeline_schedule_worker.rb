@@ -5,6 +5,7 @@ class PipelineScheduleWorker
   include CronjobQueue
 
   feature_category :continuous_integration
+  worker_resource_boundary :cpu
 
   def perform
     Ci::PipelineSchedule.runnable_schedules.preloaded.find_in_batches do |schedules|

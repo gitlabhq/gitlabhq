@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe Projects::HashedStorage::MigrateAttachmentsService do
-  subject(:service) { described_class.new(project, project.full_path, logger: nil) }
+  subject(:service) { described_class.new(project: project, old_disk_path: project.full_path, logger: nil) }
 
   let(:project) { create(:project, :repository, storage_version: 1, skip_disk_validation: true) }
   let(:legacy_storage) { Storage::LegacyProject.new(project) }
@@ -72,7 +72,23 @@ describe Projects::HashedStorage::MigrateAttachmentsService do
         FileUtils.mkdir_p(base_path(hashed_storage))
       end
 
-      it 'raises AttachmentCannotMoveError' do
+      it 'succeed when target is empty' do
+        expect { service.execute }.not_to raise_error
+      end
+
+      it 'succeed when target include only discardable items' do
+        Projects::HashedStorage::MigrateAttachmentsService::DISCARDABLE_PATHS.each do |path_fragment|
+          discardable_path = File.join(base_path(hashed_storage), path_fragment)
+          FileUtils.mkdir_p(discardable_path)
+        end
+
+        expect { service.execute }.not_to raise_error
+      end
+
+      it 'raises AttachmentCannotMoveError when there are non discardable items on target path' do
+        not_discardable_path = File.join(base_path(hashed_storage), 'something')
+        FileUtils.mkdir_p(not_discardable_path)
+
         expect(FileUtils).not_to receive(:mv).with(base_path(legacy_storage), base_path(hashed_storage))
 
         expect { service.execute }.to raise_error(Projects::HashedStorage::AttachmentCannotMoveError)
@@ -97,6 +113,18 @@ describe Projects::HashedStorage::MigrateAttachmentsService do
       service.execute
 
       expect(service.new_disk_path).to eq(project.disk_path)
+    end
+  end
+
+  context '#target_path_discardable?' do
+    it 'returns true when it include only items on the discardable list' do
+      hashed_attachments_path = File.join(base_path(hashed_storage))
+      Projects::HashedStorage::MigrateAttachmentsService::DISCARDABLE_PATHS.each do |path_fragment|
+        discardable_path = File.join(hashed_attachments_path, path_fragment)
+        FileUtils.mkdir_p(discardable_path)
+      end
+
+      expect(service.target_path_discardable?(hashed_attachments_path)).to be_truthy
     end
   end
 

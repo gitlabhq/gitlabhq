@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20180913142237_schedule_digest_personal_access_tokens.rb')
 
@@ -32,7 +34,7 @@ describe ScheduleDigestPersonalAccessTokens, :migration, :sidekiq do
     end
   end
 
-  it 'schedules background migrations' do
+  it 'schedules background migrations', :sidekiq_might_not_need_inline do
     perform_enqueued_jobs do
       plain_text_token = 'token IS NOT NULL'
 

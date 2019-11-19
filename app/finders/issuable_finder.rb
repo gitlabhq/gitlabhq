@@ -385,6 +385,9 @@ class IssuableFinder
   end
 
   def count_key(value)
+    # value may be an array if the finder used in `count_by_state` added an
+    # additional `group by`. Anyway we are sure that state will be always the
+    # last item because it's added as the last one to the query.
     value = Array(value).last
     klass.available_states.key(value)
   end
@@ -483,6 +486,7 @@ class IssuableFinder
   # rubocop: disable CodeReuse/ActiveRecord
   def by_search(items)
     return items unless search
+    return items if items.is_a?(ActiveRecord::NullRelation)
 
     if use_cte_for_search?
       cte = Gitlab::SQL::RecursiveCTE.new(klass.table_name)

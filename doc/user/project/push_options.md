@@ -75,3 +75,33 @@ merge request, and target a branch named `my-target-branch`:
 ```shell
 git push -o merge_request.create -o merge_request.target=my-target-branch
 ```
+
+Additionally if you want the merge request to merge as soon as the pipeline succeeds you can do:
+
+```shell
+git push -o merge_request.create -o merge_request.target=my-target-branch -o merge_request.merge_when_pipeline_succeeds
+```
+
+## Useful Git aliases
+
+As shown above, Git push options can cause Git commands to grow very long. If
+you use the same push options frequently, it's useful to create [Git
+aliases](https://git-scm.com/book/en/v2/Git-Basics-Git-Aliases). Git aliases
+are command line shortcuts for Git which can significantly simplify the use of
+long Git commands.
+
+### Merge when pipeline succeeds alias
+
+To set up a Git alias for the [merge when pipeline succeeds Git push
+option](#push-options-for-merge-requests):
+
+```shell
+git config --global alias.mwps "push -o merge_request.create -o merge_request.target=master -o merge_request.merge_when_pipeline_succeeds"
+```
+
+Then to quickly push a local branch that will target master and merge when the
+pipeline succeeds:
+
+```shell
+git mwps origin <local-branch-name>
+```

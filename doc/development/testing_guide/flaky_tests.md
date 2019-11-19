@@ -83,6 +83,7 @@ This was originally implemented in: <https://gitlab.com/gitlab-org/gitlab-foss/m
 - In JS tests, shifting elements can cause Capybara to misclick when the element moves at the exact time Capybara sends the click
   - [Dropdowns rendering upward or downward due to window size and scroll position](https://gitlab.com/gitlab-org/gitlab/merge_requests/17660)
   - [Lazy loaded images can cause Capybara to misclick](https://gitlab.com/gitlab-org/gitlab/merge_requests/18713)
+- [Triggering JS events before the event handlers are set up](https://gitlab.com/gitlab-org/gitlab/merge_requests/18742)
 
 #### Capybara viewport size related issues
 

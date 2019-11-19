@@ -1,0 +1,4 @@
+export const SET_ENDPOINT = 'SET_ENDPOINT';
+export const SET_REPORTS = 'SET_REPORTS';
+export const SET_SELECTED_SUITE = 'SET_SELECTED_SUITE';
+export const TOGGLE_LOADING = 'TOGGLE_LOADING';

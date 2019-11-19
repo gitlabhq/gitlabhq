@@ -42,6 +42,7 @@ module API
       optional :asset_proxy_whitelist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Assets that match these domain(s) will NOT be proxied. Wildcards allowed. Your GitLab installation URL is automatically whitelisted.'
       optional :container_registry_token_expire_delay, type: Integer, desc: 'Authorization token duration (minutes)'
       optional :default_artifacts_expire_in, type: String, desc: "Set the default expiration time for each job's artifacts"
+      optional :default_ci_config_path, type: String, desc: 'The instance default CI configuration path for new projects'
       optional :default_project_creation, type: Integer, values: ::Gitlab::Access.project_creation_values, desc: 'Determine if developers can create projects in the group'
       optional :default_branch_protection, type: Integer, values: ::Gitlab::Access.protection_values, desc: 'Determine if developers can push to master'
       optional :default_group_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default group visibility'
@@ -52,6 +53,12 @@ module API
       optional :domain_blacklist_enabled, type: Boolean, desc: 'Enable domain blacklist for sign ups'
       optional :domain_blacklist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com'
       optional :domain_whitelist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'ONLY users with e-mail addresses that match these domain(s) will be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com'
+      optional :eks_integration_enabled, type: Boolean, desc: 'Enable integration with Amazon EKS'
+      given eks_integration_enabled: -> (val) { val } do
+        requires :eks_account_id, type: String, desc: 'Amazon account ID for EKS integration'
+        requires :eks_access_key_id, type: String, desc: 'Access key ID for the EKS integration IAM user'
+        requires :eks_secret_access_key, type: String, desc: 'Secret access key for the EKS integration IAM user'
+      end
       optional :email_author_in_body, type: Boolean, desc: 'Some email servers do not support overriding the email sender name. Enable this option to include the name of the author of the issue, merge request or comment in the email body instead.'
       optional :enabled_git_access_protocol, type: String, values: %w[ssh http nil], desc: 'Allow only the selected protocols to be used for Git access.'
       optional :gitaly_timeout_default, type: Integer, desc: 'Default Gitaly timeout, in seconds. Set to 0 to disable timeouts.'
@@ -129,16 +136,22 @@ module API
       optional :sign_in_text, type: String, desc: 'The sign in text of the GitLab application'
       optional :signin_enabled, type: Boolean, desc: 'Flag indicating if password authentication is enabled for the web interface' # support legacy names, can be removed in v5
       optional :signup_enabled, type: Boolean, desc: 'Flag indicating if sign up is enabled'
+      optional :sourcegraph_enabled, type: Boolean, desc: 'Enable Sourcegraph'
+      optional :sourcegraph_public_only, type: Boolean, desc: 'Only allow public projects to communicate with Sourcegraph'
+      given sourcegraph_enabled: ->(val) { val } do
+        requires :sourcegraph_url, type: String, desc: 'The configured Sourcegraph instance URL'
+      end
       optional :terminal_max_session_time, type: Integer, desc: 'Maximum time for web terminal websocket connection (in seconds). Set to 0 for unlimited time.'
       optional :usage_ping_enabled, type: Boolean, desc: 'Every week GitLab will report license usage back to GitLab, Inc.'
       optional :instance_statistics_visibility_private, type: Boolean, desc: 'When set to `true` Instance statistics will only be available to admins'
       optional :local_markdown_version, type: Integer, desc: 'Local markdown version, increase this value when any cached markdown should be invalidated'
       optional :allow_local_requests_from_hooks_and_services, type: Boolean, desc: 'Deprecated: Use :allow_local_requests_from_web_hooks_and_services instead. Allow requests to the local network from hooks and services.' # support legacy names, can be removed in v5
       optional :snowplow_enabled, type: Grape::API::Boolean, desc: 'Enable Snowplow tracking'
+      optional :snowplow_iglu_registry_url, type: String, desc: 'The Snowplow base Iglu Schema Registry URL to use for custom context and self describing events'
       given snowplow_enabled: ->(val) { val } do
         requires :snowplow_collector_hostname, type: String, desc: 'The Snowplow collector hostname'
         optional :snowplow_cookie_domain, type: String, desc: 'The Snowplow cookie domain'
-        optional :snowplow_site_id, type: String, desc: 'The Snowplow site name / application ic'
+        optional :snowplow_app_id, type: String, desc: 'The Snowplow site name / application id'
       end
 
       ApplicationSetting::SUPPORTED_KEY_TYPES.each do |type|

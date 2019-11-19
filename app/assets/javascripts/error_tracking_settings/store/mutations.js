@@ -58,4 +58,7 @@ export default {
     state.connectSuccessful = false;
     state.connectError = true;
   },
+  [types.SET_PROJECTS_LOADING](state, loading) {
+    state.isLoadingProjects = loading;
+  },
 };

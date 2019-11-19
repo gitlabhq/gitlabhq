@@ -90,7 +90,7 @@ describe Gitlab::BareRepositoryImport::Importer, :seed_helper do
         hook_path = File.join(repo_path, 'hooks')
 
         expect(gitlab_shell.repository_exists?(project.repository_storage, repo_path)).to be(true)
-        expect(gitlab_shell.exists?(project.repository_storage, hook_path)).to be(true)
+        expect(TestEnv.storage_dir_exists?(project.repository_storage, hook_path)).to be(true)
       end
 
       context 'hashed storage enabled' do

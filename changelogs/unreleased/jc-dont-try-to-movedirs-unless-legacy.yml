@@ -1,0 +1,5 @@
+---
+title: Only move repos for legacy project storage
+merge_request: 19410
+author:
+type: fixed

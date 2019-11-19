@@ -55,12 +55,16 @@ describe 'Cherry-pick Commits' do
     end
   end
 
-  context "I cherry-pick a commit in a new merge request" do
+  context "I cherry-pick a commit in a new merge request", :js do
     it do
+      find('.header-action-buttons a.dropdown-toggle').click
       find("a[href='#modal-cherry-pick-commit']").click
       page.within('#modal-cherry-pick-commit') do
         click_button 'Cherry-pick'
       end
+
+      wait_for_requests
+
       expect(page).to have_content("The commit has been successfully cherry-picked into cherry-pick-#{master_pickable_commit.short_id}. You can now submit a merge request to get this change into the original branch.")
       expect(page).to have_content("From cherry-pick-#{master_pickable_commit.short_id} into master")
     end

@@ -29,7 +29,7 @@ Set the title to: `Description of the original issue`
 
 #### Documentation and final details
 
-- [ ] Check the topic on #security to see when the next release is going to happen and add a link to the [links section](#links)
+- [ ] Check the topic on #releases to see when the next release is going to happen and add a link to the [links section](#links)
 - [ ] Add links to this issue and your MRs in the description of the security release issue
 - [ ] Find out the versions affected (the Git history of the files affected may help you with this) and add them to the [details section](#details)
 - [ ] Fill in any upgrade notes that users may need to take into account in the [details section](#details)

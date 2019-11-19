@@ -8,12 +8,16 @@ module Types
 
     present_using UserPresenter
 
-    field :name, GraphQL::STRING_TYPE, null: false # rubocop:disable Graphql/Descriptions
-    field :username, GraphQL::STRING_TYPE, null: false # rubocop:disable Graphql/Descriptions
-    field :avatar_url, GraphQL::STRING_TYPE, null: false # rubocop:disable Graphql/Descriptions
-    field :web_url, GraphQL::STRING_TYPE, null: false # rubocop:disable Graphql/Descriptions
+    field :name, GraphQL::STRING_TYPE, null: false,
+          description: 'Human-readable name of the user'
+    field :username, GraphQL::STRING_TYPE, null: false,
+          description: 'Username of the user. Unique within this instance of GitLab'
+    field :avatar_url, GraphQL::STRING_TYPE, null: false,
+          description: "URL of the user's avatar"
+    field :web_url, GraphQL::STRING_TYPE, null: false,
+          description: 'Web URL of the user'
     field :todos, Types::TodoType.connection_type, null: false,
           resolver: Resolvers::TodoResolver,
-          description: 'Todos of this user'
+          description: 'Todos of the user'
   end
 end

@@ -1,12 +1,14 @@
 <script>
 import { glEmojiTag } from '~/emoji';
 
+import AddRequest from './add_request.vue';
 import DetailedMetric from './detailed_metric.vue';
 import RequestSelector from './request_selector.vue';
 import { s__ } from '~/locale';
 
 export default {
   components: {
+    AddRequest,
     DetailedMetric,
     RequestSelector,
   },
@@ -118,6 +120,7 @@ export default {
       >
         <a :href="currentRequest.details.tracing.tracing_url">{{ s__('PerformanceBar|trace') }}</a>
       </div>
+      <add-request v-on="$listeners" />
       <request-selector
         v-if="currentRequest"
         :current-request="currentRequest"

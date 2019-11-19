@@ -80,7 +80,8 @@ describe Metrics::Dashboard::ProjectDashboardService, :use_clean_rails_memory_st
           [{
             path: dashboard_path,
             display_name: 'test.yml',
-            default: false
+            default: false,
+            system_dashboard: false
           }]
         )
       end

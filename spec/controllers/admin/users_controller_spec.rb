@@ -35,7 +35,7 @@ describe Admin::UsersController do
     end
   end
 
-  describe 'DELETE #user with projects' do
+  describe 'DELETE #user with projects', :sidekiq_might_not_need_inline do
     let(:project) { create(:project, namespace: user.namespace) }
     let!(:issue) { create(:issue, author: user) }
 

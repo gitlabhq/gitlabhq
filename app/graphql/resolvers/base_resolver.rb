@@ -10,6 +10,14 @@ module Resolvers
       end
     end
 
+    def self.last
+      @last ||= Class.new(self) do
+        def resolve(**args)
+          super.last
+        end
+      end
+    end
+
     def self.resolver_complexity(args, child_complexity:)
       complexity = 1
       complexity += 1 if args[:sort]

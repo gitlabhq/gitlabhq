@@ -42,6 +42,7 @@ module ApplicationSettingImplementation
         container_registry_token_expire_delay: 5,
         default_artifacts_expire_in: '30 days',
         default_branch_protection: Settings.gitlab['default_branch_protection'],
+        default_ci_config_path: nil,
         default_group_visibility: Settings.gitlab.default_projects_features['visibility_level'],
         default_project_creation: Settings.gitlab['default_project_creation'],
         default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
@@ -54,6 +55,10 @@ module ApplicationSettingImplementation
         dsa_key_restriction: 0,
         ecdsa_key_restriction: 0,
         ed25519_key_restriction: 0,
+        eks_integration_enabled: false,
+        eks_account_id: nil,
+        eks_access_key_id: nil,
+        eks_secret_access_key: nil,
         first_day_of_week: 0,
         gitaly_timeout_default: 55,
         gitaly_timeout_fast: 10,
@@ -97,6 +102,9 @@ module ApplicationSettingImplementation
         shared_runners_text: nil,
         sign_in_text: nil,
         signup_enabled: Settings.gitlab['signup_enabled'],
+        sourcegraph_enabled: false,
+        sourcegraph_url: nil,
+        sourcegraph_public_only: true,
         terminal_max_session_time: 0,
         throttle_authenticated_api_enabled: false,
         throttle_authenticated_api_period_in_seconds: 3600,
@@ -128,8 +136,10 @@ module ApplicationSettingImplementation
         snowplow_collector_hostname: nil,
         snowplow_cookie_domain: nil,
         snowplow_enabled: false,
-        snowplow_site_id: nil,
-        custom_http_clone_url_root: nil
+        snowplow_app_id: nil,
+        snowplow_iglu_registry_url: nil,
+        custom_http_clone_url_root: nil,
+        productivity_analytics_start_date: Time.now
       }
     end
 

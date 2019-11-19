@@ -8,20 +8,20 @@ module Gitlab
       include BlobLanguageFromGitAttributes
       include Gitlab::Utils::StrongMemoize
 
-      attr_reader :project, :content_match, :blob_filename
+      attr_reader :project, :content_match, :blob_path
 
-      FILENAME_REGEXP = /\A(?<ref>[^:]*):(?<filename>[^\x00]*)\x00/.freeze
-      CONTENT_REGEXP = /^(?<ref>[^:]*):(?<filename>[^\x00]*)\x00(?<startline>\d+)\x00/.freeze
+      PATH_REGEXP = /\A(?<ref>[^:]*):(?<path>[^\x00]*)\x00/.freeze
+      CONTENT_REGEXP = /^(?<ref>[^:]*):(?<path>[^\x00]*)\x00(?<startline>\d+)\x00/.freeze
 
       def self.preload_blobs(blobs)
-        to_fetch = blobs.select { |blob| blob.is_a?(self) && blob.blob_filename }
+        to_fetch = blobs.select { |blob| blob.is_a?(self) && blob.blob_path }
 
         to_fetch.each { |blob| blob.fetch_blob }
       end
 
       def initialize(opts = {})
         @id = opts.fetch(:id, nil)
-        @binary_filename = opts.fetch(:filename, nil)
+        @binary_path = opts.fetch(:path, nil)
         @binary_basename = opts.fetch(:basename, nil)
         @ref = opts.fetch(:ref, nil)
         @startline = opts.fetch(:startline, nil)
@@ -34,7 +34,7 @@ module Gitlab
         # Allow those to just pass project_id instead.
         @project_id = opts.fetch(:project_id, nil)
         @content_match = opts.fetch(:content_match, nil)
-        @blob_filename = opts.fetch(:blob_filename, nil)
+        @blob_path = opts.fetch(:blob_path, nil)
         @repository = opts.fetch(:repository, nil)
       end
 
@@ -50,16 +50,16 @@ module Gitlab
         @startline ||= parsed_content[:startline]
       end
 
-      # binary_filename is used for running filters on all matches,
-      # for grepped results (which use content_match), we get
-      # filename from the beginning of the grepped result which is faster
-      # then parsing whole snippet
-      def binary_filename
-        @binary_filename ||= content_match ? search_result_filename : parsed_content[:binary_filename]
+      # binary_path is used for running filters on all matches.
+      # For grepped results (which use content_match), we get
+      # the path from the beginning of the grepped result which is faster
+      # than parsing the whole snippet
+      def binary_path
+        @binary_path ||= content_match ? search_result_path : parsed_content[:binary_path]
       end
 
-      def filename
-        @filename ||= encode_utf8(@binary_filename || parsed_content[:binary_filename])
+      def path
+        @path ||= encode_utf8(@binary_path || parsed_content[:binary_path])
       end
 
       def basename
@@ -68,10 +68,6 @@ module Gitlab
 
       def data
         @data ||= encode_utf8(@binary_data || parsed_content[:binary_data])
-      end
-
-      def path
-        filename
       end
 
       def project_id
@@ -83,16 +79,16 @@ module Gitlab
       end
 
       def fetch_blob
-        path = [ref, blob_filename]
-        missing_blob = { binary_filename: blob_filename }
+        path = [ref, blob_path]
+        missing_blob = { binary_path: blob_path }
 
         BatchLoader.for(path).batch(default_value: missing_blob) do |refs, loader|
           Gitlab::Git::Blob.batch(repository, refs, blob_size_limit: 1024).each do |blob|
             # if the blob couldn't be fetched for some reason,
-            # show at least the blob filename
+            # show at least the blob path
             data = {
               id: blob.id,
-              binary_filename: blob.path,
+              binary_path: blob.path,
               binary_basename: path_without_extension(blob.path),
               ref: ref,
               startline: 1,
@@ -107,8 +103,8 @@ module Gitlab
 
       private
 
-      def search_result_filename
-        content_match.match(FILENAME_REGEXP) { |matches| matches[:filename] }
+      def search_result_path
+        content_match.match(PATH_REGEXP) { |matches| matches[:path] }
       end
 
       def path_without_extension(path)
@@ -119,7 +115,7 @@ module Gitlab
         strong_memoize(:parsed_content) do
           if content_match
             parse_search_result
-          elsif blob_filename
+          elsif blob_path
             fetch_blob
           else
             {}
@@ -129,7 +125,7 @@ module Gitlab
 
       def parse_search_result
         ref = nil
-        filename = nil
+        path = nil
         basename = nil
 
         data = []
@@ -138,17 +134,17 @@ module Gitlab
         content_match.each_line.each_with_index do |line, index|
           prefix ||= line.match(CONTENT_REGEXP)&.tap do |matches|
             ref = matches[:ref]
-            filename = matches[:filename]
+            path = matches[:path]
             startline = matches[:startline]
             startline = startline.to_i - index
-            basename = path_without_extension(filename)
+            basename = path_without_extension(path)
           end
 
           data << line.sub(prefix.to_s, '')
         end
 
         {
-          binary_filename: filename,
+          binary_path: path,
           binary_basename: basename,
           ref: ref,
           startline: startline,

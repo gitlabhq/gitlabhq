@@ -20,6 +20,7 @@ describe MergeWorker do
       described_class.new.perform(
         merge_request.id, merge_request.author_id,
         commit_message: 'wow such merge',
+        sha: merge_request.diff_head_sha,
         should_remove_source_branch: true)
 
       merge_request.reload

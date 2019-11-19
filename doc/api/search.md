@@ -181,6 +181,7 @@ Example response:
     "merge_status": "can_be_merged",
     "sha": "78765a2d5e0a43585945c58e61ba2f822e4d090b",
     "merge_commit_sha": null,
+    "squash_commit_sha": null,
     "user_notes_count": 0,
     "discussion_locked": null,
     "should_remove_source_branch": null,
@@ -299,6 +300,7 @@ Example response:
   {
     "basename": "home",
     "data": "hello\n\nand bye\n\nend",
+    "path": "home.md",
     "filename": "home.md",
     "id": null,
     "ref": "master",
@@ -307,6 +309,8 @@ Example response:
   }
 ]
 ```
+
+**Note:** `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` will be only the file name and not the full path (see [this issue][gitlab-34521]).
 
 ### Scope: commits **(STARTER)**
 
@@ -367,6 +371,7 @@ Example response:
   {
     "basename": "README",
     "data": "```\n\n## Installation\n\nQuick start using the [pre-built",
+    "path": "README.md",
     "filename": "README.md",
     "id": null,
     "ref": "master",
@@ -375,6 +380,8 @@ Example response:
   }
 ]
 ```
+
+**Note:** `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` will be only the file name and not the full path (see [this issue][gitlab-34521]).
 
 ### Scope: users
 
@@ -577,6 +584,7 @@ Example response:
     "merge_status": "can_be_merged",
     "sha": "78765a2d5e0a43585945c58e61ba2f822e4d090b",
     "merge_commit_sha": null,
+    "squash_commit_sha": null,
     "user_notes_count": 0,
     "discussion_locked": null,
     "should_remove_source_branch": null,
@@ -633,6 +641,7 @@ Example response:
   {
     "basename": "home",
     "data": "hello\n\nand bye\n\nend",
+    "path": "home.md",
     "filename": "home.md",
     "id": null,
     "ref": "master",
@@ -641,6 +650,8 @@ Example response:
   }
 ]
 ```
+
+**Note:** `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` will be only the file name and not the full path (see [this issue][gitlab-34521]).
 
 ### Scope: commits **(STARTER)**
 
@@ -701,6 +712,7 @@ Example response:
   {
     "basename": "README",
     "data": "```\n\n## Installation\n\nQuick start using the [pre-built",
+    "path": "README.md",
     "filename": "README.md",
     "id": null,
     "ref": "master",
@@ -709,6 +721,8 @@ Example response:
   }
 ]
 ```
+
+**Note:** `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` will be only the file name and not the full path (see [this issue][gitlab-34521]).
 
 ### Scope: users
 
@@ -878,6 +892,7 @@ Example response:
     "merge_status": "can_be_merged",
     "sha": "78765a2d5e0a43585945c58e61ba2f822e4d090b",
     "merge_commit_sha": null,
+    "squash_commit_sha": null,
     "user_notes_count": 0,
     "discussion_locked": null,
     "should_remove_source_branch": null,
@@ -981,6 +996,7 @@ Example response:
   {
     "basename": "home",
     "data": "hello\n\nand bye\n\nend",
+    "path": "home.md",
     "filename": "home.md",
     "id": null,
     "ref": "master",
@@ -989,6 +1005,8 @@ Example response:
   }
 ]
 ```
+
+**Note:** `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` will be only the file name and not the full path (see [this issue][gitlab-34521]).
 
 ### Scope: commits
 
@@ -1051,6 +1069,7 @@ Example response:
   {
     "basename": "README",
     "data": "```\n\n## Installation\n\nQuick start using the [pre-built",
+    "path": "README.md",
     "filename": "README.md",
     "id": null,
     "ref": "master",
@@ -1059,6 +1078,8 @@ Example response:
   }
 ]
 ```
+
+**Note:** `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` will be only the file name and not the full path (see [this issue][gitlab-34521]).
 
 ### Scope: users
 
@@ -1082,3 +1103,4 @@ Example response:
 ```
 
 [ce-41763]: https://gitlab.com/gitlab-org/gitlab-foss/issues/41763
+[gitlab-34521]: https://gitlab.com/gitlab-org/gitlab/issues/34521

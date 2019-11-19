@@ -29,12 +29,28 @@ class ClusterablePresenter < Gitlab::View::Presenter::Delegated
     new_polymorphic_path([clusterable, :cluster], options)
   end
 
+  def aws_api_proxy_path(resource)
+    polymorphic_path([clusterable, :clusters], action: :aws_proxy, resource: resource)
+  end
+
+  def authorize_aws_role_path
+    polymorphic_path([clusterable, :clusters], action: :authorize_aws_role)
+  end
+
+  def revoke_aws_role_path
+    polymorphic_path([clusterable, :clusters], action: :revoke_aws_role)
+  end
+
   def create_user_clusters_path
     polymorphic_path([clusterable, :clusters], action: :create_user)
   end
 
   def create_gcp_clusters_path
     polymorphic_path([clusterable, :clusters], action: :create_gcp)
+  end
+
+  def create_aws_clusters_path
+    polymorphic_path([clusterable, :clusters], action: :create_aws)
   end
 
   def cluster_status_cluster_path(cluster, params = {})

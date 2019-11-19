@@ -15,7 +15,7 @@ describe HashedStorage::MigratorWorker do
       worker.perform(5, 10)
     end
 
-    it 'migrates projects in the specified range' do
+    it 'migrates projects in the specified range', :sidekiq_might_not_need_inline do
       perform_enqueued_jobs do
         worker.perform(ids.min, ids.max)
       end

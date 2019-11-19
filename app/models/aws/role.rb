@@ -13,5 +13,11 @@ module Aws
         with: Gitlab::Regex.aws_arn_regex,
         message: Gitlab::Regex.aws_arn_regex_message
       }
+
+    before_validation :ensure_role_external_id!, on: :create
+
+    def ensure_role_external_id!
+      self.role_external_id ||= SecureRandom.hex(20)
+    end
   end
 end

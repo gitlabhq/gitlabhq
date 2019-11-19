@@ -99,7 +99,7 @@ description: 'Learn how to contribute to GitLab.'
 - [Post deployment migrations](post_deployment_migrations.md)
 - [Background migrations](background_migrations.md)
 - [Swapping tables](swapping_tables.md)
-- [Deleting exiting migrations](deleting_migrations.md)
+- [Deleting migrations](deleting_migrations.md)
 
 ### Best practices
 
@@ -118,6 +118,7 @@ description: 'Learn how to contribute to GitLab.'
 - [Query Count Limits](query_count_limits.md)
 - [Database helper modules](database_helpers.md)
 - [Code comments](code_comments.md)
+- [Creating enums](creating_enums.md)
 
 ### Case studies
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'Git HTTP requests' do
@@ -87,7 +89,7 @@ describe 'Git HTTP requests' do
   end
 
   shared_examples_for 'pulls are allowed' do
-    it do
+    it 'allows pulls' do
       download(path, env) do |response|
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
@@ -96,7 +98,7 @@ describe 'Git HTTP requests' do
   end
 
   shared_examples_for 'pushes are allowed' do
-    it do
+    it 'allows pushes', :sidekiq_might_not_need_inline do
       upload(path, env) do |response|
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
@@ -450,16 +452,22 @@ describe 'Git HTTP requests' do
           context "when authentication fails" do
             context "when the user is IP banned" do
               before do
-                Gitlab.config.rack_attack.git_basic_auth['enabled'] = true
+                stub_rack_attack_setting(enabled: true, ip_whitelist: [])
               end
 
-              it "responds with status 401" do
+              it "responds with status 403" do
                 expect(Rack::Attack::Allow2Ban).to receive(:filter).and_return(true)
-                allow_any_instance_of(ActionDispatch::Request).to receive(:ip).and_return('1.2.3.4')
+                expect(Gitlab::AuthLogger).to receive(:error).with({
+                  message: 'Rack_Attack',
+                  env: :blocklist,
+                  remote_ip: '127.0.0.1',
+                  request_method: 'GET',
+                  path: "/#{path}/info/refs?service=git-upload-pack"
+                })
 
                 clone_get(path, env)
 
-                expect(response).to have_gitlab_http_status(:unauthorized)
+                expect(response).to have_gitlab_http_status(:forbidden)
               end
             end
           end
@@ -493,7 +501,7 @@ describe 'Git HTTP requests' do
 
               context "when the user isn't blocked" do
                 before do
-                  Gitlab.config.rack_attack.git_basic_auth['enabled'] = true
+                  stub_rack_attack_setting(enabled: true, bantime: 1.minute, findtime: 5.minutes, maxretry: 2, ip_whitelist: [])
                 end
 
                 it "resets the IP in Rack Attack on download" do
@@ -652,9 +660,11 @@ describe 'Git HTTP requests' do
                   response.status
                 end
 
+                include_context 'rack attack cache store'
+
                 it "repeated attempts followed by successful attempt" do
                   options = Gitlab.config.rack_attack.git_basic_auth
-                  maxretry = options[:maxretry] - 1
+                  maxretry = options[:maxretry]
                   ip = '1.2.3.4'
 
                   allow_any_instance_of(ActionDispatch::Request).to receive(:ip).and_return(ip)
@@ -666,12 +676,6 @@ describe 'Git HTTP requests' do
 
                   expect(attempt_login(true)).to eq(200)
                   expect(Rack::Attack::Allow2Ban.banned?(ip)).to be_falsey
-
-                  maxretry.times.each do
-                    expect(attempt_login(false)).to eq(401)
-                  end
-
-                  Rack::Attack::Allow2Ban.reset(ip, options)
                 end
               end
 
@@ -843,8 +847,8 @@ describe 'Git HTTP requests' do
             get "/#{project.full_path}/blob/master/info/refs"
           end
 
-          it "returns not found" do
-            expect(response).to have_gitlab_http_status(:not_found)
+          it "redirects" do
+            expect(response).to have_gitlab_http_status(302)
           end
         end
       end

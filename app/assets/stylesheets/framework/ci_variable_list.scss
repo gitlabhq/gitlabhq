@@ -99,3 +99,13 @@
     color: $gl-text-color-disabled;
   }
 }
+
+.group-variable-list {
+  color: $gray-700;
+
+  .table-section:not(:first-child) {
+    @include media-breakpoint-down(sm) {
+      border-top: hidden;
+    }
+  }
+}

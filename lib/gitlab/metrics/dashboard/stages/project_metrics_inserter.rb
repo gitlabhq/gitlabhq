@@ -9,7 +9,7 @@ module Gitlab
           # config. If there are no project-specific metrics,
           # this will have no effect.
           def transform!
-            project.prometheus_metrics.each do |project_metric|
+            PrometheusMetricsFinder.new(project: project).execute.each do |project_metric|
               group = find_or_create_panel_group(dashboard[:panel_groups], project_metric)
               panel = find_or_create_panel(group[:panels], project_metric)
               find_or_create_metric(panel[:metrics], project_metric)

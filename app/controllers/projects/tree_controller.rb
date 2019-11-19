@@ -5,6 +5,7 @@ class Projects::TreeController < Projects::ApplicationController
   include ExtractsPath
   include CreatesCommit
   include ActionView::Helpers::SanitizeHelper
+  include RedirectsForMissingPathOnTree
 
   around_action :allow_gitaly_ref_name_caching, only: [:show]
 
@@ -19,12 +20,9 @@ class Projects::TreeController < Projects::ApplicationController
 
     if tree.entries.empty?
       if @repository.blob_at(@commit.id, @path)
-        return redirect_to(
-          project_blob_path(@project,
-                                      File.join(@ref, @path))
-        )
+        return redirect_to project_blob_path(@project, File.join(@ref, @path))
       elsif @path.present?
-        return render_404
+        return redirect_to_tree_root_for_missing_path(@project, @ref, @path)
       end
     end
 

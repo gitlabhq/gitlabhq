@@ -20,10 +20,6 @@ class UsersNameLowerIndex < ActiveRecord::Migration[4.2]
   def down
     return unless Gitlab::Database.postgresql?
 
-    if supports_drop_index_concurrently?
-      execute "DROP INDEX CONCURRENTLY IF EXISTS #{INDEX_NAME}"
-    else
-      execute "DROP INDEX IF EXISTS #{INDEX_NAME}"
-    end
+    execute "DROP INDEX CONCURRENTLY IF EXISTS #{INDEX_NAME}"
   end
 end

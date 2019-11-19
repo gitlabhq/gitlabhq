@@ -71,7 +71,7 @@ describe Gitlab::CycleAnalytics::UsageData do
         }
       end
 
-      it 'returns the aggregated usage data of every selected project' do
+      it 'returns the aggregated usage data of every selected project', :sidekiq_might_not_need_inline do
         result = subject.to_json
 
         expect(result).to have_key(:avg_cycle_analytics)

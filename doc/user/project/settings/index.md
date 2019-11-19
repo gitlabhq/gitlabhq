@@ -49,10 +49,11 @@ Add an [issue description template](../description_templates.md#description-temp
 Set up your project's merge request settings:
 
 - Set up the merge request method (merge commit, [fast-forward merge](../merge_requests/fast_forward_merge.html)).
-- Merge request [description templates](../description_templates.md#description-templates).
+- Add merge request [description templates](../description_templates.md#description-templates).
 - Enable [merge request approvals](../merge_requests/merge_request_approvals.md). **(STARTER)**
-- Enable [merge only of pipeline succeeds](../merge_requests/merge_when_pipeline_succeeds.md).
-- Enable [merge only when all discussions are resolved](../../discussions/index.md#only-allow-merge-requests-to-be-merged-if-all-threads-are-resolved).
+- Enable [merge only if pipeline succeeds](../merge_requests/merge_when_pipeline_succeeds.md).
+- Enable [merge only when all threads are resolved](../../discussions/index.md#only-allow-merge-requests-to-be-merged-if-all-threads-are-resolved).
+- Enable [`delete source branch after merge` option by default](../merge_requests/creating_merge_requests.md#deleting-the-source-branch)
 
 ![project's merge request settings](img/merge_requests_settings.png)
 

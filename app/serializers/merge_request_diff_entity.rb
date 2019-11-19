@@ -21,6 +21,8 @@ class MergeRequestDiffEntity < Grape::Entity
   expose :latest?, as: :latest
 
   expose :short_commit_sha do |merge_request_diff|
+    next unless merge_request_diff.head_commit_sha
+
     short_sha(merge_request_diff.head_commit_sha)
   end
 

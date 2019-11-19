@@ -13,23 +13,22 @@ describe "User browses files" do
   let(:user) { project.owner }
 
   before do
-    stub_feature_flags(vue_file_list: false)
     sign_in(user)
   end
 
-  it "shows last commit for current directory" do
+  it "shows last commit for current directory", :js do
     visit(tree_path_root_ref)
 
     click_link("files")
 
     last_commit = project.repository.last_commit_for_path(project.default_branch, "files")
 
-    page.within(".blob-commit-info") do
+    page.within(".commit-detail") do
       expect(page).to have_content(last_commit.short_id).and have_content(last_commit.author_name)
     end
   end
 
-  context "when browsing the master branch" do
+  context "when browsing the master branch", :js do
     before do
       visit(tree_path_root_ref)
     end
@@ -124,8 +123,7 @@ describe "User browses files" do
         expect(current_path).to eq(project_tree_path(project, "markdown/doc/raketasks"))
         expect(page).to have_content("backup_restore.md").and have_content("maintenance.md")
 
-        click_link("shop")
-        click_link("Maintenance")
+        click_link("maintenance.md")
 
         expect(current_path).to eq(project_blob_path(project, "markdown/doc/raketasks/maintenance.md"))
         expect(page).to have_content("bundle exec rake gitlab:env:info RAILS_ENV=production")
@@ -144,7 +142,7 @@ describe "User browses files" do
 
         # rubocop:disable Lint/Void
         # Test the full URLs of links instead of relative paths by `have_link(text: "...", href: "...")`.
-        find("a", text: /^empty$/)["href"] == project_tree_url(project, "markdown/d")
+        find("a", text: "..")["href"] == project_tree_url(project, "markdown/d")
         # rubocop:enable Lint/Void
 
         page.within(".tree-table") do
@@ -168,7 +166,7 @@ describe "User browses files" do
     end
   end
 
-  context "when browsing a specific ref" do
+  context "when browsing a specific ref", :js do
     let(:ref) { project_tree_path(project, "6d39438") }
 
     before do
@@ -180,7 +178,7 @@ describe "User browses files" do
       expect(page).to have_content(".gitignore").and have_content("LICENSE")
     end
 
-    it "shows files from a repository with apostroph in its name", :js do
+    it "shows files from a repository with apostroph in its name" do
       first(".js-project-refs-dropdown").click
 
       page.within(".project-refs-form") do
@@ -191,10 +189,10 @@ describe "User browses files" do
 
       visit(project_tree_path(project, "'test'"))
 
-      expect(page).to have_css(".tree-commit-link").and have_no_content("Loading commit data...")
+      expect(page).not_to have_selector(".tree-commit .animation-container")
     end
 
-    it "shows the code with a leading dot in the directory", :js do
+    it "shows the code with a leading dot in the directory" do
       first(".js-project-refs-dropdown").click
 
       page.within(".project-refs-form") do
@@ -203,7 +201,7 @@ describe "User browses files" do
 
       visit(project_tree_path(project, "fix/.testdir"))
 
-      expect(page).to have_css(".tree-commit-link").and have_no_content("Loading commit data...")
+      expect(page).not_to have_selector(".tree-commit .animation-container")
     end
 
     it "does not show the permalink link" do
@@ -221,7 +219,7 @@ describe "User browses files" do
       click_link(".gitignore")
     end
 
-    it "shows a file content", :js do
+    it "shows a file content" do
       expect(page).to have_content("*.rbc")
     end
 

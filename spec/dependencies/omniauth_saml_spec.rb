@@ -14,7 +14,9 @@ describe 'processing of SAMLResponse in dependencies' do
 
   before do
     allow(saml_strategy).to receive(:session).and_return(session_mock)
-    allow_any_instance_of(OneLogin::RubySaml::Response).to receive(:is_valid?).and_return(true)
+    allow_next_instance_of(OneLogin::RubySaml::Response) do |instance|
+      allow(instance).to receive(:is_valid?).and_return(true)
+    end
     saml_strategy.send(:handle_response, mock_saml_response, {}, settings ) { }
   end
 

@@ -73,7 +73,7 @@ function generateEntries() {
 
   const manualEntries = {
     default: defaultEntries,
-    raven: './raven/index.js',
+    sentry: './sentry/index.js',
   };
 
   return Object.assign(manualEntries, autoEntries);
@@ -298,6 +298,11 @@ module.exports = {
       {
         from: path.join(ROOT_PATH, 'node_modules/pdfjs-dist/cmaps/'),
         to: path.join(ROOT_PATH, 'public/assets/webpack/cmaps/'),
+      },
+      {
+        from: path.join(ROOT_PATH, 'node_modules/@sourcegraph/code-host-integration/'),
+        to: path.join(ROOT_PATH, 'public/assets/webpack/sourcegraph/'),
+        ignore: ['package.json'],
       },
       {
         from: path.join(

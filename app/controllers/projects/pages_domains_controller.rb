@@ -8,6 +8,7 @@ class Projects::PagesDomainsController < Projects::ApplicationController
   before_action :domain, except: [:new, :create]
 
   def show
+    redirect_to edit_project_pages_domain_path(@project, @domain)
   end
 
   def new
@@ -23,7 +24,7 @@ class Projects::PagesDomainsController < Projects::ApplicationController
       flash[:alert] = 'Failed to verify domain ownership'
     end
 
-    redirect_to project_pages_domain_path(@project, @domain)
+    redirect_to edit_project_pages_domain_path(@project, @domain)
   end
 
   def edit
@@ -33,7 +34,7 @@ class Projects::PagesDomainsController < Projects::ApplicationController
     @domain = @project.pages_domains.create(create_params)
 
     if @domain.valid?
-      redirect_to project_pages_domain_path(@project, @domain)
+      redirect_to edit_project_pages_domain_path(@project, @domain)
     else
       render 'new'
     end
@@ -42,7 +43,7 @@ class Projects::PagesDomainsController < Projects::ApplicationController
   def update
     if @domain.update(update_params)
       redirect_to project_pages_path(@project),
-        status: 302,
+        status: :found,
         notice: 'Domain was updated'
     else
       render 'edit'
@@ -55,11 +56,19 @@ class Projects::PagesDomainsController < Projects::ApplicationController
     respond_to do |format|
       format.html do
         redirect_to project_pages_path(@project),
-                    status: 302,
+                    status: :found,
                     notice: 'Domain was removed'
       end
       format.js
     end
+  end
+
+  def clean_certificate
+    unless @domain.update(user_provided_certificate: nil, user_provided_key: nil)
+      flash[:alert] = @domain.errors.full_messages.join(', ')
+    end
+
+    redirect_to edit_project_pages_domain_path(@project, @domain)
   end
 
   private
@@ -69,7 +78,7 @@ class Projects::PagesDomainsController < Projects::ApplicationController
   end
 
   def update_params
-    params.require(:pages_domain).permit(:user_provided_key, :user_provided_certificate, :auto_ssl_enabled)
+    params.fetch(:pages_domain, {}).permit(:user_provided_key, :user_provided_certificate, :auto_ssl_enabled)
   end
 
   def domain

@@ -33,7 +33,8 @@ body {
   &.limit-container-width {
     .flash-container.sticky {
       max-width: $limited-layout-width;
-      margin: 0 auto;
+      margin-right: auto;
+      margin-left: auto;
     }
   }
 }

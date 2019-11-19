@@ -75,9 +75,9 @@ request approval rules:
 1. Click **Add approvers** to create a new approval rule.
 1. Just like in [GitLab Starter](#editing-approvals), select the approval members and approvals required.
 1. Give the approval rule a name that describes the set of approvers selected.
-1. Click **Add approvers** to submit the new rule.
+1. Click **Add approval rule** to submit the new rule.
 
-   ![Approvals premium project edit](img/approvals_premium_project_edit_v12_3.png)
+   ![Approvals premium project edit](img/approvals_premium_project_edit_v12_5.png)
 
 ## Multiple approval rules **(PREMIUM)**
 
@@ -218,8 +218,6 @@ If approver overriding is enabled
 and the project level approvers are changed after a merge request is created,
 the merge request retains the previous approvers.
 However, the approvers can be changed by [editing the merge request](#overriding-the-merge-request-approvals-default-settings).
-
----
 
 The default approval settings can now be overridden when creating a
 [merge request](index.md) or by editing it after it's been created:

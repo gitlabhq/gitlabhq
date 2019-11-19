@@ -247,7 +247,7 @@ describe('Frequent Items App Component', () => {
 
         .then(() => {
           expect(vm.$el.querySelectorAll('.frequent-items-list-container li').length).toBe(
-            mockSearchedProjects.length,
+            mockSearchedProjects.data.length,
           );
         })
         .then(done)

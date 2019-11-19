@@ -142,7 +142,6 @@ describe Gitlab::Database::MigrationHelpers do
         allow(model).to receive(:transaction_open?).and_return(false)
         allow(model).to receive(:index_exists?).and_return(true)
         allow(model).to receive(:disable_statement_timeout).and_call_original
-        allow(model).to receive(:supports_drop_index_concurrently?).and_return(true)
       end
 
       describe 'by column name' do

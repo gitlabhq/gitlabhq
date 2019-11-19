@@ -10,6 +10,7 @@ module Gitlab
         class Job < ::Gitlab::Config::Entry::Node
           include ::Gitlab::Config::Entry::Configurable
           include ::Gitlab::Config::Entry::Attributable
+          include ::Gitlab::Config::Entry::Inheritable
 
           ALLOWED_WHEN = %w[on_success on_failure always manual delayed].freeze
           ALLOWED_KEYS = %i[tags script only except rules type image services
@@ -37,7 +38,6 @@ module Gitlab
             with_options allow_nil: true do
               validates :tags, array_of_strings: true
               validates :allow_failure, boolean: true
-              validates :interruptible, boolean: true
               validates :parallel, numericality: { only_integer: true,
                                                    greater_than_or_equal_to: 2,
                                                    less_than_or_equal_to: 50 }
@@ -49,7 +49,6 @@ module Gitlab
               validates :timeout, duration: { limit: ChronicDuration.output(Project::MAX_BUILD_TIMEOUT) }
 
               validates :dependencies, array_of_strings: true
-              validates :needs, array_of_strings: true
               validates :extends, array_of_strings_or_string: true
               validates :rules, array_of_hashes: true
             end
@@ -73,13 +72,16 @@ module Gitlab
             inherit: true
 
           entry :script, Entry::Commands,
-            description: 'Commands that will be executed in this job.'
+            description: 'Commands that will be executed in this job.',
+            inherit: false
 
           entry :stage, Entry::Stage,
-            description: 'Pipeline stage this job will be executed into.'
+            description: 'Pipeline stage this job will be executed into.',
+            inherit: false
 
           entry :type, Entry::Stage,
-            description: 'Deprecated: stage this job will be executed into.'
+            description: 'Deprecated: stage this job will be executed into.',
+            inherit: false
 
           entry :after_script, Entry::Script,
             description: 'Commands that will be executed when finishing job.',
@@ -97,30 +99,50 @@ module Gitlab
             description: 'Services that will be used to execute this job.',
             inherit: true
 
+          entry :interruptible, Entry::Boolean,
+            description: 'Set jobs interruptible value.',
+            inherit: true
+
           entry :only, Entry::Policy,
             description: 'Refs policy this job will be executed for.',
-            default: Entry::Policy::DEFAULT_ONLY
+            default: Entry::Policy::DEFAULT_ONLY,
+            inherit: false
 
           entry :except, Entry::Policy,
-            description: 'Refs policy this job will be executed for.'
+            description: 'Refs policy this job will be executed for.',
+            inherit: false
 
           entry :rules, Entry::Rules,
-            description: 'List of evaluable Rules to determine job inclusion.'
+            description: 'List of evaluable Rules to determine job inclusion.',
+            inherit: false,
+            metadata: {
+              allowed_when: %w[on_success on_failure always never manual delayed].freeze
+            }
+
+          entry :needs, Entry::Needs,
+            description: 'Needs configuration for this job.',
+            metadata: { allowed_needs: %i[job] },
+            inherit: false
 
           entry :variables, Entry::Variables,
-            description: 'Environment variables available for this job.'
+            description: 'Environment variables available for this job.',
+            inherit: false
 
           entry :artifacts, Entry::Artifacts,
-            description: 'Artifacts configuration for this job.'
+            description: 'Artifacts configuration for this job.',
+            inherit: false
 
           entry :environment, Entry::Environment,
-            description: 'Environment configuration for this job.'
+            description: 'Environment configuration for this job.',
+            inherit: false
 
           entry :coverage, Entry::Coverage,
-            description: 'Coverage configuration for this job.'
+            description: 'Coverage configuration for this job.',
+            inherit: false
 
           entry :retry, Entry::Retry,
-               description: 'Retry configuration for this job.'
+            description: 'Retry configuration for this job.',
+            inherit: false
 
           helpers :before_script, :script, :stage, :type, :after_script,
                   :cache, :image, :services, :only, :except, :variables,
@@ -155,8 +177,6 @@ module Gitlab
                 @entries.delete(:except)
               end
             end
-
-            inherit!(deps)
           end
 
           def name
@@ -185,21 +205,8 @@ module Gitlab
 
           private
 
-          # We inherit config entries from `default:`
-          # if the entry has the `inherit: true` flag set
-          def inherit!(deps)
-            return unless deps
-
-            self.class.nodes.each do |key, factory|
-              next unless factory.inheritable?
-
-              default_entry = deps.default[key]
-              job_entry = self[key]
-
-              if default_entry.specified? && !job_entry.specified?
-                @entries[key] = default_entry
-              end
-            end
+          def overwrite_entry(deps, key, current_entry)
+            deps.default[key] unless current_entry.specified?
           end
 
           def to_hash

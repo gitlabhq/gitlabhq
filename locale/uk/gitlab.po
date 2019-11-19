@@ -7669,7 +7669,7 @@ msgstr "Go Micro — це фреймворк для розробки мікро�
 msgid "Go back"
 msgstr "Повернутися"
 
-msgid "Go back (while searching for files"
+msgid "Go back (while searching for files)"
 msgstr "Перейти назад (при пошуку файлів"
 
 msgid "Go back to %{startTag}Open issues%{endTag} and select some issues to add to your board."
@@ -16558,7 +16558,7 @@ msgstr ""
 msgid "To preserve performance only <strong>%{display_size} of %{real_size}</strong> files are displayed."
 msgstr "Для збереження швидкодії відображаються лише <strong>%{display_size} із %{real_size}</strong> файлів."
 
-msgid "To protect this issue's confidentiality, %{link_start}fork the project%{link_end} and set the forks visiblity to private."
+msgid "To protect this issue's confidentiality, %{link_start}fork the project%{link_end} and set the forks visibility to private."
 msgstr ""
 
 msgid "To protect this issue's confidentiality, a private fork of this project was selected."

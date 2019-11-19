@@ -14,6 +14,16 @@ export default {
       type: String,
       required: true,
     },
+    newSize: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
+    oldSize: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
   },
 };
 </script>
@@ -22,12 +32,14 @@ export default {
   <div class="two-up view d-flex">
     <image-viewer
       :path="oldPath"
+      :file-size="oldSize"
       :render-info="true"
       inner-css-classes="frame deleted"
       class="wrap w-50"
     />
     <image-viewer
       :path="newPath"
+      :file-size="newSize"
       :render-info="true"
       :inner-css-classes="['frame', 'added']"
       class="wrap w-50"

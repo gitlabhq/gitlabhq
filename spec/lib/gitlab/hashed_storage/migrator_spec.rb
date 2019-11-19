@@ -42,7 +42,7 @@ describe Gitlab::HashedStorage::Migrator, :sidekiq, :redis do
       subject.bulk_migrate(start: ids.min, finish: ids.max)
     end
 
-    it 'has all projects migrated and set as writable' do
+    it 'has all projects migrated and set as writable', :sidekiq_might_not_need_inline do
       perform_enqueued_jobs do
         subject.bulk_migrate(start: ids.min, finish: ids.max)
       end
@@ -79,7 +79,7 @@ describe Gitlab::HashedStorage::Migrator, :sidekiq, :redis do
       subject.bulk_rollback(start: ids.min, finish: ids.max)
     end
 
-    it 'has all projects rolledback and set as writable' do
+    it 'has all projects rolledback and set as writable', :sidekiq_might_not_need_inline do
       perform_enqueued_jobs do
         subject.bulk_rollback(start: ids.min, finish: ids.max)
       end
@@ -108,7 +108,7 @@ describe Gitlab::HashedStorage::Migrator, :sidekiq, :redis do
       expect { subject.migrate(project) }.not_to raise_error
     end
 
-    it 'migrates project storage' do
+    it 'migrates project storage', :sidekiq_might_not_need_inline do
       perform_enqueued_jobs do
         subject.migrate(project)
       end
@@ -154,7 +154,7 @@ describe Gitlab::HashedStorage::Migrator, :sidekiq, :redis do
       expect { subject.rollback(project) }.not_to raise_error
     end
 
-    it 'rolls-back project storage' do
+    it 'rolls-back project storage', :sidekiq_might_not_need_inline do
       perform_enqueued_jobs do
         subject.rollback(project)
       end

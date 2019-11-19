@@ -21,11 +21,11 @@
                   %span.badge.badge-danger
                     = s_('GitLabPages|Expired')
           %div
-            = link_to s_('GitLabPages|Details'), project_pages_domain_path(@project, domain), class: "btn btn-sm btn-grouped"
+            = link_to s_('GitLabPages|Edit'), edit_project_pages_domain_path(@project, domain), class: "btn btn-sm btn-grouped btn-success btn-inverted"
             = link_to s_('GitLabPages|Remove'), project_pages_domain_path(@project, domain), data: { confirm: s_('GitLabPages|Are you sure?')}, method: :delete, class: "btn btn-remove btn-sm btn-grouped"
         - if verification_enabled && domain.unverified?
           %li.list-group-item.bs-callout-warning
-            - details_link_start = "<a href='#{project_pages_domain_path(@project, domain)}'>".html_safe
+            - details_link_start = "<a href='#{edit_project_pages_domain_path(@project, domain)}'>".html_safe
             - details_link_end = '</a>'.html_safe
             = s_('GitLabPages|%{domain} is not verified. To learn how to verify ownership, visit your %{link_start}domain details%{link_end}.').html_safe % { domain: domain.domain,
                 link_start: details_link_start,

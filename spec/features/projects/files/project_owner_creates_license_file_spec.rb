@@ -7,7 +7,6 @@ describe 'Projects > Files > Project owner creates a license file', :js do
   let(:project_maintainer) { project.owner }
 
   before do
-    stub_feature_flags(vue_file_list: false)
     project.repository.delete_file(project_maintainer, 'LICENSE',
       message: 'Remove LICENSE', branch_name: 'master')
     sign_in(project_maintainer)
@@ -39,7 +38,7 @@ describe 'Projects > Files > Project owner creates a license file', :js do
   end
 
   it 'project maintainer creates a license file from the "Add license" link' do
-    click_link 'Add license'
+    click_link 'Add LICENSE'
 
     expect(page).to have_content('New file')
     expect(current_path).to eq(

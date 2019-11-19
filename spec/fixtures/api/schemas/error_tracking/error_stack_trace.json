@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "required": [
+    "issue_id",
+    "stack_trace_entries",
+    "date_received"
+  ],
+  "properties": {
+    "issue_id": { "type": ["string", "integer"] },
+    "stack_trace_entries": { "type": "object" },
+    "date_received": { "type": "string" }
+  },
+  "additionalProperties": false
+}

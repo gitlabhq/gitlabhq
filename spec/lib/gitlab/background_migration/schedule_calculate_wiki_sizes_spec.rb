@@ -33,7 +33,7 @@ describe ScheduleCalculateWikiSizes, :migration, :sidekiq do
       end
     end
 
-    it 'calculates missing wiki sizes' do
+    it 'calculates missing wiki sizes', :sidekiq_might_not_need_inline do
       expect(project_statistics.find_by(id: 2).wiki_size).to be_nil
       expect(project_statistics.find_by(id: 3).wiki_size).to be_nil
 

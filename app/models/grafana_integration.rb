@@ -14,7 +14,13 @@ class GrafanaIntegration < ApplicationRecord
 
   validates :token, :project, presence: true
 
+  validates :enabled, inclusion: { in: [true, false] }
+
+  scope :enabled, -> { where(enabled: true) }
+
   def client
+    return unless enabled?
+
     @client ||= ::Grafana::Client.new(api_url: grafana_url.chomp('/'), token: token)
   end
 end

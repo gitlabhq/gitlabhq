@@ -47,7 +47,7 @@ module RoutableActions
 
     canonical_path = routable.full_path
     if canonical_path != requested_full_path
-      if canonical_path.casecmp(requested_full_path) != 0
+      if !request.xhr? && request.format.html? && canonical_path.casecmp(requested_full_path) != 0
         flash[:notice] = "#{routable.class.to_s.titleize} '#{requested_full_path}' was moved to '#{canonical_path}'. Please update any links and bookmarks that may still have the old path."
       end
 

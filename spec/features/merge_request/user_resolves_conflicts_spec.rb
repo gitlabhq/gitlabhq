@@ -9,6 +9,7 @@ describe 'Merge request > User resolves conflicts', :js do
   before do
     # In order to have the diffs collapsed, we need to disable the increase feature
     stub_feature_flags(gitlab_git_diff_size_limit_increase: false)
+    stub_feature_flags(single_mr_diff_view: false)
   end
 
   def create_merge_request(source_branch)
@@ -17,7 +18,9 @@ describe 'Merge request > User resolves conflicts', :js do
     end
   end
 
-  shared_examples "conflicts are resolved in Interactive mode" do
+  it_behaves_like 'rendering a single diff version'
+
+  shared_examples 'conflicts are resolved in Interactive mode' do
     it 'conflicts are resolved in Interactive mode' do
       within find('.files-wrapper .diff-file', text: 'files/ruby/popen.rb') do
         click_button 'Use ours'

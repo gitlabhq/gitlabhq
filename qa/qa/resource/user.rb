@@ -7,14 +7,19 @@ module QA
     class User < Base
       attr_reader :unique_id
       attr_writer :username, :password
-      attr_accessor :provider, :extern_uid
+      attr_accessor :admin, :provider, :extern_uid
 
       attribute :id
       attribute :name
       attribute :email
 
       def initialize
+        @admin = false
         @unique_id = SecureRandom.hex(8)
+      end
+
+      def admin?
+        api_resource&.dig(:is_admin) || false
       end
 
       def username
@@ -71,6 +76,16 @@ module QA
         super
       end
 
+      def api_delete
+        super
+
+        QA::Runtime::Logger.debug("Deleted user '#{username}'") if Runtime::Env.debug?
+      end
+
+      def api_delete_path
+        "/users/#{id}"
+      end
+
       def api_get_path
         "/users/#{fetch_id(username)}"
       end
@@ -81,6 +96,7 @@ module QA
 
       def api_post_body
         {
+          admin: admin,
           email: email,
           password: password,
           username: username,
@@ -93,6 +109,7 @@ module QA
         if Runtime::Env.signup_disabled?
           self.fabricate_via_api! do |user|
             user.username = username
+            user.password = password
           end
         else
           self.fabricate!

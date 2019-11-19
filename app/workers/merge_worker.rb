@@ -4,6 +4,7 @@ class MergeWorker
   include ApplicationWorker
 
   feature_category :source_code_management
+  latency_sensitive_worker!
 
   def perform(merge_request_id, current_user_id, params)
     params = params.with_indifferent_access

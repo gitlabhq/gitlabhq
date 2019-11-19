@@ -12,6 +12,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
   before_action do
     push_frontend_feature_flag(:hide_dismissed_vulnerabilities)
+    push_frontend_feature_flag(:junit_pipeline_view)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show]
@@ -156,14 +157,21 @@ class Projects::PipelinesController < Projects::ApplicationController
   def test_report
     return unless Feature.enabled?(:junit_pipeline_view, project)
 
-    if pipeline_test_report == :error
-      render json: { status: :error_parsing_report }
-      return
-    end
+    respond_to do |format|
+      format.html do
+        render 'show'
+      end
 
-    render json: TestReportSerializer
-      .new(current_user: @current_user)
-      .represent(pipeline_test_report)
+      format.json do
+        if pipeline_test_report == :error
+          render json: { status: :error_parsing_report }
+        else
+          render json: TestReportSerializer
+            .new(current_user: @current_user)
+            .represent(pipeline_test_report)
+        end
+      end
+    end
   end
 
   private

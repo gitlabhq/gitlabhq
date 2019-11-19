@@ -1,11 +1,13 @@
 /* eslint-disable class-methods-use-this, no-new */
 
 import $ from 'jquery';
+import { property } from 'underscore';
 import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
 import MilestoneSelect from './milestone_select';
 import issueStatusSelect from './issue_status_select';
 import subscriptionSelect from './subscription_select';
 import LabelsSelect from './labels_select';
+import issueableEventHub from './issuables_list/eventhub';
 
 const HIDDEN_CLASS = 'hidden';
 const DISABLED_CONTENT_CLASS = 'disabled-content';
@@ -14,6 +16,8 @@ const SIDEBAR_COLLAPSED_CLASS = 'right-sidebar-collapsed issuable-bulk-update-si
 
 export default class IssuableBulkUpdateSidebar {
   constructor() {
+    this.vueIssuablesListFeature = property(['gon', 'features', 'vueIssuablesList'])(window);
+
     this.initDomElements();
     this.bindEvents();
     this.initDropdowns();
@@ -41,6 +45,17 @@ export default class IssuableBulkUpdateSidebar {
     this.$issuesList.on('change', () => this.updateFormState());
     this.$bulkEditSubmitBtn.on('click', () => this.prepForSubmit());
     this.$checkAllContainer.on('click', () => this.updateFormState());
+
+    if (this.vueIssuablesListFeature) {
+      issueableEventHub.$on('issuables:updateBulkEdit', () => {
+        // Danger! Strong coupling ahead!
+        // The bulk update sidebar and its dropdowns look for .selected-issuable checkboxes, and get data on which issue
+        // is selected by inspecting the DOM. Ideally, we would pass the selected issuable IDs and their properties
+        // explicitly, but this component is used in too many places right now to refactor straight away.
+
+        this.updateFormState();
+      });
+    }
   }
 
   initDropdowns() {
@@ -72,6 +87,8 @@ export default class IssuableBulkUpdateSidebar {
 
   toggleBulkEdit(e, enable) {
     e.preventDefault();
+
+    issueableEventHub.$emit('issuables:toggleBulkEdit', enable);
 
     this.toggleSidebarDisplay(enable);
     this.toggleBulkEditButtonDisabled(enable);
@@ -106,7 +123,7 @@ export default class IssuableBulkUpdateSidebar {
   }
 
   toggleCheckboxDisplay(show) {
-    this.$checkAllContainer.toggleClass(HIDDEN_CLASS, !show);
+    this.$checkAllContainer.toggleClass(HIDDEN_CLASS, !show || this.vueIssuablesListFeature);
     this.$issueChecks.toggleClass(HIDDEN_CLASS, !show);
   }
 

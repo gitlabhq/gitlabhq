@@ -100,6 +100,7 @@ FactoryBot.define do
       auto_merge_enabled { true }
       auto_merge_strategy { AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS }
       merge_user { author }
+      merge_params { { sha: diff_head_sha } }
     end
 
     trait :remove_source_branch do
@@ -114,6 +115,18 @@ FactoryBot.define do
           :ci_pipeline,
           :success,
           :with_test_reports,
+          project: merge_request.source_project,
+          ref: merge_request.source_branch,
+          sha: merge_request.diff_head_sha)
+      end
+    end
+
+    trait :with_exposed_artifacts do
+      after(:build) do |merge_request|
+        merge_request.head_pipeline = build(
+          :ci_pipeline,
+          :success,
+          :with_exposed_artifacts,
           project: merge_request.source_project,
           ref: merge_request.source_branch,
           sha: merge_request.diff_head_sha)

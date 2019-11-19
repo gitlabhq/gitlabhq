@@ -22,11 +22,11 @@ module Gitlab
 
           start_offset = @state.offset
 
-          @state.set_current_line!(style: Style.new(@state.inherited_style))
+          @state.new_line!(
+            style: Style.new(@state.inherited_style))
 
           stream.each_line do |line|
-            s = StringScanner.new(line)
-            convert_line(s)
+            consume_line(line)
           end
 
           # This must be assigned before flushing the current line
@@ -52,26 +52,41 @@ module Gitlab
 
         private
 
-        def convert_line(scanner)
-          until scanner.eos?
+        def consume_line(line)
+          scanner = StringScanner.new(line)
 
-            if scanner.scan(Gitlab::Regex.build_trace_section_regex)
-              handle_section(scanner)
-            elsif scanner.scan(/\e([@-_])(.*?)([@-~])/)
-              handle_sequence(scanner)
-            elsif scanner.scan(/\e(([@-_])(.*?)?)?$/)
-              break
-            elsif scanner.scan(/</)
-              @state.current_line << '&lt;'
-            elsif scanner.scan(/\r?\n/)
-              # we advance the offset of the next current line
-              # so it does not start from \n
-              flush_current_line(advance_offset: scanner.matched_size)
-            else
-              @state.current_line << scanner.scan(/./m)
-            end
+          consume_token(scanner) until scanner.eos?
+        end
 
-            @state.offset += scanner.matched_size
+        def consume_token(scanner)
+          if scan_token(scanner, Gitlab::Regex.build_trace_section_regex, consume: false)
+            handle_section(scanner)
+          elsif scan_token(scanner, /\e([@-_])(.*?)([@-~])/)
+            handle_sequence(scanner)
+          elsif scan_token(scanner, /\e(([@-_])(.*?)?)?$/)
+            # stop scanning
+            scanner.terminate
+          elsif scan_token(scanner, /\r?\n/)
+            flush_current_line
+          elsif scan_token(scanner, /\r/)
+            # drop last line
+            @state.current_line.clear!
+          elsif scan_token(scanner, /.[^\e\r\ns]*/m)
+            # this is a join from all previous tokens and first letters
+            # it always matches at least one character `.`
+            # it matches everything that is not start of:
+            # `\e`, `<`, `\r`, `\n`, `s` (for section_start)
+            @state.current_line << scanner[0]
+          else
+            raise 'invalid parser state'
+          end
+        end
+
+        def scan_token(scanner, match, consume: true)
+          scanner.scan(match).tap do |result|
+            # we need to move offset as soon
+            # as we match the token
+            @state.offset += scanner.matched_size if consume && result
           end
         end
 
@@ -96,32 +111,50 @@ module Gitlab
           section_name = sanitize_section_name(section)
 
           if action == "start"
-            handle_section_start(section_name, timestamp)
+            handle_section_start(scanner, section_name, timestamp)
           elsif action == "end"
-            handle_section_end(section_name, timestamp)
+            handle_section_end(scanner, section_name, timestamp)
+          else
+            raise 'unsupported action'
           end
         end
 
-        def handle_section_start(section, timestamp)
-          flush_current_line unless @state.current_line.empty?
+        def handle_section_start(scanner, section, timestamp)
+          # We make a new line for new section
+          flush_current_line
+
           @state.open_section(section, timestamp)
+
+          # we need to consume match after handling
+          # the open of section, as we want the section
+          # marker to be refresh on incremental update
+          @state.offset += scanner.matched_size
         end
 
-        def handle_section_end(section, timestamp)
+        def handle_section_end(scanner, section, timestamp)
           return unless @state.section_open?(section)
 
-          flush_current_line unless @state.current_line.empty?
+          # We flush the content to make the end
+          # of section to be a new line
+          flush_current_line
+
           @state.close_section(section, timestamp)
 
-          # ensure that section end is detached from the last
-          # line in the section
+          # we need to consume match before handling
+          # as we want the section close marker
+          # not to be refreshed on incremental update
+          @state.offset += scanner.matched_size
+
+          # this flushes an empty line with `section_duration`
           flush_current_line
         end
 
-        def flush_current_line(advance_offset: 0)
-          @lines << @state.current_line.to_h
+        def flush_current_line
+          unless @state.current_line.empty?
+            @lines << @state.current_line.to_h
+          end
 
-          @state.set_current_line!(advance_offset: advance_offset)
+          @state.new_line!
         end
 
         def sanitize_section_name(section)

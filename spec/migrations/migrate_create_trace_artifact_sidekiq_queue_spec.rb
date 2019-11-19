@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20180306074045_migrate_create_trace_artifact_sidekiq_queue.rb')
 

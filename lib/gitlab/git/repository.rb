@@ -25,9 +25,18 @@ module Gitlab
       InvalidRef = Class.new(StandardError)
       GitError = Class.new(StandardError)
       DeleteBranchError = Class.new(StandardError)
-      CreateTreeError = Class.new(StandardError)
       TagExistsError = Class.new(StandardError)
       ChecksumError = Class.new(StandardError)
+      class CreateTreeError < StandardError
+        attr_reader :error_code
+
+        def initialize(error_code)
+          super(self.class.name)
+
+          # The value coming from Gitaly is an uppercase String (e.g., "EMPTY")
+          @error_code = error_code.downcase.to_sym
+        end
+      end
 
       # Directory name of repo
       attr_reader :name
