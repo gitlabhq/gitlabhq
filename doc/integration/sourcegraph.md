@@ -4,13 +4,16 @@ type: reference, how-to
 
 # Sourcegraph integration
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/16556) in GitLab 12.5. Please note that this integration is [behind a feature flag](#enable-the-sourcegraph-feature-flag).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/16556) in GitLab 12.5. Please note that this integration is in BETA and [behind a feature flag](#enable-the-sourcegraph-feature-flag).
 
 [Sourcegraph](https://sourcegraph.com) provides code intelligence features, natively integrated into the GitLab UI.
 
 For GitLab.com users, see [Sourcegraph for GitLab.com](#sourcegraph-for-gitlabcom).
 
 ![Sourcegraph demo](img/sourcegraph_demo_v12_5.png)
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, watch the video [Sourcegraph's new GitLab native integration](https://www.youtube.com/watch?v=LjVxkt4_sEA).
 
 NOTE: **Note:**
 This feature requires user opt-in. After Sourcegraph has been enabled for your GitLab instance,
@@ -103,11 +106,17 @@ When visiting one of these views, you can now hover over a code reference to see
 
 ## Sourcegraph for GitLab.com
 
-Sourcegraph powered code intelligence will be incrementally rolled out on GitLab.com. It will eventually be
-available for all public projects, but for now, it is only available for some specific [`gitlab-org` projects](https://gitlab.com/gitlab-org/).
+Sourcegraph powered code intelligence will be incrementally rolled out on GitLab.com.
+It will eventually become available for all public projects, but for now, it is only
+available for some specific [`gitlab-org` projects](https://gitlab.com/gitlab-org/).
+This means that you can see it working and use it to dig into the code of these projects,
+but you cannot use it on your own project on GitLab.com yet.
 
-If you have a private or internal project and would like integrated code intelligence, please consider
+If you would like to use it in your own projects as of GitLab 12.5, you can do so by
 setting up a self-managed GitLab instance.
+
+Follow the epic [&2201](https://gitlab.com/groups/gitlab-org/-/epics/2201) for
+updates.
 
 ## Sourcegraph and Privacy
 

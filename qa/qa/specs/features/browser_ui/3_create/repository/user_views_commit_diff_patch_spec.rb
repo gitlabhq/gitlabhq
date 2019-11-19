@@ -31,8 +31,7 @@ module QA
       end
 
       def view_commit
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.perform(&:sign_in_using_credentials)
+        Flow::Login.sign_in
 
         @project.visit!
         Page::Project::Show.perform do |show|

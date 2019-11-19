@@ -29,6 +29,10 @@ module QA
       def sign_in_as_admin
         sign_in(as: Runtime::User.admin)
       end
+
+      def sign_in_unless_signed_in(as: nil)
+        sign_in(as: as) unless Page::Main::Menu.perform(&:signed_in?)
+      end
     end
   end
 end
