@@ -15,14 +15,10 @@ module Gitlab
         end
 
         def update(ansi_commands)
-          command = ansi_commands.shift
-          return unless command
+          # treat e\[m as \e[0m
+          ansi_commands = ['0'] if ansi_commands.empty?
 
-          if changes = Gitlab::Ci::Ansi2json::Parser.new(command, ansi_commands).changes
-            apply_changes(changes)
-          end
-
-          update(ansi_commands)
+          evaluate_stack_command(ansi_commands)
         end
 
         def set?
@@ -49,6 +45,17 @@ module Gitlab
         end
 
         private
+
+        def evaluate_stack_command(ansi_commands)
+          command = ansi_commands.shift
+          return unless command
+
+          if changes = Gitlab::Ci::Ansi2json::Parser.new(command, ansi_commands).changes
+            apply_changes(changes)
+          end
+
+          evaluate_stack_command(ansi_commands)
+        end
 
         def apply_changes(changes)
           case

@@ -128,6 +128,8 @@ CREATE EXTENSION pg_trgm;
 On some systems you may need to install an additional package (e.g.
 `postgresql-contrib`) for this extension to become available.
 
+NOTE: **Note:** Support for PostgreSQL 9.6 and 10 will be removed in GitLab 13.0 so that GitLab can benefit from PostgreSQL 11 improvements, such as partitioning. For the schedule on adding support for PostgreSQL 11 and 12, see [the related epic](https://gitlab.com/groups/gitlab-org/-/epics/2184). For the release schedule for GitLab 13.0, see [GitLab's release and maintenance policy](../policy/maintenance.md).
+
 #### Additional requirements for GitLab Geo
 
 If you are using [GitLab Geo](../development/geo.md):

@@ -1,0 +1,5 @@
+---
+title: Enable support for multiple content query in GraphQL Todo API
+merge_request: 19576
+author:
+type: changed

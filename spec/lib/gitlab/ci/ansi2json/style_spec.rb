@@ -143,6 +143,7 @@ describe Gitlab::Ci::Ansi2json::Style do
         [[], %w[106], 'term-bg-l-cyan', 'sets bg color light cyan'],
         [[], %w[107], 'term-bg-l-white', 'sets bg color light white'],
         # reset
+        [%w[1], %w[], '', 'resets style from format bold'],
         [%w[1], %w[0], '', 'resets style from format bold'],
         [%w[1 3], %w[0], '', 'resets style from format bold and italic'],
         [%w[1 3 term-fg-l-red term-bg-yellow], %w[0], '', 'resets all formats and colors'],

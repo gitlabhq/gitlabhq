@@ -10,8 +10,7 @@ module QA
       end
 
       it 'users creates a pipeline which gets processed' do
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.perform(&:sign_in_using_credentials)
+        Flow::Login.sign_in
 
         project = Resource::Project.fabricate! do |project|
           project.name = 'project-with-pipelines'
