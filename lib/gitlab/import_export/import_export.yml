@@ -275,3 +275,4 @@ ee:
         - :unprotect_access_levels
       - protected_environments:
         - :deploy_access_levels
+      - :service_desk_setting

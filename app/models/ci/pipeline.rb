@@ -599,12 +599,6 @@ module Ci
       project.notes.for_commit_id(sha)
     end
 
-    # rubocop: disable CodeReuse/ServiceClass
-    def process!(trigger_build_ids = nil)
-      Ci::ProcessPipelineService.new(project, user).execute(self, trigger_build_ids)
-    end
-    # rubocop: enable CodeReuse/ServiceClass
-
     def update_status
       retry_optimistic_lock(self) do
         new_status = latest_builds_status.to_s

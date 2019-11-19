@@ -54,7 +54,6 @@ module Gitlab
             target_project_id: project.id,
             source_branch: pull_request.formatted_source_branch,
             target_branch: pull_request.target_branch,
-            state: pull_request.state,
             state_id: ::MergeRequest.available_states[pull_request.state],
             milestone_id: milestone_finder.id_for(pull_request),
             author_id: author_id,

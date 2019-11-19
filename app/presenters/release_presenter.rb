@@ -58,6 +58,7 @@ class ReleasePresenter < Gitlab::View::Presenter::Delegated
   end
 
   def release_edit_page_available?
-    ::Feature.enabled?(:release_edit_page, project, default_enabled: true)
+    ::Feature.enabled?(:release_edit_page, project, default_enabled: true) &&
+      can?(current_user, :update_release, release)
   end
 end

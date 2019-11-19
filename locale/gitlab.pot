@@ -7348,6 +7348,9 @@ msgstr ""
 msgid "FeatureFlags|Inactive flag for %{scope}"
 msgstr ""
 
+msgid "FeatureFlags|Include additional user IDs"
+msgstr ""
+
 msgid "FeatureFlags|Install a %{docs_link_anchored_start}compatible client library%{docs_link_anchored_end} and specify the API URL, application name, and instance ID during the configuration setup. %{docs_link_start}More Information%{docs_link_end}"
 msgstr ""
 

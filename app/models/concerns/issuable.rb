@@ -23,7 +23,6 @@ module Issuable
   include Sortable
   include CreatedAtFilterable
   include UpdatedAtFilterable
-  include IssuableStates
   include ClosedAtFilterable
   include VersionedDescription
 

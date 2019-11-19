@@ -397,7 +397,7 @@ class IssuableBaseService < BaseService
   end
 
   def update_project_counter_caches?(issuable)
-    issuable.state_changed?
+    issuable.state_id_changed?
   end
 
   def parent

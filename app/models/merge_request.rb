@@ -228,6 +228,9 @@ class MergeRequest < ApplicationRecord
     with_state(:opened).where(auto_merge_enabled: true)
   end
 
+  # Only remove after 2019-12-22 and with %12.7
+  self.ignored_columns += %i[state]
+
   after_save :keep_around_commit
 
   alias_attribute :project, :target_project

@@ -223,7 +223,7 @@ describe Ci::RetryPipelineService, '#execute' do
     end
 
     it 'reprocesses the pipeline' do
-      expect(pipeline).to receive(:process!)
+      expect_any_instance_of(Ci::ProcessPipelineService).to receive(:execute)
 
       service.execute(pipeline)
     end

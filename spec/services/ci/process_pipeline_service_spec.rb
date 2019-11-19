@@ -845,7 +845,7 @@ describe Ci::ProcessPipelineService, '#execute' do
   end
 
   def process_pipeline
-    described_class.new(pipeline.project, user).execute(pipeline)
+    described_class.new(pipeline).execute
   end
 
   def all_builds

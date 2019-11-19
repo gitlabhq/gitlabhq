@@ -432,6 +432,7 @@ project:
 - downstream_projects
 - upstream_project_subscriptions
 - downstream_project_subscriptions
+- service_desk_setting
 award_emoji:
 - awardable
 - user

@@ -21,7 +21,7 @@ module Gitlab
             finder_class: MergeRequestsFinder,
             serializer_class: AnalyticsMergeRequestSerializer,
             includes_for_query: { target_project: [:namespace], author: [] },
-            columns_for_select: %I[title iid id created_at author_id state target_project_id]
+            columns_for_select: %I[title iid id created_at author_id state_id target_project_id]
           }
         }.freeze
 

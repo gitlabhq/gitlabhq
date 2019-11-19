@@ -79,7 +79,8 @@ describe 'Database schema' do
     vulnerability_identifiers: %w[external_id],
     vulnerability_scanners: %w[external_id],
     web_hooks: %w[service_id group_id],
-    suggestions: %w[commit_id]
+    suggestions: %w[commit_id],
+    commit_user_mentions: %w[commit_id]
   }.with_indifferent_access.freeze
 
   context 'for table' do

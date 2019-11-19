@@ -200,7 +200,6 @@ module Gitlab
           target_project_id: project.id,
           target_branch: Gitlab::Git.ref_name(pull_request.target_branch_name),
           target_branch_sha: pull_request.target_branch_sha,
-          state: pull_request.state,
           state_id: MergeRequest.available_states[pull_request.state],
           author_id: author_id,
           assignee_id: nil,

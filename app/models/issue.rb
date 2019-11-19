@@ -66,7 +66,10 @@ class Issue < ApplicationRecord
   scope :public_only, -> { where(confidential: false) }
   scope :confidential_only, -> { where(confidential: true) }
 
-  scope :counts_by_state, -> { reorder(nil).group(:state).count }
+  scope :counts_by_state, -> { reorder(nil).group(:state_id).count }
+
+  # Only remove after 2019-12-22 and with %12.7
+  self.ignored_columns += %i[state]
 
   after_commit :expire_etag_cache
   after_save :ensure_metrics, unless: :imported?

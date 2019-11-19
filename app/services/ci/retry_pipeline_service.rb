@@ -24,7 +24,9 @@ module Ci
         .new(project, current_user)
         .close_all(pipeline)
 
-      pipeline.process!
+      Ci::ProcessPipelineService
+        .new(pipeline)
+        .execute
     end
   end
 end

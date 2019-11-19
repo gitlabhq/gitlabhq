@@ -1198,6 +1198,16 @@ ActiveRecord::Schema.define(version: 2019_11_15_091425) do
     t.index ["project_id"], name: "index_clusters_kubernetes_namespaces_on_project_id"
   end
 
+  create_table "commit_user_mentions", force: :cascade do |t|
+    t.integer "note_id", null: false
+    t.binary "commit_id", null: false
+    t.integer "mentioned_users_ids", array: true
+    t.integer "mentioned_projects_ids", array: true
+    t.integer "mentioned_groups_ids", array: true
+    t.index ["commit_id", "note_id"], name: "commit_user_mentions_on_commit_id_and_note_id_index"
+    t.index ["note_id"], name: "index_commit_user_mentions_on_note_id", unique: true
+  end
+
   create_table "container_repositories", id: :serial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.string "name", null: false
@@ -1361,6 +1371,16 @@ ActiveRecord::Schema.define(version: 2019_11_15_091425) do
     t.index ["sha", "issue_id"], name: "index_design_management_versions_on_sha_and_issue_id", unique: true
   end
 
+  create_table "design_user_mentions", force: :cascade do |t|
+    t.integer "design_id", null: false
+    t.integer "note_id", null: false
+    t.integer "mentioned_users_ids", array: true
+    t.integer "mentioned_projects_ids", array: true
+    t.integer "mentioned_groups_ids", array: true
+    t.index ["design_id", "note_id"], name: "design_user_mentions_on_design_id_and_note_id_index"
+    t.index ["note_id"], name: "index_design_user_mentions_on_note_id", unique: true
+  end
+
   create_table "draft_notes", force: :cascade do |t|
     t.integer "merge_request_id", null: false
     t.integer "author_id", null: false
@@ -1431,6 +1451,17 @@ ActiveRecord::Schema.define(version: 2019_11_15_091425) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["epic_id"], name: "index_epic_metrics"
+  end
+
+  create_table "epic_user_mentions", force: :cascade do |t|
+    t.integer "epic_id", null: false
+    t.integer "note_id"
+    t.integer "mentioned_users_ids", array: true
+    t.integer "mentioned_projects_ids", array: true
+    t.integer "mentioned_groups_ids", array: true
+    t.index ["epic_id", "note_id"], name: "epic_user_mentions_on_epic_id_and_note_id_index", unique: true
+    t.index ["epic_id"], name: "epic_user_mentions_on_epic_id_index", unique: true, where: "(note_id IS NULL)"
+    t.index ["note_id"], name: "index_epic_user_mentions_on_note_id", unique: true, where: "(note_id IS NOT NULL)"
   end
 
   create_table "epics", id: :serial, force: :cascade do |t|
@@ -1978,6 +2009,17 @@ ActiveRecord::Schema.define(version: 2019_11_15_091425) do
     t.index ["service_id"], name: "index_issue_tracker_data_on_service_id"
   end
 
+  create_table "issue_user_mentions", force: :cascade do |t|
+    t.integer "issue_id", null: false
+    t.integer "note_id"
+    t.integer "mentioned_users_ids", array: true
+    t.integer "mentioned_projects_ids", array: true
+    t.integer "mentioned_groups_ids", array: true
+    t.index ["issue_id", "note_id"], name: "issue_user_mentions_on_issue_id_and_note_id_index", unique: true
+    t.index ["issue_id"], name: "issue_user_mentions_on_issue_id_index", unique: true, where: "(note_id IS NULL)"
+    t.index ["note_id"], name: "index_issue_user_mentions_on_note_id", unique: true, where: "(note_id IS NOT NULL)"
+  end
+
   create_table "issues", id: :serial, force: :cascade do |t|
     t.string "title"
     t.integer "author_id"
@@ -2331,6 +2373,17 @@ ActiveRecord::Schema.define(version: 2019_11_15_091425) do
     t.index ["merged_at"], name: "index_merge_request_metrics_on_merged_at"
     t.index ["merged_by_id"], name: "index_merge_request_metrics_on_merged_by_id"
     t.index ["pipeline_id"], name: "index_merge_request_metrics_on_pipeline_id"
+  end
+
+  create_table "merge_request_user_mentions", force: :cascade do |t|
+    t.integer "merge_request_id", null: false
+    t.integer "note_id"
+    t.integer "mentioned_users_ids", array: true
+    t.integer "mentioned_projects_ids", array: true
+    t.integer "mentioned_groups_ids", array: true
+    t.index ["merge_request_id", "note_id"], name: "merge_request_user_mentions_on_mr_id_and_note_id_index", unique: true
+    t.index ["merge_request_id"], name: "merge_request_user_mentions_on_mr_id_index", unique: true, where: "(note_id IS NULL)"
+    t.index ["note_id"], name: "index_merge_request_user_mentions_on_note_id", unique: true, where: "(note_id IS NOT NULL)"
   end
 
   create_table "merge_requests", id: :serial, force: :cascade do |t|
@@ -3486,6 +3539,10 @@ ActiveRecord::Schema.define(version: 2019_11_15_091425) do
     t.index ["reply_key"], name: "index_sent_notifications_on_reply_key", unique: true
   end
 
+  create_table "service_desk_settings", primary_key: "project_id", id: :bigint, default: nil, force: :cascade do |t|
+    t.string "issue_template_key", limit: 255
+  end
+
   create_table "services", id: :serial, force: :cascade do |t|
     t.string "type"
     t.string "title"
@@ -3538,6 +3595,17 @@ ActiveRecord::Schema.define(version: 2019_11_15_091425) do
     t.string "issuer", null: false
     t.index ["subject", "issuer"], name: "index_smartcard_identities_on_subject_and_issuer", unique: true
     t.index ["user_id"], name: "index_smartcard_identities_on_user_id"
+  end
+
+  create_table "snippet_user_mentions", force: :cascade do |t|
+    t.integer "snippet_id", null: false
+    t.integer "note_id"
+    t.integer "mentioned_users_ids", array: true
+    t.integer "mentioned_projects_ids", array: true
+    t.integer "mentioned_groups_ids", array: true
+    t.index ["note_id"], name: "index_snippet_user_mentions_on_note_id", unique: true, where: "(note_id IS NOT NULL)"
+    t.index ["snippet_id", "note_id"], name: "snippet_user_mentions_on_snippet_id_and_note_id_index", unique: true
+    t.index ["snippet_id"], name: "snippet_user_mentions_on_snippet_id_index", unique: true, where: "(note_id IS NULL)"
   end
 
   create_table "snippets", id: :serial, force: :cascade do |t|
@@ -4261,6 +4329,7 @@ ActiveRecord::Schema.define(version: 2019_11_15_091425) do
   add_foreign_key "clusters_kubernetes_namespaces", "clusters", on_delete: :cascade
   add_foreign_key "clusters_kubernetes_namespaces", "environments", on_delete: :nullify
   add_foreign_key "clusters_kubernetes_namespaces", "projects", on_delete: :nullify
+  add_foreign_key "commit_user_mentions", "notes", on_delete: :cascade
   add_foreign_key "container_repositories", "projects"
   add_foreign_key "dependency_proxy_blobs", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "dependency_proxy_group_settings", "namespaces", column: "group_id", on_delete: :cascade
@@ -4278,6 +4347,8 @@ ActiveRecord::Schema.define(version: 2019_11_15_091425) do
   add_foreign_key "design_management_designs_versions", "design_management_versions", column: "version_id", name: "fk_f4d25ba00c", on_delete: :cascade
   add_foreign_key "design_management_versions", "issues", on_delete: :cascade
   add_foreign_key "design_management_versions", "users", column: "author_id", name: "fk_c1440b4896", on_delete: :nullify
+  add_foreign_key "design_user_mentions", "design_management_designs", column: "design_id", on_delete: :cascade
+  add_foreign_key "design_user_mentions", "notes", on_delete: :cascade
   add_foreign_key "draft_notes", "merge_requests", on_delete: :cascade
   add_foreign_key "draft_notes", "users", column: "author_id", on_delete: :cascade
   add_foreign_key "elasticsearch_indexed_namespaces", "namespaces", on_delete: :cascade
@@ -4286,6 +4357,8 @@ ActiveRecord::Schema.define(version: 2019_11_15_091425) do
   add_foreign_key "epic_issues", "epics", on_delete: :cascade
   add_foreign_key "epic_issues", "issues", on_delete: :cascade
   add_foreign_key "epic_metrics", "epics", on_delete: :cascade
+  add_foreign_key "epic_user_mentions", "epics", on_delete: :cascade
+  add_foreign_key "epic_user_mentions", "notes", on_delete: :cascade
   add_foreign_key "epics", "epics", column: "due_date_sourcing_epic_id", name: "fk_013c9f36ca", on_delete: :nullify
   add_foreign_key "epics", "epics", column: "parent_id", name: "fk_25b99c1be3", on_delete: :cascade
   add_foreign_key "epics", "epics", column: "start_date_sourcing_epic_id", name: "fk_9d480c64b2", on_delete: :nullify
@@ -4353,6 +4426,8 @@ ActiveRecord::Schema.define(version: 2019_11_15_091425) do
   add_foreign_key "issue_links", "issues", column: "target_id", name: "fk_e71bb44f1f", on_delete: :cascade
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
   add_foreign_key "issue_tracker_data", "services", on_delete: :cascade
+  add_foreign_key "issue_user_mentions", "issues", on_delete: :cascade
+  add_foreign_key "issue_user_mentions", "notes", on_delete: :cascade
   add_foreign_key "issues", "issues", column: "duplicated_to_id", name: "fk_9c4516d665", on_delete: :nullify
   add_foreign_key "issues", "issues", column: "moved_to_id", name: "fk_a194299be1", on_delete: :nullify
   add_foreign_key "issues", "milestones", name: "fk_96b1dd429c", on_delete: :nullify
@@ -4392,6 +4467,8 @@ ActiveRecord::Schema.define(version: 2019_11_15_091425) do
   add_foreign_key "merge_request_metrics", "merge_requests", on_delete: :cascade
   add_foreign_key "merge_request_metrics", "users", column: "latest_closed_by_id", name: "fk_ae440388cc", on_delete: :nullify
   add_foreign_key "merge_request_metrics", "users", column: "merged_by_id", name: "fk_7f28d925f3", on_delete: :nullify
+  add_foreign_key "merge_request_user_mentions", "merge_requests", on_delete: :cascade
+  add_foreign_key "merge_request_user_mentions", "notes", on_delete: :cascade
   add_foreign_key "merge_requests", "ci_pipelines", column: "head_pipeline_id", name: "fk_fd82eae0b9", on_delete: :nullify
   add_foreign_key "merge_requests", "merge_request_diffs", column: "latest_merge_request_diff_id", name: "fk_06067f5644", on_delete: :nullify
   add_foreign_key "merge_requests", "milestones", name: "fk_6a5165a692", on_delete: :nullify
@@ -4509,9 +4586,12 @@ ActiveRecord::Schema.define(version: 2019_11_15_091425) do
   add_foreign_key "scim_oauth_access_tokens", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "self_managed_prometheus_alert_events", "environments", on_delete: :cascade
   add_foreign_key "self_managed_prometheus_alert_events", "projects", on_delete: :cascade
+  add_foreign_key "service_desk_settings", "projects", on_delete: :cascade
   add_foreign_key "services", "projects", name: "fk_71cce407f9", on_delete: :cascade
   add_foreign_key "slack_integrations", "services", on_delete: :cascade
   add_foreign_key "smartcard_identities", "users", on_delete: :cascade
+  add_foreign_key "snippet_user_mentions", "notes", on_delete: :cascade
+  add_foreign_key "snippet_user_mentions", "snippets", on_delete: :cascade
   add_foreign_key "snippets", "projects", name: "fk_be41fd4bb7", on_delete: :cascade
   add_foreign_key "software_license_policies", "projects", on_delete: :cascade
   add_foreign_key "software_license_policies", "software_licenses", on_delete: :cascade

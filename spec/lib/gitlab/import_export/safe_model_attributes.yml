@@ -762,3 +762,6 @@ ZoomMeeting:
 - url
 - created_at
 - updated_at
+ServiceDeskSetting:
+- project_id
+- issue_template_key

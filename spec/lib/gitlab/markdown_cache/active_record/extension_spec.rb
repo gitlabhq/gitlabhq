@@ -73,11 +73,11 @@ describe Gitlab::MarkdownCache::ActiveRecord::Extension do
     let(:thing) { klass.new(title: markdown, title_html: html, cached_markdown_version: cache_version) }
 
     before do
-      thing.state = 'closed'
+      thing.state_id = 2
       thing.save
     end
 
-    it { expect(thing.state).to eq('closed') }
+    it { expect(thing.state_id).to eq(2) }
     it { expect(thing.title).to eq(markdown) }
     it { expect(thing.title_html).to eq(html) }
     it { expect(thing.cached_markdown_version).to eq(cache_version) }

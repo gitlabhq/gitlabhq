@@ -18,7 +18,7 @@ describe Gitlab::Import::MergeRequestHelpers, type: :helper do
         target_project_id: project.id,
         source_branch: 'master-42',
         target_branch: 'master',
-        state: :merged,
+        state_id: 3,
         author_id: user.id,
         assignee_id: user.id
       }

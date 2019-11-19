@@ -188,6 +188,7 @@ module ProjectsHelper
       "cross-project:#{can?(current_user, :read_cross_project)}",
       max_project_member_access_cache_key(project),
       pipeline_status,
+      Gitlab::I18n.locale,
       'v2.6'
     ]
 

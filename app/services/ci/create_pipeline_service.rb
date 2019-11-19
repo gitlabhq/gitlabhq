@@ -57,7 +57,9 @@ module Ci
           cancel_pending_pipelines if project.auto_cancel_pending_pipelines?
           pipeline_created_counter.increment(source: source)
 
-          pipeline.process!
+          Ci::ProcessPipelineService
+            .new(pipeline)
+            .execute
         end
       end
 

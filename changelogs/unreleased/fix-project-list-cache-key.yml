@@ -1,0 +1,5 @@
+---
+title: Fix projects list to show info in user's locale
+merge_request: 20015
+author: Arun Kumar Mohan
+type: fixed

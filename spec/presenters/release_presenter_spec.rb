@@ -97,5 +97,11 @@ describe ReleasePresenter do
 
       it { is_expected.to be_nil }
     end
+
+    context 'when a user is not allowed to update a release' do
+      let(:presenter) { described_class.new(release, current_user: guest) }
+
+      it { is_expected.to be_nil }
+    end
   end
 end

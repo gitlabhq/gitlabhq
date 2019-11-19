@@ -49,6 +49,22 @@ purposes.
 In this setup guide we will start by configuring Praefect, then its child
 Gitaly nodes, and lastly the GitLab server configuration.
 
+#### Secrets
+
+We need to manage the following secrets and make them match across hosts:
+
+1. `GITLAB_SHELL_SECRET_TOKEN`: this is used by Git hooks to make
+    callback HTTP API requests to GitLab when accepting a Git push. This
+    secret is shared with GitLab Shell for legacy reasons.
+1. `PRAEFECT_EXTERNAL_TOKEN`: repositories hosted on your Praefect
+    cluster can only be accessed by Gitaly clients that carry this
+    token.
+1. `PRAEFECT_INTERNAL_TOKEN`: this token is used for replication
+    traffic inside your Praefect cluster. This is distinct from
+    `PRAEFECT_EXTERNAL_TOKEN` because Gitaly clients must not be able to
+    access internal nodes of the Praefect cluster directly; that could
+    lead to data loss.
+
 #### Praefect
 
 On the Praefect node we disable all other services, including Gitaly. We list each
@@ -57,14 +73,8 @@ Gitaly node that will be connected to Praefect under `praefect['storage_nodes']`
 In the example below, the Gitaly nodes are named `praefect-gitaly-N`. Note that one
 node is designated as primary by setting the primary to `true`.
 
-`praefect['auth_token']` is the token used to authenticate with the GitLab server,
-just like `gitaly['auth_token']` is used for a standard Gitaly server.
-
-The `token` field under each storage listed in `praefect['storage_nodes']` is used
-to authenticate each child Gitaly node with Praefect.
-
 ```ruby
-# /etc/gitlab/gitlab.rb
+# /etc/gitlab/gitlab.rb on praefect server
 
 # Avoid running unnecessary services on the Gitaly server
 postgresql['enable'] = false
@@ -83,7 +93,7 @@ In the example below, the Gitaly nodes are named `praefect-git-X`. Note that one
 primary, by setting the primary to `true`:
 
 ```ruby
-# /etc/gitlab/gitlab.rb
+# /etc/gitlab/gitlab.rb on praefect server
 
 # Prevent database connections during 'gitlab-ctl reconfigure'
 gitlab_rails['rake_cache_clear'] = false
@@ -98,22 +108,24 @@ praefect['listen_addr'] = '0.0.0.0:2305'
 # virtual_storage_name must match the same storage name given to praefect in git_data_dirs
 praefect['virtual_storage_name'] = 'praefect'
 
-# Authentication token to ensure only authorized servers can communicate with
-# Praefect server
-praefect['auth_token'] = 'praefect-token'
+# Replace PRAEFECT_EXTERNAL_TOKEN with a real secret
+praefect['auth_token'] = 'PRAEFECT_EXTERNAL_TOKEN'
+
+# Replace each instance of PRAEFECT_INTERNAL_TOKEN below with a real
+# secret, distinct from PRAEFECT_EXTERNAL_TOKEN.
 praefect['storage_nodes'] = {
   'praefect-gitaly-1' => {
     'address' => 'tcp://praefect-git-1.internal:8075',
-    'token'   => 'praefect-gitaly-token',
+    'token'   => 'PRAEFECT_INTERNAL_TOKEN',
     'primary' => true
   },
   'praefect-gitaly-2' => {
     'address' => 'tcp://praefect-git-2.internal:8075',
-    'token'   => 'praefect-gitaly-token'
+    'token'   => 'PRAEFECT_INTERNAL_TOKEN'
   },
   'praefect-gitaly-3' => {
     'address' => 'tcp://praefect-git-3.internal:8075',
-    'token'   => 'praefect-gitaly-token'
+    'token'   => 'PRAEFECT_INTERNAL_TOKEN'
   }
 }
 ```
@@ -133,7 +145,7 @@ Note that `gitaly['auth_token']` matches the `token` value listed under `praefec
 on the Praefect node.
 
 ```ruby
-# /etc/gitlab/gitlab.rb
+# /etc/gitlab/gitlab.rb on gitaly node inside praefect cluster
 
 # Avoid running unnecessary services on the Gitaly server
 postgresql['enable'] = false
@@ -148,15 +160,16 @@ gitlab_workhorse['enable'] = false
 gitlab_rails['rake_cache_clear'] = false
 gitlab_rails['auto_migrate'] = false
 
+# Replace GITLAB_SHELL_SECRET_TOKEN below with real secret
+gitlab_shell['secret_token'] = 'GITLAB_SHELL_SECRET_TOKEN'
+
 # Configure the gitlab-shell API callback URL. Without this, `git push` will
 # fail. This can be your 'front door' GitLab URL or an internal load
 # balancer.
-# Don't forget to copy `/etc/gitlab/gitlab-secrets.json` from web server to Gitaly server.
 gitlab_rails['internal_api_url'] = 'https://gitlab.example.com'
 
-# Authentication token to ensure only authorized servers can communicate with
-# Gitaly server
-gitaly['auth_token'] = 'praefect-gitaly-token'
+# Replace PRAEFECT_INTERNAL_TOKEN below with a real secret.
+gitaly['auth_token'] = 'PRAEFECT_INTERNAL_TOKEN'
 
 # Make Gitaly accept connections on all network interfaces. You must use
 # firewalls to restrict access to this address/port.
@@ -170,9 +183,6 @@ git_data_dirs({
 })
 ```
 
-Note that just as with a standard Gitaly server, `/etc/gitlab/gitlab-secrets.json` must
-be copied from the GitLab server to the Gitaly node for authentication purposes.
-
 For more information on Gitaly server configuration, see our [gitaly documentation](index.md#3-gitaly-server-configuration).
 
 #### GitLab
@@ -182,23 +192,25 @@ is done through setting the `git_data_dirs`. Assuming the default storage
 is present, there should be two storages available to GitLab:
 
 ```ruby
+# /etc/gitlab/gitlab.rb on gitlab server
+
+# Replace PRAEFECT_EXTERNAL_TOKEN below with real secret.
 git_data_dirs({
   "default" => {
     "gitaly_address" => "tcp://gitaly.internal"
   },
   "praefect" => {
-    "gitaly_address" => "tcp://praefect.internal:2305"
+    "gitaly_address" => "tcp://praefect.internal:2305",
+    "gitaly_token" => 'PRAEFECT_EXTERNAL_TOKEN'
   }
 })
 
-gitlab_rails['gitaly_token'] = 'praefect-token'
+# Replace GITLAB_SHELL_SECRET_TOKEN below with real secret
+gitlab_shell['secret_token'] = 'GITLAB_SHELL_SECRET_TOKEN'
 ```
 
 Note that the storage name used is the same as the `praefect['virtual_storage_name']` set
 on the Praefect node.
-
-Also, the `gitlab_rails['gitaly_token']` matches the value of `praefect['auth_token']`
-on Praefect.
 
 Restart GitLab using `gitlab-ctl restart` on the GitLab node.
 
@@ -211,7 +223,3 @@ create a new project and check the "Initialize repository with a README" box.
 If you receive a 503 error, check `/var/log/gitlab/gitlab-rails/production.log`.
 A `GRPC::Unavailable (14:failed to connect to all addresses)` error indicates
 that GitLab was unable to connect to Praefect.
-
-If the project is created but the README is not, then ensure that the
-`/etc/gitlab/gitlab-secrets.json` file from the GitLab server has been copied
-to the Gitaly servers.
