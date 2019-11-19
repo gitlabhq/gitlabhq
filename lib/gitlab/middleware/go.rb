@@ -25,13 +25,13 @@ module Gitlab
       def render_go_doc(request)
         return unless go_request?(request)
 
-        path = project_path(request)
+        path, branch = project_path(request)
         return unless path
 
-        body = go_body(path)
+        body, code = go_response(path, branch)
         return unless body
 
-        response = Rack::Response.new(body, 200, { 'Content-Type' => 'text/html' })
+        response = Rack::Response.new(body, code, { 'Content-Type' => 'text/html' })
         response.finish
       end
 
@@ -39,8 +39,15 @@ module Gitlab
         request["go-get"].to_i == 1 && request.env["PATH_INFO"].present?
       end
 
-      def go_body(path)
+      def go_response(path, branch)
         config = Gitlab.config
+        body_tag = content_tag :body, "go get #{config.gitlab.url}/#{path}"
+
+        unless branch
+          html_tag = content_tag :html, body_tag
+          return html_tag, 404
+        end
+
         project_url = Gitlab::Utils.append_path(config.gitlab.url, path)
         import_prefix = strip_url(project_url.to_s)
 
@@ -52,9 +59,11 @@ module Gitlab
                            "#{project_url}.git"
                          end
 
-        meta_tag = tag :meta, name: 'go-import', content: "#{import_prefix} git #{repository_url}"
-        head_tag = content_tag :head, meta_tag
-        content_tag :html, head_tag
+        meta_import_tag = tag :meta, name: 'go-import', content: "#{import_prefix} git #{repository_url}"
+        meta_source_tag = tag :meta, name: 'go-source', content: "#{import_prefix} #{project_url} #{project_url}/tree/#{branch}{/dir} #{project_url}/blob/#{branch}{/dir}/{file}#L{line}"
+        head_tag = content_tag :head, meta_import_tag + meta_source_tag
+        html_tag = content_tag :html, head_tag + body_tag
+        [html_tag, 200]
       end
 
       def strip_url(url)
@@ -80,9 +89,6 @@ module Gitlab
         path_segments = path.split('/')
         simple_project_path = path_segments.first(2).join('/')
 
-        # If the path is at most 2 segments long, it is a simple `namespace/project` path and we're done
-        return simple_project_path if path_segments.length <= 2
-
         project_paths = []
         begin
           project_paths << path_segments.join('/')
@@ -94,7 +100,7 @@ module Gitlab
 
         if project
           # If a project is found and the user has access, we return the full project path
-          project.full_path
+          return project.full_path, project.default_branch
         else
           # If not, we return the first two components as if it were a simple `namespace/project` path,
           # so that we don't reveal the existence of a nested project the user doesn't have access to.
@@ -105,7 +111,7 @@ module Gitlab
           # `go get gitlab.com/group/subgroup/project/subpackage` will not work for private projects.
           # `go get gitlab.com/group/subgroup/project.git/subpackage` will work, since Go is smart enough
           # to figure that out. `import 'gitlab.com/...'` behaves the same as `go get`.
-          simple_project_path
+          return simple_project_path, 'master'
         end
       end
 

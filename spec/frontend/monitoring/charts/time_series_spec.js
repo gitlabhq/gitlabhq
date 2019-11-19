@@ -116,6 +116,19 @@ describe('Time series component', () => {
           });
         });
 
+        it('does not throw error if data point is outside the zoom range', () => {
+          const seriesDataWithoutValue = generateSeriesData('line');
+          expect(
+            timeSeriesChart.vm.formatTooltipText({
+              ...seriesDataWithoutValue,
+              seriesData: seriesDataWithoutValue.seriesData.map(data => ({
+                ...data,
+                value: undefined,
+              })),
+            }),
+          ).toBeUndefined();
+        });
+
         describe('when series is of line type', () => {
           beforeEach(done => {
             timeSeriesChart.vm.formatTooltipText(generateSeriesData('line'));

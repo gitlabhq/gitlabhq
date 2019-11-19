@@ -1567,6 +1567,18 @@ describe API::MergeRequests do
       expect(response).to have_gitlab_http_status(200)
     end
 
+    it 'does not merge if merge_when_pipeline_succeeds is passed and the pipeline has failed' do
+      create(:ci_pipeline,
+        :failed,
+        sha: merge_request.diff_head_sha,
+        merge_requests_as_head_pipeline: [merge_request])
+
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: { merge_when_pipeline_succeeds: true }
+
+      expect(response).to have_gitlab_http_status(405)
+      expect(merge_request.reload.state).to eq('opened')
+    end
+
     it "enables merge when pipeline succeeds if the pipeline is active" do
       allow_any_instance_of(MergeRequest).to receive_messages(head_pipeline: pipeline, actual_head_pipeline: pipeline)
       allow(pipeline).to receive(:active?).and_return(true)

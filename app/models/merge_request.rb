@@ -241,6 +241,9 @@ class MergeRequest < ApplicationRecord
   alias_attribute :auto_merge_enabled, :merge_when_pipeline_succeeds
   alias_method :issuing_parent, :target_project
 
+  delegate :active?, to: :head_pipeline, prefix: true, allow_nil: true
+  delegate :success?, to: :actual_head_pipeline, prefix: true, allow_nil: true
+
   RebaseLockTimeout = Class.new(StandardError)
 
   REBASE_LOCK_MESSAGE = _("Failed to enqueue the rebase operation, possibly due to a long-lived transaction. Try again later.")

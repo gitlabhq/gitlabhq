@@ -10,6 +10,9 @@ This section documents LDAP features specific to to GitLab Enterprise Edition
 For documentation relevant to both Community Edition and Enterprise Edition,
 see the main [LDAP documentation](ldap.md).
 
+NOTE: **Note:**
+[Microsoft Active Directory Trusts](https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-R2-and-2008/cc771568(v=ws.10)) are not supported
+
 ## Use cases
 
 - User sync: Once a day, GitLab will update users against LDAP.

@@ -2326,6 +2326,26 @@ describe MergeRequest do
     end
   end
 
+  describe "#head_pipeline_active? " do
+    it do
+      is_expected
+        .to delegate_method(:active?)
+        .to(:head_pipeline)
+        .with_prefix
+        .with_arguments(allow_nil: true)
+    end
+  end
+
+  describe "#actual_head_pipeline_success? " do
+    it do
+      is_expected
+        .to delegate_method(:success?)
+        .to(:actual_head_pipeline)
+        .with_prefix
+        .with_arguments(allow_nil: true)
+    end
+  end
+
   describe '#mergeable_ci_state?' do
     let(:project) { create(:project, only_allow_merge_if_pipeline_succeeds: true) }
     let(:pipeline) { create(:ci_empty_pipeline) }

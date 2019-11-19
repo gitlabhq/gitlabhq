@@ -179,7 +179,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        resources :releases, only: [:index, :edit], param: :tag, constraints: { tag: %r{[^/]+} }
+        resources :releases, only: [:index, :edit], param: :tag, constraints: { tag: %r{[^/]+} } do
+          member do
+            get :evidence
+          end
+        end
+
         resources :starrers, only: [:index]
         resources :forks, only: [:index, :new, :create]
         resources :group_links, only: [:index, :create, :update, :destroy], constraints: { id: /\d+/ }

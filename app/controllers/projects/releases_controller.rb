@@ -20,6 +20,14 @@ class Projects::ReleasesController < Projects::ApplicationController
     end
   end
 
+  def evidence
+    respond_to do |format|
+      format.json do
+        render json: release.evidence_summary
+      end
+    end
+  end
+
   protected
 
   def releases

@@ -253,23 +253,25 @@ export default {
       this.tooltip.title = dateFormat(params.value, dateFormats.default);
       this.tooltip.content = [];
       params.seriesData.forEach(dataPoint => {
-        const [xVal, yVal] = dataPoint.value;
-        this.tooltip.isDeployment = dataPoint.componentSubType === graphTypes.deploymentData;
-        if (this.tooltip.isDeployment) {
-          const [deploy] = this.recentDeployments.filter(
-            deployment => deployment.createdAt === xVal,
-          );
-          this.tooltip.sha = deploy.sha.substring(0, 8);
-          this.tooltip.commitUrl = deploy.commitUrl;
-        } else {
-          const { seriesName, color, dataIndex } = dataPoint;
-          const value = yVal.toFixed(3);
-          this.tooltip.content.push({
-            name: seriesName,
-            dataIndex,
-            value,
-            color,
-          });
+        if (dataPoint.value) {
+          const [xVal, yVal] = dataPoint.value;
+          this.tooltip.isDeployment = dataPoint.componentSubType === graphTypes.deploymentData;
+          if (this.tooltip.isDeployment) {
+            const [deploy] = this.recentDeployments.filter(
+              deployment => deployment.createdAt === xVal,
+            );
+            this.tooltip.sha = deploy.sha.substring(0, 8);
+            this.tooltip.commitUrl = deploy.commitUrl;
+          } else {
+            const { seriesName, color, dataIndex } = dataPoint;
+            const value = yVal.toFixed(3);
+            this.tooltip.content.push({
+              name: seriesName,
+              dataIndex,
+              value,
+              color,
+            });
+          }
         }
       });
     },
