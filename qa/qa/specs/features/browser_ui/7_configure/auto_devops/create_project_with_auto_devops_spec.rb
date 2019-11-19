@@ -55,8 +55,7 @@ module QA
       end
     end
 
-    # https://gitlab.com/gitlab-org/gitlab/issues/35156
-    describe 'Auto DevOps support', :orchestrated, :kubernetes, :quarantine do
+    describe 'Auto DevOps support', :orchestrated, :kubernetes do
       context 'when rbac is enabled' do
         before(:all) do
           @cluster = Service::KubernetesCluster.new.create!

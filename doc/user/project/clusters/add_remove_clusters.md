@@ -262,55 +262,55 @@ new Kubernetes cluster to your project:
    1. Click **Create Policy**, which will open a new window.
    1. Select the **JSON** tab, and paste in the following snippet in place of the existing content:
 
-    ```json
-    {
-        "Version": "2012-10-17",
-        "Statement": [
-            {
-                "Effect": "Allow",
-                "Action": [
-                    "autoscaling:CreateAutoScalingGroup",
-                    "autoscaling:DescribeAutoScalingGroups",
-                    "autoscaling:DescribeScalingActivities",
-                    "autoscaling:UpdateAutoScalingGroup",
-                    "autoscaling:CreateLaunchConfiguration",
-                    "autoscaling:DescribeLaunchConfigurations",
-                    "cloudformation:CreateStack",
-                    "cloudformation:DescribeStacks",
-                    "ec2:AuthorizeSecurityGroupEgress",
-                    "ec2:AuthorizeSecurityGroupIngress",
-                    "ec2:RevokeSecurityGroupEgress",
-                    "ec2:RevokeSecurityGroupIngress",
-                    "ec2:CreateSecurityGroup",
-                    "ec2:createTags",
-                    "ec2:DescribeImages",
-                    "ec2:DescribeKeyPairs",
-                    "ec2:DescribeRegions",
-                    "ec2:DescribeSecurityGroups",
-                    "ec2:DescribeSubnets",
-                    "ec2:DescribeVpcs",
-                    "eks:CreateCluster",
-                    "eks:DescribeCluster",
-                    "iam:AddRoleToInstanceProfile",
-                    "iam:AttachRolePolicy",
-                    "iam:CreateRole",
-                    "iam:CreateInstanceProfile",
-                    "iam:GetRole",
-                    "iam:ListRoles",
-                    "iam:PassRole",
-                    "ssm:GetParameters"
-                ],
-                "Resource": "*"
-            }
-        ]
-    }
-    ```
+      ```json
+      {
+          "Version": "2012-10-17",
+          "Statement": [
+              {
+                  "Effect": "Allow",
+                  "Action": [
+                      "autoscaling:CreateAutoScalingGroup",
+                      "autoscaling:DescribeAutoScalingGroups",
+                      "autoscaling:DescribeScalingActivities",
+                      "autoscaling:UpdateAutoScalingGroup",
+                      "autoscaling:CreateLaunchConfiguration",
+                      "autoscaling:DescribeLaunchConfigurations",
+                      "cloudformation:CreateStack",
+                      "cloudformation:DescribeStacks",
+                      "ec2:AuthorizeSecurityGroupEgress",
+                      "ec2:AuthorizeSecurityGroupIngress",
+                      "ec2:RevokeSecurityGroupEgress",
+                      "ec2:RevokeSecurityGroupIngress",
+                      "ec2:CreateSecurityGroup",
+                      "ec2:createTags",
+                      "ec2:DescribeImages",
+                      "ec2:DescribeKeyPairs",
+                      "ec2:DescribeRegions",
+                      "ec2:DescribeSecurityGroups",
+                      "ec2:DescribeSubnets",
+                      "ec2:DescribeVpcs",
+                      "eks:CreateCluster",
+                      "eks:DescribeCluster",
+                      "iam:AddRoleToInstanceProfile",
+                      "iam:AttachRolePolicy",
+                      "iam:CreateRole",
+                      "iam:CreateInstanceProfile",
+                      "iam:GetRole",
+                      "iam:ListRoles",
+                      "iam:PassRole",
+                      "ssm:GetParameters"
+                  ],
+                  "Resource": "*"
+              }
+          ]
+      }
+      ```
 
-    NOTE: **Note:**
-    These permissions give GitLab the ability to create resources, but not delete them.
-    This means that if an error is encountered during the creation process, changes will
-    not be rolled back and you must remove resources manually. You can do this by deleting
-    the relevant [CloudFormation stack](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-console-delete-stack.html)
+      NOTE: **Note:**
+      These permissions give GitLab the ability to create resources, but not delete them.
+      This means that if an error is encountered during the creation process, changes will
+      not be rolled back and you must remove resources manually. You can do this by deleting
+      the relevant [CloudFormation stack](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-console-delete-stack.html)
 
    1. Click **Review policy**.
    1. Enter a suitable name for this policy, and click **Create Policy**. You can now close this window.

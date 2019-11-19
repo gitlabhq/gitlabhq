@@ -172,11 +172,7 @@ class Clusters::ClustersController < Clusters::BaseController
   private
 
   def destroy_params
-    # To be uncomented on https://gitlab.com/gitlab-org/gitlab/merge_requests/16954
-    # This MR got split into other since it was too big.
-    #
-    # params.permit(:cleanup)
-    {}
+    params.permit(:cleanup)
   end
 
   def update_params

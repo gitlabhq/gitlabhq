@@ -1,5 +1,6 @@
 - if !Gitlab::CurrentSettings.eks_integration_enabled?
-  - documentation_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path("integration/amazon") }
+  - documentation_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/project/clusters/add_remove_clusters.md',
+      anchor: 'additional-requirements-for-self-managed-instances') }
   = s_('Amazon authentication is not %{link_start}correctly configured%{link_end}. Ask your GitLab administrator if you want to use this service.').html_safe % { link_start: documentation_link_start, link_end: '<a/>'.html_safe }
 - else
   .js-create-eks-cluster-form-container{ data: { 'gitlab-managed-cluster-help-path' => help_page_path('user/project/clusters/index.md', anchor: 'gitlab-managed-clusters'),
@@ -16,5 +17,7 @@
     'account-id' => Gitlab::CurrentSettings.eks_account_id,
     'external-id' => @aws_role.role_external_id,
     'kubernetes-integration-help-path' => help_page_path('user/project/clusters/index'),
+    'account-and-external-ids-help-path' => help_page_path('user/project/clusters/add_remove_clusters.md', anchor: 'eks-cluster'),
+    'create-role-arn-help-path' => help_page_path('user/project/clusters/add_remove_clusters.md', anchor: 'eks-cluster'),
     'external-link-icon' => icon('external-link'),
     'has-credentials' => @aws_role.role_arn.present?.to_s } }

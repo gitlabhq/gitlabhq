@@ -500,6 +500,48 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     end
   end
 
+  describe '.with_persisted_applications' do
+    let(:cluster) { create(:cluster) }
+    let!(:helm) { create(:clusters_applications_helm, :installed, cluster: cluster) }
+
+    it 'preloads persisted applications' do
+      query_rec = ActiveRecord::QueryRecorder.new do
+        described_class.with_persisted_applications.find_by_id(cluster.id).application_helm
+      end
+
+      expect(query_rec.count).to eq(1)
+    end
+  end
+
+  describe '#persisted_applications' do
+    let(:cluster) { create(:cluster) }
+
+    subject { cluster.persisted_applications }
+
+    context 'when all applications are created' do
+      let!(:helm) { create(:clusters_applications_helm, cluster: cluster) }
+      let!(:ingress) { create(:clusters_applications_ingress, cluster: cluster) }
+      let!(:cert_manager) { create(:clusters_applications_cert_manager, cluster: cluster) }
+      let!(:prometheus) { create(:clusters_applications_prometheus, cluster: cluster) }
+      let!(:runner) { create(:clusters_applications_runner, cluster: cluster) }
+      let!(:jupyter) { create(:clusters_applications_jupyter, cluster: cluster) }
+      let!(:knative) { create(:clusters_applications_knative, cluster: cluster) }
+
+      it 'returns a list of created applications' do
+        is_expected.to contain_exactly(helm, ingress, cert_manager, prometheus, runner, jupyter, knative)
+      end
+    end
+
+    context 'when not all were created' do
+      let!(:helm) { create(:clusters_applications_helm, cluster: cluster) }
+      let!(:ingress) { create(:clusters_applications_ingress, cluster: cluster) }
+
+      it 'returns a list of created applications' do
+        is_expected.to contain_exactly(helm, ingress)
+      end
+    end
+  end
+
   describe '#applications' do
     set(:cluster) { create(:cluster) }
 

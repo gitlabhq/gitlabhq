@@ -85,7 +85,7 @@ in your repository map to paths of pages on your website using a Route Map.
 Once set, GitLab will display **View on ...** buttons, which will take you
 to the pages changed directly from merge requests.
 
-To set up a route map, add a a file inside the repository at `.gitlab/route-map.yml`,
+To set up a route map, add a file inside the repository at `.gitlab/route-map.yml`,
 which contains a YAML array that maps `source` paths (in the repository) to `public`
 paths (on the website).
 

@@ -38,6 +38,9 @@
 - gcp_cluster:cluster_patch_app
 - gcp_cluster:cluster_upgrade_app
 - gcp_cluster:cluster_provision
+- gcp_cluster:clusters_cleanup_app
+- gcp_cluster:clusters_cleanup_project_namespace
+- gcp_cluster:clusters_cleanup_service_account
 - gcp_cluster:cluster_wait_for_app_installation
 - gcp_cluster:wait_for_cluster_creation
 - gcp_cluster:cluster_wait_for_ingress_ip_address

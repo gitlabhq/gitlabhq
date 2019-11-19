@@ -1,4 +1,4 @@
 - page_title _('Error Details')
 - add_to_breadcrumbs 'Errors', project_error_tracking_index_path(@project)
 
-#js-error_details{ data: error_details_data(@current_user, @project) }
+#js-error_details{ data: error_details_data(@project, @issue_id) }

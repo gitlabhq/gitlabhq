@@ -50,14 +50,17 @@ Any issue that belongs to a project in the epic's group, or any of the epic's
 subgroups, are eligible to be added.  New issues appear at the top of the list of issues in the **Epics and Issues** tab.
 
 An epic contains a list of issues and an issue can be associated with at most
-one epic. When you add an issue to an epic that is already associated with another epic,
-the issue is automatically removed from the previous epic.
+one epic. When you add an issue that is already linked to an epic,
+the issue is automatically unlinked from its current parent.
 
 To add an issue to an epic:
 
 1. Click **Add an issue**.
-1. Paste the link of the issue.
-   - Press <kbd>Spacebar</kbd> and repeat this step if there are multiple issues.
+1. Identify the issue to be added, using either of the following methods:
+   - Paste the link of the issue.
+   - Search for the desired issue by entering part of the issue's title, then selecting the desired match. ([From GitLab 12.5](https://gitlab.com/gitlab-org/gitlab/issues/9126))
+
+   If there are multiple issues to be added, press <kbd>Spacebar</kbd> and repeat this step.
 1. Click **Add**.
 
 To remove an issue from an epic:
@@ -72,17 +75,19 @@ To remove an issue from an epic:
 Any epic that belongs to a group, or subgroup of the parent epic's group, is
 eligible to be added. New child epics appear at the top of the list of epics in the **Epics and Issues** tab.
 
-When you add a child epic that is already associated with another epic,
-that epic is automatically removed from the previous epic.
+When you add an epic that is already linked to a parent epic, the link to its current parent is removed.
 
 An epic can have multiple child epics with
 the maximum depth being 5.
 
-To add a child epic:
+To add a child epic to an epic:
 
 1. Click **Add an epic**.
-1. Paste the link of the epic.
-   - Press <kbd>Spacebar</kbd> and repeat this step if there are multiple issues.
+1. Identify the epic to be added, using either of the following methods:
+   - Paste the link of the epic.
+   - Search for the desired issue by entering part of the epic's title, then selecting the desired match. ([From GitLab 12.5](https://gitlab.com/gitlab-org/gitlab/issues/9126))
+
+   If there are multiple epics to be added, press <kbd>Spacebar</kbd> and repeat this step.
 1. Click **Add**.
 
 To remove a child epic from a parent epic:

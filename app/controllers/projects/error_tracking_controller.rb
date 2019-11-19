@@ -2,6 +2,7 @@
 
 class Projects::ErrorTrackingController < Projects::ApplicationController
   before_action :authorize_read_sentry_issue!
+  before_action :set_issue_id, only: [:details, :stack_trace]
 
   POLLING_INTERVAL = 10_000
 
@@ -111,6 +112,10 @@ class Projects::ErrorTrackingController < Projects::ApplicationController
 
   def issue_details_params
     params.permit(:issue_id)
+  end
+
+  def set_issue_id
+    @issue_id = issue_details_params[:issue_id]
   end
 
   def set_polling_interval

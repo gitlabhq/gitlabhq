@@ -1,0 +1,5 @@
+---
+title: Fix group managed accounts members cleanup
+merge_request: 20157
+author:
+type: fixed

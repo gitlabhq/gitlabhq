@@ -3,13 +3,14 @@
 module Clusters
   module Cleanup
     class ServiceAccountWorker
-      include ApplicationWorker
-      include ClusterQueue
-      include ClusterApplications
+      include ClusterCleanupMethods
 
-      # TODO: Merge with https://gitlab.com/gitlab-org/gitlab/merge_requests/16954
-      # We're splitting the above MR in smaller chunks to facilitate reviews
-      def perform
+      def perform(cluster_id)
+        Clusters::Cluster.find_by_id(cluster_id).try do |cluster|
+          break unless cluster.cleanup_removing_service_account?
+
+          Clusters::Cleanup::ServiceAccountService.new(cluster).execute
+        end
       end
     end
   end

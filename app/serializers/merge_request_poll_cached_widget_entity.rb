@@ -101,3 +101,5 @@ class MergeRequestPollCachedWidgetEntity < IssuableEntity
                               merged_by: merge_event&.author)
   end
 end
+
+MergeRequestPollCachedWidgetEntity.prepend_if_ee('EE::MergeRequestPollCachedWidgetEntity')

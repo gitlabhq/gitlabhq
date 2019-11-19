@@ -14,12 +14,12 @@ module Projects::ErrorTrackingHelper
     }
   end
 
-  def error_details_data(project, issue)
-    opts = [project, issue, { format: :json }]
+  def error_details_data(project, issue_id)
+    opts = [project, issue_id, { format: :json }]
 
     {
-      'issue-details-path' => details_namespace_project_error_tracking_index_path(*opts),
-      'issue-stack-trace-path' => stack_trace_namespace_project_error_tracking_index_path(*opts)
+      'issue-details-path' => details_project_error_tracking_index_path(*opts),
+      'issue-stack-trace-path' => stack_trace_project_error_tracking_index_path(*opts)
     }
   end
 end

@@ -3,13 +3,16 @@
 module Clusters
   module Cleanup
     class ProjectNamespaceWorker
-      include ApplicationWorker
-      include ClusterQueue
-      include ClusterApplications
+      include ClusterCleanupMethods
 
-      # TODO: Merge with https://gitlab.com/gitlab-org/gitlab/merge_requests/16954
-      # We're splitting the above MR in smaller chunks to facilitate reviews
-      def perform
+      def perform(cluster_id, execution_count = 0)
+        Clusters::Cluster.find_by_id(cluster_id).try do |cluster|
+          break unless cluster.cleanup_removing_project_namespaces?
+
+          break exceeded_execution_limit(cluster) if exceeded_execution_limit?(execution_count)
+
+          Clusters::Cleanup::ProjectNamespaceService.new(cluster, execution_count).execute
+        end
       end
     end
   end

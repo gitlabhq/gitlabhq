@@ -1,0 +1,5 @@
+---
+title: Return 422 status code in case of error in submitting comments
+merge_request: 19276
+author: raju249
+type: added
