@@ -129,14 +129,17 @@ module ReactiveCaching
 
     def exclusively_update_reactive_cache!(*args)
       locking_reactive_cache(*args) do
+        key = full_reactive_cache_key(*args)
+
         if within_reactive_cache_lifetime?(*args)
           enqueuing_update(*args) do
-            key = full_reactive_cache_key(*args)
             new_value = calculate_reactive_cache(*args)
             old_value = Rails.cache.read(key)
             Rails.cache.write(key, new_value)
             reactive_cache_updated(*args) if new_value != old_value
           end
+        else
+          Rails.cache.delete(key)
         end
       end
     end

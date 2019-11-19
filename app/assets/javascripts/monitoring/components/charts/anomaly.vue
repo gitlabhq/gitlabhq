@@ -66,6 +66,7 @@ export default {
         const values = query.result[0] ? query.result[0].values : [];
         return {
           label: query.label,
+          // NaN values may disrupt avg., max. & min. calculations in the legend, filter them out
           data: values.filter(([, value]) => !Number.isNaN(value)),
         };
       });

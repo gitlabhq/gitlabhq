@@ -26,9 +26,9 @@ For this document, the following network topology is assumed:
 graph TB
   GitLab --> Gitaly;
   GitLab --> Praefect;
-  Praefect --> Praefect-Gitaly-1;
-  Praefect --> Praefect-Gitaly-2;
-  Praefect --> Praefect-Gitaly-3;
+  Praefect --> Gitaly-1;
+  Praefect --> Gitaly-2;
+  Praefect --> Gitaly-3;
 ```
 
 Where `GitLab` is the collection of clients that can request Git operations.
@@ -70,7 +70,7 @@ We need to manage the following secrets and make them match across hosts:
 On the Praefect node we disable all other services, including Gitaly. We list each
 Gitaly node that will be connected to Praefect under `praefect['storage_nodes']`.
 
-In the example below, the Gitaly nodes are named `praefect-gitaly-N`. Note that one
+In the example below, the Gitaly nodes are named `gitaly-N`. Note that one
 node is designated as primary by setting the primary to `true`.
 
 ```ruby
@@ -89,7 +89,7 @@ gitaly['enable'] = false
 
 ##### Set up Praefect and its Gitaly nodes
 
-In the example below, the Gitaly nodes are named `praefect-git-X`. Note that one node is designated as
+In the example below, the Gitaly nodes are named `gitaly-X`. Note that one node is designated as
 primary, by setting the primary to `true`:
 
 ```ruby
@@ -114,17 +114,17 @@ praefect['auth_token'] = 'PRAEFECT_EXTERNAL_TOKEN'
 # Replace each instance of PRAEFECT_INTERNAL_TOKEN below with a real
 # secret, distinct from PRAEFECT_EXTERNAL_TOKEN.
 praefect['storage_nodes'] = {
-  'praefect-gitaly-1' => {
-    'address' => 'tcp://praefect-git-1.internal:8075',
+  'gitaly-1' => {
+    'address' => 'tcp://gitaly-1.internal:8075',
     'token'   => 'PRAEFECT_INTERNAL_TOKEN',
     'primary' => true
   },
-  'praefect-gitaly-2' => {
-    'address' => 'tcp://praefect-git-2.internal:8075',
+  'gitaly-2' => {
+    'address' => 'tcp://gitaly-2.internal:8075',
     'token'   => 'PRAEFECT_INTERNAL_TOKEN'
   },
-  'praefect-gitaly-3' => {
-    'address' => 'tcp://praefect-git-3.internal:8075',
+  'gitaly-3' => {
+    'address' => 'tcp://gitaly-3.internal:8075',
     'token'   => 'PRAEFECT_INTERNAL_TOKEN'
   }
 }
@@ -138,7 +138,7 @@ Next we will configure each Gitaly server assigned to Praefect.  Configuration f
 is the same as a normal standalone Gitaly server, except that we use storage names and
 auth tokens from Praefect instead of GitLab.
 
-Below is an example configuration for `praefect-gitaly-1`, the only difference for the
+Below is an example configuration for `gitaly-1`, the only difference for the
 other Gitaly nodes is the storage name under `git_data_dirs`.
 
 Note that `gitaly['auth_token']` matches the `token` value listed under `praefect['storage_nodes']`
@@ -177,7 +177,7 @@ gitaly['auth_token'] = 'PRAEFECT_INTERNAL_TOKEN'
 gitaly['listen_addr'] = "0.0.0.0:8075"
 
 git_data_dirs({
-  "praefect-gitaly-1" => {
+  "gitaly-1" => {
     "path" => "/var/opt/gitlab/git-data"
   }
 })

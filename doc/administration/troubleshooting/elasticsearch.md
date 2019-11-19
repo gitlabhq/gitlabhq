@@ -171,7 +171,7 @@ To do this:
    pp s.search_objects.class.name
    ```
 
-The ouput from the last command is the key here. If it shows:
+The output from the last command is the key here. If it shows:
 
 - `ActiveRecord::Relation`, **it is not** using Elasticsearch.
 - `Kaminari::PaginatableArray`, **it is** using Elasticsearch.
@@ -326,7 +326,7 @@ feel free to update that page with issues you encounter and solutions.
 
 Setting up Elasticsearch isn't too bad, but it can be a bit finnicky and time consuming.
 
-The eastiest method is to spin up a docker container with the required version and
+The easiest method is to spin up a docker container with the required version and
 bind ports 9200/9300 so it can be used.
 
 The following is an example of running a docker container of Elasticsearch v7.2.0:

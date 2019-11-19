@@ -7,6 +7,7 @@
 export const makeDataSeries = (queryResults, defaultConfig) =>
   queryResults
     .map(result => {
+      // NaN values may disrupt avg., max. & min. calculations in the legend, filter them out
       const data = result.values.filter(([, value]) => !Number.isNaN(value));
       if (!data.length) {
         return null;

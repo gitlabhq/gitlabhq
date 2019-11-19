@@ -51,10 +51,14 @@ This is an experimental feature. Smartcard authentication against local database
 change or be removed completely in future releases.
 
 To use a smartcard with an X.509 certificate to authenticate against a local
-database with GitLab, at least one of the `subjectAltName` (SAN) extensions
-need to define the user identity (`email`) within the GitLab instance (`URI`).
+database with GitLab, in:
 
-`URI`: needs to match `Gitlab.config.host.gitlab`.
+- GitLab 12.4 and later, at least one of the `subjectAltName` (SAN) extensions
+  need to define the user identity (`email`) within the GitLab instance (`URI`).
+  `URI`: needs to match `Gitlab.config.host.gitlab`.
+- From [GitLab 12.5](https://gitlab.com/gitlab-org/gitlab/issues/33907),
+  if your certificate contains only **one** SAN email entry, you don't need to
+  add or modify it to match the `email` with the `URI`.
 
 For example:
 
