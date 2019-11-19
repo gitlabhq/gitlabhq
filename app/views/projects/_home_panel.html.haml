@@ -74,13 +74,12 @@
 
     - if @project.forked?
       %p
-        - if @project.fork_source
+        - source = visible_fork_source(@project)
+        - if source
           #{ s_('ForkedFromProjectPath|Forked from') }
-          = link_to project_path(@project.fork_source) do
-            = fork_source_name(@project)
+          = link_to source.full_name, project_path(source)
         - else
-          - deleted_message = s_('ForkedFromProjectPath|Forked from %{project_name} (deleted)')
-          = deleted_message % { project_name: fork_source_name(@project) }
+          = s_('ForkedFromProjectPath|Forked from an inaccessible project')
 
     = render_if_exists "projects/home_mirror"
 

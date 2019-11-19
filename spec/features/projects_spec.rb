@@ -206,13 +206,13 @@ describe 'Project' do
       expect(page).not_to have_content('Forked from')
     end
 
-    it 'shows the name of the deleted project when the source was deleted' do
+    it 'does not show the name of the deleted project when the source was deleted' do
       forked_project
       Projects::DestroyService.new(base_project, base_project.owner).execute
 
       visit project_path(forked_project)
 
-      expect(page).to have_content("Forked from #{base_project.full_name} (deleted)")
+      expect(page).to have_content('Forked from an inaccessible project')
     end
 
     context 'a fork of a fork' do
