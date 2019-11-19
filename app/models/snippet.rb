@@ -51,8 +51,8 @@ class Snippet < ApplicationRecord
   # Scopes
   scope :are_internal, -> { where(visibility_level: Snippet::INTERNAL) }
   scope :are_private, -> { where(visibility_level: Snippet::PRIVATE) }
-  scope :are_public, -> { where(visibility_level: Snippet::PUBLIC) }
-  scope :public_and_internal, -> { where(visibility_level: [Snippet::PUBLIC, Snippet::INTERNAL]) }
+  scope :are_public, -> { public_only }
+  scope :are_secret, -> { public_only.where(secret: true) }
   scope :fresh, -> { order("created_at DESC") }
   scope :inc_author, -> { includes(:author) }
   scope :inc_relations_for_view, -> { includes(author: :status) }
@@ -62,6 +62,11 @@ class Snippet < ApplicationRecord
 
   attr_spammable :title, spam_title: true
   attr_spammable :content, spam_description: true
+
+  attr_encrypted :secret_token,
+    key:       Settings.attr_encrypted_db_key_base_truncated,
+    mode:      :per_attribute_iv,
+    algorithm: 'aes-256-cbc'
 
   def self.with_optional_visibility(value = nil)
     if value
@@ -112,11 +117,8 @@ class Snippet < ApplicationRecord
   end
 
   def self.visible_to_or_authored_by(user)
-    where(
-      'snippets.visibility_level IN (?) OR snippets.author_id = ?',
-      Gitlab::VisibilityLevel.levels_for_user(user),
-      user.id
-    )
+    query = where(visibility_level: Gitlab::VisibilityLevel.levels_for_user(user))
+    query.or(where(author_id: user.id))
   end
 
   def self.reference_prefix
@@ -220,6 +222,19 @@ class Snippet < ApplicationRecord
 
   def to_ability_name
     model_name.singular
+  end
+
+  def valid_secret_token?(token)
+    return false unless token && secret_token
+
+    ActiveSupport::SecurityUtils.secure_compare(token.to_s, secret_token.to_s)
+  end
+
+  def as_json(options = {})
+    options[:except] = Array.wrap(options[:except])
+    options[:except] << :secret_token
+
+    super
   end
 
   class << self

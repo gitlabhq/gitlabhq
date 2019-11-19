@@ -3555,13 +3555,16 @@ ActiveRecord::Schema.define(version: 2019_11_15_091425) do
     t.integer "cached_markdown_version"
     t.text "description"
     t.text "description_html"
+    t.string "encrypted_secret_token", limit: 255
+    t.string "encrypted_secret_token_iv", limit: 255
+    t.boolean "secret", default: false, null: false
     t.index ["author_id"], name: "index_snippets_on_author_id"
     t.index ["content"], name: "index_snippets_on_content_trigram", opclass: :gin_trgm_ops, using: :gin
     t.index ["file_name"], name: "index_snippets_on_file_name_trigram", opclass: :gin_trgm_ops, using: :gin
     t.index ["project_id", "visibility_level"], name: "index_snippets_on_project_id_and_visibility_level"
     t.index ["title"], name: "index_snippets_on_title_trigram", opclass: :gin_trgm_ops, using: :gin
     t.index ["updated_at"], name: "index_snippets_on_updated_at"
-    t.index ["visibility_level"], name: "index_snippets_on_visibility_level"
+    t.index ["visibility_level", "secret"], name: "index_snippets_on_visibility_level_and_secret"
   end
 
   create_table "software_license_policies", id: :serial, force: :cascade do |t|

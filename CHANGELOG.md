@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.4.3
+
+### Fixed (2 changes)
+
+- Only enable protected paths for POST requests. !19184
+- Fix Bitbucket Cloud importer pull request state. !19734
+
+
 ## 12.4.2
 
 ### Fixed (10 changes)

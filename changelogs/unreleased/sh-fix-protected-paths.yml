@@ -1,5 +1,0 @@
----
-title: Only enable protected paths for POST requests
-merge_request: 19184
-author:
-type: fixed

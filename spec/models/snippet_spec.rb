@@ -451,4 +451,20 @@ describe Snippet do
       expect(blob.data).to eq(snippet.content)
     end
   end
+
+  describe '#to_json' do
+    let(:snippet) { build(:snippet) }
+
+    it 'excludes secret_token from generated json' do
+      expect(JSON.parse(to_json).keys).not_to include("secret_token")
+    end
+
+    it 'does not override existing exclude option value' do
+      expect(JSON.parse(to_json(except: [:id])).keys).not_to include("secret_token", "id")
+    end
+
+    def to_json(params = {})
+      snippet.to_json(params)
+    end
+  end
 end
