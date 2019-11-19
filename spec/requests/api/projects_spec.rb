@@ -47,6 +47,8 @@ shared_examples 'languages and percentages JSON response' do
 end
 
 describe API::Projects do
+  include ProjectForksHelper
+
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
@@ -1047,6 +1049,18 @@ describe API::Projects do
         expect(json_response.keys).not_to include('permissions')
       end
 
+      context 'the project is a public fork' do
+        it 'hides details of a public fork parent' do
+          public_project = create(:project, :repository, :public)
+          fork = fork_project(public_project)
+
+          get api("/projects/#{fork.id}")
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response['forked_from_project']).to be_nil
+        end
+      end
+
       context 'and the project has a private repository' do
         let(:project) { create(:project, :repository, :public, :repository_private) }
         let(:protected_attributes) { %w(default_branch ci_config_path) }
@@ -1359,6 +1373,28 @@ describe API::Projects do
           expect(links.has_key?('merge_requests')).to be_falsy
           expect(links.has_key?('issues')).to be_falsy
           expect(links['self']).to end_with("/api/v4/projects/#{project.id}")
+        end
+      end
+
+      context 'the project is a fork' do
+        it 'shows details of a visible fork parent' do
+          fork = fork_project(project, user)
+
+          get api("/projects/#{fork.id}", user)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response['forked_from_project']).to include('id' => project.id)
+        end
+
+        it 'hides details of a hidden fork parent' do
+          fork = fork_project(project, user)
+          fork_user = create(:user)
+          fork.team.add_developer(fork_user)
+
+          get api("/projects/#{fork.id}", fork_user)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response['forked_from_project']).to be_nil
         end
       end
 

@@ -6816,7 +6816,7 @@ msgstr ""
 msgid "ForkedFromProjectPath|Forked from"
 msgstr ""
 
-msgid "ForkedFromProjectPath|Forked from %{project_name} (deleted)"
+msgid "ForkedFromProjectPath|Forked from an inaccessible project"
 msgstr ""
 
 msgid "Forking in progress"
@@ -15919,7 +15919,10 @@ msgstr ""
 msgid "This will redirect you to an external sign in page."
 msgstr ""
 
-msgid "This will remove the fork relationship to source project"
+msgid "This will remove the fork relationship between this project and %{fork_source}."
+msgstr ""
+
+msgid "This will remove the fork relationship between this project and other projects in the fork network."
 msgstr ""
 
 msgid "Those emails automatically become issues (with the comments becoming the email conversation) listed here."
@@ -17767,7 +17770,7 @@ msgstr ""
 msgid "You are going to remove %{project_full_name}. Removed project CANNOT be restored! Are you ABSOLUTELY sure?"
 msgstr ""
 
-msgid "You are going to remove the fork relationship to source project %{forked_from_project}. Are you ABSOLUTELY sure?"
+msgid "You are going to remove the fork relationship from %{project_full_name}. Are you ABSOLUTELY sure?"
 msgstr ""
 
 msgid "You are going to transfer %{project_full_name} to another owner. Are you ABSOLUTELY sure?"
