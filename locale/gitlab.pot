@@ -17422,6 +17422,9 @@ msgstr ""
 msgid "There was an error fetching cycle analytics stages."
 msgstr ""
 
+msgid "There was an error fetching data for the chart"
+msgstr ""
+
 msgid "There was an error fetching data for the selected stage"
 msgstr ""
 

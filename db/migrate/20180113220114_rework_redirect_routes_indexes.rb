@@ -25,10 +25,6 @@ class ReworkRedirectRoutesIndexes < ActiveRecord::Migration[4.2]
         remove_concurrent_index(:redirect_routes, :permanent)
       end
 
-      # If we're on MySQL then the existing index on path is ok. But on
-      # Postgres we need to clean things up:
-      break unless Gitlab::Database.postgresql?
-
       if_not_exists = Gitlab::Database.version.to_f >= 9.5 ? "IF NOT EXISTS" : ""
 
       # Unique index on lower(path) across both types of redirect_routes:
@@ -52,8 +48,6 @@ class ReworkRedirectRoutesIndexes < ActiveRecord::Migration[4.2]
   def down
     disable_statement_timeout do
       add_concurrent_index(:redirect_routes, :permanent)
-
-      break unless Gitlab::Database.postgresql?
 
       execute("CREATE INDEX CONCURRENTLY #{OLD_INDEX_NAME_PATH_TPOPS} ON redirect_routes (path varchar_pattern_ops);")
       execute("CREATE INDEX CONCURRENTLY #{OLD_INDEX_NAME_PATH_LOWER} ON redirect_routes (LOWER(path));")

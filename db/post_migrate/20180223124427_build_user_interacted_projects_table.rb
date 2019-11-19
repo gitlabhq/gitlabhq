@@ -12,11 +12,7 @@ class BuildUserInteractedProjectsTable < ActiveRecord::Migration[4.2]
   disable_ddl_transaction!
 
   def up
-    if Gitlab::Database.postgresql?
-      PostgresStrategy.new
-    else
-      MysqlStrategy.new
-    end.up
+    PostgresStrategy.new.up
 
     if index_exists_by_name?(:user_interacted_projects, CreateUserInteractedProjectsTable::INDEX_NAME)
       remove_concurrent_index_by_name :user_interacted_projects, CreateUserInteractedProjectsTable::INDEX_NAME
@@ -138,32 +134,6 @@ class BuildUserInteractedProjectsTable < ActiveRecord::Migration[4.2]
       yield
     ensure
       remove_concurrent_index(*args) if index_exists?(*args)
-    end
-  end
-
-  class MysqlStrategy < ActiveRecord::Migration[4.2]
-    include Gitlab::Database::MigrationHelpers
-
-    def up
-      execute <<~SQL
-        INSERT INTO user_interacted_projects (user_id, project_id)
-        SELECT e.user_id, e.project_id
-        FROM (SELECT DISTINCT author_id AS user_id, project_id FROM events WHERE project_id IS NOT NULL) AS e
-        LEFT JOIN user_interacted_projects ucp USING (user_id, project_id)
-        WHERE ucp.user_id IS NULL
-      SQL
-
-      unless index_exists?(:user_interacted_projects, [:project_id, :user_id])
-        add_concurrent_index :user_interacted_projects, [:project_id, :user_id], unique: true, name: UNIQUE_INDEX_NAME
-      end
-
-      unless foreign_key_exists?(:user_interacted_projects, :users, column: :user_id)
-        add_concurrent_foreign_key :user_interacted_projects, :users, column: :user_id, on_delete: :cascade
-      end
-
-      unless foreign_key_exists?(:user_interacted_projects, :projects, column: :project_id)
-        add_concurrent_foreign_key :user_interacted_projects, :projects, column: :project_id, on_delete: :cascade
-      end
     end
   end
 end

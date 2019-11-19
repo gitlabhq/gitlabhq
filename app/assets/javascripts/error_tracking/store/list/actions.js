@@ -7,6 +7,8 @@ import { __, sprintf } from '~/locale';
 let eTagPoll;
 
 export function startPolling({ commit, dispatch }, endpoint) {
+  commit(types.SET_LOADING, true);
+
   eTagPoll = new Poll({
     resource: Service,
     method: 'getSentryData',

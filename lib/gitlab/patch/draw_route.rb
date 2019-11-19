@@ -10,7 +10,7 @@ module Gitlab
       RoutesNotFound = Class.new(StandardError)
 
       def draw(routes_name)
-        drawn_any = draw_ce(routes_name) | draw_ee(routes_name)
+        drawn_any = draw_ee(routes_name) | draw_ce(routes_name)
 
         drawn_any || raise(RoutesNotFound.new("Cannot find #{routes_name}"))
       end

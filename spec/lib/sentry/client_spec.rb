@@ -88,12 +88,13 @@ describe Sentry::Client do
   describe '#list_issues' do
     let(:issue_status) { 'unresolved' }
     let(:limit) { 20 }
+    let(:search_term) { '' }
     let(:sentry_api_response) { issues_sample_response }
     let(:sentry_request_url) { sentry_url + '/issues/?limit=20&query=is:unresolved' }
 
     let!(:sentry_api_request) { stub_sentry_request(sentry_request_url, body: sentry_api_response) }
 
-    subject { client.list_issues(issue_status: issue_status, limit: limit) }
+    subject { client.list_issues(issue_status: issue_status, limit: limit, search_term: search_term) }
 
     it_behaves_like 'calls sentry api'
 
@@ -202,6 +203,16 @@ describe Sentry::Client do
     end
 
     it_behaves_like 'maps exceptions'
+
+    context 'when search term is present' do
+      let(:search_term) { 'NoMethodError'}
+      let(:sentry_request_url) { "#{sentry_url}/issues/?limit=20&query=is:unresolved NoMethodError" }
+
+      it_behaves_like 'calls sentry api'
+
+      it_behaves_like 'has correct return type', Gitlab::ErrorTracking::Error
+      it_behaves_like 'has correct length', 1
+    end
   end
 
   describe '#list_projects' do

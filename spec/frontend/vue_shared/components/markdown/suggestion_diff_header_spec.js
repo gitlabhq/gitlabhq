@@ -64,12 +64,10 @@ describe('Suggestion Diff component', () => {
   });
 
   describe('when apply suggestion is clicked', () => {
-    beforeEach(done => {
+    beforeEach(() => {
       createComponent();
 
       findApplyButton().vm.$emit('click');
-
-      wrapper.vm.$nextTick(done);
     });
 
     it('emits apply', () => {
@@ -88,19 +86,15 @@ describe('Suggestion Diff component', () => {
       expect(wrapper.text()).toContain('Applying suggestion');
     });
 
-    it('when callback of apply is called, hides loading', done => {
+    it('when callback of apply is called, hides loading', () => {
       const [callback] = wrapper.emitted().apply[0];
 
       callback();
 
-      wrapper.vm
-        .$nextTick()
-        .then(() => {
-          expect(findApplyButton().exists()).toBe(true);
-          expect(findLoading().exists()).toBe(false);
-        })
-        .then(done)
-        .catch(done.fail);
+      return wrapper.vm.$nextTick().then(() => {
+        expect(findApplyButton().exists()).toBe(true);
+        expect(findLoading().exists()).toBe(false);
+      });
     });
   });
 });

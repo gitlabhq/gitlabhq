@@ -104,14 +104,6 @@ describe MergeRequests::MergeService do
           .to change { merge_request.merge_error }
                 .from(nil).to(merge_error)
       end
-
-      it 'merges the MR when the feature is disabled' do
-        stub_feature_flags(validate_merge_sha: false)
-
-        service.execute(merge_request)
-
-        expect(merge_request).to be_merged
-      end
     end
 
     context 'closes related issues' do

@@ -62,8 +62,6 @@ module MergeRequests
     end
 
     def updated_check!
-      return unless Feature.enabled?(:validate_merge_sha, merge_request.target_project, default_enabled: false)
-
       unless source_matches?
         raise_error('Branch has been updated since the merge was requested. '\
                     'Please review the changes.')

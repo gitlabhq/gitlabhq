@@ -1,0 +1,6 @@
+---
+title: Validate the merge sha before merging, confirming that the merge will only
+  contain what the user saw
+merge_request: 20348
+author:
+type: fixed

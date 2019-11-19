@@ -5,7 +5,7 @@ import headerComponent from '~/vue_shared/components/markdown/header.vue';
 describe('Markdown field header component', () => {
   let vm;
 
-  beforeEach(done => {
+  beforeEach(() => {
     const Component = Vue.extend(headerComponent);
 
     vm = new Component({
@@ -13,8 +13,6 @@ describe('Markdown field header component', () => {
         previewMarkdown: false,
       },
     }).$mount();
-
-    Vue.nextTick(done);
   });
 
   it('renders markdown header buttons', () => {
@@ -42,13 +40,11 @@ describe('Markdown field header component', () => {
     expect(vm.$el.querySelector('li:nth-child(1)').classList.contains('active')).toBeTruthy();
   });
 
-  it('renders `preview` link as active when previewMarkdown is true', done => {
+  it('renders `preview` link as active when previewMarkdown is true', () => {
     vm.previewMarkdown = true;
 
     Vue.nextTick(() => {
       expect(vm.$el.querySelector('li:nth-child(2)').classList.contains('active')).toBeTruthy();
-
-      done();
     });
   });
 

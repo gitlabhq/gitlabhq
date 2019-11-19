@@ -8,11 +8,10 @@ class AddIndexToProjectDeployTokensDeployTokenId < ActiveRecord::Migration[4.2]
   disable_ddl_transaction!
 
   def up
-    # MySQL already has index inserted
-    add_concurrent_index :project_deploy_tokens, :deploy_token_id if Gitlab::Database.postgresql?
+    add_concurrent_index :project_deploy_tokens, :deploy_token_id
   end
 
   def down
-    remove_concurrent_index(:project_deploy_tokens, :deploy_token_id) if Gitlab::Database.postgresql?
+    remove_concurrent_index(:project_deploy_tokens, :deploy_token_id)
   end
 end

@@ -1,7 +1,14 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 import ErrorTrackingList from '~/error_tracking/components/error_tracking_list.vue';
-import { GlButton, GlEmptyState, GlLoadingIcon, GlTable, GlLink } from '@gitlab/ui';
+import {
+  GlButton,
+  GlEmptyState,
+  GlLoadingIcon,
+  GlTable,
+  GlLink,
+  GlSearchBoxByClick,
+} from '@gitlab/ui';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -34,8 +41,8 @@ describe('ErrorTrackingList', () => {
 
   beforeEach(() => {
     actions = {
-      getSentryData: () => {},
-      startPolling: () => {},
+      getErrorList: () => {},
+      startPolling: jest.fn(),
       restartPolling: jest.fn().mockName('restartPolling'),
     };
 
@@ -63,13 +70,13 @@ describe('ErrorTrackingList', () => {
 
   describe('loading', () => {
     beforeEach(() => {
+      store.state.list.loading = true;
       mountComponent();
     });
 
     it('shows spinner', () => {
       expect(wrapper.find(GlLoadingIcon).exists()).toBeTruthy();
       expect(wrapper.find(GlTable).exists()).toBeFalsy();
-      expect(wrapper.find(GlButton).exists()).toBeFalsy();
     });
   });
 
@@ -84,6 +91,20 @@ describe('ErrorTrackingList', () => {
       expect(wrapper.find(GlLoadingIcon).exists()).toBeFalsy();
       expect(wrapper.find(GlTable).exists()).toBeTruthy();
       expect(wrapper.find(GlButton).exists()).toBeTruthy();
+    });
+
+    describe('filtering', () => {
+      it('shows search box', () => {
+        expect(wrapper.find(GlSearchBoxByClick).exists()).toBeTruthy();
+      });
+
+      it('makes network request on submit', () => {
+        expect(actions.startPolling).toHaveBeenCalledTimes(1);
+
+        wrapper.find(GlSearchBoxByClick).vm.$emit('submit');
+
+        expect(actions.startPolling).toHaveBeenCalledTimes(2);
+      });
     });
   });
 

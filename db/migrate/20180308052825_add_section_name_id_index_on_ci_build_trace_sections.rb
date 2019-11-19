@@ -8,16 +8,10 @@ class AddSectionNameIdIndexOnCiBuildTraceSections < ActiveRecord::Migration[4.2]
   disable_ddl_transaction!
 
   def up
-    # MySQL may already have this as a foreign key
-    unless index_exists?(:ci_build_trace_sections, :section_name_id, name: INDEX_NAME)
-      add_concurrent_index :ci_build_trace_sections, :section_name_id, name: INDEX_NAME
-    end
+    add_concurrent_index :ci_build_trace_sections, :section_name_id, name: INDEX_NAME
   end
 
   def down
-    # We cannot remove index for MySQL because it's needed for foreign key
-    if Gitlab::Database.postgresql?
-      remove_concurrent_index :ci_build_trace_sections, :section_name_id, name: INDEX_NAME
-    end
+    remove_concurrent_index :ci_build_trace_sections, :section_name_id, name: INDEX_NAME
   end
 end

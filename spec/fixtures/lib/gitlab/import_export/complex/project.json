@@ -7209,15 +7209,15 @@
     }
   ],
   "project_feature": {
-    "builds_access_level": 0,
+    "builds_access_level": 10,
     "created_at": "2014-12-26T09:26:45.000Z",
     "id": 2,
-    "issues_access_level": 0,
-    "merge_requests_access_level": 20,
+    "issues_access_level": 10,
+    "merge_requests_access_level": 10,
     "project_id": 4,
-    "snippets_access_level": 20,
+    "snippets_access_level": 10,
     "updated_at": "2016-09-23T11:58:28.000Z",
-    "wiki_access_level": 20
+    "wiki_access_level": 10
   },
   "custom_attributes": [
     {
@@ -7257,6 +7257,9 @@
       "image_url": "http://www.example.com"
     }
   ],
+  "ci_cd_settings": {
+    "group_runners_enabled": false
+  },
   "boards": [
     {
       "id": 29,

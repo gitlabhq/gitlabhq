@@ -25,8 +25,12 @@ module Sentry
       map_to_event(latest_event)
     end
 
-    def list_issues(issue_status:, limit:)
-      issues = get_issues(issue_status: issue_status, limit: limit)
+    def list_issues(issue_status:, limit:, search_term: '')
+      issues = get_issues(
+        issue_status: issue_status,
+        limit: limit,
+        search_term: search_term
+      )
 
       validate_size(issues)
 
@@ -71,13 +75,14 @@ module Sentry
       response = handle_request_exceptions do
         Gitlab::HTTP.get(url, **request_params.merge(params))
       end
-
       handle_response(response)
     end
 
-    def get_issues(issue_status:, limit:)
+    def get_issues(issue_status:, limit:, search_term: '')
+      query = "is:#{issue_status} #{search_term}".strip
+
       http_get(issues_api_url, query: {
-        query: "is:#{issue_status}",
+        query: query,
         limit: limit
       })
     end
