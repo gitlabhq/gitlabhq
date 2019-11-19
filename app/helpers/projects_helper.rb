@@ -110,17 +110,24 @@ module ProjectsHelper
       { project_full_name: project.full_name }
   end
 
-  def remove_fork_project_message(project)
-    _("You are going to remove the fork relationship to source project %{forked_from_project}. Are you ABSOLUTELY sure?") %
-      { forked_from_project: fork_source_name(project) }
+  def remove_fork_project_description_message(project)
+    source = visible_fork_source(project)
+
+    if source
+      _('This will remove the fork relationship between this project and %{fork_source}.') %
+        { fork_source: link_to(source.full_name, project_path(source)) }
+    else
+      _('This will remove the fork relationship between this project and other projects in the fork network.')
+    end
   end
 
-  def fork_source_name(project)
-    if @project.fork_source
-      @project.fork_source.full_name
-    else
-      @project.fork_network&.deleted_root_project_name
-    end
+  def remove_fork_project_warning_message(project)
+    _("You are going to remove the fork relationship from %{project_full_name}. Are you ABSOLUTELY sure?") %
+      { project_full_name: project.full_name }
+  end
+
+  def visible_fork_source(project)
+    project.fork_source if project.fork_source && can?(current_user, :read_project, project.fork_source)
   end
 
   def project_nav_tabs
