@@ -1,6 +1,6 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { GlLoadingIcon, GlLink } from '@gitlab/ui';
+import { GlButton, GlLoadingIcon, GlLink } from '@gitlab/ui';
 import Stacktrace from '~/error_tracking/components/stacktrace.vue';
 import ErrorDetails from '~/error_tracking/components/error_details.vue';
 
@@ -20,6 +20,7 @@ describe('ErrorDetails', () => {
       propsData: {
         issueDetailsPath: '/123/details',
         issueStackTracePath: '/stacktrace',
+        issueProjectPath: '/test-project/issues/new',
       },
     });
   }
@@ -80,6 +81,15 @@ describe('ErrorDetails', () => {
       expect(wrapper.find(GlLink).exists()).toBe(true);
       expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
       expect(wrapper.find(Stacktrace).exists()).toBe(false);
+    });
+
+    it('should allow a blank issue to be created', () => {
+      store.state.details.loading = false;
+      store.state.details.error.id = 1;
+      mountComponent();
+      const button = wrapper.find(GlButton);
+      expect(button.exists()).toBe(true);
+      expect(button.attributes().href).toBe(wrapper.props().issueProjectPath);
     });
 
     describe('Stacktrace', () => {

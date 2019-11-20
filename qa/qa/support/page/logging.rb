@@ -59,6 +59,18 @@ module QA
           elements
         end
 
+        def check_element(name)
+          log("checking :#{name}")
+
+          super
+        end
+
+        def uncheck_element(name)
+          log("unchecking :#{name}")
+
+          super
+        end
+
         def click_element(name, page = nil, **kwargs)
           msg = ["clicking :#{name}"]
           msg << ", expecting to be at #{page.class}" if page
@@ -99,10 +111,10 @@ module QA
           found
         end
 
-        def has_text?(text)
+        def has_text?(text, **kwargs)
           found = super
 
-          log(%Q{has_text?('#{text}') returned #{found}})
+          log(%Q{has_text?('#{text}', wait: #{kwargs[:wait] || Capybara.default_max_wait_time}) returned #{found}})
 
           found
         end

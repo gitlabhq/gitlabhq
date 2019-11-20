@@ -6,9 +6,10 @@
 
 variables:
   SAST_ANALYZER_IMAGE_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
-  SAST_DEFAULT_ANALYZERS: "bandit, brakeman, gosec, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, tslint, secrets, sobelow, pmd-apex"
+  SAST_DEFAULT_ANALYZERS: "bandit, brakeman, gosec, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, tslint, secrets, sobelow, pmd-apex, kubesec"
   SAST_ANALYZER_IMAGE_TAG: 2
   SAST_DISABLE_DIND: "false"
+  SCAN_KUBERNETES_MANIFESTS: "false"
 
 sast:
   stage: test
@@ -97,6 +98,16 @@ flawfinder-sast:
       - $GITLAB_FEATURES =~ /\bsast\b/ &&
           $SAST_DEFAULT_ANALYZERS =~ /flawfinder/ &&
           $CI_PROJECT_REPOSITORY_LANGUAGES =~ /\b(c\+\+|c)\b/
+
+kubesec-sast:
+  extends: .analyzer
+  image:
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/kubesec:$SAST_ANALYZER_IMAGE_TAG"
+  only:
+    variables:
+      - $GITLAB_FEATURES =~ /\bsast\b/ &&
+          $SAST_DEFAULT_ANALYZERS =~ /kubesec/ &&
+          $SCAN_KUBERNETES_MANIFESTS == 'true'
 
 gosec-sast:
   extends: .analyzer

@@ -32,6 +32,10 @@ export default {
       type: String,
       required: true,
     },
+    issueProjectPath: {
+      type: String,
+      required: true,
+    },
   },
   computed: {
     ...mapState('details', ['error', 'loading', 'loadingStacktrace', 'stacktraceData']),
@@ -82,9 +86,9 @@ export default {
     <div v-else-if="showDetails" class="error-details">
       <div class="top-area align-items-center justify-content-between py-3">
         <span v-if="!loadingStacktrace && stacktrace" v-html="reported"></span>
-        <!--   <gl-button class="my-3 ml-auto" variant="success">
-             {{ __('Create Issue') }}
-           </gl-button>-->
+        <gl-button variant="success" :href="issueProjectPath">
+          {{ __('Create issue') }}
+        </gl-button>
       </div>
       <div>
         <tooltip-on-truncate :title="error.title" truncate-target="child" placement="top">

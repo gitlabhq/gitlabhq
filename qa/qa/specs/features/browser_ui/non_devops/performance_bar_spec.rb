@@ -6,7 +6,7 @@ module QA
       before do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_admin_credentials)
-        Page::Main::Menu.perform(&:click_admin_area)
+        Page::Main::Menu.perform(&:go_to_admin_area)
         Page::Admin::Menu.perform(&:go_to_metrics_and_profiling_settings)
 
         Page::Admin::Settings::MetricsAndProfiling.perform do |setting|

@@ -86,11 +86,19 @@ module QA
       end
 
       def check_element(name)
-        find_element(name).set(true)
+        retry_until(sleep_interval: 1) do
+          find_element(name).set(true)
+
+          find_element(name).checked?
+        end
       end
 
       def uncheck_element(name)
-        find_element(name).set(false)
+        retry_until(sleep_interval: 1) do
+          find_element(name).set(false)
+
+          !find_element(name).checked?
+        end
       end
 
       # replace with (..., page = self.class)
@@ -125,8 +133,8 @@ module QA
         has_no_css?(element_selector_css(name, kwargs), wait: wait, text: text)
       end
 
-      def has_text?(text)
-        page.has_text? text
+      def has_text?(text, wait: Capybara.default_max_wait_time)
+        page.has_text?(text, wait: wait)
       end
 
       def has_no_text?(text)

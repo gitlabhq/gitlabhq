@@ -331,6 +331,7 @@ module QA
 
     module Admin
       autoload :Menu, 'qa/page/admin/menu'
+      autoload :NewSession, 'qa/page/admin/new_session'
 
       module Settings
         autoload :Repository, 'qa/page/admin/settings/repository'

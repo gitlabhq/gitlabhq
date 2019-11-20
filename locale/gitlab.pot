@@ -4892,6 +4892,9 @@ msgstr ""
 msgid "Create group label"
 msgstr ""
 
+msgid "Create issue"
+msgstr ""
+
 msgid "Create lists from labels. Issues with that label appear in that list."
 msgstr ""
 
