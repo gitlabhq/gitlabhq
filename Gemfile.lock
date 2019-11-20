@@ -881,14 +881,14 @@ GEM
       proc_to_ast
       rspec (>= 2.13, < 4)
       unparser
-    rspec-rails (3.8.2)
-      actionpack (>= 3.0)
-      activesupport (>= 3.0)
-      railties (>= 3.0)
-      rspec-core (~> 3.8.0)
-      rspec-expectations (~> 3.8.0)
-      rspec-mocks (~> 3.8.0)
-      rspec-support (~> 3.8.0)
+    rspec-rails (4.0.0.beta3)
+      actionpack (>= 4.2)
+      activesupport (>= 4.2)
+      railties (>= 4.2)
+      rspec-core (~> 3.8)
+      rspec-expectations (~> 3.8)
+      rspec-mocks (~> 3.8)
+      rspec-support (~> 3.8)
     rspec-retry (0.6.1)
       rspec-core (> 3.3)
     rspec-set (0.1.3)
@@ -1307,7 +1307,7 @@ DEPENDENCIES
   rouge (~> 3.11.0)
   rqrcode-rails3 (~> 0.1.7)
   rspec-parameterized
-  rspec-rails (~> 3.8.0)
+  rspec-rails (~> 4.0.0.beta3)
   rspec-retry (~> 0.6.1)
   rspec-set (~> 0.1.3)
   rspec_junit_formatter

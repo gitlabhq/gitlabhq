@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'projects/tags/index' do
+describe 'projects/tags/index.html.haml' do
   let(:project)  { create(:project, :repository) }
   let(:tags)     { TagsFinder.new(project.repository, {}).execute }
   let(:git_tag)  { project.repository.tags.last }

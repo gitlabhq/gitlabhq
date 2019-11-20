@@ -352,25 +352,16 @@ group :development, :test do
   gem 'pry-rails', '~> 0.3.4'
 
   gem 'awesome_print', require: false
-  gem 'fuubar', '~> 2.2.0'
 
   gem 'database_cleaner', '~> 1.7.0'
   gem 'factory_bot_rails', '~> 5.1.0'
-  gem 'rspec-rails', '~> 3.8.0'
-  gem 'rspec-retry', '~> 0.6.1'
-  gem 'rspec_profiling', '~> 0.0.5'
-  gem 'rspec-set', '~> 0.1.3'
-  gem 'rspec-parameterized', require: false
+  gem 'rspec-rails', '~> 4.0.0.beta3'
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
   gem 'minitest', '~> 5.11.0'
 
   # Generate Fake data
   gem 'ffaker', '~> 2.10'
-
-  gem 'capybara', '~> 3.22.0'
-  gem 'capybara-screenshot', '~> 1.0.22'
-  gem 'selenium-webdriver', '~> 3.141'
 
   gem 'spring', '~> 2.0.0'
   gem 'spring-commands-rspec', '~> 1.0.4'
@@ -403,6 +394,16 @@ group :development, :test, :omnibus do
 end
 
 group :test do
+  gem 'fuubar', '~> 2.2.0'
+  gem 'rspec-retry', '~> 0.6.1'
+  gem 'rspec_profiling', '~> 0.0.5'
+  gem 'rspec-set', '~> 0.1.3'
+  gem 'rspec-parameterized', require: false
+
+  gem 'capybara', '~> 3.22.0'
+  gem 'capybara-screenshot', '~> 1.0.22'
+  gem 'selenium-webdriver', '~> 3.141'
+
   gem 'shoulda-matchers', '~> 4.0.1', require: false
   gem 'email_spec', '~> 2.2.0'
   gem 'json-schema', '~> 2.8.0'

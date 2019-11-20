@@ -12220,6 +12220,9 @@ msgstr ""
 msgid "Pipeline quota"
 msgstr ""
 
+msgid "Pipeline subscriptions"
+msgstr ""
+
 msgid "Pipeline triggers"
 msgstr ""
 
@@ -13205,6 +13208,9 @@ msgid "Project order will not be saved as local storage is not available."
 msgstr ""
 
 msgid "Project overview"
+msgstr ""
+
+msgid "Project path"
 msgstr ""
 
 msgid "Project slug"
@@ -15651,6 +15657,9 @@ msgstr ""
 msgid "Set up new password"
 msgstr ""
 
+msgid "Set up pipeline subscriptions for this project."
+msgstr ""
+
 msgid "Set up your project to automatically push and/or pull changes to/from another repository. Branches, tags, and commits will be synced automatically."
 msgstr ""
 
@@ -16661,6 +16670,12 @@ msgstr ""
 msgid "SubscriptionTable|Usage count is performed once a day at 12:00 PM."
 msgstr ""
 
+msgid "Subscriptions"
+msgstr ""
+
+msgid "Subscriptions allow successfully completed pipelines on the %{default_branch_docs} of the subscribed project to trigger a new pipeline on thee default branch of this project."
+msgstr ""
+
 msgid "Subtracted"
 msgstr ""
 
@@ -17393,6 +17408,9 @@ msgid "There are no staged changes"
 msgstr ""
 
 msgid "There are no unstaged changes"
+msgstr ""
+
+msgid "There is a limit of 100 subscriptions from or to a project."
 msgstr ""
 
 msgid "There is already a repository with that name on disk"
@@ -18338,7 +18356,7 @@ msgstr ""
 msgid "Triggerer"
 msgstr ""
 
-msgid "Triggers can force a specific branch or tag to get rebuilt with an API call.  These tokens will impersonate their associated user including their access to projects and their project permissions."
+msgid "Triggers can force a specific branch or tag to get rebuilt with an API call. These tokens will impersonate their associated user including their access to projects and their project permissions."
 msgstr ""
 
 msgid "Troubleshoot and monitor your application with tracing"
@@ -20565,6 +20583,9 @@ msgid "day"
 msgid_plural "days"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "default branch"
+msgstr ""
 
 msgid "deleted"
 msgstr ""

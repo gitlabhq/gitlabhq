@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'projects/show' do
+describe 'projects/show.html.haml' do
   include Devise::Test::ControllerHelpers
 
   let(:user) { create(:admin) }
