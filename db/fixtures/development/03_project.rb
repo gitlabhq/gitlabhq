@@ -52,7 +52,6 @@ class Gitlab::Seeder::Projects
     internal: 1, # 1m projects +
     public: 1 # 1m projects = 5m total
   }
-  MASS_INSERT_NAME_START = 'mass_insert_project_'
 
   def seed!
     Sidekiq::Testing.inline! do
@@ -167,7 +166,7 @@ class Gitlab::Seeder::Projects
         INSERT INTO projects (name, path, creator_id, namespace_id, visibility_level, created_at, updated_at)
         SELECT
           'Seed project ' || seq || ' ' || ('{#{visibility_per_user}}'::text[])[seq] AS project_name,
-          'mass_insert_project_' || ('{#{visibility_per_user}}'::text[])[seq] || '_' || seq AS project_path,
+          '#{Gitlab::Seeder::MASS_INSERT_PROJECT_START}' || ('{#{visibility_per_user}}'::text[])[seq] || '_' || seq AS project_path,
           u.id AS user_id,
           n.id AS namespace_id,
           ('{#{visibility_level_per_user}}'::int[])[seq] AS visibility_level,

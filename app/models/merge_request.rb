@@ -1066,7 +1066,7 @@ class MergeRequest < ApplicationRecord
   # Returns the oldest multi-line commit message, or the MR title if none found
   def default_squash_commit_message
     strong_memoize(:default_squash_commit_message) do
-      commits.without_merge_commits.reverse.find(&:description?)&.safe_message || title
+      recent_commits.without_merge_commits.reverse_each.find(&:description?)&.safe_message || title
     end
   end
 

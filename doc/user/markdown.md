@@ -90,7 +90,7 @@ It makes use of [new markdown features](#new-GFM-markdown-extensions),
 not found in standard markdown:
 
 - [Color "chips" written in HEX, RGB or HSL](#colors)
-- [Diagrams and flowcharts using Mermaid](#diagrams-and-flowcharts-using-mermaid)
+- [Diagrams and flowcharts](#diagrams-and-flowcharts)
 - [Emoji](#emoji)
 - [Front matter](#front-matter)
 - [Inline diffs](#inline-diff)
@@ -151,13 +151,16 @@ Color written inside backticks will be followed by a color "chip":
 `HSL(540,70%,50%)`  
 `HSLA(540,70%,50%,0.3)`  
 
-### Diagrams and flowcharts using Mermaid
+### Diagrams and flowcharts
+
+It is possible to generate diagrams and flowcharts from text in GitLab using [Mermaid](https://mermaidjs.github.io/) or [PlantUML](http://plantuml.com).
+
+#### Mermaid
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/15107) in
 GitLab 10.3.
 
-It is possible to generate diagrams and flowcharts from text using [Mermaid](https://mermaidjs.github.io/).
-Visit the official page for more details.
+Visit the [official page](https://mermaidjs.github.io/) for more details.
 
 In order to generate a diagram or flowchart, you should write your text inside the `mermaid` block:
 
@@ -178,8 +181,6 @@ graph TD;
   B-->D;
   C-->D;
 ```
-
-#### Subgraphs
 
 Subgraphs can also be included:
 
@@ -218,6 +219,10 @@ graph TB
   SubGraph1 --> FinalThing[Final Thing]
 end
 ```
+
+#### PlantUML
+
+To make PlantUML available in GitLab, a GitLab administrator needs to enable it first. Read more in [PlantUML & GitLab](../administration/integration/plantuml.md).
 
 ### Emoji
 

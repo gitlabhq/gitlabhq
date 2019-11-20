@@ -20,11 +20,10 @@ for updates and roadmap.
 
 ### Architecture
 
-For this document, the following network topology is assumed:
+The most common architecture for Praefect is simplified in the diagram below:
 
 ```mermaid
 graph TB
-  GitLab --> Gitaly;
   GitLab --> Praefect;
   Praefect --> Gitaly-1;
   Praefect --> Gitaly-2;
@@ -32,9 +31,8 @@ graph TB
 ```
 
 Where `GitLab` is the collection of clients that can request Git operations.
-`Gitaly` is a Gitaly server before using Praefect. The Praefect node has three
-storage nodes attached. Praefect itself doesn't store data, but connects to
-three Gitaly nodes, `Praefect-Gitaly-1`,  `Praefect-Gitaly-2`, and `Praefect-Gitaly-3`.
+The Praefect node has threestorage nodes attached. Praefect itself doesn't
+store data, but connects to three Gitaly nodes, `Gitaly-1`,  `Gitaly-2`, and `Gitaly-3`.
 
 Praefect may be enabled on its own node or can be run on the GitLab server.
 In the example below we will use a separate server, but the optimal configuration

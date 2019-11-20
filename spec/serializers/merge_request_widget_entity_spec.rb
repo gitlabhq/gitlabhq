@@ -212,9 +212,29 @@ describe MergeRequestWidgetEntity do
       .to eq(resource.default_merge_commit_message(include_description: true))
   end
 
-  it 'has default_squash_commit_message' do
-    expect(subject[:default_squash_commit_message])
-      .to eq(resource.default_squash_commit_message)
+  describe 'attributes for squash commit message' do
+    context 'when merge request is mergeable' do
+      before do
+        stub_const('MergeRequestDiff::COMMITS_SAFE_SIZE', 20)
+      end
+
+      it 'has default_squash_commit_message and commits_without_merge_commits' do
+        expect(subject[:default_squash_commit_message])
+          .to eq(resource.default_squash_commit_message)
+        expect(subject[:commits_without_merge_commits].size).to eq(12)
+      end
+    end
+
+    context 'when merge request is not mergeable' do
+      before do
+        allow(resource).to receive(:mergeable?).and_return(false)
+      end
+
+      it 'does not have default_squash_commit_message and commits_without_merge_commits' do
+        expect(subject[:default_squash_commit_message]).to eq(nil)
+        expect(subject[:commits_without_merge_commits]).to eq(nil)
+      end
+    end
   end
 
   describe 'new_blob_path' do

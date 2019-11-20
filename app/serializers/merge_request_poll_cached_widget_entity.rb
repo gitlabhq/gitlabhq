@@ -15,7 +15,7 @@ class MergeRequestPollCachedWidgetEntity < IssuableEntity
   expose :target_project_id
   expose :squash
   expose :rebase_in_progress?, as: :rebase_in_progress
-  expose :default_squash_commit_message
+  expose :default_squash_commit_message, if: -> (merge_request, _) { merge_request.mergeable? }
   expose :commits_count
   expose :merge_ongoing?, as: :merge_ongoing
   expose :work_in_progress?, as: :work_in_progress
@@ -25,8 +25,9 @@ class MergeRequestPollCachedWidgetEntity < IssuableEntity
   expose :source_branch_exists?, as: :source_branch_exists
   expose :branch_missing?, as: :branch_missing
 
-  expose :commits_without_merge_commits, using: MergeRequestWidgetCommitEntity do |merge_request|
-    merge_request.commits.without_merge_commits
+  expose :commits_without_merge_commits, using: MergeRequestWidgetCommitEntity,
+    if: -> (merge_request, _) { merge_request.mergeable? } do |merge_request|
+    merge_request.recent_commits.without_merge_commits
   end
   expose :diff_head_sha do |merge_request|
     merge_request.diff_head_sha.presence

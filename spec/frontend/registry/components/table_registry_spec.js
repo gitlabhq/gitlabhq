@@ -25,6 +25,7 @@ describe('table registry', () => {
   const findDeleteButtonsRow = (w = wrapper) => w.findAll('.js-delete-registry-row');
   const findPagination = (w = wrapper) => w.find('.js-registry-pagination');
   const findDeleteModal = (w = wrapper) => w.find({ ref: 'deleteModal' });
+  const findImageId = (w = wrapper) => w.find({ ref: 'imageId' });
   const bulkDeletePath = 'path';
 
   const mountWithStore = config => mount(tableRegistry, { ...config, store, localVue });
@@ -67,6 +68,15 @@ describe('table registry', () => {
       expect(tds.at(3).html()).toContain(repoPropsData.list[0].layers);
       expect(tds.at(3).html()).toContain(repoPropsData.list[0].size);
       expect(tds.at(4).html()).toContain(wrapper.vm.timeFormated(repoPropsData.list[0].createdAt));
+    });
+
+    it('should have a label called Image ID', () => {
+      const label = findImageId();
+      expect(label.element).toMatchInlineSnapshot(`
+        <th>
+          Image ID
+        </th>
+      `);
     });
   });
 

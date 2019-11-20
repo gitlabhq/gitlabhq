@@ -1,0 +1,5 @@
+---
+title: Replace index on environments table project_id and state with project_id, state, and environment_type
+merge_request: 19902
+author:
+type: performance

@@ -9,6 +9,7 @@ class Feature
       %w[
         inforef_uploadpack_cache
         get_all_lfs_pointers_go
+        get_tag_messages_go
       ].freeze
 
     DEFAULT_ON_FLAGS = Set.new([]).freeze

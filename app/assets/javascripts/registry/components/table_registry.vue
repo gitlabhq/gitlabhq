@@ -196,7 +196,7 @@ export default {
             />
           </th>
           <th>{{ s__('ContainerRegistry|Tag') }}</th>
-          <th>{{ s__('ContainerRegistry|Tag ID') }}</th>
+          <th ref="imageId">{{ s__('ContainerRegistry|Image ID') }}</th>
           <th>{{ s__('ContainerRegistry|Size') }}</th>
           <th>{{ s__('ContainerRegistry|Last Updated') }}</th>
           <th>
