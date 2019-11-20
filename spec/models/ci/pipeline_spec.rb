@@ -808,13 +808,24 @@ describe Ci::Pipeline, :mailer do
     it 'includes all predefined variables in a valid order' do
       keys = subject.map { |variable| variable[:key] }
 
-      expect(keys).to eq %w[CI_PIPELINE_IID
-                            CI_CONFIG_PATH
-                            CI_PIPELINE_SOURCE
-                            CI_COMMIT_MESSAGE
-                            CI_COMMIT_TITLE
-                            CI_COMMIT_DESCRIPTION
-                            CI_COMMIT_REF_PROTECTED]
+      expect(keys).to eq %w[
+        CI_PIPELINE_IID
+        CI_PIPELINE_SOURCE
+        CI_CONFIG_PATH
+        CI_COMMIT_SHA
+        CI_COMMIT_SHORT_SHA
+        CI_COMMIT_BEFORE_SHA
+        CI_COMMIT_REF_NAME
+        CI_COMMIT_REF_SLUG
+        CI_COMMIT_MESSAGE
+        CI_COMMIT_TITLE
+        CI_COMMIT_DESCRIPTION
+        CI_COMMIT_REF_PROTECTED
+        CI_BUILD_REF
+        CI_BUILD_BEFORE_SHA
+        CI_BUILD_REF_NAME
+        CI_BUILD_REF_SLUG
+      ]
     end
 
     context 'when source is merge request' do

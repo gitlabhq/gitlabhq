@@ -13,8 +13,6 @@ module Ci
     included do
       delegate :merge_request_event?,
                :merge_request_ref?,
-               :source_ref,
-               :source_ref_slug,
                :legacy_detached_merge_request_pipeline?,
                :merge_train_pipeline?, to: :pipeline
     end

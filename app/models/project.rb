@@ -1868,9 +1868,18 @@ class Project < ApplicationRecord
   end
 
   def predefined_variables
-    visibility = Gitlab::VisibilityLevel.string_level(visibility_level)
-
     Gitlab::Ci::Variables::Collection.new
+      .concat(predefined_ci_server_variables)
+      .concat(predefined_project_variables)
+      .concat(pages_variables)
+      .concat(container_registry_variables)
+      .concat(auto_devops_variables)
+      .concat(api_variables)
+  end
+
+  def predefined_project_variables
+    Gitlab::Ci::Variables::Collection.new
+      .append(key: 'GITLAB_FEATURES', value: licensed_features.join(','))
       .append(key: 'CI_PROJECT_ID', value: id.to_s)
       .append(key: 'CI_PROJECT_NAME', value: path)
       .append(key: 'CI_PROJECT_TITLE', value: title)
@@ -1878,16 +1887,28 @@ class Project < ApplicationRecord
       .append(key: 'CI_PROJECT_PATH_SLUG', value: full_path_slug)
       .append(key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path)
       .append(key: 'CI_PROJECT_URL', value: web_url)
-      .append(key: 'CI_PROJECT_VISIBILITY', value: visibility)
+      .append(key: 'CI_PROJECT_VISIBILITY', value: Gitlab::VisibilityLevel.string_level(visibility_level))
       .append(key: 'CI_PROJECT_REPOSITORY_LANGUAGES', value: repository_languages.map(&:name).join(',').downcase)
-      .concat(pages_variables)
-      .concat(container_registry_variables)
-      .concat(auto_devops_variables)
-      .concat(api_variables)
+      .append(key: 'CI_DEFAULT_BRANCH', value: default_branch)
+  end
+
+  def predefined_ci_server_variables
+    Gitlab::Ci::Variables::Collection.new
+      .append(key: 'CI', value: 'true')
+      .append(key: 'GITLAB_CI', value: 'true')
+      .append(key: 'CI_SERVER_HOST', value: Gitlab.config.gitlab.host)
+      .append(key: 'CI_SERVER_NAME', value: 'GitLab')
+      .append(key: 'CI_SERVER_VERSION', value: Gitlab::VERSION)
+      .append(key: 'CI_SERVER_VERSION_MAJOR', value: Gitlab.version_info.major.to_s)
+      .append(key: 'CI_SERVER_VERSION_MINOR', value: Gitlab.version_info.minor.to_s)
+      .append(key: 'CI_SERVER_VERSION_PATCH', value: Gitlab.version_info.patch.to_s)
+      .append(key: 'CI_SERVER_REVISION', value: Gitlab.revision)
   end
 
   def pages_variables
     Gitlab::Ci::Variables::Collection.new.tap do |variables|
+      break unless pages_enabled?
+
       variables.append(key: 'CI_PAGES_DOMAIN', value: Gitlab.config.pages.host)
       variables.append(key: 'CI_PAGES_URL', value: pages_url)
     end

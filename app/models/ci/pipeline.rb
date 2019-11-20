@@ -478,6 +478,10 @@ module Ci
       end
     end
 
+    def before_sha
+      super || Gitlab::Git::BLANK_SHA
+    end
+
     def short_sha
       Ci::Pipeline.truncate_sha(sha)
     end
@@ -640,12 +644,11 @@ module Ci
     def predefined_variables
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         variables.append(key: 'CI_PIPELINE_IID', value: iid.to_s)
-        variables.append(key: 'CI_CONFIG_PATH', value: config_path)
         variables.append(key: 'CI_PIPELINE_SOURCE', value: source.to_s)
-        variables.append(key: 'CI_COMMIT_MESSAGE', value: git_commit_message.to_s)
-        variables.append(key: 'CI_COMMIT_TITLE', value: git_commit_full_title.to_s)
-        variables.append(key: 'CI_COMMIT_DESCRIPTION', value: git_commit_description.to_s)
-        variables.append(key: 'CI_COMMIT_REF_PROTECTED', value: (!!protected_ref?).to_s)
+
+        variables.append(key: 'CI_CONFIG_PATH', value: config_path)
+
+        variables.concat(predefined_commit_variables)
 
         if merge_request_event? && merge_request
           variables.append(key: 'CI_MERGE_REQUEST_EVENT_TYPE', value: merge_request_event_type.to_s)
@@ -657,6 +660,28 @@ module Ci
         if external_pull_request_event? && external_pull_request
           variables.concat(external_pull_request.predefined_variables)
         end
+      end
+    end
+
+    def predefined_commit_variables
+      Gitlab::Ci::Variables::Collection.new.tap do |variables|
+        variables.append(key: 'CI_COMMIT_SHA', value: sha)
+        variables.append(key: 'CI_COMMIT_SHORT_SHA', value: short_sha)
+        variables.append(key: 'CI_COMMIT_BEFORE_SHA', value: before_sha)
+        variables.append(key: 'CI_COMMIT_REF_NAME', value: source_ref)
+        variables.append(key: 'CI_COMMIT_REF_SLUG', value: source_ref_slug)
+        variables.append(key: 'CI_COMMIT_TAG', value: ref) if tag?
+        variables.append(key: 'CI_COMMIT_MESSAGE', value: git_commit_message.to_s)
+        variables.append(key: 'CI_COMMIT_TITLE', value: git_commit_full_title.to_s)
+        variables.append(key: 'CI_COMMIT_DESCRIPTION', value: git_commit_description.to_s)
+        variables.append(key: 'CI_COMMIT_REF_PROTECTED', value: (!!protected_ref?).to_s)
+
+        # legacy variables
+        variables.append(key: 'CI_BUILD_REF', value: sha)
+        variables.append(key: 'CI_BUILD_BEFORE_SHA', value: before_sha)
+        variables.append(key: 'CI_BUILD_REF_NAME', value: source_ref)
+        variables.append(key: 'CI_BUILD_REF_SLUG', value: source_ref_slug)
+        variables.append(key: 'CI_BUILD_TAG', value: ref) if tag?
       end
     end
 
