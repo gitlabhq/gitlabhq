@@ -221,6 +221,8 @@ Git operations in GitLab will result in an API error.
    ```toml
    listen_addr = '0.0.0.0:8075'
 
+   internal_socket_dir = '/var/opt/gitlab/gitaly'
+
    [auth]
    token = 'abc123secret'
 
