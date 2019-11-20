@@ -119,7 +119,7 @@ In order to interact with your AWS account, the .gitlab-ci.yml requires both `AW
 For more information please see: <https://docs.gitlab.com/ee/ci/variables/README.html#via-the-ui>
 
 NOTE: **Note:**
-   The AWS credentials you provide must include IAM policies that provision correct access control to AWS Lambda, API Gateway, and CloudFormation resources.
+   The AWS credentials you provide must include IAM policies that provision correct access control to AWS Lambda, API Gateway, CloudFormation, and IAM resources.
 
 ### Deploying your function
 

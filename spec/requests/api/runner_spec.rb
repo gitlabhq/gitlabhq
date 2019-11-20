@@ -513,6 +513,16 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             expect(json_response['features']).to eq(expected_features)
           end
 
+          it 'creates persistent ref' do
+            expect_any_instance_of(Ci::PersistentRef).to receive(:create_ref)
+              .with(job.sha, "refs/#{Repository::REF_PIPELINES}/#{job.commit_id}")
+
+            request_job info: { platform: :darwin }
+
+            expect(response).to have_gitlab_http_status(201)
+            expect(json_response['id']).to eq(job.id)
+          end
+
           context 'when job is made for tag' do
             let!(:job) { create(:ci_build, :tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
 

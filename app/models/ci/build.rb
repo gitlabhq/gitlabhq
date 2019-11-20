@@ -247,10 +247,11 @@ module Ci
       end
 
       after_transition pending: :running do |build|
-        build.pipeline.persistent_ref.create
         build.deployment&.run
 
         build.run_after_commit do
+          build.pipeline.persistent_ref.create
+
           BuildHooksWorker.perform_async(id)
         end
       end

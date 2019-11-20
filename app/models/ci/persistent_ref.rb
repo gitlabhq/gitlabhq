@@ -14,13 +14,15 @@ module Ci
     delegate :ref_exists?, :create_ref, :delete_refs, to: :repository
 
     def exist?
+      return unless enabled?
+
       ref_exists?(path)
     rescue
       false
     end
 
     def create
-      return if exist?
+      return unless enabled? && !exist?
 
       create_ref(sha, path)
     rescue => e
@@ -29,6 +31,8 @@ module Ci
     end
 
     def delete
+      return unless enabled?
+
       delete_refs(path)
     rescue Gitlab::Git::Repository::NoRepository
       # no-op
@@ -39,6 +43,12 @@ module Ci
 
     def path
       "refs/#{Repository::REF_PIPELINES}/#{pipeline.id}"
+    end
+
+    private
+
+    def enabled?
+      Feature.enabled?(:depend_on_persistent_pipeline_ref, project, default_enabled: true)
     end
   end
 end

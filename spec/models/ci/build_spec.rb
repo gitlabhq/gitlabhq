@@ -3086,10 +3086,20 @@ describe Ci::Build do
     rescue StateMachines::InvalidTransition
     end
 
-    it 'ensures pipeline ref existence' do
-      expect(job.pipeline.persistent_ref).to receive(:create).once
+    context 'for pipeline ref existence' do
+      it 'ensures pipeline ref creation' do
+        expect(job.pipeline.persistent_ref).to receive(:create).once
 
-      run_job_without_exception
+        run_job_without_exception
+      end
+
+      it 'ensures that it is not run in database transaction' do
+        expect(job.pipeline.persistent_ref).to receive(:create) do
+          expect(Gitlab::Database).not_to be_inside_transaction
+        end
+
+        run_job_without_exception
+      end
     end
 
     shared_examples 'saves data on transition' do

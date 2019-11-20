@@ -468,3 +468,15 @@ To illustrate its life cycle:
    even if the commit history of the `example` branch has been overwritten by force-push.
 1. GitLab Runner fetches the persistent pipeline ref and gets source code from the checkout-SHA.
 1. When the pipeline finished, its persistent ref is cleaned up in a background process.
+
+NOTE: **NOTE**: At this moment, this feature is on by default and can be manually disabled
+by disabling `depend_on_persistent_pipeline_ref` feature flag. If you're interested in
+manually disabling this behavior, please ask the administrator
+to execute the following commands in rails console.
+
+```shell
+> sudo gitlab-rails console                                        # Login to Rails console of GitLab instance.
+> project = Project.find_by_full_path('namespace/project-name')    # Get the project instance.
+> Feature.disable(:depend_on_persistent_pipeline_ref, project)     # Disable the feature flag for specific project
+> Feature.disable(:depend_on_persistent_pipeline_ref)              # Disable the feature flag system-wide
+```

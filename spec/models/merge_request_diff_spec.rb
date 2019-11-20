@@ -98,6 +98,12 @@ describe MergeRequestDiff do
       end
 
       it { is_expected.to contain_exactly(outdated.id, latest.id, closed.id, merged.id, closed_recently.id, merged_recently.id) }
+
+      it 'ignores diffs with 0 files' do
+        MergeRequestDiffFile.where(merge_request_diff_id: [closed_recently.id, merged_recently.id]).delete_all
+
+        is_expected.to contain_exactly(outdated.id, latest.id, closed.id, merged.id)
+      end
     end
 
     context 'external diffs are enabled for outdated diffs' do

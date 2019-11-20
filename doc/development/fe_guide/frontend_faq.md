@@ -15,7 +15,7 @@
 
 ## FAQ
 
-### How do I find the Rails route for a page?
+### 1. How do I find the Rails route for a page?
 
 #### Check the 'page' data attribute
 
@@ -37,7 +37,7 @@ The output includes the request types available, route parameters and the releva
 bundle exec rake routes | grep "issues"
 ```
 
-### `modal_copy_button` vs `clipboard_button`
+### 2. `modal_copy_button` vs `clipboard_button`
 
 The `clipboard_button` uses the `copy_to_clipboard.js` behaviour, which is
 initialized on page load, so if there are vue-based clipboard buttons that
@@ -50,3 +50,26 @@ the instance of that component, which means that clipboard events are
 bound on mounting and destroyed when the button is, mitigating the above
 issue. It also has bindings to a particular container or modal ID
 available, to work with the focus trap created by our GlModal.
+
+### 3. A gitlab-ui component not conforming to [Pajamas Design System](https://design.gitlab.com/)
+
+Some [Pajamas Design System](https://design.gitlab.com/) components implemented in
+gitlab-ui do not conform with the design system specs because they lack some
+planned features or are not correctly styled yet. In the Pajamas website, a
+banner on top of the component examples indicates that:
+
+> This component does not yet conform to the correct styling defined in our Design
+> System. Refer to the Design System documentation when referencing visuals for this
+> component.
+
+For example, at the time of writing, this type of warning can be observed for
+[all form components](https://design.gitlab.com/components/forms). It, however,
+doesn't imply that the component should not be used.
+
+GitLab always asks to use `<gl-*>` components whenever a suitable component exists.
+It makes codebase unified and more comfortable to maintain/refactor in the future.
+
+Ensure a [Product Designer](https://about.gitlab.com/company/team/?department=ux-department)
+reviews the use of the non-conforming component as part of the MR review. Make a
+follow up issue and attach it to the component implementation epic found within the
+[Components of Pajamas Design System epic](https://gitlab.com/groups/gitlab-org/-/epics/973).
