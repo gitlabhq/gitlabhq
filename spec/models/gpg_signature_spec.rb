@@ -75,7 +75,9 @@ RSpec.describe GpgSignature do
 
   describe '#commit' do
     it 'fetches the commit through the project' do
-      expect_any_instance_of(Project).to receive(:commit).with(commit_sha).and_return(commit)
+      expect_next_instance_of(Project) do |instance|
+        expect(instance).to receive(:commit).with(commit_sha).and_return(commit)
+      end
 
       gpg_signature.commit
     end

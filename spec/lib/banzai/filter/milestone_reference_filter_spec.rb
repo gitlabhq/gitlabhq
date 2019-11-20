@@ -214,7 +214,9 @@ describe Banzai::Filter::MilestoneReferenceFilter do
     end
 
     it 'escapes the name attribute' do
-      allow_any_instance_of(Milestone).to receive(:title).and_return(%{"></a>whatever<a title="})
+      allow_next_instance_of(Milestone) do |instance|
+        allow(instance).to receive(:title).and_return(%{"></a>whatever<a title="})
+      end
 
       doc = reference_filter("See #{reference}")
 
@@ -251,7 +253,9 @@ describe Banzai::Filter::MilestoneReferenceFilter do
     end
 
     it 'escapes the name attribute' do
-      allow_any_instance_of(Milestone).to receive(:title).and_return(%{"></a>whatever<a title="})
+      allow_next_instance_of(Milestone) do |instance|
+        allow(instance).to receive(:title).and_return(%{"></a>whatever<a title="})
+      end
 
       doc = reference_filter("See #{reference}")
 
@@ -288,7 +292,9 @@ describe Banzai::Filter::MilestoneReferenceFilter do
     end
 
     it 'escapes the name attribute' do
-      allow_any_instance_of(Milestone).to receive(:title).and_return(%{"></a>whatever<a title="})
+      allow_next_instance_of(Milestone) do |instance|
+        allow(instance).to receive(:title).and_return(%{"></a>whatever<a title="})
+      end
 
       doc = reference_filter("See #{reference}")
 

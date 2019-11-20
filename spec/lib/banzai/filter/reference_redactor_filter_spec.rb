@@ -42,7 +42,9 @@ describe Banzai::Filter::ReferenceRedactorFilter do
 
     context 'valid projects' do
       before do
-        allow_any_instance_of(Banzai::ReferenceParser::BaseParser).to receive(:can_read_reference?).and_return(true)
+        allow_next_instance_of(Banzai::ReferenceParser::BaseParser) do |instance|
+          allow(instance).to receive(:can_read_reference?).and_return(true)
+        end
       end
 
       it 'allows permitted Project references' do
@@ -59,7 +61,9 @@ describe Banzai::Filter::ReferenceRedactorFilter do
 
     context 'invalid projects' do
       before do
-        allow_any_instance_of(Banzai::ReferenceParser::BaseParser).to receive(:can_read_reference?).and_return(false)
+        allow_next_instance_of(Banzai::ReferenceParser::BaseParser) do |instance|
+          allow(instance).to receive(:can_read_reference?).and_return(false)
+        end
       end
 
       it 'removes unpermitted references' do

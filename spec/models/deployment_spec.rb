@@ -32,8 +32,9 @@ describe Deployment do
     let(:deployment) { create(:deployment, deployable: build) }
 
     it 'delegates to other_scheduled_actions' do
-      expect_any_instance_of(Ci::Build)
-        .to receive(:other_scheduled_actions)
+      expect_next_instance_of(Ci::Build) do |instance|
+        expect(instance).to receive(:other_scheduled_actions)
+      end
 
       subject
     end

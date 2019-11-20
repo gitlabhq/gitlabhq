@@ -1095,7 +1095,9 @@ describe Notify do
 
         context 'when note is not on text' do
           before do
-            allow_any_instance_of(DiffDiscussion).to receive(:on_text?).and_return(false)
+            allow_next_instance_of(DiffDiscussion) do |instance|
+              allow(instance).to receive(:on_text?).and_return(false)
+            end
           end
 
           it 'does not include diffs with character-level highlighting' do

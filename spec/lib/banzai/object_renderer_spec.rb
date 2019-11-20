@@ -25,7 +25,9 @@ describe Banzai::ObjectRenderer do
       end
 
       it 'calls Banzai::ReferenceRedactor to perform redaction' do
-        expect_any_instance_of(Banzai::ReferenceRedactor).to receive(:redact).and_call_original
+        expect_next_instance_of(Banzai::ReferenceRedactor) do |instance|
+          expect(instance).to receive(:redact).and_call_original
+        end
 
         renderer.render([object], :note)
       end
@@ -85,7 +87,9 @@ describe Banzai::ObjectRenderer do
       end
 
       it 'calls Banzai::ReferenceRedactor to perform redaction' do
-        expect_any_instance_of(Banzai::ReferenceRedactor).to receive(:redact).and_call_original
+        expect_next_instance_of(Banzai::ReferenceRedactor) do |instance|
+          expect(instance).to receive(:redact).and_call_original
+        end
 
         renderer.render([cacheless_thing], :title)
       end

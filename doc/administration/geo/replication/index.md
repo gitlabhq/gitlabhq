@@ -266,7 +266,7 @@ these epics/issues:
 | All database content                                | **Yes**                  | **Yes**                     |                                            |
 | Project repository                                  | **Yes**                  | **Yes**                     |                                            |
 | Project wiki repository                             | **Yes**                  | **Yes**                     |                                            |
-| Project designs repository                          | [No][design-replication] | [No][design-verification]   |                                            |
+| Project designs repository                          | **Yes**                  | [No][design-verification]   | Behind feature flag (2)                    |
 | Uploads                                             | **Yes**                  | [No][upload-verification]   | Verified only on transfer, or manually (1) |
 | LFS Objects                                         | **Yes**                  | [No][lfs-verification]      | Verified only on transfer, or manually (1) |
 | CI job artifacts (other than traces)                | **Yes**                  | [No][artifact-verification] | Verified only manually (1)                 |
@@ -307,6 +307,12 @@ these epics/issues:
 1. The integrity can be verified manually using
 [Integrity Check Rake Task](../../raketasks/check.md)
 on both nodes and comparing the output between them.
+1. Enable the `enable_geo_design_sync` feature flag by running the
+following in a Rails console:
+
+    ```ruby
+    Feature.disable(:enable_geo_design_sync)
+    ```
 
 DANGER: **DANGER**
 Features not on this list, or with **No** in the **Replicated** column,

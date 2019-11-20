@@ -15,7 +15,9 @@ describe OmniAuth::Strategies::SAML, type: :strategy do
 
     it 'stores request ID during request phase' do
       request_id = double
-      allow_any_instance_of(OneLogin::RubySaml::Authrequest).to receive(:uuid).and_return(request_id)
+      allow_next_instance_of(OneLogin::RubySaml::Authrequest) do |instance|
+        allow(instance).to receive(:uuid).and_return(request_id)
+      end
 
       post '/users/auth/saml'
       expect(session['last_authn_request_id']).to eq(request_id)

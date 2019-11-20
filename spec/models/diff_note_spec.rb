@@ -343,7 +343,9 @@ describe DiffNote do
 
     context 'when line is not suggestible' do
       it 'returns false' do
-        allow_any_instance_of(Gitlab::Diff::Line).to receive(:suggestible?) { false }
+        allow_next_instance_of(Gitlab::Diff::Line) do |instance|
+          allow(instance).to receive(:suggestible?) { false }
+        end
 
         expect(subject.supports_suggestion?).to be(false)
       end

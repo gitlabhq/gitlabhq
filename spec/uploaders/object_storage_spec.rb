@@ -151,7 +151,9 @@ describe ObjectStorage do
       describe 'fails' do
         it 'is handled gracefully' do
           store = uploader.object_store
-          expect_any_instance_of(Upload).to receive(:save!).and_raise("An error")
+          expect_next_instance_of(Upload) do |instance|
+            expect(instance).to receive(:save!).and_raise("An error")
+          end
 
           expect { subject }.to raise_error("An error")
           expect(uploader.exists?).to be_truthy
