@@ -9565,6 +9565,9 @@ msgstr ""
 msgid "IssuableStatus|moved"
 msgstr ""
 
+msgid "IssuableStatus|promoted"
+msgstr ""
+
 msgid "Issue"
 msgstr ""
 

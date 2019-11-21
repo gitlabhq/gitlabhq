@@ -2538,6 +2538,16 @@ enum IssueSort {
   RELATIVE_POSITION_ASC
 
   """
+  Weight by ascending order
+  """
+  WEIGHT_ASC
+
+  """
+  Weight by descending order
+  """
+  WEIGHT_DESC
+
+  """
   Created at ascending order
   """
   created_asc

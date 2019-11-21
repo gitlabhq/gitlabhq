@@ -2049,6 +2049,7 @@ ActiveRecord::Schema.define(version: 2019_11_18_182722) do
     t.integer "closed_by_id"
     t.integer "state_id", limit: 2, default: 1, null: false
     t.integer "duplicated_to_id"
+    t.integer "promoted_to_epic_id"
     t.index ["author_id"], name: "index_issues_on_author_id"
     t.index ["closed_by_id"], name: "index_issues_on_closed_by_id"
     t.index ["confidential"], name: "index_issues_on_confidential"
@@ -2065,6 +2066,7 @@ ActiveRecord::Schema.define(version: 2019_11_18_182722) do
     t.index ["project_id", "relative_position", "state_id", "id"], name: "idx_issues_on_project_id_and_rel_position_and_state_id_and_id", order: { id: :desc }
     t.index ["project_id", "updated_at", "id", "state"], name: "index_issues_on_project_id_and_updated_at_and_id_and_state"
     t.index ["project_id", "updated_at", "id", "state_id"], name: "idx_issues_on_project_id_and_updated_at_and_id_and_state_id"
+    t.index ["promoted_to_epic_id"], name: "index_issues_on_promoted_to_epic_id", where: "(promoted_to_epic_id IS NOT NULL)"
     t.index ["relative_position"], name: "index_issues_on_relative_position"
     t.index ["state"], name: "index_issues_on_state"
     t.index ["state_id"], name: "idx_issues_on_state_id"
@@ -4428,6 +4430,7 @@ ActiveRecord::Schema.define(version: 2019_11_18_182722) do
   add_foreign_key "issue_tracker_data", "services", on_delete: :cascade
   add_foreign_key "issue_user_mentions", "issues", on_delete: :cascade
   add_foreign_key "issue_user_mentions", "notes", on_delete: :cascade
+  add_foreign_key "issues", "epics", column: "promoted_to_epic_id", name: "fk_df75a7c8b8", on_delete: :nullify
   add_foreign_key "issues", "issues", column: "duplicated_to_id", name: "fk_9c4516d665", on_delete: :nullify
   add_foreign_key "issues", "issues", column: "moved_to_id", name: "fk_a194299be1", on_delete: :nullify
   add_foreign_key "issues", "milestones", name: "fk_96b1dd429c", on_delete: :nullify

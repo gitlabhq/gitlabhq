@@ -12,3 +12,5 @@ module Types
   end
   # rubocop: enable Graphql/AuthorizeTypes
 end
+
+Types::IssueSortEnum.prepend_if_ee('::EE::Types::IssueSortEnum')

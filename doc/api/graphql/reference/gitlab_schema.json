@@ -13772,6 +13772,18 @@
               "description": "Relative position by ascending order",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "WEIGHT_ASC",
+              "description": "Weight by ascending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "WEIGHT_DESC",
+              "description": "Weight by descending order",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null

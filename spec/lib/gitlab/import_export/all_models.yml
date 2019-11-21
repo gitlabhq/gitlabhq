@@ -15,6 +15,7 @@ issues:
 - user_agent_detail
 - moved_to
 - duplicated_to
+- promoted_to_epic
 - events
 - merge_requests_closing_issues
 - metrics

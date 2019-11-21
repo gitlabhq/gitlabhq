@@ -183,4 +183,4 @@ module IssuesHelper
   module_function :url_for_tracker_issue
 end
 
-IssuesHelper.include_if_ee('EE::IssuesHelper')
+IssuesHelper.prepend_if_ee('EE::IssuesHelper')
