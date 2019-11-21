@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, no-return-assign */
+/* eslint-disable func-names, no-return-assign */
 
 import $ from 'jquery';
 import Cookies from 'js-cookie';
@@ -90,19 +90,19 @@ export default class Project {
   }
 
   static initRefSwitcher() {
-    var refListItem = document.createElement('li');
-    var refLink = document.createElement('a');
+    const refListItem = document.createElement('li');
+    const refLink = document.createElement('a');
 
     refLink.href = '#';
 
     return $('.js-project-refs-dropdown').each(function() {
-      var $dropdown = $(this);
-      var selected = $dropdown.data('selected');
-      var fieldName = $dropdown.data('fieldName');
-      var shouldVisit = Boolean($dropdown.data('visit'));
-      var $form = $dropdown.closest('form');
-      var action = $form.attr('action');
-      var linkTarget = mergeUrlParams(serializeForm($form[0]), action);
+      const $dropdown = $(this);
+      const selected = $dropdown.data('selected');
+      const fieldName = $dropdown.data('fieldName');
+      const shouldVisit = Boolean($dropdown.data('visit'));
+      const $form = $dropdown.closest('form');
+      const action = $form.attr('action');
+      const linkTarget = mergeUrlParams(serializeForm($form[0]), action);
 
       return $dropdown.glDropdown({
         data(term, callback) {
@@ -123,9 +123,9 @@ export default class Project {
         inputFieldName: $dropdown.data('inputFieldName'),
         fieldName,
         renderRow(ref) {
-          var li = refListItem.cloneNode(false);
+          const li = refListItem.cloneNode(false);
 
-          var link = refLink.cloneNode(false);
+          const link = refLink.cloneNode(false);
 
           if (ref === selected) {
             link.className = 'is-active';

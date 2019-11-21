@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Gitlab::Git::Conflict::Parser do
@@ -208,7 +210,7 @@ CONFLICT
       # these strings.
       context 'when the file contains UTF-8 characters' do
         it 'does not raise' do
-          expect { parse_text("Espa\xC3\xB1a".force_encoding(Encoding::ASCII_8BIT)) }
+          expect { parse_text((+"Espa\xC3\xB1a").force_encoding(Encoding::ASCII_8BIT)) }
             .not_to raise_error
         end
       end

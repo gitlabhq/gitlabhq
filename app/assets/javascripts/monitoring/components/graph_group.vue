@@ -30,9 +30,6 @@ export default {
       return this.collapseGroup && this.showGroup ? 'angle-down' : 'angle-right';
     },
   },
-  created() {
-    this.showGroup = this.collapseGroup;
-  },
   methods: {
     collapse() {
       this.showGroup = !this.showGroup;

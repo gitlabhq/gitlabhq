@@ -1,47 +1,49 @@
-import Vue from 'vue';
-import noteEditedText from '~/notes/components/note_edited_text.vue';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
+import NoteEditedText from '~/notes/components/note_edited_text.vue';
 
-describe('note_edited_text', () => {
-  let vm;
-  let props;
+const localVue = createLocalVue();
+const propsData = {
+  actionText: 'Edited',
+  className: 'foo-bar',
+  editedAt: '2017-08-04T09:52:31.062Z',
+  editedBy: {
+    avatar_url: 'path',
+    id: 1,
+    name: 'Root',
+    path: '/root',
+    state: 'active',
+    username: 'root',
+  },
+};
+
+describe('NoteEditedText', () => {
+  let wrapper;
 
   beforeEach(() => {
-    const Component = Vue.extend(noteEditedText);
-    props = {
-      actionText: 'Edited',
-      className: 'foo-bar',
-      editedAt: '2017-08-04T09:52:31.062Z',
-      editedBy: {
-        avatar_url: 'path',
-        id: 1,
-        name: 'Root',
-        path: '/root',
-        state: 'active',
-        username: 'root',
-      },
-    };
-
-    vm = new Component({
-      propsData: props,
-    }).$mount();
+    wrapper = shallowMount(NoteEditedText, {
+      localVue,
+      propsData,
+      sync: false,
+      attachToDocument: true,
+    });
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   it('should render block with provided className', () => {
-    expect(vm.$el.className).toEqual(props.className);
+    expect(wrapper.classes()).toContain(propsData.className);
   });
 
   it('should render provided actionText', () => {
-    expect(vm.$el.textContent).toContain(props.actionText);
+    expect(wrapper.text().trim()).toContain(propsData.actionText);
   });
 
   it('should render provided user information', () => {
-    const authorLink = vm.$el.querySelector('.js-user-link');
+    const authorLink = wrapper.find('.js-user-link');
 
-    expect(authorLink.getAttribute('href')).toEqual(props.editedBy.path);
-    expect(authorLink.textContent.trim()).toEqual(props.editedBy.name);
+    expect(authorLink.attributes('href')).toEqual(propsData.editedBy.path);
+    expect(authorLink.text().trim()).toEqual(propsData.editedBy.name);
   });
 });

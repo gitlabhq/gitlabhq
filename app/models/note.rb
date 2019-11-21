@@ -409,6 +409,10 @@ class Note < ApplicationRecord
     full_discussion || to_discussion
   end
 
+  def start_of_discussion?
+    discussion.first_note == self
+  end
+
   def part_of_discussion?
     !to_discussion.individual_note?
   end

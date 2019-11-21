@@ -22,7 +22,14 @@ describe('collapsible registry container', () => {
   const findToggleRepos = (w = wrapper) => w.findAll('.js-toggle-repo');
   const findDeleteModal = (w = wrapper) => w.find({ ref: 'deleteModal' });
 
-  const mountWithStore = config => mount(collapsibleComponent, { ...config, store, localVue });
+  const mountWithStore = config =>
+    mount(collapsibleComponent, {
+      ...config,
+      store,
+      localVue,
+      attachToDocument: true,
+      sync: false,
+    });
 
   beforeEach(() => {
     createFlash.mockClear();
@@ -63,12 +70,15 @@ describe('collapsible registry container', () => {
     it('should be closed by default', () => {
       expectIsClosed();
     });
-    it('should be open when user clicks on closed repo', () => {
+    it('should be open when user clicks on closed repo', done => {
       const toggleRepos = findToggleRepos(wrapper);
       toggleRepos.at(0).trigger('click');
-      const container = findContainerImageTags(wrapper);
-      expect(container.exists()).toBe(true);
-      expect(wrapper.vm.fetchList).toHaveBeenCalled();
+      Vue.nextTick(() => {
+        const container = findContainerImageTags(wrapper);
+        expect(container.exists()).toBe(true);
+        expect(wrapper.vm.fetchList).toHaveBeenCalled();
+        done();
+      });
     });
     it('should be closed when the user clicks on an opened repo', done => {
       const toggleRepos = findToggleRepos(wrapper);

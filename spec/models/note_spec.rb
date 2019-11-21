@@ -456,6 +456,19 @@ describe Note do
     end
   end
 
+  describe '#start_of_discussion?' do
+    let_it_be(:note) { create(:discussion_note_on_merge_request) }
+    let_it_be(:reply) { create(:discussion_note_on_merge_request, in_reply_to: note) }
+
+    it 'returns true when note is the start of a discussion' do
+      expect(note).to be_start_of_discussion
+    end
+
+    it 'returns false when note is a reply' do
+      expect(reply).not_to be_start_of_discussion
+    end
+  end
+
   describe '.find_discussion' do
     let!(:note) { create(:discussion_note_on_merge_request) }
     let!(:note2) { create(:discussion_note_on_merge_request, in_reply_to: note) }

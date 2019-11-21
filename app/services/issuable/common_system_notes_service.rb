@@ -7,20 +7,24 @@ module Issuable
     def execute(issuable, old_labels: [], is_update: true)
       @issuable = issuable
 
-      if is_update
-        if issuable.previous_changes.include?('title')
-          create_title_change_note(issuable.previous_changes['title'].first)
+      # We disable touch so that created system notes do not update
+      # the noteable's updated_at field
+      ActiveRecord::Base.no_touching do
+        if is_update
+          if issuable.previous_changes.include?('title')
+            create_title_change_note(issuable.previous_changes['title'].first)
+          end
+
+          handle_description_change_note
+
+          handle_time_tracking_note if issuable.is_a?(TimeTrackable)
+          create_discussion_lock_note if issuable.previous_changes.include?('discussion_locked')
         end
 
-        handle_description_change_note
-
-        handle_time_tracking_note if issuable.is_a?(TimeTrackable)
-        create_discussion_lock_note if issuable.previous_changes.include?('discussion_locked')
+        create_due_date_note if issuable.previous_changes.include?('due_date')
+        create_milestone_note if issuable.previous_changes.include?('milestone_id')
+        create_labels_note(old_labels) if old_labels && issuable.labels != old_labels
       end
-
-      create_due_date_note if issuable.previous_changes.include?('due_date')
-      create_milestone_note if issuable.previous_changes.include?('milestone_id')
-      create_labels_note(old_labels) if old_labels && issuable.labels != old_labels
     end
 
     private

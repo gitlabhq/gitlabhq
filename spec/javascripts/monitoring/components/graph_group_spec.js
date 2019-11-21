@@ -3,6 +3,8 @@ import GraphGroup from '~/monitoring/components/graph_group.vue';
 
 describe('Graph group component', () => {
   let graphGroup;
+  const findPrometheusGroup = () => graphGroup.find('.prometheus-graph-group');
+  const findPrometheusPanel = () => graphGroup.find('.prometheus-panel');
 
   afterEach(() => {
     graphGroup.destroy();
@@ -40,8 +42,32 @@ describe('Graph group component', () => {
       });
     });
 
-    it('should not contain a prometheus-graph-group container when showPanels is false', () => {
-      expect(graphGroup.vm.$el.querySelector('.prometheus-graph-group')).toBe(null);
+    it('should not contain a prometheus-panel container when showPanels is false', () => {
+      expect(findPrometheusPanel().exists()).toBe(false);
+    });
+  });
+
+  describe('When collapseGroup prop is updated', () => {
+    beforeEach(() => {
+      graphGroup = shallowMount(GraphGroup, {
+        propsData: {
+          name: 'panel',
+          collapseGroup: false,
+        },
+      });
+    });
+
+    it('previously collapsed group should respond to the prop change', done => {
+      expect(findPrometheusGroup().exists()).toBe(false);
+
+      graphGroup.setProps({
+        collapseGroup: true,
+      });
+
+      graphGroup.vm.$nextTick(() => {
+        expect(findPrometheusGroup().exists()).toBe(true);
+        done();
+      });
     });
   });
 });

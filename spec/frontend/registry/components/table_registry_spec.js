@@ -28,7 +28,8 @@ describe('table registry', () => {
   const findImageId = (w = wrapper) => w.find({ ref: 'imageId' });
   const bulkDeletePath = 'path';
 
-  const mountWithStore = config => mount(tableRegistry, { ...config, store, localVue });
+  const mountWithStore = config =>
+    mount(tableRegistry, { ...config, store, localVue, attachToDocument: true, sync: false });
 
   beforeEach(() => {
     // This is needed due to  console.error called by vue to emit a warning that stop the tests
@@ -196,7 +197,7 @@ describe('table registry', () => {
       expect(wrapper.vm.handleSingleDelete).toHaveBeenCalledWith(repoPropsData.list[0]);
       expect(wrapper.vm.handleMultipleDelete).not.toHaveBeenCalled();
     });
-    it('on ok when multiple items are selected should call muultiDelete', () => {
+    it('on ok when multiple items are selected should call multiDelete', () => {
       wrapper.setData({ itemsToBeDeleted: [0, 1, 2] });
       wrapper.vm.onDeletionConfirmed();
 

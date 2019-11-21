@@ -88,10 +88,6 @@ class DiffNote < Note
     line&.suggestible?
   end
 
-  def discussion_first_note?
-    self == discussion.first_note
-  end
-
   def banzai_render_context(field)
     super.merge(suggestions_filter_enabled: true)
   end
@@ -108,7 +104,7 @@ class DiffNote < Note
   end
 
   def should_create_diff_file?
-    on_text? && note_diff_file.nil? && discussion_first_note?
+    on_text? && note_diff_file.nil? && start_of_discussion?
   end
 
   def fetch_diff_file

@@ -282,4 +282,20 @@ describe('URL utility', () => {
       expect(urlUtils.getWebSocketUrl(path)).toEqual('ws://example.com/lorem/ipsum?a=bc');
     });
   });
+
+  describe('queryToObject', () => {
+    it('converts search query into an object', () => {
+      const searchQuery = '?one=1&two=2';
+
+      expect(urlUtils.queryToObject(searchQuery)).toEqual({ one: '1', two: '2' });
+    });
+  });
+
+  describe('objectToQuery', () => {
+    it('converts search query object back into a search query', () => {
+      const searchQueryObject = { one: '1', two: '2' };
+
+      expect(urlUtils.objectToQuery(searchQueryObject)).toEqual('one=1&two=2');
+    });
+  });
 });

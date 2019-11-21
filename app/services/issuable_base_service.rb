@@ -164,9 +164,7 @@ class IssuableBaseService < BaseService
     before_create(issuable)
 
     if issuable.save
-      ActiveRecord::Base.no_touching do
-        Issuable::CommonSystemNotesService.new(project, current_user).execute(issuable, is_update: false)
-      end
+      Issuable::CommonSystemNotesService.new(project, current_user).execute(issuable, is_update: false)
 
       after_create(issuable)
       execute_hooks(issuable)
@@ -227,10 +225,7 @@ class IssuableBaseService < BaseService
       ensure_milestone_available(issuable)
 
       if issuable.with_transaction_returning_status { issuable.save(touch: should_touch) }
-        # We do not touch as it will affect a update on updated_at field
-        ActiveRecord::Base.no_touching do
-          Issuable::CommonSystemNotesService.new(project, current_user).execute(issuable, old_labels: old_associations[:labels])
-        end
+        Issuable::CommonSystemNotesService.new(project, current_user).execute(issuable, old_labels: old_associations[:labels])
 
         handle_changes(issuable, old_associations: old_associations)
 
@@ -264,10 +259,7 @@ class IssuableBaseService < BaseService
       before_update(issuable, skip_spam_check: true)
 
       if issuable.with_transaction_returning_status { issuable.save }
-        # We do not touch as it will affect a update on updated_at field
-        ActiveRecord::Base.no_touching do
-          Issuable::CommonSystemNotesService.new(project, current_user).execute(issuable, old_labels: nil)
-        end
+        Issuable::CommonSystemNotesService.new(project, current_user).execute(issuable, old_labels: nil)
 
         handle_task_changes(issuable)
         invalidate_cache_counts(issuable, users: issuable.assignees.to_a)

@@ -2515,10 +2515,10 @@ msgstr ""
 msgid "BillingPlans|To manage the plan for this group, visit the billing section of %{parent_billing_page_link}."
 msgstr ""
 
-msgid "BillingPlans|Your GitLab.com Gold trial expired on %{expiration_date}. You can restore access to the Gold features at any time by upgrading below."
+msgid "BillingPlans|Your GitLab.com %{plan} trial will <strong>expire after %{expiration_date}</strong>. You can retain access to the %{plan} features by upgrading below."
 msgstr ""
 
-msgid "BillingPlans|Your GitLab.com Gold trial will <strong>expire after %{expiration_date}</strong>. You can retain access to the Gold features by upgrading below."
+msgid "BillingPlans|Your GitLab.com trial expired on %{expiration_date}. You can restore access to the features at any time by upgrading below."
 msgstr ""
 
 msgid "BillingPlans|billed annually at %{price_per_year}"
@@ -5770,7 +5770,7 @@ msgstr ""
 msgid "DesignManagement|Could not add a new comment. Please try again"
 msgstr ""
 
-msgid "DesignManagement|Could not create new discussion, please try again."
+msgid "DesignManagement|Could not create new discussion. Please try again."
 msgstr ""
 
 msgid "DesignManagement|Could not find design, please try again."
@@ -5819,9 +5819,6 @@ msgid "DesignManagement|Upload and view the latest designs for this issue. Consi
 msgstr ""
 
 msgid "DesignManagement|We could not delete %{design}. Please try again."
-msgstr ""
-
-msgid "DesignManagement|We could not delete design(s). Please try again."
 msgstr ""
 
 msgid "Designs"

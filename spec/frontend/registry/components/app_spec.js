@@ -39,6 +39,8 @@ describe('Registry List', () => {
     // See https://github.com/vuejs/vue-test-utils/issues/532.
     Vue.config.silent = true;
     wrapper = mount(registry, {
+      attachToDocument: true,
+      sync: false,
       propsData,
       computed: {
         repos() {
@@ -67,6 +69,8 @@ describe('Registry List', () => {
     let localWrapper;
     beforeEach(() => {
       localWrapper = mount(registry, {
+        attachToDocument: true,
+        sync: false,
         propsData,
         computed: {
           repos() {

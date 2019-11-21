@@ -6,6 +6,36 @@ import UsersSelect from './users_select';
 import ZenMode from './zen_mode';
 import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
 import { parsePikadayDate, pikadayToString } from './lib/utils/datetime_utility';
+import { queryToObject, objectToQuery } from './lib/utils/url_utility';
+
+function organizeQuery(obj, isFallbackKey = false) {
+  const sourceBranch = 'merge_request[source_branch]';
+  const targetBranch = 'merge_request[target_branch]';
+
+  if (isFallbackKey) {
+    return {
+      [sourceBranch]: obj[sourceBranch],
+    };
+  }
+
+  return {
+    [sourceBranch]: obj[sourceBranch],
+    [targetBranch]: obj[targetBranch],
+  };
+}
+
+function format(searchTerm, isFallbackKey = false) {
+  const queryObject = queryToObject(searchTerm);
+  const organizeQueryObject = organizeQuery(queryObject, isFallbackKey);
+  const formattedQuery = objectToQuery(organizeQueryObject);
+
+  return formattedQuery;
+}
+
+function getFallbackKey() {
+  const searchTerm = format(document.location.search, true);
+  return ['autosave', document.location.pathname, searchTerm].join('/');
+}
 
 export default class IssuableForm {
   constructor(form) {
@@ -57,16 +87,20 @@ export default class IssuableForm {
   }
 
   initAutosave() {
-    this.autosave = new Autosave(this.titleField, [
-      document.location.pathname,
-      document.location.search,
-      'title',
-    ]);
-    return new Autosave(this.descriptionField, [
-      document.location.pathname,
-      document.location.search,
-      'description',
-    ]);
+    const searchTerm = format(document.location.search);
+    const fallbackKey = getFallbackKey();
+
+    this.autosave = new Autosave(
+      this.titleField,
+      [document.location.pathname, searchTerm, 'title'],
+      `${fallbackKey}=title`,
+    );
+
+    return new Autosave(
+      this.descriptionField,
+      [document.location.pathname, searchTerm, 'description'],
+      `${fallbackKey}=description`,
+    );
   }
 
   handleSubmit() {

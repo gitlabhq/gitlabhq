@@ -1,12 +1,11 @@
-/* eslint-disable no-var, no-else-return, dot-notation, no-return-assign, no-new, no-underscore-dangle */
+/* eslint-disable no-else-return, dot-notation, no-return-assign, no-new, no-underscore-dangle */
 
 import $ from 'jquery';
 import LineHighlighter from '~/line_highlighter';
 
 describe('LineHighlighter', function() {
-  var clickLine;
   preloadFixtures('static/line_highlighter.html');
-  clickLine = function(number, eventData = {}) {
+  const clickLine = function(number, eventData = {}) {
     if ($.isEmptyObject(eventData)) {
       return $(`#L${number}`).click();
     } else {
@@ -39,34 +38,30 @@ describe('LineHighlighter', function() {
     });
 
     it('highlights a range of lines given in the URL hash', function() {
-      var line;
       new LineHighlighter({ hash: '#L5-25' });
 
       expect($(`.${this.css}`).length).toBe(21);
-      for (line = 5; line <= 25; line += 1) {
+      for (let line = 5; line <= 25; line += 1) {
         expect($(`#LC${line}`)).toHaveClass(this.css);
       }
     });
 
     it('scrolls to the first highlighted line on initial load', function() {
-      var spy;
-      spy = spyOn($, 'scrollTo');
+      const spy = spyOn($, 'scrollTo');
       new LineHighlighter({ hash: '#L5-25' });
 
       expect(spy).toHaveBeenCalledWith('#L5', jasmine.anything());
     });
 
     it('discards click events', function() {
-      var spy;
-      spy = spyOnEvent('a[data-line-number]', 'click');
+      const spy = spyOnEvent('a[data-line-number]', 'click');
       clickLine(13);
 
       expect(spy).toHaveBeenPrevented();
     });
 
     it('handles garbage input from the hash', function() {
-      var func;
-      func = function() {
+      const func = function() {
         return new LineHighlighter({ fileHolderSelector: '#blob-content-holder' });
       };
 
@@ -76,8 +71,7 @@ describe('LineHighlighter', function() {
 
   describe('clickHandler', function() {
     it('handles clicking on a child icon element', function() {
-      var spy;
-      spy = spyOn(this['class'], 'setHash').and.callThrough();
+      const spy = spyOn(this['class'], 'setHash').and.callThrough();
       $('#L13 i')
         .mousedown()
         .click();
@@ -102,8 +96,7 @@ describe('LineHighlighter', function() {
       });
 
       it('sets the hash', function() {
-        var spy;
-        spy = spyOn(this['class'], 'setHash').and.callThrough();
+        const spy = spyOn(this['class'], 'setHash').and.callThrough();
         clickLine(13);
 
         expect(spy).toHaveBeenCalledWith(13);
@@ -112,8 +105,7 @@ describe('LineHighlighter', function() {
 
     describe('with shiftKey', function() {
       it('sets the hash', function() {
-        var spy;
-        spy = spyOn(this['class'], 'setHash').and.callThrough();
+        const spy = spyOn(this['class'], 'setHash').and.callThrough();
         clickLine(13);
         clickLine(20, {
           shiftKey: true,
@@ -134,8 +126,7 @@ describe('LineHighlighter', function() {
         });
 
         it('sets the hash', function() {
-          var spy;
-          spy = spyOn(this['class'], 'setHash');
+          const spy = spyOn(this['class'], 'setHash');
           clickLine(13, {
             shiftKey: true,
           });
@@ -146,27 +137,25 @@ describe('LineHighlighter', function() {
 
       describe('with existing single-line highlight', function() {
         it('uses existing line as last line when target is lesser', function() {
-          var line;
           clickLine(20);
           clickLine(15, {
             shiftKey: true,
           });
 
           expect($(`.${this.css}`).length).toBe(6);
-          for (line = 15; line <= 20; line += 1) {
+          for (let line = 15; line <= 20; line += 1) {
             expect($(`#LC${line}`)).toHaveClass(this.css);
           }
         });
 
         it('uses existing line as first line when target is greater', function() {
-          var line;
           clickLine(5);
           clickLine(10, {
             shiftKey: true,
           });
 
           expect($(`.${this.css}`).length).toBe(6);
-          for (line = 5; line <= 10; line += 1) {
+          for (let line = 5; line <= 10; line += 1) {
             expect($(`#LC${line}`)).toHaveClass(this.css);
           }
         });
@@ -183,25 +172,23 @@ describe('LineHighlighter', function() {
         });
 
         it('uses target as first line when it is less than existing first line', function() {
-          var line;
           clickLine(5, {
             shiftKey: true,
           });
 
           expect($(`.${this.css}`).length).toBe(6);
-          for (line = 5; line <= 10; line += 1) {
+          for (let line = 5; line <= 10; line += 1) {
             expect($(`#LC${line}`)).toHaveClass(this.css);
           }
         });
 
         it('uses target as last line when it is greater than existing first line', function() {
-          var line;
           clickLine(15, {
             shiftKey: true,
           });
 
           expect($(`.${this.css}`).length).toBe(6);
-          for (line = 10; line <= 15; line += 1) {
+          for (let line = 10; line <= 15; line += 1) {
             expect($(`#LC${line}`)).toHaveClass(this.css);
           }
         });

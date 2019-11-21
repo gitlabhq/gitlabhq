@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 
 describe Gitlab::Git::Commit, :seed_helper do
@@ -64,8 +66,8 @@ describe Gitlab::Git::Commit, :seed_helper do
   end
 
   describe "Commit info from gitaly commit" do
-    let(:subject) { "My commit".force_encoding('ASCII-8BIT') }
-    let(:body) { subject + "My body".force_encoding('ASCII-8BIT') }
+    let(:subject) { (+"My commit").force_encoding('ASCII-8BIT') }
+    let(:body) { subject + (+"My body").force_encoding('ASCII-8BIT') }
     let(:body_size) { body.length }
     let(:gitaly_commit) { build(:gitaly_commit, subject: subject, body: body, body_size: body_size) }
     let(:id) { gitaly_commit.id }
@@ -85,7 +87,7 @@ describe Gitlab::Git::Commit, :seed_helper do
     it { expect(commit.parent_ids).to eq(gitaly_commit.parent_ids) }
 
     context 'body_size != body.size' do
-      let(:body) { "".force_encoding('ASCII-8BIT') }
+      let(:body) { (+"").force_encoding('ASCII-8BIT') }
 
       context 'zero body_size' do
         it { expect(commit.safe_message).to eq(subject) }
