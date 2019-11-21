@@ -1539,9 +1539,14 @@ cache:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/18986) in GitLab v12.5.
 
-If `cache:key:files` is added, one or two files must be defined with it. The cache `key`
-will be a SHA computed from the most recent commits (one or two) that changed the
-given files. If neither file was changed in any commits, the key will be `default`.
+The `cache:key:files` keyword extends the `cache:key` functionality by making it easier
+to reuse some caches, and rebuild them less often, which will speed up subsequent pipeline
+runs.
+
+When you include `cache:key:files`, you must also list the project files that will be used to generate the key, up to a maximum of two files.
+The cache `key` will be a SHA checksum computed from the most recent commits (up to two, if two files are listed)
+that changed the given files. If neither file was changed in any commits,
+the fallback key will be `default`.
 
 ```yaml
 cache:
@@ -1554,20 +1559,26 @@ cache:
     - node_modules
 ```
 
+In this example we are creating a cache for Ruby and Nodejs dependencies that
+is tied to current versions of the `Gemfile.lock` and `package.json` files. Whenever one of
+these files changes, a new cache key is computed and a new cache is created. Any future
+job runs using the same `Gemfile.lock` and `package.json`  with `cache:key:files` will
+use the new cache, instead of rebuilding the dependencies.
+
 ##### `cache:key:prefix`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/18986) in GitLab v12.5.
-
 The `prefix` parameter adds extra functionality to `key:files` by allowing the key to
 be composed of the given `prefix` combined with the SHA computed for `cache:key:files`.
-For example, adding a `prefix` of `rspec`, will
-cause keys to look like: `rspec-feef9576d21ee9b6a32e30c5c79d0a0ceb68d1e5`. If neither
-file was changed in any commits, the prefix is added to `default`, so the key in the
-example would be `rspec-default`.
+For example, adding a `prefix` of `test`, will cause keys to look like: `test-feef9576d21ee9b6a32e30c5c79d0a0ceb68d1e5`.
+If neither file was changed in any commits, the prefix is added to `default`, so the
+key in the example would be `test-default`.
 
-`prefix` follows the same restrictions as `key`, so it can use any of the
-[predefined variables](../variables/README.md). Similarly, the `/` character or the
-equivalent URI-encoded `%2F`, or a value made only of `.` or `%2E`, is not allowed.
+Like `cache:key`, `prefix` can use any of the [predefined variables](../variables/README.md),
+but the following are not allowed:
+
+- the `/` character (or the equivalent URI-encoded `%2F`)
+- a value made only of `.` (or the equivalent URI-encoded `%2E`)
 
 ```yaml
 cache:
@@ -1577,7 +1588,19 @@ cache:
     prefix: ${CI_JOB_NAME}
   paths:
     - vendor/ruby
+
+rspec:
+  script:
+    - bundle exec rspec
 ```
+
+For example, adding a `prefix` of `$CI_JOB_NAME` will
+cause the key to look like: `rspec-feef9576d21ee9b6a32e30c5c79d0a0ceb68d1e5` and
+the job cache is shared across different branches. If a branch changes
+`Gemfile.lock`, that branch will have a new SHA checksum for `cache:key:files`. A new cache key
+will be generated, and a new cache will be created for that key.
+If `Gemfile.lock` is not found, the prefix is added to
+`default`, so the key in the example would be `rspec-default`.
 
 #### `cache:untracked`
 

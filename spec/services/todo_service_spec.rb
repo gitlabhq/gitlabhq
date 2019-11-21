@@ -1015,6 +1015,21 @@ describe TodoService do
     end
   end
 
+  describe '#mark_all_todos_as_done_by_user' do
+    it 'marks all todos done' do
+      todo1 = create(:todo, user: john_doe, state: :pending)
+      todo2 = create(:todo, user: john_doe, state: :done)
+      todo3 = create(:todo, user: john_doe, state: :pending)
+
+      ids = described_class.new.mark_all_todos_as_done_by_user(john_doe)
+
+      expect(ids).to contain_exactly(todo1.id, todo3.id)
+      expect(todo1.reload.state).to eq('done')
+      expect(todo2.reload.state).to eq('done')
+      expect(todo3.reload.state).to eq('done')
+    end
+  end
+
   describe '#mark_todos_as_done_by_ids' do
     let(:issue) { create(:issue, project: project, author: author, assignees: [john_doe]) }
     let(:another_issue) { create(:issue, project: project, author: author, assignees: [john_doe]) }

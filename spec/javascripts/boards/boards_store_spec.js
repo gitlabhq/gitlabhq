@@ -11,7 +11,7 @@ import '~/boards/models/list';
 import '~/boards/services/board_service';
 import boardsStore from '~/boards/stores/boards_store';
 import eventHub from '~/boards/eventhub';
-import { listObj, listObjDuplicate, boardsMockInterceptor, mockBoardService } from './mock_data';
+import { listObj, listObjDuplicate, boardsMockInterceptor } from './mock_data';
 import waitForPromises from '../../frontend/helpers/wait_for_promises';
 
 describe('Store', () => {
@@ -20,17 +20,16 @@ describe('Store', () => {
   beforeEach(() => {
     mock = new MockAdapter(axios);
     mock.onAny().reply(boardsMockInterceptor);
-    gl.boardService = mockBoardService();
     boardsStore.create();
 
-    spyOn(gl.boardService, 'moveIssue').and.callFake(
+    spyOn(boardsStore, 'moveIssue').and.callFake(
       () =>
         new Promise(resolve => {
           resolve();
         }),
     );
 
-    spyOn(gl.boardService, 'moveMultipleIssues').and.callFake(
+    spyOn(boardsStore, 'moveMultipleIssues').and.callFake(
       () =>
         new Promise(resolve => {
           resolve();
@@ -263,7 +262,7 @@ describe('Store', () => {
         expect(listOne.issues.length).toBe(0);
         expect(listTwo.issues.length).toBe(2);
         expect(listTwo.issues[0].id).toBe(2);
-        expect(gl.boardService.moveIssue).toHaveBeenCalledWith(2, listOne.id, listTwo.id, null, 1);
+        expect(boardsStore.moveIssue).toHaveBeenCalledWith(2, listOne.id, listTwo.id, null, 1);
 
         done();
       }, 0);
@@ -286,7 +285,7 @@ describe('Store', () => {
         expect(listOne.issues.length).toBe(0);
         expect(listTwo.issues.length).toBe(2);
         expect(listTwo.issues[1].id).toBe(2);
-        expect(gl.boardService.moveIssue).toHaveBeenCalledWith(2, listOne.id, listTwo.id, 1, null);
+        expect(boardsStore.moveIssue).toHaveBeenCalledWith(2, listOne.id, listTwo.id, 1, null);
 
         done();
       }, 0);
@@ -311,7 +310,7 @@ describe('Store', () => {
         boardsStore.moveIssueInList(list, issue, 0, 1, [1, 2]);
 
         expect(list.issues[0].id).toBe(2);
-        expect(gl.boardService.moveIssue).toHaveBeenCalledWith(2, null, null, 1, null);
+        expect(boardsStore.moveIssue).toHaveBeenCalledWith(2, null, null, 1, null);
 
         done();
       });
@@ -495,7 +494,7 @@ describe('Store', () => {
 
           expect(list.issues[0].id).toBe(issue1.id);
 
-          expect(gl.boardService.moveMultipleIssues).toHaveBeenCalledWith({
+          expect(boardsStore.moveMultipleIssues).toHaveBeenCalledWith({
             ids: [issue1.id, issue2.id],
             fromListId: null,
             toListId: null,

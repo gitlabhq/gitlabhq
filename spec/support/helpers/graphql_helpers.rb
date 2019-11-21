@@ -297,6 +297,10 @@ module GraphqlHelpers
       extract_attribute ? item['node'][extract_attribute] : item['node']
     end
   end
+
+  def global_id_of(model)
+    model.to_global_id.to_s
+  end
 end
 
 # This warms our schema, doing this as part of loading the helpers to avoid

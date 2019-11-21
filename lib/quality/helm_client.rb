@@ -7,7 +7,7 @@ module Quality
   class HelmClient
     CommandFailedError = Class.new(StandardError)
 
-    attr_reader :namespace
+    attr_reader :tiller_namespace, :namespace
 
     RELEASE_JSON_ATTRIBUTES = %w[Name Revision Updated Status Chart AppVersion Namespace].freeze
 
@@ -24,7 +24,8 @@ module Quality
     # A single page of data and the corresponding page number.
     Page = Struct.new(:releases, :number)
 
-    def initialize(namespace:)
+    def initialize(tiller_namespace:, namespace:)
+      @tiller_namespace = tiller_namespace
       @namespace = namespace
     end
 
@@ -35,7 +36,7 @@ module Quality
     def delete(release_name:)
       run_command([
         'delete',
-        %(--tiller-namespace "#{namespace}"),
+        %(--tiller-namespace "#{tiller_namespace}"),
         '--purge',
         release_name
       ])
@@ -60,7 +61,7 @@ module Quality
       command = [
         'list',
         %(--namespace "#{namespace}"),
-        %(--tiller-namespace "#{namespace}" --output json),
+        %(--tiller-namespace "#{tiller_namespace}" --output json),
         *args
       ]
       json = JSON.parse(run_command(command))

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe Mutations::Todos::MarkDone do
+  include GraphqlHelpers
+
   let_it_be(:current_user) { create(:user) }
   let_it_be(:author) { create(:user) }
   let_it_be(:other_user) { create(:user) }
@@ -58,9 +60,5 @@ describe Mutations::Todos::MarkDone do
 
   def mark_done_mutation(todo)
     mutation.resolve(id: global_id_of(todo))
-  end
-
-  def global_id_of(todo)
-    todo.to_global_id.to_s
   end
 end

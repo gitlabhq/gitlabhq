@@ -25,7 +25,6 @@ class AutomatedCleanup
   def initialize(project_path: ENV['CI_PROJECT_PATH'], gitlab_token: ENV['GITLAB_BOT_REVIEW_APPS_CLEANUP_TOKEN'])
     @project_path = project_path
     @gitlab_token = gitlab_token
-    ENV['TILLER_NAMESPACE'] ||= review_apps_namespace
   end
 
   def gitlab
@@ -45,7 +44,9 @@ class AutomatedCleanup
   end
 
   def helm
-    @helm ||= Quality::HelmClient.new(namespace: review_apps_namespace)
+    @helm ||= Quality::HelmClient.new(
+      tiller_namespace: review_apps_namespace,
+      namespace: review_apps_namespace)
   end
 
   def kubernetes

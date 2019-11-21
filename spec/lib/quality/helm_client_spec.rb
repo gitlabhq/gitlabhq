@@ -3,7 +3,8 @@
 require 'fast_spec_helper'
 
 RSpec.describe Quality::HelmClient do
-  let(:namespace) { 'review-apps-ee' }
+  let(:tiller_namespace) { 'review-apps-ee' }
+  let(:namespace) { tiller_namespace }
   let(:release_name) { 'my-release' }
   let(:raw_helm_list_page1) do
     <<~OUTPUT
@@ -30,12 +31,12 @@ RSpec.describe Quality::HelmClient do
     OUTPUT
   end
 
-  subject { described_class.new(namespace: namespace) }
+  subject { described_class.new(tiller_namespace: tiller_namespace, namespace: namespace) }
 
   describe '#releases' do
     it 'raises an error if the Helm command fails' do
       expect(Gitlab::Popen).to receive(:popen_with_detail)
-        .with([%(helm list --namespace "#{namespace}" --tiller-namespace "#{namespace}" --output json)])
+        .with([%(helm list --namespace "#{namespace}" --tiller-namespace "#{tiller_namespace}" --output json)])
         .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: false)))
 
       expect { subject.releases.to_a }.to raise_error(described_class::CommandFailedError)
@@ -43,7 +44,7 @@ RSpec.describe Quality::HelmClient do
 
     it 'calls helm list with default arguments' do
       expect(Gitlab::Popen).to receive(:popen_with_detail)
-        .with([%(helm list --namespace "#{namespace}" --tiller-namespace "#{namespace}" --output json)])
+        .with([%(helm list --namespace "#{namespace}" --tiller-namespace "#{tiller_namespace}" --output json)])
         .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: true)))
 
       subject.releases.to_a
@@ -51,7 +52,7 @@ RSpec.describe Quality::HelmClient do
 
     it 'calls helm list with extra arguments' do
       expect(Gitlab::Popen).to receive(:popen_with_detail)
-        .with([%(helm list --namespace "#{namespace}" --tiller-namespace "#{namespace}" --output json --deployed)])
+        .with([%(helm list --namespace "#{namespace}" --tiller-namespace "#{tiller_namespace}" --output json --deployed)])
         .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: true)))
 
       subject.releases(args: ['--deployed']).to_a
@@ -59,7 +60,7 @@ RSpec.describe Quality::HelmClient do
 
     it 'returns a list of Release objects' do
       expect(Gitlab::Popen).to receive(:popen_with_detail)
-        .with([%(helm list --namespace "#{namespace}" --tiller-namespace "#{namespace}" --output json --deployed)])
+        .with([%(helm list --namespace "#{namespace}" --tiller-namespace "#{tiller_namespace}" --output json --deployed)])
         .and_return(Gitlab::Popen::Result.new([], raw_helm_list_page2, '', double(success?: true)))
 
       releases = subject.releases(args: ['--deployed']).to_a
@@ -78,10 +79,10 @@ RSpec.describe Quality::HelmClient do
 
     it 'automatically paginates releases' do
       expect(Gitlab::Popen).to receive(:popen_with_detail).ordered
-        .with([%(helm list --namespace "#{namespace}" --tiller-namespace "#{namespace}" --output json)])
+        .with([%(helm list --namespace "#{namespace}" --tiller-namespace "#{tiller_namespace}" --output json)])
         .and_return(Gitlab::Popen::Result.new([], raw_helm_list_page1, '', double(success?: true)))
       expect(Gitlab::Popen).to receive(:popen_with_detail).ordered
-        .with([%(helm list --namespace "#{namespace}" --tiller-namespace "#{namespace}" --output json --offset review-6709-group-t40qbv)])
+        .with([%(helm list --namespace "#{namespace}" --tiller-namespace "#{tiller_namespace}" --output json --offset review-6709-group-t40qbv)])
         .and_return(Gitlab::Popen::Result.new([], raw_helm_list_page2, '', double(success?: true)))
 
       releases = subject.releases.to_a
@@ -94,7 +95,7 @@ RSpec.describe Quality::HelmClient do
   describe '#delete' do
     it 'raises an error if the Helm command fails' do
       expect(Gitlab::Popen).to receive(:popen_with_detail)
-        .with([%(helm delete --tiller-namespace "#{namespace}" --purge #{release_name})])
+        .with([%(helm delete --tiller-namespace "#{tiller_namespace}" --purge #{release_name})])
         .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: false)))
 
       expect { subject.delete(release_name: release_name) }.to raise_error(described_class::CommandFailedError)
@@ -102,7 +103,7 @@ RSpec.describe Quality::HelmClient do
 
     it 'calls helm delete with default arguments' do
       expect(Gitlab::Popen).to receive(:popen_with_detail)
-        .with([%(helm delete --tiller-namespace "#{namespace}" --purge #{release_name})])
+        .with([%(helm delete --tiller-namespace "#{tiller_namespace}" --purge #{release_name})])
         .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: true)))
 
       expect(subject.delete(release_name: release_name)).to eq('')
@@ -113,7 +114,7 @@ RSpec.describe Quality::HelmClient do
 
       it 'raises an error if the Helm command fails' do
         expect(Gitlab::Popen).to receive(:popen_with_detail)
-                                   .with([%(helm delete --tiller-namespace "#{namespace}" --purge #{release_name.join(' ')})])
+                                   .with([%(helm delete --tiller-namespace "#{tiller_namespace}" --purge #{release_name.join(' ')})])
                                    .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: false)))
 
         expect { subject.delete(release_name: release_name) }.to raise_error(described_class::CommandFailedError)
@@ -121,7 +122,7 @@ RSpec.describe Quality::HelmClient do
 
       it 'calls helm delete with multiple release names' do
         expect(Gitlab::Popen).to receive(:popen_with_detail)
-                                   .with([%(helm delete --tiller-namespace "#{namespace}" --purge #{release_name.join(' ')})])
+                                   .with([%(helm delete --tiller-namespace "#{tiller_namespace}" --purge #{release_name.join(' ')})])
                                    .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: true)))
 
         expect(subject.delete(release_name: release_name)).to eq('')
