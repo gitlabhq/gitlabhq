@@ -16,9 +16,9 @@ module QA
         validate_content('My First Wiki Content')
 
         Page::Project::Wiki::Edit.perform(&:click_edit)
-        Page::Project::Wiki::New.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
-          page.set_content("My Second Wiki Content")
-          page.save_changes
+        Page::Project::Wiki::New.perform do |wiki|
+          wiki.set_content("My Second Wiki Content")
+          wiki.save_changes
         end
 
         validate_content('My Second Wiki Content')

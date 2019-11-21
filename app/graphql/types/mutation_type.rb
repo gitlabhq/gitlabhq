@@ -21,6 +21,7 @@ module Types
     mount_mutation Mutations::Notes::Update
     mount_mutation Mutations::Notes::Destroy
     mount_mutation Mutations::Todos::MarkDone
+    mount_mutation Mutations::Todos::Restore
   end
 end
 

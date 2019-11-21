@@ -5,6 +5,7 @@ module ErrorTracking
     include Gitlab::Utils::StrongMemoize
     include ReactiveCaching
 
+    SENTRY_API_ERROR_TYPE_BAD_REQUEST = 'bad_request_for_sentry_api'
     SENTRY_API_ERROR_TYPE_MISSING_KEYS = 'missing_keys_in_sentry_response'
     SENTRY_API_ERROR_TYPE_NON_20X_RESPONSE = 'non_20x_response_from_sentry'
     SENTRY_API_ERROR_INVALID_SIZE = 'invalid_size_of_sentry_response'
@@ -119,6 +120,8 @@ module ErrorTracking
       { error: e.message, error_type: SENTRY_API_ERROR_TYPE_MISSING_KEYS }
     rescue Sentry::Client::ResponseInvalidSizeError => e
       { error: e.message, error_type: SENTRY_API_ERROR_INVALID_SIZE }
+    rescue Sentry::Client::BadRequestError => e
+      { error: e.message, error_type: SENTRY_API_ERROR_TYPE_BAD_REQUEST }
     end
 
     # http://HOST/api/0/projects/ORG/PROJECT

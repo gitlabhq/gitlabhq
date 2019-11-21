@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-underscore-dangle, no-var, one-var, vars-on-top, no-cond-assign, no-return-assign, no-else-return, camelcase, no-lonely-if, guard-for-in, no-restricted-syntax, consistent-return, no-param-reassign, no-loop-func */
+/* eslint-disable func-names, no-underscore-dangle, one-var, no-cond-assign, no-return-assign, no-else-return, camelcase, no-lonely-if, guard-for-in, no-restricted-syntax, consistent-return, no-param-reassign, no-loop-func */
 
 import $ from 'jquery';
 import _ from 'underscore';
@@ -33,13 +33,12 @@ const FILTER_INPUT = '.dropdown-input .dropdown-input-field:not(.dropdown-no-fil
 const NO_FILTER_INPUT = '.dropdown-input .dropdown-input-field.dropdown-no-filter';
 
 function GitLabDropdownInput(input, options) {
-  var $inputContainer, $clearButton;
-  var _this = this;
+  const _this = this;
   this.input = input;
   this.options = options;
   this.fieldName = this.options.fieldName || 'field-name';
-  $inputContainer = this.input.parent();
-  $clearButton = $inputContainer.find('.js-dropdown-input-clear');
+  const $inputContainer = this.input.parent();
+  const $clearButton = $inputContainer.find('.js-dropdown-input-clear');
   $clearButton.on('click', e => {
     // Clear click
     e.preventDefault();
@@ -52,13 +51,13 @@ function GitLabDropdownInput(input, options) {
 
   this.input
     .on('keydown', e => {
-      var keyCode = e.which;
+      const keyCode = e.which;
       if (keyCode === 13 && !options.elIsInput) {
         e.preventDefault();
       }
     })
     .on('input', e => {
-      var val = e.currentTarget.value || _this.options.inputFieldName;
+      let val = e.currentTarget.value || _this.options.inputFieldName;
       val = val
         .split(' ')
         .join('-') // replaces space with dash
@@ -78,12 +77,12 @@ GitLabDropdownInput.prototype.onInput = function(cb) {
 };
 
 function GitLabDropdownFilter(input, options) {
-  var $clearButton, $inputContainer, ref, timeout;
+  let ref, timeout;
   this.input = input;
   this.options = options;
   this.filterInputBlur = (ref = this.options.filterInputBlur) != null ? ref : true;
-  $inputContainer = this.input.parent();
-  $clearButton = $inputContainer.find('.js-dropdown-input-clear');
+  const $inputContainer = this.input.parent();
+  const $clearButton = $inputContainer.find('.js-dropdown-input-clear');
   $clearButton.on('click', e => {
     // Clear click
     e.preventDefault();
@@ -97,7 +96,7 @@ function GitLabDropdownFilter(input, options) {
   timeout = '';
   this.input
     .on('keydown', e => {
-      var keyCode = e.which;
+      const keyCode = e.which;
       if (keyCode === 13 && !options.elIsInput) {
         e.preventDefault();
       }
@@ -130,11 +129,11 @@ GitLabDropdownFilter.prototype.shouldBlur = function(keyCode) {
 };
 
 GitLabDropdownFilter.prototype.filter = function(search_text) {
-  var data, elements, group, key, results, tmp;
+  let elements, group, key, results, tmp;
   if (this.options.onFilter) {
     this.options.onFilter(search_text);
   }
-  data = this.options.data();
+  const data = this.options.data();
   if (data != null && !this.options.filterByText) {
     results = data;
     if (search_text !== '') {
@@ -178,9 +177,8 @@ GitLabDropdownFilter.prototype.filter = function(search_text) {
     elements = this.options.elements();
     if (search_text) {
       elements.each(function() {
-        var $el, matches;
-        $el = $(this);
-        matches = fuzzaldrinPlus.match($el.text().trim(), search_text);
+        const $el = $(this);
+        const matches = fuzzaldrinPlus.match($el.text().trim(), search_text);
         if (!$el.is('.dropdown-header')) {
           if (matches.length) {
             return $el.show().removeClass('option-hidden');
@@ -238,7 +236,7 @@ GitLabDropdownRemote.prototype.fetchData = function() {
 };
 
 function GitLabDropdown(el1, options) {
-  var searchFields, selector, self;
+  let selector, self;
   this.el = el1;
   this.options = options;
   this.updateLabel = this.updateLabel.bind(this);
@@ -260,7 +258,7 @@ function GitLabDropdown(el1, options) {
   if (_.isString(this.filterInput)) {
     this.filterInput = this.getElement(this.filterInput);
   }
-  searchFields = this.options.search ? this.options.search.fields : [];
+  const searchFields = this.options.search ? this.options.search.fields : [];
   if (this.options.data) {
     // If we provided data
     // data could be an array of objects or a group of arrays
@@ -350,7 +348,7 @@ function GitLabDropdown(el1, options) {
     }
   });
   this.dropdown.on('blur', 'a', e => {
-    var $dropdownMenu, $relatedTarget;
+    let $dropdownMenu, $relatedTarget;
     if (e.relatedTarget != null) {
       $relatedTarget = $(e.relatedTarget);
       $dropdownMenu = $relatedTarget.closest('.dropdown-menu');
@@ -372,11 +370,10 @@ function GitLabDropdown(el1, options) {
       selector = '.dropdown-page-one .dropdown-content a';
     }
     this.dropdown.on('click', selector, e => {
-      var $el, selected, selectedObj, isMarking;
-      $el = $(e.currentTarget);
-      selected = self.rowClicked($el);
-      selectedObj = selected ? selected[0] : null;
-      isMarking = selected ? selected[1] : null;
+      const $el = $(e.currentTarget);
+      const selected = self.rowClicked($el);
+      const selectedObj = selected ? selected[0] : null;
+      const isMarking = selected ? selected[1] : null;
       if (this.options.clicked) {
         this.options.clicked.call(this, {
           selectedObj,
@@ -406,8 +403,7 @@ GitLabDropdown.prototype.toggleLoading = function() {
 };
 
 GitLabDropdown.prototype.togglePage = function() {
-  var menu;
-  menu = $('.dropdown-menu', this.dropdown);
+  const menu = $('.dropdown-menu', this.dropdown);
   if (menu.hasClass(PAGE_TWO_CLASS)) {
     if (this.remote) {
       this.remote.execute();
@@ -419,7 +415,7 @@ GitLabDropdown.prototype.togglePage = function() {
 };
 
 GitLabDropdown.prototype.parseData = function(data) {
-  var full_html, groupData, html, name;
+  let groupData, html, name;
   this.renderedData = data;
   if (this.options.filterable && data.length === 0) {
     // render no matching results
@@ -447,7 +443,7 @@ GitLabDropdown.prototype.parseData = function(data) {
     }
   }
   // Render the full menu
-  full_html = this.renderMenu(html);
+  const full_html = this.renderMenu(html);
   return this.appendMenu(full_html);
 };
 
@@ -456,7 +452,7 @@ GitLabDropdown.prototype.renderData = function(data, group) {
 };
 
 GitLabDropdown.prototype.shouldPropagate = function(e) {
-  var $target;
+  let $target;
   if (this.options.multiSelect || this.options.shouldPropagate === false) {
     $target = $(e.target);
     if (
@@ -487,7 +483,6 @@ GitLabDropdown.prototype.filteredFullData = function() {
 };
 
 GitLabDropdown.prototype.opened = function(e) {
-  var contentHtml;
   this.resetRows();
   this.addArrowKeyEvent();
 
@@ -513,7 +508,7 @@ GitLabDropdown.prototype.opened = function(e) {
     );
   }
 
-  contentHtml = $('.dropdown-content', this.dropdown).html();
+  const contentHtml = $('.dropdown-content', this.dropdown).html();
   if (this.remote && contentHtml === '') {
     this.remote.execute();
   } else {
@@ -536,7 +531,7 @@ GitLabDropdown.prototype.opened = function(e) {
 };
 
 GitLabDropdown.prototype.positionMenuAbove = function() {
-  var $menu = this.dropdown.find('.dropdown-menu');
+  const $menu = this.dropdown.find('.dropdown-menu');
 
   $menu.addClass('dropdown-open-top');
   $menu.css('top', 'initial');
@@ -544,10 +539,9 @@ GitLabDropdown.prototype.positionMenuAbove = function() {
 };
 
 GitLabDropdown.prototype.hidden = function(e) {
-  var $input;
   this.resetRows();
   this.removeArrowKeyEvent();
-  $input = this.dropdown.find('.dropdown-input-field');
+  const $input = this.dropdown.find('.dropdown-input-field');
   if (this.options.filterable) {
     $input.blur();
   }
@@ -575,7 +569,7 @@ GitLabDropdown.prototype.appendMenu = function(html) {
 };
 
 GitLabDropdown.prototype.clearMenu = function() {
-  var selector;
+  let selector;
   selector = '.dropdown-content';
   if (this.dropdown.find('.dropdown-toggle-page').length) {
     if (this.options.containerSelector) {
@@ -635,10 +629,9 @@ GitLabDropdown.prototype.noResults = function() {
 };
 
 GitLabDropdown.prototype.rowClicked = function(el) {
-  var field, groupName, isInput, selectedIndex, selectedObject, value, isMarking;
-
+  let field, groupName, selectedIndex, selectedObject, isMarking;
   const { fieldName } = this.options;
-  isInput = $(this.el).is('input');
+  const isInput = $(this.el).is('input');
   if (this.renderedData) {
     groupName = el.data('group');
     if (groupName) {
@@ -662,7 +655,7 @@ GitLabDropdown.prototype.rowClicked = function(el) {
   }
 
   field = [];
-  value = this.options.id ? this.options.id(selectedObject, el) : selectedObject.id;
+  const value = this.options.id ? this.options.id(selectedObject, el) : selectedObject.id;
   if (isInput) {
     field = $(this.el);
   } else if (value != null) {
@@ -734,13 +727,12 @@ GitLabDropdown.prototype.focusTextInput = function() {
 };
 
 GitLabDropdown.prototype.addInput = function(fieldName, value, selectedObject, single) {
-  var $input;
   // Create hidden input for form
   if (single) {
     $(`input[name="${fieldName}"]`).remove();
   }
 
-  $input = $('<input>')
+  const $input = $('<input>')
     .attr('type', 'hidden')
     .attr('name', fieldName)
     .val(value);
@@ -762,7 +754,7 @@ GitLabDropdown.prototype.addInput = function(fieldName, value, selectedObject, s
 };
 
 GitLabDropdown.prototype.selectRowAtIndex = function(index) {
-  var $el, selector;
+  let selector;
   // If we pass an option index
   if (typeof index !== 'undefined') {
     selector = `${SELECTABLE_CLASSES}:eq(${index}) a`;
@@ -773,9 +765,9 @@ GitLabDropdown.prototype.selectRowAtIndex = function(index) {
     selector = `.dropdown-page-one ${selector}`;
   }
   // simulate a click on the first link
-  $el = $(selector, this.dropdown);
+  const $el = $(selector, this.dropdown);
   if ($el.length) {
-    var href = $el.attr('href');
+    const href = $el.attr('href');
     if (href && href !== '#') {
       visitUrl(href);
     } else {
@@ -785,15 +777,15 @@ GitLabDropdown.prototype.selectRowAtIndex = function(index) {
 };
 
 GitLabDropdown.prototype.addArrowKeyEvent = function() {
-  var ARROW_KEY_CODES, selector;
-  ARROW_KEY_CODES = [38, 40];
+  let selector;
+  const ARROW_KEY_CODES = [38, 40];
   selector = SELECTABLE_CLASSES;
   if (this.dropdown.find('.dropdown-toggle-page').length) {
     selector = `.dropdown-page-one ${selector}`;
   }
   return $('body').on('keydown', e => {
-    var $listItems, PREV_INDEX, currentKeyCode;
-    currentKeyCode = e.which;
+    let $listItems, PREV_INDEX;
+    const currentKeyCode = e.which;
     if (ARROW_KEY_CODES.indexOf(currentKeyCode) !== -1) {
       e.preventDefault();
       e.stopImmediatePropagation();
@@ -834,16 +826,6 @@ GitLabDropdown.prototype.resetRows = function resetRows() {
 };
 
 GitLabDropdown.prototype.highlightRowAtIndex = function($listItems, index) {
-  var $dropdownContent,
-    $listItem,
-    dropdownContentBottom,
-    dropdownContentHeight,
-    dropdownContentTop,
-    dropdownScrollTop,
-    listItemBottom,
-    listItemHeight,
-    listItemTop;
-
   if (!$listItems) {
     $listItems = $(SELECTABLE_CLASSES, this.dropdown);
   }
@@ -851,18 +833,18 @@ GitLabDropdown.prototype.highlightRowAtIndex = function($listItems, index) {
   // Remove the class for the previously focused row
   $('.is-focused', this.dropdown).removeClass('is-focused');
   // Update the class for the row at the specific index
-  $listItem = $listItems.eq(index);
+  const $listItem = $listItems.eq(index);
   $listItem.find('a:first-child').addClass('is-focused');
   // Dropdown content scroll area
-  $dropdownContent = $listItem.closest('.dropdown-content');
-  dropdownScrollTop = $dropdownContent.scrollTop();
-  dropdownContentHeight = $dropdownContent.outerHeight();
-  dropdownContentTop = $dropdownContent.prop('offsetTop');
-  dropdownContentBottom = dropdownContentTop + dropdownContentHeight;
+  const $dropdownContent = $listItem.closest('.dropdown-content');
+  const dropdownScrollTop = $dropdownContent.scrollTop();
+  const dropdownContentHeight = $dropdownContent.outerHeight();
+  const dropdownContentTop = $dropdownContent.prop('offsetTop');
+  const dropdownContentBottom = dropdownContentTop + dropdownContentHeight;
   // Get the offset bottom of the list item
-  listItemHeight = $listItem.outerHeight();
-  listItemTop = $listItem.prop('offsetTop');
-  listItemBottom = listItemTop + listItemHeight;
+  const listItemHeight = $listItem.outerHeight();
+  const listItemTop = $listItem.prop('offsetTop');
+  const listItemBottom = listItemTop + listItemHeight;
   if (!index) {
     // Scroll the dropdown content to the top
     $dropdownContent.scrollTop(0);

@@ -1,0 +1,11 @@
+---
+
+- networking.istio.io
+- rbac.istio.io
+- authentication.istio.io
+- config.istio.io
+
+- networking.internal.knative.dev
+- serving.knative.dev
+- caching.internal.knative.dev
+- autoscaling.internal.knative.dev

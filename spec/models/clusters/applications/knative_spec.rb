@@ -161,18 +161,19 @@ describe Clusters::Applications::Knative do
     end
 
     it "initializes command with all necessary postdelete script" do
-      api_resources = YAML.safe_load(File.read(Rails.root.join(Clusters::Applications::Knative::API_RESOURCES_PATH)))
+      api_groups = YAML.safe_load(File.read(Rails.root.join(Clusters::Applications::Knative::API_GROUPS_PATH)))
 
       remove_knative_istio_leftovers_script = [
         "kubectl delete --ignore-not-found ns knative-serving",
         "kubectl delete --ignore-not-found ns knative-build"
       ]
 
-      full_delete_commands_size = api_resources.size + remove_knative_istio_leftovers_script.size
+      full_delete_commands_size = api_groups.size + remove_knative_istio_leftovers_script.size
 
       expect(subject.postdelete).to include(*remove_knative_istio_leftovers_script)
       expect(subject.postdelete.size).to eq(full_delete_commands_size)
-      expect(subject.postdelete[2]).to eq("kubectl delete --ignore-not-found crd #{api_resources[0]}")
+      expect(subject.postdelete[2]).to eq("kubectl api-resources -o name --api-group #{api_groups[0]} | xargs kubectl delete --ignore-not-found crd")
+      expect(subject.postdelete[3]).to eq("kubectl api-resources -o name --api-group #{api_groups[1]} | xargs kubectl delete --ignore-not-found crd")
     end
   end
 

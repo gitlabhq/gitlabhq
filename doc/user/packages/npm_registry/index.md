@@ -156,9 +156,10 @@ a given scope, you will receive a `403 Forbidden!` error.
 
 ## Uploading a package with the same version twice
 
-If you upload a package with a same name and version twice, GitLab will show
-both packages in the UI, but the GitLab NPM Registry will expose the most recent
-one as it supports only one package per version for `npm install`.
+You cannot upload a package with the same name and version twice, unless you
+delete the existing package first. This aligns with npmjs.org's behavior, with
+the exception that npmjs.org does not allow users to ever publish the same version
+more than once, even if it has been deleted.
 
 ## Troubleshooting
 

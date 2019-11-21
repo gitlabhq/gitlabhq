@@ -1407,7 +1407,7 @@ If the merge request is already merged or closed - you get `405` and error messa
 In case the merge request is not set to be merged when the pipeline succeeds, you'll also get a `406` error.
 
 ```
-PUT /projects/:id/merge_requests/:merge_request_iid/cancel_merge_when_pipeline_succeeds
+POST /projects/:id/merge_requests/:merge_request_iid/cancel_merge_when_pipeline_succeeds
 ```
 
 Parameters:

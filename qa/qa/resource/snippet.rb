@@ -16,13 +16,13 @@ module QA
       def fabricate!
         Page::Dashboard::Snippet::Index.perform(&:go_to_new_snippet_page)
 
-        Page::Dashboard::Snippet::New.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
-          page.fill_title(@title)
-          page.fill_description(@description)
-          page.set_visibility(@visibility)
-          page.fill_file_name(@file_name)
-          page.fill_file_content(@file_content)
-          page.click_create_snippet_button
+        Page::Dashboard::Snippet::New.perform do |new_page|
+          new_page.fill_title(@title)
+          new_page.fill_description(@description)
+          new_page.set_visibility(@visibility)
+          new_page.fill_file_name(@file_name)
+          new_page.fill_file_content(@file_content)
+          new_page.click_create_snippet_button
         end
       end
     end

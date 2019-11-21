@@ -169,12 +169,6 @@ export default {
     <p v-if="shouldShowMetricsUnavailable" class="usage-info js-usage-info usage-info-unavailable">
       {{ s__('mrWidget|Deployment statistics are not available currently') }}
     </p>
-    <memory-graph
-      v-if="shouldShowMemoryGraph"
-      :metrics="memoryMetrics"
-      :deployment-time="deploymentTime"
-      height="25"
-      width="100"
-    />
+    <memory-graph v-if="shouldShowMemoryGraph" :metrics="memoryMetrics" :height="25" :width="110" />
   </div>
 </template>

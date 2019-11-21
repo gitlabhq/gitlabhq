@@ -48,20 +48,17 @@ describe Projects::ErrorTrackingController do
     describe 'format json' do
       let(:list_issues_service) { spy(:list_issues_service) }
       let(:external_url) { 'http://example.com' }
-      let(:search_term) do
-        ActionController::Parameters.new(
-          search_term: 'something'
-        ).permit!
-      end
 
       context 'no data' do
-        let(:search_term) do
+        let(:params) { project_params(format: :json) }
+
+        let(:permitted_params) do
           ActionController::Parameters.new({}).permit!
         end
 
         before do
           expect(ErrorTracking::ListIssuesService)
-            .to receive(:new).with(project, user, search_term)
+            .to receive(:new).with(project, user, permitted_params)
             .and_return(list_issues_service)
 
           expect(list_issues_service).to receive(:execute)
@@ -75,10 +72,16 @@ describe Projects::ErrorTrackingController do
         end
       end
 
-      context 'with a search_term param' do
+      context 'with a search_term and sort params' do
+        let(:params) { project_params(format: :json, search_term: 'something', sort: 'last_seen') }
+
+        let(:permitted_params) do
+          ActionController::Parameters.new(search_term: 'something', sort: 'last_seen').permit!
+        end
+
         before do
           expect(ErrorTracking::ListIssuesService)
-            .to receive(:new).with(project, user, search_term)
+            .to receive(:new).with(project, user, permitted_params)
             .and_return(list_issues_service)
         end
 
@@ -93,7 +96,7 @@ describe Projects::ErrorTrackingController do
           let(:error) { build(:error_tracking_error) }
 
           it 'returns a list of errors' do
-            get :index, params: project_params(format: :json, search_term: 'something')
+            get :index, params: params
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to match_response_schema('error_tracking/index')
@@ -103,7 +106,7 @@ describe Projects::ErrorTrackingController do
         end
       end
 
-      context 'without a search_term param' do
+      context 'without params' do
         before do
           expect(ErrorTracking::ListIssuesService)
             .to receive(:new).with(project, user, {})

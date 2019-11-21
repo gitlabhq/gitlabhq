@@ -50,10 +50,10 @@ module QA
           @project.visit!
 
           Page::Project::Show.perform(&:open_web_ide!)
-          Page::Project::WebIDE::Edit.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
-            page.create_new_file_from_template template[:file_name], template[:name]
+          Page::Project::WebIDE::Edit.perform do |ide|
+            ide.create_new_file_from_template template[:file_name], template[:name]
 
-            expect(page.has_file?(template[:file_name])).to be_truthy
+            expect(ide.has_file?(template[:file_name])).to be_truthy
           end
 
           expect(page).to have_button('Undo')

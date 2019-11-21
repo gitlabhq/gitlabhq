@@ -185,6 +185,7 @@ describe('MemoryUsage', () => {
       vm.loadingMetrics = false;
       vm.hasMetrics = true;
       vm.loadFailed = false;
+      vm.memoryMetrics = metricsMockData.metrics.memory_values[0].values;
 
       Vue.nextTick(() => {
         expect(el.querySelector('.memory-graph-container')).toBeDefined();

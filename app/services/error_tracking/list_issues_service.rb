@@ -4,6 +4,7 @@ module ErrorTracking
   class ListIssuesService < ErrorTracking::BaseService
     DEFAULT_ISSUE_STATUS = 'unresolved'
     DEFAULT_LIMIT = 20
+    DEFAULT_SORT = 'last_seen'
 
     def execute
       return error('Error Tracking is not enabled') unless enabled?
@@ -12,7 +13,8 @@ module ErrorTracking
       result = project_error_tracking_setting.list_sentry_issues(
         issue_status: issue_status,
         limit: limit,
-        search_term: search_term
+        search_term: search_term,
+        sort: sort
       )
 
       # our results are not yet ready
@@ -32,10 +34,6 @@ module ErrorTracking
     end
 
     private
-
-    def fetch
-      project_error_tracking_setting.list_sentry_issues(issue_status: issue_status, limit: limit)
-    end
 
     def parse_response(response)
       { issues: response[:issues] }
@@ -59,6 +57,10 @@ module ErrorTracking
 
     def can_read?
       can?(current_user, :read_sentry_issue, project)
+    end
+
+    def sort
+      params[:sort] || DEFAULT_SORT
     end
   end
 end

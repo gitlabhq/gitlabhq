@@ -5,12 +5,13 @@ require 'spec_helper'
 describe ErrorTracking::ListIssuesService do
   set(:user) { create(:user) }
   set(:project) { create(:project) }
-  let(:params) { { search_term: 'something' } }
+  let(:params) { { search_term: 'something', sort: 'last_seen' } }
   let(:list_sentry_issues_args) do
     {
       issue_status: 'unresolved',
       limit: 20,
-      search_term: params[:search_term]
+      search_term: params[:search_term],
+      sort: params[:sort]
     }
   end
 

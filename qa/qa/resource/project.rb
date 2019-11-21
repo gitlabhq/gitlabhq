@@ -32,14 +32,14 @@ module QA
       end
 
       attribute :repository_ssh_location do
-        Page::Project::Show.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
-          page.repository_clone_ssh_location
+        Page::Project::Show.perform do |show|
+          show.repository_clone_ssh_location
         end
       end
 
       attribute :repository_http_location do
-        Page::Project::Show.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
-          page.repository_clone_http_location
+        Page::Project::Show.perform do |show|
+          show.repository_clone_http_location
         end
       end
 
@@ -62,13 +62,13 @@ module QA
           Page::Group::Show.perform(&:go_to_new_project)
         end
 
-        Page::Project::New.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
-          page.choose_test_namespace
-          page.choose_name(@name)
-          page.add_description(@description)
-          page.set_visibility(@visibility)
-          page.enable_initialize_with_readme if @initialize_with_readme
-          page.create_new_project
+        Page::Project::New.perform do |new_page|
+          new_page.choose_test_namespace
+          new_page.choose_name(@name)
+          new_page.add_description(@description)
+          new_page.set_visibility(@visibility)
+          new_page.enable_initialize_with_readme if @initialize_with_readme
+          new_page.create_new_project
         end
       end
 

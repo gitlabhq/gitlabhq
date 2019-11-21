@@ -5,6 +5,12 @@ require 'spec_helper'
 describe Sentry::Client do
   let(:sentry_url) { 'https://sentrytest.gitlab.com/api/0/projects/sentry-org/sentry-project' }
   let(:token) { 'test-token' }
+  let(:default_httparty_options) do
+    {
+      follow_redirects: false,
+      headers: { "Authorization" => "Bearer test-token" }
+    }
+  end
 
   let(:issues_sample_response) do
     Gitlab::Utils.deep_indifferent_access(
@@ -94,7 +100,7 @@ describe Sentry::Client do
 
     let!(:sentry_api_request) { stub_sentry_request(sentry_request_url, body: sentry_api_response) }
 
-    subject { client.list_issues(issue_status: issue_status, limit: limit, search_term: search_term) }
+    subject { client.list_issues(issue_status: issue_status, limit: limit, search_term: search_term, sort: 'last_seen') }
 
     it_behaves_like 'calls sentry api'
 
@@ -162,6 +168,35 @@ describe Sentry::Client do
         subject
 
         expect(sentry_api_request).to have_been_requested
+      end
+    end
+
+    context 'requests with sort parameter in sentry api' do
+      let(:sentry_request_url) do
+        'https://sentrytest.gitlab.com/api/0/projects/sentry-org/sentry-project/' \
+          'issues/?limit=20&query=is:unresolved&sort=freq'
+      end
+      let!(:sentry_api_request) { stub_sentry_request(sentry_request_url, body: sentry_api_response) }
+
+      subject { client.list_issues(issue_status: issue_status, limit: limit, sort: 'frequency') }
+
+      it 'calls the sentry api with sort params' do
+        expect(Gitlab::HTTP).to receive(:get).with(
+          URI("#{sentry_url}/issues/"),
+          default_httparty_options.merge(query: { limit: 20, query: "is:unresolved", sort: "freq" })
+        ).and_call_original
+
+        subject
+
+        expect(sentry_api_request).to have_been_requested
+      end
+    end
+
+    context 'with invalid sort params' do
+      subject { client.list_issues(issue_status: issue_status, limit: limit, sort: 'fish') }
+
+      it 'throws an error' do
+        expect { subject }.to raise_error(Sentry::Client::BadRequestError, 'Invalid value for sort param')
       end
     end
 

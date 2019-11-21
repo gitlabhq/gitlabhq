@@ -5692,9 +5692,6 @@ msgstr ""
 msgid "Deployed"
 msgstr ""
 
-msgid "Deployed %{deployedSince}"
-msgstr ""
-
 msgid "Deployed to"
 msgstr ""
 
@@ -10388,6 +10385,9 @@ msgid "Logs"
 msgstr ""
 
 msgid "Logs|To see the pod logs, deploy your code to an environment."
+msgstr ""
+
+msgid "MB"
 msgstr ""
 
 msgid "MD5"

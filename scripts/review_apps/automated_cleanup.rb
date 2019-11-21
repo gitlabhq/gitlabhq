@@ -75,8 +75,8 @@ class AutomatedCleanup
       deployed_at = Time.parse(last_deploy)
 
       if deployed_at < delete_threshold
-        environment = delete_environment(environment, deployment)
-        if environment
+        deleted_environment = delete_environment(environment, deployment)
+        if deleted_environment
           release = Quality::HelmClient::Release.new(environment.slug, 1, deployed_at.to_s, nil, nil, review_apps_namespace)
           releases_to_delete << release
         end

@@ -111,7 +111,7 @@ class Projects::ErrorTrackingController < Projects::ApplicationController
   end
 
   def list_issues_params
-    params.permit(:search_term)
+    params.permit([:search_term, :sort])
   end
 
   def list_projects_params

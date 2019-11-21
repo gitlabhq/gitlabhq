@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require './spec/support/sidekiq'
+require './spec/support/sidekiq_middleware'
 
 # Create an api access token for root user with the value: ypCa3Dzb23o5nvsixwPA
 Gitlab::Seeder.quiet do

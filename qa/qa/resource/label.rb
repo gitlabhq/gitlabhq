@@ -28,11 +28,11 @@ module QA
         Page::Project::Menu.perform(&:go_to_labels)
         Page::Label::Index.perform(&:click_new_label_button)
 
-        Page::Label::New.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
-          page.fill_title(@title)
-          page.fill_description(@description)
-          page.fill_color(@color)
-          page.click_label_create_button
+        Page::Label::New.perform do |new_page|
+          new_page.fill_title(@title)
+          new_page.fill_description(@description)
+          new_page.fill_color(@color)
+          new_page.click_label_create_button
         end
       end
 

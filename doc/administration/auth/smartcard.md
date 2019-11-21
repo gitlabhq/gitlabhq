@@ -4,6 +4,10 @@ type: reference
 
 # Smartcard authentication **(PREMIUM ONLY)**
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/33669) in GitLab 12.6,
+if a user has a pre-existing username and password, they can still use that to log
+in by default. However, this can be disabled.
+
 GitLab supports authentication using smartcards.
 
 ## Authentication methods

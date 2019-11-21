@@ -1,4 +1,4 @@
-require './spec/support/sidekiq'
+require './spec/support/sidekiq_middleware'
 
 Gitlab::Seeder.quiet do
   # Limit the number of merge requests per project to avoid long seeds
