@@ -4,11 +4,6 @@ require 'pathname'
 
 module QA
   context 'Configure' do
-    def login
-      Runtime::Browser.visit(:gitlab, Page::Main::Login)
-      Page::Main::Login.perform(&:sign_in_using_credentials)
-    end
-
     def disable_optional_jobs(project)
       # Disable code_quality check in Auto DevOps pipeline as it takes
       # too long and times out the test
@@ -66,7 +61,7 @@ module QA
         end
 
         it 'runs auto devops' do
-          login
+          Flow::Login.sign_in
 
           @project = Resource::Project.fabricate! do |p|
             p.name = Runtime::Env.auto_devops_project_name || 'project-with-autodevops'
@@ -148,7 +143,7 @@ module QA
 
     describe 'Auto DevOps', :smoke do
       before do
-        login
+        Flow::Login.sign_in
 
         @project = Resource::Project.fabricate_via_browser_ui! do |p|
           p.name = "project-with-autodevops-#{SecureRandom.hex(8)}"

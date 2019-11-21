@@ -4,8 +4,7 @@ module QA
   context 'Performance bar' do
     context 'when logged in as an admin user', :requires_admin do
       before do
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.perform(&:sign_in_using_admin_credentials)
+        Flow::Login.sign_in_as_admin
         Page::Main::Menu.perform(&:go_to_admin_area)
         Page::Admin::Menu.perform(&:go_to_metrics_and_profiling_settings)
 
