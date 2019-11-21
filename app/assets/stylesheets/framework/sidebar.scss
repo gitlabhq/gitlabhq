@@ -61,10 +61,6 @@
   padding-right: 0;
   z-index: 300;
 
-  .btn-sidebar-action {
-    display: inline-flex;
-  }
-
   @include media-breakpoint-only(sm) {
     &:not(.wiki-sidebar):not(.build-sidebar):not(.issuable-bulk-update-sidebar) .content-wrapper {
       padding-right: $gutter-collapsed-width;

@@ -86,6 +86,7 @@ describe Git::BranchPushService, services: true do
                 after: newrev,
                 ref: ref,
                 checkout_sha: SeedRepo::Commit::ID,
+                variables_attributes: [],
                 push_options: {}
               }).and_call_original
 

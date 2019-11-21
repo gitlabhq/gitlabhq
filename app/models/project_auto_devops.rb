@@ -16,6 +16,7 @@ class ProjectAutoDevops < ApplicationRecord
 
   def predefined_variables
     Gitlab::Ci::Variables::Collection.new.tap do |variables|
+      variables.append(key: 'AUTO_DEVOPS_EXPLICITLY_ENABLED', value: '1') if enabled?
       variables.concat(deployment_strategy_default_variables)
     end
   end

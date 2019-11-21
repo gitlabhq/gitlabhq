@@ -29,7 +29,7 @@ describe('Release detail component', () => {
 
     const store = new Vuex.Store({ actions, state });
 
-    wrapper = mount(ReleaseDetailApp, { store });
+    wrapper = mount(ReleaseDetailApp, { store, sync: false, attachToDocument: true });
 
     return wrapper.vm.$nextTick();
   });

@@ -19,13 +19,13 @@ describe('table registry', () => {
   let wrapper;
   let store;
 
-  const findSelectAllCheckbox = (w = wrapper) => w.find('.js-select-all-checkbox > input');
-  const findSelectCheckboxes = (w = wrapper) => w.findAll('.js-select-checkbox > input');
-  const findDeleteButton = (w = wrapper) => w.find({ ref: 'bulkDeleteButton' });
-  const findDeleteButtonsRow = (w = wrapper) => w.findAll('.js-delete-registry-row');
-  const findPagination = (w = wrapper) => w.find('.js-registry-pagination');
-  const findDeleteModal = (w = wrapper) => w.find({ ref: 'deleteModal' });
-  const findImageId = (w = wrapper) => w.find({ ref: 'imageId' });
+  const findSelectAllCheckbox = () => wrapper.find('.js-select-all-checkbox > input');
+  const findSelectCheckboxes = () => wrapper.findAll('.js-select-checkbox > input');
+  const findDeleteButton = () => wrapper.find({ ref: 'bulkDeleteButton' });
+  const findDeleteButtonsRow = () => wrapper.findAll('.js-delete-registry-row');
+  const findPagination = () => wrapper.find('.js-registry-pagination');
+  const findDeleteModal = () => wrapper.find({ ref: 'deleteModal' });
+  const findImageId = () => wrapper.find({ ref: 'imageId' });
   const bulkDeletePath = 'path';
 
   const mountWithStore = config =>
@@ -83,8 +83,8 @@ describe('table registry', () => {
 
   describe('multi select', () => {
     it('selecting a row should enable delete button', done => {
-      const deleteBtn = findDeleteButton(wrapper);
-      const checkboxes = findSelectCheckboxes(wrapper);
+      const deleteBtn = findDeleteButton();
+      const checkboxes = findSelectCheckboxes();
 
       expect(deleteBtn.attributes('disabled')).toBe('disabled');
 
@@ -96,8 +96,8 @@ describe('table registry', () => {
     });
 
     it('selecting all checkbox should select all rows and enable delete button', done => {
-      const selectAll = findSelectAllCheckbox(wrapper);
-      const checkboxes = findSelectCheckboxes(wrapper);
+      const selectAll = findSelectAllCheckbox();
+      const checkboxes = findSelectCheckboxes();
       selectAll.trigger('click');
 
       Vue.nextTick(() => {
@@ -108,8 +108,8 @@ describe('table registry', () => {
     });
 
     it('deselecting select all checkbox should deselect all rows and disable delete button', done => {
-      const checkboxes = findSelectCheckboxes(wrapper);
-      const selectAll = findSelectAllCheckbox(wrapper);
+      const checkboxes = findSelectCheckboxes();
+      const selectAll = findSelectAllCheckbox();
       selectAll.trigger('click');
       selectAll.trigger('click');
 
@@ -123,11 +123,11 @@ describe('table registry', () => {
     it('should delete multiple items when multiple items are selected', done => {
       const multiDeleteItems = jest.fn().mockResolvedValue();
       wrapper.setMethods({ multiDeleteItems });
-      const selectAll = findSelectAllCheckbox(wrapper);
+      const selectAll = findSelectAllCheckbox();
       selectAll.trigger('click');
 
       Vue.nextTick(() => {
-        const deleteBtn = findDeleteButton(wrapper);
+        const deleteBtn = findDeleteButton();
         expect(wrapper.vm.selectedItems).toEqual([0, 1]);
         expect(deleteBtn.attributes('disabled')).toEqual(undefined);
         wrapper.setData({ itemsToBeDeleted: [...wrapper.vm.selectedItems] });
@@ -165,8 +165,8 @@ describe('table registry', () => {
     });
 
     it('should be possible to delete a registry', () => {
-      const deleteBtn = findDeleteButton(wrapper);
-      const deleteBtns = findDeleteButtonsRow(wrapper);
+      const deleteBtn = findDeleteButton();
+      const deleteBtns = findDeleteButtonsRow();
       expect(wrapper.vm.selectedItems).toEqual([0]);
       expect(deleteBtn).toBeDefined();
       expect(deleteBtn.attributes('disable')).toBe(undefined);
@@ -174,7 +174,7 @@ describe('table registry', () => {
     });
 
     it('should allow deletion row by row', () => {
-      const deleteBtns = findDeleteButtonsRow(wrapper);
+      const deleteBtns = findDeleteButtonsRow();
       const deleteSingleItem = jest.fn();
       const deleteItem = jest.fn().mockResolvedValue();
       wrapper.setMethods({ deleteSingleItem, deleteItem });
@@ -225,11 +225,11 @@ describe('table registry', () => {
     });
 
     it('should exist', () => {
-      const pagination = findPagination(wrapper);
+      const pagination = findPagination();
       expect(pagination.exists()).toBe(true);
     });
     it('should be visible when pagination is needed', () => {
-      const pagination = findPagination(wrapper);
+      const pagination = findPagination();
       expect(pagination.isVisible()).toBe(true);
       wrapper.setProps({
         repo: {
@@ -283,22 +283,22 @@ describe('table registry', () => {
     });
 
     it('should not render select all', () => {
-      const selectAll = findSelectAllCheckbox(wrapper);
+      const selectAll = findSelectAllCheckbox();
       expect(selectAll.exists()).toBe(false);
     });
 
     it('should not render any select checkbox', () => {
-      const selects = findSelectCheckboxes(wrapper);
+      const selects = findSelectCheckboxes();
       expect(selects.length).toBe(0);
     });
 
     it('should not render delete registry button', () => {
-      const deleteBtn = findDeleteButton(wrapper);
+      const deleteBtn = findDeleteButton();
       expect(deleteBtn.exists()).toBe(false);
     });
 
     it('should not render delete row button', () => {
-      const deleteBtns = findDeleteButtonsRow(wrapper);
+      const deleteBtns = findDeleteButtonsRow();
       expect(deleteBtns.length).toBe(0);
     });
   });

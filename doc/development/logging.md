@@ -39,7 +39,7 @@ Note that currently on GitLab.com, any messages in `production.log` will
 NOT get indexed by Elasticsearch due to the sheer volume and noise. They
 do end up in Google Stackdriver, but it is still harder to search for
 logs there. See the [GitLab.com logging
-documentation](https://gitlab.com/gitlab-com/runbooks/blob/master/howto/logging.md)
+documentation](https://gitlab.com/gitlab-com/runbooks/blob/master/logging/doc/README.md)
 for more details.
 
 ## Use structured (JSON) logging

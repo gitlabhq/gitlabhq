@@ -5758,9 +5758,6 @@ msgstr ""
 msgid "DesignManagement|Adding a design with the same filename replaces the file in a new version."
 msgstr ""
 
-msgid "DesignManagement|An error occurred while loading designs. Please try again."
-msgstr ""
-
 msgid "DesignManagement|Are you sure you want to delete the selected designs?"
 msgstr ""
 
