@@ -1,15 +1,19 @@
 import $ from 'jquery';
 import Sortable from 'sortablejs';
 import Vue from 'vue';
+import { GlButtonGroup, GlButton, GlTooltip } from '@gitlab/ui';
 import { n__, s__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import Tooltip from '~/vue_shared/directives/tooltip';
+import isWipLimitsOn from 'ee_else_ce/boards/mixins/is_wip_limits';
 import AccessorUtilities from '../../lib/utils/accessor';
 import BoardBlankState from './board_blank_state.vue';
 import BoardDelete from './board_delete';
 import BoardList from './board_list.vue';
+import IssueCount from './issue_count.vue';
 import boardsStore from '../stores/boards_store';
 import { getBoardSortableDefaultOptions, sortableEnd } from '../mixins/sortable_default_options';
+import { ListType } from '../constants';
 
 export default Vue.extend({
   components: {
@@ -17,10 +21,15 @@ export default Vue.extend({
     BoardDelete,
     BoardList,
     Icon,
+    GlButtonGroup,
+    IssueCount,
+    GlButton,
+    GlTooltip,
   },
   directives: {
     Tooltip,
   },
+  mixins: [isWipLimitsOn],
   props: {
     list: {
       type: Object,
@@ -53,6 +62,11 @@ export default Vue.extend({
     isLoggedIn() {
       return Boolean(gon.current_user_id);
     },
+    showListHeaderButton() {
+      return (
+        !this.disabled && this.list.type !== ListType.closed && this.list.type !== ListType.blank
+      );
+    },
     counterTooltip() {
       const { issuesSize } = this.list;
       return `${n__('%d issue', '%d issues', issuesSize)}`;
@@ -61,10 +75,18 @@ export default Vue.extend({
       return this.list.isExpanded ? s__('Boards|Collapse') : s__('Boards|Expand');
     },
     isNewIssueShown() {
+      return this.list.type === ListType.backlog || this.showListHeaderButton;
+    },
+    isSettingsShown() {
       return (
-        this.list.type === 'backlog' ||
-        (!this.disabled && this.list.type !== 'closed' && this.list.type !== 'blank')
+        this.list.type !== ListType.backlog &&
+        this.showListHeaderButton &&
+        this.list.isExpanded &&
+        this.isWipLimitsOn
       );
+    },
+    showBoardListAndBoardInfo() {
+      return this.list.type !== ListType.blank && this.list.type !== ListType.promotion;
     },
     uniqueKey() {
       // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings

@@ -718,6 +718,14 @@ Note that `enforced="true"`, meaning that authentication is being enforced.
 
 ## Troubleshooting Gitaly
 
+### Checking versions when using standalone Gitaly nodes
+
+When using standalone Gitaly nodes, you must make sure they are the same version
+as GitLab to ensure full compatibility. Check **Admin Area > Gitaly Servers** on
+your GitLab instance and confirm all Gitaly Servers are `Up to date`.
+
+![Gitaly standalone software versions diagram](img/gitlab_gitaly_version_mismatch_v12_4.png)
+
 ### `gitaly-debug`
 
 The `gitaly-debug` command provides "production debugging" tools for Gitaly and Git

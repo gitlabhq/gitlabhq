@@ -72,7 +72,7 @@ export default {
             {{ __('Related merge requests') }}
           </span>
           <div v-if="totalCount" class="d-inline-flex lh-100 align-middle">
-            <div class="mr-count-badge">
+            <div class="mr-count-badge border-width-1px border-style-solid border-color-default">
               <div class="mr-count-badge-count">
                 <svg class="s16 mr-1 text-secondary">
                   <icon name="merge-request" class="mr-1 text-secondary" />

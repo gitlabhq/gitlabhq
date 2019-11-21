@@ -123,6 +123,25 @@ NOTE: **Note:** GitLab is unable to provide support for IdPs that are not listed
 
 When [configuring your identify provider](#configuring-your-identity-provider), please consider the notes below for specific providers to help avoid common issues and as a guide for terminology used.
 
+### Azure setup notes
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a demo of the Azure SAML setup including SCIM, see [SCIM Provisioning on Azure Using SAML SSO for Groups Demo](https://youtu.be/24-ZxmTeEBU).
+
+| GitLab Setting | Azure Field |
+|--------------|----------------|
+| Identifier   | Identifier (Entity ID) |
+| Assertion consumer service URL | Reply URL (Assertion Consumer Service URL) |
+| Identity provider single sign on URL | Login URL |
+| Certificate fingerprint | Thumbprint |
+
+We recommend:
+
+- **Unique User Identifier (Name identifier)** set to `user.objectID`.
+- **nameid-format** set to persistent.
+
+Set other user attributes and claims according to the [assertions table](#assertions).
+
 ### Okta setup notes
 
 | GitLab Setting | Okta Field |

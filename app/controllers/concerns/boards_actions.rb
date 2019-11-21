@@ -9,6 +9,7 @@ module BoardsActions
 
     before_action :boards, only: :index
     before_action :board, only: :show
+    before_action :push_wip_limits, only: :index
   end
 
   def index
@@ -23,6 +24,10 @@ module BoardsActions
   end
 
   private
+
+  # Noop on FOSS
+  def push_wip_limits
+  end
 
   def boards
     strong_memoize(:boards) do

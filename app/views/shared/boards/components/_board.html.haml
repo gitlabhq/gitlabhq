@@ -42,23 +42,27 @@
             %button.board-delete.no-drag.p-0.border-0.has-tooltip.float-right{ type: "button", title: _("Delete list"), ":class": "{ 'd-none': !list.isExpanded }", "aria-label" => _("Delete list"), data: { placement: "bottom" }, "@click.stop" => "deleteBoard" }
               = icon("trash")
 
-        .issue-count-badge.no-drag.text-secondary{ "v-if" => 'list.type !== "blank" && list.type !== "promotion"', ":title": "counterTooltip", "v-tooltip": true, data: { placement: "top" } }
+        .issue-count-badge.pr-0.no-drag.text-secondary{ "v-if" => "showBoardListAndBoardInfo", ":title": "counterTooltip", "v-tooltip": true, data: { placement: "top" } }
           %span.d-inline-flex
             %span.issue-count-badge-count
               %icon.mr-1{ name: "issues" }
-              {{ list.issuesSize }}
+              %issue-count{ ":maxIssueCount" => "list.maxIssueCount",
+                ":issuesSize" => "list.issuesSize" }
             = render_if_exists "shared/boards/components/list_weight"
 
-        %button.issue-count-badge-add-button.no-drag.btn.btn-sm.btn-default.ml-1.has-tooltip{ type: "button",
-          "@click" => "showNewIssueForm",
-          "v-if" => "isNewIssueShown",
-          ":class": "{ 'd-none': !list.isExpanded }",
-          "aria-label" => _("New issue"),
-          "title" => _("New issue"),
-          data: { placement: "top", container: "body" } }
-          = icon("plus")
+        %gl-button-group.board-list-button-group.pl-2{ "v-if" => "isNewIssueShown || isSettingsShown" }
+          %gl-button.issue-count-badge-add-button.no-drag{ type: "button",
+            "@click" => "showNewIssueForm",
+            "v-if" => "isNewIssueShown",
+            ":class": "{ 'd-none': !list.isExpanded, 'rounded-right': isNewIssueShown && !isSettingsShown }",
+            "aria-label" => _("New issue"),
+            "ref" => "newIssueBtn" }
+            = icon("plus")
+          %gl-tooltip{ ":target" => "() => $refs.newIssueBtn" }
+            = _("New Issue")
+          = render_if_exists 'shared/boards/components/list_settings'
 
-    %board-list{ "v-if" => 'list.type !== "blank" && list.type !== "promotion"',
+    %board-list{ "v-if" => "showBoardListAndBoardInfo",
       ":list" => "list",
       ":issues" => "list.issues",
       ":loading" => "list.loading",

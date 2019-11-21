@@ -72,7 +72,6 @@ describe 'Issue Boards', :js do
     let!(:closed)       { create(:label, project: project, name: 'Closed') }
     let!(:accepting) { create(:label, project: project, name: 'Accepting Merge Requests') }
     let!(:a_plus) { create(:label, project: project, name: 'A+') }
-
     let!(:list1) { create(:list, board: board, label: planning, position: 0) }
     let!(:list2) { create(:list, board: board, label: development, position: 1) }
 
@@ -287,6 +286,17 @@ describe 'Issue Boards', :js do
         it 'shows assignee' do
           page.within(find('.board:nth-child(2)')) do
             expect(page).to have_selector('.avatar', count: 1)
+          end
+        end
+
+        context 'list header' do
+          let(:total_planning_issues) { "8" }
+
+          it 'shows issue count on the list' do
+            page.within(find(".board:nth-child(2)")) do
+              expect(page.find('.js-issue-size')).to have_text(total_planning_issues)
+              expect(page).not_to have_selector('.js-max-issue-size')
+            end
           end
         end
       end

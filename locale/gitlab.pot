@@ -10291,6 +10291,9 @@ msgstr ""
 msgid "List"
 msgstr ""
 
+msgid "List Settings"
+msgstr ""
+
 msgid "List Your Gitea Repositories"
 msgstr ""
 

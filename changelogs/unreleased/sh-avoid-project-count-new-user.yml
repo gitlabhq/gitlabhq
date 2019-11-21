@@ -1,0 +1,5 @@
+---
+title: Disable public project counts on welcome page
+merge_request: 20517
+author:
+type: performance

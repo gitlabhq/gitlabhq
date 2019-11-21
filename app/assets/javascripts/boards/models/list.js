@@ -52,6 +52,9 @@ class List {
     this.loadingMore = false;
     this.issues = obj.issues || [];
     this.issuesSize = obj.issuesSize ? obj.issuesSize : 0;
+    this.maxIssueCount = Object.hasOwnProperty.call(obj, 'max_issue_count')
+      ? obj.max_issue_count
+      : 0;
     this.defaultAvatar = defaultAvatar;
 
     if (obj.label) {
