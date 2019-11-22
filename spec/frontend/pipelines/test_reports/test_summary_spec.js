@@ -1,9 +1,13 @@
 import Summary from '~/pipelines/components/test_reports/test_summary.vue';
 import { mount } from '@vue/test-utils';
-import { testSuites } from './mock_data';
+import { getJSONFixture } from 'helpers/fixtures';
 
 describe('Test reports summary', () => {
   let wrapper;
+
+  const {
+    test_suites: [testSuite],
+  } = getJSONFixture('pipelines/test_report.json');
 
   const backButton = () => wrapper.find('.js-back-button');
   const totalTests = () => wrapper.find('.js-total-tests');
@@ -13,7 +17,7 @@ describe('Test reports summary', () => {
   const duration = () => wrapper.find('.js-duration');
 
   const defaultProps = {
-    report: testSuites[0],
+    report: testSuite,
     showBack: false,
   };
 
@@ -72,7 +76,7 @@ describe('Test reports summary', () => {
     });
 
     it('displays the correctly formatted duration', () => {
-      expect(duration().text()).toBe('00:01:00');
+      expect(duration().text()).toBe('00:00:00');
     });
   });
 });

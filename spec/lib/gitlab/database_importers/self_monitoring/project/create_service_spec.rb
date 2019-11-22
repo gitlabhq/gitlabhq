@@ -279,5 +279,11 @@ describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService do
         end
       end
     end
+
+    it "tracks successful install" do
+      expect(Gitlab::Tracking).to receive(:event).with("self_monitoring", "project_created")
+
+      result
+    end
   end
 end

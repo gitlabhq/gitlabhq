@@ -173,7 +173,7 @@ module Issuable
     private
 
     def milestone_is_valid
-      errors.add(:milestone_id, message: "is invalid") if milestone_id.present? && !milestone_available?
+      errors.add(:milestone_id, message: "is invalid") if respond_to?(:milestone_id) && milestone_id.present? && !milestone_available?
     end
 
     def description_max_length_for_new_records_is_valid

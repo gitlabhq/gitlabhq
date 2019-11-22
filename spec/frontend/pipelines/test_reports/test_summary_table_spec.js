@@ -2,7 +2,7 @@ import Vuex from 'vuex';
 import SummaryTable from '~/pipelines/components/test_reports/test_summary_table.vue';
 import * as getters from '~/pipelines/stores/test_reports/getters';
 import { mount, createLocalVue } from '@vue/test-utils';
-import { testReports, testReportsWithNoSuites } from './mock_data';
+import { getJSONFixture } from 'helpers/fixtures';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -10,6 +10,8 @@ localVue.use(Vuex);
 describe('Test reports summary table', () => {
   let wrapper;
   let store;
+
+  const testReports = getJSONFixture('pipelines/test_report.json');
 
   const allSuitesRows = () => wrapper.findAll('.js-suite-row');
   const noSuitesToShow = () => wrapper.find('.js-no-tests-suites');
@@ -44,7 +46,7 @@ describe('Test reports summary table', () => {
 
   describe('when there are no test suites', () => {
     beforeEach(() => {
-      createComponent({ testReportsWithNoSuites });
+      createComponent({ test_suites: [] });
     });
 
     it('displays the no suites to show message', () => {

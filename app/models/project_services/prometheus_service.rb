@@ -22,6 +22,8 @@ class PrometheusService < MonitoringService
 
   after_save :clear_reactive_cache!
 
+  after_commit :track_events
+
   def initialize_properties
     if properties.nil?
       self.properties = {}
@@ -115,5 +117,23 @@ class PrometheusService < MonitoringService
     self.active = prometheus_available? || manual_configuration?
 
     true
+  end
+
+  def track_events
+    if enabled_manual_prometheus?
+      Gitlab::Tracking.event('cluster:services:prometheus', 'enabled_manual_prometheus')
+    elsif disabled_manual_prometheus?
+      Gitlab::Tracking.event('cluster:services:prometheus', 'disabled_manual_prometheus')
+    end
+
+    true
+  end
+
+  def enabled_manual_prometheus?
+    manual_configuration_changed? && manual_configuration?
+  end
+
+  def disabled_manual_prometheus?
+    manual_configuration_changed? && !manual_configuration?
   end
 end

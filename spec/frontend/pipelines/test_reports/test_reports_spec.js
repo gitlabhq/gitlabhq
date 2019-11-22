@@ -1,12 +1,14 @@
 import Vuex from 'vuex';
 import TestReports from '~/pipelines/components/test_reports/test_reports.vue';
 import { shallowMount } from '@vue/test-utils';
-import { testReports } from './mock_data';
 import * as actions from '~/pipelines/stores/test_reports/actions';
+import { getJSONFixture } from 'helpers/fixtures';
 
 describe('Test reports app', () => {
   let wrapper;
   let store;
+
+  const testReports = getJSONFixture('pipelines/test_report.json');
 
   const loadingSpinner = () => wrapper.find('.js-loading-spinner');
   const testsDetail = () => wrapper.find('.js-tests-detail');

@@ -47,7 +47,6 @@ tables:
   epics:
     whitelist:
     - id
-    - milestone_id
     - group_id
     - author_id
     - assignee_id

@@ -1,9 +1,11 @@
 import * as types from '~/pipelines/stores/test_reports/mutation_types';
 import mutations from '~/pipelines/stores/test_reports/mutations';
-import { testReports, testSuites } from '../mock_data';
+import { getJSONFixture } from 'helpers/fixtures';
 
 describe('Mutations TestReports Store', () => {
   let mockState;
+
+  const testReports = getJSONFixture('pipelines/test_report.json');
 
   const defaultState = {
     endpoint: '',
@@ -27,7 +29,7 @@ describe('Mutations TestReports Store', () => {
 
   describe('set reports', () => {
     it('should set testReports', () => {
-      const expectedState = Object.assign({}, mockState, { testReports });
+      const expectedState = { ...mockState, testReports };
       mutations[types.SET_REPORTS](mockState, testReports);
 
       expect(mockState.testReports).toEqual(expectedState.testReports);
@@ -36,10 +38,10 @@ describe('Mutations TestReports Store', () => {
 
   describe('set selected suite', () => {
     it('should set selectedSuite', () => {
-      const expectedState = Object.assign({}, mockState, { selectedSuite: testSuites[0] });
-      mutations[types.SET_SELECTED_SUITE](mockState, testSuites[0]);
+      const selectedSuite = testReports.test_suites[0];
+      mutations[types.SET_SELECTED_SUITE](mockState, selectedSuite);
 
-      expect(mockState.selectedSuite).toEqual(expectedState.selectedSuite);
+      expect(mockState.selectedSuite).toEqual(selectedSuite);
     });
   });
 

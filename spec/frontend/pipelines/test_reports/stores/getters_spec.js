@@ -1,8 +1,11 @@
 import * as getters from '~/pipelines/stores/test_reports/getters';
-import { testReports, testSuitesFormatted, testCasesFormatted } from '../mock_data';
+import { iconForTestStatus } from '~/pipelines/stores/test_reports/utils';
+import { getJSONFixture } from 'helpers/fixtures';
 
 describe('Getters TestReports Store', () => {
   let state;
+
+  const testReports = getJSONFixture('pipelines/test_report.json');
 
   const defaultState = {
     testReports,
@@ -28,7 +31,13 @@ describe('Getters TestReports Store', () => {
     it('should return the test suites', () => {
       setupState();
 
-      expect(getters.getTestSuites(state)).toEqual(testSuitesFormatted);
+      const suites = getters.getTestSuites(state);
+      const expected = testReports.test_suites.map(x => ({
+        ...x,
+        formattedTime: '00:00:00',
+      }));
+
+      expect(suites).toEqual(expected);
     });
 
     it('should return an empty array when testReports is empty', () => {
@@ -42,7 +51,14 @@ describe('Getters TestReports Store', () => {
     it('should return the test cases inside the suite', () => {
       setupState();
 
-      expect(getters.getSuiteTests(state)).toEqual(testCasesFormatted);
+      const cases = getters.getSuiteTests(state);
+      const expected = testReports.test_suites[0].test_cases.map(x => ({
+        ...x,
+        formattedTime: '00:00:00',
+        icon: iconForTestStatus(x.status),
+      }));
+
+      expect(cases).toEqual(expected);
     });
 
     it('should return an empty array when testReports is empty', () => {

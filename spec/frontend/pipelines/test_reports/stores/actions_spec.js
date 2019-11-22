@@ -2,16 +2,18 @@ import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import * as actions from '~/pipelines/stores/test_reports/actions';
 import * as types from '~/pipelines/stores/test_reports/mutation_types';
+import { getJSONFixture } from 'helpers/fixtures';
 import { TEST_HOST } from '../../../helpers/test_constants';
 import testAction from '../../../helpers/vuex_action_helper';
 import createFlash from '~/flash';
-import { testReports } from '../mock_data';
 
 jest.mock('~/flash.js');
 
 describe('Actions TestReports Store', () => {
   let mock;
   let state;
+
+  const testReports = getJSONFixture('pipelines/test_report.json');
 
   const endpoint = `${TEST_HOST}/test_reports.json`;
   const defaultState = {

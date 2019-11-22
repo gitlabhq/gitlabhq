@@ -97,7 +97,7 @@ query {
 
 ### The root node
 
-Any field defined in [`QueryType`](app/graphql/types/query_type.rb) will be exposed as a root node.
+Any field defined in [`QueryType`](https://gitlab.com/gitlab-org/gitlab/tree/master/app/graphql/types/query_type.rb) will be exposed as a root node.
 When retrieving child nodes use:
 
 - the `edges { node { } }` syntax.

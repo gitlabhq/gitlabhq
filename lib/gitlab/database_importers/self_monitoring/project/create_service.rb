@@ -29,10 +29,11 @@ module Gitlab
 
           def execute!
             result = execute_steps
-
             if result[:status] == :success
+              ::Gitlab::Tracking.event("self_monitoring", "project_created")
               result
             elsif STEPS_ALLOWED_TO_FAIL.include?(result[:last_step])
+              ::Gitlab::Tracking.event("self_monitoring", "project_created")
               success
             else
               raise StandardError, result[:message]

@@ -13,7 +13,7 @@ describe Projects::TagsController do
     end
 
     it 'returns the tags for the page' do
-      expect(assigns(:tags).map(&:name)).to eq(['v1.1.0', 'v1.0.0'])
+      expect(assigns(:tags).map(&:name)).to include('v1.1.0', 'v1.0.0')
     end
 
     it 'returns releases matching those tags' do

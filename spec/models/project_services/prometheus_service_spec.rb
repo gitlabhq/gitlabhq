@@ -262,4 +262,28 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
       end
     end
   end
+
+  describe '#track_events after_commit callback' do
+    before do
+      allow(service).to receive(:prometheus_available?).and_return(true)
+    end
+
+    context "enabling manual_configuration" do
+      it "tracks enable event" do
+        service.update!(manual_configuration: false)
+
+        expect(Gitlab::Tracking).to receive(:event).with('cluster:services:prometheus', 'enabled_manual_prometheus')
+
+        service.update!(manual_configuration: true)
+      end
+
+      it "tracks disable event" do
+        service.update!(manual_configuration: true)
+
+        expect(Gitlab::Tracking).to receive(:event).with('cluster:services:prometheus', 'disabled_manual_prometheus')
+
+        service.update!(manual_configuration: false)
+      end
+    end
+  end
 end

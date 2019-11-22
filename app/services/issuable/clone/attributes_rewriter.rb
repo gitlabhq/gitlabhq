@@ -10,7 +10,13 @@ module Issuable
       end
 
       def execute
-        new_entity.update(milestone: cloneable_milestone, labels: cloneable_labels)
+        update_attributes = { labels: cloneable_labels }
+
+        milestone = cloneable_milestone
+        update_attributes[:milestone] = milestone if milestone.present?
+
+        new_entity.update(update_attributes)
+
         copy_resource_label_events
       end
 

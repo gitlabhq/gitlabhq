@@ -3,18 +3,26 @@ import SuiteTable from '~/pipelines/components/test_reports/test_suite_table.vue
 import * as getters from '~/pipelines/stores/test_reports/getters';
 import { TestStatus } from '~/pipelines/constants';
 import { shallowMount } from '@vue/test-utils';
-import { testSuites, testCases } from './mock_data';
+import { getJSONFixture } from 'helpers/fixtures';
+import skippedTestCases from './mock_data';
 
 describe('Test reports suite table', () => {
   let wrapper;
   let store;
+
+  const {
+    test_suites: [testSuite],
+  } = getJSONFixture('pipelines/test_report.json');
+
+  testSuite.test_cases = [...testSuite.test_cases, ...skippedTestCases];
+  const testCases = testSuite.test_cases;
 
   const noCasesMessage = () => wrapper.find('.js-no-test-cases');
   const allCaseRows = () => wrapper.findAll('.js-case-row');
   const findCaseRowAtIndex = index => wrapper.findAll('.js-case-row').at(index);
   const findIconForRow = (row, status) => row.find(`.ci-status-icon-${status}`);
 
-  const createComponent = (suite = testSuites[0]) => {
+  const createComponent = (suite = testSuite) => {
     store = new Vuex.Store({
       state: {
         selectedSuite: suite,
