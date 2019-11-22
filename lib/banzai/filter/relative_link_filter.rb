@@ -172,7 +172,7 @@ module Banzai
       end
 
       def cleaned_file_path(uri)
-        Addressable::URI.unescape(uri.path).delete("\0").chomp("/")
+        Addressable::URI.unescape(uri.path).scrub.delete("\0").chomp("/")
       end
 
       def relative_file_path(uri)
