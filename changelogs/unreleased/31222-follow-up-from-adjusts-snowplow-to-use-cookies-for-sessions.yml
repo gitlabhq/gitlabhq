@@ -1,5 +1,0 @@
----
-title: Rename snowplow_site_id to snowplow_app_id in application_settings table
-merge_request: 19252
-author:
-type: other

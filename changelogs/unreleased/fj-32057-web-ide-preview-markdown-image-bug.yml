@@ -1,5 +1,0 @@
----
-title: Fix broken images when previewing markdown files in Web IDE
-merge_request: 18899
-author:
-type: fixed

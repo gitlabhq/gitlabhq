@@ -1,5 +1,0 @@
----
-title: Enable image link and lazy loading in AsciiDoc documents
-merge_request: 18164
-author: Guillaume Grossetie
-type: fixed

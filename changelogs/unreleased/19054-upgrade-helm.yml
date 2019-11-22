@@ -1,5 +1,0 @@
----
-title: 'Updated Auto-DevOps to kubectl v1.13.12 and helm v2.15.1'
-merge_request: 19054
-author: Leo Antunes
-type: changed

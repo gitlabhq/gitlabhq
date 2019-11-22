@@ -1,5 +1,0 @@
----
-title: Fix query validation in custom metrics form
-merge_request: 18769
-author:
-type: fixed

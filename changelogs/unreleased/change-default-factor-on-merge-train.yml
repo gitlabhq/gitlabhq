@@ -1,5 +1,0 @@
----
-title: Change the default concurrency factor of merge train to 20
-merge_request: 20201
-author:
-type: changed

@@ -1,5 +1,0 @@
----
-title: Fix checking task item when previous tasks contain only spaces
-merge_request: 19724
-author:
-type: fixed

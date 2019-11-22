@@ -1,5 +1,0 @@
----
-title: Fix "project or group was moved" alerts showing up in the wrong pages
-merge_request: 18985
-author:
-type: fixed

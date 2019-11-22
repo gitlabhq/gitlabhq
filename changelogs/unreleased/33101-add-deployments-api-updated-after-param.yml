@@ -1,5 +1,0 @@
----
-title: Allow order_by updated_at in Deployments API
-merge_request: 19658
-author:
-type: added

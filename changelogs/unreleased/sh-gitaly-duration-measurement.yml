@@ -1,5 +1,0 @@
----
-title: Fix Gitaly call duration measurements
-merge_request: 18785
-author:
-type: fixed

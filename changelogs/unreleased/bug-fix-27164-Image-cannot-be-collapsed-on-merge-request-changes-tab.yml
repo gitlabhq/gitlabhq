@@ -1,5 +1,0 @@
----
-title: 'fixed #27164 Image cannot be collapsed on merge request changes tab'
-merge_request: 18917
-author: Jannik Lehmann
-type: fixed

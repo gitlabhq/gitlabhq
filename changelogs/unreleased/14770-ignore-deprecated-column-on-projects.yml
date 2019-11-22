@@ -1,5 +1,0 @@
----
-title: Ignore deprecated column and remove references to it
-merge_request: 18911
-author:
-type: deprecated

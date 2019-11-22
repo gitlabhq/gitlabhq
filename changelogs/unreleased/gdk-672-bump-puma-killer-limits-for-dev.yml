@@ -1,5 +1,0 @@
----
-title: Increase PumaWorkerKiller memory limit in development environment
-merge_request: 20039
-author:
-type: performance

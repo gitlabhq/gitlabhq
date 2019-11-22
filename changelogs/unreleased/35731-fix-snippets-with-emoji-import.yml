@@ -1,5 +1,0 @@
----
-title: Fix import of snippets having `award_emoji` (Project Export/Import)
-merge_request: 19690
-author:
-type: fixed

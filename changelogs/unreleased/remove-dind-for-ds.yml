@@ -1,5 +1,0 @@
----
-title: Dependency Scanning template that doesn't rely on Docker-in-Docker
-merge_request:
-author:
-type: other

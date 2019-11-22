@@ -1,5 +1,0 @@
----
-title: Set X-GitLab-NotificationReason header if notification reason is explicit subscription
-merge_request: 18812
-author:
-type: added

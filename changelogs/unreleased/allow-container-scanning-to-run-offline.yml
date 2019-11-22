@@ -1,5 +1,0 @@
----
-title: Allow container scanning to run offline by specifying the Clair DB image to use.
-merge_request: 19161
-author:
-type: changed

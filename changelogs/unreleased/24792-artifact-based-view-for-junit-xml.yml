@@ -1,6 +1,0 @@
----
-title: Added Tests tab to pipeline detail that contains a UI for browsing test reports
-  produced by JUnit
-merge_request: 18255
-author:
-type: added

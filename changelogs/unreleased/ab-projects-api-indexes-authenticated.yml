@@ -1,5 +1,0 @@
----
-title: Add index for authenticated requests to projects API default endpoint
-merge_request: 19993
-author:
-type: performance

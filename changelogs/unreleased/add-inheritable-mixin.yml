@@ -1,5 +1,0 @@
----
-title: Make `Job`, `Bridge` and `Default` inheritable
-merge_request: 18867
-author:
-type: added

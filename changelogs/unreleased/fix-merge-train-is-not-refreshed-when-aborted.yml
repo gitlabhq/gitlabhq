@@ -1,5 +1,0 @@
----
-title: Fix merge train is not refreshed when the system aborts/drops a merge request
-merge_request: 19763
-author:
-type: fixed

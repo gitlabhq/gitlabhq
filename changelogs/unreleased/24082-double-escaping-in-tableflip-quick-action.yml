@@ -1,5 +1,0 @@
----
-title: Fix double escaping in /tableflip quick action
-merge_request: 19271
-author: Brian T
-type: fixed

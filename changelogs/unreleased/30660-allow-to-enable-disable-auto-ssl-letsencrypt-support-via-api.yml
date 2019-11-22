@@ -1,5 +1,0 @@
----
-title: Require explicit null parameters to remove pages domain certificate and allow to use Let's Encrypt certificates through API
-merge_request:
-author:
-type: changed

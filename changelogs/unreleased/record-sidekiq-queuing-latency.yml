@@ -1,5 +1,0 @@
----
-title: Adds a Sidekiq queue duration metric
-merge_request: 19005
-author:
-type: other

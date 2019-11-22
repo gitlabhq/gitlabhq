@@ -1,5 +1,0 @@
----
-title: "[Geo] Fix: rake gitlab:geo:check on the primary is cluttered"
-merge_request: 19460
-author:
-type: changed

@@ -1,5 +1,0 @@
----
-title: Fix uninitialized constant SystemDashboardService
-merge_request: 19453
-author:
-type: fixed

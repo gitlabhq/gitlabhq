@@ -1,6 +1,0 @@
----
-title: When a user views a file's blame or blob and switches to a branch where the
-  current file does not exist, they will now be redirected to the root of the repository.
-merge_request: 18169
-author: Jesse Hall @jessehall3
-type: changed

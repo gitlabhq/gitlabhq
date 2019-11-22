@@ -1,5 +1,0 @@
----
-title: Prevent Dropzone.js initialisation error by checking target element existence
-merge_request: 20256
-author: Fabio Huser
-type: fixed

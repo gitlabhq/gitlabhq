@@ -1,5 +1,0 @@
----
-title: Add can_edit and project_blob_path to metrics_dashboard endpoint
-merge_request: 19663
-author:
-type: added

@@ -1,5 +1,0 @@
----
-title: Fix serverless function descriptions not showing on Knative 0.7
-merge_request: 18973
-author:
-type: fixed

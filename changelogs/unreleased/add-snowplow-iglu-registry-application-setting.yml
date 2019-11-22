@@ -1,5 +1,0 @@
----
-title: Add ApplicationSetting for snowplow_iglu_registry_url
-merge_request: 18449
-author:
-type: added

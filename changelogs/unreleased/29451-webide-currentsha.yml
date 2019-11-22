@@ -1,5 +1,0 @@
----
-title: 'Resolve: Web IDE Throws Error When Viewing Diff for Renamed Files'
-merge_request: 19348
-author:
-type: fixed

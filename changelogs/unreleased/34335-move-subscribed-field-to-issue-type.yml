@@ -1,5 +1,0 @@
----
-title: Expose subscribed field in issue lists queried with GraphQL
-merge_request: 19458
-author: briankabiro
-type: changed

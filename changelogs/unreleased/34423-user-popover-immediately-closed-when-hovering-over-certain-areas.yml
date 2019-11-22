@@ -1,5 +1,0 @@
----
-title: Fix user popover not being displayed when the user has a status message
-merge_request: 19519
-author:
-type: fixed

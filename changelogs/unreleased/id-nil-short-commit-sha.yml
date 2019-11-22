@@ -1,5 +1,0 @@
----
-title: Serialize short sha as nil if head commit is blank
-merge_request: 19014
-author:
-type: fixed

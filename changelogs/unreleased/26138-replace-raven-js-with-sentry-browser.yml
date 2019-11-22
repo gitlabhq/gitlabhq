@@ -1,5 +1,0 @@
----
-title: Replace raven-js with @sentry/browser
-merge_request: 17715
-author:
-type: changed

@@ -1,5 +1,0 @@
----
-title: Change return type of getDateInPast to Date
-merge_request: 19081
-author:
-type: changed

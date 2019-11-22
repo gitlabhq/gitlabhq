@@ -1,5 +1,0 @@
----
-title: Record latencies for Sidekiq failures
-merge_request: 18909
-author:
-type: performance

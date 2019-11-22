@@ -1,5 +1,0 @@
----
-title: Bump Gitaly to 1.70.0 and remove cache invalidation feature flag
-merge_request: 18766
-author:
-type: other

@@ -1,5 +1,0 @@
----
-title: Analyze incoming GraphQL queries and check for recursion
-merge_request:
-author:
-type: security
