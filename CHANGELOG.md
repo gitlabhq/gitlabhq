@@ -4,7 +4,6 @@ entry.
 
 ## 12.5.0
 
-- No changes.
 ### Security (15 changes)
 
 - Enable the HttpOnly flag for experimentation_subject_id cookie. !19189
