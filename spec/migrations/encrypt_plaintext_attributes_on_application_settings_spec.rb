@@ -18,7 +18,7 @@ describe EncryptPlaintextAttributesOnApplicationSettings, :migration do
   ].freeze
 
   describe '#up' do
-    it 'encrypts token, saves it and removes plaintext token' do
+    it 'encrypts token and saves it' do
       application_setting = application_settings.create
       application_setting.update_columns(
         PLAINTEXT_ATTRIBUTES.each_with_object({}) do |plaintext_attribute, attributes|
@@ -30,7 +30,7 @@ describe EncryptPlaintextAttributesOnApplicationSettings, :migration do
 
       application_setting.reload
       PLAINTEXT_ATTRIBUTES.each do |plaintext_attribute|
-        expect(application_setting[plaintext_attribute]).to be_nil
+        expect(application_setting[plaintext_attribute]).not_to be_nil
         expect(application_setting["encrypted_#{plaintext_attribute}"]).not_to be_nil
         expect(application_setting["encrypted_#{plaintext_attribute}_iv"]).not_to be_nil
       end
