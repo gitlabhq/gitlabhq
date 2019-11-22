@@ -18,7 +18,14 @@ export default {
 };
 </script>
 <template>
-  <a :href="link" target="_blank" rel="noopener noreferrer nofollow" :class="cssClass">
+  <a
+    :href="link"
+    target="_blank"
+    rel="noopener noreferrer nofollow"
+    :class="cssClass"
+    data-track-event="open_review_app"
+    data-track-label="review_app"
+  >
     {{ __('View app') }} <icon class="fgray" name="external-link" />
   </a>
 </template>

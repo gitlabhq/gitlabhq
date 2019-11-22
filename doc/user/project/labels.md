@@ -12,7 +12,7 @@ requests are located.
 
 In GitLab, you can create project and group labels:
 
-- **Project labels** can be assigned to epics, issues and merge requests in that project only.
+- **Project labels** can be assigned to issues and merge requests in that project only.
 - **Group labels** can be assigned to any epics, issue and merge request in any project in
   that group, or any subgroups of the group.
 

@@ -4335,7 +4335,6 @@ describe Project do
       expect(project.wiki.repository).to receive(:after_import)
       expect(import_state).to receive(:finish)
       expect(project).to receive(:update_project_counter_caches)
-      expect(import_state).to receive(:remove_jid)
       expect(project).to receive(:after_create_default_branch)
       expect(project).to receive(:refresh_markdown_cache!)
       expect(InternalId).to receive(:flush_records!).with(project: project)

@@ -60,11 +60,11 @@ mvn package
 The above sequence of commands will generate a WAR file that can be deployed
 using Tomcat:
 
-```sh
-sudo apt-get install tomcat7
-sudo cp target/plantuml.war /var/lib/tomcat7/webapps/plantuml.war
-sudo chown tomcat7:tomcat7 /var/lib/tomcat7/webapps/plantuml.war
-sudo service tomcat7 restart
+```shell
+sudo apt-get install tomcat8
+sudo cp target/plantuml.war /var/lib/tomcat8/webapps/plantuml.war
+sudo chown tomcat8:tomcat8 /var/lib/tomcat8/webapps/plantuml.war
+sudo service tomcat8 restart
 ```
 
 Once the Tomcat service restarts the PlantUML service will be ready and
@@ -74,7 +74,7 @@ listening for requests on port 8080:
 http://localhost:8080/plantuml
 ```
 
-you can change these defaults by editing the `/etc/tomcat7/server.xml` file.
+you can change these defaults by editing the `/etc/tomcat8/server.xml` file.
 
 Note that the default URL is different than when using the Docker-based image,
 where the service is available at the root of URL with no relative path. Adjust

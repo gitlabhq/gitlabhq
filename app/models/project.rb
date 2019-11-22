@@ -1773,7 +1773,6 @@ class Project < ApplicationRecord
     InternalId.flush_records!(project: self)
 
     import_state.finish
-    import_state.remove_jid
     update_project_counter_caches
     after_create_default_branch
     join_pool_repository

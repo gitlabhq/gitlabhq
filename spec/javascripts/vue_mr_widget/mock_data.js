@@ -284,7 +284,20 @@ export const mockStore = {
   targetBranch: 'target-branch',
   sourceBranch: 'source-branch',
   sourceBranchLink: 'source-branch-link',
-  deployments: [{ id: 0, name: 'bogus' }, { id: 1, name: 'bogus-docs' }],
+  deployments: [
+    {
+      id: 0,
+      name: 'bogus',
+      external_url: 'https://fake.com',
+      external_url_formatted: 'https://fake.com',
+    },
+    {
+      id: 1,
+      name: 'bogus-docs',
+      external_url: 'https://fake.com',
+      external_url_formatted: 'https://fake.com',
+    },
+  ],
   postMergeDeployments: [{ id: 0, name: 'prod' }, { id: 1, name: 'prod-docs' }],
   troubleshootingDocsPath: 'troubleshooting-docs-path',
   ciStatus: 'ci-status',

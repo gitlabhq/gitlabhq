@@ -3673,6 +3673,9 @@ msgstr ""
 msgid "ClusterIntegration|Did you know?"
 msgstr ""
 
+msgid "ClusterIntegration|Elastic Kubernetes Service"
+msgstr ""
+
 msgid "ClusterIntegration|Elastic Stack"
 msgstr ""
 
@@ -3904,7 +3907,7 @@ msgstr ""
 msgid "ClusterIntegration|Make sure your account %{link_to_requirements} to create Kubernetes clusters"
 msgstr ""
 
-msgid "ClusterIntegration|Manage your Kubernetes cluster by visiting %{link_gke}"
+msgid "ClusterIntegration|Manage your Kubernetes cluster by visiting %{provider_link}"
 msgstr ""
 
 msgid "ClusterIntegration|No IAM Roles found"
@@ -19327,13 +19330,10 @@ msgstr ""
 msgid "VisualReviewApp|%{stepStart}Step 2%{stepEnd}. Add it to the %{headTags} tags of every page of your application, ensuring the merge request ID is set or not set as required. "
 msgstr ""
 
-msgid "VisualReviewApp|%{stepStart}Step 3%{stepEnd}. Open the Review App and provide a %{linkStart}personal access token%{linkEnd}."
+msgid "VisualReviewApp|%{stepStart}Step 3%{stepEnd}. If not previously %{linkStart}configured%{linkEnd} by a developer, enter the merge request ID for the review when prompted. The ID of this merge request is %{stepStart}%{mrId}%{stepStart}."
 msgstr ""
 
-msgid "VisualReviewApp|%{stepStart}Step 4%{stepEnd}. If not previously %{linkStart}configured%{linkEnd} by a developer, enter the merge request ID for the review when prompted. The ID of this merge request is %{stepStart}%{mrId}%{stepStart}."
-msgstr ""
-
-msgid "VisualReviewApp|%{stepStart}Step 5%{stepEnd}. Leave feedback in the Review App."
+msgid "VisualReviewApp|%{stepStart}Step 4%{stepEnd}. Leave feedback in the Review App."
 msgstr ""
 
 msgid "VisualReviewApp|Copy merge request ID"

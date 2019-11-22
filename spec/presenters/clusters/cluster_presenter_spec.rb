@@ -153,11 +153,42 @@ describe Clusters::ClusterPresenter do
     end
   end
 
-  describe '#gke_cluster_url' do
-    subject { described_class.new(cluster).gke_cluster_url }
+  describe '#provider_label' do
+    let(:cluster) { create(:cluster, provider_type: provider_type) }
 
-    it { is_expected.to include(cluster.provider.zone) }
-    it { is_expected.to include(cluster.name) }
+    subject { described_class.new(cluster).provider_label }
+
+    context 'AWS provider' do
+      let(:provider_type) { :aws }
+
+      it { is_expected.to eq('Elastic Kubernetes Service') }
+    end
+
+    context 'GCP provider' do
+      let(:provider_type) { :gcp }
+
+      it { is_expected.to eq('Google Kubernetes Engine') }
+    end
+  end
+
+  describe '#provider_management_url' do
+    let(:cluster) { provider.cluster }
+
+    subject { described_class.new(cluster).provider_management_url }
+
+    context 'AWS provider' do
+      let(:provider) { create(:cluster_provider_aws) }
+
+      it { is_expected.to include(provider.region) }
+      it { is_expected.to include(cluster.name) }
+    end
+
+    context 'GCP provider' do
+      let(:provider) { create(:cluster_provider_gcp) }
+
+      it { is_expected.to include(provider.zone) }
+      it { is_expected.to include(cluster.name) }
+    end
   end
 
   describe '#cluster_type_description' do
