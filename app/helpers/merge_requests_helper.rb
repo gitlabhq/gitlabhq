@@ -27,6 +27,16 @@ module MergeRequestsHelper
     classes.join(' ')
   end
 
+  def state_name_with_icon(merge_request)
+    if merge_request.merged?
+      [_("Merged"), "git-merge"]
+    elsif merge_request.closed?
+      [_("Closed"), "close"]
+    else
+      [_("Open"), "issue-open-m"]
+    end
+  end
+
   def ci_build_details_path(merge_request)
     build_url = merge_request.source_project.ci_service.build_page(merge_request.diff_head_sha, merge_request.source_branch)
     return unless build_url

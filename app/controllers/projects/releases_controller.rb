@@ -6,7 +6,6 @@ class Projects::ReleasesController < Projects::ApplicationController
   before_action :release, only: %i[edit update]
   before_action :authorize_read_release!
   before_action do
-    push_frontend_feature_flag(:release_edit_page, project, default_enabled: true)
     push_frontend_feature_flag(:release_issue_summary, project)
     push_frontend_feature_flag(:release_evidence_collection, project)
   end
@@ -44,7 +43,6 @@ class Projects::ReleasesController < Projects::ApplicationController
   private
 
   def authorize_update_release!
-    access_denied! unless Feature.enabled?(:release_edit_page, project, default_enabled: true)
     access_denied! unless can?(current_user, :update_release, release)
   end
 

@@ -1149,26 +1149,6 @@ class MergeRequest < ApplicationRecord
     actual_head_pipeline.environments
   end
 
-  def state_human_name
-    if merged?
-      "Merged"
-    elsif closed?
-      "Closed"
-    else
-      "Open"
-    end
-  end
-
-  def state_icon_name
-    if merged?
-      "git-merge"
-    elsif closed?
-      "close"
-    else
-      "issue-open-m"
-    end
-  end
-
   def fetch_ref!
     target_project.repository.fetch_source_branch!(source_project.repository, source_branch, ref_path)
   end

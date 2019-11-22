@@ -26,6 +26,31 @@ describe MergeRequestsHelper do
     end
   end
 
+  describe '#state_name_with_icon' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:merge_request) { MergeRequest.new }
+
+    where(:state, :expected_name, :expected_icon) do
+      :merged? | 'Merged' | 'git-merge'
+      :closed? | 'Closed' | 'close'
+      :opened? | 'Open' | 'issue-open-m'
+    end
+
+    with_them do
+      before do
+        allow(merge_request).to receive(state).and_return(true)
+      end
+
+      it 'returns name and icon' do
+        name, icon = helper.state_name_with_icon(merge_request)
+
+        expect(name).to eq(expected_name)
+        expect(icon).to eq(expected_icon)
+      end
+    end
+  end
+
   describe '#format_mr_branch_names' do
     describe 'within the same project' do
       let(:merge_request) { create(:merge_request) }

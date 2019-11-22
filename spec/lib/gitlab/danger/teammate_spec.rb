@@ -33,8 +33,8 @@ describe Gitlab::Danger::Teammate do
     context 'when labels contain devops::create and the category is test' do
       let(:labels) { ['devops::create'] }
 
-      context 'when role is Test Automation Engineer, Create' do
-        let(:role) { 'Test Automation Engineer, Create' }
+      context 'when role is Software Engineer in Test, Create' do
+        let(:role) { 'Software Engineer in Test, Create' }
 
         it '#reviewer? returns true' do
           expect(subject.reviewer?(project, :test, labels)).to be_truthy
@@ -45,7 +45,7 @@ describe Gitlab::Danger::Teammate do
         end
 
         context 'when hyperlink is mangled in the role' do
-          let(:role) { '<a href="#">Test Automation Engineer</a>, Create' }
+          let(:role) { '<a href="#">Software Engineer in Test</a>, Create' }
 
           it '#reviewer? returns true' do
             expect(subject.reviewer?(project, :test, labels)).to be_truthy
@@ -53,16 +53,16 @@ describe Gitlab::Danger::Teammate do
         end
       end
 
-      context 'when role is Test Automation Engineer' do
-        let(:role) { 'Test Automation Engineer' }
+      context 'when role is Software Engineer in Test' do
+        let(:role) { 'Software Engineer in Test' }
 
         it '#reviewer? returns false' do
           expect(subject.reviewer?(project, :test, labels)).to be_falsey
         end
       end
 
-      context 'when role is Test Automation Engineer, Manage' do
-        let(:role) { 'Test Automation Engineer, Manage' }
+      context 'when role is Software Engineer in Test, Manage' do
+        let(:role) { 'Software Engineer in Test, Manage' }
 
         it '#reviewer? returns false' do
           expect(subject.reviewer?(project, :test, labels)).to be_falsey

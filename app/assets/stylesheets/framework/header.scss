@@ -552,6 +552,11 @@
     svg {
       vertical-align: text-top;
     }
+
+    a.trial-link gl-emoji {
+      font-size: $gl-font-size;
+      vertical-align: baseline;
+    }
   }
 }
 

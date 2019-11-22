@@ -30,7 +30,6 @@ describe('Release block', () => {
       },
       provide: {
         glFeatures: {
-          releaseEditPage: true,
           releaseIssueSummary: true,
           ...featureFlags,
         },
@@ -179,11 +178,6 @@ describe('Release block', () => {
       expect(editButton().exists()).toBe(false);
     });
   });
-
-  it('does not render an edit button if the releaseEditPage feature flag is disabled', () =>
-    factory(releaseClone, { releaseEditPage: false }).then(() => {
-      expect(editButton().exists()).toBe(false);
-    }));
 
   it('does not render the milestone list if no milestones are associated to the release', () => {
     delete releaseClone.milestones;
