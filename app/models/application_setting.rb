@@ -364,30 +364,6 @@ class ApplicationSetting < ApplicationRecord
     Gitlab::ThreadMemoryCache.cache_backend
   end
 
-  def akismet_api_key
-    decrypt(:akismet_api_key, self[:encrypted_akismet_api_key]) || self[:akismet_api_key]
-  end
-
-  def elasticsearch_aws_secret_access_key
-    decrypt(:elasticsearch_aws_secret_access_key, self[:encrypted_elasticsearch_aws_secret_access_key]) || self[:elasticsearch_aws_secret_access_key]
-  end
-
-  def recaptcha_private_key
-    decrypt(:recaptcha_private_key, self[:encrypted_recaptcha_private_key]) || self[:recaptcha_private_key]
-  end
-
-  def recaptcha_site_key
-    decrypt(:recaptcha_site_key, self[:encrypted_recaptcha_site_key]) || self[:recaptcha_site_key]
-  end
-
-  def slack_app_secret
-    decrypt(:slack_app_secret, self[:encrypted_slack_app_secret]) || self[:slack_app_secret]
-  end
-
-  def slack_app_verification_token
-    decrypt(:slack_app_verification_token, self[:encrypted_slack_app_verification_token]) || self[:slack_app_verification_token]
-  end
-
   def recaptcha_or_login_protection_enabled
     recaptcha_enabled || login_recaptcha_protection_enabled
   end

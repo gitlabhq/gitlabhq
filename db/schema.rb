@@ -180,11 +180,8 @@ ActiveRecord::Schema.define(version: 2019_11_24_150431) do
     t.integer "metrics_timeout", default: 10
     t.integer "metrics_method_call_threshold", default: 10
     t.boolean "recaptcha_enabled", default: false
-    t.string "recaptcha_site_key"
-    t.string "recaptcha_private_key"
     t.integer "metrics_port", default: 8089
     t.boolean "akismet_enabled", default: false
-    t.string "akismet_api_key"
     t.integer "metrics_sample_interval", default: 15
     t.boolean "email_author_in_body", default: false
     t.integer "default_group_visibility"
@@ -231,7 +228,6 @@ ActiveRecord::Schema.define(version: 2019_11_24_150431) do
     t.boolean "elasticsearch_aws", default: false, null: false
     t.string "elasticsearch_aws_region", default: "us-east-1"
     t.string "elasticsearch_aws_access_key"
-    t.string "elasticsearch_aws_secret_access_key"
     t.integer "geo_status_timeout", default: 10
     t.string "uuid"
     t.decimal "polling_interval_multiplier", default: "1.0", null: false
@@ -247,8 +243,6 @@ ActiveRecord::Schema.define(version: 2019_11_24_150431) do
     t.string "help_page_support_url"
     t.boolean "slack_app_enabled", default: false
     t.string "slack_app_id"
-    t.string "slack_app_secret"
-    t.string "slack_app_verification_token"
     t.integer "performance_bar_allowed_group_id"
     t.boolean "allow_group_owners_to_manage_ldap", default: true, null: false
     t.boolean "hashed_storage_enabled", default: true, null: false
