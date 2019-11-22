@@ -35,20 +35,26 @@ export default {
 
       return false;
     },
-    jumpToDiscussion(id) {
+
+    switchToDiscussionsTabAndJumpTo(id) {
+      window.mrTabs.eventHub.$once('MergeRequestTabChange', () => {
+        setTimeout(() => this.discussionJump(id), 0);
+      });
+
+      window.mrTabs.tabShown('show');
+    },
+
+    jumpToDiscussion(discussion) {
+      const { id, diff_discussion: isDiffDiscussion } = discussion;
       if (id) {
         const activeTab = window.mrTabs.currentAction;
 
-        if (activeTab === 'diffs') {
+        if (activeTab === 'diffs' && isDiffDiscussion) {
           this.diffsJump(id);
-        } else if (activeTab === 'commits' || activeTab === 'pipelines') {
-          window.mrTabs.eventHub.$once('MergeRequestTabChange', () => {
-            setTimeout(() => this.discussionJump(id), 0);
-          });
-
-          window.mrTabs.tabShown('show');
-        } else {
+        } else if (activeTab === 'show') {
           this.discussionJump(id);
+        } else {
+          this.switchToDiscussionsTabAndJumpTo(id);
         }
       }
     },

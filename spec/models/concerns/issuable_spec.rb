@@ -852,4 +852,77 @@ describe Issuable do
       it_behaves_like 'matches_cross_reference_regex? fails fast'
     end
   end
+
+  describe 'release scopes' do
+    let_it_be(:project) { create(:project) }
+
+    let_it_be(:release_1) { create(:release, tag: 'v1.0', project: project) }
+    let_it_be(:release_2) { create(:release, tag: 'v2.0', project: project) }
+    let_it_be(:release_3) { create(:release, tag: 'v3.0', project: project) }
+    let_it_be(:release_4) { create(:release, tag: 'v4.0', project: project) }
+
+    let_it_be(:milestone_1) { create(:milestone, releases: [release_1], title: 'm1', project: project) }
+    let_it_be(:milestone_2) { create(:milestone, releases: [release_1, release_2], title: 'm2', project: project) }
+    let_it_be(:milestone_3) { create(:milestone, releases: [release_2, release_4], title: 'm3', project: project) }
+    let_it_be(:milestone_4) { create(:milestone, releases: [release_3], title: 'm4', project: project) }
+    let_it_be(:milestone_5) { create(:milestone, releases: [release_3], title: 'm5', project: project) }
+    let_it_be(:milestone_6) { create(:milestone, title: 'm6', project: project) }
+
+    let_it_be(:issue_1) { create(:issue, milestone: milestone_1, project: project) }
+    let_it_be(:issue_2) { create(:issue, milestone: milestone_1, project: project) }
+    let_it_be(:issue_3) { create(:issue, milestone: milestone_2, project: project) }
+    let_it_be(:issue_4) { create(:issue, milestone: milestone_5, project: project) }
+    let_it_be(:issue_5) { create(:issue, milestone: milestone_6, project: project) }
+    let_it_be(:issue_6) { create(:issue, project: project) }
+
+    let_it_be(:items) { Issue.all }
+
+    describe '#without_release' do
+      it 'returns the issues not tied to any milestone and the ones tied to milestone with no release' do
+        expect(items.without_release).to contain_exactly(issue_5, issue_6)
+      end
+    end
+
+    describe '#any_release' do
+      it 'returns all issues tied to a release' do
+        expect(items.any_release).to contain_exactly(issue_1, issue_2, issue_3, issue_4)
+      end
+    end
+
+    describe '#with_release' do
+      it 'returns the issues tied a specfic release' do
+        expect(items.with_release('v1.0', project.id)).to contain_exactly(issue_1, issue_2, issue_3)
+      end
+
+      context 'when a release has a milestone with one issue and another one with no issue' do
+        it 'returns that one issue' do
+          expect(items.with_release('v2.0', project.id)).to contain_exactly(issue_3)
+        end
+
+        context 'when the milestone with no issue is added as a filter' do
+          it 'returns an empty list' do
+            expect(items.with_release('v2.0', project.id).with_milestone('m3')).to be_empty
+          end
+        end
+
+        context 'when the milestone with the issue is added as a filter' do
+          it 'returns this issue' do
+            expect(items.with_release('v2.0', project.id).with_milestone('m2')).to contain_exactly(issue_3)
+          end
+        end
+      end
+
+      context 'when there is no issue under a specific release' do
+        it 'returns no issue' do
+          expect(items.with_release('v4.0', project.id)).to be_empty
+        end
+      end
+
+      context 'when a non-existent release tag is passed in' do
+        it 'returns no issue' do
+          expect(items.with_release('v999.0', project.id)).to be_empty
+        end
+      end
+    end
+  end
 end

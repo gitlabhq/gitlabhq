@@ -126,12 +126,26 @@ queues will use three threads in total.
 
 ## Limiting concurrency
 
-To limit the concurrency of the Sidekiq processes:
+To limit the concurrency of the Sidekiq process:
 
 1. Edit `/etc/gitlab/gitlab.rb` and add:
 
    ```ruby
-   sidekiq_cluster['concurrency'] = 25
+   sidekiq['concurrency'] = 25
+   ```
+
+1. Save the file and reconfigure GitLab for the changes to take effect:
+
+   ```sh
+   sudo gitlab-ctl reconfigure
+   ```
+
+To limit the max concurrency of the Sidekiq cluster processes:
+
+1. Edit `/etc/gitlab/gitlab.rb` and add:
+
+   ```ruby
+   sidekiq_cluster['max_concurrency'] = 25
    ```
 
 1. Save the file and reconfigure GitLab for the changes to take effect:

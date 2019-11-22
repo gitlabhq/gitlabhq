@@ -24,7 +24,7 @@ describe Gitlab::Ci::Config::Entry::Job do
       let(:result) do
         %i[before_script script stage type after_script cache
            image services only except rules needs variables artifacts
-           environment coverage retry interruptible]
+           environment coverage retry interruptible timeout]
       end
 
       it { is_expected.to match_array result }
@@ -417,21 +417,21 @@ describe Gitlab::Ci::Config::Entry::Job do
 
       context 'when timeout value is not correct' do
         context 'when it is higher than instance wide timeout' do
-          let(:config) { { timeout: '3 months' } }
+          let(:config) { { timeout: '3 months', script: 'test' } }
 
           it 'returns error about value too high' do
             expect(entry).not_to be_valid
             expect(entry.errors)
-              .to include "job timeout should not exceed the limit"
+              .to include "timeout config should not exceed the limit"
           end
         end
 
         context 'when it is not a duration' do
-          let(:config) { { timeout: 100 } }
+          let(:config) { { timeout: 100, script: 'test' } }
 
           it 'returns error about wrong value' do
             expect(entry).not_to be_valid
-            expect(entry.errors).to include 'job timeout should be a duration'
+            expect(entry.errors).to include 'timeout config should be a duration'
           end
         end
       end

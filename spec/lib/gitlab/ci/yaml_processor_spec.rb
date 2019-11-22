@@ -1375,7 +1375,7 @@ module Gitlab
           end
 
           it 'raises an error for invalid number' do
-            expect { builds }.to raise_error('jobs:deploy_to_production timeout should be a duration')
+            expect { builds }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, 'jobs:deploy_to_production:timeout config should be a duration')
           end
         end
 

@@ -18,7 +18,7 @@ GET /projects/:id/pipelines
 | `yaml_errors`| boolean  | no       | Returns pipelines with invalid configurations |
 | `name`| string  | no       | The name of the user who triggered pipelines |
 | `username`| string  | no       | The username of the user who triggered pipelines |
-| `order_by`| string  | no       | Order pipelines by `id`, `status`, `ref`, or `user_id` (default: `id`) |
+| `order_by`| string  | no       | Order pipelines by `id`, `status`, `ref`, `updated_at` or `user_id` (default: `id`) |
 | `sort`    | string  | no       | Sort pipelines in `asc` or `desc` order (default: `desc`) |
 
 ```

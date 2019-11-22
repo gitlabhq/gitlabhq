@@ -1,6 +1,12 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import { GlSkeletonLoading, GlEmptyState } from '@gitlab/ui';
+import {
+  getParameterByName,
+  historyPushState,
+  buildUrlWithCurrentLocation,
+} from '~/lib/utils/common_utils';
+import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
 import ReleaseBlock from './release_block.vue';
 
 export default {
@@ -9,6 +15,7 @@ export default {
     GlSkeletonLoading,
     GlEmptyState,
     ReleaseBlock,
+    TablePagination,
   },
   props: {
     projectId: {
@@ -25,7 +32,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['isLoading', 'releases', 'hasError']),
+    ...mapState(['isLoading', 'releases', 'hasError', 'pageInfo']),
     shouldRenderEmptyState() {
       return !this.releases.length && !this.hasError && !this.isLoading;
     },
@@ -34,10 +41,17 @@ export default {
     },
   },
   created() {
-    this.fetchReleases(this.projectId);
+    this.fetchReleases({
+      page: getParameterByName('page'),
+      projectId: this.projectId,
+    });
   },
   methods: {
     ...mapActions(['fetchReleases']),
+    onChangePage(page) {
+      historyPushState(buildUrlWithCurrentLocation(`?page=${page}`));
+      this.fetchReleases({ page, projectId: this.projectId });
+    },
   },
 };
 </script>
@@ -67,6 +81,8 @@ export default {
         :class="{ 'linked-card': releases.length > 1 && index !== releases.length - 1 }"
       />
     </div>
+
+    <table-pagination v-if="!isLoading" :change="onChangePage" :page-info="pageInfo" />
   </div>
 </template>
 <style>

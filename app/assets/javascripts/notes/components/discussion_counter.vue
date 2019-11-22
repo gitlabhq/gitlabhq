@@ -19,6 +19,7 @@ export default {
       'resolvableDiscussionsCount',
       'firstUnresolvedDiscussionId',
       'unresolvedDiscussionsCount',
+      'getDiscussion',
     ]),
     isLoggedIn() {
       return this.getUserData.id;
@@ -40,9 +41,10 @@ export default {
     ...mapActions(['expandDiscussion']),
     jumpToFirstUnresolvedDiscussion() {
       const diffTab = window.mrTabs.currentAction === 'diffs';
-      const discussionId = this.firstUnresolvedDiscussionId(diffTab);
-
-      this.jumpToDiscussion(discussionId);
+      const discussionId =
+        this.firstUnresolvedDiscussionId(diffTab) || this.firstUnresolvedDiscussionId();
+      const firstDiscussion = this.getDiscussion(discussionId);
+      this.jumpToDiscussion(firstDiscussion);
     },
   },
 };

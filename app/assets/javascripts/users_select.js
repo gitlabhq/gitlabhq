@@ -1,4 +1,4 @@
-/* eslint-disable func-names, one-var, no-var, prefer-rest-params, vars-on-top, consistent-return, no-shadow, no-else-return, no-self-compare, no-unused-expressions, yoda, prefer-spread, camelcase, no-param-reassign */
+/* eslint-disable func-names, prefer-rest-params, consistent-return, no-shadow, no-else-return, no-self-compare, no-unused-expressions, yoda, prefer-spread, camelcase, no-param-reassign */
 /* global Issuable */
 /* global emitSidebarEvent */
 
@@ -13,7 +13,7 @@ import { parseBoolean } from './lib/utils/common_utils';
 window.emitSidebarEvent = window.emitSidebarEvent || $.noop;
 
 function UsersSelect(currentUser, els, options = {}) {
-  var $els;
+  const $els = $(els || '.js-user-search');
   this.users = this.users.bind(this);
   this.user = this.user.bind(this);
   this.usersPath = '/autocomplete/users.json';
@@ -28,36 +28,11 @@ function UsersSelect(currentUser, els, options = {}) {
 
   const { handleClick } = options;
 
-  $els = $(els);
-
-  if (!els) {
-    $els = $('.js-user-search');
-  }
-
   $els.each(
     (function(_this) {
       return function(i, dropdown) {
-        var options = {};
-        var $block,
-          $collapsedSidebar,
-          $dropdown,
-          $loading,
-          $selectbox,
-          $value,
-          abilityName,
-          assignTo,
-          assigneeTemplate,
-          collapsedAssigneeTemplate,
-          defaultLabel,
-          defaultNullUser,
-          firstUser,
-          issueURL,
-          selectedId,
-          selectedIdDefault,
-          showAnyUser,
-          showNullUser,
-          showMenuAbove;
-        $dropdown = $(dropdown);
+        const options = {};
+        const $dropdown = $(dropdown);
         options.projectId = $dropdown.data('projectId');
         options.groupId = $dropdown.data('groupId');
         options.showCurrentUser = $dropdown.data('currentUser');
@@ -65,22 +40,25 @@ function UsersSelect(currentUser, els, options = {}) {
         options.todoStateFilter = $dropdown.data('todoStateFilter');
         options.iid = $dropdown.data('iid');
         options.issuableType = $dropdown.data('issuableType');
-        showNullUser = $dropdown.data('nullUser');
-        defaultNullUser = $dropdown.data('nullUserDefault');
-        showMenuAbove = $dropdown.data('showMenuAbove');
-        showAnyUser = $dropdown.data('anyUser');
-        firstUser = $dropdown.data('firstUser');
+        const showNullUser = $dropdown.data('nullUser');
+        const defaultNullUser = $dropdown.data('nullUserDefault');
+        const showMenuAbove = $dropdown.data('showMenuAbove');
+        const showAnyUser = $dropdown.data('anyUser');
+        const firstUser = $dropdown.data('firstUser');
         options.authorId = $dropdown.data('authorId');
-        defaultLabel = $dropdown.data('defaultLabel');
-        issueURL = $dropdown.data('issueUpdate');
-        $selectbox = $dropdown.closest('.selectbox');
-        $block = $selectbox.closest('.block');
-        abilityName = $dropdown.data('abilityName');
-        $value = $block.find('.value');
-        $collapsedSidebar = $block.find('.sidebar-collapsed-user');
-        $loading = $block.find('.block-loading').fadeOut();
-        selectedIdDefault = defaultNullUser && showNullUser ? 0 : null;
-        selectedId = $dropdown.data('selected');
+        const defaultLabel = $dropdown.data('defaultLabel');
+        const issueURL = $dropdown.data('issueUpdate');
+        const $selectbox = $dropdown.closest('.selectbox');
+        let $block = $selectbox.closest('.block');
+        const abilityName = $dropdown.data('abilityName');
+        let $value = $block.find('.value');
+        const $collapsedSidebar = $block.find('.sidebar-collapsed-user');
+        const $loading = $block.find('.block-loading').fadeOut();
+        const selectedIdDefault = defaultNullUser && showNullUser ? 0 : null;
+        let selectedId = $dropdown.data('selected');
+        let assignTo;
+        let assigneeTemplate;
+        let collapsedAssigneeTemplate;
 
         if (selectedId === undefined) {
           selectedId = selectedIdDefault;
@@ -207,15 +185,15 @@ function UsersSelect(currentUser, els, options = {}) {
         });
 
         assignTo = function(selected) {
-          var data;
-          data = {};
+          const data = {};
           data[abilityName] = {};
           data[abilityName].assignee_id = selected != null ? selected : null;
           $loading.removeClass('hidden').fadeIn();
           $dropdown.trigger('loading.gl.dropdown');
 
           return axios.put(issueURL, data).then(({ data }) => {
-            var user, tooltipTitle;
+            let user = {};
+            let tooltipTitle = user.name;
             $dropdown.trigger('loaded.gl.dropdown');
             $loading.fadeOut();
             if (data.assignee) {
@@ -471,10 +449,9 @@ function UsersSelect(currentUser, els, options = {}) {
               }
             }
 
-            var isIssueIndex, isMRIndex, page, selected;
-            page = $('body').attr('data-page');
-            isIssueIndex = page === 'projects:issues:index';
-            isMRIndex = page === page && page === 'projects:merge_requests:index';
+            const page = $('body').attr('data-page');
+            const isIssueIndex = page === 'projects:issues:index';
+            const isMRIndex = page === page && page === 'projects:merge_requests:index';
             if (
               $dropdown.hasClass('js-filter-bulk-update') ||
               $dropdown.hasClass('js-issuable-form-dropdown')
@@ -501,7 +478,7 @@ function UsersSelect(currentUser, els, options = {}) {
             } else if ($dropdown.hasClass('js-filter-submit')) {
               return $dropdown.closest('form').submit();
             } else if (!$dropdown.hasClass('js-multiselect')) {
-              selected = $dropdown
+              const selected = $dropdown
                 .closest('.selectbox')
                 .find(`input[name='${$dropdown.data('fieldName')}']`)
                 .val();
@@ -544,9 +521,8 @@ function UsersSelect(currentUser, els, options = {}) {
           },
           updateLabel: $dropdown.data('dropdownTitle'),
           renderRow(user) {
-            var avatar, img, username;
-            username = user.username ? `@${user.username}` : '';
-            avatar = user.avatar_url ? user.avatar_url : gon.default_avatar_url;
+            const username = user.username ? `@${user.username}` : '';
+            const avatar = user.avatar_url ? user.avatar_url : gon.default_avatar_url;
 
             let selected = false;
 
@@ -565,7 +541,7 @@ function UsersSelect(currentUser, els, options = {}) {
               selected = user.id === selectedId;
             }
 
-            img = '';
+            let img = '';
             if (user.beforeDivider != null) {
               `<li><a href='#' class='${selected === true ? 'is-active' : ''}'>${_.escape(
                 user.name,
@@ -586,35 +562,34 @@ function UsersSelect(currentUser, els, options = {}) {
       $('.ajax-users-select').each(
         (function(_this) {
           return function(i, select) {
-            var firstUser, showAnyUser, showEmailUser, showNullUser;
-            var options = {};
+            const options = {};
             options.skipLdap = $(select).hasClass('skip_ldap');
             options.projectId = $(select).data('projectId');
             options.groupId = $(select).data('groupId');
             options.showCurrentUser = $(select).data('currentUser');
             options.authorId = $(select).data('authorId');
             options.skipUsers = $(select).data('skipUsers');
-            showNullUser = $(select).data('nullUser');
-            showAnyUser = $(select).data('anyUser');
-            showEmailUser = $(select).data('emailUser');
-            firstUser = $(select).data('firstUser');
+            const showNullUser = $(select).data('nullUser');
+            const showAnyUser = $(select).data('anyUser');
+            const showEmailUser = $(select).data('emailUser');
+            const firstUser = $(select).data('firstUser');
             return $(select).select2({
               placeholder: __('Search for a user'),
               multiple: $(select).hasClass('multiselect'),
               minimumInputLength: 0,
               query(query) {
                 return _this.users(query.term, options, users => {
-                  var anyUser, data, emailUser, index, len, name, nullUser, obj, ref;
-                  data = {
+                  let name;
+                  const data = {
                     results: users,
                   };
                   if (query.term.length === 0) {
                     if (firstUser) {
                       // Move current user to the front of the list
-                      ref = data.results;
+                      const ref = data.results;
 
-                      for (index = 0, len = ref.length; index < len; index += 1) {
-                        obj = ref[index];
+                      for (let index = 0, len = ref.length; index < len; index += 1) {
+                        const obj = ref[index];
                         if (obj.username === firstUser) {
                           data.results.splice(index, 1);
                           data.results.unshift(obj);
@@ -623,7 +598,7 @@ function UsersSelect(currentUser, els, options = {}) {
                       }
                     }
                     if (showNullUser) {
-                      nullUser = {
+                      const nullUser = {
                         name: s__('UsersSelect|Unassigned'),
                         id: 0,
                       };
@@ -634,7 +609,7 @@ function UsersSelect(currentUser, els, options = {}) {
                       if (name === true) {
                         name = s__('UsersSelect|Any User');
                       }
-                      anyUser = {
+                      const anyUser = {
                         name,
                         id: null,
                       };
@@ -646,8 +621,8 @@ function UsersSelect(currentUser, els, options = {}) {
                     data.results.length === 0 &&
                     query.term.match(/^[^@]+@[^@]+$/)
                   ) {
-                    var trimmed = query.term.trim();
-                    emailUser = {
+                    const trimmed = query.term.trim();
+                    const emailUser = {
                       name: sprintf(__('Invite "%{trimmed}" by email'), { trimmed }),
                       username: trimmed,
                       id: trimmed,
@@ -659,18 +634,15 @@ function UsersSelect(currentUser, els, options = {}) {
                 });
               },
               initSelection() {
-                var args;
-                args = 1 <= arguments.length ? [].slice.call(arguments, 0) : [];
+                const args = 1 <= arguments.length ? [].slice.call(arguments, 0) : [];
                 return _this.initSelection.apply(_this, args);
               },
               formatResult() {
-                var args;
-                args = 1 <= arguments.length ? [].slice.call(arguments, 0) : [];
+                const args = 1 <= arguments.length ? [].slice.call(arguments, 0) : [];
                 return _this.formatResult.apply(_this, args);
               },
               formatSelection() {
-                var args;
-                args = 1 <= arguments.length ? [].slice.call(arguments, 0) : [];
+                const args = 1 <= arguments.length ? [].slice.call(arguments, 0) : [];
                 return _this.formatSelection.apply(_this, args);
               },
               dropdownCssClass: 'ajax-users-dropdown',
@@ -687,10 +659,9 @@ function UsersSelect(currentUser, els, options = {}) {
 }
 
 UsersSelect.prototype.initSelection = function(element, callback) {
-  var id, nullUser;
-  id = $(element).val();
+  const id = $(element).val();
   if (id === '0') {
-    nullUser = {
+    const nullUser = {
       name: s__('UsersSelect|Unassigned'),
     };
     return callback(nullUser);
@@ -700,11 +671,9 @@ UsersSelect.prototype.initSelection = function(element, callback) {
 };
 
 UsersSelect.prototype.formatResult = function(user) {
-  var avatar;
+  let avatar = gon.default_avatar_url;
   if (user.avatar_url) {
     avatar = user.avatar_url;
-  } else {
-    avatar = gon.default_avatar_url;
   }
   return `
     <div class='user-result'>
@@ -732,8 +701,7 @@ UsersSelect.prototype.user = function(user_id, callback) {
     return false;
   }
 
-  var url;
-  url = this.buildUrl(this.userPath);
+  let url = this.buildUrl(this.userPath);
   url = url.replace(':id', user_id);
   return axios.get(url).then(({ data }) => {
     callback(data);

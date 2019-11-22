@@ -38,6 +38,7 @@ describe('issue_comment_form component', () => {
       },
       store,
       sync: false,
+      attachToDocument: true,
     });
   };
 

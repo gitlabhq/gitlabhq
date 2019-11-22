@@ -1,0 +1,5 @@
+---
+title: Ensure next unresolved discussion button takes user to the right place
+merge_request: 20620
+author:
+type: fixed

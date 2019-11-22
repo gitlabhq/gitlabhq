@@ -5,6 +5,8 @@ import { joinPaths } from './lib/utils/url_utility';
 import flash from '~/flash';
 import { __ } from '~/locale';
 
+const DEFAULT_PER_PAGE = 20;
+
 const Api = {
   groupsPath: '/api/:version/groups.json',
   groupPath: '/api/:version/groups/:id',
@@ -66,7 +68,7 @@ const Api = {
         params: Object.assign(
           {
             search: query,
-            per_page: 20,
+            per_page: DEFAULT_PER_PAGE,
           },
           options,
         ),
@@ -90,7 +92,7 @@ const Api = {
       .get(url, {
         params: {
           search: query,
-          per_page: 20,
+          per_page: DEFAULT_PER_PAGE,
         },
       })
       .then(({ data }) => callback(data));
@@ -101,7 +103,7 @@ const Api = {
     const url = Api.buildUrl(Api.projectsPath);
     const defaults = {
       search: query,
-      per_page: 20,
+      per_page: DEFAULT_PER_PAGE,
       simple: true,
     };
 
@@ -126,7 +128,7 @@ const Api = {
       .get(url, {
         params: {
           search: query,
-          per_page: 20,
+          per_page: DEFAULT_PER_PAGE,
           ...options,
         },
       })
@@ -235,7 +237,7 @@ const Api = {
     const url = Api.buildUrl(Api.groupProjectsPath).replace(':id', groupId);
     const defaults = {
       search: query,
-      per_page: 20,
+      per_page: DEFAULT_PER_PAGE,
     };
     return axios
       .get(url, {
@@ -325,7 +327,7 @@ const Api = {
       params: Object.assign(
         {
           search: query,
-          per_page: 20,
+          per_page: DEFAULT_PER_PAGE,
         },
         options,
       ),
@@ -355,7 +357,7 @@ const Api = {
     const url = Api.buildUrl(Api.userProjectsPath).replace(':id', userId);
     const defaults = {
       search: query,
-      per_page: 20,
+      per_page: DEFAULT_PER_PAGE,
     };
     return axios
       .get(url, {
@@ -371,7 +373,7 @@ const Api = {
     return axios.get(url, {
       params: {
         search: query,
-        per_page: 20,
+        per_page: DEFAULT_PER_PAGE,
         ...options,
       },
     });
@@ -403,10 +405,15 @@ const Api = {
     return axios.post(url);
   },
 
-  releases(id) {
+  releases(id, options = {}) {
     const url = Api.buildUrl(this.releasesPath).replace(':id', encodeURIComponent(id));
 
-    return axios.get(url);
+    return axios.get(url, {
+      params: {
+        per_page: DEFAULT_PER_PAGE,
+        ...options,
+      },
+    });
   },
 
   release(projectPath, tagName) {

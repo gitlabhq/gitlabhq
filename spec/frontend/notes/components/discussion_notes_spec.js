@@ -36,6 +36,7 @@ describe('DiscussionNotes', () => {
         'avatar-badge': '<span class="avatar-badge-slot-content" />',
       },
       sync: false,
+      attachToDocument: true,
     });
   };
 

@@ -46,8 +46,6 @@ module Gitlab
                 message: "should be one of: #{ALLOWED_WHEN.join(', ')}"
               }
 
-              validates :timeout, duration: { limit: ChronicDuration.output(Project::MAX_BUILD_TIMEOUT) }
-
               validates :dependencies, array_of_strings: true
               validates :extends, array_of_strings_or_string: true
               validates :rules, array_of_hashes: true
@@ -101,6 +99,10 @@ module Gitlab
 
           entry :interruptible, Entry::Boolean,
             description: 'Set jobs interruptible value.',
+            inherit: true
+
+          entry :timeout, Entry::Timeout,
+            description: 'Timeout duration of this job.',
             inherit: true
 
           entry :only, Entry::Policy,

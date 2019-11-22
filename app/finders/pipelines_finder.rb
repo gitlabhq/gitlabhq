@@ -3,7 +3,7 @@
 class PipelinesFinder
   attr_reader :project, :pipelines, :params, :current_user
 
-  ALLOWED_INDEXED_COLUMNS = %w[id status ref user_id].freeze
+  ALLOWED_INDEXED_COLUMNS = %w[id status ref updated_at user_id].freeze
 
   def initialize(project, current_user, params = {})
     @project = project

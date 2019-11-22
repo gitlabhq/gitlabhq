@@ -1,0 +1,5 @@
+---
+title: Allow order_by updated_at in Pipelines API
+merge_request: 19886
+author:
+type: added

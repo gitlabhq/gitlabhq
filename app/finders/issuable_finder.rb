@@ -13,6 +13,7 @@
 #     group_id: integer
 #     project_id: integer
 #     milestone_title: string
+#     release_tag: string
 #     author_id: integer
 #     author_username: string
 #     assignee_id: integer or 'None' or 'Any'
@@ -59,6 +60,7 @@ class IssuableFinder
       author_username
       label_name
       milestone_title
+      release_tag
       my_reaction_emoji
       search
       in
@@ -126,6 +128,7 @@ class IssuableFinder
     items = by_non_archived(items)
     items = by_iids(items)
     items = by_milestone(items)
+    items = by_release(items)
     items = by_label(items)
     by_my_reaction_emoji(items)
   end
@@ -364,6 +367,10 @@ class IssuableFinder
     end
   end
 
+  def releases?
+    params[:release_tag].present?
+  end
+
   private
 
   def force_cte?
@@ -570,6 +577,18 @@ class IssuableFinder
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
+  def by_release(items)
+    return items unless releases?
+
+    if filter_by_no_release?
+      items.without_release
+    elsif filter_by_any_release?
+      items.any_release
+    else
+      items.with_release(params[:release_tag], params[:project_id])
+    end
+  end
+
   def filter_by_no_milestone?
     # Accepts `No Milestone` for compatibility
     params[:milestone_title].to_s.downcase == FILTER_NONE || params[:milestone_title] == Milestone::None.title
@@ -586,6 +605,14 @@ class IssuableFinder
 
   def filter_by_started_milestone?
     params[:milestone_title] == Milestone::Started.name
+  end
+
+  def filter_by_no_release?
+    params[:release_tag].to_s.downcase == FILTER_NONE
+  end
+
+  def filter_by_any_release?
+    params[:release_tag].to_s.downcase == FILTER_ANY
   end
 
   def by_label(items)

@@ -44,7 +44,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   before_action do
     push_frontend_feature_flag(:vue_issuable_sidebar, project.group)
-    push_frontend_feature_flag(:release_search_filter, project)
+    push_frontend_feature_flag(:release_search_filter, project, default_enabled: true)
   end
 
   respond_to :html

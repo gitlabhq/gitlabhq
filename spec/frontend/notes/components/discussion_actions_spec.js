@@ -37,6 +37,8 @@ describe('DiscussionActions', () => {
         shouldShowJumpToNextDiscussion: true,
         ...props,
       },
+      sync: false,
+      attachToDocument: true,
     });
   };
 

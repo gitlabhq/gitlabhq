@@ -84,6 +84,7 @@ export default {
       'hasUnresolvedDiscussions',
       'showJumpToNextDiscussion',
       'getUserData',
+      'getDiscussion',
     ]),
     currentUser() {
       return this.getUserData;
@@ -221,8 +222,9 @@ export default {
         this.discussion.id,
         this.discussionsByDiffOrder,
       );
+      const nextDiscussion = this.getDiscussion(nextId);
 
-      this.jumpToDiscussion(nextId);
+      this.jumpToDiscussion(nextDiscussion);
     },
     deleteNoteHandler(note) {
       this.$emit('noteDeleted', this.discussion, note);

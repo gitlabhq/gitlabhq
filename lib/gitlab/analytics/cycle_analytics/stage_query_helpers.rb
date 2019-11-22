@@ -9,11 +9,11 @@ module Gitlab
         end
 
         def zero_interval
-          Arel::Nodes::NamedFunction.new("CAST", [Arel.sql("'0' AS INTERVAL")])
+          Arel::Nodes::NamedFunction.new('CAST', [Arel.sql("'0' AS INTERVAL")])
         end
 
         def round_duration_to_seconds
-          Arel::Nodes::Extract.new(duration, :epoch)
+          Arel::Nodes::NamedFunction.new('ROUND', [Arel::Nodes::Extract.new(duration, :epoch)])
         end
 
         def duration
