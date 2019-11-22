@@ -273,6 +273,65 @@ git config core.sshCommand "ssh -o IdentitiesOnly=yes -i ~/.ssh/private-key-file
 
 This will not use the SSH Agent and requires at least Git 2.10.
 
+## Multiple accounts on a single GitLab instance
+
+The [per-repository](#per-repository-ssh-keys) method also works for using
+multiple accounts within a single GitLab instance.
+
+Alternatively, it is possible to directly assign aliases to hosts in
+`~.ssh/config`. SSH and, by extension, Git will fail to log in if there is
+an `IdentityFile` set outside of a `Host` block in `.ssh/config`. This is
+due to how SSH assembles `IdentityFile` entries and is not changed by
+setting `IdentitiesOnly` to `yes`. `IdentityFile` entries should point to
+the private key of an SSH key pair.
+
+NOTE: **Note:**
+Private and public keys should be readable by the user only. Accomplish this
+on Linux and macOS by running: `chmod 0400 ~/.ssh/<example_ssh_key>` and
+`chmod 0400 ~/.ssh/<example_sh_key.pub>`.
+
+```conf
+# User1 Account Identity
+Host <user_1.gitlab.com>
+  Hostname gitlab.com
+  PreferredAuthentications publickey
+  IdentityFile ~/.ssh/<example_ssh_key1>
+
+# User2 Account Identity
+Host <user_2.gitlab.com>
+  Hostname gitlab.com
+  PreferredAuthentications publickey
+  IdentityFile ~/.ssh/<example_ssh_key2>
+```
+
+NOTE: **Note:**
+The example `Host` aliases are defined as `user_1.gitlab.com` and
+`user_2.gitlab.com` for efficiency and transparency. Advanced configurations
+are more difficult to maintain; using this type of alias makes it easier to
+understand when using other tools such as `git remote` subcommands. SSH
+would understand any string as a `Host` alias thus `Tanuki1` and `Tanuki2`,
+despite giving very little context as to where they point, would also work.
+
+Cloning the `gitlab` repository normally looks like this:
+
+```sh
+git clone git@gitlab.com:gitlab-org/gitlab.git
+```
+
+To clone it for `user_1`, replace `gitlab.com` with the SSH alias `user_1.gitlab.com`:
+
+```sh
+git clone git@<user_1.gitlab.com>:gitlab-org/gitlab.git
+```
+
+Fix a previously cloned repository using the `git remote` command.
+
+The example below assumes the remote repository is aliased as `origin`.
+
+```sh
+git remote set-url origin git@<user_1.gitlab.com>:gitlab-org/gitlab.git
+```
+
 ## Deploy keys
 
 ### Per-repository deploy keys

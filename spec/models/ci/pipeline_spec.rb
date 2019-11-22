@@ -75,71 +75,6 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
-  describe '.sort_by_merge_request_pipelines' do
-    subject { described_class.sort_by_merge_request_pipelines }
-
-    context 'when branch pipelines exist' do
-      let!(:branch_pipeline_1) { create(:ci_pipeline, source: :push) }
-      let!(:branch_pipeline_2) { create(:ci_pipeline, source: :push) }
-
-      it 'returns pipelines order by id' do
-        expect(subject).to eq([branch_pipeline_2,
-                               branch_pipeline_1])
-      end
-    end
-
-    context 'when merge request pipelines exist' do
-      let!(:merge_request_pipeline_1) do
-        create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request)
-      end
-
-      let!(:merge_request_pipeline_2) do
-        create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request)
-      end
-
-      let(:merge_request) do
-        create(:merge_request,
-               source_project: project,
-               source_branch: 'feature',
-               target_project: project,
-               target_branch: 'master')
-      end
-
-      it 'returns pipelines order by id' do
-        expect(subject).to eq([merge_request_pipeline_2,
-                               merge_request_pipeline_1])
-      end
-    end
-
-    context 'when both branch pipeline and merge request pipeline exist' do
-      let!(:branch_pipeline_1) { create(:ci_pipeline, source: :push) }
-      let!(:branch_pipeline_2) { create(:ci_pipeline, source: :push) }
-
-      let!(:merge_request_pipeline_1) do
-        create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request)
-      end
-
-      let!(:merge_request_pipeline_2) do
-        create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request)
-      end
-
-      let(:merge_request) do
-        create(:merge_request,
-               source_project: project,
-               source_branch: 'feature',
-               target_project: project,
-               target_branch: 'master')
-      end
-
-      it 'returns merge request pipeline first' do
-        expect(subject).to eq([merge_request_pipeline_2,
-                               merge_request_pipeline_1,
-                               branch_pipeline_2,
-                               branch_pipeline_1])
-      end
-    end
-  end
-
   describe '.for_sha' do
     subject { described_class.for_sha(sha) }
 
@@ -226,39 +161,6 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
-  describe '.detached_merge_request_pipelines' do
-    subject { described_class.detached_merge_request_pipelines(merge_request, sha) }
-
-    let!(:pipeline) do
-      create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request, sha: merge_request.diff_head_sha)
-    end
-
-    let(:merge_request) { create(:merge_request) }
-    let(:sha) { merge_request.diff_head_sha }
-
-    it 'returns detached merge request pipelines' do
-      is_expected.to eq([pipeline])
-    end
-
-    context 'when sha does not exist' do
-      let(:sha) { 'abc' }
-
-      it 'returns empty array' do
-        is_expected.to be_empty
-      end
-    end
-
-    context 'when pipeline is merge request pipeline' do
-      let!(:pipeline) do
-        create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request, source_sha: merge_request.diff_head_sha)
-      end
-
-      it 'returns empty array' do
-        is_expected.to be_empty
-      end
-    end
-  end
-
   describe '#detached_merge_request_pipeline?' do
     subject { pipeline.detached_merge_request_pipeline? }
 
@@ -275,39 +177,6 @@ describe Ci::Pipeline, :mailer do
       let(:target_sha) { merge_request.target_branch_sha }
 
       it { is_expected.to be_falsy }
-    end
-  end
-
-  describe '.merge_request_pipelines' do
-    subject { described_class.merge_request_pipelines(merge_request, source_sha) }
-
-    let!(:pipeline) do
-      create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request, source_sha: merge_request.diff_head_sha)
-    end
-
-    let(:merge_request) { create(:merge_request) }
-    let(:source_sha) { merge_request.diff_head_sha }
-
-    it 'returns merge pipelines' do
-      is_expected.to eq([pipeline])
-    end
-
-    context 'when source sha is empty' do
-      let(:source_sha) { nil }
-
-      it 'returns empty array' do
-        is_expected.to be_empty
-      end
-    end
-
-    context 'when pipeline is detached merge request pipeline' do
-      let!(:pipeline) do
-        create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request, sha: merge_request.diff_head_sha)
-      end
-
-      it 'returns empty array' do
-        is_expected.to be_empty
-      end
     end
   end
 
@@ -495,50 +364,6 @@ describe Ci::Pipeline, :mailer do
         expect(Gitlab::Utils).to receive(:slugify).with(merge_request.source_branch)
 
         subject
-      end
-    end
-  end
-
-  describe '.triggered_for_branch' do
-    subject { described_class.triggered_for_branch(ref) }
-
-    let(:project) { create(:project, :repository) }
-    let(:ref) { 'feature' }
-    let!(:pipeline) { create(:ci_pipeline, ref: ref) }
-
-    it 'returns the pipeline' do
-      is_expected.to eq([pipeline])
-    end
-
-    context 'when sha is not specified' do
-      it 'returns the pipeline' do
-        expect(described_class.triggered_for_branch(ref)).to eq([pipeline])
-      end
-    end
-
-    context 'when pipeline is triggered for tag' do
-      let(:ref) { 'v1.1.0' }
-      let!(:pipeline) { create(:ci_pipeline, ref: ref, tag: true) }
-
-      it 'does not return the pipeline' do
-        is_expected.to be_empty
-      end
-    end
-
-    context 'when pipeline is triggered for merge_request' do
-      let!(:merge_request) do
-        create(:merge_request,
-          :with_merge_request_pipeline,
-          source_project: project,
-          source_branch: ref,
-          target_project: project,
-          target_branch: 'master')
-      end
-
-      let(:pipeline) { merge_request.pipelines_for_merge_request.first }
-
-      it 'does not return the pipeline' do
-        is_expected.to be_empty
       end
     end
   end

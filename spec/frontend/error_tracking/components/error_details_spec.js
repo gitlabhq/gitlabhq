@@ -83,13 +83,34 @@ describe('ErrorDetails', () => {
       expect(wrapper.find(Stacktrace).exists()).toBe(false);
     });
 
-    it('should allow a blank issue to be created', () => {
+    it('should allow an issue to be created with title and description', () => {
       store.state.details.loading = false;
-      store.state.details.error.id = 1;
+      store.state.details.error = {
+        id: 1,
+        title: 'Issue title',
+        external_url: 'http://sentry.gitlab.net/gitlab',
+        first_seen: '2017-05-26T13:32:48Z',
+        last_seen: '2018-05-26T13:32:48Z',
+        count: 12,
+        user_count: 2,
+      };
       mountComponent();
       const button = wrapper.find(GlButton);
+      const title = 'Issue title';
+      const url = 'Sentry event: http://sentry.gitlab.net/gitlab';
+      const firstSeen = 'First seen: 2017-05-26T13:32:48Z';
+      const lastSeen = 'Last seen: 2018-05-26T13:32:48Z';
+      const count = 'Events: 12';
+      const userCount = 'Users: 2';
+
+      const issueDescription = `${url}${firstSeen}${lastSeen}${count}${userCount}`;
+
+      const issueLink = `/test-project/issues/new?issue[title]=${encodeURIComponent(
+        title,
+      )}&issue[description]=${encodeURIComponent(issueDescription)}`;
+
       expect(button.exists()).toBe(true);
-      expect(button.attributes().href).toBe(wrapper.props().issueProjectPath);
+      expect(button.attributes().href).toBe(issueLink);
     });
 
     describe('Stacktrace', () => {

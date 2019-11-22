@@ -205,14 +205,6 @@ module Ci
 
     scope :internal, -> { where(source: internal_sources) }
     scope :ci_sources, -> { where(config_source: ci_sources_values) }
-
-    scope :sort_by_merge_request_pipelines, -> do
-      sql = 'CASE ci_pipelines.source WHEN (?) THEN 0 ELSE 1 END, ci_pipelines.id DESC'
-      query = ApplicationRecord.send(:sanitize_sql_array, [sql, sources[:merge_request_event]]) # rubocop:disable GitlabSecurity/PublicSend
-
-      order(Arel.sql(query))
-    end
-
     scope :for_user, -> (user) { where(user: user) }
     scope :for_sha, -> (sha) { where(sha: sha) }
     scope :for_source_sha, -> (source_sha) { where(source_sha: source_sha) }
@@ -220,22 +212,6 @@ module Ci
     scope :for_ref, -> (ref) { where(ref: ref) }
     scope :for_id, -> (id) { where(id: id) }
     scope :created_after, -> (time) { where('ci_pipelines.created_at > ?', time) }
-
-    scope :triggered_by_merge_request, -> (merge_request) do
-      where(source: :merge_request_event, merge_request: merge_request)
-    end
-
-    scope :detached_merge_request_pipelines, -> (merge_request, sha) do
-      triggered_by_merge_request(merge_request).for_sha(sha)
-    end
-
-    scope :merge_request_pipelines, -> (merge_request, source_sha) do
-      triggered_by_merge_request(merge_request).for_source_sha(source_sha)
-    end
-
-    scope :triggered_for_branch, -> (ref) do
-      where(source: branch_pipeline_sources).where(ref: ref, tag: false)
-    end
 
     scope :with_reports, -> (reports_scope) do
       where('EXISTS (?)', ::Ci::Build.latest.with_reports(reports_scope).where('ci_pipelines.id=ci_builds.commit_id').select(1))
@@ -342,10 +318,6 @@ module Ci
 
     def self.internal_sources
       sources.reject { |source| source == "external" }.values
-    end
-
-    def self.branch_pipeline_sources
-      @branch_pipeline_sources ||= sources.reject { |source| source == 'merge_request_event' }.values
     end
 
     def self.ci_sources_values
