@@ -70,12 +70,6 @@ class EncryptPlaintextAttributesOnApplicationSettings < ActiveRecord::Migration[
         end
       )
       application_setting.save(validate: false)
-
-      application_setting.update_columns(
-        PLAINTEXT_ATTRIBUTES.each_with_object({}) do |plaintext_attribute, attributes|
-          attributes[plaintext_attribute] = nil
-        end
-      )
     end
   end
 
