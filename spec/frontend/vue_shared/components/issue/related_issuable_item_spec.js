@@ -35,6 +35,7 @@ describe('RelatedIssuableItem', () => {
       localVue,
       slots,
       sync: false,
+      attachToDocument: true,
       propsData: props,
     });
   });

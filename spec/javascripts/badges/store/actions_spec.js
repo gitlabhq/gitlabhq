@@ -90,6 +90,7 @@ describe('Badges store actions', () => {
       endpointMock.replyOnce(req => {
         expect(req.data).toBe(
           JSON.stringify({
+            name: 'TestBadge',
             image_url: badgeInAddForm.imageUrl,
             link_url: badgeInAddForm.linkUrl,
           }),
@@ -114,6 +115,7 @@ describe('Badges store actions', () => {
       endpointMock.replyOnce(req => {
         expect(req.data).toBe(
           JSON.stringify({
+            name: 'TestBadge',
             image_url: badgeInAddForm.imageUrl,
             link_url: badgeInAddForm.linkUrl,
           }),
@@ -526,6 +528,7 @@ describe('Badges store actions', () => {
       endpointMock.replyOnce(req => {
         expect(req.data).toBe(
           JSON.stringify({
+            name: 'TestBadge',
             image_url: badgeInEditForm.imageUrl,
             link_url: badgeInEditForm.linkUrl,
           }),
@@ -550,6 +553,7 @@ describe('Badges store actions', () => {
       endpointMock.replyOnce(req => {
         expect(req.data).toBe(
           JSON.stringify({
+            name: 'TestBadge',
             image_url: badgeInEditForm.imageUrl,
             link_url: badgeInEditForm.linkUrl,
           }),

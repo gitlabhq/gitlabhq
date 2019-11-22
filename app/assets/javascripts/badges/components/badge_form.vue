@@ -4,7 +4,7 @@ import { mapActions, mapState } from 'vuex';
 import createFlash from '~/flash';
 import { s__, sprintf } from '~/locale';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlFormInput, GlFormGroup } from '@gitlab/ui';
 import createEmptyBadge from '../empty_badge';
 import Badge from './badge.vue';
 
@@ -16,6 +16,8 @@ export default {
     Badge,
     LoadingButton,
     GlLoadingIcon,
+    GlFormInput,
+    GlFormGroup,
   },
   props: {
     isEditing: {
@@ -63,6 +65,18 @@ export default {
     },
     renderedLinkUrl() {
       return this.renderedBadge ? this.renderedBadge.renderedLinkUrl : '';
+    },
+    name: {
+      get() {
+        return this.badge ? this.badge.name : '';
+      },
+      set(name) {
+        const badge = this.badge || createEmptyBadge();
+        this.updateBadgeInForm({
+          ...badge,
+          name,
+        });
+      },
     },
     imageUrl: {
       get() {
@@ -154,6 +168,10 @@ export default {
     novalidate
     @submit.prevent.stop="onSubmit"
   >
+    <gl-form-group :label="s__('Badges|Name')" label-for="badge-name">
+      <gl-form-input id="badge-name" v-model="name" />
+    </gl-form-group>
+
     <div class="form-group">
       <label for="badge-link-url" class="label-bold">{{ s__('Badges|Link') }}</label>
       <p v-html="helpText"></p>

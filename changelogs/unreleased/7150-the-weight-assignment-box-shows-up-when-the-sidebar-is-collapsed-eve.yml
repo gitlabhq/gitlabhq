@@ -1,0 +1,5 @@
+---
+title: Fix issue trying to edit weight with collapsed sidebar as guest
+merge_request: 20431
+author:
+type: fixed

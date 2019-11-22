@@ -1,6 +1,7 @@
 import * as types from './mutation_types';
 import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';
+import trackDashboardLoad from '../monitoring_tracking_helper';
 import statusCodes from '../../lib/utils/http_status';
 import { backOff } from '../../lib/utils/common_utils';
 import { s__, __ } from '../../locale';
@@ -45,7 +46,7 @@ export const requestMetricsDashboard = ({ commit }) => {
 export const receiveMetricsDashboardSuccess = ({ commit, dispatch }, { response, params }) => {
   commit(types.SET_ALL_DASHBOARDS, response.all_dashboards);
   commit(types.RECEIVE_METRICS_DATA_SUCCESS, response.dashboard.panel_groups);
-  dispatch('fetchPrometheusMetrics', params);
+  return dispatch('fetchPrometheusMetrics', params);
 };
 export const receiveMetricsDashboardFailure = ({ commit }, error) => {
   commit(types.RECEIVE_METRICS_DATA_FAILURE, error);
@@ -83,10 +84,12 @@ export const fetchDashboard = ({ state, dispatch }, params) => {
 
   return backOffRequest(() => axios.get(state.dashboardEndpoint, { params }))
     .then(resp => resp.data)
-    .then(response => {
-      dispatch('receiveMetricsDashboardSuccess', {
-        response,
-        params,
+    .then(response => dispatch('receiveMetricsDashboardSuccess', { response, params }))
+    .then(() => {
+      const dashboardType = state.currentDashboard === '' ? 'default' : 'custom';
+      return trackDashboardLoad({
+        label: `${dashboardType}_metrics_dashboard`,
+        value: state.metricsWithData.length,
       });
     })
     .catch(error => {

@@ -26,9 +26,10 @@ GET /groups/:id/badges
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `name`    | string         | no  | Name of the badges to return (case-sensitive). |
 
 ```bash
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/badges
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/badges?name=Coverage
 ```
 
 Example response:
@@ -36,21 +37,14 @@ Example response:
 ```json
 [
   {
+    "name": "Coverage",
     "id": 1,
     "link_url": "http://example.com/ci_status.svg?project=%{project_path}&ref=%{default_branch}",
     "image_url": "https://shields.io/my/badge",
     "rendered_link_url": "http://example.com/ci_status.svg?project=example-org/example-project&ref=master",
     "rendered_image_url": "https://shields.io/my/badge",
     "kind": "group"
-  },
-  {
-    "id": 2,
-    "link_url": "http://example.com/ci_status.svg?project=%{project_path}&ref=%{default_branch}",
-    "image_url": "https://shields.io/my/badge",
-    "rendered_link_url": "http://example.com/ci_status.svg?project=example-org/example-project&ref=master",
-    "rendered_image_url": "https://shields.io/my/badge",
-    "kind": "group"
-  },
+  }
 ]
 ```
 

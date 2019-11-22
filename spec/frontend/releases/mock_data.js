@@ -35,6 +35,7 @@ export const release = {
   description_html: '<p data-sourcepos="1:1-1:21" dir="auto">A super nice release!</p>',
   created_at: '2019-08-26T17:54:04.952Z',
   released_at: '2019-08-26T17:54:04.807Z',
+  evidence_sha: 'fb3a125fd69a0e5048ebfb0ba43eb32ce4911520dd8d',
   author: {
     id: 1,
     name: 'Administrator',
@@ -62,6 +63,8 @@ export const release = {
   milestones,
   assets: {
     count: 5,
+    evidence_file_path:
+      'https://20592.qa-tunnel.gitlab.info/root/test-deployments/-/releases/v1.1.2/evidence.json',
     sources: [
       {
         format: 'zip',

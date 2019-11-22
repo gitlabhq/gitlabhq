@@ -14,6 +14,11 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   props: {
+    name: {
+      type: String,
+      required: false,
+      default: '',
+    },
     imageUrl: {
       type: String,
       required: true,

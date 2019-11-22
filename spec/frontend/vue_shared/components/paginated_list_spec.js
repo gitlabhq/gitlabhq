@@ -26,6 +26,8 @@ describe('Pagination links component', () => {
         list: [{ id: 'foo' }, { id: 'bar' }],
         props,
       },
+      attachToDocument: true,
+      sync: false,
     });
 
     [glPaginatedList] = wrapper.vm.$children;

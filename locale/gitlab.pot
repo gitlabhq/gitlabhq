@@ -374,6 +374,9 @@ msgstr[1] ""
 msgid "%{tabname} changed"
 msgstr ""
 
+msgid "%{tag}-evidence.json"
+msgstr ""
+
 msgid "%{template_project_id} is unknown or invalid"
 msgstr ""
 
@@ -1780,6 +1783,15 @@ msgstr ""
 msgid "Analytics"
 msgstr ""
 
+msgid "Analyze a review version of your web application."
+msgstr ""
+
+msgid "Analyze your dependencies for known vulnerabilities"
+msgstr ""
+
+msgid "Analyze your source code for known vulnerabilities"
+msgstr ""
+
 msgid "Ancestors"
 msgstr ""
 
@@ -2381,6 +2393,9 @@ msgid "Badges|Group Badge"
 msgstr ""
 
 msgid "Badges|Link"
+msgstr ""
+
+msgid "Badges|Name"
 msgstr ""
 
 msgid "Badges|No badge image"
@@ -3110,6 +3125,9 @@ msgid "Check the %{docs_link_start}documentation%{docs_link_end}."
 msgstr ""
 
 msgid "Check your .gitlab-ci.yml"
+msgstr ""
+
+msgid "Check your Docker images for known vulnerabilities"
 msgstr ""
 
 msgid "Checking %{text} availability…"
@@ -4551,6 +4569,9 @@ msgstr ""
 msgid "Container Registry"
 msgstr ""
 
+msgid "Container Scanning"
+msgstr ""
+
 msgid "Container registry images"
 msgstr ""
 
@@ -5527,6 +5548,9 @@ msgstr ""
 msgid "Dependency Proxy"
 msgstr ""
 
+msgid "Dependency Scanning"
+msgstr ""
+
 msgid "Dependency proxy"
 msgstr ""
 
@@ -6028,6 +6052,9 @@ msgstr ""
 msgid "Download codes"
 msgstr ""
 
+msgid "Download evidence JSON"
+msgstr ""
+
 msgid "Download export"
 msgstr ""
 
@@ -6065,6 +6092,9 @@ msgid "Duration"
 msgstr ""
 
 msgid "During this process, you’ll be asked for URLs from GitLab’s side. Use the URLs shown below."
+msgstr ""
+
+msgid "Dynamic Application Security Testing (DAST)"
 msgstr ""
 
 msgid "Each Runner can be in one of the following states:"
@@ -6947,6 +6977,9 @@ msgid "Everything you need to create a GitLab Pages site using Jekyll."
 msgstr ""
 
 msgid "Everything you need to create a GitLab Pages site using plain HTML."
+msgstr ""
+
+msgid "Evidence collection"
 msgstr ""
 
 msgid "Example: @sub\\.company\\.com$"
@@ -15038,6 +15071,9 @@ msgstr ""
 msgid "Search users or groups"
 msgstr ""
 
+msgid "Search your project dependencies for their licenses and apply policies"
+msgstr ""
+
 msgid "Search your projects"
 msgstr ""
 
@@ -15154,6 +15190,9 @@ msgid "Security"
 msgstr ""
 
 msgid "Security & Compliance"
+msgstr ""
+
+msgid "Security Configuration"
 msgstr ""
 
 msgid "Security Dashboard"
@@ -15291,7 +15330,7 @@ msgstr ""
 msgid "SecurityDashboard|More information"
 msgstr ""
 
-msgid "SecurityDashboard|Pipeline %{pipelineLink} triggered"
+msgid "SecurityDashboard|Pipeline %{pipelineLink} triggered %{timeago} by %{user}"
 msgstr ""
 
 msgid "SecurityDashboard|Project"
@@ -16497,6 +16536,9 @@ msgid "Starts at (UTC)"
 msgstr ""
 
 msgid "State your message to activate"
+msgstr ""
+
+msgid "Static Application Security Testing (SAST)"
 msgstr ""
 
 msgid "Statistics"

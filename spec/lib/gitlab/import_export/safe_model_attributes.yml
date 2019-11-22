@@ -651,6 +651,7 @@ PrometheusAlert:
 - prometheus_metric_id
 Badge:
 - id
+- name
 - link_url
 - image_url
 - project_id

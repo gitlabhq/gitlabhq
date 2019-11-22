@@ -39,6 +39,10 @@ describe('BadgeListRow component', () => {
     expect(badgeElement.getAttribute('src')).toBe(badge.renderedImageUrl);
   });
 
+  it('renders the badge name', () => {
+    expect(vm.$el).toContainText(badge.name);
+  });
+
   it('renders the badge link', () => {
     expect(vm.$el).toContainText(badge.linkUrl);
   });

@@ -6,6 +6,7 @@ export const createDummyBadge = () => {
   const id = _.uniqueId();
   return {
     id,
+    name: 'TestBadge',
     imageUrl: `${TEST_HOST}/badges/${id}/image/url`,
     isDeleting: false,
     linkUrl: `${TEST_HOST}/badges/${id}/link/url`,
@@ -16,6 +17,7 @@ export const createDummyBadge = () => {
 };
 
 export const createDummyBadgeResponse = () => ({
+  name: 'TestBadge',
   image_url: `${TEST_HOST}/badge/image/url`,
   link_url: `${TEST_HOST}/badge/link/url`,
   kind: PROJECT_BADGE,

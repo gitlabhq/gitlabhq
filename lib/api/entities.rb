@@ -1736,6 +1736,7 @@ module API
     end
 
     class BasicBadgeDetails < Grape::Entity
+      expose :name
       expose :link_url
       expose :image_url
       expose :rendered_link_url do |badge, options|

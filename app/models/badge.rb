@@ -22,6 +22,8 @@ class Badge < ApplicationRecord
 
   scope :order_created_at_asc, -> { reorder(created_at: :asc) }
 
+  scope :with_name, ->(name) { where(name: name) }
+
   validates :link_url, :image_url, addressable_url: true
   validates :type, presence: true
 

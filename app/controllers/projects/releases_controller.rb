@@ -8,6 +8,7 @@ class Projects::ReleasesController < Projects::ApplicationController
   before_action do
     push_frontend_feature_flag(:release_edit_page, project, default_enabled: true)
     push_frontend_feature_flag(:release_issue_summary, project)
+    push_frontend_feature_flag(:release_evidence_collection, project)
   end
   before_action :authorize_update_release!, only: %i[edit update]
 

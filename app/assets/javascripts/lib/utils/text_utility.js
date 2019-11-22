@@ -72,7 +72,7 @@ export const truncate = (string, maxLength) => `${string.substr(0, maxLength - 3
  * @param {String} sha
  * @returns {String}
  */
-export const truncateSha = sha => sha.substr(0, 8);
+export const truncateSha = sha => sha.substring(0, 8);
 
 const ELLIPSIS_CHAR = '…';
 export const truncatePathMiddleToLength = (text, maxWidth) => {

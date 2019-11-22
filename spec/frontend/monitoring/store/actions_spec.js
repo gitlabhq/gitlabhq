@@ -1,4 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
+import Tracking from '~/tracking';
 import { TEST_HOST } from 'helpers/test_constants';
 import testAction from 'helpers/vuex_action_helper';
 import axios from '~/lib/utils/axios_utils';
@@ -226,12 +227,14 @@ describe('Monitoring store actions', () => {
     let state;
     const response = metricsDashboardResponse;
     beforeEach(() => {
+      jest.spyOn(Tracking, 'event');
       dispatch = jest.fn();
       state = storeState();
       state.dashboardEndpoint = '/dashboard';
     });
     it('dispatches receive and success actions', done => {
       const params = {};
+      document.body.dataset.page = 'projects:environments:metrics';
       mock.onGet(state.dashboardEndpoint).reply(200, response);
       fetchDashboard(
         {
@@ -246,6 +249,17 @@ describe('Monitoring store actions', () => {
             response,
             params,
           });
+        })
+        .then(() => {
+          expect(Tracking.event).toHaveBeenCalledWith(
+            document.body.dataset.page,
+            'dashboard_fetch',
+            {
+              label: 'custom_metrics_dashboard',
+              property: 'count',
+              value: 0,
+            },
+          );
           done();
         })
         .catch(done.fail);

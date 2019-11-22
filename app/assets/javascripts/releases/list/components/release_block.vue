@@ -11,10 +11,12 @@ import { getLocationHash } from '~/lib/utils/url_utility';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ReleaseBlockFooter from './release_block_footer.vue';
+import EvidenceBlock from './evidence_block.vue';
 
 export default {
   name: 'ReleaseBlock',
   components: {
+    EvidenceBlock,
     GlLink,
     GlBadge,
     GlButton,
@@ -70,6 +72,9 @@ export default {
     hasAuthor() {
       return !_.isEmpty(this.author);
     },
+    hasEvidence() {
+      return Boolean(this.release.evidence_sha);
+    },
     shouldRenderMilestones() {
       return !_.isEmpty(this.release.milestones);
     },
@@ -80,6 +85,9 @@ export default {
       return Boolean(
         this.glFeatures.releaseEditPage && this.release._links && this.release._links.edit_url,
       );
+    },
+    shouldShowEvidence() {
+      return this.glFeatures.releaseEvidenceCollection;
     },
     shouldShowFooter() {
       return this.glFeatures.releaseIssueSummary;
@@ -216,6 +224,8 @@ export default {
           </div>
         </div>
       </div>
+
+      <evidence-block v-if="hasEvidence && shouldShowEvidence" :release="release" />
 
       <div class="card-text prepend-top-default">
         <div v-html="release.description_html"></div>

@@ -4,6 +4,27 @@
 > - [Always enabled](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/30444)
   in GitLab 12.1.
 
+## Getting Started
+
+For those new to the GitLab GraphQL API, see
+[Getting started with GitLab GraphQL API](getting_started.md).
+
+### Quick Reference
+
+- GitLab's GraphQL API endpoint is located at `/api/graphql`.
+- Get an [introduction to GraphQL from graphql.org](https://graphql.org/).
+- GitLab supports a wide range of resources, listed in the [GraphQL API Reference](reference/index.md).
+
+#### GraphiQL
+
+Explore the GraphQL API using the interactive [GraphiQL explorer](https://gitlab.com/-/graphql-explorer),
+or on your self-managed GitLab instance on
+`https://<your-gitlab-site.com>/-/graphql-explorer`.
+
+See the [GitLab GraphQL overview](getting_started.md#graphiql) for more information about the GraphiQL Explorer.
+
+## What is GraphQL?
+
 [GraphQL](https://graphql.org/) is a query language for APIs that
 allows clients to request exactly the data they need, making it
 possible to get all required data in a limited number of requests.
@@ -33,11 +54,16 @@ possible.
 
 ## Available queries
 
-A first iteration of a GraphQL API includes the following queries
+The GraphQL API includes the following queries at the root level:
 
-1. `project` : Within a project it is also possible to fetch a `mergeRequest` by IID.
+1. `project` : Project information, with many of its associations such as issues and merge requests also available.
 1. `group` : Basic group information and epics **(ULTIMATE)** are currently supported.
 1. `namespace` : Within a namespace it is also possible to fetch `projects`.
+1. `currentUser`: Information about the currently logged in user.
+1. `metaData`: Metadata about GitLab and the GraphQL API.
+
+Root-level queries are defined in
+[`app/graphql/types/query_type.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/app/graphql/types/query_type.rb).
 
 ### Multiplex queries
 
@@ -57,11 +83,6 @@ Machine-readable versions are also available:
 
 - [JSON format](reference/gitlab_schema.json)
 - [IDL format](reference/gitlab_schema.graphql)
-
-## GraphiQL
-
-The API can be explored by using the GraphiQL IDE, it is available on your
-instance on `gitlab.example.com/-/graphql-explorer`.
 
 [ce-19008]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/19008
 [features-api]: ../features.md

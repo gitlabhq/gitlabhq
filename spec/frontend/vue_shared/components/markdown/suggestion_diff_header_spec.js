@@ -21,6 +21,7 @@ describe('Suggestion Diff component', () => {
       },
       localVue,
       sync: false,
+      attachToDocument: true,
     });
   };
 

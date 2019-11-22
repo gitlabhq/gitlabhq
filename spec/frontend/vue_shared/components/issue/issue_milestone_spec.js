@@ -1,18 +1,20 @@
 import Vue from 'vue';
-import { mount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 
 import IssueMilestone from '~/vue_shared/components/issue/issue_milestone.vue';
+import Icon from '~/vue_shared/components/icon.vue';
 
 import { mockMilestone } from '../../../../javascripts/boards/mock_data';
 
 const createComponent = (milestone = mockMilestone) => {
   const Component = Vue.extend(IssueMilestone);
 
-  return mount(Component, {
+  return shallowMount(Component, {
     propsData: {
       milestone,
     },
     sync: false,
+    attachToDocument: true,
   });
 };
 
@@ -156,7 +158,7 @@ describe('IssueMilestoneComponent', () => {
     });
 
     it('renders milestone icon', () => {
-      expect(vm.$el.querySelector('svg use').getAttribute('xlink:href')).toContain('clock');
+      expect(wrapper.find(Icon).props('name')).toBe('clock');
     });
 
     it('renders milestone title', () => {

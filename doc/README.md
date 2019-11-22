@@ -42,6 +42,7 @@ Have a look at some of our most popular documentation resources:
 | [Kubernetes integration](user/project/clusters/index.md)        | Use GitLab with Kubernetes.                                      |
 | [SSH authentication](ssh/README.md)                             | Secure your network communications.                              |
 | [Using Docker images](ci/docker/using_docker_images.md)         | Build and test your applications with Docker.                    |
+| [GraphQL](api/graphql/index.md)                                 | Explore GitLab's GraphQL API.                                    |
 
 ## The entire DevOps Lifecycle
 
