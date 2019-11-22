@@ -1,5 +1,0 @@
----
-title: Build CI cache key from commit SHAs that changed given files
-merge_request: 19392
-author:
-type: added

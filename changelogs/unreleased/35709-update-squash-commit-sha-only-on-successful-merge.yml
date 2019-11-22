@@ -1,5 +1,0 @@
----
-title: Update squash_commit_sha only on successful merge
-merge_request: 19688
-author:
-type: fixed

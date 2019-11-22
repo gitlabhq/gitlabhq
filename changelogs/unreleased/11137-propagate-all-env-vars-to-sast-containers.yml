@@ -1,5 +1,0 @@
----
-title: Propagate custom environment variables to SAST analyzers
-merge_request: 18193
-author:
-type: changed

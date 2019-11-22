@@ -1,5 +1,0 @@
----
-title: Add index on marked_for_deletion_at in projects table
-merge_request: 19788
-author:
-type: other

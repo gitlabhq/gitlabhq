@@ -1,5 +1,0 @@
----
-title: Abort only MWPS when FF only merge is impossible
-merge_request: 18591
-author:
-type: fixed

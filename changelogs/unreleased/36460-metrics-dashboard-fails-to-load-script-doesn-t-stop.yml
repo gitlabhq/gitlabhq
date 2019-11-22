@@ -1,5 +1,0 @@
----
-title: Remove update hook from date filter to prevent js from getting stuck
-merge_request: 20215
-author:
-type: fixed

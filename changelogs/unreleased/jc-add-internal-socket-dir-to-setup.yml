@@ -1,5 +1,0 @@
----
-title: Add internal_socket_dir to gitaly config in setup helper
-merge_request: 19170
-author:
-type: other

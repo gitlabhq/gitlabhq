@@ -1,5 +1,0 @@
----
-title: The Security Dashboard displays DAST vulnerabilities for all the scanned sites, not just the first
-merge_request: 17779
-author:
-type: added

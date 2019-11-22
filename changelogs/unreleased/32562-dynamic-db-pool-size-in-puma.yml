@@ -1,5 +1,0 @@
----
-title: 'Puma only: database connection pool now always >= number of worker threads'
-merge_request: 19286
-author:
-type: performance

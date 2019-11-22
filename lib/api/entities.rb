@@ -1838,6 +1838,7 @@ end
 ::API::Entities::Issue.prepend_if_ee('EE::API::Entities::Issue')
 ::API::Entities::List.prepend_if_ee('EE::API::Entities::List')
 ::API::Entities::MergeRequestBasic.prepend_if_ee('EE::API::Entities::MergeRequestBasic', with_descendants: true)
+::API::Entities::Member.prepend_if_ee('EE::API::Entities::Member', with_descendants: true)
 ::API::Entities::Namespace.prepend_if_ee('EE::API::Entities::Namespace')
 ::API::Entities::Project.prepend_if_ee('EE::API::Entities::Project', with_descendants: true)
 ::API::Entities::ProtectedRefAccess.prepend_if_ee('EE::API::Entities::ProtectedRefAccess')

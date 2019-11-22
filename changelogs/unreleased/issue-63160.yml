@@ -1,5 +1,0 @@
----
-title: Use initial commit SHA instead of branch id to request IDE files and contents
-merge_request: 19348
-author: David Palubin
-type: fixed

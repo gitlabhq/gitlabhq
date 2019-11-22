@@ -1,6 +1,0 @@
----
-title: 'Hashed Storage Migration: Handle failed attachment migrations with existing
-  target path'
-merge_request: 19061
-author:
-type: fixed

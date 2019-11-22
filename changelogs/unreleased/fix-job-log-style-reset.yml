@@ -1,5 +1,0 @@
----
-title: Fix style reset in job log when empty ANSI sequence is encoutered
-merge_request: 20367
-author:
-type: fixed

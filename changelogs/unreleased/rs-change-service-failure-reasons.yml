@@ -1,5 +1,0 @@
----
-title: 'Add an `error_code` attribute to the API response when a cherry-pick or revert fails.'
-merge_request: 19518
-author:
-type: added

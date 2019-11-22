@@ -1,5 +1,0 @@
----
-title: Add backtrace to production_json.log
-merge_request: 20122
-author:
-type: changed

@@ -14,7 +14,7 @@ module API
         end
 
         def public_snippets
-          SnippetsFinder.new(current_user, scope: :are_public).execute
+          Snippet.only_personal_snippets.are_public.fresh
         end
 
         def snippets
@@ -33,7 +33,7 @@ module API
         present paginate(snippets_for_current_user), with: Entities::PersonalSnippet
       end
 
-      desc 'List all public snippets current_user has access to' do
+      desc 'List all public personal snippets current_user has access to' do
         detail 'This feature was introduced in GitLab 8.15.'
         success Entities::PersonalSnippet
       end

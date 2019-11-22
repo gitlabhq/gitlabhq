@@ -14,7 +14,7 @@ module Gitlab
       signup_flow: {
         feature_toggle: :experimental_separate_sign_up_flow,
         environment: ::Gitlab.dev_env_or_com?,
-        enabled_ratio: 0.1,
+        enabled_ratio: 0.5,
         tracking_category: 'Growth::Acquisition::Experiment::SignUpFlow'
       }
     }.freeze

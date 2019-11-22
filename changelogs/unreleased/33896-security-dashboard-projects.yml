@@ -1,5 +1,0 @@
----
-title: Create a users_security_dashboard_projects table to store the projects a user has added to their personal security dashboard
-merge_request: 18708
-author:
-type: added

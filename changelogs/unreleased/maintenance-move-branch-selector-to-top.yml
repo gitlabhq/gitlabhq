@@ -1,6 +1,0 @@
----
-title: Reduce new MR page redundancy by moving the source/target branch selector to
-  the top
-merge_request: 17559
-author:
-type: changed

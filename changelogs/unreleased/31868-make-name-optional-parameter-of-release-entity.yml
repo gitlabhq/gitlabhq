@@ -1,5 +1,0 @@
----
-title: Made `name` optional parameter of Release entity
-merge_request: 19705
-author:
-type: changed

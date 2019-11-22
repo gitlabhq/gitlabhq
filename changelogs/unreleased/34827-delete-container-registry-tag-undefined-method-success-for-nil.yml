@@ -1,5 +1,0 @@
----
-title: Fix crash when docker fails deleting tags
-merge_request: 19208
-author:
-type: fixed

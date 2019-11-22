@@ -1,5 +1,0 @@
----
-title: Fix missing admin mode UI buttons on bigger screen sizes
-merge_request: 18585
-author: Diego Louzán
-type: fixed

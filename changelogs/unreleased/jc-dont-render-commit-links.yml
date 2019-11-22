@@ -1,5 +1,0 @@
----
-title: Do not render links in commit message on blame page
-merge_request: 19128
-author:
-type: performance

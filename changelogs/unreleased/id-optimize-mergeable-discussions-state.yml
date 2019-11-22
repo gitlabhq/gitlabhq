@@ -1,5 +1,0 @@
----
-title: Optimize MergeRequest#mergeable_discussions_state? method
-merge_request: 19988
-author:
-type: performance

@@ -1,5 +1,0 @@
----
-title: Run check_mergeability only if merge status requires it
-merge_request: 19364
-author:
-type: performance

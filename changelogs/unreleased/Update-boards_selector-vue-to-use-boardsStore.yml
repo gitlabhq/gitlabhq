@@ -1,5 +1,0 @@
----
-title: remove all references of BoardService in boards_selector.vue
-merge_request: 20147
-author: nuwe1
-type: other

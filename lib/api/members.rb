@@ -21,18 +21,14 @@ module API
           optional :user_ids, type: Array[Integer], desc: 'Array of user ids to look up for membership'
           use :pagination
         end
-        # rubocop: disable CodeReuse/ActiveRecord
+
         get ":id/members" do
           source = find_source(source_type, params[:id])
 
-          members = source.members.where.not(user_id: nil).includes(:user)
-          members = members.joins(:user).merge(User.search(params[:query])) if params[:query].present?
-          members = members.where(user_id: params[:user_ids]) if params[:user_ids].present?
-          members = paginate(members)
+          members = paginate(retrieve_members(source, params: params))
 
-          present members, with: Entities::Member
+          present_members members
         end
-        # rubocop: enable CodeReuse/ActiveRecord
 
         desc 'Gets a list of group or project members viewable by the authenticated user, including those who gained membership through ancestor group.' do
           success Entities::Member
@@ -42,18 +38,14 @@ module API
           optional :user_ids, type: Array[Integer], desc: 'Array of user ids to look up for membership'
           use :pagination
         end
-        # rubocop: disable CodeReuse/ActiveRecord
+
         get ":id/members/all" do
           source = find_source(source_type, params[:id])
 
-          members = find_all_members(source_type, source)
-          members = members.includes(:user).references(:user).merge(User.search(params[:query])) if params[:query].present?
-          members = members.where(user_id: params[:user_ids]) if params[:user_ids].present?
-          members = paginate(members)
+          members = paginate(retrieve_members(source, params: params, deep: true))
 
-          present members, with: Entities::Member
+          present_members members
         end
-        # rubocop: enable CodeReuse/ActiveRecord
 
         desc 'Gets a member of a group or project.' do
           success Entities::Member
@@ -68,7 +60,7 @@ module API
           members = source.members
           member = members.find_by!(user_id: params[:user_id])
 
-          present member, with: Entities::Member
+          present_members member
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
@@ -82,10 +74,10 @@ module API
         get ":id/members/all/:user_id" do
           source = find_source(source_type, params[:id])
 
-          members = find_all_members(source_type, source)
+          members = find_all_members(source)
           member = members.find_by!(user_id: params[:user_id])
 
-          present member, with: Entities::Member
+          present_members member
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
@@ -113,7 +105,7 @@ module API
           if !member
             not_allowed! # This currently can only be reached in EE
           elsif member.persisted? && member.valid?
-            present member, with: Entities::Member
+            present_members member
           else
             render_validation_error!(member)
           end
@@ -140,7 +132,7 @@ module API
               .execute(member)
 
           if updated_member.valid?
-            present updated_member, with: Entities::Member
+            present_members updated_member
           else
             render_validation_error!(updated_member)
           end
@@ -165,3 +157,5 @@ module API
     end
   end
 end
+
+API::Members.prepend_if_ee('EE::API::Members')

@@ -1,6 +1,0 @@
----
-title: Increase the timeout for GitLab-managed cert-manager installation to 90 seconds
-  (was 30 seconds)
-merge_request: 19447
-author:
-type: fixed

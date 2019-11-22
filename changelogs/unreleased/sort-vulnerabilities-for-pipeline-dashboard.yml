@@ -1,5 +1,0 @@
----
-title: Pipeline vulnerability dashboard sort vulnerabilities by severity then confidence
-merge_request: 18863
-author:
-type: fixed

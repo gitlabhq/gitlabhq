@@ -66,6 +66,9 @@ describe API::Snippets do
     let!(:public_snippet_other) { create(:personal_snippet, :public, author: other_user) }
     let!(:private_snippet_other) { create(:personal_snippet, :private, author: other_user) }
     let!(:internal_snippet_other) { create(:personal_snippet, :internal, author: other_user) }
+    let!(:public_snippet_project) { create(:project_snippet, :public, author: user) }
+    let!(:private_snippet_project) { create(:project_snippet, :private, author: user) }
+    let!(:internal_snippet_project) { create(:project_snippet, :internal, author: user) }
 
     it 'returns all snippets with public visibility from all users' do
       get api("/snippets/public", user)
@@ -76,10 +79,10 @@ describe API::Snippets do
       expect(json_response.map { |snippet| snippet['id']} ).to contain_exactly(
         public_snippet.id,
         public_snippet_other.id)
-      expect(json_response.map { |snippet| snippet['web_url']} ).to include(
+      expect(json_response.map { |snippet| snippet['web_url']} ).to contain_exactly(
         "http://localhost/snippets/#{public_snippet.id}",
         "http://localhost/snippets/#{public_snippet_other.id}")
-      expect(json_response.map { |snippet| snippet['raw_url']} ).to include(
+      expect(json_response.map { |snippet| snippet['raw_url']} ).to contain_exactly(
         "http://localhost/snippets/#{public_snippet.id}/raw",
         "http://localhost/snippets/#{public_snippet_other.id}/raw")
     end

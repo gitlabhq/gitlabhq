@@ -1,5 +1,0 @@
----
-title: Set shorter TTL for all unauthenticated requests
-merge_request: 19064
-author:
-type: fixed

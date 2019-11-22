@@ -1,5 +1,0 @@
----
-title: Update incrementing of failed logins to be thread-safe
-merge_request: 19614
-author:
-type: security

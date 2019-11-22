@@ -1,5 +1,0 @@
----
-title: Add modsecurity logging sidecar to ingress controller
-merge_request: 19600
-author:
-type: added

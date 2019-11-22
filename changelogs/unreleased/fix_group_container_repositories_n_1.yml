@@ -1,5 +1,0 @@
----
-title: Fix N+1 for group container repositories view
-merge_request: 18979
-author:
-type: performance

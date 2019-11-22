@@ -1,5 +1,0 @@
----
-title: Make 'Sidekiq::Testing.fake!' mode as default
-merge_request: 31662
-author: "@blackst0ne"
-type: other

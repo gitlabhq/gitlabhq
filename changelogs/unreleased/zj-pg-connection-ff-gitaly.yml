@@ -1,5 +1,0 @@
----
-title: Remove required dependecy of Postgresql for Gitaly
-merge_request: 18659
-author:
-type: other

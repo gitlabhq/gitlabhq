@@ -1,5 +1,0 @@
----
-title: Attribute Sidekiq workers according to their workloads
-merge_request: 18066
-author:
-type: other

@@ -1,5 +1,0 @@
----
-title: Correctly cleanup orphan job artifacts
-merge_request: 17679
-author: Adam Mulvany
-type: fixed

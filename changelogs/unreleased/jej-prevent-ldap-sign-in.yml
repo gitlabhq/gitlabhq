@@ -1,5 +1,0 @@
----
-title: Add prevent_ldap_sign_in option so LDAP can be used exclusively for sync
-merge_request: 18749
-author:
-type: added

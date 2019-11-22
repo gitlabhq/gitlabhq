@@ -1,5 +1,0 @@
----
-title: Enable the HttpOnly flag for experimentation_subject_id cookie
-merge_request: 19189
-author:
-type: security
