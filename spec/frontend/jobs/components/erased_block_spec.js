@@ -1,23 +1,30 @@
-import Vue from 'vue';
+import { mount } from '@vue/test-utils';
+import { GlLink } from '@gitlab/ui';
 import { getTimeago } from '~/lib/utils/datetime_utility';
-import component from '~/jobs/components/erased_block.vue';
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import ErasedBlock from '~/jobs/components/erased_block.vue';
 
 describe('Erased block', () => {
-  const Component = Vue.extend(component);
-  let vm;
+  let wrapper;
 
   const erasedAt = '2016-11-07T11:11:16.525Z';
   const timeago = getTimeago();
   const formatedDate = timeago.format(erasedAt);
 
+  const createComponent = props => {
+    wrapper = mount(ErasedBlock, {
+      propsData: props,
+      sync: false,
+      attachToDocument: true,
+    });
+  };
+
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   describe('with job erased by user', () => {
     beforeEach(() => {
-      vm = mountComponent(Component, {
+      createComponent({
         user: {
           username: 'root',
           web_url: 'gitlab.com/root',
@@ -27,30 +34,30 @@ describe('Erased block', () => {
     });
 
     it('renders username and link', () => {
-      expect(vm.$el.querySelector('a').getAttribute('href')).toEqual('gitlab.com/root');
+      expect(wrapper.find(GlLink).attributes('href')).toEqual('gitlab.com/root');
 
-      expect(vm.$el.textContent).toContain('Job has been erased by');
-      expect(vm.$el.textContent).toContain('root');
+      expect(wrapper.text().trim()).toContain('Job has been erased by');
+      expect(wrapper.text().trim()).toContain('root');
     });
 
     it('renders erasedAt', () => {
-      expect(vm.$el.textContent).toContain(formatedDate);
+      expect(wrapper.text().trim()).toContain(formatedDate);
     });
   });
 
   describe('with erased job', () => {
     beforeEach(() => {
-      vm = mountComponent(Component, {
+      createComponent({
         erasedAt,
       });
     });
 
     it('renders username and link', () => {
-      expect(vm.$el.textContent).toContain('Job has been erased');
+      expect(wrapper.text().trim()).toContain('Job has been erased');
     });
 
     it('renders erasedAt', () => {
-      expect(vm.$el.textContent).toContain(formatedDate);
+      expect(wrapper.text().trim()).toContain(formatedDate);
     });
   });
 });

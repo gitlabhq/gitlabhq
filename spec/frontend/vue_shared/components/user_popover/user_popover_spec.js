@@ -1,5 +1,7 @@
 import UserPopover from '~/vue_shared/components/user_popover/user_popover.vue';
-import { mount } from '@vue/test-utils';
+import { GlSkeletonLoading } from '@gitlab/ui';
+import Icon from '~/vue_shared/components/icon.vue';
+import { shallowMount } from '@vue/test-utils';
 
 const DEFAULT_PROPS = {
   loaded: true,
@@ -29,7 +31,7 @@ describe('User Popover Component', () => {
 
   describe('Empty', () => {
     beforeEach(() => {
-      wrapper = mount(UserPopover, {
+      wrapper = shallowMount(UserPopover, {
         propsData: {
           target: document.querySelector('.js-user-link'),
           user: {
@@ -41,18 +43,19 @@ describe('User Popover Component', () => {
             status: null,
           },
         },
+        attachToDocument: true,
         sync: false,
       });
     });
 
     it('should return skeleton loaders', () => {
-      expect(wrapper.findAll('.animation-container').length).toBe(4);
+      expect(wrapper.find(GlSkeletonLoading).exists()).toBe(true);
     });
   });
 
   describe('basic data', () => {
     it('should show basic fields', () => {
-      wrapper = mount(UserPopover, {
+      wrapper = shallowMount(UserPopover, {
         propsData: {
           ...DEFAULT_PROPS,
           target: document.querySelector('.js-user-link'),
@@ -66,9 +69,9 @@ describe('User Popover Component', () => {
     });
 
     it('shows icon for location', () => {
-      const iconEl = wrapper.find('.js-location svg');
+      const iconEl = wrapper.find(Icon);
 
-      expect(iconEl.find('use').element.getAttribute('xlink:href')).toContain('location');
+      expect(iconEl.props('name')).toEqual('location');
     });
   });
 
@@ -77,7 +80,7 @@ describe('User Popover Component', () => {
       const testProps = Object.assign({}, DEFAULT_PROPS);
       testProps.user.bio = 'Engineer';
 
-      wrapper = mount(UserPopover, {
+      wrapper = shallowMount(UserPopover, {
         propsData: {
           ...testProps,
           target: document.querySelector('.js-user-link'),
@@ -92,7 +95,7 @@ describe('User Popover Component', () => {
       const testProps = Object.assign({}, DEFAULT_PROPS);
       testProps.user.organization = 'GitLab';
 
-      wrapper = mount(UserPopover, {
+      wrapper = shallowMount(UserPopover, {
         propsData: {
           ...testProps,
           target: document.querySelector('.js-user-link'),
@@ -108,7 +111,7 @@ describe('User Popover Component', () => {
       testProps.user.bio = 'Engineer';
       testProps.user.organization = 'GitLab';
 
-      wrapper = mount(UserPopover, {
+      wrapper = shallowMount(UserPopover, {
         propsData: {
           ...DEFAULT_PROPS,
           target: document.querySelector('.js-user-link'),
@@ -125,7 +128,7 @@ describe('User Popover Component', () => {
       testProps.user.bio = 'Manager & Team Lead';
       testProps.user.organization = 'Me & my <funky> Company';
 
-      wrapper = mount(UserPopover, {
+      wrapper = shallowMount(UserPopover, {
         propsData: {
           ...DEFAULT_PROPS,
           target: document.querySelector('.js-user-link'),
@@ -138,15 +141,13 @@ describe('User Popover Component', () => {
     });
 
     it('shows icon for bio', () => {
-      const iconEl = wrapper.find('.js-bio svg');
-
-      expect(iconEl.find('use').element.getAttribute('xlink:href')).toContain('profile');
+      expect(wrapper.findAll(Icon).filter(icon => icon.props('name') === 'profile').length).toEqual(
+        1,
+      );
     });
 
     it('shows icon for organization', () => {
-      const iconEl = wrapper.find('.js-organization svg');
-
-      expect(iconEl.find('use').element.getAttribute('xlink:href')).toContain('work');
+      expect(wrapper.findAll(Icon).filter(icon => icon.props('name') === 'work').length).toEqual(1);
     });
   });
 
@@ -155,7 +156,7 @@ describe('User Popover Component', () => {
       const testProps = Object.assign({}, DEFAULT_PROPS);
       testProps.user.status = { message_html: 'Hello World' };
 
-      wrapper = mount(UserPopover, {
+      wrapper = shallowMount(UserPopover, {
         propsData: {
           ...DEFAULT_PROPS,
           target: document.querySelector('.js-user-link'),
@@ -170,7 +171,7 @@ describe('User Popover Component', () => {
       const testProps = Object.assign({}, DEFAULT_PROPS);
       testProps.user.status = { emoji: 'basketball_player', message_html: 'Hello World' };
 
-      wrapper = mount(UserPopover, {
+      wrapper = shallowMount(UserPopover, {
         propsData: {
           ...DEFAULT_PROPS,
           target: document.querySelector('.js-user-link'),
