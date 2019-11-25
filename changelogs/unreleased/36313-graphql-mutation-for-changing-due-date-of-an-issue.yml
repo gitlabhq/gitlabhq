@@ -1,0 +1,5 @@
+---
+title: Add GraphQL mutation for changing due date of an issue
+merge_request: 20577
+author:
+type: added

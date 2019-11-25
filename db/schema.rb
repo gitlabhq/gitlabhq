@@ -1892,6 +1892,13 @@ ActiveRecord::Schema.define(version: 2019_11_19_023952) do
     t.index ["key", "value"], name: "index_group_custom_attributes_on_key_and_value"
   end
 
+  create_table "group_deletion_schedules", primary_key: "group_id", id: :bigint, default: nil, force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.date "marked_for_deletion_on", null: false
+    t.index ["marked_for_deletion_on"], name: "index_group_deletion_schedules_on_marked_for_deletion_on"
+    t.index ["user_id"], name: "index_group_deletion_schedules_on_user_id"
+  end
+
   create_table "group_group_links", force: :cascade do |t|
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
@@ -4413,6 +4420,8 @@ ActiveRecord::Schema.define(version: 2019_11_19_023952) do
   add_foreign_key "gpg_signatures", "projects", on_delete: :cascade
   add_foreign_key "grafana_integrations", "projects", on_delete: :cascade
   add_foreign_key "group_custom_attributes", "namespaces", column: "group_id", on_delete: :cascade
+  add_foreign_key "group_deletion_schedules", "namespaces", column: "group_id", on_delete: :cascade
+  add_foreign_key "group_deletion_schedules", "users", on_delete: :nullify
   add_foreign_key "group_group_links", "namespaces", column: "shared_group_id", on_delete: :cascade
   add_foreign_key "group_group_links", "namespaces", column: "shared_with_group_id", on_delete: :cascade
   add_foreign_key "identities", "saml_providers", name: "fk_aade90f0fc", on_delete: :cascade

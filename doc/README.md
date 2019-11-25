@@ -23,7 +23,7 @@ No matter how you use GitLab, we have documentation for you.
 | Essential Documentation                                                                                                                    | Essential Documentation                                                                                                    |
 |:-------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------|
 | [**User Documentation**](user/index.md)<br/>Discover features and concepts for GitLab users.                                               | [**Administrator documentation**](administration/index.md)<br/>Everything GitLab self-managed administrators need to know. |
-| [**Contributing to GitLab**](#contributing-to-gitlab)<br/>At GitLab, everyone can contribute!                                              | [**New to Git and GitLab?**](#new-to-git-and-gitlab)<br/>We have resources to get you started.                             |
+| [**Contributing to GitLab**](#contributing-to-gitlab)<br/>At GitLab, everyone can contribute!                                              | [**New to Git and GitLab?**](#new-to-git-and-gitlab)<br/>We have the resources to get you started.                             |
 | [**Building an integration with GitLab?**](#building-an-integration-with-gitlab)<br/>Consult our automation and integration documentation. | [**Coming to GitLab from another platform?**](#coming-to-gitlab-from-another-platform)<br/>Consult our handy guides.       |
 | [**Install GitLab**](https://about.gitlab.com/install/)<br/>Installation options for different platforms.                                  | [**Customers**](subscriptions/index.md)<br/>Information for new and existing customers.                                    |
 | [**Update GitLab**](update/README.md)<br/>Update your GitLab self-managed instance to the latest version.                                  | [**GitLab Releases**](https://about.gitlab.com/releases/)<br/>What's new in GitLab.                                        |
@@ -412,7 +412,7 @@ Learn more about using Git, and using Git with GitLab:
 | Topic                                                                       | Description                                                                |
 |:----------------------------------------------------------------------------|:---------------------------------------------------------------------------|
 | [Git](topics/git/index.md)                                                  | Getting started with Git, branching strategies, Git LFS, and advanced use. |
-| [Git cheatsheet](https://about.gitlab.com/images/press/git-cheat-sheet.pdf) | Download a PDF describing the most used Git operations.                    |
+| [Git cheat sheet](https://about.gitlab.com/images/press/git-cheat-sheet.pdf) | Download a PDF describing the most used Git operations.                    |
 | [GitLab Flow](topics/gitlab_flow.md)                                      | Explore the best of Git with the GitLab Flow strategy.                     |
 
 <div align="right">

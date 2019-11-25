@@ -32,18 +32,11 @@ module Gitlab
         class Connection < GraphQL::Relay::BaseConnection
           include Gitlab::Utils::StrongMemoize
 
-          # TODO https://gitlab.com/gitlab-org/gitlab/issues/35104
-          include Gitlab::Graphql::Connections::Keyset::LegacyKeysetConnection
-
           def cursor_from_node(node)
-            return legacy_cursor_from_node(node) if use_legacy_pagination?
-
             encoded_json_from_ordering(node)
           end
 
           def sliced_nodes
-            return legacy_sliced_nodes if use_legacy_pagination?
-
             @sliced_nodes ||=
               begin
                 OrderInfo.validate_ordering(ordered_nodes, order_list)

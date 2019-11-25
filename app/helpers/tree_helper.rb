@@ -158,7 +158,9 @@ module TreeHelper
   def breadcrumb_data_attributes
     attrs = {
       can_collaborate: can_collaborate_with_project?(@project).to_s,
-      new_blob_path: project_new_blob_path(@project, @id),
+      new_blob_path: project_new_blob_path(@project, @ref),
+      upload_path: project_create_blob_path(@project, @ref),
+      new_dir_path: project_create_dir_path(@project, @ref),
       new_branch_path: new_project_branch_path(@project),
       new_tag_path: new_project_tag_path(@project),
       can_edit_tree: can_edit_tree?.to_s

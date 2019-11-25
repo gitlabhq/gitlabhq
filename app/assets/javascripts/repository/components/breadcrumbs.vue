@@ -124,7 +124,7 @@ export default {
           },
           {
             attrs: {
-              href: this.newBlobPath,
+              href: `${this.newBlobPath}${this.currentPath}`,
               class: 'qa-new-file-option',
             },
             text: __('New file'),
