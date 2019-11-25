@@ -602,3 +602,19 @@ export const getDatesInRange = (d1, d2, formatter = x => x) => {
  * @return {Number} number of milliseconds
  */
 export const secondsToMilliseconds = seconds => seconds * 1000;
+
+/**
+ * Converts the supplied number of seconds to days.
+ *
+ * @param {Number} seconds
+ * @return {Number} number of days
+ */
+export const secondsToDays = seconds => Math.round(seconds / 86400);
+
+/**
+ * Returns the date after the date provided
+ *
+ * @param {Date} date the initial date
+ * @return {Date} the date following the date provided
+ */
+export const dayAfter = date => new Date(newDate(date).setDate(date.getDate() + 1));

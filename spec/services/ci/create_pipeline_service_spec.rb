@@ -801,6 +801,32 @@ describe Ci::CreatePipelineService do
       end
     end
 
+    context 'environment with Kubernetes configuration' do
+      let(:kubernetes_namespace) { 'custom-namespace' }
+
+      before do
+        config = YAML.dump(
+          deploy: {
+            environment: {
+              name: "environment-name",
+              kubernetes: { namespace: kubernetes_namespace }
+            },
+            script: 'ls'
+          }
+        )
+
+        stub_ci_pipeline_yaml_file(config)
+      end
+
+      it 'stores the requested namespace' do
+        result = execute_service
+        build = result.builds.first
+
+        expect(result).to be_persisted
+        expect(build.options.dig(:environment, :kubernetes, :namespace)).to eq(kubernetes_namespace)
+      end
+    end
+
     context 'when environment with invalid name' do
       before do
         config = YAML.dump(deploy: { environment: { name: 'name,with,commas' }, script: 'ls' })

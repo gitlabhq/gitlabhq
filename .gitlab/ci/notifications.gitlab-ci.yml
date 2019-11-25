@@ -1,0 +1,18 @@
+.notify:
+  image: alpine
+  stage: notification
+  dependencies: []
+  cache: {}
+  before_script:
+    - apk update && apk add git curl bash
+  variables:
+    COMMIT_NOTES_URL: "https://$CI_SERVER_HOST/$CI_PROJECT_PATH/commit/$CI_COMMIT_SHA#notes-list"
+
+schedule:package-and-qa:notify-failure:
+  extends:
+    - .only:variables_refs-canonical-dot-com-schedules
+    - .notify
+  script:
+    - 'scripts/notify-slack qa-master ":skull_and_crossbones: Scheduled QA against master failed! :skull_and_crossbones: See $CI_PIPELINE_URL. For downstream pipelines, see $COMMIT_NOTES_URL" ci_failing'
+  needs: ["schedule:package-and-qa"]
+  when: on_failure

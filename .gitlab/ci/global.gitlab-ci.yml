@@ -93,7 +93,7 @@
   - "config.ru"
   - "{package.json,yarn.lock}"
   - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
-  - "doc/api/graphql/**/*"
+  - "doc/api/graphql/reference/*" # Files in this folder are auto-generated
 
 .backstage-patterns: &backstage-patterns
   - "Dangerfile"
@@ -139,7 +139,7 @@
       - "config.ru"
       - "{package.json,yarn.lock}"
       - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
-      - "doc/api/graphql/**/*"
+      - "doc/api/graphql/reference/*" # Files in this folder are auto-generated
       # Backstage changes
       - "Dangerfile"
       - "danger/**/*"
@@ -163,7 +163,7 @@
       - "config.ru"
       - "{package.json,yarn.lock}"
       - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
-      - "doc/api/graphql/**/*"
+      - "doc/api/graphql/reference/*" # Files in this folder are auto-generated
       # QA changes
       - ".dockerignore"
       - "qa/**/*"
@@ -183,7 +183,7 @@
       - "config.ru"
       - "{package.json,yarn.lock}"
       - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
-      - "doc/api/graphql/**/*"
+      - "doc/api/graphql/reference/*" # Files in this folder are auto-generated
       # Backstage changes
       - "Dangerfile"
       - "danger/**/*"

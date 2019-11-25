@@ -482,3 +482,27 @@ describe('secondsToMilliseconds', () => {
     expect(datetimeUtility.secondsToMilliseconds(123)).toBe(123000);
   });
 });
+
+describe('dayAfter', () => {
+  const date = new Date('2019-07-16T00:00:00.000Z');
+
+  it('returns the following date', () => {
+    const nextDay = datetimeUtility.dayAfter(date);
+    const expectedNextDate = new Date('2019-07-17T00:00:00.000Z');
+
+    expect(nextDay).toStrictEqual(expectedNextDate);
+  });
+
+  it('does not modifiy the original date', () => {
+    datetimeUtility.dayAfter(date);
+    expect(date).toStrictEqual(new Date('2019-07-16T00:00:00.000Z'));
+  });
+});
+
+describe('secondsToDays', () => {
+  it('converts seconds to days correctly', () => {
+    expect(datetimeUtility.secondsToDays(0)).toBe(0);
+    expect(datetimeUtility.secondsToDays(90000)).toBe(1);
+    expect(datetimeUtility.secondsToDays(270000)).toBe(3);
+  });
+});

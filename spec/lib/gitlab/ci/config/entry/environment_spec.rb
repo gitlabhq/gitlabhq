@@ -241,4 +241,28 @@ describe Gitlab::Ci::Config::Entry::Environment do
       end
     end
   end
+
+  describe 'kubernetes' do
+    let(:config) do
+      { name: 'production', kubernetes: kubernetes_config }
+    end
+
+    context 'is a string' do
+      let(:kubernetes_config) { 'production' }
+
+      it { expect(entry).not_to be_valid }
+    end
+
+    context 'is a hash' do
+      let(:kubernetes_config) { Hash(namespace: 'production') }
+
+      it { expect(entry).to be_valid }
+    end
+
+    context 'is nil' do
+      let(:kubernetes_config) { nil }
+
+      it { expect(entry).to be_valid }
+    end
+  end
 end
