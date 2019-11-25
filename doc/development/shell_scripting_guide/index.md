@@ -60,7 +60,7 @@ All projects with shell scripts should use this GitLab CI/CD job:
 
 ```yaml
 shell check:
-  image: koalaman/shellcheck-alpine
+  image: koalaman/shellcheck-alpine:stable
   stage: test
   before_script:
     - shellcheck --version
