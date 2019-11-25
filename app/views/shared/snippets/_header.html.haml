@@ -17,11 +17,11 @@
       = render "snippets/actions"
 
 .snippet-header.limited-header-width
-  %h2.snippet-title.prepend-top-0.mb-3.qa-snippet-title
+  %h2.snippet-title.prepend-top-0.mb-3{ data: { qa_selector: 'snippet_title' } }
     = markdown_field(@snippet, :title)
 
   - if @snippet.description.present?
-    .description.qa-snippet-description
+    .description{ data: { qa_selector: 'snippet_description' } }
       .md
         = markdown_field(@snippet, :description)
       %textarea.hidden.js-task-list-field

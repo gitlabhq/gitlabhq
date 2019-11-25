@@ -177,6 +177,25 @@ describe Gitlab::Gpg do
       end.not_to raise_error
     end
 
+    it 'tracks an exception when cleaning up the tmp dir fails' do
+      expected_exception = described_class::CleanupError.new('cleanup failed')
+      expected_tmp_dir = nil
+
+      expect(described_class).to receive(:cleanup_tmp_dir).and_raise(expected_exception)
+      allow(Gitlab::Sentry).to receive(:track_exception)
+
+      described_class.using_tmp_keychain do
+        expected_tmp_dir = described_class.current_home_dir
+        FileUtils.touch(File.join(expected_tmp_dir, 'dummy.file'))
+      end
+
+      expect(Gitlab::Sentry).to have_received(:track_exception).with(
+        expected_exception,
+        issue_url: 'https://gitlab.com/gitlab-org/gitlab/issues/20918',
+        extra: { tmp_dir: expected_tmp_dir, contents: ['dummy.file'] }
+      )
+    end
+
     shared_examples 'multiple deletion attempts of the tmp-dir' do |seconds|
       let(:tmp_dir) do
         tmp_dir = Dir.mktmpdir
@@ -210,15 +229,6 @@ describe Gitlab::Gpg do
         expect { described_class.using_tmp_keychain { } }.not_to raise_error
 
         expect(File.exist?(tmp_dir)).to be false
-      end
-
-      it 'does not retry when the feature flag is disabled' do
-        stub_feature_flags(gpg_cleanup_retries: false)
-
-        expect(FileUtils).to receive(:remove_entry).with(tmp_dir, true).and_call_original
-        expect(Retriable).not_to receive(:retriable)
-
-        described_class.using_tmp_keychain {}
       end
     end
 

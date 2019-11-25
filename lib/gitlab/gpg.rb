@@ -5,7 +5,7 @@ module Gitlab
     extend self
 
     CleanupError = Class.new(StandardError)
-    BG_CLEANUP_RUNTIME_S = 2
+    BG_CLEANUP_RUNTIME_S = 10
     FG_CLEANUP_RUNTIME_S = 0.5
 
     MUTEX = Mutex.new
@@ -107,19 +107,18 @@ module Gitlab
       begin
         cleanup_tmp_dir(tmp_dir)
       rescue CleanupError => e
+        folder_contents = Dir.children(tmp_dir)
         # This means we left a GPG-agent process hanging. Logging the problem in
         # sentry will make this more visible.
         Gitlab::Sentry.track_exception(e,
                                        issue_url: 'https://gitlab.com/gitlab-org/gitlab/issues/20918',
-                                       extra: { tmp_dir: tmp_dir })
+                                       extra: { tmp_dir: tmp_dir, contents: folder_contents })
       end
 
       tmp_keychains_removed.increment unless File.exist?(tmp_dir)
     end
 
     def cleanup_tmp_dir(tmp_dir)
-      return FileUtils.remove_entry(tmp_dir, true) if Feature.disabled?(:gpg_cleanup_retries)
-
       # Retry when removing the tmp directory failed, as we may run into a
       # race condition:
       # The `gpg-agent` agent process may clean up some files as well while

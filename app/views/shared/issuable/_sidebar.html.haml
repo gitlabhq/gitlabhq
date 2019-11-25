@@ -30,10 +30,10 @@
         = render_if_exists 'shared/issuable/sidebar_item_epic', issuable_sidebar: issuable_sidebar
 
         - milestone = issuable_sidebar[:milestone] || {}
-        .block.milestone
+        .block.milestone{ data: { qa_selector: 'milestone_block' } }
           .sidebar-collapsed-icon.has-tooltip{ title: sidebar_milestone_tooltip_label(milestone), data: { container: 'body', html: 'true', placement: 'left', boundary: 'viewport' } }
             = icon('clock-o', 'aria-hidden': 'true')
-            %span.milestone-title.collapse-truncated-title
+            %span.milestone-title.collapse-truncated-title{ data: { qa_selector: 'milestone_title' } }
               - if milestone.present?
                 = milestone[:title]
               - else
@@ -107,10 +107,10 @@
             = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
             - if can_edit_issuable
               = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link qa-edit-link-labels float-right', data: { track_label: "right_sidebar", track_property: "labels", track_event: "click_edit_button", track_value: "" }
-          .value.issuable-show-labels.dont-hide.hide-collapsed.qa-labels-block{ class: ("has-labels" if selected_labels.any?) }
+          .value.issuable-show-labels.dont-hide.hide-collapsed{ class: ("has-labels" if selected_labels.any?), data: { qa_selector: 'labels_block' } }
             - if selected_labels.any?
               - selected_labels.each do |label_hash|
-                = render_label(label_from_hash(label_hash).present(issuable_subject: nil), link: sidebar_label_filter_path(issuable_sidebar[:project_issuables_path], label_hash[:title]))
+                = render_label(label_from_hash(label_hash).present(issuable_subject: nil), link: sidebar_label_filter_path(issuable_sidebar[:project_issuables_path], label_hash[:title]), dataset: { qa_selector: 'label', qa_label_name: label_hash[:title] })
             - else
               %span.no-value
                 = _('None')

@@ -6,8 +6,8 @@ module QA
       module Snippet
         class Show < Page::Base
           view 'app/views/shared/snippets/_header.html.haml' do
-            element :snippet_title
-            element :snippet_description
+            element :snippet_title, required: true
+            element :snippet_description, required: true
             element :embed_type
             element :snippet_box
           end
@@ -21,15 +21,11 @@ module QA
           end
 
           def has_snippet_title?(snippet_title)
-            within_element(:snippet_title) do
-              has_text?(snippet_title)
-            end
+            has_element? :snippet_title, text: snippet_title
           end
 
           def has_snippet_description?(snippet_description)
-            within_element(:snippet_description) do
-              has_text?(snippet_description)
-            end
+            has_element? :snippet_description, text: snippet_description
           end
 
           def has_embed_type?(embed_type)

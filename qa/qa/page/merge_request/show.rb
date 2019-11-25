@@ -122,9 +122,8 @@ module QA
         end
 
         def has_label?(label)
-          page.within(element_selector_css(:labels_block)) do
-            element = find('span', text: label)
-            !element.nil?
+          within_element(:labels_block) do
+            !!has_element?(:label, label_name: label)
           end
         end
 
