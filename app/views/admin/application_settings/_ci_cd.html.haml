@@ -58,6 +58,6 @@
       = f.text_field :default_ci_config_path, class: 'form-control', placeholder: '.gitlab-ci.yml'
       %p.form-text.text-muted
         = _("The default CI configuration path for new projects.").html_safe
-        = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'custom-ci-config-path'), target: '_blank'
+        = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'custom-ci-configuration-path'), target: '_blank'
 
   = f.submit _('Save changes'), class: "btn btn-success"

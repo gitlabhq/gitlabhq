@@ -1,7 +1,7 @@
 <script>
-/* global katex */
 import marked from 'marked';
 import sanitize from 'sanitize-html';
+import katex from 'katex';
 import Prompt from './prompt.vue';
 
 const renderer = new marked.Renderer();
@@ -70,7 +70,6 @@ renderer.paragraph = t => {
 };
 
 marked.setOptions({
-  sanitize: true,
   renderer,
 });
 
@@ -87,9 +86,66 @@ export default {
   computed: {
     markdown() {
       return sanitize(marked(this.cell.source.join('').replace(/\\/g, '\\\\')), {
-        allowedTags: false,
+        // allowedTags from GitLab's inline HTML guidelines
+        // https://docs.gitlab.com/ee/user/markdown.html#inline-html
+        allowedTags: [
+          'h1',
+          'h2',
+          'h3',
+          'h4',
+          'h5',
+          'h6',
+          'h7',
+          'h8',
+          'br',
+          'b',
+          'i',
+          'strong',
+          'em',
+          'a',
+          'pre',
+          'code',
+          'img',
+          'tt',
+          'div',
+          'ins',
+          'del',
+          'sup',
+          'sub',
+          'p',
+          'ol',
+          'ul',
+          'table',
+          'thead',
+          'tbody',
+          'tfoot',
+          'blockquote',
+          'dl',
+          'dt',
+          'dd',
+          'kbd',
+          'q',
+          'samp',
+          'var',
+          'hr',
+          'ruby',
+          'rt',
+          'rp',
+          'li',
+          'tr',
+          'td',
+          'th',
+          's',
+          'strike',
+          'span',
+          'abbr',
+          'abbr',
+          'summary',
+        ],
         allowedAttributes: {
-          '*': ['class'],
+          '*': ['class', 'style'],
+          a: ['href'],
+          img: ['src'],
         },
       });
     },
@@ -105,6 +161,15 @@ export default {
 </template>
 
 <style>
+/*
+  Importing the necessary katex stylesheet from the node_module folder rather
+  than copying the stylesheet into `app/assets/stylesheets/vendors` for
+  automatic importing via `app/assets/stylesheets/application.scss`. The reason
+  is that the katex stylesheet depends on many fonts that are in node_module
+  subfolders - moving all these fonts would make updating katex difficult.
+ */
+@import '~katex/dist/katex.min.css';
+
 .markdown .katex {
   display: block;
   text-align: center;

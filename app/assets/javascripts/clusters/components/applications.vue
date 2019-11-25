@@ -170,7 +170,7 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
           ),
         ),
         {
-          gitlabIntegrationLink: `<a href="https://docs.gitlab.com/ce/user/project/integrations/crossplane.html"
+          gitlabIntegrationLink: `<a href="https://docs.gitlab.com/ee/user/clusters/applications.html#crossplane"
           target="_blank" rel="noopener noreferrer">
           ${_.escape(s__('ClusterIntegration|Gitlab Integration'))}</a>`,
           kubectl: `<code>kubectl</code>`,

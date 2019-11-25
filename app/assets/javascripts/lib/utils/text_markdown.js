@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, no-param-reassign, one-var, operator-assignment, no-else-return, consistent-return */
+/* eslint-disable func-names, no-param-reassign, operator-assignment, no-else-return, consistent-return */
 import $ from 'jquery';
 import { insertText } from '~/lib/utils/common_utils';
 
@@ -13,8 +13,7 @@ function addBlockTags(blockTag, selected) {
 }
 
 function lineBefore(text, textarea) {
-  var split;
-  split = text
+  const split = text
     .substring(0, textarea.selectionStart)
     .trim()
     .split('\n');
@@ -80,7 +79,7 @@ function moveCursor({
   editorSelectionStart,
   editorSelectionEnd,
 }) {
-  var pos;
+  let pos;
   if (textArea && !textArea.setSelectionRange) {
     return;
   }
@@ -132,18 +131,13 @@ export function insertMarkdownText({
   select,
   editor,
 }) {
-  var textToInsert,
-    selectedSplit,
-    startChar,
-    removedLastNewLine,
-    removedFirstNewLine,
-    currentLineEmpty,
-    lastNewLine,
-    editorSelectionStart,
-    editorSelectionEnd;
-  removedLastNewLine = false;
-  removedFirstNewLine = false;
-  currentLineEmpty = false;
+  let removedLastNewLine = false;
+  let removedFirstNewLine = false;
+  let currentLineEmpty = false;
+  let editorSelectionStart;
+  let editorSelectionEnd;
+  let lastNewLine;
+  let textToInsert;
 
   if (editor) {
     const selectionRange = editor.getSelectionRange();
@@ -186,7 +180,7 @@ export function insertMarkdownText({
     }
   }
 
-  selectedSplit = selected.split('\n');
+  const selectedSplit = selected.split('\n');
 
   if (editor && !wrap) {
     lastNewLine = editor.getValue().split('\n')[editorSelectionStart.row];
@@ -207,8 +201,7 @@ export function insertMarkdownText({
     (textArea && textArea.selectionStart === 0) ||
     (editor && editorSelectionStart.column === 0 && editorSelectionStart.row === 0);
 
-  startChar = !wrap && !currentLineEmpty && !isBeginning ? '\n' : '';
-
+  const startChar = !wrap && !currentLineEmpty && !isBeginning ? '\n' : '';
   const textPlaceholder = '{text}';
 
   if (selectedSplit.length > 1 && (!wrap || (blockTag != null && blockTag !== ''))) {
@@ -263,11 +256,10 @@ export function insertMarkdownText({
 }
 
 function updateText({ textArea, tag, cursorOffset, blockTag, wrap, select, tagContent }) {
-  var $textArea, selected, text;
-  $textArea = $(textArea);
+  const $textArea = $(textArea);
   textArea = $textArea.get(0);
-  text = $textArea.val();
-  selected = selectedText(text, textArea) || tagContent;
+  const text = $textArea.val();
+  const selected = selectedText(text, textArea) || tagContent;
   $textArea.focus();
   return insertMarkdownText({
     textArea,
