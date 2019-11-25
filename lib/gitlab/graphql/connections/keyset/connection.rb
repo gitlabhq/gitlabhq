@@ -137,14 +137,7 @@ module Gitlab
           def ordering_from_encoded_json(cursor)
             JSON.parse(decode(cursor))
           rescue JSON::ParserError
-            # for the transition period where a client might request using an
-            # old style cursor.  Once removed, make it an error:
-            #   raise Gitlab::Graphql::Errors::ArgumentError, "Please provide a valid cursor"
-            # TODO can be removed in next release
-            # https://gitlab.com/gitlab-org/gitlab/issues/32933
-            field_name = order_list.first.attribute_name
-
-            { field_name => decode(cursor) }
+            raise Gitlab::Graphql::Errors::ArgumentError, "Please provide a valid cursor"
           end
         end
       end

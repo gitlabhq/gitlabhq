@@ -218,23 +218,11 @@ describe Gitlab::Graphql::Connections::Keyset::Connection do
       end
     end
 
-    # TODO Enable this as part of below issue
-    # https://gitlab.com/gitlab-org/gitlab/issues/32933
-    # context 'when an invalid cursor is provided' do
-    #   let(:arguments) { { before: 'invalidcursor' } }
-    #
-    #   it 'raises an error' do
-    #     expect { expect(subject.sliced_nodes) }.to raise_error(Gitlab::Graphql::Errors::ArgumentError)
-    #   end
-    # end
+    context 'when an invalid cursor is provided' do
+      let(:arguments) { { before: Base64Bp.urlsafe_encode64('invalidcursor', padding: false) } }
 
-    # TODO Remove this as part of below issue
-    # https://gitlab.com/gitlab-org/gitlab/issues/32933
-    context 'when an old style cursor is provided' do
-      let(:arguments) { { before: Base64Bp.urlsafe_encode64(projects[1].id.to_s, padding: false) } }
-
-      it 'only returns the project before the selected one' do
-        expect(subject.sliced_nodes).to contain_exactly(projects.first)
+      it 'raises an error' do
+        expect { subject.sliced_nodes }.to raise_error(Gitlab::Graphql::Errors::ArgumentError)
       end
     end
   end

@@ -16,7 +16,6 @@ import '~/boards/models/project';
 import store from '~/boards/stores';
 import boardsStore from '~/boards/stores/boards_store';
 import ModalStore from '~/boards/stores/modal_store';
-import BoardService from 'ee_else_ce/boards/services/board_service';
 import modalMixin from '~/boards/mixins/modal_mixins';
 import '~/boards/filters/due_date_filters';
 import Board from 'ee_else_ce/boards/components/board';
@@ -97,7 +96,6 @@ export default () => {
         bulkUpdatePath: this.bulkUpdatePath,
         boardId: this.boardId,
       });
-      gl.boardService = new BoardService();
       boardsStore.rootPath = this.boardsEndpoint;
 
       eventHub.$on('updateTokens', this.updateTokens);
@@ -116,7 +114,7 @@ export default () => {
       this.filterManager.setup();
 
       boardsStore.disabled = this.disabled;
-      gl.boardService
+      boardsStore
         .all()
         .then(res => res.data)
         .then(lists => {
@@ -155,7 +153,8 @@ export default () => {
           newIssue.setFetchingState('subscriptions', true);
           setWeigthFetchingState(newIssue, true);
           setEpicFetchingState(newIssue, true);
-          BoardService.getIssueInfo(sidebarInfoEndpoint)
+          boardsStore
+            .getIssueInfo(sidebarInfoEndpoint)
             .then(res => res.data)
             .then(data => {
               const {
@@ -211,7 +210,8 @@ export default () => {
         const { issue } = boardsStore.detail;
         if (issue.id === id && issue.toggleSubscriptionEndpoint) {
           issue.setFetchingState('subscriptions', true);
-          BoardService.toggleIssueSubscription(issue.toggleSubscriptionEndpoint)
+          boardsStore
+            .toggleIssueSubscription(issue.toggleSubscriptionEndpoint)
             .then(() => {
               issue.setFetchingState('subscriptions', false);
               issue.updateData({

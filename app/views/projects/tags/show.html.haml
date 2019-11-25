@@ -1,3 +1,7 @@
+- user = user_email = nil
+- if @tag.tagger
+  - user_email = @tag.tagger.email
+  - user = User.find_by_any_email(user_email)
 - add_to_breadcrumbs s_('TagsPage|Tags'), project_tags_path(@project)
 - breadcrumb_title @tag.name
 - page_title @tag.name, s_('TagsPage|Tags')
@@ -11,6 +15,24 @@
       - if protected_tag?(@project, @tag)
         %span.badge.badge-success
           = s_('TagsPage|protected')
+
+    - if user
+      = link_to user_path(user) do
+        %div
+          = user_avatar_without_link(user: user, size: 32, css_class: "mt-1 mb-1")
+
+        %div
+          %strong= user.name
+          %div= user.to_reference
+
+    - elsif user_email
+      = mail_to user_email do
+        %div
+          = user_avatar_without_link(user_email: user_email, size: 32, css_class: "mt-1 mb-1")
+
+        %div{ :class => "clearfix" }
+          %strong= user_email
+
     - if @commit
       = render 'projects/branches/commit', commit: @commit, project: @project
     - else
@@ -33,7 +55,7 @@
 
   - if @tag.message.present?
     %pre.wrap
-      = strip_gpg_signature(@tag.message)
+      = strip_signature(@tag.message)
 
 .append-bottom-default.prepend-top-default
   - if @release.description.present?

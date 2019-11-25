@@ -62,6 +62,10 @@ module Gitlab
         encode! @message
       end
 
+      def tagger
+        @raw_tag.tagger
+      end
+
       private
 
       def message_from_gitaly_tag

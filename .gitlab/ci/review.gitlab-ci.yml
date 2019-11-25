@@ -94,10 +94,7 @@ schedule:review-build-cng:
   variables:
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
     DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"
-    # v2.4.4 + two improvements:
-    # - Allow to pass an EE license when installing the chart: https://gitlab.com/gitlab-org/charts/gitlab/merge_requests/1008
-    # - Allow to customize the livenessProbe for `gitlab-shell`: https://gitlab.com/gitlab-org/charts/gitlab/merge_requests/1021
-    GITLAB_HELM_CHART_REF: "6c655ed77e60f1f7f533afb97bef8c9cb7dc61eb"
+    GITLAB_HELM_CHART_REF: "v2.5.1"
     GITLAB_EDITION: "ce"
   environment:
     name: review/${CI_COMMIT_REF_NAME}
@@ -135,13 +132,11 @@ review-deploy:
     - .review-deploy-base
     - .only-review
     - .only:changes-code-qa
-  needs: ["review-build-cng"]
 
 schedule:review-deploy:
   extends:
     - .review-deploy-base
     - .only-review-schedules
-  needs: ["schedule:review-build-cng"]
 
 .base-review-stop:
   extends:

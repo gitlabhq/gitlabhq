@@ -1,0 +1,5 @@
+---
+title: Fix dropdown location on the monitoring charts
+merge_request: 20400
+author:
+type: fixed

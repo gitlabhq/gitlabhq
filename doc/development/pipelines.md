@@ -191,8 +191,8 @@ subgraph "`review-prepare` stage"
     end
 
 subgraph "`review` stage"
-    G --> |needs| E;
-    G2 --> |needs| E;
+    G
+    G2
     end
 
 subgraph "`qa` stage"

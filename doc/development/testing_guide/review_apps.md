@@ -129,6 +129,10 @@ two node pools:
 
 ### Helm/Tiller
 
+The Helm/Tiller version used is defined in the
+[`registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base` image](https://gitlab.com/gitlab-org/gitlab-build-images/blob/master/Dockerfile.gitlab-charts-build-base#L4)
+used by the `review-deploy` and `review-stop` jobs.
+
 The `tiller` deployment (the Helm server) is deployed to a dedicated node pool
 that has the `app=helm` label and a specific
 [taint](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/)

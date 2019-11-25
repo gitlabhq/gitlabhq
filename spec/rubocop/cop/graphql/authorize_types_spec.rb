@@ -79,5 +79,15 @@ describe RuboCop::Cop::Graphql::AuthorizeTypes do
         end
       TYPE
     end
+
+    it 'does not add an offense for Enums' do
+      expect_no_offenses(<<~TYPE)
+        module Types
+          class ATypeEnum < AnotherEnum
+            field :a_thing
+          end
+        end
+      TYPE
+    end
   end
 end

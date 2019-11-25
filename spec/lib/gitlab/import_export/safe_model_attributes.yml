@@ -728,6 +728,7 @@ List:
 - milestone_id
 - user_id
 - max_issue_count
+- max_issue_weight
 ExternalPullRequest:
 - id
 - created_at

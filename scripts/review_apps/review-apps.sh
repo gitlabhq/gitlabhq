@@ -141,6 +141,7 @@ function install_tiller() {
     --tiller-namespace "${namespace}" \
     --wait \
     --upgrade \
+    --force-upgrade \
     --node-selectors "app=helm" \
     --replicas 3 \
     --override "spec.template.spec.tolerations[0].key"="dedicated" \
@@ -214,6 +215,21 @@ function create_application_secret() {
     --dry-run -o json | kubectl apply -f -
 }
 
+function label_application_secret() {
+  local namespace="${KUBE_NAMESPACE}"
+  local release="${CI_ENVIRONMENT_SLUG}"
+
+  echoinfo "Labeling the ${release}-gitlab-initial-root-password and ${release}-gitlab-license secrets in the ${namespace} namespace..." true
+
+  kubectl label secret --namespace "${namespace}" \
+    "${release}-gitlab-initial-root-password" \
+    release="${release}"
+  
+  kubectl label secret --namespace "${namespace}" \
+    "${release}-gitlab-license" \
+    release="${release}"
+}
+
 function download_chart() {
   echoinfo "Downloading the GitLab chart..." true
 
@@ -254,6 +270,7 @@ function deploy() {
   gitlab_workhorse_image_repository="${IMAGE_REPOSITORY}/gitlab-workhorse-${edition}"
 
   create_application_secret
+  label_application_secret
 
 HELM_CMD=$(cat << EOF
   helm upgrade \

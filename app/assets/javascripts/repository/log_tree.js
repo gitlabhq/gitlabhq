@@ -7,8 +7,8 @@ import getRef from './queries/getRef.query.graphql';
 let fetchpromise;
 let resolvers = [];
 
-export function resolveCommit(commits, { resolve, entry }) {
-  const commit = commits.find(c => c.fileName === entry.name && c.type === entry.type);
+export function resolveCommit(commits, path, { resolve, entry }) {
+  const commit = commits.find(c => c.filePath === `${path}/${entry.name}` && c.type === entry.type);
 
   if (commit) {
     resolve(commit);
@@ -35,13 +35,13 @@ export function fetchLogsTree(client, path, offset, resolver = null) {
     .then(({ data, headers }) => {
       const headerLogsOffset = headers['more-logs-offset'];
       const { commits } = client.readQuery({ query: getCommits });
-      const newCommitData = [...commits, ...normalizeData(data)];
+      const newCommitData = [...commits, ...normalizeData(data, path)];
       client.writeQuery({
         query: getCommits,
         data: { commits: newCommitData },
       });
 
-      resolvers.forEach(r => resolveCommit(newCommitData, r));
+      resolvers.forEach(r => resolveCommit(newCommitData, path, r));
 
       fetchpromise = null;
 

@@ -34,7 +34,10 @@ module RuboCop
         end
 
         def whitelisted?(class_node)
-          return false unless class_node&.const_name
+          class_const = class_node&.const_name
+
+          return false unless class_const
+          return true if class_const.end_with?('Enum')
 
           WHITELISTED_TYPES.any? { |whitelisted| class_node.const_name.include?(whitelisted) }
         end

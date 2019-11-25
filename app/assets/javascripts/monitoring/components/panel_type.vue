@@ -126,7 +126,7 @@ export default {
       />
       <gl-dropdown
         v-gl-tooltip
-        class="mx-2"
+        class="ml-auto mx-3"
         toggle-class="btn btn-transparent border-0"
         :right="true"
         :no-caret="true"

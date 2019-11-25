@@ -21,11 +21,18 @@ describe('resolveCommit', () => {
       entry: { name: 'index.js', type: 'blob' },
       resolve: jest.fn(),
     };
-    const commits = [{ fileName: 'index.js', type: 'blob' }];
+    const commits = [
+      { fileName: 'index.js', filePath: '/index.js', type: 'blob' },
+      { fileName: 'index.js', filePath: '/app/assets/index.js', type: 'blob' },
+    ];
 
-    resolveCommit(commits, resolver);
+    resolveCommit(commits, '', resolver);
 
-    expect(resolver.resolve).toHaveBeenCalledWith({ fileName: 'index.js', type: 'blob' });
+    expect(resolver.resolve).toHaveBeenCalledWith({
+      fileName: 'index.js',
+      filePath: '/index.js',
+      type: 'blob',
+    });
   });
 });
 
@@ -84,6 +91,7 @@ describe('fetchLogsTree', () => {
         commitPath: 'https://test.com',
         committedDate: '2019-01-01',
         fileName: 'index.js',
+        filePath: '/index.js',
         message: 'testing message',
         sha: '123',
         type: 'blob',
@@ -101,6 +109,7 @@ describe('fetchLogsTree', () => {
               commitPath: 'https://test.com',
               committedDate: '2019-01-01',
               fileName: 'index.js',
+              filePath: '/index.js',
               message: 'testing message',
               sha: '123',
               type: 'blob',
