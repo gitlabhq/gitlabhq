@@ -155,6 +155,14 @@ class Service < ApplicationRecord
     end
   end
 
+  def configurable_event_actions
+    self.class.supported_event_actions
+  end
+
+  def self.supported_event_actions
+    %w()
+  end
+
   def supported_events
     self.class.supported_events
   end

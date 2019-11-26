@@ -3577,6 +3577,7 @@ ActiveRecord::Schema.define(version: 2019_11_24_150431) do
     t.boolean "confidential_note_events", default: true
     t.boolean "deployment_events", default: false, null: false
     t.string "description", limit: 500
+    t.boolean "comment_on_event_enabled", default: true, null: false
     t.index ["project_id"], name: "index_services_on_project_id"
     t.index ["template"], name: "index_services_on_template"
     t.index ["type"], name: "index_services_on_type"

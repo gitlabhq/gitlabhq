@@ -171,7 +171,10 @@ describe('test errors', () => {
 // see: https://github.com/deepsweet/istanbul-instrumenter-loader/issues/15
 if (process.env.BABEL_ENV === 'coverage') {
   // exempt these files from the coverage report
-  const troubleMakers = ['./pages/admin/application_settings/general/index.js'];
+  const troubleMakers = [
+    './pages/admin/application_settings/general/index.js',
+    './geo_designs/index.js',
+  ];
 
   describe('Uncovered files', function() {
     const sourceFilesContexts = [require.context('~', true, /\.(js|vue)$/)];

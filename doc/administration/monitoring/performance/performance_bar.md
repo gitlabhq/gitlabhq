@@ -19,6 +19,7 @@ It allows you to see (from left to right):
 - a link to add a request's details to the performance bar; the request can be
   added by its full URL (authenticated as the current user), or by the value of
   its `X-Request-Id` header
+- a link to download the raw JSON used to generate the Performance Bar reports
 
 On the far right is a request selector that allows you to view the same metrics
 (excluding the page timing and line profiler) for any requests made while the

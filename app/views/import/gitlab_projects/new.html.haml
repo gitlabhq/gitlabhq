@@ -14,7 +14,6 @@
       = _("To move or copy an entire GitLab project from another GitLab installation to this one, navigate to the original project's settings page, generate an export file, and upload it here.")
   .row
     .form-group.col-sm-12
-      = hidden_field_tag :namespace_id, @namespace.id
       = label_tag :file, _('GitLab project export'), class: 'label-bold'
       .form-group
         = file_field_tag :file, class: ''

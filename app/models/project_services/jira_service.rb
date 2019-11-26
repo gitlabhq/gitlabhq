@@ -32,6 +32,10 @@ class JiraService < IssueTrackerService
     %w(commit merge_request)
   end
 
+  def self.supported_event_actions
+    %w(comment)
+  end
+
   # {PROJECT-KEY}-{NUMBER} Examples: JIRA-1, PROJECT-1
   def self.reference_pattern(only_long: true)
     @reference_pattern ||= /(?<issue>\b#{Gitlab::Regex.jira_issue_key_regex})/
@@ -268,17 +272,25 @@ class JiraService < IssueTrackerService
     return unless client_url.present?
 
     jira_request do
-      remote_link = find_remote_link(issue, remote_link_props[:object][:url])
-      if remote_link
-        remote_link.save!(remote_link_props)
-      elsif issue.comments.build.save!(body: message)
-        new_remote_link = issue.remotelink.build
-        new_remote_link.save!(remote_link_props)
-      end
+      create_issue_link(issue, remote_link_props)
+      create_issue_comment(issue, message)
 
       log_info("Successfully posted", client_url: client_url)
       "SUCCESS: Successfully posted to #{client_url}."
     end
+  end
+
+  def create_issue_link(issue, remote_link_props)
+    remote_link = find_remote_link(issue, remote_link_props[:object][:url])
+    remote_link ||= issue.remotelink.build
+
+    remote_link.save!(remote_link_props)
+  end
+
+  def create_issue_comment(issue, message)
+    return unless comment_on_event_enabled
+
+    issue.comments.build.save!(body: message)
   end
 
   def find_remote_link(issue, url)

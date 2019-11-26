@@ -48,8 +48,8 @@ incremental upgrades (and installations) are as simple as possible.
 review process a new change goes through.
 1. Ensuring that tests pass on older release is a considerable challenge in some cases, and as such is very time consuming.
 
-Including new features in patch releases is not possible as that would break [Semantic Versioning].
-Breaking [Semantic Versioning] has the following consequences for users that
+Including new features in patch releases is not possible as that would break [Semantic Versioning](https://semver.org/).
+Breaking [Semantic Versioning](https://semver.org/) has the following consequences for users that
 have to adhere to various internal requirements (e.g. org. compliance, verifying new features and similar):
 
 1. Inability to quickly upgrade to leverage bug fixes included in patch versions.

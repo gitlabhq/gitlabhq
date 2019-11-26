@@ -4,14 +4,14 @@ module MergeRequests
   class PushOptionsHandlerService
     LIMIT = 10
 
-    attr_reader :branches, :changes_by_branch, :current_user, :errors,
+    attr_reader :current_user, :errors, :changes,
                 :project, :push_options, :target_project
 
     def initialize(project, current_user, changes, push_options)
       @project = project
       @target_project = @project.default_merge_request_target
       @current_user = current_user
-      @branches = get_branches(changes)
+      @changes = Gitlab::ChangesList.new(changes)
       @push_options = push_options
       @errors = []
     end
@@ -34,8 +34,12 @@ module MergeRequests
 
     private
 
-    def get_branches(raw_changes)
-      Gitlab::ChangesList.new(raw_changes).map do |changes|
+    def branches
+      changes_by_branch.keys
+    end
+
+    def changes_by_branch
+      @changes_by_branch ||= changes.each_with_object({}) do |changes, result|
         next unless Gitlab::Git.branch_ref?(changes[:ref])
 
         # Deleted branch
@@ -45,8 +49,8 @@ module MergeRequests
         branch_name = Gitlab::Git.branch_name(changes[:ref])
         next if branch_name == target_project.default_branch
 
-        branch_name
-      end.compact.uniq
+        result[branch_name] = changes
+      end
     end
 
     def validate_service
@@ -101,7 +105,7 @@ module MergeRequests
           project,
           current_user,
           merge_request.attributes.merge(assignees: merge_request.assignees,
-                                        label_ids: merge_request.label_ids)
+                                         label_ids: merge_request.label_ids)
         ).execute
       end
 
@@ -112,7 +116,7 @@ module MergeRequests
       merge_request = ::MergeRequests::UpdateService.new(
         target_project,
         current_user,
-        update_params
+        update_params(merge_request)
       ).execute(merge_request)
 
       collect_errors_from_merge_request(merge_request) unless merge_request.valid?
@@ -130,17 +134,20 @@ module MergeRequests
 
       params.compact!
 
-      if push_options.key?(:merge_when_pipeline_succeeds)
-        params.merge!(
-          merge_when_pipeline_succeeds: push_options[:merge_when_pipeline_succeeds],
-          merge_user: current_user
-        )
-      end
-
       params[:add_labels] = params.delete(:label).keys if params.has_key?(:label)
       params[:remove_labels] = params.delete(:unlabel).keys if params.has_key?(:unlabel)
 
       params
+    end
+
+    def merge_params(branch)
+      return {} unless push_options.key?(:merge_when_pipeline_succeeds)
+
+      {
+        merge_when_pipeline_succeeds: push_options[:merge_when_pipeline_succeeds],
+        merge_user: current_user,
+        sha: changes_by_branch.dig(branch, :newrev)
+      }
     end
 
     def create_params(branch)
@@ -153,13 +160,15 @@ module MergeRequests
         target_project: target_project
       )
 
+      params.merge!(merge_params(branch))
+
       params[:target_branch] ||= target_project.default_branch
 
       params
     end
 
-    def update_params
-      base_params
+    def update_params(merge_request)
+      base_params.merge(merge_params(merge_request.source_branch))
     end
 
     def collect_errors_from_merge_request(merge_request)

@@ -443,6 +443,7 @@ Service:
 - note_events
 - pipeline_events
 - job_events
+- comment_on_event_enabled
 - category
 - default
 - wiki_page_events

@@ -143,6 +143,7 @@ Changes pushed to the upstream repository will be pulled into the GitLab reposit
 CAUTION: **Caution:**
 If you do manually update a branch in the GitLab repository, the branch will become diverged from
 upstream and GitLab will no longer automatically update this branch to prevent any changes from being lost.
+Also note that deleted branches and tags in the upstream repository will not be reflected in the GitLab repository.
 
 ### How it works
 
@@ -246,6 +247,10 @@ You then need to add the public SSH key to the other repository's configuration:
 If you need to change the key at any time, you can remove and re-add the mirror
 to generate a new key. You'll have to update the other repository with the new
 key to keep the mirror running.
+
+NOTE: **Note:**
+The generated keys are stored in the GitLab database, not in the filesystem. Therefore,
+SSH public key authentication for mirrors cannot be used in a pre-receive hook.
 
 ### Overwrite diverged branches **(STARTER)**
 
@@ -362,6 +367,7 @@ proxy_push()
       branch=$(expr "$refname" : "refs/heads/\(.*\)")
 
       if [ "$whitelisted" = "$branch" ]; then
+        unset GIT_QUARANTINE_PATH # handle https://git-scm.com/docs/git-receive-pack#_quarantine_environment
         error="$(git push --quiet $TARGET_REPO $NEWREV:$REFNAME 2>&1)"
         fail=$?
 
@@ -395,6 +401,15 @@ else
   done
 fi
 ```
+
+Note that this sample has a few limitations:
+
+- This example may not work verbatim for your use case and might need modification.
+  - It does not regard different types of authentication mechanisms for the mirror.
+  - It does not work with forced updates (rewriting history).
+  - Only branches that match the `whitelisted` patterns will be proxy pushed.
+- The script circumvents the git hook quarantine environment because the update of `$TARGET_REPO`
+  is seen as a ref update and git will complain about it.
 
 ### Mirroring with Perforce Helix via Git Fusion **(STARTER)**
 

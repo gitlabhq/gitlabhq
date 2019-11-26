@@ -431,6 +431,16 @@ describe JiraService do
         ).once
       end
 
+      context 'when "comment_on_event_enabled" is set to false' do
+        it 'creates Remote Link reference but does not create comment' do
+          allow(@jira_service).to receive_messages(comment_on_event_enabled: false)
+          @jira_service.close_issue(resource, ExternalIssue.new('JIRA-123', project))
+
+          expect(WebMock).not_to have_requested(:post, @comment_url)
+          expect(WebMock).to have_requested(:post, @remote_link_url)
+        end
+      end
+
       it 'does not send comment or remote links to issues already closed' do
         allow_any_instance_of(JIRA::Resource::Issue).to receive(:resolution).and_return(true)
 

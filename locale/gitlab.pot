@@ -5783,7 +5783,13 @@ msgstr ""
 msgid "Deselect all"
 msgstr ""
 
+msgid "Design Management"
+msgstr ""
+
 msgid "Design Management files and data"
+msgstr ""
+
+msgid "Design Sync Not Enabled"
 msgstr ""
 
 msgid "DesignManagement|%{current_design} of %{designs_count}"
@@ -5853,6 +5859,9 @@ msgid "DesignManagement|We could not delete %{design}. Please try again."
 msgstr ""
 
 msgid "Designs"
+msgstr ""
+
+msgid "Designs coming soon."
 msgstr ""
 
 msgid "Destroy"
@@ -6929,6 +6938,9 @@ msgstr ""
 msgid "Estimated"
 msgstr ""
 
+msgid "Event Actions"
+msgstr ""
+
 msgid "EventFilterBy|Filter by all"
 msgstr ""
 
@@ -7807,10 +7819,16 @@ msgstr ""
 msgid "Geo"
 msgstr ""
 
+msgid "Geo Designs"
+msgstr ""
+
 msgid "Geo Nodes"
 msgstr ""
 
 msgid "Geo Settings"
+msgstr ""
+
+msgid "Geo Troubleshooting"
 msgstr ""
 
 msgid "Geo allows you to replicate your GitLab instance to other geographical locations."
@@ -9223,6 +9241,9 @@ msgid "If this was a mistake you can leave the %{source_type}."
 msgstr ""
 
 msgid "If using GitHub, you’ll see pipeline statuses on GitHub for your commits and pull requests. %{more_info_link}"
+msgstr ""
+
+msgid "If you believe this page to be an error, check out the links below for more information."
 msgstr ""
 
 msgid "If you lose your recovery codes you can generate new ones, invalidating all previous codes."
@@ -12224,6 +12245,9 @@ msgstr ""
 msgid "Performance optimization"
 msgstr ""
 
+msgid "PerformanceBar|Download"
+msgstr ""
+
 msgid "PerformanceBar|Gitaly calls"
 msgstr ""
 
@@ -13365,6 +13389,12 @@ msgid "ProjectService|%{service_title}: status off"
 msgstr ""
 
 msgid "ProjectService|%{service_title}: status on"
+msgstr ""
+
+msgid "ProjectService|Comment"
+msgstr ""
+
+msgid "ProjectService|Comment will be posted on each event"
 msgstr ""
 
 msgid "ProjectService|Integrations"
@@ -17549,6 +17579,9 @@ msgstr ""
 msgid "There was an error fetching label data for the selected group"
 msgstr ""
 
+msgid "There was an error fetching the Designs"
+msgstr ""
+
 msgid "There was an error gathering the chart data"
 msgstr ""
 
@@ -18427,6 +18460,9 @@ msgid "Tree view"
 msgstr ""
 
 msgid "Trending"
+msgstr ""
+
+msgid "Trigger"
 msgstr ""
 
 msgid "Trigger pipelines for mirror updates"

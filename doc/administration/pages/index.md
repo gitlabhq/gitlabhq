@@ -321,6 +321,23 @@ pages:
 
 1. [Reconfigure GitLab][reconfigure] for the changes to take effect.
 
+### Using a custom Certificate Authority (CA) with Access Control
+
+When using certificates issued by a custom CA, Access Control on GitLab Pages may fail to work if the custom CA is not recognized.
+
+This usually results in this error:
+`Post /oauth/token: x509: certificate signed by unknown authority`.
+
+For GitLab Pages Access Control with TLS/SSL certs issued by an internal or custom CA:
+
+1. Copy the certificate bundle to `/opt/gitlab/embedded/ssl/certs/` in `.pem` format.
+
+1. [Restart](../restart_gitlab.md) the GitLab Pages Daemon. For GitLab Omnibus instances:
+
+    ```bash
+    sudo gitlab-ctl restart gitlab-pages
+    ```
+
 ## Activate verbose logging for daemon
 
 Verbose logging was [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests/2533) in
