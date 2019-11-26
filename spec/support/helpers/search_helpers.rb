@@ -20,6 +20,12 @@ module SearchHelpers
     end
   end
 
+  def has_search_scope?(scope)
+    page.within '.search-filter' do
+      has_link?(scope)
+    end
+  end
+
   def max_limited_count
     Gitlab::SearchResults::COUNT_LIMIT_MESSAGE
   end
