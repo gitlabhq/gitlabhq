@@ -1,25 +1,15 @@
 # frozen_string_literal: true
 
 class Admin::JobsController < Admin::ApplicationController
-  # rubocop: disable CodeReuse/ActiveRecord
   def index
+    # We need all builds for tabs counters
+    @all_builds = JobsFinder.new(current_user: current_user).execute
+
     @scope = params[:scope]
-    @all_builds = Ci::Build
-    @builds = @all_builds.order('id DESC')
-    @builds =
-      case @scope
-      when 'pending'
-        @builds.pending.reverse_order
-      when 'running'
-        @builds.running.reverse_order
-      when 'finished'
-        @builds.finished
-      else
-        @builds
-      end
+    @builds = JobsFinder.new(current_user: current_user, params: params).execute
+    @builds = @builds.eager_load_everything
     @builds = @builds.page(params[:page]).per(30)
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def cancel_all
     Ci::Build.running_or_pending.each(&:cancel)

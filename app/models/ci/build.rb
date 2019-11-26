@@ -120,6 +120,20 @@ module Ci
 
     scope :eager_load_job_artifacts, -> { includes(:job_artifacts) }
 
+    scope :eager_load_everything, -> do
+      includes(
+        [
+          { pipeline: [:project, :user] },
+          :job_artifacts_archive,
+          :metadata,
+          :trigger_request,
+          :project,
+          :user,
+          :tags
+        ]
+      )
+    end
+
     scope :with_exposed_artifacts, -> do
       joins(:metadata).merge(Ci::BuildMetadata.with_exposed_artifacts)
         .includes(:metadata, :job_artifacts_metadata)
@@ -161,6 +175,7 @@ module Ci
     end
 
     scope :queued_before, ->(time) { where(arel_table[:queued_at].lt(time)) }
+    scope :order_id_desc, -> { order('ci_builds.id DESC') }
 
     acts_as_taggable
 

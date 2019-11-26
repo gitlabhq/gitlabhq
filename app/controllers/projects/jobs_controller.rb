@@ -17,34 +17,15 @@ class Projects::JobsController < Projects::ApplicationController
 
   layout 'project'
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def index
+    # We need all builds for tabs counters
+    @all_builds = JobsFinder.new(current_user: current_user, project: @project).execute
+
     @scope = params[:scope]
-    @all_builds = project.builds.relevant
-    @builds = @all_builds.order('ci_builds.id DESC')
-    @builds =
-      case @scope
-      when 'pending'
-        @builds.pending.reverse_order
-      when 'running'
-        @builds.running.reverse_order
-      when 'finished'
-        @builds.finished
-      else
-        @builds
-      end
-    @builds = @builds.includes([
-      { pipeline: [:project, :user] },
-      :job_artifacts_archive,
-      :metadata,
-      :trigger_request,
-      :project,
-      :user,
-      :tags
-    ])
+    @builds = JobsFinder.new(current_user: current_user, project: @project, params: params).execute
+    @builds = @builds.eager_load_everything
     @builds = @builds.page(params[:page]).per(30).without_count
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   # rubocop: disable CodeReuse/ActiveRecord
   def show

@@ -199,25 +199,6 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
-  describe '#merge_train_pipeline?' do
-    subject { pipeline.merge_train_pipeline? }
-
-    let!(:pipeline) do
-      create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request, ref: ref, target_sha: 'xxx')
-    end
-
-    let(:merge_request) { create(:merge_request) }
-    let(:ref) { 'refs/merge-requests/1/train' }
-
-    it { is_expected.to be_truthy }
-
-    context 'when ref is merge ref' do
-      let(:ref) { 'refs/merge-requests/1/merge' }
-
-      it { is_expected.to be_falsy }
-    end
-  end
-
   describe '#merge_request_ref?' do
     subject { pipeline.merge_request_ref? }
 
@@ -228,43 +209,19 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
-  describe '#merge_train_ref?' do
-    subject { pipeline.merge_train_ref? }
-
-    it 'calls Mergetrain#merge_train_ref?' do
-      expect(MergeRequest).to receive(:merge_train_ref?).with(pipeline.ref)
-
-      subject
-    end
-  end
-
   describe '#merge_request_event_type' do
     subject { pipeline.merge_request_event_type }
 
-    before do
-      allow(pipeline).to receive(:merge_request_event?) { true }
-    end
-
-    context 'when pipeline is merge train pipeline' do
-      before do
-        allow(pipeline).to receive(:merge_train_pipeline?) { true }
-      end
-
-      it { is_expected.to eq(:merge_train) }
-    end
+    let(:pipeline) { merge_request.all_pipelines.last }
 
     context 'when pipeline is merge request pipeline' do
-      before do
-        allow(pipeline).to receive(:merge_request_pipeline?) { true }
-      end
+      let(:merge_request) { create(:merge_request, :with_merge_request_pipeline) }
 
       it { is_expected.to eq(:merged_result) }
     end
 
     context 'when pipeline is detached merge request pipeline' do
-      before do
-        allow(pipeline).to receive(:detached_merge_request_pipeline?) { true }
-      end
+      let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline) }
 
       it { is_expected.to eq(:detached) }
     end

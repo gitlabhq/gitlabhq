@@ -772,16 +772,8 @@ module Ci
       triggered_by_merge_request? && target_sha.present?
     end
 
-    def merge_train_pipeline?
-      merge_request_pipeline? && merge_train_ref?
-    end
-
     def merge_request_ref?
       MergeRequest.merge_request_ref?(ref)
-    end
-
-    def merge_train_ref?
-      MergeRequest.merge_train_ref?(ref)
     end
 
     def matches_sha_or_source_sha?(sha)
@@ -816,9 +808,7 @@ module Ci
       return unless merge_request_event?
 
       strong_memoize(:merge_request_event_type) do
-        if merge_train_pipeline?
-          :merge_train
-        elsif merge_request_pipeline?
+        if merge_request_pipeline?
           :merged_result
         elsif detached_merge_request_pipeline?
           :detached
