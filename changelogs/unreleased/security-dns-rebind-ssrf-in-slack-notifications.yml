@@ -1,0 +1,5 @@
+---
+title: Limit potential for DNS rebind SSRF in chat notifications
+merge_request:
+author:
+type: security
