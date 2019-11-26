@@ -83,6 +83,12 @@ describe GroupClusterablePresenter do
     it { is_expected.to eq(update_applications_group_cluster_path(group, cluster, application)) }
   end
 
+  describe '#clear_cluster_cache_path' do
+    subject { presenter.clear_cluster_cache_path(cluster) }
+
+    it { is_expected.to eq(clear_cache_group_cluster_path(group, cluster)) }
+  end
+
   describe '#cluster_path' do
     subject { presenter.cluster_path(cluster) }
 

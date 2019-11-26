@@ -13,6 +13,7 @@ import {
   convertExpandLines,
   idleCallback,
   allDiscussionWrappersExpanded,
+  prepareDiffData,
 } from './utils';
 import * as types from './mutation_types';
 import {
@@ -33,12 +34,27 @@ import {
   START_RENDERING_INDEX,
   INLINE_DIFF_LINES_KEY,
   PARALLEL_DIFF_LINES_KEY,
+  DIFFS_PER_PAGE,
 } from '../constants';
 import { diffViewerModes } from '~/ide/constants';
 
 export const setBaseConfig = ({ commit }, options) => {
-  const { endpoint, projectPath, dismissEndpoint, showSuggestPopover } = options;
-  commit(types.SET_BASE_CONFIG, { endpoint, projectPath, dismissEndpoint, showSuggestPopover });
+  const {
+    endpoint,
+    endpointMetadata,
+    endpointBatch,
+    projectPath,
+    dismissEndpoint,
+    showSuggestPopover,
+  } = options;
+  commit(types.SET_BASE_CONFIG, {
+    endpoint,
+    endpointMetadata,
+    endpointBatch,
+    projectPath,
+    dismissEndpoint,
+    showSuggestPopover,
+  });
 };
 
 export const fetchDiffFiles = ({ state, commit }) => {
@@ -64,6 +80,53 @@ export const fetchDiffFiles = ({ state, commit }) => {
       return Vue.nextTick();
     })
     .then(handleLocationHash)
+    .catch(() => worker.terminate());
+};
+
+export const fetchDiffFilesBatch = ({ commit, state }) => {
+  const baseUrl = `${state.endpointBatch}?per_page=${DIFFS_PER_PAGE}`;
+  const url = page => (page ? `${baseUrl}&page=${page}` : baseUrl);
+
+  commit(types.SET_BATCH_LOADING, true);
+
+  const getBatch = page =>
+    axios
+      .get(url(page))
+      .then(({ data: { pagination, diff_files } }) => {
+        commit(types.SET_DIFF_DATA_BATCH, { diff_files });
+        commit(types.SET_BATCH_LOADING, false);
+        return pagination.next_page;
+      })
+      .then(nextPage => nextPage && getBatch(nextPage));
+
+  return getBatch()
+    .then(handleLocationHash)
+    .catch(() => null);
+};
+
+export const fetchDiffFilesMeta = ({ commit, state }) => {
+  const worker = new TreeWorker();
+
+  commit(types.SET_LOADING, true);
+
+  worker.addEventListener('message', ({ data }) => {
+    commit(types.SET_TREE_DATA, data);
+
+    worker.terminate();
+  });
+
+  return axios
+    .get(state.endpointMetadata)
+    .then(({ data }) => {
+      const strippedData = { ...data };
+      strippedData.diff_files = [];
+      commit(types.SET_LOADING, false);
+      commit(types.SET_MERGE_REQUEST_DIFFS, data.merge_request_diffs || []);
+      commit(types.SET_DIFF_DATA, strippedData);
+
+      prepareDiffData(data);
+      worker.postMessage(data.diff_files);
+    })
     .catch(() => worker.terminate());
 };
 

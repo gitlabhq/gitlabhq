@@ -28,6 +28,14 @@
     .form-group
       = field.submit _('Save changes'), class: 'btn btn-success qa-save-domain'
 
+  - if @cluster.managed?
+    .sub-section.form-group
+      %h4
+        = s_('ClusterIntegration|Clear cluster cache')
+      %p
+        = s_("ClusterIntegration|Clear the local cache of namespace and service accounts. This is necessary if your integration has become out of sync. The cache is repopulated during the next CI job that requires namespace and service accounts.")
+      = link_to(s_('ClusterIntegration|Clear cluster cache'), clusterable.clear_cluster_cache_path(@cluster), method: :delete, class: 'btn btn-primary')
+
   .sub-section.form-group
     %h4.text-danger
       = s_('ClusterIntegration|Remove Kubernetes cluster integration')

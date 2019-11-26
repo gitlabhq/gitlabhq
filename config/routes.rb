@@ -166,6 +166,7 @@ Rails.application.routes.draw do
         end
 
         get :cluster_status, format: :json
+        delete :clear_cache
       end
     end
   end

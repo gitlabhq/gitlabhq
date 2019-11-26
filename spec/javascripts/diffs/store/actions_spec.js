@@ -8,6 +8,8 @@ import {
 import actions, {
   setBaseConfig,
   fetchDiffFiles,
+  fetchDiffFilesBatch,
+  fetchDiffFilesMeta,
   assignDiscussionsToDiff,
   removeDiscussionsFromDiff,
   startRenderDiffsQueue,
@@ -68,18 +70,41 @@ describe('DiffsStoreActions', () => {
   describe('setBaseConfig', () => {
     it('should set given endpoint and project path', done => {
       const endpoint = '/diffs/set/endpoint';
+      const endpointMetadata = '/diffs/set/endpoint/metadata';
+      const endpointBatch = '/diffs/set/endpoint/batch';
       const projectPath = '/root/project';
       const dismissEndpoint = '/-/user_callouts';
       const showSuggestPopover = false;
 
       testAction(
         setBaseConfig,
-        { endpoint, projectPath, dismissEndpoint, showSuggestPopover },
-        { endpoint: '', projectPath: '', dismissEndpoint: '', showSuggestPopover: true },
+        {
+          endpoint,
+          endpointBatch,
+          endpointMetadata,
+          projectPath,
+          dismissEndpoint,
+          showSuggestPopover,
+        },
+        {
+          endpoint: '',
+          endpointBatch: '',
+          endpointMetadata: '',
+          projectPath: '',
+          dismissEndpoint: '',
+          showSuggestPopover: true,
+        },
         [
           {
             type: types.SET_BASE_CONFIG,
-            payload: { endpoint, projectPath, dismissEndpoint, showSuggestPopover },
+            payload: {
+              endpoint,
+              endpointMetadata,
+              endpointBatch,
+              projectPath,
+              dismissEndpoint,
+              showSuggestPopover,
+            },
           },
         ],
         [],
@@ -104,6 +129,64 @@ describe('DiffsStoreActions', () => {
           { type: types.SET_LOADING, payload: false },
           { type: types.SET_MERGE_REQUEST_DIFFS, payload: res.merge_request_diffs },
           { type: types.SET_DIFF_DATA, payload: res },
+        ],
+        [],
+        () => {
+          mock.restore();
+          done();
+        },
+      );
+    });
+  });
+
+  describe('fetchDiffFilesBatch', () => {
+    it('should fetch batch diff files', done => {
+      const endpointBatch = '/fetch/diffs_batch';
+      const batch1 = `${endpointBatch}?per_page=10`;
+      const batch2 = `${endpointBatch}?per_page=10&page=2`;
+      const mock = new MockAdapter(axios);
+      const res1 = { diff_files: [], pagination: { next_page: 2 } };
+      const res2 = { diff_files: [], pagination: {} };
+      mock.onGet(batch1).reply(200, res1);
+      mock.onGet(batch2).reply(200, res2);
+
+      testAction(
+        fetchDiffFilesBatch,
+        {},
+        { endpointBatch },
+        [
+          { type: types.SET_BATCH_LOADING, payload: true },
+          { type: types.SET_DIFF_DATA_BATCH, payload: { diff_files: res1.diff_files } },
+          { type: types.SET_BATCH_LOADING, payload: false },
+          { type: types.SET_DIFF_DATA_BATCH, payload: { diff_files: [] } },
+          { type: types.SET_BATCH_LOADING, payload: false },
+        ],
+        [],
+        () => {
+          mock.restore();
+          done();
+        },
+      );
+    });
+  });
+
+  describe('fetchDiffFilesMeta', () => {
+    it('should fetch diff meta information', done => {
+      const endpointMetadata = '/fetch/diffs_meta';
+      const mock = new MockAdapter(axios);
+      const data = { diff_files: [] };
+      const res = { data };
+      mock.onGet(endpointMetadata).reply(200, res);
+
+      testAction(
+        fetchDiffFilesMeta,
+        {},
+        { endpointMetadata },
+        [
+          { type: types.SET_LOADING, payload: true },
+          { type: types.SET_LOADING, payload: false },
+          { type: types.SET_MERGE_REQUEST_DIFFS, payload: [] },
+          { type: types.SET_DIFF_DATA, payload: { data, diff_files: [] } },
         ],
         [],
         () => {

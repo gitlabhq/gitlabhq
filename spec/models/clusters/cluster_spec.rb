@@ -960,4 +960,20 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
       end
     end
   end
+
+  describe '#delete_cached_resources!' do
+    let!(:cluster) { create(:cluster, :project) }
+    let!(:staging_namespace) { create(:cluster_kubernetes_namespace, cluster: cluster, namespace: 'staging') }
+    let!(:production_namespace) { create(:cluster_kubernetes_namespace, cluster: cluster, namespace: 'production') }
+
+    subject { cluster.delete_cached_resources! }
+
+    it 'deletes associated namespace records' do
+      expect(cluster.kubernetes_namespaces).to match_array([staging_namespace, production_namespace])
+
+      subject
+
+      expect(cluster.kubernetes_namespaces).to be_empty
+    end
+  end
 end

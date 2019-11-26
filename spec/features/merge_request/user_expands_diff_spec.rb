@@ -8,6 +8,7 @@ describe 'User expands diff', :js do
 
   before do
     stub_feature_flags(single_mr_diff_view: false)
+    stub_feature_flags(diffs_batch_load: false)
 
     allow(Gitlab::Git::Diff).to receive(:size_limit).and_return(100.kilobytes)
     allow(Gitlab::Git::Diff).to receive(:collapse_limit).and_return(10.kilobytes)
@@ -20,7 +21,7 @@ describe 'User expands diff', :js do
   it_behaves_like 'rendering a single diff version'
 
   it 'allows user to expand diff' do
-    page.within find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd"]') do
+    page.within find('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9"]') do
       click_link 'Click to expand it.'
 
       wait_for_requests

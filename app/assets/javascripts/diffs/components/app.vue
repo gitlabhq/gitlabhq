@@ -1,5 +1,6 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import Icon from '~/vue_shared/components/icon.vue';
 import { __ } from '~/locale';
 import createFlash from '~/flash';
@@ -36,8 +37,17 @@ export default {
     GlLoadingIcon,
     PanelResizer,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     endpoint: {
+      type: String,
+      required: true,
+    },
+    endpointMetadata: {
+      type: String,
+      required: true,
+    },
+    endpointBatch: {
       type: String,
       required: true,
     },
@@ -92,6 +102,7 @@ export default {
   computed: {
     ...mapState({
       isLoading: state => state.diffs.isLoading,
+      isBatchLoading: state => state.diffs.isBatchLoading,
       diffFiles: state => state.diffs.diffFiles,
       diffViewType: state => state.diffs.diffViewType,
       mergeRequestDiffs: state => state.diffs.mergeRequestDiffs,
@@ -153,6 +164,8 @@ export default {
   mounted() {
     this.setBaseConfig({
       endpoint: this.endpoint,
+      endpointMetadata: this.endpointMetadata,
+      endpointBatch: this.endpointBatch,
       projectPath: this.projectPath,
       dismissEndpoint: this.dismissEndpoint,
       showSuggestPopover: this.showSuggestPopover,
@@ -185,6 +198,8 @@ export default {
     ...mapActions('diffs', [
       'setBaseConfig',
       'fetchDiffFiles',
+      'fetchDiffFilesMeta',
+      'fetchDiffFilesBatch',
       'startRenderDiffsQueue',
       'assignDiscussionsToDiff',
       'setHighlightedRow',
@@ -196,24 +211,51 @@ export default {
       this.assignedDiscussions = false;
       this.fetchData(false);
     },
+    isLatestVersion() {
+      return window.location.search.indexOf('diff_id') === -1;
+    },
     fetchData(toggleTree = true) {
-      this.fetchDiffFiles()
-        .then(() => {
-          if (toggleTree) {
-            this.hideTreeListIfJustOneFile();
-          }
+      if (this.isLatestVersion() && this.glFeatures.diffsBatchLoad) {
+        this.fetchDiffFilesMeta()
+          .then(() => {
+            if (toggleTree) this.hideTreeListIfJustOneFile();
+          })
+          .catch(() => {
+            createFlash(__('Something went wrong on our end. Please try again!'));
+          });
 
-          requestIdleCallback(
-            () => {
-              this.setDiscussions();
-              this.startRenderDiffsQueue();
-            },
-            { timeout: 1000 },
-          );
-        })
-        .catch(() => {
-          createFlash(__('Something went wrong on our end. Please try again!'));
-        });
+        this.fetchDiffFilesBatch()
+          .then(() => {
+            requestIdleCallback(
+              () => {
+                this.setDiscussions();
+                this.startRenderDiffsQueue();
+              },
+              { timeout: 1000 },
+            );
+          })
+          .catch(() => {
+            createFlash(__('Something went wrong on our end. Please try again!'));
+          });
+      } else {
+        this.fetchDiffFiles()
+          .then(() => {
+            if (toggleTree) {
+              this.hideTreeListIfJustOneFile();
+            }
+
+            requestIdleCallback(
+              () => {
+                this.setDiscussions();
+                this.startRenderDiffsQueue();
+              },
+              { timeout: 1000 },
+            );
+          })
+          .catch(() => {
+            createFlash(__('Something went wrong on our end. Please try again!'));
+          });
+      }
 
       if (!this.isNotesFetched) {
         eventHub.$emit('fetchNotesData');
@@ -324,7 +366,8 @@ export default {
           }"
         >
           <commit-widget v-if="commit" :commit="commit" />
-          <template v-if="renderDiffFiles">
+          <div v-if="isBatchLoading" class="loading"><gl-loading-icon /></div>
+          <template v-else-if="renderDiffFiles">
             <diff-file
               v-for="file in diffFiles"
               :key="file.newPath"

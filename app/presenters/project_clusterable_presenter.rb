@@ -19,6 +19,11 @@ class ProjectClusterablePresenter < ClusterablePresenter
     update_applications_project_cluster_path(clusterable, cluster, application)
   end
 
+  override :clear_cluster_cache_path
+  def clear_cluster_cache_path(cluster)
+    clear_cache_project_cluster_path(clusterable, cluster)
+  end
+
   override :cluster_path
   def cluster_path(cluster, params = {})
     project_cluster_path(clusterable, cluster, params)

@@ -10,6 +10,7 @@ describe 'View on environment', :js do
 
   before do
     stub_feature_flags(single_mr_diff_view: false)
+    stub_feature_flags(diffs_batch_load: false)
 
     project.add_maintainer(user)
   end

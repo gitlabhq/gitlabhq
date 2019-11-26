@@ -184,6 +184,17 @@ that the YAML parser knows to interpret the whole thing as a string rather than
 a "key: value" pair. Be careful when using special characters:
 `:`, `{`, `}`, `[`, `]`, `,`, `&`, `*`, `#`, `?`, `|`, `-`, `<`, `>`, `=`, `!`, `%`, `@`, `` ` ``.
 
+If any of the script commands return an exit code different from zero, the job
+will fail and further commands will not be executed. This behavior can be avoided by
+storing the exit code in a variable:
+
+```yaml
+job:
+  script:
+    - false && true; exit_code=$?
+    - if [ $exit_code -ne 0 ]; then echo "Previous command failed"; fi;
+```
+
 #### YAML anchors for `script`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/23005) in GitLab 12.5.

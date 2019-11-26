@@ -37,6 +37,11 @@ class InstanceClusterablePresenter < ClusterablePresenter
     update_applications_admin_cluster_path(cluster, application)
   end
 
+  override :clear_cluster_cache_path
+  def clear_cluster_cache_path(cluster)
+    clear_cache_admin_cluster_path(cluster)
+  end
+
   override :cluster_path
   def cluster_path(cluster, params = {})
     admin_cluster_path(cluster, params)

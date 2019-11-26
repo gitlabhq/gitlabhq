@@ -83,6 +83,12 @@ describe ProjectClusterablePresenter do
     it { is_expected.to eq(update_applications_project_cluster_path(project, cluster, application)) }
   end
 
+  describe '#clear_cluster_cache_path' do
+    subject { presenter.clear_cluster_cache_path(cluster) }
+
+    it { is_expected.to eq(clear_cache_project_cluster_path(project, cluster)) }
+  end
+
   describe '#cluster_path' do
     subject { presenter.cluster_path(cluster) }
 

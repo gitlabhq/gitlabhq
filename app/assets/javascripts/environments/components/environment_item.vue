@@ -6,6 +6,7 @@ import _ from 'underscore';
 import { GlTooltipDirective } from '@gitlab/ui';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import Icon from '~/vue_shared/components/icon.vue';
+import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import environmentItemMixin from 'ee_else_ce/environments/mixins/environment_item_mixin';
 import ActionsComponent from './environment_actions.vue';
 import ExternalUrlComponent from './environment_external_url.vue';
@@ -26,7 +27,6 @@ const timeagoInstance = new Timeago();
 
 export default {
   components: {
-    UserAvatarLink,
     CommitComponent,
     Icon,
     ActionsComponent,
@@ -35,6 +35,8 @@ export default {
     RollbackComponent,
     TerminalButtonComponent,
     MonitoringButtonComponent,
+    TooltipOnTruncate,
+    UserAvatarLink,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -508,12 +510,16 @@ export default {
     </div>
 
     <div class="table-section section-15 d-none d-sm-none d-md-block" role="gridcell">
-      <a
-        v-if="shouldRenderBuildName"
-        :href="buildPath"
-        class="build-link cgray flex-truncate-parent"
-      >
-        <span class="flex-truncate-child">{{ buildName }}</span>
+      <a v-if="shouldRenderBuildName" :href="buildPath" class="build-link cgray">
+        <tooltip-on-truncate
+          :title="buildName"
+          truncate-target="child"
+          class="flex-truncate-parent"
+        >
+          <span class="flex-truncate-child">
+            {{ buildName }}
+          </span>
+        </tooltip-on-truncate>
       </a>
     </div>
 

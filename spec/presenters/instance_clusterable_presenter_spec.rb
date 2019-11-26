@@ -34,4 +34,10 @@ describe InstanceClusterablePresenter do
 
     it { is_expected.to eq(aws_proxy_admin_clusters_path(resource: resource)) }
   end
+
+  describe '#clear_cluster_cache_path' do
+    subject { presenter.clear_cluster_cache_path(cluster) }
+
+    it { is_expected.to eq(clear_cache_admin_cluster_path(cluster)) }
+  end
 end

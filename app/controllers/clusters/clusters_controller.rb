@@ -3,14 +3,14 @@
 class Clusters::ClustersController < Clusters::BaseController
   include RoutableActions
 
-  before_action :cluster, only: [:cluster_status, :show, :update, :destroy]
+  before_action :cluster, only: [:cluster_status, :show, :update, :destroy, :clear_cache]
   before_action :generate_gcp_authorize_url, only: [:new]
   before_action :validate_gcp_token, only: [:new]
   before_action :gcp_cluster, only: [:new]
   before_action :user_cluster, only: [:new]
   before_action :authorize_create_cluster!, only: [:new, :authorize_aws_role, :revoke_aws_role, :aws_proxy]
   before_action :authorize_update_cluster!, only: [:update]
-  before_action :authorize_admin_cluster!, only: [:destroy]
+  before_action :authorize_admin_cluster!, only: [:destroy, :clear_cache]
   before_action :update_applications_status, only: [:cluster_status]
   before_action only: [:new, :create_gcp] do
     push_frontend_feature_flag(:create_eks_clusters)
@@ -167,6 +167,12 @@ class Clusters::ClustersController < Clusters::BaseController
     ).execute
 
     render json: response.body, status: response.status
+  end
+
+  def clear_cache
+    cluster.delete_cached_resources!
+
+    redirect_to cluster.show_path, notice: _('Cluster cache cleared.')
   end
 
   private

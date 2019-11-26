@@ -78,6 +78,8 @@
           = render 'projects/commit/pipelines_list', disable_initialization: true, endpoint: pipelines_project_merge_request_path(@project, @merge_request)
       #js-diffs-app.diffs.tab-pane{ data: { "is-locked" => @merge_request.discussion_locked?,
         endpoint: diffs_project_merge_request_path(@project, @merge_request, 'json', request.query_parameters),
+        endpoint_metadata: diffs_metadata_project_json_merge_request_path(@project, @merge_request, 'json', request.query_parameters),
+        endpoint_batch: diffs_batch_project_json_merge_request_path(@project, @merge_request, 'json', request.query_parameters),
         help_page_path: suggest_changes_help_path,
         current_user_data: @current_user_data,
         project_path: project_path(@merge_request.project),

@@ -516,6 +516,42 @@ describe Groups::ClustersController do
     end
   end
 
+  describe 'DELETE clear cluster cache' do
+    let(:cluster) { create(:cluster, :group, groups: [group]) }
+    let!(:kubernetes_namespace) do
+      create(:cluster_kubernetes_namespace,
+        cluster: cluster,
+        project: create(:project)
+      )
+    end
+
+    def go
+      delete :clear_cache,
+        params: {
+          group_id: group,
+          id: cluster
+        }
+    end
+
+    it 'deletes the namespaces associated with the cluster' do
+      expect { go }.to change { Clusters::KubernetesNamespace.count }
+
+      expect(response).to redirect_to(group_cluster_path(group, cluster))
+      expect(cluster.kubernetes_namespaces).to be_empty
+    end
+
+    describe 'security' do
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_allowed_for(:owner).of(group) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(group) }
+      it { expect { go }.to be_denied_for(:developer).of(group) }
+      it { expect { go }.to be_denied_for(:reporter).of(group) }
+      it { expect { go }.to be_denied_for(:guest).of(group) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
+    end
+  end
+
   describe 'GET cluster_status' do
     let(:cluster) { create(:cluster, :providing_by_gcp, cluster_type: :group_type, groups: [group]) }
 

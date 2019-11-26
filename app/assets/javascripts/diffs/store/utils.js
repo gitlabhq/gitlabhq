@@ -252,10 +252,11 @@ export function prepareDiffData(diffData) {
       showingLines += file.parallel_diff_lines.length;
     }
 
+    const name = (file.viewer && file.viewer.name) || diffViewerModes.text;
+
     Object.assign(file, {
       renderIt: showingLines < LINES_TO_BE_RENDERED_DIRECTLY,
-      collapsed:
-        file.viewer.name === diffViewerModes.text && showingLines > MAX_LINES_TO_BE_RENDERED,
+      collapsed: name === diffViewerModes.text && showingLines > MAX_LINES_TO_BE_RENDERED,
       isShowingFullFile: false,
       isLoadingFullFile: false,
       discussions: [],

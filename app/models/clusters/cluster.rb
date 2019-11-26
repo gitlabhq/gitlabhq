@@ -267,6 +267,10 @@ module Clusters
       end
     end
 
+    def delete_cached_resources!
+      kubernetes_namespaces.delete_all(:delete_all)
+    end
+
     private
 
     def unique_management_project_environment_scope

@@ -10,7 +10,6 @@ describe('Environment', () => {
     endpoint: 'environments.json',
     canCreateEnvironment: true,
     canReadEnvironment: true,
-    cssContainerClass: 'container',
     newEnvironmentPath: 'environments/new',
     helpPagePath: 'help',
     canaryDeploymentFeatureId: 'canary_deployment',

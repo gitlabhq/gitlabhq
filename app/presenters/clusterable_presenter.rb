@@ -65,6 +65,10 @@ class ClusterablePresenter < Gitlab::View::Presenter::Delegated
     raise NotImplementedError
   end
 
+  def clear_cluster_cache_path(cluster)
+    raise NotImplementedError
+  end
+
   def cluster_path(cluster, params = {})
     raise NotImplementedError
   end

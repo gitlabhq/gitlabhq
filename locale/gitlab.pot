@@ -3469,6 +3469,9 @@ msgstr ""
 msgid "Cluster Health"
 msgstr ""
 
+msgid "Cluster cache cleared."
+msgstr ""
+
 msgid "ClusterIntegration| %{custom_domain_start}More information%{custom_domain_end}."
 msgstr ""
 
@@ -3599,6 +3602,12 @@ msgid "ClusterIntegration|Choose which applications to install on your Kubernete
 msgstr ""
 
 msgid "ClusterIntegration|Choose which of your environments will use this cluster."
+msgstr ""
+
+msgid "ClusterIntegration|Clear cluster cache"
+msgstr ""
+
+msgid "ClusterIntegration|Clear the local cache of namespace and service accounts. This is necessary if your integration has become out of sync. The cache is repopulated during the next CI job that requires namespace and service accounts."
 msgstr ""
 
 msgid "ClusterIntegration|Cloud Run"
@@ -6644,6 +6653,9 @@ msgstr ""
 msgid "Epic"
 msgstr ""
 
+msgid "Epic cannot be found."
+msgstr ""
+
 msgid "Epic events"
 msgstr ""
 
@@ -9609,6 +9621,9 @@ msgid "Issue Boards"
 msgstr ""
 
 msgid "Issue board focus mode"
+msgstr ""
+
+msgid "Issue cannot be found."
 msgstr ""
 
 msgid "Issue events"
@@ -17678,6 +17693,9 @@ msgstr ""
 msgid "This environment has no deployments yet."
 msgstr ""
 
+msgid "This epic already has the maximum number of child epics."
+msgstr ""
+
 msgid "This epic does not exist or you don't have sufficient permission."
 msgstr ""
 
@@ -19485,12 +19503,6 @@ msgid "Waiting for performance data"
 msgstr ""
 
 msgid "Want to see the data? Please ask an administrator for access."
-msgstr ""
-
-msgid "We can't find an epic that matches what you are looking for."
-msgstr ""
-
-msgid "We can't find an issue that matches what you are looking for."
 msgstr ""
 
 msgid "We could not determine the path to remove the epic"
