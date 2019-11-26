@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_18_104222) do
+ActiveRecord::Schema.define(version: 2019_11_22_135327) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -155,11 +155,8 @@ ActiveRecord::Schema.define(version: 2019_09_18_104222) do
     t.integer "metrics_timeout", default: 10
     t.integer "metrics_method_call_threshold", default: 10
     t.boolean "recaptcha_enabled", default: false
-    t.string "recaptcha_site_key"
-    t.string "recaptcha_private_key"
     t.integer "metrics_port", default: 8089
     t.boolean "akismet_enabled", default: false
-    t.string "akismet_api_key"
     t.integer "metrics_sample_interval", default: 15
     t.boolean "email_author_in_body", default: false
     t.integer "default_group_visibility"
@@ -206,7 +203,6 @@ ActiveRecord::Schema.define(version: 2019_09_18_104222) do
     t.boolean "elasticsearch_aws", default: false, null: false
     t.string "elasticsearch_aws_region", default: "us-east-1"
     t.string "elasticsearch_aws_access_key"
-    t.string "elasticsearch_aws_secret_access_key"
     t.integer "geo_status_timeout", default: 10
     t.string "uuid"
     t.decimal "polling_interval_multiplier", default: "1.0", null: false
@@ -222,8 +218,6 @@ ActiveRecord::Schema.define(version: 2019_09_18_104222) do
     t.string "help_page_support_url"
     t.boolean "slack_app_enabled", default: false
     t.string "slack_app_id"
-    t.string "slack_app_secret"
-    t.string "slack_app_verification_token"
     t.integer "performance_bar_allowed_group_id"
     t.boolean "allow_group_owners_to_manage_ldap", default: true, null: false
     t.boolean "hashed_storage_enabled", default: true, null: false
@@ -307,6 +301,18 @@ ActiveRecord::Schema.define(version: 2019_09_18_104222) do
     t.string "encrypted_asset_proxy_secret_key_iv"
     t.string "static_objects_external_storage_url", limit: 255
     t.string "static_objects_external_storage_auth_token", limit: 255
+    t.text "encrypted_akismet_api_key"
+    t.string "encrypted_akismet_api_key_iv", limit: 255
+    t.text "encrypted_elasticsearch_aws_secret_access_key"
+    t.string "encrypted_elasticsearch_aws_secret_access_key_iv", limit: 255
+    t.text "encrypted_recaptcha_private_key"
+    t.string "encrypted_recaptcha_private_key_iv", limit: 255
+    t.text "encrypted_recaptcha_site_key"
+    t.string "encrypted_recaptcha_site_key_iv", limit: 255
+    t.text "encrypted_slack_app_secret"
+    t.string "encrypted_slack_app_secret_iv", limit: 255
+    t.text "encrypted_slack_app_verification_token"
+    t.string "encrypted_slack_app_verification_token_iv", limit: 255
     t.index ["custom_project_templates_group_id"], name: "index_application_settings_on_custom_project_templates_group_id"
     t.index ["file_template_project_id"], name: "index_application_settings_on_file_template_project_id"
     t.index ["instance_administration_project_id"], name: "index_applicationsettings_on_instance_administration_project_id"
