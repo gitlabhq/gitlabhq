@@ -1,0 +1,5 @@
+---
+title: Improve the way the metrics dashboard waits for data
+merge_request: 20687
+author:
+type: fixed

@@ -169,10 +169,12 @@ function install_external_dns() {
     helm repo update --tiller-namespace "${namespace}"
 
     # Default requested: CPU => 0, memory => 0
+    # Chart > 2.6.1 has a problem with AWS so we're pinning it for now.
+    # See https://gitlab.com/gitlab-org/gitlab/issues/37269 and https://github.com/kubernetes-sigs/external-dns/issues/1262
     helm install stable/external-dns \
       --tiller-namespace "${namespace}" \
       --namespace "${namespace}" \
-      --version '^2.2.1' \
+      --version '2.6.1' \
       --name "${release}" \
       --set provider="aws" \
       --set aws.credentials.secretKey="${REVIEW_APPS_AWS_SECRET_KEY}" \

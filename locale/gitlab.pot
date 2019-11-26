@@ -7181,9 +7181,6 @@ msgstr ""
 msgid "Failed to check related branches."
 msgstr ""
 
-msgid "Failed to connect to the prometheus server"
-msgstr ""
-
 msgid "Failed to create Merge Request. Please try again."
 msgstr ""
 
