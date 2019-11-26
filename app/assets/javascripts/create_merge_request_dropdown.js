@@ -311,6 +311,7 @@ export default class CreateMergeRequestDropdown {
   }
 
   onChangeInput(event) {
+    this.disable();
     let target;
     let value;
 

@@ -10,3 +10,6 @@ Before using feature flags for GitLab's development, read through the following:
 - [Process for using features flags](process.md).
 - [Developing with feature flags](development.md).
 - [Controlling feature flags](controls.md).
+
+When documenting feature flags, see [Feature flags](../documentation/styleguide.md#feature-flags)
+in the Documentation Style Guide.

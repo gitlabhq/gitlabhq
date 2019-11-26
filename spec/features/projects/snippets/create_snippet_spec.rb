@@ -52,7 +52,7 @@ describe 'Projects > Snippets > Create Snippet', :js do
       expect(link).to match(%r{/#{Regexp.escape(project.full_path) }/uploads/\h{32}/banana_sample\.gif\z})
     end
 
-    it 'creates a snippet when all reuiqred fields are filled in after validation failing' do
+    it 'creates a snippet when all required fields are filled in after validation failing' do
       fill_in 'project_snippet_title', with: 'My Snippet Title'
       click_button('Create snippet')
 

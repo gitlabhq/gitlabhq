@@ -1055,7 +1055,7 @@ Sometimes features are shipped with feature flags, either:
 - On by default, but providing the option to turn the feature off.
 - Off by default, but providing the option to turn the feature on.
 
-When documenting feature flags for a feature, it's important that users know:
+When documenting feature flags for a feature, include:
 
 - Why a feature flag is necessary. Some of the reasons are
   [outlined in the handbook](https://about.gitlab.com/handbook/product/#alpha-beta-ga).
@@ -1079,6 +1079,9 @@ migrated, ask a GitLab administrator with Rails console access to run the follow
 Feature.disable(:feature_flag)
 ```
 ````
+
+For guidance on developing with feature flags, see
+[Feature flags in development of GitLab](../feature_flags/index.md).
 
 ## API
 

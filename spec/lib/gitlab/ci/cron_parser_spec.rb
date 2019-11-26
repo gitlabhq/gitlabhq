@@ -152,6 +152,22 @@ describe Gitlab::Ci::CronParser do
               end
             end
           end
+
+          context 'when time crosses a Daylight Savings boundary' do
+            let(:cron) { '* 0 1 12 *'}
+
+            # Note this previously only failed if the time zone is set
+            # to a zone that observes Daylight Savings
+            # (e.g. America/Chicago) at the start of the test. Stubbing
+            # TZ doesn't appear to be enough.
+            it 'generates day without TZInfo::AmbiguousTime error' do
+              Timecop.freeze(Time.utc(2020, 1, 1)) do
+                expect(subject.year).to eq(2020)
+                expect(subject.month).to eq(12)
+                expect(subject.day).to eq(1)
+              end
+            end
+          end
         end
       end
     end
