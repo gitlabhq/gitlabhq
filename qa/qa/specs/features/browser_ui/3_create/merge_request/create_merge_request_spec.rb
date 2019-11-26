@@ -28,7 +28,8 @@ module QA
         end
       end
 
-      it 'creates a merge request with a milestone and label' do
+      # Failure issue (in master): https://gitlab.com/gitlab-org/gitlab/issues/37304
+      it 'creates a merge request with a milestone and label', :quarantine do
         gitlab_account_username = "@#{Runtime::User.username}"
 
         milestone = Resource::ProjectMilestone.fabricate_via_api! do |milestone|

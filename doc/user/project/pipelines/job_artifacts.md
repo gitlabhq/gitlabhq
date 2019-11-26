@@ -103,8 +103,12 @@ It is possible to download the latest artifacts of a job via a well known URL
 so you can use it for scripting purposes.
 
 NOTE: **Note:**
-The latest artifacts are considered as the artifacts created by jobs in the
-latest pipeline that succeeded for the specific ref.
+The latest artifacts are created by jobs in the **most recent** successful pipeline
+for the specific ref. If you run two types of pipelines for the same ref, the latest
+artifact will be determined by timing. For example, if a branch pipeline created
+by merging a merge request runs at the same time as a scheduled pipeline, the
+latest artifact will be from the pipeline that completed most recently.
+
 Artifacts for other pipelines can be accessed with direct access to them.
 
 The structure of the URL to download the whole artifacts archive is the following:

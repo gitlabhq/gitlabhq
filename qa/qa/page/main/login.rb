@@ -42,6 +42,10 @@ module QA
           element :login_page, required: true
         end
 
+        def can_sign_in?
+          has_element?(:sign_in_button)
+        end
+
         def sign_in_using_credentials(user: nil, skip_page_validation: false)
           # Don't try to log-in if we're already logged-in
           return if Page::Main::Menu.perform(&:signed_in?)

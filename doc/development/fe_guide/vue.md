@@ -284,7 +284,7 @@ need to test the rendered output. [Vue][vue-test] guide's to unit test show us e
 
 One should apply to be a Vue.js expert by opening an MR when the Merge Request's they create and review show:
 
-- Deep understanding of Vue and Vuex reactivy
+- Deep understanding of Vue and Vuex reactivity
 - Vue and Vuex code are structured according to both official and our guidelines
 - Full understanding of testing a Vue and Vuex application
 - Vuex code follows the [documented pattern](vuex.md#actions-pattern-request-and-receive-namespaces)

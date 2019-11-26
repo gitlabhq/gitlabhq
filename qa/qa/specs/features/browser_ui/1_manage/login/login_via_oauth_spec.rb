@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Manage', :orchestrated, :oauth do
+  # Failure issue: https://gitlab.com/gitlab-org/gitlab/issues/36305
+  context 'Manage', :orchestrated, :oauth, :skip do
     describe 'OAuth login' do
       it 'User logs in to GitLab with GitHub OAuth' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)

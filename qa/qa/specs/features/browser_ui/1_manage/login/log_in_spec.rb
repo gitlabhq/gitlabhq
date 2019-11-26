@@ -14,11 +14,11 @@ module QA
         Support::Retrier.retry_until(sleep_interval: 0.5) do
           Page::Main::Menu.perform(&:sign_out)
 
-          Page::Main::Login.perform(&:has_sign_in_tab?)
+          Page::Main::Login.perform(&:can_sign_in?)
         end
 
         Page::Main::Login.perform do |form|
-          expect(form.sign_in_tab?).to be(true)
+          expect(form.can_sign_in?).to be(true)
         end
       end
     end
