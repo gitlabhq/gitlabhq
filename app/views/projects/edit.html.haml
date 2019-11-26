@@ -126,17 +126,12 @@
     - if @project.forked? && can?(current_user, :remove_fork_project, @project)
       .sub-section
         %h4.danger-title= _('Remove fork relationship')
-        %p
-          = _('This will remove the fork relationship to source project')
-          = succeed "." do
-            - if @project.fork_source
-              = link_to(fork_source_name(@project), project_path(@project.fork_source))
-            - else
-              = fork_source_name(@project)
+        %p= remove_fork_project_description_message(@project)
+
         = form_for([@project.namespace.becomes(Namespace), @project], url: remove_fork_project_path(@project), method: :delete, remote: true, html: { class: 'transfer-project' }) do |f|
           %p
             %strong= _('Once removed, the fork relationship cannot be restored and you will no longer be able to send merge requests to the source.')
-          = button_to _('Remove fork relationship'), '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_fork_project_message(@project) }
+          = button_to _('Remove fork relationship'), '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_fork_project_warning_message(@project) }
 
     - if can?(current_user, :remove_project, @project)
       .sub-section
