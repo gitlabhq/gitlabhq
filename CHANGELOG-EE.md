@@ -1,5 +1,13 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.4.3
+
+### Fixed (2 changes)
+
+- Fix admin welcome image not found. !19676
+- Revert ES support for public/internal project snippets. !19715
+
+
 ## 12.4.2
 
 ### Fixed (1 change)

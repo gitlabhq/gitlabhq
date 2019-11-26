@@ -59,7 +59,8 @@ class Rack::Attack
   end
 
   throttle('throttle_unauthenticated_protected_paths', Gitlab::Throttle.protected_paths_options) do |req|
-    Gitlab::Throttle.protected_paths_enabled? &&
+    req.post? &&
+      Gitlab::Throttle.protected_paths_enabled? &&
       req.unauthenticated? &&
       !req.should_be_skipped? &&
       req.protected_path? &&
@@ -67,14 +68,16 @@ class Rack::Attack
   end
 
   throttle('throttle_authenticated_protected_paths_api', Gitlab::Throttle.protected_paths_options) do |req|
-    Gitlab::Throttle.protected_paths_enabled? &&
+    req.post? &&
+      Gitlab::Throttle.protected_paths_enabled? &&
       req.api_request? &&
       req.protected_path? &&
       req.authenticated_user_id([:api])
   end
 
   throttle('throttle_authenticated_protected_paths_web', Gitlab::Throttle.protected_paths_options) do |req|
-    Gitlab::Throttle.protected_paths_enabled? &&
+    req.post? &&
+      Gitlab::Throttle.protected_paths_enabled? &&
       req.web_request? &&
       req.protected_path? &&
       req.authenticated_user_id([:api, :rss, :ics])
