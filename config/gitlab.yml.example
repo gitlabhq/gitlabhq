@@ -321,8 +321,8 @@ production: &base
     # external_https: ["1.1.1.1:443", "[2001::1]:443"] # If defined, enables custom domain and certificate support in GitLab Pages
 
     # File that contains the shared secret key for verifying access for gitlab-pages.
-    # Default is '.gitlab_pages_shared_secret' relative to Rails.root (i.e. root of the GitLab app).
-    # secret_file: /home/git/gitlab/.gitlab_pages_shared_secret
+    # Default is '.gitlab_pages_secret' relative to Rails.root (i.e. root of the GitLab app).
+    # secret_file: /home/git/gitlab/.gitlab_pages_secret
 
   ## Mattermost
   ## For enabling Add to Mattermost button

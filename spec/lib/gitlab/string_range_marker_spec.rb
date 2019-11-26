@@ -9,7 +9,7 @@ describe Gitlab::StringRangeMarker do
       inline_diffs = [2..5]
 
       described_class.new(raw, rich).mark(inline_diffs) do |text, left:, right:|
-        "LEFT#{text}RIGHT"
+        "LEFT#{text}RIGHT".html_safe
       end
     end
 

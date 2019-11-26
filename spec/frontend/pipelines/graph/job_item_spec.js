@@ -1,10 +1,13 @@
-import Vue from 'vue';
+import { trimText } from 'helpers/text_helper';
+import { mount } from '@vue/test-utils';
 import JobItem from '~/pipelines/components/graph/job_item.vue';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('pipeline graph job item', () => {
-  const JobComponent = Vue.extend(JobItem);
-  let component;
+  let wrapper;
+
+  const createWrapper = propsData => {
+    wrapper = mount(JobItem, { sync: false, attachToDocument: true, propsData });
+  };
 
   const delayedJobFixture = getJSONFixture('jobs/delayed.json');
   const mockJob = {
@@ -28,27 +31,25 @@ describe('pipeline graph job item', () => {
   };
 
   afterEach(() => {
-    component.$destroy();
+    wrapper.destroy();
   });
 
   describe('name with link', () => {
     it('should render the job name and status with a link', done => {
-      component = mountComponent(JobComponent, { job: mockJob });
+      createWrapper({ job: mockJob });
 
-      Vue.nextTick(() => {
-        const link = component.$el.querySelector('a');
+      wrapper.vm.$nextTick(() => {
+        const link = wrapper.find('a');
 
-        expect(link.getAttribute('href')).toEqual(mockJob.status.details_path);
+        expect(link.attributes('href')).toBe(mockJob.status.details_path);
 
-        expect(link.getAttribute('data-original-title')).toEqual(
+        expect(link.attributes('data-original-title')).toEqual(
           `${mockJob.name} - ${mockJob.status.label}`,
         );
 
-        expect(component.$el.querySelector('.js-status-icon-success')).toBeDefined();
+        expect(wrapper.find('.js-status-icon-success')).toBeDefined();
 
-        expect(component.$el.querySelector('.ci-status-text').textContent.trim()).toEqual(
-          mockJob.name,
-        );
+        expect(trimText(wrapper.find('.ci-status-text').text())).toBe(mockJob.name);
 
         done();
       });
@@ -57,7 +58,7 @@ describe('pipeline graph job item', () => {
 
   describe('name without link', () => {
     it('it should render status and name', () => {
-      component = mountComponent(JobComponent, {
+      createWrapper({
         job: {
           id: 4257,
           name: 'test',
@@ -72,36 +73,34 @@ describe('pipeline graph job item', () => {
         },
       });
 
-      expect(component.$el.querySelector('.js-status-icon-success')).toBeDefined();
-      expect(component.$el.querySelector('a')).toBeNull();
+      expect(wrapper.find('.js-status-icon-success')).toBeDefined();
+      expect(wrapper.find('a').exists()).toBe(false);
 
-      expect(component.$el.querySelector('.ci-status-text').textContent.trim()).toEqual(
-        mockJob.name,
-      );
+      expect(trimText(wrapper.find('.ci-status-text').text())).toEqual(mockJob.name);
     });
   });
 
   describe('action icon', () => {
     it('it should render the action icon', () => {
-      component = mountComponent(JobComponent, { job: mockJob });
+      createWrapper({ job: mockJob });
 
-      expect(component.$el.querySelector('a.ci-action-icon-container')).toBeDefined();
-      expect(component.$el.querySelector('i.ci-action-icon-wrapper')).toBeDefined();
+      expect(wrapper.find('a.ci-action-icon-container')).toBeDefined();
+      expect(wrapper.find('i.ci-action-icon-wrapper')).toBeDefined();
     });
   });
 
   it('should render provided class name', () => {
-    component = mountComponent(JobComponent, {
+    createWrapper({
       job: mockJob,
       cssClassJobName: 'css-class-job-name',
     });
 
-    expect(component.$el.querySelector('a').classList.contains('css-class-job-name')).toBe(true);
+    expect(wrapper.find('a').classes()).toContain('css-class-job-name');
   });
 
   describe('status label', () => {
     it('should not render status label when it is not provided', () => {
-      component = mountComponent(JobComponent, {
+      createWrapper({
         job: {
           id: 4258,
           name: 'test',
@@ -111,15 +110,13 @@ describe('pipeline graph job item', () => {
         },
       });
 
-      expect(
-        component.$el
-          .querySelector('.js-job-component-tooltip')
-          .getAttribute('data-original-title'),
-      ).toEqual('test');
+      expect(wrapper.find('.js-job-component-tooltip').attributes('data-original-title')).toBe(
+        'test',
+      );
     });
 
     it('should not render status label when it is  provided', () => {
-      component = mountComponent(JobComponent, {
+      createWrapper({
         job: {
           id: 4259,
           name: 'test',
@@ -131,25 +128,21 @@ describe('pipeline graph job item', () => {
         },
       });
 
-      expect(
-        component.$el
-          .querySelector('.js-job-component-tooltip')
-          .getAttribute('data-original-title'),
-      ).toEqual('test - success');
+      expect(wrapper.find('.js-job-component-tooltip').attributes('data-original-title')).toEqual(
+        'test - success',
+      );
     });
   });
 
   describe('for delayed job', () => {
     it('displays remaining time in tooltip', () => {
-      component = mountComponent(JobComponent, {
+      createWrapper({
         job: delayedJobFixture,
       });
 
-      expect(
-        component.$el
-          .querySelector('.js-pipeline-graph-job-link')
-          .getAttribute('data-original-title'),
-      ).toEqual(`delayed job - delayed manual action (${component.remainingTime})`);
+      expect(wrapper.find('.js-pipeline-graph-job-link').attributes('data-original-title')).toEqual(
+        `delayed job - delayed manual action (${wrapper.vm.remainingTime})`,
+      );
     });
   });
 });

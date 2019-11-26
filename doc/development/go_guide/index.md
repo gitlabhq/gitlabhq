@@ -336,6 +336,49 @@ Generated docker images should have the program at their `Entrypoint` to create
 portable commands. That way, anyone can run the image, and without parameters
 it will display its help message (if `cli` has been used).
 
+## Distributing Go binaries
+
+With the exception of [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner),
+which publishes its own binaries, our Go binaries are created by projects
+managed by the [Distribution group](https://about.gitlab.com/handbook/product/categories/#distribution-group).
+
+The [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab) project creates a
+single, monolithic operating system package containing all the binaries, while
+the [Cloud-Native GitLab (CNG)](https://gitlab.com/gitlab-org/build/CNG) project
+publishes a set of Docker images and Helm charts to glue them together.
+
+Both approaches use the same version of Go for all projects, so it's important
+to ensure all our Go-using projects have at least one Go version in common in
+their test matrices. You can check the version of Go currently being used by
+[Omnibus](https://gitlab.com/gitlab-org/gitlab-omnibus-builder/blob/master/docker/Dockerfile_debian_10#L59),
+and the version being used for [CNG](https://gitlab.com/gitlab-org/build/cng/blob/master/ci_files/variables.yml#L12).
+
+### Updating Go version
+
+We should always use a [supported version](https://golang.org/doc/devel/release.html#policy)
+of Go, i.e., one of the three most recent minor releases, and should always use
+the most recent patch-level for that version, as it may contain security fixes.
+
+Changing the version affects every project being compiled, so it's important to
+ensure that all projects have been updated to test against the new Go version
+before changing the package builders to use it. Despite [Go's compatibility promise](https://golang.org/doc/go1compat),
+changes between minor versions can expose bugs or cause problems in our projects.
+
+Once you've picked a new Go version to use, the steps to update Omnibus and CNG
+are:
+
+- [Create a merge request in the CNG project](https://gitlab.com/gitlab-org/build/CNG/edit/master/ci_files/variables.yml?branch_name=update-go-version),
+   updating the `GO_VERSION` in `ci_files/variables.yml`.
+- Create a merge request in the [`gitlab-omnibus-builder` project](https://gitlab.com/gitlab-org/gitlab-omnibus-builder),
+   updating every file in the `docker/` directory so the `GO_VERSION` is set
+   appropriately. [Here's an example](https://gitlab.com/gitlab-org/gitlab-omnibus-builder/merge_requests/125/diffs).
+- Tag a new release of `gitlab-omnibus-builder` containing the change.
+- [Create a merge request in the `gitlab-omnibus` project](https://gitlab.com/gitlab-org/omnibus-gitlab/edit/master/.gitlab-ci.yml?branch_name=update-gitlab-omnibus-builder-version),
+   updating the `BUILDER_IMAGE_REVISION` to match the newly-created tag.
+
+To reduce unnecessary differences between two distribution methods, Omnibus and
+CNG **should always use the same Go version**.
+
 ---
 
 [Return to Development documentation](../README.md).

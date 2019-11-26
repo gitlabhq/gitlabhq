@@ -9,7 +9,7 @@ module Gitlab
 
       def mark(line_inline_diffs, mode: nil)
         super(line_inline_diffs) do |text, left:, right:|
-          %{<span class="#{html_class_names(left, right, mode)}">#{text}</span>}
+          %{<span class="#{html_class_names(left, right, mode)}">#{text}</span>}.html_safe
         end
       end
 

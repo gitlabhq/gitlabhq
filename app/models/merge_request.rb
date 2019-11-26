@@ -103,7 +103,7 @@ class MergeRequest < ApplicationRecord
     super + [:merged, :locked]
   end
 
-  state_machine :state_id, initial: :opened do
+  state_machine :state_id, initial: :opened, initialize: false do
     event :close do
       transition [:opened] => :closed
     end

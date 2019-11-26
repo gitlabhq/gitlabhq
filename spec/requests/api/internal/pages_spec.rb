@@ -4,10 +4,10 @@ require 'spec_helper'
 
 describe API::Internal::Pages do
   describe "GET /internal/pages" do
-    let(:pages_shared_secret) { SecureRandom.random_bytes(Gitlab::Pages::SECRET_LENGTH) }
+    let(:pages_secret) { SecureRandom.random_bytes(Gitlab::Pages::SECRET_LENGTH) }
 
     before do
-      allow(Gitlab::Pages).to receive(:secret).and_return(pages_shared_secret)
+      allow(Gitlab::Pages).to receive(:secret).and_return(pages_secret)
     end
 
     def query_host(host, headers = {})
