@@ -11,12 +11,28 @@ module Gitlab
       end
 
       def data
-        [serialize(Summary::Issue.new(project: @project, from: @from, to: @to, current_user: @current_user)),
-         serialize(Summary::Commit.new(project: @project, from: @from, to: @to)),
-         serialize(Summary::Deploy.new(project: @project, from: @from, to: @to))]
+        summary = [issue_stats]
+        summary << commit_stats if user_has_sufficient_access?
+        summary << deploy_stats
       end
 
       private
+
+      def issue_stats
+        serialize(Summary::Issue.new(project: @project, from: @from, to: @to, current_user: @current_user))
+      end
+
+      def commit_stats
+        serialize(Summary::Commit.new(project: @project, from: @from, to: @to))
+      end
+
+      def deploy_stats
+        serialize(Summary::Deploy.new(project: @project, from: @from, to: @to))
+      end
+
+      def user_has_sufficient_access?
+        @project.team.member?(@current_user, Gitlab::Access::REPORTER)
+      end
 
       def serialize(summary_object)
         AnalyticsSummarySerializer.new.represent(summary_object)
