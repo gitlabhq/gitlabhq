@@ -51,14 +51,16 @@ def presented_no_changelog_labels
   NO_CHANGELOG_LABELS.map { |label| "~#{label}" }.join(', ')
 end
 
+def sanitized_mr_title
+  gitlab.mr_json["title"].gsub(/^WIP: */, '').gsub(/`/, '\\\`')
+end
+
 changelog_needed = (gitlab.mr_labels & NO_CHANGELOG_LABELS).empty?
 changelog_found = git.added_files.find { |path| path =~ %r{\A(ee/)?(changelogs/unreleased)(-ee)?/} }
 
-mr_title = gitlab.mr_json["title"].gsub(/^WIP: */, '')
-
 if git.modified_files.include?("CHANGELOG.md")
   fail "**CHANGELOG.md was edited.** Please remove the additions and create a CHANGELOG entry.\n\n" +
-    format(CREATE_CHANGELOG_MESSAGE, mr_iid: gitlab.mr_json["iid"], mr_title: mr_title, labels: presented_no_changelog_labels)
+    format(CREATE_CHANGELOG_MESSAGE, mr_iid: gitlab.mr_json["iid"], mr_title: sanitized_mr_title, labels: presented_no_changelog_labels)
 end
 
 if changelog_needed
@@ -66,6 +68,6 @@ if changelog_needed
     check_changelog(changelog_found)
   else
     message "**[CHANGELOG missing](https://docs.gitlab.com/ce/development/changelog.html)**: If this merge request [doesn't need a CHANGELOG entry](https://docs.gitlab.com/ee/development/changelog.html#what-warrants-a-changelog-entry), feel free to ignore this message.\n\n" +
-      format(CREATE_CHANGELOG_MESSAGE, mr_iid: gitlab.mr_json["iid"], mr_title: mr_title, labels: presented_no_changelog_labels)
+      format(CREATE_CHANGELOG_MESSAGE, mr_iid: gitlab.mr_json["iid"], mr_title: sanitized_mr_title, labels: presented_no_changelog_labels)
   end
 end

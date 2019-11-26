@@ -1530,13 +1530,24 @@ describe Repository do
           expect(merge_request.reload.rebase_commit_sha).to eq(new_sha)
         end
 
-        it 'does rollback when an error is encountered in the second step' do
+        it 'does rollback when a PreReceiveError is encountered in the second step' do
           second_response = double(pre_receive_error: 'my_error', git_error: nil)
           mock_gitaly(second_response)
 
           expect do
             repository.rebase(user, merge_request)
           end.to raise_error(Gitlab::Git::PreReceiveError)
+
+          expect(merge_request.reload.rebase_commit_sha).to be_nil
+        end
+
+        it 'does rollback when a GitError is encountered in the second step' do
+          second_response = double(pre_receive_error: nil, git_error: 'git error')
+          mock_gitaly(second_response)
+
+          expect do
+            repository.rebase(user, merge_request)
+          end.to raise_error(Gitlab::Git::Repository::GitError)
 
           expect(merge_request.reload.rebase_commit_sha).to be_nil
         end

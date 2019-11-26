@@ -1052,18 +1052,19 @@ class Repository
       return rebase_deprecated(user, merge_request)
     end
 
-    MergeRequest.transaction do
-      raw.rebase(
-        user,
-        merge_request.id,
-        branch: merge_request.source_branch,
-        branch_sha: merge_request.source_branch_sha,
-        remote_repository: merge_request.target_project.repository.raw,
-        remote_branch: merge_request.target_branch
-      ) do |commit_id|
-        merge_request.update!(rebase_commit_sha: commit_id, merge_error: nil)
-      end
+    raw.rebase(
+      user,
+      merge_request.id,
+      branch: merge_request.source_branch,
+      branch_sha: merge_request.source_branch_sha,
+      remote_repository: merge_request.target_project.repository.raw,
+      remote_branch: merge_request.target_branch
+    ) do |commit_id|
+      merge_request.update!(rebase_commit_sha: commit_id, merge_error: nil)
     end
+  rescue StandardError => error
+    merge_request.update!(rebase_commit_sha: nil)
+    raise error
   end
 
   def squash(user, merge_request, message)

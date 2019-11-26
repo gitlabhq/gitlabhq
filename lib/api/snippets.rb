@@ -131,7 +131,7 @@ module API
         snippet = snippets_for_current_user.find_by_id(params.delete(:id))
         break not_found!('Snippet') unless snippet
 
-        authorize! :destroy_personal_snippet, snippet
+        authorize! :admin_personal_snippet, snippet
 
         destroy_conditionally!(snippet)
       end

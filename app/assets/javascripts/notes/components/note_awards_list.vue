@@ -116,16 +116,20 @@ export default {
 
       // We have 10+ awarded user, join them with comma and add `and x more`.
       if (remainingAwardList.length) {
-        title = sprintf(__(`%{listToShow}, and %{awardsListLength} more.`), {
-          listToShow: namesToShow.join(', '),
-          awardsListLength: remainingAwardList.length,
-        });
+        title = sprintf(
+          __(`%{listToShow}, and %{awardsListLength} more.`),
+          {
+            listToShow: namesToShow.join(', '),
+            awardsListLength: remainingAwardList.length,
+          },
+          false,
+        );
       } else if (namesToShow.length > 1) {
         // Join all names with comma but not the last one, it will be added with and text.
         title = namesToShow.slice(0, namesToShow.length - 1).join(', ');
         // If we have more than 2 users we need an extra comma before and text.
         title += namesToShow.length > 2 ? ',' : '';
-        title += sprintf(__(` and %{sliced}`), { sliced: namesToShow.slice(-1) }); // Append and text
+        title += sprintf(__(` and %{sliced}`), { sliced: namesToShow.slice(-1) }, false); // Append and text
       } else {
         // We have only 2 users so join them with and.
         title = namesToShow.join(__(' and '));
