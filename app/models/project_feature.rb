@@ -24,6 +24,7 @@ class ProjectFeature < ApplicationRecord
 
   FEATURES = %i(issues merge_requests wiki snippets builds repository pages).freeze
   PRIVATE_FEATURES_MIN_ACCESS_LEVEL = { merge_requests: Gitlab::Access::REPORTER }.freeze
+  PRIVATE_FEATURES_MIN_ACCESS_LEVEL_FOR_PRIVATE_PROJECT = { repository: Gitlab::Access::REPORTER }.freeze
   STRING_OPTIONS = HashWithIndifferentAccess.new({
     'disabled' => DISABLED,
     'private'  => PRIVATE,
@@ -49,6 +50,15 @@ class ProjectFeature < ApplicationRecord
       feature = ensure_feature!(feature)
 
       PRIVATE_FEATURES_MIN_ACCESS_LEVEL.fetch(feature, Gitlab::Access::GUEST)
+    end
+
+    # Guest users can perform certain features on public and internal projects, but not private projects.
+    def required_minimum_access_level_for_private_project(feature)
+      feature = ensure_feature!(feature)
+
+      PRIVATE_FEATURES_MIN_ACCESS_LEVEL_FOR_PRIVATE_PROJECT.fetch(feature) do
+        required_minimum_access_level(feature)
+      end
     end
 
     def access_level_from_str(level)

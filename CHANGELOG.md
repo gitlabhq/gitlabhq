@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.4.4
+
+### Security (9 changes)
+
+- Check permissions before showing a forked project's source.
+- Encrypt application setting tokens.
+- Update Workhorse and Gitaly to fix a security issue.
+- Hide commit counts from guest users in Cycle Analytics.
+- Limit potential for DNS rebind SSRF in chat notifications.
+- Fix 500 error caused by invalid byte sequences in links.
+- Ensure are cleaned by ImportExport::AttributeCleaner.
+- Remove notes regarding Related Branches from Issue activity feeds for guest users.
+- Escape namespace in label references to prevent XSS.
+
+
 ## 12.4.3
 
 ### Fixed (2 changes)

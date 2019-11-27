@@ -113,12 +113,9 @@ class ChatNotificationService < Service
 
   private
 
+  # every notifier must implement this independently
   def notify(message, opts)
-    Slack::Notifier.new(webhook, opts).ping(
-      message.pretext,
-      attachments: message.attachments,
-      fallback: message.fallback
-    )
+    raise NotImplementedError
   end
 
   def custom_data(data)
