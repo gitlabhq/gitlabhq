@@ -589,6 +589,24 @@ describe API::Issues do
       expect(json_response['subscribed']).to be_truthy
     end
 
+    context "moved_to_id" do
+      let(:moved_issue) do
+        create(:closed_issue, project: project, moved_to: issue)
+      end
+
+      it 'returns null when not moved' do
+        get api("/projects/#{project.id}/issues/#{issue.iid}", user)
+
+        expect(json_response['moved_to_id']).to be_nil
+      end
+
+      it 'returns issue id when moved' do
+        get api("/projects/#{project.id}/issues/#{moved_issue.iid}", user)
+
+        expect(json_response['moved_to_id']).to eq(issue.id)
+      end
+    end
+
     it 'exposes the closed_at attribute' do
       get api("/projects/#{project.id}/issues/#{closed_issue.iid}", user)
 

@@ -6500,6 +6500,9 @@ msgstr ""
 msgid "Environments allow you to track deployments of your application %{link_to_read_more}."
 msgstr ""
 
+msgid "Environments in %{name}"
+msgstr ""
+
 msgid "EnvironmentsDashboard|Add a project to the dashboard"
 msgstr ""
 
@@ -7649,6 +7652,9 @@ msgid "FogBugz URL"
 msgstr ""
 
 msgid "FogBugz import"
+msgstr ""
+
+msgid "Folder/%{name}"
 msgstr ""
 
 msgid "Follow the steps below to export your Google Code project data."

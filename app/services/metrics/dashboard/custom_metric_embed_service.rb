@@ -40,7 +40,7 @@ module Metrics
         # All custom metrics are displayed on the system dashboard.
         # Nil is acceptable as we'll default to the system dashboard.
         def valid_dashboard?(dashboard)
-          dashboard.nil? || ::Metrics::Dashboard::SystemDashboardService.system_dashboard?(dashboard)
+          dashboard.nil? || ::Metrics::Dashboard::SystemDashboardService.matching_dashboard?(dashboard)
         end
       end
 

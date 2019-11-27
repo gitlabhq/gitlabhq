@@ -19,7 +19,7 @@ module MetricsDashboardHelpers
   end
 
   def system_dashboard_path
-    Metrics::Dashboard::SystemDashboardService::SYSTEM_DASHBOARD_PATH
+    Metrics::Dashboard::SystemDashboardService::DASHBOARD_PATH
   end
 
   def business_metric_title
@@ -51,6 +51,15 @@ module MetricsDashboardHelpers
     let(:dashboard_schema) { JSON.parse(fixture_file('lib/gitlab/metrics/dashboard/schemas/dashboard.json')) }
 
     it_behaves_like 'valid dashboard service response for schema'
+  end
+
+  shared_examples_for 'caches the unprocessed dashboard for subsequent calls' do
+    it do
+      expect(YAML).to receive(:safe_load).once.and_call_original
+
+      described_class.new(*service_params).get_dashboard
+      described_class.new(*service_params).get_dashboard
+    end
   end
 
   shared_examples_for 'valid embedded dashboard service response' do

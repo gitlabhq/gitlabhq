@@ -113,6 +113,7 @@ Example response:
       "id" : 76,
       "title" : "Consequatur vero maxime deserunt laboriosam est voluptas dolorem.",
       "created_at" : "2016-01-04T15:31:51.081Z",
+      "moved_to_id" : null,
       "iid" : 6,
       "labels" : ["foo", "bar"],
       "upvotes": 4,

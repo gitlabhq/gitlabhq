@@ -27,7 +27,7 @@ UNKNOWN_FILES_MESSAGE = <<MARKDOWN
 
 These files couldn't be categorised, so Danger was unable to suggest a reviewer.
 Please consider creating a merge request to
-[add support](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/danger/helper.rb)
+[add support](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/danger/helper.rb)
 for them.
 MARKDOWN
 
@@ -46,7 +46,7 @@ def spin_for_category(team, project, category, branch_name)
     end
 
   # TODO: take CODEOWNERS into account?
-  # https://gitlab.com/gitlab-org/gitlab-foss/issues/57653
+  # https://gitlab.com/gitlab-org/gitlab/issues/26723
 
   # Make traintainers have triple the chance to be picked as a reviewer
   reviewer = roulette.spin_for_person(reviewers + traintainers + traintainers, random: random)

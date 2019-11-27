@@ -832,7 +832,7 @@ describe API::Issues do
     end
 
     context 'when issue does not exist' do
-      it 'returns 404 when trying to move an issue' do
+      it 'returns 404 when trying to delete an issue' do
         delete api("/projects/#{project.id}/issues/123", user)
 
         expect(response).to have_gitlab_http_status(404)

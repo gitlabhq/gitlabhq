@@ -10,6 +10,7 @@ class MergeRequestDiff < ApplicationRecord
 
   # Don't display more than 100 commits at once
   COMMITS_SAFE_SIZE = 100
+  BATCH_SIZE = 1000
 
   # Applies to closed or merged MRs when determining whether to migrate their
   # diffs to external storage
@@ -254,10 +255,14 @@ class MergeRequestDiff < ApplicationRecord
     merge_request_diff_commits.limit(limit).pluck(:sha)
   end
 
-  def commits_by_shas(shas)
-    return MergeRequestDiffCommit.none unless shas.present?
+  def includes_any_commits?(shas)
+    return false if shas.blank?
 
-    merge_request_diff_commits.where(sha: shas)
+    # when the number of shas is huge (1000+) we don't want
+    # to pass them all as an SQL param, let's pass them in batches
+    shas.each_slice(BATCH_SIZE).any? do |batched_shas|
+      merge_request_diff_commits.where(sha: batched_shas).exists?
+    end
   end
 
   def diff_refs=(new_diff_refs)

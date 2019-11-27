@@ -14,24 +14,18 @@ describe Metrics::Dashboard::SystemDashboardService, :use_clean_rails_memory_sto
   end
 
   describe 'get_dashboard' do
-    let(:dashboard_path) { described_class::SYSTEM_DASHBOARD_PATH }
+    let(:dashboard_path) { described_class::DASHBOARD_PATH }
     let(:service_params) { [project, user, { environment: environment, dashboard_path: dashboard_path }] }
     let(:service_call) { described_class.new(*service_params).get_dashboard }
 
     it_behaves_like 'valid dashboard service response'
     it_behaves_like 'raises error for users with insufficient permissions'
-
-    it 'caches the unprocessed dashboard for subsequent calls' do
-      expect(YAML).to receive(:safe_load).once.and_call_original
-
-      described_class.new(*service_params).get_dashboard
-      described_class.new(*service_params).get_dashboard
-    end
+    it_behaves_like 'caches the unprocessed dashboard for subsequent calls'
 
     context 'when called with a non-system dashboard' do
       let(:dashboard_path) { 'garbage/dashboard/path' }
 
-      # We want to alwaus return the system dashboard.
+      # We want to always return the system dashboard.
       it_behaves_like 'valid dashboard service response'
     end
   end
@@ -42,8 +36,8 @@ describe Metrics::Dashboard::SystemDashboardService, :use_clean_rails_memory_sto
 
       expect(all_dashboards).to eq(
         [{
-          path: described_class::SYSTEM_DASHBOARD_PATH,
-          display_name: described_class::SYSTEM_DASHBOARD_NAME,
+          path: described_class::DASHBOARD_PATH,
+          display_name: described_class::DASHBOARD_NAME,
           default: true,
           system_dashboard: true
         }]

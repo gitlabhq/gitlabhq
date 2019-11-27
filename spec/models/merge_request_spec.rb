@@ -3134,36 +3134,6 @@ describe MergeRequest do
     end
   end
 
-  describe '#includes_any_commits?' do
-    it 'returns false' do
-      expect(subject.includes_any_commits?([])).to be_falsey
-    end
-
-    it 'returns false' do
-      expect(subject.includes_any_commits?([Gitlab::Git::BLANK_SHA])).to be_falsey
-    end
-
-    it 'returns true' do
-      expect(subject.includes_any_commits?([subject.merge_request_diff.head_commit_sha])).to be_truthy
-    end
-
-    it 'returns true even when there is a non-existent comit' do
-      expect(subject.includes_any_commits?([Gitlab::Git::BLANK_SHA, subject.merge_request_diff.head_commit_sha])).to be_truthy
-    end
-
-    context 'unpersisted merge request' do
-      let(:new_mr) { build(:merge_request) }
-
-      it 'returns false' do
-        expect(new_mr.includes_any_commits?([Gitlab::Git::BLANK_SHA])).to be_falsey
-      end
-
-      it 'returns true' do
-        expect(new_mr.includes_any_commits?([subject.merge_request_diff.head_commit_sha])).to be_truthy
-      end
-    end
-  end
-
   describe '#can_allow_collaboration?' do
     let(:target_project) { create(:project, :public) }
     let(:source_project) { fork_project(target_project) }

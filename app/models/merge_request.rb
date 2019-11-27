@@ -420,15 +420,6 @@ class MergeRequest < ApplicationRecord
     limit ? shas.take(limit) : shas
   end
 
-  # Returns true if there are commits that match at least one commit SHA.
-  def includes_any_commits?(shas)
-    if persisted?
-      merge_request_diff.commits_by_shas(shas).exists?
-    else
-      (commit_shas & shas).present?
-    end
-  end
-
   def supports_suggestion?
     true
   end

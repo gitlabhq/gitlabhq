@@ -26,6 +26,8 @@ gitlab:
   mailroom:
     enabled: false
   migrations:
+    initialRootPassword:
+      secret: shared-gitlab-initial-root-password
     resources:
       requests:
         cpu: 350m

@@ -197,39 +197,33 @@ function install_external_dns() {
 function create_application_secret() {
   local namespace="${KUBE_NAMESPACE}"
   local release="${CI_ENVIRONMENT_SLUG}"
+  local initial_root_password_shared_secret
+  local gitlab_license_shared_secret
 
-  echoinfo "Creating the ${release}-gitlab-initial-root-password secret in the ${namespace} namespace..." true
-
-  kubectl create secret generic --namespace "${namespace}" \
-    "${release}-gitlab-initial-root-password" \
-    --from-literal="password=${REVIEW_APPS_ROOT_PASSWORD}" \
-    --dry-run -o json | kubectl apply -f -
+  initial_root_password_shared_secret=$(kubectl get secret --namespace ${namespace} --no-headers -o=custom-columns=NAME:.metadata.name shared-gitlab-initial-root-password | tail -n 1)
+  if [[ "${initial_root_password_shared_secret}" == "" ]]; then
+    echoinfo "Creating the 'shared-gitlab-initial-root-password' secret in the ${namespace} namespace..." true
+    kubectl create secret generic --namespace "${namespace}" \
+      "shared-gitlab-initial-root-password" \
+      --from-literal="password=${REVIEW_APPS_ROOT_PASSWORD}" \
+      --dry-run -o json | kubectl apply -f -
+  else
+    echoinfo "The 'shared-gitlab-initial-root-password' secret already exists in the ${namespace} namespace."
+  fi
 
   if [ -z "${REVIEW_APPS_EE_LICENSE}" ]; then echo "License not found" && return; fi
 
-  echoinfo "Creating the ${release}-gitlab-license secret in the ${namespace} namespace..." true
-
-  echo "${REVIEW_APPS_EE_LICENSE}" > /tmp/license.gitlab
-
-  kubectl create secret generic --namespace "${namespace}" \
-    "${release}-gitlab-license" \
-    --from-file=license=/tmp/license.gitlab \
-    --dry-run -o json | kubectl apply -f -
-}
-
-function label_application_secret() {
-  local namespace="${KUBE_NAMESPACE}"
-  local release="${CI_ENVIRONMENT_SLUG}"
-
-  echoinfo "Labeling the ${release}-gitlab-initial-root-password and ${release}-gitlab-license secrets in the ${namespace} namespace..." true
-
-  kubectl label secret --namespace "${namespace}" \
-    "${release}-gitlab-initial-root-password" \
-    release="${release}"
-  
-  kubectl label secret --namespace "${namespace}" \
-    "${release}-gitlab-license" \
-    release="${release}"
+  gitlab_license_shared_secret=$(kubectl get secret --namespace ${namespace} --no-headers -o=custom-columns=NAME:.metadata.name shared-gitlab-license | tail -n 1)
+  if [[ "${gitlab_license_shared_secret}" == "" ]]; then
+    echoinfo "Creating the 'shared-gitlab-license' secret in the ${namespace} namespace..." true
+    echo "${REVIEW_APPS_EE_LICENSE}" > /tmp/license.gitlab
+    kubectl create secret generic --namespace "${namespace}" \
+      "shared-gitlab-license" \
+      --from-file=license=/tmp/license.gitlab \
+      --dry-run -o json | kubectl apply -f -
+  else
+    echoinfo "The 'shared-gitlab-license' secret already exists in the ${namespace} namespace."
+  fi
 }
 
 function download_chart() {
@@ -272,7 +266,6 @@ function deploy() {
   gitlab_workhorse_image_repository="${IMAGE_REPOSITORY}/gitlab-workhorse-${edition}"
 
   create_application_secret
-  label_application_secret
 
 HELM_CMD=$(cat << EOF
   helm upgrade \
@@ -308,7 +301,7 @@ EOF
 if [ -n "${REVIEW_APPS_EE_LICENSE}" ]; then
 HELM_CMD=$(cat << EOF
   ${HELM_CMD} \
-  --set global.gitlab.license.secret="${release}-gitlab-license"
+  --set global.gitlab.license.secret="shared-gitlab-license"
 EOF
 )
 fi

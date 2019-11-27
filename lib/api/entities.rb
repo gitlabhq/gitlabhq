@@ -660,6 +660,8 @@ module API
       expose :subscribed, if: -> (_, options) { options.fetch(:include_subscribed, true) } do |issue, options|
         issue.subscribed?(options[:current_user], options[:project] || issue.project)
       end
+
+      expose :moved_to_id
     end
 
     class IssuableTimeStats < Grape::Entity

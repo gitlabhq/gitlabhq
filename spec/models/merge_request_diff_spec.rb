@@ -426,24 +426,38 @@ describe MergeRequestDiff do
     end
   end
 
-  describe '#commits_by_shas' do
-    let(:commit_shas) { diff_with_commits.commit_shas }
-
-    it 'returns empty if no SHAs were provided' do
-      expect(diff_with_commits.commits_by_shas([])).to be_empty
+  describe '#includes_any_commits?' do
+    let(:non_existent_shas) do
+      Array.new(30) { Digest::SHA1.hexdigest(SecureRandom.hex) }
     end
 
-    it 'returns one SHA' do
-      commits = diff_with_commits.commits_by_shas([commit_shas.first, Gitlab::Git::BLANK_SHA])
+    subject { diff_with_commits }
 
-      expect(commits.count).to eq(1)
+    context 'processes the passed shas in batches' do
+      context 'number of existing commits is greater than batch size' do
+        it 'performs a separate request for each batch' do
+          stub_const('MergeRequestDiff::BATCH_SIZE', 5)
+
+          commit_shas = subject.commit_shas
+
+          query_count = ActiveRecord::QueryRecorder.new do
+            subject.includes_any_commits?(non_existent_shas + commit_shas)
+          end.count
+
+          expect(query_count).to eq(7)
+        end
+      end
     end
 
-    it 'returns all matching SHAs' do
-      commits = diff_with_commits.commits_by_shas(commit_shas)
+    it 'returns false if passed commits do not exist' do
+      expect(subject.includes_any_commits?([])).to eq(false)
+      expect(subject.includes_any_commits?([Gitlab::Git::BLANK_SHA])).to eq(false)
+    end
 
-      expect(commits.count).to eq(commit_shas.count)
-      expect(commits.map(&:sha)).to match_array(commit_shas)
+    it 'returns true if passed commits exists' do
+      args_with_existing_commits = non_existent_shas << subject.head_commit_sha
+
+      expect(subject.includes_any_commits?(args_with_existing_commits)).to eq(true)
     end
   end
 

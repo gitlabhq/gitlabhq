@@ -34,7 +34,7 @@ module Gitlab
           end
 
           def system_dashboard?(filepath)
-            SERVICES::SystemDashboardService.system_dashboard?(filepath)
+            SERVICES::SystemDashboardService.matching_dashboard?(filepath)
           end
 
           def custom_metric_embed?(params)
