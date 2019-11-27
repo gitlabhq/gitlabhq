@@ -26,13 +26,13 @@ module Projects
 
       def delete_tags(tags_to_delete, tags_by_digest)
         deleted_digests = group_by_digest(tags_to_delete).select do |digest, tags|
-          delete_tag_digest(digest, tags, tags_by_digest[digest])
+          delete_tag_digest(tags, tags_by_digest[digest])
         end
 
         deleted_digests.values.flatten
       end
 
-      def delete_tag_digest(digest, tags, other_tags)
+      def delete_tag_digest(tags, other_tags)
         # Issue: https://gitlab.com/gitlab-org/gitlab-foss/issues/21405
         # we have to remove all tags due
         # to Docker Distribution bug unable

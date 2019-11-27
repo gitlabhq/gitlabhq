@@ -18,8 +18,6 @@ describe 'Gcp Cluster', :js do
     let(:project_id) { 'test-project-1234' }
 
     before do
-      stub_feature_flags(create_eks_clusters: false)
-
       allow_any_instance_of(Projects::ClustersController)
         .to receive(:token_in_session).and_return('token')
       allow_any_instance_of(Projects::ClustersController)
@@ -31,7 +29,8 @@ describe 'Gcp Cluster', :js do
         visit project_clusters_path(project)
 
         click_link 'Add Kubernetes cluster'
-        click_link 'Create new Cluster on GKE'
+        click_link 'Create new Cluster'
+        click_link 'Google GKE'
       end
 
       context 'when user filled form with valid parameters' do
@@ -147,21 +146,6 @@ describe 'Gcp Cluster', :js do
     end
   end
 
-  context 'when user has not signed with Google' do
-    before do
-      stub_feature_flags(create_eks_clusters: false)
-      visit project_clusters_path(project)
-
-      click_link 'Add Kubernetes cluster'
-      click_link 'Create new Cluster on GKE'
-    end
-
-    it 'user sees a login page' do
-      expect(page).to have_css('.signin-with-google')
-      expect(page).to have_link('Google account')
-    end
-  end
-
   context 'when a user cannot edit the environment scope' do
     before do
       visit project_clusters_path(project)
@@ -177,7 +161,6 @@ describe 'Gcp Cluster', :js do
 
   context 'when user has not dismissed GCP signup offer' do
     before do
-      stub_feature_flags(create_eks_clusters: false)
       visit project_clusters_path(project)
     end
 
@@ -190,18 +173,10 @@ describe 'Gcp Cluster', :js do
 
       expect(page).to have_css('.gcp-signup-offer')
     end
-
-    it 'user sees offer on cluster GCP login page' do
-      click_link 'Add Kubernetes cluster'
-      click_link 'Create new Cluster on GKE'
-
-      expect(page).to have_css('.gcp-signup-offer')
-    end
   end
 
   context 'when user has dismissed GCP signup offer' do
     before do
-      stub_feature_flags(create_eks_clusters: false)
       visit project_clusters_path(project)
     end
 

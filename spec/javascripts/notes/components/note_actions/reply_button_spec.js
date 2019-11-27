@@ -2,15 +2,14 @@ import Vuex from 'vuex';
 import { createLocalVue, mount } from '@vue/test-utils';
 import ReplyButton from '~/notes/components/note_actions/reply_button.vue';
 
+const localVue = createLocalVue();
+localVue.use(Vuex);
+
 describe('ReplyButton', () => {
   let wrapper;
 
   beforeEach(() => {
-    const localVue = createLocalVue();
-
-    localVue.use(Vuex);
-
-    wrapper = mount(ReplyButton, {
+    wrapper = mount(localVue.extend(ReplyButton), {
       sync: false,
       localVue,
     });

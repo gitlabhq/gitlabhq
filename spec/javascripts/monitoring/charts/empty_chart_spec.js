@@ -1,15 +1,19 @@
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
 import EmptyChart from '~/monitoring/components/charts/empty_chart.vue';
+
+const localVue = createLocalVue();
 
 describe('Empty Chart component', () => {
   let emptyChart;
   const graphTitle = 'Memory Usage';
 
   beforeEach(() => {
-    emptyChart = shallowMount(EmptyChart, {
+    emptyChart = shallowMount(localVue.extend(EmptyChart), {
       propsData: {
         graphTitle,
       },
+      sync: false,
+      localVue,
     });
   });
 

@@ -10,6 +10,8 @@ import mockDiffFile from '../../diffs/mock_data/diff_file';
 
 const discussionWithTwoUnresolvedNotes = 'merge_requests/resolved_diff_discussion.json';
 
+const localVue = createLocalVue();
+
 describe('noteable_discussion component', () => {
   let store;
   let wrapper;
@@ -22,8 +24,7 @@ describe('noteable_discussion component', () => {
     store.dispatch('setNoteableData', noteableDataMock);
     store.dispatch('setNotesData', notesDataMock);
 
-    const localVue = createLocalVue();
-    wrapper = mount(noteableDiscussion, {
+    wrapper = mount(localVue.extend(noteableDiscussion), {
       store,
       propsData: { discussion: discussionMock },
       localVue,

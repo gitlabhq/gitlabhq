@@ -211,32 +211,8 @@ GitLab supports:
 Before creating your first cluster on Amazon EKS with GitLab's integration,
 make sure the following requirements are met:
 
-- Self-managed GitLab instances have the `create_eks_clusters` feature flag enabled.
 - An [Amazon Web Services](https://aws.amazon.com/) account is set up and you are able to log in.
 - You have permissions to manage IAM resources.
-
-##### Enable the `create_eks_clusters` feature flag **(CORE ONLY)**
-
-Self-managed instances must have the feature flag `create_eks_clusters` enabled to create
-EKS clusters. To enable EKS cluster creation, ask a GitLab administrator with Rails console access
-to run the following command:
-
-```ruby
-Feature.enable(:create_eks_clusters)
-```
-
-To have it enabled for a specific project only, ask a GitLab administrator to run the following
-command using a Rails console:
-
-```ruby
-Feature.enable(:create_eks_clusters, Project.find_by_full_path('my_group/my_project'))
-```
-
-To have this feature disabled, ask a GitLab administrator to run the following command:
-
-```ruby
-Feature.disable(:create_eks_clusters)
-```
 
 ##### Additional requirements for self-managed instances
 

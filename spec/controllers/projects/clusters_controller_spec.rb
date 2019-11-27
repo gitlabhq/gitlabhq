@@ -95,29 +95,15 @@ describe Projects::ClustersController do
         end
 
         before do
-          stub_feature_flags(create_eks_clusters: false)
           allow(SecureRandom).to receive(:hex).and_return(key)
         end
 
-        it 'has authorize_url' do
+        it 'redirects to gcp authorize_url' do
           go
 
           expect(assigns(:authorize_url)).to include(key)
-          expect(session[session_key_for_redirect_uri]).to eq(new_project_cluster_path(project))
-        end
-
-        context 'when create_eks_clusters feature flag is enabled' do
-          before do
-            stub_feature_flags(create_eks_clusters: true)
-          end
-
-          context 'when selected provider is gke and no valid gcp token exists' do
-            it 'redirects to gcp authorize_url' do
-              go
-
-              expect(response).to redirect_to(assigns(:authorize_url))
-            end
-          end
+          expect(session[session_key_for_redirect_uri]).to eq(new_project_cluster_path(project, provider: :gcp))
+          expect(response).to redirect_to(assigns(:authorize_url))
         end
       end
 

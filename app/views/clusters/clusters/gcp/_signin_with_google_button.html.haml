@@ -1,4 +1,0 @@
-.signin-with-google
-  - create_account_link = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: 'https://accounts.google.com/SignUpWithoutGmail?service=cloudconsole&continue=https%3A%2F%2Fconsole.cloud.google.com%2Ffreetrial%3Futm_campaign%3D2018_cpanel%26utm_source%3Dgitlab%26utm_medium%3Dreferral' }
-  = link_to(image_tag('auth_buttons/signin_with_google.png', width: '191px', alt: _('Sign in with Google')), @authorize_url)
-  = s_('or %{link_start}create a new Google account%{link_end}').html_safe % { link_start: create_account_link, link_end: '</a>'.html_safe }

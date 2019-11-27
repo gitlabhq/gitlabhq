@@ -15948,9 +15948,6 @@ msgstr ""
 msgid "Sign in via 2FA code"
 msgstr ""
 
-msgid "Sign in with Google"
-msgstr ""
-
 msgid "Sign in with Single Sign-On"
 msgstr ""
 
@@ -21261,9 +21258,6 @@ msgid "nounSeries|%{item}, and %{lastItem}"
 msgstr ""
 
 msgid "opened %{timeAgoString} by %{user}"
-msgstr ""
-
-msgid "or %{link_start}create a new Google account%{link_end}"
 msgstr ""
 
 msgid "out of %d total test"

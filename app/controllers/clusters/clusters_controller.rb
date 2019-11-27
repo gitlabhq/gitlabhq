@@ -12,9 +12,6 @@ class Clusters::ClustersController < Clusters::BaseController
   before_action :authorize_update_cluster!, only: [:update]
   before_action :authorize_admin_cluster!, only: [:destroy, :clear_cache]
   before_action :update_applications_status, only: [:cluster_status]
-  before_action only: [:new, :create_gcp] do
-    push_frontend_feature_flag(:create_eks_clusters)
-  end
   before_action only: [:show] do
     push_frontend_feature_flag(:enable_cluster_application_elastic_stack)
     push_frontend_feature_flag(:enable_cluster_application_crossplane)
@@ -42,8 +39,6 @@ class Clusters::ClustersController < Clusters::BaseController
   end
 
   def new
-    return unless Feature.enabled?(:create_eks_clusters)
-
     if params[:provider] == 'aws'
       @aws_role = current_user.aws_role || Aws::Role.new
       @aws_role.ensure_role_external_id!
@@ -113,6 +108,7 @@ class Clusters::ClustersController < Clusters::BaseController
       generate_gcp_authorize_url
       validate_gcp_token
       user_cluster
+      params[:provider] = 'gcp'
 
       render :new, locals: { active_tab: 'create' }
     end
@@ -277,8 +273,7 @@ class Clusters::ClustersController < Clusters::BaseController
   end
 
   def generate_gcp_authorize_url
-    params = Feature.enabled?(:create_eks_clusters) ? { provider: :gke } : {}
-    state = generate_session_key_redirect(clusterable.new_path(params).to_s)
+    state = generate_session_key_redirect(clusterable.new_path(provider: :gcp).to_s)
 
     @authorize_url = GoogleApi::CloudPlatform::Client.new(
       nil, callback_google_api_auth_url,

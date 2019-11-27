@@ -1,14 +1,18 @@
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
 import GraphqlPagination from '~/vue_shared/components/pagination/graphql_pagination.vue';
+
+const localVue = createLocalVue();
 
 describe('Graphql Pagination component', () => {
   let wrapper;
   function factory({ hasNextPage = true, hasPreviousPage = true }) {
-    wrapper = shallowMount(GraphqlPagination, {
+    wrapper = shallowMount(localVue.extend(GraphqlPagination), {
       propsData: {
         hasNextPage,
         hasPreviousPage,
       },
+      sync: false,
+      localVue,
     });
   }
 

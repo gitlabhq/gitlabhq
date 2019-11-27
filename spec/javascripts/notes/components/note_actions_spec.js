@@ -12,7 +12,7 @@ describe('noteActions', () => {
 
   const shallowMountNoteActions = propsData => {
     const localVue = createLocalVue();
-    return shallowMount(noteActions, {
+    return shallowMount(localVue.extend(noteActions), {
       store,
       propsData,
       localVue,

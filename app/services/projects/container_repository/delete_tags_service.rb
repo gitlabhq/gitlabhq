@@ -24,32 +24,36 @@ module Projects
         dummy_manifest = container_repository.client.generate_empty_manifest(container_repository.path)
         return error('could not generate manifest') if dummy_manifest.nil?
 
-        # update the manifests of the tags with the new dummy image
-        deleted_tags = []
-        tag_digests = []
+        deleted_tags = replace_tag_manifests(container_repository, dummy_manifest, tag_names)
+
+        # Deletes the dummy image
+        # All created tag digests are the same since they all have the same dummy image.
+        # a single delete is sufficient to remove all tags with it
+        if deleted_tags.any? && container_repository.delete_tag_by_digest(deleted_tags.values.first)
+          success(deleted: deleted_tags.keys)
+        else
+          error('could not delete tags')
+        end
+      end
+
+      # update the manifests of the tags with the new dummy image
+      def replace_tag_manifests(container_repository, dummy_manifest, tag_names)
+        deleted_tags = {}
 
         tag_names.each do |name|
           digest = container_repository.client.put_tag(container_repository.path, name, dummy_manifest)
           next unless digest
 
-          deleted_tags << name
-          tag_digests << digest
+          deleted_tags[name] = digest
         end
 
         # make sure the digests are the same (it should always be)
-        tag_digests.uniq!
+        digests = deleted_tags.values.uniq
 
         # rubocop: disable CodeReuse/ActiveRecord
-        Gitlab::Sentry.track_exception(ArgumentError.new('multiple tag digests')) if tag_digests.many?
+        Gitlab::Sentry.track_exception(ArgumentError.new('multiple tag digests')) if digests.many?
 
-        # Deletes the dummy image
-        # All created tag digests are the same since they all have the same dummy image.
-        # a single delete is sufficient to remove all tags with it
-        if tag_digests.any? && container_repository.delete_tag_by_digest(tag_digests.first)
-          success(deleted: deleted_tags)
-        else
-          error('could not delete tags')
-        end
+        deleted_tags
       end
     end
   end

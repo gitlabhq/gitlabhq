@@ -72,6 +72,17 @@ describe('Dashboard', () => {
   let mock;
   let store;
   let component;
+  let wrapper;
+
+  const createComponentWrapper = (props = {}, options = {}) => {
+    wrapper = shallowMount(localVue.extend(DashboardComponent), {
+      localVue,
+      sync: false,
+      propsData: { ...propsData, ...props },
+      store,
+      ...options,
+    });
+  };
 
   beforeEach(() => {
     setFixtures(`
@@ -81,12 +92,15 @@ describe('Dashboard', () => {
 
     store = createStore();
     mock = new MockAdapter(axios);
-    DashboardComponent = Vue.extend(Dashboard);
+    DashboardComponent = localVue.extend(Dashboard);
   });
 
   afterEach(() => {
     if (component) {
       component.$destroy();
+    }
+    if (wrapper) {
+      wrapper.destroy();
     }
     mock.restore();
   });
@@ -123,15 +137,8 @@ describe('Dashboard', () => {
   });
 
   describe('cluster health', () => {
-    let wrapper;
-
     beforeEach(done => {
-      wrapper = shallowMount(DashboardComponent, {
-        localVue,
-        sync: false,
-        propsData: { ...propsData, hasMetrics: true },
-        store,
-      });
+      createComponentWrapper({ hasMetrics: true });
 
       // all_dashboards is not defined in health dashboards
       wrapper.vm.$store.commit(`monitoringDashboard/${types.SET_ALL_DASHBOARDS}`, undefined);
@@ -383,7 +390,6 @@ describe('Dashboard', () => {
   });
 
   describe('drag and drop function', () => {
-    let wrapper;
     let expectedPanelCount; // also called metrics, naming to be improved: https://gitlab.com/gitlab-org/gitlab/issues/31565
 
     const findDraggables = () => wrapper.findAll(VueDraggable);
@@ -400,17 +406,15 @@ describe('Dashboard', () => {
     });
 
     beforeEach(done => {
-      wrapper = shallowMount(DashboardComponent, {
-        localVue,
-        sync: false,
-        propsData: { ...propsData, hasMetrics: true },
-        store,
-        attachToDocument: true,
-      });
+      createComponentWrapper({ hasMetrics: true }, { attachToDocument: true });
 
       setupComponentStore(wrapper.vm);
 
       wrapper.vm.$nextTick(done);
+    });
+
+    afterEach(() => {
+      wrapper.destroy();
     });
 
     afterEach(() => {
@@ -502,7 +506,6 @@ describe('Dashboard', () => {
   // https://gitlab.com/gitlab-org/gitlab-ce/issues/66922
   // eslint-disable-next-line jasmine/no-disabled-tests
   xdescribe('link to chart', () => {
-    let wrapper;
     const currentDashboard = 'TEST_DASHBOARD';
     localVue.use(GlToast);
     const link = () => wrapper.find('.js-chart-link');
@@ -511,13 +514,7 @@ describe('Dashboard', () => {
     beforeEach(done => {
       mock.onGet(mockApiEndpoint).reply(200, metricsGroupsAPIResponse);
 
-      wrapper = shallowMount(DashboardComponent, {
-        localVue,
-        sync: false,
-        attachToDocument: true,
-        propsData: { ...propsData, hasMetrics: true, currentDashboard },
-        store,
-      });
+      createComponentWrapper({ hasMetrics: true, currentDashboard }, { attachToDocument: true });
 
       setTimeout(done);
     });
@@ -614,19 +611,12 @@ describe('Dashboard', () => {
   });
 
   describe('dashboard edit link', () => {
-    let wrapper;
     const findEditLink = () => wrapper.find('.js-edit-link');
 
     beforeEach(done => {
       mock.onGet(mockApiEndpoint).reply(200, metricsGroupsAPIResponse);
 
-      wrapper = shallowMount(DashboardComponent, {
-        localVue,
-        sync: false,
-        attachToDocument: true,
-        propsData: { ...propsData, hasMetrics: true },
-        store,
-      });
+      createComponentWrapper({ hasMetrics: true }, { attachToDocument: true });
 
       wrapper.vm.$store.commit(
         `monitoringDashboard/${types.SET_ALL_DASHBOARDS}`,

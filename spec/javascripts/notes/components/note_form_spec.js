@@ -14,7 +14,7 @@ describe('issue_note_form component', () => {
 
   const createComponentWrapper = () => {
     const localVue = createLocalVue();
-    return shallowMount(NoteForm, {
+    return shallowMount(localVue.extend(NoteForm), {
       store,
       propsData: props,
       // see https://gitlab.com/gitlab-org/gitlab-foss/issues/56317 for the following

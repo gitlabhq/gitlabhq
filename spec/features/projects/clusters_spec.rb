@@ -49,41 +49,20 @@ describe 'Clusters', :js do
     end
   end
 
-  context 'when user has not signed in Google' do
+  context 'user visits create cluster page' do
     before do
-      stub_feature_flags(create_eks_clusters: false)
       visit project_clusters_path(project)
 
       click_link 'Add Kubernetes cluster'
-      click_link 'Create new Cluster on GKE'
+      click_link 'Create new Cluster'
     end
 
-    it 'user sees a login page' do
-      expect(page).to have_css('.signin-with-google')
-      expect(page).to have_link('Google account')
-    end
-  end
-
-  context 'when create_eks_clusters feature flag is enabled' do
-    before do
-      stub_feature_flags(create_eks_clusters: true)
+    it 'user sees a link to create a GKE cluster' do
+      expect(page).to have_link('Google GKE')
     end
 
-    context 'when user access create cluster page' do
-      before do
-        visit project_clusters_path(project)
-
-        click_link 'Add Kubernetes cluster'
-        click_link 'Create new Cluster'
-      end
-
-      it 'user sees a link to create a GKE cluster' do
-        expect(page).to have_link('Google GKE')
-      end
-
-      it 'user sees a link to create an EKS cluster' do
-        expect(page).to have_link('Amazon EKS')
-      end
+    it 'user sees a link to create an EKS cluster' do
+      expect(page).to have_link('Amazon EKS')
     end
   end
 end

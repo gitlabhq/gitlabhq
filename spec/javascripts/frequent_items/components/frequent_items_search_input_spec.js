@@ -1,13 +1,15 @@
-import Vue from 'vue';
 import searchComponent from '~/frequent_items/components/frequent_items_search_input.vue';
 import eventHub from '~/frequent_items/event_hub';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
 
-const createComponent = (namespace = 'projects') => {
-  const Component = Vue.extend(searchComponent);
+const localVue = createLocalVue();
 
-  return shallowMount(Component, { propsData: { namespace } });
-};
+const createComponent = (namespace = 'projects') =>
+  shallowMount(localVue.extend(searchComponent), {
+    propsData: { namespace },
+    localVue,
+    sync: false,
+  });
 
 describe('FrequentItemsSearchInputComponent', () => {
   let wrapper;
@@ -40,7 +42,7 @@ describe('FrequentItemsSearchInputComponent', () => {
       spyOn(eventHub, '$on');
       const vmX = createComponent().vm;
 
-      Vue.nextTick(() => {
+      localVue.nextTick(() => {
         expect(eventHub.$on).toHaveBeenCalledWith(
           `${vmX.namespace}-dropdownOpen`,
           jasmine.any(Function),
@@ -58,7 +60,7 @@ describe('FrequentItemsSearchInputComponent', () => {
       vmX.$mount();
       vmX.$destroy();
 
-      Vue.nextTick(() => {
+      localVue.nextTick(() => {
         expect(eventHub.$off).toHaveBeenCalledWith(
           `${vmX.namespace}-dropdownOpen`,
           jasmine.any(Function),

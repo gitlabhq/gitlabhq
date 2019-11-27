@@ -1,7 +1,5 @@
 = render 'clusters/clusters/gcp/header'
 - if @valid_gcp_token
   = render 'clusters/clusters/gcp/form'
-- elsif @authorize_url
-  = render 'clusters/clusters/gcp/signin_with_google_button'
 - else
   = render 'clusters/clusters/gcp/gcp_not_configured'

@@ -1,10 +1,21 @@
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
 import GraphGroup from '~/monitoring/components/graph_group.vue';
+
+const localVue = createLocalVue();
 
 describe('Graph group component', () => {
   let graphGroup;
+
   const findPrometheusGroup = () => graphGroup.find('.prometheus-graph-group');
   const findPrometheusPanel = () => graphGroup.find('.prometheus-panel');
+
+  const createComponent = propsData => {
+    graphGroup = shallowMount(localVue.extend(GraphGroup), {
+      propsData,
+      sync: false,
+      localVue,
+    });
+  };
 
   afterEach(() => {
     graphGroup.destroy();
@@ -12,11 +23,9 @@ describe('Graph group component', () => {
 
   describe('When groups can be collapsed', () => {
     beforeEach(() => {
-      graphGroup = shallowMount(GraphGroup, {
-        propsData: {
-          name: 'panel',
-          collapseGroup: true,
-        },
+      createComponent({
+        name: 'panel',
+        collapseGroup: true,
       });
     });
 
@@ -33,12 +42,10 @@ describe('Graph group component', () => {
 
   describe('When groups can not be collapsed', () => {
     beforeEach(() => {
-      graphGroup = shallowMount(GraphGroup, {
-        propsData: {
-          name: 'panel',
-          collapseGroup: true,
-          showPanels: false,
-        },
+      createComponent({
+        name: 'panel',
+        collapseGroup: true,
+        showPanels: false,
       });
     });
 
@@ -49,12 +56,7 @@ describe('Graph group component', () => {
 
   describe('When collapseGroup prop is updated', () => {
     beforeEach(() => {
-      graphGroup = shallowMount(GraphGroup, {
-        propsData: {
-          name: 'panel',
-          collapseGroup: false,
-        },
-      });
+      createComponent({ name: 'panel', collapseGroup: false });
     });
 
     it('previously collapsed group should respond to the prop change', done => {
