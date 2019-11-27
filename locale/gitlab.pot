@@ -6394,6 +6394,9 @@ msgstr ""
 msgid "Enter merge request URLs"
 msgstr ""
 
+msgid "Enter new AWS Secret Access Key"
+msgstr ""
+
 msgid "Enter the issue description"
 msgstr ""
 
