@@ -6524,15 +6524,6 @@ msgstr ""
 msgid "Environments|An error occurred while fetching the environments."
 msgstr ""
 
-msgid "Environments|An error occurred while fetching the logs"
-msgstr ""
-
-msgid "Environments|An error occurred while fetching the logs - Error: %{message}"
-msgstr ""
-
-msgid "Environments|An error occurred while fetching the logs for this environment or pod. Please try again"
-msgstr ""
-
 msgid "Environments|An error occurred while making the request."
 msgstr ""
 

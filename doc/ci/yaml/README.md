@@ -275,13 +275,13 @@ For more information, see see [Available settings for `services`](../docker/usin
 
 `before_script` is used to define a command that should be run before each
 job, including deploy jobs, but after the restoration of any [artifacts](#artifacts).
-This must be an an array.
+This must be an array.
 
 Scripts specified in `before_script` are concatenated with any scripts specified
 in the main [`script`](#script), and executed together in a single shell.
 
 `after_script` is used to define the command that will be run after each
-job, including failed ones. This must be an an array.
+job, including failed ones. This must be an array.
 
 Scripts specified in `after_script` are executed in a new shell, separate from any
 `before_script` or `script` scripts. As a result, they:

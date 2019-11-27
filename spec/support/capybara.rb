@@ -16,6 +16,7 @@ JSConsoleError = Class.new(StandardError)
 JS_CONSOLE_FILTER = Regexp.union([
   '"[HMR] Waiting for update signal from WDS..."',
   '"[WDS] Hot Module Replacement enabled."',
+  '"[WDS] Live Reloading enabled."',
   "Download the Vue Devtools extension"
 ])
 
