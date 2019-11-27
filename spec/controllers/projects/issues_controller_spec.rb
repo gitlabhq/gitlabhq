@@ -1435,6 +1435,43 @@ describe Projects::IssuesController do
           expect { get :discussions, params: { namespace_id: project.namespace, project_id: project, id: issue.iid } }.not_to exceed_query_limit(control_count)
         end
       end
+
+      context 'private project' do
+        let!(:branch_note) { create(:discussion_note_on_issue, :system, noteable: issue, project: project) }
+        let!(:commit_note) { create(:discussion_note_on_issue, :system, noteable: issue, project: project) }
+        let!(:branch_note_meta) { create(:system_note_metadata, note: branch_note, action: "branch") }
+        let!(:commit_note_meta) { create(:system_note_metadata, note: commit_note, action: "commit") }
+
+        context 'user is allowed access' do
+          before do
+            project.add_user(user, :maintainer)
+          end
+
+          it 'displays all available notes' do
+            get :discussions, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
+
+            expect(json_response.length).to eq(3)
+          end
+        end
+
+        context 'user is a guest' do
+          let(:json_response_note_ids) do
+            json_response.collect { |discussion| discussion["notes"] }.flatten
+              .collect { |note| note["id"].to_i }
+          end
+
+          before do
+            project.add_guest(user)
+          end
+
+          it 'does not display notes w/type listed in TYPES_RESTRICTED_BY_ACCESS_LEVEL' do
+            get :discussions, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
+
+            expect(json_response.length).to eq(2)
+            expect(json_response_note_ids).not_to include(branch_note.id)
+          end
+        end
+      end
     end
   end
 

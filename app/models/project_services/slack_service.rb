@@ -30,4 +30,28 @@ class SlackService < ChatNotificationService
   def webhook_placeholder
     'https://hooks.slack.com/services/…'
   end
+
+  module Notifier
+    private
+
+    def notify(message, opts)
+      # See https://github.com/stevenosloan/slack-notifier#custom-http-client
+      notifier = Slack::Notifier.new(webhook, opts.merge(http_client: HTTPClient))
+
+      notifier.ping(
+        message.pretext,
+        attachments: message.attachments,
+        fallback: message.fallback
+      )
+    end
+
+    class HTTPClient
+      def self.post(uri, params = {})
+        params.delete(:http_options) # these are internal to the client and we do not want them
+        Gitlab::HTTP.post(uri, body: params)
+      end
+    end
+  end
+
+  include Notifier
 end

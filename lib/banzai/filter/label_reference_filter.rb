@@ -89,7 +89,7 @@ module Banzai
           parent_from_ref = from_ref_cached(project_path)
           reference       = parent_from_ref.to_human_reference(parent)
 
-          label_suffix = " <i>in #{reference}</i>" if reference.present?
+          label_suffix = " <i>in #{ERB::Util.html_escape(reference)}</i>" if reference.present?
         end
 
         presenter = object.present(issuable_subject: parent)
