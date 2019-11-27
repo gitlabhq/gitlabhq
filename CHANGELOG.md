@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.5.2
+
+### Security (1 change)
+
+- Fix 500 error caused by invalid byte sequences in links.
+
+
 ## 12.5.1
 
 ### Security (11 changes)
