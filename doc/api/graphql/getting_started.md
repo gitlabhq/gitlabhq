@@ -22,8 +22,8 @@ to use as a bearer token.
 Example:
 
 ```sh
-GRAPHQL_TOKEN = <your-token>
-curl 'http://gitlab.com/api/graphql' --header "Authorization: Bearer $GRAPHQL_TOKEN" --header "Content-Type: application/json" --request POST --data "{\"query\": \"query {currentUser {name}}\"}
+GRAPHQL_TOKEN=<your-token>
+curl 'https://gitlab.com/api/graphql' --header "Authorization: Bearer $GRAPHQL_TOKEN" --header "Content-Type: application/json" --request POST --data "{\"query\": \"query {currentUser {name}}\"}"
 ```
 
 ### GraphiQL
@@ -86,18 +86,17 @@ Example: Get a specific project and the title of Issue #2.
 
 ```graphql
 query {
-     project(fullPath: "gitlab-org/graphql-sandbox") {
-       name
-       issue(iid: "2") {
-         title
-       }
-     }
-   }
+  project(fullPath: "gitlab-org/graphql-sandbox") {
+    name
+    issue(iid: "2") {
+      title
+    }
+  }
+}
 ```
 
-### The root node
+### Graph traversal
 
-Any field defined in [`QueryType`](https://gitlab.com/gitlab-org/gitlab/tree/master/app/graphql/types/query_type.rb) will be exposed as a root node.
 When retrieving child nodes use:
 
 - the `edges { node { } }` syntax.
@@ -121,32 +120,14 @@ query {
 }
 ```
 
-More on schema definitions:
-[graphql-ruby docs](https://graphql-ruby.org/schema/definition)
-
 More about queries:
-[GraphQL docs](https://graphql.org/learn/queries/) and
-[graphql-ruby docs](https://graphql-ruby.org/queries/executing_queries)
+[GraphQL docs](https://graphql.org/learn/queries/)
 
 ### Authorization
 
-Authorization uses the same engine as the Rails app. So if you've signed in to GitLab
-and use GraphiQL, all queries will be performed as you, the signed in user.
-
-See the [authorization section](../../development/api_graphql_styleguide.html#authorization) of the StyleGuide
-for implementation details.
-
-### Resolvers
-
-A resolver is how we define how the records requested by the client are retrieved, collected,
-and assembled into the response.
-
-The [GraphQL API StyleGuide](../../development/api_graphql_styleguide.md#resolvers) has more details
-about the implementation of resolvers.
-
-More about resolvers:
-[GraphQL Docs](https://graphql.org/learn/execution/) and
-[graphql-ruby docs](https://graphql-ruby.org/fields/resolvers.html)
+Authorization uses the same engine as the GitLab application (and GitLab.com). So if you've signed in to GitLab
+and use GraphiQL, all queries will be performed as you, the signed in user. For more information, see the
+[GitLab API documentation](../README.md#authentication).
 
 ### Mutations
 
@@ -197,7 +178,7 @@ mutation {
       body
       discussion {
         id
-      }  
+      }
     }
     errors
   }
@@ -253,12 +234,8 @@ You should get something like the following output:
 
 We've asked for the note details, but it doesn't exist anymore, so we get `null`.
 
-The [GraphQL API StyleGuide](../../development/api_graphql_styleguide.md#mutations) has more details
-about implementation of mutations.
-
 More about mutations:
-[GraphQL Docs](https://graphql.org/learn/queries/#mutations) and
-[graphql-ruby docs](https://graphql-ruby.org/mutations/mutation_classes.html)
+[GraphQL Docs](https://graphql.org/learn/queries/#mutations).
 
 ### Introspective queries
 
@@ -301,8 +278,7 @@ query IssueTypes {
 ```
 
 More about introspection:
-[GraphQL docs](https://graphql.org/learn/introspection/) and
-[graphql-ruby docs](https://graphql-ruby.org/schema/introspection.html)
+[GraphQL docs](https://graphql.org/learn/introspection/)
 
 ## Sorting
 
@@ -382,5 +358,4 @@ query {
 ```
 
 More on pagination and cursors:
-[GraphQL docs](https://graphql.org/learn/pagination/) and
-[graphql-ruby docs](https://graphql-ruby.org/relay/connections.html#cursors)
+[GraphQL docs](https://graphql.org/learn/pagination/)

@@ -177,4 +177,70 @@ describe('Tracking', () => {
       expect(eventSpy).toHaveBeenCalledWith('_category_', 'nested_event', {});
     });
   });
+
+  describe('tracking mixin', () => {
+    describe('trackingOptions', () => {
+      it('return the options defined on initialisation', () => {
+        const mixin = Tracking.mixin({ foo: 'bar' });
+        expect(mixin.computed.trackingOptions()).toEqual({ foo: 'bar' });
+      });
+
+      it('local tracking value override and extend options', () => {
+        const mixin = Tracking.mixin({ foo: 'bar' });
+        //  the value of this in the  vue lifecyle is different, but this serve the tests purposes
+        mixin.computed.tracking = { foo: 'baz', baz: 'bar' };
+        expect(mixin.computed.trackingOptions()).toEqual({ foo: 'baz', baz: 'bar' });
+      });
+    });
+
+    describe('trackingCategory', () => {
+      it('return the category set in the component properties first', () => {
+        const mixin = Tracking.mixin({ category: 'foo' });
+        mixin.computed.tracking = {
+          category: 'bar',
+        };
+        expect(mixin.computed.trackingCategory()).toBe('bar');
+      });
+
+      it('return the category set in the options', () => {
+        const mixin = Tracking.mixin({ category: 'foo' });
+        expect(mixin.computed.trackingCategory()).toBe('foo');
+      });
+
+      it('if no category is selected returns undefined', () => {
+        const mixin = Tracking.mixin();
+        expect(mixin.computed.trackingCategory()).toBe(undefined);
+      });
+    });
+
+    describe('track', () => {
+      let eventSpy;
+      let mixin;
+
+      beforeEach(() => {
+        eventSpy = jest.spyOn(Tracking, 'event').mockReturnValue();
+        mixin = Tracking.mixin();
+        mixin = {
+          ...mixin.computed,
+          ...mixin.methods,
+        };
+      });
+
+      it('calls the event method', () => {
+        mixin.trackingCategory = mixin.trackingCategory();
+        mixin.trackingOptions = mixin.trackingOptions();
+
+        mixin.track('foo');
+        expect(eventSpy).toHaveBeenCalledWith(undefined, 'foo', {});
+      });
+
+      it('give precedence to data for category and options', () => {
+        mixin.trackingCategory = mixin.trackingCategory();
+        mixin.trackingOptions = mixin.trackingOptions();
+        const data = { category: 'foo', label: 'baz' };
+        mixin.track('foo', data);
+        expect(eventSpy).toHaveBeenCalledWith('foo', 'foo', data);
+      });
+    });
+  });
 });

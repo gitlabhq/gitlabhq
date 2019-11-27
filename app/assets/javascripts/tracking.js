@@ -73,20 +73,25 @@ export default class Tracking {
     return handlers;
   }
 
-  static mixin(opts) {
+  static mixin(opts = {}) {
     return {
-      data() {
-        return {
-          tracking: {
-            // eslint-disable-next-line no-underscore-dangle
-            category: this.$options.name || this.$options._componentTag,
-          },
-        };
+      computed: {
+        trackingCategory() {
+          const localCategory = this.tracking ? this.tracking.category : null;
+          return localCategory || opts.category;
+        },
+        trackingOptions() {
+          return { ...opts, ...this.tracking };
+        },
       },
       methods: {
-        track(action, data) {
-          const category = opts.category || data.category || this.tracking.category;
-          Tracking.event(category || 'unspecified', action, { ...opts, ...this.tracking, ...data });
+        track(action, data = {}) {
+          const category = data.category || this.trackingCategory;
+          const options = {
+            ...this.trackingOptions,
+            ...data,
+          };
+          Tracking.event(category, action, options);
         },
       },
     };

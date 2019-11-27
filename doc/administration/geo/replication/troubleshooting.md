@@ -115,10 +115,12 @@ Any **secondary** nodes should point only to read-only instances.
 
 #### Can Geo detect the current node correctly?
 
-Geo finds the current machine's name in `/etc/gitlab/gitlab.rb` by first looking
-for `gitlab_rails['geo_node_name']`. If it is not defined, then it defaults to
-the external URL defined in e.g. `external_url "http://gitlab.example.com"`. To
-get a machine's name, run:
+Geo finds the current machine's name in `/etc/gitlab/gitlab.rb` by:
+
+- Using the `gitlab_rails['geo_node_name']` setting.
+- If that is not defined, using the `external_url` setting.
+
+To get a machine's name, run:
 
 ```sh
 sudo gitlab-rails runner "puts GeoNode.current_node_name"

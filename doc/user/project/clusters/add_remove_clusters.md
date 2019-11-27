@@ -300,6 +300,7 @@ new Kubernetes cluster to your project:
                       "iam:AttachRolePolicy",
                       "iam:CreateRole",
                       "iam:CreateInstanceProfile",
+                      "iam:CreateServiceLinkedRole",
                       "iam:GetRole",
                       "iam:ListRoles",
                       "iam:PassRole",
