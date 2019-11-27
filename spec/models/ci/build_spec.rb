@@ -741,20 +741,26 @@ describe Ci::Build do
 
       before do
         needs.to_a.each do |need|
-          create(:ci_build_need, build: final, name: need)
+          create(:ci_build_need, build: final, **need)
         end
       end
 
       subject { final.dependencies }
 
-      context 'when depedencies are defined' do
+      context 'when dependencies are defined' do
         let(:dependencies) { %w(rspec staging) }
 
         it { is_expected.to contain_exactly(rspec_test, staging) }
       end
 
       context 'when needs are defined' do
-        let(:needs) { %w(build rspec staging) }
+        let(:needs) do
+          [
+            { name: 'build',   artifacts: true },
+            { name: 'rspec',   artifacts: true },
+            { name: 'staging', artifacts: true }
+          ]
+        end
 
         it { is_expected.to contain_exactly(build, rspec_test, staging) }
 
@@ -767,11 +773,42 @@ describe Ci::Build do
         end
       end
 
+      context 'when need artifacts are defined' do
+        let(:needs) do
+          [
+            { name: 'build',   artifacts: true },
+            { name: 'rspec',   artifacts: false },
+            { name: 'staging', artifacts: true }
+          ]
+        end
+
+        it { is_expected.to contain_exactly(build, staging) }
+      end
+
       context 'when needs and dependencies are defined' do
         let(:dependencies) { %w(rspec staging) }
-        let(:needs) { %w(build rspec staging) }
+        let(:needs) do
+          [
+            { name: 'build',   artifacts: true },
+            { name: 'rspec',   artifacts: true },
+            { name: 'staging', artifacts: true }
+          ]
+        end
 
         it { is_expected.to contain_exactly(rspec_test, staging) }
+      end
+
+      context 'when needs and dependencies contradict' do
+        let(:dependencies) { %w(rspec staging) }
+        let(:needs) do
+          [
+            { name: 'build',   artifacts: true },
+            { name: 'rspec',   artifacts: false },
+            { name: 'staging', artifacts: true }
+          ]
+        end
+
+        it { is_expected.to contain_exactly(staging) }
       end
 
       context 'when nor dependencies or needs are defined' do

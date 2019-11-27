@@ -68,8 +68,22 @@ describe Resolvers::IssuesResolver do
         end
       end
 
-      it 'searches issues' do
-        expect(resolve_issues(search: 'foo')).to contain_exactly(issue2)
+      context 'when searching issues' do
+        it 'returns correct issues' do
+          expect(resolve_issues(search: 'foo')).to contain_exactly(issue2)
+        end
+
+        it 'uses project search optimization' do
+          expected_arguments = {
+            search: 'foo',
+            attempt_project_search_optimizations: true,
+            iids: [],
+            project_id: project.id
+          }
+          expect(IssuesFinder).to receive(:new).with(anything, expected_arguments).and_call_original
+
+          resolve_issues(search: 'foo')
+        end
       end
 
       describe 'sorting' do

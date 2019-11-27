@@ -93,7 +93,7 @@ describe Gitlab::Ci::Config::Entry::Job do
 
       context 'when delayed job' do
         context 'when start_in is specified' do
-          let(:config) { { script: 'echo', when: 'delayed', start_in: '1 day' } }
+          let(:config) { { script: 'echo', when: 'delayed', start_in: '1 week' } }
 
           it { expect(entry).to be_valid }
         end
@@ -232,11 +232,9 @@ describe Gitlab::Ci::Config::Entry::Job do
 
       context 'when delayed job' do
         context 'when start_in is specified' do
-          let(:config) { { script: 'echo', when: 'delayed', start_in: '1 day' } }
+          let(:config) { { script: 'echo', when: 'delayed', start_in: '1 week' } }
 
-          it 'returns error about invalid type' do
-            expect(entry).to be_valid
-          end
+          it { expect(entry).to be_valid }
         end
 
         context 'when start_in is empty' do
@@ -257,8 +255,8 @@ describe Gitlab::Ci::Config::Entry::Job do
           end
         end
 
-        context 'when start_in is longer than one day' do
-          let(:config) { { when: 'delayed', start_in: '2 days' } }
+        context 'when start_in is longer than one week' do
+          let(:config) { { when: 'delayed', start_in: '8 days' } }
 
           it 'returns error about exceeding the limit' do
             expect(entry).not_to be_valid

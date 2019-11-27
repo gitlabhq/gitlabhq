@@ -764,7 +764,7 @@ module Ci
 
       # find all jobs that are needed
       if Feature.enabled?(:ci_dag_support, project, default_enabled: true) && needs.exists?
-        depended_jobs = depended_jobs.where(name: needs.select(:name))
+        depended_jobs = depended_jobs.where(name: needs.artifacts.select(:name))
       end
 
       # find all jobs that are dependent on
@@ -772,6 +772,8 @@ module Ci
         depended_jobs = depended_jobs.where(name: options[:dependencies])
       end
 
+      # if both needs and dependencies are used,
+      # the end result will be an intersection between them
       depended_jobs
     end
 

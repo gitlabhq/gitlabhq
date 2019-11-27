@@ -94,11 +94,11 @@ setup-test-env:
 
 rspec unit pg9:
   extends: .rspec-base-pg9
-  parallel: 20
+  parallel: 24
 
 rspec unit pg9-foss:
   extends: .rspec-base-pg9-foss
-  parallel: 20
+  parallel: 24
 
 rspec integration pg9:
   extends: .rspec-base-pg9

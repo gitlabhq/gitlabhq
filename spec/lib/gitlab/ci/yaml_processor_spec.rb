@@ -1525,8 +1525,48 @@ module Gitlab
               name: "test1",
               options: { script: ["test"] },
               needs_attributes: [
-                { name: "build1" },
-                { name: "build2" }
+                { name: "build1", artifacts: true },
+                { name: "build2", artifacts: true }
+              ],
+              when: "on_success",
+              allow_failure: false,
+              yaml_variables: []
+            )
+          end
+        end
+
+        context 'needs two builds' do
+          let(:needs) do
+            [
+              { job: 'parallel', artifacts: false },
+              { job: 'build1',   artifacts: true },
+              'build2'
+            ]
+          end
+
+          it "does create jobs with valid specification" do
+            expect(subject.builds.size).to eq(7)
+            expect(subject.builds[0]).to eq(
+              stage: "build",
+              stage_idx: 1,
+              name: "build1",
+              options: {
+                script: ["test"]
+              },
+              when: "on_success",
+              allow_failure: false,
+              yaml_variables: []
+            )
+            expect(subject.builds[4]).to eq(
+              stage: "test",
+              stage_idx: 2,
+              name: "test1",
+              options: { script: ["test"] },
+              needs_attributes: [
+                { name: "parallel 1/2", artifacts: false },
+                { name: "parallel 2/2", artifacts: false },
+                { name: "build1", artifacts: true },
+                { name: "build2", artifacts: true }
               ],
               when: "on_success",
               allow_failure: false,
@@ -1546,8 +1586,37 @@ module Gitlab
               name: "test1",
               options: { script: ["test"] },
               needs_attributes: [
-                { name: "parallel 1/2" },
-                { name: "parallel 2/2" }
+                { name: "parallel 1/2", artifacts: true },
+                { name: "parallel 2/2", artifacts: true }
+              ],
+              when: "on_success",
+              allow_failure: false,
+              yaml_variables: []
+            )
+          end
+        end
+
+        context 'needs dependencies artifacts' do
+          let(:needs) do
+            [
+              "build1",
+              { job: "build2" },
+              { job: "parallel", artifacts: true }
+            ]
+          end
+
+          it "does create jobs with valid specification" do
+            expect(subject.builds.size).to eq(7)
+            expect(subject.builds[4]).to eq(
+              stage: "test",
+              stage_idx: 2,
+              name: "test1",
+              options: { script: ["test"] },
+              needs_attributes: [
+                { name: "build1", artifacts: true },
+                { name: "build2", artifacts: true },
+                { name: "parallel 1/2", artifacts: true },
+                { name: "parallel 2/2", artifacts: true }
               ],
               when: "on_success",
               allow_failure: false,

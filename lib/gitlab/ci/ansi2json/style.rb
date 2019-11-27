@@ -61,9 +61,9 @@ module Gitlab
           case
           when changes[:reset]
             reset!
-          when changes[:fg]
+          when changes.key?(:fg)
             @fg = changes[:fg]
-          when changes[:bg]
+          when changes.key?(:bg)
             @bg = changes[:bg]
           when changes[:enable]
             @mask |= changes[:enable]

@@ -51,9 +51,34 @@ describe ::Gitlab::Ci::Config::Entry::Needs do
         end
       end
     end
+
+    context 'when wrong needs type is used' do
+      let(:config) { [{ job: 'job_name', artifacts: true, some: :key }] }
+
+      describe '#valid?' do
+        it { is_expected.not_to be_valid }
+      end
+
+      describe '#errors' do
+        it 'returns error about incorrect type' do
+          expect(needs.errors).to contain_exactly(
+            'need config contains unknown keys: some')
+        end
+      end
+    end
   end
 
   describe '.compose!' do
+    shared_examples 'entry with descendant nodes' do
+      describe '#descendants' do
+        it 'creates valid descendant nodes' do
+          expect(needs.descendants.count).to eq 2
+          expect(needs.descendants)
+            .to all(be_an_instance_of(::Gitlab::Ci::Config::Entry::Need))
+        end
+      end
+    end
+
     context 'when valid job entries composed' do
       let(:config) { %w[first_job_name second_job_name] }
 
@@ -65,18 +90,80 @@ describe ::Gitlab::Ci::Config::Entry::Needs do
         it 'returns key value' do
           expect(needs.value).to eq(
             job: [
-              { name: 'first_job_name' },
-              { name: 'second_job_name' }
+              { name: 'first_job_name',  artifacts: true },
+              { name: 'second_job_name', artifacts: true }
             ]
           )
         end
       end
 
-      describe '#descendants' do
-        it 'creates valid descendant nodes' do
-          expect(needs.descendants.count).to eq 2
-          expect(needs.descendants)
-            .to all(be_an_instance_of(::Gitlab::Ci::Config::Entry::Need))
+      it_behaves_like 'entry with descendant nodes'
+    end
+
+    context 'with complex job entries composed' do
+      let(:config) do
+        [
+          { job: 'first_job_name',  artifacts: true },
+          { job: 'second_job_name', artifacts: false }
+        ]
+      end
+
+      before do
+        needs.compose!
+      end
+
+      describe '#value' do
+        it 'returns key value' do
+          expect(needs.value).to eq(
+            job: [
+              { name: 'first_job_name',  artifacts: true },
+              { name: 'second_job_name', artifacts: false }
+            ]
+          )
+        end
+      end
+
+      it_behaves_like 'entry with descendant nodes'
+    end
+
+    context 'with mixed job entries composed' do
+      let(:config) do
+        [
+          'first_job_name',
+          { job: 'second_job_name', artifacts: false }
+        ]
+      end
+
+      before do
+        needs.compose!
+      end
+
+      describe '#value' do
+        it 'returns key value' do
+          expect(needs.value).to eq(
+            job: [
+              { name: 'first_job_name',  artifacts: true },
+              { name: 'second_job_name', artifacts: false }
+            ]
+          )
+        end
+      end
+
+      it_behaves_like 'entry with descendant nodes'
+    end
+
+    context 'with empty config' do
+      let(:config) do
+        []
+      end
+
+      before do
+        needs.compose!
+      end
+
+      describe '#value' do
+        it 'returns empty value' do
+          expect(needs.value).to eq({})
         end
       end
     end

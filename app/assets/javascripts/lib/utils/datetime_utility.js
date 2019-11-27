@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import _ from 'underscore';
-import timeago from 'timeago.js';
+import * as timeago from 'timeago.js';
 import dateFormat from 'dateformat';
 import { languageCode, s__, __, n__ } from '../../locale';
 
@@ -92,79 +92,71 @@ export const formatDate = (datetime, format = 'mmm d, yyyy h:MMtt Z') => {
  */
 const timeagoLanguageCode = languageCode().replace(/-/g, '_');
 
-let timeagoInstance;
-
 /**
- * Sets a timeago Instance
+ * Registers timeago locales
  */
-export const getTimeago = () => {
-  if (!timeagoInstance) {
-    const memoizedLocaleRemaining = () => {
-      const cache = [];
+const memoizedLocaleRemaining = () => {
+  const cache = [];
 
-      const timeAgoLocaleRemaining = [
-        () => [s__('Timeago|just now'), s__('Timeago|right now')],
-        () => [s__('Timeago|just now'), s__('Timeago|%s seconds remaining')],
-        () => [s__('Timeago|1 minute ago'), s__('Timeago|1 minute remaining')],
-        () => [s__('Timeago|%s minutes ago'), s__('Timeago|%s minutes remaining')],
-        () => [s__('Timeago|1 hour ago'), s__('Timeago|1 hour remaining')],
-        () => [s__('Timeago|%s hours ago'), s__('Timeago|%s hours remaining')],
-        () => [s__('Timeago|1 day ago'), s__('Timeago|1 day remaining')],
-        () => [s__('Timeago|%s days ago'), s__('Timeago|%s days remaining')],
-        () => [s__('Timeago|1 week ago'), s__('Timeago|1 week remaining')],
-        () => [s__('Timeago|%s weeks ago'), s__('Timeago|%s weeks remaining')],
-        () => [s__('Timeago|1 month ago'), s__('Timeago|1 month remaining')],
-        () => [s__('Timeago|%s months ago'), s__('Timeago|%s months remaining')],
-        () => [s__('Timeago|1 year ago'), s__('Timeago|1 year remaining')],
-        () => [s__('Timeago|%s years ago'), s__('Timeago|%s years remaining')],
-      ];
+  const timeAgoLocaleRemaining = [
+    () => [s__('Timeago|just now'), s__('Timeago|right now')],
+    () => [s__('Timeago|just now'), s__('Timeago|%s seconds remaining')],
+    () => [s__('Timeago|1 minute ago'), s__('Timeago|1 minute remaining')],
+    () => [s__('Timeago|%s minutes ago'), s__('Timeago|%s minutes remaining')],
+    () => [s__('Timeago|1 hour ago'), s__('Timeago|1 hour remaining')],
+    () => [s__('Timeago|%s hours ago'), s__('Timeago|%s hours remaining')],
+    () => [s__('Timeago|1 day ago'), s__('Timeago|1 day remaining')],
+    () => [s__('Timeago|%s days ago'), s__('Timeago|%s days remaining')],
+    () => [s__('Timeago|1 week ago'), s__('Timeago|1 week remaining')],
+    () => [s__('Timeago|%s weeks ago'), s__('Timeago|%s weeks remaining')],
+    () => [s__('Timeago|1 month ago'), s__('Timeago|1 month remaining')],
+    () => [s__('Timeago|%s months ago'), s__('Timeago|%s months remaining')],
+    () => [s__('Timeago|1 year ago'), s__('Timeago|1 year remaining')],
+    () => [s__('Timeago|%s years ago'), s__('Timeago|%s years remaining')],
+  ];
 
-      return (number, index) => {
-        if (cache[index]) {
-          return cache[index];
-        }
-        cache[index] = timeAgoLocaleRemaining[index] && timeAgoLocaleRemaining[index]();
-        return cache[index];
-      };
-    };
-
-    const memoizedLocale = () => {
-      const cache = [];
-
-      const timeAgoLocale = [
-        () => [s__('Timeago|just now'), s__('Timeago|right now')],
-        () => [s__('Timeago|just now'), s__('Timeago|in %s seconds')],
-        () => [s__('Timeago|1 minute ago'), s__('Timeago|in 1 minute')],
-        () => [s__('Timeago|%s minutes ago'), s__('Timeago|in %s minutes')],
-        () => [s__('Timeago|1 hour ago'), s__('Timeago|in 1 hour')],
-        () => [s__('Timeago|%s hours ago'), s__('Timeago|in %s hours')],
-        () => [s__('Timeago|1 day ago'), s__('Timeago|in 1 day')],
-        () => [s__('Timeago|%s days ago'), s__('Timeago|in %s days')],
-        () => [s__('Timeago|1 week ago'), s__('Timeago|in 1 week')],
-        () => [s__('Timeago|%s weeks ago'), s__('Timeago|in %s weeks')],
-        () => [s__('Timeago|1 month ago'), s__('Timeago|in 1 month')],
-        () => [s__('Timeago|%s months ago'), s__('Timeago|in %s months')],
-        () => [s__('Timeago|1 year ago'), s__('Timeago|in 1 year')],
-        () => [s__('Timeago|%s years ago'), s__('Timeago|in %s years')],
-      ];
-
-      return (number, index) => {
-        if (cache[index]) {
-          return cache[index];
-        }
-        cache[index] = timeAgoLocale[index] && timeAgoLocale[index]();
-        return cache[index];
-      };
-    };
-
-    timeago.register(timeagoLanguageCode, memoizedLocale());
-    timeago.register(`${timeagoLanguageCode}-remaining`, memoizedLocaleRemaining());
-
-    timeagoInstance = timeago();
-  }
-
-  return timeagoInstance;
+  return (number, index) => {
+    if (cache[index]) {
+      return cache[index];
+    }
+    cache[index] = timeAgoLocaleRemaining[index] && timeAgoLocaleRemaining[index]();
+    return cache[index];
+  };
 };
+
+const memoizedLocale = () => {
+  const cache = [];
+
+  const timeAgoLocale = [
+    () => [s__('Timeago|just now'), s__('Timeago|right now')],
+    () => [s__('Timeago|just now'), s__('Timeago|in %s seconds')],
+    () => [s__('Timeago|1 minute ago'), s__('Timeago|in 1 minute')],
+    () => [s__('Timeago|%s minutes ago'), s__('Timeago|in %s minutes')],
+    () => [s__('Timeago|1 hour ago'), s__('Timeago|in 1 hour')],
+    () => [s__('Timeago|%s hours ago'), s__('Timeago|in %s hours')],
+    () => [s__('Timeago|1 day ago'), s__('Timeago|in 1 day')],
+    () => [s__('Timeago|%s days ago'), s__('Timeago|in %s days')],
+    () => [s__('Timeago|1 week ago'), s__('Timeago|in 1 week')],
+    () => [s__('Timeago|%s weeks ago'), s__('Timeago|in %s weeks')],
+    () => [s__('Timeago|1 month ago'), s__('Timeago|in 1 month')],
+    () => [s__('Timeago|%s months ago'), s__('Timeago|in %s months')],
+    () => [s__('Timeago|1 year ago'), s__('Timeago|in 1 year')],
+    () => [s__('Timeago|%s years ago'), s__('Timeago|in %s years')],
+  ];
+
+  return (number, index) => {
+    if (cache[index]) {
+      return cache[index];
+    }
+    cache[index] = timeAgoLocale[index] && timeAgoLocale[index]();
+    return cache[index];
+  };
+};
+
+timeago.register(timeagoLanguageCode, memoizedLocale());
+timeago.register(`${timeagoLanguageCode}-remaining`, memoizedLocaleRemaining());
+
+export const getTimeago = () => timeago;
 
 /**
  * For the given elements, sets a tooltip with a formatted date.
@@ -172,10 +164,8 @@ export const getTimeago = () => {
  * @param {Boolean} setTimeago
  */
 export const localTimeAgo = ($timeagoEls, setTimeago = true) => {
-  getTimeago();
-
   $timeagoEls.each((i, el) => {
-    $(el).text(timeagoInstance.format($(el).attr('datetime'), timeagoLanguageCode));
+    $(el).text(timeago.format($(el).attr('datetime'), timeagoLanguageCode));
   });
 
   if (!setTimeago) {
@@ -207,9 +197,7 @@ export const timeFor = (time, expiredLabel) => {
   if (new Date(time) < new Date()) {
     return expiredLabel || s__('Timeago|Past due');
   }
-  return getTimeago()
-    .format(time, `${timeagoLanguageCode}-remaining`)
-    .trim();
+  return timeago.format(time, `${timeagoLanguageCode}-remaining`).trim();
 };
 
 export const getDayDifference = (a, b) => {

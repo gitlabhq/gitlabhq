@@ -10,5 +10,6 @@ module Ci
     validates :name, presence: true, length: { maximum: 128 }
 
     scope :scoped_build, -> { where('ci_builds.id=ci_build_needs.build_id') }
+    scope :artifacts, -> { where(artifacts: true) }
   end
 end

@@ -1,0 +1,5 @@
+---
+title: Improve issues search performance on GraphQL
+merge_request: 20784
+author:
+type: performance

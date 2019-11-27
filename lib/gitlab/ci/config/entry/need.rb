@@ -5,9 +5,10 @@ module Gitlab
     class Config
       module Entry
         class Need < ::Gitlab::Config::Entry::Simplifiable
-          strategy :Job, if: -> (config) { config.is_a?(String) }
+          strategy :JobString, if: -> (config) { config.is_a?(String) }
+          strategy :JobHash, if: -> (config) { config.is_a?(Hash) && config.key?(:job) }
 
-          class Job < ::Gitlab::Config::Entry::Node
+          class JobString < ::Gitlab::Config::Entry::Node
             include ::Gitlab::Config::Entry::Validatable
 
             validations do
@@ -20,7 +21,30 @@ module Gitlab
             end
 
             def value
-              { name: @config }
+              { name: @config, artifacts: true }
+            end
+          end
+
+          class JobHash < ::Gitlab::Config::Entry::Node
+            include ::Gitlab::Config::Entry::Validatable
+            include ::Gitlab::Config::Entry::Attributable
+
+            ALLOWED_KEYS = %i[job artifacts].freeze
+            attributes :job, :artifacts
+
+            validations do
+              validates :config, presence: true
+              validates :config, allowed_keys: ALLOWED_KEYS
+              validates :job, type: String, presence: true
+              validates :artifacts, boolean: true, allow_nil: true
+            end
+
+            def type
+              :job
+            end
+
+            def value
+              { name: job, artifacts: artifacts || artifacts.nil? }
             end
           end
 

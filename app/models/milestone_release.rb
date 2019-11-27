@@ -6,9 +6,6 @@ class MilestoneRelease < ApplicationRecord
 
   validate :same_project_between_milestone_and_release
 
-  # Keep until 2019-11-29
-  self.ignored_columns += %i[id]
-
   private
 
   def same_project_between_milestone_and_release

@@ -53,6 +53,7 @@ module Resolvers
       # https://gitlab.com/gitlab-org/gitlab-foss/issues/54520
       args[:project_id] = project.id
       args[:iids] ||= [args[:iid]].compact
+      args[:attempt_project_search_optimizations] = args[:search].present?
 
       IssuesFinder.new(context[:current_user], args).execute
     end

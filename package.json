@@ -116,7 +116,7 @@
     "three": "^0.84.0",
     "three-orbit-controls": "^82.1.0",
     "three-stl-loader": "^1.0.4",
-    "timeago.js": "^3.0.2",
+    "timeago.js": "^4.0.1",
     "tiptap": "^1.8.0",
     "tiptap-commands": "^1.4.0",
     "tiptap-extensions": "^1.8.0",

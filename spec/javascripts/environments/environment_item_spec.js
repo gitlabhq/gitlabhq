@@ -1,4 +1,4 @@
-import 'timeago.js';
+import { format } from 'timeago.js';
 import Vue from 'vue';
 import environmentItemComp from '~/environments/components/environment_item.vue';
 
@@ -139,8 +139,7 @@ describe('Environment item', () => {
       });
 
       it('should render last deployment date', () => {
-        const timeagoInstance = new timeago(); // eslint-disable-line
-        const formatedDate = timeagoInstance.format(environment.last_deployment.deployed_at);
+        const formatedDate = format(environment.last_deployment.deployed_at);
 
         expect(
           component.$el.querySelector('.environment-created-date-timeago').textContent,

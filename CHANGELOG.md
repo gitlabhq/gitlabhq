@@ -4,16 +4,19 @@ entry.
 
 ## 12.5.1
 
-### Security (8 changes)
+### Security (11 changes)
 
-- Check permissions before showing a forked project's source.
+- Do not create todos for approvers without access. !1442
+- Hide commit counts from guest users in Cycle Analytics.
 - Encrypt application setting tokens.
 - Update Workhorse and Gitaly to fix a security issue.
-- Hide commit counts from guest users in Cycle Analytics.
+- Add maven file_name regex validation on incoming files.
+- Check permissions before showing a forked project's source.
 - Limit potential for DNS rebind SSRF in chat notifications.
 - Ensure are cleaned by ImportExport::AttributeCleaner.
 - Remove notes regarding Related Branches from Issue activity feeds for guest users.
 - Escape namespace in label references to prevent XSS.
+- Add authorization to using filter vulnerable in Dependency List.
 
 
 ## 12.5.0
@@ -365,21 +368,6 @@ entry.
 - Dependency Scanning template that doesn't rely on Docker-in-Docker.
 - Adding dropdown arrow icon and updated text alignment.
 - Change selects from default browser style to custom style.
-
-
-## 12.4.4
-
-### Security (9 changes)
-
-- Check permissions before showing a forked project's source.
-- Encrypt application setting tokens.
-- Update Workhorse and Gitaly to fix a security issue.
-- Hide commit counts from guest users in Cycle Analytics.
-- Limit potential for DNS rebind SSRF in chat notifications.
-- Fix 500 error caused by invalid byte sequences in links.
-- Ensure are cleaned by ImportExport::AttributeCleaner.
-- Remove notes regarding Related Branches from Issue activity feeds for guest users.
-- Escape namespace in label references to prevent XSS.
 
 
 ## 12.4.3
@@ -752,17 +740,20 @@ entry.
 
 ## 12.3.7
 
-### Security (9 changes)
+### Security (12 changes)
 
-- Check permissions before showing a forked project's source.
+- Do not create todos for approvers without access. !1442
+- Limit potential for DNS rebind SSRF in chat notifications.
 - Encrypt application setting tokens.
 - Update Workhorse and Gitaly to fix a security issue.
+- Add maven file_name regex validation on incoming files.
 - Hide commit counts from guest users in Cycle Analytics.
-- Limit potential for DNS rebind SSRF in chat notifications.
+- Check permissions before showing a forked project's source.
 - Fix 500 error caused by invalid byte sequences in links.
 - Ensure are cleaned by ImportExport::AttributeCleaner.
 - Remove notes regarding Related Branches from Issue activity feeds for guest users.
 - Escape namespace in label references to prevent XSS.
+- Add authorization to using filter vulnerable in Dependency List.
 
 
 ## 12.3.4

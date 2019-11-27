@@ -1,5 +1,17 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.5.1
+
+### Security (6 changes)
+
+- Protect Jira integration endpoints from guest users.
+- Fix private comment Elasticsearch leak on project search scope.
+- Filter snippet search results by feature visibility.
+- Hide AWS secret on Admin Integration page.
+- Fail pull mirror when mirror user is blocked.
+- Prevent IDOR when adding users to protected environments.
+
+
 ## 12.5.0
 
 ### Security (5 changes)
@@ -222,6 +234,18 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Updated sidebar navigation icons to be horizontally centered when bar is condensed. !16820
 - Pin major version of SAST analyzers. !17110
 - Docs for protected branch code owner approval API. !17132
+
+
+## 12.3.7
+
+### Security (6 changes)
+
+- Protect Jira integration endpoints from guest users.
+- Fix private comment Elasticsearch leak on project search scope.
+- Filter snippet search results by feature visibility.
+- Hide AWS secret on Admin Integration page.
+- Fail pull mirror when mirror user is blocked.
+- Prevent IDOR when adding users to protected environments.
 
 
 ## 12.3.4

@@ -94,7 +94,7 @@ module Gitlab
 
         def on_38(stack) { fg: fg_color_256(stack) } end
 
-        def on_39(_) { fg: fg_color(9) } end
+        def on_39(_) { fg: nil } end
 
         def on_40(_) { bg: bg_color(0) } end
 
@@ -114,8 +114,7 @@ module Gitlab
 
         def on_48(stack) { bg: bg_color_256(stack) } end
 
-        # TODO: all the x9 never get called?
-        def on_49(_) { fg: fg_color(9) } end
+        def on_49(_) { bg: nil } end
 
         def on_90(_) { fg: fg_color(0, 'l') } end
 

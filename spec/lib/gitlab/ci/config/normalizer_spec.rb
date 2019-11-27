@@ -105,7 +105,7 @@ describe Gitlab::Ci::Config::Normalizer do
     context 'for needs' do
       let(:expanded_job_attributes) do
         expanded_job_names.map do |job_name|
-          { name: job_name }
+          { name: job_name, extra: :key }
         end
       end
 
@@ -117,7 +117,7 @@ describe Gitlab::Ci::Config::Normalizer do
               script: 'echo 1',
               needs: {
                 job: [
-                  { name: job_name.to_s }
+                  { name: job_name.to_s, extra: :key }
                 ]
               }
             }
@@ -140,8 +140,8 @@ describe Gitlab::Ci::Config::Normalizer do
               script: 'echo 1',
               needs: {
                 job: [
-                  { name: job_name.to_s },
-                  { name: "other_job" }
+                  { name: job_name.to_s, extra: :key },
+                  { name: "other_job", extra: :key }
                 ]
               }
             }
@@ -153,7 +153,7 @@ describe Gitlab::Ci::Config::Normalizer do
         end
 
         it "includes the regular job in dependencies" do
-          expect(subject.dig(:final_job, :needs, :job)).to include(name: 'other_job')
+          expect(subject.dig(:final_job, :needs, :job)).to include(name: 'other_job', extra: :key)
         end
       end
     end

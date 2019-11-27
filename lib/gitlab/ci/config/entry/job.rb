@@ -51,7 +51,7 @@ module Gitlab
               validates :rules, array_of_hashes: true
             end
 
-            validates :start_in, duration: { limit: '1 day' }, if: :delayed?
+            validates :start_in, duration: { limit: '1 week' }, if: :delayed?
             validates :start_in, absence: true, if: -> { has_rules? || !delayed? }
 
             validate do

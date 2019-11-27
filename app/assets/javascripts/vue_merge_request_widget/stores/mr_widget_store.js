@@ -1,4 +1,4 @@
-import Timeago from 'timeago.js';
+import { format } from 'timeago.js';
 import _ from 'underscore';
 import getStateKey from 'ee_else_ce/vue_merge_request_widget/stores/get_state_key';
 import { stateKey } from './state_maps';
@@ -213,9 +213,7 @@ export default class MergeRequestStore {
       return '';
     }
 
-    const timeagoInstance = new Timeago();
-
-    return timeagoInstance.format(date);
+    return format(date);
   }
 
   static getPreferredAutoMergeStrategy(availableAutoMergeStrategies) {
