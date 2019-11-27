@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'projects/_home_panel' do
+  include ProjectForksHelper
+
   context 'notifications' do
     let(:project) { create(:project) }
 
@@ -139,6 +141,38 @@ describe 'projects/_home_panel' do
         render
 
         expect(rendered).not_to have_content("Project ID: #{project.id}")
+      end
+    end
+  end
+
+  context 'forks' do
+    let(:source_project) { create(:project, :repository) }
+    let(:project) { fork_project(source_project) }
+    let(:user) { create(:user) }
+
+    before do
+      assign(:project, project)
+
+      allow(view).to receive(:current_user).and_return(user)
+    end
+
+    context 'user can read fork source' do
+      it 'shows the forked-from project' do
+        allow(view).to receive(:can?).with(user, :read_project, source_project).and_return(true)
+
+        render
+
+        expect(rendered).to have_content("Forked from #{source_project.full_name}")
+      end
+    end
+
+    context 'user cannot read fork source' do
+      it 'does not show the forked-from project' do
+        allow(view).to receive(:can?).with(user, :read_project, source_project).and_return(false)
+
+        render
+
+        expect(rendered).to have_content("Forked from an inaccessible project")
       end
     end
   end

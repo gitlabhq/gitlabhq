@@ -10,16 +10,18 @@ module ProjectHelpers
       nil
     when :non_member
       create(:user, name: membership)
+    when :admin
+      create(:user, :admin, name: 'admin')
     else
       create(:user, name: membership).tap { |u| target.add_user(u, membership) }
     end
   end
 
   def update_feature_access_level(project, access_level)
-    project.update!(
-      repository_access_level: access_level,
-      merge_requests_access_level: access_level,
-      builds_access_level: access_level
-    )
+    features = ProjectFeature::FEATURES.dup
+    features.delete(:pages)
+    params = features.each_with_object({}) { |feature, h| h["#{feature}_access_level"] = access_level }
+
+    project.update!(params)
   end
 end
