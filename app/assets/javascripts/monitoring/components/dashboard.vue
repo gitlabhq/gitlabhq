@@ -22,8 +22,7 @@ import MonitorTimeSeriesChart from './charts/time_series.vue';
 import MonitorSingleStatChart from './charts/single_stat.vue';
 import GraphGroup from './graph_group.vue';
 import EmptyState from './empty_state.vue';
-import TrackEventDirective from '~/vue_shared/directives/track_event';
-import { getTimeDiff, isValidDate, downloadCSVOptions, generateLinkToChartOptions } from '../utils';
+import { getTimeDiff, isValidDate } from '../utils';
 
 export default {
   components: {
@@ -44,7 +43,6 @@ export default {
   directives: {
     GlModal: GlModalDirective,
     GlTooltip: GlTooltipDirective,
-    TrackEvent: TrackEventDirective,
   },
   props: {
     externalDashboardUrl: {
@@ -300,8 +298,6 @@ export default {
     onDateTimePickerApply(timeWindowUrlParams) {
       return redirectTo(mergeUrlParams(timeWindowUrlParams, window.location.href));
     },
-    downloadCSVOptions,
-    generateLinkToChartOptions,
   },
   addMetric: {
     title: s__('Metrics|Add metric'),

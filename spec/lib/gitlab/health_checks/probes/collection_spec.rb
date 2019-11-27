@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Gitlab::HealthChecks::Probes::Collection do
   let(:readiness) { described_class.new(*checks) }
 
-  describe '#call' do
+  describe '#execute' do
     subject { readiness.execute }
 
     context 'with all checks' do

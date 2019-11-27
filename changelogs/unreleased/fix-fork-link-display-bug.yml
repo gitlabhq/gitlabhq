@@ -1,0 +1,5 @@
+---
+title: Fix a display bug in the fork removal description message
+merge_request: 20843
+author:
+type: fixed

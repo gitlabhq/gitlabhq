@@ -883,6 +883,15 @@ $ide-commit-header-height: 48px;
   margin-right: $ide-tree-padding;
   border-bottom: 1px solid $white-dark;
 
+  svg {
+    color: $gray-700;
+
+    &:focus,
+    &:hover {
+      color: $blue-600;
+    }
+  }
+
   .ide-new-btn {
     margin-left: auto;
   }
@@ -899,6 +908,11 @@ $ide-commit-header-height: 48px;
     .dropdown-menu-toggle {
       svg {
         vertical-align: middle;
+        color: $gray-700;
+
+        &:hover {
+          color: $gray-700;
+        }
       }
 
       &:hover {

@@ -114,8 +114,10 @@ module ProjectsHelper
     source = visible_fork_source(project)
 
     if source
-      _('This will remove the fork relationship between this project and %{fork_source}.') %
+      msg = _('This will remove the fork relationship between this project and %{fork_source}.') %
         { fork_source: link_to(source.full_name, project_path(source)) }
+
+      msg.html_safe
     else
       _('This will remove the fork relationship between this project and other projects in the fork network.')
     end
