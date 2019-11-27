@@ -211,7 +211,7 @@ end
 
 We use the following approach to determine whether a worker is CPU-bound:
 
-- In the sidekiq structured JSON logs, aggregate the worker `duration` and
+- In the Sidekiq structured JSON logs, aggregate the worker `duration` and
   `cpu_s` fields.
 - `duration` refers to the total job execution duration, in seconds
 - `cpu_s` is derived from the

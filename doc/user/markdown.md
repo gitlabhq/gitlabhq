@@ -1,9 +1,9 @@
 # GitLab Markdown
 
-This markdown guide is **valid only for GitLab's internal markdown rendering system for entries and files**.
+This Markdown guide is **valid only for GitLab's internal Markdown rendering system for entries and files**.
 It is **not** valid for the [GitLab documentation website](https://docs.gitlab.com)
 or [GitLab's main website](https://about.gitlab.com), as they both use
-[Kramdown](https://kramdown.gettalong.org) as their markdown engine. The documentation
+[Kramdown](https://kramdown.gettalong.org) as their Markdown engine. The documentation
 website uses an extended Kramdown gem, [GitLab Kramdown](https://gitlab.com/gitlab-org/gitlab_kramdown).
 Consult the [GitLab Kramdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/)
 for a complete Kramdown reference.
@@ -40,7 +40,7 @@ repositories are also processed with CommonMark. As of 11.8, the [Redcarpet Ruby
 has been removed and all issues and comments, including those from pre-11.1, are now processed
 using the [CommonMark Ruby Library](https://github.com/gjtorikian/commonmarker).
 
-The documentation website had its [markdown engine migrated from Redcarpet to Kramdown](https://gitlab.com/gitlab-org/gitlab-docs/merge_requests/108)
+The documentation website had its [Markdown engine migrated from Redcarpet to Kramdown](https://gitlab.com/gitlab-org/gitlab-docs/merge_requests/108)
 in October 2018.
 
 You may have older issues, merge requests, or Markdown documents in your
@@ -71,7 +71,7 @@ the top list item (`C` in this case):
    - milk
 
 NOTE: **Note:** We will flag any significant differences between Redcarpet and CommonMark
-  markdown in this document.
+  Markdown in this document.
 
 If you have a large volume of Markdown files, it can be tedious to determine
 if they will display correctly or not. You can use the
@@ -81,13 +81,13 @@ differences between how RedCarpet and CommonMark render the files. It can give
 an indication if anything needs to be changed - often nothing will need
 to change.
 
-### GFM extends standard markdown
+### GFM extends standard Markdown
 
 GitLab makes full use of the standard (CommonMark) formatting, but also includes additional
 functionality useful for GitLab users.
 
-It makes use of [new markdown features](#new-GFM-markdown-extensions),
-not found in standard markdown:
+It makes use of [new Markdown features](#new-GFM-markdown-extensions),
+not found in standard Markdown:
 
 - [Color "chips" written in HEX, RGB or HSL](#colors)
 - [Diagrams and flowcharts](#diagrams-and-flowcharts)
@@ -97,12 +97,12 @@ not found in standard markdown:
 - [Math equations and symbols written in LaTeX](#math)
 - [Special GitLab references](#special-gitlab-references)
 - [Task Lists](#task-lists)
-- [Wiki specific markdown](#wiki-specific-markdown)
+- [Wiki specific Markdown](#wiki-specific-markdown)
 
-It also has [extended markdown features](#standard-markdown-and-extensions-in-gitlab), without
-changing how standard markdown is used:
+It also has [extended Markdown features](#standard-markdown-and-extensions-in-gitlab), without
+changing how standard Markdown is used:
 
-| Standard markdown                     | Extended markdown in GitLab |
+| Standard Markdown                     | Extended Markdown in GitLab |
 | ------------------------------------- | ------------------------- |
 | [blockquotes](#blockquotes)           | [multiline blockquotes](#multiline-blockquote) |
 | [code blocks](#code-spans-and-blocks) | [colored code and syntax highlighting](#colored-code-and-syntax-highlighting) |
@@ -112,7 +112,7 @@ changing how standard markdown is used:
 | [linebreaks](#line-breaks)            | [more linebreak control](#newlines) |
 | [links](#links)                       | [automatically linking URLs](#url-auto-linking) |
 
-## New GFM markdown extensions
+## New GFM Markdown extensions
 
 ### Colors
 
@@ -263,7 +263,7 @@ this font installed by default.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/23331) in GitLab 11.6.
 
-Front matter is metadata included at the beginning of a markdown document, preceding
+Front matter is metadata included at the beginning of a Markdown document, preceding
 its content. This data can be used by static site generators such as [Jekyll](https://jekyllrb.com/docs/front-matter/),
 [Hugo](https://gohugo.io/content-management/front-matter/), and many other applications.
 
@@ -534,9 +534,9 @@ This snippet links to `<wiki_root>/miscellaneous.md`:
 
 Metric charts can be embedded within GitLab Flavored Markdown. See [Embedding Metrics within GitLab flavored Markdown](../user/project/integrations/prometheus.md#embedding-metric-charts-within-gitlab-flavored-markdown) for more details.
 
-## Standard markdown and extensions in GitLab
+## Standard Markdown and extensions in GitLab
 
-All standard markdown formatting should work as expected within GitLab. Some standard
+All standard Markdown formatting should work as expected within GitLab. Some standard
 functionality is extended with additional features, without affecting the standard usage.
 If a functionality is extended, the new option will be listed as a sub-section.
 
@@ -565,7 +565,7 @@ Quote break.
 
 > If this is not rendered correctly, [view it in GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#multiline-blockquote).
 
-GFM extends the standard markdown standard by also supporting multiline blockquotes
+GFM extends the standard Markdown standard by also supporting multiline blockquotes
 fenced by `>>>`:
 
 ```
@@ -709,7 +709,7 @@ But let's throw in a <b>tag</b>.
 
 ### Emphasis
 
-There are multiple ways to emphasize text in markdown. You can italicize, bold, strikethrough,
+There are multiple ways to emphasize text in Markdown. You can italicize, bold, strikethrough,
 as well as combine these emphasis styles together.
 
 Examples:
@@ -740,8 +740,8 @@ NOTE: **Note:** Strikethrough is not part of the core Markdown standard, but is 
 
 It is not usually useful to italicize just _part_ of a word, especially when you're
 dealing with code and names that often appear with multiple underscores. As a result,
-GFM extends the standard markdown standard by ignoring multiple underlines in words,
-to allow better rendering of markdown documents discussing code:
+GFM extends the standard Markdown standard by ignoring multiple underlines in words,
+to allow better rendering of Markdown documents discussing code:
 
 ```md
 perform_complicated_task
@@ -773,7 +773,7 @@ do*this*and*do*that*and*another thing
 
 ### Footnotes
 
-Footnotes add a link to a note rendered at the end of a markdown file:
+Footnotes add a link to a note rendered at the end of a Markdown file:
 
 ```markdown
 You can add footnotes to your text as follows.[^1]
@@ -806,7 +806,7 @@ Alt-H2
 
 #### Header IDs and links
 
-GFM extends the standard markdown standard so that all Markdown-rendered headers automatically
+GFM extends the standard Markdown standard so that all Markdown-rendered headers automatically
 get IDs, which can be linked to, except in comments.
 
 On hover, a link to those IDs becomes visible to make it easier to copy the link to
@@ -925,7 +925,7 @@ Here's a sample audio clip:
 
 ### Inline HTML
 
-> To see the markdown rendered within HTML in the second example, [view it in GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#inline-html).
+> To see the Markdown rendered within HTML in the second example, [view it in GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#inline-html).
 
 You can also use raw HTML in your Markdown, and it'll usually work pretty well.
 
@@ -953,7 +953,7 @@ class for the list of allowed HTML tags and attributes.  In addition to the defa
 
 ---
 
-It is still possible to use markdown inside HTML tags, but only if the lines containing markdown
+It is still possible to use Markdown inside HTML tags, but only if the lines containing Markdown
 are separated into their own lines:
 
 ```html
@@ -970,7 +970,7 @@ are separated into their own lines:
 </dl>
 ```
 
-<!-- Note: The example below uses HTML to force correct rendering on docs.gitlab.com, markdown will be fine in GitLab -->
+<!-- Note: The example below uses HTML to force correct rendering on docs.gitlab.com, Markdown will be fine in GitLab -->
 
 <dl>
   <dt>Markdown in HTML</dt>
@@ -986,7 +986,7 @@ are separated into their own lines:
 
 #### Details and Summary
 
-> To see the markdown rendered within HTML in the second example, [view it in GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#details-and-summary).
+> To see the Markdown rendered within HTML in the second example, [view it in GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#details-and-summary).
 
 Content can be collapsed using HTML's [`<details>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details)
 and [`<summary>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/summary)
@@ -1034,7 +1034,7 @@ PASTE LOGS HERE
 </details>
 ````
 
-<!-- Note: The example below uses HTML to force correct rendering on docs.gitlab.com, markdown will be fine in GitLab -->
+<!-- Note: The example below uses HTML to force correct rendering on docs.gitlab.com, Markdown will be fine in GitLab -->
 
 <details>
 <summary>Click me to collapse/fold.</summary>
@@ -1075,7 +1075,7 @@ in the *same paragraph*.
 
 #### Newlines
 
-GFM adheres to the markdown specification in how [paragraphs and line breaks are handled](https://spec.commonmark.org/current/).
+GFM adheres to the Markdown specification in how [paragraphs and line breaks are handled](https://spec.commonmark.org/current/).
 
 A paragraph is simply one or more consecutive lines of text, separated by one or
 more blank lines (i.e. two newlines at the end of the first paragraph), as [explained above](#line-breaks).
@@ -1122,7 +1122,7 @@ There are two ways to create links, inline-style and reference-style:
 
 Using header ID anchors:
 
-- This links to [a section on a different markdown page, using a "#" and the header ID](index.md#overview)
+- This links to [a section on a different Markdown page, using a "#" and the header ID](index.md#overview)
 - This links to [a different section on the same page, using a "#" and the header ID](#header-ids-and-links)
 
 Using references:
@@ -1145,7 +1145,7 @@ Some text to show that the reference links can follow later.
 
 Using header ID anchors:
 
-- This links to [a section on a different markdown page, using a "#" and the header ID](index.md#overview)
+- This links to [a section on a different Markdown page, using a "#" and the header ID](index.md#overview)
 - This links to [a different section on the same page, using a "#" and the header ID](#header-ids-and-links)
 
 Using references:
@@ -1163,7 +1163,7 @@ Some text to show that the reference links can follow later.
 NOTE: **Note:** Relative links do not allow the referencing of project files in a wiki
 page, or a wiki page in a project file. The reason for this is that a wiki is always
 in a separate Git repository in GitLab. For example, `[I'm a reference-style link](style)`
-will point the link to `wikis/style` only when the link is inside of a wiki markdown file.
+will point the link to `wikis/style` only when the link is inside of a wiki Markdown file.
 
 #### URL auto-linking
 
@@ -1319,7 +1319,7 @@ Tables aren't part of the core Markdown spec, but they are part of GFM.
 1. The first line contains the headers, separated by "pipes" (`|`).
 1. The second line separates the headers from the cells, and must contain three or more dashes.
 1. The third, and any following lines, contain the cell values.
-   - You **can't** have cells separated over many lines in the markdown, they must be kept to single lines,
+   - You **can't** have cells separated over many lines in the Markdown, they must be kept to single lines,
      but they can be very long. You can also include HTML `<br>` tags to force newlines if needed.
    - The cell sizes **don't** have to match each other. They are flexible, but must be separated
      by pipes (`|`).
@@ -1362,6 +1362,6 @@ to the sides of the "dash" lines in the second row. This will affect every cell 
 
 - This document leveraged heavily from the [Markdown-Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet).
 - The original [Markdown Syntax Guide](https://daringfireball.net/projects/markdown/syntax)
-  at Daring Fireball is an excellent resource for a detailed explanation of standard markdown.
+  at Daring Fireball is an excellent resource for a detailed explanation of standard Markdown.
 - The detailed specification for CommonMark can be found in the [CommonMark Spec](https://spec.commonmark.org/current/)
 - The [CommonMark Dingus](http://try.commonmark.org) is a handy tool for testing CommonMark syntax.

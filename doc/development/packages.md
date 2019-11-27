@@ -90,14 +90,14 @@ model for that package type.
 
 ## File uploads
 
-File uploads should be handled by GitLab workhorse using object accelerated uploads. What this means is that
+File uploads should be handled by GitLab Workhorse using object accelerated uploads. What this means is that
 the workhorse proxy that checks all incoming requests to GitLab will intercept the upload request,
 upload the file, and forward a request to the main GitLab codebase only containing the metadata
 and file location rather than the file itself. An overview of this process can be found in the
 [development documentation](uploads.md#workhorse-object-storage-acceleration).
 
 In terms of code, this means a route will need to be added to the
-[gitlab-workhorse project](https://gitlab.com/gitlab-org/gitlab-workhorse) for each level of remote being added
+[GitLab Workhorse project](https://gitlab.com/gitlab-org/gitlab-workhorse) for each level of remote being added
 (instance, group, project). [This merge request](https://gitlab.com/gitlab-org/gitlab-workhorse/merge_requests/412/diffs)
 demonstrates adding an instance-level endpoint for Conan to workhorse. You can also see the Maven project level endpoint
 implemented in the same file.
@@ -164,7 +164,7 @@ process.
 
 These changes represent all that is needed to deliver a minimally usable package management system.
 
-1. Empty file structure (api file, base service for this package)
+1. Empty file structure (API file, base service for this package)
 1. Authentication system for 'logging in' to the package manager
 1. Identify metadata and create applicable tables
 1. Workhorse route for [object storage accelerated uploads](uploads.md#workhorse-object-storage-acceleration)

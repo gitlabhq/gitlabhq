@@ -1,6 +1,6 @@
 # Pipelines for the GitLab project
 
-Pipelines for `gitlab-org/gitlab` and `gitlab-org/gitlab-foss` (as well as the
+Pipelines for <https://gitlab.com/gitlab-org/gitlab> and <https://gitlab.com/gitlab-org/gitlab-foss> (as well as the
 `dev` instance's mirrors) are configured in the usual
 [`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab-ci.yml)
 which itself includes files under
@@ -15,8 +15,8 @@ as much as possible.
 
 The current stages are:
 
-- `sync`: This stage is used to synchronize changes from gitlab-org/gitlab to
-  gitlab-org/gitlab-foss.
+- `sync`: This stage is used to synchronize changes from <https://gitlab.com/gitlab-org/gitlab> to
+  <https://gitlab.com/gitlab-org/gitlab-foss>.
 - `prepare`: This stage includes jobs that prepare artifacts that are needed by
   jobs in subsequent stages.
 - `quick-test`: This stage includes test jobs that should run first and fail the
@@ -33,7 +33,7 @@ The current stages are:
 - `post-test`: This stage includes jobs that build reports or gather data from
   the previous stages' jobs (e.g. coverage, Knapsack metadata etc.).
 - `pages`: This stage includes a job that deploys the various reports as
-  GitLab pages (e.g. <https://gitlab-org.gitlab.io/gitlab/coverage-ruby/>,
+  GitLab Pages (e.g. <https://gitlab-org.gitlab.io/gitlab/coverage-ruby/>,
   <https://gitlab-org.gitlab.io/gitlab/coverage-javascript/>,
   <https://gitlab-org.gitlab.io/gitlab/webpack-report/>).
 

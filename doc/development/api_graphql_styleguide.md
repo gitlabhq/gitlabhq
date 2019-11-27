@@ -548,7 +548,7 @@ found, we should raise a
 `Gitlab::Graphql::Errors::ResourceNotAvailable` error. Which will be
 correctly rendered to the clients.
 
-## Gitlab's custom scalars
+## GitLab's custom scalars
 
 ### `Types::TimeType`
 

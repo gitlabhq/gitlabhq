@@ -4,8 +4,8 @@ The internal API is used by different GitLab components, it can not be
 used by other consumers. This documentation is intended for people
 working on the GitLab codebase.
 
-This documentation does not yet include the internal api used by
-GitLab pages.
+This documentation does not yet include the internal API used by
+GitLab Pages.
 
 ## Authentication
 
@@ -19,7 +19,7 @@ file, and include the token Base64 encoded in a `secret_token` param
 or in the `Gitlab-Shared-Secret` header.
 
 NOTE: **Note:**
-The internal api used by GitLab pages uses a different kind of
+The internal API used by GitLab Pages uses a different kind of
 authentication.
 
 ## Git Authentication
@@ -119,7 +119,7 @@ curl --request POST --header "Gitlab-Shared-Secret: <Base64 encoded token>" --da
 ## Authorized Keys Check
 
 This endpoint is called by the GitLab-shell authorized keys
-check. Which is called by OpenSSH for [fast ssh key
+check. Which is called by OpenSSH for [fast SSH key
 lookup](../administration/operations/fast_ssh_key_lookup.md).
 
 | Attribute | Type   | Required | Description |
@@ -292,7 +292,7 @@ Example response:
 ## PostReceive
 
 Called from Gitaly after a receiving a push. This triggers the
-`PostReceive`-worker in sidekiq, processes the passed push options and
+`PostReceive`-worker in Sidekiq, processes the passed push options and
 builds the response including messages that need to be displayed to
 the user.
 

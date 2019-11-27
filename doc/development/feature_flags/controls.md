@@ -19,7 +19,7 @@ run:
 ## Where to run commands
 
 To increase visibility, we recommend that GitLab team members run feature flag
-related Chatops commands within certain slack channels based on the environment
+related Chatops commands within certain Slack channels based on the environment
 and related feature. For the [staging](https://staging.gitlab.com)
 and [development](https://dev.gitlab.org) environments of GitLab.com,
 the commands should run in a channel for the stage the feature is relevant too.

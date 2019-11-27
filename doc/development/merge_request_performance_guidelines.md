@@ -75,7 +75,7 @@ data set is for this feature to process, and what problems it might cause.
 If you would think about the following example that puts
 a strong emphasis of data set being processed.
 The problem is simple: you want to filter a list of files from
-some git repository. Your feature requests a list of all files
+some Git repository. Your feature requests a list of all files
 from the repository and perform search for the set of files.
 As an author you should in context of that problem consider
 the following:

@@ -102,7 +102,7 @@ Note that Kramdown-specific markup (e.g., `{:.class}`) will not render properly 
 
 Hard-coded HTML is valid, although it's discouraged to be used while we have `/help`. HTML is permitted as long as:
 
-- There's no equivalent markup in markdown.
+- There's no equivalent markup in Markdown.
 - Advanced tables are necessary.
 - Special styling is required.
 - Reviewed and approved by a technical writer.
@@ -245,7 +245,7 @@ Do not include the same information in multiple places. [Link to a SSOT instead.
 
 ## Text
 
-- [Write in markdown](#markdown).
+- [Write in Markdown](#markdown).
 - Splitting long lines (preferably up to 100 characters) can make it easier to provide feedback on small chunks of text.
 - Insert an empty line for new paragraphs.
 - Use sentence case for titles, headings, labels, menu items, and buttons.
@@ -453,7 +453,7 @@ to mix types, that is also possible, as long as you don't mix items at the same 
 
 ## Quotes
 
-Valid for markdown content only, not for frontmatter entries:
+Valid for Markdown content only, not for frontmatter entries:
 
 - Standard quotes: double quotes (`"`). Example: "This is wrapped in double quotes".
 - Quote within a quote: double quotes (`"`) wrap single quotes (`'`). Example: "I am 'quoting' something within a quote".
@@ -464,7 +464,7 @@ For other punctuation rules, please refer to the
 ## Headings
 
 - Add **only one H1** in each document, by adding `#` at the beginning of
-  it (when using markdown). The `h1` will be the document `<title>`.
+  it (when using Markdown). The `h1` will be the document `<title>`.
 - Start with an `h2` (`##`), and respect the order `h2` > `h3` > `h4` > `h5` > `h6`.
   Never skip the hierarchy level, such as `h2` > `h4`
 - Avoid putting numbers in headings. Numbers shift, hence documentation anchor
@@ -490,7 +490,7 @@ For other punctuation rules, please refer to the
 
 ## Links
 
-- Use inline link markdown markup `[Text](https://example.com)`.
+- Use inline link Markdown markup `[Text](https://example.com)`.
   It's easier to read, review, and maintain. **Do not** use `[Text][identifier]`.
 
 - Use [meaningful anchor texts](https://www.futurehosting.com/blog/links-should-have-meaningful-anchor-text-heres-why/).
@@ -533,7 +533,7 @@ For other punctuation rules, please refer to the
   [issue tags](../../issues/tags.md#stages)
   ```
 
-- Using the markdown extension is necessary for the [`/help`](index.md#gitlab-help)
+- Using the Markdown extension is necessary for the [`/help`](index.md#gitlab-help)
   section of GitLab.
 
 ### Links requiring permissions
@@ -656,7 +656,7 @@ to readers.
 To embed a video, follow the instructions below and make sure
 you have your MR reviewed and approved by a technical writer.
 
-1. Copy the code below and paste it into your markdown file.
+1. Copy the code below and paste it into your Markdown file.
    Leave a blank line above and below it. Do NOT edit the code
    (don't remove or add any spaces, etc).
 1. On YouTube, visit the video URL you want to display. Copy
@@ -694,7 +694,7 @@ This is how it renders on the GitLab Docs site:
 class is necessary to make sure the video is responsive and displays
 nicely on different mobile devices.
 > - The `<div class="video-fallback">` is a fallback necessary for GitLab's
-`/help`, as GitLab's markdown processor does not support iframes. It's hidden on the docs site but will be displayed on GitLab's `/help`.
+`/help`, as GitLab's Markdown processor does not support iframes. It's hidden on the docs site but will be displayed on GitLab's `/help`.
 
 ## Code blocks
 
@@ -725,7 +725,7 @@ nicely on different mobile devices.
   ```
   ~~~
 
-- To display raw markdown instead of rendered markdown, you can use triple backticks
+- To display raw Markdown instead of rendered Markdown, you can use triple backticks
   with `md`, like the `Markdown code` example above, unless you want to include triple
   backticks in the code block as well. In that case, use triple tildes (`~~~`) instead.
 - For a complete reference on code blocks, check the [Kramdown guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/#code-blocks).
@@ -739,7 +739,7 @@ _Note that the alert boxes only work for one paragraph only. Multiple paragraphs
 lists, headers, etc will not render correctly. For multiple lines, use blockquotes instead._
 
 Alert boxes only render on the GitLab Docs site (<https://docs.gitlab.com>).
-Within GitLab itself, they will appear as plain markdown text (like the examples
+Within GitLab itself, they will appear as plain Markdown text (like the examples
 above the rendered versions, below).
 
 ### Note

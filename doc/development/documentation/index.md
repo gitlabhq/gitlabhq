@@ -41,7 +41,7 @@ However, anyone can contribute [documentation improvements](improvement-workflow
 ## Markdown and styles
 
 [GitLab docs](https://gitlab.com/gitlab-org/gitlab-docs) uses [GitLab Kramdown](https://gitlab.com/gitlab-org/gitlab_kramdown)
-as its markdown rendering engine. See the [GitLab Markdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/) for a complete Kramdown reference.
+as its Markdown rendering engine. See the [GitLab Markdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/) for a complete Kramdown reference.
 
 Adhere to the [Documentation Style Guide](styleguide.md). If a style standard is missing, you are welcome to suggest one via a merge request.
 
@@ -449,7 +449,7 @@ A file with `proselint` configuration must be placed in a
 
 #### `markdownlint`
 
-[`markdownlint`](https://github.com/DavidAnson/markdownlint) checks that markdown
+[`markdownlint`](https://github.com/DavidAnson/markdownlint) checks that Markdown
 syntax follows [certain rules](https://github.com/DavidAnson/markdownlint/blob/master/doc/Rules.md#rules),
 and is used by the [`docs-lint` test](#testing) with a [configuration file](#markdownlint-configuration).
 Our [Documentation Style Guide](styleguide.md#markdown) and [Markdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/)

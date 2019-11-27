@@ -367,7 +367,7 @@ If we take a look at the project's main page on the GitLab UI, we can see the st
 build made by GitLab CI/CD.
 
 Time to show the world our green build badge! Navigate to your project's **Settings > CI/CD** and
-expand **General pipelines settings**. Scroll down to **Pipeline status** and copy the markdown code
+expand **General pipelines settings**. Scroll down to **Pipeline status** and copy the Markdown code
 for your badge. Paste it on the top of your `README.md` file, to let people outside of our project
 see if our latest code is running without errors.
 

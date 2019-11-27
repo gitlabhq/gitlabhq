@@ -117,7 +117,7 @@ version and rotates the old one:
    There's a temporary hack for now:
 
    1. Edit `content/404.html`, making sure all offline versions under
-      `content/_data/versions.yaml` are in the Javascript snippet at the end of
+      `content/_data/versions.yaml` are in the JavaScript snippet at the end of
       the document.
 
 1. **Update the `:latest` and `:archives` Docker images:**

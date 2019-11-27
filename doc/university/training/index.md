@@ -5,7 +5,7 @@ type: index
 
 # GitLab Training Material
 
-All GitLab training material is stored in markdown format. Slides are
+All GitLab training material is stored in Markdown format. Slides are
 generated using [Deskset](https://www.deckset.com/).
 
 All training material is open to public contribution.
