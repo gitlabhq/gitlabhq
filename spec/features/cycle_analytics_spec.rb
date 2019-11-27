@@ -112,6 +112,10 @@ describe 'Cycle Analytics', :js do
       wait_for_requests
     end
 
+    it 'does not show the commit stats' do
+      expect(page).to have_no_selector(:xpath, commits_counter_selector)
+    end
+
     it 'needs permissions to see restricted stages' do
       expect(find('.stage-events')).to have_content(issue.title)
 
@@ -127,8 +131,12 @@ describe 'Cycle Analytics', :js do
     find(:xpath, "//p[contains(text(),'New Issue')]/preceding-sibling::h3")
   end
 
+  def commits_counter_selector
+    "//p[contains(text(),'Commits')]/preceding-sibling::h3"
+  end
+
   def commits_counter
-    find(:xpath, "//p[contains(text(),'Commits')]/preceding-sibling::h3")
+    find(:xpath, commits_counter_selector)
   end
 
   def deploys_counter

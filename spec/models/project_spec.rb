@@ -2924,7 +2924,7 @@ describe Project do
   end
 
   describe '#any_lfs_file_locks?', :request_store do
-    set(:project) { create(:project) }
+    let_it_be(:project) { create(:project) }
 
     it 'returns false when there are no LFS file locks' do
       expect(project.any_lfs_file_locks?).to be_falsey
@@ -3411,6 +3411,20 @@ describe Project do
         expect(projects).to eq([public_project])
       end
     end
+
+    context 'min_access_level' do
+      let!(:private_project) { create(:project, :private) }
+
+      before do
+        private_project.add_guest(user)
+      end
+
+      it 'excludes projects when user does not have required minimum access level' do
+        projects = described_class.all.public_or_visible_to_user(user, Gitlab::Access::REPORTER)
+
+        expect(projects).to contain_exactly(public_project)
+      end
+    end
   end
 
   describe '.ids_with_issuables_available_for' do
@@ -3539,7 +3553,7 @@ describe Project do
     include ProjectHelpers
     using RSpec::Parameterized::TableSyntax
 
-    set(:group) { create(:group) }
+    let_it_be(:group) { create(:group) }
     let!(:project) { create(:project, project_level, namespace: group ) }
     let(:user) { create_user_from_membership(project, membership) }
 
@@ -3548,6 +3562,66 @@ describe Project do
 
       where(:project_level, :feature_access_level, :membership, :expected_count) do
         permission_table_for_reporter_feature_access
+      end
+
+      with_them do
+        it "respects visibility" do
+          update_feature_access_level(project, feature_access_level)
+
+          expected_objects = expected_count == 1 ? [project] : []
+
+          expect(
+            described_class.filter_by_feature_visibility(feature, user)
+          ).to eq(expected_objects)
+        end
+      end
+    end
+
+    context 'issues' do
+      let(:feature) { Issue }
+
+      where(:project_level, :feature_access_level, :membership, :expected_count) do
+        permission_table_for_guest_feature_access
+      end
+
+      with_them do
+        it "respects visibility" do
+          update_feature_access_level(project, feature_access_level)
+
+          expected_objects = expected_count == 1 ? [project] : []
+
+          expect(
+            described_class.filter_by_feature_visibility(feature, user)
+          ).to eq(expected_objects)
+        end
+      end
+    end
+
+    context 'wiki' do
+      let(:feature) { :wiki }
+
+      where(:project_level, :feature_access_level, :membership, :expected_count) do
+        permission_table_for_guest_feature_access
+      end
+
+      with_them do
+        it "respects visibility" do
+          update_feature_access_level(project, feature_access_level)
+
+          expected_objects = expected_count == 1 ? [project] : []
+
+          expect(
+            described_class.filter_by_feature_visibility(feature, user)
+          ).to eq(expected_objects)
+        end
+      end
+    end
+
+    context 'code' do
+      let(:feature) { :repository }
+
+      where(:project_level, :feature_access_level, :membership, :expected_count) do
+        permission_table_for_guest_feature_access_and_non_private_project_only
       end
 
       with_them do

@@ -14,7 +14,6 @@ module MicrosoftTeams
         response = Gitlab::HTTP.post(
           @webhook.to_str,
           headers: @header,
-          allow_local_requests: true,
           body: body(options)
         )
 
