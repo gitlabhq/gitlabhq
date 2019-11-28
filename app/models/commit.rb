@@ -464,7 +464,19 @@ class Commit
     "commit:#{sha}"
   end
 
+  def expire_note_etag_cache
+    super
+
+    expire_note_etag_cache_for_related_mrs
+  end
+
   private
+
+  def expire_note_etag_cache_for_related_mrs
+    MergeRequest.includes(target_project: :namespace).by_commit_sha(id).find_each do |mr|
+      mr.expire_note_etag_cache
+    end
+  end
 
   def commit_reference(from, referable_commit_id, full: false)
     reference = project.to_reference(from, full: full)

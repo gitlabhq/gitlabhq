@@ -133,7 +133,7 @@ module Metrics
       def uid_regex
         base_url = @project.grafana_integration.grafana_url.chomp('/')
 
-        %r{(#{Regexp.escape(base_url)}\/d\/(?<uid>\w+)\/)}x
+        %r{^(#{Regexp.escape(base_url)}\/d\/(?<uid>.+)\/)}x
       end
     end
 

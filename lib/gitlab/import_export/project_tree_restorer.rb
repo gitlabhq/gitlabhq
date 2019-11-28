@@ -85,13 +85,16 @@ module Gitlab
         # we do not care if we process array or hash
         data_hashes = [data_hashes] unless data_hashes.is_a?(Array)
 
+        relation_index = 0
+
         # consume and remove objects from memory
         while data_hash = data_hashes.shift
-          process_project_relation_item!(relation_key, relation_definition, data_hash)
+          process_project_relation_item!(relation_key, relation_definition, relation_index, data_hash)
+          relation_index += 1
         end
       end
 
-      def process_project_relation_item!(relation_key, relation_definition, data_hash)
+      def process_project_relation_item!(relation_key, relation_definition, relation_index, data_hash)
         relation_object = build_relation(relation_key, relation_definition, data_hash)
         return unless relation_object
         return if group_model?(relation_object)
@@ -100,6 +103,25 @@ module Gitlab
         relation_object.save!
 
         save_id_mapping(relation_key, data_hash, relation_object)
+      rescue => e
+        # re-raise if not enabled
+        raise e unless Feature.enabled?(:import_graceful_failures, @project.group)
+
+        log_import_failure(relation_key, relation_index, e)
+      end
+
+      def log_import_failure(relation_key, relation_index, exception)
+        Gitlab::Sentry.track_acceptable_exception(exception,
+          extra: { project_id: @project.id, relation_key: relation_key, relation_index: relation_index })
+
+        ImportFailure.create(
+          project: @project,
+          relation_key: relation_key,
+          relation_index: relation_index,
+          exception_class: exception.class.to_s,
+          exception_message: exception.message.truncate(255),
+          correlation_id_value: Labkit::Correlation::CorrelationId.current_id
+        )
       end
 
       # Older, serialized CI pipeline exports may only have a

@@ -7,7 +7,9 @@ module Projects
 
       Project.transaction do
         move_before_destroy_relationships(source_project)
-        destroy_old_project(source_project)
+        # Reset is required in order to get the proper
+        # uncached fork network method calls value.
+        destroy_old_project(source_project.reset)
         rename_project(source_project.name, source_project.path)
 
         @project

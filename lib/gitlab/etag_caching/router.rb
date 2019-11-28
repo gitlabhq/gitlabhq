@@ -23,6 +23,10 @@ module Gitlab
           'issue_notes'
         ),
         Gitlab::EtagCaching::Router::Route.new(
+          %r(#{RESERVED_WORDS_PREFIX}/noteable/merge_request/\d+/notes\z),
+          'merge_request_notes'
+        ),
+        Gitlab::EtagCaching::Router::Route.new(
           %r(#{RESERVED_WORDS_PREFIX}/issues/\d+/realtime_changes\z),
           'issue_title'
         ),

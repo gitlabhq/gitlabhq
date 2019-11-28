@@ -5,7 +5,7 @@
   = image_tag avatar_icon_for_user(snippet.author), class: "avatar s40 d-none d-sm-block", alt: ''
 
   .title
-    = link_to reliable_snippet_path(snippet) do
+    = link_to snippet_path(snippet) do
       = snippet.title
     - if snippet.file_name.present?
       %span.snippet-filename.d-none.d-sm-inline-block.ml-2
@@ -14,7 +14,7 @@
 
     %ul.controls
       %li
-        = link_to reliable_snippet_path(snippet, anchor: 'notes'), class: ('no-comments' if notes_count.zero?) do
+        = link_to snippet_path(snippet, anchor: 'notes'), class: ('no-comments' if notes_count.zero?) do
           = icon('comments')
           = notes_count
       %li

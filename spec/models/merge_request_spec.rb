@@ -33,6 +33,21 @@ describe MergeRequest do
     end
   end
 
+  describe '.from_and_to_forks' do
+    it 'returns only MRs from and to forks (with no internal MRs)' do
+      project = create(:project)
+      fork = fork_project(project)
+      fork_2 = fork_project(project)
+      mr_from_fork = create(:merge_request, source_project: fork, target_project: project)
+      mr_to_fork = create(:merge_request, source_project: project, target_project: fork)
+
+      create(:merge_request, source_project: fork, target_project: fork_2)
+      create(:merge_request, source_project: project, target_project: project)
+
+      expect(described_class.from_and_to_forks(project)).to contain_exactly(mr_from_fork, mr_to_fork)
+    end
+  end
+
   describe 'locking' do
     using RSpec::Parameterized::TableSyntax
 

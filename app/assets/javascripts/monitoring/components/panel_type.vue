@@ -54,10 +54,14 @@ export default {
       return IS_EE && this.prometheusAlertsAvailable && this.alertsEndpoint && this.graphData;
     },
     graphDataHasMetrics() {
-      return this.graphData.queries[0].result.length > 0;
+      return (
+        this.graphData.metrics &&
+        this.graphData.metrics[0].result &&
+        this.graphData.metrics[0].result.length > 0
+      );
     },
     csvText() {
-      const chartData = this.graphData.queries[0].result[0].values;
+      const chartData = this.graphData.metrics[0].result[0].values;
       const yLabel = this.graphData.y_label;
       const header = `timestamp,${yLabel}\r\n`; // eslint-disable-line @gitlab/i18n/no-non-i18n-strings
       return chartData.reduce((csv, data) => {
@@ -112,7 +116,7 @@ export default {
     :graph-data="graphData"
     :deployment-data="deploymentData"
     :project-path="projectPath"
-    :thresholds="getGraphAlertValues(graphData.queries)"
+    :thresholds="getGraphAlertValues(graphData.metrics)"
     group-id="panel-type-chart"
   >
     <div class="d-flex align-items-center">
@@ -120,8 +124,8 @@ export default {
         v-if="alertWidgetAvailable && graphData"
         :modal-id="`alert-modal-${index}`"
         :alerts-endpoint="alertsEndpoint"
-        :relevant-queries="graphData.queries"
-        :alerts-to-manage="getGraphAlerts(graphData.queries)"
+        :relevant-queries="graphData.metrics"
+        :alerts-to-manage="getGraphAlerts(graphData.metrics)"
         @setAlerts="setAlerts"
       />
       <gl-dropdown

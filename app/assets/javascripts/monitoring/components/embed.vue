@@ -37,11 +37,14 @@ export default {
   computed: {
     ...mapState('monitoringDashboard', ['dashboard', 'metricsWithData']),
     charts() {
+      if (!this.dashboard || !this.dashboard.panel_groups) {
+        return [];
+      }
       const groupWithMetrics = this.dashboard.panel_groups.find(group =>
-        group.metrics.find(chart => this.chartHasData(chart)),
-      ) || { metrics: [] };
+        group.panels.find(chart => this.chartHasData(chart)),
+      ) || { panels: [] };
 
-      return groupWithMetrics.metrics.filter(chart => this.chartHasData(chart));
+      return groupWithMetrics.panels.filter(chart => this.chartHasData(chart));
     },
     isSingleChart() {
       return this.charts.length === 1;

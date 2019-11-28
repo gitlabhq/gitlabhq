@@ -11,7 +11,7 @@ describe('Column component', () => {
     columnChart = shallowMount(localVue.extend(ColumnChart), {
       propsData: {
         graphData: {
-          queries: [
+          metrics: [
             {
               x_label: 'Time',
               y_label: 'Usage',

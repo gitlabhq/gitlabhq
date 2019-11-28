@@ -105,7 +105,7 @@ export default {
       // Transforms & supplements query data to render appropriate labels & styles
       // Input: [{ queryAttributes1 }, { queryAttributes2 }]
       // Output: [{ seriesAttributes1 }, { seriesAttributes2 }]
-      return this.graphData.queries.reduce((acc, query) => {
+      return this.graphData.metrics.reduce((acc, query) => {
         const { appearance } = query;
         const lineType =
           appearance && appearance.line && appearance.line.type
@@ -121,7 +121,7 @@ export default {
               ? appearance.area.opacity
               : undefined,
         };
-        const series = makeDataSeries(query.result, {
+        const series = makeDataSeries(query.result || [], {
           name: this.formatLegendLabel(query),
           lineStyle: {
             type: lineType,

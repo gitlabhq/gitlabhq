@@ -105,22 +105,11 @@ export const graphDataPrometheusQuery = {
   metrics: [
     {
       id: 'metric_a1',
-      metric_id: 2,
+      metricId: '2',
       query: 'max(go_memstats_alloc_bytes{job="prometheus"}) by (job) /1024/1024',
       unit: 'MB',
       label: 'Total Consumption',
-      prometheus_endpoint_path:
-        '/root/kubernetes-gke-project/environments/35/prometheus/api/v1/query?query=max%28go_memstats_alloc_bytes%7Bjob%3D%22prometheus%22%7D%29+by+%28job%29+%2F1024%2F1024',
-    },
-  ],
-  queries: [
-    {
-      metricId: null,
-      id: 'metric_a1',
       metric_id: 2,
-      query: 'max(go_memstats_alloc_bytes{job="prometheus"}) by (job) /1024/1024',
-      unit: 'MB',
-      label: 'Total Consumption',
       prometheus_endpoint_path:
         '/root/kubernetes-gke-project/environments/35/prometheus/api/v1/query?query=max%28go_memstats_alloc_bytes%7Bjob%3D%22prometheus%22%7D%29+by+%28job%29+%2F1024%2F1024',
       result: [
@@ -140,24 +129,12 @@ export const graphDataPrometheusQueryRange = {
   metrics: [
     {
       id: 'metric_a1',
-      metric_id: 2,
+      metricId: '2',
       query_range:
         'avg(sum(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}) by (job)) without (job)  /1024/1024/1024',
       unit: 'MB',
       label: 'Total Consumption',
-      prometheus_endpoint_path:
-        '/root/kubernetes-gke-project/environments/35/prometheus/api/v1/query?query=max%28go_memstats_alloc_bytes%7Bjob%3D%22prometheus%22%7D%29+by+%28job%29+%2F1024%2F1024',
-    },
-  ],
-  queries: [
-    {
-      metricId: '10',
-      id: 'metric_a1',
       metric_id: 2,
-      query_range:
-        'avg(sum(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}) by (job)) without (job)  /1024/1024/1024',
-      unit: 'MB',
-      label: 'Total Consumption',
       prometheus_endpoint_path:
         '/root/kubernetes-gke-project/environments/35/prometheus/api/v1/query?query=max%28go_memstats_alloc_bytes%7Bjob%3D%22prometheus%22%7D%29+by+%28job%29+%2F1024%2F1024',
       result: [
@@ -176,8 +153,7 @@ export const graphDataPrometheusQueryRangeMultiTrack = {
   weight: 3,
   x_label: 'Status Code',
   y_label: 'Time',
-  metrics: [],
-  queries: [
+  metrics: [
     {
       metricId: '1',
       id: 'response_metrics_nginx_ingress_throughput_status_code',

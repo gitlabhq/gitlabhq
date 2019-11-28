@@ -40,15 +40,14 @@
 # Any other value will be ignored.
 class SnippetsFinder < UnionFinder
   include FinderMethods
+  include Gitlab::Utils::StrongMemoize
 
-  attr_accessor :current_user, :project, :author, :scope, :explore
+  attr_accessor :current_user, :params
+  delegate :explore, :only_personal, :only_project, :scope, to: :params
 
   def initialize(current_user = nil, params = {})
     @current_user = current_user
-    @project = params[:project]
-    @author = params[:author]
-    @scope = params[:scope].to_s
-    @explore = params[:explore]
+    @params = OpenStruct.new(params)
 
     if project && author
       raise(
@@ -60,8 +59,15 @@ class SnippetsFinder < UnionFinder
   end
 
   def execute
-    base = init_collection
-    base.with_optional_visibility(visibility_from_scope).fresh
+    # The snippet query can be expensive, therefore if the
+    # author or project params have been passed and they don't
+    # exist, it's better to return
+    return Snippet.none if author.nil? && params[:author].present?
+    return Snippet.none if project.nil? && params[:project].present?
+
+    items = init_collection
+    items = by_ids(items)
+    items.with_optional_visibility(visibility_from_scope).fresh
   end
 
   private
@@ -69,10 +75,12 @@ class SnippetsFinder < UnionFinder
   def init_collection
     if explore
       snippets_for_explore
+    elsif only_personal
+      personal_snippets
     elsif project
       snippets_for_a_single_project
     else
-      snippets_for_multiple_projects
+      snippets_for_personal_and_multiple_projects
     end
   end
 
@@ -96,8 +104,9 @@ class SnippetsFinder < UnionFinder
   #
   # Each collection is constructed in isolation, allowing for greater control
   # over the resulting SQL query.
-  def snippets_for_multiple_projects
-    queries = [personal_snippets]
+  def snippets_for_personal_and_multiple_projects
+    queries = []
+    queries << personal_snippets unless only_project
 
     if Ability.allowed?(current_user, :read_cross_project)
       queries << snippets_of_visible_projects
@@ -158,7 +167,7 @@ class SnippetsFinder < UnionFinder
   end
 
   def visibility_from_scope
-    case scope
+    case scope.to_s
     when 'are_private'
       Snippet::PRIVATE
     when 'are_internal'
@@ -167,6 +176,28 @@ class SnippetsFinder < UnionFinder
       Snippet::PUBLIC
     else
       nil
+    end
+  end
+
+  def by_ids(items)
+    return items unless params[:ids].present?
+
+    items.id_in(params[:ids])
+  end
+
+  def author
+    strong_memoize(:author) do
+      next unless params[:author].present?
+
+      params[:author].is_a?(User) ? params[:author] : User.find_by_id(params[:author])
+    end
+  end
+
+  def project
+    strong_memoize(:project) do
+      next unless params[:project].present?
+
+      params[:project].is_a?(Project) ? params[:project] : Project.find_by_id(params[:project])
     end
   end
 end

@@ -59,6 +59,26 @@ describe Gitlab::UrlBuilder do
       end
     end
 
+    context 'when passing a ProjectSnippet' do
+      it 'returns a proper URL' do
+        project_snippet = create(:project_snippet)
+
+        url = described_class.build(project_snippet)
+
+        expect(url).to eq "#{Settings.gitlab['url']}/#{project_snippet.project.full_path}/snippets/#{project_snippet.id}"
+      end
+    end
+
+    context 'when passing a PersonalSnippet' do
+      it 'returns a proper URL' do
+        personal_snippet = create(:personal_snippet)
+
+        url = described_class.build(personal_snippet)
+
+        expect(url).to eq "#{Settings.gitlab['url']}/snippets/#{personal_snippet.id}"
+      end
+    end
+
     context 'when passing a Note' do
       context 'on a Commit' do
         it 'returns a proper URL' do

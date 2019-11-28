@@ -314,32 +314,32 @@ describe('isDateTimePickerInputValid', () => {
 });
 
 describe('graphDataValidatorForAnomalyValues', () => {
-  let oneQuery;
-  let threeQueries;
-  let fourQueries;
+  let oneMetric;
+  let threeMetrics;
+  let fourMetrics;
   beforeEach(() => {
-    oneQuery = graphDataPrometheusQuery;
-    threeQueries = anomalyMockGraphData;
+    oneMetric = graphDataPrometheusQuery;
+    threeMetrics = anomalyMockGraphData;
 
-    const queries = [...threeQueries.queries];
-    queries.push(threeQueries.queries[0]);
-    fourQueries = {
+    const metrics = [...threeMetrics.metrics];
+    metrics.push(threeMetrics.metrics[0]);
+    fourMetrics = {
       ...anomalyMockGraphData,
-      queries,
+      metrics,
     };
   });
   /*
-   * Anomaly charts can accept results for exactly 3 queries,
+   * Anomaly charts can accept results for exactly 3 metrics,
    */
   it('validates passes with the right query format', () => {
-    expect(graphDataValidatorForAnomalyValues(threeQueries)).toBe(true);
+    expect(graphDataValidatorForAnomalyValues(threeMetrics)).toBe(true);
   });
 
   it('validation fails for wrong format, 1 metric', () => {
-    expect(graphDataValidatorForAnomalyValues(oneQuery)).toBe(false);
+    expect(graphDataValidatorForAnomalyValues(oneMetric)).toBe(false);
   });
 
   it('validation fails for wrong format, more than 3 metrics', () => {
-    expect(graphDataValidatorForAnomalyValues(fourQueries)).toBe(false);
+    expect(graphDataValidatorForAnomalyValues(fourMetrics)).toBe(false);
   });
 });
