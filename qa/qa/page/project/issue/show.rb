@@ -157,7 +157,7 @@ module QA
 
           def select_filter_with_text(text)
             retry_on_exception do
-              click_body
+              click_element(:title)
               click_element :discussion_filter
               find_element(:filter_options, text: text).click
             end

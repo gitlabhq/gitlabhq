@@ -98,6 +98,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Remove IIFEs from jira_connect.js file. !19248 (nuwe1)
 
 
+## 12.4.5
+
+- No changes.
+
 ## 12.4.3
 
 ### Fixed (2 changes)

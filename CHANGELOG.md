@@ -370,6 +370,10 @@ entry.
 - Change selects from default browser style to custom style.
 
 
+## 12.4.5
+
+- No changes.
+
 ## 12.4.3
 
 ### Fixed (2 changes)

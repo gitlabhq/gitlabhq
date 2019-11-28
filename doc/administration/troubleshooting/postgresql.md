@@ -58,30 +58,30 @@ This section is for links to information elsewhere in the GitLab documentation.
   - required extension pg_trgm
   - required extension postgres_fdw for Geo
 
-- Errors like this in the `production / Sidekiq` log; see: [Set default_transaction_isolation into read committed](https://docs.gitlab.com/omnibus/settings/database.html#set-default_transaction_isolation-into-read-committed)
+- Errors like this in the `production/sidekiq` log; see: [Set default_transaction_isolation into read committed](https://docs.gitlab.com/omnibus/settings/database.html#set-default_transaction_isolation-into-read-committed):
 
-```
-ActiveRecord::StatementInvalid PG::TRSerializationFailure: ERROR:  could not serialize access due to concurrent update
-```
+  ```plaintext
+  ActiveRecord::StatementInvalid PG::TRSerializationFailure: ERROR:  could not serialize access due to concurrent update
+  ```
 
-- PostgreSQL HA - [replication slot errors](https://docs.gitlab.com/omnibus/settings/database.html#troubleshooting-upgrades-in-an-ha-cluster)
+- PostgreSQL HA - [replication slot errors](https://docs.gitlab.com/omnibus/settings/database.html#troubleshooting-upgrades-in-an-ha-cluster):
 
-```
-pg_basebackup: could not create temporary replication slot "pg_basebackup_12345": ERROR:  all replication slots are in use
-HINT:  Free one or increase max_replication_slots.
-```
+  ```plaintext
+  pg_basebackup: could not create temporary replication slot "pg_basebackup_12345": ERROR:  all replication slots are in use
+  HINT:  Free one or increase max_replication_slots.
+  ```
 
 - GEO [replication errors](../geo/replication/troubleshooting.md#fixing-replication-errors) including:
 
-```
-ERROR: replication slots can only be used if max_replication_slots > 0
+  ```plaintext
+  ERROR: replication slots can only be used if max_replication_slots > 0
 
-FATAL: could not start WAL streaming: ERROR: replication slot “geo_secondary_my_domain_com” does not exist
+  FATAL: could not start WAL streaming: ERROR: replication slot “geo_secondary_my_domain_com” does not exist
 
-Command exceeded allowed execution time
+  Command exceeded allowed execution time
 
-PANIC: could not write to file ‘pg_xlog/xlogtemp.123’: No space left on device
-```
+  PANIC: could not write to file ‘pg_xlog/xlogtemp.123’: No space left on device
+  ```
 
 - [Checking GEO configuration](../geo/replication/troubleshooting.md#checking-configuration) including
   - reconfiguring hosts/ports

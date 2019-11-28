@@ -19,7 +19,7 @@ NOTE: **Note:**
 - Group sync: Once an hour, GitLab will update group membership
   based on LDAP group members.
 
-## Multiple LDAP servers **(STARTER ONLY)**
+## Multiple LDAP servers
 
 With GitLab Enterprise Edition Starter, you can configure multiple LDAP servers
 that your GitLab instance will connect to.

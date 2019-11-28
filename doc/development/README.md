@@ -69,6 +69,7 @@ description: 'Learn how to contribute to GitLab.'
 - [Developing against interacting components or features](interacting_components.md)
 - [File uploads](uploads.md)
 - [Auto DevOps development guide](auto_devops.md)
+- [Cycle Analytics development guide](cycle_analytics.md)
 
 ## Performance guides
 
