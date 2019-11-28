@@ -1,6 +1,20 @@
 import BoardService from '~/boards/services/board_service';
 import boardsStore from '~/boards/stores/boards_store';
 
+export const setMockEndpoints = (opts = {}) => {
+  const boardsEndpoint = opts.boardsEndpoint || '/test/issue-boards/-/boards.json';
+  const listsEndpoint = opts.listsEndpoint || '/test/-/boards/1/lists';
+  const bulkUpdatePath = opts.bulkUpdatePath || '';
+  const boardId = opts.boardId || '1';
+
+  boardsStore.setEndpoints({
+    boardsEndpoint,
+    listsEndpoint,
+    bulkUpdatePath,
+    boardId,
+  });
+};
+
 export const boardObj = {
   id: 1,
   name: 'test',

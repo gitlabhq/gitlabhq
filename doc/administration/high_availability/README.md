@@ -221,7 +221,7 @@ users are, how much automation you use, mirroring, and repo/change size.
 
 ### 5,000 User Configuration
 
-- **Supported Users (approximate):** 50,000
+- **Supported Users (approximate):** 5,000
 - **Test RPS Rates:** API: 100 RPS, Web: 10 RPS, Git: 10 RPS
 - **Status:** Work-in-progress
 - **Known Issues:** For the latest list of known performance issues head

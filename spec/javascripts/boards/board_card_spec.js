@@ -13,7 +13,7 @@ import '~/boards/models/list';
 import store from '~/boards/stores';
 import boardsStore from '~/boards/stores/boards_store';
 import boardCard from '~/boards/components/board_card.vue';
-import { listObj, boardsMockInterceptor, mockBoardService } from './mock_data';
+import { listObj, boardsMockInterceptor, setMockEndpoints } from './mock_data';
 
 describe('Board card', () => {
   let vm;
@@ -22,8 +22,8 @@ describe('Board card', () => {
   beforeEach(done => {
     mock = new MockAdapter(axios);
     mock.onAny().reply(boardsMockInterceptor);
+    setMockEndpoints();
 
-    gl.boardService = mockBoardService();
     boardsStore.create();
     boardsStore.detail.issue = {};
 

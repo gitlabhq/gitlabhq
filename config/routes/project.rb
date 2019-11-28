@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
+# rubocop: disable Cop/PutProjectRoutesUnderScope
 resources :projects, only: [:index, :new, :create]
 
 draw :git_http
 
 get '/projects/:id' => 'projects#resolve'
+# rubocop: enable Cop/PutProjectRoutesUnderScope
 
 constraints(::Constraints::ProjectUrlConstrainer.new) do
   # If the route has a wildcard segment, the segment has a regex constraint,
@@ -209,6 +211,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
       # End of the /-/ scope.
+
+      # All new routes should go under /-/ scope.
+      # Look for scope '-' at the top of the file.
+      # rubocop: disable Cop/PutProjectRoutesUnderScope
 
       #
       # Templates
@@ -522,6 +528,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       draw :wiki
       draw :repository
 
+      # All new routes should go under /-/ scope.
+      # Look for scope '-' at the top of the file.
+      # rubocop: enable Cop/PutProjectRoutesUnderScope
+
       # Legacy routes.
       # Introduced in 12.0.
       # Should be removed with https://gitlab.com/gitlab-org/gitlab/issues/28848.
@@ -533,6 +543,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
                                             :cycle_analytics, :mattermost, :variables, :triggers)
     end
 
+    # rubocop: disable Cop/PutProjectRoutesUnderScope
     resources(:projects,
               path: '/',
               constraints: { id: Gitlab::PathRegex.project_route_regex },
@@ -554,5 +565,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         put :new_issuable_address
       end
     end
+    # rubocop: enable Cop/PutProjectRoutesUnderScope
   end
 end
