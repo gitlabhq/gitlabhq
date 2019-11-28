@@ -3,8 +3,8 @@ import Vuex from 'vuex';
 import { mount, createLocalVue } from '@vue/test-utils';
 import createFlash from '~/flash';
 import Tracking from '~/tracking';
-import collapsibleComponent from '~/registry/components/collapsible_container.vue';
-import * as getters from '~/registry/stores/getters';
+import collapsibleComponent from '~/registry/list/components/collapsible_container.vue';
+import * as getters from '~/registry/list/stores/getters';
 import { repoPropsData } from '../mock_data';
 
 jest.mock('~/flash.js');

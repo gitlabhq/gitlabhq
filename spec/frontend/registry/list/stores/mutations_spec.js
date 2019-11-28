@@ -1,5 +1,5 @@
-import mutations from '~/registry/stores/mutations';
-import * as types from '~/registry/stores/mutation_types';
+import mutations from '~/registry/list/stores/mutations';
+import * as types from '~/registry/list/stores/mutation_types';
 import {
   defaultState,
   reposServerResponse,

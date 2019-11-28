@@ -3,9 +3,9 @@ import Vuex from 'vuex';
 import { mount, createLocalVue } from '@vue/test-utils';
 import createFlash from '~/flash';
 import Tracking from '~/tracking';
-import tableRegistry from '~/registry/components/table_registry.vue';
+import tableRegistry from '~/registry/list/components/table_registry.vue';
 import { repoPropsData } from '../mock_data';
-import * as getters from '~/registry/stores/getters';
+import * as getters from '~/registry/list/stores/getters';
 
 jest.mock('~/flash');
 

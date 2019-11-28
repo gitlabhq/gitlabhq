@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { mount } from '@vue/test-utils';
-import registry from '~/registry/components/app.vue';
-import { TEST_HOST } from '../../helpers/test_constants';
+import registry from '~/registry/list/components/app.vue';
+import { TEST_HOST } from 'helpers/test_constants';
 import { reposServerResponse, parsedReposServerResponse } from '../mock_data';
 
 describe('Registry List', () => {

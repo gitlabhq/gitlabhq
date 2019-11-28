@@ -38,7 +38,7 @@
     "@babel/plugin-syntax-import-meta": "^7.2.0",
     "@babel/preset-env": "^7.6.2",
     "@gitlab/svgs": "^1.82.0",
-    "@gitlab/ui": "7.16.1",
+    "@gitlab/ui": "8.0.1",
     "@gitlab/visual-review-tools": "1.2.0",
     "@sentry/browser": "^5.7.1",
     "@sourcegraph/code-host-integration": "^0.0.14",

@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import projectEmptyState from '~/registry/components/project_empty_state.vue';
+import projectEmptyState from '~/registry/list/components/project_empty_state.vue';
 
 describe('Registry Project Empty state', () => {
   let wrapper;

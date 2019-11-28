@@ -5,7 +5,7 @@ import store from '../stores';
 import CollapsibleContainer from './collapsible_container.vue';
 import ProjectEmptyState from './project_empty_state.vue';
 import GroupEmptyState from './group_empty_state.vue';
-import { s__, sprintf } from '../../locale';
+import { s__, sprintf } from '~/locale';
 
 export default {
   name: 'RegistryListApp',

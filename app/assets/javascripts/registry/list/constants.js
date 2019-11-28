@@ -1,4 +1,4 @@
-import { __ } from '../locale';
+import { __ } from '~/locale';
 
 export const FETCH_REGISTRY_ERROR_MESSAGE = __(
   'Something went wrong while fetching the registry list.',
