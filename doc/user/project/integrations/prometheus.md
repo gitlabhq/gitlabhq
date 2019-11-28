@@ -520,7 +520,7 @@ The sharing dialog within Grafana provides the link, as highlighted below.
 NOTE: **Note:**
 For this embed to display correctly the Grafana instance must be available to the target user, either as a public dashboard or on the same network.
 
-Copy the link and add an image tag as [inline HTML](../../markdown.md#inline-html) in your markdown. You may tweak the query parameters as required. For instance, removing the `&from=` and `&to=` parameters will give you a live chart. Here is example markup for a live chart from GitLab's public dashboard:
+Copy the link and add an image tag as [inline HTML](../../markdown.md#inline-html) in your Markdown. You may tweak the query parameters as required. For instance, removing the `&from=` and `&to=` parameters will give you a live chart. Here is example markup for a live chart from GitLab's public dashboard:
 
 ```html
 <img src="https://dashboards.gitlab.com/render/d-solo/RZmbBr7mk/gitlab-triage?orgId=1&refresh=30s&var-env=gprd&var-environment=gprd&var-prometheus=prometheus-01-inf-gprd&var-prometheus_app=prometheus-app-01-inf-gprd&var-backend=All&var-type=All&var-stage=main&panelId=1247&width=1000&height=300"/>
@@ -534,7 +534,7 @@ This will render like so:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/31376) in GitLab 12.5.
 
-Each project can support integration with one Grafana instance. This configuration allows a user to copy a link to a panel in Grafana, then paste it into a GitLab markdown field. The chart will be rendered in the GitLab chart format.
+Each project can support integration with one Grafana instance. This configuration allows a user to copy a link to a panel in Grafana, then paste it into a GitLab Markdown field. The chart will be rendered in the GitLab chart format.
 
 Prerequisites for embedding from a Grafana instance:
 
@@ -562,7 +562,7 @@ Prerequisites for embedding from a Grafana instance:
 1. If your Prometheus queries use Grafana's custom template variables, ensure that "Template variables" and "Current time range" options are toggled to **On**. Of Grafana global template variables, only `$__interval`, `$__from`, and `$__to` are currently supported.
    ![Grafana Sharing Dialog](img/grafana_sharing_dialog_v12_5.png)
 1. Click **Copy** to copy the URL to the clipboard.
-1. In GitLab, paste the URL into a markdown field and save. The chart will take a few moments to render.
+1. In GitLab, paste the URL into a Markdown field and save. The chart will take a few moments to render.
    ![GitLab Rendered Grafana Panel](img/rendered_grafana_embed_v12_5.png)
 
 ## Troubleshooting

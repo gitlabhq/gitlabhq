@@ -4,6 +4,7 @@ class Deployment < ApplicationRecord
   include AtomicInternalId
   include IidRoutes
   include AfterCommitQueue
+  include UpdatedAtFilterable
 
   belongs_to :project, required: true
   belongs_to :environment, required: true

@@ -1,6 +1,6 @@
 # Invalidate Markdown Cache
 
-For performance reasons, GitLab caches the HTML version of markdown text
+For performance reasons, GitLab caches the HTML version of Markdown text
 (e.g. issue and merge request descriptions, comments). It's possible
 that these cached versions become outdated, for example
 when the `external_url` configuration option is changed - causing links

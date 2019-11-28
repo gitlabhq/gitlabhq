@@ -84,7 +84,7 @@ you can continue with the next step.
 
 1. [Load Balancer(s)](load_balancer.md)[^2]
 1. [Consul](consul.md)
-1. [PostgreSQL](database.md#postgresql-in-a-scaled-environment) with [PGBouncer](https://docs.gitlab.com/ee/administration/high_availability/pgbouncer.html)
+1. [PostgreSQL](database.md#postgresql-in-a-scaled-environment) with [PgBouncer](https://docs.gitlab.com/ee/administration/high_availability/pgbouncer.html)
 1. [Redis](redis.md#redis-in-a-scaled-environment)
 1. [Gitaly](gitaly.md) (recommended) and / or [NFS](nfs.md)[^4]
 1. [GitLab application nodes](gitlab.md)

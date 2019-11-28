@@ -85,7 +85,7 @@ There are two ways to define the URL to be scanned by DAST:
 
 1. Add it in an `environment_url.txt` file at the root of your project.
     This is great for testing in dynamic environments. In order to run DAST against
-    an app that is dynamically created during a Gitlab CI pipeline, have the app
+    an app that is dynamically created during a GitLab CI pipeline, have the app
     persist its domain in an `environment_url.txt` file, and DAST will
     automatically parse that file to find its scan target.
     You can see an [example](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml)
@@ -228,7 +228,7 @@ server {
 ###### Apache
 
 Apache can also be used as a [reverse proxy](https://httpd.apache.org/docs/2.4/mod/mod_proxy.html)
-to add the Gitlab-DAST-Permission [header](https://httpd.apache.org/docs/current/mod/mod_headers.html).
+to add the `Gitlab-DAST-Permission` [header](https://httpd.apache.org/docs/current/mod/mod_headers.html).
 
 To do so, add the following lines to `httpd.conf`:
 

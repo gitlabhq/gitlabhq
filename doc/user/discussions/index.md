@@ -386,7 +386,7 @@ from any device you're logged into.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/18008) in GitLab 11.6.
 
 As a reviewer, you're able to suggest code changes with a simple
-markdown syntax in Merge Request Diff threads. Then, the
+Markdown syntax in Merge Request Diff threads. Then, the
 Merge Request author (or other users with appropriate
 [permission](../permissions.md)) is able to apply these
 suggestions with a click, which will generate a commit in

@@ -152,7 +152,7 @@ SHA. From a project's files page, choose **New tag** from the dropdown.
 
 Give the tag a name such as `v1.0.0`. Choose the branch or SHA from which you
 would like to create this new tag. You can optionally add a message and
-release notes. The release notes section supports markdown format and you can
+release notes. The release notes section supports Markdown format and you can
 also upload an attachment. Click **Create tag** and you will be taken to the tag
 list page.
 

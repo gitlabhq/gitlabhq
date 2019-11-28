@@ -32,7 +32,7 @@ your users to quickly scan the differences between each one you publish.
 
 NOTE: **Note:**
 [Git's tagging messages](https://git-scm.com/book/en/v2/Git-Basics-Tagging) and
-Release descriptions are unrelated. Description supports [markdown](../../markdown.md).
+Release descriptions are unrelated. Description supports [Markdown](../../markdown.md).
 
 ### Release assets
 
@@ -126,7 +126,7 @@ following modal window will be then displayed, from which you can select **New r
 ## Add release notes to Git tags
 
 You can add release notes to any Git tag using the notes feature. Release notes
-behave like any other markdown form in GitLab so you can write text and
+behave like any other Markdown form in GitLab so you can write text and
 drag and drop files to it. Release notes are stored in GitLab's database.
 
 There are several ways to add release notes:

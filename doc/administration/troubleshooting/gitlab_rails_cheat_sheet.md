@@ -923,7 +923,7 @@ queue = Sidekiq::Queue.new('update_merge_requests')
 queue.each { |job| job.delete if job.args[0]==125 and job.args[4]=='ref/heads/my_branch'}
 ```
 
-**Note:** Running jobs will not be killed. Stop sidekiq before doing this, to get all matching jobs.
+**Note:** Running jobs will not be killed. Stop Sidekiq before doing this, to get all matching jobs.
 
 ### Enable debug logging of Sidekiq
 

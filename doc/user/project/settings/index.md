@@ -18,7 +18,7 @@ Adjust your project's name, description, avatar, [default branch](../repository/
 
 ![general project settings](img/general_settings.png)
 
-The project description also partially supports [standard markdown](../../markdown.md#standard-markdown-and-extensions-in-gitlab). You can use [emphasis](../../markdown.md#emphasis), [links](../../markdown.md#links), and [line-breaks](../../markdown.md#line-breaks) to add more context to the project description.
+The project description also partially supports [standard Markdown](../../markdown.md#standard-markdown-and-extensions-in-gitlab). You can use [emphasis](../../markdown.md#emphasis), [links](../../markdown.md#links), and [line-breaks](../../markdown.md#line-breaks) to add more context to the project description.
 
 ### Sharing and permissions
 
