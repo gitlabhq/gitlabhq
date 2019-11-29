@@ -54,7 +54,7 @@ If a project is private or you want to upload an NPM package to GitLab,
 credentials will need to be provided for authentication. Support is available for [OAuth tokens](../../../api/oauth2.md#resource-owner-password-credentials-flow) or [personal access tokens](../../profile/personal_access_tokens.md).
 
 CAUTION: **2FA is only supported with personal access tokens:**
-If you have 2FA enabled, you need to use a [personal access token](../../profile/personal_access_tokens.md) with OAuth headers. Standard OAuth tokens won't be able to authenticate to the GitLab NPM Registry.
+If you have 2FA enabled, you need to use a [personal access token](../../profile/personal_access_tokens.md) with OAuth headers with the scope set to `api`. Standard OAuth tokens won't be able to authenticate to the GitLab NPM Registry.
 
 ### Authenticating with an OAuth token
 

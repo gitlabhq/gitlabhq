@@ -37,7 +37,7 @@ credentials do not work.
 ### Authenticating with a personal access token
 
 To authenticate with a [personal access token](../../profile/personal_access_tokens.md),
-add a corresponding section to your
+set the scope to `api` and add a corresponding section to your
 [`settings.xml`](https://maven.apache.org/settings.html) file:
 
 ```xml

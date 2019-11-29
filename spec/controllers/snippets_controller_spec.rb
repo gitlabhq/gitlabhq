@@ -53,6 +53,16 @@ describe SnippetsController do
 
         expect(response).to have_gitlab_http_status(200)
       end
+
+      context 'when user is not allowed to create a personal snippet' do
+        let(:user) { create(:user, :external) }
+
+        it 'responds with status 404' do
+          get :new
+
+          expect(response).to have_gitlab_http_status(404)
+        end
+      end
     end
 
     context 'when not signed in' do
@@ -213,6 +223,20 @@ describe SnippetsController do
       expect(snippet.title).to eq('Title')
       expect(snippet.content).to eq('Content')
       expect(snippet.description).to eq('Description')
+    end
+
+    context 'when user is not allowed to create a personal snippet' do
+      let(:user) { create(:user, :external) }
+
+      it 'responds with status 404' do
+        aggregate_failures do
+          expect do
+            create_snippet(visibility_level: Snippet::PUBLIC)
+          end.not_to change { Snippet.count }
+
+          expect(response).to have_gitlab_http_status(404)
+        end
+      end
     end
 
     context 'when the snippet description contains a file' do

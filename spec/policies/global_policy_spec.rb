@@ -306,4 +306,22 @@ describe GlobalPolicy do
       it { is_expected.not_to be_allowed(:use_slash_commands) }
     end
   end
+
+  describe 'create_personal_snippet' do
+    context 'when anonymous' do
+      let(:current_user) { nil }
+
+      it { is_expected.not_to be_allowed(:create_personal_snippet) }
+    end
+
+    context 'regular user' do
+      it { is_expected.to be_allowed(:create_personal_snippet) }
+    end
+
+    context 'when external' do
+      let(:current_user) { build(:user, :external) }
+
+      it { is_expected.not_to be_allowed(:create_personal_snippet) }
+    end
+  end
 end

@@ -158,4 +158,21 @@ describe 'Snippet', :js do
 
     subject { visit snippet_path(snippet) }
   end
+
+  context 'when user cannot create snippets' do
+    let(:user) { create(:user, :external) }
+    let(:snippet) { create(:personal_snippet, :public) }
+
+    before do
+      sign_in(user)
+
+      visit snippet_path(snippet)
+
+      wait_for_requests
+    end
+
+    it 'does not show the "New Snippet" button' do
+      expect(page).not_to have_link('New snippet')
+    end
+  end
 end

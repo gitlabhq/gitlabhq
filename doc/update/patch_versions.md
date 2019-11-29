@@ -12,13 +12,7 @@ You can select the tag in the version dropdown in the top left corner of GitLab 
 
 ### 0. Backup
 
-It's useful to make a backup just in case things go south:
-
-```bash
-cd /home/git/gitlab
-
-sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
-```
+It's useful to make a backup just in case things go south. Depending on the installation method, backup commands vary, see the [backing up and restoring GitLab](../raketasks/backup_restore.md#creating-a-backup-of-the-gitlab-system) documentation.
 
 ### 1. Stop server
 
