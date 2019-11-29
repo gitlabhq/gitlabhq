@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :conversational_development_index_metric, class: ConversationalDevelopmentIndex::Metric do
+  factory :dev_ops_score_metric, class: ConversationalDevelopmentIndex::Metric do
     leader_issues { 9.256 }
     instance_issues { 1.234 }
     percentage_issues { 13.331 }

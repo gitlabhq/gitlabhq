@@ -48,7 +48,7 @@ describe 'Conversational Development Index' do
   context 'when there is data to display' do
     it 'shows numbers for each metric' do
       stub_application_setting(usage_ping_enabled: true)
-      create(:conversational_development_index_metric)
+      create(:dev_ops_score_metric)
 
       visit instance_statistics_conversational_development_index_index_path
 
