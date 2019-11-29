@@ -299,11 +299,6 @@ module Ci
       end
     end
 
-    def self.latest_for_shas(shas)
-      max_id_per_sha = for_sha(shas).group(:sha).select("max(id)")
-      where(id: max_id_per_sha)
-    end
-
     def self.latest_successful_ids_per_project
       success.group(:project_id).select('max(id) as id')
     end
