@@ -2250,12 +2250,13 @@ class Project < ApplicationRecord
   # Git objects are only poolable when the project is or has:
   # - Hashed storage -> The object pool will have a remote to its members, using relative paths.
   #                     If the repository path changes we would have to update the remote.
-  # - Public         -> User will be able to fetch Git objects that might not exist
-  #                     in their own repository.
+  # - not private    -> The visibility level or repository access level has to be greater than private
+  #                     to prevent fetching objects that might not exist
   # - Repository     -> Else the disk path will be empty, and there's nothing to pool
   def git_objects_poolable?
     hashed_storage?(:repository) &&
-      public? &&
+      visibility_level > Gitlab::VisibilityLevel::PRIVATE &&
+      repository_access_level > ProjectFeature::PRIVATE &&
       repository_exists? &&
       Gitlab::CurrentSettings.hashed_storage_enabled
   end

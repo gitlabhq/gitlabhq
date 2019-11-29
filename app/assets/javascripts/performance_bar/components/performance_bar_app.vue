@@ -52,6 +52,11 @@ export default {
       header: s__('PerformanceBar|Redis calls'),
       keys: ['cmd'],
     },
+    {
+      metric: 'total',
+      header: s__('PerformanceBar|Frontend resources'),
+      keys: ['name', 'size'],
+    },
   ],
   data() {
     return { currentRequestId: '' };

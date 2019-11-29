@@ -12,6 +12,12 @@
     }
   }
 
+  .file-title-name {
+    &.limited-width {
+      max-width: 80%;
+    }
+  }
+
   .line_content.old::before {
     content: none !important;
   }

@@ -627,7 +627,8 @@ POST /projects/:id/issues
 | `merge_request_to_resolve_discussions_of` | integer        | no       | The IID of a merge request in which to resolve all issues. This will fill the issue with a default description and mark all discussions as resolved. When passing a description or title, these values will take precedence over the default values.|
 | `discussion_to_resolve`                   | string         | no       | The ID of a discussion to resolve. This will fill in the issue with a default description and mark the discussion as resolved. Use in combination with `merge_request_to_resolve_discussions_of`. |
 | `weight` **(STARTER)**                    | integer        | no       | The weight of the issue. Valid values are greater than or equal to 0. |
-| `epic_iid` **(ULTIMATE)** | integer | no | IID of the epic to add the issue to. Valid values are greater than or equal to 0. |
+| `epic_id` **(ULTIMATE)** | integer | no | ID of the epic to add the issue to. Valid values are greater than or equal to 0. |
+| `epic_iid` **(ULTIMATE)** | integer | no | IID of the epic to add the issue to. Valid values are greater than or equal to 0. (deprecated, [will be removed in 13.0](https://gitlab.com/gitlab-org/gitlab/issues/35157)) |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/4/issues?title=Issues%20with%20auth&labels=bug
@@ -729,7 +730,8 @@ PUT /projects/:id/issues/:issue_iid
 | `due_date`     | string  | no       | Date time string in the format YEAR-MONTH-DAY, e.g. `2016-03-11`                                           |
 | `weight` **(STARTER)** | integer | no | The weight of the issue. Valid values are greater than or equal to 0. 0                                                                    |
 | `discussion_locked` | boolean | no  | Flag indicating if the issue's discussion is locked. If the discussion is locked only project members can add or edit comments. |
-| `epic_iid` **(ULTIMATE)** | integer | no | IID of the epic to add the issue to. Valid values are greater than or equal to 0. |
+| `epic_id` **(ULTIMATE)** | integer | no | ID of the epic to add the issue to. Valid values are greater than or equal to 0. |
+| `epic_iid` **(ULTIMATE)** | integer | no | IID of the epic to add the issue to. Valid values are greater than or equal to 0. (deprecated, [will be removed in 13.0](https://gitlab.com/gitlab-org/gitlab/issues/35157)) |
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/4/issues/85?state_event=close

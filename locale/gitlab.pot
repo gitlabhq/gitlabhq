@@ -5272,10 +5272,19 @@ msgstr ""
 msgid "CycleAnalytics|All stages"
 msgstr ""
 
+msgid "CycleAnalytics|Date"
+msgstr ""
+
+msgid "CycleAnalytics|Days to completion"
+msgstr ""
+
 msgid "CycleAnalytics|No stages selected"
 msgstr ""
 
 msgid "CycleAnalytics|Stages"
+msgstr ""
+
+msgid "CycleAnalytics|Total days to completion"
 msgstr ""
 
 msgid "CycleAnalytics|group dropdown filter"
@@ -12269,6 +12278,9 @@ msgstr ""
 msgid "PerformanceBar|Download"
 msgstr ""
 
+msgid "PerformanceBar|Frontend resources"
+msgstr ""
+
 msgid "PerformanceBar|Gitaly calls"
 msgstr ""
 
@@ -17642,6 +17654,9 @@ msgstr ""
 msgid "There was an error while fetching cycle analytics data."
 msgstr ""
 
+msgid "There was an error while fetching cycle analytics duration data."
+msgstr ""
+
 msgid "There was an error while fetching cycle analytics summary data."
 msgstr ""
 
@@ -20374,6 +20389,9 @@ msgstr ""
 msgid "assign yourself"
 msgstr ""
 
+msgid "at line %{errorLine}%{errorColumn}"
+msgstr ""
+
 msgid "attach a new file"
 msgstr ""
 
@@ -20852,6 +20870,9 @@ msgid "import flow"
 msgstr ""
 
 msgid "importing"
+msgstr ""
+
+msgid "in %{errorFn} "
 msgstr ""
 
 msgid "in group %{link_to_group}"

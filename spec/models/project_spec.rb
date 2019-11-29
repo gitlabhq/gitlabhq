@@ -5088,10 +5088,22 @@ describe Project do
       it { is_expected.not_to be_git_objects_poolable }
     end
 
-    context 'when the project is not public' do
+    context 'when the project is private' do
       let(:project) { create(:project, :private) }
 
       it { is_expected.not_to be_git_objects_poolable }
+    end
+
+    context 'when the project is public' do
+      let(:project) { create(:project, :repository, :public) }
+
+      it { is_expected.to be_git_objects_poolable }
+    end
+
+    context 'when the project is internal' do
+      let(:project) { create(:project, :repository, :internal) }
+
+      it { is_expected.to be_git_objects_poolable }
     end
 
     context 'when objects are poolable' do

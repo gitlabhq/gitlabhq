@@ -111,7 +111,7 @@ are as follows:
   contents of the pool repository are a Git clone of the source
   project repository.
 - The occasion for creating a pool is when an existing eligible
-  (public, hashed storage, non-forked) GitLab project gets forked and
+  (non-private, hashed storage, non-forked) GitLab project gets forked and
   this project does not belong to a pool repository yet. The fork
   parent project becomes the source project of the new pool, and both
   the fork parent and the fork child project become members of the new

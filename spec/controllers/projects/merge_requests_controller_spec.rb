@@ -1226,9 +1226,9 @@ describe Projects::MergeRequestsController do
         environment2 = create(:environment, project: forked)
         create(:deployment, :succeed, environment: environment2, sha: sha, ref: 'master', deployable: build)
 
-        # TODO address the last 5 queries
-        # See https://gitlab.com/gitlab-org/gitlab-foss/issues/63952 (5 queries)
-        leeway = 5
+        # TODO address the last 3 queries
+        # See https://gitlab.com/gitlab-org/gitlab-foss/issues/63952 (3 queries)
+        leeway = 3
         expect { get_ci_environments_status }.not_to exceed_all_query_limit(control_count + leeway)
       end
     end

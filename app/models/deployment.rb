@@ -5,6 +5,7 @@ class Deployment < ApplicationRecord
   include IidRoutes
   include AfterCommitQueue
   include UpdatedAtFilterable
+  include Gitlab::Utils::StrongMemoize
 
   belongs_to :project, required: true
   belongs_to :environment, required: true
@@ -124,6 +125,12 @@ class Deployment < ApplicationRecord
 
   def scheduled_actions
     @scheduled_actions ||= deployable.try(:other_scheduled_actions)
+  end
+
+  def playable_build
+    strong_memoize(:playable_build) do
+      deployable.try(:playable?) ? deployable : nil
+    end
   end
 
   def includes_commit?(commit)

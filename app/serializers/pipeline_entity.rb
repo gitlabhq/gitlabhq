@@ -77,6 +77,10 @@ class PipelineEntity < Grape::Entity
     cancel_project_pipeline_path(pipeline.project, pipeline)
   end
 
+  expose :failed_builds, if: -> (*) { can_retry? }, using: JobEntity do |pipeline|
+    pipeline.builds.failed
+  end
+
   private
 
   alias_method :pipeline, :object

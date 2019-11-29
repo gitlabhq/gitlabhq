@@ -42,4 +42,21 @@ describe('PerformanceBarStore', () => {
       expect(findUrl('id')).toEqual('html5-boilerplate');
     });
   });
+
+  describe('setRequestDetailsData', () => {
+    let store;
+
+    beforeEach(() => {
+      store = new PerformanceBarStore();
+    });
+
+    it('updates correctly specific details', () => {
+      store.addRequest('id', 'https://gitlab.com/');
+      store.setRequestDetailsData('id', 'test', {
+        calls: 123,
+      });
+
+      expect(store.findRequest('id').details.test.calls).toEqual(123);
+    });
+  });
 });

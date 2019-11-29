@@ -17,11 +17,11 @@ module Clusters
       include ::Clusters::Concerns::ApplicationData
       include AfterCommitQueue
 
+      alias_method :original_set_initial_status, :set_initial_status
       def set_initial_status
-        return unless not_installable?
-        return unless verify_cluster?
+        return unless cluster&.platform_kubernetes_rbac?
 
-        self.status = status_states[:installable]
+        original_set_initial_status
       end
 
       state_machine :status do
@@ -130,10 +130,6 @@ module Clusters
         return [] unless cluster.application_prometheus_available?
 
         [Gitlab::Kubernetes::KubectlCmd.delete("--ignore-not-found", "-f", METRICS_CONFIG)]
-      end
-
-      def verify_cluster?
-        cluster&.application_helm_available? && cluster&.platform_kubernetes_rbac?
       end
     end
   end
