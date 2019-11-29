@@ -139,6 +139,8 @@ merge_requests:
 - blocking_merge_requests
 - blocked_merge_requests
 - description_versions
+- deployment_merge_requests
+- deployments
 external_pull_requests:
 - project
 merge_request_diff:

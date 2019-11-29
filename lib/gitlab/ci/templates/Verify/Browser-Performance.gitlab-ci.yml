@@ -11,7 +11,7 @@ performance:
   image: docker:git
   variables:
     URL: https://example.com
-    SITESPEED_VERSION: 6.3.1
+    SITESPEED_VERSION: 11.2.0
     SITESPEED_OPTIONS: ''
   services:
     - docker:stable-dind

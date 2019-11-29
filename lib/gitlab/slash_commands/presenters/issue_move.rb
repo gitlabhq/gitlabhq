@@ -19,30 +19,15 @@ module Gitlab
         private
 
         def moved_issue(old_issue)
-          {
-            attachments: [
-              {
-                title:        "#{@resource.title} · #{@resource.to_reference}",
-                title_link:   resource_url,
-                author_name:  author.name,
-                author_icon:  author.avatar_url,
-                fallback:     "Issue #{@resource.to_reference}: #{@resource.title}",
-                pretext:      pretext(old_issue),
-                color:        color(@resource),
-                fields:       fields,
-                mrkdwn_in: [
-                  :title,
-                  :pretext,
-                  :text,
-                  :fields
-                ]
-              }
-            ]
-          }
+          response_message(custom_pretext: custom_pretext(old_issue))
         end
 
-        def pretext(old_issue)
-          "Moved issue *#{issue_link(old_issue)}* to *#{issue_link(@resource)}*"
+        def fallback_message
+          "Issue #{issue.to_reference}: #{issue.title}"
+        end
+
+        def custom_pretext(old_issue)
+          "Moved issue *#{issue_link(old_issue)}* to *#{issue_link(issue)}*"
         end
 
         def issue_link(issue)

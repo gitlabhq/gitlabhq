@@ -73,6 +73,14 @@ class MergeRequest < ApplicationRecord
   has_many :merge_request_assignees
   has_many :assignees, class_name: "User", through: :merge_request_assignees
 
+  has_many :deployment_merge_requests
+
+  # These are deployments created after the merge request has been merged, and
+  # the merge request was tracked explicitly (instead of implicitly using a CI
+  # build).
+  has_many :deployments,
+    through: :deployment_merge_requests
+
   KNOWN_MERGE_PARAMS = [
     :auto_merge_strategy,
     :should_remove_source_branch,
@@ -1473,6 +1481,10 @@ class MergeRequest < ApplicationRecord
 
   def etag_caching_enabled?
     true
+  end
+
+  def recent_visible_deployments
+    deployments.visible.includes(:environment).order(id: :desc).limit(10)
   end
 
   private

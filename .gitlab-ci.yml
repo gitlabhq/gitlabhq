@@ -5,10 +5,11 @@ stages:
   - prepare
   - quick-test
   - test
+  - post-test
   - review-prepare
   - review
   - qa
-  - post-test
+  - post-qa
   - notification
   - pages
 

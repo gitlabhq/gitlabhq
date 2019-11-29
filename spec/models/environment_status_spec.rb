@@ -92,6 +92,84 @@ describe EnvironmentStatus do
     end
   end
 
+  describe '.for_deployed_merge_request' do
+    context 'when a merge request has no explicitly linked deployments' do
+      it 'returns the statuses based on the CI pipelines' do
+        mr = create(:merge_request, :merged)
+
+        expect(described_class)
+          .to receive(:after_merge_request)
+          .with(mr, mr.author)
+          .and_return([])
+
+        statuses = described_class.for_deployed_merge_request(mr, mr.author)
+
+        expect(statuses).to eq([])
+      end
+    end
+
+    context 'when a merge request has explicitly linked deployments' do
+      let(:merge_request) { create(:merge_request, :merged) }
+
+      let(:environment) do
+        create(:environment, project: merge_request.target_project)
+      end
+
+      it 'returns the statuses based on the linked deployments' do
+        deploy = create(
+          :deployment,
+          :success,
+          project: merge_request.target_project,
+          environment: environment,
+          deployable: nil
+        )
+
+        deploy.link_merge_requests(merge_request.target_project.merge_requests)
+
+        statuses = described_class
+          .for_deployed_merge_request(merge_request, merge_request.author)
+
+        expect(statuses.length).to eq(1)
+        expect(statuses[0].environment).to eq(environment)
+        expect(statuses[0].merge_request).to eq(merge_request)
+      end
+
+      it 'excludes environments the user can not see' do
+        deploy = create(
+          :deployment,
+          :success,
+          project: merge_request.target_project,
+          environment: environment,
+          deployable: nil
+        )
+
+        deploy.link_merge_requests(merge_request.target_project.merge_requests)
+
+        statuses = described_class
+          .for_deployed_merge_request(merge_request, create(:user))
+
+        expect(statuses).to be_empty
+      end
+
+      it 'excludes deployments that have the status "created"' do
+        deploy = create(
+          :deployment,
+          :created,
+          project: merge_request.target_project,
+          environment: environment,
+          deployable: nil
+        )
+
+        deploy.link_merge_requests(merge_request.target_project.merge_requests)
+
+        statuses = described_class
+          .for_deployed_merge_request(merge_request, merge_request.author)
+
+        expect(statuses).to be_empty
+      end
+    end
+  end
+
   describe '.build_environments_status' do
     subject { described_class.send(:build_environments_status, merge_request, user, pipeline) }
 

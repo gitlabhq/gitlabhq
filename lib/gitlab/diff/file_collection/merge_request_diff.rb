@@ -4,12 +4,16 @@ module Gitlab
   module Diff
     module FileCollection
       class MergeRequestDiff < MergeRequestDiffBase
+        include Gitlab::Utils::StrongMemoize
+
         def diff_files
-          diff_files = super
+          strong_memoize(:diff_files) do
+            diff_files = super
 
-          diff_files.each { |diff_file| cache.decorate(diff_file) }
+            diff_files.each { |diff_file| cache.decorate(diff_file) }
 
-          diff_files
+            diff_files
+          end
         end
 
         override :write_cache

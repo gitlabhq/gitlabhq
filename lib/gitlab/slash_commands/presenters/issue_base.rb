@@ -42,17 +42,11 @@ module Gitlab
           ]
         end
 
-        def project_link
-          "[#{project.full_name}](#{project.web_url})"
-        end
-
-        def author_profile_link
-          "[#{author.to_reference}](#{url_for(author)})"
-        end
-
         private
 
         attr_reader :resource
+
+        alias_method :issue, :resource
       end
     end
   end

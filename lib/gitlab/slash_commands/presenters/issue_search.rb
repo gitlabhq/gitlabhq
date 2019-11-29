@@ -7,12 +7,12 @@ module Gitlab
         include Presenters::IssueBase
 
         def present
-          text = if @resource.count >= 5
+          text = if resource.count >= 5
                    "Here are the first 5 issues I found:"
-                 elsif @resource.one?
+                 elsif resource.one?
                    "Here is the only issue I found:"
                  else
-                   "Here are the #{@resource.count} issues I found:"
+                   "Here are the #{resource.count} issues I found:"
                  end
 
           ephemeral_response(text: text, attachments: attachments)
@@ -21,7 +21,7 @@ module Gitlab
         private
 
         def attachments
-          @resource.map do |issue|
+          resource.map do |issue|
             url = "[#{issue.to_reference}](#{url_for([namespace, project, issue])})"
 
             {
@@ -37,7 +37,7 @@ module Gitlab
         end
 
         def project
-          @project ||= @resource.first.project
+          @project ||= resource.first.project
         end
 
         def namespace

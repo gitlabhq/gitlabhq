@@ -2399,7 +2399,40 @@ describe Repository do
   end
 
   describe '#ancestor? with Gitaly enabled' do
-    it_behaves_like "#ancestor?"
+    let(:commit) { repository.commit }
+    let(:ancestor) { commit.parents.first }
+    let(:cache_key) { "ancestor:#{ancestor.id}:#{commit.id}" }
+
+    it_behaves_like '#ancestor?'
+
+    context 'caching', :request_store, :clean_gitlab_redis_cache do
+      it 'only calls out to Gitaly once' do
+        expect(repository.raw_repository).to receive(:ancestor?).once
+
+        2.times { repository.ancestor?(commit.id, ancestor.id) }
+      end
+
+      it 'increments a counter with cache hits' do
+        counter = Gitlab::Metrics.counter(:repository_ancestor_calls_total, 'Repository ancestor calls')
+
+        expect do
+          2.times { repository.ancestor?(commit.id, ancestor.id) }
+        end.to change { counter.get(cache_hit: 'true') }.by(1)
+                 .and change { counter.get(cache_hit: 'false') }.by(1)
+      end
+
+      it 'returns the value from the request store' do
+        repository.__send__(:request_store_cache).write(cache_key, "it's apparent")
+
+        expect(repository.ancestor?(ancestor.id, commit.id)).to eq("it's apparent")
+      end
+
+      it 'returns the value from the redis cache' do
+        expect(repository.__send__(:cache)).to receive(:fetch).with(cache_key).and_return("it's apparent")
+
+        expect(repository.ancestor?(ancestor.id, commit.id)).to eq("it's apparent")
+      end
+    end
   end
 
   describe '#ancestor? with Rugged enabled', :enable_rugged do

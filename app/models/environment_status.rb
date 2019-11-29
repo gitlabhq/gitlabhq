@@ -20,6 +20,28 @@ class EnvironmentStatus
     build_environments_status(mr, user, mr.merge_pipeline)
   end
 
+  def self.for_deployed_merge_request(mr, user)
+    statuses = []
+
+    mr.recent_visible_deployments.each do |deploy|
+      env = deploy.environment
+
+      next unless Ability.allowed?(user, :read_environment, env)
+
+      statuses <<
+        EnvironmentStatus.new(deploy.project, env, mr, deploy.sha)
+    end
+
+    # Existing projects that used deployments prior to the introduction of
+    # explicitly linked merge requests won't have any data using this new
+    # approach, so we fall back to retrieving deployments based on CI pipelines.
+    if statuses.any?
+      statuses
+    else
+      after_merge_request(mr, user)
+    end
+  end
+
   def initialize(project, environment, merge_request, sha)
     @project = project
     @environment = environment
