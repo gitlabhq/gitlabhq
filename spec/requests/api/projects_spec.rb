@@ -570,6 +570,87 @@ describe API::Projects do
         let(:projects) { Project.all }
       end
     end
+
+    context 'with keyset pagination' do
+      let(:current_user) { user }
+      let(:projects) { [public_project, project, project2, project3] }
+
+      context 'headers and records' do
+        let(:params) { { pagination: 'keyset', order_by: :id, sort: :asc, per_page: 1 } }
+
+        it 'includes a pagination header with link to the next page' do
+          get api('/projects', current_user), params: params
+
+          expect(response.header).to include('Links')
+          expect(response.header['Links']).to include('pagination=keyset')
+          expect(response.header['Links']).to include("id_after=#{public_project.id}")
+        end
+
+        it 'contains only the first project with per_page = 1' do
+          get api('/projects', current_user), params: params
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response).to be_an Array
+          expect(json_response.map { |p| p['id'] }).to contain_exactly(public_project.id)
+        end
+
+        it 'does not include a link if the end has reached and there is no more data' do
+          get api('/projects', current_user), params: params.merge(id_after: project2.id)
+
+          expect(response.header).not_to include('Links')
+        end
+
+        it 'responds with 501 if order_by is different from id' do
+          get api('/projects', current_user), params: params.merge(order_by: :created_at)
+
+          expect(response).to have_gitlab_http_status(501)
+        end
+      end
+
+      context 'with descending sorting' do
+        let(:params) { { pagination: 'keyset', order_by: :id, sort: :desc, per_page: 1 } }
+
+        it 'includes a pagination header with link to the next page' do
+          get api('/projects', current_user), params: params
+
+          expect(response.header).to include('Links')
+          expect(response.header['Links']).to include('pagination=keyset')
+          expect(response.header['Links']).to include("id_before=#{project3.id}")
+        end
+
+        it 'contains only the last project with per_page = 1' do
+          get api('/projects', current_user), params: params
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response).to be_an Array
+          expect(json_response.map { |p| p['id'] }).to contain_exactly(project3.id)
+        end
+      end
+
+      context 'retrieving the full relation' do
+        let(:params) { { pagination: 'keyset', order_by: :id, sort: :desc, per_page: 2 } }
+
+        it 'returns all projects' do
+          url = '/projects'
+          requests = 0
+          ids = []
+
+          while url && requests <= 5 # circuit breaker
+            requests += 1
+            get api(url, current_user), params: params
+
+            links = response.header['Links']
+            url = links&.match(/<[^>]+(\/projects\?[^>]+)>; rel="next"/) do |match|
+              match[1]
+            end
+
+            ids += JSON.parse(response.body).map { |p| p['id'] }
+          end
+
+          expect(ids).to contain_exactly(*projects.map(&:id))
+        end
+      end
+    end
   end
 
   describe 'POST /projects' do

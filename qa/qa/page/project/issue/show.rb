@@ -44,6 +44,7 @@ module QA
           end
 
           view 'app/views/shared/issuable/_close_reopen_button.html.haml' do
+            element :close_issue_button
             element :reopen_issue_button
           end
 
@@ -82,6 +83,10 @@ module QA
 
           def click_remove_related_issue_button
             click_element(:remove_related_issue_button)
+          end
+
+          def click_close_issue_button
+            click_element :close_issue_button
           end
 
           # Adds a comment to an issue

@@ -155,7 +155,7 @@ export default {
           {{ cherryPickLabel }}
         </a>
       </div>
-      <section class="mr-info-list">
+      <section class="mr-info-list" data-qa-selector="merged_status_content">
         <p>
           {{ s__('mrWidget|The changes were merged into') }}
           <span class="label-branch">

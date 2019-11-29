@@ -175,6 +175,7 @@ describe Feature do
       let(:flag) { :some_feature_flag }
 
       before do
+        stub_feature_flags(Gitlab::Marginalia::MARGINALIA_FEATURE_FLAG => false)
         described_class.flipper.memoize = false
         described_class.enabled?(flag)
       end

@@ -6,7 +6,7 @@
 - if is_current_user
   - if can_update
     = link_to "Close #{display_issuable_type}", close_issuable_path(issuable), method: button_method,
-              class: "d-none d-sm-none d-md-block btn btn-grouped btn-close js-btn-issue-action #{issuable_button_visibility(issuable, true)}", title: "Close #{display_issuable_type}"
+              class: "d-none d-sm-none d-md-block btn btn-grouped btn-close js-btn-issue-action #{issuable_button_visibility(issuable, true)}", title: "Close #{display_issuable_type}", data: { qa_selector: 'close_issue_button' }
   - if can_reopen
     = link_to "Reopen #{display_issuable_type}", reopen_issuable_path(issuable), method: button_method,
               class: "d-none d-sm-none d-md-block btn btn-grouped btn-reopen js-btn-issue-action #{issuable_button_visibility(issuable, false)}", title: "Reopen #{display_issuable_type}", data: { qa_selector: 'reopen_issue_button' }
