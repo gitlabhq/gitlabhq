@@ -73,8 +73,8 @@ describe Ci::PersistentRef do
         pipeline.persistent_ref.create
       end
 
-      it 'does not create a persistent ref' do
-        expect(project.repository).not_to receive(:create_ref)
+      it 'overwrites a persistent ref' do
+        expect(project.repository).to receive(:create_ref).and_call_original
 
         subject
       end

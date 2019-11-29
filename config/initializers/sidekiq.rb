@@ -118,8 +118,5 @@ end
 Sidekiq.configure_client do |config|
   config.redis = queues_config_hash
 
-  config.client_middleware do |chain|
-    chain.add Gitlab::SidekiqMiddleware::CorrelationInjector
-    chain.add Gitlab::SidekiqStatus::ClientMiddleware
-  end
+  config.client_middleware(&Gitlab::SidekiqMiddleware.client_configurator)
 end

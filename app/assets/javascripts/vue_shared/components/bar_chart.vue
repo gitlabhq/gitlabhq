@@ -55,13 +55,13 @@ export default {
       vbWidth: 0,
       vbHeight: 0,
       vpWidth: 0,
-      vpHeight: 350,
-      preserveAspectRatioType: 'xMidYMid meet',
+      vpHeight: 200,
+      preserveAspectRatioType: 'xMidYMin meet',
       containerMargin: {
         leftRight: 30,
       },
       viewBoxMargin: {
-        topBottom: 150,
+        topBottom: 100,
       },
       panX: 0,
       xScale: {},
@@ -274,6 +274,7 @@ export default {
   <div ref="svgContainer" :class="activateGrabCursor" class="svg-graph-container">
     <svg
       ref="baseSvg"
+      class="svg-graph overflow-visible pt-5"
       :width="vpWidth"
       :height="vpHeight"
       :viewBox="svgViewBox"

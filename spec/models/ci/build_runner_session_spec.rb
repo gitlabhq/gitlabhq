@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe Ci::BuildRunnerSession, model: true do
   let!(:build) { create(:ci_build, :with_runner_session) }
+  let(:url) { 'https://new.example.com' }
 
   subject { build.runner_session }
 
@@ -11,6 +12,25 @@ describe Ci::BuildRunnerSession, model: true do
 
   it { is_expected.to validate_presence_of(:build) }
   it { is_expected.to validate_presence_of(:url).with_message('must be a valid URL') }
+
+  context 'nested attribute assignment' do
+    it 'creates a new session' do
+      simple_build = create(:ci_build)
+      simple_build.runner_session_attributes = { url: url }
+      simple_build.save!
+
+      session = simple_build.reload.runner_session
+      expect(session).to be_a(Ci::BuildRunnerSession)
+      expect(session.url).to eq(url)
+    end
+
+    it 'updates session with new attributes' do
+      build.runner_session_attributes = { url: url }
+      build.save!
+
+      expect(build.reload.runner_session.url).to eq(url)
+    end
+  end
 
   describe '#terminal_specification' do
     let(:specification) { subject.terminal_specification }

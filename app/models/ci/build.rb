@@ -53,7 +53,7 @@ module Ci
 
     has_one :runner_session, class_name: 'Ci::BuildRunnerSession', validate: true, inverse_of: :build
 
-    accepts_nested_attributes_for :runner_session
+    accepts_nested_attributes_for :runner_session, update_only: true
     accepts_nested_attributes_for :job_variables
 
     delegate :url, to: :runner_session, prefix: true, allow_nil: true
