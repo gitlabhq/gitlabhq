@@ -2171,6 +2171,9 @@ msgstr ""
 msgid "At least one approval from a code owner is required to change files matching the respective CODEOWNER rules."
 msgstr ""
 
+msgid "At least one of group_id or project_id must be specified"
+msgstr ""
+
 msgid "Attach a file"
 msgstr ""
 
@@ -11616,6 +11619,15 @@ msgstr ""
 msgid "No value set by top-level parent group."
 msgstr ""
 
+msgid "No vulnerabilities found for this group"
+msgstr ""
+
+msgid "No vulnerabilities found for this pipeline"
+msgstr ""
+
+msgid "No vulnerabilities found for this project"
+msgstr ""
+
 msgid "No, directly import the existing email addresses and usernames."
 msgstr ""
 
@@ -15353,12 +15365,6 @@ msgid "Security Reports|There was an error reverting this dismissal."
 msgstr ""
 
 msgid "Security Reports|Undo dismiss"
-msgstr ""
-
-msgid "Security Reports|We've found no vulnerabilities for your group"
-msgstr ""
-
-msgid "Security Reports|While it's rare to have no vulnerabilities for your group, it can happen. In any event, we ask that you please double check your settings to make sure you've set up your dashboard correctly."
 msgstr ""
 
 msgid "Security configuration help link"
@@ -19607,6 +19613,9 @@ msgstr ""
 msgid "We want to be sure it is you, please confirm you are not a robot."
 msgstr ""
 
+msgid "We've found no vulnerabilities"
+msgstr ""
+
 msgid "Web IDE"
 msgstr ""
 
@@ -19673,6 +19682,18 @@ msgid "When using the <code>http://</code> or <code>https://</code> protocols, p
 msgstr ""
 
 msgid "When:"
+msgstr ""
+
+msgid "While it's rare to have no vulnerabilities for your group, it can happen. In any event, we ask that you double check your settings to make sure you've set up your dashboard correctly."
+msgstr ""
+
+msgid "While it's rare to have no vulnerabilities for your pipeline, it can happen. In any event, we ask that you double check your settings to make sure all security scanning jobs have passed successfully."
+msgstr ""
+
+msgid "While it's rare to have no vulnerabilities for your project, it can happen. In any event, we ask that you double check your settings to make sure you've set up your dashboard correctly."
+msgstr ""
+
+msgid "While it's rare to have no vulnerabilities, it can happen. In any event, we ask that you please double check your settings to make sure you've set up your dashboard correctly."
 msgstr ""
 
 msgid "White helpers give contextual information."
