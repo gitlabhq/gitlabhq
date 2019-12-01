@@ -911,7 +911,7 @@ Here's a sample video:
 > If this is not rendered correctly, [view it in GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#audio).
 
 Similar to videos, link tags for files with an audio extension are automatically converted to
-an audio player. The valid audio extensions are `.mp3`, `.ogg`, and `.wav`:
+an audio player. The valid audio extensions are `.mp3`, `.oga`, `.ogg`, `.spx`, and `.wav`:
 
 ```md
 Here's a sample audio clip:
