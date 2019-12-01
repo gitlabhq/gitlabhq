@@ -31,6 +31,7 @@ class Project < ApplicationRecord
   include FeatureGate
   include OptionallySearch
   include FromUnion
+  include IgnorableColumns
   extend Gitlab::Cache::RequestCache
 
   extend Gitlab::ConfigHelper
@@ -64,7 +65,7 @@ class Project < ApplicationRecord
 
   # TODO: remove once GitLab 12.5 is released
   # https://gitlab.com/gitlab-org/gitlab/issues/34638
-  self.ignored_columns += %i[merge_requests_require_code_owner_approval]
+  ignore_column :merge_requests_require_code_owner_approval, remove_after: '2019-12-01', remove_with: '12.6'
 
   default_value_for :archived, false
   default_value_for :resolve_outdated_diff_discussions, false

@@ -8,7 +8,10 @@ task 'db:obsolete_ignored_columns' => :environment do
     puts 'The following `ignored_columns` are obsolete and can be removed:'
 
     list.each do |name, ignored_columns|
-      puts "- #{name}: #{ignored_columns.join(', ')}"
+      puts "#{name}:"
+      ignored_columns.each do |column, removal|
+        puts " - #{column.ljust(30)} Remove after #{removal.remove_after} with #{removal.remove_with}"
+      end
     end
 
     puts <<~TEXT

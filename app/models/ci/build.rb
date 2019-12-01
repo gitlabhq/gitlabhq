@@ -13,17 +13,11 @@ module Ci
     include Importable
     include Gitlab::Utils::StrongMemoize
     include HasRef
+    include IgnorableColumns
 
     BuildArchivedError = Class.new(StandardError)
 
-    self.ignored_columns += %i[
-      artifacts_file
-      artifacts_file_store
-      artifacts_metadata
-      artifacts_metadata_store
-      artifacts_size
-      commands
-    ]
+    ignore_columns :artifacts_file, :artifacts_file_store, :artifacts_metadata, :artifacts_metadata_store, :artifacts_size, :commands, remove_after: '2019-12-15', remove_with: '12.7'
 
     belongs_to :project, inverse_of: :builds
     belongs_to :runner

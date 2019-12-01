@@ -2,6 +2,7 @@
 
 class DeployKey < Key
   include FromUnion
+  include IgnorableColumns
 
   has_many :deploy_keys_projects, inverse_of: :deploy_key, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :projects, through: :deploy_keys_projects
@@ -10,7 +11,7 @@ class DeployKey < Key
   scope :are_public,  -> { where(public: true) }
   scope :with_projects, -> { includes(deploy_keys_projects: { project: [:route, :namespace] }) }
 
-  self.ignored_columns += %i[can_push]
+  ignore_column :can_push, remove_after: '2019-12-15', remove_with: '12.6'
 
   accepts_nested_attributes_for :deploy_keys_projects
 

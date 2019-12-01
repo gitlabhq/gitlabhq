@@ -23,8 +23,15 @@ module Gitlab
       private
 
       def ignored_columns_safe_to_remove_for(klass)
-        ignored = klass.ignored_columns.map(&:to_s)
+        ignores = ignored_and_not_present(klass).each_with_object({}) do |col, h|
+          h[col] = klass.ignored_columns_details[col.to_sym]
+        end
 
+        ignores.select { |_, i| i&.safe_to_remove? }
+      end
+
+      def ignored_and_not_present(klass)
+        ignored = klass.ignored_columns.map(&:to_s)
         return [] if ignored.empty?
 
         schema = klass.connection.schema_cache.columns_hash(klass.table_name)
