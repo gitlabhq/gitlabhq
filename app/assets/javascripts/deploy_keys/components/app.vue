@@ -133,7 +133,7 @@ export default {
         :keys="keys[currentTab]"
         :store="store"
         :endpoint="endpoint"
-        class="qa-project-deploy-keys"
+        data-qa-selector="project_deploy_keys"
       />
     </template>
   </div>

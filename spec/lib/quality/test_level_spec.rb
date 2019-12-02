@@ -25,6 +25,13 @@ RSpec.describe Quality::TestLevel do
       end
     end
 
+    context 'when level is migration' do
+      it 'returns a pattern' do
+        expect(subject.pattern(:migration))
+          .to eq("spec/{migrations,lib/gitlab/background_migration}{,/**/}*_spec.rb")
+      end
+    end
+
     context 'when level is integration' do
       it 'returns a pattern' do
         expect(subject.pattern(:integration))
@@ -79,6 +86,13 @@ RSpec.describe Quality::TestLevel do
       end
     end
 
+    context 'when level is migration' do
+      it 'returns a regexp' do
+        expect(subject.regexp(:migration))
+          .to eq(%r{spec/(migrations|lib/gitlab/background_migration)})
+      end
+    end
+
     context 'when level is integration' do
       it 'returns a regexp' do
         expect(subject.regexp(:integration))
@@ -114,6 +128,18 @@ RSpec.describe Quality::TestLevel do
   describe '#level_for' do
     it 'returns the correct level for a unit test' do
       expect(subject.level_for('spec/models/abuse_report_spec.rb')).to eq(:unit)
+    end
+
+    it 'returns the correct level for a migration test' do
+      expect(subject.level_for('spec/migrations/add_default_and_free_plans_spec.rb')).to eq(:migration)
+    end
+
+    it 'returns the correct level for a background_migration test' do
+      expect(subject.level_for('spec/lib/gitlab/background_migration/archive_legacy_traces_spec.rb')).to eq(:migration)
+    end
+
+    it 'returns the correct level for a geo migration test' do
+      expect(described_class.new('ee/').level_for('ee/spec/migrations/geo/migrate_ci_job_artifacts_to_separate_registry_spec.rb')).to eq(:migration)
     end
 
     it 'returns the correct level for an integration test' do

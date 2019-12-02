@@ -12,7 +12,7 @@ module QA
 
           view 'app/assets/javascripts/deploy_keys/components/app.vue' do
             element :deploy_keys_section, /class=".*deploy\-keys.*"/ # rubocop:disable QA/ElementWithPattern
-            element :project_deploy_keys, 'class="qa-project-deploy-keys"' # rubocop:disable QA/ElementWithPattern
+            element :project_deploy_keys
           end
 
           view 'app/assets/javascripts/deploy_keys/components/key.vue' do

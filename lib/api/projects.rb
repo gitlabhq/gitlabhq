@@ -82,6 +82,7 @@ module API
       def present_projects(projects, options = {})
         projects = reorder_projects(projects)
         projects = apply_filters(projects)
+        projects = paginate(projects)
         projects, options = with_custom_attributes(projects, options)
 
         options = options.reverse_merge(
@@ -92,10 +93,7 @@ module API
         )
         options[:with] = Entities::BasicProjectDetails if params[:simple]
 
-        projects = options[:with].prepare_relation(projects, options)
-        projects = paginate(projects)
-
-        present projects, options
+        present options[:with].prepare_relation(projects, options), options
       end
 
       def translate_params_for_compatibility(params)

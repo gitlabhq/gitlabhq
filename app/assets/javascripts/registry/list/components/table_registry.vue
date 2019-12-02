@@ -23,7 +23,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [timeagoMixin],
+  mixins: [timeagoMixin, Tracking.mixin()],
   props: {
     repo: {
       type: Object,
@@ -71,9 +71,6 @@ export default {
   },
   methods: {
     ...mapActions(['fetchList', 'deleteItem', 'multiDeleteItems']),
-    track(action) {
-      Tracking.event(document.body.dataset.page, action, this.tracking);
-    },
     setModalDescription(itemIndex = -1) {
       if (itemIndex === -1) {
         this.modalDescription = sprintf(

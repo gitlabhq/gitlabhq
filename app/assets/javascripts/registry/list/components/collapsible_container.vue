@@ -31,7 +31,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     GlModal: GlModalDirective,
   },
-  mixins: [Tracking.mixin({})],
+  mixins: [Tracking.mixin()],
   props: {
     repo: {
       type: Object,
@@ -43,7 +43,6 @@ export default {
       isOpen: false,
       modalId: `confirm-repo-deletion-modal-${this.repo.id}`,
       tracking: {
-        category: document.body.dataset.page,
         label: 'registry_repository_delete',
       },
     };
@@ -67,7 +66,7 @@ export default {
       }
     },
     handleDeleteRepository() {
-      this.track('confirm_delete', {});
+      this.track('confirm_delete');
       return this.deleteItem(this.repo)
         .then(() => {
           createFlash(__('This container registry has been scheduled for deletion.'), 'notice');
@@ -103,7 +102,7 @@ export default {
           :aria-label="s__('ContainerRegistry|Remove repository')"
           class="js-remove-repo btn-inverted"
           variant="danger"
-          @click="track('click_button', {})"
+          @click="track('click_button')"
         >
           <icon name="remove" />
         </gl-button>
@@ -132,7 +131,7 @@ export default {
       :modal-id="modalId"
       ok-variant="danger"
       @ok="handleDeleteRepository"
-      @cancel="track('cancel_delete', {})"
+      @cancel="track('cancel_delete')"
     >
       <template v-slot:modal-title>{{ s__('ContainerRegistry|Remove repository') }}</template>
       <p

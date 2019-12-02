@@ -1662,7 +1662,7 @@ describe Project do
   end
 
   describe '.search' do
-    let(:project) { create(:project, description: 'kitten mittens') }
+    let_it_be(:project) { create(:project, description: 'kitten mittens') }
 
     it 'returns projects with a matching name' do
       expect(described_class.search(project.name)).to eq([project])
@@ -1698,6 +1698,39 @@ describe Project do
 
     it 'returns projects with a matching path regardless of the casing' do
       expect(described_class.search(project.path.upcase)).to eq([project])
+    end
+
+    context 'by full path' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project) { create(:project, group: group) }
+
+      context 'when feature is enabled' do
+        before do
+          stub_feature_flags(project_search_by_full_path: true)
+        end
+
+        it 'returns projects that match the group path' do
+          expect(described_class.search(group.path)).to eq([project])
+        end
+
+        it 'returns projects that match the full path' do
+          expect(described_class.search(project.full_path)).to eq([project])
+        end
+      end
+
+      context 'when feature is disabled' do
+        before do
+          stub_feature_flags(project_search_by_full_path: false)
+        end
+
+        it 'returns no results when searching by group path' do
+          expect(described_class.search(group.path)).to be_empty
+        end
+
+        it 'returns no results when searching by full path' do
+          expect(described_class.search(project.full_path)).to be_empty
+        end
+      end
     end
 
     describe 'with pending_delete project' do

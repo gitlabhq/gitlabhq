@@ -133,7 +133,7 @@ class ActiveSession
 
     entry_keys = raw_active_session_entries(redis, session_ids, user_id)
 
-    entry_keys.map do |raw_session|
+    entry_keys.compact.map do |raw_session|
       Marshal.load(raw_session) # rubocop:disable Security/MarshalLoad
     end
   end

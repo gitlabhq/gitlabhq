@@ -307,6 +307,28 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_shared_state do
           expect(lookup_entries).not_to include(max_number_of_sessions_plus_one.to_s, max_number_of_sessions_plus_two.to_s)
         end
       end
+
+      it 'removes obsolete lookup entries even without active session' do
+        Gitlab::Redis::SharedState.with do |redis|
+          redis.sadd(
+            "session:lookup:user:gitlab:#{user.id}",
+            "#{max_number_of_sessions_plus_two + 1}"
+          )
+        end
+
+        ActiveSession.cleanup(user)
+
+        Gitlab::Redis::SharedState.with do |redis|
+          lookup_entries = redis.smembers("session:lookup:user:gitlab:#{user.id}")
+
+          expect(lookup_entries.count).to eq(ActiveSession::ALLOWED_NUMBER_OF_ACTIVE_SESSIONS)
+          expect(lookup_entries).not_to include(
+            max_number_of_sessions_plus_one.to_s,
+            max_number_of_sessions_plus_two.to_s,
+            (max_number_of_sessions_plus_two + 1).to_s
+          )
+        end
+      end
     end
   end
 end

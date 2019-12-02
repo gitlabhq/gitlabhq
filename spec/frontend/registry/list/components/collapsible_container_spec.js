@@ -140,43 +140,33 @@ describe('collapsible registry container', () => {
   });
 
   describe('tracking', () => {
-    const category = 'mock_page';
+    const testTrackingCall = action => {
+      expect(Tracking.event).toHaveBeenCalledWith(undefined, action, {
+        label: 'registry_repository_delete',
+      });
+    };
+
     beforeEach(() => {
       jest.spyOn(Tracking, 'event');
       wrapper.vm.deleteItem = jest.fn().mockResolvedValue();
       wrapper.vm.fetchRepos = jest.fn();
-      wrapper.setData({
-        tracking: {
-          ...wrapper.vm.tracking,
-          category,
-        },
-      });
     });
 
     it('send an event when delete button is clicked', () => {
       const deleteBtn = findDeleteBtn();
       deleteBtn.trigger('click');
-      expect(Tracking.event).toHaveBeenCalledWith(category, 'click_button', {
-        label: 'registry_repository_delete',
-        category,
-      });
+      testTrackingCall('click_button');
     });
     it('send an event when cancel is pressed on modal', () => {
       const deleteModal = findDeleteModal();
       deleteModal.vm.$emit('cancel');
-      expect(Tracking.event).toHaveBeenCalledWith(category, 'cancel_delete', {
-        label: 'registry_repository_delete',
-        category,
-      });
+      testTrackingCall('cancel_delete');
     });
     it('send an event when confirm is clicked on modal', () => {
       const deleteModal = findDeleteModal();
       deleteModal.vm.$emit('ok');
 
-      expect(Tracking.event).toHaveBeenCalledWith(category, 'confirm_delete', {
-        label: 'registry_repository_delete',
-        category,
-      });
+      testTrackingCall('confirm_delete');
     });
   });
 });

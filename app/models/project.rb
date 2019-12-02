@@ -543,7 +543,11 @@ class Project < ApplicationRecord
     #
     # query - The search query as a String.
     def search(query)
-      fuzzy_search(query, [:path, :name, :description])
+      if Feature.enabled?(:project_search_by_full_path, default_enabled: true)
+        joins(:route).fuzzy_search(query, [Route.arel_table[:path], :name, :description])
+      else
+        fuzzy_search(query, [:path, :name, :description])
+      end
     end
 
     def search_by_title(query)

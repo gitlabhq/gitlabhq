@@ -48,35 +48,6 @@ function a(p) {
 };
 ```
 
-## Avoid side effects in constructors
-
-Avoid making asynchronous calls, API requests or DOM manipulations in the `constructor`.
-Move them into separate functions instead. This will make tests easier to write and
-code easier to maintain.
-
-```javascript
-// bad
-class myClass {
-  constructor(config) {
-    this.config = config;
-    axios.get(this.config.endpoint)
-  }
-}
-
-// good
-class myClass {
-  constructor(config) {
-    this.config = config;
-  }
-
-  makeRequest() {
-    axios.get(this.config.endpoint)
-  }
-}
-const instance = new myClass();
-instance.makeRequest();
-```
-
 ## Avoid classes to handle DOM events
 
 If the only purpose of the class is to bind a DOM event and handle the callback, prefer
@@ -215,7 +186,7 @@ we have a lot of examples of files which wrap their contents in IIFEs,
 this is no longer necessary after the transition from Sprockets to webpack.
 Do not use them anymore and feel free to remove them when refactoring legacy code.
 
-## Global namespace and side effects
+## Global namespace
 
 Avoid adding to the global namespace.
 
@@ -226,6 +197,10 @@ window.MyClass = class { /* ... */ };
 // good
 export default class MyClass { /* ... */ }
 ```
+
+## Side effects
+
+### Top-level side effects
 
 Top-level side effects are forbidden in any script which contains `export`:
 
@@ -238,37 +213,34 @@ document.addEventListener("DOMContentLoaded", function(event) {
 }
 ```
 
-Avoid constructors with side effects whenever possible.
+### Avoid side effects in constructors
 
-Side effects make constructors difficult to unit test and violate the [Single Responsibility Principle](https://en.wikipedia.org/wiki/Single_responsibility_principle).
+Avoid making asynchronous calls, API requests or DOM manipulations in the `constructor`.
+Move them into separate functions instead. This will make tests easier to write and
+avoids violating the [Single Responsibility Principle](https://en.wikipedia.org/wiki/Single_responsibility_principle).
 
 ```javascript
-// Bad
-export class Foo {
-  constructor() {
-    this.currentState = state.INITIAL;
-    document.getElementById('root').addEventListener('click', this.handleCallback)
-  }
-  handleCallback() {
+// bad
+class myClass {
+  constructor(config) {
+    this.config = config;
+    axios.get(this.config.endpoint)
   }
 }
 
-// Good
-export class Foo {
-  constructor() {
-    this.currentState = state.INITIAL;
+// good
+class myClass {
+  constructor(config) {
+    this.config = config;
   }
-  initListener(element) {
-    element.addEventListener('click', this.handleCallback)
-  }
-  handleCallback() {
+
+  makeRequest() {
+    axios.get(this.config.endpoint)
   }
 }
+const instance = new myClass();
+instance.makeRequest();
 ```
-
-On the other hand, if a class only needs to extend a third-party or add
-event listeners in some specific cases, they should be initialized outside
-of the constructor.
 
 ## Pure Functions and Data Mutation
 

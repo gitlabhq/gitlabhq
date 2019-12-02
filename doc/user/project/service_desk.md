@@ -57,7 +57,7 @@ you can skip the step 1 below; you only need to enable it per project.
    support [email sub-addressing](../../administration/incoming_email.md#email-sub-addressing).
 1. Navigate to your project's **Settings** and scroll down to the **Service Desk**
    section.
-1. If you have the correct access and an Premium license,
+1. If you have the correct access and a Premium license,
    you will see an option to set up Service Desk:
 
    ![Activate Service Desk option](img/service_desk_disabled.png)
@@ -78,6 +78,9 @@ you can skip the step 1 below; you only need to enable it per project.
    _In GitLab 11.7, we updated the format of the generated email address.
    However the older format is still supported, allowing existing aliases
    or contacts to continue working._
+
+1. If you have [templates](description_templates.md) in your repository, then you can optionally
+   select one of these templates from the dropdown to append it to all Service Desk issues.
 
 1. Service Desk is now enabled for this project! You should be able to access it from your project's navigation **Issue submenu**:
 

@@ -1702,6 +1702,9 @@ msgstr ""
 msgid "An error occurred while saving the approval settings"
 msgstr ""
 
+msgid "An error occurred while saving the template. Please check if the template exists."
+msgstr ""
+
 msgid "An error occurred while subscribing to notifications."
 msgstr ""
 
@@ -15054,6 +15057,9 @@ msgstr ""
 msgid "Save pipeline schedule"
 msgstr ""
 
+msgid "Save template"
+msgstr ""
+
 msgid "Save variables"
 msgstr ""
 
@@ -15713,6 +15719,12 @@ msgid "Service Desk"
 msgstr ""
 
 msgid "Service Desk is enabled but not yet active"
+msgstr ""
+
+msgid "Service Desk is off"
+msgstr ""
+
+msgid "Service Desk is on"
 msgstr ""
 
 msgid "Service Templates"
@@ -17131,6 +17143,12 @@ msgid "Telephone number"
 msgstr ""
 
 msgid "Template"
+msgstr ""
+
+msgid "Template to append to all Service Desk issues"
+msgstr ""
+
+msgid "Template was successfully saved."
 msgstr ""
 
 msgid "Templates"

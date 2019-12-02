@@ -304,17 +304,14 @@ describe('table registry', () => {
   });
 
   describe('event tracking', () => {
-    const mockPageName = 'mock_page';
+    const testTrackingCall = (action, label = 'registry_tag_delete') => {
+      expect(Tracking.event).toHaveBeenCalledWith(undefined, action, { label, property: 'foo' });
+    };
 
     beforeEach(() => {
       jest.spyOn(Tracking, 'event');
       wrapper.vm.handleSingleDelete = jest.fn();
       wrapper.vm.handleMultipleDelete = jest.fn();
-      document.body.dataset.page = mockPageName;
-    });
-
-    afterEach(() => {
-      document.body.dataset.page = null;
     });
 
     describe('single tag delete', () => {
@@ -325,29 +322,25 @@ describe('table registry', () => {
       it('send an event when delete button is clicked', () => {
         const deleteBtn = findDeleteButtonsRow();
         deleteBtn.at(0).trigger('click');
-        expect(Tracking.event).toHaveBeenCalledWith(mockPageName, 'click_button', {
-          label: 'registry_tag_delete',
-          property: 'foo',
-        });
+
+        testTrackingCall('click_button');
       });
+
       it('send an event when cancel is pressed on modal', () => {
         const deleteModal = findDeleteModal();
         deleteModal.vm.$emit('cancel');
-        expect(Tracking.event).toHaveBeenCalledWith(mockPageName, 'cancel_delete', {
-          label: 'registry_tag_delete',
-          property: 'foo',
-        });
+
+        testTrackingCall('cancel_delete');
       });
+
       it('send an event when confirm is clicked on modal', () => {
         const deleteModal = findDeleteModal();
         deleteModal.vm.$emit('ok');
 
-        expect(Tracking.event).toHaveBeenCalledWith(mockPageName, 'confirm_delete', {
-          label: 'registry_tag_delete',
-          property: 'foo',
-        });
+        testTrackingCall('confirm_delete');
       });
     });
+
     describe('bulk tag delete', () => {
       beforeEach(() => {
         const items = [0, 1, 2];
@@ -357,27 +350,22 @@ describe('table registry', () => {
       it('send an event when delete button is clicked', () => {
         const deleteBtn = findDeleteButton();
         deleteBtn.vm.$emit('click');
-        expect(Tracking.event).toHaveBeenCalledWith(mockPageName, 'click_button', {
-          label: 'bulk_registry_tag_delete',
-          property: 'foo',
-        });
+
+        testTrackingCall('click_button', 'bulk_registry_tag_delete');
       });
+
       it('send an event when cancel is pressed on modal', () => {
         const deleteModal = findDeleteModal();
         deleteModal.vm.$emit('cancel');
-        expect(Tracking.event).toHaveBeenCalledWith(mockPageName, 'cancel_delete', {
-          label: 'bulk_registry_tag_delete',
-          property: 'foo',
-        });
+
+        testTrackingCall('cancel_delete', 'bulk_registry_tag_delete');
       });
+
       it('send an event when confirm is clicked on modal', () => {
         const deleteModal = findDeleteModal();
         deleteModal.vm.$emit('ok');
 
-        expect(Tracking.event).toHaveBeenCalledWith(mockPageName, 'confirm_delete', {
-          label: 'bulk_registry_tag_delete',
-          property: 'foo',
-        });
+        testTrackingCall('confirm_delete', 'bulk_registry_tag_delete');
       });
     });
   });
