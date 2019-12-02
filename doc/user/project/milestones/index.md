@@ -105,14 +105,17 @@ The milestone view shows the title and description.
 
 There are also tabs below these that show the following:
 
-- Issues
-  Shows all issues assigned to the milestone. These are displayed in three columns: Unstarted issues, ongoing issues, and completed issues.
-- Merge requests
-  Shows all merge requests assigned to the milestone. These are displayed in four columns: Work in progress merge requests, waiting for merge, rejected, and closed.
-- Participants
-  Shows all assignees of issues assigned to the milestone.
-- Labels
-  Shows all labels that are used in issues assigned to the milestone.
+- **Issues**: Shows all issues assigned to the milestone. These are displayed in three columns named:
+  - Unstarted Issues (open and unassigned)
+  - Ongoing Issues (open and assigned)
+  - Completed Issues (closed)
+- **Merge Requests**: Shows all merge requests assigned to the milestone. These are displayed in four columns named:
+  - Work in progress (open and unassigned)
+  - Waiting for merge (open and unassigned)
+  - Rejected (closed)
+  - Merged
+- **Participants**: Shows all assignees of issues assigned to the milestone.
+- **Labels**: Shows all labels that are used in issues assigned to the milestone.
 
 ### Project Burndown Charts **(STARTER)**
 
