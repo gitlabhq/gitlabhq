@@ -16,6 +16,8 @@ describe('Issuable suggestions suggestion component', () => {
           ...suggestion,
         },
       },
+      sync: false,
+      attachToDocument: true,
     });
   }
 

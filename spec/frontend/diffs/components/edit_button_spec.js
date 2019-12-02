@@ -10,8 +10,9 @@ describe('EditButton', () => {
   const createComponent = (props = {}) => {
     wrapper = shallowMount(EditButton, {
       localVue,
-      sync: false,
       propsData: { ...props },
+      sync: false,
+      attachToDocument: true,
     });
   };
 
