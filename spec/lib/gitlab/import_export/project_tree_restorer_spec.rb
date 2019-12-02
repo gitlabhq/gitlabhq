@@ -635,43 +635,39 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
   end
 
   context 'JSON with invalid records' do
+    subject(:restored_project_json) { project_tree_restorer.restore }
+
     let(:user) { create(:user) }
     let!(:project) { create(:project, :builds_disabled, :issues_disabled, name: 'project', path: 'project') }
     let(:project_tree_restorer) { described_class.new(user: user, shared: shared, project: project) }
-    let(:restored_project_json) { project_tree_restorer.restore }
+    let(:correlation_id) { 'my-correlation-id' }
 
-    context 'when some failures occur' do
-      context 'because a relation fails to be processed' do
-        let(:correlation_id) { 'my-correlation-id' }
+    before do
+      setup_import_export_config('with_invalid_records')
 
-        before do
-          setup_import_export_config('with_invalid_records')
+      Labkit::Correlation::CorrelationId.use_id(correlation_id) { subject }
+    end
 
-          Labkit::Correlation::CorrelationId.use_id(correlation_id) do
-            expect(restored_project_json).to eq(true)
-          end
-        end
+    context 'when failures occur because a relation fails to be processed' do
+      it_behaves_like 'restores project successfully',
+        issues: 0,
+        labels: 0,
+        label_with_priorities: nil,
+        milestones: 1,
+        first_issue_labels: 0,
+        services: 0,
+        import_failures: 1
 
-        it_behaves_like 'restores project successfully',
-          issues: 0,
-          labels: 0,
-          label_with_priorities: nil,
-          milestones: 1,
-          first_issue_labels: 0,
-          services: 0,
-          import_failures: 1
+      it 'records the failures in the database' do
+        import_failure = ImportFailure.last
 
-        it 'records the failures in the database' do
-          import_failure = ImportFailure.last
-
-          expect(import_failure.project_id).to eq(project.id)
-          expect(import_failure.relation_key).to eq('milestones')
-          expect(import_failure.relation_index).to be_present
-          expect(import_failure.exception_class).to eq('ActiveRecord::RecordInvalid')
-          expect(import_failure.exception_message).to be_present
-          expect(import_failure.correlation_id_value).to eq('my-correlation-id')
-          expect(import_failure.created_at).to be_present
-        end
+        expect(import_failure.project_id).to eq(project.id)
+        expect(import_failure.relation_key).to eq('milestones')
+        expect(import_failure.relation_index).to be_present
+        expect(import_failure.exception_class).to eq('ActiveRecord::RecordInvalid')
+        expect(import_failure.exception_message).to be_present
+        expect(import_failure.correlation_id_value).to eq('my-correlation-id')
+        expect(import_failure.created_at).to be_present
       end
     end
   end

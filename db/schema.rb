@@ -573,6 +573,7 @@ ActiveRecord::Schema.define(version: 2019_11_25_140458) do
     t.string "font"
     t.text "message_html", null: false
     t.integer "cached_markdown_version"
+    t.string "target_path", limit: 255
     t.index ["starts_at", "ends_at", "id"], name: "index_broadcast_messages_on_starts_at_and_ends_at_and_id"
   end
 

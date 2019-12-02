@@ -9650,6 +9650,9 @@ msgstr ""
 msgid "Issue"
 msgstr ""
 
+msgid "Issue %{issue_reference} has already been added to epic %{epic_reference}."
+msgstr ""
+
 msgid "Issue Boards"
 msgstr ""
 
@@ -12261,6 +12264,9 @@ msgid "Path, transfer, remove"
 msgstr ""
 
 msgid "Path:"
+msgstr ""
+
+msgid "Paths can contain wildcards, like */welcome"
 msgstr ""
 
 msgid "Pause"
@@ -16836,7 +16842,7 @@ msgstr ""
 msgid "Subscriptions"
 msgstr ""
 
-msgid "Subscriptions allow successfully completed pipelines on the %{default_branch_docs} of the subscribed project to trigger a new pipeline on thee default branch of this project."
+msgid "Subscriptions allow successfully completed pipelines on the %{default_branch_docs} of the subscribed project to trigger a new pipeline on the default branch of this project."
 msgstr ""
 
 msgid "Subtracted"
@@ -17107,6 +17113,9 @@ msgid "TagsPage|protected"
 msgstr ""
 
 msgid "Target Branch"
+msgstr ""
+
+msgid "Target Path"
 msgstr ""
 
 msgid "Target branch"

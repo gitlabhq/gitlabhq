@@ -20,7 +20,7 @@ class BroadcastMessage < ApplicationRecord
 
   after_commit :flush_redis_cache
 
-  def self.current
+  def self.current(current_path = nil)
     messages = cache.fetch(CACHE_KEY, as: BroadcastMessage, expires_in: cache_expires_in) do
       current_and_future_messages
     end
@@ -33,7 +33,7 @@ class BroadcastMessage < ApplicationRecord
     # cache so we don't keep running this code all the time.
     cache.expire(CACHE_KEY) if now_or_future.empty?
 
-    now_or_future.select(&:now?)
+    now_or_future.select(&:now?).select { |message| message.matches_current_path(current_path) }
   end
 
   def self.current_and_future_messages
@@ -70,6 +70,12 @@ class BroadcastMessage < ApplicationRecord
 
   def now_or_future?
     now? || future?
+  end
+
+  def matches_current_path(current_path)
+    return true if current_path.blank? || target_path.blank?
+
+    current_path.match(Regexp.escape(target_path).gsub('\\*', '.*'))
   end
 
   def flush_redis_cache

@@ -19,6 +19,7 @@
         %th Preview
         %th Starts
         %th Ends
+        %th Target Path
         %th &nbsp;
     %tbody
       - @broadcast_messages.each do |message|
@@ -31,6 +32,8 @@
             = message.starts_at
           %td
             = message.ends_at
+          %td
+            = message.target_path
           %td
             = link_to sprite_icon('pencil-square'), edit_admin_broadcast_message_path(message), title: 'Edit', class: 'btn'
             = link_to sprite_icon('remove'), admin_broadcast_message_path(message), method: :delete, remote: true, title: 'Remove', class: 'js-remove-tr btn btn-danger'

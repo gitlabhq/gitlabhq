@@ -166,3 +166,36 @@ via Omnibus, or [restart GitLab] if you installed from source.
 
 [reconfigure GitLab]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
 [restart GitLab]: ../administration/restart_gitlab.md#installations-from-source
+
+## Troubleshooting
+
+### Error 500 when trying to sign in to GitLab via GitHub Enterprise
+
+Check the [`production.log`](../administration/logs.md#productionlog)
+on your GitLab server to obtain further details. If you are getting the error like
+`Faraday::ConnectionFailed (execution expired)` in the log, there may be a connectivity issue
+between your GitLab instance and GitHub Enterprise. To verify it, [start the rails console](https://docs.gitlab.com/omnibus/maintenance/#starting-a-rails-console-session)
+and run the commands below replacing <github_url> with the URL of your GitHub Enterprise instance:
+
+```ruby
+uri = URI.parse("https://<github_url>") # replace `GitHub-URL` with the real one here
+http = Net::HTTP.new(uri.host, uri.port)
+http.use_ssl = true
+http.verify_mode = 1
+response = http.request(Net::HTTP::Get.new(uri.request_uri))
+```
+
+If you are getting a similar `execution expired` error, it confirms the theory about the
+network connectivity. In that case, make sure that the GitLab server is able to reach your
+GitHub enterprise instance.
+
+### Signing in using your GitHub account without a pre-existing GitLab account is not allowed
+
+If you're getting the message `Signing in using your GitHub account without a pre-existing
+GitLab account is not allowed. Create a GitLab account first, and then connect it to your
+GitHub account` when signing in, in GitLab:
+
+1. Go to your **Profile > Account**.
+1. Under the "Social sign-in" section, click **Connect** near the GitHub icon.
+
+After that, you should be able to sign in via GitHub successfully.

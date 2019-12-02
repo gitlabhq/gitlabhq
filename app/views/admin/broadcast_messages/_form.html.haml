@@ -40,6 +40,13 @@
       = f.color_field :font, class: "form-control text-font-color"
   .form-group.row
     .col-sm-2.col-form-label
+      = f.label :target_path, _('Target Path')
+    .col-sm-10
+      = f.text_field :target_path, class: "form-control"
+      .form-text.text-muted
+        = _('Paths can contain wildcards, like */welcome')
+  .form-group.row
+    .col-sm-2.col-form-label
       = f.label :starts_at, _("Starts at (UTC)")
     .col-sm-10.datetime-controls
       = f.datetime_select :starts_at, {}, class: 'form-control form-control-inline'

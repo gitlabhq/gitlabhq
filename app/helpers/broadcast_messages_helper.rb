@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 module BroadcastMessagesHelper
+  def current_broadcast_messages
+    BroadcastMessage.current(request.path)
+  end
+
   def broadcast_message(message)
     return unless message.present?
 

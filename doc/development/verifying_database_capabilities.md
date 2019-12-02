@@ -6,22 +6,16 @@ necessary to add database (version) specific behaviour.
 
 To facilitate this we have the following methods that you can use:
 
-- `Gitlab::Database.postgresql?`: returns `true` if PostgreSQL is being used.
-  You can normally just assume this is the case.
 - `Gitlab::Database.version`: returns the PostgreSQL version number as a string
   in the format `X.Y.Z`.
 
 This allows you to write code such as:
 
 ```ruby
-if Gitlab::Database.postgresql?
-  if Gitlab::Database.version.to_f >= 9.6
-    run_really_fast_query
-  else
-    run_fast_query
-  end
+if Gitlab::Database.version.to_f >= 9.6
+  run_really_fast_query
 else
-  run_query
+  run_fast_query
 end
 ```
 
