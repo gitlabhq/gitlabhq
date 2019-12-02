@@ -53,7 +53,8 @@ default['gitlab']['gitlab-rails']['rack_attack_protected_paths'] = [
   '/users',
   '/users/confirmation',
   '/unsubscribes/',
-  '/import/github/personal_access_token'
+  '/import/github/personal_access_token',
+  '/admin/session'
 ]
 ```
 

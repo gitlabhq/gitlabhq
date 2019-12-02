@@ -14,11 +14,7 @@ module QA::Page
       def click_on_latest_pipeline
         css = '.js-pipeline-url-link'
 
-        link = wait(reload: false) do
-          first(css)
-        end
-
-        link.click
+        first(css, wait: 60).click
       end
 
       def wait_for_latest_pipeline_success

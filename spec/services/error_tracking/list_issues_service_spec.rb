@@ -5,13 +5,14 @@ require 'spec_helper'
 describe ErrorTracking::ListIssuesService do
   set(:user) { create(:user) }
   set(:project) { create(:project) }
-  let(:params) { { search_term: 'something', sort: 'last_seen' } }
+  let(:params) { { search_term: 'something', sort: 'last_seen', cursor: 'some-cursor' } }
   let(:list_sentry_issues_args) do
     {
       issue_status: 'unresolved',
       limit: 20,
-      search_term: params[:search_term],
-      sort: params[:sort]
+      search_term: 'something',
+      sort: 'last_seen',
+      cursor: 'some-cursor'
     }
   end
 
@@ -40,11 +41,11 @@ describe ErrorTracking::ListIssuesService do
           expect(error_tracking_setting)
             .to receive(:list_sentry_issues)
             .with(list_sentry_issues_args)
-            .and_return(issues: issues)
+            .and_return(issues: issues, pagination: {})
         end
 
         it 'returns the issues' do
-          expect(result).to eq(status: :success, issues: issues)
+          expect(result).to eq(status: :success, pagination: {}, issues: issues)
         end
       end
 

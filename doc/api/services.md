@@ -229,6 +229,51 @@ Get Campfire service settings for a project.
 GET /projects/:id/services/campfire
 ```
 
+## Unify Circuit
+
+Unify Circuit RTC and collaboration tool.
+
+### Create/Edit Unify Circuit service
+
+Set Unify Circuit service for a project.
+
+```
+PUT /projects/:id/services/unify-circuit
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `webhook` | string | true | The Unify Circuit webhook. For example, `https://circuit.com/rest/v2/webhooks/incoming/...`. |
+| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines |
+| `branches_to_be_notified` | string | all | Branches to send notifications for. Valid options are "all", "default", "protected", and "default_and_protected" |
+| `push_events` | boolean | false | Enable notifications for push events |
+| `issues_events` | boolean | false | Enable notifications for issue events |
+| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events |
+| `merge_requests_events` | boolean | false | Enable notifications for merge request events |
+| `tag_push_events` | boolean | false | Enable notifications for tag push events |
+| `note_events` | boolean | false | Enable notifications for note events |
+| `confidential_note_events` | boolean | false | Enable notifications for confidential note events |
+| `pipeline_events` | boolean | false | Enable notifications for pipeline events |
+| `wiki_page_events` | boolean | false | Enable notifications for wiki page events |
+
+### Delete Unify Circuit service
+
+Delete Unify Circuit service for a project.
+
+```
+DELETE /projects/:id/services/unify-circuit
+```
+
+### Get Unify Circuit service settings
+
+Get Unify Circuit service settings for a project.
+
+```
+GET /projects/:id/services/unify-circuit
+```
+
 ## Custom Issue Tracker
 
 Custom issue tracker
@@ -480,6 +525,7 @@ Parameters:
 | `merge_requests_events` | boolean | false | Enable notifications for merge request events |
 | `tag_push_events` | boolean | false | Enable notifications for tag push events |
 | `note_events` | boolean | false | Enable notifications for note events |
+| `confidential_note_events` | boolean | false | Enable notifications for confidential note events |
 | `pipeline_events` | boolean | false | Enable notifications for pipeline events |
 | `wiki_page_events` | boolean | false | Enable notifications for wiki page events |
 
@@ -1088,6 +1134,7 @@ Parameters:
 | `merge_requests_events` | boolean | false | Enable notifications for merge request events |
 | `tag_push_events` | boolean | false | Enable notifications for tag push events |
 | `note_events` | boolean | false | Enable notifications for note events |
+| `confidential_note_events` | boolean | false | Enable notifications for confidential note events |
 | `pipeline_events` | boolean | false | Enable notifications for pipeline events |
 | `wiki_page_events` | boolean | false | Enable notifications for wiki page events |
 | `push_channel` | string | false | The name of the channel to receive push events notifications |
@@ -1095,6 +1142,7 @@ Parameters:
 | `confidential_issue_channel` | string | false | The name of the channel to receive confidential issues events notifications |
 | `merge_request_channel` | string | false | The name of the channel to receive merge request events notifications |
 | `note_channel` | string | false | The name of the channel to receive note events notifications |
+| `confidential_note_channel` | boolean | The name of the channel to receive confidential note events notifications |
 | `tag_push_channel` | string | false | The name of the channel to receive tag push events notifications |
 | `pipeline_channel` | string | false | The name of the channel to receive pipeline events notifications |
 | `wiki_page_channel` | string | false | The name of the channel to receive wiki page events notifications |

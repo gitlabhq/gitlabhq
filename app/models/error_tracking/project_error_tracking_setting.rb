@@ -104,7 +104,7 @@ module ErrorTracking
     def calculate_reactive_cache(request, opts)
       case request
       when 'list_issues'
-        { issues: sentry_client.list_issues(**opts.symbolize_keys) }
+        sentry_client.list_issues(**opts.symbolize_keys)
       when 'issue_details'
         {
           issue: sentry_client.issue_details(**opts.symbolize_keys)

@@ -780,7 +780,7 @@ it is possible to define a job to be created based on files modified
 in a merge request.
 
 In order to deduce the correct base SHA of the source branch, we recommend combining
-this keyword with `only: merge_requests`. This way, file differences are correctly
+this keyword with `only: [merge_requests]`. This way, file differences are correctly
 calculated from any further commits, thus all changes in the merge requests are properly
 tested in pipelines.
 
@@ -802,7 +802,7 @@ either files in `service-one` directory or the `Dockerfile`, GitLab creates
 and triggers the `docker build service one` job.
 
 Note that if [pipelines for merge requests](../merge_request_pipelines/index.md) is
-combined with `only: change`, but `only: merge_requests` is omitted, there could be
+combined with `only: [change]`, but `only: [merge_requests]` is omitted, there could be
 unwanted behavior.
 
 For example:

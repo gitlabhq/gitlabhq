@@ -158,6 +158,10 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Shared Runners pipelines quota](../user/admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota-starter-only): Limit the usage of pipeline minutes for Shared Runners. **(STARTER ONLY)**
 - [Enable/disable Auto DevOps](../topics/autodevops/index.md#enablingdisabling-auto-devops): Enable or disable Auto DevOps for your instance.
 
+## Snippet settings
+
+- [Setting snippet content size limit](snippets/index.md): Set a maximum size limit for snippets' content.
+
 ## Git configuration options
 
 - [Custom Git hooks](custom_hooks.md): Custom Git hooks (on the filesystem) for when webhooks aren't enough.

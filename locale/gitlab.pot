@@ -3361,6 +3361,9 @@ msgstr ""
 msgid "Clear"
 msgstr ""
 
+msgid "Clear chart filters"
+msgstr ""
+
 msgid "Clear input"
 msgstr ""
 
@@ -20932,6 +20935,9 @@ msgid "is not a valid X509 certificate."
 msgstr ""
 
 msgid "is not an email you own"
+msgstr ""
+
+msgid "is too long (%{current_value}). The maximum size is %{max_size}."
 msgstr ""
 
 msgid "is too long (maximum is 100 entries)"

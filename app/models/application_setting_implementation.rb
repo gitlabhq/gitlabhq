@@ -26,7 +26,8 @@ module ApplicationSettingImplementation
     '/users',
     '/users/confirmation',
     '/unsubscribes/',
-    '/import/github/personal_access_token'
+    '/import/github/personal_access_token',
+    '/admin/session'
   ].freeze
 
   class_methods do
@@ -139,7 +140,8 @@ module ApplicationSettingImplementation
         snowplow_app_id: nil,
         snowplow_iglu_registry_url: nil,
         custom_http_clone_url_root: nil,
-        productivity_analytics_start_date: Time.now
+        productivity_analytics_start_date: Time.now,
+        snippet_size_limit: 50.megabytes
       }
     end
 

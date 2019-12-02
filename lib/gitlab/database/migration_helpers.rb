@@ -155,6 +155,7 @@ module Gitlab
       # column - The name of the column to create the foreign key on.
       # on_delete - The action to perform when associated data is removed,
       #             defaults to "CASCADE".
+      # name - The name of the foreign key.
       #
       # rubocop:disable Gitlab/RailsLogger
       def add_concurrent_foreign_key(source, target, column:, on_delete: :cascade, name: nil)
@@ -164,25 +165,31 @@ module Gitlab
           raise 'add_concurrent_foreign_key can not be run inside a transaction'
         end
 
-        on_delete = 'SET NULL' if on_delete == :nullify
+        options = {
+          column: column,
+          on_delete: on_delete,
+          name: name.presence || concurrent_foreign_key_name(source, column)
+        }
 
-        key_name = name || concurrent_foreign_key_name(source, column)
-
-        unless foreign_key_exists?(source, target, column: column)
-          Rails.logger.warn "Foreign key not created because it exists already " \
+        if foreign_key_exists?(source, target, options)
+          warning_message = "Foreign key not created because it exists already " \
             "(this may be due to an aborted migration or similar): " \
-            "source: #{source}, target: #{target}, column: #{column}"
+            "source: #{source}, target: #{target}, column: #{options[:column]}, "\
+            "name: #{options[:name]}, on_delete: #{options[:on_delete]}"
 
+          Rails.logger.warn warning_message
+        else
           # Using NOT VALID allows us to create a key without immediately
           # validating it. This means we keep the ALTER TABLE lock only for a
           # short period of time. The key _is_ enforced for any newly created
           # data.
+
           execute <<-EOF.strip_heredoc
           ALTER TABLE #{source}
-          ADD CONSTRAINT #{key_name}
-          FOREIGN KEY (#{column})
+          ADD CONSTRAINT #{options[:name]}
+          FOREIGN KEY (#{options[:column]})
           REFERENCES #{target} (id)
-          #{on_delete ? "ON DELETE #{on_delete.upcase}" : ''}
+          #{on_delete_statement(options[:on_delete])}
           NOT VALID;
           EOF
         end
@@ -193,18 +200,15 @@ module Gitlab
         #
         # Note this is a no-op in case the constraint is VALID already
         disable_statement_timeout do
-          execute("ALTER TABLE #{source} VALIDATE CONSTRAINT #{key_name};")
+          execute("ALTER TABLE #{source} VALIDATE CONSTRAINT #{options[:name]};")
         end
       end
       # rubocop:enable Gitlab/RailsLogger
 
-      def foreign_key_exists?(source, target = nil, column: nil)
-        foreign_keys(source).any? do |key|
-          if column
-            key.options[:column].to_s == column.to_s
-          else
-            key.to_table.to_s == target.to_s
-          end
+      def foreign_key_exists?(source, target = nil, **options)
+        foreign_keys(source).any? do |foreign_key|
+          tables_match?(target.to_s, foreign_key.to_table.to_s) &&
+            options_match?(foreign_key.options, options)
         end
       end
 
@@ -1049,6 +1053,21 @@ into similar problems in the future (e.g. when new tables are created).
       end
 
       private
+
+      def tables_match?(target_table, foreign_key_table)
+        target_table.blank? || foreign_key_table == target_table
+      end
+
+      def options_match?(foreign_key_options, options)
+        options.all? { |k, v| foreign_key_options[k].to_s == v.to_s }
+      end
+
+      def on_delete_statement(on_delete)
+        return '' if on_delete.blank?
+        return 'ON DELETE SET NULL' if on_delete == :nullify
+
+        "ON DELETE #{on_delete.upcase}"
+      end
 
       def create_column_from(table, old, new, type: nil)
         old_col = column_for(table, old)

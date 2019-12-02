@@ -11,18 +11,19 @@ import {
   GlModalDirective,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import PanelType from 'ee_else_ce/monitoring/components/panel_type.vue';
 import { s__ } from '~/locale';
 import createFlash from '~/flash';
 import Icon from '~/vue_shared/components/icon.vue';
 import { getParameterValues, mergeUrlParams, redirectTo } from '~/lib/utils/url_utility';
 import invalidUrl from '~/lib/utils/invalid_url';
-import PanelType from 'ee_else_ce/monitoring/components/panel_type.vue';
 import DateTimePicker from './date_time_picker/date_time_picker.vue';
 import MonitorTimeSeriesChart from './charts/time_series.vue';
 import MonitorSingleStatChart from './charts/single_stat.vue';
 import GraphGroup from './graph_group.vue';
 import EmptyState from './empty_state.vue';
-import { getTimeDiff, isValidDate } from '../utils';
+import TrackEventDirective from '~/vue_shared/directives/track_event';
+import { getTimeDiff, isValidDate, getAddMetricTrackingOptions } from '../utils';
 
 export default {
   components: {
@@ -43,6 +44,7 @@ export default {
   directives: {
     GlModal: GlModalDirective,
     GlTooltip: GlTooltipDirective,
+    TrackEvent: TrackEventDirective,
   },
   props: {
     externalDashboardUrl: {
@@ -298,6 +300,7 @@ export default {
     onDateTimePickerApply(timeWindowUrlParams) {
       return redirectTo(mergeUrlParams(timeWindowUrlParams, window.location.href));
     },
+    getAddMetricTrackingOptions,
   },
   addMetric: {
     title: s__('Metrics|Add metric'),
@@ -389,9 +392,10 @@ export default {
             </gl-button>
             <gl-button
               v-if="addingMetricsAvailable"
+              ref="addMetricBtn"
               v-gl-modal="$options.addMetric.modalId"
               variant="outline-success"
-              class="mr-2 mt-1 js-add-metric-button"
+              class="mr-2 mt-1"
             >
               {{ $options.addMetric.title }}
             </gl-button>
@@ -411,6 +415,8 @@ export default {
               <div slot="modal-footer">
                 <gl-button @click="hideAddMetricModal">{{ __('Cancel') }}</gl-button>
                 <gl-button
+                  ref="submitCustomMetricsFormBtn"
+                  v-track-event="getAddMetricTrackingOptions()"
                   :disabled="!formIsValid"
                   variant="success"
                   @click="submitCustomMetricsForm"

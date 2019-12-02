@@ -165,6 +165,54 @@ can quickly spiral out of control.
 There are some cases where this may be needed. If this is the case this should
 be clearly mentioned in the merge request description.
 
+## Batch process
+
+**Summary:** Iterating a single process to external services (e.g. PostgreSQL, Redis, Object Storage, etc)
+should be executed in a **batch-style** in order to reduce connection overheads.
+
+For fetching rows from various tables in a batch-style, please see [Eager Loading](#eager-loading) section.
+
+### Example: Delete multiple files from Object Storage
+
+When you delete multiple files from object storage (e.g. GCS),
+executing a single REST API call multiple times is a quite expensive
+process. Ideally, this should be done in a batch-style, for example, S3 provides
+[batch deletion API](https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteObjects.html),
+so it'd be a good idea to consider such an approach.
+
+The `FastDestroyAll` module might help this situation. It's a
+small framework when you remove a bunch of database rows and its associated data
+in a batch style.
+
+## Timeout
+
+**Summary:** You should set a reasonable timeout when the system invokes HTTP calls
+to external services (e.g. Kubernetes), and it should be executed in Sidekiq, not
+in Puma/Unicorn threads.
+
+Often, GitLab needs to communicate with an external service such as Kubernetes
+clusters. In this case, it's hard to estimate when the external service finishes
+the requested process, for example, if it's a user-owned cluster that is inactive for some reason,
+GitLab might wait for the response forever ([Example](https://gitlab.com/gitlab-org/gitlab/issues/31475)).
+This could result in Puma/Unicorn timeout and should be avoided at all cost.
+
+You should set a reasonable timeout, gracefully handle exceptions and surface the
+errors in UI or logging internally.
+
+Using [`ReactiveCaching`](https://docs.gitlab.com/ee/development/utilities.html#reactivecaching) is one of the best solutions to fetch external data.
+
+## Keep database transaction minimal
+
+**Summary:** You should avoid accessing to external services (e.g. Gitaly) during database
+transactions, otherwise it leads to severe contention problems
+as an open transaction basically blocks the release of a Postgres backend connection.
+
+For keeping transaction as minimal as possible, please consider using `AfterCommitQueue`
+module or `after_commit` AR hook.
+
+Here is [an example](https://gitlab.com/gitlab-org/gitlab/issues/36154#note_247228859)
+that one request to Gitaly instance during transaction triggered a P1 issue.
+
 ## Eager Loading
 
 **Summary:** always eager load associations when retrieving more than one row.

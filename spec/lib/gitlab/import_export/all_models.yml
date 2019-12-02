@@ -290,6 +290,7 @@ project:
 - microsoft_teams_service
 - mattermost_service
 - hangouts_chat_service
+- unify_circuit_service
 - buildkite_service
 - bamboo_service
 - teamcity_service

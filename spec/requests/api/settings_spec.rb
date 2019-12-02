@@ -36,6 +36,7 @@ describe API::Settings, 'Settings' do
       expect(json_response['allow_local_requests_from_system_hooks']).to be(true)
       expect(json_response).not_to have_key('performance_bar_allowed_group_path')
       expect(json_response).not_to have_key('performance_bar_enabled')
+      expect(json_response['snippet_size_limit']).to eq(50.megabytes)
     end
   end
 
@@ -85,7 +86,8 @@ describe API::Settings, 'Settings' do
             allow_local_requests_from_web_hooks_and_services: true,
             allow_local_requests_from_system_hooks: false,
             push_event_hooks_limit: 2,
-            push_event_activities_limit: 2
+            push_event_activities_limit: 2,
+            snippet_size_limit: 5
           }
 
         expect(response).to have_gitlab_http_status(200)
@@ -121,6 +123,7 @@ describe API::Settings, 'Settings' do
         expect(json_response['allow_local_requests_from_system_hooks']).to eq(false)
         expect(json_response['push_event_hooks_limit']).to eq(2)
         expect(json_response['push_event_activities_limit']).to eq(2)
+        expect(json_response['snippet_size_limit']).to eq(5)
       end
     end
 

@@ -226,6 +226,8 @@ class ApplicationSetting < ApplicationRecord
   validates :push_event_activities_limit,
             numericality: { greater_than_or_equal_to: 0 }
 
+  validates :snippet_size_limit, numericality: { only_integer: true, greater_than: 0 }
+
   SUPPORTED_KEY_TYPES.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
   end

@@ -289,6 +289,7 @@ class Service < ApplicationRecord
       slack
       teamcity
       microsoft_teams
+      unify_circuit
     ]
 
     if Rails.env.development?

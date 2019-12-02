@@ -132,6 +132,10 @@ module QA
           config.default_max_wait_time = CAPYBARA_MAX_WAIT_TIME
           # https://github.com/mattheworiordan/capybara-screenshot/issues/164
           config.save_path = ::File.expand_path('../../tmp', __dir__)
+
+          # Cabybara 3 does not normalize text by default, so older tests
+          # fail because of unexpected line breaks and other white space
+          config.default_normalize_ws = true
         end
       end
 
