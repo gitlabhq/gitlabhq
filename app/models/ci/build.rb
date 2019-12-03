@@ -425,6 +425,18 @@ module Ci
       end
     end
 
+    def expanded_kubernetes_namespace
+      return unless has_environment?
+
+      namespace = options.dig(:environment, :kubernetes, :namespace)
+
+      if namespace.present?
+        strong_memoize(:expanded_kubernetes_namespace) do
+          ExpandVariables.expand(namespace, -> { simple_variables })
+        end
+      end
+    end
+
     def has_environment?
       environment.present?
     end

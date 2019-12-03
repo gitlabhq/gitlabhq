@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DeleteMergedBranchesService do
+describe Branches::DeleteMergedService do
   include ProjectForksHelper
 
   subject(:service) { described_class.new(project, project.owner) }

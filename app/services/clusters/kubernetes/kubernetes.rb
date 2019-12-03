@@ -12,5 +12,8 @@ module Clusters
     GITLAB_KNATIVE_SERVING_ROLE_BINDING_NAME = 'gitlab-knative-serving-rolebinding'
     GITLAB_CROSSPLANE_DATABASE_ROLE_NAME = 'gitlab-crossplane-database-role'
     GITLAB_CROSSPLANE_DATABASE_ROLE_BINDING_NAME = 'gitlab-crossplane-database-rolebinding'
+    GITLAB_KNATIVE_VERSION_ROLE_NAME = 'gitlab-knative-version-role'
+    GITLAB_KNATIVE_VERSION_ROLE_BINDING_NAME = 'gitlab-knative-version-rolebinding'
+    KNATIVE_SERVING_NAMESPACE = 'knative-serving'
   end
 end

@@ -359,7 +359,7 @@ eos
 
     it { expect(data).to be_a(Hash) }
     it { expect(data[:message]).to include('adds bar folder and branch-test text file to check Repository merged_to_root_ref method') }
-    it { expect(data[:timestamp]).to eq('2016-09-27T14:37:46Z') }
+    it { expect(data[:timestamp]).to eq('2016-09-27T14:37:46+00:00') }
     it { expect(data[:added]).to contain_exactly("bar/branch-test.txt") }
     it { expect(data[:modified]).to eq([]) }
     it { expect(data[:removed]).to eq([]) }

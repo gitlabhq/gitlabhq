@@ -116,7 +116,8 @@ You must do the following:
 
 1. Ensure GitLab can manage Knative:
    - For a non-GitLab managed cluster, ensure that the service account for the token
-     provided can manage resources in the `serving.knative.dev` API group.
+     provided can manage resources in the `serving.knative.dev` API group. It will also
+     need list access to the deployments in the `knative-serving` namespace.
    - For a GitLab managed cluster, if you added the cluster in [GitLab 12.1 or later](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/30235),
      then GitLab will already have the required access and you can proceed to the next step.
 
@@ -153,6 +154,19 @@ You must do the following:
        - delete
        - patch
        - watch
+     ---
+     apiVersion: rbac.authorization.k8s.io/v1
+     kind: ClusterRole
+     metadata:
+       name: gitlab-knative-version-role
+     rules:
+     - apiGroups:
+       - apps
+       resources:
+       - deployments
+       verbs:
+       - list
+       - get
      ```
 
      Then run the following command:

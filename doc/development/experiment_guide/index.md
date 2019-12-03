@@ -55,7 +55,7 @@ The author then adds a comment to this piece of code and adds a link to the issu
   end
   ```
 
-- [ ] Track necessery events. See the [event tracking guide](../event_tracking/index.md) for details.
+- [ ] Track necessary events. See the [event tracking guide](../event_tracking/index.md) for details.
 - [ ] After the merge request is merged, use [`chatops`](../../ci/chatops/README.md) to enable the feature flag and start the experiment. For visibility, please run the command in the `#s_growth` channel:
 
   ```

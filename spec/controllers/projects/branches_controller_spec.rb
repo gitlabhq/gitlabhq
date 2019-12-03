@@ -178,7 +178,7 @@ describe Projects::BranchesController do
         it 'redirects to newly created branch' do
           result = { status: :success, branch: double(name: branch) }
 
-          expect_any_instance_of(CreateBranchService).to receive(:execute).and_return(result)
+          expect_any_instance_of(::Branches::CreateService).to receive(:execute).and_return(result)
           expect(SystemNoteService).to receive(:new_issue_branch).and_return(true)
 
           post :create,
@@ -200,7 +200,7 @@ describe Projects::BranchesController do
           it 'redirects to autodeploy setup page' do
             result = { status: :success, branch: double(name: branch) }
 
-            expect_any_instance_of(CreateBranchService).to receive(:execute).and_return(result)
+            expect_any_instance_of(::Branches::CreateService).to receive(:execute).and_return(result)
             expect(SystemNoteService).to receive(:new_issue_branch).and_return(true)
 
             post :create,
@@ -221,7 +221,7 @@ describe Projects::BranchesController do
 
           create(:cluster, :provided_by_gcp, projects: [project])
 
-          expect_any_instance_of(CreateBranchService).to receive(:execute).and_return(result)
+          expect_any_instance_of(::Branches::CreateService).to receive(:execute).and_return(result)
           expect(SystemNoteService).to receive(:new_issue_branch).and_return(true)
 
           post :create,
@@ -459,7 +459,7 @@ describe Projects::BranchesController do
       end
 
       it 'starts worker to delete merged branches' do
-        expect_any_instance_of(DeleteMergedBranchesService).to receive(:async_execute)
+        expect_any_instance_of(::Branches::DeleteMergedService).to receive(:async_execute)
 
         destroy_all_merged
       end

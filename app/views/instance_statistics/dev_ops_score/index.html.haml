@@ -2,7 +2,7 @@
 - usage_ping_enabled = Gitlab::CurrentSettings.usage_ping_enabled
 
 .container
-  - if usage_ping_enabled && show_callout?('convdev_intro_callout_dismissed')
+  - if usage_ping_enabled && show_callout?('dev_ops_score_intro_callout_dismissed')
     = render 'callout'
 
   .prepend-top-default
@@ -19,7 +19,7 @@
           = _('index')
           %br
           = _('score')
-          = link_to icon('question-circle', 'aria-hidden' => 'true'), help_page_path('user/instance_statistics/convdev')
+          = link_to icon('question-circle', 'aria-hidden' => 'true'), help_page_path('user/instance_statistics/dev_ops_score')
 
       .devops-cards.board-card-container
         - @metric.cards.each do |card|

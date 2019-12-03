@@ -32,7 +32,7 @@ module Commits
     end
 
     def prepare_branch!
-      branch_result = CreateBranchService.new(project, current_user)
+      branch_result = ::Branches::CreateService.new(project, current_user)
                         .execute(@branch_name, @start_branch)
 
       if branch_result[:status] != :success

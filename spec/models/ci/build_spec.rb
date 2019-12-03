@@ -1197,6 +1197,54 @@ describe Ci::Build do
       end
     end
 
+    describe '#expanded_kubernetes_namespace' do
+      let(:build) { create(:ci_build, environment: environment, options: options) }
+
+      subject { build.expanded_kubernetes_namespace }
+
+      context 'environment and namespace are not set' do
+        let(:environment) { nil }
+        let(:options) { nil }
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'environment is specified' do
+        let(:environment) { 'production' }
+
+        context 'namespace is not set' do
+          let(:options) { nil }
+
+          it { is_expected.to be_nil }
+        end
+
+        context 'namespace is provided' do
+          let(:options) do
+            {
+              environment: {
+                name: environment,
+                kubernetes: {
+                  namespace: namespace
+                }
+              }
+            }
+          end
+
+          context 'with a static value' do
+            let(:namespace) { 'production' }
+
+            it { is_expected.to eq namespace }
+          end
+
+          context 'with a dynamic value' do
+            let(:namespace) { 'deploy-$CI_COMMIT_REF_NAME'}
+
+            it { is_expected.to eq 'deploy-master' }
+          end
+        end
+      end
+    end
+
     describe '#starts_environment?' do
       subject { build.starts_environment? }
 
@@ -2984,6 +3032,32 @@ describe Ci::Build do
       context 'when ref is not protected' do
         it { is_expected.not_to include(variable) }
       end
+    end
+  end
+
+  describe '#deployment_variables' do
+    let(:build) { create(:ci_build, environment: environment) }
+    let(:environment) { 'production' }
+    let(:kubernetes_namespace) { 'namespace' }
+    let(:project_variables) { double }
+
+    subject { build.deployment_variables(environment: environment) }
+
+    before do
+      allow(build).to receive(:expanded_kubernetes_namespace)
+        .and_return(kubernetes_namespace)
+
+      allow(build.project).to receive(:deployment_variables)
+        .with(environment: environment, kubernetes_namespace: kubernetes_namespace)
+        .and_return(project_variables)
+    end
+
+    it { is_expected.to eq(project_variables) }
+
+    context 'environment is nil' do
+      let(:environment) { nil }
+
+      it { is_expected.to be_empty }
     end
   end
 

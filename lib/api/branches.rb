@@ -137,7 +137,7 @@ module API
       post ':id/repository/branches' do
         authorize_push_project
 
-        result = CreateBranchService.new(user_project, current_user)
+        result = ::Branches::CreateService.new(user_project, current_user)
                  .execute(params[:branch], params[:ref])
 
         if result[:status] == :success
@@ -162,7 +162,7 @@ module API
         commit = user_project.repository.commit(branch.dereferenced_target)
 
         destroy_conditionally!(commit, last_updated: commit.authored_date) do
-          result = DeleteBranchService.new(user_project, current_user)
+          result = ::Branches::DeleteService.new(user_project, current_user)
                     .execute(params[:branch])
 
           if result.error?
@@ -173,7 +173,7 @@ module API
 
       desc 'Delete all merged branches'
       delete ':id/repository/merged_branches' do
-        DeleteMergedBranchesService.new(user_project, current_user).async_execute
+        ::Branches::DeleteMergedService.new(user_project, current_user).async_execute
 
         accepted!
       end

@@ -8,8 +8,8 @@ describe DeleteMergedBranchesWorker do
   let(:project) { create(:project, :repository) }
 
   describe "#perform" do
-    it "calls DeleteMergedBranchesService" do
-      expect_any_instance_of(DeleteMergedBranchesService).to receive(:execute).and_return(true)
+    it "delegates to Branches::DeleteMergedService" do
+      expect_any_instance_of(::Branches::DeleteMergedService).to receive(:execute).and_return(true)
 
       worker.perform(project.id, project.owner.id)
     end

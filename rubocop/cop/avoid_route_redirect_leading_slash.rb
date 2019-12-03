@@ -7,10 +7,10 @@ module RuboCop
     #
     # @example
     #   # bad
-    #   root to: redirect('/-/instance/statistics/conversational_development_index')
+    #   root to: redirect('/-/instance/statistics/dev_ops_score')
     #
     #   # good
-    #   root to: redirect('-/instance/statistics/conversational_development_index')
+    #   root to: redirect('-/instance/statistics/dev_ops_score')
     #
 
     class AvoidRouteRedirectLeadingSlash < RuboCop::Cop::Cop

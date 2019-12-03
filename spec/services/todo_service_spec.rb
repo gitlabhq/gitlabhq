@@ -1015,6 +1015,30 @@ describe TodoService do
     end
   end
 
+  describe '#mark_todo_as_done' do
+    it 'marks a todo done' do
+      todo1 = create(:todo, :pending, user: john_doe)
+
+      described_class.new.mark_todo_as_done(todo1, john_doe)
+
+      expect(todo1.reload.state).to eq('done')
+    end
+
+    context 'when todo is already in state done' do
+      let(:todo1) { create(:todo, :done, user: john_doe) }
+
+      it 'does not update the todo' do
+        expect { described_class.new.mark_todo_as_done(todo1, john_doe) }.not_to change(todo1.reload, :state)
+      end
+
+      it 'does not update cache count' do
+        expect(john_doe).not_to receive(:update_todos_count_cache)
+
+        described_class.new.mark_todo_as_done(todo1, john_doe)
+      end
+    end
+  end
+
   describe '#mark_all_todos_as_done_by_user' do
     it 'marks all todos done' do
       todo1 = create(:todo, user: john_doe, state: :pending)

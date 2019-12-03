@@ -22,7 +22,7 @@ describe Clusters::Kubernetes::CreateOrUpdateNamespaceService, '#execute' do
 
   before do
     stub_kubeclient_discover(api_url)
-    stub_kubeclient_get_namespace(api_url)
+    stub_kubeclient_get_namespaces(api_url)
     stub_kubeclient_get_service_account_error(api_url, 'gitlab')
     stub_kubeclient_create_service_account(api_url)
     stub_kubeclient_get_secret_error(api_url, 'gitlab-token')
@@ -39,6 +39,8 @@ describe Clusters::Kubernetes::CreateOrUpdateNamespaceService, '#execute' do
     stub_kubeclient_put_role_binding(api_url, Clusters::Kubernetes::GITLAB_KNATIVE_SERVING_ROLE_BINDING_NAME, namespace: namespace)
     stub_kubeclient_put_role(api_url, Clusters::Kubernetes::GITLAB_CROSSPLANE_DATABASE_ROLE_NAME, namespace: namespace)
     stub_kubeclient_put_role_binding(api_url, Clusters::Kubernetes::GITLAB_CROSSPLANE_DATABASE_ROLE_BINDING_NAME, namespace: namespace)
+    stub_kubeclient_put_cluster_role(api_url, Clusters::Kubernetes::GITLAB_KNATIVE_VERSION_ROLE_NAME)
+    stub_kubeclient_put_cluster_role_binding(api_url, Clusters::Kubernetes::GITLAB_KNATIVE_VERSION_ROLE_BINDING_NAME)
 
     stub_kubeclient_get_secret(
       api_url,

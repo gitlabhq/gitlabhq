@@ -31,6 +31,7 @@ class CustomEnvironment extends JSDOMEnvironment {
     this.global.gon = {
       ee: IS_EE,
     };
+    this.global.IS_EE = IS_EE;
 
     this.rejectedPromises = [];
 

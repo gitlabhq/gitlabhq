@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-describe DeleteBranchService do
+describe Branches::DeleteService do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:user) { create(:user) }
-  let(:service) { described_class.new(project, user) }
+  subject(:service) { described_class.new(project, user) }
 
   shared_examples 'a deleted branch' do |branch_name|
     it 'removes the branch' do

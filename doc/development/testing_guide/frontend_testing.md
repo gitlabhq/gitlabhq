@@ -26,7 +26,7 @@ If you need to update an existing Karma test file (found in `spec/javascripts`),
 need to migrate the whole spec to Jest. Simply updating the Karma spec to test your change
 is fine. It is probably more appropriate to migrate to Jest in a separate merge request.
 
-If you need to create a new test file, we strongly recommend creating one in Jest. This will
+If you create a new test file, it needs to be created in Jest. This will
 help support our migration and we think you'll love using Jest.
 
 As always, please use discretion. Jest solves a lot of issues we experienced in Karma and

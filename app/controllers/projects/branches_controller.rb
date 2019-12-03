@@ -46,7 +46,7 @@ class Projects::BranchesController < Projects::ApplicationController
   def diverging_commit_counts
     respond_to do |format|
       format.json do
-        service = Branches::DivergingCommitCountsService.new(repository)
+        service = ::Branches::DivergingCommitCountsService.new(repository)
         branches = BranchesFinder.new(repository, params.permit(names: [])).execute
 
         Gitlab::GitalyClient.allow_n_plus_1_calls do
@@ -63,7 +63,7 @@ class Projects::BranchesController < Projects::ApplicationController
 
     redirect_to_autodeploy = project.empty_repo? && project.deployment_platform.present?
 
-    result = CreateBranchService.new(project, current_user)
+    result = ::Branches::CreateService.new(project, current_user)
         .execute(branch_name, ref)
 
     success = (result[:status] == :success)
@@ -102,7 +102,7 @@ class Projects::BranchesController < Projects::ApplicationController
 
   def destroy
     @branch_name = Addressable::URI.unescape(params[:id])
-    result = DeleteBranchService.new(project, current_user).execute(@branch_name)
+    result = ::Branches::DeleteService.new(project, current_user).execute(@branch_name)
 
     respond_to do |format|
       format.html do
@@ -118,7 +118,7 @@ class Projects::BranchesController < Projects::ApplicationController
   end
 
   def destroy_all_merged
-    DeleteMergedBranchesService.new(@project, current_user).async_execute
+    ::Branches::DeleteMergedService.new(@project, current_user).async_execute
 
     redirect_to project_branches_path(@project),
       notice: _('Merged branches are being deleted. This can take some time depending on the number of branches. Please refresh the page to see changes.')

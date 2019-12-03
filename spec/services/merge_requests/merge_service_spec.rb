@@ -211,7 +211,8 @@ describe MergeRequests::MergeService do
         end
 
         it 'does not delete the source branch' do
-          expect(DeleteBranchService).not_to receive(:new)
+          expect(::Branches::DeleteService).not_to receive(:new)
+
           service.execute(merge_request)
         end
       end
@@ -226,7 +227,7 @@ describe MergeRequests::MergeService do
         end
 
         it 'does not delete the source branch' do
-          expect(DeleteBranchService).not_to receive(:new)
+          expect(::Branches::DeleteService).not_to receive(:new)
           service.execute(merge_request)
         end
       end
@@ -238,7 +239,7 @@ describe MergeRequests::MergeService do
           end
 
           it 'removes the source branch using the author user' do
-            expect(DeleteBranchService).to receive(:new)
+            expect(::Branches::DeleteService).to receive(:new)
               .with(merge_request.source_project, merge_request.author)
               .and_call_original
             service.execute(merge_request)
@@ -248,7 +249,7 @@ describe MergeRequests::MergeService do
             let(:service) { described_class.new(project, user, merge_params.merge('should_remove_source_branch' => false)) }
 
             it 'does not delete the source branch' do
-              expect(DeleteBranchService).not_to receive(:new)
+              expect(::Branches::DeleteService).not_to receive(:new)
               service.execute(merge_request)
             end
           end
@@ -260,7 +261,7 @@ describe MergeRequests::MergeService do
           end
 
           it 'removes the source branch using the current user' do
-            expect(DeleteBranchService).to receive(:new)
+            expect(::Branches::DeleteService).to receive(:new)
               .with(merge_request.source_project, user)
               .and_call_original
             service.execute(merge_request)

@@ -22,4 +22,8 @@ class DashboardGroupMilestone < GlobalMilestone
   def dashboard_milestone?
     true
   end
+
+  def merge_requests_enabled?
+    true
+  end
 end

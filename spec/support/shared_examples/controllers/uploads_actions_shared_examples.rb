@@ -74,7 +74,7 @@ shared_examples 'handle uploads' do
     end
 
     before do
-      expect(FileUploader).to receive(:generate_secret).and_return(secret)
+      allow(FileUploader).to receive(:generate_secret).and_return(secret)
       UploadService.new(model, jpg, uploader_class).execute
     end
 
@@ -85,6 +85,18 @@ shared_examples 'handle uploads' do
         show_upload
 
         expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    context 'when the upload does not have a MIME type that Rails knows' do
+      let(:po) { fixture_file_upload('spec/fixtures/missing_metadata.po', 'text/plain') }
+
+      it 'falls back to the null type' do
+        UploadService.new(model, po, uploader_class).execute
+
+        get :show, params: params.merge(secret: secret, filename: 'missing_metadata.po')
+
+        expect(response.headers['Content-Type']).to eq('application/octet-stream')
       end
     end
 

@@ -1986,12 +1986,16 @@ class Project < ApplicationRecord
     end
   end
 
-  def deployment_variables(environment:)
+  def deployment_variables(environment:, kubernetes_namespace: nil)
     platform = deployment_platform(environment: environment)
 
     return [] unless platform.present?
 
-    platform.predefined_variables(project: self, environment_name: environment)
+    platform.predefined_variables(
+      project: self,
+      environment_name: environment,
+      kubernetes_namespace: kubernetes_namespace
+    )
   end
 
   def auto_devops_variables

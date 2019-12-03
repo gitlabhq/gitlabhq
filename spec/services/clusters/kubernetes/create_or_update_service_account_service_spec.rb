@@ -141,12 +141,15 @@ describe Clusters::Kubernetes::CreateOrUpdateServiceAccountService do
       before do
         cluster.platform_kubernetes.rbac!
 
+        stub_kubeclient_get_namespaces(api_url)
         stub_kubeclient_get_role_binding_error(api_url, role_binding_name, namespace: namespace)
         stub_kubeclient_create_role_binding(api_url, namespace: namespace)
         stub_kubeclient_put_role(api_url, Clusters::Kubernetes::GITLAB_KNATIVE_SERVING_ROLE_NAME, namespace: namespace)
         stub_kubeclient_put_role_binding(api_url, Clusters::Kubernetes::GITLAB_KNATIVE_SERVING_ROLE_BINDING_NAME, namespace: namespace)
         stub_kubeclient_put_role(api_url, Clusters::Kubernetes::GITLAB_CROSSPLANE_DATABASE_ROLE_NAME, namespace: namespace)
         stub_kubeclient_put_role_binding(api_url, Clusters::Kubernetes::GITLAB_CROSSPLANE_DATABASE_ROLE_BINDING_NAME, namespace: namespace)
+        stub_kubeclient_put_cluster_role(api_url, Clusters::Kubernetes::GITLAB_KNATIVE_VERSION_ROLE_NAME)
+        stub_kubeclient_put_cluster_role_binding(api_url, Clusters::Kubernetes::GITLAB_KNATIVE_VERSION_ROLE_BINDING_NAME)
       end
 
       it_behaves_like 'creates service account and token'
@@ -231,6 +234,30 @@ describe Clusters::Kubernetes::CreateOrUpdateServiceAccountService do
               resources: %w(postgresqlinstances),
               verbs: %w(get list create watch)
             }]
+          )
+        )
+      end
+
+      it 'creates a role and role binding granting the ability to get the version of deployments in knative-serving namespace' do
+        subject
+
+        expect(WebMock).to have_requested(:put, api_url + "/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/#{Clusters::Kubernetes::GITLAB_KNATIVE_VERSION_ROLE_BINDING_NAME}").with(
+          body: hash_including(
+            metadata: {
+              name: Clusters::Kubernetes::GITLAB_KNATIVE_VERSION_ROLE_BINDING_NAME
+            },
+            roleRef: {
+              apiGroup: "rbac.authorization.k8s.io",
+              kind: "ClusterRole",
+              name: Clusters::Kubernetes::GITLAB_KNATIVE_VERSION_ROLE_NAME
+            },
+            subjects: [
+              {
+                kind: "ServiceAccount",
+                name: service_account_name,
+                namespace: namespace
+              }
+            ]
           )
         )
       end

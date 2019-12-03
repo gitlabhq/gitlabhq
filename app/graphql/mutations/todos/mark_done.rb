@@ -16,22 +16,21 @@ module Mutations
             null: false,
             description: 'The requested todo'
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def resolve(id:)
         todo = authorized_find!(id: id)
-        mark_done(Todo.where(id: todo.id)) unless todo.done?
+
+        mark_done(todo)
 
         {
           todo: todo.reset,
           errors: errors_on_object(todo)
         }
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       private
 
       def mark_done(todo)
-        TodoService.new.mark_todos_as_done(todo, current_user)
+        TodoService.new.mark_todo_as_done(todo, current_user)
       end
     end
   end

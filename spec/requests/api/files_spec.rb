@@ -315,11 +315,11 @@ describe API::Files do
         expect(range['commit']['message'])
           .to eq("Files, encoding and much more\n\nSigned-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>\n")
 
-        expect(range['commit']['authored_date']).to eq('2014-02-27T08:14:56.000Z')
+        expect(range['commit']['authored_date']).to eq('2014-02-27T10:14:56.000+02:00')
         expect(range['commit']['author_name']).to eq('Dmitriy Zaporozhets')
         expect(range['commit']['author_email']).to eq('dmitriy.zaporozhets@gmail.com')
 
-        expect(range['commit']['committed_date']).to eq('2014-02-27T08:14:56.000Z')
+        expect(range['commit']['committed_date']).to eq('2014-02-27T10:14:56.000+02:00')
         expect(range['commit']['committer_name']).to eq('Dmitriy Zaporozhets')
         expect(range['commit']['committer_email']).to eq('dmitriy.zaporozhets@gmail.com')
       end

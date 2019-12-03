@@ -15,7 +15,7 @@ module Ci
         variables.concat(project.predefined_variables)
         variables.concat(pipeline.predefined_variables)
         variables.concat(runner.predefined_variables) if runnable? && runner
-        variables.concat(project.deployment_variables(environment: environment)) if environment
+        variables.concat(deployment_variables(environment: environment))
         variables.concat(yaml_variables)
         variables.concat(user_variables)
         variables.concat(secret_group_variables)
@@ -70,6 +70,15 @@ module Ci
         variables.append(key: 'CI_BUILD_TRIGGERED', value: 'true') if trigger_request
         variables.append(key: 'CI_BUILD_MANUAL', value: 'true') if action?
       end
+    end
+
+    def deployment_variables(environment:)
+      return [] unless environment
+
+      project.deployment_variables(
+        environment: environment,
+        kubernetes_namespace: expanded_kubernetes_namespace
+      )
     end
 
     def secret_group_variables

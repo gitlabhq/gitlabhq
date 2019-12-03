@@ -370,13 +370,24 @@ module Gitlab
         # subject from the message to make it clearer when there's one
         # available but not the other.
         @message = message_from_gitaly_body
-        @authored_date = Time.at(commit.author.date.seconds).utc
+        @authored_date = init_date_from_gitaly(commit.author)
         @author_name = commit.author.name.dup
         @author_email = commit.author.email.dup
-        @committed_date = Time.at(commit.committer.date.seconds).utc
+
+        @committed_date = init_date_from_gitaly(commit.committer)
         @committer_name = commit.committer.name.dup
         @committer_email = commit.committer.email.dup
         @parent_ids = Array(commit.parent_ids)
+      end
+
+      # Gitaly provides a UNIX timestamp in author.date.seconds, and a timezone
+      # offset in author.timezone. If the latter isn't present, assume UTC.
+      def init_date_from_gitaly(author)
+        if author.timezone.present?
+          Time.strptime("#{author.date.seconds} #{author.timezone}", '%s %z')
+        else
+          Time.at(author.date.seconds).utc
+        end
       end
 
       def serialize_keys

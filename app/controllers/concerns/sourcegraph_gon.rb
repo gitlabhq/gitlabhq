@@ -4,7 +4,7 @@ module SourcegraphGon
   extend ActiveSupport::Concern
 
   included do
-    before_action :push_sourcegraph_gon, unless: :json_request?
+    before_action :push_sourcegraph_gon, if: :html_request?
   end
 
   private

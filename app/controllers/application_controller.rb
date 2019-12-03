@@ -20,11 +20,11 @@ class ApplicationController < ActionController::Base
   before_action :authenticate_user!, except: [:route_not_found]
   before_action :enforce_terms!, if: :should_enforce_terms?
   before_action :validate_user_service_ticket!
-  before_action :check_password_expiration
+  before_action :check_password_expiration, if: :html_request?
   before_action :ldap_security_check
   before_action :sentry_context
   before_action :default_headers
-  before_action :add_gon_variables, unless: [:peek_request?, :json_request?]
+  before_action :add_gon_variables, if: :html_request?
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :require_email, unless: :devise_controller?
   before_action :active_user_check, unless: :devise_controller?
@@ -455,8 +455,8 @@ class ApplicationController < ActionController::Base
     response.headers['Page-Title'] = URI.escape(page_title('GitLab'))
   end
 
-  def peek_request?
-    request.path.start_with?('/-/peek')
+  def html_request?
+    request.format.html?
   end
 
   def json_request?
@@ -466,7 +466,7 @@ class ApplicationController < ActionController::Base
   def should_enforce_terms?
     return false unless Gitlab::CurrentSettings.current_application_settings.enforce_terms
 
-    !(peek_request? || devise_controller?)
+    html_request? && !devise_controller?
   end
 
   def set_usage_stats_consent_flag

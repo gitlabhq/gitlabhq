@@ -131,7 +131,7 @@ describe API::Branches do
         end
 
         new_branch_name = 'protected-branch'
-        CreateBranchService.new(project, current_user).execute(new_branch_name, 'master')
+        ::Branches::CreateService.new(project, current_user).execute(new_branch_name, 'master')
         create(:protected_branch, name: new_branch_name, project: project)
 
         expect do

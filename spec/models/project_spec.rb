@@ -2765,8 +2765,9 @@ describe Project do
   describe '#deployment_variables' do
     let(:project) { create(:project) }
     let(:environment) { 'production' }
+    let(:namespace) { 'namespace' }
 
-    subject { project.deployment_variables(environment: environment) }
+    subject { project.deployment_variables(environment: environment, kubernetes_namespace: namespace) }
 
     before do
       expect(project).to receive(:deployment_platform).with(environment: environment)
@@ -2785,7 +2786,7 @@ describe Project do
 
       before do
         expect(deployment_platform).to receive(:predefined_variables)
-          .with(project: project, environment_name: environment)
+          .with(project: project, environment_name: environment, kubernetes_namespace: namespace)
           .and_return(platform_variables)
       end
 

@@ -101,7 +101,7 @@ module Commits
     end
 
     def validate_new_branch_name!
-      result = ValidateNewBranchService.new(project, current_user).execute(@branch_name, force: force?)
+      result = ::Branches::ValidateNewService.new(project).execute(@branch_name, force: force?)
 
       if result[:status] == :error
         raise_error("Something went wrong when we tried to create '#{@branch_name}' for you: #{result[:message]}")

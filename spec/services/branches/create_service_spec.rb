@@ -2,9 +2,9 @@
 
 require 'spec_helper'
 
-describe CreateBranchService do
+describe Branches::CreateService do
   let(:user) { create(:user) }
-  let(:service) { described_class.new(project, user) }
+  subject(:service) { described_class.new(project, user) }
 
   describe '#execute' do
     context 'when repository is empty' do
@@ -30,7 +30,7 @@ describe CreateBranchService do
         allow(project.repository).to receive(:add_branch).and_return(false)
       end
 
-      it 'retruns an error with the branch name' do
+      it 'returns an error with the branch name' do
         result = service.execute('my-feature', 'master')
 
         expect(result[:status]).to eq(:error)

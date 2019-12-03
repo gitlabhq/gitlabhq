@@ -19,7 +19,7 @@ module MergeRequests
       return error('Not allowed to create merge request') unless can_create_merge_request?
       return error('Invalid issue iid') unless @issue_iid.present? && issue.present?
 
-      result = CreateBranchService.new(target_project, current_user).execute(branch_name, ref)
+      result = ::Branches::CreateService.new(target_project, current_user).execute(branch_name, ref)
       return result if result[:status] == :error
 
       new_merge_request = create(merge_request)

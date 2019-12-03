@@ -15,7 +15,7 @@ class DeleteMergedBranchesWorker
     user = User.find(user_id)
 
     begin
-      DeleteMergedBranchesService.new(project, user).execute
+      ::Branches::DeleteMergedService.new(project, user).execute
     rescue Gitlab::Access::AccessDeniedError
       return
     end

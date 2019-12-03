@@ -6,15 +6,15 @@
           = sprite_icon('chart', size: 24)
         .sidebar-context-title= _('Instance Statistics')
     %ul.sidebar-top-level-items
-      = nav_link(controller: :conversational_development_index) do
-        = link_to instance_statistics_conversational_development_index_index_path do
+      = nav_link(controller: :dev_ops_score) do
+        = link_to instance_statistics_dev_ops_score_index_path do
           .nav-icon-container
             = sprite_icon('comment')
           %span.nav-item-name
             = _('ConvDev Index')
         %ul.sidebar-sub-level-items.is-fly-out-only
-          = nav_link(controller: :conversational_development_index, html_options: { class: "fly-out-top-item" } ) do
-            = link_to instance_statistics_conversational_development_index_index_path do
+          = nav_link(controller: :dev_ops_score, html_options: { class: "fly-out-top-item" } ) do
+            = link_to instance_statistics_dev_ops_score_index_path do
               %strong.fly-out-top-item-name
                 = _('ConvDev Index')
 
