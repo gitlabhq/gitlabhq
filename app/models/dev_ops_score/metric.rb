@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module ConversationalDevelopmentIndex
+module DevOpsScore
   class Metric < ApplicationRecord
     include Presentable
 

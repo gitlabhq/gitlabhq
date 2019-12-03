@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
   render(createElement) {
     return createElement('my-component', {
       props: {
-        endpoint: this.isLoading,
+        endpoint: this.endpoint,
       },
     });
   },

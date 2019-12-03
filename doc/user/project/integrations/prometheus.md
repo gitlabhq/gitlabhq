@@ -481,7 +481,7 @@ It is possible to display metrics charts within [GitLab Flavored Markdown](../..
 NOTE: **Note:**
 Requires [Kubernetes](prometheus_library/kubernetes.md) metrics.
 
-To display a metric chart, include a link of the form `https://<root_url>/<project>/environments/<environment_id>/metrics`.
+To display a metric chart, include a link of the form `https://<root_url>/<project>/-/environments/<environment_id>/metrics`.
 
 A single chart may also be embedded. You can generate a link to the chart via the dropdown located on the right side of the chart:
 

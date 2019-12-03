@@ -209,6 +209,55 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             get :production
           end
         end
+
+        concerns :clusterable
+
+        namespace :serverless do
+          scope :functions do
+            get '/:environment_id/:id', to: 'functions#show'
+            get '/:environment_id/:id/metrics', to: 'functions#metrics', as: :metrics
+          end
+
+          resources :functions, only: [:index]
+        end
+
+        resources :environments, except: [:destroy] do
+          member do
+            post :stop
+            get :terminal
+            get :metrics
+            get :additional_metrics
+            get :metrics_dashboard
+            get '/terminal.ws/authorize', to: 'environments#terminal_websocket_authorize', constraints: { format: nil }
+
+            get '/prometheus/api/v1/*proxy_path', to: 'environments/prometheus_api#proxy', as: :prometheus_api
+          end
+
+          collection do
+            get :metrics, action: :metrics_redirect
+            get :folder, path: 'folders/*id', constraints: { format: /(html|json)/ }
+            get :search
+          end
+
+          resources :deployments, only: [:index] do
+            member do
+              get :metrics
+              get :additional_metrics
+            end
+          end
+        end
+
+        resources :error_tracking, only: [:index], controller: :error_tracking do
+          collection do
+            get ':issue_id/details',
+              to: 'error_tracking#details',
+              as: 'details'
+            get ':issue_id/stack_trace',
+              to: 'error_tracking#stack_trace',
+              as: 'stack_trace'
+            post :list_projects
+          end
+        end
       end
       # End of the /-/ scope.
 
@@ -373,43 +422,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
-      concerns :clusterable
-
-      resources :environments, except: [:destroy] do
-        member do
-          post :stop
-          get :terminal
-          get :metrics
-          get :additional_metrics
-          get :metrics_dashboard
-          get '/terminal.ws/authorize', to: 'environments#terminal_websocket_authorize', constraints: { format: nil }
-
-          get '/prometheus/api/v1/*proxy_path', to: 'environments/prometheus_api#proxy', as: :prometheus_api
-        end
-
-        collection do
-          get :metrics, action: :metrics_redirect
-          get :folder, path: 'folders/*id', constraints: { format: /(html|json)/ }
-          get :search
-        end
-
-        resources :deployments, only: [:index] do
-          member do
-            get :metrics
-            get :additional_metrics
-          end
-        end
-      end
-
-      namespace :serverless do
-        scope :functions do
-          get '/:environment_id/:id', to: 'functions#show'
-          get '/:environment_id/:id/metrics', to: 'functions#metrics', as: :metrics
-        end
-
-        resources :functions, only: [:index]
-      end
-
       draw :legacy_builds
 
       resources :hooks, only: [:index, :create, :edit, :update, :destroy], constraints: { id: /\d+/ } do
@@ -507,18 +519,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :error_tracking, only: [:index], controller: :error_tracking do
-        collection do
-          get ':issue_id/details',
-              to: 'error_tracking#details',
-              as: 'details'
-          get ':issue_id/stack_trace',
-              to: 'error_tracking#stack_trace',
-              as: 'stack_trace'
-          post :list_projects
-        end
-      end
-
       scope :usage_ping, controller: :usage_ping do
         post :web_ide_clientside_preview
       end
@@ -540,7 +540,9 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
                                             :project_members, :deploy_keys, :deploy_tokens,
                                             :labels, :milestones, :services, :boards, :releases,
                                             :forks, :group_links, :import, :avatar, :mirror,
-                                            :cycle_analytics, :mattermost, :variables, :triggers)
+                                            :cycle_analytics, :mattermost, :variables, :triggers,
+                                            :environments, :protected_environments, :error_tracking,
+                                            :serverless, :clusters, :audit_events)
     end
 
     # rubocop: disable Cop/PutProjectRoutesUnderScope

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module ConversationalDevelopmentIndexHelper
+module DevOpsScoreHelper
   def score_level(score)
     if score < 33.33
       'low'

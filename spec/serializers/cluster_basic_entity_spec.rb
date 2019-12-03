@@ -24,7 +24,7 @@ describe ClusterBasicEntity do
 
     it 'exposes the cluster details' do
       expect(subject[:name]).to eq('the-cluster')
-      expect(subject[:path]).to eq("/#{project.full_path}/clusters/#{cluster.id}")
+      expect(subject[:path]).to eq("/#{project.full_path}/-/clusters/#{cluster.id}")
     end
 
     context 'when the user does not have permission to view the cluster' do

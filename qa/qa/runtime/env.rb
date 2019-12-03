@@ -261,8 +261,28 @@ module QA
         ENV['QA_RUNTIME_SCENARIO_ATTRIBUTES']
       end
 
+      def disable_rspec_retry?
+        enabled?(ENV['QA_DISABLE_RSPEC_RETRY'], default: false)
+      end
+
+      def simulate_slow_connection?
+        enabled?(ENV['QA_SIMULATE_SLOW_CONNECTION'], default: false)
+      end
+
+      def slow_connection_latency
+        ENV.fetch('QA_SLOW_CONNECTION_LATENCY_MS', 2000).to_i
+      end
+
+      def slow_connection_throughput
+        ENV.fetch('QA_SLOW_CONNECTION_THROUGHPUT_KBPS', 32).to_i
+      end
+
       def gitlab_qa_loop_runner_minutes
         ENV.fetch('GITLAB_QA_LOOP_RUNNER_MINUTES', 1).to_i
+      end
+
+      def mailhog_hostname
+        ENV['MAILHOG_HOSTNAME']
       end
 
       private

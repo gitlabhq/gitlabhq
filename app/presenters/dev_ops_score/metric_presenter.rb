@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module ConversationalDevelopmentIndex
+module DevOpsScore
   class MetricPresenter < Gitlab::View::Presenter::Simple
     def cards
       [

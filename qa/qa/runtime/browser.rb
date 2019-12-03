@@ -156,6 +156,8 @@ module QA
         def perform(&block)
           visit(url)
 
+          simulate_slow_connection if Runtime::Env.simulate_slow_connection?
+
           page_class.validate_elements_present!
 
           if QA::Runtime::Env.qa_cookies
@@ -178,6 +180,28 @@ module QA
         def clear!
           visit(url)
           reset_session!
+          @network_conditions_configured = false
+        end
+
+        private
+
+        def simulate_slow_connection
+          return if @network_conditions_configured
+
+          QA::Runtime::Logger.info(
+            <<~MSG.tr("\n", " ")
+              Simulating a slow connection with additional latency
+              of #{Runtime::Env.slow_connection_latency} ms and a maximum
+              throughput of #{Runtime::Env.slow_connection_throughput} kbps
+            MSG
+          )
+
+          Capybara.current_session.driver.browser.network_conditions = {
+            latency: Runtime::Env.slow_connection_latency,
+            throughput: Runtime::Env.slow_connection_throughput * 1000
+          }
+
+          @network_conditions_configured = true
         end
       end
     end
