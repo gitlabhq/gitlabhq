@@ -1,0 +1,5 @@
+---
+title: Allow patch notes on repo tags page to word wrap
+merge_request: 20135
+author:
+type: fixed

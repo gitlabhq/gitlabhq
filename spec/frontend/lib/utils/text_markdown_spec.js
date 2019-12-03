@@ -243,7 +243,7 @@ describe('init markdown', () => {
     });
 
     it('uses ace editor insert text when editor is passed in', () => {
-      spyOn(editor, 'insert');
+      jest.spyOn(editor, 'insert').mockReturnValue();
 
       insertMarkdownText({
         text: editor.getValue,
@@ -258,7 +258,7 @@ describe('init markdown', () => {
     });
 
     it('adds block tags on line above and below selection', () => {
-      spyOn(editor, 'insert');
+      jest.spyOn(editor, 'insert').mockReturnValue();
 
       const selected = 'this text \n is multiple \n lines';
       const text = `before \n ${selected} \n after`;
@@ -276,7 +276,7 @@ describe('init markdown', () => {
     });
 
     it('uses ace editor to navigate back tag length when nothing is selected', () => {
-      spyOn(editor, 'navigateLeft');
+      jest.spyOn(editor, 'navigateLeft').mockReturnValue();
 
       insertMarkdownText({
         text: editor.getValue,
@@ -291,7 +291,7 @@ describe('init markdown', () => {
     });
 
     it('ace editor does not navigate back when there is selected text', () => {
-      spyOn(editor, 'navigateLeft');
+      jest.spyOn(editor, 'navigateLeft').mockReturnValue();
 
       insertMarkdownText({
         text: editor.getValue,

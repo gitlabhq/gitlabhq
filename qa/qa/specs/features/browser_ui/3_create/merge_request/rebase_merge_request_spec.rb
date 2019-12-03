@@ -5,8 +5,7 @@ module QA
   context 'Create', :quarantine do
     describe 'Merge request rebasing' do
       it 'user rebases source branch of merge request' do
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.perform(&:sign_in_using_credentials)
+        Flow::Login.sign_in
 
         project = Resource::Project.fabricate! do |project|
           project.name = "only-fast-forward"

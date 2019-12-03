@@ -14,8 +14,11 @@ To access the visibility and access control options:
 
 ## Default branch protection
 
-Branch protection specifies which roles can push to branches and which roles can delete
-branches.
+This global option defines the branch protection that applies to every repository's default branch. [Branch protection](../../project/protected_branches.md) specifies which roles can push to branches and which roles can delete
+branches.  In this case _Default_ refers to a repository's default branch, which in most cases is _master_.
+branches.  "Default" in this case refers to a repository's default branch, which in most cases would be "master".
+
+This setting applies only to each repositories' default branch. To protect other branches, you must configure branch protection in repository. For details, see [Protected Branches](../../project/protected_branches.md).
 
 To change the default branch protection:
 

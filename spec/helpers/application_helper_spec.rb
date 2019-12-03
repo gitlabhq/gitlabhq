@@ -235,4 +235,88 @@ describe ApplicationHelper do
       end
     end
   end
+
+  describe '#body_data' do
+    context 'when @project is not set' do
+      it 'does not include project data in the body data elements' do
+        expect(helper.body_data).to eq(
+          {
+            page: 'application',
+            page_type_id: nil,
+            find_file: nil,
+            group: ''
+          }
+        )
+      end
+
+      context 'when @group is set' do
+        it 'sets group in the body data elements' do
+          group = create(:group)
+
+          assign(:group, group)
+
+          expect(helper.body_data).to eq(
+            {
+              page: 'application',
+              page_type_id: nil,
+              find_file: nil,
+              group: group.path
+            }
+          )
+        end
+      end
+    end
+
+    context 'when @project is set' do
+      it 'includes all possible body data elements and associates the project elements with project' do
+        project = create(:project)
+
+        assign(:project, project)
+
+        expect(helper.body_data).to eq(
+          {
+            page: 'application',
+            page_type_id: nil,
+            find_file: nil,
+            group: '',
+            project_id: project.id,
+            project: project.name,
+            namespace_id: project.namespace.id
+          }
+        )
+      end
+
+      context 'when controller is issues' do
+        before do
+          stub_controller_method(:controller_path, 'projects:issues')
+        end
+
+        context 'when params[:id] is present and the issue exsits and action_name is show' do
+          it 'sets all project and id elements correctly related to the issue' do
+            issue = create(:issue)
+            stub_controller_method(:action_name, 'show')
+            stub_controller_method(:params, { id: issue.id })
+
+            assign(:project, issue.project)
+
+            expect(helper.body_data).to eq(
+              {
+                page: 'projects:issues:show',
+                page_type_id: issue.id,
+                find_file: nil,
+                group: '',
+                project_id: issue.project.id,
+                project: issue.project.name,
+                namespace_id: issue.project.namespace.id
+              }
+            )
+          end
+        end
+      end
+    end
+
+    def stub_controller_method(method_name, value)
+      allow(helper.controller).to receive(method_name).and_return(value)
+    end
+  end
 end

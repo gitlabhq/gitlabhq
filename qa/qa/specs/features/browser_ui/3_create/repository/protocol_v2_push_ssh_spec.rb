@@ -17,20 +17,15 @@ module QA
         end
       end
 
-      def login
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.perform(&:sign_in_using_credentials)
-      end
-
       around do |example|
         # Create an SSH key to be used with Git
-        login
+        Flow::Login.sign_in
         ssh_key
 
         example.run
 
         # Remove the SSH key
-        login
+        Flow::Login.sign_in
         Page::Main::Menu.perform(&:click_settings_link)
         Page::Profile::Menu.perform(&:click_ssh_keys)
         Page::Profile::SSHKeys.perform do |ssh_keys|

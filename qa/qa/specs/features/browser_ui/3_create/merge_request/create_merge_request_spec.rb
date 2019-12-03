@@ -4,8 +4,7 @@ module QA
   context 'Create' do
     describe 'Create a new merge request' do
       before do
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.perform(&:sign_in_using_credentials)
+        Flow::Login.sign_in
 
         @project = Resource::Project.fabricate_via_api! do |project|
           project.name = 'project'

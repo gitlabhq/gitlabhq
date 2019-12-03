@@ -30,6 +30,23 @@ The source of the documentation exists within the codebase of each GitLab applic
 
 Documentation issues and merge requests are part of their respective repositories and all have the label `Documentation`.
 
+### Branch naming
+
+The [CI pipeline for the main GitLab project](../pipelines.md) is configured to automatically
+run only the jobs that match the type of contribution. If your contribution contains
+**only** documentation changes, then only documentation-related jobs will be run, and
+the pipeline will complete much faster than a code contribution.
+
+If you are submitting documentation-only changes to Runner, Omnibus, or Charts,
+the fast pipeline is not determined automatically. Instead, create branches for
+docs-only merge requests using the following guide:
+
+| Branch name           | Valid example                |
+|:----------------------|:-----------------------------|
+| Starting with `docs/` | `docs/update-api-issues`     |
+| Starting with `docs-` | `docs-update-api-issues`     |
+| Ending in `-docs`     | `123-update-api-issues-docs` |
+
 ## Contributing to docs
 
 [Contributions to GitLab docs](workflow.md) are welcome from the entire GitLab community.

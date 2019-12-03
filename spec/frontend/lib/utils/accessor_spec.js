@@ -1,14 +1,18 @@
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import AccessorUtilities from '~/lib/utils/accessor';
 
 describe('AccessorUtilities', () => {
+  useLocalStorageSpy();
+
   const testError = new Error('test error');
 
   describe('isPropertyAccessSafe', () => {
     let base;
 
     it('should return `true` if access is safe', () => {
-      base = { testProp: 'testProp' };
-
+      base = {
+        testProp: 'testProp',
+      };
       expect(AccessorUtilities.isPropertyAccessSafe(base, 'testProp')).toBe(true);
     });
 
@@ -54,17 +58,12 @@ describe('AccessorUtilities', () => {
   });
 
   describe('isLocalStorageAccessSafe', () => {
-    beforeEach(() => {
-      spyOn(window.localStorage, 'setItem');
-      spyOn(window.localStorage, 'removeItem');
-    });
-
     it('should return `true` if access is safe', () => {
       expect(AccessorUtilities.isLocalStorageAccessSafe()).toBe(true);
     });
 
     it('should return `false` if access to .setItem isnt safe', () => {
-      window.localStorage.setItem.and.callFake(() => {
+      window.localStorage.setItem.mockImplementation(() => {
         throw testError;
       });
 

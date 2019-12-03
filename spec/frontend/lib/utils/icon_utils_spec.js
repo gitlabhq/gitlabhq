@@ -17,51 +17,44 @@ describe('Icon utils', () => {
 
     let axiosMock;
     let mockEndpoint;
-    let getIcon;
     const mockName = 'mockIconName';
     const mockPath = 'mockPath';
+    const getIcon = () => iconUtils.getSvgIconPathContent(mockName);
 
     beforeEach(() => {
       axiosMock = new MockAdapter(axios);
       mockEndpoint = axiosMock.onGet(gon.sprite_icons);
-      getIcon = iconUtils.getSvgIconPathContent(mockName);
     });
 
     afterEach(() => {
       axiosMock.restore();
     });
 
-    it('extracts svg icon path content from sprite icons', done => {
+    it('extracts svg icon path content from sprite icons', () => {
       mockEndpoint.replyOnce(
         200,
         `<svg><symbol id="${mockName}"><path d="${mockPath}"/></symbol></svg>`,
       );
-      getIcon
-        .then(path => {
-          expect(path).toBe(mockPath);
-          done();
-        })
-        .catch(done.fail);
+
+      return getIcon().then(path => {
+        expect(path).toBe(mockPath);
+      });
     });
 
-    it('returns null if icon path content does not exist', done => {
+    it('returns null if icon path content does not exist', () => {
       mockEndpoint.replyOnce(200, ``);
-      getIcon
-        .then(path => {
-          expect(path).toBe(null);
-          done();
-        })
-        .catch(done.fail);
+
+      return getIcon().then(path => {
+        expect(path).toBe(null);
+      });
     });
 
-    it('returns null if an http error occurs', done => {
+    it('returns null if an http error occurs', () => {
       mockEndpoint.replyOnce(500);
-      getIcon
-        .then(path => {
-          expect(path).toBe(null);
-          done();
-        })
-        .catch(done.fail);
+
+      return getIcon().then(path => {
+        expect(path).toBe(null);
+      });
     });
   });
 });

@@ -20,7 +20,7 @@ describe('File upload', () => {
       const btn = document.querySelector('.js-button');
       const input = document.querySelector('.js-input');
 
-      spyOn(input, 'click');
+      jest.spyOn(input, 'click').mockReturnValue();
 
       btn.click();
 
@@ -43,7 +43,7 @@ describe('File upload', () => {
     const btn = document.querySelector('.js-button');
     fileUpload('.js-not-button', '.js-input');
 
-    spyOn(input, 'click');
+    jest.spyOn(input, 'click').mockReturnValue();
 
     btn.click();
 
@@ -55,7 +55,7 @@ describe('File upload', () => {
     const btn = document.querySelector('.js-button');
     fileUpload('.js-button', '.js-not-input');
 
-    spyOn(input, 'click');
+    jest.spyOn(input, 'click').mockReturnValue();
 
     btn.click();
 

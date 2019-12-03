@@ -3595,9 +3595,6 @@ msgstr ""
 msgid "ClusterIntegration|Certificate Authority bundle (PEM format)"
 msgstr ""
 
-msgid "ClusterIntegration|Choose a prefix to be used for your namespaces. Defaults to your project path."
-msgstr ""
-
 msgid "ClusterIntegration|Choose the %{startLink}security group %{externalLinkIcon} %{endLink} to apply to the EKS-managed Elastic Network Interfaces that are created in your worker node subnets."
 msgstr ""
 
@@ -4130,6 +4127,9 @@ msgid "ClusterIntegration|Service Token"
 msgstr ""
 
 msgid "ClusterIntegration|Service token is required."
+msgstr ""
+
+msgid "ClusterIntegration|Set a prefix for your namespaces. If not set, defaults to your project path. If modified, existing environments will use their current namespaces until the cluster cache is cleared."
 msgstr ""
 
 msgid "ClusterIntegration|Show"

@@ -23,8 +23,7 @@ module QA
       end
 
       it 'user imports a GitHub repo' do
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.perform(&:sign_in_using_credentials)
+        Flow::Login.sign_in
 
         imported_project # import the project
 

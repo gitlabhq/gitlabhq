@@ -25,7 +25,7 @@ describe('DOM Utils', () => {
 
       addClassIfElementExists(childElement, className);
 
-      expect(childElement.classList).toContain(className);
+      expect(childElement.classList).toContainEqual(className);
     });
 
     it('does not throw if element does not exist', () => {
@@ -40,22 +40,44 @@ describe('DOM Utils', () => {
   describe('canScrollUp', () => {
     [1, 100].forEach(scrollTop => {
       it(`is true if scrollTop is > 0 (${scrollTop})`, () => {
-        expect(canScrollUp({ scrollTop })).toBe(true);
+        expect(
+          canScrollUp({
+            scrollTop,
+          }),
+        ).toBe(true);
       });
     });
 
     [0, -10].forEach(scrollTop => {
       it(`is false if scrollTop is <= 0 (${scrollTop})`, () => {
-        expect(canScrollUp({ scrollTop })).toBe(false);
+        expect(
+          canScrollUp({
+            scrollTop,
+          }),
+        ).toBe(false);
       });
     });
 
     it('is true if scrollTop is > margin', () => {
-      expect(canScrollUp({ scrollTop: TEST_MARGIN + 1 }, TEST_MARGIN)).toBe(true);
+      expect(
+        canScrollUp(
+          {
+            scrollTop: TEST_MARGIN + 1,
+          },
+          TEST_MARGIN,
+        ),
+      ).toBe(true);
     });
 
     it('is false if scrollTop is <= margin', () => {
-      expect(canScrollUp({ scrollTop: TEST_MARGIN }, TEST_MARGIN)).toBe(false);
+      expect(
+        canScrollUp(
+          {
+            scrollTop: TEST_MARGIN,
+          },
+          TEST_MARGIN,
+        ),
+      ).toBe(false);
     });
   });
 
@@ -63,7 +85,11 @@ describe('DOM Utils', () => {
     let element;
 
     beforeEach(() => {
-      element = { scrollTop: 7, offsetHeight: 22, scrollHeight: 30 };
+      element = {
+        scrollTop: 7,
+        offsetHeight: 22,
+        scrollHeight: 30,
+      };
     });
 
     it('is true if element can be scrolled down', () => {
