@@ -456,7 +456,7 @@ describe 'Git HTTP requests' do
               end
 
               it "responds with status 403" do
-                expect(Rack::Attack::Allow2Ban).to receive(:filter).and_return(true)
+                expect(Rack::Attack::Allow2Ban).to receive(:banned?).and_return(true)
                 expect(Gitlab::AuthLogger).to receive(:error).with({
                   message: 'Rack_Attack',
                   env: :blocklist,

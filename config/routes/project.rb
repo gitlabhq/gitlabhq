@@ -58,7 +58,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             get :trace, defaults: { format: 'json' }
             get :raw
             get :terminal
-            get '/terminal.ws/authorize', to: 'jobs#terminal_websocket_authorize', constraints: { format: nil }
+            get '/terminal.ws/authorize', to: 'jobs#terminal_websocket_authorize', format: false
           end
 
           resource :artifacts, only: [] do
@@ -228,7 +228,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             get :metrics
             get :additional_metrics
             get :metrics_dashboard
-            get '/terminal.ws/authorize', to: 'environments#terminal_websocket_authorize', constraints: { format: nil }
+            get '/terminal.ws/authorize', to: 'environments#terminal_websocket_authorize', format: false
 
             get '/prometheus/api/v1/*proxy_path', to: 'environments/prometheus_api#proxy', as: :prometheus_api
           end
@@ -328,13 +328,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get :test_reports
           get :exposed_artifacts
 
-          scope constraints: { format: nil }, action: :show do
-            get :commits, defaults: { tab: 'commits' }
-            get :pipelines, defaults: { tab: 'pipelines' }
-            get :diffs, defaults: { tab: 'diffs' }
-          end
-
-          scope constraints: { format: 'json' }, as: :json do
+          scope constraints: ->(req) { req.format == :json }, as: :json do
             get :commits
             get :pipelines
             get :diffs, to: 'merge_requests/diffs#show'
@@ -342,6 +336,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             get :diffs_metadata, to: 'merge_requests/diffs#diffs_metadata'
             get :widget, to: 'merge_requests/content#widget'
             get :cached_widget, to: 'merge_requests/content#cached_widget'
+          end
+
+          scope action: :show do
+            get :commits, defaults: { tab: 'commits' }
+            get :pipelines, defaults: { tab: 'pipelines' }
+            get :diffs, defaults: { tab: 'diffs' }
           end
 
           get :diff_for_path, controller: 'merge_requests/diffs'
@@ -372,14 +372,14 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         scope path: 'new', as: :new_merge_request do
           get '', action: :new
 
-          scope constraints: { format: nil }, action: :new do
-            get :diffs, defaults: { tab: 'diffs' }
-            get :pipelines, defaults: { tab: 'pipelines' }
-          end
-
-          scope constraints: { format: 'json' }, as: :json do
+          scope constraints: ->(req) { req.format == :json }, as: :json do
             get :diffs
             get :pipelines
+          end
+
+          scope action: :new do
+            get :diffs, defaults: { tab: 'diffs' }
+            get :pipelines, defaults: { tab: 'pipelines' }
           end
 
           get :diff_for_path

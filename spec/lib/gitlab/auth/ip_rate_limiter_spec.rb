@@ -62,4 +62,36 @@ describe Gitlab::Auth::IpRateLimiter, :use_clean_rails_memory_store_caching do
       it_behaves_like 'whitelisted IPs'
     end
   end
+
+  shared_examples 'skips the rate limiter' do
+    it 'does not call Rack::Attack::Allow2Ban.reset!' do
+      expect(Rack::Attack::Allow2Ban).not_to receive(:reset!)
+
+      subject.reset!
+    end
+
+    it 'does not call Rack::Attack::Allow2Ban.banned?' do
+      expect(Rack::Attack::Allow2Ban).not_to receive(:banned?)
+
+      subject.banned?
+    end
+
+    it 'does not call Rack::Attack::Allow2Ban.filter' do
+      expect(Rack::Attack::Allow2Ban).not_to receive(:filter)
+
+      subject.register_fail!
+    end
+  end
+
+  context 'when IP is whitlisted' do
+    let(:ip) { '127.0.0.1' }
+
+    it_behaves_like 'skips the rate limiter'
+  end
+
+  context 'when rate limiter is disabled' do
+    let(:options) { { enabled: false } }
+
+    it_behaves_like 'skips the rate limiter'
+  end
 end

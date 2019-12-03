@@ -31,6 +31,8 @@ also appear in the top right of the:
 In this case, the merge request will use the most recent branch you pushed changes
 to as the source branch, and `master` in the current project as the target.
 
+You can also [create a new merge request directly from an issue](../repository/web_editor.md#create-a-new-branch-from-an-issue).
+
 ## Workflow for new merge requests
 
 On the **New Merge Request** page, you can start by filling in the title and description

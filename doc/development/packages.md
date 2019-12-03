@@ -74,6 +74,29 @@ PUT https://gitlab.com/api/v4/projects/<your_project_id>/packages/npm/
 
 Group-level and instance-level endpoints are good to have but are optional.
 
+### Remote hierarchy
+
+Packages are scoped within various levels of access, which is generally configured by setting your remote. A
+remote endpoint may be set at the project level, meaning when installing packages, only packages belonging to that
+project will be visible. Alternatively, a group-level endpoint may be used to allow visibility to all packages
+within a given group. Lastly, an instance-level endpoint can be used to allow visibility to all packages within an
+entire GitLab instance.
+
+Using group and project level endpoints will allow for more flexibility in package naming, however, more remotes
+will have to be managed. Using instance level endpoints requires [stricter naming conventions](#naming-conventions).
+
+The current state of existing package registries availability is:
+
+| Repository Type | Project Level | Group Level | Instance Level |
+|-----------------|---------------|-------------|----------------|
+| Maven           | Yes           | Yes         | Yes            |
+| Conan           | No - [open issue](https://gitlab.com/gitlab-org/gitlab/issues/11679) | No - [open issue](https://gitlab.com/gitlab-org/gitlab/issues/11679) | Yes |
+| NPM             | No - [open issue](https://gitlab.com/gitlab-org/gitlab/issues/36853) | Yes | No - [open issue](https://gitlab.com/gitlab-org/gitlab/issues/36853) |
+
+NOTE: **Note:** NPM is currently a hybrid of the instance level and group level.
+It is using the top-level group or namespace as the defining portion of the name
+(for example, `@my-group-name/my-package-name`).
+
 ## Naming conventions
 
 To avoid name conflict for instance-level endpoints you will need to define a package naming convention

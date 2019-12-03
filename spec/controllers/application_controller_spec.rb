@@ -867,5 +867,31 @@ describe ApplicationController do
 
       it { is_expected.not_to redirect_to users_sign_up_welcome_path }
     end
+
+    describe 'rescue_from Gitlab::Auth::IpBlacklisted' do
+      controller(described_class) do
+        skip_before_action :authenticate_user!
+
+        def index
+          raise Gitlab::Auth::IpBlacklisted
+        end
+      end
+
+      it 'returns a 403 and logs the request' do
+        expect(Gitlab::AuthLogger).to receive(:error).with({
+          message: 'Rack_Attack',
+          env: :blocklist,
+          remote_ip: '1.2.3.4',
+          request_method: 'GET',
+          path: '/anonymous'
+        })
+
+        request.remote_addr = '1.2.3.4'
+
+        get :index
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
   end
 end
