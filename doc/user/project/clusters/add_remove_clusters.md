@@ -206,8 +206,45 @@ GitLab supports:
 Before creating your first cluster on Amazon EKS with GitLab's integration,
 make sure the following requirements are met:
 
+- Enable the `create_eks_clusters` feature flag for your GitLab instance.
 - An [Amazon Web Services](https://aws.amazon.com/) account is set up and you are able to log in.
 - You have permissions to manage IAM resources.
+
+#### Enable the `create_eks_clusters` feature flag **(CORE ONLY)**
+
+NOTE: **Note:**
+If you are running a self-managed instance, EKS cluster creation will not be available
+unless the feature flag `create_eks_clusters` is enabled. This can be done from the Rails console
+by instance administrators.
+
+Use these commands to start the Rails console:
+
+```sh
+# Omnibus GitLab
+gitlab-rails console
+
+# Installation from source
+cd /home/git/gitlab
+sudo -u git -H bin/rails console RAILS_ENV=production
+```
+
+Then run the following command to enable the feature flag:
+
+```
+Feature.enable(:create_eks_clusters)
+```
+
+You can also enable the feature flag only for specific projects with:
+
+```
+Feature.enable(:create_eks_clusters, Project.find_by_full_path('my_group/my_project'))
+```
+
+Run the following command to disable the feature flag:
+
+```
+Feature.disable(:create_eks_clusters)
+```
 
 ##### Additional requirements for self-managed instances
 
@@ -262,55 +299,55 @@ new Kubernetes cluster to your project:
    1. Click **Create Policy**, which will open a new window.
    1. Select the **JSON** tab, and paste in the following snippet in place of the existing content:
 
-    ```json
-    {
-        "Version": "2012-10-17",
-        "Statement": [
-            {
-                "Effect": "Allow",
-                "Action": [
-                    "autoscaling:CreateAutoScalingGroup",
-                    "autoscaling:DescribeAutoScalingGroups",
-                    "autoscaling:DescribeScalingActivities",
-                    "autoscaling:UpdateAutoScalingGroup",
-                    "autoscaling:CreateLaunchConfiguration",
-                    "autoscaling:DescribeLaunchConfigurations",
-                    "cloudformation:CreateStack",
-                    "cloudformation:DescribeStacks",
-                    "ec2:AuthorizeSecurityGroupEgress",
-                    "ec2:AuthorizeSecurityGroupIngress",
-                    "ec2:RevokeSecurityGroupEgress",
-                    "ec2:RevokeSecurityGroupIngress",
-                    "ec2:CreateSecurityGroup",
-                    "ec2:createTags",
-                    "ec2:DescribeImages",
-                    "ec2:DescribeKeyPairs",
-                    "ec2:DescribeRegions",
-                    "ec2:DescribeSecurityGroups",
-                    "ec2:DescribeSubnets",
-                    "ec2:DescribeVpcs",
-                    "eks:CreateCluster",
-                    "eks:DescribeCluster",
-                    "iam:AddRoleToInstanceProfile",
-                    "iam:AttachRolePolicy",
-                    "iam:CreateRole",
-                    "iam:CreateInstanceProfile",
-                    "iam:GetRole",
-                    "iam:ListRoles",
-                    "iam:PassRole",
-                    "ssm:GetParameters"
-                ],
-                "Resource": "*"
-            }
-        ]
-    }
-    ```
+      ```json
+      {
+          "Version": "2012-10-17",
+          "Statement": [
+              {
+                  "Effect": "Allow",
+                  "Action": [
+                      "autoscaling:CreateAutoScalingGroup",
+                      "autoscaling:DescribeAutoScalingGroups",
+                      "autoscaling:DescribeScalingActivities",
+                      "autoscaling:UpdateAutoScalingGroup",
+                      "autoscaling:CreateLaunchConfiguration",
+                      "autoscaling:DescribeLaunchConfigurations",
+                      "cloudformation:CreateStack",
+                      "cloudformation:DescribeStacks",
+                      "ec2:AuthorizeSecurityGroupEgress",
+                      "ec2:AuthorizeSecurityGroupIngress",
+                      "ec2:RevokeSecurityGroupEgress",
+                      "ec2:RevokeSecurityGroupIngress",
+                      "ec2:CreateSecurityGroup",
+                      "ec2:createTags",
+                      "ec2:DescribeImages",
+                      "ec2:DescribeKeyPairs",
+                      "ec2:DescribeRegions",
+                      "ec2:DescribeSecurityGroups",
+                      "ec2:DescribeSubnets",
+                      "ec2:DescribeVpcs",
+                      "eks:CreateCluster",
+                      "eks:DescribeCluster",
+                      "iam:AddRoleToInstanceProfile",
+                      "iam:AttachRolePolicy",
+                      "iam:CreateRole",
+                      "iam:CreateInstanceProfile",
+                      "iam:GetRole",
+                      "iam:ListRoles",
+                      "iam:PassRole",
+                      "ssm:GetParameters"
+                  ],
+                  "Resource": "*"
+              }
+          ]
+      }
+      ```
 
-    NOTE: **Note:**
-    These permissions give GitLab the ability to create resources, but not delete them.
-    This means that if an error is encountered during the creation process, changes will
-    not be rolled back and you must remove resources manually. You can do this by deleting
-    the relevant [CloudFormation stack](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-console-delete-stack.html)
+      NOTE: **Note:**
+      These permissions give GitLab the ability to create resources, but not delete them.
+      This means that if an error is encountered during the creation process, changes will
+      not be rolled back and you must remove resources manually. You can do this by deleting
+      the relevant [CloudFormation stack](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-console-delete-stack.html)
 
    1. Click **Review policy**.
    1. Enter a suitable name for this policy, and click **Create Policy**. You can now close this window.

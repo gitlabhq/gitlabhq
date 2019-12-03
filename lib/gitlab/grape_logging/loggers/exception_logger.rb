@@ -11,19 +11,11 @@ module Gitlab
           # precedence so the logger never sees it. We need to
           # store and retrieve the exception from the environment.
           exception = request.env[::API::Helpers::API_EXCEPTION_ENV]
+          data = {}
 
-          return {} unless exception.is_a?(Exception)
+          return data unless exception.is_a?(Exception)
 
-          data = {
-            exception: {
-              class: exception.class.to_s,
-              message: exception.message
-            }
-          }
-
-          if exception.backtrace
-            data[:exception][:backtrace] = Gitlab::Profiler.clean_backtrace(exception.backtrace)
-          end
+          Gitlab::ExceptionLogFormatter.format!(exception, data)
 
           data
         end

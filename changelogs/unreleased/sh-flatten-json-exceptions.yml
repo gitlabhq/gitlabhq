@@ -1,0 +1,5 @@
+---
+title: Flatten exception details in API and controller logs
+merge_request: 20434
+author:
+type: changed

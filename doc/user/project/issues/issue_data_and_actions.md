@@ -157,6 +157,8 @@ The plain text title and description of the issue fill the top center of the iss
 The description fully supports [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm),
 allowing many formatting options.
 
+> [Since GitLab 12.5](https://gitlab.com/gitlab-org/gitlab/issues/10103), changes to an issue's description are listed in the [issue history](#23-issue-history).**(STARTER)**
+
 #### 17. Mentions
 
 You can mention a user or a group present in your GitLab instance with `@username` or

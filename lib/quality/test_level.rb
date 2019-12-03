@@ -36,6 +36,10 @@ module Quality
         workers
         elastic_integration
       ],
+      migration: %w[
+        migrations
+        lib/gitlab/background_migration
+      ],
       integration: %w[
         controllers
         mailers
@@ -62,6 +66,10 @@ module Quality
 
     def level_for(file_path)
       case file_path
+      # Detect migration first since some background migration tests are under
+      # spec/lib/gitlab/background_migration and tests under spec/lib are unit by default
+      when regexp(:migration)
+        :migration
       when regexp(:unit)
         :unit
       when regexp(:integration)

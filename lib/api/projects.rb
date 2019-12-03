@@ -191,6 +191,7 @@ module API
         optional :path, type: String, desc: 'The path of the repository'
         optional :default_branch, type: String, desc: 'The default branch of the project'
         use :optional_project_params
+        use :optional_create_project_params
         use :create_params
       end
       # rubocop: disable CodeReuse/ActiveRecord

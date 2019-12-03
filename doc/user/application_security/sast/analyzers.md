@@ -15,7 +15,7 @@ SAST supports the following official analyzers:
 
 - [`bandit`](https://gitlab.com/gitlab-org/security-products/analyzers/bandit) (Bandit)
 - [`brakeman`](https://gitlab.com/gitlab-org/security-products/analyzers/brakeman) (Brakeman)
-- [`eslint`](https://gitlab.com/gitlab-org/security-products/analyzers/eslint) (ESLint (JavaScript))
+- [`eslint`](https://gitlab.com/gitlab-org/security-products/analyzers/eslint) (ESLint (JavaScript and React))
 - [`flawfinder`](https://gitlab.com/gitlab-org/security-products/analyzers/flawfinder) (Flawfinder)
 - [`gosec`](https://gitlab.com/gitlab-org/security-products/analyzers/gosec) (Gosec)
 - [`nodejs-scan`](https://gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan) (NodeJsScan)

@@ -101,17 +101,15 @@ describe MergeRequests::PushOptionsHandlerService do
   shared_examples_for 'a service that can set the merge request to merge when pipeline succeeds' do
     subject(:last_mr) { MergeRequest.last }
 
+    let(:change) { Gitlab::ChangesList.new(changes).changes.first }
+
     it 'sets auto_merge_enabled' do
       service.execute
 
       expect(last_mr.auto_merge_enabled).to eq(true)
       expect(last_mr.auto_merge_strategy).to eq(AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
-    end
-
-    it 'sets merge_user to the user' do
-      service.execute
-
       expect(last_mr.merge_user).to eq(user)
+      expect(last_mr.merge_params['sha']).to eq(change[:newrev])
     end
   end
 

@@ -1,0 +1,5 @@
+---
+title: Fix project creation with templates using /projects/user/:id API
+merge_request: 20590
+author:
+type: fixed

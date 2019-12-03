@@ -71,7 +71,7 @@ Once you're on the dashboard, at the top you should see a series of filters for:
 - Report type
 - Project
 
-To the right of the filters, you should see a **Hide dismissed** toggle button ([available in GitLab Ultimate 12.5](https://gitlab.com/gitlab-org/gitlab/issues/9102)).
+To the right of the filters, you should see a **Hide dismissed** toggle button ([available for GitLab.com Gold, planned for GitLab Ultimate 12.6](https://gitlab.com/gitlab-org/gitlab/issues/9102)).
 
 NOTE: **Note:**
 The dashboard only shows projects with [security reports](#supported-reports) enabled in a group.

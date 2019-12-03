@@ -92,6 +92,14 @@ setup-test-env:
     - .use-pg10
     - .only-master
 
+rspec migration pg9:
+  extends: .rspec-base-pg9
+  parallel: 4
+
+rspec migration pg9-foss:
+  extends: .rspec-base-pg9-foss
+  parallel: 4
+
 rspec unit pg9:
   extends: .rspec-base-pg9
   parallel: 20
@@ -140,9 +148,13 @@ rspec system pg10:
     - .only-ee
     - .use-pg10-ee
 
+rspec-ee migration pg9:
+  extends: .rspec-ee-base-pg9
+  parallel: 2
+
 rspec-ee unit pg9:
   extends: .rspec-ee-base-pg9
-  parallel: 7
+  parallel: 5
 
 rspec-ee integration pg9:
   extends: .rspec-ee-base-pg9
@@ -152,11 +164,17 @@ rspec-ee system pg9:
   extends: .rspec-ee-base-pg9
   parallel: 5
 
+rspec-ee migration pg10:
+  extends:
+    - .rspec-ee-base-pg10
+    - .only-master
+  parallel: 2
+
 rspec-ee unit pg10:
   extends:
     - .rspec-ee-base-pg10
     - .only-master
-  parallel: 7
+  parallel: 5
 
 rspec-ee integration pg10:
   extends:

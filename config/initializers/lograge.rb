@@ -44,16 +44,7 @@ unless Sidekiq.server?
       # https://github.com/roidrage/lograge#logging-errors--exceptions
       exception = event.payload[:exception_object]
 
-      if exception
-        payload[:exception] = {
-          class: exception.class.name,
-          message: exception.message
-        }
-
-        if exception.backtrace
-          payload[:exception][:backtrace] = Gitlab::Profiler.clean_backtrace(exception.backtrace)
-        end
-      end
+      ::Gitlab::ExceptionLogFormatter.format!(exception, payload)
 
       payload
     end

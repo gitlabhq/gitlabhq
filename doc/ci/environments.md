@@ -738,6 +738,11 @@ NOTE: **Note:**
 The most _specific_ spec takes precedence over the other wildcard matching.
 In this case, `review/feature-1` spec takes precedence over `review/*` and `*` specs.
 
+### Environments Dashboard **(PREMIUM)**
+
+See [Environments Dashboard](environments/environments_dashboard.md) for a summary of each
+environment's operational health.
+
 ## Limitations
 
 In the `environment: name`, you are limited to only the [predefined environment variables](variables/predefined_variables.md).
