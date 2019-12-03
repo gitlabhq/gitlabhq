@@ -55,7 +55,8 @@ module Users
         username: group.full_path,
         name: group.full_name,
         avatar_url: group.avatar_url,
-        count: group_counts.fetch(group.id, 0)
+        count: group_counts.fetch(group.id, 0),
+        mentionsDisabled: group.mentions_disabled
       }
     end
   end

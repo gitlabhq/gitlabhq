@@ -19,14 +19,22 @@ describe Banzai::ReferenceParser::UserParser do
           link['data-group'] = project.group.id.to_s
         end
 
-        it 'returns the users of the group' do
-          create(:group_member, group: group, user: user)
-
-          expect(subject.referenced_by([link])).to eq([user])
-        end
-
         it 'returns an empty Array when the group has no users' do
           expect(subject.referenced_by([link])).to eq([])
+        end
+
+        context 'when group has members' do
+          let!(:group_member) { create(:group_member, group: group, user: user) }
+
+          it 'returns the users of the group' do
+            expect(subject.referenced_by([link])).to eq([user])
+          end
+
+          it 'returns an empty Array when the group has mentions disabled' do
+            group.update!(mentions_disabled: true)
+
+            expect(subject.referenced_by([link])).to eq([])
+          end
         end
       end
 

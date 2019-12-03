@@ -689,8 +689,9 @@ describe Issues::UpdateService, :mailer do
 
       context 'valid canonical_issue_id' do
         it 'calls the duplicate service with both issues' do
-          expect_any_instance_of(Issues::DuplicateService)
-            .to receive(:execute).with(issue, canonical_issue)
+          expect_next_instance_of(Issues::DuplicateService) do |service|
+            expect(service).to receive(:execute).with(issue, canonical_issue)
+          end
 
           update_issue(canonical_issue_id: canonical_issue.id)
         end

@@ -54,6 +54,7 @@ module Gitlab
       ProjectTemplate.new('nfplainhtml', 'Netlify/Plain HTML', _('A plain HTML site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features.'), 'https://gitlab.com/pages/nfplain-html', 'illustrations/logos/netlify.svg'),
       ProjectTemplate.new('nfgitbook', 'Netlify/GitBook', _('A GitBook site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features.'), 'https://gitlab.com/pages/nfgitbook', 'illustrations/logos/netlify.svg'),
       ProjectTemplate.new('nfhexo', 'Netlify/Hexo', _('A Hexo site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features.'), 'https://gitlab.com/pages/nfhexo', 'illustrations/logos/netlify.svg'),
+      ProjectTemplate.new('salesforcedx', 'SalesforceDX', _('A project boilerplate for Salesforce App development with Salesforce Developer tools.'), 'https://gitlab.com/gitlab-org/project-templates/salesforcedx'),
       ProjectTemplate.new('serverless_framework', 'Serverless Framework/JS', _('A basic page and serverless function that uses AWS Lambda, AWS API Gateway, and GitLab Pages'), 'https://gitlab.com/gitlab-org/project-templates/serverless-framework', 'illustrations/logos/serverless_framework.svg')
     ].freeze
 

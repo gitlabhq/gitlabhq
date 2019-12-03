@@ -16,13 +16,6 @@ entry.
 - Flatten exception details in API and controller logs. !20434
 
 
-## 12.5.2
-
-### Security (1 change)
-
-- Fix 500 error caused by invalid byte sequences in links.
-
-
 ## 12.5.1
 
 ### Security (11 changes)

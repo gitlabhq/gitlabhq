@@ -60,7 +60,7 @@ The following quick actions are applicable to descriptions, discussions and thre
 | `/remove_epic`                        | ✓     |               |      | Remove from epic **(ULTIMATE)** |
 | `/promote`                            | ✓     |               |      | Promote issue to epic **(ULTIMATE)** |
 | `/confidential`                       | ✓     |               |      | Make confidential |
-| `/duplicate <#issue>`                 | ✓     |               |      | Mark this issue as a duplicate of another issue |
+| `/duplicate <#issue>`                 | ✓     |               |      | Mark this issue as a duplicate of another issue and relate them for **(STARTER)** |
 | `/create_merge_request <branch name>` | ✓     |               |      | Create a new merge request starting from the current issue |
 | `/relate #issue1 #issue2`             | ✓     |               |      | Mark issues as related **(STARTER)** |
 | `/move <path/to/project>`             | ✓     |               |      | Move this issue to another project |

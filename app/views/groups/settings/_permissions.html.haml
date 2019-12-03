@@ -23,6 +23,13 @@
           %span.d-block= s_('GroupSettings|Disable email notifications')
           %span.text-muted= s_('GroupSettings|This setting will override user notification preferences for all members of the group, subgroups, and projects.')
 
+    .form-group.append-bottom-default
+      .form-check
+        = f.check_box :mentions_disabled, checked: @group.mentions_disabled?, class: 'form-check-input'
+        = f.label :mentions_disabled, class: 'form-check-label' do
+          %span.d-block= s_('GroupSettings|Disable group mentions')
+          %span.text-muted= s_('GroupSettings|This setting will prevent group members from being notified if the group is mentioned.')
+
     = render_if_exists 'groups/settings/ip_restriction', f: f, group: @group
     = render_if_exists 'groups/settings/allowed_email_domain', f: f, group: @group
     = render 'groups/settings/lfs', f: f

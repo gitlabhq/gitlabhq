@@ -97,7 +97,9 @@ module Banzai
       def find_users_for_groups(ids)
         return [] if ids.empty?
 
-        User.joins(:group_members).where(members: { source_id: ids }).to_a
+        User.joins(:group_members).where(members: {
+          source_id: Namespace.where(id: ids).where('mentions_disabled IS NOT TRUE').select(:id)
+        }).to_a
       end
 
       def find_users_for_projects(ids)

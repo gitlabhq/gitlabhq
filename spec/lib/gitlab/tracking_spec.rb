@@ -97,7 +97,7 @@ describe Gitlab::Tracking do
           '_property_',
           '_value_',
           nil,
-          timestamp.to_i
+          (timestamp.to_f * 1000).to_i
         )
 
         track_event
@@ -130,7 +130,7 @@ describe Gitlab::Tracking do
         expect(tracker).to receive(:track_self_describing_event).with(
           '_event_json_',
           nil,
-          timestamp.to_i
+          (timestamp.to_f * 1000).to_i
         )
 
         track_event
