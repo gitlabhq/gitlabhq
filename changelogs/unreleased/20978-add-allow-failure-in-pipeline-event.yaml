@@ -1,0 +1,6 @@
+---
+title: |
+  Add allow failure in pipeline webhook event
+merge_request: 20978
+author: Gaetan Semet
+type: added

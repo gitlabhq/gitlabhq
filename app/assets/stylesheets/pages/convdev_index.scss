@@ -1,24 +1,24 @@
 $space-between-cards: 8px;
 
-.convdev-empty svg {
+.devops-empty svg {
   margin: 64px auto 32px;
   max-width: 420px;
 }
 
-.convdev-header {
+.devops-header {
   margin-top: $gl-padding;
   margin-bottom: $gl-padding;
   padding: 0 4px;
   display: flex;
   align-items: center;
 
-  .convdev-header-title {
+  .devops-header-title {
     font-size: 48px;
     line-height: 1;
     margin: 0;
   }
 
-  .convdev-header-subtitle {
+  .devops-header-subtitle {
     font-size: 22px;
     line-height: 1;
     color: $gl-text-color-secondary;
@@ -36,13 +36,13 @@ $space-between-cards: 8px;
   }
 }
 
-.convdev-cards {
+.devops-cards {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
 }
 
-.convdev-card-wrapper {
+.devops-card-wrapper {
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -70,7 +70,7 @@ $space-between-cards: 8px;
   }
 }
 
-.convdev-card {
+.devops-card {
   border: solid 1px $border-color;
   border-radius: 3px;
   border-top-width: 3px;
@@ -79,7 +79,7 @@ $space-between-cards: 8px;
   flex-grow: 1;
 }
 
-.convdev-card-low {
+.devops-card-low {
   border-top-color: $red-400;
 
   .board-card-score-big {
@@ -87,7 +87,7 @@ $space-between-cards: 8px;
   }
 }
 
-.convdev-card-average {
+.devops-card-average {
   border-top-color: $orange-400;
 
   .board-card-score-big {
@@ -95,7 +95,7 @@ $space-between-cards: 8px;
   }
 }
 
-.convdev-card-high {
+.devops-card-high {
   border-top-color: $green-400;
 
   .board-card-score-big {
@@ -103,7 +103,7 @@ $space-between-cards: 8px;
   }
 }
 
-.convdev-card-title {
+.devops-card-title {
   margin: $gl-padding auto auto;
   max-width: 100px;
 
@@ -170,7 +170,7 @@ $space-between-cards: 8px;
   }
 }
 
-.convdev-steps {
+.devops-steps {
   margin-top: $gl-padding;
   height: 1px;
   min-width: 100%;
@@ -179,7 +179,7 @@ $space-between-cards: 8px;
   background: $border-color;
 }
 
-.convdev-step {
+.devops-step {
   $step-positions: 5% 10% 30% 42% 48% 55% 60% 70% 75% 90%;
   @each $pos in $step-positions {
     $i: index($step-positions, $pos);
@@ -212,7 +212,7 @@ $space-between-cards: 8px;
     height: auto;
     width: auto;
 
-    .convdev-step-title {
+    .devops-step-title {
       max-height: 2em;
       opacity: 1;
       transition: opacity 0.2s;
@@ -233,7 +233,7 @@ $space-between-cards: 8px;
   }
 }
 
-.convdev-step-title {
+.devops-step-title {
   max-height: 0;
   opacity: 0;
   text-transform: uppercase;
@@ -242,14 +242,14 @@ $space-between-cards: 8px;
   font-size: 12px;
 }
 
-.convdev-high-score {
+.devops-high-score {
   color: $green-400;
 }
 
-.convdev-average-score {
+.devops-average-score {
   color: $orange-400;
 }
 
-.convdev-low-score {
+.devops-low-score {
   color: $red-400;
 }

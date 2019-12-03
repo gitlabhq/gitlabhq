@@ -61,6 +61,7 @@ module Gitlab
           finished_at: build.finished_at,
           when: build.when,
           manual: build.action?,
+          allow_failure: build.allow_failure,
           user: build.user.try(:hook_attrs),
           runner: build.runner && runner_hook_attrs(build.runner),
           artifacts_file: {

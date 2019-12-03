@@ -591,7 +591,7 @@ filter_output = search_field_tag search_id, nil, class: "dropdown-input-field", 
 > `data-qa-*` data attributes and CSS classes starting with `qa-` are used solely for the purpose of QA and testing.
 > By defining these, we add **testability** to the application.
 >
-> When defining a data attribute like: `qa_selector: 'labels_block'`, it should match the element definition: `element :labels_block`. We use a [sanity test](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/qa/qa/page#how-did-we-solve-fragile-tests-problem) to check that defined elements have their respective selectors in the specified views.
+> When defining a data attribute like: `qa_selector: 'labels_block'`, it should match the element definition: `element :labels_block`. We use a [sanity test](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/doc/development/testing_guide/end_to_end/page_objects.md#how-did-we-solve-fragile-tests-problem) to check that defined elements have their respective selectors in the specified views.
 
 #### Updates in the `QA::Page::Base` class
 

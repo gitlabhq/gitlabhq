@@ -15,12 +15,31 @@ documentation is associated with:
 Documentation is not usually required when a "backstage feature" is added or changed, and does not
 directly affect the way that any user or administrator interacts with GitLab.
 
+## Documentation labels
+
+Regardless of the type of issue or merge request, certain labels are required when documentation
+is added or updated. The following are added by the issue or merge request author:
+
+- An appropriate [type label](../contributing/issue_workflow.md#type-labels). For example,
+  `~backstage`.
+- The [stage label](../contributing/issue_workflow.md#stage-labels) and
+  [group label](../contributing/issue_workflow.md#group-labels). For example, `~devops::create` and
+  `~group::source code`.
+- The `~documentation` [specialization label](../contributing/issue_workflow.md#specialization-labels).
+
+The following are also added by members of the Technical Writing team:
+
+- A documentation [scoped label](../../user/project/labels.md#scoped-labels-premium) with the
+  `docs::` prefix. For example, `~docs::improvement`.
+- The `~Technical Writing` [team label](../contributing/issue_workflow.md#team-labels).
+
 ## For a product change
 
 This documentation is required for any new or changed feature and is:
 
-- Created or updated as part of feature development, typically via the same merge request as the
-  feature code.
+- Created or updated as part of feature development, almost always in the same merge request as the
+  feature code. Including documentation in the same merge request as the code eliminates the
+  possibility that code and documentation get out of sync.
 - Required with the delivery of a feature for a specific milestone as part of GitLab's
   [definition of done](../contributing/merge_request_workflow.md#definition-of-done).
 - Often linked from the release post.
@@ -100,27 +119,9 @@ Prior to merging, documentation changes committed by the developer must be revie
 
 - The code reviewer for the merge request. This is known as a technical review.
 - Optionally, others involved in the work, such as other developers or the Product Manager.
-- Optionally, the Technical Writer for the DevOps stage group.
+- The Technical Writer for the DevOps stage group, except in exceptional circumstances where a
+  [post-merge review](#post-merge-reviews) can be requested.
 - A maintainer of the project.
-
-If not assigned to a Technical Writer for review prior to merging, a review must be scheduled
-immediately after merge by the developer or maintainer. For this,
-create an issue using the [Doc Review description template](https://gitlab.com/gitlab-org/gitlab/issues/new?issuable_template=Doc%20Review)
-and link to it from the merged merge request that introduced the documentation change.
-
-To decide whether to request a Technical Writer review before or after merge, consider:
-
-- The amount of time left before the milestone release. If there is less than three days
-  remaining, seek a post-merge review and ping the writer via Slack to ensure the review is
-  completed in time.
-- The size of the change and your degree of confidence in having early users (for example,
-  GitLab.com users) of features use your documentation as written.
-- That pre-merge Technical Writer reviews should be most common when the code is complete well in
-  advance of a milestone release and for larger documentation changes.
-- You can request a post-merge Technical Writer review if it's important to get the code part of
-  a merge request merged as soon as possible.
-- The Technical Writer can also help decide that documentation can be merged without Technical
-  writer review, with the review to occur soon after merge.
 
 #### Product Managers
 
@@ -149,10 +150,12 @@ will do the following:
 
 Technical Writers are responsible for:
 
+- Participating in issues discussions and reviewing MRs for the upcoming milestone.
 - Reviewing documentation requirements in issues when called upon.
 - Answering questions, and helping and providing advice throughout the authoring and editing
   process.
-- Reviewing all new and updated documentation content, whether before merge or after it is merged.
+- Reviewing all significant new and updated documentation content, whether before merge or after it
+  is merged.
 - Assisting the developer and Product Manager with feature documentation delivery.
 
 ##### Planning
@@ -228,7 +231,7 @@ have this section by default.
 Anyone can add these details, but the Product Manager who assigns the issue to a specific release
 milestone will ensure these details are present and finalized by the time of that milestone's kickoff.
 
-Developers, Technical Writers, and others may help further refine this plan at any time.
+Developers, Technical Writers, and others may help further refine this plan at any time on request.
 
 The following details should be included:
 
@@ -283,12 +286,22 @@ To update GitLab documentation:
 TIP: **Tip:**
 Work in a fork if you do not have developer access to the GitLab project.
 
-Ping the Technical Writer for the relevant [DevOps stage group](https://about.gitlab.com/handbook/product/technical-writing/index.html#assignments)
-in your issue or merge request, or within `#docs` if you are a member of GitLab's Slack workspace, if you:
+Request help from the Technical Writing team if you:
 
 - Need help to choose the correct place for documentation.
 - Want to discuss a documentation idea or outline.
 - Want to request any other help.
+
+To request help:
+
+1. Locate the the Technical Writer for the relevant
+   [DevOps stage group](https://about.gitlab.com/handbook/product/technical-writing/index.html#assignments).
+1. Either:
+   - If urgent help is required, directly assign the Technical Writer in the issue or
+     [in the merge request](../../user/project/merge_requests/creating_merge_requests.md#multiple-assignees-starter).
+   - If non-urgent help is required, ping the Technical Writer in the issue or merge request.
+
+If you are a member of GitLab's Slack workspace, you can request help in `#docs`.
 
 ### Reviewing and merging
 
@@ -307,11 +320,10 @@ The process involves the following:
   or other appropriate colleague to confirm accuracy, clarity, and completeness. This can be skipped
   for minor fixes without substantive content changes.
 - Technical Writer (Optional). If not completed for a merge request prior to merging, must be scheduled
-  post-merge. To request a:
+  post-merge. Schedule post-merge reviews only if an urgent merge is required. To request a:
   - Pre-merge review, assign the Technical Writer listed for the applicable
     [DevOps stage group](https://about.gitlab.com/handbook/product/technical-writing/index.html#assignments).
-  - Post-merge review, [create an issue for one](https://gitlab.com/gitlab-org/gitlab/issues/new?issuable_template=Doc%20Review)
-    and link it from the MR that makes the documentation change.
+  - Post-merge review, see [Post-merge reviews](#post-merge-reviews).
 - Maintainer. For merge requests, Maintainers:
   - Can always request any of the above reviews.
   - Review before or after a Technical Writer review.
@@ -319,7 +331,7 @@ The process involves the following:
   - Ensure the appropriate labels are applied, including any required to pick a merge request into
     a release.
   - Ensure that, if there has not been a Technical Writer review completed or scheduled, they
-    [create the required issue](https://gitlab.com/gitlab-org/gitlab/issues/new?issuable_template=Doc%20Review), assign to the technical writer of the given stage group,
+    [create the required issue](https://gitlab.com/gitlab-org/gitlab/issues/new?issuable_template=Doc%20Review), assign to the Technical Writer of the given stage group,
     and link it from the merge request.
 
 The process is reflected in the **Documentation**
@@ -330,3 +342,50 @@ The process is reflected in the **Documentation**
 If you have ideas for further documentation resources please
 [create an issue](https://gitlab.com/gitlab-org/gitlab/issues/new?issuable_template=Documentation)
 using the Documentation template.
+
+## Post-merge reviews
+
+If not assigned to a Technical Writer for review prior to merging, a review must be scheduled
+immediately after merge by the developer or maintainer. For this,
+create an issue using the [Doc Review description template](https://gitlab.com/gitlab-org/gitlab/issues/new?issuable_template=Doc%20Review)
+and link to it from the merged merge request that introduced the documentation change.
+
+Circumstances where a regular pre-merge Technical Writer review might be skipped include:
+
+- There is a short amount of time left before the milestone release. If there are less than three days
+  remaining, seek a post-merge review and ping the writer via Slack to ensure the review is
+  completed as soon as possible.
+- The size of the change is small and you have a high degree of confidence
+  that early users of the feature (for example, GitLab.com users) can easily
+  use the documentation as written.
+
+Remember:
+
+- At GitLab, we treat documentation like code. As with code, documentation must be reviewed to
+  ensure quality.
+- Documentation forms part of the GitLab [definition of done](../contributing/merge_request_workflow.md#definition-of-done).
+- That pre-merge Technical Writer reviews should be most common when the code is complete well in
+  advance of a milestone release and for larger documentation changes.
+- You can request a post-merge Technical Writer review of documentation if it's important to get the
+  code with which it ships merged as soon as possible. In this case, the author of the original MR
+  will address the feedback provided by the Technical Writer in a follow-up MR.
+- The Technical Writer can also help decide that documentation can be merged without Technical
+  writer review, with the review to occur soon after merge.
+
+### Before merging
+
+Ensure the following if skipping an initial Technical Writer review:
+
+- That [product badges](styleguide.md#product-badges) are applied.
+- That the GitLab [version](styleguide.md#text-for-documentation-requiring-version-text) that
+  introduced the feature has been included.
+- That changes to headings don't affect in-app hyperlinks.
+- Specific [user permissions](../../user/permissions.md) are documented.
+- That new documents are linked from higher-level indexes, for discoverability.
+- Style guide is followed:
+  - For [directories and files](styleguide.md#working-with-directories-and-files).
+  - For [images](styleguide.md#images).
+
+NOTE: **Note:**
+Merge requests that change the location of documentation must always be reviewed by a Technical
+Writer prior to merging.

@@ -53,6 +53,8 @@ describe Gitlab::UsageData do
       create(:grafana_integration, project: projects[1], enabled: true)
       create(:grafana_integration, project: projects[2], enabled: false)
 
+      allow(Gitlab::GrafanaEmbedUsageData).to receive(:issue_count).and_return(2)
+
       ProjectFeature.first.update_attribute('repository_access_level', 0)
     end
 
@@ -152,6 +154,7 @@ describe Gitlab::UsageData do
         issues
         issues_with_associated_zoom_link
         issues_using_zoom_quick_actions
+        issues_with_embedded_grafana_charts_approx
         keys
         label_lists
         labels
@@ -211,6 +214,7 @@ describe Gitlab::UsageData do
       expect(count_data[:projects_with_error_tracking_enabled]).to eq(1)
       expect(count_data[:issues_with_associated_zoom_link]).to eq(2)
       expect(count_data[:issues_using_zoom_quick_actions]).to eq(3)
+      expect(count_data[:issues_with_embedded_grafana_charts_approx]).to eq(2)
 
       expect(count_data[:clusters_enabled]).to eq(4)
       expect(count_data[:project_clusters_enabled]).to eq(3)

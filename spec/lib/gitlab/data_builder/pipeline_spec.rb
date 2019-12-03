@@ -34,6 +34,7 @@ describe Gitlab::DataBuilder::Pipeline do
       expect(build_data).to be_a(Hash)
       expect(build_data[:id]).to eq(build.id)
       expect(build_data[:status]).to eq(build.status)
+      expect(build_data[:allow_failure]).to eq(build.allow_failure)
       expect(project_data).to eq(project.hook_attrs(backward: false))
       expect(data[:merge_request]).to be_nil
     end

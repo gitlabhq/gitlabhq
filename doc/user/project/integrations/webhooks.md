@@ -1076,6 +1076,7 @@ X-Gitlab-Event: Pipeline Hook
          "finished_at": null,
          "when": "manual",
          "manual": true,
+         "allow_failure": false,
          "user":{
             "name": "Administrator",
             "username": "root",
@@ -1097,6 +1098,7 @@ X-Gitlab-Event: Pipeline Hook
          "finished_at": null,
          "when": "on_success",
          "manual": false,
+         "allow_failure": false,
          "user":{
             "name": "Administrator",
             "username": "root",
@@ -1123,6 +1125,7 @@ X-Gitlab-Event: Pipeline Hook
          "finished_at": "2016-08-12 15:26:29 UTC",
          "when": "on_success",
          "manual": false,
+         "allow_failure": false,
          "user":{
             "name": "Administrator",
             "username": "root",
@@ -1149,6 +1152,7 @@ X-Gitlab-Event: Pipeline Hook
          "finished_at": "2016-08-12 15:25:26 UTC",
          "when": "on_success",
          "manual": false,
+         "allow_failure": false,
          "user":{
             "name": "Administrator",
             "username": "root",
@@ -1175,6 +1179,7 @@ X-Gitlab-Event: Pipeline Hook
          "finished_at": null,
          "when": "on_success",
          "manual": false,
+         "allow_failure": false,
          "user":{
             "name": "Administrator",
             "username": "root",
