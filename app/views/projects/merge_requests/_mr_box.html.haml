@@ -1,13 +1,6 @@
-.detail-page-description
-  %h2.title.qa-title
+.detail-page-description{ class: ("py-2" if mr_tabs_position_enabled?) }
+  %h2.title.qa-title{ class: ("mb-0" if mr_tabs_position_enabled?) }
     = markdown_field(@merge_request, :title)
 
-  %div
-    - if @merge_request.description.present?
-      .description.qa-description{ class: can?(current_user, :update_merge_request, @merge_request) ? 'js-task-list-container' : '' }
-        .md
-          = markdown_field(@merge_request, :description)
-        %textarea.hidden.js-task-list-field
-          = @merge_request.description
-
-  = edited_time_ago_with_tooltip(@merge_request, placement: 'bottom')
+  - unless mr_tabs_position_enabled?
+    = render "projects/merge_requests/description"

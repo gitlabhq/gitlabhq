@@ -25,15 +25,16 @@ describe 'Merge request > User sees MR with deleted source branch', :js do
 
   it 'still contains Discussion, Commits and Changes tabs' do
     within '.merge-request-details' do
-      expect(page).to have_content('Discussion')
+      expect(page).to have_content('Overview')
       expect(page).to have_content('Commits')
       expect(page).to have_content('Changes')
     end
+
+    expect(page).to have_content('Source branch does not exist.')
 
     click_on 'Changes'
     wait_for_requests
 
     expect(page).to have_selector('.diffs.tab-pane .file-holder')
-    expect(page).to have_content('Source branch does not exist.')
   end
 end

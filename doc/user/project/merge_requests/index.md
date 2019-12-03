@@ -40,6 +40,40 @@ B. Consider you're a web developer writing a webpage for your company's website:
 1. Once approved, your merge request is [squashed and merged](squash_and_merge.md), and [deployed to staging with GitLab Pages](https://about.gitlab.com/blog/2016/08/26/ci-deployment-and-environments/)
 1. Your production team [cherry picks](cherry_pick_changes.md) the merge commit into production
 
+## Overview
+
+Merge requests (aka "MRs") display a great deal of information about the changes proposed.
+The body of an MR contains its description, along with its widget (displaying information
+about CI/CD pipelines, when present), followed by the discussion threads of the people
+collaborating with that MR.
+
+MRs also contain navigation tabs from which you can see the discussion happening on the thread,
+the list of commits, the list of pipelines and jobs, the code changes and inline code reviews.
+
+## Merge request navigation tabs at the top
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/33813) in GitLab 12.6. This positioning is experimental.
+
+So far, the navigation tabs present in merge requests to display **Discussion**,
+**Commits**, **Pipelines**, and **Changes** were located after the merge request
+widget.
+
+To facilitate this navigation without having to scroll up and down through the page
+to find these tabs, based on user feedback, we are experimenting with a new positioning
+of these tabs. They are now located at the top of the merge request, with a new
+**Overview** tab, containing the description of the merge request followed by the
+widget. Next to **Overview**, you can find **Pipelines**, **Commits**, and **Changes**.
+
+![Merge request tab positions](img/merge_request_tab_position_v12_6.png)
+
+Please note this change is currently behind a feature flag which is enabled by default. For
+self-managed instances, it can be disabled through the Rails console by a GitLab
+administrator with the following command:
+
+```ruby
+Feature.disable(:mr_tabs_position)
+```
+
 ## Creating merge requests
 
 While making changes to files in the `master` branch of a repository is possible, it is not

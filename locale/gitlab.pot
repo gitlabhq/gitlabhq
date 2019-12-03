@@ -11212,6 +11212,9 @@ msgstr ""
 msgid "More information"
 msgstr ""
 
+msgid "More information and share feedback"
+msgstr ""
+
 msgid "More information is available|here"
 msgstr ""
 
@@ -11821,6 +11824,9 @@ msgid "Nov"
 msgstr ""
 
 msgid "November"
+msgstr ""
+
+msgid "Now you can access the merge request navigation tabs at the top, where they’re easier to find."
 msgstr ""
 
 msgid "Number of Elasticsearch replicas"

@@ -1,0 +1,7 @@
+- tab_name = local_assigns.fetch(:name, nil)
+- tab_id = local_assigns.fetch(:id, nil)
+- tab_class = local_assigns.fetch(:class, nil)
+- tab_data = local_assigns.fetch(:data, nil)
+
+.tab-pane{ id: tab_id, class: tab_class, style: ("display: block" if params[:tab] == tab_name), data: tab_data }
+  = yield
