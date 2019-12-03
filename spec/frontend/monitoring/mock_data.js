@@ -110,9 +110,6 @@ export const anomalyMockGraphData = {
   type: 'anomaly-chart',
   weight: 3,
   metrics: [
-    // Not used
-  ],
-  queries: [
     {
       metricId: '90',
       id: 'metric',

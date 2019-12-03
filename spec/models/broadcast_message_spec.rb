@@ -88,6 +88,42 @@ describe BroadcastMessage do
       expect(Rails.cache).not_to receive(:delete).with(described_class::CACHE_KEY)
       expect(described_class.current.length).to eq(0)
     end
+
+    it 'returns message if it matches the target path' do
+      message = create(:broadcast_message, target_path: "*/onboarding_completed")
+
+      expect(described_class.current('/users/onboarding_completed')).to include(message)
+    end
+
+    it 'returns message if part of the target path matches' do
+      create(:broadcast_message, target_path: "/users/*/issues")
+
+      expect(described_class.current('/users/name/issues').length).to eq(1)
+    end
+
+    it 'returns the message for empty target path' do
+      create(:broadcast_message, target_path: "")
+
+      expect(described_class.current('/users/name/issues').length).to eq(1)
+    end
+
+    it 'returns the message if target path is nil' do
+      create(:broadcast_message, target_path: nil)
+
+      expect(described_class.current('/users/name/issues').length).to eq(1)
+    end
+
+    it 'does not return message if target path does not match' do
+      create(:broadcast_message, target_path: "/onboarding_completed")
+
+      expect(described_class.current('/welcome').length).to eq(0)
+    end
+
+    it 'does not return message if target path does not match when using wildcard' do
+      create(:broadcast_message, target_path: "/users/*/issues")
+
+      expect(described_class.current('/group/groupname/issues').length).to eq(0)
+    end
   end
 
   describe '#attributes' do

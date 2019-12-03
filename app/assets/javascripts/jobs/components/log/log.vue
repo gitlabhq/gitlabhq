@@ -9,7 +9,12 @@ export default {
     LogLine,
   },
   computed: {
-    ...mapState(['traceEndpoint', 'trace', 'isTraceComplete']),
+    ...mapState([
+      'traceEndpoint',
+      'trace',
+      'isTraceComplete',
+      'isScrolledToBottomBeforeReceivingTrace',
+    ]),
   },
   updated() {
     this.$nextTick(() => {

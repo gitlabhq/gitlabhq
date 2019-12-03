@@ -1725,17 +1725,6 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
-  describe '.latest_for_shas' do
-    let(:sha) { 'abc' }
-
-    it 'returns latest pipeline for sha' do
-      create(:ci_pipeline, sha: sha)
-      pipeline2 = create(:ci_pipeline, sha: sha)
-
-      expect(described_class.latest_for_shas(sha)).to contain_exactly(pipeline2)
-    end
-  end
-
   describe '.latest_successful_ids_per_project' do
     let(:projects) { create_list(:project, 2) }
     let!(:pipeline1) { create(:ci_pipeline, :success, project: projects[0]) }

@@ -72,7 +72,7 @@ Decision on whether backporting a change will be performed is done at the discre
 
 1. Estimated [severity][severity-labels] of the bug: Highest possible impact to users based on the current definition of severity.
 
-1. Estimated [priority][priority-labels] of the bug: Immediate impact on all impacted users based on the above estimated severity.
+1. Estimated [priority][priority-definition] of the bug: Immediate impact on all impacted users based on the above estimated severity.
 
 1. Potentially incurring data loss and/or security breach.
 
@@ -115,16 +115,24 @@ one major version. For example, it is safe to:
   - `8.9.0` -> `8.9.7`
   - `8.9.0` -> `8.9.1`
   - `8.9.2` -> `8.9.6`
+  - `9.5.5` -> `9.5.9`
+  - `10.6.3` -> `10.6.6`
+  - `11.11.1` -> `11.11.8`
+  - `12.0.4` -> `12.0.9`
 - Upgrade the minor version:
   - `8.9.4` -> `8.12.3`
   - `9.2.3` -> `9.5.5`
+  - `10.6.6` -> `10.8.7`
+  - `11.3.4` -> `11.11.8`
 
 Upgrading the major version requires more attention.
 We cannot guarantee that upgrading between major versions will be seamless. As previously mentioned, major versions are reserved for backwards incompatible changes.
-
 We recommend that you first upgrade to the latest available minor version within
 your major version. By doing this, you can address any deprecation messages
 that could change behavior in the next major release.
+To ensure background migrations are successful, increment by one minor version during the version jump before installing newer releases.
+
+For example: `11.11.x` -> `12.0.x`
 
 Please see the table below for some examples:
 
@@ -133,7 +141,7 @@ Please see the table below for some examples:
 | 9.4.5                 | 8.13.4       | `8.13.4` -> `8.17.7` -> `9.4.5`                          | `8.17.7` is the last version in version `8` |
 | 10.1.4                | 8.13.4       | `8.13.4 -> 8.17.7 -> 9.5.10 -> 10.1.4`                   | `8.17.7` is the last version in version `8`, `9.5.10` is the last version in version `9` |
 | 11.3.4                | 8.13.4       | `8.13.4` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> `11.3.4` | `8.17.7` is the last version in version `8`, `9.5.10` is the last version in version `9`, `10.8.7` is the last version in version `10` |
-| 12.0.2                | 11.3.4       | `11.3.4` -> `11.11.x` -> `12.0.2`                        | `11.11.x` is the last version in version `11`
+| 12.5.8                | 11.3.4       | `11.3.4` -> `11.11.8` -> `12.0.9` -> `12.5.8`            | `11.11.8` is the last version in version `11` |
 
 More information about the release procedures can be found in our
 [release documentation](https://gitlab.com/gitlab-org/release/docs). You may also want to read our
@@ -143,4 +151,4 @@ More information about the release procedures can be found in our
 [priority-definition]: ../development/contributing/issue_workflow.md#priority-labels
 [severity-labels]: ../development/contributing/issue_workflow.html#severity-labels
 [managing bugs]: https://gitlab.com/gitlab-org/gitlab/blob/master/PROCESS.md#managing-bugs
-[release/tasks]: https://gitlab.com/gitlab-org/release/tasks/issues
+[release/tasks]: https://gitlab.com/gitlab-org/release/tasks/issues/new?issuable_template=Backporting-request

@@ -9,8 +9,7 @@ module QA
       let(:key_title) { "key for ssh tests #{Time.now.to_f}" }
 
       it 'user adds an ssh key and pushes code to the repository' do
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.perform(&:sign_in_using_credentials)
+        Flow::Login.sign_in
 
         key = Resource::SSHKey.fabricate! do |resource|
           resource.title = key_title

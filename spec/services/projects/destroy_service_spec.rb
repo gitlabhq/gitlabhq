@@ -296,9 +296,12 @@ describe Projects::DestroyService do
   end
 
   context 'as the root of a fork network' do
-    let!(:fork_network) { create(:fork_network, root_project: project) }
+    let!(:fork_1) { fork_project(project, user) }
+    let!(:fork_2) { fork_project(project, user) }
 
     it 'updates the fork network with the project name' do
+      fork_network = project.fork_network
+
       destroy_project(project, user)
 
       fork_network.reload

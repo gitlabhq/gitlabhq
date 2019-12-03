@@ -6,6 +6,7 @@ import howToMerge from '~/how_to_merge';
 import initPipelines from '~/commit/pipelines/pipelines_bundle';
 import initVueIssuableSidebarApp from '~/issuable_sidebar/sidebar_bundle';
 import initSourcegraph from '~/sourcegraph';
+import initPopover from '~/mr_tabs_popover';
 import initWidget from '../../../vue_merge_request_widget';
 
 export default function() {
@@ -21,4 +22,10 @@ export default function() {
   howToMerge();
   initWidget();
   initSourcegraph();
+
+  const tabHighlightEl = document.querySelector('.js-tabs-feature-highlight');
+
+  if (tabHighlightEl) {
+    initPopover(tabHighlightEl);
+  }
 }

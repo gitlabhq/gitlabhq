@@ -39,6 +39,50 @@ To distinguish queries from mutations and fragments, the following naming conven
 - `addUser.mutation.graphql` for mutations;
 - `basicUser.fragment.graphql` for fragments.
 
+GraphQL:
+
+- Queries are stored in `(ee/)app/assets/javascripts/` under the feature. For example, `respository/queries`. Frontend components can use these stored queries.
+- Mutations are stored in
+  `(ee/)app/assets/javascripts/<subfolders>/<name of mutation>.mutation.graphql`.
+
+### Fragments
+
+Fragments are a way to make your complex GraphQL queries more readable and re-usable.
+They can be stored in a separate file and imported.
+
+For example, a fragment that references another fragment:
+
+```ruby
+fragment BaseEpic on Epic {
+  id
+  iid
+  title
+  webPath
+  relativePosition
+  userPermissions {
+    adminEpic
+    createEpic
+  }
+}
+
+fragment EpicNode on Epic {
+  ...BaseEpic
+  state
+  reference(full: true)
+  relationPath
+  createdAt
+  closedAt
+  hasChildren
+  hasIssues
+  group {
+    fullPath
+  }
+}
+```
+
+More about fragments:
+[GraphQL Docs](https://graphql.org/learn/queries/#fragments)
+
 ## Usage in Vue
 
 To use Vue Apollo, import the [Vue Apollo][vue-apollo] plugin as well

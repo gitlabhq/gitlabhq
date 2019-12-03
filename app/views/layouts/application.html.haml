@@ -1,7 +1,7 @@
 !!! 5
 %html{ lang: I18n.locale, class: page_class }
   = render "layouts/head"
-  %body{ class: "#{user_application_theme} #{@body_class} #{client_class_list}", data: { page: body_data_page, project: "#{@project.path if @project}", group: "#{@group.path if @group}", find_file: find_file_path } }
+  %body{ class: "#{user_application_theme} #{@body_class} #{client_class_list}", data: body_data }
     = render "layouts/init_auto_complete" if @gfm_form
     = render "layouts/init_client_detection_flags"
     = render 'peek/bar'

@@ -218,11 +218,16 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def ci_environments_status
-    environments = if ci_environments_status_on_merge_result?
-                     EnvironmentStatus.after_merge_request(@merge_request, current_user)
-                   else
-                     EnvironmentStatus.for_merge_request(@merge_request, current_user)
-                   end
+    environments =
+      if ci_environments_status_on_merge_result?
+        if Feature.enabled?(:deployment_merge_requests_widget, @project)
+          EnvironmentStatus.for_deployed_merge_request(@merge_request, current_user)
+        else
+          EnvironmentStatus.after_merge_request(@merge_request, current_user)
+        end
+      else
+        EnvironmentStatus.for_merge_request(@merge_request, current_user)
+      end
 
     render json: EnvironmentStatusSerializer.new(current_user: current_user).represent(environments)
   end

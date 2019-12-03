@@ -133,8 +133,6 @@ class Projects::BranchesController < Projects::ApplicationController
   # frontend could omit this set. To prevent excessive I/O, we require
   # that a list of names be specified.
   def limit_diverging_commit_counts!
-    return unless Feature.enabled?(:limit_diverging_commit_counts, default_enabled: true)
-
     limit = Kaminari.config.default_per_page
 
     # If we don't have many branches in the repository, then go ahead.

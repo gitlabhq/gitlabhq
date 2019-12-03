@@ -17,9 +17,6 @@ class PersonalSnippetPolicy < BasePolicy
     enable :create_note
   end
 
-  rule { ~anonymous }.enable :create_personal_snippet
-  rule { external_user }.prevent :create_personal_snippet
-
   rule { internal_snippet & ~external_user }.policy do
     enable :read_personal_snippet
     enable :create_note

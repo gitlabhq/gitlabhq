@@ -189,7 +189,7 @@ Parameters:
 
 Request body:
 
-- `description` (required) - Release notes with markdown support
+- `description` (required) - Release notes with Markdown support
 
 ```json
 {
@@ -221,7 +221,7 @@ Parameters:
 
 Request body:
 
-- `description` (required) - Release notes with markdown support
+- `description` (required) - Release notes with Markdown support
 
 ```json
 {

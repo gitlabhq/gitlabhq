@@ -75,7 +75,9 @@ describe MergeRequest::Pipelines do
       let(:shas) { project.repository.commits(source_ref, limit: 2).map(&:id) }
 
       before do
-        allow(merge_request).to receive(:all_commit_shas) { shas }
+        create(:merge_request_diff_commit,
+          merge_request_diff: merge_request.merge_request_diff,
+          sha: shas.second, relative_order: 1)
       end
 
       it 'returns merge request pipeline first' do
@@ -119,7 +121,11 @@ describe MergeRequest::Pipelines do
         end
 
         before do
-          allow(merge_request_2).to receive(:all_commit_shas) { shas }
+          shas.each.with_index do |sha, index|
+            create(:merge_request_diff_commit,
+              merge_request_diff: merge_request_2.merge_request_diff,
+              sha: sha, relative_order: index)
+          end
         end
 
         it 'returns only related merge request pipelines' do

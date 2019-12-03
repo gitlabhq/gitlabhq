@@ -15,3 +15,5 @@ module API
     end
   end
 end
+
+API::Helpers::CommonHelpers.prepend_if_ee('EE::API::Helpers::CommonHelpers')

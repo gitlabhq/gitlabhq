@@ -22,7 +22,7 @@ module Ci
     end
 
     def create
-      return unless enabled? && !exist?
+      return unless enabled?
 
       create_ref(sha, path)
     rescue => e

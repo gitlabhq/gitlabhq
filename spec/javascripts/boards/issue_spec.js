@@ -7,13 +7,13 @@ import '~/boards/models/issue';
 import '~/boards/models/list';
 import '~/boards/services/board_service';
 import boardsStore from '~/boards/stores/boards_store';
-import { mockBoardService } from './mock_data';
+import { setMockEndpoints } from './mock_data';
 
 describe('Issue model', () => {
   let issue;
 
   beforeEach(() => {
-    gl.boardService = mockBoardService();
+    setMockEndpoints();
     boardsStore.create();
 
     issue = new ListIssue({

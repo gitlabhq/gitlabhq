@@ -46,6 +46,18 @@ class Snippet < ApplicationRecord
     length: { maximum: 255 }
 
   validates :content, presence: true
+  validates :content,
+            length: {
+              maximum: ->(_) { Gitlab::CurrentSettings.snippet_size_limit },
+              message: -> (_, data) do
+                current_value = ActiveSupport::NumberHelper.number_to_human_size(data[:value].size)
+                max_size = ActiveSupport::NumberHelper.number_to_human_size(Gitlab::CurrentSettings.snippet_size_limit)
+
+                _("is too long (%{current_value}). The maximum size is %{max_size}.") % { current_value: current_value, max_size: max_size }
+              end
+            },
+            if: :content_changed?
+
   validates :visibility_level, inclusion: { in: Gitlab::VisibilityLevel.values }
 
   # Scopes

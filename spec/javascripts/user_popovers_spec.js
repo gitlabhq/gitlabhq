@@ -38,6 +38,7 @@ describe('User Popovers', () => {
       const shownPopover = document.querySelector('.popover');
 
       expect(shownPopover).not.toBeNull();
+      expect(targetLink.getAttribute('aria-describedby')).not.toBeNull();
 
       expect(shownPopover.innerHTML).toContain(dummyUser.name);
       expect(UsersCache.retrieveById).toHaveBeenCalledWith(userId.toString());
@@ -47,6 +48,7 @@ describe('User Popovers', () => {
       setTimeout(() => {
         // After Mouse leave it should be hidden now
         expect(document.querySelector('.popover')).toBeNull();
+        expect(targetLink.getAttribute('aria-describedby')).toBeNull();
         done();
       });
     }, 210); // We need to wait until the 200ms mouseover delay is over, only then the popover will be visible

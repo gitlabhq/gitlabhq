@@ -1,0 +1,5 @@
+.content-block.content-block-small.emoji-list-container.js-noteable-awards
+  = render 'award_emoji/awards_block', awardable: @merge_request, inline: true do
+    - if mr_tabs_position_enabled?
+      .ml-auto.mt-auto.mb-auto
+        = render "projects/merge_requests/discussion_filter"

@@ -17,6 +17,7 @@ const handleUserPopoverMouseOut = event => {
     renderedPopover.$destroy();
     renderedPopover = null;
   }
+  target.removeAttribute('aria-describedby');
 };
 
 /**

@@ -54,8 +54,18 @@ describe Sentry::Client do
     end
   end
 
+  shared_examples 'issues has correct return type' do |klass|
+    it "returns objects of type #{klass}" do
+      expect(subject[:issues]).to all( be_a(klass) )
+    end
+  end
+
   shared_examples 'has correct length' do |length|
     it { expect(subject.length).to eq(length) }
+  end
+
+  shared_examples 'issues has correct length' do |length|
+    it { expect(subject[:issues].length).to eq(length) }
   end
 
   # Requires sentry_api_request and subject to be defined
@@ -95,23 +105,41 @@ describe Sentry::Client do
     let(:issue_status) { 'unresolved' }
     let(:limit) { 20 }
     let(:search_term) { '' }
+    let(:cursor) { nil }
+    let(:sort) { 'last_seen' }
     let(:sentry_api_response) { issues_sample_response }
     let(:sentry_request_url) { sentry_url + '/issues/?limit=20&query=is:unresolved' }
 
     let!(:sentry_api_request) { stub_sentry_request(sentry_request_url, body: sentry_api_response) }
 
-    subject { client.list_issues(issue_status: issue_status, limit: limit, search_term: search_term, sort: 'last_seen') }
+    subject { client.list_issues(issue_status: issue_status, limit: limit, search_term: search_term, sort: sort, cursor: cursor) }
 
     it_behaves_like 'calls sentry api'
 
-    it_behaves_like 'has correct return type', Gitlab::ErrorTracking::Error
-    it_behaves_like 'has correct length', 1
+    it_behaves_like 'issues has correct return type', Gitlab::ErrorTracking::Error
+    it_behaves_like 'issues has correct length', 1
 
     shared_examples 'has correct external_url' do
       context 'external_url' do
         it 'is constructed correctly' do
-          expect(subject[0].external_url).to eq('https://sentrytest.gitlab.com/sentry-org/sentry-project/issues/11')
+          expect(subject[:issues][0].external_url).to eq('https://sentrytest.gitlab.com/sentry-org/sentry-project/issues/11')
         end
+      end
+    end
+
+    context 'when response has a pagination info' do
+      let(:headers) do
+        {
+          link: '<https://sentrytest.gitlab.com>; rel="previous"; results="true"; cursor="1573556671000:0:1", <https://sentrytest.gitlab.com>; rel="next"; results="true"; cursor="1572959139000:0:0"'
+        }
+      end
+      let!(:sentry_api_request) { stub_sentry_request(sentry_request_url, body: sentry_api_response, headers: headers) }
+
+      it 'parses the pagination' do
+        expect(subject[:pagination]).to eq(
+          'previous' => { 'cursor' => '1573556671000:0:1' },
+          'next' => { 'cursor' => '1572959139000:0:0' }
+        )
       end
     end
 
@@ -137,7 +165,7 @@ describe Sentry::Client do
       end
 
       with_them do
-        it { expect(subject[0].public_send(error_object)).to eq(sentry_api_response[0].dig(*sentry_response)) }
+        it { expect(subject[:issues][0].public_send(error_object)).to eq(sentry_api_response[0].dig(*sentry_response)) }
       end
 
       it_behaves_like 'has correct external_url'
@@ -210,8 +238,8 @@ describe Sentry::Client do
 
       it_behaves_like 'calls sentry api'
 
-      it_behaves_like 'has correct return type', Gitlab::ErrorTracking::Error
-      it_behaves_like 'has correct length', 1
+      it_behaves_like 'issues has correct return type', Gitlab::ErrorTracking::Error
+      it_behaves_like 'issues has correct length', 1
 
       it_behaves_like 'has correct external_url'
     end
@@ -240,13 +268,23 @@ describe Sentry::Client do
     it_behaves_like 'maps exceptions'
 
     context 'when search term is present' do
-      let(:search_term) { 'NoMethodError'}
+      let(:search_term) { 'NoMethodError' }
       let(:sentry_request_url) { "#{sentry_url}/issues/?limit=20&query=is:unresolved NoMethodError" }
 
       it_behaves_like 'calls sentry api'
 
-      it_behaves_like 'has correct return type', Gitlab::ErrorTracking::Error
-      it_behaves_like 'has correct length', 1
+      it_behaves_like 'issues has correct return type', Gitlab::ErrorTracking::Error
+      it_behaves_like 'issues has correct length', 1
+    end
+
+    context 'when cursor is present' do
+      let(:cursor) { '1572959139000:0:0' }
+      let(:sentry_request_url) { "#{sentry_url}/issues/?limit=20&cursor=#{cursor}&query=is:unresolved" }
+
+      it_behaves_like 'calls sentry api'
+
+      it_behaves_like 'issues has correct return type', Gitlab::ErrorTracking::Error
+      it_behaves_like 'issues has correct length', 1
     end
   end
 

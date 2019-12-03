@@ -1,0 +1,5 @@
+---
+title: Add limit for snippet content size
+merge_request: 20346
+author:
+type: performance

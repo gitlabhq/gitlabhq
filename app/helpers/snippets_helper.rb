@@ -11,33 +11,9 @@ module SnippetsHelper
     end
   end
 
-  def reliable_snippet_path(snippet, opts = {})
-    reliable_snippet_url(snippet, opts.merge(only_path: true))
-  end
-
-  def reliable_raw_snippet_path(snippet, opts = {})
-    reliable_raw_snippet_url(snippet, opts.merge(only_path: true))
-  end
-
-  def reliable_snippet_url(snippet, opts = {})
-    if snippet.project_id?
-      project_snippet_url(snippet.project, snippet, nil, opts)
-    else
-      snippet_url(snippet, nil, opts)
-    end
-  end
-
-  def reliable_raw_snippet_url(snippet, opts = {})
-    if snippet.project_id?
-      raw_project_snippet_url(snippet.project, snippet, nil, opts)
-    else
-      raw_snippet_url(snippet, nil, opts)
-    end
-  end
-
   def download_raw_snippet_button(snippet)
     link_to(icon('download'),
-            reliable_raw_snippet_path(snippet, inline: false),
+            raw_snippet_path(snippet, inline: false),
             target: '_blank',
             rel: 'noopener noreferrer',
             class: "btn btn-sm has-tooltip",
@@ -133,7 +109,7 @@ module SnippetsHelper
   end
 
   def snippet_embed_tag(snippet)
-    content_tag(:script, nil, src: reliable_snippet_url(snippet, format: :js, only_path: false))
+    content_tag(:script, nil, src: snippet_url(snippet, format: :js))
   end
 
   def snippet_badge(snippet)
@@ -158,7 +134,7 @@ module SnippetsHelper
     return if blob.empty? || blob.binary? || blob.stored_externally?
 
     link_to(external_snippet_icon('doc-code'),
-            reliable_raw_snippet_url(@snippet),
+            raw_snippet_url(@snippet),
             class: 'btn',
             target: '_blank',
             rel: 'noopener noreferrer',
@@ -167,7 +143,7 @@ module SnippetsHelper
 
   def embedded_snippet_download_button
     link_to(external_snippet_icon('download'),
-            reliable_raw_snippet_url(@snippet, inline: false),
+            raw_snippet_url(@snippet, inline: false),
             class: 'btn',
             target: '_blank',
             title: 'Download',

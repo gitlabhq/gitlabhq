@@ -193,6 +193,101 @@ module GitlabRoutingHelper
     project = schedule.project
     take_ownership_project_pipeline_schedule_path(project, schedule, *args)
   end
+
+  def snippet_path(snippet, *args)
+    if snippet.is_a?(ProjectSnippet)
+      application_url_helpers.project_snippet_path(snippet.project, snippet, *args)
+    else
+      new_args = snippet_query_params(snippet, *args)
+      application_url_helpers.snippet_path(snippet, *new_args)
+    end
+  end
+
+  def snippet_url(snippet, *args)
+    if snippet.is_a?(ProjectSnippet)
+      application_url_helpers.project_snippet_url(snippet.project, snippet, *args)
+    else
+      new_args = snippet_query_params(snippet, *args)
+      application_url_helpers.snippet_url(snippet, *new_args)
+    end
+  end
+
+  def raw_snippet_path(snippet, *args)
+    if snippet.is_a?(ProjectSnippet)
+      application_url_helpers.raw_project_snippet_path(snippet.project, snippet, *args)
+    else
+      new_args = snippet_query_params(snippet, *args)
+      application_url_helpers.raw_snippet_path(snippet, *new_args)
+    end
+  end
+
+  def raw_snippet_url(snippet, *args)
+    if snippet.is_a?(ProjectSnippet)
+      application_url_helpers.raw_project_snippet_url(snippet.project, snippet, *args)
+    else
+      new_args = snippet_query_params(snippet, *args)
+      application_url_helpers.raw_snippet_url(snippet, *new_args)
+    end
+  end
+
+  def snippet_notes_path(snippet, *args)
+    new_args = snippet_query_params(snippet, *args)
+    application_url_helpers.snippet_notes_path(snippet, *new_args)
+  end
+
+  def snippet_notes_url(snippet, *args)
+    new_args = snippet_query_params(snippet, *args)
+    application_url_helpers.snippet_notes_url(snippet, *new_args)
+  end
+
+  def snippet_note_path(snippet, note, *args)
+    new_args = snippet_query_params(snippet, *args)
+    application_url_helpers.snippet_note_path(snippet, note, *new_args)
+  end
+
+  def snippet_note_url(snippet, note, *args)
+    new_args = snippet_query_params(snippet, *args)
+    application_url_helpers.snippet_note_url(snippet, note, *new_args)
+  end
+
+  def toggle_award_emoji_snippet_note_path(snippet, note, *args)
+    new_args = snippet_query_params(snippet, *args)
+    application_url_helpers.toggle_award_emoji_snippet_note_path(snippet, note, *new_args)
+  end
+
+  def toggle_award_emoji_snippet_note_url(snippet, note, *args)
+    new_args = snippet_query_params(snippet, *args)
+    application_url_helpers.toggle_award_emoji_snippet_note_url(snippet, note, *new_args)
+  end
+
+  def toggle_award_emoji_snippet_path(snippet, *args)
+    new_args = snippet_query_params(snippet, *args)
+    application_url_helpers.toggle_award_emoji_snippet_path(snippet, *new_args)
+  end
+
+  def toggle_award_emoji_snippet_url(snippet, *args)
+    new_args = snippet_query_params(snippet, *args)
+    application_url_helpers.toggle_award_emoji_snippet_url(snippet, *new_args)
+  end
+
+  private
+
+  def application_url_helpers
+    Gitlab::Routing.url_helpers
+  end
+
+  def snippet_query_params(snippet, *args)
+    opts = case args.last
+           when Hash
+             args.pop
+           when ActionController::Parameters
+             args.pop.to_h
+           else
+             {}
+           end
+
+    args << opts
+  end
 end
 
 GitlabRoutingHelper.include_if_ee('EE::GitlabRoutingHelper')

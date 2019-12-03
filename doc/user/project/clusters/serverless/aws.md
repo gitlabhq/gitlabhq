@@ -94,7 +94,7 @@ The `events` declaration will create a AWS API Gateway `GET` endpoint to receive
 
 You can read more about the available properties and additional configuration possibilities of the Serverless Framework here: <https://serverless.com/framework/docs/providers/aws/guide/serverless.yml/>
 
-### Crafting the .gitlab-ci.yml file
+### Crafting the `.gitlab-ci.yml` file
 
 In a `.gitlab-ci.yml` file in the root of your project, place the following code:
 

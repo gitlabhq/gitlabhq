@@ -17,7 +17,7 @@ export default {
   },
   computed: {
     queryInfo() {
-      return this.graphData.queries[0];
+      return this.graphData.metrics[0];
     },
     engineeringNotation() {
       return `${roundOffFloat(this.queryInfo.result[0].value[1], 1)}${this.queryInfo.unit}`;

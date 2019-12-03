@@ -153,9 +153,9 @@ describe ErrorTracking::ProjectErrorTrackingSetting do
 
       it 'returns cached issues' do
         expect(sentry_client).to receive(:list_issues).with(opts)
-          .and_return(issues)
+          .and_return(issues: issues, pagination: {})
 
-        expect(result).to eq(issues: issues)
+        expect(result).to eq(issues: issues, pagination: {})
       end
     end
 

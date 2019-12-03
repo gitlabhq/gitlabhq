@@ -6,8 +6,7 @@ module QA
   context 'Create', :quarantine do
     describe 'Push over HTTP using Git protocol version 2', :requires_git_protocol_v2 do
       it 'user pushes to the repository' do
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.perform(&:sign_in_using_credentials)
+        Flow::Login.sign_in
 
         # Create a project to push to
         project = Resource::Project.fabricate! do |project|

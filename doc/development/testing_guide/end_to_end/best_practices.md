@@ -54,9 +54,9 @@ In summary:
 - **Do**: Split tests across separate files, unless the tests share expensive setup.
 - **Don't**: Put new tests in an existing file without considering the impact on parallelization.
 
-## Limit the use of `before(:all)` hook
+## Limit the use of `before(:all)` and `after` hooks
 
-Limit the use of `before(:all)` to perform setup tasks with only API calls, non UI operations
+Limit the use of `before(:all)` hook to perform setup tasks with only API calls, non UI operations
 or basic UI operations such as login.
 
 We use [`capybara-screenshot`](https://github.com/mattheworiordan/capybara-screenshot) library to automatically save screenshots on failures.
@@ -66,6 +66,10 @@ This library [saves the screenshots in the RSpec's `after` hook](https://github.
 Given this fact, we should limit the use of `before(:all)` to only those operations where a screenshot is not
 necessary in case of failure and QA logs would be enough for debugging.
 
+Similarly, the `after` hook should only be used for non-UI operations. Any UI operations in `after` hook in a test file
+would execute before the `after` hook that takes the screenshot. This would result in moving the UI status away from the
+point of failure and so the screenshot would not be captured at the right moment.
+
 ## Ensure tests do not leave the browser logged in
 
 All QA tests expect to be able to log in at the start of the test.
@@ -74,7 +78,7 @@ That's not possible if a test leaves the browser logged in when it finishes. Nor
 
 For an example see: <https://gitlab.com/gitlab-org/gitlab/issues/34736>
 
-Ideally, any actions peformed in an `after(:context)` (or [`before(:context)`](#limit-the-use-of-beforeall-hook)) block would be performed via the API. But if it's necessary to do so via the UI (e.g., if API functionality doesn't exist), make sure to log out at the end of the block.
+Ideally, any actions peformed in an `after(:context)` (or [`before(:context)`](#limit-the-use-of-beforeall-and-after-hooks)) block would be performed via the API. But if it's necessary to do so via the UI (e.g., if API functionality doesn't exist), make sure to log out at the end of the block.
 
 ```ruby
 after(:all) do

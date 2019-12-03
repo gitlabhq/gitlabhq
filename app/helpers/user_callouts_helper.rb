@@ -4,6 +4,7 @@ module UserCalloutsHelper
   GKE_CLUSTER_INTEGRATION = 'gke_cluster_integration'
   GCP_SIGNUP_OFFER = 'gcp_signup_offer'
   SUGGEST_POPOVER_DISMISSED = 'suggest_popover_dismissed'
+  TABS_POSITION_HIGHLIGHT = 'tabs_position_highlight'
 
   def show_gke_cluster_integration_callout?(project)
     can?(current_user, :create_cluster, project) &&
@@ -23,6 +24,10 @@ module UserCalloutsHelper
 
   def show_suggest_popover?
     !user_dismissed?(SUGGEST_POPOVER_DISMISSED)
+  end
+
+  def show_tabs_feature_highlight?
+    !user_dismissed?(TABS_POSITION_HIGHLIGHT) && !Rails.env.test?
   end
 
   private

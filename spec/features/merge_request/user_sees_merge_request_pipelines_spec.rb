@@ -8,6 +8,7 @@ describe 'Merge request > User sees pipelines triggered by merge request', :js d
 
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.creator }
+  let(:enable_mr_tabs_position_flag) { true }
 
   let(:config) do
     {
@@ -26,6 +27,7 @@ describe 'Merge request > User sees pipelines triggered by merge request', :js d
   end
 
   before do
+    stub_feature_flags(mr_tabs_position: enable_mr_tabs_position_flag)
     stub_application_setting(auto_devops_enabled: false)
     stub_feature_flags(ci_merge_request_pipeline: true)
     stub_ci_pipeline_yaml_file(YAML.dump(config))
@@ -51,6 +53,7 @@ describe 'Merge request > User sees pipelines triggered by merge request', :js d
       Ci::CreatePipelineService.new(project, user, ref: 'feature')
                                 .execute(:merge_request_event, merge_request: merge_request)
     end
+    let(:enable_mr_tabs_position_flag) { false }
 
     before do
       visit project_merge_request_path(project, merge_request)
@@ -67,9 +70,23 @@ describe 'Merge request > User sees pipelines triggered by merge request', :js d
       end
     end
 
-    it 'sees the latest detached merge request pipeline as the head pipeline', :sidekiq_might_not_need_inline do
-      page.within('.ci-widget-content') do
-        expect(page).to have_content("##{detached_merge_request_pipeline.id}")
+    context 'when merge request tabs feature flag is disabled' do
+      it 'sees the latest detached merge request pipeline as the head pipeline', :sidekiq_might_not_need_inline do
+        page.within('.ci-widget-content') do
+          expect(page).to have_content("##{detached_merge_request_pipeline.id}")
+        end
+      end
+    end
+
+    context 'when merge request tabs feature flag is enabled' do
+      let(:enable_mr_tabs_position_flag) { true }
+
+      it 'sees the latest detached merge request pipeline as the head pipeline', :sidekiq_might_not_need_inline do
+        click_link "Overview"
+
+        page.within('.ci-widget-content') do
+          expect(page).to have_content("##{detached_merge_request_pipeline.id}")
+        end
       end
     end
 
@@ -243,9 +260,23 @@ describe 'Merge request > User sees pipelines triggered by merge request', :js d
       end
     end
 
-    it 'sees the latest detached merge request pipeline as the head pipeline' do
-      page.within('.ci-widget-content') do
-        expect(page).to have_content("##{detached_merge_request_pipeline.id}")
+    context 'when merge request tabs feature flag is enabled' do
+      it 'sees the latest detached merge request pipeline as the head pipeline' do
+        click_link "Overview"
+
+        page.within('.ci-widget-content') do
+          expect(page).to have_content("##{detached_merge_request_pipeline.id}")
+        end
+      end
+    end
+
+    context 'when merge request tabs feature flag is disabled' do
+      let(:enable_mr_tabs_position_flag) { false }
+
+      it 'sees the latest detached merge request pipeline as the head pipeline' do
+        page.within('.ci-widget-content') do
+          expect(page).to have_content("##{detached_merge_request_pipeline.id}")
+        end
       end
     end
 
@@ -309,6 +340,8 @@ describe 'Merge request > User sees pipelines triggered by merge request', :js d
       end
 
       it 'sees the latest detached merge request pipeline as the head pipeline' do
+        click_link "Overview"
+
         page.within('.ci-widget-content') do
           expect(page).to have_content("##{detached_merge_request_pipeline_2.id}")
         end
@@ -323,6 +356,8 @@ describe 'Merge request > User sees pipelines triggered by merge request', :js d
 
     context 'when a user merges a merge request from a forked project to the parent project' do
       before do
+        click_link("Overview")
+
         click_button 'Merge when pipeline succeeds'
 
         wait_for_requests

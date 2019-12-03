@@ -27,7 +27,7 @@ describe('Monitoring mutations', () => {
     it('normalizes values', () => {
       mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, groups);
       const expectedLabel = 'Pod average';
-      const { label, query_range } = stateCopy.dashboard.panel_groups[0].metrics[0].metrics[0];
+      const { label, query_range } = stateCopy.dashboard.panel_groups[0].panels[0].metrics[0];
       expect(label).toEqual(expectedLabel);
       expect(query_range.length).toBeGreaterThan(0);
     });
@@ -39,22 +39,11 @@ describe('Monitoring mutations', () => {
       expect(stateCopy.dashboard.panel_groups[0].panels[0].metrics.length).toEqual(1);
       expect(stateCopy.dashboard.panel_groups[0].panels[1].metrics.length).toEqual(1);
     });
-    it('assigns queries a metric id', () => {
+    it('assigns metrics a metric id', () => {
       mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, groups);
-      expect(stateCopy.dashboard.panel_groups[0].metrics[0].queries[0].metricId).toEqual(
+      expect(stateCopy.dashboard.panel_groups[0].panels[0].metrics[0].metricId).toEqual(
         '17_system_metrics_kubernetes_container_memory_average',
       );
-    });
-    describe('dashboard endpoint', () => {
-      const dashboardGroups = metricsDashboardResponse.dashboard.panel_groups;
-      it('aliases group panels to metrics for backwards compatibility', () => {
-        mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, dashboardGroups);
-        expect(stateCopy.dashboard.panel_groups[0].metrics[0]).toBeDefined();
-      });
-      it('aliases panel metrics to queries for backwards compatibility', () => {
-        mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, dashboardGroups);
-        expect(stateCopy.dashboard.panel_groups[0].metrics[0].queries).toBeDefined();
-      });
     });
   });
 

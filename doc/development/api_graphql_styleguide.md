@@ -1,5 +1,13 @@
 # GraphQL API
 
+## How GitLab implements GraphQL
+
+We use the [graphql-ruby gem](https://graphql-ruby.org/) written by [Robert Mosolgo](https://github.com/rmosolgo/).
+
+All GraphQL queries are directed to a single endpoint
+([`app/controllers/graphql_controller.rb#execute`](https://gitlab.com/gitlab-org/gitlab/blob/master/app%2Fcontrollers%2Fgraphql_controller.rb)),
+which is exposed as an API endpoint at `/api/graphql`.
+
 ## Deep Dive
 
 In March 2019, Nick Thomas hosted a [Deep Dive](https://gitlab.com/gitlab-org/create-stage/issues/1)
@@ -22,8 +30,31 @@ add a `HTTP_PRIVATE_TOKEN` header.
 
 ## Types
 
+We use a code-first schema, and we declare what type everything is in Ruby.
+
+For example, `app/graphql/types/issue_type.rb`:
+
+```ruby
+graphql_name 'Issue'
+
+field :iid, GraphQL::ID_TYPE, null: false
+field :title, GraphQL::STRING_TYPE, null: false
+
+# we also have a method here that we've defined, that extends `field`
+markdown_field :title_html, null: true
+field :description, GraphQL::STRING_TYPE, null: true
+markdown_field :description_html, null: true
+```
+
+We give each type a name (in this case `Issue`).
+
+The `iid`, `title` and `description` are _scalar_ GraphQL types.
+`iid` is a `GraphQL::ID_TYPE`, a special string type that signifies a unique ID.
+`title` and `description` are regular `GraphQL::STRING_TYPE` types.
+
 When exposing a model through the GraphQL API, we do so by creating a
-new type in `app/graphql/types`.
+new type in `app/graphql/types`. You can also declare custom GraphQL data types
+for scalar data types (e.g. `TimeType`).
 
 When exposing properties in a type, make sure to keep the logic inside
 the definition as minimal as possible. Instead, consider moving any
@@ -293,6 +324,8 @@ If the:
 - Resource is part of a collection, the collection will be filtered to
   exclude the objects that the user's authorization checks failed against.
 
+Also see [authorizing resources in a mutation](#authorizing-resources).
+
 TIP: **Tip:**
 Try to load only what the currently authenticated user is allowed to
 view with our existing finders first, without relying on authorization
@@ -390,6 +423,11 @@ end
 ```
 
 ## Resolvers
+
+We define how the application serves the response using _resolvers_
+stored in the `app/graphql/resolvers` directory.
+The resolver provides the actual implementation logic for retrieving
+the objects in question.
 
 To find objects to display in a field, we can add resolvers to
 `app/graphql/resolvers`.
@@ -618,7 +656,61 @@ it 'returns a successful response' do
 end
 ```
 
+## Notes about Query flow and GraphQL infrastructure
+
+GitLab's GraphQL infrastructure can be found in `lib/gitlab/graphql`.
+
+[Instrumentation](https://graphql-ruby.org/queries/instrumentation.html) is functionality
+that wraps around a query being executed. It is implemented as a module that uses the `Instrumentation` class.
+
+Example: `Present`
+
+```ruby
+module Present
+  #... some code above...
+
+  def self.use(schema_definition)
+    schema_definition.instrument(:field, Instrumentation.new)
+  end
+end
+```
+
+A [Query Analyzer](https://graphql-ruby.org/queries/analysis.html#analyzer-api) contains a series
+of callbacks to validate queries before they are executed. Each field can pass through
+the analyzer, and the final value is also available to you.
+
+[Multiplex queries](https://graphql-ruby.org/queries/multiplex.html) enable
+multiple queries to be sent in a single request. This reduces the number of requests sent to the server.
+(there are custom Multiplex Query Analyzers and Multiplex Instrumentation provided by graphql-ruby).
+
+### Query limits
+
+Queries and mutations are limited by depth, complexity, and recursion
+to protect server resources from overly ambitious or malicious queries.
+These values can be set as defaults and overridden in specific queries as needed.
+The complexity values can be set per object as well, and the final query complexity is
+evaluated based on how many objects are being returned. This is useful
+for objects that are expensive (e.g. requiring Gitaly calls).
+
+For example, a conditional complexity method in a resolver:
+
+```ruby
+def self.resolver_complexity(args, child_complexity:)
+  complexity = super
+  complexity += 2 if args[:labelName]
+
+  complexity
+end
+```
+
+More about complexity:
+[graphql-ruby docs](https://graphql-ruby.org/queries/complexity_and_depth.html)
+
 ## Documentation and Schema
 
+Our schema is located at `app/graphql/gitlab_schema.rb`.
+See the [schema reference](../api/graphql/reference/index.md) for details.
+
+This generated GraphQL documentation needs to be updated when the schema changes.
 For information on generating GraphQL documentation and schema files, see
-[Rake tasks related to GraphQL](rake_tasks.md#update-graphql-documentation-and-schema-definitions).
+[updating the schema documentation](rake_tasks.md#update-graphql-documentation-and-schema-definitions).

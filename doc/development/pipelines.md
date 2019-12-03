@@ -23,15 +23,17 @@ The current stages are:
   pipeline early (currently used to run Geo tests when the branch name starts
   with `geo-`, `geo/`, or ends with `-geo`).
 - `test`: This stage includes most of the tests, DB/migration jobs, and static analysis jobs.
+- `post-test`: This stage includes jobs that build reports or gather data from
+  the `test` stage's jobs (e.g. coverage, Knapsack metadata etc.).
 - `review-prepare`: This stage includes a job that build the CNG images that are
   later used by the (Helm) Review App deployment (see
   [Review Apps](testing_guide/review_apps.md) for details).
 - `review`: This stage includes jobs that deploy the GitLab and Docs Review Apps.
 - `qa`: This stage includes jobs that perform QA tasks against the Review App
   that is deployed in the previous stage.
+- `post-qa`: This stage includes jobs that build reports or gather data from
+  the `qa` stage's jobs (e.g. Review App performance report).
 - `notification`: This stage includes jobs that sends notifications about pipeline status.
-- `post-test`: This stage includes jobs that build reports or gather data from
-  the previous stages' jobs (e.g. coverage, Knapsack metadata etc.).
 - `pages`: This stage includes a job that deploys the various reports as
   GitLab Pages (e.g. <https://gitlab-org.gitlab.io/gitlab/coverage-ruby/>,
   <https://gitlab-org.gitlab.io/gitlab/coverage-javascript/>,
@@ -40,9 +42,9 @@ The current stages are:
 ## Default image
 
 The default image is currently
-`registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.3-golang-1.11-git-2.22-chrome-73.0-node-12.x-yarn-1.16-postgresql-9.6-graphicsmagick-1.3.33`.
+`registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.3-golang-1.12-git-2.22-chrome-73.0-node-12.x-yarn-1.16-postgresql-9.6-graphicsmagick-1.3.33`.
 
-It includes Ruby 2.6.3, Go 1.11, Git 2.22, Chrome 73, Node 12, Yarn 1.16,
+It includes Ruby 2.6.3, Go 1.12, Git 2.22, Chrome 73, Node 12, Yarn 1.16,
 PostgreSQL 9.6, and Graphics Magick 1.3.33.
 
 The images used in our pipelines are configured in the

@@ -41,7 +41,7 @@ forking (copying) a [sample project from the most popular Static Site Generators
    and click **Run pipeline** to trigger GitLab CI/CD to build and deploy your
    site to the server.
 1. Once the pipeline has finished successfully, find the link to visit your
-   website from your project's **Settings > Pages**. It can take aproximatelly
+   website from your project's **Settings > Pages**. It can take approximately
    30 minutes to be deployed.
 
 You can also take some **optional** further steps:

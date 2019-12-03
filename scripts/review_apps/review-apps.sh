@@ -48,9 +48,29 @@ function delete_release() {
     return
   fi
 
-  echoinfo "Deleting release '${release}'..." true
+  helm_delete_release "${namespace}" "${release}"
+  kubectl_cleanup_release "${namespace}" "${release}"
+}
+
+function helm_delete_release() {
+  local namespace="${1}"
+  local release="${2}"
+
+  echoinfo "Deleting Helm release '${release}'..." true
 
   helm delete --tiller-namespace "${namespace}" --purge "${release}"
+}
+
+function kubectl_cleanup_release() {
+  local namespace="${1}"
+  local release="${2}"
+
+  echoinfo "Deleting all K8s resources matching '${release}'..." true
+  kubectl --namespace "${namespace}" get ingress,svc,pdb,hpa,deploy,statefulset,job,pod,secret,configmap,pvc,secret,clusterrole,clusterrolebinding,role,rolebinding,sa,crd 2>&1 \
+    | grep "${release}" \
+    | awk '{print $1}' \
+    | xargs kubectl --namespace "${namespace}" delete \
+    || true
 }
 
 function delete_failed_release() {

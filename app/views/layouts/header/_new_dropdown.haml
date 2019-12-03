@@ -38,4 +38,5 @@
         %li= link_to _('New project'), new_project_path, class: 'qa-global-new-project-link'
       - if current_user.can_create_group?
         %li= link_to _('New group'), new_group_path
-      %li= link_to _('New snippet'), new_snippet_path, class: 'qa-global-new-snippet-link'
+      - if current_user.can?(:create_personal_snippet)
+        %li= link_to _('New snippet'), new_snippet_path, class: 'qa-global-new-snippet-link'

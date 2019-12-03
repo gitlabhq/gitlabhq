@@ -34,12 +34,18 @@ module Sentry
     end
 
     def list_issues(**keyword_args)
-      issues = get_issues(keyword_args)
+      response = get_issues(keyword_args)
+
+      issues = response[:issues]
+      pagination = response[:pagination]
 
       validate_size(issues)
 
       handle_mapping_exceptions do
-        map_to_errors(issues)
+        {
+          issues: map_to_errors(issues),
+          pagination: pagination
+        }
       end
     end
 
@@ -83,36 +89,40 @@ module Sentry
     end
 
     def get_issues(**keyword_args)
-      http_get(
+      response = http_get(
         issues_api_url,
         query: list_issue_sentry_query(keyword_args)
       )
+
+      {
+        issues: response[:body],
+        pagination: Sentry::PaginationParser.parse(response[:headers])
+      }
     end
 
-    def list_issue_sentry_query(issue_status:, limit:, sort: nil, search_term: '')
+    def list_issue_sentry_query(issue_status:, limit:, sort: nil, search_term: '', cursor: nil)
       unless SENTRY_API_SORT_VALUE_MAP.key?(sort)
         raise BadRequestError, 'Invalid value for sort param'
       end
 
-      query_params = {
+      {
         query: "is:#{issue_status} #{search_term}".strip,
         limit: limit,
-        sort: SENTRY_API_SORT_VALUE_MAP[sort]
-      }
-
-      query_params.compact
+        sort: SENTRY_API_SORT_VALUE_MAP[sort],
+        cursor: cursor
+      }.compact
     end
 
     def get_issue(issue_id:)
-      http_get(issue_api_url(issue_id))
+      http_get(issue_api_url(issue_id))[:body]
     end
 
     def get_issue_latest_event(issue_id:)
-      http_get(issue_latest_event_api_url(issue_id))
+      http_get(issue_latest_event_api_url(issue_id))[:body]
     end
 
     def get_projects
-      http_get(projects_api_url)
+      http_get(projects_api_url)[:body]
     end
 
     def handle_request_exceptions
@@ -138,7 +148,7 @@ module Sentry
         raise_error "Sentry response status code: #{response.code}"
       end
 
-      response.parsed_response
+      { body: response.parsed_response, headers: response.headers }
     end
 
     def raise_error(message)

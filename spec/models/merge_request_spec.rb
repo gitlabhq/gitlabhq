@@ -33,6 +33,21 @@ describe MergeRequest do
     end
   end
 
+  describe '.from_and_to_forks' do
+    it 'returns only MRs from and to forks (with no internal MRs)' do
+      project = create(:project)
+      fork = fork_project(project)
+      fork_2 = fork_project(project)
+      mr_from_fork = create(:merge_request, source_project: fork, target_project: project)
+      mr_to_fork = create(:merge_request, source_project: project, target_project: fork)
+
+      create(:merge_request, source_project: fork, target_project: fork_2)
+      create(:merge_request, source_project: project, target_project: project)
+
+      expect(described_class.from_and_to_forks(project)).to contain_exactly(mr_from_fork, mr_to_fork)
+    end
+  end
+
   describe 'locking' do
     using RSpec::Parameterized::TableSyntax
 
@@ -3374,6 +3389,58 @@ describe MergeRequest do
       expect(subject.recent_commits.map(&:sha)).to eq(%w[
         b83d6e391c22777fca1ed3012fce84f633d7fed0 498214de67004b1da3d820901307bed2a68a8ef6
       ])
+    end
+  end
+
+  describe '#recent_visible_deployments' do
+    let(:merge_request) { create(:merge_request) }
+
+    let(:environment) do
+      create(:environment, project: merge_request.target_project)
+    end
+
+    it 'returns visible deployments' do
+      created = create(
+        :deployment,
+        :created,
+        project: merge_request.target_project,
+        environment: environment
+      )
+
+      success = create(
+        :deployment,
+        :success,
+        project: merge_request.target_project,
+        environment: environment
+      )
+
+      failed = create(
+        :deployment,
+        :failed,
+        project: merge_request.target_project,
+        environment: environment
+      )
+
+      merge_request.deployment_merge_requests.create!(deployment: created)
+      merge_request.deployment_merge_requests.create!(deployment: success)
+      merge_request.deployment_merge_requests.create!(deployment: failed)
+
+      expect(merge_request.recent_visible_deployments).to eq([failed, success])
+    end
+
+    it 'only returns a limited number of deployments' do
+      20.times do
+        deploy = create(
+          :deployment,
+          :success,
+          project: merge_request.target_project,
+          environment: environment
+        )
+
+        merge_request.deployment_merge_requests.create!(deployment: deploy)
+      end
+
+      expect(merge_request.recent_visible_deployments.count).to eq(10)
     end
   end
 end

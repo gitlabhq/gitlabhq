@@ -75,7 +75,7 @@
                     = link_to new_project_tag_path(@project) do
                       #{ _('New tag') }
 
-.tree-controls
+.tree-controls<
   = render_if_exists 'projects/tree/lock_link'
   - if vue_file_list_enabled?
     #js-tree-history-link.d-inline-block{ data: { history_link: project_commits_path(@project, @ref) } }
@@ -85,20 +85,19 @@
   = render 'projects/find_file_link'
 
   - if can_create_mr_from_fork
-    = succeed " " do
-      - if can_collaborate || current_user&.already_forked?(@project)
-        - if vue_file_list_enabled?
-          #js-tree-web-ide-link.d-inline-block
-        - else
-          = link_to ide_edit_path(@project, @ref, @path), class: 'btn btn-default qa-web-ide-button' do
-            = _('Web IDE')
+    - if can_collaborate || current_user&.already_forked?(@project)
+      - if vue_file_list_enabled?
+        #js-tree-web-ide-link.d-inline-block
       - else
-        = link_to '#modal-confirm-fork', class: 'btn btn-default qa-web-ide-button', data: { target: '#modal-confirm-fork', toggle: 'modal'} do
+        = link_to ide_edit_path(@project, @ref, @path), class: 'btn btn-default qa-web-ide-button' do
           = _('Web IDE')
-        = render 'shared/confirm_fork_modal', fork_path: ide_fork_and_edit_path(@project, @ref, @path)
+    - else
+      = link_to '#modal-confirm-fork', class: 'btn btn-default qa-web-ide-button', data: { target: '#modal-confirm-fork', toggle: 'modal'} do
+        = _('Web IDE')
+      = render 'shared/confirm_fork_modal', fork_path: ide_fork_and_edit_path(@project, @ref, @path)
 
   - if show_xcode_link?(@project)
-    .project-action-button.project-xcode.inline
+    .project-action-button.project-xcode.inline<
       = render "projects/buttons/xcode_link"
 
   = render 'projects/buttons/download', project: @project, ref: @ref

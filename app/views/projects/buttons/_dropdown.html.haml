@@ -7,7 +7,7 @@
 - show_menu = can_create_issue || can_create_project_snippet || can_push_code || create_mr_from_new_fork || merge_project
 
 - if show_menu
-  .project-action-button.dropdown.inline
+  .project-action-button.dropdown.inline<
     %a.btn.dropdown-toggle.has-tooltip.qa-create-new-dropdown{ href: '#', title: _('Create new...'), 'data-toggle' => 'dropdown', 'data-container' => 'body', 'aria-label' => _('Create new...'), 'data-display' => 'static' }
       = icon('plus')
       = icon("caret-down")

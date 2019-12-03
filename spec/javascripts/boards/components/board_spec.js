@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import Board from '~/boards/components/board';
 import List from '~/boards/models/list';
-import { mockBoardService } from '../mock_data';
 
 describe('Board component', () => {
   let vm;
@@ -35,13 +34,6 @@ describe('Board component', () => {
   const setUpTests = (done, opts = {}) => {
     loadFixtures('boards/show.html');
 
-    gl.boardService = mockBoardService({
-      boardsEndpoint: '/',
-      listsEndpoint: '/',
-      bulkUpdatePath: '/',
-      boardId: 1,
-    });
-
     createComponent(opts);
 
     Vue.nextTick(done);
@@ -61,15 +53,6 @@ describe('Board component', () => {
   };
 
   describe('List', () => {
-    beforeEach(() => {
-      gl.boardService = mockBoardService({
-        boardsEndpoint: '/',
-        listsEndpoint: '/',
-        bulkUpdatePath: '/',
-        boardId: 1,
-      });
-    });
-
     it('board is expandable when list type is closed', () => {
       expect(new List({ id: 1, list_type: 'closed' }).isExpandable).toBe(true);
     });

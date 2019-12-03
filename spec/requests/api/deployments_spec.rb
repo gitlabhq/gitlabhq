@@ -31,39 +31,36 @@ describe API::Deployments do
       end
 
       describe 'ordering' do
-        using RSpec::Parameterized::TableSyntax
-
-        let(:order_by) { nil }
-        let(:sort) { nil }
+        let(:order_by) { 'iid' }
+        let(:sort) { 'desc' }
 
         subject { get api("/projects/#{project.id}/deployments?order_by=#{order_by}&sort=#{sort}", user) }
-
-        def expect_deployments(ordered_deployments)
-          json_response.each_with_index do |deployment_json, index|
-            expect(deployment_json['id']).to eq(public_send(ordered_deployments[index]).id)
-          end
-        end
 
         before do
           subject
         end
 
-        where(:order_by, :sort, :ordered_deployments) do
-          'created_at' | 'asc'  | [:deployment_3, :deployment_2, :deployment_1]
-          'created_at' | 'desc' | [:deployment_1, :deployment_2, :deployment_3]
-          'id'         | 'asc'  | [:deployment_1, :deployment_2, :deployment_3]
-          'id'         | 'desc' | [:deployment_3, :deployment_2, :deployment_1]
-          'iid'        | 'asc'  | [:deployment_3, :deployment_1, :deployment_2]
-          'iid'        | 'desc' | [:deployment_2, :deployment_1, :deployment_3]
-          'ref'        | 'asc'  | [:deployment_2, :deployment_1, :deployment_3]
-          'ref'        | 'desc' | [:deployment_3, :deployment_1, :deployment_2]
-          'updated_at' | 'asc'  | [:deployment_2, :deployment_3, :deployment_1]
-          'updated_at' | 'desc' | [:deployment_1, :deployment_3, :deployment_2]
+        def expect_deployments(ordered_deployments)
+          expect(json_response.map { |d| d['id'] }).to eq(ordered_deployments.map(&:id))
         end
 
-        with_them do
-          it 'returns the deployments ordered' do
-            expect_deployments(ordered_deployments)
+        it 'returns ordered deployments' do
+          expect(json_response.map { |i| i['id'] }).to eq([deployment_2.id, deployment_1.id, deployment_3.id])
+        end
+
+        context 'with invalid order_by' do
+          let(:order_by) { 'wrong_sorting_value' }
+
+          it 'returns error' do
+            expect(response).to have_gitlab_http_status(400)
+          end
+        end
+
+        context 'with invalid sorting' do
+          let(:sort) { 'wrong_sorting_direction' }
+
+          it 'returns error' do
+            expect(response).to have_gitlab_http_status(400)
           end
         end
       end

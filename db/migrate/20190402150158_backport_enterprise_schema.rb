@@ -464,15 +464,12 @@ class BackportEnterpriseSchema < ActiveRecord::Migration[5.0]
   end
 
   def update_environments
-    return unless Gitlab::Database.postgresql?
     return if index_exists?(:environments, :name, name: 'index_environments_on_name_varchar_pattern_ops')
 
     execute('CREATE INDEX CONCURRENTLY index_environments_on_name_varchar_pattern_ops ON environments (name varchar_pattern_ops);')
   end
 
   def revert_environments
-    return unless Gitlab::Database.postgresql?
-
     remove_concurrent_index_by_name(
       :environments,
       'index_environments_on_name_varchar_pattern_ops'

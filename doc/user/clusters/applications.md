@@ -429,6 +429,69 @@ administrator to run following command within a Rails console:
 Feature.enable(:enable_cluster_application_crossplane)
 ```
 
+## Install using GitLab CI (alpha)
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/20822) in GitLab 12.6.
+
+CAUTION: **Warning:**
+This is an _alpha_ feature, and it is subject to change at any time without
+prior notice.
+
+This alternative method allows users to install GitLab-managed
+applications using GitLab CI. It also allows customization of the
+install using Helm `values.yaml` files.
+
+Supported applications:
+
+- [Ingress](#install-ingress-using-gitlab-ci)
+
+### Usage
+
+To install applications using GitLab CI:
+
+1. Connect the cluster to a [cluster management project](management_project.md).
+1. In that project, add a `.gitlab-ci.yml` file with the following content:
+
+    ```yaml
+    include:
+      - template: Managed-Cluster-Applications.gitlab-ci.yml
+    ```
+
+1. Add a `.gitlab/managed-apps/config.yaml` file to define which
+  applications you would like to install. Define the `installed` key as
+  `true` to install the application and `false` to uninstall the
+  application. For example, to install Ingress:
+
+    ```yaml
+    ingress:
+      installed: true
+    ```
+
+1. Optionally, define `.gitlab/managed-apps/<application>/values.yaml` file to
+   customize values for the installed application.
+
+A GitLab CI pipeline will then run on the `master` branch to install the
+applications you have configured.
+
+### Install Ingress using GitLab CI
+
+To install ingress, define the `.gitlab/managed-apps/config.yaml` file
+with:
+
+```yaml
+ingress:
+  installed: true
+```
+
+Ingress will then be installed into the `gitlab-managed-apps` namespace
+of your cluster.
+
+You can customize the installation of Ingress by defining
+`.gitlab/managed-apps/ingress/values.yaml` file in your cluster
+management project. Refer to the
+[chart](https://github.com/helm/charts/tree/master/stable/nginx-ingress)
+for the available configuration options.
+
 ## Upgrading applications
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/24789) in GitLab 11.8.

@@ -72,10 +72,9 @@ export const ISODateToString = date => dateformat(date, dateFormats.dateTimePick
  */
 export const graphDataValidatorForValues = (isValues, graphData) => {
   const responseValueKeyName = isValues ? 'value' : 'values';
-
   return (
-    Array.isArray(graphData.queries) &&
-    graphData.queries.filter(query => {
+    Array.isArray(graphData.metrics) &&
+    graphData.metrics.filter(query => {
       if (Array.isArray(query.result)) {
         return (
           query.result.filter(res => Array.isArray(res[responseValueKeyName])).length ===
@@ -83,7 +82,7 @@ export const graphDataValidatorForValues = (isValues, graphData) => {
         );
       }
       return false;
-    }).length === graphData.queries.length
+    }).length === graphData.metrics.filter(query => query.result).length
   );
 };
 
@@ -116,6 +115,7 @@ export const generateLinkToChartOptions = chartLink => {
 /**
  * Tracks snowplow event when user downloads CSV of cluster metric
  * @param {String}  chart title that will be sent as a property for the event
+ * @return {Object} config object for event tracking
  */
 export const downloadCSVOptions = title => {
   const isCLusterHealthBoard = isClusterHealthBoard();
@@ -131,7 +131,19 @@ export const downloadCSVOptions = title => {
 };
 
 /**
- * This function validates the graph data contains exactly 3 queries plus
+ * Generate options for snowplow to track adding a new metric via the dashboard
+ * custom metric modal
+ * @return {Object} config object for event tracking
+ */
+export const getAddMetricTrackingOptions = () => ({
+  category: document.body.dataset.page,
+  action: 'click_button',
+  label: 'add_new_metric',
+  property: 'modal',
+});
+
+/**
+ * This function validates the graph data contains exactly 3 metrics plus
  * value validations from graphDataValidatorForValues.
  * @param {Object} isValues
  * @param {Object} graphData  the graph data response from a prometheus request
@@ -140,8 +152,8 @@ export const downloadCSVOptions = title => {
 export const graphDataValidatorForAnomalyValues = graphData => {
   const anomalySeriesCount = 3; // metric, upper, lower
   return (
-    graphData.queries &&
-    graphData.queries.length === anomalySeriesCount &&
+    graphData.metrics &&
+    graphData.metrics.length === anomalySeriesCount &&
     graphDataValidatorForValues(false, graphData)
   );
 };

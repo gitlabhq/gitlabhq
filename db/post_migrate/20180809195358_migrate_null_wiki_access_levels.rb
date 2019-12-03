@@ -20,7 +20,7 @@ class MigrateNullWikiAccessLevels < ActiveRecord::Migration[4.2]
 
     # We need to re-count wikis as previous attempt was not considering the NULLs.
     transaction do
-      execute('SET LOCAL statement_timeout TO 0') if Gitlab::Database.postgresql? # see https://gitlab.com/gitlab-org/gitlab-foss/issues/48967
+      execute('SET LOCAL statement_timeout TO 0') # see https://gitlab.com/gitlab-org/gitlab-foss/issues/48967
 
       execute("UPDATE site_statistics SET wikis_count = (SELECT COUNT(*) FROM project_features WHERE wiki_access_level != 0)")
     end

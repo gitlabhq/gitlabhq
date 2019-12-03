@@ -6,8 +6,8 @@ import Flash from './flash';
 const DEFERRED_LINK_CLASS = 'deferred-link';
 
 export default class PersistentUserCallout {
-  constructor(container) {
-    const { dismissEndpoint, featureId, deferLinks } = container.dataset;
+  constructor(container, options = container.dataset) {
+    const { dismissEndpoint, featureId, deferLinks } = options;
     this.container = container;
     this.dismissEndpoint = dismissEndpoint;
     this.featureId = featureId;
@@ -53,11 +53,11 @@ export default class PersistentUserCallout {
       });
   }
 
-  static factory(container) {
+  static factory(container, options) {
     if (!container) {
       return undefined;
     }
 
-    return new PersistentUserCallout(container);
+    return new PersistentUserCallout(container, options);
   }
 }

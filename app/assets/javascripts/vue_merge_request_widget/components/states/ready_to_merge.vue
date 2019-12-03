@@ -249,9 +249,10 @@ export default {
               type="button"
               class="btn btn-sm btn-info dropdown-toggle js-merge-moment"
               data-toggle="dropdown"
+              data-qa-selector="merge_moment_dropdown"
               :aria-label="__('Select merge moment')"
             >
-              <i class="fa fa-chevron-down qa-merge-moment-dropdown" aria-hidden="true"></i>
+              <i class="fa fa-chevron-down" aria-hidden="true"></i>
             </button>
             <ul
               v-if="shouldShowMergeImmediatelyDropdown"
@@ -272,7 +273,8 @@ export default {
               </li>
               <li>
                 <a
-                  class="accept-merge-request qa-merge-immediately-option"
+                  class="accept-merge-request"
+                  data-qa-selector="merge_immediately_option"
                   href="#"
                   @click.prevent="handleMergeButtonClick(false, true)"
                 >

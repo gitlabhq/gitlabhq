@@ -80,7 +80,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
   - [Backup and restore](../raketasks/backup_restore.md): Backup and restore your GitLab instance.
 - [Operations](operations/index.md): Keeping GitLab up and running (clean up Redis sessions, moving repositories, Sidekiq MemoryKiller, Unicorn).
 - [Restart GitLab](restart_gitlab.md): Learn how to restart GitLab and its components.
-- [Invalidate markdown cache](invalidate_markdown_cache.md): Invalidate any cached markdown.
+- [Invalidate Markdown cache](invalidate_markdown_cache.md): Invalidate any cached Markdown.
 
 #### Updating GitLab
 
@@ -157,6 +157,10 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Register Shared and specific Runners](../ci/runners/README.md#registering-a-shared-runner): Learn how to register and configure Shared and specific Runners to your own instance.
 - [Shared Runners pipelines quota](../user/admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota-starter-only): Limit the usage of pipeline minutes for Shared Runners. **(STARTER ONLY)**
 - [Enable/disable Auto DevOps](../topics/autodevops/index.md#enablingdisabling-auto-devops): Enable or disable Auto DevOps for your instance.
+
+## Snippet settings
+
+- [Setting snippet content size limit](snippets/index.md): Set a maximum size limit for snippets' content.
 
 ## Git configuration options
 

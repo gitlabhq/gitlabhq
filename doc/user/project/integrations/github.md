@@ -33,6 +33,9 @@ with `repo:status` access granted:
 1. Optionally uncheck **Static status check names** checkbox to disable static status check names.
 1. Save or optionally click "Test Settings".
 
+Once the integration is configured, see [Pipelines for external pull requests](../../../ci/ci_cd_for_external_repos/#pipelines-for-external-pull-requests)
+to configure pipelines to run for open pull requests.
+
 #### Static / dynamic status check names
 
 > - Introduced in GitLab 11.5: using static status check names as opt-in option.

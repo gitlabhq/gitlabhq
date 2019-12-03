@@ -1,4 +1,4 @@
-# Custom server-side Git hooks
+# Custom server-side Git hooks **(CORE ONLY)**
 
 NOTE: **Note:**
 Custom Git hooks must be configured on the filesystem of the GitLab

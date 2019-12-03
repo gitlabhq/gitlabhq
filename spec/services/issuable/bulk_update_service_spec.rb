@@ -11,7 +11,7 @@ describe Issuable::BulkUpdateService do
       .reverse_merge(issuable_ids: Array(issuables).map(&:id).join(','))
 
     type = Array(issuables).first.model_name.param_key
-    Issuable::BulkUpdateService.new(user, bulk_update_params).execute(type)
+    Issuable::BulkUpdateService.new(parent, user, bulk_update_params).execute(type)
   end
 
   shared_examples 'updates milestones' do
@@ -184,6 +184,8 @@ describe Issuable::BulkUpdateService do
   end
 
   context 'with issuables at a project level' do
+    let(:parent) { project }
+
     describe 'close issues' do
       let(:issues) { create_list(:issue, 2, project: project) }
 
@@ -199,33 +201,6 @@ describe Issuable::BulkUpdateService do
 
         expect(project.issues.opened).to be_empty
         expect(project.issues.closed).not_to be_empty
-      end
-
-      context 'when issue for a different project is created' do
-        let(:private_project) { create(:project, :private) }
-        let(:issue) { create(:issue, project: private_project, author: user) }
-
-        context 'when user has access to the project' do
-          it 'closes all issues passed' do
-            private_project.add_maintainer(user)
-
-            bulk_update(issues + [issue], state_event: 'close')
-
-            expect(project.issues.opened).to be_empty
-            expect(project.issues.closed).not_to be_empty
-            expect(private_project.issues.closed).not_to be_empty
-          end
-        end
-
-        context 'when user does not have access to project' do
-          it 'only closes all issues that the user has access to' do
-            bulk_update(issues + [issue], state_event: 'close')
-
-            expect(project.issues.opened).to be_empty
-            expect(project.issues.closed).not_to be_empty
-            expect(private_project.issues.closed).to be_empty
-          end
-        end
       end
     end
 
@@ -362,10 +337,29 @@ describe Issuable::BulkUpdateService do
         end
       end
     end
+
+    describe 'updating issues from external project' do
+      it 'updates only issues that belong to the parent project' do
+        issue1 = create(:issue, project: project)
+        issue2 = create(:issue, project: create(:project))
+        result = bulk_update([issue1, issue2], assignee_ids: [user.id])
+
+        expect(result[:success]).to be_truthy
+        expect(result[:count]).to eq(1)
+
+        expect(issue1.reload.assignees).to eq([user])
+        expect(issue2.reload.assignees).to be_empty
+      end
+    end
   end
 
   context 'with issuables at a group level' do
     let(:group) { create(:group) }
+    let(:parent) { group }
+
+    before do
+      group.add_reporter(user)
+    end
 
     describe 'updating milestones' do
       let(:milestone) { create(:milestone, group: group) }
@@ -398,11 +392,24 @@ describe Issuable::BulkUpdateService do
       let(:regression)     { create(:group_label, group: group) }
       let(:merge_requests) { create(:group_label, group: group) }
 
-      before do
-        group.add_reporter(user)
-      end
-
       it_behaves_like 'updating labels'
+    end
+
+    describe 'with issues from external group' do
+      it 'updates issues that belong to the parent group or descendants' do
+        issue1 = create(:issue, project: create(:project, group: group))
+        issue2 = create(:issue, project: create(:project, group: create(:group)))
+        issue3 = create(:issue, project: create(:project, group: create(:group, parent: group)))
+        milestone = create(:milestone, group: group)
+        result = bulk_update([issue1, issue2, issue3], milestone_id: milestone.id)
+
+        expect(result[:success]).to be_truthy
+        expect(result[:count]).to eq(2)
+
+        expect(issue1.reload.milestone).to eq(milestone)
+        expect(issue2.reload.milestone).to be_nil
+        expect(issue3.reload.milestone).to eq(milestone)
+      end
     end
   end
 end

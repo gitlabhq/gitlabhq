@@ -2,8 +2,8 @@ source 'https://rubygems.org'
 
 gem 'gitlab-qa'
 gem 'activesupport', '5.2.3' # This should stay in sync with the root's Gemfile
-gem 'capybara', '~> 2.16.1'
-gem 'capybara-screenshot', '~> 1.0.18'
+gem 'capybara', '~> 3.29.0'
+gem 'capybara-screenshot', '~> 1.0.23'
 gem 'rake', '~> 12.3.0'
 gem 'rspec', '~> 3.7'
 gem 'selenium-webdriver', '~> 3.12'

@@ -4,8 +4,7 @@ module QA
   context 'Create' do
     describe 'Merge request squashing' do
       it 'user squashes commits while merging' do
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.perform(&:sign_in_using_credentials)
+        Flow::Login.sign_in
 
         project = Resource::Project.fabricate! do |project|
           project.name = "squash-before-merge"

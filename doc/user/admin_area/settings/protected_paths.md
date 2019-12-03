@@ -14,7 +14,8 @@ GitLab protects the following paths with Rack Attack by default:
 '/users',
 '/users/confirmation',
 '/unsubscribes/',
-'/import/github/personal_access_token'
+'/import/github/personal_access_token',
+'/admin/session'
 ```
 
 GitLab responds with HTTP status code `429` to POST requests at protected paths

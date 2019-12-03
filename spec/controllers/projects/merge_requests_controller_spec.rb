@@ -1226,9 +1226,9 @@ describe Projects::MergeRequestsController do
         environment2 = create(:environment, project: forked)
         create(:deployment, :succeed, environment: environment2, sha: sha, ref: 'master', deployable: build)
 
-        # TODO address the last 5 queries
-        # See https://gitlab.com/gitlab-org/gitlab-foss/issues/63952 (5 queries)
-        leeway = 5
+        # TODO address the last 3 queries
+        # See https://gitlab.com/gitlab-org/gitlab-foss/issues/63952 (3 queries)
+        leeway = 3
         expect { get_ci_environments_status }.not_to exceed_all_query_limit(control_count + leeway)
       end
     end
@@ -1277,6 +1277,28 @@ describe Projects::MergeRequestsController do
           expect { get_ci_environments_status }
             .to change { Gitlab::GitalyClient.get_request_count }.by_at_most(1)
         end
+      end
+    end
+
+    it 'uses the explicitly linked deployments' do
+      expect(EnvironmentStatus)
+        .to receive(:for_deployed_merge_request)
+        .with(merge_request, user)
+        .and_call_original
+
+      get_ci_environments_status(environment_target: 'merge_commit')
+    end
+
+    context 'when the deployment_merge_requests_widget feature flag is disabled' do
+      it 'uses the deployments retrieved using CI builds' do
+        stub_feature_flags(deployment_merge_requests_widget: false)
+
+        expect(EnvironmentStatus)
+          .to receive(:after_merge_request)
+          .with(merge_request, user)
+          .and_call_original
+
+        get_ci_environments_status(environment_target: 'merge_commit')
       end
     end
 

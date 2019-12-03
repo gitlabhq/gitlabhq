@@ -27,6 +27,8 @@ export default {
       :lines="entry.context"
       :file-path="entry.filename"
       :error-line="entry.lineNo"
+      :error-fn="entry.function"
+      :error-column="entry.colNo"
       :expanded="isFirstEntry(index)"
     />
   </div>

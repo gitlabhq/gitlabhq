@@ -134,7 +134,7 @@ A lot of Gitaly RPCs need to look up Git objects from repositories.
 Most of the time we use `git cat-file --batch` processes for that. For
 better performance, Gitaly can re-use these `git cat-file` processes
 across RPC calls. Previously used processes are kept around in a
-["git cat-file cache"](https://about.gitlab.com/blog/2019/07/08/git-performance-on-nfs/#enter-cat-file-cache).
+["Git cat-file cache"](https://about.gitlab.com/blog/2019/07/08/git-performance-on-nfs/#enter-cat-file-cache).
 In order to control how much system resources this uses, we have a maximum number
 of cat-file processes that can go into the cache.
 
@@ -165,11 +165,11 @@ Gitaly restarts its `gitaly-ruby` helpers when their memory exceeds the
 
 | Name | Type | Required | Description |
 | ---- | ---- | -------- | ----------- |
-| `dir` | string | yes | Path to where gitaly-ruby is installed (needed to boot the process).|
-| `max_rss` | integer | no | Resident set size limit that triggers a gitaly-ruby restart, in bytes. Default is `200000000` (200MB). |
-| `graceful_restart_timeout` | string | no | Grace period before a gitaly-ruby process is forcibly terminated after exceeding `max_rss`. Default is `10m` (10 minutes).|
-| `restart_delay` | string | no |Time that gitaly-ruby memory must remain high before a restart. Default is `5m` (5 minutes).|
-| `num_workers` | integer | no |Number of gitaly-ruby worker processes. Try increasing this number in case of `ResourceExhausted` errors. Default is `2`, minimum is `2`.|
+| `dir` | string | yes | Path to where `gitaly-ruby` is installed (needed to boot the process).|
+| `max_rss` | integer | no | Resident set size limit that triggers a `gitaly-ruby` restart, in bytes. Default is `200000000` (200MB). |
+| `graceful_restart_timeout` | string | no | Grace period before a `gitaly-ruby` process is forcibly terminated after exceeding `max_rss`. Default is `10m` (10 minutes).|
+| `restart_delay` | string | no |Time that `gitaly-ruby` memory must remain high before a restart. Default is `5m` (5 minutes).|
+| `num_workers` | integer | no |Number of `gitaly-ruby` worker processes. Try increasing this number in case of `ResourceExhausted` errors. Default is `2`, minimum is `2`.|
 | `linguist_languages_path` | string | no | Override for dynamic `languages.json` discovery. Defaults to an empty string (use of dynamic discovery).|
 
 Example:
@@ -231,11 +231,11 @@ The following values configure logging in Gitaly under the `[logging]` section.
 | `level`  | string | no | Log level: `debug`, `info`, `warn`, `error`, `fatal`, or `panic`. Default: `info`. |
 | `sentry_dsn` | string | no | Sentry DSN for exception monitoring. |
 | `sentry_environment` | string | no | [Sentry Environment](https://docs.sentry.io/enriching-error-data/environments/) for exception monitoring. |
-| `ruby_sentry_dsn` | string | no | Sentry DSN for gitaly-ruby exception monitoring. |
+| `ruby_sentry_dsn` | string | no | Sentry DSN for `gitaly-ruby` exception monitoring. |
 
 While the main Gitaly application logs go to stdout, there are some extra log
 files that go to a configured directory, like the GitLab Shell logs.
-Gitlab Shell does not support `panic` or `trace` level logs. `panic` will fall
+GitLab Shell does not support `panic` or `trace` level logs. `panic` will fall
 back to `error`, while `trace` will fall back to `debug`. Any other invalid log
 levels will default to `info`.
 

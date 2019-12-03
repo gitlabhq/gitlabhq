@@ -275,7 +275,7 @@ parallel-spec-reports:
     - .only-review
     - .only:changes-code-qa
   image: ruby:2.6-alpine
-  stage: post-test
+  stage: post-qa
   dependencies: ["review-qa-all"]
   variables:
     NEW_PARALLEL_SPECS_REPORT: qa/report-new.html

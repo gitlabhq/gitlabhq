@@ -4,8 +4,7 @@ module QA
   context 'Release' do
     describe 'Deploy key creation' do
       it 'user adds a deploy key' do
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.perform(&:sign_in_using_credentials)
+        Flow::Login.sign_in
 
         key = Runtime::Key::RSA.new
         deploy_key_title = 'deploy key title'

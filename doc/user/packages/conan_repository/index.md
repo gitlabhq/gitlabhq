@@ -27,7 +27,7 @@ get familiar with the package naming convention.
 
 ## Authenticating to the GitLab Conan Repository
 
-You will need to generate a [personal access token](../../../user/profile/personal_access_tokens.md) for repository authentication.
+You will need to generate a [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to `api` for repository authentication.
 
 Now you can run conan commands using your token.
 

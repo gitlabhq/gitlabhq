@@ -12,7 +12,7 @@ POST /api/v4/markdown
 
 | Attribute | Type    | Required      | Description                                |
 | --------- | ------- | ------------- | ------------------------------------------ |
-| `text`    | string  | yes           | The markdown text to render                |
+| `text`    | string  | yes           | The Markdown text to render                |
 | `gfm`     | boolean | no (optional) | Render text using GitLab Flavored Markdown. Default is `false` |
 | `project` | string  | no (optional) | Use `project` as a context when creating references using GitLab Flavored Markdown. [Authentication](README.html#authentication) is required if a project is not public.  |
 

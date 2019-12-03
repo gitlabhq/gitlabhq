@@ -32,6 +32,16 @@ export default class PerformanceBarStore {
     return request;
   }
 
+  setRequestDetailsData(requestId, metricKey, requestDetailsData) {
+    const selectedRequest = this.findRequest(requestId);
+    if (selectedRequest) {
+      selectedRequest.details = {
+        ...selectedRequest.details,
+        [metricKey]: requestDetailsData,
+      };
+    }
+  }
+
   requestsWithDetails() {
     return this.requests.filter(request => request.details);
   }

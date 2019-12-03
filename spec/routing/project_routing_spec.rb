@@ -794,4 +794,28 @@ describe 'project routing' do
       expect(post('/gitlab/gitlabhq/usage_ping/web_ide_clientside_preview')).to route_to('projects/usage_ping#web_ide_clientside_preview', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
   end
+
+  describe Projects::EnvironmentsController, 'routing' do
+    describe 'legacy routing' do
+      it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/environments", "/gitlab/gitlabhq/-/environments"
+    end
+  end
+
+  describe Projects::ClustersController, 'routing' do
+    describe 'legacy routing' do
+      it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/clusters", "/gitlab/gitlabhq/-/clusters"
+    end
+  end
+
+  describe Projects::ErrorTrackingController, 'routing' do
+    describe 'legacy routing' do
+      it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/error_tracking", "/gitlab/gitlabhq/-/error_tracking"
+    end
+  end
+
+  describe Projects::Serverless, 'routing' do
+    describe 'legacy routing' do
+      it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/serverless", "/gitlab/gitlabhq/-/serverless"
+    end
+  end
 end

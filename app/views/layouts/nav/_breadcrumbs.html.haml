@@ -2,7 +2,7 @@
 - hide_top_links = @hide_top_links || false
 
 %nav.breadcrumbs{ role: "navigation", class: [container, @content_class] }
-  .breadcrumbs-container
+  .breadcrumbs-container{ class: ("border-bottom-0" if @no_breadcrumb_border && mr_tabs_position_enabled?) }
     - if defined?(@left_sidebar)
       = button_tag class: 'toggle-mobile-nav', type: 'button' do
         %span.sr-only= _("Open sidebar")

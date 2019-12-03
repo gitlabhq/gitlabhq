@@ -1,3 +1,4 @@
+/* eslint-disable @gitlab/i18n/no-non-i18n-strings */
 import Vue from 'vue';
 import axios from '~/lib/utils/axios_utils';
 
@@ -53,11 +54,60 @@ export default ({ container }) =>
         PerformanceBarService.fetchRequestDetails(this.peekUrl, requestId)
           .then(res => {
             this.store.addRequestDetails(requestId, res.data);
+
+            if (this.requestId === requestId) this.collectFrontendPerformanceMetrics();
           })
           .catch(() =>
             // eslint-disable-next-line no-console
             console.warn(`Error getting performance bar results for ${requestId}`),
           );
+      },
+      collectFrontendPerformanceMetrics() {
+        if (performance) {
+          const navigationEntries = performance.getEntriesByType('navigation');
+          const paintEntries = performance.getEntriesByType('paint');
+          const resourceEntries = performance.getEntriesByType('resource');
+
+          let durationString = '';
+          if (navigationEntries.length > 0) {
+            durationString = `BE ${this.formatMs(navigationEntries[0].responseEnd)} / `;
+            durationString += `FCP ${this.formatMs(paintEntries[1].startTime)} / `;
+            durationString += `DOM ${this.formatMs(navigationEntries[0].domContentLoadedEventEnd)}`;
+          }
+
+          let newEntries = resourceEntries.map(this.transformResourceEntry);
+
+          this.updateFrontendPerformanceMetrics(durationString, newEntries);
+
+          if ('PerformanceObserver' in window) {
+            // We start observing for more incoming timings
+            const observer = new PerformanceObserver(list => {
+              newEntries = newEntries.concat(list.getEntries().map(this.transformResourceEntry));
+              this.updateFrontendPerformanceMetrics(durationString, newEntries);
+            });
+
+            observer.observe({ entryTypes: ['resource'] });
+          }
+        }
+      },
+      updateFrontendPerformanceMetrics(durationString, requestEntries) {
+        this.store.setRequestDetailsData(this.requestId, 'total', {
+          duration: durationString,
+          calls: requestEntries.length,
+          details: requestEntries,
+        });
+      },
+      transformResourceEntry(entry) {
+        const nf = new Intl.NumberFormat();
+        return {
+          name: entry.name.replace(document.location.origin, ''),
+          duration: Math.round(entry.duration),
+          size: entry.transferSize ? `${nf.format(entry.transferSize)} bytes` : 'cached',
+        };
+      },
+      formatMs(msValue) {
+        const nf = new Intl.NumberFormat();
+        return `${nf.format(Math.round(msValue))}ms`;
       },
     },
     render(createElement) {

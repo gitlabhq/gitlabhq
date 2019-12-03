@@ -8,6 +8,7 @@ module QA
           def self.included(base)
             base.view 'app/assets/javascripts/issue_show/components/title.vue' do
               element :edit_button
+              element :title, required: true
             end
 
             base.view 'app/assets/javascripts/issue_show/components/fields/title.vue' do

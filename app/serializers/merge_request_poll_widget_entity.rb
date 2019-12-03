@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-class MergeRequestPollWidgetEntity < IssuableEntity
+class MergeRequestPollWidgetEntity < Grape::Entity
+  include RequestAwareEntity
+
   expose :auto_merge_strategy
   expose :available_auto_merge_strategies do |merge_request|
     AutoMergeService.new(merge_request.project, current_user).available_strategies(merge_request) # rubocop: disable CodeReuse/ServiceClass

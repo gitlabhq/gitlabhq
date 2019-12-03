@@ -121,7 +121,7 @@ module IssuableActions
   end
 
   def bulk_update
-    result = Issuable::BulkUpdateService.new(current_user, bulk_update_params).execute(resource_name)
+    result = Issuable::BulkUpdateService.new(parent, current_user, bulk_update_params).execute(resource_name)
     quantity = result[:count]
 
     render json: { notice: "#{quantity} #{resource_name.pluralize(quantity)} updated" }

@@ -21,14 +21,9 @@
       margin-bottom: 2px;
     }
 
-    .issue-labels {
+    .issue-labels,
+    .author-link {
       display: inline-block;
-    }
-
-    .issuable-meta {
-      .author-link {
-        display: inline-block;
-      }
     }
 
     .icon-merge-request-unmerged {
@@ -53,16 +48,6 @@
   margin-right: 15px;
 }
 
-.issues_content {
-  .title {
-    height: 40px;
-  }
-
-  form {
-    margin: 0;
-  }
-}
-
 form.edit-issue {
   margin: 0;
 }
@@ -79,10 +64,6 @@ ul.related-merge-requests > li {
     margin-left: 5px;
   }
 
-  .row_title {
-    vertical-align: bottom;
-  }
-
   gl-emoji {
     font-size: 1em;
   }
@@ -91,10 +72,6 @@ ul.related-merge-requests > li {
 .related-branches-title {
   font-size: 16px;
   font-weight: $gl-font-weight-bold;
-}
-
-.merge-request-id {
-  display: inline-block;
 }
 
 .merge-request-status {
@@ -118,11 +95,7 @@ ul.related-merge-requests > li {
     border-color: $issues-today-border;
   }
 
-  &.closed {
-    background: $gray-light;
-    border-color: $border-color;
-  }
-
+  &.closed,
   &.merged {
     background: $gray-light;
     border-color: $border-color;
@@ -160,9 +133,12 @@ ul.related-merge-requests > li {
   padding-bottom: 37px;
 }
 
-.issues-nav-controls {
+.issues-nav-controls,
+.new-branch-col {
   font-size: 0;
+}
 
+.issues-nav-controls {
   .btn-group:empty {
     display: none;
   }
@@ -198,8 +174,6 @@ ul.related-merge-requests > li {
 }
 
 .new-branch-col {
-  font-size: 0;
-
   .discussion-filter-container {
     &:not(:only-child) {
       margin-right: $gl-padding-8;
@@ -297,11 +271,11 @@ ul.related-merge-requests > li {
       padding-top: 0;
       align-self: center;
     }
+  }
 
-    .create-mr-dropdown-wrap {
-      .btn-group:not(.hidden) {
-        display: inline-flex;
-      }
+  .create-mr-dropdown-wrap {
+    .btn-group:not(.hidden) {
+      display: inline-flex;
     }
   }
 }

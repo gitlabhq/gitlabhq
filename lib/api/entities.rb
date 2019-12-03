@@ -532,7 +532,7 @@ module API
 
     class PersonalSnippet < Snippet
       expose :raw_url do |snippet|
-        Gitlab::UrlBuilder.build(snippet) + "/raw"
+        Gitlab::UrlBuilder.build(snippet, raw: true)
       end
     end
 

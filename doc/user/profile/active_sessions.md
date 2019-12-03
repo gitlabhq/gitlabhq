@@ -18,6 +18,9 @@ review the sessions, and revoke any you don't recognize.
 
 ![Active sessions list](img/active_sessions_list.png)
 
+CAUTION: **Caution:**
+It is currently possible to have 100 active sessions at once. If the number of active sessions exceed 100, the oldest ones will be deleted.
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

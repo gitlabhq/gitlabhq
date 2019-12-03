@@ -1,9 +1,13 @@
 import Vue from 'vue';
 import { slugify } from '~/lib/utils/text_utility';
 import * as types from './mutation_types';
-import { normalizeMetrics, normalizeMetric, normalizeQueryResult } from './utils';
+import { normalizeMetric, normalizeQueryResult } from './utils';
 
-const normalizePanel = panel => panel.metrics.map(normalizeMetric);
+const normalizePanelMetrics = (metrics, defaultLabel) =>
+  metrics.map(metric => ({
+    ...normalizeMetric(metric),
+    label: metric.label || defaultLabel,
+  }));
 
 export default {
   [types.REQUEST_METRICS_DATA](state) {
@@ -13,28 +17,18 @@ export default {
   [types.RECEIVE_METRICS_DATA_SUCCESS](state, groupData) {
     state.dashboard.panel_groups = groupData.map((group, i) => {
       const key = `${slugify(group.group || 'default')}-${i}`;
-      let { metrics = [], panels = [] } = group;
+      let { panels = [] } = group;
 
       // each panel has metric information that needs to be normalized
-
       panels = panels.map(panel => ({
         ...panel,
-        metrics: normalizePanel(panel),
-      }));
-
-      // for backwards compatibility, and to limit Vue template changes:
-      // for each group alias panels to metrics
-      // for each panel alias metrics to queries
-      metrics = panels.map(panel => ({
-        ...panel,
-        queries: panel.metrics,
+        metrics: normalizePanelMetrics(panel.metrics, panel.y_label),
       }));
 
       return {
         ...group,
         panels,
         key,
-        metrics: normalizeMetrics(metrics),
       };
     });
 
@@ -58,6 +52,7 @@ export default {
   [types.RECEIVE_ENVIRONMENTS_DATA_FAILURE](state) {
     state.environments = [];
   },
+
   [types.SET_QUERY_RESULT](state, { metricId, result }) {
     if (!metricId || !result || result.length === 0) {
       return;
@@ -65,14 +60,17 @@ export default {
 
     state.showEmptyState = false;
 
+    /**
+     * Search the dashboard state for a matching id
+     */
     state.dashboard.panel_groups.forEach(group => {
-      group.metrics.forEach(metric => {
-        metric.queries.forEach(query => {
-          if (query.metric_id === metricId) {
+      group.panels.forEach(panel => {
+        panel.metrics.forEach(metric => {
+          if (metric.metric_id === metricId) {
             state.metricsWithData.push(metricId);
             // ensure dates/numbers are correctly formatted for charts
             const normalizedResults = result.map(normalizeQueryResult);
-            Vue.set(query, 'result', Object.freeze(normalizedResults));
+            Vue.set(metric, 'result', Object.freeze(normalizedResults));
           }
         });
       });
@@ -101,6 +99,6 @@ export default {
   },
   [types.SET_PANEL_GROUP_METRICS](state, payload) {
     const panelGroup = state.dashboard.panel_groups.find(pg => payload.key === pg.key);
-    panelGroup.metrics = payload.metrics;
+    panelGroup.panels = payload.panels;
   },
 };

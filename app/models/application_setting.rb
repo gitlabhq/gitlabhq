@@ -5,12 +5,9 @@ class ApplicationSetting < ApplicationRecord
   include CacheMarkdownField
   include TokenAuthenticatable
   include ChronicDurationAttribute
+  include IgnorableColumns
 
-  # Only remove this >= %12.6 and >= 2019-12-01
-  self.ignored_columns += %i[
-      pendo_enabled
-      pendo_url
-    ]
+  ignore_columns :pendo_enabled, :pendo_url, remove_after: '2019-12-01', remove_with: '12.6'
 
   add_authentication_token_field :runners_registration_token, encrypted: -> { Feature.enabled?(:application_settings_tokens_optional_encryption, default_enabled: true) ? :optional : :required }
   add_authentication_token_field :health_check_access_token
@@ -228,6 +225,8 @@ class ApplicationSetting < ApplicationRecord
 
   validates :push_event_activities_limit,
             numericality: { greater_than_or_equal_to: 0 }
+
+  validates :snippet_size_limit, numericality: { only_integer: true, greater_than: 0 }
 
   SUPPORTED_KEY_TYPES.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }

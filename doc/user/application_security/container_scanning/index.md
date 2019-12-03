@@ -127,7 +127,7 @@ If you want to whitelist specific vulnerabilities, you'll need to:
    [overriding the Container Scanning template](#overriding-the-container-scanning-template) section of this document.
    1. Define the whitelisted vulnerabilities in a YAML file named `clair-whitelist.yml` which must use the format described
    in the [following whitelist example file](https://github.com/arminc/clair-scanner/blob/v12/example-whitelist.yaml).
-   1. Add the `clair-whitelist.yml` file to the git repository of your project
+   1. Add the `clair-whitelist.yml` file to the Git repository of your project
 
 ### Overriding the Container Scanning template
 

@@ -30,7 +30,10 @@ rules:
   no-else-return:
     - error
     - allowElseIf: true
+  import/no-cycle: warn
+  import/no-unresolved: warn
   import/no-useless-path-segments: off
+  import/order: warn
   lines-between-class-members: off
   # Disabled for now, to make the plugin-vue 4.5 -> 5.0 update smoother
   vue/no-confusing-v-for-v-if: error

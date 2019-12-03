@@ -8,7 +8,6 @@ import {
   GlTable,
   GlSearchBoxByClick,
 } from '@gitlab/ui';
-import { visitUrl } from '~/lib/utils/url_utility';
 import Icon from '~/vue_shared/components/icon.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { __ } from '~/locale';
@@ -76,8 +75,8 @@ export default {
       this.startPolling(`${this.indexPath}?search_term=${this.errorSearchQuery}`);
     },
     trackViewInSentryOptions,
-    viewDetails(errorId) {
-      visitUrl(`error_tracking/${errorId}/details`);
+    getDetailsLink(errorId) {
+      return `error_tracking/${errorId}/details`;
     },
   },
 };
@@ -129,11 +128,7 @@ export default {
           </template>
           <template slot="error" slot-scope="errors">
             <div class="d-flex flex-column">
-              <gl-link
-                class="d-flex text-dark"
-                target="_blank"
-                @click="viewDetails(errors.item.id)"
-              >
+              <gl-link class="d-flex text-dark" :href="getDetailsLink(errors.item.id)">
                 <strong class="text-truncate">{{ errors.item.title.trim() }}</strong>
               </gl-link>
               <span class="text-secondary text-truncate">

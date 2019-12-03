@@ -76,15 +76,18 @@ Read the [frontend's FAQ](frontend_faq.md) for common small pieces of helpful in
 
 ## Style Guides
 
-### [JavaScript Style Guide](style_guide_js.md)
+See the relevant style guides for our guidelines and for information on linting:
 
-We use eslint to enforce our JavaScript style guides. Our guide is based on
+- [JavaScript](style/javascript.md). Our guide is based on
 the excellent [Airbnb][airbnb-js-style-guide] style guide with a few small
 changes.
+- [SCSS](style/scss.md): our SCSS conventions which are enforced through [`scss-lint`](https://github.com/brigade/scss-lint).
+- [HTML](style/html.md). Guidelines for writing HTML code consistent with the rest of the codebase.
+- [Vue](style/vue.md). Guidelines and conventions for Vue code may be found here.
 
-### [SCSS Style Guide](style_guide_scss.md)
+## Tooling
 
-Our SCSS conventions which are enforced through [scss-lint](https://github.com/sds/scss-lint).
+Our code is automatically formatted with [Prettier](https://prettier.io) to follow our guidelines. Read our [Tooling guide](tooling.md) for more detail.
 
 ## [Performance](performance.md)
 

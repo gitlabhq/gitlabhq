@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
   render(createElement) {
     return createElement('my-component', {
       props: {
-        endpoint: this.isLoading,
+        endpoint: this.endpoint,
       },
     });
   },
@@ -179,7 +179,7 @@ Check this [page](vuex.md) for more details.
 
 ## Style guide
 
-Please refer to the Vue section of our [style guide](style_guide_js.md#vuejs)
+Please refer to the Vue section of our [style guide](style/vue.md)
 for best practices while writing your Vue components and templates.
 
 ## Testing Vue Components

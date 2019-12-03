@@ -11,7 +11,7 @@ describe 'environments routing' do
   end
 
   let(:environments_route) do
-    "#{project.full_path}/environments/"
+    "#{project.full_path}/-/environments/"
   end
 
   describe 'routing environment folders' do
@@ -38,7 +38,7 @@ describe 'environments routing' do
   end
 
   def get_folder(folder)
-    get("#{project.full_path}/environments/folders/#{folder}")
+    get("#{project.full_path}/-/environments/folders/#{folder}")
   end
 
   def folder_action(**opts)

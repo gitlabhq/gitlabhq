@@ -14,7 +14,7 @@ With Deploy Boards you can gain more insight into deploys with benefits such as:
 
 - Following a deploy from the start, not just when it's done
 - Watching the rollout of a build across multiple servers
-- Finer state detail (Waiting, Deploying, Finished, Unknown)
+- Finer state detail (Succeeded, Running, Failed, Pending, Unknown)
 - See [Canary Deployments](canary_deployments.md)
 
 Here's an example of a Deploy Board of the production environment.

@@ -42,38 +42,34 @@ export const metrics = [
   },
 ];
 
-const queries = [
+const result = [
   {
-    result: [
-      {
-        values: [
-          ['Mon', 1220],
-          ['Tue', 932],
-          ['Wed', 901],
-          ['Thu', 934],
-          ['Fri', 1290],
-          ['Sat', 1330],
-          ['Sun', 1320],
-        ],
-      },
+    values: [
+      ['Mon', 1220],
+      ['Tue', 932],
+      ['Wed', 901],
+      ['Thu', 934],
+      ['Fri', 1290],
+      ['Sat', 1330],
+      ['Sun', 1320],
     ],
   },
 ];
 
 export const metricsData = [
   {
-    queries,
     metrics: [
       {
         metric_id: 15,
+        result,
       },
     ],
   },
   {
-    queries,
     metrics: [
       {
         metric_id: 16,
+        result,
       },
     ],
   },

@@ -442,4 +442,36 @@ describe Deployment do
       expect(deploy2.previous_environment_deployment).to be_nil
     end
   end
+
+  describe '#playable_build' do
+    subject { deployment.playable_build }
+
+    context 'when there is a deployable build' do
+      let(:deployment) { create(:deployment, deployable: build) }
+
+      context 'when the deployable build is playable' do
+        let(:build) { create(:ci_build, :playable) }
+
+        it 'returns that build' do
+          is_expected.to eq(build)
+        end
+      end
+
+      context 'when the deployable build is not playable' do
+        let(:build) { create(:ci_build) }
+
+        it 'returns nil' do
+          is_expected.to be_nil
+        end
+      end
+    end
+
+    context 'when there is no deployable build' do
+      let(:deployment) { create(:deployment) }
+
+      it 'returns nil' do
+        is_expected.to be_nil
+      end
+    end
+  end
 end

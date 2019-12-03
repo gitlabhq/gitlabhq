@@ -4,8 +4,7 @@ module QA
   context 'Manage', :smoke do
     describe 'basic user login' do
       it 'user logs in using basic credentials and logs out' do
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.perform(&:sign_in_using_credentials)
+        Flow::Login.sign_in
 
         Page::Main::Menu.perform do |menu|
           expect(menu).to have_personal_area

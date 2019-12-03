@@ -33,7 +33,7 @@ describe('Panel Type component', () => {
     let glEmptyChart;
     // Deep clone object before modifying
     const graphDataNoResult = JSON.parse(JSON.stringify(graphDataPrometheusQueryRange));
-    graphDataNoResult.queries[0].result = [];
+    graphDataNoResult.metrics[0].result = [];
 
     beforeEach(() => {
       panelType = shallowMount(PanelType, {
@@ -143,7 +143,7 @@ describe('Panel Type component', () => {
     describe('csvText', () => {
       it('converts metrics data from json to csv', () => {
         const header = `timestamp,${graphDataPrometheusQueryRange.y_label}`;
-        const data = graphDataPrometheusQueryRange.queries[0].result[0].values;
+        const data = graphDataPrometheusQueryRange.metrics[0].result[0].values;
         const firstRow = `${data[0][0]},${data[0][1]}`;
         const secondRow = `${data[1][0]},${data[1][1]}`;
 

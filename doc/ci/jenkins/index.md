@@ -228,5 +228,5 @@ our very powerful [`only/except` rules system](../yaml/README.md#onlyexcept-basi
 
 ```yaml
 my_job:
-  only: branches
+  only: [branches]
 ```

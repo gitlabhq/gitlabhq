@@ -6,10 +6,10 @@ module Gitlab
     include GitlabRoutingHelper
     include ActionView::RecordIdentifier
 
-    attr_reader :object
+    attr_reader :object, :opts
 
-    def self.build(object)
-      new(object).url
+    def self.build(object, opts = {})
+      new(object, opts).url
     end
 
     def url
@@ -24,10 +24,8 @@ module Gitlab
         note_url
       when WikiPage
         wiki_page_url
-      when ProjectSnippet
-        project_snippet_url(object.project, object)
       when Snippet
-        snippet_url(object)
+        opts[:raw].present? ? raw_snippet_url(object) : snippet_url(object)
       when Milestone
         milestone_url(object)
       when ::Ci::Build
@@ -41,8 +39,9 @@ module Gitlab
 
     private
 
-    def initialize(object)
+    def initialize(object, opts = {})
       @object = object
+      @opts = opts
     end
 
     def commit_url(opts = {})
@@ -66,13 +65,7 @@ module Gitlab
         merge_request_url(object.noteable, anchor: dom_id(object))
 
       elsif object.for_snippet?
-        snippet = object.noteable
-
-        if snippet.is_a?(PersonalSnippet)
-          snippet_url(snippet, anchor: dom_id(object))
-        else
-          project_snippet_url(snippet.project, snippet, anchor: dom_id(object))
-        end
+        snippet_url(object.noteable, anchor: dom_id(object))
       end
     end
 

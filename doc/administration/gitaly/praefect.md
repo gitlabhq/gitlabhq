@@ -181,7 +181,7 @@ git_data_dirs({
 })
 ```
 
-For more information on Gitaly server configuration, see our [gitaly documentation](index.md#3-gitaly-server-configuration).
+For more information on Gitaly server configuration, see our [Gitaly documentation](index.md#3-gitaly-server-configuration).
 
 #### GitLab
 

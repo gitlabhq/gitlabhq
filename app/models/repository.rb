@@ -925,7 +925,22 @@ class Repository
   def ancestor?(ancestor_id, descendant_id)
     return false if ancestor_id.nil? || descendant_id.nil?
 
-    raw_repository.ancestor?(ancestor_id, descendant_id)
+    counter = Gitlab::Metrics.counter(
+      :repository_ancestor_calls_total,
+      'The number of times we call Repository#ancestor with valid arguments')
+    cache_hit = true
+
+    cache_key = "ancestor:#{ancestor_id}:#{descendant_id}"
+    result = request_store_cache.fetch(cache_key) do
+      cache.fetch(cache_key) do
+        cache_hit = false
+        raw_repository.ancestor?(ancestor_id, descendant_id)
+      end
+    end
+
+    counter.increment(cache_hit: cache_hit.to_s)
+
+    result
   end
 
   def fetch_as_mirror(url, forced: false, refmap: :all_refs, remote_name: nil, prune: true)

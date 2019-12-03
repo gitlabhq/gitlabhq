@@ -52,6 +52,7 @@ dependency_scanning:
           PIP_INDEX_URL \
           PIP_EXTRA_INDEX_URL \
           MAVEN_CLI_OPTS \
+          BUNDLER_AUDIT_UPDATE_DISABLED \
         ) \
         --volume "$PWD:/code" \
         --volume /var/run/docker.sock:/var/run/docker.sock \

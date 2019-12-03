@@ -1,0 +1,5 @@
+---
+title: Ensure to check create_personal_snippet ability
+merge_request: 20838
+author:
+type: fixed

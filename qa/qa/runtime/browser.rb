@@ -132,6 +132,10 @@ module QA
           config.default_max_wait_time = CAPYBARA_MAX_WAIT_TIME
           # https://github.com/mattheworiordan/capybara-screenshot/issues/164
           config.save_path = ::File.expand_path('../../tmp', __dir__)
+
+          # Cabybara 3 does not normalize text by default, so older tests
+          # fail because of unexpected line breaks and other white space
+          config.default_normalize_ws = true
         end
       end
 
@@ -151,6 +155,8 @@ module QA
 
         def perform(&block)
           visit(url)
+
+          simulate_slow_connection if Runtime::Env.simulate_slow_connection?
 
           page_class.validate_elements_present!
 
@@ -174,6 +180,28 @@ module QA
         def clear!
           visit(url)
           reset_session!
+          @network_conditions_configured = false
+        end
+
+        private
+
+        def simulate_slow_connection
+          return if @network_conditions_configured
+
+          QA::Runtime::Logger.info(
+            <<~MSG.tr("\n", " ")
+              Simulating a slow connection with additional latency
+              of #{Runtime::Env.slow_connection_latency} ms and a maximum
+              throughput of #{Runtime::Env.slow_connection_throughput} kbps
+            MSG
+          )
+
+          Capybara.current_session.driver.browser.network_conditions = {
+            latency: Runtime::Env.slow_connection_latency,
+            throughput: Runtime::Env.slow_connection_throughput * 1000
+          }
+
+          @network_conditions_configured = true
         end
       end
     end

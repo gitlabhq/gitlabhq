@@ -2,6 +2,32 @@ import { format } from 'timeago.js';
 import Vue from 'vue';
 import environmentItemComp from '~/environments/components/environment_item.vue';
 
+const tableData = {
+  name: {
+    title: 'Environment',
+    spacing: 'section-15',
+  },
+  deploy: {
+    title: 'Deployment',
+    spacing: 'section-10',
+  },
+  build: {
+    title: 'Job',
+    spacing: 'section-15',
+  },
+  commit: {
+    title: 'Commit',
+    spacing: 'section-20',
+  },
+  date: {
+    title: 'Updated',
+    spacing: 'section-10',
+  },
+  actions: {
+    spacing: 'section-25',
+  },
+};
+
 describe('Environment item', () => {
   let EnvironmentItem;
 
@@ -27,6 +53,7 @@ describe('Environment item', () => {
         propsData: {
           model: mockItem,
           canReadEnvironment: true,
+          tableData,
         },
       }).$mount();
     });
@@ -119,6 +146,7 @@ describe('Environment item', () => {
         propsData: {
           model: environment,
           canReadEnvironment: true,
+          tableData,
         },
       }).$mount();
     });

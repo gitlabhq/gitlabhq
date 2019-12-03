@@ -4,8 +4,7 @@ module QA
   context 'Manage' do
     describe 'Project transfer between groups' do
       it 'user transfers a project between groups' do
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.perform(&:sign_in_using_credentials)
+        Flow::Login.sign_in
 
         source_group = Resource::Group.fabricate_via_api! do |group|
           group.path = 'source-group'

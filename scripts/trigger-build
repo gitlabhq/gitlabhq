@@ -71,7 +71,7 @@ module Trigger
 
     # Can be overridden
     def version_param_value(version_file)
-      File.read(version_file).strip
+      ENV[version_file]&.strip || File.read(version_file).strip
     end
 
     def variables

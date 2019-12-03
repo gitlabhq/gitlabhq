@@ -3,25 +3,31 @@ import App from '~/issuable_suggestions/components/app.vue';
 import Suggestion from '~/issuable_suggestions/components/item.vue';
 
 describe('Issuable suggestions app component', () => {
-  let vm;
+  let wrapper;
 
   function createComponent(search = 'search') {
-    vm = shallowMount(App, {
+    wrapper = shallowMount(App, {
       propsData: {
         search,
         projectPath: 'project',
       },
+      sync: false,
+      attachToDocument: true,
     });
   }
 
+  beforeEach(() => {
+    createComponent();
+  });
+
   afterEach(() => {
-    vm.destroy();
+    wrapper.destroy();
   });
 
   it('does not render with empty search', () => {
-    createComponent('');
+    wrapper.setProps({ search: '' });
 
-    expect(vm.isVisible()).toBe(false);
+    expect(wrapper.isVisible()).toBe(false);
   });
 
   describe('with data', () => {
@@ -32,65 +38,65 @@ describe('Issuable suggestions app component', () => {
     });
 
     it('renders component', () => {
-      createComponent();
-      vm.setData(data);
+      wrapper.setData(data);
 
-      expect(vm.isEmpty()).toBe(false);
+      expect(wrapper.isEmpty()).toBe(false);
     });
 
     it('does not render with empty search', () => {
-      createComponent('');
-      vm.setData(data);
+      wrapper.setProps({ search: '' });
+      wrapper.setData(data);
 
-      expect(vm.isVisible()).toBe(false);
+      expect(wrapper.isVisible()).toBe(false);
     });
 
     it('does not render when loading', () => {
-      createComponent();
-      vm.setData({
+      wrapper.setData({
         ...data,
         loading: 1,
       });
 
-      expect(vm.isVisible()).toBe(false);
+      expect(wrapper.isVisible()).toBe(false);
     });
 
     it('does not render with empty issues data', () => {
-      createComponent();
-      vm.setData({ issues: [] });
+      wrapper.setData({ issues: [] });
 
-      expect(vm.isVisible()).toBe(false);
+      expect(wrapper.isVisible()).toBe(false);
     });
 
     it('renders list of issues', () => {
-      createComponent();
-      vm.setData(data);
+      wrapper.setData(data);
 
-      expect(vm.findAll(Suggestion).length).toBe(2);
+      return wrapper.vm.$nextTick(() => {
+        expect(wrapper.findAll(Suggestion).length).toBe(2);
+      });
     });
 
     it('adds margin class to first item', () => {
-      createComponent();
-      vm.setData(data);
+      wrapper.setData(data);
 
-      expect(
-        vm
-          .findAll('li')
-          .at(0)
-          .is('.append-bottom-default'),
-      ).toBe(true);
+      return wrapper.vm.$nextTick(() => {
+        expect(
+          wrapper
+            .findAll('li')
+            .at(0)
+            .is('.append-bottom-default'),
+        ).toBe(true);
+      });
     });
 
     it('does not add margin class to last item', () => {
-      createComponent();
-      vm.setData(data);
+      wrapper.setData(data);
 
-      expect(
-        vm
-          .findAll('li')
-          .at(1)
-          .is('.append-bottom-default'),
-      ).toBe(false);
+      return wrapper.vm.$nextTick(() => {
+        expect(
+          wrapper
+            .findAll('li')
+            .at(1)
+            .is('.append-bottom-default'),
+        ).toBe(false);
+      });
     });
   });
 });

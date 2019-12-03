@@ -17,6 +17,7 @@ class MergeRequest < ApplicationRecord
   include FromUnion
   include DeprecatedAssignee
   include ShaAttribute
+  include IgnorableColumns
 
   sha_attribute :squash_commit_sha
 
@@ -72,6 +73,14 @@ class MergeRequest < ApplicationRecord
 
   has_many :merge_request_assignees
   has_many :assignees, class_name: "User", through: :merge_request_assignees
+
+  has_many :deployment_merge_requests
+
+  # These are deployments created after the merge request has been merged, and
+  # the merge request was tracked explicitly (instead of implicitly using a CI
+  # build).
+  has_many :deployments,
+    through: :deployment_merge_requests
 
   KNOWN_MERGE_PARAMS = [
     :auto_merge_strategy,
@@ -199,6 +208,9 @@ class MergeRequest < ApplicationRecord
   scope :by_milestone, ->(milestone) { where(milestone_id: milestone) }
   scope :of_projects, ->(ids) { where(target_project_id: ids) }
   scope :from_project, ->(project) { where(source_project_id: project.id) }
+  scope :from_and_to_forks, ->(project) do
+    where('source_project_id <> target_project_id AND (source_project_id = ? OR target_project_id = ?)', project.id, project.id)
+  end
   scope :merged, -> { with_state(:merged) }
   scope :closed_and_merged, -> { with_states(:closed, :merged) }
   scope :open_and_closed, -> { with_states(:opened, :closed) }
@@ -228,8 +240,7 @@ class MergeRequest < ApplicationRecord
     with_state(:opened).where(auto_merge_enabled: true)
   end
 
-  # Only remove after 2019-12-22 and with %12.7
-  self.ignored_columns += %i[state]
+  ignore_column :state, remove_with: '12.7', remove_after: '2019-12-22'
 
   after_save :keep_around_commit
 
@@ -266,7 +277,7 @@ class MergeRequest < ApplicationRecord
   def self.recent_target_branches(limit: 100)
     group(:target_branch)
       .select(:target_branch)
-      .reorder('MAX(merge_requests.updated_at) DESC')
+      .reorder(arel_table[:updated_at].maximum.desc)
       .limit(limit)
       .pluck(:target_branch)
   end
@@ -1466,6 +1477,14 @@ class MergeRequest < ApplicationRecord
 
   def find_actual_head_pipeline
     all_pipelines.for_sha_or_source_sha(diff_head_sha).first
+  end
+
+  def etag_caching_enabled?
+    true
+  end
+
+  def recent_visible_deployments
+    deployments.visible.includes(:environment).order(id: :desc).limit(10)
   end
 
   private

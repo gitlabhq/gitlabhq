@@ -1,0 +1,5 @@
+---
+title: Accept user-defined dashboard uids in Grafana embeds
+merge_request: 20486
+author:
+type: fixed

@@ -301,7 +301,8 @@ module ApplicationSettingsHelper
       :snowplow_iglu_registry_url,
       :push_event_hooks_limit,
       :push_event_activities_limit,
-      :custom_http_clone_url_root
+      :custom_http_clone_url_root,
+      :snippet_size_limit
     ]
   end
 

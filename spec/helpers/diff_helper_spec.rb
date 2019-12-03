@@ -258,6 +258,51 @@ describe DiffHelper do
     end
   end
 
+  context '#render_overflow_warning?' do
+    let(:diffs_collection) { instance_double(Gitlab::Diff::FileCollection::MergeRequestDiff, diff_files: diff_files) }
+    let(:diff_files) { Gitlab::Git::DiffCollection.new(files) }
+    let(:safe_file) { { too_large: false, diff: '' } }
+    let(:large_file) { { too_large: true, diff: '' } }
+    let(:files) { [safe_file, safe_file] }
+
+    before do
+      allow(diff_files).to receive(:overflow?).and_return(false)
+    end
+
+    context 'when neither collection nor individual file hit the limit' do
+      it 'returns false and does not log any overflow events' do
+        expect(Gitlab::Metrics).not_to receive(:add_event).with(:diffs_overflow_collection_limits)
+        expect(Gitlab::Metrics).not_to receive(:add_event).with(:diffs_overflow_single_file_limits)
+
+        expect(render_overflow_warning?(diffs_collection)).to be false
+      end
+    end
+
+    context 'when the file collection has an overflow' do
+      before do
+        allow(diff_files).to receive(:overflow?).and_return(true)
+      end
+
+      it 'returns false and only logs collection overflow event' do
+        expect(Gitlab::Metrics).to receive(:add_event).with(:diffs_overflow_collection_limits).exactly(:once)
+        expect(Gitlab::Metrics).not_to receive(:add_event).with(:diffs_overflow_single_file_limits)
+
+        expect(render_overflow_warning?(diffs_collection)).to be true
+      end
+    end
+
+    context 'when two individual files are too big' do
+      let(:files) { [safe_file, large_file, large_file] }
+
+      it 'returns false and only logs single file overflow events' do
+        expect(Gitlab::Metrics).to receive(:add_event).with(:diffs_overflow_single_file_limits).exactly(:once)
+        expect(Gitlab::Metrics).not_to receive(:add_event).with(:diffs_overflow_collection_limits)
+
+        expect(render_overflow_warning?(diffs_collection)).to be false
+      end
+    end
+  end
+
   context '#diff_file_path_text' do
     it 'returns full path by default' do
       expect(diff_file_path_text(diff_file)).to eq(diff_file.new_path)

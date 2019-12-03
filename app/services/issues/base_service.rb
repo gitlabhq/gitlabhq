@@ -36,3 +36,5 @@ module Issues
     end
   end
 end
+
+Issues::BaseService.prepend_if_ee('EE::Issues::BaseService')

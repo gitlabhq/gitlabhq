@@ -52,16 +52,16 @@ module QA
           Page::Project::Show.perform(&:create_new_file!)
           Page::File::Form.perform do |form|
             form.select_template template[:file_name], template[:name]
+
+            expect(form).to have_normalized_ws_text(content[0..100])
+
+            form.commit_changes
+
+            expect(form).to have_content('The file has been successfully created.')
+            expect(form).to have_content(template[:file_name])
+            expect(form).to have_content('Add new file')
+            expect(form).to have_normalized_ws_text(content[0..100])
           end
-
-          expect(page).to have_content(content[0..100])
-
-          Page::File::Form.perform(&:commit_changes)
-
-          expect(page).to have_content('The file has been successfully created.')
-          expect(page).to have_content(template[:file_name])
-          expect(page).to have_content('Add new file')
-          expect(page).to have_content(content[0..100])
         end
       end
     end

@@ -1,0 +1,5 @@
+---
+title: Optimize query for CI pipelines of merge request
+merge_request: 19653
+author:
+type: performance

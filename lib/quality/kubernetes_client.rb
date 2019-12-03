@@ -4,6 +4,7 @@ require_relative '../gitlab/popen' unless defined?(Gitlab::Popen)
 
 module Quality
   class KubernetesClient
+    RESOURCE_LIST = 'ingress,svc,pdb,hpa,deploy,statefulset,job,pod,secret,configmap,pvc,secret,clusterrole,clusterrolebinding,role,rolebinding,sa,crd'
     CommandFailedError = Class.new(StandardError)
 
     attr_reader :namespace
@@ -13,6 +14,13 @@ module Quality
     end
 
     def cleanup(release_name:, wait: true)
+      delete_by_selector(release_name: release_name, wait: wait)
+      delete_by_matching_name(release_name: release_name)
+    end
+
+    private
+
+    def delete_by_selector(release_name:, wait:)
       selector = case release_name
                  when String
                    %(-l release="#{release_name}")
@@ -23,9 +31,9 @@ module Quality
                  end
 
       command = [
-        %(--namespace "#{namespace}"),
         'delete',
-        'ingress,svc,pdb,hpa,deploy,statefulset,job,pod,secret,configmap,pvc,secret,clusterrole,clusterrolebinding,role,rolebinding,sa',
+        RESOURCE_LIST,
+        %(--namespace "#{namespace}"),
         '--now',
         '--ignore-not-found',
         '--include-uninitialized',
@@ -36,7 +44,29 @@ module Quality
       run_command(command)
     end
 
-    private
+    def delete_by_matching_name(release_name:)
+      resource_names = raw_resource_names
+      command = [
+        'delete',
+        %(--namespace "#{namespace}")
+      ]
+
+      Array(release_name).each do |release|
+        resource_names
+          .select { |resource_name| resource_name.include?(release) }
+          .each { |matching_resource| run_command(command + [matching_resource]) }
+      end
+    end
+
+    def raw_resource_names
+      command = [
+        'get',
+        RESOURCE_LIST,
+        %(--namespace "#{namespace}"),
+        '-o custom-columns=NAME:.metadata.name'
+      ]
+      run_command(command).lines.map(&:strip)
+    end
 
     def run_command(command)
       final_command = ['kubectl', *command].join(' ')

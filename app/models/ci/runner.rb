@@ -8,6 +8,7 @@ module Ci
     include ChronicDurationAttribute
     include FromUnion
     include TokenAuthenticatable
+    include IgnorableColumns
 
     add_authentication_token_field :token, encrypted: -> { Feature.enabled?(:ci_runners_tokens_optional_encryption, default_enabled: true) ? :optional : :required }
 
@@ -35,7 +36,7 @@ module Ci
 
     FORM_EDITABLE = %i[description tag_list active run_untagged locked access_level maximum_timeout_human_readable].freeze
 
-    self.ignored_columns += %i[is_shared]
+    ignore_column :is_shared, remove_after: '2019-12-15', remove_with: '12.6'
 
     has_many :builds
     has_many :runner_projects, inverse_of: :runner, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent

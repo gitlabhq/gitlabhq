@@ -8,21 +8,27 @@ describe Gitlab::Database::ObsoleteIgnoredColumns do
     end
 
     class SomeAbstract < MyBase
+      include IgnorableColumns
+
       self.abstract_class = true
 
       self.table_name = 'projects'
 
-      self.ignored_columns += %i[unused]
+      ignore_column :unused, remove_after: '2019-01-01', remove_with: '12.0'
     end
 
     class B < MyBase
+      include IgnorableColumns
+
       self.table_name = 'issues'
 
-      self.ignored_columns += %i[id other]
+      ignore_column :id, :other, remove_after: '2019-01-01', remove_with: '12.0'
+      ignore_column :not_used_but_still_ignored, remove_after: Date.today.to_s, remove_with: '12.1'
     end
 
     class A < SomeAbstract
-      self.ignored_columns += %i[id also_unused]
+      ignore_column :also_unused, remove_after: '2019-02-01', remove_with: '12.1'
+      ignore_column :not_used_but_still_ignored, remove_after: Date.today.to_s, remove_with: '12.1'
     end
 
     class C < MyBase
@@ -35,8 +41,13 @@ describe Gitlab::Database::ObsoleteIgnoredColumns do
   describe '#execute' do
     it 'returns a list of class names and columns pairs' do
       expect(subject.execute).to eq([
-        ['Testing::A', %w(unused also_unused)],
-        ['Testing::B', %w(other)]
+        ['Testing::A', {
+          'unused' => IgnorableColumns::ColumnIgnore.new(Date.parse('2019-01-01'), '12.0'),
+          'also_unused' => IgnorableColumns::ColumnIgnore.new(Date.parse('2019-02-01'), '12.1')
+        }],
+        ['Testing::B', {
+          'other' => IgnorableColumns::ColumnIgnore.new(Date.parse('2019-01-01'), '12.0')
+        }]
       ])
     end
   end

@@ -2,6 +2,7 @@
   "type": "object",
   "required": [
     "external_url",
+    "pagination",
     "errors"
   ],
   "properties": {
@@ -9,6 +10,9 @@
     "errors": {
       "type": "array",
       "items": { "$ref": "error.json" }
+    },
+    "pagination": {
+      "type": "object"
     }
   },
   "additionalProperties": false
