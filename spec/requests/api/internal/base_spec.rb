@@ -193,7 +193,15 @@ describe API::Internal::Base do
     end
 
     it 'responds successfully when a user is not found' do
-      get(api("/internal/discover"), params: { username: 'noone', secret_token: secret_token })
+      get(api('/internal/discover'), params: { username: 'noone', secret_token: secret_token })
+
+      expect(response).to have_gitlab_http_status(200)
+
+      expect(response.body).to eq('null')
+    end
+
+    it 'response successfully when passing invalid params' do
+      get(api('/internal/discover'), params: { nothing: 'to find a user', secret_token: secret_token })
 
       expect(response).to have_gitlab_http_status(200)
 
@@ -819,7 +827,6 @@ describe API::Internal::Base do
 
     before do
       project.add_developer(user)
-      allow(described_class).to receive(:identify).and_return(user)
       allow_any_instance_of(Gitlab::Identifier).to receive(:identify).and_return(user)
     end
 

@@ -30,7 +30,6 @@ rules:
   no-else-return:
     - error
     - allowElseIf: true
-  import/no-cycle: warn
   import/no-useless-path-segments: off
   import/order: warn
   lines-between-class-members: off

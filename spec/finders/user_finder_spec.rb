@@ -176,26 +176,4 @@ describe UserFinder do
       end
     end
   end
-
-  describe '#find_by_ssh_key_id' do
-    let_it_be(:ssh_key) { create(:key, user: user) }
-
-    it 'returns the user when passing the ssh key id' do
-      found = described_class.new(ssh_key.id).find_by_ssh_key_id
-
-      expect(found).to eq(user)
-    end
-
-    it 'returns the user when passing the ssh key id (string)' do
-      found = described_class.new(ssh_key.id.to_s).find_by_ssh_key_id
-
-      expect(found).to eq(user)
-    end
-
-    it 'returns nil when the id does not exist' do
-      found = described_class.new(-1).find_by_ssh_key_id
-
-      expect(found).to be_nil
-    end
-  end
 end

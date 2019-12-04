@@ -9,17 +9,26 @@ describe API::Support::GitAccessActor do
   subject { described_class.new(user: user, key: key) }
 
   describe '.from_params' do
+    let(:key) { create(:key) }
+
     context 'with params that are valid' do
       it 'returns an instance of API::Support::GitAccessActor' do
-        params = { key_id: create(:key).id }
+        params = { key_id: key.id }
 
         expect(described_class.from_params(params)).to be_instance_of(described_class)
       end
     end
 
     context 'with params that are invalid' do
-      it 'returns nil' do
-        expect(described_class.from_params({})).to be_nil
+      it "returns an instance of #{described_class}" do
+        expect(described_class.from_params({})).to be_instance_of(described_class)
+      end
+    end
+
+    context 'when passing an identifier used gitaly' do
+      it 'finds the user based on an identifier' do
+        expect(described_class).to receive(:identify).and_call_original
+        expect(described_class.from_params(identifier: "key-#{key.id}").user).to eq(key.user)
       end
     end
   end

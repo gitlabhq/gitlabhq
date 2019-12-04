@@ -7,6 +7,10 @@ module API
 
       delegate :wiki?, to: :repo_type
 
+      def actor
+        @actor ||= Support::GitAccessActor.from_params(params)
+      end
+
       def repo_type
         set_project unless defined?(@repo_type) # rubocop:disable Gitlab/ModuleWithInstanceVariables
         @repo_type # rubocop:disable Gitlab/ModuleWithInstanceVariables
