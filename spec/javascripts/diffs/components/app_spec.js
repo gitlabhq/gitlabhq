@@ -77,16 +77,17 @@ describe('diffs/components/app', () => {
       spyOn(wrapper.vm, 'startRenderDiffsQueue');
     });
 
-    it('calls fetchDiffFiles if diffsBatchLoad is not enabled', () => {
+    it('calls fetchDiffFiles if diffsBatchLoad is not enabled', done => {
       wrapper.vm.glFeatures.diffsBatchLoad = false;
       wrapper.vm.fetchData(false);
 
       expect(wrapper.vm.fetchDiffFiles).toHaveBeenCalled();
-      wrapper.vm.$nextTick(() => {
-        expect(wrapper.vm.setDiscussions).toHaveBeenCalled();
+      setTimeout(() => {
         expect(wrapper.vm.startRenderDiffsQueue).toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesMeta).not.toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesBatch).not.toHaveBeenCalled();
+
+        done();
       });
     });
 
@@ -97,7 +98,6 @@ describe('diffs/components/app', () => {
 
       expect(wrapper.vm.fetchDiffFiles).toHaveBeenCalled();
       wrapper.vm.$nextTick(() => {
-        expect(wrapper.vm.setDiscussions).toHaveBeenCalled();
         expect(wrapper.vm.startRenderDiffsQueue).toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesMeta).not.toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesBatch).not.toHaveBeenCalled();
@@ -110,7 +110,6 @@ describe('diffs/components/app', () => {
 
       expect(wrapper.vm.fetchDiffFiles).not.toHaveBeenCalled();
       wrapper.vm.$nextTick(() => {
-        expect(wrapper.vm.setDiscussions).toHaveBeenCalled();
         expect(wrapper.vm.startRenderDiffsQueue).toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesMeta).toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesBatch).toHaveBeenCalled();

@@ -55,16 +55,15 @@ class ProcessCommitWorker
     end
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def update_issue_metrics(commit, author)
     mentioned_issues = commit.all_references(author).issues
 
     return if mentioned_issues.empty?
 
-    Issue::Metrics.where(issue_id: mentioned_issues.map(&:id), first_mentioned_in_commit_at: nil)
+    Issue::Metrics.for_issues(mentioned_issues)
+      .with_first_mention_not_earlier_than(commit.committed_date)
       .update_all(first_mentioned_in_commit_at: commit.committed_date)
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def build_commit(project, hash)
     date_suffix = '_date'

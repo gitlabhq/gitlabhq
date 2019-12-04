@@ -7,6 +7,33 @@ describe Issue::Metrics do
 
   subject { create(:issue, project: project) }
 
+  describe '.for_issues' do
+    subject(:scope) { described_class.for_issues([issue1, issue2]) }
+
+    let(:issue1) { create(:issue) }
+    let(:issue2) { create(:issue) }
+
+    it 'returns metrics associated with given issues' do
+      create(:issue)
+
+      expect(scope).to match_array([issue1.metrics, issue2.metrics])
+    end
+  end
+
+  describe '.with_first_mention_not_earlier_than' do
+    subject(:scope) { described_class.with_first_mention_not_earlier_than(timestamp) }
+
+    let(:timestamp) { DateTime.now }
+
+    it 'returns metrics without mentioning in commit or with mentioning after given timestamp' do
+      issue1 = create(:issue)
+      issue2 = create(:issue).tap { |i| i.metrics.update!(first_mentioned_in_commit_at: timestamp + 1.day) }
+      create(:issue).tap { |i| i.metrics.update!(first_mentioned_in_commit_at: timestamp - 1.day) }
+
+      expect(scope).to match_array([issue1.metrics, issue2.metrics])
+    end
+  end
+
   describe "when recording the default set of issue metrics on issue save" do
     context "milestones" do
       it "records the first time an issue is associated with a milestone" do

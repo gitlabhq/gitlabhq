@@ -39,7 +39,16 @@ export default {
   },
 
   [types.SET_DIFF_DATA](state, data) {
-    prepareDiffData(data);
+    if (
+      !(
+        gon &&
+        gon.features &&
+        gon.features.diffsBatchLoad &&
+        window.location.search.indexOf('diff_id') === -1
+      )
+    ) {
+      prepareDiffData(data);
+    }
 
     Object.assign(state, {
       ...convertObjectPropsToCamelCase(data),

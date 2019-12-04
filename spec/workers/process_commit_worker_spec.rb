@@ -129,21 +129,54 @@ describe ProcessCommitWorker do
   end
 
   describe '#update_issue_metrics' do
-    it 'updates any existing issue metrics' do
-      allow(commit).to receive(:safe_message).and_return("Closes #{issue.to_reference}")
+    context 'when commit has issue reference' do
+      subject(:update_metrics_and_reload) do
+        -> {
+          worker.update_issue_metrics(commit, user)
+          issue.metrics.reload
+        }
+      end
 
-      worker.update_issue_metrics(commit, user)
+      before do
+        allow(commit).to receive(:safe_message).and_return("Closes #{issue.to_reference}")
+      end
 
-      metric = Issue::Metrics.first
+      context 'when issue has no first_mentioned_in_commit_at set' do
+        it 'updates issue metrics' do
+          expect(update_metrics_and_reload)
+            .to change { issue.metrics.first_mentioned_in_commit_at }.to(commit.committed_date)
+        end
+      end
 
-      expect(metric.first_mentioned_in_commit_at).to eq(commit.committed_date)
+      context 'when issue has first_mentioned_in_commit_at earlier than given committed_date' do
+        before do
+          issue.metrics.update(first_mentioned_in_commit_at: commit.committed_date - 1.day)
+        end
+
+        it "doesn't update issue metrics" do
+          expect(update_metrics_and_reload).not_to change { issue.metrics.first_mentioned_in_commit_at }
+        end
+      end
+
+      context 'when issue has first_mentioned_in_commit_at later than given committed_date' do
+        before do
+          issue.metrics.update(first_mentioned_in_commit_at: commit.committed_date + 1.day)
+        end
+
+        it "doesn't update issue metrics" do
+          expect(update_metrics_and_reload)
+            .to change { issue.metrics.first_mentioned_in_commit_at }.to(commit.committed_date)
+        end
+      end
     end
 
-    it "doesn't execute any queries with false conditions" do
-      allow(commit).to receive(:safe_message).and_return("Lorem Ipsum")
+    context 'when commit has no issue references' do
+      it "doesn't execute any queries with false conditions" do
+        allow(commit).to receive(:safe_message).and_return("Lorem Ipsum")
 
-      expect { worker.update_issue_metrics(commit, user) }
-        .not_to make_queries_matching(/WHERE (?:1=0|0=1)/)
+        expect { worker.update_issue_metrics(commit, user) }
+          .not_to make_queries_matching(/WHERE (?:1=0|0=1)/)
+      end
     end
   end
 
