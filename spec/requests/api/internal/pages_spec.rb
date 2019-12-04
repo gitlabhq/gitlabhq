@@ -47,11 +47,12 @@ describe API::Internal::Pages do
           project.mark_pages_as_deployed
         end
 
-        context 'not existing host' do
-          it 'responds with 404 Not Found' do
+        context 'domain does not exist' do
+          it 'responds with 204 no content' do
             query_host('pages.gitlab.io')
 
-            expect(response).to have_gitlab_http_status(404)
+            expect(response).to have_gitlab_http_status(204)
+            expect(response.body).to be_empty
           end
         end
 

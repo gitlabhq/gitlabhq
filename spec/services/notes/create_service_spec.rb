@@ -87,10 +87,28 @@ describe Notes::CreateService do
           .to receive(:unfolded_diff?) { true }
       end
 
-      it 'clears noteable diff cache when it was unfolded for the note position' do
-        expect_any_instance_of(Gitlab::Diff::HighlightCache).to receive(:clear)
+      context 'using Gitlab::Diff::DeprecatedHighlightCache' do
+        before do
+          stub_feature_flags(hset_redis_diff_caching: false)
+        end
 
-        described_class.new(project_with_repo, user, new_opts).execute
+        it 'clears noteable diff cache when it was unfolded for the note position' do
+          expect_any_instance_of(Gitlab::Diff::DeprecatedHighlightCache).to receive(:clear)
+
+          described_class.new(project_with_repo, user, new_opts).execute
+        end
+      end
+
+      context 'using Gitlab::Diff::HighlightCache' do
+        before do
+          stub_feature_flags(hset_redis_diff_caching: true)
+        end
+
+        it 'clears noteable diff cache when it was unfolded for the note position' do
+          expect_any_instance_of(Gitlab::Diff::HighlightCache).to receive(:clear)
+
+          described_class.new(project_with_repo, user, new_opts).execute
+        end
       end
 
       it 'does not clear cache when note is not the first of the discussion' do

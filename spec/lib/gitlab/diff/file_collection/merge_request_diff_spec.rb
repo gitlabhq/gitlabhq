@@ -29,13 +29,19 @@ describe Gitlab::Diff::FileCollection::MergeRequestDiff do
     let(:diffable) { merge_request.merge_request_diff }
   end
 
-  it 'uses a different cache key if diff line keys change' do
-    mr_diff = described_class.new(merge_request.merge_request_diff, diff_options: nil)
-    key = mr_diff.cache_key
+  context 'using Gitlab::Diff::DeprecatedHighlightCache' do
+    before do
+      stub_feature_flags(hset_redis_diff_caching: false)
+    end
 
-    stub_const('Gitlab::Diff::Line::SERIALIZE_KEYS', [:foo])
+    it 'uses a different cache key if diff line keys change' do
+      mr_diff = described_class.new(merge_request.merge_request_diff, diff_options: nil)
+      key = mr_diff.cache_key
 
-    expect(mr_diff.cache_key).not_to eq(key)
+      stub_const('Gitlab::Diff::Line::SERIALIZE_KEYS', [:foo])
+
+      expect(mr_diff.cache_key).not_to eq(key)
+    end
   end
 
   it_behaves_like 'diff statistics' do

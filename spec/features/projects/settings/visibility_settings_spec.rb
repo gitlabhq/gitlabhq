@@ -64,6 +64,12 @@ describe 'Projects > Settings > Visibility settings', :js do
       it 'is visible' do
         expect(page).to have_selector('.js-emails-disabled', visible: true)
       end
+
+      it 'accepts the changed state' do
+        find('.js-emails-disabled input[type="checkbox"]').click
+
+        expect { save_permissions_group }.to change { updated_emails_disabled? }.to(true)
+      end
     end
   end
 
@@ -88,5 +94,17 @@ describe 'Projects > Settings > Visibility settings', :js do
         expect(page).not_to have_selector('.js-emails-disabled', visible: true)
       end
     end
+  end
+
+  def save_permissions_group
+    page.within('.sharing-permissions') do
+      click_button 'Save changes'
+      wait_for_requests
+    end
+  end
+
+  def updated_emails_disabled?
+    project.reload.clear_memoization(:emails_disabled)
+    project.emails_disabled?
   end
 end

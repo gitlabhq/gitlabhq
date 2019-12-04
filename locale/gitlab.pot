@@ -984,9 +984,6 @@ msgstr ""
 msgid "Add approval rule"
 msgstr ""
 
-msgid "Add approvers"
-msgstr ""
-
 msgid "Add bold text"
 msgstr ""
 
@@ -1911,6 +1908,9 @@ msgid "Applying multiple commands"
 msgstr ""
 
 msgid "Applying suggestion"
+msgstr ""
+
+msgid "Approval rules"
 msgstr ""
 
 msgid "ApprovalRuleRemove|%d member"

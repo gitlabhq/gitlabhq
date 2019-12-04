@@ -19,6 +19,7 @@ describe 'Edit group settings' do
     it 'the group is accessible via the new path' do
       update_path(new_group_path)
       visit new_group_full_path
+
       expect(current_path).to eq(new_group_full_path)
       expect(find('h1.home-panel-title')).to have_content(group.name)
     end
@@ -26,6 +27,7 @@ describe 'Edit group settings' do
     it 'the old group path redirects to the new path' do
       update_path(new_group_path)
       visit old_group_full_path
+
       expect(current_path).to eq(new_group_full_path)
       expect(find('h1.home-panel-title')).to have_content(group.name)
     end
@@ -38,6 +40,7 @@ describe 'Edit group settings' do
       it 'the subgroup is accessible via the new path' do
         update_path(new_group_path)
         visit new_subgroup_full_path
+
         expect(current_path).to eq(new_subgroup_full_path)
         expect(find('h1.home-panel-title')).to have_content(subgroup.name)
       end
@@ -45,6 +48,7 @@ describe 'Edit group settings' do
       it 'the old subgroup path redirects to the new path' do
         update_path(new_group_path)
         visit old_subgroup_full_path
+
         expect(current_path).to eq(new_subgroup_full_path)
         expect(find('h1.home-panel-title')).to have_content(subgroup.name)
       end
@@ -66,6 +70,7 @@ describe 'Edit group settings' do
       it 'the project is accessible via the new path' do
         update_path(new_group_path)
         visit new_project_full_path
+
         expect(current_path).to eq(new_project_full_path)
         expect(find('.breadcrumbs')).to have_content(project.path)
       end
@@ -73,6 +78,7 @@ describe 'Edit group settings' do
       it 'the old project path redirects to the new path' do
         update_path(new_group_path)
         visit old_project_full_path
+
         expect(current_path).to eq(new_project_full_path)
         expect(find('.breadcrumbs')).to have_content(project.path)
       end
@@ -101,7 +107,7 @@ describe 'Edit group settings' do
 
       attach_file(:group_avatar, Rails.root.join('spec', 'fixtures', 'banana_sample.gif'))
 
-      expect { save_group }.to change { group.reload.avatar? }.to(true)
+      expect { save_general_group }.to change { group.reload.avatar? }.to(true)
     end
 
     it 'uploads new group avatar' do
@@ -132,6 +138,21 @@ describe 'Edit group settings' do
     end
   end
 
+  context 'disable email notifications' do
+    it 'is visible' do
+      visit edit_group_path(group)
+
+      expect(page).to have_selector('#group_emails_disabled', visible: true)
+    end
+
+    it 'accepts the changed state' do
+      visit edit_group_path(group)
+      check 'group_emails_disabled'
+
+      expect { save_permissions_group }.to change { updated_emails_disabled? }.to(true)
+    end
+  end
+
   def update_path(new_group_path)
     visit edit_group_path(group)
 
@@ -141,9 +162,20 @@ describe 'Edit group settings' do
     end
   end
 
-  def save_group
+  def save_general_group
     page.within('.gs-general') do
       click_button 'Save changes'
     end
+  end
+
+  def save_permissions_group
+    page.within('.gs-permissions') do
+      click_button 'Save changes'
+    end
+  end
+
+  def updated_emails_disabled?
+    group.reload.clear_memoization(:emails_disabled)
+    group.emails_disabled?
   end
 end
