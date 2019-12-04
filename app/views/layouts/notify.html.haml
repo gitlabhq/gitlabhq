@@ -20,7 +20,7 @@
             #{link_to _("View it on GitLab"), @target_url}.
           %br
           -# Don't link the host in the line below, one link in the email is easier to quickly click than two.
-          = _("You're receiving this email because %{reason}.") % { reason: notification_reason_text(@reason) }
+          = notification_reason_text(@reason)
           If you'd like to receive fewer emails, you can
           - if @labels_url
             adjust your #{link_to 'label subscriptions', @labels_url}.

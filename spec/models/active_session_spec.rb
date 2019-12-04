@@ -329,6 +329,35 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_shared_state do
           )
         end
       end
+
+      context 'when the number of active sessions is lower than the limit' do
+        before do
+          Gitlab::Redis::SharedState.with do |redis|
+            ((max_number_of_sessions_plus_two - 4)..max_number_of_sessions_plus_two).each do |number|
+              redis.del("session:user:gitlab:#{user.id}:#{number}")
+            end
+          end
+        end
+
+        it 'does not remove active session entries, but removes lookup entries' do
+          lookup_entries_before_cleanup = Gitlab::Redis::SharedState.with do |redis|
+            redis.smembers("session:lookup:user:gitlab:#{user.id}")
+          end
+
+          sessions_before_cleanup = Gitlab::Redis::SharedState.with do |redis|
+            redis.scan_each(match: "session:user:gitlab:#{user.id}:*").to_a
+          end
+
+          ActiveSession.cleanup(user)
+
+          Gitlab::Redis::SharedState.with do |redis|
+            lookup_entries = redis.smembers("session:lookup:user:gitlab:#{user.id}")
+            sessions = redis.scan_each(match: "session:user:gitlab:#{user.id}:*").to_a
+            expect(sessions.count).to eq(sessions_before_cleanup.count)
+            expect(lookup_entries.count).to be < lookup_entries_before_cleanup.count
+          end
+        end
+      end
     end
   end
 end

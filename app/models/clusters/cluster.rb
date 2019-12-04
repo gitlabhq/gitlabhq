@@ -271,6 +271,21 @@ module Clusters
       kubernetes_namespaces.delete_all(:delete_all)
     end
 
+    def clusterable
+      return unless cluster_type
+
+      case cluster_type
+      when 'project_type'
+        project
+      when 'group_type'
+        group
+      when 'instance_type'
+        instance
+      else
+        raise NotImplementedError
+      end
+    end
+
     private
 
     def unique_management_project_environment_scope

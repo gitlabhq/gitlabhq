@@ -108,7 +108,8 @@ module Gitlab
             services_usage,
             approximate_counts,
             usage_counters,
-            user_preferences_usage
+            user_preferences_usage,
+            ingress_modsecurity_usage
           )
         }
       end
@@ -168,6 +169,10 @@ module Gitlab
           gitlab_pages: { enabled: Gitlab.config.pages.enabled, version: Gitlab::Pages::VERSION },
           database: { adapter: Gitlab::Database.adapter_name, version: Gitlab::Database.version }
         }
+      end
+
+      def ingress_modsecurity_usage
+        ::Clusters::Applications::IngressModsecurityUsageService.new.execute
       end
 
       # rubocop: disable CodeReuse/ActiveRecord

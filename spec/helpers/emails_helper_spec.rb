@@ -74,6 +74,28 @@ describe EmailsHelper do
     end
   end
 
+  describe 'notification_reason_text' do
+    subject { helper.notification_reason_text(reason_code) }
+
+    using RSpec::Parameterized::TableSyntax
+
+    where(:reason_code, :reason_text) do
+      NotificationReason::OWN_ACTIVITY | ' of your activity '
+      NotificationReason::ASSIGNED     | ' you have been assigned an item '
+      NotificationReason::MENTIONED    | ' you have been mentioned '
+      ""                               | ' of your account '
+      nil                              | ' of your account '
+    end
+
+    with_them do
+      it { is_expected.to start_with "You're receiving this email because" }
+
+      it { is_expected.to include reason_text }
+
+      it { is_expected.to end_with "on #{Gitlab.config.gitlab.host}." }
+    end
+  end
+
   describe 'sanitize_name' do
     context 'when name contains a valid URL string' do
       it 'returns name with `.` replaced with `_` to prevent mail clients from auto-linking URLs' do

@@ -146,8 +146,9 @@ class ActiveSession
     # remove sessions if there are more than ALLOWED_NUMBER_OF_ACTIVE_SESSIONS.
     sessions = active_session_entries(session_ids, user.id, redis)
     sessions.sort_by! {|session| session.updated_at }.reverse!
-    sessions = sessions[ALLOWED_NUMBER_OF_ACTIVE_SESSIONS..-1].map { |session| session.session_id }
-    destroy_sessions(redis, user, sessions)
+    sessions = sessions.drop(ALLOWED_NUMBER_OF_ACTIVE_SESSIONS)
+    sessions = sessions.map { |session| session.session_id }
+    destroy_sessions(redis, user, sessions) if sessions.any?
   end
 
   def self.cleaned_up_lookup_entries(redis, user)

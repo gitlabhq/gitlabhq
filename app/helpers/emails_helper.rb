@@ -112,20 +112,20 @@ module EmailsHelper
     end
   end
 
-  # "You are receiving this email because #{reason}"
+  # "You are receiving this email because #{reason} on #{gitlab_host}."
   def notification_reason_text(reason)
-    string = case reason
-             when NotificationReason::OWN_ACTIVITY
-               'of your activity'
-             when NotificationReason::ASSIGNED
-               'you have been assigned an item'
-             when NotificationReason::MENTIONED
-               'you have been mentioned'
-             else
-               'of your account'
-             end
+    gitlab_host = Gitlab.config.gitlab.host
 
-    "#{string} on #{Gitlab.config.gitlab.host}"
+    case reason
+    when NotificationReason::OWN_ACTIVITY
+      _("You're receiving this email because of your activity on %{host}.") % { host: gitlab_host }
+    when NotificationReason::ASSIGNED
+      _("You're receiving this email because you have been assigned an item on %{host}.") % { host: gitlab_host }
+    when NotificationReason::MENTIONED
+      _("You're receiving this email because you have been mentioned on %{host}.") % { host: gitlab_host }
+    else
+      _("You're receiving this email because of your account on %{host}.") % { host: gitlab_host }
+    end
   end
 
   def create_list_id_string(project, list_id_max_length = 255)

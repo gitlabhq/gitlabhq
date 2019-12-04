@@ -976,4 +976,38 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
       expect(cluster.kubernetes_namespaces).to be_empty
     end
   end
+
+  describe '#clusterable' do
+    subject { cluster.clusterable }
+
+    context 'project type' do
+      let(:cluster) { create(:cluster, :project) }
+
+      it { is_expected.to eq(cluster.project) }
+    end
+
+    context 'group type' do
+      let(:cluster) { create(:cluster, :group) }
+
+      it { is_expected.to eq(cluster.group) }
+    end
+
+    context 'instance type' do
+      let(:cluster) { create(:cluster, :instance) }
+
+      it { is_expected.to be_a(Clusters::Instance) }
+    end
+
+    context 'unknown type' do
+      let(:cluster) { create(:cluster, :project) }
+
+      before do
+        allow(cluster).to receive(:cluster_type).and_return('unknown_type')
+      end
+
+      it 'raises NotImplementedError' do
+        expect { subject }.to raise_error(NotImplementedError)
+      end
+    end
+  end
 end

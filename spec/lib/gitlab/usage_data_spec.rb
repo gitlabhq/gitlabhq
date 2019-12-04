@@ -297,6 +297,24 @@ describe Gitlab::UsageData do
     end
   end
 
+  describe '#ingress_modsecurity_usage' do
+    subject { described_class.ingress_modsecurity_usage }
+
+    it 'gathers variable data' do
+      allow_any_instance_of(
+        ::Clusters::Applications::IngressModsecurityUsageService
+      ).to receive(:execute).and_return(
+        {
+          ingress_modsecurity_blocking: 1,
+          ingress_modsecurity_disabled: 2
+        }
+      )
+
+      expect(subject[:ingress_modsecurity_blocking]).to eq(1)
+      expect(subject[:ingress_modsecurity_disabled]).to eq(2)
+    end
+  end
+
   describe '#license_usage_data' do
     subject { described_class.license_usage_data }
 

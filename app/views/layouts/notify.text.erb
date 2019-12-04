@@ -11,7 +11,7 @@
 <%    end -%>
 <%  end -%>
 
-<%= "You're receiving this email because #{notification_reason_text(@reason)}." %>
+<%= notification_reason_text(@reason) %>
 <%= render_if_exists 'layouts/mailer/additional_text' %>
 
 <%= text_footer_message -%>
