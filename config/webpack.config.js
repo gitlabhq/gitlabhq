@@ -1,5 +1,6 @@
 const path = require('path');
 const glob = require('glob');
+const fs = require('fs');
 const webpack = require('webpack');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const StatsWriterPlugin = require('webpack-stats-plugin').StatsWriterPlugin;
@@ -23,6 +24,7 @@ const NO_SOURCEMAPS = process.env.NO_SOURCEMAPS;
 
 const VUE_VERSION = require('vue/package.json').version;
 const VUE_LOADER_VERSION = require('vue-loader/package.json').version;
+const WEBPACK_VERSION = require('webpack/package.json').version;
 
 const devtool = IS_PRODUCTION ? 'source-map' : 'cheap-module-eval-source-map';
 
@@ -358,6 +360,21 @@ module.exports = {
           const toMB = bytes => Math.floor(bytes / 1024 / 1024);
 
           console.log(`Webpack heap size: ${toMB(memoryUsage)} MB`);
+
+          const webpackStatistics = {
+            memoryUsage,
+            date: Date.now(), // milliseconds
+            commitSHA: process.env.CI_COMMIT_SHA,
+            nodeVersion: process.versions.node,
+            webpackVersion: WEBPACK_VERSION,
+          };
+
+          console.log(webpackStatistics);
+
+          fs.writeFileSync(
+            path.join(ROOT_PATH, 'webpack-dev-server.json'),
+            JSON.stringify(webpackStatistics),
+          );
 
           // exit in case we're running webpack-dev-server
           IS_DEV_SERVER && process.exit();

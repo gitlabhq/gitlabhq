@@ -84,3 +84,4 @@ jsdoc/
 .overcommit.yml
 .projections.json
 /qa/.rakeTasks
+webpack-dev-server.json

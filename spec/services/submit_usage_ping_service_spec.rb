@@ -42,7 +42,7 @@ describe SubmitUsagePingService do
       subject.execute
     end
 
-    it 'saves conversational development index data from the response' do
+    it 'saves DevOps Score data from the response' do
       stub_response(with_conv_index_params)
 
       expect { subject.execute }

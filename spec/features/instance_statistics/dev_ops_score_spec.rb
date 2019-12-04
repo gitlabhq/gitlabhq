@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Dev Ops Score' do
+describe 'DevOps Score' do
   before do
     sign_in(create(:admin))
   end
@@ -10,11 +10,11 @@ describe 'Dev Ops Score' do
   it 'has dismissable intro callout', :js do
     visit instance_statistics_dev_ops_score_index_path
 
-    expect(page).to have_content 'Introducing Your Conversational Development Index'
+    expect(page).to have_content 'Introducing Your DevOps Score'
 
     find('.js-close-callout').click
 
-    expect(page).not_to have_content 'Introducing Your Conversational Development Index'
+    expect(page).not_to have_content 'Introducing Your DevOps Score'
   end
 
   context 'when usage ping is disabled' do
@@ -31,7 +31,7 @@ describe 'Dev Ops Score' do
     it 'hides the intro callout' do
       visit instance_statistics_dev_ops_score_index_path
 
-      expect(page).not_to have_content 'Introducing Your Conversational Development Index'
+      expect(page).not_to have_content 'Introducing Your DevOps Score'
     end
   end
 

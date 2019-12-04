@@ -1,4 +1,3 @@
-import BoardService from '~/boards/services/board_service';
 import boardsStore from '~/boards/stores/boards_store';
 
 export const setMockEndpoints = (opts = {}) => {
@@ -85,22 +84,6 @@ export const BoardsMockData = {
 export const boardsMockInterceptor = config => {
   const body = BoardsMockData[config.method.toUpperCase()][config.url];
   return [200, body];
-};
-
-export const mockBoardService = (opts = {}) => {
-  const boardsEndpoint = opts.boardsEndpoint || '/test/issue-boards/-/boards.json';
-  const listsEndpoint = opts.listsEndpoint || '/test/-/boards/1/lists';
-  const bulkUpdatePath = opts.bulkUpdatePath || '';
-  const boardId = opts.boardId || '1';
-
-  boardsStore.setEndpoints({
-    boardsEndpoint,
-    listsEndpoint,
-    bulkUpdatePath,
-    boardId,
-  });
-
-  return new BoardService();
 };
 
 export const mockAssigneesList = [

@@ -245,5 +245,9 @@ webpack-dev-server:
   variables:
     WEBPACK_MEMORY_TEST: "true"
   script:
-    - node --version
     - node --expose-gc node_modules/.bin/webpack-dev-server --config config/webpack.config.js
+  artifacts:
+    name: webpack-dev-server
+    expire_in: 31d
+    paths:
+      - webpack-dev-server.json

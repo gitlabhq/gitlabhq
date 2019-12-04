@@ -1826,7 +1826,13 @@ msgstr ""
 msgid "Any Milestone"
 msgstr ""
 
+msgid "Any eligible user"
+msgstr ""
+
 msgid "Any encrypted tokens"
+msgstr ""
+
+msgid "Any member with Developer or higher permissions to the project."
 msgstr ""
 
 msgid "Any namespace"
@@ -1935,9 +1941,6 @@ msgid "ApprovalRuleSummary|%{count} approval required from %{membersCount}"
 msgid_plural "ApprovalRuleSummary|%{count} approvals required from %{membersCount}"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "ApprovalRule|All members with Developer role or higher and code owners (if any)"
-msgstr ""
 
 msgid "ApprovalRule|Approvers"
 msgstr ""
@@ -4307,6 +4310,9 @@ msgstr ""
 msgid "Code Owners"
 msgstr ""
 
+msgid "Code Owners to the merge request changes."
+msgstr ""
+
 msgid "Code owner approval is required"
 msgstr ""
 
@@ -4737,9 +4743,6 @@ msgstr ""
 msgid "Control the maximum concurrency of repository backfill for this secondary node"
 msgstr ""
 
-msgid "ConvDev Index"
-msgstr ""
-
 msgid "Cookie domain"
 msgstr ""
 
@@ -4858,6 +4861,9 @@ msgid "Could not delete chat nickname %{chat_name}."
 msgstr ""
 
 msgid "Could not remove the trigger."
+msgstr ""
+
+msgid "Could not restore the group"
 msgstr ""
 
 msgid "Could not revoke impersonation token %{token_name}."
@@ -5910,6 +5916,9 @@ msgstr ""
 msgid "Detect host keys"
 msgstr ""
 
+msgid "DevOps Score"
+msgstr ""
+
 msgid "Diff content limits"
 msgstr ""
 
@@ -6012,10 +6021,10 @@ msgstr ""
 msgid "Dismiss"
 msgstr ""
 
-msgid "Dismiss ConvDev introduction"
+msgid "Dismiss Cycle Analytics introduction box"
 msgstr ""
 
-msgid "Dismiss Cycle Analytics introduction box"
+msgid "Dismiss DevOps Score introduction"
 msgstr ""
 
 msgid "Dismiss Merge Request promotion"
@@ -8675,6 +8684,12 @@ msgstr ""
 msgid "Group details"
 msgstr ""
 
+msgid "Group has been already marked for deletion"
+msgstr ""
+
+msgid "Group has not been marked for deletion"
+msgstr ""
+
 msgid "Group info:"
 msgstr ""
 
@@ -9579,7 +9594,7 @@ msgstr ""
 msgid "Introducing Cycle Analytics"
 msgstr ""
 
-msgid "Introducing Your Conversational Development Index"
+msgid "Introducing Your DevOps Score"
 msgstr ""
 
 msgid "Invalid Git ref"
@@ -19351,6 +19366,9 @@ msgstr ""
 msgid "Users"
 msgstr ""
 
+msgid "Users or groups set as approvers in the project's or merge request's settings."
+msgstr ""
+
 msgid "Users outside of license"
 msgstr ""
 
@@ -19748,6 +19766,9 @@ msgstr ""
 msgid "Whitelist to allow requests to the local network from hooks and services"
 msgstr ""
 
+msgid "Who can be an approver?"
+msgstr ""
+
 msgid "Who can see this group?"
 msgstr ""
 
@@ -19971,6 +19992,9 @@ msgid "You are going to transfer %{project_full_name} to another owner. Are you 
 msgstr ""
 
 msgid "You are not allowed to unlink your primary login account"
+msgstr ""
+
+msgid "You are not authorized to perform this action"
 msgstr ""
 
 msgid "You are now impersonating %{username}"
@@ -20300,10 +20324,10 @@ msgstr ""
 msgid "Your Commit Email will be used for web based operations, such as edits and merges."
 msgstr ""
 
-msgid "Your Conversational Development Index gives an overview of how you are using GitLab from a feature perspective. View how you compare with other organizations, discover features you are not using, and learn best practices through blog posts and white papers."
+msgid "Your Default Notification Email will be used for account notifications if a %{openingTag}group-specific email address%{closingTag} is not set."
 msgstr ""
 
-msgid "Your Default Notification Email will be used for account notifications if a %{openingTag}group-specific email address%{closingTag} is not set."
+msgid "Your DevOps Score gives an overview of how you are using GitLab from a feature perspective. View how you compare with other organizations, discover features you are not using, and learn best practices through blog posts and white papers."
 msgstr ""
 
 msgid "Your GPG keys (%{count})"

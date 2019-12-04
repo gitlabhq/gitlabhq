@@ -158,7 +158,10 @@ If you select `Limit namespaces and projects that can be indexed`, more options 
 You can select namespaces and projects to index exclusively. Please note that if the namespace is a group it will include
 any sub-groups and projects belonging to those sub-groups to be indexed as well.
 
+Elasticsearch only provides cross-group code/commit search (global) if all name-spaces are indexed. In this particular scenario where only a subset of namespaces are indexed, a global search will not provide a code or commit scope. This will be possible only in the scope of an indexed namespace. Currently there is no way to code/commit search in multiple indexed namespaces (when only a subset of namespaces has been indexed). For example if two groups are indexed, there is no way to run a single code search on both. You can only run a code search on the first group and then on the second.
+
 You can filter the selection dropdown by writing part of the namespace or project name you're interested in.
+
 ![limit namespace filter](img/limit_namespace_filter.png)
 
 NOTE: **Note**:
@@ -502,6 +505,9 @@ Here are some common pitfalls and how to overcome them:
 
   If you see `Elasticsearch::Model::Response::Records`, you are using Elasticsearch.
 
+  NOTE: **Note**:
+  The above instructions are used to verify that GitLab is using Elasticsearch only when indexing all namespaces. This is not to be used for scenarios that only index a [subset of namespaces](https://docs.gitlab.com/ee/integration/elasticsearch.html#limiting-namespaces-and-projects).
+
 - **I updated GitLab and now I can't find anything**
 
   We continuously make updates to our indexing strategies and aim to support
@@ -521,6 +527,9 @@ Here are some common pitfalls and how to overcome them:
   s = SearchService.new(u, {:search => 'search_term', :scope => ‘blobs’})
   pp s.search_objects.to_a
   ```
+
+  NOTE: **Note**:
+  The above instructions are not to be used for scenarios that only index a [subset of namespaces](https://docs.gitlab.com/ee/integration/elasticsearch.html#limiting-namespaces-and-projects).
 
   See [Elasticsearch Index Scopes](#elasticsearch-index-scopes) for more information on searching for specific types of data.
 

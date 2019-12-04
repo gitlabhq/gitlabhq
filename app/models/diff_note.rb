@@ -21,8 +21,8 @@ class DiffNote < Note
   validate :positions_complete
   validate :verify_supported
 
-  before_validation :set_line_code, if: :on_text?
-  after_save :keep_around_commits
+  before_validation :set_line_code, if: :on_text?, unless: :importing?
+  after_save :keep_around_commits, unless: :importing?
   after_commit :create_diff_file, on: :create
 
   def discussion_class(*)

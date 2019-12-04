@@ -164,7 +164,7 @@ class MergeRequestDiff < ApplicationRecord
     # hooks that run when an attribute was changed are run twice.
     reset
 
-    keep_around_commits
+    keep_around_commits unless importing?
   end
 
   def set_as_latest_diff
