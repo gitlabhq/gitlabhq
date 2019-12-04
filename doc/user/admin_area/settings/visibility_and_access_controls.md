@@ -38,7 +38,7 @@ To change the default project creation protection:
 
 For more details, see [Default project-creation level](../../group/index.md#default-project-creation-level).
 
-## Default project deletion protection
+## Default project deletion protection **(PREMIUM ONLY)**
 
 By default, a project can be deleted by anyone with the **Owner** role, either at the project or
 group level.
