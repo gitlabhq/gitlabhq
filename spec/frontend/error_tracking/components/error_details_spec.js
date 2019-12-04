@@ -1,6 +1,7 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { GlButton, GlLoadingIcon, GlLink } from '@gitlab/ui';
+import { GlLoadingIcon, GlLink } from '@gitlab/ui';
+import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import Stacktrace from '~/error_tracking/components/stacktrace.vue';
 import ErrorDetails from '~/error_tracking/components/error_details.vue';
 
@@ -15,12 +16,14 @@ describe('ErrorDetails', () => {
 
   function mountComponent() {
     wrapper = shallowMount(ErrorDetails, {
+      stubs: { LoadingButton },
       localVue,
       store,
       propsData: {
         issueDetailsPath: '/123/details',
         issueStackTracePath: '/stacktrace',
-        issueProjectPath: '/test-project/issues/new',
+        projectIssuesPath: '/test-project/issues/',
+        csrfToken: 'fakeToken',
       },
     });
   }
@@ -83,36 +86,6 @@ describe('ErrorDetails', () => {
       expect(wrapper.find(Stacktrace).exists()).toBe(false);
     });
 
-    it('should allow an issue to be created with title and description', () => {
-      store.state.details.loading = false;
-      store.state.details.error = {
-        id: 1,
-        title: 'Issue title',
-        external_url: 'http://sentry.gitlab.net/gitlab',
-        first_seen: '2017-05-26T13:32:48Z',
-        last_seen: '2018-05-26T13:32:48Z',
-        count: 12,
-        user_count: 2,
-      };
-      mountComponent();
-      const button = wrapper.find(GlButton);
-      const title = 'Issue title';
-      const url = 'Sentry event: http://sentry.gitlab.net/gitlab';
-      const firstSeen = 'First seen: 2017-05-26T13:32:48Z';
-      const lastSeen = 'Last seen: 2018-05-26T13:32:48Z';
-      const count = 'Events: 12';
-      const userCount = 'Users: 2';
-
-      const issueDescription = `${url}${firstSeen}${lastSeen}${count}${userCount}`;
-
-      const issueLink = `/test-project/issues/new?issue[title]=${encodeURIComponent(
-        title,
-      )}&issue[description]=${encodeURIComponent(issueDescription)}`;
-
-      expect(button.exists()).toBe(true);
-      expect(button.attributes().href).toBe(issueLink);
-    });
-
     describe('Stacktrace', () => {
       it('should show stacktrace', () => {
         store.state.details.loading = false;
@@ -130,6 +103,39 @@ describe('ErrorDetails', () => {
         mountComponent();
         expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
         expect(wrapper.find(Stacktrace).exists()).toBe(false);
+      });
+    });
+
+    describe('When a user clicks the create issue button', () => {
+      beforeEach(() => {
+        store.state.details.loading = false;
+        store.state.details.error = {
+          id: 1,
+          title: 'Issue title',
+          external_url: 'http://sentry.gitlab.net/gitlab',
+          first_seen: '2017-05-26T13:32:48Z',
+          last_seen: '2018-05-26T13:32:48Z',
+          count: 12,
+          user_count: 2,
+        };
+        mountComponent();
+      });
+
+      it('should set the form values with title and description', () => {
+        const csrfTokenInput = wrapper.find('glforminput-stub[name="authenticity_token"]');
+        const issueTitleInput = wrapper.find('glforminput-stub[name="issue[title]"]');
+        const issueDescriptionInput = wrapper.find('input[name="issue[description]"]');
+        expect(csrfTokenInput.attributes('value')).toBe('fakeToken');
+        expect(issueTitleInput.attributes('value')).toContain(wrapper.vm.issueTitle);
+        expect(issueDescriptionInput.attributes('value')).toContain(wrapper.vm.issueDescription);
+      });
+
+      it('should submit the form', () => {
+        window.HTMLFormElement.prototype.submit = () => {};
+        const submitSpy = jest.spyOn(wrapper.vm.$refs.sentryIssueForm, 'submit');
+        wrapper.find('button').trigger('click');
+        expect(submitSpy).toHaveBeenCalled();
+        submitSpy.mockRestore();
       });
     });
   });

@@ -81,7 +81,7 @@ describe Projects::ErrorTrackingHelper do
     let(:route_params) { [project.owner, project, issue_id, { format: :json }] }
     let(:details_path) { details_namespace_project_error_tracking_index_path(*route_params) }
     let(:stack_trace_path) { stack_trace_namespace_project_error_tracking_index_path(*route_params) }
-    let(:issue_project_path) { new_project_issue_path(project) }
+    let(:issues_path) { project_issues_path(project) }
 
     let(:result) { helper.error_details_data(project, issue_id) }
 
@@ -93,8 +93,8 @@ describe Projects::ErrorTrackingHelper do
       expect(result['issue-stack-trace-path']).to eq stack_trace_path
     end
 
-    it 'returns the correct path for creating a new issue' do
-      expect(result['issue-project-path']).to eq issue_project_path
+    it 'creates an issue and redirects to issue show page' do
+      expect(result['project-issues-path']).to eq issues_path
     end
   end
 end

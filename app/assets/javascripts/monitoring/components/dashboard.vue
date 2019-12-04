@@ -252,22 +252,17 @@ export default {
       'setEndpoints',
       'setPanelGroupMetrics',
     ]),
-    updateMetrics(key, panels) {
+    updatePanels(key, panels) {
       this.setPanelGroupMetrics({
         panels,
         key,
       });
     },
-    removeMetric(key, metrics, graphIndex) {
+    removePanel(key, panels, graphIndex) {
       this.setPanelGroupMetrics({
-        metrics: metrics.filter((v, i) => i !== graphIndex),
+        panels: panels.filter((v, i) => i !== graphIndex),
         key,
       });
-    },
-    removeGraph(metrics, graphIndex) {
-      // At present graphs will not be removed, they should removed using the vuex store
-      // See https://gitlab.com/gitlab-org/gitlab/issues/27835
-      metrics.splice(graphIndex, 1);
     },
     showInvalidDateError() {
       createFlash(s__('Metrics|Link contains an invalid time window.'));
@@ -463,7 +458,7 @@ export default {
           group="metrics-dashboard"
           :component-data="{ attrs: { class: 'row mx-0 w-100' } }"
           :disabled="!isRearrangingPanels"
-          @input="updateMetrics(groupData.key, $event)"
+          @input="updatePanels(groupData.key, $event)"
         >
           <div
             v-for="(graphData, graphIndex) in groupData.panels"
@@ -475,7 +470,7 @@ export default {
               <div
                 v-if="isRearrangingPanels"
                 class="draggable-remove js-draggable-remove p-2 w-100 position-absolute d-flex justify-content-end"
-                @click="removeGraph(groupData.panels, graphIndex)"
+                @click="removePanel(groupData.key, groupData.panels, graphIndex)"
               >
                 <a class="mx-2 p-2 draggable-remove-link" :aria-label="__('Remove')"
                   ><icon name="close"
