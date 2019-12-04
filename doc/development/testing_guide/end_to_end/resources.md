@@ -44,6 +44,9 @@ create the resource via the public GitLab API:
 - `#api_post_path`: The `POST` path to create a new resource.
 - `#api_post_body`: The `POST` body (as a Ruby hash) to create a new resource.
 
+> Be aware that many API resources are [paginated](../../../api/README.md#pagination).
+> If you don't find the results you expect, check if there is more that one page of results.
+
 Let's take the `Shirt` resource class, and add these three API methods:
 
 ```ruby

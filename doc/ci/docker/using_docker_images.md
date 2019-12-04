@@ -576,14 +576,26 @@ There are two ways to determine the value of `DOCKER_AUTH_CONFIG`:
   will use the available system keystore to store the result of `docker
   login`. In that case, it's impossible to read `~/.docker/config.json`,
   so you will need to prepare the required base64-encoded version of
-  `${username}:${password}` manually. Open a terminal and execute the
-  following command:
+  `${username}:${password}` and create the Docker configuration JSON manually.
+  Open a terminal and execute the following command:
 
   ```bash
   echo -n "my_username:my_password" | base64
 
   # Example output to copy
   bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ=
+  ```
+  
+  Create the Docker JSON configuration content as follows:
+
+  ```json
+  {
+      "auths": {
+          "registry.example.com:5000": {
+              "auth": "(Base64 content from above)"
+          }
+      }
+  }
   ```
 
 #### Configuring a job
