@@ -5,7 +5,7 @@
 With the GitLab [Maven](https://maven.apache.org) Repository, every
 project can have its own space to store its Maven artifacts.
 
-![GitLab Maven Repository](img/maven_package_view.png)
+![GitLab Maven Repository](img/maven_package_view_v12_6.png)
 
 ## Enabling the Maven Repository
 

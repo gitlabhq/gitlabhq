@@ -107,6 +107,8 @@ installed. Instances provide 1 vCPU and 25GB of HDD disk space. The default
 region of the VMs is US East1.
 Each instance is used only for one job, this ensures any sensitive data left on the system can't be accessed by other people their CI jobs.
 
+The `gitlab-shared-runners-manager-X.gitlab.com` fleet of Runners are dedicated for GitLab projects as well as community forks of them. They use a slightly larger machine type (n1-standard-2) and have a bigger SSD disk size. They will not run untagged jobs and unlike the general fleet of shared Runners, the instances are re-used up to 40 times.
+
 Jobs handled by the shared Runners on GitLab.com (`shared-runners-manager-X.gitlab.com`),
 **will be timed out after 3 hours**, regardless of the timeout configured in a
 project. Check the issues [4010] and [4070] for the reference.

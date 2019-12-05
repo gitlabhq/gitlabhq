@@ -1055,45 +1055,34 @@ describe ProjectsController do
     end
   end
 
-  describe '#export' do
+  describe 'project export' do
     before do
       sign_in(user)
 
       project.add_maintainer(user)
     end
 
-    context 'when project export is enabled' do
-      it 'returns 302' do
-        get :export, params: { namespace_id: project.namespace, id: project }
+    shared_examples 'rate limits project export endpoint' do
+      before do
+        allow(::Gitlab::ApplicationRateLimiter)
+          .to receive(:throttled?)
+          .and_return(true)
+      end
 
+      it 'prevents requesting project export' do
+        get action, params: { namespace_id: project.namespace, id: project }
+
+        expect(flash[:alert]).to eq('This endpoint has been requested too many times. Try again later.')
         expect(response).to have_gitlab_http_status(302)
       end
     end
 
-    context 'when project export is disabled' do
-      before do
-        stub_application_setting(project_export_enabled?: false)
-      end
+    describe '#export' do
+      let(:action) { :export }
 
-      it 'returns 404' do
-        get :export, params: { namespace_id: project.namespace, id: project }
-
-        expect(response).to have_gitlab_http_status(404)
-      end
-    end
-  end
-
-  describe '#download_export' do
-    before do
-      sign_in(user)
-
-      project.add_maintainer(user)
-    end
-
-    context 'object storage enabled' do
       context 'when project export is enabled' do
         it 'returns 302' do
-          get :download_export, params: { namespace_id: project.namespace, id: project }
+          get action, params: { namespace_id: project.namespace, id: project }
 
           expect(response).to have_gitlab_http_status(302)
         end
@@ -1105,66 +1094,96 @@ describe ProjectsController do
         end
 
         it 'returns 404' do
-          get :download_export, params: { namespace_id: project.namespace, id: project }
+          get action, params: { namespace_id: project.namespace, id: project }
+
+          expect(response).to have_gitlab_http_status(404)
+        end
+      end
+
+      context 'when the endpoint receives requests above the limit', :clean_gitlab_redis_cache do
+        include_examples 'rate limits project export endpoint'
+      end
+    end
+
+    describe '#download_export' do
+      let(:action) { :download_export }
+
+      context 'object storage enabled' do
+        context 'when project export is enabled' do
+          it 'returns 302' do
+            get action, params: { namespace_id: project.namespace, id: project }
+
+            expect(response).to have_gitlab_http_status(302)
+          end
+        end
+
+        context 'when project export is disabled' do
+          before do
+            stub_application_setting(project_export_enabled?: false)
+          end
+
+          it 'returns 404' do
+            get action, params: { namespace_id: project.namespace, id: project }
+
+            expect(response).to have_gitlab_http_status(404)
+          end
+        end
+
+        context 'when the endpoint receives requests above the limit', :clean_gitlab_redis_cache do
+          include_examples 'rate limits project export endpoint'
+        end
+      end
+    end
+
+    describe '#remove_export' do
+      let(:action) { :remove_export }
+
+      context 'when project export is enabled' do
+        it 'returns 302' do
+          post action, params: { namespace_id: project.namespace, id: project }
+
+          expect(response).to have_gitlab_http_status(302)
+        end
+      end
+
+      context 'when project export is disabled' do
+        before do
+          stub_application_setting(project_export_enabled?: false)
+        end
+
+        it 'returns 404' do
+          post action, params: { namespace_id: project.namespace, id: project }
 
           expect(response).to have_gitlab_http_status(404)
         end
       end
     end
-  end
 
-  describe '#remove_export' do
-    before do
-      sign_in(user)
+    describe '#generate_new_export' do
+      let(:action) { :generate_new_export }
 
-      project.add_maintainer(user)
-    end
+      context 'when project export is enabled' do
+        it 'returns 302' do
+          post action, params: { namespace_id: project.namespace, id: project }
 
-    context 'when project export is enabled' do
-      it 'returns 302' do
-        post :remove_export, params: { namespace_id: project.namespace, id: project }
-
-        expect(response).to have_gitlab_http_status(302)
-      end
-    end
-
-    context 'when project export is disabled' do
-      before do
-        stub_application_setting(project_export_enabled?: false)
+          expect(response).to have_gitlab_http_status(302)
+        end
       end
 
-      it 'returns 404' do
-        post :remove_export, params: { namespace_id: project.namespace, id: project }
+      context 'when project export is disabled' do
+        before do
+          stub_application_setting(project_export_enabled?: false)
+        end
 
-        expect(response).to have_gitlab_http_status(404)
-      end
-    end
-  end
+        it 'returns 404' do
+          post action, params: { namespace_id: project.namespace, id: project }
 
-  describe '#generate_new_export' do
-    before do
-      sign_in(user)
-
-      project.add_maintainer(user)
-    end
-
-    context 'when project export is enabled' do
-      it 'returns 302' do
-        post :generate_new_export, params: { namespace_id: project.namespace, id: project }
-
-        expect(response).to have_gitlab_http_status(302)
-      end
-    end
-
-    context 'when project export is disabled' do
-      before do
-        stub_application_setting(project_export_enabled?: false)
+          expect(response).to have_gitlab_http_status(404)
+        end
       end
 
-      it 'returns 404' do
-        post :generate_new_export, params: { namespace_id: project.namespace, id: project }
-
-        expect(response).to have_gitlab_http_status(404)
+      context 'when the endpoint receives requests above the limit', :clean_gitlab_redis_cache do
+        include_examples 'rate limits project export endpoint'
       end
     end
   end

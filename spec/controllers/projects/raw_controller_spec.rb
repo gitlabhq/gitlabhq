@@ -65,7 +65,7 @@ describe Projects::RawController do
 
       it 'logs the event on auth.log' do
         attributes = {
-          message: 'Action_Rate_Limiter_Request',
+          message: 'Application_Rate_Limiter_Request',
           env: :raw_blob_request_limit,
           remote_ip: '0.0.0.0',
           request_method: 'GET',

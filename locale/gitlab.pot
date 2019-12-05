@@ -17898,6 +17898,9 @@ msgstr ""
 msgid "This domain is not verified. You will need to verify ownership before access is enabled."
 msgstr ""
 
+msgid "This endpoint has been requested too many times. Try again later."
+msgstr ""
+
 msgid "This environment has no deployments yet."
 msgstr ""
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::ProjectExport do
+describe API::ProjectExport, :clean_gitlab_redis_cache do
   set(:project) { create(:project) }
   set(:project_none) { create(:project) }
   set(:project_started) { create(:project) }
@@ -45,6 +45,19 @@ describe API::ProjectExport do
     end
 
     it_behaves_like '404 response'
+  end
+
+  shared_examples_for 'when rate limit is exceeded' do
+    before do
+      allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+    end
+
+    it 'prevents requesting project export' do
+      request
+
+      expect(response).to have_gitlab_http_status(429)
+      expect(json_response['message']['error']).to eq('This endpoint has been requested too many times. Try again later.')
+    end
   end
 
   describe 'GET /projects/:project_id/export' do
@@ -219,6 +232,12 @@ describe API::ProjectExport do
         let(:user) { admin }
 
         it_behaves_like 'get project download by strategy'
+
+        context 'when rate limit is exceeded' do
+          let(:request) { get api(download_path, admin) }
+
+          include_examples 'when rate limit is exceeded'
+        end
       end
 
       context 'when user is a maintainer' do
@@ -329,6 +348,12 @@ describe API::ProjectExport do
         let(:user) { admin }
 
         it_behaves_like 'post project export start'
+
+        context 'when rate limit is exceeded' do
+          let(:request) { post api(path, admin) }
+
+          include_examples 'when rate limit is exceeded'
+        end
       end
 
       context 'when user is a maintainer' do

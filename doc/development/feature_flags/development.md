@@ -129,3 +129,9 @@ In the rails console (`rails c`), enter the following command to enable your fea
 ```ruby
 Feature.enable(:feature_flag_name)
 ```
+
+Similarly, the following command will disable a feature flag:
+
+```ruby
+Feature.disable(:feature_flag_name)
+```

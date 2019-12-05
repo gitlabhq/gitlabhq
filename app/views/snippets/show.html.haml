@@ -4,13 +4,16 @@
 - breadcrumb_title @snippet.to_reference
 - page_title "#{@snippet.title} (#{@snippet.to_reference})", _("Snippets")
 
-= render 'shared/snippets/header'
+- if Feature.enabled?(:snippets_vue)
+  #js-snippet-view{ 'data-qa-selector': 'snippet_view' }
+- else
+  = render 'shared/snippets/header'
 
-.personal-snippets
-  %article.file-holder.snippet-file-content
-    = render 'shared/snippets/blob'
+  .personal-snippets
+    %article.file-holder.snippet-file-content
+      = render 'shared/snippets/blob'
 
-  .row-content-block.top-block.content-component-block
-    = render 'award_emoji/awards_block', awardable: @snippet, inline: true
+    .row-content-block.top-block.content-component-block
+      = render 'award_emoji/awards_block', awardable: @snippet, inline: true
 
-  #notes.limited-width-notes= render "shared/notes/notes_with_form", :autocomplete => false
+    #notes.limited-width-notes= render "shared/notes/notes_with_form", :autocomplete => false

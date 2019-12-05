@@ -1285,7 +1285,7 @@ Markdown features, like link labels.
 
 ## Testing webhooks
 
-You can trigger the webhook manually. Sample data from the project will be used.Sample data will take from the project.
+You can trigger the webhook manually. Sample data from the project will be used. Sample data will take from the project.
 > For example: for triggering `Push Events` your project should have at least one commit.
 
 ![Webhook testing](img/webhook_testing.png)
