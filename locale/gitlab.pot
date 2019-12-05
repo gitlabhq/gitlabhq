@@ -324,6 +324,9 @@ msgstr ""
 msgid "%{percent}%% complete"
 msgstr ""
 
+msgid "%{percent}%{percentSymbol} complete"
+msgstr ""
+
 msgid "%{primary} (%{secondary})"
 msgstr ""
 
@@ -12015,6 +12018,9 @@ msgstr ""
 msgid "Open source software to collaborate on code"
 msgstr ""
 
+msgid "Open: %{open} • Closed: %{closed}"
+msgstr ""
+
 msgid "Opened"
 msgstr ""
 
@@ -21515,6 +21521,12 @@ msgid "severity|Unknown"
 msgstr ""
 
 msgid "should be greater than or equal to %{access} inherited membership from group %{group_name}"
+msgstr ""
+
+msgid "show %{count} more"
+msgstr ""
+
+msgid "show fewer"
 msgstr ""
 
 msgid "show less"

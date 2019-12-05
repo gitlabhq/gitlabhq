@@ -1,6 +1,6 @@
 apply:
   stage: deploy
-  image: "registry.gitlab.com/gitlab-org/cluster-integration/cluster-applications:v0.1.0"
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/cluster-applications:v0.2.0"
   environment:
     name: production
   variables:

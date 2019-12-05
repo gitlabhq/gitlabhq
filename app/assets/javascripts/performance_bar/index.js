@@ -70,9 +70,9 @@ export default ({ container }) =>
 
           let durationString = '';
           if (navigationEntries.length > 0) {
-            durationString = `BE ${this.formatMs(navigationEntries[0].responseEnd)} / `;
-            durationString += `FCP ${this.formatMs(paintEntries[1].startTime)} / `;
-            durationString += `DOM ${this.formatMs(navigationEntries[0].domContentLoadedEventEnd)}`;
+            durationString = `${Math.round(navigationEntries[0].responseEnd)} | `;
+            durationString += `${Math.round(paintEntries[1].startTime)} | `;
+            durationString += ` ${Math.round(navigationEntries[0].domContentLoadedEventEnd)}`;
           }
 
           let newEntries = resourceEntries.map(this.transformResourceEntry);
@@ -104,10 +104,6 @@ export default ({ container }) =>
           duration: Math.round(entry.duration),
           size: entry.transferSize ? `${nf.format(entry.transferSize)} bytes` : 'cached',
         };
-      },
-      formatMs(msValue) {
-        const nf = new Intl.NumberFormat();
-        return `${nf.format(Math.round(msValue))}ms`;
       },
     },
     render(createElement) {

@@ -117,35 +117,6 @@ describe('Release block', () => {
       });
     });
 
-    it('renders the milestone icon', () => {
-      expect(
-        milestoneListLabel()
-          .find(Icon)
-          .exists(),
-      ).toBe(true);
-    });
-
-    it('renders the label as "Milestones" if more than one milestone is passed in', () => {
-      expect(
-        milestoneListLabel()
-          .find('.js-label-text')
-          .text(),
-      ).toEqual('Milestones');
-    });
-
-    it('renders a link to the milestone with a tooltip', () => {
-      const milestone = first(release.milestones);
-      const milestoneLink = wrapper.find('.js-milestone-link');
-
-      expect(milestoneLink.exists()).toBe(true);
-
-      expect(milestoneLink.text()).toBe(milestone.title);
-
-      expect(milestoneLink.attributes('href')).toBe(milestone.web_url);
-
-      expect(milestoneLink.attributes('data-original-title')).toBe(milestone.description);
-    });
-
     it('renders the footer', () => {
       expect(wrapper.find(ReleaseBlockFooter).exists()).toBe(true);
     });
@@ -184,18 +155,6 @@ describe('Release block', () => {
 
     return factory(releaseClone).then(() => {
       expect(milestoneListLabel().exists()).toBe(false);
-    });
-  });
-
-  it('renders the label as "Milestone" if only a single milestone is passed in', () => {
-    releaseClone.milestones = releaseClone.milestones.slice(0, 1);
-
-    return factory(releaseClone).then(() => {
-      expect(
-        milestoneListLabel()
-          .find('.js-label-text')
-          .text(),
-      ).toEqual('Milestone');
     });
   });
 
@@ -278,6 +237,53 @@ describe('Release block', () => {
 
       return factory(release).then(() => {
         expect(hasTargetBlueBackground()).toBe(false);
+      });
+    });
+  });
+
+  describe('when the releaseIssueSummary feature flag is disabled', () => {
+    describe('with default props', () => {
+      beforeEach(() => factory(release, { releaseIssueSummary: false }));
+
+      it('renders the milestone icon', () => {
+        expect(
+          milestoneListLabel()
+            .find(Icon)
+            .exists(),
+        ).toBe(true);
+      });
+
+      it('renders the label as "Milestones" if more than one milestone is passed in', () => {
+        expect(
+          milestoneListLabel()
+            .find('.js-label-text')
+            .text(),
+        ).toEqual('Milestones');
+      });
+
+      it('renders a link to the milestone with a tooltip', () => {
+        const milestone = first(release.milestones);
+        const milestoneLink = wrapper.find('.js-milestone-link');
+
+        expect(milestoneLink.exists()).toBe(true);
+
+        expect(milestoneLink.text()).toBe(milestone.title);
+
+        expect(milestoneLink.attributes('href')).toBe(milestone.web_url);
+
+        expect(milestoneLink.attributes('data-original-title')).toBe(milestone.description);
+      });
+    });
+
+    it('renders the label as "Milestone" if only a single milestone is passed in', () => {
+      releaseClone.milestones = releaseClone.milestones.slice(0, 1);
+
+      return factory(releaseClone, { releaseIssueSummary: false }).then(() => {
+        expect(
+          milestoneListLabel()
+            .find('.js-label-text')
+            .text(),
+        ).toEqual('Milestone');
       });
     });
   });

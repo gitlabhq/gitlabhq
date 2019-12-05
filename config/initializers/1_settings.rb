@@ -645,6 +645,7 @@ Settings.rack_attack.git_basic_auth['ip_whitelist'] ||= %w{127.0.0.1}
 Settings.rack_attack.git_basic_auth['maxretry'] ||= 10
 Settings.rack_attack.git_basic_auth['findtime'] ||= 1.minute
 Settings.rack_attack.git_basic_auth['bantime'] ||= 1.hour
+Settings.rack_attack['admin_area_protected_paths_enabled'] ||= false
 
 #
 # Gitaly

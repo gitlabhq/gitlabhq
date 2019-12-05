@@ -12,6 +12,7 @@ import { scrollToElement } from '~/lib/utils/common_utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ReleaseBlockFooter from './release_block_footer.vue';
 import EvidenceBlock from './evidence_block.vue';
+import ReleaseBlockMilestoneInfo from './release_block_milestone_info.vue';
 
 export default {
   name: 'ReleaseBlock',
@@ -23,6 +24,7 @@ export default {
     Icon,
     UserAvatarLink,
     ReleaseBlockFooter,
+    ReleaseBlockMilestoneInfo,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -90,6 +92,12 @@ export default {
     shouldShowFooter() {
       return this.glFeatures.releaseIssueSummary;
     },
+    shouldRenderReleaseMetaData() {
+      return !this.glFeatures.releaseIssueSummary;
+    },
+    shouldRenderMilestoneInfo() {
+      return Boolean(this.glFeatures.releaseIssueSummary && !_.isEmpty(this.release.milestones));
+    },
   },
   mounted() {
     const hash = getLocationHash();
@@ -106,26 +114,30 @@ export default {
 </script>
 <template>
   <div :id="id" :class="{ 'bg-line-target-blue': isHighlighted }" class="card release-block">
+    <div class="card-header d-flex align-items-center bg-white pr-0">
+      <h2 class="card-title my-2 mr-auto gl-font-size-20">
+        {{ release.name }}
+        <gl-badge v-if="release.upcoming_release" variant="warning" class="align-middle">{{
+          __('Upcoming Release')
+        }}</gl-badge>
+      </h2>
+      <gl-link
+        v-if="shouldShowEditButton"
+        v-gl-tooltip
+        class="btn btn-default append-right-10 js-edit-button ml-2"
+        :title="__('Edit this release')"
+        :href="release._links.edit_url"
+      >
+        <icon name="pencil" />
+      </gl-link>
+    </div>
     <div class="card-body">
-      <div class="d-flex align-items-start">
-        <h2 class="card-title mt-0 mr-auto">
-          {{ release.name }}
-          <gl-badge v-if="release.upcoming_release" variant="warning" class="align-middle">{{
-            __('Upcoming Release')
-          }}</gl-badge>
-        </h2>
-        <gl-link
-          v-if="shouldShowEditButton"
-          v-gl-tooltip
-          class="btn btn-default js-edit-button ml-2"
-          :title="__('Edit this release')"
-          :href="release._links.edit_url"
-        >
-          <icon name="pencil" />
-        </gl-link>
+      <div v-if="shouldRenderMilestoneInfo">
+        <release-block-milestone-info :milestones="release.milestones" />
+        <hr class="mb-3 mt-0" />
       </div>
 
-      <div class="card-subtitle d-flex flex-wrap text-secondary">
+      <div v-if="shouldRenderReleaseMetaData" class="card-subtitle d-flex flex-wrap text-secondary">
         <div class="append-right-8">
           <icon name="commit" class="align-middle" />
           <gl-link v-if="commitUrl" v-gl-tooltip.bottom :title="commit.title" :href="commitUrl">

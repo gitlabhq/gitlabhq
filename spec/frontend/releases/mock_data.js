@@ -11,6 +11,10 @@ export const milestones = [
     due_date: '2019-09-19',
     start_date: '2019-08-31',
     web_url: 'http://0.0.0.0:3001/root/release-test/-/milestones/2',
+    issue_stats: {
+      opened: 14,
+      closed: 19,
+    },
   },
   {
     id: 49,
@@ -24,6 +28,10 @@ export const milestones = [
     due_date: '2019-10-11',
     start_date: '2019-08-19',
     web_url: 'http://0.0.0.0:3001/root/release-test/-/milestones/1',
+    issue_stats: {
+      opened: 18,
+      closed: 3,
+    },
   },
 ];
 
