@@ -115,8 +115,8 @@ module QA
         post_body
       end
 
-      def runners
-        response = get Runtime::API::Request.new(api_client, api_runners_path).url
+      def runners(tag_list: nil)
+        response = get Runtime::API::Request.new(api_client, "#{api_runners_path}?tag_list=#{tag_list.compact.join(',')}").url
         parse_body(response)
       end
 

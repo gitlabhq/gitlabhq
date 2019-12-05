@@ -41,7 +41,17 @@ module QA
       end
 
       def remove_via_api!
-        @id = project.runners.find { |runner| runner[:description] == name }[:id]
+        runners = project.runners(tag_list: tags)
+        unless runners && !runners.empty?
+          raise "Project #{project.path_with_namespace} has no runners with tags #{tags}."
+        end
+
+        this_runner = runners.find { |runner| runner[:description] == name }
+        unless this_runner
+          raise "Project #{project.path_with_namespace} does not have a runner with a description matching #{name} and tags #{tags}. Runners available: #{runners}"
+        end
+
+        @id = this_runner[:id]
 
         super
 
