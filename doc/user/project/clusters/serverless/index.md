@@ -13,7 +13,7 @@ GitLab supports several ways deploy Serverless applications in both Kubernetes E
 
 Currently we support:
 
-- [Knative](#knative): Build Knative applications with Knative and gitlabktl on GKE.
+- [Knative](#knative): Build Knative applications with Knative and `gitlabktl` on GKE.
 - [AWS Lambda](aws.md): Create serverless applications via the Serverless Framework and GitLab CI.
 
 ## Knative
@@ -36,10 +36,12 @@ With GitLab Serverless, you can deploy both functions-as-a-service (FaaS) and se
 To run Knative on GitLab, you will need:
 
 1. **Existing GitLab project:** You will need a GitLab project to associate all resources. The simplest way to get started:
-
-   - If you are planning on deploying functions, clone the [functions example project](https://gitlab.com/knative-examples/functions) to get started.
-   - If you are planning on deploying a serverless application, clone the sample [Knative Ruby App](https://gitlab.com/knative-examples/knative-ruby-app) to get started.
-
+   - If you are planning on [deploying functions](#deploying-functions),
+     clone the [functions example project](https://gitlab.com/knative-examples/functions) to get
+     started.
+   - If you are planning on [deploying a serverless application](#deploying-serverless-applications),
+     clone the sample [Knative Ruby App](https://gitlab.com/knative-examples/knative-ruby-app) to get
+     started.
 1. **Kubernetes Cluster:** An RBAC-enabled Kubernetes cluster is required to deploy Knative.
    The simplest way to get started is to add a cluster using [GitLab's GKE integration](../add_remove_clusters.md#gke-cluster).
    The set of minimum recommended cluster specifications to run Knative is 3 nodes, 6 vCPUs, and 22.50 GB memory.
@@ -58,7 +60,7 @@ To run Knative on GitLab, you will need:
 1. **`serverless.yml`** (for [functions only](#deploying-functions)): When using serverless to deploy functions, the `serverless.yml` file
    will contain the information for all the functions being hosted in the repository as well as a reference to the
    runtime being used.
-1. **`Dockerfile`** (for [applications only](#deploying-serverless-applications): Knative requires a
+1. **`Dockerfile`** (for [applications only](#deploying-serverless-applications)): Knative requires a
    `Dockerfile` in order to build your applications. It should be included at the root of your
    project's repo and expose port `8080`. `Dockerfile` is not require if you plan to build serverless functions
    using our [runtimes](https://gitlab.com/gitlab-org/serverless/runtimes).
@@ -231,26 +233,40 @@ Or:
 
 ## Supported runtimes
 
-Serverless functions for GitLab can be written in 6 supported languages:
+Serverless functions for GitLab can be run using:
 
-- NodeJS and Ruby, with GitLab-managed and OpenFaas runtimes.
-- C#, Go, PHP, and Python with OpenFaaS runtimes only.
+- [GitLab-managed](#gitlab-managed-runtimes) runtimes.
+- [OpenFaaS](#openfaas-runtimes) runtimes.
 
-### GitLab managed runtimes
+If a runtime is not available for the required programming language, consider deploying a
+[serverless application](#deploying-serverless-applications).
 
-Currently the following [runtimes](https://gitlab.com/gitlab-org/serverless/runtimes) are offered:
+### GitLab-managed runtimes
 
-- ruby
-- node.js
-- Dockerfile
+Currently the following GitLab-managed [runtimes](https://gitlab.com/gitlab-org/serverless/runtimes)
+are available:
 
-`Dockerfile` presence is assumed when a runtime is not specified.
+- `go` (proof of concept)
+- `nodejs`
+- `ruby`
+
+You must provide a `Dockerfile` to run serverless functions if no runtime is specified.
 
 ### OpenFaaS runtimes
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/29253) in GitLab 12.5.
 
 [OpenFaaS classic runtimes](https://github.com/openfaas/templates#templates-in-store) can be used with GitLab serverless.
+
+OpenFaas runtimes are available for the following languages:
+
+- C#
+- Go
+- NodeJS
+- PHP
+- Python
+- Ruby
+
 Runtimes are specified using the pattern: `openfaas/classic/<template_name>`. The following
 example shows how to define a function in `serverless.yml` using an OpenFaaS runtime:
 
@@ -441,9 +457,10 @@ To run a function locally:
 
 > Introduced in GitLab 11.5.
 
-Serverless applications are the building block of serverless functions. They are useful in scenarios where an existing
-runtime does not meet the needs of an application, such as one written in a language that has no runtime available. Note
-though that serverless applications should be stateless!
+Serverless applications are an alternative to [serverless functions](#deploying-functions).
+They are useful in scenarios where an existing runtime does not meet the needs of an application,
+such as one written in a language that has no runtime available. Note though that serverless
+applications should be stateless!
 
 NOTE: **Note:**
 You can reference and import the sample [Knative Ruby App](https://gitlab.com/knative-examples/knative-ruby-app) to get started.
