@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import MemoryUsage from '~/vue_merge_request_widget/components/memory_usage.vue';
+import MemoryUsage from '~/vue_merge_request_widget/components/deployment/memory_usage.vue';
 import MRWidgetService from '~/vue_merge_request_widget/services/mr_widget_service';
 
 const url = '/root/acets-review-apps/environments/15/deployments/1/metrics';

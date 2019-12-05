@@ -154,7 +154,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           .and_return(merge_request)
       end
 
-      it 'does not serialize builds in exposed stages', :sidekiq_might_not_need_inline do
+      it 'does not serialize builds in exposed stages' do
         get_show_json
 
         json_response.dig('pipeline', 'details', 'stages').tap do |stages|
@@ -183,7 +183,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         context 'job is cancelable' do
           let(:job) { create(:ci_build, :running, pipeline: pipeline) }
 
-          it 'cancel_path is present with correct redirect', :sidekiq_might_not_need_inline do
+          it 'cancel_path is present with correct redirect' do
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to match_response_schema('job/job_details')
             expect(json_response['cancel_path']).to include(CGI.escape(json_response['build_path']))
@@ -193,7 +193,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         context 'with web terminal' do
           let(:job) { create(:ci_build, :running, :with_runner_session, pipeline: pipeline) }
 
-          it 'exposes the terminal path', :sidekiq_might_not_need_inline do
+          it 'exposes the terminal path' do
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to match_response_schema('job/job_details')
             expect(json_response['terminal_path']).to match(%r{/terminal})
@@ -268,7 +268,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           project.add_maintainer(user) # Need to be a maintianer to view cluster.path
         end
 
-        it 'exposes the deployment information', :sidekiq_might_not_need_inline do
+        it 'exposes the deployment information' do
           get_show_json
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -292,7 +292,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
             sign_in(user)
           end
 
-          it 'user can edit runner', :sidekiq_might_not_need_inline do
+          it 'user can edit runner' do
             get_show_json
 
             expect(response).to have_gitlab_http_status(:ok)
@@ -312,7 +312,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
             sign_in(user)
           end
 
-          it 'user can not edit runner', :sidekiq_might_not_need_inline do
+          it 'user can not edit runner' do
             get_show_json
 
             expect(response).to have_gitlab_http_status(:ok)
@@ -331,7 +331,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
             sign_in(user)
           end
 
-          it 'user can not edit runner', :sidekiq_might_not_need_inline do
+          it 'user can not edit runner' do
             get_show_json
 
             expect(response).to have_gitlab_http_status(:ok)
@@ -412,7 +412,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
       context 'when job has trace' do
         let(:job) { create(:ci_build, :running, :trace_live, pipeline: pipeline) }
 
-        it "has_trace is true", :sidekiq_might_not_need_inline do
+        it "has_trace is true" do
           get_show_json
 
           expect(response).to match_response_schema('job/job_details')
@@ -458,7 +458,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           create(:ci_pipeline_variable, pipeline: pipeline, key: :TRIGGER_KEY_1, value: 'TRIGGER_VALUE_1')
         end
 
-        context 'user is a maintainer', :sidekiq_might_not_need_inline do
+        context 'user is a maintainer' do
           before do
             project.add_maintainer(user)
 
@@ -512,7 +512,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
 
     def get_show_json
       expect { get_show(id: job.id, format: :json) }
-        .not_to change { Gitlab::GitalyClient.get_request_count }
+        .to change { Gitlab::GitalyClient.get_request_count }.by(1) # ListCommitsByOid
     end
 
     def get_show(**extra_params)

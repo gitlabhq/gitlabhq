@@ -10,6 +10,7 @@ class Projects::ReleasesController < Projects::ApplicationController
     push_frontend_feature_flag(:release_evidence_collection, project)
   end
   before_action :authorize_update_release!, only: %i[edit update]
+  before_action :authorize_download_code!, only: [:evidence]
 
   def index
     respond_to do |format|

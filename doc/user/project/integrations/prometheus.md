@@ -574,6 +574,7 @@ If the "No data found" screen continues to appear, it could be due to:
   are not labeled correctly. To test this, connect to the Prometheus server and
   [run a query](prometheus_library/kubernetes.html#metrics-supported), replacing `$CI_ENVIRONMENT_SLUG`
   with the name of your environment.
+- You may need to re-add the GitLab predefined common metrics. This can be done by running the [import common metrics rake task](../../../administration/raketasks/maintenance.md#import-common-metrics).
 
 [autodeploy]: ../../../topics/autodevops/index.md#auto-deploy
 [kubernetes]: https://kubernetes.io

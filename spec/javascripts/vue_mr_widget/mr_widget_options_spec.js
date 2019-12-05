@@ -6,6 +6,7 @@ import { stateKey } from '~/vue_merge_request_widget/stores/state_maps';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import mockData from './mock_data';
 import { faviconDataUrl, overlayDataUrl } from '../lib/utils/mock_data';
+import { SUCCESS } from '~/vue_merge_request_widget/components/deployment/constants';
 
 const returnPromise = data =>
   new Promise(resolve => {
@@ -277,7 +278,9 @@ describe('mrWidgetOptions', () => {
 
     describe('fetchDeployments', () => {
       it('should fetch deployments', done => {
-        spyOn(vm.service, 'fetchDeployments').and.returnValue(returnPromise([{ id: 1 }]));
+        spyOn(vm.service, 'fetchDeployments').and.returnValue(
+          returnPromise([{ id: 1, status: SUCCESS }]),
+        );
 
         vm.fetchPreMergeDeployments();
 
@@ -554,7 +557,7 @@ describe('mrWidgetOptions', () => {
       deployed_at: '2017-03-22T22:44:42.258Z',
       deployed_at_formatted: 'Mar 22, 2017 10:44pm',
       changes,
-      status: 'success',
+      status: SUCCESS,
     };
 
     beforeEach(done => {

@@ -88,8 +88,8 @@ def instrument_classes(instrumentation)
   instrumentation.instrument_instance_methods(Gitlab::Highlight)
 
   Gitlab.ee do
-    instrumentation.instrument_methods(Elasticsearch::Git::Repository)
-    instrumentation.instrument_instance_methods(Elasticsearch::Git::Repository)
+    instrumentation.instrument_instance_methods(Elastic::Latest::GitInstanceProxy)
+    instrumentation.instrument_instance_methods(Elastic::Latest::GitClassProxy)
 
     instrumentation.instrument_instance_methods(Search::GlobalService)
     instrumentation.instrument_instance_methods(Search::ProjectService)

@@ -1,10 +1,10 @@
 <script>
 import { sprintf, s__ } from '~/locale';
-import statusCodes from '../../lib/utils/http_status';
-import { bytesToMiB } from '../../lib/utils/number_utils';
-import { backOff } from '../../lib/utils/common_utils';
-import MemoryGraph from '../../vue_shared/components/memory_graph.vue';
-import MRWidgetService from '../services/mr_widget_service';
+import statusCodes from '~/lib/utils/http_status';
+import { bytesToMiB } from '~/lib/utils/number_utils';
+import { backOff } from '~/lib/utils/common_utils';
+import MemoryGraph from '~/vue_shared/components/memory_graph.vue';
+import MRWidgetService from '../../services/mr_widget_service';
 
 export default {
   name: 'MemoryUsage',

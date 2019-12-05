@@ -1,7 +1,7 @@
 <script>
 import _ from 'underscore';
 import ArtifactsApp from './artifacts_list_app.vue';
-import Deployment from './deployment.vue';
+import Deployment from './deployment/deployment.vue';
 import MrWidgetContainer from './mr_widget_container.vue';
 import MrWidgetPipeline from './mr_widget_pipeline.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';

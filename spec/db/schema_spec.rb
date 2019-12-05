@@ -43,6 +43,7 @@ describe 'Database schema' do
     geo_nodes: %w[oauth_application_id],
     geo_repository_deleted_events: %w[project_id],
     geo_upload_deleted_events: %w[upload_id model_id],
+    gitlab_subscription_histories: %w[gitlab_subscription_id hosted_plan_id namespace_id],
     import_failures: %w[project_id],
     identities: %w[user_id],
     issues: %w[last_edited_by_id state_id],

@@ -1,3 +1,5 @@
+import { SUCCESS } from '~/vue_merge_request_widget/components/deployment/constants';
+
 export default {
   id: 132,
   iid: 22,
@@ -290,15 +292,20 @@ export const mockStore = {
       name: 'bogus',
       external_url: 'https://fake.com',
       external_url_formatted: 'https://fake.com',
+      status: SUCCESS,
     },
     {
       id: 1,
       name: 'bogus-docs',
       external_url: 'https://fake.com',
       external_url_formatted: 'https://fake.com',
+      status: SUCCESS,
     },
   ],
-  postMergeDeployments: [{ id: 0, name: 'prod' }, { id: 1, name: 'prod-docs' }],
+  postMergeDeployments: [
+    { id: 0, name: 'prod', status: SUCCESS },
+    { id: 1, name: 'prod-docs', status: SUCCESS },
+  ],
   troubleshootingDocsPath: 'troubleshooting-docs-path',
   ciStatus: 'ci-status',
   hasCI: true,

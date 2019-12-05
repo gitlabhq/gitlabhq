@@ -49,6 +49,7 @@ describe('Issuables list component', () => {
       },
       localVue,
       sync: false,
+      attachToDocument: true,
     });
   };
 

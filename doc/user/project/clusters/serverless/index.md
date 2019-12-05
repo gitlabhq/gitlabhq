@@ -348,7 +348,7 @@ project):
      echo-js:
        handler: echo-js
        source: ./echo-js
-       runtime: https://gitlab.com/gitlab-org/serverless/runtimes/nodejs
+       runtime: gitlab/runtimes/nodejs
        description: "node.js runtime function"
        environment:
          MY_FUNCTION: echo-js
@@ -379,9 +379,26 @@ subsequent lines contain the function attributes.
 |-----------|-------------|
 | `handler` | The function's name. |
 | `source` | Directory with sources of a functions. |
-| `runtime` (optional)| The runtime to be used to execute the function. When the runtime is not specified, we assume that `Dockerfile` is present in the function directory specified by `source`. |
+| `runtime` (optional)| The runtime to be used to execute the function. This can be a runtime alias (see [Runtime aliases](#runtime-aliases)), or it can be a full URL to a custom runtime repository. When the runtime is not specified, we assume that `Dockerfile` is present in the function directory specified by `source`. |
 | `description` | A short description of the function. |
 | `environment` | Sets an environment variable for the specific function only. |
+
+#### Runtime aliases
+
+The optional `runtime` parameter can refer to one of the following runtime aliases (also see [Supported runtimes](#supported-runtimes)):
+
+| Runtime alias | Maintained by |
+|-------------|---------------|
+| `gitlab/runtimes/go` | GitLab |
+| `gitlab/runtimes/nodejs` | GitLab |
+| `gitlab/runtimes/ruby` | GitLab |
+| `openfaas/classic/csharp` | OpenFaaS |
+| `openfaas/classic/go` | OpenFaaS |
+| `openfaas/classic/node` | OpenFaaS |
+| `openfaas/classic/php7` | OpenFaaS |
+| `openfaas/classic/python` | OpenFaaS |
+| `openfaas/classic/python3` | OpenFaaS |
+| `openfaas/classic/ruby` | OpenFaaS |
 
 After the `gitlab-ci.yml` template has been added and the `serverless.yml` file
 has been created, pushing a commit to your project will result in a CI pipeline

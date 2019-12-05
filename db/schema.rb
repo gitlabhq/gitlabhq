@@ -1828,6 +1828,23 @@ ActiveRecord::Schema.define(version: 2019_12_02_031812) do
     t.index ["upload_id"], name: "index_geo_upload_deleted_events_on_upload_id"
   end
 
+  create_table "gitlab_subscription_histories", force: :cascade do |t|
+    t.datetime_with_timezone "gitlab_subscription_created_at"
+    t.datetime_with_timezone "gitlab_subscription_updated_at"
+    t.date "start_date"
+    t.date "end_date"
+    t.date "trial_ends_on"
+    t.integer "namespace_id"
+    t.integer "hosted_plan_id"
+    t.integer "max_seats_used"
+    t.integer "seats"
+    t.boolean "trial"
+    t.integer "change_type", limit: 2
+    t.bigint "gitlab_subscription_id", null: false
+    t.datetime_with_timezone "created_at"
+    t.index ["gitlab_subscription_id"], name: "index_gitlab_subscription_histories_on_gitlab_subscription_id"
+  end
+
   create_table "gitlab_subscriptions", force: :cascade do |t|
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false

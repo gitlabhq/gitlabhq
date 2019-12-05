@@ -270,3 +270,15 @@ database: gitlabhq_production
 --------------------------------------------------
    up     migration_id    migration_name
 ```
+
+## Import common metrics
+
+Sometimes you may need to re-import the common metrics that power the Metrics dashboards.
+
+This could be as a result of [updating existing metrics](../../development/prometheus_metrics.md#update-existing-metrics), or as a [troubleshooting measure](../../user/project/integrations/prometheus.md#troubleshooting).
+
+To re-import the metrics you can run:
+
+```sh
+sudo gitlab-rake metrics:setup_common_metrics
+```

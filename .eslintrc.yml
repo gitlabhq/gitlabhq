@@ -30,6 +30,11 @@ rules:
   no-else-return:
     - error
     - allowElseIf: true
+  import/no-unresolved:
+    - error
+    - ignore:
+        # https://gitlab.com/gitlab-org/gitlab/issues/38226
+        - '^ee_component/'
   import/no-useless-path-segments: off
   import/order: off
   lines-between-class-members: off

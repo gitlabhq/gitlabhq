@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Registry List renders 1`] = `
+<div>
+  <p>
+    
+    Tag retention policies are designed to:
+  
+  </p>
+   
+  <ul>
+    <li>
+      Keep and protect the images that matter most.
+    </li>
+     
+    <li>
+      
+      Automatically remove extra images that aren't designed to be kept.
+    
+    </li>
+  </ul>
+   
+  <p>
+    Read more about the 
+    <a
+      href="foo"
+      target="_blank"
+    >
+      Container Registry tag retention policies
+    </a>
+  </p>
+</div>
+`;

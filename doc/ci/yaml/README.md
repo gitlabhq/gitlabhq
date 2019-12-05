@@ -75,6 +75,7 @@ cannot be used as job names**:
 - `after_script`
 - `variables`
 - `cache`
+- `include`
 
 ### Using reserved keywords
 

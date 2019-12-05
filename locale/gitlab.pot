@@ -2942,6 +2942,9 @@ msgstr ""
 msgid "Callback URL"
 msgstr ""
 
+msgid "Can deploy manually to"
+msgstr ""
+
 msgid "Can override approvers and approvals required per merge request"
 msgstr ""
 
@@ -2967,6 +2970,9 @@ msgid "Cancel running"
 msgstr ""
 
 msgid "Cancel this job"
+msgstr ""
+
+msgid "Canceled deploy to"
 msgstr ""
 
 msgid "Cancelling Preview"
@@ -4334,6 +4340,24 @@ msgstr ""
 msgid "Cohorts"
 msgstr ""
 
+msgid "Cohorts|Inactive users"
+msgstr ""
+
+msgid "Cohorts|Month %{month_index}"
+msgstr ""
+
+msgid "Cohorts|New users"
+msgstr ""
+
+msgid "Cohorts|Registration month"
+msgstr ""
+
+msgid "Cohorts|Returning users"
+msgstr ""
+
+msgid "Cohorts|User cohorts are shown for the last %{months_included} months. Only users with activity are counted in the 'New users' column; inactive users are counted separately."
+msgstr ""
+
 msgid "Collapse"
 msgstr ""
 
@@ -4613,6 +4637,9 @@ msgid "Contact your Administrator to upgrade your license."
 msgstr ""
 
 msgid "Container Registry"
+msgstr ""
+
+msgid "Container Registry tag expiration policies"
 msgstr ""
 
 msgid "Container Scanning"
@@ -7090,6 +7117,9 @@ msgid "Expand up"
 msgstr ""
 
 msgid "Expiration date"
+msgstr ""
+
+msgid "Expiration policies for the Container Registry are a perfect solution for keeping the Registry space down while still enjoying the full power of GitLab CI/CD."
 msgstr ""
 
 msgid "Expired"
@@ -12141,6 +12171,9 @@ msgstr ""
 msgid "Package was removed"
 msgstr ""
 
+msgid "PackageRegistry|Automatically remove extra images that aren't designed to be kept."
+msgstr ""
+
 msgid "PackageRegistry|Copy Maven XML"
 msgstr ""
 
@@ -12180,6 +12213,9 @@ msgstr ""
 msgid "PackageRegistry|Installation"
 msgstr ""
 
+msgid "PackageRegistry|Keep and protect the images that matter most."
+msgstr ""
+
 msgid "PackageRegistry|Learn how to %{noPackagesLinkStart}publish and share your packages%{noPackagesLinkEnd} with GitLab."
 msgstr ""
 
@@ -12192,10 +12228,16 @@ msgstr ""
 msgid "PackageRegistry|Package installation"
 msgstr ""
 
+msgid "PackageRegistry|Read more about the %{helpLinkStart}Container Registry tag retention policies%{helpLinkEnd}"
+msgstr ""
+
 msgid "PackageRegistry|Registry Setup"
 msgstr ""
 
 msgid "PackageRegistry|Remove package"
+msgstr ""
+
+msgid "PackageRegistry|Tag retention policies are designed to:"
 msgstr ""
 
 msgid "PackageRegistry|There are no packages yet"
@@ -19531,6 +19573,9 @@ msgid "View log"
 msgstr ""
 
 msgid "View open merge request"
+msgstr ""
+
+msgid "View previous app"
 msgstr ""
 
 msgid "View project labels"

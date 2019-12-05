@@ -59,3 +59,14 @@
   .settings-content
     = render 'projects/triggers/index'
 
+- if Feature.enabled?(:registry_retention_policies_settings, @project)
+  %section.settings.no-animate#js-registry-polcies{ class: ('expanded' if expanded) }
+    .settings-header
+      %h4
+        = _("Container Registry tag expiration policies")
+      %button.btn.js-settings-toggle{ type: 'button' }
+        = expanded ? _('Collapse') : _('Expand')
+      %p
+        = _("Expiration policies for the Container Registry are a perfect solution for keeping the Registry space down while still enjoying the full power of GitLab CI/CD.")
+    .settings-content
+      = render 'projects/registry/settings/index'

@@ -10,7 +10,7 @@ import createFlash from '../flash';
 import WidgetHeader from './components/mr_widget_header.vue';
 import WidgetMergeHelp from './components/mr_widget_merge_help.vue';
 import MrWidgetPipelineContainer from './components/mr_widget_pipeline_container.vue';
-import Deployment from './components/deployment.vue';
+import Deployment from './components/deployment/deployment.vue';
 import WidgetRelatedLinks from './components/mr_widget_related_links.vue';
 import MrWidgetAlertMessage from './components/mr_widget_alert_message.vue';
 import MergedState from './components/states/mr_widget_merged.vue';

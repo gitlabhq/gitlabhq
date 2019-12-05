@@ -249,7 +249,7 @@ scss_lint` in the GitLab directory. SCSS Lint will also run in GitLab CI to
 catch any warnings.
 
 If the Rake task is throwing warnings you don't understand, SCSS Lint's
-documentation includes [a full list of their linters][scss-lint-documentation](https://github.com/sds/scss-lint/blob/master/lib/scss_lint/linter/README.md).
+documentation includes [a full list of their linters](https://github.com/sds/scss-lint/blob/master/lib/scss_lint/linter/README.md).
 
 ### Fixing issues
 

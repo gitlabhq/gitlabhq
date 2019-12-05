@@ -662,9 +662,8 @@ module Ci
     def execute_hooks
       return unless project
 
-      build_data = Gitlab::DataBuilder::Build.build(self)
-      project.execute_hooks(build_data.dup, :job_hooks)
-      project.execute_services(build_data.dup, :job_hooks)
+      project.execute_hooks(build_data.dup, :job_hooks) if project.has_active_hooks?(:job_hooks)
+      project.execute_services(build_data.dup, :job_hooks) if project.has_active_services?(:job_hooks)
     end
 
     def browsable_artifacts?
@@ -872,6 +871,10 @@ module Ci
     end
 
     private
+
+    def build_data
+      @build_data ||= Gitlab::DataBuilder::Build.build(self)
+    end
 
     def successful_deployment_status
       if deployment&.last?
