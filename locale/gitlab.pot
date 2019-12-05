@@ -1119,6 +1119,9 @@ msgstr ""
 msgid "Adds an issue to an epic."
 msgstr ""
 
+msgid "Adjust your filters/search criteria above."
+msgstr ""
+
 msgid "Admin Area"
 msgstr ""
 
@@ -5904,9 +5907,6 @@ msgstr ""
 msgid "Designs"
 msgstr ""
 
-msgid "Designs coming soon."
-msgstr ""
-
 msgid "Destroy"
 msgstr ""
 
@@ -9292,6 +9292,9 @@ msgstr ""
 msgid "If using GitHub, you’ll see pipeline statuses on GitHub for your commits and pull requests. %{more_info_link}"
 msgstr ""
 
+msgid "If you believe this may be an error, please refer to the %{linkStart}Geo Troubleshooting%{linkEnd} documentation for more information."
+msgstr ""
+
 msgid "If you believe this page to be an error, check out the links below for more information."
 msgstr ""
 
@@ -10130,10 +10133,19 @@ msgstr ""
 msgid "Last reply by"
 msgstr ""
 
+msgid "Last repository check run"
+msgstr ""
+
 msgid "Last seen"
 msgstr ""
 
+msgid "Last successful sync"
+msgstr ""
+
 msgid "Last successful update"
+msgstr ""
+
+msgid "Last time verified"
 msgstr ""
 
 msgid "Last update"
@@ -11500,6 +11512,9 @@ msgstr ""
 msgid "No %{providerTitle} repositories found"
 msgstr ""
 
+msgid "No Design Repositories match this filter"
+msgstr ""
+
 msgid "No Epic"
 msgstr ""
 
@@ -11690,6 +11705,9 @@ msgid "Nodes"
 msgstr ""
 
 msgid "None"
+msgstr ""
+
+msgid "Not Implemented"
 msgstr ""
 
 msgid "Not all data has been processed yet, the accuracy of the chart for the selected timeframe is limited."

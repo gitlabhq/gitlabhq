@@ -1223,6 +1223,7 @@ X-Gitlab-Event: Job Hook
   "build_duration": null,
   "build_allow_failure": false,
   "build_failure_reason": "script_failure",
+  "pipeline_id": 2366,
   "project_id": 380,
   "project_name": "gitlab-org/gitlab-test",
   "user": {
@@ -1248,9 +1249,17 @@ X-Gitlab-Event: Job Hook
     "git_ssh_url": "git@192.168.64.1:gitlab-org/gitlab-test.git",
     "git_http_url": "http://192.168.64.1:3005/gitlab-org/gitlab-test.git",
     "visibility_level": 20
+  },
+  "runner": {
+    "active": true,
+    "is_shared": false,
+    "id": 380987,
+    "description": "shared-runners-manager-6.gitlab.com"
   }
 }
 ```
+
+Note that `commit.id` is the id of the pipeline, not the id of the commit.
 
 ## Image URL rewriting
 

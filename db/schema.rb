@@ -3673,7 +3673,7 @@ ActiveRecord::Schema.define(version: 2019_12_02_031812) do
   create_table "software_license_policies", id: :serial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.integer "software_license_id", null: false
-    t.integer "approval_status", default: 0, null: false
+    t.integer "classification", default: 0, null: false
     t.index ["project_id", "software_license_id"], name: "index_software_license_policies_unique_per_project", unique: true
     t.index ["software_license_id"], name: "index_software_license_policies_on_software_license_id"
   end
