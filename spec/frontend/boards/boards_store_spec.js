@@ -1,10 +1,9 @@
-import BoardService from '~/boards/services/board_service';
 import { TEST_HOST } from 'helpers/test_constants';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import boardsStore from '~/boards/stores/boards_store';
 
-describe('BoardService', () => {
+describe('boardsStore', () => {
   const dummyResponse = "without type checking this doesn't matter";
   const boardId = 'dummy-board-id';
   const endpoints = {
@@ -14,7 +13,6 @@ describe('BoardService', () => {
     recentBoardsEndpoint: `${TEST_HOST}/recent/boards`,
   };
 
-  let service;
   let axiosMock;
 
   beforeEach(() => {
@@ -23,7 +21,6 @@ describe('BoardService', () => {
       ...endpoints,
       boardId,
     });
-    service = new BoardService();
   });
 
   describe('all', () => {
@@ -31,13 +28,13 @@ describe('BoardService', () => {
       axiosMock.onGet(endpoints.listsEndpoint).replyOnce(200, dummyResponse);
       const expectedResponse = expect.objectContaining({ data: dummyResponse });
 
-      return expect(service.all()).resolves.toEqual(expectedResponse);
+      return expect(boardsStore.all()).resolves.toEqual(expectedResponse);
     });
 
     it('fails for error response', () => {
       axiosMock.onGet(endpoints.listsEndpoint).replyOnce(500);
 
-      return expect(service.all()).rejects.toThrow();
+      return expect(boardsStore.all()).rejects.toThrow();
     });
   });
 
@@ -48,13 +45,13 @@ describe('BoardService', () => {
       axiosMock.onPost(listsEndpointGenerate).replyOnce(200, dummyResponse);
       const expectedResponse = expect.objectContaining({ data: dummyResponse });
 
-      return expect(service.generateDefaultLists()).resolves.toEqual(expectedResponse);
+      return expect(boardsStore.generateDefaultLists()).resolves.toEqual(expectedResponse);
     });
 
     it('fails for error response', () => {
       axiosMock.onPost(listsEndpointGenerate).replyOnce(500);
 
-      return expect(service.generateDefaultLists()).rejects.toThrow();
+      return expect(boardsStore.generateDefaultLists()).rejects.toThrow();
     });
   });
 
@@ -76,7 +73,7 @@ describe('BoardService', () => {
       requestSpy.mockReturnValue([200, dummyResponse]);
       const expectedResponse = expect.objectContaining({ data: dummyResponse });
 
-      return expect(service.createList(entityId, entityType))
+      return expect(boardsStore.createList(entityId, entityType))
         .resolves.toEqual(expectedResponse)
         .then(() => {
           expect(requestSpy).toHaveBeenCalledWith(expectedRequest);
@@ -86,7 +83,7 @@ describe('BoardService', () => {
     it('fails for error response', () => {
       requestSpy.mockReturnValue([500]);
 
-      return expect(service.createList(entityId, entityType))
+      return expect(boardsStore.createList(entityId, entityType))
         .rejects.toThrow()
         .then(() => {
           expect(requestSpy).toHaveBeenCalledWith(expectedRequest);
@@ -113,7 +110,7 @@ describe('BoardService', () => {
       requestSpy.mockReturnValue([200, dummyResponse]);
       const expectedResponse = expect.objectContaining({ data: dummyResponse });
 
-      return expect(service.updateList(id, position, collapsed))
+      return expect(boardsStore.updateList(id, position, collapsed))
         .resolves.toEqual(expectedResponse)
         .then(() => {
           expect(requestSpy).toHaveBeenCalledWith(expectedRequest);
@@ -123,7 +120,7 @@ describe('BoardService', () => {
     it('fails for error response', () => {
       requestSpy.mockReturnValue([500]);
 
-      return expect(service.updateList(id, position, collapsed))
+      return expect(boardsStore.updateList(id, position, collapsed))
         .rejects.toThrow()
         .then(() => {
           expect(requestSpy).toHaveBeenCalledWith(expectedRequest);
@@ -147,7 +144,7 @@ describe('BoardService', () => {
       requestSpy.mockReturnValue([200, dummyResponse]);
       const expectedResponse = expect.objectContaining({ data: dummyResponse });
 
-      return expect(service.destroyList(id))
+      return expect(boardsStore.destroyList(id))
         .resolves.toEqual(expectedResponse)
         .then(() => {
           expect(requestSpy).toHaveBeenCalled();
@@ -157,7 +154,7 @@ describe('BoardService', () => {
     it('fails for error response', () => {
       requestSpy.mockReturnValue([500]);
 
-      return expect(service.destroyList(id))
+      return expect(boardsStore.destroyList(id))
         .rejects.toThrow()
         .then(() => {
           expect(requestSpy).toHaveBeenCalled();
@@ -173,7 +170,7 @@ describe('BoardService', () => {
       axiosMock.onGet(url).replyOnce(200, dummyResponse);
       const expectedResponse = expect.objectContaining({ data: dummyResponse });
 
-      return expect(service.getIssuesForList(id)).resolves.toEqual(expectedResponse);
+      return expect(boardsStore.getIssuesForList(id)).resolves.toEqual(expectedResponse);
     });
 
     it('makes a request to fetch list issues with filter', () => {
@@ -181,13 +178,13 @@ describe('BoardService', () => {
       axiosMock.onGet(`${url}&algal=scrubber`).replyOnce(200, dummyResponse);
       const expectedResponse = expect.objectContaining({ data: dummyResponse });
 
-      return expect(service.getIssuesForList(id, filter)).resolves.toEqual(expectedResponse);
+      return expect(boardsStore.getIssuesForList(id, filter)).resolves.toEqual(expectedResponse);
     });
 
     it('fails for error response', () => {
       axiosMock.onGet(url).replyOnce(500);
 
-      return expect(service.getIssuesForList(id)).rejects.toThrow();
+      return expect(boardsStore.getIssuesForList(id)).rejects.toThrow();
     });
   });
 
@@ -228,7 +225,7 @@ describe('BoardService', () => {
       requestSpy.mockReturnValue([200, dummyResponse]);
       const expectedResponse = expect.objectContaining({ data: dummyResponse });
 
-      return expect(service.moveIssue(id, fromListId, toListId, moveBeforeId, moveAfterId))
+      return expect(boardsStore.moveIssue(id, fromListId, toListId, moveBeforeId, moveAfterId))
         .resolves.toEqual(expectedResponse)
         .then(() => {
           expect(requestSpy).toHaveBeenCalledWith(expectedRequest);
@@ -238,7 +235,7 @@ describe('BoardService', () => {
     it('fails for error response', () => {
       requestSpy.mockReturnValue([500]);
 
-      return expect(service.moveIssue(id, fromListId, toListId, moveBeforeId, moveAfterId))
+      return expect(boardsStore.moveIssue(id, fromListId, toListId, moveBeforeId, moveAfterId))
         .rejects.toThrow()
         .then(() => {
           expect(requestSpy).toHaveBeenCalledWith(expectedRequest);
@@ -267,7 +264,7 @@ describe('BoardService', () => {
       requestSpy.mockReturnValue([200, dummyResponse]);
       const expectedResponse = expect.objectContaining({ data: dummyResponse });
 
-      return expect(service.newIssue(id, issue))
+      return expect(boardsStore.newIssue(id, issue))
         .resolves.toEqual(expectedResponse)
         .then(() => {
           expect(requestSpy).toHaveBeenCalledWith(expectedRequest);
@@ -277,7 +274,7 @@ describe('BoardService', () => {
     it('fails for error response', () => {
       requestSpy.mockReturnValue([500]);
 
-      return expect(service.newIssue(id, issue))
+      return expect(boardsStore.newIssue(id, issue))
         .rejects.toThrow()
         .then(() => {
           expect(requestSpy).toHaveBeenCalledWith(expectedRequest);
@@ -304,13 +301,13 @@ describe('BoardService', () => {
       axiosMock.onGet(url).replyOnce(200, dummyResponse);
       const expectedResponse = expect.objectContaining({ data: dummyResponse });
 
-      return expect(service.getBacklog(requestParams)).resolves.toEqual(expectedResponse);
+      return expect(boardsStore.getBacklog(requestParams)).resolves.toEqual(expectedResponse);
     });
 
     it('fails for error response', () => {
       axiosMock.onGet(url).replyOnce(500);
 
-      return expect(service.getBacklog(requestParams)).rejects.toThrow();
+      return expect(boardsStore.getBacklog(requestParams)).rejects.toThrow();
     });
   });
 
@@ -337,7 +334,7 @@ describe('BoardService', () => {
       requestSpy.mockReturnValue([200, dummyResponse]);
       const expectedResponse = expect.objectContaining({ data: dummyResponse });
 
-      return expect(service.bulkUpdate(issueIds, extraData))
+      return expect(boardsStore.bulkUpdate(issueIds, extraData))
         .resolves.toEqual(expectedResponse)
         .then(() => {
           expect(requestSpy).toHaveBeenCalledWith(expectedRequest);
@@ -347,7 +344,7 @@ describe('BoardService', () => {
     it('fails for error response', () => {
       requestSpy.mockReturnValue([500]);
 
-      return expect(service.bulkUpdate(issueIds, extraData))
+      return expect(boardsStore.bulkUpdate(issueIds, extraData))
         .rejects.toThrow()
         .then(() => {
           expect(requestSpy).toHaveBeenCalledWith(expectedRequest);
@@ -362,13 +359,13 @@ describe('BoardService', () => {
       axiosMock.onGet(dummyEndpoint).replyOnce(200, dummyResponse);
       const expectedResponse = expect.objectContaining({ data: dummyResponse });
 
-      return expect(BoardService.getIssueInfo(dummyEndpoint)).resolves.toEqual(expectedResponse);
+      return expect(boardsStore.getIssueInfo(dummyEndpoint)).resolves.toEqual(expectedResponse);
     });
 
     it('fails for error response', () => {
       axiosMock.onGet(dummyEndpoint).replyOnce(500);
 
-      return expect(BoardService.getIssueInfo(dummyEndpoint)).rejects.toThrow();
+      return expect(boardsStore.getIssueInfo(dummyEndpoint)).rejects.toThrow();
     });
   });
 
@@ -379,7 +376,7 @@ describe('BoardService', () => {
       axiosMock.onPost(dummyEndpoint).replyOnce(200, dummyResponse);
       const expectedResponse = expect.objectContaining({ data: dummyResponse });
 
-      return expect(BoardService.toggleIssueSubscription(dummyEndpoint)).resolves.toEqual(
+      return expect(boardsStore.toggleIssueSubscription(dummyEndpoint)).resolves.toEqual(
         expectedResponse,
       );
     });
@@ -387,7 +384,7 @@ describe('BoardService', () => {
     it('fails for error response', () => {
       axiosMock.onPost(dummyEndpoint).replyOnce(500);
 
-      return expect(BoardService.toggleIssueSubscription(dummyEndpoint)).rejects.toThrow();
+      return expect(boardsStore.toggleIssueSubscription(dummyEndpoint)).rejects.toThrow();
     });
   });
 
@@ -398,13 +395,13 @@ describe('BoardService', () => {
       axiosMock.onGet(url).replyOnce(200, dummyResponse);
       const expectedResponse = expect.objectContaining({ data: dummyResponse });
 
-      return expect(service.allBoards()).resolves.toEqual(expectedResponse);
+      return expect(boardsStore.allBoards()).resolves.toEqual(expectedResponse);
     });
 
     it('fails for error response', () => {
       axiosMock.onGet(url).replyOnce(500);
 
-      return expect(service.allBoards()).rejects.toThrow();
+      return expect(boardsStore.allBoards()).rejects.toThrow();
     });
   });
 
@@ -415,13 +412,13 @@ describe('BoardService', () => {
       axiosMock.onGet(url).replyOnce(200, dummyResponse);
       const expectedResponse = expect.objectContaining({ data: dummyResponse });
 
-      return expect(service.recentBoards()).resolves.toEqual(expectedResponse);
+      return expect(boardsStore.recentBoards()).resolves.toEqual(expectedResponse);
     });
 
     it('fails for error response', () => {
       axiosMock.onGet(url).replyOnce(500);
 
-      return expect(service.recentBoards()).rejects.toThrow();
+      return expect(boardsStore.recentBoards()).rejects.toThrow();
     });
   });
 
@@ -462,7 +459,7 @@ describe('BoardService', () => {
         const expectedResponse = expect.objectContaining({ data: dummyResponse });
 
         return expect(
-          service.createBoard({
+          boardsStore.createBoard({
             ...board,
             id,
           }),
@@ -477,7 +474,7 @@ describe('BoardService', () => {
         requestSpy.mockReturnValue([500]);
 
         return expect(
-          service.createBoard({
+          boardsStore.createBoard({
             ...board,
             id,
           }),
@@ -513,7 +510,7 @@ describe('BoardService', () => {
         requestSpy.mockReturnValue([200, dummyResponse]);
         const expectedResponse = expect.objectContaining({ data: dummyResponse });
 
-        return expect(service.createBoard(board))
+        return expect(boardsStore.createBoard(board))
           .resolves.toEqual(expectedResponse)
           .then(() => {
             expect(requestSpy).toHaveBeenCalledWith(expectedRequest);
@@ -523,7 +520,7 @@ describe('BoardService', () => {
       it('fails for error response', () => {
         requestSpy.mockReturnValue([500]);
 
-        return expect(service.createBoard(board))
+        return expect(boardsStore.createBoard(board))
           .rejects.toThrow()
           .then(() => {
             expect(requestSpy).toHaveBeenCalledWith(expectedRequest);
@@ -540,13 +537,13 @@ describe('BoardService', () => {
       axiosMock.onDelete(url).replyOnce(200, dummyResponse);
       const expectedResponse = expect.objectContaining({ data: dummyResponse });
 
-      return expect(service.deleteBoard({ id })).resolves.toEqual(expectedResponse);
+      return expect(boardsStore.deleteBoard({ id })).resolves.toEqual(expectedResponse);
     });
 
     it('fails for error response', () => {
       axiosMock.onDelete(url).replyOnce(500);
 
-      return expect(service.deleteBoard({ id })).rejects.toThrow();
+      return expect(boardsStore.deleteBoard({ id })).rejects.toThrow();
     });
   });
 });

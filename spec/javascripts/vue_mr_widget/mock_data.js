@@ -222,6 +222,7 @@ export default {
   plain_diff_path: '/root/acets-app/merge_requests/22.diff',
   merge_request_basic_path: '/root/acets-app/merge_requests/22.json?serializer=basic',
   merge_request_widget_path: '/root/acets-app/merge_requests/22/widget.json',
+  merge_request_cached_widget_path: '/cached.json',
   merge_check_path: '/root/acets-app/merge_requests/22/merge_check',
   ci_environments_status_url: '/root/acets-app/merge_requests/22/ci_environments_status',
   project_archived: false,

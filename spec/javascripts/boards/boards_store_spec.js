@@ -8,7 +8,6 @@ import '~/boards/models/label';
 import '~/boards/models/assignee';
 import '~/boards/models/issue';
 import '~/boards/models/list';
-import '~/boards/services/board_service';
 import boardsStore from '~/boards/stores/boards_store';
 import eventHub from '~/boards/eventhub';
 import { listObj, listObjDuplicate, boardsMockInterceptor } from './mock_data';

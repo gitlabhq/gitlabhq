@@ -44,31 +44,21 @@
       .ci-variable-body-item.ci-variable-protected-item.table-section.section-20.mr-0.border-top-0
         .append-right-default
           = s_("CiVariable|Protected")
-        %button{ type: 'button',
-          class: "js-project-feature-toggle project-feature-toggle #{'is-checked' if is_protected}",
-          "aria-label": s_("CiVariable|Toggle protected") }
+        = render "shared/buttons/project_feature_toggle", is_checked: is_protected, label: s_("CiVariable|Toggle protected") do
           %input{ type: "hidden",
             class: 'js-ci-variable-input-protected js-project-feature-toggle-input',
             name: protected_input_name,
             value: is_protected,
             data: { default: is_protected_default.to_s } }
-          %span.toggle-icon
-            = sprite_icon('status_success_borderless', size: 16, css_class: 'toggle-icon-svg toggle-status-checked')
-            = sprite_icon('status_failed_borderless', size: 16, css_class: 'toggle-icon-svg toggle-status-unchecked')
       .ci-variable-body-item.ci-variable-masked-item.table-section.section-20.mr-0.border-top-0
         .append-right-default
           = s_("CiVariable|Masked")
-        %button{ type: 'button',
-          class: "js-project-feature-toggle project-feature-toggle qa-variable-masked #{'is-checked' if is_masked}",
-          "aria-label": s_("CiVariable|Toggle masked") }
+        = render "shared/buttons/project_feature_toggle", is_checked: is_masked, label: s_("CiVariable|Toggle masked"), class_list: "js-project-feature-toggle project-feature-toggle qa-variable-masked" do
           %input{ type: "hidden",
             class: 'js-ci-variable-input-masked js-project-feature-toggle-input',
             name: masked_input_name,
             value: is_masked,
             data: { default: is_masked_default.to_s } }
-          %span.toggle-icon
-            = sprite_icon('status_success_borderless', size: 16, css_class: 'toggle-icon-svg toggle-status-checked')
-            = sprite_icon('status_failed_borderless', size: 16, css_class: 'toggle-icon-svg toggle-status-unchecked')
       = render_if_exists 'ci/variables/environment_scope', form_field: form_field, variable: variable
     %button.js-row-remove-button.ci-variable-row-remove-button.table-section.section-5.border-top-0{ type: 'button', 'aria-label': s_('CiVariables|Remove variable row') }
       = icon('minus-circle')

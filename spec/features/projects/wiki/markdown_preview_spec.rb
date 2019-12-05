@@ -29,11 +29,11 @@ describe 'Projects > Wiki > User previews markdown changes', :js do
 
         expect(page).to have_content("regular link")
 
-        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/regular\">regular link</a>")
-        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a/b/relative\">relative link 1</a>")
-        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a/b/c/relative\">relative link 2</a>")
-        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a/b/c/e/f/relative\">relative link 3</a>")
-        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/title%20with%20spaces\">spaced link</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/-/wikis/regular\">regular link</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/-/wikis/a/b/relative\">relative link 1</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/-/wikis/a/b/c/relative\">relative link 2</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/-/wikis/a/b/c/e/f/relative\">relative link 3</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/-/wikis/title%20with%20spaces\">spaced link</a>")
       end
     end
 
@@ -43,11 +43,11 @@ describe 'Projects > Wiki > User previews markdown changes', :js do
 
         expect(page).to have_content("regular link")
 
-        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/regular\">regular link</a>")
-        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/relative\">relative link 1</a>")
-        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/c-page/relative\">relative link 2</a>")
-        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/c-page/e/f/relative\">relative link 3</a>")
-        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/title%20with%20spaces\">spaced link</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/-/wikis/regular\">regular link</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/-/wikis/a-page/b-page/relative\">relative link 1</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/-/wikis/a-page/b-page/c-page/relative\">relative link 2</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/-/wikis/a-page/b-page/c-page/e/f/relative\">relative link 3</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/-/wikis/title%20with%20spaces\">spaced link</a>")
       end
     end
 
@@ -57,11 +57,11 @@ describe 'Projects > Wiki > User previews markdown changes', :js do
 
         expect(page).to have_content("regular link")
 
-        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/regular\">regular link</a>")
-        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/relative\">relative link 1</a>")
-        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/c-page/relative\">relative link 2</a>")
-        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/c-page/e/f/relative\">relative link 3</a>")
-        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/title%20with%20spaces\">spaced link</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/-/wikis/regular\">regular link</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/-/wikis/a-page/b-page/relative\">relative link 1</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/-/wikis/a-page/b-page/c-page/relative\">relative link 2</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/-/wikis/a-page/b-page/c-page/e/f/relative\">relative link 3</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/-/wikis/title%20with%20spaces\">spaced link</a>")
       end
     end
   end
@@ -77,11 +77,11 @@ describe 'Projects > Wiki > User previews markdown changes', :js do
 
         expect(page).to have_content("regular link")
 
-        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/regular\">regular link</a>")
-        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a/b/relative\">relative link 1</a>")
-        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a/b/c/relative\">relative link 2</a>")
-        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a/b/c/e/f/relative\">relative link 3</a>")
-        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/title%20with%20spaces\">spaced link</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/-/wikis/regular\">regular link</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/-/wikis/a/b/relative\">relative link 1</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/-/wikis/a/b/c/relative\">relative link 2</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/-/wikis/a/b/c/e/f/relative\">relative link 3</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/-/wikis/title%20with%20spaces\">spaced link</a>")
       end
     end
 
@@ -95,11 +95,11 @@ describe 'Projects > Wiki > User previews markdown changes', :js do
 
         expect(page).to have_content("regular link")
 
-        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/regular\">regular link</a>")
-        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/relative\">relative link 1</a>")
-        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/c-page/relative\">relative link 2</a>")
-        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/c-page/e/f/relative\">relative link 3</a>")
-        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/title%20with%20spaces\">spaced link</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/-/wikis/regular\">regular link</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/-/wikis/a-page/b-page/relative\">relative link 1</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/-/wikis/a-page/b-page/c-page/relative\">relative link 2</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/-/wikis/a-page/b-page/c-page/e/f/relative\">relative link 3</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/-/wikis/title%20with%20spaces\">spaced link</a>")
       end
     end
 
@@ -113,11 +113,11 @@ describe 'Projects > Wiki > User previews markdown changes', :js do
 
         expect(page).to have_content("regular link")
 
-        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/regular\">regular link</a>")
-        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/relative\">relative link 1</a>")
-        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/c-page/relative\">relative link 2</a>")
-        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/c-page/e/f/relative\">relative link 3</a>")
-        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/title%20with%20spaces\">spaced link</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/-/wikis/regular\">regular link</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/-/wikis/a-page/b-page/relative\">relative link 1</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/-/wikis/a-page/b-page/c-page/relative\">relative link 2</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/-/wikis/a-page/b-page/c-page/e/f/relative\">relative link 3</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/-/wikis/title%20with%20spaces\">spaced link</a>")
       end
     end
 

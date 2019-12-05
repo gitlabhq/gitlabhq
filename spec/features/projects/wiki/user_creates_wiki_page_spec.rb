@@ -55,7 +55,7 @@ describe "User creates wiki page" do
         end
 
         expect(current_path).to include("one/two/three-test")
-        expect(page).to have_xpath("//a[@href='/#{project.full_path}/wikis/one/two/three-test']")
+        expect(page).to have_xpath("//a[@href='/#{project.full_path}/-/wikis/one/two/three-test']")
       end
 
       it "has `Create home` as a commit message", :js do

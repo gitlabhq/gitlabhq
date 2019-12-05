@@ -258,6 +258,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             post :list_projects
           end
         end
+
+        # The wiki routing contains wildcard characters so
+        # its preferable to keep it below all other project routes
+        draw :wiki
       end
       # End of the /-/ scope.
 
@@ -523,9 +527,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         post :web_ide_clientside_preview
       end
 
-      # Since both wiki and repository routing contains wildcard characters
+      # The repository routing contains wildcard characters so
       # its preferable to keep it below all other project routes
-      draw :wiki
       draw :repository
 
       # All new routes should go under /-/ scope.
@@ -542,7 +545,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
                                             :forks, :group_links, :import, :avatar, :mirror,
                                             :cycle_analytics, :mattermost, :variables, :triggers,
                                             :environments, :protected_environments, :error_tracking,
-                                            :serverless, :clusters, :audit_events)
+                                            :serverless, :clusters, :audit_events, :wikis)
     end
 
     # rubocop: disable Cop/PutProjectRoutesUnderScope

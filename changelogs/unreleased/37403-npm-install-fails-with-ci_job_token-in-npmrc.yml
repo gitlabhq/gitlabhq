@@ -1,0 +1,5 @@
+---
+title: Allow NPM package downloads with CI_JOB_TOKEN
+merge_request: 20868
+author:
+type: added

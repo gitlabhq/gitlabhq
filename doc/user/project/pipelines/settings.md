@@ -67,19 +67,36 @@ For information about setting a maximum artifact size for a project, see
 
 ## Custom CI configuration path
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/12509) in GitLab 9.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/12509) in GitLab 9.4.
+> - [Support for external `.gitlab-ci.yml` locations](https://gitlab.com/gitlab-org/gitlab/issues/14376) introduced in GitLab 12.6.
 
 By default we look for the `.gitlab-ci.yml` file in the project's root
-directory. If you require a different location **within** the repository,
-you can set a custom path that will be used to look up the configuration file,
-this path should be **relative** to the root.
+directory. If needed, you can specify an alternate path and file name, including locations outside the project.
 
-Here are some valid examples:
+Hosting the configuration file in a separate project will allow stricter control of the
+configuration file. You can limit access to the project hosting the configuration to only people
+with proper authorization, and users can use the configuration for their pipelines,
+without being able to modify it.
 
-- `.gitlab-ci.yml`
+If the CI configuration will stay within the repository, but in a
+location different than the default,
+the path must be relative to the root directory. Examples of valid paths and file names:
+
+- `.gitlab-ci.yml` (default)
 - `.my-custom-file.yml`
 - `my/path/.gitlab-ci.yml`
 - `my/path/.my-custom-file.yml`
+
+If the CI configuration will be hosted in a different project within GitLab, the path must be relative
+to the root directory in the other project, with the group and project name added to the end:
+
+- `.gitlab-ci.yml@mygroup/another-project`
+- `my/path/.my-custom-file.yml@mygroup/another-project`
+
+If the CI configuration will be hosted on an external site, different than the GitLab instance,
+the URL link must end with `.yml`:
+
+- `http://example.com/generate/ci/config.yml`
 
 The path can be customized at a project level. To customize the path:
 

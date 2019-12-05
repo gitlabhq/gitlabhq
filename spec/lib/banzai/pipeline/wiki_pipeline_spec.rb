@@ -72,14 +72,14 @@ describe Banzai::Pipeline::WikiPipeline do
               markdown = "[Page](./page)"
               output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
 
-              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/wikis/nested/twice/page\"")
+              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/-/wikis/nested/twice/page\"")
             end
 
             it "rewrites file links to be at the scope of the current directory" do
               markdown = "[Link to Page](./page.md)"
               output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
 
-              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/wikis/nested/twice/page.md\"")
+              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/-/wikis/nested/twice/page.md\"")
             end
           end
 
@@ -88,14 +88,14 @@ describe Banzai::Pipeline::WikiPipeline do
               markdown = "[Link to Page](../page)"
               output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
 
-              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/wikis/nested/page\"")
+              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/-/wikis/nested/page\"")
             end
 
             it "rewrites file links to be at the scope of the parent directory" do
               markdown = "[Link to Page](../page.md)"
               output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
 
-              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/wikis/nested/page.md\"")
+              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/-/wikis/nested/page.md\"")
             end
           end
 
@@ -104,14 +104,14 @@ describe Banzai::Pipeline::WikiPipeline do
               markdown = "[Link to Page](./subdirectory/page)"
               output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
 
-              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/wikis/nested/twice/subdirectory/page\"")
+              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/-/wikis/nested/twice/subdirectory/page\"")
             end
 
             it "rewrites file links to be at the scope of the sub-directory" do
               markdown = "[Link to Page](./subdirectory/page.md)"
               output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
 
-              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/wikis/nested/twice/subdirectory/page.md\"")
+              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/-/wikis/nested/twice/subdirectory/page.md\"")
             end
           end
 
@@ -120,35 +120,35 @@ describe Banzai::Pipeline::WikiPipeline do
               markdown = "[Link to Page](page)"
               output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
 
-              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/wikis/page\"")
+              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/-/wikis/page\"")
             end
 
             it 'rewrites non-file links (with spaces) to be at the scope of the wiki root' do
               markdown = "[Link to Page](page slug)"
               output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
 
-              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/wikis/page%20slug\"")
+              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/-/wikis/page%20slug\"")
             end
 
             it "rewrites file links to be at the scope of the current directory" do
               markdown = "[Link to Page](page.md)"
               output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
 
-              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/wikis/nested/twice/page.md\"")
+              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/-/wikis/nested/twice/page.md\"")
             end
 
             it 'rewrites links with anchor' do
               markdown = '[Link to Header](start-page#title)'
               output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
 
-              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/wikis/start-page#title\"")
+              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/-/wikis/start-page#title\"")
             end
 
             it 'rewrites links (with spaces) with anchor' do
               markdown = '[Link to Header](start page#title)'
               output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
 
-              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/wikis/start%20page#title\"")
+              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/-/wikis/start%20page#title\"")
             end
           end
 
@@ -157,14 +157,14 @@ describe Banzai::Pipeline::WikiPipeline do
               markdown = "[Link to Page](/page)"
               output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
 
-              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/wikis/page\"")
+              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/-/wikis/page\"")
             end
 
             it 'rewrites file links to be at the scope of the wiki root' do
               markdown = "[Link to Page](/page.md)"
               output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
 
-              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/wikis/page.md\"")
+              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/-/wikis/page.md\"")
             end
           end
         end
@@ -270,28 +270,28 @@ describe Banzai::Pipeline::WikiPipeline do
       markdown = "![video_file](video_file_name.mp4)"
       output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
 
-      expect(output).to include('<video src="/wiki_link_ns/wiki_link_project/wikis/nested/twice/video_file_name.mp4"')
+      expect(output).to include('<video src="/wiki_link_ns/wiki_link_project/-/wikis/nested/twice/video_file_name.mp4"')
     end
 
     it 'rewrites and replaces video links names with white spaces to %20' do
       markdown = "![video file](video file name.mp4)"
       output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
 
-      expect(output).to include('<video src="/wiki_link_ns/wiki_link_project/wikis/nested/twice/video%20file%20name.mp4"')
+      expect(output).to include('<video src="/wiki_link_ns/wiki_link_project/-/wikis/nested/twice/video%20file%20name.mp4"')
     end
 
     it 'generates audio html structure' do
       markdown = "![audio_file](audio_file_name.wav)"
       output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
 
-      expect(output).to include('<audio src="/wiki_link_ns/wiki_link_project/wikis/nested/twice/audio_file_name.wav"')
+      expect(output).to include('<audio src="/wiki_link_ns/wiki_link_project/-/wikis/nested/twice/audio_file_name.wav"')
     end
 
     it 'rewrites and replaces audio links names with white spaces to %20' do
       markdown = "![audio file](audio file name.wav)"
       output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
 
-      expect(output).to include('<audio src="/wiki_link_ns/wiki_link_project/wikis/nested/twice/audio%20file%20name.wav"')
+      expect(output).to include('<audio src="/wiki_link_ns/wiki_link_project/-/wikis/nested/twice/audio%20file%20name.wav"')
     end
   end
 end

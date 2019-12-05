@@ -27,7 +27,7 @@ describe WikiHelper do
     let(:classes) { "btn btn-default has-tooltip reverse-sort-btn qa-reverse-sort rspec-reverse-sort" }
 
     def expected_link(sort, direction, icon_class)
-      path = "/#{project.full_path}/wikis/pages?direction=#{direction}&sort=#{sort}"
+      path = "/#{project.full_path}/-/wikis/pages?direction=#{direction}&sort=#{sort}"
 
       helper.link_to(path, type: 'button', class: classes, title: 'Sort direction') do
         helper.sprite_icon("sort-#{icon_class}", size: 16)

@@ -31,13 +31,14 @@ module SearchHelper
     from = collection.offset_value + 1
     to = collection.offset_value + collection.to_a.size
     count = collection.total_count
+    term_element = "<span>&nbsp;<code>#{h(term)}</code>&nbsp;</span>".html_safe
 
     search_entries_info_template(collection) % {
       from: from,
       to: to,
       count: count,
       scope: search_entries_scope_label(scope, count),
-      term: term
+      term_element: term_element
     }
   end
 
@@ -72,9 +73,9 @@ module SearchHelper
 
   def search_entries_info_template(collection)
     if collection.total_pages > 1
-      s_("SearchResults|Showing %{from} - %{to} of %{count} %{scope} for \"%{term}\"")
+      s_("SearchResults|Showing %{from} - %{to} of %{count} %{scope} for%{term_element}").html_safe
     else
-      s_("SearchResults|Showing %{count} %{scope} for \"%{term}\"")
+      s_("SearchResults|Showing %{count} %{scope} for%{term_element}").html_safe
     end
   end
 

@@ -122,13 +122,13 @@ describe SearchHelper do
       it 'uses the correct singular label' do
         collection = Kaminari.paginate_array([:foo]).page(1).per(10)
 
-        expect(search_entries_info(collection, scope, 'foo')).to eq("Showing 1 #{label} for \"foo\"")
+        expect(search_entries_info(collection, scope, 'foo')).to eq("Showing 1 #{label} for<span>&nbsp;<code>foo</code>&nbsp;</span>")
       end
 
       it 'uses the correct plural label' do
         collection = Kaminari.paginate_array([:foo] * 23).page(1).per(10)
 
-        expect(search_entries_info(collection, scope, 'foo')).to eq("Showing 1 - 10 of 23 #{label.pluralize} for \"foo\"")
+        expect(search_entries_info(collection, scope, 'foo')).to eq("Showing 1 - 10 of 23 #{label.pluralize} for<span>&nbsp;<code>foo</code>&nbsp;</span>")
       end
     end
 

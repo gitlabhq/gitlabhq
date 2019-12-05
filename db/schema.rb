@@ -3698,7 +3698,7 @@ ActiveRecord::Schema.define(version: 2019_12_02_031812) do
   create_table "software_licenses", id: :serial, force: :cascade do |t|
     t.string "name", null: false
     t.string "spdx_identifier", limit: 255
-    t.index ["name"], name: "index_software_licenses_on_name"
+    t.index ["name"], name: "index_software_licenses_on_unique_name", unique: true
     t.index ["spdx_identifier"], name: "index_software_licenses_on_spdx_identifier"
   end
 

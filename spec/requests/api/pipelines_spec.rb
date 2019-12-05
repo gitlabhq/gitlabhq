@@ -384,7 +384,7 @@ describe API::Pipelines do
             post api("/projects/#{project.id}/pipeline", user), params: { ref: project.default_branch }
 
             expect(response).to have_gitlab_http_status(400)
-            expect(json_response['message']['base'].first).to eq 'Missing .gitlab-ci.yml file'
+            expect(json_response['message']['base'].first).to eq 'Missing CI config file'
             expect(json_response).not_to be_an Array
           end
         end

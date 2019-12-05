@@ -155,17 +155,21 @@ describe 'project routing' do
   #                      DELETE /:project_id/wikis/:id(.:format)         projects/wikis#destroy
   describe Projects::WikisController, 'routing' do
     it 'to #pages' do
-      expect(get('/gitlab/gitlabhq/wikis/pages')).to route_to('projects/wikis#pages', namespace_id: 'gitlab', project_id: 'gitlabhq')
+      expect(get('/gitlab/gitlabhq/-/wikis/pages')).to route_to('projects/wikis#pages', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
 
     it 'to #history' do
-      expect(get('/gitlab/gitlabhq/wikis/1/history')).to route_to('projects/wikis#history', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1')
+      expect(get('/gitlab/gitlabhq/-/wikis/1/history')).to route_to('projects/wikis#history', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1')
     end
 
     it_behaves_like 'RESTful project resources' do
       let(:actions)    { [:create, :edit, :show, :destroy] }
       let(:controller) { 'wikis' }
+      let(:controller_path) { '/-/wikis' }
     end
+
+    it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/wikis", "/gitlab/gitlabhq/-/wikis"
+    it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/wikis/home/edit", "/gitlab/gitlabhq/-/wikis/home/edit"
   end
 
   # branches_project_repository GET    /:project_id/repository/branches(.:format) projects/repositories#branches

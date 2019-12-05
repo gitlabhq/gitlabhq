@@ -28,7 +28,7 @@ describe ProjectWiki do
 
   describe '#web_url' do
     it 'returns the full web URL to the wiki' do
-      expect(subject.web_url).to eq("#{Gitlab.config.gitlab.url}/#{project.full_path}/wikis/home")
+      expect(subject.web_url).to eq("#{Gitlab.config.gitlab.url}/#{project.full_path}/-/wikis/home")
     end
   end
 
@@ -71,7 +71,7 @@ describe ProjectWiki do
 
   describe "#wiki_base_path" do
     it "returns the wiki base path" do
-      wiki_base_path = "#{Gitlab.config.gitlab.relative_url_root}/#{project.full_path}/wikis"
+      wiki_base_path = "#{Gitlab.config.gitlab.relative_url_root}/#{project.full_path}/-/wikis"
 
       expect(subject.wiki_base_path).to eq(wiki_base_path)
     end

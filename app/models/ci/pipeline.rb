@@ -204,7 +204,7 @@ module Ci
     end
 
     scope :internal, -> { where(source: internal_sources) }
-    scope :ci_sources, -> { where(config_source: ci_sources_values) }
+    scope :ci_sources, -> { where(config_source: ::Ci::PipelineEnums.ci_config_sources_values) }
     scope :for_user, -> (user) { where(user: user) }
     scope :for_sha, -> (sha) { where(sha: sha) }
     scope :for_source_sha, -> (source_sha) { where(source_sha: source_sha) }
@@ -313,10 +313,6 @@ module Ci
 
     def self.internal_sources
       sources.reject { |source| source == "external" }.values
-    end
-
-    def self.ci_sources_values
-      config_sources.values_at(:repository_source, :auto_devops_source, :unknown_source)
     end
 
     def self.bridgeable_statuses

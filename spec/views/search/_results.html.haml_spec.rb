@@ -16,7 +16,7 @@ describe 'search/_results' do
   it 'displays the page size' do
     render
 
-    expect(rendered).to have_content('Showing 1 - 2 of 3 issues for "foo"')
+    expect(rendered).to have_content('Showing 1 - 2 of 3 issues for foo')
   end
 
   context 'when search results do not have a count' do

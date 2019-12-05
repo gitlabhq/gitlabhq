@@ -195,7 +195,7 @@ module GitlabRoutingHelper
   end
 
   def snippet_path(snippet, *args)
-    if snippet.is_a?(ProjectSnippet)
+    if snippet.type == "ProjectSnippet"
       application_url_helpers.project_snippet_path(snippet.project, snippet, *args)
     else
       new_args = snippet_query_params(snippet, *args)
@@ -204,7 +204,7 @@ module GitlabRoutingHelper
   end
 
   def snippet_url(snippet, *args)
-    if snippet.is_a?(ProjectSnippet)
+    if snippet.type == "ProjectSnippet"
       application_url_helpers.project_snippet_url(snippet.project, snippet, *args)
     else
       new_args = snippet_query_params(snippet, *args)
@@ -213,7 +213,7 @@ module GitlabRoutingHelper
   end
 
   def raw_snippet_path(snippet, *args)
-    if snippet.is_a?(ProjectSnippet)
+    if snippet.type == "ProjectSnippet"
       application_url_helpers.raw_project_snippet_path(snippet.project, snippet, *args)
     else
       new_args = snippet_query_params(snippet, *args)
@@ -222,7 +222,7 @@ module GitlabRoutingHelper
   end
 
   def raw_snippet_url(snippet, *args)
-    if snippet.is_a?(ProjectSnippet)
+    if snippet.type == "ProjectSnippet"
       application_url_helpers.raw_project_snippet_url(snippet.project, snippet, *args)
     else
       new_args = snippet_query_params(snippet, *args)

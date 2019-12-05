@@ -969,7 +969,7 @@ X-Gitlab-Event: Wiki Page Hook
     "http_url": "http://example.com/root/awesome-project.git"
   },
   "wiki": {
-    "web_url": "http://example.com/root/awesome-project/wikis/home",
+    "web_url": "http://example.com/root/awesome-project/-/wikis/home",
     "git_ssh_url": "git@example.com:root/awesome-project.wiki.git",
     "git_http_url": "http://example.com/root/awesome-project.wiki.git",
     "path_with_namespace": "root/awesome-project.wiki",
@@ -981,7 +981,7 @@ X-Gitlab-Event: Wiki Page Hook
     "format": "markdown",
     "message": "adding an awesome page to the wiki",
     "slug": "awesome",
-    "url": "http://example.com/root/awesome-project/wikis/awesome",
+    "url": "http://example.com/root/awesome-project/-/wikis/awesome",
     "action": "create"
   }
 }

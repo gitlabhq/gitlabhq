@@ -35,8 +35,19 @@ module Ci
       {
         unknown_source: nil,
         repository_source: 1,
-        auto_devops_source: 2
+        auto_devops_source: 2,
+        remote_source: 4,
+        external_project_source: 5
       }
+    end
+
+    def self.ci_config_sources_values
+      config_sources.values_at(
+        :unknown_source,
+        :repository_source,
+        :auto_devops_source,
+        :remote_source,
+        :external_project_source)
     end
   end
 end

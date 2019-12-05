@@ -2960,6 +2960,9 @@ msgstr ""
 msgid "Can't scan the code?"
 msgstr ""
 
+msgid "Canary"
+msgstr ""
+
 msgid "Canary Deployments is a popular CI strategy, where a small portion of the fleet is updated to the new version of your application."
 msgstr ""
 
@@ -15325,16 +15328,16 @@ msgstr ""
 msgid "SearchCodeResults|of %{link_to_project}"
 msgstr ""
 
-msgid "SearchResults|Showing %{count} %{scope} for \"%{term}\""
+msgid "SearchResults|Showing %{count} %{scope} for%{term_element}"
 msgstr ""
 
-msgid "SearchResults|Showing %{count} %{scope} for \"%{term}\" in your personal and project snippets"
+msgid "SearchResults|Showing %{count} %{scope} for%{term_element} in your personal and project snippets"
 msgstr ""
 
-msgid "SearchResults|Showing %{from} - %{to} of %{count} %{scope} for \"%{term}\""
+msgid "SearchResults|Showing %{from} - %{to} of %{count} %{scope} for%{term_element}"
 msgstr ""
 
-msgid "SearchResults|Showing %{from} - %{to} of %{count} %{scope} for \"%{term}\" in your personal and project snippets"
+msgid "SearchResults|Showing %{from} - %{to} of %{count} %{scope} for%{term_element} in your personal and project snippets"
 msgstr ""
 
 msgid "SearchResults|We couldn't find any %{scope} matching %{term}"
@@ -16961,6 +16964,9 @@ msgid "Subtracted"
 msgstr ""
 
 msgid "Subtracts"
+msgstr ""
+
+msgid "Succeeded"
 msgstr ""
 
 msgid "Successfully activated"
@@ -18758,6 +18764,9 @@ msgid "Unable to generate new instance ID"
 msgstr ""
 
 msgid "Unable to load the diff. %{button_try_again}"
+msgstr ""
+
+msgid "Unable to load the merge request widget. Try reloading the page."
 msgstr ""
 
 msgid "Unable to resolve"

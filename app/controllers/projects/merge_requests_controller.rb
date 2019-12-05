@@ -25,6 +25,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action do
     push_frontend_feature_flag(:vue_issuable_sidebar, @project.group)
     push_frontend_feature_flag(:release_search_filter, @project, default_enabled: true)
+    push_frontend_feature_flag(:async_mr_widget, @project)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :discussions]

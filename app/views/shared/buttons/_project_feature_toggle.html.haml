@@ -1,0 +1,16 @@
+- class_list ||= "js-project-feature-toggle project-feature-toggle"
+- data ||= nil
+- disabled ||= false
+- is_checked ||= false
+- label ||= nil
+
+%button{ type: 'button',
+         class: "#{class_list} #{'is-disabled' if disabled} #{'is-checked' if is_checked}",
+         "aria-label": label,
+         disabled: disabled,
+         data: data }
+  - if yield.present?
+    = yield
+  %span.toggle-icon
+    = sprite_icon('status_success_borderless', size: 16, css_class: 'toggle-icon-svg toggle-status-checked')
+    = sprite_icon('status_failed_borderless', size: 16, css_class: 'toggle-icon-svg toggle-status-unchecked')

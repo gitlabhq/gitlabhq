@@ -10,7 +10,7 @@ describe Ci::CreatePipelineService do
   let(:ref_name) { 'refs/heads/master' }
 
   before do
-    stub_repository_ci_yaml_file(sha: anything)
+    stub_ci_pipeline_yaml_file(gitlab_ci_yaml)
   end
 
   describe '#execute' do
@@ -510,7 +510,7 @@ describe Ci::CreatePipelineService do
         it 'attaches errors to the pipeline' do
           pipeline = execute_service
 
-          expect(pipeline.errors.full_messages).to eq ['Missing .gitlab-ci.yml file']
+          expect(pipeline.errors.full_messages).to eq ['Missing CI config file']
           expect(pipeline).not_to be_persisted
         end
       end

@@ -706,7 +706,7 @@ describe 'Pipelines', :js do
             click_on 'Run Pipeline'
           end
 
-          it { expect(page).to have_content('Missing .gitlab-ci.yml file') }
+          it { expect(page).to have_content('Missing CI config file') }
           it 'creates a pipeline after first request failed and a valid gitlab-ci.yml file is available when trying again' do
             click_button project.default_branch
 

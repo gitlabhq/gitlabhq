@@ -1,6 +1,6 @@
 <script>
-import { __ } from '~/locale';
 import { mapGetters, mapActions } from 'vuex';
+import { __ } from '~/locale';
 import { getLocationHash, doesHashExistInUrl } from '../../lib/utils/url_utility';
 import Flash from '../../flash';
 import * as constants from '../constants';
@@ -71,6 +71,9 @@ export default {
       'userCanReply',
       'discussionTabCounter',
     ]),
+    discussionTabCounterText() {
+      return this.isLoading ? '' : this.discussionTabCounter;
+    },
     noteableType() {
       return this.noteableData.noteableType;
     },
@@ -95,9 +98,9 @@ export default {
         this.fetchNotes();
       }
     },
-    allDiscussions() {
-      if (this.discussionsCount && !this.isLoading) {
-        this.discussionsCount.textContent = this.discussionTabCounter;
+    discussionTabCounterText(val) {
+      if (this.discussionsCount) {
+        this.discussionsCount.textContent = val;
       }
     },
   },

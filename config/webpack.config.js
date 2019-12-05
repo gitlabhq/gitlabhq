@@ -185,7 +185,7 @@ module.exports = {
         options: { limit: 2048 },
       },
       {
-        test: /\_worker\.js$/,
+        test: /_worker\.js$/,
         use: [
           {
             loader: 'worker-loader',

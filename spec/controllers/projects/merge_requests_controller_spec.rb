@@ -1073,7 +1073,7 @@ describe Projects::MergeRequestsController do
     end
 
     it 'renders MergeRequest as JSON' do
-      expect(json_response.keys).to include('id', 'iid', 'description')
+      expect(json_response.keys).to include('id', 'iid')
     end
   end
 
@@ -1107,7 +1107,7 @@ describe Projects::MergeRequestsController do
     it 'renders MergeRequest as JSON' do
       subject
 
-      expect(json_response.keys).to include('id', 'iid', 'description')
+      expect(json_response.keys).to include('id', 'iid')
     end
   end
 
