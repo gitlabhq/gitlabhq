@@ -341,8 +341,10 @@ project):
 
    provider:
      name: triggermesh
-     environment:
+     envs:
        FOO: value
+     secrets:
+       - my-secrets
 
    functions:
      echo-js:
@@ -350,8 +352,10 @@ project):
        source: ./echo-js
        runtime: gitlab/runtimes/nodejs
        description: "node.js runtime function"
-       environment:
+       envs:
          MY_FUNCTION: echo-js
+       secrets:
+         - my-secrets
    ```
 
 Explanation of the fields used above:
@@ -368,7 +372,8 @@ Explanation of the fields used above:
 | Parameter | Description |
 |-----------|-------------|
 | `name` | Indicates which provider is used to execute the `serverless.yml` file. In this case, the TriggerMesh middleware. |
-| `environment` | Includes the environment variables to be passed as part of function execution for **all** functions in the file, where `FOO` is the variable name and `BAR` are he variable contents. You may replace this with you own variables. |
+| `envs` | Includes the environment variables to be passed as part of function execution for **all** functions in the file, where `FOO` is the variable name and `BAR` are he variable contents. You may replace this with you own variables. |
+| `secrets` | Includes the contents of the Kubernetes secret as environment variables accessible to be passed as part of function execution for **all** functions in the file. The secrets are expected in ini format. |
 
 ### `functions`
 
@@ -381,7 +386,10 @@ subsequent lines contain the function attributes.
 | `source` | Directory with sources of a functions. |
 | `runtime` (optional)| The runtime to be used to execute the function. This can be a runtime alias (see [Runtime aliases](#runtime-aliases)), or it can be a full URL to a custom runtime repository. When the runtime is not specified, we assume that `Dockerfile` is present in the function directory specified by `source`. |
 | `description` | A short description of the function. |
-| `environment` | Sets an environment variable for the specific function only. |
+| `envs` | Sets an environment variable for the specific function only. |
+| `secrets` | Includes the contents of the Kubernetes secret as environment variables accessible to be passed as part of function execution for the specific function only. The secrets are expected in ini format. |
+
+### Deployment
 
 #### Runtime aliases
 
@@ -434,6 +442,33 @@ The sample function can now be triggered from any HTTP client using a simple `PO
   1. Using a web-based tool (ie. postman, restlet, etc)
 
      ![function execution](img/function-execution.png)
+
+### Secrets
+
+To access your Kubernetes secrets from within your function, the secrets should be created under the namespace of your serverless deployment.
+
+#### CLI example
+
+```bash
+kubectl create secret generic my-secrets -n "$KUBE_NAMESPACE" --from-literal MY_SECRET=imverysecure
+```
+
+#### Part of deployment job
+
+You can extend your `.gitlab-ci.yml` to create the secrets during deployment using the [environment variables](../../../../ci/variables/README.md)
+stored securely under your GitLab project.
+
+```yaml
+deploy:function:
+  stage: deploy
+  environment: production
+  extends: .serverless:deploy:functions
+  before_script:
+    - kubectl create secret generic my-secret
+        --from-literal MY_SECRET="$GITLAB_SECRET_VARIABLE"
+        --namespace "$KUBE_NAMESPACE"
+        --dry-run -o yaml | kubectl apply -f -
+```
 
 ### Running functions locally
 

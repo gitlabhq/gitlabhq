@@ -403,6 +403,8 @@ to start again from scratch, there are a few steps that can help you:
 
    mv /var/opt/gitlab/gitlab-rails/uploads /var/opt/gitlab/gitlab-rails/uploads.old
    mkdir -p /var/opt/gitlab/gitlab-rails/uploads
+
+   gitlab-ctl start geo-postgresql
    ```
 
    Reconfigure in order to recreate the folders and make sure permissions and ownership
