@@ -6,7 +6,6 @@ describe 'Private Snippets', :js do
   let(:user) { create(:user) }
 
   before do
-    stub_feature_flags(snippets_vue: false)
     sign_in(user)
   end
 

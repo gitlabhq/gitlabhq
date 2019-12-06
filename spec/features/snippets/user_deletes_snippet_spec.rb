@@ -10,8 +10,6 @@ describe 'User deletes snippet' do
   before do
     sign_in(user)
 
-    stub_feature_flags(snippets_vue: false)
-
     visit snippet_path(snippet)
   end
 

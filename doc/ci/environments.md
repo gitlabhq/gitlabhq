@@ -303,6 +303,41 @@ You are not required to use the same prefix or only slashes (`/`) in the dynamic
 names. However, using this format will enable the [grouping similar environments](#grouping-similar-environments)
 feature.
 
+### Configuring Kubernetes deployments
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/27630) in GitLab 12.6.
+
+If you are deploying to a [Kubernetes cluster](../user/project/clusters/index.md)
+associated with your project, you can configure these deployments from your
+`gitlab-ci.yml` file.
+
+The following configuration options are supported:
+
+- [`namespace`](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/)
+
+In the following example, the job will deploy your application to the
+`production` Kubernetes namespace.
+
+```yaml
+deploy:
+  stage: deploy
+  script:
+    - echo "Deploy to production server"
+  environment:
+    name: production
+    url: https://example.com
+    kubernetes:
+      namespace: production
+  only:
+  - master
+```
+
+NOTE: **Note:**
+Kubernetes configuration is not supported for Kubernetes clusters
+that are [managed by GitLab](../user/project/clusters/index.md#gitlab-managed-clusters).
+To follow progress on support for Gitlab-managed clusters, see the
+[relevant issue](https://gitlab.com/gitlab-org/gitlab/issues/38054).
+
 ### Complete example
 
 The configuration in this section provides a full development workflow where your app is:

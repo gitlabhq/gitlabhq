@@ -5,6 +5,7 @@ module Ci
   # We should migrate this object to actual database record in the future
   class LegacyStage
     include StaticModel
+    include Presentable
 
     attr_reader :pipeline, :name
 

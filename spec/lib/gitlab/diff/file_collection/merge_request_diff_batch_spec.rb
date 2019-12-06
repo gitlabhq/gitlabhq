@@ -123,4 +123,8 @@ describe Gitlab::Diff::FileCollection::MergeRequestDiffBatch do
                           collection_default_args)
     end
   end
+
+  it_behaves_like 'cacheable diff collection' do
+    let(:cacheable_files_count) { batch_size }
+  end
 end

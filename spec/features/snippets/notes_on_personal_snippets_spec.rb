@@ -16,7 +16,6 @@ describe 'Comments on personal snippets', :js do
   let!(:other_note) { create(:note_on_personal_snippet) }
 
   before do
-    stub_feature_flags(snippets_vue: false)
     sign_in user
     visit snippet_path(snippet)
 

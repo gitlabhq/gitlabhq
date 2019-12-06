@@ -4,7 +4,8 @@ require 'spec_helper'
 
 describe Gitlab::Diff::FileCollection::MergeRequestDiff do
   let(:merge_request) { create(:merge_request) }
-  let(:subject) { described_class.new(merge_request.merge_request_diff, diff_options: nil) }
+  let(:diffable) { merge_request.merge_request_diff }
+  let(:subject) { described_class.new(diffable, diff_options: nil) }
   let(:diff_files) { subject.diff_files }
 
   describe '#diff_files' do
@@ -50,6 +51,10 @@ describe Gitlab::Diff::FileCollection::MergeRequestDiff do
     end
     let(:diffable) { merge_request.merge_request_diff }
     let(:stub_path) { '.gitignore' }
+  end
+
+  it_behaves_like 'cacheable diff collection' do
+    let(:cacheable_files_count) { diffable.size.to_i }
   end
 
   it 'returns a valid instance of a DiffCollection' do

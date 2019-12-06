@@ -102,6 +102,10 @@ describe('Panel Type component', () => {
 
         expect(clipboardText()).toBe(exampleText);
       });
+
+      it('includes a default group id', () => {
+        expect(panelType.vm.groupId).toBe('panel-type-chart');
+      });
     });
 
     describe('Anomaly Chart panel type', () => {

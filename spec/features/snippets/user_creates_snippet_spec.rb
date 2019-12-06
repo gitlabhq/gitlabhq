@@ -8,7 +8,6 @@ describe 'User creates snippet', :js do
   let(:user) { create(:user) }
 
   before do
-    stub_feature_flags(snippets_vue: false)
     sign_in(user)
     visit new_snippet_path
   end

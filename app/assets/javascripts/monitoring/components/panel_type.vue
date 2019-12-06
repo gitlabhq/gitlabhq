@@ -47,6 +47,11 @@ export default {
       required: false,
       default: '',
     },
+    groupId: {
+      type: String,
+      required: false,
+      default: 'panel-type-chart',
+    },
   },
   computed: {
     ...mapState('monitoringDashboard', ['deploymentData', 'projectPath']),
@@ -117,7 +122,7 @@ export default {
     :deployment-data="deploymentData"
     :project-path="projectPath"
     :thresholds="getGraphAlertValues(graphData.metrics)"
-    group-id="panel-type-chart"
+    :group-id="groupId"
   >
     <div class="d-flex align-items-center">
       <alert-widget

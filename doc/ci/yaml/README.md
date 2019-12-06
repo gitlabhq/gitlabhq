@@ -1421,6 +1421,38 @@ The `stop_review_app` job is **required** to have the following keywords defined
 - `stage` should be the same as the `review_app` in order for the environment
   to stop automatically when the branch is deleted
 
+#### `environment:kubernetes`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/27630) in GitLab 12.6.
+
+The `kubernetes` block is used to configure deployments to a
+[Kubernetes cluster](../../user/project/clusters/index.md) that is associated with your project.
+
+For example:
+
+```yaml
+deploy:
+  stage: deploy
+  script: make deploy-app
+  environment:
+    name: production
+    kubernetes:
+      namespace: production
+```
+
+This will set up the `deploy` job to deploy to the `production`
+environment, using the `production`
+[Kubernetes namespace](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/).
+
+For more information, see
+[Available settings for `kubernetes`](../environments.md#configuring-kubernetes-deployments).
+
+NOTE: **Note:**
+Kubernetes configuration is not supported for Kubernetes clusters
+that are [managed by GitLab](../../user/project/clusters/index.md#gitlab-managed-clusters).
+To follow progress on support for Gitlab-managed clusters, see the
+[relevant issue](https://gitlab.com/gitlab-org/gitlab/issues/38054).
+
 #### Dynamic environments
 
 > - [Introduced][ce-6323] in GitLab 8.12 and GitLab Runner 1.6.

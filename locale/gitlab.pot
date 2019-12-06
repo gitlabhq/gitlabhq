@@ -9128,6 +9128,9 @@ msgstr ""
 msgid "Helps reduce request volume for protected paths"
 msgstr ""
 
+msgid "Hi %{username}!"
+msgstr ""
+
 msgid "Hide archived projects"
 msgstr ""
 
@@ -10274,6 +10277,9 @@ msgstr ""
 msgid "Leave Admin Mode"
 msgstr ""
 
+msgid "Leave blank for no limit. Once set, existing personal access tokens may be revoked"
+msgstr ""
+
 msgid "Leave edit mode? All unsaved changes will be lost."
 msgstr ""
 
@@ -10764,6 +10770,9 @@ msgstr ""
 msgid "Max seats used"
 msgstr ""
 
+msgid "Maximum allowable lifetime for personal access token (days)"
+msgstr ""
+
 msgid "Maximum artifacts size (MB)"
 msgstr ""
 
@@ -10780,6 +10789,9 @@ msgid "Maximum job timeout"
 msgstr ""
 
 msgid "Maximum job timeout has a value which could not be accepted"
+msgstr ""
+
+msgid "Maximum lifetime allowable for Personal Access Tokens is active, your expire date must be set before %{maximum_allowable_date}."
 msgstr ""
 
 msgid "Maximum number of comments exceeded"
@@ -11983,6 +11995,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "One or more groups that you don't have access to."
+msgstr ""
+
+msgid "One or more of you personal access tokens were revoked"
 msgstr ""
 
 msgid "One or more of your Bitbucket projects cannot be imported into GitLab directly because they use Subversion or Mercurial for version control, rather than Git."
@@ -17439,6 +17454,11 @@ msgstr ""
 msgid "The following items will be exported:"
 msgstr ""
 
+msgid "The following personal access token: %{token_names} was revoked, because a new policy to expire personal access tokens were set."
+msgid_plural "The following personal access tokens: %{token_names} were revoked, because a new policy to expire personal access tokens were set."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "The fork relationship has been removed."
 msgstr ""
 
@@ -20112,6 +20132,12 @@ msgid "You can apply your Trial to your Personal account or create a New Group."
 msgstr ""
 
 msgid "You can create files directly in GitLab using one of the following options."
+msgstr ""
+
+msgid "You can create new ones at your %{pat_link_start}Personal Access Tokens%{pat_link_end} settings"
+msgstr ""
+
+msgid "You can create new ones at your Personal Access Tokens settings %{pat_link}"
 msgstr ""
 
 msgid "You can easily contribute to them by requesting to join these groups."

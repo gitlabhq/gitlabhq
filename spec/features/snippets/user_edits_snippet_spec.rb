@@ -12,7 +12,6 @@ describe 'User edits snippet', :js do
   let(:snippet) { create(:personal_snippet, :public, file_name: file_name, content: content, author: user) }
 
   before do
-    stub_feature_flags(snippets_vue: false)
     sign_in(user)
 
     visit edit_snippet_path(snippet)

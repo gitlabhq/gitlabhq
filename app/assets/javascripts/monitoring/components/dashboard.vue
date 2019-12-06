@@ -18,8 +18,6 @@ import Icon from '~/vue_shared/components/icon.vue';
 import { getParameterValues, mergeUrlParams, redirectTo } from '~/lib/utils/url_utility';
 import invalidUrl from '~/lib/utils/invalid_url';
 import DateTimePicker from './date_time_picker/date_time_picker.vue';
-import MonitorTimeSeriesChart from './charts/time_series.vue';
-import MonitorSingleStatChart from './charts/single_stat.vue';
 import GraphGroup from './graph_group.vue';
 import EmptyState from './empty_state.vue';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
@@ -28,8 +26,6 @@ import { getTimeDiff, isValidDate, getAddMetricTrackingOptions } from '../utils'
 export default {
   components: {
     VueDraggable,
-    MonitorTimeSeriesChart,
-    MonitorSingleStatChart,
     PanelType,
     GraphGroup,
     EmptyState,

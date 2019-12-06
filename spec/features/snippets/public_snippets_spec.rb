@@ -3,10 +3,6 @@
 require 'spec_helper'
 
 describe 'Public Snippets', :js do
-  before do
-    stub_feature_flags(snippets_vue: false)
-  end
-
   it 'Unauthenticated user should see public snippets' do
     public_snippet = create(:personal_snippet, :public)
 

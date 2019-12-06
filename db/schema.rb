@@ -325,6 +325,7 @@ ActiveRecord::Schema.define(version: 2019_12_02_031812) do
     t.string "encrypted_asset_proxy_secret_key_iv"
     t.string "static_objects_external_storage_url", limit: 255
     t.string "static_objects_external_storage_auth_token", limit: 255
+    t.integer "max_personal_access_token_lifetime"
     t.boolean "throttle_protected_paths_enabled", default: false, null: false
     t.integer "throttle_protected_paths_requests_per_period", default: 10, null: false
     t.integer "throttle_protected_paths_period_in_seconds", default: 60, null: false
@@ -2524,9 +2525,10 @@ ActiveRecord::Schema.define(version: 2019_12_02_031812) do
     t.datetime_with_timezone "updated_at", null: false
     t.integer "target_project_id", null: false
     t.text "target_branch", null: false
+    t.integer "status", limit: 2, default: 0, null: false
     t.index ["merge_request_id"], name: "index_merge_trains_on_merge_request_id", unique: true
     t.index ["pipeline_id"], name: "index_merge_trains_on_pipeline_id"
-    t.index ["target_project_id"], name: "index_merge_trains_on_target_project_id"
+    t.index ["target_project_id", "target_branch", "status"], name: "index_for_status_per_branch_per_project"
     t.index ["user_id"], name: "index_merge_trains_on_user_id"
   end
 
@@ -2925,6 +2927,7 @@ ActiveRecord::Schema.define(version: 2019_12_02_031812) do
     t.boolean "impersonation", default: false, null: false
     t.string "token_digest"
     t.index ["token_digest"], name: "index_personal_access_tokens_on_token_digest", unique: true
+    t.index ["user_id", "expires_at"], name: "index_pat_on_user_id_and_expires_at"
     t.index ["user_id"], name: "index_personal_access_tokens_on_user_id"
   end
 

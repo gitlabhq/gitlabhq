@@ -23,6 +23,9 @@
       = f.label :session_expire_delay, _('Session duration (minutes)'), class: 'label-light'
       = f.number_field :session_expire_delay, class: 'form-control'
       %span.form-text.text-muted#session_expire_delay_help_block= _('GitLab restart is required to apply changes')
+
+    = render_if_exists 'admin/application_settings/personal_access_token_expiration_policy', form: f
+
     .form-group
       = f.label :user_oauth_applications, _('User OAuth applications'), class: 'label-bold'
       .form-check

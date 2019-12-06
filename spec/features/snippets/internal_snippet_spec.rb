@@ -5,10 +5,6 @@ require 'spec_helper'
 describe 'Internal Snippets', :js do
   let(:internal_snippet) { create(:personal_snippet, :internal) }
 
-  before do
-    stub_feature_flags(snippets_vue: false)
-  end
-
   describe 'normal user' do
     before do
       sign_in(create(:user))

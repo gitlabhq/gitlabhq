@@ -7,7 +7,6 @@ describe 'User creates snippet', :js do
 
   before do
     stub_feature_flags(allow_possible_spam: false)
-    stub_feature_flags(snippets_vue: false)
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
 
     Gitlab::CurrentSettings.update!(

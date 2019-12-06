@@ -1,8 +1,8 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import { getParameterValues, removeParams } from '~/lib/utils/url_utility';
+import PanelType from 'ee_else_ce/monitoring/components/panel_type.vue';
 import GraphGroup from './graph_group.vue';
-import MonitorTimeSeriesChart from './charts/time_series.vue';
 import { sidebarAnimationDuration } from '../constants';
 import { getTimeDiff } from '../utils';
 
@@ -11,7 +11,7 @@ let sidebarMutationObserver;
 export default {
   components: {
     GraphGroup,
-    MonitorTimeSeriesChart,
+    PanelType,
   },
   props: {
     dashboardUrl: {
@@ -92,16 +92,13 @@ export default {
 <template>
   <div class="metrics-embed" :class="{ 'd-inline-flex col-lg-6 p-0': isSingleChart }">
     <div v-if="charts.length" class="row w-100 m-n2 pb-4">
-      <monitor-time-series-chart
-        v-for="graphData in charts"
-        :key="graphData.title"
+      <panel-type
+        v-for="(graphData, graphIndex) in charts"
+        :key="`panel-type-${graphIndex}`"
         class="w-100"
+        clipboard-text=""
         :graph-data="graphData"
-        :container-width="elWidth"
         :group-id="dashboardUrl"
-        :project-path="null"
-        :show-border="true"
-        :single-embed="isSingleChart"
       />
     </div>
   </div>

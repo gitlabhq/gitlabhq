@@ -34,3 +34,5 @@ module Emails
     # rubocop: enable CodeReuse/ActiveRecord
   end
 end
+
+Emails::Profile.prepend_if_ee('EE::Emails::Profile')

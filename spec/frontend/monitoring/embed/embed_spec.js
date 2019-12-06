@@ -1,7 +1,7 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 import Embed from '~/monitoring/components/embed.vue';
-import MonitorTimeSeriesChart from '~/monitoring/components/charts/time_series.vue';
+import PanelType from 'ee_else_ce/monitoring/components/panel_type.vue';
 import { TEST_HOST } from 'helpers/test_constants';
 import { groups, initialState, metricsData, metricsWithData } from './mock_data';
 
@@ -55,7 +55,7 @@ describe('Embed', () => {
 
     it('shows an empty state when no metrics are present', () => {
       expect(wrapper.find('.metrics-embed').exists()).toBe(true);
-      expect(wrapper.find(MonitorTimeSeriesChart).exists()).toBe(false);
+      expect(wrapper.find(PanelType).exists()).toBe(false);
     });
   });
 
@@ -71,12 +71,12 @@ describe('Embed', () => {
     it('shows a chart when metrics are present', () => {
       wrapper.setProps({});
       expect(wrapper.find('.metrics-embed').exists()).toBe(true);
-      expect(wrapper.find(MonitorTimeSeriesChart).exists()).toBe(true);
-      expect(wrapper.findAll(MonitorTimeSeriesChart).length).toBe(2);
+      expect(wrapper.find(PanelType).exists()).toBe(true);
+      expect(wrapper.findAll(PanelType).length).toBe(2);
     });
 
     it('includes groupId with dashboardUrl', () => {
-      expect(wrapper.find(MonitorTimeSeriesChart).props('groupId')).toBe(TEST_HOST);
+      expect(wrapper.find(PanelType).props('groupId')).toBe(TEST_HOST);
     });
   });
 });

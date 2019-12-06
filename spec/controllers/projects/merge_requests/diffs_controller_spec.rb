@@ -25,6 +25,16 @@ describe Projects::MergeRequests::DiffsController do
     end
   end
 
+  shared_examples 'cached diff collection' do
+    it 'ensures diff highlighting cache writing' do
+      expect_next_instance_of(Gitlab::Diff::HighlightCache) do |cache|
+        expect(cache).to receive(:write_if_empty).once
+      end
+
+      go
+    end
+  end
+
   shared_examples 'persisted preferred diff view cookie' do
     context 'with view param' do
       before do
@@ -112,6 +122,7 @@ describe Projects::MergeRequests::DiffsController do
     end
 
     it_behaves_like 'persisted preferred diff view cookie'
+    it_behaves_like 'cached diff collection'
   end
 
   describe 'GET diffs_metadata' do
@@ -404,6 +415,7 @@ describe Projects::MergeRequests::DiffsController do
 
     it_behaves_like 'forked project with submodules'
     it_behaves_like 'persisted preferred diff view cookie'
+    it_behaves_like 'cached diff collection'
 
     context 'diff unfolding' do
       let!(:unfoldable_diff_note) do

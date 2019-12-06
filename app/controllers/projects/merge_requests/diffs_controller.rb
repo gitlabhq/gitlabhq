@@ -28,6 +28,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
     positions = @merge_request.note_positions_for_paths(diffs.diff_file_paths, current_user)
 
     diffs.unfold_diff_files(positions.unfoldable)
+    diffs.write_cache
 
     options = {
       merge_request: @merge_request,

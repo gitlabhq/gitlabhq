@@ -84,3 +84,35 @@ add the line below to `/etc/gitlab/gitlab.rb` before increasing the max attachme
 ```
 nginx['client_max_body_size'] = "200m"
 ```
+
+## Limiting lifetime of personal access tokens **(ULTIMATE ONLY)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/3649) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.6.
+
+Users can optionally specify an expiration date for
+[personal access tokens](../../profile/personal_access_tokens.md).
+This expiration date is not a requirement, and can be set to any arbitrary date.
+
+Since personal access tokens are the only token needed for programmatic access to GitLab,
+organizations with security requirements may want to enforce more protection to require
+regular rotation of these tokens.
+
+### Setting a limit
+
+Only a GitLab administrator can set a limit. Leaving it empty means
+there are no restrictions.
+
+To set a limit on how long personal access tokens are valid:
+
+1. Navigate to **Admin Area > Settings > General**.
+1. Expand the **Account and limit** section.
+1. Fill in the **Maximun allowable lifetime for personal access tokens (days)** field.
+1. Click **Save changes**.
+
+Once a lifetime for personal access tokens is set, GitLab will:
+
+- Apply the lifetime for new personal access tokens, and require users to set an expiration date
+  and a date no later than the allowed lifetime.
+- After three hours, revoke old tokens with no expiration date or with a lifetime longer than the
+  allowed lifetime. Three hours is given to allow administrators to change the allowed lifetime,
+  or remove it, before revocation takes place.
