@@ -32,13 +32,13 @@ describe DeploymentsFinder do
 
       let(:params) { { order_by: order_by, sort: sort } }
 
-      let!(:deployment_1) { create(:deployment, :success, project: project, iid: 11, ref: 'master', created_at: Time.now, updated_at: Time.now) }
+      let!(:deployment_1) { create(:deployment, :success, project: project, iid: 11, ref: 'master', created_at: 2.days.ago, updated_at: Time.now) }
       let!(:deployment_2) { create(:deployment, :success, project: project, iid: 12, ref: 'feature', created_at: 1.day.ago, updated_at: 2.hours.ago) }
-      let!(:deployment_3) { create(:deployment, :success, project: project, iid: 8, ref: 'patch', created_at: 2.days.ago, updated_at: 1.hour.ago) }
+      let!(:deployment_3) { create(:deployment, :success, project: project, iid: 8, ref: 'patch', created_at: Time.now, updated_at: 1.hour.ago) }
 
       where(:order_by, :sort, :ordered_deployments) do
-        'created_at' | 'asc'  | [:deployment_3, :deployment_2, :deployment_1]
-        'created_at' | 'desc' | [:deployment_1, :deployment_2, :deployment_3]
+        'created_at' | 'asc'  | [:deployment_1, :deployment_2, :deployment_3]
+        'created_at' | 'desc' | [:deployment_3, :deployment_2, :deployment_1]
         'id'         | 'asc'  | [:deployment_1, :deployment_2, :deployment_3]
         'id'         | 'desc' | [:deployment_3, :deployment_2, :deployment_1]
         'iid'        | 'asc'  | [:deployment_3, :deployment_1, :deployment_2]
@@ -55,6 +55,42 @@ describe DeploymentsFinder do
         it 'returns the deployments ordered' do
           expect(subject).to eq(ordered_deployments.map { |name| public_send(name) })
         end
+      end
+    end
+
+    describe 'transform `created_at` sorting to `id` sorting' do
+      let(:params) { { order_by: 'created_at', sort: 'asc' } }
+
+      it 'sorts by only one column' do
+        expect(subject.order_values.size).to eq(1)
+      end
+
+      it 'sorts by `id`' do
+        expect(subject.order_values.first.to_sql).to eq(Deployment.arel_table[:id].asc.to_sql)
+      end
+    end
+
+    describe 'tie-breaker for `updated_at` sorting' do
+      let(:params) { { order_by: 'updated_at', sort: 'asc' } }
+
+      it 'sorts by two columns' do
+        expect(subject.order_values.size).to eq(2)
+      end
+
+      it 'adds `id` sorting as the second order column' do
+        order_value = subject.order_values[1]
+
+        expect(order_value.to_sql).to eq(Deployment.arel_table[:id].desc.to_sql)
+      end
+
+      it 'uses the `id DESC` as tie-breaker when ordering' do
+        updated_at = Time.now
+
+        deployment_1 = create(:deployment, :success, project: project, updated_at: updated_at)
+        deployment_2 = create(:deployment, :success, project: project, updated_at: updated_at)
+        deployment_3 = create(:deployment, :success, project: project, updated_at: updated_at)
+
+        expect(subject).to eq([deployment_3, deployment_2, deployment_1])
       end
     end
   end

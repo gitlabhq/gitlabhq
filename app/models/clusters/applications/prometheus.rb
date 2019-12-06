@@ -84,11 +84,15 @@ module Clusters
         # ensures headers containing auth data are appended to original k8s client options
         options = kube_client.rest_client.options.merge(headers: kube_client.headers)
         Gitlab::PrometheusClient.new(proxy_url, options)
-      rescue Kubeclient::HttpError
+      rescue Kubeclient::HttpError, Errno::ECONNRESET, Errno::ECONNREFUSED
         # If users have mistakenly set parameters or removed the depended clusters,
         # `proxy_url` could raise an exception because gitlab can not communicate with the cluster.
         # Since `PrometheusAdapter#can_query?` is eargely loaded on environement pages in gitlab,
         # we need to silence the exceptions
+      end
+
+      def configured?
+        kube_client.present? && available?
       end
 
       private

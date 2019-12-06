@@ -22,9 +22,28 @@ class DeploymentsFinder
 
   private
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def init_collection
-    project.deployments
+    project
+      .deployments
+      .includes(
+        :user,
+        environment: [],
+        deployable: {
+          job_artifacts: [],
+          pipeline: {
+            project: {
+              route: [],
+              namespace: :route
+            }
+          },
+          project: {
+            namespace: :route
+          }
+        }
+      )
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   # rubocop: disable CodeReuse/ActiveRecord
   def sort(items)
@@ -43,6 +62,9 @@ class DeploymentsFinder
     order_by = ALLOWED_SORT_VALUES.include?(params[:order_by]) ? params[:order_by] : DEFAULT_SORT_VALUE
     order_direction = ALLOWED_SORT_DIRECTIONS.include?(params[:sort]) ? params[:sort] : DEFAULT_SORT_DIRECTION
 
-    { order_by => order_direction }
+    { order_by => order_direction }.tap do |sort_values|
+      sort_values['id'] = 'desc' if sort_values['updated_at']
+      sort_values['id'] = sort_values.delete('created_at') if sort_values['created_at'] # Sorting by `id` produces the same result as sorting by `created_at`
+    end
   end
 end

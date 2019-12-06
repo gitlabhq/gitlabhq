@@ -14,7 +14,7 @@ module HashedStorage
 
       try_obtain_lease do
         project = Project.without_deleted.find_by(id: project_id)
-        break unless project
+        break unless project && project.storage_upgradable?
 
         old_disk_path ||= Storage::LegacyProject.new(project).disk_path
 

@@ -23,6 +23,21 @@ class Upload < ApplicationRecord
   after_destroy :delete_file!, if: -> { uploader_class <= FileUploader }
 
   class << self
+    def inner_join_local_uploads_projects
+      upload_table = Upload.arel_table
+      project_table = Project.arel_table
+
+      join_statement = upload_table.project(upload_table[Arel.star])
+                         .join(project_table)
+                         .on(
+                           upload_table[:model_type].eq('Project')
+                             .and(upload_table[:model_id].eq(project_table[:id]))
+                             .and(upload_table[:store].eq(ObjectStorage::Store::LOCAL))
+                         )
+
+      joins(join_statement.join_sources)
+    end
+
     ##
     # FastDestroyAll concerns
     def begin_fast_destroy

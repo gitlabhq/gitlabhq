@@ -374,9 +374,17 @@ class Project < ApplicationRecord
   scope :pending_delete, -> { where(pending_delete: true) }
   scope :without_deleted, -> { where(pending_delete: false) }
 
-  scope :with_storage_feature, ->(feature) { where('storage_version >= :version', version: HASHED_STORAGE_FEATURES[feature]) }
-  scope :without_storage_feature, ->(feature) { where('storage_version < :version OR storage_version IS NULL', version: HASHED_STORAGE_FEATURES[feature]) }
-  scope :with_unmigrated_storage, -> { where('storage_version < :version OR storage_version IS NULL', version: LATEST_STORAGE_VERSION) }
+  scope :with_storage_feature, ->(feature) do
+    where(arel_table[:storage_version].gteq(HASHED_STORAGE_FEATURES[feature]))
+  end
+  scope :without_storage_feature, ->(feature) do
+    where(arel_table[:storage_version].lt(HASHED_STORAGE_FEATURES[feature])
+        .or(arel_table[:storage_version].eq(nil)))
+  end
+  scope :with_unmigrated_storage, -> do
+    where(arel_table[:storage_version].lt(LATEST_STORAGE_VERSION)
+        .or(arel_table[:storage_version].eq(nil)))
+  end
 
   # last_activity_at is throttled every minute, but last_repository_updated_at is updated with every push
   scope :sorted_by_activity, -> { reorder(Arel.sql("GREATEST(COALESCE(last_activity_at, '1970-01-01'), COALESCE(last_repository_updated_at, '1970-01-01')) DESC")) }

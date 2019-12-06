@@ -332,4 +332,40 @@ describe API::Deployments do
       end
     end
   end
+
+  context 'prevent N + 1 queries' do
+    context 'when the endpoint returns multiple records' do
+      let(:project) { create(:project) }
+
+      def create_record
+        create(:deployment, :success, project: project)
+      end
+
+      def request_with_query_count
+        ActiveRecord::QueryRecorder.new { trigger_request }.count
+      end
+
+      def trigger_request
+        get api("/projects/#{project.id}/deployments?order_by=updated_at&sort=asc", user)
+      end
+
+      before do
+        create_record
+      end
+
+      it 'succeeds' do
+        trigger_request
+
+        expect(response).to have_gitlab_http_status(200)
+
+        expect(json_response.size).to eq(1)
+      end
+
+      it 'does not increase the query count' do
+        expect { create_record }.not_to change { request_with_query_count }
+
+        expect(json_response.size).to eq(2)
+      end
+    end
+  end
 end

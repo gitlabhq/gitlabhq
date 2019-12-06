@@ -95,6 +95,10 @@ class PrometheusService < MonitoringService
     self_monitoring_project? && internal_prometheus_url?
   end
 
+  def configured?
+    should_return_client?
+  end
+
   private
 
   def self_monitoring_project?

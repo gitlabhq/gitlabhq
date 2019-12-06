@@ -146,7 +146,10 @@ module QA
       end
 
       def finished_loading?
-        has_no_css?('.fa-spinner', wait: Capybara.default_max_wait_time)
+        # The number of selectors should be able to be reduced after
+        # migration to the new spinner is complete.
+        # https://gitlab.com/groups/gitlab-org/-/epics/956
+        has_no_css?('.gl-spinner, .fa-spinner, .spinner', wait: Capybara.default_max_wait_time)
       end
 
       def finished_loading_block?

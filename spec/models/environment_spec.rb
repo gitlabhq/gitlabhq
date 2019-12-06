@@ -824,6 +824,14 @@ describe Environment, :use_clean_rails_memory_store_caching do
         context 'and no deployments' do
           it { is_expected.to be_truthy }
         end
+
+        context 'and the prometheus adapter is not configured' do
+          before do
+            allow(environment.prometheus_adapter).to receive(:configured?).and_return(false)
+          end
+
+          it { is_expected.to be_falsy }
+        end
       end
 
       context 'without a monitoring service' do
@@ -857,6 +865,14 @@ describe Environment, :use_clean_rails_memory_store_caching do
           .and_return(:fake_metrics)
 
         is_expected.to eq(:fake_metrics)
+      end
+
+      context 'and the prometheus client is not present' do
+        before do
+          allow(environment.prometheus_adapter).to receive(:promethus_client).and_return(nil)
+        end
+
+        it { is_expected.to be_nil }
       end
     end
 

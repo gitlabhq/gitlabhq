@@ -8,7 +8,7 @@ module Gitlab
           def unmet?
             deployment_cluster.present? &&
               deployment_cluster.managed? &&
-              (missing_namespace? || missing_knative_version_role_binding?)
+              (missing_namespace? || need_knative_version_role_binding?)
           end
 
           def complete!
@@ -23,8 +23,8 @@ module Gitlab
             kubernetes_namespace.nil? || kubernetes_namespace.service_account_token.blank?
           end
 
-          def missing_knative_version_role_binding?
-            knative_version_role_binding.nil?
+          def need_knative_version_role_binding?
+            !knative_serving_namespace.nil? && knative_version_role_binding.nil?
           end
 
           def deployment_cluster
@@ -33,6 +33,14 @@ module Gitlab
 
           def environment
             build.deployment.environment
+          end
+
+          def knative_serving_namespace
+            strong_memoize(:knative_serving_namespace) do
+              Clusters::KnativeServingNamespaceFinder.new(
+                deployment_cluster
+              ).execute
+            end
           end
 
           def knative_version_role_binding

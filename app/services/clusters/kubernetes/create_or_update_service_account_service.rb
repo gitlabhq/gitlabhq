@@ -71,9 +71,9 @@ module Clusters
       end
 
       def knative_serving_namespace
-        kubeclient.core_client.get_namespaces.find do |namespace|
-          namespace.metadata.name == Clusters::Kubernetes::KNATIVE_SERVING_NAMESPACE
-        end
+        kubeclient.get_namespace(Clusters::Kubernetes::KNATIVE_SERVING_NAMESPACE)
+      rescue Kubeclient::ResourceNotFoundError
+        nil
       end
 
       def create_role_or_cluster_role_binding

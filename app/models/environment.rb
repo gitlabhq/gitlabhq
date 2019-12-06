@@ -193,11 +193,11 @@ class Environment < ApplicationRecord
   end
 
   def has_metrics?
-    available? && prometheus_adapter&.can_query?
+    available? && prometheus_adapter&.configured?
   end
 
   def metrics
-    prometheus_adapter.query(:environment, self) if has_metrics?
+    prometheus_adapter.query(:environment, self) if has_metrics? && prometheus_adapter.can_query?
   end
 
   def prometheus_status

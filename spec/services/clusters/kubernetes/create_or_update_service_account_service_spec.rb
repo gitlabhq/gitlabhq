@@ -141,7 +141,7 @@ describe Clusters::Kubernetes::CreateOrUpdateServiceAccountService do
       before do
         cluster.platform_kubernetes.rbac!
 
-        stub_kubeclient_get_namespaces(api_url)
+        stub_kubeclient_get_namespace(api_url, namespace: Clusters::Kubernetes::KNATIVE_SERVING_NAMESPACE)
         stub_kubeclient_get_role_binding_error(api_url, role_binding_name, namespace: namespace)
         stub_kubeclient_create_role_binding(api_url, namespace: namespace)
         stub_kubeclient_put_role(api_url, Clusters::Kubernetes::GITLAB_KNATIVE_SERVING_ROLE_NAME, namespace: namespace)
