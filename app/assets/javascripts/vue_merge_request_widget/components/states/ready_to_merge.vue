@@ -2,9 +2,9 @@
 import _ from 'underscore';
 import successSvg from 'icons/_icon_status_success.svg';
 import warningSvg from 'icons/_icon_status_warning.svg';
+import readyToMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/ready_to_merge';
 import simplePoll from '~/lib/utils/simple_poll';
 import { __, sprintf } from '~/locale';
-import readyToMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/ready_to_merge';
 import { GlIcon } from '@gitlab/ui';
 import MergeRequest from '../../../merge_request';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
@@ -26,6 +26,10 @@ export default {
     CommitEdit,
     CommitMessageDropdown,
     GlIcon,
+    MergeImmediatelyConfirmationDialog: () =>
+      import(
+        'ee_component/vue_merge_request_widget/components/merge_immediately_confirmation_dialog.vue'
+      ),
   },
   mixins: [readyToMergeMixin],
   props: {
@@ -165,6 +169,16 @@ export default {
           new Flash(__('Something went wrong. Please try again.')); // eslint-disable-line
         });
     },
+    handleMergeImmediatelyButtonClick() {
+      if (this.isMergeImmediatelyDangerous) {
+        this.$refs.confirmationDialog.show();
+      } else {
+        this.handleMergeButtonClick(false, true);
+      }
+    },
+    onMergeImmediatelyConfirmation() {
+      this.handleMergeButtonClick(false, true);
+    },
     initiateMergePolling() {
       simplePoll(
         (continuePolling, stopPolling) => {
@@ -286,11 +300,16 @@ export default {
                 </a>
               </li>
               <li>
+                <merge-immediately-confirmation-dialog
+                  ref="confirmationDialog"
+                  :docs-url="mr.mergeImmediatelyDocsPath"
+                  @mergeImmediately="onMergeImmediatelyConfirmation"
+                />
                 <a
-                  class="accept-merge-request"
+                  class="accept-merge-request js-merge-immediately-button"
                   data-qa-selector="merge_immediately_option"
                   href="#"
-                  @click.prevent="handleMergeButtonClick(false, true)"
+                  @click.prevent="handleMergeImmediatelyButtonClick"
                 >
                   <span class="media">
                     <span class="merge-opt-icon" aria-hidden="true" v-html="warningSvg"></span>

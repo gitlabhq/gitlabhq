@@ -2041,6 +2041,9 @@ msgstr ""
 msgid "Are you sure you want to lose your issue information?"
 msgstr ""
 
+msgid "Are you sure you want to merge immediately?"
+msgstr ""
+
 msgid "Are you sure you want to permanently delete this license?"
 msgstr ""
 
@@ -11002,6 +11005,9 @@ msgid "Merged branches are being deleted. This can take some time depending on t
 msgstr ""
 
 msgid "Merges this merge request when the pipeline succeeds."
+msgstr ""
+
+msgid "Merging immediately isn't recommended as it may negatively impact the existing merge train. Read the %{docsLinkStart}documentation%{docsLinkEnd} for more information."
 msgstr ""
 
 msgid "Messages"

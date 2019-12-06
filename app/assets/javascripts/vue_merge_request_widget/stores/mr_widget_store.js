@@ -173,6 +173,7 @@ export default class MergeRequestStore {
     this.ciEnvironmentsStatusPath = data.ci_environments_status_path;
     this.securityApprovalsHelpPagePath = data.security_approvals_help_page_path;
     this.eligibleApproversDocsPath = data.eligible_approvers_docs_path;
+    this.mergeImmediatelyDocsPath = data.merge_immediately_docs_path;
   }
 
   get isNothingToMergeState() {

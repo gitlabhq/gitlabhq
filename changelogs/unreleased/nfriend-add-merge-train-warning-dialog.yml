@@ -1,0 +1,5 @@
+---
+title: Add warning dialog when users click the "Merge immediately" merge train option
+merge_request: 20054
+author:
+type: added

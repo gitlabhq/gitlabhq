@@ -9,12 +9,13 @@
 # @example
 #   bundle exec rake "gitlab:import_export:import[root, root, imported_project, /path/to/file.tar.gz]"
 #
-require 'sidekiq/testing'
-
 namespace :gitlab do
   namespace :import_export do
     desc 'EXPERIMENTAL | Import large project archives'
     task :import, [:username, :namespace_path, :project_path, :archive_path] => :gitlab_environment do |_t, args|
+      # Load it here to avoid polluting Rake tasks with Sidekiq test warnings
+      require 'sidekiq/testing'
+
       warn_user_is_not_gitlab
 
       if ENV['IMPORT_DEBUG'].present?

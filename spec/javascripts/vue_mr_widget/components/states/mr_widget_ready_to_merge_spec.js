@@ -1,11 +1,11 @@
 import Vue from 'vue';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
 import ReadyToMerge from '~/vue_merge_request_widget/components/states/ready_to_merge.vue';
 import SquashBeforeMerge from '~/vue_merge_request_widget/components/states/squash_before_merge.vue';
 import CommitsHeader from '~/vue_merge_request_widget/components/states/commits_header.vue';
 import CommitEdit from '~/vue_merge_request_widget/components/states/commit_edit.vue';
 import CommitMessageDropdown from '~/vue_merge_request_widget/components/states/commit_message_dropdown.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { MWPS_MERGE_STRATEGY, MTWPS_MERGE_STRATEGY } from '~/vue_merge_request_widget/constants';
 
 const commitMessage = 'This is the commit message';
@@ -286,6 +286,12 @@ describe('ReadyToMerge', () => {
         Vue.set(vm, 'isMakingRequest', true);
 
         expect(vm.isMergeButtonDisabled).toBe(true);
+      });
+    });
+
+    describe('isMergeImmediatelyDangerous', () => {
+      it('should always return false in CE', () => {
+        expect(vm.isMergeImmediatelyDangerous).toBe(false);
       });
     });
   });
