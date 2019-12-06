@@ -15,19 +15,12 @@ exports[`Confidential merge request project form group component renders empty s
       class="text-muted mt-1 mb-0"
     >
       
-        No forks available to you.
+        No forks are available to you.
       <br />
        
-      <span>
-        To protect this issue's confidentiality, 
-        <a
-          class="help-link"
-          href="https://test.com"
-        >
-          fork the project
-        </a>
-         and set the forks visibility to private.
-      </span>
+      <glsprintf-stub
+        message="To protect this issue's confidentiality, %{forkLink} and set the fork's visibility to private."
+      />
        
       <gllink-stub
         class="w-auto p-0 d-inline-block text-primary bg-transparent"
@@ -65,19 +58,12 @@ exports[`Confidential merge request project form group component renders fork dr
       class="text-muted mt-1 mb-0"
     >
       
-        No forks available to you.
+        No forks are available to you.
       <br />
        
-      <span>
-        To protect this issue's confidentiality, 
-        <a
-          class="help-link"
-          href="https://test.com"
-        >
-          fork the project
-        </a>
-         and set the forks visibility to private.
-      </span>
+      <glsprintf-stub
+        message="To protect this issue's confidentiality, %{forkLink} and set the fork's visibility to private."
+      />
        
       <gllink-stub
         class="w-auto p-0 d-inline-block text-primary bg-transparent"

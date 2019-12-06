@@ -4,6 +4,7 @@ module Gitlab
   module ErrorTracking
     class DetailedError
       include ActiveModel::Model
+      include GlobalID::Identification
 
       attr_accessor :count,
                     :culprit,
@@ -13,6 +14,7 @@ module Gitlab
                     :first_release_short_version,
                     :first_seen,
                     :frequency,
+                    :gitlab_project,
                     :id,
                     :last_release_last_commit,
                     :last_release_short_version,
@@ -26,6 +28,10 @@ module Gitlab
                     :title,
                     :type,
                     :user_count
+
+      def self.declarative_policy_class
+        'ErrorTracking::DetailedErrorPolicy'
+      end
     end
   end
 end

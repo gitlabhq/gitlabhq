@@ -128,7 +128,7 @@ module Issuable
     end
 
     scope :joins_milestone_releases, -> do
-      joins("JOIN milestone_releases ON issues.milestone_id = milestone_releases.milestone_id
+      joins("JOIN milestone_releases ON #{table_name}.milestone_id = milestone_releases.milestone_id
              JOIN releases ON milestone_releases.release_id = releases.id").distinct
     end
 

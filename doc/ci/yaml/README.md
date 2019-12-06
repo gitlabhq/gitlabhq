@@ -203,7 +203,7 @@ job:
 You can use [YAML anchors](#anchors) with scripts, which makes it possible to
 include a predefined list of commands in multiple jobs.
 
-Example:
+For example:
 
 ```yaml
 .something: &something
@@ -1412,6 +1412,11 @@ GitLab's web interface in order to run.
 Also in the example, `GIT_STRATEGY` is set to `none` so that GitLab Runner won’t
 try to check out the code after the branch is deleted when the `stop_review_app`
 job is [automatically triggered](../environments.md#automatically-stopping-an-environment).
+
+NOTE: **Note:**
+The above example overwrites global variables. If your stop environment job depends
+on global variables, you can use [anchor variables](#yaml-anchors-for-variables) when setting the `GIT_STRATEGY`
+to change it without overriding the global variables.
 
 The `stop_review_app` job is **required** to have the following keywords defined:
 
@@ -3158,6 +3163,29 @@ you can set in `.gitlab-ci.yml`, there are also the so called
 which can be set in GitLab's UI.
 
 Learn more about [variables and their priority][variables].
+
+#### YAML anchors for variables
+
+[YAML anchors](#anchors) can be used with `variables`, to easily repeat assignment
+of variables across multiple jobs. It can also enable more flexibility when a job
+requires a specific `variables` block that would otherwise override the global variables.
+
+In the example below, we will override the `GIT_STRATEGY` variable without affecting
+the use of the `SAMPLE_VARIABLE` variable:
+
+```yaml
+# global variables
+variables: &global-variables
+  SAMPLE_VARIABLE: sample_variable_value
+
+# a job that needs to set the GIT_STRATEGY variable, yet depend on global variables
+job_no_git_strategy:
+  stage: cleanup
+  variables:
+    <<: *global-variables
+    GIT_STRATEGY: none
+  script: echo $SAMPLE_VARIABLE
+```
 
 #### Git strategy
 

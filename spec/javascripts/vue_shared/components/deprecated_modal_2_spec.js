@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import Vue from 'vue';
-import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';
 
 const modalComponent = Vue.extend(DeprecatedModal2);
 

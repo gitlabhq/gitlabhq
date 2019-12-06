@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import headerCi from '~/vue_shared/components/header_ci_component.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import headerCi from '~/vue_shared/components/header_ci_component.vue';
 
 describe('Header CI Component', () => {
   let HeaderCi;

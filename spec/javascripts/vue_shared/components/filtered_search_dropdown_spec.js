@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import component from '~/vue_shared/components/filtered_search_dropdown.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import component from '~/vue_shared/components/filtered_search_dropdown.vue';
 
 describe('Filtered search dropdown', () => {
   const Component = Vue.extend(component);

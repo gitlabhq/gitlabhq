@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import SmartVirtualScrollList from '~/vue_shared/components/smart_virtual_list.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import SmartVirtualScrollList from '~/vue_shared/components/smart_virtual_list.vue';
 
 describe('Toggle Button', () => {
   let vm;

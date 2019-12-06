@@ -28,7 +28,7 @@
         %ul#create-merge-request-dropdown.create-merge-request-dropdown-menu.dropdown-menu.dropdown-menu-right.gl-show-field-errors{ class: ("create-confidential-merge-request-dropdown-menu" if can_create_confidential_merge_request?), data: { dropdown: true } }
           - if can_create_merge_request
             %li.droplab-item-selected{ role: 'button', data: { value: 'create-mr', text: create_mr_text } }
-              .menu-item
+              .menu-item.text-nowrap
                 = icon('check', class: 'icon')
                 - if can_create_confidential_merge_request?
                   = _('Create confidential merge request and branch')

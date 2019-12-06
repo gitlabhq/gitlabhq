@@ -1,11 +1,11 @@
 import Vue from 'vue';
 import _ from 'underscore';
-import ProjectSelector from '~/vue_shared/components/project_selector/project_selector.vue';
-import ProjectListItem from '~/vue_shared/components/project_selector/project_list_item.vue';
 
 import { GlSearchBoxByType, GlInfiniteScroll } from '@gitlab/ui';
 import { mount, createLocalVue } from '@vue/test-utils';
 import { trimText } from 'spec/helpers/text_helper';
+import ProjectListItem from '~/vue_shared/components/project_selector/project_list_item.vue';
+import ProjectSelector from '~/vue_shared/components/project_selector/project_selector.vue';
 
 const localVue = createLocalVue();
 

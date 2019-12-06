@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import Jed from 'jed';
 
+import { trimText } from 'spec/helpers/text_helper';
 import locale from '~/locale';
 import Translate from '~/vue_shared/translate';
-import { trimText } from 'spec/helpers/text_helper';
 
 describe('Vue translate filter', () => {
   let el;

@@ -664,6 +664,7 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `repository` | Repository | Git repository of the project |
 | `mergeRequest` | MergeRequest | A single merge request of the project |
 | `issue` | Issue | A single issue of the project |
+| `sentryDetailedError` | SentryDetailedError | Detailed version of a Sentry error on the project |
 
 ### ProjectPermissions
 
@@ -750,6 +751,39 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `buildArtifactsSize` | Int! | The CI artifacts size in bytes |
 | `packagesSize` | Int! | The packages size in bytes |
 | `wikiSize` | Int! | The wiki size in bytes |
+
+### SentryDetailedError
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `id` | ID! | ID (global ID) of the error |
+| `sentryId` | String! | ID (Sentry ID) of the error |
+| `title` | String! | Title of the error |
+| `type` | String! | Type of the error |
+| `userCount` | Int! | Count of users affected by the error |
+| `count` | Int! | Count of occurrences |
+| `firstSeen` | Time! | Timestamp when the error was first seen |
+| `lastSeen` | Time! | Timestamp when the error was last seen |
+| `message` | String | Sentry metadata message of the error |
+| `culprit` | String! | Culprit of the error |
+| `externalUrl` | String! | External URL of the error |
+| `sentryProjectId` | ID! | ID of the project (Sentry project) |
+| `sentryProjectName` | String! | Name of the project affected by the error |
+| `sentryProjectSlug` | String! | Slug of the project affected by the error |
+| `shortId` | String! | Short ID (Sentry ID) of the error |
+| `status` | SentryErrorStatus! | Status of the error |
+| `frequency` | SentryErrorFrequency! => Array | Last 24hr stats of the error |
+| `firstReleaseLastCommit` | String | Commit the error was first seen |
+| `lastReleaseLastCommit` | String | Commit the error was last seen |
+| `firstReleaseShortVersion` | String | Release version the error was first seen |
+| `lastReleaseShortVersion` | String | Release version the error was last seen |
+
+### SentryErrorFrequency
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `time` | Time! | Time the error frequency stats were recorded |
+| `count` | Int! | Count of errors received since the previously recorded time |
 
 ### Submodule
 

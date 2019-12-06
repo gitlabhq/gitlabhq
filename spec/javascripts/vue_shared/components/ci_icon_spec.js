@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import ciIcon from '~/vue_shared/components/ci_icon.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import ciIcon from '~/vue_shared/components/ci_icon.vue';
 
 describe('CI Icon component', () => {
   const Component = Vue.extend(ciIcon);

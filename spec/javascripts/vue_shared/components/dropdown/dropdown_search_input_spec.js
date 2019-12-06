@@ -1,8 +1,7 @@
 import Vue from 'vue';
 
-import dropdownSearchInputComponent from '~/vue_shared/components/dropdown/dropdown_search_input.vue';
-
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import dropdownSearchInputComponent from '~/vue_shared/components/dropdown/dropdown_search_input.vue';
 
 const componentConfig = {
   placeholderText: 'Search something',

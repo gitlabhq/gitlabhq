@@ -4401,6 +4401,16 @@ type Project {
   requestAccessEnabled: Boolean
 
   """
+  Detailed version of a Sentry error on the project
+  """
+  sentryDetailedError(
+    """
+    ID of the Sentry issue
+    """
+    id: ID!
+  ): SentryDetailedError
+
+  """
   Indicates if shared runners are enabled on the project
   """
   sharedRunnersEnabled: Boolean
@@ -4884,6 +4894,150 @@ type RootStorageStatistics {
   The wiki size in bytes
   """
   wikiSize: Int!
+}
+
+type SentryDetailedError {
+  """
+  Count of occurrences
+  """
+  count: Int!
+
+  """
+  Culprit of the error
+  """
+  culprit: String!
+
+  """
+  External URL of the error
+  """
+  externalUrl: String!
+
+  """
+  Commit the error was first seen
+  """
+  firstReleaseLastCommit: String
+
+  """
+  Release version the error was first seen
+  """
+  firstReleaseShortVersion: String
+
+  """
+  Timestamp when the error was first seen
+  """
+  firstSeen: Time!
+
+  """
+  Last 24hr stats of the error
+  """
+  frequency: [SentryErrorFrequency!]!
+
+  """
+  ID (global ID) of the error
+  """
+  id: ID!
+
+  """
+  Commit the error was last seen
+  """
+  lastReleaseLastCommit: String
+
+  """
+  Release version the error was last seen
+  """
+  lastReleaseShortVersion: String
+
+  """
+  Timestamp when the error was last seen
+  """
+  lastSeen: Time!
+
+  """
+  Sentry metadata message of the error
+  """
+  message: String
+
+  """
+  ID (Sentry ID) of the error
+  """
+  sentryId: String!
+
+  """
+  ID of the project (Sentry project)
+  """
+  sentryProjectId: ID!
+
+  """
+  Name of the project affected by the error
+  """
+  sentryProjectName: String!
+
+  """
+  Slug of the project affected by the error
+  """
+  sentryProjectSlug: String!
+
+  """
+  Short ID (Sentry ID) of the error
+  """
+  shortId: String!
+
+  """
+  Status of the error
+  """
+  status: SentryErrorStatus!
+
+  """
+  Title of the error
+  """
+  title: String!
+
+  """
+  Type of the error
+  """
+  type: String!
+
+  """
+  Count of users affected by the error
+  """
+  userCount: Int!
+}
+
+type SentryErrorFrequency {
+  """
+  Count of errors received since the previously recorded time
+  """
+  count: Int!
+
+  """
+  Time the error frequency stats were recorded
+  """
+  time: Time!
+}
+
+"""
+State of a Sentry error
+"""
+enum SentryErrorStatus {
+  """
+  Error has been ignored
+  """
+  IGNORED
+
+  """
+  Error has been resolved
+  """
+  RESOLVED
+
+  """
+  Error has been ignored until next release
+  """
+  RESOLVED_IN_NEXT_RELEASE
+
+  """
+  Error is unresolved
+  """
+  UNRESOLVED
 }
 
 type Submodule implements Entry {

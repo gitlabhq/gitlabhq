@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import BarChart from '~/vue_shared/components/bar_chart.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import BarChart from '~/vue_shared/components/bar_chart.vue';
 
 function getRandomArbitrary(min, max) {
   return Math.random() * (max - min) + min;
