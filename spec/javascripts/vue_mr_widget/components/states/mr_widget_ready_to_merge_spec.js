@@ -938,4 +938,31 @@ describe('ReadyToMerge', () => {
       expect(customVm.$el.querySelector('.js-modify-commit-message-button')).toBeNull();
     });
   });
+
+  describe('with a mismatched SHA', () => {
+    const findMismatchShaBlock = () => vm.$el.querySelector('.js-sha-mismatch');
+
+    beforeEach(() => {
+      vm = createComponent({
+        mr: {
+          isSHAMismatch: true,
+          mergeRequestDiffsPath: '/merge_requests/1/diffs',
+        },
+      });
+    });
+
+    it('displays a warning message', () => {
+      expect(findMismatchShaBlock()).toExist();
+    });
+
+    it('warns the user to refresh to review', () => {
+      expect(findMismatchShaBlock().textContent.trim()).toBe(
+        'New changes were added. Reload the page to review them',
+      );
+    });
+
+    it('displays link to the diffs tab', () => {
+      expect(findMismatchShaBlock().querySelector('a').href).toContain(vm.mr.mergeRequestDiffsPath);
+    });
+  });
 });

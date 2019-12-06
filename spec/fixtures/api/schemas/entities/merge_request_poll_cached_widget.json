@@ -26,6 +26,7 @@
     "has_conflicts": { "type": "boolean" },
     "can_be_merged": { "type": "boolean" },
     "remove_source_branch": { "type": ["boolean", "null"] },
+    "diffs_path": { "type": "string" },
     "source_branch_exists": { "type": "boolean" },
     "branch_missing": { "type": "boolean" },
     "commits_without_merge_commits": { "type": "array" },

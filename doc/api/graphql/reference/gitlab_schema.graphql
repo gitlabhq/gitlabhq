@@ -1230,6 +1230,11 @@ type Epic implements Noteable {
     """
     last: Int
   ): DiscussionConnection!
+
+  """
+  Number of downvotes the epic has received
+  """
+  downvotes: Int!
   dueDate: Time
   dueDateFixed: Time
   dueDateFromMilestones: Time
@@ -1359,6 +1364,11 @@ type Epic implements Noteable {
   subscribed: Boolean!
   title: String
   updatedAt: Time
+
+  """
+  Number of upvotes the epic has received
+  """
+  upvotes: Int!
 
   """
   Permissions for the current user on the resource

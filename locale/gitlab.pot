@@ -11461,6 +11461,9 @@ msgstr ""
 msgid "New branch unavailable"
 msgstr ""
 
+msgid "New changes were added. %{linkStart}Reload the page to review them%{linkEnd}"
+msgstr ""
+
 msgid "New deploy key"
 msgstr ""
 
@@ -11987,6 +11990,9 @@ msgid "Once removed, the fork relationship cannot be restored and you will no lo
 msgstr ""
 
 msgid "Once the exported file is ready, you will receive a notification email with a download link, or you can download it from this page."
+msgstr ""
+
+msgid "Once you confirm and press \"Reduce project visibility\":"
 msgstr ""
 
 msgid "One more item"
@@ -14395,6 +14401,12 @@ msgid "Recovery Codes"
 msgstr ""
 
 msgid "Redirect to SAML provider to test configuration"
+msgstr ""
+
+msgid "Reduce project visibility"
+msgstr ""
+
+msgid "Reduce this project’s visibility?"
 msgstr ""
 
 msgid "Reference:"
@@ -20399,6 +20411,12 @@ msgid "You'll be signed out from your current account automatically."
 msgstr ""
 
 msgid "You'll need to use different branch names to get a valid comparison."
+msgstr ""
+
+msgid "You're about to reduce the visibility of the project %{strong_start}%{project_name}%{strong_end} in %{strong_start}%{group_name}%{strong_end}."
+msgstr ""
+
+msgid "You're about to reduce the visibility of the project %{strong_start}%{project_name}%{strong_end}."
 msgstr ""
 
 msgid "You're not allowed to %{tag_start}edit%{tag_end} files in this project directly. Please fork this project, make your changes there, and submit a merge request."

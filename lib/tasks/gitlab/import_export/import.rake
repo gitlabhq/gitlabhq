@@ -17,6 +17,10 @@ namespace :gitlab do
     task :import, [:username, :namespace_path, :project_path, :archive_path] => :gitlab_environment do |_t, args|
       warn_user_is_not_gitlab
 
+      if ENV['IMPORT_DEBUG'].present?
+        ActiveRecord::Base.logger = Logger.new(STDOUT)
+      end
+
       GitlabProjectImport.new(
         namespace_path: args.namespace_path,
         project_path:   args.project_path,

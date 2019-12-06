@@ -25,7 +25,6 @@ import NothingToMergeState from './components/states/nothing_to_merge.vue';
 import MissingBranchState from './components/states/mr_widget_missing_branch.vue';
 import NotAllowedState from './components/states/mr_widget_not_allowed.vue';
 import ReadyToMergeState from './components/states/ready_to_merge.vue';
-import ShaMismatchState from './components/states/sha_mismatch.vue';
 import UnresolvedDiscussionsState from './components/states/unresolved_discussions.vue';
 import PipelineBlockedState from './components/states/mr_widget_pipeline_blocked.vue';
 import PipelineFailedState from './components/states/pipeline_failed.vue';
@@ -63,7 +62,7 @@ export default {
     'mr-widget-not-allowed': NotAllowedState,
     'mr-widget-missing-branch': MissingBranchState,
     'mr-widget-ready-to-merge': ReadyToMergeState,
-    'sha-mismatch': ShaMismatchState,
+    'sha-mismatch': ReadyToMergeState,
     'mr-widget-checking': CheckingState,
     'mr-widget-unresolved-discussions': UnresolvedDiscussionsState,
     'mr-widget-pipeline-blocked': PipelineBlockedState,

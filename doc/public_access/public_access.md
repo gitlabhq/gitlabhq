@@ -77,6 +77,16 @@ by accident. The restricted visibility settings do not apply to admin users.
 
 For details, see [Restricted visibility levels](../user/admin_area/settings/visibility_and_access_controls.md#restricted-visibility-levels).
 
+## Reducing visibility
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/33358) in GitLab 12.6.
+
+Reducing a project's visibility level will remove the fork relationship between the project and
+any forked project. This is a potentially destructive action which requires confirmation before
+this can be saved.
+
+![Project visibility change confirmation](img/project_visibility_confirmation_v12_6.png)
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

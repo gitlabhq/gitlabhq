@@ -70,6 +70,10 @@ class MergeRequestPollCachedWidgetEntity < IssuableEntity
     presenter(merge_request).source_branch_with_namespace_link
   end
 
+  expose :diffs_path do |merge_request|
+    diffs_project_merge_request_path(merge_request.project, merge_request)
+  end
+
   private
 
   delegate :current_user, to: :request

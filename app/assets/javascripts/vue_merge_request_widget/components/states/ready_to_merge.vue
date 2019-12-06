@@ -3,8 +3,9 @@ import _ from 'underscore';
 import successSvg from 'icons/_icon_status_success.svg';
 import warningSvg from 'icons/_icon_status_warning.svg';
 import simplePoll from '~/lib/utils/simple_poll';
-import { __ } from '~/locale';
+import { __, sprintf } from '~/locale';
 import readyToMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/ready_to_merge';
+import { GlIcon } from '@gitlab/ui';
 import MergeRequest from '../../../merge_request';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import Flash from '../../../flash';
@@ -24,6 +25,7 @@ export default {
     CommitsHeader,
     CommitEdit,
     CommitMessageDropdown,
+    GlIcon,
   },
   mixins: [readyToMergeMixin],
   props: {
@@ -111,6 +113,18 @@ export default {
     shouldShowMergeEdit() {
       return !this.mr.ffOnlyEnabled;
     },
+    shaMismatchLink() {
+      const href = this.mr.mergeRequestDiffsPath;
+
+      return sprintf(
+        __('New changes were added. %{linkStart}Reload the page to review them%{linkEnd}'),
+        {
+          linkStart: `<a href="${href}">`,
+          linkEnd: '</a>',
+        },
+        false,
+      );
+    },
   },
   methods: {
     updateMergeCommitMessage(includeDescription) {
@@ -123,7 +137,7 @@ export default {
       }
 
       const options = {
-        sha: this.mr.sha,
+        sha: this.mr.latestSHA || this.mr.sha,
         commit_message: this.commitMessage,
         auto_merge_strategy: useAutoMerge ? this.mr.preferredAutoMergeStrategy : undefined,
         should_remove_source_branch: this.removeSourceBranch === true,
@@ -313,6 +327,10 @@ export default {
               </span>
             </template>
           </div>
+        </div>
+        <div v-if="mr.isSHAMismatch" class="d-flex align-items-center mt-2 js-sha-mismatch">
+          <gl-icon name="warning-solid" class="text-warning mr-1" />
+          <span class="text-warning" v-html="shaMismatchLink"></span>
         </div>
       </div>
     </div>

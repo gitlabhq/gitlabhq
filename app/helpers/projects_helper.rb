@@ -699,4 +699,8 @@ module ProjectsHelper
   def vue_file_list_enabled?
     Feature.enabled?(:vue_file_list, @project)
   end
+
+  def show_visibility_confirm_modal?(project)
+    project.unlink_forks_upon_visibility_decrease_enabled? && project.visibility_level > Gitlab::VisibilityLevel::PRIVATE && project.forks_count > 0
+  end
 end

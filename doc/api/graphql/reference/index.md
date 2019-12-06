@@ -211,6 +211,8 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `dueDateIsFixed` | Boolean |  |
 | `dueDateFixed` | Time |  |
 | `dueDateFromMilestones` | Time |  |
+| `upvotes` | Int! | Number of upvotes the epic has received |
+| `downvotes` | Int! | Number of downvotes the epic has received |
 | `closedAt` | Time |  |
 | `createdAt` | Time |  |
 | `updatedAt` | Time |  |

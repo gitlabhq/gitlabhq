@@ -26,6 +26,10 @@ Set up your project's access, [visibility](../../../public_access/public_access.
 
 ![projects sharing permissions](img/sharing_and_permissions_settings_v12_3.png)
 
+CAUTION: **Caution:**
+[Reducing a project's visibility level](../../../public_access/public_access.md#reducing-visibility)
+will remove the fork relationship between the project and any forked project.
+
 If Issues are disabled, or you can't access Issues because you're not a project member, then Labels and Milestones
 links will be missing from the sidebar UI.
 

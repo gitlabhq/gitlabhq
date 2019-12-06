@@ -1,0 +1,5 @@
+---
+title: Add upvote/downvotes attributes to GraphQL Epic query
+merge_request: 14311
+author:
+type: added

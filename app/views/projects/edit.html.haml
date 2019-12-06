@@ -21,7 +21,9 @@
       %input{ name: 'update_section', type: 'hidden', value: 'js-shared-permissions' }
       %template.js-project-permissions-form-data{ type: "application/json" }= project_permissions_panel_data_json(@project)
       .js-project-permissions-form
-      = f.submit _('Save changes'), class: "btn btn-success", data: { qa_selector: 'visibility_features_permissions_save_button' }
+      - if show_visibility_confirm_modal?(@project)
+        = render "visibility_modal"
+      = f.submit _('Save changes'), class: "btn btn-success #{('js-confirm-danger' if show_visibility_confirm_modal?(@project))}", data: { qa_selector: 'visibility_features_permissions_save_button', check_field_name: ("project[visibility_level]" if show_visibility_confirm_modal?(@project)), check_compare_value: @project.visibility_level }
 
 %section.qa-merge-request-settings.rspec-merge-request-settings.settings.merge-requests-feature.no-animate#js-merge-request-settings{ class: [('expanded' if expanded), ('hidden' if @project.project_feature.send(:merge_requests_access_level) == 0)] }
   .settings-header

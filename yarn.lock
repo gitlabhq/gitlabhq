@@ -690,16 +690,16 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@gitlab/eslint-config@^1.6.0":
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/eslint-config/-/eslint-config-1.6.0.tgz#1fd247d6ab477d53d4c330e05f007e3afa303689"
-  integrity sha512-EZffCwsRZmRWPP6N3wp20EJDVGYLG1v43/W7fF/gYQpUjcRclC8ks/jEv8UppasSDlanDmkh1bLWoE9CelSyyw==
+"@gitlab/eslint-config@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/eslint-config/-/eslint-config-2.0.0.tgz#e30dbf2b170a7a4ca003a321de9f4170a2512510"
+  integrity sha512-3Zw3ww8Q4hhVYxO7vliByD0yTeAQn4iBxOyqlASAZepZgdu/OmM4NPbWyntpTfDyHGoRGxmzEaCqv7DS6ubACA==
   dependencies:
     babel-eslint "^10.0.1"
     eslint-config-airbnb-base "^13.1.0"
     eslint-config-prettier "^3.3.0"
     eslint-plugin-filenames "^1.3.2"
-    eslint-plugin-import "^2.16.0"
+    eslint-plugin-import "^2.18.2"
     eslint-plugin-promise "^4.1.1"
     eslint-plugin-vue "^5.0.0"
 
@@ -717,15 +717,15 @@
   dependencies:
     vue-eslint-parser "^6.0.4"
 
-"@gitlab/svgs@^1.82.0":
-  version "1.82.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.82.0.tgz#c059c460afc13ebfe9df370521ca8963fa5afb80"
-  integrity sha512-9L4Brys2LCk44lHvFsCFDKN768lYjoMVYDb4PD7FSjqUEruQQ1SRj0rvb1RWKLhiTCDKrtDOXkH6I1TTEms24w==
+"@gitlab/svgs@^1.85.0":
+  version "1.85.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.85.0.tgz#c80247ec4764824385df2837136a0d4a84f881dc"
+  integrity sha512-yzvKut0MPJEbSx/LExopCLpF5KEZsckF+d/Blbji1VqODVanH85oIVuJNmdECUlc7qxye9Or3evpFjW9Pkshmg==
 
-"@gitlab/ui@8.0.1":
-  version "8.0.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-8.0.1.tgz#4e3b4791045540785cc389af931e24c6411910ca"
-  integrity sha512-PfZPlx3f12wcGxe0eMAXRk1gdhEAkX4czQWAt8EQ1WosKiADCNzCpEPR4jyWa60RF/+zHqJKIjq0VqLMClk8Jg==
+"@gitlab/ui@8.2.0":
+  version "8.2.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-8.2.0.tgz#82cf512407f8a774878969c72c4227d08ce49aa6"
+  integrity sha512-ZzxA3XwmwZpol6QJjqBf3Oblb1wSFbDJ4QENvPiE9lAUHvhbe8wfKBK++RtgOtd6aXtLvoY1o1Du9qill07Jvg==
   dependencies:
     "@babel/standalone" "^7.0.0"
     "@gitlab/vue-toasted" "^1.3.0"
@@ -4243,7 +4243,7 @@ eslint-plugin-filenames@^1.3.2:
     lodash.snakecase "4.1.1"
     lodash.upperfirst "4.3.1"
 
-eslint-plugin-import@^2.16.0, eslint-plugin-import@^2.18.2:
+eslint-plugin-import@^2.18.2:
   version "2.18.2"
   resolved "https://registry.yarnpkg.com/eslint-plugin-import/-/eslint-plugin-import-2.18.2.tgz#02f1180b90b077b33d447a17a2326ceb400aceb6"
   integrity sha512-5ohpsHAiUBRNaBWAF08izwUGlbrJoJJ+W9/TBwsGoR1MnlgfwMIKrFeSjWbt6moabiXW9xNvtFz+97KHRfI4HQ==

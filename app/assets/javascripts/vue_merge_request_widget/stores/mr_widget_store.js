@@ -48,6 +48,7 @@ export default class MergeRequestStore {
     this.commits = data.commits_without_merge_commits || [];
     this.squashCommitMessage = data.default_squash_commit_message;
     this.rebaseInProgress = data.rebase_in_progress;
+    this.mergeRequestDiffsPath = data.diffs_path;
 
     if (data.issues_links) {
       const links = data.issues_links;
@@ -81,6 +82,7 @@ export default class MergeRequestStore {
     this.isOpen = data.state === 'opened';
     this.hasMergeableDiscussionsState = data.mergeable_discussions_state === false;
     this.isSHAMismatch = this.sha !== data.diff_head_sha;
+    this.latestSHA = data.diff_head_sha;
     this.canBeMerged = data.can_be_merged || false;
     this.isMergeAllowed = data.mergeable || false;
     this.mergeOngoing = data.merge_ongoing;
@@ -170,6 +172,7 @@ export default class MergeRequestStore {
     this.conflictsDocsPath = data.conflicts_docs_path;
     this.ciEnvironmentsStatusPath = data.ci_environments_status_path;
     this.securityApprovalsHelpPagePath = data.security_approvals_help_page_path;
+    this.eligibleApproversDocsPath = data.eligible_approvers_docs_path;
   }
 
   get isNothingToMergeState() {
