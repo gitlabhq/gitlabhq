@@ -1,3 +1,4 @@
+import MockAdapter from 'axios-mock-adapter';
 import actions, {
   stageAllChanges,
   unstageAllChanges,
@@ -18,7 +19,6 @@ import * as types from '~/ide/stores/mutation_types';
 import router from '~/ide/ide_router';
 import { resetStore, file } from '../helpers';
 import testAction from '../../helpers/vuex_action_helper';
-import MockAdapter from 'axios-mock-adapter';
 import eventHub from '~/ide/eventhub';
 
 const store = createStore();

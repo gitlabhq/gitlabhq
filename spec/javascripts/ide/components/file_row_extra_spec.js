@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import { createStore } from '~/ide/stores';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
+import { createStore } from '~/ide/stores';
 import FileRowExtra from '~/ide/components/file_row_extra.vue';
 import { file, resetStore } from '../helpers';
 

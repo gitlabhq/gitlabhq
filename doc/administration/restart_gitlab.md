@@ -8,6 +8,7 @@ If you want the TL;DR versions, jump to:
 - [Omnibus GitLab restart](#omnibus-gitlab-restart)
 - [Omnibus GitLab reconfigure](#omnibus-gitlab-reconfigure)
 - [Source installation restart](#installations-from-source)
+- [Helm chart installation restart](#helm-chart-installations)
 
 ## Omnibus installations
 
@@ -143,3 +144,16 @@ If you are using other init systems, like systemd, you can check the
 [chef]: https://www.chef.io/products/chef-infra/ "Chef official website"
 [src-service]: https://gitlab.com/gitlab-org/gitlab/blob/master/lib/support/init.d/gitlab "GitLab init service file"
 [gl-recipes]: https://gitlab.com/gitlab-org/gitlab-recipes/tree/master/init "GitLab Recipes repository"
+
+## Helm chart installations
+
+There is no single command to restart the entire GitLab application installed via
+the [cloud native Helm Chart](https://docs.gitlab.com/charts/). Usually, it should be
+enough to restart a specific component separately (`gitaly`, `unicorn`,
+`workhorse`, `gitlab-shell`, etc.) by deleting all the pods related to it:
+
+```bash
+kubectl delete pods -l release=<helm release name>,app=<component name>
+```
+
+The release name can be obtained from the output of the `helm list` command.

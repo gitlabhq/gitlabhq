@@ -91,6 +91,25 @@ describe Ci::RetryPipelineService, '#execute' do
       end
     end
 
+    context 'when there is a failed test in a DAG' do
+      before do
+        create_build('build', :success, 0)
+        create_build('build2', :success, 0)
+        test_build = create_build('test', :failed, 1)
+        create(:ci_build_need, build: test_build, name: 'build')
+        create(:ci_build_need, build: test_build, name: 'build2')
+      end
+
+      it 'retries the test' do
+        service.execute(pipeline)
+
+        expect(build('build')).to be_success
+        expect(build('build2')).to be_success
+        expect(build('test')).to be_pending
+        expect(build('test').needs.map(&:name)).to match_array(%w(build build2))
+      end
+    end
+
     context 'when the last stage was skipepd' do
       before do
         create_build('build 1', :success, 0)

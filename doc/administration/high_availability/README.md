@@ -4,18 +4,19 @@ type: reference, concepts
 
 # Scaling and High Availability
 
-GitLab supports several different types of clustering and high-availability.
+GitLab supports a number of options for scaling your self-managed instance and configuring high availability (HA).
 The solution you choose will be based on the level of scalability and
 availability you require. The easiest solutions are scalable, but not necessarily
 highly available.
 
-GitLab provides a service that is usually essential to most organizations: it
+GitLab provides a service that is essential to most organizations: it
 enables people to collaborate on code in a timely fashion. Any downtime should
-therefore be short and planned. Luckily, GitLab provides a solid setup even on
-a single server without special measures. Due to the distributed nature
-of Git, developers can still commit code locally even when GitLab is not
+therefore be short and planned. Due to the distributed nature
+of Git, developers can continue to commit code locally even when GitLab is not
 available. However, some GitLab features such as the issue tracker and
-Continuous Integration are not available when GitLab is down.
+continuous integration are not available when GitLab is down.
+If you require all GitLab functionality to be highly available,
+consider the options outlined below.
 
 **Keep in mind that all highly-available solutions come with a trade-off between
 cost/complexity and uptime**. The more uptime you want, the more complex the
@@ -25,8 +26,8 @@ solution should balance the costs against the benefits.
 
 There are many options when choosing a highly-available GitLab architecture. We
 recommend engaging with GitLab Support to choose the best architecture for your
-use case. This page contains some various options and guidelines based on
-experience with GitLab.com and Enterprise Edition on-premises customers.
+use case. This page contains recommendations based on
+experience with GitLab.com and internal scale testing.
 
 For detailed insight into how GitLab scales and configures GitLab.com, you can
 watch [this 1 hour Q&A](https://www.youtube.com/watch?v=uCU8jdYzpac)

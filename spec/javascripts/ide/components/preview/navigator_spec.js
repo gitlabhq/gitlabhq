@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import ClientsideNavigator from '~/ide/components/preview/navigator.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import ClientsideNavigator from '~/ide/components/preview/navigator.vue';
 
 describe('IDE clientside preview navigator', () => {
   let vm;

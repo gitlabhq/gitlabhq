@@ -215,14 +215,29 @@ module BlobHelper
     return if blob.binary? || blob.stored_externally?
 
     title = _('Open raw')
-    link_to icon('file-code-o'), blob_raw_path, class: 'btn btn-sm has-tooltip', target: '_blank', rel: 'noopener noreferrer', title: title, data: { container: 'body' }
+    link_to sprite_icon('doc-code'),
+      external_storage_url_or_path(blob_raw_path),
+      class: 'btn btn-sm has-tooltip',
+      target: '_blank',
+      rel: 'noopener noreferrer',
+      aria: { label: title },
+      title: title,
+      data: { container: 'body' }
   end
 
   def download_blob_button(blob)
     return if blob.empty?
 
     title = _('Download')
-    link_to sprite_icon('download'), blob_raw_path(inline: false), download: @path, class: 'btn btn-sm has-tooltip', target: '_blank', rel: 'noopener noreferrer', title: title, data: { container: 'body' }
+    link_to sprite_icon('download'),
+      external_storage_url_or_path(blob_raw_path(inline: false)),
+      download: @path,
+      class: 'btn btn-sm has-tooltip',
+      target: '_blank',
+      rel: 'noopener noreferrer',
+      aria: { label: title },
+      title: title,
+      data: { container: 'body' }
   end
 
   def blob_render_error_reason(viewer)

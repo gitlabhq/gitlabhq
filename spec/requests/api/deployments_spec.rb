@@ -30,6 +30,16 @@ describe API::Deployments do
         expect(json_response.last['iid']).to eq(deployment_3.iid)
       end
 
+      context 'with updated_at filters specified' do
+        it 'returns projects deployments with last update in specified datetime range' do
+          get api("/projects/#{project.id}/deployments", user), params: { updated_before: 30.minutes.ago, updated_after: 90.minutes.ago }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response.first['id']).to eq(deployment_3.id)
+        end
+      end
+
       describe 'ordering' do
         let(:order_by) { 'iid' }
         let(:sort) { 'desc' }

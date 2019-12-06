@@ -169,6 +169,8 @@ module Gitlab
         case request_format
         when :archive
           archive_request?
+        when :blob
+          blob_request?
         else
           false
         end
@@ -188,6 +190,10 @@ module Gitlab
 
       def archive_request?
         current_request.path.include?('/-/archive/')
+      end
+
+      def blob_request?
+        current_request.path.include?('/raw/')
       end
     end
   end

@@ -1,9 +1,9 @@
 import MockAdapter from 'axios-mock-adapter';
+import testAction from 'spec/helpers/vuex_action_helper';
 import axios from '~/lib/utils/axios_utils';
 import createState from '~/ide/stores/modules/file_templates/state';
 import * as actions from '~/ide/stores/modules/file_templates/actions';
 import * as types from '~/ide/stores/modules/file_templates/mutation_types';
-import testAction from 'spec/helpers/vuex_action_helper';
 
 describe('IDE file templates actions', () => {
   let state;

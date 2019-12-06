@@ -4,11 +4,15 @@
 class Projects::RawController < Projects::ApplicationController
   include ExtractsPath
   include SendsBlob
+  include StaticObjectExternalStorage
+
+  prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:blob) }
 
   before_action :require_non_empty_project
   before_action :assign_ref_vars
   before_action :authorize_download_code!
-  before_action :show_rate_limit, only: [:show]
+  before_action :show_rate_limit, only: [:show], unless: :external_storage_request?
+  before_action :redirect_to_external_storage, only: :show, if: :static_objects_external_storage_enabled?
 
   def show
     @blob = @repository.blob_at(@commit.id, @path)

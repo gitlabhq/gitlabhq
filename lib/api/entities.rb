@@ -176,7 +176,7 @@ module API
     end
 
     class BasicProjectDetails < ProjectIdentity
-      include ::API::ProjectsRelationBuilder
+      include ::API::ProjectsBatchCounting
 
       expose :default_branch, if: -> (project, options) { Ability.allowed?(options[:current_user], :download_code, project) }
       # Avoids an N+1 query: https://github.com/mbleigh/acts-as-taggable-on/issues/91#issuecomment-168273770
@@ -418,7 +418,7 @@ module API
           options: { only_owned: true }
         ).execute
 
-        Entities::Project.prepare_relation(projects)
+        Entities::Project.preload_and_batch_count!(projects)
       end
 
       expose :shared_projects, using: Entities::Project do |group, options|
@@ -428,7 +428,7 @@ module API
           options: { only_shared: true }
         ).execute
 
-        Entities::Project.prepare_relation(projects)
+        Entities::Project.preload_and_batch_count!(projects)
       end
     end
 

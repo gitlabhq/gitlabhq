@@ -75,15 +75,17 @@ module API
         mutually_exclusive :import_url, :template_name, :template_project_id
       end
 
-      def load_projects
+      def find_projects
         ProjectsFinder.new(current_user: current_user, params: project_finder_params).execute
       end
 
-      def present_projects(projects, options = {})
+      # Prepare the full projects query
+      # None of this is supposed to actually execute any database query
+      def prepare_query(projects)
         projects = reorder_projects(projects)
         projects = apply_filters(projects)
-        projects = paginate(projects)
-        projects, options = with_custom_attributes(projects, options)
+
+        projects, options = with_custom_attributes(projects)
 
         options = options.reverse_merge(
           with: current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails,
@@ -91,9 +93,23 @@ module API
           current_user: current_user,
           license: false
         )
+
         options[:with] = Entities::BasicProjectDetails if params[:simple]
 
-        present options[:with].prepare_relation(projects, options), options
+        projects = options[:with].preload_relation(projects, options)
+
+        [projects, options]
+      end
+
+      def prepare_and_present(project_relation)
+        projects, options = prepare_query(project_relation)
+
+        projects = paginate_and_retrieve!(projects)
+
+        # Refresh count caches
+        options[:with].execute_batch_counting(projects)
+
+        present projects, options
       end
 
       def translate_params_for_compatibility(params)
@@ -118,7 +134,7 @@ module API
 
         params[:user] = user
 
-        present_projects load_projects
+        prepare_and_present find_projects
       end
 
       desc 'Get projects starred by a user' do
@@ -134,7 +150,7 @@ module API
         not_found!('User') unless user
 
         starred_projects = StarredProjectsFinder.new(user, params: project_finder_params, current_user: current_user).execute
-        present_projects starred_projects
+        prepare_and_present starred_projects
       end
     end
 
@@ -150,7 +166,7 @@ module API
         use :with_custom_attributes
       end
       get do
-        present_projects load_projects
+        prepare_and_present find_projects
       end
 
       desc 'Create new project' do
@@ -287,7 +303,7 @@ module API
       get ':id/forks' do
         forks = ForkProjectsFinder.new(user_project, params: project_finder_params, current_user: current_user).execute
 
-        present_projects forks
+        prepare_and_present forks
       end
 
       desc 'Check pages access of this project'

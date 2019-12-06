@@ -32,12 +32,16 @@ export default {
             placeholder="https://mysentryserver.com"
             @input="updateApiHost"
           />
+          <p class="form-text text-muted">
+            {{
+              s__(
+                "ErrorTracking|If you self-host Sentry, enter the full URL of your Sentry instance. If you're using Sentry's hosted solution, enter https://sentry.io",
+              )
+            }}
+          </p>
           <!-- eslint-enable @gitlab/vue-i18n/no-bare-attribute-strings -->
         </div>
       </div>
-      <p class="form-text text-muted">
-        {{ s__('ErrorTracking|Find your hostname in your Sentry account settings page') }}
-      </p>
     </div>
     <div class="form-group" :class="{ 'gl-show-field-errors': connectError }">
       <label class="label-bold" for="error-tracking-token">

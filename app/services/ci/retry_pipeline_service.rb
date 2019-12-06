@@ -9,12 +9,22 @@ module Ci
         raise Gitlab::Access::AccessDeniedError
       end
 
-      pipeline.retryable_builds.find_each do |build|
+      needs = Set.new
+
+      pipeline.retryable_builds.preload_needs.find_each do |build|
         next unless can?(current_user, :update_build, build)
 
         Ci::RetryBuildService.new(project, current_user)
           .reprocess!(build)
+
+        needs += build.needs.map(&:name)
       end
+
+      # In a DAG, the dependencies may have already completed. Figure out
+      # which builds have succeeded and use them to update the pipeline. If we don't
+      # do this, then builds will be stuck in the created state since their dependencies
+      # will never run.
+      completed_build_ids = pipeline.find_successful_build_ids_by_names(needs) if needs.any?
 
       pipeline.builds.latest.skipped.find_each do |skipped|
         retry_optimistic_lock(skipped) { |build| build.process }
@@ -26,7 +36,7 @@ module Ci
 
       Ci::ProcessPipelineService
         .new(pipeline)
-        .execute
+        .execute(completed_build_ids)
     end
   end
 end

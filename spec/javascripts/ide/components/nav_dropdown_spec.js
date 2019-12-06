@@ -1,8 +1,8 @@
 import $ from 'jquery';
 import Vue from 'vue';
+import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import store from '~/ide/stores';
 import NavDropdown from '~/ide/components/nav_dropdown.vue';
-import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 
 describe('IDE NavDropdown', () => {
   const Component = Vue.extend(NavDropdown);

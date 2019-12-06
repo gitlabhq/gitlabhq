@@ -6993,7 +6993,7 @@ msgstr ""
 msgid "ErrorTracking|Connection has failed. Re-check Auth Token and try again."
 msgstr ""
 
-msgid "ErrorTracking|Find your hostname in your Sentry account settings page"
+msgid "ErrorTracking|If you self-host Sentry, enter the full URL of your Sentry instance. If you're using Sentry's hosted solution, enter https://sentry.io"
 msgstr ""
 
 msgid "ErrorTracking|No projects available"

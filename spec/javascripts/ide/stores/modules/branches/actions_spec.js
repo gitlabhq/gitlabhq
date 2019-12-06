@@ -1,8 +1,8 @@
 import MockAdapter from 'axios-mock-adapter';
+import testAction from 'spec/helpers/vuex_action_helper';
 import axios from '~/lib/utils/axios_utils';
 import state from '~/ide/stores/modules/branches/state';
 import * as types from '~/ide/stores/modules/branches/mutation_types';
-import testAction from 'spec/helpers/vuex_action_helper';
 import {
   requestBranches,
   receiveBranchesError,

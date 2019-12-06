@@ -1,3 +1,4 @@
+import { resetStore, file } from 'spec/ide/helpers';
 import rootActions from '~/ide/stores/actions';
 import { createStore } from '~/ide/stores';
 import service from '~/ide/services';
@@ -7,7 +8,6 @@ import consts from '~/ide/stores/modules/commit/constants';
 import * as mutationTypes from '~/ide/stores/modules/commit/mutation_types';
 import * as actions from '~/ide/stores/modules/commit/actions';
 import { commitActionTypes } from '~/ide/constants';
-import { resetStore, file } from 'spec/ide/helpers';
 import testAction from '../../../../helpers/vuex_action_helper';
 
 const TEST_COMMIT_SHA = '123456789';

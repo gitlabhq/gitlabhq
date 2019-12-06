@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import TokenedInput from '~/ide/components/shared/tokened_input.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import TokenedInput from '~/ide/components/shared/tokened_input.vue';
 
 const TEST_PLACEHOLDER = 'Searching in test';
 const TEST_TOKENS = [

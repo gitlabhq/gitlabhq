@@ -206,7 +206,7 @@ module Sentry
 
       uri = URI(url)
       uri.path.squeeze!('/')
-      # Remove trailing spaces
+      # Remove trailing slash
       uri = uri.to_s.gsub(/\/\z/, '')
 
       uri

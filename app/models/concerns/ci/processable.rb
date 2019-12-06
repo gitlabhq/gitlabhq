@@ -14,6 +14,8 @@ module Ci
       has_many :needs, class_name: 'Ci::BuildNeed', foreign_key: :build_id, inverse_of: :build
 
       accepts_nested_attributes_for :needs
+
+      scope :preload_needs, -> { preload(:needs) }
     end
 
     def schedulable?

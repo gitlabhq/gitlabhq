@@ -170,41 +170,14 @@ describe PipelinesFinder do
       end
     end
 
-    context 'when order_by and sort are specified' do
-      context 'when order_by user_id' do
-        let(:params)     { { order_by: 'user_id', sort: 'asc' } }
-        let(:users)      { Array.new(2) { create(:user, developer_projects: [project]) } }
-        let!(:pipelines) { users.map { |user| create(:ci_pipeline, project: project, user: user) } }
+    context 'when updated_at filters are specified' do
+      let(:params) { { updated_before: 1.day.ago, updated_after: 3.days.ago } }
+      let!(:pipeline1) { create(:ci_pipeline, project: project, updated_at: 2.days.ago) }
+      let!(:pipeline2) { create(:ci_pipeline, project: project, updated_at: 4.days.ago) }
+      let!(:pipeline3) { create(:ci_pipeline, project: project, updated_at: 1.hour.ago) }
 
-        it 'sorts as user_id: :asc' do
-          is_expected.to match_array(pipelines)
-        end
-
-        context 'when sort is invalid' do
-          let(:params) { { order_by: 'user_id', sort: 'invalid_sort' } }
-
-          it 'sorts as user_id: :desc' do
-            is_expected.to eq(pipelines.sort_by { |p| -p.user.id })
-          end
-        end
-      end
-
-      context 'when order_by is invalid' do
-        let(:params) { { order_by: 'invalid_column', sort: 'asc' } }
-        let!(:pipelines) { create_list(:ci_pipeline, 2, project: project) }
-
-        it 'sorts as id: :asc' do
-          is_expected.to eq(pipelines.sort_by { |p| p.id })
-        end
-      end
-
-      context 'when both are nil' do
-        let(:params) { { order_by: nil, sort: nil } }
-        let!(:pipelines) { create_list(:ci_pipeline, 2, project: project) }
-
-        it 'sorts as id: :desc' do
-          is_expected.to eq(pipelines.sort_by { |p| -p.id })
-        end
+      it 'returns deployments with matched updated_at' do
+        is_expected.to match_array([pipeline1])
       end
     end
 
@@ -246,6 +219,37 @@ describe PipelinesFinder do
       context 'the user is not allowed to read pipelines' do
         it 'returns empty' do
           is_expected.to be_empty
+        end
+      end
+    end
+
+    describe 'ordering' do
+      using RSpec::Parameterized::TableSyntax
+
+      let(:params) { { order_by: order_by, sort: sort } }
+
+      let!(:pipeline_1) { create(:ci_pipeline, :scheduled, project: project, iid: 11, ref: 'master', created_at: Time.now, updated_at: Time.now, user: create(:user)) }
+      let!(:pipeline_2) { create(:ci_pipeline, :created, project: project, iid: 12, ref: 'feature', created_at: 1.day.ago, updated_at: 2.hours.ago, user: create(:user)) }
+      let!(:pipeline_3) { create(:ci_pipeline, :success, project: project, iid: 8, ref: 'patch', created_at: 2.days.ago, updated_at: 1.hour.ago, user: create(:user)) }
+
+      where(:order_by, :sort, :ordered_pipelines) do
+        'id'         | 'asc'  | [:pipeline_1, :pipeline_2, :pipeline_3]
+        'id'         | 'desc' | [:pipeline_3, :pipeline_2, :pipeline_1]
+        'ref'        | 'asc'  | [:pipeline_2, :pipeline_1, :pipeline_3]
+        'ref'        | 'desc' | [:pipeline_3, :pipeline_1, :pipeline_2]
+        'status'     | 'asc'  | [:pipeline_2, :pipeline_1, :pipeline_3]
+        'status'     | 'desc' | [:pipeline_3, :pipeline_1, :pipeline_2]
+        'updated_at' | 'asc'  | [:pipeline_2, :pipeline_3, :pipeline_1]
+        'updated_at' | 'desc' | [:pipeline_1, :pipeline_3, :pipeline_2]
+        'user_id'    | 'asc'  | [:pipeline_1, :pipeline_2, :pipeline_3]
+        'user_id'    | 'desc' | [:pipeline_3, :pipeline_2, :pipeline_1]
+        'invalid'    | 'asc'  | [:pipeline_1, :pipeline_2, :pipeline_3]
+        'id'         | 'err'  | [:pipeline_3, :pipeline_2, :pipeline_1]
+      end
+
+      with_them do
+        it 'returns the pipelines ordered' do
+          expect(subject).to eq(ordered_pipelines.map { |name| public_send(name) })
         end
       end
     end

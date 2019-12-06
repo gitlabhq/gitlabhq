@@ -116,9 +116,9 @@ describe Gitlab::Auth::UserAuthFinders do
   end
 
   describe '#find_user_from_static_object_token' do
-    context 'when request format is archive' do
+    shared_examples 'static object request' do
       before do
-        env['SCRIPT_NAME'] = 'project/-/archive/master.zip'
+        env['SCRIPT_NAME'] = path
       end
 
       context 'when token header param is present' do
@@ -126,7 +126,7 @@ describe Gitlab::Auth::UserAuthFinders do
           it 'returns the user' do
             request.headers['X-Gitlab-Static-Object-Token'] = user.static_object_token
 
-            expect(find_user_from_static_object_token(:archive)).to eq(user)
+            expect(find_user_from_static_object_token(format)).to eq(user)
           end
         end
 
@@ -134,7 +134,7 @@ describe Gitlab::Auth::UserAuthFinders do
           it 'returns the user' do
             request.headers['X-Gitlab-Static-Object-Token'] = 'foobar'
 
-            expect { find_user_from_static_object_token(:archive) }.to raise_error(Gitlab::Auth::UnauthorizedError)
+            expect { find_user_from_static_object_token(format) }.to raise_error(Gitlab::Auth::UnauthorizedError)
           end
         end
       end
@@ -144,7 +144,7 @@ describe Gitlab::Auth::UserAuthFinders do
           it 'returns the user' do
             set_param(:token, user.static_object_token)
 
-            expect(find_user_from_static_object_token(:archive)).to eq(user)
+            expect(find_user_from_static_object_token(format)).to eq(user)
           end
         end
 
@@ -152,13 +152,27 @@ describe Gitlab::Auth::UserAuthFinders do
           it 'returns the user' do
             set_param(:token, 'foobar')
 
-            expect { find_user_from_static_object_token(:archive) }.to raise_error(Gitlab::Auth::UnauthorizedError)
+            expect { find_user_from_static_object_token(format) }.to raise_error(Gitlab::Auth::UnauthorizedError)
           end
         end
       end
     end
 
-    context 'when request format is not archive' do
+    context 'when request format is archive' do
+      it_behaves_like 'static object request' do
+        let_it_be(:path) { 'project/-/archive/master.zip' }
+        let_it_be(:format) { :archive }
+      end
+    end
+
+    context 'when request format is blob' do
+      it_behaves_like 'static object request' do
+        let_it_be(:path) { 'project/raw/master/README.md' }
+        let_it_be(:format) { :blob }
+      end
+    end
+
+    context 'when request format is not archive nor blob' do
       before do
         env['script_name'] = 'url'
       end

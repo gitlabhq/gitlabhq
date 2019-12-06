@@ -14,6 +14,7 @@ module Ci
     include HasRef
     include ShaAttribute
     include FromUnion
+    include UpdatedAtFilterable
 
     sha_attribute :source_sha
     sha_attribute :target_sha
@@ -809,6 +810,10 @@ module Ci
 
     def persistent_ref
       @persistent_ref ||= PersistentRef.new(pipeline: self)
+    end
+
+    def find_successful_build_ids_by_names(names)
+      statuses.latest.success.where(name: names).pluck(:id)
     end
 
     private
