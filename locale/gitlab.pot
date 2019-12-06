@@ -701,6 +701,9 @@ msgstr ""
 msgid "API Token"
 msgstr ""
 
+msgid "AWS Secret Access Key"
+msgstr ""
+
 msgid "Abort"
 msgstr ""
 
@@ -6127,6 +6130,9 @@ msgid "Enter in your Phabricator Server URL and personal access token below"
 msgstr ""
 
 msgid "Enter merge request URLs"
+msgstr ""
+
+msgid "Enter new AWS Secret Access Key"
 msgstr ""
 
 msgid "Enter the issue description"

@@ -1,5 +1,21 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.4.5
+
+- No changes.
+
+## 12.4.4
+
+### Security (6 changes)
+
+- Protect Jira integration endpoints from guest users.
+- Fix private comment Elasticsearch leak on project search scope.
+- Filter snippet search results by feature visibility.
+- Hide AWS secret on Admin Integration page.
+- Fail pull mirror when mirror user is blocked.
+- Prevent IDOR when adding users to protected environments.
+
+
 ## 12.4.3
 
 ### Fixed (2 changes)
