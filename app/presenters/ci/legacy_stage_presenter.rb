@@ -15,9 +15,10 @@ module Ci
     private
 
     def preload_statuses(statuses)
+      loaded_statuses = statuses.load
       statuses.tap do |statuses|
         # rubocop: disable CodeReuse/ActiveRecord
-        ActiveRecord::Associations::Preloader.new.preload(preloadable_statuses(statuses), :tags)
+        ActiveRecord::Associations::Preloader.new.preload(preloadable_statuses(loaded_statuses), %w[tags job_artifacts_archive metadata])
         # rubocop: enable CodeReuse/ActiveRecord
       end
     end
