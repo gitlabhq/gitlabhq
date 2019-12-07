@@ -56,7 +56,7 @@ describe 'Direct upload support' do
           let(:connection) { nil }
 
           it 'raises an error' do
-            expect { subject }.to raise_error /are supported as a object storage provider when 'direct_upload' is used/
+            expect { subject }.to raise_error "No provider configured for '#{config_name}'. Only Google, AWS are supported."
           end
         end
 
@@ -64,7 +64,20 @@ describe 'Direct upload support' do
           let(:provider) { 'Rackspace' }
 
           it 'raises an error' do
-            expect { subject }.to raise_error /are supported as a object storage provider when 'direct_upload' is used/
+            expect { subject }.to raise_error /Object storage provider '#{provider}' is not supported when 'direct_upload' is used for '#{config_name}'/
+          end
+        end
+
+        context 'when connection is omitted' do
+          let(:object_store) do
+            {
+              enabled: enabled,
+              direct_upload: direct_upload
+            }
+          end
+
+          it 'raises an error' do
+            expect { subject }.to raise_error /the 'connection' section is missing/
           end
         end
       end
