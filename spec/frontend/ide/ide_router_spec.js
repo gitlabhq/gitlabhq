@@ -31,7 +31,7 @@ describe('IDE router', () => {
     `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}`,
   ].forEach(route => {
     it(`finds project path when route is "${route}"`, () => {
-      spyOn(store, 'dispatch').and.returnValue(new Promise(() => {}));
+      jest.spyOn(store, 'dispatch').mockReturnValue(new Promise(() => {}));
 
       router.push(route);
 

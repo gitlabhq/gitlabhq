@@ -18,8 +18,9 @@ describe Gitlab::Auth::LDAP::Authentication do
 
       # try only to fake the LDAP call
       adapter = double('adapter', dn: dn).as_null_object
-      allow_any_instance_of(described_class)
-        .to receive(:adapter).and_return(adapter)
+      allow_next_instance_of(described_class) do |instance|
+        allow(instance).to receive(:adapter).and_return(adapter)
+      end
 
       expect(described_class.login(login, password)).to be_truthy
     end
@@ -27,8 +28,9 @@ describe Gitlab::Auth::LDAP::Authentication do
     it "is false if the user does not exist" do
       # try only to fake the LDAP call
       adapter = double('adapter', dn: dn).as_null_object
-      allow_any_instance_of(described_class)
-        .to receive(:adapter).and_return(adapter)
+      allow_next_instance_of(described_class) do |instance|
+        allow(instance).to receive(:adapter).and_return(adapter)
+      end
 
       expect(described_class.login(login, password)).to be_falsey
     end
@@ -38,8 +40,9 @@ describe Gitlab::Auth::LDAP::Authentication do
 
       # try only to fake the LDAP call
       adapter = double('adapter', bind_as: nil).as_null_object
-      allow_any_instance_of(described_class)
-        .to receive(:adapter).and_return(adapter)
+      allow_next_instance_of(described_class) do |instance|
+        allow(instance).to receive(:adapter).and_return(adapter)
+      end
 
       expect(described_class.login(login, password)).to be_falsey
     end

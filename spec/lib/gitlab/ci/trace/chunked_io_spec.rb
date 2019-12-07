@@ -112,8 +112,9 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
       end
 
       it 'calls get_chunk only once' do
-        expect_any_instance_of(Gitlab::Ci::Trace::ChunkedIO)
-          .to receive(:current_chunk).once.and_call_original
+        expect_next_instance_of(Gitlab::Ci::Trace::ChunkedIO) do |instance|
+          expect(instance).to receive(:current_chunk).once.and_call_original
+        end
 
         chunked_io.each_line { |line| }
       end

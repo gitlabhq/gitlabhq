@@ -38,8 +38,9 @@ describe Gitlab::EtagCaching::Middleware do
     end
 
     it 'generates ETag' do
-      expect_any_instance_of(Gitlab::EtagCaching::Store)
-        .to receive(:touch).and_return('123')
+      expect_next_instance_of(Gitlab::EtagCaching::Store) do |instance|
+        expect(instance).to receive(:touch).and_return('123')
+      end
 
       middleware.call(build_request(path, if_none_match))
     end
@@ -177,9 +178,9 @@ describe Gitlab::EtagCaching::Middleware do
         'SCRIPT_NAME' => '/relative-gitlab'
       }
 
-      expect_any_instance_of(Gitlab::EtagCaching::Store)
-        .to receive(:get).with("/relative-gitlab#{enabled_path}")
-        .and_return(nil)
+      expect_next_instance_of(Gitlab::EtagCaching::Store) do |instance|
+        expect(instance).to receive(:get).with("/relative-gitlab#{enabled_path}").and_return(nil)
+      end
 
       middleware.call(env)
     end
@@ -190,8 +191,9 @@ describe Gitlab::EtagCaching::Middleware do
   end
 
   def mock_value_in_store(value)
-    allow_any_instance_of(Gitlab::EtagCaching::Store)
-      .to receive(:get).and_return(value)
+    allow_next_instance_of(Gitlab::EtagCaching::Store) do |instance|
+      allow(instance).to receive(:get).and_return(value)
+    end
   end
 
   def build_request(path, if_none_match)

@@ -134,7 +134,9 @@ describe Gitlab::Git::Blob, :seed_helper do
 
   describe '.find with Rugged enabled', :enable_rugged do
     it 'calls out to the Rugged implementation' do
-      allow_any_instance_of(Rugged).to receive(:rev_parse).with(SeedRepo::Commit::ID).and_call_original
+      allow_next_instance_of(Rugged) do |instance|
+        allow(instance).to receive(:rev_parse).with(SeedRepo::Commit::ID).and_call_original
+      end
 
       described_class.find(repository, SeedRepo::Commit::ID, 'files/images/6049019_460s.jpg')
     end

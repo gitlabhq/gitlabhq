@@ -1,5 +1,6 @@
 import Visibility from 'visibilityjs';
 import MockAdapter from 'axios-mock-adapter';
+import { TEST_HOST } from 'helpers/test_constants';
 import axios from '~/lib/utils/axios_utils';
 import {
   requestLatestPipeline,
@@ -78,7 +79,7 @@ describe('IDE pipelines actions', () => {
             type: 'setErrorMessage',
             payload: {
               text: 'An error occurred whilst fetching the latest pipeline.',
-              action: jasmine.any(Function),
+              action: expect.any(Function),
               actionText: 'Please try again',
               actionPayload: null,
             },
@@ -91,38 +92,28 @@ describe('IDE pipelines actions', () => {
   });
 
   describe('receiveLatestPipelineSuccess', () => {
-    const rootGetters = {
-      lastCommit: { id: '123' },
-    };
+    const rootGetters = { lastCommit: { id: '123' } };
     let commit;
 
     beforeEach(() => {
-      commit = jasmine.createSpy('commit');
+      commit = jest.fn().mockName('commit');
     });
 
     it('commits pipeline', () => {
       receiveLatestPipelineSuccess({ rootGetters, commit }, { pipelines });
-
-      expect(commit.calls.argsFor(0)).toEqual([
-        types.RECEIVE_LASTEST_PIPELINE_SUCCESS,
-        pipelines[0],
-      ]);
+      expect(commit).toHaveBeenCalledWith(types.RECEIVE_LASTEST_PIPELINE_SUCCESS, pipelines[0]);
     });
 
     it('commits false when there are no pipelines', () => {
       receiveLatestPipelineSuccess({ rootGetters, commit }, { pipelines: [] });
-
-      expect(commit.calls.argsFor(0)).toEqual([types.RECEIVE_LASTEST_PIPELINE_SUCCESS, false]);
+      expect(commit).toHaveBeenCalledWith(types.RECEIVE_LASTEST_PIPELINE_SUCCESS, false);
     });
   });
 
   describe('fetchLatestPipeline', () => {
-    beforeEach(() => {
-      jasmine.clock().install();
-    });
+    beforeEach(() => {});
 
     afterEach(() => {
-      jasmine.clock().uninstall();
       stopPipelinePolling();
       clearEtagPoll();
     });
@@ -135,10 +126,10 @@ describe('IDE pipelines actions', () => {
       });
 
       it('dispatches request', done => {
-        spyOn(axios, 'get').and.callThrough();
-        spyOn(Visibility, 'hidden').and.returnValue(false);
+        jest.spyOn(axios, 'get');
+        jest.spyOn(Visibility, 'hidden').mockReturnValue(false);
 
-        const dispatch = jasmine.createSpy('dispatch');
+        const dispatch = jest.fn().mockName('dispatch');
         const rootGetters = {
           lastCommit: { id: 'abc123def456ghi789jkl' },
           currentProject: { path_with_namespace: 'abc/def' },
@@ -146,31 +137,29 @@ describe('IDE pipelines actions', () => {
 
         fetchLatestPipeline({ dispatch, rootGetters });
 
-        expect(dispatch.calls.argsFor(0)).toEqual(['requestLatestPipeline']);
+        expect(dispatch).toHaveBeenCalledWith('requestLatestPipeline');
 
-        jasmine.clock().tick(1000);
+        jest.advanceTimersByTime(1000);
 
         new Promise(resolve => requestAnimationFrame(resolve))
           .then(() => {
             expect(axios.get).toHaveBeenCalled();
-            expect(axios.get.calls.count()).toBe(1);
-
-            expect(dispatch.calls.argsFor(1)).toEqual([
+            expect(axios.get).toHaveBeenCalledTimes(1);
+            expect(dispatch).toHaveBeenCalledWith(
               'receiveLatestPipelineSuccess',
-              jasmine.anything(),
-            ]);
+              expect.anything(),
+            );
 
-            jasmine.clock().tick(10000);
+            jest.advanceTimersByTime(10000);
           })
           .then(() => new Promise(resolve => requestAnimationFrame(resolve)))
           .then(() => {
             expect(axios.get).toHaveBeenCalled();
-            expect(axios.get.calls.count()).toBe(2);
-
-            expect(dispatch.calls.argsFor(2)).toEqual([
+            expect(axios.get).toHaveBeenCalledTimes(2);
+            expect(dispatch).toHaveBeenCalledWith(
               'receiveLatestPipelineSuccess',
-              jasmine.anything(),
-            ]);
+              expect.anything(),
+            );
           })
           .then(done)
           .catch(done.fail);
@@ -183,7 +172,7 @@ describe('IDE pipelines actions', () => {
       });
 
       it('dispatches error', done => {
-        const dispatch = jasmine.createSpy('dispatch');
+        const dispatch = jest.fn().mockName('dispatch');
         const rootGetters = {
           lastCommit: { id: 'abc123def456ghi789jkl' },
           currentProject: { path_with_namespace: 'abc/def' },
@@ -191,14 +180,11 @@ describe('IDE pipelines actions', () => {
 
         fetchLatestPipeline({ dispatch, rootGetters });
 
-        jasmine.clock().tick(1500);
+        jest.advanceTimersByTime(1500);
 
         new Promise(resolve => requestAnimationFrame(resolve))
           .then(() => {
-            expect(dispatch.calls.argsFor(1)).toEqual([
-              'receiveLatestPipelineError',
-              jasmine.anything(),
-            ]);
+            expect(dispatch).toHaveBeenCalledWith('receiveLatestPipelineError', expect.anything());
           })
           .then(done)
           .catch(done.fail);
@@ -224,7 +210,7 @@ describe('IDE pipelines actions', () => {
             type: 'setErrorMessage',
             payload: {
               text: 'An error occurred whilst loading the pipelines jobs.',
-              action: jasmine.anything(),
+              action: expect.anything(),
               actionText: 'Please try again',
               actionPayload: { id: 1 },
             },
@@ -249,10 +235,7 @@ describe('IDE pipelines actions', () => {
   });
 
   describe('fetchJobs', () => {
-    const stage = {
-      id: 1,
-      dropdownPath: `${gl.TEST_HOST}/jobs`,
-    };
+    const stage = { id: 1, dropdownPath: `${TEST_HOST}/jobs` };
 
     describe('success', () => {
       beforeEach(() => {
@@ -361,7 +344,7 @@ describe('IDE pipelines actions', () => {
             type: 'setErrorMessage',
             payload: {
               text: 'An error occurred whilst fetching the job trace.',
-              action: jasmine.any(Function),
+              action: expect.any(Function),
               actionText: 'Please try again',
               actionPayload: null,
             },
@@ -387,15 +370,13 @@ describe('IDE pipelines actions', () => {
 
   describe('fetchJobTrace', () => {
     beforeEach(() => {
-      mockedState.detailJob = {
-        path: `${gl.TEST_HOST}/project/builds`,
-      };
+      mockedState.detailJob = { path: `${TEST_HOST}/project/builds` };
     });
 
     describe('success', () => {
       beforeEach(() => {
-        spyOn(axios, 'get').and.callThrough();
-        mock.onGet(`${gl.TEST_HOST}/project/builds/trace`).replyOnce(200, { html: 'html' });
+        jest.spyOn(axios, 'get');
+        mock.onGet(`${TEST_HOST}/project/builds/trace`).replyOnce(200, { html: 'html' });
       });
 
       it('dispatches request', done => {
@@ -413,9 +394,12 @@ describe('IDE pipelines actions', () => {
       });
 
       it('sends get request to correct URL', () => {
-        fetchJobTrace({ state: mockedState, dispatch() {} });
+        fetchJobTrace({
+          state: mockedState,
 
-        expect(axios.get).toHaveBeenCalledWith(`${gl.TEST_HOST}/project/builds/trace`, {
+          dispatch() {},
+        });
+        expect(axios.get).toHaveBeenCalledWith(`${TEST_HOST}/project/builds/trace`, {
           params: { format: 'json' },
         });
       });
@@ -423,7 +407,7 @@ describe('IDE pipelines actions', () => {
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onGet(`${gl.TEST_HOST}/project/builds/trace`).replyOnce(500);
+        mock.onGet(`${TEST_HOST}/project/builds/trace`).replyOnce(500);
       });
 
       it('dispatches error', done => {

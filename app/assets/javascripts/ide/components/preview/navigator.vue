@@ -1,7 +1,7 @@
 <script>
 import { listen } from 'codesandbox-api';
-import Icon from '~/vue_shared/components/icon.vue';
 import { GlLoadingIcon } from '@gitlab/ui';
+import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
   components: {

@@ -1,5 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
-import testAction from 'spec/helpers/vuex_action_helper';
+import testAction from 'helpers/vuex_action_helper';
 import axios from '~/lib/utils/axios_utils';
 import createState from '~/ide/stores/modules/file_templates/state';
 import * as actions from '~/ide/stores/modules/file_templates/actions';
@@ -43,7 +43,7 @@ describe('IDE file templates actions', () => {
           {
             type: 'setErrorMessage',
             payload: {
-              action: jasmine.any(Function),
+              action: expect.any(Function),
               actionText: 'Please try again',
               text: 'Error loading template types.',
             },
@@ -82,7 +82,7 @@ describe('IDE file templates actions', () => {
       });
 
       it('rejects if selectedTemplateType is empty', done => {
-        const dispatch = jasmine.createSpy('dispatch');
+        const dispatch = jest.fn().mockName('dispatch');
 
         actions
           .fetchTemplateTypes({ dispatch, state })
@@ -95,9 +95,7 @@ describe('IDE file templates actions', () => {
       });
 
       it('dispatches actions', done => {
-        state.selectedTemplateType = {
-          key: 'licenses',
-        };
+        state.selectedTemplateType = { key: 'licenses' };
 
         testAction(
           actions.fetchTemplateTypes,
@@ -105,17 +103,9 @@ describe('IDE file templates actions', () => {
           state,
           [],
           [
-            {
-              type: 'requestTemplateTypes',
-            },
-            {
-              type: 'receiveTemplateTypesSuccess',
-              payload: pages[0],
-            },
-            {
-              type: 'receiveTemplateTypesSuccess',
-              payload: pages[0].concat(pages[1]),
-            },
+            { type: 'requestTemplateTypes' },
+            { type: 'receiveTemplateTypesSuccess', payload: pages[0] },
+            { type: 'receiveTemplateTypesSuccess', payload: pages[0].concat(pages[1]) },
             {
               type: 'receiveTemplateTypesSuccess',
               payload: pages[0].concat(pages[1]).concat(pages[2]),
@@ -132,23 +122,14 @@ describe('IDE file templates actions', () => {
       });
 
       it('dispatches actions', done => {
-        state.selectedTemplateType = {
-          key: 'licenses',
-        };
+        state.selectedTemplateType = { key: 'licenses' };
 
         testAction(
           actions.fetchTemplateTypes,
           null,
           state,
           [],
-          [
-            {
-              type: 'requestTemplateTypes',
-            },
-            {
-              type: 'receiveTemplateTypesError',
-            },
-          ],
+          [{ type: 'requestTemplateTypes' }, { type: 'receiveTemplateTypesError' }],
           done,
         );
       });
@@ -157,16 +138,11 @@ describe('IDE file templates actions', () => {
 
   describe('setSelectedTemplateType', () => {
     it('commits SET_SELECTED_TEMPLATE_TYPE', () => {
-      const commit = jasmine.createSpy('commit');
+      const commit = jest.fn().mockName('commit');
       const options = {
         commit,
         dispatch() {},
-        rootGetters: {
-          activeFile: {
-            name: 'test',
-            prevPath: '',
-          },
-        },
+        rootGetters: { activeFile: { name: 'test', prevPath: '' } },
       };
 
       actions.setSelectedTemplateType(options, { name: 'test' });
@@ -175,17 +151,12 @@ describe('IDE file templates actions', () => {
     });
 
     it('dispatches discardFileChanges if prevPath matches templates name', () => {
-      const dispatch = jasmine.createSpy('dispatch');
+      const dispatch = jest.fn().mockName('dispatch');
       const options = {
         commit() {},
+
         dispatch,
-        rootGetters: {
-          activeFile: {
-            name: 'test',
-            path: 'test',
-            prevPath: 'test',
-          },
-        },
+        rootGetters: { activeFile: { name: 'test', path: 'test', prevPath: 'test' } },
       };
 
       actions.setSelectedTemplateType(options, { name: 'test' });
@@ -194,27 +165,19 @@ describe('IDE file templates actions', () => {
     });
 
     it('dispatches renameEntry if file name doesnt match', () => {
-      const dispatch = jasmine.createSpy('dispatch');
+      const dispatch = jest.fn().mockName('dispatch');
       const options = {
         commit() {},
+
         dispatch,
-        rootGetters: {
-          activeFile: {
-            name: 'oldtest',
-            path: 'oldtest',
-            prevPath: '',
-          },
-        },
+        rootGetters: { activeFile: { name: 'oldtest', path: 'oldtest', prevPath: '' } },
       };
 
       actions.setSelectedTemplateType(options, { name: 'test' });
 
       expect(dispatch).toHaveBeenCalledWith(
         'renameEntry',
-        {
-          path: 'oldtest',
-          name: 'test',
-        },
+        { path: 'oldtest', name: 'test' },
         { root: true },
       );
     });
@@ -231,7 +194,7 @@ describe('IDE file templates actions', () => {
           {
             type: 'setErrorMessage',
             payload: {
-              action: jasmine.any(Function),
+              action: expect.any(Function),
               actionText: 'Please try again',
               text: 'Error loading template.',
               actionPayload: 'test',
@@ -246,18 +209,16 @@ describe('IDE file templates actions', () => {
   describe('fetchTemplate', () => {
     describe('success', () => {
       beforeEach(() => {
-        mock.onGet(/api\/(.*)\/templates\/licenses\/mit/).replyOnce(200, {
-          content: 'MIT content',
-        });
-        mock.onGet(/api\/(.*)\/templates\/licenses\/testing/).replyOnce(200, {
-          content: 'testing content',
-        });
+        mock
+          .onGet(/api\/(.*)\/templates\/licenses\/mit/)
+          .replyOnce(200, { content: 'MIT content' });
+        mock
+          .onGet(/api\/(.*)\/templates\/licenses\/testing/)
+          .replyOnce(200, { content: 'testing content' });
       });
 
       it('dispatches setFileTemplate if template already has content', done => {
-        const template = {
-          content: 'already has content',
-        };
+        const template = { content: 'already has content' };
 
         testAction(
           actions.fetchTemplate,
@@ -270,13 +231,9 @@ describe('IDE file templates actions', () => {
       });
 
       it('dispatches success', done => {
-        const template = {
-          key: 'mit',
-        };
+        const template = { key: 'mit' };
 
-        state.selectedTemplateType = {
-          key: 'licenses',
-        };
+        state.selectedTemplateType = { key: 'licenses' };
 
         testAction(
           actions.fetchTemplate,
@@ -289,13 +246,9 @@ describe('IDE file templates actions', () => {
       });
 
       it('dispatches success and uses name key for API call', done => {
-        const template = {
-          name: 'testing',
-        };
+        const template = { name: 'testing' };
 
-        state.selectedTemplateType = {
-          key: 'licenses',
-        };
+        state.selectedTemplateType = { key: 'licenses' };
 
         testAction(
           actions.fetchTemplate,
@@ -314,13 +267,9 @@ describe('IDE file templates actions', () => {
       });
 
       it('dispatches error', done => {
-        const template = {
-          name: 'testing',
-        };
+        const template = { name: 'testing' };
 
-        state.selectedTemplateType = {
-          key: 'licenses',
-        };
+        state.selectedTemplateType = { key: 'licenses' };
 
         testAction(
           actions.fetchTemplate,
@@ -336,11 +285,9 @@ describe('IDE file templates actions', () => {
 
   describe('setFileTemplate', () => {
     it('dispatches changeFileContent', () => {
-      const dispatch = jasmine.createSpy('dispatch');
-      const commit = jasmine.createSpy('commit');
-      const rootGetters = {
-        activeFile: { path: 'test' },
-      };
+      const dispatch = jest.fn().mockName('dispatch');
+      const commit = jest.fn().mockName('commit');
+      const rootGetters = { activeFile: { path: 'test' } };
 
       actions.setFileTemplate({ dispatch, commit, rootGetters }, { content: 'content' });
 
@@ -352,11 +299,9 @@ describe('IDE file templates actions', () => {
     });
 
     it('commits SET_UPDATE_SUCCESS', () => {
-      const dispatch = jasmine.createSpy('dispatch');
-      const commit = jasmine.createSpy('commit');
-      const rootGetters = {
-        activeFile: { path: 'test' },
-      };
+      const dispatch = jest.fn().mockName('dispatch');
+      const commit = jest.fn().mockName('commit');
+      const rootGetters = { activeFile: { path: 'test' } };
 
       actions.setFileTemplate({ dispatch, commit, rootGetters }, { content: 'content' });
 
@@ -366,11 +311,9 @@ describe('IDE file templates actions', () => {
 
   describe('undoFileTemplate', () => {
     it('dispatches changeFileContent', () => {
-      const dispatch = jasmine.createSpy('dispatch');
-      const commit = jasmine.createSpy('commit');
-      const rootGetters = {
-        activeFile: { path: 'test', raw: 'raw content' },
-      };
+      const dispatch = jest.fn().mockName('dispatch');
+      const commit = jest.fn().mockName('commit');
+      const rootGetters = { activeFile: { path: 'test', raw: 'raw content' } };
 
       actions.undoFileTemplate({ dispatch, commit, rootGetters });
 
@@ -382,11 +325,9 @@ describe('IDE file templates actions', () => {
     });
 
     it('commits SET_UPDATE_SUCCESS', () => {
-      const dispatch = jasmine.createSpy('dispatch');
-      const commit = jasmine.createSpy('commit');
-      const rootGetters = {
-        activeFile: { path: 'test', raw: 'raw content' },
-      };
+      const dispatch = jest.fn().mockName('dispatch');
+      const commit = jest.fn().mockName('commit');
+      const rootGetters = { activeFile: { path: 'test', raw: 'raw content' } };
 
       actions.undoFileTemplate({ dispatch, commit, rootGetters });
 
@@ -394,18 +335,12 @@ describe('IDE file templates actions', () => {
     });
 
     it('dispatches discardFileChanges if file has prevPath', () => {
-      const dispatch = jasmine.createSpy('dispatch');
-      const rootGetters = {
-        activeFile: { path: 'test', prevPath: 'newtest', raw: 'raw content' },
-      };
+      const dispatch = jest.fn().mockName('dispatch');
+      const rootGetters = { activeFile: { path: 'test', prevPath: 'newtest', raw: 'raw content' } };
 
       actions.undoFileTemplate({ dispatch, commit() {}, rootGetters });
 
-      expect(dispatch.calls.mostRecent().args).toEqual([
-        'discardFileChanges',
-        'test',
-        { root: true },
-      ]);
+      expect(dispatch).toHaveBeenCalledWith('discardFileChanges', 'test', { root: true });
     });
   });
 });

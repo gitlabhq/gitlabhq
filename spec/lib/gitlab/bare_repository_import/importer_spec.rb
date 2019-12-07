@@ -75,7 +75,9 @@ describe Gitlab::BareRepositoryImport::Importer, :seed_helper do
       end
 
       it 'does not schedule an import' do
-        expect_any_instance_of(Project).not_to receive(:import_schedule)
+        expect_next_instance_of(Project) do |instance|
+          expect(instance).not_to receive(:import_schedule)
+        end
 
         importer.create_project_if_needed
       end

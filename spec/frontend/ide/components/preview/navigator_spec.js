@@ -1,5 +1,6 @@
 import Vue from 'vue';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import mountComponent from 'helpers/vue_mount_component_helper';
+import { TEST_HOST } from 'helpers/test_constants';
 import ClientsideNavigator from '~/ide/components/preview/navigator.vue';
 
 describe('IDE clientside preview navigator', () => {
@@ -12,14 +13,9 @@ describe('IDE clientside preview navigator', () => {
   });
 
   beforeEach(() => {
-    manager = {
-      bundlerURL: gl.TEST_HOST,
-      iframe: { src: '' },
-    };
+    manager = { bundlerURL: TEST_HOST, iframe: { src: '' } };
 
-    vm = mountComponent(Component, {
-      manager,
-    });
+    vm = mountComponent(Component, { manager });
   });
 
   afterEach(() => {
@@ -47,7 +43,7 @@ describe('IDE clientside preview navigator', () => {
   it('calls back method when clicking back button', done => {
     vm.navigationStack.push('/test');
     vm.navigationStack.push('/test2');
-    spyOn(vm, 'back');
+    jest.spyOn(vm, 'back').mockReturnValue();
 
     vm.$nextTick(() => {
       vm.$el.querySelector('.ide-navigator-btn').click();
@@ -60,7 +56,7 @@ describe('IDE clientside preview navigator', () => {
 
   it('calls forward method when clicking forward button', done => {
     vm.forwardNavigationStack.push('/test');
-    spyOn(vm, 'forward');
+    jest.spyOn(vm, 'forward').mockReturnValue();
 
     vm.$nextTick(() => {
       vm.$el.querySelectorAll('.ide-navigator-btn')[1].click();
@@ -73,49 +69,35 @@ describe('IDE clientside preview navigator', () => {
 
   describe('onUrlChange', () => {
     it('updates the path', () => {
-      vm.onUrlChange({
-        url: `${gl.TEST_HOST}/url`,
-      });
+      vm.onUrlChange({ url: `${TEST_HOST}/url` });
 
       expect(vm.path).toBe('/url');
     });
 
     it('sets currentBrowsingIndex 0 if not already set', () => {
-      vm.onUrlChange({
-        url: `${gl.TEST_HOST}/url`,
-      });
+      vm.onUrlChange({ url: `${TEST_HOST}/url` });
 
       expect(vm.currentBrowsingIndex).toBe(0);
     });
 
     it('increases currentBrowsingIndex if path doesnt match', () => {
-      vm.onUrlChange({
-        url: `${gl.TEST_HOST}/url`,
-      });
+      vm.onUrlChange({ url: `${TEST_HOST}/url` });
 
-      vm.onUrlChange({
-        url: `${gl.TEST_HOST}/url2`,
-      });
+      vm.onUrlChange({ url: `${TEST_HOST}/url2` });
 
       expect(vm.currentBrowsingIndex).toBe(1);
     });
 
     it('does not increase currentBrowsingIndex if path matches', () => {
-      vm.onUrlChange({
-        url: `${gl.TEST_HOST}/url`,
-      });
+      vm.onUrlChange({ url: `${TEST_HOST}/url` });
 
-      vm.onUrlChange({
-        url: `${gl.TEST_HOST}/url`,
-      });
+      vm.onUrlChange({ url: `${TEST_HOST}/url` });
 
       expect(vm.currentBrowsingIndex).toBe(0);
     });
 
     it('pushes path into navigation stack', () => {
-      vm.onUrlChange({
-        url: `${gl.TEST_HOST}/url`,
-      });
+      vm.onUrlChange({ url: `${TEST_HOST}/url` });
 
       expect(vm.navigationStack).toEqual(['/url']);
     });
@@ -128,7 +110,7 @@ describe('IDE clientside preview navigator', () => {
       vm.navigationStack.push('/test');
       vm.navigationStack.push('/test2');
 
-      spyOn(vm, 'visitPath');
+      jest.spyOn(vm, 'visitPath').mockReturnValue();
 
       vm.back();
     });
@@ -152,7 +134,7 @@ describe('IDE clientside preview navigator', () => {
 
   describe('forward', () => {
     it('calls visitPath with first entry in forwardNavigationStack', () => {
-      spyOn(vm, 'visitPath');
+      jest.spyOn(vm, 'visitPath').mockReturnValue();
 
       vm.forwardNavigationStack.push('/test');
       vm.forwardNavigationStack.push('/test2');
@@ -165,7 +147,7 @@ describe('IDE clientside preview navigator', () => {
 
   describe('refresh', () => {
     it('calls refresh with current path', () => {
-      spyOn(vm, 'visitPath');
+      jest.spyOn(vm, 'visitPath').mockReturnValue();
 
       vm.path = '/test';
 
@@ -179,7 +161,7 @@ describe('IDE clientside preview navigator', () => {
     it('updates iframe src with passed in path', () => {
       vm.visitPath('/testpath');
 
-      expect(manager.iframe.src).toBe(`${gl.TEST_HOST}/testpath`);
+      expect(manager.iframe.src).toBe(`${TEST_HOST}/testpath`);
     });
   });
 });

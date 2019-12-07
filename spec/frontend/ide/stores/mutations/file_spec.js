@@ -9,10 +9,7 @@ describe('IDE store file mutations', () => {
 
   beforeEach(() => {
     localState = state();
-    localFile = {
-      ...file(),
-      type: 'blob',
-    };
+    localFile = { ...file(), type: 'blob' };
 
     localState.entries[localFile.path] = localFile;
   });
@@ -28,11 +25,7 @@ describe('IDE store file mutations', () => {
     });
 
     it('sets pending tab as not active', () => {
-      localState.openFiles.push({
-        ...localFile,
-        pending: true,
-        active: true,
-      });
+      localState.openFiles.push({ ...localFile, pending: true, active: true });
 
       mutations.SET_FILE_ACTIVE(localState, {
         path: localFile.path,
@@ -132,7 +125,7 @@ describe('IDE store file mutations', () => {
         localFile,
       ].forEach(f => {
         expect(f).toEqual(
-          jasmine.objectContaining({
+          expect.objectContaining({
             path,
             name,
             raw: null,
@@ -154,10 +147,7 @@ describe('IDE store file mutations', () => {
     });
 
     it('adds raw data to open pending file', () => {
-      localState.openFiles.push({
-        ...localFile,
-        pending: true,
-      });
+      localState.openFiles.push({ ...localFile, pending: true });
 
       mutations.SET_FILE_RAW_DATA(localState, {
         file: localFile,
@@ -168,11 +158,7 @@ describe('IDE store file mutations', () => {
     });
 
     it('does not add raw data to open pending tempFile file', () => {
-      localState.openFiles.push({
-        ...localFile,
-        pending: true,
-        tempFile: true,
-      });
+      localState.openFiles.push({ ...localFile, pending: true, tempFile: true });
 
       mutations.SET_FILE_RAW_DATA(localState, {
         file: localFile,
@@ -234,7 +220,9 @@ describe('IDE store file mutations', () => {
     it('sets file mr change', () => {
       mutations.SET_FILE_MERGE_REQUEST_CHANGE(localState, {
         file: localFile,
-        mrChange: { diff: 'ABC' },
+        mrChange: {
+          diff: 'ABC',
+        },
       });
 
       expect(localFile.mrChange.diff).toBe('ABC');
@@ -311,12 +299,7 @@ describe('IDE store file mutations', () => {
 
       mutations.DISCARD_FILE_CHANGES(localState, localFile.path);
 
-      expect(localState.trees['gitlab-ce/master'].tree).toEqual([
-        {
-          ...localFile,
-          deleted: false,
-        },
-      ]);
+      expect(localState.trees['gitlab-ce/master'].tree).toEqual([{ ...localFile, deleted: false }]);
     });
 
     it('adds to parent tree if deleted', () => {
@@ -328,12 +311,7 @@ describe('IDE store file mutations', () => {
 
       mutations.DISCARD_FILE_CHANGES(localState, localFile.path);
 
-      expect(localState.entries.parentPath.tree).toEqual([
-        {
-          ...localFile,
-          deleted: false,
-        },
-      ]);
+      expect(localState.entries.parentPath.tree).toEqual([{ ...localFile, deleted: false }]);
     });
   });
 
@@ -379,11 +357,7 @@ describe('IDE store file mutations', () => {
     let f;
 
     beforeEach(() => {
-      f = {
-        ...file(),
-        type: 'blob',
-        staged: true,
-      };
+      f = { ...file(), type: 'blob', staged: true };
 
       localState.stagedFiles.push(f);
       localState.changedFiles.push(f);
@@ -422,19 +396,16 @@ describe('IDE store file mutations', () => {
 
   describe('ADD_PENDING_TAB', () => {
     beforeEach(() => {
-      const f = {
-        ...file('openFile'),
-        path: 'openFile',
-        active: true,
-        opened: true,
-      };
+      const f = { ...file('openFile'), path: 'openFile', active: true, opened: true };
 
       localState.entries[f.path] = f;
       localState.openFiles.push(f);
     });
 
     it('adds file into openFiles as pending', () => {
-      mutations.ADD_PENDING_TAB(localState, { file: localFile });
+      mutations.ADD_PENDING_TAB(localState, {
+        file: localFile,
+      });
 
       expect(localState.openFiles.length).toBe(1);
       expect(localState.openFiles[0].pending).toBe(true);
@@ -445,11 +416,15 @@ describe('IDE store file mutations', () => {
       const newFile = file('test');
       localState.entries[newFile.path] = newFile;
 
-      mutations.ADD_PENDING_TAB(localState, { file: localFile });
+      mutations.ADD_PENDING_TAB(localState, {
+        file: localFile,
+      });
 
       expect(localState.openFiles.length).toBe(1);
 
-      mutations.ADD_PENDING_TAB(localState, { file: file('test') });
+      mutations.ADD_PENDING_TAB(localState, {
+        file: file('test'),
+      });
 
       expect(localState.openFiles.length).toBe(1);
       expect(localState.openFiles[0].name).toBe('test');

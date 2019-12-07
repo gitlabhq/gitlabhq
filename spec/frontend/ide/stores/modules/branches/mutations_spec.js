@@ -10,7 +10,7 @@ describe('IDE branches mutations', () => {
     mockedState = state();
   });
 
-  describe(types.REQUEST_BRANCHES, () => {
+  describe('REQUEST_BRANCHES', () => {
     it('sets loading to true', () => {
       mutations[types.REQUEST_BRANCHES](mockedState);
 
@@ -18,7 +18,7 @@ describe('IDE branches mutations', () => {
     });
   });
 
-  describe(types.RECEIVE_BRANCHES_ERROR, () => {
+  describe('RECEIVE_BRANCHES_ERROR', () => {
     it('sets loading to false', () => {
       mutations[types.RECEIVE_BRANCHES_ERROR](mockedState);
 
@@ -26,7 +26,7 @@ describe('IDE branches mutations', () => {
     });
   });
 
-  describe(types.RECEIVE_BRANCHES_SUCCESS, () => {
+  describe('RECEIVE_BRANCHES_SUCCESS', () => {
     it('sets branches', () => {
       const expectedBranches = branches.map(branch => ({
         name: branch.name,
@@ -39,7 +39,7 @@ describe('IDE branches mutations', () => {
     });
   });
 
-  describe(types.RESET_BRANCHES, () => {
+  describe('RESET_BRANCHES', () => {
     it('clears branches array', () => {
       mockedState.branches = ['test'];
 

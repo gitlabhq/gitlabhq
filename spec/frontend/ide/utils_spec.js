@@ -26,15 +26,18 @@ describe('WebIDE utils', () => {
       entry.deleted = true;
       expect(getCommitIconMap(entry)).toEqual(commitItemIconMap.deleted);
     });
+
     it('renders "addition" icon for temp entries', () => {
       entry.tempFile = true;
       expect(getCommitIconMap(entry)).toEqual(commitItemIconMap.addition);
     });
+
     it('renders "modified" icon for newly-renamed entries', () => {
       entry.prevPath = 'foo/bar';
       entry.tempFile = false;
       expect(getCommitIconMap(entry)).toEqual(commitItemIconMap.modified);
     });
+
     it('renders "modified" icon even for temp entries if they are newly-renamed', () => {
       entry.prevPath = 'foo/bar';
       entry.tempFile = true;

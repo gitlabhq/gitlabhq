@@ -109,7 +109,9 @@ describe Gitlab::HttpIO do
         end
 
         it 'calls get_chunk only once' do
-          expect_any_instance_of(Net::HTTP).to receive(:request).once.and_call_original
+          expect_next_instance_of(Net::HTTP) do |instance|
+            expect(instance).to receive(:request).once.and_call_original
+          end
 
           http_io.each_line { |line| }
         end

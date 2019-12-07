@@ -45,7 +45,9 @@ describe('IDE store getters', () => {
       localState.currentMergeRequestId = 1;
       localState.projects.abcproject = {
         mergeRequests: {
-          1: { mergeId: 1 },
+          1: {
+            mergeId: 1,
+          },
         },
       };
 
@@ -62,9 +64,21 @@ describe('IDE store getters', () => {
   describe('allBlobs', () => {
     beforeEach(() => {
       Object.assign(localState.entries, {
-        index: { type: 'blob', name: 'index', lastOpenedAt: 0 },
-        app: { type: 'blob', name: 'blob', lastOpenedAt: 0 },
-        folder: { type: 'folder', name: 'folder', lastOpenedAt: 0 },
+        index: {
+          type: 'blob',
+          name: 'index',
+          lastOpenedAt: 0,
+        },
+        app: {
+          type: 'blob',
+          name: 'blob',
+          lastOpenedAt: 0,
+        },
+        folder: {
+          type: 'folder',
+          name: 'folder',
+          lastOpenedAt: 0,
+        },
       });
     });
 
@@ -174,7 +188,7 @@ describe('IDE store getters', () => {
         },
       };
       const localGetters = {
-        findBranch: jasmine.createSpy('findBranchSpy'),
+        findBranch: jest.fn(),
       };
       getters.currentBranch(localState, localGetters);
 
@@ -251,7 +265,9 @@ describe('IDE store getters', () => {
 
   describe('packageJson', () => {
     it('returns package.json entry', () => {
-      localState.entries['package.json'] = { name: 'package.json' };
+      localState.entries['package.json'] = {
+        name: 'package.json',
+      };
 
       expect(getters.packageJson(localState)).toEqual({
         name: 'package.json',
@@ -273,7 +289,9 @@ describe('IDE store getters', () => {
         currentProject: {
           default_branch: 'master',
         },
-        currentBranch: { can_push: true },
+        currentBranch: {
+          can_push: true,
+        },
       };
 
       expect(getters.canPushToBranch({}, localGetters)).toBeTruthy();
@@ -284,7 +302,9 @@ describe('IDE store getters', () => {
         currentProject: {
           default_branch: 'master',
         },
-        currentBranch: { can_push: false },
+        currentBranch: {
+          can_push: false,
+        },
       };
 
       expect(getters.canPushToBranch({}, localGetters)).toBeFalsy();

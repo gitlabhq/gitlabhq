@@ -1,5 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
-import testAction from 'spec/helpers/vuex_action_helper';
+import testAction from 'helpers/vuex_action_helper';
 import axios from '~/lib/utils/axios_utils';
 import state from '~/ide/stores/modules/branches/state';
 import * as types from '~/ide/stores/modules/branches/mutation_types';
@@ -21,12 +21,8 @@ describe('IDE branches actions', () => {
   beforeEach(() => {
     mockedContext = {
       dispatch() {},
-      rootState: {
-        currentProjectId: projectData.name_with_namespace,
-      },
-      rootGetters: {
-        currentProject: projectData,
-      },
+      rootState: { currentProjectId: projectData.name_with_namespace },
+      rootGetters: { currentProject: projectData },
       state: state(),
     };
 
@@ -70,7 +66,7 @@ describe('IDE branches actions', () => {
             type: 'setErrorMessage',
             payload: {
               text: 'Error loading branches.',
-              action: jasmine.any(Function),
+              action: expect.any(Function),
               actionText: 'Please try again',
               actionPayload: { search: TEST_SEARCH },
             },
@@ -105,15 +101,12 @@ describe('IDE branches actions', () => {
       });
 
       it('calls API with params', () => {
-        const apiSpy = spyOn(axios, 'get').and.callThrough();
+        const apiSpy = jest.spyOn(axios, 'get');
 
         fetchBranches(mockedContext, { search: TEST_SEARCH });
 
-        expect(apiSpy).toHaveBeenCalledWith(jasmine.anything(), {
-          params: jasmine.objectContaining({
-            search: TEST_SEARCH,
-            sort: 'updated_desc',
-          }),
+        expect(apiSpy).toHaveBeenCalledWith(expect.anything(), {
+          params: expect.objectContaining({ search: TEST_SEARCH, sort: 'updated_desc' }),
         });
       });
 
@@ -126,10 +119,7 @@ describe('IDE branches actions', () => {
           [
             { type: 'requestBranches' },
             { type: 'resetBranches' },
-            {
-              type: 'receiveBranchesSuccess',
-              payload: branches,
-            },
+            { type: 'receiveBranchesSuccess', payload: branches },
           ],
           done,
         );
@@ -150,10 +140,7 @@ describe('IDE branches actions', () => {
           [
             { type: 'requestBranches' },
             { type: 'resetBranches' },
-            {
-              type: 'receiveBranchesError',
-              payload: { search: TEST_SEARCH },
-            },
+            { type: 'receiveBranchesError', payload: { search: TEST_SEARCH } },
           ],
           done,
         );

@@ -19,9 +19,7 @@ describe('IDE merge requests actions', () => {
 
   beforeEach(() => {
     mockedState = state();
-    mockedRootState = {
-      currentProjectId: 7,
-    };
+    mockedRootState = { currentProjectId: 7 };
     mock = new MockAdapter(axios);
   });
 
@@ -54,7 +52,7 @@ describe('IDE merge requests actions', () => {
             type: 'setErrorMessage',
             payload: {
               text: 'Error loading merge requests.',
-              action: jasmine.any(Function),
+              action: expect.any(Function),
               actionText: 'Please try again',
               actionPayload: { type: 'created', search: '' },
             },
@@ -71,12 +69,7 @@ describe('IDE merge requests actions', () => {
         receiveMergeRequestsSuccess,
         mergeRequests,
         mockedState,
-        [
-          {
-            type: types.RECEIVE_MERGE_REQUESTS_SUCCESS,
-            payload: mergeRequests,
-          },
-        ],
+        [{ type: types.RECEIVE_MERGE_REQUESTS_SUCCESS, payload: mergeRequests }],
         [],
         done,
       );
@@ -94,36 +87,34 @@ describe('IDE merge requests actions', () => {
       });
 
       it('calls API with params', () => {
-        const apiSpy = spyOn(axios, 'get').and.callThrough();
-
+        const apiSpy = jest.spyOn(axios, 'get');
         fetchMergeRequests(
-          { dispatch() {}, state: mockedState, rootState: mockedRootState },
+          {
+            dispatch() {},
+
+            state: mockedState,
+            rootState: mockedRootState,
+          },
           { type: 'created' },
         );
-
-        expect(apiSpy).toHaveBeenCalledWith(jasmine.anything(), {
-          params: {
-            scope: 'created-by-me',
-            state: 'opened',
-            search: '',
-          },
+        expect(apiSpy).toHaveBeenCalledWith(expect.anything(), {
+          params: { scope: 'created-by-me', state: 'opened', search: '' },
         });
       });
 
       it('calls API with search', () => {
-        const apiSpy = spyOn(axios, 'get').and.callThrough();
-
+        const apiSpy = jest.spyOn(axios, 'get');
         fetchMergeRequests(
-          { dispatch() {}, state: mockedState, rootState: mockedRootState },
+          {
+            dispatch() {},
+
+            state: mockedState,
+            rootState: mockedRootState,
+          },
           { type: 'created', search: 'testing search' },
         );
-
-        expect(apiSpy).toHaveBeenCalledWith(jasmine.anything(), {
-          params: {
-            scope: 'created-by-me',
-            state: 'opened',
-            search: 'testing search',
-          },
+        expect(apiSpy).toHaveBeenCalledWith(expect.anything(), {
+          params: { scope: 'created-by-me', state: 'opened', search: 'testing search' },
         });
       });
 
@@ -136,10 +127,7 @@ describe('IDE merge requests actions', () => {
           [
             { type: 'requestMergeRequests' },
             { type: 'resetMergeRequests' },
-            {
-              type: 'receiveMergeRequestsSuccess',
-              payload: mergeRequests,
-            },
+            { type: 'receiveMergeRequestsSuccess', payload: mergeRequests },
           ],
           done,
         );
@@ -152,21 +140,19 @@ describe('IDE merge requests actions', () => {
       });
 
       it('calls API with project', () => {
-        const apiSpy = spyOn(axios, 'get').and.callThrough();
-
+        const apiSpy = jest.spyOn(axios, 'get');
         fetchMergeRequests(
-          { dispatch() {}, state: mockedState, rootState: mockedRootState },
+          {
+            dispatch() {},
+
+            state: mockedState,
+            rootState: mockedRootState,
+          },
           { type: null, search: 'testing search' },
         );
-
         expect(apiSpy).toHaveBeenCalledWith(
-          jasmine.stringMatching(`projects/${mockedRootState.currentProjectId}/merge_requests`),
-          {
-            params: {
-              state: 'opened',
-              search: 'testing search',
-            },
-          },
+          expect.stringMatching(`projects/${mockedRootState.currentProjectId}/merge_requests`),
+          { params: { state: 'opened', search: 'testing search' } },
         );
       });
 
@@ -179,10 +165,7 @@ describe('IDE merge requests actions', () => {
           [
             { type: 'requestMergeRequests' },
             { type: 'resetMergeRequests' },
-            {
-              type: 'receiveMergeRequestsSuccess',
-              payload: mergeRequests,
-            },
+            { type: 'receiveMergeRequestsSuccess', payload: mergeRequests },
           ],
           done,
         );

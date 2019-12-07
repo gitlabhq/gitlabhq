@@ -12,12 +12,16 @@ describe Gitlab::Ci::Build::Credentials::Factory do
   end
 
   before do
-    allow_any_instance_of(described_class).to receive(:providers).and_return([TestProvider])
+    allow_next_instance_of(described_class) do |instance|
+      allow(instance).to receive(:providers).and_return([TestProvider])
+    end
   end
 
   context 'when provider is valid' do
     before do
-      allow_any_instance_of(TestProvider).to receive(:valid?).and_return(true)
+      allow_next_instance_of(TestProvider) do |instance|
+        allow(instance).to receive(:valid?).and_return(true)
+      end
     end
 
     it 'generates an array of credentials objects' do
@@ -29,7 +33,9 @@ describe Gitlab::Ci::Build::Credentials::Factory do
 
   context 'when provider is not valid' do
     before do
-      allow_any_instance_of(TestProvider).to receive(:valid?).and_return(false)
+      allow_next_instance_of(TestProvider) do |instance|
+        allow(instance).to receive(:valid?).and_return(false)
+      end
     end
 
     it 'generates an array without specific credential object' do

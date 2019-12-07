@@ -95,7 +95,9 @@ describe Gitlab::Email::Handler::CreateMergeRequestHandler do
     context "something is wrong" do
       context "when the merge request could not be saved" do
         before do
-          allow_any_instance_of(MergeRequest).to receive(:save).and_return(false)
+          allow_next_instance_of(MergeRequest) do |instance|
+            allow(instance).to receive(:save).and_return(false)
+          end
         end
 
         it "raises an InvalidMergeRequestError" do

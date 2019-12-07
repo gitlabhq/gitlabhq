@@ -43,7 +43,9 @@ describe Gitlab::RequestContext do
         let(:ip) { '192.168.1.11' }
 
         before do
-          allow_any_instance_of(Rack::Request).to receive(:ip).and_return(ip)
+          allow_next_instance_of(Rack::Request) do |instance|
+            allow(instance).to receive(:ip).and_return(ip)
+          end
           described_class.new(app).call(env)
         end
 

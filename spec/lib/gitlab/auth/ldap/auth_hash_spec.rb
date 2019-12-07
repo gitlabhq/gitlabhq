@@ -58,7 +58,9 @@ describe Gitlab::Auth::LDAP::AuthHash do
     end
 
     before do
-      allow_any_instance_of(Gitlab::Auth::LDAP::Config).to receive(:attributes).and_return(attributes)
+      allow_next_instance_of(Gitlab::Auth::LDAP::Config) do |instance|
+        allow(instance).to receive(:attributes).and_return(attributes)
+      end
     end
 
     it "has the correct username" do

@@ -23,8 +23,9 @@ describe Gitlab::Ci::Config::External::Mapper do
   before do
     stub_full_request(remote_url).to_return(body: file_content)
 
-    allow_any_instance_of(Gitlab::Ci::Config::External::Context)
-      .to receive(:check_execution_time!)
+    allow_next_instance_of(Gitlab::Ci::Config::External::Context) do |instance|
+      allow(instance).to receive(:check_execution_time!)
+    end
   end
 
   describe '#process' do

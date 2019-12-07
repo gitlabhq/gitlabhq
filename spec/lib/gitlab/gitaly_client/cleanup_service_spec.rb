@@ -10,10 +10,11 @@ describe Gitlab::GitalyClient::CleanupService do
 
   describe '#apply_bfg_object_map_stream' do
     it 'sends an apply_bfg_object_map_stream message' do
-      expect_any_instance_of(Gitaly::CleanupService::Stub)
-        .to receive(:apply_bfg_object_map_stream)
-        .with(kind_of(Enumerator), kind_of(Hash))
-        .and_return([])
+      expect_next_instance_of(Gitaly::CleanupService::Stub) do |instance|
+        expect(instance).to receive(:apply_bfg_object_map_stream)
+          .with(kind_of(Enumerator), kind_of(Hash))
+          .and_return([])
+      end
 
       client.apply_bfg_object_map_stream(StringIO.new)
     end

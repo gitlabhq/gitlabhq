@@ -32,7 +32,9 @@ describe Gitlab::Checks::BranchCheck do
       end
 
       it 'raises an error if the user is not allowed to merge to protected branches' do
-        expect_any_instance_of(Gitlab::Checks::MatchingMergeRequest).to receive(:match?).and_return(true)
+        expect_next_instance_of(Gitlab::Checks::MatchingMergeRequest) do |instance|
+          expect(instance).to receive(:match?).and_return(true)
+        end
         expect(user_access).to receive(:can_merge_to_branch?).and_return(false)
         expect(user_access).to receive(:can_push_to_branch?).and_return(false)
 

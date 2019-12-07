@@ -158,7 +158,9 @@ describe Gitlab::Experimentation do
 
         context 'the user is part of the control group' do
           before do
-            allow_any_instance_of(described_class).to receive(:experiment_enabled?).with(:test_experiment).and_return(false)
+            allow_next_instance_of(described_class) do |instance|
+              allow(instance).to receive(:experiment_enabled?).with(:test_experiment).and_return(false)
+            end
           end
 
           it 'pushes the right parameters to gon' do

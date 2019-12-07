@@ -51,7 +51,9 @@ describe('Multi-file store tree mutations', () => {
     });
 
     it('keeps loading state', () => {
-      mutations.CREATE_TREE(localState, { treePath: 'project/master' });
+      mutations.CREATE_TREE(localState, {
+        treePath: 'project/master',
+      });
       mutations.SET_DIRECTORY_DATA(localState, {
         data,
         treePath: 'project/master',

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_04_070713) do
+ActiveRecord::Schema.define(version: 2019_12_04_093410) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -2228,6 +2228,8 @@ ActiveRecord::Schema.define(version: 2019_12_04_070713) do
     t.integer "group_id"
     t.integer "cached_markdown_version"
     t.index ["group_id", "project_id", "title"], name: "index_labels_on_group_id_and_project_id_and_title", unique: true
+    t.index ["group_id", "title"], name: "index_labels_on_group_id_and_title", where: "(project_id = NULL::integer)"
+    t.index ["project_id", "title"], name: "index_labels_on_project_id_and_title", where: "(group_id = NULL::integer)"
     t.index ["project_id"], name: "index_labels_on_project_id"
     t.index ["template"], name: "index_labels_on_template", where: "template"
     t.index ["title"], name: "index_labels_on_title"

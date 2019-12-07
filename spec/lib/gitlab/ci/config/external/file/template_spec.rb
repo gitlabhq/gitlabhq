@@ -14,8 +14,9 @@ describe Gitlab::Ci::Config::External::File::Template do
   let(:template_file) { described_class.new(params, context) }
 
   before do
-    allow_any_instance_of(Gitlab::Ci::Config::External::Context)
-      .to receive(:check_execution_time!)
+    allow_next_instance_of(Gitlab::Ci::Config::External::Context) do |instance|
+      allow(instance).to receive(:check_execution_time!)
+    end
   end
 
   describe '#matching?' do

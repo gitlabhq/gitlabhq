@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import mountCompontent from 'spec/helpers/vue_mount_component_helper';
+import mountCompontent from 'helpers/vue_mount_component_helper';
 import router from '~/ide/ide_router';
 import Item from '~/ide/components/branches/item.vue';
 import { getTimeago } from '~/lib/utils/datetime_utility';
@@ -30,7 +30,7 @@ describe('IDE branch item', () => {
   it('renders branch name and timeago', () => {
     const timeText = getTimeago().format(TEST_BRANCH.committedDate);
 
-    expect(vm.$el).toContainText(TEST_BRANCH.name);
+    expect(vm.$el.textContent).toContain(TEST_BRANCH.name);
     expect(vm.$el.querySelector('time')).toHaveText(timeText);
     expect(vm.$el.querySelector('.ic-mobile-issue-close')).toBe(null);
   });
@@ -39,7 +39,7 @@ describe('IDE branch item', () => {
     const expectedHref = router.resolve(`/project/${TEST_PROJECT_ID}/edit/${TEST_BRANCH.name}`)
       .href;
 
-    expect(vm.$el).toMatch('a');
+    expect(vm.$el.textContent).toMatch('a');
     expect(vm.$el).toHaveAttr('href', expectedHref);
   });
 

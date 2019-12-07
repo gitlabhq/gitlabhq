@@ -10,17 +10,25 @@ describe Gitlab::Diff::FileCollection::MergeRequestDiff do
 
   describe '#diff_files' do
     it 'does not highlight binary files' do
-      allow_any_instance_of(Gitlab::Diff::File).to receive(:text?).and_return(false)
+      allow_next_instance_of(Gitlab::Diff::File) do |instance|
+        allow(instance).to receive(:text?).and_return(false)
+      end
 
-      expect_any_instance_of(Gitlab::Diff::File).not_to receive(:highlighted_diff_lines)
+      expect_next_instance_of(Gitlab::Diff::File) do |instance|
+        expect(instance).not_to receive(:highlighted_diff_lines)
+      end
 
       diff_files
     end
 
     it 'does not highlight files marked as undiffable in .gitattributes' do
-      allow_any_instance_of(Gitlab::Diff::File).to receive(:diffable?).and_return(false)
+      allow_next_instance_of(Gitlab::Diff::File) do |instance|
+        allow(instance).to receive(:diffable?).and_return(false)
+      end
 
-      expect_any_instance_of(Gitlab::Diff::File).not_to receive(:highlighted_diff_lines)
+      expect_next_instance_of(Gitlab::Diff::File) do |instance|
+        expect(instance).not_to receive(:highlighted_diff_lines)
+      end
 
       diff_files
     end

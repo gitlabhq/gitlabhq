@@ -104,21 +104,9 @@ describe('Multi-file store utils', () => {
             base64: true,
             lastCommitSha: '123456789',
           },
-          {
-            ...file('deletedFile'),
-            path: 'deletedFile',
-            deleted: true,
-          },
-          {
-            ...file('renamedFile'),
-            path: 'renamedFile',
-            prevPath: 'prevPath',
-          },
-          {
-            ...file('replacingFile'),
-            path: 'replacingFile',
-            replaces: true,
-          },
+          { ...file('deletedFile'), path: 'deletedFile', deleted: true },
+          { ...file('renamedFile'), path: 'renamedFile', prevPath: 'prevPath' },
+          { ...file('replacingFile'), path: 'replacingFile', replaces: true },
         ],
         currentBranchId: 'master',
       };
@@ -237,15 +225,27 @@ describe('Multi-file store utils', () => {
 
   describe('commitActionForFile', () => {
     it('returns deleted for deleted file', () => {
-      expect(utils.commitActionForFile({ deleted: true })).toBe(commitActionTypes.delete);
+      expect(
+        utils.commitActionForFile({
+          deleted: true,
+        }),
+      ).toBe(commitActionTypes.delete);
     });
 
     it('returns create for tempFile', () => {
-      expect(utils.commitActionForFile({ tempFile: true })).toBe(commitActionTypes.create);
+      expect(
+        utils.commitActionForFile({
+          tempFile: true,
+        }),
+      ).toBe(commitActionTypes.create);
     });
 
     it('returns move for moved file', () => {
-      expect(utils.commitActionForFile({ prevPath: 'test' })).toBe(commitActionTypes.move);
+      expect(
+        utils.commitActionForFile({
+          prevPath: 'test',
+        }),
+      ).toBe(commitActionTypes.move);
     });
 
     it('returns update by default', () => {
@@ -341,12 +341,7 @@ describe('Multi-file store utils', () => {
       fromTree[0].tree.push({
         ...file('alpha'),
         path: 'foo/alpha',
-        tree: [
-          {
-            ...file('beta.md'),
-            path: 'foo/alpha/beta.md',
-          },
-        ],
+        tree: [{ ...file('beta.md'), path: 'foo/alpha/beta.md' }],
       });
 
       toTree.push({
@@ -355,12 +350,7 @@ describe('Multi-file store utils', () => {
           {
             ...file('alpha'),
             path: 'foo/alpha',
-            tree: [
-              {
-                ...file('gamma.md'),
-                path: 'foo/alpha/gamma.md',
-              },
-            ],
+            tree: [{ ...file('gamma.md'), path: 'foo/alpha/gamma.md' }],
           },
         ],
       });
@@ -381,12 +371,7 @@ describe('Multi-file store utils', () => {
       fromTree[0].tree.push({
         ...file('alpha'),
         path: 'foo/alpha',
-        tree: [
-          {
-            ...file('beta.md'),
-            path: 'foo/alpha/beta.md',
-          },
-        ],
+        tree: [{ ...file('beta.md'), path: 'foo/alpha/beta.md' }],
       });
 
       toTree.push({
@@ -395,12 +380,7 @@ describe('Multi-file store utils', () => {
           {
             ...file('alpha'),
             path: 'foo/alpha',
-            tree: [
-              {
-                ...file('gamma.md'),
-                path: 'foo/alpha/gamma.md',
-              },
-            ],
+            tree: [{ ...file('gamma.md'), path: 'foo/alpha/gamma.md' }],
           },
         ],
       });
@@ -431,10 +411,7 @@ describe('Multi-file store utils', () => {
     });
 
     it('swaps existing entry with a new one', () => {
-      const file1 = {
-        ...file('old'),
-        key: 'foo',
-      };
+      const file1 = { ...file('old'), key: 'foo' };
       const file2 = file('new');
       const arr = [file1];
 
@@ -511,8 +488,12 @@ describe('Multi-file store utils', () => {
 
         expect(branchInfo.tree.length).toBe(2);
         expect(branchInfo.tree).toEqual([
-          jasmine.objectContaining({ name: 'newPath' }),
-          jasmine.objectContaining({ name: 'oldPath' }),
+          expect.objectContaining({
+            name: 'newPath',
+          }),
+          expect.objectContaining({
+            name: 'oldPath',
+          }),
         ]);
       });
 
@@ -521,7 +502,9 @@ describe('Multi-file store utils', () => {
 
         expect(localState.entries.parentPath.tree.length).toBe(1);
         expect(localState.entries.parentPath.tree).toEqual([
-          jasmine.objectContaining({ name: 'newPath' }),
+          expect.objectContaining({
+            name: 'newPath',
+          }),
         ]);
 
         localState.entries.parentPath.tree = [localState.entries.oldPath];
@@ -530,8 +513,12 @@ describe('Multi-file store utils', () => {
 
         expect(localState.entries.parentPath.tree.length).toBe(2);
         expect(localState.entries.parentPath.tree).toEqual([
-          jasmine.objectContaining({ name: 'newPath' }),
-          jasmine.objectContaining({ name: 'oldPath' }),
+          expect.objectContaining({
+            name: 'newPath',
+          }),
+          expect.objectContaining({
+            name: 'oldPath',
+          }),
         ]);
       });
     });
@@ -542,11 +529,19 @@ describe('Multi-file store utils', () => {
 
         utils.swapInParentTreeWithSorting(localState, localState.entries.oldPath.key, 'newPath');
 
-        expect(branchInfo.tree).toEqual([jasmine.objectContaining({ name: 'newPath' })]);
+        expect(branchInfo.tree).toEqual([
+          expect.objectContaining({
+            name: 'newPath',
+          }),
+        ]);
 
         utils.swapInParentTreeWithSorting(localState, localState.entries.newPath.key, 'oldPath');
 
-        expect(branchInfo.tree).toEqual([jasmine.objectContaining({ name: 'oldPath' })]);
+        expect(branchInfo.tree).toEqual([
+          expect.objectContaining({
+            name: 'oldPath',
+          }),
+        ]);
       });
 
       it('sorts tree after swapping the entries', () => {
@@ -554,32 +549,55 @@ describe('Multi-file store utils', () => {
         const beta = file('beta', 'beta', 'blob');
         const gamma = file('gamma', 'gamma', 'blob');
         const theta = file('theta', 'theta', 'blob');
-        localState.entries = { alpha, beta, gamma, theta };
+        localState.entries = {
+          alpha,
+          beta,
+          gamma,
+          theta,
+        };
 
         branchInfo.tree = [alpha, beta, gamma];
 
         utils.swapInParentTreeWithSorting(localState, alpha.key, 'theta');
 
         expect(branchInfo.tree).toEqual([
-          jasmine.objectContaining({ name: 'beta' }),
-          jasmine.objectContaining({ name: 'gamma' }),
-          jasmine.objectContaining({ name: 'theta' }),
+          expect.objectContaining({
+            name: 'beta',
+          }),
+          expect.objectContaining({
+            name: 'gamma',
+          }),
+          expect.objectContaining({
+            name: 'theta',
+          }),
         ]);
 
         utils.swapInParentTreeWithSorting(localState, gamma.key, 'alpha');
 
         expect(branchInfo.tree).toEqual([
-          jasmine.objectContaining({ name: 'alpha' }),
-          jasmine.objectContaining({ name: 'beta' }),
-          jasmine.objectContaining({ name: 'theta' }),
+          expect.objectContaining({
+            name: 'alpha',
+          }),
+          expect.objectContaining({
+            name: 'beta',
+          }),
+          expect.objectContaining({
+            name: 'theta',
+          }),
         ]);
 
         utils.swapInParentTreeWithSorting(localState, beta.key, 'gamma');
 
         expect(branchInfo.tree).toEqual([
-          jasmine.objectContaining({ name: 'alpha' }),
-          jasmine.objectContaining({ name: 'gamma' }),
-          jasmine.objectContaining({ name: 'theta' }),
+          expect.objectContaining({
+            name: 'alpha',
+          }),
+          expect.objectContaining({
+            name: 'gamma',
+          }),
+          expect.objectContaining({
+            name: 'theta',
+          }),
         ]);
       });
     });
@@ -587,11 +605,26 @@ describe('Multi-file store utils', () => {
 
   describe('cleanTrailingSlash', () => {
     [
-      { input: '', output: '' },
-      { input: 'abc', output: 'abc' },
-      { input: 'abc/', output: 'abc' },
-      { input: 'abc/def', output: 'abc/def' },
-      { input: 'abc/def/', output: 'abc/def' },
+      {
+        input: '',
+        output: '',
+      },
+      {
+        input: 'abc',
+        output: 'abc',
+      },
+      {
+        input: 'abc/',
+        output: 'abc',
+      },
+      {
+        input: 'abc/def',
+        output: 'abc/def',
+      },
+      {
+        input: 'abc/def/',
+        output: 'abc/def',
+      },
     ].forEach(({ input, output }) => {
       it(`cleans trailing slash from string "${input}"`, () => {
         expect(utils.cleanTrailingSlash(input)).toEqual(output);
@@ -601,13 +634,34 @@ describe('Multi-file store utils', () => {
 
   describe('pathsAreEqual', () => {
     [
-      { args: ['abc', 'abc'], output: true },
-      { args: ['abc', 'def'], output: false },
-      { args: ['abc/', 'abc'], output: true },
-      { args: ['abc/abc', 'abc'], output: false },
-      { args: ['/', ''], output: true },
-      { args: ['', '/'], output: true },
-      { args: [false, '/'], output: true },
+      {
+        args: ['abc', 'abc'],
+        output: true,
+      },
+      {
+        args: ['abc', 'def'],
+        output: false,
+      },
+      {
+        args: ['abc/', 'abc'],
+        output: true,
+      },
+      {
+        args: ['abc/abc', 'abc'],
+        output: false,
+      },
+      {
+        args: ['/', ''],
+        output: true,
+      },
+      {
+        args: ['', '/'],
+        output: true,
+      },
+      {
+        args: [false, '/'],
+        output: true,
+      },
     ].forEach(({ args, output }) => {
       it(`cleans and tests equality (${JSON.stringify(args)})`, () => {
         expect(utils.pathsAreEqual(...args)).toEqual(output);
@@ -618,10 +672,22 @@ describe('Multi-file store utils', () => {
   describe('addFinalNewlineIfNeeded', () => {
     it('adds a newline if it doesnt already exist', () => {
       [
-        { input: 'some text', output: 'some text\n' },
-        { input: 'some text\n', output: 'some text\n' },
-        { input: 'some text\n\n', output: 'some text\n\n' },
-        { input: 'some\n text', output: 'some\n text\n' },
+        {
+          input: 'some text',
+          output: 'some text\n',
+        },
+        {
+          input: 'some text\n',
+          output: 'some text\n',
+        },
+        {
+          input: 'some text\n\n',
+          output: 'some text\n\n',
+        },
+        {
+          input: 'some\n text',
+          output: 'some\n text\n',
+        },
       ].forEach(({ input, output }) => {
         expect(utils.addFinalNewlineIfNeeded(input)).toEqual(output);
       });

@@ -14,31 +14,41 @@ describe Gitlab::Checks::ChangeAccess do
       end
 
       it 'calls pushes checks' do
-        expect_any_instance_of(Gitlab::Checks::PushCheck).to receive(:validate!)
+        expect_next_instance_of(Gitlab::Checks::PushCheck) do |instance|
+          expect(instance).to receive(:validate!)
+        end
 
         subject.exec
       end
 
       it 'calls branches checks' do
-        expect_any_instance_of(Gitlab::Checks::BranchCheck).to receive(:validate!)
+        expect_next_instance_of(Gitlab::Checks::BranchCheck) do |instance|
+          expect(instance).to receive(:validate!)
+        end
 
         subject.exec
       end
 
       it 'calls tags checks' do
-        expect_any_instance_of(Gitlab::Checks::TagCheck).to receive(:validate!)
+        expect_next_instance_of(Gitlab::Checks::TagCheck) do |instance|
+          expect(instance).to receive(:validate!)
+        end
 
         subject.exec
       end
 
       it 'calls lfs checks' do
-        expect_any_instance_of(Gitlab::Checks::LfsCheck).to receive(:validate!)
+        expect_next_instance_of(Gitlab::Checks::LfsCheck) do |instance|
+          expect(instance).to receive(:validate!)
+        end
 
         subject.exec
       end
 
       it 'calls diff checks' do
-        expect_any_instance_of(Gitlab::Checks::DiffCheck).to receive(:validate!)
+        expect_next_instance_of(Gitlab::Checks::DiffCheck) do |instance|
+          expect(instance).to receive(:validate!)
+        end
 
         subject.exec
       end

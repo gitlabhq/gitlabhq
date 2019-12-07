@@ -61,7 +61,7 @@ describe 'Member autocomplete', :js do
 
     before do
       allow(User).to receive(:find_by_any_email)
-        .with(noteable.author_email.downcase).and_return(author)
+        .with(noteable.author_email.downcase, confirmed: true).and_return(author)
 
       visit project_commit_path(project, noteable)
     end

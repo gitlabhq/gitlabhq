@@ -17,7 +17,9 @@ describe Gitlab::CycleAnalytics::UsageData do
         projects.each_with_index do |project, time|
           issue = create(:issue, project: project, created_at: (time + 1).hour.ago)
 
-          allow_any_instance_of(Gitlab::ReferenceExtractor).to receive(:issues).and_return([issue])
+          allow_next_instance_of(Gitlab::ReferenceExtractor) do |instance|
+            allow(instance).to receive(:issues).and_return([issue])
+          end
 
           milestone = create(:milestone, project: project)
           mr = create_merge_request_closing_issue(user, project, issue, commit_message: "References #{issue.to_reference}")

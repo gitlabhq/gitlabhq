@@ -10,7 +10,7 @@ describe('IDE pipelines mutations', () => {
     mockedState = state();
   });
 
-  describe(types.REQUEST_LATEST_PIPELINE, () => {
+  describe('REQUEST_LATEST_PIPELINE', () => {
     it('sets loading to true', () => {
       mutations[types.REQUEST_LATEST_PIPELINE](mockedState);
 
@@ -18,7 +18,7 @@ describe('IDE pipelines mutations', () => {
     });
   });
 
-  describe(types.RECEIVE_LASTEST_PIPELINE_ERROR, () => {
+  describe('RECEIVE_LASTEST_PIPELINE_ERROR', () => {
     it('sets loading to false', () => {
       mutations[types.RECEIVE_LASTEST_PIPELINE_ERROR](mockedState);
 
@@ -26,7 +26,7 @@ describe('IDE pipelines mutations', () => {
     });
   });
 
-  describe(types.RECEIVE_LASTEST_PIPELINE_SUCCESS, () => {
+  describe('RECEIVE_LASTEST_PIPELINE_SUCCESS', () => {
     const itSetsPipelineLoadingStates = () => {
       it('sets has loaded to true', () => {
         expect(mockedState.hasLoadedPipeline).toBe(true);
@@ -52,7 +52,7 @@ describe('IDE pipelines mutations', () => {
           id: '51',
           path: 'test',
           commit: { id: '123' },
-          details: { status: jasmine.any(Object) },
+          details: { status: expect.any(Object) },
           yamlError: undefined,
         });
       });
@@ -95,12 +95,9 @@ describe('IDE pipelines mutations', () => {
     });
   });
 
-  describe(types.REQUEST_JOBS, () => {
+  describe('REQUEST_JOBS', () => {
     beforeEach(() => {
-      mockedState.stages = stages.map((stage, i) => ({
-        ...stage,
-        id: i,
-      }));
+      mockedState.stages = stages.map((stage, i) => ({ ...stage, id: i }));
     });
 
     it('sets isLoading on stage', () => {
@@ -110,12 +107,9 @@ describe('IDE pipelines mutations', () => {
     });
   });
 
-  describe(types.RECEIVE_JOBS_ERROR, () => {
+  describe('RECEIVE_JOBS_ERROR', () => {
     beforeEach(() => {
-      mockedState.stages = stages.map((stage, i) => ({
-        ...stage,
-        id: i,
-      }));
+      mockedState.stages = stages.map((stage, i) => ({ ...stage, id: i }));
     });
 
     it('sets isLoading on stage after error', () => {
@@ -125,29 +119,22 @@ describe('IDE pipelines mutations', () => {
     });
   });
 
-  describe(types.RECEIVE_JOBS_SUCCESS, () => {
+  describe('RECEIVE_JOBS_SUCCESS', () => {
     let data;
 
     beforeEach(() => {
-      mockedState.stages = stages.map((stage, i) => ({
-        ...stage,
-        id: i,
-      }));
+      mockedState.stages = stages.map((stage, i) => ({ ...stage, id: i }));
 
-      data = {
-        latest_statuses: [...jobs],
-      };
+      data = { latest_statuses: [...jobs] };
     });
 
     it('updates loading', () => {
       mutations[types.RECEIVE_JOBS_SUCCESS](mockedState, { id: mockedState.stages[0].id, data });
-
       expect(mockedState.stages[0].isLoading).toBe(false);
     });
 
     it('sets jobs on stage', () => {
       mutations[types.RECEIVE_JOBS_SUCCESS](mockedState, { id: mockedState.stages[0].id, data });
-
       expect(mockedState.stages[0].jobs.length).toBe(jobs.length);
       expect(mockedState.stages[0].jobs).toEqual(
         jobs.map(job => ({
@@ -164,13 +151,9 @@ describe('IDE pipelines mutations', () => {
     });
   });
 
-  describe(types.TOGGLE_STAGE_COLLAPSE, () => {
+  describe('TOGGLE_STAGE_COLLAPSE', () => {
     beforeEach(() => {
-      mockedState.stages = stages.map((stage, i) => ({
-        ...stage,
-        id: i,
-        isCollapsed: false,
-      }));
+      mockedState.stages = stages.map((stage, i) => ({ ...stage, id: i, isCollapsed: false }));
     });
 
     it('toggles collapsed state', () => {
@@ -184,7 +167,7 @@ describe('IDE pipelines mutations', () => {
     });
   });
 
-  describe(types.SET_DETAIL_JOB, () => {
+  describe('SET_DETAIL_JOB', () => {
     it('sets detail job', () => {
       mutations[types.SET_DETAIL_JOB](mockedState, jobs[0]);
 
@@ -192,7 +175,7 @@ describe('IDE pipelines mutations', () => {
     });
   });
 
-  describe(types.REQUEST_JOB_TRACE, () => {
+  describe('REQUEST_JOB_TRACE', () => {
     beforeEach(() => {
       mockedState.detailJob = { ...jobs[0] };
     });
@@ -204,7 +187,7 @@ describe('IDE pipelines mutations', () => {
     });
   });
 
-  describe(types.RECEIVE_JOB_TRACE_ERROR, () => {
+  describe('RECEIVE_JOB_TRACE_ERROR', () => {
     beforeEach(() => {
       mockedState.detailJob = { ...jobs[0], isLoading: true };
     });
@@ -216,14 +199,13 @@ describe('IDE pipelines mutations', () => {
     });
   });
 
-  describe(types.RECEIVE_JOB_TRACE_SUCCESS, () => {
+  describe('RECEIVE_JOB_TRACE_SUCCESS', () => {
     beforeEach(() => {
       mockedState.detailJob = { ...jobs[0], isLoading: true };
     });
 
     it('sets output on detail job', () => {
       mutations[types.RECEIVE_JOB_TRACE_SUCCESS](mockedState, { html: 'html' });
-
       expect(mockedState.detailJob.output).toBe('html');
       expect(mockedState.detailJob.isLoading).toBe(false);
     });

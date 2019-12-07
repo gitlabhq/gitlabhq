@@ -15,8 +15,9 @@ describe Gitlab::Ci::Config::External::File::Project do
   before do
     project.add_developer(user)
 
-    allow_any_instance_of(Gitlab::Ci::Config::External::Context)
-      .to receive(:check_execution_time!)
+    allow_next_instance_of(Gitlab::Ci::Config::External::Context) do |instance|
+      allow(instance).to receive(:check_execution_time!)
+    end
   end
 
   describe '#matching?' do
@@ -159,8 +160,8 @@ describe Gitlab::Ci::Config::External::File::Project do
   private
 
   def stub_project_blob(ref, path)
-    allow_any_instance_of(Repository)
-      .to receive(:blob_data_at)
-      .with(ref, path) { yield }
+    allow_next_instance_of(Repository) do |instance|
+      allow(instance).to receive(:blob_data_at).with(ref, path) { yield }
+    end
   end
 end

@@ -21,18 +21,24 @@ describe Gitlab::GitlabImport::Client do
   it 'uses membership and simple flags' do
     stub_request('/api/v4/projects?membership=true&page=1&per_page=100&simple=true')
 
-    expect_any_instance_of(OAuth2::Response).to receive(:parsed).and_return([])
+    expect_next_instance_of(OAuth2::Response) do |instance|
+      expect(instance).to receive(:parsed).and_return([])
+    end
 
     expect(client.projects.to_a).to eq []
   end
 
   shared_examples 'pagination params' do
     before do
-      allow_any_instance_of(OAuth2::Response).to receive(:parsed).and_return([])
+      allow_next_instance_of(OAuth2::Response) do |instance|
+        allow(instance).to receive(:parsed).and_return([])
+      end
     end
 
     it 'allows page_limit param' do
-      allow_any_instance_of(OAuth2::Response).to receive(:parsed).and_return(element_list)
+      allow_next_instance_of(OAuth2::Response) do |instance|
+        allow(instance).to receive(:parsed).and_return(element_list)
+      end
 
       expect(client).to receive(:lazy_page_iterator).with(hash_including(page_limit: 2)).and_call_original
 

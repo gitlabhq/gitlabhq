@@ -730,7 +730,9 @@ describe Gitlab::GitAccess do
       it 'checks LFS integrity only for first change' do
         allow(project).to receive(:lfs_enabled?).and_return(true)
 
-        expect_any_instance_of(Gitlab::Checks::LfsIntegrity).to receive(:objects_missing?).exactly(1).times
+        expect_next_instance_of(Gitlab::Checks::LfsIntegrity) do |instance|
+          expect(instance).to receive(:objects_missing?).exactly(1).times
+        end
 
         push_access_check
       end

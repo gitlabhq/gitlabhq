@@ -3,7 +3,7 @@ import '~/behaviors/markdown/render_gfm';
 import { createStore } from '~/ide/stores';
 import RightPane from '~/ide/components/panes/right.vue';
 import { rightSidebarViews } from '~/ide/constants';
-import { createComponentWithStore } from '../../../helpers/vue_mount_component_helper';
+import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 
 describe('IDE right pane', () => {
   let Component;
@@ -56,7 +56,7 @@ describe('IDE right pane', () => {
 
   describe('click', () => {
     beforeEach(() => {
-      spyOn(vm, 'open');
+      jest.spyOn(vm, 'open').mockReturnValue();
     });
 
     it('sets view to merge request', done => {
@@ -74,7 +74,9 @@ describe('IDE right pane', () => {
 
   describe('live preview', () => {
     it('renders live preview button', done => {
-      Vue.set(vm.$store.state.entries, 'package.json', { name: 'package.json' });
+      Vue.set(vm.$store.state.entries, 'package.json', {
+        name: 'package.json',
+      });
       vm.$store.state.clientsidePreviewEnabled = true;
 
       vm.$nextTick(() => {
