@@ -1,0 +1,5 @@
+---
+title: Limit number of projects displayed in GET /groups/:id API
+merge_request: 20023
+author:
+type: deprecated

@@ -415,7 +415,7 @@ module API
         projects = GroupProjectsFinder.new(
           group: group,
           current_user: options[:current_user],
-          options: { only_owned: true }
+          options: { only_owned: true, limit: projects_limit }
         ).execute
 
         Entities::Project.preload_and_batch_count!(projects)
@@ -425,10 +425,18 @@ module API
         projects = GroupProjectsFinder.new(
           group: group,
           current_user: options[:current_user],
-          options: { only_shared: true }
+          options: { only_shared: true, limit: projects_limit }
         ).execute
 
         Entities::Project.preload_and_batch_count!(projects)
+      end
+
+      def projects_limit
+        if ::Feature.enabled?(:limit_projects_in_groups_api, default_enabled: true)
+          GroupProjectsFinder::DEFAULT_PROJECTS_LIMIT
+        else
+          nil
+        end
       end
     end
 

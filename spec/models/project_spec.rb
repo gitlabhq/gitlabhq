@@ -1349,6 +1349,14 @@ describe Project do
     end
   end
 
+  describe '.with_limit' do
+    it 'limits the number of projects returned' do
+      create_list(:project, 3)
+
+      expect(described_class.with_limit(1).count).to eq(1)
+    end
+  end
+
   describe '.visible_to_user' do
     let!(:project) { create(:project, :private) }
     let!(:user)    { create(:user) }

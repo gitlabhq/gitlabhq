@@ -5,6 +5,8 @@
 Get a list of visible groups for the authenticated user. When accessed without
 authentication, only public groups are returned.
 
+By default, this request returns 20 results at a time because the API results [are paginated](README.md#pagination).
+
 Parameters:
 
 | Attribute                | Type              | Required | Description |
@@ -106,6 +108,8 @@ GET /groups?custom_attributes[key]=value&custom_attributes[other_key]=other_valu
 Get a list of visible direct subgroups in this group.
 When accessed without authentication, only public groups are returned.
 
+By default, this request returns 20 results at a time because the API results [are paginated](README.md#pagination).
+
 Parameters:
 
 | Attribute                | Type              | Required | Description |
@@ -154,8 +158,9 @@ GET /groups/:id/subgroups
 
 ## List a group's projects
 
-Get a list of projects in this group. When accessed without authentication, only
-public projects are returned.
+Get a list of projects in this group. When accessed without authentication, only public projects are returned.
+
+By default, this request returns 20 results at a time because the API results [are paginated](README.md#pagination).
 
 ```
 GET /groups/:id/projects
@@ -246,6 +251,13 @@ Parameters:
 ```bash
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/4
 ```
+
+This endpoint returns:
+
+- All projects and shared projects in GitLab 12.5 and earlier.
+- A maximum of 100 projects and shared projects [in GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/issues/31031)
+  and later. To get the details of all projects within a group, use the
+  [list a group's projects endpoint](#list-a-groups-projects) instead.
 
 Example response:
 
@@ -439,6 +451,18 @@ Example response:
 }
 ```
 
+### Disabling the results limit
+
+The 100 results limit can be disabled if it breaks integrations developed using GitLab
+12.4 and earlier.
+
+To disable the limit while migrating to using the [list a group's projects](#list-a-groups-projects) endpoint, ask a GitLab administrator
+with Rails console access to run the following command:
+
+```ruby
+Feature.disable(:limit_projects_in_groups_api)
+```
+
 ## New group
 
 Creates a new project group. Available only for users who can create groups.
@@ -518,6 +542,13 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 
 ```
 
+This endpoint returns:
+
+- All projects and shared projects in GitLab 12.5 and earlier.
+- A maximum of 100 projects and shared projects [in GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/issues/31031)
+  and later. To get the details of all projects within a group, use the
+  [list a group's projects endpoint](#list-a-groups-projects) instead.
+
 Example response:
 
 ```json
@@ -575,6 +606,19 @@ Example response:
     }
   ]
 }
+```
+
+### Disabling the results limit
+
+The 100 results limit can be disabled if it breaks integrations developed using GitLab
+12.4 and earlier.
+
+To disable the limit while migrating to using the
+[list a group's projects](#list-a-groups-projects) endpoint, ask a GitLab administrator
+with Rails console access to run the following command:
+
+```ruby
+Feature.disable(:limit_projects_in_groups_api)
 ```
 
 ## Remove group

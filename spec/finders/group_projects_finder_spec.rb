@@ -168,4 +168,20 @@ describe GroupProjectsFinder do
       end
     end
   end
+
+  describe 'limiting' do
+    context 'without limiting' do
+      it 'returns all projects' do
+        expect(subject.count).to eq(3)
+      end
+    end
+
+    context 'with limiting' do
+      let(:options) { { limit: 1 } }
+
+      it 'returns only the number of projects specified by the limit' do
+        expect(subject.count).to eq(1)
+      end
+    end
+  end
 end
