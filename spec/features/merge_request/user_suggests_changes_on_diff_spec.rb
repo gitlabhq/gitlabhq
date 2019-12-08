@@ -139,6 +139,10 @@ describe 'User comments on a diff', :js do
       # Making sure it's not a Front-end cache.
       visit(diffs_project_merge_request_path(project, merge_request))
 
+      page.within '.line-resolve-all-container' do
+        page.find('.discussion-next-btn').click
+      end
+
       expect_appliable_suggestions(2)
 
       page.within("[id='#{hash}']") do
