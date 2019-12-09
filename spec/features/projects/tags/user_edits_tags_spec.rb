@@ -21,23 +21,21 @@ describe 'Project > Tags', :js do
 
     context 'page with tags list' do
       it 'shows tag name' do
-        page.within first('.tags > .content-list > li') do
-          expect(page.find('.row-main-content')).to have_content 'v1.1.0 Version 1.1.0'
-        end
+        expect(page).to have_content 'v1.1.0 Version 1.1.0'
       end
 
       it 'shows tag edit button' do
-        page.within first('.tags > .content-list > li') do
-          edit_btn = page.find('.row-fixed-content.controls a.btn-edit')
+        page.within '.tags > .content-list' do
+          edit_btn = page.find("li > .row-fixed-content.controls a.btn-edit[href='/#{project.full_path}/-/tags/v1.1.0/release/edit']")
 
-          expect(edit_btn['href']).to have_content '/tags/v1.1.0/release/edit'
+          expect(edit_btn['href']).to end_with("/#{project.full_path}/-/tags/v1.1.0/release/edit")
         end
       end
     end
 
     context 'edit tag release notes' do
       before do
-        find('.tags > .content-list > li:first-child .row-fixed-content.controls a.btn-edit').click
+        page.find("li > .row-fixed-content.controls a.btn-edit[href='/#{project.full_path}/-/tags/v1.1.0/release/edit']").click
       end
 
       it 'shows tag name header' do

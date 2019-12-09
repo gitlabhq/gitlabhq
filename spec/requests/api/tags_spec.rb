@@ -5,6 +5,7 @@ describe API::Tags do
   let(:guest) { create(:user).tap { |u| project.add_guest(u) } }
   let(:project) { create(:project, :repository, creator: user, path: 'my.project') }
   let(:tag_name) { project.repository.find_tag('v1.1.0').name }
+  let(:tag_message) { project.repository.find_tag('v1.1.0').message }
 
   let(:project_id) { project.id }
   let(:current_user) { nil }
@@ -73,7 +74,7 @@ describe API::Tags do
         expect(response).to have_gitlab_http_status(200)
         expect(response).to match_response_schema('public_api/v4/tags')
         expect(response).to include_pagination_headers
-        expect(json_response.first['name']).to eq(tag_name)
+        expect(json_response.map { |r| r['name'] }).to include(tag_name)
       end
 
       context 'when repository is disabled' do
@@ -133,9 +134,9 @@ describe API::Tags do
         expect(response).to have_gitlab_http_status(200)
         expect(response).to match_response_schema('public_api/v4/tags')
         expect(response).to include_pagination_headers
-        expect(json_response.first['name']).to eq(tag_name)
-        expect(json_response.first['message']).to eq('Version 1.1.0')
-        expect(json_response.first['release']['description']).to eq(description)
+        expected_tag = json_response.find { |r| r['name'] == tag_name }
+        expect(expected_tag['message']).to eq(tag_message)
+        expect(expected_tag['release']['description']).to eq(description)
       end
     end
   end
