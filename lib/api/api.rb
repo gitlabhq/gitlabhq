@@ -156,6 +156,7 @@ module API
     mount ::API::ProtectedTags
     mount ::API::Releases
     mount ::API::Release::Links
+    mount ::API::RemoteMirrors
     mount ::API::Repositories
     mount ::API::Runner
     mount ::API::Runners

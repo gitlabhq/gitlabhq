@@ -63,9 +63,7 @@ describe Projects::Environments::PrometheusApiController do
 
           context 'with nil query' do
             let(:params_without_query) do
-              params = environment_params
-              params.delete(:query)
-              params
+              environment_params.except(:query)
             end
 
             before do

@@ -26,9 +26,11 @@ module QA
 
         merge_request.visit!
 
-        expect(page).to have_text('to be squashed')
-
         Page::MergeRequest::Show.perform do |merge_request_page|
+          merge_request_page.retry_on_exception(reload: true) do
+            expect(merge_request_page).to have_text('to be squashed')
+          end
+
           merge_request_page.mark_to_squash
           merge_request_page.merge!
 

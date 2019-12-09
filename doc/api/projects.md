@@ -61,6 +61,9 @@ GET /projects
 | `id_after`                    | integer | no | Limit results to projects with IDs greater than the specified ID |
 | `id_before`                   | integer | no | Limit results to projects with IDs less than the specified ID |
 
+NOTE: **Note:**
+This endpoint supports [keyset pagination](README.md#keyset-based-pagination) for selected `order_by` options.
+
 When `simple=true` or the user is unauthenticated this returns something like:
 
 ```json
@@ -308,6 +311,9 @@ GET /users/:user_id/projects
 | `min_access_level` | integer | no | Limit by current user minimal [access level](members.md) |
 | `id_after`                    | integer | no | Limit results to projects with IDs greater than the specified ID |
 | `id_before`                   | integer | no | Limit results to projects with IDs less than the specified ID |
+
+NOTE: **Note:**
+This endpoint supports [keyset pagination](README.md#keyset-based-pagination) for selected `order_by` options.
 
 ```json
 [

@@ -149,6 +149,9 @@ Pipeline visibility is determined by:
 - Your current [user access level](../../permissions.md).
 - The **Public pipelines** project setting under your project's **Settings > CI/CD > General pipelines**.
 
+NOTE: **Note:**
+If the project visibility is set to **Private**, the [**Public pipelines** setting will have no effect](../../../ci/enable_or_disable_ci.md#per-project-user-setting).
+
 This also determines the visibility of these related features:
 
 - Job output logs

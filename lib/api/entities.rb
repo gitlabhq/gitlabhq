@@ -166,6 +166,18 @@ module API
       end
     end
 
+    class RemoteMirror < Grape::Entity
+      expose :id
+      expose :enabled
+      expose :safe_url, as: :url
+      expose :update_status
+      expose :last_update_at
+      expose :last_update_started_at
+      expose :last_successful_update_at
+      expose :last_error
+      expose :only_protected_branches
+    end
+
     class ProjectImportStatus < ProjectIdentity
       expose :import_status
 

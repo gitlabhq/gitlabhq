@@ -313,6 +313,17 @@ The following table shows the possible return codes for API requests.
 
 ## Pagination
 
+We support two kinds of pagination methods:
+
+- Offset-based pagination. This is the default method and available on all endpoints.
+- Keyset-based pagination. Added to selected endpoints but being
+  [progressively rolled out](https://gitlab.com/groups/gitlab-org/-/epics/2039).
+
+For large collections, we recommend keyset pagination (when available) over offset
+pagination for performance reasons.
+
+### Offset-based pagination
+
 Sometimes the returned result will span across many pages. When listing
 resources you can pass the following parameters:
 
@@ -324,10 +335,10 @@ resources you can pass the following parameters:
 In the example below, we list 50 [namespaces](namespaces.md) per page.
 
 ```bash
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/namespaces?per_page=50
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/namespaces?per_page=50"
 ```
 
-### Pagination Link header
+#### Pagination Link header
 
 [Link headers](https://www.w3.org/wiki/LinkHeader) are sent back with each
 response. They have `rel` set to prev/next/first/last and contain the relevant
@@ -362,7 +373,7 @@ X-Total: 8
 X-Total-Pages: 3
 ```
 
-### Other pagination headers
+#### Other pagination headers
 
 Additional pagination headers are also sent back.
 
@@ -382,6 +393,48 @@ and **behind the `api_kaminari_count_with_limit`
 [feature flag](../development/feature_flags.md)**, if the number of resources is
 more than 10,000, the `X-Total` and `X-Total-Pages` headers as well as the
 `rel="last"` `Link` are not present in the response headers.
+
+### Keyset-based pagination
+
+Keyset-pagination allows for more efficient retrieval of pages and - in contrast to offset-based pagination - runtime
+is independent of the size of the collection.
+
+This method is controlled by the following parameters:
+
+| Parameter    | Description                            |
+| ------------ | -------------------------------------- |
+| `pagination` | `keyset` (to enable keyset pagination) |
+| `per_page`   | Number of items to list per page (default: `20`, max: `100`) |
+
+In the example below, we list 50 [projects](projects.md) per page, ordered by `id` ascending.
+
+```bash
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects?pagination=keyset&per_page=50&order_by=id&sort=asc"
+```
+
+The response header includes a link to the next page. For example:
+
+```
+HTTP/1.1 200 OK
+...
+Link: <https://gitlab.example.com/api/v4/projects?pagination=keyset&per_page=50&order_by=id&sort=asc&id_after=42>; rel="next"
+Status: 200 OK
+...
+```
+
+The link to the next page contains an additional filter `id_after=42` which excludes records we have retrieved already.
+Note the type of filter depends on the `order_by` option used and we may have more than one additional filter.
+
+The `Link` header is absent when the end of the collection has been reached and there are no additional records to retrieve.
+
+We recommend using only the given link to retrieve the next page instead of building your own URL. Apart from the headers shown,
+we don't expose additional pagination headers.
+
+Keyset-based pagination is only supported for selected resources and ordering options:
+
+| Resource                  | Order                      |
+| ------------------------- | -------------------------- |
+| [Projects](projects.md)   | `order_by=id` only         |
 
 ## Namespaced path encoding
 
