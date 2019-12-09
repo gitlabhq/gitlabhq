@@ -756,6 +756,10 @@ entry.
 - Remove Postgresql specific setup tasks and move to schema.rb.
 
 
+## 12.3.9
+
+- No changes.
+
 ## 12.3.7
 
 ### Security (12 changes)
