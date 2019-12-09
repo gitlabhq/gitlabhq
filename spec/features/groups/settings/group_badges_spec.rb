@@ -5,8 +5,9 @@ describe 'Group Badges' do
 
   let(:user) { create(:user) }
   let(:group) { create(:group) }
-  let(:badge_link_url) { 'https://gitlab.com/gitlab-org/gitlab-ee/commits/master'}
-  let(:badge_image_url) { 'https://gitlab.com/gitlab-org/gitlab-ee/badges/master/build.svg'}
+  let(:project) { create(:project, namespace: group) }
+  let(:badge_link_url) { "http://#{page.server.host}:#{page.server.port}/#{project.full_path}/commits/master" }
+  let(:badge_image_url) { "http://#{page.server.host}:#{page.server.port}/#{project.full_path}/badges/master/pipeline.svg" }
   let!(:badge_1) { create(:group_badge, group: group) }
   let!(:badge_2) { create(:group_badge, group: group) }
 

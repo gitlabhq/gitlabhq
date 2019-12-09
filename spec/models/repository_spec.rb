@@ -66,14 +66,16 @@ describe Repository do
   end
 
   describe 'tags_sorted_by' do
+    let(:tags_to_compare) { %w[v1.0.0 v1.1.0] }
+
     context 'name_desc' do
-      subject { repository.tags_sorted_by('name_desc').map(&:name) }
+      subject { repository.tags_sorted_by('name_desc').map(&:name) & tags_to_compare }
 
       it { is_expected.to eq(['v1.1.0', 'v1.0.0']) }
     end
 
     context 'name_asc' do
-      subject { repository.tags_sorted_by('name_asc').map(&:name) }
+      subject { repository.tags_sorted_by('name_asc').map(&:name) & tags_to_compare }
 
       it { is_expected.to eq(['v1.0.0', 'v1.1.0']) }
     end
@@ -115,7 +117,7 @@ describe Repository do
       context 'annotated tag pointing to a blob' do
         let(:annotated_tag_name) { 'annotated-tag' }
 
-        subject { repository.tags_sorted_by('updated_asc').map(&:name) }
+        subject { repository.tags_sorted_by('updated_asc').map(&:name) & (tags_to_compare + [annotated_tag_name]) }
 
         before do
           options = { message: 'test tag message\n',
