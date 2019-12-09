@@ -1,6 +1,6 @@
-import Summary from '~/pipelines/components/test_reports/test_summary.vue';
 import { mount } from '@vue/test-utils';
 import { getJSONFixture } from 'helpers/fixtures';
+import Summary from '~/pipelines/components/test_reports/test_summary.vue';
 
 describe('Test reports summary', () => {
   let wrapper;

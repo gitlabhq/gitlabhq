@@ -1,6 +1,6 @@
 <script>
-import Icon from '~/vue_shared/components/icon.vue';
 import iconCycleAnalyticsSplash from 'icons/_icon_cycle_analytics_splash.svg';
+import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
   components: {

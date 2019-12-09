@@ -10,6 +10,7 @@ class Feature
         inforef_uploadpack_cache
         get_all_lfs_pointers_go
         get_tag_messages_go
+        filter_shas_with_signatures_go
       ].freeze
 
     DEFAULT_ON_FLAGS = Set.new([]).freeze

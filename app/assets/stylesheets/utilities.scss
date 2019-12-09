@@ -31,3 +31,4 @@
 
 .gl-w-64 { width: px-to-rem($grid-size * 8); }
 .gl-h-64 { height: px-to-rem($grid-size * 8); }
+.gl-bg-blue-500 { @include gl-bg-blue-500; }

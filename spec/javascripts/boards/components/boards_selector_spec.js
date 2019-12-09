@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import BoardsSelector from '~/boards/components/boards_selector.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { TEST_HOST } from 'spec/test_constants';
+import BoardsSelector from '~/boards/components/boards_selector.vue';
 import boardsStore from '~/boards/stores/boards_store';
 
 const throttleDuration = 1;

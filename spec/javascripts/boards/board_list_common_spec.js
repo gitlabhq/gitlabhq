@@ -3,8 +3,8 @@
 
 import MockAdapter from 'axios-mock-adapter';
 import Vue from 'vue';
-import axios from '~/lib/utils/axios_utils';
 import Sortable from 'sortablejs';
+import axios from '~/lib/utils/axios_utils';
 import BoardList from '~/boards/components/board_list.vue';
 
 import '~/boards/models/issue';

@@ -1,8 +1,8 @@
 /* global ListIssue */
 
 import MockAdapter from 'axios-mock-adapter';
-import axios from '~/lib/utils/axios_utils';
 import Cookies from 'js-cookie';
+import axios from '~/lib/utils/axios_utils';
 
 import '~/boards/models/label';
 import '~/boards/models/assignee';

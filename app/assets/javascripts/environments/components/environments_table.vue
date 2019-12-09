@@ -4,8 +4,8 @@
  */
 import { GlLoadingIcon } from '@gitlab/ui';
 import _ from 'underscore';
-import { s__ } from '~/locale';
 import environmentTableMixin from 'ee_else_ce/environments/mixins/environments_table_mixin';
+import { s__ } from '~/locale';
 import EnvironmentItem from './environment_item.vue';
 
 export default {

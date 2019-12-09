@@ -1,8 +1,8 @@
 <script>
+import { GlIcon } from '@gitlab/ui';
 import DropdownSearchInput from '~/vue_shared/components/dropdown/dropdown_search_input.vue';
 import DropdownHiddenInput from '~/vue_shared/components/dropdown/dropdown_hidden_input.vue';
 import DropdownButton from '~/vue_shared/components/dropdown/dropdown_button.vue';
-import { GlIcon } from '@gitlab/ui';
 
 const toArray = value => [].concat(value);
 const itemsProp = (items, prop) => items.map(item => item[prop]);

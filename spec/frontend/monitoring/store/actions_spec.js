@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
-import Tracking from '~/tracking';
 import testAction from 'helpers/vuex_action_helper';
+import Tracking from '~/tracking';
 import axios from '~/lib/utils/axios_utils';
 import statusCodes from '~/lib/utils/http_status';
 import { backOff } from '~/lib/utils/common_utils';

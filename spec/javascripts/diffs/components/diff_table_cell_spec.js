@@ -1,7 +1,7 @@
 import Vue from 'vue';
+import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { createStore } from '~/mr_notes/stores';
 import DiffTableCell from '~/diffs/components/diff_table_cell.vue';
-import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import diffFileMockData from '../mock_data/diff_file';
 
 describe('DiffTableCell', () => {

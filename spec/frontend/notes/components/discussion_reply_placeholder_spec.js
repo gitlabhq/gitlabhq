@@ -1,5 +1,5 @@
-import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
+import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 
 const localVue = createLocalVue();
 const buttonText = 'Test Button Text';

@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import environmentTableComp from '~/environments/components/environments_table.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import environmentTableComp from '~/environments/components/environments_table.vue';
 
 describe('Environment table', () => {
   let Component;

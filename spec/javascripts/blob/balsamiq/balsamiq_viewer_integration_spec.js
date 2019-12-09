@@ -1,5 +1,5 @@
-import BalsamiqViewer from '~/blob/balsamiq/balsamiq_viewer';
 import { FIXTURES_PATH } from 'spec/test_constants';
+import BalsamiqViewer from '~/blob/balsamiq/balsamiq_viewer';
 
 const bmprPath = `${FIXTURES_PATH}/blob/balsamiq/test.bmpr`;
 

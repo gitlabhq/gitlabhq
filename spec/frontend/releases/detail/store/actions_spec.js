@@ -1,7 +1,7 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import * as actions from '~/releases/detail/store/actions';
 import testAction from 'helpers/vuex_action_helper';
+import * as actions from '~/releases/detail/store/actions';
 import * as types from '~/releases/detail/store/mutation_types';
 import { release } from '../../mock_data';
 import state from '~/releases/detail/store/state';

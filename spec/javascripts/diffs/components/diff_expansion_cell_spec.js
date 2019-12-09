@@ -1,7 +1,7 @@
 import Vue from 'vue';
+import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { createStore } from '~/mr_notes/stores';
 import DiffExpansionCell from '~/diffs/components/diff_expansion_cell.vue';
-import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import diffFileMockData from '../mock_data/diff_file';
 
 const EXPAND_UP_CLASS = '.js-unfold';

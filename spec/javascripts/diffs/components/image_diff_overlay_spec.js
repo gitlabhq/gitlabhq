@@ -1,7 +1,7 @@
 import Vue from 'vue';
+import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import ImageDiffOverlay from '~/diffs/components/image_diff_overlay.vue';
 import { createStore } from '~/mr_notes/stores';
-import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { imageDiffDiscussions } from '../mock_data/diff_discussions';
 
 describe('Diffs image diff overlay component', () => {

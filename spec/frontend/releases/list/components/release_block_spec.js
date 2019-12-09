@@ -1,9 +1,9 @@
 import { mount } from '@vue/test-utils';
+import { first } from 'underscore';
 import EvidenceBlock from '~/releases/list/components/evidence_block.vue';
 import ReleaseBlock from '~/releases/list/components/release_block.vue';
 import ReleaseBlockFooter from '~/releases/list/components/release_block_footer.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
-import { first } from 'underscore';
 import { release } from '../../mock_data';
 import Icon from '~/vue_shared/components/icon.vue';
 import { scrollToElement } from '~/lib/utils/common_utils';

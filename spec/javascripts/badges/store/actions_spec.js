@@ -1,10 +1,10 @@
-import axios from '~/lib/utils/axios_utils';
 import MockAdapter from 'axios-mock-adapter';
+import { TEST_HOST } from 'spec/test_constants';
+import testAction from 'spec/helpers/vuex_action_helper';
+import axios from '~/lib/utils/axios_utils';
 import actions, { transformBackendBadge } from '~/badges/store/actions';
 import mutationTypes from '~/badges/store/mutation_types';
 import createState from '~/badges/store/state';
-import { TEST_HOST } from 'spec/test_constants';
-import testAction from 'spec/helpers/vuex_action_helper';
 import { createDummyBadge, createDummyBadgeResponse } from '../dummy_badge';
 
 describe('Badges store actions', () => {

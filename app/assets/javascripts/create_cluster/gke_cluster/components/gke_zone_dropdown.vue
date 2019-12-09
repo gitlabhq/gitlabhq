@@ -1,6 +1,6 @@
 <script>
-import { sprintf, s__ } from '~/locale';
 import { mapState, mapActions } from 'vuex';
+import { sprintf, s__ } from '~/locale';
 
 import gkeDropdownMixin from './gke_dropdown_mixin';
 

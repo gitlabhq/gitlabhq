@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import ConfidentialIssueSidebar from '~/sidebar/components/confidential/confidential_issue_sidebar.vue';
 import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
+import ConfidentialIssueSidebar from '~/sidebar/components/confidential/confidential_issue_sidebar.vue';
 import EditForm from '~/sidebar/components/confidential/edit_form.vue';
 import SidebarService from '~/sidebar/services/sidebar_service';
 import createFlash from '~/flash';

@@ -1,6 +1,6 @@
+import { getJSONFixture } from 'helpers/fixtures';
 import * as getters from '~/pipelines/stores/test_reports/getters';
 import { iconForTestStatus } from '~/pipelines/stores/test_reports/utils';
-import { getJSONFixture } from 'helpers/fixtures';
 
 describe('Getters TestReports Store', () => {
   let state;

@@ -5,7 +5,7 @@
     - key.emails_with_verified_status.map do |email, verified|
       = render partial: 'shared/email_with_badge', locals: { email: email, verified: verified }
 
-    .description
+    %span.text-truncate
       %code= key.fingerprint
     - if key.subkeys.present?
       .subkeys

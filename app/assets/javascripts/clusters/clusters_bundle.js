@@ -1,7 +1,7 @@
 import Visibility from 'visibilityjs';
 import Vue from 'vue';
-import AccessorUtilities from '~/lib/utils/accessor';
 import { GlToast } from '@gitlab/ui';
+import AccessorUtilities from '~/lib/utils/accessor';
 import PersistentUserCallout from '../persistent_user_callout';
 import { s__, sprintf } from '../locale';
 import Flash from '../flash';

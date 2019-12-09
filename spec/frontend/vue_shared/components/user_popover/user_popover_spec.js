@@ -1,7 +1,7 @@
-import UserPopover from '~/vue_shared/components/user_popover/user_popover.vue';
 import { GlSkeletonLoading } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
 import { shallowMount } from '@vue/test-utils';
+import UserPopover from '~/vue_shared/components/user_popover/user_popover.vue';
+import Icon from '~/vue_shared/components/icon.vue';
 
 const DEFAULT_PROPS = {
   loaded: true,

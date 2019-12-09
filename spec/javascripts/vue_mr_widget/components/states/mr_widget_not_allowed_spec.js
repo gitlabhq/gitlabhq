@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import notAllowedComponent from '~/vue_merge_request_widget/components/states/mr_widget_not_allowed.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import notAllowedComponent from '~/vue_merge_request_widget/components/states/mr_widget_not_allowed.vue';
 
 describe('MRWidgetNotAllowed', () => {
   let vm;

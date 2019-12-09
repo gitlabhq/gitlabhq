@@ -1,7 +1,7 @@
 import Vue from 'vue';
+import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { createStore } from '~/mr_notes/stores';
 import InlineDiffExpansionRow from '~/diffs/components/inline_diff_expansion_row.vue';
-import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import diffFileMockData from '../mock_data/diff_file';
 
 describe('InlineDiffExpansionRow', () => {

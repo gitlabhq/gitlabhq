@@ -2,9 +2,9 @@ import _ from 'underscore';
 import { trimText } from 'helpers/text_helper';
 import { shallowMount } from '@vue/test-utils';
 import { GlLink } from '@gitlab/ui';
+import { TEST_HOST } from 'spec/test_constants';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
-import { TEST_HOST } from 'spec/test_constants';
 
 describe('User Avatar Link Component', () => {
   let wrapper;

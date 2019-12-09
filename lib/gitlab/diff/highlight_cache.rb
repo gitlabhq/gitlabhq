@@ -54,6 +54,15 @@ module Gitlab
 
       private
 
+      # We create a Gitlab::Diff::DeprecatedHighlightCache here in order to
+      #   expire deprecated cache entries while we make the transition. This can
+      #   be removed when :hset_redis_diff_caching is fully launched.
+      # See https://gitlab.com/gitlab-org/gitlab/issues/38008
+      #
+      def deprecated_cache
+        @deprecated_cache ||= Gitlab::Diff::DeprecatedHighlightCache.new(@diff_collection)
+      end
+
       def uncached_files
         diff_files = @diff_collection.diff_files
 
@@ -85,6 +94,10 @@ module Gitlab
             redis.expire(key, EXPIRATION)
           end
         end
+
+        # Clean up any deprecated hash entries
+        #
+        deprecated_cache.clear
       end
 
       def file_paths

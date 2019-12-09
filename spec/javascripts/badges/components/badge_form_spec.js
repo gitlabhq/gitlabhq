@@ -1,10 +1,10 @@
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
+import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import axios from '~/lib/utils/axios_utils';
 import store from '~/badges/store';
 import createEmptyBadge from '~/badges/empty_badge';
 import BadgeForm from '~/badges/components/badge_form.vue';
-import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { DUMMY_IMAGE_URL, TEST_HOST } from '../../test_constants';
 
 // avoid preview background process

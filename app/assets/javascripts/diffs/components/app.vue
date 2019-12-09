@@ -1,12 +1,12 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { GlLoadingIcon } from '@gitlab/ui';
+import Mousetrap from 'mousetrap';
 import Icon from '~/vue_shared/components/icon.vue';
 import { __ } from '~/locale';
 import createFlash from '~/flash';
-import { GlLoadingIcon } from '@gitlab/ui';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
-import Mousetrap from 'mousetrap';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import eventHub from '../../notes/event_hub';
 import CompareVersions from './compare_versions.vue';
 import DiffFile from './diff_file.vue';

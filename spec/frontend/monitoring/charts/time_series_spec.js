@@ -1,9 +1,9 @@
 import { shallowMount } from '@vue/test-utils';
 import { setTestTimeout } from 'helpers/timeout';
-import { createStore } from '~/monitoring/stores';
 import { GlLink } from '@gitlab/ui';
 import { GlAreaChart, GlLineChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import { shallowWrapperContainsSlotText } from 'helpers/vue_test_utils_helper';
+import { createStore } from '~/monitoring/stores';
 import TimeSeries from '~/monitoring/components/charts/time_series.vue';
 import * as types from '~/monitoring/stores/mutation_types';
 import {

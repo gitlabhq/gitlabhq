@@ -1,8 +1,8 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
-import Embed from '~/monitoring/components/embed.vue';
 import PanelType from 'ee_else_ce/monitoring/components/panel_type.vue';
 import { TEST_HOST } from 'helpers/test_constants';
+import Embed from '~/monitoring/components/embed.vue';
 import { groups, initialState, metricsData, metricsWithData } from './mock_data';
 
 const localVue = createLocalVue();

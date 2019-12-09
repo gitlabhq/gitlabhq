@@ -1,5 +1,5 @@
-import RequestSelector from '~/performance_bar/components/request_selector.vue';
 import { shallowMount } from '@vue/test-utils';
+import RequestSelector from '~/performance_bar/components/request_selector.vue';
 
 describe('request selector', () => {
   const requests = [

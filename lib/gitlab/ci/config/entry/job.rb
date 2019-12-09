@@ -173,7 +173,7 @@ module Gitlab
               @entries.delete(:type)
 
               # This is something of a hack, see issue for details:
-              # https://gitlab.com/gitlab-org/gitlab-foss/issues/67150
+              # https://gitlab.com/gitlab-org/gitlab/issues/31685
               if !only_defined? && has_rules?
                 @entries.delete(:only)
                 @entries.delete(:except)

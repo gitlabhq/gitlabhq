@@ -1,11 +1,11 @@
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
+import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
+import { waitForMutation } from 'spec/helpers/vue_test_utils_helper';
 import axios from '~/lib/utils/axios_utils';
 import jobApp from '~/jobs/components/job_app.vue';
 import createStore from '~/jobs/store';
 import * as types from '~/jobs/store/mutation_types';
-import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
-import { waitForMutation } from 'spec/helpers/vue_test_utils_helper';
 import { resetStore } from '../store/helpers';
 import job from '../mock_data';
 

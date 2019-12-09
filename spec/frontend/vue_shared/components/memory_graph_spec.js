@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { shallowMount } from '@vue/test-utils';
-import MemoryGraph from '~/vue_shared/components/memory_graph.vue';
 import { GlSparklineChart } from '@gitlab/ui/dist/charts';
+import MemoryGraph from '~/vue_shared/components/memory_graph.vue';
 
 describe('MemoryGraph', () => {
   const Component = Vue.extend(MemoryGraph);

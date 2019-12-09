@@ -1,6 +1,7 @@
+import { shallowMount } from '@vue/test-utils';
+import { TEST_HOST } from 'helpers/test_constants';
 import Anomaly from '~/monitoring/components/charts/anomaly.vue';
 
-import { shallowMount } from '@vue/test-utils';
 import { colorValues } from '~/monitoring/constants';
 import {
   anomalyDeploymentData,
@@ -8,7 +9,6 @@ import {
   anomalyMockGraphData,
   anomalyMockResultValues,
 } from '../../mock_data';
-import { TEST_HOST } from 'helpers/test_constants';
 import MonitorTimeSeriesChart from '~/monitoring/components/charts/time_series.vue';
 
 const mockWidgets = 'mockWidgets';

@@ -1,9 +1,9 @@
 <script>
+import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 /**
  * Renders the Monitoring (Metrics) link in environments table.
  */
-import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
 
 export default {

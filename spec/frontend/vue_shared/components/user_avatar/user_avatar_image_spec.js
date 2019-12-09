@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
+import defaultAvatarUrl from 'images/no_avatar.png';
 import { placeholderImage } from '~/lazy_loader';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
-import defaultAvatarUrl from 'images/no_avatar.png';
 
 jest.mock('images/no_avatar.png', () => 'default-avatar-url');
 

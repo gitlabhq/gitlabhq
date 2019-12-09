@@ -1,4 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
+import testAction from 'spec/helpers/vuex_action_helper';
+import { TEST_HOST } from 'spec/test_constants';
 import axios from '~/lib/utils/axios_utils';
 import {
   setJobEndpoint,
@@ -27,8 +29,6 @@ import {
 } from '~/jobs/store/actions';
 import state from '~/jobs/store/state';
 import * as types from '~/jobs/store/mutation_types';
-import testAction from 'spec/helpers/vuex_action_helper';
-import { TEST_HOST } from 'spec/test_constants';
 
 describe('Job State actions', () => {
   let mockedState;

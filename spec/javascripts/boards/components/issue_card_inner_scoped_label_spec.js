@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import IssueCardInnerScopedLabel from '~/boards/components/issue_card_inner_scoped_label.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import IssueCardInnerScopedLabel from '~/boards/components/issue_card_inner_scoped_label.vue';
 
 describe('IssueCardInnerScopedLabel Component', () => {
   let vm;

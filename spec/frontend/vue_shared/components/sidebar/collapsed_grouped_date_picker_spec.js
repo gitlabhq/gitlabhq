@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import collapsedGroupedDatePicker from '~/vue_shared/components/sidebar/collapsed_grouped_date_picker.vue';
 import mountComponent from 'helpers/vue_mount_component_helper';
+import collapsedGroupedDatePicker from '~/vue_shared/components/sidebar/collapsed_grouped_date_picker.vue';
 
 describe('collapsedGroupedDatePicker', () => {
   let vm;

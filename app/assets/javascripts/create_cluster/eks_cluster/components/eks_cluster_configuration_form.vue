@@ -1,8 +1,8 @@
 <script>
 import { createNamespacedHelpers, mapState, mapActions } from 'vuex';
-import { sprintf, s__ } from '~/locale';
 import _ from 'underscore';
 import { GlFormInput, GlFormCheckbox } from '@gitlab/ui';
+import { sprintf, s__ } from '~/locale';
 import ClusterFormDropdown from './cluster_form_dropdown.vue';
 import { KUBERNETES_VERSIONS } from '../constants';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';

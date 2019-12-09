@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import component from '~/jobs/components/stages_dropdown.vue';
 import { trimText } from 'spec/helpers/text_helper';
+import component from '~/jobs/components/stages_dropdown.vue';
 import mountComponent from '../../helpers/vue_mount_component_helper';
 
 describe('Stages Dropdown', () => {

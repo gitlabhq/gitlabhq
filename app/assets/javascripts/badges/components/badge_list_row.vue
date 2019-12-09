@@ -1,8 +1,8 @@
 <script>
 import { mapActions, mapState } from 'vuex';
+import { GlLoadingIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
-import { GlLoadingIcon } from '@gitlab/ui';
 import { PROJECT_BADGE } from '../constants';
 import Badge from './badge.vue';
 

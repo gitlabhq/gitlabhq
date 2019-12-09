@@ -2,12 +2,12 @@ import $ from 'jquery';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import Autosize from 'autosize';
+import { trimText } from 'helpers/text_helper';
 import axios from '~/lib/utils/axios_utils';
 import createStore from '~/notes/stores';
 import CommentForm from '~/notes/components/comment_form.vue';
 import * as constants from '~/notes/constants';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
-import { trimText } from 'helpers/text_helper';
 import { keyboardDownEvent } from '../../issue_show/helpers';
 import {
   loggedOutnoteableData,

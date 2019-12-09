@@ -1,6 +1,6 @@
+import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import * as commonUtils from '~/lib/utils/common_utils';
-import MockAdapter from 'axios-mock-adapter';
 import { faviconDataUrl, overlayDataUrl, faviconWithOverlayDataUrl } from './mock_data';
 import breakpointInstance from '~/breakpoints';
 

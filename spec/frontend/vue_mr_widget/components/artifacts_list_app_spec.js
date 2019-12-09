@@ -1,9 +1,9 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import MockAdapter from 'axios-mock-adapter';
-import axios from '~/lib/utils/axios_utils';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { TEST_HOST } from 'helpers/test_constants';
+import axios from '~/lib/utils/axios_utils';
 import ArtifactsListApp from '~/vue_merge_request_widget/components/artifacts_list_app.vue';
 import createStore from '~/vue_merge_request_widget/stores/artifacts_list';
 import { artifactsList } from './mock_data';

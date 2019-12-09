@@ -1,5 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import Cookies from 'js-cookie';
+import mockDiffFile from 'spec/diffs/mock_data/diff_file';
 import {
   DIFF_VIEW_COOKIE_NAME,
   INLINE_DIFF_VIEW_TYPE,
@@ -44,7 +45,6 @@ import actions, {
 import eventHub from '~/notes/event_hub';
 import * as types from '~/diffs/store/mutation_types';
 import axios from '~/lib/utils/axios_utils';
-import mockDiffFile from 'spec/diffs/mock_data/diff_file';
 import testAction from '../../helpers/vuex_action_helper';
 
 describe('DiffsStoreActions', () => {

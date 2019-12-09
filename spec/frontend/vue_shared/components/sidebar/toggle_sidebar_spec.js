@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import toggleSidebar from '~/vue_shared/components/sidebar/toggle_sidebar.vue';
 import mountComponent from 'helpers/vue_mount_component_helper';
+import toggleSidebar from '~/vue_shared/components/sidebar/toggle_sidebar.vue';
 
 describe('toggleSidebar', () => {
   let vm;

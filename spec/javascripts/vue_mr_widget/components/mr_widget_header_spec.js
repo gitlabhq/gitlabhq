@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import headerComponent from '~/vue_merge_request_widget/components/mr_widget_header.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import headerComponent from '~/vue_merge_request_widget/components/mr_widget_header.vue';
 
 describe('MRWidgetHeader', () => {
   let vm;

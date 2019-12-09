@@ -1,9 +1,9 @@
 /* eslint-disable no-underscore-dangle, class-methods-use-this, consistent-return, no-shadow */
 
+import ListIssue from 'ee_else_ce/boards/models/issue';
 import { __ } from '~/locale';
 import ListLabel from './label';
 import ListAssignee from './assignee';
-import ListIssue from 'ee_else_ce/boards/models/issue';
 import { urlParamsToObject } from '~/lib/utils/common_utils';
 import flash from '~/flash';
 import boardsStore from '../stores/boards_store';

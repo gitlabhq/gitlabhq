@@ -1,7 +1,7 @@
 import Vue from 'vue';
+import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import createStore from '~/notes/stores';
 import DiscussionCounter from '~/notes/components/discussion_counter.vue';
-import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { noteableDataMock, discussionMock, notesDataMock } from '../mock_data';
 
 describe('DiscussionCounter component', () => {

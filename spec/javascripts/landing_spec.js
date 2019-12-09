@@ -1,5 +1,5 @@
-import Landing from '~/landing';
 import Cookies from 'js-cookie';
+import Landing from '~/landing';
 
 describe('Landing', function() {
   describe('class constructor', function() {

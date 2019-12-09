@@ -1,6 +1,6 @@
+import { getJSONFixture } from 'helpers/fixtures';
 import * as types from '~/pipelines/stores/test_reports/mutation_types';
 import mutations from '~/pipelines/stores/test_reports/mutations';
-import { getJSONFixture } from 'helpers/fixtures';
 
 describe('Mutations TestReports Store', () => {
   let mockState;

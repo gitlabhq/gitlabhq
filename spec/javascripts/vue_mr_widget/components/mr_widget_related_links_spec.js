@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import relatedLinksComponent from '~/vue_merge_request_widget/components/mr_widget_related_links.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import relatedLinksComponent from '~/vue_merge_request_widget/components/mr_widget_related_links.vue';
 
 describe('MRWidgetRelatedLinks', () => {
   let vm;

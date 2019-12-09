@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import dropzoneInput from '~/dropzone_input';
 import { TEST_HOST } from 'spec/test_constants';
+import dropzoneInput from '~/dropzone_input';
 
 const TEST_FILE = new File([], 'somefile.jpg');
 TEST_FILE.upload = {};

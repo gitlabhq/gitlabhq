@@ -1,9 +1,9 @@
 import Vuex from 'vuex';
+import { shallowMount } from '@vue/test-utils';
+import { getJSONFixture } from 'helpers/fixtures';
 import SuiteTable from '~/pipelines/components/test_reports/test_suite_table.vue';
 import * as getters from '~/pipelines/stores/test_reports/getters';
 import { TestStatus } from '~/pipelines/constants';
-import { shallowMount } from '@vue/test-utils';
-import { getJSONFixture } from 'helpers/fixtures';
 import skippedTestCases from './mock_data';
 
 describe('Test reports suite table', () => {

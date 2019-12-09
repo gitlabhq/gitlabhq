@@ -1,13 +1,13 @@
 <script>
 /* eslint-disable @gitlab/vue-i18n/no-bare-strings */
-import { __, sprintf } from '~/locale';
 import { format } from 'timeago.js';
 import _ from 'underscore';
 import { GlTooltipDirective } from '@gitlab/ui';
+import environmentItemMixin from 'ee_else_ce/environments/mixins/environment_item_mixin';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
-import environmentItemMixin from 'ee_else_ce/environments/mixins/environment_item_mixin';
+import { __, sprintf } from '~/locale';
 import ActionsComponent from './environment_actions.vue';
 import ExternalUrlComponent from './environment_external_url.vue';
 import StopComponent from './environment_stop.vue';

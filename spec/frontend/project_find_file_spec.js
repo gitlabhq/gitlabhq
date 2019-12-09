@@ -1,9 +1,9 @@
 import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
-import ProjectFindFile from '~/project_find_file';
-import axios from '~/lib/utils/axios_utils';
 import { TEST_HOST } from 'helpers/test_constants';
 import sanitize from 'sanitize-html';
+import ProjectFindFile from '~/project_find_file';
+import axios from '~/lib/utils/axios_utils';
 
 jest.mock('sanitize-html', () => jest.fn(val => val));
 

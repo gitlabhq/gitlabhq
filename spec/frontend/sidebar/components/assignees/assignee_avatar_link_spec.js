@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import { joinPaths } from '~/lib/utils/url_utility';
 import { TEST_HOST } from 'helpers/test_constants';
+import { joinPaths } from '~/lib/utils/url_utility';
 import AssigneeAvatarLink from '~/sidebar/components/assignees/assignee_avatar_link.vue';
 import AssigneeAvatar from '~/sidebar/components/assignees/assignee_avatar.vue';
 import userDataMock from '../../user_data_mock';

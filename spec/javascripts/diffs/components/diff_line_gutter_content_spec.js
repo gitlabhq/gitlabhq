@@ -1,7 +1,7 @@
 import Vue from 'vue';
+import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import DiffLineGutterContent from '~/diffs/components/diff_line_gutter_content.vue';
 import { createStore } from '~/mr_notes/stores';
-import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import discussionsMockData from '../mock_data/diff_discussions';
 import diffFileMockData from '../mock_data/diff_file';
 

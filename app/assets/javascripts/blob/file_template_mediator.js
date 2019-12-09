@@ -1,6 +1,6 @@
+import $ from 'jquery';
 import Api from '~/api';
 
-import $ from 'jquery';
 import Flash from '../flash';
 import FileTemplateTypeSelector from './template_selectors/type_selector';
 import BlobCiYamlSelector from './template_selectors/ci_yaml_selector';

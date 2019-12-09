@@ -1,5 +1,5 @@
-import { trimText } from 'helpers/text_helper';
 import { mount } from '@vue/test-utils';
+import { trimText } from 'helpers/text_helper';
 import JobItem from '~/pipelines/components/graph/job_item.vue';
 
 describe('pipeline graph job item', () => {

@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import axios from '~/lib/utils/axios_utils';
 import Cookies from 'js-cookie';
+import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';
 import { s__ } from '~/locale';
 import { handleLocationHash, historyPushState, scrollToElement } from '~/lib/utils/common_utils';

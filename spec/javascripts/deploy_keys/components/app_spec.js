@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
+import { TEST_HOST } from 'spec/test_constants';
 import axios from '~/lib/utils/axios_utils';
 import eventHub from '~/deploy_keys/eventhub';
 import deployKeysApp from '~/deploy_keys/components/app.vue';
-import { TEST_HOST } from 'spec/test_constants';
 
 describe('Deploy keys app component', () => {
   const data = getJSONFixture('deploy_keys/keys.json');

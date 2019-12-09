@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import { formatDate } from '~/lib/utils/datetime_utility';
 import { mount, createLocalVue } from '@vue/test-utils';
+import { formatDate } from '~/lib/utils/datetime_utility';
 import RelatedIssuableItem from '~/vue_shared/components/issue/related_issuable_item.vue';
 import {
   defaultAssignees,

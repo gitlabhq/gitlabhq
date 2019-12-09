@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
+import UsersMockHelper from 'helpers/user_mock_data_helper';
 import CollapsedAssigneeList from '~/sidebar/components/assignees/collapsed_assignee_list.vue';
 import CollapsedAssignee from '~/sidebar/components/assignees/collapsed_assignee.vue';
-import UsersMockHelper from 'helpers/user_mock_data_helper';
 
 const DEFAULT_MAX_COUNTER = 99;
 

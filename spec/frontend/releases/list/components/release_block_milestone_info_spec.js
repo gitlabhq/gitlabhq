@@ -1,8 +1,8 @@
 import { mount } from '@vue/test-utils';
 import { GlProgressBar, GlLink, GlBadge, GlButton } from '@gitlab/ui';
+import { trimText } from 'helpers/text_helper';
 import ReleaseBlockMilestoneInfo from '~/releases/list/components/release_block_milestone_info.vue';
 import { milestones } from '../../mock_data';
-import { trimText } from 'helpers/text_helper';
 import { MAX_MILESTONES_TO_DISPLAY } from '~/releases/list/constants';
 
 describe('Release block milestone info', () => {

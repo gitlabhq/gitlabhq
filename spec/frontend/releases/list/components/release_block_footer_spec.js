@@ -1,8 +1,8 @@
 import { mount } from '@vue/test-utils';
-import ReleaseBlockFooter from '~/releases/list/components/release_block_footer.vue';
-import Icon from '~/vue_shared/components/icon.vue';
 import { GlLink } from '@gitlab/ui';
 import { trimText } from 'helpers/text_helper';
+import ReleaseBlockFooter from '~/releases/list/components/release_block_footer.vue';
+import Icon from '~/vue_shared/components/icon.vue';
 import { release } from '../../mock_data';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 

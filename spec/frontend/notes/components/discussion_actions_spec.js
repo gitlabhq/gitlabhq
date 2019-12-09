@@ -1,4 +1,3 @@
-import createStore from '~/notes/stores';
 import { shallowMount, mount, createLocalVue } from '@vue/test-utils';
 import { discussionMock } from '../../notes/mock_data';
 import DiscussionActions from '~/notes/components/discussion_actions.vue';
@@ -6,6 +5,7 @@ import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vu
 import ResolveDiscussionButton from '~/notes/components/discussion_resolve_button.vue';
 import ResolveWithIssueButton from '~/notes/components/discussion_resolve_with_issue_button.vue';
 import JumpToNextDiscussionButton from '~/notes/components/discussion_jump_to_next_button.vue';
+import createStore from '~/notes/stores';
 
 // NOTE: clone mock_data so that it is not accidentally mutated
 const createDiscussionMock = (props = {}) =>

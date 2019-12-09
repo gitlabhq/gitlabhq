@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import sidebarDatePicker from '~/vue_shared/components/sidebar/date_picker.vue';
 import mountComponent from 'helpers/vue_mount_component_helper';
+import sidebarDatePicker from '~/vue_shared/components/sidebar/date_picker.vue';
 
 describe('sidebarDatePicker', () => {
   let vm;

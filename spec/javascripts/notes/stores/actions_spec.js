@@ -1,6 +1,7 @@
 import $ from 'jquery';
-import Api from '~/api';
 import { TEST_HOST } from 'spec/test_constants';
+import AxiosMockAdapter from 'axios-mock-adapter';
+import Api from '~/api';
 import actionsModule, * as actions from '~/notes/stores/actions';
 import * as mutationTypes from '~/notes/stores/mutation_types';
 import * as notesConstants from '~/notes/constants';
@@ -15,7 +16,6 @@ import {
   noteableDataMock,
   individualNote,
 } from '../mock_data';
-import AxiosMockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 
 const TEST_ERROR_MESSAGE = 'Test error message';

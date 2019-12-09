@@ -1,8 +1,8 @@
 import Vue from 'vue';
-import eventHub from '~/environments/event_hub';
-import EnvironmentActions from '~/environments/components/environment_actions.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { TEST_HOST } from 'spec/test_constants';
+import eventHub from '~/environments/event_hub';
+import EnvironmentActions from '~/environments/components/environment_actions.vue';
 
 describe('EnvironmentActions Component', () => {
   const Component = Vue.extend(EnvironmentActions);

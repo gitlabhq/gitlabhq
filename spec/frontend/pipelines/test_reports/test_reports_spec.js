@@ -1,8 +1,8 @@
 import Vuex from 'vuex';
-import TestReports from '~/pipelines/components/test_reports/test_reports.vue';
 import { shallowMount } from '@vue/test-utils';
-import * as actions from '~/pipelines/stores/test_reports/actions';
 import { getJSONFixture } from 'helpers/fixtures';
+import TestReports from '~/pipelines/components/test_reports/test_reports.vue';
+import * as actions from '~/pipelines/stores/test_reports/actions';
 
 describe('Test reports app', () => {
   let wrapper;

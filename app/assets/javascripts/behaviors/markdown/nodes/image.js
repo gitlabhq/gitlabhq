@@ -1,8 +1,8 @@
 /* eslint-disable class-methods-use-this */
 
 import { Image as BaseImage } from 'tiptap-extensions';
-import { placeholderImage } from '~/lazy_loader';
 import { defaultMarkdownSerializer } from 'prosemirror-markdown';
+import { placeholderImage } from '~/lazy_loader';
 
 export default class Image extends BaseImage {
   get schema() {

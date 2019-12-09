@@ -1,4 +1,5 @@
 import axios from '~/lib/utils/axios_utils';
+import '~/performance_bar/components/performance_bar_app.vue';
 import performanceBar from '~/performance_bar';
 import PerformanceBarService from '~/performance_bar/services/performance_bar_service';
 

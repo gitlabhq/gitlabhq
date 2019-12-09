@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import collapsedCalendarIcon from '~/vue_shared/components/sidebar/collapsed_calendar_icon.vue';
 import mountComponent from 'helpers/vue_mount_component_helper';
+import collapsedCalendarIcon from '~/vue_shared/components/sidebar/collapsed_calendar_icon.vue';
 
 describe('collapsedCalendarIcon', () => {
   let vm;
