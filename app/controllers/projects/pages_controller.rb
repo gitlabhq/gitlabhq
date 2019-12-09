@@ -15,8 +15,7 @@ class Projects::PagesController < Projects::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def destroy
-    project.remove_pages
-    project.pages_domains.destroy_all # rubocop: disable DestroyAll
+    ::Pages::DeleteService.new(@project, current_user).execute
 
     respond_to do |format|
       format.html do

@@ -1,7 +1,7 @@
 <script>
 import _ from 'underscore';
-import { s__, sprintf } from '~/locale';
 import { GlModal, GlModalDirective } from '@gitlab/ui';
+import { s__, sprintf } from '~/locale';
 
 export default {
   components: {

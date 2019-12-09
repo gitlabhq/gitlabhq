@@ -24,7 +24,7 @@ module QA
 
         # Wait for Action Mailer to deliver messages
         mailhog_json = Support::Retrier.retry_until(sleep_interval: 1) do
-          Runtime::Logger.debug(%Q[retrieving "#{QA::Runtime::MailHog.api_messages_url}"]) if Runtime::Env.debug?
+          Runtime::Logger.debug(%Q[retrieving "#{QA::Runtime::MailHog.api_messages_url}"])
 
           mailhog_response = get QA::Runtime::MailHog.api_messages_url
 

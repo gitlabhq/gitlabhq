@@ -20,7 +20,7 @@ RSpec.configure do |config|
   QA::Specs::Helpers::Quarantine.configure_rspec
 
   config.before do |example|
-    QA::Runtime::Logger.debug("\nStarting test: #{example.full_description}\n") if QA::Runtime::Env.debug?
+    QA::Runtime::Logger.debug("\nStarting test: #{example.full_description}\n")
   end
 
   config.after(:context) do
