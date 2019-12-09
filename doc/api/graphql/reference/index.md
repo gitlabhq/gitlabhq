@@ -195,32 +195,32 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
 | `userPermissions` | EpicPermissions! | Permissions for the current user on the resource |
-| `id` | ID! |  |
-| `iid` | ID! |  |
-| `title` | String |  |
-| `description` | String |  |
-| `state` | EpicState! |  |
-| `group` | Group! |  |
-| `parent` | Epic |  |
-| `author` | User! |  |
-| `startDate` | Time |  |
-| `startDateIsFixed` | Boolean |  |
-| `startDateFixed` | Time |  |
-| `startDateFromMilestones` | Time |  |
-| `dueDate` | Time |  |
-| `dueDateIsFixed` | Boolean |  |
-| `dueDateFixed` | Time |  |
-| `dueDateFromMilestones` | Time |  |
+| `id` | ID! | ID of the epic |
+| `iid` | ID! | Internal ID of the epic |
+| `title` | String | Title of the epic |
+| `description` | String | Description of the epic |
+| `state` | EpicState! | State of the epic |
+| `group` | Group! | Group to which the epic belongs |
+| `parent` | Epic | Parent epic of the epic |
+| `author` | User! | Author of the epic |
+| `startDate` | Time | Start date of the epic |
+| `startDateIsFixed` | Boolean | Indicates if the start date has been manually set |
+| `startDateFixed` | Time | Fixed start date of the epic |
+| `startDateFromMilestones` | Time | Inherited start date of the epic from milestones |
+| `dueDate` | Time | Due date of the epic |
+| `dueDateIsFixed` | Boolean | Indicates if the due date has been manually set |
+| `dueDateFixed` | Time | Fixed due date of the epic |
+| `dueDateFromMilestones` | Time | Inherited due date of the epic from milestones |
 | `upvotes` | Int! | Number of upvotes the epic has received |
 | `downvotes` | Int! | Number of downvotes the epic has received |
-| `closedAt` | Time |  |
-| `createdAt` | Time |  |
-| `updatedAt` | Time |  |
-| `hasChildren` | Boolean! |  |
-| `hasIssues` | Boolean! |  |
+| `closedAt` | Time | Timestamp of the epic's closure |
+| `createdAt` | Time | Timestamp of the epic's creation |
+| `updatedAt` | Time | Timestamp of the epic's last activity |
+| `hasChildren` | Boolean! | Indicates if the epic has children |
+| `hasIssues` | Boolean! | Indicates if the epic has direct issues |
 | `webPath` | String! |  |
 | `webUrl` | String! |  |
-| `relativePosition` | Int | The relative position of the epic in the Epic tree |
+| `relativePosition` | Int | The relative position of the epic in the epic tree |
 | `relationPath` | String |  |
 | `reference` | String! |  |
 | `subscribed` | Boolean! | Boolean flag for whether the currently logged in user is subscribed to this epic |

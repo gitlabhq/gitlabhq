@@ -3342,7 +3342,7 @@
           "fields": [
             {
               "name": "author",
-              "description": null,
+              "description": "Author of the epic",
               "args": [
 
               ],
@@ -3360,7 +3360,7 @@
             },
             {
               "name": "children",
-              "description": null,
+              "description": "Children (sub-epics) of the epic",
               "args": [
                 {
                   "name": "iid",
@@ -3519,7 +3519,7 @@
             },
             {
               "name": "closedAt",
-              "description": null,
+              "description": "Timestamp of the epic's closure",
               "args": [
 
               ],
@@ -3533,7 +3533,7 @@
             },
             {
               "name": "createdAt",
-              "description": null,
+              "description": "Timestamp of the epic's creation",
               "args": [
 
               ],
@@ -3561,7 +3561,7 @@
             },
             {
               "name": "description",
-              "description": null,
+              "description": "Description of the epic",
               "args": [
 
               ],
@@ -3650,7 +3650,7 @@
             },
             {
               "name": "dueDate",
-              "description": null,
+              "description": "Due date of the epic",
               "args": [
 
               ],
@@ -3664,7 +3664,7 @@
             },
             {
               "name": "dueDateFixed",
-              "description": null,
+              "description": "Fixed due date of the epic",
               "args": [
 
               ],
@@ -3678,7 +3678,7 @@
             },
             {
               "name": "dueDateFromMilestones",
-              "description": null,
+              "description": "Inherited due date of the epic from milestones",
               "args": [
 
               ],
@@ -3692,7 +3692,7 @@
             },
             {
               "name": "dueDateIsFixed",
-              "description": null,
+              "description": "Indicates if the due date has been manually set",
               "args": [
 
               ],
@@ -3706,7 +3706,7 @@
             },
             {
               "name": "group",
-              "description": null,
+              "description": "Group to which the epic belongs",
               "args": [
 
               ],
@@ -3724,7 +3724,7 @@
             },
             {
               "name": "hasChildren",
-              "description": null,
+              "description": "Indicates if the epic has children",
               "args": [
 
               ],
@@ -3742,7 +3742,7 @@
             },
             {
               "name": "hasIssues",
-              "description": null,
+              "description": "Indicates if the epic has direct issues",
               "args": [
 
               ],
@@ -3760,7 +3760,7 @@
             },
             {
               "name": "id",
-              "description": null,
+              "description": "ID of the epic",
               "args": [
 
               ],
@@ -3778,7 +3778,7 @@
             },
             {
               "name": "iid",
-              "description": null,
+              "description": "Internal ID of the epic",
               "args": [
 
               ],
@@ -3959,7 +3959,7 @@
             },
             {
               "name": "parent",
-              "description": null,
+              "description": "Parent epic of the epic",
               "args": [
 
               ],
@@ -4067,7 +4067,7 @@
             },
             {
               "name": "relativePosition",
-              "description": "The relative position of the epic in the Epic tree",
+              "description": "The relative position of the epic in the epic tree",
               "args": [
 
               ],
@@ -4081,7 +4081,7 @@
             },
             {
               "name": "startDate",
-              "description": null,
+              "description": "Start date of the epic",
               "args": [
 
               ],
@@ -4095,7 +4095,7 @@
             },
             {
               "name": "startDateFixed",
-              "description": null,
+              "description": "Fixed start date of the epic",
               "args": [
 
               ],
@@ -4109,7 +4109,7 @@
             },
             {
               "name": "startDateFromMilestones",
-              "description": null,
+              "description": "Inherited start date of the epic from milestones",
               "args": [
 
               ],
@@ -4123,7 +4123,7 @@
             },
             {
               "name": "startDateIsFixed",
-              "description": null,
+              "description": "Indicates if the start date has been manually set",
               "args": [
 
               ],
@@ -4137,7 +4137,7 @@
             },
             {
               "name": "state",
-              "description": null,
+              "description": "State of the epic",
               "args": [
 
               ],
@@ -4173,7 +4173,7 @@
             },
             {
               "name": "title",
-              "description": null,
+              "description": "Title of the epic",
               "args": [
 
               ],
@@ -4187,7 +4187,7 @@
             },
             {
               "name": "updatedAt",
-              "description": null,
+              "description": "Timestamp of the epic's last activity",
               "args": [
 
               ],

@@ -1,0 +1,5 @@
+---
+title: 'Correctly return stripped PGP text'
+merge_request: 21187
+author: Roger Meier
+type: fixed

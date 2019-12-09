@@ -1128,7 +1128,14 @@ enum EntryType {
 }
 
 type Epic implements Noteable {
+  """
+  Author of the epic
+  """
   author: User!
+
+  """
+  Children (sub-epics) of the epic
+  """
   children(
     """
     Returns the elements in the list that come after the specified cursor.
@@ -1197,13 +1204,25 @@ type Epic implements Noteable {
     """
     state: EpicState
   ): EpicConnection
+
+  """
+  Timestamp of the epic's closure
+  """
   closedAt: Time
+
+  """
+  Timestamp of the epic's creation
+  """
   createdAt: Time
 
   """
   Number of open and closed descendant epics and issues
   """
   descendantCounts: EpicDescendantCount
+
+  """
+  Description of the epic
+  """
   description: String
 
   """
@@ -1235,14 +1254,50 @@ type Epic implements Noteable {
   Number of downvotes the epic has received
   """
   downvotes: Int!
+
+  """
+  Due date of the epic
+  """
   dueDate: Time
+
+  """
+  Fixed due date of the epic
+  """
   dueDateFixed: Time
+
+  """
+  Inherited due date of the epic from milestones
+  """
   dueDateFromMilestones: Time
+
+  """
+  Indicates if the due date has been manually set
+  """
   dueDateIsFixed: Boolean
+
+  """
+  Group to which the epic belongs
+  """
   group: Group!
+
+  """
+  Indicates if the epic has children
+  """
   hasChildren: Boolean!
+
+  """
+  Indicates if the epic has direct issues
+  """
   hasIssues: Boolean!
+
+  """
+  ID of the epic
+  """
   id: ID!
+
+  """
+  Internal ID of the epic
+  """
   iid: ID!
 
   """
@@ -1319,6 +1374,10 @@ type Epic implements Noteable {
     """
     last: Int
   ): NoteConnection!
+
+  """
+  Parent epic of the epic
+  """
   parent: Epic
 
   """
@@ -1349,20 +1408,48 @@ type Epic implements Noteable {
   relationPath: String
 
   """
-  The relative position of the epic in the Epic tree
+  The relative position of the epic in the epic tree
   """
   relativePosition: Int
+
+  """
+  Start date of the epic
+  """
   startDate: Time
+
+  """
+  Fixed start date of the epic
+  """
   startDateFixed: Time
+
+  """
+  Inherited start date of the epic from milestones
+  """
   startDateFromMilestones: Time
+
+  """
+  Indicates if the start date has been manually set
+  """
   startDateIsFixed: Boolean
+
+  """
+  State of the epic
+  """
   state: EpicState!
 
   """
   Boolean flag for whether the currently logged in user is subscribed to this epic
   """
   subscribed: Boolean!
+
+  """
+  Title of the epic
+  """
   title: String
+
+  """
+  Timestamp of the epic's last activity
+  """
   updatedAt: Time
 
   """
