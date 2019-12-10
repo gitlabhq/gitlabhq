@@ -740,10 +740,10 @@ describe ProjectsController do
     it 'gets a list of branches and tags' do
       get :refs, params: { namespace_id: project.namespace, id: project, sort: 'updated_desc' }
 
-      expect(json_response['Branches']).to include('master')
-      expect(json_response['Tags'].first).to eq('v1.1.0')
-      expect(json_response['Tags'].last).to eq('v1.0.0')
-      expect(json_response['Commits']).to be_nil
+      parsed_body = JSON.parse(response.body)
+      expect(parsed_body['Branches']).to include('master')
+      expect(json_response['Tags']).to include('v1.0.0')
+      expect(parsed_body['Commits']).to be_nil
     end
 
     it "gets a list of branches, tags and commits" do

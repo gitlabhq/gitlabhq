@@ -55,24 +55,25 @@ describe TagsFinder do
     end
 
     context 'filter and sort' do
-      it 'filters tags by name and sorts by recently_updated' do
-        params = { sort: 'updated_desc', search: 'v1' }
-        tags_finder = described_class.new(repository, params)
+      let(:tags_to_compare) { %w[v1.0.0 v1.1.0] }
+      subject { described_class.new(repository, params).execute.select { |tag| tags_to_compare.include?(tag.name) } }
 
-        result = tags_finder.execute
+      context 'when sort by updated_desc' do
+        let(:params) { { sort: 'updated_desc', search: 'v1' } }
 
-        expect(result.first.name).to eq('v1.1.0')
-        expect(result.count).to eq(2)
+        it 'filters tags by name' do
+          expect(subject.first.name).to eq('v1.1.0')
+          expect(subject.count).to eq(2)
+        end
       end
 
-      it 'filters tags by name and sorts by last_updated' do
-        params = { sort: 'updated_asc', search: 'v1' }
-        tags_finder = described_class.new(repository, params)
+      context 'when sort by updated_asc' do
+        let(:params) { { sort: 'updated_asc', search: 'v1' } }
 
-        result = tags_finder.execute
-
-        expect(result.first.name).to eq('v1.0.0')
-        expect(result.count).to eq(2)
+        it 'filters tags by name' do
+          expect(subject.first.name).to eq('v1.0.0')
+          expect(subject.count).to eq(2)
+        end
       end
     end
   end

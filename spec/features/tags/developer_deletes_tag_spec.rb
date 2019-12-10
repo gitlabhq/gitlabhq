@@ -15,7 +15,7 @@ describe 'Developer deletes tag' do
     it 'deletes the tag' do
       expect(page).to have_content 'v1.1.0'
 
-      delete_first_tag
+      delete_tag 'v1.1.0'
 
       expect(page).not_to have_content 'v1.1.0'
     end
@@ -42,15 +42,15 @@ describe 'Developer deletes tag' do
     end
 
     it 'shows the error message' do
-      delete_first_tag
+      delete_tag 'v1.1.0'
 
       expect(page).to have_content('Do not delete tags')
     end
   end
 
-  def delete_first_tag
+  def delete_tag(tag)
     page.within('.content') do
-      accept_confirm { first('.btn-remove').click }
+      accept_confirm { find("li > .row-fixed-content.controls a.btn-remove[href='/#{project.full_path}/-/tags/#{tag}']").click }
     end
   end
 end
