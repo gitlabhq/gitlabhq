@@ -695,8 +695,7 @@ describe ProjectsController do
 
       parsed_body = JSON.parse(response.body)
       expect(parsed_body['Branches']).to include('master')
-      expect(parsed_body['Tags'].first).to eq('v1.1.0')
-      expect(parsed_body['Tags'].last).to eq('v1.0.0')
+      expect(json_response['Tags']).to include('v1.0.0')
       expect(parsed_body['Commits']).to be_nil
     end
 
