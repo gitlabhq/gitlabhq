@@ -24,6 +24,8 @@ module Gitlab
 
       PRIVATE_TOKEN_HEADER = 'HTTP_PRIVATE_TOKEN'
       PRIVATE_TOKEN_PARAM = :private_token
+      JOB_TOKEN_HEADER = "HTTP_JOB_TOKEN".freeze
+      JOB_TOKEN_PARAM = :job_token
 
       # Check the Rails session for valid authentication details
       def find_user_from_warden
@@ -48,6 +50,20 @@ module Gitlab
         return unless token
 
         User.find_by_feed_token(token) || raise(UnauthorizedError)
+      end
+
+      def find_user_from_job_token
+        return unless route_authentication_setting[:job_token_allowed]
+
+        token = (params[JOB_TOKEN_PARAM] || env[JOB_TOKEN_HEADER]).to_s
+        return unless token.present?
+
+        job = ::Ci::Build.find_by_token(token)
+        raise ::Gitlab::Auth::UnauthorizedError unless job
+
+        @current_authenticated_job = job # rubocop:disable Gitlab/ModuleWithInstanceVariables
+
+        job.user
       end
 
       # We only allow Private Access Tokens with `api` scope to be used by web

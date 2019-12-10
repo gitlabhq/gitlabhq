@@ -82,7 +82,7 @@ There are four ways to authenticate with the GitLab API:
 1. [OAuth2 tokens](#oauth2-tokens)
 1. [Personal access tokens](#personal-access-tokens)
 1. [Session cookie](#session-cookie)
-1. [GitLab CI job token](#gitlab-ci-job-token-premium) **(PREMIUM)**
+1. [GitLab CI job token](#gitlab-ci-job-token) **(Specific endpoints only)**
 
 For admins who want to authenticate with the API as a specific user, or who want to build applications or scripts that do so, two options are available:
 
@@ -152,13 +152,14 @@ The primary user of this authentication method is the web frontend of GitLab its
 which can use the API as the authenticated user to get a list of their projects,
 for example, without needing to explicitly pass an access token.
 
-### GitLab CI job token **(PREMIUM)**
+### GitLab CI job token
 
 With a few API endpoints you can use a [GitLab CI job token](../user/project/new_ci_build_permissions_model.md#job-token)
 to authenticate with the API:
 
 - [Get job artifacts](jobs.md#get-job-artifacts)
 - [Pipeline triggers](pipeline_triggers.md)
+- [Release creation](releases/index.md#create-a-release)
 
 ### Impersonation tokens
 

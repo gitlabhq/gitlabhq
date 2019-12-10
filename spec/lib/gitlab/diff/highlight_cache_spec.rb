@@ -72,11 +72,20 @@ describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
 
   describe '#write_if_empty' do
     it 'filters the key/value list of entries to be caches for each invocation' do
+      paths = merge_request.diffs.diff_files.select(&:text?).map(&:file_path)
+
       expect(cache).to receive(:write_to_redis_hash)
-        .once.with(hash_including(".gitignore")).and_call_original
-      expect(cache).to receive(:write_to_redis_hash).once.with({}).and_call_original
+        .with(hash_including(*paths))
+        .once
+        .and_call_original
 
       2.times { cache.write_if_empty }
+    end
+
+    it 'reads from cache once' do
+      expect(cache).to receive(:read_cache).once.and_call_original
+
+      cache.write_if_empty
     end
 
     context 'different diff_collections for the same diffable' do

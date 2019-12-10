@@ -1,0 +1,5 @@
+---
+title: Add support for Conan package management in the package registry
+merge_request: 21152
+author:
+type: added

@@ -63,7 +63,9 @@ module API
       end
 
       def find_user_from_sources
-        find_user_from_access_token || find_user_from_warden
+        find_user_from_access_token ||
+          find_user_from_job_token ||
+          find_user_from_warden
       end
 
       private
