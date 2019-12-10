@@ -141,6 +141,10 @@ class Gitlab::Seeder::Projects
       # the `after_commit` queue to ensure the job is run now.
       project.send(:_run_after_commit_queue)
       project.import_state.send(:_run_after_commit_queue)
+
+      # Expire repository cache after import to ensure
+      # valid_repo? call below returns a correct answer
+      project.repository.expire_all_method_caches
     end
 
     if project.valid? && project.valid_repo?

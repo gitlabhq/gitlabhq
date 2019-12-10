@@ -195,3 +195,153 @@ shared_examples 'an editable mentionable' do
     subject.create_new_cross_references!(author)
   end
 end
+
+shared_examples_for 'mentions in description' do |mentionable_type|
+  describe 'when store_mentioned_users_to_db feature disabled' do
+    before do
+      stub_feature_flags(store_mentioned_users_to_db: false)
+      mentionable.store_mentions!
+    end
+
+    context 'when mentionable description contains mentions' do
+      let(:user) { create(:user) }
+      let(:mentionable) { create(mentionable_type, description: "#{user.to_reference} some description") }
+
+      it 'stores no mentions' do
+        expect(mentionable.user_mentions.count).to eq 0
+      end
+    end
+  end
+
+  describe 'when store_mentioned_users_to_db feature enabled' do
+    before do
+      stub_feature_flags(store_mentioned_users_to_db: true)
+      mentionable.store_mentions!
+    end
+
+    context 'when mentionable description has no mentions' do
+      let(:mentionable) { create(mentionable_type, description: "just some description") }
+
+      it 'stores no mentions' do
+        expect(mentionable.user_mentions.count).to eq 0
+      end
+    end
+
+    context 'when mentionable description contains mentions' do
+      let(:user) { create(:user) }
+      let(:group) { create(:group) }
+
+      let(:mentionable_desc) { "#{user.to_reference} some description #{group.to_reference(full: true)} and @all" }
+      let(:mentionable) { create(mentionable_type, description: mentionable_desc) }
+
+      it 'stores mentions' do
+        add_member(user)
+
+        expect(mentionable.user_mentions.count).to eq 1
+        expect(mentionable.referenced_users).to match_array([user])
+        expect(mentionable.referenced_projects(user)).to match_array([mentionable.project].compact) # epic.project is nil, and we want empty []
+        expect(mentionable.referenced_groups(user)).to match_array([group])
+      end
+    end
+  end
+end
+
+shared_examples_for 'mentions in notes' do |mentionable_type|
+  context 'when mentionable notes contain mentions' do
+    let(:user) { create(:user) }
+    let(:group) { create(:group) }
+    let(:note_desc) { "#{user.to_reference} and #{group.to_reference(full: true)} and @all" }
+    let!(:mentionable) { note.noteable }
+
+    before do
+      note.update(note: note_desc)
+      note.store_mentions!
+      add_member(user)
+    end
+
+    it 'returns all mentionable mentions' do
+      expect(mentionable.user_mentions.count).to eq 1
+      expect(mentionable.referenced_users).to eq [user]
+      expect(mentionable.referenced_projects(user)).to eq [mentionable.project].compact # epic.project is nil, and we want empty []
+      expect(mentionable.referenced_groups(user)).to eq [group]
+    end
+  end
+end
+
+shared_examples_for 'load mentions from DB' do |mentionable_type|
+  context 'load stored mentions' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:mentioned_user) { create(:user) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:note_desc) { "#{mentioned_user.to_reference} and #{group.to_reference(full: true)} and @all" }
+
+    before do
+      note.update(note: note_desc)
+      note.store_mentions!
+      add_member(user)
+    end
+
+    context 'when stored user mention contains ids of inexistent records' do
+      before do
+        user_mention = note.send(:model_user_mention)
+        mention_ids = {
+          mentioned_users_ids: user_mention.mentioned_users_ids.to_a << User.maximum(:id).to_i.succ,
+          mentioned_projects_ids: user_mention.mentioned_projects_ids.to_a << Project.maximum(:id).to_i.succ,
+          mentioned_groups_ids: user_mention.mentioned_groups_ids.to_a << Group.maximum(:id).to_i.succ
+        }
+        user_mention.update(mention_ids)
+      end
+
+      it 'filters out inexistent mentions' do
+        expect(mentionable.referenced_users).to match_array([mentioned_user])
+        expect(mentionable.referenced_projects(user)).to match_array([mentionable.project].compact) # epic.project is nil, and we want empty []
+        expect(mentionable.referenced_groups(user)).to match_array([group])
+      end
+    end
+
+    context 'when private projects and groups are mentioned' do
+      let(:mega_user) { create(:user) }
+      let(:private_project) { create(:project, :private) }
+      let(:project_member) { create(:project_member, user: create(:user), project: private_project) }
+      let(:private_group) { create(:group, :private) }
+      let(:group_member) { create(:group_member, user: create(:user), group: private_group) }
+
+      before do
+        user_mention = note.send(:model_user_mention)
+        mention_ids = {
+          mentioned_projects_ids: user_mention.mentioned_projects_ids.to_a << private_project.id,
+          mentioned_groups_ids: user_mention.mentioned_groups_ids.to_a << private_group.id
+        }
+        user_mention.update(mention_ids)
+
+        add_member(mega_user)
+        private_project.add_developer(mega_user)
+        private_group.add_developer(mega_user)
+      end
+
+      context 'when user has no access to some mentions' do
+        it 'filters out inaccessible mentions' do
+          expect(mentionable.referenced_projects(user)).to match_array([mentionable.project].compact) # epic.project is nil, and we want empty []
+          expect(mentionable.referenced_groups(user)).to match_array([group])
+        end
+      end
+
+      context 'when user has access to all mentions' do
+        it 'returns all mentions' do
+          expect(mentionable.referenced_projects(mega_user)).to match_array([mentionable.project, private_project].compact) # epic.project is nil, and we want empty []
+          expect(mentionable.referenced_groups(mega_user)).to match_array([group, private_group])
+        end
+      end
+    end
+  end
+end
+
+def add_member(user)
+  issuable_parent = if mentionable.is_a?(Epic)
+                      mentionable.group
+                    else
+                      mentionable.project
+                    end
+
+  issuable_parent&.add_developer(user)
+end

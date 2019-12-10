@@ -499,7 +499,17 @@ class Note < ApplicationRecord
     project
   end
 
+  def user_mentions
+    noteable.user_mentions.where(note: self)
+  end
+
   private
+
+  # Using this method followed by a call to `save` may result in ActiveRecord::RecordNotUnique exception
+  # in a multithreaded environment. Make sure to use it within a `safe_ensure_unique` block.
+  def model_user_mention
+    user_mentions.first_or_initialize
+  end
 
   def system_note_viewable_by?(user)
     return true unless system_note_metadata

@@ -163,7 +163,11 @@ class IssuableBaseService < BaseService
 
     before_create(issuable)
 
-    if issuable.save
+    issuable_saved = issuable.with_transaction_returning_status do
+      issuable.save && issuable.store_mentions!
+    end
+
+    if issuable_saved
       Issuable::CommonSystemNotesService.new(project, current_user).execute(issuable, is_update: false)
 
       after_create(issuable)
@@ -224,7 +228,11 @@ class IssuableBaseService < BaseService
       update_project_counters = issuable.project && update_project_counter_caches?(issuable)
       ensure_milestone_available(issuable)
 
-      if issuable.with_transaction_returning_status { issuable.save(touch: should_touch) }
+      issuable_saved = issuable.with_transaction_returning_status do
+        issuable.save(touch: should_touch) && issuable.store_mentions!
+      end
+
+      if issuable_saved
         Issuable::CommonSystemNotesService.new(project, current_user).execute(issuable, old_labels: old_associations[:labels])
 
         handle_changes(issuable, old_associations: old_associations)

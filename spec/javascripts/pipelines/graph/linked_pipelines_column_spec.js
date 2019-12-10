@@ -35,4 +35,8 @@ describe('Linked Pipelines Column', () => {
 
     expect(linkedPipelineElements.length).toBe(props.linkedPipelines.length);
   });
+
+  it('renders cross project triangle when column is upstream', () => {
+    expect(vm.$el.querySelector('.cross-project-triangle')).toBeDefined();
+  });
 });

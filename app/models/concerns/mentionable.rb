@@ -80,6 +80,66 @@ module Mentionable
     all_references(current_user).users
   end
 
+  def store_mentions!
+    # if store_mentioned_users_to_db feature flag is not enabled then consider storing operation as succeeded
+    # because we wrap this method in transaction with with_transaction_returning_status, and we need the status to be
+    # successful if mentionable.save is successful.
+    #
+    # This line will get removed when we remove the feature flag.
+    return true unless store_mentioned_users_to_db_enabled?
+
+    refs = all_references(self.author)
+
+    references = {}
+    references[:mentioned_users_ids] = refs.mentioned_users&.pluck(:id).presence
+    references[:mentioned_groups_ids] = refs.mentioned_groups&.pluck(:id).presence
+    references[:mentioned_projects_ids] = refs.mentioned_projects&.pluck(:id).presence
+
+    # One retry should be enough as next time `model_user_mention` should return the existing mention record, that
+    # threw the `ActiveRecord::RecordNotUnique` exception in first place.
+    self.class.safe_ensure_unique(retries: 1) do
+      user_mention = model_user_mention
+      user_mention.mentioned_users_ids = references[:mentioned_users_ids]
+      user_mention.mentioned_groups_ids = references[:mentioned_groups_ids]
+      user_mention.mentioned_projects_ids = references[:mentioned_projects_ids]
+
+      if user_mention.has_mentions?
+        user_mention.save!
+      elsif user_mention.persisted?
+        user_mention.destroy!
+      end
+
+      true
+    end
+  end
+
+  def referenced_users
+    User.where(id: user_mentions.select("unnest(mentioned_users_ids)"))
+  end
+
+  def referenced_projects(current_user = nil)
+    Project.where(id: user_mentions.select("unnest(mentioned_projects_ids)")).public_or_visible_to_user(current_user)
+  end
+
+  def referenced_project_users(current_user = nil)
+    User.joins(:project_members).where(members: { source_id: referenced_projects(current_user) }).distinct
+  end
+
+  def referenced_groups(current_user = nil)
+    # TODO: IMPORTANT: Revisit before using it.
+    # Check DB data for max mentioned groups per mentionable:
+    #
+    # select issue_id, count(mentions_count.men_gr_id) gr_count from
+    # (select DISTINCT unnest(mentioned_groups_ids) as men_gr_id, issue_id
+    # from issue_user_mentions group by issue_id, mentioned_groups_ids) as mentions_count
+    # group by mentions_count.issue_id order by gr_count desc limit 10
+    Group.where(id: user_mentions.select("unnest(mentioned_groups_ids)")).public_or_visible_to_user(current_user)
+  end
+
+  def referenced_group_users(current_user = nil)
+    User.joins(:group_members).where(members: { source_id: referenced_groups }).distinct
+  end
+
   def directly_addressed_users(current_user = nil)
     all_references(current_user).directly_addressed_users
   end
@@ -170,6 +230,26 @@ module Mentionable
 
   def mentionable_params
     {}
+  end
+
+  # User mention that is parsed from model description rather then its related notes.
+  # Models that have a descriprion attribute like Issue, MergeRequest, Epic, Snippet may have such a user mention.
+  # Other mentionable models like Commit, DesignManagement::Design, will never have such record as those do not have
+  # a description attribute.
+  #
+  # Using this method followed by a call to *save* may result in *ActiveRecord::RecordNotUnique* exception
+  # in a multithreaded environment. Make sure to use it within a *safe_ensure_unique* block.
+  def model_user_mention
+    user_mentions.where(note_id: nil).first_or_initialize
+  end
+
+  # We need this method to be checking that store_mentioned_users_to_db feature flag is enabled at the group level
+  # and not the project level as epics are defined at group level and we want to have epics store user mentions as well
+  # for the test period.
+  # During the test period the flag should be enabled at the group level.
+  def store_mentioned_users_to_db_enabled?
+    return Feature.enabled?(:store_mentioned_users_to_db, self.project&.group) if self.respond_to?(:project)
+    return Feature.enabled?(:store_mentioned_users_to_db, self.group) if self.respond_to?(:group)
   end
 end
 

@@ -19,8 +19,8 @@ module QA
 
       def api_support?
         respond_to?(:api_get_path) &&
-          respond_to?(:api_post_path) &&
-          respond_to?(:api_post_body)
+          (respond_to?(:api_post_path) && respond_to?(:api_post_body)) ||
+          (respond_to?(:api_put_path) && respond_to?(:api_put_body))
       end
 
       def fabricate_via_api!
@@ -79,6 +79,18 @@ module QA
 
         unless response.code == HTTP_STATUS_CREATED
           raise ResourceFabricationFailedError, "Fabrication of #{self.class.name} using the API failed (#{response.code}) with `#{response}`."
+        end
+
+        process_api_response(parse_body(response))
+      end
+
+      def api_put
+        response = put(
+          Runtime::API::Request.new(api_client, api_put_path).url,
+          api_put_body)
+
+        unless response.code == HTTP_STATUS_OK
+          raise ResourceFabricationFailedError, "Updating #{self.class.name} using the API failed (#{response.code}) with `#{response}`."
         end
 
         process_api_response(parse_body(response))

@@ -2,7 +2,7 @@
 
 module Banzai
   module ReferenceParser
-    class MentionedUsersByGroupParser < BaseParser
+    class MentionedGroupParser < BaseParser
       GROUP_ATTR = 'data-group'
 
       self.reference_type = :user

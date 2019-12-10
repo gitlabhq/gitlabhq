@@ -24,7 +24,7 @@ describe Gitlab::Ci::Config::Entry::Job do
       let(:result) do
         %i[before_script script stage type after_script cache
            image services only except rules needs variables artifacts
-           environment coverage retry interruptible timeout]
+           environment coverage retry interruptible timeout tags]
       end
 
       it { is_expected.to match_array result }

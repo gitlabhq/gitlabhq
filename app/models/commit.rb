@@ -281,6 +281,10 @@ class Commit
     project.notes.for_commit_id(self.id)
   end
 
+  def user_mentions
+    CommitUserMention.where(commit_id: self.id)
+  end
+
   def discussion_notes
     notes.non_diff_notes
   end

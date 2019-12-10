@@ -61,6 +61,7 @@ class Admin::BroadcastMessagesController < Admin::ApplicationController
       message
       starts_at
       target_path
+      broadcast_type
     ))
   end
 end

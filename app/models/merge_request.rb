@@ -71,6 +71,7 @@ class MergeRequest < ApplicationRecord
 
   has_many :merge_request_assignees
   has_many :assignees, class_name: "User", through: :merge_request_assignees
+  has_many :user_mentions, class_name: "MergeRequestUserMention"
 
   has_many :deployment_merge_requests
 

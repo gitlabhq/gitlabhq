@@ -2,7 +2,7 @@
 
 module Banzai
   module ReferenceParser
-    class MentionedUsersByProjectParser < ProjectParser
+    class MentionedProjectParser < ProjectParser
       PROJECT_ATTR = 'data-project'
 
       self.reference_type = :user

@@ -26,7 +26,7 @@
             = image_tag avatar_icon_for_user(project.creator, 48), class: "avatar s48", alt:''
           - else
             = project_icon(project, alt: '', class: 'avatar project-avatar s48', width: 48, height: 48)
-    .project-details.d-sm-flex.flex-sm-fill.align-items-center
+    .project-details.d-sm-flex.flex-sm-fill.align-items-center{ data: { qa_selector: 'project', qa_project_name: project.name } }
       .flex-wrapper
         .d-flex.align-items-center.flex-wrap.project-title
           %h2.d-flex.prepend-top-8

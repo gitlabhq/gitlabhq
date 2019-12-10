@@ -18,6 +18,7 @@ describe Snippet do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
     it { is_expected.to have_many(:award_emoji).dependent(:destroy) }
+    it { is_expected.to have_many(:user_mentions).class_name("SnippetUserMention") }
   end
 
   describe 'validation' do

@@ -36,7 +36,6 @@ module Gitlab
               if: :has_rules?
 
             with_options allow_nil: true do
-              validates :tags, array_of_strings: true
               validates :allow_failure, boolean: true
               validates :parallel, numericality: { only_integer: true,
                                                    greater_than_or_equal_to: 2,
@@ -97,7 +96,7 @@ module Gitlab
             description: 'Services that will be used to execute this job.',
             inherit: true
 
-          entry :interruptible, Entry::Boolean,
+          entry :interruptible, ::Gitlab::Config::Entry::Boolean,
             description: 'Set jobs interruptible value.',
             inherit: true
 
@@ -107,6 +106,10 @@ module Gitlab
 
           entry :retry, Entry::Retry,
             description: 'Retry configuration for this job.',
+            inherit: true
+
+          entry :tags, ::Gitlab::Config::Entry::ArrayOfStrings,
+            description: 'Set the tags.',
             inherit: true
 
           entry :only, Entry::Policy,

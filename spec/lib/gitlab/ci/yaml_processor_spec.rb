@@ -1849,7 +1849,7 @@ module Gitlab
           config = YAML.dump({ rspec: { script: "test", tags: "mysql" } })
           expect do
             Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec tags should be an array of strings")
+          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec:tags config should be an array of strings")
         end
 
         it "returns errors if before_script parameter is invalid" do
@@ -2197,7 +2197,7 @@ module Gitlab
         context "when the tags parameter is invalid" do
           let(:content) { YAML.dump({ rspec: { script: "test", tags: "mysql" } }) }
 
-          it { is_expected.to eq "jobs:rspec tags should be an array of strings" }
+          it { is_expected.to eq "jobs:rspec:tags config should be an array of strings" }
         end
 
         context "when YAML content is empty" do
