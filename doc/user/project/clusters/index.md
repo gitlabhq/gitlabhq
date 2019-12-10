@@ -128,9 +128,16 @@ automatically. If you are using [Auto DevOps](../../../topics/autodevops/index.m
 need to explicitly provide the `KUBE_NAMESPACE` [deployment variable](#deployment-variables)
 that will be used by your deployment jobs, otherwise a namespace will be created for you.
 
-NOTE: **Note:**
-If you [install applications](#installing-applications) on your cluster, GitLab will create
-the resources required to run these even if you have chosen to manage your own cluster.
+#### Important notes
+
+Note the following with GitLab and clusters:
+
+- If you [install applications](#installing-applications) on your cluster, GitLab will
+  create the resources required to run these even if you have chosen to manage your own
+  cluster.
+- Be aware that manually managing resources that have been created by GitLab, like
+  namespaces and service accounts, can cause unexpected errors. If this occurs, try
+  [clearing the cluster cache](#clearing-the-cluster-cache).
 
 #### Clearing the cluster cache
 

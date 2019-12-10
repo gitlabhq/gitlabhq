@@ -23,6 +23,7 @@ FactoryBot.define do
         [Time.now.to_i, 10]
       ]
     end
+    gitlab_issue { 'http://gitlab.example.com/issues/1' }
     first_release_last_commit { '68c914da9' }
     last_release_last_commit { '9ad419c86' }
     first_release_short_version { 'abc123' }

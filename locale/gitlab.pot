@@ -8360,6 +8360,9 @@ msgstr ""
 msgid "GitLab Import"
 msgstr ""
 
+msgid "GitLab Issue"
+msgstr ""
+
 msgid "GitLab Shared Runners execute code of different projects on the same Runner unless you configure GitLab Runner Autoscale with MaxBuilds 1 (which it is on GitLab.com)."
 msgstr ""
 

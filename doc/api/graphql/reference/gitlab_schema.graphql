@@ -2156,6 +2156,10 @@ type Group {
     """
     state: EpicState
   ): EpicConnection
+
+  """
+  Indicates if Epics are enabled for namespace
+  """
   epicsEnabled: Boolean
 
   """
@@ -2167,6 +2171,11 @@ type Group {
   Full path of the namespace
   """
   fullPath: ID!
+
+  """
+  Indicates if Group timelogs are enabled for namespace
+  """
+  groupTimelogsEnabled: Boolean
 
   """
   ID of the namespace
@@ -2232,6 +2241,41 @@ type Group {
   Aggregated storage statistics of the namespace. Only available for root namespaces
   """
   rootStorageStatistics: RootStorageStatistics
+
+  """
+  Time logged in issues by group members
+  """
+  timelogs(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    List time logs within a time range where the logged date is before end_date parameter.
+    """
+    endDate: Time!
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    List time logs within a time range where the logged date is after start_date parameter.
+    """
+    startDate: Time!
+  ): TimelogConnection!
 
   """
   Permissions for the current user on the resource
@@ -5483,6 +5527,63 @@ type TaskCompletionStatus {
 Time represented in ISO 8601
 """
 scalar Time
+
+type Timelog {
+  """
+  The date when the time tracked was spent at
+  """
+  date: Time!
+
+  """
+  The issue that logged time was added to
+  """
+  issue: Issue
+
+  """
+  The time spent displayed in seconds
+  """
+  timeSpent: Int!
+
+  """
+  The user that logged the time
+  """
+  user: User!
+}
+
+"""
+The connection type for Timelog.
+"""
+type TimelogConnection {
+  """
+  A list of edges.
+  """
+  edges: [TimelogEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [Timelog]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type TimelogEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: Timelog
+}
 
 """
 Representing a todo entry

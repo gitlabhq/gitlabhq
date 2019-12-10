@@ -127,9 +127,11 @@ export default {
           <input name="issue[description]" :value="issueDescription" type="hidden" />
           <gl-form-input :value="csrfToken" class="hidden" name="authenticity_token" />
           <loading-button
+            v-if="!error.gitlab_issue"
             class="btn-success"
             :label="__('Create issue')"
             :loading="issueCreationInProgress"
+            data-qa-selector="create_issue_button"
             @click="createIssue"
           />
         </form>
@@ -140,6 +142,12 @@ export default {
         </tooltip-on-truncate>
         <h3>{{ __('Error details') }}</h3>
         <ul>
+          <li v-if="error.gitlab_issue">
+            <span class="bold">{{ __('GitLab Issue') }}:</span>
+            <gl-link :href="error.gitlab_issue">
+              <span>{{ error.gitlab_issue }}</span>
+            </gl-link>
+          </li>
           <li>
             <span class="bold">{{ __('Sentry event') }}:</span>
             <gl-link

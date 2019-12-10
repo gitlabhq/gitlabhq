@@ -233,6 +233,15 @@ module Sentry
       stack_trace_entry.dig('stacktrace', 'frames')
     end
 
+    def parse_gitlab_issue(plugin_issues)
+      return unless plugin_issues
+
+      gitlab_plugin = plugin_issues.detect { |item| item['id'] == 'gitlab' }
+      return unless gitlab_plugin
+
+      gitlab_plugin.dig('issue', 'url')
+    end
+
     def map_to_detailed_error(issue)
       Gitlab::ErrorTracking::DetailedError.new(
         id: issue.fetch('id'),
@@ -252,6 +261,7 @@ module Sentry
         project_id: issue.dig('project', 'id'),
         project_name: issue.dig('project', 'name'),
         project_slug: issue.dig('project', 'slug'),
+        gitlab_issue: parse_gitlab_issue(issue.fetch('pluginIssues', nil)),
         first_release_last_commit: issue.dig('firstRelease', 'lastCommit'),
         last_release_last_commit: issue.dig('lastRelease', 'lastCommit'),
         first_release_short_version: issue.dig('firstRelease', 'shortVersion'),

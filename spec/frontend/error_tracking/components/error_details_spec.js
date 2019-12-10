@@ -138,5 +138,48 @@ describe('ErrorDetails', () => {
         submitSpy.mockRestore();
       });
     });
+
+    describe('GitLab issue link', () => {
+      const gitlabIssue = 'https://gitlab.example.com/issues/1';
+      const findGitLabLink = () => wrapper.find(`[href="${gitlabIssue}"]`);
+      const findCreateIssueButton = () => wrapper.find('[data-qa-selector="create_issue_button"]');
+
+      describe('is present', () => {
+        beforeEach(() => {
+          store.state.details.loading = false;
+          store.state.details.error = {
+            id: 1,
+            gitlab_issue: gitlabIssue,
+          };
+          mountComponent();
+        });
+
+        it('should display the issue link', () => {
+          expect(findGitLabLink().exists()).toBe(true);
+        });
+
+        it('should not display a create issue button', () => {
+          expect(findCreateIssueButton().exists()).toBe(false);
+        });
+      });
+
+      describe('is not present', () => {
+        beforeEach(() => {
+          store.state.details.loading = false;
+          store.state.details.error = {
+            id: 1,
+            gitlab_issue: null,
+          };
+          mountComponent();
+        });
+
+        it('should not display an issue link', () => {
+          expect(findGitLabLink().exists()).toBe(false);
+        });
+        it('should display the create issue button', () => {
+          expect(findCreateIssueButton().exists()).toBe(true);
+        });
+      });
+    });
   });
 });

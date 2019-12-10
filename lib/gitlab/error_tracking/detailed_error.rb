@@ -15,6 +15,7 @@ module Gitlab
                     :first_seen,
                     :frequency,
                     :gitlab_project,
+                    :gitlab_issue,
                     :id,
                     :last_release_last_commit,
                     :last_release_short_version,

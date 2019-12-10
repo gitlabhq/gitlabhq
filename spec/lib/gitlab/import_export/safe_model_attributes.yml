@@ -689,6 +689,10 @@ ErrorTracking::ProjectErrorTrackingSetting:
 - project_id
 - project_name
 - organization_name
+SentryIssue:
+- id
+- issue_id
+- sentry_issue_identifier
 Suggestion:
 - id
 - note_id

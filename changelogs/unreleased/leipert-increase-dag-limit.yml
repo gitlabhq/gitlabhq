@@ -1,0 +1,5 @@
+---
+title: Increase lower DAG `needs` limit from five to ten
+merge_request: 21237
+author:
+type: changed

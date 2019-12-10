@@ -8,6 +8,8 @@ global:
     configureCertmanager: false
     tls:
       secretName: tls-cert
+  initialRootPassword:
+    secret: shared-gitlab-initial-root-password
 certmanager:
   install: false
 gitlab:
@@ -26,8 +28,6 @@ gitlab:
   mailroom:
     enabled: false
   migrations:
-    initialRootPassword:
-      secret: shared-gitlab-initial-root-password
     resources:
       requests:
         cpu: 350m

@@ -852,7 +852,7 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
 
       it "returns an error" do
         expect(subject.errors).to contain_exactly(
-          "rspec: one job can only need 5 others, but you have listed 6. See needs keyword documentation for more details")
+          "rspec: one job can only need 10 others, but you have listed 11. See needs keyword documentation for more details")
       end
     end
 

@@ -94,7 +94,7 @@ module Gitlab
           relation_index: relation_index,
           exception_class: exception.class.to_s,
           exception_message: exception.message.truncate(255),
-          correlation_id_value: Labkit::Correlation::CorrelationId.current_id
+          correlation_id_value: Labkit::Correlation::CorrelationId.current_or_new_id
         )
       end
 

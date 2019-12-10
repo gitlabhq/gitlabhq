@@ -320,7 +320,8 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `webUrl` | String! | Web URL of the group |
 | `avatarUrl` | String | Avatar URL of the group |
 | `parent` | Group | Parent group |
-| `epicsEnabled` | Boolean |  |
+| `epicsEnabled` | Boolean | Indicates if Epics are enabled for namespace |
+| `groupTimelogsEnabled` | Boolean | Indicates if Group timelogs are enabled for namespace |
 | `epic` | Epic |  |
 
 ### GroupPermissions
@@ -835,6 +836,15 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | ---   |  ---- | ----------  |
 | `count` | Int! | Number of total tasks |
 | `completedCount` | Int! | Number of completed tasks |
+
+### Timelog
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `date` | Time! | The date when the time tracked was spent at |
+| `timeSpent` | Int! | The time spent displayed in seconds |
+| `user` | User! | The user that logged the time |
+| `issue` | Issue | The issue that logged time was added to |
 
 ### Todo
 

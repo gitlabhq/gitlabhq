@@ -2256,11 +2256,11 @@ This example creates three paths of execution:
   pipeline will be created with YAML error.
 - We are temporarily limiting the maximum number of jobs that a single job can
   need in the `needs:` array:
-  - For GitLab.com, the limit is five. For more information, see our
+  - For GitLab.com, the limit is ten. For more information, see our
     [infrastructure issue](https://gitlab.com/gitlab-com/gl-infra/infrastructure/issues/7541).
   - For self-managed instances, the limit is:
-    - Five by default (`ci_dag_limit_needs` feature flag is enabled).
-    - 50 if the `ci_dag_limit_needs` feature flag is disabled.
+    - 10, if the `ci_dag_limit_needs` feature flag is enabled (default).
+    - 50, if the `ci_dag_limit_needs` feature flag is disabled.
 - It is impossible for now to have `needs: []` (empty needs), the job always needs to
   depend on something, unless this is the job in the first stage. However, support for
   an empty needs array [is planned](https://gitlab.com/gitlab-org/gitlab/issues/30631).

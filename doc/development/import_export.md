@@ -208,7 +208,7 @@ and it is useful for knowing which versions won't be compatible between them.
 
 ### When to bump the version up
 
-We will have to bump the verision if we rename model/columns or perform any format
+We will have to bump the version if we rename model/columns or perform any format
 modifications in the JSON structure or the file structure of the archive file.
 
 We do not need to bump the version up in any of the following cases:

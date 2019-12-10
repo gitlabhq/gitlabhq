@@ -10,6 +10,7 @@ module ErrorTracking
            :first_release_short_version,
            :first_seen,
            :frequency,
+           :gitlab_issue,
            :id,
            :last_release_last_commit,
            :last_release_short_version,

@@ -133,6 +133,8 @@ CHROME_HEADLESS=0 bundle exec rspec some_spec.rb
 ```
 
 The test will go by quickly, but this will give you an idea of what's happening.
+Using `live_debug` with `CHROME_HEADLESS=0` pauses the open browser, and does not
+open the page again. This can be used to debug and inspect elements.
 
 You can also add `byebug` or `binding.pry` to pause execution and [step through](../pry_debugging.md#stepping)
 the test.

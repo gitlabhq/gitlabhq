@@ -92,17 +92,17 @@ project.
 
 ## Editing a release
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/26016) in GitLab 12.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/26016) in GitLab 12.6.
 
 To edit the details of a release, navigate to **Project overview > Releases** and click
 the edit button (pencil icon) in the top-right corner of the release you want to modify.
 
-![A release with an edit button](img/release_edit_button_v12_5.png)
+![A release with an edit button](img/release_edit_button_v12_6.png)
 
 This will bring you to the **Edit Release** page, from which you can
 change some of the release's details.
 
-![Edit release page](img/edit_release_page_v12_5.png)
+![Edit release page](img/edit_release_page_v12_6.png)
 
 Currently, it is only possible to edit the release title and notes.
 To change other release information, such as its tag, associated
