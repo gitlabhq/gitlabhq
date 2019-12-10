@@ -11,7 +11,7 @@ RUN echo "deb http://ftp.debian.org/debian stretch-backports main" >> /etc/apt/s
 # Update APT sources and install some dependencies
 #
 RUN sed -i "s/httpredir.debian.org/ftp.us.debian.org/" /etc/apt/sources.list
-RUN apt-get update && apt-get install -y wget unzip xvfb
+RUN apt-get update && apt-get install -y wget unzip xvfb lsb-release
 
 ##
 # Install some packages from backports
