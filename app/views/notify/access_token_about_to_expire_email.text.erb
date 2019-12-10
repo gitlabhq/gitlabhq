@@ -1,0 +1,5 @@
+<%= _('Hi %{username}!') % { username: sanitize_name(@user.name) } %>
+
+<%= _('One or more of your personal access tokens will expire in %{days_to_expire} days or less.') % { days_to_expire: @days_to_expire} %>
+
+<%= _('You can create a new one or check them in your Personal Access Tokens settings %{pat_link}') % { pat_link: @target_url } %>

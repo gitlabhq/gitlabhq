@@ -143,6 +143,7 @@ using environment variables.
 | `DS_RUN_ANALYZER_TIMEOUT`               | Time limit when running an analyzer. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, `h`. For example, `300ms`, `1.5h`, or `2h45m`. |
 | `PIP_INDEX_URL`                         | Base URL of Python Package Index (default `https://pypi.org/simple`). |
 | `PIP_EXTRA_INDEX_URL`                   | Array of [extra URLs](https://pip.pypa.io/en/stable/reference/pip_install/#cmdoption-extra-index-url) of package indexes to use in addition to `PIP_INDEX_URL`. Comma separated. |
+| `PIP_REQUIREMENTS_FILE`                 | Pip requirements file to be scanned. |
 | `MAVEN_CLI_OPTS`                        | List of command line arguments that will be passed to the maven analyzer during the project's build phase (see example for [using private repos](#using-private-maven-repos)). |
 | `BUNDLER_AUDIT_UPDATE_DISABLED`         | Disable automatic updates for the `bundler-audit` analyzer (default: `"false"`). Useful if you're running Dependency Scanning in an offline, air-gapped environment.|
 

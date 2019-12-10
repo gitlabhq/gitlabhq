@@ -7,7 +7,7 @@ module QA
         view 'app/views/shared/issuable/_sidebar.html.haml' do
           element :labels_block
           element :milestone_block
-          element :milestone_title
+          element :milestone_link
         end
 
         def has_label?(label)
@@ -16,9 +16,9 @@ module QA
           end
         end
 
-        def has_milestone?(milestone)
+        def has_milestone?(milestone_title)
           within_element(:milestone_block) do
-            has_element?(:milestone_title, text: milestone)
+            has_element?(:milestone_link, title: milestone_title)
           end
         end
       end

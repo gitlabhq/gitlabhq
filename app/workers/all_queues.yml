@@ -16,6 +16,7 @@
 - cronjob:pages_domain_verification_cron
 - cronjob:pages_domain_removal_cron
 - cronjob:pages_domain_ssl_renewal_cron
+- cronjob:personal_access_tokens_expiring
 - cronjob:pipeline_schedule
 - cronjob:prune_old_events
 - cronjob:remove_expired_group_links
@@ -51,6 +52,8 @@
 - gcp_cluster:clusters_cleanup_app
 - gcp_cluster:clusters_cleanup_project_namespace
 - gcp_cluster:clusters_cleanup_service_account
+- gcp_cluster:clusters_applications_activate_service
+- gcp_cluster:clusters_applications_deactivate_service
 
 - github_import_advance_stage
 - github_importer:github_import_import_diff_note

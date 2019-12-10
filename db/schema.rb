@@ -717,6 +717,7 @@ ActiveRecord::Schema.define(version: 2019_12_04_093410) do
     t.jsonb "config_options"
     t.jsonb "config_variables"
     t.boolean "has_exposed_artifacts"
+    t.string "environment_auto_stop_in", limit: 255
     t.index ["build_id"], name: "index_ci_builds_metadata_on_build_id", unique: true
     t.index ["build_id"], name: "index_ci_builds_metadata_on_build_id_and_has_exposed_artifacts", where: "(has_exposed_artifacts IS TRUE)"
     t.index ["build_id"], name: "index_ci_builds_metadata_on_build_id_and_interruptible", where: "(interruptible = true)"
@@ -1447,6 +1448,7 @@ ActiveRecord::Schema.define(version: 2019_12_04_093410) do
     t.string "environment_type"
     t.string "state", default: "available", null: false
     t.string "slug", null: false
+    t.datetime_with_timezone "auto_stop_at"
     t.index ["name"], name: "index_environments_on_name_varchar_pattern_ops", opclass: :varchar_pattern_ops
     t.index ["project_id", "name"], name: "index_environments_on_project_id_and_name", unique: true
     t.index ["project_id", "slug"], name: "index_environments_on_project_id_and_slug", unique: true
@@ -2822,6 +2824,20 @@ ActiveRecord::Schema.define(version: 2019_12_04_093410) do
     t.index ["package_id"], name: "index_packages_conan_metadata_on_package_id", unique: true
   end
 
+  create_table "packages_dependencies", force: :cascade do |t|
+    t.string "name", limit: 255, null: false
+    t.string "version_pattern", limit: 255, null: false
+    t.index ["name", "version_pattern"], name: "index_packages_dependencies_on_name_and_version_pattern", unique: true
+  end
+
+  create_table "packages_dependency_links", force: :cascade do |t|
+    t.bigint "package_id", null: false
+    t.bigint "dependency_id", null: false
+    t.integer "dependency_type", limit: 2, null: false
+    t.index ["dependency_id"], name: "index_packages_dependency_links_on_dependency_id"
+    t.index ["package_id", "dependency_id", "dependency_type"], name: "idx_pkgs_dep_links_on_pkg_id_dependency_id_dependency_type", unique: true
+  end
+
   create_table "packages_maven_metadata", force: :cascade do |t|
     t.bigint "package_id", null: false
     t.datetime_with_timezone "created_at", null: false
@@ -2847,12 +2863,6 @@ ActiveRecord::Schema.define(version: 2019_12_04_093410) do
     t.index ["package_id", "file_name"], name: "index_packages_package_files_on_package_id_and_file_name"
   end
 
-  create_table "packages_package_metadata", force: :cascade do |t|
-    t.integer "package_id", null: false
-    t.binary "metadata", null: false
-    t.index ["package_id"], name: "index_packages_package_metadata_on_package_id", unique: true
-  end
-
   create_table "packages_package_tags", force: :cascade do |t|
     t.integer "package_id", null: false
     t.string "name", limit: 255, null: false
@@ -2867,6 +2877,7 @@ ActiveRecord::Schema.define(version: 2019_12_04_093410) do
     t.string "version"
     t.integer "package_type", limit: 2, null: false
     t.index ["name"], name: "index_packages_packages_on_name_trigram", opclass: :gin_trgm_ops, using: :gin
+    t.index ["project_id", "name", "version", "package_type"], name: "idx_packages_packages_on_project_id_name_version_package_type"
     t.index ["project_id"], name: "index_packages_packages_on_project_id"
   end
 
@@ -2929,6 +2940,7 @@ ActiveRecord::Schema.define(version: 2019_12_04_093410) do
     t.string "scopes", default: "--- []\n", null: false
     t.boolean "impersonation", default: false, null: false
     t.string "token_digest"
+    t.boolean "expire_notification_delivered", default: false, null: false
     t.index ["token_digest"], name: "index_personal_access_tokens_on_token_digest", unique: true
     t.index ["user_id", "expires_at"], name: "index_pat_on_user_id_and_expires_at"
     t.index ["user_id"], name: "index_personal_access_tokens_on_user_id"
@@ -4565,9 +4577,10 @@ ActiveRecord::Schema.define(version: 2019_12_04_093410) do
   add_foreign_key "operations_feature_flags_clients", "projects", on_delete: :cascade
   add_foreign_key "packages_conan_file_metadata", "packages_package_files", column: "package_file_id", on_delete: :cascade
   add_foreign_key "packages_conan_metadata", "packages_packages", column: "package_id", on_delete: :cascade
+  add_foreign_key "packages_dependency_links", "packages_dependencies", column: "dependency_id", on_delete: :cascade
+  add_foreign_key "packages_dependency_links", "packages_packages", column: "package_id", on_delete: :cascade
   add_foreign_key "packages_maven_metadata", "packages_packages", column: "package_id", name: "fk_be88aed360", on_delete: :cascade
   add_foreign_key "packages_package_files", "packages_packages", column: "package_id", name: "fk_86f0f182f8", on_delete: :cascade
-  add_foreign_key "packages_package_metadata", "packages_packages", column: "package_id", on_delete: :cascade
   add_foreign_key "packages_package_tags", "packages_packages", column: "package_id", on_delete: :cascade
   add_foreign_key "packages_packages", "projects", on_delete: :cascade
   add_foreign_key "pages_domain_acme_orders", "pages_domains", on_delete: :cascade

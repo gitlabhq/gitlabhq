@@ -37,7 +37,6 @@ GEM
       unf (>= 0.0.5, < 1.0.0)
     faker (1.9.3)
       i18n (>= 0.7)
-    ffi (1.9.25)
     gitlab-qa (4.0.0)
     http-cookie (1.0.3)
       domain_name (~> 0.5)

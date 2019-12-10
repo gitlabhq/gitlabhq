@@ -1,0 +1,7 @@
+%p
+  = _('Hi %{username}!') % { username: sanitize_name(@user.name) }
+%p
+  = _('One or more of your personal access tokens will expire in %{days_to_expire} days or less.') % { days_to_expire: @days_to_expire }
+%p
+  - pat_link_start =  '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: @target_url }
+  = _('You can create a new one or check them in your %{pat_link_start}Personal Access Tokens%{pat_link_end} settings').html_safe % { pat_link_start: pat_link_start, pat_link_end: '</a>'.html_safe }

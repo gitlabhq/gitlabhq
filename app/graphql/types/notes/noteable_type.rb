@@ -15,6 +15,8 @@ module Types
             Types::IssueType
           when MergeRequest
             Types::MergeRequestType
+          when Snippet
+            Types::SnippetType
           else
             raise "Unknown GraphQL type for #{object}"
           end

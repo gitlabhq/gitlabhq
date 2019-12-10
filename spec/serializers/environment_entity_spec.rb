@@ -62,4 +62,12 @@ describe EnvironmentEntity do
       end
     end
   end
+
+  context 'with auto_stop_in' do
+    let(:environment) { create(:environment, :will_auto_stop) }
+
+    it 'exposes auto stop related information' do
+      expect(subject).to include(:cancel_auto_stop_path, :auto_stop_at)
+    end
+  end
 end

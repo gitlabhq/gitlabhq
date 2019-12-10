@@ -34,6 +34,7 @@ module Clusters
 
     has_many :cluster_groups, class_name: 'Clusters::Group'
     has_many :groups, through: :cluster_groups, class_name: '::Group'
+    has_many :groups_projects, through: :groups, source: :projects, class_name: '::Project'
 
     # we force autosave to happen when we save `Cluster` model
     has_one :provider_gcp, class_name: 'Clusters::Providers::Gcp', autosave: true
@@ -175,6 +176,13 @@ module Clusters
           Clusters::Cleanup::ServiceAccountWorker.perform_async(cluster.id)
         end
       end
+    end
+
+    def all_projects
+      return projects if project_type?
+      return groups_projects if group_type?
+
+      ::Project.all
     end
 
     def status_name

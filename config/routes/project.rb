@@ -224,6 +224,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         resources :environments, except: [:destroy] do
           member do
             post :stop
+            post :cancel_auto_stop
             get :terminal
             get :metrics
             get :additional_metrics

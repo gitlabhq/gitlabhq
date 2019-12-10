@@ -12,35 +12,29 @@ describe Clusters::Applications::Prometheus do
   include_examples 'cluster application initial status specs'
 
   describe 'after_destroy' do
-    let(:project) { create(:project) }
-    let(:cluster) { create(:cluster, :with_installed_helm, projects: [project]) }
-    let!(:application) { create(:clusters_applications_prometheus, :installed, cluster: cluster) }
-    let!(:prometheus_service) { project.create_prometheus_service(active: true) }
+    context 'cluster type is project' do
+      let(:cluster) { create(:cluster, :with_installed_helm) }
+      let(:application) { create(:clusters_applications_prometheus, :installed, cluster: cluster) }
 
-    it 'deactivates prometheus_service after destroy' do
-      expect do
+      it 'deactivates prometheus_service after destroy' do
+        expect(Clusters::Applications::DeactivateServiceWorker)
+          .to receive(:perform_async).with(cluster.id, 'prometheus')
+
         application.destroy!
-
-        prometheus_service.reload
-      end.to change(prometheus_service, :active).from(true).to(false)
+      end
     end
   end
 
   describe 'transition to installed' do
     let(:project) { create(:project) }
-    let(:cluster) { create(:cluster, :with_installed_helm, projects: [project]) }
-    let(:prometheus_service) { double('prometheus_service') }
+    let(:cluster) { create(:cluster, :with_installed_helm) }
+    let(:application) { create(:clusters_applications_prometheus, :installing, cluster: cluster) }
 
-    subject { create(:clusters_applications_prometheus, :installing, cluster: cluster) }
+    it 'schedules post installation job' do
+      expect(Clusters::Applications::ActivateServiceWorker)
+        .to receive(:perform_async).with(cluster.id, 'prometheus')
 
-    before do
-      allow(project).to receive(:find_or_initialize_service).with('prometheus').and_return prometheus_service
-    end
-
-    it 'ensures Prometheus service is activated' do
-      expect(prometheus_service).to receive(:update!).with(active: true)
-
-      subject.make_installed
+      application.make_installed
     end
   end
 

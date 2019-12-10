@@ -5,16 +5,14 @@ require 'spec_helper'
 describe Projects::EnvironmentsController do
   include MetricsDashboardHelpers
 
-  let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
+  let_it_be(:maintainer) { create(:user, name: 'main-dos').tap { |u| project.add_maintainer(u) } }
+  let_it_be(:reporter) { create(:user, name: 'repo-dos').tap { |u| project.add_reporter(u) } }
+  let(:user) { maintainer }
 
-  let_it_be(:environment) do
-    create(:environment, name: 'production', project: project)
-  end
+  let!(:environment) { create(:environment, name: 'production', project: project) }
 
   before do
-    project.add_maintainer(user)
-
     sign_in(user)
   end
 
@@ -245,6 +243,36 @@ describe Projects::EnvironmentsController do
     end
   end
 
+  describe 'POST #cancel_auto_stop' do
+    subject { post :cancel_auto_stop, params: params }
+
+    let(:params) { environment_params }
+
+    context 'when environment is set as auto-stop' do
+      let(:environment) { create(:environment, :will_auto_stop, name: 'staging', project: project) }
+
+      it_behaves_like 'successful response for #cancel_auto_stop'
+
+      context 'when user is reporter' do
+        let(:user) { reporter }
+
+        it 'shows NOT Found' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+
+    context 'when environment is not set as auto-stop' do
+      let(:environment) { create(:environment, name: 'staging', project: project) }
+
+      it_behaves_like 'failed response for #cancel_auto_stop' do
+        let(:message) { 'the environment is not set as auto stop' }
+      end
+    end
+  end
+
   describe 'GET #terminal' do
     context 'with valid id' do
       it 'responds with a status code 200' do
@@ -320,21 +348,21 @@ describe Projects::EnvironmentsController do
   end
 
   describe 'GET #metrics_redirect' do
-    let(:project) { create(:project) }
-
     it 'redirects to environment if it exists' do
-      environment = create(:environment, name: 'production', project: project)
-
       get :metrics_redirect, params: { namespace_id: project.namespace, project_id: project }
 
       expect(response).to redirect_to(environment_metrics_path(environment))
     end
 
-    it 'redirects to empty metrics page if no environment exists' do
-      get :metrics_redirect, params: { namespace_id: project.namespace, project_id: project }
+    context 'when there are no environments' do
+      let(:environment) { }
 
-      expect(response).to be_ok
-      expect(response).to render_template 'empty_metrics'
+      it 'redirects to empty metrics page' do
+        get :metrics_redirect, params: { namespace_id: project.namespace, project_id: project }
+
+        expect(response).to be_ok
+        expect(response).to render_template 'empty_metrics'
+      end
     end
   end
 
@@ -548,6 +576,10 @@ describe Projects::EnvironmentsController do
           let(:dashboard_yml) { fixture_file('lib/gitlab/metrics/dashboard/sample_dashboard.yml') }
           let(:project) { project_with_dashboard(dashboard_path, dashboard_yml) }
           let(:environment) { create(:environment, name: 'production', project: project) }
+
+          before do
+            project.add_maintainer(user)
+          end
 
           it_behaves_like 'the specified dashboard', 'Test Dashboard'
         end

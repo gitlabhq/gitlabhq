@@ -22,7 +22,7 @@ describe GitlabSchema.types['Project'] do
       only_allow_merge_if_pipeline_succeeds request_access_enabled
       only_allow_merge_if_all_discussions_are_resolved printing_merge_request_link_enabled
       namespace group statistics repository merge_requests merge_request issues
-      issue pipelines removeSourceBranchAfterMerge sentryDetailedError
+      issue pipelines removeSourceBranchAfterMerge sentryDetailedError snippets
     ]
 
     is_expected.to have_graphql_fields(*expected_fields)
@@ -61,6 +61,15 @@ describe GitlabSchema.types['Project'] do
     it 'returns merge request' do
       is_expected.to have_graphql_type(Types::MergeRequestType.connection_type)
       is_expected.to have_graphql_resolver(Resolvers::MergeRequestsResolver)
+    end
+  end
+
+  describe 'snippets field' do
+    subject { described_class.fields['snippets'] }
+
+    it 'returns snippets' do
+      is_expected.to have_graphql_type(Types::SnippetType.connection_type)
+      is_expected.to have_graphql_resolver(Resolvers::Projects::SnippetsResolver)
     end
   end
 end

@@ -288,7 +288,7 @@
     list-style: none;
     padding: 0 1px;
 
-    a:not(.help-link),
+    > a,
     button,
     .menu-item {
       @include dropdown-link;

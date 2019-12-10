@@ -97,7 +97,9 @@ describe 'User comments on a diff', :js do
   end
 
   context 'multiple suggestions in expanded lines' do
-    it 'suggestions are appliable' do
+    # Report issue: https://gitlab.com/gitlab-org/gitlab/issues/38277
+    # Fix issue: https://gitlab.com/gitlab-org/gitlab/issues/39095
+    it 'suggestions are appliable', :quarantine do
       diff_file = merge_request.diffs(paths: ['files/ruby/popen.rb']).diff_files.first
       hash = Digest::SHA1.hexdigest(diff_file.file_path)
 

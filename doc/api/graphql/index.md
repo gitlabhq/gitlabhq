@@ -61,6 +61,7 @@ The GraphQL API includes the following queries at the root level:
 1. `namespace` : Within a namespace it is also possible to fetch `projects`.
 1. `currentUser`: Information about the currently logged in user.
 1. `metaData`: Metadata about GitLab and the GraphQL API.
+1. `snippets`: Snippets visible to the currently logged in user.
 
 Root-level queries are defined in
 [`app/graphql/types/query_type.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/app/graphql/types/query_type.rb).

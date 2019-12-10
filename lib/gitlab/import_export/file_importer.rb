@@ -5,6 +5,8 @@ module Gitlab
     class FileImporter
       include Gitlab::ImportExport::CommandLineUtil
 
+      ImporterError = Class.new(StandardError)
+
       MAX_RETRIES = 8
       IGNORED_FILENAMES = %w(. ..).freeze
 
@@ -12,8 +14,8 @@ module Gitlab
         new(*args).import
       end
 
-      def initialize(project:, archive_file:, shared:)
-        @project = project
+      def initialize(importable:, archive_file:, shared:)
+        @importable = importable
         @archive_file = archive_file
         @shared = shared
       end
@@ -52,7 +54,7 @@ module Gitlab
       def decompress_archive
         result = untar_zxf(archive: @archive_file, dir: @shared.export_path)
 
-        raise Projects::ImportService::Error.new("Unable to decompress #{@archive_file} into #{@shared.export_path}") unless result
+        raise ImporterError.new("Unable to decompress #{@archive_file} into #{@shared.export_path}") unless result
 
         result
       end
@@ -60,9 +62,9 @@ module Gitlab
       def copy_archive
         return if @archive_file
 
-        @archive_file = File.join(@shared.archive_path, Gitlab::ImportExport.export_filename(exportable: @project))
+        @archive_file = File.join(@shared.archive_path, Gitlab::ImportExport.export_filename(exportable: @importable))
 
-        download_or_copy_upload(@project.import_export_upload.import_file, @archive_file)
+        download_or_copy_upload(@importable.import_export_upload.import_file, @archive_file)
       end
 
       def remove_symlinks

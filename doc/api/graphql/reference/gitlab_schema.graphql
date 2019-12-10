@@ -4513,6 +4513,41 @@ type Project {
   sharedRunnersEnabled: Boolean
 
   """
+  Snippets of the project
+  """
+  snippets(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Array of global snippet ids, e.g., "gid://gitlab/ProjectSnippet/1"
+    """
+    ids: [ID!]
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    The visibility of the snippet
+    """
+    visibility: VisibilityScopesEnum
+  ): SnippetConnection
+
+  """
   (deprecated) Does this project have snippets enabled?. Use `snippets_access_level` instead
   """
   snippetsEnabled: Boolean
@@ -4675,9 +4710,9 @@ type ProjectPermissions {
   createPipelineSchedule: Boolean!
 
   """
-  Whether or not a user can perform `create_project_snippet` on this resource
+  Whether or not a user can perform `create_snippet` on this resource
   """
-  createProjectSnippet: Boolean!
+  createSnippet: Boolean!
 
   """
   Whether or not a user can perform `create_wiki` on this resource
@@ -4882,6 +4917,61 @@ type Query {
     """
     fullPath: ID!
   ): Project
+
+  """
+  Find Snippets visible to the current user
+  """
+  snippets(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    The ID of an author
+    """
+    authorId: ID
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Explore personal snippets
+    """
+    explore: Boolean
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Array of global snippet ids, e.g., "gid://gitlab/ProjectSnippet/1"
+    """
+    ids: [ID!]
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    The ID of a project
+    """
+    projectId: ID
+
+    """
+    The type of snippet
+    """
+    type: TypeEnum
+
+    """
+    The visibility of the snippet
+    """
+    visibility: VisibilityScopesEnum
+  ): SnippetConnection
 }
 
 """
@@ -5135,6 +5225,193 @@ enum SentryErrorStatus {
   Error is unresolved
   """
   UNRESOLVED
+}
+
+"""
+Represents a snippet entry
+"""
+type Snippet implements Noteable {
+  """
+  The owner of the snippet
+  """
+  author: User!
+
+  """
+  Content of the snippet
+  """
+  content: String!
+
+  """
+  Timestamp this snippet was created
+  """
+  createdAt: Time!
+
+  """
+  Description of the snippet
+  """
+  description: String
+
+  """
+  The GitLab Flavored Markdown rendering of `description`
+  """
+  descriptionHtml: String
+
+  """
+  All discussions on this noteable
+  """
+  discussions(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): DiscussionConnection!
+
+  """
+  File Name of the snippet
+  """
+  fileName: String
+
+  """
+  Id of the snippet
+  """
+  id: ID!
+
+  """
+  All notes on this noteable
+  """
+  notes(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): NoteConnection!
+
+  """
+  The project the snippet is associated with
+  """
+  project: Project
+
+  """
+  Raw URL of the snippet
+  """
+  rawUrl: String!
+
+  """
+  Title of the snippet
+  """
+  title: String!
+
+  """
+  Timestamp this snippet was updated
+  """
+  updatedAt: Time!
+
+  """
+  Permissions for the current user on the resource
+  """
+  userPermissions: SnippetPermissions!
+
+  """
+  Visibility of the snippet
+  """
+  visibility: String!
+
+  """
+  Web URL of the snippet
+  """
+  webUrl: String!
+}
+
+"""
+The connection type for Snippet.
+"""
+type SnippetConnection {
+  """
+  A list of edges.
+  """
+  edges: [SnippetEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [Snippet]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type SnippetEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: Snippet
+}
+
+type SnippetPermissions {
+  """
+  Whether or not a user can perform `admin_snippet` on this resource
+  """
+  adminSnippet: Boolean!
+
+  """
+  Whether or not a user can perform `award_emoji` on this resource
+  """
+  awardEmoji: Boolean!
+
+  """
+  Whether or not a user can perform `create_note` on this resource
+  """
+  createNote: Boolean!
+
+  """
+  Whether or not a user can perform `read_snippet` on this resource
+  """
+  readSnippet: Boolean!
+
+  """
+  Whether or not a user can perform `update_snippet` on this resource
+  """
+  updateSnippet: Boolean!
 }
 
 type Submodule implements Entry {
@@ -5602,6 +5879,11 @@ type TreeEntryEdge {
   node: TreeEntry
 }
 
+enum TypeEnum {
+  personal
+  project
+}
+
 """
 Autogenerated input type of UpdateEpic
 """
@@ -5741,6 +6023,46 @@ type User {
   name: String!
 
   """
+  Snippets authored by the user
+  """
+  snippets(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Array of global snippet ids, e.g., "gid://gitlab/ProjectSnippet/1"
+    """
+    ids: [ID!]
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    The type of snippet
+    """
+    type: TypeEnum
+
+    """
+    The visibility of the snippet
+    """
+    visibility: VisibilityScopesEnum
+  ): SnippetConnection
+
+  """
   Todos of the user
   """
   todos(
@@ -5796,6 +6118,11 @@ type User {
   ): TodoConnection!
 
   """
+  Permissions for the current user on the resource
+  """
+  userPermissions: UserPermissions!
+
+  """
   Username of the user. Unique within this instance of GitLab
   """
   username: String!
@@ -5839,4 +6166,17 @@ type UserEdge {
   The item at the end of the edge.
   """
   node: User
+}
+
+type UserPermissions {
+  """
+  Whether or not a user can perform `create_snippet` on this resource
+  """
+  createSnippet: Boolean!
+}
+
+enum VisibilityScopesEnum {
+  internal
+  private
+  public
 }

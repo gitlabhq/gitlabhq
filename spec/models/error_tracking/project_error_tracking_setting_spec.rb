@@ -5,7 +5,7 @@ require 'spec_helper'
 describe ErrorTracking::ProjectErrorTrackingSetting do
   include ReactiveCachingHelpers
 
-  set(:project) { create(:project) }
+  let_it_be(:project) { create(:project) }
 
   subject { create(:project_error_tracking_setting, project: project) }
 
@@ -14,23 +14,24 @@ describe ErrorTracking::ProjectErrorTrackingSetting do
   end
 
   describe 'Validations' do
-    context 'when api_url is over 255 chars' do
-      before do
-        subject.api_url = 'https://' + 'a' * 250
-      end
+    it { is_expected.to validate_length_of(:api_url).is_at_most(255) }
+    it { is_expected.to allow_value("http://gitlab.com/api/0/projects/project1/something").for(:api_url) }
+    it { is_expected.not_to allow_values("http://gitlab.com/api/0/projects/project1/something€").for(:api_url) }
 
-      it 'fails validation' do
-        expect(subject).not_to be_valid
-        expect(subject.errors.messages[:api_url]).to include('is too long (maximum is 255 characters)')
-      end
+    it 'rejects invalid api_urls' do
+      is_expected.not_to allow_values(
+        "https://replaceme.com/'><script>alert(document.cookie)</script>", # unsafe
+        "http://gitlab.com/project1/something", # missing api/0/projects
+        "http://gitlab.com/api/0/projects/org/proj/something", # extra segments
+        "http://gitlab.com/api/0/projects/org" # too few segments
+      ).for(:api_url).with_message('is invalid')
     end
 
-    context 'With unsafe url' do
-      it 'fails validation' do
-        subject.api_url = "https://replaceme.com/'><script>alert(document.cookie)</script>"
+    it 'fails validation without org and project slugs' do
+      subject.api_url = 'http://gitlab.com/api/0/projects/'
 
-        expect(subject).not_to be_valid
-      end
+      expect(subject).not_to be_valid
+      expect(subject.errors.messages[:project]).to include('is a required field')
     end
 
     context 'presence validations' do
@@ -58,52 +59,6 @@ describe ErrorTracking::ProjectErrorTrackingSetting do
         end
 
         it { expect(subject.valid?).to eq(valid?) }
-      end
-    end
-
-    context 'URL path' do
-      it 'fails validation without api/0/projects' do
-        subject.api_url = 'http://gitlab.com/project1/something'
-
-        expect(subject).not_to be_valid
-        expect(subject.errors.messages[:api_url]).to include('is invalid')
-      end
-
-      it 'fails validation without org and project slugs' do
-        subject.api_url = 'http://gitlab.com/api/0/projects/'
-
-        expect(subject).not_to be_valid
-        expect(subject.errors.messages[:project]).to include('is a required field')
-      end
-
-      it 'fails validation when api_url has extra parts' do
-        subject.api_url = 'http://gitlab.com/api/0/projects/org/proj/something'
-
-        expect(subject).not_to be_valid
-        expect(subject.errors.messages[:api_url]).to include("is invalid")
-      end
-
-      it 'fails validation when api_url has less parts' do
-        subject.api_url = 'http://gitlab.com/api/0/projects/org'
-
-        expect(subject).not_to be_valid
-        expect(subject.errors.messages[:api_url]).to include("is invalid")
-      end
-
-      it 'passes validation with correct path' do
-        subject.api_url = 'http://gitlab.com/api/0/projects/project1/something'
-
-        expect(subject).to be_valid
-      end
-    end
-
-    context 'non ascii chars in api_url' do
-      before do
-        subject.api_url = 'http://gitlab.com/api/0/projects/project1/something€'
-      end
-
-      it 'fails validation' do
-        expect(subject).not_to be_valid
       end
     end
   end

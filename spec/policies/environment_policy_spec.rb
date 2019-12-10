@@ -68,7 +68,7 @@ describe EnvironmentPolicy do
           nil         | false
           :guest      | false
           :reporter   | false
-          :developer  | false
+          :developer  | true
           :maintainer | true
         end
 

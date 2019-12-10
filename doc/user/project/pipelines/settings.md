@@ -73,19 +73,25 @@ For information about setting a maximum artifact size for a project, see
 By default we look for the `.gitlab-ci.yml` file in the project's root
 directory. If needed, you can specify an alternate path and file name, including locations outside the project.
 
-Hosting the configuration file in a separate project will allow stricter control of the
-configuration file. You can limit access to the project hosting the configuration to only people
-with proper authorization, and users can use the configuration for their pipelines,
-without being able to modify it.
+To customize the path:
 
-If the CI configuration will stay within the repository, but in a
-location different than the default,
-the path must be relative to the root directory. Examples of valid paths and file names:
+1. Go to the project's **Settings > CI / CD**.
+1. Expand the **General pipelines** section.
+1. Provide a value in the **Custom CI configuration path** field.
+1. Click **Save changes**.
+
+If the CI configuration is stored within the repository in a non-default
+location, the path must be relative to the root directory. Examples of valid
+paths and file names include:
 
 - `.gitlab-ci.yml` (default)
 - `.my-custom-file.yml`
 - `my/path/.gitlab-ci.yml`
 - `my/path/.my-custom-file.yml`
+
+If the CI configuration will be hosted on an external site, the URL link must end with `.yml`:
+
+- `http://example.com/generate/ci/config.yml`
 
 If the CI configuration will be hosted in a different project within GitLab, the path must be relative
 to the root directory in the other project, with the group and project name added to the end:
@@ -93,17 +99,14 @@ to the root directory in the other project, with the group and project name adde
 - `.gitlab-ci.yml@mygroup/another-project`
 - `my/path/.my-custom-file.yml@mygroup/another-project`
 
-If the CI configuration will be hosted on an external site, different than the GitLab instance,
-the URL link must end with `.yml`:
+Hosting the configuration file in a separate project allows stricter control of the
+configuration file. For example:
 
-- `http://example.com/generate/ci/config.yml`
+- Create a public project to host the configuration file.
+- Give write permissions on the project only to users who are allowed to edit the file.
 
-The path can be customized at a project level. To customize the path:
-
-1. Go to the project's **Settings > CI / CD**.
-1. Expand the **General pipelines** section.
-1. Provide a value in the **Custom CI configuration path** field.
-1. Click **Save changes**.
+Other users and projects will be able to access the configuration file without being
+able to edit it.
 
 ## Test coverage parsing
 

@@ -144,8 +144,16 @@
                 %strong.fly-out-top-item-name
                   = issue_tracker.title
 
+      - if (project_nav_tab? :labels) && !@project.issues_enabled?
+        = nav_link(controller: [:labels]) do
+          = link_to project_labels_path(@project), title: _('Labels'), class: 'shortcuts-labels qa-labels-items' do
+            .nav-icon-container
+              = sprite_icon('label')
+            %span.nav-item-name#js-onboarding-labels-link
+              = _('Labels')
+
       - if project_nav_tab? :merge_requests
-        = nav_link(controller: @project.issues_enabled? ? :merge_requests : [:merge_requests, :labels, :milestones]) do
+        = nav_link(controller: @project.issues_enabled? ? :merge_requests : [:merge_requests, :milestones]) do
           = link_to project_merge_requests_path(@project), class: 'shortcuts-merge_requests', data: { qa_selector: 'merge_requests_link' } do
             .nav-icon-container
               = sprite_icon('git-merge')

@@ -697,6 +697,9 @@ msgstr ""
 msgid "A merge request approval is required when the license compliance report contains a blacklisted license."
 msgstr ""
 
+msgid "A new Auto DevOps pipeline has been created, go to %{pipelines_link_start}Pipelines page%{pipelines_link_end} for details"
+msgstr ""
+
 msgid "A new Release %{tag} for %{name} was published. Visit the %{release_link_start}Releases page%{release_link_end} to read more about it."
 msgstr ""
 
@@ -2310,6 +2313,9 @@ msgid "Auto DevOps, runners and job artifacts"
 msgstr ""
 
 msgid "Auto License Compliance"
+msgstr ""
+
+msgid "Auto stop successfully canceled."
 msgstr ""
 
 msgid "Auto-cancel redundant, pending pipelines"
@@ -7251,6 +7257,15 @@ msgstr ""
 msgid "Failed to assign a user because no user was found."
 msgstr ""
 
+msgid "Failed to cancel auto stop because failed to update the environment."
+msgstr ""
+
+msgid "Failed to cancel auto stop because the environment is not set as auto stop."
+msgstr ""
+
+msgid "Failed to cancel auto stop because you do not have permission to update the environment."
+msgstr ""
+
 msgid "Failed to change the owner"
 msgstr ""
 
@@ -7425,13 +7440,7 @@ msgstr ""
 msgid "FeatureFlags|Active"
 msgstr ""
 
-msgid "FeatureFlags|Add"
-msgstr ""
-
 msgid "FeatureFlags|All users"
-msgstr ""
-
-msgid "FeatureFlags|Clear all"
 msgstr ""
 
 msgid "FeatureFlags|Configure"
@@ -7453,9 +7462,6 @@ msgid "FeatureFlags|Description"
 msgstr ""
 
 msgid "FeatureFlags|Edit Feature Flag"
-msgstr ""
-
-msgid "FeatureFlags|Enter comma separated list of user IDs"
 msgstr ""
 
 msgid "FeatureFlags|Environment Spec"
@@ -7539,13 +7545,7 @@ msgstr ""
 msgid "FeatureFlags|Status"
 msgstr ""
 
-msgid "FeatureFlags|Target Users"
-msgstr ""
-
 msgid "FeatureFlags|Target environments"
-msgstr ""
-
-msgid "FeatureFlags|Target user behaviour is built up by creating a list of active user IDs. These IDs should be the users in the system in which the feature flag is set, not GitLab ids. Target users apply across %{strong_start}All Environments%{strong_end} and are not affected by Target Environment rules."
 msgstr ""
 
 msgid "FeatureFlags|There are no active feature flags"
@@ -10420,6 +10420,36 @@ msgstr ""
 msgid "Licenses"
 msgstr ""
 
+msgid "Licenses|%{remainingComponentsCount} more"
+msgstr ""
+
+msgid "Licenses|Component"
+msgstr ""
+
+msgid "Licenses|Components"
+msgstr ""
+
+msgid "Licenses|Displays licenses detected in the project, based on the %{linkStart}latest pipeline%{linkEnd} scan"
+msgstr ""
+
+msgid "Licenses|Error fetching the license list. Please check your network connection and try again."
+msgstr ""
+
+msgid "Licenses|Learn more about license compliance"
+msgstr ""
+
+msgid "Licenses|License Compliance"
+msgstr ""
+
+msgid "Licenses|Name"
+msgstr ""
+
+msgid "Licenses|The license list details information about the licenses used within your project."
+msgstr ""
+
+msgid "Licenses|View license details for your project"
+msgstr ""
+
 msgid "License|Buy license"
 msgstr ""
 
@@ -11635,6 +11665,9 @@ msgstr ""
 msgid "No due date"
 msgstr ""
 
+msgid "No endpoint provided"
+msgstr ""
+
 msgid "No errors to display."
 msgstr ""
 
@@ -12024,6 +12057,9 @@ msgstr ""
 msgid "One or more of your dependency files are not supported, and the dependency list may be incomplete. Below is a list of supported file types."
 msgstr ""
 
+msgid "One or more of your personal access tokens will expire in %{days_to_expire} days or less."
+msgstr ""
+
 msgid "Only 'Reporter' roles and above on tiers Premium / Silver and above can see Cycle Analytics."
 msgstr ""
 
@@ -12310,9 +12346,6 @@ msgid "Pages"
 msgstr ""
 
 msgid "Pages Domain"
-msgstr ""
-
-msgid "Pages Domains"
 msgstr ""
 
 msgid "Pages getting started guide"
@@ -20152,6 +20185,12 @@ msgstr ""
 msgid "You can apply your Trial to your Personal account or create a New Group."
 msgstr ""
 
+msgid "You can create a new one or check them in your %{pat_link_start}Personal Access Tokens%{pat_link_end} settings"
+msgstr ""
+
+msgid "You can create a new one or check them in your Personal Access Tokens settings %{pat_link}"
+msgstr ""
+
 msgid "You can create files directly in GitLab using one of the following options."
 msgstr ""
 
@@ -20477,6 +20516,9 @@ msgid "Your Groups"
 msgstr ""
 
 msgid "Your New Personal Access Token"
+msgstr ""
+
+msgid "Your Personal Access Tokens will expire in %{days_to_expire} days or less"
 msgstr ""
 
 msgid "Your Primary Email will be used for avatar detection."

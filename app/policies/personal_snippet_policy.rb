@@ -27,4 +27,7 @@ class PersonalSnippetPolicy < BasePolicy
   rule { can?(:create_note) }.enable :award_emoji
 
   rule { can?(:read_all_resources) }.enable :read_personal_snippet
+
+  # Aliasing the ability to ease GraphQL permissions check
+  rule { can?(:read_personal_snippet) }.enable :read_snippet
 end

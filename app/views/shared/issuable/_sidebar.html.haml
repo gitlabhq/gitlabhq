@@ -33,7 +33,7 @@
         .block.milestone{ data: { qa_selector: 'milestone_block' } }
           .sidebar-collapsed-icon.has-tooltip{ title: sidebar_milestone_tooltip_label(milestone), data: { container: 'body', html: 'true', placement: 'left', boundary: 'viewport' } }
             = icon('clock-o', 'aria-hidden': 'true')
-            %span.milestone-title.collapse-truncated-title{ data: { qa_selector: 'milestone_title' } }
+            %span.milestone-title.collapse-truncated-title
               - if milestone.present?
                 = milestone[:title]
               - else
@@ -45,7 +45,7 @@
               = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link float-right', data: { track_label: "right_sidebar", track_property: "milestone", track_event: "click_edit_button", track_value: "" }
           .value.hide-collapsed
             - if milestone.present?
-              = link_to milestone[:title], milestone[:web_url], class: "bold has-tooltip", title: sidebar_milestone_remaining_days(milestone), data: { container: "body", html: 'true', boundary: 'viewport', qa_selector: 'milestone_link' }
+              = link_to milestone[:title], milestone[:web_url], class: "bold has-tooltip", title: sidebar_milestone_remaining_days(milestone), data: { container: "body", html: 'true', boundary: 'viewport', qa_selector: 'milestone_link', qa_title: milestone[:title] }
             - else
               %span.no-value
                 = _('None')

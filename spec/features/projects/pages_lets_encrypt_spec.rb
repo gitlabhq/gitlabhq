@@ -41,7 +41,7 @@ describe "Pages with Let's Encrypt", :https_pages_enabled do
     end
 
     it 'enables auto SSL and dynamically updates the form accordingly', :js do
-      visit edit_project_pages_domain_path(project, domain)
+      visit project_pages_domain_path(project, domain)
 
       expect(domain.auto_ssl_enabled).to eq false
 
@@ -67,7 +67,7 @@ describe "Pages with Let's Encrypt", :https_pages_enabled do
     end
 
     it 'disables auto SSL and dynamically updates the form accordingly', :js do
-      visit edit_project_pages_domain_path(project, domain)
+      visit project_pages_domain_path(project, domain)
 
       expect(find("#pages_domain_auto_ssl_enabled", visible: false).value).to eq 'true'
       expect(page).not_to have_field 'Certificate (PEM)', type: 'textarea'
@@ -88,7 +88,7 @@ describe "Pages with Let's Encrypt", :https_pages_enabled do
   shared_examples 'user sees private keys only for user provided certificate' do
     shared_examples 'user do not see private key' do
       it 'user do not see private key' do
-        visit edit_project_pages_domain_path(project, domain)
+        visit project_pages_domain_path(project, domain)
 
         expect(page).not_to have_selector '.card-header', text: 'Certificate'
         expect(page).not_to have_text domain.subject
@@ -111,14 +111,14 @@ describe "Pages with Let's Encrypt", :https_pages_enabled do
       let(:domain) { create(:pages_domain, project: project, auto_ssl_enabled: false) }
 
       it 'user sees certificate subject' do
-        visit edit_project_pages_domain_path(project, domain)
+        visit project_pages_domain_path(project, domain)
 
         expect(page).to have_selector '.card-header', text: 'Certificate'
         expect(page).to have_text domain.subject
       end
 
       it 'user can delete the certificate', :js do
-        visit edit_project_pages_domain_path(project, domain)
+        visit project_pages_domain_path(project, domain)
 
         expect(page).to have_selector '.card-header', text: 'Certificate'
         expect(page).to have_text domain.subject
@@ -139,7 +139,7 @@ describe "Pages with Let's Encrypt", :https_pages_enabled do
     before do
       stub_application_setting(lets_encrypt_terms_of_service_accepted: false)
 
-      visit edit_project_pages_domain_path(project, domain)
+      visit project_pages_domain_path(project, domain)
     end
 
     it "does not render the Let's Encrypt field", :js do

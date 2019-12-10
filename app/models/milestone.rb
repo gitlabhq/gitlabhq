@@ -341,6 +341,6 @@ class Milestone < ApplicationRecord
   end
 
   def issues_finder_params
-    { project_id: project_id, group_id: group_id }.compact
+    { project_id: project_id, group_id: group_id, include_subgroups: group_id.present? }.compact
   end
 end

@@ -31,9 +31,6 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
         project_tree_restorer = described_class.new(user: @user, shared: @shared, project: @project)
 
-        expect(Gitlab::ImportExport::RelationFactory).to receive(:create).with(hash_including(excluded_keys: ['whatever'])).and_call_original.at_least(:once)
-        allow(project_tree_restorer).to receive(:excluded_keys_for_relation).and_return(['whatever'])
-
         @restored_project_json = project_tree_restorer.restore
       end
     end
@@ -557,8 +554,9 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
   context 'Minimal JSON' do
     let(:project) { create(:project) }
+    let(:user) { create(:user) }
     let(:tree_hash) { { 'visibility_level' => visibility } }
-    let(:restorer) { described_class.new(user: nil, shared: shared, project: project) }
+    let(:restorer) { described_class.new(user: user, shared: shared, project: project) }
 
     before do
       expect(restorer).to receive(:read_tree_hash) { tree_hash }

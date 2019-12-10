@@ -16,6 +16,7 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
   it { is_expected.to have_many(:projects) }
   it { is_expected.to have_many(:cluster_groups) }
   it { is_expected.to have_many(:groups) }
+  it { is_expected.to have_many(:groups_projects) }
   it { is_expected.to have_one(:provider_gcp) }
   it { is_expected.to have_one(:provider_aws) }
   it { is_expected.to have_one(:platform_kubernetes) }
@@ -612,6 +613,36 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
         let(:cluster) { create(:cluster, :provided_by_gcp, :instance, managed: false) }
 
         it { is_expected.to be_truthy }
+      end
+    end
+  end
+
+  describe '#all_projects' do
+    context 'cluster_type is project_type' do
+      let(:project) { create(:project) }
+      let(:cluster) { create(:cluster, :with_installed_helm, projects: [project]) }
+
+      it 'returns projects' do
+        expect(cluster.all_projects).to match_array [project]
+      end
+    end
+
+    context 'cluster_type is group_type' do
+      let(:group) { create(:group) }
+      let!(:project) { create(:project, group: group) }
+      let(:cluster) { create(:cluster_for_group, :with_installed_helm, groups: [group]) }
+
+      it 'returns group projects' do
+        expect(cluster.all_projects.ids).to match_array [project.id]
+      end
+    end
+
+    context 'cluster_type is instance_type' do
+      let!(:project) { create(:project) }
+      let(:cluster) { create(:cluster, :instance) }
+
+      it "returns all instance's projects" do
+        expect(cluster.all_projects.ids).to match_array [project.id]
       end
     end
   end

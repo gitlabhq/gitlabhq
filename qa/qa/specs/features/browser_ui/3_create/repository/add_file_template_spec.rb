@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  # Failure issue: https://gitlab.com/gitlab-org/gitlab/issues/34551
-  context 'Create', :quarantine do
+  context 'Create' do
     describe 'File templates' do
       include Runtime::Fixtures
 

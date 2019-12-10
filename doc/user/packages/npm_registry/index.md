@@ -122,7 +122,7 @@ Then, you could run `npm publish` either locally or via GitLab CI/CD:
 
 - **GitLab CI/CD:** Set an `NPM_TOKEN` [variable](../../../ci/variables/README.md)
   under your project's **Settings > CI/CD > Variables**.
-  
+
 ### Authenticating with a CI job token
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9104) in GitLab Premium 12.5.
@@ -130,7 +130,7 @@ Then, you could run `npm publish` either locally or via GitLab CI/CD:
 If you’re using NPM with GitLab CI/CD, a CI job token can be used instead of a personal access token.
 The token will inherit the permissions of the user that generates the pipeline.
 
-Add a corresponding section to your `.npmrc` file:  
+Add a corresponding section to your `.npmrc` file:
 
 ```ini
 @foo:registry=https://gitlab.com/api/v4/packages/npm/
@@ -226,3 +226,19 @@ And the `.npmrc` file should look like:
 //gitlab.com/api/v4/packages/npm/:_authToken=<your_oauth_token>
 @foo:registry=https://gitlab.com/api/v4/packages/npm/
 ```
+
+## NPM dependencies metadata
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/11867) in GitLab Premium 12.6.
+
+Starting from GitLab 12.6, new packages published to the GitLab NPM Registry expose the following attributes to the NPM client:
+
+- name
+- version
+- dist-tags
+- dependencies
+  - dependencies
+  - devDependencies
+  - bundleDependencies
+  - peerDependencies
+  - deprecated

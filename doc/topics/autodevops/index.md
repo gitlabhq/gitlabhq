@@ -1340,26 +1340,28 @@ spec:
   service account for your project. For help debugging this issue, see
   [Troubleshooting failed deployment jobs](../../user/project/clusters/index.md#troubleshooting).
 
-### Disable the banner instance wide
+### Auto DevOps banner
 
-If an administrator would like to disable the banners on an instance level, this
-feature can be disabled either through the console:
+The following Auto DevOps banner will show for maintainers+ on new projects when Auto DevOps is not enabled
 
-```sh
-sudo gitlab-rails console
-```
+![Auto DevOps banner](img/autodevops_banner_v12_6.png)
 
-Then run:
+The banner can be disabled:
 
-```ruby
-Feature.get(:auto_devops_banner_disabled).enable
-```
+- Per user when they dismiss it.
+- Project-wide by explicitly [disabling Auto DevOps](#enablingdisabling-auto-devops).
+- By a GitLab administrator for an entire GitLab instance by either:
+  - Running the following in a Rails console:
 
-Or through the HTTP API with an admin access token:
+    ```ruby
+    Feature.get(:auto_devops_banner_disabled).enable
+    ```
 
-```sh
-curl --data "value=true" --header "PRIVATE-TOKEN: personal_access_token" https://gitlab.example.com/api/v4/features/auto_devops_banner_disabled
-```
+  - Through the REST API with an admin access token:
+
+    ```sh
+    curl --data "value=true" --header "PRIVATE-TOKEN: personal_access_token" https://gitlab.example.com/api/v4/features/auto_devops_banner_disabled
+    ```
 
 [ce-37115]: https://gitlab.com/gitlab-org/gitlab-foss/issues/37115
 [docker-in-docker]: ../../docker/using_docker_build.md#use-docker-in-docker-executor

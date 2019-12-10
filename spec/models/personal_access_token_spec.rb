@@ -146,4 +146,25 @@ describe PersonalAccessToken do
       expect(personal_access_token.errors[:scopes].first).to eq "can only contain available scopes"
     end
   end
+
+  describe 'scopes' do
+    describe '.expiring_and_not_notified' do
+      let_it_be(:expired_token) { create(:personal_access_token, expires_at: 2.days.ago) }
+      let_it_be(:revoked_token) { create(:personal_access_token, revoked: true) }
+      let_it_be(:valid_token_and_notified) { create(:personal_access_token, expires_at: 2.days.from_now, expire_notification_delivered: true) }
+      let_it_be(:valid_token) { create(:personal_access_token, expires_at: 2.days.from_now) }
+
+      context 'in one day' do
+        it "doesn't have any tokens" do
+          expect(described_class.expiring_and_not_notified(1.day.from_now)).to be_empty
+        end
+      end
+
+      context 'in three days' do
+        it 'only includes a valid token' do
+          expect(described_class.expiring_and_not_notified(3.days.from_now)).to contain_exactly(valid_token)
+        end
+      end
+    end
+  end
 end

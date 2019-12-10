@@ -781,6 +781,25 @@ describe Ci::CreatePipelineService do
       end
     end
 
+    context 'with environment with auto_stop_in' do
+      before do
+        config = YAML.dump(
+          deploy: {
+            environment: { name: "review/$CI_COMMIT_REF_NAME", auto_stop_in: '1 day' },
+            script: 'ls'
+          })
+
+        stub_ci_pipeline_yaml_file(config)
+      end
+
+      it 'creates the environment with auto stop in' do
+        result = execute_service
+
+        expect(result).to be_persisted
+        expect(result.builds.first.options[:environment][:auto_stop_in]).to eq('1 day')
+      end
+    end
+
     context 'with environment name including persisted variables' do
       before do
         config = YAML.dump(

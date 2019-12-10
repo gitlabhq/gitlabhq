@@ -151,5 +151,11 @@ module Types
           null: true,
           description: 'Detailed version of a Sentry error on the project',
           resolver: Resolvers::ErrorTracking::SentryDetailedErrorResolver
+
+    field :snippets,
+          Types::SnippetType.connection_type,
+          null: true,
+          description: 'Snippets of the project',
+          resolver: Resolvers::Projects::SnippetsResolver
   end
 end

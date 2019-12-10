@@ -206,6 +206,35 @@ describe Gitlab::Ci::Config::Entry::Environment do
     end
   end
 
+  context 'when auto_stop_in is specified' do
+    let(:config) do
+      {
+        name: 'review/$CI_COMMIT_REF_NAME',
+        url: 'https://$CI_COMMIT_REF_NAME.review.gitlab.com',
+        on_stop: 'stop_review',
+        auto_stop_in: auto_stop_in
+      }
+    end
+
+    context 'when auto_stop_in is correct format' do
+      let(:auto_stop_in) { '2 days' }
+
+      it 'becomes valid' do
+        expect(entry).to be_valid
+        expect(entry.auto_stop_in).to eq(auto_stop_in)
+      end
+    end
+
+    context 'when auto_stop_in is invalid format' do
+      let(:auto_stop_in) { 'invalid' }
+
+      it 'becomes invalid' do
+        expect(entry).not_to be_valid
+        expect(entry.errors).to include 'environment auto stop in should be a duration'
+      end
+    end
+  end
+
   context 'when configuration is invalid' do
     context 'when configuration is an array' do
       let(:config) { ['env'] }

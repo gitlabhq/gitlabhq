@@ -529,6 +529,35 @@ describe User, :do_not_mock_admin_mode do
           .to contain_exactly(user)
       end
     end
+
+    describe '.with_expiring_and_not_notified_personal_access_tokens' do
+      let_it_be(:user1) { create(:user) }
+      let_it_be(:user2) { create(:user) }
+      let_it_be(:user3) { create(:user) }
+
+      let_it_be(:expired_token) { create(:personal_access_token, user: user1, expires_at: 2.days.ago) }
+      let_it_be(:revoked_token) { create(:personal_access_token, user: user1, revoked: true) }
+      let_it_be(:valid_token_and_notified) { create(:personal_access_token, user: user2, expires_at: 2.days.from_now, expire_notification_delivered: true) }
+      let_it_be(:valid_token1) { create(:personal_access_token, user: user2, expires_at: 2.days.from_now) }
+      let_it_be(:valid_token2) { create(:personal_access_token, user: user2, expires_at: 2.days.from_now) }
+      let(:users) { described_class.with_expiring_and_not_notified_personal_access_tokens(from) }
+
+      context 'in one day' do
+        let(:from) { 1.day.from_now }
+
+        it "doesn't include an user" do
+          expect(users).to be_empty
+        end
+      end
+
+      context 'in three days' do
+        let(:from) { 3.days.from_now }
+
+        it 'only includes user2' do
+          expect(users).to contain_exactly(user2)
+        end
+      end
+    end
   end
 
   describe "Respond to" do

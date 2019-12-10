@@ -88,7 +88,7 @@ class PrometheusService < MonitoringService
     return false if template?
     return false unless project
 
-    project.clusters.enabled.any? { |cluster| cluster.application_prometheus_available? }
+    project.all_clusters.enabled.any? { |cluster| cluster.application_prometheus_available? }
   end
 
   def allow_local_api_url?

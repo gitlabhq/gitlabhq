@@ -1,0 +1,5 @@
+---
+title: Update padding for cluster alert warning
+merge_request: 20036
+author: George Tsiolis
+type: fixed

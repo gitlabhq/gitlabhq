@@ -39,12 +39,13 @@ RSpec.shared_context 'ProjectPolicy context' do
       update_pipeline create_merge_request_from create_wiki push_code
       resolve_note create_container_image update_container_image
       create_environment create_deployment update_deployment create_release update_release
+      update_environment
     ]
   end
 
   let(:base_maintainer_permissions) do
     %i[
-      push_to_delete_protected_branch update_project_snippet update_environment
+      push_to_delete_protected_branch update_project_snippet
       admin_project_snippet admin_project_member admin_note admin_wiki admin_project
       admin_commit_status admin_build admin_container_image
       admin_pipeline admin_environment admin_deployment destroy_release add_cluster

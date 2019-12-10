@@ -86,12 +86,15 @@ In case, you have a high-priority merge request (e.g. critical patch) to be merg
 you can use **Merge Immediately** option for bypassing the merge train.
 This is the fastest option to get the change merged into the target branch.
 
-![Merge Immediately](img/merge_train_immediate_merge.png)
+![Merge Immediately](img/merge_train_immediate_merge_v12_6.png)
 
 However, every time you merge a merge request immediately, it could affect the
 existing merge train to be reconstructed, specifically, it regenerates expected
 merge commits and pipelines. This means, merging immediately essentially wastes
-CI resources.
+CI resources. Because of these downsides, you will be asked to confirm before
+the merge is initiated:
+
+![Merge immediately confirmation dialog](img/merge_train_immediate_merge_confirmation_dialog_v12_6.png)
 
 ## Troubleshooting
 

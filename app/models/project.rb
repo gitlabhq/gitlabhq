@@ -404,6 +404,7 @@ class Project < ApplicationRecord
   scope :with_push, -> { joins(:events).where('events.action = ?', Event::PUSHED) }
   scope :with_project_feature, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id') }
   scope :with_statistics, -> { includes(:statistics) }
+  scope :with_service, ->(service) { joins(service).eager_load(service) }
   scope :with_shared_runners, -> { where(shared_runners_enabled: true) }
   scope :with_container_registry, -> { where(container_registry_enabled: true) }
   scope :inside_path, ->(path) do
@@ -1256,8 +1257,9 @@ class Project < ApplicationRecord
 
   def all_clusters
     group_clusters = Clusters::Cluster.joins(:groups).where(cluster_groups: { group_id: ancestors_upto } )
+    instance_clusters = Clusters::Cluster.instance_type
 
-    Clusters::Cluster.from_union([clusters, group_clusters])
+    Clusters::Cluster.from_union([clusters, group_clusters, instance_clusters])
   end
 
   def items_for(entity)

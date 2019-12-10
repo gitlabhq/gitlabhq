@@ -366,6 +366,9 @@ production: &base
     # Send admin emails once a week
     admin_email_worker:
       cron: "0 0 * * 0"
+    # Send emails for personal tokens which are about to expire
+    personal_access_tokens_expiring_worker:
+      cron: "0 1 * * *"
 
     # Remove outdated repository archives
     repository_archive_cache_worker:

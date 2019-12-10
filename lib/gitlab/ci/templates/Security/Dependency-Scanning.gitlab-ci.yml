@@ -50,6 +50,7 @@ dependency_scanning:
           DS_PIP_DEPENDENCY_PATH \
           PIP_INDEX_URL \
           PIP_EXTRA_INDEX_URL \
+          PIP_REQUIREMENTS_FILE \
           MAVEN_CLI_OPTS \
           BUNDLER_AUDIT_UPDATE_DISABLED \
         ) \

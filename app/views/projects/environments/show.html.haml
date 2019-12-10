@@ -5,7 +5,7 @@
 - content_for :page_specific_javascripts do
   = stylesheet_link_tag 'page_bundles/xterm'
 
-- if can?(current_user, :stop_environment, @environment)
+- if @environment.available? && can?(current_user, :stop_environment, @environment)
   #stop-environment-modal.modal.fade{ tabindex: -1 }
     .modal-dialog
       .modal-content
@@ -40,7 +40,7 @@
     = render 'projects/environments/metrics_button', environment: @environment
     - if can?(current_user, :update_environment, @environment)
       = link_to _('Edit'), edit_project_environment_path(@project, @environment), class: 'btn'
-    - if can?(current_user, :stop_environment, @environment)
+    - if @environment.available? && can?(current_user, :stop_environment, @environment)
       = button_tag class: 'btn btn-danger', type: 'button', data: { toggle: 'modal',
         target: '#stop-environment-modal' } do
         = sprite_icon('stop')

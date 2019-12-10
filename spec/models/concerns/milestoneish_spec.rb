@@ -192,6 +192,23 @@ describe Milestone, 'Milestoneish' do
         end
       end
     end
+
+    context 'when milestone is at parent level group' do
+      let(:parent_group) { create(:group) }
+      let(:group) { create(:group, parent: parent_group) }
+      let(:project) { create(:project, namespace: group) }
+      let(:milestone) { create(:milestone, group: parent_group) }
+
+      it 'does not return any merge request for a non member' do
+        merge_requests = milestone.merge_requests_visible_to_user(non_member)
+        expect(merge_requests).to be_empty
+      end
+
+      it 'returns milestone merge requests for a member' do
+        merge_requests = milestone.merge_requests_visible_to_user(member)
+        expect(merge_requests).to contain_exactly(merge_request)
+      end
+    end
   end
 
   describe '#complete?' do

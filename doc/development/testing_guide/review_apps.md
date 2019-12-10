@@ -186,22 +186,89 @@ secure note named `gitlab-{ce,ee} Review App's root password`.
    `review-qa-raise-e-12chm0-migrations.1-nqwtx`.
 1. Click on the `Container logs` link.
 
-### Diagnosing unhealthy review-app releases
+## Diagnosing unhealthy Review App releases
 
-If [Review App Stability](https://gitlab.com/gitlab-org/quality/team-tasks/issues/93) dips this may be a signal
-that the `review-apps-ce/ee` cluster is unhealthy. Leading indicators may be healthcheck failures leading to restarts or majority failure for Review App deployments.
+If [Review App Stability](https://app.periscopedata.com/app/gitlab/496118/Engineering-Productivity-Sandbox?widget=6690556&udv=785399)
+dips this may be a signal that the `review-apps-ce/ee` cluster is unhealthy.
+Leading indicators may be healthcheck failures leading to restarts or majority failure for Review App deployments.
 
-The following items may help diagnose this:
+The [Review Apps Overview dashboard](https://app.google.stackdriver.com/dashboards/6798952013815386466?project=gitlab-review-apps&timeDomain=1d)
+aids in identifying load spikes on the cluster, and if nodes are problematic or the entire cluster is trending towards unhealthy.
 
-- [Review Apps Health dashboard](https://app.google.stackdriver.com/dashboards/6798952013815386466?project=gitlab-review-apps&timeDomain=1d)
-  - Aids in identifying load spikes on the cluster, and if nodes are problematic or the entire cluster is trending towards unhealthy.
-- `kubectl top nodes | sort --key 3 --numeric` - can identify if node spikes are common or load on specific nodes which may get rebalanced by the Kubernetes scheduler.
-- `kubectl top pods | sort --key 2 --numeric` -
-- [K9s] - K9s is a powerful command line dashboard which allows you to filter by labels. This can help identify trends with apps exceeding the [review-app resource requests](https://gitlab.com/gitlab-org/gitlab/blob/master/scripts/review_apps/base-config.yaml). Kubernetes will schedule pods to nodes based on resource requests and allow for CPU usage up to the limits.
-  - In K9s you can sort or add filters by typing the `/` character
-    - `-lrelease=<review-app-slug>` - filters down to all pods for a release. This aids in determining what is having issues in a single deployment
-    - `-lapp=<app>` - filters down to all pods for a specific app. This aids in determining resource usage by app.
-  - You can scroll to a Kubernetes resource and hit `d`(describe), `s`(shell), `l`(logs) for a deeper inspection
+### Node count is always increasing (i.e. never stabilizing or decreasing)
+
+**Potential cause:**
+
+That could be a sign that the [`schedule:review-cleanup`][gitlab-ci-yml] job is
+failing to cleanup stale Review Apps and Kubernetes resources.
+
+**Where to look for further debugging:**
+
+Look at the latest `schedule:review-cleanup` job log, and identify look for any
+unexpected failure.
+
+### p99 CPU utilization is at 100% for most of the nodes and/or many components
+
+**Potential cause:**
+
+This could be a sign that Helm is failing to deploy Review Apps. When Helm has a
+lot of `FAILED` releases, it seems that the CPU utilization is increasing, probably
+due to Helm or Kubernetes trying to recreate the components.
+
+**Where to look for further debugging:**
+
+Look at a recent `review-deploy` job log, and at the Tiller logs.
+
+**Useful commands:**
+
+```shell
+# Identify if node spikes are common or load on specific nodes which may get rebalanced by the Kubernetes scheduler
+› kubectl top nodes | sort --key 3 --numeric
+
+# Identify pods under heavy CPU load
+› kubectl top pods | sort --key 2 --numeric
+```
+
+### The `logging/user/events/FailedMount` chart is going up
+
+**Potential cause:**
+
+This could be a sign that there are too many stale secrets and/or config maps.
+
+**Where to look for further debugging:**
+
+Look at [the list of Configurations](https://console.cloud.google.com/kubernetes/config?project=gitlab-review-apps)
+or `kubectl get secret,cm --sort-by='{.metadata.creationTimestamp}' | grep 'review-'`.
+
+Any secrets or config maps older than 5 days are suspect and should be deleted.
+
+**Useful commands:**
+
+```
+# List secrets and config maps ordered by created date
+› kubectl get secret,cm --sort-by='{.metadata.creationTimestamp}' | grep 'review-'
+
+# Delete all secrets that are 5 to 9 days old
+› kubectl get secret --sort-by='{.metadata.creationTimestamp}' | grep '^review-' | grep '[5-9]d$' | cut -d' ' -f1 | xargs kubectl delete secret
+
+# Delete all secrets that are 10 to 99 days old
+› kubectl get secret --sort-by='{.metadata.creationTimestamp}' | grep '^review-' | grep '[1-9][0-9]d$' | cut -d' ' -f1 | xargs kubectl delete secret
+
+# Delete all config maps that are 5 to 9 days old
+› kubectl get cm --sort-by='{.metadata.creationTimestamp}' | grep 'review-' | grep -v 'dns-gitlab-review-app' | grep '[5-9]d$' | cut -d' ' -f1 | xargs kubectl delete cm
+
+# Delete all config maps that are 10 to 99 days old
+› kubectl get cm --sort-by='{.metadata.creationTimestamp}' | grep 'review-' | grep -v 'dns-gitlab-review-app' | grep '[1-9][0-9]d$' | cut -d' ' -f1 | xargs kubectl delete cm
+```
+
+### Using K9s
+
+[K9s] is a powerful command line dashboard which allows you to filter by labels. This can help identify trends with apps exceeding the [review-app resource requests](https://gitlab.com/gitlab-org/gitlab/blob/master/scripts/review_apps/base-config.yaml). Kubernetes will schedule pods to nodes based on resource requests and allow for CPU usage up to the limits.
+
+- In K9s you can sort or add filters by typing the `/` character
+  - `-lrelease=<review-app-slug>` - filters down to all pods for a release. This aids in determining what is having issues in a single deployment
+  - `-lapp=<app>` - filters down to all pods for a specific app. This aids in determining resource usage by app.
+- You can scroll to a Kubernetes resource and hit `d`(describe), `s`(shell), `l`(logs) for a deeper inspection
 
 ![K9s](img/k9s.png)
 

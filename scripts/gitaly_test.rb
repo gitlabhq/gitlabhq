@@ -56,6 +56,14 @@ module GitalyTest
   end
 
   def check_gitaly_config!
+    puts "Checking gitaly-ruby Gemfile..."
+
+    unless File.exist?(gemfile)
+      message = "#{gemfile} does not exist."
+      message += "\n\nThis might have happened if the CI artifacts for this build were destroyed." if ENV['CI']
+      abort message
+    end
+
     puts 'Checking gitaly-ruby bundle...'
     abort 'bundle check failed' unless system(env, 'bundle', 'check', chdir: File.dirname(gemfile))
   end

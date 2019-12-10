@@ -31,7 +31,7 @@ describe Gitlab::ImportExport::FileImporter do
 
   context 'normal run' do
     before do
-      described_class.import(project: build(:project), archive_file: '', shared: shared)
+      described_class.import(importable: build(:project), archive_file: '', shared: shared)
     end
 
     it 'removes symlinks in root folder' do
@@ -70,7 +70,7 @@ describe Gitlab::ImportExport::FileImporter do
   context 'error' do
     before do
       allow_any_instance_of(described_class).to receive(:wait_for_archived_file).and_raise(StandardError)
-      described_class.import(project: build(:project), archive_file: '', shared: shared)
+      described_class.import(importable: build(:project), archive_file: '', shared: shared)
     end
 
     it 'removes symlinks in root folder' do

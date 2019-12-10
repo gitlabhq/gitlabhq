@@ -1,8 +1,9 @@
+-# We currently only support `alert`, `notice`, `success`, 'toast'
 .flash-container.flash-container-page.sticky
-  -# We currently only support `alert`, `notice`, `success`
   - flash.each do |key, value|
-    -# Don't show a flash message if the message is nil
-    - if value
+    - if key == 'toast' && value
+      .js-toast-message{ data: { message: value } }
+    - elsif value
       %div{ class: "flash-#{key} mb-2" }
         %span= value
         %div{ class: "close-icon-wrapper js-close-icon" }

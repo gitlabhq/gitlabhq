@@ -310,6 +310,13 @@ class User < ApplicationRecord
   scope :with_dashboard, -> (dashboard) { where(dashboard: dashboard) }
   scope :with_public_profile, -> { where(private_profile: false) }
 
+  scope :with_expiring_and_not_notified_personal_access_tokens, ->(at) do
+    where('EXISTS (?)',
+          ::PersonalAccessToken
+            .where('personal_access_tokens.user_id = users.id')
+            .expiring_and_not_notified(at).select(1))
+  end
+
   def self.with_visible_profile(user)
     return with_public_profile if user.nil?
 

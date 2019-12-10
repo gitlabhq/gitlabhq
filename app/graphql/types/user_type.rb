@@ -8,6 +8,8 @@ module Types
 
     present_using UserPresenter
 
+    expose_permissions Types::PermissionTypes::User
+
     field :name, GraphQL::STRING_TYPE, null: false,
           description: 'Human-readable name of the user'
     field :username, GraphQL::STRING_TYPE, null: false,
@@ -19,5 +21,11 @@ module Types
     field :todos, Types::TodoType.connection_type, null: false,
           resolver: Resolvers::TodoResolver,
           description: 'Todos of the user'
+
+    field :snippets,
+          Types::SnippetType.connection_type,
+          null: true,
+          description: 'Snippets authored by the user',
+          resolver: Resolvers::Users::SnippetsResolver
   end
 end

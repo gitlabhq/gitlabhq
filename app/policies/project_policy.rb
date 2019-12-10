@@ -262,6 +262,7 @@ class ProjectPolicy < BasePolicy
     enable :update_container_image
     enable :destroy_container_image
     enable :create_environment
+    enable :update_environment
     enable :create_deployment
     enable :update_deployment
     enable :create_release
@@ -278,8 +279,6 @@ class ProjectPolicy < BasePolicy
     enable :admin_board
     enable :push_to_delete_protected_branch
     enable :update_project_snippet
-    enable :update_environment
-    enable :update_deployment
     enable :admin_project_snippet
     enable :admin_project_member
     enable :admin_note

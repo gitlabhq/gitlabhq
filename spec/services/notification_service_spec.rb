@@ -210,6 +210,18 @@ describe NotificationService, :mailer do
     end
   end
 
+  describe 'AccessToken' do
+    describe '#access_token_about_to_expire' do
+      let_it_be(:user) { create(:user) }
+
+      it 'sends email to the token owner' do
+        expect(notification.access_token_about_to_expire(user)).to be_truthy
+
+        should_email user
+      end
+    end
+  end
+
   describe 'Notes' do
     context 'issue note' do
       let(:project) { create(:project, :private) }

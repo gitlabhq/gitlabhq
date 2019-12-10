@@ -29,6 +29,8 @@
 .border-color-default { border-color: $border-color; }
 .box-shadow-default { box-shadow: 0 2px 4px 0 $black-transparent; }
 
+.mh-50vh { max-height: 50vh; }
+
 .gl-w-64 { width: px-to-rem($grid-size * 8); }
 .gl-h-64 { height: px-to-rem($grid-size * 8); }
 .gl-bg-blue-500 { @include gl-bg-blue-500; }
