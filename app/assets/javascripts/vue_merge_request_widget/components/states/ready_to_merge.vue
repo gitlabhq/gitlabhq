@@ -1,11 +1,11 @@
 <script>
 import _ from 'underscore';
+import { GlIcon } from '@gitlab/ui';
 import successSvg from 'icons/_icon_status_success.svg';
 import warningSvg from 'icons/_icon_status_warning.svg';
 import readyToMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/ready_to_merge';
 import simplePoll from '~/lib/utils/simple_poll';
 import { __, sprintf } from '~/locale';
-import { GlIcon } from '@gitlab/ui';
 import MergeRequest from '../../../merge_request';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import Flash from '../../../flash';

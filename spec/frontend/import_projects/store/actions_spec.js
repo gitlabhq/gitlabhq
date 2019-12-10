@@ -1,4 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
+import testAction from 'helpers/vuex_action_helper';
+import { TEST_HOST } from 'helpers/test_constants';
 import axios from '~/lib/utils/axios_utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import {
@@ -27,8 +29,6 @@ import {
   stopJobsPolling,
 } from '~/import_projects/store/actions';
 import state from '~/import_projects/store/state';
-import testAction from 'helpers/vuex_action_helper';
-import { TEST_HOST } from 'helpers/test_constants';
 
 describe('import_projects store actions', () => {
   let localState;

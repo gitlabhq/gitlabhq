@@ -1,10 +1,10 @@
 import Vue from 'vue';
+import mountComponent from 'helpers/vue_mount_component_helper';
+import { shallowMount } from '@vue/test-utils';
 import applications from '~/clusters/components/applications.vue';
 import { CLUSTER_TYPE } from '~/clusters/constants';
-import mountComponent from 'helpers/vue_mount_component_helper';
 import { APPLICATIONS_MOCK_STATE } from '../services/mock_data';
 import eventHub from '~/clusters/event_hub';
-import { shallowMount } from '@vue/test-utils';
 import KnativeDomainEditor from '~/clusters/components/knative_domain_editor.vue';
 import CrossplaneProviderStack from '~/clusters/components/crossplane_provider_stack.vue';
 

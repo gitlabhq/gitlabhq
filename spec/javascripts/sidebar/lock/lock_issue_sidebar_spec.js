@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import lockIssueSidebar from '~/sidebar/components/lock/lock_issue_sidebar.vue';
 import { mockTracking, triggerEvent } from 'spec/helpers/tracking_helper';
+import lockIssueSidebar from '~/sidebar/components/lock/lock_issue_sidebar.vue';
 
 describe('LockIssueSidebar', () => {
   let vm1;

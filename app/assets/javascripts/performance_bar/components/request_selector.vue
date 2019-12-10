@@ -1,7 +1,7 @@
 <script>
+import { GlPopover } from '@gitlab/ui';
 import { glEmojiTag } from '~/emoji';
 import { n__ } from '~/locale';
-import { GlPopover } from '@gitlab/ui';
 
 export default {
   components: {

@@ -1,6 +1,5 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
-import ErrorTrackingList from '~/error_tracking/components/error_tracking_list.vue';
 import {
   GlButton,
   GlEmptyState,
@@ -9,6 +8,7 @@ import {
   GlLink,
   GlSearchBoxByClick,
 } from '@gitlab/ui';
+import ErrorTrackingList from '~/error_tracking/components/error_tracking_list.vue';
 import errorsList from './list_mock.json';
 
 const localVue = createLocalVue();

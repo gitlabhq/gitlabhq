@@ -1,11 +1,11 @@
 <script>
 import Visibility from 'visibilityjs';
+import { GlLoadingIcon } from '@gitlab/ui';
 import ciIcon from '~/vue_shared/components/ci_icon.vue';
 import Poll from '~/lib/utils/poll';
 import Flash from '~/flash';
 import { __, s__, sprintf } from '~/locale';
 import tooltip from '~/vue_shared/directives/tooltip';
-import { GlLoadingIcon } from '@gitlab/ui';
 import CommitPipelineService from '../services/commit_pipeline_service';
 
 export default {

@@ -1,6 +1,6 @@
-import frequentItemsListItemComponent from '~/frequent_items/components/frequent_items_list_item.vue';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { trimText } from 'spec/helpers/text_helper';
+import frequentItemsListItemComponent from '~/frequent_items/components/frequent_items_list_item.vue';
 import { mockProject } from '../mock_data'; // can also use 'mockGroup', but not useful to test here
 
 const localVue = createLocalVue();

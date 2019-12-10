@@ -1,5 +1,5 @@
-import axios from '~/lib/utils/axios_utils';
 import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import CreateMergeRequestDropdown from '~/create_merge_request_dropdown';
 import confidentialState from '~/confidential_merge_request/state';
 import { TEST_HOST } from './helpers/test_constants';

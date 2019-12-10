@@ -1,11 +1,11 @@
 import Vue from 'vue';
 import { shallowMount } from '@vue/test-utils';
+import mountComponent from 'helpers/vue_mount_component_helper';
 import eventHub from '~/clusters/event_hub';
 import { APPLICATION_STATUS } from '~/clusters/constants';
 import applicationRow from '~/clusters/components/application_row.vue';
 import UninstallApplicationConfirmationModal from '~/clusters/components/uninstall_application_confirmation_modal.vue';
 
-import mountComponent from 'helpers/vue_mount_component_helper';
 import { DEFAULT_APPLICATION_STATE } from '../services/mock_data';
 
 describe('Application Row', () => {

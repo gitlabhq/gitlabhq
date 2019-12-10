@@ -1,6 +1,6 @@
+import AxiosMockAdapter from 'axios-mock-adapter';
 import awsServicesFacadeFactory from '~/create_cluster/eks_cluster/services/aws_services_facade';
 import axios from '~/lib/utils/axios_utils';
-import AxiosMockAdapter from 'axios-mock-adapter';
 
 describe('awsServicesFacade', () => {
   let apiPaths;

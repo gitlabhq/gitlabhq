@@ -1,5 +1,5 @@
-import axios from '~/lib/utils/axios_utils';
 import { normalizeData } from 'ee_else_ce/repository/utils/commit';
+import axios from '~/lib/utils/axios_utils';
 import getCommits from './queries/getCommits.query.graphql';
 import getProjectPath from './queries/getProjectPath.query.graphql';
 import getRef from './queries/getRef.query.graphql';

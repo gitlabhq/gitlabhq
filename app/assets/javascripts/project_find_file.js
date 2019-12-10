@@ -2,10 +2,10 @@
 
 import $ from 'jquery';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
+import sanitize from 'sanitize-html';
 import axios from '~/lib/utils/axios_utils';
 import flash from '~/flash';
 import { __ } from '~/locale';
-import sanitize from 'sanitize-html';
 
 // highlight text(awefwbwgtc -> <b>a</b>wefw<b>b</b>wgt<b>c</b> )
 const highlighter = function(element, text, matches) {

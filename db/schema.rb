@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_04_093410) do
+ActiveRecord::Schema.define(version: 2019_12_06_122926) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -2969,7 +2969,7 @@ ActiveRecord::Schema.define(version: 2019_12_04_093410) do
     t.integer "source_project_id"
     t.index ["disk_path"], name: "index_pool_repositories_on_disk_path", unique: true
     t.index ["shard_id"], name: "index_pool_repositories_on_shard_id"
-    t.index ["source_project_id"], name: "index_pool_repositories_on_source_project_id", unique: true
+    t.index ["source_project_id", "shard_id"], name: "index_pool_repositories_on_source_project_id_and_shard_id", unique: true
   end
 
   create_table "programming_languages", id: :serial, force: :cascade do |t|

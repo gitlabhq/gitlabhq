@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import editFormButtons from '~/sidebar/components/lock/edit_form_buttons.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import editFormButtons from '~/sidebar/components/lock/edit_form_buttons.vue';
 
 describe('EditFormButtons', () => {
   let vm1;

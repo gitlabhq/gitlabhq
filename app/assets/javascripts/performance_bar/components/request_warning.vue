@@ -1,6 +1,6 @@
 <script>
-import { glEmojiTag } from '~/emoji';
 import { GlPopover } from '@gitlab/ui';
+import { glEmojiTag } from '~/emoji';
 
 export default {
   components: {

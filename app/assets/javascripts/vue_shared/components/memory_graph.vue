@@ -1,6 +1,6 @@
 <script>
-import { formatDate, secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 import { GlSparklineChart } from '@gitlab/ui/dist/charts';
+import { formatDate, secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 
 export default {
   name: 'MemoryGraph',

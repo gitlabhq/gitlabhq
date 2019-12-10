@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import UninstallApplicationConfirmationModal from '~/clusters/components/uninstall_application_confirmation_modal.vue';
 import { GlModal } from '@gitlab/ui';
+import UninstallApplicationConfirmationModal from '~/clusters/components/uninstall_application_confirmation_modal.vue';
 import { INGRESS } from '~/clusters/constants';
 
 describe('UninstallApplicationConfirmationModal', () => {

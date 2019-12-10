@@ -1,12 +1,12 @@
 /* eslint-disable no-unused-vars */
-import GLDropdown from '~/gl_dropdown';
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
+import setTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
+import GLDropdown from '~/gl_dropdown';
 import axios from '~/lib/utils/axios_utils';
 import '~/behaviors/markdown/render_gfm';
 import issuableApp from '~/issue_show/components/app.vue';
 import eventHub from '~/issue_show/event_hub';
-import setTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
 import issueShowData from '../mock_data';
 
 function formatText(text) {

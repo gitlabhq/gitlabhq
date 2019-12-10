@@ -1,6 +1,6 @@
 <script>
-import { __, sprintf } from '~/locale';
 import { GlTooltipDirective } from '@gitlab/ui';
+import { __, sprintf } from '~/locale';
 import CollapsedAssignee from './collapsed_assignee.vue';
 
 const DEFAULT_MAX_COUNTER = 99;

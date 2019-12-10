@@ -1,6 +1,6 @@
+import { shallowMount, createLocalVue } from '@vue/test-utils';
 import searchComponent from '~/frequent_items/components/frequent_items_search_input.vue';
 import eventHub from '~/frequent_items/event_hub';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
 
 const localVue = createLocalVue();
 

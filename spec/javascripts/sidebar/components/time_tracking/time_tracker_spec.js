@@ -1,8 +1,7 @@
 import Vue from 'vue';
 
-import TimeTracker from '~/sidebar/components/time_tracking/time_tracker.vue';
-
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import TimeTracker from '~/sidebar/components/time_tracking/time_tracker.vue';
 
 describe('Issuable Time Tracker', () => {
   let initialData;

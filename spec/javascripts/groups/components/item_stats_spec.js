@@ -1,7 +1,7 @@
 import Vue from 'vue';
 
-import itemStatsComponent from '~/groups/components/item_stats.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import itemStatsComponent from '~/groups/components/item_stats.vue';
 import {
   mockParentGroupItem,
   ITEM_TYPE,

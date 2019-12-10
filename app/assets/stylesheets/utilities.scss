@@ -33,4 +33,21 @@
 
 .gl-w-64 { width: px-to-rem($grid-size * 8); }
 .gl-h-64 { height: px-to-rem($grid-size * 8); }
+
+.gl-text-purple { color: $purple; }
+.gl-text-gray-800 { color: $gray-800; }
+.gl-bg-purple-light { background-color: $purple-light; }
+
+// Classes using mixins coming from @gitlab-ui
+// can be removed once https://gitlab.com/gitlab-org/gitlab/merge_requests/19021 has been merged
 .gl-bg-blue-500 { @include gl-bg-blue-500; }
+.gl-bg-red-100 { @include gl-bg-red-100; }
+.gl-bg-orange-100 { @include gl-bg-orange-100; }
+.gl-bg-gray-100 { @include gl-bg-gray-100; }
+.gl-bg-green-100 { @include gl-bg-green-100;}
+
+.gl-text-gray-900 { @include gl-text-gray-900; }
+.gl-text-red-700 { @include gl-text-red-700; }
+.gl-text-orange-700 { @include gl-text-orange-700; }
+.gl-text-green-700 { @include gl-text-green-700; }
+

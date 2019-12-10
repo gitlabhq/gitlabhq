@@ -1,12 +1,12 @@
 <script>
 /* eslint-disable vue/require-default-prop */
 import { GlTooltipDirective, GlLink } from '@gitlab/ui';
+import mrWidgetPipelineMixin from 'ee_else_ce/vue_merge_request_widget/mixins/mr_widget_pipeline';
 import { sprintf, s__ } from '~/locale';
 import PipelineStage from '~/pipelines/components/stage.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
-import mrWidgetPipelineMixin from 'ee_else_ce/vue_merge_request_widget/mixins/mr_widget_pipeline';
 
 export default {
   name: 'MRWidgetPipeline',

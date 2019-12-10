@@ -7,9 +7,9 @@ import 'core-js/features/set-immediate';
 import 'vendor/jasmine-jquery';
 import '~/commons';
 import Vue from 'vue';
-import Translate from '~/vue_shared/translate';
 import jasmineDiff from 'jasmine-diff';
 import { config as testUtilsConfig } from '@vue/test-utils';
+import Translate from '~/vue_shared/translate';
 
 import { getDefaultAdapter } from '~/lib/utils/axios_utils';
 import { FIXTURES_PATH, TEST_HOST } from './test_constants';

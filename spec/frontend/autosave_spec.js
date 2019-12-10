@@ -1,7 +1,7 @@
 import $ from 'jquery';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import Autosave from '~/autosave';
 import AccessorUtilities from '~/lib/utils/accessor';
-import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 
 describe('Autosave', () => {
   useLocalStorageSpy();

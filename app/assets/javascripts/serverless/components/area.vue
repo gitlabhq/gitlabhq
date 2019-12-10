@@ -1,7 +1,7 @@
 <script>
 import { GlAreaChart } from '@gitlab/ui/dist/charts';
-import { debounceByAnimationFrame } from '~/lib/utils/common_utils';
 import dateFormat from 'dateformat';
+import { debounceByAnimationFrame } from '~/lib/utils/common_utils';
 import { X_INTERVAL } from '../constants';
 import { validateGraphData } from '../utils';
 import { __ } from '~/locale';

@@ -19,9 +19,9 @@
 import $ from 'jquery';
 import { mapGetters, mapActions } from 'vuex';
 import { GlSkeletonLoading } from '@gitlab/ui';
+import descriptionVersionHistoryMixin from 'ee_else_ce/notes/mixins/description_version_history';
 import noteHeader from '~/notes/components/note_header.vue';
 import Icon from '~/vue_shared/components/icon.vue';
-import descriptionVersionHistoryMixin from 'ee_else_ce/notes/mixins/description_version_history';
 import TimelineEntryItem from './timeline_entry_item.vue';
 import { spriteIcon } from '../../../lib/utils/common_utils';
 import initMRPopovers from '~/mr_popover/';

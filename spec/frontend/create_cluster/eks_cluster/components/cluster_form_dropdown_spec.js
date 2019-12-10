@@ -1,9 +1,9 @@
 import { shallowMount } from '@vue/test-utils';
 
+import { GlIcon } from '@gitlab/ui';
 import ClusterFormDropdown from '~/create_cluster/eks_cluster/components/cluster_form_dropdown.vue';
 import DropdownButton from '~/vue_shared/components/dropdown/dropdown_button.vue';
 import DropdownSearchInput from '~/vue_shared/components/dropdown/dropdown_search_input.vue';
-import { GlIcon } from '@gitlab/ui';
 
 describe('ClusterFormDropdown', () => {
   let vm;

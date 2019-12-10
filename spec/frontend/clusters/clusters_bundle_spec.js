@@ -1,3 +1,7 @@
+import MockAdapter from 'axios-mock-adapter';
+import $ from 'jquery';
+import { loadHTMLFixture } from 'helpers/fixtures';
+import { setTestTimeout } from 'helpers/timeout';
 import Clusters from '~/clusters/clusters_bundle';
 import {
   APPLICATION_STATUS,
@@ -5,11 +9,7 @@ import {
   APPLICATIONS,
   RUNNER,
 } from '~/clusters/constants';
-import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import { loadHTMLFixture } from 'helpers/fixtures';
-import { setTestTimeout } from 'helpers/timeout';
-import $ from 'jquery';
 import initProjectSelectDropdown from '~/project_select';
 
 jest.mock('~/lib/utils/poll');

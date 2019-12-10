@@ -1,8 +1,7 @@
 import Vue from 'vue';
 
-import itemCaretComponent from '~/groups/components/item_caret.vue';
-
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import itemCaretComponent from '~/groups/components/item_caret.vue';
 
 const createComponent = (isGroupOpen = false) => {
   const Component = Vue.extend(itemCaretComponent);

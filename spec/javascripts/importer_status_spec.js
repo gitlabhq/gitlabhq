@@ -1,6 +1,6 @@
+import MockAdapter from 'axios-mock-adapter';
 import { ImporterStatus } from '~/importer_status';
 import axios from '~/lib/utils/axios_utils';
-import MockAdapter from 'axios-mock-adapter';
 
 describe('Importer Status', () => {
   let instance;

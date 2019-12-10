@@ -1,6 +1,6 @@
 <script>
-import { __, sprintf } from '~/locale';
 import { GlTooltipDirective, GlLink } from '@gitlab/ui';
+import { __, sprintf } from '~/locale';
 import { joinPaths } from '~/lib/utils/url_utility';
 import AssigneeAvatar from './assignee_avatar.vue';
 

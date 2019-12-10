@@ -1,6 +1,6 @@
+import { shallowMount } from '@vue/test-utils';
 import IssueTimeEstimate from '~/boards/components/issue_time_estimate.vue';
 import boardsStore from '~/boards/stores/boards_store';
-import { shallowMount } from '@vue/test-utils';
 
 describe('Issue Time Estimate component', () => {
   let wrapper;

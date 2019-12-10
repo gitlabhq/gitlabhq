@@ -1,11 +1,11 @@
 import { mount, shallowMount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
+import { TEST_HOST } from 'helpers/test_constants';
 import GrafanaIntegration from '~/grafana_integration/components/grafana_integration.vue';
 import { createStore } from '~/grafana_integration/store';
 import axios from '~/lib/utils/axios_utils';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import createFlash from '~/flash';
-import { TEST_HOST } from 'helpers/test_constants';
 
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/flash');

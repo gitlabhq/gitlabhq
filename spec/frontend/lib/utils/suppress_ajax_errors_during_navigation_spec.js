@@ -1,5 +1,5 @@
-import suppressAjaxErrorsDuringNavigation from '~/lib/utils/suppress_ajax_errors_during_navigation';
 import waitForPromises from 'helpers/wait_for_promises';
+import suppressAjaxErrorsDuringNavigation from '~/lib/utils/suppress_ajax_errors_during_navigation';
 
 describe('suppressAjaxErrorsDuringNavigation', () => {
   const OTHER_ERR_CODE = 'foo';

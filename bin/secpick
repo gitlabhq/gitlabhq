@@ -11,8 +11,12 @@ using Rainbow
 module Secpick
   BRANCH_PREFIX = 'security'.freeze
   STABLE_SUFFIX = 'stable'.freeze
+
   DEFAULT_REMOTE = 'dev'.freeze
+  SECURITY_REMOTE = 'security'.freeze
+
   NEW_MR_URL = 'https://dev.gitlab.org/gitlab/gitlabhq/merge_requests/new'.freeze
+  SECURITY_MR_URL = 'https://gitlab.com/gitlab-org/security/gitlab/merge_requests/new'.freeze
 
   class SecurityFix
     def initialize
@@ -20,7 +24,7 @@ module Secpick
     end
 
     def ee?
-      File.exist?('./ee/app/models/license.rb')
+      File.exist?(File.expand_path('../ee/app/models/license.rb', __dir__))
     end
 
     def dry_run?
@@ -62,17 +66,30 @@ module Secpick
     end
 
     def new_mr_url
-      if ee?
-        NEW_MR_URL.sub('gitlabhq', 'gitlab-ee')
+      if @options[:security_remote]
+        if ee?
+          SECURITY_MR_URL
+        else
+          SECURITY_MR_URL.sub('/gitlab/', '/gitlab-foss/')
+        end
       else
-        NEW_MR_URL
+        if ee?
+          NEW_MR_URL.sub('gitlabhq', 'gitlab-ee')
+        else
+          NEW_MR_URL
+        end
       end
     end
 
     def create!
       if dry_run?
-        puts git_commands.join("\n").green
-        puts "\nMerge request params: ".blue
+        puts "\nGit commands:".blue
+        puts git_commands.join("\n")
+
+        puts "\nMerge request URL:".blue
+        puts new_mr_url
+
+        puts "\nMerge request params:".blue
         pp gitlab_params
       else
         cmd = git_commands.join(' && ')
@@ -111,12 +128,26 @@ module Secpick
             options[:remote] = remote
           end
 
-          opts.on('-d', '--dry-run', 'Only show Git commands, without calling them') do |remote|
+          opts.on('--security-remote', 'Use the new Security group-based workflow on gitlab.com (note: mutually exclusive to --remote)') do
+            unless options[:remote].nil?
+              abort('Cannot use --security-remote with --remote')
+            end
+
+            options[:security_remote] = true
+            options[:remote] = SECURITY_REMOTE
+          end
+
+          opts.on('-d', '--dry-run', 'Only show Git commands, without calling them') do
             options[:try] = true
           end
 
           opts.on('-h', '--help', 'Displays Help') do
             puts opts
+
+            puts
+            puts 'NOTE: If `--security-remote` is used, commands will default ' \
+              'to using a `security` remote, and merge requests will be created ' \
+              'on gitlab.com/gitlab-org/security/ rather than dev.gitlab.org.'
 
             exit
           end
@@ -127,7 +158,7 @@ module Secpick
         options[:branch] ||= `git rev-parse --abbrev-ref HEAD`
         options[:remote] ||= DEFAULT_REMOTE
 
-        abort("Missing options. Use #{$0} --help to see the list of options available".red) if options.values.include?(nil)
+        abort("Missing options. Use #{$0} --help to see the list of options available".red) if options.value?(nil)
         abort("Wrong version format #{options[:version].bold}".red) unless options[:version] =~ /\A\d*\-\d*\Z/
       end
     end

@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import frequentItemsListComponent from '~/frequent_items/components/frequent_items_list.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import frequentItemsListComponent from '~/frequent_items/components/frequent_items_list.vue';
 import { mockFrequentProjects } from '../mock_data';
 
 const createComponent = (namespace = 'projects') => {

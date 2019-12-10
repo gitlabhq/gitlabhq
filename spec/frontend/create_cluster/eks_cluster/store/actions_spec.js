@@ -1,5 +1,6 @@
 import testAction from 'helpers/vuex_action_helper';
 
+import MockAdapter from 'axios-mock-adapter';
 import createState from '~/create_cluster/eks_cluster/store/state';
 import * as actions from '~/create_cluster/eks_cluster/store/actions';
 import {
@@ -23,7 +24,6 @@ import {
   SIGN_OUT,
 } from '~/create_cluster/eks_cluster/store/mutation_types';
 import axios from '~/lib/utils/axios_utils';
-import MockAdapter from 'axios-mock-adapter';
 import createFlash from '~/flash';
 
 jest.mock('~/flash');

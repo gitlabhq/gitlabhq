@@ -1,6 +1,6 @@
 <script>
-import { __ } from '~/locale';
 import { GlTooltipDirective } from '@gitlab/ui';
+import { __ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import { visitUrl } from '~/lib/utils/url_utility';

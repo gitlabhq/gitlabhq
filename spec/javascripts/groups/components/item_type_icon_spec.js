@@ -1,7 +1,7 @@
 import Vue from 'vue';
 
-import itemTypeIconComponent from '~/groups/components/item_type_icon.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import itemTypeIconComponent from '~/groups/components/item_type_icon.vue';
 import { ITEM_TYPE } from '../mock_data';
 
 const createComponent = (itemType = ITEM_TYPE.GROUP, isGroupOpen = false) => {

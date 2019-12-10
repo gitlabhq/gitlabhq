@@ -1,11 +1,11 @@
 <script>
 import _ from 'underscore';
-import { sprintf, s__, __ } from '~/locale';
-import Project from '~/pages/projects/project';
-import SmartInterval from '~/smart_interval';
 import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
 import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
 import stateMaps from 'ee_else_ce/vue_merge_request_widget/stores/state_maps';
+import { sprintf, s__, __ } from '~/locale';
+import Project from '~/pages/projects/project';
+import SmartInterval from '~/smart_interval';
 import createFlash from '../flash';
 import Loading from './components/loading.vue';
 import WidgetHeader from './components/mr_widget_header.vue';

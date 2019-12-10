@@ -1,0 +1,5 @@
+---
+title: Fix forking a deduplicated project after it was moved to a different shard
+merge_request: 21339
+author:
+type: fixed
