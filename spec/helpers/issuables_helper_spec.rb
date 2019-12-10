@@ -202,6 +202,26 @@ describe IssuablesHelper do
       expect(helper.issuable_initial_data(issue)).to match(hash_including(expected_data))
     end
 
+    describe '#sentryIssueIdentifier' do
+      let(:issue) { create(:issue, author: user) }
+
+      before do
+        assign(:project, issue.project)
+      end
+
+      it 'sets sentryIssueIdentifier to nil with no sentry issue ' do
+        expect(helper.issuable_initial_data(issue)[:sentryIssueIdentifier])
+          .to be_nil
+      end
+
+      it 'sets sentryIssueIdentifier to sentry_issue_identifier' do
+        sentry_issue = create(:sentry_issue, issue: issue)
+
+        expect(helper.issuable_initial_data(issue)[:sentryIssueIdentifier])
+          .to eq(sentry_issue.sentry_issue_identifier)
+      end
+    end
+
     describe '#zoomMeetingUrl in issue' do
       let(:issue) { create(:issue, author: user) }
 

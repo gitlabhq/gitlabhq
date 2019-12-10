@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  # https://gitlab.com/gitlab-org/gitlab-foss/issues/58158
+  # https://gitlab.com/gitlab-org/gitlab/issues/26952
+  # BUG_IN_CODE
   context 'Manage', :github, :quarantine do
     describe 'Project import from GitHub' do
       let(:imported_project) do

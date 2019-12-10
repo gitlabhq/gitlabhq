@@ -25,7 +25,7 @@ module Gitlab
       when WikiPage
         wiki_page_url
       when Snippet
-        opts[:raw].present? ? raw_snippet_url(object) : snippet_url(object)
+        opts[:raw].present? ? gitlab_raw_snippet_url(object) : gitlab_snippet_url(object)
       when Milestone
         milestone_url(object)
       when ::Ci::Build
@@ -65,7 +65,7 @@ module Gitlab
         merge_request_url(object.noteable, anchor: dom_id(object))
 
       elsif object.for_snippet?
-        snippet_url(object.noteable, anchor: dom_id(object))
+        gitlab_snippet_url(object.noteable, anchor: dom_id(object))
       end
     end
 

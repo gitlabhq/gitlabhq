@@ -1,9 +1,10 @@
 - if readme.rich_viewer
   %article.file-holder.readme-holder{ id: 'readme', class: [("limited-width-container" unless fluid_layout), ("js-show-on-root" if vue_file_list_enabled?)] }
-    .js-file-title.file-title
-      = blob_icon readme.mode, readme.name
-      = link_to project_blob_path(@project, tree_join(@ref, readme.path)) do
-        %strong
-          = readme.name
+    .js-file-title.file-title-flex-parent
+      .file-header-content
+        = blob_icon readme.mode, readme.name
+        = link_to project_blob_path(@project, tree_join(@ref, readme.path)) do
+          %strong
+            = readme.name
 
     = render 'projects/blob/viewer', viewer: readme.rich_viewer, viewer_url: project_blob_path(@project, tree_join(@ref, readme.path), viewer: :rich, format: :json)

@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.5.4
+
+### Security (1 change)
+
+- Update maven_file_name_regex for full string match.
+
+
 ## 12.5.3
 
 ### Fixed (4 changes)
@@ -754,6 +761,13 @@ entry.
 - Use correct icons for issue actions.
 - Increase color contrast of select option path.
 - Remove Postgresql specific setup tasks and move to schema.rb.
+
+
+## 12.3.9
+
+### Security (1 change)
+
+- Update maven_file_name_regex for full string match.
 
 
 ## 12.3.7

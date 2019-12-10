@@ -1,57 +1,99 @@
 #!/usr/bin/env ruby
 
+# frozen_string_literal: true
+
 require 'digest'
 require 'fileutils'
 
-harness_path = File.expand_path('../.git/security_harness', __dir__)
-hook_path    = File.expand_path("../.git/hooks/pre-push", __dir__)
-
-if File.exist?(hook_path)
-  # Deal with a pre-existing hook
-  source_sum = Digest::SHA256.hexdigest(DATA.read)
-  dest_sum   = Digest::SHA256.file(hook_path).hexdigest
-
-  if source_sum != dest_sum
-    puts "#{hook_path} exists and is different from our hook!"
-    puts "Remove it and re-run this script to continue."
-
-    exit 1
-  end
+if ENV['NO_COLOR']
+  SHELL_RED    = ''
+  SHELL_GREEN  = ''
+  SHELL_YELLOW = ''
+  SHELL_CLEAR  = ''
 else
-  File.open(hook_path, 'w') do |file|
-    IO.copy_stream(DATA, file)
-  end
+  SHELL_RED    = "\e[1;31m"
+  SHELL_GREEN  = "\e[1;32m"
+  SHELL_YELLOW = "\e[1;33m"
+  SHELL_CLEAR  = "\e[0m"
+end
 
-  File.chmod(0755, hook_path)
+HOOK_PATH = File.expand_path("../.git/hooks/pre-push", __dir__)
+HOOK_DATA = <<~HOOK
+  #!/bin/bash
+
+  set -e
+
+  url="$2"
+  harness=`dirname "$0"`/../security_harness
+
+  if [ -e "$harness" ]
+  then
+    if [[ ("$url" != *"dev.gitlab.org"*) && ("$url" != *"gitlab-org/security/"*) ]]
+    then
+      echo "Pushing to remotes other than dev.gitlab.org and gitlab.com/gitlab-org/security has been disabled!"
+      echo "Run scripts/security-harness to disable this check."
+      echo
+
+      exit 1
+    fi
+  fi
+HOOK
+
+def write_hook
+  FileUtils.mkdir_p(File.dirname(HOOK_PATH))
+  File.open(HOOK_PATH, 'w') do |file|
+    file.write(HOOK_DATA)
+  end
+  File.chmod(0755, HOOK_PATH)
 end
 
 # Toggle the harness on or off
-if File.exist?(harness_path)
-  FileUtils.rm(harness_path)
+def toggle
+  harness_path = File.expand_path('../.git/security_harness', __dir__)
 
-  puts "Security harness removed -- you can now push to all remotes."
-else
-  FileUtils.touch(harness_path)
+  if File.exist?(harness_path)
+    FileUtils.rm(harness_path)
 
-  puts "Security harness installed -- you will only be able to push to dev.gitlab.org!"
+    puts "#{SHELL_YELLOW}Security harness removed -- you can now push to all remotes.#{SHELL_CLEAR}"
+  else
+    FileUtils.touch(harness_path)
+
+    puts "#{SHELL_GREEN}Security harness installed -- you will only be able to push to dev.gitlab.org or gitlab.com/gitlab-org/security!#{SHELL_CLEAR}"
+  end
 end
 
-__END__
-#!/bin/bash
+# If we were to change the script and then check for a pre-existing hook before
+# writing, the check would fail even if the user had an unmodified version of
+# the old hook. Checking previous version hashes allows us to safely overwrite a
+# script that differs from the current version, as long as it's an old one and
+# not custom.
+def previous_version?(dest_sum)
+  # SHA256 hashes of previous iterations of the script contained in `DATA`
+  %w[
+    010bf0363a911ebab2bd5728d80795ed02388da51815f0b2530d08ae8ac574f0
+  ].include?(dest_sum)
+end
 
-set -e
+if !File.exist?(HOOK_PATH)
+  write_hook
+  toggle
+else
+  # Deal with a pre-existing hook
+  source_sum = Digest::SHA256.hexdigest(HOOK_DATA)
+  dest_sum   = Digest::SHA256.file(HOOK_PATH).hexdigest
 
-url="$2"
-harness=`dirname "$0"`/../security_harness
-
-if [ -e "$harness" ]
-then
-  if [[ "$url" != *"dev.gitlab.org"* ]]
-  then
-    echo "Pushing to remotes other than dev.gitlab.org has been disabled!"
-    echo "Run scripts/security-harness to disable this check."
-    echo
+  if previous_version?(dest_sum)
+    # Upgrading from a previous version, update in-place
+    write_hook
+    toggle
+  elsif source_sum != dest_sum
+    # Pre-existing hook we didn't create; do nothing
+    puts "#{SHELL_RED}#{HOOK_PATH} exists and is different from our hook!"
+    puts "Remove it and re-run this script to continue.#{SHELL_CLEAR}"
 
     exit 1
-  fi
-fi
+  else
+    # No hook update needed, just toggle
+    toggle
+  end
+end

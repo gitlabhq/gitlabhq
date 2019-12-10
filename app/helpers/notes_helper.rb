@@ -95,7 +95,7 @@ module NotesHelper
 
   def notes_url(params = {})
     if @snippet.is_a?(PersonalSnippet)
-      snippet_notes_path(@snippet, params)
+      gitlab_snippet_notes_path(@snippet, params)
     else
       params.merge!(target_id: @noteable.id, target_type: @noteable.class.name.underscore)
 
@@ -105,7 +105,7 @@ module NotesHelper
 
   def note_url(note, project = @project)
     if note.noteable.is_a?(PersonalSnippet)
-      snippet_note_path(note.noteable, note)
+      gitlab_snippet_note_path(note.noteable, note)
     else
       project_note_path(project, note)
     end
@@ -126,7 +126,7 @@ module NotesHelper
   def new_form_url
     return unless @snippet.is_a?(PersonalSnippet)
 
-    snippet_notes_path(@snippet)
+    gitlab_snippet_notes_path(@snippet)
   end
 
   def can_create_note?

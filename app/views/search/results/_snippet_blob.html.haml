@@ -1,7 +1,7 @@
 - snippet_blob = chunk_snippet(snippet_blob, @search_term)
 - snippet = snippet_blob[:snippet_object]
 - snippet_chunks = snippet_blob[:snippet_chunks]
-- snippet_path = snippet_path(snippet)
+- snippet_path = gitlab_snippet_path(snippet)
 
 .search-result-row
   %span

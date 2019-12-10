@@ -1,6 +1,6 @@
 .search-result-row
   %h4.snippet-title.term
-    = link_to snippet_path(snippet_title) do
+    = link_to gitlab_snippet_path(snippet_title) do
       = truncate(snippet_title.title, length: 60)
       = snippet_badge(snippet_title)
     %span.cgray.monospace.tiny.float-right.term
