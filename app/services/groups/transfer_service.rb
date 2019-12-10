@@ -38,7 +38,13 @@ module Groups
         ensure_ownership
       end
 
+      post_update_hooks(@updated_project_ids)
+
       true
+    end
+
+    # Overridden in EE
+    def post_update_hooks(updated_project_ids)
     end
 
     def ensure_allowed_transfer
@@ -90,9 +96,16 @@ module Groups
         .where(id: descendants.select(:id))
         .update_all(visibility_level: @new_parent_group.visibility_level)
 
-      @group
+      projects_to_update = @group
         .all_projects
         .where("visibility_level > ?", @new_parent_group.visibility_level)
+
+      # Used in post_update_hooks in EE. Must use pluck (and not select)
+      # here as after we perform the update below we won't be able to find
+      # these records again.
+      @updated_project_ids = projects_to_update.pluck(:id)
+
+      projects_to_update
         .update_all(visibility_level: @new_parent_group.visibility_level)
     end
     # rubocop: enable CodeReuse/ActiveRecord
@@ -109,3 +122,5 @@ module Groups
     end
   end
 end
+
+Groups::TransferService.prepend_if_ee('EE::Groups::TransferService')
