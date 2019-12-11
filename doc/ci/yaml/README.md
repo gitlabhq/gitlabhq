@@ -1514,8 +1514,10 @@ globally and all jobs will use that definition.
 
 #### `cache:paths`
 
-Use the `paths` directive to choose which files or directories will be cached. You can only specify paths within your `$CI_PROJECT_DIR`.
-Wildcards can be used that follow the [glob](https://en.wikipedia.org/wiki/Glob_(programming)) patterns and [filepath.Match](https://golang.org/pkg/path/filepath/#Match).
+Use the `paths` directive to choose which files or directories will be cached. Paths
+are relative to the project directory (`$CI_PROJECT_DIR`) and cannot directly link outside it.
+Wildcards can be used that follow the [glob](https://en.wikipedia.org/wiki/Glob_(programming))
+patterns and [filepath.Match](https://golang.org/pkg/path/filepath/#Match).
 
 Cache all files in `binaries` that end in `.apk` and the `.config` file:
 
@@ -1744,8 +1746,9 @@ be available for download in the GitLab UI.
 
 #### `artifacts:paths`
 
-You can only use paths that are within the local working copy.
-Wildcards can be used that follow the [glob](https://en.wikipedia.org/wiki/Glob_(programming)) patterns and [filepath.Match](https://golang.org/pkg/path/filepath/#Match).
+Paths are relative to the project directory (`$CI_PROJECT_DIR`) and cannot directly
+link outside it. Wildcards can be used that follow the [glob](https://en.wikipedia.org/wiki/Glob_(programming))
+patterns and [filepath.Match](https://golang.org/pkg/path/filepath/#Match).
 
 To restrict which jobs a specific job will fetch artifacts from, see [dependencies](#dependencies).
 

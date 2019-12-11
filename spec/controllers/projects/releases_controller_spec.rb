@@ -167,7 +167,8 @@ describe Projects::ReleasesController do
   end
 
   describe 'GET #evidence' do
-    let!(:release) { create(:release, :with_evidence, project: project) }
+    let(:tag_name) { "v1.1.0-evidence" }
+    let!(:release) { create(:release, :with_evidence, project: project, tag: tag_name) }
     let(:tag) { CGI.escape(release.tag) }
     let(:format) { :json }
 
