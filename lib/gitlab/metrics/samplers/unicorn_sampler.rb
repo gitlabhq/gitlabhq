@@ -61,7 +61,7 @@ module Gitlab
         # it takes around 80ms. The instances of HttpServers are not a subject
         # to change so we can cache the list of servers.
         def http_servers
-          return [] unless defined?(::Unicorn::HttpServer)
+          return [] unless Gitlab::Runtime.unicorn?
 
           @http_servers ||= ObjectSpace.each_object(::Unicorn::HttpServer).to_a
         end

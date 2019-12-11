@@ -1,0 +1,5 @@
+---
+title: add sha256 fingerprint to keys model, view and extend users API to search user via fingerprint
+merge_request: 19860
+author: Roger Meier
+type: added

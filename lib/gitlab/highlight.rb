@@ -68,7 +68,7 @@ module Gitlab
     end
 
     def timeout_time
-      Sidekiq.server? ? TIMEOUT_BACKGROUND : TIMEOUT_FOREGROUND
+      Gitlab::Runtime.sidekiq? ? TIMEOUT_BACKGROUND : TIMEOUT_FOREGROUND
     end
 
     def link_dependencies(text, highlighted_text)

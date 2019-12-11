@@ -92,6 +92,7 @@ describe Key, :mailer do
     with_them do
       let!(:key) { create(factory) }
       let!(:original_fingerprint) { key.fingerprint }
+      let!(:original_fingerprint_sha256) { key.fingerprint_sha256 }
 
       it 'accepts a key with blank space characters after stripping them' do
         modified_key = key.key.insert(100, chars.first).insert(40, chars.last)
@@ -104,6 +105,8 @@ describe Key, :mailer do
 
         expect(content).not_to match(/\s/)
         expect(original_fingerprint).to eq(key.fingerprint)
+        expect(original_fingerprint).to eq(key.fingerprint_md5)
+        expect(original_fingerprint_sha256).to eq(key.fingerprint_sha256)
       end
     end
   end

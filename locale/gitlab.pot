@@ -7703,9 +7703,6 @@ msgstr ""
 msgid "Fingerprint"
 msgstr ""
 
-msgid "Fingerprint:"
-msgstr ""
-
 msgid "Fingerprints"
 msgstr ""
 

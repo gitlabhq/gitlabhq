@@ -26,7 +26,7 @@ describe Gitlab::GitalyClient do
 
     context 'running in Unicorn' do
       before do
-        stub_const('Unicorn', 1)
+        allow(Gitlab::Runtime).to receive(:unicorn?).and_return(true)
       end
 
       it { expect(subject.long_timeout).to eq(55) }
@@ -34,7 +34,7 @@ describe Gitlab::GitalyClient do
 
     context 'running in Puma' do
       before do
-        stub_const('Puma', 1)
+        allow(Gitlab::Runtime).to receive(:puma?).and_return(true)
       end
 
       it { expect(subject.long_timeout).to eq(55) }

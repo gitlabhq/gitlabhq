@@ -29,7 +29,7 @@ module Gitlab
     PEM_REGEX = /\-+BEGIN CERTIFICATE\-+.+?\-+END CERTIFICATE\-+/m.freeze
     SERVER_VERSION_FILE = 'GITALY_SERVER_VERSION'
     MAXIMUM_GITALY_CALLS = 30
-    CLIENT_NAME = (Sidekiq.server? ? 'gitlab-sidekiq' : 'gitlab-web').freeze
+    CLIENT_NAME = (Gitlab::Runtime.sidekiq? ? 'gitlab-sidekiq' : 'gitlab-web').freeze
     GITALY_METADATA_FILENAME = '.gitaly-metadata'
 
     MUTEX = Mutex.new
@@ -383,15 +383,11 @@ module Gitlab
     end
 
     def self.long_timeout
-      if web_app_server?
+      if Gitlab::Runtime.app_server?
         default_timeout
       else
         6.hours
       end
-    end
-
-    def self.web_app_server?
-      defined?(::Unicorn) || defined?(::Puma)
     end
 
     def self.storage_metadata_file_path(storage)

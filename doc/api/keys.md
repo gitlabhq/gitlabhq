@@ -4,13 +4,19 @@
 
 Get SSH key with user by ID of an SSH key. Note only administrators can lookup SSH key with user by ID of an SSH key.
 
-```
+```text
 GET /keys/:id
 ```
 
-Parameters:
+| Attribute | Type    | Required | Description          |
+|:----------|:--------|:---------|:---------------------|
+| `id`      | integer | yes      | The ID of an SSH key |
 
-- `id` (required) - The ID of an SSH key
+Example request:
+
+```sh
+curl --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/keys/1
+```
 
 ```json
 {
@@ -48,6 +54,77 @@ Parameters:
     "two_factor_enabled": false
     "external": false,
     "private_profile": null
+  }
+}
+```
+
+## Get user by fingerprint of SSH key
+
+You can search for a user that owns a specific SSH key. Note only administrators can lookup SSH key with the fingerprint of an SSH key.
+
+```text
+GET /keys
+```
+
+| Attribute     | Type   | Required | Description                   |
+|:--------------|:-------|:---------|:------------------------------|
+| `fingerprint` | string | yes      | The fingerprint of an SSH key |
+
+Example request:
+
+```sh
+curl --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/keys?fingerprint=ba:81:59:68:d7:6c:cd:02:02:bf:6a:9b:55:4e:af:d1'
+```
+
+If using sha256 fingerprint API calls, make sure that the fingerprint is URL-encoded.
+
+For example, `/` is represented by `%2F` and `:` is represented by`%3A`:
+
+```sh
+curl --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/keys?fingerprint=SHA256%3AnUhzNyftwADy8AH3wFY31tAKs7HufskYTte2aXo%2FlCg
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "title": "Sample key 1",
+  "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt1016k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=",
+  "created_at": "2019-11-14T15:11:13.222Z",
+  "user": {
+    "id": 1,
+    "name": "Administrator",
+    "username": "root",
+    "state": "active",
+    "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+    "web_url": "http://0.0.0.0:3000/root",
+    "created_at": "2019-11-14T15:09:34.831Z",
+    "bio": null,
+    "location": null,
+    "public_email": "",
+    "skype": "",
+    "linkedin": "",
+    "twitter": "",
+    "website_url": "",
+    "organization": null,
+    "last_sign_in_at": "2019-11-16T22:41:26.663Z",
+    "confirmed_at": "2019-11-14T15:09:34.575Z",
+    "last_activity_on": "2019-11-20",
+    "email": "admin@example.com",
+    "theme_id": 1,
+    "color_scheme_id": 1,
+    "projects_limit": 100000,
+    "current_sign_in_at": "2019-11-19T14:42:18.078Z",
+    "identities": [
+    ],
+    "can_create_group": true,
+    "can_create_project": true,
+    "two_factor_enabled": false,
+    "external": false,
+    "private_profile": false,
+    "shared_runners_minutes_limit": null,
+    "extra_shared_runners_minutes_limit": null
   }
 }
 ```

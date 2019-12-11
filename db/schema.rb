@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_06_122926) do
+ActiveRecord::Schema.define(version: 2019_12_08_071112) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -2206,7 +2206,9 @@ ActiveRecord::Schema.define(version: 2019_12_06_122926) do
     t.string "fingerprint"
     t.boolean "public", default: false, null: false
     t.datetime "last_used_at"
+    t.binary "fingerprint_sha256"
     t.index ["fingerprint"], name: "index_keys_on_fingerprint", unique: true
+    t.index ["fingerprint_sha256"], name: "index_keys_on_fingerprint_sha256"
     t.index ["id", "type"], name: "index_on_deploy_keys_id_and_type_and_public", unique: true, where: "(public = true)"
     t.index ["user_id"], name: "index_keys_on_user_id"
   end

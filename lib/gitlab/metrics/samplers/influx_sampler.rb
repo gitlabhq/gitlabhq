@@ -39,13 +39,9 @@ module Gitlab
         end
 
         def add_metric(series, values, tags = {})
-          prefix = sidekiq? ? 'sidekiq_' : 'rails_'
+          prefix = Gitlab::Runtime.sidekiq? ? 'sidekiq_' : 'rails_'
 
           @metrics << Metric.new("#{prefix}#{series}", values, tags)
-        end
-
-        def sidekiq?
-          Sidekiq.server?
         end
       end
     end

@@ -5,6 +5,9 @@ require 'digest/md5'
 class Key < ApplicationRecord
   include AfterCommitQueue
   include Sortable
+  include Sha256Attribute
+
+  sha256_attribute :fingerprint_sha256
 
   belongs_to :user
 
@@ -33,6 +36,8 @@ class Key < ApplicationRecord
   after_commit :remove_from_shell, on: :destroy
   after_destroy :post_destroy_hook
   after_destroy :refresh_user_cache
+
+  alias_attribute :fingerprint_md5, :fingerprint
 
   def self.regular_keys
     where(type: ['Key', nil])
@@ -114,10 +119,12 @@ class Key < ApplicationRecord
 
   def generate_fingerprint
     self.fingerprint = nil
+    self.fingerprint_sha256 = nil
 
     return unless public_key.valid?
 
-    self.fingerprint = public_key.fingerprint
+    self.fingerprint_md5 = public_key.fingerprint
+    self.fingerprint_sha256 = public_key.fingerprint("SHA256").gsub("SHA256:", "")
   end
 
   def key_meets_restrictions

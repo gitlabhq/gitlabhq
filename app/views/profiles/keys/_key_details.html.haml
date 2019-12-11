@@ -17,11 +17,21 @@
 
   .col-md-8
     = form_errors(@key, type: 'key') unless @key.valid?
-    %p
-      %span.light= _('Fingerprint:')
-      %code.key-fingerprint= @key.fingerprint
     %pre.well-pre
       = @key.key
+    .card
+      .card-header
+        = _('Fingerprints')
+      %ul.content-list
+        %li
+          %span.light= 'MD5:'
+          %code.key-fingerprint= @key.fingerprint
+        - if @key.fingerprint_sha256.present?
+          %li
+            %span.light= 'SHA256:'
+            %code.key-fingerprint= @key.fingerprint_sha256
+
+
   .col-md-12
     .float-right
       - if @key.can_delete?
