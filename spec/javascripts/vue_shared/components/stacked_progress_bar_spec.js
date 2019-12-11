@@ -53,6 +53,12 @@ describe('StackedProgressBarComponent', () => {
       it('returns percentage as `< 1` from provided count based on `totalCount` when evaluated value is less than 1', () => {
         expect(vm.getPercent(10)).toBe('< 1');
       });
+
+      it('returns 0 if totalCount is falsy', () => {
+        vm = createComponent({ totalCount: 0 });
+
+        expect(vm.getPercent(100)).toBe(0);
+      });
     });
 
     describe('barStyle', () => {

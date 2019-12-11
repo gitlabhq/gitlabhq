@@ -71,6 +71,10 @@ export default {
   },
   methods: {
     getPercent(count) {
+      if (!this.totalCount) {
+        return 0;
+      }
+
       const percent = roundOffFloat((count / this.totalCount) * 100, 1);
       if (percent > 0 && percent < 1) {
         return '< 1';
