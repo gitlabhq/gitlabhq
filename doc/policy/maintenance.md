@@ -50,7 +50,7 @@ review process a new change goes through.
 
 Including new features in patch releases is not possible as that would break [Semantic Versioning](https://semver.org/).
 Breaking [Semantic Versioning](https://semver.org/) has the following consequences for users that
-have to adhere to various internal requirements (e.g. org. compliance, verifying new features and similar):
+have to adhere to various internal requirements (for example, org. compliance, verifying new features, and similar):
 
 1. Inability to quickly upgrade to leverage bug fixes included in patch versions.
 1. Inability to quickly upgrade to leverage security fixes included in patch versions.
@@ -58,9 +58,12 @@ have to adhere to various internal requirements (e.g. org. compliance, verifying
 
 In cases where a strategic user has a requirement to test a feature before it is
 officially released, we can offer to create a Release Candidate (RC) version that will
-include the specific feature. This should be needed only in extreme cases, and can be requested for consideration by raising an issue in [release/tasks] issue tracker.
-It is important to note that the Release Candidate will also contain other
-features and changes as it is not possible to easily isolate a specific feature (similar reasons as noted above). The Release Candidate will be no different than any code that is deployed to GitLab.com or is publicly accessible.
+include the specific feature. This should be needed only in extreme cases, and can be requested for
+consideration by raising an issue in the [release/tasks](https://gitlab.com/gitlab-org/release/tasks/issues/new?issuable_template=Backporting-request) issue tracker.
+It is important to note that the Release Candidate will also contain other features and changes as
+it is not possible to easily isolate a specific feature (similar reasons as noted above). The
+Release Candidate will be no different than any code that is deployed to GitLab.com or is publicly
+accessible.
 
 ### Backporting to older releases
 
@@ -68,11 +71,16 @@ Backporting to more than one stable release is reserved for [security releases](
 In some cases however, we may need to backport *a bug fix* to more than one stable
 release, depending on the severity of the bug.
 
-Decision on whether backporting a change will be performed is done at the discretion of the [current release managers][release-managers], similar to what is described in the [managing bugs] process, based on *all* of the following:
+The decision on whether backporting a change will be performed is done at the discretion of the
+[current release managers](https://about.gitlab.com/community/release-managers/), similar to what is
+described in the [managing bugs](https://gitlab.com/gitlab-org/gitlab/blob/master/PROCESS.md#managing-bugs) process,
+based on *all* of the following:
 
-1. Estimated [severity][severity-labels] of the bug: Highest possible impact to users based on the current definition of severity.
+1. Estimated [severity](../development/contributing/issue_workflow.md#severity-labels) of the bug:
+   Highest possible impact to users based on the current definition of severity.
 
-1. Estimated [priority][priority-definition] of the bug: Immediate impact on all impacted users based on the above estimated severity.
+1. Estimated [priority](../development/contributing/issue_workflow.md#priority-labels) of the bug:
+   Immediate impact on all impacted users based on the above estimated severity.
 
 1. Potentially incurring data loss and/or security breach.
 
@@ -83,7 +91,8 @@ the current stable stable release, and two previous monthly releases.
 For instance, if we release `11.2.1` with a fix for a severe bug introduced in
 `11.0.0`, we could backport the fix to a new `11.0.x`, and `11.1.x` patch release.
 
-To request backporting to more than one stable release for consideration, raise an issue in [release/tasks] issue tracker.
+To request backporting to more than one stable release for consideration, raise an issue in the
+[release/tasks](https://gitlab.com/gitlab-org/release/tasks/issues/new?issuable_template=Backporting-request) issue tracker.
 
 ### Security releases
 
@@ -146,9 +155,3 @@ Please see the table below for some examples:
 More information about the release procedures can be found in our
 [release documentation](https://gitlab.com/gitlab-org/release/docs). You may also want to read our
 [Responsible Disclosure Policy](https://about.gitlab.com/security/disclosure/).
-
-[release-managers]: https://about.gitlab.com/community/release-managers/
-[priority-definition]: ../development/contributing/issue_workflow.md#priority-labels
-[severity-labels]: ../development/contributing/issue_workflow.html#severity-labels
-[managing bugs]: https://gitlab.com/gitlab-org/gitlab/blob/master/PROCESS.md#managing-bugs
-[release/tasks]: https://gitlab.com/gitlab-org/release/tasks/issues/new?issuable_template=Backporting-request

@@ -80,15 +80,10 @@ module Gitlab
       # when the new_record? method incorrectly returns false.
       #
       # See https://gitlab.com/gitlab-org/gitlab/issues/9903#note_145329964
-      klass
-        .allocate
-        .init_with(
-          "attributes" => attributes_for(klass, raw),
-          "new_record" => new_record?(raw, klass)
-        )
+      klass.allocate.init_with(encode_for(klass, raw))
     end
 
-    def attributes_for(klass, raw)
+    def encode_for(klass, raw)
       # We have models that leave out some fields from the JSON export for
       # security reasons, e.g. models that include the CacheMarkdownField.
       # The ActiveRecord::AttributeSet we build from raw does know about
@@ -96,7 +91,10 @@ module Gitlab
       missing_attributes = (klass.columns.map(&:name) - raw.keys)
       missing_attributes.each { |column| raw[column] = nil }
 
-      klass.attributes_builder.build_from_database(raw, {})
+      coder = {}
+      klass.new(raw).encode_with(coder)
+      coder["new_record"] = new_record?(raw, klass)
+      coder
     end
 
     def new_record?(raw, klass)

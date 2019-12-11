@@ -138,7 +138,7 @@ configured or there was an error reporting the status via the API.
 
 ### Merge Request event does not trigger a Jenkins Pipeline
 
-Check the **/var/log/gitlab/gitlab-rails/production.log** file for messages like:
+Check the `/var/log/gitlab/gitlab-rails/production.log` file for messages like:
 
 ```plaintext
 WebHook Error => Net::ReadTimeout
@@ -157,7 +157,7 @@ which is set to 10 seconds by default.
 To fix this the `gitlab_rails['webhook_timeout']` value will need to be increased
 in the `gitlab.rb` config file, followed by the [`gitlab-ctl reconfigure` command](../administration/restart_gitlab.md).
 
-If you don't find the errors above, but do find *duplicate* entries like below (in **/var/log/gitlab/gitlab-rail**), this
+If you don't find the errors above, but do find *duplicate* entries like below (in `/var/log/gitlab/gitlab-rail`), this
 could also indicate that [webhook requests are timing out](../user/project/integrations/webhooks.md#receiving-duplicate-or-multiple-webhook-requests-triggered-by-one-event):
 
 ```

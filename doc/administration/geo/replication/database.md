@@ -35,7 +35,7 @@ The following guide assumes that:
 
 - You are using Omnibus and therefore you are using PostgreSQL 9.6 or later
   which includes the [`pg_basebackup` tool](https://www.postgresql.org/docs/9.6/app-pgbasebackup.html) and improved
-  [Foreign Data Wrapper][FDW](https://www.postgresql.org/docs/9.6/postgres-fdw.html) support.
+  [Foreign Data Wrapper](https://www.postgresql.org/docs/9.6/postgres-fdw.html) support.
 - You have a **primary** node already set up (the GitLab server you are
   replicating from), running Omnibus' PostgreSQL (or equivalent version), and
   you have a new **secondary** server set up with the same versions of the OS,

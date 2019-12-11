@@ -481,7 +481,7 @@ applications you have configured.
 
 ### Install Ingress using GitLab CI
 
-To install ingress, define the `.gitlab/managed-apps/config.yaml` file
+To install Ingress, define the `.gitlab/managed-apps/config.yaml` file
 with:
 
 ```yaml

@@ -408,8 +408,8 @@ Note that this sample has a few limitations:
   - It does not regard different types of authentication mechanisms for the mirror.
   - It does not work with forced updates (rewriting history).
   - Only branches that match the `whitelisted` patterns will be proxy pushed.
-- The script circumvents the git hook quarantine environment because the update of `$TARGET_REPO`
-  is seen as a ref update and git will complain about it.
+- The script circumvents the Git hook quarantine environment because the update of `$TARGET_REPO`
+  is seen as a ref update and Git will complain about it.
 
 ### Mirroring with Perforce Helix via Git Fusion **(STARTER)**
 

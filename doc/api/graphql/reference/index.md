@@ -399,7 +399,7 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
 | `id` | ID! | Label ID |
-| `description` | String | Description of the label (markdown rendered as HTML for caching) |
+| `description` | String | Description of the label (Markdown rendered as HTML for caching) |
 | `descriptionHtml` | String | The GitLab Flavored Markdown rendering of `description` |
 | `title` | String! | Content of the label |
 | `color` | String! | Background color of the label |
@@ -414,7 +414,7 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `iid` | String! | Internal ID of the merge request |
 | `title` | String! | Title of the merge request |
 | `titleHtml` | String | The GitLab Flavored Markdown rendering of `title` |
-| `description` | String | Description of the merge request (markdown rendered as HTML for caching) |
+| `description` | String | Description of the merge request (Markdown rendered as HTML for caching) |
 | `descriptionHtml` | String | The GitLab Flavored Markdown rendering of `description` |
 | `state` | MergeRequestState! | State of the merge request |
 | `createdAt` | Time! | Timestamp of when the merge request was created |
@@ -749,7 +749,7 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
 | `storageSize` | Int! | The total storage in bytes |
-| `repositorySize` | Int! | The git repository size in bytes |
+| `repositorySize` | Int! | The Git repository size in bytes |
 | `lfsObjectsSize` | Int! | The LFS objects size in bytes |
 | `buildArtifactsSize` | Int! | The CI artifacts size in bytes |
 | `packagesSize` | Int! | The packages size in bytes |

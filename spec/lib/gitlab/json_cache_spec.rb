@@ -378,6 +378,12 @@ describe Gitlab::JsonCache do
           expect(result).to eq(broadcast_message)
         end
 
+        it 'decodes enums correctly' do
+          result = cache.fetch(key, as: BroadcastMessage) { 'block result' }
+
+          expect(result.broadcast_type).to eq(broadcast_message.broadcast_type)
+        end
+
         context 'when the cached value is an instance of ActiveRecord::Base' do
           it 'returns a persisted record when id is set' do
             backend.write(expanded_key, broadcast_message.to_json)

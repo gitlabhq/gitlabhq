@@ -2,7 +2,7 @@
 
 ## ESLint
 
-We use ESLint to encapsulate and enforce frontend code standards. Our configuration may be found in the [gitlab-eslint-config](https://gitlab.com/gitlab-org/gitlab-eslint-config) project.
+We use ESLint to encapsulate and enforce frontend code standards. Our configuration may be found in the [`gitlab-eslint-config`](https://gitlab.com/gitlab-org/gitlab-eslint-config) project.
 
 ### Disabling ESLint in new files
 

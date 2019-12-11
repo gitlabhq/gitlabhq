@@ -287,8 +287,6 @@ Example response:
 }
 ```
 
-## Notify Post Receive [UNUSED] ?
-
 ## PostReceive
 
 Called from Gitaly after a receiving a push. This triggers the
@@ -300,7 +298,7 @@ the user.
 |:----------|:-------|:---------|:------------|
 | `identifier` | string | yes | `user-[id]` or `key-[id]` Identifying the user performing the push |
 | `gl_repository` | string | yes | identifier of the repository being pushed to |
-| `push_options` | [string] | no | array of push options |
+| `push_options` | string array | no | array of push options |
 | `changes` | string | no | refs to be updated in the push in the format `oldrev newrev refname\n`. |
 
 ```

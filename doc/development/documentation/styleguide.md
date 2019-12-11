@@ -111,10 +111,37 @@ Hard-coded HTML is valid, although it's discouraged to be used while we have `/h
 
 GitLab ensures that the Markdown used across all documentation is consistent, as
 well as easy to review and maintain, by [testing documentation changes](index.md#testing) with
-[`markdownlint`](index.md#markdownlint). This lint test fails when any document has an issue
+[markdownlint](index.md#markdownlint). This lint test fails when any document has an issue
 with Markdown formatting that may cause the page to render incorrectly within GitLab.
 It will also fail when a document is using non-standard Markdown (which may render
 correctly, but is not the current standard for GitLab documentation).
+
+#### Markdown rule `MD044/proper-names` (capitalization)
+
+A rule that could cause confusion is `MD044/proper-names`, as it might not be immediately
+clear what caused markdownlint to fail, or how to correct the failure. This rule
+checks a list of known words, listed in the `.markdownlint.json` file in each project,
+to verify that proper capitalization and backticks are used. Words in backticks will
+be ignored by markdownlint.
+
+In general, product names should follow the exact capitalization of the official names
+of the products, protocols, etc.
+
+Some examples that will fail if incorrect capitalization is used:
+
+- MinIO (needs capital `IO`)
+- NGINX (needs all capitals)
+- runit (needs lowercase `r`)
+
+Additionally, commands, parameters, values, filenames, etc. must be included in backticks.
+For example:
+
+- "Change the `needs` keyword in your `.gitlab.yml`..."
+  - `needs` is a parameter, and `.gitlab.yml` is a file, so both need backticks. Additionally,
+    `.gitlab.yml` will fail markdownlint without backticks as it does not have capital G or L.
+- "Run `git clone` to clone a Git repository..."
+  - `git clone` is a command, so it must be lowercase, while Git is the product, so
+    it must have a capital G.
 
 ## Structure
 

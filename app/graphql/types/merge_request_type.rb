@@ -20,7 +20,7 @@ module Types
           description: 'Title of the merge request'
     markdown_field :title_html, null: true
     field :description, GraphQL::STRING_TYPE, null: true,
-          description: 'Description of the merge request (markdown rendered as HTML for caching)'
+          description: 'Description of the merge request (Markdown rendered as HTML for caching)'
     markdown_field :description_html, null: true
     field :state, MergeRequestStateEnum, null: false,
           description: 'State of the merge request'

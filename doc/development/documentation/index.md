@@ -399,7 +399,7 @@ merge request with new or changed docs is submitted, are:
     - The `CHANGELOG.md` does not contain duplicate versions.
     - No files in `doc/` are executable.
     - No new `README.md` was added.
-  - [`markdownlint`](#markdownlint).
+  - [markdownlint](#markdownlint).
   - Nanoc tests, which you can [run locally](#previewing-the-changes-live) before
     pushing to GitLab by executing the command `bundle exec nanoc check internal_links`
     (or `internal_anchors`) on your local [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs) directory:
@@ -420,7 +420,7 @@ help you catch common issues before raising merge requests for review of documen
 The following are some suggested linters you can install locally and sample configuration:
 
 - [`proselint`](#proselint)
-- [`markdownlint`](#markdownlint), which is the same as the test run in [`docs-lint`](#testing)
+- [markdownlint](#markdownlint), which is the same as the test run in [`docs-lint`](#testing)
 
 NOTE: **Note:**
 This list does not limit what other linters you can add to your local documentation writing toolchain.
@@ -464,18 +464,18 @@ noise. The following sample `proselint` configuration disables these checks:
 A file with `proselint` configuration must be placed in a
 [valid location](https://github.com/amperser/proselint#checks). For example, `~/.config/proselint/config`.
 
-#### `markdownlint`
+#### markdownlint
 
-[`markdownlint`](https://github.com/DavidAnson/markdownlint) checks that Markdown
+[markdownlint](https://github.com/DavidAnson/markdownlint) checks that Markdown
 syntax follows [certain rules](https://github.com/DavidAnson/markdownlint/blob/master/doc/Rules.md#rules),
 and is used by the [`docs-lint` test](#testing) with a [configuration file](#markdownlint-configuration).
 Our [Documentation Style Guide](styleguide.md#markdown) and [Markdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/)
 elaborate on which choices must be made when selecting Markdown syntax for GitLab
 documentation. This tool helps catch deviations from those guidelines.
 
-`markdownlint` can be used [on the command line](https://github.com/igorshubovych/markdownlint-cli#markdownlint-cli--),
+markdownlint can be used [on the command line](https://github.com/igorshubovych/markdownlint-cli#markdownlint-cli--),
 either on a single Markdown file or on all Markdown files in a project. For example, to run
-`markdownlint` on all documentation in the [`gitlab` project](https://gitlab.com/gitlab-org/gitlab),
+markdownlint on all documentation in the [`gitlab` project](https://gitlab.com/gitlab-org/gitlab),
 run the following commands from within your `gitlab` project root directory, which will
 automatically detect the [`.markdownlint.json`](#markdownlint-configuration) config
 file in the root of the project, and test all files in `/doc` and its subdirectories:
@@ -490,7 +490,7 @@ If you wish to use a different config file, use the `-c` flag:
 markdownlint -c <config-file-name> 'doc/**/*.md'
 ```
 
-`markdownlint` can also be run from within text editors using [plugins/extensions](https://github.com/DavidAnson/markdownlint#related),
+markdownlint can also be run from within text editors using [plugins/extensions](https://github.com/DavidAnson/markdownlint#related),
 such as:
 
 - [Sublime Text](https://packagecontrol.io/packages/SublimeLinter-contrib-markdownlint)
@@ -502,9 +502,9 @@ is in use in the four repos that are the sources for <https://docs.gitlab.com>. 
 plugin/extension has different requirements regarding the configuration file, which
 is explained in each editor's docs.
 
-##### `markdownlint` configuration
+##### markdownlint configuration
 
-Each formatting issue that `markdownlint` checks has an associated
+Each formatting issue that markdownlint checks has an associated
 [rule](https://github.com/DavidAnson/markdownlint/blob/master/doc/Rules.md#rules).
 These rules are configured in the `.markdownlint.json` files located in the root of
 four repos that are the sources for <https://docs.gitlab.com>:
@@ -518,7 +518,7 @@ By default all rules are enabled, so the configuration file is used to disable u
 rules, and also to configure optional parameters for enabled rules as needed. You can
 also check [the issue](https://gitlab.com/gitlab-org/gitlab-foss/issues/64352) that
 tracked the changes required to implement these rules, and details which rules were
-on or off when `markdownlint` was enabled on the docs.
+on or off when markdownlint was enabled on the docs.
 
 ## Danger Bot
 

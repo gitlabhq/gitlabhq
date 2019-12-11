@@ -2647,7 +2647,7 @@
             },
             {
               "name": "repositorySize",
-              "description": "The git repository size in bytes",
+              "description": "The Git repository size in bytes",
               "args": [
 
               ],
@@ -7591,7 +7591,7 @@
             },
             {
               "name": "description",
-              "description": "Description of the label (markdown rendered as HTML for caching)",
+              "description": "Description of the label (Markdown rendered as HTML for caching)",
               "args": [
 
               ],
@@ -13656,7 +13656,7 @@
             },
             {
               "name": "description",
-              "description": "Description of the merge request (markdown rendered as HTML for caching)",
+              "description": "Description of the merge request (Markdown rendered as HTML for caching)",
               "args": [
 
               ],

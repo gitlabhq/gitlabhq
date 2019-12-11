@@ -2815,7 +2815,7 @@ type Label {
   color: String!
 
   """
-  Description of the label (markdown rendered as HTML for caching)
+  Description of the label (Markdown rendered as HTML for caching)
   """
   description: String
 
@@ -2917,7 +2917,7 @@ type MergeRequest implements Noteable {
   defaultMergeCommitMessage: String
 
   """
-  Description of the merge request (markdown rendered as HTML for caching)
+  Description of the merge request (Markdown rendered as HTML for caching)
   """
   description: String
 
@@ -5112,7 +5112,7 @@ type RootStorageStatistics {
   packagesSize: Int!
 
   """
-  The git repository size in bytes
+  The Git repository size in bytes
   """
   repositorySize: Int!
 

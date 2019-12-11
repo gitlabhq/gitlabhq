@@ -335,7 +335,7 @@ deploy:
 NOTE: **Note:**
 Kubernetes configuration is not supported for Kubernetes clusters
 that are [managed by GitLab](../user/project/clusters/index.md#gitlab-managed-clusters).
-To follow progress on support for Gitlab-managed clusters, see the
+To follow progress on support for GitLab-managed clusters, see the
 [relevant issue](https://gitlab.com/gitlab-org/gitlab/issues/38054).
 
 ### Complete example
