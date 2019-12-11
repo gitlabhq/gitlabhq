@@ -1,6 +1,6 @@
 <script>
-import { __ } from '~/locale';
 import { GlButton } from '@gitlab/ui';
+import { __ } from '~/locale';
 
 const HIDDEN_VALUE = '••••••';
 

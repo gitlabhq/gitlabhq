@@ -83,7 +83,7 @@ describe('Pipelines table in Commits and Merge requests', function() {
             };
 
             vm.$nextTick(() => {
-              vm.$el.querySelector('.js-next-button .page-link').click();
+              vm.$el.querySelector('.next-page-item').click();
 
               expect(vm.updateContent).toHaveBeenCalledWith({ page: '2' });
               done();

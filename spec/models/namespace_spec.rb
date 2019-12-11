@@ -199,6 +199,13 @@ describe Namespace do
 
       expect(described_class.find_by_pages_host(host)).to eq(namespace)
     end
+
+    it "returns no result if the provided host is not subdomain of the Pages host" do
+      create(:namespace, name: 'namespace.io')
+      host = "namespace.io"
+
+      expect(described_class.find_by_pages_host(host)).to eq(nil)
+    end
   end
 
   describe '#ancestors_upto' do

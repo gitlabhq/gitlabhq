@@ -159,3 +159,5 @@ module Types
           resolver: Resolvers::Projects::SnippetsResolver
   end
 end
+
+Types::ProjectType.prepend_if_ee('::EE::Types::ProjectType')

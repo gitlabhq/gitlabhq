@@ -100,7 +100,7 @@ module QA
         url = Runtime::API::Request.new(api_client, api_delete_path).url
         response = delete(url)
 
-        unless response.code == HTTP_STATUS_NO_CONTENT
+        unless [HTTP_STATUS_NO_CONTENT, HTTP_STATUS_ACCEPTED].include? response.code
           raise ResourceNotDeletedError, "Resource at #{url} could not be deleted (#{response.code}): `#{response}`."
         end
 

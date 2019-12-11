@@ -996,6 +996,10 @@ class User < ApplicationRecord
     @ldap_identity ||= identities.find_by(["provider LIKE ?", "ldap%"])
   end
 
+  def matches_identity?(provider, extern_uid)
+    identities.where(provider: provider, extern_uid: extern_uid).exists?
+  end
+
   def project_deploy_keys
     DeployKey.in_projects(authorized_projects.select(:id)).distinct(:id)
   end

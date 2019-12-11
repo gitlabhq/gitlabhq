@@ -49,11 +49,11 @@ describe 'Environments page', :js do
         it 'renders second page of pipelines' do
           visit_environments(project, scope: 'available')
 
-          find('.js-next-button').click
+          find('.page-link.next-page-item').click
           wait_for_requests
 
-          expect(page).to have_selector('.gl-pagination .page', count: 2)
-          expect(find('.gl-pagination .page-item.active .page-link').text).to eq("2")
+          expect(page).to have_selector('.gl-pagination .page-link', count: 4)
+          expect(find('.gl-pagination .page-link.active').text).to eq("2")
         end
       end
 

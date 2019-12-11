@@ -97,8 +97,11 @@ class Project < ApplicationRecord
     unless: :ci_cd_settings,
     if: proc { ProjectCiCdSetting.available? }
 
+  after_create :create_container_expiration_policy,
+               unless: :container_expiration_policy
+
   after_create :create_pages_metadatum,
-    unless: :pages_metadatum
+               unless: :pages_metadatum
 
   after_create :set_timestamps_for_create
   after_update :update_forks_visibility_level
@@ -248,6 +251,7 @@ class Project < ApplicationRecord
   # which is not managed by the DB. Hence we're still using dependent: :destroy
   # here.
   has_many :container_repositories, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_one :container_expiration_policy, inverse_of: :project
 
   has_many :commit_statuses
   # The relation :all_pipelines is intended to be used when we want to get the
@@ -305,6 +309,7 @@ class Project < ApplicationRecord
   accepts_nested_attributes_for :import_data
   accepts_nested_attributes_for :auto_devops, update_only: true
   accepts_nested_attributes_for :ci_cd_settings, update_only: true
+  accepts_nested_attributes_for :container_expiration_policy, update_only: true
 
   accepts_nested_attributes_for :remote_mirrors,
                                 allow_destroy: true,

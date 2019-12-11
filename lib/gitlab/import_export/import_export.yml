@@ -73,6 +73,7 @@ tree:
     - :auto_devops
     - :triggers
     - :pipeline_schedules
+    - :container_expiration_policy
     - :services
     - protected_branches:
       - :merge_access_levels

@@ -155,8 +155,8 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    | `postgresql['md5_auth_cidr_addresses']` | **Secondary** node's public or VPC private addresses. |
 
    If you are using Google Cloud Platform, SoftLayer, or any other vendor that
-   provides a virtual private cloud (VPC) you can use the **secondary** node's private
-   address (corresponds to "internal address" for Google Cloud Platform) for
+   provides a virtual private cloud (VPC) you can use the **primary** and **secondary** nodes
+   private addresses (corresponds to "internal address" for Google Cloud Platform) for
    `postgresql['md5_auth_cidr_addresses']` and `postgresql['listen_address']`.
 
    The `listen_address` option opens PostgreSQL up to network connections with the interface

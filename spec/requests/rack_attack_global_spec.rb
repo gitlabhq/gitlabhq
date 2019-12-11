@@ -100,6 +100,18 @@ describe 'Rack Attack global throttles' do
         end
       end
 
+      context 'when the request is authenticated by a runner token' do
+        let(:request_jobs_url) { '/api/v4/jobs/request' }
+        let(:runner) { create(:ci_runner) }
+
+        it 'does not cont as unauthenticated' do
+          (1 + requests_per_period).times do
+            post request_jobs_url, params: { token: runner.token }
+            expect(response).to have_http_status 204
+          end
+        end
+      end
+
       it 'logs RackAttack info into structured logs' do
         requests_per_period.times do
           get url_that_does_not_require_authentication

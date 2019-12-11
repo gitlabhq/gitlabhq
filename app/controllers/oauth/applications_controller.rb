@@ -6,6 +6,7 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   include PageLayoutHelper
   include OauthApplications
   include Gitlab::Experimentation::ControllerConcern
+  include InitializesCurrentUserMode
 
   before_action :verify_user_oauth_applications_enabled, except: :index
   before_action :authenticate_user!

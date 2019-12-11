@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe OmniauthCallbacksController, type: :controller do
+describe OmniauthCallbacksController, type: :controller, do_not_mock_admin_mode: true do
   include LoginHelpers
 
   describe 'omniauth' do
@@ -333,6 +333,111 @@ describe OmniauthCallbacksController, type: :controller do
 
       it 'doesn\'t link a new identity to the user' do
         expect { post :saml, params: { SAMLResponse: mock_saml_response } }.not_to change { user.identities.count }
+      end
+    end
+  end
+
+  describe 'enable admin mode' do
+    include_context 'custom session'
+
+    let(:provider) { :auth0 }
+    let(:extern_uid) { 'my-uid' }
+    let(:user) { create(:omniauth_user, extern_uid: extern_uid, provider: provider) }
+
+    def reauthenticate_and_check_admin_mode(expected_admin_mode:)
+      # Initially admin mode disabled
+      expect(subject.current_user_mode.admin_mode?).to be(false)
+
+      # Trigger OmniAuth admin mode flow and expect admin mode status
+      post provider
+
+      expect(request.env['warden']).to be_authenticated
+      expect(subject.current_user_mode.admin_mode?).to be(expected_admin_mode)
+    end
+
+    context 'user and admin mode requested by the same user' do
+      before do
+        sign_in user
+
+        mock_auth_hash(provider.to_s, extern_uid, user.email, additional_info: {})
+        stub_omniauth_provider(provider, context: request)
+      end
+
+      context 'with a regular user' do
+        it 'cannot be enabled' do
+          reauthenticate_and_check_admin_mode(expected_admin_mode: false)
+
+          expect(response).to redirect_to(root_path)
+        end
+      end
+
+      context 'with an admin user' do
+        let(:user) { create(:omniauth_user, extern_uid: extern_uid, provider: provider, access_level: :admin) }
+
+        context 'when requested first' do
+          before do
+            subject.current_user_mode.request_admin_mode!
+          end
+
+          it 'can be enabled' do
+            reauthenticate_and_check_admin_mode(expected_admin_mode: true)
+
+            expect(response).to redirect_to(admin_root_path)
+          end
+        end
+
+        context 'when not requested first' do
+          it 'cannot be enabled' do
+            reauthenticate_and_check_admin_mode(expected_admin_mode: false)
+
+            expect(response).to redirect_to(root_path)
+          end
+        end
+      end
+    end
+
+    context 'user and admin mode requested by different users' do
+      let(:reauth_extern_uid) { 'another_uid' }
+      let(:reauth_user) { create(:omniauth_user, extern_uid: reauth_extern_uid, provider: provider) }
+
+      before do
+        sign_in user
+
+        mock_auth_hash(provider.to_s, reauth_extern_uid, reauth_user.email, additional_info: {})
+        stub_omniauth_provider(provider, context: request)
+      end
+
+      context 'with a regular user' do
+        it 'cannot be enabled' do
+          reauthenticate_and_check_admin_mode(expected_admin_mode: false)
+
+          expect(response).to redirect_to(profile_account_path)
+        end
+      end
+
+      context 'with an admin user' do
+        let(:user) { create(:omniauth_user, extern_uid: extern_uid, provider: provider, access_level: :admin) }
+        let(:reauth_user) { create(:omniauth_user, extern_uid: reauth_extern_uid, provider: provider, access_level: :admin) }
+
+        context 'when requested first' do
+          before do
+            subject.current_user_mode.request_admin_mode!
+          end
+
+          it 'cannot be enabled' do
+            reauthenticate_and_check_admin_mode(expected_admin_mode: false)
+
+            expect(response).to redirect_to(new_admin_session_path)
+          end
+        end
+
+        context 'when not requested first' do
+          it 'cannot be enabled' do
+            reauthenticate_and_check_admin_mode(expected_admin_mode: false)
+
+            expect(response).to redirect_to(profile_account_path)
+          end
+        end
       end
     end
   end

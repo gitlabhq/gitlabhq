@@ -2839,6 +2839,7 @@ describe User, :do_not_mock_admin_mode do
 
       context 'when admin mode is enabled' do
         before do
+          Gitlab::Auth::CurrentUserMode.new(user).request_admin_mode!
           Gitlab::Auth::CurrentUserMode.new(user).enable_admin_mode!(password: user.password)
         end
 

@@ -668,6 +668,8 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `mergeRequest` | MergeRequest | A single merge request of the project |
 | `issue` | Issue | A single issue of the project |
 | `sentryDetailedError` | SentryDetailedError | Detailed version of a Sentry error on the project |
+| `serviceDeskEnabled` | Boolean | Indicates if the project has service desk enabled. |
+| `serviceDeskAddress` | String | E-mail address of the service desk. |
 
 ### ProjectPermissions
 

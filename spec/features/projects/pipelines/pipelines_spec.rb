@@ -592,15 +592,15 @@ describe 'Pipelines', :js do
           visit project_pipelines_path(project, page: '2')
           wait_for_requests
 
-          expect(page).to have_selector('.gl-pagination .page', count: 2)
+          expect(page).to have_selector('.gl-pagination .page-link', count: 4)
         end
 
         it 'shows updated content' do
           visit project_pipelines_path(project)
           wait_for_requests
-          page.find('.js-next-button .page-link').click
+          page.find('.page-link.next-page-item').click
 
-          expect(page).to have_selector('.gl-pagination .page', count: 2)
+          expect(page).to have_selector('.gl-pagination .page-link', count: 4)
         end
       end
     end

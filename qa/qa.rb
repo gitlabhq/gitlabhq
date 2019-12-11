@@ -35,6 +35,7 @@ module QA
     autoload :Logger, 'qa/runtime/logger'
     autoload :GPG, 'qa/runtime/gpg'
     autoload :MailHog, 'qa/runtime/mail_hog'
+    autoload :IPAddress, 'qa/runtime/ip_address'
 
     module API
       autoload :Client, 'qa/runtime/api/client'

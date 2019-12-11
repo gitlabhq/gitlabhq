@@ -1,15 +1,18 @@
 <script>
+import { GlPagination } from '@gitlab/ui';
 import {
-  PAGINATION_UI_BUTTON_LIMIT,
-  UI_LIMIT,
-  SPREAD,
   PREV,
   NEXT,
-  FIRST,
-  LAST,
+  LABEL_FIRST_PAGE,
+  LABEL_PREV_PAGE,
+  LABEL_NEXT_PAGE,
+  LABEL_LAST_PAGE,
 } from '~/vue_shared/components/pagination/constants';
 
 export default {
+  components: {
+    GlPagination,
+  },
   props: {
     /**
         This function will take the information given by the pagination component
@@ -46,113 +49,34 @@ export default {
     },
   },
   computed: {
-    prev() {
-      return this.pageInfo.previousPage;
-    },
-    next() {
-      return this.pageInfo.nextPage;
-    },
-    getItems() {
-      const { totalPages, nextPage, previousPage, page } = this.pageInfo;
-      const items = [];
-
-      if (page > 1) {
-        items.push({ title: FIRST, first: true });
-      }
-
-      if (previousPage) {
-        items.push({ title: PREV, prev: true });
-      } else {
-        items.push({ title: PREV, disabled: true, prev: true });
-      }
-
-      if (page > UI_LIMIT) items.push({ title: SPREAD, separator: true });
-
-      if (totalPages) {
-        const start = Math.max(page - PAGINATION_UI_BUTTON_LIMIT, 1);
-        const end = Math.min(page + PAGINATION_UI_BUTTON_LIMIT, totalPages);
-
-        for (let i = start; i <= end; i += 1) {
-          const isActive = i === page;
-          items.push({ title: i, active: isActive, page: true });
-        }
-
-        if (totalPages - page > PAGINATION_UI_BUTTON_LIMIT) {
-          items.push({ title: SPREAD, separator: true, page: true });
-        }
-      }
-
-      if (nextPage) {
-        items.push({ title: NEXT, next: true });
-      } else {
-        items.push({ title: NEXT, disabled: true, next: true });
-      }
-
-      if (totalPages && totalPages - page >= 1) {
-        items.push({ title: LAST, last: true });
-      }
-
-      return items;
-    },
     showPagination() {
       return this.pageInfo.nextPage || this.pageInfo.previousPage;
     },
   },
-  methods: {
-    changePage(text, isDisabled) {
-      if (isDisabled) return;
-
-      const { totalPages, nextPage, previousPage } = this.pageInfo;
-
-      switch (text) {
-        case SPREAD:
-          break;
-        case LAST:
-          this.change(totalPages);
-          break;
-        case NEXT:
-          this.change(nextPage);
-          break;
-        case PREV:
-          this.change(previousPage);
-          break;
-        case FIRST:
-          this.change(1);
-          break;
-        default:
-          this.change(Number(text));
-          break;
-      }
-    },
-    hideOnSmallScreen(item) {
-      return !item.first && !item.last && !item.next && !item.prev && !item.active;
-    },
-  },
+  prevText: PREV,
+  nextText: NEXT,
+  labelFirstPage: LABEL_FIRST_PAGE,
+  labelPrevPage: LABEL_PREV_PAGE,
+  labelNextPage: LABEL_NEXT_PAGE,
+  labelLastPage: LABEL_LAST_PAGE,
 };
 </script>
 <template>
-  <div v-if="showPagination" class="gl-pagination prepend-top-default">
-    <ul class="pagination justify-content-center">
-      <li
-        v-for="(item, index) in getItems"
-        :key="index"
-        :class="{
-          page: item.page,
-          'js-previous-button': item.prev,
-          'js-next-button': item.next,
-          'js-last-button': item.last,
-          'js-first-button': item.first,
-          'd-none d-md-block': hideOnSmallScreen(item),
-          separator: item.separator,
-          active: item.active,
-          disabled: item.disabled || item.separator,
-        }"
-        class="page-item"
-      >
-        <button type="button" class="page-link" @click="changePage(item.title, item.disabled)">
-          {{ item.title }}
-        </button>
-      </li>
-    </ul>
-  </div>
+  <gl-pagination
+    v-if="showPagination"
+    class="justify-content-center prepend-top-default"
+    v-bind="$attrs"
+    :value="pageInfo.page"
+    :per-page="pageInfo.perPage"
+    :total-items="pageInfo.total"
+    :prev-page="pageInfo.previousPage"
+    :prev-text="$options.prevText"
+    :next-page="pageInfo.nextPage"
+    :next-text="$options.nextText"
+    :label-first-page="$options.labelFirstPage"
+    :label-prev-page="$options.labelPrevPage"
+    :label-next-page="$options.labelNextPage"
+    :label-last-page="$options.labelLastPage"
+    @input="change"
+  />
 </template>

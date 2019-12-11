@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Gcp Cluster', :js do
+describe 'Gcp Cluster', :js, :do_not_mock_admin_mode do
   include GoogleApi::CloudPlatformHelpers
 
   let(:project) { create(:project) }

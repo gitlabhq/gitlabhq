@@ -18,6 +18,7 @@ module EnforcesAdminAuthentication
     return unless Feature.enabled?(:user_mode_in_session)
 
     unless current_user_mode.admin_mode?
+      current_user_mode.request_admin_mode!
       store_location_for(:redirect, request.fullpath) if storable_location?
       redirect_to(new_admin_session_path, notice: _('Re-authentication required'))
     end

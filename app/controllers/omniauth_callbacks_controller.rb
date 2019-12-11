@@ -4,6 +4,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   include AuthenticatesWithTwoFactor
   include Devise::Controllers::Rememberable
   include AuthHelper
+  include InitializesCurrentUserMode
 
   protect_from_forgery except: [:kerberos, :saml, :cas3, :failure], with: :exception, prepend: true
 
@@ -94,8 +95,12 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       return render_403 unless link_provider_allowed?(oauth['provider'])
 
       log_audit_event(current_user, with: oauth['provider'])
-      identity_linker ||= auth_module::IdentityLinker.new(current_user, oauth, session)
 
+      if Feature.enabled?(:user_mode_in_session)
+        return admin_mode_flow if current_user_mode.admin_mode_requested?
+      end
+
+      identity_linker ||= auth_module::IdentityLinker.new(current_user, oauth, session)
       link_identity(identity_linker)
 
       if identity_linker.changed?
@@ -238,6 +243,24 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       uri.fragment = redirect_fragment
       store_location_for(:user, uri.to_s)
     end
+  end
+
+  def admin_mode_flow
+    if omniauth_identity_matches_current_user?
+      current_user_mode.enable_admin_mode!(skip_password_validation: true)
+
+      redirect_to stored_location_for(:redirect) || admin_root_path, notice: _('Admin mode enabled')
+    else
+      fail_admin_mode_invalid_credentials
+    end
+  end
+
+  def omniauth_identity_matches_current_user?
+    current_user.matches_identity?(oauth['provider'], oauth['uid'])
+  end
+
+  def fail_admin_mode_invalid_credentials
+    redirect_to new_admin_session_path, alert: _('Invalid login or password')
   end
 end
 

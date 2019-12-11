@@ -16,10 +16,10 @@ import Cookies from 'js-cookie';
 import Autosize from 'autosize';
 import 'jquery.caret'; // required by at.js
 import 'at.js';
-import AjaxCache from '~/lib/utils/ajax_cache';
 import Vue from 'vue';
-import syntaxHighlight from '~/syntax_highlight';
 import { GlSkeletonLoading } from '@gitlab/ui';
+import AjaxCache from '~/lib/utils/ajax_cache';
+import syntaxHighlight from '~/syntax_highlight';
 import axios from './lib/utils/axios_utils';
 import { getLocationHash } from './lib/utils/url_utility';
 import Flash from './flash';

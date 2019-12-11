@@ -17,8 +17,8 @@ module Gitlab
       end
     end
 
-    module UserAuthFinders
-      prepend_if_ee('::EE::Gitlab::Auth::UserAuthFinders') # rubocop: disable Cop/InjectEnterpriseEditionModule
+    module AuthFinders
+      prepend_if_ee('::EE::Gitlab::Auth::AuthFinders') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
       include Gitlab::Utils::StrongMemoize
 
@@ -26,6 +26,7 @@ module Gitlab
       PRIVATE_TOKEN_PARAM = :private_token
       JOB_TOKEN_HEADER = "HTTP_JOB_TOKEN".freeze
       JOB_TOKEN_PARAM = :job_token
+      RUNNER_TOKEN_PARAM = :token
 
       # Check the Rails session for valid authentication details
       def find_user_from_warden
@@ -83,6 +84,15 @@ module Gitlab
         validate_access_token!
 
         access_token.user || raise(UnauthorizedError)
+      end
+
+      def find_runner_from_token
+        return unless api_request?
+
+        token = current_request.params[RUNNER_TOKEN_PARAM].presence
+        return unless token
+
+        ::Ci::Runner.find_by_token(token) || raise(UnauthorizedError)
       end
 
       def validate_access_token!(scopes: [])
@@ -201,7 +211,7 @@ module Gitlab
       end
 
       def api_request?
-        current_request.path.starts_with?("/api/")
+        current_request.path.starts_with?('/api/')
       end
 
       def archive_request?

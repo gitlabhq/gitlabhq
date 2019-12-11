@@ -4552,6 +4552,16 @@ type Project {
   ): SentryDetailedError
 
   """
+  E-mail address of the service desk.
+  """
+  serviceDeskAddress: String
+
+  """
+  Indicates if the project has service desk enabled.
+  """
+  serviceDeskEnabled: Boolean
+
+  """
   Indicates if shared runners are enabled on the project
   """
   sharedRunnersEnabled: Boolean

@@ -62,6 +62,12 @@ describe Oauth::ApplicationsController do
     end
   end
 
+  context 'Helpers' do
+    it 'current_user_mode available' do
+      expect(subject.current_user_mode).not_to be_nil
+    end
+  end
+
   def disable_user_oauth
     allow(Gitlab::CurrentSettings.current_application_settings).to receive(:user_oauth_applications?).and_return(false)
   end

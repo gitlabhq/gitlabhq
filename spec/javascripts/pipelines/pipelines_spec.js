@@ -446,7 +446,7 @@ describe('Pipelines', () => {
             };
 
             vm.$nextTick(() => {
-              vm.$el.querySelector('.js-next-button .page-link').click();
+              vm.$el.querySelector('.next-page-item').click();
 
               expect(vm.updateContent).toHaveBeenCalledWith({ scope: 'all', page: '2' });
 

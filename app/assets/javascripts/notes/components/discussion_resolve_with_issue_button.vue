@@ -1,6 +1,6 @@
 <script>
-import Icon from '~/vue_shared/components/icon.vue';
 import { GlTooltipDirective, GlButton } from '@gitlab/ui';
+import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
   name: 'ResolveWithIssueButton',

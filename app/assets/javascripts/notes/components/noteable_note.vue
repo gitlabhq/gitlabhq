@@ -2,9 +2,9 @@
 import $ from 'jquery';
 import { mapGetters, mapActions } from 'vuex';
 import { escape } from 'underscore';
+import draftMixin from 'ee_else_ce/notes/mixins/draft';
 import { truncateSha } from '~/lib/utils/text_utility';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
-import draftMixin from 'ee_else_ce/notes/mixins/draft';
 import { __, s__, sprintf } from '../../locale';
 import Flash from '../../flash';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';

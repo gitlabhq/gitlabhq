@@ -1,7 +1,6 @@
 <script>
 import { mapState } from 'vuex';
 import _ from 'underscore';
-import { __ } from '~/locale';
 import {
   GlDropdown,
   GlDropdownItem,
@@ -9,6 +8,7 @@ import {
   GlModalDirective,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import { __ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import MonitorTimeSeriesChart from './charts/time_series.vue';
 import MonitorAnomalyChart from './charts/anomaly.vue';

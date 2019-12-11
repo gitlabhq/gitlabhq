@@ -1,0 +1,5 @@
+---
+title: Authenticate runner requests in Rack::Attack
+merge_request: 21311
+author:
+type: fixed

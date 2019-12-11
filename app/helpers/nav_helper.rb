@@ -87,7 +87,7 @@ module NavHelper
     end
 
     if Feature.enabled?(:user_mode_in_session)
-      if current_user&.admin? && current_user_mode&.admin_mode?
+      if current_user_mode.admin_mode?
         links << :admin_mode
       end
     end

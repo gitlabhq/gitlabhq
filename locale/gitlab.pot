@@ -234,6 +234,9 @@ msgstr[1] ""
 msgid "%{count} related %{pluralized_subject}: %{links}"
 msgstr ""
 
+msgid "%{days} days until tags are automatically removed"
+msgstr ""
+
 msgid "%{description}- Sentry event: %{errorUrl}- First seen: %{firstSeen}- Last seen: %{lastSeen} %{countLabel}: %{count}%{userCountLabel}: %{userCount}"
 msgstr ""
 
@@ -378,6 +381,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "%{tabname} changed"
+msgstr ""
+
+msgid "%{tags} tag per image name"
+msgstr ""
+
+msgid "%{tags} tags per image name"
 msgstr ""
 
 msgid "%{tag}-evidence.json"
@@ -1134,7 +1143,13 @@ msgstr ""
 msgid "Admin Section"
 msgstr ""
 
+msgid "Admin mode already enabled"
+msgstr ""
+
 msgid "Admin mode disabled"
+msgstr ""
+
+msgid "Admin mode enabled"
 msgstr ""
 
 msgid "Admin notes"
@@ -7050,10 +7065,25 @@ msgstr ""
 msgid "Every %{action} attempt has failed: %{job_error_message}. Please try again."
 msgstr ""
 
+msgid "Every day"
+msgstr ""
+
 msgid "Every day (at 4:00am)"
 msgstr ""
 
+msgid "Every month"
+msgstr ""
+
 msgid "Every month (on the 1st at 4:00am)"
+msgstr ""
+
+msgid "Every three months"
+msgstr ""
+
+msgid "Every two weeks"
+msgstr ""
+
+msgid "Every week"
 msgstr ""
 
 msgid "Every week (Sundays at 4:00am)"
@@ -9676,6 +9706,9 @@ msgid "Invalid import params"
 msgstr ""
 
 msgid "Invalid input, please avoid emojis"
+msgstr ""
+
+msgid "Invalid login or password"
 msgstr ""
 
 msgid "Invalid pin code"
@@ -14395,6 +14428,9 @@ msgid "Rake Tasks Help"
 msgstr ""
 
 msgid "Raw blob request rate limit per minute"
+msgstr ""
+
+msgid "Re-authentication period expired or never requested. Please try again"
 msgstr ""
 
 msgid "Re-authentication required"

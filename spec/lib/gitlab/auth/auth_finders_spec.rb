@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Auth::UserAuthFinders do
+describe Gitlab::Auth::AuthFinders do
   include described_class
 
   let(:user) { create(:user) }
@@ -196,13 +196,13 @@ describe Gitlab::Auth::UserAuthFinders do
 
     context 'when validate_access_token! returns valid' do
       it 'returns user' do
-        env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
+        env[described_class::PRIVATE_TOKEN_HEADER] = personal_access_token.token
 
         expect(find_user_from_access_token).to eq user
       end
 
       it 'returns exception if token has no user' do
-        env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
+        env[described_class::PRIVATE_TOKEN_HEADER] = personal_access_token.token
         allow_any_instance_of(PersonalAccessToken).to receive(:user).and_return(nil)
 
         expect { find_user_from_access_token }.to raise_error(Gitlab::Auth::UnauthorizedError)
@@ -228,7 +228,7 @@ describe Gitlab::Auth::UserAuthFinders do
     let(:personal_access_token) { create(:personal_access_token, user: user) }
 
     before do
-      env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
+      env[described_class::PRIVATE_TOKEN_HEADER] = personal_access_token.token
     end
 
     it 'returns exception if token has no user' do
@@ -279,7 +279,7 @@ describe Gitlab::Auth::UserAuthFinders do
 
     context 'passed as header' do
       it 'returns token if valid personal_access_token' do
-        env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
+        env[described_class::PRIVATE_TOKEN_HEADER] = personal_access_token.token
 
         expect(find_personal_access_token).to eq personal_access_token
       end
@@ -287,7 +287,7 @@ describe Gitlab::Auth::UserAuthFinders do
 
     context 'passed as param' do
       it 'returns token if valid personal_access_token' do
-        set_param(Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_PARAM, personal_access_token.token)
+        set_param(described_class::PRIVATE_TOKEN_PARAM, personal_access_token.token)
 
         expect(find_personal_access_token).to eq personal_access_token
       end
@@ -298,7 +298,7 @@ describe Gitlab::Auth::UserAuthFinders do
     end
 
     it 'returns exception if invalid personal_access_token' do
-      env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = 'invalid_token'
+      env[described_class::PRIVATE_TOKEN_HEADER] = 'invalid_token'
 
       expect { find_personal_access_token }.to raise_error(Gitlab::Auth::UnauthorizedError)
     end
@@ -376,6 +376,60 @@ describe Gitlab::Auth::UserAuthFinders do
         it 'returns Gitlab::Auth::ImpersonationDisabled' do
           expect { validate_access_token! }.to raise_error(Gitlab::Auth::ImpersonationDisabled)
         end
+      end
+    end
+  end
+
+  describe '#find_runner_from_token' do
+    let(:runner) { create(:ci_runner) }
+
+    context 'with API requests' do
+      before do
+        env['SCRIPT_NAME'] = '/api/endpoint'
+      end
+
+      it 'returns the runner if token is valid' do
+        set_param(:token, runner.token)
+
+        expect(find_runner_from_token).to eq(runner)
+      end
+
+      it 'returns nil if token is not present' do
+        expect(find_runner_from_token).to be_nil
+      end
+
+      it 'returns nil if token is blank' do
+        set_param(:token, '')
+
+        expect(find_runner_from_token).to be_nil
+      end
+
+      it 'returns exception if invalid token' do
+        set_param(:token, 'invalid_token')
+
+        expect { find_runner_from_token }.to raise_error(Gitlab::Auth::UnauthorizedError)
+      end
+    end
+
+    context 'without API requests' do
+      before do
+        env['SCRIPT_NAME'] = 'url.ics'
+      end
+
+      it 'returns nil if token is valid' do
+        set_param(:token, runner.token)
+
+        expect(find_runner_from_token).to be_nil
+      end
+
+      it 'returns nil if token is blank' do
+        expect(find_runner_from_token).to be_nil
+      end
+
+      it 'returns nil if invalid token' do
+        set_param(:token, 'invalid_token')
+
+        expect(find_runner_from_token).to be_nil
       end
     end
   end

@@ -11,6 +11,7 @@ describe 'layouts/application' do
     allow(view).to receive(:session).and_return({})
     allow(view).to receive(:user_signed_in?).and_return(true)
     allow(view).to receive(:current_user).and_return(user)
+    allow(view).to receive(:current_user_mode).and_return(Gitlab::Auth::CurrentUserMode.new(user))
   end
 
   context 'body data elements for pageview context' do

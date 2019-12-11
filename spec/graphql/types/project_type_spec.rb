@@ -25,7 +25,7 @@ describe GitlabSchema.types['Project'] do
       issue pipelines removeSourceBranchAfterMerge sentryDetailedError snippets
     ]
 
-    is_expected.to have_graphql_fields(*expected_fields)
+    is_expected.to include_graphql_fields(*expected_fields)
   end
 
   describe 'issue field' do

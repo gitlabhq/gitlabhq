@@ -1315,6 +1315,34 @@
               "deprecationReason": null
             },
             {
+              "name": "serviceDeskAddress",
+              "description": "E-mail address of the service desk.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "serviceDeskEnabled",
+              "description": "Indicates if the project has service desk enabled.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "sharedRunnersEnabled",
               "description": "Indicates if shared runners are enabled on the project",
               "args": [

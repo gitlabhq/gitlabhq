@@ -1,7 +1,7 @@
 <script>
-import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { mapGetters, mapActions } from 'vuex';
 import noteFormMixin from 'ee_else_ce/notes/mixins/note_form';
+import { mergeUrlParams } from '~/lib/utils/url_utility';
 import eventHub from '../event_hub';
 import issueWarning from '../../vue_shared/components/issue/issue_warning.vue';
 import markdownField from '../../vue_shared/components/markdown/field.vue';

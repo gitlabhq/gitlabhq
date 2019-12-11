@@ -443,6 +443,7 @@ project:
 - downstream_project_subscriptions
 - service_desk_setting
 - import_failures
+- container_expiration_policy
 award_emoji:
 - awardable
 - user

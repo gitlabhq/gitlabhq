@@ -1,10 +1,10 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import { GlTooltipDirective } from '@gitlab/ui';
+import diffLineNoteFormMixin from 'ee_else_ce/notes/mixins/diff_line_note_form';
 import { s__, __ } from '~/locale';
 import { clearDraft, getDiscussionReplyKey } from '~/lib/utils/autosave';
 import icon from '~/vue_shared/components/icon.vue';
-import diffLineNoteFormMixin from 'ee_else_ce/notes/mixins/diff_line_note_form';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import Flash from '../../flash';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';

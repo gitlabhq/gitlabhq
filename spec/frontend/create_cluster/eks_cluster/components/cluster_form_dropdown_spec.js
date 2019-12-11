@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import $ from 'jquery';
 
 import { GlIcon } from '@gitlab/ui';
 import ClusterFormDropdown from '~/create_cluster/eks_cluster/components/cluster_form_dropdown.vue';
@@ -168,5 +169,15 @@ describe('ClusterFormDropdown', () => {
 
     expect(vm.findAll('.js-dropdown-item').length).toEqual(1);
     expect(vm.find('.js-dropdown-item').text()).toEqual(secondItem.name);
+  });
+
+  it('focuses dropdown search input when dropdown is displayed', () => {
+    const dropdownEl = vm.find('.dropdown').element;
+
+    expect(vm.find(DropdownSearchInput).props('focused')).toBe(false);
+
+    $(dropdownEl).trigger('shown.bs.dropdown');
+
+    expect(vm.find(DropdownSearchInput).props('focused')).toBe(true);
   });
 });

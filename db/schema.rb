@@ -1224,6 +1224,18 @@ ActiveRecord::Schema.define(version: 2019_12_06_122926) do
     t.index ["note_id"], name: "index_commit_user_mentions_on_note_id", unique: true
   end
 
+  create_table "container_expiration_policies", primary_key: "project_id", id: :bigint, default: nil, force: :cascade do |t|
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.datetime_with_timezone "next_run_at"
+    t.string "name_regex", limit: 255
+    t.string "cadence", limit: 12, default: "7d", null: false
+    t.string "older_than", limit: 12
+    t.integer "keep_n"
+    t.boolean "enabled", default: false, null: false
+    t.index ["next_run_at", "enabled"], name: "index_container_expiration_policies_on_next_run_at_and_enabled"
+  end
+
   create_table "container_repositories", id: :serial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.string "name", null: false
@@ -4410,6 +4422,7 @@ ActiveRecord::Schema.define(version: 2019_12_06_122926) do
   add_foreign_key "clusters_kubernetes_namespaces", "environments", on_delete: :nullify
   add_foreign_key "clusters_kubernetes_namespaces", "projects", on_delete: :nullify
   add_foreign_key "commit_user_mentions", "notes", on_delete: :cascade
+  add_foreign_key "container_expiration_policies", "projects", on_delete: :cascade
   add_foreign_key "container_repositories", "projects"
   add_foreign_key "dependency_proxy_blobs", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "dependency_proxy_group_settings", "namespaces", column: "group_id", on_delete: :cascade

@@ -115,7 +115,9 @@ describe('Environments Folder View', () => {
       it('should make an API request when changing page', done => {
         spyOn(component, 'updateContent');
         setTimeout(() => {
-          component.$el.querySelector('.gl-pagination .js-last-button .page-link').click();
+          component.$el
+            .querySelector('.gl-pagination .page-item:nth-last-of-type(2) .page-link')
+            .click();
 
           expect(component.updateContent).toHaveBeenCalledWith({
             scope: component.scope,

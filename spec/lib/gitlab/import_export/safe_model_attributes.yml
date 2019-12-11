@@ -773,3 +773,13 @@ ZoomMeeting:
 ServiceDeskSetting:
 - project_id
 - issue_template_key
+ContainerExpirationPolicy:
+- created_at
+- updated_at
+- next_run_at
+- project_id
+- name_regex
+- cadence
+- older_than
+- keep_n
+- enabled

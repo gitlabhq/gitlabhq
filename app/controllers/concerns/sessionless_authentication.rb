@@ -33,6 +33,8 @@ module SessionlessAuthentication
   end
 
   def enable_admin_mode!
-    current_user_mode.enable_admin_mode!(skip_password_validation: true) if Feature.enabled?(:user_mode_in_session)
+    return unless Feature.enabled?(:user_mode_in_session)
+
+    current_user_mode.enable_sessionless_admin_mode!
   end
 end

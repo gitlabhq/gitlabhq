@@ -1,6 +1,6 @@
 <script>
-import icon from '~/vue_shared/components/icon.vue';
 import { GlTooltipDirective } from '@gitlab/ui';
+import icon from '~/vue_shared/components/icon.vue';
 
 export default {
   name: 'JumpToNextDiscussionButton',

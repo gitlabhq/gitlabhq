@@ -1,6 +1,6 @@
 <script>
-import { __ } from '~/locale';
 import { GlEmptyState } from '@gitlab/ui';
+import { __ } from '~/locale';
 
 export default {
   components: {

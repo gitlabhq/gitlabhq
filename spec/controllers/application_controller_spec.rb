@@ -814,6 +814,7 @@ describe ApplicationController do
 
       context 'that re-authenticated' do
         before do
+          Gitlab::Auth::CurrentUserMode.new(user).request_admin_mode!
           Gitlab::Auth::CurrentUserMode.new(user).enable_admin_mode!(password: user.password)
         end
 

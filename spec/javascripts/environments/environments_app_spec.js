@@ -92,13 +92,13 @@ describe('Environment', () => {
 
       describe('pagination', () => {
         it('should render pagination', () => {
-          expect(component.$el.querySelectorAll('.gl-pagination li').length).toEqual(5);
+          expect(component.$el.querySelectorAll('.gl-pagination li').length).toEqual(9);
         });
 
         it('should make an API request when page is clicked', done => {
           spyOn(component, 'updateContent');
           setTimeout(() => {
-            component.$el.querySelector('.gl-pagination li:nth-child(5) .page-link').click();
+            component.$el.querySelector('.gl-pagination li:nth-child(3) .page-link').click();
 
             expect(component.updateContent).toHaveBeenCalledWith({ scope: 'available', page: '2' });
             done();

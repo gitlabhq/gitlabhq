@@ -113,11 +113,15 @@ class Rack::Attack
 
   class Request
     def unauthenticated?
-      !authenticated_user_id([:api, :rss, :ics])
+      !(authenticated_user_id([:api, :rss, :ics]) || authenticated_runner_id)
     end
 
     def authenticated_user_id(request_formats)
-      Gitlab::Auth::RequestAuthenticator.new(self).user(request_formats)&.id
+      request_authenticator.user(request_formats)&.id
+    end
+
+    def authenticated_runner_id
+      request_authenticator.runner&.id
     end
 
     def api_request?
@@ -149,6 +153,10 @@ class Rack::Attack
     end
 
     private
+
+    def request_authenticator
+      @request_authenticator ||= Gitlab::Auth::RequestAuthenticator.new(self)
+    end
 
     def protected_paths
       Gitlab::CurrentSettings.current_application_settings.protected_paths

@@ -16,6 +16,7 @@ class ApplicationController < ActionController::Base
   include ConfirmEmailWarning
   include Gitlab::Tracking::ControllerConcern
   include Gitlab::Experimentation::ControllerConcern
+  include InitializesCurrentUserMode
 
   before_action :authenticate_user!, except: [:route_not_found]
   before_action :enforce_terms!, if: :should_enforce_terms?
@@ -41,7 +42,6 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception, prepend: true
 
   helper_method :can?
-  helper_method :current_user_mode
   helper_method :import_sources_enabled?, :github_import_enabled?,
     :gitea_import_enabled?, :github_import_configured?,
     :gitlab_import_enabled?, :gitlab_import_configured?,
@@ -544,10 +544,6 @@ class ApplicationController < ActionController::Base
     ::Gitlab::GitalyClient.allow_ref_name_caching do
       yield
     end
-  end
-
-  def current_user_mode
-    @current_user_mode ||= Gitlab::Auth::CurrentUserMode.new(current_user)
   end
 
   # A user requires a role and have the setup_for_company attribute set when they are part of the experimental signup
