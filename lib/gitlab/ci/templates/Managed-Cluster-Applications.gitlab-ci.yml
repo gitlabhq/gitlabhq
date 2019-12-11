@@ -1,12 +1,13 @@
 apply:
   stage: deploy
-  image: "registry.gitlab.com/gitlab-org/cluster-integration/cluster-applications:v0.2.0"
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/cluster-applications:v0.3.0"
   environment:
     name: production
   variables:
     TILLER_NAMESPACE: gitlab-managed-apps
     GITLAB_MANAGED_APPS_FILE: $CI_PROJECT_DIR/.gitlab/managed-apps/config.yaml
     INGRESS_VALUES_FILE: $CI_PROJECT_DIR/.gitlab/managed-apps/ingress/values.yaml
+    SENTRY_VALUES_FILE: $CI_PROJECT_DIR/.gitlab/managed-apps/sentry/values.yaml
   script:
     - gitlab-managed-apps /usr/local/share/gitlab-managed-apps/helmfile.yaml
   only:

@@ -1,0 +1,5 @@
+---
+title: Respect snippet query params when displaying embed urls
+merge_request: 21131
+author:
+type: fixed

@@ -26,6 +26,7 @@
     "stop_path": { "type": "string" },
     "cancel_auto_stop_path": { "type": "string" },
     "folder_path": { "type": "string" },
+    "project_path": { "type": "string" },
     "created_at": { "type": "string", "format": "date-time" },
     "updated_at": { "type": "string", "format": "date-time" },
     "auto_stop_at": { "type": "string", "format": "date-time" },

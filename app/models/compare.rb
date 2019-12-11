@@ -4,6 +4,7 @@ require 'set'
 
 class Compare
   include Gitlab::Utils::StrongMemoize
+  include ActsAsPaginatedDiff
 
   delegate :same, :head, :base, to: :@compare
 

@@ -524,7 +524,7 @@ Here are some common pitfalls and how to overcome them:
 
   ```ruby
   u = User.find_by_username('your-username')
-  s = SearchService.new(u, {:search => 'search_term', :scope => ‘blobs’})
+  s = SearchService.new(u, {:search => 'search_term', :scope => 'blobs'})
   pp s.search_objects.to_a
   ```
 

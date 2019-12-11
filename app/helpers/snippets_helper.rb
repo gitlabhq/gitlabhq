@@ -112,6 +112,17 @@ module SnippetsHelper
     content_tag(:script, nil, src: gitlab_snippet_url(snippet, format: :js))
   end
 
+  def snippet_embed_input(snippet)
+    content_tag(:input,
+                nil,
+                type: :text,
+                readonly: true,
+                class: 'js-snippet-url-area snippet-embed-input form-control',
+                data: { url: gitlab_snippet_url(snippet) },
+                value: snippet_embed_tag(snippet),
+                autocomplete: 'off')
+  end
+
   def snippet_badge(snippet)
     return unless attrs = snippet_badge_attributes(snippet)
 

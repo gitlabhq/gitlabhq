@@ -128,6 +128,47 @@ describe Gitlab::Ci::Build::Prerequisite::KubernetesNamespace do
 
           subject
         end
+
+        context 'the build has a namespace configured via CI template' do
+          let(:kubernetes_namespace) { double(namespace: existing_namespace) }
+
+          before do
+            allow(build).to receive(:expanded_kubernetes_namespace)
+              .and_return(requested_namespace)
+          end
+
+          context 'the requested namespace matches the default' do
+            let(:requested_namespace) { 'production' }
+            let(:existing_namespace) { requested_namespace }
+
+            it 'creates a namespace' do
+              expect(Clusters::BuildKubernetesNamespaceService)
+                .to receive(:new)
+                .with(cluster, environment: deployment.environment)
+                .and_return(namespace_builder)
+
+              expect(Clusters::Kubernetes::CreateOrUpdateNamespaceService)
+                .to receive(:new)
+                .with(cluster: cluster, kubernetes_namespace: kubernetes_namespace)
+                .and_return(service)
+
+              expect(service).to receive(:execute).once
+
+              subject
+            end
+          end
+
+          context 'the requested namespace differs from the default' do
+            let(:requested_namespace) { 'production' }
+            let(:existing_namespace) { 'other-namespace' }
+
+            it 'does not create a namespace' do
+              expect(Clusters::Kubernetes::CreateOrUpdateNamespaceService).not_to receive(:new)
+
+              subject
+            end
+          end
+        end
       end
 
       context 'kubernetes namespace exists (but has no service_account_token)' do

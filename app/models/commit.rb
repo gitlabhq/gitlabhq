@@ -12,6 +12,7 @@ class Commit
   include StaticModel
   include Presentable
   include ::Gitlab::Utils::StrongMemoize
+  include ActsAsPaginatedDiff
   include CacheMarkdownField
 
   attr_mentionable :safe_message, pipeline: :single_line

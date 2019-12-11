@@ -211,6 +211,65 @@ describe MergeRequestDiff do
       end
     end
 
+    describe '#diffs_in_batch' do
+      let(:diff_options) { {} }
+
+      shared_examples_for 'fetching full diffs' do
+        it 'returns diffs from repository comparison' do
+          expect_next_instance_of(Compare) do |comparison|
+            expect(comparison).to receive(:diffs_in_batch)
+              .with(1, 10, diff_options: diff_options)
+              .and_call_original
+          end
+
+          diff_with_commits.diffs_in_batch(1, 10, diff_options: diff_options)
+        end
+
+        it 'returns a Gitlab::Diff::FileCollection::Compare with full diffs' do
+          diffs = diff_with_commits.diffs_in_batch(1, 10, diff_options: diff_options)
+
+          expect(diffs).to be_a(Gitlab::Diff::FileCollection::Compare)
+          expect(diffs.diff_files.size).to be > 10
+        end
+
+        it 'returns empty pagination data' do
+          diffs = diff_with_commits.diffs_in_batch(1, 10, diff_options: diff_options)
+
+          expect(diffs.pagination_data).to eq(current_page: nil,
+                                              next_page: nil,
+                                              total_pages: nil)
+        end
+      end
+
+      context 'when no persisted files available' do
+        before do
+          diff_with_commits.clean!
+        end
+
+        it_behaves_like 'fetching full diffs'
+      end
+
+      context 'when diff_options include ignore_whitespace_change' do
+        it_behaves_like 'fetching full diffs' do
+          let(:diff_options) do
+            { ignore_whitespace_change: true }
+          end
+        end
+      end
+
+      context 'when persisted files available' do
+        it 'returns paginated diffs' do
+          diffs = diff_with_commits.diffs_in_batch(1, 10, diff_options: {})
+
+          expect(diffs).to be_a(Gitlab::Diff::FileCollection::MergeRequestDiffBatch)
+          expect(diffs.diff_files.size).to eq(10)
+          expect(diffs.pagination_data).to eq(current_page: 1,
+                                              next_page: 2,
+                                              total_pages: 2)
+        end
+      end
+    end
+
     describe '#raw_diffs' do
       context 'when the :ignore_whitespace_change option is set' do
         it 'creates a new compare object instead of using preprocessed data' do

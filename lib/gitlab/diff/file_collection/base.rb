@@ -34,6 +34,18 @@ module Gitlab
           @diff_files ||= diffs.decorate! { |diff| decorate_diff!(diff) }
         end
 
+        def diff_file_paths
+          diff_files.map(&:file_path)
+        end
+
+        def pagination_data
+          {
+            current_page: nil,
+            next_page: nil,
+            total_pages: nil
+          }
+        end
+
         # This mutates `diff_files` lines.
         def unfold_diff_files(positions)
           positions_grouped_by_path = positions.group_by { |position| position.file_path }

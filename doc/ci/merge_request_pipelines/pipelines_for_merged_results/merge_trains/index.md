@@ -6,6 +6,7 @@ last_update: 2019-07-03
 # Merge Trains **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9186) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.0.
+> [Squash and merge](../../../../user/project/merge_requests/squash_and_merge.md) support [introduced](https://gitlab.com/gitlab-org/gitlab/issues/13001) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.6.
 
 [Pipelines for merged results](../index.md#pipelines-for-merged-results-premium) introduces
 running a build on the result of the merged code prior to merging, as a way to keep master green.
@@ -36,7 +37,6 @@ Merge trains have the following requirements and limitations:
   If more than twenty merge requests are added to the merge train, the merge requests
   will be queued until a slot in the merge train is free. There is no limit to the
   number of merge requests that can be queued.
-- This feature does not support [squash and merge](../../../../user/project/merge_requests/squash_and_merge.md).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 Watch this video for a demonstration on [how parallel execution

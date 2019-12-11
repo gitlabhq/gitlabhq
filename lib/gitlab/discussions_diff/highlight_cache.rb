@@ -43,11 +43,7 @@ module Gitlab
             next unless lines
 
             JSON.parse(lines).map! do |line|
-              line = line.with_indifferent_access
-              rich_text = line[:rich_text]
-              line[:rich_text] = rich_text&.html_safe
-
-              Gitlab::Diff::Line.init_from_hash(line)
+              Gitlab::Diff::Line.safe_init_from_hash(line)
             end
           end
         end

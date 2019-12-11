@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import '~/behaviors/markdown/render_gfm';
+import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import { createStore } from '~/ide/stores';
 import RightPane from '~/ide/components/panes/right.vue';
 import { rightSidebarViews } from '~/ide/constants';
-import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 
 describe('IDE right pane', () => {
   let Component;

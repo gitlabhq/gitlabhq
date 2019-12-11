@@ -16,6 +16,7 @@ describe 'Public Snippets', :js do
     expect(page).to have_content(public_snippet.content)
     expect(page).to have_css('.js-embed-btn', visible: false)
     expect(page).to have_css('.js-share-btn', visible: false)
+    expect(page.find('.js-snippet-url-area')).to be_readonly
   end
 
   it 'Unauthenticated user should see raw public snippets' do

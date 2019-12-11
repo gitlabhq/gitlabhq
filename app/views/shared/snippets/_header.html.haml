@@ -44,7 +44,7 @@
             %li
               %button.js-share-btn.btn.btn-transparent{ type: 'button' }
                 %strong.embed-toggle-list-item= _("Share")
-        %input.js-snippet-url-area.snippet-embed-input.form-control{ type: "text", autocomplete: 'off', value: snippet_embed_tag(@snippet) }
+        = snippet_embed_input(@snippet)
         .input-group-append
           = clipboard_button(title: _('Copy'), class: 'js-clipboard-btn snippet-clipboard-btn btn btn-default', target: '.js-snippet-url-area')
     .clearfix

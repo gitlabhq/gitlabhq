@@ -5,8 +5,8 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   include RendersNotes
 
   before_action :apply_diff_view_cookie!
-  before_action :commit, except: :diffs_batch
-  before_action :define_diff_vars, except: :diffs_batch
+  before_action :commit
+  before_action :define_diff_vars
   before_action :define_diff_comment_vars, except: [:diffs_batch, :diffs_metadata]
 
   def show
@@ -20,11 +20,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   def diffs_batch
     return render_404 unless Feature.enabled?(:diffs_batch_load, @merge_request.project)
 
-    diffable = @merge_request.merge_request_diff
-
-    return render_404 unless diffable
-
-    diffs = diffable.diffs_in_batch(params[:page], params[:per_page], diff_options: diff_options)
+    diffs = @compare.diffs_in_batch(params[:page], params[:per_page], diff_options: diff_options)
     positions = @merge_request.note_positions_for_paths(diffs.diff_file_paths, current_user)
 
     diffs.unfold_diff_files(positions.unfoldable)
@@ -40,8 +36,10 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   end
 
   def diffs_metadata
+    diffs = @compare.diffs(diff_options)
+
     render json: DiffsMetadataSerializer.new(project: @merge_request.project)
-                   .represent(@diffs, additional_attributes)
+                   .represent(diffs, additional_attributes)
   end
 
   private
@@ -50,11 +48,13 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
     [{ source_project: :namespace }, { target_project: :namespace }]
   end
 
+  # Deprecated: https://gitlab.com/gitlab-org/gitlab/issues/37735
   def render_diffs
+    diffs = @compare.diffs(diff_options)
     @environment = @merge_request.environments_for(current_user).last
 
-    @diffs.unfold_diff_files(note_positions.unfoldable)
-    @diffs.write_cache
+    diffs.unfold_diff_files(note_positions.unfoldable)
+    diffs.write_cache
 
     request = {
       current_user: current_user,
@@ -64,15 +64,14 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
 
     options = additional_attributes.merge(diff_view: diff_view)
 
-    render json: DiffsSerializer.new(request).represent(@diffs, options)
+    render json: DiffsSerializer.new(request).represent(diffs, options)
   end
 
+  # Deprecated: https://gitlab.com/gitlab-org/gitlab/issues/37735
   def define_diff_vars
     @merge_request_diffs = @merge_request.merge_request_diffs.viewable.order_id_desc
     @compare = commit || find_merge_request_diff_compare
     return render_404 unless @compare
-
-    @diffs = @compare.diffs(diff_options)
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
@@ -85,6 +84,8 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   # rubocop: enable CodeReuse/ActiveRecord
 
   # rubocop: disable CodeReuse/ActiveRecord
+  #
+  # Deprecated: https://gitlab.com/gitlab-org/gitlab/issues/37735
   def find_merge_request_diff_compare
     @merge_request_diff =
       if diff_id = params[:diff_id].presence
@@ -127,6 +128,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
     }
   end
 
+  # Deprecated: https://gitlab.com/gitlab-org/gitlab/issues/37735
   def define_diff_comment_vars
     @new_diff_note_attrs = {
       noteable_type: 'MergeRequest',

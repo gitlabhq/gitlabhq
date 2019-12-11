@@ -40,6 +40,9 @@ Object.defineProperty(global.Element.prototype, 'innerText', {
   get() {
     return this.textContent;
   },
+  set(value) {
+    this.textContext = value;
+  },
   configurable: true, // make it so that it doesn't blow chunks on re-running tests with things like --watch
 });
 

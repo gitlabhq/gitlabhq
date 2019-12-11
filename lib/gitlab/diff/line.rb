@@ -34,6 +34,14 @@ module Gitlab
             rich_text: hash[:rich_text])
       end
 
+      def self.safe_init_from_hash(hash)
+        line = hash.with_indifferent_access
+        rich_text = line[:rich_text]
+        line[:rich_text] = rich_text&.html_safe
+
+        init_from_hash(line)
+      end
+
       def to_hash
         hash = {}
         SERIALIZE_KEYS.each { |key| hash[key] = send(key) } # rubocop:disable GitlabSecurity/PublicSend

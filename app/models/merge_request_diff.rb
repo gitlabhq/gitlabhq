@@ -309,20 +309,25 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def diffs_in_batch(batch_page, batch_size, diff_options:)
-    Gitlab::Diff::FileCollection::MergeRequestDiffBatch.new(self,
-                                                            batch_page,
-                                                            batch_size,
-                                                            diff_options: diff_options)
+    fetching_repository_diffs(diff_options) do |comparison|
+      if comparison
+        comparison.diffs_in_batch(batch_page, batch_size, diff_options: diff_options)
+      else
+        diffs_in_batch_collection(batch_page, batch_size, diff_options: diff_options)
+      end
+    end
   end
 
   def diffs(diff_options = nil)
-    if without_files? && comparison = diff_refs&.compare_in(project)
+    fetching_repository_diffs(diff_options) do |comparison|
       # It should fetch the repository when diffs are cleaned by the system.
       # We don't keep these for storage overload purposes.
       # See https://gitlab.com/gitlab-org/gitlab-foss/issues/37639
-      comparison.diffs(diff_options)
-    else
-      diffs_collection(diff_options)
+      if comparison
+        comparison.diffs(diff_options)
+      else
+        diffs_collection(diff_options)
+      end
     end
   end
 
@@ -430,6 +435,13 @@ class MergeRequestDiff < ApplicationRecord
 
   private
 
+  def diffs_in_batch_collection(batch_page, batch_size, diff_options:)
+    Gitlab::Diff::FileCollection::MergeRequestDiffBatch.new(self,
+                                                            batch_page,
+                                                            batch_size,
+                                                            diff_options: diff_options)
+  end
+
   def encode_in_base64?(diff_text)
     (diff_text.encoding == Encoding::BINARY && !diff_text.ascii_only?) ||
       diff_text.include?("\0")
@@ -485,6 +497,25 @@ class MergeRequestDiff < ApplicationRecord
         end
       end
     end
+  end
+
+  # Yields the block with the repository Compare object if it should
+  # fetch diffs from the repository instead DB.
+  def fetching_repository_diffs(diff_options)
+    return unless block_given?
+
+    diff_options ||= {}
+
+    # Can be read as: fetch the persisted diffs if yielded without the
+    # Compare object.
+    return yield unless without_files? || diff_options[:ignore_whitespace_change]
+    return yield unless diff_refs&.complete?
+
+    comparison = diff_refs.compare_in(repository.project)
+
+    return yield unless comparison
+
+    yield(comparison)
   end
 
   def use_external_diff?

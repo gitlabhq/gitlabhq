@@ -1,6 +1,6 @@
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import mutations from '~/error_tracking/store/list/mutations';
 import * as types from '~/error_tracking/store/list/mutation_types';
-import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 
 const ADD_RECENT_SEARCH = mutations[types.ADD_RECENT_SEARCH];
 const CLEAR_RECENT_SEARCHES = mutations[types.CLEAR_RECENT_SEARCHES];

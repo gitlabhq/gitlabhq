@@ -127,4 +127,28 @@ describe SnippetsHelper do
       end
     end
   end
+
+  describe '#snippet_embed_input' do
+    subject { snippet_embed_input(snippet) }
+
+    context 'with PersonalSnippet' do
+      let(:snippet) { public_personal_snippet }
+
+      it 'returns the input component' do
+        expect(subject).to eq embed_input(snippet_url(snippet))
+      end
+    end
+
+    context 'with ProjectSnippet' do
+      let(:snippet) { public_project_snippet }
+
+      it 'returns the input component' do
+        expect(subject).to eq embed_input(project_snippet_url(snippet.project, snippet))
+      end
+    end
+
+    def embed_input(url)
+      "<input type=\"text\" readonly=\"readonly\" class=\"js-snippet-url-area snippet-embed-input form-control\" data-url=\"#{url}\" value=\"<script src=&quot;#{url}.js&quot;></script>\" autocomplete=\"off\"></input>"
+    end
+  end
 end

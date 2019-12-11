@@ -62,6 +62,15 @@ describe Gitlab::DiscussionsDiff::HighlightCache, :clean_gitlab_redis_cache do
       expect(found.second.size).to eq(2)
       expect(found.second).to all(be_a(Gitlab::Diff::Line))
     end
+
+    it 'returns lines which rich_text are HTML-safe' do
+      described_class.write_multiple(mapping)
+
+      found = described_class.read_multiple(mapping.keys)
+      rich_texts = found.flatten.map(&:rich_text)
+
+      expect(rich_texts).to all(be_html_safe)
+    end
   end
 
   describe '#clear_multiple' do

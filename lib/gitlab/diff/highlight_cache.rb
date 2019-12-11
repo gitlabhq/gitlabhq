@@ -21,7 +21,7 @@ module Gitlab
       def decorate(diff_file)
         if content = read_file(diff_file)
           diff_file.highlighted_diff_lines = content.map do |line|
-            Gitlab::Diff::Line.init_from_hash(line)
+            Gitlab::Diff::Line.safe_init_from_hash(line)
           end
         end
       end
