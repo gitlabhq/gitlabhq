@@ -4,7 +4,7 @@ import createFlash from '~/flash';
 import trackDashboardLoad from '../monitoring_tracking_helper';
 import statusCodes from '../../lib/utils/http_status';
 import { backOff } from '../../lib/utils/common_utils';
-import { s__ } from '../../locale';
+import { s__, sprintf } from '../../locale';
 
 const TWO_MINUTES = 120000;
 
@@ -74,17 +74,21 @@ export const fetchDashboard = ({ state, dispatch }, params) => {
   return backOffRequest(() => axios.get(state.dashboardEndpoint, { params }))
     .then(resp => resp.data)
     .then(response => dispatch('receiveMetricsDashboardSuccess', { response, params }))
-    .then(() => {
-      const dashboardType = state.currentDashboard === '' ? 'default' : 'custom';
-      return trackDashboardLoad({
-        label: `${dashboardType}_metrics_dashboard`,
-        value: state.metricsWithData.length,
-      });
-    })
-    .catch(error => {
-      dispatch('receiveMetricsDashboardFailure', error);
-      if (state.setShowErrorBanner) {
-        createFlash(s__('Metrics|There was an error while retrieving metrics'));
+    .catch(e => {
+      dispatch('receiveMetricsDashboardFailure', e);
+      if (state.showErrorBanner) {
+        if (e.response.data && e.response.data.message) {
+          const { message } = e.response.data;
+          createFlash(
+            sprintf(
+              s__('Metrics|There was an error while retrieving metrics. %{message}'),
+              { message },
+              false,
+            ),
+          );
+        } else {
+          createFlash(s__('Metrics|There was an error while retrieving metrics'));
+        }
       }
     });
 };
@@ -126,7 +130,7 @@ export const fetchPrometheusMetric = ({ commit }, { metric, params }) => {
   });
 };
 
-export const fetchPrometheusMetrics = ({ state, commit, dispatch }, params) => {
+export const fetchPrometheusMetrics = ({ state, commit, dispatch, getters }, params) => {
   commit(types.REQUEST_METRICS_DATA);
 
   const promises = [];
@@ -140,9 +144,11 @@ export const fetchPrometheusMetrics = ({ state, commit, dispatch }, params) => {
 
   return Promise.all(promises)
     .then(() => {
-      if (state.metricsWithData.length === 0) {
-        commit(types.SET_NO_DATA_EMPTY_STATE);
-      }
+      const dashboardType = state.currentDashboard === '' ? 'default' : 'custom';
+      trackDashboardLoad({
+        label: `${dashboardType}_metrics_dashboard`,
+        value: getters.metricsWithData().length,
+      });
     })
     .catch(() => {
       createFlash(s__(`Metrics|There was an error while retrieving metrics`), 'warning');

@@ -42,6 +42,7 @@ export default class MergeRequestStore {
     this.commitsCount = data.commits_count;
     this.divergedCommitsCount = data.diverged_commits_count;
     this.pipeline = data.pipeline || {};
+    this.pipelineCoverageDelta = data.pipeline_coverage_delta;
     this.mergePipeline = data.merge_pipeline || {};
     this.deployments = this.deployments || data.deployments || [];
     this.postMergeDeployments = this.postMergeDeployments || [];

@@ -76,6 +76,7 @@ export default {
   <mr-widget-container>
     <mr-widget-pipeline
       :pipeline="pipeline"
+      :pipeline-coverage-delta="mr.pipelineCoverageDelta"
       :ci-status="mr.ciStatus"
       :has-ci="mr.hasCI"
       :source-branch="branch"

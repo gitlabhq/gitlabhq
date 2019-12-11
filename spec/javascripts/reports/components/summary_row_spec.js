@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import component from '~/reports/components/summary_row.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import component from '~/reports/components/summary_row.vue';
 
 describe('Summary row', () => {
   const Component = Vue.extend(component);

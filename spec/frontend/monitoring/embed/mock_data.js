@@ -75,11 +75,9 @@ export const metricsData = [
   },
 ];
 
-export const initialState = {
-  monitoringDashboard: {},
+export const initialState = () => ({
   dashboard: {
     panel_groups: [],
   },
-  metricsWithData: [],
   useDashboardEndpoint: true,
-};
+});

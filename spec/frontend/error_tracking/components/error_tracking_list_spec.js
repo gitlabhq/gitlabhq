@@ -6,8 +6,11 @@ import {
   GlLoadingIcon,
   GlTable,
   GlLink,
-  GlSearchBoxByClick,
+  GlFormInput,
+  GlDropdown,
+  GlDropdownItem,
 } from '@gitlab/ui';
+import createListState from '~/error_tracking/store/list/state';
 import ErrorTrackingList from '~/error_tracking/components/error_tracking_list.vue';
 import errorsList from './list_mock.json';
 
@@ -51,12 +54,13 @@ describe('ErrorTrackingList', () => {
       getErrorList: () => {},
       startPolling: jest.fn(),
       restartPolling: jest.fn().mockName('restartPolling'),
+      addRecentSearch: jest.fn(),
+      loadRecentSearches: jest.fn(),
+      setIndexPath: jest.fn(),
+      clearRecentSearches: jest.fn(),
     };
 
-    const state = {
-      errors: errorsList,
-      loading: true,
-    };
+    const state = createListState();
 
     store = new Vuex.Store({
       modules: {
@@ -90,6 +94,7 @@ describe('ErrorTrackingList', () => {
   describe('results', () => {
     beforeEach(() => {
       store.state.list.loading = false;
+      store.state.list.errors = errorsList;
       mountComponent();
     });
 
@@ -114,7 +119,7 @@ describe('ErrorTrackingList', () => {
     });
 
     describe('filtering', () => {
-      const findSearchBox = () => wrapper.find(GlSearchBoxByClick);
+      const findSearchBox = () => wrapper.find(GlFormInput);
 
       it('shows search box', () => {
         expect(findSearchBox().exists()).toBe(true);
@@ -122,7 +127,9 @@ describe('ErrorTrackingList', () => {
 
       it('makes network request on submit', () => {
         expect(actions.startPolling).toHaveBeenCalledTimes(1);
-        findSearchBox().vm.$emit('submit');
+
+        findSearchBox().trigger('keyup.enter');
+
         expect(actions.startPolling).toHaveBeenCalledTimes(2);
       });
     });
@@ -183,6 +190,53 @@ describe('ErrorTrackingList', () => {
       expect(wrapper.find('a').attributes('href')).toBe(
         '/help/user/project/operations/error_tracking.html',
       );
+    });
+  });
+
+  describe('recent searches', () => {
+    beforeEach(() => {
+      mountComponent();
+    });
+
+    it('shows empty message', () => {
+      store.state.list.recentSearches = [];
+
+      expect(wrapper.find(GlDropdown).text()).toBe("You don't have any recent searches");
+    });
+
+    it('shows items', () => {
+      store.state.list.recentSearches = ['great', 'search'];
+
+      const dropdownItems = wrapper.findAll(GlDropdownItem);
+
+      expect(dropdownItems.length).toBe(3);
+      expect(dropdownItems.at(0).text()).toBe('great');
+      expect(dropdownItems.at(1).text()).toBe('search');
+    });
+
+    describe('clear', () => {
+      const clearRecentButton = () => wrapper.find({ ref: 'clearRecentSearches' });
+
+      it('is hidden when list empty', () => {
+        store.state.list.recentSearches = [];
+
+        expect(clearRecentButton().exists()).toBe(false);
+      });
+
+      it('is visible when list has items', () => {
+        store.state.list.recentSearches = ['some', 'searches'];
+
+        expect(clearRecentButton().exists()).toBe(true);
+        expect(clearRecentButton().text()).toBe('Clear recent searches');
+      });
+
+      it('clears items on click', () => {
+        store.state.list.recentSearches = ['some', 'searches'];
+
+        clearRecentButton().vm.$emit('click');
+
+        expect(actions.clearRecentSearches).toHaveBeenCalledTimes(1);
+      });
     });
   });
 });

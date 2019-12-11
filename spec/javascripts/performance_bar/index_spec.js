@@ -1,9 +1,8 @@
+import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import '~/performance_bar/components/performance_bar_app.vue';
 import performanceBar from '~/performance_bar';
 import PerformanceBarService from '~/performance_bar/services/performance_bar_service';
-
-import MockAdapter from 'axios-mock-adapter';
 
 describe('performance bar wrapper', () => {
   let mock;

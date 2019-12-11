@@ -11,6 +11,7 @@ function createComponent(props) {
       emptyGettingStartedSvgPath: '/path/to/getting-started.svg',
       emptyLoadingSvgPath: '/path/to/loading.svg',
       emptyNoDataSvgPath: '/path/to/no-data.svg',
+      emptyNoDataSmallSvgPath: '/path/to/no-data-small.svg',
       emptyUnableToConnectSvgPath: '/path/to/unable-to-connect.svg',
     },
   });

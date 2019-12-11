@@ -240,6 +240,11 @@ export const metricsNewGroupsAPIResponse = [
   },
 ];
 
+export const mockedEmptyResult = {
+  metricId: '1_response_metrics_nginx_ingress_throughput_status_code',
+  result: [],
+};
+
 export const mockedQueryResultPayload = {
   metricId: '17_system_metrics_kubernetes_container_memory_average',
   result: [
@@ -327,6 +332,30 @@ export const mockedQueryResultPayloadCoresTotal = {
 };
 
 export const metricsGroupsAPIResponse = [
+  {
+    group: 'Response metrics (NGINX Ingress VTS)',
+    priority: 10,
+    panels: [
+      {
+        metrics: [
+          {
+            id: 'response_metrics_nginx_ingress_throughput_status_code',
+            label: 'Status Code',
+            metric_id: 1,
+            prometheus_endpoint_path:
+              '/root/autodevops-deploy/environments/32/prometheus/api/v1/query_range?query=sum%28rate%28nginx_upstream_responses_total%7Bupstream%3D~%22%25%7Bkube_namespace%7D-%25%7Bci_environment_slug%7D-.%2A%22%7D%5B2m%5D%29%29+by+%28status_code%29',
+            query_range:
+              'sum(rate(nginx_upstream_responses_total{upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"}[2m])) by (status_code)',
+            unit: 'req / sec',
+          },
+        ],
+        title: 'Throughput',
+        type: 'area-chart',
+        weight: 1,
+        y_label: 'Requests / Sec',
+      },
+    ],
+  },
   {
     group: 'System metrics (Kubernetes)',
     priority: 5,

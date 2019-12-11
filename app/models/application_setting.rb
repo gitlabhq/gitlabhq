@@ -5,9 +5,6 @@ class ApplicationSetting < ApplicationRecord
   include CacheMarkdownField
   include TokenAuthenticatable
   include ChronicDurationAttribute
-  include IgnorableColumns
-
-  ignore_columns :pendo_enabled, :pendo_url, remove_after: '2019-12-01', remove_with: '12.6'
 
   add_authentication_token_field :runners_registration_token, encrypted: -> { Feature.enabled?(:application_settings_tokens_optional_encryption, default_enabled: true) ? :optional : :required }
   add_authentication_token_field :health_check_access_token

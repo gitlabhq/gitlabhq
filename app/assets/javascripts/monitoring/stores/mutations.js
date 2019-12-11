@@ -67,7 +67,6 @@ export default {
       group.panels.forEach(panel => {
         panel.metrics.forEach(metric => {
           if (metric.metric_id === metricId) {
-            state.metricsWithData.push(metricId);
             // ensure dates/numbers are correctly formatted for charts
             const normalizedResults = result.map(normalizeQueryResult);
             Vue.set(metric, 'result', Object.freeze(normalizedResults));

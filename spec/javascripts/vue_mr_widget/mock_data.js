@@ -185,6 +185,7 @@ export default {
     created_at: '2017-04-07T12:27:19.520Z',
     updated_at: '2017-04-07T15:28:44.800Z',
   },
+  pipelineCoverageDelta: '15.25',
   work_in_progress: false,
   source_branch_exists: false,
   mergeable_discussions_state: true,

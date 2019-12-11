@@ -191,12 +191,11 @@ describe('Monitoring store actions', () => {
     let state;
     const response = metricsDashboardResponse;
     beforeEach(() => {
-      jest.spyOn(Tracking, 'event');
       dispatch = jest.fn();
       state = storeState();
       state.dashboardEndpoint = '/dashboard';
     });
-    it('dispatches receive and success actions', done => {
+    it('on success, dispatches receive and success actions', done => {
       const params = {};
       document.body.dataset.page = 'projects:environments:metrics';
       mock.onGet(state.dashboardEndpoint).reply(200, response);
@@ -213,39 +212,65 @@ describe('Monitoring store actions', () => {
             response,
             params,
           });
-        })
-        .then(() => {
-          expect(Tracking.event).toHaveBeenCalledWith(
-            document.body.dataset.page,
-            'dashboard_fetch',
-            {
-              label: 'custom_metrics_dashboard',
-              property: 'count',
-              value: 0,
-            },
-          );
           done();
         })
         .catch(done.fail);
     });
-    it('dispatches failure action', done => {
-      const params = {};
-      mock.onGet(state.dashboardEndpoint).reply(500);
-      fetchDashboard(
-        {
-          state,
-          dispatch,
-        },
-        params,
-      )
-        .then(() => {
-          expect(dispatch).toHaveBeenCalledWith(
-            'receiveMetricsDashboardFailure',
-            new Error('Request failed with status code 500'),
-          );
-          done();
-        })
-        .catch(done.fail);
+
+    describe('on failure', () => {
+      let result;
+      let errorResponse;
+      beforeEach(() => {
+        const params = {};
+        result = () => {
+          mock.onGet(state.dashboardEndpoint).replyOnce(500, errorResponse);
+          return fetchDashboard({ state, dispatch }, params);
+        };
+      });
+
+      it('dispatches a failure action', done => {
+        errorResponse = {};
+        result()
+          .then(() => {
+            expect(dispatch).toHaveBeenCalledWith(
+              'receiveMetricsDashboardFailure',
+              new Error('Request failed with status code 500'),
+            );
+            expect(createFlash).toHaveBeenCalled();
+            done();
+          })
+          .catch(done.fail);
+      });
+
+      it('dispatches a failure action when a message is returned', done => {
+        const message = 'Something went wrong with Prometheus!';
+        errorResponse = { message };
+        result()
+          .then(() => {
+            expect(dispatch).toHaveBeenCalledWith(
+              'receiveMetricsDashboardFailure',
+              new Error('Request failed with status code 500'),
+            );
+            expect(createFlash).toHaveBeenCalledWith(expect.stringContaining(message));
+            done();
+          })
+          .catch(done.fail);
+      });
+
+      it('does not show a flash error when showErrorBanner is disabled', done => {
+        state.showErrorBanner = false;
+
+        result()
+          .then(() => {
+            expect(dispatch).toHaveBeenCalledWith(
+              'receiveMetricsDashboardFailure',
+              new Error('Request failed with status code 500'),
+            );
+            expect(createFlash).not.toHaveBeenCalled();
+            done();
+          })
+          .catch(done.fail);
+      });
     });
   });
   describe('receiveMetricsDashboardSuccess', () => {
@@ -317,18 +342,33 @@ describe('Monitoring store actions', () => {
     });
   });
   describe('fetchPrometheusMetrics', () => {
+    const params = {};
     let commit;
     let dispatch;
+    let state;
+
     beforeEach(() => {
+      jest.spyOn(Tracking, 'event');
       commit = jest.fn();
       dispatch = jest.fn();
+      state = storeState();
     });
+
     it('commits empty state when state.groups is empty', done => {
-      const state = storeState();
-      const params = {};
-      fetchPrometheusMetrics({ state, commit, dispatch }, params)
+      const getters = {
+        metricsWithData: () => [],
+      };
+      fetchPrometheusMetrics({ state, commit, dispatch, getters }, params)
         .then(() => {
-          expect(commit).toHaveBeenCalledWith(types.SET_NO_DATA_EMPTY_STATE);
+          expect(Tracking.event).toHaveBeenCalledWith(
+            document.body.dataset.page,
+            'dashboard_fetch',
+            {
+              label: 'custom_metrics_dashboard',
+              property: 'count',
+              value: 0,
+            },
+          );
           expect(dispatch).not.toHaveBeenCalled();
           expect(createFlash).not.toHaveBeenCalled();
           done();
@@ -336,19 +376,28 @@ describe('Monitoring store actions', () => {
         .catch(done.fail);
     });
     it('dispatches fetchPrometheusMetric for each panel query', done => {
-      const params = {};
-      const state = storeState();
       state.dashboard.panel_groups = metricsDashboardResponse.dashboard.panel_groups;
-      const metric = state.dashboard.panel_groups[0].panels[0].metrics[0];
-      fetchPrometheusMetrics({ state, commit, dispatch }, params)
+      const [metric] = state.dashboard.panel_groups[0].panels[0].metrics;
+      const getters = {
+        metricsWithData: () => [metric.id],
+      };
+
+      fetchPrometheusMetrics({ state, commit, dispatch, getters }, params)
         .then(() => {
-          expect(dispatch).toHaveBeenCalledTimes(3);
           expect(dispatch).toHaveBeenCalledWith('fetchPrometheusMetric', {
             metric,
             params,
           });
 
-          expect(createFlash).not.toHaveBeenCalled();
+          expect(Tracking.event).toHaveBeenCalledWith(
+            document.body.dataset.page,
+            'dashboard_fetch',
+            {
+              label: 'custom_metrics_dashboard',
+              property: 'count',
+              value: 1,
+            },
+          );
 
           done();
         })
@@ -357,8 +406,6 @@ describe('Monitoring store actions', () => {
     });
 
     it('dispatches fetchPrometheusMetric for each panel query, handles an error', done => {
-      const params = {};
-      const state = storeState();
       state.dashboard.panel_groups = metricsDashboardResponse.dashboard.panel_groups;
       const metric = state.dashboard.panel_groups[0].panels[0].metrics[0];
 

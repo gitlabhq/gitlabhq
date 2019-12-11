@@ -1,16 +1,18 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import GraphGroup from '~/monitoring/components/graph_group.vue';
+import Icon from '~/vue_shared/components/icon.vue';
 
 const localVue = createLocalVue();
 
 describe('Graph group component', () => {
-  let graphGroup;
+  let wrapper;
 
-  const findPrometheusGroup = () => graphGroup.find('.prometheus-graph-group');
-  const findPrometheusPanel = () => graphGroup.find('.prometheus-panel');
+  const findGroup = () => wrapper.find({ ref: 'graph-group' });
+  const findContent = () => wrapper.find({ ref: 'graph-group-content' });
+  const findCaretIcon = () => wrapper.find(Icon);
 
   const createComponent = propsData => {
-    graphGroup = shallowMount(localVue.extend(GraphGroup), {
+    wrapper = shallowMount(localVue.extend(GraphGroup), {
       propsData,
       sync: false,
       localVue,
@@ -18,57 +20,100 @@ describe('Graph group component', () => {
   };
 
   afterEach(() => {
-    graphGroup.destroy();
+    wrapper.destroy();
   });
 
-  describe('When groups can be collapsed', () => {
+  describe('When group is not collapsed', () => {
     beforeEach(() => {
       createComponent({
         name: 'panel',
-        collapseGroup: true,
+        collapseGroup: false,
       });
     });
 
-    it('should show the angle-down caret icon when collapseGroup is true', () => {
-      expect(graphGroup.vm.caretIcon).toBe('angle-down');
+    it('should show the angle-down caret icon', () => {
+      expect(findContent().isVisible()).toBe(true);
+      expect(findCaretIcon().props('name')).toBe('angle-down');
     });
 
-    it('should show the angle-right caret icon when collapseGroup is false', () => {
-      graphGroup.vm.collapse();
+    it('should show the angle-right caret icon when the user collapses the group', done => {
+      wrapper.vm.collapse();
 
-      expect(graphGroup.vm.caretIcon).toBe('angle-right');
-    });
-  });
-
-  describe('When groups can not be collapsed', () => {
-    beforeEach(() => {
-      createComponent({
-        name: 'panel',
-        collapseGroup: true,
-        showPanels: false,
-      });
-    });
-
-    it('should not contain a prometheus-panel container when showPanels is false', () => {
-      expect(findPrometheusPanel().exists()).toBe(false);
-    });
-  });
-
-  describe('When collapseGroup prop is updated', () => {
-    beforeEach(() => {
-      createComponent({ name: 'panel', collapseGroup: false });
-    });
-
-    it('previously collapsed group should respond to the prop change', done => {
-      expect(findPrometheusGroup().exists()).toBe(false);
-
-      graphGroup.setProps({
-        collapseGroup: true,
-      });
-
-      graphGroup.vm.$nextTick(() => {
-        expect(findPrometheusGroup().exists()).toBe(true);
+      wrapper.vm.$nextTick(() => {
+        expect(findContent().isVisible()).toBe(false);
+        expect(findCaretIcon().props('name')).toBe('angle-right');
         done();
+      });
+    });
+
+    it('should show the open the group when collapseGroup is set to true', done => {
+      wrapper.setProps({
+        collapseGroup: true,
+      });
+
+      wrapper.vm.$nextTick(() => {
+        expect(findContent().isVisible()).toBe(true);
+        expect(findCaretIcon().props('name')).toBe('angle-down');
+        done();
+      });
+    });
+
+    describe('When group is collapsed', () => {
+      beforeEach(() => {
+        createComponent({
+          name: 'panel',
+          collapseGroup: true,
+        });
+      });
+
+      it('should show the angle-down caret icon when collapseGroup is true', () => {
+        expect(wrapper.vm.caretIcon).toBe('angle-right');
+      });
+
+      it('should show the angle-right caret icon when collapseGroup is false', () => {
+        wrapper.vm.collapse();
+
+        expect(wrapper.vm.caretIcon).toBe('angle-down');
+      });
+    });
+
+    describe('When groups can not be collapsed', () => {
+      beforeEach(() => {
+        createComponent({
+          name: 'panel',
+          showPanels: false,
+          collapseGroup: false,
+        });
+      });
+
+      it('should not have a container when showPanels is false', () => {
+        expect(findGroup().exists()).toBe(false);
+        expect(findContent().exists()).toBe(true);
+      });
+    });
+
+    describe('When group does not show a panel heading', () => {
+      beforeEach(() => {
+        createComponent({
+          name: 'panel',
+          showPanels: false,
+          collapseGroup: false,
+        });
+      });
+
+      it('should collapse the panel content', () => {
+        expect(findContent().isVisible()).toBe(true);
+        expect(findCaretIcon().exists()).toBe(false);
+      });
+
+      it('should show the panel content when clicked', done => {
+        wrapper.vm.collapse();
+
+        wrapper.vm.$nextTick(() => {
+          expect(findContent().isVisible()).toBe(true);
+          expect(findCaretIcon().exists()).toBe(false);
+          done();
+        });
       });
     });
   });

@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import stageColumnComponent from '~/pipelines/components/graph/stage_column_component.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import stageColumnComponent from '~/pipelines/components/graph/stage_column_component.vue';
 
 describe('stage column component', () => {
   let component;

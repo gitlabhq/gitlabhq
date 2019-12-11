@@ -37,6 +37,10 @@ export default {
       type: String,
       required: true,
     },
+    emptyNoDataSmallSvgPath: {
+      type: String,
+      required: true,
+    },
     emptyUnableToConnectSvgPath: {
       type: String,
       required: true,
@@ -79,6 +83,11 @@ export default {
           buttonPath: this.settingsPath,
           secondaryButtonText: '',
           secondaryButtonPath: '',
+        },
+        noDataGroup: {
+          svgUrl: this.emptyNoDataSmallSvgPath,
+          title: __('No data to display'),
+          description: __('The data source is connected, but there is no data to display.'),
         },
         unableToConnect: {
           svgUrl: this.emptyUnableToConnectSvgPath,

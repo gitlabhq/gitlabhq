@@ -2821,6 +2821,63 @@ describe MergeRequest do
     end
   end
 
+  describe '#pipeline_coverage_delta' do
+    let!(:project)       { create(:project, :repository) }
+    let!(:merge_request) { create(:merge_request, source_project: project) }
+
+    let!(:source_pipeline) do
+      create(:ci_pipeline,
+        project: project,
+        ref: merge_request.source_branch,
+        sha: merge_request.diff_head_sha
+      )
+    end
+
+    let!(:target_pipeline) do
+      create(:ci_pipeline,
+        project: project,
+        ref: merge_request.target_branch,
+        sha: merge_request.diff_base_sha
+      )
+    end
+
+    def create_build(pipeline, coverage, name)
+      create(:ci_build, :success, pipeline: pipeline, coverage: coverage, name: name)
+      merge_request.update_head_pipeline
+    end
+
+    context 'when both source and target branches have coverage information' do
+      it 'returns the appropriate coverage delta' do
+        create_build(source_pipeline, 60.2, 'test:1')
+        create_build(target_pipeline, 50, 'test:2')
+
+        expect(merge_request.pipeline_coverage_delta).to eq('10.20')
+      end
+    end
+
+    context 'when target branch does not have coverage information' do
+      it 'returns nil' do
+        create_build(source_pipeline, 50, 'test:1')
+
+        expect(merge_request.pipeline_coverage_delta).to be_nil
+      end
+    end
+
+    context 'when source branch does not have coverage information' do
+      it 'returns nil for coverage_delta' do
+        create_build(target_pipeline, 50, 'test:1')
+
+        expect(merge_request.pipeline_coverage_delta).to be_nil
+      end
+    end
+
+    context 'neither source nor target branch has coverage information' do
+      it 'returns nil for coverage_delta' do
+        expect(merge_request.pipeline_coverage_delta).to be_nil
+      end
+    end
+  end
+
   describe '#base_pipeline' do
     let(:pipeline_arguments) do
       {

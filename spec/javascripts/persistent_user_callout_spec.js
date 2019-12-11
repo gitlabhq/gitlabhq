@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
+import setTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
 import axios from '~/lib/utils/axios_utils';
 import PersistentUserCallout from '~/persistent_user_callout';
-import setTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
 
 describe('PersistentUserCallout', () => {
   const dismissEndpoint = '/dismiss';

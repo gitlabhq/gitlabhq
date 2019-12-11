@@ -1423,6 +1423,12 @@ class MergeRequest < ApplicationRecord
     true
   end
 
+  def pipeline_coverage_delta
+    if base_pipeline&.coverage && head_pipeline&.coverage
+      '%.2f' % (head_pipeline.coverage.to_f - base_pipeline.coverage.to_f)
+    end
+  end
+
   def base_pipeline
     @base_pipeline ||= project.ci_pipelines
       .order(id: :desc)

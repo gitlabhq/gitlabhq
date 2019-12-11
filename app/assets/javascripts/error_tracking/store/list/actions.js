@@ -51,4 +51,20 @@ export function restartPolling({ commit }) {
   if (eTagPoll) eTagPoll.restart();
 }
 
+export function setIndexPath({ commit }, path) {
+  commit(types.SET_INDEX_PATH, path);
+}
+
+export function loadRecentSearches({ commit }) {
+  commit(types.LOAD_RECENT_SEARCHES);
+}
+
+export function addRecentSearch({ commit }, searchQuery) {
+  commit(types.ADD_RECENT_SEARCH, searchQuery);
+}
+
+export function clearRecentSearches({ commit }) {
+  commit(types.CLEAR_RECENT_SEARCHES);
+}
+
 export default () => {};

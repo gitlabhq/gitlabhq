@@ -34,6 +34,7 @@ describe('MrWidgetPipelineContainer', () => {
       expect(wrapper.find(MrWidgetPipeline).props()).toEqual(
         jasmine.objectContaining({
           pipeline: mockStore.pipeline,
+          pipelineCoverageDelta: mockStore.pipelineCoverageDelta,
           ciStatus: mockStore.ciStatus,
           hasCi: mockStore.hasCI,
           sourceBranch: mockStore.sourceBranch,
@@ -68,6 +69,7 @@ describe('MrWidgetPipelineContainer', () => {
       expect(wrapper.find(MrWidgetPipeline).props()).toEqual(
         jasmine.objectContaining({
           pipeline: mockStore.mergePipeline,
+          pipelineCoverageDelta: mockStore.pipelineCoverageDelta,
           ciStatus: mockStore.ciStatus,
           hasCi: mockStore.hasCI,
           sourceBranch: mockStore.targetBranch,

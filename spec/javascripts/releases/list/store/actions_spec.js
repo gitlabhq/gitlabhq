@@ -1,3 +1,4 @@
+import testAction from 'spec/helpers/vuex_action_helper';
 import {
   requestReleases,
   fetchReleases,
@@ -8,7 +9,6 @@ import state from '~/releases/list/store/state';
 import * as types from '~/releases/list/store/mutation_types';
 import api from '~/api';
 import { parseIntPagination } from '~/lib/utils/common_utils';
-import testAction from 'spec/helpers/vuex_action_helper';
 import { pageInfoHeadersWithoutPagination, releases } from '../../mock_data';
 
 describe('Releases State actions', () => {

@@ -28,6 +28,10 @@ export default {
       type: Object,
       required: true,
     },
+    pipelineCoverageDelta: {
+      type: String,
+      required: false,
+    },
     // This prop needs to be camelCase, html attributes are case insensive
     // https://vuejs.org/v2/guide/components.html#camelCase-vs-kebab-case
     hasCi: {
@@ -92,6 +96,16 @@ export default {
     showSourceBranch() {
       return Boolean(this.pipeline.ref.branch);
     },
+    coverageDeltaClass() {
+      const delta = this.pipelineCoverageDelta;
+      if (delta && parseFloat(delta) > 0) {
+        return 'text-success';
+      }
+      if (delta && parseFloat(delta) < 0) {
+        return 'text-danger';
+      }
+      return '';
+    },
   },
 };
 </script>
@@ -142,6 +156,14 @@ export default {
             </div>
             <div v-if="pipeline.coverage" class="coverage">
               {{ s__('Pipeline|Coverage') }} {{ pipeline.coverage }}%
+
+              <span
+                v-if="pipelineCoverageDelta"
+                class="js-pipeline-coverage-delta"
+                :class="coverageDeltaClass"
+              >
+                ({{ pipelineCoverageDelta }}%)
+              </span>
             </div>
           </div>
         </div>

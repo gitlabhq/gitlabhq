@@ -12,6 +12,7 @@ describe('Embed', () => {
   let wrapper;
   let store;
   let actions;
+  let metricsWithDataGetter;
 
   function mountComponent() {
     wrapper = shallowMount(Embed, {
@@ -31,11 +32,16 @@ describe('Embed', () => {
       fetchMetricsData: () => {},
     };
 
+    metricsWithDataGetter = jest.fn();
+
     store = new Vuex.Store({
       modules: {
         monitoringDashboard: {
           namespaced: true,
           actions,
+          getters: {
+            metricsWithData: () => metricsWithDataGetter,
+          },
           state: initialState,
         },
       },
@@ -43,6 +49,7 @@ describe('Embed', () => {
   });
 
   afterEach(() => {
+    metricsWithDataGetter.mockClear();
     if (wrapper) {
       wrapper.destroy();
     }
@@ -63,13 +70,13 @@ describe('Embed', () => {
     beforeEach(() => {
       store.state.monitoringDashboard.dashboard.panel_groups = groups;
       store.state.monitoringDashboard.dashboard.panel_groups[0].panels = metricsData;
-      store.state.monitoringDashboard.metricsWithData = metricsWithData;
+
+      metricsWithDataGetter.mockReturnValue(metricsWithData);
 
       mountComponent();
     });
 
     it('shows a chart when metrics are present', () => {
-      wrapper.setProps({});
       expect(wrapper.find('.metrics-embed').exists()).toBe(true);
       expect(wrapper.find(PanelType).exists()).toBe(true);
       expect(wrapper.findAll(PanelType).length).toBe(2);

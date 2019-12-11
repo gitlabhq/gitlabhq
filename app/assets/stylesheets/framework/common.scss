@@ -515,6 +515,12 @@ img.emoji {
   cursor: pointer;
 }
 
+// this needs to use "!important" due to some very specific styles
+// around buttons
+.cursor-default {
+  cursor: default !important;
+}
+
 // Make buttons/dropdowns full-width on mobile
 .full-width-mobile {
   @include media-breakpoint-down(xs) {

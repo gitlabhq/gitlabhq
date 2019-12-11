@@ -11157,6 +11157,9 @@ msgstr ""
 msgid "Metrics|There was an error while retrieving metrics"
 msgstr ""
 
+msgid "Metrics|There was an error while retrieving metrics. %{message}"
+msgstr ""
+
 msgid "Metrics|Unexpected deployment data response from prometheus endpoint"
 msgstr ""
 
@@ -15346,6 +15349,9 @@ msgstr ""
 msgid "Search or filter results..."
 msgstr ""
 
+msgid "Search or filter results…"
+msgstr ""
+
 msgid "Search or jump to…"
 msgstr ""
 
@@ -17476,6 +17482,9 @@ msgid "The connection will time out after %{timeout}. For repositories that take
 msgstr ""
 
 msgid "The content of this page is not encoded in UTF-8. Edits can only be made via the Git repository."
+msgstr ""
+
+msgid "The data source is connected, but there is no data to display."
 msgstr ""
 
 msgid "The default CI configuration path for new projects."

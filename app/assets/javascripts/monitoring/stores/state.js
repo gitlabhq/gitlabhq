@@ -13,7 +13,6 @@ export default () => ({
   },
   deploymentData: [],
   environments: [],
-  metricsWithData: [],
   allDashboards: [],
   currentDashboard: null,
   projectPath: null,

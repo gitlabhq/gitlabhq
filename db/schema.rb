@@ -4490,7 +4490,7 @@ ActiveRecord::Schema.define(version: 2019_12_06_122926) do
   add_foreign_key "grafana_integrations", "projects", on_delete: :cascade
   add_foreign_key "group_custom_attributes", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "group_deletion_schedules", "namespaces", column: "group_id", on_delete: :cascade
-  add_foreign_key "group_deletion_schedules", "users", on_delete: :nullify
+  add_foreign_key "group_deletion_schedules", "users", name: "fk_11e3ebfcdd", on_delete: :cascade
   add_foreign_key "group_group_links", "namespaces", column: "shared_group_id", on_delete: :cascade
   add_foreign_key "group_group_links", "namespaces", column: "shared_with_group_id", on_delete: :cascade
   add_foreign_key "identities", "saml_providers", name: "fk_aade90f0fc", on_delete: :cascade

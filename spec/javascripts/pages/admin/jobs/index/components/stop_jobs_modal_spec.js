@@ -1,9 +1,8 @@
 import Vue from 'vue';
 
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import axios from '~/lib/utils/axios_utils';
 import stopJobsModal from '~/pages/admin/jobs/index/components/stop_jobs_modal.vue';
-
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('stop_jobs_modal.vue', () => {
   const props = {

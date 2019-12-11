@@ -57,6 +57,10 @@ class MergeRequestPollWidgetEntity < Grape::Entity
     presenter(merge_request).ci_status
   end
 
+  expose :pipeline_coverage_delta do |merge_request|
+    presenter(merge_request).pipeline_coverage_delta
+  end
+
   expose :cancel_auto_merge_path do |merge_request|
     presenter(merge_request).cancel_auto_merge_path
   end

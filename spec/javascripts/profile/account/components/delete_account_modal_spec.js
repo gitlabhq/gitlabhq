@@ -1,8 +1,7 @@
 import Vue from 'vue';
 
-import deleteAccountModal from '~/profile/account/components/delete_account_modal.vue';
-
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import deleteAccountModal from '~/profile/account/components/delete_account_modal.vue';
 
 describe('DeleteAccountModal component', () => {
   const actionUrl = `${gl.TEST_HOST}/delete/user`;

@@ -4,11 +4,13 @@ import { GlToast } from '@gitlab/ui';
 import VueDraggable from 'vuedraggable';
 import MockAdapter from 'axios-mock-adapter';
 import Dashboard from '~/monitoring/components/dashboard.vue';
+import EmptyState from '~/monitoring/components/empty_state.vue';
 import * as types from '~/monitoring/stores/mutation_types';
 import { createStore } from '~/monitoring/stores';
 import axios from '~/lib/utils/axios_utils';
 import {
   metricsGroupsAPIResponse,
+  mockedEmptyResult,
   mockedQueryResultPayload,
   mockedQueryResultPayloadCoresTotal,
   mockApiEndpoint,
@@ -29,6 +31,7 @@ const propsData = {
   emptyGettingStartedSvgPath: '/path/to/getting-started.svg',
   emptyLoadingSvgPath: '/path/to/loading.svg',
   emptyNoDataSvgPath: '/path/to/no-data.svg',
+  emptyNoDataSmallSvgPath: '/path/to/no-data-small.svg',
   emptyUnableToConnectSvgPath: '/path/to/unable-to-connect.svg',
   environmentsEndpoint: '/root/hello-prometheus/environments/35',
   currentEnvironmentName: 'production',
@@ -43,15 +46,17 @@ const resetSpy = spy => {
   }
 };
 
-export default propsData;
+let expectedPanelCount;
 
 function setupComponentStore(component) {
+  // Load 2 panel groups
   component.$store.commit(
     `monitoringDashboard/${types.RECEIVE_METRICS_DATA_SUCCESS}`,
     metricsGroupsAPIResponse,
   );
 
-  // Load 2 panels to the dashboard
+  // Load 3 panels to the dashboard, one with an empty result
+  component.$store.commit(`monitoringDashboard/${types.SET_QUERY_RESULT}`, mockedEmptyResult);
   component.$store.commit(
     `monitoringDashboard/${types.SET_QUERY_RESULT}`,
     mockedQueryResultPayload,
@@ -60,6 +65,8 @@ function setupComponentStore(component) {
     `monitoringDashboard/${types.SET_QUERY_RESULT}`,
     mockedQueryResultPayloadCoresTotal,
   );
+
+  expectedPanelCount = 2;
 
   component.$store.commit(
     `monitoringDashboard/${types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS}`,
@@ -126,13 +133,9 @@ describe('Dashboard', () => {
 
   describe('no data found', () => {
     it('shows the environment selector dropdown', () => {
-      component = new DashboardComponent({
-        el: document.querySelector('.prometheus-graphs'),
-        propsData: { ...propsData, showEmptyState: true },
-        store,
-      });
+      createComponentWrapper();
 
-      expect(component.$el.querySelector('.js-environments-dropdown')).toBeTruthy();
+      expect(wrapper.find('.js-environments-dropdown').exists()).toBeTruthy();
     });
   });
 
@@ -389,9 +392,36 @@ describe('Dashboard', () => {
     });
   });
 
-  describe('drag and drop function', () => {
-    let expectedPanelCount; // also called metrics, naming to be improved: https://gitlab.com/gitlab-org/gitlab/issues/31565
+  describe('when one of the metrics is missing', () => {
+    beforeEach(() => {
+      mock.onGet(mockApiEndpoint).reply(200, metricsGroupsAPIResponse);
+    });
 
+    beforeEach(done => {
+      createComponentWrapper({ hasMetrics: true }, { attachToDocument: true });
+      setupComponentStore(wrapper.vm);
+
+      wrapper.vm.$nextTick(done);
+    });
+
+    it('shows a group empty area', () => {
+      const emptyGroup = wrapper.findAll({ ref: 'empty-group' });
+
+      expect(emptyGroup).toHaveLength(1);
+      expect(emptyGroup.is(EmptyState)).toBe(true);
+    });
+
+    it('group empty area displays a "noDataGroup"', () => {
+      expect(
+        wrapper
+          .findAll({ ref: 'empty-group' })
+          .at(0)
+          .props('selectedState'),
+      ).toEqual('noDataGroup');
+    });
+  });
+
+  describe('drag and drop function', () => {
     const findDraggables = () => wrapper.findAll(VueDraggable);
     const findEnabledDraggables = () => findDraggables().filter(f => !f.attributes('disabled'));
     const findDraggablePanels = () => wrapper.findAll('.js-draggable-panel');
@@ -399,10 +429,6 @@ describe('Dashboard', () => {
 
     beforeEach(() => {
       mock.onGet(mockApiEndpoint).reply(200, metricsGroupsAPIResponse);
-      expectedPanelCount = metricsGroupsAPIResponse.reduce(
-        (acc, group) => group.panels.length + acc,
-        0,
-      );
     });
 
     beforeEach(done => {
@@ -411,10 +437,6 @@ describe('Dashboard', () => {
       setupComponentStore(wrapper.vm);
 
       wrapper.vm.$nextTick(done);
-    });
-
-    afterEach(() => {
-      wrapper.destroy();
     });
 
     afterEach(() => {
@@ -459,22 +481,20 @@ describe('Dashboard', () => {
 
         it('metrics can be swapped', done => {
           const firstDraggable = findDraggables().at(0);
-          const mockMetrics = [...metricsGroupsAPIResponse[0].panels];
-          const value = () => firstDraggable.props('value');
+          const mockMetrics = [...metricsGroupsAPIResponse[1].panels];
 
-          expect(value().length).toBe(mockMetrics.length);
-          value().forEach((metric, i) => {
-            expect(metric.title).toBe(mockMetrics[i].title);
-          });
+          const firstTitle = mockMetrics[0].title;
+          const secondTitle = mockMetrics[1].title;
 
           // swap two elements and `input` them
           [mockMetrics[0], mockMetrics[1]] = [mockMetrics[1], mockMetrics[0]];
           firstDraggable.vm.$emit('input', mockMetrics);
 
-          firstDraggable.vm.$nextTick(() => {
-            value().forEach((metric, i) => {
-              expect(metric.title).toBe(mockMetrics[i].title);
-            });
+          wrapper.vm.$nextTick(() => {
+            const { panels } = wrapper.vm.dashboard.panel_groups[1];
+
+            expect(panels[1].title).toEqual(firstTitle);
+            expect(panels[0].title).toEqual(secondTitle);
             done();
           });
         });
@@ -584,7 +604,7 @@ describe('Dashboard', () => {
       setupComponentStore(component);
 
       return Vue.nextTick().then(() => {
-        promPanel = component.$el.querySelector('.prometheus-panel');
+        [, promPanel] = component.$el.querySelectorAll('.prometheus-panel');
         promGroup = promPanel.querySelector('.prometheus-graph-group');
         panelToggle = promPanel.querySelector('.js-graph-group-toggle');
         chart = promGroup.querySelector('.position-relative svg');

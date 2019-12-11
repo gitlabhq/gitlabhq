@@ -1,9 +1,9 @@
-import Vue from 'vue';
 import _ from 'underscore';
+import Vue from 'vue';
+import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import app from '~/releases/list/components/app.vue';
 import createStore from '~/releases/list/store';
 import api from '~/api';
-import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { resetStore } from '../store/helpers';
 import {
   pageInfoHeadersWithoutPagination,

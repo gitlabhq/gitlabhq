@@ -1,6 +1,6 @@
 <script>
 import _ from 'underscore';
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapState, mapGetters } from 'vuex';
 import VueDraggable from 'vuedraggable';
 import {
   GlButton,
@@ -99,6 +99,10 @@ export default {
       type: String,
       required: true,
     },
+    emptyNoDataSmallSvgPath: {
+      type: String,
+      required: true,
+    },
     emptyUnableToConnectSvgPath: {
       type: String,
       required: true,
@@ -176,11 +180,11 @@ export default {
       'showEmptyState',
       'environments',
       'deploymentData',
-      'metricsWithData',
       'useDashboardEndpoint',
       'allDashboards',
       'additionalPanelTypesEnabled',
     ]),
+    ...mapGetters('monitoringDashboard', ['metricsWithData']),
     firstDashboard() {
       return this.environmentsEndpoint.length > 0 && this.allDashboards.length > 0
         ? this.allDashboards[0]
@@ -280,13 +284,8 @@ export default {
     submitCustomMetricsForm() {
       this.$refs.customMetricsForm.submit();
     },
-    chartsWithData(panels) {
-      return panels.filter(panel =>
-        panel.metrics.some(metric => this.metricsWithData.includes(metric.metric_id)),
-      );
-    },
     groupHasData(group) {
-      return this.chartsWithData(group.panels).length > 0;
+      return this.metricsWithData(group.key).length > 0;
     },
     onDateTimePickerApply(timeWindowUrlParams) {
       return redirectTo(mergeUrlParams(timeWindowUrlParams, window.location.href));
@@ -447,42 +446,61 @@ export default {
         :key="`${groupData.group}.${groupData.priority}`"
         :name="groupData.group"
         :show-panels="showPanels"
-        :collapse-group="groupHasData(groupData)"
+        :collapse-group="!groupHasData(groupData)"
       >
-        <vue-draggable
-          :value="groupData.panels"
-          group="metrics-dashboard"
-          :component-data="{ attrs: { class: 'row mx-0 w-100' } }"
-          :disabled="!isRearrangingPanels"
-          @input="updatePanels(groupData.key, $event)"
-        >
-          <div
-            v-for="(graphData, graphIndex) in groupData.panels"
-            :key="`panel-type-${graphIndex}`"
-            class="col-12 col-lg-6 px-2 mb-2 draggable"
-            :class="{ 'draggable-enabled': isRearrangingPanels }"
+        <div v-if="groupHasData(groupData)">
+          <vue-draggable
+            :value="groupData.panels"
+            group="metrics-dashboard"
+            :component-data="{ attrs: { class: 'row mx-0 w-100' } }"
+            :disabled="!isRearrangingPanels"
+            @input="updatePanels(groupData.key, $event)"
           >
-            <div class="position-relative draggable-panel js-draggable-panel">
-              <div
-                v-if="isRearrangingPanels"
-                class="draggable-remove js-draggable-remove p-2 w-100 position-absolute d-flex justify-content-end"
-                @click="removePanel(groupData.key, groupData.panels, graphIndex)"
-              >
-                <a class="mx-2 p-2 draggable-remove-link" :aria-label="__('Remove')"
-                  ><icon name="close"
-                /></a>
-              </div>
+            <div
+              v-for="(graphData, graphIndex) in groupData.panels"
+              :key="`panel-type-${graphIndex}`"
+              class="col-12 col-lg-6 px-2 mb-2 draggable"
+              :class="{ 'draggable-enabled': isRearrangingPanels }"
+            >
+              <div class="position-relative draggable-panel js-draggable-panel">
+                <div
+                  v-if="isRearrangingPanels"
+                  class="draggable-remove js-draggable-remove p-2 w-100 position-absolute d-flex justify-content-end"
+                  @click="removePanel(groupData.key, groupData.panels, graphIndex)"
+                >
+                  <a class="mx-2 p-2 draggable-remove-link" :aria-label="__('Remove')"
+                    ><icon name="close"
+                  /></a>
+                </div>
 
-              <panel-type
-                :clipboard-text="generateLink(groupData.group, graphData.title, graphData.y_label)"
-                :graph-data="graphData"
-                :alerts-endpoint="alertsEndpoint"
-                :prometheus-alerts-available="prometheusAlertsAvailable"
-                :index="`${index}-${graphIndex}`"
-              />
+                <panel-type
+                  :clipboard-text="
+                    generateLink(groupData.group, graphData.title, graphData.y_label)
+                  "
+                  :graph-data="graphData"
+                  :alerts-endpoint="alertsEndpoint"
+                  :prometheus-alerts-available="prometheusAlertsAvailable"
+                  :index="`${index}-${graphIndex}`"
+                />
+              </div>
             </div>
-          </div>
-        </vue-draggable>
+          </vue-draggable>
+        </div>
+        <div v-else class="py-5 col col-sm-10 col-md-8 col-lg-7 col-xl-6">
+          <empty-state
+            ref="empty-group"
+            selected-state="noDataGroup"
+            :documentation-path="documentationPath"
+            :settings-path="settingsPath"
+            :clusters-path="clustersPath"
+            :empty-getting-started-svg-path="emptyGettingStartedSvgPath"
+            :empty-loading-svg-path="emptyLoadingSvgPath"
+            :empty-no-data-svg-path="emptyNoDataSvgPath"
+            :empty-no-data-small-svg-path="emptyNoDataSmallSvgPath"
+            :empty-unable-to-connect-svg-path="emptyUnableToConnectSvgPath"
+            :compact="true"
+          />
+        </div>
       </graph-group>
     </div>
     <empty-state
@@ -494,6 +512,7 @@ export default {
       :empty-getting-started-svg-path="emptyGettingStartedSvgPath"
       :empty-loading-svg-path="emptyLoadingSvgPath"
       :empty-no-data-svg-path="emptyNoDataSvgPath"
+      :empty-no-data-small-svg-path="emptyNoDataSmallSvgPath"
       :empty-unable-to-connect-svg-path="emptyUnableToConnectSvgPath"
       :compact="smallEmptyState"
     />
