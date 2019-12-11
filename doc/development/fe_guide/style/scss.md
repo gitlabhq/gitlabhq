@@ -11,7 +11,7 @@ easy to maintain, and performant for the end-user.
 
 ### Utility Classes
 
-As part of the effort for [cleaning up our CSS and moving our components into gitlab-ui](https://gitlab.com/groups/gitlab-org/-/epics/950)
+As part of the effort for [cleaning up our CSS and moving our components into `gitlab-ui`](https://gitlab.com/groups/gitlab-org/-/epics/950)
 led by the [GitLab UI WG](https://gitlab.com/gitlab-com/www-gitlab-com/merge_requests/20623) we prefer the use of utility classes over adding new CSS. However, complex CSS can be addressed by adding component classes.
 
 #### Where are utility classes defined?

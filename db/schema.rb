@@ -1663,6 +1663,8 @@ ActiveRecord::Schema.define(version: 2019_12_06_122926) do
     t.text "new_wiki_disk_path", null: false
     t.integer "old_storage_version", limit: 2
     t.integer "new_storage_version", limit: 2, null: false
+    t.text "old_design_disk_path"
+    t.text "new_design_disk_path"
     t.index ["project_id"], name: "index_geo_hashed_storage_migrated_events_on_project_id"
   end
 

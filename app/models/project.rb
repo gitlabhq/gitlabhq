@@ -1577,7 +1577,9 @@ class Project < ApplicationRecord
   end
 
   def wiki
-    @wiki ||= ProjectWiki.new(self, self.owner)
+    strong_memoize(:wiki) do
+      ProjectWiki.new(self, self.owner)
+    end
   end
 
   def jira_tracker_active?

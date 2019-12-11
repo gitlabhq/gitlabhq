@@ -293,6 +293,10 @@ Scripts specified in `after_script` are executed in a new shell, separate from a
   - Command aliases and variables exported in `script` scripts.
   - Changes outside of the working tree (depending on the Runner executor), like
     software installed by a `before_script` or `script` script.
+- Have a separate timeout, which is hard coded to 5 minutes. See
+  [related issue](https://gitlab.com/gitlab-org/gitlab-runner/issues/2716) for details.
+- Do not affect the job's exit code. If the `script` section succeeds and the
+  `after_script` times out or fails, the job will exit with code `0` (`Job Succeeded`).
 
 It's possible to overwrite a globally defined `before_script` or `after_script`
 if you set it per-job:

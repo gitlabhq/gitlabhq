@@ -1793,6 +1793,7 @@ describe Project do
     let(:project) { create(:project, :repository) }
     let(:repo)    { double(:repo, exists?: true) }
     let(:wiki)    { double(:wiki, exists?: true) }
+    let(:design)  { double(:wiki, exists?: false) }
 
     it 'expires the caches of the repository and wiki' do
       allow(Repository).to receive(:new)
@@ -1802,6 +1803,10 @@ describe Project do
       allow(Repository).to receive(:new)
         .with('foo.wiki', project)
         .and_return(wiki)
+
+      allow(Repository).to receive(:new)
+        .with('foo.design', project)
+        .and_return(design)
 
       expect(repo).to receive(:before_delete)
       expect(wiki).to receive(:before_delete)

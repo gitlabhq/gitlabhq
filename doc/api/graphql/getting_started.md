@@ -289,16 +289,16 @@ Example: Issues can be sorted by creation date:
 
 ```graphql
 query {
-     project(fullPath: "gitlab-org/graphql-sandbox") {
-       name
-        issues(sort: created_asc) {
-        nodes {
-          title
-          createdAt
-        }
+  project(fullPath: "gitlab-org/graphql-sandbox") {
+   name
+    issues(sort: created_asc) {
+      nodes {
+        title
+        createdAt
       }
     }
   }
+}
 ```
 
 ## Pagination
@@ -324,9 +324,9 @@ query {
           title
         }
       }
-    pageInfo {
-      endCursor
-      hasNextPage
+      pageInfo {
+        endCursor
+        hasNextPage
       }
     }
   }
