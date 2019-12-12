@@ -393,6 +393,23 @@ It is stored at:
 - `/var/log/gitlab/gitlab-rails/database_load_balancing.log` for Omnibus GitLab packages.
 - `/home/git/gitlab/log/database_load_balancing.log` for installations from source.
 
+## `elasticsearch.log`
+
+Introduced in GitLab 12.6. This file lives in
+`/var/log/gitlab/gitlab-rails/elasticsearch.log` for Omnibus GitLab
+packages or in `/home/git/gitlab/log/elasticsearch.log` for installations
+from source.
+
+It logs information related to the Elasticsearch Integration including
+errors during indexing or searching Elasticsearch.
+
+Each line contains a JSON line that can be ingested by Elasticsearch, Splunk,
+etc. For example:
+
+```json
+{"severity":"DEBUG","time":"2019-10-17T06:23:13.227Z","correlation_id":null,"message":"redacted_search_result","class_name":"Milestone","id":2,"ability":"read_milestone","current_user_id":2,"query":"project"}
+```
+
 [repocheck]: repository_checks.md
 [Rack Attack]: ../security/rack_attack.md
 [Rate Limit]: ../user/admin_area/settings/rate_limits_on_raw_endpoints.md

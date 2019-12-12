@@ -1,0 +1,5 @@
+---
+title: Fix Zoom Quick Action server error when creating a GitLab Issue
+merge_request: 21262
+author:
+type: fixed

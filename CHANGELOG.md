@@ -8,6 +8,7 @@ entry.
 
 - Update maven_file_name_regex for full string match.
 
+
 ## 12.5.3
 
 ### Fixed (4 changes)
@@ -768,6 +769,7 @@ entry.
 
 - Update maven_file_name_regex for full string match.
 
+
 ## 12.3.7
 
 ### Security (12 changes)
@@ -1090,10 +1092,6 @@ entry.
 - Remove vue resource from group service. (Lee Tickett)
 - Updates tooltip of 'detached' label/state.
 
-
-## 12.2.10
-
-- No changes.
 
 ## 12.2.8
 

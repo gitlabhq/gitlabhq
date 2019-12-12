@@ -183,6 +183,7 @@ module Gitlab
         command :zoom do |link|
           result = @zoom_service.add_link(link)
           @execution_message[:zoom] = result.message
+          @updates.merge!(result.payload) if result.payload
         end
 
         desc _('Remove Zoom meeting')

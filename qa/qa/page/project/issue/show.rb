@@ -26,11 +26,6 @@ module QA
             element :avatar_image
           end
 
-          view 'app/assets/javascripts/sidebar/components/assignees/assignee_title.vue' do
-            element :assignee_edit_link
-            element :assignee_title
-          end
-
           view 'app/assets/javascripts/sidebar/components/assignees/uncollapsed_assignee_list.vue' do
             element :more_assignees_link
           end
@@ -59,16 +54,6 @@ module QA
           view 'app/views/shared/notes/_form.html.haml' do
             element :new_note_form, 'new-note' # rubocop:disable QA/ElementWithPattern
             element :new_note_form, 'attr: :note' # rubocop:disable QA/ElementWithPattern
-          end
-
-          def assign(user)
-            click_element(:assignee_edit_link)
-            select_user(user.username)
-            click_body
-          end
-
-          def assignee_title
-            find_element(:assignee_title)
           end
 
           def avatar_image_count
@@ -166,19 +151,6 @@ module QA
               click_element :discussion_filter
               find_element(:filter_options, text: text).click
             end
-          end
-
-          def select_user(username)
-            find("#{element_selector_css(:assignee_block)} input").set(username)
-
-            dropdown_menu_user_link_selector = '.dropdown-menu-user-link'
-            at_username = "@#{username}"
-            ten_seconds = 10
-
-            wait(reload: false, max: ten_seconds, interval: 1) do
-              has_css?(dropdown_menu_user_link_selector, wait: ten_seconds, text: at_username)
-            end
-            find(dropdown_menu_user_link_selector, text: at_username).click
           end
 
           def wait_assignees_block_finish_loading

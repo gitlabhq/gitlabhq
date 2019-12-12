@@ -232,9 +232,3 @@ dast:
       - gl-dast-report.json
     reports:
       dast: gl-dast-report.json
-  only:
-    variables:
-      - $GITLAB_FEATURES =~ /\bdast\b/
-  except:
-    variables:
-      - $DAST_DISABLED

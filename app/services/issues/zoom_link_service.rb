@@ -13,30 +13,29 @@ module Issues
       if can_add_link? && (link = parse_link(link))
         begin
           add_zoom_meeting(link)
-          success(_('Zoom meeting added'))
         rescue ActiveRecord::RecordNotUnique
-          error(_('Failed to add a Zoom meeting'))
+          error(message: _('Failed to add a Zoom meeting'))
         end
       else
-        error(_('Failed to add a Zoom meeting'))
+        error(message: _('Failed to add a Zoom meeting'))
       end
     end
 
     def remove_link
       if can_remove_link?
         remove_zoom_meeting
-        success(_('Zoom meeting removed'))
+        success(message: _('Zoom meeting removed'))
       else
-        error(_('Failed to remove a Zoom meeting'))
+        error(message: _('Failed to remove a Zoom meeting'))
       end
     end
 
     def can_add_link?
-      can_update_issue? && !@added_meeting
+      can_change_link? && !@added_meeting
     end
 
     def can_remove_link?
-      can_update_issue? && !!@added_meeting
+      can_change_link? && @issue.persisted? && !!@added_meeting
     end
 
     def parse_link(link)
@@ -56,14 +55,29 @@ module Issues
     end
 
     def add_zoom_meeting(link)
-      ZoomMeeting.create(
+      zoom_meeting = new_zoom_meeting(link)
+      response =
+        if @issue.persisted?
+          # Save the meeting directly since we only want to update one meeting, not all
+          zoom_meeting.save
+          success(message: _('Zoom meeting added'))
+        else
+          success(message: _('Zoom meeting added'), payload: { zoom_meetings: [zoom_meeting] })
+        end
+
+      track_meeting_added_event
+      SystemNoteService.zoom_link_added(@issue, @project, current_user)
+
+      response
+    end
+
+    def new_zoom_meeting(link)
+      ZoomMeeting.new(
         issue: @issue,
-        project: @issue.project,
+        project: @project,
         issue_status: :added,
         url: link
       )
-      track_meeting_added_event
-      SystemNoteService.zoom_link_added(@issue, @project, current_user)
     end
 
     def remove_zoom_meeting
@@ -72,16 +86,20 @@ module Issues
       SystemNoteService.zoom_link_removed(@issue, @project, current_user)
     end
 
-    def success(message)
-      ServiceResponse.success(message: message)
+    def success(message:, payload: nil)
+      ServiceResponse.success(message: message, payload: payload)
     end
 
-    def error(message)
+    def error(message:)
       ServiceResponse.error(message: message)
     end
 
-    def can_update_issue?
-      can?(current_user, :update_issue, project)
+    def can_change_link?
+      if @issue.persisted?
+        can?(current_user, :update_issue, @project)
+      else
+        can?(current_user, :create_issue, @project)
+      end
     end
   end
 end

@@ -43,7 +43,7 @@ const Api = {
   releasesPath: '/api/:version/projects/:id/releases',
   releasePath: '/api/:version/projects/:id/releases/:tag_name',
   mergeRequestsPipeline: '/api/:version/projects/:id/merge_requests/:merge_request_iid/pipelines',
-  adminStatisticsPath: 'api/:version/application/statistics',
+  adminStatisticsPath: '/api/:version/application/statistics',
 
   group(groupId, callback) {
     const url = Api.buildUrl(Api.groupPath).replace(':id', groupId);
