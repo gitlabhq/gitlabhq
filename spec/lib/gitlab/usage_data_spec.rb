@@ -27,6 +27,7 @@ describe Gitlab::UsageData do
       create_list(:zoom_meeting, 2, project: projects[0], issue: projects[0].issues[1], issue_status: :removed)
       create(:zoom_meeting, project: projects[0], issue: projects[0].issues[2], issue_status: :added)
       create_list(:zoom_meeting, 2, project: projects[0], issue: projects[0].issues[2], issue_status: :removed)
+      create(:sentry_issue, issue: projects[0].issues[0])
 
       # Enabled clusters
       gcp_cluster = create(:cluster_provider_gcp, :created).cluster
@@ -152,6 +153,7 @@ describe Gitlab::UsageData do
         grafana_integrated_projects
         groups
         issues
+        issues_created_from_gitlab_error_tracking_ui
         issues_with_associated_zoom_link
         issues_using_zoom_quick_actions
         issues_with_embedded_grafana_charts_approx
@@ -212,6 +214,7 @@ describe Gitlab::UsageData do
       expect(count_data[:projects_mattermost_active]).to eq(1)
       expect(count_data[:projects_with_repositories_enabled]).to eq(3)
       expect(count_data[:projects_with_error_tracking_enabled]).to eq(1)
+      expect(count_data[:issues_created_from_gitlab_error_tracking_ui]).to eq(1)
       expect(count_data[:issues_with_associated_zoom_link]).to eq(2)
       expect(count_data[:issues_using_zoom_quick_actions]).to eq(3)
       expect(count_data[:issues_with_embedded_grafana_charts_approx]).to eq(2)

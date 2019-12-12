@@ -1217,7 +1217,7 @@ module API
     end
 
     class BroadcastMessage < Grape::Entity
-      expose :message, :starts_at, :ends_at, :color, :font
+      expose :message, :starts_at, :ends_at, :color, :font, :target_path
     end
 
     class ApplicationStatistics < Grape::Entity
