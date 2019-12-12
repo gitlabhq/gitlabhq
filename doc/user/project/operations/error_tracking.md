@@ -52,7 +52,8 @@ From error list, users can navigate to the error details page by clicking the ti
 
 This page has:
 
-- A link to Sentry issue.
+- A link to the Sentry issue.
 - A full stack trace along with other details.
+- Ability to create an issue from a Sentry error.
 
-![Error Details](img/error_details_v12_5.png)
+![Error Details](img/error_details_v12_6.png)

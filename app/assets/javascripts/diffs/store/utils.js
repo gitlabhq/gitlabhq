@@ -498,7 +498,7 @@ export const allDiscussionWrappersExpanded = diff => {
       }
     });
   } else if (diff.highlighted_diff_lines) {
-    diff.parallel_diff_lines.forEach(line => {
+    diff.highlighted_diff_lines.forEach(line => {
       if (line.discussions.length) {
         discussionsExpandedArray.push(line.discussionsExpanded);
       }
