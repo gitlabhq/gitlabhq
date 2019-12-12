@@ -8,7 +8,7 @@ class Clusters::ClustersController < Clusters::BaseController
   before_action :validate_gcp_token, only: [:new]
   before_action :gcp_cluster, only: [:new]
   before_action :user_cluster, only: [:new]
-  before_action :authorize_create_cluster!, only: [:new, :authorize_aws_role, :revoke_aws_role, :aws_proxy]
+  before_action :authorize_create_cluster!, only: [:new, :authorize_aws_role]
   before_action :authorize_update_cluster!, only: [:update]
   before_action :authorize_admin_cluster!, only: [:destroy, :clear_cache]
   before_action :update_applications_status, only: [:cluster_status]
@@ -42,6 +42,7 @@ class Clusters::ClustersController < Clusters::BaseController
     if params[:provider] == 'aws'
       @aws_role = current_user.aws_role || Aws::Role.new
       @aws_role.ensure_role_external_id!
+      @instance_types = load_instance_types.to_json
 
     elsif params[:provider] == 'gcp'
       redirect_to @authorize_url if @authorize_url && !@valid_gcp_token
@@ -145,21 +146,9 @@ class Clusters::ClustersController < Clusters::BaseController
   end
 
   def authorize_aws_role
-    role = current_user.build_aws_role(create_role_params)
-
-    role.save ? respond_201 : respond_422
-  end
-
-  def revoke_aws_role
-    current_user.aws_role&.destroy
-
-    head :no_content
-  end
-
-  def aws_proxy
-    response = Clusters::Aws::ProxyService.new(
-      current_user.aws_role,
-      params: params
+    response = Clusters::Aws::AuthorizeRoleService.new(
+      current_user,
+      params: aws_role_params
     ).execute
 
     render json: response.body, status: response.status
@@ -268,7 +257,7 @@ class Clusters::ClustersController < Clusters::BaseController
       )
   end
 
-  def create_role_params
+  def aws_role_params
     params.require(:cluster).permit(:role_arn, :role_external_id)
   end
 
@@ -312,6 +301,19 @@ class Clusters::ClustersController < Clusters::BaseController
     GoogleApi::CloudPlatform::Client.new_session_key_for_redirect_uri do |key|
       session[key] = uri
     end
+  end
+
+  ##
+  # Unfortunately the EC2 API doesn't provide a list of
+  # possible instance types. There is a workaround, using
+  # the Pricing API, but instead of requiring the
+  # user to grant extra permissions for this we use the
+  # values that validate the CloudFormation template.
+  def load_instance_types
+    stack_template = File.read(Rails.root.join('vendor', 'aws', 'cloudformation', 'eks_cluster.yaml'))
+    instance_types = YAML.safe_load(stack_template).dig('Parameters', 'NodeInstanceType', 'AllowedValues')
+
+    instance_types.map { |type| Hash(name: type, value: type) }
   end
 
   def update_applications_status

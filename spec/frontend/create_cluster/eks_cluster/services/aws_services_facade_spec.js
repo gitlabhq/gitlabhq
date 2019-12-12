@@ -1,42 +1,62 @@
-import AxiosMockAdapter from 'axios-mock-adapter';
-import awsServicesFacadeFactory from '~/create_cluster/eks_cluster/services/aws_services_facade';
-import axios from '~/lib/utils/axios_utils';
+import AWS from 'aws-sdk/global';
+import EC2 from 'aws-sdk/clients/ec2';
+import {
+  setAWSConfig,
+  fetchRoles,
+  fetchRegions,
+  fetchKeyPairs,
+  fetchVpcs,
+  fetchSubnets,
+  fetchSecurityGroups,
+  DEFAULT_REGION,
+} from '~/create_cluster/eks_cluster/services/aws_services_facade';
+
+const mockListRolesPromise = jest.fn();
+const mockDescribeRegionsPromise = jest.fn();
+const mockDescribeKeyPairsPromise = jest.fn();
+const mockDescribeVpcsPromise = jest.fn();
+const mockDescribeSubnetsPromise = jest.fn();
+const mockDescribeSecurityGroupsPromise = jest.fn();
+
+jest.mock('aws-sdk/clients/iam', () =>
+  jest.fn().mockImplementation(() => ({
+    listRoles: jest.fn().mockReturnValue({ promise: mockListRolesPromise }),
+  })),
+);
+
+jest.mock('aws-sdk/clients/ec2', () =>
+  jest.fn().mockImplementation(() => ({
+    describeRegions: jest.fn().mockReturnValue({ promise: mockDescribeRegionsPromise }),
+    describeKeyPairs: jest.fn().mockReturnValue({ promise: mockDescribeKeyPairsPromise }),
+    describeVpcs: jest.fn().mockReturnValue({ promise: mockDescribeVpcsPromise }),
+    describeSubnets: jest.fn().mockReturnValue({ promise: mockDescribeSubnetsPromise }),
+    describeSecurityGroups: jest
+      .fn()
+      .mockReturnValue({ promise: mockDescribeSecurityGroupsPromise }),
+  })),
+);
 
 describe('awsServicesFacade', () => {
-  let apiPaths;
-  let axiosMock;
-  let awsServices;
   let region;
   let vpc;
 
   beforeEach(() => {
-    apiPaths = {
-      getKeyPairsPath: '/clusters/aws/api/key_pairs',
-      getRegionsPath: '/clusters/aws/api/regions',
-      getRolesPath: '/clusters/aws/api/roles',
-      getSecurityGroupsPath: '/clusters/aws/api/security_groups',
-      getSubnetsPath: '/clusters/aws/api/subnets',
-      getVpcsPath: '/clusters/aws/api/vpcs',
-      getInstanceTypesPath: '/clusters/aws/api/instance_types',
-    };
     region = 'west-1';
     vpc = 'vpc-2';
-    awsServices = awsServicesFacadeFactory(apiPaths);
-    axiosMock = new AxiosMockAdapter(axios);
   });
 
-  describe('when fetchRegions succeeds', () => {
-    let regions;
-    let regionsOutput;
+  it('setAWSConfig configures AWS SDK with provided credentials and default region', () => {
+    const awsCredentials = {
+      accessKeyId: 'access-key',
+      secretAccessKey: 'secret-key',
+      sessionToken: 'session-token',
+    };
 
-    beforeEach(() => {
-      regions = [{ region_name: 'east-1' }, { region_name: 'west-2' }];
-      regionsOutput = regions.map(({ region_name: name }) => ({ name, value: name }));
-      axiosMock.onGet(apiPaths.getRegionsPath).reply(200, { regions });
-    });
+    setAWSConfig({ awsCredentials });
 
-    it('return list of roles where each item has a name and value', () => {
-      expect(awsServices.fetchRegions()).resolves.toEqual(regionsOutput);
+    expect(AWS.config).toEqual({
+      ...awsCredentials,
+      region: DEFAULT_REGION,
     });
   });
 
@@ -46,15 +66,32 @@ describe('awsServicesFacade', () => {
 
     beforeEach(() => {
       roles = [
-        { role_name: 'admin', arn: 'aws::admin' },
-        { role_name: 'read-only', arn: 'aws::read-only' },
+        { RoleName: 'admin', Arn: 'aws::admin' },
+        { RoleName: 'read-only', Arn: 'aws::read-only' },
       ];
-      rolesOutput = roles.map(({ role_name: name, arn: value }) => ({ name, value }));
-      axiosMock.onGet(apiPaths.getRolesPath).reply(200, { roles });
+      rolesOutput = roles.map(({ RoleName: name, Arn: value }) => ({ name, value }));
+
+      mockListRolesPromise.mockResolvedValueOnce({ Roles: roles });
     });
 
     it('return list of regions where each item has a name and value', () => {
-      expect(awsServices.fetchRoles()).resolves.toEqual(rolesOutput);
+      expect(fetchRoles()).resolves.toEqual(rolesOutput);
+    });
+  });
+
+  describe('when fetchRegions succeeds', () => {
+    let regions;
+    let regionsOutput;
+
+    beforeEach(() => {
+      regions = [{ RegionName: 'east-1' }, { RegionName: 'west-2' }];
+      regionsOutput = regions.map(({ RegionName: name }) => ({ name, value: name }));
+
+      mockDescribeRegionsPromise.mockResolvedValueOnce({ Regions: regions });
+    });
+
+    it('return list of roles where each item has a name and value', () => {
+      expect(fetchRegions()).resolves.toEqual(regionsOutput);
     });
   });
 
@@ -63,15 +100,19 @@ describe('awsServicesFacade', () => {
     let keyPairsOutput;
 
     beforeEach(() => {
-      keyPairs = [{ key_pair: 'key-pair' }, { key_pair: 'key-pair-2' }];
-      keyPairsOutput = keyPairs.map(({ key_name: name }) => ({ name, value: name }));
-      axiosMock
-        .onGet(apiPaths.getKeyPairsPath, { params: { region } })
-        .reply(200, { key_pairs: keyPairs });
+      keyPairs = [{ KeyName: 'key-pair' }, { KeyName: 'key-pair-2' }];
+      keyPairsOutput = keyPairs.map(({ KeyName: name }) => ({ name, value: name }));
+
+      mockDescribeKeyPairsPromise.mockResolvedValueOnce({ KeyPairs: keyPairs });
+    });
+
+    it('instantatiates ec2 service with provided region', () => {
+      fetchKeyPairs({ region });
+      expect(EC2).toHaveBeenCalledWith({ region });
     });
 
     it('return list of key pairs where each item has a name and value', () => {
-      expect(awsServices.fetchKeyPairs({ region })).resolves.toEqual(keyPairsOutput);
+      expect(fetchKeyPairs({ region })).resolves.toEqual(keyPairsOutput);
     });
   });
 
@@ -80,13 +121,37 @@ describe('awsServicesFacade', () => {
     let vpcsOutput;
 
     beforeEach(() => {
-      vpcs = [{ vpc_id: 'vpc-1' }, { vpc_id: 'vpc-2' }];
-      vpcsOutput = vpcs.map(({ vpc_id: name }) => ({ name, value: name }));
-      axiosMock.onGet(apiPaths.getVpcsPath, { params: { region } }).reply(200, { vpcs });
+      vpcs = [{ VpcId: 'vpc-1', Tags: [] }, { VpcId: 'vpc-2', Tags: [] }];
+      vpcsOutput = vpcs.map(({ VpcId: vpcId }) => ({ name: vpcId, value: vpcId }));
+
+      mockDescribeVpcsPromise.mockResolvedValueOnce({ Vpcs: vpcs });
+    });
+
+    it('instantatiates ec2 service with provided region', () => {
+      fetchVpcs({ region });
+      expect(EC2).toHaveBeenCalledWith({ region });
     });
 
     it('return list of vpcs where each item has a name and value', () => {
-      expect(awsServices.fetchVpcs({ region })).resolves.toEqual(vpcsOutput);
+      expect(fetchVpcs({ region })).resolves.toEqual(vpcsOutput);
+    });
+  });
+
+  describe('when vpcs has a Name tag', () => {
+    const vpcName = 'vpc name';
+    const vpcId = 'vpc id';
+    let vpcs;
+    let vpcsOutput;
+
+    beforeEach(() => {
+      vpcs = [{ VpcId: vpcId, Tags: [{ Key: 'Name', Value: vpcName }] }];
+      vpcsOutput = [{ name: vpcName, value: vpcId }];
+
+      mockDescribeVpcsPromise.mockResolvedValueOnce({ Vpcs: vpcs });
+    });
+
+    it('uses name tag value as the vpc name', () => {
+      expect(fetchVpcs({ region })).resolves.toEqual(vpcsOutput);
     });
   });
 
@@ -95,15 +160,14 @@ describe('awsServicesFacade', () => {
     let subnetsOutput;
 
     beforeEach(() => {
-      subnets = [{ subnet_id: 'vpc-1' }, { subnet_id: 'vpc-2' }];
-      subnetsOutput = subnets.map(({ subnet_id }) => ({ name: subnet_id, value: subnet_id }));
-      axiosMock
-        .onGet(apiPaths.getSubnetsPath, { params: { region, vpc_id: vpc } })
-        .reply(200, { subnets });
+      subnets = [{ SubnetId: 'subnet-1' }, { SubnetId: 'subnet-2' }];
+      subnetsOutput = subnets.map(({ SubnetId }) => ({ name: SubnetId, value: SubnetId }));
+
+      mockDescribeSubnetsPromise.mockResolvedValueOnce({ Subnets: subnets });
     });
 
     it('return list of subnets where each item has a name and value', () => {
-      expect(awsServices.fetchSubnets({ region, vpc })).resolves.toEqual(subnetsOutput);
+      expect(fetchSubnets({ region, vpc })).resolves.toEqual(subnetsOutput);
     });
   });
 
@@ -113,40 +177,19 @@ describe('awsServicesFacade', () => {
 
     beforeEach(() => {
       securityGroups = [
-        { group_name: 'admin group', group_id: 'group-1' },
-        { group_name: 'basic group', group_id: 'group-2' },
+        { GroupName: 'admin group', GroupId: 'group-1' },
+        { GroupName: 'basic group', GroupId: 'group-2' },
       ];
-      securityGroupsOutput = securityGroups.map(({ group_id: value, group_name: name }) => ({
+      securityGroupsOutput = securityGroups.map(({ GroupId: value, GroupName: name }) => ({
         name,
         value,
       }));
-      axiosMock
-        .onGet(apiPaths.getSecurityGroupsPath, { params: { region, vpc_id: vpc } })
-        .reply(200, { security_groups: securityGroups });
+
+      mockDescribeSecurityGroupsPromise.mockResolvedValueOnce({ SecurityGroups: securityGroups });
     });
 
     it('return list of security groups where each item has a name and value', () => {
-      expect(awsServices.fetchSecurityGroups({ region, vpc })).resolves.toEqual(
-        securityGroupsOutput,
-      );
-    });
-  });
-
-  describe('when fetchInstanceTypes succeeds', () => {
-    let instanceTypes;
-    let instanceTypesOutput;
-
-    beforeEach(() => {
-      instanceTypes = [{ instance_type_name: 't2.small' }, { instance_type_name: 't2.medium' }];
-      instanceTypesOutput = instanceTypes.map(({ instance_type_name }) => ({
-        name: instance_type_name,
-        value: instance_type_name,
-      }));
-      axiosMock.onGet(apiPaths.getInstanceTypesPath).reply(200, { instance_types: instanceTypes });
-    });
-
-    it('return list of instance types where each item has a name and value', () => {
-      expect(awsServices.fetchInstanceTypes()).resolves.toEqual(instanceTypesOutput);
+      expect(fetchSecurityGroups({ region, vpc })).resolves.toEqual(securityGroupsOutput);
     });
   });
 });

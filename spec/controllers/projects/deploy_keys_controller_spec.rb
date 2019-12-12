@@ -46,17 +46,27 @@ describe Projects::DeployKeysController do
         create(:deploy_keys_project, project: project_private, deploy_key: create(:another_deploy_key))
       end
 
-      before do
-        project2.add_developer(user)
+      context 'when user has access to all projects where deploy keys are used' do
+        before do
+          project2.add_developer(user)
+        end
+
+        it 'returns json in a correct format' do
+          get :index, params: params.merge(format: :json)
+
+          expect(json_response.keys).to match_array(%w(enabled_keys available_project_keys public_keys))
+          expect(json_response['enabled_keys'].count).to eq(1)
+          expect(json_response['available_project_keys'].count).to eq(1)
+          expect(json_response['public_keys'].count).to eq(1)
+        end
       end
 
-      it 'returns json in a correct format' do
-        get :index, params: params.merge(format: :json)
+      context 'when user has no access to all projects where deploy keys are used' do
+        it 'returns json in a correct format' do
+          get :index, params: params.merge(format: :json)
 
-        expect(json_response.keys).to match_array(%w(enabled_keys available_project_keys public_keys))
-        expect(json_response['enabled_keys'].count).to eq(1)
-        expect(json_response['available_project_keys'].count).to eq(1)
-        expect(json_response['public_keys'].count).to eq(1)
+          expect(json_response['available_project_keys'].count).to eq(0)
+        end
       end
     end
   end

@@ -1,5 +1,4 @@
 import testAction from 'helpers/vuex_action_helper';
-
 import MockAdapter from 'axios-mock-adapter';
 import createState from '~/create_cluster/eks_cluster/store/state';
 import * as actions from '~/create_cluster/eks_cluster/store/actions';
@@ -21,7 +20,6 @@ import {
   CREATE_ROLE_ERROR,
   REQUEST_CREATE_CLUSTER,
   CREATE_CLUSTER_ERROR,
-  SIGN_OUT,
 } from '~/create_cluster/eks_cluster/store/mutation_types';
 import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';
@@ -64,7 +62,6 @@ describe('EKS Cluster Store Actions', () => {
     state = {
       ...createState(),
       createRolePath: '/clusters/roles/',
-      signOutPath: '/aws/signout',
       createClusterPath: '/clusters/',
     };
   });
@@ -102,6 +99,10 @@ describe('EKS Cluster Store Actions', () => {
       roleArn: 'role_arn',
       externalId: 'externalId',
     };
+    const response = {
+      accessKeyId: 'access-key-id',
+      secretAccessKey: 'secret-key-id',
+    };
 
     describe('when request succeeds', () => {
       beforeEach(() => {
@@ -110,7 +111,7 @@ describe('EKS Cluster Store Actions', () => {
             role_arn: payload.roleArn,
             role_external_id: payload.externalId,
           })
-          .reply(201);
+          .reply(201, response);
       });
 
       it('dispatches createRoleSuccess action', () =>
@@ -119,7 +120,7 @@ describe('EKS Cluster Store Actions', () => {
           payload,
           state,
           [],
-          [{ type: 'requestCreateRole' }, { type: 'createRoleSuccess' }],
+          [{ type: 'requestCreateRole' }, { type: 'createRoleSuccess', payload: response }],
         ));
     });
 
@@ -279,16 +280,6 @@ describe('EKS Cluster Store Actions', () => {
 
     it('creates a flash that displays the create cluster error', () => {
       expect(createFlash).toHaveBeenCalledWith(payload.name[0]);
-    });
-  });
-
-  describe('signOut', () => {
-    beforeEach(() => {
-      mock.onDelete(state.signOutPath).reply(200, null);
-    });
-
-    it('commits signOut mutation', () => {
-      testAction(actions.signOut, null, state, [{ type: SIGN_OUT }]);
     });
   });
 });

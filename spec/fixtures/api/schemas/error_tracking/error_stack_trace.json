@@ -7,7 +7,7 @@
   ],
   "properties": {
     "issue_id": { "type": ["string", "integer"] },
-    "stack_trace_entries": { "type": "object" },
+    "stack_trace_entries": { "type": "array" },
     "date_received": { "type": "string" }
   },
   "additionalProperties": false

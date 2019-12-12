@@ -1305,6 +1305,7 @@ ActiveRecord::Schema.define(version: 2019_12_08_071112) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean "can_push", default: false, null: false
+    t.index ["deploy_key_id"], name: "index_deploy_keys_projects_on_deploy_key_id"
     t.index ["project_id"], name: "index_deploy_keys_projects_on_project_id"
   end
 
@@ -2049,6 +2050,7 @@ ActiveRecord::Schema.define(version: 2019_12_08_071112) do
     t.integer "target_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer "link_type", limit: 2, default: 0, null: false
     t.index ["source_id", "target_id"], name: "index_issue_links_on_source_id_and_target_id", unique: true
     t.index ["source_id"], name: "index_issue_links_on_source_id"
     t.index ["target_id"], name: "index_issue_links_on_target_id"

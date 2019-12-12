@@ -1261,6 +1261,25 @@ describe API::Users do
       expect { Namespace.find(namespace.id) }.to raise_error ActiveRecord::RecordNotFound
     end
 
+    context "sole owner of a group" do
+      let!(:group) { create(:group).tap { |group| group.add_owner(user) } }
+
+      context "hard delete disabled" do
+        it "does not delete user" do
+          perform_enqueued_jobs { delete api("/users/#{user.id}", admin)}
+          expect(response).to have_gitlab_http_status(409)
+        end
+      end
+
+      context "hard delete enabled" do
+        it "delete user and group", :sidekiq_might_not_need_inline do
+          perform_enqueued_jobs { delete api("/users/#{user.id}?hard_delete=true", admin)}
+          expect(response).to have_gitlab_http_status(204)
+          expect(Group.exists?(group.id)).to be_falsy
+        end
+      end
+    end
+
     it_behaves_like '412 response' do
       let(:request) { api("/users/#{user.id}", admin) }
     end

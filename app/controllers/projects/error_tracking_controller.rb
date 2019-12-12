@@ -77,8 +77,10 @@ class Projects::ErrorTrackingController < Projects::ApplicationController
 
     return if handle_errors(result)
 
+    result_with_syntax_highlight = Gitlab::ErrorTracking::StackTraceHighlightDecorator.decorate(result[:latest_event])
+
     render json: {
-      error: serialize_error_event(result[:latest_event])
+      error: serialize_error_event(result_with_syntax_highlight)
     }
   end
 

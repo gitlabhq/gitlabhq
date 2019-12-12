@@ -381,10 +381,15 @@ describe Admin::ClustersController do
       post :authorize_aws_role, params: params
     end
 
+    before do
+      allow(Clusters::Aws::FetchCredentialsService).to receive(:new)
+        .and_return(double(execute: double))
+    end
+
     it 'creates an Aws::Role record' do
       expect { go }.to change { Aws::Role.count }
 
-      expect(response.status).to eq 201
+      expect(response.status).to eq 200
 
       role = Aws::Role.last
       expect(role.user).to eq admin
@@ -400,27 +405,6 @@ describe Admin::ClustersController do
 
         expect(response.status).to eq 422
       end
-    end
-
-    describe 'security' do
-      it { expect { go }.to be_allowed_for(:admin) }
-      it { expect { go }.to be_denied_for(:user) }
-      it { expect { go }.to be_denied_for(:external) }
-    end
-  end
-
-  describe 'DELETE revoke AWS role for EKS cluster' do
-    let!(:role) { create(:aws_role, user: admin) }
-
-    def go
-      delete :revoke_aws_role
-    end
-
-    it 'deletes the Aws::Role record' do
-      expect { go }.to change { Aws::Role.count }
-
-      expect(response.status).to eq 204
-      expect(admin.reload_aws_role).to be_nil
     end
 
     describe 'security' do

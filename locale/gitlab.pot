@@ -4145,9 +4145,6 @@ msgstr ""
 msgid "ClusterIntegration|Select a VPC to use for your EKS Cluster resources. To use a new VPC, first create one on %{startLink}Amazon Web Services %{externalLinkIcon} %{endLink}."
 msgstr ""
 
-msgid "ClusterIntegration|Select a different AWS role"
-msgstr ""
-
 msgid "ClusterIntegration|Select a region to choose a Key Pair"
 msgstr ""
 

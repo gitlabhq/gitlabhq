@@ -384,6 +384,10 @@ describe Projects::ErrorTrackingController do
       ).permit!
     end
 
+    subject(:get_stack_trace) do
+      get :stack_trace, params: issue_params(issue_id: issue_id, format: :json)
+    end
+
     before do
       expect(ErrorTracking::IssueLatestEventService)
         .to receive(:new).with(project, user, permitted_params)
@@ -398,7 +402,7 @@ describe Projects::ErrorTrackingController do
         end
 
         it 'returns no data' do
-          get :stack_trace, params: issue_params(issue_id: issue_id, format: :json)
+          get_stack_trace
 
           expect(response).to have_gitlab_http_status(:no_content)
         end
@@ -408,16 +412,21 @@ describe Projects::ErrorTrackingController do
         before do
           expect(issue_stack_trace_service).to receive(:execute)
             .and_return(status: :success, latest_event: error_event)
+
+          get_stack_trace
         end
 
         let(:error_event) { build(:error_tracking_error_event) }
 
         it 'returns an error' do
-          get :stack_trace, params: issue_params(issue_id: issue_id, format: :json)
-
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to match_response_schema('error_tracking/issue_stack_trace')
-          expect(json_response['error']).to eq(error_event.as_json)
+        end
+
+        it 'highlights stack trace source code' do
+          expect(json_response['error']).to eq(
+            Gitlab::ErrorTracking::StackTraceHighlightDecorator.decorate(error_event).as_json
+          )
         end
       end
 
@@ -431,7 +440,7 @@ describe Projects::ErrorTrackingController do
           end
 
           it 'returns 400 with message' do
-            get :stack_trace, params: issue_params(issue_id: issue_id, format: :json)
+            get_stack_trace
 
             expect(response).to have_gitlab_http_status(:bad_request)
             expect(json_response['message']).to eq(error_message)
@@ -450,7 +459,7 @@ describe Projects::ErrorTrackingController do
           end
 
           it 'returns http_status with message' do
-            get :stack_trace, params: issue_params(issue_id: issue_id, format: :json)
+            get_stack_trace
 
             expect(response).to have_gitlab_http_status(http_status)
             expect(json_response['message']).to eq(error_message)

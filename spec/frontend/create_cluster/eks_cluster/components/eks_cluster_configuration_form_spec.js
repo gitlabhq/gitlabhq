@@ -27,13 +27,11 @@ describe('EksClusterConfigurationForm', () => {
   let subnetsActions;
   let keyPairsActions;
   let securityGroupsActions;
-  let instanceTypesActions;
   let vm;
 
   beforeEach(() => {
     state = eksClusterFormState();
     actions = {
-      signOut: jest.fn(),
       createCluster: jest.fn(),
       setClusterName: jest.fn(),
       setEnvironmentScope: jest.fn(),
@@ -64,9 +62,6 @@ describe('EksClusterConfigurationForm', () => {
       fetchItems: jest.fn(),
     };
     securityGroupsActions = {
-      fetchItems: jest.fn(),
-    };
-    instanceTypesActions = {
       fetchItems: jest.fn(),
     };
     rolesState = {
@@ -127,7 +122,6 @@ describe('EksClusterConfigurationForm', () => {
         instanceTypes: {
           namespaced: true,
           state: instanceTypesState,
-          actions: instanceTypesActions,
         },
       },
     });
@@ -164,7 +158,6 @@ describe('EksClusterConfigurationForm', () => {
     });
   };
 
-  const findSignOutButton = () => vm.find('.js-sign-out');
   const findCreateClusterButton = () => vm.find('.js-create-cluster');
   const findClusterNameInput = () => vm.find('[id=eks-cluster-name]');
   const findEnvironmentScopeInput = () => vm.find('[id=eks-environment-scope]');
@@ -187,15 +180,6 @@ describe('EksClusterConfigurationForm', () => {
     it('fetches available roles', () => {
       expect(rolesActions.fetchItems).toHaveBeenCalled();
     });
-
-    it('fetches available instance types', () => {
-      expect(instanceTypesActions.fetchItems).toHaveBeenCalled();
-    });
-  });
-
-  it('dispatches signOut action when sign out button is clicked', () => {
-    findSignOutButton().trigger('click');
-    expect(actions.signOut).toHaveBeenCalled();
   });
 
   it('sets isLoadingRoles to RoleDropdown loading property', () => {

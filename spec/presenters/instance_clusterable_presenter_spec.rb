@@ -21,20 +21,6 @@ describe InstanceClusterablePresenter do
     it { is_expected.to eq(authorize_aws_role_admin_clusters_path) }
   end
 
-  describe '#revoke_aws_role_path' do
-    subject { described_class.new(instance).revoke_aws_role_path }
-
-    it { is_expected.to eq(revoke_aws_role_admin_clusters_path) }
-  end
-
-  describe '#aws_api_proxy_path' do
-    let(:resource) { 'resource' }
-
-    subject { described_class.new(instance).aws_api_proxy_path(resource) }
-
-    it { is_expected.to eq(aws_proxy_admin_clusters_path(resource: resource)) }
-  end
-
   describe '#clear_cluster_cache_path' do
     subject { presenter.clear_cluster_cache_path(cluster) }
 

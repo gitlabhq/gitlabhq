@@ -452,6 +452,7 @@ module API
 
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
+        conflict!('User cannot be removed while is the sole-owner of a group') unless user.can_be_removed? || params[:hard_delete]
 
         destroy_conditionally!(user) do
           user.delete_async(deleted_by: current_user, params: params)

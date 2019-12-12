@@ -1001,7 +1001,7 @@ class User < ApplicationRecord
   end
 
   def project_deploy_keys
-    DeployKey.in_projects(authorized_projects.select(:id)).distinct(:id)
+    @project_deploy_keys ||= DeployKey.in_projects(authorized_projects.select(:id)).distinct(:id)
   end
 
   def highest_role

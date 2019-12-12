@@ -7,9 +7,8 @@ module Clusters
 
       MissingRoleError = Class.new(StandardError)
 
-      def initialize(provision_role, region:, provider: nil)
+      def initialize(provision_role, provider: nil)
         @provision_role = provision_role
-        @region = region
         @provider = provider
       end
 
@@ -20,13 +19,14 @@ module Clusters
           client: client,
           role_arn: provision_role.role_arn,
           role_session_name: session_name,
-          external_id: provision_role.role_external_id
+          external_id: provision_role.role_external_id,
+          policy: session_policy
         ).credentials
       end
 
       private
 
-      attr_reader :provider, :region
+      attr_reader :provider
 
       def client
         ::Aws::STS::Client.new(credentials: gitlab_credentials, region: region)
@@ -42,6 +42,26 @@ module Clusters
 
       def secret_access_key
         Gitlab::CurrentSettings.eks_secret_access_key
+      end
+
+      def region
+        provider&.region || Clusters::Providers::Aws::DEFAULT_REGION
+      end
+
+      ##
+      # If we haven't created a provider record yet,
+      # we restrict ourselves to read only access so
+      # that we can safely expose credentials to the
+      # frontend (to be used when populating the
+      # creation form).
+      def session_policy
+        if provider.nil?
+          File.read(read_only_policy)
+        end
+      end
+
+      def read_only_policy
+        Rails.root.join('vendor', 'aws', 'iam', "eks_cluster_read_only_policy.json")
       end
 
       def session_name

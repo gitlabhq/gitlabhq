@@ -8,9 +8,11 @@ module Clusters
 
       self.table_name = 'cluster_providers_aws'
 
+      DEFAULT_REGION = 'us-east-1'
+
       belongs_to :cluster, inverse_of: :provider_aws, class_name: 'Clusters::Cluster'
 
-      default_value_for :region, 'us-east-1'
+      default_value_for :region, DEFAULT_REGION
       default_value_for :num_nodes, 3
       default_value_for :instance_type, 'm5.large'
 

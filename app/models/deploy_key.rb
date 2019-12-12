@@ -9,7 +9,7 @@ class DeployKey < Key
 
   scope :in_projects, ->(projects) { joins(:deploy_keys_projects).where('deploy_keys_projects.project_id in (?)', projects) }
   scope :are_public,  -> { where(public: true) }
-  scope :with_projects, -> { includes(deploy_keys_projects: { project: [:route, :namespace] }) }
+  scope :with_projects, -> { includes(deploy_keys_projects: { project: [:route, namespace: :route] }) }
 
   ignore_column :can_push, remove_after: '2019-12-15', remove_with: '12.6'
 
@@ -24,7 +24,7 @@ class DeployKey < Key
   end
 
   def almost_orphaned?
-    self.deploy_keys_projects.count == 1
+    self.deploy_keys_projects.size == 1
   end
 
   def destroyed_when_orphaned?
@@ -44,7 +44,11 @@ class DeployKey < Key
   end
 
   def deploy_keys_project_for(project)
-    deploy_keys_projects.find_by(project: project)
+    if association(:deploy_keys_projects).loaded?
+      deploy_keys_projects.find { |dkp| dkp.project_id.eql?(project&.id) }
+    else
+      deploy_keys_projects.find_by(project: project)
+    end
   end
 
   def projects_with_write_access

@@ -430,7 +430,7 @@ e.g. when renaming the email address to some existing one.
 ## User deletion
 
 Deletes a user. Available only for administrators.
-This returns a `204 No Content` status code if the operation was successfully or `404` if the resource was not found.
+This returns a `204 No Content` status code if the operation was successfully, `404` if the resource was not found or `409` if the user cannot be soft deleted.
 
 ```
 DELETE /users/:id

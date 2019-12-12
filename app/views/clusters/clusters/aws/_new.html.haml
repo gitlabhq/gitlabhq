@@ -5,19 +5,12 @@
 - else
   .js-create-eks-cluster-form-container{ data: { 'gitlab-managed-cluster-help-path' => help_page_path('user/project/clusters/index.md', anchor: 'gitlab-managed-clusters'),
     'create-role-path' => clusterable.authorize_aws_role_path,
-    'sign-out-path' => clusterable.revoke_aws_role_path,
     'create-cluster-path' => clusterable.create_aws_clusters_path,
-    'get-roles-path' => clusterable.aws_api_proxy_path('roles'),
-    'get-regions-path' => clusterable.aws_api_proxy_path('regions'),
-    'get-key-pairs-path' => clusterable.aws_api_proxy_path('key_pairs'),
-    'get-vpcs-path' => clusterable.aws_api_proxy_path('vpcs'),
-    'get-subnets-path' => clusterable.aws_api_proxy_path('subnets'),
-    'get-security-groups-path' => clusterable.aws_api_proxy_path('security_groups'),
-    'get-instance-types-path' => clusterable.aws_api_proxy_path('instance_types'),
     'account-id' => Gitlab::CurrentSettings.eks_account_id,
     'external-id' => @aws_role.role_external_id,
+    'role-arn' => @aws_role.role_arn,
+    'instance-types' => @instance_types,
     'kubernetes-integration-help-path' => help_page_path('user/project/clusters/index'),
     'account-and-external-ids-help-path' => help_page_path('user/project/clusters/add_remove_clusters.md', anchor: 'eks-cluster'),
     'create-role-arn-help-path' => help_page_path('user/project/clusters/add_remove_clusters.md', anchor: 'eks-cluster'),
-    'external-link-icon' => icon('external-link'),
-    'has-credentials' => @aws_role.role_arn.present?.to_s } }
+    'external-link-icon' => icon('external-link') } }
