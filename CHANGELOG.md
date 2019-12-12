@@ -4,6 +4,7 @@ entry.
 
 ## 12.0.10
 
+- No changes.
 - Unreleased due to build failures
 
 ## 12.0.9
