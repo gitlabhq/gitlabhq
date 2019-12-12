@@ -1093,6 +1093,10 @@ entry.
 - Updates tooltip of 'detached' label/state.
 
 
+## 12.2.11
+
+- No changes.
+
 ## 12.2.8
 
 ### Security (1 change)
