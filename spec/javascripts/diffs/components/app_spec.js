@@ -41,6 +41,7 @@ describe('diffs/components/app', () => {
         changesEmptyStateIllustration: '',
         dismissEndpoint: '',
         showSuggestPopover: true,
+        useSingleDiffStyle: false,
         ...props,
       },
       store,

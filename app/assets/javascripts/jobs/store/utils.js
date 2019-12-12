@@ -114,7 +114,7 @@ export const logLinesParser = (lines = [], accumulator = []) =>
         acc.push(parseHeaderLine(line, lineNumber));
       } else if (isCollapsibleSection(acc, last, line)) {
         // if the object belongs to a nested section, we append it to the new `lines` array of the
-        // previously formated header
+        // previously formatted header
         last.lines.push(parseLine(line, lineNumber));
       } else if (line.section_duration) {
         // if the line has section_duration, we look for the correct header to add it

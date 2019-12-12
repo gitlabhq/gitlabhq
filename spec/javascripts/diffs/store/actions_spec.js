@@ -75,6 +75,7 @@ describe('DiffsStoreActions', () => {
       const projectPath = '/root/project';
       const dismissEndpoint = '/-/user_callouts';
       const showSuggestPopover = false;
+      const useSingleDiffStyle = false;
 
       testAction(
         setBaseConfig,
@@ -85,6 +86,7 @@ describe('DiffsStoreActions', () => {
           projectPath,
           dismissEndpoint,
           showSuggestPopover,
+          useSingleDiffStyle,
         },
         {
           endpoint: '',
@@ -93,6 +95,7 @@ describe('DiffsStoreActions', () => {
           projectPath: '',
           dismissEndpoint: '',
           showSuggestPopover: true,
+          useSingleDiffStyle: true,
         },
         [
           {
@@ -104,6 +107,7 @@ describe('DiffsStoreActions', () => {
               projectPath,
               dismissEndpoint,
               showSuggestPopover,
+              useSingleDiffStyle,
             },
           },
         ],

@@ -721,6 +721,28 @@ describe('common_utils', () => {
       });
     });
 
+    describe('convertObjectPropsToSnakeCase', () => {
+      it('converts each object key to snake case', () => {
+        const obj = {
+          some: 'some',
+          'cool object': 'cool object',
+          likeThisLongOne: 'likeThisLongOne',
+        };
+
+        expect(commonUtils.convertObjectPropsToSnakeCase(obj)).toEqual({
+          some: 'some',
+          cool_object: 'cool object',
+          like_this_long_one: 'likeThisLongOne',
+        });
+      });
+
+      it('returns an empty object if there are no keys', () => {
+        ['', {}, [], null].forEach(badObj => {
+          expect(commonUtils.convertObjectPropsToSnakeCase(badObj)).toEqual({});
+        });
+      });
+    });
+
     describe('with options', () => {
       const objWithoutChildren = {
         project_name: 'GitLab CE',

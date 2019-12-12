@@ -48,7 +48,7 @@ export default {
     },
     releasedTimeAgo() {
       return sprintf(__('released %{time}'), {
-        time: this.timeFormated(this.release.released_at),
+        time: this.timeFormatted(this.release.released_at),
       });
     },
     userImageAltDescription() {

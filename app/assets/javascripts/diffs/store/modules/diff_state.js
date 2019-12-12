@@ -31,4 +31,5 @@ export default () => ({
   fileFinderVisible: false,
   dismissEndpoint: '',
   showSuggestPopover: true,
+  useSingleDiffStyle: false,
 });

@@ -45,9 +45,9 @@ describe('Environment item', () => {
       });
 
       it('should render last deployment date', () => {
-        const formatedDate = format(environment.last_deployment.deployed_at);
+        const formattedDate = format(environment.last_deployment.deployed_at);
 
-        expect(wrapper.find('.environment-created-date-timeago').text()).toContain(formatedDate);
+        expect(wrapper.find('.environment-created-date-timeago').text()).toContain(formattedDate);
       });
 
       describe('With user information', () => {

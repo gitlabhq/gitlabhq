@@ -41,7 +41,7 @@ export default {
   },
   computed: {
     deployTimeago() {
-      return this.timeFormated(this.deployment.deployed_at);
+      return this.timeFormatted(this.deployment.deployed_at);
     },
     deployedText() {
       return this.$options.deployedTextMap[this.computedDeploymentStatus];

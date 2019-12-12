@@ -50,7 +50,7 @@ export default {
   },
   computed: {
     releasedAtTimeAgo() {
-      return this.timeFormated(this.releasedAt);
+      return this.timeFormatted(this.releasedAt);
     },
     userImageAltDescription() {
       return this.author && this.author.username

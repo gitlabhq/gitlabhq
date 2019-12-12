@@ -68,7 +68,7 @@ describe('table registry', () => {
       expect(tds.at(2).html()).toContain(repoPropsData.list[0].shortRevision);
       expect(tds.at(3).html()).toContain(repoPropsData.list[0].layers);
       expect(tds.at(3).html()).toContain(repoPropsData.list[0].size);
-      expect(tds.at(4).html()).toContain(wrapper.vm.timeFormated(repoPropsData.list[0].createdAt));
+      expect(tds.at(4).html()).toContain(wrapper.vm.timeFormatted(repoPropsData.list[0].createdAt));
     });
 
     it('should have a label called Image ID', () => {

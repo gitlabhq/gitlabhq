@@ -54,7 +54,7 @@ export default {
           return timeFor(
             this.milestoneDue,
             sprintf(__('Expired %{expiredOn}'), {
-              expiredOn: this.timeFormated(this.milestoneDue),
+              expiredOn: this.timeFormatted(this.milestoneDue),
             }),
           );
         }
@@ -62,7 +62,7 @@ export default {
         return sprintf(
           this.isMilestoneStarted ? __('Started %{startsIn}') : __('Starts %{startsIn}'),
           {
-            startsIn: this.timeFormated(this.milestoneStart),
+            startsIn: this.timeFormatted(this.milestoneStart),
           },
         );
       }

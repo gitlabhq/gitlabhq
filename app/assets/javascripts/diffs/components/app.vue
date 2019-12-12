@@ -177,6 +177,7 @@ export default {
       projectPath: this.projectPath,
       dismissEndpoint: this.dismissEndpoint,
       showSuggestPopover: this.showSuggestPopover,
+      useSingleDiffStyle: this.glFeatures.singleMrDiffView,
     });
 
     if (this.shouldShow) {

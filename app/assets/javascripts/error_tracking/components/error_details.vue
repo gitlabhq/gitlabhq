@@ -56,7 +56,7 @@ export default {
         __('Reported %{timeAgo} by %{reportedBy}'),
         {
           reportedBy: `<strong>${this.error.culprit}</strong>`,
-          timeAgo: this.timeFormated(this.stacktraceData.date_received),
+          timeAgo: this.timeFormatted(this.stacktraceData.date_received),
         },
         false,
       );
@@ -107,7 +107,7 @@ export default {
       this.$refs.sentryIssueForm.submit();
     },
     formatDate(date) {
-      return `${this.timeFormated(date)} (${dateFormat(date, 'UTC:yyyy-mm-dd h:MM:ssTT Z')})`;
+      return `${this.timeFormatted(date)} (${dateFormat(date, 'UTC:yyyy-mm-dd h:MM:ssTT Z')})`;
     },
   },
 };

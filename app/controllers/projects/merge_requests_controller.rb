@@ -20,6 +20,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
   before_action only: [:show] do
     push_frontend_feature_flag(:diffs_batch_load, @project)
+    push_frontend_feature_flag(:single_mr_diff_view, @project)
   end
 
   before_action do

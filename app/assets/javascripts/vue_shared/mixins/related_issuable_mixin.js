@@ -159,7 +159,7 @@ const mixins = {
       return this.displayReference.split(this.pathIdSeparator).pop();
     },
     createdAtInWords() {
-      return this.createdAt ? this.timeFormated(this.createdAt) : '';
+      return this.createdAt ? this.timeFormatted(this.createdAt) : '';
     },
     createdAtTimestamp() {
       return this.createdAt ? formatDate(new Date(this.createdAt)) : '';
@@ -168,10 +168,10 @@ const mixins = {
       return this.mergedAt ? formatDate(new Date(this.mergedAt)) : '';
     },
     mergedAtInWords() {
-      return this.mergedAt ? this.timeFormated(this.mergedAt) : '';
+      return this.mergedAt ? this.timeFormatted(this.mergedAt) : '';
     },
     closedAtInWords() {
-      return this.closedAt ? this.timeFormated(this.closedAt) : '';
+      return this.closedAt ? this.timeFormatted(this.closedAt) : '';
     },
     closedAtTimestamp() {
       return this.closedAt ? formatDate(new Date(this.closedAt)) : '';

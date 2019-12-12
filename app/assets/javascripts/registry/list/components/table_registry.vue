@@ -247,7 +247,7 @@ export default {
 
           <td>
             <span v-gl-tooltip.bottom :title="tooltipTitle(item.createdAt)">{{
-              timeFormated(item.createdAt)
+              timeFormatted(item.createdAt)
             }}</span>
           </td>
 

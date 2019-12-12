@@ -35,10 +35,10 @@ export default {
     title() {
       const timeago = getTimeago();
       const { timeDifference, standardDateFormat } = this;
-      const formatedDate = standardDateFormat;
+      const formattedDate = standardDateFormat;
 
       if (timeDifference >= -1 && timeDifference < 7) {
-        return `${timeago.format(this.issueDueDate)} (${formatedDate})`;
+        return `${timeago.format(this.issueDueDate)} (${formattedDate})`;
       }
 
       return timeago.format(this.issueDueDate);

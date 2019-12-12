@@ -8,8 +8,8 @@ import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 
 jest.mock('~/vue_shared/mixins/timeago', () => ({
   methods: {
-    timeFormated() {
-      return '7 fortnightes ago';
+    timeFormatted() {
+      return '7 fortnights ago';
     },
     tooltipTitle() {
       return 'February 30, 2401';
@@ -82,7 +82,7 @@ describe('Release block footer', () => {
 
     it('renders the author and creation time info', () => {
       expect(trimText(authorDateInfoSection().text())).toBe(
-        `Created 7 fortnightes ago by ${releaseClone.author.username}`,
+        `Created 7 fortnights ago by ${releaseClone.author.username}`,
       );
     });
 
@@ -139,7 +139,7 @@ describe('Release block footer', () => {
     beforeEach(() => factory({ author: undefined }));
 
     it('renders the release date without the author name', () => {
-      expect(trimText(authorDateInfoSection().text())).toBe('Created 7 fortnightes ago');
+      expect(trimText(authorDateInfoSection().text())).toBe('Created 7 fortnights ago');
     });
   });
 

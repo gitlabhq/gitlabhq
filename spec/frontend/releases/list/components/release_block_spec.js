@@ -68,7 +68,7 @@ describe('Release block', () => {
     });
 
     it('renders release date', () => {
-      expect(wrapper.text()).toContain(timeagoMixin.methods.timeFormated(release.released_at));
+      expect(wrapper.text()).toContain(timeagoMixin.methods.timeFormatted(release.released_at));
     });
 
     it('renders number of assets provided', () => {

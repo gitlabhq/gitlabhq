@@ -22,7 +22,7 @@ export default {
   mixins: [timeAgoMixin],
   data() {
     return {
-      lastCommitFormatedAge: null,
+      lastCommitFormattedAge: null,
     };
   },
   computed: {
@@ -62,7 +62,7 @@ export default {
     },
     commitAgeUpdate() {
       if (this.lastCommit) {
-        this.lastCommitFormatedAge = this.timeFormated(this.lastCommit.committed_date);
+        this.lastCommitFormattedAge = this.timeFormatted(this.lastCommit.committed_date);
       }
     },
     getCommitPath(shortSha) {
@@ -118,7 +118,7 @@ export default {
         :title="tooltipTitle(lastCommit.committed_date)"
         data-placement="top"
         data-container="body"
-        >{{ lastCommitFormatedAge }}</time
+        >{{ lastCommitFormattedAge }}</time
       >
     </div>
     <ide-status-list class="ml-auto" />

@@ -31,7 +31,7 @@ export default {
     hasFinishedTime() {
       return this.finishedTime !== '';
     },
-    durationFormated() {
+    durationFormatted() {
       const date = new Date(this.duration * 1000);
 
       let hh = date.getUTCHours();
@@ -59,7 +59,7 @@ export default {
     <div class="table-mobile-header" role="rowheader">{{ s__('Pipeline|Duration') }}</div>
     <div class="table-mobile-content">
       <p v-if="hasDuration" class="duration">
-        <span v-html="iconTimerSvg"> </span> {{ durationFormated }}
+        <span v-html="iconTimerSvg"> </span> {{ durationFormatted }}
       </p>
 
       <p v-if="hasFinishedTime" class="finished-at d-none d-sm-none d-md-block">
@@ -71,7 +71,7 @@ export default {
           data-placement="top"
           data-container="body"
         >
-          {{ timeFormated(finishedTime) }}
+          {{ timeFormatted(finishedTime) }}
         </time>
       </p>
     </div>

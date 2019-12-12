@@ -168,13 +168,13 @@ export default {
           />
           <detail-row
             v-if="job.finished_at"
-            :value="timeFormated(job.finished_at)"
+            :value="timeFormatted(job.finished_at)"
             class="js-job-finished"
             title="Finished"
           />
           <detail-row
             v-if="job.erased_at"
-            :value="timeFormated(job.erased_at)"
+            :value="timeFormatted(job.erased_at)"
             class="js-job-erased"
             title="Erased"
           />
