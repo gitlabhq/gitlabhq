@@ -8,7 +8,6 @@ class Feature
     SERVER_FEATURE_FLAGS =
       %w[
         inforef_uploadpack_cache
-        get_all_lfs_pointers_go
         get_tag_messages_go
         filter_shas_with_signatures_go
       ].freeze

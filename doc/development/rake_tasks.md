@@ -93,9 +93,9 @@ There are a few environment flags you can pass to change how projects are seeded
 In order to run the test you can use the following commands:
 
 - `bin/rake spec` to run the rspec suite
-- `bin/rake spec:unit` to run the only the unit tests
-- `bin/rake spec:integration` to run the only the integration tests
-- `bin/rake spec:system` to run the only the system tests
+- `bin/rake spec:unit` to run only the unit tests
+- `bin/rake spec:integration` to run only the integration tests
+- `bin/rake spec:system` to run only the system tests
 - `bin/rake karma` to run the Karma test suite
 
 Note: `bin/rake spec` takes significant time to pass.
@@ -188,11 +188,10 @@ task, then check the dimensions of the new spritesheet and update the
 ## Updating project templates
 
 Starting a project from a template needs this project to be exported. On a
-up to date master branch with run:
+up to date master branch run:
 
 ```
-gdk run
-# In a new terminal window
+gdk start
 bundle exec rake gitlab:update_project_templates
 git checkout -b update-project-templates
 git add vendor/project_templates

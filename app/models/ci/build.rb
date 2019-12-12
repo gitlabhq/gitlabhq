@@ -23,6 +23,7 @@ module Ci
     belongs_to :runner
     belongs_to :trigger_request
     belongs_to :erased_by, class_name: 'User'
+    belongs_to :resource_group, class_name: 'Ci::ResourceGroup', inverse_of: :builds
 
     RUNNER_FEATURES = {
       upload_multiple_artifacts: -> (build) { build.publishes_artifacts_reports? },
@@ -34,6 +35,7 @@ module Ci
     }.freeze
 
     has_one :deployment, as: :deployable, class_name: 'Deployment'
+    has_one :resource, class_name: 'Ci::Resource', inverse_of: :build
     has_many :trace_sections, class_name: 'Ci::BuildTraceSection'
     has_many :trace_chunks, class_name: 'Ci::BuildTraceChunk', foreign_key: :build_id
 
@@ -439,6 +441,15 @@ module Ci
 
     def has_environment?
       environment.present?
+    end
+
+    def requires_resource?
+      Feature.enabled?(:ci_resource_group, project) &&
+        self.resource_group_id.present? && resource.nil?
+    end
+
+    def retains_resource?
+      self.resource_group_id.present? && resource.present?
     end
 
     def starts_environment?
