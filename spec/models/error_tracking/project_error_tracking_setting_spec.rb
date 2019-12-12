@@ -193,7 +193,7 @@ describe ErrorTracking::ProjectErrorTrackingSetting do
 
     it 'calls sentry client' do
       expect(subject).to receive(:sentry_client).and_return(sentry_client)
-      expect(sentry_client).to receive(:list_projects).and_return(projects)
+      expect(sentry_client).to receive(:projects).and_return(projects)
 
       result = subject.list_sentry_projects
 

@@ -53,10 +53,10 @@ msgstr ""
 msgid " or <!merge request id>"
 msgstr ""
 
-msgid " or <#epic id>"
+msgid " or <#issue id>"
 msgstr ""
 
-msgid " or <#issue id>"
+msgid " or <&epic id>"
 msgstr ""
 
 msgid " or references (e.g. path/to/project!merge_request_id)"
@@ -18252,6 +18252,9 @@ msgid "This will remove the fork relationship between this project and other pro
 msgstr ""
 
 msgid "Those emails automatically become issues (with the comments becoming the email conversation) listed here."
+msgstr ""
+
+msgid "Threat Monitoring"
 msgstr ""
 
 msgid "Thursday"

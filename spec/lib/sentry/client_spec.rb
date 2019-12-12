@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe Sentry::Client do
+  include SentryClientHelpers
+
   let(:sentry_url) { 'https://sentrytest.gitlab.com/api/0/projects/sentry-org/sentry-project' }
   let(:token) { 'test-token' }
   let(:default_httparty_options) do
@@ -18,41 +20,7 @@ describe Sentry::Client do
     )
   end
 
-  let(:projects_sample_response) do
-    Gitlab::Utils.deep_indifferent_access(
-      JSON.parse(fixture_file('sentry/list_projects_sample_response.json'))
-    )
-  end
-
   subject(:client) { described_class.new(sentry_url, token) }
-
-  # Requires sentry_api_url and subject to be defined
-  shared_examples 'no redirects' do
-    let(:redirect_to) { 'https://redirected.example.com' }
-    let(:other_url) { 'https://other.example.org' }
-
-    let!(:redirected_req_stub) { stub_sentry_request(other_url) }
-
-    let!(:redirect_req_stub) do
-      stub_sentry_request(
-        sentry_api_url,
-        status: 302,
-        headers: { location: redirect_to }
-      )
-    end
-
-    it 'does not follow redirects' do
-      expect { subject }.to raise_exception(Sentry::Client::Error, 'Sentry response status code: 302')
-      expect(redirect_req_stub).to have_been_requested
-      expect(redirected_req_stub).not_to have_been_requested
-    end
-  end
-
-  shared_examples 'has correct return type' do |klass|
-    it "returns objects of type #{klass}" do
-      expect(subject).to all( be_a(klass) )
-    end
-  end
 
   shared_examples 'issues has correct return type' do |klass|
     it "returns objects of type #{klass}" do
@@ -60,45 +28,8 @@ describe Sentry::Client do
     end
   end
 
-  shared_examples 'has correct length' do |length|
-    it { expect(subject.length).to eq(length) }
-  end
-
   shared_examples 'issues has correct length' do |length|
     it { expect(subject[:issues].length).to eq(length) }
-  end
-
-  # Requires sentry_api_request and subject to be defined
-  shared_examples 'calls sentry api' do
-    it 'calls sentry api' do
-      subject
-
-      expect(sentry_api_request).to have_been_requested
-    end
-  end
-
-  shared_examples 'maps exceptions' do
-    exceptions = {
-      Gitlab::HTTP::Error => 'Error when connecting to Sentry',
-      Net::OpenTimeout => 'Connection to Sentry timed out',
-      SocketError => 'Received SocketError when trying to connect to Sentry',
-      OpenSSL::SSL::SSLError => 'Sentry returned invalid SSL data',
-      Errno::ECONNREFUSED => 'Connection refused',
-      StandardError => 'Sentry request failed due to StandardError'
-    }
-
-    exceptions.each do |exception, message|
-      context "#{exception}" do
-        before do
-          stub_request(:get, sentry_request_url).to_raise(exception)
-        end
-
-        it do
-          expect { subject }
-            .to raise_exception(Sentry::Client::Error, message)
-        end
-      end
-    end
   end
 
   describe '#list_issues' do
@@ -174,7 +105,7 @@ describe Sentry::Client do
     context 'redirects' do
       let(:sentry_api_url) { sentry_url + '/issues/?limit=20&query=is:unresolved' }
 
-      it_behaves_like 'no redirects'
+      it_behaves_like 'no Sentry redirects'
     end
 
     # Sentry API returns 404 if there are extra slashes in the URL!
@@ -265,7 +196,7 @@ describe Sentry::Client do
       end
     end
 
-    it_behaves_like 'maps exceptions'
+    it_behaves_like 'maps Sentry exceptions'
 
     context 'when search term is present' do
       let(:search_term) { 'NoMethodError' }
@@ -286,113 +217,5 @@ describe Sentry::Client do
       it_behaves_like 'issues has correct return type', Gitlab::ErrorTracking::Error
       it_behaves_like 'issues has correct length', 1
     end
-  end
-
-  describe '#list_projects' do
-    let(:sentry_list_projects_url) { 'https://sentrytest.gitlab.com/api/0/projects/' }
-
-    let(:sentry_api_response) { projects_sample_response }
-
-    let!(:sentry_api_request) { stub_sentry_request(sentry_list_projects_url, body: sentry_api_response) }
-
-    subject { client.list_projects }
-
-    it_behaves_like 'calls sentry api'
-
-    it_behaves_like 'has correct return type', Gitlab::ErrorTracking::Project
-    it_behaves_like 'has correct length', 2
-
-    context 'essential keys missing in API response' do
-      let(:sentry_api_response) do
-        projects_sample_response[0...1].map do |project|
-          project.except(:slug)
-        end
-      end
-
-      it 'raises exception' do
-        expect { subject }.to raise_error(Sentry::Client::MissingKeysError, 'Sentry API response is missing keys. key not found: "slug"')
-      end
-    end
-
-    context 'optional keys missing in sentry response' do
-      let(:sentry_api_response) do
-        projects_sample_response[0...1].map do |project|
-          project[:organization].delete(:id)
-          project.delete(:id)
-          project.except(:status)
-        end
-      end
-
-      it_behaves_like 'calls sentry api'
-
-      it_behaves_like 'has correct return type', Gitlab::ErrorTracking::Project
-      it_behaves_like 'has correct length', 1
-    end
-
-    context 'error object created from sentry response' do
-      using RSpec::Parameterized::TableSyntax
-
-      where(:sentry_project_object, :sentry_response) do
-        :id                | :id
-        :name              | :name
-        :status            | :status
-        :slug              | :slug
-        :organization_name | [:organization, :name]
-        :organization_id   | [:organization, :id]
-        :organization_slug | [:organization, :slug]
-      end
-
-      with_them do
-        it do
-          expect(subject[0].public_send(sentry_project_object)).to(
-            eq(sentry_api_response[0].dig(*sentry_response))
-          )
-        end
-      end
-    end
-
-    context 'redirects' do
-      let(:sentry_api_url) { sentry_list_projects_url }
-
-      it_behaves_like 'no redirects'
-    end
-
-    # Sentry API returns 404 if there are extra slashes in the URL!
-    context 'extra slashes in URL' do
-      let(:sentry_url) { 'https://sentrytest.gitlab.com/api//0/projects//' }
-      let(:client) { described_class.new(sentry_url, token) }
-
-      let!(:valid_req_stub) do
-        stub_sentry_request(sentry_list_projects_url)
-      end
-
-      it 'removes extra slashes in api url' do
-        expect(Gitlab::HTTP).to receive(:get).with(
-          URI(sentry_list_projects_url),
-          anything
-        ).and_call_original
-
-        subject
-
-        expect(valid_req_stub).to have_been_requested
-      end
-    end
-
-    context 'when exception is raised' do
-      let(:sentry_request_url) { sentry_list_projects_url }
-
-      it_behaves_like 'maps exceptions'
-    end
-  end
-
-  private
-
-  def stub_sentry_request(url, body: {}, status: 200, headers: {})
-    stub_request(:get, url)
-      .to_return(
-        status: status,
-        headers: { 'Content-Type' => 'application/json' }.merge(headers),
-        body: body.to_json
-      )
   end
 end

@@ -2,29 +2,22 @@
 
 require 'fast_spec_helper'
 require 'rspec-parameterized'
+require_relative 'danger_spec_helper'
 
 require 'gitlab/danger/helper'
 
 describe Gitlab::Danger::Helper do
   using RSpec::Parameterized::TableSyntax
-
-  class FakeDanger
-    include Gitlab::Danger::Helper
-
-    attr_reader :git, :gitlab
-
-    def initialize(git:, gitlab:)
-      @git = git
-      @gitlab = gitlab
-    end
-  end
+  include DangerSpecHelper
 
   let(:fake_git) { double('fake-git') }
 
   let(:mr_author) { nil }
   let(:fake_gitlab) { double('fake-gitlab', mr_author: mr_author) }
 
-  subject(:helper) { FakeDanger.new(git: fake_git, gitlab: fake_gitlab) }
+  let(:fake_danger) { new_fake_danger.include(described_class) }
+
+  subject(:helper) { fake_danger.new(git: fake_git, gitlab: fake_gitlab) }
 
   describe '#gitlab_helper' do
     context 'when gitlab helper is not available' do

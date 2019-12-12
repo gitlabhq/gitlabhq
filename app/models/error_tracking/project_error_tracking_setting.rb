@@ -86,7 +86,7 @@ module ErrorTracking
     end
 
     def list_sentry_projects
-      { projects: sentry_client.list_projects }
+      { projects: sentry_client.projects }
     end
 
     def issue_details(opts = {})
