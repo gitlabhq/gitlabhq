@@ -10,6 +10,7 @@ describe Gitlab::SlashCommands::Presenters::IssueComment do
 
   describe '#present' do
     let(:attachment) { subject[:attachments].first }
+
     subject { described_class.new(note).present }
 
     it { is_expected.to be_a(Hash) }

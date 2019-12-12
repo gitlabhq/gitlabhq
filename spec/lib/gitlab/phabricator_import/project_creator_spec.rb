@@ -8,6 +8,7 @@ describe Gitlab::PhabricatorImport::ProjectCreator do
       phabricator_server_url: 'http://phab.example.com',
       api_token: 'the-token' }
   end
+
   subject(:creator) { described_class.new(user, params) }
 
   describe '#execute' do

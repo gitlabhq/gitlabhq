@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
   let(:gl_auth) { described_class }
+
   set(:project) { create(:project) }
 
   describe 'constants' do

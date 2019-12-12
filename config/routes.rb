@@ -119,6 +119,7 @@ Rails.application.routes.draw do
       draw :trial_registration
       draw :country
       draw :country_state
+      draw :subscription
     end
 
     Gitlab.ee do

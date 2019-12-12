@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe Prometheus::AdapterService do
   let(:project) { create(:project) }
+
   subject { described_class.new(project) }
 
   describe '#prometheus_adapter' do

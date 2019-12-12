@@ -10,6 +10,7 @@ describe Gitlab::BackgroundMigration::BackfillProjectFullpathInRepoConfig, :migr
 
   describe described_class::Storage::HashedProject do
     let(:project) { double(id: 555) }
+
     subject(:project_storage) { described_class.new(project) }
 
     it 'has the correct disk_path' do
@@ -19,6 +20,7 @@ describe Gitlab::BackgroundMigration::BackfillProjectFullpathInRepoConfig, :migr
 
   describe described_class::Storage::LegacyProject do
     let(:project) { double(full_path: 'this/is/the/full/path') }
+
     subject(:project_storage) { described_class.new(project) }
 
     it 'has the correct disk_path' do
@@ -28,6 +30,7 @@ describe Gitlab::BackgroundMigration::BackfillProjectFullpathInRepoConfig, :migr
 
   describe described_class::Project do
     let(:project_record) { projects.create!(namespace_id: subgroup.id, name: 'baz', path: 'baz') }
+
     subject(:project) { described_class.find(project_record.id) }
 
     describe '#full_path' do

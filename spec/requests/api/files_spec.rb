@@ -636,7 +636,7 @@ describe API::Files do
       put api(route(file_path), user), params: params_with_stale_id
 
       expect(response).to have_gitlab_http_status(400)
-      expect(json_response['message']).to eq('You are attempting to update a file that has changed since you started editing it.')
+      expect(json_response['message']).to eq(_('You are attempting to update a file that has changed since you started editing it.'))
     end
 
     it "updates existing file in project repo with accepts correct last commit id" do

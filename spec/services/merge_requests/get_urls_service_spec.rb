@@ -47,6 +47,7 @@ describe MergeRequests::GetUrlsService do
 
     context 'pushing to default branch' do
       let(:changes) { default_branch_changes }
+
       it_behaves_like 'no_merge_request_url'
     end
 
@@ -62,28 +63,33 @@ describe MergeRequests::GetUrlsService do
 
     context 'pushing one completely new branch' do
       let(:changes) { new_branch_changes }
+
       it_behaves_like 'new_merge_request_link'
     end
 
     context 'pushing to existing branch but no merge request' do
       let(:changes) { existing_branch_changes }
+
       it_behaves_like 'new_merge_request_link'
     end
 
     context 'pushing to deleted branch' do
       let(:changes) { deleted_branch_changes }
+
       it_behaves_like 'no_merge_request_url'
     end
 
     context 'pushing to existing branch and merge request opened' do
       let!(:merge_request) { create(:merge_request, source_project: project, source_branch: source_branch) }
       let(:changes) { existing_branch_changes }
+
       it_behaves_like 'show_merge_request_url'
     end
 
     context 'pushing to existing branch and merge request is reopened' do
       let!(:merge_request) { create(:merge_request, :opened, source_project: project, source_branch: source_branch) }
       let(:changes) { existing_branch_changes }
+
       it_behaves_like 'show_merge_request_url'
     end
 
@@ -105,12 +111,14 @@ describe MergeRequests::GetUrlsService do
     context 'pushing to existing branch and merge request is closed' do
       let!(:merge_request) { create(:merge_request, :closed, source_project: project, source_branch: source_branch) }
       let(:changes) { existing_branch_changes }
+
       it_behaves_like 'new_merge_request_link'
     end
 
     context 'pushing to existing branch and merge request is merged' do
       let!(:merge_request) { create(:merge_request, :merged, source_project: project, source_branch: source_branch) }
       let(:changes) { existing_branch_changes }
+
       it_behaves_like 'new_merge_request_link'
     end
 

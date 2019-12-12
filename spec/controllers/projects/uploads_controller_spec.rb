@@ -35,7 +35,7 @@ describe Projects::UploadsController do
       post_authorize
 
       expect(response).to have_gitlab_http_status(500)
-      expect(response.body).to eq('Error uploading file')
+      expect(response.body).to eq(_('Error uploading file'))
     end
   end
 

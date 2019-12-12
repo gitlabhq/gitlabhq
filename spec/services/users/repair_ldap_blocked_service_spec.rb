@@ -5,6 +5,7 @@ require 'spec_helper'
 describe Users::RepairLdapBlockedService do
   let(:user) { create(:omniauth_user, provider: 'ldapmain', state: 'ldap_blocked') }
   let(:identity) { user.ldap_identity }
+
   subject(:service) { described_class.new(user) }
 
   describe '#execute' do

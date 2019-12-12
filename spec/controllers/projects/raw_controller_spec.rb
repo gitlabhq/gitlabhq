@@ -59,7 +59,7 @@ describe Projects::RawController do
       it 'prevents from accessing the raw file' do
         execute_raw_requests(requests: 6, project: project, file_path: file_path)
 
-        expect(flash[:alert]).to eq('You cannot access the raw file. Please wait a minute.')
+        expect(flash[:alert]).to eq(_('You cannot access the raw file. Please wait a minute.'))
         expect(response).to have_gitlab_http_status(429)
       end
 
@@ -109,7 +109,7 @@ describe Projects::RawController do
 
           execute_raw_requests(requests: 3, project: project, file_path: modified_path)
 
-          expect(flash[:alert]).to eq('You cannot access the raw file. Please wait a minute.')
+          expect(flash[:alert]).to eq(_('You cannot access the raw file. Please wait a minute.'))
           expect(response).to have_gitlab_http_status(429)
         end
       end
@@ -137,7 +137,7 @@ describe Projects::RawController do
           # Accessing downcase version of readme
           execute_raw_requests(requests: 6, project: project, file_path: file_path)
 
-          expect(flash[:alert]).to eq('You cannot access the raw file. Please wait a minute.')
+          expect(flash[:alert]).to eq(_('You cannot access the raw file. Please wait a minute.'))
           expect(response).to have_gitlab_http_status(429)
 
           # Accessing upcase version of readme

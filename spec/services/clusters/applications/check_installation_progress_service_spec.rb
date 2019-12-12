@@ -76,6 +76,7 @@ describe Clusters::Applications::CheckInstallationProgressService, '#execute' do
 
     context 'when installation POD succeeded' do
       let(:phase) { Gitlab::Kubernetes::Pod::SUCCEEDED }
+
       before do
         expect(service).to receive(:pod_phase).once.and_return(phase)
       end
@@ -137,6 +138,7 @@ describe Clusters::Applications::CheckInstallationProgressService, '#execute' do
 
     context 'when installation POD succeeded' do
       let(:phase) { Gitlab::Kubernetes::Pod::SUCCEEDED }
+
       before do
         expect(service).to receive(:pod_phase).once.and_return(phase)
       end

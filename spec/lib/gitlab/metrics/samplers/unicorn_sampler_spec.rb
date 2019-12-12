@@ -52,6 +52,7 @@ describe Gitlab::Metrics::Samplers::UnicornSampler do
     context 'unicorn listens on tcp sockets' do
       let(:tcp_socket_address) { '0.0.0.0:8080' }
       let(:tcp_sockets) { [tcp_socket_address] }
+
       before do
         allow(unicorn).to receive(:listener_names).and_return(tcp_sockets)
       end

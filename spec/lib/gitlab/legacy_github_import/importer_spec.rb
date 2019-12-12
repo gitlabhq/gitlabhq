@@ -265,6 +265,7 @@ describe Gitlab::LegacyGithubImport::Importer do
   context 'when importing a GitHub project' do
     let(:api_root) { 'https://api.github.com' }
     let(:repo_root) { 'https://github.com' }
+
     subject { described_class.new(project) }
 
     it_behaves_like 'Gitlab::LegacyGithubImport::Importer#execute'
@@ -287,6 +288,7 @@ describe Gitlab::LegacyGithubImport::Importer do
   context 'when importing a Gitea project' do
     let(:api_root) { 'https://try.gitea.io/api/v1' }
     let(:repo_root) { 'https://try.gitea.io' }
+
     subject { described_class.new(project) }
 
     before do

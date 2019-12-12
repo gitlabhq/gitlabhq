@@ -25,6 +25,7 @@ describe Gitlab::Graphql::Authorize::AuthorizeFieldService do
   end
 
   let(:current_user) { double(:current_user) }
+
   subject(:service) { described_class.new(field) }
 
   describe '#authorized_resolve' do
@@ -34,6 +35,7 @@ describe Gitlab::Graphql::Authorize::AuthorizeFieldService do
     let(:schema) { GraphQL::Schema.define(query: query_type, mutation: nil)}
     let(:query_context) { OpenStruct.new(schema: schema) }
     let(:context) { GraphQL::Query::Context.new(query: OpenStruct.new(schema: schema, context: query_context), values: { current_user: current_user }, object: nil) }
+
     subject(:resolved) { service.authorized_resolve.call(presented_type, {}, context) }
 
     context 'scalar types' do

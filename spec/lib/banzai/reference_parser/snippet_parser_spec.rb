@@ -200,6 +200,7 @@ describe Banzai::ReferenceParser::SnippetParser do
 
   describe '#referenced_by' do
     let(:snippet) { create(:snippet, project: project) }
+
     describe 'when the link has a data-snippet attribute' do
       context 'using an existing snippet ID' do
         it 'returns an Array of snippets' do

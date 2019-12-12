@@ -42,6 +42,7 @@ describe Gitlab::SlashCommands::IssueSearch do
 
   describe 'self.match' do
     let(:query) { "my search keywords" }
+
     it 'matches the query' do
       match = described_class.match("issue search #{query}")
 

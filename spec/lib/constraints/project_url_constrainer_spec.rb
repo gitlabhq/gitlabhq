@@ -37,11 +37,13 @@ describe Constraints::ProjectUrlConstrainer do
 
       context 'and is a GET request' do
         let(:request) { build_request(namespace.full_path, old_project_path) }
+
         it { expect(subject.matches?(request)).to be_truthy }
       end
 
       context 'and is NOT a GET request' do
         let(:request) { build_request(namespace.full_path, old_project_path, 'POST') }
+
         it { expect(subject.matches?(request)).to be_falsey }
       end
     end

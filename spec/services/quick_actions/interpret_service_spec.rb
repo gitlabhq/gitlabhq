@@ -570,7 +570,7 @@ describe QuickActions::InterpretService do
       it 'returns move issue failure message when the referenced issue is not found' do
         _, _, message = service.execute('/move invalid', issue)
 
-        expect(message).to eq("Failed to move this issue because target project doesn't exist.")
+        expect(message).to eq(_("Failed to move this issue because target project doesn't exist."))
       end
     end
 
@@ -1125,7 +1125,7 @@ describe QuickActions::InterpretService do
 
         _, _, message = service.execute('/due invalid date', issue)
 
-        expect(message).to eq('Failed to set due date because the date format is invalid.')
+        expect(message).to eq(_('Failed to set due date because the date format is invalid.'))
       end
 
       it_behaves_like 'due command' do
@@ -1251,12 +1251,12 @@ describe QuickActions::InterpretService do
           let(:issuable) { issue }
         end
 
-        it_behaves_like 'empty command', 'Failed to mark this issue as a duplicate because referenced issue was not found.' do
+        it_behaves_like 'empty command', _('Failed to mark this issue as a duplicate because referenced issue was not found.') do
           let(:content) { "/duplicate imaginary#1234" }
           let(:issuable) { issue }
         end
 
-        it_behaves_like 'empty command', 'Failed to mark this issue as a duplicate because referenced issue was not found.' do
+        it_behaves_like 'empty command', _('Failed to mark this issue as a duplicate because referenced issue was not found.') do
           let(:other_project) { create(:project, :private) }
           let(:issue_duplicate) { create(:issue, project: other_project) }
 
@@ -1321,7 +1321,7 @@ describe QuickActions::InterpretService do
         let(:issuable) { issue }
       end
 
-      it_behaves_like 'empty command', 'Failed to mark this issue as a duplicate because referenced issue was not found.' do
+      it_behaves_like 'empty command', _('Failed to mark this issue as a duplicate because referenced issue was not found.') do
         let(:content) { '/duplicate #{issue.to_reference}' }
         let(:issuable) { issue }
       end
@@ -1370,6 +1370,7 @@ describe QuickActions::InterpretService do
       context 'if issuable is a Commit' do
         let(:content) { '/award :100:' }
         let(:issuable) { commit }
+
         it_behaves_like 'empty command'
       end
     end
@@ -1497,23 +1498,27 @@ describe QuickActions::InterpretService do
       context 'if the given label does not exist' do
         let(:issuable) { issue }
         let(:content) { '/board_move ~"Fake Label"' }
+
         it_behaves_like 'empty command', 'Failed to move this issue because label was not found.'
       end
 
       context 'if multiple labels are given' do
         let(:issuable) { issue }
         let(:content) { %{/board_move ~"#{inreview.title}" ~"#{todo.title}"} }
+
         it_behaves_like 'empty command', 'Failed to move this issue because only a single label can be provided.'
       end
 
       context 'if the given label is not a list on the board' do
         let(:issuable) { issue }
         let(:content) { %{/board_move ~"#{bug.title}"} }
+
         it_behaves_like 'empty command', 'Failed to move this issue because label was not found.'
       end
 
       context 'if issuable is not an Issue' do
         let(:issuable) { merge_request }
+
         it_behaves_like 'empty command'
       end
     end
@@ -1695,7 +1700,7 @@ describe QuickActions::InterpretService do
         merge_request.update!(label_ids: [bug.id])
         _, explanations = service.explain(content, merge_request)
 
-        expect(explanations).to eq(['Removes all labels.'])
+        expect(explanations).to eq([_('Removes all labels.')])
       end
     end
 
@@ -1856,13 +1861,13 @@ describe QuickActions::InterpretService do
         it 'uses the default branch name' do
           _, explanations = service.explain(content, issue)
 
-          expect(explanations).to eq(['Creates a branch and a merge request to resolve this issue.'])
+          expect(explanations).to eq([_('Creates a branch and a merge request to resolve this issue.')])
         end
 
         it 'returns the execution message using the default branch name' do
           _, _, message = service.execute(content, issue)
 
-          expect(message).to eq('Created a branch and a merge request to resolve this issue.')
+          expect(message).to eq(_('Created a branch and a merge request to resolve this issue.'))
         end
       end
 

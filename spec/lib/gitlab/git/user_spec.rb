@@ -26,6 +26,7 @@ describe Gitlab::Git::User do
   describe '.from_gitlab' do
     context 'when no commit_email has been set' do
       let(:user) { build(:user, email: 'alice@example.com', commit_email: nil) }
+
       subject { described_class.from_gitlab(user) }
 
       it { expect(subject).to eq(described_class.new(user.username, user.name, user.email, 'user-')) }
@@ -33,6 +34,7 @@ describe Gitlab::Git::User do
 
     context 'when commit_email has been set' do
       let(:user) { build(:user, email: 'alice@example.com', commit_email: 'bob@example.com') }
+
       subject { described_class.from_gitlab(user) }
 
       it { expect(subject).to eq(described_class.new(user.username, user.name, user.commit_email, 'user-')) }

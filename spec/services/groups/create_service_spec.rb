@@ -60,7 +60,7 @@ describe Groups::CreateService, '#execute' do
       it 'does not save group and returns an error' do
         is_expected.not_to be_persisted
 
-        expect(subject.errors[:parent_id].first).to eq('You don’t have permission to create a subgroup in this group.')
+        expect(subject.errors[:parent_id].first).to eq(s_('CreateGroup|You don’t have permission to create a subgroup in this group.'))
         expect(subject.parent_id).to be_nil
       end
     end

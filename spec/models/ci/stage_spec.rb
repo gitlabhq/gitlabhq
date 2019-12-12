@@ -65,7 +65,7 @@ describe Ci::Stage, :models do
       it 'updates stage status correctly' do
         expect { stage.update_status }
           .to change { stage.reload.status }
-          .to 'running'
+          .to eq 'running'
       end
     end
 
@@ -89,7 +89,7 @@ describe Ci::Stage, :models do
       it 'updates status to skipped' do
         expect { stage.update_status }
           .to change { stage.reload.status }
-          .to 'skipped'
+          .to eq 'skipped'
       end
     end
 
@@ -109,7 +109,7 @@ describe Ci::Stage, :models do
       it 'updates status to skipped' do
         expect { stage.update_status }
           .to change { stage.reload.status }
-          .to 'skipped'
+          .to eq('skipped')
       end
     end
 
@@ -171,7 +171,7 @@ describe Ci::Stage, :models do
       end
 
       it 'has a correct label' do
-        expect(subject.label).to eq label.to_s
+        expect(subject.label).to eq(label.to_s)
       end
     end
 
@@ -187,7 +187,7 @@ describe Ci::Stage, :models do
       end
 
       it 'is passed with warnings' do
-        expect(subject.label).to eq 'passed with warnings'
+        expect(subject.label).to eq s_('CiStatusLabel|passed with warnings')
       end
     end
   end

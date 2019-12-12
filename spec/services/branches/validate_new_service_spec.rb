@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe Branches::ValidateNewService do
   let(:project) { create(:project, :repository) }
+
   subject(:service) { described_class.new(project) }
 
   describe '#execute' do

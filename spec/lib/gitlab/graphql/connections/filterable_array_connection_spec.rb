@@ -6,6 +6,7 @@ describe Gitlab::Graphql::Connections::FilterableArrayConnection do
   let(:callback) { proc { |nodes| nodes } }
   let(:all_nodes) { Gitlab::Graphql::FilterableArray.new(callback, 1, 2, 3, 4, 5) }
   let(:arguments) { {} }
+
   subject(:connection) do
     described_class.new(all_nodes, arguments, max_page_size: 3)
   end

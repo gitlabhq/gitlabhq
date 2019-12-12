@@ -18,7 +18,7 @@ describe Lfs::UnlockFileService do
 
         expect(result[:status]).to eq(:error)
         expect(result[:http_status]).to eq(403)
-        expect(result[:message]).to eq('You have no permissions')
+        expect(result[:message]).to eq(_('You have no permissions'))
       end
     end
 
@@ -29,6 +29,7 @@ describe Lfs::UnlockFileService do
 
       context 'when lock does not exists' do
         let(:params) { { id: 123 } }
+
         it "doesn't succeed" do
           result = subject.execute
 
@@ -82,7 +83,7 @@ describe Lfs::UnlockFileService do
             result = subject.execute
 
             expect(result[:status]).to eq(:error)
-            expect(result[:message]).to match(/You must have maintainer access/)
+            expect(result[:message]).to eq(_('You must have maintainer access to force delete a lock'))
             expect(result[:http_status]).to eq(403)
           end
         end

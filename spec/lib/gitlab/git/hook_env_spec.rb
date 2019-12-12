@@ -57,6 +57,7 @@ describe Gitlab::Git::HookEnv do
       using RSpec::Parameterized::TableSyntax
 
       let(:key) { 'GIT_OBJECT_DIRECTORY_RELATIVE' }
+
       subject { described_class.to_env_hash(gl_repository) }
 
       where(:input, :output) do

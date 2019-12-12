@@ -24,7 +24,7 @@ describe AbuseReportsController do
         get :new, params: { user_id: user_id }
 
         expect(response).to redirect_to root_path
-        expect(flash[:alert]).to eq('Cannot create the abuse report. The user has been deleted.')
+        expect(flash[:alert]).to eq(_('Cannot create the abuse report. The user has been deleted.'))
       end
     end
 
@@ -35,7 +35,7 @@ describe AbuseReportsController do
         get :new, params: { user_id: user.id }
 
         expect(response).to redirect_to user
-        expect(flash[:alert]).to eq('Cannot create the abuse report. This user has been blocked.')
+        expect(flash[:alert]).to eq(_('Cannot create the abuse report. This user has been blocked.'))
       end
     end
   end

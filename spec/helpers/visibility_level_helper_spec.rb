@@ -59,29 +59,29 @@ describe VisibilityLevelHelper do
   describe "#project_visibility_level_description" do
     it "describes private projects" do
       expect(project_visibility_level_description(Gitlab::VisibilityLevel::PRIVATE))
-            .to eq "Project access must be granted explicitly to each user."
+            .to eq _('Project access must be granted explicitly to each user.')
     end
 
     it "describes public projects" do
       expect(project_visibility_level_description(Gitlab::VisibilityLevel::PUBLIC))
-            .to eq "The project can be accessed without any authentication."
+            .to eq _('The project can be accessed without any authentication.')
     end
   end
 
   describe "#snippet_visibility_level_description" do
     it 'describes visibility only for me' do
       expect(snippet_visibility_level_description(Gitlab::VisibilityLevel::PRIVATE, personal_snippet))
-            .to eq "The snippet is visible only to me."
+            .to eq _('The snippet is visible only to me.')
     end
 
     it 'describes visibility for project members' do
       expect(snippet_visibility_level_description(Gitlab::VisibilityLevel::PRIVATE, project_snippet))
-            .to eq "The snippet is visible only to project members."
+            .to eq _('The snippet is visible only to project members.')
     end
 
     it 'defaults to personal snippet' do
       expect(snippet_visibility_level_description(Gitlab::VisibilityLevel::PRIVATE))
-            .to eq "The snippet is visible only to me."
+            .to eq _('The snippet is visible only to me.')
     end
   end
 

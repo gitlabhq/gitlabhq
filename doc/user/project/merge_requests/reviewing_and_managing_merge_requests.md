@@ -68,7 +68,7 @@ list.
 
 By default, the diff shows only the parts of a file which are changed.
 To view more unchanged lines above or below a change click on the
-**Expand up** or **Expand down** icons. You can also click on **Show all lines**
+**Expand up** or **Expand down** icons. You can also click on **Show unchanged lines**
 to expand the entire file.
 
 ![Incrementally expand merge request diffs](img/incrementally_expand_merge_request_diffs_v12_2.png)

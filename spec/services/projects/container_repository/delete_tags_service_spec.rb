@@ -26,6 +26,7 @@ describe Projects::ContainerRepository::DeleteTagsService do
 
   describe '#execute' do
     let(:tags) { %w[A] }
+
     subject { service.execute(repository) }
 
     context 'without permissions' do

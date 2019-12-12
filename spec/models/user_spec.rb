@@ -142,7 +142,7 @@ describe User, :do_not_mock_admin_mode do
           expect(user.namespace).to receive(:any_project_has_container_registry_tags?).and_return(true)
           user.username = 'new_path'
           expect(user).to be_invalid
-          expect(user.errors.messages[:username].first).to match('cannot be changed if a personal project has container registry tags')
+          expect(user.errors.messages[:username].first).to eq(_('cannot be changed if a personal project has container registry tags.'))
         end
       end
 
@@ -3214,7 +3214,7 @@ describe User, :do_not_mock_admin_mode do
 
             it 'causes the user save to fail' do
               expect(user.update(username: new_username)).to be_falsey
-              expect(user.namespace.errors.messages[:path].first).to eq('has already been taken')
+              expect(user.namespace.errors.messages[:path].first).to eq(_('has already been taken'))
             end
 
             it 'adds the namespace errors to the user' do

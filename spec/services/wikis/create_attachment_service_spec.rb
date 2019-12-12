@@ -174,6 +174,7 @@ describe Wikis::CreateAttachmentService do
 
   describe '#execute' do
     let(:wiki) { project.wiki }
+
     subject(:service_execute) { service.execute[:result] }
 
     context 'creates branch if it does not exists' do

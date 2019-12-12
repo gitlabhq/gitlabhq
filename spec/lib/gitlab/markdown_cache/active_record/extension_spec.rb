@@ -126,6 +126,7 @@ describe Gitlab::MarkdownCache::ActiveRecord::Extension do
 
   describe '#cached_html_up_to_date?' do
     let(:thing) { klass.create(title: updated_markdown, title_html: html, cached_markdown_version: nil) }
+
     subject { thing.cached_html_up_to_date?(:title) }
 
     it 'returns false if markdown has been changed but html has not' do

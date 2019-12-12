@@ -41,6 +41,7 @@ describe JSONWebToken::RSAToken do
 
     context 'for invalid key to raise an exception' do
       let(:new_key) { OpenSSL::PKey::RSA.generate(512) }
+
       subject { JWT.decode(rsa_encoded, new_key, true, { algorithm: 'RS256' }) }
 
       it { expect {subject}.to raise_error(JWT::DecodeError) }

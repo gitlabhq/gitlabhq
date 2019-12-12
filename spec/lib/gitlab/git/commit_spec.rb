@@ -542,6 +542,7 @@ describe Gitlab::Git::Commit, :seed_helper do
   skip 'move this test to gitaly-ruby' do
     describe '#init_from_rugged' do
       let(:gitlab_commit) { described_class.new(repository, rugged_commit) }
+
       subject { gitlab_commit }
 
       describe '#id' do
@@ -553,6 +554,7 @@ describe Gitlab::Git::Commit, :seed_helper do
 
   describe '#init_from_hash' do
     let(:commit) { described_class.new(repository, sample_commit_hash) }
+
     subject { commit }
 
     describe '#id' do
@@ -608,6 +610,7 @@ describe Gitlab::Git::Commit, :seed_helper do
 
   describe '#to_hash' do
     let(:hash) { commit.to_hash }
+
     subject { hash }
 
     it { is_expected.to be_kind_of Hash }
@@ -629,6 +632,7 @@ describe Gitlab::Git::Commit, :seed_helper do
 
   describe '#ref_names' do
     let(:commit) { described_class.find(repository, 'master') }
+
     subject { commit.ref_names(repository) }
 
     it 'has 2 element' do

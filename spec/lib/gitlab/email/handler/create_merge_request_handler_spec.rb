@@ -191,6 +191,7 @@ describe Gitlab::Email::Handler::CreateMergeRequestHandler do
   describe '#patch_attachments' do
     let(:email_raw) { email_fixture('emails/merge_request_multiple_patches.eml') }
     let(:mail) { Mail::Message.new(email_raw) }
+
     subject(:handler) { described_class.new(mail, mail_key) }
 
     it 'orders attachments ending in `.patch` by name' do

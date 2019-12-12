@@ -49,6 +49,7 @@ describe Gitlab::BranchPushMergeCommitAnalyzer do
 
     context 'when relevant_commit_ids is provided' do
       let(:relevant_commit_id) { '8a994512e8c8f0dfcf22bb16df6e876be7a61036' }
+
       subject { described_class.new(commits, relevant_commit_ids: [relevant_commit_id]) }
 
       it 'returns correct merge commit' do

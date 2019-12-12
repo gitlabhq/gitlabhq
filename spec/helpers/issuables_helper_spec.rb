@@ -49,7 +49,7 @@ describe IssuablesHelper do
     let(:label2_entity) { LabelEntity.represent(label2).as_json }
 
     it 'returns label text with no labels' do
-      expect(issuable_labels_tooltip([])).to eq("Labels")
+      expect(issuable_labels_tooltip([])).to eq(_('Labels'))
     end
 
     it 'returns label text with labels within max limit' do

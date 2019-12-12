@@ -151,6 +151,7 @@ describe Issues::UpdateService, :mailer do
 
       context 'when current user cannot admin issues in the project' do
         let(:guest) { create(:user) }
+
         before do
           project.add_guest(guest)
         end

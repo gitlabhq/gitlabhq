@@ -7,6 +7,7 @@ describe Gitlab::ImportExport::Saver do
   let!(:project) { create(:project, :public, name: 'project') }
   let(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
   let(:shared) { project.import_export_shared }
+
   subject { described_class.new(exportable: project, shared: shared) }
 
   before do

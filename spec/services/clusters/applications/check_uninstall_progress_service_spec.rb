@@ -46,6 +46,7 @@ describe Clusters::Applications::CheckUninstallProgressService do
 
     context 'when installation POD succeeded' do
       let(:phase) { Gitlab::Kubernetes::Pod::SUCCEEDED }
+
       before do
         expect_any_instance_of(Gitlab::Kubernetes::Helm::Api)
             .to receive(:delete_pod!)

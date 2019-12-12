@@ -152,6 +152,7 @@ describe Gitlab::Ci::Build::Artifacts::Metadata::Entry do
 
     describe '#blob' do
       let(:file_entry) { |example| path(example) }
+
       subject { file_entry.blob }
 
       it 'returns a blob representing the entry data' do

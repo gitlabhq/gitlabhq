@@ -5,6 +5,7 @@ require 'spec_helper'
 describe Gitlab::Kubernetes::Namespace do
   let(:name) { 'a_namespace' }
   let(:client) { double('kubernetes client') }
+
   subject { described_class.new(name, client) }
 
   it { expect(subject.name).to eq(name) }

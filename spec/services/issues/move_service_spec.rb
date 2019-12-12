@@ -191,6 +191,7 @@ describe Issues::MoveService do
       context 'issue is not persisted' do
         include_context 'user can move issue'
         let(:old_issue) { build(:issue, project: old_project, author: author) }
+
         it { expect { move }.to raise_error(StandardError, /permissions/) }
       end
     end

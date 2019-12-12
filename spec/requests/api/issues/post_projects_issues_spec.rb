@@ -453,7 +453,7 @@ describe API::Issues do
           params: { to_project_id: project.id }
 
         expect(response).to have_gitlab_http_status(400)
-        expect(json_response['message']).to eq('Cannot move issue to project it originates from!')
+        expect(json_response['message']).to eq(s_('MoveIssue|Cannot move issue to project it originates from!'))
       end
     end
 
@@ -463,7 +463,7 @@ describe API::Issues do
           params: { to_project_id: target_project2.id }
 
         expect(response).to have_gitlab_http_status(400)
-        expect(json_response['message']).to eq('Cannot move issue due to insufficient permissions!')
+        expect(json_response['message']).to eq(s_('MoveIssue|Cannot move issue due to insufficient permissions!'))
       end
     end
 

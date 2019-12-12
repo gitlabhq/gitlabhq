@@ -153,11 +153,11 @@ describe JobEntity do
     end
 
     it 'states that it failed' do
-      expect(subject[:status][:label]).to eq('failed')
+      expect(subject[:status][:label]).to eq(s_('CiStatusLabel|failed'))
     end
 
     it 'indicates the failure reason on tooltip' do
-      expect(subject[:status][:tooltip]).to eq('failed - (API failure)')
+      expect(subject[:status][:tooltip]).to eq("#{s_('CiStatusLabel|failed')} - (API failure)")
     end
 
     it 'includes a callout message with a verbose output' do
@@ -181,7 +181,7 @@ describe JobEntity do
     end
 
     it 'indicates the failure reason on tooltip' do
-      expect(subject[:status][:tooltip]).to eq('failed - (API failure) (allowed to fail)')
+      expect(subject[:status][:tooltip]).to eq("#{s_('CiStatusLabel|failed')} - (API failure) (allowed to fail)")
     end
 
     it 'includes a callout message with a verbose output' do

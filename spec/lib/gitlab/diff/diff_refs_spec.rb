@@ -7,6 +7,7 @@ describe Gitlab::Diff::DiffRefs do
 
   describe '#==' do
     let(:commit) { project.commit('1a0b36b3cdad1d2ee32457c102a8c0b7056fa863') }
+
     subject { commit.diff_refs }
 
     context 'when shas are missing' do
@@ -63,6 +64,7 @@ describe Gitlab::Diff::DiffRefs do
   describe '#compare_in' do
     context 'with diff refs for the initial commit' do
       let(:commit) { project.commit('1a0b36b3cdad1d2ee32457c102a8c0b7056fa863') }
+
       subject { commit.diff_refs }
 
       it 'returns an appropriate comparison' do
@@ -74,6 +76,7 @@ describe Gitlab::Diff::DiffRefs do
 
     context 'with diff refs for a commit' do
       let(:commit) { project.commit('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
+
       subject { commit.diff_refs }
 
       it 'returns an appropriate comparison' do

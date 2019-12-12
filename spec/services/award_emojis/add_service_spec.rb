@@ -7,6 +7,7 @@ describe AwardEmojis::AddService do
   set(:project) { create(:project) }
   set(:awardable) { create(:note, project: project) }
   let(:name) { 'thumbsup' }
+
   subject(:service) { described_class.new(awardable, name, user) }
 
   describe '#execute' do

@@ -21,6 +21,7 @@ describe Gitlab::Ci::Trace::SectionParser do
   end
 
   let(:lines) { build_lines('') }
+
   subject { described_class.new(lines) }
 
   describe '#sections' do

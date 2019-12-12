@@ -416,7 +416,7 @@ describe Projects::PipelineSchedulesController do
         end
 
         expect(flash.to_a.size).to eq(2)
-        expect(flash[:alert]).to eq 'You cannot play this scheduled pipeline at the moment. Please wait a minute.'
+        expect(flash[:alert]).to eq _('You cannot play this scheduled pipeline at the moment. Please wait a minute.')
         expect(response).to have_gitlab_http_status(302)
       end
     end

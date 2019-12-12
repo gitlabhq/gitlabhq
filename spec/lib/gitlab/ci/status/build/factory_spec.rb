@@ -31,10 +31,10 @@ describe Gitlab::Ci::Status::Build::Factory do
     end
 
     it 'fabricates status with correct details' do
-      expect(status.text).to eq 'passed'
+      expect(status.text).to eq s_('CiStatusText|passed')
       expect(status.icon).to eq 'status_success'
       expect(status.favicon).to eq 'favicon_status_success'
-      expect(status.label).to eq 'passed'
+      expect(status.label).to eq s_('CiStatusLabel|passed')
       expect(status).to have_details
       expect(status).to have_action
     end
@@ -58,10 +58,10 @@ describe Gitlab::Ci::Status::Build::Factory do
     end
 
     it 'fabricates status with correct details' do
-      expect(status.text).to eq 'passed'
+      expect(status.text).to eq s_('CiStatusText|passed')
       expect(status.icon).to eq 'status_success'
       expect(status.favicon).to eq 'favicon_status_success'
-      expect(status.label).to eq 'passed'
+      expect(status.label).to eq s_('CiStatusLabel|passed')
       expect(status).to have_details
       expect(status).to have_action
     end
@@ -86,11 +86,11 @@ describe Gitlab::Ci::Status::Build::Factory do
       end
 
       it 'fabricates status with correct details' do
-        expect(status.text).to eq 'failed'
+        expect(status.text).to eq s_('CiStatusText|failed')
         expect(status.icon).to eq 'status_failed'
         expect(status.favicon).to eq 'favicon_status_failed'
-        expect(status.label).to eq 'failed'
-        expect(status.status_tooltip).to eq 'failed - (unknown failure)'
+        expect(status.label).to eq s_('CiStatusLabel|failed')
+        expect(status.status_tooltip).to eq "#{s_('CiStatusText|failed')} - (unknown failure)"
         expect(status).to have_details
         expect(status).to have_action
       end
@@ -115,7 +115,7 @@ describe Gitlab::Ci::Status::Build::Factory do
       end
 
       it 'fabricates status with correct details' do
-        expect(status.text).to eq 'failed'
+        expect(status.text).to eq s_('CiStatusText|failed')
         expect(status.icon).to eq 'status_warning'
         expect(status.favicon).to eq 'favicon_status_failed'
         expect(status.label).to eq 'failed (allowed to fail)'
@@ -144,10 +144,10 @@ describe Gitlab::Ci::Status::Build::Factory do
       end
 
       it 'fabricates status with correct details' do
-        expect(status.text).to eq 'failed'
+        expect(status.text).to eq s_('CiStatusText|failed')
         expect(status.icon).to eq 'status_failed'
         expect(status.favicon).to eq 'favicon_status_failed'
-        expect(status.label).to eq 'failed'
+        expect(status.label).to eq s_('CiStatusLabel|failed')
         expect(status).to have_details
         expect(status).to have_action
         expect(status.action_title).to include 'Retry'
@@ -173,11 +173,11 @@ describe Gitlab::Ci::Status::Build::Factory do
     end
 
     it 'fabricates status with correct details' do
-      expect(status.text).to eq 'canceled'
+      expect(status.text).to eq s_('CiStatusText|canceled')
       expect(status.icon).to eq 'status_canceled'
       expect(status.favicon).to eq 'favicon_status_canceled'
       expect(status.illustration).to include(:image, :size, :title)
-      expect(status.label).to eq 'canceled'
+      expect(status.label).to eq s_('CiStatusLabel|canceled')
       expect(status).to have_details
       expect(status).to have_action
     end
@@ -200,10 +200,10 @@ describe Gitlab::Ci::Status::Build::Factory do
     end
 
     it 'fabricates status with correct details' do
-      expect(status.text).to eq 'running'
+      expect(status.text).to eq s_('CiStatus|running')
       expect(status.icon).to eq 'status_running'
       expect(status.favicon).to eq 'favicon_status_running'
-      expect(status.label).to eq 'running'
+      expect(status.label).to eq s_('CiStatus|running')
       expect(status).to have_details
       expect(status).to have_action
     end
@@ -226,11 +226,11 @@ describe Gitlab::Ci::Status::Build::Factory do
     end
 
     it 'fabricates status with correct details' do
-      expect(status.text).to eq 'pending'
+      expect(status.text).to eq s_('CiStatusText|pending')
       expect(status.icon).to eq 'status_pending'
       expect(status.favicon).to eq 'favicon_status_pending'
       expect(status.illustration).to include(:image, :size, :title, :content)
-      expect(status.label).to eq 'pending'
+      expect(status.label).to eq s_('CiStatusLabel|pending')
       expect(status).to have_details
       expect(status).to have_action
     end
@@ -252,11 +252,11 @@ describe Gitlab::Ci::Status::Build::Factory do
     end
 
     it 'fabricates status with correct details' do
-      expect(status.text).to eq 'skipped'
+      expect(status.text).to eq s_('CiStatusText|skipped')
       expect(status.icon).to eq 'status_skipped'
       expect(status.favicon).to eq 'favicon_status_skipped'
       expect(status.illustration).to include(:image, :size, :title)
-      expect(status.label).to eq 'skipped'
+      expect(status.label).to eq s_('CiStatusLabel|skipped')
       expect(status).to have_details
       expect(status).not_to have_action
     end
@@ -282,7 +282,7 @@ describe Gitlab::Ci::Status::Build::Factory do
       end
 
       it 'fabricates status with correct details' do
-        expect(status.text).to eq 'manual'
+        expect(status.text).to eq s_('CiStatusText|manual')
         expect(status.group).to eq 'manual'
         expect(status.icon).to eq 'status_manual'
         expect(status.favicon).to eq 'favicon_status_manual'
@@ -339,7 +339,7 @@ describe Gitlab::Ci::Status::Build::Factory do
         end
 
         it 'fabricates status with correct details' do
-          expect(status.text).to eq 'manual'
+          expect(status.text).to eq s_('CiStatusText|manual')
           expect(status.group).to eq 'manual'
           expect(status.icon).to eq 'status_manual'
           expect(status.favicon).to eq 'favicon_status_manual'
@@ -370,7 +370,7 @@ describe Gitlab::Ci::Status::Build::Factory do
     end
 
     it 'fabricates status with correct details' do
-      expect(status.text).to eq 'delayed'
+      expect(status.text).to eq s_('CiStatusText|delayed')
       expect(status.group).to eq 'scheduled'
       expect(status.icon).to eq 'status_scheduled'
       expect(status.favicon).to eq 'favicon_status_scheduled'

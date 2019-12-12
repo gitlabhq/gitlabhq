@@ -441,6 +441,7 @@ describe TodoService do
 
         context 'leaving a note on a commit in a public project' do
           let(:project) { create(:project, :repository, :public) }
+
           it 'creates a todo for each valid mentioned user' do
             expected_todo = base_commit_todo_attrs.merge(
               action: Todo::MENTIONED,

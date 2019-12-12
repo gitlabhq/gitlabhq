@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe Backup::Uploads do
   let(:progress) { StringIO.new }
+
   subject(:backup) { described_class.new(progress) }
 
   describe '#initialize' do

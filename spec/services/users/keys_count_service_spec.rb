@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe Users::KeysCountService, :use_clean_rails_memory_store_caching do
   let(:user) { create(:user) }
+
   subject { described_class.new(user) }
 
   it_behaves_like 'a counter caching service'

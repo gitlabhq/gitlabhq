@@ -5,6 +5,7 @@ require 'spec_helper'
 describe Backup::Repository do
   let(:progress) { StringIO.new }
   let!(:project) { create(:project, :wiki_repo) }
+
   subject { described_class.new(progress) }
 
   before do

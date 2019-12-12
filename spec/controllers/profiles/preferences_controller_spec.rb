@@ -37,7 +37,7 @@ describe Profiles::PreferencesController do
     context 'on successful update' do
       it 'sets the flash' do
         go
-        expect(flash[:notice]).to eq 'Preferences saved.'
+        expect(flash[:notice]).to eq _('Preferences saved.')
       end
 
       it "changes the user's preferences" do
@@ -62,7 +62,7 @@ describe Profiles::PreferencesController do
 
         go
 
-        expect(flash[:alert]).to eq('Failed to save preferences.')
+        expect(flash[:alert]).to eq(_('Failed to save preferences.'))
       end
     end
 

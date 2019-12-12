@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe Branches::CreateService do
   let(:user) { create(:user) }
+
   subject(:service) { described_class.new(project, user) }
 
   describe '#execute' do

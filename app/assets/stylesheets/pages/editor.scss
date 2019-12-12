@@ -172,7 +172,7 @@
 }
 
 .template-selector-dropdowns-wrap {
-  display: inline-block;
+  display: flex;
   vertical-align: top;
 
   @media(max-width: map-get($grid-breakpoints, lg)-1) {
@@ -189,6 +189,7 @@
     display: inline-block;
     vertical-align: top;
     font-family: $regular_font;
+    margin: 0 8px 0 0;
 
     @media(max-width: map-get($grid-breakpoints, lg)-1) {
       display: block;

@@ -244,7 +244,7 @@ describe Project do
           new_project = build_stubbed(:project, namespace_id: project.namespace_id, path: "#{project.path}.wiki")
 
           expect(new_project).not_to be_valid
-          expect(new_project.errors[:name].first).to eq('has already been taken')
+          expect(new_project.errors[:name].first).to eq(_('has already been taken'))
         end
       end
 
@@ -254,7 +254,7 @@ describe Project do
           new_project = build_stubbed(:project, namespace_id: project_with_wiki_suffix.namespace_id, path: 'foo')
 
           expect(new_project).not_to be_valid
-          expect(new_project.errors[:name].first).to eq('has already been taken')
+          expect(new_project.errors[:name].first).to eq(_('has already been taken'))
         end
       end
     end
@@ -385,7 +385,7 @@ describe Project do
       end
 
       it 'contains errors related to the project being deleted' do
-        expect(new_project.errors.full_messages.first).to eq('The project is still being deleted. Please try again later.')
+        expect(new_project.errors.full_messages.first).to eq(_('The project is still being deleted. Please try again later.'))
       end
     end
 
@@ -2270,7 +2270,7 @@ describe Project do
       it 'returns the right human import status' do
         project = create(:project, :import_started)
 
-        expect(project.human_import_status_name).to eq('started')
+        expect(project.human_import_status_name).to eq(_('started'))
       end
     end
 
@@ -3280,6 +3280,54 @@ describe Project do
     end
 
     it { expect(project.parent_changed?).to be_truthy }
+  end
+
+  describe '#default_merge_request_target' do
+    context 'when forked from a more visible project' do
+      it 'returns the more restrictive project' do
+        project = create(:project, :public)
+        forked = fork_project(project)
+        forked.visibility = Gitlab::VisibilityLevel::PRIVATE
+        forked.save!
+
+        expect(project.visibility).to eq 'public'
+        expect(forked.visibility).to eq 'private'
+
+        expect(forked.default_merge_request_target).to eq(forked)
+      end
+    end
+
+    context 'when forked from a project with disabled merge requests' do
+      it 'returns the current project' do
+        project = create(:project, :merge_requests_disabled)
+        forked = fork_project(project)
+
+        expect(forked.forked_from_project).to receive(:merge_requests_enabled?)
+          .and_call_original
+
+        expect(forked.default_merge_request_target).to eq(forked)
+      end
+    end
+
+    context 'when forked from a project with enabled merge requests' do
+      it 'returns the source project' do
+        project = create(:project, :public)
+        forked = fork_project(project)
+
+        expect(project.visibility).to eq 'public'
+        expect(forked.visibility).to eq 'public'
+
+        expect(forked.default_merge_request_target).to eq(project)
+      end
+    end
+
+    context 'when not forked' do
+      it 'returns the current project' do
+        project = build_stubbed(:project)
+
+        expect(project.default_merge_request_target).to eq(project)
+      end
+    end
   end
 
   def enable_lfs

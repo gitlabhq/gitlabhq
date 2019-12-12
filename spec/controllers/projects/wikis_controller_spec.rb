@@ -114,7 +114,7 @@ describe Projects::WikisController do
           subject
 
           expect(response).to have_http_status(:ok)
-          expect(flash[:notice]).to eq('The content of this page is not encoded in UTF-8. Edits can only be made via the Git repository.')
+          expect(flash[:notice]).to eq(_('The content of this page is not encoded in UTF-8. Edits can only be made via the Git repository.'))
         end
       end
     end
@@ -205,7 +205,7 @@ describe Projects::WikisController do
         subject
 
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include('Edit Page')
+        expect(response.body).to include(s_('Wiki|Edit Page'))
       end
     end
   end

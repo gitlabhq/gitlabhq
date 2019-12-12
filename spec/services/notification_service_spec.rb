@@ -154,6 +154,7 @@ describe NotificationService, :mailer do
 
   describe '#async' do
     let(:async) { notification.async }
+
     set(:key) { create(:personal_key) }
 
     it 'returns an Async object with the correct parent' do

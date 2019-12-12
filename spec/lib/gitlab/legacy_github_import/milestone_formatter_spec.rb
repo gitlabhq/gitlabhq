@@ -89,6 +89,7 @@ describe Gitlab::LegacyGithubImport::MilestoneFormatter do
 
   context 'when importing a Gitea project' do
     let(:iid_attr) { :id }
+
     before do
       project.update(import_type: 'gitea')
     end

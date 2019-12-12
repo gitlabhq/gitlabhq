@@ -3209,6 +3209,9 @@ msgstr ""
 msgid "Checking username availability..."
 msgstr ""
 
+msgid "Checkout"
+msgstr ""
+
 msgid "Cherry-pick this commit"
 msgstr ""
 
@@ -5994,7 +5997,7 @@ msgstr ""
 msgid "Diffs|No file name available"
 msgstr ""
 
-msgid "Diffs|Show all lines"
+msgid "Diffs|Show unchanged lines"
 msgstr ""
 
 msgid "Diffs|Something went wrong while fetching diff lines."

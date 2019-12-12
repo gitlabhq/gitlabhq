@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe Gitlab::Metrics::RequestsRackMiddleware do
   let(:app) { double('app') }
+
   subject { described_class.new(app) }
 
   describe '#call' do

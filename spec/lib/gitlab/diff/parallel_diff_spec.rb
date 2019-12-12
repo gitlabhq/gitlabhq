@@ -11,6 +11,7 @@ describe Gitlab::Diff::ParallelDiff do
   let(:diffs) { commit.raw_diffs }
   let(:diff) { diffs.first }
   let(:diff_file) { Gitlab::Diff::File.new(diff, diff_refs: commit.diff_refs, repository: repository) }
+
   subject { described_class.new(diff_file) }
 
   describe '#parallelize' do

@@ -608,6 +608,7 @@ describe MergeRequests::RefreshService do
 
     context 'marking the merge request as work in progress' do
       let(:refresh_service) { service.new(@project, @user) }
+
       before do
         allow(refresh_service).to receive(:execute_hooks)
       end

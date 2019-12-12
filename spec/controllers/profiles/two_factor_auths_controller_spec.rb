@@ -70,7 +70,7 @@ describe Profiles::TwoFactorAuthsController do
 
       it 'assigns error' do
         go
-        expect(assigns[:error]).to eq 'Invalid pin code'
+        expect(assigns[:error]).to eq _('Invalid pin code')
       end
 
       it 'assigns qr_code' do

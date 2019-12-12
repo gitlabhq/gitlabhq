@@ -10,6 +10,7 @@ describe AwardEmojis::DestroyService do
   let!(:award_from_other_user) do
     create(:award_emoji, name: name, awardable: awardable, user: create(:user))
   end
+
   subject(:service) { described_class.new(awardable, name, user) }
 
   describe '#execute' do

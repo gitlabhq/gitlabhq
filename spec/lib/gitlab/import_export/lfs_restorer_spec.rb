@@ -9,6 +9,7 @@ describe Gitlab::ImportExport::LfsRestorer do
   let(:project) { create(:project) }
   let(:shared) { project.import_export_shared }
   let(:saver) { Gitlab::ImportExport::LfsSaver.new(project: project, shared: shared) }
+
   subject(:restorer) { described_class.new(project: project, shared: shared) }
 
   before do

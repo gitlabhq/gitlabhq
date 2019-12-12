@@ -253,6 +253,7 @@ describe Gitlab::Auth::OAuth::User do
 
             context "and LDAP user has an account already" do
               let!(:existing_user) { create(:omniauth_user, name: 'John Doe', email: 'john@example.com', extern_uid: dn, provider: 'ldapmain', username: 'john') }
+
               it "adds the omniauth identity to the LDAP account" do
                 allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_uid).and_return(ldap_user)
 

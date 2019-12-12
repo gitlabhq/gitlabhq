@@ -5,6 +5,7 @@ require 'fileutils'
 
 describe Gitlab::ImportExport::Shared do
   let(:project) { build(:project) }
+
   subject { project.import_export_shared }
 
   context 'with a repository on disk' do
