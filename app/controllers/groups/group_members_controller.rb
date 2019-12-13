@@ -24,8 +24,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
     @sort = params[:sort].presence || sort_value_name
     @project = @group.projects.find(params[:project_id]) if params[:project_id]
-
-    @members = GroupMembersFinder.new(@group).execute
+    @members = find_members
 
     if can_manage_members
       @invited_members = @members.invite
@@ -52,6 +51,12 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
   # MembershipActions concern
   alias_method :membershipable, :group
+
+  private
+
+  def find_members
+    GroupMembersFinder.new(@group).execute(include_relations: requested_relations)
+  end
 end
 
 Groups::GroupMembersController.prepend_if_ee('EE::Groups::GroupMembersController')

@@ -16,9 +16,14 @@ migrations automatically reschedule themselves for a later point in time.
 > the migrations.
 
 In the vast majority of cases you will want to use a regular Rails migration
-instead. Background migrations should _only_ be used when migrating _data_ in
+instead. Background migrations should be used when migrating _data_ in
 tables that have so many rows this process would take hours when performed in a
 regular Rails migration.
+
+Background migrations _may_ also be used when executing numerous single-row queries
+for every item on a large dataset. Typically, for single-record patterns, runtime is
+largely dependent on the size of the dataset, hence it should be split accordingly
+and put into background migrations.
 
 Background migrations _may not_ be used to perform schema migrations, they
 should only be used for data migrations.

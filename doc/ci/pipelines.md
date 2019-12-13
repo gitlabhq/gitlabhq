@@ -157,7 +157,7 @@ In the following example:
 - Two sections are collapsed and can be expanded.
 - Three sections are expanded and can be collapsed.
 
-![Collapsible sections](img/collapsible_log.png)
+![Collapsible sections](img/collapsible_log_v12_6.png)
 
 ## Configuring pipelines
 

@@ -6,15 +6,15 @@ class GroupMembersFinder < UnionFinder
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
-  def execute(include_descendants: false)
+  def execute(include_relations: [:inherited, :direct])
     group_members = @group.members
     relations = []
 
-    return group_members unless @group.parent || include_descendants
+    return group_members if include_relations == [:direct]
 
-    relations << group_members
+    relations << group_members if include_relations.include?(:direct)
 
-    if @group.parent
+    if include_relations.include?(:inherited) && @group.parent
       parents_members = GroupMember.non_request
         .where(source_id: @group.ancestors.select(:id))
         .where.not(user_id: @group.users.select(:id))
@@ -22,7 +22,7 @@ class GroupMembersFinder < UnionFinder
       relations << parents_members
     end
 
-    if include_descendants
+    if include_relations.include?(:descendants)
       descendant_members = GroupMember.non_request
         .where(source_id: @group.descendants.select(:id))
         .where.not(user_id: @group.users.select(:id))

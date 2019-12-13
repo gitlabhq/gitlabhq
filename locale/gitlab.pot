@@ -16189,6 +16189,9 @@ msgstr ""
 msgid "Show all activity"
 msgstr ""
 
+msgid "Show all members"
+msgstr ""
+
 msgid "Show archived projects"
 msgstr ""
 
@@ -16214,6 +16217,12 @@ msgid "Show file browser"
 msgstr ""
 
 msgid "Show latest version"
+msgstr ""
+
+msgid "Show only direct members"
+msgstr ""
+
+msgid "Show only inherited members"
 msgstr ""
 
 msgid "Show parent pages"

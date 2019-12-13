@@ -17,7 +17,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     @skip_groups << @project.namespace_id unless @project.personal?
     @skip_groups += @project.group.ancestors.pluck(:id) if @project.group
 
-    @project_members = MembersFinder.new(@project, current_user).execute
+    @project_members = MembersFinder.new(@project, current_user).execute(include_relations: requested_relations)
 
     if params[:search].present?
       @project_members = @project_members.joins(:user).merge(User.search(params[:search]))

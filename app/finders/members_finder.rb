@@ -9,14 +9,18 @@ class MembersFinder
     @group = project.group
   end
 
-  def execute(include_descendants: false, include_invited_groups_members: false)
+  def execute(include_relations: [:inherited, :direct])
     project_members = project.project_members
     project_members = project_members.non_invite unless can?(current_user, :admin_project, project)
 
-    union_members = group_union_members(include_descendants, include_invited_groups_members)
+    return project_members if include_relations == [:direct]
+
+    union_members = group_union_members(include_relations)
+
+    union_members << project_members if include_relations.include?(:direct)
 
     if union_members.any?
-      distinct_union_of_members(union_members << project_members)
+      distinct_union_of_members(union_members)
     else
       project_members
     end
@@ -28,15 +32,17 @@ class MembersFinder
 
   private
 
-  def group_union_members(include_descendants, include_invited_groups_members)
+  def group_union_members(include_relations)
     [].tap do |members|
-      members << direct_group_members(include_descendants) if group
-      members << project_invited_groups_members if include_invited_groups_members
+      members << direct_group_members(include_relations.include?(:descendants)) if group
+      members << project_invited_groups_members if include_relations.include?(:invited_groups_members)
     end
   end
 
   def direct_group_members(include_descendants)
-    GroupMembersFinder.new(group).execute(include_descendants: include_descendants).non_invite # rubocop: disable CodeReuse/Finder
+    requested_relations = [:inherited, :direct]
+    requested_relations << :descendants if include_descendants
+    GroupMembersFinder.new(group).execute(include_relations: requested_relations).non_invite # rubocop: disable CodeReuse/Finder
   end
 
   def project_invited_groups_members
