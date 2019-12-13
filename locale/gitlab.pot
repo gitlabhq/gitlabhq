@@ -7735,6 +7735,9 @@ msgstr ""
 msgid "Finished"
 msgstr ""
 
+msgid "First Seen"
+msgstr ""
+
 msgid "First day of the week"
 msgstr ""
 
@@ -7859,6 +7862,9 @@ msgid "Free Trial"
 msgstr ""
 
 msgid "Free Trial of GitLab.com Gold"
+msgstr ""
+
+msgid "Frequency"
 msgstr ""
 
 msgid "Friday"
@@ -10199,6 +10205,9 @@ msgid "Last %{days} days"
 msgstr ""
 
 msgid "Last Pipeline"
+msgstr ""
+
+msgid "Last Seen"
 msgstr ""
 
 msgid "Last accessed on"
@@ -19760,9 +19769,6 @@ msgid "View full dashboard"
 msgstr ""
 
 msgid "View group labels"
-msgstr ""
-
-msgid "View in Sentry"
 msgstr ""
 
 msgid "View it on GitLab"

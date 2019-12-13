@@ -128,15 +128,15 @@ const bindEvents = () => {
       },
       iosswift: {
         text: s__('ProjectTemplates|iOS (Swift)'),
-        icon: '.template-option svg.icon-gitlab',
+        icon: '.template-option .icon-iosswift',
       },
       dotnetcore: {
         text: s__('ProjectTemplates|.NET Core'),
-        icon: '.template-option .icon-dotnet',
+        icon: '.template-option .icon-dotnetcore',
       },
       android: {
         text: s__('ProjectTemplates|Android'),
-        icon: '.template-option svg.icon-android',
+        icon: '.template-option .icon-android',
       },
       gomicro: {
         text: s__('ProjectTemplates|Go Micro'),
@@ -164,27 +164,27 @@ const bindEvents = () => {
       },
       nfhugo: {
         text: s__('ProjectTemplates|Netlify/Hugo'),
-        icon: '.template-option .icon-netlify',
+        icon: '.template-option .icon-nfhugo',
       },
       nfjekyll: {
         text: s__('ProjectTemplates|Netlify/Jekyll'),
-        icon: '.template-option .icon-netlify',
+        icon: '.template-option .icon-nfjekyll',
       },
       nfplainhtml: {
         text: s__('ProjectTemplates|Netlify/Plain HTML'),
-        icon: '.template-option .icon-netlify',
+        icon: '.template-option .icon-nfplainhtml',
       },
       nfgitbook: {
         text: s__('ProjectTemplates|Netlify/GitBook'),
-        icon: '.template-option .icon-netlify',
+        icon: '.template-option .icon-nfgitbook',
       },
       nfhexo: {
         text: s__('ProjectTemplates|Netlify/Hexo'),
-        icon: '.template-option .icon-netlify',
+        icon: '.template-option .icon-nfhexo',
       },
       salesforcedx: {
         text: s__('ProjectTemplates|SalesforceDX'),
-        icon: '.template-option svg.icon-gitlab',
+        icon: '.template-option .icon-salesforcedx',
       },
       serverless_framework: {
         text: s__('ProjectTemplates|Serverless Framework/JS'),

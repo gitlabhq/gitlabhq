@@ -1,7 +1,7 @@
 - link_project = local_assigns.fetch(:link_project, false)
 - notes_count = @noteable_meta_data[snippet.id].user_notes_count
 
-%li.snippet-row
+%li.snippet-row.py-3
   = image_tag avatar_icon_for_user(snippet.author), class: "avatar s40 d-none d-sm-block", alt: ''
 
   .title

@@ -17,8 +17,6 @@ import AccessorUtils from '~/lib/utils/accessor';
 import Icon from '~/vue_shared/components/icon.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { __ } from '~/locale';
-import TrackEventDirective from '~/vue_shared/directives/track_event';
-import { trackViewInSentryOptions } from '../utils';
 
 export default {
   fields: [
@@ -27,6 +25,11 @@ export default {
     { key: 'users', label: __('Users') },
     { key: 'lastSeen', label: __('Last seen'), thClass: 'w-15p' },
   ],
+  sortFields: {
+    last_seen: __('Last Seen'),
+    first_seen: __('First Seen'),
+    frequency: __('Frequency'),
+  },
   components: {
     GlEmptyState,
     GlButton,
@@ -43,7 +46,6 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
-    TrackEvent: TrackEventDirective,
   },
   props: {
     indexPath: {
@@ -74,45 +76,47 @@ export default {
     };
   },
   computed: {
-    ...mapState('list', ['errors', 'externalUrl', 'loading', 'recentSearches']),
+    ...mapState('list', ['errors', 'loading', 'searchQuery', 'sortField', 'recentSearches']),
   },
   created() {
     if (this.errorTrackingEnabled) {
-      this.startPolling(this.indexPath);
+      this.setEndpoint(this.indexPath);
+      this.startPolling();
     }
   },
   methods: {
     ...mapActions('list', [
       'startPolling',
       'restartPolling',
+      'setEndpoint',
+      'searchByQuery',
+      'sortByField',
       'addRecentSearch',
       'clearRecentSearches',
       'loadRecentSearches',
       'setIndexPath',
     ]),
-    filterErrors() {
-      const searchTerm = this.errorSearchQuery.trim();
-      this.addRecentSearch(searchTerm);
-
-      this.startPolling(`${this.indexPath}?search_term=${searchTerm}`);
-    },
     setSearchText(text) {
       this.errorSearchQuery = text;
-      this.filterErrors();
+      this.searchByQuery(text);
     },
-    trackViewInSentryOptions,
     getDetailsLink(errorId) {
       return `error_tracking/${errorId}/details`;
+    },
+    isCurrentSortField(field) {
+      return field === this.sortField;
     },
   },
 };
 </script>
 
 <template>
-  <div>
+  <div class="error-list">
     <div v-if="errorTrackingEnabled">
-      <div class="d-flex flex-row justify-content-around bg-secondary border p-3">
-        <div class="filtered-search-box">
+      <div
+        class="d-flex flex-row justify-content-around align-items-center bg-secondary border mt-2"
+      >
+        <div class="filtered-search-box flex-grow-1 my-3 ml-3 mr-2">
           <gl-dropdown
             :text="__('Recent searches')"
             class="filtered-search-history-dropdown-wrapper d-none d-md-block"
@@ -143,7 +147,7 @@ export default {
               :disabled="loading"
               :placeholder="__('Search or filter results…')"
               autofocus
-              @keyup.enter.native="filterErrors"
+              @keyup.enter.native="searchByQuery(errorSearchQuery)"
             />
           </div>
           <div class="gl-search-box-by-type-right-icons">
@@ -160,16 +164,28 @@ export default {
           </div>
         </div>
 
-        <gl-button
-          v-track-event="trackViewInSentryOptions(externalUrl)"
-          class="ml-3"
-          variant="primary"
-          :href="externalUrl"
-          target="_blank"
+        <gl-dropdown
+          :text="$options.sortFields[sortField]"
+          left
+          :disabled="loading"
+          class="mr-3"
+          menu-class="sort-dropdown"
         >
-          {{ __('View in Sentry') }}
-          <icon name="external-link" class="flex-shrink-0" />
-        </gl-button>
+          <gl-dropdown-item
+            v-for="(label, field) in $options.sortFields"
+            :key="field"
+            @click="sortByField(field)"
+          >
+            <span class="d-flex">
+              <icon
+                class="flex-shrink-0 append-right-4"
+                :class="{ invisible: !isCurrentSortField(field) }"
+                name="mobile-issue-close"
+              />
+              {{ label }}
+            </span>
+          </gl-dropdown-item>
+        </gl-dropdown>
       </div>
 
       <div v-if="loading" class="py-3">

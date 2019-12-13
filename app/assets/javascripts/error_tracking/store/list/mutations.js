@@ -6,9 +6,6 @@ export default {
   [types.SET_ERRORS](state, data) {
     state.errors = convertObjectPropsToCamelCase(data, { deep: true });
   },
-  [types.SET_EXTERNAL_URL](state, url) {
-    state.externalUrl = url;
-  },
   [types.SET_LOADING](state, loading) {
     state.loading = loading;
   },
@@ -46,5 +43,14 @@ export default {
       state.recentSearches = [];
       throw e;
     }
+  },
+  [types.SET_SORT_FIELD](state, field) {
+    state.sortField = field;
+  },
+  [types.SET_SEARCH_QUERY](state, query) {
+    state.searchQuery = query;
+  },
+  [types.SET_ENDPOINT](state, endpoint) {
+    state.endpoint = endpoint;
   },
 };

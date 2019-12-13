@@ -1,7 +1,7 @@
 - user = local_assigns.fetch(:user, current_user)
 - access = user&.max_member_access_for_group(group.id)
 
-%li.group-row{ class: ('no-description' if group.description.blank?) }
+%li.group-row.py-3{ class: ('no-description' if group.description.blank?) }
   .stats
     %span
       = icon('bookmark')

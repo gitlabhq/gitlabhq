@@ -1,7 +1,7 @@
 - group = local_assigns.fetch(:group)
 - css_class = 'no-description' if group.description.blank?
 
-%li.group-row{ class: css_class }
+%li.group-row.py-3{ class: css_class }
   .controls
     = link_to _('Edit'), admin_group_edit_path(group), id: "edit_#{dom_id(group)}", class: 'btn'
     = link_to _('Delete'), [:admin, group], data: { confirm: _("Are you sure you want to remove %{group_name}?") % { group_name: group.name } }, method: :delete, class: 'btn btn-remove'

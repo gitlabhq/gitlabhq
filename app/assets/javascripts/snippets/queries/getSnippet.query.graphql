@@ -1,0 +1,13 @@
+query getSnippet($ids: [ID!]) {
+  snippets(ids: $ids) {
+    edges {
+      node {
+        title
+        description
+        createdAt
+        updatedAt
+        visibility
+      }
+    }
+  }
+}

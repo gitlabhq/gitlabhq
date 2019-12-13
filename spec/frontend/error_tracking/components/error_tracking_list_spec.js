@@ -1,7 +1,6 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 import {
-  GlButton,
   GlEmptyState,
   GlLoadingIcon,
   GlTable,
@@ -24,7 +23,9 @@ describe('ErrorTrackingList', () => {
 
   const findErrorListTable = () => wrapper.find('table');
   const findErrorListRows = () => wrapper.findAll('tbody tr');
-  const findButton = () => wrapper.find(GlButton);
+  const findSortDropdown = () => wrapper.find('.sort-dropdown');
+  const findRecentSearchesDropdown = () =>
+    wrapper.find('.filtered-search-history-dropdown-wrapper');
   const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
 
   function mountComponent({
@@ -33,6 +34,8 @@ describe('ErrorTrackingList', () => {
     stubs = {
       'gl-link': GlLink,
       'gl-table': GlTable,
+      'gl-dropdown': GlDropdown,
+      'gl-dropdown-item': GlDropdownItem,
     },
   } = {}) {
     wrapper = shallowMount(ErrorTrackingList, {
@@ -46,6 +49,9 @@ describe('ErrorTrackingList', () => {
         illustrationPath: 'illustration/path',
       },
       stubs,
+      data() {
+        return { errorSearchQuery: 'search' };
+      },
     });
   }
 
@@ -58,6 +64,9 @@ describe('ErrorTrackingList', () => {
       loadRecentSearches: jest.fn(),
       setIndexPath: jest.fn(),
       clearRecentSearches: jest.fn(),
+      setEndpoint: jest.fn(),
+      searchByQuery: jest.fn(),
+      sortByField: jest.fn(),
     };
 
     const state = createListState();
@@ -101,7 +110,7 @@ describe('ErrorTrackingList', () => {
     it('shows table', () => {
       expect(findLoadingIcon().exists()).toBe(false);
       expect(findErrorListTable().exists()).toBe(true);
-      expect(findButton().exists()).toBe(true);
+      expect(findSortDropdown().exists()).toBe(true);
     });
 
     it('shows list of errors in a table', () => {
@@ -121,16 +130,20 @@ describe('ErrorTrackingList', () => {
     describe('filtering', () => {
       const findSearchBox = () => wrapper.find(GlFormInput);
 
-      it('shows search box', () => {
+      it('shows search box & sort dropdown', () => {
         expect(findSearchBox().exists()).toBe(true);
+        expect(findSortDropdown().exists()).toBe(true);
       });
 
-      it('makes network request on submit', () => {
-        expect(actions.startPolling).toHaveBeenCalledTimes(1);
-
+      it('it searches by query', () => {
         findSearchBox().trigger('keyup.enter');
+        expect(actions.searchByQuery.mock.calls[0][1]).toEqual(wrapper.vm.errorSearchQuery);
+      });
 
-        expect(actions.startPolling).toHaveBeenCalledTimes(2);
+      it('it sorts by fields', () => {
+        const findSortItem = () => wrapper.find('.dropdown-item');
+        findSortItem().trigger('click');
+        expect(actions.sortByField).toHaveBeenCalled();
       });
     });
   });
@@ -148,7 +161,7 @@ describe('ErrorTrackingList', () => {
     it('shows empty table', () => {
       expect(findLoadingIcon().exists()).toBe(false);
       expect(findErrorListRows().length).toEqual(1);
-      expect(findButton().exists()).toBe(true);
+      expect(findSortDropdown().exists()).toBe(true);
     });
 
     it('shows a message prompting to refresh', () => {
@@ -170,7 +183,7 @@ describe('ErrorTrackingList', () => {
       expect(wrapper.find(GlEmptyState).exists()).toBe(true);
       expect(findLoadingIcon().exists()).toBe(false);
       expect(findErrorListTable().exists()).toBe(false);
-      expect(findButton().exists()).toBe(false);
+      expect(findSortDropdown().exists()).toBe(false);
     });
   });
 
@@ -201,13 +214,13 @@ describe('ErrorTrackingList', () => {
     it('shows empty message', () => {
       store.state.list.recentSearches = [];
 
-      expect(wrapper.find(GlDropdown).text()).toBe("You don't have any recent searches");
+      expect(findRecentSearchesDropdown().text()).toContain("You don't have any recent searches");
     });
 
     it('shows items', () => {
       store.state.list.recentSearches = ['great', 'search'];
 
-      const dropdownItems = wrapper.findAll(GlDropdownItem);
+      const dropdownItems = wrapper.findAll('.filtered-search-box li');
 
       expect(dropdownItems.length).toBe(3);
       expect(dropdownItems.at(0).text()).toBe('great');

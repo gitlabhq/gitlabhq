@@ -134,6 +134,36 @@ to add that `only:` rule to all of your jobs in order to make them always run. Y
 can use this for scenarios like having only pipelines with merge requests get a
 Review App set up, helping to save resources.
 
+## Excluding certain branches
+
+Pipelines for merge requests require special treatement when
+using [`only`/`except`](../yaml/README.md#onlyexcept-basic). Unlike ordinary
+branch refs (for example `refs/heads/my-feature-branch`), merge request refs
+use a special Git reference that looks like `refs/merge-requests/:iid/head`. Because
+of this, the following configuration will **not** work as expected:
+
+```yaml
+# Does not exclude a branch named "docs-my-fix"!
+test:
+  only: [merge_requests]
+  except: [/^docs-/]
+```
+
+Instead, you can use the
+[`$CI_COMMIT_REF_NAME` predefined environment
+variable](../variables/predefined_variables.md#variables-reference) in
+combination with
+[`only:variables`](../yaml/README.md#onlyvariablesexceptvariables) to
+accomplish this behavior:
+
+```yaml
+test:
+  only: [merge_requests]
+  except:
+    variables:
+      $CI_COMMIT_REF_NAME =~ /^docs-/
+```
+
 ## Important notes about merge requests from forked projects
 
 Note that the current behavior is subject to change. In the usual contribution

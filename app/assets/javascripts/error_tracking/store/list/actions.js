@@ -6,19 +6,24 @@ import { __, sprintf } from '~/locale';
 
 let eTagPoll;
 
-export function startPolling({ commit, dispatch }, endpoint) {
+export function startPolling({ state, commit, dispatch }) {
   commit(types.SET_LOADING, true);
 
   eTagPoll = new Poll({
     resource: Service,
     method: 'getSentryData',
-    data: { endpoint },
+    data: {
+      endpoint: state.endpoint,
+      params: {
+        search_term: state.searchQuery,
+        sort: state.sortField,
+      },
+    },
     successCallback: ({ data }) => {
       if (!data) {
         return;
       }
       commit(types.SET_ERRORS, data.errors);
-      commit(types.SET_EXTERNAL_URL, data.external_url);
       commit(types.SET_LOADING, false);
       dispatch('stopPolling');
     },
@@ -45,7 +50,6 @@ export const stopPolling = () => {
 
 export function restartPolling({ commit }) {
   commit(types.SET_ERRORS, []);
-  commit(types.SET_EXTERNAL_URL, '');
   commit(types.SET_LOADING, true);
 
   if (eTagPoll) eTagPoll.restart();
@@ -66,5 +70,23 @@ export function addRecentSearch({ commit }, searchQuery) {
 export function clearRecentSearches({ commit }) {
   commit(types.CLEAR_RECENT_SEARCHES);
 }
+
+export const searchByQuery = ({ commit, dispatch }, query) => {
+  const searchQuery = query.trim();
+  commit(types.SET_SEARCH_QUERY, searchQuery);
+  commit(types.ADD_RECENT_SEARCH, searchQuery);
+  dispatch('stopPolling');
+  dispatch('startPolling');
+};
+
+export const sortByField = ({ commit, dispatch }, field) => {
+  commit(types.SET_SORT_FIELD, field);
+  dispatch('stopPolling');
+  dispatch('startPolling');
+};
+
+export const setEndpoint = ({ commit }, endpoint) => {
+  commit(types.SET_ENDPOINT, endpoint);
+};
 
 export default () => {};

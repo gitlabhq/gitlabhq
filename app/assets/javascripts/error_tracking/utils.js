@@ -1,15 +1,4 @@
-/* eslint-disable @gitlab/i18n/no-non-i18n-strings */
-
-/**
- * Tracks snowplow event when user clicks View in Sentry btn
- * @param {String}  externalUrl that will be send as a property for the event
- */
-export const trackViewInSentryOptions = url => ({
-  category: 'Error Tracking',
-  action: 'click_view_in_sentry',
-  label: 'External Url',
-  property: url,
-});
+/* eslint-disable @gitlab/i18n/no-non-i18n-strings, import/prefer-default-export */
 
 /**
  * Tracks snowplow event when User clicks on error link to Sentry

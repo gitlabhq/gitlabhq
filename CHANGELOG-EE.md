@@ -835,6 +835,13 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Don't send CI usage email notifications for self-hosted instances. !14809
 
 
+## 12.0.12
+
+### Fixed (1 change)
+
+- Backport the new reliable fetcher to 12.0.9. !20532
+
+
 ## 12.0.10
 
 - No changes.
