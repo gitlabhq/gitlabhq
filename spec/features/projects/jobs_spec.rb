@@ -22,7 +22,6 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
   before do
     project.add_role(user, user_access_level)
     sign_in(user)
-    stub_feature_flags(job_log_json: false)
   end
 
   describe "GET /:project/jobs" do
@@ -810,7 +809,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
         it 'renders job log' do
           wait_for_all_requests
-          expect(page).to have_selector('.js-build-trace')
+          expect(page).to have_selector('.job-log')
         end
       end
 

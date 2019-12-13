@@ -7,10 +7,6 @@ describe "Internal Project Access" do
 
   set(:project) { create(:project, :internal, :repository) }
 
-  before do
-    stub_feature_flags(job_log_json: false)
-  end
-
   describe "Project should be internal" do
     describe '#internal?' do
       subject { project.internal? }

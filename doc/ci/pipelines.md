@@ -149,12 +149,13 @@ The union of A, B, and C is (1, 4) and (6, 7). Therefore, the total running time
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/14664) in GitLab
 > 12.0.
 
-Job logs are divided into sections that can be collapsed or expanded.
+Job logs are divided into sections that can be collapsed or expanded. Each section will display
+the duration.
 
 In the following example:
 
-- Two sections are expanded and can be collapsed.
-- One section is collapsed and can be expanded.
+- Two sections are collapsed and can be expanded.
+- Three sections are expanded and can be collapsed.
 
 ![Collapsible sections](img/collapsible_log.png)
 

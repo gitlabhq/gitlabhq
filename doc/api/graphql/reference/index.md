@@ -92,6 +92,14 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `errors` | String! => Array | Reasons why the mutation failed. |
 | `note` | Note | The note after mutation |
 
+### CreateSnippetPayload
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `clientMutationId` | String | A unique identifier for the client performing the mutation. |
+| `errors` | String! => Array | Reasons why the mutation failed. |
+| `snippet` | Snippet | The snippet after mutation |
+
 ### Design
 
 | Name  | Type  | Description |
@@ -144,6 +152,14 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `clientMutationId` | String | A unique identifier for the client performing the mutation. |
 | `errors` | String! => Array | Reasons why the mutation failed. |
 | `note` | Note | The note after mutation |
+
+### DestroySnippetPayload
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `clientMutationId` | String | A unique identifier for the client performing the mutation. |
+| `errors` | String! => Array | Reasons why the mutation failed. |
+| `snippet` | Snippet | The snippet after mutation |
 
 ### DetailedStatus
 
@@ -802,7 +818,7 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `fileName` | String | File Name of the snippet |
 | `content` | String! | Content of the snippet |
 | `description` | String | Description of the snippet |
-| `visibility` | String! | Visibility of the snippet |
+| `visibilityLevel` | VisibilityLevelsEnum! | Visibility Level of the snippet |
 | `createdAt` | Time! | Timestamp this snippet was created |
 | `updatedAt` | Time! | Timestamp this snippet was updated |
 | `webUrl` | String! | Web URL of the snippet |
@@ -928,6 +944,14 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `clientMutationId` | String | A unique identifier for the client performing the mutation. |
 | `errors` | String! => Array | Reasons why the mutation failed. |
 | `note` | Note | The note after mutation |
+
+### UpdateSnippetPayload
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `clientMutationId` | String | A unique identifier for the client performing the mutation. |
+| `errors` | String! => Array | Reasons why the mutation failed. |
+| `snippet` | Snippet | The snippet after mutation |
 
 ### User
 

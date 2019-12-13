@@ -8,8 +8,12 @@ describe Resolvers::BaseResolver do
   let(:resolver) do
     Class.new(described_class) do
       def resolve(**args)
+        process(object)
+
         [args, args]
       end
+
+      def process(obj); end
     end
   end
 
@@ -67,6 +71,28 @@ describe Resolvers::BaseResolver do
       expect(field.to_graphql.complexity.call({}, { sort: 'foo' }, 1)).to eq 6
       expect(field.to_graphql.complexity.call({}, { sort: 'foo', iid: 1 }, 1)).to eq 3
       expect(field.to_graphql.complexity.call({}, { sort: 'foo', iids: [1, 2, 3] }, 1)).to eq 3
+    end
+  end
+
+  describe '#object' do
+    let_it_be(:user) { create(:user) }
+
+    it 'returns object' do
+      expect_next_instance_of(resolver) do |r|
+        expect(r).to receive(:process).with(user)
+      end
+
+      resolve(resolver, obj: user)
+    end
+
+    context 'when object is a presenter' do
+      it 'returns presented object' do
+        expect_next_instance_of(resolver) do |r|
+          expect(r).to receive(:process).with(user)
+        end
+
+        resolve(resolver, obj: UserPresenter.new(user))
+      end
     end
   end
 end

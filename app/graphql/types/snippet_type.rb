@@ -44,8 +44,8 @@ module Types
           description: 'Description of the snippet',
           null: true
 
-    field :visibility, GraphQL::STRING_TYPE,
-          description: 'Visibility of the snippet',
+    field :visibility_level, Types::VisibilityLevelsEnum,
+          description: 'Visibility Level of the snippet',
           null: false
 
     field :created_at, Types::TimeType,

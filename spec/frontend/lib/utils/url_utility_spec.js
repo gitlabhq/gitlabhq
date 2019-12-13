@@ -298,4 +298,28 @@ describe('URL utility', () => {
       expect(urlUtils.objectToQuery(searchQueryObject)).toEqual('one=1&two=2');
     });
   });
+
+  describe('joinPaths', () => {
+    it.each`
+      paths                                       | expected
+      ${['foo', 'bar']}                           | ${'foo/bar'}
+      ${['foo/', 'bar']}                          | ${'foo/bar'}
+      ${['foo//', 'bar']}                         | ${'foo/bar'}
+      ${['abc/', '/def']}                         | ${'abc/def'}
+      ${['foo', '/bar']}                          | ${'foo/bar'}
+      ${['foo', '/bar/']}                         | ${'foo/bar/'}
+      ${['foo', '//bar/']}                        | ${'foo/bar/'}
+      ${['foo', '', '/bar']}                      | ${'foo/bar'}
+      ${['foo', '/bar', '']}                      | ${'foo/bar'}
+      ${['/', '', 'foo/bar/  ', '', '/ninja']}    | ${'/foo/bar/  /ninja'}
+      ${['', '/ninja', '/', ' ', '', 'bar', ' ']} | ${'/ninja/ /bar/ '}
+      ${['http://something/bar/', 'foo']}         | ${'http://something/bar/foo'}
+      ${['foo/bar', null, 'ninja', null]}         | ${'foo/bar/ninja'}
+      ${[null, 'abc/def', 'zoo']}                 | ${'abc/def/zoo'}
+      ${['', '', '']}                             | ${''}
+      ${['///', '/', '//']}                       | ${'/'}
+    `('joins paths $paths => $expected', ({ paths, expected }) => {
+      expect(urlUtils.joinPaths(...paths)).toBe(expected);
+    });
+  });
 });

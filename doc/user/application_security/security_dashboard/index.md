@@ -76,7 +76,7 @@ To the right of the filters, you should see a **Hide dismissed** toggle button.
 NOTE: **Note:**
 The dashboard only shows projects with [security reports](#supported-reports) enabled in a group.
 
-![dashboard with action buttons and metrics](img/group_security_dashboard_v12_4.png)
+![dashboard with action buttons and metrics](img/group_security_dashboard_v12_6.png)
 
 Selecting one or more filters will filter the results in this page. Disabling the **Hide dismissed**
 toggle button will let you also see vulnerabilities that have been dismissed.
@@ -96,6 +96,17 @@ Next to the list is a timeline chart that shows how many open
 vulnerabilities your projects had at various points in time. You can filter among 30, 60, and
 90 days, with the default being 90. Hover over the chart to get more details about
 the open vulnerabilities at a specific time.
+
+Below the timeline chart is a list of projects, grouped and sorted by the severity of the vulnerability found:
+
+- F: 1 or more "critical"
+- D: 1 or more "high" or "unknown"
+- C: 1 or more "medium"
+- B: 1 or more "low"
+- A: 0 vulnerabilities
+
+Projects with no vulnerability tests configured will not appear in the list. Additionally, dismissed
+vulnerabilities are not included either.
 
 Read more on how to [interact with the vulnerabilities](../index.md#interacting-with-the-vulnerabilities).
 

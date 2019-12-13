@@ -1,9 +1,42 @@
-import { join as joinPaths } from 'path';
+const PATH_SEPARATOR = '/';
+const PATH_SEPARATOR_LEADING_REGEX = new RegExp(`^${PATH_SEPARATOR}+`);
+const PATH_SEPARATOR_ENDING_REGEX = new RegExp(`${PATH_SEPARATOR}+$`);
 
 // Returns a decoded url parameter value
 // - Treats '+' as '%20'
 function decodeUrlParameter(val) {
   return decodeURIComponent(val.replace(/\+/g, '%20'));
+}
+
+function cleanLeadingSeparator(path) {
+  return path.replace(PATH_SEPARATOR_LEADING_REGEX, '');
+}
+
+function cleanEndingSeparator(path) {
+  return path.replace(PATH_SEPARATOR_ENDING_REGEX, '');
+}
+
+/**
+ * Safely joins the given paths which might both start and end with a `/`
+ *
+ * Example:
+ * - `joinPaths('abc/', '/def') === 'abc/def'`
+ * - `joinPaths(null, 'abc/def', 'zoo) === 'abc/def/zoo'`
+ *
+ * @param  {...String} paths
+ * @returns {String}
+ */
+export function joinPaths(...paths) {
+  return paths.reduce((acc, path) => {
+    if (!path) {
+      return acc;
+    }
+    if (!acc) {
+      return path;
+    }
+
+    return [cleanEndingSeparator(acc), PATH_SEPARATOR, cleanLeadingSeparator(path)].join('');
+  }, '');
 }
 
 // Returns an array containing the value(s) of the
@@ -212,5 +245,3 @@ export function objectToQuery(obj) {
     .map(k => `${encodeURIComponent(k)}=${encodeURIComponent(obj[k])}`)
     .join('&');
 }
-
-export { joinPaths };

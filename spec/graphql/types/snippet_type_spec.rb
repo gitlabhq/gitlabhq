@@ -6,7 +6,7 @@ describe GitlabSchema.types['Snippet'] do
   it 'has the correct fields' do
     expected_fields = [:id, :title, :project, :author,
                        :file_name, :content, :description,
-                       :visibility, :created_at, :updated_at,
+                       :visibility_level, :created_at, :updated_at,
                        :web_url, :raw_url, :notes, :discussions,
                        :user_permissions, :description_html]
 

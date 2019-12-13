@@ -7,10 +7,6 @@ describe "Private Project Access" do
 
   set(:project) { create(:project, :private, :repository, public_builds: false) }
 
-  before do
-    stub_feature_flags(job_log_json: false)
-  end
-
   describe "Project should be private" do
     describe '#private?' do
       subject { project.private? }

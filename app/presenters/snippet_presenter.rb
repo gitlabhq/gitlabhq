@@ -30,6 +30,6 @@ class SnippetPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def ability_name(ability_prefix)
-    "#{ability_prefix}_#{snippet.class.underscore}".to_sym
+    "#{ability_prefix}_#{snippet.to_ability_name}".to_sym
   end
 end

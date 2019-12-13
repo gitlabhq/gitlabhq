@@ -153,6 +153,11 @@ msgid_plural "%d more comments"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d project"
+msgid_plural "%d projects"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d request with warnings"
 msgid_plural "%d requests with warnings"
 msgstr[0] ""
@@ -5139,6 +5144,9 @@ msgstr ""
 msgid "Creation date"
 msgstr ""
 
+msgid "Critical vulnerabilities present"
+msgstr ""
+
 msgid "Cron Timezone"
 msgstr ""
 
@@ -6223,6 +6231,9 @@ msgid "During this process, you’ll be asked for URLs from GitLab’s side. Use
 msgstr ""
 
 msgid "Dynamic Application Security Testing (DAST)"
+msgstr ""
+
+msgid "Each Runner can be in one of the following states and/or belong to one of the following types:"
 msgstr ""
 
 msgid "Each Runner can be in one of the following states:"
@@ -9205,6 +9216,9 @@ msgstr ""
 msgid "Hiding all labels"
 msgstr ""
 
+msgid "High or unknown vulnerabilities present"
+msgstr ""
+
 msgid "Highest number of requests per minute for each raw path, default to 300. To disable throttling set to 0."
 msgstr ""
 
@@ -10638,6 +10652,9 @@ msgstr ""
 msgid "Logs|To see the pod logs, deploy your code to an environment."
 msgstr ""
 
+msgid "Low vulnerabilities present"
+msgstr ""
+
 msgid "MB"
 msgstr ""
 
@@ -10885,6 +10902,9 @@ msgid "May"
 msgstr ""
 
 msgid "Median"
+msgstr ""
+
+msgid "Medium vulnerabilities present"
 msgstr ""
 
 msgid "Member lock"
@@ -11816,6 +11836,9 @@ msgid "No vulnerabilities found for this pipeline"
 msgstr ""
 
 msgid "No vulnerabilities found for this project"
+msgstr ""
+
+msgid "No vulnerabilities present"
 msgstr ""
 
 msgid "No, directly import the existing email addresses and usernames."
@@ -13575,6 +13598,12 @@ msgstr ""
 msgid "Project path"
 msgstr ""
 
+msgid "Project security status"
+msgstr ""
+
+msgid "Project security status help page"
+msgstr ""
+
 msgid "Project slug"
 msgstr ""
 
@@ -13944,6 +13973,9 @@ msgstr ""
 msgid "Projects Successfully Retrieved"
 msgstr ""
 
+msgid "Projects are graded based on the highest severity vulnerability present"
+msgstr ""
+
 msgid "Projects shared with %{group_name}"
 msgstr ""
 
@@ -13951,6 +13983,21 @@ msgid "Projects that belong to a group are prefixed with the group namespace. Ex
 msgstr ""
 
 msgid "Projects to index"
+msgstr ""
+
+msgid "Projects with critical vulnerabilities"
+msgstr ""
+
+msgid "Projects with high or unknown vulnerabilities"
+msgstr ""
+
+msgid "Projects with low vulnerabilities"
+msgstr ""
+
+msgid "Projects with medium vulnerabilities"
+msgstr ""
+
+msgid "Projects with no vulnerabilities and security scanning enabled"
 msgstr ""
 
 msgid "Projects with write access"
@@ -18870,6 +18917,9 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
+msgid "Type/State"
+msgstr ""
+
 msgid "U2F Devices (%{length})"
 msgstr ""
 
@@ -18901,6 +18951,9 @@ msgid "Unable to connect to Prometheus server"
 msgstr ""
 
 msgid "Unable to connect to server: %{error}"
+msgstr ""
+
+msgid "Unable to fetch vulnerable projects"
 msgstr ""
 
 msgid "Unable to generate new instance ID"
@@ -21754,6 +21807,9 @@ msgid "severity|Low"
 msgstr ""
 
 msgid "severity|Medium"
+msgstr ""
+
+msgid "severity|None"
 msgstr ""
 
 msgid "severity|Undefined"
