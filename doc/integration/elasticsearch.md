@@ -273,7 +273,7 @@ or creating [extra Sidekiq processes](../administration/operations/extra_sidekiq
    decrease in indexing time. We'll enable them when indexing is done. This step is optional!
 
    ```bash
-   curl --request PUT localhost:9200/gitlab-production/_settings --data '{
+   curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' --data '{
        "index" : {
            "refresh_interval" : "-1",
            "number_of_replicas" : 0
@@ -355,7 +355,7 @@ or creating [extra Sidekiq processes](../administration/operations/extra_sidekiq
 1. Enable replication and refreshing again after indexing (only if you previously disabled it):
 
    ```bash
-   curl --request PUT localhost:9200/gitlab-production/_settings --data '{
+   curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' ---data '{
        "index" : {
            "number_of_replicas" : 1,
            "refresh_interval" : "1s"
@@ -367,7 +367,7 @@ or creating [extra Sidekiq processes](../administration/operations/extra_sidekiq
    For Elasticsearch 6.x, the index should be in read-only mode before proceeding with the force merge:
 
    ```bash
-   curl --request PUT localhost:9200/gitlab-production/_settings --data '{
+   curl --request PUT localhost:9200/gitlab-production/_settings ---header 'Content-Type: application/json' --data '{
      "settings": {
        "index.blocks.write": true
      } }'
@@ -376,13 +376,13 @@ or creating [extra Sidekiq processes](../administration/operations/extra_sidekiq
    Then, initiate the force merge:
 
    ```bash
-   curl --request POST 'http://localhost:9200/gitlab-production/_forcemerge?max_num_segments=5'
+   curl --request POST 'localhost:9200/gitlab-production/_forcemerge?max_num_segments=5'
    ```
 
    After this, if your index is in read-only mode, switch back to read-write:
 
    ```bash
-   curl --request PUT localhost:9200/gitlab-production/_settings --data '{
+   curl --request PUT localhost:9200/gitlab-production/_settings ---header 'Content-Type: application/json' --data '{
      "settings": {
        "index.blocks.write": false
      } }'
@@ -470,7 +470,7 @@ However, some larger installations may wish to tune the merge policy settings:
 - Consider reducing the `index.merge.policy.max_merged_segment` size from the default 5 GB to maybe 2 GB or 3 GB.  Merging only happens when a segment has at least 50% deletions.  Smaller segment sizes will allow merging to happen more frequently.
 
   ```bash
-  curl --request PUT http://localhost:9200/gitlab-production/_settings --data '{
+  curl --request PUT localhost:9200/gitlab-production/_settings ---header 'Content-Type: application/json' --data '{
     "index" : {
       "merge.policy.max_merged_segment": "2gb"
     }
@@ -480,7 +480,7 @@ However, some larger installations may wish to tune the merge policy settings:
 - You can also adjust `index.merge.policy.reclaim_deletes_weight`, which controls how aggressively deletions are targeted.  But this can lead to costly merge decisions, so we recommend not changing this unless you understand the tradeoffs.
 
   ```bash
-  curl --request PUT http://localhost:9200/gitlab-production/_settings --data '{
+  curl --request PUT localhost:9200/gitlab-production/_settings ---header 'Content-Type: application/json' --data '{
     "index" : {
       "merge.policy.reclaim_deletes_weight": "3.0"
     }
