@@ -4,8 +4,6 @@ module Banzai
   module Filter
     # The actual filter is implemented in the EE mixin
     class EpicReferenceFilter < IssuableReferenceFilter
-      prepend EE::Banzai::Filter::EpicReferenceFilter # rubocop: disable Cop/InjectEnterpriseEditionModule
-
       self.reference_type = :epic
 
       def self.object_class

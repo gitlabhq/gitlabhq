@@ -455,5 +455,3 @@ class Member < ApplicationRecord
     end
   end
 end
-
-Member.prepend(EE::Member)

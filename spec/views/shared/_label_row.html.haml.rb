@@ -1,4 +1,3 @@
-# frozen_string_literal: true
 require 'spec_helper'
 
 describe 'shared/_label_row.html.haml' do

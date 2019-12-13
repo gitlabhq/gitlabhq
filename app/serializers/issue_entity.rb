@@ -2,7 +2,6 @@
 
 class IssueEntity < IssuableEntity
   include TimeTrackableEntity
-  prepend ::EE::IssueEntity # rubocop: disable Cop/InjectEnterpriseEditionModule
 
   expose :state
   expose :milestone_id

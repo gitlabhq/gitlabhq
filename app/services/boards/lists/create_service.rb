@@ -48,5 +48,3 @@ module Boards
     end
   end
 end
-
-Boards::Lists::CreateService.prepend(EE::Boards::Lists::CreateService)

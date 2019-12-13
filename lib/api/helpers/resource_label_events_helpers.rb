@@ -11,5 +11,3 @@ module API
     end
   end
 end
-
-API::Helpers::ResourceLabelEventsHelpers.prepend(EE::API::Helpers::ResourceLabelEventsHelpers)

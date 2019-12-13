@@ -74,5 +74,3 @@ class GroupMember < Member
     super
   end
 end
-
-GroupMember.prepend(EE::GroupMember)

@@ -191,5 +191,3 @@ module EmailsHelper
     current_appearance&.email_header_and_footer_enabled?
   end
 end
-
-EmailsHelper.prepend(EE::EmailsHelper)

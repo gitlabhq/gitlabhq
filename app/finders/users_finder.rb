@@ -95,5 +95,3 @@ class UsersFinder
     end
   end
 end
-
-UsersFinder.prepend(EE::UsersFinder)

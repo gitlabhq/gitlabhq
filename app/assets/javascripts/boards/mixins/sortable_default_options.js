@@ -1,7 +1,7 @@
 /* global DocumentTouch */
 
 import $ from 'jquery';
-import sortableConfig from 'ee/sortable/sortable_config';
+import sortableConfig from '../../sortable/sortable_config';
 
 export function sortableStart() {
   $('.has-tooltip')

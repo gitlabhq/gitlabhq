@@ -21,5 +21,3 @@ module Projects
     end
   end
 end
-
-Projects::GroupLinks::CreateService.prepend(EE::Projects::GroupLinks::CreateService)

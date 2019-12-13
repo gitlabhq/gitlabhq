@@ -318,5 +318,3 @@ module Clusters
     end
   end
 end
-
-Clusters::Cluster.prepend(EE::Clusters::Cluster)

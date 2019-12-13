@@ -31,5 +31,3 @@ class ConfirmationsController < Devise::ConfirmationsController
     after_sign_in_path_for(resource)
   end
 end
-
-ConfirmationsController.prepend(EE::ConfirmationsController)

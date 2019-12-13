@@ -19,5 +19,3 @@ class AuditEvent < ApplicationRecord
     self.user.name
   end
 end
-
-AuditEvent.prepend(EE::AuditEvent)

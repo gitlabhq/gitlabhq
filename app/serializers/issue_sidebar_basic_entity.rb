@@ -4,5 +4,3 @@ class IssueSidebarBasicEntity < IssuableSidebarBasicEntity
   expose :due_date
   expose :confidential
 end
-
-IssueSidebarBasicEntity.prepend(EE::IssueSidebarBasicEntity)

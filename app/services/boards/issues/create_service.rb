@@ -35,5 +35,3 @@ module Boards
     end
   end
 end
-
-Boards::Issues::CreateService.prepend(EE::Boards::Issues::CreateService)

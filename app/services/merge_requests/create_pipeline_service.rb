@@ -35,5 +35,3 @@ module MergeRequests
     end
   end
 end
-
-MergeRequests::CreatePipelineService.prepend(EE::MergeRequests::CreatePipelineService)

@@ -193,6 +193,7 @@ describe MergeRequest do
       with_them do
         it "validates source_branch" do
           subject = build(:merge_request, source_branch: branch_name, target_branch: 'master')
+
           subject.valid?
 
           expect(subject.errors.added?(:source_branch)).to eq(!valid)
@@ -200,6 +201,7 @@ describe MergeRequest do
 
         it "validates target_branch" do
           subject = build(:merge_request, source_branch: 'master', target_branch: branch_name)
+
           subject.valid?
 
           expect(subject.errors.added?(:target_branch)).to eq(!valid)

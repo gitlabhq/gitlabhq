@@ -403,5 +403,3 @@ class IssuableBaseService < BaseService
     issuable.milestone_id = nil unless issuable.milestone_available?
   end
 end
-
-IssuableBaseService.prepend(EE::IssuableBaseService)

@@ -1,10 +1,6 @@
 {
   "type": "object",
-  "required": [
-    "dashboard",
-    "priority",
-    "panel_groups"
-  ],
+  "required": ["dashboard", "priority", "panel_groups"],
   "properties": {
     "dashboard": { "type": "string" },
     "priority": { "type": "number" },

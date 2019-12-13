@@ -194,5 +194,3 @@ module GitlabRoutingHelper
     take_ownership_project_pipeline_schedule_path(project, schedule, *args)
   end
 end
-
-GitlabRoutingHelper.include(EE::GitlabRoutingHelper)

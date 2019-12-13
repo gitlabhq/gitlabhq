@@ -128,5 +128,3 @@ module MigrationsHelpers
     end
   end
 end
-
-MigrationsHelpers.prepend(EE::MigrationsHelpers)

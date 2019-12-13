@@ -4,7 +4,6 @@ module QA
   module Page
     module MergeRequest
       class Show < Page::Base
-        prepend QA::EE::Page::MergeRequest::Show
         include Page::Component::Note
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/ready_to_merge.vue' do
@@ -173,12 +172,6 @@ module QA
 
         def edit!
           click_element :edit_button
-        end
-
-        def approvers
-          within_element :approver_list do
-            all_elements(:approver).map(&:text)
-          end
         end
 
         def view_email_patches

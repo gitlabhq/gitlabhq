@@ -180,5 +180,3 @@ class DiffNote < Note
     noteable.respond_to?(:repository) ? noteable.repository : project.repository
   end
 end
-
-DiffNote.prepend(::EE::DiffNote)

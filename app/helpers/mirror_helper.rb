@@ -12,5 +12,3 @@ module MirrorHelper
     _('The Git LFS objects will <strong>not</strong> be synced.').html_safe
   end
 end
-
-MirrorHelper.prepend(EE::MirrorHelper)

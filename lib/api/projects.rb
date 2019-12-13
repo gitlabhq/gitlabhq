@@ -499,5 +499,3 @@ module API
     end
   end
 end
-
-API::Projects.prepend(EE::API::Projects)

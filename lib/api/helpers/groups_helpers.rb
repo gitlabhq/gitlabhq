@@ -31,5 +31,3 @@ module API
     end
   end
 end
-
-API::Helpers::GroupsHelpers.prepend(EE::API::Helpers::GroupsHelpers)

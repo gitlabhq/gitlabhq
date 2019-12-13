@@ -35,5 +35,3 @@ module Search
     end
   end
 end
-
-Search::GlobalService.prepend(EE::Search::GlobalService)

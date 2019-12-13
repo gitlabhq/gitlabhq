@@ -86,5 +86,3 @@ module Boards
     end
   end
 end
-
-Boards::Issues::MoveService.prepend(EE::Boards::Issues::MoveService)

@@ -186,5 +186,3 @@ module NotesHelper
     rendered_for_merge_request? || params['html'].nil?
   end
 end
-
-NotesHelper.prepend(EE::NotesHelper)

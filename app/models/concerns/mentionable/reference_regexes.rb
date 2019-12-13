@@ -34,5 +34,3 @@ module Mentionable
     end
   end
 end
-
-Mentionable::ReferenceRegexes.prepend(EE::Mentionable::ReferenceRegexes)

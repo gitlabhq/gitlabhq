@@ -30,5 +30,3 @@ module API
     end
   end
 end
-
-API::Validations::CheckAssigneesCount.prepend(EE::API::Validations::CheckAssigneesCount)

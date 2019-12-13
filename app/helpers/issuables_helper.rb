@@ -438,5 +438,3 @@ module IssuablesHelper
     @project || @group
   end
 end
-
-IssuablesHelper.prepend(EE::IssuablesHelper)

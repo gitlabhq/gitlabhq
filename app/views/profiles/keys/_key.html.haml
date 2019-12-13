@@ -20,5 +20,5 @@
       = s_('Profiles|Created %{time_ago}'.html_safe) % { time_ago:time_ago_with_tooltip(key.created_at)}
     - if key.can_delete?
       = link_to path_to_key(key, is_admin), data: { confirm: _('Are you sure?')}, method: :delete, class: "btn btn-transparent prepend-left-10" do
-        %span.sr-only _('Remove')
+        %span.sr-only= _('Remove')
         = icon('trash')

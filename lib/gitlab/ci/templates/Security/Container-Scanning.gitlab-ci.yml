@@ -1,4 +1,4 @@
-# Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/container_scanning/
+# Read more about this feature here: https://docs.gitlab.com/ee/user/project/merge_requests/container_scanning.html
 
 container_scanning:
   stage: test

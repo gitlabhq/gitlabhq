@@ -407,5 +407,3 @@ class Event < ApplicationRecord
     UserInteractedProject.track(self) if UserInteractedProject.available?
   end
 end
-
-Event.prepend(EE::Event)

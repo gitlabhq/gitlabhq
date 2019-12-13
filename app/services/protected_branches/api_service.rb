@@ -15,5 +15,3 @@ module ProtectedBranches
     end
   end
 end
-
-ProtectedBranches::ApiService.prepend(EE::ProtectedBranches::ApiService)

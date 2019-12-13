@@ -39,5 +39,3 @@ module RunnersHelper
     end
   end
 end
-
-RunnersHelper.prepend(EE::RunnersHelper)

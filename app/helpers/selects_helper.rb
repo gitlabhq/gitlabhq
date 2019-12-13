@@ -89,5 +89,3 @@ module SelectsHelper
     }
   end
 end
-
-SelectsHelper.prepend(EE::SelectsHelper)

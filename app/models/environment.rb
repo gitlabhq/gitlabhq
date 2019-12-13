@@ -265,5 +265,3 @@ class Environment < ApplicationRecord
     (0..5).map { SUFFIX_CHARS.sample }.join
   end
 end
-
-Environment.prepend(EE::Environment)

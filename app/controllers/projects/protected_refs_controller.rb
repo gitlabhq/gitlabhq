@@ -65,5 +65,3 @@ class Projects::ProtectedRefsController < Projects::ApplicationController
     %i[access_level id]
   end
 end
-
-Projects::ProtectedRefsController.prepend(EE::Projects::ProtectedRefsController)

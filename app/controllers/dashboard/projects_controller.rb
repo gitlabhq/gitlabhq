@@ -88,5 +88,3 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
     Events::RenderService.new(current_user).execute(@events, atom_request: request.format.atom?)
   end
 end
-
-Dashboard::ProjectsController.prepend(EE::Dashboard::ProjectsController)

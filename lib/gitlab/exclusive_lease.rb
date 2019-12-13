@@ -96,5 +96,3 @@ module Gitlab
     end
   end
 end
-
-Gitlab::ExclusiveLease.prepend(EE::Gitlab::ExclusiveLease)

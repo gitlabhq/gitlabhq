@@ -237,5 +237,3 @@ class Admin::UsersController < Admin::ApplicationController
     access_denied! unless Gitlab.config.gitlab.impersonation_enabled
   end
 end
-
-Admin::UsersController.prepend(EE::Admin::UsersController)

@@ -18,5 +18,3 @@ module UserCalloutEnums
     }
   end
 end
-
-UserCalloutEnums.prepend(EE::UserCalloutEnums)

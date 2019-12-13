@@ -32,8 +32,6 @@ end
 require 'rainbow/ext/string'
 Rainbow.enabled = false
 
-require_relative '../ee/spec/spec_helper'
-
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
 # Requires helpers, and shared contexts/examples first since they're used in other support files

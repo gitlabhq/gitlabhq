@@ -44,5 +44,3 @@ class Groups::GroupMembersController < Groups::ApplicationController
   # MembershipActions concern
   alias_method :membershipable, :group
 end
-
-Groups::GroupMembersController.prepend(EE::Groups::GroupMembersController)

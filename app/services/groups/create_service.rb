@@ -75,5 +75,3 @@ module Groups
     end
   end
 end
-
-Groups::CreateService.prepend(EE::Groups::CreateService)

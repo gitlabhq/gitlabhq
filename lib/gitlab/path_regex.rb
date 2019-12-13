@@ -243,5 +243,3 @@ module Gitlab
     end
   end
 end
-
-Gitlab::PathRegex.prepend(EE::Gitlab::PathRegex)

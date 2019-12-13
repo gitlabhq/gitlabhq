@@ -40,5 +40,3 @@ module ResourceEvents
     end
   end
 end
-
-ResourceEvents::ChangeLabelsService.prepend(EE::ResourceEvents::ChangeLabelsService)

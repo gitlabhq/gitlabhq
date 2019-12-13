@@ -4,8 +4,7 @@ require('spec_helper')
 
 describe Projects::ProjectMembersController do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public, :access_requestable, namespace: namespace) }
-  let(:namespace) { create :group }
+  let(:project) { create(:project, :public, :access_requestable) }
 
   describe 'GET index' do
     it 'has the project_members address with a 200 status code' do
@@ -316,13 +315,6 @@ describe Projects::ProjectMembersController do
   end
 
   describe 'POST apply_import' do
-    subject(:apply_import) do
-      post(:apply_import, params: {
-        namespace_id: project.namespace,
-        project_id: project,
-        source_project_id: another_project.id
-      })
-    end
     let(:another_project) { create(:project, :private) }
     let(:member) { create(:user) }
 
@@ -332,44 +324,40 @@ describe Projects::ProjectMembersController do
       sign_in(user)
     end
 
+    shared_context 'import applied' do
+      before do
+        post(:apply_import, params: {
+                              namespace_id: project.namespace,
+                              project_id: project,
+                              source_project_id: another_project.id
+                            })
+      end
+    end
+
     context 'when user can access source project members' do
       before do
         another_project.add_guest(user)
       end
 
-      it 'imports source project members' do
-        apply_import
+      include_context 'import applied'
 
+      it 'imports source project members' do
         expect(project.team_members).to include member
         expect(response).to set_flash.to 'Successfully imported'
         expect(response).to redirect_to(
           project_project_members_path(project)
         )
       end
-
-      context 'and the project group has membership lock enabled' do
-        before do
-          project.namespace.update(membership_lock: true)
-        end
-
-        it 'responds with 403' do
-          apply_import
-
-          expect(response.status).to eq 403
-        end
-      end
     end
 
     context 'when user is not member of a source project' do
-      it 'does not import team members' do
-        apply_import
+      include_context 'import applied'
 
+      it 'does not import team members' do
         expect(project.team_members).not_to include member
       end
 
       it 'responds with not found' do
-        apply_import
-
         expect(response.status).to eq 404
       end
     end
@@ -377,78 +365,40 @@ describe Projects::ProjectMembersController do
 
   describe 'POST create' do
     let(:stranger) { create(:user) }
-    subject(:create_member) do
-      post :create, params: {
-        user_ids: stranger.id,
-        namespace_id: project.namespace,
-        access_level: access_level,
-        project_id: project
-      }
-    end
-    let(:access_level) { nil }
-
-    before do
-      project.add_maintainer(user)
-      sign_in(user)
-    end
 
     context 'when creating owner' do
-      let(:access_level) { Member::OWNER }
+      before do
+        project.add_maintainer(user)
+        sign_in(user)
+      end
 
       it 'does not create a member' do
-        expect { create_member }.not_to change { project.members.count }
+        expect do
+          post :create, params: {
+                          user_ids: stranger.id,
+                          namespace_id: project.namespace,
+                          access_level: Member::OWNER,
+                          project_id: project
+                        }
+        end.to change { project.members.count }.by(0)
       end
     end
 
     context 'when create maintainer' do
-      let(:access_level) { Member::MAINTAINER }
+      before do
+        project.add_maintainer(user)
+        sign_in(user)
+      end
 
       it 'creates a member' do
-        expect { create_member }.to change { project.members.count }.by(1)
-      end
-    end
-
-    context 'when project group has membership lock enabled' do
-      before do
-        project.namespace.update(membership_lock: true)
-      end
-
-      it 'responds with 403' do
-        create_member
-
-        expect(response.status).to eq 403
-      end
-    end
-  end
-
-  describe 'GET import' do
-    subject(:import) do
-      get :import, params: {
-        namespace_id: project.namespace,
-        project_id: project
-      }
-    end
-
-    before do
-      project.add_maintainer(user)
-      sign_in(user)
-    end
-
-    it 'responds with 200' do
-      import
-
-      expect(response.status).to eq 200
-    end
-
-    context 'when project group has membership lock enabled' do
-      before do
-        project.namespace.update(membership_lock: true)
-      end
-
-      it 'responds with 403' do
-        import
-
-        expect(response.status).to eq 403
+        expect do
+          post :create, params: {
+                          user_ids: stranger.id,
+                          namespace_id: project.namespace,
+                          access_level: Member::MAINTAINER,
+                          project_id: project
+                        }
+        end.to change { project.members.count }.by(1)
       end
     end
   end

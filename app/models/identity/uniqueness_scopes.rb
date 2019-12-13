@@ -9,5 +9,3 @@ class Identity < ApplicationRecord
     end
   end
 end
-
-Identity::UniquenessScopes.prepend(EE::Identity::UniquenessScopes)

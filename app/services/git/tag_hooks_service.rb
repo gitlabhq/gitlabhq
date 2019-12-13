@@ -34,5 +34,3 @@ module Git
     end
   end
 end
-
-Git::TagHooksService.prepend(::EE::Git::TagHooksService)

@@ -77,14 +77,6 @@ GEM
       encryptor (~> 3.0.0)
     attr_required (1.0.1)
     awesome_print (1.8.0)
-    aws-sdk (2.9.32)
-      aws-sdk-resources (= 2.9.32)
-    aws-sdk-core (2.9.32)
-      aws-sigv4 (~> 1.0)
-      jmespath (~> 1.0)
-    aws-sdk-resources (2.9.32)
-      aws-sdk-core (= 2.9.32)
-    aws-sigv4 (1.0.0)
     axiom-types (0.1.1)
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
@@ -157,7 +149,6 @@ GEM
     concurrent-ruby-ext (1.1.5)
       concurrent-ruby (= 1.1.5)
     connection_pool (2.2.2)
-    contracts (0.11.0)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
     crass (1.0.4)
@@ -208,19 +199,6 @@ GEM
       doorkeeper (~> 4.3)
       json-jwt (~> 1.6)
     ed25519 (1.2.4)
-    elasticsearch (5.0.3)
-      elasticsearch-api (= 5.0.3)
-      elasticsearch-transport (= 5.0.3)
-    elasticsearch-api (5.0.3)
-      multi_json
-    elasticsearch-model (0.1.9)
-      activesupport (> 3)
-      elasticsearch (> 0.4)
-      hashie
-    elasticsearch-rails (0.1.9)
-    elasticsearch-transport (5.0.3)
-      faraday
-      multi_json
     email_reply_trimmer (0.1.6)
     email_spec (2.2.0)
       htmlentities (~> 4.3.3)
@@ -245,9 +223,6 @@ GEM
       multipart-post (>= 1.2, < 3)
     faraday_middleware (0.12.2)
       faraday (>= 0.7.4, < 1.0)
-    faraday_middleware-aws-signers-v4 (0.1.7)
-      aws-sdk-resources (~> 2)
-      faraday (~> 0.9)
     faraday_middleware-multi_json (0.0.6)
       faraday_middleware
       multi_json
@@ -337,7 +312,6 @@ GEM
       grpc (~> 1.19.0)
       jaeger-client (~> 0.10)
       opentracing (~> 0.4)
-    gitlab-license (1.0.0)
     gitlab-markup (1.7.0)
     gitlab-sidekiq-fetcher (0.5.2)
       sidekiq (~> 5)
@@ -399,8 +373,6 @@ GEM
     grpc (1.19.0)
       google-protobuf (~> 3.1)
       googleapis-common-protos-types (~> 1.0.0)
-    gssapi (1.2.0)
-      ffi (>= 1.0.1)
     haml (5.0.4)
       temple (>= 0.8.0)
       tilt
@@ -460,7 +432,6 @@ GEM
       activesupport
       multipart-post
       oauth (~> 0.5, >= 0.5.0)
-    jmespath (1.3.1)
     js_regex (3.1.1)
       character_set (~> 1.1)
       regexp_parser (~> 1.1)
@@ -543,9 +514,7 @@ GEM
       mustermann (~> 1.0.0)
     mysql2 (0.4.10)
     nakayoshi_fork (0.0.4)
-    net-dns (0.9.0)
     net-ldap (0.16.0)
-    net-ntp (2.1.3)
     net-ssh (5.0.1)
     netrc (0.11.0)
     nio4r (2.3.1)
@@ -929,8 +898,6 @@ GEM
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.2)
     slack-notifier (1.5.1)
-    snowplow-tracker (0.6.1)
-      contracts (~> 0.7, <= 0.11)
     spring (2.0.2)
       activesupport (>= 4.2)
     spring-commands-rspec (1.0.4)
@@ -959,7 +926,7 @@ GEM
     sys-filesystem (1.1.6)
       ffi
     sysexits (1.2.0)
-    temple (0.8.1)
+    temple (0.8.0)
     test-prof (0.2.5)
     text (1.3.1)
     thin (1.7.2)
@@ -969,7 +936,7 @@ GEM
     thor (0.19.4)
     thread_safe (0.3.6)
     thrift (0.11.0.0)
-    tilt (2.0.9)
+    tilt (2.0.8)
     timecop (0.8.1)
     timfel-krb5-auth (0.8.3)
     toml (0.2.0)
@@ -1063,7 +1030,6 @@ DEPENDENCIES
   asciidoctor-plantuml (= 0.0.8)
   attr_encrypted (~> 3.1.0)
   awesome_print
-  aws-sdk
   babosa (~> 1.0.2)
   base32 (~> 0.3.0)
   batch-loader (~> 1.4.0)
@@ -1099,15 +1065,11 @@ DEPENDENCIES
   doorkeeper (~> 4.3)
   doorkeeper-openid_connect (~> 1.5)
   ed25519 (~> 1.2)
-  elasticsearch-api (= 5.0.3)
-  elasticsearch-model (~> 0.1.9)
-  elasticsearch-rails (~> 0.1.9)
   email_reply_trimmer (~> 0.1)
   email_spec (~> 2.2.0)
   escape_utils (~> 1.1)
   factory_bot_rails (~> 4.8.2)
   faraday (~> 0.12)
-  faraday_middleware-aws-signers-v4
   fast_blank
   ffaker (~> 2.10)
   flipper (~> 0.13.0)
@@ -1133,7 +1095,6 @@ DEPENDENCIES
   github-markup (~> 1.7.0)
   gitlab-default_value_for (~> 3.1.1)
   gitlab-labkit (~> 0.3.0)
-  gitlab-license (~> 1.0)
   gitlab-markup (~> 1.7.0)
   gitlab-sidekiq-fetcher (= 0.5.2)
   gitlab-styles (~> 2.7)
@@ -1149,7 +1110,6 @@ DEPENDENCIES
   graphiql-rails (~> 1.4.10)
   graphql (~> 1.8.0)
   grpc (~> 1.19.0)
-  gssapi
   haml_lint (~> 0.31.0)
   hamlit (~> 2.8.8)
   hangouts-chat (~> 0.0.5)
@@ -1181,9 +1141,7 @@ DEPENDENCIES
   minitest (~> 5.11.0)
   mysql2 (~> 0.4.10)
   nakayoshi_fork (~> 0.0.4)
-  net-dns (~> 0.9.0)
   net-ldap
-  net-ntp
   net-ssh (~> 5.0)
   nokogiri (~> 1.10.3)
   oauth2 (~> 1.4)
@@ -1272,7 +1230,6 @@ DEPENDENCIES
   simple_po_parser (~> 1.1.2)
   simplecov (~> 0.16.1)
   slack-notifier (~> 1.5.1)
-  snowplow-tracker (~> 0.6.1)
   spring (~> 2.0.0)
   spring-commands-rspec (~> 1.0.4)
   sprockets (~> 3.7.0)

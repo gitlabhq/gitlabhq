@@ -17,7 +17,7 @@ describe 'layouts/nav/sidebar/_project' do
     it 'has board tab' do
       render
 
-      expect(rendered).to have_css('a[title="Boards"]')
+      expect(rendered).to have_css('a[title="Board"]')
     end
   end
 

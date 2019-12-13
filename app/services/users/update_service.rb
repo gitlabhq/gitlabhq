@@ -59,5 +59,3 @@ module Users
     end
   end
 end
-
-Users::UpdateService.prepend(EE::Users::UpdateService)

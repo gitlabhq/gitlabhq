@@ -68,7 +68,7 @@ describe('Title component', () => {
     });
   });
 
-  describe('show inline edit button', () => {
+  describe('inline edit button', () => {
     beforeEach(() => {
       spyOn(eventHub, '$emit');
     });

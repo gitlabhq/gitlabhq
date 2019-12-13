@@ -3,5 +3,3 @@
 class PersonalSnippet < Snippet
   include WithUploads
 end
-
-PersonalSnippet.prepend(EE::PersonalSnippet)

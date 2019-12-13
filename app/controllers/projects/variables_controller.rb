@@ -41,5 +41,3 @@ class Projects::VariablesController < Projects::ApplicationController
     %i[id variable_type key secret_value protected masked _destroy]
   end
 end
-
-Projects::VariablesController.prepend(EE::Projects::VariablesController)

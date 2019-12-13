@@ -14,5 +14,3 @@ class EnvironmentPolicy < BasePolicy
 
   rule { stop_with_deployment_allowed | stop_with_update_allowed }.enable :stop_environment
 end
-
-EnvironmentPolicy.prepend(EE::EnvironmentPolicy)

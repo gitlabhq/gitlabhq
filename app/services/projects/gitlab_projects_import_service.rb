@@ -69,5 +69,3 @@ module Projects
     end
   end
 end
-
-Projects::GitlabProjectsImportService.prepend(EE::Projects::GitlabProjectsImportService)

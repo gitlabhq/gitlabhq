@@ -139,5 +139,3 @@ module Projects
     end
   end
 end
-
-Projects::AfterRenameService.prepend(EE::Projects::AfterRenameService)

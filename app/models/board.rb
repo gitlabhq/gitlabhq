@@ -37,5 +37,3 @@ class Board < ApplicationRecord
     false
   end
 end
-
-Board.prepend(EE::Board)

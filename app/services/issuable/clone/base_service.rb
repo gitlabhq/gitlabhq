@@ -58,5 +58,3 @@ module Issuable
     end
   end
 end
-
-Issuable::Clone::BaseService.prepend(EE::Issuable::Clone::BaseService)

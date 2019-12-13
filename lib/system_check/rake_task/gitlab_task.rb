@@ -31,5 +31,3 @@ module SystemCheck
     end
   end
 end
-
-SystemCheck::RakeTask::GitlabTask.prepend(EE::SystemCheck::RakeTask::GitlabTask)

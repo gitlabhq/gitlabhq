@@ -244,5 +244,3 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     access_denied! unless can?(current_user, :stop_environment, environment)
   end
 end
-
-Projects::EnvironmentsController.prepend(EE::Projects::EnvironmentsController)

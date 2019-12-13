@@ -47,5 +47,3 @@ class Identity < ApplicationRecord
     user.user_synced_attributes_metadata&.destroy
   end
 end
-
-Identity.prepend(EE::Identity)

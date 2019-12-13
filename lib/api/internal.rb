@@ -291,5 +291,3 @@ module API
     end
   end
 end
-
-API::Internal.prepend(EE::API::Internal)

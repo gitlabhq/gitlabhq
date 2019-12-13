@@ -32,5 +32,3 @@ module Projects
     end
   end
 end
-
-Projects::Prometheus::MetricsController.prepend(EE::Projects::Prometheus::MetricsController)

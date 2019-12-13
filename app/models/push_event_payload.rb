@@ -22,5 +22,3 @@ class PushEventPayload < ApplicationRecord
     tag: 1
   }
 end
-
-PushEventPayload.prepend(EE::PushEventPayload)

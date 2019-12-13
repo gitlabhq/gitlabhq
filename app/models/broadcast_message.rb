@@ -76,5 +76,3 @@ class BroadcastMessage < ApplicationRecord
     self.class.cache.expire(CACHE_KEY)
   end
 end
-
-BroadcastMessage.prepend(EE::BroadcastMessage)

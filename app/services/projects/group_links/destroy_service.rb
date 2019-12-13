@@ -11,5 +11,3 @@ module Projects
     end
   end
 end
-
-Projects::GroupLinks::DestroyService.prepend(EE::Projects::GroupLinks::DestroyService)

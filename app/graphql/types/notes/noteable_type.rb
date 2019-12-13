@@ -23,5 +23,3 @@ module Types
     end
   end
 end
-
-Types::Notes::NoteableType.extend(::EE::Types::Notes::NoteableType)

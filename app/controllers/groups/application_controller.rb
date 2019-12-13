@@ -38,5 +38,3 @@ class Groups::ApplicationController < ApplicationController
     url_for(safe_params)
   end
 end
-
-Groups::ApplicationController.prepend(EE::Groups::ApplicationController)

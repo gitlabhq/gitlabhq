@@ -33,5 +33,3 @@ module ProtectedBranches
     end
   end
 end
-
-ProtectedBranches::AccessLevelParams.prepend(EE::ProtectedBranches::AccessLevelParams)

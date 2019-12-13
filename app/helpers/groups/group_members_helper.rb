@@ -5,5 +5,3 @@ module Groups::GroupMembersHelper
     { multiple: true, class: 'input-clamp', scope: :all, email_user: true }
   end
 end
-
-Groups::GroupMembersHelper.prepend(EE::Groups::GroupMembersHelper)

@@ -11,5 +11,3 @@ module API
     end
   end
 end
-
-API::Helpers::ProtectedBranchesHelpers.prepend(EE::API::Helpers::ProtectedBranchesHelpers)

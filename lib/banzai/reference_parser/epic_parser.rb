@@ -4,8 +4,6 @@ module Banzai
   module ReferenceParser
     # The actual parser is implemented in the EE mixin
     class EpicParser < IssuableParser
-      prepend ::EE::Banzai::ReferenceParser::EpicParser # rubocop: disable Cop/InjectEnterpriseEditionModule
-
       self.reference_type = :epic
 
       def records_for_nodes(_nodes)

@@ -360,5 +360,3 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     return render_404 unless can?(current_user, :read_build, merge_request.actual_head_pipeline)
   end
 end
-
-Projects::MergeRequestsController.prepend(EE::Projects::MergeRequestsController)

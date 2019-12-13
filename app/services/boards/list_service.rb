@@ -18,5 +18,3 @@ module Boards
     end
   end
 end
-
-Boards::ListService.prepend(EE::Boards::ListService)

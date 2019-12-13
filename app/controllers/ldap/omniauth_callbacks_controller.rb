@@ -31,5 +31,3 @@ class Ldap::OmniauthCallbacksController < OmniauthCallbacksController
     redirect_to new_user_session_path
   end
 end
-
-Ldap::OmniauthCallbacksController.prepend(EE::Ldap::OmniauthCallbacksController)

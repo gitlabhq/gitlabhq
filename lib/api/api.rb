@@ -173,5 +173,3 @@ module API
     end
   end
 end
-
-API::API.prepend(::EE::API::Endpoints)

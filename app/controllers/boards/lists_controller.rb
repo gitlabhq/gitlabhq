@@ -83,5 +83,3 @@ module Boards
     end
   end
 end
-
-Boards::ListsController.prepend(EE::Boards::ListsController)

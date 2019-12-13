@@ -279,5 +279,3 @@ class SessionsController < Devise::SessionsController
     end
   end
 end
-
-SessionsController.prepend(EE::SessionsController)

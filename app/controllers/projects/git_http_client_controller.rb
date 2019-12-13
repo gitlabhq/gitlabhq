@@ -114,5 +114,3 @@ class Projects::GitHttpClientController < Projects::ApplicationController
     authentication_result.ci?(project)
   end
 end
-
-Projects::GitHttpClientController.prepend(EE::Projects::GitHttpClientController)

@@ -67,5 +67,3 @@ class InstanceClusterablePresenter < ClusterablePresenter
     link_to(s_('ClusterIntegration|Learn more about instance Kubernetes clusters'), help_page_path('user/instance/clusters/index'), target: '_blank', rel: 'noopener noreferrer')
   end
 end
-
-InstanceClusterablePresenter.prepend EE::InstanceClusterablePresenter

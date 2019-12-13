@@ -41,5 +41,3 @@ module Lfs
     end
   end
 end
-
-Lfs::LockFileService.prepend(EE::Lfs::LockFileService)

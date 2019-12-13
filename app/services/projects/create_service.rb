@@ -199,5 +199,3 @@ module Projects
     end
   end
 end
-
-Projects::CreateService.prepend(EE::Projects::CreateService)

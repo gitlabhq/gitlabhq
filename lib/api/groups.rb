@@ -266,5 +266,3 @@ module API
     end
   end
 end
-
-API::Groups.prepend(EE::API::Groups)

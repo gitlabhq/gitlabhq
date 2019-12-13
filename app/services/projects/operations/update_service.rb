@@ -47,5 +47,3 @@ module Projects
     end
   end
 end
-
-Projects::Operations::UpdateService.prepend(::EE::Projects::Operations::UpdateService)

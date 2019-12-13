@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 module SortingHelper
-  prepend ::EE::SortingHelper # rubocop: disable Cop/InjectEnterpriseEditionModule
-
   def sort_options_hash
     {
       sort_value_created_date      => sort_title_created_date,

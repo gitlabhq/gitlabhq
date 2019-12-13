@@ -15,5 +15,3 @@ class Epic < ApplicationRecord
     '&amp;'
   end
 end
-
-Epic.prepend(EE::Epic)

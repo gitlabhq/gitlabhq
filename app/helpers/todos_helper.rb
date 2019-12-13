@@ -177,5 +177,3 @@ module TodosHelper
     groups.unshift({ id: '', text: 'Any Group' }).to_json
   end
 end
-
-TodosHelper.prepend(EE::NotesHelper)

@@ -182,5 +182,3 @@ class Import::GithubController < Import::BaseController
     {}
   end
 end
-
-Import::GithubController.prepend(EE::Import::GithubController)

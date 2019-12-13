@@ -309,5 +309,3 @@ class HipchatService < Service
     end
   end
 end
-
-HipchatService.prepend(EE::HipchatService)

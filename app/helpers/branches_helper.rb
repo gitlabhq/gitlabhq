@@ -17,5 +17,3 @@ module BranchesHelper
     end
   end
 end
-
-BranchesHelper.prepend(EE::BranchesHelper)

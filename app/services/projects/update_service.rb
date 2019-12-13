@@ -134,5 +134,3 @@ module Projects
     end
   end
 end
-
-Projects::UpdateService.prepend(EE::Projects::UpdateService)

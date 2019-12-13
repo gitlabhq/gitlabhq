@@ -49,5 +49,3 @@ class LabelPresenter < Gitlab::View::Presenter::Delegated
     issuable_subject || label.try(:subject)
   end
 end
-
-LabelPresenter.prepend(EE::LabelPresenter)

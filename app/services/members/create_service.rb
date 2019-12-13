@@ -52,5 +52,3 @@ module Members
     end
   end
 end
-
-Members::CreateService.prepend(EE::Members::CreateService)

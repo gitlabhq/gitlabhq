@@ -1188,5 +1188,3 @@ class Repository
                                 project.full_path)
   end
 end
-
-Repository.prepend(EE::Repository)

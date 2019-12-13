@@ -28,8 +28,6 @@ class MergeRequest < ApplicationRecord
                 :ref_fetched,
                 :deleted_at
 
-  prepend ::EE::MergeRequest # rubocop: disable Cop/InjectEnterpriseEditionModule
-
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
   belongs_to :merge_user, class_name: "User"

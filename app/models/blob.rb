@@ -243,5 +243,3 @@ class Blob < SimpleDelegator
     classes.find { |viewer_class| viewer_class.can_render?(self, verify_binary: verify_binary) }
   end
 end
-
-Blob.prepend(EE::Blob)

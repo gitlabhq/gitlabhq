@@ -274,5 +274,3 @@ class RemoteMirror < ApplicationRecord
     saved_change_to_url? || saved_change_to_credentials?
   end
 end
-
-RemoteMirror.prepend(EE::RemoteMirror)

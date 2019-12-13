@@ -75,5 +75,3 @@ module AppearancesHelper
     style.join
   end
 end
-
-AppearancesHelper.prepend(EE::AppearancesHelper)

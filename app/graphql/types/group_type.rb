@@ -21,5 +21,3 @@ module Types
     end
   end
 end
-
-Types::GroupType.prepend(EE::Types::GroupType)

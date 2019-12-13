@@ -6,5 +6,3 @@ module LicenseHelpers
     # do nothing
   end
 end
-
-LicenseHelpers.prepend(EE::LicenseHelpers)

@@ -324,5 +324,3 @@ module Ci
     end
   end
 end
-
-Ci::Runner.prepend(EE::Ci::Runner)

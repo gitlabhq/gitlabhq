@@ -12,5 +12,3 @@ module Types
     end
   end
 end
-
-Types::PermissionTypes::Issue.prepend(::EE::Types::PermissionTypes::Issue)

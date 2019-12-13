@@ -47,5 +47,3 @@ module ShaAttribute
     end
   end
 end
-
-ShaAttribute::ClassMethods.prepend(EE::ShaAttribute)

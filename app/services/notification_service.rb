@@ -602,5 +602,3 @@ class NotificationService
     member.source.respond_to?(:group) && member.source.group
   end
 end
-
-NotificationService.prepend(EE::NotificationService)

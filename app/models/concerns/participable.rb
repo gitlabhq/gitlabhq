@@ -25,6 +25,7 @@
 #     users = issue.participants
 module Participable
   extend ActiveSupport::Concern
+
   class_methods do
     # Adds a list of participant attributes. Attributes can either be symbols or
     # Procs.
@@ -111,5 +112,3 @@ module Participable
     end
   end
 end
-
-Participable.prepend(EE::Participable)

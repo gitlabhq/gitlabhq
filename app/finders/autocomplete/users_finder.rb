@@ -93,5 +93,3 @@ module Autocomplete
     end
   end
 end
-
-Autocomplete::UsersFinder.prepend(EE::Autocomplete::UsersFinder)

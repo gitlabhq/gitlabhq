@@ -429,6 +429,3 @@ module Issuable
     old_title != title
   end
 end
-
-Issuable.prepend(EE::Issuable) # rubocop: disable Cop/InjectEnterpriseEditionModule
-Issuable::ClassMethods.prepend(EE::Issuable::ClassMethods)

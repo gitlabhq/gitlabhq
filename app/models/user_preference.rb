@@ -55,5 +55,3 @@ class UserPreference < ApplicationRecord
     "#{field_key}_notes_filter"
   end
 end
-
-UserPreference.prepend(EE::UserPreference)

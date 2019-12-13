@@ -36,5 +36,3 @@ module SystemCheck
     end
   end
 end
-
-SystemCheck::RakeTask::AppTask.prepend(EE::SystemCheck::RakeTask::AppTask)

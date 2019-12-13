@@ -44,5 +44,3 @@ module Ci
     rule { can?(:update_build) & terminal }.enable :create_build_terminal
   end
 end
-
-Ci::BuildPolicy.prepend(EE::Ci::BuildPolicy)

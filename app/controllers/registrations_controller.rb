@@ -126,5 +126,3 @@ class RegistrationsController < Devise::RegistrationsController
     Gitlab::Utils.to_boolean(params[:terms_opt_in])
   end
 end
-
-RegistrationsController.prepend(EE::RegistrationsController)

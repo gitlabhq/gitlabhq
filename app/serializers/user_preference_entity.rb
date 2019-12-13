@@ -12,5 +12,3 @@ class UserPreferenceEntity < Grape::Entity
     UserPreference::NOTES_FILTERS[:all_notes]
   end
 end
-
-UserPreferenceEntity.prepend(EE::UserPreferenceEntity)

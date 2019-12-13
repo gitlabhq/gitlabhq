@@ -125,5 +125,3 @@ module Users
     end
   end
 end
-
-Users::BuildService.prepend(EE::Users::BuildService)

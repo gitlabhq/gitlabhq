@@ -94,5 +94,3 @@ class Admin::GroupsController < Admin::ApplicationController
     ]
   end
 end
-
-Admin::GroupsController.prepend(EE::Admin::GroupsController)

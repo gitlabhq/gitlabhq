@@ -218,5 +218,3 @@ module Projects
     end
   end
 end
-
-Projects::DestroyService.prepend(EE::Projects::DestroyService)

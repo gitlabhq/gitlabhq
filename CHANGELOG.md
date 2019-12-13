@@ -4,11 +4,11 @@ entry.
 
 ## 12.0.11
 
-- Unreleased due to build failures.
+- Unreleased due to build failures
 
 ## 12.0.10
 
-- Unreleased due to build failures.
+- Unreleased due to build failures
 
 ## 12.0.9
 
@@ -44,11 +44,13 @@ entry.
 - Fix weak session management by clearing password reset tokens after login (username/email) are updated.
 - Fix SSRF via DNS rebinding in Kubernetes Integration.
 
+
 ## 12.0.7
 
 - Unreleased due to QA failure.
 
 ## 12.0.6
+
 ### Security (2 changes)
 
 - Upgrade Gitaly to 1.47.2 to prevent revision flag injection exploits.

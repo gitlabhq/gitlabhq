@@ -48,5 +48,3 @@ module ProtectedBranches
     end
   end
 end
-
-ProtectedBranches::LegacyApiUpdateService.prepend(EE::ProtectedBranches::LegacyApiUpdateService)

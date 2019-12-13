@@ -49,5 +49,3 @@ module Gitlab
     private_class_method :instance
   end
 end
-
-Gitlab::GlRepository.prepend(::EE::Gitlab::GlRepository)

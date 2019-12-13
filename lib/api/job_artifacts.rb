@@ -11,8 +11,6 @@ module API
       end
     end
 
-    prepend EE::API::JobArtifacts # rubocop: disable Cop/InjectEnterpriseEditionModule
-
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end

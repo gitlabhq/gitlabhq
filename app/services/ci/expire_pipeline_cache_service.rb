@@ -60,5 +60,3 @@ module Ci
     end
   end
 end
-
-Ci::ExpirePipelineCacheService.prepend(EE::Ci::ExpirePipelineCacheService)

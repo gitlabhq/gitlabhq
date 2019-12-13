@@ -201,5 +201,3 @@ module GroupsHelper
     s_("GroupSettings|This setting is applied on %{ancestor_group} and has been overridden on this subgroup.").html_safe % { ancestor_group: ancestor_group(group) }
   end
 end
-
-GroupsHelper.prepend(EE::GroupsHelper)

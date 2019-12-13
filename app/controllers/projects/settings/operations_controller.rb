@@ -69,5 +69,3 @@ module Projects
     end
   end
 end
-
-Projects::Settings::OperationsController.prepend(::EE::Projects::Settings::OperationsController)

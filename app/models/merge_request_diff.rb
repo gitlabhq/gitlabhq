@@ -162,7 +162,7 @@ class MergeRequestDiff < ApplicationRecord
     # Another set of `after_save` hooks will be called here when we update the record
     save
     # We need to reset so that dirty tracking is reset when running the original set
-    # of `after_save` hooks that come after this 'after_create` hook. Otherwise, the
+    # of `after_save` hooks that come after this `after_create` hook. Otherwise, the
     # hooks that run when an attribute was changed are run twice.
     reset
 

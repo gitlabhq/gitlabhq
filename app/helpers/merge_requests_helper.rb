@@ -159,5 +159,3 @@ module MergeRequestsHelper
     end
   end
 end
-
-MergeRequestsHelper.prepend(EE::MergeRequestsHelper)

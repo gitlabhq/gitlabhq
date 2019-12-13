@@ -54,5 +54,3 @@ module Notes
     end
   end
 end
-
-Notes::QuickActionsService.prepend(EE::Notes::QuickActionsService)

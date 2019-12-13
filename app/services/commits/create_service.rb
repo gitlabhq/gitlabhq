@@ -84,5 +84,3 @@ module Commits
     end
   end
 end
-
-Commits::CreateService.prepend(EE::Commits::CreateService)

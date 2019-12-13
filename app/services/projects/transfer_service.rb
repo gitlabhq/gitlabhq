@@ -165,5 +165,3 @@ module Projects
     end
   end
 end
-
-Projects::TransferService.prepend(EE::Projects::TransferService)

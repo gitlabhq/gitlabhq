@@ -68,5 +68,3 @@ module Emails
     end
   end
 end
-
-Emails::Notes.prepend(EE::Emails::Notes)

@@ -116,5 +116,3 @@ module API
     end
   end
 end
-
-API::ProjectMilestones.prepend(EE::API::ProjectMilestones)

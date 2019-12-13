@@ -42,10 +42,6 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
         expect(saved_project_json).to include({ 'description' => 'description', 'visibility_level' => 20 })
       end
 
-      it 'has approvals_before_merge set' do
-        expect(saved_project_json['approvals_before_merge']).to eq(1)
-      end
-
       it 'has milestones' do
         expect(saved_project_json['milestones']).not_to be_empty
       end
@@ -291,8 +287,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
                      issues: [issue],
                      snippets: [snippet],
                      releases: [release],
-                     group: group,
-                     approvals_before_merge: 1
+                     group: group
                     )
     project_label = create(:label, project: project)
     group_label = create(:group_label, group: group)

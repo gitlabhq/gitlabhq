@@ -6,15 +6,14 @@ module Gitlab
   module GitRefValidator
     extend self
 
-    EXPANDED_PREFIXES = %w(refs/heads/ refs/remotes/).freeze
-    DISALLOWED_PREFIXES = %w(-).freeze
+    EXPANDED_PREFIXES = %w[refs/heads/ refs/remotes/].freeze
+    DISALLOWED_PREFIXES = %w[-].freeze
 
     # Validates a given name against the git reference specification
     #
     # Returns true for a valid reference name, false otherwise
     def validate(ref_name)
-      return false if ref_name.start_with?(*EXPANDED_PREFIXES)
-      return false if ref_name.start_with?(*DISALLOWED_PREFIXES)
+      return false if ref_name.start_with?(*(EXPANDED_PREFIXES + DISALLOWED_PREFIXES))
       return false if ref_name == 'HEAD'
 
       begin

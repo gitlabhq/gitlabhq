@@ -9,7 +9,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-
   props: {
     endDateString: {
       type: String,

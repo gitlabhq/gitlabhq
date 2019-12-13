@@ -543,5 +543,3 @@ module API
     end
   end
 end
-
-API::Helpers.prepend(EE::API::Helpers)

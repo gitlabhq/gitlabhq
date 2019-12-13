@@ -3,8 +3,6 @@
 require 'carrierwave/orm/activerecord'
 
 class ProjectImportData < ApplicationRecord
-  prepend ::EE::ProjectImportData # rubocop: disable Cop/InjectEnterpriseEditionModule
-
   belongs_to :project, inverse_of: :import_data
   attr_encrypted :credentials,
                  key: Settings.attr_encrypted_db_key_base,

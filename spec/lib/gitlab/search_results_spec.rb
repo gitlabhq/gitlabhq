@@ -272,6 +272,7 @@ describe Gitlab::SearchResults do
       milestone_1 = create(:milestone, project: private_project_1, title: 'Private project with access milestone', state: 'closed')
       milestone_2 = create(:milestone, project: internal_project, title: 'Internal project milestone')
       milestone_3 = create(:milestone, project: public_project_1, title: 'Public project with milestones enabled milestone')
+      # Global search scope takes user authorized projects, internal projects and public projects.
       limit_projects = ProjectsFinder.new(current_user: user).execute
 
       milestones = described_class.new(user, limit_projects, 'milestone').objects('milestones')

@@ -11,5 +11,3 @@ class PipelineDetailsEntity < PipelineEntity
     expose :scheduled_actions, using: BuildActionEntity
   end
 end
-
-PipelineDetailsEntity.prepend(EE::PipelineDetailsEntity)

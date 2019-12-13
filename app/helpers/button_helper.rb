@@ -97,5 +97,3 @@ module ButtonHelper
       data: (data if data)
   end
 end
-
-ButtonHelper.prepend(EE::ButtonHelper)

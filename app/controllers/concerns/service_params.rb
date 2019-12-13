@@ -85,5 +85,3 @@ module ServiceParams
     ALLOWED_PARAMS_CE
   end
 end
-
-ServiceParams.prepend(EE::ServiceParams)

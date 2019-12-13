@@ -11,5 +11,3 @@ class MergeRequestPolicy < IssuablePolicy
   # note permissions are shared, and this would apply too broadly.
   rule { ~can?(:read_merge_request) }.prevent :create_note
 end
-
-MergeRequestPolicy.prepend(EE::MergeRequestPolicy)

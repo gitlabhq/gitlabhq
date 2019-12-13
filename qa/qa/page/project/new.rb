@@ -5,7 +5,6 @@ module QA
     module Project
       class New < Page::Base
         include Page::Component::Select2
-        prepend EE::Page::Project::New # rubocop: disable Cop/InjectEnterpriseEditionModule
 
         view 'app/views/projects/new.html.haml' do
           element :project_create_from_template_tab

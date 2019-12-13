@@ -64,5 +64,3 @@ module Issues
     end
   end
 end
-
-Issues::MoveService.prepend(EE::Issues::MoveService)

@@ -58,5 +58,3 @@ class PipelineSerializer < BaseSerializer
     ]
   end
 end
-
-PipelineSerializer.prepend(EE::PipelineSerializer)

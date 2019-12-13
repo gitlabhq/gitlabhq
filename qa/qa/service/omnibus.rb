@@ -11,12 +11,11 @@ module QA
       end
 
       def gitlab_ctl(command, input: nil)
-        docker_exec("gitlab-ctl #{command}", input: input)
-      end
-
-      def docker_exec(command, input: nil)
-        command = "#{input} | #{command}" if input
-        shell "docker exec #{@name} bash -c '#{command}'"
+        if input.nil?
+          shell "docker exec #{@name} gitlab-ctl #{command}"
+        else
+          shell "docker exec #{@name} bash -c '#{input} | gitlab-ctl #{command}'"
+        end
       end
     end
   end

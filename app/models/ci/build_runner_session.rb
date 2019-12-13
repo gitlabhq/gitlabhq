@@ -37,5 +37,3 @@ module Ci
     end
   end
 end
-
-Ci::BuildRunnerSession.prepend(EE::Ci::BuildRunnerSession)

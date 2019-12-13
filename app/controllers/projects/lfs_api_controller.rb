@@ -123,5 +123,3 @@ class Projects::LfsApiController < Projects::GitHttpClientController
     _('You cannot write to this read-only GitLab instance.')
   end
 end
-
-Projects::LfsApiController.prepend(EE::Projects::LfsApiController)

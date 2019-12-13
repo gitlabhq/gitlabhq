@@ -34,5 +34,3 @@ class BuildFinishedWorker
     ChatNotificationWorker.perform_async(build.id) if build.pipeline.chat?
   end
 end
-
-BuildFinishedWorker.prepend(EE::BuildFinishedWorker)

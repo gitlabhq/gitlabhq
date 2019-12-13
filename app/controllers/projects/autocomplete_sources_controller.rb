@@ -43,5 +43,3 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
       .execute(params[:type], params[:type_id])
   end
 end
-
-Projects::AutocompleteSourcesController.prepend(EE::Projects::AutocompleteSourcesController)

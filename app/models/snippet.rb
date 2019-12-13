@@ -222,5 +222,3 @@ class Snippet < ApplicationRecord
     end
   end
 end
-
-Snippet.prepend(EE::Snippet)

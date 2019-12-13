@@ -135,6 +135,3 @@ module Noteable
 end
 
 Noteable.extend(Noteable::ClassMethods)
-
-Noteable::ClassMethods.prepend(EE::Noteable::ClassMethods) # rubocop: disable Cop/InjectEnterpriseEditionModule
-Noteable.prepend(EE::Noteable)

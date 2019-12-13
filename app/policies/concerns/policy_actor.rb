@@ -34,5 +34,3 @@ module PolicyActor
     false
   end
 end
-
-PolicyActor.prepend(EE::PolicyActor)

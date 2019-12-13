@@ -63,22 +63,6 @@ describe API::ResourceLabelEvents do
     end
   end
 
-  context 'when eventable is an Epic' do
-    let(:group) { create(:group, :public) }
-    let(:epic) { create(:epic, group: group, author: user) }
-
-    before do
-      group.add_owner(user)
-      stub_licensed_features(epics: true)
-    end
-
-    it_behaves_like 'resource_label_events API', 'groups', 'epics', 'id' do
-      let(:parent) { group }
-      let(:eventable) { epic }
-      let!(:event) { create(:resource_label_event, epic: epic) }
-    end
-  end
-
   context 'when eventable is a Merge Request' do
     let(:merge_request) { create(:merge_request, source_project: project, target_project: project, author: user) }
 

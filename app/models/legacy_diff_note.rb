@@ -111,5 +111,3 @@ class LegacyDiffNote < Note
     diffs.find { |d| d.new_path == self.diff.new_path }
   end
 end
-
-LegacyDiffNote.prepend(EE::LegacyDiffNote)

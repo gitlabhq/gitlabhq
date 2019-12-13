@@ -32,5 +32,3 @@ class MockDeploymentService < Service
     false
   end
 end
-
-MockDeploymentService.prepend(EE::MockDeploymentService)

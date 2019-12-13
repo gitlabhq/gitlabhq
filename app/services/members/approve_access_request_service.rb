@@ -20,5 +20,3 @@ module Members
     end
   end
 end
-
-Members::ApproveAccessRequestService.prepend(EE::Members::ApproveAccessRequestService)

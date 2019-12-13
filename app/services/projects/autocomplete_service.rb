@@ -38,5 +38,3 @@ module Projects
     end
   end
 end
-
-Projects::AutocompleteService.prepend(EE::Projects::AutocompleteService)

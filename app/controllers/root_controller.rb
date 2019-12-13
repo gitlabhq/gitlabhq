@@ -62,5 +62,3 @@ class RootController < Dashboard::ProjectsController
     root_urls.exclude?(home_page_url)
   end
 end
-
-RootController.prepend(EE::RootController)

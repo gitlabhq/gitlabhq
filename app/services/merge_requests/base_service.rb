@@ -92,5 +92,3 @@ module MergeRequests
     end
   end
 end
-
-MergeRequests::BaseService.prepend(EE::MergeRequests::BaseService)

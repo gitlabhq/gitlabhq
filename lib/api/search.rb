@@ -123,5 +123,3 @@ module API
     end
   end
 end
-
-API::Search.prepend(EE::API::Search)

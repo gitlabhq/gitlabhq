@@ -7,5 +7,3 @@ module DbCleaner
     DatabaseCleaner[:active_record, { connection: ActiveRecord::Base }]
   end
 end
-
-DbCleaner.prepend(EE::DbCleaner)

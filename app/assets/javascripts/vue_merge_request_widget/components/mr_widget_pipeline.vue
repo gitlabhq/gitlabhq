@@ -92,6 +92,7 @@ export default {
   },
 };
 </script>
+
 <template>
   <div class="ci-widget media js-ci-widget">
     <template v-if="!hasPipeline || hasCIError">
@@ -190,7 +191,6 @@ export default {
                 </div>
               </template>
             </span>
-
             <linked-pipelines-mini-list v-if="triggered.length" :triggered="triggered" />
           </span>
         </div>

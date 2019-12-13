@@ -104,5 +104,3 @@ module Projects
     end
   end
 end
-
-Projects::Settings::RepositoryController.prepend(EE::Projects::Settings::RepositoryController)

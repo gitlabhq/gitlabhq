@@ -25,5 +25,3 @@ module Search
     end
   end
 end
-
-Search::ProjectService.prepend(EE::Search::ProjectService)

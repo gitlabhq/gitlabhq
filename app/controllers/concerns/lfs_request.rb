@@ -128,5 +128,3 @@ module LfsRequest
     false
   end
 end
-
-LfsRequest.prepend(EE::LfsRequest)

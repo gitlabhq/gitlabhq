@@ -390,5 +390,3 @@ module Banzai
     end
   end
 end
-
-Banzai::Filter::AbstractReferenceFilter.prepend(EE::Banzai::Filter::AbstractReferenceFilter)

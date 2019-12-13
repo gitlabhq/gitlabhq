@@ -62,5 +62,3 @@ module API
     end
   end
 end
-
-API::Helpers::IssuesHelpers.prepend(EE::API::Helpers::IssuesHelpers)

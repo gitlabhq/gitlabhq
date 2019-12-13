@@ -22,5 +22,3 @@ module VersionCheckHelper
     'gitlab-ce'
   end
 end
-
-VersionCheckHelper.prepend(EE::VersionCheckHelper)

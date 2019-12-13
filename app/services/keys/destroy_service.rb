@@ -12,5 +12,3 @@ module Keys
     end
   end
 end
-
-Keys::DestroyService.prepend(EE::Keys::DestroyService)

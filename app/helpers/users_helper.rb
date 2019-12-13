@@ -109,5 +109,3 @@ module UsersHelper
     items
   end
 end
-
-UsersHelper.prepend(EE::UsersHelper)

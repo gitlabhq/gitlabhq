@@ -7,5 +7,3 @@ module DeployKeys
     end
   end
 end
-
-DeployKeys::CreateService.prepend(::EE::DeployKeys::CreateService)

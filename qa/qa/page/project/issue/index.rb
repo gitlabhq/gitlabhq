@@ -5,8 +5,6 @@ module QA
     module Project
       module Issue
         class Index < Page::Base
-          prepend QA::EE::Page::Project::Issue::Index
-
           view 'app/views/projects/issues/_issue.html.haml' do
             element :issue_link, 'link_to issue.title' # rubocop:disable QA/ElementWithPattern
           end

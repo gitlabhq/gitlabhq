@@ -77,5 +77,3 @@ module API
     end
   end
 end
-
-API::Helpers::ProjectsHelpers.prepend(EE::API::Helpers::ProjectsHelpers)

@@ -182,5 +182,3 @@ module Ci
     end
   end
 end
-
-Ci::RegisterJobService.prepend(EE::Ci::RegisterJobService)

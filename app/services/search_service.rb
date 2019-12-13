@@ -69,5 +69,3 @@ class SearchService
 
   attr_reader :current_user, :params
 end
-
-SearchService.prepend(EE::SearchService)

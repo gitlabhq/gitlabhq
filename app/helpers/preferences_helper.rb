@@ -87,5 +87,3 @@ module PreferencesHelper
     first_day_of_week_choices.rassoc(Gitlab::CurrentSettings.first_day_of_week).first
   end
 end
-
-PreferencesHelper.prepend(EE::PreferencesHelper)

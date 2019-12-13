@@ -38,5 +38,3 @@ module Projects
     end
   end
 end
-
-Projects::HashedStorage::MigrateRepositoryService.prepend(EE::Projects::HashedStorage::MigrateRepositoryService)
