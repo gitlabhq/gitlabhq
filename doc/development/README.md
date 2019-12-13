@@ -103,6 +103,10 @@ description: 'Learn how to contribute to GitLab.'
 - [Swapping tables](swapping_tables.md)
 - [Deleting migrations](deleting_migrations.md)
 
+### Debugging
+
+- Tracing the source of an SQL query using query comments with [Marginalia](database_query_comments.md)
+
 ### Best practices
 
 - [Merge Request checklist](database_merge_request_checklist.md)

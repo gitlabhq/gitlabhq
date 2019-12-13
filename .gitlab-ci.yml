@@ -24,7 +24,7 @@ variables:
   FLAKY_RSPEC_SUITE_REPORT_PATH: rspec_flaky/report-suite.json
   BUILD_ASSETS_IMAGE: "false"
   ES_JAVA_OPTS: "-Xms256m -Xmx256m"
-  ELASTIC_URL: "http://elastic:changeme@docker.elastic.co-elasticsearch-elasticsearch:9200"
+  ELASTIC_URL: "http://elastic:changeme@elasticsearch:9200"
 
 after_script:
   - date

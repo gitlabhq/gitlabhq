@@ -1,5 +1,5 @@
 .broadcast-message-preview{ style: broadcast_message_style(@broadcast_message) }
-  = icon('bullhorn')
+  = sprite_icon('bullhorn', size: 16, css_class:'vertical-align-text-top mr-2')
   .js-broadcast-message-preview
     - if @broadcast_message.message.present?
       = render_broadcast_message(@broadcast_message)
