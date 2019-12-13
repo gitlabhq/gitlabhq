@@ -19211,9 +19211,6 @@ msgstr ""
 msgid "Upload file"
 msgstr ""
 
-msgid "Upload file does not exist"
-msgstr ""
-
 msgid "Upload object map"
 msgstr ""
 

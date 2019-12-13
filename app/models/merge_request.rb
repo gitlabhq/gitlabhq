@@ -1514,7 +1514,7 @@ class MergeRequest < ApplicationRecord
       end
     end
   rescue ActiveRecord::LockWaitTimeout => e
-    Gitlab::Sentry.track_acceptable_exception(e)
+    Gitlab::Sentry.track_exception(e)
     raise RebaseLockTimeout, REBASE_LOCK_MESSAGE
   end
 

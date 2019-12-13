@@ -11,7 +11,6 @@ module Gitlab
                 { title: 'task', color: '#7F8C8D' }].freeze
 
       attr_reader :project, :client, :errors, :users
-      attr_accessor :logger
 
       def initialize(project)
         @project = project
@@ -20,7 +19,6 @@ module Gitlab
         @labels = {}
         @errors = []
         @users = {}
-        @logger = Gitlab::Import::Logger.build
       end
 
       def execute
@@ -47,7 +45,8 @@ module Gitlab
         backtrace = Gitlab::Profiler.clean_backtrace(ex.backtrace)
         error = { type: :pull_request, iid: pull_request.iid, errors: ex.message, trace: backtrace, raw_response: pull_request.raw }
 
-        log_error(error)
+        Gitlab::Sentry.log_exception(ex, error)
+
         # Omit the details from the database to avoid blowing up usage in the error column
         error.delete(:trace)
         error.delete(:raw_response)
@@ -273,10 +272,6 @@ module Gitlab
         author = @formatter.author_line(comment.author) unless find_user_id(comment.author)
 
         author.to_s + comment.note.to_s
-      end
-
-      def log_error(details)
-        logger.error(log_base_data.merge(details))
       end
 
       def log_base_data

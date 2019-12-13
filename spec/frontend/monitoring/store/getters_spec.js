@@ -57,22 +57,22 @@ describe('Monitoring store Getters', () => {
 
       it('an empty metric, returns empty', () => {
         mutations[types.RECEIVE_METRICS_DATA_SUCCESS](state, metricsGroupsAPIResponse);
-        mutations[types.SET_QUERY_RESULT](state, mockedEmptyResult);
+        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, mockedEmptyResult);
 
         expect(metricsWithData()).toEqual([]);
       });
 
       it('a metric with results, it returns a metric', () => {
         mutations[types.RECEIVE_METRICS_DATA_SUCCESS](state, metricsGroupsAPIResponse);
-        mutations[types.SET_QUERY_RESULT](state, mockedQueryResultPayload);
+        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, mockedQueryResultPayload);
 
         expect(metricsWithData()).toEqual([mockedQueryResultPayload.metricId]);
       });
 
       it('multiple metrics with results, it return multiple metrics', () => {
         mutations[types.RECEIVE_METRICS_DATA_SUCCESS](state, metricsGroupsAPIResponse);
-        mutations[types.SET_QUERY_RESULT](state, mockedQueryResultPayload);
-        mutations[types.SET_QUERY_RESULT](state, mockedQueryResultPayloadCoresTotal);
+        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, mockedQueryResultPayload);
+        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, mockedQueryResultPayloadCoresTotal);
 
         expect(metricsWithData()).toEqual([
           mockedQueryResultPayload.metricId,
@@ -82,8 +82,8 @@ describe('Monitoring store Getters', () => {
 
       it('multiple metrics with results, it returns metrics filtered by group', () => {
         mutations[types.RECEIVE_METRICS_DATA_SUCCESS](state, metricsGroupsAPIResponse);
-        mutations[types.SET_QUERY_RESULT](state, mockedQueryResultPayload);
-        mutations[types.SET_QUERY_RESULT](state, mockedQueryResultPayloadCoresTotal);
+        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, mockedQueryResultPayload);
+        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, mockedQueryResultPayloadCoresTotal);
 
         // First group has no metrics
         expect(metricsWithData(state.dashboard.panel_groups[0].key)).toEqual([]);

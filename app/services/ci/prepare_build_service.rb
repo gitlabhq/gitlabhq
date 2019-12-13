@@ -13,7 +13,7 @@ module Ci
 
       build.enqueue!
     rescue => e
-      Gitlab::Sentry.track_acceptable_exception(e, extra: { build_id: build.id })
+      Gitlab::Sentry.track_exception(e, build_id: build.id)
 
       build.drop(:unmet_prerequisites)
     end

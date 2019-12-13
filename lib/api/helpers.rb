@@ -384,8 +384,9 @@ module API
     def handle_api_exception(exception)
       if report_exception?(exception)
         define_params_for_grape_middleware
-        Gitlab::Sentry.context(current_user)
-        Gitlab::Sentry.track_acceptable_exception(exception, extra: params)
+        Gitlab::Sentry.with_context(current_user) do
+          Gitlab::Sentry.track_exception(exception, params)
+        end
       end
 
       # This is used with GrapeLogging::Loggers::ExceptionLogger

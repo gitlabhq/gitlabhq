@@ -620,7 +620,7 @@ describe Projects::MergeRequestsController do
       end
 
       it "prevents deletion if destroy_confirm is not set" do
-        expect(Gitlab::Sentry).to receive(:track_acceptable_exception).and_call_original
+        expect(Gitlab::Sentry).to receive(:track_exception).and_call_original
 
         delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: merge_request.iid }
 
@@ -629,7 +629,7 @@ describe Projects::MergeRequestsController do
       end
 
       it "prevents deletion in JSON format if destroy_confirm is not set" do
-        expect(Gitlab::Sentry).to receive(:track_acceptable_exception).and_call_original
+        expect(Gitlab::Sentry).to receive(:track_exception).and_call_original
 
         delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: merge_request.iid, format: 'json' }
 

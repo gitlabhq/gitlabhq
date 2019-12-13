@@ -1,12 +1,12 @@
-# Postgres exporter
+# PostgreSQL Server Exporter
 
 >**Note:**
-Available since [Omnibus GitLab 8.17][1131]. For installations from source
-you'll have to install and configure it yourself.
+Available since [Omnibus GitLab 8.17](https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests/1131).
+For installations from source you will have to install and configure it yourself.
 
-The [postgres exporter] allows you to measure various PostgreSQL metrics.
+The [PostgreSQL Server Exporter](https://github.com/wrouesnel/postgres_exporter) allows you to export various PostgreSQL metrics.
 
-To enable the postgres exporter:
+To enable the PostgreSQL Server Exporter:
 
 1. [Enable Prometheus](index.md#configuring-prometheus).
 1. Edit `/etc/gitlab/gitlab.rb` and enable `postgres_exporter`:
@@ -16,23 +16,22 @@ To enable the postgres exporter:
    ```
 
 NOTE: **Note:**
-If PostgreSQL is configured on a separate node, make sure that the local
+If PostgreSQL Server Exporter is configured on a separate node, make sure that the local
 address is [listed in `trust_auth_cidr_addresses`](../../high_availability/database.md#network-information) or the
 exporter will not be able to connect to the database.
 
-1. Save the file and [reconfigure GitLab][reconfigure] for the changes to
+1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to
    take effect.
 
 Prometheus will now automatically begin collecting performance data from
-the postgres exporter exposed under `localhost:9187`.
+the PostgreSQL Server Exporter exposed under `localhost:9187`.
 
 ## Advanced configuration
 
-In most cases, Postgres exporter will work with the defaults and you should not
+In most cases, PostgreSQL Server Exporter will work with the defaults and you should not
 need to change anything.
 
-The following configuration options can be used to further customize the
-Postgres exporter:
+To further customize the PostgreSQL Server Exporter, use the following configuration options:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -54,11 +53,6 @@ Postgres exporter:
    postgres_exporter['sslrootcert'] = 'ssl-root.crt'   # The location of the root certificate file. The file must contain PEM encoded data.
    ```
 
-1. Save the file and [reconfigure GitLab][reconfigure] for the changes to take effect.
+1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
 [← Back to the main Prometheus page](index.md)
-
-[1131]: https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests/1131
-[postgres exporter]: https://github.com/wrouesnel/postgres_exporter
-[prometheus]: https://prometheus.io
-[reconfigure]: ../../restart_gitlab.md#omnibus-gitlab-reconfigure

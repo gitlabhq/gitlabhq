@@ -56,11 +56,7 @@ module Gitlab
       end
 
       def error(error)
-        error_payload = { message: error.message }
-        error_payload[:error_backtrace] = Gitlab::Profiler.clean_backtrace(error.backtrace) if error.backtrace
-        log_error(error_payload)
-
-        Gitlab::Sentry.track_acceptable_exception(error, extra: log_base_data)
+        Gitlab::Sentry.track_exception(error, log_base_data)
 
         add_error_message(error.message)
       end

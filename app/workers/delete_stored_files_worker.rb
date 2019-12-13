@@ -15,7 +15,7 @@ class DeleteStoredFilesWorker
     unless klass
       message = "Unknown class '#{class_name}'"
       logger.error(message)
-      Gitlab::Sentry.track_exception(RuntimeError.new(message))
+      Gitlab::Sentry.track_and_raise_for_dev_exception(RuntimeError.new(message))
       return
     end
 

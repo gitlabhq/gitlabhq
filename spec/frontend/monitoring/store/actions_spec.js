@@ -434,13 +434,11 @@ describe('Monitoring store actions', () => {
       start: '2019-08-06T12:40:02.184Z',
       end: '2019-08-06T20:40:02.184Z',
     };
-    let commit;
     let metric;
     let state;
     let data;
 
     beforeEach(() => {
-      commit = jest.fn();
       state = storeState();
       [metric] = metricsDashboardResponse.dashboard.panel_groups[0].panels[0].metrics;
       [data] = metricsGroupsAPIResponse[0].panels[0].metrics;
@@ -449,17 +447,31 @@ describe('Monitoring store actions', () => {
     it('commits result', done => {
       mock.onGet('http://test').reply(200, { data }); // One attempt
 
-      fetchPrometheusMetric({ state, commit }, { metric, params })
-        .then(() => {
-          expect(commit).toHaveBeenCalledWith(types.SET_QUERY_RESULT, {
-            metricId: metric.metric_id,
-            result: data.result,
-          });
-
+      testAction(
+        fetchPrometheusMetric,
+        { metric, params },
+        state,
+        [
+          {
+            type: types.REQUEST_METRIC_RESULT,
+            payload: {
+              metricId: metric.metric_id,
+            },
+          },
+          {
+            type: types.RECEIVE_METRIC_RESULT_SUCCESS,
+            payload: {
+              metricId: metric.metric_id,
+              result: data.result,
+            },
+          },
+        ],
+        [],
+        () => {
           expect(mock.history.get).toHaveLength(1);
           done();
-        })
-        .catch(done.fail);
+        },
+      ).catch(done.fail);
     });
 
     it('commits result, when waiting for results', done => {
@@ -469,18 +481,31 @@ describe('Monitoring store actions', () => {
       mock.onGet('http://test').replyOnce(statusCodes.NO_CONTENT);
       mock.onGet('http://test').reply(200, { data }); // 4th attempt
 
-      const fetch = fetchPrometheusMetric({ state, commit }, { metric, params });
-
-      fetch
-        .then(() => {
-          expect(commit).toHaveBeenCalledWith(types.SET_QUERY_RESULT, {
-            metricId: metric.metric_id,
-            result: data.result,
-          });
+      testAction(
+        fetchPrometheusMetric,
+        { metric, params },
+        state,
+        [
+          {
+            type: types.REQUEST_METRIC_RESULT,
+            payload: {
+              metricId: metric.metric_id,
+            },
+          },
+          {
+            type: types.RECEIVE_METRIC_RESULT_SUCCESS,
+            payload: {
+              metricId: metric.metric_id,
+              result: data.result,
+            },
+          },
+        ],
+        [],
+        () => {
           expect(mock.history.get).toHaveLength(4);
           done();
-        })
-        .catch(done.fail);
+        },
+      ).catch(done.fail);
     });
 
     it('commits failure, when waiting for results and getting a server error', done => {
@@ -490,15 +515,33 @@ describe('Monitoring store actions', () => {
       mock.onGet('http://test').replyOnce(statusCodes.NO_CONTENT);
       mock.onGet('http://test').reply(500); // 4th attempt
 
-      fetchPrometheusMetric({ state, commit }, { metric, params })
-        .then(() => {
-          done.fail();
-        })
-        .catch(() => {
-          expect(commit).not.toHaveBeenCalled();
-          expect(mock.history.get).toHaveLength(4);
-          done();
-        });
+      const error = new Error('Request failed with status code 500');
+
+      testAction(
+        fetchPrometheusMetric,
+        { metric, params },
+        state,
+        [
+          {
+            type: types.REQUEST_METRIC_RESULT,
+            payload: {
+              metricId: metric.metric_id,
+            },
+          },
+          {
+            type: types.RECEIVE_METRIC_RESULT_ERROR,
+            payload: {
+              metricId: metric.metric_id,
+              error,
+            },
+          },
+        ],
+        [],
+      ).catch(e => {
+        expect(mock.history.get).toHaveLength(4);
+        expect(e).toEqual(error);
+        done();
+      });
     });
   });
 });

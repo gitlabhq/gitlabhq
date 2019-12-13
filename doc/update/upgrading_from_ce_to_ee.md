@@ -59,17 +59,22 @@ sudo -u git -H git checkout EE_BRANCH
 ```sh
 cd /home/git/gitlab
 
-# MySQL installations (note: the line below states '--without postgres')
-sudo -u git -H bundle install --without postgres development test --deployment
+sudo -u git -H bundle install --deployment --without development test mysql aws kerberos
 
-# PostgreSQL installations (note: the line below states '--without mysql')
-sudo -u git -H bundle install --without mysql development test --deployment
+# Optional: clean up old gems
+sudo -u git -H bundle clean
 
 # Run database migrations
 sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production
 
-# Clean up assets and cache
-sudo -u git -H bundle exec rake assets:clean assets:precompile cache:clear RAILS_ENV=production
+# Compile GetText PO files
+sudo -u git -H bundle exec rake gettext:compile RAILS_ENV=production
+
+# Update node dependencies and recompile assets
+sudo -u git -H bundle exec rake yarn:install gitlab:assets:clean gitlab:assets:compile RAILS_ENV=production NODE_ENV=production NODE_OPTIONS="--max_old_space_size=4096"
+
+# Clean up cache
+sudo -u git -H bundle exec rake cache:clear RAILS_ENV=production
 ```
 
 ### 4. Install `gitlab-elasticsearch-indexer` (optional) **(STARTER ONLY)**

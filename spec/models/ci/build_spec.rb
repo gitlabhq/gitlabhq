@@ -3522,7 +3522,7 @@ describe Ci::Build do
       end
 
       it 'can drop the build' do
-        expect(Gitlab::Sentry).to receive(:track_exception)
+        expect(Gitlab::Sentry).to receive(:track_and_raise_for_dev_exception)
 
         expect { build.drop! }.not_to raise_error
 

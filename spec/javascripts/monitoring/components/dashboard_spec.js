@@ -56,13 +56,16 @@ function setupComponentStore(component) {
   );
 
   // Load 3 panels to the dashboard, one with an empty result
-  component.$store.commit(`monitoringDashboard/${types.SET_QUERY_RESULT}`, mockedEmptyResult);
   component.$store.commit(
-    `monitoringDashboard/${types.SET_QUERY_RESULT}`,
+    `monitoringDashboard/${types.RECEIVE_METRIC_RESULT_SUCCESS}`,
+    mockedEmptyResult,
+  );
+  component.$store.commit(
+    `monitoringDashboard/${types.RECEIVE_METRIC_RESULT_SUCCESS}`,
     mockedQueryResultPayload,
   );
   component.$store.commit(
-    `monitoringDashboard/${types.SET_QUERY_RESULT}`,
+    `monitoringDashboard/${types.RECEIVE_METRIC_RESULT_SUCCESS}`,
     mockedQueryResultPayloadCoresTotal,
   );
 
@@ -269,7 +272,7 @@ describe('Dashboard', () => {
         metricsGroupsAPIResponse,
       );
       component.$store.commit(
-        `monitoringDashboard/${types.SET_QUERY_RESULT}`,
+        `monitoringDashboard/${types.RECEIVE_METRIC_RESULT_SUCCESS}`,
         mockedQueryResultPayload,
       );
 

@@ -103,10 +103,8 @@ class Upload < ApplicationRecord
 
     # Help sysadmins find missing upload files
     if persisted? && !exist
-      if Gitlab::Sentry.enabled?
-        Raven.capture_message(_("Upload file does not exist"), extra: self.attributes)
-      end
-
+      exception = RuntimeError.new("Uploaded file does not exist")
+      Gitlab::Sentry.track_exception(exception, self.attributes)
       Gitlab::Metrics.counter(:upload_file_does_not_exist_total, _('The number of times an upload record could not find its file')).increment
     end
 

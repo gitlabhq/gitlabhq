@@ -23,7 +23,8 @@ module Uploads
       unless in_uploads?(path)
         message = "Path '#{path}' is not in uploads dir, skipping"
         logger.warn(message)
-        Gitlab::Sentry.track_exception(RuntimeError.new(message), extra: { uploads_dir: storage_dir })
+        Gitlab::Sentry.track_and_raise_for_dev_exception(
+          RuntimeError.new(message), uploads_dir: storage_dir)
         return
       end
 

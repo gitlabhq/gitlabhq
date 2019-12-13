@@ -82,11 +82,8 @@ module Gitlab
       end
 
       def log_import_failure(relation_key, relation_index, exception)
-        Gitlab::Sentry.track_acceptable_exception(
-          exception,
-          extra: { project_id: @importable.id,
-                   relation_key: relation_key,
-                   relation_index: relation_index })
+        Gitlab::Sentry.track_exception(exception,
+          project_id: @importable.id, relation_key: relation_key, relation_index: relation_index)
 
         ImportFailure.create(
           project: @importable,

@@ -127,6 +127,68 @@ importer progresses. Here's what to do:
    logger.info(message: "Import error", error_code: 1, error: "I/O failure")
    ```
 
+## Exception Handling
+
+It often happens that you catch the exception and want to track it.
+
+It should be noted that manual logging of exceptions is not allowed, as:
+
+1. Manual logged exceptions can leak confidential data,
+1. Manual logged exception very often require to clean backtrace
+   which reduces the boilerplate,
+1. Very often manually logged exception needs to be tracked to Sentry as well,
+1. Manually logged exceptions does not use `correlation_id`, which makes hard
+   to pin them to request, user and context in which this exception was raised,
+1. It is very likely that manually logged exceptions will end-up across
+   multiple files, which increases burden scraping all logging files.
+
+To avoid duplicating and having consistent behavior the `Gitlab::Sentry`
+provides helper methods to track exceptions:
+
+1. `Gitlab::Sentry.track_and_raise_exception`: this method logs,
+   sends exception to Sentry (if configured) and re-raises the exception,
+1. `Gitlab::Sentry.track_exception`: this method only logs
+   and sends exception to Sentry (if configured),
+1. `Gitlab::Sentry.log_exception`: this method only logs the exception,
+   and DOES NOT send the exception to Sentry,
+1. `Gitlab::Sentry.track_and_raise_for_dev_exception`: this method logs,
+   sends exception to Sentry (if configured) and re-raises the exception
+  for development and test enviroments.
+
+It is advised to only use `Gitlab::Sentry.track_and_raise_exception`
+and `Gitlab::Sentry.track_exception` as presented on below examples.
+
+Consider adding additional extra parameters to provide more context
+for each tracked exception.
+
+### Example
+
+```ruby
+class MyService < ::BaseService
+  def execute
+    project.perform_expensive_operation
+
+    success
+  rescue => e
+    Gitlab::Sentry.track_exception(e, project_id: project.id)
+
+    error('Exception occurred')
+  end
+end
+```
+
+```ruby
+class MyService < ::BaseService
+  def execute
+    project.perform_expensive_operation
+
+    success
+  rescue => e
+    Gitlab::Sentry.track_and_raise_exception(e, project_id: project.id)
+  end
+end
+```
+
 ## Additional steps with new log files
 
 1. Consider log retention settings. By default, Omnibus will rotate any

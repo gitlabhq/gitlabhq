@@ -46,7 +46,10 @@ describe('Time series component', () => {
     store.commit(`monitoringDashboard/${types.RECEIVE_DEPLOYMENTS_DATA_SUCCESS}`, deploymentData);
 
     // Mock data contains 2 panel groups, with 1 and 2 panels respectively
-    store.commit(`monitoringDashboard/${types.SET_QUERY_RESULT}`, mockedQueryResultPayload);
+    store.commit(
+      `monitoringDashboard/${types.RECEIVE_METRIC_RESULT_SUCCESS}`,
+      mockedQueryResultPayload,
+    );
 
     // Pick the second panel group and the first panel in it
     [mockGraphData] = store.state.monitoringDashboard.dashboard.panel_groups[1].panels;

@@ -118,6 +118,8 @@ module Gitlab
     end
 
     def self.clean_backtrace(backtrace)
+      return unless backtrace
+
       Array(Rails.backtrace_cleaner.clean(backtrace)).reject do |line|
         line.match(Regexp.union(IGNORE_BACKTRACES))
       end

@@ -1,6 +1,9 @@
+import httpStatusCodes from '~/lib/utils/http_status';
+
 import mutations from '~/monitoring/stores/mutations';
 import * as types from '~/monitoring/stores/mutation_types';
 import state from '~/monitoring/stores/state';
+import { metricsErrors } from '~/monitoring/constants';
 import {
   metricsGroupsAPIResponse,
   deploymentData,
@@ -90,7 +93,7 @@ describe('Monitoring mutations', () => {
       expect(stateCopy.projectPath).toEqual('/gitlab-org/gitlab-foss');
     });
   });
-  describe('SET_QUERY_RESULT', () => {
+  describe('Individual panel/metric results', () => {
     const metricId = '12_system_metrics_kubernetes_container_memory_total';
     const result = [
       {
@@ -98,31 +101,145 @@ describe('Monitoring mutations', () => {
       },
     ];
     const dashboardGroups = metricsDashboardResponse.dashboard.panel_groups;
-    const getMetrics = () => stateCopy.dashboard.panel_groups[0].panels[0].metrics;
+    const getMetric = () => stateCopy.dashboard.panel_groups[0].panels[0].metrics[0];
 
-    beforeEach(() => {
-      mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, dashboardGroups);
+    describe('REQUEST_METRIC_RESULT', () => {
+      beforeEach(() => {
+        mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, dashboardGroups);
+      });
+      it('stores a loading state on a metric', () => {
+        expect(stateCopy.showEmptyState).toBe(true);
+
+        mutations[types.REQUEST_METRIC_RESULT](stateCopy, {
+          metricId,
+          result,
+        });
+
+        expect(stateCopy.showEmptyState).toBe(true);
+        expect(getMetric()).toEqual(
+          expect.objectContaining({
+            loading: true,
+            result: null,
+            error: null,
+          }),
+        );
+      });
     });
-    it('clears empty state', () => {
-      expect(stateCopy.showEmptyState).toBe(true);
 
-      mutations[types.SET_QUERY_RESULT](stateCopy, {
-        metricId,
-        result,
+    describe('RECEIVE_METRIC_RESULT_SUCCESS', () => {
+      beforeEach(() => {
+        mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, dashboardGroups);
+      });
+      it('clears empty state', () => {
+        expect(stateCopy.showEmptyState).toBe(true);
+
+        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](stateCopy, {
+          metricId,
+          result,
+        });
+
+        expect(stateCopy.showEmptyState).toBe(false);
       });
 
-      expect(stateCopy.showEmptyState).toBe(false);
+      it('adds results to the store', () => {
+        expect(getMetric().result).toBe(undefined);
+
+        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](stateCopy, {
+          metricId,
+          result,
+        });
+
+        expect(getMetric().result).toHaveLength(result.length);
+        expect(getMetric()).toEqual(
+          expect.objectContaining({
+            loading: false,
+            error: null,
+          }),
+        );
+      });
     });
 
-    it('adds results to the store', () => {
-      expect(getMetrics()[0].result).toBe(undefined);
+    describe('RECEIVE_METRIC_RESULT_ERROR', () => {
+      beforeEach(() => {
+        mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, dashboardGroups);
+      });
+      it('maintains the loading state when a metric fails', () => {
+        expect(stateCopy.showEmptyState).toBe(true);
 
-      mutations[types.SET_QUERY_RESULT](stateCopy, {
-        metricId,
-        result,
+        mutations[types.RECEIVE_METRIC_RESULT_ERROR](stateCopy, {
+          metricId,
+          error: 'an error',
+        });
+
+        expect(stateCopy.showEmptyState).toBe(true);
       });
 
-      expect(getMetrics()[0].result).toHaveLength(result.length);
+      it('stores a timeout error in a metric', () => {
+        mutations[types.RECEIVE_METRIC_RESULT_ERROR](stateCopy, {
+          metricId,
+          error: { message: 'BACKOFF_TIMEOUT' },
+        });
+
+        expect(getMetric()).toEqual(
+          expect.objectContaining({
+            loading: false,
+            result: null,
+            error: metricsErrors.TIMEOUT,
+          }),
+        );
+      });
+
+      it('stores a connection failed error in a metric', () => {
+        mutations[types.RECEIVE_METRIC_RESULT_ERROR](stateCopy, {
+          metricId,
+          error: {
+            response: {
+              status: httpStatusCodes.SERVICE_UNAVAILABLE,
+            },
+          },
+        });
+        expect(getMetric()).toEqual(
+          expect.objectContaining({
+            loading: false,
+            result: null,
+            error: metricsErrors.CONNECTION_FAILED,
+          }),
+        );
+      });
+
+      it('stores a bad data error in a metric', () => {
+        mutations[types.RECEIVE_METRIC_RESULT_ERROR](stateCopy, {
+          metricId,
+          error: {
+            response: {
+              status: httpStatusCodes.BAD_REQUEST,
+            },
+          },
+        });
+
+        expect(getMetric()).toEqual(
+          expect.objectContaining({
+            loading: false,
+            result: null,
+            error: metricsErrors.BAD_DATA,
+          }),
+        );
+      });
+
+      it('stores an unknown error in a metric', () => {
+        mutations[types.RECEIVE_METRIC_RESULT_ERROR](stateCopy, {
+          metricId,
+          error: null, // no reason in response
+        });
+
+        expect(getMetric()).toEqual(
+          expect.objectContaining({
+            loading: false,
+            result: null,
+            error: metricsErrors.UNKNOWN_ERROR,
+          }),
+        );
+      });
     });
   });
   describe('SET_ALL_DASHBOARDS', () => {

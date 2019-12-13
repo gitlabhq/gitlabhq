@@ -490,6 +490,8 @@ export const historyPushState = newUrl => {
  */
 export const parseBoolean = value => (value && value.toString()) === 'true';
 
+export const BACKOFF_TIMEOUT = 'BACKOFF_TIMEOUT';
+
 /**
  * @callback backOffCallback
  * @param {Function} next
@@ -541,7 +543,7 @@ export const backOff = (fn, timeout = 60000) => {
         timeElapsed += nextInterval;
         nextInterval = Math.min(nextInterval + nextInterval, maxInterval);
       } else {
-        reject(new Error('BACKOFF_TIMEOUT'));
+        reject(new Error(BACKOFF_TIMEOUT));
       }
     };
 

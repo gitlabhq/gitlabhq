@@ -15,7 +15,7 @@ module Ci
         data: data
       }
     rescue => e
-      Gitlab::Sentry.track_acceptable_exception(e, extra: { project_id: project.id })
+      Gitlab::Sentry.track_exception(e, project_id: project.id)
       {
         status: :error,
         key: key(base_pipeline, head_pipeline),

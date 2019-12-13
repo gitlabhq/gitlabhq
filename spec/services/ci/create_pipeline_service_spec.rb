@@ -528,7 +528,7 @@ describe Ci::CreatePipelineService do
         end
 
         it 'logs error' do
-          expect(Gitlab::Sentry).to receive(:track_acceptable_exception).and_call_original
+          expect(Gitlab::Sentry).to receive(:track_exception).and_call_original
 
           execute_service
         end
@@ -613,7 +613,7 @@ describe Ci::CreatePipelineService do
       end
 
       it 'logs error' do
-        expect(Gitlab::Sentry).to receive(:track_acceptable_exception).and_call_original
+        expect(Gitlab::Sentry).to receive(:track_exception).and_call_original
 
         execute_service
       end

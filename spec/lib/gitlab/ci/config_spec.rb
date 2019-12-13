@@ -157,7 +157,7 @@ describe Gitlab::Ci::Config do
 
       describe '.new' do
         it 'raises error' do
-          expect(Gitlab::Sentry).to receive(:track_exception)
+          expect(Gitlab::Sentry).to receive(:track_and_raise_for_dev_exception)
 
           expect { config }.to raise_error(
             described_class::ConfigError,
@@ -367,7 +367,7 @@ describe Gitlab::Ci::Config do
       end
 
       it 'raises error TimeoutError' do
-        expect(Gitlab::Sentry).to receive(:track_exception)
+        expect(Gitlab::Sentry).to receive(:track_and_raise_for_dev_exception)
 
         expect { config }.to raise_error(
           described_class::ConfigError,

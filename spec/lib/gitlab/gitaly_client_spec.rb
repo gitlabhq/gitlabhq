@@ -86,12 +86,11 @@ describe Gitlab::GitalyClient do
 
   describe '.stub_certs' do
     it 'skips certificates if OpenSSLError is raised and report it' do
-      expect(Rails.logger).to receive(:error).at_least(:once)
       expect(Gitlab::Sentry)
-        .to receive(:track_exception)
+        .to receive(:track_and_raise_for_dev_exception)
         .with(
           a_kind_of(OpenSSL::X509::CertificateError),
-          extra: { cert_file: a_kind_of(String) }).at_least(:once)
+          cert_file: a_kind_of(String)).at_least(:once)
 
       expect(OpenSSL::X509::Certificate)
         .to receive(:new)

@@ -76,7 +76,7 @@ module Clusters
             message: error.message
           })
 
-          Gitlab::Sentry.track_acceptable_exception(error, extra: { cluster_id: cluster&.id, application_id: id })
+          Gitlab::Sentry.track_exception(error, cluster_id: cluster&.id, application_id: id)
         end
       end
     end

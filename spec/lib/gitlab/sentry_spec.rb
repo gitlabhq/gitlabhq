@@ -3,12 +3,31 @@
 require 'spec_helper'
 
 describe Gitlab::Sentry do
-  describe '.context' do
-    it 'adds the expected tags' do
-      expect(described_class).to receive(:enabled?).and_return(true)
-      allow(Labkit::Correlation::CorrelationId).to receive(:current_id).and_return('cid')
+  let(:exception) { RuntimeError.new('boom') }
+  let(:issue_url) { 'http://gitlab.com/gitlab-org/gitlab-foss/issues/1' }
 
-      described_class.context(nil)
+  let(:expected_payload_includes) do
+    [
+      { 'exception.class' => 'RuntimeError' },
+      { 'exception.message' => 'boom' },
+      { 'tags.correlation_id' => 'cid' },
+      { 'extra.some_other_info' => 'info' },
+      { 'extra.issue_url' => 'http://gitlab.com/gitlab-org/gitlab-foss/issues/1' }
+    ]
+  end
+
+  before do
+    stub_sentry_settings
+
+    allow(described_class).to receive(:sentry_dsn).and_return(Gitlab.config.sentry.dsn)
+    allow(Labkit::Correlation::CorrelationId).to receive(:current_id).and_return('cid')
+
+    described_class.configure
+  end
+
+  describe '.with_context' do
+    it 'adds the expected tags' do
+      described_class.with_context {}
 
       expect(Raven.tags_context[:locale].to_s).to eq(I18n.locale.to_s)
       expect(Raven.tags_context[Labkit::Correlation::CorrelationId::LOG_KEY.to_sym].to_s)
@@ -16,23 +35,23 @@ describe Gitlab::Sentry do
     end
   end
 
-  describe '.track_exception' do
-    let(:exception) { RuntimeError.new('boom') }
-
-    before do
-      allow(described_class).to receive(:enabled?).and_return(true)
-    end
-
-    it 'raises the exception if it should' do
-      expect(described_class).to receive(:should_raise_for_dev?).and_return(true)
-      expect { described_class.track_exception(exception) }
-        .to raise_error(RuntimeError)
-    end
-
-    context 'when exceptions should not be raised' do
+  describe '.track_and_raise_for_dev_exception' do
+    context 'when exceptions for dev should be raised' do
       before do
-        allow(described_class).to receive(:should_raise_for_dev?).and_return(false)
-        allow(Labkit::Correlation::CorrelationId).to receive(:current_id).and_return('cid')
+        expect(described_class).to receive(:should_raise_for_dev?).and_return(true)
+      end
+
+      it 'raises the exception' do
+        expect(Raven).to receive(:capture_exception)
+
+        expect { described_class.track_and_raise_for_dev_exception(exception) }
+          .to raise_error(RuntimeError)
+      end
+    end
+
+    context 'when exceptions for dev should not be raised' do
+      before do
+        expect(described_class).to receive(:should_raise_for_dev?).and_return(false)
       end
 
       it 'logs the exception with all attributes passed' do
@@ -50,30 +69,49 @@ describe Gitlab::Sentry do
                             tags: a_hash_including(expected_tags),
                             extra: a_hash_including(expected_extras))
 
-        described_class.track_exception(
+        described_class.track_and_raise_for_dev_exception(
           exception,
-          issue_url: 'http://gitlab.com/gitlab-org/gitlab-foss/issues/1',
-          extra: { some_other_info: 'info' }
+          issue_url: issue_url,
+          some_other_info: 'info'
         )
       end
 
-      it 'sets the context' do
-        expect(described_class).to receive(:context)
+      it 'calls Gitlab::Sentry::Logger.error with formatted payload' do
+        expect(Gitlab::Sentry::Logger).to receive(:error)
+          .with(a_hash_including(*expected_payload_includes))
 
-        described_class.track_exception(exception)
+        described_class.track_and_raise_for_dev_exception(
+          exception,
+          issue_url: issue_url,
+          some_other_info: 'info'
+        )
       end
     end
   end
 
-  context '.track_acceptable_exception' do
-    let(:exception) { RuntimeError.new('boom') }
-    let(:issue_url) { 'http://gitlab.com/gitlab-org/gitlab-foss/issues/1' }
+  describe '.track_and_raise_exception' do
+    it 'always raises the exception' do
+      expect(Raven).to receive(:capture_exception)
 
-    before do
-      allow(described_class).to receive(:enabled?).and_return(true)
-      allow(Labkit::Correlation::CorrelationId).to receive(:current_id).and_return('cid')
+      expect { described_class.track_and_raise_exception(exception) }
+        .to raise_error(RuntimeError)
     end
 
+    it 'calls Gitlab::Sentry::Logger.error with formatted payload' do
+      expect(Gitlab::Sentry::Logger).to receive(:error)
+        .with(a_hash_including(*expected_payload_includes))
+
+      expect do
+        described_class.track_and_raise_exception(
+          exception,
+          issue_url: issue_url,
+          some_other_info: 'info'
+        )
+      end.to raise_error(RuntimeError)
+    end
+  end
+
+  describe '.track_exception' do
     it 'calls Raven.capture_exception' do
       expected_extras = {
         some_other_info: 'info',
@@ -89,34 +127,45 @@ describe Gitlab::Sentry do
                           tags: a_hash_including(expected_tags),
                           extra: a_hash_including(expected_extras))
 
-      described_class.track_acceptable_exception(
+      described_class.track_exception(
         exception,
         issue_url: issue_url,
-        extra: { some_other_info: 'info' }
+        some_other_info: 'info'
+      )
+    end
+
+    it 'calls Gitlab::Sentry::Logger.error with formatted payload' do
+      expect(Gitlab::Sentry::Logger).to receive(:error)
+        .with(a_hash_including(*expected_payload_includes))
+
+      described_class.track_exception(
+        exception,
+        issue_url: issue_url,
+        some_other_info: 'info'
       )
     end
 
     context 'the exception implements :sentry_extra_data' do
       let(:extra_info) { { event: 'explosion', size: :massive } }
-      let(:exception) { double(message: 'bang!', sentry_extra_data: extra_info) }
+      let(:exception) { double(message: 'bang!', sentry_extra_data: extra_info, backtrace: caller) }
 
       it 'includes the extra data from the exception in the tracking information' do
         expect(Raven).to receive(:capture_exception)
           .with(exception, a_hash_including(extra: a_hash_including(extra_info)))
 
-        described_class.track_acceptable_exception(exception)
+        described_class.track_exception(exception)
       end
     end
 
     context 'the exception implements :sentry_extra_data, which returns nil' do
-      let(:exception) { double(message: 'bang!', sentry_extra_data: nil) }
+      let(:exception) { double(message: 'bang!', sentry_extra_data: nil, backtrace: caller) }
 
       it 'just includes the other extra info' do
         extra_info = { issue_url: issue_url }
         expect(Raven).to receive(:capture_exception)
           .with(exception, a_hash_including(extra: a_hash_including(extra_info)))
 
-        described_class.track_acceptable_exception(exception, extra_info)
+        described_class.track_exception(exception, extra_info)
       end
     end
   end

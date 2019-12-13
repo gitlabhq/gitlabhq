@@ -55,7 +55,7 @@ The following languages and dependency managers are supported.
 
 | Language (package managers)  | Supported | Scan tool(s) |
 |----------------------------- | --------- | ------------ |
-| Java ([Gradle](https://gradle.org/)) | not currently ([issue](https://gitlab.com/gitlab-org/gitlab/issues/13075 "Dependency Scanning for Gradle" )) | not available |
+| Java ([Gradle](https://gradle.org/)) | yes | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
 | Java ([Maven](https://maven.apache.org/)) | yes | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
 | JavaScript ([npm](https://www.npmjs.com/), [yarn](https://yarnpkg.com/en/)) | yes | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium), [Retire.js](https://retirejs.github.io/retire.js/)         |
 | Go ([Golang](https://golang.org/)) | not currently ([issue](https://gitlab.com/gitlab-org/gitlab/issues/7132 "Dependency Scanning for Go")) | not available |

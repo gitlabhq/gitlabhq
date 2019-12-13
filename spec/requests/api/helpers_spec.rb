@@ -226,11 +226,11 @@ describe API::Helpers do
   describe '.handle_api_exception' do
     before do
       allow_any_instance_of(self.class).to receive(:rack_response)
-      allow(Gitlab::Sentry).to receive(:enabled?).and_return(true)
 
       stub_sentry_settings
 
-      configure_sentry
+      expect(Gitlab::Sentry).to receive(:sentry_dsn).and_return(Gitlab.config.sentry.dsn)
+      Gitlab::Sentry.configure
       Raven.client.configuration.encoding = 'json'
     end
 

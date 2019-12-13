@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
   before_action :validate_user_service_ticket!
   before_action :check_password_expiration, if: :html_request?
   before_action :ldap_security_check
-  before_action :sentry_context
+  around_action :sentry_context
   before_action :default_headers
   before_action :add_gon_variables, if: :html_request?
   before_action :configure_permitted_parameters, if: :devise_controller?
@@ -165,7 +165,7 @@ class ApplicationController < ActionController::Base
   end
 
   def log_exception(exception)
-    Gitlab::Sentry.track_acceptable_exception(exception)
+    Gitlab::Sentry.track_exception(exception)
 
     backtrace_cleaner = request.env["action_dispatch.backtrace_cleaner"]
     application_trace = ActionDispatch::ExceptionWrapper.new(backtrace_cleaner, exception).application_trace
@@ -532,8 +532,8 @@ class ApplicationController < ActionController::Base
     @impersonator ||= User.find(session[:impersonator_id]) if session[:impersonator_id]
   end
 
-  def sentry_context
-    Gitlab::Sentry.context(current_user)
+  def sentry_context(&block)
+    Gitlab::Sentry.with_context(current_user, &block)
   end
 
   def allow_gitaly_ref_name_caching

@@ -63,7 +63,7 @@ describe Ci::ArchiveTracesCronWorker do
       let!(:build) { create(:ci_build, :success, :trace_live, finished_at: finished_at) }
 
       before do
-        allow(Gitlab::Sentry).to receive(:track_exception)
+        allow(Gitlab::Sentry).to receive(:track_and_raise_for_dev_exception)
         allow_any_instance_of(Gitlab::Ci::Trace).to receive(:archive!).and_raise('Unexpected error')
       end
 

@@ -60,10 +60,10 @@ describe Ci::ArchiveTraceService, '#execute' do
 
     it 'increments Prometheus counter, sends crash report to Sentry and ignore an error for continuing to archive' do
       expect(Gitlab::Sentry)
-        .to receive(:track_exception)
+        .to receive(:track_and_raise_for_dev_exception)
         .with(::Gitlab::Ci::Trace::ArchiveError,
               issue_url: 'https://gitlab.com/gitlab-org/gitlab-foss/issues/51502',
-              extra: { job_id: job.id } ).once
+              job_id: job.id).once
 
       expect(Sidekiq.logger).to receive(:warn).with(
         class: ArchiveTraceWorker.name,

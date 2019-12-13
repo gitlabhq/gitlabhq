@@ -62,7 +62,7 @@ module Sentry
     def handle_mapping_exceptions(&block)
       yield
     rescue KeyError => e
-      Gitlab::Sentry.track_acceptable_exception(e)
+      Gitlab::Sentry.track_exception(e)
       raise MissingKeysError, "Sentry API response is missing keys. #{e.message}"
     end
 
@@ -118,7 +118,7 @@ module Sentry
     def handle_request_exceptions
       yield
     rescue Gitlab::HTTP::Error => e
-      Gitlab::Sentry.track_acceptable_exception(e)
+      Gitlab::Sentry.track_exception(e)
       raise_error 'Error when connecting to Sentry'
     rescue Net::OpenTimeout
       raise_error 'Connection to Sentry timed out'
@@ -129,7 +129,7 @@ module Sentry
     rescue Errno::ECONNREFUSED
       raise_error 'Connection refused'
     rescue => e
-      Gitlab::Sentry.track_acceptable_exception(e)
+      Gitlab::Sentry.track_exception(e)
       raise_error "Sentry request failed due to #{e.class}"
     end
 

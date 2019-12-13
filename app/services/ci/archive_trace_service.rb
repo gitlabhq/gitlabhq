@@ -47,9 +47,9 @@ module Ci
         job_id: job.id)
 
       Gitlab::Sentry
-        .track_exception(error,
+        .track_and_raise_for_dev_exception(error,
                           issue_url: 'https://gitlab.com/gitlab-org/gitlab-foss/issues/51502',
-                         extra: { job_id: job.id })
+                          job_id: job.id )
     end
   end
 end

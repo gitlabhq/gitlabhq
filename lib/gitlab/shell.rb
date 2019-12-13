@@ -126,7 +126,7 @@ module Gitlab
 
       true
     rescue => e
-      Gitlab::Sentry.track_acceptable_exception(e, extra: { path: path, new_path: new_path, storage: storage })
+      Gitlab::Sentry.track_exception(e, path: path, new_path: new_path, storage: storage)
 
       false
     end
@@ -158,7 +158,7 @@ module Gitlab
       true
     rescue => e
       Rails.logger.warn("Repository does not exist: #{e} at: #{name}.git") # rubocop:disable Gitlab/RailsLogger
-      Gitlab::Sentry.track_acceptable_exception(e, extra: { path: name, storage: storage })
+      Gitlab::Sentry.track_exception(e, path: name, storage: storage)
 
       false
     end
@@ -267,7 +267,7 @@ module Gitlab
     def mv_namespace(storage, old_name, new_name)
       Gitlab::GitalyClient::NamespaceService.new(storage).rename(old_name, new_name)
     rescue GRPC::InvalidArgument => e
-      Gitlab::Sentry.track_acceptable_exception(e, extra: { old_name: old_name, new_name: new_name, storage: storage })
+      Gitlab::Sentry.track_exception(e, old_name: old_name, new_name: new_name, storage: storage)
 
       false
     end

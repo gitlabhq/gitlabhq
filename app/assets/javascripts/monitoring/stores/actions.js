@@ -6,7 +6,7 @@ import statusCodes from '../../lib/utils/http_status';
 import { backOff } from '../../lib/utils/common_utils';
 import { s__, sprintf } from '../../locale';
 
-const TWO_MINUTES = 120000;
+import { PROMETHEUS_TIMEOUT } from '../constants';
 
 function backOffRequest(makeRequestCallback) {
   return backOff((next, stop) => {
@@ -19,7 +19,7 @@ function backOffRequest(makeRequestCallback) {
         }
       })
       .catch(stop);
-  }, TWO_MINUTES);
+  }, PROMETHEUS_TIMEOUT);
 }
 
 export const setGettingStartedEmptyState = ({ commit }) => {
@@ -125,9 +125,17 @@ export const fetchPrometheusMetric = ({ commit }, { metric, params }) => {
     step,
   };
 
-  return fetchPrometheusResult(metric.prometheus_endpoint_path, queryParams).then(result => {
-    commit(types.SET_QUERY_RESULT, { metricId: metric.metric_id, result });
-  });
+  commit(types.REQUEST_METRIC_RESULT, { metricId: metric.metric_id });
+
+  return fetchPrometheusResult(metric.prometheus_endpoint_path, queryParams)
+    .then(result => {
+      commit(types.RECEIVE_METRIC_RESULT_SUCCESS, { metricId: metric.metric_id, result });
+    })
+    .catch(error => {
+      commit(types.RECEIVE_METRIC_RESULT_ERROR, { metricId: metric.metric_id, error });
+      // Continue to throw error so the dashboard can notify using createFlash
+      throw error;
+    });
 };
 
 export const fetchPrometheusMetrics = ({ state, commit, dispatch, getters }, params) => {
@@ -159,7 +167,8 @@ export const fetchDeploymentsData = ({ state, dispatch }) => {
   if (!state.deploymentsEndpoint) {
     return Promise.resolve([]);
   }
-  return backOffRequest(() => axios.get(state.deploymentsEndpoint))
+  return axios
+    .get(state.deploymentsEndpoint)
     .then(resp => resp.data)
     .then(response => {
       if (!response || !response.deployments) {
