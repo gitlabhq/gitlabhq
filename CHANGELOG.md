@@ -2,10 +2,6 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
-## 12.2.11
-
-- No changes.
-
 ## 12.2.10
 
 - Unreleased due to build failures
