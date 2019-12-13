@@ -145,8 +145,7 @@ describe('DiffsStoreActions', () => {
   });
 
   describe('fetchDiffFilesBatch', () => {
-    // eslint-disable-next-line jasmine/no-focused-tests
-    fit('should fetch batch diff files', done => {
+    it('should fetch batch diff files', done => {
       const endpointBatch = '/fetch/diffs_batch';
       const batch1 = `${endpointBatch}?per_page=${DIFFS_PER_PAGE}`;
       const batch2 = `${endpointBatch}?per_page=${DIFFS_PER_PAGE}&page=2`;

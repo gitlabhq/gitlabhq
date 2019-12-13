@@ -49,7 +49,7 @@ module Gitlab
           command = ['helm', 'upgrade', name, chart] +
             install_flag +
             reset_values_flag +
-            optional_tls_flags +
+            tls_flags_if_remote_tiller +
             optional_version_flag +
             rbac_create_flag +
             namespace_flag +

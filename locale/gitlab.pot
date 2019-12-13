@@ -6078,6 +6078,9 @@ msgstr ""
 msgid "Discussion"
 msgstr ""
 
+msgid "Discussion to reply to cannot be found"
+msgstr ""
+
 msgid "Disk Usage"
 msgstr ""
 
@@ -7393,9 +7396,6 @@ msgid "Failed to remove user key."
 msgstr ""
 
 msgid "Failed to reset key. Please try again."
-msgstr ""
-
-msgid "Failed to save comment!"
 msgstr ""
 
 msgid "Failed to save merge conflicts resolutions. Please try again!"
@@ -16399,9 +16399,6 @@ msgstr ""
 msgid "Something went wrong while adding your award. Please try again."
 msgstr ""
 
-msgid "Something went wrong while adding your comment. Please try again."
-msgstr ""
-
 msgid "Something went wrong while applying the suggestion. Please try again."
 msgstr ""
 
@@ -20645,6 +20642,9 @@ msgid "Your changes have been saved"
 msgstr ""
 
 msgid "Your changes have been successfully committed."
+msgstr ""
+
+msgid "Your comment could not be submitted because %{error}"
 msgstr ""
 
 msgid "Your comment could not be submitted! Please check your network connection and try again."

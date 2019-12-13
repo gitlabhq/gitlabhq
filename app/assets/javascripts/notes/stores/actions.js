@@ -14,7 +14,7 @@ import sidebarTimeTrackingEventHub from '../../sidebar/event_hub';
 import { isInViewport, scrollToElement, isInMRPage } from '../../lib/utils/common_utils';
 import { mergeUrlParams } from '../../lib/utils/url_utility';
 import mrWidgetEventHub from '../../vue_merge_request_widget/event_hub';
-import { __ } from '~/locale';
+import { __, sprintf } from '~/locale';
 import Api from '~/api';
 
 let eTagPoll;
@@ -252,29 +252,22 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
     }
   }
 
-  const processErrors = res => {
-    const { errors } = res;
-    if (!errors || !Object.keys(errors).length) {
-      return res;
-    }
-
+  const processQuickActions = res => {
+    const { errors: { commands_only: message } = { commands_only: null } } = res;
     /*
      The following reply means that quick actions have been successfully applied:
 
      {"commands_changes":{},"valid":false,"errors":{"commands_only":["Commands applied"]}}
      */
-    if (hasQuickActions) {
+    if (hasQuickActions && message) {
       eTagPoll.makeRequest();
 
       $('.js-gfm-input').trigger('clear-commands-cache.atwho');
 
-      const { commands_only: message } = errors;
       Flash(message || __('Commands applied'), 'notice', noteData.flashContainer);
-
-      return res;
     }
 
-    throw new Error(__('Failed to save comment!'));
+    return res;
   };
 
   const processEmojiAward = res => {
@@ -321,11 +314,33 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
     return res;
   };
 
+  const processErrors = error => {
+    if (error.response) {
+      const {
+        response: { data = {} },
+      } = error;
+      const { errors = {} } = data;
+      const { base = [] } = errors;
+
+      // we handle only errors.base for now
+      if (base.length > 0) {
+        const errorMsg = sprintf(__('Your comment could not be submitted because %{error}'), {
+          error: base[0].toLowerCase(),
+        });
+        Flash(errorMsg, 'alert', noteData.flashContainer);
+        return { ...data, hasFlash: true };
+      }
+    }
+
+    throw error;
+  };
+
   return dispatch(methodToDispatch, postData, { root: true })
-    .then(processErrors)
+    .then(processQuickActions)
     .then(processEmojiAward)
     .then(processTimeTracking)
-    .then(removePlaceholder);
+    .then(removePlaceholder)
+    .catch(processErrors);
 };
 
 const pollSuccessCallBack = (resp, commit, state, getters, dispatch) => {

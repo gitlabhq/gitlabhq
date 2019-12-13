@@ -12,6 +12,7 @@ import actions, {
   renameEntry,
   getBranchData,
   createTempEntry,
+  discardAllChanges,
 } from '~/ide/stores/actions';
 import axios from '~/lib/utils/axios_utils';
 import { createStore } from '~/ide/stores';
@@ -60,8 +61,9 @@ describe('Multi-file store actions', () => {
   });
 
   describe('discardAllChanges', () => {
+    let f;
     beforeEach(() => {
-      const f = file('discardAll');
+      f = file('discardAll');
       f.changed = true;
 
       store.state.openFiles.push(f);
@@ -88,6 +90,27 @@ describe('Multi-file store actions', () => {
         })
         .then(done)
         .catch(done.fail);
+    });
+
+    it('closes the temp file if it was open', done => {
+      f.tempFile = true;
+
+      testAction(
+        discardAllChanges,
+        undefined,
+        store.state,
+        [
+          { type: types.DISCARD_FILE_CHANGES, payload: 'discardAll' },
+          { type: types.REMOVE_ALL_CHANGES_FILES },
+        ],
+        [
+          {
+            type: 'closeFile',
+            payload: jasmine.objectContaining({ path: 'discardAll' }),
+          },
+        ],
+        done,
+      );
     });
   });
 

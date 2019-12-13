@@ -480,6 +480,13 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Fixes style-lint errors and warnings for EE builds.scss file.
 
 
+## 12.2.11
+
+### Fixed (1 change)
+
+- Backport the new reliable fetcher. !21198
+
+
 ## 12.2.8
 
 ### Fixed (1 change)
@@ -830,6 +837,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 ## 12.0.10
 
+- No changes.
 ### Fixed (1 change)
 
 - Backport the new reliable fetcher to 12.0.9. !20532

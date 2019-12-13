@@ -552,6 +552,7 @@ For running the frontend tests, you need the following commands:
 
 - `rake frontend:fixtures` (re-)generates [fixtures](#frontend-test-fixtures).
 - `yarn test` executes the tests.
+- `yarn jest` executes only the Jest tests.
 
 As long as the fixtures don't change, `yarn test` is sufficient (and saves you some time).
 
@@ -591,6 +592,24 @@ glob otherwise your shell may split it into multiple arguments:
 ```bash
 # Run all specs named `file_spec` within the IDE subdirectory
 yarn karma -f 'spec/javascripts/ide/**/file_spec.js'
+```
+
+It is also possible to target individual Jest / RSpec tests:
+
+```bash
+# Run specific jest file
+yarn jest ./path/to/local_spec.js
+# Run specific jest folder
+yarn jest ./path/to/folder/
+# Run all jest files which path contain term
+yarn jest term
+```
+
+```bash
+# Run specific rspec file
+rspec ./path/to/local_spec.rb
+# Run specific block within rspec file
+rspec ./path/to/local_spec.rb:15
 ```
 
 ## Frontend test fixtures

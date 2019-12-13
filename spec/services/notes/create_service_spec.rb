@@ -382,6 +382,19 @@ describe Notes::CreateService do
         end.to change { existing_note.type }.from(nil).to('DiscussionNote')
             .and change { existing_note.updated_at }
       end
+
+      context 'discussion to reply cannot be found' do
+        before do
+          existing_note.delete
+        end
+
+        it 'returns an note with errors' do
+          note = subject
+
+          expect(note.errors).not_to be_empty
+          expect(note.errors[:base]).to eq(['Discussion to reply to cannot be found'])
+        end
+      end
     end
 
     describe "usage counter" do

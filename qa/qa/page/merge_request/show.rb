@@ -91,16 +91,14 @@ module QA
         end
 
         def merge_immediately
-          wait(reload: false, max: 60) do
-            has_merge_options?
+          wait(reload: false) do
+            finished_loading?
           end
 
           if has_merge_options?
-            if has_no_element? :merge_immediately_option
-              retry_until do
-                click_element :merge_moment_dropdown
-                has_element? :merge_immediately_option
-              end
+            retry_until do
+              click_element :merge_moment_dropdown
+              has_element? :merge_immediately_option
             end
 
             click_element :merge_immediately_option
@@ -108,7 +106,7 @@ module QA
             click_element :merge_button
           end
 
-          wait(reload: false, max: 60) do
+          wait(reload: false) do
             merged?
           end
         end

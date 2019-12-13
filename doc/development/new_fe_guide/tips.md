@@ -23,3 +23,7 @@ Your feature flag can now be:
 - [Deleting a feature flag](../../api/features.md#delete-a-feature)
 - [Manage feature flags](../feature_flags/process.md)
 - [Feature flags API](../../api/features.md)
+
+## Running tests locally
+
+This can be done as outlined by the [frontend testing guide](../testing_guide/frontend_testing.md#running-frontend-tests).

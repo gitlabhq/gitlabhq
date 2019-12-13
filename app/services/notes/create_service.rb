@@ -2,6 +2,7 @@
 
 module Notes
   class CreateService < ::Notes::BaseService
+    # rubocop:disable Metrics/CyclomaticComplexity
     def execute
       merge_request_diff_head_sha = params.delete(:merge_request_diff_head_sha)
 
@@ -9,7 +10,9 @@ module Notes
 
       # n+1: https://gitlab.com/gitlab-org/gitlab-foss/issues/37440
       note_valid = Gitlab::GitalyClient.allow_n_plus_1_calls do
-        note.valid?
+        # We may set errors manually in Notes::BuildService for this reason
+        # we also need to check for already existing errors.
+        note.errors.empty? && note.valid?
       end
 
       return note unless note_valid
@@ -67,6 +70,7 @@ module Notes
 
       note
     end
+    # rubocop:enable Metrics/CyclomaticComplexity
 
     private
 

@@ -20,7 +20,7 @@ export const discardAllChanges = ({ state, commit, dispatch }) => {
     commit(types.DISCARD_FILE_CHANGES, file.path);
 
     if (file.tempFile) {
-      dispatch('closeFile', file.path);
+      dispatch('closeFile', file);
     }
   });
 

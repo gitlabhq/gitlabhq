@@ -198,23 +198,22 @@ export default {
         data: postData,
       };
 
-      this.isReplying = false;
       this.saveNote(replyData)
-        .then(() => {
-          clearDraft(this.autosaveKey);
+        .then(res => {
+          if (res.hasFlash !== true) {
+            this.isReplying = false;
+            clearDraft(this.autosaveKey);
+          }
           callback();
         })
         .catch(err => {
           this.removePlaceholderNotes();
-          this.isReplying = true;
-          this.$nextTick(() => {
-            const msg = __(
-              'Your comment could not be submitted! Please check your network connection and try again.',
-            );
-            Flash(msg, 'alert', this.$el);
-            this.$refs.noteForm.note = noteText;
-            callback(err);
-          });
+          const msg = __(
+            'Your comment could not be submitted! Please check your network connection and try again.',
+          );
+          Flash(msg, 'alert', this.$el);
+          this.$refs.noteForm.note = noteText;
+          callback(err);
         });
     },
     jumpToNextDiscussion() {
