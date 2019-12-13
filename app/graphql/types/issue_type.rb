@@ -55,3 +55,5 @@ module Types
     field :task_completion_status, Types::TaskCompletionStatus, null: false
   end
 end
+
+Types::IssueType.prepend(::EE::Types::IssueType)

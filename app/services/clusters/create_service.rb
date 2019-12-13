@@ -51,3 +51,5 @@ module Clusters
     end
   end
 end
+
+Clusters::CreateService.prepend(EE::Clusters::CreateService)

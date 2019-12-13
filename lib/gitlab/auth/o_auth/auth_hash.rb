@@ -6,6 +6,8 @@ module Gitlab
   module Auth
     module OAuth
       class AuthHash
+        prepend ::EE::Gitlab::Auth::OAuth::AuthHash # rubocop: disable Cop/InjectEnterpriseEditionModule
+
         attr_reader :auth_hash
         def initialize(auth_hash)
           @auth_hash = auth_hash

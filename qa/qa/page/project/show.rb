@@ -4,6 +4,8 @@ module QA
   module Page
     module Project
       class Show < Page::Base
+        prepend QA::EE::Page::Project::Show
+
         include Page::Component::ClonePanel
 
         view 'app/views/layouts/header/_new_dropdown.haml' do

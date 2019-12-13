@@ -10,3 +10,5 @@ module Boards
     end
   end
 end
+
+Boards::BaseService.prepend(EE::Boards::BaseService)

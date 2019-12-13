@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module FormHelper
+  prepend ::EE::FormHelper # rubocop: disable Cop/InjectEnterpriseEditionModule
+
   def form_errors(model, type: 'form')
     return unless model.errors.any?
 

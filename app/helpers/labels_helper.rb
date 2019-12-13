@@ -252,3 +252,5 @@ module LabelsHelper
   # Required for Banzai::Filter::LabelReferenceFilter
   module_function :render_colored_label, :text_color_for_bg, :escape_once, :label_tooltip_title
 end
+
+LabelsHelper.prepend(EE::LabelsHelper)

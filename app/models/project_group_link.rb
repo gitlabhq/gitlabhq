@@ -52,3 +52,5 @@ class ProjectGroupLink < ApplicationRecord
     group.refresh_members_authorized_projects
   end
 end
+
+ProjectGroupLink.prepend(EE::ProjectGroupLink)

@@ -9,3 +9,5 @@ module Keys
     end
   end
 end
+
+Keys::CreateService.prepend(EE::Keys::CreateService)

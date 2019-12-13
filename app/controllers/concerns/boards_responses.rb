@@ -85,3 +85,5 @@ module BoardsResponses
     BoardSerializer.new
   end
 end
+
+BoardsResponses.prepend(EE::BoardsResponses)

@@ -6,3 +6,5 @@ class IdeController < ApplicationController
   def index
   end
 end
+
+IdeController.prepend(EE::IdeController)

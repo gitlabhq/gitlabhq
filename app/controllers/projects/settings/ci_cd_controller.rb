@@ -122,3 +122,5 @@ module Projects
     end
   end
 end
+
+Projects::Settings::CiCdController.prepend(EE::Projects::Settings::CiCdController)

@@ -17,3 +17,5 @@ module Emails
     end
   end
 end
+
+Emails::DestroyService.prepend(EE::Emails::DestroyService)

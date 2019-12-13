@@ -278,3 +278,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Database.prepend(EE::Gitlab::Database)

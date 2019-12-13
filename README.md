@@ -2,12 +2,42 @@
 
 ## Test coverage
 
-- [![Ruby coverage](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/coverage.svg?job=coverage)](https://gitlab-org.gitlab.io/gitlab-ce/coverage-ruby) Ruby
-- [![JavaScript coverage](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/coverage.svg?job=karma)](https://gitlab-org.gitlab.io/gitlab-ce/coverage-javascript) JavaScript
+- [![Ruby coverage](https://gitlab.com/gitlab-org/gitlab-ee/badges/master/coverage.svg?job=coverage)](https://gitlab-org.gitlab.io/gitlab-ee/coverage-ruby) Ruby
+- [![JavaScript coverage](https://gitlab.com/gitlab-org/gitlab-ee/badges/master/coverage.svg?job=karma)](https://gitlab-org.gitlab.io/gitlab-ee/coverage-javascript) JavaScript
 
 ## Canonical source
 
 The canonical source of GitLab Community Edition is [hosted on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/).
+
+The source of GitLab Enterprise Edition is [hosted on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ee).
+
+# ![logo](https://about.gitlab.com/images/logo.png) GitLab
+
+## Free trial
+
+You can request a free trial of GitLab Ultimate [on our website](https://about.gitlab.com/free-trial/).
+
+## Subscriber onboarding information
+
+Thank you for purchasing a GitLab subscription!
+
+For standard subscribers, please see **emergency contact info and other useful information** in [the Standard subscribers README](https://gitlab.com/standard/standard-subscriber-information/tree/master#README).
+
+GitLab Enterprise Edition repository:
+https://gitlab.com/gitlab-org/gitlab-ee
+
+Download GitLab Enterprise Edition:
+https://about.gitlab.com/downloads-ee
+
+Documentation:
+http://doc.gitlab.com/ee/
+
+To upgrade from CE, just perform a normal upgrade, but use an EE package:
+https://about.gitlab.com/upgrade/
+
+If you need help with your GitLab installation and for any technical questions please see the [support page](https://about.gitlab.com/support/)
+
+For all other questions, please see our [contact page](https://about.gitlab.com/contact/)
 
 ## Open source software to collaborate on code
 
@@ -106,7 +136,7 @@ For upgrading information please see our [update page](https://about.gitlab.com/
 
 ## Documentation
 
-All documentation can be found on [docs.gitlab.com/ce/](https://docs.gitlab.com/ce/).
+All documentation can be found on [doc.gitlab.com/ee/](http://doc.gitlab.com/ee/).
 
 ## Getting help
 

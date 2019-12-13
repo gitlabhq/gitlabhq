@@ -54,3 +54,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::HookData::IssueBuilder.prepend(EE::Gitlab::HookData::IssueBuilder)

@@ -67,3 +67,9 @@ module ProtectedRef
     @ref_matcher ||= RefMatcher.new(self.name)
   end
 end
+
+# Prepending a module into a concern doesn't work very well for class methods,
+# since these are defined in a ClassMethods constant. As such, we prepend the
+# module directly into ProtectedRef::ClassMethods, instead of prepending it into
+# ProtectedRef.
+ProtectedRef::ClassMethods.prepend(EE::ProtectedRef)

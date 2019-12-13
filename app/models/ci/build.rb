@@ -845,3 +845,5 @@ module Ci
     end
   end
 end
+
+Ci::Build.prepend(EE::Ci::Build)

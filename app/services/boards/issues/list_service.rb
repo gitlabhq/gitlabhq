@@ -110,3 +110,5 @@ module Boards
     end
   end
 end
+
+Boards::Issues::ListService.prepend(EE::Boards::Issues::ListService)

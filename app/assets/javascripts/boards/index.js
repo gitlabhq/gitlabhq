@@ -2,26 +2,23 @@ import $ from 'jquery';
 import Vue from 'vue';
 
 import Flash from '~/flash';
-import { __ } from '~/locale';
+import { s__, __ } from '~/locale';
 import './models/label';
 import './models/assignee';
 
 import FilteredSearchBoards from './filtered_search_boards';
 import eventHub from './eventhub';
 import sidebarEventHub from '~/sidebar/event_hub';
-import './models/issue';
-import './models/list';
 import './models/milestone';
 import './models/project';
 import boardsStore from './stores/boards_store';
 import ModalStore from './stores/modal_store';
-import BoardService from './services/board_service';
 import modalMixin from './mixins/modal_mixins';
 import './filters/due_date_filters';
-import Board from './components/board';
-import BoardSidebar from './components/board_sidebar';
+import Board from 'ee/boards/components/board';
+import BoardSidebar from 'ee/boards/components/board_sidebar';
 import initNewListDropdown from './components/new_list_dropdown';
-import BoardAddIssuesModal from './components/modal/index.vue';
+import BoardAddIssuesModal from 'ee/boards/components/modal/index';
 import '~/vue_shared/vue_resource_interceptor';
 import {
   NavigationType,
@@ -29,10 +26,20 @@ import {
   parseBoolean,
 } from '~/lib/utils/common_utils';
 
+import 'ee/boards/models/list';
+import 'ee/boards/models/issue';
+import 'ee/boards/models/project';
+import BoardService from 'ee/boards/services/board_service';
+import BoardsSelector from 'ee/boards/components/boards_selector.vue';
+import collapseIcon from 'ee/boards/icons/fullscreen_collapse.svg';
+import expandIcon from 'ee/boards/icons/fullscreen_expand.svg';
+import tooltip from '~/vue_shared/directives/tooltip';
+
 let issueBoardsApp;
 
 export default () => {
   const $boardApp = document.getElementById('board-app');
+  const issueBoardsContent = document.querySelector('.content-wrapper > .js-focus-mode-board');
 
   // check for browser back and trigger a hard reload to circumvent browser caching.
   window.addEventListener('pageshow', event => {
@@ -124,6 +131,7 @@ export default () => {
           });
 
           boardsStore.addBlankState();
+          boardsStore.addPromotionState();
           this.loading = false;
         })
         .catch(() => {
@@ -138,6 +146,8 @@ export default () => {
         const { sidebarInfoEndpoint } = newIssue;
         if (sidebarInfoEndpoint && newIssue.subscribed === undefined) {
           newIssue.setFetchingState('subscriptions', true);
+          newIssue.setFetchingState('weight', true);
+          newIssue.setFetchingState('epic', true);
           BoardService.getIssueInfo(sidebarInfoEndpoint)
             .then(res => res.data)
             .then(data => {
@@ -152,6 +162,8 @@ export default () => {
               } = convertObjectPropsToCamelCase(data);
 
               newIssue.setFetchingState('subscriptions', false);
+              newIssue.setFetchingState('weight', false);
+              newIssue.setFetchingState('epic', false);
               newIssue.updateData({
                 humanTimeSpent: humanTotalTimeSpent,
                 timeSpent: totalTimeSpent,
@@ -164,6 +176,7 @@ export default () => {
             })
             .catch(() => {
               newIssue.setFetchingState('subscriptions', false);
+              newIssue.setFetchingState('weight', false);
               Flash(__('An error occurred while fetching sidebar data'));
             });
         }
@@ -198,11 +211,55 @@ export default () => {
     el: document.getElementById('js-add-list'),
     data: {
       filters: boardsStore.state.filters,
+      milestoneTitle: $boardApp.dataset.boardMilestoneTitle,
     },
     mounted() {
       initNewListDropdown();
     },
   });
+
+  const configEl = document.querySelector('.js-board-config');
+
+  if (configEl) {
+    gl.boardConfigToggle = new Vue({
+      el: configEl,
+      directives: {
+        tooltip,
+      },
+      data() {
+        return {
+          canAdminList: this.$options.el.hasAttribute('data-can-admin-list'),
+          hasScope: this.$options.el.hasAttribute('data-has-scope'),
+          state: boardsStore.state,
+        };
+      },
+      computed: {
+        buttonText() {
+          return this.canAdminList ? s__('Boards|Edit board') : s__('Boards|View scope');
+        },
+        tooltipTitle() {
+          return this.hasScope ? __("This board's scope is reduced") : '';
+        },
+      },
+      methods: {
+        showPage: page => boardsStore.showPage(page),
+      },
+      template: `
+        <div class="prepend-left-10">
+          <button
+            v-tooltip
+            :title="tooltipTitle"
+            class="btn btn-inverted"
+            :class="{ 'dot-highlight': hasScope }"
+            type="button"
+            @click.prevent="showPage('edit')"
+          >
+            {{ buttonText }}
+          </button>
+        </div>
+      `,
+    });
+  }
 
   const issueBoardsModal = document.getElementById('js-add-issues-btn');
 
@@ -215,6 +272,8 @@ export default () => {
         return {
           modal: ModalStore.store,
           store: boardsStore.state,
+          isFullscreen: false,
+          focusModeAvailable: $boardApp.hasAttribute('data-focus-mode-available'),
           canAdminList: this.$options.el.hasAttribute('data-can-admin-list'),
         };
       },
@@ -277,4 +336,78 @@ export default () => {
       `,
     });
   }
+
+  // eslint-disable-next-line no-new
+  new Vue({
+    el: document.getElementById('js-toggle-focus-btn'),
+    data: {
+      modal: ModalStore.store,
+      store: boardsStore.state,
+      isFullscreen: false,
+      focusModeAvailable: $boardApp.hasAttribute('data-focus-mode-available'),
+    },
+    methods: {
+      toggleFocusMode() {
+        if (!this.focusModeAvailable) {
+          return;
+        }
+
+        $(this.$refs.toggleFocusModeButton).tooltip('hide');
+        issueBoardsContent.classList.toggle('is-focused');
+
+        this.isFullscreen = !this.isFullscreen;
+      },
+    },
+    template: `
+      <div class="board-extra-actions">
+        <a
+          href="#"
+          class="btn btn-default has-tooltip prepend-left-10 js-focus-mode-btn"
+          role="button"
+          aria-label="Toggle focus mode"
+          title="Toggle focus mode"
+          ref="toggleFocusModeButton"
+          v-if="focusModeAvailable"
+          @click="toggleFocusMode">
+          <span v-show="isFullscreen">
+            ${collapseIcon}
+          </span>
+          <span v-show="!isFullscreen">
+            ${expandIcon}
+          </span>
+        </a>
+      </div>
+    `,
+  });
+
+  const boardsSwitcherElement = document.getElementById('js-multiple-boards-switcher');
+  // eslint-disable-next-line no-new
+  new Vue({
+    el: boardsSwitcherElement,
+    components: {
+      BoardsSelector,
+    },
+    data() {
+      const { dataset } = boardsSwitcherElement;
+
+      const boardsSelectorProps = {
+        ...dataset,
+        currentBoard: JSON.parse(dataset.currentBoard),
+        hasMissingBoards: parseBoolean(dataset.hasMissingBoards),
+        canAdminBoard: parseBoolean(dataset.canAdminBoard),
+        multipleIssueBoardsAvailable: parseBoolean(dataset.multipleIssueBoardsAvailable),
+        projectId: Number(dataset.projectId),
+        groupId: Number(dataset.groupId),
+        scopedIssueBoardFeatureEnabled: parseBoolean(dataset.scopedIssueBoardFeatureEnabled),
+        weights: JSON.parse(dataset.weights),
+      };
+
+      return { boardsSelectorProps };
+    },
+    render(createElement) {
+      return createElement(BoardsSelector, {
+        props: this.boardsSelectorProps,
+      });
+    },
+  });
 };

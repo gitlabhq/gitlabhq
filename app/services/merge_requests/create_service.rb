@@ -66,3 +66,5 @@ module MergeRequests
     end
   end
 end
+
+MergeRequests::CreateService.include(EE::MergeRequests::CreateService)

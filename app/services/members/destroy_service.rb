@@ -66,3 +66,5 @@ module Members
     end
   end
 end
+
+Members::DestroyService.prepend(EE::Members::DestroyService)

@@ -15,3 +15,5 @@ class NamespacePolicy < BasePolicy
 
   rule { personal_project & ~can_create_personal_project }.prevent :create_projects
 end
+
+NamespacePolicy.prepend(EE::NamespacePolicy)

@@ -145,3 +145,5 @@ module Issues
     end
   end
 end
+
+Issues::UpdateService.prepend(EE::Issues::UpdateService)

@@ -305,3 +305,5 @@ class ApplicationSetting < ApplicationRecord
     recaptcha_enabled || login_recaptcha_protection_enabled
   end
 end
+
+ApplicationSetting.prepend(EE::ApplicationSetting)

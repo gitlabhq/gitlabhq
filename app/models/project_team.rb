@@ -204,3 +204,5 @@ class ProjectTeam
     Member.on_project_and_ancestors(project).select(:user_id)
   end
 end
+
+ProjectTeam.prepend(EE::ProjectTeam)

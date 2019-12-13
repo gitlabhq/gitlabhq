@@ -346,3 +346,5 @@ class Service < ApplicationRecord
     activated? && !importing?
   end
 end
+
+Service.prepend(EE::Service)

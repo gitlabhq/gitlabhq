@@ -93,3 +93,26 @@
   - [migrate_external_diffs, 1]
   - [update_project_statistics, 1]
   - [phabricator_import_import_tasks, 1]
+
+  # EE-specific queues
+  - [ldap_group_sync, 2]
+  - [create_github_webhook, 2]
+  - [geo, 1]
+  - [repository_update_mirror, 1]
+  - [new_epic, 2]
+  - [project_import_schedule, 1]
+  - [project_update_repository_storage, 1]
+  - [admin_emails, 1]
+  - [elastic_batch_project_indexer, 1]
+  - [elastic_indexer, 1]
+  - [elastic_full_index, 1]
+  - [elastic_commit_indexer, 1]
+  - [elastic_namespace_indexer, 1]
+  - [export_csv, 1]
+  - [incident_management, 2]
+
+  # Deprecated queues: Remove after 10.7
+  - geo_base_scheduler
+  - geo_file_download
+  - geo_project_sync
+  - geo_repository_shard_sync

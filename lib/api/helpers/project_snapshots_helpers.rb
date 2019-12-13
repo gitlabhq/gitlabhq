@@ -3,6 +3,8 @@
 module API
   module Helpers
     module ProjectSnapshotsHelpers
+      prepend ::EE::API::Helpers::ProjectSnapshotsHelpers # rubocop: disable Cop/InjectEnterpriseEditionModule
+
       def authorize_read_git_snapshot!
         authenticated_with_full_private_access!
       end

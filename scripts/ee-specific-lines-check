@@ -1,0 +1,50 @@
+#!/usr/bin/env ruby
+
+require_relative 'ee_specific_check/ee_specific_check'
+
+include EESpecificCheck # rubocop:disable Style/MixinUsage
+git_version
+
+base = find_compare_base
+
+current_numstat = updated_diff_numstat(base.ce_base, base.ee_base)
+updated_numstat = updated_diff_numstat(base.ce_head, base.ee_head)
+
+offenses = updated_numstat.select do |file, updated_delta|
+  current_delta = current_numstat[file]
+
+  more_lines = updated_delta > current_delta
+
+  allow_prepend_line =
+    # Don't complain if we're just adding 1 or 2 more lines, which could be
+    # `prepend EE::Module` and a blank line that we want.
+    !(current_delta == 0 && updated_delta <= 2) ||
+    # We only allow Ruby files to have prepend line
+    !file.end_with?('.rb')
+
+  more_lines &&
+    allow_prepend_line &&
+    !WHITELIST.any? { |pattern| Dir.glob(pattern, File::FNM_DOTMATCH).include?(file) }
+end
+
+if offenses.empty?
+  say "🎉 All good, congrats! 🎉"
+else
+  puts
+
+  offenses.each do |(file, delta)|
+    puts "* 💥 #{file} has #{delta - current_numstat[file]} updated lines that differ between EE and CE! 💥"
+  end
+
+  say <<~MESSAGE
+    ℹ️ Make sure all lines in shared files have been updated in your backport merge request and the branch name includes #{minimal_ce_branch_name}.
+    ℹ️ Consider using an EE module to add the features you want.
+    ℹ️ See this for detail: https://docs.gitlab.com/ee/development/ee_features.html#ee-features-based-on-ce-features
+  MESSAGE
+end
+
+remove_remotes
+
+say "ℹ️ For more information on why, see https://gitlab.com/gitlab-org/gitlab-ee/issues/2952"
+
+exit(offenses.size)

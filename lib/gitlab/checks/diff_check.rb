@@ -4,6 +4,7 @@ module Gitlab
   module Checks
     class DiffCheck < BaseChecker
       include Gitlab::Utils::StrongMemoize
+      prepend EE::Gitlab::Checks::DiffCheck # rubocop: disable Cop/InjectEnterpriseEditionModule
 
       LOG_MESSAGES = {
         validate_file_paths: "Validating diffs' file paths...",

@@ -31,3 +31,5 @@ module UserCalloutsHelper
     current_user&.callouts&.find_by(feature_name: UserCallout.feature_names[feature_name])
   end
 end
+
+UserCalloutsHelper.prepend(EE::UserCalloutsHelper)

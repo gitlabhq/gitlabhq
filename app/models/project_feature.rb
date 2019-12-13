@@ -156,3 +156,5 @@ class ProjectFeature < ApplicationRecord
     project.team.member?(user, ProjectFeature.required_minimum_access_level(feature))
   end
 end
+
+ProjectFeature.prepend(EE::ProjectFeature)

@@ -49,6 +49,7 @@ describe 'Maintainer deletes tag' do
 
   def delete_tag(tag)
     page.within('.content') do
+      accept_confirm { first('.btn-remove').click }
       accept_confirm { find("li > .row-fixed-content.controls a.btn-remove[href='/#{project.full_path}/-/tags/#{tag}']").click }
     end
   end

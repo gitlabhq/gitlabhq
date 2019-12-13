@@ -55,3 +55,5 @@ module RoutableActions
     end
   end
 end
+
+RoutableActions.prepend(EE::RoutableActions)

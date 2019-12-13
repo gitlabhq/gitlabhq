@@ -1,0 +1,20 @@
+project_identifier: 'gitlab-ee'
+api_key_env: CROWDIN_API_KEY
+preserve_hierarchy: true
+commit_message: "[skip ci]"
+
+files:
+  - source: /locale/gitlab.pot
+    translation: /locale/%locale_with_underscore%/gitlab.po
+    languages_mapping:
+      locale_with_underscore:
+        bg: bg
+        de: de
+        eo: eo
+        es-ES: es
+        fr: fr
+        it: it
+        ja: ja
+        ko: ko
+        ru: ru
+        uk: uk

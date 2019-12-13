@@ -2,6 +2,8 @@
 
 module ChatMessage
   class MergeMessage < BaseMessage
+    prepend ::EE::ChatMessage::MergeMessage # rubocop: disable Cop/InjectEnterpriseEditionModule
+
     attr_reader :merge_request_iid
     attr_reader :source_branch
     attr_reader :target_branch

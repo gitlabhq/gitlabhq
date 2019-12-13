@@ -574,7 +574,7 @@ describe QuickActions::InterpretService do
 
       context 'Issue' do
         it 'populates assignee_ids: [] if content contains /unassign' do
-          issue.update(assignee_ids: [developer.id])
+          issue.update!(assignee_ids: [developer.id])
           _, updates = service.execute(content, issue)
 
           expect(updates).to eq(assignee_ids: [])
@@ -583,7 +583,7 @@ describe QuickActions::InterpretService do
 
       context 'Merge Request' do
         it 'populates assignee_ids: [] if content contains /unassign' do
-          merge_request.update(assignee_ids: [developer.id])
+          merge_request.update!(assignee_ids: [developer.id])
           _, updates = service.execute(content, merge_request)
 
           expect(updates).to eq(assignee_ids: [])

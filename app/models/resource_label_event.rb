@@ -122,3 +122,5 @@ class ResourceLabelEvent < ApplicationRecord
     issuable.project || issuable.group
   end
 end
+
+ResourceLabelEvent.prepend(EE::ResourceLabelEvent)

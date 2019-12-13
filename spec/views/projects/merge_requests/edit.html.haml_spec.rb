@@ -23,6 +23,7 @@ describe 'projects/merge_requests/edit.html.haml' do
 
   before do
     assign(:project, project)
+    assign(:target_project, project)
     assign(:merge_request, closed_merge_request)
     assign(:mr_presenter, closed_merge_request.present(current_user: user))
 

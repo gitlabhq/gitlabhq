@@ -355,3 +355,5 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     )
   end
 end
+
+ProjectPresenter.prepend(EE::ProjectPresenter)

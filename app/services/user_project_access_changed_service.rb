@@ -15,3 +15,5 @@ class UserProjectAccessChangedService
     end
   end
 end
+
+UserProjectAccessChangedService.prepend(EE::UserProjectAccessChangedService)

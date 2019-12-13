@@ -25,3 +25,5 @@ module Members
     end
   end
 end
+
+Members::UpdateService.prepend(EE::Members::UpdateService)

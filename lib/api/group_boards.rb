@@ -5,6 +5,8 @@ module API
     include BoardsResponses
     include PaginationParams
 
+    prepend EE::API::BoardsResponses # rubocop: disable Cop/InjectEnterpriseEditionModule
+
     before do
       authenticate!
     end

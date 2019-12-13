@@ -10,6 +10,7 @@ describe "Profile access" do
 
     it { is_expected.to be_allowed_for :admin }
     it { is_expected.to be_allowed_for :user }
+    it { is_expected.to be_allowed_for :auditor }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -18,6 +19,7 @@ describe "Profile access" do
 
     it { is_expected.to be_allowed_for :admin }
     it { is_expected.to be_allowed_for :user }
+    it { is_expected.to be_allowed_for :auditor }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -26,6 +28,7 @@ describe "Profile access" do
 
     it { is_expected.to be_allowed_for :admin }
     it { is_expected.to be_allowed_for :user }
+    it { is_expected.to be_allowed_for :auditor }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -34,6 +37,7 @@ describe "Profile access" do
 
     it { is_expected.to be_allowed_for :admin }
     it { is_expected.to be_allowed_for :user }
+    it { is_expected.to be_allowed_for :auditor }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -42,6 +46,7 @@ describe "Profile access" do
 
     it { is_expected.to be_allowed_for :admin }
     it { is_expected.to be_allowed_for :user }
+    it { is_expected.to be_allowed_for :auditor }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -50,6 +55,7 @@ describe "Profile access" do
 
     it { is_expected.to be_allowed_for :admin }
     it { is_expected.to be_allowed_for :user }
+    it { is_expected.to be_allowed_for :auditor }
     it { is_expected.to be_denied_for :visitor }
   end
 end

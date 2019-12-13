@@ -2,3 +2,5 @@
 
 class IssueSidebarExtrasEntity < IssuableSidebarExtrasEntity
 end
+
+IssueSidebarExtrasEntity.prepend(EE::IssueSidebarExtrasEntity)

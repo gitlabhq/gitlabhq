@@ -265,3 +265,5 @@ class KubernetesService < Service
     _("Fields on this page are now uneditable, you can configure")
   end
 end
+
+KubernetesService.prepend(EE::KubernetesService)

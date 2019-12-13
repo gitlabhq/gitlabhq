@@ -140,3 +140,5 @@ module IssuesHelper
   module_function :url_for_internal_issue
   module_function :url_for_tracker_issue
 end
+
+IssuesHelper.include(EE::IssuesHelper)

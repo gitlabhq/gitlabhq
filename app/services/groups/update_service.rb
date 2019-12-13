@@ -61,3 +61,5 @@ module Groups
     end
   end
 end
+
+Groups::UpdateService.prepend(EE::Groups::UpdateService)

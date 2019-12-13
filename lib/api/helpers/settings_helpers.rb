@@ -17,3 +17,5 @@ module API
     end
   end
 end
+
+API::Helpers::SettingsHelpers.prepend(EE::API::Helpers::SettingsHelpers)

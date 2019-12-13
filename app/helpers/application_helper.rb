@@ -306,3 +306,5 @@ module ApplicationHelper
     ::Appearance.current
   end
 end
+
+ApplicationHelper.prepend(EE::ApplicationHelper)

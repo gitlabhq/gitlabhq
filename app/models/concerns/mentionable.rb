@@ -169,3 +169,5 @@ module Mentionable
     {}
   end
 end
+
+Mentionable.prepend(EE::Mentionable)

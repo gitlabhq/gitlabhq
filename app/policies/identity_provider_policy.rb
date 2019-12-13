@@ -13,3 +13,5 @@ class IdentityProviderPolicy < BasePolicy
 
   rule { protected_provider }.prevent(:unlink)
 end
+
+IdentityProviderPolicy.prepend(EE::IdentityProviderPolicy)

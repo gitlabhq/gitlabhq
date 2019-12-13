@@ -95,3 +95,5 @@ module API
     end
   end
 end
+
+API::GroupMilestones.prepend(EE::API::GroupMilestones)

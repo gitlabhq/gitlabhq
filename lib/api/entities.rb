@@ -1669,3 +1669,19 @@ module API
     end
   end
 end
+
+API::Entities.prepend(EE::API::Entities::Entities) # rubocop: disable Cop/InjectEnterpriseEditionModule
+API::Entities.prepend_entity(::API::Entities::ApplicationSetting, with: EE::API::Entities::ApplicationSetting)
+API::Entities.prepend_entity(::API::Entities::Board, with: EE::API::Entities::Board)
+API::Entities.prepend_entity(::API::Entities::Group, with: EE::API::Entities::Group)
+API::Entities.prepend_entity(::API::Entities::GroupDetail, with: EE::API::Entities::GroupDetail)
+API::Entities.prepend_entity(::API::Entities::IssueBasic, with: EE::API::Entities::IssueBasic)
+API::Entities.prepend_entity(::API::Entities::List, with: EE::API::Entities::List)
+API::Entities.prepend_entity(::API::Entities::MergeRequestBasic, with: EE::API::Entities::MergeRequestBasic)
+API::Entities.prepend_entity(::API::Entities::Namespace, with: EE::API::Entities::Namespace)
+API::Entities.prepend_entity(::API::Entities::Project, with: EE::API::Entities::Project)
+API::Entities.prepend_entity(::API::Entities::ProtectedRefAccess, with: EE::API::Entities::ProtectedRefAccess)
+API::Entities.prepend_entity(::API::Entities::UserPublic, with: EE::API::Entities::UserPublic)
+API::Entities.prepend_entity(::API::Entities::Variable, with: EE::API::Entities::Variable)
+API::Entities.prepend_entity(::API::Entities::Todo, with: EE::API::Entities::Todo)
+API::Entities.prepend_entity(::API::Entities::ProtectedBranch, with: EE::API::Entities::ProtectedBranch)

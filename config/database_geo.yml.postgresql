@@ -1,0 +1,51 @@
+#
+# PRODUCTION
+#
+production:
+  adapter: postgresql
+  encoding: unicode
+  database: gitlabhq_geo_production
+  pool: 10
+  username: git
+  password: "secure password"
+  host: localhost
+  fdw: true
+
+#
+# Development specific
+#
+development:
+  adapter: postgresql
+  encoding: unicode
+  database: gitlabhq_geo_development
+  pool: 5
+  username: postgres
+  password: "secure password"
+  host: localhost
+  fdw: true
+
+#
+# Staging specific
+#
+staging:
+  adapter: postgresql
+  encoding: unicode
+  database: gitlabhq_geo_staging
+  pool: 10
+  username: git
+  password: "secure password"
+  host: localhost
+  fdw: true
+
+# Warning: The database defined as "test" will be erased and
+# re-generated from your development database when you run "rake".
+# Do not set this db to the same as development or production.
+test: &test
+  adapter: postgresql
+  encoding: unicode
+  database: gitlabhq_geo_test
+  pool: 5
+  username: postgres
+  password:
+  host: localhost
+  fdw: true

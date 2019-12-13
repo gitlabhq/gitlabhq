@@ -22,3 +22,5 @@ class GroupMemberPolicy < BasePolicy
     enable :destroy_group_member
   end
 end
+
+GroupMemberPolicy.prepend(EE::GroupMemberPolicy)

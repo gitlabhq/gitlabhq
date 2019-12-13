@@ -9,3 +9,5 @@ module Types
     mount_mutation Mutations::MergeRequests::SetWip
   end
 end
+
+::Types::MutationType.prepend(::EE::Types::MutationType)

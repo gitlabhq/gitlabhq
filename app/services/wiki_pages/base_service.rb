@@ -11,3 +11,5 @@ module WikiPages
     end
   end
 end
+
+WikiPages::BaseService.prepend(EE::WikiPages::BaseService)

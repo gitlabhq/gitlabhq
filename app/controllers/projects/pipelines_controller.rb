@@ -197,3 +197,5 @@ class Projects::PipelinesController < Projects::ApplicationController
     view_context.limited_counter_with_delimiter(finder.execute)
   end
 end
+
+Projects::PipelinesController.prepend(EE::Projects::PipelinesController)

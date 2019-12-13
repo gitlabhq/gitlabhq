@@ -37,3 +37,5 @@ module DashboardHelper
     links
   end
 end
+
+DashboardHelper.prepend(EE::DashboardHelper)

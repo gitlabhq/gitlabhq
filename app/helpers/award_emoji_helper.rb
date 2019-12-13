@@ -16,3 +16,5 @@ module AwardEmojiHelper
     end
   end
 end
+
+AwardEmojiHelper.prepend(EE::AwardEmojiHelper)

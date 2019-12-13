@@ -82,3 +82,5 @@ class ProjectStatistics < ApplicationRecord
     update_all(updates.join(', '))
   end
 end
+
+ProjectStatistics.prepend(EE::ProjectStatistics)

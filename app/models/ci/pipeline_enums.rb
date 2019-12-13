@@ -38,3 +38,5 @@ module Ci
     end
   end
 end
+
+Ci::PipelineEnums.prepend(EE::Ci::PipelineEnums)

@@ -125,3 +125,5 @@ class Upload < ApplicationRecord
     super&.to_sym
   end
 end
+
+Upload.prepend(EE::Upload)

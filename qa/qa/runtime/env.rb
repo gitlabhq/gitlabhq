@@ -3,6 +3,8 @@
 module QA
   module Runtime
     module Env
+      prepend QA::EE::Runtime::Env
+
       extend self
 
       attr_writer :personal_access_token, :ldap_username, :ldap_password

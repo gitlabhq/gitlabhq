@@ -40,6 +40,14 @@ resource :profile, only: [:show, :update] do
         put :resend_confirmation_instructions
       end
     end
+
+    ## EE-specific
+    resource :slack, only: [:edit] do
+      member do
+        get :slack_link
+      end
+    end
+
     resources :chat_names, only: [:index, :new, :create, :destroy] do
       collection do
         delete :deny
@@ -63,5 +71,10 @@ resource :profile, only: [:show, :update] do
     end
 
     resources :u2f_registrations, only: [:destroy]
+
+    ## EE-specific
+    resources :pipeline_quota, only: [:index]
+    resources :billings, only: [:index]
+    ## EE-specific
   end
 end

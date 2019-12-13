@@ -65,3 +65,5 @@ module ApplicationSettings
     end
   end
 end
+
+ApplicationSettings::UpdateService.prepend(EE::ApplicationSettings::UpdateService)

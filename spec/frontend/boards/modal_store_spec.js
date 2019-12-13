@@ -25,7 +25,7 @@ describe('Modal store', () => {
     });
     issue2 = new ListIssue({
       title: 'Testing',
-      id: 1,
+      id: 2,
       iid: 2,
       confidential: false,
       labels: [],

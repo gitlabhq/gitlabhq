@@ -333,3 +333,5 @@ class TodoService
     PendingTodosFinder.new(user, criteria).execute
   end
 end
+
+TodoService.prepend(EE::TodoService)

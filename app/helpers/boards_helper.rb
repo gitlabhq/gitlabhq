@@ -89,3 +89,5 @@ module BoardsHelper
     s_("IssueBoards|Board")
   end
 end
+
+BoardsHelper.prepend(EE::BoardsHelper)

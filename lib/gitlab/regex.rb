@@ -107,3 +107,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Regex.prepend(EE::Gitlab::Regex)

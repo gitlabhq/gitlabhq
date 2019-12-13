@@ -239,3 +239,5 @@ module MergeRequests
     end
   end
 end
+
+MergeRequests::BuildService.prepend(EE::MergeRequests::BuildService)

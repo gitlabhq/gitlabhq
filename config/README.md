@@ -1,6 +1,6 @@
 # Configuration files Documentation
 
-Note that most configuration files (`config/*.*`) committed into
+Note that most configuration files (`*.*`) committed into
 [gitlab-ce](https://gitlab.com/gitlab-org/gitlab-ce) **will not be used** for
 [omnibus-gitlab](https://gitlab.com/gitlab-org/omnibus-gitlab). Configuration
 files committed into gitlab-ce are only used for development.

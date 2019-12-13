@@ -22,3 +22,5 @@ module Milestones
     # rubocop: enable CodeReuse/ActiveRecord
   end
 end
+
+Milestones::UpdateService.prepend(EE::Milestones::UpdateService)

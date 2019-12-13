@@ -45,3 +45,5 @@ module InternalRedirect
     URI(request.referer).path
   end
 end
+
+InternalRedirect.prepend(EE::InternalRedirect)

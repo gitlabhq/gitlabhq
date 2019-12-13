@@ -9,3 +9,5 @@ module KerberosSpnegoHelper
     false # different behavior in GitLab Enterprise Edition
   end
 end
+
+KerberosSpnegoHelper.prepend(EE::KerberosSpnegoHelper)

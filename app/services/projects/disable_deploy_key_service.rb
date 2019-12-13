@@ -11,3 +11,5 @@ module Projects
     end
   end
 end
+
+Projects::DisableDeployKeyService.prepend(EE::Projects::DisableDeployKeyService)

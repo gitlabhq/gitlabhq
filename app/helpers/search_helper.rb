@@ -227,3 +227,5 @@ module SearchHelper
     end
   end
 end
+
+SearchHelper.prepend(EE::SearchHelper)

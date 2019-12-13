@@ -3,6 +3,8 @@
 module QA::Page
   module Project::Pipeline
     class Show < QA::Page::Base
+      prepend QA::EE::Page::Project::Pipeline::Show
+
       view 'app/assets/javascripts/vue_shared/components/header_ci_component.vue' do
         element :pipeline_header, /header class.*ci-header-container.*/ # rubocop:disable QA/ElementWithPattern
       end

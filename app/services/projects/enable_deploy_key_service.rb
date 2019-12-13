@@ -26,3 +26,5 @@ module Projects
     end
   end
 end
+
+Projects::EnableDeployKeyService.prepend(EE::Projects::EnableDeployKeyService)

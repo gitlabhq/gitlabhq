@@ -266,3 +266,5 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     can?(current_user, :fork_project, project)
   end
 end
+
+MergeRequestPresenter.prepend(EE::MergeRequestPresenter)

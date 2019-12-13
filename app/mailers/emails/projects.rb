@@ -57,3 +57,5 @@ module Emails
     end
   end
 end
+
+Emails::Projects.prepend(EE::Emails::Projects)

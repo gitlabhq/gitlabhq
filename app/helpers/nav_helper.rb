@@ -90,3 +90,5 @@ module NavHelper
     links
   end
 end
+
+NavHelper.prepend(EE::NavHelper)

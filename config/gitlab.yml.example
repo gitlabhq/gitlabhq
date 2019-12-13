@@ -230,7 +230,45 @@ production: &base
 
   ## Packages (maven repository, npm registry, etc...)
   packages:
-    enabled: false
+    enabled: true
+    # The location where build packages are stored (default: shared/packages).
+    # storage_path: shared/packages
+    object_store:
+      enabled: false
+      remote_directory: packages # The bucket name
+      # direct_upload: false # Use Object Storage directly for uploads instead of background uploads if enabled (Default: false)
+      # background_upload: false # Temporary option to limit automatic upload (Default: true)
+      # proxy_download: false # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
+      connection:
+        provider: AWS
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: us-east-1
+        # host: 'localhost' # default: s3.amazonaws.com
+        # endpoint: 'http://127.0.0.1:9000' # default: nil
+        # aws_signature_version: 4 # For creation of signed URLs. Set to 2 if provider does not support v4.
+        # path_style: true # Use 'host/bucket_name/object' instead of 'bucket_name.host/object'
+
+  ## Dependency Proxy
+  dependency_proxy:
+    enabled: true
+    # The location where build packages are stored (default: shared/dependency_proxy).
+    # storage_path: shared/dependency_proxy
+    object_store:
+      enabled: false
+      remote_directory: dependency_proxy # The bucket name
+      # direct_upload: false # Use Object Storage directly for uploads instead of background uploads if enabled (Default: false)
+      # background_upload: false # Temporary option to limit automatic upload (Default: true)
+      # proxy_download: false # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
+      connection:
+        provider: AWS
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: us-east-1
+        # host: 'localhost' # default: s3.amazonaws.com
+        # endpoint: 'http://127.0.0.1:9000' # default: nil
+        # aws_signature_version: 4 # For creation of signed URLs. Set to 2 if provider does not support v4.
+        # path_style: true # Use 'host/bucket_name/object' instead of 'bucket_name.host/object'
 
   ## GitLab Pages
   pages:
@@ -306,6 +344,53 @@ production: &base
     schedule_migrate_external_diffs_worker:
       cron: "15 * * * *"
 
+    ##
+    # GitLab EE only jobs:
+
+    # Snapshot active users statistics
+    historical_data_worker:
+      cron: "0 12 * * *"
+
+    # In addition to refreshing users when they log in,
+    # periodically refresh LDAP users membership.
+    # NOTE: This will only take effect if LDAP is enabled
+    ldap_sync_worker:
+      cron: "30 1 * * *"
+
+    # Periodically refresh LDAP groups membership.
+    # NOTE: This will only take effect if LDAP is enabled
+    ldap_group_sync_worker:
+      cron: "0 * * * *"
+
+    # GitLab Geo metrics update worker
+    # NOTE: This will only take effect if Geo is enabled
+    geo_metrics_update_worker:
+      cron: "*/1 * * * *"
+
+    # GitLab Geo prune event log worker
+    # NOTE: This will only take effect if Geo is enabled (primary node only)
+    geo_prune_event_log_worker:
+      cron: "*/5 * * * *"
+
+    # GitLab Geo repository sync worker
+    # NOTE: This will only take effect if Geo is enabled (secondary nodes only)
+    geo_repository_sync_worker:
+      cron: "*/1 * * * *"
+
+    # GitLab Geo file download dispatch worker
+    # NOTE: This will only take effect if Geo is enabled (secondary nodes only)
+    geo_file_download_dispatch_worker:
+      cron: "*/1 * * * *"
+
+    # GitLab Geo migrated local files clean up worker
+    # NOTE: This will only take effect if Geo is enabled (secondary nodes only)
+    geo_migrated_local_files_clean_up_worker:
+      cron: "15 */6 * * *"
+
+    # Export pseudonymized data in CSV format for analysis
+    pseudonymizer_worker:
+      cron: "0 * * * *"
+
   registry:
     # enabled: true
     # host: registry.example.com
@@ -322,6 +407,16 @@ production: &base
     # dsn: https://<key>@sentry.io/<project>
     # clientside_dsn: https://<key>@sentry.io/<project>
     # environment: 'production' # e.g. development, staging, production
+
+  ## Geo
+  # NOTE: These settings will only take effect if Geo is enabled
+  geo:
+    # This is an optional identifier which Geo nodes can use to identify themselves.
+    # For example, if external_url is the same for two secondaries, you must specify
+    # a unique Geo node name for those secondaries.
+    #
+    # If it is blank, it defaults to external_url.
+    node_name: ''
 
   #
   # 2. GitLab CI settings
@@ -349,6 +444,19 @@ production: &base
   #   bundle exec rake gitlab:ldap:check RAILS_ENV=production
   ldap:
     enabled: false
+
+    # This setting controls the number of seconds between LDAP permission checks
+    # for each user. After this time has expired for a given user, their next
+    # interaction with GitLab (a click in the web UI, a git pull, etc.) will be
+    # slower because the LDAP permission check is being performed. How much
+    # slower depends on your LDAP setup, but it is not uncommon for this check
+    # to add seconds of waiting time. The default value is to have a "slow
+    # click" once every 3600 seconds (i.e., once per hour).
+    #
+    # Warning: if you set this value too low, every click in GitLab will be a
+    # "slow click" for all of your LDAP users.
+    # sync_time: 3600
+
     servers:
       ##########################################################################
       #
@@ -446,6 +554,10 @@ production: &base
         # A value of 0 means there is no timeout.
         timeout: 10
 
+        # Enable smartcard authentication against the LDAP server. Valid values
+        # are "false", "optional", and "required".
+        smartcard_auth: false
+
         # This setting specifies if LDAP server is Active Directory LDAP server.
         # For non AD servers it skips the AD specific queries.
         # If your LDAP server is not AD, set this to false.
@@ -485,6 +597,31 @@ production: &base
         #
         user_filter: ''
 
+        # Base where we can search for groups
+        #
+        #   Ex. ou=Groups,dc=gitlab,dc=example
+        #
+        group_base: ''
+
+        # LDAP group of users who should be admins in GitLab
+        #
+        #   Ex. GLAdmins
+        #
+        admin_group: ''
+
+        # LDAP group of users who should be marked as external users in GitLab
+        #
+        #   Ex. ['Contractors', 'Interns']
+        #
+        external_groups: []
+
+        # Name of attribute which holds a ssh public key of the user object.
+        # If false or nil, SSH key syncronisation will be disabled.
+        #
+        #   Ex. sshpublickey
+        #
+        sync_ssh_keys: false
+
         # LDAP attributes that GitLab will use to create an account for the LDAP user.
         # The specified attribute can either be the attribute name as a string (e.g. 'mail'),
         # or an array of attribute names to try in order (e.g. ['mail', 'email']).
@@ -516,6 +653,38 @@ production: &base
       #   host:
       #   ....
 
+  ## Smartcard authentication settings
+  smartcard:
+    # Allow smartcard authentication
+    enabled: false
+
+    # Path to a file containing a CA certificate
+    ca_file: '/etc/ssl/certs/CA.pem'
+
+    # Port where the client side certificate is requested by the webserver (NGINX/Apache)
+    # client_certificate_required_port: 3444
+
+  ## Kerberos settings
+  kerberos:
+    # Allow the HTTP Negotiate authentication method for Git clients
+    enabled: false
+
+    # Kerberos 5 keytab file. The keytab file must be readable by the GitLab user,
+    # and should be different from other keytabs in the system.
+    # (default: use default keytab from Krb5 config)
+    # keytab: /etc/http.keytab
+
+    # The Kerberos service name to be used by GitLab.
+    # (default: accept any service name in keytab file)
+    # service_principal_name: HTTP/gitlab.example.com@EXAMPLE.COM
+
+    # Dedicated port: Git before 2.4 does not fall back to Basic authentication if Negotiate fails.
+    # To support both Basic and Negotiate methods with older versions of Git, configure
+    # nginx to proxy GitLab on an extra port (e.g. 8443) and uncomment the following lines
+    # to dedicate this port to Kerberos authentication. (default: false)
+    # use_dedicated_port: true
+    # port: 8443
+    # https: true
 
   ## OmniAuth settings
   omniauth:
@@ -635,6 +804,8 @@ production: &base
       #             name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
       #           } }
       #
+      # - { name: 'group_saml' }
+      #
       # - { name: 'crowd',
       #     args: {
       #       crowd_server_url: 'CROWD SERVER URL',
@@ -706,6 +877,20 @@ production: &base
     #   # encryption_key: '<base64 key>'
     #   # Specifies Amazon S3 storage class to use for backups, this is optional
     #   # storage_class: 'STANDARD'
+
+  ## Pseudonymizer exporter
+  pseudonymizer:
+    # Tables manifest that specifies the fields to extract and pseudonymize.
+    manifest: config/pseudonymizer.yml
+    upload:
+      remote_directory: 'gitlab-elt'
+      # Fog storage connection settings, see http://fog.io/storage/ .
+      connection:
+      #   provider: AWS
+      #   region: eu-west-1
+      #   aws_access_key_id: AKIAKIAKI
+      #   aws_secret_access_key: 'secret123'
+      #   # The remote 'directory' to store the CSV files. For S3, this would be the bucket name.
 
   ## GitLab Shell settings
   gitlab_shell:
@@ -872,6 +1057,17 @@ test:
     token: secret
   backup:
     path: tmp/tests/backups
+  pseudonymizer:
+    manifest: config/pseudonymizer.yml
+    upload:
+      # The remote 'directory' to store the CSV files. For S3, this would be the bucket name.
+      remote_directory: gitlab-elt.test
+      # Fog storage connection settings, see http://fog.io/storage/
+      connection:
+        provider: AWS # Only AWS supported at the moment
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: us-east-1
   gitlab_shell:
     path: tmp/tests/gitlab-shell/
     authorized_keys_file: tmp/tests/authorized_keys
@@ -892,6 +1088,7 @@ test:
     external_providers: []
 
     providers:
+      - { name: 'group_saml' }
       - { name: 'cas3',
           label: 'cas3',
           args: { url: 'https://sso.example.com',

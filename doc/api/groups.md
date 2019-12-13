@@ -70,8 +70,8 @@ GET /groups?statistics=true
       "repository_size" : 33,
       "wiki_size" : 100,
       "lfs_objects_size" : 123,
-      "job_artifacts_size" : 57
-
+      "job_artifacts_size" : 57,
+      "packages_size": 0
     }
   }
 ]
@@ -240,6 +240,8 @@ Example response:
   "full_path": "twitter",
   "file_template_project_id": 1,
   "parent_id": null,
+  "shared_runners_minutes_limit": 133,
+  "extra_shared_runners_minutes_limit": 133,
   "projects": [
     {
       "id": 7,
@@ -419,6 +421,8 @@ Parameters:
 | `lfs_enabled` | boolean | no | Enable/disable Large File Storage (LFS) for the projects in this group |
 | `request_access_enabled` | boolean | no | Allow users to request member access. |
 | `parent_id` | integer | no | The parent group id for creating nested group. |
+| `shared_runners_minutes_limit` | integer | no | (admin-only) Pipeline minutes quota for this group. |
+| `extra_shared_runners_minutes_limit` | integer | no | (admin-only) Extra pipeline minutes quota for this group. |
 
 ## Transfer project to group
 
@@ -449,10 +453,14 @@ PUT /groups/:id
 | `name` | string | no | The name of the group |
 | `path` | string | no | The path of the group |
 | `description` | string | no | The description of the group |
+| `membership_lock` | boolean | no | Prevent adding new members to project membership within this group |
+| `share_with_group_lock` | boolean | no | Prevent sharing a project with another group within this group |
 | `visibility` | string | no | The visibility level of the group. Can be `private`, `internal`, or `public`. |
 | `lfs_enabled` (optional) | boolean | no | Enable/disable Large File Storage (LFS) for the projects in this group |
 | `request_access_enabled` | boolean | no | Allow users to request member access. |
 | `file_template_project_id` | integer | no | **(Premium)** The ID of a project to load custom file templates from |
+| `shared_runners_minutes_limit` | integer | no | (admin-only) Pipeline minutes quota for this group |
+| `extra_shared_runners_minutes_limit` | integer | no | (admin-only) Extra pipeline minutes quota for this group |
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5?name=Experimental"
@@ -520,7 +528,7 @@ Example response:
 
 ## Remove group
 
-Removes group with all projects inside.
+Removes group with all projects inside. Only available to group owners and administrators.
 
 ```
 DELETE /groups/:id
@@ -552,9 +560,61 @@ GET /groups?search=foobar
 ]
 ```
 
+## Sync group with LDAP
+
+Syncs the group with its linked LDAP group. Only available to group owners and administrators.
+
+```
+POST /groups/:id/ldap_sync
+```
+
+Parameters:
+
+- `id` (required) - The ID or path of a user group
+
 ## Group members
 
 Please consult the [Group Members](members.md) documentation.
+
+### Add LDAP group link
+
+Adds LDAP group link
+
+```
+POST /groups/:id/ldap_group_links
+```
+
+Parameters:
+
+- `id` (required) - The ID of a group
+- `cn` (required) - The CN of a LDAP group
+- `group_access` (required) - Minimum access level for members of the LDAP group
+- `provider` (required) - LDAP provider for the LDAP group
+
+### Delete LDAP group link
+
+Deletes a LDAP group link
+
+```
+DELETE /groups/:id/ldap_group_links/:cn
+```
+
+Parameters:
+
+- `id` (required) - The ID of a group
+- `cn` (required) - The CN of a LDAP group
+
+Deletes a LDAP group link for a specific LDAP provider
+
+```
+DELETE /groups/:id/ldap_group_links/:provider/:cn
+```
+
+Parameters:
+
+- `id` (required) - The ID of a group
+- `cn` (required) - The CN of a LDAP group
+- `provider` (required) - Name of a LDAP provider
 
 ## Namespaces in groups
 

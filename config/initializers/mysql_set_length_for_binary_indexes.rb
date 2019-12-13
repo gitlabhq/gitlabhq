@@ -1,6 +1,6 @@
-# This patches ActiveRecord so indexes for binary columns created using the
-# MySQL adapter apply a length of 20. Otherwise MySQL can't create an index on
-# binary columns.
+# This patches ActiveRecord so indexes for binary columns created
+# using the MySQL adapter apply a length of 20. Otherwise MySQL can't create an
+# index on binary columns.
 
 module MysqlSetLengthForBinaryIndexAndIgnorePostgresOptionsForSchema
   # This method is used in Rails 5 schema loading as t.index

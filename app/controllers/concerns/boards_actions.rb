@@ -44,3 +44,5 @@ module BoardsActions
     serializer.represent(resource, serializer: 'board', include_full_project_path: board.group_board?)
   end
 end
+
+BoardsActions.prepend(EE::BoardsActions)

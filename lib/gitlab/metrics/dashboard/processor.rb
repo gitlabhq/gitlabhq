@@ -46,3 +46,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Metrics::Dashboard::Processor.prepend EE::Gitlab::Metrics::Dashboard::Processor

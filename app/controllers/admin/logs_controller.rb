@@ -20,3 +20,5 @@ class Admin::LogsController < Admin::ApplicationController
     ]
   end
 end
+
+Admin::LogsController.prepend(EE::Admin::LogsController)

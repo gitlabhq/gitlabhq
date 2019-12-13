@@ -4,6 +4,10 @@ require_relative '../object_store_settings'
 # Default settings
 Settings['ldap'] ||= Settingslogic.new({})
 Settings.ldap['enabled'] = false if Settings.ldap['enabled'].nil?
+Settings.ldap['sync_time'] = 3600 if Settings.ldap['sync_time'].nil?
+Settings.ldap['schedule_sync_daily'] = 1 if Settings.ldap['schedule_sync_daily'].nil?
+Settings.ldap['schedule_sync_hour'] = 1 if Settings.ldap['schedule_sync_hour'].nil?
+Settings.ldap['schedule_sync_minute'] = 30 if Settings.ldap['schedule_sync_minute'].nil?
 
 # backwards compatibility, we only have one host
 if Settings.ldap['enabled'] || Rails.env.test?
@@ -23,11 +27,14 @@ if Settings.ldap['enabled'] || Rails.env.test?
     server['timeout'] ||= 10.seconds
     server['block_auto_created_users'] = false if server['block_auto_created_users'].nil?
     server['allow_username_or_email_login'] = false if server['allow_username_or_email_login'].nil?
+    server['smartcard_auth'] = false unless %w[optional required].include?(server['smartcard_auth'])
     server['active_directory'] = true if server['active_directory'].nil?
     server['attributes'] = {} if server['attributes'].nil?
     server['lowercase_usernames'] = false if server['lowercase_usernames'].nil?
     server['provider_name'] ||= "ldap#{key}".downcase
     server['provider_class'] = OmniAuth::Utils.camelize(server['provider_name'])
+    server['external_groups'] = [] if server['external_groups'].nil?
+    server['sync_ssh_keys'] = 'sshPublicKey' if server['sync_ssh_keys'].to_s == 'true'
 
     # For backwards compatibility
     server['encryption'] ||= server['method']
@@ -61,6 +68,10 @@ if Settings.ldap['enabled'] || Rails.env.test?
     Settings.ldap['servers'][key] = server
   end
 end
+
+Settings['smartcard'] ||= Settingslogic.new({})
+Settings.smartcard['enabled'] = false if Settings.smartcard['enabled'].nil?
+Settings.smartcard['client_certificate_required_port'] = 3444 if Settings.smartcard['client_certificate_required_port'].nil?
 
 Settings['omniauth'] ||= Settingslogic.new({})
 Settings.omniauth['enabled'] = true if Settings.omniauth['enabled'].nil?
@@ -127,6 +138,7 @@ Settings['issues_tracker'] ||= {}
 #
 Settings['gitlab'] ||= Settingslogic.new({})
 Settings.gitlab['default_project_creation'] ||= ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS
+Settings.gitlab['default_project_deletion_protection'] ||= false
 Settings.gitlab['default_projects_limit'] ||= 100000
 Settings.gitlab['default_branch_protection'] ||= 2
 Settings.gitlab['default_can_create_group'] = true if Settings.gitlab['default_can_create_group'].nil?
@@ -163,6 +175,9 @@ Settings.gitlab['webhook_timeout'] ||= 10
 Settings.gitlab['max_attachment_size'] ||= 10
 Settings.gitlab['session_expire_delay'] ||= 10080
 Settings.gitlab['unauthenticated_session_expire_delay'] ||= 2.hours.to_i
+Settings.gitlab['mirror_max_delay'] ||= 300
+Settings.gitlab['mirror_max_capacity'] ||= 30
+Settings.gitlab['mirror_capacity_threshold'] ||= 15
 Settings.gitlab.default_projects_features['issues']             = true if Settings.gitlab.default_projects_features['issues'].nil?
 Settings.gitlab.default_projects_features['merge_requests']     = true if Settings.gitlab.default_projects_features['merge_requests'].nil?
 Settings.gitlab.default_projects_features['wiki']               = true if Settings.gitlab.default_projects_features['wiki'].nil?
@@ -176,6 +191,13 @@ Settings.gitlab['trusted_proxies'] ||= []
 Settings.gitlab['no_todos_messages'] ||= YAML.load_file(Rails.root.join('config', 'no_todos_messages.yml'))
 Settings.gitlab['impersonation_enabled'] ||= true if Settings.gitlab['impersonation_enabled'].nil?
 Settings.gitlab['usage_ping_enabled'] = true if Settings.gitlab['usage_ping_enabled'].nil?
+
+#
+# Elasticseacrh
+#
+Settings['elasticsearch'] ||= Settingslogic.new({})
+Settings.elasticsearch['enabled'] = false if Settings.elasticsearch['enabled'].nil?
+Settings.elasticsearch['url'] = ENV['ELASTIC_URL'] || "http://localhost:9200"
 
 #
 # CI
@@ -246,6 +268,13 @@ Settings.pages['admin'] ||= Settingslogic.new({})
 Settings.pages.admin['certificate'] ||= ''
 
 #
+# Geo
+#
+Settings['geo'] ||= Settingslogic.new({})
+# For backwards compatibility, default to gitlab_url and if so, ensure it ends with "/"
+Settings.geo['node_name'] = Settings.geo['node_name'].presence || Settings.gitlab['url'].chomp('/').concat('/')
+
+#
 # External merge request diffs
 #
 Settings['external_diffs'] ||= Settingslogic.new({})
@@ -270,6 +299,27 @@ Settings.uploads['storage_path'] = Settings.absolute(Settings.uploads['storage_p
 Settings.uploads['base_dir'] = Settings.uploads['base_dir'] || 'uploads/-/system'
 Settings.uploads['object_store'] = ObjectStoreSettings.parse(Settings.uploads['object_store'])
 Settings.uploads['object_store']['remote_directory'] ||= 'uploads'
+
+#
+# Packages
+#
+Settings['packages'] ||= Settingslogic.new({})
+Settings.packages['enabled']      = true if Settings.packages['enabled'].nil?
+Settings.packages['storage_path'] = Settings.absolute(Settings.packages['storage_path'] || File.join(Settings.shared['path'], "packages"))
+Settings.packages['object_store'] = ObjectStoreSettings.parse(Settings.packages['object_store'])
+
+#
+# Dependency Proxy
+#
+Settings['dependency_proxy'] ||= Settingslogic.new({})
+Settings.dependency_proxy['enabled']      = true if Settings.dependency_proxy['enabled'].nil?
+Settings.dependency_proxy['storage_path'] = Settings.absolute(Settings.dependency_proxy['storage_path'] || File.join(Settings.shared['path'], "dependency_proxy"))
+Settings.dependency_proxy['object_store'] = ObjectStoreSettings.parse(Settings.dependency_proxy['object_store'])
+# For first iteration dependency proxy uses Rails server to download blobs.
+# To ensure acceptable performance we only allow feature to be used with
+# multithreaded web-server Puma. This will be removed once download logic is moved
+# to GitLab workhorse
+Settings.dependency_proxy['enabled'] = false unless defined?(::Puma)
 
 #
 # Mattermost
@@ -309,6 +359,36 @@ Settings.cron_jobs['admin_email_worker']['job_class'] = 'AdminEmailWorker'
 Settings.cron_jobs['repository_archive_cache_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['repository_archive_cache_worker']['cron'] ||= '0 * * * *'
 Settings.cron_jobs['repository_archive_cache_worker']['job_class'] = 'RepositoryArchiveCacheWorker'
+Settings.cron_jobs['historical_data_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['historical_data_worker']['cron'] ||= '0 12 * * *'
+Settings.cron_jobs['historical_data_worker']['job_class'] = 'HistoricalDataWorker'
+Settings.cron_jobs['ldap_sync_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['ldap_sync_worker']['cron'] ||= '30 1 * * *'
+Settings.cron_jobs['ldap_sync_worker']['job_class'] = 'LdapSyncWorker'
+Settings.cron_jobs['ldap_group_sync_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['ldap_group_sync_worker']['cron'] ||= '0 * * * *'
+Settings.cron_jobs['ldap_group_sync_worker']['job_class'] = 'LdapAllGroupsSyncWorker'
+Settings.cron_jobs['geo_metrics_update_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['geo_metrics_update_worker']['cron'] ||= '*/1 * * * *'
+Settings.cron_jobs['geo_metrics_update_worker']['job_class'] ||= 'Geo::MetricsUpdateWorker'
+Settings.cron_jobs['geo_repository_sync_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['geo_repository_sync_worker']['cron'] ||= '*/1 * * * *'
+Settings.cron_jobs['geo_repository_sync_worker']['job_class'] ||= 'Geo::RepositorySyncWorker'
+Settings.cron_jobs['geo_file_download_dispatch_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['geo_file_download_dispatch_worker']['cron'] ||= '*/1 * * * *'
+Settings.cron_jobs['geo_file_download_dispatch_worker']['job_class'] ||= 'Geo::FileDownloadDispatchWorker'
+Settings.cron_jobs['geo_prune_event_log_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['geo_prune_event_log_worker']['cron'] ||= '*/5 * * * *'
+Settings.cron_jobs['geo_prune_event_log_worker']['job_class'] ||= 'Geo::PruneEventLogWorker'
+Settings.cron_jobs['geo_repository_verification_primary_batch_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['geo_repository_verification_primary_batch_worker']['cron'] ||= '*/1 * * * *'
+Settings.cron_jobs['geo_repository_verification_primary_batch_worker']['job_class'] ||= 'Geo::RepositoryVerification::Primary::BatchWorker'
+Settings.cron_jobs['geo_repository_verification_secondary_scheduler_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['geo_repository_verification_secondary_scheduler_worker']['cron'] ||= '*/1 * * * *'
+Settings.cron_jobs['geo_repository_verification_secondary_scheduler_worker']['job_class'] ||= 'Geo::RepositoryVerification::Secondary::SchedulerWorker'
+Settings.cron_jobs['geo_migrated_local_files_clean_up_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['geo_migrated_local_files_clean_up_worker']['cron'] ||= '15 */6 * * *'
+Settings.cron_jobs['geo_migrated_local_files_clean_up_worker']['job_class'] ||= 'Geo::MigratedLocalFilesCleanUpWorker'
 Settings.cron_jobs['import_export_project_cleanup_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['import_export_project_cleanup_worker']['cron'] ||= '0 * * * *'
 Settings.cron_jobs['import_export_project_cleanup_worker']['job_class'] = 'ImportExportProjectCleanupWorker'
@@ -341,6 +421,14 @@ Settings.cron_jobs['gitlab_usage_ping_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['gitlab_usage_ping_worker']['cron'] ||= Settings.__send__(:cron_for_usage_ping)
 Settings.cron_jobs['gitlab_usage_ping_worker']['job_class'] = 'GitlabUsagePingWorker'
 
+Settings.cron_jobs['pseudonymizer_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['pseudonymizer_worker']['cron'] ||= '0 23 * * *'
+Settings.cron_jobs['pseudonymizer_worker']['job_class'] ||= 'PseudonymizerWorker'
+
+Settings.cron_jobs['clear_shared_runners_minutes_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['clear_shared_runners_minutes_worker']['cron'] ||= '0 0 1 * *'
+Settings.cron_jobs['clear_shared_runners_minutes_worker']['job_class'] = 'ClearSharedRunnersMinutesWorker'
+
 Settings.cron_jobs['stuck_merge_jobs_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['stuck_merge_jobs_worker']['cron'] ||= '0 */2 * * *'
 Settings.cron_jobs['stuck_merge_jobs_worker']['job_class'] = 'StuckMergeJobsWorker'
@@ -364,6 +452,10 @@ Settings.cron_jobs['prune_web_hook_logs_worker']['job_class'] = 'PruneWebHookLog
 Settings.cron_jobs['schedule_migrate_external_diffs_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['schedule_migrate_external_diffs_worker']['cron'] ||= '15 * * * *'
 Settings.cron_jobs['schedule_migrate_external_diffs_worker']['job_class'] = 'ScheduleMigrateExternalDiffsWorker'
+
+Settings.cron_jobs['update_max_seats_used_for_gitlab_com_subscriptions_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['update_max_seats_used_for_gitlab_com_subscriptions_worker']['cron'] ||= '0 12 * * *'
+Settings.cron_jobs['update_max_seats_used_for_gitlab_com_subscriptions_worker']['job_class'] = 'UpdateMaxSeatsUsedForGitlabComSubscriptionsWorker'
 
 #
 # Sidekiq
@@ -444,6 +536,14 @@ Settings.backup['upload']['encryption_key'] ||= ENV['GITLAB_BACKUP_ENCRYPTION_KE
 Settings.backup['upload']['storage_class'] ||= nil
 
 #
+# Pseudonymizer
+#
+Settings['pseudonymizer'] ||= Settingslogic.new({})
+Settings.pseudonymizer['manifest'] = Settings.absolute(Settings.pseudonymizer['manifest'] || Rails.root.join("config/pseudonymizer.yml"))
+Settings.pseudonymizer['upload'] ||= Settingslogic.new({ 'remote_directory' => nil, 'connection' => nil })
+# Settings.pseudonymizer['upload']['multipart_chunk_size'] ||= 104857600
+
+#
 # Git
 #
 Settings['git'] ||= Settingslogic.new({})
@@ -454,6 +554,21 @@ Settings.git['bin_path'] ||= '/usr/bin/git'
 # db/migrate/20151023144219_remove_satellites.rb
 Settings['satellites'] ||= Settingslogic.new({})
 Settings.satellites['path'] = Settings.absolute(Settings.satellites['path'] || "tmp/repo_satellites/")
+
+#
+# Kerberos
+#
+Settings['kerberos'] ||= Settingslogic.new({})
+Settings.kerberos['enabled'] = false if Settings.kerberos['enabled'].nil?
+Settings.kerberos['keytab'] = nil if Settings.kerberos['keytab'].blank? # nil means use default keytab
+Settings.kerberos['service_principal_name'] = nil if Settings.kerberos['service_principal_name'].blank? # nil means any SPN in keytab
+Settings.kerberos['use_dedicated_port'] = false if Settings.kerberos['use_dedicated_port'].nil?
+Settings.kerberos['https'] = Settings.gitlab.https if Settings.kerberos['https'].nil?
+Settings.kerberos['port'] ||= Settings.kerberos.https ? 8443 : 8088
+
+if Settings.kerberos['enabled'] && !Settings.omniauth.providers.map(&:name).include?('kerberos_spnego')
+  Settings.omniauth.providers << Settingslogic.new({ 'name' => 'kerberos_spnego' })
+end
 
 #
 # Extra customization

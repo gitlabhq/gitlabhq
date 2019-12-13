@@ -48,3 +48,5 @@ class RepositoryImportWorker
     project.gitlab_project_import?
   end
 end
+
+RepositoryImportWorker.prepend(EE::RepositoryImportWorker)

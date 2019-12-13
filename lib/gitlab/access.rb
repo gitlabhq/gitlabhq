@@ -121,3 +121,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Access.prepend(EE::Gitlab::Access)

@@ -56,3 +56,5 @@ module Ci
     end
   end
 end
+
+::Ci::Bridge.prepend(::EE::Ci::Bridge)

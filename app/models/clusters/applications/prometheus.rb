@@ -108,3 +108,5 @@ module Clusters
     end
   end
 end
+
+Clusters::Applications::Prometheus.prepend(EE::Clusters::Applications::Prometheus)

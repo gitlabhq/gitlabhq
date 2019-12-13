@@ -202,3 +202,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::UsageData.prepend(EE::Gitlab::UsageData)

@@ -32,3 +32,5 @@ module Gitlab
     alias_method :has_attribute?, :[]
   end
 end
+
+Gitlab::FakeApplicationSettings.prepend(EE::Gitlab::FakeApplicationSettings)

@@ -162,3 +162,5 @@ module API
     end
   end
 end
+
+API::Services.prepend(EE::API::Services)

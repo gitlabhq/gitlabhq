@@ -845,3 +845,5 @@ module Ci
     end
   end
 end
+
+Ci::Pipeline.prepend(EE::Ci::Pipeline)

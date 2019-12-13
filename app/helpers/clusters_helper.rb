@@ -21,3 +21,5 @@ module ClustersHelper
     !cluster.provider.legacy_abac?
   end
 end
+
+ClustersHelper.prepend(EE::ClustersHelper)

@@ -517,3 +517,5 @@ class ProjectPolicy < BasePolicy
     @subject
   end
 end
+
+ProjectPolicy.prepend(EE::ProjectPolicy)

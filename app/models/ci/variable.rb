@@ -19,3 +19,5 @@ module Ci
     scope :unprotected, -> { where(protected: false) }
   end
 end
+
+Ci::Variable.prepend(HasEnvironmentScope)

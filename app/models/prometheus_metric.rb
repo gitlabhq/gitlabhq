@@ -124,3 +124,5 @@ class PrometheusMetric < ApplicationRecord
     GROUP_DETAILS.fetch(group.to_sym)
   end
 end
+
+PrometheusMetric.prepend(EE::PrometheusMetric)

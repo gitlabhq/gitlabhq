@@ -11,3 +11,5 @@ module API
     end
   end
 end
+
+API::Helpers::DiscussionsHelpers.prepend(EE::API::Helpers::DiscussionsHelpers)

@@ -11,3 +11,5 @@ module API
     end
   end
 end
+
+API::Helpers::VariablesHelpers.prepend(EE::API::Helpers::VariablesHelpers)

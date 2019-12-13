@@ -81,3 +81,5 @@ module Users
     end
   end
 end
+
+Users::MigrateToGhostUserService.prepend(EE::Users::MigrateToGhostUserService)

@@ -271,3 +271,5 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:graphql, default_enabled: true)
   end
 end
+
+Projects::IssuesController.prepend(EE::Projects::IssuesController)

@@ -340,3 +340,5 @@ class Namespace < ApplicationRecord
     end
   end
 end
+
+Namespace.prepend(EE::Namespace)

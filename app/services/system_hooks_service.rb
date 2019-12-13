@@ -148,3 +148,5 @@ class SystemHooksService
     }
   end
 end
+
+SystemHooksService.prepend(EE::SystemHooksService)

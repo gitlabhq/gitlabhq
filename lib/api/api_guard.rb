@@ -41,6 +41,7 @@ module API
 
     # Helper Methods for Grape Endpoint
     module HelperMethods
+      prepend EE::API::APIGuard::HelperMethods # rubocop: disable Cop/InjectEnterpriseEditionModule
       include Gitlab::Auth::UserAuthFinders
 
       def find_current_user!

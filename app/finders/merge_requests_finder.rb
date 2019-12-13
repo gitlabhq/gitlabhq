@@ -101,3 +101,5 @@ class MergeRequestsFinder < IssuableFinder
         .or(table[:title].matches('[WIP]%'))
   end
 end
+
+MergeRequestsFinder.prepend(EE::MergeRequestsFinder)

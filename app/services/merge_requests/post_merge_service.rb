@@ -53,3 +53,5 @@ module MergeRequests
     end
   end
 end
+
+MergeRequests::PostMergeService.prepend(EE::MergeRequests::PostMergeService)

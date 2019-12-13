@@ -192,3 +192,5 @@ module Ci
     end
   end
 end
+
+Ci::JobArtifact.prepend(EE::Ci::JobArtifact)

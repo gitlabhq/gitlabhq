@@ -4,6 +4,8 @@ module QA
   module Page
     module Dashboard
       class Projects < Page::Base
+        prepend QA::EE::Page::Dashboard::Projects
+
         view 'app/views/shared/projects/_search_form.html.haml' do
           element :project_filter_form, required: true
         end

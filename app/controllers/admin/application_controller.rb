@@ -8,3 +8,5 @@ class Admin::ApplicationController < ApplicationController
 
   layout 'admin'
 end
+
+Admin::ApplicationController.prepend(EE::Admin::ApplicationController)

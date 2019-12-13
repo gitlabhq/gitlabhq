@@ -4,6 +4,8 @@ module QA
   module Page
     module File
       class Show < Page::Base
+        prepend QA::EE::Page::File::Show
+
         include Shared::CommitMessage
 
         view 'app/helpers/blob_helper.rb' do

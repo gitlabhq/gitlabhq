@@ -134,3 +134,5 @@ module TabHelper
     'active' if current_controller?('oauth/applications')
   end
 end
+
+TabHelper.prepend(EE::TabHelper)

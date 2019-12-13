@@ -52,7 +52,7 @@ class List {
     } else if (obj.user) {
       this.assignee = new ListAssignee(obj.user);
       this.title = this.assignee.name;
-    } else if (isEE && obj.milestone) {
+    } else if (obj.milestone) {
       this.milestone = new ListMilestone(obj.milestone);
       this.title = this.milestone.title;
     }

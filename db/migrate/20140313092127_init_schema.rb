@@ -1,7 +1,11 @@
+# frozen_string_literal: true
+
+# rubocop:disable Metrics/AbcSize
+# rubocop:disable Lint/UnneededCopDisableDirective
+
 class InitSchema < ActiveRecord::Migration[4.2]
   DOWNTIME = true
 
-  # rubocop:disable Metrics/AbcSize
   def up
     create_table "broadcast_messages", force: :cascade do |t|
       t.text "message", null: false

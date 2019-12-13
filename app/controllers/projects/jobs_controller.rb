@@ -208,3 +208,5 @@ class Projects::JobsController < Projects::ApplicationController
     'attachment'
   end
 end
+
+Projects::JobsController.prepend(EE::Projects::JobsController)

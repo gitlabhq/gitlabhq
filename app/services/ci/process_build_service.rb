@@ -43,3 +43,5 @@ module Ci
     end
   end
 end
+
+Ci::ProcessBuildService.prepend(EE::Ci::ProcessBuildService)

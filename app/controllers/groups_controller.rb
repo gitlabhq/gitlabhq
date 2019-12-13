@@ -228,3 +228,5 @@ class GroupsController < Groups::ApplicationController
     url_for(safe_params)
   end
 end
+
+GroupsController.prepend(EE::GroupsController)

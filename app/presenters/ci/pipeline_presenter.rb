@@ -79,3 +79,5 @@ module Ci
     end
   end
 end
+
+Ci::PipelinePresenter.prepend(EE::Ci::PipelinePresenter)

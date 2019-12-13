@@ -103,3 +103,5 @@ module Issuable
     end
   end
 end
+
+Issuable::CommonSystemNotesService.prepend(EE::Issuable::CommonSystemNotesService)

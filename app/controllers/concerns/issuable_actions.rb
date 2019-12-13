@@ -223,3 +223,5 @@ module IssuableActions
     @project || @group # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 end
+
+IssuableActions.prepend(EE::IssuableActions)

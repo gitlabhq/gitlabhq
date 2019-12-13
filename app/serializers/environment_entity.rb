@@ -66,3 +66,5 @@ class EnvironmentEntity < Grape::Entity
     deployment_platform.cluster
   end
 end
+
+EnvironmentEntity.prepend(::EE::EnvironmentEntity)

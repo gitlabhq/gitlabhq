@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class List < ApplicationRecord
+  prepend ::EE::List # rubocop: disable Cop/InjectEnterpriseEditionModule
+
   belongs_to :board
   belongs_to :label
 

@@ -47,6 +47,9 @@ gem 'omniauth-salesforce', '~> 1.0.5'
 gem 'rack-oauth2', '~> 1.9.3'
 gem 'jwt', '~> 2.1.0'
 
+# Kerberos authentication. EE-only
+gem 'gssapi', group: :kerberos
+
 # Spam and anti-bot protection
 gem 'recaptcha', '~> 4.11', require: 'recaptcha/rails'
 gem 'akismet', '~> 2.0'
@@ -117,6 +120,13 @@ gem 'unf', '~> 0.1.4'
 
 # Seed data
 gem 'seed-fu', '~> 2.3.7'
+
+# Search
+gem 'elasticsearch-model', '~> 0.1.9'
+gem 'elasticsearch-rails', '~> 0.1.9', require: 'elasticsearch/rails/instrumentation'
+gem 'elasticsearch-api',   '5.0.3'
+gem 'aws-sdk'
+gem 'faraday_middleware-aws-signers-v4'
 
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 2.8'
@@ -275,6 +285,8 @@ gem 'request_store', '~> 1.3'
 gem 'virtus', '~> 1.0.1'
 gem 'base32', '~> 0.3.0'
 
+gem "gitlab-license", "~> 1.0"
+
 # Sentry integration
 gem 'sentry-raven', '~> 2.9'
 
@@ -299,6 +311,9 @@ gem 'peek-mysql2', '~> 1.2.0', group: :mysql
 gem 'peek-pg', '~> 1.3.0', group: :postgres
 gem 'peek-rblineprof', '~> 0.2.0'
 gem 'peek-redis', '~> 1.2.0'
+
+# Snowplow events tracking
+gem 'snowplow-tracker', '~> 0.6.1'
 
 # Metrics
 group :metrics do
@@ -416,6 +431,9 @@ gem 'health_check', '~> 2.6.0'
 gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'
 
+# NTP client
+gem 'net-ntp'
+
 # SSH host key support
 gem 'net-ssh', '~> 5.0'
 gem 'sshkey', '~> 2.0'
@@ -443,3 +461,6 @@ gem 'flipper-active_support_cache_store', '~> 0.13.0'
 # Structured logging
 gem 'lograge', '~> 0.5'
 gem 'grape_logging', '~> 1.7'
+
+# DNS Lookup
+gem 'net-dns', '~> 0.9.0'

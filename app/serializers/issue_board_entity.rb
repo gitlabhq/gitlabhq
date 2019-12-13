@@ -2,7 +2,7 @@
 
 class IssueBoardEntity < Grape::Entity
   include RequestAwareEntity
-  include TimeTrackableEntity
+  prepend ::EE::IssueBoardEntity # rubocop: disable Cop/InjectEnterpriseEditionModule
 
   expose :id
   expose :iid

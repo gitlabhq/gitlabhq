@@ -158,3 +158,5 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     ]
   end
 end
+
+Admin::ApplicationSettingsController.prepend(EE::Admin::ApplicationSettingsController)

@@ -76,3 +76,5 @@ class Admin::ProjectsController < Admin::ApplicationController
     @group ||= @project.group
   end
 end
+
+Admin::ProjectsController.prepend(EE::Admin::ProjectsController)

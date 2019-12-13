@@ -221,3 +221,5 @@ class ProjectWiki
     @project.touch(:last_activity_at, :last_repository_updated_at)
   end
 end
+
+ProjectWiki.prepend(EE::ProjectWiki)

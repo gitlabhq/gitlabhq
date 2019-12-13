@@ -5,3 +5,5 @@ module TrackingHelper
     {} # CE has no tracking features
   end
 end
+
+TrackingHelper.prepend(EE::TrackingHelper)

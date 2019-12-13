@@ -2304,3 +2304,5 @@ class Project < ApplicationRecord
     @services_templates ||= Service.where(template: true)
   end
 end
+
+Project.prepend(EE::Project)

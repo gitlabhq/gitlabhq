@@ -215,3 +215,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::ObjectHierarchy.prepend(EE::Gitlab::ObjectHierarchy)

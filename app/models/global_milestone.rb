@@ -2,6 +2,7 @@
 # Global Milestones are milestones that can be shared across multiple projects
 class GlobalMilestone
   include Milestoneish
+  include ::EE::GlobalMilestone # rubocop: disable Cop/InjectEnterpriseEditionModule
 
   STATE_COUNT_HASH = { opened: 0, closed: 0, all: 0 }.freeze
 

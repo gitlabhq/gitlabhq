@@ -111,7 +111,7 @@
   variables:
     SETUP_DB: "false"
   script:
-    - git fetch https://gitlab.com/gitlab-org/gitlab-ce.git v11.11.0
+    - git fetch https://gitlab.com/gitlab-org/gitlab-ee.git v11.11.0-ee
     - git checkout -f FETCH_HEAD
     - sed -i "s/gem 'oj', '~> 2.17.4'//" Gemfile
     - sed -i "s/gem 'bootsnap', '~> 1.0.0'/gem 'bootsnap'/" Gemfile
@@ -347,3 +347,188 @@ coverage:
   except:
     - /(^docs[\/-].*|.*-docs$)/
     - /(^qa[\/-].*|.*-qa$)/
+
+## EE-specific content
+.use-pg-with-elasticsearch: &use-pg-with-elasticsearch
+  services:
+    - name: postgres:9.6
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+    - name: redis:alpine
+    - name: docker.elastic.co/elasticsearch/elasticsearch:5.6.12
+
+.use-mysql-with-elasticsearch: &use-mysql-with-elasticsearch
+  services:
+    - mysql:5.7.24
+    - redis:alpine
+    - docker.elastic.co/elasticsearch/elasticsearch:5.6.12
+
+.rspec-metadata-ee: &rspec-metadata-ee
+  <<: *rspec-metadata
+  stage: test
+  script:
+    - JOB_NAME=( $CI_JOB_NAME )
+    - TEST_TOOL=${JOB_NAME[0]}
+    - TEST_LEVEL=${JOB_NAME[1]}
+    - DATABASE=${JOB_NAME[2]}
+    - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${TEST_TOOL}_${TEST_LEVEL}_${DATABASE}_ee_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
+    - export KNAPSACK_GENERATE_REPORT=true KNAPSACK_LOG_LEVEL=debug KNAPSACK_TEST_DIR=spec
+    - export CACHE_CLASSES=true
+    - cp ${EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
+    - scripts/gitaly-test-spawn
+    - date
+    - 'export KNAPSACK_TEST_FILE_PATTERN=$(ruby -r./lib/quality/test_level.rb -e "puts Quality::TestLevel.new(%(ee/)).pattern(:${TEST_LEVEL})")'
+    - knapsack rspec "--color --format documentation --format RspecJunitFormatter --out junit_rspec.xml --tag level:${TEST_LEVEL} --tag ~geo"
+    - date
+
+.rspec-metadata-pg-ee: &rspec-metadata-pg-ee
+  <<: *rspec-metadata-ee
+  <<: *use-pg-with-elasticsearch
+
+.rspec-metadata-mysql-ee: &rspec-metadata-mysql-ee
+  <<: *rspec-metadata-ee
+  <<: *use-mysql-with-elasticsearch
+
+rspec unit pg ee:
+  <<: *rspec-metadata-pg-ee
+  parallel: 7
+
+rspec integration pg ee:
+  <<: *rspec-metadata-pg-ee
+  parallel: 3
+
+rspec system pg ee:
+  <<: *rspec-metadata-pg-ee
+  parallel: 5
+
+rspec unit mysql ee:
+  <<: *rspec-metadata-mysql-ee
+  <<: *only-schedules-master
+  parallel: 7
+
+rspec integration mysql ee:
+  <<: *rspec-metadata-mysql-ee
+  <<: *only-schedules-master
+  parallel: 3
+
+rspec system mysql ee:
+  <<: *rspec-metadata-mysql-ee
+  <<: *only-schedules-master
+  parallel: 5
+
+rspec unit mysql ee on-demand:
+  <<: *rspec-metadata-mysql-ee
+  <<: *rspec-mysql-on-demand
+  parallel: 7
+
+rspec integration mysql ee on-demand:
+  <<: *rspec-metadata-mysql-ee
+  <<: *rspec-mysql-on-demand
+  parallel: 3
+
+rspec system mysql ee on-demand:
+  <<: *rspec-metadata-mysql-ee
+  <<: *rspec-mysql-on-demand
+  parallel: 5
+
+.rspec-metadata-pg-geo: &rspec-metadata-pg-geo
+  <<: *rspec-metadata
+  stage: test
+  script:
+    - JOB_NAME=( $CI_JOB_NAME )
+    - TEST_TOOL=${JOB_NAME[0]}
+    - export KNAPSACK_TEST_FILE_PATTERN="ee/spec/**{,/*/**}/*_spec.rb" KNAPSACK_GENERATE_REPORT=true CACHE_CLASSES=true
+    - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${TEST_TOOL}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
+    - cp ${EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
+    - source scripts/prepare_postgres_fdw.sh
+    - scripts/gitaly-test-spawn
+    - knapsack rspec "-Ispec --color --format documentation --format RspecJunitFormatter --out junit_rspec.xml --tag geo"
+
+rspec geo pg ee:
+  <<: *rspec-metadata-pg-geo
+  <<: *use-pg
+  parallel: 3
+  except:
+    - /(^geo[\/-].*|.*-geo$)/
+    - /(^docs[\/-].*|.*-docs$)/
+    - /(^qa[\/-].*|.*-qa$)/
+
+rspec geo pg-10 ee:
+  <<: *rspec-metadata-pg-geo
+  <<: *use-pg-10
+  parallel: 3
+  except:
+    - /(^geo[\/-].*|.*-geo$)/
+    - /(^docs[\/-].*|.*-docs$)/
+    - /(^qa[\/-].*|.*-qa$)/
+
+quick-rspec geo pg ee:
+  <<: *rspec-metadata-pg-geo
+  <<: *use-pg
+  stage: quick-test
+  only:
+    - /(^geo[\/-].*|.*-geo$)/
+
+quick-rspec geo pg-10 ee:
+  <<: *rspec-metadata-pg-geo
+  <<: *use-pg-10
+  stage: quick-test
+  only:
+    - /(^geo[\/-].*|.*-geo$)/
+
+.rspec-quarantine-ee: &rspec-quarantine-ee
+  <<: *only-schedules-master
+  allow_failure: true
+  script:
+    - export NO_KNAPSACK=1 CACHE_CLASSES=true
+    - scripts/gitaly-test-spawn
+    - bin/rspec --color --format documentation --format RspecJunitFormatter --out junit_rspec.xml --tag quarantine -- ee/spec/
+
+rspec quarantine pg ee:
+  <<: *rspec-quarantine-ee
+  <<: *rspec-metadata-pg
+
+rspec quarantine mysql ee:
+  <<: *rspec-quarantine-ee
+  <<: *rspec-metadata-mysql
+  <<: *only-schedules-master
+
+.migration-paths-upgrade-ce-to-ee: &migration-paths-upgrade-ce-to-ee
+  extends: .dedicated-no-docs-and-no-qa-pull-cache-job
+  variables:
+    SETUP_DB: "false"
+  script:
+    - ruby -r./scripts/ee_specific_check/ee_specific_check -e'EESpecificCheck.fetch_remote_ce_branch'
+    - git checkout -f FETCH_HEAD
+    - . scripts/utils.sh
+    - . scripts/prepare_build.sh
+    - date
+    - setup_db
+    - date
+    - git checkout -f $CI_COMMIT_SHA
+    - date
+    - . scripts/prepare_build.sh
+    - date
+    - bundle exec rake db:migrate
+  dependencies:
+    - setup-test-env
+
+migration:upgrade-pg-ce-to-ee:
+  <<: *migration-paths-upgrade-ce-to-ee
+  <<: *use-pg
+  only:
+    - /^[\d-]+-stable(-ee)?$/
+
+migration:upgrade-mysql-ce-to-ee:
+  <<: *migration-paths-upgrade-ce-to-ee
+  <<: *use-mysql
+  only:
+    - /^[\d-]+-stable(-ee)?$/
+
+db:rollback-pg-geo:
+  <<: *db-rollback
+  <<: *use-pg
+  script:
+    - bundle exec rake geo:db:migrate VERSION=20170627195211
+    - bundle exec rake geo:db:migrate
+
+## END of EE-specific content

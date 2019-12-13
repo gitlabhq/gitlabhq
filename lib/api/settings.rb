@@ -183,3 +183,5 @@ module API
     end
   end
 end
+
+API::Settings.prepend(EE::API::Settings)

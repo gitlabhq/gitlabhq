@@ -34,3 +34,5 @@ class GroupMembersFinder
   end
   # rubocop: enable CodeReuse/ActiveRecord
 end
+
+GroupMembersFinder.prepend(EE::GroupMembersFinder)

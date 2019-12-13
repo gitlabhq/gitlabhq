@@ -82,3 +82,5 @@ class PostReceive
     Gitlab::GitLogger.error("POST-RECEIVE: #{message}")
   end
 end
+
+PostReceive.prepend(EE::PostReceive)

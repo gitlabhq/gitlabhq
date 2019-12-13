@@ -3,7 +3,7 @@
 Every API call to issues must be authenticated.
 
 If a user is not a member of a project and the project is private, a `GET`
-request on that project will result to a `404` status code.
+request on that project will result in a `404` status code.
 
 ## Issues pagination
 
@@ -47,6 +47,7 @@ GET /issues?confidential=true
 | `assignee_id`       | integer          | no         | Return issues assigned to the given user `id`. Mutually exclusive with `assignee_username`. `None` returns unassigned issues. `Any` returns issues with an assignee. _([Introduced][ce-13004] in GitLab 9.5)_ |
 | `assignee_username` | Array[String]    | no         | Return issues assigned to the given `username`. Simillar to `assignee_id` and mutually exclusive with `assignee_id`. In CE version `assignee_username` array should only contain a single value or an invalid param error will be returned otherwise. |
 | `my_reaction_emoji` | string           | no         | Return issues reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. _([Introduced][ce-14016] in GitLab 10.0)_ |
+| `weight`            | integer          | no         | Return issues with the specified `weight`. `None` returns issues with no weight assigned. `Any` returns issues with a weight assigned.              |
 | `iids[]`            | Array[integer]   | no         | Return only the issues having the given `iid`                                                                                                       |
 | `order_by`          | string           | no         | Return issues ordered by `created_at` or `updated_at` fields. Default is `created_at`                                                               |
 | `sort`              | string           | no         | Return issues sorted in `asc` or `desc` order. Default is `desc`                                                                                    |
@@ -119,6 +120,7 @@ Example response:
       "user_notes_count": 1,
       "due_date": "2016-07-22",
       "web_url": "http://example.com/example/example/issues/6",
+      "weight": null,
       "time_stats": {
          "time_estimate": 0,
          "total_time_spent": 0,
@@ -183,6 +185,7 @@ GET /groups/:id/issues?confidential=true
 | `assignee_id`       | integer          | no         | Return issues assigned to the given user `id`. Mutually exclusive with `assignee_username`. `None` returns unassigned issues. `Any` returns issues with an assignee. _([Introduced][ce-13004] in GitLab 9.5)_ |
 | `assignee_username` | Array[String]    | no         | Return issues assigned to the given `username`. Simillar to `assignee_id` and mutually exclusive with `assignee_id`. In CE version `assignee_username` array should only contain a single value or an invalid param error will be returned otherwise. |
 | `my_reaction_emoji` | string           | no         | Return issues reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. _([Introduced][ce-14016] in GitLab 10.0)_ |
+| `weight`            | integer          | no         | Return issues with the specified `weight`. `None` returns issues with no weight assigned. `Any` returns issues with a weight assigned. |
 | `order_by`          | string           | no         | Return issues ordered by `created_at` or `updated_at` fields. Default is `created_at`                                         |
 | `sort`              | string           | no         | Return issues sorted in `asc` or `desc` order. Default is `desc`                                                              |
 | `search`            | string           | no         | Search group issues against their `title` and `description`                                                                   |
@@ -253,6 +256,7 @@ Example response:
       "user_notes_count": 1,
       "due_date": null,
       "web_url": "http://example.com/example/example/issues/1",
+      "weight": null,
       "time_stats": {
          "time_estimate": 0,
          "total_time_spent": 0,
@@ -317,6 +321,7 @@ GET /projects/:id/issues?confidential=true
 | `assignee_id`       | integer          | no         | Return issues assigned to the given user `id`. Mutually exclusive with `assignee_username`. `None` returns unassigned issues. `Any` returns issues with an assignee. _([Introduced][ce-13004] in GitLab 9.5)_ |
 | `assignee_username` | Array[String]    | no         | Return issues assigned to the given `username`. Simillar to `assignee_id` and mutually exclusive with `assignee_id`. In CE version `assignee_username` array should only contain a single value or an invalid param error will be returned otherwise. |
 | `my_reaction_emoji` | string           | no         | Return issues reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. _([Introduced][ce-14016] in GitLab 10.0)_ |
+| `weight`            | integer          | no         | Return issues with the specified `weight`. `None` returns issues with no weight assigned. `Any` returns issues with a weight assigned. |
 | `order_by`          | string           | no         | Return issues ordered by `created_at` or `updated_at` fields. Default is `created_at`                                         |
 | `sort`              | string           | no         | Return issues sorted in `asc` or `desc` order. Default is `desc`                                                              |
 | `search`            | string           | no         | Search project issues against their `title` and `description`                                                                 |
@@ -395,6 +400,7 @@ Example response:
       "user_notes_count": 1,
       "due_date": "2016-07-22",
       "web_url": "http://example.com/example/example/issues/1",
+      "weight": null,
       "time_stats": {
          "time_estimate": 0,
          "total_time_spent": 0,
@@ -506,6 +512,7 @@ Example response:
       "human_total_time_spent": null
    },
    "confidential": false,
+   "weight": null,
    "discussion_locked": false,
    "_links": {
       "self": "http://example.com/api/v4/projects/1/issues/2",
@@ -536,16 +543,17 @@ POST /projects/:id/issues
 |-------------------------------------------|----------------|----------|--------------|
 | `id`                                      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `iid`                                     | integer/string | no       | The internal ID of the project's issue (requires admin or project owner rights) |
-| `title`                                   | string  | yes      | The title of an issue |
+| `title`                                   | string         | yes      | The title of an issue |
 | `description`                             | string         | no       | The description of an issue. Limited to 1 000 000 characters. |
-| `confidential`                            | boolean | no       | Set an issue to be confidential. Default is `false`.  |
-| `assignee_ids`                            | Array[integer] | no       | The ID of the users to assign issue |
-| `milestone_id`                            | integer | no       | The global ID of a milestone to assign issue  |
-| `labels`                                  | string  | no       | Comma-separated label names for an issue  |
+| `confidential`                            | boolean        | no       | Set an issue to be confidential. Default is `false`.  |
+| `assignee_ids`                            | Array[integer] | no       | The ID of a user to assign issue |
+| `milestone_id`                            | integer        | no       | The global ID of a milestone to assign issue  |
+| `labels`                                  | string         | no       | Comma-separated label names for an issue  |
 | `created_at`                              | string  | no       | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` (requires admin or project/group owner rights) |
-| `due_date`                                | string  | no       | Date time string in the format YEAR-MONTH-DAY, e.g. `2016-03-11` |
-| `merge_request_to_resolve_discussions_of` | integer | no       | The IID of a merge request in which to resolve all issues. This will fill the issue with a default description and mark all discussions as resolved. When passing a description or title, these values will take precedence over the default values.|
-| `discussion_to_resolve`                   | string  | no       | The ID of a discussion to resolve. This will fill in the issue with a default description and mark the discussion as resolved. Use in combination with `merge_request_to_resolve_discussions_of`. |
+| `due_date`                                | string         | no       | Date time string in the format YEAR-MONTH-DAY, e.g. `2016-03-11` |
+| `merge_request_to_resolve_discussions_of` | integer        | no       | The IID of a merge request in which to resolve all issues. This will fill the issue with a default description and mark all discussions as resolved. When passing a description or title, these values will take precedence over the default values.|
+| `discussion_to_resolve`                   | string         | no       | The ID of a discussion to resolve. This will fill in the issue with a default description and mark the discussion as resolved. Use in combination with `merge_request_to_resolve_discussions_of`. |
+| `weight` | integer                                         | no | The weight of the issue. Valid values are greater than or equal to 0. |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/4/issues?title=Issues%20with%20auth&labels=bug
@@ -593,6 +601,7 @@ Example response:
       "human_total_time_spent": null
    },
    "confidential": false,
+   "weight": null,
    "discussion_locked": false,
    "_links": {
       "self": "http://example.com/api/v4/projects/1/issues/2",
@@ -633,6 +642,7 @@ PUT /projects/:id/issues/:issue_iid
 | `state_event`  | string  | no       | The state event of an issue. Set `close` to close the issue and `reopen` to reopen it                      |
 | `updated_at`   | string  | no       | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` (requires admin or project owner rights) |
 | `due_date`     | string  | no       | Date time string in the format YEAR-MONTH-DAY, e.g. `2016-03-11`                                           |
+| `weight`       | integer | no       | The weight of the issue. Valid values are greater than or equal to 0. 0                                                                    |
 | `discussion_locked` | boolean | no  | Flag indicating if the issue's discussion is locked. If the discussion is locked only project members can add or edit comments. |
 
 ```bash
@@ -688,6 +698,7 @@ Example response:
       "human_total_time_spent": null
    },
    "confidential": false,
+   "weight": null,
    "discussion_locked": false,
    "_links": {
       "self": "http://example.com/api/v4/projects/1/issues/2",
@@ -798,6 +809,7 @@ Example response:
     "human_total_time_spent": null
   },
   "confidential": false,
+  "weight": null,
   "discussion_locked": false,
   "_links": {
     "self": "http://example.com/api/v4/projects/1/issues/2",
@@ -887,6 +899,7 @@ Example response:
     "human_total_time_spent": null
   },
   "confidential": false,
+  "weight": null,
   "discussion_locked": false,
   "_links": {
     "self": "http://example.com/api/v4/projects/1/issues/2",

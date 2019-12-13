@@ -43,3 +43,5 @@ class AuditEventService
     SecurityEvent.create(base_payload.merge(details: @details))
   end
 end
+
+AuditEventService.prepend(EE::AuditEventService)

@@ -50,3 +50,5 @@ class Profiles::PreferencesController < Profiles::ApplicationController
     ]
   end
 end
+
+Profiles::PreferencesController.prepend(::EE::Profiles::PreferencesController)

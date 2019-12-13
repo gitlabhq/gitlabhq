@@ -14,3 +14,5 @@ module API
     end
   end
 end
+
+API::Helpers::UsersHelpers.prepend(EE::API::Helpers::UsersHelpers)

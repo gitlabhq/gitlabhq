@@ -113,3 +113,5 @@ class IssueTrackerService < Service
     end
   end
 end
+
+IssueTrackerService.prepend(EE::IssueTrackerService)

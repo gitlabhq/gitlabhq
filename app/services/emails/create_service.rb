@@ -11,3 +11,5 @@ module Emails
     end
   end
 end
+
+Emails::CreateService.prepend(EE::Emails::CreateService)

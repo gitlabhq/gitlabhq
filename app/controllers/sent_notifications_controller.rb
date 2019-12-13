@@ -36,3 +36,5 @@ class SentNotificationsController < ApplicationController
     end
   end
 end
+
+SentNotificationsController.prepend(EE::SentNotificationsController)

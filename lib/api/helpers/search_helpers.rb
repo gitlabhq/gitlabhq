@@ -20,3 +20,5 @@ module API
     end
   end
 end
+
+API::Helpers::SearchHelpers.prepend(EE::API::Helpers::SearchHelpers)

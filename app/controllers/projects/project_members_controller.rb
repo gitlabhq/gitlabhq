@@ -7,6 +7,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
   # Authorize
   before_action :authorize_admin_project_member!, except: [:index, :leave, :request_access]
+  before_action :check_membership_lock!, only: [:create, :import, :apply_import]
 
   # rubocop: disable CodeReuse/ActiveRecord
   def index
@@ -50,4 +51,8 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
   # MembershipActions concern
   alias_method :membershipable, :project
+
+  def check_membership_lock!
+    access_denied!('Membership is locked by group settings') if membership_locked?
+  end
 end

@@ -58,3 +58,5 @@ module Gitlab
     end
   end
 end
+
+::Gitlab::Ci::Config::Entry::Jobs.prepend(::EE::Gitlab::Ci::Config::Entry::Jobs)

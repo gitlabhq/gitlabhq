@@ -123,3 +123,5 @@ module API
     end
   end
 end
+
+API::Variables.prepend(EE::API::Variables)
