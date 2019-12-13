@@ -1811,6 +1811,10 @@ entry.
 - Removes EE differences for app/views/admin/users/show.html.haml.
 
 
+## 12.0.12
+
+- No changes.
+
 ## 12.0.10
 
 - No changes.
