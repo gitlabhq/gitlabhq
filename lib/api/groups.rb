@@ -231,7 +231,7 @@ module API
 
         projects, options = with_custom_attributes(projects, options)
 
-        present options[:with].preload_and_batch_count!(projects), options
+        present options[:with].prepare_relation(projects), options
       end
 
       desc 'Get a list of subgroups in this group.' do

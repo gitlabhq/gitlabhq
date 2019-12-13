@@ -237,7 +237,10 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def issue_params
-    params.require(:issue).permit(*issue_params_attributes)
+    params.require(:issue).permit(
+      *issue_params_attributes,
+      sentry_issue_attributes: [:sentry_issue_identifier]
+    )
   end
 
   def issue_params_attributes

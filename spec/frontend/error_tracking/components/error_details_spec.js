@@ -110,7 +110,7 @@ describe('ErrorDetails', () => {
       beforeEach(() => {
         store.state.details.loading = false;
         store.state.details.error = {
-          id: 1,
+          id: 129381,
           title: 'Issue title',
           external_url: 'http://sentry.gitlab.net/gitlab',
           first_seen: '2017-05-26T13:32:48Z',
@@ -119,6 +119,13 @@ describe('ErrorDetails', () => {
           user_count: 2,
         };
         mountComponent();
+      });
+
+      it('should send sentry_issue_identifier', () => {
+        const sentryErrorIdInput = wrapper.find(
+          'glforminput-stub[name="issue[sentry_issue_attributes][sentry_issue_identifier]"',
+        );
+        expect(sentryErrorIdInput.attributes('value')).toBe('129381');
       });
 
       it('should set the form values with title and description', () => {

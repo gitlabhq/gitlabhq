@@ -45,6 +45,8 @@ class Issue < ApplicationRecord
   has_many :user_mentions, class_name: "IssueUserMention"
   has_one :sentry_issue
 
+  accepts_nested_attributes_for :sentry_issue
+
   validates :project, presence: true
 
   alias_attribute :parent_ids, :project_id

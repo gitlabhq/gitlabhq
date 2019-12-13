@@ -13,5 +13,6 @@ describe SentryIssue do
     it { is_expected.to validate_presence_of(:issue) }
     it { is_expected.to validate_uniqueness_of(:issue) }
     it { is_expected.to validate_presence_of(:sentry_issue_identifier) }
+    it { is_expected.to validate_uniqueness_of(:sentry_issue_identifier).with_message("has already been taken") }
   end
 end
