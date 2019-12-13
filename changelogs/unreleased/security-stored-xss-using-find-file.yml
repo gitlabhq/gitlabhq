@@ -1,5 +1,0 @@
----
-title: Sanitize search text to prevent XSS
-merge_request:
-author:
-type: security
