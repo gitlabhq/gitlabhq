@@ -16,6 +16,7 @@ module Ci
                 Gitlab::Ci::Pipeline::Chain::EvaluateWorkflowRules,
                 Gitlab::Ci::Pipeline::Chain::Seed,
                 Gitlab::Ci::Pipeline::Chain::Limit::Size,
+                Gitlab::Ci::Pipeline::Chain::Validate::External,
                 Gitlab::Ci::Pipeline::Chain::Populate,
                 Gitlab::Ci::Pipeline::Chain::Create,
                 Gitlab::Ci::Pipeline::Chain::Limit::Activity,

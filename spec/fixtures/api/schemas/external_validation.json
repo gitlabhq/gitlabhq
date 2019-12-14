@@ -1,0 +1,75 @@
+{
+  "type": "object",
+  "required" : [
+    "project",
+    "user",
+    "pipeline",
+    "builds"
+  ],
+  "properties" : {
+    "project": {
+      "type": "object",
+      "required": [
+        "id",
+        "path"
+      ],
+      "properties": {
+        "id": { "type": "integer" },
+        "path": { "type": "string" }
+      }
+    },
+    "user": {
+      "type": "object",
+      "required": [
+        "id",
+        "username",
+        "email"
+      ],
+      "properties": {
+        "id": { "type": "integer" },
+        "username": { "type": "string" },
+        "email": { "type": "string" }
+      }
+    },
+    "pipeline": {
+      "type": "object",
+      "required": [
+        "sha",
+        "ref",
+        "type"
+      ],
+      "properties": {
+        "sha": { "type": "string" },
+        "ref": { "type": "string" },
+        "type": { "type": "string" }
+      }
+    },
+    "builds": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "stage",
+          "image",
+          "services",
+          "script"
+        ],
+        "properties": {
+          "name": { "type": "string" },
+          "stage": { "type": "string" },
+          "image": { "type": ["string", "null"] },
+          "services": {
+            "type": ["array", "null"],
+            "items": { "type": "string" }
+          },
+          "script": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -7,7 +7,8 @@ module Ci
     def self.failure_reasons
       {
         unknown_failure: 0,
-        config_error: 1
+        config_error: 1,
+        external_validation_failure: 2
       }
     end
 
