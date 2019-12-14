@@ -147,7 +147,7 @@ describe API::Deployments do
         expect(response).to have_gitlab_http_status(500)
       end
 
-      it 'links any merged merge requests to the deployment' do
+      it 'links any merged merge requests to the deployment', :sidekiq_inline do
         mr = create(
           :merge_request,
           :merged,
@@ -199,7 +199,7 @@ describe API::Deployments do
         expect(json_response['ref']).to eq('master')
       end
 
-      it 'links any merged merge requests to the deployment' do
+      it 'links any merged merge requests to the deployment', :sidekiq_inline do
         mr = create(
           :merge_request,
           :merged,

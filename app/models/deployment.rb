@@ -217,6 +217,23 @@ class Deployment < ApplicationRecord
     SQL
   end
 
+  # Changes the status of a deployment and triggers the correspinding state
+  # machine events.
+  def update_status(status)
+    case status
+    when 'running'
+      run
+    when 'success'
+      succeed
+    when 'failed'
+      drop
+    when 'canceled'
+      cancel
+    else
+      raise ArgumentError, "The status #{status.inspect} is invalid"
+    end
+  end
+
   private
 
   def ref_path

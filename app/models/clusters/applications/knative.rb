@@ -11,6 +11,8 @@ module Clusters
 
       self.table_name = 'clusters_applications_knative'
 
+      has_one :serverless_domain_cluster, class_name: 'Serverless::DomainCluster', foreign_key: 'clusters_applications_knative_id', inverse_of: :knative
+
       include ::Clusters::Concerns::ApplicationCore
       include ::Clusters::Concerns::ApplicationStatus
       include ::Clusters::Concerns::ApplicationVersion

@@ -446,7 +446,7 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       delete ":id" do
-        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42279')
+        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab/issues/20757')
 
         authenticated_as_admin!
 

@@ -34,9 +34,9 @@ describe Deployments::UpdateService do
       expect(deploy).to be_canceled
     end
 
-    it 'returns false when the status is not supported' do
-      expect(described_class.new(deploy, status: 'kittens').execute)
-        .to be_falsey
+    it 'raises ArgumentError if the status is invalid' do
+      expect { described_class.new(deploy, status: 'kittens').execute }
+        .to raise_error(ArgumentError)
     end
 
     it 'links merge requests when changing the status to success', :sidekiq_inline do

@@ -11,13 +11,15 @@ module Deployments
     end
 
     def execute
-      create_deployment.tap do |deployment|
-        AfterCreateService.new(deployment).execute if deployment.persisted?
+      environment.deployments.build(deployment_attributes).tap do |deployment|
+        # Deployment#change_status already saves the model, so we only need to
+        # call #save ourselves if no status is provided.
+        if (status = params[:status])
+          deployment.update_status(status)
+        else
+          deployment.save
+        end
       end
-    end
-
-    def create_deployment
-      environment.deployments.create(deployment_attributes)
     end
 
     def deployment_attributes
@@ -31,8 +33,7 @@ module Deployments
         tag: params[:tag],
         sha: params[:sha],
         user: current_user,
-        on_stop: params[:on_stop],
-        status: params[:status]
+        on_stop: params[:on_stop]
       }
     end
   end

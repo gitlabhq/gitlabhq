@@ -2951,13 +2951,17 @@ ActiveRecord::Schema.define(version: 2019_12_08_071112) do
     t.datetime_with_timezone "certificate_valid_not_before"
     t.datetime_with_timezone "certificate_valid_not_after"
     t.integer "certificate_source", limit: 2, default: 0, null: false
+    t.boolean "wildcard", default: false, null: false
+    t.integer "domain_type", limit: 2, default: 2, null: false
     t.index ["certificate_source", "certificate_valid_not_after"], name: "index_pages_domains_need_auto_ssl_renewal", where: "(auto_ssl_enabled = true)"
     t.index ["domain"], name: "index_pages_domains_on_domain", unique: true
+    t.index ["domain_type"], name: "index_pages_domains_on_domain_type"
     t.index ["project_id", "enabled_until"], name: "index_pages_domains_on_project_id_and_enabled_until"
     t.index ["project_id"], name: "index_pages_domains_on_project_id"
     t.index ["remove_at"], name: "index_pages_domains_on_remove_at"
     t.index ["verified_at", "enabled_until"], name: "index_pages_domains_on_verified_at_and_enabled_until"
     t.index ["verified_at"], name: "index_pages_domains_on_verified_at"
+    t.index ["wildcard"], name: "index_pages_domains_on_wildcard"
   end
 
   create_table "path_locks", id: :serial, force: :cascade do |t|
@@ -3652,6 +3656,17 @@ ActiveRecord::Schema.define(version: 2019_12_08_071112) do
     t.bigint "issue_id", null: false
     t.bigint "sentry_issue_identifier", null: false
     t.index ["issue_id"], name: "index_sentry_issues_on_issue_id", unique: true
+  end
+
+  create_table "serverless_domain_cluster", primary_key: "uuid", id: :string, limit: 14, force: :cascade do |t|
+    t.bigint "pages_domain_id", null: false
+    t.bigint "clusters_applications_knative_id", null: false
+    t.bigint "creator_id"
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.index ["clusters_applications_knative_id"], name: "idx_serverless_domain_cluster_on_clusters_applications_knative", unique: true
+    t.index ["creator_id"], name: "index_serverless_domain_cluster_on_creator_id"
+    t.index ["pages_domain_id"], name: "index_serverless_domain_cluster_on_pages_domain_id"
   end
 
   create_table "service_desk_settings", primary_key: "project_id", id: :bigint, default: nil, force: :cascade do |t|
@@ -4714,6 +4729,9 @@ ActiveRecord::Schema.define(version: 2019_12_08_071112) do
   add_foreign_key "self_managed_prometheus_alert_events", "environments", on_delete: :cascade
   add_foreign_key "self_managed_prometheus_alert_events", "projects", on_delete: :cascade
   add_foreign_key "sentry_issues", "issues", on_delete: :cascade
+  add_foreign_key "serverless_domain_cluster", "clusters_applications_knative", on_delete: :cascade
+  add_foreign_key "serverless_domain_cluster", "pages_domains", on_delete: :cascade
+  add_foreign_key "serverless_domain_cluster", "users", column: "creator_id", on_delete: :nullify
   add_foreign_key "service_desk_settings", "projects", on_delete: :cascade
   add_foreign_key "services", "projects", name: "fk_71cce407f9", on_delete: :cascade
   add_foreign_key "slack_integrations", "services", on_delete: :cascade

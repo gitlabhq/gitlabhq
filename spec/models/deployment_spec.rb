@@ -474,4 +474,29 @@ describe Deployment do
       end
     end
   end
+
+  context '#update_status' do
+    let(:deploy) { create(:deployment, status: :running) }
+
+    it 'changes the status' do
+      deploy.update_status('success')
+
+      expect(deploy).to be_success
+    end
+
+    it 'schedules SuccessWorker and FinishedWorker when finishing a deploy' do
+      expect(Deployments::SuccessWorker).to receive(:perform_async)
+      expect(Deployments::FinishedWorker).to receive(:perform_async)
+
+      deploy.update_status('success')
+    end
+
+    it 'updates finished_at when transitioning to a finished status' do
+      Timecop.freeze do
+        deploy.update_status('success')
+
+        expect(deploy.read_attribute(:finished_at)).to eq(Time.now)
+      end
+    end
+  end
 end

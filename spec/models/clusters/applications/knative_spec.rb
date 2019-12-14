@@ -16,6 +16,10 @@ describe Clusters::Applications::Knative do
     allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_async)
   end
 
+  describe 'associations' do
+    it { is_expected.to have_one(:serverless_domain_cluster).class_name('Serverless::DomainCluster').with_foreign_key('clusters_applications_knative_id').inverse_of(:knative) }
+  end
+
   describe 'when cloud run is enabled' do
     let(:cluster) { create(:cluster, :provided_by_gcp, :cloud_run_enabled) }
     let(:knative_cloud_run) { create(:clusters_applications_knative, cluster: cluster) }
