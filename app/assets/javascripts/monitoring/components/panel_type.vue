@@ -36,7 +36,8 @@ export default {
   props: {
     clipboardText: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     graphData: {
       type: Object,
@@ -152,6 +153,7 @@ export default {
           {{ __('Download CSV') }}
         </gl-dropdown-item>
         <gl-dropdown-item
+          v-if="clipboardText"
           v-track-event="generateLinkToChartOptions(clipboardText)"
           class="js-chart-link"
           :data-clipboard-text="clipboardText"

@@ -1,12 +1,11 @@
 import { shallowMount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
-import { joinPaths } from '~/lib/utils/url_utility';
 import AssigneeAvatarLink from '~/sidebar/components/assignees/assignee_avatar_link.vue';
 import AssigneeAvatar from '~/sidebar/components/assignees/assignee_avatar.vue';
 import userDataMock from '../../user_data_mock';
 
 const TOOLTIP_PLACEMENT = 'bottom';
-const { name: USER_NAME, username: USER_USERNAME } = userDataMock();
+const { name: USER_NAME } = userDataMock();
 const TEST_ISSUABLE_TYPE = 'merge_request';
 
 describe('AssigneeAvatarLink component', () => {
@@ -38,9 +37,8 @@ describe('AssigneeAvatarLink component', () => {
 
   it('has the root url present in the assigneeUrl method', () => {
     createComponent();
-    const assigneeUrl = joinPaths(TEST_HOST, USER_USERNAME);
 
-    expect(wrapper.attributes().href).toEqual(assigneeUrl);
+    expect(wrapper.attributes().href).toEqual(userDataMock().web_url);
   });
 
   it('renders assignee avatar', () => {

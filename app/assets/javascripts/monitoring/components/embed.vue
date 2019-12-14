@@ -97,7 +97,6 @@ export default {
         v-for="(graphData, graphIndex) in charts"
         :key="`panel-type-${graphIndex}`"
         class="w-100"
-        clipboard-text=""
         :graph-data="graphData"
         :group-id="dashboardUrl"
       />

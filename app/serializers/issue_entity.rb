@@ -64,4 +64,12 @@ class IssueEntity < IssuableEntity
   expose :locked_discussion_docs_path, if: -> (issue) { issue.discussion_locked? } do |issue|
     help_page_path('user/discussions/index.md', anchor: 'lock-discussions')
   end
+
+  expose :is_project_archived do |issue|
+    issue.project.archived?
+  end
+
+  expose :archived_project_docs_path, if: -> (issue) { issue.project.archived? } do |issue|
+    help_page_path('user/project/settings/index.md', anchor: 'archiving-a-project')
+  end
 end

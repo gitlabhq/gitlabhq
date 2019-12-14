@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, no-else-return, consistent-return, one-var, no-return-assign */
+/* eslint-disable func-names, no-else-return, consistent-return, one-var, no-return-assign */
 
 import $ from 'jquery';
 
@@ -51,7 +51,7 @@ export default class ImageFile {
   }
   // eslint-disable-next-line class-methods-use-this
   initDraggable($el, padding, callback) {
-    var dragging = false;
+    let dragging = false;
     const $body = $('body');
     const $offsetEl = $el.parent();
     const dragStart = function() {
@@ -88,14 +88,12 @@ export default class ImageFile {
   }
 
   static prepareFrames(view) {
-    var maxHeight, maxWidth;
-    maxWidth = 0;
-    maxHeight = 0;
+    let maxWidth = 0;
+    let maxHeight = 0;
     $('.frame', view)
       .each((index, frame) => {
-        var height, width;
-        width = $(frame).width();
-        height = $(frame).height();
+        const width = $(frame).width();
+        const height = $(frame).height();
         maxWidth = width > maxWidth ? width : maxWidth;
         return (maxHeight = height > maxHeight ? height : maxHeight);
       })
@@ -110,8 +108,7 @@ export default class ImageFile {
     'two-up': function() {
       return $('.two-up.view .wrap', this.file).each((index, wrap) => {
         $('img', wrap).each(function() {
-          var currentWidth;
-          currentWidth = $(this).width();
+          const currentWidth = $(this).width();
           if (currentWidth > availWidth / 2) {
             return $(this).width(availWidth / 2);
           }
@@ -124,16 +121,14 @@ export default class ImageFile {
       });
     },
     swipe() {
-      var maxHeight, maxWidth;
-      maxWidth = 0;
-      maxHeight = 0;
+      let maxWidth = 0;
+      let maxHeight = 0;
       return $('.swipe.view', this.file).each((index, view) => {
-        var $swipeWrap, $swipeBar, $swipeFrame, wrapPadding;
         const ref = ImageFile.prepareFrames(view);
         [maxWidth, maxHeight] = ref;
-        $swipeFrame = $('.swipe-frame', view);
-        $swipeWrap = $('.swipe-wrap', view);
-        $swipeBar = $('.swipe-bar', view);
+        const $swipeFrame = $('.swipe-frame', view);
+        const $swipeWrap = $('.swipe-wrap', view);
+        const $swipeBar = $('.swipe-bar', view);
 
         $swipeFrame.css({
           width: maxWidth + 16,
@@ -148,7 +143,7 @@ export default class ImageFile {
           left: 1,
         });
 
-        wrapPadding = parseInt($swipeWrap.css('right').replace('px', ''), 10);
+        const wrapPadding = parseInt($swipeWrap.css('right').replace('px', ''), 10);
 
         this.initDraggable($swipeBar, wrapPadding, (e, left) => {
           if (left > 0 && left < $swipeFrame.width() - wrapPadding * 2) {
@@ -159,19 +154,17 @@ export default class ImageFile {
       });
     },
     'onion-skin': function() {
-      var dragTrackWidth, maxHeight, maxWidth;
+      let maxHeight, maxWidth;
       maxWidth = 0;
       maxHeight = 0;
-      dragTrackWidth = $('.drag-track', this.file).width() - $('.dragger', this.file).width();
+      const dragTrackWidth = $('.drag-track', this.file).width() - $('.dragger', this.file).width();
       return $('.onion-skin.view', this.file).each((index, view) => {
-        var $frame, $track, $dragger, $frameAdded, framePadding;
-
         const ref = ImageFile.prepareFrames(view);
         [maxWidth, maxHeight] = ref;
-        $frame = $('.onion-skin-frame', view);
-        $frameAdded = $('.frame.added', view);
-        $track = $('.drag-track', view);
-        $dragger = $('.dragger', $track);
+        const $frame = $('.onion-skin-frame', view);
+        const $frameAdded = $('.frame.added', view);
+        const $track = $('.drag-track', view);
+        const $dragger = $('.dragger', $track);
 
         $frame.css({
           width: maxWidth + 16,
@@ -186,10 +179,10 @@ export default class ImageFile {
         });
 
         $frameAdded.css('opacity', 1);
-        framePadding = parseInt($frameAdded.css('right').replace('px', ''), 10);
+        const framePadding = parseInt($frameAdded.css('right').replace('px', ''), 10);
 
         this.initDraggable($dragger, framePadding, (e, left) => {
-          var opacity = left / dragTrackWidth;
+          const opacity = left / dragTrackWidth;
 
           if (opacity >= 0 && opacity <= 1) {
             $dragger.css('left', left);

@@ -40,7 +40,7 @@
     "@gitlab/svgs": "^1.85.0",
     "@gitlab/ui": "8.2.0",
     "@gitlab/visual-review-tools": "1.2.0",
-    "@sentry/browser": "^5.7.1",
+    "@sentry/browser": "^5.10.2",
     "@sourcegraph/code-host-integration": "^0.0.14",
     "apollo-cache-inmemory": "^1.6.3",
     "apollo-client": "^2.6.4",

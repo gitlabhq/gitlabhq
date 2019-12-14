@@ -48,6 +48,8 @@ it's easier to do so [via GitLab UI](web_editor.md):
 - [File templates](web_editor.md#template-dropdowns)
 - [Create a directory](web_editor.md#create-a-directory)
 - [Start a merge request](web_editor.md#tips)
+- [Find file history](git_history.md)
+- [Identify changes by line (Git blame)](git_blame.md)
 
 **From the command line:**
 

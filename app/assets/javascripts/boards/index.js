@@ -166,6 +166,7 @@ export default () => {
                 humanTotalTimeSpent,
                 weight,
                 epic,
+                assignees,
               } = convertObjectPropsToCamelCase(data);
 
               newIssue.setFetchingState('subscriptions', false);
@@ -179,6 +180,7 @@ export default () => {
                 subscribed,
                 weight,
                 epic,
+                assignees,
               });
             })
             .catch(() => {

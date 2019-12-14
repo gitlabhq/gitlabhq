@@ -1,6 +1,9 @@
 {
   "type": "object",
-  "properties" : {
+  "required": ["id", "iid", "title", "description", "merge_params", "state", "source_branch", "target_branch",
+    "diff_head_sha", "create_note_path", "preview_note_path", "can_receive_suggestion", "create_issue_to_resolve_discussions_path",
+    "new_blob_path", "current_user", "is_project_archived"],
+  "properties": {
     "id": { "type": "integer" },
     "iid": { "type": "integer" },
     "title": { "type": "string" },
@@ -26,7 +29,10 @@
         "can_update": { "type": "boolean" }
       },
       "additionalProperties": false
-    }
+    },
+    "is_project_archived": { "type":  "boolean" },
+    "locked_discussion_docs_path": { "type":  "string" },
+    "archived_project_docs_path": { "type":  "string" }
   },
   "additionalProperties": false
 }

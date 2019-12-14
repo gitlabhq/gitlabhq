@@ -12,6 +12,9 @@ export default {
   },
   mixins: [Issuable, issuableStateMixin],
   computed: {
+    projectArchivedWarning() {
+      return __('This project is archived and cannot be commented on.');
+    },
     lockedIssueWarning() {
       return sprintf(
         __('This %{issuableDisplayName} is locked. Only project members can comment.'),
@@ -26,9 +29,15 @@ export default {
   <div class="disabled-comment text-center">
     <span class="issuable-note-warning inline">
       <icon :size="16" name="lock" class="icon" />
-      <span>
-        {{ lockedIssueWarning }}
+      <span v-if="isProjectArchived">
+        {{ projectArchivedWarning }}
+        <gl-link :href="archivedProjectDocsPath" target="_blank" class="learn-more">
+          {{ __('Learn more') }}
+        </gl-link>
+      </span>
 
+      <span v-else>
+        {{ lockedIssueWarning }}
         <gl-link :href="lockedIssueDocsPath" target="_blank" class="learn-more">
           {{ __('Learn more') }}
         </gl-link>

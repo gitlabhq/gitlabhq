@@ -391,13 +391,24 @@ describe AutocompleteController do
     end
 
     context 'user with an accessible merge request but no scope' do
-      it 'returns an error' do
-        sign_in(user)
+      where(
+        params: [
+          {},
+          { group_id: ' ' },
+          { project_id: ' ' },
+          { group_id: ' ', project_id: ' ' }
+        ]
+      )
 
-        get :merge_request_target_branches
+      with_them do
+        it 'returns an error' do
+          sign_in(user)
 
-        expect(response).to have_gitlab_http_status(400)
-        expect(json_response).to eq({ 'error' => 'At least one of group_id or project_id must be specified' })
+          get :merge_request_target_branches, params: params
+
+          expect(response).to have_gitlab_http_status(400)
+          expect(json_response).to eq({ 'error' => 'At least one of group_id or project_id must be specified' })
+        end
       end
     end
 

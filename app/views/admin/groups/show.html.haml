@@ -19,7 +19,8 @@
             = group_icon(@group, class: "avatar s60")
         %li
           %span.light= _('Name:')
-          %strong= @group.name
+          %strong
+            = link_to @group.name, group_path(@group)
         %li
           %span.light= _('Path:')
           %strong

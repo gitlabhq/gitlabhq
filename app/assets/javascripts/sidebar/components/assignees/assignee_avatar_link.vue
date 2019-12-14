@@ -1,7 +1,6 @@
 <script>
 import { GlTooltipDirective, GlLink } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
-import { joinPaths } from '~/lib/utils/url_utility';
 import AssigneeAvatar from './assignee_avatar.vue';
 
 export default {
@@ -60,7 +59,7 @@ export default {
       };
     },
     assigneeUrl() {
-      return joinPaths(`${this.rootPath}`, `${this.user.username}`);
+      return this.user.web_url;
     },
   },
 };

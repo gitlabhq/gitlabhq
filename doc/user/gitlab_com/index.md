@@ -91,7 +91,7 @@ GitLab.com, CI/CD, and related services are deployed into Google Cloud Platform 
 IP based firewall can be configured by looking up all
 [IP address ranges or CIDR blocks for GCP](https://cloud.google.com/compute/docs/faq#where_can_i_find_product_name_short_ip_ranges).
 
-[Static endpoints](https://gitlab.com/gitlab-com/gl-infra/infrastructure/issues/5071) are being considered.
+[Static endpoints](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/97) are being considered.
 
 ## Shared Runners
 

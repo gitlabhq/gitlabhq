@@ -53,7 +53,7 @@ class AutocompleteController < ApplicationController
   private
 
   def target_branch_params
-    params.permit(:group_id, :project_id)
+    params.permit(:group_id, :project_id).select { |_, v| v.present? }
   end
 end
 
