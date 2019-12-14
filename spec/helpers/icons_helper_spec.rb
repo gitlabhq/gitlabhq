@@ -76,6 +76,8 @@ describe IconsHelper do
       it 'does not raise in production mode' do
         stub_rails_env('production')
 
+        expect(File).not_to receive(:read)
+
         expect { sprite_icon(non_existing) }.not_to raise_error
       end
     end
