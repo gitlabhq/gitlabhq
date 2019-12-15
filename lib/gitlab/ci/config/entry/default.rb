@@ -15,7 +15,7 @@ module Gitlab
 
           ALLOWED_KEYS = %i[before_script image services
                             after_script cache interruptible
-                            timeout retry tags].freeze
+                            timeout retry tags artifacts].freeze
 
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS
@@ -57,8 +57,11 @@ module Gitlab
             description: 'Set the default tags.',
             inherit: false
 
-          helpers :before_script, :image, :services, :after_script, :cache, :interruptible,
-            :timeout, :retry, :tags
+          entry :artifacts, Entry::Artifacts,
+            description: 'Default artifacts.',
+            inherit: false
+
+          helpers :before_script, :image, :services, :after_script, :cache
 
           private
 

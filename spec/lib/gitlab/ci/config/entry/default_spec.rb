@@ -27,7 +27,7 @@ describe Gitlab::Ci::Config::Entry::Default do
         expect(described_class.nodes.keys)
           .to match_array(%i[before_script image services
                              after_script cache interruptible
-                             timeout retry tags])
+                             timeout retry tags artifacts])
       end
     end
   end

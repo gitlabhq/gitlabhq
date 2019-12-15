@@ -114,6 +114,10 @@ module Gitlab
             description: 'Set the tags.',
             inherit: true
 
+          entry :artifacts, Entry::Artifacts,
+            description: 'Artifacts configuration for this job.',
+            inherit: true
+
           entry :only, Entry::Policy,
             description: 'Refs policy this job will be executed for.',
             default: Entry::Policy::DEFAULT_ONLY,
@@ -137,10 +141,6 @@ module Gitlab
 
           entry :variables, Entry::Variables,
             description: 'Environment variables available for this job.',
-            inherit: false
-
-          entry :artifacts, Entry::Artifacts,
-            description: 'Artifacts configuration for this job.',
             inherit: false
 
           entry :environment, Entry::Environment,

@@ -137,6 +137,7 @@ The following job parameters can be defined inside a `default:` block:
 - [`after_script`](#before_script-and-after_script)
 - [`tags`](#tags)
 - [`cache`](#cache)
+- [`artifacts`](#artifacts)
 - [`retry`](#retry)
 - [`timeout`](#timeout)
 - [`interruptible`](#interruptible)
