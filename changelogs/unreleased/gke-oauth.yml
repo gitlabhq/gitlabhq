@@ -1,0 +1,5 @@
+---
+title: Allow Gitlab GKE clusters to access Google Cloud Registry private images
+merge_request: 20662
+author: Tan Yee Jian
+type: fixed

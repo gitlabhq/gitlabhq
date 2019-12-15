@@ -13,6 +13,11 @@ module GoogleApi
       LEAST_TOKEN_LIFE_TIME = 10.minutes
       CLUSTER_MASTER_AUTH_USERNAME = 'admin'
       CLUSTER_IPV4_CIDR_BLOCK = '/16'
+      CLUSTER_OAUTH_SCOPES = [
+        "https://www.googleapis.com/auth/devstorage.read_only",
+        "https://www.googleapis.com/auth/logging.write",
+        "https://www.googleapis.com/auth/monitoring"
+      ].freeze
 
       class << self
         def session_key_for_token
@@ -86,7 +91,8 @@ module GoogleApi
             name: cluster_name,
             initial_node_count: cluster_size,
             node_config: {
-              machine_type: machine_type
+              machine_type: machine_type,
+              oauth_scopes: CLUSTER_OAUTH_SCOPES
             },
             master_auth: {
               username: CLUSTER_MASTER_AUTH_USERNAME,
@@ -101,11 +107,15 @@ module GoogleApi
               use_ip_aliases: true,
               cluster_ipv4_cidr_block: CLUSTER_IPV4_CIDR_BLOCK
             },
-            addons_config: enable_addons.each_with_object({}) do |addon, hash|
-              hash[addon] = { disabled: false }
-            end
+            addons_config: make_addons_config(enable_addons)
           }
         }
+      end
+
+      def make_addons_config(enable_addons)
+        enable_addons.each_with_object({}) do |addon, hash|
+          hash[addon] = { disabled: false }
+        end
       end
 
       def token_life_time(expires_at)
