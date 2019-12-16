@@ -2846,6 +2846,13 @@ ActiveRecord::Schema.define(version: 2019_12_08_071112) do
     t.index ["project_id", "token_encrypted"], name: "index_feature_flags_clients_on_project_id_and_token_encrypted", unique: true
   end
 
+  create_table "packages_build_infos", force: :cascade do |t|
+    t.integer "package_id", null: false
+    t.integer "pipeline_id"
+    t.index ["package_id"], name: "index_packages_build_infos_on_package_id", unique: true
+    t.index ["pipeline_id"], name: "index_packages_build_infos_on_pipeline_id"
+  end
+
   create_table "packages_conan_file_metadata", force: :cascade do |t|
     t.bigint "package_file_id", null: false
     t.datetime_with_timezone "created_at", null: false
@@ -4644,6 +4651,8 @@ ActiveRecord::Schema.define(version: 2019_12_08_071112) do
   add_foreign_key "operations_feature_flag_scopes", "operations_feature_flags", column: "feature_flag_id", on_delete: :cascade
   add_foreign_key "operations_feature_flags", "projects", on_delete: :cascade
   add_foreign_key "operations_feature_flags_clients", "projects", on_delete: :cascade
+  add_foreign_key "packages_build_infos", "ci_pipelines", column: "pipeline_id", on_delete: :nullify
+  add_foreign_key "packages_build_infos", "packages_packages", column: "package_id", on_delete: :cascade
   add_foreign_key "packages_conan_file_metadata", "packages_package_files", column: "package_file_id", on_delete: :cascade
   add_foreign_key "packages_conan_metadata", "packages_packages", column: "package_id", on_delete: :cascade
   add_foreign_key "packages_dependency_links", "packages_dependencies", column: "dependency_id", on_delete: :cascade

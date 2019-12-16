@@ -1,0 +1,5 @@
+---
+title: Do not clean the prometheus metrics directory for sidekiq
+merge_request: 21671
+author:
+type: fixed

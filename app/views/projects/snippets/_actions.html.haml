@@ -4,7 +4,7 @@
   - if can?(current_user, :update_project_snippet, @snippet)
     = link_to edit_project_snippet_path(@project, @snippet), class: "btn btn-grouped" do
       = _('Edit')
-  - if can?(current_user, :update_project_snippet, @snippet)
+  - if can?(current_user, :admin_project_snippet, @snippet)
     = link_to project_snippet_path(@project, @snippet), method: :delete, data: { confirm: _("Are you sure?") }, class: "btn btn-grouped btn-inverted btn-remove", title: _('Delete Snippet') do
       = _('Delete')
   - if can?(current_user, :create_project_snippet, @project)
@@ -23,7 +23,7 @@
           %li
             = link_to new_project_snippet_path(@project), title: _("New snippet") do
               = _('New snippet')
-        - if can?(current_user, :update_project_snippet, @snippet)
+        - if can?(current_user, :admin_project_snippet, @snippet)
           %li
             = link_to project_snippet_path(@project, @snippet), method: :delete, data: { confirm: _("Are you sure?") }, title: _('Delete Snippet') do
               = _('Delete')

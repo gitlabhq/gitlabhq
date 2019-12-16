@@ -22,6 +22,8 @@ end
 
 # This initializer can be removed as soon as https://github.com/plataformatec/devise/pull/5166
 # is merged into Devise.
+
+# TODO: Update Devise. Issue: https://gitlab.com/gitlab-org/gitlab/issues/118450
 if length_validator_supports_dynamic_length_checks?(password_length_validator)
   raise "Devise now supports dynamic length checks, please remove the monkey patch in #{__FILE__}"
 else

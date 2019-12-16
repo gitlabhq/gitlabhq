@@ -3226,6 +3226,18 @@ msgstr ""
 msgid "Checkout"
 msgstr ""
 
+msgid "Checkout|1. Your profile"
+msgstr ""
+
+msgid "Checkout|2. Checkout"
+msgstr ""
+
+msgid "Checkout|3. Your GitLab group"
+msgstr ""
+
+msgid "Checkout|Checkout"
+msgstr ""
+
 msgid "Cherry-pick this commit"
 msgstr ""
 

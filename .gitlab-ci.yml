@@ -30,6 +30,7 @@ after_script:
   - date
 
 include:
+  - local: .gitlab/ci/cache-repo.gitlab-ci.yml
   - local: .gitlab/ci/cng.gitlab-ci.yml
   - local: .gitlab/ci/docs.gitlab-ci.yml
   - local: .gitlab/ci/frontend.gitlab-ci.yml

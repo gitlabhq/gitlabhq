@@ -1,0 +1,33 @@
+# Builds a cached .tar.gz of the master branch with full history and
+# uploads it to Google Cloud Storage. This archive is downloaded by a
+# script defined by a CI/CD variable named CI_PRE_CLONE_SCRIPT. This has
+# two benefits:
+#
+# 1. It speeds up builds. A 800 MB download only takes seconds.
+# 2. It significantly reduces load on the file server. Smaller deltas
+#    means less time spent in git pack-objects.
+#
+# Since the destination directory of the archive depends on the project
+# ID, this is only run on GitLab.com.
+#
+# CI_REPO_CACHE_CREDENTIALS contains the Google Cloud service account
+# JSON for uploading to the gitlab-ci-git-repo-cache bucket. These
+# credentials are stored in the Production vault.
+#
+# Note that this bucket should be located in the same continent as the
+# runner, or network egress charges will apply:
+# https://cloud.google.com/storage/pricing
+cache-repo:
+  extends:
+    - .only:variables_refs-canonical-dot-com-schedules
+  image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+  stage: sync
+  allow_failure: true
+  variables:
+    GIT_DEPTH: 0
+    TAR_FILENAME: /tmp/gitlab-master.tar
+  script:
+    - gcloud auth activate-service-account --key-file=$CI_REPO_CACHE_CREDENTIALS
+    - tar cf $TAR_FILENAME .
+    - gzip $TAR_FILENAME
+    - gsutil cp $TAR_FILENAME.gz gs://gitlab-ci-git-repo-cache/project-$CI_PROJECT_ID/gitlab-master.tar.gz

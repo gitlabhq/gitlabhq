@@ -305,7 +305,7 @@ Pages access control is disabled by default. To enable it:
    ```
 
 1. [Reconfigure GitLab][reconfigure].
-1. Users can now configure it in their [projects' settings](../../user/project/pages/introduction.md#gitlab-pages-access-control-core).
+1. Users can now configure it in their [projects' settings](../../user/project/pages/pages_access_control.md).
 
 ### Running behind a proxy
 
@@ -500,6 +500,7 @@ then you must use the following procedure to configure [access control](#access-
 
    ```ruby
    gitlab_pages['gitlab_server'] = "https://<your-gitlab-server-URL>"
+   gitlab_pages['access_control'] = true
    ```
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
