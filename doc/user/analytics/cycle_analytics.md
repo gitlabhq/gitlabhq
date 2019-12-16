@@ -153,6 +153,27 @@ A few notes:
   cycles, calculate their median time and the result is what the dashboard of
   Cycle Analytics is showing.
 
+## Days to completion chart
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/21631) in GitLab 12.6.
+
+This chart visually depicts the total number of days it takes for cycles to be completed.
+
+This chart uses the global page filters for displaying data based on the selected
+group, projects, and timeframe. In addition, specific stages can be selected
+from within the chart itself.
+
+### Enabling chart
+
+By default, this chart is disabled for self-managed instances. To enable it, ask an
+administrator with Rails console access to run the following:
+
+```ruby
+Feature.enable(:cycle_analytics_scatterplot_enabled)
+```
+
+This chart is enabled by default on GitLab.com.
+
 ## Permissions
 
 The current permissions on the Project Cycle Analytics dashboard are:

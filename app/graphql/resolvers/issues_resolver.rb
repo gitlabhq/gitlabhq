@@ -4,17 +4,17 @@ module Resolvers
   class IssuesResolver < BaseResolver
     argument :iid, GraphQL::STRING_TYPE,
               required: false,
-              description: 'The IID of the issue, e.g., "1"'
+              description: 'IID of the issue. For example, "1"'
 
     argument :iids, [GraphQL::STRING_TYPE],
               required: false,
-              description: 'The list of IIDs of issues, e.g., [1, 2]'
+              description: 'List of IIDs of issues. For example, [1, 2]'
     argument :state, Types::IssuableStateEnum,
               required: false,
-              description: 'Current state of Issue'
+              description: 'Current state of this issue'
     argument :label_name, GraphQL::STRING_TYPE.to_list_type,
               required: false,
-              description: 'Labels applied to the Issue'
+              description: 'Labels applied to this issue'
     argument :created_before, Types::TimeType,
               required: false,
               description: 'Issues created before this date'
@@ -33,8 +33,9 @@ module Resolvers
     argument :closed_after, Types::TimeType,
               required: false,
               description: 'Issues closed after this date'
-    argument :search, GraphQL::STRING_TYPE, # rubocop:disable Graphql/Descriptions
-              required: false
+    argument :search, GraphQL::STRING_TYPE,
+              required: false,
+              description: 'Search query for finding issues by title or description'
     argument :sort, Types::IssueSortEnum,
               description: 'Sort issues by this criteria',
               required: false,

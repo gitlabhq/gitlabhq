@@ -2,8 +2,10 @@
 
 module Resolvers
   class EchoResolver < BaseResolver
-    argument    :text, GraphQL::STRING_TYPE, required: true # rubocop:disable Graphql/Descriptions
     description 'Testing endpoint to validate the API with'
+
+    argument    :text, GraphQL::STRING_TYPE, required: true,
+                description: 'Text to echo back'
 
     def resolve(**args)
       username = context[:current_user]&.username

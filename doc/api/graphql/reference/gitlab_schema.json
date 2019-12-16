@@ -50,11 +50,11 @@
             },
             {
               "name": "echo",
-              "description": "Testing endpoint to validate the API with",
+              "description": "Text to echo back",
               "args": [
                 {
                   "name": "text",
-                  "description": null,
+                  "description": "Text to echo back",
                   "type": {
                     "kind": "NON_NULL",
                     "name": null,
@@ -494,7 +494,7 @@
               "args": [
                 {
                   "name": "iid",
-                  "description": "The IID of the issue, e.g., \"1\"",
+                  "description": "IID of the issue. For example, \"1\"",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -504,7 +504,7 @@
                 },
                 {
                   "name": "iids",
-                  "description": "The list of IIDs of issues, e.g., [1, 2]",
+                  "description": "List of IIDs of issues. For example, [1, 2]",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -522,7 +522,7 @@
                 },
                 {
                   "name": "state",
-                  "description": "Current state of Issue",
+                  "description": "Current state of this issue",
                   "type": {
                     "kind": "ENUM",
                     "name": "IssuableState",
@@ -532,7 +532,7 @@
                 },
                 {
                   "name": "labelName",
-                  "description": "Labels applied to the Issue",
+                  "description": "Labels applied to this issue",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -606,7 +606,7 @@
                 },
                 {
                   "name": "search",
-                  "description": null,
+                  "description": "Search query for finding issues by title or description",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -639,7 +639,7 @@
               "args": [
                 {
                   "name": "iid",
-                  "description": "The IID of the issue, e.g., \"1\"",
+                  "description": "IID of the issue. For example, \"1\"",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -649,7 +649,7 @@
                 },
                 {
                   "name": "iids",
-                  "description": "The list of IIDs of issues, e.g., [1, 2]",
+                  "description": "List of IIDs of issues. For example, [1, 2]",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -667,7 +667,7 @@
                 },
                 {
                   "name": "state",
-                  "description": "Current state of Issue",
+                  "description": "Current state of this issue",
                   "type": {
                     "kind": "ENUM",
                     "name": "IssuableState",
@@ -677,7 +677,7 @@
                 },
                 {
                   "name": "labelName",
-                  "description": "Labels applied to the Issue",
+                  "description": "Labels applied to this issue",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -751,7 +751,7 @@
                 },
                 {
                   "name": "search",
-                  "description": null,
+                  "description": "Search query for finding issues by title or description",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -2973,11 +2973,11 @@
             },
             {
               "name": "epic",
-              "description": null,
+              "description": "Find a single epic",
               "args": [
                 {
                   "name": "iid",
-                  "description": "The IID of the epic, e.g., \"1\"",
+                  "description": "IID of the epic, e.g., \"1\"",
                   "type": {
                     "kind": "SCALAR",
                     "name": "ID",
@@ -2987,7 +2987,7 @@
                 },
                 {
                   "name": "iids",
-                  "description": "The list of IIDs of epics, e.g., [1, 2]",
+                  "description": "List of IIDs of epics, e.g., [1, 2]",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -3092,11 +3092,11 @@
             },
             {
               "name": "epics",
-              "description": null,
+              "description": "Find epics",
               "args": [
                 {
                   "name": "iid",
-                  "description": "The IID of the epic, e.g., \"1\"",
+                  "description": "IID of the epic, e.g., \"1\"",
                   "type": {
                     "kind": "SCALAR",
                     "name": "ID",
@@ -3106,7 +3106,7 @@
                 },
                 {
                   "name": "iids",
-                  "description": "The list of IIDs of epics, e.g., [1, 2]",
+                  "description": "List of IIDs of epics, e.g., [1, 2]",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -3693,7 +3693,7 @@
               "args": [
                 {
                   "name": "iid",
-                  "description": "The IID of the epic, e.g., \"1\"",
+                  "description": "IID of the epic, e.g., \"1\"",
                   "type": {
                     "kind": "SCALAR",
                     "name": "ID",
@@ -3703,7 +3703,7 @@
                 },
                 {
                   "name": "iids",
-                  "description": "The list of IIDs of epics, e.g., [1, 2]",
+                  "description": "List of IIDs of epics, e.g., [1, 2]",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -4887,7 +4887,7 @@
           "fields": [
             {
               "name": "author",
-              "description": "The user who wrote this note",
+              "description": "User who wrote this note",
               "args": [
 
               ],
@@ -4905,7 +4905,7 @@
             },
             {
               "name": "body",
-              "description": "The content note itself",
+              "description": "Content of the note",
               "args": [
 
               ],
@@ -4937,7 +4937,7 @@
             },
             {
               "name": "createdAt",
-              "description": null,
+              "description": "Timestamp of the note creation",
               "args": [
 
               ],
@@ -4969,7 +4969,7 @@
             },
             {
               "name": "id",
-              "description": null,
+              "description": "ID of the note",
               "args": [
 
               ],
@@ -5001,7 +5001,7 @@
             },
             {
               "name": "project",
-              "description": "The project this note is associated to",
+              "description": "Project associated with the note",
               "args": [
 
               ],
@@ -5015,7 +5015,7 @@
             },
             {
               "name": "resolvable",
-              "description": null,
+              "description": "Indicates if this note can be resolved. That is, if it is a resolvable discussion or simply a standalone note",
               "args": [
 
               ],
@@ -5033,7 +5033,7 @@
             },
             {
               "name": "resolvedAt",
-              "description": "The time the discussion was resolved",
+              "description": "Timestamp of the note's resolution",
               "args": [
 
               ],
@@ -5047,7 +5047,7 @@
             },
             {
               "name": "resolvedBy",
-              "description": "The user that resolved the discussion",
+              "description": "User that resolved the discussion",
               "args": [
 
               ],
@@ -5061,7 +5061,7 @@
             },
             {
               "name": "system",
-              "description": "Whether or not this note was created by the system or by a user",
+              "description": "Indicates whether this note was created by the system or by a user",
               "args": [
 
               ],
@@ -5079,7 +5079,7 @@
             },
             {
               "name": "updatedAt",
-              "description": null,
+              "description": "Timestamp of the note's last activity",
               "args": [
 
               ],
@@ -6608,7 +6608,7 @@
           "fields": [
             {
               "name": "createdAt",
-              "description": null,
+              "description": "Timestamp of the discussion's creation",
               "args": [
 
               ],
@@ -6626,7 +6626,7 @@
             },
             {
               "name": "id",
-              "description": null,
+              "description": "ID of this discussion",
               "args": [
 
               ],
@@ -6701,7 +6701,7 @@
             },
             {
               "name": "replyId",
-              "description": "The ID used to reply to this discussion",
+              "description": "ID used to reply to this discussion",
               "args": [
 
               ],
@@ -6916,7 +6916,7 @@
           "fields": [
             {
               "name": "diffRefs",
-              "description": null,
+              "description": "Information about the branch, HEAD, and base at the time of commenting",
               "args": [
 
               ],
@@ -6934,7 +6934,7 @@
             },
             {
               "name": "filePath",
-              "description": "The path of the file that was changed",
+              "description": "Path of the file that was changed",
               "args": [
 
               ],
@@ -6952,7 +6952,7 @@
             },
             {
               "name": "height",
-              "description": "The total height of the image",
+              "description": "Total height of the image",
               "args": [
 
               ],
@@ -6966,7 +6966,7 @@
             },
             {
               "name": "newLine",
-              "description": "The line on head sha that was changed",
+              "description": "Line on HEAD SHA that was changed",
               "args": [
 
               ],
@@ -6980,7 +6980,7 @@
             },
             {
               "name": "newPath",
-              "description": "The path of the file on the head sha.",
+              "description": "Path of the file on the HEAD SHA",
               "args": [
 
               ],
@@ -6994,7 +6994,7 @@
             },
             {
               "name": "oldLine",
-              "description": "The line on start sha that was changed",
+              "description": "Line on start SHA that was changed",
               "args": [
 
               ],
@@ -7008,7 +7008,7 @@
             },
             {
               "name": "oldPath",
-              "description": "The path of the file on the start sha.",
+              "description": "Path of the file on the start SHA",
               "args": [
 
               ],
@@ -7022,7 +7022,7 @@
             },
             {
               "name": "positionType",
-              "description": null,
+              "description": "Type of file the position refers to",
               "args": [
 
               ],
@@ -7040,7 +7040,7 @@
             },
             {
               "name": "width",
-              "description": "The total width of the image",
+              "description": "Total width of the image",
               "args": [
 
               ],
@@ -7054,7 +7054,7 @@
             },
             {
               "name": "x",
-              "description": "The X postion on which the comment was made",
+              "description": "X position on which the comment was made",
               "args": [
 
               ],
@@ -7068,7 +7068,7 @@
             },
             {
               "name": "y",
-              "description": "The Y position on which the comment was made",
+              "description": "Y position on which the comment was made",
               "args": [
 
               ],
@@ -7095,7 +7095,7 @@
           "fields": [
             {
               "name": "baseSha",
-              "description": "The merge base of the branch the comment was made on",
+              "description": "Merge base of the branch the comment was made on",
               "args": [
 
               ],
@@ -7113,7 +7113,7 @@
             },
             {
               "name": "headSha",
-              "description": "The sha of the head at the time the comment was made",
+              "description": "SHA of the HEAD at the time the comment was made",
               "args": [
 
               ],
@@ -7131,7 +7131,7 @@
             },
             {
               "name": "startSha",
-              "description": "The sha of the branch being compared against",
+              "description": "SHA of the branch being compared against",
               "args": [
 
               ],
@@ -8116,7 +8116,7 @@
             },
             {
               "name": "designCollection",
-              "description": null,
+              "description": "Collection of design images associated with this issue",
               "args": [
 
               ],
@@ -8130,7 +8130,7 @@
             },
             {
               "name": "designs",
-              "description": null,
+              "description": "Deprecated. Use `design_collection`.",
               "args": [
 
               ],
@@ -8251,7 +8251,7 @@
             },
             {
               "name": "epic",
-              "description": "The epic to which issue belongs",
+              "description": "Epic to which this issue belongs",
               "args": [
 
               ],
@@ -8265,7 +8265,7 @@
             },
             {
               "name": "epicIssueId",
-              "description": null,
+              "description": "ID of the epic-issue relation",
               "args": [
 
               ],
@@ -8283,7 +8283,7 @@
             },
             {
               "name": "id",
-              "description": "The global id of the epic-issue relation",
+              "description": "Global ID of the epic-issue relation",
               "args": [
 
               ],
@@ -8519,7 +8519,7 @@
             },
             {
               "name": "relationPath",
-              "description": null,
+              "description": "URI path of the epic-issue relation",
               "args": [
 
               ],
@@ -8777,7 +8777,7 @@
             },
             {
               "name": "weight",
-              "description": null,
+              "description": "Weight of the issue",
               "args": [
 
               ],
@@ -9546,7 +9546,7 @@
             },
             {
               "name": "designCollection",
-              "description": null,
+              "description": "Collection of design images associated with this issue",
               "args": [
 
               ],
@@ -9560,7 +9560,7 @@
             },
             {
               "name": "designs",
-              "description": null,
+              "description": "Deprecated. Use `design_collection`.",
               "args": [
 
               ],
@@ -9681,7 +9681,7 @@
             },
             {
               "name": "epic",
-              "description": "The epic to which issue belongs",
+              "description": "Epic to which this issue belongs",
               "args": [
 
               ],
@@ -10161,7 +10161,7 @@
             },
             {
               "name": "weight",
-              "description": null,
+              "description": "Weight of the issue",
               "args": [
 
               ],
@@ -18139,7 +18139,7 @@
             },
             {
               "name": "body",
-              "description": "The content note itself",
+              "description": "Content of the note",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -18265,7 +18265,7 @@
             },
             {
               "name": "body",
-              "description": "The content note itself",
+              "description": "Content of the note",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -18314,7 +18314,7 @@
           "inputFields": [
             {
               "name": "headSha",
-              "description": "The sha of the head at the time the comment was made",
+              "description": "SHA of the HEAD at the time the comment was made",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -18328,7 +18328,7 @@
             },
             {
               "name": "baseSha",
-              "description": "The merge base of the branch the comment was made on",
+              "description": "Merge base of the branch the comment was made on",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -18338,7 +18338,7 @@
             },
             {
               "name": "startSha",
-              "description": "The sha of the branch being compared against",
+              "description": "SHA of the branch being compared against",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -18366,7 +18366,7 @@
             },
             {
               "name": "oldLine",
-              "description": "The line on start sha that was changed",
+              "description": "Line on start SHA that was changed",
               "type": {
                 "kind": "SCALAR",
                 "name": "Int",
@@ -18376,7 +18376,7 @@
             },
             {
               "name": "newLine",
-              "description": "The line on head sha that was changed",
+              "description": "Line on HEAD SHA that was changed",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -18513,7 +18513,7 @@
             },
             {
               "name": "body",
-              "description": "The content note itself",
+              "description": "Content of the note",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -18562,7 +18562,7 @@
           "inputFields": [
             {
               "name": "headSha",
-              "description": "The sha of the head at the time the comment was made",
+              "description": "SHA of the HEAD at the time the comment was made",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -18576,7 +18576,7 @@
             },
             {
               "name": "baseSha",
-              "description": "The merge base of the branch the comment was made on",
+              "description": "Merge base of the branch the comment was made on",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -18586,7 +18586,7 @@
             },
             {
               "name": "startSha",
-              "description": "The sha of the branch being compared against",
+              "description": "SHA of the branch being compared against",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -18614,7 +18614,7 @@
             },
             {
               "name": "x",
-              "description": "The X postion on which the comment was made",
+              "description": "X position on which the comment was made",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -18628,7 +18628,7 @@
             },
             {
               "name": "y",
-              "description": "The Y position on which the comment was made",
+              "description": "Y position on which the comment was made",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -18642,7 +18642,7 @@
             },
             {
               "name": "width",
-              "description": "The total width of the image",
+              "description": "Total width of the image",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -18656,7 +18656,7 @@
             },
             {
               "name": "height",
-              "description": "The total height of the image",
+              "description": "Total height of the image",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -18762,7 +18762,7 @@
             },
             {
               "name": "body",
-              "description": "The content note itself",
+              "description": "Content of the note",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,

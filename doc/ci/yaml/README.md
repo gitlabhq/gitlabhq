@@ -2478,12 +2478,13 @@ sequentially from `job_name 1/N` to `job_name N/N`.
 
 For every job, `CI_NODE_INDEX` and `CI_NODE_TOTAL` [environment variables](../variables/README.md#predefined-environment-variables) are set.
 
-Marking a job to be run in parallel requires only a simple addition to your configuration file:
+Marking a job to be run in parallel requires adding `parallel` to your configuration
+file. For example:
 
-```diff
- test:
-   script: rspec
-+  parallel: 5
+```yaml
+test:
+  script: rspec
+  parallel: 5
 ```
 
 TIP: **Tip:**
@@ -2531,7 +2532,7 @@ triggers being used.
 
 #### Simple `trigger` syntax
 
-The most simple way to configure a downstream trigger to use `trigger` keyword
+The simplest way to configure a downstream trigger is to use `trigger` keyword
 with a full path to a downstream project:
 
 ```yaml
@@ -2563,7 +2564,7 @@ staging:
 
 It is possible to mirror the status from a triggered pipeline:
 
-```
+```yaml
 trigger_job:
   trigger:
     project: my/project
@@ -2572,7 +2573,7 @@ trigger_job:
 
 It is possible to mirror the status from an upstream pipeline:
 
-```
+```yaml
 upstream_bridge:
   stage: test
   needs:
@@ -3286,7 +3287,7 @@ There are three possible values: `none`, `normal`, and `recursive`:
 - `normal` means that only the top-level submodules will be included. It is
   equivalent to:
 
-  ```
+  ```shell
   git submodule sync
   git submodule update --init
   ```
@@ -3296,7 +3297,7 @@ There are three possible values: `none`, `normal`, and `recursive`:
   GitLab Runner with an executor not based on Docker, make sure the Git version
   meets that requirement. It is equivalent to:
 
-  ```
+  ```shell
   git submodule sync --recursive
   git submodule update --init --recursive
   ```
@@ -3557,7 +3558,7 @@ Read more about the various [YAML features](https://learnxinyminutes.com/docs/ya
 If you want to temporarily 'disable' a job, rather than commenting out all the
 lines where the job is defined:
 
-```
+```yaml
 #hidden_job:
 #  script:
 #    - run test

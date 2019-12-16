@@ -178,33 +178,33 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
-| `diffRefs` | DiffRefs! |  |
-| `filePath` | String! | The path of the file that was changed |
-| `oldPath` | String | The path of the file on the start sha. |
-| `newPath` | String | The path of the file on the head sha. |
-| `positionType` | DiffPositionType! |  |
-| `oldLine` | Int | The line on start sha that was changed |
-| `newLine` | Int | The line on head sha that was changed |
-| `x` | Int | The X postion on which the comment was made |
-| `y` | Int | The Y position on which the comment was made |
-| `width` | Int | The total width of the image |
-| `height` | Int | The total height of the image |
+| `diffRefs` | DiffRefs! | Information about the branch, HEAD, and base at the time of commenting |
+| `filePath` | String! | Path of the file that was changed |
+| `oldPath` | String | Path of the file on the start SHA |
+| `newPath` | String | Path of the file on the HEAD SHA |
+| `positionType` | DiffPositionType! | Type of file the position refers to |
+| `oldLine` | Int | Line on start SHA that was changed |
+| `newLine` | Int | Line on HEAD SHA that was changed |
+| `x` | Int | X position on which the comment was made |
+| `y` | Int | Y position on which the comment was made |
+| `width` | Int | Total width of the image |
+| `height` | Int | Total height of the image |
 
 ### DiffRefs
 
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
-| `headSha` | String! | The sha of the head at the time the comment was made |
-| `baseSha` | String! | The merge base of the branch the comment was made on |
-| `startSha` | String! | The sha of the branch being compared against |
+| `headSha` | String! | SHA of the HEAD at the time the comment was made |
+| `baseSha` | String! | Merge base of the branch the comment was made on |
+| `startSha` | String! | SHA of the branch being compared against |
 
 ### Discussion
 
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
-| `id` | ID! |  |
-| `replyId` | ID! | The ID used to reply to this discussion |
-| `createdAt` | Time! |  |
+| `id` | ID! | ID of this discussion |
+| `replyId` | ID! | ID used to reply to this discussion |
+| `createdAt` | Time! | Timestamp of the discussion's creation |
 
 ### Epic
 
@@ -281,13 +281,13 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `createdAt` | Time! | Timestamp of when the issue was created |
 | `updatedAt` | Time! | Timestamp of when the issue was last updated |
 | `taskCompletionStatus` | TaskCompletionStatus! | Task completion status of the issue |
-| `epic` | Epic | The epic to which issue belongs |
-| `weight` | Int |  |
-| `designs` | DesignCollection |  |
-| `designCollection` | DesignCollection |  |
-| `epicIssueId` | ID! |  |
-| `relationPath` | String |  |
-| `id` | ID | The global id of the epic-issue relation |
+| `epic` | Epic | Epic to which this issue belongs |
+| `weight` | Int | Weight of the issue |
+| `designs` | DesignCollection | Deprecated. Use `design_collection`. |
+| `designCollection` | DesignCollection | Collection of design images associated with this issue |
+| `epicIssueId` | ID! | ID of the epic-issue relation |
+| `relationPath` | String | URI path of the epic-issue relation |
+| `id` | ID | Global ID of the epic-issue relation |
 
 ### EpicPermissions
 
@@ -338,7 +338,7 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `parent` | Group | Parent group |
 | `epicsEnabled` | Boolean | Indicates if Epics are enabled for namespace |
 | `groupTimelogsEnabled` | Boolean | Indicates if Group timelogs are enabled for namespace |
-| `epic` | Epic |  |
+| `epic` | Epic | Find a single epic |
 
 ### GroupPermissions
 
@@ -376,10 +376,10 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `createdAt` | Time! | Timestamp of when the issue was created |
 | `updatedAt` | Time! | Timestamp of when the issue was last updated |
 | `taskCompletionStatus` | TaskCompletionStatus! | Task completion status of the issue |
-| `epic` | Epic | The epic to which issue belongs |
-| `weight` | Int |  |
-| `designs` | DesignCollection |  |
-| `designCollection` | DesignCollection |  |
+| `epic` | Epic | Epic to which this issue belongs |
+| `weight` | Int | Weight of the issue |
+| `designs` | DesignCollection | Deprecated. Use `design_collection`. |
+| `designCollection` | DesignCollection | Collection of design images associated with this issue |
 
 ### IssuePermissions
 
@@ -577,18 +577,18 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
 | `userPermissions` | NotePermissions! | Permissions for the current user on the resource |
-| `id` | ID! |  |
-| `project` | Project | The project this note is associated to |
-| `author` | User! | The user who wrote this note |
-| `resolvedBy` | User | The user that resolved the discussion |
-| `system` | Boolean! | Whether or not this note was created by the system or by a user |
-| `body` | String! | The content note itself |
+| `id` | ID! | ID of the note |
+| `project` | Project | Project associated with the note |
+| `author` | User! | User who wrote this note |
+| `resolvedBy` | User | User that resolved the discussion |
+| `system` | Boolean! | Indicates whether this note was created by the system or by a user |
+| `body` | String! | Content of the note |
 | `bodyHtml` | String | The GitLab Flavored Markdown rendering of `note` |
-| `createdAt` | Time! |  |
-| `updatedAt` | Time! |  |
+| `createdAt` | Time! | Timestamp of the note creation |
+| `updatedAt` | Time! | Timestamp of the note's last activity |
 | `discussion` | Discussion | The discussion this note is a part of |
-| `resolvable` | Boolean! |  |
-| `resolvedAt` | Time | The time the discussion was resolved |
+| `resolvable` | Boolean! | Indicates if this note can be resolved. That is, if it is a resolvable discussion or simply a standalone note |
+| `resolvedAt` | Time | Timestamp of the note's resolution |
 | `position` | DiffPosition | The position of this note on a diff |
 
 ### NotePermissions

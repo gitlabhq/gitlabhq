@@ -7,36 +7,38 @@ module Types
     class DiffPositionType < BaseObject
       graphql_name 'DiffPosition'
 
-      field :diff_refs, Types::DiffRefsType, null: false # rubocop:disable Graphql/Descriptions
+      field :diff_refs, Types::DiffRefsType, null: false,
+            description: 'Information about the branch, HEAD, and base at the time of commenting'
 
       field :file_path, GraphQL::STRING_TYPE, null: false,
-            description: "The path of the file that was changed"
+            description: 'Path of the file that was changed'
       field :old_path, GraphQL::STRING_TYPE, null: true,
-            description: "The path of the file on the start sha."
+            description: 'Path of the file on the start SHA'
       field :new_path, GraphQL::STRING_TYPE, null: true,
-            description: "The path of the file on the head sha."
-      field :position_type, Types::Notes::PositionTypeEnum, null: false # rubocop:disable Graphql/Descriptions
+            description: 'Path of the file on the HEAD SHA'
+      field :position_type, Types::Notes::PositionTypeEnum, null: false,
+            description: 'Type of file the position refers to'
 
       # Fields for text positions
       field :old_line, GraphQL::INT_TYPE, null: true,
-            description: "The line on start sha that was changed",
+            description: 'Line on start SHA that was changed',
             resolve: -> (position, _args, _ctx) { position.old_line if position.on_text? }
       field :new_line, GraphQL::INT_TYPE, null: true,
-            description: "The line on head sha that was changed",
+            description: 'Line on HEAD SHA that was changed',
             resolve: -> (position, _args, _ctx) { position.new_line if position.on_text? }
 
       # Fields for image positions
       field :x, GraphQL::INT_TYPE, null: true,
-            description: "The X postion on which the comment was made",
+            description: 'X position on which the comment was made',
             resolve: -> (position, _args, _ctx) { position.x if position.on_image? }
       field :y, GraphQL::INT_TYPE, null: true,
-            description: "The Y position on which the comment was made",
+            description: 'Y position on which the comment was made',
             resolve: -> (position, _args, _ctx) { position.y if position.on_image? }
       field :width, GraphQL::INT_TYPE, null: true,
-            description: "The total width of the image",
+            description: 'Total width of the image',
             resolve: -> (position, _args, _ctx) { position.width if position.on_image? }
       field :height, GraphQL::INT_TYPE, null: true,
-            description: "The total height of the image",
+            description: 'Total height of the image',
             resolve: -> (position, _args, _ctx) { position.height if position.on_image? }
     end
     # rubocop: enable Graphql/AuthorizeTypes
