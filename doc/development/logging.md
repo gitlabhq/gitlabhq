@@ -142,21 +142,21 @@ It should be noted that manual logging of exceptions is not allowed, as:
 1. It is very likely that manually logged exceptions will end-up across
    multiple files, which increases burden scraping all logging files.
 
-To avoid duplicating and having consistent behavior the `Gitlab::Sentry`
+To avoid duplicating and having consistent behavior the `Gitlab::ErrorTracking`
 provides helper methods to track exceptions:
 
-1. `Gitlab::Sentry.track_and_raise_exception`: this method logs,
+1. `Gitlab::ErrorTracking.track_and_raise_exception`: this method logs,
    sends exception to Sentry (if configured) and re-raises the exception,
-1. `Gitlab::Sentry.track_exception`: this method only logs
+1. `Gitlab::ErrorTracking.track_exception`: this method only logs
    and sends exception to Sentry (if configured),
-1. `Gitlab::Sentry.log_exception`: this method only logs the exception,
+1. `Gitlab::ErrorTracking.log_exception`: this method only logs the exception,
    and DOES NOT send the exception to Sentry,
-1. `Gitlab::Sentry.track_and_raise_for_dev_exception`: this method logs,
+1. `Gitlab::ErrorTracking.track_and_raise_for_dev_exception`: this method logs,
    sends exception to Sentry (if configured) and re-raises the exception
   for development and test enviroments.
 
-It is advised to only use `Gitlab::Sentry.track_and_raise_exception`
-and `Gitlab::Sentry.track_exception` as presented on below examples.
+It is advised to only use `Gitlab::ErrorTracking.track_and_raise_exception`
+and `Gitlab::ErrorTracking.track_exception` as presented on below examples.
 
 Consider adding additional extra parameters to provide more context
 for each tracked exception.
@@ -170,7 +170,7 @@ class MyService < ::BaseService
 
     success
   rescue => e
-    Gitlab::Sentry.track_exception(e, project_id: project.id)
+    Gitlab::ErrorTracking.track_exception(e, project_id: project.id)
 
     error('Exception occurred')
   end
@@ -184,7 +184,7 @@ class MyService < ::BaseService
 
     success
   rescue => e
-    Gitlab::Sentry.track_and_raise_exception(e, project_id: project.id)
+    Gitlab::ErrorTracking.track_and_raise_exception(e, project_id: project.id)
   end
 end
 ```

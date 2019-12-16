@@ -9,19 +9,18 @@ describe Gitlab::ImportExport::Reader do
     subject { described_class.new(shared: shared).project_tree }
 
     it 'delegates to AttributesFinder#find_root' do
-      expect_any_instance_of(Gitlab::ImportExport::AttributesFinder)
-        .to receive(:find_root)
-        .with(:project)
+      expect_next_instance_of(Gitlab::ImportExport::AttributesFinder) do |instance|
+        expect(instance).to receive(:find_root).with(:project)
+      end
 
       subject
     end
 
     context 'when exception raised' do
       before do
-        expect_any_instance_of(Gitlab::ImportExport::AttributesFinder)
-          .to receive(:find_root)
-          .with(:project)
-          .and_raise(StandardError)
+        expect_next_instance_of(Gitlab::ImportExport::AttributesFinder) do |instance|
+          expect(instance).to receive(:find_root).with(:project).and_raise(StandardError)
+        end
       end
 
       it { is_expected.to be false }
@@ -38,9 +37,9 @@ describe Gitlab::ImportExport::Reader do
     subject { described_class.new(shared: shared).group_members_tree }
 
     it 'delegates to AttributesFinder#find_root' do
-      expect_any_instance_of(Gitlab::ImportExport::AttributesFinder)
-        .to receive(:find_root)
-        .with(:group_members)
+      expect_next_instance_of(Gitlab::ImportExport::AttributesFinder) do |instance|
+        expect(instance).to receive(:find_root).with(:group_members)
+      end
 
       subject
     end

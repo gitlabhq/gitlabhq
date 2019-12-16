@@ -80,10 +80,10 @@ gitlab:
     workhorse:
       resources:
         requests:
-          cpu: 250m
+          cpu: 400m
           memory: 50M
         limits:
-          cpu: 375m
+          cpu: 600m
           memory: 75M
       readinessProbe:
         initialDelaySeconds: 5  # Default is 0

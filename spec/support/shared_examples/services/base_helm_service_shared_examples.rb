@@ -12,7 +12,7 @@ shared_examples 'logs kubernetes errors' do
   end
 
   it 'logs into kubernetes.log and Sentry' do
-    expect(Gitlab::Sentry).to receive(:track_exception).with(
+    expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
       error,
       hash_including(error_hash)
     )

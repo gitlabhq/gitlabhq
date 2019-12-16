@@ -232,6 +232,7 @@ module ApplicationSettingsHelper
       :metrics_port,
       :metrics_sample_interval,
       :metrics_timeout,
+      :minimum_password_length,
       :mirror_available,
       :pages_domain_verification_enabled,
       :password_authentication_enabled_for_web,

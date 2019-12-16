@@ -52,7 +52,7 @@ module GroupDescendant
         issue_url: 'https://gitlab.com/gitlab-org/gitlab-foss/issues/49404'
       }
 
-      Gitlab::Sentry.track_and_raise_for_dev_exception(exception, extras)
+      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(exception, extras)
     end
 
     if parent.nil? && hierarchy_top.present?

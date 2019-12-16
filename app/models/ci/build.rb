@@ -289,7 +289,7 @@ module Ci
         begin
           build.deployment.drop!
         rescue => e
-          Gitlab::Sentry.track_and_raise_for_dev_exception(e, build_id: build.id)
+          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, build_id: build.id)
         end
 
         true

@@ -301,7 +301,7 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
 
       it 'ignores Git command errors when creating a branch' do
         expect(project.repository).to receive(:add_branch).and_raise(Gitlab::Git::CommandError)
-        expect(Gitlab::Sentry).to receive(:track_exception).and_call_original
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).and_call_original
 
         mr = insert_git_data
 

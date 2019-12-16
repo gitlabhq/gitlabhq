@@ -548,8 +548,9 @@ describe API::Files do
     end
 
     it "returns a 400 if editor fails to create file" do
-      allow_any_instance_of(Repository).to receive(:create_file)
-        .and_raise(Gitlab::Git::CommitError, 'Cannot create file')
+      allow_next_instance_of(Repository) do |instance|
+        allow(instance).to receive(:create_file).and_raise(Gitlab::Git::CommitError, 'Cannot create file')
+      end
 
       post api(route("any%2Etxt"), user), params: params
 
@@ -698,7 +699,9 @@ describe API::Files do
     end
 
     it "returns a 400 if fails to delete file" do
-      allow_any_instance_of(Repository).to receive(:delete_file).and_raise(Gitlab::Git::CommitError, 'Cannot delete file')
+      allow_next_instance_of(Repository) do |instance|
+        allow(instance).to receive(:delete_file).and_raise(Gitlab::Git::CommitError, 'Cannot delete file')
+      end
 
       delete api(route(file_path), user), params: params
 

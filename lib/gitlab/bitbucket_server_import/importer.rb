@@ -133,7 +133,7 @@ module Gitlab
 
         log_info(stage: 'import_repository', message: 'finished import')
       rescue Gitlab::Shell::Error => e
-        Gitlab::Sentry.log_exception(
+        Gitlab::ErrorTracking.log_exception(
           e,
           stage: 'import_repository', message: 'failed import', error: e.message
         )
@@ -167,7 +167,7 @@ module Gitlab
           batch.each do |pull_request|
             import_bitbucket_pull_request(pull_request)
           rescue StandardError => e
-            Gitlab::Sentry.log_exception(
+            Gitlab::ErrorTracking.log_exception(
               e,
               stage: 'import_pull_requests', iid: pull_request.iid, error: e.message
             )
@@ -182,7 +182,7 @@ module Gitlab
           client.delete_branch(project_key, repository_slug, branch.name, branch.sha)
           project.repository.delete_branch(branch.name)
         rescue BitbucketServer::Connection::ConnectionError => e
-          Gitlab::Sentry.log_exception(
+          Gitlab::ErrorTracking.log_exception(
             e,
             stage: 'delete_temp_branches', branch: branch.name, error: e.message
           )
@@ -297,7 +297,7 @@ module Gitlab
         # a regular note.
         create_fallback_diff_note(merge_request, comment, position)
       rescue StandardError => e
-        Gitlab::Sentry.log_exception(
+        Gitlab::ErrorTracking.log_exception(
           e,
           stage: 'create_diff_note', comment_id: comment.id, error: e.message
         )
@@ -338,7 +338,7 @@ module Gitlab
             merge_request.notes.create!(pull_request_comment_attributes(replies))
           end
         rescue StandardError => e
-          Gitlab::Sentry.log_exception(
+          Gitlab::ErrorTracking.log_exception(
             e,
             stage: 'import_standalone_pr_comments', merge_request_id: merge_request.id, comment_id: comment.id, error: e.message
           )

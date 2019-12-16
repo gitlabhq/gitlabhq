@@ -62,7 +62,9 @@ describe RuboCop::Cop::AvoidBreakFromStrongMemoize do
         end
       end
     RUBY
-    expect_any_instance_of(described_class).to receive(:add_offense).once
+    expect_next_instance_of(described_class) do |instance|
+      expect(instance).to receive(:add_offense).once
+    end
 
     inspect_source(source)
   end

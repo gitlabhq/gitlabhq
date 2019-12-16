@@ -86,7 +86,7 @@ describe Gitlab::GitalyClient do
 
   describe '.stub_certs' do
     it 'skips certificates if OpenSSLError is raised and report it' do
-      expect(Gitlab::Sentry)
+      expect(Gitlab::ErrorTracking)
         .to receive(:track_and_raise_for_dev_exception)
         .with(
           a_kind_of(OpenSSL::X509::CertificateError),

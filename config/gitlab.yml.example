@@ -181,6 +181,11 @@ production: &base
     mailbox: "inbox"
     # The IDLE command timeout.
     idle_timeout: 60
+    # The log file path for the structured log file.
+    # Since `mail_room` is run independently of Rails, an absolute path is preferred.
+    # The default is 'log/mail_room_json.log' relative to the root of the Rails app.
+    #
+    # log_path: log/mail_room_json.log
 
   ## Build Artifacts
   artifacts:

@@ -179,7 +179,9 @@ describe API::ProjectSnippets do
       end
 
       before do
-        allow_any_instance_of(AkismetService).to receive(:spam?).and_return(true)
+        allow_next_instance_of(AkismetService) do |instance|
+          allow(instance).to receive(:spam?).and_return(true)
+        end
       end
 
       context 'when the snippet is private' do
@@ -269,7 +271,9 @@ describe API::ProjectSnippets do
       end
 
       before do
-        allow_any_instance_of(AkismetService).to receive(:spam?).and_return(true)
+        allow_next_instance_of(AkismetService) do |instance|
+          allow(instance).to receive(:spam?).and_return(true)
+        end
       end
 
       context 'when the snippet is private' do

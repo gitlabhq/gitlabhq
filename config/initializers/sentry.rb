@@ -2,4 +2,4 @@
 
 require 'gitlab/current_settings'
 
-Gitlab::Sentry.configure
+Gitlab::ErrorTracking.configure

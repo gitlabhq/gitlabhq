@@ -1004,7 +1004,7 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
         it { is_expected.to eq(connection_status: :unknown_failure) }
 
         it 'notifies Sentry' do
-          expect(Gitlab::Sentry).to receive(:track_exception)
+          expect(Gitlab::ErrorTracking).to receive(:track_exception)
             .with(instance_of(StandardError), hash_including(cluster_id: cluster.id))
 
           subject

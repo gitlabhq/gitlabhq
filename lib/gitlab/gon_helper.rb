@@ -41,7 +41,6 @@ module Gitlab
 
       # Initialize gon.features with any flags that should be
       # made globally available to the frontend
-      push_frontend_feature_flag(:suppress_ajax_navigation_errors, default_enabled: true)
       push_frontend_feature_flag(:snippets_vue, default_enabled: false)
     end
 

@@ -629,7 +629,9 @@ describe API::Branches do
 
   describe 'DELETE /projects/:id/repository/branches/:branch' do
     before do
-      allow_any_instance_of(Repository).to receive(:rm_branch).and_return(true)
+      allow_next_instance_of(Repository) do |instance|
+        allow(instance).to receive(:rm_branch).and_return(true)
+      end
     end
 
     it 'removes branch' do
@@ -666,7 +668,9 @@ describe API::Branches do
 
   describe 'DELETE /projects/:id/repository/merged_branches' do
     before do
-      allow_any_instance_of(Repository).to receive(:rm_branch).and_return(true)
+      allow_next_instance_of(Repository) do |instance|
+        allow(instance).to receive(:rm_branch).and_return(true)
+      end
     end
 
     it 'returns 202 with json body' do

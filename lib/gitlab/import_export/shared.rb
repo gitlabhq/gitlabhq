@@ -56,7 +56,7 @@ module Gitlab
       end
 
       def error(error)
-        Gitlab::Sentry.track_exception(error, log_base_data)
+        Gitlab::ErrorTracking.track_exception(error, log_base_data)
 
         add_error_message(error.message)
       end

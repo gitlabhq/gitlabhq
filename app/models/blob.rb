@@ -26,6 +26,7 @@ class Blob < SimpleDelegator
     BlobViewer::Markup,
     BlobViewer::Notebook,
     BlobViewer::SVG,
+    BlobViewer::OpenApi,
 
     BlobViewer::Image,
     BlobViewer::Sketch,

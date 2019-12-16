@@ -21,7 +21,7 @@ module Clusters
           group_ids: app.cluster.group_ids
         }
 
-        Gitlab::Sentry.track_exception(error, meta)
+        Gitlab::ErrorTracking.track_exception(error, meta)
       end
 
       def log_event(event)

@@ -23,7 +23,7 @@ module Users
         @reset_token = user.generate_reset_token if params[:reset_password]
 
         if user_params[:force_random_password]
-          random_password = Devise.friendly_token.first(Devise.password_length.min)
+          random_password = Devise.friendly_token.first(User.password_length.min)
           user.password = user.password_confirmation = random_password
         end
       end

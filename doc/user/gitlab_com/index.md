@@ -355,18 +355,43 @@ GitLab.com:
   set to the default.
 - Does not have the user and IP rate limits settings enabled.
 
+### Visibility settings
+
+On GitLab.com, projects, groups, and snippets created
+As of GitLab 12.2 (July 2019), projects, groups, and snippets have the
+[**Internal** visibility](../../public_access/public_access.md#internal-projects) setting [disabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/issues/12388).
+
+## GitLab.com Logging
+
+We use [Fluentd](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#fluentd) to parse our logs. Fluentd sends our logs to
+[Stackdriver Logging](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#stackdriver) and [Cloud Pub/Sub](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#cloud-pubsub).
+Stackdriver is used for storing logs long-term in Google Cold Storage (GCS). Cloud Pub/Sub
+is used to forward logs to an [Elastic cluster](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#elastic) using [pubsubbeat](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#pubsubbeat-vms).
+
+You can view more information in our runbooks such as:
+
+- A [detailed list of what we're logging](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#what-are-we-logging)
+- Our [current log retention policies](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#retention)
+- A [diagram of our logging infrastructure](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#logging-infrastructure-overview)
+
 ## GitLab.com at scale
 
 In addition to the GitLab Enterprise Edition Omnibus install, GitLab.com uses
 the following applications and settings to achieve scale. All settings are
 publicly available at [chef cookbooks](https://gitlab.com/gitlab-cookbooks).
 
-### ELK
+### Elastic Cluster
 
-We use Elasticsearch, logstash, and Kibana for part of our monitoring solution:
+We use Elasticsearch and Kibana for part of our monitoring solution:
 
 - [`gitlab-cookbooks` / `gitlab-elk` · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab-elk)
 - [`gitlab-cookbooks` / `gitlab_elasticsearch` · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab_elasticsearch)
+
+### Fluentd
+
+We use Fluentd to unify our GitLab logs:
+
+- [`gitlab-cookbooks` / `gitlab_fluentd` · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab_fluentd)
 
 ### Prometheus
 
@@ -407,11 +432,3 @@ High Performance TCP/HTTP Load Balancer:
 [unicorn-worker-killer]: https://rubygems.org/gems/unicorn-worker-killer "unicorn-worker-killer"
 [4010]: https://gitlab.com/gitlab-com/infrastructure/issues/4010 "Find a good value for maximum timeout for Shared Runners"
 [4070]: https://gitlab.com/gitlab-com/infrastructure/issues/4070 "Configure per-runner timeout for shared-runners-manager-X on GitLab.com"
-
-## Group and project settings
-
-On GitLab.com, projects, groups, and snippets created
-after July 2019 have the `Internal` visibility setting disabled.
-
-You can read more about the change in the
-[relevant issue](https://gitlab.com/gitlab-org/gitlab/issues/12388).

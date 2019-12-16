@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gitlab
-  module Sentry
+  module ErrorTracking
     class << self
       def configure
         Raven.configure do |config|
@@ -113,7 +113,7 @@ module Gitlab
 
           Gitlab::ExceptionLogFormatter.format!(exception, log_hash)
 
-          Gitlab::Sentry::Logger.error(log_hash)
+          Gitlab::ErrorTracking::Logger.error(log_hash)
         end
       end
 

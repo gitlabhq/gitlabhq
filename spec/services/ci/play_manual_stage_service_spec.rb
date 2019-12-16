@@ -51,8 +51,9 @@ describe Ci::PlayManualStageService, '#execute' do
 
   context 'when user does not have permission on a specific build' do
     before do
-      allow_any_instance_of(Ci::Build).to receive(:play)
-        .and_raise(Gitlab::Access::AccessDeniedError)
+      allow_next_instance_of(Ci::Build) do |instance|
+        allow(instance).to receive(:play).and_raise(Gitlab::Access::AccessDeniedError)
+      end
 
       service.execute(stage)
     end

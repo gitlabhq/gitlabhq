@@ -11,7 +11,7 @@ class PagesDomainRemovalCronWorker
     PagesDomain.for_removal.find_each do |domain|
       domain.destroy!
     rescue => e
-      Gitlab::Sentry.track_exception(e)
+      Gitlab::ErrorTracking.track_exception(e)
     end
   end
 end

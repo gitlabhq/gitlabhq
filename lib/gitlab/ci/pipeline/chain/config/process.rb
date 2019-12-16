@@ -21,7 +21,7 @@ module Gitlab
             rescue Gitlab::Ci::YamlProcessor::ValidationError => ex
               error(ex.message, config_error: true)
             rescue => ex
-              Gitlab::Sentry.track_exception(ex,
+              Gitlab::ErrorTracking.track_exception(ex,
                 project_id: project.id,
                 sha: @pipeline.sha
               )

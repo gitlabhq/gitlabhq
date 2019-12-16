@@ -16,8 +16,9 @@ describe AnalyticsSummarySerializer do
   end
 
   before do
-    allow_any_instance_of(Gitlab::CycleAnalytics::Summary::Issue)
-      .to receive(:value).and_return(1.12)
+    allow_next_instance_of(Gitlab::CycleAnalytics::Summary::Issue) do |instance|
+      allow(instance).to receive(:value).and_return(1.12)
+    end
   end
 
   it 'generates payload for single object' do

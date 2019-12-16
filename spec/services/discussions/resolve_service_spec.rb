@@ -29,7 +29,9 @@ describe Discussions::ResolveService do
     end
 
     it 'executes the notification service' do
-      expect_any_instance_of(MergeRequests::ResolvedDiscussionNotificationService).to receive(:execute).with(discussion.noteable)
+      expect_next_instance_of(MergeRequests::ResolvedDiscussionNotificationService) do |instance|
+        expect(instance).to receive(:execute).with(discussion.noteable)
+      end
 
       service.execute(discussion)
     end

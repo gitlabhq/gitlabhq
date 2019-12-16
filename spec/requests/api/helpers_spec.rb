@@ -229,8 +229,8 @@ describe API::Helpers do
 
       stub_sentry_settings
 
-      expect(Gitlab::Sentry).to receive(:sentry_dsn).and_return(Gitlab.config.sentry.dsn)
-      Gitlab::Sentry.configure
+      expect(Gitlab::ErrorTracking).to receive(:sentry_dsn).and_return(Gitlab.config.sentry.dsn)
+      Gitlab::ErrorTracking.configure
       Raven.client.configuration.encoding = 'json'
     end
 

@@ -56,13 +56,13 @@ describe Gitlab::SlashCommands::Run do
 
     context 'when a pipeline could not be scheduled' do
       it 'returns an error' do
-        expect_any_instance_of(Gitlab::Chat::Command)
-          .to receive(:try_create_pipeline)
-          .and_return(nil)
+        expect_next_instance_of(Gitlab::Chat::Command) do |instance|
+          expect(instance).to receive(:try_create_pipeline).and_return(nil)
+        end
 
-        expect_any_instance_of(Gitlab::SlashCommands::Presenters::Run)
-          .to receive(:failed_to_schedule)
-          .with('foo')
+        expect_next_instance_of(Gitlab::SlashCommands::Presenters::Run) do |instance|
+          expect(instance).to receive(:failed_to_schedule).with('foo')
+        end
 
         command.execute(command: 'foo', arguments: '')
       end
@@ -77,17 +77,18 @@ describe Gitlab::SlashCommands::Run do
           persisted?: true
         )
 
-        expect_any_instance_of(Gitlab::Chat::Command)
-          .to receive(:try_create_pipeline)
-          .and_return(pipeline)
+        expect_next_instance_of(Gitlab::Chat::Command) do |instance|
+          expect(instance).to receive(:try_create_pipeline).and_return(pipeline)
+        end
 
         expect(Gitlab::Chat::Responder)
           .to receive(:responder_for)
           .with(build)
           .and_return(nil)
 
-        expect_any_instance_of(Gitlab::SlashCommands::Presenters::Run)
-          .to receive(:unsupported_chat_service)
+        expect_next_instance_of(Gitlab::SlashCommands::Presenters::Run) do |instance|
+          expect(instance).to receive(:unsupported_chat_service)
+        end
 
         command.execute(command: 'foo', arguments: '')
       end
@@ -103,18 +104,18 @@ describe Gitlab::SlashCommands::Run do
           persisted?: true
         )
 
-        expect_any_instance_of(Gitlab::Chat::Command)
-          .to receive(:try_create_pipeline)
-          .and_return(pipeline)
+        expect_next_instance_of(Gitlab::Chat::Command) do |instance|
+          expect(instance).to receive(:try_create_pipeline).and_return(pipeline)
+        end
 
         expect(Gitlab::Chat::Responder)
           .to receive(:responder_for)
           .with(build)
           .and_return(responder)
 
-        expect_any_instance_of(Gitlab::SlashCommands::Presenters::Run)
-          .to receive(:in_channel_response)
-          .with(responder.scheduled_output)
+        expect_next_instance_of(Gitlab::SlashCommands::Presenters::Run) do |instance|
+          expect(instance).to receive(:in_channel_response).with(responder.scheduled_output)
+        end
 
         command.execute(command: 'foo', arguments: '')
       end

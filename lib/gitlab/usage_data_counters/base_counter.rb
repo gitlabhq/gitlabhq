@@ -8,7 +8,7 @@ module Gitlab::UsageDataCounters
 
     class << self
       def redis_key(event)
-        Gitlab::Sentry.track_and_raise_for_dev_exception(UnknownEvent.new, event: event) unless known_events.include?(event.to_s)
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(UnknownEvent.new, event: event) unless known_events.include?(event.to_s)
 
         "USAGE_#{prefix}_#{event}".upcase
       end

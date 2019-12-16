@@ -45,7 +45,9 @@ describe Ci::PipelineTriggerService do
 
           context 'when commit message has [ci skip]' do
             before do
-              allow_any_instance_of(Ci::Pipeline).to receive(:git_commit_message) { '[ci skip]' }
+              allow_next_instance_of(Ci::Pipeline) do |instance|
+                allow(instance).to receive(:git_commit_message) { '[ci skip]' }
+              end
             end
 
             it 'ignores [ci skip] and create as general' do
@@ -124,7 +126,9 @@ describe Ci::PipelineTriggerService do
 
           context 'when commit message has [ci skip]' do
             before do
-              allow_any_instance_of(Ci::Pipeline).to receive(:git_commit_message) { '[ci skip]' }
+              allow_next_instance_of(Ci::Pipeline) do |instance|
+                allow(instance).to receive(:git_commit_message) { '[ci skip]' }
+              end
             end
 
             it 'ignores [ci skip] and create as general' do

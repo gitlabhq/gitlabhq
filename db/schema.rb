@@ -351,6 +351,7 @@ ActiveRecord::Schema.define(version: 2019_12_08_071112) do
     t.string "sourcegraph_url", limit: 255
     t.boolean "sourcegraph_public_only", default: true, null: false
     t.bigint "snippet_size_limit", default: 52428800, null: false
+    t.integer "minimum_password_length", default: 8, null: false
     t.text "encrypted_akismet_api_key"
     t.string "encrypted_akismet_api_key_iv", limit: 255
     t.text "encrypted_elasticsearch_aws_secret_access_key"

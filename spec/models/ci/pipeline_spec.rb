@@ -599,6 +599,7 @@ describe Ci::Pipeline, :mailer do
         CI_COMMIT_BEFORE_SHA
         CI_COMMIT_REF_NAME
         CI_COMMIT_REF_SLUG
+        CI_COMMIT_BRANCH
         CI_COMMIT_MESSAGE
         CI_COMMIT_TITLE
         CI_COMMIT_DESCRIPTION

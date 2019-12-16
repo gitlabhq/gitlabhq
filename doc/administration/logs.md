@@ -360,6 +360,17 @@ Introduced in GitLab 12.3. This file lives in `/var/log/gitlab/gitlab-rails/migr
 Omnibus GitLab packages or in `/home/git/gitlab/log/migrations.log` for
 installations from source.
 
+## `mail_room_json.log` (default)
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/19186) in GitLab 12.6.
+
+This file lives in `/var/log/gitlab/mail_room/mail_room_json.log` for
+Omnibus GitLab packages or in `/home/git/gitlab/log/mail_room_json.log` for
+installations from source.
+
+This structured log file records internal activity in the `mail_room` gem.
+Its name and path are configurable, so the name and path may not match the above.
+
 ## Reconfigure Logs
 
 Reconfigure log files live in `/var/log/gitlab/reconfigure` for Omnibus GitLab

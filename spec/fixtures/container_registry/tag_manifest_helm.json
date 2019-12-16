@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 2,
+  "config": {
+    "mediaType": "application/vnd.cncf.helm.config.v1+json",
+    "digest": "sha256:65a07b841ece031e6d0ec5eb948eacb17aa6d7294cdeb01d5348e86242951487",
+    "size": 141
+  },
+  "layers": [
+    {
+      "mediaType": "application/tar+gzip",
+      "digest": "sha256:896935a875c8fe8f8b9b81e5862413de316f8da3d6d9a7e0f6f1e90f6204f551",
+      "size": 2801
+    }
+  ]
+}

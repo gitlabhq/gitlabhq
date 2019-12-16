@@ -2366,6 +2366,7 @@ describe Ci::Build do
           { key: 'CI_COMMIT_BEFORE_SHA', value: build.before_sha, public: true, masked: false },
           { key: 'CI_COMMIT_REF_NAME', value: build.ref, public: true, masked: false },
           { key: 'CI_COMMIT_REF_SLUG', value: build.ref_slug, public: true, masked: false },
+          { key: 'CI_COMMIT_BRANCH', value: build.ref, public: true, masked: false },
           { key: 'CI_COMMIT_MESSAGE', value: pipeline.git_commit_message, public: true, masked: false },
           { key: 'CI_COMMIT_TITLE', value: pipeline.git_commit_title, public: true, masked: false },
           { key: 'CI_COMMIT_DESCRIPTION', value: pipeline.git_commit_description, public: true, masked: false },
@@ -2587,6 +2588,19 @@ describe Ci::Build do
       end
 
       it { is_expected.to include(job_variable) }
+    end
+
+    context 'when build is for branch' do
+      let(:branch_variable) do
+        { key: 'CI_COMMIT_BRANCH', value: 'master', public: true, masked: false }
+      end
+
+      before do
+        build.update(tag: false)
+        pipeline.update(tag: false)
+      end
+
+      it { is_expected.to include(branch_variable) }
     end
 
     context 'when build is for tag' do
@@ -3522,7 +3536,7 @@ describe Ci::Build do
       end
 
       it 'can drop the build' do
-        expect(Gitlab::Sentry).to receive(:track_and_raise_for_dev_exception)
+        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
 
         expect { build.drop! }.not_to raise_error
 

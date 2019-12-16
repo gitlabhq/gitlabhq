@@ -45,7 +45,7 @@ module Gitlab
         backtrace = Gitlab::Profiler.clean_backtrace(ex.backtrace)
         error = { type: :pull_request, iid: pull_request.iid, errors: ex.message, trace: backtrace, raw_response: pull_request.raw }
 
-        Gitlab::Sentry.log_exception(ex, error)
+        Gitlab::ErrorTracking.log_exception(ex, error)
 
         # Omit the details from the database to avoid blowing up usage in the error column
         error.delete(:trace)

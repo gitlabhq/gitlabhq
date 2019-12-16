@@ -417,7 +417,7 @@ end
 
 gem 'octokit', '~> 4.9'
 
-gem 'mail_room', '~> 0.9.1'
+gem 'mail_room', '~> 0.10.0'
 
 gem 'email_reply_trimmer', '~> 0.1'
 gem 'html2text'

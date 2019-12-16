@@ -171,7 +171,7 @@ describe Upload do
         it 'sends a message to Sentry' do
           upload = create(:upload, :issuable_upload)
 
-          expect(Gitlab::Sentry).to receive(:track_exception).with(instance_of(RuntimeError), upload.attributes)
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(instance_of(RuntimeError), upload.attributes)
 
           upload.exist?
         end

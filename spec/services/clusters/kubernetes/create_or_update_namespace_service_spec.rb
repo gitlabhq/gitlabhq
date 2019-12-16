@@ -60,7 +60,9 @@ describe Clusters::Kubernetes::CreateOrUpdateNamespaceService, '#execute' do
     end
 
     it 'creates project service account' do
-      expect_any_instance_of(Clusters::Kubernetes::CreateOrUpdateServiceAccountService).to receive(:execute).once
+      expect_next_instance_of(Clusters::Kubernetes::CreateOrUpdateServiceAccountService) do |instance|
+        expect(instance).to receive(:execute).once
+      end
 
       subject
     end
@@ -127,7 +129,9 @@ describe Clusters::Kubernetes::CreateOrUpdateNamespaceService, '#execute' do
       end
 
       it 'creates project service account' do
-        expect_any_instance_of(Clusters::Kubernetes::CreateOrUpdateServiceAccountService).to receive(:execute).once
+        expect_next_instance_of(Clusters::Kubernetes::CreateOrUpdateServiceAccountService) do |instance|
+          expect(instance).to receive(:execute).once
+        end
 
         subject
       end

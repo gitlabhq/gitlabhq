@@ -31,7 +31,11 @@ module Gitlab
         end
 
         def diff_files
-          @diff_files ||= diffs.decorate! { |diff| decorate_diff!(diff) }
+          raw_diff_files
+        end
+
+        def raw_diff_files
+          @raw_diff_files ||= diffs.decorate! { |diff| decorate_diff!(diff) }
         end
 
         def diff_file_paths

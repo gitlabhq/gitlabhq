@@ -37,7 +37,7 @@ module Storage
         send_update_instructions
         write_projects_repository_config
       rescue => e
-        Gitlab::Sentry.track_and_raise_for_dev_exception(e,
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e,
           full_path_before_last_save: full_path_before_last_save,
           full_path: full_path,
           action: 'move_dir')

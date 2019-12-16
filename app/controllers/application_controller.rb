@@ -165,7 +165,7 @@ class ApplicationController < ActionController::Base
   end
 
   def log_exception(exception)
-    Gitlab::Sentry.track_exception(exception)
+    Gitlab::ErrorTracking.track_exception(exception)
 
     backtrace_cleaner = request.env["action_dispatch.backtrace_cleaner"]
     application_trace = ActionDispatch::ExceptionWrapper.new(backtrace_cleaner, exception).application_trace
@@ -533,7 +533,7 @@ class ApplicationController < ActionController::Base
   end
 
   def sentry_context(&block)
-    Gitlab::Sentry.with_context(current_user, &block)
+    Gitlab::ErrorTracking.with_context(current_user, &block)
   end
 
   def allow_gitaly_ref_name_caching

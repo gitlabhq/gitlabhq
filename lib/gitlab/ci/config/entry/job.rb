@@ -120,7 +120,7 @@ module Gitlab
 
           entry :only, Entry::Policy,
             description: 'Refs policy this job will be executed for.',
-            default: Entry::Policy::DEFAULT_ONLY,
+            default: ::Gitlab::Ci::Config::Entry::Policy::DEFAULT_ONLY,
             inherit: false
 
           entry :except, Entry::Policy,
@@ -177,11 +177,18 @@ module Gitlab
 
               @entries.delete(:type)
 
-              # This is something of a hack, see issue for details:
-              # https://gitlab.com/gitlab-org/gitlab/issues/31685
-              if !only_defined? && has_rules?
-                @entries.delete(:only)
-                @entries.delete(:except)
+              has_workflow_rules = deps&.workflow&.has_rules?
+
+              # If workflow:rules: or rules: are used
+              # they are considered not compatible
+              # with `only/except` defaults
+              #
+              # Context: https://gitlab.com/gitlab-org/gitlab/merge_requests/21742
+              if has_rules? || has_workflow_rules
+                # Remove only/except defaults
+                # defaults are not considered as defined
+                @entries.delete(:only) unless only_defined?
+                @entries.delete(:except) unless except_defined?
               end
             end
           end

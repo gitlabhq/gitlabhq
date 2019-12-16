@@ -25,7 +25,6 @@ module Gitlab
           end
         end
 
-        # rubocop: disable CodeReuse/ActiveRecord
         def compose!(deps = nil)
           return unless valid?
 
@@ -35,11 +34,7 @@ module Gitlab
               # we can end with different config types like String
               next unless config.is_a?(Hash)
 
-              factory
-                .value(config[key])
-                .with(key: key, parent: self)
-
-              entries[key] = factory.create!
+              entry_create!(key, config[key])
             end
 
             yield if block_given?
@@ -48,6 +43,16 @@ module Gitlab
               entry.compose!(deps)
             end
           end
+        end
+
+        # rubocop: disable CodeReuse/ActiveRecord
+        def entry_create!(key, value)
+          factory = self.class
+            .nodes[key]
+            .value(value)
+            .with(key: key, parent: self)
+
+          entries[key] = factory.create!
         end
         # rubocop: enable CodeReuse/ActiveRecord
 

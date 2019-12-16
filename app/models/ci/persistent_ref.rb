@@ -26,7 +26,7 @@ module Ci
 
       create_ref(sha, path)
     rescue => e
-      Gitlab::Sentry
+      Gitlab::ErrorTracking
         .track_exception(e, pipeline_id: pipeline.id)
     end
 
@@ -37,7 +37,7 @@ module Ci
     rescue Gitlab::Git::Repository::NoRepository
       # no-op
     rescue => e
-      Gitlab::Sentry
+      Gitlab::ErrorTracking
         .track_exception(e, pipeline_id: pipeline.id)
     end
 

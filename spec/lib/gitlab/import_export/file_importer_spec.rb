@@ -18,9 +18,15 @@ describe Gitlab::ImportExport::FileImporter do
     stub_const('Gitlab::ImportExport::FileImporter::MAX_RETRIES', 0)
     stub_uploads_object_storage(FileUploader)
 
-    allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(storage_path)
-    allow_any_instance_of(Gitlab::ImportExport::CommandLineUtil).to receive(:untar_zxf).and_return(true)
-    allow_any_instance_of(Gitlab::ImportExport::Shared).to receive(:relative_archive_path).and_return('test')
+    allow_next_instance_of(Gitlab::ImportExport) do |instance|
+      allow(instance).to receive(:storage_path).and_return(storage_path)
+    end
+    allow_next_instance_of(Gitlab::ImportExport::CommandLineUtil) do |instance|
+      allow(instance).to receive(:untar_zxf).and_return(true)
+    end
+    allow_next_instance_of(Gitlab::ImportExport::Shared) do |instance|
+      allow(instance).to receive(:relative_archive_path).and_return('test')
+    end
     allow(SecureRandom).to receive(:hex).and_return('abcd')
     setup_files
   end
@@ -69,7 +75,9 @@ describe Gitlab::ImportExport::FileImporter do
 
   context 'error' do
     before do
-      allow_any_instance_of(described_class).to receive(:wait_for_archived_file).and_raise(StandardError)
+      allow_next_instance_of(described_class) do |instance|
+        allow(instance).to receive(:wait_for_archived_file).and_raise(StandardError)
+      end
       described_class.import(importable: build(:project), archive_file: '', shared: shared)
     end
 

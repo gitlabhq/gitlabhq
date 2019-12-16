@@ -51,7 +51,7 @@ describe Ci::PrepareBuildService do
 
         it 'drops the build and notifies Sentry' do
           expect(build).to receive(:drop).with(:unmet_prerequisites).once
-          expect(Gitlab::Sentry).to receive(:track_exception)
+          expect(Gitlab::ErrorTracking).to receive(:track_exception)
             .with(instance_of(Kubeclient::HttpError), hash_including(build_id: build.id))
 
           subject

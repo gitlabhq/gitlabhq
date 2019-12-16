@@ -98,6 +98,53 @@ describe User, :do_not_mock_admin_mode do
   end
 
   describe 'validations' do
+    describe 'password' do
+      let!(:user) { create(:user) }
+
+      before do
+        allow(Devise).to receive(:password_length).and_return(8..128)
+        allow(described_class).to receive(:password_length).and_return(10..130)
+      end
+
+      context 'length' do
+        it { is_expected.to validate_length_of(:password).is_at_least(10).is_at_most(130) }
+      end
+
+      context 'length validator' do
+        context 'for a short password' do
+          before do
+            user.password = user.password_confirmation = 'abc'
+          end
+
+          it 'does not run the default Devise password length validation' do
+            expect(user).to be_invalid
+            expect(user.errors.full_messages.join).not_to include('is too short (minimum is 8 characters)')
+          end
+
+          it 'runs the custom password length validator' do
+            expect(user).to be_invalid
+            expect(user.errors.full_messages.join).to include('is too short (minimum is 10 characters)')
+          end
+        end
+
+        context 'for a long password' do
+          before do
+            user.password = user.password_confirmation = 'a' * 140
+          end
+
+          it 'does not run the default Devise password length validation' do
+            expect(user).to be_invalid
+            expect(user.errors.full_messages.join).not_to include('is too long (maximum is 128 characters)')
+          end
+
+          it 'runs the custom password length validator' do
+            expect(user).to be_invalid
+            expect(user.errors.full_messages.join).to include('is too long (maximum is 130 characters)')
+          end
+        end
+      end
+    end
+
     describe 'name' do
       it { is_expected.to validate_presence_of(:name) }
       it { is_expected.to validate_length_of(:name).is_at_most(128) }
@@ -458,6 +505,34 @@ describe User, :do_not_mock_admin_mode do
 
         expect(users_without_two_factor).to include(user_without_2fa.id)
         expect(users_without_two_factor).not_to include(user_with_2fa.id)
+      end
+    end
+
+    describe '.password_length' do
+      let(:password_length) { described_class.password_length }
+
+      it 'is expected to be a Range' do
+        expect(password_length).to be_a(Range)
+      end
+
+      context 'minimum value' do
+        before do
+          stub_application_setting(minimum_password_length: 101)
+        end
+
+        it 'is determined by the current value of `minimum_password_length` attribute of application_setting' do
+          expect(password_length.min).to eq(101)
+        end
+      end
+
+      context 'maximum value' do
+        before do
+          allow(Devise.password_length).to receive(:max).and_return(201)
+        end
+
+        it 'is determined by the current value of `Devise.password_length.max`' do
+          expect(password_length.max).to eq(201)
+        end
       end
     end
 

@@ -426,7 +426,9 @@ describe Ci::ProcessPipelineService, '#execute' do
     before do
       successful_build('test', stage_idx: 0)
 
-      allow_any_instance_of(Ci::PersistentRef).to receive(:delete_refs) { raise ArgumentError }
+      allow_next_instance_of(Ci::PersistentRef) do |instance|
+        allow(instance).to receive(:delete_refs) { raise ArgumentError }
+      end
     end
 
     it 'process the pipeline' do

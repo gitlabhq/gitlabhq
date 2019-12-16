@@ -51,7 +51,7 @@ module Projects
         digests = deleted_tags.values.uniq
 
         # rubocop: disable CodeReuse/ActiveRecord
-        Gitlab::Sentry.track_and_raise_for_dev_exception(ArgumentError.new('multiple tag digests')) if digests.many?
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(ArgumentError.new('multiple tag digests')) if digests.many?
 
         deleted_tags
       end

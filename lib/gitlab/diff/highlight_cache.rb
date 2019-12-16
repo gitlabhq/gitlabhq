@@ -70,8 +70,6 @@ module Gitlab
 
       def cacheable_files
         strong_memoize(:cacheable_files) do
-          diff_files = @diff_collection.diff_files
-
           diff_files.select { |file| cacheable?(file) && read_file(file).nil? }
         end
       end
@@ -114,7 +112,7 @@ module Gitlab
 
       def file_paths
         strong_memoize(:file_paths) do
-          @diff_collection.diffs.collect(&:file_path)
+          diff_files.collect(&:file_path)
         end
       end
 
@@ -144,6 +142,14 @@ module Gitlab
 
       def cacheable?(diff_file)
         diffable.present? && diff_file.text? && diff_file.diffable?
+      end
+
+      def diff_files
+        # We access raw_diff_files here, as diff_files will attempt to apply the
+        #   highlighting code found in this class, leading  to a circular
+        #   reference.
+        #
+        @diff_collection.raw_diff_files
       end
     end
   end

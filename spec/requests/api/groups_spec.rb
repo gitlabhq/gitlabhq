@@ -1075,8 +1075,9 @@ describe API::Groups do
     let(:project_path) { CGI.escape(project.full_path) }
 
     before do
-      allow_any_instance_of(Projects::TransferService)
-        .to receive(:execute).and_return(true)
+      allow_next_instance_of(Projects::TransferService) do |instance|
+        allow(instance).to receive(:execute).and_return(true)
+      end
     end
 
     context "when authenticated as user" do

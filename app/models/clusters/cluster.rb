@@ -335,7 +335,7 @@ module Clusters
     rescue Kubeclient::HttpError => e
       kubeclient_error_status(e.message)
     rescue => e
-      Gitlab::Sentry.track_exception(e, cluster_id: id)
+      Gitlab::ErrorTracking.track_exception(e, cluster_id: id)
 
       :unknown_failure
     else

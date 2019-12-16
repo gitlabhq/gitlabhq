@@ -46,6 +46,12 @@ class ApplicationSetting < ApplicationRecord
             presence: true,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
+  validates :minimum_password_length,
+            presence: true,
+            numericality: { only_integer: true,
+                            greater_than_or_equal_to: DEFAULT_MINIMUM_PASSWORD_LENGTH,
+                            less_than_or_equal_to: Devise.password_length.max }
+
   validates :home_page_url,
             allow_blank: true,
             addressable_url: true,

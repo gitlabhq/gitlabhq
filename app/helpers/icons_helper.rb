@@ -44,7 +44,7 @@ module IconsHelper
   def sprite_icon(icon_name, size: nil, css_class: nil)
     if known_sprites&.exclude?(icon_name)
       exception = ArgumentError.new("#{icon_name} is not a known icon in @gitlab-org/gitlab-svg")
-      Gitlab::Sentry.track_and_raise_for_dev_exception(exception)
+      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(exception)
     end
 
     css_classes = []

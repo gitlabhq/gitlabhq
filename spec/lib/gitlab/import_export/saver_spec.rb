@@ -11,7 +11,9 @@ describe Gitlab::ImportExport::Saver do
   subject { described_class.new(exportable: project, shared: shared) }
 
   before do
-    allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
+    allow_next_instance_of(Gitlab::ImportExport) do |instance|
+      allow(instance).to receive(:storage_path).and_return(export_path)
+    end
 
     FileUtils.mkdir_p(shared.export_path)
     FileUtils.touch("#{shared.export_path}/tmp.bundle")

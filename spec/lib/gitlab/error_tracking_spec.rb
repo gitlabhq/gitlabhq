@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Sentry do
+describe Gitlab::ErrorTracking do
   let(:exception) { RuntimeError.new('boom') }
   let(:issue_url) { 'http://gitlab.com/gitlab-org/gitlab-foss/issues/1' }
 
@@ -76,8 +76,8 @@ describe Gitlab::Sentry do
         )
       end
 
-      it 'calls Gitlab::Sentry::Logger.error with formatted payload' do
-        expect(Gitlab::Sentry::Logger).to receive(:error)
+      it 'calls Gitlab::ErrorTracking::Logger.error with formatted payload' do
+        expect(Gitlab::ErrorTracking::Logger).to receive(:error)
           .with(a_hash_including(*expected_payload_includes))
 
         described_class.track_and_raise_for_dev_exception(
@@ -97,8 +97,8 @@ describe Gitlab::Sentry do
         .to raise_error(RuntimeError)
     end
 
-    it 'calls Gitlab::Sentry::Logger.error with formatted payload' do
-      expect(Gitlab::Sentry::Logger).to receive(:error)
+    it 'calls Gitlab::ErrorTracking::Logger.error with formatted payload' do
+      expect(Gitlab::ErrorTracking::Logger).to receive(:error)
         .with(a_hash_including(*expected_payload_includes))
 
       expect do
@@ -134,8 +134,8 @@ describe Gitlab::Sentry do
       )
     end
 
-    it 'calls Gitlab::Sentry::Logger.error with formatted payload' do
-      expect(Gitlab::Sentry::Logger).to receive(:error)
+    it 'calls Gitlab::ErrorTracking::Logger.error with formatted payload' do
+      expect(Gitlab::ErrorTracking::Logger).to receive(:error)
         .with(a_hash_including(*expected_payload_includes))
 
       described_class.track_exception(

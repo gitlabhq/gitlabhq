@@ -10,7 +10,9 @@ describe Gitlab::ImportExport::AvatarSaver do
 
   before do
     FileUtils.mkdir_p("#{shared.export_path}/avatar/")
-    allow_any_instance_of(Gitlab::ImportExport::Shared).to receive(:export_path).and_return(export_path)
+    allow_next_instance_of(Gitlab::ImportExport::Shared) do |instance|
+      allow(instance).to receive(:export_path).and_return(export_path)
+    end
   end
 
   after do

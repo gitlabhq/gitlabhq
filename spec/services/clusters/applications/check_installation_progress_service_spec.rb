@@ -144,10 +144,9 @@ describe Clusters::Applications::CheckInstallationProgressService, '#execute' do
       end
 
       it 'removes the installation POD' do
-        expect_any_instance_of(Gitlab::Kubernetes::Helm::Api)
-          .to receive(:delete_pod!)
-          .with(kind_of(String))
-          .once
+        expect_next_instance_of(Gitlab::Kubernetes::Helm::Api) do |instance|
+          expect(instance).to receive(:delete_pod!).with(kind_of(String)).once
+        end
         expect(service).to receive(:remove_installation_pod).and_call_original
 
         service.execute

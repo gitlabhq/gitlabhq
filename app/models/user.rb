@@ -381,6 +381,11 @@ class User < ApplicationRecord
   # Class methods
   #
   class << self
+    # Devise method overridden to allow support for dynamic password lengths
+    def password_length
+      Gitlab::CurrentSettings.minimum_password_length..Devise.password_length.max
+    end
+
     # Devise method overridden to allow sign in with email or username
     def find_for_database_authentication(warden_conditions)
       conditions = warden_conditions.dup

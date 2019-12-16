@@ -30,6 +30,8 @@ module ApplicationSettingImplementation
     '/admin/session'
   ].freeze
 
+  DEFAULT_MINIMUM_PASSWORD_LENGTH = 8
+
   class_methods do
     def defaults
       {
@@ -106,6 +108,7 @@ module ApplicationSettingImplementation
         sourcegraph_enabled: false,
         sourcegraph_url: nil,
         sourcegraph_public_only: true,
+        minimum_password_length: DEFAULT_MINIMUM_PASSWORD_LENGTH,
         terminal_max_session_time: 0,
         throttle_authenticated_api_enabled: false,
         throttle_authenticated_api_period_in_seconds: 3600,

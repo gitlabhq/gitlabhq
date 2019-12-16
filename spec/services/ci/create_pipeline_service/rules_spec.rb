@@ -13,7 +13,9 @@ describe Ci::CreatePipelineService do
   context 'job:rules' do
     before do
       stub_ci_pipeline_yaml_file(config)
-      allow_any_instance_of(Ci::BuildScheduleWorker).to receive(:perform).and_return(true)
+      allow_next_instance_of(Ci::BuildScheduleWorker) do |instance|
+        allow(instance).to receive(:perform).and_return(true)
+      end
     end
 
     context 'exists:' do
@@ -96,6 +98,17 @@ describe Ci::CreatePipelineService do
   context 'when workflow:rules are used' do
     before do
       stub_ci_pipeline_yaml_file(config)
+    end
+
+    shared_examples 'workflow:rules feature disabled' do
+      before do
+        stub_feature_flags(workflow_rules: false)
+      end
+
+      it 'presents a message that rules are disabled' do
+        expect(pipeline.errors[:base]).to include('Workflow rules are disabled')
+        expect(pipeline).to be_persisted
+      end
     end
 
     context 'with a single regex-matching if: clause' do
@@ -229,16 +242,7 @@ describe Ci::CreatePipelineService do
           expect(pipeline).not_to be_persisted
         end
 
-        context 'with workflow:rules shut off' do
-          before do
-            stub_feature_flags(workflow_rules: false)
-          end
-
-          it 'invalidates the pipeline with an empty jobs error' do
-            expect(pipeline.errors[:base]).to include('No stages / jobs for this pipeline.')
-            expect(pipeline).not_to be_persisted
-          end
-        end
+        it_behaves_like 'workflow:rules feature disabled'
       end
 
       context 'where workflow passes and the job passes' do
@@ -249,16 +253,7 @@ describe Ci::CreatePipelineService do
           expect(pipeline).to be_persisted
         end
 
-        context 'with workflow:rules shut off' do
-          before do
-            stub_feature_flags(workflow_rules: false)
-          end
-
-          it 'saves a pending pipeline' do
-            expect(pipeline).to be_pending
-            expect(pipeline).to be_persisted
-          end
-        end
+        it_behaves_like 'workflow:rules feature disabled'
       end
 
       context 'where workflow fails and the job fails' do
@@ -269,16 +264,7 @@ describe Ci::CreatePipelineService do
           expect(pipeline).not_to be_persisted
         end
 
-        context 'with workflow:rules shut off' do
-          before do
-            stub_feature_flags(workflow_rules: false)
-          end
-
-          it 'invalidates the pipeline with an empty jobs error' do
-            expect(pipeline.errors[:base]).to include('No stages / jobs for this pipeline.')
-            expect(pipeline).not_to be_persisted
-          end
-        end
+        it_behaves_like 'workflow:rules feature disabled'
       end
 
       context 'where workflow fails and the job passes' do
@@ -289,16 +275,7 @@ describe Ci::CreatePipelineService do
           expect(pipeline).not_to be_persisted
         end
 
-        context 'with workflow:rules shut off' do
-          before do
-            stub_feature_flags(workflow_rules: false)
-          end
-
-          it 'saves a pending pipeline' do
-            expect(pipeline).to be_pending
-            expect(pipeline).to be_persisted
-          end
-        end
+        it_behaves_like 'workflow:rules feature disabled'
       end
     end
   end

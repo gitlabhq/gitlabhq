@@ -131,9 +131,9 @@ describe EventCreateService do
     end
 
     it 'caches the last push event for the user' do
-      expect_any_instance_of(Users::LastPushEventService)
-        .to receive(:cache_last_push_event)
-        .with(an_instance_of(PushEvent))
+      expect_next_instance_of(Users::LastPushEventService) do |instance|
+        expect(instance).to receive(:cache_last_push_event).with(an_instance_of(PushEvent))
+      end
 
       subject
     end

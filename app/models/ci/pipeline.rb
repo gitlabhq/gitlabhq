@@ -638,6 +638,7 @@ module Ci
         variables.append(key: 'CI_COMMIT_BEFORE_SHA', value: before_sha)
         variables.append(key: 'CI_COMMIT_REF_NAME', value: source_ref)
         variables.append(key: 'CI_COMMIT_REF_SLUG', value: source_ref_slug)
+        variables.append(key: 'CI_COMMIT_BRANCH', value: ref) if branch?
         variables.append(key: 'CI_COMMIT_TAG', value: ref) if tag?
         variables.append(key: 'CI_COMMIT_MESSAGE', value: git_commit_message.to_s)
         variables.append(key: 'CI_COMMIT_TITLE', value: git_commit_full_title.to_s)

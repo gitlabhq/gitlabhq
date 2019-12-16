@@ -42,7 +42,7 @@ describe RunPipelineScheduleWorker do
       before do
         allow(Ci::CreatePipelineService).to receive(:new) { raise ActiveRecord::StatementInvalid }
 
-        expect(Gitlab::Sentry)
+        expect(Gitlab::ErrorTracking)
           .to receive(:track_and_raise_for_dev_exception)
           .with(ActiveRecord::StatementInvalid,
                 issue_url: 'https://gitlab.com/gitlab-org/gitlab-foss/issues/41231',

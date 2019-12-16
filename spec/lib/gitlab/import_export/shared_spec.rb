@@ -49,7 +49,7 @@ describe Gitlab::ImportExport::Shared do
     it 'updates the import JID' do
       import_state = create(:import_state, project: project, jid: 'jid-test')
 
-      expect(Gitlab::Sentry)
+      expect(Gitlab::ErrorTracking)
         .to receive(:track_exception)
         .with(error, hash_including(import_jid: import_state.jid))
 

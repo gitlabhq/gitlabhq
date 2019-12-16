@@ -79,10 +79,8 @@ describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
     end
   end
 
-  describe '#write_if_empty' do
+  shared_examples 'caches missing entries' do
     it 'filters the key/value list of entries to be caches for each invocation' do
-      paths = merge_request.diffs.diff_files.select(&:text?).map(&:file_path)
-
       expect(cache).to receive(:write_to_redis_hash)
         .with(hash_including(*paths))
         .once
@@ -96,6 +94,12 @@ describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
 
       cache.write_if_empty
     end
+  end
+
+  describe '#write_if_empty' do
+    it_behaves_like 'caches missing entries' do
+      let(:paths) { merge_request.diffs.raw_diff_files.select(&:text?).map(&:file_path) }
+    end
 
     context 'different diff_collections for the same diffable' do
       before do
@@ -107,6 +111,21 @@ describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
 
         expect { cache.write_if_empty }
           .to change { Gitlab::Redis::Cache.with { |r| r.hgetall(cache_key) } }
+      end
+    end
+
+    context 'when cache initialized with MergeRequestDiffBatch' do
+      let(:merge_request_diff_batch) do
+        Gitlab::Diff::FileCollection::MergeRequestDiffBatch.new(
+          merge_request.merge_request_diff,
+          1,
+          10,
+          diff_options: nil)
+      end
+
+      it_behaves_like 'caches missing entries' do
+        let(:cache) { described_class.new(merge_request_diff_batch) }
+        let(:paths) { merge_request_diff_batch.raw_diff_files.select(&:text?).map(&:file_path) }
       end
     end
   end

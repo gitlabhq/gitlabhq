@@ -32,7 +32,7 @@ module Gitlab
           # Will inform you if there needs to be `calls_gitaly: true` as a kwarg in the field declaration
           # if there is at least 1 Gitaly call involved with the field resolution.
           error = RuntimeError.new("Gitaly is called for field '#{type_object.name}' on #{type_object.owner.try(:name)} - please either specify a constant complexity or add `calls_gitaly: true` to the field declaration")
-          Gitlab::Sentry.track_and_raise_for_dev_exception(error)
+          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
         end
       end
     end

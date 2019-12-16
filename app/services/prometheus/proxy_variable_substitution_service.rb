@@ -32,7 +32,7 @@ module Prometheus
       success(result)
     rescue TypeError, ArgumentError => exception
       log_error(exception.message)
-      Gitlab::Sentry.track_exception(exception, extra: {
+      Gitlab::ErrorTracking.track_exception(exception, extra: {
         template_string: query,
         variables: predefined_context
       })

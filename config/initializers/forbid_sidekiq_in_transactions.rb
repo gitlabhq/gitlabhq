@@ -29,7 +29,7 @@ module Sidekiq
                 MSG
               rescue Sidekiq::Worker::EnqueueFromTransactionError => e
                 ::Rails.logger.error(e.message) if ::Rails.env.production?
-                Gitlab::Sentry.track_and_raise_for_dev_exception(e)
+                Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
               end
             end
 

@@ -113,6 +113,7 @@
     "stickyfilljs": "^2.0.5",
     "style-loader": "^1.0.0",
     "svg4everybody": "2.1.9",
+    "swagger-ui-dist": "^3.24.3",
     "three": "^0.84.0",
     "three-orbit-controls": "^82.1.0",
     "three-stl-loader": "^1.0.4",

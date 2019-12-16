@@ -128,7 +128,7 @@ module Ci
     end
 
     def track_exception_for_build(ex, build)
-      Gitlab::Sentry.track_exception(ex,
+      Gitlab::ErrorTracking.track_exception(ex,
         build_id: build.id,
         build_name: build.name,
         build_stage: build.stage,

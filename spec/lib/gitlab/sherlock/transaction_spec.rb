@@ -167,8 +167,9 @@ describe Gitlab::Sherlock::Transaction do
         allow(Gitlab::Sherlock).to receive(:enable_line_profiler?)
           .and_return(true)
 
-        allow_any_instance_of(Gitlab::Sherlock::LineProfiler)
-          .to receive(:profile).and_return('cats are amazing', [])
+        allow_next_instance_of(Gitlab::Sherlock::LineProfiler) do |instance|
+          allow(instance).to receive(:profile).and_return('cats are amazing', [])
+        end
 
         retval = transaction.profile_lines { 'cats are amazing' }
 

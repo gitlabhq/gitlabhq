@@ -33,11 +33,9 @@ window.addEventListener('beforeunload', () => {
 
 // Ignore AJAX errors caused by requests
 // being cancelled due to browser navigation
-const { gon } = window;
-const featureFlagEnabled = gon && gon.features && gon.features.suppressAjaxNavigationErrors;
 axios.interceptors.response.use(
   response => response,
-  err => suppressAjaxErrorsDuringNavigation(err, isUserNavigating, featureFlagEnabled),
+  err => suppressAjaxErrorsDuringNavigation(err, isUserNavigating),
 );
 
 export default axios;

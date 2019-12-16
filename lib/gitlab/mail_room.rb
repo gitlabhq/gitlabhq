@@ -4,15 +4,21 @@ require 'yaml'
 require 'json'
 require_relative 'redis/queues' unless defined?(Gitlab::Redis::Queues)
 
+# This service is run independently of the main Rails process,
+# therefore the `Rails` class and its methods are unavailable.
+
 module Gitlab
   module MailRoom
+    RAILS_ROOT_DIR = Pathname.new('../..').expand_path(__dir__).freeze
+
     DEFAULT_CONFIG = {
       enabled: false,
       port: 143,
       ssl: false,
       start_tls: false,
       mailbox: 'inbox',
-      idle_timeout: 60
+      idle_timeout: 60,
+      log_path: RAILS_ROOT_DIR.join('log', 'mail_room_json.log')
     }.freeze
 
     class << self
@@ -33,7 +39,7 @@ module Gitlab
       def fetch_config
         return {} unless File.exist?(config_file)
 
-        config = YAML.load_file(config_file)[rails_env].deep_symbolize_keys[:incoming_email] || {}
+        config = load_from_yaml || {}
         config = DEFAULT_CONFIG.merge(config) do |_key, oldval, newval|
           newval.nil? ? oldval : newval
         end
@@ -47,6 +53,7 @@ module Gitlab
           end
         end
 
+        config[:log_path] = File.expand_path(config[:log_path], RAILS_ROOT_DIR)
         config
       end
 
@@ -56,6 +63,10 @@ module Gitlab
 
       def config_file
         ENV['MAIL_ROOM_GITLAB_CONFIG_FILE'] || File.expand_path('../../config/gitlab.yml', __dir__)
+      end
+
+      def load_from_yaml
+        YAML.load_file(config_file)[rails_env].deep_symbolize_keys[:incoming_email]
       end
     end
   end

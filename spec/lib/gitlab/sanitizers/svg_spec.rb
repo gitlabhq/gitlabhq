@@ -14,7 +14,9 @@ describe Gitlab::Sanitizers::SVG do
     let(:sanitized) { File.read(sanitized_svg_path) }
 
     it 'delegates sanitization to scrubber' do
-      expect_any_instance_of(Gitlab::Sanitizers::SVG::Scrubber).to receive(:scrub).at_least(:once)
+      expect_next_instance_of(Gitlab::Sanitizers::SVG::Scrubber) do |instance|
+        expect(instance).to receive(:scrub).at_least(:once)
+      end
       described_class.clean(data)
     end
 

@@ -87,7 +87,9 @@ describe Gitlab::Metrics::Instrumentation do
         allow(described_class).to receive(:transaction)
           .and_return(transaction)
 
-        expect_any_instance_of(Gitlab::Metrics::MethodCall).to receive(:measure)
+        expect_next_instance_of(Gitlab::Metrics::MethodCall) do |instance|
+          expect(instance).to receive(:measure)
+        end
 
         @dummy.foo
       end
@@ -165,7 +167,9 @@ describe Gitlab::Metrics::Instrumentation do
         allow(described_class).to receive(:transaction)
           .and_return(transaction)
 
-        expect_any_instance_of(Gitlab::Metrics::MethodCall).to receive(:measure)
+        expect_next_instance_of(Gitlab::Metrics::MethodCall) do |instance|
+          expect(instance).to receive(:measure)
+        end
 
         @dummy.new.bar
       end

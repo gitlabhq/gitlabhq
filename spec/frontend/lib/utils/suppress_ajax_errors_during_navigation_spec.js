@@ -6,24 +6,20 @@ describe('suppressAjaxErrorsDuringNavigation', () => {
   const NAV_ERR_CODE = 'ECONNABORTED';
 
   it.each`
-    isFeatureFlagEnabled | isUserNavigating | code
-    ${false}             | ${false}         | ${OTHER_ERR_CODE}
-    ${false}             | ${false}         | ${NAV_ERR_CODE}
-    ${false}             | ${true}          | ${OTHER_ERR_CODE}
-    ${false}             | ${true}          | ${NAV_ERR_CODE}
-    ${true}              | ${false}         | ${OTHER_ERR_CODE}
-    ${true}              | ${false}         | ${NAV_ERR_CODE}
-    ${true}              | ${true}          | ${OTHER_ERR_CODE}
-  `('should return a rejected Promise', ({ isFeatureFlagEnabled, isUserNavigating, code }) => {
+    isUserNavigating | code
+    ${false}         | ${OTHER_ERR_CODE}
+    ${false}         | ${NAV_ERR_CODE}
+    ${true}          | ${OTHER_ERR_CODE}
+  `('should return a rejected Promise', ({ isUserNavigating, code }) => {
     const err = { code };
-    const actual = suppressAjaxErrorsDuringNavigation(err, isUserNavigating, isFeatureFlagEnabled);
+    const actual = suppressAjaxErrorsDuringNavigation(err, isUserNavigating);
 
     return expect(actual).rejects.toBe(err);
   });
 
   it('should return a Promise that never resolves', () => {
     const err = { code: NAV_ERR_CODE };
-    const actual = suppressAjaxErrorsDuringNavigation(err, true, true);
+    const actual = suppressAjaxErrorsDuringNavigation(err, true);
 
     const thenCallback = jest.fn();
     const catchCallback = jest.fn();

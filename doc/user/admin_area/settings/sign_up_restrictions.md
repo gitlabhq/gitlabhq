@@ -19,6 +19,13 @@ their email address before they are allowed to sign in.
 
 ![Email confirmation](img/email_confirmation.png)
 
+## Minimum password length limit
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/20661) in GitLab 12.6
+
+You can [change](../../../security/password_length_limits.md#modify-minimum-password-length-using-gitlab-ui)
+the minimum number of characters a user must have in their password using the GitLab UI.
+
 ## Whitelist email domains
 
 > [Introduced][ce-598] in GitLab 7.11.0

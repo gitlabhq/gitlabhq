@@ -18,6 +18,10 @@ module Gitlab
           entry :rules, Entry::Rules,
             description: 'List of evaluable Rules to determine Pipeline status.',
             metadata: { allowed_when: %w[always never] }
+
+          def has_rules?
+            @config.try(:key?, :rules)
+          end
         end
       end
     end

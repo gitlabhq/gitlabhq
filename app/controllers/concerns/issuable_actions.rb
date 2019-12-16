@@ -98,7 +98,7 @@ module IssuableActions
 
     error_message = "Destroy confirmation not provided for #{issuable.human_class_name}"
     exception = RuntimeError.new(error_message)
-    Gitlab::Sentry.track_exception(
+    Gitlab::ErrorTracking.track_exception(
       exception,
       project_path: issuable.project.full_path,
       issuable_type: issuable.class.name,

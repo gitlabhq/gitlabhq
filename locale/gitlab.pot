@@ -4928,16 +4928,10 @@ msgstr ""
 msgid "Could not create group"
 msgstr ""
 
-msgid "Could not create issue"
-msgstr ""
-
 msgid "Could not create project"
 msgstr ""
 
 msgid "Could not delete chat nickname %{chat_name}."
-msgstr ""
-
-msgid "Could not fetch projects"
 msgstr ""
 
 msgid "Could not remove the trigger."
@@ -9923,9 +9917,6 @@ msgstr ""
 msgid "IssuesAnalytics|Total:"
 msgstr ""
 
-msgid "Issue|Title"
-msgstr ""
-
 msgid "It must have a header row and at least two columns: the first column is the issue title and the second column is the issue description. The separator is automatically detected."
 msgstr ""
 
@@ -11353,6 +11344,9 @@ msgstr ""
 msgid "Minimum length is %{minimum_password_length} characters."
 msgstr ""
 
+msgid "Minimum password length (number of characters)"
+msgstr ""
+
 msgid "Minutes"
 msgstr ""
 
@@ -11632,9 +11626,6 @@ msgid "New identity"
 msgstr ""
 
 msgid "New issue"
-msgstr ""
-
-msgid "New issue title"
 msgstr ""
 
 msgid "New label"
@@ -12507,6 +12498,9 @@ msgid "Password"
 msgstr ""
 
 msgid "Password (optional)"
+msgstr ""
+
+msgid "Password Policy Guidelines"
 msgstr ""
 
 msgid "Password authentication is unavailable."
@@ -15799,6 +15793,9 @@ msgstr ""
 msgid "SecurityDashboard|Unable to add %{invalidProjects}"
 msgstr ""
 
+msgid "See GitLab's %{password_policy_guidelines}"
+msgstr ""
+
 msgid "See metrics"
 msgstr ""
 
@@ -16564,6 +16561,9 @@ msgid "Something went wrong while fetching the projects."
 msgstr ""
 
 msgid "Something went wrong while fetching the registry list."
+msgstr ""
+
+msgid "Something went wrong while initializing the OpenAPI viewer"
 msgstr ""
 
 msgid "Something went wrong while merging this merge request. Please try again."
