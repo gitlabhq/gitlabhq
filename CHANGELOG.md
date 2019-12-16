@@ -2,6 +2,18 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.5.5
+
+### Security (1 change)
+
+- Upgrade Akismet gem to v3.0.0. !21786
+
+### Fixed (2 changes)
+
+- Fix error in updating runner session. !20902
+- Fix Asana integration. !21501
+
+
 ## 12.5.4
 
 ### Security (1 change)
