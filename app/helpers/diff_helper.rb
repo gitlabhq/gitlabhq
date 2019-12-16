@@ -162,7 +162,7 @@ module DiffHelper
   end
 
   def render_overflow_warning?(diffs_collection)
-    diff_files = diffs_collection.diff_files
+    diff_files = diffs_collection.raw_diff_files
 
     if diff_files.any?(&:too_large?)
       Gitlab::Metrics.add_event(:diffs_overflow_single_file_limits)

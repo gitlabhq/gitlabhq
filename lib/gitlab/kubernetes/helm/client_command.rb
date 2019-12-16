@@ -43,6 +43,10 @@ module Gitlab
           optional_tls_flags
         end
 
+        def repository_update_command
+          'helm repo update'
+        end
+
         def optional_tls_flags
           return [] unless files.key?(:'ca.pem')
 

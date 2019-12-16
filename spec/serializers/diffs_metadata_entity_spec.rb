@@ -36,8 +36,16 @@ describe DiffsMetadataEntity do
 
     describe 'diff_files' do
       it 'returns diff files metadata' do
-        payload =
-          DiffFileMetadataEntity.represent(merge_request_diff.diffs.diff_files).as_json
+        raw_diff_files = merge_request_diff.diffs.raw_diff_files
+
+        expect_next_instance_of(Gitlab::Diff::FileCollection::MergeRequestDiff) do |instance|
+          # Use lightweight version instead. Several methods delegate to it, so putting a 5
+          # calls limit.
+          expect(instance).to receive(:raw_diff_files).at_most(5).times.and_call_original
+          expect(instance).not_to receive(:diff_files)
+        end
+
+        payload = DiffFileMetadataEntity.represent(raw_diff_files).as_json
 
         expect(subject[:diff_files]).to eq(payload)
       end

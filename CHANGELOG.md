@@ -4,7 +4,15 @@ entry.
 
 ## 12.5.5
 
-- No changes.
+### Security (1 change)
+
+- Upgrade Akismet gem to v3.0.0. !21786
+
+### Fixed (2 changes)
+
+- Fix error in updating runner session. !20902
+- Fix Asana integration. !21501
+
 
 ## 12.5.4
 

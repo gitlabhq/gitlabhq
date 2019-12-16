@@ -1,6 +1,7 @@
 extends:
   - '@gitlab'
   - plugin:promise/recommended
+  - plugin:no-jquery/slim
 globals:
   __webpack_public_path__: true
   gl: false
@@ -44,10 +45,9 @@ rules:
   vue/no-use-v-if-with-v-for: off
   vue/no-v-html: off
   vue/use-v-on-exact: off
-  no-jquery/no-ajax: error
-  no-jquery/no-ajax-events: error
-  no-jquery/no-load: error
-  no-jquery/no-load-shorthand: error
+  no-jquery/no-animate: off
+  no-jquery/no-animate-toggle: off
+  no-jquery/no-fade: off
   no-jquery/no-serialize: error
   promise/always-return: off
   promise/no-callback-in-promise: off

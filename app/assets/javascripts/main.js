@@ -222,6 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // eslint-disable-next-line no-jquery/no-ajax-events
   $(document).ajaxError((e, xhrObj) => {
     const ref = xhrObj.status;
 

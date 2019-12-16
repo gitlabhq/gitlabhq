@@ -259,7 +259,7 @@ describe DiffHelper do
   end
 
   context '#render_overflow_warning?' do
-    let(:diffs_collection) { instance_double(Gitlab::Diff::FileCollection::MergeRequestDiff, diff_files: diff_files) }
+    let(:diffs_collection) { instance_double(Gitlab::Diff::FileCollection::MergeRequestDiff, raw_diff_files: diff_files) }
     let(:diff_files) { Gitlab::Git::DiffCollection.new(files) }
     let(:safe_file) { { too_large: false, diff: '' } }
     let(:large_file) { { too_large: true, diff: '' } }

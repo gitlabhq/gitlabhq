@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_08_071112) do
+ActiveRecord::Schema.define(version: 2019_12_14_175727) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -1357,9 +1357,11 @@ ActiveRecord::Schema.define(version: 2019_12_08_071112) do
     t.index ["id"], name: "partial_index_deployments_for_legacy_successful_deployments", where: "((finished_at IS NULL) AND (status = 2))"
     t.index ["project_id", "id"], name: "index_deployments_on_project_id_and_id", order: { id: :desc }
     t.index ["project_id", "iid"], name: "index_deployments_on_project_id_and_iid", unique: true
+    t.index ["project_id", "ref"], name: "index_deployments_on_project_id_and_ref"
     t.index ["project_id", "status", "created_at"], name: "index_deployments_on_project_id_and_status_and_created_at"
     t.index ["project_id", "status"], name: "index_deployments_on_project_id_and_status"
     t.index ["project_id", "updated_at", "id"], name: "index_deployments_on_project_id_and_updated_at_and_id", order: { updated_at: :desc, id: :desc }
+    t.index ["project_id"], name: "partial_index_deployments_for_project_id_and_tag", where: "(tag IS TRUE)"
   end
 
   create_table "description_versions", force: :cascade do |t|

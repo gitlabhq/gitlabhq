@@ -4270,10 +4270,10 @@ eslint-plugin-jest@^22.3.0:
   resolved "https://registry.yarnpkg.com/eslint-plugin-jest/-/eslint-plugin-jest-22.3.0.tgz#a10f10dedfc92def774ec9bb5bfbd2fb8e1c96d2"
   integrity sha512-P1mYVRNlOEoO5T9yTqOfucjOYf1ktmJ26NjwjH8sxpCFQa6IhBGr5TpKl3hcAAT29hOsRJVuMWmTsHoUVo9FoA==
 
-eslint-plugin-no-jquery@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-no-jquery/-/eslint-plugin-no-jquery-2.1.0.tgz#d03b74224c5cfbc7fc0bdd12ce4eb400d09e0c0b"
-  integrity sha512-5sr5tOJRfuRviyAvFTe/mr80TXWxTteD/JHRuJtDN8q/bxAh16eSKoKLAevLC7wZCRN2iwnEfhQPQV4rp/gYtg==
+eslint-plugin-no-jquery@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-no-jquery/-/eslint-plugin-no-jquery-2.3.0.tgz#fccdad84afa61baa4c0527dd6249cdcbfa0f74a8"
+  integrity sha512-XQQZM5yKO72Y8QAojNhH8oYLnLZU34FovNHVoJlPLBuBPJk0kkiPNOS/K6wRFbVgn47iZHsT6E+7mSLwbcQEsg==
 
 eslint-plugin-promise@^4.1.1:
   version "4.1.1"

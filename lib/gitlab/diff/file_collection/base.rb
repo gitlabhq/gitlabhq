@@ -8,7 +8,7 @@ module Gitlab
 
         attr_reader :project, :diff_options, :diff_refs, :fallback_diff_refs, :diffable
 
-        delegate :count, :size, :real_size, to: :diff_files
+        delegate :count, :size, :real_size, to: :raw_diff_files
 
         def self.default_options
           ::Commit.max_diff_options.merge(ignore_whitespace_change: false, expanded: false, include_stats: true)

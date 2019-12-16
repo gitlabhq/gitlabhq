@@ -55,10 +55,10 @@ module Clusters
         )
       end
 
-      def upgrade_command(values)
-        ::Gitlab::Kubernetes::Helm::InstallCommand.new(
+      def patch_command(values)
+        ::Gitlab::Kubernetes::Helm::PatchCommand.new(
           name: name,
-          version: VERSION,
+          version: version,
           rbac: cluster.platform_kubernetes_rbac?,
           chart: chart,
           files: files_with_replaced_values(values)

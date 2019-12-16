@@ -206,21 +206,19 @@ describe Clusters::Applications::Prometheus do
     end
   end
 
-  describe '#upgrade_command' do
+  describe '#patch_command' do
+    subject(:patch_command) { prometheus.patch_command(values) }
+
     let(:prometheus) { build(:clusters_applications_prometheus) }
     let(:values) { prometheus.values }
 
-    it 'returns an instance of Gitlab::Kubernetes::Helm::InstallCommand' do
-      expect(prometheus.upgrade_command(values)).to be_an_instance_of(::Gitlab::Kubernetes::Helm::InstallCommand)
-    end
+    it { is_expected.to be_an_instance_of(::Gitlab::Kubernetes::Helm::PatchCommand) }
 
     it 'is initialized with 3 arguments' do
-      command = prometheus.upgrade_command(values)
-
-      expect(command.name).to eq('prometheus')
-      expect(command.chart).to eq('stable/prometheus')
-      expect(command.version).to eq('6.7.3')
-      expect(command.files).to eq(prometheus.files)
+      expect(patch_command.name).to eq('prometheus')
+      expect(patch_command.chart).to eq('stable/prometheus')
+      expect(patch_command.version).to eq('6.7.3')
+      expect(patch_command.files).to eq(prometheus.files)
     end
   end
 

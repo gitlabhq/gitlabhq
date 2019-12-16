@@ -1,0 +1,5 @@
+---
+title: Add indexes on deployments to improve environments search
+merge_request: 21789
+author:
+type: performance

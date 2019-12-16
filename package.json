@@ -159,7 +159,7 @@
     "eslint-import-resolver-webpack": "^0.10.1",
     "eslint-plugin-jasmine": "^2.10.1",
     "eslint-plugin-jest": "^22.3.0",
-    "eslint-plugin-no-jquery": "^2.1.0",
+    "eslint-plugin-no-jquery": "^2.3.0",
     "gettext-extractor": "^3.4.3",
     "gettext-extractor-vue": "^4.0.2",
     "graphql-tag": "^2.10.0",

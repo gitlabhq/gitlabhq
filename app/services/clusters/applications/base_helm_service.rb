@@ -61,8 +61,8 @@ module Clusters
         @update_command ||= app.update_command
       end
 
-      def upgrade_command(new_values = "")
-        app.upgrade_command(new_values)
+      def patch_command(new_values = "")
+        app.patch_command(new_values)
       end
     end
   end

@@ -55,11 +55,29 @@ describe Banzai::Filter::InlineMetricsRedactorFilter do
       it_behaves_like 'a supported metrics dashboard url'
     end
 
-    context 'for an internal non-dashboard url' do
-      let(:url) { urls.project_url(project) }
+    context 'the user has requisite permissions' do
+      let(:user) { create(:user) }
+      let(:doc) { filter(input, current_user: user) }
 
-      it 'leaves the placeholder' do
-        expect(doc.to_s).to be_empty
+      before do
+        project.add_maintainer(user)
+      end
+
+      context 'for an internal non-dashboard url' do
+        let(:url) { urls.project_url(project) }
+
+        it 'leaves the placeholder' do
+          expect(doc.to_s).to be_empty
+        end
+      end
+
+      context 'with over 100 embeds' do
+        let(:embed) { %(<div class="js-render-metrics" data-dashboard-url="#{url}"></div>) }
+        let(:input) { embed * 150 }
+
+        it 'redacts ill-advised embeds' do
+          expect(doc.to_s.length).to eq(embed.length * 100)
+        end
       end
     end
   end

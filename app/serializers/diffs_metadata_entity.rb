@@ -2,5 +2,5 @@
 
 class DiffsMetadataEntity < DiffsEntity
   unexpose :diff_files
-  expose :diff_files, using: DiffFileMetadataEntity
+  expose :raw_diff_files, as: :diff_files, using: DiffFileMetadataEntity
 end

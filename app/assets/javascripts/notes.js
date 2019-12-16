@@ -1,7 +1,7 @@
-/* eslint-disable no-restricted-properties, no-var, camelcase,
-no-unused-expressions, one-var, default-case,
+/* eslint-disable no-restricted-properties, camelcase,
+no-unused-expressions, default-case,
 consistent-return, no-alert, no-param-reassign, no-else-return,
-vars-on-top, no-shadow, no-useless-escape,
+no-shadow, no-useless-escape,
 class-methods-use-this */
 
 /* global ResolveService */
@@ -224,18 +224,18 @@ export default class Notes {
   }
 
   keydownNoteText(e) {
-    var $textarea,
-      discussionNoteForm,
-      editNote,
-      myLastNote,
-      myLastNoteEditBtn,
-      newText,
-      originalText;
+    let discussionNoteForm;
+    let editNote;
+    let myLastNote;
+    let myLastNoteEditBtn;
+    let newText;
+    let originalText;
+
     if (isMetaKey(e)) {
       return;
     }
 
-    $textarea = $(e.target);
+    const $textarea = $(e.target);
     // Edit previous note when UP arrow is hit
     switch (e.which) {
       case 38:
@@ -325,11 +325,10 @@ export default class Notes {
    * if there aren't new notes coming from the server
    */
   setPollingInterval(shouldReset) {
-    var nthInterval;
     if (shouldReset == null) {
       shouldReset = true;
     }
-    nthInterval = this.basePollingInterval * Math.pow(2, this.maxPollingSteps - 1);
+    const nthInterval = this.basePollingInterval * Math.pow(2, this.maxPollingSteps - 1);
     if (shouldReset) {
       this.pollingInterval = this.basePollingInterval;
     } else if (this.pollingInterval < nthInterval) {
@@ -339,7 +338,7 @@ export default class Notes {
   }
 
   handleQuickActions(noteEntity) {
-    var votesBlock;
+    let votesBlock;
     if (noteEntity.commands_changes) {
       if ('merge' in noteEntity.commands_changes) {
         Notes.checkMergeRequestStatus();
@@ -462,14 +461,16 @@ export default class Notes {
    * Render note in discussion area. To render inline notes use renderDiscussionNote.
    */
   renderDiscussionNote(noteEntity, $form) {
-    var discussionContainer, form, row, lineType, diffAvatarContainer;
+    let discussionContainer;
+    let row;
 
     if (!Notes.isNewNote(noteEntity, this.note_ids)) {
       return;
     }
     this.note_ids.push(noteEntity.id);
 
-    form = $form || $(`.js-discussion-note-form[data-discussion-id="${noteEntity.discussion_id}"]`);
+    const form =
+      $form || $(`.js-discussion-note-form[data-discussion-id="${noteEntity.discussion_id}"]`);
     row =
       form.length || !noteEntity.discussion_line_code
         ? form.closest('tr')
@@ -479,8 +480,8 @@ export default class Notes {
       row = form;
     }
 
-    lineType = this.isParallelView() ? form.find('#line_type').val() : 'old';
-    diffAvatarContainer = row
+    const lineType = this.isParallelView() ? form.find('#line_type').val() : 'old';
+    const diffAvatarContainer = row
       .prevAll('.line_holder')
       .first()
       .find(`.js-avatar-container.${lineType}_line`);
@@ -491,15 +492,17 @@ export default class Notes {
     }
     if (discussionContainer.length === 0) {
       if (noteEntity.diff_discussion_html) {
-        var $discussion = $(noteEntity.diff_discussion_html).renderGFM();
+        const $discussion = $(noteEntity.diff_discussion_html).renderGFM();
 
         if (!this.isParallelView() || row.hasClass('js-temp-notes-holder') || noteEntity.on_image) {
           // insert the note and the reply button after the temp row
           row.after($discussion);
         } else {
           // Merge new discussion HTML in
-          var $notes = $discussion.find(`.notes[data-discussion-id="${noteEntity.discussion_id}"]`);
-          var contentContainerClass = $notes
+          const $notes = $discussion.find(
+            `.notes[data-discussion-id="${noteEntity.discussion_id}"]`,
+          );
+          const contentContainerClass = $notes
             .closest('.notes-content')
             .attr('class')
             .split(' ')
@@ -537,7 +540,7 @@ export default class Notes {
   }
 
   renderDiscussionAvatar(diffAvatarContainer, noteEntity) {
-    var avatarHolder = diffAvatarContainer.find('.diff-comment-avatar-holders');
+    let avatarHolder = diffAvatarContainer.find('.diff-comment-avatar-holders');
 
     if (!avatarHolder.length) {
       avatarHolder = document.createElement('diff-note-avatars');
@@ -557,8 +560,7 @@ export default class Notes {
    * Resets buttons.
    */
   resetMainTargetForm(e) {
-    var form;
-    form = $('.js-main-target-form');
+    const form = $('.js-main-target-form');
     // remove validation errors
     form.find('.js-errors').remove();
     // reset text and preview
@@ -572,7 +574,7 @@ export default class Notes {
       .data('autosave')
       .reset();
 
-    var event = document.createEvent('Event');
+    const event = document.createEvent('Event');
     event.initEvent('autosize:update', true, false);
     form.find('.js-autosize')[0].dispatchEvent(event);
 
@@ -580,8 +582,7 @@ export default class Notes {
   }
 
   reenableTargetFormSubmitButton() {
-    var form;
-    form = $('.js-main-target-form');
+    const form = $('.js-main-target-form');
     return form.find('.js-note-text').trigger('input');
   }
 
@@ -591,9 +592,8 @@ export default class Notes {
    * Sets some hidden fields in the form.
    */
   setupMainTargetNoteForm(enableGFM) {
-    var form;
     // find the form
-    form = $('.js-new-note-form');
+    const form = $('.js-new-note-form');
     // Set a global clone of the form for later cloning
     this.formClone = form.clone();
     // show the form
@@ -626,10 +626,9 @@ export default class Notes {
    * show the form
    */
   setupNoteForm(form, enableGFM = defaultAutocompleteConfig) {
-    var textarea, key;
     this.glForm = new GLForm(form, enableGFM);
-    textarea = form.find('.js-note-text');
-    key = [
+    const textarea = form.find('.js-note-text');
+    const key = [
       s__('NoteForm|Note'),
       form.find('#note_noteable_type').val(),
       form.find('#note_noteable_id').val(),
@@ -686,8 +685,8 @@ export default class Notes {
    */
   addDiscussionNote($form, note, isNewDiffComment) {
     if ($form.attr('data-resolve-all') != null) {
-      var discussionId = $form.data('discussionId');
-      var mergeRequestId = $form.data('noteableIid');
+      const discussionId = $form.data('discussionId');
+      const mergeRequestId = $form.data('noteableIid');
 
       if (ResolveService != null) {
         ResolveService.toggleResolveForDiscussion(mergeRequestId, discussionId);
@@ -707,13 +706,12 @@ export default class Notes {
    * Updates the current note field.
    */
   updateNote(noteEntity, $targetNote) {
-    var $noteEntityEl, $note_li;
     // Convert returned HTML to a jQuery object so we can modify it further
-    $noteEntityEl = $(noteEntity.html);
+    const $noteEntityEl = $(noteEntity.html);
     this.revertNoteEditForm($targetNote);
     $noteEntityEl.renderGFM();
     // Find the note's `li` element by ID and replace it with the updated HTML
-    $note_li = $(`.note-row-${noteEntity.id}`);
+    const $note_li = $(`.note-row-${noteEntity.id}`);
 
     $note_li.replaceWith($noteEntityEl);
     this.setupNewNote($noteEntityEl);
@@ -724,17 +722,17 @@ export default class Notes {
   }
 
   checkContentToAllowEditing($el) {
-    var initialContent = $el
+    const initialContent = $el
       .find('.original-note-content')
       .text()
       .trim();
-    var currentContent = $el.find('.js-note-text').val();
-    var isAllowed = true;
+    const currentContent = $el.find('.js-note-text').val();
+    let isAllowed = true;
 
     if (currentContent === initialContent) {
       this.removeNoteEditForm($el);
     } else {
-      var isWidgetVisible = isInViewport($el.get(0));
+      const isWidgetVisible = isInViewport($el.get(0));
 
       if (!isWidgetVisible) {
         scrollToElement($el);
@@ -756,13 +754,13 @@ export default class Notes {
   showEditForm(e) {
     e.preventDefault();
 
-    var $target = $(e.target);
-    var $editForm = $(this.getEditFormSelector($target));
-    var $note = $target.closest('.note');
-    var $currentlyEditing = $('.note.is-editing:visible');
+    const $target = $(e.target);
+    const $editForm = $(this.getEditFormSelector($target));
+    const $note = $target.closest('.note');
+    const $currentlyEditing = $('.note.is-editing:visible');
 
     if ($currentlyEditing.length) {
-      var isEditAllowed = this.checkContentToAllowEditing($currentlyEditing);
+      const isEditAllowed = this.checkContentToAllowEditing($currentlyEditing);
 
       if (!isEditAllowed) {
         return;
@@ -802,8 +800,8 @@ export default class Notes {
 
   revertNoteEditForm($target) {
     $target = $target || $('.note.is-editing:visible');
-    var selector = this.getEditFormSelector($target);
-    var $editForm = $(selector);
+    const selector = this.getEditFormSelector($target);
+    const $editForm = $(selector);
 
     $editForm.insertBefore('.diffs');
     $editForm.find('.js-comment-save-button').enable();
@@ -811,7 +809,7 @@ export default class Notes {
   }
 
   getEditFormSelector($el) {
-    var selector = '.note-edit-form:not(.mr-note-edit-form)';
+    let selector = '.note-edit-form:not(.mr-note-edit-form)';
 
     if ($el.parents('#diffs').length) {
       selector = '.note-edit-form.mr-note-edit-form';
@@ -821,7 +819,7 @@ export default class Notes {
   }
 
   removeNoteEditForm($note) {
-    var form = $note.find('.diffs .current-note-edit-form');
+    const form = $note.find('.diffs .current-note-edit-form');
 
     $note.removeClass('is-editing');
     form.removeClass('current-note-edit-form');
@@ -837,9 +835,8 @@ export default class Notes {
    * Removes the whole discussion if the last note is being removed.
    */
   removeNote(e) {
-    var noteElId, $note;
-    $note = $(e.currentTarget).closest('.note');
-    noteElId = $note.attr('id');
+    const $note = $(e.currentTarget).closest('.note');
+    const noteElId = $note.attr('id');
     $(`.note[id="${noteElId}"]`).each((i, el) => {
       // A same note appears in the "Discussion" and in the "Changes" tab, we have
       // to remove all. Using $('.note[id='noteId']') ensure we get all the notes,
@@ -915,9 +912,8 @@ export default class Notes {
   }
 
   replyToDiscussionNote(target) {
-    var form, replyLink;
-    form = this.cleanForm(this.formClone.clone());
-    replyLink = $(target).closest('.js-discussion-reply-button');
+    const form = this.cleanForm(this.formClone.clone());
+    const replyLink = $(target).closest('.js-discussion-reply-button');
     // insert the form after the button
     replyLink
       .closest('.discussion-reply-holder')
@@ -942,7 +938,7 @@ export default class Notes {
       diffFileData = dataHolder.closest('.image');
     }
 
-    var discussionID = dataHolder.data('discussionId');
+    const discussionID = dataHolder.data('discussionId');
 
     if (discussionID) {
       form.attr('data-discussion-id', discussionID);
@@ -985,7 +981,7 @@ export default class Notes {
     form.removeClass('js-main-target-form').addClass('discussion-form js-discussion-note-form');
 
     if (typeof gl.diffNotesCompileComponents !== 'undefined') {
-      var $commentBtn = form.find('comment-and-resolve-btn');
+      const $commentBtn = form.find('comment-and-resolve-btn');
       $commentBtn.attr(':discussion-id', `'${discussionID}'`);
 
       gl.diffNotesCompileComponents();
@@ -1042,16 +1038,20 @@ export default class Notes {
   }
 
   toggleDiffNote({ target, lineType, forceShow, showReplyInput = false }) {
-    var $link, addForm, hasNotes, newForm, noteForm, replyButton, row, rowCssToAdd;
-    $link = $(target);
-    row = $link.closest('tr');
+    let addForm;
+    let newForm;
+    let noteForm;
+    let replyButton;
+    let rowCssToAdd;
+    const $link = $(target);
+    const row = $link.closest('tr');
     const nextRow = row.next();
     let targetRow = row;
     if (nextRow.is('.notes_holder')) {
       targetRow = nextRow;
     }
 
-    hasNotes = nextRow.is('.notes_holder');
+    const hasNotes = nextRow.is('.notes_holder');
     addForm = false;
     let lineTypeSelector = '';
     rowCssToAdd =
@@ -1111,9 +1111,8 @@ export default class Notes {
    * Removes the form and if necessary it's temporary row.
    */
   removeDiscussionNoteForm(form) {
-    var glForm, row;
-    row = form.closest('tr');
-    glForm = form.data('glForm');
+    const row = form.closest('tr');
+    const glForm = form.data('glForm');
     glForm.destroy();
     form
       .find('.js-note-text')
@@ -1158,10 +1157,9 @@ export default class Notes {
    * Updates the file name for the selected attachment.
    */
   updateFormAttachment() {
-    var filename, form;
-    form = $(this).closest('form');
+    const form = $(this).closest('form');
     // get only the basename
-    filename = $(this)
+    const filename = $(this)
       .val()
       .replace(/^.*[\\\/]/, '');
     return form.find('.js-attachment-filename').text(filename);
@@ -1175,11 +1173,12 @@ export default class Notes {
   }
 
   updateTargetButtons(e) {
-    var closebtn, closetext, form, reopenbtn, reopentext, textarea;
-    textarea = $(e.target);
-    form = textarea.parents('form');
-    reopenbtn = form.find('.js-note-target-reopen');
-    closebtn = form.find('.js-note-target-close');
+    let closetext;
+    let reopentext;
+    const textarea = $(e.target);
+    const form = textarea.parents('form');
+    const reopenbtn = form.find('.js-note-target-reopen');
+    const closebtn = form.find('.js-note-target-close');
 
     if (textarea.val().trim().length > 0) {
       reopentext = reopenbtn.attr('data-alternative-text');
@@ -1215,16 +1214,16 @@ export default class Notes {
   }
 
   putEditFormInPlace($el) {
-    var $editForm = $(this.getEditFormSelector($el));
-    var $note = $el.closest('.note');
+    const $editForm = $(this.getEditFormSelector($el));
+    const $note = $el.closest('.note');
 
     $editForm.insertAfter($note.find('.note-text'));
 
-    var $originalContentEl = $note.find('.original-note-content');
-    var originalContent = $originalContentEl.text().trim();
-    var postUrl = $originalContentEl.data('postUrl');
-    var targetId = $originalContentEl.data('targetId');
-    var targetType = $originalContentEl.data('targetType');
+    const $originalContentEl = $note.find('.original-note-content');
+    const originalContent = $originalContentEl.text().trim();
+    const postUrl = $originalContentEl.data('postUrl');
+    const targetId = $originalContentEl.data('targetId');
+    const targetType = $originalContentEl.data('targetType');
 
     this.glForm = new GLForm($editForm.find('form'), this.enableGFM);
 

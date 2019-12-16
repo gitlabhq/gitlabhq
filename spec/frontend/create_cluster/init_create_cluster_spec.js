@@ -3,6 +3,11 @@ import initGkeDropdowns from '~/create_cluster/gke_cluster';
 import initGkeNamespace from '~/create_cluster/gke_cluster_namespace';
 import PersistentUserCallout from '~/persistent_user_callout';
 
+// This import is loaded dynamically in `init_create_cluster`.
+// Let's eager import it here so that the first spec doesn't timeout.
+// https://gitlab.com/gitlab-org/gitlab/issues/118499
+import '~/create_cluster/eks_cluster';
+
 jest.mock('~/create_cluster/gke_cluster', () => jest.fn());
 jest.mock('~/create_cluster/gke_cluster_namespace', () => jest.fn());
 jest.mock('~/persistent_user_callout', () => ({
@@ -20,10 +25,9 @@ describe('initCreateCluster', () => {
     };
     gon = { features: {} };
   });
+
   afterEach(() => {
-    initGkeDropdowns.mockReset();
-    initGkeNamespace.mockReset();
-    PersistentUserCallout.factory.mockReset();
+    jest.clearAllMocks();
   });
 
   describe.each`

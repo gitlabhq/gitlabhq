@@ -10318,6 +10318,9 @@ msgstr ""
 msgid "Learn GitLab"
 msgstr ""
 
+msgid "Learn More"
+msgstr ""
+
 msgid "Learn how to %{link_start}contribute to the built-in templates%{link_end}"
 msgstr ""
 
@@ -18388,13 +18391,28 @@ msgstr ""
 msgid "ThreatMonitoring|A Web Application Firewall (WAF) provides monitoring and rules to protect production applications. GitLab adds the modsecurity WAF plug-in when you install the Ingress app in your Kubernetes cluster."
 msgstr ""
 
-msgid "ThreatMonitoring|The graph below is an overview of traffic coming to your application. View the documentation for instructions on how to access the WAF logs to see what type of malicious traffic is trying to access your app."
+msgid "ThreatMonitoring|At this time, threat monitoring only supports WAF data."
+msgstr ""
+
+msgid "ThreatMonitoring|Environment"
+msgstr ""
+
+msgid "ThreatMonitoring|Something went wrong, unable to fetch WAF statistics"
+msgstr ""
+
+msgid "ThreatMonitoring|Something went wrong, unable to fetch environments"
+msgstr ""
+
+msgid "ThreatMonitoring|The graph below is an overview of traffic coming to your application as tracked by the Web Application Firewall (WAF). View the docs for instructions on how to access the WAF logs to see what type of malicious traffic is trying to access your app. The docs link is also accessible by clicking the \"?\" icon next to the title below."
 msgstr ""
 
 msgid "ThreatMonitoring|Threat Monitoring"
 msgstr ""
 
 msgid "ThreatMonitoring|Threat Monitoring help page link"
+msgstr ""
+
+msgid "ThreatMonitoring|View WAF documentation"
 msgstr ""
 
 msgid "ThreatMonitoring|Web Application Firewall not enabled"
