@@ -157,7 +157,7 @@ describe Banzai::Filter::RelativeLinkFilter do
     end
 
     it 'does not modify relative URLs in system notes' do
-      path = "#{project_path}/merge_requests/1/diffs"
+      path = "#{project_path}/-/merge_requests/1/diffs"
       doc = filter(link(path), system_note: true)
 
       expect(doc.at_css('a')['href']).to eq path

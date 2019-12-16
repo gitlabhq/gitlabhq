@@ -167,6 +167,10 @@ FactoryBot.define do
       attachment { fixture_file_upload("spec/fixtures/unsanitized.svg", "image/svg+xml") }
     end
 
+    trait :with_pdf_attachment do
+      attachment { fixture_file_upload("spec/fixtures/git-cheat-sheet.pdf", "application/pdf") }
+    end
+
     transient do
       in_reply_to { nil }
     end

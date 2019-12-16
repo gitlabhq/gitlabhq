@@ -55,7 +55,7 @@ describe Gitlab::UrlBuilder do
 
         url = described_class.build(merge_request)
 
-        expect(url).to eq "#{Settings.gitlab['url']}/#{merge_request.project.full_path}/merge_requests/#{merge_request.iid}"
+        expect(url).to eq "#{Settings.gitlab['url']}/#{merge_request.project.full_path}/-/merge_requests/#{merge_request.iid}"
       end
     end
 
@@ -118,7 +118,7 @@ describe Gitlab::UrlBuilder do
 
           url = described_class.build(note)
 
-          expect(url).to eq "#{Settings.gitlab['url']}/#{merge_request.project.full_path}/merge_requests/#{merge_request.iid}#note_#{note.id}"
+          expect(url).to eq "#{Settings.gitlab['url']}/#{merge_request.project.full_path}/-/merge_requests/#{merge_request.iid}#note_#{note.id}"
         end
       end
 
@@ -129,7 +129,7 @@ describe Gitlab::UrlBuilder do
 
           url = described_class.build(note)
 
-          expect(url).to eq "#{Settings.gitlab['url']}/#{merge_request.project.full_path}/merge_requests/#{merge_request.iid}#note_#{note.id}"
+          expect(url).to eq "#{Settings.gitlab['url']}/#{merge_request.project.full_path}/-/merge_requests/#{merge_request.iid}#note_#{note.id}"
         end
       end
 

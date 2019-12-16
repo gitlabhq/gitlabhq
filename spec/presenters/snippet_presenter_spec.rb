@@ -127,4 +127,20 @@ describe SnippetPresenter do
       end
     end
   end
+
+  describe '#can_report_as_spam' do
+    let(:snippet) { personal_snippet }
+
+    subject { presenter.can_report_as_spam? }
+
+    it 'returns false if the user cannot submit the snippet as spam' do
+      expect(subject).to be_falsey
+    end
+
+    it 'returns true if the user can submit the snippet as spam' do
+      allow(snippet).to receive(:submittable_as_spam_by?).and_return(true)
+
+      expect(subject).to be_truthy
+    end
+  end
 end

@@ -240,6 +240,16 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         expect(sentry_issue.sentry_issue_identifier).to eq(1234567891)
       end
 
+      it 'restores container_expiration_policy' do
+        policy = Project.find_by_path('project').container_expiration_policy
+
+        aggregate_failures do
+          expect(policy).to be_an_instance_of(ContainerExpirationPolicy)
+          expect(policy).to be_persisted
+          expect(policy.cadence).to eq('3month')
+        end
+      end
+
       context 'Merge requests' do
         it 'always has the new project as a target' do
           expect(MergeRequest.find_by_title('MR1').target_project).to eq(@project)

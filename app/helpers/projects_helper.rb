@@ -686,6 +686,7 @@ module ProjectsHelper
       error_tracking
       user
       gcp
+      logs
     ]
   end
 

@@ -45,12 +45,12 @@ describe MergeRequestWidgetEntity do
 
   it 'has email_patches_path' do
     expect(subject[:email_patches_path])
-      .to eq("/#{resource.project.full_path}/merge_requests/#{resource.iid}.patch")
+      .to eq("/#{resource.project.full_path}/-/merge_requests/#{resource.iid}.patch")
   end
 
   it 'has plain_diff_path' do
     expect(subject[:plain_diff_path])
-      .to eq("/#{resource.project.full_path}/merge_requests/#{resource.iid}.diff")
+      .to eq("/#{resource.project.full_path}/-/merge_requests/#{resource.iid}.diff")
   end
 
   describe 'when source project is deleted' do

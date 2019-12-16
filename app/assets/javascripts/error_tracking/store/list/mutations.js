@@ -44,6 +44,9 @@ export default {
       throw e;
     }
   },
+  [types.SET_PAGINATION](state, pagination) {
+    state.pagination = pagination;
+  },
   [types.SET_SORT_FIELD](state, field) {
     state.sortField = field;
   },

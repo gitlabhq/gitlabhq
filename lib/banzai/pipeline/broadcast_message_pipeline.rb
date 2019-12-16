@@ -6,7 +6,7 @@ module Banzai
       def self.filters
         @filters ||= FilterArray[
           Filter::MarkdownFilter,
-          Filter::SanitizationFilter,
+          Filter::BroadcastMessageSanitizationFilter,
 
           Filter::EmojiFilter,
           Filter::ColorFilter,

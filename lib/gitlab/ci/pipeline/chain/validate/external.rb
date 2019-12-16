@@ -38,7 +38,7 @@ module Gitlab
                 raise InvalidResponseCode, "Unsupported response code received from Validation Service: #{response_code}"
               end
             rescue => ex
-              Gitlab::Sentry.track_exception(ex)
+              Gitlab::ErrorTracking.track_exception(ex)
 
               true
             end

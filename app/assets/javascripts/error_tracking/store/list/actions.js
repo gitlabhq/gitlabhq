@@ -23,6 +23,7 @@ export function startPolling({ state, commit, dispatch }) {
       if (!data) {
         return;
       }
+      commit(types.SET_PAGINATION, data.pagination);
       commit(types.SET_ERRORS, data.errors);
       commit(types.SET_LOADING, false);
       dispatch('stopPolling');

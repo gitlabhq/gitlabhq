@@ -292,71 +292,77 @@ describe 'project routing' do
 
   describe Projects::MergeRequestsController, 'routing' do
     it 'to #commits' do
-      expect(get('/gitlab/gitlabhq/merge_requests/1/commits.json')).to route_to('projects/merge_requests#commits', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', format: 'json')
+      expect(get('/gitlab/gitlabhq/-/merge_requests/1/commits.json')).to route_to('projects/merge_requests#commits', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', format: 'json')
     end
 
     it 'to #pipelines' do
-      expect(get('/gitlab/gitlabhq/merge_requests/1/pipelines.json')).to route_to('projects/merge_requests#pipelines', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', format: 'json')
+      expect(get('/gitlab/gitlabhq/-/merge_requests/1/pipelines.json')).to route_to('projects/merge_requests#pipelines', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', format: 'json')
     end
 
     it 'to #merge' do
-      expect(post('/gitlab/gitlabhq/merge_requests/1/merge')).to route_to(
+      expect(post('/gitlab/gitlabhq/-/merge_requests/1/merge')).to route_to(
         'projects/merge_requests#merge',
         namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1'
       )
     end
 
     it 'to #show' do
-      expect(get('/gitlab/gitlabhq/merge_requests/1.diff')).to route_to('projects/merge_requests#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', format: 'diff')
-      expect(get('/gitlab/gitlabhq/merge_requests/1.patch')).to route_to('projects/merge_requests#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', format: 'patch')
-      expect(get('/gitlab/gitlabhq/merge_requests/1/diffs')).to route_to('projects/merge_requests#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', tab: 'diffs')
-      expect(get('/gitlab/gitlabhq/merge_requests/1/commits')).to route_to('projects/merge_requests#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', tab: 'commits')
-      expect(get('/gitlab/gitlabhq/merge_requests/1/pipelines')).to route_to('projects/merge_requests#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', tab: 'pipelines')
+      expect(get('/gitlab/gitlabhq/-/merge_requests/1.diff')).to route_to('projects/merge_requests#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', format: 'diff')
+      expect(get('/gitlab/gitlabhq/-/merge_requests/1.patch')).to route_to('projects/merge_requests#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', format: 'patch')
+      expect(get('/gitlab/gitlabhq/-/merge_requests/1/diffs')).to route_to('projects/merge_requests#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', tab: 'diffs')
+      expect(get('/gitlab/gitlabhq/-/merge_requests/1/commits')).to route_to('projects/merge_requests#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', tab: 'commits')
+      expect(get('/gitlab/gitlabhq/-/merge_requests/1/pipelines')).to route_to('projects/merge_requests#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', tab: 'pipelines')
     end
 
     it_behaves_like 'RESTful project resources' do
       let(:controller) { 'merge_requests' }
       let(:actions) { [:index, :edit, :show, :update] }
+      let(:controller_path) { '/-/merge_requests' }
     end
+
+    it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/merge_requests", "/gitlab/gitlabhq/-/merge_requests"
+    it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/merge_requests/1/diffs", "/gitlab/gitlabhq/-/merge_requests/1/diffs"
   end
 
   describe Projects::MergeRequests::CreationsController, 'routing' do
     it 'to #new' do
-      expect(get('/gitlab/gitlabhq/merge_requests/new')).to route_to('projects/merge_requests/creations#new', namespace_id: 'gitlab', project_id: 'gitlabhq')
-      expect(get('/gitlab/gitlabhq/merge_requests/new/diffs')).to route_to('projects/merge_requests/creations#new', namespace_id: 'gitlab', project_id: 'gitlabhq', tab: 'diffs')
-      expect(get('/gitlab/gitlabhq/merge_requests/new/pipelines')).to route_to('projects/merge_requests/creations#new', namespace_id: 'gitlab', project_id: 'gitlabhq', tab: 'pipelines')
+      expect(get('/gitlab/gitlabhq/-/merge_requests/new')).to route_to('projects/merge_requests/creations#new', namespace_id: 'gitlab', project_id: 'gitlabhq')
+      expect(get('/gitlab/gitlabhq/-/merge_requests/new/diffs')).to route_to('projects/merge_requests/creations#new', namespace_id: 'gitlab', project_id: 'gitlabhq', tab: 'diffs')
+      expect(get('/gitlab/gitlabhq/-/merge_requests/new/pipelines')).to route_to('projects/merge_requests/creations#new', namespace_id: 'gitlab', project_id: 'gitlabhq', tab: 'pipelines')
     end
 
     it 'to #create' do
-      expect(post('/gitlab/gitlabhq/merge_requests')).to route_to('projects/merge_requests/creations#create', namespace_id: 'gitlab', project_id: 'gitlabhq')
+      expect(post('/gitlab/gitlabhq/-/merge_requests')).to route_to('projects/merge_requests/creations#create', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
 
     it 'to #branch_from' do
-      expect(get('/gitlab/gitlabhq/merge_requests/new/branch_from')).to route_to('projects/merge_requests/creations#branch_from', namespace_id: 'gitlab', project_id: 'gitlabhq')
+      expect(get('/gitlab/gitlabhq/-/merge_requests/new/branch_from')).to route_to('projects/merge_requests/creations#branch_from', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
 
     it 'to #branch_to' do
-      expect(get('/gitlab/gitlabhq/merge_requests/new/branch_to')).to route_to('projects/merge_requests/creations#branch_to', namespace_id: 'gitlab', project_id: 'gitlabhq')
+      expect(get('/gitlab/gitlabhq/-/merge_requests/new/branch_to')).to route_to('projects/merge_requests/creations#branch_to', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
 
     it 'to #pipelines' do
-      expect(get('/gitlab/gitlabhq/merge_requests/new/pipelines.json')).to route_to('projects/merge_requests/creations#pipelines', namespace_id: 'gitlab', project_id: 'gitlabhq', format: 'json')
+      expect(get('/gitlab/gitlabhq/-/merge_requests/new/pipelines.json')).to route_to('projects/merge_requests/creations#pipelines', namespace_id: 'gitlab', project_id: 'gitlabhq', format: 'json')
     end
 
     it 'to #diffs' do
-      expect(get('/gitlab/gitlabhq/merge_requests/new/diffs.json')).to route_to('projects/merge_requests/creations#diffs', namespace_id: 'gitlab', project_id: 'gitlabhq', format: 'json')
+      expect(get('/gitlab/gitlabhq/-/merge_requests/new/diffs.json')).to route_to('projects/merge_requests/creations#diffs', namespace_id: 'gitlab', project_id: 'gitlabhq', format: 'json')
     end
+
+    it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/merge_requests/new", "/gitlab/gitlabhq/-/merge_requests/new"
   end
 
   describe Projects::MergeRequests::DiffsController, 'routing' do
     it 'to #show' do
-      expect(get('/gitlab/gitlabhq/merge_requests/1/diffs.json')).to route_to('projects/merge_requests/diffs#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', format: 'json')
+      expect(get('/gitlab/gitlabhq/-/merge_requests/1/diffs.json')).to route_to('projects/merge_requests/diffs#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', format: 'json')
     end
   end
 
   describe Projects::MergeRequests::ConflictsController, 'routing' do
     it 'to #show' do
-      expect(get('/gitlab/gitlabhq/merge_requests/1/conflicts')).to route_to('projects/merge_requests/conflicts#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1')
+      expect(get('/gitlab/gitlabhq/-/merge_requests/1/conflicts')).to route_to('projects/merge_requests/conflicts#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1')
     end
   end
   #  raw_project_snippet GET    /:project_id/snippets/:id/raw(.:format)  snippets#raw

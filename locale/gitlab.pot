@@ -19625,6 +19625,9 @@ msgstr ""
 msgid "UserProfile|Already reported for abuse"
 msgstr ""
 
+msgid "UserProfile|Blocked user"
+msgstr ""
+
 msgid "UserProfile|Contributed projects"
 msgstr ""
 
@@ -19683,6 +19686,9 @@ msgid "UserProfile|This user hasn't contributed to any projects"
 msgstr ""
 
 msgid "UserProfile|This user hasn't starred any projects"
+msgstr ""
+
+msgid "UserProfile|This user is blocked"
 msgstr ""
 
 msgid "UserProfile|View all"

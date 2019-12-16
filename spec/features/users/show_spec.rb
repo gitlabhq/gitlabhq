@@ -59,6 +59,42 @@ describe 'User page' do
     end
   end
 
+  context 'with blocked profile' do
+    let(:user) { create(:user, state: :blocked) }
+
+    it 'shows no tab' do
+      visit(user_path(user))
+
+      expect(page).to have_css("div.profile-header")
+      expect(page).not_to have_css("ul.nav-links")
+    end
+
+    it 'shows blocked message' do
+      visit(user_path(user))
+
+      expect(page).to have_content("This user is blocked")
+    end
+
+    it 'shows user name as blocked' do
+      visit(user_path(user))
+
+      expect(page).to have_css(".cover-title", text: 'Blocked user')
+    end
+
+    it 'shows no additional fields' do
+      visit(user_path(user))
+
+      expect(page).not_to have_css(".profile-user-bio")
+      expect(page).not_to have_css(".profile-link-holder")
+    end
+
+    it 'shows username' do
+      visit(user_path(user))
+
+      expect(page).to have_content("@#{user.username}")
+    end
+  end
+
   it 'shows the status if there was one' do
     create(:user_status, user: user, message: "Working hard!")
 

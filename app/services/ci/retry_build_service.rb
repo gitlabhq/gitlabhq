@@ -5,7 +5,7 @@ module Ci
     CLONE_ACCESSORS = %i[pipeline project ref tag options name
                          allow_failure stage stage_id stage_idx trigger_request
                          yaml_variables when environment coverage_regex
-                         description tag_list protected needs resource_group].freeze
+                         description tag_list protected needs].freeze
 
     def execute(build)
       reprocess!(build).tap do |new_build|

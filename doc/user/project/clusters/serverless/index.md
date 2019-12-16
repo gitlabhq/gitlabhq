@@ -863,3 +863,21 @@ The instructions below relate to installing and running Certbot on a Linux serve
    After your changes are running on your Knative cluster, you can begin using the HTTPS protocol for secure access your deployed Knative services.
    In the event a mistake is made during this process and you need to update the cert, you will need to edit the gateway `knative-ingress-gateway`
    to switch back to `PASSTHROUGH` mode. Once corrections are made, edit the file again so the gateway will use the new certificates.
+
+## Using an older version of `gitlabktl`
+
+There may be situations where you want to run an older version of `gitlabktl`. This
+requires setting an older version of the `gitlabktl` image in the `.gitlab-ci.yml file.`
+
+To set an older version, add `image:` to the `functions:deploy` block. For example:
+
+```yaml
+functions:deploy:
+  extends: .serverless:deploy:functions
+  environment: production
+  image: registry.gitlab.com/gitlab-org/gitlabktl:0.5.0
+```
+
+Different versions are available by changing the version tag at the end of the registry URL: `registry.gitlab.com/gitlab-org/gitlabktl:VERSION`
+
+For a full inventory of available `gitlabktl` versions please see [this list](https://gitlab.com/gitlab-org/gitlabktl/container_registry)

@@ -35,7 +35,8 @@ def jobs_to_run(node_index, node_total)
     %w[yarn run prettier-all],
     %w[bundle exec rubocop --parallel],
     %w[scripts/lint-conflicts.sh],
-    %w[scripts/lint-rugged]
+    %w[scripts/lint-rugged],
+    %w[scripts/frontend/check_no_partial_karma_jest.sh]
   ]
 
   case node_total

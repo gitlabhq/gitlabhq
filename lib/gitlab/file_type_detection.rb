@@ -20,6 +20,7 @@
 module Gitlab
   module FileTypeDetection
     SAFE_IMAGE_EXT = %w[png jpg jpeg gif bmp tiff ico].freeze
+    PDF_EXT = 'pdf'
     # We recommend using the .mp4 format over .mov. Videos in .mov format can
     # still be used but you really need to make sure they are served with the
     # proper MIME type video/mp4 and not video/quicktime or your videos won't play
@@ -44,6 +45,10 @@ module Gitlab
 
     def audio?
       extension_match?(SAFE_AUDIO_EXT)
+    end
+
+    def pdf?
+      extension_match?([PDF_EXT])
     end
 
     def embeddable?

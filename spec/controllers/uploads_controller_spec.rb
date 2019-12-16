@@ -196,24 +196,39 @@ describe UploadsController do
 
   describe "GET show" do
     context 'Content-Disposition security measures' do
+      let(:expected_disposition) { 'inline;' }
       let(:project) { create(:project, :public) }
 
-      context 'for PNG files' do
-        it 'returns Content-Disposition: inline' do
-          note = create(:note, :with_attachment, project: project)
-          get :show, params: { model: 'note', mounted_as: 'attachment', id: note.id, filename: 'dk.png' }
+      shared_examples_for 'uploaded file with disposition' do
+        it 'returns correct Content-Disposition' do
+          get :show, params: { model: 'note', mounted_as: 'attachment', id: note.id, filename: filename }
 
-          expect(response['Content-Disposition']).to start_with('inline;')
+          expect(response['Content-Disposition']).to start_with(expected_disposition)
         end
       end
 
-      context 'for SVG files' do
-        it 'returns Content-Disposition: attachment' do
-          note = create(:note, :with_svg_attachment, project: project)
-          get :show, params: { model: 'note', mounted_as: 'attachment', id: note.id, filename: 'unsanitized.svg' }
+      context 'for PNG files' do
+        let(:filename) { 'dk.png' }
+        let(:expected_disposition) { 'inline;' }
+        let(:note) { create(:note, :with_attachment, project: project) }
 
-          expect(response['Content-Disposition']).to start_with('attachment;')
-        end
+        it_behaves_like 'uploaded file with disposition'
+      end
+
+      context 'for PDF files' do
+        let(:filename) { 'git-cheat-sheet.pdf' }
+        let(:expected_disposition) { 'inline;' }
+        let(:note) { create(:note, :with_pdf_attachment, project: project) }
+
+        it_behaves_like 'uploaded file with disposition'
+      end
+
+      context 'for SVG files' do
+        let(:filename) { 'unsanitized.svg' }
+        let(:expected_disposition) { 'attachment;' }
+        let(:note) { create(:note, :with_svg_attachment, project: project) }
+
+        it_behaves_like 'uploaded file with disposition'
       end
     end
 

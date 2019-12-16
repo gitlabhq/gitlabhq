@@ -444,7 +444,6 @@ project:
 - service_desk_setting
 - import_failures
 - container_expiration_policy
-- resource_groups
 award_emoji:
 - awardable
 - user

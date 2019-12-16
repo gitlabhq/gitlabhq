@@ -23,10 +23,24 @@ then
     exit 1
 fi
 
+if [[ "$SOURCE_PROJECT" == '' ]]
+then
+    echo 'The variable SOURCE_PROJECT must be set to a non-empy value'
+    exit 1
+fi
+
+if [[ "$TARGET_PROJECT" == '' ]]
+then
+    echo 'The variable TARGET_PROJECT must be set to a non-empy value'
+    exit 1
+fi
+
 curl -X POST \
     -F token="$MERGE_TRAIN_TRIGGER_TOKEN" \
     -F ref=master \
     -F "variables[MERGE_FOSS]=1" \
     -F "variables[SOURCE_BRANCH]=$CI_COMMIT_REF_NAME" \
     -F "variables[TARGET_BRANCH]=${CI_COMMIT_REF_NAME/-ee/}" \
+    -F "variables[SOURCE_PROJECT]=$SOURCE_PROJECT" \
+    -F "variables[TARGET_PROJECT]=$TARGET_PROJECT" \
     "$MERGE_TRAIN_TRIGGER_URL"

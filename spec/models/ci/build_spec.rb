@@ -1275,68 +1275,6 @@ describe Ci::Build do
       end
     end
 
-    describe '#requires_resource?' do
-      subject { build.requires_resource? }
-
-      context 'when build needs a resource from a resource group' do
-        let(:resource_group) { create(:ci_resource_group, project: project) }
-        let(:build) { create(:ci_build, resource_group: resource_group, project: project) }
-
-        context 'when build has not retained a resource' do
-          it { is_expected.to eq(true) }
-        end
-
-        context 'when build has retained a resource' do
-          before do
-            resource_group.retain_resource_for(build)
-          end
-
-          it { is_expected.to eq(false) }
-
-          context 'when ci_resource_group feature flag is disabled' do
-            before do
-              stub_feature_flags(ci_resource_group: false)
-            end
-
-            it { is_expected.to eq(false) }
-          end
-        end
-      end
-
-      context 'when build does not need a resource from a resource group' do
-        let(:build) { create(:ci_build, project: project) }
-
-        it { is_expected.to eq(false) }
-      end
-    end
-
-    describe '#retains_resource?' do
-      subject { build.retains_resource? }
-
-      context 'when build needs a resource from a resource group' do
-        let(:resource_group) { create(:ci_resource_group, project: project) }
-        let(:build) { create(:ci_build, resource_group: resource_group, project: project) }
-
-        context 'when build has retained a resource' do
-          before do
-            resource_group.retain_resource_for(build)
-          end
-
-          it { is_expected.to eq(true) }
-        end
-
-        context 'when build has not retained a resource' do
-          it { is_expected.to eq(false) }
-        end
-      end
-
-      context 'when build does not need a resource from a resource group' do
-        let(:build) { create(:ci_build, project: project) }
-
-        it { is_expected.to eq(false) }
-      end
-    end
-
     describe '#stops_environment?' do
       subject { build.stops_environment? }
 

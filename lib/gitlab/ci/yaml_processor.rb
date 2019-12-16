@@ -64,7 +64,6 @@ module Gitlab
           except: job[:except],
           rules: job[:rules],
           cache: job[:cache],
-          resource_group_key: job[:resource_group],
           options: {
             image: job[:image],
             services: job[:services],

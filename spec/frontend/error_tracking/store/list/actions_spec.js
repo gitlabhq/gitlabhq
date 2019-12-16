@@ -30,6 +30,7 @@ describe('error tracking actions', () => {
         {},
         [
           { type: types.SET_LOADING, payload: true },
+          { type: types.SET_PAGINATION, payload: payload.pagination },
           { type: types.SET_ERRORS, payload: payload.errors },
           { type: types.SET_LOADING, payload: false },
         ],

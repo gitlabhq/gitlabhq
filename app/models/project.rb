@@ -285,7 +285,6 @@ class Project < ApplicationRecord
   has_many :pipeline_schedules, class_name: 'Ci::PipelineSchedule'
   has_many :project_deploy_tokens
   has_many :deploy_tokens, through: :project_deploy_tokens
-  has_many :resource_groups, class_name: 'Ci::ResourceGroup', inverse_of: :project
 
   has_one :auto_devops, class_name: 'ProjectAutoDevops', inverse_of: :project, autosave: true
   has_many :custom_attributes, class_name: 'ProjectCustomAttribute'
@@ -741,7 +740,7 @@ class Project < ApplicationRecord
   end
 
   def unlink_forks_upon_visibility_decrease_enabled?
-    Feature.enabled?(:unlink_fork_network_upon_visibility_decrease, self)
+    Feature.enabled?(:unlink_fork_network_upon_visibility_decrease, self, default_enabled: true)
   end
 
   def empty_repo?

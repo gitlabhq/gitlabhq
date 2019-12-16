@@ -207,14 +207,6 @@ FactoryBot.define do
       trigger_request factory: :ci_trigger_request
     end
 
-    trait :resource_group do
-      waiting_for_resource_at { 5.minutes.ago }
-
-      after(:build) do |build, evaluator|
-        build.resource_group = create(:ci_resource_group, project: build.project)
-      end
-    end
-
     after(:build) do |build, evaluator|
       build.project ||= build.pipeline.project
     end

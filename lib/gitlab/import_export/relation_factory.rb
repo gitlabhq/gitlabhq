@@ -38,12 +38,12 @@ module Gitlab
 
       IMPORTED_OBJECT_MAX_RETRIES = 5.freeze
 
-      EXISTING_OBJECT_CHECK = %i[milestone milestones label labels project_label project_labels group_label group_labels project_feature merge_request ProjectCiCdSetting].freeze
+      EXISTING_OBJECT_CHECK = %i[milestone milestones label labels project_label project_labels group_label group_labels project_feature merge_request ProjectCiCdSetting container_expiration_policy].freeze
 
       TOKEN_RESET_MODELS = %i[Project Namespace Ci::Trigger Ci::Build Ci::Runner ProjectHook].freeze
 
       # This represents all relations that have unique key on `project_id`
-      UNIQUE_RELATIONS = %i[project_feature ProjectCiCdSetting].freeze
+      UNIQUE_RELATIONS = %i[project_feature ProjectCiCdSetting container_expiration_policy].freeze
 
       def self.create(*args)
         new(*args).create

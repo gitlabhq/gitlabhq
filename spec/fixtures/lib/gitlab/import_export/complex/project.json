@@ -6757,6 +6757,17 @@
       "updated_at": "2017-01-16T15:25:29.637Z"
     }
   ],
+  "container_expiration_policy": {
+    "created_at": "2019-12-13 13:45:04 UTC",
+    "updated_at": "2019-12-13 13:45:04 UTC",
+    "next_run_at": null,
+    "project_id": 5,
+    "name_regex": null,
+    "cadence": "3month",
+    "older_than": null,
+    "keep_n": 100,
+    "enabled": false
+  },
   "deploy_keys": [],
   "services": [
     {

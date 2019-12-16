@@ -44,15 +44,14 @@ module UploadsActions
 
     expires_in ttl, directives
 
-    disposition = uploader.embeddable? ? 'inline' : 'attachment'
+    file_uploader = [uploader, *uploader.versions.values].find do |version|
+      version.filename == params[:filename]
+    end
 
-    uploaders = [uploader, *uploader.versions.values]
-    uploader = uploaders.find { |version| version.filename == params[:filename] }
-
-    return render_404 unless uploader
+    return render_404 unless file_uploader
 
     workhorse_set_content_type!
-    send_upload(uploader, attachment: uploader.filename, disposition: disposition)
+    send_upload(file_uploader, attachment: file_uploader.filename, disposition: content_disposition)
   end
 
   def authorize
@@ -80,6 +79,14 @@ module UploadsActions
       format = Mime[match.captures.first]
 
       request.format = format.symbol if format
+    end
+  end
+
+  def content_disposition
+    if uploader.embeddable? || uploader.pdf?
+      'inline'
+    else
+      'attachment'
     end
   end
 

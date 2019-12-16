@@ -12,13 +12,18 @@ import {
   GlDropdownItem,
   GlDropdownDivider,
   GlTooltipDirective,
+  GlPagination,
 } from '@gitlab/ui';
 import AccessorUtils from '~/lib/utils/accessor';
 import Icon from '~/vue_shared/components/icon.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { __ } from '~/locale';
+import _ from 'underscore';
 
 export default {
+  FIRST_PAGE: 1,
+  PREV_PAGE: 1,
+  NEXT_PAGE: 2,
   fields: [
     { key: 'error', label: __('Open errors'), thClass: 'w-70p' },
     { key: 'events', label: __('Events') },
@@ -42,6 +47,7 @@ export default {
     GlTable,
     GlFormInput,
     Icon,
+    GlPagination,
     TimeAgo,
   },
   directives: {
@@ -73,10 +79,28 @@ export default {
   data() {
     return {
       errorSearchQuery: '',
+      pageValue: this.$options.FIRST_PAGE,
     };
   },
   computed: {
-    ...mapState('list', ['errors', 'loading', 'searchQuery', 'sortField', 'recentSearches']),
+    ...mapState('list', [
+      'errors',
+      'loading',
+      'searchQuery',
+      'sortField',
+      'recentSearches',
+      'pagination',
+    ]),
+    paginationRequired() {
+      return !_.isEmpty(this.pagination);
+    },
+  },
+  watch: {
+    pagination() {
+      if (typeof this.pagination.previous === 'undefined') {
+        this.pageValue = this.$options.FIRST_PAGE;
+      }
+    },
   },
   created() {
     if (this.errorTrackingEnabled) {
@@ -102,6 +126,17 @@ export default {
     },
     getDetailsLink(errorId) {
       return `error_tracking/${errorId}/details`;
+    },
+    goToNextPage() {
+      this.pageValue = this.$options.NEXT_PAGE;
+      this.startPolling(`${this.indexPath}?cursor=${this.pagination.next.cursor}`);
+    },
+    goToPrevPage() {
+      this.startPolling(`${this.indexPath}?cursor=${this.pagination.previous.cursor}`);
+    },
+    goToPage(page) {
+      window.scrollTo(0, 0);
+      return page === this.$options.PREV_PAGE ? this.goToPrevPage() : this.goToNextPage();
     },
     isCurrentSortField(field) {
       return field === this.sortField;
@@ -217,7 +252,6 @@ export default {
             </span>
           </div>
         </template>
-
         <template slot="events" slot-scope="errors">
           <div class="text-md-right">{{ errors.item.count }}</div>
         </template>
@@ -240,6 +274,15 @@ export default {
           </div>
         </template>
       </gl-table>
+      <gl-pagination
+        v-show="!loading"
+        v-if="paginationRequired"
+        :prev-page="$options.PREV_PAGE"
+        :next-page="$options.NEXT_PAGE"
+        :value="pageValue"
+        align="center"
+        @input="goToPage"
+      />
     </div>
     <div v-else-if="userCanEnableErrorTracking">
       <gl-empty-state

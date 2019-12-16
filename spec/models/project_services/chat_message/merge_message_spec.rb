@@ -52,7 +52,7 @@ describe ChatMessage::MergeMessage do
     context 'open' do
       it 'returns a message regarding opening of merge requests' do
         expect(subject.pretext).to eq(
-          'Test User (test.user) opened <http://somewhere.com/merge_requests/100|!100 *Merge Request title*> in <http://somewhere.com|project_name>')
+          'Test User (test.user) opened <http://somewhere.com/-/merge_requests/100|!100 *Merge Request title*> in <http://somewhere.com|project_name>')
         expect(subject.attachments).to be_empty
       end
     end
@@ -63,7 +63,7 @@ describe ChatMessage::MergeMessage do
       end
       it 'returns a message regarding closing of merge requests' do
         expect(subject.pretext).to eq(
-          'Test User (test.user) closed <http://somewhere.com/merge_requests/100|!100 *Merge Request title*> in <http://somewhere.com|project_name>')
+          'Test User (test.user) closed <http://somewhere.com/-/merge_requests/100|!100 *Merge Request title*> in <http://somewhere.com|project_name>')
         expect(subject.attachments).to be_empty
       end
     end
@@ -77,12 +77,12 @@ describe ChatMessage::MergeMessage do
     context 'open' do
       it 'returns a message regarding opening of merge requests' do
         expect(subject.pretext).to eq(
-          'Test User (test.user) opened [!100 *Merge Request title*](http://somewhere.com/merge_requests/100) in [project_name](http://somewhere.com)')
+          'Test User (test.user) opened [!100 *Merge Request title*](http://somewhere.com/-/merge_requests/100) in [project_name](http://somewhere.com)')
         expect(subject.attachments).to be_empty
         expect(subject.activity).to eq({
           title: 'Merge Request opened by Test User (test.user)',
           subtitle: 'in [project_name](http://somewhere.com)',
-          text: '[!100 *Merge Request title*](http://somewhere.com/merge_requests/100)',
+          text: '[!100 *Merge Request title*](http://somewhere.com/-/merge_requests/100)',
           image: 'http://someavatar.com'
         })
       end
@@ -95,12 +95,12 @@ describe ChatMessage::MergeMessage do
 
       it 'returns a message regarding closing of merge requests' do
         expect(subject.pretext).to eq(
-          'Test User (test.user) closed [!100 *Merge Request title*](http://somewhere.com/merge_requests/100) in [project_name](http://somewhere.com)')
+          'Test User (test.user) closed [!100 *Merge Request title*](http://somewhere.com/-/merge_requests/100) in [project_name](http://somewhere.com)')
         expect(subject.attachments).to be_empty
         expect(subject.activity).to eq({
           title: 'Merge Request closed by Test User (test.user)',
           subtitle: 'in [project_name](http://somewhere.com)',
-          text: '[!100 *Merge Request title*](http://somewhere.com/merge_requests/100)',
+          text: '[!100 *Merge Request title*](http://somewhere.com/-/merge_requests/100)',
           image: 'http://someavatar.com'
         })
       end

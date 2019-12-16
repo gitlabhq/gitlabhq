@@ -147,53 +147,53 @@ describe('MergeRequestTabs', function() {
 
     it('changes from commits', function() {
       setLocation({
-        pathname: '/foo/bar/merge_requests/1/commits',
+        pathname: '/foo/bar/-/merge_requests/1/commits',
       });
 
-      expect(this.subject('show')).toBe('/foo/bar/merge_requests/1');
-      expect(this.subject('diffs')).toBe('/foo/bar/merge_requests/1/diffs');
+      expect(this.subject('show')).toBe('/foo/bar/-/merge_requests/1');
+      expect(this.subject('diffs')).toBe('/foo/bar/-/merge_requests/1/diffs');
     });
 
     it('changes from diffs', function() {
       setLocation({
-        pathname: '/foo/bar/merge_requests/1/diffs',
+        pathname: '/foo/bar/-/merge_requests/1/diffs',
       });
 
-      expect(this.subject('show')).toBe('/foo/bar/merge_requests/1');
-      expect(this.subject('commits')).toBe('/foo/bar/merge_requests/1/commits');
+      expect(this.subject('show')).toBe('/foo/bar/-/merge_requests/1');
+      expect(this.subject('commits')).toBe('/foo/bar/-/merge_requests/1/commits');
     });
 
     it('changes from diffs.html', function() {
       setLocation({
-        pathname: '/foo/bar/merge_requests/1/diffs.html',
+        pathname: '/foo/bar/-/merge_requests/1/diffs.html',
       });
 
-      expect(this.subject('show')).toBe('/foo/bar/merge_requests/1');
-      expect(this.subject('commits')).toBe('/foo/bar/merge_requests/1/commits');
+      expect(this.subject('show')).toBe('/foo/bar/-/merge_requests/1');
+      expect(this.subject('commits')).toBe('/foo/bar/-/merge_requests/1/commits');
     });
 
     it('changes from notes', function() {
       setLocation({
-        pathname: '/foo/bar/merge_requests/1',
+        pathname: '/foo/bar/-/merge_requests/1',
       });
 
-      expect(this.subject('diffs')).toBe('/foo/bar/merge_requests/1/diffs');
-      expect(this.subject('commits')).toBe('/foo/bar/merge_requests/1/commits');
+      expect(this.subject('diffs')).toBe('/foo/bar/-/merge_requests/1/diffs');
+      expect(this.subject('commits')).toBe('/foo/bar/-/merge_requests/1/commits');
     });
 
     it('includes search parameters and hash string', function() {
       setLocation({
-        pathname: '/foo/bar/merge_requests/1/diffs',
+        pathname: '/foo/bar/-/merge_requests/1/diffs',
         search: '?view=parallel',
         hash: '#L15-35',
       });
 
-      expect(this.subject('show')).toBe('/foo/bar/merge_requests/1?view=parallel#L15-35');
+      expect(this.subject('show')).toBe('/foo/bar/-/merge_requests/1?view=parallel#L15-35');
     });
 
     it('replaces the current history state', function() {
       setLocation({
-        pathname: '/foo/bar/merge_requests/1',
+        pathname: '/foo/bar/-/merge_requests/1',
       });
       const newState = this.subject('commits');
 
@@ -208,10 +208,10 @@ describe('MergeRequestTabs', function() {
 
     it('treats "show" like "notes"', function() {
       setLocation({
-        pathname: '/foo/bar/merge_requests/1/commits',
+        pathname: '/foo/bar/-/merge_requests/1/commits',
       });
 
-      expect(this.subject('show')).toBe('/foo/bar/merge_requests/1');
+      expect(this.subject('show')).toBe('/foo/bar/-/merge_requests/1');
     });
   });
 

@@ -461,7 +461,7 @@ describe('IDE commit module actions', () => {
             .dispatch('commit/commitChanges')
             .then(() => {
               expect(visitUrl).toHaveBeenCalledWith(
-                `webUrl/merge_requests/new?merge_request[source_branch]=${
+                `webUrl/-/merge_requests/new?merge_request[source_branch]=${
                   store.getters['commit/placeholderBranchName']
                 }&merge_request[target_branch]=master&nav_source=webide`,
               );

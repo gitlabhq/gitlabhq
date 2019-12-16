@@ -8,8 +8,8 @@ import {
   GlFormInput,
   GlDropdown,
   GlDropdownItem,
+  GlPagination,
 } from '@gitlab/ui';
-import createListState from '~/error_tracking/store/list/state';
 import ErrorTrackingList from '~/error_tracking/components/error_tracking_list.vue';
 import errorsList from './list_mock.json';
 
@@ -27,13 +27,16 @@ describe('ErrorTrackingList', () => {
   const findRecentSearchesDropdown = () =>
     wrapper.find('.filtered-search-history-dropdown-wrapper');
   const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
+  const findPagination = () => wrapper.find(GlPagination);
 
   function mountComponent({
     errorTrackingEnabled = true,
     userCanEnableErrorTracking = true,
+    sync = true,
     stubs = {
       'gl-link': GlLink,
       'gl-table': GlTable,
+      'gl-pagination': GlPagination,
       'gl-dropdown': GlDropdown,
       'gl-dropdown-item': GlDropdownItem,
     },
@@ -41,6 +44,7 @@ describe('ErrorTrackingList', () => {
     wrapper = shallowMount(ErrorTrackingList, {
       localVue,
       store,
+      sync,
       propsData: {
         indexPath: '/path',
         enableErrorTrackingLink: '/link',
@@ -69,7 +73,20 @@ describe('ErrorTrackingList', () => {
       sortByField: jest.fn(),
     };
 
-    const state = createListState();
+    const state = {
+      indexPath: '',
+      recentSearches: [],
+      errors: errorsList,
+      loading: true,
+      pagination: {
+        previous: {
+          cursor: 'previousCursor',
+        },
+        next: {
+          cursor: 'nextCursor',
+        },
+      },
+    };
 
     store = new Vuex.Store({
       modules: {
@@ -249,6 +266,67 @@ describe('ErrorTrackingList', () => {
         clearRecentButton().vm.$emit('click');
 
         expect(actions.clearRecentSearches).toHaveBeenCalledTimes(1);
+      });
+    });
+  });
+
+  describe('When pagination is not required', () => {
+    beforeEach(() => {
+      store.state.list.pagination = {};
+      mountComponent();
+    });
+
+    it('should not render the pagination component', () => {
+      expect(findPagination().exists()).toBe(false);
+    });
+  });
+
+  describe('When pagination is required', () => {
+    describe('and the user is on the first page', () => {
+      beforeEach(() => {
+        mountComponent({ sync: false });
+      });
+
+      it('shows a disabled Prev button', () => {
+        expect(wrapper.find('.prev-page-item').attributes('aria-disabled')).toBe('true');
+      });
+    });
+
+    describe('and the user is not on the first page', () => {
+      describe('and the previous button is clicked', () => {
+        beforeEach(() => {
+          mountComponent({ sync: false });
+          wrapper.setData({ pageValue: 2 });
+        });
+
+        it('fetches the previous page of results', () => {
+          expect(wrapper.find('.prev-page-item').attributes('aria-disabled')).toBe(undefined);
+          wrapper.vm.goToPrevPage();
+          expect(actions.startPolling).toHaveBeenCalledTimes(2);
+          expect(actions.startPolling).toHaveBeenLastCalledWith(
+            expect.anything(),
+            '/path?cursor=previousCursor',
+            undefined,
+          );
+        });
+      });
+
+      describe('and the next page button is clicked', () => {
+        beforeEach(() => {
+          mountComponent({ sync: false });
+        });
+
+        it('fetches the next page of results', () => {
+          window.scrollTo = jest.fn();
+          findPagination().vm.$emit('input', 2);
+          expect(window.scrollTo).toHaveBeenCalledWith(0, 0);
+          expect(actions.startPolling).toHaveBeenCalledTimes(2);
+          expect(actions.startPolling).toHaveBeenLastCalledWith(
+            expect.anything(),
+            '/path?cursor=nextCursor',
+            undefined,
+          );
+        });
       });
     });
   });
