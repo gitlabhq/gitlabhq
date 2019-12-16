@@ -9,7 +9,7 @@ module BoardsActions
 
     before_action :boards, only: :index
     before_action :board, only: :show
-    before_action :push_wip_limits, only: :index
+    before_action :push_wip_limits, only: [:index, :show]
   end
 
   def index
