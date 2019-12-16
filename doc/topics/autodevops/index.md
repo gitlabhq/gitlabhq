@@ -1268,6 +1268,30 @@ Everything behaves the same way, except:
   1. `timed rollout 50%`
   1. `timed rollout 100%`
 
+### Auto DevOps banner
+
+The following Auto DevOps banner will show for maintainers+ on new projects when Auto DevOps is not
+enabled:
+
+![Auto DevOps banner](img/autodevops_banner_v12_6.png)
+
+The banner can be disabled for:
+
+- A user when they dismiss it themselves.
+- A project by explicitly [disabling Auto DevOps](#enablingdisabling-auto-devops).
+- An entire GitLab instance:
+  - By an administrator running the following in a Rails console:
+
+    ```ruby
+    Feature.get(:auto_devops_banner_disabled).enable
+    ```
+
+  - Through the REST API with an admin access token:
+
+    ```sh
+    curl --data "value=true" --header "PRIVATE-TOKEN: <personal_access_token>" https://gitlab.example.com/api/v4/features/auto_devops_banner_disabled
+    ```
+
 ## Currently supported languages
 
 Note that not all buildpacks support Auto Test yet, as it's a relatively new
@@ -1339,29 +1363,6 @@ spec:
 - Auto Deploy will fail if GitLab can not create a Kubernetes namespace and
   service account for your project. For help debugging this issue, see
   [Troubleshooting failed deployment jobs](../../user/project/clusters/index.md#troubleshooting).
-
-### Auto DevOps banner
-
-The following Auto DevOps banner will show for maintainers+ on new projects when Auto DevOps is not enabled
-
-![Auto DevOps banner](img/autodevops_banner_v12_6.png)
-
-The banner can be disabled:
-
-- Per user when they dismiss it.
-- Project-wide by explicitly [disabling Auto DevOps](#enablingdisabling-auto-devops).
-- By a GitLab administrator for an entire GitLab instance by either:
-  - Running the following in a Rails console:
-
-    ```ruby
-    Feature.get(:auto_devops_banner_disabled).enable
-    ```
-
-  - Through the REST API with an admin access token:
-
-    ```sh
-    curl --data "value=true" --header "PRIVATE-TOKEN: personal_access_token" https://gitlab.example.com/api/v4/features/auto_devops_banner_disabled
-    ```
 
 [ce-37115]: https://gitlab.com/gitlab-org/gitlab-foss/issues/37115
 [docker-in-docker]: ../../docker/using_docker_build.md#use-docker-in-docker-executor

@@ -25,6 +25,14 @@ describe Gitlab::SidekiqMiddleware do
   # 1) not failing
   # 2) yielding exactly once
   describe '.server_configurator' do
+    around do |example|
+      original = Sidekiq::Testing.server_middleware.dup
+
+      example.run
+
+      Sidekiq::Testing.instance_variable_set :@server_chain, original
+    end
+
     let(:middleware_expected_args) { [a_kind_of(worker_class), hash_including({ 'args' => job_args }), anything] }
     let(:all_sidekiq_middlewares) do
       [

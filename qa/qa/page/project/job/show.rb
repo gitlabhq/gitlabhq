@@ -27,7 +27,7 @@ module QA::Page
         wait(reload: false, max: wait, interval: 1) do
           result = find_element(:build_trace).text
 
-          !result.empty?
+          result.include?('Job')
         end
 
         result

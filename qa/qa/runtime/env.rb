@@ -226,7 +226,7 @@ module QA
       end
 
       def gcloud_region
-        ENV.fetch('GCLOUD_REGION')
+        ENV['GCLOUD_REGION']
       end
 
       def gcloud_num_nodes

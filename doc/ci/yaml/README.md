@@ -1148,6 +1148,8 @@ failure.
 1. `always` - execute job regardless of the status of jobs from prior stages.
 1. `manual` - execute job manually (added in GitLab 8.10). Read about
     [manual actions](#whenmanual) below.
+1. `delayed` - execute job after a certain period (added in GitLab 11.14).
+    Read about [delayed actions](#whendelayed) below.
 
 For example:
 

@@ -1,0 +1,5 @@
+---
+title: Replace CI_COMMIT_REF with CI_COMMIT_SHA on CI docs
+merge_request: 21781
+author: Takuya Noguchi
+type: other
