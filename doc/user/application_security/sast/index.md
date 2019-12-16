@@ -358,7 +358,7 @@ it highlighted:
 }
 ```
 
-Here is the description of the report file structure nodes and their meaning. All fields are mandatory to be present in
+Here is the description of the report file structure nodes and their meaning. All fields are mandatory in
 the report JSON unless stated otherwise. Presence of optional fields depends on the underlying analyzers being used.
 
 | Report JSON node                        | Function |

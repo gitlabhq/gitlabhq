@@ -20,4 +20,12 @@ class SystemHook < WebHook
   def allow_local_requests?
     Gitlab::CurrentSettings.allow_local_requests_from_system_hooks?
   end
+
+  def pluralized_name
+    _('System Hooks')
+  end
+
+  def help_path
+    'system_hooks/system_hooks'
+  end
 end

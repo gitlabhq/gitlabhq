@@ -48,7 +48,7 @@ module QA
         @standalone = false
         @description = 'My awesome project'
         @initialize_with_readme = false
-        @auto_devops_enabled = true
+        @auto_devops_enabled = false
         @visibility = 'public'
       end
 

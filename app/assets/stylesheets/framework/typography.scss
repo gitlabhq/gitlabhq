@@ -645,6 +645,12 @@ h4 {
   }
 }
 
+.text-right-md {
+  @include media-breakpoint-up(md) {
+    text-align: right;
+  }
+}
+
 .text-right-lg {
   @include media-breakpoint-up(lg) {
     text-align: right;

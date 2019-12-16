@@ -60,16 +60,33 @@ module QA
           element :edit_button
         end
 
+        def add_comment_to_diff(text)
+          wait(interval: 5) do
+            has_text?("No newline at end of file")
+          end
+          all_elements(:new_diff_line).first.hover
+          click_element :diff_comment
+          fill_element :reply_input, text
+        end
+
         def click_discussions_tab
           click_element :notes_tab
+
+          finished_loading?
         end
 
         def click_diffs_tab
           click_element :diffs_tab
+
+          finished_loading?
         end
 
         def click_pipeline_link
           click_element :pipeline_link
+        end
+
+        def edit!
+          click_element :edit_button
         end
 
         def fast_forward_possible?
@@ -80,55 +97,6 @@ module QA
           refresh
 
           has_element?(:merge_button)
-        end
-
-        def has_merge_options?
-          has_element?(:merge_moment_dropdown)
-        end
-
-        def merged?
-          has_element? :merged_status_content, text: 'The changes were merged into'
-        end
-
-        def merge_immediately
-          wait(reload: false) do
-            finished_loading?
-          end
-
-          if has_merge_options?
-            retry_until do
-              click_element :merge_moment_dropdown
-              has_element? :merge_immediately_option
-            end
-
-            click_element :merge_immediately_option
-          else
-            click_element :merge_button
-          end
-
-          wait(reload: false) do
-            merged?
-          end
-        end
-
-        def rebase!
-          # The rebase button is disabled on load
-          wait do
-            has_element?(:mr_rebase_button)
-          end
-
-          # The rebase button is enabled via JS
-          wait(reload: false) do
-            !find_element(:mr_rebase_button).disabled?
-          end
-
-          click_element :mr_rebase_button
-
-          success = wait do
-            has_text?('Fast-forward merge without a merge commit')
-          end
-
-          raise "Rebase did not appear to be successful" unless success
         end
 
         def has_assignee?(username)
@@ -156,20 +124,6 @@ module QA
           has_element?(:description, text: description)
         end
 
-        def try_to_merge!
-          merge_immediately if ready_to_merge?
-        end
-
-        def merge!
-          try_to_merge!
-
-          success = wait do
-            has_text?('The changes were merged into')
-          end
-
-          raise "Merge did not appear to be successful" unless success
-        end
-
         def mark_to_squash
           # The squash checkbox is disabled on load
           wait do
@@ -184,17 +138,14 @@ module QA
           click_element :squash_checkbox
         end
 
-        def add_comment_to_diff(text)
-          wait(interval: 5) do
-            has_text?("No newline at end of file")
-          end
-          all_elements(:new_diff_line).first.hover
-          click_element :diff_comment
-          fill_element :reply_input, text
+        def merge!
+          click_element :merge_button if ready_to_merge?
+
+          raise "Merge did not appear to be successful" unless merged?
         end
 
-        def edit!
-          click_element :edit_button
+        def merged?
+          has_element?(:merged_status_content, text: 'The changes were merged into', wait: 30)
         end
 
         def ready_to_merge?
@@ -207,6 +158,30 @@ module QA
           wait(reload: false) do
             !find_element(:merge_button).disabled?
           end
+        end
+
+        def rebase!
+          # The rebase button is disabled on load
+          wait do
+            has_element?(:mr_rebase_button)
+          end
+
+          # The rebase button is enabled via JS
+          wait(reload: false) do
+            !find_element(:mr_rebase_button).disabled?
+          end
+
+          click_element :mr_rebase_button
+
+          success = wait do
+            has_text?('Fast-forward merge without a merge commit')
+          end
+
+          raise "Rebase did not appear to be successful" unless success
+        end
+
+        def try_to_merge!
+          click_element :merge_button if ready_to_merge?
         end
 
         def view_email_patches

@@ -18,6 +18,10 @@ class ProjectHook < WebHook
 
   belongs_to :project
   validates :project, presence: true
+
+  def pluralized_name
+    _('Project Hooks')
+  end
 end
 
 ProjectHook.prepend_if_ee('EE::ProjectHook')

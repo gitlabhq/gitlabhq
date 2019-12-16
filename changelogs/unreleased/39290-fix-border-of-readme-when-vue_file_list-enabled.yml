@@ -1,0 +1,5 @@
+---
+title: Fix top border of README in vue_file_list
+merge_request: 21578
+author: Hector Bustillos
+type: fixed

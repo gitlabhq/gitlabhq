@@ -85,7 +85,7 @@ describe 'Admin::Hooks' do
       it 'from hooks list page' do
         visit admin_hooks_path
 
-        accept_confirm { click_link 'Remove' }
+        accept_confirm { click_link 'Delete' }
         expect(page).not_to have_content(hook_url)
       end
 
@@ -93,7 +93,7 @@ describe 'Admin::Hooks' do
         visit admin_hooks_path
         click_link 'Edit'
 
-        accept_confirm { click_link 'Remove' }
+        accept_confirm { click_link 'Delete' }
         expect(page).not_to have_content(hook_url)
       end
     end

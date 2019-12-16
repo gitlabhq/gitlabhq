@@ -53,7 +53,12 @@ From error list, users can navigate to the error details page by clicking the ti
 This page has:
 
 - A link to the Sentry issue.
-- A full stack trace along with other details.
-- Ability to create an issue from a Sentry error.
+- Other details about the issue, including a full stack trace.
 
-![Error Details](img/error_details_v12_6.png)
+If the error has not been linked to an existing GitLab issue, a 'Create Issue' button will be visible:
+
+![Error Details without Issue Link](img/error_details_v12_6.png)
+
+If a link does exist, it will be shown in the details and the 'Create Issue' button will be hidden:
+
+![Error Details with Issue Link](img/error_details_with_issue_v12_6.png)

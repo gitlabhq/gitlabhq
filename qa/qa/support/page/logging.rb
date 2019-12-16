@@ -49,8 +49,8 @@ module QA
           element
         end
 
-        def all_elements(name)
-          log("finding all :#{name}")
+        def all_elements(name, **kwargs)
+          log("finding all :#{name} with args #{kwargs}")
 
           elements = super
 

@@ -1,19 +1,17 @@
-- page_title 'Integrations'
+- add_to_breadcrumbs _('ProjectService|Integrations'), namespace_project_settings_integrations_path
+- page_title _('Edit Project Hook')
 
 .row.prepend-top-default
   .col-lg-3
-    %h4.prepend-top-0
-      = page_title
-    %p
-      #{link_to 'Webhooks', help_page_path('user/project/integrations/webhooks')} can be
-      used for binding events when something is happening within the project.
+    = render 'shared/web_hooks/title_and_docs', hook: @hook
+
   .col-lg-9.append-bottom-default
     = form_for [@project.namespace.becomes(Namespace), @project, @hook], as: :hook, url: project_hook_path(@project, @hook) do |f|
       = render partial: 'shared/web_hooks/form', locals: { form: f, hook: @hook }
 
-      = f.submit 'Save changes', class: 'btn btn-success'
-      = render 'shared/web_hooks/test_button', triggers: ProjectHook.triggers, hook: @hook
-      = link_to 'Remove', project_hook_path(@project, @hook), method: :delete, class: 'btn btn-remove float-right', data: { confirm: 'Are you sure?' }
+      %span>= f.submit 'Save changes', class: 'btn btn-success append-right-8'
+      = render 'shared/web_hooks/test_button', hook: @hook
+      = link_to _('Delete'), project_hook_path(@project, @hook), method: :delete, class: 'btn btn-remove float-right', data: { confirm: _('Are you sure?') }
 
 %hr
 

@@ -55,7 +55,7 @@ you can skip the step 1 below; you only need to enable it per project.
 
 1. [Set up incoming email](../../administration/incoming_email.md#set-it-up) for the GitLab instance. This must
    support [email sub-addressing](../../administration/incoming_email.md#email-sub-addressing).
-1. Navigate to your project's **Settings** and scroll down to the **Service Desk**
+1. Navigate to your project's **Settings > General** and scroll down to the **Service Desk**
    section.
 1. If you have the correct access and a Premium license,
    you will see an option to set up Service Desk:

@@ -1,0 +1,14 @@
+%hr
+.card
+  .card-header
+    %h5
+      = hook_class.underscore.humanize.titleize.pluralize
+      (#{hooks.count})
+
+  - if hooks.any?
+    %ul.content-list
+      - hooks.each do |hook|
+        = render 'shared/web_hooks/hook', hook: hook
+  - else
+    %p.text-center.prepend-top-default.append-bottom-default
+      = _('No webhooks found, add one in the form above.')

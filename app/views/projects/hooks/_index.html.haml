@@ -1,23 +1,10 @@
 .row.prepend-top-default
   .col-lg-4
-    %h4.prepend-top-0
-      = page_title
-    %p
-      #{link_to 'Webhooks', help_page_path('user/project/integrations/webhooks')} can be
-      used for binding events when something is happening within the project.
+    = render 'shared/web_hooks/title_and_docs', hook: @hook
 
   .col-lg-8.append-bottom-default
     = form_for @hook, as: :hook, url: polymorphic_path([@project.namespace.becomes(Namespace), @project, :hooks]) do |f|
       = render partial: 'shared/web_hooks/form', locals: { form: f, hook: @hook }
       = f.submit 'Add webhook', class: 'btn btn-success'
 
-    %hr
-    %h5.prepend-top-default
-      Webhooks (#{@hooks.count})
-    - if @hooks.any?
-      %ul.content-list
-        - @hooks.each do |hook|
-          = render 'project_hook', hook: hook
-    - else
-      %p.settings-message.text-center.append-bottom-0
-        No webhooks found, add one in the form above.
+    = render 'shared/web_hooks/index', hooks: @hooks, hook_class: @hook.class
