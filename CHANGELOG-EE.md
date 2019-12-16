@@ -1,5 +1,12 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.4.6
+
+### Security (1 change)
+
+- Fix stale Elasticsearch permissions when moving group from public group to private parent group.
+
+
 ## 12.4.5
 
 - No changes.

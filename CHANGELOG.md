@@ -4,7 +4,10 @@ entry.
 
 ## 12.4.6
 
-- No changes.
+### Security (1 change)
+
+- Update maven_file_name_regex for full string match.
+
 
 ## 12.4.5
 
