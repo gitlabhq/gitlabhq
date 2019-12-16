@@ -21,6 +21,7 @@ describe AsanaService do
   describe 'Execute' do
     let(:user) { create(:user) }
     let(:project) { create(:project) }
+    let(:gid) { "123456789ABCD" }
 
     def create_data_for_commits(*messages)
       {
@@ -48,32 +49,32 @@ describe AsanaService do
     end
 
     it 'calls Asana service to create a story' do
-      data = create_data_for_commits('Message from commit. related to #123456')
+      data = create_data_for_commits("Message from commit. related to ##{gid}")
       expected_message = "#{data[:user_name]} pushed to branch #{data[:ref]} of #{project.full_name} ( #{data[:commits][0][:url]} ): #{data[:commits][0][:message]}"
 
-      d1 = double('Asana::Task')
+      d1 = double('Asana::Resources::Task')
       expect(d1).to receive(:add_comment).with(text: expected_message)
-      expect(Asana::Task).to receive(:find_by_id).with(anything, '123456').once.and_return(d1)
+      expect(Asana::Resources::Task).to receive(:find_by_id).with(anything, gid).once.and_return(d1)
 
       @asana.execute(data)
     end
 
     it 'calls Asana service to create a story and close a task' do
       data = create_data_for_commits('fix #456789')
-      d1 = double('Asana::Task')
+      d1 = double('Asana::Resources::Task')
       expect(d1).to receive(:add_comment)
       expect(d1).to receive(:update).with(completed: true)
-      expect(Asana::Task).to receive(:find_by_id).with(anything, '456789').once.and_return(d1)
+      expect(Asana::Resources::Task).to receive(:find_by_id).with(anything, '456789').once.and_return(d1)
 
       @asana.execute(data)
     end
 
     it 'is able to close via url' do
       data = create_data_for_commits('closes https://app.asana.com/19292/956299/42')
-      d1 = double('Asana::Task')
+      d1 = double('Asana::Resources::Task')
       expect(d1).to receive(:add_comment)
       expect(d1).to receive(:update).with(completed: true)
-      expect(Asana::Task).to receive(:find_by_id).with(anything, '42').once.and_return(d1)
+      expect(Asana::Resources::Task).to receive(:find_by_id).with(anything, '42').once.and_return(d1)
 
       @asana.execute(data)
     end
@@ -84,28 +85,28 @@ describe AsanaService do
       ref https://app.asana.com/19292/956299/42 and closing https://app.asana.com/19292/956299/12
       EOF
       data = create_data_for_commits(message)
-      d1 = double('Asana::Task')
+      d1 = double('Asana::Resources::Task')
       expect(d1).to receive(:add_comment)
       expect(d1).to receive(:update).with(completed: true)
-      expect(Asana::Task).to receive(:find_by_id).with(anything, '123').once.and_return(d1)
+      expect(Asana::Resources::Task).to receive(:find_by_id).with(anything, '123').once.and_return(d1)
 
-      d2 = double('Asana::Task')
+      d2 = double('Asana::Resources::Task')
       expect(d2).to receive(:add_comment)
       expect(d2).to receive(:update).with(completed: true)
-      expect(Asana::Task).to receive(:find_by_id).with(anything, '456').once.and_return(d2)
+      expect(Asana::Resources::Task).to receive(:find_by_id).with(anything, '456').once.and_return(d2)
 
-      d3 = double('Asana::Task')
+      d3 = double('Asana::Resources::Task')
       expect(d3).to receive(:add_comment)
-      expect(Asana::Task).to receive(:find_by_id).with(anything, '789').once.and_return(d3)
+      expect(Asana::Resources::Task).to receive(:find_by_id).with(anything, '789').once.and_return(d3)
 
-      d4 = double('Asana::Task')
+      d4 = double('Asana::Resources::Task')
       expect(d4).to receive(:add_comment)
-      expect(Asana::Task).to receive(:find_by_id).with(anything, '42').once.and_return(d4)
+      expect(Asana::Resources::Task).to receive(:find_by_id).with(anything, '42').once.and_return(d4)
 
-      d5 = double('Asana::Task')
+      d5 = double('Asana::Resources::Task')
       expect(d5).to receive(:add_comment)
       expect(d5).to receive(:update).with(completed: true)
-      expect(Asana::Task).to receive(:find_by_id).with(anything, '12').once.and_return(d5)
+      expect(Asana::Resources::Task).to receive(:find_by_id).with(anything, '12').once.and_return(d5)
 
       @asana.execute(data)
     end
