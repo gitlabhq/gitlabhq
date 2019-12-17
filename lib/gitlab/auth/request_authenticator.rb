@@ -32,7 +32,8 @@ module Gitlab
       def find_sessionless_user(request_format)
         find_user_from_web_access_token(request_format) ||
           find_user_from_feed_token(request_format) ||
-          find_user_from_static_object_token(request_format)
+          find_user_from_static_object_token(request_format) ||
+          find_user_from_basic_auth_job
       rescue Gitlab::Auth::AuthenticationError
         nil
       end

@@ -2,7 +2,7 @@
 
 # when running on puma, scale connection pool size with the number
 # of threads per worker process
-if Gitlab::Runtime.puma?
+if defined?(::Puma)
   db_config = Gitlab::Database.config ||
       Rails.application.config.database_configuration[Rails.env]
   puma_options = Puma.cli_config.options

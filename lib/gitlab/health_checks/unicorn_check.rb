@@ -30,7 +30,7 @@ module Gitlab
         # to change so we can cache the list of servers.
         def http_servers
           strong_memoize(:http_servers) do
-            next unless Gitlab::Runtime.unicorn?
+            next unless defined?(::Unicorn::HttpServer)
 
             ObjectSpace.each_object(::Unicorn::HttpServer).to_a
           end

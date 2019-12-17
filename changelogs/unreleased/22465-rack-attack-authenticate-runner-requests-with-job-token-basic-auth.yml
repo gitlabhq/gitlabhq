@@ -1,0 +1,5 @@
+---
+title: Authenticate requests with job token as basic auth header for request limiting
+merge_request: 21562
+author:
+type: fixed

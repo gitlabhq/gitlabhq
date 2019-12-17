@@ -135,7 +135,7 @@ module Gitlab
     end
 
     def cleanup_time
-      Gitlab::Runtime.sidekiq? ? BG_CLEANUP_RUNTIME_S : FG_CLEANUP_RUNTIME_S
+      Sidekiq.server? ? BG_CLEANUP_RUNTIME_S : FG_CLEANUP_RUNTIME_S
     end
 
     def tmp_keychains_created

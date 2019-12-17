@@ -4,11 +4,11 @@ require 'prometheus/client'
 def prometheus_default_multiproc_dir
   return unless Rails.env.development? || Rails.env.test?
 
-  if Gitlab::Runtime.sidekiq?
+  if Sidekiq.server?
     Rails.root.join('tmp/prometheus_multiproc_dir/sidekiq')
-  elsif Gitlab::Runtime.unicorn?
+  elsif defined?(Unicorn::Worker)
     Rails.root.join('tmp/prometheus_multiproc_dir/unicorn')
-  elsif Gitlab::Runtime.puma?
+  elsif defined?(::Puma)
     Rails.root.join('tmp/prometheus_multiproc_dir/puma')
   else
     Rails.root.join('tmp/prometheus_multiproc_dir')
@@ -48,9 +48,9 @@ if !Rails.env.test? && Gitlab::Metrics.prometheus_metrics_enabled?
   Gitlab::Cluster::LifecycleEvents.on_master_start do
     ::Prometheus::Client.reinitialize_on_pid_change(force: true)
 
-    if Gitlab::Runtime.unicorn?
+    if defined?(::Unicorn)
       Gitlab::Metrics::Samplers::UnicornSampler.instance(Settings.monitoring.unicorn_sampler_interval).start
-    elsif Gitlab::Runtime.puma?
+    elsif defined?(::Puma)
       Gitlab::Metrics::Samplers::PumaSampler.instance(Settings.monitoring.puma_sampler_interval).start
     end
 
@@ -58,7 +58,7 @@ if !Rails.env.test? && Gitlab::Metrics.prometheus_metrics_enabled?
   end
 end
 
-if Gitlab::Runtime.app_server?
+if defined?(::Unicorn) || defined?(::Puma)
   Gitlab::Cluster::LifecycleEvents.on_master_start do
     Gitlab::Metrics::Exporter::WebExporter.instance.start
   end

@@ -5,8 +5,10 @@
 #
 # Follow-up the issue: https://gitlab.com/gitlab-org/gitlab/issues/34107
 
-if Gitlab::Runtime.puma?
+if defined?(::Puma)
   Puma::Cluster.prepend(::Gitlab::Cluster::Mixins::PumaCluster)
-elsif Gitlab::Runtime.unicorn?
+end
+
+if defined?(::Unicorn::HttpServer)
   Unicorn::HttpServer.prepend(::Gitlab::Cluster::Mixins::UnicornHttpServer)
 end

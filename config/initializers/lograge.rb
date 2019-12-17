@@ -1,5 +1,5 @@
 # Only use Lograge for Rails
-unless Gitlab::Runtime.sidekiq?
+unless Sidekiq.server?
   filename = File.join(Rails.root, 'log', "#{Rails.env}_json.log")
 
   Rails.application.configure do

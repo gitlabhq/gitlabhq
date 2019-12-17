@@ -118,7 +118,7 @@ RSpec.shared_examples "redis_shared_examples" do
 
     context 'when running not on sidekiq workers' do
       before do
-        allow(Gitlab::Runtime).to receive(:sidekiq?).and_return(false)
+        allow(Sidekiq).to receive(:server?).and_return(false)
       end
 
       it 'instantiates a connection pool with size 5' do
@@ -130,7 +130,7 @@ RSpec.shared_examples "redis_shared_examples" do
 
     context 'when running on sidekiq workers' do
       before do
-        allow(Gitlab::Runtime).to receive(:sidekiq?).and_return(true)
+        allow(Sidekiq).to receive(:server?).and_return(true)
         allow(Sidekiq).to receive(:options).and_return({ concurrency: 18 })
       end
 

@@ -6,13 +6,16 @@ describe Prometheus::PidProvider do
   describe '.worker_id' do
     subject { described_class.worker_id }
 
+    let(:sidekiq_module) { Module.new }
+
     before do
-      allow(Gitlab::Runtime).to receive(:sidekiq?).and_return(false)
+      allow(sidekiq_module).to receive(:server?).and_return(false)
+      stub_const('Sidekiq', sidekiq_module)
     end
 
     context 'when running in Sidekiq server mode' do
       before do
-        allow(Gitlab::Runtime).to receive(:sidekiq?).and_return(true)
+        expect(Sidekiq).to receive(:server?).and_return(true)
       end
 
       context 'in a clustered setup' do
@@ -30,7 +33,8 @@ describe Prometheus::PidProvider do
 
     context 'when running in Unicorn mode' do
       before do
-        allow(Gitlab::Runtime).to receive(:unicorn?).and_return(true)
+        stub_const('Unicorn::Worker', Class.new)
+        hide_const('Puma')
 
         expect(described_class).to receive(:process_name)
           .at_least(:once)
@@ -90,7 +94,8 @@ describe Prometheus::PidProvider do
 
     context 'when running in Puma mode' do
       before do
-        allow(Gitlab::Runtime).to receive(:puma?).and_return(true)
+        stub_const('Puma', Module.new)
+        hide_const('Unicorn::Worker')
 
         expect(described_class).to receive(:process_name)
           .at_least(:once)
@@ -111,6 +116,11 @@ describe Prometheus::PidProvider do
     end
 
     context 'when running in unknown mode' do
+      before do
+        hide_const('Puma')
+        hide_const('Unicorn::Worker')
+      end
+
       it { is_expected.to eq "process_#{Process.pid}" }
     end
   end

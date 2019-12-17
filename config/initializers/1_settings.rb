@@ -364,7 +364,7 @@ Gitlab.ee do
   # To ensure acceptable performance we only allow feature to be used with
   # multithreaded web-server Puma. This will be removed once download logic is moved
   # to GitLab workhorse
-  Settings.dependency_proxy['enabled'] = false unless Gitlab::Runtime.puma?
+  Settings.dependency_proxy['enabled'] = false unless defined?(::Puma)
 end
 
 #

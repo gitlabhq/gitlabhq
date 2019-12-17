@@ -75,5 +75,5 @@ Rails.application.configure do
 
   config.eager_load = true
 
-  config.allow_concurrency = Gitlab::Runtime.multi_threaded?
+  config.allow_concurrency = defined?(::Puma)
 end

@@ -46,6 +46,7 @@ rules:
   vue/no-v-html: off
   vue/use-v-on-exact: off
   no-jquery/no-animate: off
+  # all offenses of no-jquery/no-animate-toggle are false positives ( $toast.show() )
   no-jquery/no-animate-toggle: off
   no-jquery/no-fade: off
   no-jquery/no-serialize: error

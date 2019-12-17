@@ -111,7 +111,7 @@ describe Gitlab::Highlight do
       end
 
       it 'utilizes longer timeout for sidekiq' do
-        allow(Gitlab::Runtime).to receive(:sidekiq?).and_return(true)
+        allow(Sidekiq).to receive(:server?).and_return(true)
         expect(Timeout).to receive(:timeout).with(described_class::TIMEOUT_BACKGROUND).and_call_original
 
         subject.highlight("Content")

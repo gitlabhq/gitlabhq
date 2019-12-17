@@ -335,6 +335,72 @@ describe Gitlab::Auth::AuthFinders do
     end
   end
 
+  describe '#find_user_from_basic_auth_job' do
+    def basic_http_auth(username, password)
+      ActionController::HttpAuthentication::Basic.encode_credentials(username, password)
+    end
+
+    def set_auth(username, password)
+      env['HTTP_AUTHORIZATION'] = basic_http_auth(username, password)
+    end
+
+    subject { find_user_from_basic_auth_job }
+
+    context 'when the request does not have AUTHORIZATION header' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'with wrong credentials' do
+      it 'returns nil without user and password' do
+        set_auth(nil, nil)
+
+        is_expected.to be_nil
+      end
+
+      it 'returns nil without password' do
+        set_auth('some-user', nil)
+
+        is_expected.to be_nil
+      end
+
+      it 'returns nil without user' do
+        set_auth(nil, 'password')
+
+        is_expected.to be_nil
+      end
+
+      it 'returns nil without CI username' do
+        set_auth('user', 'password')
+
+        is_expected.to be_nil
+      end
+    end
+
+    context 'with CI username' do
+      let(:username) { ::Ci::Build::CI_REGISTRY_USER }
+      let(:user) { create(:user) }
+      let(:build) { create(:ci_build, user: user) }
+
+      it 'returns nil without password' do
+        set_auth(username, nil)
+
+        is_expected.to be_nil
+      end
+
+      it 'returns user with valid token' do
+        set_auth(username, build.token)
+
+        is_expected.to eq user
+      end
+
+      it 'raises error with invalid token' do
+        set_auth(username, 'token')
+
+        expect { subject }.to raise_error(Gitlab::Auth::UnauthorizedError)
+      end
+    end
+  end
+
   describe '#validate_access_token!' do
     let(:personal_access_token) { create(:personal_access_token, user: user) }
 

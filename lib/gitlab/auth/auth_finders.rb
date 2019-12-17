@@ -21,6 +21,7 @@ module Gitlab
       prepend_if_ee('::EE::Gitlab::Auth::AuthFinders') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
       include Gitlab::Utils::StrongMemoize
+      include ActionController::HttpAuthentication::Basic
 
       PRIVATE_TOKEN_HEADER = 'HTTP_PRIVATE_TOKEN'
       PRIVATE_TOKEN_PARAM = :private_token
@@ -63,6 +64,19 @@ module Gitlab
         raise ::Gitlab::Auth::UnauthorizedError unless job
 
         @current_authenticated_job = job # rubocop:disable Gitlab/ModuleWithInstanceVariables
+
+        job.user
+      end
+
+      def find_user_from_basic_auth_job
+        return unless has_basic_credentials?(current_request)
+
+        login, password = user_name_and_password(current_request)
+        return unless login.present? && password.present?
+        return unless ::Ci::Build::CI_REGISTRY_USER == login
+
+        job = ::Ci::Build.find_by_token(password)
+        raise UnauthorizedError unless job
 
         job.user
       end

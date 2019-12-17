@@ -84,7 +84,7 @@ module KubernetesHelpers
     end
 
     logs_url = service.api_url + "/api/v1/namespaces/#{namespace}/pods/#{pod_name}" \
-    "/log?#{container_query_param}tailLines=#{Clusters::Platforms::Kubernetes::LOGS_LIMIT}"
+    "/log?#{container_query_param}tailLines=#{Clusters::Platforms::Kubernetes::LOGS_LIMIT}&timestamps=true"
 
     if status
       response = { status: status }
@@ -331,7 +331,7 @@ module KubernetesHelpers
   end
 
   def kube_logs_body
-    "Log 1\nLog 2\nLog 3"
+    "2019-12-13T14:04:22.123456Z Log 1\n2019-12-13T14:04:23.123456Z Log 2\n2019-12-13T14:04:24.123456Z Log 3"
   end
 
   def kube_deployments_body

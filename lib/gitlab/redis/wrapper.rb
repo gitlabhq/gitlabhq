@@ -22,10 +22,10 @@ module Gitlab
         def pool_size
           # heuristic constant 5 should be a config setting somewhere -- related to CPU count?
           size = 5
-          if Gitlab::Runtime.sidekiq?
+          if Sidekiq.server?
             # the pool will be used in a multi-threaded context
             size += Sidekiq.options[:concurrency]
-          elsif Gitlab::Runtime.puma?
+          elsif defined?(::Puma)
             size += Puma.cli_config.options[:max_threads]
           end
 

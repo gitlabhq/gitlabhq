@@ -9,7 +9,7 @@
 # and it's used only as the last resort. In such case this termination is
 # logged and we should fix the potential timeout issue in the code itself.
 
-if Gitlab::Runtime.puma? && !Rails.env.test?
+if defined?(::Puma) && !Rails.env.test?
   require 'rack/timeout/base'
 
   Gitlab::Application.configure do |config|

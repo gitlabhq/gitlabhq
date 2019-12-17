@@ -5,11 +5,11 @@ module Prometheus
     extend self
 
     def worker_id
-      if Gitlab::Runtime.sidekiq?
+      if Sidekiq.server?
         sidekiq_worker_id
-      elsif Gitlab::Runtime.unicorn?
+      elsif defined?(Unicorn::Worker)
         unicorn_worker_id
-      elsif Gitlab::Runtime.puma?
+      elsif defined?(::Puma)
         puma_worker_id
       else
         unknown_process_id

@@ -108,7 +108,7 @@ describe Git::BranchPushService, services: true do
       end
 
       it 'reports an error' do
-        allow(Gitlab::Runtime).to receive(:sidekiq?).and_return(true)
+        allow(Sidekiq).to receive(:server?).and_return(true)
         expect(Sidekiq.logger).to receive(:warn)
 
         expect { subject }.not_to change { Ci::Pipeline.count }

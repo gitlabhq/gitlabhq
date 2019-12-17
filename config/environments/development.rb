@@ -46,7 +46,7 @@ Rails.application.configure do
   # Do not log asset requests
   config.assets.quiet = true
 
-  config.allow_concurrency = Gitlab::Runtime.multi_threaded?
+  config.allow_concurrency = defined?(::Puma)
 
   # BetterErrors live shell (REPL) on every stack frame
   BetterErrors::Middleware.allow_ip!("127.0.0.1/0")

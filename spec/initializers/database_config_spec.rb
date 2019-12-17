@@ -16,7 +16,6 @@ describe 'Database config initializer' do
     let(:puma_options) { { max_threads: 8 } }
 
     before do
-      allow(Gitlab::Runtime).to receive(:puma?).and_return(true)
       stub_const("Puma", puma)
       allow(puma).to receive_message_chain(:cli_config, :options).and_return(puma_options)
     end
