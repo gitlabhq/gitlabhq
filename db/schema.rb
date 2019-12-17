@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_17_160632) do
+ActiveRecord::Schema.define(version: 2019_12_16_183532) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -1217,11 +1217,11 @@ ActiveRecord::Schema.define(version: 2019_12_17_160632) do
 
   create_table "commit_user_mentions", force: :cascade do |t|
     t.integer "note_id", null: false
-    t.binary "commit_id", null: false
     t.integer "mentioned_users_ids", array: true
     t.integer "mentioned_projects_ids", array: true
     t.integer "mentioned_groups_ids", array: true
-    t.index ["commit_id", "note_id"], name: "commit_user_mentions_on_commit_id_and_note_id_index"
+    t.string "commit_id", null: false
+    t.index ["commit_id", "note_id"], name: "commit_id_and_note_id_index"
     t.index ["note_id"], name: "index_commit_user_mentions_on_note_id", unique: true
   end
 

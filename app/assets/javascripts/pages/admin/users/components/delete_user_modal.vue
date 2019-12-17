@@ -109,7 +109,7 @@ export default {
     <template>
       <p v-html="text"></p>
       <p v-html="confirmationTextLabel"></p>
-      <form ref="form" :action="deleteUserUrl" method="post">
+      <form ref="form" :action="deleteUserUrl" method="post" @submit.prevent>
         <input ref="method" type="hidden" name="_method" value="delete" />
         <input :value="csrfToken" type="hidden" name="authenticity_token" />
         <gl-form-input

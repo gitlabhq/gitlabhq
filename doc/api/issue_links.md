@@ -57,7 +57,7 @@ Parameters:
 Creates a two-way relation between two issues. User must be allowed to update both issues in order to succeed.
 
 ```
-POST /projects/:id/issues/:issue_iid/links
+POST /projects/:id/issues/:issue_iid/links/:target_project_id/:target_issue_iid
 ```
 
 | Attribute   | Type    | Required | Description                          |

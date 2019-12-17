@@ -66,7 +66,7 @@ We need to manage the following secrets and make them match across hosts:
 #### Praefect
 
 On the Praefect node we disable all other services, including Gitaly. We list each
-Gitaly node that will be connected to Praefect under `praefect['storage_nodes']`.
+Gitaly node that will be connected to Praefect as members of the `praefect` hash in `praefect['virtual_storages']`.
 
 In the example below, the Gitaly nodes are named `gitaly-N`. Note that one
 node is designated as primary by setting the primary to `true`.
@@ -84,15 +84,6 @@ unicorn['enable'] = false
 sidekiq['enable'] = false
 gitlab_workhorse['enable'] = false
 gitaly['enable'] = false
-```
-
-##### Set up Praefect and its Gitaly nodes
-
-In the example below, the Gitaly nodes are named `gitaly-X`. Note that one node is designated as
-primary, by setting the primary to `true`:
-
-```ruby
-# /etc/gitlab/gitlab.rb on praefect server
 
 # Prevent database connections during 'gitlab-ctl reconfigure'
 gitlab_rails['rake_cache_clear'] = false
@@ -104,27 +95,27 @@ praefect['enable'] = true
 # firewalls to restrict access to this address/port.
 praefect['listen_addr'] = '0.0.0.0:2305'
 
-# virtual_storage_name must match the same storage name given to praefect in git_data_dirs
-praefect['virtual_storage_name'] = 'praefect'
-
 # Replace PRAEFECT_EXTERNAL_TOKEN with a real secret
 praefect['auth_token'] = 'PRAEFECT_EXTERNAL_TOKEN'
 
 # Replace each instance of PRAEFECT_INTERNAL_TOKEN below with a real
 # secret, distinct from PRAEFECT_EXTERNAL_TOKEN.
-praefect['storage_nodes'] = {
-  'gitaly-1' => {
-    'address' => 'tcp://gitaly-1.internal:8075',
-    'token'   => 'PRAEFECT_INTERNAL_TOKEN',
-    'primary' => true
-  },
-  'gitaly-2' => {
-    'address' => 'tcp://gitaly-2.internal:8075',
-    'token'   => 'PRAEFECT_INTERNAL_TOKEN'
-  },
-  'gitaly-3' => {
-    'address' => 'tcp://gitaly-3.internal:8075',
-    'token'   => 'PRAEFECT_INTERNAL_TOKEN'
+# Name of storage hash must match storage name in git_data_dirs on GitLab server.
+praefect['virtual_storages'] = {
+  'praefect' => {
+    'gitaly-1' => {
+      'address' => 'tcp://gitaly-1.internal:8075',
+      'token'   => 'PRAEFECT_INTERNAL_TOKEN',
+      'primary' => true
+    },
+    'gitaly-2' => {
+      'address' => 'tcp://gitaly-2.internal:8075',
+      'token'   => 'PRAEFECT_INTERNAL_TOKEN'
+    },
+    'gitaly-3' => {
+      'address' => 'tcp://gitaly-3.internal:8075',
+      'token'   => 'PRAEFECT_INTERNAL_TOKEN'
+    }
   }
 }
 ```
@@ -140,7 +131,7 @@ auth tokens from Praefect instead of GitLab.
 Below is an example configuration for `gitaly-1`, the only difference for the
 other Gitaly nodes is the storage name under `git_data_dirs`.
 
-Note that `gitaly['auth_token']` matches the `token` value listed under `praefect['storage_nodes']`
+Note that `gitaly['auth_token']` matches the `token` value listed under `praefect['virtual_storages']`
 on the Praefect node.
 
 ```ruby
@@ -155,6 +146,7 @@ grafana['enable'] = false
 unicorn['enable'] = false
 sidekiq['enable'] = false
 gitlab_workhorse['enable'] = false
+prometheus_monitoring['enable'] = false
 
 # Prevent database connections during 'gitlab-ctl reconfigure'
 gitlab_rails['rake_cache_clear'] = false
@@ -197,7 +189,7 @@ is present, there should be two storages available to GitLab:
 # Replace PRAEFECT_EXTERNAL_TOKEN below with real secret.
 git_data_dirs({
   "default" => {
-    "gitaly_address" => "tcp://gitaly.internal"
+    "path" => "/var/opt/gitlab/git-data"
   },
   "praefect" => {
     "gitaly_address" => "tcp://praefect.internal:2305",
@@ -212,7 +204,9 @@ gitlab_shell['secret_token'] = 'GITLAB_SHELL_SECRET_TOKEN'
 Note that the storage name used is the same as the `praefect['virtual_storage_name']` set
 on the Praefect node.
 
-Restart GitLab using `gitlab-ctl restart` on the GitLab node.
+Save your changes and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
+Run `gitlab-rake gitlab:gitaly:check` to confirm that GitLab can reach Praefect.
 
 ### Testing Praefect
 
@@ -220,6 +214,18 @@ To test Praefect, first set it as the default storage node for new projects
 using **Admin Area > Settings > Repository > Repository storage**. Next,
 create a new project and check the "Initialize repository with a README" box.
 
-If you receive a 503 error, check `/var/log/gitlab/gitlab-rails/production.log`.
-A `GRPC::Unavailable (14:failed to connect to all addresses)` error indicates
-that GitLab was unable to connect to Praefect.
+If you receive an error, check `/var/log/gitlab/gitlab-rails/production.log`.
+
+Here are common errors and potential causes:
+
+- 500 response code
+  - **ActionView::Template::Error (7:permission denied)**
+    - `praefect['auth_token']` and `gitlab_rails['gitaly_token']` do not match on the GitLab server.
+  - **Unable to save project. Error: 7:permission denied**
+    - Secret token in `praefect['storage_nodes']` on GitLab server does not match the
+      value in `gitaly['auth_token']` on one or more Gitaly servers.
+- 503 response code
+  - **GRPC::Unavailable (14:failed to connect to all addresses)**
+    - GitLab was unable to reach Praefect.
+  - **GRPC::Unavailable (14:all SubCons are in TransientFailure...)**
+    - Praefect cannot reach one or more of its child Gitaly nodes.
