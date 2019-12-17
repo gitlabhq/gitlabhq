@@ -3701,6 +3701,10 @@ test:mysql:
 
 You can see that the hidden keys are conveniently used as templates.
 
+NOTE: **Note:**
+You can't use YAML anchors across multiple files when leveraging the [`include`](#include)
+feature. Anchors are only valid within the file they were defined in.
+
 ## Triggers
 
 Triggers can be used to force a rebuild of a specific branch, tag or commit,

@@ -878,6 +878,8 @@ functions:deploy:
   image: registry.gitlab.com/gitlab-org/gitlabktl:0.5.0
 ```
 
-Different versions are available by changing the version tag at the end of the registry URL: `registry.gitlab.com/gitlab-org/gitlabktl:VERSION`
+Different versions are available by changing the version tag at the end of the registry URL in the
+format `registry.gitlab.com/gitlab-org/gitlabktl:<version>`.
 
-For a full inventory of available `gitlabktl` versions please see [this list](https://gitlab.com/gitlab-org/gitlabktl/container_registry)
+For a full inventory of available `gitlabktl` versions, see the `gitlabktl` project's
+[container registry](https://gitlab.com/gitlab-org/gitlabktl/container_registry).
