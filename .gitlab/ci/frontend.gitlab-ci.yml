@@ -74,7 +74,6 @@ gitlab:assets:compile pull-cache:
     - .default-before_script
     - .assets-compile-cache
     - .only:changes-code-backstage-qa
-    - .use-pg9
   stage: prepare
   script:
     - node --version
@@ -83,6 +82,7 @@ gitlab:assets:compile pull-cache:
     - retry bundle exec rake gitlab:assets:compile
     - scripts/clean-old-cached-assets
   variables:
+    SETUP_DB: "false"
     # we override the max_old_space_size to prevent OOM errors
     NODE_OPTIONS: --max_old_space_size=3584
   cache:

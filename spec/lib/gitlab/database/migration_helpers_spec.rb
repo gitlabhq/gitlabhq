@@ -1440,4 +1440,17 @@ describe Gitlab::Database::MigrationHelpers do
       end
     end
   end
+
+  describe '#create_or_update_plan_limit' do
+    it 'creates or updates plan limits' do
+      expect(model).to receive(:execute).with <<~SQL
+        INSERT INTO plan_limits (plan_id, "project_hooks")
+        VALUES
+          ((SELECT id FROM plans WHERE name = 'free' LIMIT 1), '10')
+        ON CONFLICT (plan_id) DO UPDATE SET "project_hooks" = EXCLUDED."project_hooks";
+      SQL
+
+      model.create_or_update_plan_limit('project_hooks', 'free', 10)
+    end
+  end
 end

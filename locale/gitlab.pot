@@ -10223,6 +10223,9 @@ msgstr ""
 msgid "Label"
 msgstr ""
 
+msgid "Label List"
+msgstr ""
+
 msgid "Label actions dropdown"
 msgstr ""
 
@@ -10980,6 +10983,9 @@ msgid "Maximum job timeout has a value which could not be accepted"
 msgstr ""
 
 msgid "Maximum lifetime allowable for Personal Access Tokens is active, your expire date must be set before %{maximum_allowable_date}."
+msgstr ""
+
+msgid "Maximum number of %{name} (%{count}) exceeded"
 msgstr ""
 
 msgid "Maximum number of comments exceeded"
@@ -18885,6 +18891,12 @@ msgid "Tomorrow"
 msgstr ""
 
 msgid "Too many changes to show."
+msgstr ""
+
+msgid "Too many namespaces enabled. You will need to manage them via the console or the API."
+msgstr ""
+
+msgid "Too many projects enabled. You will need to manage them via the console or the API."
 msgstr ""
 
 msgid "Topics"

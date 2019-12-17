@@ -22,6 +22,7 @@ module Gitlab
             return SERVICES::DynamicEmbedService if dynamic_embed?(params)
             return SERVICES::DefaultEmbedService if params[:embedded]
             return SERVICES::SystemDashboardService if system_dashboard?(params[:dashboard_path])
+            return SERVICES::PodDashboardService if pod_dashboard?(params[:dashboard_path])
             return SERVICES::ProjectDashboardService if params[:dashboard_path]
 
             default_service
@@ -35,6 +36,10 @@ module Gitlab
 
           def system_dashboard?(filepath)
             SERVICES::SystemDashboardService.matching_dashboard?(filepath)
+          end
+
+          def pod_dashboard?(filepath)
+            SERVICES::PodDashboardService.matching_dashboard?(filepath)
           end
 
           def custom_metric_embed?(params)

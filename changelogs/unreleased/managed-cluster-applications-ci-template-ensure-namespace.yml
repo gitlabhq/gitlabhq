@@ -1,0 +1,5 @@
+---
+title: Ensure namespace is present for Managed-Cluster-Applications CI template
+merge_request: 21903
+author:
+type: fixed

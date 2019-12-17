@@ -42,9 +42,9 @@ NOTE: **Note:**
 You will need at least Reporter [permissions](../../permissions.md) to view the Error Tracking list.
 
 The Error Tracking list may be found at **Operations > Error Tracking** in your project's sidebar.
-Errors can be filtered by title.
+Errors can be filtered by title or sorted by Frequency, First Seen or Last Seen. Errors are always sorted in descending order by the field specified.
 
-![Error Tracking list](img/error_tracking_list.png)
+![Error Tracking list](img/error_tracking_list_v12_6.png)
 
 ## Error Details
 

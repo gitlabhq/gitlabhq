@@ -1052,6 +1052,15 @@ into similar problems in the future (e.g. when new tables are created).
         connection.select_value(index_sql).to_i > 0
       end
 
+      def create_or_update_plan_limit(limit_name, plan_name, limit_value)
+        execute <<~SQL
+          INSERT INTO plan_limits (plan_id, #{quote_column_name(limit_name)})
+          VALUES
+            ((SELECT id FROM plans WHERE name = #{quote(plan_name)} LIMIT 1), #{quote(limit_value)})
+          ON CONFLICT (plan_id) DO UPDATE SET #{quote_column_name(limit_name)} = EXCLUDED.#{quote_column_name(limit_name)};
+        SQL
+      end
+
       private
 
       def tables_match?(target_table, foreign_key_table)

@@ -142,7 +142,6 @@ that could change behavior in the next major release.
 To ensure background migrations are successful, increment by one minor version during the version jump before installing newer releases.
 
 For example: `11.11.x` -> `12.0.x`
-
 Please see the table below for some examples:
 
 | Latest stable version | Your version | Recommended upgrade path | Note |
@@ -151,6 +150,9 @@ Please see the table below for some examples:
 | 10.1.4                | 8.13.4       | `8.13.4 -> 8.17.7 -> 9.5.10 -> 10.1.4`                   | `8.17.7` is the last version in version `8`, `9.5.10` is the last version in version `9` |
 | 11.3.4                | 8.13.4       | `8.13.4` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> `11.3.4` | `8.17.7` is the last version in version `8`, `9.5.10` is the last version in version `9`, `10.8.7` is the last version in version `10` |
 | 12.5.8                | 11.3.4       | `11.3.4` -> `11.11.8` -> `12.0.9` -> `12.5.8`            | `11.11.8` is the last version in version `11` |
+
+To check the size of `background_migration` queue and to learn more about background migrations
+see [Upgrading without downtime](../update/README.md#upgrading-without-downtime).
 
 More information about the release procedures can be found in our
 [release documentation](https://gitlab.com/gitlab-org/release/docs). You may also want to read our

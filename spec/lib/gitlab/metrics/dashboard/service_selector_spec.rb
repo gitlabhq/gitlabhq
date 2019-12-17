@@ -22,6 +22,12 @@ describe Gitlab::Metrics::Dashboard::ServiceSelector do
 
         it { is_expected.to be Metrics::Dashboard::SystemDashboardService }
       end
+
+      context 'when the path is for the pod dashboard' do
+        let(:arguments) { { dashboard_path: pod_dashboard_path } }
+
+        it { is_expected.to be Metrics::Dashboard::PodDashboardService }
+      end
     end
 
     context 'when the embedded flag is provided' do

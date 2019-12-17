@@ -47,6 +47,20 @@ and **per project and per group** for **GitLab Enterprise Edition**.
 Navigate to the webhooks page by going to your project's
 **Settings ➔ Integrations**.
 
+## Maximum number of webhooks (per tier)
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/20730) in GitLab 12.6.
+
+A maximum number of project webhooks applies to each [GitLab.com
+tier](https://about.gitlab.com/pricing/), as shown in the following table:
+
+| Tier     | Number of webhooks per project |
+|----------|--------------------------------|
+| Free     | 10                             |
+| Bronze   | 20                             |
+| Silver   | 30                             |
+| Gold     | 100                            |
+
 ## Use-cases
 
 - You can set up a webhook in GitLab to send a notification to

@@ -68,6 +68,8 @@ export default () => {
       Board,
       BoardSidebar,
       BoardAddIssuesModal,
+      BoardSettingsSidebar: () =>
+        import('ee_component/boards/components/board_settings_sidebar.vue'),
     },
     store,
     data: {

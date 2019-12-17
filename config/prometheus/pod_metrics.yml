@@ -1,0 +1,59 @@
+dashboard: 'Pod metrics'
+priority: 10
+panel_groups:
+- group: CPU metrics
+  panels:
+  - title: "CPU usage"
+    type: "line-chart"
+    y_label: "Cores per pod"
+    metrics:
+    - id: pod_cpu_usage_seconds_total
+      query_range: 'rate(container_cpu_usage_seconds_total{pod_name="{{pod_name}}",container_name="POD"}[5m])'
+      unit: "cores"
+      label: pod_name
+- group: Memory metrics
+  panels:
+  - title: "Memory usage working set"
+    type: "line-chart"
+    y_label: "Working set memory (MiB)"
+    metrics:
+    - id: pod_memory_working_set
+      query_range: 'container_memory_working_set_bytes{pod_name="{{pod_name}}",container_name="POD"}/1024/1024'
+      unit: "MiB"
+      label: pod_name
+- group: Network metrics
+  panels:
+  - title: "Network Receive (In)"
+    type: "line-chart"
+    y_label: "Received (KiB/sec)"
+    metrics:
+    - id: pod_network_receive
+      query_range: 'rate(container_network_receive_bytes_total{pod_name="{{pod_name}}",container_name="POD"}[5m])/1024'
+      unit: "KiB / sec"
+      label: pod_name
+  - title: "Network Transmit (Out)"
+    type: "line-chart"
+    y_label: "Transmitted (KiB/sec)"
+    metrics:
+    - id: pod_network_transmit
+      query_range: 'rate(container_network_transmit_bytes_total{pod_name="{{pod_name}}",container_name="POD"}[5m])/1024'
+      unit: "KiB / sec"
+      label: pod_name
+- group: Disk metrics
+  panels:
+  - title: "Disk Reads"
+    type: "line-chart"
+    y_label: "Disk reads (KiB/sec)"
+    metrics:
+    - id: pod_disk_reads
+      query_range: 'rate(container_fs_reads_bytes_total{container_name="POD",pod_name="{{pod_name}}"}[5m])/1024'
+      unit: "KiB / sec"
+      label: pod_name
+  - title: "Disk Writes"
+    type: "line-chart"
+    y_label: "Disk writes (KiB/sec)"
+    metrics:
+    - id: pod_disk_writes
+      query_range: 'rate(container_fs_writes_bytes_total{container_name="POD",pod_name="{{pod_name}}"}[5m])/1024'
+      unit: "KiB / sec"
+      label: pod_name

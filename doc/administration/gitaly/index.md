@@ -719,6 +719,105 @@ result as you did in the beginning:
 
 Note that `enforced="true"`, meaning that authentication is being enforced.
 
+## Direct Git access in GitLab Rails
+
+Also known as "the Rugged patches".
+
+### History
+
+Before Gitaly existed, the things that are now Gitaly clients used to
+access Git repositories directly. Either on a local disk in the case of
+e.g. a single-machine Omnibus GitLab installation, or via NFS in the
+case of a horizontally scaled GitLab installation.
+
+Besides running plain `git` commands, in GitLab Rails we also used to
+use a Ruby gem (library) called
+[Rugged](https://github.com/libgit2/rugged). Rugged is a wrapper around
+[libgit2](https://libgit2.org/), a stand-alone implementation of Git in
+the form of a C library.
+
+Over time it has become clear to use that Rugged, and particularly
+Rugged in combination with the [Unicorn](https://bogomips.org/unicorn/)
+web server, is extremely efficient. Because libgit2 is a *library* and
+not an external process, there was very little overhead between GitLab
+application code that tried to look up data in Git repositories, and the
+Git implementation itself.
+
+Because Rugged+Unicorn was so efficient, GitLab's application code ended
+up with lots of duplicate Git object lookups (like looking up the
+`master` commmit a dozen times in one request). We could write
+inefficient code without being punished for it.
+
+When we migrated these Git lookups to Gitaly calls, we were suddenly
+getting a much higher fixed cost per Git lookup. Even when Gitaly is
+able to re-use an already-running `git` process to look up e.g. a commit
+you still have the cost of a network roundtrip to Gitaly, and within
+Gitaly a write/read roundtrip on the Unix pipes that connect Gitaly to
+the `git` process.
+
+Using GitLab.com performance as our yardstick, we pushed down the number
+of Gitaly calls per request until the loss of Rugged's efficiency was no
+longer felt. It also helped that we run Gitaly itself directly on the
+Git file severs, rather than via NFS mounts: this gave us a speed boost
+that counteracted the negative effect of not using Rugged anymore.
+
+Unfortunately, some *other* deployments of GitLab could not ditch NFS
+like we did on GitLab.com and they got the worst of both worlds: the
+slowness of NFS and the increased inherent overhead of Gitaly.
+
+As a performance band-aid for these stuck-on-NFS deployments, we
+re-introduced some of the old Rugged code that got deleted from
+GitLab Rails during the Gitaly migration project. These pieces of
+re-introduced code are informally referred to as "the Rugged patches".
+
+### Activation of direct Git access in GitLab Rails
+
+The Ruby methods that perform direct Git access are hidden behind [feature
+flags](../../development/gitaly.md#legacy-rugged-code). These feature
+flags are off by default. It is not good if you need to know about
+feature flags to get the best performance so in a second iteration, we
+added an automatic mechanism that will enable direct Git access.
+
+When GitLab Rails calls a function that has a Rugged patch it performs
+two checks. The result of both of these checks is cached.
+
+1. Is the feature flag for this patch set in the database? If so, do
+    what the feature flag says.
+1. If the feature flag is not set (i.e. neither true nor false), try to
+    see if we can access filesystem underneath the Gitaly server
+    directly. If so, use the Rugged patch.
+
+To see if GitLab  Rails can access the repo filesystem directly, we use
+the following heuristic:
+
+- Gitaly ensures that the filesystem has a metadata file in its root
+  with a UUID in it.
+- Gitaly reports this UUID to GitLab Rails via the `ServerInfo` RPC.
+- GitLab Rails tries to read the metadata file directly. If it exists,
+  and if the UUID's match, assume we have direct access.
+
+Because of the way the UUID check works, and because Omnibus GitLab will
+fill in the correct repository paths in the GitLab Rails config file
+`config/gitlab.yml`, **direct Git access in GitLab Rails is on by default in
+Omnibus**.
+
+### Plans to remove direct Git access in GitLab Rails
+
+For the sake of removing complexity it is desirable that we get rid of
+direct Git access in GitLab Rails. For as long as some GitLab installations are stuck
+with Git repositories on slow NFS, however, we cannot just remove them.
+
+There are two prongs to our efforts to remove direct Git access in GitLab Rails:
+
+1. Reduce the number of (inefficient) Gitaly queries made by
+   GitLab Rails.
+1. Persuade everybody who runs a Highly Available / horizontally scaled
+   GitLab installation to move off of NFS.
+
+The second prong is the only real solution. For this we need [Gitaly
+HA](https://gitlab.com/groups/gitlab-org/-/epics?scope=all&utf8=%E2%9C%93&state=opened&label_name[]=Gitaly%20HA),
+which is still under development as of December 2019.
+
 ## Troubleshooting Gitaly
 
 ### Checking versions when using standalone Gitaly nodes

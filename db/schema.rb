@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_14_175727) do
+ActiveRecord::Schema.define(version: 2019_12_16_183532) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -2987,6 +2987,7 @@ ActiveRecord::Schema.define(version: 2019_12_14_175727) do
     t.integer "ci_active_pipelines", default: 0, null: false
     t.integer "ci_pipeline_size", default: 0, null: false
     t.integer "ci_active_jobs", default: 0, null: false
+    t.integer "project_hooks", default: 0, null: false
     t.index ["plan_id"], name: "index_plan_limits_on_plan_id", unique: true
   end
 
