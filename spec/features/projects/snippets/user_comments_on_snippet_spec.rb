@@ -8,6 +8,7 @@ describe 'Projects > Snippets > User comments on a snippet', :js do
   let(:user) { create(:user) }
 
   before do
+    stub_feature_flags(snippets_vue: false)
     project.add_maintainer(user)
     sign_in(user)
 

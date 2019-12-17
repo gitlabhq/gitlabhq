@@ -152,6 +152,7 @@ end
 RSpec.shared_examples 'project policies as developer' do
   context 'abilities for non-public projects' do
     let(:project) { create(:project, namespace: owner.namespace) }
+
     subject { described_class.new(developer, project) }
 
     it do

@@ -44,7 +44,7 @@ gitlab:
         memory: 37.5M
     maxReplicas: 3
     hpa:
-      targetAverageValue: 130m
+      targetAverageValue: 500m
     deployment:
       livenessProbe:
         timeoutSeconds: 5
@@ -56,6 +56,8 @@ gitlab:
       limits:
         cpu: 975m
         memory: 1450M
+    hpa:
+      targetAverageValue: 650m
   task-runner:
     resources:
       requests:

@@ -2,6 +2,7 @@ extends:
   - '@gitlab'
   - plugin:promise/recommended
   - plugin:no-jquery/slim
+  - plugin:no-jquery/deprecated-3.4
 globals:
   __webpack_public_path__: true
   gl: false
@@ -48,8 +49,10 @@ rules:
   no-jquery/no-animate: off
   # all offenses of no-jquery/no-animate-toggle are false positives ( $toast.show() )
   no-jquery/no-animate-toggle: off
+  no-jquery/no-event-shorthand: off
   no-jquery/no-fade: off
   no-jquery/no-serialize: error
+  no-jquery/no-sizzle: off
   promise/always-return: off
   promise/no-callback-in-promise: off
 overrides:

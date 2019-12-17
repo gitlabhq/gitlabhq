@@ -6,6 +6,7 @@ describe PipelinesFinder do
   let(:project) { create(:project, :public, :repository) }
   let(:current_user) { nil }
   let(:params) { {} }
+
   subject { described_class.new(project, current_user, params).execute }
 
   describe "#execute" do

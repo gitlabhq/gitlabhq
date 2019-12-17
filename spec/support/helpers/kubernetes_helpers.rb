@@ -351,7 +351,7 @@ module KubernetesHelpers
   def kube_knative_services_body(**options)
     {
       "kind" => "List",
-      "items" => [knative_07_service(options)]
+      "items" => [knative_09_service(options)]
     }
   end
 
@@ -489,6 +489,58 @@ module KubernetesHelpers
 
   # noinspection RubyStringKeysInHashInspection
   def knative_07_service(name: 'kubetest', namespace: 'default', domain: 'example.com', description: 'a knative service', environment: 'production')
+    { "apiVersion" => "serving.knative.dev/v1alpha1",
+      "kind" => "Service",
+      "metadata" =>
+        { "annotations" =>
+            { "serving.knative.dev/creator" => "system:serviceaccount:#{namespace}:#{namespace}-service-account",
+              "serving.knative.dev/lastModifier" => "system:serviceaccount:#{namespace}:#{namespace}-service-account" },
+          "creationTimestamp" => "2019-10-22T21:19:13Z",
+          "generation" => 1,
+          "labels" => { "service" => name },
+          "name" => name,
+          "namespace" => namespace,
+          "resourceVersion" => "289726",
+          "selfLink" => "/apis/serving.knative.dev/v1alpha1/namespaces/#{namespace}/services/#{name}",
+          "uid" => "988349fa-f511-11e9-9ea1-42010a80005e" },
+      "spec" => {
+        "template" => {
+          "metadata" => {
+            "annotations" => { "Description" => description },
+            "creationTimestamp" => "2019-10-22T21:19:12Z",
+            "labels" => { "service" => name }
+          },
+          "spec" => {
+            "containers" => [{
+                               "env" =>
+                                 [{ "name" => "timestamp", "value" => "2019-10-22 21:19:12" }],
+                               "image" => "image_name",
+                               "name" => "user-container",
+                               "resources" => {}
+                             }],
+            "timeoutSeconds" => 300
+          }
+        },
+        "traffic" => [{ "latestRevision" => true, "percent" => 100 }]
+      },
+      "status" =>
+        { "address" => { "url" => "http://#{name}.#{namespace}.svc.cluster.local" },
+          "conditions" =>
+            [{ "lastTransitionTime" => "2019-10-22T21:20:15Z", "status" => "True", "type" => "ConfigurationsReady" },
+             { "lastTransitionTime" => "2019-10-22T21:20:15Z", "status" => "True", "type" => "Ready" },
+             { "lastTransitionTime" => "2019-10-22T21:20:15Z", "status" => "True", "type" => "RoutesReady" }],
+          "latestCreatedRevisionName" => "#{name}-92tsj",
+          "latestReadyRevisionName" => "#{name}-92tsj",
+          "observedGeneration" => 1,
+          "traffic" => [{ "latestRevision" => true, "percent" => 100, "revisionName" => "#{name}-92tsj" }],
+          "url" => "http://#{name}.#{namespace}.#{domain}" },
+      "environment_scope" => environment,
+      "cluster_id" => 5,
+      "podcount" => 0 }
+  end
+
+  # noinspection RubyStringKeysInHashInspection
+  def knative_09_service(name: 'kubetest', namespace: 'default', domain: 'example.com', description: 'a knative service', environment: 'production')
     { "apiVersion" => "serving.knative.dev/v1alpha1",
       "kind" => "Service",
       "metadata" =>

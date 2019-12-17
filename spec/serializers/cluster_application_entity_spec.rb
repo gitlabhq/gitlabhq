@@ -5,6 +5,7 @@ require 'spec_helper'
 describe ClusterApplicationEntity do
   describe '#as_json' do
     let(:application) { build(:clusters_applications_helm, version: '0.1.1') }
+
     subject { described_class.new(application).as_json }
 
     it 'has name' do

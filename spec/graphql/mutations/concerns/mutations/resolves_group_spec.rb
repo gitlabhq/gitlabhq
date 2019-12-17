@@ -10,6 +10,7 @@ describe Mutations::ResolvesGroup do
   end
 
   let(:context) { double }
+
   subject(:mutation) { mutation_class.new(object: nil, context: context) }
 
   it 'uses the GroupsResolver to resolve groups by path' do

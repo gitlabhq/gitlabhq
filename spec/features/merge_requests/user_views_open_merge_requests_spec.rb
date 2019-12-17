@@ -113,6 +113,7 @@ describe 'User views open merge requests' do
 
   context 'when project is internal' do
     let!(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+
     set(:project) { create(:project, :internal, :repository) }
 
     context 'when signed in' do

@@ -92,16 +92,16 @@ describe('diffs/components/app', () => {
       });
     });
 
-    it('calls fetchDiffFiles if diffsBatchLoad is enabled, and not latest version', () => {
+    it('calls batch methods if diffsBatchLoad is enabled, and not latest version', () => {
       wrapper.vm.glFeatures.diffsBatchLoad = true;
       wrapper.vm.isLatestVersion = () => false;
       wrapper.vm.fetchData(false);
 
-      expect(wrapper.vm.fetchDiffFiles).toHaveBeenCalled();
+      expect(wrapper.vm.fetchDiffFiles).not.toHaveBeenCalled();
       wrapper.vm.$nextTick(() => {
         expect(wrapper.vm.startRenderDiffsQueue).toHaveBeenCalled();
-        expect(wrapper.vm.fetchDiffFilesMeta).not.toHaveBeenCalled();
-        expect(wrapper.vm.fetchDiffFilesBatch).not.toHaveBeenCalled();
+        expect(wrapper.vm.fetchDiffFilesMeta).toHaveBeenCalled();
+        expect(wrapper.vm.fetchDiffFilesBatch).toHaveBeenCalled();
       });
     });
 

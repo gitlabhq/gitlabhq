@@ -75,6 +75,7 @@ describe 'Adding an AwardEmoji' do
 
       describe 'marking Todos as done' do
         let(:user) { current_user}
+
         subject { post_graphql_mutation(mutation, current_user: user) }
 
         include_examples 'creating award emojis marks Todos as done'

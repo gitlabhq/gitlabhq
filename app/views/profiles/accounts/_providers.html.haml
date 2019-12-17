@@ -16,6 +16,6 @@
             %a.provider-btn
               = s_('Profiles|Active')
         - elsif link_allowed
-          = link_to omniauth_authorize_path(:user, provider), method: :post, class: 'provider-btn gl-bg-blue-500' do
+          = link_to omniauth_authorize_path(:user, provider), method: :post, class: 'provider-btn gl-text-blue-500' do
             = s_('Profiles|Connect')
   = render_if_exists 'profiles/accounts/group_saml_unlink_buttons', group_saml_identities: group_saml_identities

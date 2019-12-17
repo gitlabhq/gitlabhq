@@ -6,6 +6,7 @@ describe ExpirePipelineCacheWorker do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
+
   subject { described_class.new }
 
   describe '#perform' do

@@ -15,7 +15,7 @@ export default {
       const splitArray = this.path.split('/');
       splitArray.pop();
 
-      return { path: `/tree/${this.commitRef}/${splitArray.join('/')}` };
+      return { path: `/-/tree/${this.commitRef}/${splitArray.join('/')}` };
     },
   },
   methods: {

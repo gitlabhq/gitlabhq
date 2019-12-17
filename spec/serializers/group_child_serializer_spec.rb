@@ -5,6 +5,7 @@ require 'spec_helper'
 describe GroupChildSerializer do
   let(:request) { double('request') }
   let(:user) { create(:user) }
+
   subject(:serializer) { described_class.new(current_user: user) }
 
   describe '#represent' do

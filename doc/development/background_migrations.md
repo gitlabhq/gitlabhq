@@ -10,11 +10,6 @@ migrations automatically reschedule themselves for a later point in time.
 
 ## When To Use Background Migrations
 
-> **Note:**
-> When adding background migrations _you must_ make sure they are announced in the
-> monthly release post along with an estimate of how long it will take to complete
-> the migrations.
-
 In the vast majority of cases you will want to use a regular Rails migration
 instead. Background migrations should be used when migrating _data_ in
 tables that have so many rows this process would take hours when performed in a
@@ -33,6 +28,11 @@ Some examples where background migrations can be useful:
 - Migrating events from one table to multiple separate tables.
 - Populating one column based on JSON stored in another column.
 - Migrating data that depends on the output of external services (e.g. an API).
+
+> **Note:**
+> If the background migration is part of an important upgrade, make sure it's announced
+> in the release post. Discuss with your Project Manager if you're not sure the migration falls
+> into this category.
 
 ## Isolation
 

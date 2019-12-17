@@ -12,20 +12,14 @@ import {
   mockedQueryResultPayload,
   mockProjectDir,
   mockHost,
-} from '../mock_data';
-
+} from '../../mock_data';
 import * as iconUtils from '~/lib/utils/icon_utils';
 
-const mockSvgPathContent = 'mockSvgPathContent';
 const mockWidgets = 'mockWidgets';
 
+const mockSvgPathContent = 'mockSvgPathContent';
 jest.mock('~/lib/utils/icon_utils', () => ({
-  getSvgIconPathContent: jest.fn().mockImplementation(
-    () =>
-      new Promise(resolve => {
-        resolve(mockSvgPathContent);
-      }),
-  ),
+  getSvgIconPathContent: jest.fn().mockImplementation(() => Promise.resolve(mockSvgPathContent)),
 }));
 
 describe('Time series component', () => {

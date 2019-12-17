@@ -54,6 +54,7 @@ describe MergeRequestsHelper do
   describe '#format_mr_branch_names' do
     describe 'within the same project' do
       let(:merge_request) { create(:merge_request) }
+
       subject { format_mr_branch_names(merge_request) }
 
       it { is_expected.to eq([merge_request.source_branch, merge_request.target_branch]) }

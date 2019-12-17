@@ -8,6 +8,7 @@ describe 'Thread Comments Snippet', :js do
   let(:snippet) { create(:project_snippet, :private, project: project, author: user) }
 
   before do
+    stub_feature_flags(snippets_vue: false)
     project.add_maintainer(user)
     sign_in(user)
 

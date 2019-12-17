@@ -7,6 +7,7 @@ describe API::ProjectImport do
   let(:user) { create(:user) }
   let(:file) { File.join('spec', 'features', 'projects', 'import_export', 'test_project_export.tar.gz') }
   let(:namespace) { create(:group) }
+
   before do
     allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
     stub_uploads_object_storage(FileUploader)

@@ -8,6 +8,7 @@ describe 'Projects > Snippets > User updates a snippet' do
   let(:user) { create(:user) }
 
   before do
+    stub_feature_flags(snippets_vue: false)
     project.add_maintainer(user)
     sign_in(user)
 

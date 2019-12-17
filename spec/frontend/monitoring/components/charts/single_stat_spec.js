@@ -1,6 +1,6 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import SingleStatChart from '~/monitoring/components/charts/single_stat.vue';
-import { graphDataPrometheusQuery } from '../mock_data';
+import { graphDataPrometheusQuery } from '../../mock_data';
 
 const localVue = createLocalVue();
 

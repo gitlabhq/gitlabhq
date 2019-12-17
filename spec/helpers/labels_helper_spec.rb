@@ -274,6 +274,7 @@ describe LabelsHelper do
 
   describe '#label_status_tooltip' do
     let(:status) { 'unsubscribed'.inquiry }
+
     subject { label_status_tooltip(label.present(issuable_subject: nil), status) }
 
     context 'with a project label' do

@@ -209,6 +209,6 @@ panel_groups:
     weight: 1
     metrics:
     - id: system_metrics_knative_function_invocation_count
-      query_range: 'sum(ceil(rate(istio_requests_total{destination_service_namespace="%{kube_namespace}", destination_app=~"%{function_name}.*"}[1m])*60))'
+      query_range: 'sum(ceil(rate(istio_requests_total{destination_service_namespace="%{kube_namespace}", destination_service=~"%{function_name}.*"}[1m])*60))'
       label: invocations / minute
       unit: requests

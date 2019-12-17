@@ -1,0 +1,5 @@
+---
+title: Added migration which adds service desk username column
+merge_request: 21733
+author:
+type: added

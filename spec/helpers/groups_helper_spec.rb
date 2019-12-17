@@ -127,6 +127,7 @@ describe GroupsHelper do
         sub_sub_owner: sub_sub_owner
       }
     end
+
     subject { helper.share_with_group_lock_help_text(sub_subgroup) }
 
     where(:root_share_with_group_locked, :subgroup_share_with_group_locked, :sub_subgroup_share_with_group_locked, :current_user, :help_text, :linked_ancestor) do
@@ -194,6 +195,7 @@ describe GroupsHelper do
   describe '#group_container_registry_nav' do
     let(:group) { create(:group, :public) }
     let(:user) { create(:user) }
+
     before do
       stub_container_registry_config(enabled: true)
       allow(helper).to receive(:current_user) { user }
@@ -229,6 +231,7 @@ describe GroupsHelper do
   describe '#group_sidebar_links' do
     let(:group) { create(:group, :public) }
     let(:user) { create(:user) }
+
     before do
       group.add_owner(user)
       allow(helper).to receive(:current_user) { user }

@@ -33,6 +33,7 @@ describe 'OAuth Login', :js, :allow_forgery_protection do
       let(:remember_me) { false }
       let(:user) { create(:omniauth_user, extern_uid: uid, provider: provider.to_s) }
       let(:two_factor_user) { create(:omniauth_user, :two_factor, extern_uid: uid, provider: provider.to_s) }
+
       provider == :salesforce ? let(:additional_info) { { extra: { email_verified: true } } } : let(:additional_info) { {} }
 
       before do

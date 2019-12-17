@@ -39,43 +39,31 @@ To distinguish queries from mutations and fragments, the following naming conven
 - `addUser.mutation.graphql` for mutations;
 - `basicUser.fragment.graphql` for fragments.
 
-GraphQL:
-
-- Queries are stored in `(ee/)app/assets/javascripts/` under the feature. For example, `respository/queries`. Frontend components can use these stored queries.
-- Mutations are stored in
-  `(ee/)app/assets/javascripts/<subfolders>/<name of mutation>.mutation.graphql`.
-
 ### Fragments
 
-Fragments are a way to make your complex GraphQL queries more readable and re-usable.
-They can be stored in a separate file and imported.
+Fragments are a way to make your complex GraphQL queries more readable and re-usable. Here is an example of GraphQL fragment:
 
-For example, a fragment that references another fragment:
-
-```ruby
-fragment BaseEpic on Epic {
+```javascript
+fragment DesignListItem on Design {
   id
-  iid
-  title
-  webPath
-  relativePosition
-  userPermissions {
-    adminEpic
-    createEpic
-  }
+  image
+  event
+  filename
+  notesCount
 }
+```
 
-fragment EpicNode on Epic {
-  ...BaseEpic
-  state
-  reference(full: true)
-  relationPath
-  createdAt
-  closedAt
-  hasChildren
-  hasIssues
-  group {
-    fullPath
+Fragments can be stored in separate files, imported and used in queries, mutations or other fragments.
+
+```javascript
+#import "./designList.fragment.graphql"
+#import "./diffRefs.fragment.graphql"
+
+fragment DesignItem on Design {
+  ...DesignListItem
+  fullPath
+  diffRefs {
+    ...DesignDiffRefs
   }
 }
 ```

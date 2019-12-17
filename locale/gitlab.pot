@@ -4994,10 +4994,16 @@ msgstr ""
 msgid "Could not create group"
 msgstr ""
 
+msgid "Could not create issue"
+msgstr ""
+
 msgid "Could not create project"
 msgstr ""
 
 msgid "Could not delete chat nickname %{chat_name}."
+msgstr ""
+
+msgid "Could not fetch projects"
 msgstr ""
 
 msgid "Could not remove the trigger."
@@ -5642,6 +5648,12 @@ msgid "Delete license"
 msgstr ""
 
 msgid "Delete list"
+msgstr ""
+
+msgid "Delete snippet"
+msgstr ""
+
+msgid "Delete snippet?"
 msgstr ""
 
 msgid "Delete source branch"
@@ -10001,6 +10013,9 @@ msgstr ""
 msgid "IssuesAnalytics|Total:"
 msgstr ""
 
+msgid "Issue|Title"
+msgstr ""
+
 msgid "It must have a header row and at least two columns: the first column is the issue title and the second column is the issue description. The separator is automatically detected."
 msgstr ""
 
@@ -10707,6 +10722,9 @@ msgid "Loading functions timed out. Please reload the page to try again."
 msgstr ""
 
 msgid "Loading issues"
+msgstr ""
+
+msgid "Loading snippet"
 msgstr ""
 
 msgid "Loading the GitLab IDE..."
@@ -11722,6 +11740,9 @@ msgid "New identity"
 msgstr ""
 
 msgid "New issue"
+msgstr ""
+
+msgid "New issue title"
 msgstr ""
 
 msgid "New label"

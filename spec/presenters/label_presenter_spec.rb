@@ -41,6 +41,7 @@ describe LabelPresenter do
   describe '#filter_path' do
     context 'with group as context subject' do
       let(:label_in_group) { build_stubbed(:label, project: project).present(issuable_subject: group) }
+
       subject { label_in_group.filter_path }
 
       it { is_expected.to eq(issues_group_path(group, label_name: [label_in_group.title])) }

@@ -3,7 +3,7 @@
 - current_user_empty_message_header = s_('UserProfile|You haven\'t created any snippets.')
 - current_user_empty_message_description = s_('UserProfile|Snippets in GitLab can either be private, internal, or public.')
 - primary_button_label = _('New snippet')
-- primary_button_link = new_snippet_path
+- primary_button_link = new_snippet_path if can?(current_user, :create_personal_snippet)
 - visitor_empty_message = s_('UserProfile|No snippets found.')
 
 .snippets-list-holder

@@ -11,6 +11,6 @@ describe TreeEntryPresenter do
   let(:presenter) { described_class.new(tree) }
 
   describe '.web_url' do
-    it { expect(presenter.web_url).to eq("http://localhost/#{project.full_path}/tree/#{tree.commit_id}/#{tree.path}") }
+    it { expect(presenter.web_url).to eq("http://localhost/#{project.full_path}/-/tree/#{tree.commit_id}/#{tree.path}") }
   end
 end

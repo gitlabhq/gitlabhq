@@ -1,6 +1,7 @@
 - @hide_top_links = true
 - page_title    "Snippets"
 - header_title  "Snippets", dashboard_snippets_path
+- button_path = new_snippet_path if can?(current_user, :create_personal_snippet)
 
 = render 'dashboard/snippets_head'
 - if current_user.snippets.exists?
@@ -9,4 +10,4 @@
 - if current_user.snippets.exists?
   = render partial: 'shared/snippets/list', locals: { link_project: true }
 - else
-  = render 'shared/empty_states/snippets', button_path: new_snippet_path
+  = render 'shared/empty_states/snippets', button_path: button_path

@@ -6,30 +6,59 @@ describe 'Explore Snippets' do
   let!(:public_snippet) { create(:personal_snippet, :public) }
   let!(:internal_snippet) { create(:personal_snippet, :internal) }
   let!(:private_snippet) { create(:personal_snippet, :private) }
+  let(:user) { nil }
 
-  it 'User should see snippets that are not private' do
-    sign_in create(:user)
+  before do
+    sign_in(user) if user
     visit explore_snippets_path
-
-    expect(page).to have_content(public_snippet.title)
-    expect(page).to have_content(internal_snippet.title)
-    expect(page).not_to have_content(private_snippet.title)
   end
 
-  it 'External user should see only public snippets' do
-    sign_in create(:user, :external)
-    visit explore_snippets_path
+  context 'User' do
+    let(:user) { create(:user) }
 
-    expect(page).to have_content(public_snippet.title)
-    expect(page).not_to have_content(internal_snippet.title)
-    expect(page).not_to have_content(private_snippet.title)
+    it 'see snippets that are not private' do
+      expect(page).to have_content(public_snippet.title)
+      expect(page).to have_content(internal_snippet.title)
+      expect(page).not_to have_content(private_snippet.title)
+    end
+
+    it 'shows new snippet button in header' do
+      parent_element = page.find('.page-title-controls')
+      expect(parent_element).to have_link('New snippet')
+    end
   end
 
-  it 'Not authenticated user should see only public snippets' do
-    visit explore_snippets_path
+  context 'External user' do
+    let(:user) { create(:user, :external) }
 
-    expect(page).to have_content(public_snippet.title)
-    expect(page).not_to have_content(internal_snippet.title)
-    expect(page).not_to have_content(private_snippet.title)
+    it 'see only public snippets' do
+      expect(page).to have_content(public_snippet.title)
+      expect(page).not_to have_content(internal_snippet.title)
+      expect(page).not_to have_content(private_snippet.title)
+    end
+
+    context 'without snippets' do
+      before do
+        Snippet.delete_all
+      end
+
+      it 'hides new snippet button' do
+        expect(page).not_to have_link('New snippet')
+      end
+    end
+
+    context 'with snippets' do
+      it 'hides new snippet button' do
+        expect(page).not_to have_link('New snippet')
+      end
+    end
+  end
+
+  context 'Not authenticated user' do
+    it 'see only public snippets' do
+      expect(page).to have_content(public_snippet.title)
+      expect(page).not_to have_content(internal_snippet.title)
+      expect(page).not_to have_content(private_snippet.title)
+    end
   end
 end

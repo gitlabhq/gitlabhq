@@ -1,19 +1,22 @@
 import SnippetApp from '~/snippets/components/app.vue';
+import SnippetHeader from '~/snippets/components/snippet_header.vue';
+import { GlLoadingIcon } from '@gitlab/ui';
+
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 
 describe('Snippet view app', () => {
   let wrapper;
-  let snippetDataMock;
   const localVue = createLocalVue();
   const defaultProps = {
-    snippetGid: 'gid://gitlab/PersonalSnippet/35',
+    snippetGid: 'gid://gitlab/PersonalSnippet/42',
   };
 
-  function createComponent({ props = defaultProps, snippetData = {} } = {}) {
-    snippetDataMock = jest.fn();
+  function createComponent({ props = defaultProps, loading = false } = {}) {
     const $apollo = {
       queries: {
-        snippetData: snippetDataMock,
+        snippet: {
+          loading,
+        },
       },
     };
 
@@ -25,17 +28,18 @@ describe('Snippet view app', () => {
         ...props,
       },
     });
-
-    wrapper.setData({
-      snippetData,
-    });
   }
   afterEach(() => {
     wrapper.destroy();
   });
 
-  it('renders itself', () => {
+  it('renders loader while the query is in flight', () => {
+    createComponent({ loading: true });
+    expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+  });
+
+  it('renders SnippetHeader component after the query is finished', () => {
     createComponent();
-    expect(wrapper.find('.js-snippet-view').exists()).toBe(true);
+    expect(wrapper.find(SnippetHeader).exists()).toBe(true);
   });
 });

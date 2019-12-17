@@ -147,13 +147,15 @@ describe('DiffsStoreActions', () => {
   describe('fetchDiffFilesBatch', () => {
     it('should fetch batch diff files', done => {
       const endpointBatch = '/fetch/diffs_batch';
-      const batch1 = `${endpointBatch}?per_page=${DIFFS_PER_PAGE}`;
-      const batch2 = `${endpointBatch}?per_page=${DIFFS_PER_PAGE}&page=2`;
       const mock = new MockAdapter(axios);
       const res1 = { diff_files: [], pagination: { next_page: 2 } };
       const res2 = { diff_files: [], pagination: {} };
-      mock.onGet(batch1).reply(200, res1);
-      mock.onGet(batch2).reply(200, res2);
+      mock
+        .onGet(endpointBatch, { params: { page: undefined, per_page: DIFFS_PER_PAGE, w: '1' } })
+        .reply(200, res1);
+      mock
+        .onGet(endpointBatch, { params: { page: 2, per_page: DIFFS_PER_PAGE, w: '1' } })
+        .reply(200, res2);
 
       testAction(
         fetchDiffFilesBatch,

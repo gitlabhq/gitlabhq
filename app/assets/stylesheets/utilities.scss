@@ -40,12 +40,12 @@
 
 // Classes using mixins coming from @gitlab-ui
 // can be removed once https://gitlab.com/gitlab-org/gitlab/merge_requests/19021 has been merged
-.gl-bg-blue-500 { @include gl-bg-blue-500; }
 .gl-bg-red-100 { @include gl-bg-red-100; }
 .gl-bg-orange-100 { @include gl-bg-orange-100; }
 .gl-bg-gray-100 { @include gl-bg-gray-100; }
 .gl-bg-green-100 { @include gl-bg-green-100;}
 
+.gl-text-blue-500 { @include gl-text-blue-500; }
 .gl-text-gray-900 { @include gl-text-gray-900; }
 .gl-text-red-700 { @include gl-text-red-700; }
 .gl-text-orange-700 { @include gl-text-orange-700; }

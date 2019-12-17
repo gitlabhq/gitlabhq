@@ -143,6 +143,7 @@ describe "Public Project Access" do
 
   describe "GET /:project_path/pipelines/:id" do
     let(:pipeline) { create(:ci_pipeline, project: project) }
+
     subject { project_pipeline_path(project, pipeline) }
 
     it { is_expected.to be_allowed_for(:admin) }
@@ -195,6 +196,7 @@ describe "Public Project Access" do
   describe "GET /:project_path/builds/:id" do
     let(:pipeline) { create(:ci_pipeline, project: project) }
     let(:build) { create(:ci_build, pipeline: pipeline) }
+
     subject { project_job_path(project, build.id) }
 
     context "when allowed for public" do
@@ -233,6 +235,7 @@ describe "Public Project Access" do
   describe 'GET /:project_path/builds/:id/trace' do
     let(:pipeline) { create(:ci_pipeline, project: project) }
     let(:build) { create(:ci_build, pipeline: pipeline) }
+
     subject { trace_project_job_path(project, build.id) }
 
     context 'when allowed for public' do
@@ -298,6 +301,7 @@ describe "Public Project Access" do
 
   describe "GET /:project_path/-/environments/:id" do
     let(:environment) { create(:environment, project: project) }
+
     subject { project_environment_path(project, environment) }
 
     it { is_expected.to be_allowed_for(:admin) }
@@ -313,6 +317,7 @@ describe "Public Project Access" do
 
   describe "GET /:project_path/-/environments/:id/deployments" do
     let(:environment) { create(:environment, project: project) }
+
     subject { project_environment_deployments_path(project, environment) }
 
     it { is_expected.to be_allowed_for(:admin) }
@@ -399,6 +404,7 @@ describe "Public Project Access" do
 
   describe "GET /:project_path/issues/:id/edit" do
     let(:issue) { create(:issue, project: project) }
+
     subject { edit_project_issue_path(project, issue) }
 
     it { is_expected.to be_allowed_for(:admin) }

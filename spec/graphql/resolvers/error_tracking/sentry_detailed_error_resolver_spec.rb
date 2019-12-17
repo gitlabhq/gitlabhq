@@ -20,6 +20,7 @@ describe Resolvers::ErrorTracking::SentryDetailedErrorResolver do
 
   describe '#resolve' do
     let(:args) { { id: issue_global_id(1234) } }
+
     it 'fetches the data via the sentry API' do
       resolve_error(args)
 

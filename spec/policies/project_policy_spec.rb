@@ -307,6 +307,7 @@ describe ProjectPolicy do
 
   context 'for a guest in a private project' do
     let(:project) { create(:project, :private) }
+
     subject { described_class.new(guest, project) }
 
     it 'disallows the guest from reading the merge request and merge request iid' do
@@ -320,6 +321,7 @@ describe ProjectPolicy do
 
     describe 'for unconfirmed user' do
       let(:unconfirmed_user) { create(:user, confirmed_at: nil) }
+
       subject { described_class.new(unconfirmed_user, project) }
 
       it 'disallows to modify pipelines' do

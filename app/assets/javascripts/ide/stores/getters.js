@@ -115,5 +115,30 @@ export const isOnDefaultBranch = (_state, getters) =>
 export const canPushToBranch = (_state, getters) =>
   getters.currentBranch && getters.currentBranch.can_push;
 
+export const isFileDeletedAndReadded = (state, getters) => path => {
+  const stagedFile = getters.getStagedFile(path);
+  const file = state.entries[path];
+  return Boolean(stagedFile && stagedFile.deleted && file.tempFile);
+};
+
+// checks if any diff exists in the staged or unstaged changes for this path
+export const getDiffInfo = (state, getters) => path => {
+  const stagedFile = getters.getStagedFile(path);
+  const file = state.entries[path];
+  const renamed = file.prevPath ? file.path !== file.prevPath : false;
+  const deletedAndReadded = getters.isFileDeletedAndReadded(path);
+  const deleted = deletedAndReadded ? false : file.deleted;
+  const tempFile = deletedAndReadded ? false : file.tempFile;
+  const changed = file.content !== (deletedAndReadded ? stagedFile.raw : file.raw);
+
+  return {
+    exists: changed || renamed || deleted || tempFile,
+    changed,
+    renamed,
+    deleted,
+    tempFile,
+  };
+};
+
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

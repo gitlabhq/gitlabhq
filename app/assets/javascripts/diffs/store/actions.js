@@ -90,14 +90,13 @@ export const fetchDiffFiles = ({ state, commit }) => {
 };
 
 export const fetchDiffFilesBatch = ({ commit, state }) => {
-  const baseUrl = `${state.endpointBatch}?per_page=${DIFFS_PER_PAGE}`;
-  const url = page => (page ? `${baseUrl}&page=${page}` : baseUrl);
-
   commit(types.SET_BATCH_LOADING, true);
 
   const getBatch = page =>
     axios
-      .get(url(page))
+      .get(state.endpointBatch, {
+        params: { page, per_page: DIFFS_PER_PAGE, w: state.showWhitespace ? '0' : '1' },
+      })
       .then(({ data: { pagination, diff_files } }) => {
         commit(types.SET_DIFF_DATA_BATCH, { diff_files });
         commit(types.SET_BATCH_LOADING, false);

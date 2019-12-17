@@ -324,6 +324,7 @@ describe Gitlab::Database do
 
       context 'with version < 9.5' do
         let(:version) { 9.4 }
+
         it 'refuses setting the upsert' do
           expect(connection)
             .not_to receive(:execute)

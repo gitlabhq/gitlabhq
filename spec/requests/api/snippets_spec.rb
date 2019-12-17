@@ -375,6 +375,7 @@ describe API::Snippets do
 
   describe 'DELETE /snippets/:id' do
     let!(:public_snippet) { create(:personal_snippet, :public, author: user) }
+
     it 'deletes snippet' do
       expect do
         delete api("/snippets/#{public_snippet.id}", user)

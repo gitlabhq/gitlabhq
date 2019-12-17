@@ -253,7 +253,7 @@ project and should only have access to that project.
 
 External users:
 
-- Cannot create groups or projects.
+- Cannot create groups, projects, or personal snippets.
 - Can only access projects to which they are explicitly granted access,
   thus hiding all other internal or private ones from them (like being
   logged out).

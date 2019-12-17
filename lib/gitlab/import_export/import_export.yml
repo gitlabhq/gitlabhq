@@ -220,6 +220,8 @@ excluded_attributes:
     - :encrypted_token
     - :encrypted_token_iv
     - :enabled
+  service_desk_setting:
+    - :outgoing_name
 
 methods:
   notes:

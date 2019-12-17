@@ -943,7 +943,7 @@ describe ProjectsController do
       end
 
       it 'renders JSON body with image links expanded' do
-        expanded_path = "/#{project_with_repo.full_path}/raw/master/files/images/logo-white.png"
+        expanded_path = "/#{project_with_repo.full_path}/-/raw/master/files/images/logo-white.png"
 
         post :preview_markdown, params: preview_markdown_params
 

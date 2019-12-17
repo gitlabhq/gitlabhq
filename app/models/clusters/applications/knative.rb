@@ -3,7 +3,7 @@
 module Clusters
   module Applications
     class Knative < ApplicationRecord
-      VERSION = '0.7.0'
+      VERSION = '0.9.0'
       REPOSITORY = 'https://storage.googleapis.com/triggermesh-charts'
       METRICS_CONFIG = 'https://storage.googleapis.com/triggermesh-charts/istio-metrics.yaml'
       FETCH_IP_ADDRESS_DELAY = 30.seconds

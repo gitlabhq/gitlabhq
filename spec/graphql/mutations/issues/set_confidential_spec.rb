@@ -5,11 +5,13 @@ require 'spec_helper'
 describe Mutations::Issues::SetConfidential do
   let(:issue) { create(:issue) }
   let(:user) { create(:user) }
+
   subject(:mutation) { described_class.new(object: nil, context: { current_user: user }) }
 
   describe '#resolve' do
     let(:confidential) { true }
     let(:mutated_issue) { subject[:issue] }
+
     subject { mutation.resolve(project_path: issue.project.full_path, iid: issue.iid, confidential: confidential) }
 
     it 'raises an error if the resource is not accessible to the user' do

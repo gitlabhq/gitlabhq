@@ -8,6 +8,7 @@ describe 'Projects > Snippets > Project snippet', :js do
   let(:snippet) { create(:project_snippet, project: project, file_name: file_name, content: content) }
 
   before do
+    stub_feature_flags(snippets_vue: false)
     project.add_maintainer(user)
     sign_in(user)
   end

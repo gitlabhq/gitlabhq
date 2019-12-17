@@ -1,10 +1,16 @@
 <script>
-import getSnippet from '../queries/getSnippet.query.graphql';
+import GetSnippetQuery from '../queries/snippet.query.graphql';
+import SnippetHeader from './snippet_header.vue';
+import { GlLoadingIcon } from '@gitlab/ui';
 
 export default {
+  components: {
+    SnippetHeader,
+    GlLoadingIcon,
+  },
   apollo: {
-    snippetData: {
-      query: getSnippet,
+    snippet: {
+      query: GetSnippetQuery,
       variables() {
         return {
           ids: this.snippetGid,
@@ -21,11 +27,24 @@ export default {
   },
   data() {
     return {
-      snippetData: {},
+      snippet: {},
     };
+  },
+  computed: {
+    isLoading() {
+      return this.$apollo.queries.snippet.loading;
+    },
   },
 };
 </script>
 <template>
-  <div class="js-snippet-view"></div>
+  <div class="js-snippet-view">
+    <gl-loading-icon
+      v-if="isLoading"
+      :label="__('Loading snippet')"
+      :size="2"
+      class="loading-animation prepend-top-20 append-bottom-20"
+    />
+    <snippet-header v-else :snippet="snippet" />
+  </div>
 </template>

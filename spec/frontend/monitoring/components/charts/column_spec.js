@@ -4,6 +4,10 @@ import ColumnChart from '~/monitoring/components/charts/column.vue';
 
 const localVue = createLocalVue();
 
+jest.mock('~/lib/utils/icon_utils', () => ({
+  getSvgIconPathContent: jest.fn().mockResolvedValue('mockSvgPathContent'),
+}));
+
 describe('Column component', () => {
   let columnChart;
 

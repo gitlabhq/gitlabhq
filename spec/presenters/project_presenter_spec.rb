@@ -436,6 +436,7 @@ describe ProjectPresenter do
 
   describe '#repo_statistics_buttons' do
     let(:presenter) { described_class.new(project, current_user: user) }
+
     subject(:empty_repo_statistics_buttons) { presenter.empty_repo_statistics_buttons }
 
     before do

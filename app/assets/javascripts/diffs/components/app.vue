@@ -220,9 +220,6 @@ export default {
       this.assignedDiscussions = false;
       this.fetchData(false);
     },
-    isLatestVersion() {
-      return window.location.search.indexOf('diff_id') === -1;
-    },
     startDiffRendering() {
       requestIdleCallback(
         () => {
@@ -232,7 +229,7 @@ export default {
       );
     },
     fetchData(toggleTree = true) {
-      if (this.isLatestVersion() && this.glFeatures.diffsBatchLoad) {
+      if (this.glFeatures.diffsBatchLoad) {
         this.fetchDiffFilesMeta()
           .then(() => {
             if (toggleTree) this.hideTreeListIfJustOneFile();

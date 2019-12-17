@@ -16,6 +16,7 @@ describe ResolvesPipelines do
   end
 
   let(:current_user) { create(:user) }
+
   set(:project) { create(:project, :private) }
   set(:pipeline) { create(:ci_pipeline, project: project) }
   set(:failed_pipeline) { create(:ci_pipeline, :failed, project: project) }

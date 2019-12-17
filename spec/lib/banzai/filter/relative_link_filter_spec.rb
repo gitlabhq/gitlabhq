@@ -153,7 +153,7 @@ describe Banzai::Filter::RelativeLinkFilter do
     it 'rebuilds absolute URL for a file in the repo' do
       doc = filter(link('/doc/api/README.md'))
       expect(doc.at_css('a')['href'])
-        .to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
+        .to eq "/#{project_path}/-/blob/#{ref}/doc/api/README.md"
     end
 
     it 'does not modify relative URLs in system notes' do
@@ -171,13 +171,13 @@ describe Banzai::Filter::RelativeLinkFilter do
     it 'rebuilds relative URL for a file in the repo' do
       doc = filter(link('doc/api/README.md'))
       expect(doc.at_css('a')['href'])
-        .to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
+        .to eq "/#{project_path}/-/blob/#{ref}/doc/api/README.md"
     end
 
     it 'rebuilds relative URL for a file in the repo with leading ./' do
       doc = filter(link('./doc/api/README.md'))
       expect(doc.at_css('a')['href'])
-        .to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
+        .to eq "/#{project_path}/-/blob/#{ref}/doc/api/README.md"
     end
 
     it 'rebuilds relative URL for a file in the repo up one directory' do
@@ -185,7 +185,7 @@ describe Banzai::Filter::RelativeLinkFilter do
       doc = filter(relative_link, requested_path: 'doc/update/7.14-to-8.0.md')
 
       expect(doc.at_css('a')['href'])
-        .to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
+        .to eq "/#{project_path}/-/blob/#{ref}/doc/api/README.md"
     end
 
     it 'rebuilds relative URL for a file in the repo up multiple directories' do
@@ -193,7 +193,7 @@ describe Banzai::Filter::RelativeLinkFilter do
       doc = filter(relative_link, requested_path: 'doc/foo/bar/baz/README.md')
 
       expect(doc.at_css('a')['href'])
-        .to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
+        .to eq "/#{project_path}/-/blob/#{ref}/doc/api/README.md"
     end
 
     it 'rebuilds relative URL for a file in the repository root' do
@@ -201,47 +201,47 @@ describe Banzai::Filter::RelativeLinkFilter do
       doc = filter(relative_link, requested_path: 'doc/some-file.md')
 
       expect(doc.at_css('a')['href'])
-        .to eq "/#{project_path}/blob/#{ref}/README.md"
+        .to eq "/#{project_path}/-/blob/#{ref}/README.md"
     end
 
     it 'rebuilds relative URL for a file in the repo with an anchor' do
       doc = filter(link('README.md#section'))
       expect(doc.at_css('a')['href'])
-        .to eq "/#{project_path}/blob/#{ref}/README.md#section"
+        .to eq "/#{project_path}/-/blob/#{ref}/README.md#section"
     end
 
     it 'rebuilds relative URL for a directory in the repo' do
       doc = filter(link('doc/api/'))
       expect(doc.at_css('a')['href'])
-        .to eq "/#{project_path}/tree/#{ref}/doc/api"
+        .to eq "/#{project_path}/-/tree/#{ref}/doc/api"
     end
 
     it 'rebuilds relative URL for an image in the repo' do
       doc = filter(image('files/images/logo-black.png'))
 
       expect(doc.at_css('img')['src'])
-        .to eq "/#{project_path}/raw/#{ref}/files/images/logo-black.png"
+        .to eq "/#{project_path}/-/raw/#{ref}/files/images/logo-black.png"
     end
 
     it 'rebuilds relative URL for link to an image in the repo' do
       doc = filter(link('files/images/logo-black.png'))
 
       expect(doc.at_css('a')['href'])
-        .to eq "/#{project_path}/raw/#{ref}/files/images/logo-black.png"
+        .to eq "/#{project_path}/-/raw/#{ref}/files/images/logo-black.png"
     end
 
     it 'rebuilds relative URL for a video in the repo' do
       doc = filter(video('files/videos/intro.mp4'), commit: project.commit('video'), ref: 'video')
 
       expect(doc.at_css('video')['src'])
-        .to eq "/#{project_path}/raw/video/files/videos/intro.mp4"
+        .to eq "/#{project_path}/-/raw/video/files/videos/intro.mp4"
     end
 
     it 'rebuilds relative URL for audio in the repo' do
       doc = filter(audio('files/audio/sample.wav'), commit: project.commit('audio'), ref: 'audio')
 
       expect(doc.at_css('audio')['src'])
-        .to eq "/#{project_path}/raw/audio/files/audio/sample.wav"
+        .to eq "/#{project_path}/-/raw/audio/files/audio/sample.wav"
     end
 
     it 'does not modify relative URL with an anchor only' do
@@ -268,7 +268,7 @@ describe Banzai::Filter::RelativeLinkFilter do
       allow_any_instance_of(described_class).to receive(:uri_type).and_return(:raw)
 
       doc = filter(image(escaped))
-      expect(doc.at_css('img')['src']).to eq "/#{project_path}/raw/#{Addressable::URI.escape(ref)}/#{escaped}"
+      expect(doc.at_css('img')['src']).to eq "/#{project_path}/-/raw/#{Addressable::URI.escape(ref)}/#{escaped}"
     end
 
     context 'when requested path is a file in the repo' do
@@ -276,7 +276,7 @@ describe Banzai::Filter::RelativeLinkFilter do
 
       it 'rebuilds URL relative to the containing directory' do
         doc = filter(link('users.md'))
-        expect(doc.at_css('a')['href']).to eq "/#{project_path}/blob/#{Addressable::URI.escape(ref)}/doc/api/users.md"
+        expect(doc.at_css('a')['href']).to eq "/#{project_path}/-/blob/#{Addressable::URI.escape(ref)}/doc/api/users.md"
       end
     end
 
@@ -285,7 +285,7 @@ describe Banzai::Filter::RelativeLinkFilter do
 
       it 'rebuilds URL relative to the directory' do
         doc = filter(link('users.md'))
-        expect(doc.at_css('a')['href']).to eq "/#{project_path}/blob/#{Addressable::URI.escape(ref)}/doc/api/users.md"
+        expect(doc.at_css('a')['href']).to eq "/#{project_path}/-/blob/#{Addressable::URI.escape(ref)}/doc/api/users.md"
       end
     end
 
@@ -296,7 +296,7 @@ describe Banzai::Filter::RelativeLinkFilter do
 
       it 'correctly escapes the ref' do
         doc = filter(link('.gitkeep'))
-        expect(doc.at_css('a')['href']).to eq "/#{project_path}/blob/#{Addressable::URI.escape(ref)}/foo/bar/.gitkeep"
+        expect(doc.at_css('a')['href']).to eq "/#{project_path}/-/blob/#{Addressable::URI.escape(ref)}/foo/bar/.gitkeep"
       end
     end
 
@@ -315,7 +315,7 @@ describe Banzai::Filter::RelativeLinkFilter do
         doc = filter(link(path))
 
         expect(doc.at_css('a')['href'])
-          .to eq "/#{project_path}/raw/#{ref_escaped}/files/images/logo-black.png"
+          .to eq "/#{project_path}/-/raw/#{ref_escaped}/files/images/logo-black.png"
       end
     end
 
@@ -326,7 +326,7 @@ describe Banzai::Filter::RelativeLinkFilter do
 
       it 'does not escape the space twice' do
         doc = filter(link('README.md'))
-        expect(doc.at_css('a')['href']).to eq "/#{project_path}/blob/#{Addressable::URI.escape(ref)}/with%20space/README.md"
+        expect(doc.at_css('a')['href']).to eq "/#{project_path}/-/blob/#{Addressable::URI.escape(ref)}/with%20space/README.md"
       end
     end
   end

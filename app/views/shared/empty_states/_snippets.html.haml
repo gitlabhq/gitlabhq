@@ -11,7 +11,8 @@
         %p
           = s_('SnippetsEmptyState|They can be either public or private.')
         .text-center
-          = link_to s_('SnippetsEmptyState|New snippet'), button_path, class: 'btn btn-success', title: s_('SnippetsEmptyState|New snippet'), id: 'new_snippet_link'
+          - if button_path
+            = link_to s_('SnippetsEmptyState|New snippet'), button_path, class: 'btn btn-success', title: s_('SnippetsEmptyState|New snippet'), id: 'new_snippet_link'
           - unless current_page?(dashboard_snippets_path)
             = link_to s_('SnippetsEmptyState|Explore public snippets'), explore_snippets_path, class: 'btn btn-default', title: s_('SnippetsEmptyState|Explore public snippets')
       - else

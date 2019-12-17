@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe AddressableUrlValidator do
   let!(:badge) { build(:badge, link_url: 'http://www.example.com') }
+
   subject { validator.validate(badge) }
 
   include_examples 'url validator examples', described_class::DEFAULT_OPTIONS[:schemes]

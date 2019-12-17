@@ -194,6 +194,7 @@ describe 'Gcp Cluster', :js, :do_not_mock_admin_mode do
 
   context 'when third party offers are disabled' do
     let(:admin) { create(:admin) }
+
     before do
       stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
       sign_in(admin)

@@ -146,6 +146,7 @@ describe 'Task Lists' do
 
   describe 'for Notes' do
     let!(:issue) { create(:issue, author: user, project: project) }
+
     describe 'multiple tasks' do
       let!(:note) do
         create(:note, note: markdown, noteable: issue,

@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlHeatmap } from '@gitlab/ui/dist/charts';
 import Heatmap from '~/monitoring/components/charts/heatmap.vue';
-import { graphDataPrometheusQueryRangeMultiTrack } from '../mock_data';
+import { graphDataPrometheusQueryRangeMultiTrack } from '../../mock_data';
 
 describe('Heatmap component', () => {
   let heatmapChart;

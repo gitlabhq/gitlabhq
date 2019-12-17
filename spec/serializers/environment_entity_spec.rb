@@ -9,6 +9,7 @@ describe EnvironmentEntity do
   end
 
   let(:environment) { create(:environment) }
+
   subject { entity.as_json }
 
   it 'exposes latest deployment' do

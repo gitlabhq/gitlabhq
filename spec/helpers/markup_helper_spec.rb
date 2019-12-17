@@ -44,6 +44,7 @@ describe MarkupHelper do
 
     describe "override default project" do
       let(:actual) { issue.to_reference }
+
       set(:second_project) { create(:project, :public) }
       set(:second_issue) { create(:issue, project: second_project) }
 
@@ -55,6 +56,7 @@ describe MarkupHelper do
 
     describe 'uploads' do
       let(:text) { "![ImageTest](/uploads/test.png)" }
+
       set(:group) { create(:group) }
 
       subject { helper.markdown(text) }
@@ -101,7 +103,7 @@ describe MarkupHelper do
         let(:requested_path) { 'files/images/README.md' }
 
         it 'returns the correct HTML for the image' do
-          expanded_path = "/#{project.full_path}/raw/master/files/images/#{image_file}"
+          expanded_path = "/#{project.full_path}/-/raw/master/files/images/#{image_file}"
 
           expect(subject.css('a')[0].attr('href')).to eq(expanded_path)
           expect(subject.css('img')[0].attr('data-src')).to eq(expanded_path)

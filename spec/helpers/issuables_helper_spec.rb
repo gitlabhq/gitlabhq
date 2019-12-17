@@ -278,6 +278,7 @@ describe IssuablesHelper do
   describe '#assignee_sidebar_data' do
     let(:user) { create(:user) }
     let(:merge_request) { nil }
+
     subject { helper.assignee_sidebar_data(user, merge_request: merge_request) }
 
     it 'returns hash of assignee data' do

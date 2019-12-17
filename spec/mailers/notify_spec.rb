@@ -109,6 +109,7 @@ describe Notify do
 
       describe 'that are reassigned' do
         let(:previous_assignee) { create(:user, name: 'Previous Assignee') }
+
         subject { described_class.reassigned_issue_email(recipient.id, issue.id, [previous_assignee.id], current_user.id) }
 
         it_behaves_like 'a multiple recipients email'
@@ -207,6 +208,7 @@ describe Notify do
 
       describe 'status changed' do
         let(:status) { 'closed' }
+
         subject { described_class.issue_status_changed_email(recipient.id, issue.id, status, current_user.id) }
 
         it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
@@ -235,6 +237,7 @@ describe Notify do
 
       describe 'moved to another project' do
         let(:new_issue) { create(:issue) }
+
         subject { described_class.issue_moved_email(recipient, issue, new_issue, current_user) }
 
         context 'when a user has permissions to access the new issue' do
@@ -334,6 +337,7 @@ describe Notify do
 
       describe 'that are reassigned' do
         let(:previous_assignee) { create(:user, name: 'Previous Assignee') }
+
         subject { described_class.reassigned_merge_request_email(recipient.id, merge_request.id, [previous_assignee.id], current_user.id) }
 
         it_behaves_like 'a multiple recipients email'
@@ -426,6 +430,7 @@ describe Notify do
 
       describe 'status changed' do
         let(:status) { 'reopened' }
+
         subject { described_class.merge_request_status_email(recipient.id, merge_request.id, status, current_user.id) }
 
         it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
@@ -454,6 +459,7 @@ describe Notify do
 
       describe 'that are merged' do
         let(:merge_author) { create(:user) }
+
         subject { described_class.merged_merge_request_email(recipient.id, merge_request.id, merge_author.id) }
 
         it_behaves_like 'a multiple recipients email'
@@ -698,6 +704,7 @@ describe Notify do
 
     describe 'project was moved' do
       let(:recipient) { user }
+
       subject { described_class.project_was_moved_email(project.id, user.id, "gitlab/gitlab") }
 
       it_behaves_like 'an email sent to a user'
@@ -725,6 +732,7 @@ describe Notify do
         project.request_access(user)
         project.requesters.find_by(user_id: user.id)
       end
+
       subject { described_class.member_access_requested_email('project', project_member.id, recipient.id) }
 
       it_behaves_like 'an email sent from GitLab'
@@ -750,6 +758,7 @@ describe Notify do
         project.request_access(user)
         project.requesters.find_by(user_id: user.id)
       end
+
       subject { described_class.member_access_denied_email('project', project.id, user.id) }
 
       it_behaves_like 'an email sent from GitLab'
@@ -769,6 +778,7 @@ describe Notify do
       let(:owner) { create(:user, name: "Chang O'Keefe") }
       let(:project) { create(:project, :public, namespace: owner.namespace) }
       let(:project_member) { create(:project_member, project: project, user: user) }
+
       subject { described_class.member_access_granted_email('project', project_member.id) }
 
       it_behaves_like 'an email sent from GitLab'
@@ -1190,6 +1200,7 @@ describe Notify do
         group.request_access(user)
         group.requesters.find_by(user_id: user.id)
       end
+
       subject { described_class.member_access_requested_email('group', group_member.id, recipient.id) }
 
       it_behaves_like 'an email sent from GitLab'
@@ -1216,6 +1227,7 @@ describe Notify do
         group.requesters.find_by(user_id: user.id)
       end
       let(:recipient) { user }
+
       subject { described_class.member_access_denied_email('group', group.id, user.id) }
 
       it_behaves_like 'an email sent from GitLab'

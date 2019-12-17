@@ -72,7 +72,7 @@ describe MetricsDashboard do
 
           it 'includes project_blob_path only for project dashboards' do
             expect(system_dashboard['project_blob_path']).to be_nil
-            expect(project_dashboard['project_blob_path']).to eq("/#{project.namespace.path}/#{project.name}/blob/master/.gitlab/dashboards/test.yml")
+            expect(project_dashboard['project_blob_path']).to eq("/#{project.namespace.path}/#{project.name}/-/blob/master/.gitlab/dashboards/test.yml")
           end
 
           describe 'project permissions' do
