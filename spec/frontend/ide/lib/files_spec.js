@@ -1,6 +1,7 @@
 import { viewerInformationForPath } from '~/vue_shared/components/content_viewer/lib/viewer_utils';
 import { decorateFiles, splitParent } from '~/ide/lib/files';
-import { decorateData, escapeFileUrl } from '~/ide/stores/utils';
+import { decorateData } from '~/ide/stores/utils';
+import { escapeFileUrl } from '~/lib/utils/url_utility';
 
 const TEST_BRANCH_ID = 'lorem-ipsum';
 const TEST_PROJECT_ID = 10;

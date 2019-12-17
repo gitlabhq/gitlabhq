@@ -272,7 +272,7 @@ ee:
               - :push_event_payload
         - design_versions:
           - actions:
-            - :design # Duplicate export of issues.designs in order to link the record to both Issue and DesignVersion
+            - :design # Duplicate export of issues.designs in order to link the record to both Issue and Action
       - protected_branches:
         - :unprotect_access_levels
       - protected_environments:

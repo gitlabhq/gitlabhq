@@ -395,14 +395,6 @@ describe('Multi-file store utils', () => {
     });
   });
 
-  describe('escapeFileUrl', () => {
-    it('encodes URL excluding the slashes', () => {
-      expect(utils.escapeFileUrl('/foo-bar/file.md')).toBe('/foo-bar/file.md');
-      expect(utils.escapeFileUrl('foo bar/file.md')).toBe('foo%20bar/file.md');
-      expect(utils.escapeFileUrl('foo/bar/file.md')).toBe('foo/bar/file.md');
-    });
-  });
-
   describe('swapInStateArray', () => {
     let localState;
 

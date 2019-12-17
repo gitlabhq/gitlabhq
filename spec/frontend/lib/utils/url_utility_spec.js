@@ -322,6 +322,14 @@ describe('URL utility', () => {
       expect(urlUtils.joinPaths(...paths)).toBe(expected);
     });
   });
+
+  describe('escapeFileUrl', () => {
+    it('encodes URL excluding the slashes', () => {
+      expect(urlUtils.escapeFileUrl('/foo-bar/file.md')).toBe('/foo-bar/file.md');
+      expect(urlUtils.escapeFileUrl('foo bar/file.md')).toBe('foo%20bar/file.md');
+      expect(urlUtils.escapeFileUrl('foo/bar/file.md')).toBe('foo/bar/file.md');
+    });
+  });
 });
 
 describe('setUrlParams', () => {

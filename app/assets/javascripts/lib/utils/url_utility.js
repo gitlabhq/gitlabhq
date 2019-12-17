@@ -280,3 +280,5 @@ export const setUrlParams = (params, url = window.location.href, clearParams = f
 
   return urlObj.toString();
 };
+
+export const escapeFileUrl = fileUrl => encodeURIComponent(fileUrl).replace(/%2F/g, '/');
