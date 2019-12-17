@@ -90,7 +90,6 @@ The following metrics can be controlled by feature flags:
 | Metric                                                         | Feature Flag                                                       |
 |:---------------------------------------------------------------|:-------------------------------------------------------------------|
 | `gitlab_method_call_duration_seconds`                          | `prometheus_metrics_method_instrumentation`                        |
-| `gitlab_transaction_allocated_memory_bytes`                    | `prometheus_metrics_transaction_allocated_memory`                  |
 | `gitlab_view_rendering_duration_seconds`                       | `prometheus_metrics_view_instrumentation`                          |
 
 ## Sidekiq Metrics available for Geo **(PREMIUM)**

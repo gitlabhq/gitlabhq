@@ -2,6 +2,7 @@
 
 class ProjectHook < WebHook
   include TriggerableHooks
+  include Presentable
 
   triggerable_hooks [
     :push_hooks,

@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class WebHookLog < ApplicationRecord
+  include SafeUrl
+  include Presentable
+
   belongs_to :web_hook
 
   serialize :request_headers, Hash # rubocop:disable Cop/ActiveRecordSerialize
@@ -9,6 +12,8 @@ class WebHookLog < ApplicationRecord
 
   validates :web_hook, presence: true
 
+  before_save :obfuscate_basic_auth
+
   def self.recent
     where('created_at >= ?', 2.days.ago.beginning_of_day)
       .order(created_at: :desc)
@@ -16,5 +21,11 @@ class WebHookLog < ApplicationRecord
 
   def success?
     response_status =~ /^2/
+  end
+
+  private
+
+  def obfuscate_basic_auth
+    self.url = safe_url
   end
 end

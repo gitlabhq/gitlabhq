@@ -3,9 +3,19 @@ import { __ } from '~/locale';
 export const PROMETHEUS_TIMEOUT = 120000; // TWO_MINUTES
 
 /**
- * Errors in Prometheus Queries (PromQL) for metrics
+ * States and error states in Prometheus Queries (PromQL) for metrics
  */
-export const metricsErrors = {
+export const metricStates = {
+  /**
+   * Metric data is available
+   */
+  OK: 'OK',
+
+  /**
+   * Metric data is being fetched
+   */
+  LOADING: 'LOADING',
+
   /**
    * Connection timed out to prometheus server
    * the timeout is set to PROMETHEUS_TIMEOUT
@@ -24,12 +34,12 @@ export const metricsErrors = {
   CONNECTION_FAILED: 'CONNECTION_FAILED',
 
   /**
-   * The prometheus server was reach but it cannot process
+   * The prometheus server was reached but it cannot process
    * the query. This can happen for several reasons:
    * - PromQL syntax is incorrect
    * - An operator is not supported
    */
-  BAD_DATA: 'BAD_DATA',
+  BAD_QUERY: 'BAD_QUERY',
 
   /**
    * No specific reason found for error

@@ -529,7 +529,7 @@ describe('Monitoring store actions', () => {
             },
           },
           {
-            type: types.RECEIVE_METRIC_RESULT_ERROR,
+            type: types.RECEIVE_METRIC_RESULT_FAILURE,
             payload: {
               metricId: metric.metric_id,
               error,

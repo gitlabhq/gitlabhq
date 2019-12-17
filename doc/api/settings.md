@@ -72,14 +72,15 @@ Example response:
 ```
 
 Users on GitLab [Premium or Ultimate](https://about.gitlab.com/pricing/) may also see
-the `file_template_project_id` or the `geo_node_allowed_ips` parameters:
+the `file_template_project_id`, `deletion_adjourned_period`, or the `geo_node_allowed_ips` parameters:
 
 ```json
 {
    "id" : 1,
    "signup_enabled" : true,
    "file_template_project_id": 1,
-   "geo_node_allowed_ips": "0.0.0.0/0, ::/0"
+   "geo_node_allowed_ips": "0.0.0.0/0, ::/0",
+   "deletion_adjourned_period": 7,
    ...
 }
 ```
@@ -162,6 +163,7 @@ these parameters:
 - `file_template_project_id`
 - `geo_node_allowed_ips`
 - `geo_status_timeout`
+- `deletion_adjourned_period`
 
 Example responses: **(PREMIUM ONLY)**
 
@@ -292,6 +294,7 @@ are listed in the descriptions of the relevant settings.
 | `plantuml_enabled`                       | boolean          | no                                   | (**If enabled, requires:** `plantuml_url`) Enable PlantUML integration. Default is `false`. |
 | `plantuml_url`                           | string           | required by: `plantuml_enabled`      | The PlantUML instance URL for integration. |
 | `polling_interval_multiplier`            | decimal          | no                                   | Interval multiplier used by endpoints that perform polling. Set to `0` to disable polling. |
+| `deletion_adjourned_period`      | integer          | no                                   | **(PREMIUM ONLY)** How many days after marking project for deletion it is actually removed. Value between 0 and 90.
 | `project_export_enabled`                 | boolean          | no                                   | Enable project export. |
 | `prometheus_metrics_enabled`             | boolean          | no                                   | Enable Prometheus metrics. |
 | `protected_ci_variables`                 | boolean          | no                                   | Environment variables are protected by default. |

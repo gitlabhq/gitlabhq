@@ -203,17 +203,6 @@ describe WebHookService do
           expect(hook_log.internal_error_message).to be_nil
         end
       end
-
-      context 'should not log ServiceHooks' do
-        let(:service_hook) { create(:service_hook) }
-        let(:service_instance) { described_class.new(service_hook, data, 'service_hook') }
-
-        before do
-          stub_full_request(service_hook.url, method: :post).to_return(status: 200, body: 'Success')
-        end
-
-        it { expect { service_instance.execute }.not_to change(WebHookLog, :count) }
-      end
     end
   end
 

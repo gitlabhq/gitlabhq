@@ -84,11 +84,6 @@ export default {
           secondaryButtonText: '',
           secondaryButtonPath: '',
         },
-        noDataGroup: {
-          svgUrl: this.emptyNoDataSmallSvgPath,
-          title: __('No data to display'),
-          description: __('The data source is connected, but there is no data to display.'),
-        },
         unableToConnect: {
           svgUrl: this.emptyUnableToConnectSvgPath,
           title: __('Unable to connect to Prometheus server'),

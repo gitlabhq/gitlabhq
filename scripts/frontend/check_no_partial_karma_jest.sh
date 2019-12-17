@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 
-karma_files=$(find spec/javascripts ee/spec/javascripts -type f -name '*_spec.js' -not -path '*/helpers/*')
+karma_directory=spec/javascripts
+
+if [ -d ee ]; then
+  karma_directory="$karma_directory ee/$karma_directory"
+fi
+
+karma_files=$(find $karma_directory -type f -name '*_spec.js' -not -path '*/helpers/*')
 violations=""
 
 for karma_file in $karma_files; do

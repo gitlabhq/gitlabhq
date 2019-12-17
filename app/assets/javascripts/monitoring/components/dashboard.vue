@@ -20,8 +20,10 @@ import invalidUrl from '~/lib/utils/invalid_url';
 import DateTimePicker from './date_time_picker/date_time_picker.vue';
 import GraphGroup from './graph_group.vue';
 import EmptyState from './empty_state.vue';
+import GroupEmptyState from './group_empty_state.vue';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
 import { getTimeDiff, isValidDate, getAddMetricTrackingOptions } from '../utils';
+import { metricStates } from '../constants';
 
 export default {
   components: {
@@ -29,6 +31,7 @@ export default {
     PanelType,
     GraphGroup,
     EmptyState,
+    GroupEmptyState,
     Icon,
     GlButton,
     GlDropdown,
@@ -184,7 +187,7 @@ export default {
       'allDashboards',
       'additionalPanelTypesEnabled',
     ]),
-    ...mapGetters('monitoringDashboard', ['metricsWithData']),
+    ...mapGetters('monitoringDashboard', ['getMetricStates']),
     firstDashboard() {
       return this.environmentsEndpoint.length > 0 && this.allDashboards.length > 0
         ? this.allDashboards[0]
@@ -284,11 +287,34 @@ export default {
     submitCustomMetricsForm() {
       this.$refs.customMetricsForm.submit();
     },
-    groupHasData(group) {
-      return this.metricsWithData(group.key).length > 0;
-    },
     onDateTimePickerApply(timeWindowUrlParams) {
       return redirectTo(mergeUrlParams(timeWindowUrlParams, window.location.href));
+    },
+    /**
+     * Return a single empty state for a group.
+     *
+     * If all states are the same a single state is returned to be displayed
+     * Except if the state is OK, in which case the group is displayed.
+     *
+     * @param {String} groupKey - Identifier for group
+     * @returns {String} state code from `metricStates`
+     */
+    groupSingleEmptyState(groupKey) {
+      const states = this.getMetricStates(groupKey);
+      if (states.length === 1 && states[0] !== metricStates.OK) {
+        return states[0];
+      }
+      return null;
+    },
+    /**
+     * A group should be not collapsed if any metric is loaded (OK)
+     *
+     * @param {String} groupKey - Identifier for group
+     * @returns {Boolean} If the group should be collapsed
+     */
+    collapseGroup(groupKey) {
+      // Collapse group if no data is available
+      return !this.getMetricStates(groupKey).includes(metricStates.OK);
     },
     getAddMetricTrackingOptions,
   },
@@ -446,9 +472,9 @@ export default {
         :key="`${groupData.group}.${groupData.priority}`"
         :name="groupData.group"
         :show-panels="showPanels"
-        :collapse-group="!groupHasData(groupData)"
+        :collapse-group="collapseGroup(groupData.key)"
       >
-        <div v-if="groupHasData(groupData)">
+        <div v-if="!groupSingleEmptyState(groupData.key)">
           <vue-draggable
             :value="groupData.panels"
             group="metrics-dashboard"
@@ -487,18 +513,12 @@ export default {
           </vue-draggable>
         </div>
         <div v-else class="py-5 col col-sm-10 col-md-8 col-lg-7 col-xl-6">
-          <empty-state
+          <group-empty-state
             ref="empty-group"
-            selected-state="noDataGroup"
             :documentation-path="documentationPath"
             :settings-path="settingsPath"
-            :clusters-path="clustersPath"
-            :empty-getting-started-svg-path="emptyGettingStartedSvgPath"
-            :empty-loading-svg-path="emptyLoadingSvgPath"
-            :empty-no-data-svg-path="emptyNoDataSvgPath"
-            :empty-no-data-small-svg-path="emptyNoDataSmallSvgPath"
-            :empty-unable-to-connect-svg-path="emptyUnableToConnectSvgPath"
-            :compact="true"
+            :selected-state="groupSingleEmptyState(groupData.key)"
+            :svg-path="emptyNoDataSmallSvgPath"
           />
         </div>
       </graph-group>

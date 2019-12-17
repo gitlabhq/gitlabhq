@@ -159,6 +159,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           member do
             put :test
           end
+
+          resources :hook_logs, only: [:show], controller: :service_hook_logs do
+            member do
+              post :retry
+            end
+          end
         end
 
         resources :boards, only: [:index, :show, :create, :update, :destroy], constraints: { id: /\d+/ } do

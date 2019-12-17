@@ -429,6 +429,14 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `color` | String! | Background color of the label |
 | `textColor` | String! | Text color of the label |
 
+### MarkAsSpamSnippetPayload
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `clientMutationId` | String | A unique identifier for the client performing the mutation. |
+| `errors` | String! => Array | Reasons why the mutation failed. |
+| `snippet` | Snippet | The snippet after mutation |
+
 ### MergeRequest
 
 | Name  | Type  | Description |

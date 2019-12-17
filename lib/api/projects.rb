@@ -26,6 +26,14 @@ module API
 
       def verify_update_project_attrs!(project, attrs)
       end
+
+      def delete_project(user_project)
+        destroy_conditionally!(user_project) do
+          ::Projects::DestroyService.new(user_project, current_user, {}).async_execute
+        end
+
+        accepted!
+      end
     end
 
     helpers do
@@ -404,11 +412,7 @@ module API
       delete ":id" do
         authorize! :remove_project, user_project
 
-        destroy_conditionally!(user_project) do
-          ::Projects::DestroyService.new(user_project, current_user, {}).async_execute
-        end
-
-        accepted!
+        delete_project(user_project)
       end
 
       desc 'Mark this project as forked from another'

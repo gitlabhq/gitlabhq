@@ -7,6 +7,7 @@ class Projects::ServicesController < Projects::ApplicationController
   before_action :authorize_admin_project!
   before_action :ensure_service_enabled
   before_action :service
+  before_action :web_hook_logs, only: [:edit, :update]
 
   respond_to :html
 
@@ -75,6 +76,12 @@ class Projects::ServicesController < Projects::ApplicationController
 
   def service
     @service ||= @project.find_or_initialize_service(params[:id])
+  end
+
+  def web_hook_logs
+    return unless @service.service_hook.present?
+
+    @web_hook_logs ||= @service.service_hook.web_hook_logs.recent.page(params[:page])
   end
 
   def ensure_service_enabled

@@ -73,23 +73,7 @@
 
     = render 'export', project: @project
 
-    - if can? current_user, :archive_project, @project
-      .sub-section
-        %h4.warning-title
-          - if @project.archived?
-            = _('Unarchive project')
-          - else
-            = _('Archive project')
-        - if @project.archived?
-          %p= _("Unarchiving the project will restore people's ability to make changes to it. The repository can be committed to, and issues, comments and other entities can be created. <strong>Once active this project shows up in the search and on the dashboard.</strong>").html_safe
-          = link_to _('Unarchive project'), unarchive_project_path(@project),
-              data: { confirm: _("Are you sure that you want to unarchive this project?"), qa_selector: 'unarchive_project_link' },
-              method: :post, class: "btn btn-success"
-        - else
-          %p= _("Archiving the project will make it entirely read-only. It is hidden from the dashboard and doesn't show up in searches. <strong>The repository cannot be committed to, and no issues, comments or other entities can be created.</strong>").html_safe
-          = link_to _('Archive project'), archive_project_path(@project),
-              data: { confirm: _("Are you sure that you want to archive this project?"), qa_selector: 'archive_project_link' },
-              method: :post, class: "btn btn-warning"
+    = render_if_exists 'projects/settings/archive'
     .sub-section.rename-repository
       %h4.warning-title= _('Change path')
       = render 'projects/errors'
@@ -135,14 +119,7 @@
             %strong= _('Once removed, the fork relationship cannot be restored and you will no longer be able to send merge requests to the source.')
           = button_to _('Remove fork relationship'), '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_fork_project_warning_message(@project) }
 
-    - if can?(current_user, :remove_project, @project)
-      .sub-section
-        %h4.danger-title= _('Remove project')
-        %p= _('Removing the project will delete its repository and all related resources including issues, merge requests etc.')
-        = form_tag(project_path(@project), method: :delete) do
-          %p
-            %strong= _('Removed projects cannot be restored!')
-          = button_to _('Remove project'), '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_project_message(@project) }
+    = render 'remove', project: @project
 
 .save-project-loader.hide
   .center

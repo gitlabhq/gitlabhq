@@ -3,7 +3,7 @@ import httpStatusCodes from '~/lib/utils/http_status';
 import mutations from '~/monitoring/stores/mutations';
 import * as types from '~/monitoring/stores/mutation_types';
 import state from '~/monitoring/stores/state';
-import { metricsErrors } from '~/monitoring/constants';
+import { metricStates } from '~/monitoring/constants';
 import {
   metricsGroupsAPIResponse,
   deploymentData,
@@ -120,7 +120,7 @@ describe('Monitoring mutations', () => {
           expect.objectContaining({
             loading: true,
             result: null,
-            error: null,
+            state: metricStates.LOADING,
           }),
         );
       });
@@ -153,20 +153,20 @@ describe('Monitoring mutations', () => {
         expect(getMetric()).toEqual(
           expect.objectContaining({
             loading: false,
-            error: null,
+            state: metricStates.OK,
           }),
         );
       });
     });
 
-    describe('RECEIVE_METRIC_RESULT_ERROR', () => {
+    describe('RECEIVE_METRIC_RESULT_FAILURE', () => {
       beforeEach(() => {
         mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, dashboardGroups);
       });
       it('maintains the loading state when a metric fails', () => {
         expect(stateCopy.showEmptyState).toBe(true);
 
-        mutations[types.RECEIVE_METRIC_RESULT_ERROR](stateCopy, {
+        mutations[types.RECEIVE_METRIC_RESULT_FAILURE](stateCopy, {
           metricId,
           error: 'an error',
         });
@@ -175,7 +175,7 @@ describe('Monitoring mutations', () => {
       });
 
       it('stores a timeout error in a metric', () => {
-        mutations[types.RECEIVE_METRIC_RESULT_ERROR](stateCopy, {
+        mutations[types.RECEIVE_METRIC_RESULT_FAILURE](stateCopy, {
           metricId,
           error: { message: 'BACKOFF_TIMEOUT' },
         });
@@ -184,13 +184,13 @@ describe('Monitoring mutations', () => {
           expect.objectContaining({
             loading: false,
             result: null,
-            error: metricsErrors.TIMEOUT,
+            state: metricStates.TIMEOUT,
           }),
         );
       });
 
       it('stores a connection failed error in a metric', () => {
-        mutations[types.RECEIVE_METRIC_RESULT_ERROR](stateCopy, {
+        mutations[types.RECEIVE_METRIC_RESULT_FAILURE](stateCopy, {
           metricId,
           error: {
             response: {
@@ -202,13 +202,13 @@ describe('Monitoring mutations', () => {
           expect.objectContaining({
             loading: false,
             result: null,
-            error: metricsErrors.CONNECTION_FAILED,
+            state: metricStates.CONNECTION_FAILED,
           }),
         );
       });
 
       it('stores a bad data error in a metric', () => {
-        mutations[types.RECEIVE_METRIC_RESULT_ERROR](stateCopy, {
+        mutations[types.RECEIVE_METRIC_RESULT_FAILURE](stateCopy, {
           metricId,
           error: {
             response: {
@@ -221,13 +221,13 @@ describe('Monitoring mutations', () => {
           expect.objectContaining({
             loading: false,
             result: null,
-            error: metricsErrors.BAD_DATA,
+            state: metricStates.BAD_QUERY,
           }),
         );
       });
 
       it('stores an unknown error in a metric', () => {
-        mutations[types.RECEIVE_METRIC_RESULT_ERROR](stateCopy, {
+        mutations[types.RECEIVE_METRIC_RESULT_FAILURE](stateCopy, {
           metricId,
           error: null, // no reason in response
         });
@@ -236,7 +236,7 @@ describe('Monitoring mutations', () => {
           expect.objectContaining({
             loading: false,
             result: null,
-            error: metricsErrors.UNKNOWN_ERROR,
+            state: metricStates.UNKNOWN_ERROR,
           }),
         );
       });

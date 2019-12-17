@@ -48,6 +48,17 @@ To ensure only admin users can delete projects:
 1. Check the **Default project deletion protection** checkbox.
 1. Click **Save changes**.
 
+## Project deletion adjourned period **(PREMIUM ONLY)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/32935) in GitLab 12.6.
+
+By default, project marked for deletion will be permanently removed after 7 days. This period may be changed.
+
+To change this period:
+
+1. Select the desired option.
+1. Click **Save changes**.
+
 ## Default project visibility
 
 To set the default visibility levels for new projects:

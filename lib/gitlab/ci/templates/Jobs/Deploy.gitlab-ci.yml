@@ -1,5 +1,5 @@
 .auto-deploy:
-  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image:v0.8.0"
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image:v0.8.3"
 
 review:
   extends: .auto-deploy

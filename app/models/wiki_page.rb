@@ -274,6 +274,10 @@ class WikiPage
     @attributes.merge!(attrs)
   end
 
+  def to_ability_name
+    'wiki_page'
+  end
+
   private
 
   # Process and format the title based on the user input.

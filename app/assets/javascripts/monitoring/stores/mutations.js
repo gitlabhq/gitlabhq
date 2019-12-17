@@ -3,7 +3,7 @@ import { slugify } from '~/lib/utils/text_utility';
 import * as types from './mutation_types';
 import { normalizeMetric, normalizeQueryResult } from './utils';
 import { BACKOFF_TIMEOUT } from '../../lib/utils/common_utils';
-import { metricsErrors } from '../constants';
+import { metricStates } from '../constants';
 import httpStatusCodes from '~/lib/utils/http_status';
 
 const normalizePanelMetrics = (metrics, defaultLabel) =>
@@ -41,39 +41,39 @@ const findMetricInDashboard = (metricId, dashboard) => {
  * @param {Object} metric - Metric object as defined in the dashboard
  * @param {Object} state - New state
  * @param {Array|null} state.result - Array of results
- * @param {String} state.error - Error code from metricsErrors
+ * @param {String} state.error - Error code from metricStates
  * @param {Boolean} state.loading - True if the metric is loading
  */
-const setMetricState = (metric, { result = null, error = null, loading = false }) => {
+const setMetricState = (metric, { result = null, loading = false, state = null }) => {
   Vue.set(metric, 'result', result);
-  Vue.set(metric, 'error', error);
   Vue.set(metric, 'loading', loading);
+  Vue.set(metric, 'state', state);
 };
 
 /**
- * Maps a backened error state to a `metricsErrors` constant
+ * Maps a backened error state to a `metricStates` constant
  * @param {Object} error - Error from backend response
  */
-const getMetricError = error => {
+const emptyStateFromError = error => {
   if (!error) {
-    return metricsErrors.UNKNOWN_ERROR;
+    return metricStates.UNKNOWN_ERROR;
   }
 
   // Special error responses
   if (error.message === BACKOFF_TIMEOUT) {
-    return metricsErrors.TIMEOUT;
+    return metricStates.TIMEOUT;
   }
 
   // Axios error responses
   const { response } = error;
   if (response && response.status === httpStatusCodes.SERVICE_UNAVAILABLE) {
-    return metricsErrors.CONNECTION_FAILED;
+    return metricStates.CONNECTION_FAILED;
   } else if (response && response.status === httpStatusCodes.BAD_REQUEST) {
     // Note: "error.response.data.error" may contain Prometheus error information
-    return metricsErrors.BAD_DATA;
+    return metricStates.BAD_QUERY;
   }
 
-  return metricsErrors.UNKNOWN_ERROR;
+  return metricStates.UNKNOWN_ERROR;
 };
 
 export default {
@@ -132,9 +132,9 @@ export default {
    */
   [types.REQUEST_METRIC_RESULT](state, { metricId }) {
     const metric = findMetricInDashboard(metricId, state.dashboard);
-
     setMetricState(metric, {
       loading: true,
+      state: metricStates.LOADING,
     });
   },
   [types.RECEIVE_METRIC_RESULT_SUCCESS](state, { metricId, result }) {
@@ -146,24 +146,24 @@ export default {
 
     const metric = findMetricInDashboard(metricId, state.dashboard);
     if (!result || result.length === 0) {
-      // If no data is return we still consider it an error and set it to undefined
       setMetricState(metric, {
-        error: metricsErrors.NO_DATA,
+        state: metricStates.NO_DATA,
       });
     } else {
       const normalizedResults = result.map(normalizeQueryResult);
       setMetricState(metric, {
         result: Object.freeze(normalizedResults),
+        state: metricStates.OK,
       });
     }
   },
-  [types.RECEIVE_METRIC_RESULT_ERROR](state, { metricId, error }) {
+  [types.RECEIVE_METRIC_RESULT_FAILURE](state, { metricId, error }) {
     if (!metricId) {
       return;
     }
     const metric = findMetricInDashboard(metricId, state.dashboard);
     setMetricState(metric, {
-      error: getMetricError(error),
+      state: emptyStateFromError(error),
     });
   },
 

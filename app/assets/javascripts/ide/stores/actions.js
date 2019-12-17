@@ -17,10 +17,18 @@ export const setInitialData = ({ commit }, data) => commit(types.SET_INITIAL_DAT
 
 export const discardAllChanges = ({ state, commit, dispatch }) => {
   state.changedFiles.forEach(file => {
-    commit(types.DISCARD_FILE_CHANGES, file.path);
+    if (file.tempFile || file.prevPath) dispatch('closeFile', file);
 
     if (file.tempFile) {
-      dispatch('closeFile', file);
+      dispatch('deleteEntry', file.path);
+    } else if (file.prevPath) {
+      dispatch('renameEntry', {
+        path: file.path,
+        name: file.prevName,
+        parentPath: file.prevParentPath,
+      });
+    } else {
+      commit(types.DISCARD_FILE_CHANGES, file.path);
     }
   });
 

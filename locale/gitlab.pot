@@ -1720,6 +1720,9 @@ msgstr ""
 msgid "An error occurred while loading issues"
 msgstr ""
 
+msgid "An error occurred while loading the data. Please try again."
+msgstr ""
+
 msgid "An error occurred while loading the file"
 msgstr ""
 
@@ -2031,13 +2034,16 @@ msgstr ""
 msgid "Archive project"
 msgstr ""
 
+msgid "Archived project! Repository and other project resources are read only"
+msgstr ""
+
 msgid "Archived project! Repository and other project resources are read-only"
 msgstr ""
 
 msgid "Archived projects"
 msgstr ""
 
-msgid "Archiving the project will make it entirely read-only. It is hidden from the dashboard and doesn't show up in searches. <strong>The repository cannot be committed to, and no issues, comments or other entities can be created.</strong>"
+msgid "Archiving the project will make it entirely read only. It is hidden from the dashboard and doesn't show up in searches. %{strong_start}The repository cannot be committed to, and no issues, comments, or other entities can be created.%{strong_end}"
 msgstr ""
 
 msgid "Are you setting up GitLab for a company?"
@@ -3146,6 +3152,9 @@ msgid "Changing group path can have unintended side effects."
 msgstr ""
 
 msgid "Charts"
+msgstr ""
+
+msgid "Charts can't be displayed as the request for data has timed out. %{documentationLink}"
 msgstr ""
 
 msgid "Chat"
@@ -4713,7 +4722,13 @@ msgstr ""
 msgid "Connecting..."
 msgstr ""
 
+msgid "Connection failed"
+msgstr ""
+
 msgid "Connection failure"
+msgstr ""
+
+msgid "Connection timed out"
 msgstr ""
 
 msgid "Contact an owner of group %{namespace_name} to upgrade the plan."
@@ -5554,6 +5569,9 @@ msgstr ""
 msgid "Default classification label"
 msgstr ""
 
+msgid "Default deletion adjourned period"
+msgstr ""
+
 msgid "Default description template for issues"
 msgstr ""
 
@@ -5663,6 +5681,9 @@ msgid "Deleting the license failed. The license was not found."
 msgstr ""
 
 msgid "Deleting the license failed. You are not permitted to perform this action."
+msgstr ""
+
+msgid "Deletion pending. This project will be removed on %{date}. Repository and other project resources are read-only."
 msgstr ""
 
 msgid "Denied authorization of chat nickname %{user_name}."
@@ -9339,6 +9360,9 @@ msgstr ""
 msgid "How it works"
 msgstr ""
 
+msgid "How many days need to pass between marking entity for deletion and actual removing it."
+msgstr ""
+
 msgid "How many replicas each Elasticsearch shard has."
 msgstr ""
 
@@ -12242,6 +12266,9 @@ msgstr ""
 msgid "Only Project Members"
 msgstr ""
 
+msgid "Only active this projects shows up in the search and on the dashboard."
+msgstr ""
+
 msgid "Only admins"
 msgstr ""
 
@@ -13640,6 +13667,9 @@ msgstr ""
 msgid "Project '%{project_name}' is in the process of being deleted."
 msgstr ""
 
+msgid "Project '%{project_name}' is restored."
+msgstr ""
+
 msgid "Project '%{project_name}' queued for deletion."
 msgstr ""
 
@@ -13647,6 +13677,9 @@ msgid "Project '%{project_name}' was successfully created."
 msgstr ""
 
 msgid "Project '%{project_name}' was successfully updated."
+msgstr ""
+
+msgid "Project '%{project_name}' will be deleted on %{date}"
 msgstr ""
 
 msgid "Project Badges"
@@ -13668,6 +13701,9 @@ msgid "Project access must be granted explicitly to each user."
 msgstr ""
 
 msgid "Project already created"
+msgstr ""
+
+msgid "Project already deleted"
 msgstr ""
 
 msgid "Project and wiki repositories"
@@ -14588,6 +14624,9 @@ msgstr ""
 msgid "Query"
 msgstr ""
 
+msgid "Query cannot be processed"
+msgstr ""
+
 msgid "Query is valid"
 msgstr ""
 
@@ -14931,6 +14970,12 @@ msgstr ""
 msgid "Removes time estimate."
 msgstr ""
 
+msgid "Removing a project places it into a read-only state until %{date}, at which point the project will be permanantly removed. Are you ABSOLUTELY sure?"
+msgstr ""
+
+msgid "Removing a project places it into a read-only state until %{date}, at which point the project will be permanently removed."
+msgstr ""
+
 msgid "Removing group will cause all child projects and resources to be removed."
 msgstr ""
 
@@ -15224,6 +15269,12 @@ msgid "Response metrics (NGINX)"
 msgstr ""
 
 msgid "Restart Terminal"
+msgstr ""
+
+msgid "Restore project"
+msgstr ""
+
+msgid "Restoring the project will prevent the project from being removed on this date and restore people's ability to make changes to it."
 msgstr ""
 
 msgid "Restrict access by IP address"
@@ -17681,6 +17732,9 @@ msgstr ""
 msgid "The Issue Tracker is the place to add things that need to be improved or solved in a project. You can register or sign in to create issues for this project."
 msgstr ""
 
+msgid "The Prometheus server responded with \"bad request\". Please check your queries are correct and are supported in your Prometheus version. %{documentationLink}"
+msgstr ""
+
 msgid "The URL to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., \"http://localhost:9200, http://localhost:9201\")."
 msgstr ""
 
@@ -17711,7 +17765,7 @@ msgstr ""
 msgid "The content of this page is not encoded in UTF-8. Edits can only be made via the Git repository."
 msgstr ""
 
-msgid "The data source is connected, but there is no data to display."
+msgid "The data source is connected, but there is no data to display. %{documentationLink}"
 msgstr ""
 
 msgid "The default CI configuration path for new projects."
@@ -17879,6 +17933,9 @@ msgid "The remote mirror took to long to complete."
 msgstr ""
 
 msgid "The remote repository is being updated..."
+msgstr ""
+
+msgid "The repository can be commited to, and issues, comments and other entities can be created."
 msgstr ""
 
 msgid "The repository for this project does not exist."
@@ -18395,6 +18452,9 @@ msgid "This project is archived and cannot be commented on."
 msgstr ""
 
 msgid "This project path either does not exist or is private."
+msgstr ""
+
+msgid "This project will be removed on %{date}"
 msgstr ""
 
 msgid "This repository"
@@ -19157,7 +19217,7 @@ msgstr ""
 msgid "Unarchive project"
 msgstr ""
 
-msgid "Unarchiving the project will restore people's ability to make changes to it. The repository can be committed to, and issues, comments and other entities can be created. <strong>Once active this project shows up in the search and on the dashboard.</strong>"
+msgid "Unarchiving the project will restore people's ability to make changes to it. The repository can be committed to, and issues, comments, and other entities can be created. %{strong_start}Once active, this project shows up in the search and on the dashboard.%{strong_end}"
 msgstr ""
 
 msgid "Unblock"
@@ -19266,6 +19326,9 @@ msgid "Unsubscribes from this %{quick_action_target}."
 msgstr ""
 
 msgid "Until"
+msgstr ""
+
+msgid "Until that time, the project can be restored."
 msgstr ""
 
 msgid "Unverified"
@@ -19886,6 +19949,9 @@ msgstr ""
 msgid "Verify SAML Configuration"
 msgstr ""
 
+msgid "Verify configuration"
+msgstr ""
+
 msgid "Version"
 msgstr ""
 
@@ -20093,6 +20159,9 @@ msgid "We could not determine the path to remove the epic"
 msgstr ""
 
 msgid "We could not determine the path to remove the issue"
+msgstr ""
+
+msgid "We couldn't reach the Prometheus server. Either the server no longer exists or the configuration details need updating."
 msgstr ""
 
 msgid "We created a short guided tour that will help you learn the basics of GitLab and how it will help you be better at your job. It should only take a couple of minutes. You will be guided by two types of helpers, best recognized by their color."
@@ -20947,6 +21016,9 @@ msgid "already shared with this group"
 msgstr ""
 
 msgid "among other things"
+msgstr ""
+
+msgid "archived"
 msgstr ""
 
 msgid "assign yourself"
@@ -21891,6 +21963,9 @@ msgid "password"
 msgstr ""
 
 msgid "pending comment"
+msgstr ""
+
+msgid "pending removal"
 msgstr ""
 
 msgid "pipeline"

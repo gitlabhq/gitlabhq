@@ -1,0 +1,10 @@
+- return unless can?(current_user, :remove_project, project)
+
+.sub-section
+  %h4.danger-title= _('Remove project')
+  %p
+    %strong= _('Removing the project will delete its repository and all related resources including issues, merge requests etc.')
+  = form_tag(project_path(project), method: :delete) do
+    %p
+      %strong= _('Removed projects cannot be restored!')
+    = button_to _('Remove project'), '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_project_message(project) }

@@ -92,9 +92,46 @@ describe('Multi-file store actions', () => {
         .catch(done.fail);
     });
 
-    it('closes the temp file if it was open', done => {
+    it('closes the temp file and deletes it if it was open', done => {
       f.tempFile = true;
 
+      testAction(
+        discardAllChanges,
+        undefined,
+        store.state,
+        [{ type: types.REMOVE_ALL_CHANGES_FILES }],
+        [
+          { type: 'closeFile', payload: jasmine.objectContaining({ path: 'discardAll' }) },
+          { type: 'deleteEntry', payload: 'discardAll' },
+        ],
+        done,
+      );
+    });
+
+    it('renames the file to its original name and closes it if it was open', done => {
+      Object.assign(f, {
+        prevPath: 'parent/path/old_name',
+        prevName: 'old_name',
+        prevParentPath: 'parent/path',
+      });
+
+      testAction(
+        discardAllChanges,
+        undefined,
+        store.state,
+        [{ type: types.REMOVE_ALL_CHANGES_FILES }],
+        [
+          { type: 'closeFile', payload: jasmine.objectContaining({ path: 'discardAll' }) },
+          {
+            type: 'renameEntry',
+            payload: { path: 'discardAll', name: 'old_name', parentPath: 'parent/path' },
+          },
+        ],
+        done,
+      );
+    });
+
+    it('discards file changes on all other files', done => {
       testAction(
         discardAllChanges,
         undefined,
@@ -103,12 +140,7 @@ describe('Multi-file store actions', () => {
           { type: types.DISCARD_FILE_CHANGES, payload: 'discardAll' },
           { type: types.REMOVE_ALL_CHANGES_FILES },
         ],
-        [
-          {
-            type: 'closeFile',
-            payload: jasmine.objectContaining({ path: 'discardAll' }),
-          },
-        ],
+        [],
         done,
       );
     });

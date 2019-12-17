@@ -1,8 +1,10 @@
 - breadcrumb_title @service.title
 - page_title @service.title, s_("ProjectService|Services")
 - add_to_breadcrumbs(s_("ProjectService|Settings"), edit_project_path(@project))
-- add_to_breadcrumbs(s_("ProjectService|Integrations"), namespace_project_settings_integrations_path)
+- add_to_breadcrumbs(s_("ProjectService|Integrations"), project_settings_integrations_path(@project))
 
 = render 'deprecated_message' if @service.deprecation_message
 
 = render 'form'
+- if @web_hook_logs
+  = render partial: 'projects/hook_logs/index', locals: { hook: @service.service_hook, hook_logs: @web_hook_logs, project: @project }

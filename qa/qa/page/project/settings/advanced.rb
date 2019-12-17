@@ -12,6 +12,9 @@ module QA
             element :project_path_field
             element :change_path_button
             element :transfer_button
+          end
+
+          view 'app/views/projects/settings/_archive.html.haml' do
             element :archive_project_link
             element :unarchive_project_link
           end

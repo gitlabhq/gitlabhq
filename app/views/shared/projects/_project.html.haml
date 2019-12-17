@@ -67,8 +67,7 @@
             %span.icon-wrapper.pipeline-status
               = render 'ci/status/icon', status: project.last_pipeline.detailed_status(current_user), tooltip_placement: 'top', path: pipeline_path
 
-          - if project.archived
-            %span.d-flex.icon-wrapper.badge.badge-warning archived
+          = render_if_exists 'shared/projects/archived', project: project
           - if stars
             = link_to project_starrers_path(project),
                 class: "d-flex align-items-center icon-wrapper stars has-tooltip",

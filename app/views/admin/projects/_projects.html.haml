@@ -14,8 +14,7 @@
           .stats
             %span.badge.badge-pill
               = storage_counter(project.statistics&.storage_size)
-            - if project.archived
-              %span.badge.badge-warning archived
+            = render_if_exists 'admin/projects/archived', project: project
           .title
             = link_to(admin_project_path(project)) do
               .dash-project-avatar

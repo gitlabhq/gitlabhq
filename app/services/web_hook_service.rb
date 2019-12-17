@@ -92,9 +92,6 @@ class WebHookService
   end
 
   def log_execution(trigger:, url:, request_data:, response:, execution_duration:, error_message: nil)
-    # logging for ServiceHook's is not available
-    return if hook.is_a?(ServiceHook)
-
     WebHookLog.create(
       web_hook: hook,
       trigger: trigger,

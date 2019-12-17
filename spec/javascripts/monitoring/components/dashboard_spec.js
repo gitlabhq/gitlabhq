@@ -4,7 +4,8 @@ import { GlToast } from '@gitlab/ui';
 import VueDraggable from 'vuedraggable';
 import MockAdapter from 'axios-mock-adapter';
 import Dashboard from '~/monitoring/components/dashboard.vue';
-import EmptyState from '~/monitoring/components/empty_state.vue';
+import { metricStates } from '~/monitoring/constants';
+import GroupEmptyState from '~/monitoring/components/group_empty_state.vue';
 import * as types from '~/monitoring/stores/mutation_types';
 import { createStore } from '~/monitoring/stores';
 import axios from '~/lib/utils/axios_utils';
@@ -401,7 +402,7 @@ describe('Dashboard', () => {
     });
 
     beforeEach(done => {
-      createComponentWrapper({ hasMetrics: true }, { attachToDocument: true });
+      createComponentWrapper({ hasMetrics: true });
       setupComponentStore(wrapper.vm);
 
       wrapper.vm.$nextTick(done);
@@ -411,16 +412,16 @@ describe('Dashboard', () => {
       const emptyGroup = wrapper.findAll({ ref: 'empty-group' });
 
       expect(emptyGroup).toHaveLength(1);
-      expect(emptyGroup.is(EmptyState)).toBe(true);
+      expect(emptyGroup.is(GroupEmptyState)).toBe(true);
     });
 
-    it('group empty area displays a "noDataGroup"', () => {
+    it('group empty area displays a NO_DATA state', () => {
       expect(
         wrapper
           .findAll({ ref: 'empty-group' })
           .at(0)
           .props('selectedState'),
-      ).toEqual('noDataGroup');
+      ).toEqual(metricStates.NO_DATA);
     });
   });
 

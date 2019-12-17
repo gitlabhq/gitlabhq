@@ -132,7 +132,7 @@ export const fetchPrometheusMetric = ({ commit }, { metric, params }) => {
       commit(types.RECEIVE_METRIC_RESULT_SUCCESS, { metricId: metric.metric_id, result });
     })
     .catch(error => {
-      commit(types.RECEIVE_METRIC_RESULT_ERROR, { metricId: metric.metric_id, error });
+      commit(types.RECEIVE_METRIC_RESULT_FAILURE, { metricId: metric.metric_id, error });
       // Continue to throw error so the dashboard can notify using createFlash
       throw error;
     });

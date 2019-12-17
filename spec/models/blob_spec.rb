@@ -421,4 +421,21 @@ describe Blob do
       end
     end
   end
+
+  describe 'policy' do
+    let(:project) { build(:project) }
+    subject { described_class.new(fake_blob(path: 'foo'), project) }
+
+    it 'works with policy' do
+      expect(Ability.allowed?(project.creator, :read_blob, subject)).to be_truthy
+    end
+
+    context 'when project is nil' do
+      subject { described_class.new(fake_blob(path: 'foo')) }
+
+      it 'does not err' do
+        expect(Ability.allowed?(project.creator, :read_blob, subject)).to be_falsey
+      end
+    end
+  end
 end

@@ -44,6 +44,13 @@ FactoryBot.define do
     end
   end
 
+  factory :drone_ci_service do
+    project
+    active { true }
+    drone_url { 'https://bamboo.example.com' }
+    token { 'test' }
+  end
+
   factory :jira_service do
     project
     active { true }
