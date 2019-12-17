@@ -3,6 +3,7 @@
 class PersonalAccessToken < ApplicationRecord
   include Expirable
   include TokenAuthenticatable
+  include Sortable
 
   add_authentication_token_field :token, digest: true
 
@@ -20,6 +21,8 @@ class PersonalAccessToken < ApplicationRecord
   scope :inactive, -> { where("revoked = true OR expires_at < NOW()") }
   scope :with_impersonation, -> { where(impersonation: true) }
   scope :without_impersonation, -> { where(impersonation: false) }
+  scope :for_user, -> (user) { where(user: user) }
+  scope :preload_users, -> { preload(:user) }
 
   validates :scopes, presence: true
   validate :validate_scopes

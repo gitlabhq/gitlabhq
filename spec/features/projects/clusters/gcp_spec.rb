@@ -131,11 +131,11 @@ describe 'Gcp Cluster', :js, :do_not_mock_admin_mode do
         end
       end
 
-      context 'when user destroy the cluster' do
+      context 'when user destroys the cluster' do
         before do
-          page.accept_confirm do
-            click_link 'Remove integration'
-          end
+          click_button 'Remove integration and resources'
+          fill_in 'confirm_cluster_name_input', with: cluster.name
+          click_button 'Remove integration'
         end
 
         it 'user sees creation form with the successful message' do

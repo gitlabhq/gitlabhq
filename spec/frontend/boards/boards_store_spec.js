@@ -41,7 +41,6 @@ describe('boardsStore', () => {
 
   afterEach(() => {
     axiosMock.restore();
-    jest.clearAllMocks();
   });
 
   const setupDefaultResponses = () => {

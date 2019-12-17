@@ -35,7 +35,6 @@ function factory(propsData = {}) {
 describe('Repository table row component', () => {
   afterEach(() => {
     vm.destroy();
-    jest.clearAllMocks();
   });
 
   it('renders table row', () => {

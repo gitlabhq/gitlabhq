@@ -1184,6 +1184,12 @@ msgstr ""
 msgid "AdminArea|You’re about to stop all jobs.This will halt all current jobs that are running."
 msgstr ""
 
+msgid "AdminCredentials|Personal Access Tokens"
+msgstr ""
+
+msgid "AdminCredentials|SSH Keys"
+msgstr ""
+
 msgid "AdminDashboard|Error loading the statistics. Please try again"
 msgstr ""
 
@@ -1326,6 +1332,9 @@ msgid "AdminUsers|It's you!"
 msgstr ""
 
 msgid "AdminUsers|New user"
+msgstr ""
+
+msgid "AdminUsers|No credentials found"
 msgstr ""
 
 msgid "AdminUsers|No users found"
@@ -3571,6 +3580,9 @@ msgstr ""
 msgid "ClusterIntegration| %{custom_domain_start}More information%{custom_domain_end}."
 msgstr ""
 
+msgid "ClusterIntegration| This will permanently delete the following resources: <ul> <li>All installed applications and related resources</li> <li>The <code>gitlab-managed-apps</code> namespace</li> <li>Any project namespaces</li> <li><code>clusterroles</code></li> <li><code>clusterrolebindings</code></li> </ul>"
+msgstr ""
+
 msgid "ClusterIntegration| can be used instead of a custom domain."
 msgstr ""
 
@@ -3656,9 +3668,6 @@ msgid "ClusterIntegration|Applications"
 msgstr ""
 
 msgid "ClusterIntegration|Apply for credit"
-msgstr ""
-
-msgid "ClusterIntegration|Are you sure you want to remove this Kubernetes cluster's integration? This will not delete your actual Kubernetes cluster."
 msgstr ""
 
 msgid "ClusterIntegration|Authenticate with AWS"
@@ -3790,6 +3799,9 @@ msgstr ""
 msgid "ClusterIntegration|Crossplane enables declarative provisioning of managed services from your cloud of choice using %{kubectl} or %{gitlabIntegrationLink}. Crossplane runs inside your Kubernetes cluster and supports secure connectivity and secrets management between app containers and the cloud services they depend on."
 msgstr ""
 
+msgid "ClusterIntegration|Deletes all GitLab resources attached to this cluster during removal"
+msgstr ""
+
 msgid "ClusterIntegration|Did you know?"
 msgstr ""
 
@@ -3887,6 +3899,9 @@ msgid "ClusterIntegration|Hide"
 msgstr ""
 
 msgid "ClusterIntegration|If you are setting up multiple clusters and are using Auto DevOps, %{help_link_start}read this first%{help_link_end}."
+msgstr ""
+
+msgid "ClusterIntegration|If you do not wish to delete all associated GitLab resources, you can simply remove the integration."
 msgstr ""
 
 msgid "ClusterIntegration|In order to view the health of your cluster, you must first install Prometheus below."
@@ -4111,7 +4126,19 @@ msgstr ""
 msgid "ClusterIntegration|Remove integration"
 msgstr ""
 
+msgid "ClusterIntegration|Remove integration and resources"
+msgstr ""
+
+msgid "ClusterIntegration|Remove integration and resources?"
+msgstr ""
+
+msgid "ClusterIntegration|Remove integration?"
+msgstr ""
+
 msgid "ClusterIntegration|Remove this Kubernetes cluster's configuration from this project. This will not delete your actual Kubernetes cluster."
+msgstr ""
+
+msgid "ClusterIntegration|Removes cluster from project but keeps associated resources"
 msgstr ""
 
 msgid "ClusterIntegration|Replace this with your own hostname if you want. If you do so, point hostname to Ingress IP Address from above."
@@ -4282,6 +4309,12 @@ msgstr ""
 msgid "ClusterIntegration|To access your application after deployment, point a wildcard DNS to the Knative Endpoint."
 msgstr ""
 
+msgid "ClusterIntegration|To remove your integration and resources, type %{clusterName} to confirm:"
+msgstr ""
+
+msgid "ClusterIntegration|To remove your integration, type %{clusterName} to confirm:"
+msgstr ""
+
 msgid "ClusterIntegration|Toggle Kubernetes cluster"
 msgstr ""
 
@@ -4304,6 +4337,12 @@ msgid "ClusterIntegration|We could not verify that one of your projects on GCP h
 msgstr ""
 
 msgid "ClusterIntegration|With a Kubernetes cluster associated to this project, you can use review apps, deploy your applications, run your pipelines, and much more in an easy way."
+msgstr ""
+
+msgid "ClusterIntegration|You are about to remove your cluster integration and all GitLab-created resources associated with this cluster."
+msgstr ""
+
+msgid "ClusterIntegration|You are about to remove your cluster integration."
 msgstr ""
 
 msgid "ClusterIntegration|You are about to uninstall %{appTitle} from your cluster."
@@ -5117,6 +5156,9 @@ msgstr ""
 msgid "Created At"
 msgstr ""
 
+msgid "Created On"
+msgstr ""
+
 msgid "Created a branch and a merge request to resolve this issue."
 msgstr ""
 
@@ -5163,6 +5205,9 @@ msgid "Creating graphs uses the data from the Prometheus server. If this takes a
 msgstr ""
 
 msgid "Creation date"
+msgstr ""
+
+msgid "Credentials"
 msgstr ""
 
 msgid "Critical vulnerabilities present"
@@ -7206,6 +7251,9 @@ msgid "Expand sidebar"
 msgstr ""
 
 msgid "Expand up"
+msgstr ""
+
+msgid "Expiration"
 msgstr ""
 
 msgid "Expiration date"
@@ -10237,6 +10285,9 @@ msgstr[1] ""
 msgid "Last %{days} days"
 msgstr ""
 
+msgid "Last Accessed On"
+msgstr ""
+
 msgid "Last Pipeline"
 msgstr ""
 
@@ -11719,6 +11770,9 @@ msgid "No Label"
 msgstr ""
 
 msgid "No Milestone"
+msgstr ""
+
+msgid "No Scopes"
 msgstr ""
 
 msgid "No Tag"

@@ -55,6 +55,7 @@ if (IS_EE) {
 
 // eslint-disable-next-line import/no-commonjs
 module.exports = {
+  clearMocks: true,
   testMatch,
   moduleFileExtensions: ['js', 'json', 'vue'],
   moduleNameMapper,

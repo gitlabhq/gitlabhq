@@ -39,6 +39,10 @@ class Key < ApplicationRecord
 
   alias_attribute :fingerprint_md5, :fingerprint
 
+  scope :preload_users, -> { preload(:user) }
+  scope :for_user, -> (user) { where(user: user) }
+  scope :order_last_used_at_desc, -> { reorder(::Gitlab::Database.nulls_last_order('last_used_at', 'DESC')) }
+
   def self.regular_keys
     where(type: ['Key', nil])
   end

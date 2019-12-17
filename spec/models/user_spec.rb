@@ -2894,11 +2894,11 @@ describe User, :do_not_mock_admin_mode do
     end
   end
 
-  describe '#full_private_access?' do
+  describe '#can_read_all_resources?' do
     it 'returns false for regular user' do
       user = build(:user)
 
-      expect(user.full_private_access?).to be_falsy
+      expect(user.can_read_all_resources?).to be_falsy
     end
 
     context 'for admin user' do
@@ -2908,7 +2908,7 @@ describe User, :do_not_mock_admin_mode do
 
       context 'when admin mode is disabled' do
         it 'returns false' do
-          expect(user.full_private_access?).to be_falsy
+          expect(user.can_read_all_resources?).to be_falsy
         end
       end
 
@@ -2919,7 +2919,7 @@ describe User, :do_not_mock_admin_mode do
         end
 
         it 'returns true' do
-          expect(user.full_private_access?).to be_truthy
+          expect(user.can_read_all_resources?).to be_truthy
         end
       end
     end

@@ -315,6 +315,7 @@ The following documentation relates to the DevOps **Configure** stage:
 | [Protected variables](ci/variables/README.md#protected-environment-variables)                                                      | Restrict variables to protected branches and tags.                        |
 | [Serverless](user/project/clusters/serverless/index.md)                                                                            | Run serverless workloads on Kubernetes.                                   |
 | [Slack slash commands](user/project/integrations/slack_slash_commands.md)                                                          | Enable and use slash commands from within Slack.                          |
+| [Manage your infrastructure with Terraform](user/infrastructure/index.md)                                                  | Manage your infrastructure as you run your CI/CD pipeline.                |
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#overview">

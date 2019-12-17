@@ -2217,6 +2217,7 @@ ActiveRecord::Schema.define(version: 2019_12_14_175727) do
     t.index ["fingerprint"], name: "index_keys_on_fingerprint", unique: true
     t.index ["fingerprint_sha256"], name: "index_keys_on_fingerprint_sha256"
     t.index ["id", "type"], name: "index_on_deploy_keys_id_and_type_and_public", unique: true, where: "(public = true)"
+    t.index ["last_used_at"], name: "index_keys_on_last_used_at", order: "DESC NULLS LAST"
     t.index ["user_id"], name: "index_keys_on_user_id"
   end
 

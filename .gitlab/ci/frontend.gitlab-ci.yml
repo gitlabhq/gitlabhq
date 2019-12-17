@@ -244,7 +244,9 @@ webpack-dev-server:
   dependencies: ["setup-test-env", "compile-assets pull-cache"]
   variables:
     WEBPACK_MEMORY_TEST: "true"
+    WEBPACK_VENDOR_DLL: "true"
   script:
+    - yarn webpack-vendor
     - node --expose-gc node_modules/.bin/webpack-dev-server --config config/webpack.config.js
   artifacts:
     name: webpack-dev-server

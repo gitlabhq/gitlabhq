@@ -42,21 +42,23 @@ describe('ProjectFindFile', () => {
       }));
 
   const files = [
-    'fileA.txt',
-    'fileB.txt',
-    'fi#leC.txt',
-    'folderA/fileD.txt',
-    'folder#B/fileE.txt',
-    'folde?rC/fil#F.txt',
+    { path: 'fileA.txt', escaped: 'fileA.txt' },
+    { path: 'fileB.txt', escaped: 'fileB.txt' },
+    { path: 'fi#leC.txt', escaped: 'fi%23leC.txt' },
+    { path: 'folderA/fileD.txt', escaped: 'folderA/fileD.txt' },
+    { path: 'folder#B/fileE.txt', escaped: 'folder%23B/fileE.txt' },
+    { path: 'folde?rC/fil#F.txt', escaped: 'folde%3FrC/fil%23F.txt' },
   ];
 
-  beforeEach(() => {
+  beforeEach(done => {
     // Create a mock adapter for stubbing axios API requests
     mock = new MockAdapter(axios);
 
     element = $(TEMPLATE);
-    mock.onGet(FILE_FIND_URL).replyOnce(200, files);
+    mock.onGet(FILE_FIND_URL).replyOnce(200, files.map(x => x.path));
     getProjectFindFileInstance(); // This triggers a load / axios call + subsequent render in the constructor
+
+    setImmediate(done);
   });
 
   afterEach(() => {
@@ -65,26 +67,19 @@ describe('ProjectFindFile', () => {
     sanitize.mockClear();
   });
 
-  it('loads and renders elements from remote server', done => {
-    setImmediate(() => {
-      expect(findFiles()).toEqual(
-        files.map(text => ({
-          text,
-          href: `${BLOB_URL_TEMPLATE}/${encodeURIComponent(text)}`,
-        })),
-      );
-
-      done();
-    });
+  it('loads and renders elements from remote server', () => {
+    expect(findFiles()).toEqual(
+      files.map(({ path, escaped }) => ({
+        text: path,
+        href: `${BLOB_URL_TEMPLATE}/${escaped}`,
+      })),
+    );
   });
 
-  it('sanitizes search text', done => {
+  it('sanitizes search text', () => {
     const searchText = element.find('.file-finder-input').val();
 
-    setImmediate(() => {
-      expect(sanitize).toHaveBeenCalledTimes(1);
-      expect(sanitize).toHaveBeenCalledWith(searchText);
-      done();
-    });
+    expect(sanitize).toHaveBeenCalledTimes(1);
+    expect(sanitize).toHaveBeenCalledWith(searchText);
   });
 });

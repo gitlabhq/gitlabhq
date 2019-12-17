@@ -72,7 +72,6 @@ describe('Issuables list component', () => {
   afterEach(() => {
     wrapper.destroy();
     mockAxios.restore();
-    jest.clearAllMocks();
     window.location = oldLocation;
   });
 

@@ -71,7 +71,7 @@ Omnibus:
    redis['port'] = 6379
    redis['password'] = 'SECRET_PASSWORD_HERE'
 
-   gitlab_rails['auto_migrate'] = false
+   gitlab_rails['enable'] = false
    ```
 
 1. [Reconfigure Omnibus GitLab][reconfigure] for the changes to take effect.

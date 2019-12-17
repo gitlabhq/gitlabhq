@@ -127,7 +127,7 @@ class IssuesFinder < IssuableFinder
     return @user_can_see_all_confidential_issues if defined?(@user_can_see_all_confidential_issues)
 
     return @user_can_see_all_confidential_issues = false if current_user.blank?
-    return @user_can_see_all_confidential_issues = true if current_user.full_private_access?
+    return @user_can_see_all_confidential_issues = true if current_user.can_read_all_resources?
 
     @user_can_see_all_confidential_issues =
       if project? && project

@@ -4,6 +4,7 @@ import $ from 'jquery';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import sanitize from 'sanitize-html';
 import axios from '~/lib/utils/axios_utils';
+import { joinPaths, escapeFileUrl } from '~/lib/utils/url_utility';
 import flash from '~/flash';
 import { __ } from '~/locale';
 
@@ -116,7 +117,7 @@ export default class ProjectFindFile {
       if (searchText) {
         matches = fuzzaldrinPlus.match(filePath, searchText);
       }
-      const blobItemUrl = `${this.options.blobUrlTemplate}/${encodeURIComponent(filePath)}`;
+      const blobItemUrl = joinPaths(this.options.blobUrlTemplate, escapeFileUrl(filePath));
       const html = ProjectFindFile.makeHtml(filePath, matches, blobItemUrl);
       results.push(this.element.find('.tree-table > tbody').append(html));
     }

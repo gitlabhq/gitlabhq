@@ -408,6 +408,7 @@ class Project < ApplicationRecord
   scope :for_milestones, ->(ids) { joins(:milestones).where('milestones.id' => ids).distinct }
   scope :with_push, -> { joins(:events).where('events.action = ?', Event::PUSHED) }
   scope :with_project_feature, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id') }
+  scope :inc_routes, -> { includes(:route, namespace: :route) }
   scope :with_statistics, -> { includes(:statistics) }
   scope :with_service, ->(service) { joins(service).eager_load(service) }
   scope :with_shared_runners, -> { where(shared_runners_enabled: true) }

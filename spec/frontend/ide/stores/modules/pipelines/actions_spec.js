@@ -111,8 +111,6 @@ describe('IDE pipelines actions', () => {
   });
 
   describe('fetchLatestPipeline', () => {
-    beforeEach(() => {});
-
     afterEach(() => {
       stopPipelinePolling();
       clearEtagPoll();

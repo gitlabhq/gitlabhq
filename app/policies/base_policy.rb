@@ -40,6 +40,7 @@ class BasePolicy < DeclarativePolicy::Base
     prevent :read_cross_project
   end
 
+  # Policy extended in EE to also enable auditors
   rule { admin }.enable :read_all_resources
 
   rule { default }.enable :read_cross_project

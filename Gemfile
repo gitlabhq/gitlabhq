@@ -102,7 +102,7 @@ gem 'hashie-forbidden_attributes'
 gem 'kaminari', '~> 1.0'
 
 # HAML
-gem 'hamlit', '~> 2.10.0'
+gem 'hamlit', '~> 2.11.0'
 
 # Files attachments
 gem 'carrierwave', '~> 1.3'

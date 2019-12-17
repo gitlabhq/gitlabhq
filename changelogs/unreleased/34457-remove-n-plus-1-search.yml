@@ -1,0 +1,5 @@
+---
+title: Remove an N+1 call rendering projects search results
+merge_request: 21626
+author:
+type: performance

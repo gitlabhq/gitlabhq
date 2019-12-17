@@ -213,9 +213,9 @@ module API
       unauthorized! unless Devise.secure_compare(secret_token, input)
     end
 
-    def authenticated_with_full_private_access!
+    def authenticated_with_can_read_all_resources!
       authenticate!
-      forbidden! unless current_user.full_private_access?
+      forbidden! unless current_user.can_read_all_resources?
     end
 
     def authenticated_as_admin!

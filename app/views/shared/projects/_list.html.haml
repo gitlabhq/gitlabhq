@@ -35,6 +35,7 @@
 .js-projects-list-holder{ data: { qa_selector: 'projects_list' } }
   - if any_projects?(projects)
     - load_pipeline_status(projects) if pipeline_status
+    - load_max_project_member_accesses(projects) # Prime cache used in shared/projects/project view rendered below
     %ul.projects-list{ class: css_classes }
       - projects.each_with_index do |project, i|
         - css_class = (i >= projects_limit) || project.pending_delete? ? 'hide' : nil

@@ -242,7 +242,7 @@ class Issue < ApplicationRecord
 
     return false unless readable_by?(user)
 
-    user.full_private_access? ||
+    user.can_read_all_resources? ||
       ::Gitlab::ExternalAuthorization.access_allowed?(
         user, project.external_authorization_classification_label)
   end

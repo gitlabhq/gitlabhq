@@ -12,6 +12,7 @@ import { APPLICATION_STATUS, INGRESS, INGRESS_DOMAIN_SUFFIX, CROSSPLANE } from '
 import ClustersService from './services/clusters_service';
 import ClustersStore from './stores/clusters_store';
 import Applications from './components/applications.vue';
+import RemoveClusterConfirmation from './components/remove_cluster_confirmation.vue';
 import setupToggleButtons from '../toggle_buttons';
 import initProjectSelectDropdown from '~/project_select';
 
@@ -144,6 +145,8 @@ export default class Clusters {
         () => this.handlePollError(),
       );
     }
+
+    this.initRemoveClusterActions();
   }
 
   initApplications(type) {
@@ -203,6 +206,25 @@ export default class Clusters {
         });
       },
     });
+  }
+
+  initRemoveClusterActions() {
+    const el = document.querySelector('#js-cluster-remove-actions');
+    if (el && el.dataset) {
+      const { clusterName, clusterPath } = el.dataset;
+
+      this.removeClusterAction = new Vue({
+        el,
+        render(createElement) {
+          return createElement(RemoveClusterConfirmation, {
+            props: {
+              clusterName,
+              clusterPath,
+            },
+          });
+        },
+      });
+    }
   }
 
   handleClusterEnvironmentsSuccess(data) {

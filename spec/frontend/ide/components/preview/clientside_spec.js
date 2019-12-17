@@ -68,10 +68,6 @@ describe('IDE clientside preview', () => {
     jest.useRealTimers();
   });
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   afterEach(() => {
     wrapper.destroy();
   });

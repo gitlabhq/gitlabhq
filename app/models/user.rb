@@ -1473,9 +1473,7 @@ class User < ApplicationRecord
     self.admin = (new_level == 'admin')
   end
 
-  # Does the user have access to all private groups & projects?
-  # Overridden in EE to also check auditor?
-  def full_private_access?
+  def can_read_all_resources?
     can?(:read_all_resources)
   end
 

@@ -52,7 +52,6 @@ describe('Registry List', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
     Vue.config.silent = false;
     wrapper.destroy();
   });

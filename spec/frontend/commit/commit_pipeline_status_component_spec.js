@@ -44,7 +44,6 @@ describe('Commit pipeline status component', () => {
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
-    jest.clearAllMocks();
   });
 
   describe('Visibility management', () => {

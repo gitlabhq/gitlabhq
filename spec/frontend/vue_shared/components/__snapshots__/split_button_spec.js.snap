@@ -5,6 +5,7 @@ exports[`SplitButton renders actionItems 1`] = `
   menu-class="dropdown-menu-selectable "
   split="true"
   text="professor"
+  variant="secondary"
 >
   <gldropdownitem-stub
     active="true"

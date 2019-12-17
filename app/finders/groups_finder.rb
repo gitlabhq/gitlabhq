@@ -45,7 +45,7 @@ class GroupsFinder < UnionFinder
   def all_groups
     return [owned_groups] if params[:owned]
     return [groups_with_min_access_level] if min_access_level?
-    return [Group.all] if current_user&.full_private_access? && all_available?
+    return [Group.all] if current_user&.can_read_all_resources? && all_available?
 
     groups = []
     groups << Gitlab::ObjectHierarchy.new(groups_for_ancestors, groups_for_descendants).all_objects if current_user

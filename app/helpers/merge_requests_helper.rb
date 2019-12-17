@@ -88,7 +88,7 @@ module MergeRequestsHelper
 
   def target_projects(project)
     MergeRequestTargetProjectFinder.new(current_user: current_user, source_project: project)
-      .execute
+      .execute(include_routes: true)
   end
 
   def merge_request_button_visibility(merge_request, closed)

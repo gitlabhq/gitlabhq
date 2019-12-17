@@ -42,7 +42,6 @@ describe('Confidential Issue Sidebar Block', () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
     jest.spyOn(window.location, 'reload').mockImplementation();
   });
 

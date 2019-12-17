@@ -24,9 +24,11 @@ module API
         requires :fingerprint, type: String, desc: 'Search for a SSH fingerprint'
       end
       get do
-        authenticated_with_full_private_access!
+        authenticated_with_can_read_all_resources!
 
-        key = KeysFinder.new(current_user, params).execute
+        finder_params = params.merge(key_type: 'ssh')
+
+        key = KeysFinder.new(current_user, finder_params).execute
 
         not_found!('Key') unless key
         present key, with: Entities::SSHKeyWithUser, current_user: current_user

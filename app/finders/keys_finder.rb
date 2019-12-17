@@ -15,14 +15,42 @@ class KeysFinder
 
   def execute
     raise GitLabAccessDeniedError unless current_user.admin?
-    raise InvalidFingerprint unless valid_fingerprint_param?
 
-    Key.where(fingerprint_query).first # rubocop: disable CodeReuse/ActiveRecord
+    keys = by_key_type
+    keys = by_user(keys)
+    keys = sort(keys)
+
+    by_fingerprint(keys)
   end
 
   private
 
   attr_reader :current_user, :params
+
+  def by_key_type
+    if params[:key_type] == 'ssh'
+      Key.regular_keys
+    else
+      Key.all
+    end
+  end
+
+  def sort(keys)
+    keys.order_last_used_at_desc
+  end
+
+  def by_user(keys)
+    return keys unless params[:user]
+
+    keys.for_user(params[:user])
+  end
+
+  def by_fingerprint(keys)
+    return keys unless params[:fingerprint].present?
+    raise InvalidFingerprint unless valid_fingerprint_param?
+
+    keys.where(fingerprint_query).first # rubocop: disable CodeReuse/ActiveRecord
+  end
 
   def valid_fingerprint_param?
     if fingerprint_type == "sha256"

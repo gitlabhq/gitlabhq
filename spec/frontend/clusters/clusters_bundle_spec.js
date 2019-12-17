@@ -46,7 +46,6 @@ describe('Clusters', () => {
   afterEach(() => {
     cluster.destroy();
     mock.restore();
-    jest.clearAllMocks();
   });
 
   describe('class constructor', () => {

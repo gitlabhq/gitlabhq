@@ -1,0 +1,5 @@
+---
+title: Add CI variable to set the version of pip when scanning dependencies of Python projects
+merge_request: 21218
+author:
+type: added

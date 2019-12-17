@@ -186,7 +186,7 @@ class ProjectFeature < ApplicationRecord
 
   def team_access?(user, feature)
     return unless user
-    return true if user.full_private_access?
+    return true if user.can_read_all_resources?
 
     project.team.member?(user, ProjectFeature.required_minimum_access_level(feature))
   end

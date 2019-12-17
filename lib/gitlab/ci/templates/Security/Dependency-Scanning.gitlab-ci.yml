@@ -47,6 +47,7 @@ dependency_scanning:
           DS_PULL_ANALYZER_IMAGE_TIMEOUT \
           DS_RUN_ANALYZER_TIMEOUT \
           DS_PYTHON_VERSION \
+          DS_PIP_VERSION \
           DS_PIP_DEPENDENCY_PATH \
           PIP_INDEX_URL \
           PIP_EXTRA_INDEX_URL \

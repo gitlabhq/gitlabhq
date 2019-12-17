@@ -21,6 +21,18 @@ describe PersonalAccessToken do
     end
   end
 
+  describe 'scopes' do
+    describe '.for_user' do
+      it 'returns personal access tokens of specified user only' do
+        user_1 = create(:user)
+        token_of_user_1 = create(:personal_access_token, user: user_1)
+        create_list(:personal_access_token, 2)
+
+        expect(described_class.for_user(user_1)).to contain_exactly(token_of_user_1)
+      end
+    end
+  end
+
   describe ".active?" do
     let(:active_personal_access_token) { build(:personal_access_token) }
     let(:revoked_personal_access_token) { build(:personal_access_token, :revoked) }

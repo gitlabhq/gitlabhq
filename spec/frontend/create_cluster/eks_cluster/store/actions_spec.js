@@ -272,14 +272,11 @@ describe('EKS Cluster Store Actions', () => {
       payload = { name: ['Create cluster failed'] };
     });
 
-    it('commits createClusterError mutation', () => {
+    it('commits createClusterError mutation and displays flash message', () =>
       testAction(actions.createClusterError, payload, state, [
         { type: CREATE_CLUSTER_ERROR, payload },
-      ]);
-    });
-
-    it('creates a flash that displays the create cluster error', () => {
-      expect(createFlash).toHaveBeenCalledWith(payload.name[0]);
-    });
+      ]).then(() => {
+        expect(createFlash).toHaveBeenCalledWith(payload.name[0]);
+      }));
   });
 });
