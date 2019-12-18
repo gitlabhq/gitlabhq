@@ -113,6 +113,7 @@ function deferredInitialisation() {
   });
 
   $('.js-remove-tr').on('ajax:success', function removeTRAjaxSuccessCallback() {
+    // eslint-disable-next-line no-jquery/no-fade
     $(this)
       .closest('tr')
       .fadeOut();

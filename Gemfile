@@ -458,7 +458,7 @@ gem 'grpc', '~> 1.24.0'
 
 gem 'google-protobuf', '~> 3.8.0'
 
-gem 'toml-rb', '~> 1.0.0', require: false
+gem 'toml-rb', '~> 1.0.0'
 
 # Feature toggles
 gem 'flipper', '~> 0.17.1'

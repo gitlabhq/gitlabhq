@@ -7795,6 +7795,9 @@ msgstr ""
 msgid "Filter by milestone name"
 msgstr ""
 
+msgid "Filter by name..."
+msgstr ""
+
 msgid "Filter by two-factor authentication"
 msgstr ""
 
@@ -11548,6 +11551,9 @@ msgstr ""
 msgid "More actions"
 msgstr ""
 
+msgid "More details"
+msgstr ""
+
 msgid "More info"
 msgstr ""
 
@@ -14724,6 +14730,9 @@ msgid "Recent Searches Service is unavailable"
 msgstr ""
 
 msgid "Recent searches"
+msgstr ""
+
+msgid "Recipe"
 msgstr ""
 
 msgid "Recovery Codes"

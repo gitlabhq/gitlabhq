@@ -45,6 +45,7 @@ export default class LabelsSelect {
       const $sidebarLabelTooltip = $block.find('.js-sidebar-labels-tooltip');
       const $value = $block.find('.value');
       const $dropdownMenu = $dropdown.parent().find('.dropdown-menu');
+      // eslint-disable-next-line no-jquery/no-fade
       const $loading = $block.find('.block-loading').fadeOut();
       const fieldName = $dropdown.data('fieldName');
       let initialSelected = $selectbox
@@ -84,6 +85,7 @@ export default class LabelsSelect {
         if (!selected.length) {
           data[abilityName].label_ids = [''];
         }
+        // eslint-disable-next-line no-jquery/no-fade
         $loading.removeClass('hidden').fadeIn();
         $dropdown.trigger('loading.gl.dropdown');
         axios
@@ -91,6 +93,7 @@ export default class LabelsSelect {
           .then(({ data }) => {
             let labelTooltipTitle;
             let template;
+            // eslint-disable-next-line no-jquery/no-fade
             $loading.fadeOut();
             $dropdown.trigger('loaded.gl.dropdown');
             $selectbox.hide();
@@ -361,6 +364,7 @@ export default class LabelsSelect {
           const label = clickEvent.selectedObj;
 
           const fadeOutLoader = () => {
+            // eslint-disable-next-line no-jquery/no-fade
             $loading.fadeOut();
           };
 
@@ -422,6 +426,7 @@ export default class LabelsSelect {
               boardsStore.detail.issue.labels = labels;
             }
 
+            // eslint-disable-next-line no-jquery/no-fade
             $loading.fadeIn();
             const oldLabels = boardsStore.detail.issue.labels;
 

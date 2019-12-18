@@ -127,6 +127,7 @@ Its feature set is listed on the table below according to DevOps stages.
 | [GitLab Pages](../user/project/pages/index.md) | Deploy static websites. |
 | [GitLab Releases](../user/project/releases/index.md) | Add release notes to Git tags. |
 | [Review Apps](review_apps/index.md) | Configure GitLab CI/CD to preview code changes. |
+| [Cloud deployment](cloud_deployment/index.md) | Deploy your application to a main cloud provider. |
 |---+---|
 | **Secure** ||
 | [Container Scanning](../user/application_security/container_scanning/index.md) **(ULTIMATE)** | Check your Docker containers for known vulnerabilities.|

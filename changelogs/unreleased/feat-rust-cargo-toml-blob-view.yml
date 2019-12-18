@@ -1,0 +1,5 @@
+---
+title: Add support for Rust Cargo.toml dependency vizualisation and linking
+merge_request: 21374
+author: Fabio Huser
+type: added

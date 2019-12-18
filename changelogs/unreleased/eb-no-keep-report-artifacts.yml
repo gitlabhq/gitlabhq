@@ -1,0 +1,5 @@
+---
+title: Remove keep button for non archive artifacts
+merge_request: 21553
+author:
+type: fixed

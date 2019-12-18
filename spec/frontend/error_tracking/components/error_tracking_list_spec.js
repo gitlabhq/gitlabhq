@@ -272,6 +272,7 @@ describe('ErrorTrackingList', () => {
 
   describe('When pagination is not required', () => {
     beforeEach(() => {
+      store.state.list.loading = false;
       store.state.list.pagination = {};
       mountComponent();
     });
@@ -284,6 +285,7 @@ describe('ErrorTrackingList', () => {
   describe('When pagination is required', () => {
     describe('and the user is on the first page', () => {
       beforeEach(() => {
+        store.state.list.loading = false;
         mountComponent({ sync: false });
       });
 
@@ -295,6 +297,7 @@ describe('ErrorTrackingList', () => {
     describe('and the user is not on the first page', () => {
       describe('and the previous button is clicked', () => {
         beforeEach(() => {
+          store.state.list.loading = false;
           mountComponent({ sync: false });
           wrapper.setData({ pageValue: 2 });
         });
@@ -313,6 +316,7 @@ describe('ErrorTrackingList', () => {
 
       describe('and the next page button is clicked', () => {
         beforeEach(() => {
+          store.state.list.loading = false;
           mountComponent({ sync: false });
         });
 

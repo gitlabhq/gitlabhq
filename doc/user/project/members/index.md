@@ -27,7 +27,7 @@ From the image above, we can deduce the following things:
 - Administrator is the Owner and member of **all** groups and for that reason,
   there is an indication of an ancestor group and inherited Owner permissions.
 
-[From](https://gitlab.com/gitlab-org/gitlab/issues/21727), you can filter this list
+[From GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/issues/21727), you can filter this list
 using dropdown on the right side:
 
 ![Project members filter](img/project_members_filter_v12_6.png)

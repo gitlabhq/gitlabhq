@@ -116,11 +116,13 @@ class DueDateSelect {
   }
 
   updateIssueBoardIssue() {
+    // eslint-disable-next-line no-jquery/no-fade
     this.$loading.fadeIn();
     this.$dropdown.trigger('loading.gl.dropdown');
     this.$selectbox.hide();
     this.$value.css('display', '');
     const fadeOutLoader = () => {
+      // eslint-disable-next-line no-jquery/no-fade
       this.$loading.fadeOut();
     };
 
@@ -135,6 +137,7 @@ class DueDateSelect {
     const hasDueDate = this.displayedDate !== __('None');
     const displayedDateStyle = hasDueDate ? 'bold' : 'no-value';
 
+    // eslint-disable-next-line no-jquery/no-fade
     this.$loading.removeClass('hidden').fadeIn();
 
     if (isDropdown) {
@@ -158,6 +161,7 @@ class DueDateSelect {
       }
       this.$sidebarCollapsedValue.attr('data-original-title', tooltipText);
 
+      // eslint-disable-next-line no-jquery/no-fade
       return this.$loading.fadeOut();
     });
   }

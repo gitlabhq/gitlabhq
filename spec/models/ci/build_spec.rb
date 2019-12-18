@@ -2245,14 +2245,24 @@ describe Ci::Build do
     end
   end
 
-  describe '#has_expiring_artifacts?' do
+  describe '#has_expiring_archive_artifacts?' do
     context 'when artifacts have expiration date set' do
       before do
         build.update(artifacts_expire_at: 1.day.from_now)
       end
 
-      it 'has expiring artifacts' do
-        expect(build).to have_expiring_artifacts
+      context 'and job artifacts file exists' do
+        let!(:archive) { create(:ci_job_artifact, :archive, job: build) }
+
+        it 'has expiring artifacts' do
+          expect(build).to have_expiring_archive_artifacts
+        end
+      end
+
+      context 'and job artifacts file does not exist' do
+        it 'does not have expiring artifacts' do
+          expect(build).not_to have_expiring_archive_artifacts
+        end
       end
     end
 
@@ -2262,7 +2272,7 @@ describe Ci::Build do
       end
 
       it 'does not have expiring artifacts' do
-        expect(build).not_to have_expiring_artifacts
+        expect(build).not_to have_expiring_archive_artifacts
       end
     end
   end

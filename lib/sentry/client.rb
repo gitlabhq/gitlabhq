@@ -3,6 +3,7 @@
 module Sentry
   class Client
     include Sentry::Client::Projects
+    include Sentry::Client::Issue
 
     Error = Class.new(StandardError)
     MissingKeysError = Class.new(StandardError)
@@ -21,12 +22,6 @@ module Sentry
     def initialize(api_url, token)
       @url = api_url
       @token = token
-    end
-
-    def issue_details(issue_id:)
-      issue = get_issue(issue_id: issue_id)
-
-      map_to_detailed_error(issue)
     end
 
     def issue_latest_event(issue_id:)
@@ -107,10 +102,6 @@ module Sentry
       }.compact
     end
 
-    def get_issue(issue_id:)
-      http_get(issue_api_url(issue_id))[:body]
-    end
-
     def get_issue_latest_event(issue_id:)
       http_get(issue_latest_event_api_url(issue_id))[:body]
     end
@@ -143,13 +134,6 @@ module Sentry
 
     def raise_error(message)
       raise Client::Error, message
-    end
-
-    def issue_api_url(issue_id)
-      issue_url = URI(@url)
-      issue_url.path = "/api/0/issues/#{issue_id}/"
-
-      issue_url
     end
 
     def issue_latest_event_api_url(issue_id)
@@ -210,42 +194,6 @@ module Sentry
       return unless stack_trace_entry
 
       stack_trace_entry.dig('stacktrace', 'frames')
-    end
-
-    def parse_gitlab_issue(plugin_issues)
-      return unless plugin_issues
-
-      gitlab_plugin = plugin_issues.detect { |item| item['id'] == 'gitlab' }
-      return unless gitlab_plugin
-
-      gitlab_plugin.dig('issue', 'url')
-    end
-
-    def map_to_detailed_error(issue)
-      Gitlab::ErrorTracking::DetailedError.new(
-        id: issue.fetch('id'),
-        first_seen: issue.fetch('firstSeen', nil),
-        last_seen: issue.fetch('lastSeen', nil),
-        title: issue.fetch('title', nil),
-        type: issue.fetch('type', nil),
-        user_count: issue.fetch('userCount', nil),
-        count: issue.fetch('count', nil),
-        message: issue.dig('metadata', 'value'),
-        culprit: issue.fetch('culprit', nil),
-        external_url: issue_url(issue.fetch('id')),
-        external_base_url: project_url,
-        short_id: issue.fetch('shortId', nil),
-        status: issue.fetch('status', nil),
-        frequency: issue.dig('stats', '24h'),
-        project_id: issue.dig('project', 'id'),
-        project_name: issue.dig('project', 'name'),
-        project_slug: issue.dig('project', 'slug'),
-        gitlab_issue: parse_gitlab_issue(issue.fetch('pluginIssues', nil)),
-        first_release_last_commit: issue.dig('firstRelease', 'lastCommit'),
-        last_release_last_commit: issue.dig('lastRelease', 'lastCommit'),
-        first_release_short_version: issue.dig('firstRelease', 'shortVersion'),
-        last_release_short_version: issue.dig('lastRelease', 'shortVersion')
-      )
     end
 
     def map_to_error(issue)

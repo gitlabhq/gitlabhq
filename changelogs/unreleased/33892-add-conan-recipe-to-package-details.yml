@@ -1,0 +1,5 @@
+---
+title: Added Conan recipe in place of the package name on the package details page.
+merge_request: 21247
+author:
+type: changed

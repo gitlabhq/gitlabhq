@@ -336,6 +336,7 @@ export default {
 
             <markdown-field
               ref="markdownField"
+              :is-submitting="isSubmitting"
               :markdown-preview-path="markdownPreviewPath"
               :markdown-docs-path="markdownDocsPath"
               :quick-actions-docs-path="quickActionsDocsPath"

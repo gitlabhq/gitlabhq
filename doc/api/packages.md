@@ -31,13 +31,15 @@ Example response:
     "id": 1,
     "name": "com/mycompany/my-app",
     "version": "1.0-SNAPSHOT",
-    "package_type": "maven"
+    "package_type": "maven",
+    "created_at": "2019-11-27T03:37:38.711Z"
   },
   {
     "id": 2,
     "name": "@foo/bar",
     "version": "1.0.3",
-    "package_type": "npm"
+    "package_type": "npm",
+    "created_at": "2019-11-27T03:37:38.711Z"
   }
 ]
 ```
@@ -76,7 +78,8 @@ Example response:
     "_links": {
       "web_path": "/namespace1/project1/-/packages/1",
       "delete_api_path": "/namespace1/project1/-/packages/1"
-    }
+    },
+    "created_at": "2019-11-27T03:37:38.711Z"
   },
   {
     "id": 2,
@@ -86,7 +89,8 @@ Example response:
     "_links": {
       "web_path": "/namespace1/project1/-/packages/1",
       "delete_api_path": "/namespace1/project1/-/packages/1"
-    }
+    },
+    "created_at": "2019-11-27T03:37:38.711Z"
   }
 ]
 ```
@@ -128,7 +132,8 @@ Example response:
   "_links": {
     "web_path": "/namespace1/project1/-/packages/1",
     "delete_api_path": "/namespace1/project1/-/packages/1"
-  }
+  },
+  "created_at": "2019-11-27T03:37:38.711Z"
 }
 ```
 

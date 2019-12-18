@@ -1,0 +1,5 @@
+---
+title: Add fallbacks and proper errors for diff file creation
+merge_request: 21034
+author:
+type: fixed

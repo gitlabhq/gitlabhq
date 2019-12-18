@@ -83,5 +83,13 @@ describe Gitlab::DependencyLinker do
 
       described_class.link(blob_name, nil, nil)
     end
+
+    it 'links using CargoTomlLinker' do
+      blob_name = 'Cargo.toml'
+
+      expect(described_class::CargoTomlLinker).to receive(:link)
+
+      described_class.link(blob_name, nil, nil)
+    end
   end
 end

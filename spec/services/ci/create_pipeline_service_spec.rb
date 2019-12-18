@@ -493,6 +493,7 @@ describe Ci::CreatePipelineService do
         before do
           stub_ci_pipeline_yaml_file(nil)
           allow_any_instance_of(Project).to receive(:auto_devops_enabled?).and_return(true)
+          create(:project_auto_devops, project: project)
         end
 
         it 'pull it from Auto-DevOps' do

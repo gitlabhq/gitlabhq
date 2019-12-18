@@ -1,9 +1,9 @@
 import { mount, createLocalVue } from '@vue/test-utils';
-import { TEST_HOST } from 'spec/test_constants';
+import fieldComponent from '~/vue_shared/components/markdown/field.vue';
+import { TEST_HOST, FIXTURES_PATH } from 'spec/test_constants';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import axios from '~/lib/utils/axios_utils';
-import fieldComponent from '~/vue_shared/components/markdown/field.vue';
 
 const markdownPreviewPath = `${TEST_HOST}/preview`;
 const markdownDocsPath = `${TEST_HOST}/docs`;
@@ -19,6 +19,7 @@ function createComponent() {
     propsData: {
       markdownDocsPath,
       markdownPreviewPath,
+      isSubmitting: false,
     },
     slots: {
       textarea: '<textarea>testing\n123</textarea>',
@@ -27,6 +28,7 @@ function createComponent() {
     <field-component
       markdown-preview-path="${markdownPreviewPath}"
       markdown-docs-path="${markdownDocsPath}"
+      :isSubmitting="false"
     >
       <textarea
         slot="textarea"
@@ -44,6 +46,7 @@ const getPreviewLink = wrapper => wrapper.find('.nav-links .js-preview-link');
 const getWriteLink = wrapper => wrapper.find('.nav-links .js-write-link');
 const getMarkdownButton = wrapper => wrapper.find('.js-md');
 const getAllMarkdownButtons = wrapper => wrapper.findAll('.js-md');
+const getVideo = wrapper => wrapper.find('video');
 
 describe('Markdown field component', () => {
   let axiosMock;
@@ -59,7 +62,10 @@ describe('Markdown field component', () => {
 
   describe('mounted', () => {
     let wrapper;
-    const previewHTML = '<p>markdown preview</p>';
+    const previewHTML = `
+    <p>markdown preview</p>
+    <video src="${FIXTURES_PATH}/static/mock-video.mp4" muted="muted"></video>
+  `;
     let previewLink;
     let writeLink;
 
@@ -112,9 +118,35 @@ describe('Markdown field component', () => {
 
         previewLink.trigger('click');
 
-        setTimeout(() => {
-          expect($.fn.renderGFM).toHaveBeenCalled();
-        }, 0);
+        return axios.waitFor(markdownPreviewPath).then(() => {
+          expect(wrapper.find('.md-preview-holder').element.innerHTML).toContain(previewHTML);
+        });
+      });
+
+      it('calls video.pause() on comment input when isSubmitting is changed to true', () => {
+        wrapper = createComponent();
+        previewLink = getPreviewLink(wrapper);
+        previewLink.trigger('click');
+
+        let callPause;
+
+        return axios
+          .waitFor(markdownPreviewPath)
+          .then(() => {
+            const video = getVideo(wrapper);
+            callPause = jest.spyOn(video.element, 'pause').mockImplementation(() => true);
+
+            wrapper.setProps({
+              isSubmitting: true,
+              markdownPreviewPath,
+              markdownDocsPath,
+            });
+
+            return wrapper.vm.$nextTick();
+          })
+          .then(() => {
+            expect(callPause).toHaveBeenCalled();
+          });
       });
 
       it('clicking already active write or preview link does nothing', () => {

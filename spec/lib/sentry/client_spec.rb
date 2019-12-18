@@ -14,12 +14,6 @@ describe Sentry::Client do
     }
   end
 
-  let(:issues_sample_response) do
-    Gitlab::Utils.deep_indifferent_access(
-      JSON.parse(fixture_file('sentry/issues_sample_response.json'))
-    )
-  end
-
   subject(:client) { described_class.new(sentry_url, token) }
 
   shared_examples 'issues has correct return type' do |klass|
@@ -33,6 +27,12 @@ describe Sentry::Client do
   end
 
   describe '#list_issues' do
+    let(:issues_sample_response) do
+      Gitlab::Utils.deep_indifferent_access(
+        JSON.parse(fixture_file('sentry/issues_sample_response.json'))
+      )
+    end
+
     let(:issue_status) { 'unresolved' }
     let(:limit) { 20 }
     let(:search_term) { '' }

@@ -53,6 +53,7 @@ function UsersSelect(currentUser, els, options = {}) {
     const abilityName = $dropdown.data('abilityName');
     let $value = $block.find('.value');
     const $collapsedSidebar = $block.find('.sidebar-collapsed-user');
+    // eslint-disable-next-line no-jquery/no-fade
     const $loading = $block.find('.block-loading').fadeOut();
     const selectedIdDefault = defaultNullUser && showNullUser ? 0 : null;
     let selectedId = $dropdown.data('selected');
@@ -188,6 +189,7 @@ function UsersSelect(currentUser, els, options = {}) {
       const data = {};
       data[abilityName] = {};
       data[abilityName].assignee_id = selected != null ? selected : null;
+      // eslint-disable-next-line no-jquery/no-fade
       $loading.removeClass('hidden').fadeIn();
       $dropdown.trigger('loading.gl.dropdown');
 
@@ -195,6 +197,7 @@ function UsersSelect(currentUser, els, options = {}) {
         let user = {};
         let tooltipTitle = user.name;
         $dropdown.trigger('loaded.gl.dropdown');
+        // eslint-disable-next-line no-jquery/no-fade
         $loading.fadeOut();
         if (data.assignee) {
           user = {
