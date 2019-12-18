@@ -39,8 +39,12 @@ describe Prometheus::ProxyVariableSubstitutionService do
     end
 
     context 'with predefined variables' do
+      let(:params_keys) { { query: 'up{%{environment_filter}}' } }
+
       it_behaves_like 'success' do
-        let(:expected_query) { %Q[up{environment="#{environment.slug}"}] }
+        let(:expected_query) do
+          %Q[up{container_name!="POD",environment="#{environment.slug}"}]
+        end
       end
 
       context 'with nil query' do
@@ -50,6 +54,133 @@ describe Prometheus::ProxyVariableSubstitutionService do
           let(:expected_query) { nil }
         end
       end
+
+      context 'with liquid format' do
+        let(:params_keys) do
+          { query: 'up{environment="{{ci_environment_slug}}"}' }
+        end
+
+        it_behaves_like 'success' do
+          let(:expected_query) { %Q[up{environment="#{environment.slug}"}] }
+        end
+      end
+
+      context 'with ruby and liquid formats' do
+        let(:params_keys) do
+          { query: 'up{%{environment_filter},env2="{{ci_environment_slug}}"}' }
+        end
+
+        it_behaves_like 'success' do
+          let(:expected_query) do
+            %Q[up{container_name!="POD",environment="#{environment.slug}",env2="#{environment.slug}"}]
+          end
+        end
+      end
+    end
+
+    context 'with custom variables' do
+      let(:pod_name) { "pod1" }
+
+      let(:params_keys) do
+        {
+          query: 'up{pod_name="{{pod_name}}"}',
+          variables: ['pod_name', pod_name]
+        }
+      end
+
+      it_behaves_like 'success' do
+        let(:expected_query) { %q[up{pod_name="pod1"}] }
+      end
+
+      context 'with ruby variable interpolation format' do
+        let(:params_keys) do
+          {
+            query: 'up{pod_name="%{pod_name}"}',
+            variables: ['pod_name', pod_name]
+          }
+        end
+
+        it_behaves_like 'success' do
+          # Custom variables cannot be used with the Ruby interpolation format.
+          let(:expected_query) { "up{pod_name=\"%{pod_name}\"}" }
+        end
+      end
+
+      context 'with predefined variables in variables parameter' do
+        let(:params_keys) do
+          {
+            query: 'up{pod_name="{{pod_name}}",env="{{ci_environment_slug}}"}',
+            variables: ['pod_name', pod_name, 'ci_environment_slug', 'custom_value']
+          }
+        end
+
+        it_behaves_like 'success' do
+          # Predefined variable values should not be overwritten by custom variable
+          # values.
+          let(:expected_query) { "up{pod_name=\"#{pod_name}\",env=\"#{environment.slug}\"}" }
+        end
+      end
+
+      context 'with invalid variables parameter' do
+        let(:params_keys) do
+          {
+            query: 'up{pod_name="{{pod_name}}"}',
+            variables: ['a']
+          }
+        end
+
+        it_behaves_like 'error', 'Optional parameter "variables" must be an ' \
+          'array of keys and values. Ex: [key1, value1, key2, value2]'
+      end
+
+      context 'with nil variables' do
+        let(:params_keys) do
+          {
+            query: 'up{pod_name="{{pod_name}}"}',
+            variables: nil
+          }
+        end
+
+        it_behaves_like 'success' do
+          let(:expected_query) { 'up{pod_name=""}' }
+        end
+      end
+
+      context 'with ruby and liquid variables' do
+        let(:params_keys) do
+          {
+            query: 'up{env1="%{ruby_variable}",env2="{{ liquid_variable }}"}',
+            variables: %w(ruby_variable value liquid_variable env_slug)
+          }
+        end
+
+        it_behaves_like 'success' do
+          # It should replace only liquid variables with their values
+          let(:expected_query) { %q[up{env1="%{ruby_variable}",env2="env_slug"}] }
+        end
+      end
+    end
+
+    context 'with liquid tags and ruby format variables' do
+      let(:params_keys) do
+        {
+          query: 'up{ {% if true %}env1="%{ci_environment_slug}",' \
+            'env2="{{ci_environment_slug}}"{% endif %} }'
+        }
+      end
+
+      # The following spec will fail and should be changed to a 'success' spec
+      # once we remove support for the Ruby interpolation format.
+      # https://gitlab.com/gitlab-org/gitlab/issues/37990
+      #
+      # Liquid tags `{% %}` cannot be used currently because the Ruby `%`
+      # operator raises an error when it encounters a Liquid `{% %}` tag in the
+      # string.
+      #
+      # Once we remove support for the Ruby format, users can start using
+      # Liquid tags.
+
+      it_behaves_like 'error', 'Malformed string'
     end
 
     context 'ruby template rendering' do
@@ -138,6 +269,19 @@ describe Prometheus::ProxyVariableSubstitutionService do
           it_behaves_like 'error', 'Malformed string'
         end
       end
+    end
+
+    context 'when liquid template rendering raises error' do
+      before do
+        liquid_service = instance_double(TemplateEngines::LiquidService)
+
+        allow(TemplateEngines::LiquidService).to receive(:new).and_return(liquid_service)
+        allow(liquid_service).to receive(:render).and_raise(
+          TemplateEngines::LiquidService::RenderError, 'error message'
+        )
+      end
+
+      it_behaves_like 'error', 'error message'
     end
   end
 end

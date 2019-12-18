@@ -477,3 +477,5 @@ gem 'gitlab-net-dns', '~> 0.9.1'
 gem 'countries', '~> 3.0'
 
 gem 'retriable', '~> 3.1.2'
+
+gem 'liquid', '~> 4.0'

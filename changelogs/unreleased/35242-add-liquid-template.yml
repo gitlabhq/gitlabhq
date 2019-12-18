@@ -1,0 +1,5 @@
+---
+title: Add support for Liquid format in Prometheus queries
+merge_request: 20793
+author:
+type: added

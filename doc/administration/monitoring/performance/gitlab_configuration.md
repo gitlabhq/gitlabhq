@@ -1,5 +1,9 @@
 # GitLab Configuration
 
+CAUTION: **InfluxDB is deprecated in favor of Prometheus:**
+InfluxDB support is scheduled to be removed in GitLab 13.0.
+You are advised to use [Prometheus](../prometheus/index.md) instead.
+
 GitLab Performance Monitoring is disabled by default. To enable it and change any of its
 settings, navigate to the Admin area in **Settings > Metrics**
 (`/admin/application_settings`).

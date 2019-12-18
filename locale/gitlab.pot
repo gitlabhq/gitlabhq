@@ -7094,6 +7094,9 @@ msgstr ""
 msgid "Error rendering markdown preview"
 msgstr ""
 
+msgid "Error rendering query"
+msgstr ""
+
 msgid "Error saving label update."
 msgstr ""
 
@@ -11075,6 +11078,9 @@ msgstr ""
 msgid "Memory Usage"
 msgstr ""
 
+msgid "Memory limit exceeded while rendering template"
+msgstr ""
+
 msgid "Merge"
 msgstr ""
 
@@ -12408,6 +12414,9 @@ msgid "OperationsDashboard|The operations dashboard provides a summary of each p
 msgstr ""
 
 msgid "Optional"
+msgstr ""
+
+msgid "Optional parameter \"variables\" must be an array of keys and values. Ex: [key1, value1, key2, value2]"
 msgstr ""
 
 msgid "Optionally, you can %{link_to_customize} how FogBugz email addresses and usernames are imported into GitLab."

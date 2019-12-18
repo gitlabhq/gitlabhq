@@ -1,5 +1,9 @@
 # InfluxDB Schema
 
+CAUTION: **InfluxDB is deprecated in favor of Prometheus:**
+InfluxDB support is scheduled to be removed in GitLab 13.0.
+You are advised to use [Prometheus](../prometheus/index.md) instead.
+
 The following measurements are currently stored in InfluxDB:
 
 - `PROCESS_file_descriptors`

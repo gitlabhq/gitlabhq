@@ -1,5 +1,9 @@
 # InfluxDB Configuration
 
+CAUTION: **InfluxDB is being deprecated in favor of Prometheus:**
+InfluxDB support is scheduled to be dropped in GitLab 13.0.
+You are advised to use [Prometheus](../prometheus/index.md) instead.
+
 The default settings provided by [InfluxDB] are not sufficient for a high traffic
 GitLab environment. The settings discussed in this document are based on the
 settings GitLab uses for GitLab.com, depending on your own needs you may need to
