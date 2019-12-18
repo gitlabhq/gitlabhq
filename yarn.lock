@@ -732,15 +732,15 @@
   dependencies:
     vue-eslint-parser "^6.0.4"
 
-"@gitlab/svgs@^1.85.0":
-  version "1.85.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.85.0.tgz#c80247ec4764824385df2837136a0d4a84f881dc"
-  integrity sha512-yzvKut0MPJEbSx/LExopCLpF5KEZsckF+d/Blbji1VqODVanH85oIVuJNmdECUlc7qxye9Or3evpFjW9Pkshmg==
+"@gitlab/svgs@^1.88.0":
+  version "1.88.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.88.0.tgz#0a9b72e9591264fcac592ebf9944665c70f48de2"
+  integrity sha512-ZgepCvZoB/lFdgttHtu8+9YlRZlVc9MnHDbbqcQCFBvrfOjY1wq12ikxnNbwKj8QNA47TRJvSS0TkHgMWYnbsA==
 
-"@gitlab/ui@8.2.0":
-  version "8.2.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-8.2.0.tgz#82cf512407f8a774878969c72c4227d08ce49aa6"
-  integrity sha512-ZzxA3XwmwZpol6QJjqBf3Oblb1wSFbDJ4QENvPiE9lAUHvhbe8wfKBK++RtgOtd6aXtLvoY1o1Du9qill07Jvg==
+"@gitlab/ui@8.8.0":
+  version "8.8.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-8.8.0.tgz#c22b4dece89d224c525b3510970f3c61321a6765"
+  integrity sha512-fjAGSgfau28iq+Uhivc5OPwu3ZLUL25gFuW1rKeQFgnkVEaQ9IRvdM8RD9+kgXWUsccsrafQkz/nOUmp85o8yQ==
   dependencies:
     "@babel/standalone" "^7.0.0"
     "@gitlab/vue-toasted" "^1.3.0"
@@ -755,10 +755,10 @@
     vue "^2.6.10"
     vue-loader "^15.4.2"
 
-"@gitlab/visual-review-tools@1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/visual-review-tools/-/visual-review-tools-1.2.0.tgz#8d6757917193c1023012bb4a316dc1a97309a27a"
-  integrity sha512-GaV/lYLmOF0hWtv8K8MLWGaCZ7PL1LF4D0/gargXYf9HO0Cw4wtz4oWyaLS15wFposJIYdPIHSNfrLVk4Dk9sQ==
+"@gitlab/visual-review-tools@1.5.1":
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/visual-review-tools/-/visual-review-tools-1.5.1.tgz#2552927cd7a376f1f06ef3293a69fe2ffcdddb52"
+  integrity sha512-8d6xgK4TsLA5gucd78jzaMyginAMJ8cbu/6ghUGws84zzAEsyJsMTstyt/fA5l4toQXVxtOh90BvDzwxSjZ6hQ==
 
 "@gitlab/vue-toasted@^1.3.0":
   version "1.3.0"

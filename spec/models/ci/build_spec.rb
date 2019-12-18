@@ -815,6 +815,27 @@ describe Ci::Build do
         it { is_expected.to contain_exactly(build, rspec_test, rubocop_test, staging) }
       end
     end
+
+    describe '#all_dependencies' do
+      let!(:final_build) do
+        create(:ci_build,
+          pipeline: pipeline, name: 'deploy',
+          stage_idx: 3, stage: 'deploy'
+        )
+      end
+
+      subject { final_build.all_dependencies }
+
+      it 'returns dependencies and cross_dependencies' do
+        dependencies = [1, 2, 3]
+        cross_dependencies = [3, 4]
+
+        allow(final_build).to receive(:dependencies).and_return(dependencies)
+        allow(final_build).to receive(:cross_dependencies).and_return(cross_dependencies)
+
+        is_expected.to match(a_collection_containing_exactly(1, 2, 3, 4))
+      end
+    end
   end
 
   describe '#triggered_by?' do

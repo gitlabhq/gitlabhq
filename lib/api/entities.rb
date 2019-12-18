@@ -1672,7 +1672,7 @@ module API
         expose :artifacts, using: Artifacts
         expose :cache, using: Cache
         expose :credentials, using: Credentials
-        expose :dependencies, using: Dependency
+        expose :all_dependencies, as: :dependencies, using: Dependency
         expose :features
       end
     end

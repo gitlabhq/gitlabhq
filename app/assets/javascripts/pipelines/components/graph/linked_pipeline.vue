@@ -42,7 +42,6 @@ export default {
 
 <template>
   <li class="linked-pipeline build">
-    <div class="curve"></div>
     <gl-button
       :id="buttonId"
       v-gl-tooltip

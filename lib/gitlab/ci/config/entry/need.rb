@@ -6,7 +6,9 @@ module Gitlab
       module Entry
         class Need < ::Gitlab::Config::Entry::Simplifiable
           strategy :JobString, if: -> (config) { config.is_a?(String) }
-          strategy :JobHash, if: -> (config) { config.is_a?(Hash) && config.key?(:job) }
+
+          strategy :JobHash,
+            if: -> (config) { config.is_a?(Hash) && config.key?(:job) && !(config.key?(:project) || config.key?(:ref)) }
 
           class JobString < ::Gitlab::Config::Entry::Node
             include ::Gitlab::Config::Entry::Validatable

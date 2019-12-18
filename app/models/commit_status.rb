@@ -47,6 +47,12 @@ class CommitStatus < ApplicationRecord
   scope :after_stage, -> (index) { where('stage_idx > ?', index) }
   scope :processables, -> { where(type: %w[Ci::Build Ci::Bridge]) }
   scope :for_ids, -> (ids) { where(id: ids) }
+  scope :for_ref, -> (ref) { where(ref: ref) }
+  scope :by_name, -> (name) { where(name: name) }
+
+  scope :for_project_paths, -> (paths) do
+    where(project: Project.where_full_path_in(Array(paths)))
+  end
 
   scope :with_preloads, -> do
     preload(:project, :user)

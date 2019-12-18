@@ -37,25 +37,25 @@ describe ClustersHelper do
     context 'GCP provider' do
       let(:provider) { 'gcp' }
 
-      it { is_expected.to eq('Create new Cluster on GKE') }
+      it { is_expected.to eq('Create new cluster on GKE') }
     end
 
     context 'AWS provider' do
       let(:provider) { 'aws' }
 
-      it { is_expected.to eq('Create new Cluster on EKS') }
+      it { is_expected.to eq('Create new cluster on EKS') }
     end
 
     context 'other provider' do
       let(:provider) { 'other' }
 
-      it { is_expected.to eq('Create new Cluster') }
+      it { is_expected.to eq('Create new cluster') }
     end
 
     context 'no provider' do
       let(:provider) { nil }
 
-      it { is_expected.to eq('Create new Cluster') }
+      it { is_expected.to eq('Create new cluster') }
     end
   end
 

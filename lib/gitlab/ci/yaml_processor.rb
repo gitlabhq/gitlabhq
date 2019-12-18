@@ -69,6 +69,7 @@ module Gitlab
             services: job[:services],
             artifacts: job[:artifacts],
             dependencies: job[:dependencies],
+            cross_dependencies: job.dig(:needs, :cross_dependency),
             job_timeout: job[:timeout],
             before_script: job[:before_script],
             script: job[:script],

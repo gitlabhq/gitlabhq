@@ -33,7 +33,6 @@ Issue:
 Event:
 - id
 - target_type
-- target_id
 - project_id
 - group_id
 - created_at
@@ -60,7 +59,6 @@ Note:
 - attachment
 - line_code
 - commit_id
-- noteable_id
 - system
 - st_diff
 - updated_by_id
@@ -73,11 +71,8 @@ Note:
 - resolved_by_push
 - discussion_id
 - original_discussion_id
-- review_id
 LabelLink:
 - id
-- label_id
-- target_id
 - target_type
 - created_at
 - updated_at
@@ -130,13 +125,11 @@ Release:
 - released_at
 Evidence:
 - id
-- release_id
 - summary
 - created_at
 - updated_at
 Releases::Link:
 - id
-- release_id
 - url
 - name
 - created_at
@@ -144,7 +137,6 @@ Releases::Link:
 ProjectMember:
 - id
 - access_level
-- source_id
 - source_type
 - user_id
 - notification_level
@@ -600,7 +592,6 @@ AwardEmoji:
 LabelPriority:
 - id
 - project_id
-- label_id
 - priority
 - created_at
 - updated_at
@@ -608,7 +599,6 @@ Timelog:
 - id
 - time_spent
 - merge_request_id
-- issue_id
 - user_id
 - spent_at
 - created_at
@@ -623,7 +613,6 @@ ProjectAutoDevops:
 - updated_at
 IssueAssignee:
 - user_id
-- issue_id
 ProjectCustomAttribute:
 - id
 - created_at
@@ -679,7 +668,6 @@ ProtectedEnvironment::DeployAccessLevel:
 ResourceLabelEvent:
 - id
 - action
-- issue_id
 - merge_request_id
 - label_id
 - user_id
@@ -691,11 +679,9 @@ ErrorTracking::ProjectErrorTrackingSetting:
 - organization_name
 SentryIssue:
 - id
-- issue_id
 - sentry_issue_identifier
 Suggestion:
 - id
-- note_id
 - relative_order
 - applied
 - commit_id
@@ -750,21 +736,16 @@ ExternalPullRequest:
 DesignManagement::Design:
 - id
 - project_id
-- issue_id
 - filename
 DesignManagement::Action:
-- design_id
 - event
-- version_id
 DesignManagement::Version:
 - id
 - created_at
 - sha
-- issue_id
 - author_id
 ZoomMeeting:
 - id
-- issue_id
 - project_id
 - issue_status
 - url

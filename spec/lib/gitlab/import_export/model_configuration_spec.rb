@@ -8,19 +8,10 @@ require 'spec_helper'
 describe 'Import/Export model configuration' do
   include ConfigurationHelper
 
-  let(:config_hash) { Gitlab::ImportExport::Config.new.to_h.deep_stringify_keys }
-  let(:model_names) do
-    names = names_from_tree(config_hash.dig('tree', 'project'))
-
-    # Remove duplicated or add missing models
-    # - project is not part of the tree, so it has to be added manually.
-    # - milestone, labels, merge_request have both singular and plural versions in the tree, so remove the duplicates.
-    # - User, Author... Models we do not care about for checking models
-    names.flatten.uniq - %w(milestones labels user author merge_request) + ['project']
-  end
   let(:all_models_yml) { 'spec/lib/gitlab/import_export/all_models.yml' }
   let(:all_models_hash) { YAML.load_file(all_models_yml) }
   let(:current_models) { setup_models }
+  let(:model_names) { relation_names_for(:project) }
 
   it 'has no new models' do
     model_names.each do |model_name|

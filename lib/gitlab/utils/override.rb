@@ -146,7 +146,8 @@ module Gitlab
       def prepended(base = nil)
         super
 
-        queue_verification(base) if base
+        # prepend can override methods, thus we need to verify it like classes
+        queue_verification(base, verify: true) if base
       end
 
       def extended(mod = nil)
@@ -155,11 +156,15 @@ module Gitlab
         queue_verification(mod.singleton_class) if mod
       end
 
-      def queue_verification(base)
+      def queue_verification(base, verify: false)
         return unless ENV['STATIC_VERIFICATION']
 
-        if base.is_a?(Class) # We could check for Class in `override`
-          # This could be `nil` if `override` was never called
+        # We could check for Class in `override`
+        # This could be `nil` if `override` was never called.
+        # We also force verification for prepend because it can also override
+        # a method like a class, but not the cases for include or extend.
+        # This includes Rails helpers but not limited to.
+        if base.is_a?(Class) || verify
           Override.extensions[self]&.add_class(base)
         end
       end

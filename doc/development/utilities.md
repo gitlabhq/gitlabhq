@@ -53,7 +53,7 @@ Refer to <https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/utils/over
 
 - This utility can help you check if one method would override
   another or not. It is the same concept as Java's `@Override` annotation
-  or Scala's `override` keyword. However, you should only do this check when
+  or Scala's `override` keyword. However, we only run this check when
   `ENV['STATIC_VERIFICATION']` is set to avoid production runtime overhead.
   This is useful for checking:
 
@@ -93,6 +93,15 @@ Refer to <https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/utils/over
       prepend Extension # Override check happens here, not in the module
     end
     ```
+
+    Note that the check will only happen when either:
+
+    - The overriding method is defined in a class, or:
+    - The overriding method is defined in a module, and it's prepended to
+      a class or a module.
+
+    Because only a class or prepended module can actually override a method.
+    Including or extending a module into another cannot override anything.
 
 ## `StrongMemoize`
 

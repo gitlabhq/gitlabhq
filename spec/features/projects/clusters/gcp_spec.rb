@@ -29,7 +29,7 @@ describe 'Gcp Cluster', :js, :do_not_mock_admin_mode do
         visit project_clusters_path(project)
 
         click_link 'Add Kubernetes cluster'
-        click_link 'Create new Cluster'
+        click_link 'Create new cluster'
         click_link 'Google GKE'
       end
 

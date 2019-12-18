@@ -9,11 +9,11 @@ module ClustersHelper
   def create_new_cluster_label(provider: nil)
     case provider
     when 'aws'
-      s_('ClusterIntegration|Create new Cluster on EKS')
+      s_('ClusterIntegration|Create new cluster on EKS')
     when 'gcp'
-      s_('ClusterIntegration|Create new Cluster on GKE')
+      s_('ClusterIntegration|Create new cluster on GKE')
     else
-      s_('ClusterIntegration|Create new Cluster')
+      s_('ClusterIntegration|Create new cluster')
     end
   end
 

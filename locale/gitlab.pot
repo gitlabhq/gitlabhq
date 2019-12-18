@@ -3790,13 +3790,13 @@ msgstr ""
 msgid "ClusterIntegration|Create cluster on"
 msgstr ""
 
-msgid "ClusterIntegration|Create new Cluster"
+msgid "ClusterIntegration|Create new cluster"
 msgstr ""
 
-msgid "ClusterIntegration|Create new Cluster on EKS"
+msgid "ClusterIntegration|Create new cluster on EKS"
 msgstr ""
 
-msgid "ClusterIntegration|Create new Cluster on GKE"
+msgid "ClusterIntegration|Create new cluster on GKE"
 msgstr ""
 
 msgid "ClusterIntegration|Creating Kubernetes cluster"

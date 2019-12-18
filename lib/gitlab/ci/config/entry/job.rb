@@ -134,7 +134,7 @@ module Gitlab
 
           entry :needs, Entry::Needs,
             description: 'Needs configuration for this job.',
-            metadata: { allowed_needs: %i[job] },
+            metadata: { allowed_needs: %i[job cross_dependency] },
             inherit: false
 
           entry :variables, Entry::Variables,

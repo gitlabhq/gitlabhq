@@ -172,24 +172,36 @@ excluded_attributes:
     - :external_diff
     - :stored_externally
     - :external_diff_store
+    - :merge_request_id
+  merge_request_diff_commits:
+    - :merge_request_diff_id
   merge_request_diff_files:
     - :diff
     - :external_diff_offset
     - :external_diff_size
+    - :merge_request_diff_id
   issues:
     - :milestone_id
+    - :moved_to_id
+    - :state_id
+    - :duplicated_to_id
+    - :promoted_to_epic_id
   merge_request:
     - :milestone_id
     - :ref_fetched
     - :merge_jid
     - :rebase_jid
     - :latest_merge_request_diff_id
+    - :head_pipeline_id
+    - :state_id
   merge_requests:
     - :milestone_id
     - :ref_fetched
     - :merge_jid
     - :rebase_jid
     - :latest_merge_request_diff_id
+    - :head_pipeline_id
+    - :state_id
   award_emoji:
     - :awardable_id
   statuses:
@@ -203,6 +215,16 @@ excluded_attributes:
     - :artifacts_metadata_store
     - :artifacts_size
     - :commands
+    - :runner_id
+    - :trigger_request_id
+    - :erased_by_id
+    - :auto_canceled_by_id
+    - :stage_id
+    - :upstream_pipeline_id
+    - :resource_group_id
+    - :waiting_for_resource_at
+  sentry_issue:
+    - :issue_id
   push_event_payload:
     - :event_id
   project_badges:
@@ -211,6 +233,9 @@ excluded_attributes:
     - :reference
     - :reference_html
     - :epic_id
+    - :issue_id
+    - :merge_request_id
+    - :label_id
   runners:
     - :token
     - :token_encrypted
@@ -222,7 +247,64 @@ excluded_attributes:
     - :enabled
   service_desk_setting:
     - :outgoing_name
-
+  priorities:
+    - :label_id
+  events:
+    - :target_id
+  timelogs:
+    - :issue_id
+    - :merge_request_id
+  notes:
+    - :noteable_id
+    - :review_id
+  label_links:
+    - :label_id
+    - :target_id
+  issue_assignees:
+    - :issue_id
+  zoom_meetings:
+    - :issue_id
+  design:
+    - :issue_id
+  designs:
+    - :issue_id
+  design_versions:
+    - :issue_id
+  actions:
+    - :design_id
+    - :version_id
+  links:
+    - :release_id
+  project_members:
+    - :source_id
+  metrics:
+    - :merge_request_id
+    - :pipeline_id
+  suggestions:
+    - :note_id
+  ci_pipelines:
+    - :auto_canceled_by_id
+    - :pipeline_schedule_id
+    - :merge_request_id
+    - :external_pull_request_id
+  stages:
+    - :pipeline_id
+  merge_access_levels:
+    - :protected_branch_id
+  push_access_levels:
+    - :protected_branch_id
+  unprotect_access_levels:
+    - :protected_branch_id
+  create_access_levels:
+    - :protected_tag_id
+  deploy_access_levels:
+    - :protected_environment_id
+  boards:
+    - :milestone_id
+  lists:
+    - :board_id
+    - :label_id
+    - :milestone_id
 methods:
   notes:
     - :type

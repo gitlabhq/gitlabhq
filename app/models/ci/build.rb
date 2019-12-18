@@ -762,6 +762,10 @@ module Ci
       Gitlab::Ci::Build::Credentials::Factory.new(self).create!
     end
 
+    def all_dependencies
+      (dependencies + cross_dependencies).uniq
+    end
+
     def dependencies
       return [] if empty_dependencies?
 
@@ -780,6 +784,10 @@ module Ci
       # if both needs and dependencies are used,
       # the end result will be an intersection between them
       depended_jobs
+    end
+
+    def cross_dependencies
+      []
     end
 
     def empty_dependencies?

@@ -12,21 +12,11 @@ require 'spec_helper'
 describe 'Import/Export attribute configuration' do
   include ConfigurationHelper
 
-  let(:config_hash) { Gitlab::ImportExport::Config.new.to_h.deep_stringify_keys }
-  let(:relation_names) do
-    names = names_from_tree(config_hash.dig('tree', 'project'))
-
-    # Remove duplicated or add missing models
-    # - project is not part of the tree, so it has to be added manually.
-    # - milestone, labels have both singular and plural versions in the tree, so remove the duplicates.
-    names.flatten.uniq - %w(milestones labels) + ['project']
-  end
-
   let(:safe_attributes_file) { 'spec/lib/gitlab/import_export/safe_model_attributes.yml' }
   let(:safe_model_attributes) { YAML.load_file(safe_attributes_file) }
 
   it 'has no new columns' do
-    relation_names.each do |relation_name|
+    relation_names_for(:project).each do |relation_name|
       relation_class = relation_class_for_name(relation_name)
       relation_attributes = relation_class.new.attributes.keys - relation_class.encrypted_attributes.keys.map(&:to_s)
 

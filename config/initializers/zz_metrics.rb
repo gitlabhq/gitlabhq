@@ -8,6 +8,8 @@
 #
 # rubocop:disable Metrics/AbcSize
 def instrument_classes(instrumentation)
+  return if ENV['STATIC_VERIFICATION']
+
   instrumentation.instrument_instance_methods(Gitlab::Shell)
 
   instrumentation.instrument_methods(Gitlab::Git)

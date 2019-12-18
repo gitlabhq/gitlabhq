@@ -8,17 +8,9 @@ module QA
       before do
         Flow::Login.sign_in
 
-        project = Resource::Project.fabricate_via_api! do |resource|
-          resource.name = 'project-for-issue-suggestions'
-          resource.description = 'project for issue suggestions'
-        end
-
         Resource::Issue.fabricate_via_api! do |issue|
           issue.title = issue_title
-          issue.project = project
-        end
-
-        project.visit!
+        end.project.visit!
       end
 
       it 'user sees issue suggestions when creating a new issue' do

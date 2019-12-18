@@ -54,7 +54,7 @@ describe 'Clusters', :js do
       visit project_clusters_path(project)
 
       click_link 'Add Kubernetes cluster'
-      click_link 'Create new Cluster'
+      click_link 'Create new cluster'
     end
 
     it 'user sees a link to create a GKE cluster' do
