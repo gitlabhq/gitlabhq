@@ -29,7 +29,7 @@
   &:focus,
   &:active {
     background-color: $btn-active-gray;
-    box-shadow: $gl-btn-active-background;
+    box-shadow: none;
   }
 }
 

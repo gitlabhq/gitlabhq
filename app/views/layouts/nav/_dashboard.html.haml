@@ -47,10 +47,7 @@
 
           %li.dropdown
             = render_if_exists 'dashboard/nav_link_list'
-          - if can?(current_user, :read_instance_statistics)
-            = nav_link(controller: [:dev_ops_score, :cohorts]) do
-              = link_to instance_statistics_root_path do
-                = _('Instance Statistics')
+
           - if current_user.admin?
             = nav_link(controller: 'admin/dashboard') do
               = link_to admin_root_path, class: 'admin-icon qa-admin-area-link d-xl-none' do
@@ -68,6 +65,8 @@
             %li
               = link_to sherlock_transactions_path, class: 'admin-icon' do
                 = _('Sherlock Transactions')
+
+  = render_if_exists 'layouts/nav/analytics_link'
 
   - if current_user.admin?
     = nav_link(controller: 'admin/dashboard', html_options: { class: "d-none d-xl-block"}) do

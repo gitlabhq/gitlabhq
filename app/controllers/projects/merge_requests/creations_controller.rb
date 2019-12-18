@@ -52,7 +52,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
 
     @diff_notes_disabled = true
 
-    @environment = @merge_request.environments_for(current_user).last
+    @environment = @merge_request.environments_for(current_user, latest: true).last
 
     render json: { html: view_to_html_string('projects/merge_requests/creations/_diffs', diffs: @diffs, environment: @environment) }
   end

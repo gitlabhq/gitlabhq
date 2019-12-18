@@ -1,0 +1,25 @@
+- return unless dashboard_nav_link?(:analytics)
+= nav_link(controller: :dev_ops_score) do
+  = link_to instance_statistics_dev_ops_score_index_path do
+    .nav-icon-container
+      = sprite_icon('comment')
+    %span.nav-item-name
+      = _('DevOps Score')
+  %ul.sidebar-sub-level-items.is-fly-out-only
+    = nav_link(controller: :dev_ops_score, html_options: { class: "fly-out-top-item" } ) do
+      = link_to instance_statistics_dev_ops_score_index_path do
+        %strong.fly-out-top-item-name
+          = _('DevOps Score')
+
+- if Gitlab::CurrentSettings.usage_ping_enabled
+  = nav_link(controller: :cohorts) do
+    = link_to instance_statistics_cohorts_path do
+      .nav-icon-container
+        = sprite_icon('users')
+      %span.nav-item-name
+        = _('Cohorts')
+    %ul.sidebar-sub-level-items.is-fly-out-only
+      = nav_link(controller: :cohorts, html_options: { class: "fly-out-top-item" } ) do
+        = link_to instance_statistics_cohorts_path do
+          %strong.fly-out-top-item-name
+            = _('Cohorts')

@@ -1122,22 +1122,18 @@ class MergeRequest < ApplicationRecord
     actual_head_pipeline.success?
   end
 
-  def environments_for(current_user)
+  def environments_for(current_user, latest: false)
     return [] unless diff_head_commit
 
-    @environments ||= Hash.new do |h, current_user|
-      envs = EnvironmentsFinder.new(target_project, current_user,
-        ref: target_branch, commit: diff_head_commit, with_tags: true).execute
+    envs = EnvironmentsFinder.new(target_project, current_user,
+      ref: target_branch, commit: diff_head_commit, with_tags: true, find_latest: latest).execute
 
-      if source_project
-        envs.concat EnvironmentsFinder.new(source_project, current_user,
-          ref: source_branch, commit: diff_head_commit).execute
-      end
-
-      h[current_user] = envs.uniq
+    if source_project
+      envs.concat EnvironmentsFinder.new(source_project, current_user,
+        ref: source_branch, commit: diff_head_commit, find_latest: latest).execute
     end
 
-    @environments[current_user]
+    envs.uniq
   end
 
   ##

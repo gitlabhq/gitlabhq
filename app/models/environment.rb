@@ -48,13 +48,14 @@ class Environment < ApplicationRecord
 
   scope :available, -> { with_state(:available) }
   scope :stopped, -> { with_state(:stopped) }
+
   scope :order_by_last_deployed_at, -> do
-    max_deployment_id_sql =
-      Deployment.select(Deployment.arel_table[:id].maximum)
-      .where(Deployment.arel_table[:environment_id].eq(arel_table[:id]))
-      .to_sql
     order(Gitlab::Database.nulls_first_order("(#{max_deployment_id_sql})", 'ASC'))
   end
+  scope :order_by_last_deployed_at_desc, -> do
+    order(Gitlab::Database.nulls_last_order("(#{max_deployment_id_sql})", 'DESC'))
+  end
+
   scope :in_review_folder, -> { where(environment_type: "review") }
   scope :for_name, -> (name) { where(name: name) }
   scope :preload_cluster, -> { preload(last_deployment: :cluster) }
@@ -88,6 +89,12 @@ class Environment < ApplicationRecord
     after_transition do |environment|
       environment.expire_etag_cache
     end
+  end
+
+  def self.max_deployment_id_sql
+    Deployment.select(Deployment.arel_table[:id].maximum)
+    .where(Deployment.arel_table[:environment_id].eq(arel_table[:id]))
+    .to_sql
   end
 
   def self.pluck_names

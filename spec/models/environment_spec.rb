@@ -36,8 +36,12 @@ describe Environment, :use_clean_rails_memory_store_caching do
     let!(:deployment2) { create(:deployment, environment: environment2) }
     let!(:deployment3) { create(:deployment, environment: environment1) }
 
-    it 'returns the environments in order of having been last deployed' do
+    it 'returns the environments in ascending order of having been last deployed' do
       expect(project.environments.order_by_last_deployed_at.to_a).to eq([environment3, environment2, environment1])
+    end
+
+    it 'returns the environments in descending order of having been last deployed' do
+      expect(project.environments.order_by_last_deployed_at_desc.to_a).to eq([environment1, environment2, environment3])
     end
   end
 

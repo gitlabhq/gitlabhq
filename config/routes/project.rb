@@ -256,6 +256,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
+        namespace :error_tracking do
+          resources :projects, only: :index
+        end
+
         resources :error_tracking, only: [:index], controller: :error_tracking do
           collection do
             get ':issue_id/details',
@@ -264,7 +268,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             get ':issue_id/stack_trace',
               to: 'error_tracking#stack_trace',
               as: 'stack_trace'
-            post :list_projects
           end
         end
 

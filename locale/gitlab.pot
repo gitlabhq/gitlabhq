@@ -9776,9 +9776,6 @@ msgid_plural "Instances"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Instance Statistics"
-msgstr ""
-
 msgid "Instance Statistics visibility"
 msgstr ""
 

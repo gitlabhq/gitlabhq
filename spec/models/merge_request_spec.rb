@@ -2322,6 +2322,10 @@ describe MergeRequest do
     let(:project)       { create(:project, :repository) }
     let(:user)          { project.creator }
     let(:merge_request) { create(:merge_request, source_project: project) }
+    let(:source_branch) { merge_request.source_branch }
+    let(:target_branch) { merge_request.target_branch }
+    let(:source_oid) { project.commit(source_branch).id }
+    let(:target_oid) { project.commit(target_branch).id }
 
     before do
       merge_request.source_project.add_maintainer(user)
@@ -2332,12 +2336,20 @@ describe MergeRequest do
       let(:environments) { create_list(:environment, 3, project: project) }
 
       before do
-        create(:deployment, :success, environment: environments.first, ref: 'master', sha: project.commit('master').id)
-        create(:deployment, :success, environment: environments.second, ref: 'feature', sha: project.commit('feature').id)
+        create(:deployment, :success, environment: environments.first, ref: source_branch, sha: source_oid)
+        create(:deployment, :success, environment: environments.second, ref: target_branch, sha: target_oid)
       end
 
       it 'selects deployed environments' do
         expect(merge_request.environments_for(user)).to contain_exactly(environments.first)
+      end
+
+      it 'selects latest deployed environment' do
+        latest_environment = create(:environment, project: project)
+        create(:deployment, :success, environment: latest_environment, ref: source_branch, sha: source_oid)
+
+        expect(merge_request.environments_for(user)).to eq([environments.first, latest_environment])
+        expect(merge_request.environments_for(user, latest: true)).to contain_exactly(latest_environment)
       end
     end
 

@@ -1,0 +1,5 @@
+---
+title: Reduce CommitIsAncestor RPCs with environments
+merge_request: 21778
+author:
+type: performance

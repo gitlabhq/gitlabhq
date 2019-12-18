@@ -51,7 +51,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   # Deprecated: https://gitlab.com/gitlab-org/gitlab/issues/37735
   def render_diffs
     diffs = @compare.diffs(diff_options)
-    @environment = @merge_request.environments_for(current_user).last
+    @environment = @merge_request.environments_for(current_user, latest: true).last
 
     diffs.unfold_diff_files(note_positions.unfoldable)
     diffs.write_cache

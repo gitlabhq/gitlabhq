@@ -12,7 +12,7 @@
       = _('To link Sentry to GitLab, enter your Sentry URL and Auth Token.')
       = link_to _('More information'), help_page_path('user/project/operations/error_tracking'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
-    .js-error-tracking-form{ data: { list_projects_endpoint: list_projects_project_error_tracking_index_path(@project, format: :json),
+    .js-error-tracking-form{ data: { list_projects_endpoint: project_error_tracking_projects_path(@project, format: :json),
         operations_settings_endpoint: project_settings_operations_path(@project),
         project: error_tracking_setting_project_json,
         api_host: setting.api_host,

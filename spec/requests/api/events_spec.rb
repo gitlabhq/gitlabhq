@@ -8,6 +8,8 @@ describe API::Events do
   let(:private_project) { create(:project, :private, creator_id: user.id, namespace: user.namespace) }
   let(:closed_issue) { create(:closed_issue, project: private_project, author: user) }
   let!(:closed_issue_event) { create(:event, project: private_project, author: user, target: closed_issue, action: Event::CLOSED, created_at: Date.new(2016, 12, 30)) }
+  let(:closed_issue2) { create(:closed_issue, project: private_project, author: non_member) }
+  let!(:closed_issue_event2) { create(:event, project: private_project, author: non_member, target: closed_issue2, action: Event::CLOSED, created_at: Date.new(2016, 12, 30)) }
 
   describe 'GET /events' do
     context 'when unauthenticated' do
@@ -26,6 +28,19 @@ describe API::Events do
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(1)
+      end
+
+      context 'when scope is passed' do
+        it 'returns all events across projects' do
+          private_project.add_developer(non_member)
+
+          get api('/events?action=closed&target_type=issue&after=2016-12-1&before=2016-12-31&scope=all', user)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.size).to eq(2)
+        end
       end
     end
 

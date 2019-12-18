@@ -25,25 +25,13 @@ class EnvironmentsFinder
       .select(:environment_id)
 
     environments = project.environments.available
-      .where(id: environment_ids).order_by_last_deployed_at.to_a
+      .where(id: environment_ids)
 
-    environments.select! do |environment|
-      Ability.allowed?(current_user, :read_environment, environment)
+    if params[:find_latest]
+      find_one(environments.order_by_last_deployed_at_desc)
+    else
+      find_all(environments.order_by_last_deployed_at.to_a)
     end
-
-    if ref && commit
-      environments.select! do |environment|
-        environment.includes_commit?(commit)
-      end
-    end
-
-    if ref && params[:recently_updated]
-      environments.select! do |environment|
-        environment.recently_updated_on_branch?(ref)
-      end
-    end
-
-    environments
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
@@ -61,6 +49,24 @@ class EnvironmentsFinder
   end
 
   private
+
+  def find_one(environments)
+    [environments.find { |environment| valid_environment?(environment) }].compact
+  end
+
+  def find_all(environments)
+    environments.select { |environment| valid_environment?(environment) }
+  end
+
+  def valid_environment?(environment)
+    # Go in order of cost: SQL calls are cheaper than Gitaly calls
+    return false unless Ability.allowed?(current_user, :read_environment, environment)
+
+    return false if ref && params[:recently_updated] && !environment.recently_updated_on_branch?(ref)
+    return false if ref && commit && !environment.includes_commit?(commit)
+
+    true
+  end
 
   def ref
     params[:ref].try(:to_s)
