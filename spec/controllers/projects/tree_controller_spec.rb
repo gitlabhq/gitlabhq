@@ -45,7 +45,7 @@ describe Projects::TreeController do
 
       it 'redirects' do
         expect(subject)
-            .to redirect_to("/#{project.full_path}/-/tree/master")
+            .to redirect_to("/#{project.full_path}/tree/master")
       end
     end
 
@@ -60,7 +60,7 @@ describe Projects::TreeController do
 
       it 'redirects' do
         expect(subject)
-            .to redirect_to("/#{project.full_path}/-/tree/empty-branch")
+            .to redirect_to("/#{project.full_path}/tree/empty-branch")
       end
     end
 
@@ -125,7 +125,7 @@ describe Projects::TreeController do
       let(:id) { 'master/README.md' }
 
       it 'redirects' do
-        redirect_url = "/#{project.full_path}/-/blob/master/README.md"
+        redirect_url = "/#{project.full_path}/blob/master/README.md"
         expect(subject)
           .to redirect_to(redirect_url)
       end
@@ -153,7 +153,7 @@ describe Projects::TreeController do
 
       it 'redirects to the new directory' do
         expect(subject)
-            .to redirect_to("/#{project.full_path}/-/tree/#{branch_name}/#{path}")
+            .to redirect_to("/#{project.full_path}/tree/#{branch_name}/#{path}")
         expect(flash[:notice]).to eq('The directory has been successfully created.')
       end
     end
@@ -164,7 +164,7 @@ describe Projects::TreeController do
 
       it 'does not allow overwriting of existing files' do
         expect(subject)
-            .to redirect_to("/#{project.full_path}/-/tree/master")
+            .to redirect_to("/#{project.full_path}/tree/master")
         expect(flash[:alert]).to eq('A file with this name already exists')
       end
     end

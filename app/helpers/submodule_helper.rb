@@ -43,8 +43,6 @@ module SubmoduleHelper
       elsif github_dot_com_url?(url)
         standard_links('github.com', namespace, project, submodule_item_id)
       elsif gitlab_dot_com_url?(url)
-        # This need to be replaced with /-/tree routing once one is landed on
-        # GitLab.com. Issue https://gitlab.com/gitlab-org/gitlab/issues/42764
         standard_links('gitlab.com', namespace, project, submodule_item_id)
       else
         [sanitize_submodule_url(url), nil]

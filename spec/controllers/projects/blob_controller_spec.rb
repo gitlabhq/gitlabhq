@@ -33,7 +33,7 @@ describe Projects::BlobController do
 
         it 'redirects' do
           expect(subject)
-              .to redirect_to("/#{project.full_path}/-/tree/master")
+              .to redirect_to("/#{project.full_path}/tree/master")
         end
       end
 
@@ -115,7 +115,7 @@ describe Projects::BlobController do
 
         it 'redirects' do
           expect(subject)
-            .to redirect_to("/#{project.full_path}/-/tree/markdown/doc")
+            .to redirect_to("/#{project.full_path}/tree/markdown/doc")
         end
       end
     end

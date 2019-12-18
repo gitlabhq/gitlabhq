@@ -30,7 +30,7 @@ describe('noteActions', () => {
       canAwardEmoji: true,
       canReportAsAbuse: true,
       noteId: '539',
-      noteUrl: `${TEST_HOST}/group/project/-/merge_requests/1#note_1`,
+      noteUrl: `${TEST_HOST}/group/project/merge_requests/1#note_1`,
       reportAbusePath: `${TEST_HOST}/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F7%23note_539&user_id=26`,
       showReply: false,
     };

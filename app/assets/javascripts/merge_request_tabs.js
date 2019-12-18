@@ -32,17 +32,17 @@ import { __ } from './locale';
 //
 //   <ul class="nav-links merge-request-tabs">
 //     <li class="notes-tab active">
-//       <a data-action="notes" data-target="#notes" data-toggle="tab" href="/foo/bar/-/merge_requests/1">
+//       <a data-action="notes" data-target="#notes" data-toggle="tab" href="/foo/bar/merge_requests/1">
 //         Discussion
 //       </a>
 //     </li>
 //     <li class="commits-tab">
-//       <a data-action="commits" data-target="#commits" data-toggle="tab" href="/foo/bar/-/merge_requests/1/commits">
+//       <a data-action="commits" data-target="#commits" data-toggle="tab" href="/foo/bar/merge_requests/1/commits">
 //         Commits
 //       </a>
 //     </li>
 //     <li class="diffs-tab">
-//       <a data-action="diffs" data-target="#diffs" data-toggle="tab" href="/foo/bar/-/merge_requests/1/diffs">
+//       <a data-action="diffs" data-target="#diffs" data-toggle="tab" href="/foo/bar/merge_requests/1/diffs">
 //         Diffs
 //       </a>
 //     </li>
@@ -260,17 +260,17 @@ export default class MergeRequestTabs {
   //
   // Examples:
   //
-  //   location.pathname # => "/namespace/project/-/merge_requests/1"
+  //   location.pathname # => "/namespace/project/merge_requests/1"
   //   setCurrentAction('diffs')
-  //   location.pathname # => "/namespace/project/-/merge_requests/1/diffs"
+  //   location.pathname # => "/namespace/project/merge_requests/1/diffs"
   //
-  //   location.pathname # => "/namespace/project/-/merge_requests/1/diffs"
+  //   location.pathname # => "/namespace/project/merge_requests/1/diffs"
   //   setCurrentAction('show')
-  //   location.pathname # => "/namespace/project/-/merge_requests/1"
+  //   location.pathname # => "/namespace/project/merge_requests/1"
   //
-  //   location.pathname # => "/namespace/project/-/merge_requests/1/diffs"
+  //   location.pathname # => "/namespace/project/merge_requests/1/diffs"
   //   setCurrentAction('commits')
-  //   location.pathname # => "/namespace/project/-/merge_requests/1/commits"
+  //   location.pathname # => "/namespace/project/merge_requests/1/commits"
   //
   // Returns the new URL String
   setCurrentAction(action) {

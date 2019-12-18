@@ -69,7 +69,7 @@ describe Projects::RawController do
           env: :raw_blob_request_limit,
           remote_ip: '0.0.0.0',
           request_method: 'GET',
-          path: "/#{project.full_path}/-/raw/#{file_path}"
+          path: "/#{project.full_path}/raw/#{file_path}"
         }
 
         expect(Gitlab::AuthLogger).to receive(:error).with(attributes).once

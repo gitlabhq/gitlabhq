@@ -834,7 +834,7 @@ describe 'Git HTTP requests' do
               Blob.decorate(Gitlab::Git::Blob.find(project.repository, 'master', 'bar/branch-test.txt'), project)
             end
 
-            get "/#{project.full_path}/-/blob/master/info/refs"
+            get "/#{project.full_path}/blob/master/info/refs"
           end
 
           it "returns the file" do
@@ -844,7 +844,7 @@ describe 'Git HTTP requests' do
 
         context "when the file does not exist" do
           before do
-            get "/#{project.full_path}/-/blob/master/info/refs"
+            get "/#{project.full_path}/blob/master/info/refs"
           end
 
           it "redirects" do

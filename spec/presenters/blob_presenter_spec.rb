@@ -21,7 +21,7 @@ describe BlobPresenter, :seed_helper do
 
     subject { described_class.new(blob) }
 
-    it { expect(subject.web_url).to eq("http://localhost/#{project.full_path}/-/blob/#{blob.commit_id}/#{blob.path}") }
+    it { expect(subject.web_url).to eq("http://localhost/#{project.full_path}/blob/#{blob.commit_id}/#{blob.path}") }
   end
 
   describe '#highlight' do

@@ -101,7 +101,7 @@ describe MergeRequestPresenter do
         allow(presenter).to receive_message_chain(:conflicts, :can_be_resolved_by?).with(user) { true }
 
         expect(path)
-          .to eq("/#{project.full_path}/-/merge_requests/#{resource.iid}/conflicts")
+          .to eq("/#{project.full_path}/merge_requests/#{resource.iid}/conflicts")
       end
     end
   end
@@ -179,7 +179,7 @@ describe MergeRequestPresenter do
 
         it 'returns correct link with correct text' do
           is_expected
-            .to match("#{project.full_path}/-/merge_requests/#{resource.iid}/assign_related_issues")
+            .to match("#{project.full_path}/merge_requests/#{resource.iid}/assign_related_issues")
 
           is_expected
             .to match("Assign yourself to this issue")
@@ -192,7 +192,7 @@ describe MergeRequestPresenter do
 
         it 'returns correct link with correct text' do
           is_expected
-            .to match("#{project.full_path}/-/merge_requests/#{resource.iid}/assign_related_issues")
+            .to match("#{project.full_path}/merge_requests/#{resource.iid}/assign_related_issues")
 
           is_expected
             .to match("Assign yourself to these issues")
@@ -221,7 +221,7 @@ describe MergeRequestPresenter do
           .with(user)
           .and_return(true)
 
-        is_expected.to eq("/#{resource.project.full_path}/-/merge_requests/#{resource.iid}/cancel_auto_merge")
+        is_expected.to eq("/#{resource.project.full_path}/merge_requests/#{resource.iid}/cancel_auto_merge")
       end
     end
 
@@ -248,7 +248,7 @@ describe MergeRequestPresenter do
           .and_return(true)
 
         is_expected
-          .to eq("/#{resource.project.full_path}/-/merge_requests/#{resource.iid}/merge")
+          .to eq("/#{resource.project.full_path}/merge_requests/#{resource.iid}/merge")
       end
     end
 
@@ -312,7 +312,7 @@ describe MergeRequestPresenter do
         project.add_maintainer(user)
 
         is_expected
-          .to eq("/#{resource.project.full_path}/-/merge_requests/#{resource.iid}/remove_wip")
+          .to eq("/#{resource.project.full_path}/merge_requests/#{resource.iid}/remove_wip")
       end
     end
 
@@ -334,7 +334,7 @@ describe MergeRequestPresenter do
         allow(resource).to receive(:target_branch_exists?) { true }
 
         is_expected
-          .to eq("/#{resource.target_project.full_path}/-/commits/#{resource.target_branch}")
+          .to eq("/#{resource.target_project.full_path}/commits/#{resource.target_branch}")
       end
     end
 
@@ -358,7 +358,7 @@ describe MergeRequestPresenter do
         allow(resource).to receive(:source_branch_exists?) { true }
 
         is_expected
-          .to eq("/#{resource.source_project.full_path}/-/commits/#{resource.source_branch}")
+          .to eq("/#{resource.source_project.full_path}/commits/#{resource.source_branch}")
       end
     end
 
@@ -382,7 +382,7 @@ describe MergeRequestPresenter do
         allow(resource).to receive(:target_branch_exists?) { true }
 
         is_expected
-          .to eq("/#{resource.target_project.full_path}/-/tree/#{resource.target_branch}")
+          .to eq("/#{resource.target_project.full_path}/tree/#{resource.target_branch}")
       end
     end
 
@@ -496,7 +496,7 @@ describe MergeRequestPresenter do
       allow(resource).to receive(:source_branch_exists?) { true }
 
       is_expected
-        .to eq("<a href=\"/#{resource.source_project.full_path}/-/tree/#{resource.source_branch}\">#{resource.source_branch}</a>")
+        .to eq("<a href=\"/#{resource.source_project.full_path}/tree/#{resource.source_branch}\">#{resource.source_branch}</a>")
     end
 
     it 'escapes html, when source_branch does not exist' do
@@ -535,7 +535,7 @@ describe MergeRequestPresenter do
 
       it 'returns path' do
         is_expected
-          .to eq("/#{project.full_path}/-/merge_requests/#{resource.iid}/rebase")
+          .to eq("/#{project.full_path}/merge_requests/#{resource.iid}/rebase")
       end
     end
 

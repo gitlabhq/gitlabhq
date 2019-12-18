@@ -328,7 +328,7 @@ describe SystemNoteService do
         url = if type == 'commit'
                 "#{Settings.gitlab.base_url}/#{project.namespace.path}/#{project.path}/commit/#{commit.id}"
               else
-                "#{Settings.gitlab.base_url}/#{project.namespace.path}/#{project.path}/-/merge_requests/#{merge_request.iid}"
+                "#{Settings.gitlab.base_url}/#{project.namespace.path}/#{project.path}/merge_requests/#{merge_request.iid}"
               end
 
         link = double(object: { 'url' => url })

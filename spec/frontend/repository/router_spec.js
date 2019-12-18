@@ -4,11 +4,11 @@ import createRouter from '~/repository/router';
 
 describe('Repository router spec', () => {
   it.each`
-    path                           | component    | componentName
-    ${'/'}                         | ${IndexPage} | ${'IndexPage'}
-    ${'/-/tree/master'}            | ${TreePage}  | ${'TreePage'}
-    ${'/-/tree/master/app/assets'} | ${TreePage}  | ${'TreePage'}
-    ${'/-/tree/123/app/assets'}    | ${null}      | ${'null'}
+    path                         | component    | componentName
+    ${'/'}                       | ${IndexPage} | ${'IndexPage'}
+    ${'/tree/master'}            | ${TreePage}  | ${'TreePage'}
+    ${'/tree/master/app/assets'} | ${TreePage}  | ${'TreePage'}
+    ${'/tree/123/app/assets'}    | ${null}      | ${'null'}
   `('sets component as $componentName for path "$path"', ({ path, component }) => {
     const router = createRouter('', 'master');
 

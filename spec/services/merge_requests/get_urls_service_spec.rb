@@ -8,8 +8,8 @@ describe MergeRequests::GetUrlsService do
   let(:project) { create(:project, :public, :repository) }
   let(:service) { described_class.new(project) }
   let(:source_branch) { "merge-test" }
-  let(:new_merge_request_url) { "http://#{Gitlab.config.gitlab.host}/#{project.full_path}/-/merge_requests/new?merge_request%5Bsource_branch%5D=#{source_branch}" }
-  let(:show_merge_request_url) { "http://#{Gitlab.config.gitlab.host}/#{project.full_path}/-/merge_requests/#{merge_request.iid}" }
+  let(:new_merge_request_url) { "http://#{Gitlab.config.gitlab.host}/#{project.full_path}/merge_requests/new?merge_request%5Bsource_branch%5D=#{source_branch}" }
+  let(:show_merge_request_url) { "http://#{Gitlab.config.gitlab.host}/#{project.full_path}/merge_requests/#{merge_request.iid}" }
   let(:new_branch_changes) { "#{Gitlab::Git::BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/#{source_branch}" }
   let(:deleted_branch_changes) { "d14d6c0abdd253381df51a723d58691b2ee1ab08 #{Gitlab::Git::BLANK_SHA} refs/heads/#{source_branch}" }
   let(:existing_branch_changes) { "d14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/#{source_branch}" }
@@ -127,7 +127,7 @@ describe MergeRequests::GetUrlsService do
       let(:new_branch_changes) { "#{Gitlab::Git::BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/new_branch" }
       let(:existing_branch_changes) { "d14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/markdown" }
       let(:changes) { "#{new_branch_changes}\n#{existing_branch_changes}" }
-      let(:new_merge_request_url) { "http://#{Gitlab.config.gitlab.host}/#{project.full_path}/-/merge_requests/new?merge_request%5Bsource_branch%5D=new_branch" }
+      let(:new_merge_request_url) { "http://#{Gitlab.config.gitlab.host}/#{project.full_path}/merge_requests/new?merge_request%5Bsource_branch%5D=new_branch" }
 
       it 'returns 2 urls for both creating new and showing merge request' do
         result = service.execute(changes)

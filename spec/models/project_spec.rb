@@ -697,7 +697,7 @@ describe Project do
         let(:project) { create(:project, :repository) }
 
         it 'returns the README' do
-          expect(project.readme_url).to eq("#{project.web_url}/-/blob/master/README.md")
+          expect(project.readme_url).to eq("#{project.web_url}/blob/master/README.md")
         end
       end
     end

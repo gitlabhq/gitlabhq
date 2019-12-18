@@ -38,13 +38,13 @@ module TreeHelper
   # many paths, as with a repository tree that has thousands of items.
   def fast_project_blob_path(project, blob_path)
     ActionDispatch::Journey::Router::Utils.escape_path(
-      File.join(relative_url_root, project.path_with_namespace, '-', 'blob', blob_path)
+      File.join(relative_url_root, project.path_with_namespace, 'blob', blob_path)
     )
   end
 
   def fast_project_tree_path(project, tree_path)
     ActionDispatch::Journey::Router::Utils.escape_path(
-      File.join(relative_url_root, project.path_with_namespace, '-', 'tree', tree_path)
+      File.join(relative_url_root, project.path_with_namespace, 'tree', tree_path)
     )
   end
 

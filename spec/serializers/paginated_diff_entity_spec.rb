@@ -26,7 +26,7 @@ describe PaginatedDiffEntity do
     expect(subject[:pagination]).to eq(
       current_page: 2,
       next_page: 3,
-      next_page_href: "/#{merge_request.project.full_path}/-/merge_requests/#{merge_request.iid}/diffs_batch.json?page=3",
+      next_page_href: "/#{merge_request.project.full_path}/merge_requests/#{merge_request.iid}/diffs_batch.json?page=3",
       total_pages: 7
     )
   end

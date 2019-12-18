@@ -79,10 +79,10 @@ export default {
       return this.projectPath.indexOf('/') === 0 ? '' : `${gon.relative_url_root}/`;
     },
     fullOldPath() {
-      return `${this.basePath}${this.projectPath}/-/raw/${this.oldSha}/${this.oldPath}`;
+      return `${this.basePath}${this.projectPath}/raw/${this.oldSha}/${this.oldPath}`;
     },
     fullNewPath() {
-      return `${this.basePath}${this.projectPath}/-/raw/${this.newSha}/${this.newPath}`;
+      return `${this.basePath}${this.projectPath}/raw/${this.newSha}/${this.newPath}`;
     },
   },
 };

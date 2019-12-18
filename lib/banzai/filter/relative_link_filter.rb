@@ -152,18 +152,11 @@ module Banzai
 
       def rebuild_relative_uri(uri)
         file_path = nested_file_path_if_exists(uri)
-        resource_type = uri_type(file_path)
-
-        # Repository routes are under /-/ scope now.
-        # Since we craft a path without using route helpers we must
-        # ensure - is added here.
-        prefix = '-' if %w(tree blob raw commits).include?(resource_type.to_s)
 
         uri.path = [
           relative_url_root,
           project.full_path,
-          prefix,
-          resource_type,
+          uri_type(file_path),
           Addressable::URI.escape(ref).gsub('#', '%23'),
           Addressable::URI.escape(file_path)
         ].compact.join('/').squeeze('/').chomp('/')
