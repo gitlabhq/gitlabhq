@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'securerandom'
+
 module QA
   module Resource
     class ProtectedBranch < Base
@@ -15,7 +17,7 @@ module QA
       attribute :branch do
         Repository::ProjectPush.fabricate! do |project_push|
           project_push.project = project
-          project_push.file_name = 'new_file.md'
+          project_push.file_name = "new_file-#{SecureRandom.hex(8)}.md"
           project_push.commit_message = 'Add new file'
           project_push.branch_name = branch_name
           project_push.new_branch = true

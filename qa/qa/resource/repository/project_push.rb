@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'securerandom'
+
 module QA
   module Resource
     module Repository
@@ -15,7 +17,7 @@ module QA
         end
 
         def initialize
-          @file_name = 'file.txt'
+          @file_name = "file-#{SecureRandom.hex(8)}.txt"
           @file_content = '# This is test project'
           @commit_message = "This is a test commit"
           @branch_name = 'master'

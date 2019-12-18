@@ -221,6 +221,7 @@ Some features are not implemented yet. For example, support for environments.
 - `trigger` (to define a downstream pipeline trigger)
 - `stage`
 - `allow_failure`
+- [`rules`](yaml/README.md#rules)
 - `only` and `except`
 - `when` (only with `on_success`, `on_failure`, and `always` values)
 - `extends`

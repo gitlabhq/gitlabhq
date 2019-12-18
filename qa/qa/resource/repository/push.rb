@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'pathname'
+require 'securerandom'
 
 module QA
   module Resource
@@ -13,7 +14,7 @@ module QA
         attr_writer :remote_branch, :gpg_key_id
 
         def initialize
-          @file_name = 'file.txt'
+          @file_name = "file-#{SecureRandom.hex(8)}.txt"
           @file_content = '# This is test file'
           @commit_message = "This is a test commit"
           @branch_name = 'master'

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'securerandom'
+
 module QA
   module Resource
     class MergeRequestFromFork < MergeRequest
@@ -13,7 +15,7 @@ module QA
         Repository::ProjectPush.fabricate! do |resource|
           resource.project = fork.project
           resource.branch_name = fork_branch
-          resource.file_name = 'file2.txt'
+          resource.file_name = "file2-#{SecureRandom.hex(8)}.txt"
           resource.user = fork.user
         end
       end

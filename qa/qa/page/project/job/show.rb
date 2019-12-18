@@ -5,8 +5,8 @@ module QA::Page
     class Show < QA::Page::Base
       include Component::CiBadgeLink
 
-      view 'app/assets/javascripts/jobs/components/job_log.vue' do
-        element :build_trace
+      view 'app/assets/javascripts/jobs/components/log/log.vue' do
+        element :job_log_content
       end
 
       view 'app/assets/javascripts/jobs/components/stages_dropdown.vue' do
@@ -25,7 +25,7 @@ module QA::Page
         result = ''
 
         wait(reload: false, max: wait, interval: 1) do
-          result = find_element(:build_trace).text
+          result = find_element(:job_log_content).text
 
           result.include?('Job')
         end
@@ -37,7 +37,7 @@ module QA::Page
 
       def loaded?(wait: 60)
         wait(reload: true, max: wait, interval: 1) do
-          has_element?(:build_trace, wait: 1)
+          has_element?(:job_log_content, wait: 1)
         end
       end
     end
