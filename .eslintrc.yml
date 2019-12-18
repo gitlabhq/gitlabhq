@@ -51,7 +51,6 @@ rules:
   no-jquery/no-animate-toggle: off
   no-jquery/no-event-shorthand: off
   no-jquery/no-serialize: error
-  no-jquery/no-sizzle: off
   promise/always-return: off
   promise/no-callback-in-promise: off
 overrides:

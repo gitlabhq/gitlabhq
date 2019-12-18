@@ -117,7 +117,7 @@ module Gitlab
       def format_time(timestamp)
         return timestamp if timestamp.is_a?(String)
 
-        Time.at(timestamp).utc.iso8601(6)
+        Time.at(timestamp).utc.iso8601(3)
       end
 
       def limited_job_args(args)

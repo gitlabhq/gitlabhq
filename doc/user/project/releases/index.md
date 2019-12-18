@@ -6,7 +6,7 @@ type: reference, howto
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/41766) in GitLab 11.7.
 
-It's typical to create a [Git tag](../../../university/training/topics/tags.md) at
+It is typical to create a [Git tag](../../../university/training/topics/tags.md) at
 the moment of release to introduce a checkpoint in your source code
 history, but in most cases your users will need compiled objects or other
 assets output by your CI system to use them, not just the raw source
@@ -38,7 +38,7 @@ Release descriptions are unrelated. Description supports [Markdown](../../markdo
 
 You can currently add the following types of assets to each Release:
 
-- [Source code](#source-code): state of the repo at the time of the Release
+- [Source code](#source-code): state of the repository at the time of the Release
 - [Links](#links): to content such as built binaries or documentation
 
 GitLab will support more asset types in the future, including objects such
@@ -117,11 +117,14 @@ of GitLab.
 
 You can be notified by email when a new Release is created for your project.
 
-To subscribe to these notifications, navigate to your **Project**'s landing page, then click on the
-bell icon. Choose **Custom** from the dropdown menu. The
-following modal window will be then displayed, from which you can select **New release** to complete your subscription to new Releases notifications.
+To subscribe to Release notifications:
 
-![Custom notification - New release](img/custom_notifications_new_release_v12_4.png)
+1. Navigate to your **Project**'s landing page.
+1. Click the bell icon (**Notification setting**).
+1. Select **Custom** from the dropdown menu.
+   ![Custom notification - Dropdown menu](img/custom_notifications_dropdown_v12_5.png)
+1. Select **New release**.
+   ![Custom notification - New release](img/custom_notifications_new_release_v12_5.png)
 
 ## Add release notes to Git tags
 
@@ -145,7 +148,7 @@ You can also edit an existing tag to add release notes:
 
 ![tags](img/tags_12_5.png "Addition of note to an existing tag")
 
-## Release Evidence
+## Release evidence
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/26019) in GitLab 12.6.
 
@@ -154,11 +157,11 @@ parallel. This dataset will be a snapshot this new release (including linked
 milestones and issues) at moment of creation. Such collection of data will
 provide a chain of custody and facilitate processes like external audits, for example.
 
-The gathered Evidence data is stored in the database upon creation of a new
+The gathered evidence data is stored in the database upon creation of a new
 release as a JSON object. In GitLab 12.6, a link to
-the Evidence data is provided for [each Release](#releases-list).
+the evidence data is provided for [each Release](#releases-list).
 
-Here's what this object can look like:
+Here is what this object can look like:
 
 ```json
 {

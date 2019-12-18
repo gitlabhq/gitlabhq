@@ -31,7 +31,7 @@ export default class NotificationsForm {
   }
 
   saveEvent($checkbox, $parent) {
-    const form = $parent.parents('form:first');
+    const form = $parent.parents('form').first();
 
     this.showCheckboxLoadingSpinner($parent);
 

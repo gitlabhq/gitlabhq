@@ -63,6 +63,20 @@ describe Commit do
     end
   end
 
+  describe '#diff_refs' do
+    it 'is equal to itself' do
+      expect(commit.diff_refs).to eq(commit.diff_refs)
+    end
+
+    context 'from a factory' do
+      let(:commit) { create(:commit) }
+
+      it 'is equal to itself' do
+        expect(commit.diff_refs).to eq(commit.diff_refs)
+      end
+    end
+  end
+
   describe '#author', :request_store do
     it 'looks up the author in a case-insensitive way' do
       user = create(:user, email: commit.author_email.upcase)

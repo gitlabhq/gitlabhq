@@ -4,7 +4,7 @@ require 'fast_spec_helper'
 
 describe Gitlab::SidekiqLogging::StructuredLogger do
   describe '#call' do
-    let(:timestamp) { Time.iso8601('2018-01-01T12:00:00Z') }
+    let(:timestamp) { Time.iso8601('2018-01-01T12:00:00.000Z') }
     let(:created_at) { timestamp - 1.second }
     let(:scheduling_latency_s) { 1.0 }
 
@@ -30,8 +30,8 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
         'message' => 'TestWorker JID-da883554ee4fe414012f5f42: start',
         'job_status' => 'start',
         'pid' => Process.pid,
-        'created_at' => created_at.iso8601(6),
-        'enqueued_at' => created_at.iso8601(6),
+        'created_at' => created_at.iso8601(3),
+        'enqueued_at' => created_at.iso8601(3),
         'scheduling_latency_s' => scheduling_latency_s
       )
     end
@@ -40,7 +40,7 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
         'message' => 'TestWorker JID-da883554ee4fe414012f5f42: done: 0.0 sec',
         'job_status' => 'done',
         'duration' => 0.0,
-        "completed_at" => timestamp.iso8601(6),
+        "completed_at" => timestamp.iso8601(3),
         "cpu_s" => 1.111112
       )
     end
@@ -145,7 +145,7 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
     end
 
     context 'with latency' do
-      let(:created_at) { Time.iso8601('2018-01-01T10:00:00Z') }
+      let(:created_at) { Time.iso8601('2018-01-01T10:00:00.000Z') }
       let(:scheduling_latency_s) { 7200.0 }
 
       it 'logs with scheduling latency' do

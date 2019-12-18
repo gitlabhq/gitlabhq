@@ -73,7 +73,8 @@ describe Gitlab::Git do
         [sha, short_sha,     true],
         [sha, sha.reverse,   false],
         [sha, too_short_sha, false],
-        [sha, nil,           false]
+        [sha, nil,           false],
+        [nil, nil,           true]
       ]
     end
 

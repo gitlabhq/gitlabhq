@@ -88,6 +88,7 @@ module Gitlab
       end
 
       def shas_eql?(sha1, sha2)
+        return true if sha1.nil? && sha2.nil?
         return false if sha1.nil? || sha2.nil?
         return false unless sha1.class == sha2.class
 
