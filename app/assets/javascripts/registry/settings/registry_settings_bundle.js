@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Translate from '~/vue_shared/translate';
-import store from './stores/';
+import store from './store/';
 import RegistrySettingsApp from './components/registry_settings_app.vue';
 
 Vue.use(Translate);

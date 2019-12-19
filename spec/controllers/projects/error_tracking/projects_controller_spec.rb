@@ -11,7 +11,7 @@ describe Projects::ErrorTracking::ProjectsController do
     project.add_maintainer(user)
   end
 
-  describe 'POST #index' do
+  describe 'GET #index' do
     context 'with insufficient permissions' do
       before do
         project.add_guest(user)

@@ -22,6 +22,12 @@
   }
 }
 
+@each $index, $size in $type-scale {
+  #{'.lh-#{$index}'} {
+    line-height: $size;
+  }
+}
+
 .border-width-1px { border-width: 1px; }
 .border-style-dashed { border-style: dashed; }
 .border-style-solid { border-style: solid; }

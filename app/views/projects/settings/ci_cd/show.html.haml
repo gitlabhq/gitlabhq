@@ -63,10 +63,11 @@
   %section.settings.no-animate#js-registry-polcies{ class: ('expanded' if expanded) }
     .settings-header
       %h4
-        = _("Container Registry tag expiration policies")
+        = _("Container Registry tag expiration policy")
+        = link_to icon('question-circle'), help_page_path('user/packages/container_registry/index', anchor: 'retention-and-expiration-policy'), target: '_blank', rel: 'noopener noreferrer'
       %button.btn.js-settings-toggle{ type: 'button' }
         = expanded ? _('Collapse') : _('Expand')
       %p
-        = _("Expiration policies for the Container Registry are a perfect solution for keeping the Registry space down while still enjoying the full power of GitLab CI/CD.")
+        = _("Expiration policy for the Container Registry is a perfect solution for keeping the Registry space down while still enjoying the full power of GitLab CI/CD.")
     .settings-content
       = render 'projects/registry/settings/index'

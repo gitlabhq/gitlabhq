@@ -1,29 +1,34 @@
 import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import component from '~/registry/settings/components/registry_settings_app.vue';
-import { createStore } from '~/registry/settings/stores/';
+import { createStore } from '~/registry/settings/store/';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
-describe('Registry List', () => {
+describe('Registry Settings App', () => {
   let wrapper;
   let store;
+  let fetchSpy;
 
-  const helpPagePath = 'foo';
-  const findHelpLink = () => wrapper.find({ ref: 'help-link' }).find('a');
+  const findSettingsComponent = () => wrapper.find({ ref: 'settings-form' });
+  const findLoadingComponent = () => wrapper.find({ ref: 'loading-icon' });
 
-  const mountComponent = (options = {}) =>
-    shallowMount(component, {
+  const mountComponent = (options = {}) => {
+    fetchSpy = jest.fn();
+    wrapper = shallowMount(component, {
       sync: false,
       store,
+      methods: {
+        fetchSettings: fetchSpy,
+      },
       ...options,
     });
+  };
 
   beforeEach(() => {
     store = createStore();
-    store.dispatch('setInitialState', { helpPagePath });
-    wrapper = mountComponent();
+    mountComponent();
   });
 
   afterEach(() => {
@@ -34,7 +39,18 @@ describe('Registry List', () => {
     expect(wrapper.element).toMatchSnapshot();
   });
 
-  it('renders an help link dependant on the helphPagePath', () => {
-    expect(findHelpLink().attributes('href')).toBe(helpPagePath);
+  it('call the store function to load the data on mount', () => {
+    expect(fetchSpy).toHaveBeenCalled();
+  });
+
+  it('renders a loader if isLoading is true', () => {
+    store.dispatch('toggleLoading');
+    return wrapper.vm.$nextTick().then(() => {
+      expect(findLoadingComponent().exists()).toBe(true);
+      expect(findSettingsComponent().exists()).toBe(false);
+    });
+  });
+  it('renders the setting form', () => {
+    expect(findSettingsComponent().exists()).toBe(true);
   });
 });

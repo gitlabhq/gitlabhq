@@ -40,6 +40,16 @@ describe('DiffsStoreMutations', () => {
     });
   });
 
+  describe('SET_RETRIEVING_BATCHES', () => {
+    it('should set retrievingBatches state', () => {
+      const state = {};
+
+      mutations[types.SET_RETRIEVING_BATCHES](state, false);
+
+      expect(state.retrievingBatches).toEqual(false);
+    });
+  });
+
   describe('SET_DIFF_DATA', () => {
     it('should set diff data type properly', () => {
       const state = {};

@@ -312,6 +312,15 @@ variable value.
 | `DAST_FULL_SCAN_ENABLED` | no | Switches the tool to execute [ZAP Full Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Full-Scan) instead of [ZAP Baseline Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Baseline-Scan). Boolean. `true`, `True`, or `1` are considered as true value, otherwise false. Defaults to `false`. |
 | `DAST_FULL_SCAN_DOMAIN_VALIDATION_REQUIRED` | no | Requires [domain validation](#domain-validation) when running DAST full scans. Boolean. `true`, `True`, or `1` are considered as true value, otherwise false. Defaults to `false`. |
 
+## Reports JSON format
+
+CAUTION: **Caution:**
+The JSON report artifacts are not a public API of DAST and their format may change in the future.
+
+The DAST tool emits a JSON report report file. Sample report files can be found in the [DAST repository](https://gitlab.com/gitlab-org/security-products/dast/tree/master/test/end-to-end/expect).
+
+There are two formats of data in the JSON document that are used side by side: the proprietary ZAP format which will be eventually deprecated, and a "common" format which will be the default in the future.
+
 ## Security Dashboard
 
 The Security Dashboard is a good place to get an overview of all the security

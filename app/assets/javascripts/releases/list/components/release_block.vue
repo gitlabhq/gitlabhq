@@ -1,7 +1,7 @@
 <script>
 /* eslint-disable @gitlab/vue-i18n/no-bare-strings */
 import _ from 'underscore';
-import { GlTooltipDirective, GlLink, GlBadge, GlButton } from '@gitlab/ui';
+import { GlTooltipDirective, GlLink, GlBadge } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
@@ -20,7 +20,6 @@ export default {
     EvidenceBlock,
     GlLink,
     GlBadge,
-    GlButton,
     Icon,
     UserAvatarLink,
     ReleaseBlockFooter,

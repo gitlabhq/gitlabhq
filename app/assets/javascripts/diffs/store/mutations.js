@@ -40,6 +40,10 @@ export default {
     Object.assign(state, { isBatchLoading });
   },
 
+  [types.SET_RETRIEVING_BATCHES](state, retrievingBatches) {
+    Object.assign(state, { retrievingBatches });
+  },
+
   [types.SET_DIFF_DATA](state, data) {
     if (
       !(

@@ -163,10 +163,12 @@ describe('DiffsStoreActions', () => {
         { endpointBatch },
         [
           { type: types.SET_BATCH_LOADING, payload: true },
+          { type: types.SET_RETRIEVING_BATCHES, payload: true },
           { type: types.SET_DIFF_DATA_BATCH, payload: { diff_files: res1.diff_files } },
           { type: types.SET_BATCH_LOADING, payload: false },
           { type: types.SET_DIFF_DATA_BATCH, payload: { diff_files: [] } },
           { type: types.SET_BATCH_LOADING, payload: false },
+          { type: types.SET_RETRIEVING_BATCHES, payload: false },
         ],
         [],
         () => {
@@ -215,6 +217,8 @@ describe('DiffsStoreActions', () => {
 
   describe('assignDiscussionsToDiff', () => {
     it('should merge discussions into diffs', done => {
+      window.location.hash = 'ABC_123';
+
       const state = {
         diffFiles: [
           {

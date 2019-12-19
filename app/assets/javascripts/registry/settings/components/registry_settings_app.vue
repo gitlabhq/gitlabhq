@@ -1,26 +1,23 @@
 <script>
-import { mapState } from 'vuex';
-import { s__, sprintf } from '~/locale';
+import { mapState, mapActions } from 'vuex';
+import { GlLoadingIcon } from '@gitlab/ui';
+import SettingsForm from './settings_form.vue';
 
 export default {
-  components: {},
+  components: {
+    GlLoadingIcon,
+    SettingsForm,
+  },
   computed: {
     ...mapState({
-      helpPagePath: 'helpPagePath',
+      isLoading: 'isLoading',
     }),
-
-    helpText() {
-      return sprintf(
-        s__(
-          'PackageRegistry|Read more about the %{helpLinkStart}Container Registry tag retention policies%{helpLinkEnd}',
-        ),
-        {
-          helpLinkStart: `<a href="${this.helpPagePath}" target="_blank">`,
-          helpLinkEnd: '</a>',
-        },
-        false,
-      );
-    },
+  },
+  mounted() {
+    this.fetchSettings();
+  },
+  methods: {
+    ...mapActions(['fetchSettings']),
   },
 };
 </script>
@@ -28,16 +25,19 @@ export default {
 <template>
   <div>
     <p>
-      {{ s__('PackageRegistry|Tag retention policies are designed to:') }}
+      {{ s__('ContainerRegistry|Tag expiration policy is designed to:') }}
     </p>
     <ul>
-      <li>{{ s__('PackageRegistry|Keep and protect the images that matter most.') }}</li>
+      <li>{{ s__('ContainerRegistry|Keep and protect the images that matter most.') }}</li>
       <li>
         {{
-          s__("PackageRegistry|Automatically remove extra images that aren't designed to be kept.")
+          s__(
+            "ContainerRegistry|Automatically remove extra images that aren't designed to be kept.",
+          )
         }}
       </li>
     </ul>
-    <p ref="help-link" v-html="helpText"></p>
+    <gl-loading-icon v-if="isLoading" ref="loading-icon" />
+    <settings-form v-else ref="settings-form" />
   </div>
 </template>

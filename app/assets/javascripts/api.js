@@ -142,6 +142,12 @@ const Api = {
     return axios.get(url);
   },
 
+  // Update a single project
+  updateProject(projectPath, data) {
+    const url = Api.buildUrl(Api.projectPath).replace(':id', encodeURIComponent(projectPath));
+    return axios.put(url, data);
+  },
+
   /**
    * Get all projects for a forked relationship to a specified project
    * @param {string} projectPath - Path or ID of a project

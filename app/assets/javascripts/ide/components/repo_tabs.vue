@@ -1,13 +1,11 @@
 <script>
 import { mapActions } from 'vuex';
 import RepoTab from './repo_tab.vue';
-import EditorMode from './editor_mode_dropdown.vue';
 import router from '../ide_router';
 
 export default {
   components: {
     RepoTab,
-    EditorMode,
   },
   props: {
     activeFile: {

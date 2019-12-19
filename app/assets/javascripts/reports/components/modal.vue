@@ -1,14 +1,12 @@
 <script>
 // import { sprintf, __ } from '~/locale';
 import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';
-import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import CodeBlock from '~/vue_shared/components/code_block.vue';
 import { fieldTypes } from '../constants';
 
 export default {
   components: {
     Modal: DeprecatedModal2,
-    LoadingButton,
     CodeBlock,
   },
   props: {

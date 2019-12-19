@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlLink, GlProgressBar } from '@gitlab/ui';
+import { GlButton, GlProgressBar } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { formatTime, secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -8,7 +8,6 @@ export default {
   name: 'TestSummary',
   components: {
     GlButton,
-    GlLink,
     GlProgressBar,
     Icon,
   },

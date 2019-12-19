@@ -1,7 +1,6 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex';
 import tooltip from '~/vue_shared/directives/tooltip';
-import Icon from '~/vue_shared/components/icon.vue';
 import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
 import CommitFilesList from './commit_sidebar/list.vue';
 import EmptyState from './commit_sidebar/empty_state.vue';
@@ -11,7 +10,6 @@ import { activityBarViews, stageKeys } from '../constants';
 export default {
   components: {
     DeprecatedModal,
-    Icon,
     CommitFilesList,
     EmptyState,
   },

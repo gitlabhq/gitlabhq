@@ -2,7 +2,6 @@
 import { mapActions, mapState, mapGetters } from 'vuex';
 import PanelType from 'ee_else_ce/monitoring/components/panel_type.vue';
 import { getParameterValues, removeParams } from '~/lib/utils/url_utility';
-import GraphGroup from './graph_group.vue';
 import { sidebarAnimationDuration } from '../constants';
 import { getTimeDiff } from '../utils';
 
@@ -10,7 +9,6 @@ let sidebarMutationObserver;
 
 export default {
   components: {
-    GraphGroup,
     PanelType,
   },
   props: {

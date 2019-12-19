@@ -2,7 +2,6 @@
 /* eslint-disable vue/require-default-prop */
 /* eslint-disable @gitlab/vue-i18n/no-bare-strings */
 import { GlLink, GlModalDirective } from '@gitlab/ui';
-import TimeagoTooltip from '../../vue_shared/components/time_ago_tooltip.vue';
 import { s__, __, sprintf } from '~/locale';
 import eventHub from '../event_hub';
 import identicon from '../../vue_shared/components/identicon.vue';
@@ -16,7 +15,6 @@ export default {
   components: {
     loadingButton,
     identicon,
-    TimeagoTooltip,
     GlLink,
     UninstallApplicationButton,
     UninstallApplicationConfirmationModal,

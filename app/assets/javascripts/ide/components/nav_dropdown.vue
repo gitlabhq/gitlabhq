@@ -1,12 +1,10 @@
 <script>
 import $ from 'jquery';
-import Icon from '~/vue_shared/components/icon.vue';
 import NavForm from './nav_form.vue';
 import NavDropdownButton from './nav_dropdown_button.vue';
 
 export default {
   components: {
-    Icon,
     NavDropdownButton,
     NavForm,
   },

@@ -95,7 +95,7 @@
     "katex": "^0.10.0",
     "marked": "^0.3.12",
     "mermaid": "^8.4.2",
-    "monaco-editor": "^0.15.6",
+    "monaco-editor": "^0.18.1",
     "monaco-editor-webpack-plugin": "^1.7.0",
     "mousetrap": "^1.4.6",
     "pdfjs-dist": "^2.0.943",
@@ -200,7 +200,8 @@
     "yarn-deduplicate": "^1.1.1"
   },
   "resolutions": {
-    "vue-jest/ts-jest": "24.0.0"
+    "vue-jest/ts-jest": "24.0.0",
+    "monaco-editor" : "0.18.1"
   },
   "engines": {
     "node": ">=8.10.0",

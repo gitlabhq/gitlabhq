@@ -4746,7 +4746,7 @@ msgstr ""
 msgid "Container Registry"
 msgstr ""
 
-msgid "Container Registry tag expiration policies"
+msgid "Container Registry tag expiration policy"
 msgstr ""
 
 msgid "Container Scanning"
@@ -4756,6 +4756,9 @@ msgid "Container registry images"
 msgstr ""
 
 msgid "Container registry is not enabled on this GitLab instance. Ask an administrator to enable it in order for AutoDevOps to work."
+msgstr ""
+
+msgid "ContainerRegistry|Automatically remove extra images that aren't designed to be kept."
 msgstr ""
 
 msgid "ContainerRegistry|Container Registry"
@@ -4773,10 +4776,34 @@ msgstr ""
 msgid "ContainerRegistry|Docker connection error"
 msgstr ""
 
+msgid "ContainerRegistry|Docker tag expiration policy is %{toggleStatus}"
+msgstr ""
+
+msgid "ContainerRegistry|Expiration interval:"
+msgstr ""
+
+msgid "ContainerRegistry|Expiration latest:"
+msgstr ""
+
+msgid "ContainerRegistry|Expiration policy successfully saved."
+msgstr ""
+
+msgid "ContainerRegistry|Expiration policy:"
+msgstr ""
+
+msgid "ContainerRegistry|Expiration schedule:"
+msgstr ""
+
+msgid "ContainerRegistry|Expire Docker tags with name matching:"
+msgstr ""
+
 msgid "ContainerRegistry|If you are not already logged in, you need to authenticate to the Container Registry by using your GitLab username and password. If you have %{twofaDocLinkStart}Two-Factor Authentication%{twofaDocLinkEnd} enabled, use a %{personalAccessTokensDocLinkStart}Personal Access Token%{personalAccessTokensDocLinkEnd} instead of a password."
 msgstr ""
 
 msgid "ContainerRegistry|Image ID"
+msgstr ""
+
+msgid "ContainerRegistry|Keep and protect the images that matter most."
 msgstr ""
 
 msgid "ContainerRegistry|Last Updated"
@@ -4799,10 +4826,25 @@ msgstr[1] ""
 msgid "ContainerRegistry|Size"
 msgstr ""
 
+msgid "ContainerRegistry|Something went wrong while fetching the expiration policy."
+msgstr ""
+
+msgid "ContainerRegistry|Something went wrong while updating the expiration policy."
+msgstr ""
+
 msgid "ContainerRegistry|Tag"
 msgstr ""
 
+msgid "ContainerRegistry|Tag expiration policy"
+msgstr ""
+
+msgid "ContainerRegistry|Tag expiration policy is designed to:"
+msgstr ""
+
 msgid "ContainerRegistry|The last tag related to this image was recently removed. This empty image and any associated data will be automatically removed as part of the regular Garbage Collection process. If you have any questions, contact your administrator."
+msgstr ""
+
+msgid "ContainerRegistry|The value of this input should be less than 255 characters"
 msgstr ""
 
 msgid "ContainerRegistry|There are no container images available in this group"
@@ -4815,6 +4857,9 @@ msgid "ContainerRegistry|This image has no active tags"
 msgstr ""
 
 msgid "ContainerRegistry|We are having trouble connecting to Docker, which could be due to an issue with your project name or path. %{docLinkStart}More Information%{docLinkEnd}"
+msgstr ""
+
+msgid "ContainerRegistry|Wildcards such as %{codeStart}*-stable%{codeEnd} or %{codeStart}production/*%{codeEnd} are supported"
 msgstr ""
 
 msgid "ContainerRegistry|With the Container Registry, every project can have its own space to store its Docker images. %{docLinkStart}More Information%{docLinkEnd}"
@@ -7295,7 +7340,7 @@ msgstr ""
 msgid "Expiration date"
 msgstr ""
 
-msgid "Expiration policies for the Container Registry are a perfect solution for keeping the Registry space down while still enjoying the full power of GitLab CI/CD."
+msgid "Expiration policy for the Container Registry is a perfect solution for keeping the Registry space down while still enjoying the full power of GitLab CI/CD."
 msgstr ""
 
 msgid "Expired"
@@ -12416,6 +12461,12 @@ msgstr ""
 msgid "OperationsDashboard|The operations dashboard provides a summary of each project's operational health, including pipeline and alert statuses."
 msgstr ""
 
+msgid "Option 1"
+msgstr ""
+
+msgid "Option 2"
+msgstr ""
+
 msgid "Optional"
 msgstr ""
 
@@ -12476,9 +12527,6 @@ msgstr ""
 msgid "Package was removed"
 msgstr ""
 
-msgid "PackageRegistry|Automatically remove extra images that aren't designed to be kept."
-msgstr ""
-
 msgid "PackageRegistry|Copy Maven XML"
 msgstr ""
 
@@ -12518,9 +12566,6 @@ msgstr ""
 msgid "PackageRegistry|Installation"
 msgstr ""
 
-msgid "PackageRegistry|Keep and protect the images that matter most."
-msgstr ""
-
 msgid "PackageRegistry|Learn how to %{noPackagesLinkStart}publish and share your packages%{noPackagesLinkEnd} with GitLab."
 msgstr ""
 
@@ -12533,16 +12578,10 @@ msgstr ""
 msgid "PackageRegistry|Package installation"
 msgstr ""
 
-msgid "PackageRegistry|Read more about the %{helpLinkStart}Container Registry tag retention policies%{helpLinkEnd}"
-msgstr ""
-
 msgid "PackageRegistry|Registry Setup"
 msgstr ""
 
 msgid "PackageRegistry|Remove package"
-msgstr ""
-
-msgid "PackageRegistry|Tag retention policies are designed to:"
 msgstr ""
 
 msgid "PackageRegistry|There are no packages yet"
@@ -15520,6 +15559,9 @@ msgid "Save"
 msgstr ""
 
 msgid "Save Changes"
+msgstr ""
+
+msgid "Save Expiration Policy"
 msgstr ""
 
 msgid "Save anyway"

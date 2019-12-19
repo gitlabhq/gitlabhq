@@ -3,7 +3,6 @@
 import { GlTooltipDirective } from '@gitlab/ui';
 import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';
 import { s__, sprintf } from '~/locale';
-import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import eventHub from '../event_hub';
 
 export default {
@@ -12,7 +11,6 @@ export default {
 
   components: {
     GlModal: DeprecatedModal2,
-    LoadingButton,
   },
 
   directives: {

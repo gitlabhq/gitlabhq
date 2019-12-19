@@ -3,16 +3,12 @@ import { mapActions } from 'vuex';
 import tooltip from '~/vue_shared/directives/tooltip';
 import Icon from '~/vue_shared/components/icon.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
-import StageButton from './stage_button.vue';
-import UnstageButton from './unstage_button.vue';
 import { viewerTypes } from '../../constants';
 import { getCommitIconMap } from '../../utils';
 
 export default {
   components: {
     Icon,
-    StageButton,
-    UnstageButton,
     FileIcon,
   },
   directives: {

@@ -1,0 +1,155 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Settings Form renders 1`] = `
+<div
+  class="card"
+>
+  <form>
+    <div
+      class="card-header"
+    >
+      
+      Tag expiration policy
+    
+    </div>
+     
+    <div
+      class="card-body"
+    >
+      <glformgroup-stub
+        id="expiration-policy-toggle-group"
+        label="Expiration policy:"
+        label-align="right"
+        label-cols="3"
+        label-for="expiration-policy-toggle"
+      >
+        <div
+          class="d-flex align-items-start"
+        >
+          <gltoggle-stub
+            id="expiration-policy-toggle"
+            labeloff="Toggle Status: OFF"
+            labelon="Toggle Status: ON"
+          />
+           
+          <span
+            class="mb-2 ml-1 lh-2"
+          >
+            Docker tag expiration policy is 
+            <strong>
+              disabled
+            </strong>
+          </span>
+        </div>
+      </glformgroup-stub>
+       
+      <glformgroup-stub
+        id="expiration-policy-interval-group"
+        label="Expiration interval:"
+        label-align="right"
+        label-cols="3"
+        label-for="expiration-policy-interval"
+      >
+        <glformselect-stub
+          id="expiration-policy-interval"
+        >
+          <option
+            value="1"
+          >
+            Option 1
+          </option>
+           
+          <option
+            value="2"
+          >
+            Option 2
+          </option>
+        </glformselect-stub>
+      </glformgroup-stub>
+       
+      <glformgroup-stub
+        id="expiration-policy-schedule-group"
+        label="Expiration schedule:"
+        label-align="right"
+        label-cols="3"
+        label-for="expiration-policy-schedule"
+      >
+        <glformselect-stub
+          id="expiration-policy-schedule"
+        >
+          <option
+            value="1"
+          >
+            Option 1
+          </option>
+           
+          <option
+            value="2"
+          >
+            Option 2
+          </option>
+        </glformselect-stub>
+      </glformgroup-stub>
+       
+      <glformgroup-stub
+        id="expiration-policy-latest-group"
+        label="Expiration latest:"
+        label-align="right"
+        label-cols="3"
+        label-for="expiration-policy-latest"
+      >
+        <glformselect-stub
+          id="expiration-policy-latest"
+        >
+          <option
+            value="1"
+          >
+            Option 1
+          </option>
+           
+          <option
+            value="2"
+          >
+            Option 2
+          </option>
+        </glformselect-stub>
+      </glformgroup-stub>
+       
+      <glformgroup-stub
+        id="expiration-policy-name-matching-group"
+        invalid-feedback="The value of this input should be less than 255 characters"
+        label="Expire Docker tags with name matching:"
+        label-align="right"
+        label-cols="3"
+        label-for="expiration-policy-name-matching"
+      >
+        <glformtextarea-stub
+          id="expiration-policy-name-matching"
+          placeholder=".*"
+          trim=""
+          value=""
+        />
+      </glformgroup-stub>
+    </div>
+     
+    <div
+      class="card-footer text-right"
+    >
+      <glbutton-stub
+        type="reset"
+      >
+        Cancel
+      </glbutton-stub>
+       
+      <glbutton-stub
+        type="submit"
+        variant="success"
+      >
+        
+        Save Expiration Policy
+      
+      </glbutton-stub>
+    </div>
+  </form>
+</div>
+`;

@@ -19,7 +19,6 @@ import applicationRow from './application_row.vue';
 import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
 import KnativeDomainEditor from './knative_domain_editor.vue';
 import { CLUSTER_TYPE, PROVIDER_TYPE, APPLICATION_STATUS, INGRESS } from '../constants';
-import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import eventHub from '~/clusters/event_hub';
 import CrossplaneProviderStack from './crossplane_provider_stack.vue';
 
@@ -27,7 +26,6 @@ export default {
   components: {
     applicationRow,
     clipboardButton,
-    LoadingButton,
     GlLoadingIcon,
     KnativeDomainEditor,
     CrossplaneProviderStack,

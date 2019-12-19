@@ -9,6 +9,7 @@ const defaultViewType = INLINE_DIFF_VIEW_TYPE;
 export default () => ({
   isLoading: true,
   isBatchLoading: false,
+  retrievingBatches: false,
   addedLines: null,
   removedLines: null,
   endpoint: '',

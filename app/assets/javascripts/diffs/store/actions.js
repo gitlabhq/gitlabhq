@@ -91,6 +91,7 @@ export const fetchDiffFiles = ({ state, commit }) => {
 
 export const fetchDiffFilesBatch = ({ commit, state }) => {
   commit(types.SET_BATCH_LOADING, true);
+  commit(types.SET_RETRIEVING_BATCHES, true);
 
   const getBatch = page =>
     axios
@@ -100,9 +101,11 @@ export const fetchDiffFilesBatch = ({ commit, state }) => {
       .then(({ data: { pagination, diff_files } }) => {
         commit(types.SET_DIFF_DATA_BATCH, { diff_files });
         commit(types.SET_BATCH_LOADING, false);
+        if (!pagination.next_page) commit(types.SET_RETRIEVING_BATCHES, false);
         return pagination.next_page;
       })
-      .then(nextPage => nextPage && getBatch(nextPage));
+      .then(nextPage => nextPage && getBatch(nextPage))
+      .catch(() => commit(types.SET_RETRIEVING_BATCHES, false));
 
   return getBatch()
     .then(handleLocationHash)
