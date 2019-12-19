@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe SafeUrl do
   describe '#safe_url' do
-    class TestClass
+    class SafeUrlTestClass
       include SafeUrl
 
       attr_reader :url
@@ -14,7 +14,7 @@ describe SafeUrl do
       end
     end
 
-    let(:test_class) { TestClass.new(url) }
+    let(:test_class) { SafeUrlTestClass.new(url) }
     let(:url) { 'http://example.com' }
 
     subject { test_class.safe_url }

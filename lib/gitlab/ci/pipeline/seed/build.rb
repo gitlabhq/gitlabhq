@@ -18,6 +18,7 @@ module Gitlab
             @seed_attributes = attributes
             @previous_stages = previous_stages
             @needs_attributes = dig(:needs_attributes)
+            @resource_group_key = attributes.delete(:resource_group_key)
 
             @using_rules  = attributes.key?(:rules)
             @using_only   = attributes.key?(:only)
@@ -78,6 +79,7 @@ module Gitlab
               else
                 ::Ci::Build.new(attributes).tap do |job|
                   job.deployment = Seed::Deployment.new(job).to_resource
+                  job.resource_group = Seed::Build::ResourceGroup.new(job, @resource_group_key).to_resource
                 end
               end
             end

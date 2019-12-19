@@ -31,7 +31,7 @@ describe Ci::RetryBuildService do
        job_artifacts_container_scanning job_artifacts_dast
        job_artifacts_license_management job_artifacts_performance
        job_artifacts_codequality job_artifacts_metrics scheduled_at
-       job_variables].freeze
+       job_variables waiting_for_resource_at].freeze
 
   IGNORE_ACCESSORS =
     %i[type lock_version target_url base_tags trace_sections
@@ -40,14 +40,14 @@ describe Ci::RetryBuildService do
        user_id auto_canceled_by_id retried failure_reason
        sourced_pipelines artifacts_file_store artifacts_metadata_store
        metadata runner_session trace_chunks upstream_pipeline_id
-       artifacts_file artifacts_metadata artifacts_size commands].freeze
+       artifacts_file artifacts_metadata artifacts_size commands resource resource_group_id].freeze
 
   shared_examples 'build duplication' do
     let(:another_pipeline) { create(:ci_empty_pipeline, project: project) }
 
     let(:build) do
       create(:ci_build, :failed, :expired, :erased, :queued, :coverage, :tags,
-             :allowed_to_fail, :on_tag, :triggered, :teardown_environment,
+             :allowed_to_fail, :on_tag, :triggered, :teardown_environment, :resource_group,
              description: 'my-job', stage: 'test', stage_id: stage.id,
              pipeline: pipeline, auto_canceled_by: another_pipeline,
              scheduled_at: 10.seconds.since)

@@ -57,7 +57,7 @@ Set up your project's merge request settings:
 - Enable [merge request approvals](../merge_requests/merge_request_approvals.md). **(STARTER)**
 - Enable [merge only if pipeline succeeds](../merge_requests/merge_when_pipeline_succeeds.md).
 - Enable [merge only when all threads are resolved](../../discussions/index.md#only-allow-merge-requests-to-be-merged-if-all-threads-are-resolved).
-- Enable [`delete source branch after merge` option by default](../merge_requests/creating_merge_requests.md#deleting-the-source-branch)
+- Enable [`delete source branch after merge` option by default](../merge_requests/getting_started.md#deleting-the-source-branch)
 
 ![project's merge request settings](img/merge_requests_settings.png)
 

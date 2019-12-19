@@ -42,7 +42,6 @@ rules:
   lines-between-class-members: off
   # Disabled for now, to make the plugin-vue 4.5 -> 5.0 update smoother
   vue/no-confusing-v-for-v-if: error
-  vue/no-unused-components: off
   vue/no-use-v-if-with-v-for: off
   vue/no-v-html: off
   vue/use-v-on-exact: off
