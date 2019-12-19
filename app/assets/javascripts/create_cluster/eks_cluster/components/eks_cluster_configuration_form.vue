@@ -342,7 +342,6 @@ export default {
         :empty-text="s__('ClusterIntegration|Kubernetes version not found')"
         @input="setKubernetesVersion({ kubernetesVersion: $event })"
       />
-      <p class="form-text text-muted" v-html="roleDropdownHelpText"></p>
     </div>
     <div class="form-group">
       <label class="label-bold" for="eks-role">{{ s__('ClusterIntegration|Role name') }}</label>

@@ -719,9 +719,12 @@ To disable the Kubernetes cluster integration, follow the same procedure.
 
 ## Removing integration
 
-To remove the Kubernetes cluster integration from your project, simply click the
-**Remove integration** button. You will then be able to follow the procedure
-and add a Kubernetes cluster again.
+To remove the Kubernetes cluster integration from your project, either:
+
+- Select **Remove integration**, to remove only the Kubernetes integration.
+- [From GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/issues/26815), select
+  **Remove integration and resources**, to also remove all related GitLab cluster resources (for
+  example, namespaces, roles, and bindings) when removing the integration.
 
 When removing the cluster integration, note:
 
@@ -729,10 +732,6 @@ When removing the cluster integration, note:
   integration.
 - When you remove a cluster, you only remove its relationship to GitLab, not the cluster itself. To
   remove the cluster, you can do so by visiting the GKE or EKS dashboard, or using `kubectl`.
-
-[From GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/issues/26815), you can also remove all
-related GitLab cluster resources (for example, namespaces, roles, and bindings) when removing the
-integration.
 
 ## Learn more
 
