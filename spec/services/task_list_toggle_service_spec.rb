@@ -121,7 +121,7 @@ describe TaskListToggleService do
       > * [x] Task 2
     EOT
 
-    markdown_html = Banzai::Pipeline::FullPipeline.call(markdown, project: nil)[:output].to_html
+    markdown_html = parse_markdown(markdown)
     toggler = described_class.new(markdown, markdown_html,
                                   toggle_as_checked: true,
                                   line_source: '> > * [ ] Task 1', line_number: 1)
@@ -142,7 +142,7 @@ describe TaskListToggleService do
       * [x] Task 2
     EOT
 
-    markdown_html = Banzai::Pipeline::FullPipeline.call(markdown, project: nil)[:output].to_html
+    markdown_html = parse_markdown(markdown)
     toggler = described_class.new(markdown, markdown_html,
                                   toggle_as_checked: true,
                                   line_source: '* [ ] Task 1', line_number: 5)
@@ -150,5 +150,45 @@ describe TaskListToggleService do
     expect(toggler.execute).to be_truthy
     expect(toggler.updated_markdown.lines[4]).to eq "* [x] Task 1\n"
     expect(toggler.updated_markdown_html).to include('disabled checked> Task 1')
+  end
+
+  context 'when clicking an embedded subtask' do
+    it 'properly handles it inside an unordered list' do
+      markdown =
+        <<-EOT.strip_heredoc
+      - - [ ] Task 1
+        - [x] Task 2
+      EOT
+
+      markdown_html = parse_markdown(markdown)
+      toggler = described_class.new(markdown, markdown_html,
+                                    toggle_as_checked: true,
+                                    line_source: '- - [ ] Task 1', line_number: 1)
+
+      expect(toggler.execute).to be_truthy
+      expect(toggler.updated_markdown.lines[0]).to eq "- - [x] Task 1\n"
+      expect(toggler.updated_markdown_html).to include('disabled checked> Task 1')
+    end
+
+    it 'properly handles it inside an ordered list' do
+      markdown =
+        <<-EOT.strip_heredoc
+      1. - [ ] Task 1
+         - [x] Task 2
+      EOT
+
+      markdown_html = parse_markdown(markdown)
+      toggler = described_class.new(markdown, markdown_html,
+                                    toggle_as_checked: true,
+                                    line_source: '1. - [ ] Task 1', line_number: 1)
+
+      expect(toggler.execute).to be_truthy
+      expect(toggler.updated_markdown.lines[0]).to eq "1. - [x] Task 1\n"
+      expect(toggler.updated_markdown_html).to include('disabled checked> Task 1')
+    end
+  end
+
+  def parse_markdown(markdown)
+    Banzai::Pipeline::FullPipeline.call(markdown, project: nil)[:output].to_html
   end
 end

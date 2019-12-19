@@ -50,7 +50,7 @@ sast:
       - $SAST_DISABLED
       - $SAST_DISABLE_DIND == 'true'
 
-.analyzer:
+.sast-analyzer:
   extends: sast
   services: []
   except:
@@ -60,7 +60,7 @@ sast:
     - /analyzer run
 
 bandit-sast:
-  extends: .analyzer
+  extends: .sast-analyzer
   image:
     name: "$SAST_ANALYZER_IMAGE_PREFIX/bandit:$SAST_ANALYZER_IMAGE_TAG"
   only:
@@ -70,7 +70,7 @@ bandit-sast:
           $CI_PROJECT_REPOSITORY_LANGUAGES =~ /python/
 
 brakeman-sast:
-  extends: .analyzer
+  extends: .sast-analyzer
   image:
     name: "$SAST_ANALYZER_IMAGE_PREFIX/brakeman:$SAST_ANALYZER_IMAGE_TAG"
   only:
@@ -80,7 +80,7 @@ brakeman-sast:
           $CI_PROJECT_REPOSITORY_LANGUAGES =~ /ruby/
 
 eslint-sast:
-  extends: .analyzer
+  extends: .sast-analyzer
   image:
     name: "$SAST_ANALYZER_IMAGE_PREFIX/eslint:$SAST_ANALYZER_IMAGE_TAG"
   only:
@@ -90,7 +90,7 @@ eslint-sast:
           $CI_PROJECT_REPOSITORY_LANGUAGES =~ /javascript/
 
 flawfinder-sast:
-  extends: .analyzer
+  extends: .sast-analyzer
   image:
     name: "$SAST_ANALYZER_IMAGE_PREFIX/flawfinder:$SAST_ANALYZER_IMAGE_TAG"
   only:
@@ -100,7 +100,7 @@ flawfinder-sast:
           $CI_PROJECT_REPOSITORY_LANGUAGES =~ /\b(c\+\+|c)\b/
 
 kubesec-sast:
-  extends: .analyzer
+  extends: .sast-analyzer
   image:
     name: "$SAST_ANALYZER_IMAGE_PREFIX/kubesec:$SAST_ANALYZER_IMAGE_TAG"
   only:
@@ -110,7 +110,7 @@ kubesec-sast:
           $SCAN_KUBERNETES_MANIFESTS == 'true'
 
 gosec-sast:
-  extends: .analyzer
+  extends: .sast-analyzer
   image:
     name: "$SAST_ANALYZER_IMAGE_PREFIX/gosec:$SAST_ANALYZER_IMAGE_TAG"
   only:
@@ -120,7 +120,7 @@ gosec-sast:
           $CI_PROJECT_REPOSITORY_LANGUAGES =~ /\bgo\b/
 
 nodejs-scan-sast:
-  extends: .analyzer
+  extends: .sast-analyzer
   image:
     name: "$SAST_ANALYZER_IMAGE_PREFIX/nodejs-scan:$SAST_ANALYZER_IMAGE_TAG"
   only:
@@ -130,7 +130,7 @@ nodejs-scan-sast:
           $CI_PROJECT_REPOSITORY_LANGUAGES =~ /javascript/
 
 phpcs-security-audit-sast:
-  extends: .analyzer
+  extends: .sast-analyzer
   image:
     name: "$SAST_ANALYZER_IMAGE_PREFIX/phpcs-security-audit:$SAST_ANALYZER_IMAGE_TAG"
   only:
@@ -140,7 +140,7 @@ phpcs-security-audit-sast:
           $CI_PROJECT_REPOSITORY_LANGUAGES =~ /php/
 
 pmd-apex-sast:
-  extends: .analyzer
+  extends: .sast-analyzer
   image:
     name: "$SAST_ANALYZER_IMAGE_PREFIX/pmd-apex:$SAST_ANALYZER_IMAGE_TAG"
   only:
@@ -150,7 +150,7 @@ pmd-apex-sast:
           $CI_PROJECT_REPOSITORY_LANGUAGES =~ /apex/
 
 secrets-sast:
-  extends: .analyzer
+  extends: .sast-analyzer
   image:
     name: "$SAST_ANALYZER_IMAGE_PREFIX/secrets:$SAST_ANALYZER_IMAGE_TAG"
   only:
@@ -159,7 +159,7 @@ secrets-sast:
           $SAST_DEFAULT_ANALYZERS =~ /secrets/
 
 security-code-scan-sast:
-  extends: .analyzer
+  extends: .sast-analyzer
   image:
     name: "$SAST_ANALYZER_IMAGE_PREFIX/security-code-scan:$SAST_ANALYZER_IMAGE_TAG"
   only:
@@ -169,7 +169,7 @@ security-code-scan-sast:
           $CI_PROJECT_REPOSITORY_LANGUAGES =~ /\b(c\#|visual basic\b)/
 
 sobelow-sast:
-  extends: .analyzer
+  extends: .sast-analyzer
   image:
     name: "$SAST_ANALYZER_IMAGE_PREFIX/sobelow:$SAST_ANALYZER_IMAGE_TAG"
   only:
@@ -179,7 +179,7 @@ sobelow-sast:
           $CI_PROJECT_REPOSITORY_LANGUAGES =~ /elixir/
 
 spotbugs-sast:
-  extends: .analyzer
+  extends: .sast-analyzer
   image:
     name: "$SAST_ANALYZER_IMAGE_PREFIX/spotbugs:$SAST_ANALYZER_IMAGE_TAG"
   only:
@@ -189,7 +189,7 @@ spotbugs-sast:
           $CI_PROJECT_REPOSITORY_LANGUAGES =~ /java\b/
 
 tslint-sast:
-  extends: .analyzer
+  extends: .sast-analyzer
   image:
     name: "$SAST_ANALYZER_IMAGE_PREFIX/tslint:$SAST_ANALYZER_IMAGE_TAG"
   only:

@@ -24,12 +24,8 @@ module QA
         project = Resource::Project.fabricate_via_api! do |resource|
           resource.name = 'xss-test-for-mentions-project'
         end
-        project.visit!
 
-        Page::Project::Show.perform(&:go_to_members_settings)
-        Page::Project::Settings::Members.perform do |members|
-          members.add_member(user.username)
-        end
+        Flow::Project.add_member(project: project, username: user.username)
 
         issue = Resource::Issue.fabricate_via_api! do |issue|
           issue.title = 'issue title'
@@ -42,7 +38,7 @@ module QA
           show.comment("cc-ing you here @#{user.username}")
 
           expect do
-            expect(show).to have_content("cc-ing you here")
+            expect(show).to have_comment("cc-ing you here")
           end.not_to raise_error # Selenium::WebDriver::Error::UnhandledAlertError
         end
       end

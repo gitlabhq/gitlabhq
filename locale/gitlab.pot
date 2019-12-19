@@ -6896,6 +6896,9 @@ msgstr ""
 msgid "Environments|Rollback environment %{name}?"
 msgstr ""
 
+msgid "Environments|Search"
+msgstr ""
+
 msgid "Environments|Show all"
 msgstr ""
 

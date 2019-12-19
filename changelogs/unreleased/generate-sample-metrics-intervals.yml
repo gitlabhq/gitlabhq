@@ -1,0 +1,5 @@
+---
+title: Generate Prometheus sample metrics over pre-set intervals
+merge_request: 22066
+author:
+type: added

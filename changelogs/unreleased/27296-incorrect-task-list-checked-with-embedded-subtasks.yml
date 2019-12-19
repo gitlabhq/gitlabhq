@@ -1,0 +1,5 @@
+---
+title: Properly check a task embedded in a list with no text
+merge_request: 21947
+author:
+type: fixed

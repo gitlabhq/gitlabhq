@@ -17,7 +17,7 @@ describe 'gitlab:generate_sample_prometheus_data rake task' do
   it 'creates the file correctly' do
     Rake.application.rake_require 'tasks/gitlab/generate_sample_prometheus_data'
     allow(Environment).to receive(:find).and_return(environment)
-    allow(environment).to receive_message_chain(:prometheus_adapter, :prometheus_client, :query_range) { sample_query_result }
+    allow(environment).to receive_message_chain(:prometheus_adapter, :prometheus_client, :query_range) { sample_query_result[30] }
     run_rake_task('gitlab:generate_sample_prometheus_data', [environment.id])
 
     expect(File.exist?(sample_query_file)).to be true

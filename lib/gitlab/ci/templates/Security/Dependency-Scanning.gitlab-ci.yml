@@ -72,7 +72,7 @@ dependency_scanning:
       - $DEPENDENCY_SCANNING_DISABLED
       - $DS_DISABLE_DIND == 'true'
 
-.analyzer:
+.ds-analyzer:
   extends: dependency_scanning
   services: []
   except:
@@ -82,7 +82,7 @@ dependency_scanning:
     - /analyzer run
 
 gemnasium-dependency_scanning:
-  extends: .analyzer
+  extends: .ds-analyzer
   image:
     name: "$DS_ANALYZER_IMAGE_PREFIX/gemnasium:$DS_MAJOR_VERSION"
   only:
@@ -92,7 +92,7 @@ gemnasium-dependency_scanning:
         $CI_PROJECT_REPOSITORY_LANGUAGES =~ /ruby|javascript|php/
 
 gemnasium-maven-dependency_scanning:
-  extends: .analyzer
+  extends: .ds-analyzer
   image:
     name: "$DS_ANALYZER_IMAGE_PREFIX/gemnasium-maven:$DS_MAJOR_VERSION"
   only:
@@ -102,7 +102,7 @@ gemnasium-maven-dependency_scanning:
         $CI_PROJECT_REPOSITORY_LANGUAGES =~ /\bjava\b/
 
 gemnasium-python-dependency_scanning:
-  extends: .analyzer
+  extends: .ds-analyzer
   image:
     name: "$DS_ANALYZER_IMAGE_PREFIX/gemnasium-python:$DS_MAJOR_VERSION"
   only:
@@ -112,7 +112,7 @@ gemnasium-python-dependency_scanning:
         $CI_PROJECT_REPOSITORY_LANGUAGES =~ /python/
 
 bundler-audit-dependency_scanning:
-  extends: .analyzer
+  extends: .ds-analyzer
   image:
     name: "$DS_ANALYZER_IMAGE_PREFIX/bundler-audit:$DS_MAJOR_VERSION"
   only:
@@ -122,7 +122,7 @@ bundler-audit-dependency_scanning:
         $CI_PROJECT_REPOSITORY_LANGUAGES =~ /ruby/
 
 retire-js-dependency_scanning:
-  extends: .analyzer
+  extends: .ds-analyzer
   image:
     name: "$DS_ANALYZER_IMAGE_PREFIX/retire.js:$DS_MAJOR_VERSION"
   only:

@@ -78,12 +78,26 @@ projects:
 All Go projects should include these GitLab CI/CD jobs:
 
 ```yaml
-go lint:
-  image: golang:1.11
+lint:
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:golangci-lint-alpine
+  stage: test
   script:
-    - go get -u golang.org/x/lint/golint
-    - golint -set_exit_status $(go list ./... | grep -v "vendor/")
+    # Use default .golangci.yml file from the image if one is not present in the project root.
+    - '[ -e .golangci.yml ] || cp /golangci/.golangci.yml .'
+    # Write the code coverage report to gl-code-quality-report.json
+    # and print linting issues to stdout in the format: path/to/file:line description
+    - golangci-lint run --out-format code-climate | tee gl-code-quality-report.json | jq -r '.[] | "\(.location.path):\(.location.lines.begin) \(.description)"'
+  artifacts:
+    reports:
+      codequality: gl-code-quality-report.json
+    paths:
+      - gl-code-quality-report.json
+  allow_failure: true
 ```
+
+Including a `.golangci.yml` in the root directory of the project allows for
+configuration of `golangci-lint`. All options for `golangci-lint` are listed in
+this [example](https://github.com/golangci/golangci-lint/blob/master/.golangci.example.yml).
 
 Once [recursive includes](https://gitlab.com/gitlab-org/gitlab-foss/issues/56836)
 become available, you will be able to share job templates like this
