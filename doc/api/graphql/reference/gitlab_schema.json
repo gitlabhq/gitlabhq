@@ -8148,7 +8148,7 @@
             },
             {
               "name": "designs",
-              "description": "Deprecated. Use `design_collection`.",
+              "description": "Deprecated. Use `design_collection`",
               "args": [
 
               ],
@@ -9578,7 +9578,7 @@
             },
             {
               "name": "designs",
-              "description": "Deprecated. Use `design_collection`.",
+              "description": "Deprecated. Use `design_collection`",
               "args": [
 
               ],
@@ -12029,7 +12029,7 @@
           "fields": [
             {
               "name": "beforeSha",
-              "description": null,
+              "description": "Base SHA of the source branch",
               "args": [
 
               ],
@@ -12043,7 +12043,7 @@
             },
             {
               "name": "committedAt",
-              "description": null,
+              "description": "Timestamp of the pipeline's commit",
               "args": [
 
               ],
@@ -12071,7 +12071,7 @@
             },
             {
               "name": "createdAt",
-              "description": null,
+              "description": "Timestamp of the pipeline's creation",
               "args": [
 
               ],
@@ -12089,7 +12089,7 @@
             },
             {
               "name": "detailedStatus",
-              "description": null,
+              "description": "Detailed status of the pipeline",
               "args": [
 
               ],
@@ -12121,7 +12121,7 @@
             },
             {
               "name": "finishedAt",
-              "description": null,
+              "description": "Timestamp of the pipeline's completion",
               "args": [
 
               ],
@@ -12135,7 +12135,7 @@
             },
             {
               "name": "id",
-              "description": null,
+              "description": "ID of the pipeline",
               "args": [
 
               ],
@@ -12153,7 +12153,7 @@
             },
             {
               "name": "iid",
-              "description": null,
+              "description": "Internal ID of the pipeline",
               "args": [
 
               ],
@@ -12171,7 +12171,7 @@
             },
             {
               "name": "sha",
-              "description": null,
+              "description": "SHA of the pipeline's commit",
               "args": [
 
               ],
@@ -12189,7 +12189,7 @@
             },
             {
               "name": "startedAt",
-              "description": null,
+              "description": "Timestamp when the pipeline was started",
               "args": [
 
               ],
@@ -12203,7 +12203,7 @@
             },
             {
               "name": "status",
-              "description": null,
+              "description": "Status of the pipeline (CREATED, PREPARING, PENDING, RUNNING, FAILED, SUCCESS, CANCELED, SKIPPED, MANUAL, SCHEDULED)",
               "args": [
 
               ],
@@ -12221,7 +12221,7 @@
             },
             {
               "name": "updatedAt",
-              "description": null,
+              "description": "Timestamp of the pipeline's last activity",
               "args": [
 
               ],
@@ -12408,7 +12408,7 @@
           "fields": [
             {
               "name": "detailsPath",
-              "description": null,
+              "description": "Path of the details for the pipeline status",
               "args": [
 
               ],
@@ -12426,7 +12426,7 @@
             },
             {
               "name": "favicon",
-              "description": null,
+              "description": "Favicon of the pipeline status",
               "args": [
 
               ],
@@ -12444,7 +12444,7 @@
             },
             {
               "name": "group",
-              "description": null,
+              "description": "Group of the pipeline status",
               "args": [
 
               ],
@@ -12462,7 +12462,7 @@
             },
             {
               "name": "hasDetails",
-              "description": null,
+              "description": "Indicates if the pipeline status has further details",
               "args": [
 
               ],
@@ -12480,7 +12480,7 @@
             },
             {
               "name": "icon",
-              "description": null,
+              "description": "Icon of the pipeline status",
               "args": [
 
               ],
@@ -12498,7 +12498,7 @@
             },
             {
               "name": "label",
-              "description": null,
+              "description": "Label of the pipeline status",
               "args": [
 
               ],
@@ -12516,7 +12516,7 @@
             },
             {
               "name": "text",
-              "description": null,
+              "description": "Text of the pipeline status",
               "args": [
 
               ],
@@ -12534,7 +12534,7 @@
             },
             {
               "name": "tooltip",
-              "description": null,
+              "description": "Tooltip associated with the pipeline status",
               "args": [
 
               ],

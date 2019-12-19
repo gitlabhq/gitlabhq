@@ -5,8 +5,8 @@ InfluxDB support is scheduled to be removed in GitLab 13.0.
 You are advised to use [Prometheus](../prometheus/index.md) instead.
 
 GitLab Performance Monitoring is disabled by default. To enable it and change any of its
-settings, navigate to the Admin area in **Settings > Metrics**
-(`/admin/application_settings`).
+settings, navigate to **Admin Area > Settings > Metrics and profiling**
+(`/admin/application_settings/metrics_and_profiling`).
 
 The minimum required settings you need to set are the InfluxDB host and port.
 Make sure _Enable InfluxDB Metrics_ is checked and hit **Save** to save the

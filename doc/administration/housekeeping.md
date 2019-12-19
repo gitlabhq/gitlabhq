@@ -5,14 +5,13 @@
 ## Automatic housekeeping
 
 GitLab automatically runs `git gc` and `git repack` on repositories
-after Git pushes. If needed you can change how often this happens, or
-to turn it off, go to **Admin area > Settings**
-(`/admin/application_settings`).
+after Git pushes. You can change how often this happens or turn it off in
+**Admin area > Settings > Repository** (`/admin/application_settings/repository`).
 
 ## Manual housekeeping
 
-The housekeeping function will run a `repack` or `gc` depending on the
-"Automatic Git repository housekeeping" settings configured in **Admin area > Settings**
+The housekeeping function runs `repack` or `gc` depending on the
+**Housekeeping** settings configured in **Admin area > Settings > Repository**.
 
 For example in the following scenario a `git repack -d` will be executed:
 

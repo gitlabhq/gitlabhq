@@ -36,10 +36,9 @@ in `repocheck.log`:
   - `/var/log/gitlab/gitlab-rails` for Omnibus installations
   - `/home/git/gitlab/log` for installations from source
 
-If for some reason the periodic repository check caused a lot of false
-alarms you can choose to clear *all* repository check states by
-clicking "Clear all repository checks" on the **Settings** page of the
-admin panel (`/admin/application_settings`).
+If the periodic repository check causes false alarms, you can clear all repository check states by
+navigating to **Admin area > Settings > Repository**
+(`/admin/application_settings/repository`) and clicking **Clear all repository checks**.
 
 ---
 [ce-3232]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/3232 "Auto git fsck"

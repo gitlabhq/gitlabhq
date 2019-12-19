@@ -71,6 +71,7 @@ description: 'Learn how to contribute to GitLab.'
 - [Auto DevOps development guide](auto_devops.md)
 - [Mass Inserting Models](mass_insert.md)
 - [Cycle Analytics development guide](cycle_analytics.md)
+- [Issue types vs first-class types](issue_types.md)
 
 ## Performance guides
 
@@ -106,6 +107,7 @@ description: 'Learn how to contribute to GitLab.'
 ### Debugging
 
 - Tracing the source of an SQL query using query comments with [Marginalia](database_query_comments.md)
+- Tracing the source of an SQL query in Rails console using [Verbose Query Logs](https://guides.rubyonrails.org/debugging_rails_applications.html#verbose-query-logs)
 
 ### Best practices
 

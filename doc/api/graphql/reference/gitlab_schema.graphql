@@ -957,13 +957,44 @@ type DestroySnippetPayload {
 }
 
 type DetailedStatus {
+  """
+  Path of the details for the pipeline status
+  """
   detailsPath: String!
+
+  """
+  Favicon of the pipeline status
+  """
   favicon: String!
+
+  """
+  Group of the pipeline status
+  """
   group: String!
+
+  """
+  Indicates if the pipeline status has further details
+  """
   hasDetails: Boolean!
+
+  """
+  Icon of the pipeline status
+  """
   icon: String!
+
+  """
+  Label of the pipeline status
+  """
   label: String!
+
+  """
+  Text of the pipeline status
+  """
   text: String!
+
+  """
+  Tooltip associated with the pipeline status
+  """
   tooltip: String!
 }
 
@@ -1693,7 +1724,7 @@ type EpicIssue implements Noteable {
   designCollection: DesignCollection
 
   """
-  Deprecated. Use `design_collection`.
+  Deprecated. Use `design_collection`
   """
   designs: DesignCollection @deprecated(reason: "use design_collection")
 
@@ -2508,7 +2539,7 @@ type Issue implements Noteable {
   designCollection: DesignCollection
 
   """
-  Deprecated. Use `design_collection`.
+  Deprecated. Use `design_collection`
   """
   designs: DesignCollection @deprecated(reason: "use design_collection")
 
@@ -4312,26 +4343,69 @@ type PageInfo {
 }
 
 type Pipeline {
+  """
+  Base SHA of the source branch
+  """
   beforeSha: String
+
+  """
+  Timestamp of the pipeline's commit
+  """
   committedAt: Time
 
   """
   Coverage percentage
   """
   coverage: Float
+
+  """
+  Timestamp of the pipeline's creation
+  """
   createdAt: Time!
+
+  """
+  Detailed status of the pipeline
+  """
   detailedStatus: DetailedStatus!
 
   """
   Duration of the pipeline in seconds
   """
   duration: Int
+
+  """
+  Timestamp of the pipeline's completion
+  """
   finishedAt: Time
+
+  """
+  ID of the pipeline
+  """
   id: ID!
+
+  """
+  Internal ID of the pipeline
+  """
   iid: String!
+
+  """
+  SHA of the pipeline's commit
+  """
   sha: String!
+
+  """
+  Timestamp when the pipeline was started
+  """
   startedAt: Time
+
+  """
+  Status of the pipeline (CREATED, PREPARING, PENDING, RUNNING, FAILED, SUCCESS, CANCELED, SKIPPED, MANUAL, SCHEDULED)
+  """
   status: PipelineStatusEnum!
+
+  """
+  Timestamp of the pipeline's last activity
+  """
   updatedAt: Time!
 
   """
