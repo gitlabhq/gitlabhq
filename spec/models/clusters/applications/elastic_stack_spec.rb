@@ -123,6 +123,7 @@ describe Clusters::Applications::ElasticStack do
 
     context "cluster doesn't have kubeclient" do
       let(:cluster) { create(:cluster) }
+
       subject { create(:clusters_applications_elastic_stack, cluster: cluster) }
 
       it 'returns nil' do

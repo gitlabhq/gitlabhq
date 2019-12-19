@@ -319,7 +319,7 @@ describe('Multi-file store actions', () => {
             { type: types.TOGGLE_FILE_OPEN, payload: 'test' },
             { type: types.ADD_FILE_TO_CHANGED, payload: 'test' },
           ],
-          [
+          jasmine.arrayContaining([
             {
               type: 'setFileActive',
               payload: 'test',
@@ -327,7 +327,7 @@ describe('Multi-file store actions', () => {
             {
               type: 'triggerFilesChange',
             },
-          ],
+          ]),
           done,
         );
       });
@@ -345,6 +345,21 @@ describe('Multi-file store actions', () => {
           })
           .then(() => {
             expect(document.querySelector('.flash-alert')).not.toBeNull();
+
+            done();
+          })
+          .catch(done.fail);
+      });
+
+      it('bursts unused seal', done => {
+        store
+          .dispatch('createTempEntry', {
+            name: 'test',
+            branchId: 'mybranch',
+            type: 'blob',
+          })
+          .then(() => {
+            expect(store.state.unusedSeal).toBe(false);
 
             done();
           })
@@ -648,6 +663,19 @@ describe('Multi-file store actions', () => {
         ],
       );
     });
+
+    it('bursts unused seal', done => {
+      store.state.entries.test = file('test');
+
+      store
+        .dispatch('deleteEntry', 'test')
+        .then(() => {
+          expect(store.state.unusedSeal).toBe(false);
+
+          done();
+        })
+        .catch(done.fail);
+    });
   });
 
   describe('renameEntry', () => {
@@ -747,7 +775,7 @@ describe('Multi-file store actions', () => {
               payload: 'renamed',
             },
           ],
-          [{ type: 'triggerFilesChange' }],
+          [{ type: 'burstUnusedSeal' }, { type: 'triggerFilesChange' }],
           done,
         );
       });
@@ -805,6 +833,20 @@ describe('Multi-file store actions', () => {
             expect(router.push).toHaveBeenCalledWith(`/project/foo-bar.md`);
           })
           .then(done)
+          .catch(done.fail);
+      });
+
+      it('bursts unused seal', done => {
+        store
+          .dispatch('renameEntry', {
+            path: 'orig',
+            name: 'renamed',
+          })
+          .then(() => {
+            expect(store.state.unusedSeal).toBe(false);
+
+            done();
+          })
           .catch(done.fail);
       });
     });

@@ -8,7 +8,7 @@ class AddArtifactsToCiBuildNeed < ActiveRecord::Migration[5.2]
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:ci_build_needs, :artifacts,
+    add_column_with_default(:ci_build_needs, :artifacts, # rubocop:disable Migration/AddColumnWithDefault
                             :boolean,
                             default: true,
                             allow_null: false)

@@ -1357,6 +1357,7 @@ describe Projects::IssuesController do
 
   describe 'GET #discussions' do
     let!(:discussion) { create(:discussion_note_on_issue, noteable: issue, project: issue.project) }
+
     context 'when authenticated' do
       before do
         project.add_developer(user)

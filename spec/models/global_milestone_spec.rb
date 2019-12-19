@@ -162,6 +162,7 @@ describe GlobalMilestone do
 
   describe '#initialize' do
     let(:milestone1_project1) { create(:milestone, title: "Milestone v1.2", project: project1) }
+
     subject(:global_milestone) { described_class.new(milestone1_project1) }
 
     it 'has exactly one group milestone' do

@@ -610,6 +610,7 @@ describe Ci::Build do
 
     context 'artifacts archive is a zip file and metadata exists' do
       let(:build) { create(:ci_build, :artifacts) }
+
       it { is_expected.to be_truthy }
     end
   end
@@ -1408,6 +1409,7 @@ describe Ci::Build do
 
         describe '#erased?' do
           let!(:build) { create(:ci_build, :trace_artifact, :success, :artifacts) }
+
           subject { build.erased? }
 
           context 'job has not been erased' do
@@ -1469,6 +1471,7 @@ describe Ci::Build do
   describe '#first_pending' do
     let!(:first) { create(:ci_build, pipeline: pipeline, status: 'pending', created_at: Date.yesterday) }
     let!(:second) { create(:ci_build, pipeline: pipeline, status: 'pending') }
+
     subject { described_class.first_pending }
 
     it { is_expected.to be_a(described_class) }

@@ -110,6 +110,7 @@ export const createTempEntry = (
       commit(types.ADD_FILE_TO_CHANGED, file.path);
       dispatch('setFileActive', file.path);
       dispatch('triggerFilesChange');
+      dispatch('burstUnusedSeal');
     }
 
     if (parentPath && !state.entries[parentPath].opened) {
@@ -222,7 +223,9 @@ export const deleteEntry = ({ commit, dispatch, state }, path) => {
     dispatch('deleteEntry', prevPath);
     return;
   }
-  if (state.unusedSeal) dispatch('burstUnusedSeal');
+
+  dispatch('burstUnusedSeal');
+
   if (entry.opened) dispatch('closeFile', entry);
 
   if (isTree) {
@@ -267,6 +270,7 @@ export const renameEntry = ({ dispatch, commit, state }, { path, name, parentPat
       commit(types.REMOVE_FILE_FROM_STAGED_AND_CHANGED, newEntry);
     } else if (!isInChanges) {
       commit(types.ADD_FILE_TO_CHANGED, newPath);
+      dispatch('burstUnusedSeal');
     }
 
     if (!newEntry.tempFile) {

@@ -34,6 +34,9 @@ blocking access to the table being modified. See ["Adding Columns With Default
 Values"](migration_style_guide.md#adding-columns-with-default-values) for more
 information on how to use this method.
 
+Note that usage of `add_column_with_default` with `allow_null: false` to also add
+a `NOT NULL` constraint is [discouraged](https://gitlab.com/gitlab-org/gitlab/issues/38060).
+
 ## Dropping Columns
 
 Removing columns is tricky because running GitLab processes may still be using

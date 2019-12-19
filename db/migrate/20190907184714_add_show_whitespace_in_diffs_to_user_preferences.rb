@@ -11,7 +11,7 @@ class AddShowWhitespaceInDiffsToUserPreferences < ActiveRecord::Migration[5.2]
   disable_ddl_transaction!
 
   def up
-    add_column_with_default :user_preferences, :show_whitespace_in_diffs, :boolean, default: true, allow_null: false
+    add_column_with_default :user_preferences, :show_whitespace_in_diffs, :boolean, default: true, allow_null: false # rubocop:disable Migration/AddColumnWithDefault
   end
 
   def down

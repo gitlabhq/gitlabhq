@@ -7,6 +7,7 @@ describe ReadmeBlob do
 
   describe 'policy' do
     let(:project) { build(:project, :repository) }
+
     subject { described_class.new(fake_blob(path: 'README.md'), project.repository) }
 
     it 'works with policy' do

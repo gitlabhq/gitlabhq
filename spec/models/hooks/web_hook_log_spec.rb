@@ -53,16 +53,19 @@ describe WebHookLog do
 
     describe '2xx' do
       let(:status) { '200' }
+
       it { expect(web_hook_log.success?).to be_truthy }
     end
 
     describe 'not 2xx' do
       let(:status) { '500' }
+
       it { expect(web_hook_log.success?).to be_falsey }
     end
 
     describe 'internal erorr' do
       let(:status) { 'internal error' }
+
       it { expect(web_hook_log.success?).to be_falsey }
     end
   end

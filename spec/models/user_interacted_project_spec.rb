@@ -11,6 +11,7 @@ describe UserInteractedProject do
     Event::ACTIONS.each do |action|
       context "for all actions (event types)" do
         let(:event) { build(:event, action: action) }
+
         it 'creates a record' do
           expect { subject }.to change { described_class.count }.from(0).to(1)
         end

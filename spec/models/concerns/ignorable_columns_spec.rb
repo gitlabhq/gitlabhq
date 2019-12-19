@@ -49,11 +49,13 @@ describe IgnorableColumns do
 
     context 'with single column' do
       let(:columns) { :name }
+
       it_behaves_like 'storing removal information'
     end
 
     context 'with array column' do
       let(:columns) { %i[name created_at] }
+
       it_behaves_like 'storing removal information'
     end
 

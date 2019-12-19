@@ -28,6 +28,7 @@ describe Group do
     describe '#members & #requesters' do
       let(:requester) { create(:user) }
       let(:developer) { create(:user) }
+
       before do
         group.request_access(requester)
         group.add_developer(developer)

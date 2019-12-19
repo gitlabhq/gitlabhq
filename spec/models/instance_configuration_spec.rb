@@ -48,6 +48,7 @@ describe InstanceConfiguration do
 
       describe '#gitlab_pages' do
         let(:gitlab_pages) { subject.settings[:gitlab_pages] }
+
         it 'returns Settings.pages' do
           gitlab_pages.delete(:ip_address)
 
@@ -73,6 +74,7 @@ describe InstanceConfiguration do
 
       describe '#gitlab_ci' do
         let(:gitlab_ci) { subject.settings[:gitlab_ci] }
+
         it 'returns Settings.gitalb_ci' do
           gitlab_ci.delete(:artifacts_max_size)
 

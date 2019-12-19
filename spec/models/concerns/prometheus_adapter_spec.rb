@@ -103,6 +103,7 @@ describe PrometheusAdapter, :use_clean_rails_memory_store_caching do
 
   describe '#calculate_reactive_cache' do
     let(:environment) { create(:environment, slug: 'env-slug') }
+
     before do
       service.manual_configuration = true
       service.active = true

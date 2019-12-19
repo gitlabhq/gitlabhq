@@ -11,7 +11,7 @@ class EnsureRemoteMirrorColumns < ActiveRecord::Migration[4.2]
     add_column :remote_mirrors, :remote_name, :string unless column_exists?(:remote_mirrors, :remote_name) # rubocop:disable Migration/AddLimitToStringColumns
 
     unless column_exists?(:remote_mirrors, :only_protected_branches)
-      add_column_with_default(:remote_mirrors,
+      add_column_with_default(:remote_mirrors, # rubocop:disable Migration/AddColumnWithDefault
                               :only_protected_branches,
                               :boolean,
                               default: false,

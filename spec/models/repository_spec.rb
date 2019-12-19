@@ -717,6 +717,7 @@ describe Repository do
 
   describe "search_files_by_content" do
     let(:results) { repository.search_files_by_content('feature', 'master') }
+
     subject { results }
 
     it { is_expected.to be_an Array }

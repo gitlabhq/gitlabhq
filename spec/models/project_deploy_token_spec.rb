@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe ProjectDeployToken, type: :model do
   let(:project) { create(:project) }
   let(:deploy_token) { create(:deploy_token) }
+
   subject(:project_deploy_token) { create(:project_deploy_token, project: project, deploy_token: deploy_token) }
 
   it { is_expected.to belong_to :project }

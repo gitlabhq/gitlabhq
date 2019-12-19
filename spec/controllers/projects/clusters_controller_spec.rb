@@ -26,6 +26,7 @@ describe Projects::ClustersController do
         let(:project) { create(:project) }
         let!(:enabled_cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
         let!(:disabled_cluster) { create(:cluster, :disabled, :provided_by_gcp, :production_environment, projects: [project]) }
+
         it 'lists available clusters' do
           go
 

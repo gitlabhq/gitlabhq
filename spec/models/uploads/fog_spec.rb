@@ -31,6 +31,7 @@ describe Uploads::Fog do
 
     describe '#keys' do
       let!(:uploads) { create_list(:upload, 2, :object_storage, uploader: FileUploader, model: project) }
+
       subject { data_store.keys(relation) }
 
       it 'returns keys' do
@@ -41,6 +42,7 @@ describe Uploads::Fog do
     describe '#delete_keys' do
       let(:keys) { data_store.keys(relation) }
       let!(:uploads) { create_list(:upload, 2, :with_file, :issuable_upload, model: project) }
+
       subject { data_store.delete_keys(keys) }
 
       before do

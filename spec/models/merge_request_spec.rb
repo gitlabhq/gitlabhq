@@ -110,6 +110,7 @@ describe MergeRequest do
 
   describe '#squash?' do
     let(:merge_request) { build(:merge_request, squash: squash) }
+
     subject { merge_request.squash? }
 
     context 'disabled in database' do
@@ -851,6 +852,7 @@ describe MergeRequest do
 
   describe '#modified_paths' do
     let(:paths) { double(:paths) }
+
     subject(:merge_request) { build(:merge_request) }
 
     before do
@@ -879,6 +881,7 @@ describe MergeRequest do
 
     context 'when no arguments provided' do
       let(:diff) { merge_request.merge_request_diff }
+
       subject(:merge_request) { create(:merge_request, source_branch: 'feature', target_branch: 'master') }
 
       it 'returns affected file paths for merge_request_diff' do
@@ -1554,6 +1557,7 @@ describe MergeRequest do
   describe '#calculate_reactive_cache' do
     let(:project) { create(:project, :repository) }
     let(:merge_request) { create(:merge_request, source_project: project) }
+
     subject { merge_request.calculate_reactive_cache(service_class_name) }
 
     context 'when given an unknown service class name' do
@@ -3044,6 +3048,7 @@ describe MergeRequest do
     describe 'transition to cannot_be_merged' do
       let(:notification_service) { double(:notification_service) }
       let(:todo_service) { double(:todo_service) }
+
       subject { create(:merge_request, state, merge_status: :unchecked) }
 
       before do
@@ -3253,6 +3258,7 @@ describe MergeRequest do
     describe 'when merge_when_pipeline_succeeds? is true' do
       describe 'when merge user is author' do
         let(:user) { create(:user) }
+
         subject do
           create(:merge_request,
                  merge_when_pipeline_succeeds: true,
@@ -3267,6 +3273,7 @@ describe MergeRequest do
 
       describe 'when merge user and author are different users' do
         let(:merge_user) { create(:user) }
+
         subject do
           create(:merge_request,
                  merge_when_pipeline_succeeds: true,

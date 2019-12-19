@@ -12,6 +12,7 @@ describe InternalRedirect do
       end
     end
   end
+
   subject(:controller) { controller_class.new }
 
   describe '#safe_redirect_path' do

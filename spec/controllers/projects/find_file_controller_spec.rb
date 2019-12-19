@@ -28,11 +28,13 @@ describe Projects::FindFileController do
 
     context "valid branch" do
       let(:id) { 'master' }
+
       it { is_expected.to respond_with(:success) }
     end
 
     context "invalid branch" do
       let(:id) { 'invalid-branch' }
+
       it { is_expected.to respond_with(:not_found) }
     end
   end
@@ -50,6 +52,7 @@ describe Projects::FindFileController do
 
     context "valid branch" do
       let(:id) { 'master' }
+
       it 'returns an array of file path list' do
         go
 

@@ -66,6 +66,7 @@ describe Clusters::Applications::Prometheus do
 
     context "cluster doesn't have kubeclient" do
       let(:cluster) { create(:cluster) }
+
       subject { create(:clusters_applications_prometheus, cluster: cluster) }
 
       it 'returns nil' do

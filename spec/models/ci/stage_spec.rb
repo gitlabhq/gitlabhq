@@ -146,6 +146,7 @@ describe Ci::Stage, :models do
 
     let(:user) { create(:user) }
     let(:stage) { create(:ci_stage_entity, status: :created) }
+
     subject { stage.detailed_status(user) }
 
     where(:statuses, :label) do

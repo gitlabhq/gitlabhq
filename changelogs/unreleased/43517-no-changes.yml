@@ -1,0 +1,6 @@
+---
+title: Fix "No changes" empty state showing up in changes tab, despite there being
+  changes
+merge_request: 21713
+author:
+type: fixed
