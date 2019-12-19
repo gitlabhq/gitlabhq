@@ -23,11 +23,6 @@ module QA
               element :save_button
               element :delete_button
             end
-
-            base.view 'app/assets/javascripts/issue_show/components/edit_actions.vue' do
-              element :save_button
-              element :delete_button
-            end
           end
         end
       end
