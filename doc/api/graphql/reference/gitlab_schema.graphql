@@ -503,6 +503,9 @@ type CreateSnippetPayload {
 }
 
 type Design implements Noteable {
+  """
+  Diff refs of the design
+  """
   diffRefs: DiffRefs!
 
   """
@@ -531,13 +534,34 @@ type Design implements Noteable {
   ): DiscussionConnection!
 
   """
-  The change that happened to the design at this version
+  Type of change made to the design at the version specified by the `atVersion`
+  argument if supplied. Defaults to the latest version
   """
   event: DesignVersionEvent!
+
+  """
+  Filename of the design file
+  """
   filename: String!
+
+  """
+  Full path of the design file
+  """
   fullPath: String!
+
+  """
+  ID of the design
+  """
   id: ID!
+
+  """
+  Image of the design
+  """
   image: String!
+
+  """
+  Issue associated with the design
+  """
   issue: Issue!
 
   """
@@ -566,13 +590,17 @@ type Design implements Noteable {
   ): NoteConnection!
 
   """
-  The total count of user-created notes for this design
+  Total count of user-created notes for the design
   """
   notesCount: Int!
+
+  """
+  Project associated with the design
+  """
   project: Project!
 
   """
-  All versions related to this design ordered newest first
+  All versions related to the design, ordered newest first
   """
   versions(
     """
@@ -599,7 +627,7 @@ type Design implements Noteable {
 
 type DesignCollection {
   """
-  All designs for this collection
+  All designs for the design collection
   """
   designs(
     """
@@ -638,11 +666,19 @@ type DesignCollection {
     """
     last: Int
   ): DesignConnection!
+
+  """
+  Issue associated with the design collection
+  """
   issue: Issue!
+
+  """
+  Project associated with the design collection
+  """
   project: Project!
 
   """
-  All versions related to all designs ordered newest first
+  All versions related to all designs, ordered newest first
   """
   versions(
     """
@@ -799,7 +835,7 @@ type DesignManagementUploadPayload {
 
 type DesignVersion {
   """
-  All designs that were changed in this version
+  All designs that were changed in the version
   """
   designs(
     """
@@ -822,7 +858,15 @@ type DesignVersion {
     """
     last: Int
   ): DesignConnection!
+
+  """
+  ID of the design version
+  """
   id: ID!
+
+  """
+  SHA of the design version
+  """
   sha: ID!
 }
 

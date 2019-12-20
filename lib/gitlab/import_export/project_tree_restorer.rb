@@ -10,7 +10,7 @@ module Gitlab
       def initialize(user:, shared:, project:)
         @path = File.join(shared.export_path, 'project.json')
         @user = user
-        @shared  = shared
+        @shared = shared
         @project = project
       end
 

@@ -104,22 +104,22 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
-| `id` | ID! |  |
-| `project` | Project! |  |
-| `issue` | Issue! |  |
-| `notesCount` | Int! | The total count of user-created notes for this design |
-| `filename` | String! |  |
-| `fullPath` | String! |  |
-| `event` | DesignVersionEvent! | The change that happened to the design at this version |
-| `image` | String! |  |
-| `diffRefs` | DiffRefs! |  |
+| `id` | ID! | ID of the design |
+| `project` | Project! | Project associated with the design |
+| `issue` | Issue! | Issue associated with the design |
+| `notesCount` | Int! | Total count of user-created notes for the design |
+| `filename` | String! | Filename of the design file |
+| `fullPath` | String! | Full path of the design file |
+| `event` | DesignVersionEvent! | Type of change made to the design at the version specified by the `atVersion` argument if supplied. Defaults to the latest version |
+| `image` | String! | Image of the design |
+| `diffRefs` | DiffRefs! | Diff refs of the design |
 
 ### DesignCollection
 
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
-| `project` | Project! |  |
-| `issue` | Issue! |  |
+| `project` | Project! | Project associated with the design collection |
+| `issue` | Issue! | Issue associated with the design collection |
 
 ### DesignManagementDeletePayload
 
@@ -142,8 +142,8 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
-| `id` | ID! |  |
-| `sha` | ID! |  |
+| `id` | ID! | ID of the design version |
+| `sha` | ID! | SHA of the design version |
 
 ### DestroyNotePayload
 

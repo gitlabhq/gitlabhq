@@ -35,7 +35,7 @@ module DashboardHelper
     tag.p(aria: { label: label }) do
       concat(link_or_title)
 
-      concat(tag.span(class: ['light', 'float-right']) do
+      concat(tag.span(class: %w[light float-right]) do
         boolean_to_icon(enabled)
       end)
 

@@ -31,7 +31,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   # Extend the standard message generation to accept our custom exception
   def failure_message
     exception = request.env["omniauth.error"]
-    error   = exception.error_reason if exception.respond_to?(:error_reason)
+    error = exception.error_reason if exception.respond_to?(:error_reason)
     error ||= exception.error        if exception.respond_to?(:error)
     error ||= exception.message      if exception.respond_to?(:message)
     error ||= request.env["omniauth.error.type"].to_s

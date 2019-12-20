@@ -36,7 +36,7 @@ module Gitlab
         end
 
         def relative_path(path)
-          path.gsub(%r{^#{Rails.root.to_s}/?}, '')
+          path.gsub(%r{^#{Rails.root}/?}, '')
         end
 
         def values_for(event)

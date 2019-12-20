@@ -211,6 +211,7 @@ describe Project do
     it { is_expected.to validate_presence_of(:creator) }
     it { is_expected.to validate_presence_of(:namespace) }
     it { is_expected.to validate_presence_of(:repository_storage) }
+    it { is_expected.to validate_numericality_of(:max_artifacts_size).only_integer.is_greater_than(0) }
 
     it 'validates build timeout constraints' do
       is_expected.to validate_numericality_of(:build_timeout)

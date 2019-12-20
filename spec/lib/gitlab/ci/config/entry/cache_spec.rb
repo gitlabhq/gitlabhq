@@ -31,13 +31,13 @@ describe Gitlab::Ci::Config::Entry::Cache do
         it_behaves_like 'hash key value'
 
         context 'with files' do
-          let(:key) { { files: ['a-file', 'other-file'] } }
+          let(:key) { { files: %w[a-file other-file] } }
 
           it_behaves_like 'hash key value'
         end
 
         context 'with files and prefix' do
-          let(:key) { { files: ['a-file', 'other-file'], prefix: 'prefix-value' } }
+          let(:key) { { files: %w[a-file other-file], prefix: 'prefix-value' } }
 
           it_behaves_like 'hash key value'
         end
@@ -55,7 +55,7 @@ describe Gitlab::Ci::Config::Entry::Cache do
         it { is_expected.to be_valid }
 
         context 'with files' do
-          let(:key) { { files: ['a-file', 'other-file'] } }
+          let(:key) { { files: %w[a-file other-file] } }
 
           it { is_expected.to be_valid }
         end

@@ -185,60 +185,20 @@ describe Projects::UpdatePagesService do
         .and_return(metadata)
     end
 
-    shared_examples 'pages size limit exceeded' do
-      it 'limits the maximum size of gitlab pages' do
-        subject.execute
-
-        expect(deploy_status.description)
-          .to match(/artifacts for pages are too large/)
-        expect(deploy_status).to be_script_failure
-        expect(project.pages_metadatum).not_to be_deployed
-      end
-    end
-
     context 'when maximum pages size is set to zero' do
       before do
         stub_application_setting(max_pages_size: 0)
       end
 
-      context 'when page size does not exceed internal maximum' do
-        before do
-          allow(metadata).to receive(:total_size).and_return(200.megabytes)
-        end
-
-        it 'updates pages correctly' do
-          subject.execute
-
-          expect(deploy_status.description).not_to be_present
-          expect(project.pages_metadatum).to be_deployed
-        end
-      end
-
-      context 'when pages size does exceed internal maximum' do
-        before do
-          allow(metadata).to receive(:total_size).and_return(2.terabytes)
-        end
-
-        it_behaves_like 'pages size limit exceeded'
-      end
+      it_behaves_like 'pages size limit is', ::Gitlab::Pages::MAX_SIZE
     end
 
-    context 'when pages size is greater than max size setting' do
+    context 'when size is limited on the instance level' do
       before do
-        stub_application_setting(max_pages_size: 200)
-        allow(metadata).to receive(:total_size).and_return(201.megabytes)
+        stub_application_setting(max_pages_size: 100)
       end
 
-      it_behaves_like 'pages size limit exceeded'
-    end
-
-    context 'when max size setting is greater than internal max size' do
-      before do
-        stub_application_setting(max_pages_size: 3.terabytes / 1.megabyte)
-        allow(metadata).to receive(:total_size).and_return(2.terabytes)
-      end
-
-      it_behaves_like 'pages size limit exceeded'
+      it_behaves_like 'pages size limit is', 100.megabytes
     end
   end
 

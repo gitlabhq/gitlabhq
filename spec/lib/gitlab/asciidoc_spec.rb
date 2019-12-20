@@ -481,7 +481,6 @@ module Gitlab
               ['../sample.adoc',    'doc/sample.adoc',     'relative path to a file up one directory'],
               ['../../sample.adoc', 'sample.adoc',         'relative path for a file up multiple directories']
             ].each do |include_path_, file_path_, desc|
-
               context "the file is specified by #{desc}" do
                 let(:include_path) { include_path_ }
                 let(:file_path) { file_path_ }

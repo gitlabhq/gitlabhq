@@ -322,7 +322,7 @@ shared_examples 'pages settings editing' do
 
       before do
         allow(Projects::UpdateService).to receive(:new).and_return(service)
-        allow(service).to receive(:execute).and_return(status: :error)
+        allow(service).to receive(:execute).and_return(status: :error, message: 'Some error has occured')
       end
 
       it 'tries to change the setting' do
@@ -332,7 +332,7 @@ shared_examples 'pages settings editing' do
 
         click_button 'Save'
 
-        expect(page).to have_text('Something went wrong on our end')
+        expect(page).to have_text('Some error has occured')
       end
     end
 

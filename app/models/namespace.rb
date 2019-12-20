@@ -46,6 +46,8 @@ class Namespace < ApplicationRecord
     length: { maximum: 255 },
     namespace_path: true
 
+  validates :max_artifacts_size, numericality: { only_integer: true, greater_than: 0, allow_nil: true }
+
   validate :nesting_level_allowed
 
   validates_associated :runners

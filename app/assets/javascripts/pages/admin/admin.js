@@ -36,6 +36,8 @@ export default function adminInit() {
   $('.log-bottom').on('click', e => {
     e.preventDefault();
     const $visibleLog = $('.file-content:visible');
+
+    // eslint-disable-next-line no-jquery/no-animate
     $visibleLog.animate(
       {
         scrollTop: $visibleLog.find('ol').height(),

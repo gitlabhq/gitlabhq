@@ -1,0 +1,5 @@
+---
+title: Fix bug when clicking on same note twice in Firefox
+merge_request: 21699
+author: Jan Beckmann
+type: fixed

@@ -46,7 +46,7 @@ RSpec.describe Quality::KubernetesClient do
     end
 
     context 'with multiple releases' do
-      let(:release_name) { ['my-release', 'my-release-2'] }
+      let(:release_name) { %w[my-release my-release-2] }
 
       it 'raises an error if the Kubernetes command fails' do
         expect(Gitlab::Popen).to receive(:popen_with_detail)

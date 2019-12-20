@@ -17,16 +17,16 @@ module Types
       field :sha, GraphQL::STRING_TYPE, null: false,
             description: "SHA of the pipeline's commit"
       field :before_sha, GraphQL::STRING_TYPE, null: true,
-            description: "Base SHA of the source branch"
+            description: 'Base SHA of the source branch'
       field :status, PipelineStatusEnum, null: false,
             description: "Status of the pipeline (#{::Ci::Pipeline.all_state_names.compact.join(', ').upcase})"
       field :detailed_status, Types::Ci::DetailedStatusType, null: false,
             description: 'Detailed status of the pipeline',
             resolve: -> (obj, _args, ctx) { obj.detailed_status(ctx[:current_user]) }
       field :duration, GraphQL::INT_TYPE, null: true,
-            description: "Duration of the pipeline in seconds"
+            description: 'Duration of the pipeline in seconds'
       field :coverage, GraphQL::FLOAT_TYPE, null: true,
-            description: "Coverage percentage"
+            description: 'Coverage percentage'
       field :created_at, Types::TimeType, null: false,
             description: "Timestamp of the pipeline's creation"
       field :updated_at, Types::TimeType, null: false,

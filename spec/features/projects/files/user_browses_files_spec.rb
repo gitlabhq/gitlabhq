@@ -229,6 +229,16 @@ describe "User browses files" do
       expect(page).to have_content("*.rb")
                  .and have_content("Dmitriy Zaporozhets")
                  .and have_content("Initial commit")
+                 .and have_content("Ignore DS files")
+
+      previous_commit_anchor = "//a[@title='Ignore DS files']/parent::span/following-sibling::span/a"
+      find(:xpath, previous_commit_anchor).click
+
+      expect(page).to have_content("*.rb")
+                 .and have_content("Dmitriy Zaporozhets")
+                 .and have_content("Initial commit")
+
+      expect(page).not_to have_content("Ignore DS files")
     end
   end
 

@@ -115,5 +115,16 @@ describe Projects::PagesController do
 
       patch :update, params: request_params
     end
+
+    context 'when update_service returns an error message' do
+      let(:update_service) { double(execute: { status: :error, message: 'some error happened' }) }
+
+      it 'adds an error message' do
+        patch :update, params: request_params
+
+        expect(response).to redirect_to(project_pages_path(project))
+        expect(flash[:alert]).to eq('some error happened')
+      end
+    end
   end
 end

@@ -22,7 +22,7 @@ describe ControllerWithCrossProjectAccessCheck do
     describe '#requires_cross_project_access' do
       controller(ApplicationController) do
         # `described_class` is not available in this context
-        include ControllerWithCrossProjectAccessCheck # rubocop:disable RSpec/DescribedClass
+        include ControllerWithCrossProjectAccessCheck
 
         requires_cross_project_access :index, show: false,
                                               unless: -> { unless_condition },
@@ -81,7 +81,7 @@ describe ControllerWithCrossProjectAccessCheck do
     describe '#skip_cross_project_access_check' do
       controller(ApplicationController) do
         # `described_class` is not available in this context
-        include ControllerWithCrossProjectAccessCheck # rubocop:disable RSpec/DescribedClass
+        include ControllerWithCrossProjectAccessCheck
 
         requires_cross_project_access
 

@@ -45,7 +45,6 @@ namespace :admin do
   scope(path: 'groups/*id',
         controller: :groups,
         constraints: { id: Gitlab::PathRegex.full_namespace_route_regex, format: /(html|json|atom)/ }) do
-
     scope(as: :group) do
       put :members_update
       get :edit, action: :edit
@@ -90,7 +89,6 @@ namespace :admin do
               path: '/',
               constraints: { id: Gitlab::PathRegex.project_route_regex },
               only: [:show, :destroy]) do
-
       member do
         put :transfer
         post :repository_check

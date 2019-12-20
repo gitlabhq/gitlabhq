@@ -30,9 +30,6 @@ Using the GitLab project Kubernetes integration, you can:
 - View [Pod logs](#pod-logs-ultimate). **(ULTIMATE)**
 - Run serverless workloads on [Kubernetes with Knative](serverless/index.md).
 
-See [Adding and removing Kubernetes clusters](add_remove_clusters.md) for details on how to
-set up integrations.
-
 ### Deploy Boards **(PREMIUM)**
 
 GitLab's Deploy Boards offer a consolidated view of the current health and
@@ -79,10 +76,7 @@ Kubernetes clusters can be used without Auto DevOps.
 
 ### Web terminals
 
-NOTE: **Note:**
-Introduced in GitLab 8.15. You must be the project owner or have `maintainer` permissions
-to use terminals. Support is limited to the first container in the
-first pod of your environment.
+> Introduced in GitLab 8.15.
 
 When enabled, the Kubernetes service adds [web terminal](../../../ci/environments.md#web-terminals)
 support to your [environments](../../../ci/environments.md). This is based on the `exec` functionality found in
@@ -96,6 +90,14 @@ pods are annotated with:
 
 `$CI_ENVIRONMENT_SLUG` and `$CI_PROJECT_PATH_SLUG` are the values of
 the CI variables.
+
+You must be the project owner or have `maintainer` permissions to use terminals. Support is limited
+to the first container in the first pod of your environment.
+
+## Adding and removing clusters
+
+See [Adding and removing Kubernetes clusters](add_remove_clusters.md) for details on how to
+set up integrations with Google Cloud Platform (GCP) and Amazon Elastic Kubernetes Service (EKS).
 
 ## Cluster configuration
 
@@ -115,8 +117,8 @@ applications running on the cluster.
 
 ### GitLab-managed clusters
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22011) in GitLab 11.5.
-> Became [optional](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/26565) in GitLab 11.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22011) in GitLab 11.5.
+> - Became [optional](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/26565) in GitLab 11.11.
 
 You can choose to allow GitLab to manage your cluster for you. If your cluster is
 managed by GitLab, resources for your projects will be automatically created. See the

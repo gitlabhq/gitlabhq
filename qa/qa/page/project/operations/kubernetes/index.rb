@@ -13,6 +13,10 @@ module QA
             def add_kubernetes_cluster
               click_on 'Add Kubernetes cluster'
             end
+
+            def has_cluster?(cluster)
+              has_element?(:cluster, cluster_name: cluster.to_s)
+            end
           end
         end
       end

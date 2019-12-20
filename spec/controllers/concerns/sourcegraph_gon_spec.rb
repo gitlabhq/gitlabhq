@@ -17,7 +17,7 @@ describe SourcegraphGon do
   let(:project) { internal_project }
 
   controller(ApplicationController) do
-    include SourcegraphGon # rubocop:disable RSpec/DescribedClass
+    include SourcegraphGon
 
     def index
       head :ok

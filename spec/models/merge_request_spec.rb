@@ -384,7 +384,7 @@ describe MergeRequest do
     end
 
     it 'returns target branches sort by updated at desc' do
-      expect(described_class.recent_target_branches).to match_array(['feature', 'merge-test', 'fix'])
+      expect(described_class.recent_target_branches).to match_array(%w[feature merge-test fix])
     end
   end
 

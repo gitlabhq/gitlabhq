@@ -5,7 +5,7 @@ class Gitlab::Seeder::CycleAnalytics
   def initialize(project, perf: false)
     @project = project
     @user = User.admins.first
-    @issue_count = perf ? 1000 : 5
+    @issue_count = perf ? 1000 : ENV.fetch('CYCLE_ANALYTICS_ISSUE_COUNT', 5).to_i
   end
 
   def seed_metrics!

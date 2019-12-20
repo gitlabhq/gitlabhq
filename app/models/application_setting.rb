@@ -121,6 +121,11 @@ class ApplicationSetting < ApplicationRecord
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
 
+  validates :max_pages_size,
+            presence: true,
+            numericality: { only_integer: true, greater_than: 0,
+                            less_than: ::Gitlab::Pages::MAX_SIZE / 1.megabyte }
+
   validates :default_artifacts_expire_in, presence: true, duration: true
 
   validates :container_registry_token_expire_delay,

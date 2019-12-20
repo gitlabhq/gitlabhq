@@ -69,7 +69,7 @@ describe Gitlab::GitalyClient::RemoteService do
 
   describe '#update_remote_mirror' do
     let(:ref_name) { 'remote_mirror_1' }
-    let(:only_branches_matching) { ['my-branch', 'master'] }
+    let(:only_branches_matching) { %w[my-branch master] }
     let(:ssh_key) { 'KEY' }
     let(:known_hosts) { 'KNOWN HOSTS' }
 

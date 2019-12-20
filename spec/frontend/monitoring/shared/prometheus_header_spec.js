@@ -18,7 +18,7 @@ describe('Prometheus Header component', () => {
 
   describe('Prometheus header component', () => {
     it('should show a title', () => {
-      const title = prometheusHeader.vm.$el.querySelector('.js-graph-title').textContent;
+      const title = prometheusHeader.find({ ref: 'title' }).text();
 
       expect(title).toBe('graph header');
     });

@@ -1,5 +1,9 @@
 # Grafana Configuration
 
+CAUTION: **InfluxDB is deprecated in favor of Prometheus:**
+InfluxDB support is scheduled to be removed in GitLab 13.0.
+You are advised to use [Prometheus](../prometheus/index.md) instead.
+
 [Grafana](https://grafana.com/) is a tool that allows you to visualize time
 series metrics through graphs and dashboards. It supports several backend
 data stores, including InfluxDB. GitLab writes performance data to InfluxDB
@@ -152,7 +156,7 @@ For more information and further mitigation details, please refer to our [blog p
 
 Read more on:
 
-- [Introduction to GitLab Performance Monitoring](introduction.md)
+- [Introduction to GitLab Performance Monitoring](index.md)
 - [GitLab Configuration](gitlab_configuration.md)
 - [InfluxDB Installation/Configuration](influxdb_configuration.md)
 - [InfluxDB Schema](influxdb_schema.md)

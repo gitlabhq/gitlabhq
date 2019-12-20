@@ -299,3 +299,76 @@ Graphql/Descriptions:
 
 RSpec/AnyInstanceOf:
   Enabled: false
+
+# Cops for upgrade to gitlab-styles 3.1.0
+FactoryBot/FactoryClassName:
+  Enabled: false
+
+FactoryBot/CreateList:
+  Enabled: false
+
+Rails/SafeNavigationWithBlank:
+  Enabled: false
+
+Rails/ApplicationController:
+  Enabled: false
+
+Rails/ApplicationMailer:
+  Enabled: false
+
+Rails/RakeEnvironment:
+  Enabled: false
+
+Rails/HelperInstanceVariable:
+  Enabled: false
+
+Rails/EnumHash:
+  Enabled: false
+
+RSpec/ReceiveCounts:
+  Enabled: false
+
+RSpec/ContextMethod:
+  Enabled: false
+
+RSpec/ImplicitSubject:
+  Enabled: false
+
+RSpec/LeakyConstantDeclaration:
+  Enabled: false
+
+RSpec/EmptyLineAfterHook:
+  Enabled: false
+
+RSpec/HooksBeforeExamples:
+  Enabled: false
+
+RSpec/EmptyLineAfterExample:
+  Enabled: false
+
+RSpec/Be:
+  Enabled: false
+
+RSpec/DescribedClass:
+  Enabled: false
+
+RSpec/SharedExamples:
+  Enabled: false
+
+RSpec/EmptyLineAfterExampleGroup:
+  Enabled: false
+
+RSpec/ReceiveNever:
+  Enabled: false
+
+RSpec/MissingExampleGroupArgument:
+  Enabled: false
+
+RSpec/UnspecifiedException:
+  Enabled: false
+
+Style/MultilineWhenThen:
+  Enabled: false
+
+Style/FloatDivision:
+  Enabled: false

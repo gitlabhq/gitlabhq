@@ -45,7 +45,7 @@ module Gitlab
         require 'rblineprof'
 
         retval  = nil
-        samples = lineprof(/^#{Rails.root.to_s}/) { retval = yield }
+        samples = lineprof(/^#{Rails.root}/) { retval = yield }
 
         file_samples = aggregate_rblineprof(samples)
 

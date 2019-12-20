@@ -47,10 +47,11 @@ But since 11.8 the indexer uses Gitaly for data access as well. NFS can still
 be leveraged for redudancy on block level of the Git data. But only has to
 be mounted on the Gitaly server.
 
-Starting with GitLab 11.8, it is possible to use Elasticsearch in conjunction with
+From GitLab v11.8 to v12.2, it is possible to use Elasticsearch in conjunction with
 a Gitaly setup that isn't utilising NFS. In order to use Elasticsearch in this
-scenario, the [new repository indexer](../../integration/elasticsearch.md#elasticsearch-repository-indexer-beta)
-needs to be enabled in your GitLab configuration.
+scenario, the [new repository indexer](../../integration/elasticsearch.md#elasticsearch-repository-indexer)
+needs to be enabled in your GitLab configuration. [Since GitLab v12.3](https://gitlab.com/gitlab-org/gitlab/issues/6481),
+the new indexer becomes the default and no configuration is required.
 
 NOTE: **Note:** While Gitaly can be used as a replacement for NFS, it's not recommended
 to use EFS as it may impact GitLab's performance. Review the [relevant documentation](../high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs)

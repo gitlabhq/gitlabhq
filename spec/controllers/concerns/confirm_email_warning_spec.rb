@@ -10,7 +10,7 @@ describe ConfirmEmailWarning do
 
   controller(ApplicationController) do
     # `described_class` is not available in this context
-    include ConfirmEmailWarning # rubocop:disable RSpec/DescribedClass
+    include ConfirmEmailWarning
 
     def index
       head :ok

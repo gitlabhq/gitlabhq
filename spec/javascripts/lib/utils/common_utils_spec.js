@@ -88,10 +88,12 @@ describe('common_utils', () => {
   describe('handleLocationHash', () => {
     beforeEach(() => {
       spyOn(window.document, 'getElementById').and.callThrough();
+      jasmine.clock().install();
     });
 
     afterEach(() => {
       window.history.pushState({}, null, '');
+      jasmine.clock().uninstall();
     });
 
     function expectGetElementIdToHaveBeenCalledWith(elementId) {
@@ -171,6 +173,7 @@ describe('common_utils', () => {
 
       window.history.pushState({}, null, '#test');
       commonUtils.handleLocationHash();
+      jasmine.clock().tick(1);
 
       expectGetElementIdToHaveBeenCalledWith('test');
       expectGetElementIdToHaveBeenCalledWith('user-content-test');

@@ -106,7 +106,7 @@ graph TD;
   D2 --> |Yes| D4
   D4 --> |No| D5
   D4 --> |Yes| D6
-  D{Is the error concerning<br>the beta indexer?}
+  D{Is the error concerning<br>the Go indexer?}
   D1[It would be best<br>to speak with an<br>Elasticsearch admin.]
   D2{Is the ICU development<br>package installed?}
   D3>This package is required.<br>Install the package<br>and retry.]
@@ -245,12 +245,13 @@ much to "integrate" here.
 
 If the issue is:
 
-- Not concerning the beta indexer, it is almost always an
+- With the Go indexer, check if the ICU development package is installed.
+  This is a required package so make sure you install it.
+  Go indexer was a beta indexer which can be optionally turned on/off, but in 12.3 it reached stable status and is now the default.
+- Not concerning the Go indexer, it is almost always an
   Elasticsearch-side issue. This means you should reach out to your Elasticsearch admin
   regarding the error(s) you are seeing. If you are unsure here, it never hurts to reach
   out to GitLab support.
-- With the beta indexer, check if the ICU development package is installed.
-  This is a required package so make sure you install it.
 
 Beyond that, you will want to review the error. If it is:
 

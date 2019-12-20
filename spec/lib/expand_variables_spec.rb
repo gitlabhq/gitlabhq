@@ -100,7 +100,7 @@ describe ExpandVariables do
       end
 
       with_them do
-        subject { ExpandVariables.expand(value, variables) } # rubocop:disable RSpec/DescribedClass
+        subject { ExpandVariables.expand(value, variables) }
 
         it { is_expected.to eq(result) }
       end

@@ -6,12 +6,6 @@ module QA
       module Operations
         module Kubernetes
           class Show < Page::Base
-            view 'app/assets/javascripts/clusters/components/application_row.vue' do
-              element :application_row, 'js-cluster-application-row-${this.id}' # rubocop:disable QA/ElementWithPattern
-              element :install_button, "__('Install')" # rubocop:disable QA/ElementWithPattern
-              element :installed_button, "__('Installed')" # rubocop:disable QA/ElementWithPattern
-            end
-
             view 'app/assets/javascripts/clusters/components/applications.vue' do
               element :ingress_ip_address, 'id="ingress-endpoint"' # rubocop:disable QA/ElementWithPattern
             end
@@ -22,15 +16,21 @@ module QA
             end
 
             def install!(application_name)
-              within(".js-cluster-application-row-#{application_name}") do
-                page.has_button?('Install', wait: 30)
-                click_on 'Install'
+              within_element(application_name) do
+                has_element?(:install_button, application: application_name, wait: 30)
+                click_on 'Install' # TODO replace with click_element
               end
             end
 
             def await_installed(application_name)
-              within(".js-cluster-application-row-#{application_name}") do
-                page.has_text?(/Installed|Uninstall/, wait: 300)
+              within_element(application_name) do
+                has_element?(:uninstall_button, application: application_name, wait: 300)
+              end
+            end
+
+            def has_application_installed?(application_name)
+              within_element(application_name) do
+                has_element?(:uninstall_button, application: application_name, wait: 300)
               end
             end
 

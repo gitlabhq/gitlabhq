@@ -40,14 +40,13 @@ Once the data is added to the database or repository and [Elasticsearch is
 enabled in the admin area](#enabling-elasticsearch) the search index will be
 updated automatically.
 
-## Elasticsearch repository indexer (beta)
+## Elasticsearch repository indexer
 
-In order to improve Elasticsearch indexing performance, GitLab has made available a [new indexer written in Go](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer).
-This will replace the included Ruby indexer in the future but should be considered beta software for now, so there may be some bugs.
+For indexing Git repository data, GitLab uses an [indexer written in Go](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer).
 
-The Elasticsearch Go indexer is included in Omnibus for GitLab 11.8 and newer.
-
-To use the new Elasticsearch indexer included in Omnibus, check the box "Use the new repository indexer (beta)"  when [enabling the Elasticsearch integration](#enabling-elasticsearch).
+The Go indexer was included in Omnibus GitLab 11.8 as an optional replacement to a
+Ruby-based indexer. [Since GitLab v12.3](https://gitlab.com/gitlab-org/gitlab/issues/6481),
+all indexing is done by the Go indexer, and the Ruby indexer is removed.
 
 If you would like to use the Elasticsearch Go indexer with a source installation or an older version of GitLab, please follow the instructions below.
 
@@ -139,7 +138,6 @@ The following Elasticsearch settings are available:
 | Parameter                                             | Description |
 | ----------------------------------------------------- | ----------- |
 | `Elasticsearch indexing`                              | Enables/disables Elasticsearch indexing. You may want to enable indexing but disable search in order to give the index time to be fully completed, for example. Also, keep in mind that this option doesn't have any impact on existing data, this only enables/disables background indexer which tracks data changes. So by enabling this you will not get your existing data indexed, use special rake task for that as explained in [Adding GitLab's data to the Elasticsearch index](#adding-gitlabs-data-to-the-elasticsearch-index). |
-| `Use the new repository indexer (beta)`               | Perform repository indexing using [GitLab Elasticsearch Indexer](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer). |
 | `Search with Elasticsearch enabled`                   | Enables/disables using Elasticsearch in search. |
 | `URL`                                                 | The URL to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., `http://host1, https://host2:9200`). If your Elasticsearch instance is password protected, pass the `username:password` in the URL (e.g., `http://<username>:<password>@<elastic_host>:9200/`). |
 | `Number of Elasticsearch shards`                      | Elasticsearch indexes are split into multiple shards for performance reasons. In general, larger indexes need to have more shards. Changes to this value do not take effect until the index is recreated. You can read more about tradeoffs in the [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-create-index.html#create-index-settings) |

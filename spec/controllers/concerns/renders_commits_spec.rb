@@ -9,7 +9,7 @@ describe RendersCommits do
 
   controller(ApplicationController) do
     # `described_class` is not available in this context
-    include RendersCommits # rubocop:disable RSpec/DescribedClass
+    include RendersCommits
 
     def index
       @merge_request = MergeRequest.find(params[:id])

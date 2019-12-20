@@ -138,8 +138,6 @@ describe ErrorTracking::ProjectErrorTrackingSetting do
           error: 'error message',
           error_type: ErrorTracking::ProjectErrorTrackingSetting::SENTRY_API_ERROR_TYPE_NON_20X_RESPONSE
         )
-        expect(subject).to have_received(:sentry_client)
-        expect(sentry_client).to have_received(:list_issues)
       end
     end
 
@@ -159,8 +157,6 @@ describe ErrorTracking::ProjectErrorTrackingSetting do
           error: 'Sentry API response is missing keys. key not found: "id"',
           error_type: ErrorTracking::ProjectErrorTrackingSetting::SENTRY_API_ERROR_TYPE_MISSING_KEYS
         )
-        expect(subject).to have_received(:sentry_client)
-        expect(sentry_client).to have_received(:list_issues)
       end
     end
 
@@ -181,8 +177,21 @@ describe ErrorTracking::ProjectErrorTrackingSetting do
           error: error_msg,
           error_type: ErrorTracking::ProjectErrorTrackingSetting::SENTRY_API_ERROR_INVALID_SIZE
         )
-        expect(subject).to have_received(:sentry_client)
-        expect(sentry_client).to have_received(:list_issues)
+      end
+    end
+
+    context 'when sentry client raises StandardError' do
+      let(:sentry_client) { spy(:sentry_client) }
+
+      before do
+        synchronous_reactive_cache(subject)
+
+        allow(subject).to receive(:sentry_client).and_return(sentry_client)
+        allow(sentry_client).to receive(:list_issues).with(opts).and_raise(StandardError)
+      end
+
+      it 'returns error' do
+        expect(result).to eq(error: 'Unexpected Error')
       end
     end
   end

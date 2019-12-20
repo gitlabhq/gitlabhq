@@ -7,7 +7,7 @@ describe LfsRequest do
 
   controller(Projects::GitHttpClientController) do
     # `described_class` is not available in this context
-    include LfsRequest # rubocop:disable RSpec/DescribedClass
+    include LfsRequest
 
     def show
       storage_project

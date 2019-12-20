@@ -16,7 +16,7 @@ describe MetricsDashboard do
     end
 
     controller(::ApplicationController) do
-      include MetricsDashboard # rubocop:disable RSpec/DescribedClass
+      include MetricsDashboard
     end
 
     let(:json_response) do

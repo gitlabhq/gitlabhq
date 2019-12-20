@@ -506,6 +506,8 @@ export class AwardsHandler {
     const options = {
       scrollTop: $('.awards').offset().top - 110,
     };
+
+    // eslint-disable-next-line no-jquery/no-animate
     return $('body, html').animate(options, 200);
   }
 

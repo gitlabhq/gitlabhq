@@ -39,6 +39,12 @@ RUN wget -q https://chromedriver.storage.googleapis.com/$(wget -q -O - https://c
 RUN unzip chromedriver_linux64.zip -d /usr/local/bin
 
 ##
+# Install K3d local cluster support
+#   https://github.com/rancher/k3d
+#
+RUN curl -s https://raw.githubusercontent.com/rancher/k3d/master/install.sh | TAG=v1.3.4 bash
+
+##
 # Install gcloud and kubectl CLI used in Auto DevOps test to create K8s
 # clusters
 #

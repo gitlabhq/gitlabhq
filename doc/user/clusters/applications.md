@@ -454,6 +454,10 @@ Supported applications:
 
 ### Usage
 
+You can find and import all the files referenced below
+in the [example cluster applications
+project](https://gitlab.com/gitlab-org/cluster-integration/example-cluster-applications/).
+
 To install applications using GitLab CI:
 
 1. Connect the cluster to a [cluster management project](management_project.md).

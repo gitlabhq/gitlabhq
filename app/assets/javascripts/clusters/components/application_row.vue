@@ -290,6 +290,7 @@ export default {
       disabled && 'cluster-application-disabled',
     ]"
     class="cluster-application-row gl-responsive-table-row gl-responsive-table-row-col-span"
+    :data-qa-selector="id"
   >
     <div class="gl-responsive-table-row-layout" role="row">
       <div class="table-section append-right-8 section-align-top" role="gridcell">
@@ -381,12 +382,16 @@ export default {
             :disabled="disabled || installButtonDisabled"
             :label="installButtonLabel"
             class="js-cluster-application-install-button"
+            data-qa-selector="install_button"
+            :data-qa-application="id"
             @click="installClicked"
           />
           <uninstall-application-button
             v-if="displayUninstallButton"
             v-gl-modal-directive="'uninstall-' + id"
             :status="status"
+            data-qa-selector="uninstall_button"
+            :data-qa-application="id"
             class="js-cluster-application-uninstall-button"
           />
           <uninstall-application-confirmation-modal

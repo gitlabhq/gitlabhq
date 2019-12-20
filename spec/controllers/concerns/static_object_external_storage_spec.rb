@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe StaticObjectExternalStorage do
   controller(Projects::ApplicationController) do
-    include StaticObjectExternalStorage # rubocop:disable RSpec/DescribedClass
+    include StaticObjectExternalStorage
 
     before_action :redirect_to_external_storage, if: :static_objects_external_storage_enabled?
 

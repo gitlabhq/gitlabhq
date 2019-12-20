@@ -34,7 +34,7 @@ class Projects::PagesController < Projects::ApplicationController
         if result[:status] == :success
           flash[:notice] = 'Your changes have been saved'
         else
-          flash[:alert] = 'Something went wrong on our end'
+          flash[:alert] = result[:message]
         end
 
         redirect_to project_pages_path(@project)
@@ -45,6 +45,12 @@ class Projects::PagesController < Projects::ApplicationController
   private
 
   def project_params
-    params.require(:project).permit(:pages_https_only)
+    params.require(:project).permit(project_params_attributes)
+  end
+
+  def project_params_attributes
+    %i[pages_https_only]
   end
 end
+
+Projects::PagesController.prepend_if_ee('EE::Projects::PagesController')

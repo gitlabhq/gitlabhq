@@ -9206,7 +9206,7 @@
           "fields": [
             {
               "name": "designs",
-              "description": "All designs for this collection",
+              "description": "All designs for the design collection",
               "args": [
                 {
                   "name": "ids",
@@ -9309,7 +9309,7 @@
             },
             {
               "name": "issue",
-              "description": null,
+              "description": "Issue associated with the design collection",
               "args": [
 
               ],
@@ -9327,7 +9327,7 @@
             },
             {
               "name": "project",
-              "description": null,
+              "description": "Project associated with the design collection",
               "args": [
 
               ],
@@ -9345,7 +9345,7 @@
             },
             {
               "name": "versions",
-              "description": "All versions related to all designs ordered newest first",
+              "description": "All versions related to all designs, ordered newest first",
               "args": [
                 {
                   "name": "after",
@@ -10322,7 +10322,7 @@
           "fields": [
             {
               "name": "diffRefs",
-              "description": null,
+              "description": "Diff refs of the design",
               "args": [
 
               ],
@@ -10397,7 +10397,7 @@
             },
             {
               "name": "event",
-              "description": "The change that happened to the design at this version",
+              "description": "Type of change made to the design at the version specified by the `atVersion` argument if supplied. Defaults to the latest version",
               "args": [
 
               ],
@@ -10415,7 +10415,7 @@
             },
             {
               "name": "filename",
-              "description": null,
+              "description": "Filename of the design file",
               "args": [
 
               ],
@@ -10433,7 +10433,7 @@
             },
             {
               "name": "fullPath",
-              "description": null,
+              "description": "Full path of the design file",
               "args": [
 
               ],
@@ -10451,7 +10451,7 @@
             },
             {
               "name": "id",
-              "description": null,
+              "description": "ID of the design",
               "args": [
 
               ],
@@ -10469,7 +10469,7 @@
             },
             {
               "name": "image",
-              "description": null,
+              "description": "Image of the design",
               "args": [
 
               ],
@@ -10487,7 +10487,7 @@
             },
             {
               "name": "issue",
-              "description": null,
+              "description": "Issue associated with the design",
               "args": [
 
               ],
@@ -10562,7 +10562,7 @@
             },
             {
               "name": "notesCount",
-              "description": "The total count of user-created notes for this design",
+              "description": "Total count of user-created notes for the design",
               "args": [
 
               ],
@@ -10580,7 +10580,7 @@
             },
             {
               "name": "project",
-              "description": null,
+              "description": "Project associated with the design",
               "args": [
 
               ],
@@ -10598,7 +10598,7 @@
             },
             {
               "name": "versions",
-              "description": "All versions related to this design ordered newest first",
+              "description": "All versions related to the design, ordered newest first",
               "args": [
                 {
                   "name": "after",
@@ -10819,7 +10819,7 @@
           "fields": [
             {
               "name": "designs",
-              "description": "All designs that were changed in this version",
+              "description": "All designs that were changed in the version",
               "args": [
                 {
                   "name": "after",
@@ -10876,7 +10876,7 @@
             },
             {
               "name": "id",
-              "description": null,
+              "description": "ID of the design version",
               "args": [
 
               ],
@@ -10894,7 +10894,7 @@
             },
             {
               "name": "sha",
-              "description": null,
+              "description": "SHA of the design version",
               "args": [
 
               ],

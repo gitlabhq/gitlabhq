@@ -1,0 +1,5 @@
+---
+title: Fix pages size limit setting in database if it is above the hard limit
+merge_request: 20154
+author:
+type: fixed

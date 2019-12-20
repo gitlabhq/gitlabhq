@@ -95,7 +95,7 @@ Depending on the event type additional tags may be available as well.
 
 Read more on:
 
-- [Introduction to GitLab Performance Monitoring](introduction.md)
+- [Introduction to GitLab Performance Monitoring](index.md)
 - [GitLab Configuration](gitlab_configuration.md)
 - [InfluxDB Configuration](influxdb_configuration.md)
 - [Grafana Install/Configuration](grafana_configuration.md)

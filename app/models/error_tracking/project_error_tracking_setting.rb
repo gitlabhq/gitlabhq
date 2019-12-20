@@ -122,6 +122,9 @@ module ErrorTracking
       { error: e.message, error_type: SENTRY_API_ERROR_INVALID_SIZE }
     rescue Sentry::Client::BadRequestError => e
       { error: e.message, error_type: SENTRY_API_ERROR_TYPE_BAD_REQUEST }
+    rescue StandardError => e
+      Gitlab::ErrorTracking.track_exception(e)
+      { error: 'Unexpected Error' }
     end
 
     # http://HOST/api/0/projects/ORG/PROJECT

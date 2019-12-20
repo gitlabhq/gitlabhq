@@ -2707,7 +2707,7 @@ describe NotificationService, :mailer do
     # User to be participant by default
     # This user does not contain any record in notification settings table
     # It should be treated with a :participating notification_level
-    @u_lazy_participant      = create(:user, username: 'lazy-participant')
+    @u_lazy_participant = create(:user, username: 'lazy-participant')
 
     @u_guest_watcher = create_user_with_notification(:watch, 'guest_watching')
     @u_guest_custom = create_user_with_notification(:custom, 'guest_custom')

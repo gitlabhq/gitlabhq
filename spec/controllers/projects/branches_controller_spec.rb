@@ -591,7 +591,7 @@ describe Projects::BranchesController do
           params: {
             namespace_id: project.namespace,
             project_id: project,
-            names: ['fix', 'add-pdf-file', 'branch-merged']
+            names: %w[fix add-pdf-file branch-merged]
           }
 
       expect(response).to have_gitlab_http_status(200)
@@ -639,7 +639,7 @@ describe Projects::BranchesController do
             params: {
               namespace_id: project.namespace,
               project_id: project,
-              names: ['fix', 'add-pdf-file', 'branch-merged']
+              names: %w[fix add-pdf-file branch-merged]
             }
 
         expect(response).to have_gitlab_http_status(200)

@@ -15,13 +15,13 @@ describe Gitlab::PhabricatorImport::Conduit::User do
 
     it 'calls the api with the correct params' do
       expected_params = {
-         constraints: { phids: ['phid-1', 'phid-2'] }
+         constraints: { phids: %w[phid-1 phid-2] }
       }
 
       expect(fake_client).to receive(:get).with('user.search',
                                                 params: expected_params)
 
-      user_client.users(['phid-1', 'phid-2'])
+      user_client.users(%w[phid-1 phid-2])
     end
 
     it 'returns an array of parsed responses' do
@@ -43,7 +43,7 @@ describe Gitlab::PhabricatorImport::Conduit::User do
       expect(fake_client).to receive(:get).with('user.search',
                                                 params: second_params).once
 
-      user_client.users(['phid-1', 'phid-2'])
+      user_client.users(%w[phid-1 phid-2])
     end
   end
 end

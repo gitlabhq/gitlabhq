@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 class Admin::SystemInfoController < Admin::ApplicationController
-  EXCLUDED_MOUNT_OPTIONS = [
-    'nobrowse',
-    'read-only',
-    'ro'
+  EXCLUDED_MOUNT_OPTIONS = %w[
+    nobrowse
+    read-only
+    ro
   ].freeze
 
   EXCLUDED_MOUNT_TYPES = [

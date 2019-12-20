@@ -1,0 +1,5 @@
+---
+title: Add index to optimize loading pipeline charts
+merge_request: 22052
+author:
+type: performance

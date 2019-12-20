@@ -39,6 +39,10 @@ module QA
         @provider.cluster_name
       end
 
+      def to_s
+        cluster_name
+      end
+
       private
 
       def fetch_api_url

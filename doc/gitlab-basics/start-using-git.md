@@ -313,7 +313,7 @@ git merge master
 
 ### Synchronize changes in a forked repository with the upstream
 
-[Forking a repository](../user/project/repository/forking_workflow.md lets you create
+[Forking a repository](../user/project/repository/forking_workflow.md) lets you create
 a copy of a repository in your namespace. Changes made to your copy of the repository
 are not synchronized automatically with the original.
 Your local fork (copy) contains changes made by you only, so to keep the project
