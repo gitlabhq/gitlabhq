@@ -84,7 +84,12 @@ export default {
           <span v-else> {{ s__('mrWidget|Merge failed.') }} </span>
           <span :class="{ 'has-custom-error': mr.mergeError }"> {{ timerText }} </span>
         </span>
-        <button class="btn btn-default btn-sm js-refresh-button" type="button" @click="refresh">
+        <button
+          class="btn btn-default btn-sm js-refresh-button"
+          data-qa-selector="merge_request_error_content"
+          type="button"
+          @click="refresh"
+        >
           {{ s__('mrWidget|Refresh now') }}
         </button>
       </div>

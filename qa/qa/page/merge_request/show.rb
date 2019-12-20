@@ -29,6 +29,10 @@ module QA
           element :merged_status_content
         end
 
+        view 'app/assets/javascripts/vue_merge_request_widget/components/states/mr_widget_failed_to_merge.vue' do
+          element :merge_request_error_content
+        end
+
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/mr_widget_rebase.vue' do
           element :mr_rebase_button
           element :no_fast_forward_message, 'Fast-forward merge is not possible' # rubocop:disable QA/ElementWithPattern
@@ -192,6 +196,12 @@ module QA
         def view_plain_diff
           click_element :dropdown_toggle
           visit_link_in_element(:download_plain_diff)
+        end
+
+        def wait_for_merge_request_error_message
+          wait(max: 30, reload: false) do
+            has_element?(:merge_request_error_content)
+          end
         end
       end
     end
