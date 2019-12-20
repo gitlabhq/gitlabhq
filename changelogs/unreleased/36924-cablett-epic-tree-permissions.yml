@@ -1,5 +1,0 @@
----
-title: Fix removing of child epics that belong to subgroups
-merge_request: 20610
-author:
-type: fixed

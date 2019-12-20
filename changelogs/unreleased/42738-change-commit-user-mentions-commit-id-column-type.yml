@@ -1,5 +1,0 @@
----
-title: Change commit_id type on commit_user_mentions table
-merge_request: 21651
-author:
-type: fixed

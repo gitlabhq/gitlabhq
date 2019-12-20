@@ -1,5 +1,0 @@
----
-title: Drop deprecated column from projects table
-merge_request: 18914
-author:
-type: deprecated

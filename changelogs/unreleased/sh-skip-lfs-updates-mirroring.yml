@@ -1,5 +1,0 @@
----
-title: Skip updating LFS objects in mirror updates if repository has not changed
-merge_request: 21744
-author:
-type: performance

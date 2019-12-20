@@ -1,5 +1,0 @@
----
-title: Update merging an MR behavior on the API when pipeline fails
-merge_request: 19641
-author: briankabiro
-type: fixed

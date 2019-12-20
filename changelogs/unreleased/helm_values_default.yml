@@ -1,5 +1,0 @@
----
-title: Upgrade auto-deploy-image for helm default values file
-merge_request: 20588
-author:
-type: changed

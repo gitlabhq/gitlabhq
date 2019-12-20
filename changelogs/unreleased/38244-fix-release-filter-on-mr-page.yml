@@ -1,5 +1,0 @@
----
-title: Fixed query behind release filter on merge request search page.
-merge_request: 38244
-author:
-type: fixed

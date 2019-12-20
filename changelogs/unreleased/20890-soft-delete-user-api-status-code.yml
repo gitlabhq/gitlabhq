@@ -1,5 +1,0 @@
----
-title: Adds 409 when user cannot be soft deleted through the API
-merge_request: 21037
-author:
-type: fixed

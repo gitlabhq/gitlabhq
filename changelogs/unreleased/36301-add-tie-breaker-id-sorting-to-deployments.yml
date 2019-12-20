@@ -1,5 +1,0 @@
----
-title: Optimize Deployments endpoint by preloading associations and make record ordering more consistent
-merge_request: 20848
-author:
-type: changed

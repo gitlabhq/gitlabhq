@@ -1,5 +1,0 @@
----
-title: Junit success percentage no longer displays 100% if there are failures
-merge_request: 20835
-author:
-type: fixed

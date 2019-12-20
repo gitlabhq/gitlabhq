@@ -1,5 +1,0 @@
----
-title: Fix change to default foreground and backgorund colors in job log
-merge_request: 20787
-author:
-type: fixed

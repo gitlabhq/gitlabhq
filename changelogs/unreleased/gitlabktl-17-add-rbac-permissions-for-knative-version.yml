@@ -1,5 +1,0 @@
----
-title: Add rbac access to knative-serving namespace deployments to get knative version information
-merge_request: 20244
-author:
-type: changed

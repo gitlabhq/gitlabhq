@@ -1,5 +1,0 @@
----
-title: Fixed project import from export ignoring namespace selection
-merge_request: 20405
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: 'When a forked project is less visible than its source, merge requests opened in the fork now target the less visible project by default.'
-merge_request: 21517
-author:
-type: changed

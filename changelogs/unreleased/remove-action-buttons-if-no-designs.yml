@@ -1,5 +1,0 @@
----
-title: Remove action buttons from designs tab if there are no designs
-merge_request: 21186
-author:
-type: fixed

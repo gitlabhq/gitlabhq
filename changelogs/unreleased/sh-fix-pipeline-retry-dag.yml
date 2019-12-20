@@ -1,5 +1,0 @@
----
-title: Fix pipeline retry in a CI DAG
-merge_request: 21296
-author:
-type: fixed

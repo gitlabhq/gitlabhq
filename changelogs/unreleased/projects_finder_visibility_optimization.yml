@@ -1,5 +1,0 @@
----
-title: Optimize query when Projects API requests private visibility level
-merge_request: 20594
-author:
-type: performance

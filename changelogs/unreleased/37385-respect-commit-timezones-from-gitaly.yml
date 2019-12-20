@@ -1,5 +1,0 @@
----
-title: Respect the timezone reported from Gitaly
-merge_request: 21066
-author:
-type: fixed

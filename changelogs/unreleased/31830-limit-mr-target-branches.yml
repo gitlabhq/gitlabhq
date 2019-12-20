@@ -1,5 +1,0 @@
----
-title: Require group_id or project_id for MR target branch autocomplete action
-merge_request: 20933
-author:
-type: performance

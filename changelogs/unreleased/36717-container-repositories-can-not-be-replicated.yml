@@ -1,5 +1,0 @@
----
-title: Fix Container repositories can not be replicated when s3 is used
-merge_request: 21068
-author:
-type: fixed
