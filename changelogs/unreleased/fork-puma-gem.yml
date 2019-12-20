@@ -1,5 +1,0 @@
----
-title: Fork Puma to validate scheduler fixes
-merge_request: 21547
-author:
-type: performance

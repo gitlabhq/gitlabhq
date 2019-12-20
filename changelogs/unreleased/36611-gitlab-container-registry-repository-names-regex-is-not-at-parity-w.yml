@@ -1,5 +1,0 @@
----
-title: Update Container Registry naming restrictions to allow for sequential '-'
-merge_request: 20318
-author:
-type: fixed

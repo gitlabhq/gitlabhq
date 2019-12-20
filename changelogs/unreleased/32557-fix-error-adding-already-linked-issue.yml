@@ -1,5 +1,0 @@
----
-title: Fix error when linking already linked issue to epic
-merge_request: 21213
-author:
-type: fixed

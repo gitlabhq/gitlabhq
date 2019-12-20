@@ -1,5 +1,0 @@
----
-title: Fix multi select input padding in project and group user select
-merge_request: 20520
-author: Kevin Lee
-type: fixed

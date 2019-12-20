@@ -1,5 +1,0 @@
----
-title: Fix cron parsing for Daylight Savings
-merge_request: 20667
-author:
-type: fixed

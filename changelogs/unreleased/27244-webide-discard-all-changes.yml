@@ -1,5 +1,0 @@
----
-title: "Web IDE: Fix the console error that happens when discarding a newly added/uploaded file."
-merge_request: 21537
-author:
-type: fixed

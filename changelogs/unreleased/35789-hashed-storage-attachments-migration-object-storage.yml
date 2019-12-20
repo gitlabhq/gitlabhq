@@ -1,6 +1,0 @@
----
-title: 'Hashed Storage attachments migration: exclude files in object storage as they
-  are all hashed already'
-merge_request: 20338
-author:
-type: changed

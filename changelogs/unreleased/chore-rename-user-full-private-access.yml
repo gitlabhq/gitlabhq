@@ -1,5 +1,0 @@
----
-title: Rename User#full_private_access? to User#can_read_all_resources?
-merge_request: 21668
-author: Diego Louzán
-type: other

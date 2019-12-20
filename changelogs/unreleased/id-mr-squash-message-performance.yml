@@ -1,5 +1,0 @@
----
-title: Suggest squash commit messages based on recent commits
-merge_request: 20231
-author:
-type: performance

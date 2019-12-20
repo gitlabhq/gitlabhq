@@ -1,5 +1,0 @@
----
-title: Fix Single-File-Editor-Layout breaking when branch name is too long
-merge_request: 21577
-author: Roman Kuba
-type: fixed

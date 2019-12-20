@@ -1,5 +1,0 @@
----
-title: Enable ETag caching for MR notes polling
-merge_request: 20440
-author:
-type: performance

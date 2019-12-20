@@ -1,6 +1,0 @@
----
-title: Creates DB tables for storing mentioned users, groups, projects referenced
-  in a note or issuable description
-merge_request: 18316
-author:
-type: added

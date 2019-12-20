@@ -1,5 +1,0 @@
----
-title: Refactor the Deployment model so state machine events are used by both CI and the API
-merge_request: 20474
-author:
-type: fixed

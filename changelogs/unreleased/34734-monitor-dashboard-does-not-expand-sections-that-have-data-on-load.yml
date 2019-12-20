@@ -1,5 +1,0 @@
----
-title: Fix graph groups in monitor dashboard that are hidden on load
-merge_request: 20312
-author:
-type: fixed

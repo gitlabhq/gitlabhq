@@ -1,6 +1,0 @@
----
-title: Try longer to clean up after using a gpg-keychain and raise exption if the
-  cleanup fails
-merge_request: 20718
-author:
-type: fixed

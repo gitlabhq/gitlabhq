@@ -1,5 +1,0 @@
----
-title: Add empty region when group metrics are missing
-merge_request: 20900
-author:
-type: fixed
