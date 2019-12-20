@@ -153,7 +153,7 @@ export default {
         ),
         {
           startLink:
-            '<a href="https://docs.aws.amazon.com/eks/latest/userguide/getting-started-console.html#role-create" target="_blank" rel="noopener noreferrer">',
+            '<a href="https://docs.aws.amazon.com/eks/latest/userguide/service_IAM_role.html#create-service-role" target="_blank" rel="noopener noreferrer">',
           externalLinkIcon: this.externalLinkIcon,
           endLink: '</a>',
         },

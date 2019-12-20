@@ -475,58 +475,6 @@ describe 'Filter issues', :js do
     end
   end
 
-  describe 'RSS feeds' do
-    let(:group) { create(:group) }
-    let(:project) { create(:project, group: group) }
-
-    before do
-      group.add_developer(user)
-    end
-
-    shared_examples 'updates atom feed link' do |type|
-      it "for #{type}" do
-        visit path
-
-        link = find_link('Subscribe to RSS feed')
-        params = CGI.parse(URI.parse(link[:href]).query)
-        auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
-        auto_discovery_params = CGI.parse(URI.parse(auto_discovery_link[:href]).query)
-
-        expected = {
-          'feed_token' => [user.feed_token],
-          'milestone_title' => [milestone.title],
-          'assignee_id' => [user.id.to_s]
-        }
-
-        expect(params).to include(expected)
-        expect(auto_discovery_params).to include(expected)
-      end
-    end
-
-    it_behaves_like 'updates atom feed link', :project do
-      let(:path) { project_issues_path(project, milestone_title: milestone.title, assignee_id: user.id) }
-    end
-
-    it_behaves_like 'updates atom feed link', :group do
-      let(:path) { issues_group_path(group, milestone_title: milestone.title, assignee_id: user.id) }
-    end
-
-    it 'updates atom feed link for group issues' do
-      visit issues_group_path(group, milestone_title: milestone.title, assignee_id: user.id)
-      link = find('.nav-controls a[title="Subscribe to RSS feed"]', visible: false)
-      params = CGI.parse(URI.parse(link[:href]).query)
-      auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
-      auto_discovery_params = CGI.parse(URI.parse(auto_discovery_link[:href]).query)
-
-      expect(params).to include('feed_token' => [user.feed_token])
-      expect(params).to include('milestone_title' => [milestone.title])
-      expect(params).to include('assignee_id' => [user.id.to_s])
-      expect(auto_discovery_params).to include('feed_token' => [user.feed_token])
-      expect(auto_discovery_params).to include('milestone_title' => [milestone.title])
-      expect(auto_discovery_params).to include('assignee_id' => [user.id.to_s])
-    end
-  end
-
   context 'URL has a trailing slash' do
     before do
       visit "#{project_issues_path(project)}/"

@@ -111,7 +111,7 @@ export const loadFile = ({ dispatch, state }, { basePath }) => {
   }
 };
 
-export const loadBranch = ({ dispatch }, { projectId, branchId }) =>
+export const loadBranch = ({ dispatch, getters }, { projectId, branchId }) =>
   dispatch('getBranchData', {
     projectId,
     branchId,
@@ -121,9 +121,13 @@ export const loadBranch = ({ dispatch }, { projectId, branchId }) =>
         projectId,
         branchId,
       });
+
+      const branch = getters.findBranch(projectId, branchId);
+
       return dispatch('getFiles', {
         projectId,
         branchId,
+        ref: branch.commit.id,
       });
     })
     .catch(() => {

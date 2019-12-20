@@ -46,19 +46,20 @@ export const setDirectoryData = ({ state, commit }, { projectId, branchId, treeL
   });
 };
 
-export const getFiles = ({ state, commit, dispatch, getters }, { projectId, branchId } = {}) =>
+export const getFiles = ({ state, commit, dispatch }, payload = {}) =>
   new Promise((resolve, reject) => {
+    const { projectId, branchId, ref = branchId } = payload;
+
     if (
       !state.trees[`${projectId}/${branchId}`] ||
       (state.trees[`${projectId}/${branchId}`].tree &&
         state.trees[`${projectId}/${branchId}`].tree.length === 0)
     ) {
       const selectedProject = state.projects[projectId];
-      const selectedBranch = getters.findBranch(projectId, branchId);
 
       commit(types.CREATE_TREE, { treePath: `${projectId}/${branchId}` });
       service
-        .getFiles(selectedProject.web_url, selectedBranch.commit.id)
+        .getFiles(selectedProject.web_url, ref)
         .then(({ data }) => {
           const { entries, treeList } = decorateFiles({
             data,
@@ -77,8 +78,8 @@ export const getFiles = ({ state, commit, dispatch, getters }, { projectId, bran
         .catch(e => {
           dispatch('setErrorMessage', {
             text: __('An error occurred whilst loading all the files.'),
-            action: payload =>
-              dispatch('getFiles', payload).then(() => dispatch('setErrorMessage', null)),
+            action: actionPayload =>
+              dispatch('getFiles', actionPayload).then(() => dispatch('setErrorMessage', null)),
             actionText: __('Please try again'),
             actionPayload: { projectId, branchId },
           });

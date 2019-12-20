@@ -336,8 +336,9 @@ To create and add a new Kubernetes cluster to your project, group, or instance:
    - **Kubernetes cluster name** - The name you wish to give the cluster.
    - **Environment scope** - The [associated environment](index.md#setting-the-environment-scope-premium) to this cluster.
    - **Kubernetes version** - The Kubernetes version to use. Currently the only version supported is 1.14.
-   - **Role name** - Select the [IAM role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html)
-     to allow Amazon EKS and the Kubernetes control plane to manage AWS resources on your behalf.
+   - **Role name** - Select the [IAM role](https://docs.aws.amazon.com/eks/latest/userguide/service_IAM_role.html)
+     to allow Amazon EKS and the Kubernetes control plane to manage AWS resources on your behalf. This IAM role is separate
+     to the IAM role created above, you will need to create it if it does not yet exist.
    - **Region** - The [region](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html)
      in which the cluster will be created.
    - **Key pair name** - Select the [key pair](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html)

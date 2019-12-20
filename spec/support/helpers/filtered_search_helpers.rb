@@ -37,6 +37,10 @@ module FilteredSearchHelpers
     filtered_search.send_keys(:enter)
   end
 
+  def expect_filtered_search_dropdown_results(filter_dropdown, count)
+    expect(filter_dropdown).to have_selector('.filter-dropdown .filter-dropdown-item', count: count)
+  end
+
   def expect_issues_list_count(open_count, closed_count = 0)
     all_count = open_count + closed_count
 

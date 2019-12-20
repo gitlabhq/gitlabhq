@@ -29,23 +29,40 @@ describe('User Popover Component', () => {
     wrapper.destroy();
   });
 
+  const findUserStatus = () => wrapper.find('.js-user-status');
+  const findTarget = () => document.querySelector('.js-user-link');
+
+  const createWrapper = (props = {}, options = {}) => {
+    wrapper = shallowMount(UserPopover, {
+      propsData: {
+        ...DEFAULT_PROPS,
+        target: findTarget(),
+        ...props,
+      },
+      sync: false,
+      ...options,
+    });
+  };
+
   describe('Empty', () => {
     beforeEach(() => {
-      wrapper = shallowMount(UserPopover, {
-        propsData: {
-          target: document.querySelector('.js-user-link'),
-          user: {
-            name: null,
-            username: null,
-            location: null,
-            bio: null,
-            organization: null,
-            status: null,
+      createWrapper(
+        {},
+        {
+          propsData: {
+            target: findTarget(),
+            user: {
+              name: null,
+              username: null,
+              location: null,
+              bio: null,
+              organization: null,
+              status: null,
+            },
           },
+          attachToDocument: true,
         },
-        attachToDocument: true,
-        sync: false,
-      });
+      );
     });
 
     it('should return skeleton loaders', () => {
@@ -55,13 +72,7 @@ describe('User Popover Component', () => {
 
   describe('basic data', () => {
     it('should show basic fields', () => {
-      wrapper = shallowMount(UserPopover, {
-        propsData: {
-          ...DEFAULT_PROPS,
-          target: document.querySelector('.js-user-link'),
-        },
-        sync: false,
-      });
+      createWrapper();
 
       expect(wrapper.text()).toContain(DEFAULT_PROPS.user.name);
       expect(wrapper.text()).toContain(DEFAULT_PROPS.user.username);
@@ -77,64 +88,38 @@ describe('User Popover Component', () => {
 
   describe('job data', () => {
     it('should show only bio if no organization is available', () => {
-      const testProps = Object.assign({}, DEFAULT_PROPS);
-      testProps.user.bio = 'Engineer';
+      const user = { ...DEFAULT_PROPS.user, bio: 'Engineer' };
 
-      wrapper = shallowMount(UserPopover, {
-        propsData: {
-          ...testProps,
-          target: document.querySelector('.js-user-link'),
-        },
-        sync: false,
-      });
+      createWrapper({ user });
 
       expect(wrapper.text()).toContain('Engineer');
     });
 
     it('should show only organization if no bio is available', () => {
-      const testProps = Object.assign({}, DEFAULT_PROPS);
-      testProps.user.organization = 'GitLab';
+      const user = { ...DEFAULT_PROPS.user, organization: 'GitLab' };
 
-      wrapper = shallowMount(UserPopover, {
-        propsData: {
-          ...testProps,
-          target: document.querySelector('.js-user-link'),
-        },
-        sync: false,
-      });
+      createWrapper({ user });
 
       expect(wrapper.text()).toContain('GitLab');
     });
 
     it('should display bio and organization in separate lines', () => {
-      const testProps = Object.assign({}, DEFAULT_PROPS);
-      testProps.user.bio = 'Engineer';
-      testProps.user.organization = 'GitLab';
+      const user = { ...DEFAULT_PROPS.user, bio: 'Engineer', organization: 'GitLab' };
 
-      wrapper = shallowMount(UserPopover, {
-        propsData: {
-          ...DEFAULT_PROPS,
-          target: document.querySelector('.js-user-link'),
-        },
-        sync: false,
-      });
+      createWrapper({ user });
 
       expect(wrapper.find('.js-bio').text()).toContain('Engineer');
       expect(wrapper.find('.js-organization').text()).toContain('GitLab');
     });
 
     it('should not encode special characters in bio and organization', () => {
-      const testProps = Object.assign({}, DEFAULT_PROPS);
-      testProps.user.bio = 'Manager & Team Lead';
-      testProps.user.organization = 'Me & my <funky> Company';
+      const user = {
+        ...DEFAULT_PROPS.user,
+        bio: 'Manager & Team Lead',
+        organization: 'Me & my <funky> Company',
+      };
 
-      wrapper = shallowMount(UserPopover, {
-        propsData: {
-          ...DEFAULT_PROPS,
-          target: document.querySelector('.js-user-link'),
-        },
-        sync: false,
-      });
+      createWrapper({ user });
 
       expect(wrapper.find('.js-bio').text()).toContain('Manager & Team Lead');
       expect(wrapper.find('.js-organization').text()).toContain('Me & my <funky> Company');
@@ -153,35 +138,41 @@ describe('User Popover Component', () => {
 
   describe('status data', () => {
     it('should show only message', () => {
-      const testProps = Object.assign({}, DEFAULT_PROPS);
-      testProps.user.status = { message_html: 'Hello World' };
+      const user = { ...DEFAULT_PROPS.user, status: { message_html: 'Hello World' } };
 
-      wrapper = shallowMount(UserPopover, {
-        propsData: {
-          ...DEFAULT_PROPS,
-          target: document.querySelector('.js-user-link'),
-        },
-        sync: false,
-      });
+      createWrapper({ user });
 
+      expect(findUserStatus().exists()).toBe(true);
       expect(wrapper.text()).toContain('Hello World');
     });
 
     it('should show message and emoji', () => {
-      const testProps = Object.assign({}, DEFAULT_PROPS);
-      testProps.user.status = { emoji: 'basketball_player', message_html: 'Hello World' };
+      const user = {
+        ...DEFAULT_PROPS.user,
+        status: { emoji: 'basketball_player', message_html: 'Hello World' },
+      };
 
-      wrapper = shallowMount(UserPopover, {
-        propsData: {
-          ...DEFAULT_PROPS,
-          target: document.querySelector('.js-user-link'),
-          status: { emoji: 'basketball_player', message_html: 'Hello World' },
-        },
-        sync: false,
-      });
+      createWrapper({ user });
 
+      expect(findUserStatus().exists()).toBe(true);
       expect(wrapper.text()).toContain('Hello World');
       expect(wrapper.html()).toContain('<gl-emoji data-name="basketball_player"');
+    });
+
+    it('hides the div when status is null', () => {
+      const user = { ...DEFAULT_PROPS.user, status: null };
+
+      createWrapper({ user });
+
+      expect(findUserStatus().exists()).toBe(false);
+    });
+
+    it('hides the div when status is empty', () => {
+      const user = { ...DEFAULT_PROPS.user, status: { emoji: '', message_html: '' } };
+
+      createWrapper({ user });
+
+      expect(findUserStatus().exists()).toBe(false);
     });
   });
 });

@@ -285,16 +285,21 @@ describe('IDE store project actions', () => {
   describe('loadBranch', () => {
     const projectId = 'abc/def';
     const branchId = '123-lorem';
+    const ref = 'abcd2322';
 
     it('fetches branch data', done => {
+      const mockGetters = { findBranch: () => ({ commit: { id: ref } }) };
       spyOn(store, 'dispatch').and.returnValue(Promise.resolve());
 
-      loadBranch(store, { projectId, branchId })
+      loadBranch(
+        { getters: mockGetters, state: store.state, dispatch: store.dispatch },
+        { projectId, branchId },
+      )
         .then(() => {
           expect(store.dispatch.calls.allArgs()).toEqual([
             ['getBranchData', { projectId, branchId }],
             ['getMergeRequestsForBranch', { projectId, branchId }],
-            ['getFiles', { projectId, branchId }],
+            ['getFiles', { projectId, branchId, ref }],
           ]);
         })
         .then(done)

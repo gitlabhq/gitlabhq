@@ -7,6 +7,7 @@
 .bundle
 .chef
 .directory
+.eslintcache
 /.envrc
 eslint-report.html
 /.gitlab_shell_secret

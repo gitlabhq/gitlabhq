@@ -1,0 +1,5 @@
+---
+title: Remove extra whitespace in user popover
+merge_request: 19938
+author:
+type: fixed

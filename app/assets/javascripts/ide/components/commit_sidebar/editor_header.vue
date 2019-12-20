@@ -1,12 +1,13 @@
 <script>
-import $ from 'jquery';
 import { mapActions } from 'vuex';
-import { __ } from '~/locale';
+import { sprintf, __ } from '~/locale';
+import { GlModal } from '@gitlab/ui';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import ChangedFileIcon from '~/vue_shared/components/changed_file_icon.vue';
 
 export default {
   components: {
+    GlModal,
     FileIcon,
     ChangedFileIcon,
   },
@@ -17,7 +18,13 @@ export default {
     },
   },
   computed: {
-    activeButtonText() {
+    discardModalId() {
+      return `discard-file-${this.activeFile.path}`;
+    },
+    discardModalTitle() {
+      return sprintf(__('Discard changes to %{path}?'), { path: this.activeFile.path });
+    },
+    actionButtonText() {
       return this.activeFile.staged ? __('Unstage') : __('Stage');
     },
     isStaged() {
@@ -25,7 +32,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['stageChange', 'unstageChange']),
+    ...mapActions(['stageChange', 'unstageChange', 'discardFileChanges']),
     actionButtonClicked() {
       if (this.activeFile.staged) {
         this.unstageChange(this.activeFile.path);
@@ -34,7 +41,7 @@ export default {
       }
     },
     showDiscardModal() {
-      $(document.getElementById(`discard-file-${this.activeFile.path}`)).modal('show');
+      this.$refs.discardModal.show();
     },
   },
 };
@@ -53,6 +60,7 @@ export default {
     <div class="ml-auto">
       <button
         v-if="!isStaged"
+        ref="discardButton"
         type="button"
         class="btn btn-remove btn-inverted append-right-8"
         @click="showDiscardModal"
@@ -60,6 +68,7 @@ export default {
         {{ __('Discard') }}
       </button>
       <button
+        ref="actionButton"
         :class="{
           'btn-success': !isStaged,
           'btn-warning': isStaged,
@@ -68,8 +77,19 @@ export default {
         class="btn btn-inverted"
         @click="actionButtonClicked"
       >
-        {{ activeButtonText }}
+        {{ actionButtonText }}
       </button>
     </div>
+    <gl-modal
+      ref="discardModal"
+      ok-variant="danger"
+      cancel-variant="light"
+      :ok-title="__('Discard changes')"
+      :modal-id="discardModalId"
+      :title="discardModalTitle"
+      @ok="discardFileChanges(activeFile.path)"
+    >
+      {{ __("You will lose all changes you've made to this file. This action cannot be undone.") }}
+    </gl-modal>
   </div>
 </template>
