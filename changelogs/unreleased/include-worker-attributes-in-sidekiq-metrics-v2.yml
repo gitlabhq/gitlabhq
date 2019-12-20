@@ -1,5 +1,0 @@
----
-title: Add worker attributes to Sidekiq metrics
-merge_request: 20292
-author:
-type: other

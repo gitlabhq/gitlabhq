@@ -1,5 +1,0 @@
----
-title: Add dependency scanning flag for specifying pip requirements file for scanning.
-merge_request: 21219
-author:
-type: added

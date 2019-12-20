@@ -1,5 +1,0 @@
----
-title: Move persistent_ref.create into run_after_commit
-merge_request: 20422
-author:
-type: fixed

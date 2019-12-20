@@ -1,5 +1,0 @@
----
-title: Import large gitlab_project exports via rake task
-merge_request: 20724
-author:
-type: added

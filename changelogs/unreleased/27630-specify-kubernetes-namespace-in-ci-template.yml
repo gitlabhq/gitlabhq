@@ -1,5 +1,0 @@
----
-title: Allow specifying Kubernetes namespace for an environment in gitlab-ci.yml
-merge_request: 20270
-author:
-type: added

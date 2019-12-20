@@ -1,5 +1,0 @@
----
-title: Remove DB transaction from Rebase operation
-merge_request: 20739
-author:
-type: fixed

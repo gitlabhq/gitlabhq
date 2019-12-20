@@ -1,5 +1,0 @@
----
-title: Limit max metrics embeds in GFM to 100
-merge_request: 21356
-author:
-type: performance

@@ -1,5 +1,0 @@
----
-title: Upgrade `mail_room` gem to 0.10.0 and enable structured logging
-merge_request: 19186
-author:
-type: added

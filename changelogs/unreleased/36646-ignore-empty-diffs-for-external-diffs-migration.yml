@@ -1,5 +1,0 @@
----
-title: Ignore empty MR diffs when migrating to external storage
-merge_request: 20296
-author:
-type: fixed

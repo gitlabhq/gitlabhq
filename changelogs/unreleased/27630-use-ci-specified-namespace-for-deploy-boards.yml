@@ -1,6 +1,0 @@
----
-title: Allow Kubernetes namespaces specified via CI template to be used for terminals,
-  pod logs and deploy boards
-merge_request: 21460
-author:
-type: added

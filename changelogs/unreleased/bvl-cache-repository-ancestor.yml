@@ -1,5 +1,0 @@
----
-title: Cache the ancestor? Gitaly call to speed up polling for the merge request widget
-merge_request: 20958
-author:
-type: performance

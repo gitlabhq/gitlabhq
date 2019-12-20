@@ -1,5 +1,0 @@
----
-title: Update Workhorse and Gitaly to fix a security issue
-merge_request:
-author:
-type: security

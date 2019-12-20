@@ -1,5 +1,0 @@
----
-title: Fix project file finder url encoding file path separators
-merge_request: 21861
-author:
-type: fixed

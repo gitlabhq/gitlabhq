@@ -1,5 +1,0 @@
----
-title: Show merge immediately dialog even if the MR's pipeline hasn't finished
-merge_request: 21556
-author:
-type: changed

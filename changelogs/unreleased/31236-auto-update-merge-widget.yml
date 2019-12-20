@@ -1,5 +1,0 @@
----
-title: Allow merge without refresh when new commits are pushed
-merge_request: 19725
-author:
-type: changed
