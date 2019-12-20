@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Gitlab::Graphql::Authorize::AuthorizeResource do
@@ -25,6 +27,7 @@ describe Gitlab::Graphql::Authorize::AuthorizeResource do
 
   let(:user) { build(:user) }
   let(:project) { build(:project) }
+
   subject(:loading_resource) { fake_class.new(user, project) }
 
   context 'when the user is allowed to perform the action' do

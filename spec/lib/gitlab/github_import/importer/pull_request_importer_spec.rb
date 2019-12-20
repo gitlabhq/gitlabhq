@@ -94,7 +94,6 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
               target_project_id: project.id,
               source_branch: 'github/fork/alice/feature',
               target_branch: 'master',
-              state: :merged,
               state_id: 3,
               milestone_id: milestone.id,
               author_id: user.id,
@@ -140,7 +139,6 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
               target_project_id: project.id,
               source_branch: 'github/fork/alice/feature',
               target_branch: 'master',
-              state: :merged,
               state_id: 3,
               milestone_id: milestone.id,
               author_id: project.creator_id,
@@ -187,7 +185,6 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
               target_project_id: project.id,
               source_branch: 'master-42',
               target_branch: 'master',
-              state: :merged,
               state_id: 3,
               milestone_id: milestone.id,
               author_id: user.id,
@@ -304,7 +301,7 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
 
       it 'ignores Git command errors when creating a branch' do
         expect(project.repository).to receive(:add_branch).and_raise(Gitlab::Git::CommandError)
-        expect(Gitlab::Sentry).to receive(:track_acceptable_exception).and_call_original
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).and_call_original
 
         mr = insert_git_data
 

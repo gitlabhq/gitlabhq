@@ -1,7 +1,7 @@
 import Vue from 'vue';
+import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import store from '~/ide/stores';
 import ide from '~/ide/components/ide.vue';
-import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { file, resetStore } from '../helpers';
 import { projectData } from '../mock_data';
 

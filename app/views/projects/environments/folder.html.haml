@@ -1,3 +1,5 @@
-- page_title _("Environments")
+- add_to_breadcrumbs _("Environments"), project_environments_path(@project)
+- breadcrumb_title _("Folder/%{name}") % { name: @folder }
+- page_title _("Environments in %{name}") % { name: @folder }
 
 #environments-folder-list-view{ data: { environments_data: environments_folder_list_view_data } }

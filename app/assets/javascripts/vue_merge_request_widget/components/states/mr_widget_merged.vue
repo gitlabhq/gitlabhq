@@ -1,5 +1,6 @@
 <script>
 /* eslint-disable @gitlab/vue-i18n/no-bare-strings */
+import { GlLoadingIcon } from '@gitlab/ui';
 import Flash from '~/flash';
 import tooltip from '~/vue_shared/directives/tooltip';
 import { s__, __ } from '~/locale';
@@ -7,7 +8,6 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import MrWidgetAuthorTime from '../../components/mr_widget_author_time.vue';
 import statusIcon from '../mr_widget_status_icon.vue';
 import eventHub from '../../event_hub';
-import { GlLoadingIcon } from '@gitlab/ui';
 
 export default {
   name: 'MRWidgetMerged',
@@ -155,7 +155,7 @@ export default {
           {{ cherryPickLabel }}
         </a>
       </div>
-      <section class="mr-info-list">
+      <section class="mr-info-list" data-qa-selector="merged_status_content">
         <p>
           {{ s__('mrWidget|The changes were merged into') }}
           <span class="label-branch">

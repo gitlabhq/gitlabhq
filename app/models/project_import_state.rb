@@ -42,6 +42,14 @@ class ProjectImportState < ApplicationRecord
       end
     end
 
+    after_transition any => :finished do |state, _|
+      if state.jid.present?
+        Gitlab::SidekiqStatus.unset(state.jid)
+
+        state.update_column(:jid, nil)
+      end
+    end
+
     after_transition started: :finished do |state, _|
       project = state.project
 
@@ -79,14 +87,6 @@ class ProjectImportState < ApplicationRecord
   def started?
     # import? does SQL work so only run it if it looks like there's an import running
     status == 'started' && project.import?
-  end
-
-  def remove_jid
-    return unless jid
-
-    Gitlab::SidekiqStatus.unset(jid)
-
-    update_column(:jid, nil)
   end
 
   # Refreshes the expiration time of the associated import job ID.

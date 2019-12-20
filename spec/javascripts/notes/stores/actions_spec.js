@@ -1,6 +1,7 @@
 import $ from 'jquery';
-import Api from '~/api';
 import { TEST_HOST } from 'spec/test_constants';
+import AxiosMockAdapter from 'axios-mock-adapter';
+import Api from '~/api';
 import actionsModule, * as actions from '~/notes/stores/actions';
 import * as mutationTypes from '~/notes/stores/mutation_types';
 import * as notesConstants from '~/notes/constants';
@@ -15,7 +16,6 @@ import {
   noteableDataMock,
   individualNote,
 } from '../mock_data';
-import AxiosMockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 
 const TEST_ERROR_MESSAGE = 'Test error message';
@@ -751,24 +751,54 @@ describe('Actions Notes Store', () => {
   });
 
   describe('saveNote', () => {
-    const payload = { endpoint: TEST_HOST, data: { 'note[note]': 'some text' } };
+    const flashContainer = {};
+    const payload = { endpoint: TEST_HOST, data: { 'note[note]': 'some text' }, flashContainer };
 
     describe('if response contains errors', () => {
       const res = { errors: { something: ['went wrong'] } };
+      const error = { message: 'Unprocessable entity', response: { data: res } };
 
       it('throws an error', done => {
         actions
           .saveNote(
             {
               commit() {},
-              dispatch: () => Promise.resolve(res),
+              dispatch: () => Promise.reject(error),
             },
             payload,
           )
           .then(() => done.fail('Expected error to be thrown!'))
-          .catch(error => {
-            expect(error.message).toBe('Failed to save comment!');
+          .catch(err => {
+            expect(err).toBe(error);
+            expect(flashSpy).not.toHaveBeenCalled();
           })
+          .then(done)
+          .catch(done.fail);
+      });
+    });
+
+    describe('if response contains errors.base', () => {
+      const res = { errors: { base: ['something went wrong'] } };
+      const error = { message: 'Unprocessable entity', response: { data: res } };
+
+      it('sets flash alert using errors.base message', done => {
+        actions
+          .saveNote(
+            {
+              commit() {},
+              dispatch: () => Promise.reject(error),
+            },
+            { ...payload, flashContainer },
+          )
+          .then(resp => {
+            expect(resp.hasFlash).toBe(true);
+            expect(flashSpy).toHaveBeenCalledWith(
+              'Your comment could not be submitted because something went wrong',
+              'alert',
+              flashContainer,
+            );
+          })
+          .catch(() => done.fail('Expected success response!'))
           .then(done)
           .catch(done.fail);
       });
@@ -788,6 +818,7 @@ describe('Actions Notes Store', () => {
           )
           .then(data => {
             expect(data).toBe(res);
+            expect(flashSpy).not.toHaveBeenCalled();
           })
           .then(done)
           .catch(done.fail);

@@ -1,10 +1,10 @@
-import { joinPaths } from '~/lib/utils/url_utility';
+import { joinPaths, escapeFileUrl } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import eventHub from '../../eventhub';
 import service from '../../services';
 import * as types from '../mutation_types';
 import router from '../../ide_router';
-import { escapeFileUrl, addFinalNewlineIfNeeded, setPageTitleForFile } from '../utils';
+import { addFinalNewlineIfNeeded, setPageTitleForFile } from '../utils';
 import { viewerTypes, stageKeys } from '../../constants';
 
 export const closeFile = ({ commit, state, dispatch }, file) => {

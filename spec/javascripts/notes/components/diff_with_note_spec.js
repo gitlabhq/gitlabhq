@@ -1,7 +1,7 @@
 import Vue from 'vue';
+import { mountComponentWithStore } from 'spec/helpers';
 import DiffWithNote from '~/notes/components/diff_with_note.vue';
 import { createStore } from '~/mr_notes/stores';
-import { mountComponentWithStore } from 'spec/helpers';
 
 const discussionFixture = 'merge_requests/diff_discussion.json';
 const imageDiscussionFixture = 'merge_requests/image_diff_discussion.json';

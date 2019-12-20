@@ -11,6 +11,7 @@ describe Git::BaseHooksService do
   let(:oldrev) { Gitlab::Git::BLANK_SHA }
   let(:newrev) { "8a2a6eb295bb170b34c24c76c49ed0e9b2eaf34b" } # gitlab-test: git rev-parse refs/tags/v1.1.0
   let(:ref) { 'refs/tags/v1.1.0' }
+  let(:checkout_sha) { '5937ac0a7beb003549fc5fd26fc247adbce4a52e' }
 
   let(:test_service) do
     Class.new(described_class) do
@@ -129,6 +130,106 @@ describe Git::BaseHooksService do
 
         subject.execute
       end
+    end
+  end
+
+  describe 'Generating CI variables from push options' do
+    let(:pipeline_params) do
+      {
+        after: newrev,
+        before: oldrev,
+        checkout_sha: checkout_sha,
+        push_options: push_options, # defined in each context
+        ref: ref,
+        variables_attributes: variables_attributes # defined in each context
+      }
+    end
+
+    shared_examples 'creates pipeline with params and expected variables' do
+      it 'calls the create pipeline service' do
+        expect(Ci::CreatePipelineService)
+          .to receive(:new)
+          .with(project, user, pipeline_params)
+          .and_return(double(execute!: true))
+
+        subject.execute
+      end
+    end
+
+    context 'with empty push options' do
+      let(:push_options) { {} }
+      let(:variables_attributes) { [] }
+
+      it_behaves_like 'creates pipeline with params and expected variables'
+    end
+
+    context 'with push options not specifying variables' do
+      let(:push_options) do
+        {
+          mr: {
+            create: true
+          }
+        }
+      end
+      let(:variables_attributes) { [] }
+
+      before do
+        params[:push_options] = push_options
+      end
+
+      it_behaves_like 'creates pipeline with params and expected variables'
+    end
+
+    context 'with push options specifying variables' do
+      let(:push_options) do
+        {
+          ci: {
+            variable: {
+              "FOO=123": 1,
+              "BAR=456": 1,
+              "MNO=890=ABC": 1
+            }
+          }
+        }
+      end
+      let(:variables_attributes) do
+        [
+          { "key" => "FOO", "variable_type" => "env_var", "secret_value" => "123" },
+          { "key" => "BAR", "variable_type" => "env_var", "secret_value" => "456" },
+          { "key" => "MNO", "variable_type" => "env_var", "secret_value" => "890=ABC" }
+        ]
+      end
+
+      before do
+        params[:push_options] = push_options
+      end
+
+      it_behaves_like 'creates pipeline with params and expected variables'
+    end
+
+    context 'with push options not specifying variables in correct format' do
+      let(:push_options) do
+        {
+          ci: {
+            variable: {
+              "FOO=123": 1,
+              "BAR": 1,
+              "=MNO": 1
+            }
+          }
+        }
+      end
+      let(:variables_attributes) do
+        [
+          { "key" => "FOO", "variable_type" => "env_var", "secret_value" => "123" }
+        ]
+      end
+
+      before do
+        params[:push_options] = push_options
+      end
+
+      it_behaves_like 'creates pipeline with params and expected variables'
     end
   end
 end

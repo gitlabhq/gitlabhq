@@ -7,6 +7,7 @@ describe 'Reportable note on snippets', :js do
   let(:project) { create(:project) }
 
   before do
+    stub_feature_flags(snippets_vue: false)
     project.add_maintainer(user)
     sign_in(user)
   end

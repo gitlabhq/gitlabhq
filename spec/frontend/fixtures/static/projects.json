@@ -99,6 +99,15 @@
       "access_level": 50,
       "notification_level": 3
     }
+  },
+  "_links": {
+    "self": "https://gitlab.com/api/v4/projects/278964",
+    "issues": "https://gitlab.com/api/v4/projects/278964/issues",
+    "merge_requests": "https://gitlab.com/api/v4/projects/278964/merge_requests",
+    "repo_branches": "https://gitlab.com/api/v4/projects/278964/repository/branches",
+    "labels": "https://gitlab.com/api/v4/projects/278964/labels",
+    "events": "https://gitlab.com/api/v4/projects/278964/events",
+    "members": "https://gitlab.com/api/v4/projects/278964/members"
   }
 }, {
   "id": 7,

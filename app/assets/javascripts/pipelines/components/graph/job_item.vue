@@ -1,7 +1,7 @@
 <script>
+import { GlTooltipDirective, GlLink } from '@gitlab/ui';
 import ActionComponent from './action_component.vue';
 import JobNameComponent from './job_name_component.vue';
-import { GlTooltipDirective, GlLink } from '@gitlab/ui';
 import { sprintf } from '~/locale';
 import delayedJobMixin from '~/jobs/mixins/delayed_job_mixin';
 
@@ -111,7 +111,7 @@ export default {
       :href="status.details_path"
       :title="tooltipText"
       :class="cssClassJobName"
-      class="js-pipeline-graph-job-link qa-job-link"
+      class="js-pipeline-graph-job-link qa-job-link menu-item"
     >
       <job-name-component :name="job.name" :status="job.status" />
     </gl-link>

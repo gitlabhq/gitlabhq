@@ -274,6 +274,16 @@ class Milestone < ApplicationRecord
     project_id.present?
   end
 
+  def merge_requests_enabled?
+    if group_milestone?
+      # Assume that groups have at least one project with merge requests enabled.
+      # Otherwise, we would need to load all of the projects from the database.
+      true
+    elsif project_milestone?
+      project&.merge_requests_enabled?
+    end
+  end
+
   private
 
   # Milestone titles must be unique across project milestones and group milestones
@@ -331,6 +341,6 @@ class Milestone < ApplicationRecord
   end
 
   def issues_finder_params
-    { project_id: project_id, group_id: group_id }.compact
+    { project_id: project_id, group_id: group_id, include_subgroups: group_id.present? }.compact
   end
 end

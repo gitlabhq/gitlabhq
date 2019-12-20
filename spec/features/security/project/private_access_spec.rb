@@ -7,10 +7,6 @@ describe "Private Project Access" do
 
   set(:project) { create(:project, :private, :repository, public_builds: false) }
 
-  before do
-    stub_feature_flags(job_log_json: false)
-  end
-
   describe "Project should be private" do
     describe '#private?' do
       subject { project.private? }
@@ -89,7 +85,7 @@ describe "Private Project Access" do
     it { is_expected.to be_denied_for(:visitor) }
   end
 
-  describe "GET /:project_path/settings/members" do
+  describe "GET /:project_path/-/settings/members" do
     subject { project_settings_members_path(project) }
 
     it { is_expected.to be_allowed_for(:admin) }
@@ -103,7 +99,7 @@ describe "Private Project Access" do
     it { is_expected.to be_denied_for(:external) }
   end
 
-  describe "GET /:project_path/settings/ci_cd" do
+  describe "GET /:project_path/-/settings/ci_cd" do
     subject { project_settings_ci_cd_path(project) }
 
     it { is_expected.to be_allowed_for(:admin) }
@@ -117,7 +113,7 @@ describe "Private Project Access" do
     it { is_expected.to be_denied_for(:external) }
   end
 
-  describe "GET /:project_path/settings/repository" do
+  describe "GET /:project_path/-/settings/repository" do
     subject { project_settings_repository_path(project) }
 
     it { is_expected.to be_allowed_for(:admin) }
@@ -133,6 +129,7 @@ describe "Private Project Access" do
 
   describe "GET /:project_path/blob" do
     let(:commit) { project.repository.commit }
+
     subject { project_blob_path(project, File.join(commit.id, '.gitignore')) }
 
     it { is_expected.to be_allowed_for(:admin) }
@@ -190,6 +187,7 @@ describe "Private Project Access" do
 
   describe "GET /:project_path/issues/:id/edit" do
     let(:issue) { create(:issue, project: project) }
+
     subject { edit_project_issue_path(project, issue) }
 
     it { is_expected.to be_allowed_for(:admin) }
@@ -273,7 +271,7 @@ describe "Private Project Access" do
     it { is_expected.to be_denied_for(:visitor) }
   end
 
-  describe "GET /:project_path/namespace/hooks" do
+  describe "GET /:project_path/-/settings/integrations" do
     subject { project_settings_integrations_path(project) }
 
     it { is_expected.to be_allowed_for(:admin) }
@@ -315,6 +313,7 @@ describe "Private Project Access" do
 
   describe "GET /:project_path/pipelines/:id" do
     let(:pipeline) { create(:ci_pipeline, project: project) }
+
     subject { project_pipeline_path(project, pipeline) }
 
     it { is_expected.to be_allowed_for(:admin) }
@@ -369,6 +368,7 @@ describe "Private Project Access" do
   describe "GET /:project_path/builds/:id" do
     let(:pipeline) { create(:ci_pipeline, project: project) }
     let(:build) { create(:ci_build, pipeline: pipeline) }
+
     subject { project_job_path(project, build.id) }
 
     it { is_expected.to be_allowed_for(:admin) }
@@ -402,6 +402,7 @@ describe "Private Project Access" do
   describe 'GET /:project_path/builds/:id/trace' do
     let(:pipeline) { create(:ci_pipeline, project: project) }
     let(:build) { create(:ci_build, pipeline: pipeline) }
+
     subject { trace_project_job_path(project, build.id) }
 
     it { is_expected.to be_allowed_for(:admin) }
@@ -431,7 +432,7 @@ describe "Private Project Access" do
     end
   end
 
-  describe "GET /:project_path/environments" do
+  describe "GET /:project_path/-/environments" do
     subject { project_environments_path(project) }
 
     it { is_expected.to be_allowed_for(:admin) }
@@ -445,8 +446,9 @@ describe "Private Project Access" do
     it { is_expected.to be_denied_for(:visitor) }
   end
 
-  describe "GET /:project_path/environments/:id" do
+  describe "GET /:project_path/-/environments/:id" do
     let(:environment) { create(:environment, project: project) }
+
     subject { project_environment_path(project, environment) }
 
     it { is_expected.to be_allowed_for(:admin) }
@@ -460,8 +462,9 @@ describe "Private Project Access" do
     it { is_expected.to be_denied_for(:visitor) }
   end
 
-  describe "GET /:project_path/environments/:id/deployments" do
+  describe "GET /:project_path/-/environments/:id/deployments" do
     let(:environment) { create(:environment, project: project) }
+
     subject { project_environment_deployments_path(project, environment) }
 
     it { is_expected.to be_allowed_for(:admin) }
@@ -475,7 +478,7 @@ describe "Private Project Access" do
     it { is_expected.to be_denied_for(:visitor) }
   end
 
-  describe "GET /:project_path/environments/new" do
+  describe "GET /:project_path/-/environments/new" do
     subject { new_project_environment_path(project) }
 
     it { is_expected.to be_allowed_for(:admin) }
@@ -517,7 +520,7 @@ describe "Private Project Access" do
     it { is_expected.to be_denied_for(:visitor) }
   end
 
-  describe "GET /:project_path/environments/new" do
+  describe "GET /:project_path/-/environments/new" do
     subject { new_project_pipeline_schedule_path(project) }
 
     it { is_expected.to be_allowed_for(:admin) }

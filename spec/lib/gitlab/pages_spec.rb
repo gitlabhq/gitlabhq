@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 describe Gitlab::Pages do
-  let(:pages_shared_secret) { SecureRandom.random_bytes(Gitlab::Pages::SECRET_LENGTH) }
+  let(:pages_secret) { SecureRandom.random_bytes(Gitlab::Pages::SECRET_LENGTH) }
 
   before do
-    allow(described_class).to receive(:secret).and_return(pages_shared_secret)
+    allow(described_class).to receive(:secret).and_return(pages_secret)
   end
 
   describe '.verify_api_request' do

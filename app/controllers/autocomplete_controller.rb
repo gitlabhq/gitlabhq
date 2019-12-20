@@ -40,10 +40,20 @@ class AutocompleteController < ApplicationController
   end
 
   def merge_request_target_branches
-    merge_requests = MergeRequestsFinder.new(current_user, params).execute
-    target_branches = merge_requests.recent_target_branches
+    if target_branch_params.present?
+      merge_requests = MergeRequestsFinder.new(current_user, target_branch_params).execute
+      target_branches = merge_requests.recent_target_branches
 
-    render json: target_branches.map { |target_branch| { title: target_branch } }
+      render json: target_branches.map { |target_branch| { title: target_branch } }
+    else
+      render json: { error: _('At least one of group_id or project_id must be specified') }, status: :bad_request
+    end
+  end
+
+  private
+
+  def target_branch_params
+    params.permit(:group_id, :project_id).select { |_, v| v.present? }
   end
 end
 

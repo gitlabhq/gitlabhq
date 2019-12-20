@@ -116,6 +116,7 @@ graph TB
 - ⚙ - Requires additional configuration, or GitLab Managed Apps
 - ⤓ - Manual installation required
 - ❌ - Not supported or no instructions available
+- N/A - Not applicable
 
 Component statuses are linked to configuration documentation for each component.
 
@@ -144,7 +145,7 @@ Component statuses are linked to configuration documentation for each component.
 | [Postgres Exporter](#postgres-exporter) | Prometheus endpoint with PostgreSQL metrics | [✅][postgres-exporter-omnibus] | [✅][postgres-exporter-charts] | [✅][postgres-exporter-charts] | [✅](https://about.gitlab.com/handbook/engineering/monitoring/) | ❌ | ❌ | CE & EE |
 | [PgBouncer Exporter](#pgbouncer-exporter) | Prometheus endpoint with PgBouncer metrics | [⚙][pgbouncer-exporter-omnibus] | [❌][pgbouncer-exporter-charts] | [❌][pgbouncer-exporter-charts] | [✅](https://about.gitlab.com/handbook/engineering/monitoring/) | ❌ | ❌ | CE & EE |
 | [GitLab Exporter](#gitlab-exporter) | Generates a variety of GitLab metrics | [✅][gitlab-exporter-omnibus] | [✅][gitlab-exporter-charts] | [✅][gitlab-exporter-charts] | [✅](https://about.gitlab.com/handbook/engineering/monitoring/) | ❌ | ❌ | CE & EE |
-| [Node Exporter](#node-exporter) | Prometheus endpoint with system metrics | [✅][node-exporter-omnibus] | [❌][node-exporter-charts] | [❌][node-exporter-charts] | [✅](https://about.gitlab.com/handbook/engineering/monitoring/) | ❌ | ❌ | CE & EE |
+| [Node Exporter](#node-exporter) | Prometheus endpoint with system metrics | [✅][node-exporter-omnibus] | [N/A][node-exporter-charts] | [N/A][node-exporter-charts] | [✅](https://about.gitlab.com/handbook/engineering/monitoring/) | ❌ | ❌ | CE & EE |
 | [Mattermost](#mattermost) | Open-source Slack alternative | [⚙][mattermost-omnibus] | [⤓][mattermost-charts] | [⤓][mattermost-charts] | [⤓](../user/project/integrations/mattermost.md) | ❌ | ❌ | CE & EE |
 | [MinIO](#minio) | Object storage service | [⤓][minio-omnibus] | [✅][minio-charts] | [✅][minio-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#storage-architecture) | ❌ | [⚙][minio-gdk] | CE & EE |
 | [Runner](#gitlab-runner) | Executes GitLab CI jobs | [⤓][runner-omnibus] | [✅][runner-charts] | [⚙][runner-charts] | [✅](../user/gitlab_com/index.md#shared-runners) | [⚙][runner-source] | [⚙][runner-gdk] | CE & EE |

@@ -18,6 +18,7 @@ describe 'Projects > Snippets > Create Snippet', :js do
 
   context 'when a user is authenticated' do
     before do
+      stub_feature_flags(snippets_vue: false)
       project.add_maintainer(user)
       sign_in(user)
 
@@ -52,7 +53,7 @@ describe 'Projects > Snippets > Create Snippet', :js do
       expect(link).to match(%r{/#{Regexp.escape(project.full_path) }/uploads/\h{32}/banana_sample\.gif\z})
     end
 
-    it 'creates a snippet when all reuiqred fields are filled in after validation failing' do
+    it 'creates a snippet when all required fields are filled in after validation failing' do
       fill_in 'project_snippet_title', with: 'My Snippet Title'
       click_button('Create snippet')
 
@@ -76,6 +77,10 @@ describe 'Projects > Snippets > Create Snippet', :js do
   end
 
   context 'when a user is not authenticated' do
+    before do
+      stub_feature_flags(snippets_vue: false)
+    end
+
     it 'shows a public snippet on the index page but not the New snippet button' do
       snippet = create(:project_snippet, :public, project: project)
 

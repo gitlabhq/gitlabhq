@@ -15,10 +15,11 @@ describe('DiffGutterAvatars', () => {
   const createComponent = (props = {}) => {
     wrapper = shallowMount(DiffGutterAvatars, {
       localVue,
-      sync: false,
       propsData: {
         ...props,
       },
+      sync: false,
+      attachToDocument: true,
     });
   };
 

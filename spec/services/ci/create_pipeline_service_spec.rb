@@ -10,7 +10,7 @@ describe Ci::CreatePipelineService do
   let(:ref_name) { 'refs/heads/master' }
 
   before do
-    stub_repository_ci_yaml_file(sha: anything)
+    stub_ci_pipeline_yaml_file(gitlab_ci_yaml)
   end
 
   describe '#execute' do
@@ -510,7 +510,7 @@ describe Ci::CreatePipelineService do
         it 'attaches errors to the pipeline' do
           pipeline = execute_service
 
-          expect(pipeline.errors.full_messages).to eq ['Missing .gitlab-ci.yml file']
+          expect(pipeline.errors.full_messages).to eq ['Missing CI config file']
           expect(pipeline).not_to be_persisted
         end
       end
@@ -528,7 +528,7 @@ describe Ci::CreatePipelineService do
         end
 
         it 'logs error' do
-          expect(Gitlab::Sentry).to receive(:track_acceptable_exception).and_call_original
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).and_call_original
 
           execute_service
         end
@@ -613,7 +613,7 @@ describe Ci::CreatePipelineService do
       end
 
       it 'logs error' do
-        expect(Gitlab::Sentry).to receive(:track_acceptable_exception).and_call_original
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).and_call_original
 
         execute_service
       end
@@ -781,6 +781,25 @@ describe Ci::CreatePipelineService do
       end
     end
 
+    context 'with environment with auto_stop_in' do
+      before do
+        config = YAML.dump(
+          deploy: {
+            environment: { name: "review/$CI_COMMIT_REF_NAME", auto_stop_in: '1 day' },
+            script: 'ls'
+          })
+
+        stub_ci_pipeline_yaml_file(config)
+      end
+
+      it 'creates the environment with auto stop in' do
+        result = execute_service
+
+        expect(result).to be_persisted
+        expect(result.builds.first.options[:environment][:auto_stop_in]).to eq('1 day')
+      end
+    end
+
     context 'with environment name including persisted variables' do
       before do
         config = YAML.dump(
@@ -798,6 +817,32 @@ describe Ci::CreatePipelineService do
 
         expect(result).to be_persisted
         expect(Environment.find_by(name: "review/id1/id2")).to be_present
+      end
+    end
+
+    context 'environment with Kubernetes configuration' do
+      let(:kubernetes_namespace) { 'custom-namespace' }
+
+      before do
+        config = YAML.dump(
+          deploy: {
+            environment: {
+              name: "environment-name",
+              kubernetes: { namespace: kubernetes_namespace }
+            },
+            script: 'ls'
+          }
+        )
+
+        stub_ci_pipeline_yaml_file(config)
+      end
+
+      it 'stores the requested namespace' do
+        result = execute_service
+        build = result.builds.first
+
+        expect(result).to be_persisted
+        expect(build.options.dig(:environment, :kubernetes, :namespace)).to eq(kubernetes_namespace)
       end
     end
 

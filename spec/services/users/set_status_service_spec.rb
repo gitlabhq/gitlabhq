@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe Users::SetStatusService do
   let(:current_user) { create(:user) }
+
   subject(:service) { described_class.new(current_user, params) }
 
   describe '#execute' do

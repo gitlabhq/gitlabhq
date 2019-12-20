@@ -31,21 +31,17 @@ enable_json_logs = Gitlab.config.sidekiq.log_format == 'json'
 enable_sidekiq_memory_killer = ENV['SIDEKIQ_MEMORY_KILLER_MAX_RSS'].to_i.nonzero?
 use_sidekiq_daemon_memory_killer = ENV["SIDEKIQ_DAEMON_MEMORY_KILLER"].to_i.nonzero?
 use_sidekiq_legacy_memory_killer = !use_sidekiq_daemon_memory_killer
+use_request_store = ENV.fetch('SIDEKIQ_REQUEST_STORE', 1).to_i.nonzero?
 
 Sidekiq.configure_server do |config|
   config.redis = queues_config_hash
 
-  config.server_middleware do |chain|
-    chain.add Gitlab::SidekiqMiddleware::Monitor
-    chain.add Gitlab::SidekiqMiddleware::Metrics if Settings.monitoring.sidekiq_exporter
-    chain.add Gitlab::SidekiqMiddleware::ArgumentsLogger if ENV['SIDEKIQ_LOG_ARGUMENTS'] && !enable_json_logs
-    chain.add Gitlab::SidekiqMiddleware::MemoryKiller if enable_sidekiq_memory_killer && use_sidekiq_legacy_memory_killer
-    chain.add Gitlab::SidekiqMiddleware::RequestStoreMiddleware unless ENV['SIDEKIQ_REQUEST_STORE'] == '0'
-    chain.add Gitlab::SidekiqMiddleware::BatchLoader
-    chain.add Gitlab::SidekiqMiddleware::CorrelationLogger
-    chain.add Gitlab::SidekiqMiddleware::InstrumentationLogger
-    chain.add Gitlab::SidekiqStatus::ServerMiddleware
-  end
+  config.server_middleware(&Gitlab::SidekiqMiddleware.server_configurator({
+    metrics: Settings.monitoring.sidekiq_exporter,
+    arguments_logger: ENV['SIDEKIQ_LOG_ARGUMENTS'] && !enable_json_logs,
+    memory_killer: enable_sidekiq_memory_killer && use_sidekiq_legacy_memory_killer,
+    request_store: use_request_store
+  }))
 
   if enable_json_logs
     Sidekiq.logger.formatter = Gitlab::SidekiqLogging::JSONFormatter.new
@@ -56,10 +52,7 @@ Sidekiq.configure_server do |config|
     config.error_handlers << Gitlab::SidekiqLogging::ExceptionHandler.new
   end
 
-  config.client_middleware do |chain|
-    chain.add Gitlab::SidekiqStatus::ClientMiddleware
-    chain.add Gitlab::SidekiqMiddleware::CorrelationInjector
-  end
+  config.client_middleware(&Gitlab::SidekiqMiddleware.client_configurator)
 
   config.on :startup do
     # Clear any connections that might have been obtained before starting
@@ -125,8 +118,5 @@ end
 Sidekiq.configure_client do |config|
   config.redis = queues_config_hash
 
-  config.client_middleware do |chain|
-    chain.add Gitlab::SidekiqMiddleware::CorrelationInjector
-    chain.add Gitlab::SidekiqStatus::ClientMiddleware
-  end
+  config.client_middleware(&Gitlab::SidekiqMiddleware.client_configurator)
 end

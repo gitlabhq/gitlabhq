@@ -1,7 +1,7 @@
 <script>
 import _ from 'underscore';
-import { s__, sprintf } from '~/locale';
 import { mapState, mapGetters, mapActions } from 'vuex';
+import { s__, sprintf } from '~/locale';
 
 import gkeDropdownMixin from './gke_dropdown_mixin';
 

@@ -101,11 +101,15 @@ and details for a database reviewer:
   - Check consistency with `db/schema.rb` and that migrations are [reversible](migration_style_guide.md#reversibility)
   - Check queries timing (If any): Queries executed in a migration
     need to fit comfortably within `15s` - preferably much less than that - on GitLab.com.
+  - For column removals, make sure the column has been [ignored in a previous release](what_requires_downtime.md#dropping-columns)
 - Check [background migrations](background_migrations.md):
-  - Establish a time estimate for execution on GitLab.com.
-  - They should only be used when migrating data in larger tables.
-    - If a single `update` is below than `1s` the query can be placed
+  - Establish a time estimate for execution on GitLab.com. For historical purposes,
+    it's highly recommended to include this estimation on the merge request description.
+  - If a single `update` is below than `1s` the query can be placed
       directly in a regular migration (inside `db/migrate`).
+  - Background migrations are normally used, but not limited to:
+    - Migrating data in larger tables.
+    - Making numerous SQL queries per record in a dataset.
   - Review queries (for example, make sure batch sizes are fine)
   - Because execution time can be longer than for a regular migration,
     it's suggested to treat background migrations as post migrations:

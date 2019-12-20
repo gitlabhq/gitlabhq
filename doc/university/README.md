@@ -196,8 +196,8 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 ## 4. External Articles
 
 1. [2011 WSJ article by Marc Andreessen - Software is Eating the World](https://www.wsj.com/articles/SB10001424053111903480904576512250915629460)
-1. [2014 Blog post by Chris Dixon - Software eats software development](http://cdixon.org/2014/04/13/software-eats-software-development/)
-1. [2015 Venture Beat article - Actually, Open Source is Eating the World](http://venturebeat.com/2015/12/06/its-actually-open-source-software-thats-eating-the-world/)
+1. [2014 Blog post by Chris Dixon - Software eats software development](https://cdixon.org/2014/04/13/software-eats-software-development)
+1. [2015 Venture Beat article - Actually, Open Source is Eating the World](https://venturebeat.com/2015/12/06/its-actually-open-source-software-thats-eating-the-world/)
 
 ## 5. Resources for GitLab Team Members
 

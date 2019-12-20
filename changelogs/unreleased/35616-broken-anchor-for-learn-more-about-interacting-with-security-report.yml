@@ -1,0 +1,5 @@
+---
+title: Use correct fragment identifier for vulnerability help path
+merge_request: 20524
+author:
+type: fixed

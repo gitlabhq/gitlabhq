@@ -441,6 +441,7 @@ describe TodoService do
 
         context 'leaving a note on a commit in a public project' do
           let(:project) { create(:project, :repository, :public) }
+
           it 'creates a todo for each valid mentioned user' do
             expected_todo = base_commit_todo_attrs.merge(
               action: Todo::MENTIONED,
@@ -1012,6 +1013,45 @@ describe TodoService do
 
         expect(described_class.new.mark_todos_as_done(Todo.all, john_doe)).to eq([])
       end
+    end
+  end
+
+  describe '#mark_todo_as_done' do
+    it 'marks a todo done' do
+      todo1 = create(:todo, :pending, user: john_doe)
+
+      described_class.new.mark_todo_as_done(todo1, john_doe)
+
+      expect(todo1.reload.state).to eq('done')
+    end
+
+    context 'when todo is already in state done' do
+      let(:todo1) { create(:todo, :done, user: john_doe) }
+
+      it 'does not update the todo' do
+        expect { described_class.new.mark_todo_as_done(todo1, john_doe) }.not_to change(todo1.reload, :state)
+      end
+
+      it 'does not update cache count' do
+        expect(john_doe).not_to receive(:update_todos_count_cache)
+
+        described_class.new.mark_todo_as_done(todo1, john_doe)
+      end
+    end
+  end
+
+  describe '#mark_all_todos_as_done_by_user' do
+    it 'marks all todos done' do
+      todo1 = create(:todo, user: john_doe, state: :pending)
+      todo2 = create(:todo, user: john_doe, state: :done)
+      todo3 = create(:todo, user: john_doe, state: :pending)
+
+      ids = described_class.new.mark_all_todos_as_done_by_user(john_doe)
+
+      expect(ids).to contain_exactly(todo1.id, todo3.id)
+      expect(todo1.reload.state).to eq('done')
+      expect(todo2.reload.state).to eq('done')
+      expect(todo3.reload.state).to eq('done')
     end
   end
 

@@ -253,6 +253,7 @@ describe Gitlab::Auth::OAuth::User do
 
             context "and LDAP user has an account already" do
               let!(:existing_user) { create(:omniauth_user, name: 'John Doe', email: 'john@example.com', extern_uid: dn, provider: 'ldapmain', username: 'john') }
+
               it "adds the omniauth identity to the LDAP account" do
                 allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_uid).and_return(ldap_user)
 
@@ -396,7 +397,9 @@ describe Gitlab::Auth::OAuth::User do
         context "and no account for the LDAP user" do
           context 'dont block on create (LDAP)' do
             before do
-              allow_any_instance_of(Gitlab::Auth::LDAP::Config).to receive_messages(block_auto_created_users: false)
+              allow_next_instance_of(Gitlab::Auth::LDAP::Config) do |instance|
+                allow(instance).to receive_messages(block_auto_created_users: false)
+              end
             end
 
             it do
@@ -408,7 +411,9 @@ describe Gitlab::Auth::OAuth::User do
 
           context 'block on create (LDAP)' do
             before do
-              allow_any_instance_of(Gitlab::Auth::LDAP::Config).to receive_messages(block_auto_created_users: true)
+              allow_next_instance_of(Gitlab::Auth::LDAP::Config) do |instance|
+                allow(instance).to receive_messages(block_auto_created_users: true)
+              end
             end
 
             it do
@@ -424,7 +429,9 @@ describe Gitlab::Auth::OAuth::User do
 
           context 'dont block on create (LDAP)' do
             before do
-              allow_any_instance_of(Gitlab::Auth::LDAP::Config).to receive_messages(block_auto_created_users: false)
+              allow_next_instance_of(Gitlab::Auth::LDAP::Config) do |instance|
+                allow(instance).to receive_messages(block_auto_created_users: false)
+              end
             end
 
             it do
@@ -436,7 +443,9 @@ describe Gitlab::Auth::OAuth::User do
 
           context 'block on create (LDAP)' do
             before do
-              allow_any_instance_of(Gitlab::Auth::LDAP::Config).to receive_messages(block_auto_created_users: true)
+              allow_next_instance_of(Gitlab::Auth::LDAP::Config) do |instance|
+                allow(instance).to receive_messages(block_auto_created_users: true)
+              end
             end
 
             it do
@@ -480,7 +489,9 @@ describe Gitlab::Auth::OAuth::User do
 
         context 'dont block on create (LDAP)' do
           before do
-            allow_any_instance_of(Gitlab::Auth::LDAP::Config).to receive_messages(block_auto_created_users: false)
+            allow_next_instance_of(Gitlab::Auth::LDAP::Config) do |instance|
+              allow(instance).to receive_messages(block_auto_created_users: false)
+            end
           end
 
           it do
@@ -492,7 +503,9 @@ describe Gitlab::Auth::OAuth::User do
 
         context 'block on create (LDAP)' do
           before do
-            allow_any_instance_of(Gitlab::Auth::LDAP::Config).to receive_messages(block_auto_created_users: true)
+            allow_next_instance_of(Gitlab::Auth::LDAP::Config) do |instance|
+              allow(instance).to receive_messages(block_auto_created_users: true)
+            end
           end
 
           it do

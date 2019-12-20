@@ -6,17 +6,19 @@
   %span.spinner.spinner-dark.spinner-sm{ 'aria-label': 'Loading' }
   %span.prepend-left-4= s_('ClusterIntegration|Kubernetes cluster is being created...')
 
-.hidden.row.js-cluster-api-unreachable.bs-callout.bs-callout-warning{ role: 'alert' }
-  .col-11
+.hidden.row.js-cluster-api-unreachable.gl-alert.gl-alert-warning{ role: 'alert' }
+  = sprite_icon('warning', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+  %button.js-close-banner.gl-alert-dismiss{ type: 'button', 'aria-label' => _('Dismiss') }
+    = sprite_icon('close', size: 16, css_class: 'gl-icon')
+  .gl-alert-body
     = s_('ClusterIntegration|Your cluster API is unreachable. Please ensure your API URL is correct.')
-  .col-1.p-0
-    %button.js-close-banner.close.cluster-application-banner-close.h-100.m-0= "×"
 
-.hidden.js-cluster-authentication-failure.row.js-cluster-api-unreachable.bs-callout.bs-callout-warning{ role: 'alert' }
-  .col-11
+.hidden.js-cluster-authentication-failure.js-cluster-api-unreachable.gl-alert.gl-alert-warning{ role: 'alert' }
+  = sprite_icon('warning', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+  %button.js-close-banner.gl-alert-dismiss{ type: 'button', 'aria-label' => _('Dismiss') }
+    = sprite_icon('close', size: 16, css_class: 'gl-icon')
+  .gl-alert-body
     = s_('ClusterIntegration|There was a problem authenticating with your cluster. Please ensure your CA Certificate and Token are valid.')
-  .col-1.p-0
-    %button.js-close-banner.close.cluster-application-banner-close.h-100.m-0= "×"
 
 .hidden.js-cluster-success.bs-callout.bs-callout-success{ role: 'alert' }
   = s_("ClusterIntegration|Kubernetes cluster was successfully created.")

@@ -5,7 +5,7 @@ import { formatDate, getTimeago } from '../../lib/utils/datetime_utility';
  */
 export default {
   methods: {
-    timeFormated(time) {
+    timeFormatted(time) {
       const timeago = getTimeago();
 
       return timeago.format(time);

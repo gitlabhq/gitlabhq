@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import JobContainerItem from '~/jobs/components/job_container_item.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import JobContainerItem from '~/jobs/components/job_container_item.vue';
 import job from '../mock_data';
 
 describe('JobContainerItem', () => {

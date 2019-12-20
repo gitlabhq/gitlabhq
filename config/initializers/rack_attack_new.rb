@@ -1,11 +1,22 @@
+# Specs for this file can be found on:
+# * spec/lib/gitlab/throttle_spec.rb
+# * spec/requests/rack_attack_global_spec.rb
 module Gitlab::Throttle
   def self.settings
     Gitlab::CurrentSettings.current_application_settings
   end
 
+  # Returns true if we should use the Admin Area protected paths throttle
   def self.protected_paths_enabled?
-    !self.omnibus_protected_paths_present? &&
-      self.settings.throttle_protected_paths_enabled?
+    return false if should_use_omnibus_protected_paths?
+
+    self.settings.throttle_protected_paths_enabled?
+  end
+
+  # To be removed in 13.0: https://gitlab.com/gitlab-org/gitlab/issues/29952
+  def self.should_use_omnibus_protected_paths?
+    !Settings.rack_attack.admin_area_protected_paths_enabled &&
+      self.omnibus_protected_paths_present?
   end
 
   def self.omnibus_protected_paths_present?
@@ -102,11 +113,15 @@ class Rack::Attack
 
   class Request
     def unauthenticated?
-      !authenticated_user_id([:api, :rss, :ics])
+      !(authenticated_user_id([:api, :rss, :ics]) || authenticated_runner_id)
     end
 
     def authenticated_user_id(request_formats)
-      Gitlab::Auth::RequestAuthenticator.new(self).user(request_formats)&.id
+      request_authenticator.user(request_formats)&.id
+    end
+
+    def authenticated_runner_id
+      request_authenticator.runner&.id
     end
 
     def api_request?
@@ -138,6 +153,10 @@ class Rack::Attack
     end
 
     private
+
+    def request_authenticator
+      @request_authenticator ||= Gitlab::Auth::RequestAuthenticator.new(self)
+    end
 
     def protected_paths
       Gitlab::CurrentSettings.current_application_settings.protected_paths

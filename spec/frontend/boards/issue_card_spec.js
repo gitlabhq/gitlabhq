@@ -51,6 +51,7 @@ describe('Issue card component', () => {
       },
       store,
       sync: false,
+      attachToDocument: true,
     });
   });
 

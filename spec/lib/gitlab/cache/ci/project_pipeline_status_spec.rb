@@ -9,7 +9,9 @@ describe Gitlab::Cache::Ci::ProjectPipelineStatus, :clean_gitlab_redis_cache do
 
   describe '.load_for_project' do
     it "loads the status" do
-      expect_any_instance_of(described_class).to receive(:load_status)
+      expect_next_instance_of(described_class) do |instance|
+        expect(instance).to receive(:load_status)
+      end
 
       described_class.load_for_project(project)
     end

@@ -32,8 +32,9 @@ describe Deployment do
     let(:deployment) { create(:deployment, deployable: build) }
 
     it 'delegates to other_scheduled_actions' do
-      expect_any_instance_of(Ci::Build)
-        .to receive(:other_scheduled_actions)
+      expect_next_instance_of(Ci::Build) do |instance|
+        expect(instance).to receive(:other_scheduled_actions)
+      end
 
       subject
     end
@@ -439,6 +440,63 @@ describe Deployment do
       )
 
       expect(deploy2.previous_environment_deployment).to be_nil
+    end
+  end
+
+  describe '#playable_build' do
+    subject { deployment.playable_build }
+
+    context 'when there is a deployable build' do
+      let(:deployment) { create(:deployment, deployable: build) }
+
+      context 'when the deployable build is playable' do
+        let(:build) { create(:ci_build, :playable) }
+
+        it 'returns that build' do
+          is_expected.to eq(build)
+        end
+      end
+
+      context 'when the deployable build is not playable' do
+        let(:build) { create(:ci_build) }
+
+        it 'returns nil' do
+          is_expected.to be_nil
+        end
+      end
+    end
+
+    context 'when there is no deployable build' do
+      let(:deployment) { create(:deployment) }
+
+      it 'returns nil' do
+        is_expected.to be_nil
+      end
+    end
+  end
+
+  context '#update_status' do
+    let(:deploy) { create(:deployment, status: :running) }
+
+    it 'changes the status' do
+      deploy.update_status('success')
+
+      expect(deploy).to be_success
+    end
+
+    it 'schedules SuccessWorker and FinishedWorker when finishing a deploy' do
+      expect(Deployments::SuccessWorker).to receive(:perform_async)
+      expect(Deployments::FinishedWorker).to receive(:perform_async)
+
+      deploy.update_status('success')
+    end
+
+    it 'updates finished_at when transitioning to a finished status' do
+      Timecop.freeze do
+        deploy.update_status('success')
+
+        expect(deploy.read_attribute(:finished_at)).to eq(Time.now)
+      end
     end
   end
 end

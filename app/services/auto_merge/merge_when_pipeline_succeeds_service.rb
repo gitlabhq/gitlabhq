@@ -11,7 +11,7 @@ module AutoMerge
     end
 
     def process(merge_request)
-      return unless merge_request.actual_head_pipeline&.success?
+      return unless merge_request.actual_head_pipeline_success?
       return unless merge_request.mergeable?
 
       merge_request.merge_async(merge_request.merge_user_id, merge_request.merge_params)

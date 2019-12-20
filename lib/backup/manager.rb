@@ -47,11 +47,7 @@ module Backup
 
       directory = connect_to_remote_directory(connection_settings)
 
-      if directory.files.create(key: remote_target, body: File.open(tar_file), public: false,
-                                multipart_chunk_size: Gitlab.config.backup.upload.multipart_chunk_size,
-                                encryption: Gitlab.config.backup.upload.encryption,
-                                encryption_key: Gitlab.config.backup.upload.encryption_key,
-                                storage_class: Gitlab.config.backup.upload.storage_class)
+      if directory.files.create(create_attributes)
         progress.puts "done".color(:green)
       else
         puts "uploading backup to #{remote_directory} failed".color(:red)
@@ -251,6 +247,28 @@ module Backup
         installation_type: Gitlab::INSTALLATION_TYPE,
         skipped: ENV["SKIP"]
       }
+    end
+
+    def create_attributes
+      attrs = {
+        key: remote_target,
+        body: File.open(tar_file),
+        multipart_chunk_size: Gitlab.config.backup.upload.multipart_chunk_size,
+        encryption: Gitlab.config.backup.upload.encryption,
+        encryption_key: Gitlab.config.backup.upload.encryption_key,
+        storage_class: Gitlab.config.backup.upload.storage_class
+      }
+
+      # Google bucket-only policies prevent setting an ACL. In any case, by default,
+      # all objects are set to the default ACL, which is project-private:
+      # https://cloud.google.com/storage/docs/json_api/v1/defaultObjectAccessControls
+      attrs[:public] = false unless google_provider?
+
+      attrs
+    end
+
+    def google_provider?
+      Gitlab.config.backup.upload.connection&.provider&.downcase == 'google'
     end
   end
 end

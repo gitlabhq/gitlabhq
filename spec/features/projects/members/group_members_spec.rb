@@ -31,6 +31,41 @@ describe 'Projects members' do
     end
   end
 
+  context 'with a group' do
+    it 'shows group and project members by default' do
+      visit project_project_members_path(project)
+
+      page.within first('.content-list') do
+        expect(page).to have_content(developer.name)
+
+        expect(page).to have_content(user.name)
+        expect(page).to have_content(group.name)
+      end
+    end
+
+    it 'shows project members only if requested' do
+      visit project_project_members_path(project, with_inherited_permissions: 'exclude')
+
+      page.within first('.content-list') do
+        expect(page).to have_content(developer.name)
+
+        expect(page).not_to have_content(user.name)
+        expect(page).not_to have_content(group.name)
+      end
+    end
+
+    it 'shows group members only if requested' do
+      visit project_project_members_path(project, with_inherited_permissions: 'only')
+
+      page.within first('.content-list') do
+        expect(page).not_to have_content(developer.name)
+
+        expect(page).to have_content(user.name)
+        expect(page).to have_content(group.name)
+      end
+    end
+  end
+
   context 'with a group and a project invitee' do
     before do
       group_invitee

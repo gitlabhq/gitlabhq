@@ -1,8 +1,8 @@
 import Vue from 'vue';
-import subscriptions from '~/sidebar/components/subscriptions/subscriptions.vue';
-import eventHub from '~/sidebar/event_hub';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { mockTracking } from 'spec/helpers/tracking_helper';
+import subscriptions from '~/sidebar/components/subscriptions/subscriptions.vue';
+import eventHub from '~/sidebar/event_hub';
 
 describe('Subscriptions', function() {
   let vm;

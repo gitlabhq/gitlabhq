@@ -8,6 +8,8 @@ module Gitlab
         class StageEvent
           include Gitlab::CycleAnalytics::MetricsTables
 
+          delegate :label_based?, to: :class
+
           def initialize(params)
             @params = params
           end
@@ -35,7 +37,7 @@ module Gitlab
             query
           end
 
-          def label_based?
+          def self.label_based?
             false
           end
 

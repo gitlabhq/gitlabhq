@@ -76,15 +76,22 @@ describe 'User browses commits' do
   end
 
   context 'secondary email' do
+    let(:user) { create(:user) }
+
     it 'finds a commit by a secondary email' do
-      user =
-        create(:user) do |user|
-          create(:email, { user: user, email: 'dmitriy.zaporozhets@gmail.com' })
-        end
+      create(:email, :confirmed, user: user, email: 'dmitriy.zaporozhets@gmail.com')
 
       visit(project_commit_path(project, sample_commit.parent_id))
 
       check_author_link(sample_commit.author_email, user)
+    end
+
+    it 'links to an unverified e-mail address instead of the user' do
+      create(:email, user: user, email: 'dmitriy.zaporozhets@gmail.com')
+
+      visit(project_commit_path(project, sample_commit.parent_id))
+
+      check_author_email(sample_commit.author_email)
     end
   end
 
@@ -262,4 +269,10 @@ def check_author_link(email, author)
 
   expect(author_link['href']).to eq(user_path(author))
   expect(find('.commit-author-name').text).to eq(author.name)
+end
+
+def check_author_email(email)
+  author_link = find('.commit-author-link')
+
+  expect(author_link['href']).to eq("mailto:#{email}")
 end

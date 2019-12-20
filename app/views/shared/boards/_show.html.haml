@@ -29,6 +29,7 @@
       ":board-id" => "boardId",
       ":key" => "list.id" }
   = render "shared/boards/components/sidebar", group: group
+  = render_if_exists 'shared/boards/components/board_settings_sidebar'
   - if @project
     %board-add-issues-modal{ "new-issue-path" => new_project_issue_path(@project),
       "milestone-path" => milestones_filter_dropdown_path,

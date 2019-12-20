@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import panelResizer from '~/vue_shared/components/panel_resizer.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import panelResizer from '~/vue_shared/components/panel_resizer.vue';
 
 describe('Panel Resizer component', () => {
   let vm;

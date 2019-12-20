@@ -1,10 +1,10 @@
 import Vue from 'vue';
-import store from '~/ide/stores';
-import CommitForm from '~/ide/components/commit_sidebar/form.vue';
-import { activityBarViews } from '~/ide/constants';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import getSetTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
 import { projectData } from 'spec/ide/mock_data';
+import store from '~/ide/stores';
+import CommitForm from '~/ide/components/commit_sidebar/form.vue';
+import { activityBarViews } from '~/ide/constants';
 import { resetStore } from '../../helpers';
 
 describe('IDE commit form', () => {

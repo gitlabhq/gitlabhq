@@ -62,6 +62,9 @@ $gray-dark: darken($gray-light, $darken-dark-factor);
 $gray-darker: #eee;
 $gray-darkest: #c4c4c4;
 
+$purple: #6d49cb;
+$purple-light: #ede8fb;
+
 $black: #000;
 $black-transparent: rgba(0, 0, 0, 0.3);
 $almost-black: #242424;
@@ -527,16 +530,6 @@ $pagination-padding-y: 6px;
 $pagination-padding-x: 16px;
 $pagination-line-height: 20px;
 $pagination-disabled-color: #cdcdcd;
-
-/*
-* Toasts
-*/
-$toast-offset: 24px;
-$toast-height: 48px;
-$toast-max-width: 586px;
-$toast-padding-right: 42px;
-$toast-default-margin: 8px;
-$toast-background-opacity: 0.95;
 
 /*
  *  Status icons

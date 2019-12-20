@@ -94,6 +94,14 @@ describe 'Admin Groups' do
       expect(page).to have_content("Group: #{group.name}")
       expect(page).to have_content("ID: #{group.id}")
     end
+
+    it 'has a link to the group' do
+      group = create(:group, :private)
+
+      visit admin_group_path(group)
+
+      expect(page).to have_link(group.name, href: group_path(group))
+    end
   end
 
   describe 'group edit' do

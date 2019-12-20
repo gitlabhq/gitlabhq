@@ -14,9 +14,9 @@ describe 'User Snippets' do
   end
 
   it 'View all of my snippets' do
-    expect(page).to have_content(public_snippet.title)
-    expect(page).to have_content(internal_snippet.title)
-    expect(page).to have_content(private_snippet.title)
+    expect(page).to have_link(public_snippet.title, href: snippet_path(public_snippet))
+    expect(page).to have_link(internal_snippet.title, href: snippet_path(internal_snippet))
+    expect(page).to have_link(private_snippet.title, href: snippet_path(private_snippet))
   end
 
   it 'View my public snippets' do

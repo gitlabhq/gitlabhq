@@ -45,7 +45,7 @@ export default {
       return this.mergeRequest.headPipeline && this.mergeRequest.headPipeline.detailedStatus;
     },
     formattedTime() {
-      return this.timeFormated(this.mergeRequest.createdAt);
+      return this.timeFormatted(this.mergeRequest.createdAt);
     },
     statusBoxClass() {
       switch (this.mergeRequest.state) {

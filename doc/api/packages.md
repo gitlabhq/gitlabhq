@@ -72,18 +72,31 @@ Example response:
     "id": 1,
     "name": "com/mycompany/my-app",
     "version": "1.0-SNAPSHOT",
-    "package_type": "maven"
+    "package_type": "maven",
+    "_links": {
+      "web_path": "/namespace1/project1/-/packages/1",
+      "delete_api_path": "/namespace1/project1/-/packages/1"
+    }
   },
   {
     "id": 2,
     "name": "@foo/bar",
     "version": "1.0.3",
-    "package_type": "npm"
+    "package_type": "npm",
+    "_links": {
+      "web_path": "/namespace1/project1/-/packages/1",
+      "delete_api_path": "/namespace1/project1/-/packages/1"
+    }
   }
 ]
 ```
 
 By default, the `GET` request will return 20 results, since the API is [paginated](README.md#pagination).
+
+The `_links` object contains the following properties:
+
+- `web_path`: The path which you can visit in GitLab and see the details of the package.
+- `delete_api_path`: The API path to delete the package. Only available if the request user has permission to do so.
 
 ## Get a project package
 
@@ -111,9 +124,18 @@ Example response:
   "id": 1,
   "name": "com/mycompany/my-app",
   "version": "1.0-SNAPSHOT",
-  "package_type": "maven"
+  "package_type": "maven",
+  "_links": {
+    "web_path": "/namespace1/project1/-/packages/1",
+    "delete_api_path": "/namespace1/project1/-/packages/1"
+  }
 }
 ```
+
+The `_links` object contains the following properties:
+
+- `web_path`: The path which you can visit in GitLab and see the details of the package.
+- `delete_api_path`: The API path to delete the package. Only available if the request user has permission to do so.
 
 ## List package files
 

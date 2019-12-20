@@ -149,14 +149,15 @@ The union of A, B, and C is (1, 4) and (6, 7). Therefore, the total running time
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/14664) in GitLab
 > 12.0.
 
-Job logs are divided into sections that can be collapsed or expanded.
+Job logs are divided into sections that can be collapsed or expanded. Each section will display
+the duration.
 
 In the following example:
 
-- Two sections are expanded and can be collapsed.
-- One section is collapsed and can be expanded.
+- Two sections are collapsed and can be expanded.
+- Three sections are expanded and can be collapsed.
 
-![Collapsible sections](img/collapsible_log.png)
+![Collapsible sections](img/collapsible_log_v12_6.png)
 
 ## Configuring pipelines
 
@@ -468,3 +469,15 @@ To illustrate its life cycle:
    even if the commit history of the `example` branch has been overwritten by force-push.
 1. GitLab Runner fetches the persistent pipeline ref and gets source code from the checkout-SHA.
 1. When the pipeline finished, its persistent ref is cleaned up in a background process.
+
+NOTE: **NOTE**: At this moment, this feature is on by default and can be manually disabled
+by disabling `depend_on_persistent_pipeline_ref` feature flag. If you're interested in
+manually disabling this behavior, please ask the administrator
+to execute the following commands in rails console.
+
+```shell
+> sudo gitlab-rails console                                        # Login to Rails console of GitLab instance.
+> project = Project.find_by_full_path('namespace/project-name')    # Get the project instance.
+> Feature.disable(:depend_on_persistent_pipeline_ref, project)     # Disable the feature flag for specific project
+> Feature.disable(:depend_on_persistent_pipeline_ref)              # Disable the feature flag system-wide
+```

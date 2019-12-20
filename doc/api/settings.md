@@ -72,14 +72,15 @@ Example response:
 ```
 
 Users on GitLab [Premium or Ultimate](https://about.gitlab.com/pricing/) may also see
-the `file_template_project_id` or the `geo_node_allowed_ips` parameters:
+the `file_template_project_id`, `deletion_adjourned_period`, or the `geo_node_allowed_ips` parameters:
 
 ```json
 {
    "id" : 1,
    "signup_enabled" : true,
    "file_template_project_id": 1,
-   "geo_node_allowed_ips": "0.0.0.0/0, ::/0"
+   "geo_node_allowed_ips": "0.0.0.0/0, ::/0",
+   "deletion_adjourned_period": 7,
    ...
 }
 ```
@@ -162,6 +163,7 @@ these parameters:
 - `file_template_project_id`
 - `geo_node_allowed_ips`
 - `geo_status_timeout`
+- `deletion_adjourned_period`
 
 Example responses: **(PREMIUM ONLY)**
 
@@ -265,10 +267,11 @@ are listed in the descriptions of the relevant settings.
 | `html_emails_enabled`                    | boolean          | no                                   | Enable HTML emails. |
 | `import_sources`                         | array of strings | no                                   | Sources to allow project import from, possible values: `github`, `bitbucket`, `bitbucket_server`, `gitlab`, `google_code`, `fogbugz`, `git`, `gitlab_project`, `gitea`, `manifest`, and `phabricator`. |
 | `instance_statistics_visibility_private` | boolean          | no                                   | When set to `true` Instance statistics will only be available to admins. |
-| `local_markdown_version`                 | integer          | no                                   | Increase this value when any cached markdown should be invalidated. |
+| `local_markdown_version`                 | integer          | no                                   | Increase this value when any cached Markdown should be invalidated. |
 | `max_artifacts_size`                     | integer          | no                                   | Maximum artifacts size in MB |
 | `max_attachment_size`                    | integer          | no                                   | Limit attachment size in MB |
 | `max_pages_size`                         | integer          | no                                   | Maximum size of pages repositories in MB |
+| `max_personal_access_token_lifetime`     | integer          | no                                   | **(ULTIMATE ONLY)** Maximum allowable lifetime for personal access tokens in days |
 | `metrics_enabled`                        | boolean          | no                                   | (**If enabled, requires:** `metrics_host`, `metrics_method_call_threshold`, `metrics_packet_size`, `metrics_pool_size`, `metrics_port`, `metrics_sample_interval` and `metrics_timeout`) Enable influxDB metrics. |
 | `metrics_host`                           | string           | required by: `metrics_enabled`       | InfluxDB host. |
 | `metrics_method_call_threshold`          | integer          | required by: `metrics_enabled`       | A method call is only tracked when it takes longer than the given amount of milliseconds. |
@@ -291,6 +294,7 @@ are listed in the descriptions of the relevant settings.
 | `plantuml_enabled`                       | boolean          | no                                   | (**If enabled, requires:** `plantuml_url`) Enable PlantUML integration. Default is `false`. |
 | `plantuml_url`                           | string           | required by: `plantuml_enabled`      | The PlantUML instance URL for integration. |
 | `polling_interval_multiplier`            | decimal          | no                                   | Interval multiplier used by endpoints that perform polling. Set to `0` to disable polling. |
+| `deletion_adjourned_period`      | integer          | no                                   | **(PREMIUM ONLY)** How many days after marking project for deletion it is actually removed. Value between 0 and 90.
 | `project_export_enabled`                 | boolean          | no                                   | Enable project export. |
 | `prometheus_metrics_enabled`             | boolean          | no                                   | Enable Prometheus metrics. |
 | `protected_ci_variables`                 | boolean          | no                                   | Environment variables are protected by default. |
@@ -350,3 +354,4 @@ are listed in the descriptions of the relevant settings.
 | `user_show_add_ssh_key_message`          | boolean          | no                                   | When set to `false` disable the "You won't be able to pull or push project code via SSH" warning shown to users with no uploaded SSH key. |
 | `version_check_enabled`                  | boolean          | no                                   | Let GitLab inform you when an update is available. |
 | `web_ide_clientside_preview_enabled`     | boolean          | no                                   | Client side evaluation (allow live previews of JavaScript projects in the Web IDE using CodeSandbox client side evaluation). |
+| `snippet_size_limit`                     | integer          | no                                   | Max snippet content size in **bytes**. Default: 52428800 Bytes (50MB).|

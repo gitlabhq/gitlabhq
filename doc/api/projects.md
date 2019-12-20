@@ -61,6 +61,9 @@ GET /projects
 | `id_after`                    | integer | no | Limit results to projects with IDs greater than the specified ID |
 | `id_before`                   | integer | no | Limit results to projects with IDs less than the specified ID |
 
+NOTE: **Note:**
+This endpoint supports [keyset pagination](README.md#keyset-based-pagination) for selected `order_by` options.
+
 When `simple=true` or the user is unauthenticated this returns something like:
 
 ```json
@@ -238,6 +241,19 @@ When the user is authenticated and `simple` is not set this returns something li
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
     "merge_method": "merge",
+    "auto_devops_enabled": true,
+    "auto_devops_deploy_strategy": "continuous",
+    "repository_storage": "default",
+    "approvals_before_merge": 0,
+    "mirror": false,
+    "mirror_user_id": 45,
+    "mirror_trigger_builds": false,
+    "only_mirror_protected_branches": false,
+    "mirror_overwrites_diverged_branches": false,
+    "external_authorization_classification_label": null,
+    "packages_enabled": true,
+    "service_desk_enabled": false,
+    "service_desk_address": null,
     "statistics": {
       "commit_count": 12,
       "storage_size": 2066080,
@@ -308,6 +324,9 @@ GET /users/:user_id/projects
 | `min_access_level` | integer | no | Limit by current user minimal [access level](members.md) |
 | `id_after`                    | integer | no | Limit results to projects with IDs greater than the specified ID |
 | `id_before`                   | integer | no | Limit results to projects with IDs less than the specified ID |
+
+NOTE: **Note:**
+This endpoint supports [keyset pagination](README.md#keyset-based-pagination) for selected `order_by` options.
 
 ```json
 [
@@ -451,6 +470,19 @@ GET /users/:user_id/projects
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
     "merge_method": "merge",
+    "auto_devops_enabled": true,
+    "auto_devops_deploy_strategy": "continuous",
+    "repository_storage": "default",
+    "approvals_before_merge": 0,
+    "mirror": false,
+    "mirror_user_id": 45,
+    "mirror_trigger_builds": false,
+    "only_mirror_protected_branches": false,
+    "mirror_overwrites_diverged_branches": false,
+    "external_authorization_classification_label": null,
+    "packages_enabled": true,
+    "service_desk_enabled": false,
+    "service_desk_address": null,
     "statistics": {
       "commit_count": 12,
       "storage_size": 2066080,
@@ -643,6 +675,19 @@ Example response:
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
     "merge_method": "merge",
+    "auto_devops_enabled": true,
+    "auto_devops_deploy_strategy": "continuous",
+    "repository_storage": "default",
+    "approvals_before_merge": 0,
+    "mirror": false,
+    "mirror_user_id": 45,
+    "mirror_trigger_builds": false,
+    "only_mirror_protected_branches": false,
+    "mirror_overwrites_diverged_branches": false,
+    "external_authorization_classification_label": null,
+    "packages_enabled": true,
+    "service_desk_enabled": false,
+    "service_desk_address": null,
     "statistics": {
       "commit_count": 12,
       "storage_size": 2066080,
@@ -771,6 +816,19 @@ GET /projects/:id
   "printing_merge_requests_link_enabled": true,
   "request_access_enabled": false,
   "merge_method": "merge",
+  "auto_devops_enabled": true,
+  "auto_devops_deploy_strategy": "continuous",
+  "repository_storage": "default",
+  "approvals_before_merge": 0,
+  "mirror": false,
+  "mirror_user_id": 45,
+  "mirror_trigger_builds": false,
+  "only_mirror_protected_branches": false,
+  "mirror_overwrites_diverged_branches": false,
+  "external_authorization_classification_label": null,
+  "packages_enabled": true,
+  "service_desk_enabled": false,
+  "service_desk_address": null,
   "statistics": {
     "commit_count": 37,
     "storage_size": 1038090,
@@ -951,6 +1009,7 @@ POST /projects
 | `template_project_id` | integer | no | **(PREMIUM)** When used with `use_custom_template`, project ID of a custom project template. This is preferable to using `template_name` since `template_name` may be ambiguous. |
 | `use_custom_template` | boolean | no | **(PREMIUM)** Use either custom [instance](../user/admin_area/custom_project_templates.md) or [group](../user/group/custom_project_templates.md) (with `group_with_project_templates_id`) project template |
 | `group_with_project_templates_id` | integer | no | **(PREMIUM)** For group-level custom templates, specifies ID of group from which all the custom project templates are sourced. Leave empty for instance-level templates. Requires `use_custom_template` to be true |
+| `packages_enabled` | boolean | no | **(PREMIUM ONLY)** Enable or disable packages repository feature |
 
 NOTE: **Note:** If your HTTP repository is not publicly accessible,
 add authentication information to the URL: `https://username:password@gitlab.company.com/group/project.git`
@@ -1013,6 +1072,7 @@ POST /projects/user/:user_id
 | `template_name` | string | no | When used without `use_custom_template`, name of a [built-in project template](../gitlab-basics/create-project.md#built-in-templates). When used with `use_custom_template`, name of a custom project template |
 | `use_custom_template` | boolean | no | **(PREMIUM)** Use either custom [instance](../user/admin_area/custom_project_templates.md) or [group](../user/group/custom_project_templates.md) (with `group_with_project_templates_id`) project template |
 | `group_with_project_templates_id` | integer | no | **(PREMIUM)** For group-level custom templates, specifies ID of group from which all the custom project templates are sourced. Leave empty for instance-level templates. Requires `use_custom_template` to be true |
+| `packages_enabled` | boolean | no | **(PREMIUM ONLY)** Enable or disable packages repository feature |
 
 NOTE: **Note:** If your HTTP repository is not publicly accessible,
 add authentication information to the URL: `https://username:password@gitlab.company.com/group/project.git`
@@ -1075,6 +1135,7 @@ PUT /projects/:id
 | `only_mirror_protected_branches` | boolean | no | **(STARTER)** Only mirror protected branches |
 | `mirror_overwrites_diverged_branches` | boolean | no | **(STARTER)** Pull mirror overwrites diverged branches |
 | `packages_enabled` | boolean | no | **(PREMIUM ONLY)** Enable or disable packages repository feature |
+| `service_desk_enabled` | boolean | no | **(PREMIUM ONLY)** Enable or disable service desk feature |
 
 NOTE: **Note:** If your HTTP repository is not publicly accessible,
 add authentication information to the URL: `https://username:password@gitlab.company.com/group/project.git`
@@ -1652,10 +1713,27 @@ Example response:
 
 ## Remove project
 
-Removes a project including all associated resources (issues, merge requests etc).
+This endpoint either:
+
+- Removes a project including all associated resources (issues, merge requests etc).
+- From GitLab 12.6 on Premium or higher tiers, marks a project for deletion. Actual
+  deletion happens after number of days specified in
+  [instance settings](../user/admin_area/settings/visibility_and_access_controls.md#project-deletion-adjourned-period-premium-only).
 
 ```
 DELETE /projects/:id
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+
+## Restore project marked for deletion **(PREMIUM)**
+
+Restores project marked for deletion.
+
+```
+POST /projects/:id/restore
 ```
 
 | Attribute | Type | Required | Description |

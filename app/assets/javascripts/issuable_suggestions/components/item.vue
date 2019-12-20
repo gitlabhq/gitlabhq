@@ -91,7 +91,7 @@ export default {
       />
       <gl-tooltip :target="() => $refs.state" placement="bottom">
         <span class="d-block">
-          <span class="bold"> {{ stateTitle }} </span> {{ timeFormated(closedOrCreatedDate) }}
+          <span class="bold"> {{ stateTitle }} </span> {{ timeFormatted(closedOrCreatedDate) }}
         </span>
         <span class="text-tertiary">{{ tooltipTitle(closedOrCreatedDate) }}</span>
       </gl-tooltip>

@@ -3,6 +3,7 @@
 class PersonalAccessToken < ApplicationRecord
   include Expirable
   include TokenAuthenticatable
+  include Sortable
 
   add_authentication_token_field :token, digest: true
 
@@ -16,9 +17,12 @@ class PersonalAccessToken < ApplicationRecord
   before_save :ensure_token
 
   scope :active, -> { where("revoked = false AND (expires_at >= NOW() OR expires_at IS NULL)") }
+  scope :expiring_and_not_notified, ->(date) { where(["revoked = false AND expire_notification_delivered = false AND expires_at >= NOW() AND expires_at <= ?", date]) }
   scope :inactive, -> { where("revoked = true OR expires_at < NOW()") }
   scope :with_impersonation, -> { where(impersonation: true) }
   scope :without_impersonation, -> { where(impersonation: false) }
+  scope :for_user, -> (user) { where(user: user) }
+  scope :preload_users, -> { preload(:user) }
 
   validates :scopes, presence: true
   validate :validate_scopes
@@ -70,3 +74,5 @@ class PersonalAccessToken < ApplicationRecord
     "gitlab:personal_access_token:#{user_id}"
   end
 end
+
+PersonalAccessToken.prepend_if_ee('EE::PersonalAccessToken')

@@ -181,6 +181,11 @@ production: &base
     mailbox: "inbox"
     # The IDLE command timeout.
     idle_timeout: 60
+    # The log file path for the structured log file.
+    # Since `mail_room` is run independently of Rails, an absolute path is preferred.
+    # The default is 'log/mail_room_json.log' relative to the root of the Rails app.
+    #
+    # log_path: log/mail_room_json.log
 
   ## Build Artifacts
   artifacts:
@@ -321,8 +326,8 @@ production: &base
     # external_https: ["1.1.1.1:443", "[2001::1]:443"] # If defined, enables custom domain and certificate support in GitLab Pages
 
     # File that contains the shared secret key for verifying access for gitlab-pages.
-    # Default is '.gitlab_pages_shared_secret' relative to Rails.root (i.e. root of the GitLab app).
-    # secret_file: /home/git/gitlab/.gitlab_pages_shared_secret
+    # Default is '.gitlab_pages_secret' relative to Rails.root (i.e. root of the GitLab app).
+    # secret_file: /home/git/gitlab/.gitlab_pages_secret
 
   ## Mattermost
   ## For enabling Add to Mattermost button
@@ -366,6 +371,9 @@ production: &base
     # Send admin emails once a week
     admin_email_worker:
       cron: "0 0 * * 0"
+    # Send emails for personal tokens which are about to expire
+    personal_access_tokens_expiring_worker:
+      cron: "0 1 * * *"
 
     # Remove outdated repository archives
     repository_archive_cache_worker:

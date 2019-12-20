@@ -9,6 +9,7 @@ describe ProjectSnippet do
 
   describe "Validation" do
     it { is_expected.to validate_presence_of(:project) }
+    it { is_expected.to validate_inclusion_of(:secret).in_array([false]) }
   end
 
   describe '#embeddable?' do

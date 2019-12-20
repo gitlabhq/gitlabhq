@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
+import MockAdapter from 'axios-mock-adapter';
 import { createStore } from '~/contributors/stores';
 import axios from '~/lib/utils/axios_utils';
-import MockAdapter from 'axios-mock-adapter';
 import ContributorsCharts from '~/contributors/components/contributors.vue';
 
 const localVue = createLocalVue();

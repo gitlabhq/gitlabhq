@@ -5,6 +5,10 @@ module Quality
     UnknownTestLevelError = Class.new(StandardError)
 
     TEST_LEVEL_FOLDERS = {
+      migration: %w[
+        migrations
+        lib/gitlab/background_migration
+      ],
       unit: %w[
         bin
         config
@@ -19,7 +23,6 @@ module Quality
         initializers
         javascripts
         lib
-        migrations
         models
         policies
         presenters
@@ -35,10 +38,6 @@ module Quality
         views
         workers
         elastic_integration
-      ],
-      migration: %w[
-        migrations
-        lib/gitlab/background_migration
       ],
       integration: %w[
         controllers

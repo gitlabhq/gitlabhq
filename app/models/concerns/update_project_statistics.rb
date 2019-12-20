@@ -49,8 +49,7 @@ module UpdateProjectStatistics
       attr = self.class.statistic_attribute
       delta = read_attribute(attr).to_i - attribute_before_last_save(attr).to_i
 
-      update_project_statistics(delta)
-      schedule_namespace_aggregation_worker
+      schedule_update_project_statistic(delta)
     end
 
     def update_project_statistics_attribute_changed?
@@ -58,24 +57,35 @@ module UpdateProjectStatistics
     end
 
     def update_project_statistics_after_destroy
-      update_project_statistics(-read_attribute(self.class.statistic_attribute).to_i)
+      delta = -read_attribute(self.class.statistic_attribute).to_i
 
-      schedule_namespace_aggregation_worker
+      schedule_update_project_statistic(delta)
     end
 
     def project_destroyed?
       project.pending_delete?
     end
 
-    def update_project_statistics(delta)
-      ProjectStatistics.increment_statistic(project_id, self.class.project_statistics_name, delta)
-    end
+    def schedule_update_project_statistic(delta)
+      return if delta.zero?
 
-    def schedule_namespace_aggregation_worker
+      if Feature.enabled?(:update_project_statistics_after_commit, default_enabled: true)
+        # Update ProjectStatistics after the transaction
+        run_after_commit do
+          ProjectStatistics.increment_statistic(
+            project_id, self.class.project_statistics_name, delta)
+        end
+      else
+        # Use legacy-way to update within transaction
+        ProjectStatistics.increment_statistic(
+          project_id, self.class.project_statistics_name, delta)
+      end
+
       run_after_commit do
         next if project.nil?
 
-        Namespaces::ScheduleAggregationWorker.perform_async(project.namespace_id)
+        Namespaces::ScheduleAggregationWorker.perform_async(
+          project.namespace_id)
       end
     end
   end

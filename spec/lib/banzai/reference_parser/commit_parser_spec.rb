@@ -35,8 +35,9 @@ describe Banzai::ReferenceParser::CommitParser do
         it 'returns an Array of commits' do
           commit = double(:commit)
 
-          allow_any_instance_of(Project).to receive(:valid_repo?)
-            .and_return(true)
+          allow_next_instance_of(Project) do |instance|
+            allow(instance).to receive(:valid_repo?).and_return(true)
+          end
 
           expect(subject).to receive(:find_commits)
             .with(project, ['123'])
@@ -46,8 +47,9 @@ describe Banzai::ReferenceParser::CommitParser do
         end
 
         it 'returns an empty Array when the commit could not be found' do
-          allow_any_instance_of(Project).to receive(:valid_repo?)
-            .and_return(true)
+          allow_next_instance_of(Project) do |instance|
+            allow(instance).to receive(:valid_repo?).and_return(true)
+          end
 
           expect(subject).to receive(:find_commits)
             .with(project, ['123'])
@@ -57,8 +59,9 @@ describe Banzai::ReferenceParser::CommitParser do
         end
 
         it 'skips projects without valid repositories' do
-          allow_any_instance_of(Project).to receive(:valid_repo?)
-            .and_return(false)
+          allow_next_instance_of(Project) do |instance|
+            allow(instance).to receive(:valid_repo?).and_return(false)
+          end
 
           expect(subject.referenced_by([link])).to eq([])
         end
@@ -66,8 +69,9 @@ describe Banzai::ReferenceParser::CommitParser do
 
       context 'when the link does not have a data-commit attribute' do
         it 'returns an empty Array' do
-          allow_any_instance_of(Project).to receive(:valid_repo?)
-            .and_return(true)
+          allow_next_instance_of(Project) do |instance|
+            allow(instance).to receive(:valid_repo?).and_return(true)
+          end
 
           expect(subject.referenced_by([link])).to eq([])
         end
@@ -76,8 +80,9 @@ describe Banzai::ReferenceParser::CommitParser do
 
     context 'when the link does not have a data-project attribute' do
       it 'returns an empty Array' do
-        allow_any_instance_of(Project).to receive(:valid_repo?)
-          .and_return(true)
+        allow_next_instance_of(Project) do |instance|
+          allow(instance).to receive(:valid_repo?).and_return(true)
+        end
 
         expect(subject.referenced_by([link])).to eq([])
       end

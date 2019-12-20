@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { mockTracking, triggerEvent } from 'spec/helpers/tracking_helper';
 import component from '~/vue_merge_request_widget/components/review_app_link.vue';
 import mountComponent from '../../helpers/vue_mount_component_helper';
 
@@ -7,6 +8,7 @@ describe('review app link', () => {
   const props = {
     link: '/review',
     cssClass: 'js-link',
+    isCurrent: true,
   };
   let vm;
   let el;
@@ -34,5 +36,14 @@ describe('review app link', () => {
 
   it('renders svg icon', () => {
     expect(el.querySelector('svg')).not.toBeNull();
+  });
+
+  it('tracks an event when clicked', () => {
+    const spy = mockTracking('_category_', el, spyOn);
+    triggerEvent(el);
+
+    expect(spy).toHaveBeenCalledWith('_category_', 'open_review_app', {
+      label: 'review_app',
+    });
   });
 });

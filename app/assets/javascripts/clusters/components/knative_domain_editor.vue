@@ -1,7 +1,7 @@
 <script>
+import { GlLoadingIcon } from '@gitlab/ui';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import ClipboardButton from '../../vue_shared/components/clipboard_button.vue';
-import { GlLoadingIcon } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 
 import { APPLICATION_STATUS } from '~/clusters/constants';

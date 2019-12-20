@@ -96,21 +96,25 @@ describe Banzai::Filter::RelativeLinkFilter do
 
   context 'with a project_wiki' do
     let(:project_wiki) { double('ProjectWiki') }
+
     include_examples :preserve_unchanged
   end
 
   context 'without a repository' do
     let(:project) { create(:project) }
+
     include_examples :preserve_unchanged
   end
 
   context 'with an empty repository' do
     let(:project) { create(:project_empty_repo) }
+
     include_examples :preserve_unchanged
   end
 
   context 'without project repository access' do
     let(:project) { create(:project, :repository, repository_access_level: ProjectFeature::PRIVATE) }
+
     include_examples :preserve_unchanged
   end
 
@@ -269,6 +273,7 @@ describe Banzai::Filter::RelativeLinkFilter do
 
     context 'when requested path is a file in the repo' do
       let(:requested_path) { 'doc/api/README.md' }
+
       it 'rebuilds URL relative to the containing directory' do
         doc = filter(link('users.md'))
         expect(doc.at_css('a')['href']).to eq "/#{project_path}/blob/#{Addressable::URI.escape(ref)}/doc/api/users.md"
@@ -277,6 +282,7 @@ describe Banzai::Filter::RelativeLinkFilter do
 
     context 'when requested path is a directory in the repo' do
       let(:requested_path) { 'doc/api/' }
+
       it 'rebuilds URL relative to the directory' do
         doc = filter(link('users.md'))
         expect(doc.at_css('a')['href']).to eq "/#{project_path}/blob/#{Addressable::URI.escape(ref)}/doc/api/users.md"
@@ -287,6 +293,7 @@ describe Banzai::Filter::RelativeLinkFilter do
       let(:ref) { '100%branch' }
       let(:commit) { project.commit('1b12f15a11fc6e62177bef08f47bc7b5ce50b141') }
       let(:requested_path) { 'foo/bar/' }
+
       it 'correctly escapes the ref' do
         doc = filter(link('.gitkeep'))
         expect(doc.at_css('a')['href']).to eq "/#{project_path}/blob/#{Addressable::URI.escape(ref)}/foo/bar/.gitkeep"
@@ -316,6 +323,7 @@ describe Banzai::Filter::RelativeLinkFilter do
       let(:ref) { 'master' }
       let(:commit) { project.commit('38008cb17ce1466d8fec2dfa6f6ab8dcfe5cf49e') }
       let(:requested_path) { 'with space/' }
+
       it 'does not escape the space twice' do
         doc = filter(link('README.md'))
         expect(doc.at_css('a')['href']).to eq "/#{project_path}/blob/#{Addressable::URI.escape(ref)}/with%20space/README.md"
@@ -328,7 +336,9 @@ describe Banzai::Filter::RelativeLinkFilter do
   end
 
   context 'with a valid ref' do
-    let(:commit) { nil } # force filter to use ref instead of commit
+    # force filter to use ref instead of commit
+    let(:commit) { nil }
+
     include_examples :valid_repository
   end
 

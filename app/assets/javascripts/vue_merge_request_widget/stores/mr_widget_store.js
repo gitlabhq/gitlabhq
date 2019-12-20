@@ -1,4 +1,4 @@
-import Timeago from 'timeago.js';
+import { format } from 'timeago.js';
 import _ from 'underscore';
 import getStateKey from 'ee_else_ce/vue_merge_request_widget/stores/get_state_key';
 import { stateKey } from './state_maps';
@@ -42,12 +42,14 @@ export default class MergeRequestStore {
     this.commitsCount = data.commits_count;
     this.divergedCommitsCount = data.diverged_commits_count;
     this.pipeline = data.pipeline || {};
+    this.pipelineCoverageDelta = data.pipeline_coverage_delta;
     this.mergePipeline = data.merge_pipeline || {};
     this.deployments = this.deployments || data.deployments || [];
     this.postMergeDeployments = this.postMergeDeployments || [];
     this.commits = data.commits_without_merge_commits || [];
     this.squashCommitMessage = data.default_squash_commit_message;
     this.rebaseInProgress = data.rebase_in_progress;
+    this.mergeRequestDiffsPath = data.diffs_path;
 
     if (data.issues_links) {
       const links = data.issues_links;
@@ -81,6 +83,7 @@ export default class MergeRequestStore {
     this.isOpen = data.state === 'opened';
     this.hasMergeableDiscussionsState = data.mergeable_discussions_state === false;
     this.isSHAMismatch = this.sha !== data.diff_head_sha;
+    this.latestSHA = data.diff_head_sha;
     this.canBeMerged = data.can_be_merged || false;
     this.isMergeAllowed = data.mergeable || false;
     this.mergeOngoing = data.merge_ongoing;
@@ -170,6 +173,8 @@ export default class MergeRequestStore {
     this.conflictsDocsPath = data.conflicts_docs_path;
     this.ciEnvironmentsStatusPath = data.ci_environments_status_path;
     this.securityApprovalsHelpPagePath = data.security_approvals_help_page_path;
+    this.eligibleApproversDocsPath = data.eligible_approvers_docs_path;
+    this.mergeImmediatelyDocsPath = data.merge_immediately_docs_path;
   }
 
   get isNothingToMergeState() {
@@ -213,9 +218,7 @@ export default class MergeRequestStore {
       return '';
     }
 
-    const timeagoInstance = new Timeago();
-
-    return timeagoInstance.format(date);
+    return format(date);
   }
 
   static getPreferredAutoMergeStrategy(availableAutoMergeStrategies) {

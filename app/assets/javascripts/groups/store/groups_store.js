@@ -93,6 +93,7 @@ export default class GroupsStore {
       memberCount: rawGroupItem.number_users_with_delimiter,
       starCount: rawGroupItem.star_count,
       updatedAt: rawGroupItem.updated_at,
+      pendingRemoval: rawGroupItem.marked_for_deletion_at,
     };
   }
 

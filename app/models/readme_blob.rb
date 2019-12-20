@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ReadmeBlob < SimpleDelegator
+  include BlobActiveModel
+
   attr_reader :repository
 
   def initialize(blob, repository)

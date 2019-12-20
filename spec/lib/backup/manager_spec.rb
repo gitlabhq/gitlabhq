@@ -326,7 +326,7 @@ describe Backup::Manager do
     context 'target path' do
       it 'uses the tar filename by default' do
         expect_any_instance_of(Fog::Collection).to receive(:create)
-          .with(hash_including(key: backup_filename))
+          .with(hash_including(key: backup_filename, public: false))
           .and_return(true)
 
         Dir.chdir(Gitlab.config.backup.path) do
@@ -338,7 +338,39 @@ describe Backup::Manager do
         stub_env('DIRECTORY', 'daily')
 
         expect_any_instance_of(Fog::Collection).to receive(:create)
-          .with(hash_including(key: "daily/#{backup_filename}"))
+          .with(hash_including(key: "daily/#{backup_filename}", public: false))
+          .and_return(true)
+
+        Dir.chdir(Gitlab.config.backup.path) do
+          subject.upload
+        end
+      end
+    end
+
+    context 'with Google provider' do
+      before do
+        stub_backup_setting(
+          upload: {
+            connection: {
+              provider: 'Google',
+              google_storage_access_key_id: 'test-access-id',
+              google_storage_secret_access_key: 'secret'
+            },
+            remote_directory: 'directory',
+            multipart_chunk_size: Gitlab.config.backup.upload.multipart_chunk_size,
+            encryption: nil,
+            encryption_key: nil,
+            storage_class: nil
+          }
+        )
+
+        connection = ::Fog::Storage.new(Gitlab.config.backup.upload.connection.symbolize_keys)
+        connection.directories.create(key: Gitlab.config.backup.upload.remote_directory)
+      end
+
+      it 'does not attempt to set ACL' do
+        expect_any_instance_of(Fog::Collection).to receive(:create)
+          .with(hash_excluding(public: false))
           .and_return(true)
 
         Dir.chdir(Gitlab.config.backup.path) do

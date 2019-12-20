@@ -99,3 +99,5 @@ class GroupChildEntity < Grape::Entity
     end
   end
 end
+
+GroupChildEntity.prepend_if_ee('EE::GroupChildEntity')

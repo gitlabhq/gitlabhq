@@ -118,7 +118,7 @@ describe ProfilesController, :request_store do
           format: :json
 
       expect(response.status).to eq(200)
-      expect(json_response['message']).to eq('Username successfully changed')
+      expect(json_response['message']).to eq(s_('Profiles|Username successfully changed'))
     end
 
     it 'renders an error message when the username was not updated' do

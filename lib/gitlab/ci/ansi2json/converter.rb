@@ -37,16 +37,13 @@ module Gitlab
 
           flush_current_line
 
-          # TODO: replace OpenStruct with a better type
-          # https://gitlab.com/gitlab-org/gitlab/issues/34305
-          OpenStruct.new(
+          Gitlab::Ci::Ansi2json::Result.new(
             lines: @lines,
             state: @state.encode,
             append: append,
             truncated: truncated,
             offset: start_offset,
-            size: stream.tell - start_offset,
-            total: stream.size
+            stream: stream
           )
         end
 

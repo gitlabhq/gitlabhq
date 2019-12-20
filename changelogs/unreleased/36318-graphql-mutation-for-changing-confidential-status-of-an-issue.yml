@@ -1,0 +1,5 @@
+---
+title: Add GraphQL mutation for setting an issue as confidential
+merge_request: 20785
+author:
+type: added

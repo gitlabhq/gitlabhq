@@ -12,39 +12,20 @@ class Projects::JobsController < Projects::ApplicationController
   before_action :authorize_use_build_terminal!, only: [:terminal, :terminal_websocket_authorize]
   before_action :verify_api_request!, only: :terminal_websocket_authorize
   before_action only: [:show] do
-    push_frontend_feature_flag(:job_log_json, project)
+    push_frontend_feature_flag(:job_log_json, project, default_enabled: true)
   end
 
   layout 'project'
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def index
+    # We need all builds for tabs counters
+    @all_builds = JobsFinder.new(current_user: current_user, project: @project).execute
+
     @scope = params[:scope]
-    @all_builds = project.builds.relevant
-    @builds = @all_builds.order('ci_builds.id DESC')
-    @builds =
-      case @scope
-      when 'pending'
-        @builds.pending.reverse_order
-      when 'running'
-        @builds.running.reverse_order
-      when 'finished'
-        @builds.finished
-      else
-        @builds
-      end
-    @builds = @builds.includes([
-      { pipeline: [:project, :user] },
-      :job_artifacts_archive,
-      :metadata,
-      :trigger_request,
-      :project,
-      :user,
-      :tags
-    ])
+    @builds = JobsFinder.new(current_user: current_user, project: @project, params: params).execute
+    @builds = @builds.eager_load_everything
     @builds = @builds.page(params[:page]).per(30).without_count
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   # rubocop: disable CodeReuse/ActiveRecord
   def show
@@ -72,7 +53,7 @@ class Projects::JobsController < Projects::ApplicationController
         format.json do
           # TODO: when the feature flag is removed we should not pass
           # content_format to serialize method.
-          content_format = Feature.enabled?(:job_log_json, @project) ? :json : :html
+          content_format = Feature.enabled?(:job_log_json, @project, default_enabled: true) ? :json : :html
 
           build_trace = Ci::BuildTrace.new(
             build: @build,

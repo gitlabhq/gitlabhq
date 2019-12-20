@@ -84,7 +84,7 @@ module KubernetesHelpers
     end
 
     logs_url = service.api_url + "/api/v1/namespaces/#{namespace}/pods/#{pod_name}" \
-    "/log?#{container_query_param}tailLines=#{Clusters::Platforms::Kubernetes::LOGS_LIMIT}"
+    "/log?#{container_query_param}tailLines=#{Clusters::Platforms::Kubernetes::LOGS_LIMIT}&timestamps=true"
 
     if status
       response = { status: status }
@@ -194,6 +194,11 @@ module KubernetesHelpers
       .to_return(kube_response({}))
   end
 
+  def stub_kubeclient_put_cluster_role_binding(api_url, name)
+    WebMock.stub_request(:put, api_url + "/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/#{name}")
+      .to_return(kube_response({}))
+  end
+
   def stub_kubeclient_get_role_binding(api_url, name, namespace: 'default')
     WebMock.stub_request(:get, api_url + "/apis/rbac.authorization.k8s.io/v1/namespaces/#{namespace}/rolebindings/#{name}")
       .to_return(kube_response({}))
@@ -219,8 +224,18 @@ module KubernetesHelpers
       .to_return(kube_response({}))
   end
 
+  def stub_kubeclient_get_namespaces(api_url)
+    WebMock.stub_request(:get, api_url + '/api/v1/namespaces')
+      .to_return(kube_response(kube_v1_namespace_list_body))
+  end
+
   def stub_kubeclient_get_namespace(api_url, namespace: 'default')
     WebMock.stub_request(:get, api_url + "/api/v1/namespaces/#{namespace}")
+      .to_return(kube_response({}))
+  end
+
+  def stub_kubeclient_put_cluster_role(api_url, name)
+    WebMock.stub_request(:put, api_url + "/apis/rbac.authorization.k8s.io/v1/clusterroles/#{name}")
       .to_return(kube_response({}))
   end
 
@@ -253,6 +268,20 @@ module KubernetesHelpers
         { "name" => "serviceaccounts", "namespaced" => true, "kind" => "ServiceAccount" },
         { "name" => "services", "namespaced" => true, "kind" => "Service" },
         { "name" => "namespaces", "namespaced" => true, "kind" => "Namespace" }
+      ]
+    }
+  end
+
+  def kube_v1_namespace_list_body
+    {
+      "kind" => "NamespaceList",
+      "apiVersion" => "v1",
+      "items" => [
+        {
+          "metadata" => {
+            "name" => "knative-serving"
+          }
+        }
       ]
     }
   end
@@ -302,7 +331,7 @@ module KubernetesHelpers
   end
 
   def kube_logs_body
-    "Log 1\nLog 2\nLog 3"
+    "2019-12-13T14:04:22.123456Z Log 1\n2019-12-13T14:04:23.123456Z Log 2\n2019-12-13T14:04:24.123456Z Log 3"
   end
 
   def kube_deployments_body
@@ -322,7 +351,7 @@ module KubernetesHelpers
   def kube_knative_services_body(**options)
     {
       "kind" => "List",
-      "items" => [knative_07_service(options)]
+      "items" => [knative_09_service(options)]
     }
   end
 
@@ -460,6 +489,58 @@ module KubernetesHelpers
 
   # noinspection RubyStringKeysInHashInspection
   def knative_07_service(name: 'kubetest', namespace: 'default', domain: 'example.com', description: 'a knative service', environment: 'production')
+    { "apiVersion" => "serving.knative.dev/v1alpha1",
+      "kind" => "Service",
+      "metadata" =>
+        { "annotations" =>
+            { "serving.knative.dev/creator" => "system:serviceaccount:#{namespace}:#{namespace}-service-account",
+              "serving.knative.dev/lastModifier" => "system:serviceaccount:#{namespace}:#{namespace}-service-account" },
+          "creationTimestamp" => "2019-10-22T21:19:13Z",
+          "generation" => 1,
+          "labels" => { "service" => name },
+          "name" => name,
+          "namespace" => namespace,
+          "resourceVersion" => "289726",
+          "selfLink" => "/apis/serving.knative.dev/v1alpha1/namespaces/#{namespace}/services/#{name}",
+          "uid" => "988349fa-f511-11e9-9ea1-42010a80005e" },
+      "spec" => {
+        "template" => {
+          "metadata" => {
+            "annotations" => { "Description" => description },
+            "creationTimestamp" => "2019-10-22T21:19:12Z",
+            "labels" => { "service" => name }
+          },
+          "spec" => {
+            "containers" => [{
+                               "env" =>
+                                 [{ "name" => "timestamp", "value" => "2019-10-22 21:19:12" }],
+                               "image" => "image_name",
+                               "name" => "user-container",
+                               "resources" => {}
+                             }],
+            "timeoutSeconds" => 300
+          }
+        },
+        "traffic" => [{ "latestRevision" => true, "percent" => 100 }]
+      },
+      "status" =>
+        { "address" => { "url" => "http://#{name}.#{namespace}.svc.cluster.local" },
+          "conditions" =>
+            [{ "lastTransitionTime" => "2019-10-22T21:20:15Z", "status" => "True", "type" => "ConfigurationsReady" },
+             { "lastTransitionTime" => "2019-10-22T21:20:15Z", "status" => "True", "type" => "Ready" },
+             { "lastTransitionTime" => "2019-10-22T21:20:15Z", "status" => "True", "type" => "RoutesReady" }],
+          "latestCreatedRevisionName" => "#{name}-92tsj",
+          "latestReadyRevisionName" => "#{name}-92tsj",
+          "observedGeneration" => 1,
+          "traffic" => [{ "latestRevision" => true, "percent" => 100, "revisionName" => "#{name}-92tsj" }],
+          "url" => "http://#{name}.#{namespace}.#{domain}" },
+      "environment_scope" => environment,
+      "cluster_id" => 5,
+      "podcount" => 0 }
+  end
+
+  # noinspection RubyStringKeysInHashInspection
+  def knative_09_service(name: 'kubetest', namespace: 'default', domain: 'example.com', description: 'a knative service', environment: 'production')
     { "apiVersion" => "serving.knative.dev/v1alpha1",
       "kind" => "Service",
       "metadata" =>

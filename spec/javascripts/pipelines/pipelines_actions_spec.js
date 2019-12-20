@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
-import axios from '~/lib/utils/axios_utils';
-import PipelinesActions from '~/pipelines/components/pipelines_actions.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { TEST_HOST } from 'spec/test_constants';
+import axios from '~/lib/utils/axios_utils';
+import PipelinesActions from '~/pipelines/components/pipelines_actions.vue';
 
 describe('Pipelines Actions dropdown', () => {
   const Component = Vue.extend(PipelinesActions);

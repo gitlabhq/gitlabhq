@@ -1,18 +1,4 @@
 .memory-graph-container {
-  svg {
-    background: $white-light;
-    border: 1px solid $gray-200;
-  }
-
-  path {
-    fill: none;
-    stroke: $blue-500;
-    stroke-width: 2px;
-  }
-
-  circle {
-    stroke: $blue-700;
-    fill: $blue-700;
-    stroke-width: 4px;
-  }
+  background: $white-light;
+  border: 1px solid $gray-200;
 }

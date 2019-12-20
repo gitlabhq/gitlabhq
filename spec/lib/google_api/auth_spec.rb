@@ -30,8 +30,9 @@ describe GoogleApi::Auth do
     end
 
     before do
-      allow_any_instance_of(OAuth2::Strategy::AuthCode)
-        .to receive(:get_token).and_return(token)
+      allow_next_instance_of(OAuth2::Strategy::AuthCode) do |instance|
+        allow(instance).to receive(:get_token).and_return(token)
+      end
     end
 
     it 'returns token and expires_at' do

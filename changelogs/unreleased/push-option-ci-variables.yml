@@ -1,0 +1,5 @@
+---
+title: Support passing CI variables via git push options
+merge_request: 20255
+author:
+type: added

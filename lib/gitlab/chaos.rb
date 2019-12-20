@@ -19,9 +19,11 @@ module Gitlab
 
     # cpu_spin will consume all CPU on a single core for the specified duration
     def self.cpu_spin(duration_s)
-      expected_end_time = Time.now + duration_s
+      return unless Gitlab::Metrics::System.thread_cpu_time
 
-      rand while Time.now < expected_end_time
+      expected_end_time = Gitlab::Metrics::System.thread_cpu_time + duration_s
+
+      rand while Gitlab::Metrics::System.thread_cpu_time < expected_end_time
     end
 
     # db_spin will query the database in a tight loop for the specified duration

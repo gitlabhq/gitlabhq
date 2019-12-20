@@ -37,6 +37,11 @@ class InstanceClusterablePresenter < ClusterablePresenter
     update_applications_admin_cluster_path(cluster, application)
   end
 
+  override :clear_cluster_cache_path
+  def clear_cluster_cache_path(cluster)
+    clear_cache_admin_cluster_path(cluster)
+  end
+
   override :cluster_path
   def cluster_path(cluster, params = {})
     admin_cluster_path(cluster, params)
@@ -60,16 +65,6 @@ class InstanceClusterablePresenter < ClusterablePresenter
   override :authorize_aws_role_path
   def authorize_aws_role_path
     authorize_aws_role_admin_clusters_path
-  end
-
-  override :revoke_aws_role_path
-  def revoke_aws_role_path
-    revoke_aws_role_admin_clusters_path
-  end
-
-  override :aws_api_proxy_path
-  def aws_api_proxy_path(resource)
-    aws_proxy_admin_clusters_path(resource: resource)
   end
 
   override :empty_state_help_text

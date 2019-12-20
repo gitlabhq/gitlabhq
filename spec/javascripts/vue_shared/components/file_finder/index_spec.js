@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import Mousetrap from 'mousetrap';
-import FindFileComponent from '~/vue_shared/components/file_finder/index.vue';
-import { UP_KEY_CODE, DOWN_KEY_CODE, ENTER_KEY_CODE, ESC_KEY_CODE } from '~/lib/utils/keycodes';
 import { file } from 'spec/ide/helpers';
 import timeoutPromise from 'spec/helpers/set_timeout_promise_helper';
+import FindFileComponent from '~/vue_shared/components/file_finder/index.vue';
+import { UP_KEY_CODE, DOWN_KEY_CODE, ENTER_KEY_CODE, ESC_KEY_CODE } from '~/lib/utils/keycodes';
 
 describe('File finder item spec', () => {
   const Component = Vue.extend(FindFileComponent);

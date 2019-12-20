@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'active_support/inflector'
+
 module QA
   module Service
     module ClusterProvider
@@ -8,8 +10,22 @@ module QA
           find_executable('gcloud') || raise("You must first install `gcloud` executable to run these tests.")
         end
 
+        def initialize(rbac:)
+          super(rbac: rbac)
+          @attempts = 0
+          @available_regions = %w(
+            asia-east1 asia-east2
+            asia-northeast1 asia-south1
+            asia-southeast1 australia-southeast1
+            europe-west1 europe-west2 europe-west4
+            northamerica-northeast1 southamerica-east1
+            us-central1 us-east1 us-east4
+            us-west1 us-west2
+          )
+        end
+
         def set_credentials(admin_user)
-          master_auth = JSON.parse(`gcloud container clusters describe #{cluster_name} --region #{Runtime::Env.gcloud_region} --format 'json(masterAuth.username, masterAuth.password)'`)
+          master_auth = JSON.parse(`gcloud container clusters describe #{cluster_name} --region #{@region} --format 'json(masterAuth.username, masterAuth.password)'`)
 
           shell <<~CMD.tr("\n", ' ')
             kubectl config set-credentials #{admin_user}
@@ -58,28 +74,40 @@ module QA
         end
 
         def create_cluster
+          @region = get_region
+
           shell <<~CMD.tr("\n", ' ')
             gcloud container clusters
             create #{cluster_name}
             #{auth_options}
             --enable-basic-auth
-            --region #{Runtime::Env.gcloud_region}
+            --region #{@region}
             --disk-size 10GB
             --num-nodes #{Runtime::Env.gcloud_num_nodes}
             && gcloud container clusters
             get-credentials
-            --region #{Runtime::Env.gcloud_region}
+            --region #{@region}
             #{cluster_name}
           CMD
+        rescue QA::Service::Shellout::CommandError
+          @attempts += 1
+
+          retry unless @attempts > 1
+
+          raise $!, "Tried and failed to provision the cluster #{@attempts} #{"time".pluralize(@attempts)}.", $!.backtrace
         end
 
         def delete_cluster
           shell <<~CMD.tr("\n", ' ')
             gcloud container clusters delete
-              --region #{Runtime::Env.gcloud_region}
+              --region #{@region}
               #{cluster_name}
               --quiet --async
           CMD
+        end
+
+        def get_region
+          Runtime::Env.gcloud_region || @available_regions.delete(@available_regions.sample)
         end
       end
     end

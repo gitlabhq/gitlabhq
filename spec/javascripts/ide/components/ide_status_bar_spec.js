@@ -1,8 +1,8 @@
 import Vue from 'vue';
+import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import store from '~/ide/stores';
 import ideStatusBar from '~/ide/components/ide_status_bar.vue';
 import { rightSidebarViews } from '~/ide/constants';
-import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { resetStore } from '../helpers';
 import { projectData } from '../mock_data';
 

@@ -1,0 +1,5 @@
+---
+title: Add SentryIssue table to store a link between issue and sentry issue
+merge_request: 37026
+author:
+type: added

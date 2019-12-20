@@ -4,8 +4,7 @@ module QA
   context 'Manage' do
     describe 'Project activity' do
       it 'user creates an event in the activity page upon Git push' do
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.perform(&:sign_in_using_credentials)
+        Flow::Login.sign_in
 
         project_push = Resource::Repository::ProjectPush.fabricate! do |push|
           push.file_name = 'README.md'

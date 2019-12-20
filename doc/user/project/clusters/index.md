@@ -128,9 +128,31 @@ automatically. If you are using [Auto DevOps](../../../topics/autodevops/index.m
 need to explicitly provide the `KUBE_NAMESPACE` [deployment variable](#deployment-variables)
 that will be used by your deployment jobs, otherwise a namespace will be created for you.
 
-NOTE: **Note:**
-If you [install applications](#installing-applications) on your cluster, GitLab will create
-the resources required to run these even if you have chosen to manage your own cluster.
+#### Important notes
+
+Note the following with GitLab and clusters:
+
+- If you [install applications](#installing-applications) on your cluster, GitLab will
+  create the resources required to run these even if you have chosen to manage your own
+  cluster.
+- Be aware that manually managing resources that have been created by GitLab, like
+  namespaces and service accounts, can cause unexpected errors. If this occurs, try
+  [clearing the cluster cache](#clearing-the-cluster-cache).
+
+#### Clearing the cluster cache
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/31759) in GitLab 12.6.
+
+If you choose to allow GitLab to manage your cluster for you, GitLab stores a cached
+version of the namespaces and service accounts it creates for your projects. If you
+modify these resources in your cluster manually, this cache can fall out of sync with
+your cluster, which can cause deployment jobs to fail.
+
+To clear the cache:
+
+1. Navigate to your project’s **Operations > Kubernetes** page, and select your cluster.
+1. Expand the **Advanced settings** section.
+1. Click **Clear cluster cache**.
 
 ### Base domain
 

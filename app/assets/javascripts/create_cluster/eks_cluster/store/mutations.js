@@ -60,7 +60,4 @@ export default {
     state.isCreatingCluster = false;
     state.createClusterError = error;
   },
-  [types.SIGN_OUT](state) {
-    state.hasCredentials = false;
-  },
 };

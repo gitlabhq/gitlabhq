@@ -1,9 +1,9 @@
 import Vue from 'vue';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import { trimText } from 'spec/helpers/text_helper';
 import autoMergeEnabledComponent from '~/vue_merge_request_widget/components/states/mr_widget_auto_merge_enabled.vue';
 import MRWidgetService from '~/vue_merge_request_widget/services/mr_widget_service';
 import eventHub from '~/vue_merge_request_widget/event_hub';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { trimText } from 'spec/helpers/text_helper';
 import { MWPS_MERGE_STRATEGY } from '~/vue_merge_request_widget/constants';
 
 describe('MRWidgetAutoMergeEnabled', () => {

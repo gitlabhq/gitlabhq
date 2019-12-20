@@ -38,6 +38,10 @@ class ProjectSnippetPolicy < BasePolicy
 
   rule { public_snippet }.enable :read_project_snippet
 
+  rule { is_author & ~project.reporter & ~admin }.policy do
+    prevent :admin_project_snippet
+  end
+
   rule { is_author | admin }.policy do
     enable :read_project_snippet
     enable :update_project_snippet
@@ -45,6 +49,9 @@ class ProjectSnippetPolicy < BasePolicy
   end
 
   rule { ~can?(:read_project_snippet) }.prevent :create_note
+
+  # Aliasing the ability to ease GraphQL permissions check
+  rule { can?(:read_project_snippet) }.enable :read_snippet
 end
 
 ProjectSnippetPolicy.prepend_if_ee('EE::ProjectSnippetPolicy')

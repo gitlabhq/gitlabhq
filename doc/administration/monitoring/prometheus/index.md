@@ -288,6 +288,12 @@ The PgBouncer exporter allows you to measure various PgBouncer metrics.
 
 [➔ Read more about the PgBouncer exporter.](pgbouncer_exporter.md)
 
+### Registry exporter
+
+The Registry exporter allows you to measure various Registry metrics.
+
+[➔ Read more about the Registry exporter.](registry_exporter.md)
+
 ### GitLab exporter
 
 The GitLab exporter allows you to measure various GitLab metrics, pulled from Redis and the database.

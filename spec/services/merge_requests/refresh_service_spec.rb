@@ -113,7 +113,7 @@ describe MergeRequests::RefreshService do
 
       context 'when source branch ref does not exists' do
         before do
-          DeleteBranchService.new(@project, @user).execute(@merge_request.source_branch)
+          ::Branches::DeleteService.new(@project, @user).execute(@merge_request.source_branch)
         end
 
         it 'closes MRs without source branch ref' do
@@ -608,6 +608,7 @@ describe MergeRequests::RefreshService do
 
     context 'marking the merge request as work in progress' do
       let(:refresh_service) { service.new(@project, @user) }
+
       before do
         allow(refresh_service).to receive(:execute_hooks)
       end

@@ -7,6 +7,7 @@ import TreeActionLink from './components/tree_action_link.vue';
 import DirectoryDownloadLinks from './components/directory_download_links.vue';
 import apolloProvider from './graphql';
 import { setTitle } from './utils/title';
+import { updateFormAction } from './utils/dom';
 import { parseBoolean } from '../lib/utils/common_utils';
 import { webIDEUrl } from '../lib/utils/url_utility';
 import { __ } from '../locale';
@@ -42,7 +43,14 @@ export default function setupVueRepositoryList() {
       forkNewBlobPath,
       forkNewDirectoryPath,
       forkUploadBlobPath,
+      uploadPath,
+      newDirPath,
     } = breadcrumbEl.dataset;
+
+    router.afterEach(({ params: { pathMatch = '/' } }) => {
+      updateFormAction('.js-upload-blob-form', uploadPath, pathMatch);
+      updateFormAction('.js-create-dir-form', newDirPath, pathMatch);
+    });
 
     // eslint-disable-next-line no-new
     new Vue({

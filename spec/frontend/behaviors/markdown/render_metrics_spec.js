@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import renderMetrics from '~/behaviors/markdown/render_metrics';
 import { TEST_HOST } from 'helpers/test_constants';
+import renderMetrics from '~/behaviors/markdown/render_metrics';
 
 const originalExtend = Vue.extend;
 

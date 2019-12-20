@@ -21,7 +21,6 @@ export default () =>
         newEnvironmentPath: environmentsData.newEnvironmentPath,
         helpPagePath: environmentsData.helpPagePath,
         deployBoardsHelpPath: environmentsData.deployBoardsHelpPath,
-        cssContainerClass: environmentsData.cssClass,
         canCreateEnvironment: parseBoolean(environmentsData.canCreateEnvironment),
         canReadEnvironment: parseBoolean(environmentsData.canReadEnvironment),
       };
@@ -33,7 +32,6 @@ export default () =>
           newEnvironmentPath: this.newEnvironmentPath,
           helpPagePath: this.helpPagePath,
           deployBoardsHelpPath: this.deployBoardsHelpPath,
-          cssContainerClass: this.cssContainerClass,
           canCreateEnvironment: this.canCreateEnvironment,
           canReadEnvironment: this.canReadEnvironment,
           ...this.canaryCalloutProps,

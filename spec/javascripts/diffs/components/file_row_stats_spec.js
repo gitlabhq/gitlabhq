@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import FileRowStats from '~/diffs/components/file_row_stats.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import FileRowStats from '~/diffs/components/file_row_stats.vue';
 
 describe('Diff file row stats', () => {
   let Component;

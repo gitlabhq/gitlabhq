@@ -21,6 +21,7 @@ const httpStatusCodes = {
   NOT_FOUND: 404,
   GONE: 410,
   UNPROCESSABLE_ENTITY: 422,
+  SERVICE_UNAVAILABLE: 503,
 };
 
 export const successCodes = [

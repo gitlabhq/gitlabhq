@@ -200,9 +200,14 @@ When [renaming a user](../profile/index.md#changing-your-username),
 
 ## Use your project as a Go package
 
-Any project can be used as a Go package including private projects in subgroups. To use packages
-hosted in private projects with the `go get` command, use a [`.netrc` file](https://ec.haxx.se/usingcurl-netrc.html)
-and a [personal access token](../profile/personal_access_tokens.md) in the password field.
+Any project can be used as a Go package including private projects in subgroups.
+GitLab responds correctly to `go get` and `godoc.org` discovery requests,
+including the [`go-import`](https://golang.org/cmd/go/#hdr-Remote_import_paths)
+and [`go-source`](https://github.com/golang/gddo/wiki/Source-Code-Links) meta
+tags, respectively. To use packages hosted in private projects with the `go get`
+command, use a [`.netrc` file](https://ec.haxx.se/usingcurl-netrc.html) and a
+[personal access token](../profile/personal_access_tokens.md) in the password
+field.
 
 For example:
 

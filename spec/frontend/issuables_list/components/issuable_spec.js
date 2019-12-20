@@ -45,6 +45,7 @@ describe('Issuable component', () => {
         ...props,
       },
       sync: false,
+      attachToDocument: true,
     });
   };
 

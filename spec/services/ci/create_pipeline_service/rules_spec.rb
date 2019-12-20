@@ -13,7 +13,9 @@ describe Ci::CreatePipelineService do
   context 'job:rules' do
     before do
       stub_ci_pipeline_yaml_file(config)
-      allow_any_instance_of(Ci::BuildScheduleWorker).to receive(:perform).and_return(true)
+      allow_next_instance_of(Ci::BuildScheduleWorker) do |instance|
+        allow(instance).to receive(:perform).and_return(true)
+      end
     end
 
     context 'exists:' do
@@ -98,6 +100,17 @@ describe Ci::CreatePipelineService do
       stub_ci_pipeline_yaml_file(config)
     end
 
+    shared_examples 'workflow:rules feature disabled' do
+      before do
+        stub_feature_flags(workflow_rules: false)
+      end
+
+      it 'presents a message that rules are disabled' do
+        expect(pipeline.errors[:base]).to include('Workflow rules are disabled')
+        expect(pipeline).to be_persisted
+      end
+    end
+
     context 'with a single regex-matching if: clause' do
       let(:config) do
         <<-EOY
@@ -114,48 +127,36 @@ describe Ci::CreatePipelineService do
       end
 
       context 'matching the first rule in the list' do
-        it 'saves the pipeline' do
-          expect(pipeline).to be_persisted
-        end
-
-        it 'sets the pipeline state to pending' do
+        it 'saves a pending pipeline' do
           expect(pipeline).to be_pending
+          expect(pipeline).to be_persisted
         end
       end
 
       context 'matching the last rule in the list' do
         let(:ref) { 'refs/heads/feature' }
 
-        it 'saves the pipeline' do
-          expect(pipeline).to be_persisted
-        end
-
-        it 'sets the pipeline state to pending' do
+        it 'saves a pending pipeline' do
           expect(pipeline).to be_pending
+          expect(pipeline).to be_persisted
         end
       end
 
       context 'matching the when:never rule' do
         let(:ref) { 'refs/heads/wip' }
 
-        it 'does not save the pipeline' do
-          expect(pipeline).not_to be_persisted
-        end
-
-        it 'attaches errors' do
+        it 'invalidates the pipeline with a workflow rules error' do
           expect(pipeline.errors[:base]).to include('Pipeline filtered out by workflow rules.')
+          expect(pipeline).not_to be_persisted
         end
       end
 
       context 'matching no rules in the list' do
         let(:ref) { 'refs/heads/fix' }
 
-        it 'does not save the pipeline' do
-          expect(pipeline).not_to be_persisted
-        end
-
-        it 'attaches errors' do
+        it 'invalidates the pipeline with a workflow rules error' do
           expect(pipeline.errors[:base]).to include('Pipeline filtered out by workflow rules.')
+          expect(pipeline).not_to be_persisted
         end
       end
     end
@@ -176,12 +177,9 @@ describe Ci::CreatePipelineService do
       end
 
       context 'matching the first rule in the list' do
-        it 'saves the pipeline' do
-          expect(pipeline).to be_persisted
-        end
-
-        it 'sets the pipeline state to pending' do
+        it 'saves a pending pipeline' do
           expect(pipeline).to be_pending
+          expect(pipeline).to be_persisted
         end
       end
     end
@@ -204,24 +202,18 @@ describe Ci::CreatePipelineService do
       context 'with partial match' do
         let(:ref) { 'refs/heads/feature' }
 
-        it 'saves the pipeline' do
-          expect(pipeline).to be_persisted
-        end
-
-        it 'sets the pipeline state to pending' do
+        it 'saves a pending pipeline' do
           expect(pipeline).to be_pending
+          expect(pipeline).to be_persisted
         end
       end
 
       context 'with complete match' do
         let(:ref) { 'refs/heads/feature_conflict' }
 
-        it 'does not save the pipeline' do
-          expect(pipeline).not_to be_persisted
-        end
-
-        it 'attaches errors' do
+        it 'invalidates the pipeline with a workflow rules error' do
           expect(pipeline.errors[:base]).to include('Pipeline filtered out by workflow rules.')
+          expect(pipeline).not_to be_persisted
         end
       end
     end
@@ -245,105 +237,45 @@ describe Ci::CreatePipelineService do
       context 'where workflow passes and the job fails' do
         let(:ref) { 'refs/heads/master' }
 
-        it 'does not save the pipeline' do
+        it 'invalidates the pipeline with an empty jobs error' do
+          expect(pipeline.errors[:base]).to include('No stages / jobs for this pipeline.')
           expect(pipeline).not_to be_persisted
         end
 
-        it 'attaches an error about no job in the pipeline' do
-          expect(pipeline.errors[:base]).to include('No stages / jobs for this pipeline.')
-        end
-
-        context 'with workflow:rules shut off' do
-          before do
-            stub_feature_flags(workflow_rules: false)
-          end
-
-          it 'does not save the pipeline' do
-            expect(pipeline).not_to be_persisted
-          end
-
-          it 'attaches an error about no job in the pipeline' do
-            expect(pipeline.errors[:base]).to include('No stages / jobs for this pipeline.')
-          end
-        end
+        it_behaves_like 'workflow:rules feature disabled'
       end
 
       context 'where workflow passes and the job passes' do
         let(:ref) { 'refs/heads/feature' }
 
-        it 'saves the pipeline' do
+        it 'saves a pending pipeline' do
+          expect(pipeline).to be_pending
           expect(pipeline).to be_persisted
         end
 
-        it 'sets the pipeline state to pending' do
-          expect(pipeline).to be_pending
-        end
-
-        context 'with workflow:rules shut off' do
-          before do
-            stub_feature_flags(workflow_rules: false)
-          end
-
-          it 'saves the pipeline' do
-            expect(pipeline).to be_persisted
-          end
-
-          it 'sets the pipeline state to pending' do
-            expect(pipeline).to be_pending
-          end
-        end
+        it_behaves_like 'workflow:rules feature disabled'
       end
 
       context 'where workflow fails and the job fails' do
         let(:ref) { 'refs/heads/fix' }
 
-        it 'does not save the pipeline' do
+        it 'invalidates the pipeline with a workflow rules error' do
+          expect(pipeline.errors[:base]).to include('Pipeline filtered out by workflow rules.')
           expect(pipeline).not_to be_persisted
         end
 
-        it 'attaches an error about workflow rules' do
-          expect(pipeline.errors[:base]).to include('Pipeline filtered out by workflow rules.')
-        end
-
-        context 'with workflow:rules shut off' do
-          before do
-            stub_feature_flags(workflow_rules: false)
-          end
-
-          it 'does not save the pipeline' do
-            expect(pipeline).not_to be_persisted
-          end
-
-          it 'attaches an error about job rules' do
-            expect(pipeline.errors[:base]).to include('No stages / jobs for this pipeline.')
-          end
-        end
+        it_behaves_like 'workflow:rules feature disabled'
       end
 
       context 'where workflow fails and the job passes' do
         let(:ref) { 'refs/heads/wip' }
 
-        it 'does not save the pipeline' do
+        it 'invalidates the pipeline with a workflow rules error' do
+          expect(pipeline.errors[:base]).to include('Pipeline filtered out by workflow rules.')
           expect(pipeline).not_to be_persisted
         end
 
-        it 'attaches an error about workflow rules' do
-          expect(pipeline.errors[:base]).to include('Pipeline filtered out by workflow rules.')
-        end
-
-        context 'with workflow:rules shut off' do
-          before do
-            stub_feature_flags(workflow_rules: false)
-          end
-
-          it 'saves the pipeline' do
-            expect(pipeline).to be_persisted
-          end
-
-          it 'sets the pipeline state to pending' do
-            expect(pipeline).to be_pending
-          end
-        end
+        it_behaves_like 'workflow:rules feature disabled'
       end
     end
   end

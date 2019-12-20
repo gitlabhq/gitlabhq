@@ -4,8 +4,7 @@ module QA
   context 'Create' do
     describe 'Wiki management' do
       it 'user creates, edits, clones, and pushes to the wiki' do
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.perform(&:sign_in_using_credentials)
+        Flow::Login.sign_in
 
         wiki = Resource::Wiki.fabricate! do |resource|
           resource.title = 'Home'
@@ -16,9 +15,9 @@ module QA
         validate_content('My First Wiki Content')
 
         Page::Project::Wiki::Edit.perform(&:click_edit)
-        Page::Project::Wiki::New.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
-          page.set_content("My Second Wiki Content")
-          page.save_changes
+        Page::Project::Wiki::New.perform do |wiki|
+          wiki.set_content("My Second Wiki Content")
+          wiki.save_changes
         end
 
         validate_content('My Second Wiki Content')

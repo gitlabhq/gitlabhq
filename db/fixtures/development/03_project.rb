@@ -1,4 +1,4 @@
-require './spec/support/sidekiq'
+require './spec/support/sidekiq_middleware'
 
 class Gitlab::Seeder::Projects
   include ActionView::Helpers::NumberHelper
@@ -52,7 +52,6 @@ class Gitlab::Seeder::Projects
     internal: 1, # 1m projects +
     public: 1 # 1m projects = 5m total
   }
-  MASS_INSERT_NAME_START = 'mass_insert_project_'
 
   def seed!
     Sidekiq::Testing.inline! do
@@ -142,6 +141,10 @@ class Gitlab::Seeder::Projects
       # the `after_commit` queue to ensure the job is run now.
       project.send(:_run_after_commit_queue)
       project.import_state.send(:_run_after_commit_queue)
+
+      # Expire repository cache after import to ensure
+      # valid_repo? call below returns a correct answer
+      project.repository.expire_all_method_caches
     end
 
     if project.valid? && project.valid_repo?
@@ -167,7 +170,7 @@ class Gitlab::Seeder::Projects
         INSERT INTO projects (name, path, creator_id, namespace_id, visibility_level, created_at, updated_at)
         SELECT
           'Seed project ' || seq || ' ' || ('{#{visibility_per_user}}'::text[])[seq] AS project_name,
-          'mass_insert_project_' || ('{#{visibility_per_user}}'::text[])[seq] || '_' || seq AS project_path,
+          '#{Gitlab::Seeder::MASS_INSERT_PROJECT_START}' || ('{#{visibility_per_user}}'::text[])[seq] || '_' || seq AS project_path,
           u.id AS user_id,
           n.id AS namespace_id,
           ('{#{visibility_level_per_user}}'::int[])[seq] AS visibility_level,

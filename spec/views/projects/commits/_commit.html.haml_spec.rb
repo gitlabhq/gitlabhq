@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 describe 'projects/commits/_commit.html.haml' do
+  let(:template) { 'projects/commits/commit.html.haml' }
   let(:project) { create(:project, :repository) }
   let(:commit) { project.repository.commit(ref) }
 
@@ -14,7 +15,7 @@ describe 'projects/commits/_commit.html.haml' do
     let(:ref) { GpgHelpers::SIGNED_COMMIT_SHA }
 
     it 'does not display a loading spinner for GPG status' do
-      render partial: 'projects/commits/commit', locals: {
+      render partial: template, locals: {
         project: project,
         ref: ref,
         commit: commit
@@ -50,7 +51,7 @@ describe 'projects/commits/_commit.html.haml' do
       end
 
       it 'does not display a ci status icon' do
-        render partial: 'projects/commits/commit', locals: {
+        render partial: template, locals: {
           project: project,
           ref: ref,
           commit: commit
@@ -66,7 +67,7 @@ describe 'projects/commits/_commit.html.haml' do
       end
 
       it 'does display a ci status icon when pipelines are enabled' do
-        render partial: 'projects/commits/commit', locals: {
+        render partial: template, locals: {
           project: project,
           ref: ref,
           commit: commit

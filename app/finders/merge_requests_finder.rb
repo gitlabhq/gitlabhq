@@ -12,6 +12,7 @@
 #     group_id: integer
 #     project_id: integer
 #     milestone_title: string
+#     release_tag: string
 #     author_id: integer
 #     assignee_id: integer
 #     search: string

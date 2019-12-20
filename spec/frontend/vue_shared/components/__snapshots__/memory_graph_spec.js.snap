@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MemoryGraph Render chart should draw container with chart 1`] = `
+<div
+  class="memory-graph-container p-1"
+  style="width: 100px;"
+>
+  <glsparklinechart-stub
+    data="Nov 12 2019 19:17:33,2.87,Nov 12 2019 19:18:33,2.78,Nov 12 2019 19:19:33,2.78,Nov 12 2019 19:20:33,3.01"
+    height="25"
+    tooltiplabel="MB"
+    variant="gray900"
+  />
+</div>
+`;

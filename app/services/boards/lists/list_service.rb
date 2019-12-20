@@ -6,7 +6,7 @@ module Boards
       def execute(board)
         board.lists.create(list_type: :backlog) unless board.lists.backlog.exists?
 
-        board.lists.preload_associations
+        board.lists.preload_associated_models
       end
     end
   end

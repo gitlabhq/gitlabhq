@@ -32,14 +32,14 @@ module QA
       end
 
       attribute :repository_ssh_location do
-        Page::Project::Show.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
-          page.repository_clone_ssh_location
+        Page::Project::Show.perform do |show|
+          show.repository_clone_ssh_location
         end
       end
 
       attribute :repository_http_location do
-        Page::Project::Show.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
-          page.repository_clone_http_location
+        Page::Project::Show.perform do |show|
+          show.repository_clone_http_location
         end
       end
 
@@ -48,7 +48,7 @@ module QA
         @standalone = false
         @description = 'My awesome project'
         @initialize_with_readme = false
-        @auto_devops_enabled = true
+        @auto_devops_enabled = false
         @visibility = 'public'
       end
 
@@ -62,13 +62,13 @@ module QA
           Page::Group::Show.perform(&:go_to_new_project)
         end
 
-        Page::Project::New.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
-          page.choose_test_namespace
-          page.choose_name(@name)
-          page.add_description(@description)
-          page.set_visibility(@visibility)
-          page.enable_initialize_with_readme if @initialize_with_readme
-          page.create_new_project
+        Page::Project::New.perform do |new_page|
+          new_page.choose_test_namespace
+          new_page.choose_name(@name)
+          new_page.add_description(@description)
+          new_page.set_visibility(@visibility)
+          new_page.enable_initialize_with_readme if @initialize_with_readme
+          new_page.create_new_project
         end
       end
 
@@ -115,8 +115,8 @@ module QA
         post_body
       end
 
-      def runners
-        response = get Runtime::API::Request.new(api_client, api_runners_path).url
+      def runners(tag_list: nil)
+        response = get Runtime::API::Request.new(api_client, "#{api_runners_path}?tag_list=#{tag_list.compact.join(',')}").url
         parse_body(response)
       end
 

@@ -193,6 +193,7 @@ describe AvatarsHelper do
 
   describe '#user_avatar_without_link' do
     let(:options) { { user: user } }
+
     subject { helper.user_avatar_without_link(options) }
 
     it 'displays user avatar' do

@@ -1,5 +1,5 @@
-import renderPDF from '~/blob/pdf';
 import { FIXTURES_PATH } from 'spec/test_constants';
+import renderPDF from '~/blob/pdf';
 
 const testPDF = `${FIXTURES_PATH}/blob/pdf/test.pdf`;
 

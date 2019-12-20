@@ -311,6 +311,45 @@ Developer documentation][mdn].
 
 [mdn]: https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_content_best_practices#Splitting
 
+##### Vue components interpolation
+
+When translating UI text in Vue components, you might want to include child components inside
+the translation string.
+You could not use a JavaScript-only solution to render the translation,
+because Vue would not be aware of the child components and would render them as plain text.
+
+For this use case, you should use the `gl-sprintf` component which is maintained
+in **GitLab UI**.
+
+The `gl-sprintf` component accepts a `message` property, which is the translatable string,
+and it exposes a named slot for every placeholder in the string, which lets you include Vue
+components easily.
+
+Assume you want to print the translatable string
+`Pipeline %{pipelineId} triggered %{timeago} by %{author}`. To replace the `%{timeago}` and
+`%{author}` placeholders with Vue components, here's how you would do that with `gl-sprintf`:
+
+```html
+<template>
+  <div>
+    <gl-sprintf :message="__('Pipeline %{pipelineId} triggered %{timeago} by %{author}')">
+      <template #pipelineId>{{ pipeline.id }}</template>
+      <template #timeago>
+        <timeago :time="pipeline.triggerTime" />
+      </template>
+      <template #author>
+        <gl-avatar-labeled
+          :src="pipeline.triggeredBy.avatarPath"
+          :label="pipeline.triggeredBy.name"
+        />
+      </template>
+    </gl-sprintf>
+  </div>
+</template>
+```
+
+For more information, see the [`gl-sprintf`](https://gitlab-org.gitlab.io/gitlab-ui/?path=/story/base-sprintf--default) documentation.
+
 ## Updating the PO files with the new content
 
 Now that the new content is marked for translation, we need to update

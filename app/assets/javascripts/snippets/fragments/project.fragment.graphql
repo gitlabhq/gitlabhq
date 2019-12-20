@@ -1,0 +1,6 @@
+fragment Project on Snippet {
+  project {
+    fullPath
+    webUrl
+  }
+}

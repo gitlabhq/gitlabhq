@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe Gitlab::Email::Handler do
   describe '.for' do
-    it 'picks issue handler if there is not merge request prefix' do
+    it 'picks issue handler if there is no merge request prefix' do
       expect(described_class.for('email', 'project+key')).to be_an_instance_of(Gitlab::Email::Handler::CreateIssueHandler)
     end
 

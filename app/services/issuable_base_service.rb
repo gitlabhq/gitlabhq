@@ -163,10 +163,12 @@ class IssuableBaseService < BaseService
 
     before_create(issuable)
 
-    if issuable.save
-      ActiveRecord::Base.no_touching do
-        Issuable::CommonSystemNotesService.new(project, current_user).execute(issuable, is_update: false)
-      end
+    issuable_saved = issuable.with_transaction_returning_status do
+      issuable.save && issuable.store_mentions!
+    end
+
+    if issuable_saved
+      Issuable::CommonSystemNotesService.new(project, current_user).execute(issuable, is_update: false)
 
       after_create(issuable)
       execute_hooks(issuable)
@@ -226,11 +228,12 @@ class IssuableBaseService < BaseService
       update_project_counters = issuable.project && update_project_counter_caches?(issuable)
       ensure_milestone_available(issuable)
 
-      if issuable.with_transaction_returning_status { issuable.save(touch: should_touch) }
-        # We do not touch as it will affect a update on updated_at field
-        ActiveRecord::Base.no_touching do
-          Issuable::CommonSystemNotesService.new(project, current_user).execute(issuable, old_labels: old_associations[:labels])
-        end
+      issuable_saved = issuable.with_transaction_returning_status do
+        issuable.save(touch: should_touch) && issuable.store_mentions!
+      end
+
+      if issuable_saved
+        Issuable::CommonSystemNotesService.new(project, current_user).execute(issuable, old_labels: old_associations[:labels])
 
         handle_changes(issuable, old_associations: old_associations)
 
@@ -264,10 +267,7 @@ class IssuableBaseService < BaseService
       before_update(issuable, skip_spam_check: true)
 
       if issuable.with_transaction_returning_status { issuable.save }
-        # We do not touch as it will affect a update on updated_at field
-        ActiveRecord::Base.no_touching do
-          Issuable::CommonSystemNotesService.new(project, current_user).execute(issuable, old_labels: nil)
-        end
+        Issuable::CommonSystemNotesService.new(project, current_user).execute(issuable, old_labels: nil)
 
         handle_task_changes(issuable)
         invalidate_cache_counts(issuable, users: issuable.assignees.to_a)
@@ -397,7 +397,7 @@ class IssuableBaseService < BaseService
   end
 
   def update_project_counter_caches?(issuable)
-    issuable.state_changed?
+    issuable.state_id_changed?
   end
 
   def parent

@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import { formatDate } from '~/lib/utils/datetime_utility';
 import { mount, createLocalVue } from '@vue/test-utils';
+import { formatDate } from '~/lib/utils/datetime_utility';
 import RelatedIssuableItem from '~/vue_shared/components/issue/related_issuable_item.vue';
 import {
   defaultAssignees,
@@ -35,6 +35,7 @@ describe('RelatedIssuableItem', () => {
       localVue,
       slots,
       sync: false,
+      attachToDocument: true,
       propsData: props,
     });
   });
@@ -89,11 +90,11 @@ describe('RelatedIssuableItem', () => {
 
     it('renders state title', () => {
       const stateTitle = tokenState.attributes('title');
-      const formatedCreateDate = formatDate(props.createdAt);
+      const formattedCreateDate = formatDate(props.createdAt);
 
       expect(stateTitle).toContain('<span class="bold">Opened</span>');
 
-      expect(stateTitle).toContain(`<span class="text-tertiary">${formatedCreateDate}</span>`);
+      expect(stateTitle).toContain(`<span class="text-tertiary">${formattedCreateDate}</span>`);
     });
 
     it('renders aria label', () => {

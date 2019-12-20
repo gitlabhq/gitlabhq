@@ -26,6 +26,11 @@ export default {
       required: false,
       default: '',
     },
+    variant: {
+      type: String,
+      required: false,
+      default: 'secondary',
+    },
   },
 
   data() {
@@ -53,6 +58,7 @@ export default {
     :menu-class="`dropdown-menu-selectable ${menuClass}`"
     split
     :text="dropdownToggleText"
+    :variant="variant"
     v-bind="$attrs"
     @click="triggerEvent"
   >

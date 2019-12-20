@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Gitlab::ImportExport::AvatarRestorer do
@@ -12,8 +14,9 @@ describe Gitlab::ImportExport::AvatarRestorer do
 
   context 'with avatar' do
     before do
-      allow_any_instance_of(described_class).to receive(:avatar_export_file)
-                                                  .and_return(uploaded_image_temp_path)
+      allow_next_instance_of(described_class) do |instance|
+        allow(instance).to receive(:avatar_export_file).and_return(uploaded_image_temp_path)
+      end
     end
 
     it 'restores a project avatar' do
@@ -31,8 +34,9 @@ describe Gitlab::ImportExport::AvatarRestorer do
     Dir.mktmpdir do |tmpdir|
       FileUtils.mkdir_p("#{tmpdir}/a/b")
 
-      allow_any_instance_of(described_class).to receive(:avatar_export_path)
-                                                  .and_return("#{tmpdir}/a")
+      allow_next_instance_of(described_class) do |instance|
+        allow(instance).to receive(:avatar_export_path).and_return("#{tmpdir}/a")
+      end
 
       expect(described_class.new(project: project, shared: shared).restore).to be true
     end

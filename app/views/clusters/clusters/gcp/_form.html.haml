@@ -64,7 +64,7 @@
       %p.form-text.text-muted
         = s_('ClusterIntegration|Learn more about %{help_link_start_machine_type}machine types%{help_link_end} and %{help_link_start_pricing}pricing%{help_link_end}.').html_safe % { help_link_start_machine_type: help_link_start % { url: machine_type_link_url }, help_link_start_pricing: help_link_start % { url: pricing_link_url }, help_link_end: help_link_end }
 
-    - if Feature.enabled?(:create_cloud_run_clusters, clusterable)
+    - if Feature.enabled?(:create_cloud_run_clusters, clusterable, default_enabled: true)
       .form-group
         = provider_gcp_field.check_box :cloud_run, { label: s_('ClusterIntegration|Enable Cloud Run on GKE (beta)'),
           label_class: 'label-bold' }

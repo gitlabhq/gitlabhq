@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 
 describe Gitlab::GoogleCodeImport::Client do
   let(:raw_data) { JSON.parse(fixture_file("GoogleCodeProjectHosting.json")) }
+
   subject { described_class.new(raw_data) }
 
   describe "#valid?" do

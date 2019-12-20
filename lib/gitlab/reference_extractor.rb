@@ -3,7 +3,7 @@
 module Gitlab
   # Extract possible GFM references from an arbitrary String for further processing.
   class ReferenceExtractor < Banzai::ReferenceExtractor
-    REFERABLES = %i(user issue label milestone
+    REFERABLES = %i(user issue label milestone mentioned_user mentioned_group mentioned_project
                     merge_request snippet commit commit_range directly_addressed_user epic).freeze
     attr_accessor :project, :current_user, :author
 

@@ -115,10 +115,12 @@ Any **secondary** nodes should point only to read-only instances.
 
 #### Can Geo detect the current node correctly?
 
-Geo finds the current machine's name in `/etc/gitlab/gitlab.rb` by first looking
-for `gitlab_rails['geo_node_name']`. If it is not defined, then it defaults to
-the external URL defined in e.g. `external_url "http://gitlab.example.com"`. To
-get a machine's name, run:
+Geo finds the current machine's name in `/etc/gitlab/gitlab.rb` by:
+
+- Using the `gitlab_rails['geo_node_name']` setting.
+- If that is not defined, using the `external_url` setting.
+
+To get a machine's name, run:
 
 ```sh
 sudo gitlab-rails runner "puts GeoNode.current_node_name"
@@ -401,6 +403,8 @@ to start again from scratch, there are a few steps that can help you:
 
    mv /var/opt/gitlab/gitlab-rails/uploads /var/opt/gitlab/gitlab-rails/uploads.old
    mkdir -p /var/opt/gitlab/gitlab-rails/uploads
+
+   gitlab-ctl start geo-postgresql
    ```
 
    Reconfigure in order to recreate the folders and make sure permissions and ownership
@@ -699,3 +703,17 @@ See ["Foreign Data Wrapper (FDW) is not configured" error?](#foreign-data-wrappe
 
 This can be caused by orphaned records in the project registry. You can clear them
 [using a Rake task](../../../administration/raketasks/geo.md#remove-orphaned-project-registries).
+
+### Geo Admin Area returns 404 error for a secondary node
+
+Sometimes `sudo gitlab-rake gitlab:geo:check` indicates that the **secondary** node is
+healthy, but a 404 error for the **secondary** node is returned in the Geo Admin Area on
+the **primary** node.
+
+To resolve this issue:
+
+- Try restarting the **secondary** using `sudo gitlab-ctl restart`.
+- Check `/var/log/gitlab/gitlab-rails/geo.log` to see if the **secondary** node is
+  using IPv6 to send its status to the **primary** node. If it is, add an entry to
+  the **primary** node using IPv4 in the `/etc/hosts` file. Alternatively, you should
+  [enable IPv6 on the primary node](https://docs.gitlab.com/omnibus/settings/nginx.html#setting-the-nginx-listen-address-or-addresses).

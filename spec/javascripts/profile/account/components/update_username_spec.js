@@ -1,9 +1,9 @@
 import Vue from 'vue';
-import axios from '~/lib/utils/axios_utils';
 import MockAdapter from 'axios-mock-adapter';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import axios from '~/lib/utils/axios_utils';
 
 import updateUsername from '~/profile/account/components/update_username.vue';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('UpdateUsername component', () => {
   const rootUrl = gl.TEST_HOST;

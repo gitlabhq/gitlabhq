@@ -164,7 +164,6 @@ module Gitlab
         docstring 'Transaction allocated memory bytes'
         base_labels BASE_LABELS
         buckets [100, 1000, 10000, 100000, 1000000, 10000000]
-        with_feature :prometheus_metrics_transaction_allocated_memory
       end
 
       def self.transaction_metric(name, type, prefix: nil, tags: {})

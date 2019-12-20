@@ -54,8 +54,7 @@ describe('SentryConfig', () => {
     });
 
     it('should not call setUser if there is no current user ID', () => {
-      jest.clearAllMocks();
-
+      SentryConfig.setUser.mockClear();
       options.currentUserId = undefined;
 
       SentryConfig.init(options);
@@ -167,8 +166,6 @@ describe('SentryConfig', () => {
 
     describe('if no err is provided', () => {
       beforeEach(() => {
-        jest.clearAllMocks();
-
         SentryConfig.handleSentryErrors(event, req, config);
       });
 
@@ -190,8 +187,6 @@ describe('SentryConfig', () => {
     describe('if no req.responseText is provided', () => {
       beforeEach(() => {
         req.responseText = undefined;
-
-        jest.clearAllMocks();
 
         SentryConfig.handleSentryErrors(event, req, config, err);
       });

@@ -1,13 +1,17 @@
 import MockAdapter from 'axios-mock-adapter';
 import Cookies from 'js-cookie';
+import mockDiffFile from 'spec/diffs/mock_data/diff_file';
 import {
   DIFF_VIEW_COOKIE_NAME,
   INLINE_DIFF_VIEW_TYPE,
   PARALLEL_DIFF_VIEW_TYPE,
+  DIFFS_PER_PAGE,
 } from '~/diffs/constants';
 import actions, {
   setBaseConfig,
   fetchDiffFiles,
+  fetchDiffFilesBatch,
+  fetchDiffFilesMeta,
   assignDiscussionsToDiff,
   removeDiscussionsFromDiff,
   startRenderDiffsQueue,
@@ -42,7 +46,6 @@ import actions, {
 import eventHub from '~/notes/event_hub';
 import * as types from '~/diffs/store/mutation_types';
 import axios from '~/lib/utils/axios_utils';
-import mockDiffFile from 'spec/diffs/mock_data/diff_file';
 import testAction from '../../helpers/vuex_action_helper';
 
 describe('DiffsStoreActions', () => {
@@ -68,18 +71,45 @@ describe('DiffsStoreActions', () => {
   describe('setBaseConfig', () => {
     it('should set given endpoint and project path', done => {
       const endpoint = '/diffs/set/endpoint';
+      const endpointMetadata = '/diffs/set/endpoint/metadata';
+      const endpointBatch = '/diffs/set/endpoint/batch';
       const projectPath = '/root/project';
       const dismissEndpoint = '/-/user_callouts';
       const showSuggestPopover = false;
+      const useSingleDiffStyle = false;
 
       testAction(
         setBaseConfig,
-        { endpoint, projectPath, dismissEndpoint, showSuggestPopover },
-        { endpoint: '', projectPath: '', dismissEndpoint: '', showSuggestPopover: true },
+        {
+          endpoint,
+          endpointBatch,
+          endpointMetadata,
+          projectPath,
+          dismissEndpoint,
+          showSuggestPopover,
+          useSingleDiffStyle,
+        },
+        {
+          endpoint: '',
+          endpointBatch: '',
+          endpointMetadata: '',
+          projectPath: '',
+          dismissEndpoint: '',
+          showSuggestPopover: true,
+          useSingleDiffStyle: true,
+        },
         [
           {
             type: types.SET_BASE_CONFIG,
-            payload: { endpoint, projectPath, dismissEndpoint, showSuggestPopover },
+            payload: {
+              endpoint,
+              endpointMetadata,
+              endpointBatch,
+              projectPath,
+              dismissEndpoint,
+              showSuggestPopover,
+              useSingleDiffStyle,
+            },
           },
         ],
         [],
@@ -104,6 +134,66 @@ describe('DiffsStoreActions', () => {
           { type: types.SET_LOADING, payload: false },
           { type: types.SET_MERGE_REQUEST_DIFFS, payload: res.merge_request_diffs },
           { type: types.SET_DIFF_DATA, payload: res },
+        ],
+        [],
+        () => {
+          mock.restore();
+          done();
+        },
+      );
+    });
+  });
+
+  describe('fetchDiffFilesBatch', () => {
+    it('should fetch batch diff files', done => {
+      const endpointBatch = '/fetch/diffs_batch';
+      const mock = new MockAdapter(axios);
+      const res1 = { diff_files: [], pagination: { next_page: 2 } };
+      const res2 = { diff_files: [], pagination: {} };
+      mock
+        .onGet(endpointBatch, { params: { page: undefined, per_page: DIFFS_PER_PAGE, w: '1' } })
+        .reply(200, res1);
+      mock
+        .onGet(endpointBatch, { params: { page: 2, per_page: DIFFS_PER_PAGE, w: '1' } })
+        .reply(200, res2);
+
+      testAction(
+        fetchDiffFilesBatch,
+        {},
+        { endpointBatch },
+        [
+          { type: types.SET_BATCH_LOADING, payload: true },
+          { type: types.SET_DIFF_DATA_BATCH, payload: { diff_files: res1.diff_files } },
+          { type: types.SET_BATCH_LOADING, payload: false },
+          { type: types.SET_DIFF_DATA_BATCH, payload: { diff_files: [] } },
+          { type: types.SET_BATCH_LOADING, payload: false },
+        ],
+        [],
+        () => {
+          mock.restore();
+          done();
+        },
+      );
+    });
+  });
+
+  describe('fetchDiffFilesMeta', () => {
+    it('should fetch diff meta information', done => {
+      const endpointMetadata = '/fetch/diffs_meta';
+      const mock = new MockAdapter(axios);
+      const data = { diff_files: [] };
+      const res = { data };
+      mock.onGet(endpointMetadata).reply(200, res);
+
+      testAction(
+        fetchDiffFilesMeta,
+        {},
+        { endpointMetadata },
+        [
+          { type: types.SET_LOADING, payload: true },
+          { type: types.SET_LOADING, payload: false },
+          { type: types.SET_MERGE_REQUEST_DIFFS, payload: [] },
+          { type: types.SET_DIFF_DATA, payload: { data } },
         ],
         [],
         () => {

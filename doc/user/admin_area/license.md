@@ -67,7 +67,7 @@ Omnibus installations should add this entry to `gitlab.rb`:
 gitlab_rails['license_file'] = "/path/to/license/file"
 ```
 
-CAUTION:: **Caution:**
+CAUTION: **Caution:**
 These methods will only add a license at the time of installation. Use the
 admin area in the web ui to renew or upgrade licenses.
 

@@ -52,6 +52,11 @@ export default {
       header: s__('PerformanceBar|Redis calls'),
       keys: ['cmd'],
     },
+    {
+      metric: 'total',
+      header: s__('PerformanceBar|Frontend resources'),
+      keys: ['name', 'size'],
+    },
   ],
   data() {
     return { currentRequestId: '' };
@@ -79,6 +84,15 @@ export default {
         return glEmojiTag('baby_chick');
       }
       return '';
+    },
+    downloadPath() {
+      const data = JSON.stringify(this.requests);
+      const blob = new Blob([data], { type: 'text/plain' });
+      return window.URL.createObjectURL(blob);
+    },
+    downloadName() {
+      const fileName = this.requests[0].truncatedUrl;
+      return `${fileName}_perf_bar_${Date.now()}.json`;
     },
   },
   mounted() {
@@ -121,6 +135,9 @@ export default {
         <a :href="currentRequest.details.tracing.tracing_url">{{ s__('PerformanceBar|trace') }}</a>
       </div>
       <add-request v-on="$listeners" />
+      <div v-if="currentRequest.details" id="peek-download" class="view">
+        <a :download="downloadName" :href="downloadPath">{{ s__('PerformanceBar|Download') }}</a>
+      </div>
       <request-selector
         v-if="currentRequest"
         :current-request="currentRequest"

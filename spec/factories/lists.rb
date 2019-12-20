@@ -5,6 +5,8 @@ FactoryBot.define do
     board
     label
     list_type { :label }
+    max_issue_count { 0 }
+    max_issue_weight { 0 }
     sequence(:position)
   end
 

@@ -15,7 +15,7 @@
         %li.breadcrumb-item
           = link_to truncate(title, length: 40), browse_project_job_artifacts_path(@project, @build, path)
 
-    .tree-controls
+    .tree-controls<
       = link_to download_project_job_artifacts_path(@project, @build),
         rel: 'nofollow', download: '', class: 'btn btn-default download' do
         = sprite_icon('download')

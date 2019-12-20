@@ -1,10 +1,10 @@
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
+import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import axios from '~/lib/utils/axios_utils';
 import store from '~/badges/store';
 import createEmptyBadge from '~/badges/empty_badge';
 import BadgeForm from '~/badges/components/badge_form.vue';
-import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { DUMMY_IMAGE_URL, TEST_HOST } from '../../test_constants';
 
 // avoid preview background process
@@ -51,13 +51,14 @@ describe('BadgeForm component', () => {
   });
 
   const sharedSubmitTests = submitAction => {
+    const nameSelector = '#badge-name';
     const imageUrlSelector = '#badge-image-url';
     const findImageUrlElement = () => vm.$el.querySelector(imageUrlSelector);
     const linkUrlSelector = '#badge-link-url';
     const findLinkUrlElement = () => vm.$el.querySelector(linkUrlSelector);
-    const setValue = (inputElementSelector, url) => {
+    const setValue = (inputElementSelector, value) => {
       const inputElement = vm.$el.querySelector(inputElementSelector);
-      inputElement.value = url;
+      inputElement.value = value;
       inputElement.dispatchEvent(new Event('input'));
     };
     const submitForm = () => {
@@ -82,6 +83,7 @@ describe('BadgeForm component', () => {
         isSaving: false,
       });
 
+      setValue(nameSelector, 'TestBadge');
       setValue(linkUrlSelector, `${TEST_HOST}/link/url`);
       setValue(imageUrlSelector, `${window.location.origin}${DUMMY_IMAGE_URL}`);
     });

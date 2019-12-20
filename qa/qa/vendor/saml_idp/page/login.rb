@@ -8,7 +8,7 @@ module QA
       module Page
         class Login < Page::Base
           def login(username, password)
-            QA::Runtime::Logger.debug("Logging into SAMLIdp with username: #{username} and password:#{password}") if QA::Runtime::Env.debug?
+            QA::Runtime::Logger.debug("Logging into SAMLIdp with username: #{username} and password:#{password}")
 
             fill_in 'username', with: username
             fill_in 'password', with: password
@@ -21,7 +21,7 @@ module QA
 
           def login_required?
             login_required = page.has_text?('Enter your username and password')
-            QA::Runtime::Logger.debug("login_required: #{login_required}") if QA::Runtime::Env.debug?
+            QA::Runtime::Logger.debug("login_required: #{login_required}")
             login_required
           end
         end

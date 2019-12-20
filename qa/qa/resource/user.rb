@@ -79,7 +79,7 @@ module QA
       def api_delete
         super
 
-        QA::Runtime::Logger.debug("Deleted user '#{username}'") if Runtime::Env.debug?
+        QA::Runtime::Logger.debug("Deleted user '#{username}'")
       end
 
       def api_delete_path

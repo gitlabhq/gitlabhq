@@ -45,6 +45,18 @@ describe Ci::PersistentRef do
         expect(pipeline.persistent_ref).to be_exist
       end
 
+      context 'when depend_on_persistent_pipeline_ref feature flag is disabled' do
+        before do
+          stub_feature_flags(depend_on_persistent_pipeline_ref: false)
+        end
+
+        it 'does not create a persistent ref' do
+          expect(project.repository).not_to receive(:create_ref)
+
+          subject
+        end
+      end
+
       context 'when sha does not exist in the repository' do
         let(:sha) { 'not-exist' }
 
@@ -61,8 +73,8 @@ describe Ci::PersistentRef do
         pipeline.persistent_ref.create
       end
 
-      it 'does not create a persistent ref' do
-        expect(project.repository).not_to receive(:create_ref)
+      it 'overwrites a persistent ref' do
+        expect(project.repository).to receive(:create_ref).and_call_original
 
         subject
       end

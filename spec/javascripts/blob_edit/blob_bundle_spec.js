@@ -1,5 +1,5 @@
-import blobBundle from '~/blob_edit/blob_bundle';
 import $ from 'jquery';
+import blobBundle from '~/blob_edit/blob_bundle';
 
 describe('BlobBundle', () => {
   beforeEach(() => {

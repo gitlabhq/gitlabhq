@@ -1,0 +1,16 @@
+%li
+  .row
+    .col-md-8.col-lg-7
+      %strong.light-header= hook.url
+      %div
+        - hook.class.triggers.each_value do |trigger|
+          - if hook.public_send(trigger)
+            %span.badge.badge-gray.deploy-project-label= trigger.to_s.titleize
+        %span.badge.badge-gray
+          = _('SSL Verification:')
+          = hook.enable_ssl_verification ? _('enabled') : _('disabled')
+
+    .col-md-4.col-lg-5.text-right-md.prepend-top-5
+      %span>= render 'shared/web_hooks/test_button', hook: hook, button_class: 'btn-sm append-right-8'
+      %span>= link_to _('Edit'), edit_hook_path(hook), class: 'btn btn-sm append-right-8'
+      = link_to _('Delete'), destroy_hook_path(hook), data: { confirm: _('Are you sure?') }, method: :delete, class: 'btn btn-sm'

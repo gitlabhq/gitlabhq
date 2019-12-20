@@ -43,8 +43,9 @@
     .col-sm-4.milestone-progress
       = milestone_progress_bar(milestone)
       = link_to pluralize(milestone.total_issues_count(current_user), 'Issue'), issues_path
-      &middot;
-      = link_to pluralize(milestone.merge_requests_visible_to_user(current_user).size, 'Merge Request'), merge_requests_path
+      - if milestone.merge_requests_enabled?
+        &middot;
+        = link_to pluralize(milestone.merge_requests_visible_to_user(current_user).size, 'Merge Request'), merge_requests_path
       .float-lg-right.light #{milestone.percent_complete(current_user)}% complete
     .col-sm-2
       .milestone-actions.d-flex.justify-content-sm-start.justify-content-md-end

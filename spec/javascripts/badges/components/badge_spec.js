@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import Badge from '~/badges/components/badge.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { DUMMY_IMAGE_URL, TEST_HOST } from 'spec/test_constants';
+import Badge from '~/badges/components/badge.vue';
 
 describe('Badge component', () => {
   const Component = Vue.extend(Badge);

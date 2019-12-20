@@ -23,6 +23,21 @@ class Upload < ApplicationRecord
   after_destroy :delete_file!, if: -> { uploader_class <= FileUploader }
 
   class << self
+    def inner_join_local_uploads_projects
+      upload_table = Upload.arel_table
+      project_table = Project.arel_table
+
+      join_statement = upload_table.project(upload_table[Arel.star])
+                         .join(project_table)
+                         .on(
+                           upload_table[:model_type].eq('Project')
+                             .and(upload_table[:model_id].eq(project_table[:id]))
+                             .and(upload_table[:store].eq(ObjectStorage::Store::LOCAL))
+                         )
+
+      joins(join_statement.join_sources)
+    end
+
     ##
     # FastDestroyAll concerns
     def begin_fast_destroy
@@ -88,10 +103,8 @@ class Upload < ApplicationRecord
 
     # Help sysadmins find missing upload files
     if persisted? && !exist
-      if Gitlab::Sentry.enabled?
-        Raven.capture_message(_("Upload file does not exist"), extra: self.attributes)
-      end
-
+      exception = RuntimeError.new("Uploaded file does not exist")
+      Gitlab::ErrorTracking.track_exception(exception, self.attributes)
       Gitlab::Metrics.counter(:upload_file_does_not_exist_total, _('The number of times an upload record could not find its file')).increment
     end
 

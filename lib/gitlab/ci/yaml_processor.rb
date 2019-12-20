@@ -9,6 +9,12 @@ module Gitlab
 
       attr_reader :stages, :jobs
 
+      ResultWithErrors = Struct.new(:content, :errors) do
+        def valid?
+          errors.empty?
+        end
+      end
+
       def initialize(config, opts = {})
         @ci_config = Gitlab::Ci::Config.new(config, **opts)
         @config = @ci_config.to_hash
@@ -20,6 +26,18 @@ module Gitlab
         initial_parsing
       rescue Gitlab::Ci::Config::ConfigError => e
         raise ValidationError, e.message
+      end
+
+      def self.new_with_validation_errors(content, opts = {})
+        return ResultWithErrors.new('', ['Please provide content of .gitlab-ci.yml']) if content.blank?
+
+        config = Gitlab::Ci::Config.new(content, **opts)
+        return ResultWithErrors.new("", config.errors) unless config.valid?
+
+        config = Gitlab::Ci::YamlProcessor.new(content, opts)
+        ResultWithErrors.new(config, [])
+      rescue ValidationError, Gitlab::Ci::Config::ConfigError => e
+        ResultWithErrors.new('', [e.message])
       end
 
       def builds
@@ -42,6 +60,8 @@ module Gitlab
           yaml_variables: transform_to_yaml_variables(job_variables(name)),
           needs_attributes: job.dig(:needs, :job),
           interruptible: job[:interruptible],
+          only: job[:only],
+          except: job[:except],
           rules: job[:rules],
           cache: job[:cache],
           options: {
@@ -49,6 +69,7 @@ module Gitlab
             services: job[:services],
             artifacts: job[:artifacts],
             dependencies: job[:dependencies],
+            cross_dependencies: job.dig(:needs, :cross_dependency),
             job_timeout: job[:timeout],
             before_script: job[:before_script],
             script: job[:script],
@@ -71,13 +92,7 @@ module Gitlab
 
       def stages_attributes
         @stages.uniq.map do |stage|
-          seeds = stage_builds_attributes(stage).map do |attributes|
-            job = @jobs.fetch(attributes[:name].to_sym)
-
-            attributes
-              .merge(only: job.fetch(:only, {}))
-              .merge(except: job.fetch(:except, {}))
-          end
+          seeds = stage_builds_attributes(stage)
 
           { name: stage, index: @stages.index(stage), builds: seeds }
         end

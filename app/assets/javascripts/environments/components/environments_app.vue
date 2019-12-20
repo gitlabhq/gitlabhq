@@ -31,10 +31,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    cssContainerClass: {
-      type: String,
-      required: true,
-    },
     newEnvironmentPath: {
       type: String,
       required: true,
@@ -93,7 +89,7 @@ export default {
 };
 </script>
 <template>
-  <div :class="cssContainerClass">
+  <div>
     <stop-environment-modal :environment="environmentInStopModal" />
     <confirm-rollback-modal :environment="environmentInRollbackModal" />
 

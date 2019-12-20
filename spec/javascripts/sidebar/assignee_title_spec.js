@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import AssigneeTitle from '~/sidebar/components/assignees/assignee_title.vue';
 import { mockTracking, triggerEvent } from 'spec/helpers/tracking_helper';
+import AssigneeTitle from '~/sidebar/components/assignees/assignee_title.vue';
 
 describe('AssigneeTitle component', () => {
   let component;

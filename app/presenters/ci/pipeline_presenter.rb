@@ -8,7 +8,9 @@ module Ci
     # We use a class method here instead of a constant, allowing EE to redefine
     # the returned `Hash` more easily.
     def self.failure_reasons
-      { config_error: 'CI/CD YAML configuration error!' }
+      { unknown_failure: 'Unknown pipeline failure!',
+        config_error: 'CI/CD YAML configuration error!',
+        external_validation_failure: 'External pipeline validation failed!' }
     end
 
     presents :pipeline

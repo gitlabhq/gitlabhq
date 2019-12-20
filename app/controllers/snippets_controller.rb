@@ -15,13 +15,9 @@ class SnippetsController < ApplicationController
 
   before_action :snippet, only: [:show, :edit, :destroy, :update, :raw]
 
-  # Allow read snippet
+  before_action :authorize_create_snippet!, only: [:new, :create]
   before_action :authorize_read_snippet!, only: [:show, :raw]
-
-  # Allow modify snippet
   before_action :authorize_update_snippet!, only: [:edit, :update]
-
-  # Allow destroy snippet
   before_action :authorize_admin_snippet!, only: [:destroy]
 
   skip_before_action :authenticate_user!, only: [:index, :show, :raw]
@@ -138,6 +134,10 @@ class SnippetsController < ApplicationController
 
   def authorize_admin_snippet!
     return render_404 unless can?(current_user, :admin_personal_snippet, @snippet)
+  end
+
+  def authorize_create_snippet!
+    return render_404 unless can?(current_user, :create_personal_snippet)
   end
 
   def snippet_params

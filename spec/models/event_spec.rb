@@ -20,7 +20,9 @@ describe Event do
 
     describe 'after_create :reset_project_activity' do
       it 'calls the reset_project_activity method' do
-        expect_any_instance_of(described_class).to receive(:reset_project_activity)
+        expect_next_instance_of(described_class) do |instance|
+          expect(instance).to receive(:reset_project_activity)
+        end
 
         create_push_event(project, project.owner)
       end

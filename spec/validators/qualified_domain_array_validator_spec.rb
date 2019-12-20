@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe QualifiedDomainArrayValidator do
-  class TestClass
+  class QualifiedDomainArrayValidatorTestClass
     include ActiveModel::Validations
 
     attr_accessor :domain_array
@@ -14,7 +14,7 @@ describe QualifiedDomainArrayValidator do
   end
 
   let!(:record) do
-    TestClass.new(['gitlab.com'])
+    QualifiedDomainArrayValidatorTestClass.new(['gitlab.com'])
   end
 
   subject { validator.validate(record) }

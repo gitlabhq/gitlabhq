@@ -10,8 +10,6 @@ describe 'User browses a job', :js do
   let!(:build) { create(:ci_build, :success, :trace_artifact, :coverage, pipeline: pipeline) }
 
   before do
-    stub_feature_flags(job_log_json: false)
-
     project.add_maintainer(user)
     project.enable_ci
 
@@ -24,7 +22,7 @@ describe 'User browses a job', :js do
     wait_for_requests
 
     expect(page).to have_content("Job ##{build.id}")
-    expect(page).to have_css('.js-build-trace')
+    expect(page).to have_css('.job-log')
 
     # scroll to the top of the page first
     execute_script "window.scrollTo(0,0)"

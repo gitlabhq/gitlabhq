@@ -3,7 +3,6 @@
 
 require 'yaml'
 
-NO_CHANGELOG_LABELS = %w[backstage ci-build meta].freeze
 SEE_DOC = "See [the documentation](https://docs.gitlab.com/ce/development/changelog.html)."
 CREATE_CHANGELOG_MESSAGE = <<~MSG
 You can create one with:
@@ -21,14 +20,6 @@ bin/changelog --ee -m %<mr_iid>s "%<mr_title>s"
 Note: Merge requests with %<labels>s do not trigger this check.
 MSG
 
-def ee_changelog?(changelog_path)
-  changelog_path =~ /unreleased-ee/
-end
-
-def ce_port_changelog?(changelog_path)
-  helper.ee? && !ee_changelog?(changelog_path)
-end
-
 def check_changelog(path)
   yaml = YAML.safe_load(File.read(path))
 
@@ -37,7 +28,7 @@ def check_changelog(path)
 
   if yaml["merge_request"].nil?
     message "Consider setting `merge_request` to #{gitlab.mr_json["iid"]} in #{gitlab.html_link(path)}. #{SEE_DOC}"
-  elsif yaml["merge_request"] != gitlab.mr_json["iid"] && !ce_port_changelog?(path)
+  elsif yaml["merge_request"] != gitlab.mr_json["iid"] && !changelog.ce_port_changelog?(path)
     fail "Merge request ID was not set to #{gitlab.mr_json["iid"]}! #{SEE_DOC}"
   end
 rescue Psych::SyntaxError, Psych::DisallowedClass, Psych::BadAlias
@@ -47,25 +38,18 @@ rescue StandardError => e
   warn "There was a problem trying to check the Changelog. Exception: #{e.name} - #{e.message}"
 end
 
-def presented_no_changelog_labels
-  NO_CHANGELOG_LABELS.map { |label| "~#{label}" }.join(', ')
-end
-
-changelog_needed = (gitlab.mr_labels & NO_CHANGELOG_LABELS).empty?
-changelog_found = git.added_files.find { |path| path =~ %r{\A(ee/)?(changelogs/unreleased)(-ee)?/} }
-
-mr_title = gitlab.mr_json["title"].gsub(/^WIP: */, '')
-
 if git.modified_files.include?("CHANGELOG.md")
   fail "**CHANGELOG.md was edited.** Please remove the additions and create a CHANGELOG entry.\n\n" +
-    format(CREATE_CHANGELOG_MESSAGE, mr_iid: gitlab.mr_json["iid"], mr_title: mr_title, labels: presented_no_changelog_labels)
+    format(CREATE_CHANGELOG_MESSAGE, mr_iid: gitlab.mr_json["iid"], mr_title: changelog.sanitized_mr_title, labels: changelog.presented_no_changelog_labels)
 end
 
-if changelog_needed
+changelog_found = changelog.found
+
+if changelog.needed?
   if changelog_found
     check_changelog(changelog_found)
   else
     message "**[CHANGELOG missing](https://docs.gitlab.com/ce/development/changelog.html)**: If this merge request [doesn't need a CHANGELOG entry](https://docs.gitlab.com/ee/development/changelog.html#what-warrants-a-changelog-entry), feel free to ignore this message.\n\n" +
-      format(CREATE_CHANGELOG_MESSAGE, mr_iid: gitlab.mr_json["iid"], mr_title: mr_title, labels: presented_no_changelog_labels)
+      format(CREATE_CHANGELOG_MESSAGE, mr_iid: gitlab.mr_json["iid"], mr_title: changelog.sanitized_mr_title, labels: changelog.presented_no_changelog_labels)
   end
 end

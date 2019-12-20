@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 
 describe Gitlab::Git::Diff, :seed_helper do
@@ -147,6 +149,7 @@ EOT
 
   describe '.between' do
     let(:diffs) { described_class.between(repository, 'feature', 'master') }
+
     subject { diffs }
 
     it { is_expected.to be_kind_of Gitlab::Git::DiffCollection }

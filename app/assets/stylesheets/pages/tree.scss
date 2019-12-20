@@ -1,6 +1,6 @@
 .tree-holder {
   .nav-block {
-    margin: 10px 0;
+    margin: 16px 0;
 
     .btn .fa,
     .btn svg {
@@ -16,6 +16,10 @@
 
       .tree-controls {
         text-align: right;
+
+        .btn {
+          margin-left: 8px;
+        }
 
         .btn-group {
           margin-left: 10px;

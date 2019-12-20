@@ -1,8 +1,8 @@
 import Vue from 'vue';
+import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import GkeProjectIdDropdown from '~/create_cluster/gke_cluster/components/gke_project_id_dropdown.vue';
 import { createStore } from '~/create_cluster/gke_cluster/store';
 import { SET_PROJECTS } from '~/create_cluster/gke_cluster/store/mutation_types';
-import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { emptyProjectMock, selectedProjectMock } from '../mock_data';
 import { gapi } from '../helpers';
 

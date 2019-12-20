@@ -137,6 +137,7 @@ module API
     mount ::API::Discussions
     mount ::API::ResourceLabelEvents
     mount ::API::NotificationSettings
+    mount ::API::Pages
     mount ::API::PagesDomains
     mount ::API::Pipelines
     mount ::API::PipelineSchedules
@@ -156,6 +157,7 @@ module API
     mount ::API::ProtectedTags
     mount ::API::Releases
     mount ::API::Release::Links
+    mount ::API::RemoteMirrors
     mount ::API::Repositories
     mount ::API::Runner
     mount ::API::Runners

@@ -18,7 +18,6 @@ rspec_profiling_is_configured =
   ENV['RSPEC_PROFILING_POSTGRES_URL'].present? ||
   ENV['RSPEC_PROFILING']
 branch_can_be_profiled =
-  ENV['GITLAB_DATABASE'] == 'postgresql' &&
   (ENV['CI_COMMIT_REF_NAME'] == 'master' ||
     ENV['CI_COMMIT_REF_NAME'] =~ /rspec-profile/)
 
@@ -159,6 +158,9 @@ RSpec.configure do |config|
     allow(Feature).to receive(:enabled?)
       .with(:force_autodevops_on_by_default, anything)
       .and_return(false)
+
+    # Enable Marginalia feature for all specs in the test suite.
+    allow(Gitlab::Marginalia).to receive(:cached_feature_enabled?).and_return(true)
 
     # The following can be removed once Vue Issuable Sidebar
     # is feature-complete and can be made default in place

@@ -83,6 +83,8 @@ module ContainerRegistry
 
       strong_memoize(:created_at) do
         DateTime.rfc3339(config['created'])
+      rescue ArgumentError
+        nil
       end
     end
 

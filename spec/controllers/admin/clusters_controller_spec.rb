@@ -84,29 +84,11 @@ describe Admin::ClustersController do
           GoogleApi::CloudPlatform::Client.session_key_for_redirect_uri(key)
         end
 
-        before do
-          stub_feature_flags(create_eks_clusters: false)
-          allow(SecureRandom).to receive(:hex).and_return(key)
-        end
+        context 'when selected provider is gke and no valid gcp token exists' do
+          it 'redirects to gcp authorize_url' do
+            get_new
 
-        it 'has authorize_url' do
-          get_new
-
-          expect(assigns(:authorize_url)).to include(key)
-          expect(session[session_key_for_redirect_uri]).to eq(new_admin_cluster_path)
-        end
-
-        context 'when create_eks_clusters feature flag is enabled' do
-          before do
-            stub_feature_flags(create_eks_clusters: true)
-          end
-
-          context 'when selected provider is gke and no valid gcp token exists' do
-            it 'redirects to gcp authorize_url' do
-              get_new
-
-              expect(response).to redirect_to(assigns(:authorize_url))
-            end
+            expect(response).to redirect_to(assigns(:authorize_url))
           end
         end
       end
@@ -399,10 +381,15 @@ describe Admin::ClustersController do
       post :authorize_aws_role, params: params
     end
 
+    before do
+      allow(Clusters::Aws::FetchCredentialsService).to receive(:new)
+        .and_return(double(execute: double))
+    end
+
     it 'creates an Aws::Role record' do
       expect { go }.to change { Aws::Role.count }
 
-      expect(response.status).to eq 201
+      expect(response.status).to eq 200
 
       role = Aws::Role.last
       expect(role.user).to eq admin
@@ -427,18 +414,24 @@ describe Admin::ClustersController do
     end
   end
 
-  describe 'DELETE revoke AWS role for EKS cluster' do
-    let!(:role) { create(:aws_role, user: admin) }
-
-    def go
-      delete :revoke_aws_role
+  describe 'DELETE clear cluster cache' do
+    let(:cluster) { create(:cluster, :instance) }
+    let!(:kubernetes_namespace) do
+      create(:cluster_kubernetes_namespace,
+        cluster: cluster,
+        project: create(:project)
+      )
     end
 
-    it 'deletes the Aws::Role record' do
-      expect { go }.to change { Aws::Role.count }
+    def go
+      delete :clear_cache, params: { id: cluster }
+    end
 
-      expect(response.status).to eq 204
-      expect(admin.reload_aws_role).to be_nil
+    it 'deletes the namespaces associated with the cluster' do
+      expect { go }.to change { Clusters::KubernetesNamespace.count }
+
+      expect(response).to redirect_to(admin_cluster_path(cluster))
+      expect(cluster.kubernetes_namespaces).to be_empty
     end
 
     describe 'security' do

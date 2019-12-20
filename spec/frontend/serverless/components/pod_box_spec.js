@@ -1,5 +1,5 @@
-import podBoxComponent from '~/serverless/components/pod_box.vue';
 import { shallowMount } from '@vue/test-utils';
+import podBoxComponent from '~/serverless/components/pod_box.vue';
 
 const createComponent = count =>
   shallowMount(podBoxComponent, {

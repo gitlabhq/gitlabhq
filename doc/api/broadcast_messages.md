@@ -34,7 +34,8 @@ Example response:
         "color":"#E75E40",
         "font":"#FFFFFF",
         "id":1,
-        "active": false
+        "active": false,
+        "target_path": "*/welcome"
     }
 ]
 ```
@@ -69,7 +70,8 @@ Example response:
     "color":"#cecece",
     "font":"#FFFFFF",
     "id":1,
-    "active":false
+    "active":false,
+    "target_path": "*/welcome"
 }
 ```
 
@@ -107,7 +109,8 @@ Example response:
     "color":"#cecece",
     "font":"#FFFFFF",
     "id":1,
-    "active": true
+    "active": true,
+    "target_path": "*/welcome"
 }
 ```
 
@@ -146,7 +149,8 @@ Example response:
     "color":"#000",
     "font":"#FFFFFF",
     "id":1,
-    "active": true
+    "active": true,
+    "target_path": "*/welcome"
 }
 ```
 

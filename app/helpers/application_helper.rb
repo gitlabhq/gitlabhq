@@ -94,6 +94,25 @@ module ApplicationHelper
     sanitize(str, tags: %w(a span))
   end
 
+  def body_data
+    {
+      page: body_data_page,
+      page_type_id: controller.params[:id],
+      find_file: find_file_path,
+      group: "#{@group&.path}"
+    }.merge(project_data)
+  end
+
+  def project_data
+    return {} unless @project
+
+    {
+      project_id: @project.id,
+      project: @project.path,
+      namespace_id: @project.namespace&.id
+    }
+  end
+
   def body_data_page
     [*controller.controller_path.split('/'), controller.action_name].compact.join(':')
   end

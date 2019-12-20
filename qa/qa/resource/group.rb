@@ -70,6 +70,10 @@ module QA
         }
       end
 
+      def api_delete_path
+        "/groups/#{id}"
+      end
+
       def full_path
         sandbox.path + ' / ' + path
       end

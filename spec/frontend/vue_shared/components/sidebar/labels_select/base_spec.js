@@ -1,22 +1,20 @@
 import Vue from 'vue';
 
+import { shallowMount } from '@vue/test-utils';
 import LabelsSelect from '~/labels_select';
-import baseComponent from '~/vue_shared/components/sidebar/labels_select/base.vue';
+import BaseComponent from '~/vue_shared/components/sidebar/labels_select/base.vue';
 
-import { mount } from '@vue/test-utils';
 import {
   mockConfig,
   mockLabels,
 } from '../../../../../javascripts/vue_shared/components/sidebar/labels_select/mock_data';
 
-const createComponent = (config = mockConfig) => {
-  const Component = Vue.extend(baseComponent);
-
-  return mount(Component, {
+const createComponent = (config = mockConfig) =>
+  shallowMount(BaseComponent, {
     propsData: config,
     sync: false,
+    attachToDocument: true,
   });
-};
 
 describe('BaseComponent', () => {
   let wrapper;

@@ -1,0 +1,5 @@
+---
+title: Change container registry column name from Tag ID to Image ID
+merge_request: 20349
+author:
+type: fixed

@@ -3,14 +3,8 @@
   .form-group
     %h5= s_('ClusterIntegration|Integration status')
     %label.append-bottom-0.js-cluster-enable-toggle-area
-      %button{ type: 'button',
-        class: "js-project-feature-toggle project-feature-toggle #{'is-checked' if @cluster.enabled?} #{'is-disabled' unless can?(current_user, :update_cluster, @cluster)}",
-        "aria-label": s_("ClusterIntegration|Toggle Kubernetes cluster"),
-        disabled: !can?(current_user, :update_cluster, @cluster) }
+      = render "shared/buttons/project_feature_toggle", is_checked: @cluster.enabled?, label: s_("ClusterIntegration|Toggle Kubernetes cluster"), disabled: !can?(current_user, :update_cluster, @cluster) do
         = field.hidden_field :enabled, { class: 'js-project-feature-toggle-input'}
-        %span.toggle-icon
-          = sprite_icon('status_success_borderless', size: 16, css_class: 'toggle-icon-svg toggle-status-checked')
-          = sprite_icon('status_failed_borderless', size: 16, css_class: 'toggle-icon-svg toggle-status-unchecked')
       .form-text.text-muted= s_('ClusterIntegration|Enable or disable GitLab\'s connection to your Kubernetes cluster.')
 
   .form-group

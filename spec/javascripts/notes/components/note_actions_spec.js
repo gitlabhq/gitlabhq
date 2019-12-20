@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import { shallowMount, createLocalVue, createWrapper } from '@vue/test-utils';
+import { TEST_HOST } from 'spec/test_constants';
 import createStore from '~/notes/stores';
 import noteActions from '~/notes/components/note_actions.vue';
-import { TEST_HOST } from 'spec/test_constants';
 import { userDataMock } from '../mock_data';
 
 describe('noteActions', () => {
@@ -12,7 +12,7 @@ describe('noteActions', () => {
 
   const shallowMountNoteActions = propsData => {
     const localVue = createLocalVue();
-    return shallowMount(noteActions, {
+    return shallowMount(localVue.extend(noteActions), {
       store,
       propsData,
       localVue,

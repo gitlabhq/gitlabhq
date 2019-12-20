@@ -1,7 +1,7 @@
 <script>
+import { mapState, mapActions } from 'vuex';
 import createFlash from '~/flash';
 import { s__ } from '~/locale';
-import { mapState, mapActions } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import { UNFOLD_COUNT } from '../constants';
 import * as utils from '../store/utils';
@@ -226,7 +226,7 @@ export default {
         <icon :size="12" name="expand-up" aria-hidden="true" />
       </a>
       <a class="mx-2 cursor-pointer js-unfold-all" @click="handleExpandLines()">
-        <span>{{ s__('Diffs|Show all lines') }}</span>
+        <span>{{ s__('Diffs|Show unchanged lines') }}</span>
       </a>
       <a
         v-if="canExpandDown"

@@ -7,6 +7,7 @@ describe Gitlab::JsonCache do
   let(:namespace) { 'geo' }
   let(:key) { 'foo' }
   let(:expanded_key) { "#{namespace}:#{key}:#{Gitlab::VERSION}:#{Rails.version}" }
+
   set(:broadcast_message) { create(:broadcast_message) }
 
   subject(:cache) { described_class.new(namespace: namespace, backend: backend) }
@@ -376,6 +377,12 @@ describe Gitlab::JsonCache do
           result = cache.fetch(key, as: BroadcastMessage) { 'block result' }
 
           expect(result).to eq(broadcast_message)
+        end
+
+        it 'decodes enums correctly' do
+          result = cache.fetch(key, as: BroadcastMessage) { 'block result' }
+
+          expect(result.broadcast_type).to eq(broadcast_message.broadcast_type)
         end
 
         context 'when the cached value is an instance of ActiveRecord::Base' do

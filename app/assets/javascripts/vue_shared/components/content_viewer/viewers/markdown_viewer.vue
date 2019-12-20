@@ -1,8 +1,8 @@
 <script>
-import axios from '~/lib/utils/axios_utils';
-import { __ } from '~/locale';
 import $ from 'jquery';
 import { GlSkeletonLoading } from '@gitlab/ui';
+import axios from '~/lib/utils/axios_utils';
+import { __ } from '~/locale';
 
 const { CancelToken } = axios;
 let axiosSource;

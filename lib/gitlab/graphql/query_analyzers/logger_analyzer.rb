@@ -18,7 +18,7 @@ module Gitlab
             variables: variables
           })
         rescue => e
-          Gitlab::Sentry.track_exception(e)
+          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
           default_initial_values(query)
         end
 
@@ -38,7 +38,7 @@ module Gitlab
 
           GraphqlLogger.info(memo.except!(:time_started, :query))
         rescue => e
-          Gitlab::Sentry.track_exception(e)
+          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
         end
 
         private

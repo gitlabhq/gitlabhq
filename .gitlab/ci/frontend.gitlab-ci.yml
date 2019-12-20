@@ -13,7 +13,7 @@
     - .default-before_script
     - .assets-compile-cache
     - .only:changes-code-backstage-qa
-  image: registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.3-git-2.22-chrome-73.0-node-12.x-yarn-1.16-graphicsmagick-1.3.33-docker-18.06.1
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.3-git-2.24-lfs-2.9-chrome-73.0-node-12.x-yarn-1.16-graphicsmagick-1.3.33-docker-19.03.1
   stage: test
   dependencies: ["setup-test-env"]
   needs: ["setup-test-env"]
@@ -74,7 +74,6 @@ gitlab:assets:compile pull-cache:
     - .default-before_script
     - .assets-compile-cache
     - .only:changes-code-backstage-qa
-    - .use-pg9
   stage: prepare
   script:
     - node --version
@@ -83,6 +82,7 @@ gitlab:assets:compile pull-cache:
     - retry bundle exec rake gitlab:assets:compile
     - scripts/clean-old-cached-assets
   variables:
+    SETUP_DB: "false"
     # we override the max_old_space_size to prevent OOM errors
     NODE_OPTIONS: --max_old_space_size=3584
   cache:
@@ -244,6 +244,12 @@ webpack-dev-server:
   dependencies: ["setup-test-env", "compile-assets pull-cache"]
   variables:
     WEBPACK_MEMORY_TEST: "true"
+    WEBPACK_VENDOR_DLL: "true"
   script:
-    - node --version
+    - yarn webpack-vendor
     - node --expose-gc node_modules/.bin/webpack-dev-server --config config/webpack.config.js
+  artifacts:
+    name: webpack-dev-server
+    expire_in: 31d
+    paths:
+      - webpack-dev-server.json

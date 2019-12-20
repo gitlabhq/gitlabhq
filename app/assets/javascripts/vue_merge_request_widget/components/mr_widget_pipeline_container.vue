@@ -1,9 +1,10 @@
 <script>
 import _ from 'underscore';
 import ArtifactsApp from './artifacts_list_app.vue';
-import Deployment from './deployment.vue';
+import Deployment from './deployment/deployment.vue';
 import MrWidgetContainer from './mr_widget_container.vue';
 import MrWidgetPipeline from './mr_widget_pipeline.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 /**
  * Renders the pipeline and related deployments from the store.
@@ -23,6 +24,7 @@ export default {
     MergeTrainPositionIndicator: () =>
       import('ee_component/vue_merge_request_widget/components/merge_train_position_indicator.vue'),
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     mr: {
       type: Object,
@@ -62,7 +64,7 @@ export default {
       return this.isPostMerge ? this.mr.mergePipeline : this.mr.pipeline;
     },
     showVisualReviewAppLink() {
-      return this.mr.visualReviewAppAvailable;
+      return this.mr.visualReviewAppAvailable && this.glFeatures.anonymousVisualReviewFeedback;
     },
     showMergeTrainPositionIndicator() {
       return _.isNumber(this.mr.mergeTrainIndex);
@@ -74,6 +76,7 @@ export default {
   <mr-widget-container>
     <mr-widget-pipeline
       :pipeline="pipeline"
+      :pipeline-coverage-delta="mr.pipelineCoverageDelta"
       :ci-status="mr.ciStatus"
       :has-ci="mr.hasCI"
       :source-branch="branch"

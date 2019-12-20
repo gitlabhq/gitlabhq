@@ -16,6 +16,8 @@ module Gitlab
   class Seeder
     extend ActionView::Helpers::NumberHelper
 
+    MASS_INSERT_PROJECT_START = 'mass_insert_project_'
+    MASS_INSERT_USER_START = 'mass_insert_user_'
     ESTIMATED_INSERT_PER_MINUTE = 2_000_000
     MASS_INSERT_ENV = 'MASS_INSERT'
 
@@ -24,7 +26,7 @@ module Gitlab
 
       included do
         scope :not_mass_generated, -> do
-          where.not("path LIKE '#{Gitlab::Seeder::Projects::MASS_INSERT_NAME_START}%'")
+          where.not("path LIKE '#{MASS_INSERT_PROJECT_START}%'")
         end
       end
     end
@@ -34,7 +36,7 @@ module Gitlab
 
       included do
         scope :not_mass_generated, -> do
-          where.not("username LIKE '#{Gitlab::Seeder::Users::MASS_INSERT_USERNAME_START}%'")
+          where.not("username LIKE '#{MASS_INSERT_USER_START}%'")
         end
       end
     end

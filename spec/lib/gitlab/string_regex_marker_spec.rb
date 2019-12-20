@@ -10,7 +10,7 @@ describe Gitlab::StringRegexMarker do
 
       subject do
         described_class.new(raw, rich).mark(/"[^"]+":\s*"(?<name>[^"]+)"/, group: :name) do |text, left:, right:|
-          %{<a href="#">#{text}</a>}
+          %{<a href="#">#{text}</a>}.html_safe
         end
       end
 
@@ -26,7 +26,7 @@ describe Gitlab::StringRegexMarker do
 
       subject do
         described_class.new(raw, rich).mark(/<[a-z]>/) do |text, left:, right:|
-          %{<strong>#{text}</strong>}
+          %{<strong>#{text}</strong>}.html_safe
         end
       end
 

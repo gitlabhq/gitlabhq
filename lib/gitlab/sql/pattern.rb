@@ -35,7 +35,7 @@ module Gitlab
           query.length >= min_chars_for_partial_matching
         end
 
-        # column - The column name to search in.
+        # column - The column name / Arel column to search in.
         # query - The text to search for.
         # lower_exact_match - When set to `true` we'll fall back to using
         #                     `LOWER(column) = query` instead of using `ILIKE`.
@@ -43,19 +43,21 @@ module Gitlab
           query = query.squish
           return unless query.present?
 
+          arel_column = column.is_a?(Arel::Attributes::Attribute) ? column : arel_table[column]
+
           words = select_fuzzy_words(query, use_minimum_char_limit: use_minimum_char_limit)
 
           if words.any?
-            words.map { |word| arel_table[column].matches(to_pattern(word, use_minimum_char_limit: use_minimum_char_limit)) }.reduce(:and)
+            words.map { |word| arel_column.matches(to_pattern(word, use_minimum_char_limit: use_minimum_char_limit)) }.reduce(:and)
           else
             # No words of at least 3 chars, but we can search for an exact
             # case insensitive match with the query as a whole
             if lower_exact_match
               Arel::Nodes::NamedFunction
-                .new('LOWER', [arel_table[column]])
+                .new('LOWER', [arel_column])
                 .eq(query)
             else
-              arel_table[column].matches(sanitize_sql_like(query))
+              arel_column.matches(sanitize_sql_like(query))
             end
           end
         end

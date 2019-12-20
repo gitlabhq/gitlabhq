@@ -1,44 +1,40 @@
-import Vue from 'vue';
-import timeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { formatDate, getTimeago } from '~/lib/utils/datetime_utility';
 
 describe('Time ago with tooltip component', () => {
-  let TimeagoTooltip;
   let vm;
 
-  beforeEach(() => {
-    TimeagoTooltip = Vue.extend(timeagoTooltip);
-  });
+  const buildVm = (propsData = {}) => {
+    vm = shallowMount(TimeAgoTooltip, {
+      attachToDocument: true,
+      sync: false,
+      propsData,
+      localVue: createLocalVue(),
+    });
+  };
+  const timestamp = '2017-05-08T14:57:39.781Z';
 
   afterEach(() => {
-    vm.$destroy();
+    vm.destroy();
   });
 
   it('should render timeago with a bootstrap tooltip', () => {
-    vm = new TimeagoTooltip({
-      propsData: {
-        time: '2017-05-08T14:57:39.781Z',
-      },
-    }).$mount();
-
-    expect(vm.$el.tagName).toEqual('TIME');
-    expect(vm.$el.getAttribute('data-original-title')).toEqual(
-      formatDate('2017-05-08T14:57:39.781Z'),
-    );
-
+    buildVm({
+      time: timestamp,
+    });
     const timeago = getTimeago();
 
-    expect(vm.$el.textContent.trim()).toEqual(timeago.format('2017-05-08T14:57:39.781Z'));
+    expect(vm.attributes('data-original-title')).toEqual(formatDate(timestamp));
+    expect(vm.text()).toEqual(timeago.format(timestamp));
   });
 
   it('should render provided html class', () => {
-    vm = new TimeagoTooltip({
-      propsData: {
-        time: '2017-05-08T14:57:39.781Z',
-        cssClass: 'foo',
-      },
-    }).$mount();
+    buildVm({
+      time: timestamp,
+      cssClass: 'foo',
+    });
 
-    expect(vm.$el.classList.contains('foo')).toEqual(true);
+    expect(vm.classes()).toContain('foo');
   });
 });

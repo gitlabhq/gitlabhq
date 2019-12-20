@@ -64,7 +64,7 @@ export default {
     tooltipText(dateType = 'min') {
       const defaultText = dateType === 'min' ? __('Start date') : __('Due date');
       const date = this[`${dateType}Date`];
-      const timeAgo = dateType === 'min' ? this.timeFormated(date) : timeFor(date);
+      const timeAgo = dateType === 'min' ? this.timeFormatted(date) : timeFor(date);
       const dateText = date ? [this.dateText(dateType), `(${timeAgo})`].join(' ') : '';
 
       if (date) {

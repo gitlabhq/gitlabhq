@@ -1,6 +1,6 @@
 import Vuex from 'vuex';
-import createStore from '~/import_projects/store';
 import { createLocalVue, mount } from '@vue/test-utils';
+import createStore from '~/import_projects/store';
 import importedProjectTableRow from '~/import_projects/components/imported_project_table_row.vue';
 import STATUS_MAP from '~/import_projects/constants';
 

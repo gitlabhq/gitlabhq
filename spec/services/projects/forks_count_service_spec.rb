@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe Projects::ForksCountService, :use_clean_rails_memory_store_caching do
   let(:project) { build(:project) }
+
   subject { described_class.new(project) }
 
   it_behaves_like 'a counter caching service'

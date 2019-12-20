@@ -47,23 +47,13 @@ module Gitlab
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def self.legacy_attachments_relation
-        Upload.joins(<<~SQL).where('projects.storage_version < :version OR projects.storage_version IS NULL', version: Project::HASHED_STORAGE_FEATURES[:attachments])
-          JOIN projects
-            ON (uploads.model_type='Project' AND uploads.model_id=projects.id)
-        SQL
+        Upload.inner_join_local_uploads_projects.merge(Project.without_storage_feature(:attachments))
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def self.hashed_attachments_relation
-        Upload.joins(<<~SQL).where('projects.storage_version >= :version', version: Project::HASHED_STORAGE_FEATURES[:attachments])
-          JOIN projects
-          ON (uploads.model_type='Project' AND uploads.model_id=projects.id)
-        SQL
+        Upload.inner_join_local_uploads_projects.merge(Project.with_storage_feature(:attachments))
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       def self.relation_summary(relation_name, relation)
         relation_count = relation.count

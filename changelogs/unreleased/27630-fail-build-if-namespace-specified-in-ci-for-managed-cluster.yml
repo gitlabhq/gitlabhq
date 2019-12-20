@@ -1,0 +1,6 @@
+---
+title: Do not allow specifying a Kubernetes namespace via CI template for managed
+  clusters
+merge_request: 21223
+author:
+type: added

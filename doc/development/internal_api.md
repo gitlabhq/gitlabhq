@@ -4,8 +4,8 @@ The internal API is used by different GitLab components, it can not be
 used by other consumers. This documentation is intended for people
 working on the GitLab codebase.
 
-This documentation does not yet include the internal api used by
-GitLab pages.
+This documentation does not yet include the internal API used by
+GitLab Pages.
 
 ## Authentication
 
@@ -19,7 +19,7 @@ file, and include the token Base64 encoded in a `secret_token` param
 or in the `Gitlab-Shared-Secret` header.
 
 NOTE: **Note:**
-The internal api used by GitLab pages uses a different kind of
+The internal API used by GitLab Pages uses a different kind of
 authentication.
 
 ## Git Authentication
@@ -119,7 +119,7 @@ curl --request POST --header "Gitlab-Shared-Secret: <Base64 encoded token>" --da
 ## Authorized Keys Check
 
 This endpoint is called by the GitLab-shell authorized keys
-check. Which is called by OpenSSH for [fast ssh key
+check. Which is called by OpenSSH for [fast SSH key
 lookup](../administration/operations/fast_ssh_key_lookup.md).
 
 | Attribute | Type   | Required | Description |
@@ -287,12 +287,10 @@ Example response:
 }
 ```
 
-## Notify Post Receive [UNUSED] ?
-
 ## PostReceive
 
 Called from Gitaly after a receiving a push. This triggers the
-`PostReceive`-worker in sidekiq, processes the passed push options and
+`PostReceive`-worker in Sidekiq, processes the passed push options and
 builds the response including messages that need to be displayed to
 the user.
 
@@ -300,7 +298,7 @@ the user.
 |:----------|:-------|:---------|:------------|
 | `identifier` | string | yes | `user-[id]` or `key-[id]` Identifying the user performing the push |
 | `gl_repository` | string | yes | identifier of the repository being pushed to |
-| `push_options` | [string] | no | array of push options |
+| `push_options` | string array | no | array of push options |
 | `changes` | string | no | refs to be updated in the push in the format `oldrev newrev refname\n`. |
 
 ```

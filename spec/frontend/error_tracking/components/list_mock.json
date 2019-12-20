@@ -1,0 +1,29 @@
+[
+  {
+    "id": "1",
+    "title": "PG::ConnectionBad: FATAL",
+    "type": "error",
+    "userCount": 0,
+    "count": "52",
+    "firstSeen": "2019-05-30T07:21:46Z",
+    "lastSeen": "2019-11-06T03:21:39Z"
+  },
+  {
+    "id": "2",
+    "title": "ActiveRecord::StatementInvalid",
+    "type": "error",
+    "userCount": 0,
+    "count": "12",
+    "firstSeen": "2019-10-19T03:53:56Z",
+    "lastSeen": "2019-11-05T03:51:54Z"
+  },
+  {
+    "id": "3",
+    "title": "Command has failed",
+    "type": "default",
+    "userCount": 0,
+    "count": "275",
+    "firstSeen": "2019-02-12T07:22:36Z",
+    "lastSeen": "2019-10-22T03:20:48Z"
+  }
+]

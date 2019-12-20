@@ -128,9 +128,9 @@ We can then loop over the `versions` array with something like:
 Note that the data file must have the `yaml` extension (not `yml`) and that
 we reference the array with a symbol (`:versions`).
 
-## Bumping versions of CSS and Javascript
+## Bumping versions of CSS and JavaScript
 
-Whenever the custom CSS and Javascript files under `content/assets/` change,
+Whenever the custom CSS and JavaScript files under `content/assets/` change,
 make sure to bump their version in the frontmatter. This method guarantees that
 your changes will take effect by clearing the cache of previous files.
 
@@ -180,7 +180,7 @@ for its search function. This is how it works:
 1. On the docs side, we use a [docsearch layout](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/layouts/docsearch.html) which
    is present on pretty much every page except <https://docs.gitlab.com/search/>,
    which uses its [own layout](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/layouts/instantsearch.html). In those layouts,
-   there's a javascript snippet which initiates docsearch by using an API key
+   there's a JavaScript snippet which initiates docsearch by using an API key
    and an index name (`gitlab`) that are needed for Algolia to show the results.
 
 NOTE: **For GitLab employees:**

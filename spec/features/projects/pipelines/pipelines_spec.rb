@@ -592,15 +592,15 @@ describe 'Pipelines', :js do
           visit project_pipelines_path(project, page: '2')
           wait_for_requests
 
-          expect(page).to have_selector('.gl-pagination .page', count: 2)
+          expect(page).to have_selector('.gl-pagination .page-link', count: 4)
         end
 
         it 'shows updated content' do
           visit project_pipelines_path(project)
           wait_for_requests
-          page.find('.js-next-button .page-link').click
+          page.find('.page-link.next-page-item').click
 
-          expect(page).to have_selector('.gl-pagination .page', count: 2)
+          expect(page).to have_selector('.gl-pagination .page-link', count: 4)
         end
       end
     end
@@ -706,7 +706,7 @@ describe 'Pipelines', :js do
             click_on 'Run Pipeline'
           end
 
-          it { expect(page).to have_content('Missing .gitlab-ci.yml file') }
+          it { expect(page).to have_content('Missing CI config file') }
           it 'creates a pipeline after first request failed and a valid gitlab-ci.yml file is available when trying again' do
             click_button project.default_branch
 

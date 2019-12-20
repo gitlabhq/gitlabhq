@@ -4,6 +4,8 @@ class Deployment < ApplicationRecord
   include AtomicInternalId
   include IidRoutes
   include AfterCommitQueue
+  include UpdatedAtFilterable
+  include Gitlab::Utils::StrongMemoize
 
   belongs_to :project, required: true
   belongs_to :environment, required: true
@@ -125,6 +127,12 @@ class Deployment < ApplicationRecord
     @scheduled_actions ||= deployable.try(:other_scheduled_actions)
   end
 
+  def playable_build
+    strong_memoize(:playable_build) do
+      deployable.try(:playable?) ? deployable : nil
+    end
+  end
+
   def includes_commit?(commit)
     return false unless commit
 
@@ -207,6 +215,23 @@ class Deployment < ApplicationRecord
       (merge_request_id, deployment_id)
       #{select}
     SQL
+  end
+
+  # Changes the status of a deployment and triggers the correspinding state
+  # machine events.
+  def update_status(status)
+    case status
+    when 'running'
+      run
+    when 'success'
+      succeed
+    when 'failed'
+      drop
+    when 'canceled'
+      cancel
+    else
+      raise ArgumentError, "The status #{status.inspect} is invalid"
+    end
   end
 
   private

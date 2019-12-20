@@ -24,7 +24,7 @@ get the commit comment added to it.
 You can also close a task with a message containing: `fix #123456`.
 
 You can create a Personal Access Token here:
-http://app.asana.com/-/account_api'
+https://app.asana.com/0/developer-console'
   end
 
   def self.to_param

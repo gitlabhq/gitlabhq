@@ -2,6 +2,8 @@
 
 class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   include Gitlab::Experimentation::ControllerConcern
+  include InitializesCurrentUserMode
+
   layout 'profile'
 
   # Overridden from Doorkeeper::AuthorizationsController to

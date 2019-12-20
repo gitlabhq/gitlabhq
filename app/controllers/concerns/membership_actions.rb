@@ -144,4 +144,15 @@ module MembershipActions
         end
       end
   end
+
+  def requested_relations
+    case params[:with_inherited_permissions].presence
+    when 'exclude'
+      [:direct]
+    when 'only'
+      [:inherited]
+    else
+      [:inherited, :direct]
+    end
+  end
 end

@@ -28,6 +28,19 @@ RSpec::Matchers.define :have_graphql_fields do |*expected|
   end
 end
 
+RSpec::Matchers.define :include_graphql_fields do |*expected|
+  expected_field_names = expected.map { |name| GraphqlHelpers.fieldnamerize(name) }
+
+  match do |kls|
+    expect(kls.fields.keys).to include(*expected_field_names)
+  end
+
+  failure_message do |kls|
+    missing = expected_field_names - kls.fields.keys
+    "is missing fields: <#{missing.inspect}>" if missing.any?
+  end
+end
+
 RSpec::Matchers.define :have_graphql_field do |field_name, args = {}|
   match do |kls|
     field = kls.fields[GraphqlHelpers.fieldnamerize(field_name)]
@@ -61,6 +74,12 @@ end
 RSpec::Matchers.define :have_graphql_type do |expected|
   match do |field|
     expect(field.type).to eq(expected.to_graphql)
+  end
+end
+
+RSpec::Matchers.define :have_non_null_graphql_type do |expected|
+  match do |field|
+    expect(field.type).to eq(!expected.to_graphql)
   end
 end
 

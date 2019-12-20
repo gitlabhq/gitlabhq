@@ -48,11 +48,11 @@ module GroupDescendant
       extras = {
         parent: parent.inspect,
         child: child.inspect,
-        preloaded: preloaded.map(&:full_path)
+        preloaded: preloaded.map(&:full_path),
+        issue_url: 'https://gitlab.com/gitlab-org/gitlab-foss/issues/49404'
       }
-      issue_url = 'https://gitlab.com/gitlab-org/gitlab-foss/issues/49404'
 
-      Gitlab::Sentry.track_exception(exception, issue_url: issue_url, extra: extras)
+      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(exception, extras)
     end
 
     if parent.nil? && hierarchy_top.present?

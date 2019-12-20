@@ -166,6 +166,62 @@ describe Projects::ReleasesController do
     end
   end
 
+  describe 'GET #evidence' do
+    let(:tag_name) { "v1.1.0-evidence" }
+    let!(:release) { create(:release, :with_evidence, project: project, tag: tag_name) }
+    let(:tag) { CGI.escape(release.tag) }
+    let(:format) { :json }
+
+    subject do
+      get :evidence, params: {
+        namespace_id: project.namespace,
+        project_id: project,
+        tag: tag,
+        format: format
+      }
+    end
+
+    before do
+      sign_in(user)
+    end
+
+    context 'when the user is a developer' do
+      it 'returns the correct evidence summary as a json' do
+        subject
+
+        expect(json_response).to eq(release.evidence.summary)
+      end
+
+      context 'when the release was created before evidence existed' do
+        before do
+          release.evidence.destroy
+        end
+
+        it 'returns an empty json' do
+          subject
+
+          expect(json_response).to eq({})
+        end
+      end
+    end
+
+    context 'when the user is a guest for the project' do
+      before do
+        project.add_guest(user)
+      end
+
+      context 'when the project is private' do
+        let(:project) { private_project }
+
+        it_behaves_like 'not found'
+      end
+
+      context 'when the project is public' do
+        it_behaves_like 'successful request'
+      end
+    end
+  end
+
   private
 
   def get_index

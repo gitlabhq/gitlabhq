@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import _ from 'underscore';
-import SmartInterval from '~/smart_interval';
 import waitForPromises from 'spec/helpers/wait_for_promises';
+import SmartInterval from '~/smart_interval';
 
 describe('SmartInterval', function() {
   const DEFAULT_MAX_INTERVAL = 100;

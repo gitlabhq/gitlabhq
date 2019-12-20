@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 
 describe Gitlab::Git::Branch, :seed_helper do
@@ -77,7 +79,7 @@ describe Gitlab::Git::Branch, :seed_helper do
       tree = parents.first.tree
 
       {
-        message: 'commit message',
+        message: +'commit message',
         author: committer,
         committer: committer,
         tree: tree,
@@ -126,7 +128,7 @@ describe Gitlab::Git::Branch, :seed_helper do
   it { expect(repository.branches.size).to eq(SeedRepo::Repo::BRANCHES.size) }
 
   def create_commit
-    params[:message].delete!("\r")
+    params[:message].delete!(+"\r")
     Rugged::Commit.create(rugged, params.merge(committer: committer.merge(time: Time.now)))
   end
 end

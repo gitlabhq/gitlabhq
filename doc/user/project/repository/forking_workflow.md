@@ -37,6 +37,10 @@ After the forking is done, you can start working on the newly created
 repository. There, you will have full [Owner](../../permissions.md)
 access, so you can set it up as you please.
 
+CAUTION: **CAUTION:**
+From GitLab 12.6 onwards, if the [visibility of an upstream project is reduced](../../../public_access/public_access.md#reducing-visibility)
+in any way, the fork relationship with all its forks will be removed.
+
 ## Merging upstream
 
 Once you are ready to send your code back to the main project, you need

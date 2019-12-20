@@ -26,6 +26,7 @@ end
 RSpec.shared_examples 'a Note mutation when there are active record validation errors' do |model: Note|
   before do
     expect_next_instance_of(model) do |note|
+      allow(note).to receive_message_chain(:errors, :empty?).and_return(true)
       expect(note).to receive(:valid?).at_least(:once).and_return(false)
       expect(note).to receive_message_chain(
         :errors,

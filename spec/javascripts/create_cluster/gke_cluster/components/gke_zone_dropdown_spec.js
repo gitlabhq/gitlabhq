@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import GkeZoneDropdown from '~/create_cluster/gke_cluster/components/gke_zone_dropdown.vue';
 import { createStore } from '~/create_cluster/gke_cluster/store';
 import {
@@ -6,7 +7,6 @@ import {
   SET_ZONES,
   SET_PROJECT_BILLING_STATUS,
 } from '~/create_cluster/gke_cluster/store/mutation_types';
-import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { selectedZoneMock, selectedProjectMock, gapiZonesResponseMock } from '../mock_data';
 
 const componentConfig = {

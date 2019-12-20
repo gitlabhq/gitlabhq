@@ -95,6 +95,10 @@ module Gitlab
       version.to_f >= 9.6
     end
 
+    def self.upsert_supported?
+      version.to_f >= 9.5
+    end
+
     # map some of the function names that changed between PostgreSQL 9 and 10
     # https://wiki.postgresql.org/wiki/New_in_postgres_10
     def self.pg_wal_lsn_diff
@@ -158,7 +162,9 @@ module Gitlab
     # disable_quote - A key or an Array of keys to exclude from quoting (You
     #                 become responsible for protection from SQL injection for
     #                 these keys!)
-    def self.bulk_insert(table, rows, return_ids: false, disable_quote: [])
+    # on_conflict - Defines an upsert. Values can be: :disabled (default) or
+    #               :do_nothing
+    def self.bulk_insert(table, rows, return_ids: false, disable_quote: [], on_conflict: nil)
       return if rows.empty?
 
       keys = rows.first.keys
@@ -176,9 +182,11 @@ module Gitlab
         VALUES #{tuples.map { |tuple| "(#{tuple.join(', ')})" }.join(', ')}
       EOF
 
-      if return_ids
-        sql = "#{sql}RETURNING id"
+      if upsert_supported? && on_conflict == :do_nothing
+        sql = "#{sql} ON CONFLICT DO NOTHING"
       end
+
+      sql = "#{sql} RETURNING id" if return_ids
 
       result = connection.execute(sql)
 

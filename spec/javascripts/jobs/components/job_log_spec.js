@@ -1,7 +1,7 @@
 import Vue from 'vue';
+import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import component from '~/jobs/components/job_log.vue';
 import createStore from '~/jobs/store';
-import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { resetStore } from '../store/helpers';
 
 describe('Job Log', () => {

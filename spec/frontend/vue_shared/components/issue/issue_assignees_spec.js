@@ -18,6 +18,7 @@ describe('IssueAssigneesComponent', () => {
         ...props,
       },
       sync: false,
+      attachToDocument: true,
     });
     vm = wrapper.vm; // eslint-disable-line
   };

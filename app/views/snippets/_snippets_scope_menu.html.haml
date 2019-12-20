@@ -9,7 +9,7 @@
         - if include_private
           = subject.snippets.count
         - else
-          = subject.snippets.public_and_internal.count
+          = subject.snippets.public_and_internal_only.count
 
   - if include_private
     %li{ class: active_when(params[:scope] == "are_private") }

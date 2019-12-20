@@ -16,5 +16,5 @@ useful compilation of accessibility-related material.
 [audit-rules]: https://github.com/GoogleChrome/accessibility-developer-tools/wiki/Audit-Rules
 [axe-website]: https://www.deque.com/axe/
 [axe-firefox-extension]: https://addons.mozilla.org/en-US/firefox/addon/axe-devtools/
-[axe-chrome-extension]: https://chrome.google.com/webstore/detail/axe/lhdoppojpmngadmnindnejefpokejbdd
+[axe-chrome-extension]: https://chrome.google.com/webstore/detail/axe-web-accessibility-tes/lhdoppojpmngadmnindnejefpokejbdd
 [awesome-a11y]: https://github.com/brunopulis/awesome-a11y

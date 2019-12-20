@@ -1,0 +1,5 @@
+---
+title: Add syntax highlight for Sentry error stack trace
+merge_request: 21182
+author:
+type: added

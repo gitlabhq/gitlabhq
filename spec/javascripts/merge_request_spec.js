@@ -89,6 +89,7 @@ describe('MergeRequest', function() {
         });
       });
 
+      // https://gitlab.com/gitlab-org/gitlab/issues/34861
       // eslint-disable-next-line jasmine/no-disabled-tests
       xit('shows an error notification when tasklist update failed', done => {
         mock

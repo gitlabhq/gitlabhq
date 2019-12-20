@@ -1,7 +1,7 @@
 import $ from 'jquery';
-import createFlash from '~/flash';
 import GfmAutoComplete from 'ee_else_ce/gfm_auto_complete';
 import emojiRegex from 'emoji-regex';
+import createFlash from '~/flash';
 import EmojiMenu from './emoji_menu';
 import { __ } from '~/locale';
 

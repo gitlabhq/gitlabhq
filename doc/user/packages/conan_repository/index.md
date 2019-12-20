@@ -1,6 +1,6 @@
 # GitLab Conan Repository **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/8248) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/8248) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.6.
 
 With the GitLab Conan Repository, every
 project can have its own space to store Conan packages.
@@ -27,7 +27,7 @@ get familiar with the package naming convention.
 
 ## Authenticating to the GitLab Conan Repository
 
-You will need to generate a [personal access token](../../../user/profile/personal_access_tokens.md) for repository authentication.
+You will need to generate a [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to `api` for repository authentication.
 
 Now you can run conan commands using your token.
 

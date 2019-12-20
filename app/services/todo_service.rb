@@ -174,6 +174,19 @@ class TodoService
     mark_todos_as_done(todos, current_user)
   end
 
+  def mark_all_todos_as_done_by_user(current_user)
+    todos = TodosFinder.new(current_user).execute
+    mark_todos_as_done(todos, current_user)
+  end
+
+  def mark_todo_as_done(todo, current_user)
+    return if todo.done?
+
+    todo.update(state: :done)
+
+    current_user.update_todos_count_cache
+  end
+
   # When user marks some todos as pending
   def mark_todos_as_pending(todos, current_user)
     update_todos_state(todos, current_user, :pending)

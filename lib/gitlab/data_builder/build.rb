@@ -31,6 +31,8 @@ module Gitlab
           build_duration: build.duration,
           build_allow_failure: build.allow_failure,
           build_failure_reason: build.failure_reason,
+          pipeline_id: commit.id,
+          runner: build_runner(build.runner),
 
           # TODO: do we still need it?
           project_id: project.id,
@@ -43,6 +45,7 @@ module Gitlab
           },
 
           commit: {
+            # note: commit.id is actually the pipeline id
             id: commit.id,
             sha: commit.sha,
             message: commit.git_commit_message,
@@ -74,6 +77,17 @@ module Gitlab
       def build_author_url(commit, pipeline)
         author = commit.try(:author)
         author ? Gitlab::Routing.url_helpers.user_url(author) : "mailto:#{pipeline.git_author_email}"
+      end
+
+      def build_runner(runner)
+        return unless runner
+
+        {
+          id: runner.id,
+          description: runner.description,
+          active: runner.active?,
+          is_shared: runner.instance_type?
+        }
       end
     end
   end

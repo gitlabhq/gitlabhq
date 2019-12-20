@@ -1,0 +1,5 @@
+%h4.prepend-top-0
+  = page_title
+%p
+  - link = link_to(hook.pluralized_name, help_page_path(hook.help_path))
+  = _('%{link} can be used for binding events when something is happening within the project.').html_safe % { link: link }

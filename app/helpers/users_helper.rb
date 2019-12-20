@@ -44,6 +44,14 @@ module UsersHelper
     current_user_menu_items.include?(item)
   end
 
+  # Used to preload when you are rendering many projects and checking access
+  #
+  # rubocop: disable CodeReuse/ActiveRecord: `projects` can be array which also responds to pluck
+  def load_max_project_member_accesses(projects)
+    current_user&.max_member_access_for_project_ids(projects.pluck(:id))
+  end
+  # rubocop: enable CodeReuse/ActiveRecord
+
   def max_project_member_access(project)
     current_user&.max_member_access_for_project(project.id) || Gitlab::Access::NO_ACCESS
   end
@@ -57,7 +65,7 @@ module UsersHelper
 
     unless user.association(:status).loaded?
       exception = RuntimeError.new("Status was not preloaded")
-      Gitlab::Sentry.track_exception(exception, extra: { user: user.inspect })
+      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(exception, user: user.inspect)
     end
 
     return unless user.status

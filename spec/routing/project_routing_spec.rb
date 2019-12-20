@@ -155,17 +155,21 @@ describe 'project routing' do
   #                      DELETE /:project_id/wikis/:id(.:format)         projects/wikis#destroy
   describe Projects::WikisController, 'routing' do
     it 'to #pages' do
-      expect(get('/gitlab/gitlabhq/wikis/pages')).to route_to('projects/wikis#pages', namespace_id: 'gitlab', project_id: 'gitlabhq')
+      expect(get('/gitlab/gitlabhq/-/wikis/pages')).to route_to('projects/wikis#pages', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
 
     it 'to #history' do
-      expect(get('/gitlab/gitlabhq/wikis/1/history')).to route_to('projects/wikis#history', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1')
+      expect(get('/gitlab/gitlabhq/-/wikis/1/history')).to route_to('projects/wikis#history', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1')
     end
 
     it_behaves_like 'RESTful project resources' do
       let(:actions)    { [:create, :edit, :show, :destroy] }
       let(:controller) { 'wikis' }
+      let(:controller_path) { '/-/wikis' }
     end
+
+    it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/wikis", "/gitlab/gitlabhq/-/wikis"
+    it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/wikis/home/edit", "/gitlab/gitlabhq/-/wikis/home/edit"
   end
 
   # branches_project_repository GET    /:project_id/repository/branches(.:format) projects/repositories#branches
@@ -792,6 +796,30 @@ describe 'project routing' do
   describe Projects::UsagePingController, 'routing' do
     it 'routes to usage_ping#web_ide_clientside_preview' do
       expect(post('/gitlab/gitlabhq/usage_ping/web_ide_clientside_preview')).to route_to('projects/usage_ping#web_ide_clientside_preview', namespace_id: 'gitlab', project_id: 'gitlabhq')
+    end
+  end
+
+  describe Projects::EnvironmentsController, 'routing' do
+    describe 'legacy routing' do
+      it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/environments", "/gitlab/gitlabhq/-/environments"
+    end
+  end
+
+  describe Projects::ClustersController, 'routing' do
+    describe 'legacy routing' do
+      it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/clusters", "/gitlab/gitlabhq/-/clusters"
+    end
+  end
+
+  describe Projects::ErrorTrackingController, 'routing' do
+    describe 'legacy routing' do
+      it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/error_tracking", "/gitlab/gitlabhq/-/error_tracking"
+    end
+  end
+
+  describe Projects::Serverless, 'routing' do
+    describe 'legacy routing' do
+      it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/serverless", "/gitlab/gitlabhq/-/serverless"
     end
   end
 end

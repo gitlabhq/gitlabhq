@@ -14,56 +14,54 @@
   .merge-request-details.issuable-details{ data: { id: @merge_request.project.id } }
     = render "projects/merge_requests/mr_box"
 
-    - if @merge_request.source_branch_exists?
-      = render "projects/merge_requests/how_to_merge"
-
-    = javascript_tag nonce: true do
-      :plain
-        window.gl = window.gl || {};
-        window.gl.mrWidgetData = #{serialize_issuable(@merge_request, serializer: 'widget', issues_links: true)}
-
-        window.gl.mrWidgetData.squash_before_merge_help_path = '#{help_page_path("user/project/merge_requests/squash_and_merge")}';
-        window.gl.mrWidgetData.troubleshooting_docs_path = '#{help_page_path('user/project/merge_requests/index.md', anchor: 'troubleshooting')}';
-        window.gl.mrWidgetData.security_approvals_help_page_path = '#{help_page_path('user/application_security/index.html', anchor: 'security-approvals-in-merge-requests-ultimate')}';
-
-    #js-vue-mr-widget.mr-widget
-
-    .content-block.content-block-small.emoji-list-container.js-noteable-awards
-      = render 'award_emoji/awards_block', awardable: @merge_request, inline: true
+    - unless mr_tabs_position_enabled?
+      = render "projects/merge_requests/widget"
+      = render "projects/merge_requests/awards_block"
 
     .merge-request-tabs-holder{ class: ("js-tabs-affix" unless ENV['RAILS_ENV'] == 'test') }
       .merge-request-tabs-container
         %ul.merge-request-tabs.nav-tabs.nav.nav-links
-          %li.notes-tab{ data: { qa_selector: 'notes_tab'} }
+          = render "projects/merge_requests/tabs/tab", class: "notes-tab", qa_selector: "notes_tab" do
             = tab_link_for @merge_request, :show, force_link: @commit.present? do
-              = _("Discussion")
+              - if mr_tabs_position_enabled?
+                = _("Overview")
+              - else
+                = _("Discussion")
               %span.badge.badge-pill= @merge_request.related_notes.user.count
           - if @merge_request.source_project
-            %li.commits-tab
+            = render "projects/merge_requests/tabs/tab", name: "commits", class: "commits-tab" do
               = tab_link_for @merge_request, :commits do
                 = _("Commits")
                 %span.badge.badge-pill= @commits_count
           - if number_of_pipelines.nonzero?
-            %li.pipelines-tab
+            = render "projects/merge_requests/tabs/tab", name: "pipelines", class: "pipelines-tab" do
               = tab_link_for @merge_request, :pipelines do
                 = _("Pipelines")
                 %span.badge.badge-pill.js-pipelines-mr-count= number_of_pipelines
-          %li.diffs-tab.qa-diffs-tab
+          = render "projects/merge_requests/tabs/tab", name: "diffs", class: "diffs-tab qa-diffs-tab", id: "diffs-tab" do
             = tab_link_for @merge_request, :diffs do
               = _("Changes")
               %span.badge.badge-pill= @merge_request.diff_size
+            - if mr_tabs_position_enabled? && show_tabs_feature_highlight?
+              .js-tabs-feature-highlight{ data: { dismiss_endpoint: user_callouts_path, feature_id: UserCalloutsHelper::TABS_POSITION_HIGHLIGHT } }
         .d-flex.flex-wrap.align-items-center.justify-content-lg-end
-          #js-vue-discussion-filter{ data: { default_filter: current_user&.notes_filter_for(@merge_request),
-            notes_filters: UserPreference.notes_filters.to_json } }
+          - unless mr_tabs_position_enabled?
+            = render "projects/merge_requests/discussion_filter"
           #js-vue-discussion-counter
 
     .tab-content#diff-notes-app
       #js-diff-file-finder
-      #notes.notes.tab-pane.voting_notes
+      = render "projects/merge_requests/tabs/pane", id: "notes", class: "notes voting_notes" do
         .row
           %section.col-md-12
             %script.js-notes-data{ type: "application/json" }= initial_notes_data(true).to_json.html_safe
             .issuable-discussion.js-vue-notes-event
+              - if mr_tabs_position_enabled?
+                - if @merge_request.description.present?
+                  .detail-page-description
+                    = render "projects/merge_requests/description"
+                = render "projects/merge_requests/widget"
+                = render "projects/merge_requests/awards_block"
               #js-vue-mr-discussions{ data: { notes_data: notes_data(@merge_request).to_json,
                 noteable_data: serialize_issuable(@merge_request, serializer: 'noteable'),
                 noteable_type: 'MergeRequest',
@@ -71,13 +69,15 @@
                 help_page_path: suggest_changes_help_path,
                 current_user_data: @current_user_data} }
 
-      #commits.commits.tab-pane
+      = render "projects/merge_requests/tabs/pane", name: "commits", id: "commits", class: "commits" do
         -# This tab is always loaded via AJAX
-      #pipelines.pipelines.tab-pane
+      = render "projects/merge_requests/tabs/pane", name: "pipelines", id: "pipelines", class: "pipelines" do
         - if number_of_pipelines.nonzero?
           = render 'projects/commit/pipelines_list', disable_initialization: true, endpoint: pipelines_project_merge_request_path(@project, @merge_request)
-      #js-diffs-app.diffs.tab-pane{ data: { "is-locked" => @merge_request.discussion_locked?,
+      = render "projects/merge_requests/tabs/pane", name: "diffs", id: "js-diffs-app", class: "diffs", data: { "is-locked": @merge_request.discussion_locked?,
         endpoint: diffs_project_merge_request_path(@project, @merge_request, 'json', request.query_parameters),
+        endpoint_metadata: diffs_metadata_project_json_merge_request_path(@project, @merge_request, 'json', request.query_parameters),
+        endpoint_batch: diffs_batch_project_json_merge_request_path(@project, @merge_request, 'json', request.query_parameters),
         help_page_path: suggest_changes_help_path,
         current_user_data: @current_user_data,
         project_path: project_path(@merge_request.project),
@@ -85,7 +85,7 @@
         is_fluid_layout: fluid_layout.to_s,
         dismiss_endpoint: user_callouts_path,
         show_suggest_popover: show_suggest_popover?.to_s,
-        show_whitespace_default: @show_whitespace_default.to_s } }
+        show_whitespace_default: @show_whitespace_default.to_s }
 
     .mr-loading-status
       = spinner

@@ -67,11 +67,11 @@ module Gitlab
         build_config(config)
 
       rescue Gitlab::Config::Loader::Yaml::DataTooLargeError => e
-        track_exception(e)
+        track_and_raise_for_dev_exception(e)
         raise Config::ConfigError, e.message
 
       rescue Gitlab::Ci::Config::External::Context::TimeoutError => e
-        track_exception(e)
+        track_and_raise_for_dev_exception(e)
         raise Config::ConfigError, TIMEOUT_MESSAGE
       end
 
@@ -94,8 +94,8 @@ module Gitlab
           user: user)
       end
 
-      def track_exception(error)
-        Gitlab::Sentry.track_exception(error, extra: @context.sentry_payload)
+      def track_and_raise_for_dev_exception(error)
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error, @context.sentry_payload)
       end
 
       # Overriden in EE

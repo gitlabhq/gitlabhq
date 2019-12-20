@@ -32,4 +32,4 @@
       .prepend-top-default.append-bottom-default
         = f.submit _('Save password'), class: "btn btn-success append-right-10", data: { qa_selector: 'save_password_button' }
         - unless @user.password_automatically_set?
-          = link_to _('I forgot my password'), reset_profile_password_path, method: :put, class: "account-btn-link"
+          = link_to _('I forgot my password'), reset_profile_password_path, method: :put

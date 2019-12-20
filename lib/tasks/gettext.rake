@@ -94,7 +94,7 @@ namespace :gettext do
 
     if pot_diff.present?
       raise <<~MSG
-        Newly translated strings found, please add them to `#{pot_file}` by running:
+        Changes in translated strings found, please update file `#{pot_file}` by running:
 
           bin/rake gettext:regenerate
 

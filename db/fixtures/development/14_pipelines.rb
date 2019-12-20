@@ -1,4 +1,4 @@
-require './spec/support/sidekiq'
+require './spec/support/sidekiq_middleware'
 
 class Gitlab::Seeder::Pipelines
   STAGES = %w[build test deploy notify]

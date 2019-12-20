@@ -50,7 +50,7 @@ module PositionTracerHelpers
   end
 
   def create_branch(new_name, branch_name)
-    CreateBranchService.new(project, current_user).execute(new_name, branch_name)
+    ::Branches::CreateService.new(project, current_user).execute(new_name, branch_name)
   end
 
   def create_file(branch_name, file_name, content)

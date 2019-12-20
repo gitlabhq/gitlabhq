@@ -10,7 +10,6 @@ describe 'Project Jobs Permissions' do
   let!(:job) { create(:ci_build, :running, :coverage, :trace_artifact, pipeline: pipeline) }
 
   before do
-    stub_feature_flags(job_log_json: true)
     sign_in(user)
 
     project.enable_ci

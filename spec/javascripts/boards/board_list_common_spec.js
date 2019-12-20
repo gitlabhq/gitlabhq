@@ -3,13 +3,13 @@
 
 import MockAdapter from 'axios-mock-adapter';
 import Vue from 'vue';
-import axios from '~/lib/utils/axios_utils';
 import Sortable from 'sortablejs';
+import axios from '~/lib/utils/axios_utils';
 import BoardList from '~/boards/components/board_list.vue';
 
 import '~/boards/models/issue';
 import '~/boards/models/list';
-import { listObj, boardsMockInterceptor, mockBoardService } from './mock_data';
+import { listObj, boardsMockInterceptor } from './mock_data';
 import store from '~/boards/stores';
 import boardsStore from '~/boards/stores/boards_store';
 
@@ -26,7 +26,6 @@ export default function createComponent({
   document.body.appendChild(el);
   const mock = new MockAdapter(axios);
   mock.onAny().reply(boardsMockInterceptor);
-  gl.boardService = mockBoardService();
   boardsStore.create();
 
   const BoardListComp = Vue.extend(BoardList);

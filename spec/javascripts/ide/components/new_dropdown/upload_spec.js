@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import upload from '~/ide/components/new_dropdown/upload.vue';
 import createComponent from 'spec/helpers/vue_mount_component_helper';
+import upload from '~/ide/components/new_dropdown/upload.vue';
 
 describe('new dropdown upload', () => {
   let vm;

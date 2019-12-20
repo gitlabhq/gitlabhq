@@ -30,7 +30,7 @@ describe Gitlab::Ci::Pipeline::Chain::Build do
   let(:step) { described_class.new(pipeline, command) }
 
   before do
-    stub_repository_ci_yaml_file(sha: anything)
+    stub_ci_pipeline_yaml_file(gitlab_ci_yaml)
   end
 
   it 'never breaks the chain' do

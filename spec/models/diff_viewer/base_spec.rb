@@ -60,7 +60,9 @@ describe DiffViewer::Base do
 
       context 'when the binaryness does not match' do
         before do
-          allow_any_instance_of(Blob).to receive(:binary_in_repo?).and_return(true)
+          allow_next_instance_of(Blob) do |instance|
+            allow(instance).to receive(:binary_in_repo?).and_return(true)
+          end
         end
 
         it 'returns false' do

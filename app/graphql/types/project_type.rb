@@ -145,5 +145,19 @@ module Types
           null: true,
           description: 'Build pipelines of the project',
           resolver: Resolvers::ProjectPipelinesResolver
+
+    field :sentry_detailed_error,
+          Types::ErrorTracking::SentryDetailedErrorType,
+          null: true,
+          description: 'Detailed version of a Sentry error on the project',
+          resolver: Resolvers::ErrorTracking::SentryDetailedErrorResolver
+
+    field :snippets,
+          Types::SnippetType.connection_type,
+          null: true,
+          description: 'Snippets of the project',
+          resolver: Resolvers::Projects::SnippetsResolver
   end
 end
+
+Types::ProjectType.prepend_if_ee('::EE::Types::ProjectType')

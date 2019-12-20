@@ -4,10 +4,10 @@ require 'spec_helper'
 
 describe API::Internal::Pages do
   describe "GET /internal/pages" do
-    let(:pages_shared_secret) { SecureRandom.random_bytes(Gitlab::Pages::SECRET_LENGTH) }
+    let(:pages_secret) { SecureRandom.random_bytes(Gitlab::Pages::SECRET_LENGTH) }
 
     before do
-      allow(Gitlab::Pages).to receive(:secret).and_return(pages_shared_secret)
+      allow(Gitlab::Pages).to receive(:secret).and_return(pages_secret)
     end
 
     def query_host(host, headers = {})
@@ -47,11 +47,12 @@ describe API::Internal::Pages do
           project.mark_pages_as_deployed
         end
 
-        context 'not existing host' do
-          it 'responds with 404 Not Found' do
+        context 'domain does not exist' do
+          it 'responds with 204 no content' do
             query_host('pages.gitlab.io')
 
-            expect(response).to have_gitlab_http_status(404)
+            expect(response).to have_gitlab_http_status(204)
+            expect(response.body).to be_empty
           end
         end
 

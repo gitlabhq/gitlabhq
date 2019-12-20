@@ -1,0 +1,5 @@
+---
+title: Fixed monitor charts from throwing error when zoomed
+merge_request: 20331
+author:
+type: fixed

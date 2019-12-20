@@ -24,7 +24,7 @@ export default {
   },
   computed: {
     chartData() {
-      return this.queries.result.reduce(
+      return this.metrics.result.reduce(
         (acc, result, i) => [...acc, ...result.values.map((value, j) => [i, j, value[1]])],
         [],
       );
@@ -36,7 +36,7 @@ export default {
       return this.graphData.y_label || '';
     },
     xAxisLabels() {
-      return this.queries.result.map(res => Object.values(res.metric)[0]);
+      return this.metrics.result.map(res => Object.values(res.metric)[0]);
     },
     yAxisLabels() {
       return this.result.values.map(val => {
@@ -46,10 +46,10 @@ export default {
       });
     },
     result() {
-      return this.queries.result[0];
+      return this.metrics.result[0];
     },
-    queries() {
-      return this.graphData.queries[0];
+    metrics() {
+      return this.graphData.metrics[0];
     },
   },
 };

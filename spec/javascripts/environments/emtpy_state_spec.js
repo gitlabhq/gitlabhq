@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import emptyState from '~/environments/components/empty_state.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import emptyState from '~/environments/components/empty_state.vue';
 
 describe('environments empty state', () => {
   let vm;

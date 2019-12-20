@@ -214,8 +214,8 @@
     padding-left: 0;
     height: $input-height - 2;
     line-height: inherit;
-    border-color: transparent;
 
+    &,
     &:focus,
     &:hover {
       outline: none;

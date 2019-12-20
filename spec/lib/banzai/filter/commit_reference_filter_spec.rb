@@ -60,7 +60,9 @@ describe Banzai::Filter::CommitReferenceFilter do
     end
 
     it 'escapes the title attribute' do
-      allow_any_instance_of(Commit).to receive(:title).and_return(%{"></a>whatever<a title="})
+      allow_next_instance_of(Commit) do |instance|
+        allow(instance).to receive(:title).and_return(%{"></a>whatever<a title="})
+      end
 
       doc = reference_filter("See #{reference}")
       expect(doc.text).to eq "See #{commit.short_id}"

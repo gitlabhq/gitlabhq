@@ -13,13 +13,15 @@ export default {
    * Sets isLoading to false.
    * Sets hasError to false.
    * Sets the received data
+   * Sets the received pagination information
    * @param {Object} state
-   * @param {Object} data
+   * @param {Object} resp
    */
-  [types.RECEIVE_RELEASES_SUCCESS](state, data) {
+  [types.RECEIVE_RELEASES_SUCCESS](state, { data, pageInfo }) {
     state.hasError = false;
     state.isLoading = false;
     state.releases = data;
+    state.pageInfo = pageInfo;
   },
 
   /**

@@ -1,0 +1,5 @@
+---
+title: Do not attribute unverified commit e-mails to GitLab users
+merge_request: 21214
+author:
+type: fixed

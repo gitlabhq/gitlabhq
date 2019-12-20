@@ -1,42 +1,43 @@
 import Vue from 'vue';
+import { shallowMount } from '@vue/test-utils';
 import Translate from '~/vue_shared/translate';
-import limitWarningComp from '~/cycle_analytics/components/limit_warning_component.vue';
+import LimitWarningComponent from '~/cycle_analytics/components/limit_warning_component.vue';
 
 Vue.use(Translate);
 
+const createComponent = props =>
+  shallowMount(LimitWarningComponent, {
+    propsData: {
+      ...props,
+    },
+    sync: false,
+    attachToDocument: true,
+  });
+
 describe('Limit warning component', () => {
   let component;
-  let LimitWarningComponent;
 
   beforeEach(() => {
-    LimitWarningComponent = Vue.extend(limitWarningComp);
+    component = null;
+  });
+
+  afterEach(() => {
+    component.destroy();
   });
 
   it('should not render if count is not exactly than 50', () => {
-    component = new LimitWarningComponent({
-      propsData: {
-        count: 5,
-      },
-    }).$mount();
+    component = createComponent({ count: 5 });
 
-    expect(component.$el.textContent.trim()).toBe('');
+    expect(component.text().trim()).toBe('');
 
-    component = new LimitWarningComponent({
-      propsData: {
-        count: 55,
-      },
-    }).$mount();
+    component = createComponent({ count: 55 });
 
-    expect(component.$el.textContent.trim()).toBe('');
+    expect(component.text().trim()).toBe('');
   });
 
   it('should render if count is exactly 50', () => {
-    component = new LimitWarningComponent({
-      propsData: {
-        count: 50,
-      },
-    }).$mount();
+    component = createComponent({ count: 50 });
 
-    expect(component.$el.textContent.trim()).toBe('Showing 50 events');
+    expect(component.text().trim()).toBe('Showing 50 events');
   });
 });

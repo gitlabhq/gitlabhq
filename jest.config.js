@@ -40,6 +40,8 @@ const moduleNameMapper = {
   '^spec/test_constants$': '<rootDir>/spec/frontend/helpers/test_constants',
 };
 
+const collectCoverageFrom = ['<rootDir>/app/assets/javascripts/**/*.{js,vue}'];
+
 if (IS_EE) {
   const rootDirEE = '<rootDir>/ee/app/assets/javascripts$1';
   Object.assign(moduleNameMapper, {
@@ -47,14 +49,17 @@ if (IS_EE) {
     '^ee_component(/.*)$': rootDirEE,
     '^ee_else_ce(/.*)$': rootDirEE,
   });
+
+  collectCoverageFrom.push(rootDirEE.replace('$1', '/**/*.{js,vue}'));
 }
 
 // eslint-disable-next-line import/no-commonjs
 module.exports = {
+  clearMocks: true,
   testMatch,
   moduleFileExtensions: ['js', 'json', 'vue'],
   moduleNameMapper,
-  collectCoverageFrom: ['<rootDir>/app/assets/javascripts/**/*.{js,vue}'],
+  collectCoverageFrom,
   coverageDirectory: '<rootDir>/coverage-frontend/',
   coverageReporters: ['json', 'lcov', 'text-summary', 'clover'],
   cacheDirectory: '<rootDir>/tmp/cache/jest',

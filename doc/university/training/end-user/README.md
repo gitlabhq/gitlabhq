@@ -4,7 +4,7 @@ comments: false
 
 # Training
 
-This training material is the markdown used to generate training slides
+This training material is the Markdown used to generate training slides
 which can be found at [End User Slides](https://gitlab-org.gitlab.io/end-user-training-slides/#/)
 through it's [RevealJS](https://gitlab.com/gitlab-org/end-user-training-slides)
 project.

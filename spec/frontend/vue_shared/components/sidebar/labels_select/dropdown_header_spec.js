@@ -1,8 +1,7 @@
 import Vue from 'vue';
 
-import dropdownHeaderComponent from '~/vue_shared/components/sidebar/labels_select/dropdown_header.vue';
-
 import mountComponent from 'helpers/vue_mount_component_helper';
+import dropdownHeaderComponent from '~/vue_shared/components/sidebar/labels_select/dropdown_header.vue';
 
 const createComponent = () => {
   const Component = Vue.extend(dropdownHeaderComponent);

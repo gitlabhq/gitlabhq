@@ -44,7 +44,7 @@ module Gitlab
 
             if all_job_names = parallelized_jobs[job_need_name]
               all_job_names.map do |job_name|
-                { name: job_name }
+                job_need.merge(name: job_name)
               end
             else
               job_need

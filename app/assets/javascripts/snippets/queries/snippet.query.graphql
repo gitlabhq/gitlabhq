@@ -1,0 +1,15 @@
+#import '../fragments/snippetBase.fragment.graphql'
+#import '../fragments/project.fragment.graphql'
+#import '../fragments/author.fragment.graphql'
+
+query GetSnippetQuery($ids: [ID!]) {
+  snippets(ids: $ids) {
+    edges {
+      node {
+        ...SnippetBase
+        ...Project
+        ...Author
+      }
+    }
+  }
+}

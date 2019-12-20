@@ -4,7 +4,7 @@ type: reference, howto, concepts
 
 # Subgroups
 
->[Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/2772) in GitLab 9.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/2772) in GitLab 9.0.
 
 Subgroups, also known as nested groups or hierarchical groups, allow you to have up to 20
 levels of groups.
@@ -142,6 +142,16 @@ From the image above, we can deduce the following things:
 - Administrator is the Owner and member of **all** subgroups and for that reason,
   as with User3, there is no indication of an ancestor group.
 
+[From](https://gitlab.com/gitlab-org/gitlab/issues/21727) GitLab 12.6, you can filter
+this list using dropdown on the right side:
+
+![Group members filter](img/group_members_filter_v12_6.png)
+
+- **Show only direct members** displays only Administrator and User3, since these are
+  the only users that belong to group `four`, which is the one we're inspecting.
+- **Show only inherited members** displays User0, User1 and User2, no matter which group
+  above the hierarchy is the source of inherited permissions.
+
 ### Overriding the ancestor group membership
 
 NOTE: **Note:**
@@ -186,7 +196,7 @@ Here's a list of what you can't do with subgroups:
 
 [ce-2772]: https://gitlab.com/gitlab-org/gitlab-foss/issues/2772
 [permissions]: ../../permissions.md#group-members-permissions
-[reserved]:  ../../reserved_names.md
+[reserved]: ../../reserved_names.md
 [issue]: https://gitlab.com/gitlab-org/gitlab-foss/issues/30472#note_27747600
 
 <!-- ## Troubleshooting

@@ -48,7 +48,24 @@ describe MergeRequestSerializer do
     let(:serializer) { 'noteable' }
 
     it 'matches noteable merge request json schema' do
-      expect(json_entity).to match_schema('entities/merge_request_noteable', strict: true)
+      expect(json_entity).to match_schema('entities/merge_request_noteable')
+    end
+
+    context 'when merge_request is locked' do
+      let(:resource) { create(:merge_request, :locked, description: "Description") }
+
+      it 'matches noteable merge request json schema' do
+        expect(json_entity).to match_schema('entities/merge_request_noteable')
+      end
+    end
+
+    context 'when project is archived' do
+      let(:project) { create(:project, :archived, :repository) }
+      let(:resource) { create(:merge_request, source_project: project, target_project: project, description: "Description") }
+
+      it 'matches noteable merge request json schema' do
+        expect(json_entity).to match_schema('entities/merge_request_noteable')
+      end
     end
   end
 

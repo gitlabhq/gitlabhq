@@ -1,6 +1,6 @@
+import _ from 'underscore';
 import InputValidator from '~/validators/input_validator';
 
-import _ from 'underscore';
 import fetchGroupPathAvailability from './fetch_group_path_availability';
 import flash from '~/flash';
 import { __ } from '~/locale';

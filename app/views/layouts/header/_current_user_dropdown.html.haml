@@ -20,7 +20,7 @@
       = link_to s_("CurrentUser|Profile"), current_user, class: 'profile-link', data: { user: current_user.username }
   - if current_user_menu?(:start_trial)
     %li
-      %a.profile-link{ href: trials_link_url }
+      %a.trial-link{ href: trials_link_url }
         = s_("CurrentUser|Start a Gold trial")
         = emoji_icon('rocket')
   - if current_user_menu?(:settings)

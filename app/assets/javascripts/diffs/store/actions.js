@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import axios from '~/lib/utils/axios_utils';
 import Cookies from 'js-cookie';
+import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';
 import { s__ } from '~/locale';
 import { handleLocationHash, historyPushState, scrollToElement } from '~/lib/utils/common_utils';
@@ -13,6 +13,7 @@ import {
   convertExpandLines,
   idleCallback,
   allDiscussionWrappersExpanded,
+  prepareDiffData,
 } from './utils';
 import * as types from './mutation_types';
 import {
@@ -33,15 +34,82 @@ import {
   START_RENDERING_INDEX,
   INLINE_DIFF_LINES_KEY,
   PARALLEL_DIFF_LINES_KEY,
+  DIFFS_PER_PAGE,
 } from '../constants';
 import { diffViewerModes } from '~/ide/constants';
 
 export const setBaseConfig = ({ commit }, options) => {
-  const { endpoint, projectPath, dismissEndpoint, showSuggestPopover } = options;
-  commit(types.SET_BASE_CONFIG, { endpoint, projectPath, dismissEndpoint, showSuggestPopover });
+  const {
+    endpoint,
+    endpointMetadata,
+    endpointBatch,
+    projectPath,
+    dismissEndpoint,
+    showSuggestPopover,
+    useSingleDiffStyle,
+  } = options;
+  commit(types.SET_BASE_CONFIG, {
+    endpoint,
+    endpointMetadata,
+    endpointBatch,
+    projectPath,
+    dismissEndpoint,
+    showSuggestPopover,
+    useSingleDiffStyle,
+  });
 };
 
 export const fetchDiffFiles = ({ state, commit }) => {
+  const worker = new TreeWorker();
+  const urlParams = {
+    w: state.showWhitespace ? '0' : '1',
+  };
+
+  commit(types.SET_LOADING, true);
+
+  worker.addEventListener('message', ({ data }) => {
+    commit(types.SET_TREE_DATA, data);
+
+    worker.terminate();
+  });
+
+  return axios
+    .get(mergeUrlParams(urlParams, state.endpoint))
+    .then(res => {
+      commit(types.SET_LOADING, false);
+
+      commit(types.SET_MERGE_REQUEST_DIFFS, res.data.merge_request_diffs || []);
+      commit(types.SET_DIFF_DATA, res.data);
+
+      worker.postMessage(state.diffFiles);
+
+      return Vue.nextTick();
+    })
+    .then(handleLocationHash)
+    .catch(() => worker.terminate());
+};
+
+export const fetchDiffFilesBatch = ({ commit, state }) => {
+  commit(types.SET_BATCH_LOADING, true);
+
+  const getBatch = page =>
+    axios
+      .get(state.endpointBatch, {
+        params: { page, per_page: DIFFS_PER_PAGE, w: state.showWhitespace ? '0' : '1' },
+      })
+      .then(({ data: { pagination, diff_files } }) => {
+        commit(types.SET_DIFF_DATA_BATCH, { diff_files });
+        commit(types.SET_BATCH_LOADING, false);
+        return pagination.next_page;
+      })
+      .then(nextPage => nextPage && getBatch(nextPage));
+
+  return getBatch()
+    .then(handleLocationHash)
+    .catch(() => null);
+};
+
+export const fetchDiffFilesMeta = ({ commit, state }) => {
   const worker = new TreeWorker();
 
   commit(types.SET_LOADING, true);
@@ -53,17 +121,17 @@ export const fetchDiffFiles = ({ state, commit }) => {
   });
 
   return axios
-    .get(mergeUrlParams({ w: state.showWhitespace ? '0' : '1' }, state.endpoint))
-    .then(res => {
+    .get(state.endpointMetadata)
+    .then(({ data }) => {
+      const strippedData = { ...data };
+      delete strippedData.diff_files;
       commit(types.SET_LOADING, false);
-      commit(types.SET_MERGE_REQUEST_DIFFS, res.data.merge_request_diffs || []);
-      commit(types.SET_DIFF_DATA, res.data);
+      commit(types.SET_MERGE_REQUEST_DIFFS, data.merge_request_diffs || []);
+      commit(types.SET_DIFF_DATA, strippedData);
 
-      worker.postMessage(state.diffFiles);
-
-      return Vue.nextTick();
+      prepareDiffData(data);
+      worker.postMessage(data.diff_files);
     })
-    .then(handleLocationHash)
     .catch(() => worker.terminate());
 };
 

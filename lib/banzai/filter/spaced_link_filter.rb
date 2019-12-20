@@ -77,7 +77,7 @@ module Banzai
 
       def spaced_link_filter(text)
         Gitlab::StringRegexMarker.new(CGI.unescapeHTML(text), text.html_safe).mark(LINK_OR_IMAGE_PATTERN) do |link, left:, right:|
-          spaced_link_match(link)
+          spaced_link_match(link).html_safe
         end
       end
 

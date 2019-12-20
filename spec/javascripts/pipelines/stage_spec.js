@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import axios from '~/lib/utils/axios_utils';
 import stage from '~/pipelines/components/stage.vue';
 import eventHub from '~/pipelines/event_hub';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { stageReply } from './mock_data';
 
 describe('Pipelines stage component', () => {

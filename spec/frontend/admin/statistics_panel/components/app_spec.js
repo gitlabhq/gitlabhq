@@ -1,12 +1,12 @@
 import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
+import { GlLoadingIcon } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import StatisticsPanelApp from '~/admin/statistics_panel/components/app.vue';
 import statisticsLabels from '~/admin/statistics_panel/constants';
 import createStore from '~/admin/statistics_panel/store';
-import { GlLoadingIcon } from '@gitlab/ui';
 import mockStatistics from '../mock_data';
 
 const localVue = createLocalVue();

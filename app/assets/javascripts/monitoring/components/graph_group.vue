@@ -15,34 +15,44 @@ export default {
       required: false,
       default: true,
     },
+    /**
+     * Initial value of collapse on mount.
+     */
     collapseGroup: {
       type: Boolean,
-      required: true,
+      required: false,
+      default: false,
     },
   },
   data() {
     return {
-      showGroup: true,
+      isCollapsed: this.collapseGroup,
     };
   },
   computed: {
     caretIcon() {
-      return this.collapseGroup && this.showGroup ? 'angle-down' : 'angle-right';
+      return this.isCollapsed ? 'angle-right' : 'angle-down';
     },
   },
-  created() {
-    this.showGroup = this.collapseGroup;
+  watch: {
+    collapseGroup(val) {
+      // Respond to changes in collapseGroup but do not
+      // collapse it once was opened by the user.
+      if (this.showPanels && !val) {
+        this.isCollapsed = false;
+      }
+    },
   },
   methods: {
     collapse() {
-      this.showGroup = !this.showGroup;
+      this.isCollapsed = !this.isCollapsed;
     },
   },
 };
 </script>
 
 <template>
-  <div v-if="showPanels" class="card prometheus-panel">
+  <div v-if="showPanels" ref="graph-group" class="card prometheus-panel">
     <div class="card-header d-flex align-items-center">
       <h4 class="flex-grow-1">{{ name }}</h4>
       <a role="button" class="js-graph-group-toggle" @click="collapse">
@@ -50,12 +60,12 @@ export default {
       </a>
     </div>
     <div
-      v-if="collapseGroup"
-      v-show="collapseGroup && showGroup"
+      v-show="!isCollapsed"
+      ref="graph-group-content"
       class="card-body prometheus-graph-group p-0"
     >
       <slot></slot>
     </div>
   </div>
-  <div v-else class="prometheus-graph-group"><slot></slot></div>
+  <div v-else ref="graph-group-content" class="prometheus-graph-group"><slot></slot></div>
 </template>

@@ -1,7 +1,6 @@
 <script>
 import { mapState } from 'vuex';
 import _ from 'underscore';
-import { __ } from '~/locale';
 import {
   GlDropdown,
   GlDropdownItem,
@@ -9,6 +8,7 @@ import {
   GlModalDirective,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import { __ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import MonitorTimeSeriesChart from './charts/time_series.vue';
 import MonitorAnomalyChart from './charts/anomaly.vue';
@@ -36,7 +36,8 @@ export default {
   props: {
     clipboardText: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     graphData: {
       type: Object,
@@ -47,6 +48,11 @@ export default {
       required: false,
       default: '',
     },
+    groupId: {
+      type: String,
+      required: false,
+      default: 'panel-type-chart',
+    },
   },
   computed: {
     ...mapState('monitoringDashboard', ['deploymentData', 'projectPath']),
@@ -54,10 +60,14 @@ export default {
       return IS_EE && this.prometheusAlertsAvailable && this.alertsEndpoint && this.graphData;
     },
     graphDataHasMetrics() {
-      return this.graphData.queries[0].result.length > 0;
+      return (
+        this.graphData.metrics &&
+        this.graphData.metrics[0].result &&
+        this.graphData.metrics[0].result.length > 0
+      );
     },
     csvText() {
-      const chartData = this.graphData.queries[0].result[0].values;
+      const chartData = this.graphData.metrics[0].result[0].values;
       const yLabel = this.graphData.y_label;
       const header = `timestamp,${yLabel}\r\n`; // eslint-disable-line @gitlab/i18n/no-non-i18n-strings
       return chartData.reduce((csv, data) => {
@@ -112,21 +122,21 @@ export default {
     :graph-data="graphData"
     :deployment-data="deploymentData"
     :project-path="projectPath"
-    :thresholds="getGraphAlertValues(graphData.queries)"
-    group-id="panel-type-chart"
+    :thresholds="getGraphAlertValues(graphData.metrics)"
+    :group-id="groupId"
   >
     <div class="d-flex align-items-center">
       <alert-widget
         v-if="alertWidgetAvailable && graphData"
         :modal-id="`alert-modal-${index}`"
         :alerts-endpoint="alertsEndpoint"
-        :relevant-queries="graphData.queries"
-        :alerts-to-manage="getGraphAlerts(graphData.queries)"
+        :relevant-queries="graphData.metrics"
+        :alerts-to-manage="getGraphAlerts(graphData.metrics)"
         @setAlerts="setAlerts"
       />
       <gl-dropdown
         v-gl-tooltip
-        class="mx-2"
+        class="ml-auto mx-3"
         toggle-class="btn btn-transparent border-0"
         :right="true"
         :no-caret="true"
@@ -143,6 +153,7 @@ export default {
           {{ __('Download CSV') }}
         </gl-dropdown-item>
         <gl-dropdown-item
+          v-if="clipboardText"
           v-track-event="generateLinkToChartOptions(clipboardText)"
           class="js-chart-link"
           :data-clipboard-text="clipboardText"

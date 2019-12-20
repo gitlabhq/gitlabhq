@@ -58,7 +58,7 @@ class ProjectWiki
   end
 
   def wiki_base_path
-    [Gitlab.config.gitlab.relative_url_root, '/', @project.full_path, '/wikis'].join('')
+    [Gitlab.config.gitlab.relative_url_root, '/', @project.full_path, '/-', '/wikis'].join('')
   end
 
   # Returns the Gitlab::Git::Wiki object.

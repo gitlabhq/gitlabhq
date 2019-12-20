@@ -1,9 +1,9 @@
 <script>
-import { __ } from '~/locale';
 import _ from 'underscore';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { GlAreaChart } from '@gitlab/ui/dist/charts';
+import { __ } from '~/locale';
 import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
 import { getDatesInRange } from '~/lib/utils/datetime_utility';
 import { xAxisLabelFormatter, dateFormatter } from '../utils';

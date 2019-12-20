@@ -20,6 +20,8 @@ describe Gitlab::FogbugzImport::Client do
   end
 
   def stub_api(users)
-    allow_any_instance_of(::Fogbugz::Interface).to receive(:command).with(:listPeople).and_return(users)
+    allow_next_instance_of(::Fogbugz::Interface) do |instance|
+      allow(instance).to receive(:command).with(:listPeople).and_return(users)
+    end
   end
 end

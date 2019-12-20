@@ -290,6 +290,26 @@ describe Clusters::Platforms::Kubernetes do
         it { is_expected.to include(key: 'KUBE_TOKEN', value: platform.token, public: false, masked: true) }
         it { is_expected.to include(key: 'KUBE_NAMESPACE', value: namespace) }
         it { is_expected.to include(key: 'KUBECONFIG', value: kubeconfig, public: false, file: true) }
+
+        context 'custom namespace is provided' do
+          let(:custom_namespace) { 'custom-namespace' }
+
+          subject do
+            platform.predefined_variables(
+              project: project,
+              environment_name: environment_name,
+              kubernetes_namespace: custom_namespace
+            )
+          end
+
+          before do
+            allow(platform).to receive(:kubeconfig).with(custom_namespace).and_return(kubeconfig)
+          end
+
+          it { is_expected.to include(key: 'KUBE_TOKEN', value: platform.token, public: false, masked: true) }
+          it { is_expected.to include(key: 'KUBE_NAMESPACE', value: custom_namespace) }
+          it { is_expected.to include(key: 'KUBECONFIG', value: kubeconfig, public: false, file: true) }
+        end
       end
     end
 

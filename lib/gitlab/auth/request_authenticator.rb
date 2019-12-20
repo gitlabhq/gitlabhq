@@ -5,7 +5,7 @@
 module Gitlab
   module Auth
     class RequestAuthenticator
-      include UserAuthFinders
+      include AuthFinders
 
       attr_reader :request
 
@@ -23,10 +23,17 @@ module Gitlab
         find_user_from_warden
       end
 
+      def runner
+        find_runner_from_token
+      rescue Gitlab::Auth::AuthenticationError
+        nil
+      end
+
       def find_sessionless_user(request_format)
         find_user_from_web_access_token(request_format) ||
           find_user_from_feed_token(request_format) ||
-          find_user_from_static_object_token(request_format)
+          find_user_from_static_object_token(request_format) ||
+          find_user_from_basic_auth_job
       rescue Gitlab::Auth::AuthenticationError
         nil
       end

@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 class ProjectCiCdSetting < ApplicationRecord
-  # TODO: remove once GitLab 12.7 is released
+  include IgnorableColumns
   # https://gitlab.com/gitlab-org/gitlab/issues/36651
-  self.ignored_columns += %i[merge_trains_enabled]
+  ignore_column :merge_trains_enabled, remove_with: '12.7', remove_after: '2019-12-22'
+
   belongs_to :project, inverse_of: :ci_cd_settings
 
   # The version of the schema that first introduced this model/table.

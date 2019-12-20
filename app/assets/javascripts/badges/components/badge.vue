@@ -1,6 +1,6 @@
 <script>
-import Icon from '~/vue_shared/components/icon.vue';
 import { GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
+import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
   // name: 'Badge' is a false positive: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/25
@@ -14,6 +14,11 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   props: {
+    name: {
+      type: String,
+      required: false,
+      default: '',
+    },
     imageUrl: {
       type: String,
       required: true,

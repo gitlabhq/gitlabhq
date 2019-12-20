@@ -98,13 +98,11 @@ module IssuableActions
 
     error_message = "Destroy confirmation not provided for #{issuable.human_class_name}"
     exception = RuntimeError.new(error_message)
-    Gitlab::Sentry.track_acceptable_exception(
+    Gitlab::ErrorTracking.track_exception(
       exception,
-      extra: {
-        project_path: issuable.project.full_path,
-        issuable_type: issuable.class.name,
-        issuable_id: issuable.id
-      }
+      project_path: issuable.project.full_path,
+      issuable_type: issuable.class.name,
+      issuable_id: issuable.id
     )
 
     index_path = polymorphic_path([parent, issuable.class])
@@ -121,7 +119,7 @@ module IssuableActions
   end
 
   def bulk_update
-    result = Issuable::BulkUpdateService.new(current_user, bulk_update_params).execute(resource_name)
+    result = Issuable::BulkUpdateService.new(parent, current_user, bulk_update_params).execute(resource_name)
     quantity = result[:count]
 
     render json: { notice: "#{quantity} #{resource_name.pluralize(quantity)} updated" }

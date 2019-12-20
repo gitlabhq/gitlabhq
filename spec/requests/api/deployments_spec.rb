@@ -30,40 +30,47 @@ describe API::Deployments do
         expect(json_response.last['iid']).to eq(deployment_3.iid)
       end
 
-      describe 'ordering' do
-        using RSpec::Parameterized::TableSyntax
+      context 'with updated_at filters specified' do
+        it 'returns projects deployments with last update in specified datetime range' do
+          get api("/projects/#{project.id}/deployments", user), params: { updated_before: 30.minutes.ago, updated_after: 90.minutes.ago }
 
-        let(:order_by) { nil }
-        let(:sort) { nil }
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response.first['id']).to eq(deployment_3.id)
+        end
+      end
+
+      describe 'ordering' do
+        let(:order_by) { 'iid' }
+        let(:sort) { 'desc' }
 
         subject { get api("/projects/#{project.id}/deployments?order_by=#{order_by}&sort=#{sort}", user) }
-
-        def expect_deployments(ordered_deployments)
-          json_response.each_with_index do |deployment_json, index|
-            expect(deployment_json['id']).to eq(public_send(ordered_deployments[index]).id)
-          end
-        end
 
         before do
           subject
         end
 
-        where(:order_by, :sort, :ordered_deployments) do
-          'created_at' | 'asc'  | [:deployment_3, :deployment_2, :deployment_1]
-          'created_at' | 'desc' | [:deployment_1, :deployment_2, :deployment_3]
-          'id'         | 'asc'  | [:deployment_1, :deployment_2, :deployment_3]
-          'id'         | 'desc' | [:deployment_3, :deployment_2, :deployment_1]
-          'iid'        | 'asc'  | [:deployment_3, :deployment_1, :deployment_2]
-          'iid'        | 'desc' | [:deployment_2, :deployment_1, :deployment_3]
-          'ref'        | 'asc'  | [:deployment_2, :deployment_1, :deployment_3]
-          'ref'        | 'desc' | [:deployment_3, :deployment_1, :deployment_2]
-          'updated_at' | 'asc'  | [:deployment_2, :deployment_3, :deployment_1]
-          'updated_at' | 'desc' | [:deployment_1, :deployment_3, :deployment_2]
+        def expect_deployments(ordered_deployments)
+          expect(json_response.map { |d| d['id'] }).to eq(ordered_deployments.map(&:id))
         end
 
-        with_them do
-          it 'returns the deployments ordered' do
-            expect_deployments(ordered_deployments)
+        it 'returns ordered deployments' do
+          expect(json_response.map { |i| i['id'] }).to eq([deployment_2.id, deployment_1.id, deployment_3.id])
+        end
+
+        context 'with invalid order_by' do
+          let(:order_by) { 'wrong_sorting_value' }
+
+          it 'returns error' do
+            expect(response).to have_gitlab_http_status(400)
+          end
+        end
+
+        context 'with invalid sorting' do
+          let(:sort) { 'wrong_sorting_direction' }
+
+          it 'returns error' do
+            expect(response).to have_gitlab_http_status(400)
           end
         end
       end
@@ -140,7 +147,7 @@ describe API::Deployments do
         expect(response).to have_gitlab_http_status(500)
       end
 
-      it 'links any merged merge requests to the deployment' do
+      it 'links any merged merge requests to the deployment', :sidekiq_inline do
         mr = create(
           :merge_request,
           :merged,
@@ -192,7 +199,7 @@ describe API::Deployments do
         expect(json_response['ref']).to eq('master')
       end
 
-      it 'links any merged merge requests to the deployment' do
+      it 'links any merged merge requests to the deployment', :sidekiq_inline do
         mr = create(
           :merge_request,
           :merged,
@@ -332,6 +339,42 @@ describe API::Deployments do
         )
 
         expect(response).to have_gitlab_http_status(404)
+      end
+    end
+  end
+
+  context 'prevent N + 1 queries' do
+    context 'when the endpoint returns multiple records' do
+      let(:project) { create(:project) }
+
+      def create_record
+        create(:deployment, :success, project: project)
+      end
+
+      def request_with_query_count
+        ActiveRecord::QueryRecorder.new { trigger_request }.count
+      end
+
+      def trigger_request
+        get api("/projects/#{project.id}/deployments?order_by=updated_at&sort=asc", user)
+      end
+
+      before do
+        create_record
+      end
+
+      it 'succeeds' do
+        trigger_request
+
+        expect(response).to have_gitlab_http_status(200)
+
+        expect(json_response.size).to eq(1)
+      end
+
+      it 'does not increase the query count' do
+        expect { create_record }.not_to change { request_with_query_count }
+
+        expect(json_response.size).to eq(2)
       end
     end
   end

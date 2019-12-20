@@ -33,7 +33,11 @@ module API
         get ":id/badges" do
           source = find_source(source_type, params[:id])
 
-          present_badges(source, paginate(source.badges))
+          badges = source.badges
+          name = params[:name]
+          badges = badges.with_name(name) if name
+
+          present_badges(source, paginate(badges))
         end
 
         desc "Preview a badge from a #{source_type}." do
@@ -80,6 +84,7 @@ module API
         params do
           requires :link_url, type: String, desc: 'URL of the badge link'
           requires :image_url, type: String, desc: 'URL of the badge image'
+          optional :name, type: String, desc: 'Name for the badge'
         end
         post ":id/badges" do
           source = find_source_if_admin(source_type)
@@ -100,6 +105,7 @@ module API
         params do
           optional :link_url, type: String, desc: 'URL of the badge link'
           optional :image_url, type: String, desc: 'URL of the badge image'
+          optional :name, type: String, desc: 'Name for the badge'
         end
         put ":id/badges/:badge_id" do
           source = find_source_if_admin(source_type)

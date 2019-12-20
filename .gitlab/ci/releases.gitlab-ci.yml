@@ -1,22 +1,36 @@
 ---
 
-# Syncs any changes pushed to a stable branch to the corresponding CE stable
-# branch. We run this prior to any tests so that random failures don't prevent a
-# sync.
-sync-stable-branch:
+# Syncs any changes pushed to a stable branch to the corresponding
+# gitlab-foss/CE stable branch. We run this prior to any tests so that random
+# failures don't prevent a sync.
+.merge-train-sync:
   # We don't need/want any global before/after commands, so we overwrite these
   # settings.
   image: alpine:edge
   stage: sync
-  # This job should only run on EE stable branches on the canonical GitLab.com
-  # repository.
-  only:
-    variables:
-      - $CI_SERVER_HOST == "gitlab.com"
-    refs:
-      - /^[\d-]+-stable-ee$/@gitlab-org/gitlab
   before_script:
     - apk add --no-cache --update curl bash
   after_script: []
   script:
     - bash scripts/sync-stable-branch.sh
+  only:
+    variables:
+      - $CI_SERVER_HOST == "gitlab.com"
+
+sync-stable-branch:
+  extends: .merge-train-sync
+  variables:
+    SOURCE_PROJECT: gitlab-org/gitlab
+    TARGET_PROJECT: gitlab-org/gitlab-foss
+  only:
+    refs:
+      - /^[\d-]+-stable-ee$/@gitlab-org/gitlab
+
+sync-security-branch:
+  extends: .merge-train-sync
+  variables:
+    SOURCE_PROJECT: gitlab-org/security/gitlab
+    TARGET_PROJECT: gitlab-org/security/gitlab-foss
+  only:
+    refs:
+      - /^[\d-]+-stable-ee$/@gitlab-org/security/gitlab

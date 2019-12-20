@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import toggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import toggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
 import { note } from '../mock_data';
 
 const deepCloneObject = obj => JSON.parse(JSON.stringify(obj));

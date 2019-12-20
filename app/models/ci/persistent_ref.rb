@@ -14,31 +14,41 @@ module Ci
     delegate :ref_exists?, :create_ref, :delete_refs, to: :repository
 
     def exist?
+      return unless enabled?
+
       ref_exists?(path)
     rescue
       false
     end
 
     def create
-      return if exist?
+      return unless enabled?
 
       create_ref(sha, path)
     rescue => e
-      Gitlab::Sentry
-        .track_acceptable_exception(e, extra: { pipeline_id: pipeline.id })
+      Gitlab::ErrorTracking
+        .track_exception(e, pipeline_id: pipeline.id)
     end
 
     def delete
+      return unless enabled?
+
       delete_refs(path)
     rescue Gitlab::Git::Repository::NoRepository
       # no-op
     rescue => e
-      Gitlab::Sentry
-        .track_acceptable_exception(e, extra: { pipeline_id: pipeline.id })
+      Gitlab::ErrorTracking
+        .track_exception(e, pipeline_id: pipeline.id)
     end
 
     def path
       "refs/#{Repository::REF_PIPELINES}/#{pipeline.id}"
+    end
+
+    private
+
+    def enabled?
+      Feature.enabled?(:depend_on_persistent_pipeline_ref, project, default_enabled: true)
     end
   end
 end

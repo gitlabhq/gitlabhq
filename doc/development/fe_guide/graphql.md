@@ -39,6 +39,38 @@ To distinguish queries from mutations and fragments, the following naming conven
 - `addUser.mutation.graphql` for mutations;
 - `basicUser.fragment.graphql` for fragments.
 
+### Fragments
+
+Fragments are a way to make your complex GraphQL queries more readable and re-usable. Here is an example of GraphQL fragment:
+
+```javascript
+fragment DesignListItem on Design {
+  id
+  image
+  event
+  filename
+  notesCount
+}
+```
+
+Fragments can be stored in separate files, imported and used in queries, mutations or other fragments.
+
+```javascript
+#import "./designList.fragment.graphql"
+#import "./diffRefs.fragment.graphql"
+
+fragment DesignItem on Design {
+  ...DesignListItem
+  fullPath
+  diffRefs {
+    ...DesignDiffRefs
+  }
+}
+```
+
+More about fragments:
+[GraphQL Docs](https://graphql.org/learn/queries/#fragments)
+
 ## Usage in Vue
 
 To use Vue Apollo, import the [Vue Apollo][vue-apollo] plugin as well
@@ -100,6 +132,8 @@ Read more about local state management with Apollo in the [Vue Apollo documentat
 
 ### Testing
 
+#### Mocking response as component data
+
 With [Vue test utils][vue-test-utils] it is easy to quickly test components that
 fetch GraphQL queries. The simplest way is to use `shallowMount` and then set
 the data on the component
@@ -114,7 +148,100 @@ it('tests apollo component', () => {
 });
 ```
 
-Another possible way is testing queries with mocked GraphQL schema. Read more about this way in [Vue Apollo testing documentation](https://vue-apollo.netlify.com/guide/testing.html#tests-with-mocked-graqhql-schema)
+#### Testing loading state
+
+If we need to test how our component renders when results from the GraphQL API are still loading, we can mock a loading state into respective Apollo queries/mutations:
+
+```javascript
+  function createComponent({
+    loading = false,
+  } = {}) {
+    const $apollo = {
+      queries: {
+        designs: {
+          loading,
+        },
+    };
+
+    wrapper = shallowMount(Index, {
+      sync: false,
+      mocks: { $apollo }
+    });
+  }
+
+  it('renders loading icon', () => {
+  createComponent({ loading: true });
+
+  expect(wrapper.element).toMatchSnapshot();
+})
+```
+
+#### Testing Apollo components
+
+If we use `ApolloQuery` or `ApolloMutation` in our components, in order to test their functionality we need to add a stub first:
+
+```javascript
+import { ApolloMutation } from 'vue-apollo';
+
+function createComponent(props = {}) {
+  wrapper = shallowMount(MyComponent, {
+    sync: false,
+    propsData: {
+      ...props,
+    },
+    stubs: {
+      ApolloMutation,
+    },
+  });
+}
+```
+
+`ApolloMutation` component exposes `mutate` method via scoped slot. If we want to test this method, we need to add it to mocks:
+
+```javascript
+const mutate = jest.fn(() => Promise.resolve());
+const $apollo = {
+  mutate,
+};
+
+function createComponent(props = {}) {
+  wrapper = shallowMount(MyComponent, {
+    sync: false,
+    propsData: {
+      ...props,
+    },
+    stubs: {
+      ApolloMutation,
+    },
+    mocks: {
+      $apollo:
+    }
+  });
+}
+```
+
+Then we can check if `mutate` is called with correct variables:
+
+```javascript
+const mutationVariables = {
+  mutation: createNoteMutation,
+  update: expect.anything(),
+  variables: {
+    input: {
+      noteableId: 'noteable-id',
+      body: 'test',
+      discussionId: '0',
+    },
+  },
+};
+
+it('calls mutation on submitting form ', () => {
+  createComponent()
+  findReplyForm().vm.$emit('submitForm');
+
+  expect(mutate).toHaveBeenCalledWith(mutationVariables);
+});
+```
 
 ## Usage outside of Vue
 

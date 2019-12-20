@@ -4,8 +4,7 @@ module QA
   context 'Create', :smoke do
     describe 'Snippet creation' do
       it 'User creates a snippet' do
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.perform(&:sign_in_using_credentials)
+        Flow::Login.sign_in
 
         Page::Main::Menu.perform(&:go_to_snippets)
 

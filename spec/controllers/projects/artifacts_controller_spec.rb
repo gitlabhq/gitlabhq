@@ -97,7 +97,7 @@ describe Projects::ArtifactsController do
     it 'sets the notice' do
       subject
 
-      expect(flash[:notice]).to eq('Artifact was successfully deleted.')
+      expect(flash[:notice]).to eq(_('Artifact was successfully deleted.'))
     end
 
     context 'when artifact deletion fails' do
@@ -114,7 +114,7 @@ describe Projects::ArtifactsController do
       it 'sets the notice' do
         subject
 
-        expect(flash[:notice]).to eq('Artifact could not be deleted.')
+        expect(flash[:notice]).to eq(_('Artifact could not be deleted.'))
       end
     end
 

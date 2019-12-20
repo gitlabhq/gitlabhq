@@ -1,0 +1,5 @@
+---
+title: Suppress progress on pulling image on Code Quality of Auto DevOps
+merge_request: 20604
+author: Takuya Noguchi
+type: other

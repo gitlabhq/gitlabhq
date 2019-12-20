@@ -91,7 +91,7 @@ Please refer to a list of [available slash commands](../../integration/slash_com
 
 ## Zoom in issues
 
-In order to communicate synchronously for incidents management, GitLab allows to
+In order to communicate synchronously for incidents management, GitLab allows you to
 associate a Zoom meeting with an issue. Once you start a Zoom call for a fire-fight,
 you need a way to associate the conference call with an issue, so that your team
 members can join swiftly without requesting a link.

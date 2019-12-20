@@ -32,7 +32,7 @@ your users to quickly scan the differences between each one you publish.
 
 NOTE: **Note:**
 [Git's tagging messages](https://git-scm.com/book/en/v2/Git-Basics-Tagging) and
-Release descriptions are unrelated. Description supports [markdown](../../markdown.md).
+Release descriptions are unrelated. Description supports [Markdown](../../markdown.md).
 
 ### Release assets
 
@@ -92,17 +92,17 @@ project.
 
 ## Editing a release
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/26016) in GitLab 12.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/26016) in GitLab 12.6.
 
 To edit the details of a release, navigate to **Project overview > Releases** and click
 the edit button (pencil icon) in the top-right corner of the release you want to modify.
 
-![A release with an edit button](img/release_edit_button_v12_5.png)
+![A release with an edit button](img/release_edit_button_v12_6.png)
 
 This will bring you to the **Edit Release** page, from which you can
 change some of the release's details.
 
-![Edit release page](img/edit_release_page_v12_5.png)
+![Edit release page](img/edit_release_page_v12_6.png)
 
 Currently, it is only possible to edit the release title and notes.
 To change other release information, such as its tag, associated
@@ -126,7 +126,7 @@ following modal window will be then displayed, from which you can select **New r
 ## Add release notes to Git tags
 
 You can add release notes to any Git tag using the notes feature. Release notes
-behave like any other markdown form in GitLab so you can write text and
+behave like any other Markdown form in GitLab so you can write text and
 drag and drop files to it. Release notes are stored in GitLab's database.
 
 There are several ways to add release notes:

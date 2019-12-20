@@ -1,7 +1,7 @@
 <script>
 import { GlModal } from '@gitlab/ui';
-import { sprintf, s__ } from '~/locale';
 import trackUninstallButtonClickMixin from 'ee_else_ce/clusters/mixins/track_uninstall_button_click';
+import { sprintf, s__ } from '~/locale';
 import {
   HELM,
   INGRESS,

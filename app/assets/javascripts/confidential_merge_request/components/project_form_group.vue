@@ -1,6 +1,6 @@
 <script>
-import { GlLink } from '@gitlab/ui';
-import { __, sprintf } from '../../locale';
+import { GlLink, GlSprintf } from '@gitlab/ui';
+import { __ } from '../../locale';
 import createFlash from '../../flash';
 import Api from '../../api';
 import state from '../state';
@@ -9,6 +9,7 @@ import Dropdown from './dropdown.vue';
 export default {
   components: {
     GlLink,
+    GlSprintf,
     Dropdown,
   },
   props: {
@@ -37,15 +38,6 @@ export default {
   computed: {
     selectedProject() {
       return state.selectedProject;
-    },
-    noForkText() {
-      return sprintf(
-        __(
-          "To protect this issue's confidentiality, %{link_start}fork the project%{link_end} and set the forks visibility to private.",
-        ),
-        { link_start: `<a href="${this.newForkPath}" class="help-link">`, link_end: '</a>' },
-        false,
-      );
     },
   },
   mounted() {
@@ -123,8 +115,20 @@ export default {
           }}
         </template>
         <template v-else>
-          {{ __('No forks available to you.') }}<br />
-          <span v-html="noForkText"></span>
+          {{ __('No forks are available to you.') }}<br />
+          <gl-sprintf
+            :message="
+              __(
+                `To protect this issue's confidentiality, %{forkLink} and set the fork's visibility to private.`,
+              )
+            "
+          >
+            <template #forkLink>
+              <a :href="newForkPath" target="_blank" class="help-link">{{
+                __('fork this project')
+              }}</a>
+            </template>
+          </gl-sprintf>
         </template>
         <gl-link
           :href="helpPagePath"

@@ -182,6 +182,8 @@
               %strong.fly-out-top-item-name
                 = _('Deploy Keys')
 
+      = render_if_exists 'layouts/nav/sidebar/credentials_link'
+
       = nav_link(controller: :services) do
         = link_to admin_application_settings_services_path do
           .nav-icon-container
@@ -264,8 +266,8 @@
               = link_to network_admin_application_settings_path, title: _('Network'), data: { qa_selector: 'admin_settings_network_item' } do
                 %span
                   = _('Network')
-            - if template_exists?('admin/application_settings/geo')
-              = nav_link(path: 'application_settings#geo') do
+            - if template_exists?('admin/geo/settings/show')
+              = nav_link do
                 = link_to geo_admin_application_settings_path, title: _('Geo') do
                   %span
                     = _('Geo')

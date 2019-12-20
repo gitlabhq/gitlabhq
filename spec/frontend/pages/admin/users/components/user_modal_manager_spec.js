@@ -83,10 +83,6 @@ describe('Users admin page Modal Manager', () => {
       jest.spyOn(document, 'removeEventListener');
     });
 
-    afterEach(() => {
-      jest.clearAllMocks();
-    });
-
     afterAll(() => {
       jest.restoreAllMocks();
     });

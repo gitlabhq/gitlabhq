@@ -8,9 +8,11 @@ module Gitlab
         # Entry that represents an environment.
         #
         class Environment < ::Gitlab::Config::Entry::Node
-          include ::Gitlab::Config::Entry::Validatable
+          include ::Gitlab::Config::Entry::Configurable
 
-          ALLOWED_KEYS = %i[name url action on_stop].freeze
+          ALLOWED_KEYS = %i[name url action on_stop auto_stop_in kubernetes].freeze
+
+          entry :kubernetes, Entry::Kubernetes, description: 'Kubernetes deployment configuration.'
 
           validations do
             validate do
@@ -46,6 +48,8 @@ module Gitlab
                         allow_nil: true
 
               validates :on_stop, type: String, allow_nil: true
+              validates :kubernetes, type: Hash, allow_nil: true
+              validates :auto_stop_in, duration: true, allow_nil: true
             end
           end
 
@@ -73,12 +77,24 @@ module Gitlab
             value[:on_stop]
           end
 
+          def kubernetes
+            value[:kubernetes]
+          end
+
+          def auto_stop_in
+            value[:auto_stop_in]
+          end
+
           def value
             case @config
             when String then { name: @config, action: 'start' }
             when Hash then @config
             else {}
             end
+          end
+
+          def skip_config_hash_validation?
+            true
           end
         end
       end

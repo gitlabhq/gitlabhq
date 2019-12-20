@@ -1,5 +1,4 @@
 <script>
-import { __ } from '~/locale';
 import { mapGetters, mapActions } from 'vuex';
 import { getLocationHash, doesHashExistInUrl } from '../../lib/utils/url_utility';
 import Flash from '../../flash';
@@ -14,6 +13,7 @@ import placeholderNote from '../../vue_shared/components/notes/placeholder_note.
 import placeholderSystemNote from '../../vue_shared/components/notes/placeholder_system_note.vue';
 import skeletonLoadingContainer from '../../vue_shared/components/notes/skeleton_note.vue';
 import highlightCurrentUser from '~/behaviors/markdown/highlight_current_user';
+import { __ } from '~/locale';
 import initUserPopovers from '../../user_popovers';
 
 export default {
@@ -71,6 +71,9 @@ export default {
       'userCanReply',
       'discussionTabCounter',
     ]),
+    discussionTabCounterText() {
+      return this.isLoading ? '' : this.discussionTabCounter;
+    },
     noteableType() {
       return this.noteableData.noteableType;
     },
@@ -95,9 +98,9 @@ export default {
         this.fetchNotes();
       }
     },
-    allDiscussions() {
-      if (this.discussionsCount && !this.isLoading) {
-        this.discussionsCount.textContent = this.discussionTabCounter;
+    discussionTabCounterText(val) {
+      if (this.discussionsCount) {
+        this.discussionsCount.textContent = val;
       }
     },
   },

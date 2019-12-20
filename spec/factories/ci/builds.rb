@@ -373,6 +373,14 @@ FactoryBot.define do
       end
     end
 
+    trait :license_management do
+      options do
+        {
+            artifacts: { reports: { license_management: 'gl-license-management-report.json' } }
+        }
+      end
+    end
+
     trait :non_playable do
       status { 'created' }
       self.when { 'manual' }

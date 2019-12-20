@@ -14,7 +14,7 @@ The Packages feature allows GitLab to act as a repository for the following:
 
 Don't you see your package management system supported yet?
 Please consider contributing
-to GitLab. This [development documentation](../../development/packages.md) will guide you through the process.
+to GitLab. This [development documentation](../../development/packages.md) will guide you through the process, it includes a list of [suggested contributions](../../development/packages.md#suggested-contributions).
 
 ## Enabling the Packages feature
 

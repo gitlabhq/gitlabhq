@@ -156,11 +156,34 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
 
   describe '#prometheus_available?' do
     context 'clusters with installed prometheus' do
-      let!(:cluster) { create(:cluster, projects: [project]) }
-      let!(:prometheus) { create(:clusters_applications_prometheus, :installed, cluster: cluster) }
+      before do
+        create(:clusters_applications_prometheus, :installed, cluster: cluster)
+      end
 
-      it 'returns true' do
-        expect(service.prometheus_available?).to be(true)
+      context 'cluster belongs to project' do
+        let(:cluster) { create(:cluster, projects: [project]) }
+
+        it 'returns true' do
+          expect(service.prometheus_available?).to be(true)
+        end
+      end
+
+      context 'cluster belongs to projects group' do
+        set(:group) { create(:group) }
+        let(:project) { create(:prometheus_project, group: group) }
+        let(:cluster) { create(:cluster_for_group, :with_installed_helm, groups: [group]) }
+
+        it 'returns true' do
+          expect(service.prometheus_available?).to be(true)
+        end
+      end
+
+      context 'cluster belongs to gitlab instance' do
+        let(:cluster) { create(:cluster, :instance) }
+
+        it 'returns true' do
+          expect(service.prometheus_available?).to be(true)
+        end
       end
     end
 
@@ -259,6 +282,30 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
         it 'keeps service active when manual_configuration is disabled' do
           expect { service.update!(manual_configuration: false) }.not_to change { service.active }.from(true)
         end
+      end
+    end
+  end
+
+  describe '#track_events after_commit callback' do
+    before do
+      allow(service).to receive(:prometheus_available?).and_return(true)
+    end
+
+    context "enabling manual_configuration" do
+      it "tracks enable event" do
+        service.update!(manual_configuration: false)
+
+        expect(Gitlab::Tracking).to receive(:event).with('cluster:services:prometheus', 'enabled_manual_prometheus')
+
+        service.update!(manual_configuration: true)
+      end
+
+      it "tracks disable event" do
+        service.update!(manual_configuration: true)
+
+        expect(Gitlab::Tracking).to receive(:event).with('cluster:services:prometheus', 'disabled_manual_prometheus')
+
+        service.update!(manual_configuration: false)
       end
     end
   end

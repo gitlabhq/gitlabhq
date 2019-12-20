@@ -22,22 +22,64 @@ describe MembersFinder, '#execute' do
     expect(result).to contain_exactly(member1, member2, member3)
   end
 
+  it 'includes only non-invite members if user do not have amdin permissions on project' do
+    create(:project_member, :invited, project: project, invite_email: create(:user).email)
+    member1 = project.add_maintainer(user1)
+    member2 = project.add_developer(user2)
+
+    result = described_class.new(project, user2).execute(include_relations: [:direct])
+
+    expect(result).to contain_exactly(member1, member2)
+  end
+
+  it 'includes invited members if user have admin permissions on project' do
+    member_invite = create(:project_member, :invited, project: project, invite_email: create(:user).email)
+    member1 = project.add_maintainer(user1)
+    member2 = project.add_maintainer(user2)
+
+    result = described_class.new(project, user2).execute(include_relations: [:direct])
+
+    expect(result).to contain_exactly(member1, member2, member_invite)
+  end
+
   it 'includes nested group members if asked', :nested_groups do
     nested_group.request_access(user1)
     member1 = group.add_maintainer(user2)
     member2 = nested_group.add_maintainer(user3)
     member3 = project.add_maintainer(user4)
 
-    result = described_class.new(project, user2).execute(include_descendants: true)
+    result = described_class.new(project, user2).execute(include_relations: [:direct, :descendants])
 
     expect(result).to contain_exactly(member1, member2, member3)
+  end
+
+  it 'returns only members of project if asked' do
+    nested_group.request_access(user1)
+    group.add_maintainer(user2)
+    nested_group.add_maintainer(user3)
+    member4 = project.add_maintainer(user4)
+
+    result = described_class.new(project, user2).execute(include_relations: [:direct])
+
+    expect(result).to contain_exactly(member4)
+  end
+
+  it 'returns only inherited members of project if asked' do
+    nested_group.request_access(user1)
+    member2 = group.add_maintainer(user2)
+    member3 = nested_group.add_maintainer(user3)
+    project.add_maintainer(user4)
+
+    result = described_class.new(project, user2).execute(include_relations: [:inherited])
+
+    expect(result).to contain_exactly(member2, member3)
   end
 
   it 'returns the members.access_level when the user is invited', :nested_groups do
     member_invite = create(:project_member, :invited, project: project, invite_email: create(:user).email)
     member1 = group.add_maintainer(user2)
 
-    result = described_class.new(project, user2).execute(include_descendants: true)
+    result = described_class.new(project, user2).execute(include_relations: [:direct, :descendants])
 
     expect(result).to contain_exactly(member1, member_invite)
     expect(result.last.access_level).to eq(member_invite.access_level)
@@ -48,14 +90,14 @@ describe MembersFinder, '#execute' do
     group.add_developer(user1)
     nested_group.add_reporter(user1)
 
-    result = described_class.new(project, user1).execute(include_descendants: true)
+    result = described_class.new(project, user1).execute(include_relations: [:direct, :descendants])
 
     expect(result).to contain_exactly(member1)
     expect(result.first.access_level).to eq(Gitlab::Access::DEVELOPER)
   end
 
   context 'when include_invited_groups_members == true' do
-    subject { described_class.new(project, user2).execute(include_invited_groups_members: true) }
+    subject { described_class.new(project, user2).execute(include_relations: [:inherited, :direct, :invited_groups_members]) }
 
     set(:linked_group) { create(:group, :public) }
     set(:nested_linked_group) { create(:group, parent: linked_group) }

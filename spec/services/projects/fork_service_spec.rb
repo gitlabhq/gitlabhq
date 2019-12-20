@@ -6,6 +6,16 @@ describe Projects::ForkService do
   include ProjectForksHelper
   include Gitlab::ShellAdapter
 
+  shared_examples 'forks count cache refresh' do
+    it 'flushes the forks count cache of the source project', :clean_gitlab_redis_cache do
+      expect(from_project.forks_count).to be_zero
+
+      fork_project(from_project, to_user)
+
+      expect(from_project.forks_count).to eq(1)
+    end
+  end
+
   context 'when forking a new project' do
     describe 'fork by user' do
       before do
@@ -40,6 +50,11 @@ describe Projects::ForkService do
           end
         end
 
+        it_behaves_like 'forks count cache refresh' do
+          let(:from_project) { @from_project }
+          let(:to_user) { @to_user }
+        end
+
         describe "successfully creates project in the user namespace" do
           let(:to_project) { fork_project(@from_project, @to_user, namespace: @to_user.namespace) }
 
@@ -62,12 +77,9 @@ describe Projects::ForkService do
             expect(@from_project.avatar.file).to be_exists
           end
 
-          it 'flushes the forks count cache of the source project' do
-            expect(@from_project.forks_count).to be_zero
-
-            fork_project(@from_project, @to_user)
-
-            expect(@from_project.forks_count).to eq(1)
+          it_behaves_like 'forks count cache refresh' do
+            let(:from_project) { @from_project }
+            let(:to_user) { @to_user }
           end
 
           it 'creates a fork network with the new project and the root project set' do
@@ -101,6 +113,11 @@ describe Projects::ForkService do
 
           it 'sets the forked_from_project on the membership' do
             expect(to_project.fork_network_member.forked_from_project).to eq(from_forked_project)
+          end
+
+          it_behaves_like 'forks count cache refresh' do
+            let(:from_project) { from_forked_project }
+            let(:to_user) { @to_user }
           end
         end
       end

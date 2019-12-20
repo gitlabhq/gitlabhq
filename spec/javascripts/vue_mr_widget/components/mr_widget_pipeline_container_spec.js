@@ -4,18 +4,19 @@ import MrWidgetPipeline from '~/vue_merge_request_widget/components/mr_widget_pi
 import ArtifactsApp from '~/vue_merge_request_widget/components/artifacts_list_app.vue';
 import { mockStore } from '../mock_data';
 
+const localVue = createLocalVue();
+
 describe('MrWidgetPipelineContainer', () => {
   let wrapper;
 
   const factory = (props = {}) => {
-    const localVue = createLocalVue();
-
     wrapper = mount(localVue.extend(MrWidgetPipelineContainer), {
       propsData: {
         mr: Object.assign({}, mockStore),
         ...props,
       },
       localVue,
+      sync: false,
     });
   };
 
@@ -33,6 +34,7 @@ describe('MrWidgetPipelineContainer', () => {
       expect(wrapper.find(MrWidgetPipeline).props()).toEqual(
         jasmine.objectContaining({
           pipeline: mockStore.pipeline,
+          pipelineCoverageDelta: mockStore.pipelineCoverageDelta,
           ciStatus: mockStore.ciStatus,
           hasCi: mockStore.hasCI,
           sourceBranch: mockStore.sourceBranch,
@@ -67,6 +69,7 @@ describe('MrWidgetPipelineContainer', () => {
       expect(wrapper.find(MrWidgetPipeline).props()).toEqual(
         jasmine.objectContaining({
           pipeline: mockStore.mergePipeline,
+          pipelineCoverageDelta: mockStore.pipelineCoverageDelta,
           ciStatus: mockStore.ciStatus,
           hasCi: mockStore.hasCI,
           sourceBranch: mockStore.targetBranch,

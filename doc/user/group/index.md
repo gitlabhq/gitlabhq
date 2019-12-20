@@ -431,6 +431,23 @@ To enable this feature:
 1. Expand the **Permissions, LFS, 2FA** section, and select **Disable email notifications**.
 1. Click **Save changes**.
 
+#### Disabling group mentions
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/21301) in GitLab 12.6.
+
+You can prevent users from being added to a conversation and getting notified when
+anyone mentions a group in which those users are members.
+
+Groups with disabled mentions are visualized accordingly in the autocompletion dropdown.
+
+This is particularly helpful for groups with a large number of users.
+
+To enable this feature:
+
+1. Navigate to the group's **Settings > General** page.
+1. Expand the **Permissions, LFS, 2FA** section, and select **Disable group mentions**.
+1. Click **Save changes**.
+
 ### Advanced settings
 
 - **Projects**: View all projects within that group, add members to each project,

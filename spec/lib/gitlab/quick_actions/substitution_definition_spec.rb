@@ -9,6 +9,7 @@ Hello! Let's do this!
 /sub_name I like this stuff
 EOF
   end
+
   subject do
     described_class.new(:sub_name, action_block: proc { |text| "#{text} foo" })
   end

@@ -3,12 +3,12 @@
 import $ from 'jquery';
 import _ from 'underscore';
 import MockAdapter from 'axios-mock-adapter';
-import axios from '~/lib/utils/axios_utils';
-import * as urlUtility from '~/lib/utils/url_utility';
 import '~/behaviors/markdown/render_gfm';
 import { createSpyObj } from 'helpers/jest_helpers';
 import { setTestTimeoutOnce } from 'helpers/timeout';
 import { TEST_HOST } from 'helpers/test_constants';
+import * as urlUtility from '~/lib/utils/url_utility';
+import axios from '~/lib/utils/axios_utils';
 
 // These must be imported synchronously because they pull dependencies
 // from the DOM.

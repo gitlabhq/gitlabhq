@@ -62,8 +62,6 @@ module MergeRequests
     end
 
     def updated_check!
-      return unless Feature.enabled?(:validate_merge_sha, merge_request.target_project, default_enabled: false)
-
       unless source_matches?
         raise_error('Branch has been updated since the merge was requested. '\
                     'Please review the changes.')
@@ -101,7 +99,7 @@ module MergeRequests
       log_info("Post merge finished on JID #{merge_jid} with state #{state}")
 
       if delete_source_branch?
-        DeleteBranchService.new(@merge_request.source_project, branch_deletion_user)
+        ::Branches::DeleteService.new(@merge_request.source_project, branch_deletion_user)
           .execute(merge_request.source_branch)
       end
     end

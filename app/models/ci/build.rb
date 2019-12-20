@@ -13,17 +13,11 @@ module Ci
     include Importable
     include Gitlab::Utils::StrongMemoize
     include HasRef
+    include IgnorableColumns
 
     BuildArchivedError = Class.new(StandardError)
 
-    self.ignored_columns += %i[
-      artifacts_file
-      artifacts_file_store
-      artifacts_metadata
-      artifacts_metadata_store
-      artifacts_size
-      commands
-    ]
+    ignore_columns :artifacts_file, :artifacts_file_store, :artifacts_metadata, :artifacts_metadata_store, :artifacts_size, :commands, remove_after: '2019-12-15', remove_with: '12.7'
 
     belongs_to :project, inverse_of: :builds
     belongs_to :runner
@@ -120,6 +114,20 @@ module Ci
 
     scope :eager_load_job_artifacts, -> { includes(:job_artifacts) }
 
+    scope :eager_load_everything, -> do
+      includes(
+        [
+          { pipeline: [:project, :user] },
+          :job_artifacts_archive,
+          :metadata,
+          :trigger_request,
+          :project,
+          :user,
+          :tags
+        ]
+      )
+    end
+
     scope :with_exposed_artifacts, -> do
       joins(:metadata).merge(Ci::BuildMetadata.with_exposed_artifacts)
         .includes(:metadata, :job_artifacts_metadata)
@@ -161,6 +169,7 @@ module Ci
     end
 
     scope :queued_before, ->(time) { where(arel_table[:queued_at].lt(time)) }
+    scope :order_id_desc, -> { order('ci_builds.id DESC') }
 
     acts_as_taggable
 
@@ -247,10 +256,11 @@ module Ci
       end
 
       after_transition pending: :running do |build|
-        build.pipeline.persistent_ref.create
         build.deployment&.run
 
         build.run_after_commit do
+          build.pipeline.persistent_ref.create
+
           BuildHooksWorker.perform_async(id)
         end
       end
@@ -277,7 +287,7 @@ module Ci
         begin
           build.deployment.drop!
         rescue => e
-          Gitlab::Sentry.track_exception(e, extra: { build_id: build.id })
+          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, build_id: build.id)
         end
 
         true
@@ -412,6 +422,18 @@ module Ci
 
       strong_memoize(:expanded_environment_name) do
         ExpandVariables.expand(environment, -> { simple_variables })
+      end
+    end
+
+    def expanded_kubernetes_namespace
+      return unless has_environment?
+
+      namespace = options.dig(:environment, :kubernetes, :namespace)
+
+      if namespace.present?
+        strong_memoize(:expanded_kubernetes_namespace) do
+          ExpandVariables.expand(namespace, -> { simple_variables })
+        end
       end
     end
 
@@ -640,9 +662,8 @@ module Ci
     def execute_hooks
       return unless project
 
-      build_data = Gitlab::DataBuilder::Build.build(self)
-      project.execute_hooks(build_data.dup, :job_hooks)
-      project.execute_services(build_data.dup, :job_hooks)
+      project.execute_hooks(build_data.dup, :job_hooks) if project.has_active_hooks?(:job_hooks)
+      project.execute_services(build_data.dup, :job_hooks) if project.has_active_services?(:job_hooks)
     end
 
     def browsable_artifacts?
@@ -741,6 +762,10 @@ module Ci
       Gitlab::Ci::Build::Credentials::Factory.new(self).create!
     end
 
+    def all_dependencies
+      (dependencies + cross_dependencies).uniq
+    end
+
     def dependencies
       return [] if empty_dependencies?
 
@@ -748,7 +773,7 @@ module Ci
 
       # find all jobs that are needed
       if Feature.enabled?(:ci_dag_support, project, default_enabled: true) && needs.exists?
-        depended_jobs = depended_jobs.where(name: needs.select(:name))
+        depended_jobs = depended_jobs.where(name: needs.artifacts.select(:name))
       end
 
       # find all jobs that are dependent on
@@ -756,7 +781,13 @@ module Ci
         depended_jobs = depended_jobs.where(name: options[:dependencies])
       end
 
+      # if both needs and dependencies are used,
+      # the end result will be an intersection between them
       depended_jobs
+    end
+
+    def cross_dependencies
+      []
     end
 
     def empty_dependencies?
@@ -849,6 +880,10 @@ module Ci
 
     private
 
+    def build_data
+      @build_data ||= Gitlab::DataBuilder::Build.build(self)
+    end
+
     def successful_deployment_status
       if deployment&.last?
         :last
@@ -860,7 +895,7 @@ module Ci
     def each_report(report_types)
       job_artifacts_for_types(report_types).each do |report_artifact|
         report_artifact.each_blob do |blob|
-          yield report_artifact.file_type, blob
+          yield report_artifact.file_type, blob, report_artifact
         end
       end
     end

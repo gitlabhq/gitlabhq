@@ -63,7 +63,11 @@ module NotesActions
           json.merge!(note_json(@note))
         end
 
-        render json: json
+        if @note.errors.present? && @note.errors.keys != [:commands_only]
+          render json: json, status: :unprocessable_entity
+        else
+          render json: json
+        end
       end
       format.html { redirect_back_or_default }
     end

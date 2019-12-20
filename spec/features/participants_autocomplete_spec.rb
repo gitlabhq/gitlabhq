@@ -34,6 +34,7 @@ describe 'Member autocomplete', :js do
 
   context 'adding a new note on a Issue' do
     let(:noteable) { create(:issue, author: author, project: project) }
+
     before do
       visit project_issue_path(project, noteable)
     end
@@ -47,6 +48,7 @@ describe 'Member autocomplete', :js do
       create(:merge_request, source_project: project,
                              target_project: project, author: author)
     end
+
     before do
       visit project_merge_request_path(project, noteable)
     end
@@ -61,7 +63,7 @@ describe 'Member autocomplete', :js do
 
     before do
       allow(User).to receive(:find_by_any_email)
-        .with(noteable.author_email.downcase).and_return(author)
+        .with(noteable.author_email.downcase, confirmed: true).and_return(author)
 
       visit project_commit_path(project, noteable)
     end

@@ -258,6 +258,22 @@ Project.find_each do |project|
 end
 ```
 
+## Wikis
+
+### Recreate
+
+A Projects Wiki can be recreated by
+
+**Note:** This is a destructive operation, the Wiki will be empty
+
+```ruby
+p = Project.find_by_full_path('<username-or-group>/<project-name>')  ### enter your projects path
+
+GitlabShellWorker.perform_in(0, :remove_repository, p.repository_storage, p.wiki.disk_path)  ### deletes the wiki project from the filesystem
+
+p.create_wiki  ### creates the wiki project on the filesystem
+```
+
 ## Imports / Exports
 
 ```ruby
@@ -907,7 +923,7 @@ queue = Sidekiq::Queue.new('update_merge_requests')
 queue.each { |job| job.delete if job.args[0]==125 and job.args[4]=='ref/heads/my_branch'}
 ```
 
-**Note:** Running jobs will not be killed. Stop sidekiq before doing this, to get all matching jobs.
+**Note:** Running jobs will not be killed. Stop Sidekiq before doing this, to get all matching jobs.
 
 ### Enable debug logging of Sidekiq
 

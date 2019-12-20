@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Gitlab::ImportExport::RelationFactory do
@@ -201,7 +203,7 @@ describe Gitlab::ImportExport::RelationFactory do
       Gitlab::ImportExport::MembersMapper.new(
         exported_members: [exported_member],
         user: user,
-        project: project)
+        importable: project)
     end
 
     it 'maps the right author to the imported note' do

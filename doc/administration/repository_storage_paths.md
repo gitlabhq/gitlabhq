@@ -107,7 +107,8 @@ working, you can remove the `repos_path` line.
 ## Choose where new project repositories will be stored
 
 Once you set the multiple storage paths, you can choose where new projects will
-be stored via the **Application Settings** in the Admin area.
+be stored under **Admin Area > Settings > Repository > Repository storage > Storage
+nodes for new projects**.
 
 ![Choose repository storage path in Admin area](img/repository_storages_admin_ui.png)
 

@@ -1,0 +1,5 @@
+---
+title: Remove reactive caching value keys once the alive key has expired
+merge_request: 20111
+author:
+type: performance

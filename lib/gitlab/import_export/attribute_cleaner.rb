@@ -3,7 +3,7 @@
 module Gitlab
   module ImportExport
     class AttributeCleaner
-      ALLOWED_REFERENCES = RelationFactory::PROJECT_REFERENCES + RelationFactory::USER_REFERENCES + %w[group_id commit_id]
+      ALLOWED_REFERENCES = RelationFactory::PROJECT_REFERENCES + RelationFactory::USER_REFERENCES + %w[group_id commit_id discussion_id]
       PROHIBITED_REFERENCES = Regexp.union(/\Acached_markdown_version\Z/, /_id\Z/, /_ids\Z/, /_html\Z/).freeze
 
       def self.clean(*args)

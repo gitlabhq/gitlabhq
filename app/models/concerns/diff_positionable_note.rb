@@ -5,7 +5,7 @@ module DiffPositionableNote
   included do
     delegate :on_text?, :on_image?, to: :position, allow_nil: true
     before_validation :set_original_position, on: :create
-    before_validation :update_position, on: :create, if: :on_text?
+    before_validation :update_position, on: :create, if: :on_text?, unless: :importing?
 
     serialize :original_position, Gitlab::Diff::Position # rubocop:disable Cop/ActiveRecordSerialize
     serialize :position, Gitlab::Diff::Position # rubocop:disable Cop/ActiveRecordSerialize

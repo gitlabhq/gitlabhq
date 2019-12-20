@@ -3,18 +3,15 @@
 class Clusters::ClustersController < Clusters::BaseController
   include RoutableActions
 
-  before_action :cluster, only: [:cluster_status, :show, :update, :destroy]
+  before_action :cluster, only: [:cluster_status, :show, :update, :destroy, :clear_cache]
   before_action :generate_gcp_authorize_url, only: [:new]
   before_action :validate_gcp_token, only: [:new]
   before_action :gcp_cluster, only: [:new]
   before_action :user_cluster, only: [:new]
-  before_action :authorize_create_cluster!, only: [:new, :authorize_aws_role, :revoke_aws_role, :aws_proxy]
+  before_action :authorize_create_cluster!, only: [:new, :authorize_aws_role]
   before_action :authorize_update_cluster!, only: [:update]
-  before_action :authorize_admin_cluster!, only: [:destroy]
+  before_action :authorize_admin_cluster!, only: [:destroy, :clear_cache]
   before_action :update_applications_status, only: [:cluster_status]
-  before_action only: [:new, :create_gcp] do
-    push_frontend_feature_flag(:create_eks_clusters)
-  end
   before_action only: [:show] do
     push_frontend_feature_flag(:enable_cluster_application_elastic_stack)
     push_frontend_feature_flag(:enable_cluster_application_crossplane)
@@ -42,11 +39,10 @@ class Clusters::ClustersController < Clusters::BaseController
   end
 
   def new
-    return unless Feature.enabled?(:create_eks_clusters)
-
     if params[:provider] == 'aws'
       @aws_role = current_user.aws_role || Aws::Role.new
       @aws_role.ensure_role_external_id!
+      @instance_types = load_instance_types.to_json
 
     elsif params[:provider] == 'gcp'
       redirect_to @authorize_url if @authorize_url && !@valid_gcp_token
@@ -113,6 +109,7 @@ class Clusters::ClustersController < Clusters::BaseController
       generate_gcp_authorize_url
       validate_gcp_token
       user_cluster
+      params[:provider] = 'gcp'
 
       render :new, locals: { active_tab: 'create' }
     end
@@ -149,34 +146,24 @@ class Clusters::ClustersController < Clusters::BaseController
   end
 
   def authorize_aws_role
-    role = current_user.build_aws_role(create_role_params)
-
-    role.save ? respond_201 : respond_422
-  end
-
-  def revoke_aws_role
-    current_user.aws_role&.destroy
-
-    head :no_content
-  end
-
-  def aws_proxy
-    response = Clusters::Aws::ProxyService.new(
-      current_user.aws_role,
-      params: params
+    response = Clusters::Aws::AuthorizeRoleService.new(
+      current_user,
+      params: aws_role_params
     ).execute
 
     render json: response.body, status: response.status
   end
 
+  def clear_cache
+    cluster.delete_cached_resources!
+
+    redirect_to cluster.show_path, notice: _('Cluster cache cleared.')
+  end
+
   private
 
   def destroy_params
-    # To be uncomented on https://gitlab.com/gitlab-org/gitlab/merge_requests/16954
-    # This MR got split into other since it was too big.
-    #
-    # params.permit(:cleanup)
-    {}
+    params.permit(:cleanup)
   end
 
   def update_params
@@ -270,13 +257,12 @@ class Clusters::ClustersController < Clusters::BaseController
       )
   end
 
-  def create_role_params
+  def aws_role_params
     params.require(:cluster).permit(:role_arn, :role_external_id)
   end
 
   def generate_gcp_authorize_url
-    params = Feature.enabled?(:create_eks_clusters) ? { provider: :gke } : {}
-    state = generate_session_key_redirect(clusterable.new_path(params).to_s)
+    state = generate_session_key_redirect(clusterable.new_path(provider: :gcp).to_s)
 
     @authorize_url = GoogleApi::CloudPlatform::Client.new(
       nil, callback_google_api_auth_url,
@@ -315,6 +301,19 @@ class Clusters::ClustersController < Clusters::BaseController
     GoogleApi::CloudPlatform::Client.new_session_key_for_redirect_uri do |key|
       session[key] = uri
     end
+  end
+
+  ##
+  # Unfortunately the EC2 API doesn't provide a list of
+  # possible instance types. There is a workaround, using
+  # the Pricing API, but instead of requiring the
+  # user to grant extra permissions for this we use the
+  # values that validate the CloudFormation template.
+  def load_instance_types
+    stack_template = File.read(Rails.root.join('vendor', 'aws', 'cloudformation', 'eks_cluster.yaml'))
+    instance_types = YAML.safe_load(stack_template).dig('Parameters', 'NodeInstanceType', 'AllowedValues')
+
+    instance_types.map { |type| Hash(name: type, value: type) }
   end
 
   def update_applications_status

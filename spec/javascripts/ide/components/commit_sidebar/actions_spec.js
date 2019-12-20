@@ -1,9 +1,9 @@
 import Vue from 'vue';
+import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
+import { projectData, branches } from 'spec/ide/mock_data';
 import { createStore } from '~/ide/stores';
 import commitActions from '~/ide/components/commit_sidebar/actions.vue';
 import consts from '~/ide/stores/modules/commit/constants';
-import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
-import { projectData, branches } from 'spec/ide/mock_data';
 
 const ACTION_UPDATE_COMMIT_ACTION = 'commit/updateCommitAction';
 

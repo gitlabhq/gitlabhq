@@ -123,8 +123,6 @@ module Gitlab
       end
 
       def add_missing_db_timezone
-        return '' unless Gitlab::Database.postgresql?
-
         'at time zone \'UTC\''
       end
     end

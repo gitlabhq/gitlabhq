@@ -1,8 +1,8 @@
 import $ from 'jquery';
 import Vue from 'vue';
+import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import store from '~/badges/store';
 import BadgeSettings from '~/badges/components/badge_settings.vue';
-import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { createDummyBadge } from '../dummy_badge';
 
 describe('BadgeSettings component', () => {

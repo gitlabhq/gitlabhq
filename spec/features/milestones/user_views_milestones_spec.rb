@@ -18,6 +18,7 @@ describe "User views milestones" do
     expect(page).to have_content(milestone.title)
       .and have_content(milestone.expires_at)
       .and have_content("Issues")
+      .and have_content("Merge Requests")
   end
 
   context "with issues" do
@@ -32,6 +33,7 @@ describe "User views milestones" do
         .and have_selector("#tab-issues li.issuable-row", count: 2)
         .and have_content(issue.title)
         .and have_content(closed_issue.title)
+        .and have_selector("#tab-merge-requests")
     end
   end
 
@@ -60,5 +62,34 @@ describe "User views milestones" do
         expect(page).to have_link("2 more releases", href: project_releases_path(project))
       end
     end
+  end
+end
+
+describe "User views milestones with no MR" do
+  set(:user) { create(:user) }
+  set(:project) { create(:project, :merge_requests_disabled) }
+  set(:milestone) { create(:milestone, project: project) }
+
+  before do
+    project.add_developer(user)
+    sign_in(user)
+
+    visit(project_milestones_path(project))
+  end
+
+  it "shows milestone" do
+    expect(page).to have_content(milestone.title)
+      .and have_content(milestone.expires_at)
+      .and have_content("Issues")
+      .and have_no_content("Merge Requests")
+  end
+
+  it "opens milestone" do
+    click_link(milestone.title)
+
+    expect(current_path).to eq(project_milestone_path(project, milestone))
+    expect(page).to have_content(milestone.title)
+      .and have_selector("#tab-issues")
+      .and have_no_selector("#tab-merge-requests")
   end
 end

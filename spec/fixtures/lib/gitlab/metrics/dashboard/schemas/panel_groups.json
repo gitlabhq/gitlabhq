@@ -2,7 +2,6 @@
   "type": "object",
   "required": [
     "group",
-    "priority",
     "panels"
   ],
   "properties": {

@@ -1,7 +1,7 @@
 <script>
+import { GlPopover } from '@gitlab/ui';
 import { glEmojiTag } from '~/emoji';
 import { n__ } from '~/locale';
-import { GlPopover } from '@gitlab/ui';
 
 export default {
   components: {
@@ -40,16 +40,6 @@ export default {
     },
   },
   methods: {
-    truncatedUrl(requestUrl) {
-      const components = requestUrl.replace(/\/$/, '').split('/');
-      let truncated = components[components.length - 1];
-
-      if (truncated.match(/^\d+$/)) {
-        truncated = `${components[components.length - 2]}/${truncated}`;
-      }
-
-      return truncated;
-    },
     glEmojiTag,
   },
 };
@@ -63,7 +53,7 @@ export default {
         :value="request.id"
         class="qa-performance-bar-request"
       >
-        {{ truncatedUrl(request.url) }}
+        {{ request.truncatedUrl }}
         <span v-if="request.hasWarnings">(!)</span>
       </option>
     </select>

@@ -1,0 +1,23 @@
+.notify:
+  image: ruby:2.6-alpine
+  stage: notification
+  dependencies: []
+  cache: {}
+  before_script:
+    - apk update && apk add git curl bash
+    - source scripts/utils.sh
+    - source scripts/notifications.sh
+    - install_gitlab_gem
+  variables:
+    COMMIT_NOTES_URL: "https://${CI_SERVER_HOST}/${CI_PROJECT_PATH}/commit/${CI_COMMIT_SHA}#notes-list"
+
+schedule:package-and-qa:notify-failure:
+  extends:
+    - .only:variables_refs-canonical-dot-com-schedules
+    - .notify
+  script:
+    - 'export NOTIFICATION_MESSAGE=":skull_and_crossbones: Scheduled QA against master failed! :skull_and_crossbones: See ${CI_PIPELINE_URL}. For downstream pipelines, see ${COMMIT_NOTES_URL}"'
+    - 'notify_on_job_failure schedule:package-and-qa qa-master "${NOTIFICATION_MESSAGE}" ci_failing'
+  needs: ["schedule:package-and-qa"]
+  allow_failure: true
+  when: always

@@ -162,6 +162,10 @@ class Environment < ApplicationRecord
     stop_action&.play(current_user)
   end
 
+  def reset_auto_stop
+    update_column(:auto_stop_at, nil)
+  end
+
   def actions_for(environment)
     return [] unless manual_actions
 
@@ -193,11 +197,11 @@ class Environment < ApplicationRecord
   end
 
   def has_metrics?
-    available? && prometheus_adapter&.can_query?
+    available? && prometheus_adapter&.configured?
   end
 
   def metrics
-    prometheus_adapter.query(:environment, self) if has_metrics?
+    prometheus_adapter.query(:environment, self) if has_metrics? && prometheus_adapter.can_query?
   end
 
   def prometheus_status
@@ -259,6 +263,17 @@ class Environment < ApplicationRecord
     if last_deployment&.cluster
       Clusters::KnativeServicesFinder.new(last_deployment.cluster, self)
     end
+  end
+
+  def auto_stop_in
+    auto_stop_at - Time.now if auto_stop_at
+  end
+
+  def auto_stop_in=(value)
+    return unless value
+    return unless parsed_result = ChronicDuration.parse(value)
+
+    self.auto_stop_at = parsed_result.seconds.from_now
   end
 
   private

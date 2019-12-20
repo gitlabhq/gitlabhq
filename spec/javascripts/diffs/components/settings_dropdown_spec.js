@@ -4,15 +4,14 @@ import diffModule from '~/diffs/store/modules';
 import SettingsDropdown from '~/diffs/components/settings_dropdown.vue';
 import { PARALLEL_DIFF_VIEW_TYPE, INLINE_DIFF_VIEW_TYPE } from '~/diffs/constants';
 
+const localVue = createLocalVue();
+localVue.use(Vuex);
+
 describe('Diff settiings dropdown component', () => {
   let vm;
   let actions;
 
   function createComponent(extendStore = () => {}) {
-    const localVue = createLocalVue();
-
-    localVue.use(Vuex);
-
     const store = new Vuex.Store({
       modules: {
         diffs: {
@@ -26,9 +25,10 @@ describe('Diff settiings dropdown component', () => {
 
     extendStore(store);
 
-    vm = mount(SettingsDropdown, {
+    vm = mount(localVue.extend(SettingsDropdown), {
       localVue,
       store,
+      sync: false,
     });
   }
 

@@ -1,6 +1,6 @@
 # Pipelines for the GitLab project
 
-Pipelines for `gitlab-org/gitlab` and `gitlab-org/gitlab-foss` (as well as the
+Pipelines for <https://gitlab.com/gitlab-org/gitlab> and <https://gitlab.com/gitlab-org/gitlab-foss> (as well as the
 `dev` instance's mirrors) are configured in the usual
 [`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab-ci.yml)
 which itself includes files under
@@ -15,33 +15,36 @@ as much as possible.
 
 The current stages are:
 
-- `sync`: This stage is used to synchronize changes from gitlab-org/gitlab to
-  gitlab-org/gitlab-foss.
+- `sync`: This stage is used to synchronize changes from <https://gitlab.com/gitlab-org/gitlab> to
+  <https://gitlab.com/gitlab-org/gitlab-foss>.
 - `prepare`: This stage includes jobs that prepare artifacts that are needed by
   jobs in subsequent stages.
 - `quick-test`: This stage includes test jobs that should run first and fail the
   pipeline early (currently used to run Geo tests when the branch name starts
   with `geo-`, `geo/`, or ends with `-geo`).
 - `test`: This stage includes most of the tests, DB/migration jobs, and static analysis jobs.
+- `post-test`: This stage includes jobs that build reports or gather data from
+  the `test` stage's jobs (e.g. coverage, Knapsack metadata etc.).
 - `review-prepare`: This stage includes a job that build the CNG images that are
   later used by the (Helm) Review App deployment (see
   [Review Apps](testing_guide/review_apps.md) for details).
 - `review`: This stage includes jobs that deploy the GitLab and Docs Review Apps.
 - `qa`: This stage includes jobs that perform QA tasks against the Review App
   that is deployed in the previous stage.
-- `post-test`: This stage includes jobs that build reports or gather data from
-  the previous stages' jobs (e.g. coverage, Knapsack metadata etc.).
+- `post-qa`: This stage includes jobs that build reports or gather data from
+  the `qa` stage's jobs (e.g. Review App performance report).
+- `notification`: This stage includes jobs that sends notifications about pipeline status.
 - `pages`: This stage includes a job that deploys the various reports as
-  GitLab pages (e.g. <https://gitlab-org.gitlab.io/gitlab/coverage-ruby/>,
+  GitLab Pages (e.g. <https://gitlab-org.gitlab.io/gitlab/coverage-ruby/>,
   <https://gitlab-org.gitlab.io/gitlab/coverage-javascript/>,
   <https://gitlab-org.gitlab.io/gitlab/webpack-report/>).
 
 ## Default image
 
 The default image is currently
-`registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.3-golang-1.11-git-2.22-chrome-73.0-node-12.x-yarn-1.16-postgresql-9.6-graphicsmagick-1.3.33`.
+`registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.3-golang-1.12-git-2.24-lfs-2.9-chrome-73.0-node-12.x-yarn-1.16-postgresql-9.6-graphicsmagick-1.3.33`.
 
-It includes Ruby 2.6.3, Go 1.11, Git 2.22, Chrome 73, Node 12, Yarn 1.16,
+It includes Ruby 2.6.3, Go 1.12, Git 2.24, Git LFS 2.9, Chrome 73, Node 12, Yarn 1.16,
 PostgreSQL 9.6, and Graphics Magick 1.3.33.
 
 The images used in our pipelines are configured in the
@@ -191,8 +194,8 @@ subgraph "`review-prepare` stage"
     end
 
 subgraph "`review` stage"
-    G --> |needs| E;
-    G2 --> |needs| E;
+    G
+    G2
     end
 
 subgraph "`qa` stage"
@@ -207,6 +210,11 @@ subgraph "`qa` stage"
     review-performance -.-> |needs and depends on| G;
     X2["schedule:review-performance<br/>(master only)"] -.-> |needs and depends on| G2;
     dast -.-> |needs and depends on| G;
+    end
+
+subgraph "`notification` stage"
+    NOTIFICATION1["schedule:package-and-qa:notify-success<br>(on_success)"] -.-> |needs| P;
+    NOTIFICATION2["schedule:package-and-qa:notify-failure<br>(on_failure)"] -.-> |needs| P;
     end
 
 subgraph "`post-test` stage"

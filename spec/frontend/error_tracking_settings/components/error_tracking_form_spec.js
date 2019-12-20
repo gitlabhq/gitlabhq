@@ -49,7 +49,9 @@ describe('error tracking settings form', () => {
     it('is rendered with labels and placeholders', () => {
       const pageText = wrapper.text();
 
-      expect(pageText).toContain('Find your hostname in your Sentry account settings page');
+      expect(pageText).toContain(
+        "If you self-host Sentry, enter the full URL of your Sentry instance. If you're using Sentry's hosted solution, enter https://sentry.io",
+      );
       expect(pageText).toContain(
         "After adding your Auth Token, use the 'Connect' button to load projects",
       );

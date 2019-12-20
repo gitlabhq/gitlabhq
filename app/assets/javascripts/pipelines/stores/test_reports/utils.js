@@ -1,7 +1,7 @@
 import { TestStatus } from '~/pipelines/constants';
 import { formatTime, secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 
-function iconForTestStatus(status) {
+export function iconForTestStatus(status) {
   switch (status) {
     case 'success':
       return 'status_success_borderless';

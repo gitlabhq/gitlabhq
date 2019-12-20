@@ -50,6 +50,32 @@ describe Key, :mailer do
     end
   end
 
+  describe 'scopes' do
+    describe '.for_user' do
+      let(:user_1) { create(:user) }
+      let(:key_of_user_1) { create(:personal_key, user: user_1) }
+
+      before do
+        create_list(:personal_key, 2, user: create(:user))
+      end
+
+      it 'returns keys of the specified user only' do
+        expect(described_class.for_user(user_1)).to contain_exactly(key_of_user_1)
+      end
+    end
+
+    describe '.order_last_used_at_desc' do
+      it 'sorts by last_used_at descending, with null values at last' do
+        key_1 = create(:personal_key, last_used_at: 7.days.ago)
+        key_2 = create(:personal_key, last_used_at: nil)
+        key_3 = create(:personal_key, last_used_at: 2.days.ago)
+
+        expect(described_class.order_last_used_at_desc)
+          .to eq([key_3, key_1, key_2])
+      end
+    end
+  end
+
   context "validation of uniqueness (based on fingerprint uniqueness)" do
     let(:user) { create(:user) }
 
@@ -92,6 +118,7 @@ describe Key, :mailer do
     with_them do
       let!(:key) { create(factory) }
       let!(:original_fingerprint) { key.fingerprint }
+      let!(:original_fingerprint_sha256) { key.fingerprint_sha256 }
 
       it 'accepts a key with blank space characters after stripping them' do
         modified_key = key.key.insert(100, chars.first).insert(40, chars.last)
@@ -104,6 +131,8 @@ describe Key, :mailer do
 
         expect(content).not_to match(/\s/)
         expect(original_fingerprint).to eq(key.fingerprint)
+        expect(original_fingerprint).to eq(key.fingerprint_md5)
+        expect(original_fingerprint_sha256).to eq(key.fingerprint_sha256)
       end
     end
   end

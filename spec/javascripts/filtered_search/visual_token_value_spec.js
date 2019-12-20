@@ -1,5 +1,5 @@
-import VisualTokenValue from '~/filtered_search/visual_token_value';
 import _ from 'underscore';
+import VisualTokenValue from '~/filtered_search/visual_token_value';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import UsersCache from '~/lib/utils/users_cache';
 import DropdownUtils from '~/filtered_search//dropdown_utils';

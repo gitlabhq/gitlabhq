@@ -8,8 +8,7 @@
 
       - if can?(current_user, :create_project_snippet, @project)
         .nav-controls
-          - if can?(current_user, :create_project_snippet, @project)
-            = link_to _("New snippet"), new_project_snippet_path(@project), class: "btn btn-success", title: _("New snippet")
+          = link_to _("New snippet"), new_project_snippet_path(@project), class: "btn btn-success", title: _("New snippet")
 
   = render 'shared/snippets/list'
 - else

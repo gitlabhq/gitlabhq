@@ -1,8 +1,7 @@
 import Vue from 'vue';
 
-import dropdownButtonComponent from '~/vue_shared/components/dropdown/dropdown_button.vue';
-
 import { mountComponentWithSlots } from 'spec/helpers/vue_mount_component_helper';
+import dropdownButtonComponent from '~/vue_shared/components/dropdown/dropdown_button.vue';
 
 const defaultLabel = 'Select';
 const customLabel = 'Select project';

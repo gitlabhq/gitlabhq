@@ -32,5 +32,19 @@ module Emails
       mail(to: @user.notification_email, subject: subject("GPG key was added to your account"))
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    def access_token_about_to_expire_email(user)
+      return unless user
+
+      @user = user
+      @target_url = profile_personal_access_tokens_url
+      @days_to_expire = PersonalAccessToken::DAYS_TO_EXPIRE
+
+      Gitlab::I18n.with_locale(@user.preferred_language) do
+        mail(to: @user.notification_email, subject: subject(_("Your Personal Access Tokens will expire in %{days_to_expire} days or less") % { days_to_expire: @days_to_expire }))
+      end
+    end
   end
 end
+
+Emails::Profile.prepend_if_ee('EE::Emails::Profile')

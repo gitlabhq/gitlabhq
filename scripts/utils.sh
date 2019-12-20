@@ -14,21 +14,13 @@ function retry() {
 }
 
 function setup_db_user_only() {
-    if [ "$GITLAB_DATABASE" = "postgresql" ]; then
-        source scripts/create_postgres_user.sh
-    else
-        source scripts/create_mysql_user.sh
-    fi
+    source scripts/create_postgres_user.sh
 }
 
 function setup_db() {
     setup_db_user_only
 
     bundle exec rake db:drop db:create db:schema:load db:migrate
-
-    if [ "$GITLAB_DATABASE" = "mysql" ]; then
-        bundle exec rake add_limits_mysql
-    fi
 
     bundle exec rake gitlab:db:setup_ee
 }
@@ -42,7 +34,8 @@ function install_api_client_dependencies_with_apt() {
 }
 
 function install_gitlab_gem() {
-  gem install gitlab --no-document
+  gem install httparty --no-document --version 0.17.3
+  gem install gitlab --no-document --version 4.13.0
 }
 
 function echoerr() {

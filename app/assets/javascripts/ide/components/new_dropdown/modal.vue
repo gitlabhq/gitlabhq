@@ -1,8 +1,8 @@
 <script>
 import $ from 'jquery';
+import { mapActions, mapState, mapGetters } from 'vuex';
 import flash from '~/flash';
 import { __, sprintf, s__ } from '~/locale';
-import { mapActions, mapState, mapGetters } from 'vuex';
 import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';
 import { modalTypes } from '../../constants';
 

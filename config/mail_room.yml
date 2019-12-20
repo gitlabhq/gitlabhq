@@ -13,6 +13,8 @@
       :email: <%= config[:user].to_json %>
       :password: <%= config[:password].to_json %>
       :idle_timeout: <%= config[:idle_timeout].to_json %>
+      :logger:
+        :log_path: <%= config[:log_path].to_json %>
 
       :name: <%= config[:mailbox].to_json %>
 

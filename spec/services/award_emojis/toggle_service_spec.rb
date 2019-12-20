@@ -7,6 +7,7 @@ describe AwardEmojis::ToggleService do
   set(:project) { create(:project, :public) }
   set(:awardable) { create(:note, project: project) }
   let(:name) { 'thumbsup' }
+
   subject(:service) { described_class.new(awardable, name, user) }
 
   describe '#execute' do

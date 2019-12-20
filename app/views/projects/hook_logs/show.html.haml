@@ -3,7 +3,6 @@
     %h4.prepend-top-0
       Request details
   .col-lg-9
-
-    = link_to 'Resend Request', retry_project_hook_hook_log_path(@project, @hook, @hook_log), method: :post, class: "btn btn-default float-right prepend-left-10"
+    = link_to 'Resend Request', @hook_log.present.retry_path, method: :post, class: "btn btn-default float-right prepend-left-10"
 
     = render partial: 'shared/hook_logs/content', locals: { hook_log: @hook_log }

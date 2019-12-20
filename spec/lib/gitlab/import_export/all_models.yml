@@ -8,6 +8,7 @@ issues:
 - milestone
 - notes
 - resource_label_events
+- sentry_issue
 - label_links
 - labels
 - last_edited_by
@@ -15,6 +16,7 @@ issues:
 - user_agent_detail
 - moved_to
 - duplicated_to
+- promoted_to_epic
 - events
 - merge_requests_closing_issues
 - metrics
@@ -32,6 +34,7 @@ issues:
 - zoom_meetings
 - vulnerability_links
 - related_vulnerabilities
+- user_mentions
 events:
 - author
 - project
@@ -80,6 +83,7 @@ snippets:
 - notes
 - award_emoji
 - user_agent_detail
+- user_mentions
 releases:
 - author
 - project
@@ -138,6 +142,9 @@ merge_requests:
 - blocking_merge_requests
 - blocked_merge_requests
 - description_versions
+- deployment_merge_requests
+- deployments
+- user_mentions
 external_pull_requests:
 - project
 merge_request_diff:
@@ -287,6 +294,7 @@ project:
 - microsoft_teams_service
 - mattermost_service
 - hangouts_chat_service
+- unify_circuit_service
 - buildkite_service
 - bamboo_service
 - teamcity_service
@@ -364,6 +372,7 @@ project:
 - root_of_fork_network
 - fork_network_member
 - fork_network
+- fork_network_projects
 - custom_attributes
 - lfs_file_locks
 - project_badges
@@ -432,6 +441,9 @@ project:
 - downstream_projects
 - upstream_project_subscriptions
 - downstream_project_subscriptions
+- service_desk_setting
+- import_failures
+- container_expiration_policy
 award_emoji:
 - awardable
 - user
@@ -531,14 +543,18 @@ design: &design
 - actions
 - versions
 - notes
+- user_mentions
 designs: *design
 actions:
 - design
 - version
 versions: &version
+- author
 - issue
 - designs
 - actions
 zoom_meetings:
+- issue
+sentry_issue:
 - issue
 design_versions: *version

@@ -42,6 +42,18 @@ class MergeRequestNoteableEntity < IssuableEntity
     end
   end
 
+  expose :locked_discussion_docs_path, if: -> (merge_request) { merge_request.discussion_locked? } do |merge_request|
+    help_page_path('user/discussions/index.md', anchor: 'lock-discussions')
+  end
+
+  expose :is_project_archived do |merge_request|
+    merge_request.project.archived?
+  end
+
+  expose :archived_project_docs_path, if: -> (merge_request) { merge_request.project.archived? } do |merge_request|
+    help_page_path('user/project/settings/index.md', anchor: 'archiving-a-project')
+  end
+
   private
 
   delegate :current_user, to: :request

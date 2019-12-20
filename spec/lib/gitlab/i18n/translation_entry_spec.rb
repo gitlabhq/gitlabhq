@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Gitlab::I18n::TranslationEntry do
@@ -134,6 +136,7 @@ describe Gitlab::I18n::TranslationEntry do
   describe '#contains_unescaped_chars' do
     let(:data) { { msgid: '' } }
     let(:entry) { described_class.new(data, 2) }
+
     it 'is true when the msgid is an array' do
       string = '「100%確定」'
 

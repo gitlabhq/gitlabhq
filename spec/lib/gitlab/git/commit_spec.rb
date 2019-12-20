@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 
 describe Gitlab::Git::Commit, :seed_helper do
@@ -15,13 +17,13 @@ describe Gitlab::Git::Commit, :seed_helper do
       @committer = {
         email: 'mike@smith.com',
         name: "Mike Smith",
-        time: Time.now
+        time: Time.new(2000, 1, 1, 0, 0, 0, "+08:00")
       }
 
       @author = {
         email: 'john@smith.com',
         name: "John Smith",
-        time: Time.now
+        time: Time.new(2000, 1, 1, 0, 0, 0, "-08:00")
       }
 
       @parents = [rugged_repo.head.target]
@@ -46,7 +48,7 @@ describe Gitlab::Git::Commit, :seed_helper do
     it { expect(@commit.id).to eq(@raw_commit.oid) }
     it { expect(@commit.sha).to eq(@raw_commit.oid) }
     it { expect(@commit.safe_message).to eq(@raw_commit.message) }
-    it { expect(@commit.created_at).to eq(@raw_commit.author[:time]) }
+    it { expect(@commit.created_at).to eq(@raw_commit.committer[:time]) }
     it { expect(@commit.date).to eq(@raw_commit.committer[:time]) }
     it { expect(@commit.author_email).to eq(@author[:email]) }
     it { expect(@commit.author_name).to eq(@author[:name]) }
@@ -64,8 +66,8 @@ describe Gitlab::Git::Commit, :seed_helper do
   end
 
   describe "Commit info from gitaly commit" do
-    let(:subject) { "My commit".force_encoding('ASCII-8BIT') }
-    let(:body) { subject + "My body".force_encoding('ASCII-8BIT') }
+    let(:subject) { (+"My commit").force_encoding('ASCII-8BIT') }
+    let(:body) { subject + (+"My body").force_encoding('ASCII-8BIT') }
     let(:body_size) { body.length }
     let(:gitaly_commit) { build(:gitaly_commit, subject: subject, body: body, body_size: body_size) }
     let(:id) { gitaly_commit.id }
@@ -77,15 +79,29 @@ describe Gitlab::Git::Commit, :seed_helper do
     it { expect(commit.id).to eq(id) }
     it { expect(commit.sha).to eq(id) }
     it { expect(commit.safe_message).to eq(body) }
-    it { expect(commit.created_at).to eq(Time.at(committer.date.seconds)) }
+    it { expect(commit.created_at).to eq(Time.at(committer.date.seconds).utc) }
     it { expect(commit.author_email).to eq(author.email) }
     it { expect(commit.author_name).to eq(author.name) }
     it { expect(commit.committer_name).to eq(committer.name) }
     it { expect(commit.committer_email).to eq(committer.email) }
     it { expect(commit.parent_ids).to eq(gitaly_commit.parent_ids) }
 
+    context 'non-UTC dates' do
+      let(:seconds) { Time.now.to_i }
+
+      it 'sets timezones correctly' do
+        gitaly_commit.author.date.seconds = seconds
+        gitaly_commit.author.timezone = '-0800'
+        gitaly_commit.committer.date.seconds = seconds
+        gitaly_commit.committer.timezone = '+0800'
+
+        expect(commit.authored_date).to eq(Time.at(seconds, in: '-08:00'))
+        expect(commit.committed_date).to eq(Time.at(seconds, in: '+08:00'))
+      end
+    end
+
     context 'body_size != body.size' do
-      let(:body) { "".force_encoding('ASCII-8BIT') }
+      let(:body) { (+"").force_encoding('ASCII-8BIT') }
 
       context 'zero body_size' do
         it { expect(commit.safe_message).to eq(subject) }
@@ -160,7 +176,9 @@ describe Gitlab::Git::Commit, :seed_helper do
 
     describe '.find with Rugged enabled', :enable_rugged do
       it 'calls out to the Rugged implementation' do
-        allow_any_instance_of(Rugged).to receive(:rev_parse).with(SeedRepo::Commit::ID).and_call_original
+        allow_next_instance_of(Rugged) do |instance|
+          allow(instance).to receive(:rev_parse).with(SeedRepo::Commit::ID).and_call_original
+        end
 
         described_class.find(repository, SeedRepo::Commit::ID)
       end
@@ -422,7 +440,9 @@ describe Gitlab::Git::Commit, :seed_helper do
       it_should_behave_like '.batch_by_oid'
 
       it 'calls out to the Rugged implementation' do
-        allow_any_instance_of(Rugged).to receive(:rev_parse).with(SeedRepo::Commit::ID).and_call_original
+        allow_next_instance_of(Rugged) do |instance|
+          allow(instance).to receive(:rev_parse).with(SeedRepo::Commit::ID).and_call_original
+        end
 
         described_class.batch_by_oid(repository, [SeedRepo::Commit::ID])
       end
@@ -522,6 +542,7 @@ describe Gitlab::Git::Commit, :seed_helper do
   skip 'move this test to gitaly-ruby' do
     describe '#init_from_rugged' do
       let(:gitlab_commit) { described_class.new(repository, rugged_commit) }
+
       subject { gitlab_commit }
 
       describe '#id' do
@@ -533,6 +554,7 @@ describe Gitlab::Git::Commit, :seed_helper do
 
   describe '#init_from_hash' do
     let(:commit) { described_class.new(repository, sample_commit_hash) }
+
     subject { commit }
 
     describe '#id' do
@@ -588,6 +610,7 @@ describe Gitlab::Git::Commit, :seed_helper do
 
   describe '#to_hash' do
     let(:hash) { commit.to_hash }
+
     subject { hash }
 
     it { is_expected.to be_kind_of Hash }
@@ -609,6 +632,7 @@ describe Gitlab::Git::Commit, :seed_helper do
 
   describe '#ref_names' do
     let(:commit) { described_class.find(repository, 'master') }
+
     subject { commit.ref_names(repository) }
 
     it 'has 2 element' do

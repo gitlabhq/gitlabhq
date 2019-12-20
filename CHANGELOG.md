@@ -4,7 +4,6 @@ entry.
 
 ## 12.5.5
 
-- No changes.
 ### Security (1 change)
 
 - Upgrade Akismet gem to v3.0.0. !21786
@@ -34,13 +33,6 @@ entry.
 ### Changed (1 change)
 
 - Flatten exception details in API and controller logs. !20434
-
-
-## 12.5.2
-
-### Security (1 change)
-
-- Fix 500 error caused by invalid byte sequences in links.
 
 
 ## 12.5.1
@@ -411,6 +403,18 @@ entry.
 - Change selects from default browser style to custom style.
 
 
+## 12.4.5
+
+- No changes.
+
+## 12.4.3
+
+### Fixed (2 changes)
+
+- Only enable protected paths for POST requests. !19184
+- Fix Bitbucket Cloud importer pull request state. !19734
+
+
 ## 12.4.2
 
 ### Fixed (10 changes)
@@ -771,6 +775,31 @@ entry.
 - Remove Postgresql specific setup tasks and move to schema.rb.
 
 
+## 12.3.9
+
+### Security (1 change)
+
+- Update maven_file_name_regex for full string match.
+
+
+## 12.3.7
+
+### Security (12 changes)
+
+- Do not create todos for approvers without access. !1442
+- Limit potential for DNS rebind SSRF in chat notifications.
+- Encrypt application setting tokens.
+- Update Workhorse and Gitaly to fix a security issue.
+- Add maven file_name regex validation on incoming files.
+- Hide commit counts from guest users in Cycle Analytics.
+- Check permissions before showing a forked project's source.
+- Fix 500 error caused by invalid byte sequences in links.
+- Ensure are cleaned by ImportExport::AttributeCleaner.
+- Remove notes regarding Related Branches from Issue activity feeds for guest users.
+- Escape namespace in label references to prevent XSS.
+- Add authorization to using filter vulnerable in Dependency List.
+
+
 ## 12.3.4
 
 ### Fixed (2 changes)
@@ -1075,6 +1104,10 @@ entry.
 - Remove vue resource from group service. (Lee Tickett)
 - Updates tooltip of 'detached' label/state.
 
+
+## 12.2.11
+
+- No changes.
 
 ## 12.2.8
 
@@ -1789,6 +1822,15 @@ entry.
 - Removes EE differences for app/views/layouts/fullscreen.html.haml.
 - Removes EE differences for app/views/admin/users/show.html.haml.
 
+
+## 12.0.12
+
+- No changes.
+
+## 12.0.10
+
+- No changes.
+- No changes.
 
 ## 12.0.7
 

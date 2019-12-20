@@ -1,12 +1,12 @@
 <script>
 /* eslint-disable vue/require-default-prop */
 import { GlTooltipDirective, GlLink } from '@gitlab/ui';
+import mrWidgetPipelineMixin from 'ee_else_ce/vue_merge_request_widget/mixins/mr_widget_pipeline';
 import { sprintf, s__ } from '~/locale';
 import PipelineStage from '~/pipelines/components/stage.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
-import mrWidgetPipelineMixin from 'ee_else_ce/vue_merge_request_widget/mixins/mr_widget_pipeline';
 
 export default {
   name: 'MRWidgetPipeline',
@@ -27,6 +27,10 @@ export default {
     pipeline: {
       type: Object,
       required: true,
+    },
+    pipelineCoverageDelta: {
+      type: String,
+      required: false,
     },
     // This prop needs to be camelCase, html attributes are case insensive
     // https://vuejs.org/v2/guide/components.html#camelCase-vs-kebab-case
@@ -92,6 +96,16 @@ export default {
     showSourceBranch() {
       return Boolean(this.pipeline.ref.branch);
     },
+    coverageDeltaClass() {
+      const delta = this.pipelineCoverageDelta;
+      if (delta && parseFloat(delta) > 0) {
+        return 'text-success';
+      }
+      if (delta && parseFloat(delta) < 0) {
+        return 'text-danger';
+      }
+      return '';
+    },
   },
 };
 </script>
@@ -142,6 +156,14 @@ export default {
             </div>
             <div v-if="pipeline.coverage" class="coverage">
               {{ s__('Pipeline|Coverage') }} {{ pipeline.coverage }}%
+
+              <span
+                v-if="pipelineCoverageDelta"
+                class="js-pipeline-coverage-delta"
+                :class="coverageDeltaClass"
+              >
+                ({{ pipelineCoverageDelta }}%)
+              </span>
             </div>
           </div>
         </div>

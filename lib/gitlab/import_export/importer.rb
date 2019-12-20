@@ -39,7 +39,7 @@ module Gitlab
       end
 
       def import_file
-        Gitlab::ImportExport::FileImporter.import(project: project,
+        Gitlab::ImportExport::FileImporter.import(importable: project,
                                                   archive_file: archive_file,
                                                   shared: shared)
       end

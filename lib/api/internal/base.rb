@@ -7,7 +7,6 @@ module API
       before { authenticate_by_gitlab_shell_token! }
 
       helpers ::API::Helpers::InternalHelpers
-      helpers ::Gitlab::Identifier
 
       UNKNOWN_CHECK_RESULT_ERROR = 'Unknown check result'.freeze
 
@@ -35,7 +34,6 @@ module API
           env = parse_env
           Gitlab::Git::HookEnv.set(gl_repository, env) if project
 
-          actor = Support::GitAccessActor.from_params(params)
           actor.update_last_used_at!
           access_checker = access_checker_for(actor, params[:protocol])
 
@@ -103,36 +101,30 @@ module API
           check_allowed(params)
         end
 
-        # rubocop: disable CodeReuse/ActiveRecord
         post "/lfs_authenticate" do
           status 200
 
-          if params[:key_id]
-            actor = Key.find(params[:key_id])
-            actor.update_last_used_at
-          elsif params[:user_id]
-            actor = User.find_by(id: params[:user_id])
-            raise ActiveRecord::RecordNotFound.new("No such user id!") unless actor
-          else
-            raise ActiveRecord::RecordNotFound.new("No key_id or user_id passed!")
+          unless actor.key_or_user
+            raise ActiveRecord::RecordNotFound.new('User not found!')
           end
 
+          actor.update_last_used_at!
+
           Gitlab::LfsToken
-            .new(actor)
+            .new(actor.key_or_user)
             .authentication_payload(lfs_authentication_url(project))
         end
-        # rubocop: enable CodeReuse/ActiveRecord
 
         #
         # Get a ssh key using the fingerprint
         #
         # rubocop: disable CodeReuse/ActiveRecord
-        get "/authorized_keys" do
+        get '/authorized_keys' do
           fingerprint = params.fetch(:fingerprint) do
             Gitlab::InsecureKeyFingerprint.new(params.fetch(:key)).fingerprint
           end
           key = Key.find_by(fingerprint: fingerprint)
-          not_found!("Key") if key.nil?
+          not_found!('Key') if key.nil?
           present key, with: Entities::SSHKey
         end
         # rubocop: enable CodeReuse/ActiveRecord
@@ -141,16 +133,10 @@ module API
         # Discover user by ssh key, user id or username
         #
         get '/discover' do
-          if params[:key_id]
-            user = UserFinder.new(params[:key_id]).find_by_ssh_key_id
-          elsif params[:username]
-            user = UserFinder.new(params[:username]).find_by_username
-          end
-
-          present user, with: Entities::UserSafe
+          present actor.user, with: Entities::UserSafe
         end
 
-        get "/check" do
+        get '/check' do
           {
             api_version: API.version,
             gitlab_version: Gitlab::VERSION,
@@ -158,35 +144,26 @@ module API
             redis: redis_ping
           }
         end
-
-        # rubocop: disable CodeReuse/ActiveRecord
         post '/two_factor_recovery_codes' do
           status 200
 
-          if params[:key_id]
-            key = Key.find_by(id: params[:key_id])
+          actor.update_last_used_at!
+          user = actor.user
 
-            if key
-              key.update_last_used_at
-            else
-              break { 'success' => false, 'message' => 'Could not find the given key' }
+          if params[:key_id]
+            unless actor.key
+              break { success: false, message: 'Could not find the given key' }
             end
 
-            if key.is_a?(DeployKey)
+            if actor.key.is_a?(DeployKey)
               break { success: false, message: 'Deploy keys cannot be used to retrieve recovery codes' }
             end
-
-            user = key.user
 
             unless user
               break { success: false, message: 'Could not find a user for the given key' }
             end
-          elsif params[:user_id]
-            user = User.find_by(id: params[:user_id])
-
-            unless user
-              break { success: false, message: 'Could not find the given user' }
-            end
+          elsif params[:user_id] && user.nil?
+            break { success: false, message: 'Could not find the given user' }
           end
 
           unless user.two_factor_enabled?
@@ -201,7 +178,6 @@ module API
 
           { success: true, recovery_codes: codes }
         end
-        # rubocop: enable CodeReuse/ActiveRecord
 
         post '/pre_receive' do
           status 200
@@ -211,7 +187,7 @@ module API
           { reference_counter_increased: reference_counter_increased }
         end
 
-        post "/notify_post_receive" do
+        post '/notify_post_receive' do
           status 200
 
           # TODO: Re-enable when Gitaly is processing the post-receive notification
@@ -229,8 +205,7 @@ module API
           status 200
 
           response = Gitlab::InternalPostReceive::Response.new
-          user = identify(params[:identifier])
-          project = Gitlab::GlRepository.parse(params[:gl_repository]).first
+          user = actor.user
           push_options = Gitlab::PushOptions.new(params[:push_options])
 
           response.reference_counter_decreased = Gitlab::ReferenceCounter.new(params[:gl_repository]).decrease

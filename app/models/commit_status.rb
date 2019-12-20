@@ -17,7 +17,7 @@ class CommitStatus < ApplicationRecord
   belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
 
   delegate :commit, to: :pipeline
-  delegate :sha, :short_sha, to: :pipeline
+  delegate :sha, :short_sha, :before_sha, to: :pipeline
 
   validates :pipeline, presence: true, unless: :importing?
   validates :name, presence: true, unless: :importing?
@@ -47,6 +47,12 @@ class CommitStatus < ApplicationRecord
   scope :after_stage, -> (index) { where('stage_idx > ?', index) }
   scope :processables, -> { where(type: %w[Ci::Build Ci::Bridge]) }
   scope :for_ids, -> (ids) { where(id: ids) }
+  scope :for_ref, -> (ref) { where(ref: ref) }
+  scope :by_name, -> (name) { where(name: name) }
+
+  scope :for_project_paths, -> (paths) do
+    where(project: Project.where_full_path_in(Array(paths)))
+  end
 
   scope :with_preloads, -> do
     preload(:project, :user)
@@ -174,10 +180,6 @@ class CommitStatus < ApplicationRecord
 
   def locking_enabled?
     will_save_change_to_status?
-  end
-
-  def before_sha
-    pipeline.before_sha || Gitlab::Git::BLANK_SHA
   end
 
   def group_name

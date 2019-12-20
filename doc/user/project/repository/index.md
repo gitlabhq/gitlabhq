@@ -34,7 +34,7 @@ You can either use the user interface (UI), or connect your local computer
 with GitLab [through the command line](../../../gitlab-basics/command-line-commands.md#start-working-on-your-project).
 
 To configure [GitLab CI/CD](../../../ci/README.md) to build, test, and deploy
-you code, add a file called [`.gitlab-ci.yml`](../../../ci/quick_start/README.md)
+your code, add a file called [`.gitlab-ci.yml`](../../../ci/quick_start/README.md)
 to your repository's root.
 
 **From the user interface:**
@@ -48,6 +48,8 @@ it's easier to do so [via GitLab UI](web_editor.md):
 - [File templates](web_editor.md#template-dropdowns)
 - [Create a directory](web_editor.md#create-a-directory)
 - [Start a merge request](web_editor.md#tips)
+- [Find file history](git_history.md)
+- [Identify changes by line (Git blame)](git_blame.md)
 
 **From the command line:**
 

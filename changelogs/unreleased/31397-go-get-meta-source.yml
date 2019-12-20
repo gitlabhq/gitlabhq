@@ -1,0 +1,5 @@
+---
+title: Support go-source meta tag for godoc.org
+merge_request: 19888
+author: Ethan Reesor (@firelizzard)
+type: changed

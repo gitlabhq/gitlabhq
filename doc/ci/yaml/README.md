@@ -75,6 +75,7 @@ cannot be used as job names**:
 - `after_script`
 - `variables`
 - `cache`
+- `include`
 
 ### Using reserved keywords
 
@@ -134,7 +135,11 @@ The following job parameters can be defined inside a `default:` block:
 - [`services`](#services)
 - [`before_script`](#before_script-and-after_script)
 - [`after_script`](#before_script-and-after_script)
+- [`tags`](#tags)
 - [`cache`](#cache)
+- [`artifacts`](#artifacts)
+- [`retry`](#retry)
+- [`timeout`](#timeout)
 - [`interruptible`](#interruptible)
 
 In the following example, the `ruby:2.5` image is set as the default for all
@@ -182,6 +187,17 @@ that the YAML parser knows to interpret the whole thing as a string rather than
 a "key: value" pair. Be careful when using special characters:
 `:`, `{`, `}`, `[`, `]`, `,`, `&`, `*`, `#`, `?`, `|`, `-`, `<`, `>`, `=`, `!`, `%`, `@`, `` ` ``.
 
+If any of the script commands return an exit code different from zero, the job
+will fail and further commands will not be executed. This behavior can be avoided by
+storing the exit code in a variable:
+
+```yaml
+job:
+  script:
+    - false && true; exit_code=$?
+    - if [ $exit_code -ne 0 ]; then echo "Previous command failed"; fi;
+```
+
 #### YAML anchors for `script`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/23005) in GitLab 12.5.
@@ -189,7 +205,7 @@ a "key: value" pair. Be careful when using special characters:
 You can use [YAML anchors](#anchors) with scripts, which makes it possible to
 include a predefined list of commands in multiple jobs.
 
-Example:
+For example:
 
 ```yaml
 .something: &something
@@ -262,13 +278,13 @@ For more information, see see [Available settings for `services`](../docker/usin
 
 `before_script` is used to define a command that should be run before each
 job, including deploy jobs, but after the restoration of any [artifacts](#artifacts).
-This must be an an array.
+This must be an array.
 
 Scripts specified in `before_script` are concatenated with any scripts specified
 in the main [`script`](#script), and executed together in a single shell.
 
 `after_script` is used to define the command that will be run after each
-job, including failed ones. This must be an an array.
+job, including failed ones. This must be an array.
 
 Scripts specified in `after_script` are executed in a new shell, separate from any
 `before_script` or `script` scripts. As a result, they:
@@ -278,6 +294,10 @@ Scripts specified in `after_script` are executed in a new shell, separate from a
   - Command aliases and variables exported in `script` scripts.
   - Changes outside of the working tree (depending on the Runner executor), like
     software installed by a `before_script` or `script` script.
+- Have a separate timeout, which is hard coded to 5 minutes. See
+  [related issue](https://gitlab.com/gitlab-org/gitlab-runner/issues/2716) for details.
+- Do not affect the job's exit code. If the `script` section succeeds and the
+  `after_script` times out or fails, the job will exit with code `0` (`Job Succeeded`).
 
 It's possible to overwrite a globally defined `before_script` or `after_script`
 if you set it per-job:
@@ -450,7 +470,9 @@ Jobs will run on your own Runners in parallel only if:
 ### `only`/`except` (basic)
 
 NOTE: **Note:**
-These parameters will soon be [deprecated](https://gitlab.com/gitlab-org/gitlab/issues/27449) in favor of [`rules`](#rules) as it offers a more powerful syntax.
+The [`rules`](#rules) syntax is now the preferred method of setting job policies.
+`only` and `except` are [candidates for deprecation](https://gitlab.com/gitlab-org/gitlab/issues/27449),
+and may be removed in the future.
 
 `only` and `except` are two parameters that set a job policy to limit when
 jobs are created:
@@ -767,7 +789,7 @@ it is possible to define a job to be created based on files modified
 in a merge request.
 
 In order to deduce the correct base SHA of the source branch, we recommend combining
-this keyword with `only: merge_requests`. This way, file differences are correctly
+this keyword with `only: [merge_requests]`. This way, file differences are correctly
 calculated from any further commits, thus all changes in the merge requests are properly
 tested in pipelines.
 
@@ -789,7 +811,7 @@ either files in `service-one` directory or the `Dockerfile`, GitLab creates
 and triggers the `docker build service one` job.
 
 Note that if [pipelines for merge requests](../merge_request_pipelines/index.md) is
-combined with `only: change`, but `only: merge_requests` is omitted, there could be
+combined with `only: [change]`, but `only: [merge_requests]` is omitted, there could be
 unwanted behavior.
 
 For example:
@@ -1005,6 +1027,33 @@ Additional job configuration may be added to rules in the future. If something
 useful isn't available, please
 [open an issue](https://gitlab.com/gitlab-org/gitlab/issues).
 
+### `workflow:rules`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/29654) in GitLab 12.5
+
+The top-level `workflow:` key applies to the entirety of a pipeline, and will
+determine whether or not a pipeline is created. It currently accepts a single
+`rules:` key that operates similarly to [`rules:` defined within jobs](#rules),
+enabling dynamic configuration of the pipeline.
+
+The configuration options currently available for `workflow:rules` are:​
+
+- [`if`](#rulesif): Define a rule.
+- [`when`](#when): May be set to `always` or `never` only. If not provided, the default value is `always`​.
+
+The list of `if` rules is evaluated until a single one is matched. If none
+match, the last `when` will be used:
+
+```yaml
+workflow:
+  rules:
+    - if: $CI_COMMIT_REF_NAME =~ /-wip$/
+      when: never
+    - if: $CI_COMMIT_TAG
+      when: never
+    - when: always
+```
+
 ### `tags`
 
 `tags` is used to select specific Runners from the list of all Runners that are
@@ -1099,6 +1148,8 @@ failure.
 1. `always` - execute job regardless of the status of jobs from prior stages.
 1. `manual` - execute job manually (added in GitLab 8.10). Read about
     [manual actions](#whenmanual) below.
+1. `delayed` - execute job after a certain period (added in GitLab 11.14).
+    Read about [delayed actions](#whendelayed) below.
 
 For example:
 
@@ -1232,11 +1283,13 @@ Delayed job are for executing scripts after a certain period.
 This is useful if you want to avoid jobs entering `pending` state immediately.
 
 You can set the period with `start_in` key. The value of `start_in` key is an elapsed time in seconds, unless a unit is
-provided. `start_in` key must be less than or equal to one hour. Examples of valid values include:
+provided. `start_in` key must be less than or equal to one week. Examples of valid values include:
 
+- `'5'`
 - `10 seconds`
 - `30 minutes`
-- `1 hour`
+- `1 day`
+- `1 week`
 
 When there is a delayed job in a stage, the pipeline will not progress until the delayed job has finished.
 This means this keyword can also be used for inserting delays between different stages.
@@ -1397,6 +1450,11 @@ Also in the example, `GIT_STRATEGY` is set to `none` so that GitLab Runner won�
 try to check out the code after the branch is deleted when the `stop_review_app`
 job is [automatically triggered](../environments.md#automatically-stopping-an-environment).
 
+NOTE: **Note:**
+The above example overwrites global variables. If your stop environment job depends
+on global variables, you can use [anchor variables](#yaml-anchors-for-variables) when setting the `GIT_STRATEGY`
+to change it without overriding the global variables.
+
 The `stop_review_app` job is **required** to have the following keywords defined:
 
 - `when` - [reference](#when)
@@ -1404,6 +1462,38 @@ The `stop_review_app` job is **required** to have the following keywords defined
 - `environment:action`
 - `stage` should be the same as the `review_app` in order for the environment
   to stop automatically when the branch is deleted
+
+#### `environment:kubernetes`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/27630) in GitLab 12.6.
+
+The `kubernetes` block is used to configure deployments to a
+[Kubernetes cluster](../../user/project/clusters/index.md) that is associated with your project.
+
+For example:
+
+```yaml
+deploy:
+  stage: deploy
+  script: make deploy-app
+  environment:
+    name: production
+    kubernetes:
+      namespace: production
+```
+
+This will set up the `deploy` job to deploy to the `production`
+environment, using the `production`
+[Kubernetes namespace](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/).
+
+For more information, see
+[Available settings for `kubernetes`](../environments.md#configuring-kubernetes-deployments).
+
+NOTE: **Note:**
+Kubernetes configuration is not supported for Kubernetes clusters
+that are [managed by GitLab](../../user/project/clusters/index.md#gitlab-managed-clusters).
+To follow progress on support for GitLab-managed clusters, see the
+[relevant issue](https://gitlab.com/gitlab-org/gitlab/issues/38054).
 
 #### Dynamic environments
 
@@ -1460,8 +1550,10 @@ globally and all jobs will use that definition.
 
 #### `cache:paths`
 
-Use the `paths` directive to choose which files or directories will be cached. You can only specify paths within your `$CI_PROJECT_DIR`.
-Wildcards can be used that follow the [glob](https://en.wikipedia.org/wiki/Glob_(programming)) patterns and [filepath.Match](https://golang.org/pkg/path/filepath/#Match).
+Use the `paths` directive to choose which files or directories will be cached. Paths
+are relative to the project directory (`$CI_PROJECT_DIR`) and cannot directly link outside it.
+Wildcards can be used that follow the [glob](https://en.wikipedia.org/wiki/Glob_(programming))
+patterns and [filepath.Match](https://golang.org/pkg/path/filepath/#Match).
 
 Cache all files in `binaries` that end in `.apk` and the `.config` file:
 
@@ -1690,8 +1782,9 @@ be available for download in the GitLab UI.
 
 #### `artifacts:paths`
 
-You can only use paths that are within the local working copy.
-Wildcards can be used that follow the [glob](https://en.wikipedia.org/wiki/Glob_(programming)) patterns and [filepath.Match](https://golang.org/pkg/path/filepath/#Match).
+Paths are relative to the project directory (`$CI_PROJECT_DIR`) and cannot directly
+link outside it. Wildcards can be used that follow the [glob](https://en.wikipedia.org/wiki/Glob_(programming))
+patterns and [filepath.Match](https://golang.org/pkg/path/filepath/#Match).
 
 To restrict which jobs a specific job will fetch artifacts from, see [dependencies](#dependencies).
 
@@ -2203,11 +2296,11 @@ This example creates three paths of execution:
   pipeline will be created with YAML error.
 - We are temporarily limiting the maximum number of jobs that a single job can
   need in the `needs:` array:
-  - For GitLab.com, the limit is five. For more information, see our
+  - For GitLab.com, the limit is ten. For more information, see our
     [infrastructure issue](https://gitlab.com/gitlab-com/gl-infra/infrastructure/issues/7541).
   - For self-managed instances, the limit is:
-    - Five by default (`ci_dag_limit_needs` feature flag is enabled).
-    - 50 if the `ci_dag_limit_needs` feature flag is disabled.
+    - 10, if the `ci_dag_limit_needs` feature flag is enabled (default).
+    - 50, if the `ci_dag_limit_needs` feature flag is disabled.
 - It is impossible for now to have `needs: []` (empty needs), the job always needs to
   depend on something, unless this is the job in the first stage. However, support for
   an empty needs array [is planned](https://gitlab.com/gitlab-org/gitlab/issues/30631).
@@ -2218,6 +2311,49 @@ This example creates three paths of execution:
   current stage is not possible either, but support [is planned](https://gitlab.com/gitlab-org/gitlab/issues/30632).
 - Related to the above, stages must be explicitly defined for all jobs
   that have the keyword `needs:` or are referred to by one.
+
+#### Artifact downloads with `needs`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/14311) in GitLab v12.6.
+
+When using `needs`, artifact downloads are controlled with `artifacts: true` or `artifacts: false`.
+The `dependencies` keyword should not be used with `needs`, as this is deprecated since GitLab 12.6.
+
+In the example below, the `rspec` job will download the `build_job` artifacts, while the
+`rubocop` job will not:
+
+```yaml
+build_job:
+  stage: build
+  artifacts:
+    paths:
+      - binaries/
+
+rspec:
+  stage: test
+  needs:
+    - job: build_job
+      artifacts: true
+
+rubocop:
+  stage: test
+  needs:
+    - job: build_job
+      artifacts: false
+```
+
+Additionally, in the three syntax examples below, the `rspec` job will download the artifacts
+from all three `build_jobs`, as `artifacts` is true for `build_job_1`, and will
+**default** to true for both `build_job_2` and `build_job_3`.
+
+```yaml
+rspec:
+  needs:
+    - job: build_job_1
+      artifacts: true
+    - job: build_job_2
+    - build_job_3
+```
 
 ### `coverage`
 
@@ -2344,12 +2480,13 @@ sequentially from `job_name 1/N` to `job_name N/N`.
 
 For every job, `CI_NODE_INDEX` and `CI_NODE_TOTAL` [environment variables](../variables/README.md#predefined-environment-variables) are set.
 
-Marking a job to be run in parallel requires only a simple addition to your configuration file:
+Marking a job to be run in parallel requires adding `parallel` to your configuration
+file. For example:
 
-```diff
- test:
-   script: rspec
-+  parallel: 5
+```yaml
+test:
+  script: rspec
+  parallel: 5
 ```
 
 TIP: **Tip:**
@@ -2397,7 +2534,7 @@ triggers being used.
 
 #### Simple `trigger` syntax
 
-The most simple way to configure a downstream trigger to use `trigger` keyword
+The simplest way to configure a downstream trigger is to use `trigger` keyword
 with a full path to a downstream project:
 
 ```yaml
@@ -2429,7 +2566,7 @@ staging:
 
 It is possible to mirror the status from a triggered pipeline:
 
-```
+```yaml
 trigger_job:
   trigger:
     project: my/project
@@ -2438,7 +2575,7 @@ trigger_job:
 
 It is possible to mirror the status from an upstream pipeline:
 
-```
+```yaml
 upstream_bridge:
   stage: test
   needs:
@@ -3068,6 +3205,29 @@ which can be set in GitLab's UI.
 
 Learn more about [variables and their priority][variables].
 
+#### YAML anchors for variables
+
+[YAML anchors](#anchors) can be used with `variables`, to easily repeat assignment
+of variables across multiple jobs. It can also enable more flexibility when a job
+requires a specific `variables` block that would otherwise override the global variables.
+
+In the example below, we will override the `GIT_STRATEGY` variable without affecting
+the use of the `SAMPLE_VARIABLE` variable:
+
+```yaml
+# global variables
+variables: &global-variables
+  SAMPLE_VARIABLE: sample_variable_value
+
+# a job that needs to set the GIT_STRATEGY variable, yet depend on global variables
+job_no_git_strategy:
+  stage: cleanup
+  variables:
+    <<: *global-variables
+    GIT_STRATEGY: none
+  script: echo $SAMPLE_VARIABLE
+```
+
 #### Git strategy
 
 > Introduced in GitLab 8.9 as an experimental feature. May change or be removed
@@ -3129,7 +3289,7 @@ There are three possible values: `none`, `normal`, and `recursive`:
 - `normal` means that only the top-level submodules will be included. It is
   equivalent to:
 
-  ```
+  ```shell
   git submodule sync
   git submodule update --init
   ```
@@ -3139,7 +3299,7 @@ There are three possible values: `none`, `normal`, and `recursive`:
   GitLab Runner with an executor not based on Docker, make sure the Git version
   meets that requirement. It is equivalent to:
 
-  ```
+  ```shell
   git submodule sync --recursive
   git submodule update --init --recursive
   ```
@@ -3400,7 +3560,7 @@ Read more about the various [YAML features](https://learnxinyminutes.com/docs/ya
 If you want to temporarily 'disable' a job, rather than commenting out all the
 lines where the job is defined:
 
-```
+```yaml
 #hidden_job:
 #  script:
 #    - run test
@@ -3540,6 +3700,10 @@ test:mysql:
 ```
 
 You can see that the hidden keys are conveniently used as templates.
+
+NOTE: **Note:**
+You can't use YAML anchors across multiple files when leveraging the [`include`](#include)
+feature. Anchors are only valid within the file they were defined in.
 
 ## Triggers
 

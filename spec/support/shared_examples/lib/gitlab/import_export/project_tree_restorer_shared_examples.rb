@@ -2,7 +2,7 @@
 
 # Shared examples for ProjectTreeRestorer (shared to allow the testing
 # of EE-specific features)
-RSpec.shared_examples 'restores project correctly' do |**results|
+RSpec.shared_examples 'restores project successfully' do |**results|
   it 'restores the project' do
     expect(shared.errors).to be_empty
     expect(restored_project_json).to be_truthy
@@ -32,6 +32,10 @@ RSpec.shared_examples 'restores project correctly' do |**results|
 
   it 'does not set params that are excluded from import_export settings' do
     expect(project.import_type).to be_nil
-    expect(project.creator_id).not_to eq 123
+    expect(project.creator_id).not_to eq 999
+  end
+
+  it 'records exact number of import failures' do
+    expect(project.import_failures.size).to eq(results.fetch(:import_failures, 0))
   end
 end

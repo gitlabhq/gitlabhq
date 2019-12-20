@@ -32,8 +32,8 @@ export default {
   },
   computed: {
     chartData() {
-      const queryData = this.graphData.queries.reduce((acc, query) => {
-        const series = makeDataSeries(query.result, {
+      const queryData = this.graphData.metrics.reduce((acc, query) => {
+        const series = makeDataSeries(query.result || [], {
           name: this.formatLegendLabel(query),
         });
 
@@ -45,13 +45,13 @@ export default {
       };
     },
     xAxisTitle() {
-      return this.graphData.queries[0].result[0].x_label !== undefined
-        ? this.graphData.queries[0].result[0].x_label
+      return this.graphData.metrics[0].result[0].x_label !== undefined
+        ? this.graphData.metrics[0].result[0].x_label
         : '';
     },
     yAxisTitle() {
-      return this.graphData.queries[0].result[0].y_label !== undefined
-        ? this.graphData.queries[0].result[0].y_label
+      return this.graphData.metrics[0].result[0].y_label !== undefined
+        ? this.graphData.metrics[0].result[0].y_label
         : '';
     },
     xAxisType() {

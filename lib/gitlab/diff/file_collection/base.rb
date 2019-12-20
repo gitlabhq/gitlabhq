@@ -8,7 +8,7 @@ module Gitlab
 
         attr_reader :project, :diff_options, :diff_refs, :fallback_diff_refs, :diffable
 
-        delegate :count, :size, :real_size, to: :diff_files
+        delegate :count, :size, :real_size, to: :raw_diff_files
 
         def self.default_options
           ::Commit.max_diff_options.merge(ignore_whitespace_change: false, expanded: false, include_stats: true)
@@ -31,7 +31,23 @@ module Gitlab
         end
 
         def diff_files
-          @diff_files ||= diffs.decorate! { |diff| decorate_diff!(diff) }
+          raw_diff_files
+        end
+
+        def raw_diff_files
+          @raw_diff_files ||= diffs.decorate! { |diff| decorate_diff!(diff) }
+        end
+
+        def diff_file_paths
+          diff_files.map(&:file_path)
+        end
+
+        def pagination_data
+          {
+            current_page: nil,
+            next_page: nil,
+            total_pages: nil
+          }
         end
 
         # This mutates `diff_files` lines.

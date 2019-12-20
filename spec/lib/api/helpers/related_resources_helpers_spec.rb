@@ -43,6 +43,7 @@ describe API::Helpers::RelatedResourcesHelpers do
 
   describe '#expose_url' do
     let(:path) { '/api/v4/awesome_endpoint' }
+
     subject(:url) { helpers.expose_url(path) }
 
     def stub_default_url_options(protocol: 'http', host: 'example.com', port: nil, script_name: '')

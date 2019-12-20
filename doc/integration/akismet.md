@@ -24,9 +24,9 @@ To use Akismet:
 
 1. Click on **Show** to reveal the API key.
 
-1. Go to Applications Settings on Admin Area (`admin/application_settings`)
+1. Go to **Admin Area > Settings > Reporting** (`/admin/application_settings/reporting`).
 
-1. Check the **Enable Akismet** checkbox
+1. Check the **Enable Akismet** checkbox.
 
 1. Fill in the API key from step 3.
 

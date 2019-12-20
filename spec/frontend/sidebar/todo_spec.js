@@ -89,5 +89,11 @@ describe('SidebarTodo', () => {
 
       expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
     });
+
+    it('hides button icon when `isActionActive` prop is true', () => {
+      createComponent({ collapsed: true, isActionActive: true });
+
+      expect(wrapper.find(Icon).isVisible()).toBe(false);
+    });
   });
 });

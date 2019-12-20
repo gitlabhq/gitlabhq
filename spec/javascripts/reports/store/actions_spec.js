@@ -1,4 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
+import testAction from 'spec/helpers/vuex_action_helper';
+import { TEST_HOST } from 'spec/test_constants';
 import axios from '~/lib/utils/axios_utils';
 import {
   setEndpoint,
@@ -13,8 +15,6 @@ import {
 } from '~/reports/store/actions';
 import state from '~/reports/store/state';
 import * as types from '~/reports/store/mutation_types';
-import testAction from 'spec/helpers/vuex_action_helper';
-import { TEST_HOST } from 'spec/test_constants';
 
 describe('Reports Store Actions', () => {
   let mockedState;

@@ -1,0 +1,5 @@
+---
+title: Use cascading deletes for deleting oauth_openid_requests upon deleting an oauth_access_grant
+merge_request: 19617
+author:
+type: fixed

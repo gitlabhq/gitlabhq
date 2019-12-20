@@ -47,7 +47,6 @@ tables:
   epics:
     whitelist:
     - id
-    - milestone_id
     - group_id
     - author_id
     - assignee_id
@@ -93,7 +92,7 @@ tables:
     - updated_at
     - description
     - milestone_id
-    - state
+    - state_id
     - updated_by_id
     - weight
     - due_date
@@ -174,7 +173,7 @@ tables:
     - created_at
     - updated_at
     - milestone_id
-    - state
+    - state_id
     - merge_status
     - target_project_id
     - updated_by_id

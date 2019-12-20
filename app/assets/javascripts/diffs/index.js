@@ -67,6 +67,8 @@ export default function initDiffsApp(store) {
 
       return {
         endpoint: dataset.endpoint,
+        endpointMetadata: dataset.endpointMetadata || '',
+        endpointBatch: dataset.endpointBatch || '',
         projectPath: dataset.projectPath,
         helpPagePath: dataset.helpPagePath,
         currentUser: JSON.parse(dataset.currentUserData) || {},
@@ -100,6 +102,8 @@ export default function initDiffsApp(store) {
       return createElement('diffs-app', {
         props: {
           endpoint: this.endpoint,
+          endpointMetadata: this.endpointMetadata,
+          endpointBatch: this.endpointBatch,
           currentUser: this.currentUser,
           projectPath: this.projectPath,
           helpPagePath: this.helpPagePath,

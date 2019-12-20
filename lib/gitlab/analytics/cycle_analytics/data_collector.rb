@@ -42,3 +42,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Analytics::CycleAnalytics::DataCollector.prepend_if_ee('EE::Gitlab::Analytics::CycleAnalytics::DataCollector')

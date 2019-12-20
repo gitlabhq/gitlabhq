@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import axios from '~/lib/utils/axios_utils';
 import pipelinesComp from '~/pipelines/components/pipelines.vue';
 import Store from '~/pipelines/stores/pipelines_store';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { pipelineWithStages, stageReply } from './mock_data';
 
 describe('Pipelines', () => {
@@ -446,7 +446,7 @@ describe('Pipelines', () => {
             };
 
             vm.$nextTick(() => {
-              vm.$el.querySelector('.js-next-button .page-link').click();
+              vm.$el.querySelector('.next-page-item').click();
 
               expect(vm.updateContent).toHaveBeenCalledWith({ scope: 'all', page: '2' });
 

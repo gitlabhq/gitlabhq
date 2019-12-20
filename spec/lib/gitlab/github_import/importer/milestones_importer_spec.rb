@@ -80,8 +80,9 @@ describe Gitlab::GithubImport::Importer::MilestonesImporter, :clean_gitlab_redis
 
   describe '#build_milestones_cache' do
     it 'builds the milestones cache' do
-      expect_any_instance_of(Gitlab::GithubImport::MilestoneFinder)
-        .to receive(:build_cache)
+      expect_next_instance_of(Gitlab::GithubImport::MilestoneFinder) do |instance|
+        expect(instance).to receive(:build_cache)
+      end
 
       importer.build_milestones_cache
     end

@@ -58,6 +58,14 @@ class NotificationService
     end
   end
 
+  # Notify the owner of the personal access token, when it is about to expire
+  # And mark the token with about_to_expire_delivered
+  def access_token_about_to_expire(user)
+    return unless user.can?(:receive_notifications)
+
+    mailer.access_token_about_to_expire_email(user).deliver_later
+  end
+
   # When create an issue we should send an email to:
   #
   #  * issue assignee if their notification level is not Disabled

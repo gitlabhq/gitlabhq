@@ -73,6 +73,7 @@ The following table shows which languages, package managers and frameworks are s
 | Groovy ([Ant](https://ant.apache.org/), [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/) and [SBT](https://www.scala-sbt.org/)) | [SpotBugs](https://spotbugs.github.io/) with the [find-sec-bugs](https://find-sec-bugs.github.io/) plugin | 11.3 (Gradle) & 11.9 (Ant, Maven, SBT) |
 | Java ([Ant](https://ant.apache.org/), [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/) and [SBT](https://www.scala-sbt.org/)) | [SpotBugs](https://spotbugs.github.io/) with the [find-sec-bugs](https://find-sec-bugs.github.io/) plugin | 10.6 (Maven), 10.8 (Gradle) & 11.9 (Ant, SBT) |
 | JavaScript                                                                  | [ESLint security plugin](https://github.com/nodesecurity/eslint-plugin-security)       | 11.8                         |
+| Kubernetes manifests                                                        | [Kubesec](https://github.com/controlplaneio/kubesec)                                   | 12.6                         |
 | Node.js                                                                     | [NodeJsScan](https://github.com/ajinabraham/NodeJsScan)                                | 11.1                         |
 | PHP                                                                         | [phpcs-security-audit](https://github.com/FloeDesignTechnologies/phpcs-security-audit) | 10.8                         |
 | Python ([pip](https://pip.pypa.io/en/stable/))                              | [bandit](https://github.com/PyCQA/bandit)                                              | 10.3                         |
@@ -185,6 +186,22 @@ variables:
 
 This will create individual `<analyzer-name>-sast` jobs for each analyzer that runs in your CI/CD pipeline.
 
+#### Enabling kubesec analyzer
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12752) in GitLab Ultimate 12.6.
+
+When [Docker in Docker is disabled](#disabling-docker-in-docker-for-sast),
+you will need to set `SCAN_KUBERNETES_MANIFESTS` to `"true"` to enable the
+kubesec analyzer. In `.gitlab-ci.yml`, define:
+
+```yaml
+include:
+  template: SAST.gitlab-ci.yml
+
+variables:
+  SCAN_KUBERNETES_MANIFESTS: "true"
+```
+
 ### Available variables
 
 SAST can be [configured](#customizing-the-sast-settings) using environment variables.
@@ -206,14 +223,14 @@ The following are Docker image-related variables.
 
 Some analyzers make it possible to filter out vulnerabilities under a given threshold.
 
-| Environment variable | Default value | Description | Example usage |
-|----------------------|---------------|-------------|---|
-| `SAST_BANDIT_EXCLUDED_PATHS`  | -   | comma-separated list of paths to exclude from scan. Uses Python's [`fnmatch` syntax](https://docs.python.org/2/library/fnmatch.html) | |
-| `SAST_BRAKEMAN_LEVEL`   |         1 | Ignore Brakeman vulnerabilities under given confidence level. Integer, 1=Low 3=High. | |
-| `SAST_FLAWFINDER_LEVEL` |         1 | Ignore Flawfinder vulnerabilities under given risk level. Integer, 0=No risk, 5=High risk. | |
-| `SAST_GITLEAKS_ENTROPY_LEVEL` | 8.0 | Minimum entropy for secret detection. Float, 0.0 = low, 8.0 = high. | |
-| `SAST_GOSEC_LEVEL`      |         0 | Ignore gosec vulnerabilities under given confidence level. Integer, 0=Undefined, 1=Low, 2=Medium, 3=High. | |
-| `SAST_EXCLUDED_PATHS`   |   -        | Exclude vulnerabilities from output based on the paths. This is a comma-separated list of patterns. Patterns can be globs, file or folder paths. Parent directories will also match patterns. | `SAST_EXCLUDED_PATHS=doc,spec` |
+| Environment variable | Default value | Description |
+|----------------------|---------------|-------------|
+| `SAST_BANDIT_EXCLUDED_PATHS`  | -   | comma-separated list of paths to exclude from scan. Uses Python's [`fnmatch` syntax](https://docs.python.org/2/library/fnmatch.html) |
+| `SAST_BRAKEMAN_LEVEL`   |         1 | Ignore Brakeman vulnerabilities under given confidence level. Integer, 1=Low 3=High. |
+| `SAST_FLAWFINDER_LEVEL` |         1 | Ignore Flawfinder vulnerabilities under given risk level. Integer, 0=No risk, 5=High risk. |
+| `SAST_GITLEAKS_ENTROPY_LEVEL` | 8.0 | Minimum entropy for secret detection. Float, 0.0 = low, 8.0 = high. |
+| `SAST_GOSEC_LEVEL`      |         0 | Ignore gosec vulnerabilities under given confidence level. Integer, 0=Undefined, 1=Low, 2=Medium, 3=High. |
+| `SAST_EXCLUDED_PATHS`   |   -        | Exclude vulnerabilities from output based on the paths. This is a comma-separated list of patterns. Patterns can be globs, file or folder paths (e.g., `doc,spec` ). Parent directories will also match patterns. |
 
 #### Timeouts
 
@@ -232,19 +249,20 @@ Timeout variables are not applicable for setups with [disabled Docker In Docker]
 
 Some analyzers can be customized with environment variables.
 
-| Environment variable    | Analyzer | Description |
-|-------------------------|----------|----------|
-| `ANT_HOME`              | spotbugs | The `ANT_HOME` environment variable. |
-| `ANT_PATH`              | spotbugs | Path to the `ant` executable. |
-| `GRADLE_PATH`           | spotbugs | Path to the `gradle` executable. |
-| `JAVA_OPTS`             | spotbugs | Additional arguments for the `java` executable. |
-| `JAVA_PATH`             | spotbugs | Path to the `java` executable. |
-| `SAST_JAVA_VERSION`     | spotbugs | Which Java version to use. Supported versions are `8` and `11`. Defaults to `8`. |
-| `MAVEN_CLI_OPTS`        | spotbugs | Additional arguments for the `mvn` or `mvnw` executable. |
-| `MAVEN_PATH`            | spotbugs | Path to the `mvn` executable. |
-| `MAVEN_REPO_PATH`       | spotbugs | Path to the Maven local repository (shortcut for the `maven.repo.local` property). |
-| `SBT_PATH`              | spotbugs | Path to the `sbt` executable. |
-| `FAIL_NEVER`            | spotbugs | Set to `1` to ignore compilation failure. |
+| Environment variable        | Analyzer | Description |
+|-----------------------------|----------|-------------|
+| `SCAN_KUBERNETES_MANIFESTS` | kubesec  | Set to `"true"` to scan Kubernetes manifests when [Docker in Docker](#disabling-docker-in-docker-for-sast) is disabled. |
+| `ANT_HOME`                  | spotbugs | The `ANT_HOME` environment variable. |
+| `ANT_PATH`                  | spotbugs | Path to the `ant` executable. |
+| `GRADLE_PATH`               | spotbugs | Path to the `gradle` executable. |
+| `JAVA_OPTS`                 | spotbugs | Additional arguments for the `java` executable. |
+| `JAVA_PATH`                 | spotbugs | Path to the `java` executable. |
+| `SAST_JAVA_VERSION`         | spotbugs | Which Java version to use. Supported versions are `8` and `11`. Defaults to `8`. |
+| `MAVEN_CLI_OPTS`            | spotbugs | Additional arguments for the `mvn` or `mvnw` executable. |
+| `MAVEN_PATH`                | spotbugs | Path to the `mvn` executable. |
+| `MAVEN_REPO_PATH`           | spotbugs | Path to the Maven local repository (shortcut for the `maven.repo.local` property). |
+| `SBT_PATH`                  | spotbugs | Path to the `sbt` executable. |
+| `FAIL_NEVER`                | spotbugs | Set to `1` to ignore compilation failure. |
 
 #### Custom environment variables
 
@@ -340,7 +358,7 @@ it highlighted:
 }
 ```
 
-Here is the description of the report file structure nodes and their meaning. All fields are mandatory to be present in
+Here is the description of the report file structure nodes and their meaning. All fields are mandatory in
 the report JSON unless stated otherwise. Presence of optional fields depends on the underlying analyzers being used.
 
 | Report JSON node                        | Function |

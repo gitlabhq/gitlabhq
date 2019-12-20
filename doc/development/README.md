@@ -69,6 +69,8 @@ description: 'Learn how to contribute to GitLab.'
 - [Developing against interacting components or features](interacting_components.md)
 - [File uploads](uploads.md)
 - [Auto DevOps development guide](auto_devops.md)
+- [Mass Inserting Models](mass_insert.md)
+- [Cycle Analytics development guide](cycle_analytics.md)
 
 ## Performance guides
 
@@ -100,6 +102,10 @@ description: 'Learn how to contribute to GitLab.'
 - [Background migrations](background_migrations.md)
 - [Swapping tables](swapping_tables.md)
 - [Deleting migrations](deleting_migrations.md)
+
+### Debugging
+
+- Tracing the source of an SQL query using query comments with [Marginalia](database_query_comments.md)
 
 ### Best practices
 

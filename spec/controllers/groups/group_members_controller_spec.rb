@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Groups::GroupMembersController do
   include ExternalAuthorizationServiceHelpers
 
-  let(:user)  { create(:user) }
+  let(:user) { create(:user) }
   let(:group) { create(:group, :public) }
   let(:membership) { create(:group_member, group: group) }
 
@@ -47,6 +47,35 @@ describe Groups::GroupMembersController do
         get :index, params: { group_id: group, invited_members_page: 2 }
 
         expect(assigns(:invited_members).count).to eq(1)
+      end
+    end
+
+    context 'when user has owner access to subgroup' do
+      let(:nested_group) { create(:group, parent: group) }
+      let(:nested_group_user) { create(:user) }
+
+      before do
+        group.add_owner(user)
+        nested_group.add_owner(nested_group_user)
+        sign_in(user)
+      end
+
+      it 'lists inherited group members by default' do
+        get :index, params: { group_id: nested_group }
+
+        expect(assigns(:members).map(&:user_id)).to contain_exactly(user.id, nested_group_user.id)
+      end
+
+      it 'lists direct group members only' do
+        get :index, params: { group_id: nested_group, with_inherited_permissions: 'exclude' }
+
+        expect(assigns(:members).map(&:user_id)).to contain_exactly(nested_group_user.id)
+      end
+
+      it 'lists inherited group members only' do
+        get :index, params: { group_id: nested_group, with_inherited_permissions: 'only' }
+
+        expect(assigns(:members).map(&:user_id)).to contain_exactly(user.id)
       end
     end
   end

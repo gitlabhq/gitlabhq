@@ -199,6 +199,13 @@ describe Namespace do
 
       expect(described_class.find_by_pages_host(host)).to eq(namespace)
     end
+
+    it "returns no result if the provided host is not subdomain of the Pages host" do
+      create(:namespace, name: 'namespace.io')
+      host = "namespace.io"
+
+      expect(described_class.find_by_pages_host(host)).to eq(nil)
+    end
   end
 
   describe '#ancestors_upto' do
@@ -274,7 +281,7 @@ describe Namespace do
 
               move_dir_result
             end
-            expect(Gitlab::Sentry).to receive(:should_raise_for_dev?).and_return(false) # like prod
+            expect(Gitlab::ErrorTracking).to receive(:should_raise_for_dev?).and_return(false) # like prod
 
             namespace.update(path: namespace.full_path + '_new')
           end

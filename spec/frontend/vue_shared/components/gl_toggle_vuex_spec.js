@@ -1,7 +1,7 @@
 import Vuex from 'vuex';
-import GlToggleVuex from '~/vue_shared/components/gl_toggle_vuex.vue';
 import { GlToggle } from '@gitlab/ui';
 import { mount, createLocalVue } from '@vue/test-utils';
+import GlToggleVuex from '~/vue_shared/components/gl_toggle_vuex.vue';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

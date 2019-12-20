@@ -98,6 +98,53 @@ describe User, :do_not_mock_admin_mode do
   end
 
   describe 'validations' do
+    describe 'password' do
+      let!(:user) { create(:user) }
+
+      before do
+        allow(Devise).to receive(:password_length).and_return(8..128)
+        allow(described_class).to receive(:password_length).and_return(10..130)
+      end
+
+      context 'length' do
+        it { is_expected.to validate_length_of(:password).is_at_least(10).is_at_most(130) }
+      end
+
+      context 'length validator' do
+        context 'for a short password' do
+          before do
+            user.password = user.password_confirmation = 'abc'
+          end
+
+          it 'does not run the default Devise password length validation' do
+            expect(user).to be_invalid
+            expect(user.errors.full_messages.join).not_to include('is too short (minimum is 8 characters)')
+          end
+
+          it 'runs the custom password length validator' do
+            expect(user).to be_invalid
+            expect(user.errors.full_messages.join).to include('is too short (minimum is 10 characters)')
+          end
+        end
+
+        context 'for a long password' do
+          before do
+            user.password = user.password_confirmation = 'a' * 140
+          end
+
+          it 'does not run the default Devise password length validation' do
+            expect(user).to be_invalid
+            expect(user.errors.full_messages.join).not_to include('is too long (maximum is 128 characters)')
+          end
+
+          it 'runs the custom password length validator' do
+            expect(user).to be_invalid
+            expect(user.errors.full_messages.join).to include('is too long (maximum is 130 characters)')
+          end
+        end
+      end
+    end
+
     describe 'name' do
       it { is_expected.to validate_presence_of(:name) }
       it { is_expected.to validate_length_of(:name).is_at_most(128) }
@@ -142,7 +189,7 @@ describe User, :do_not_mock_admin_mode do
           expect(user.namespace).to receive(:any_project_has_container_registry_tags?).and_return(true)
           user.username = 'new_path'
           expect(user).to be_invalid
-          expect(user.errors.messages[:username].first).to match('cannot be changed if a personal project has container registry tags')
+          expect(user.errors.messages[:username].first).to eq(_('cannot be changed if a personal project has container registry tags.'))
         end
       end
 
@@ -461,6 +508,34 @@ describe User, :do_not_mock_admin_mode do
       end
     end
 
+    describe '.password_length' do
+      let(:password_length) { described_class.password_length }
+
+      it 'is expected to be a Range' do
+        expect(password_length).to be_a(Range)
+      end
+
+      context 'minimum value' do
+        before do
+          stub_application_setting(minimum_password_length: 101)
+        end
+
+        it 'is determined by the current value of `minimum_password_length` attribute of application_setting' do
+          expect(password_length.min).to eq(101)
+        end
+      end
+
+      context 'maximum value' do
+        before do
+          allow(Devise.password_length).to receive(:max).and_return(201)
+        end
+
+        it 'is determined by the current value of `Devise.password_length.max`' do
+          expect(password_length.max).to eq(201)
+        end
+      end
+    end
+
     describe '.limit_to_todo_authors' do
       context 'when filtering by todo authors' do
         let(:user1) { create(:user) }
@@ -527,6 +602,35 @@ describe User, :do_not_mock_admin_mode do
 
         expect(described_class.by_username('CAMELCASED'))
           .to contain_exactly(user)
+      end
+    end
+
+    describe '.with_expiring_and_not_notified_personal_access_tokens' do
+      let_it_be(:user1) { create(:user) }
+      let_it_be(:user2) { create(:user) }
+      let_it_be(:user3) { create(:user) }
+
+      let_it_be(:expired_token) { create(:personal_access_token, user: user1, expires_at: 2.days.ago) }
+      let_it_be(:revoked_token) { create(:personal_access_token, user: user1, revoked: true) }
+      let_it_be(:valid_token_and_notified) { create(:personal_access_token, user: user2, expires_at: 2.days.from_now, expire_notification_delivered: true) }
+      let_it_be(:valid_token1) { create(:personal_access_token, user: user2, expires_at: 2.days.from_now) }
+      let_it_be(:valid_token2) { create(:personal_access_token, user: user2, expires_at: 2.days.from_now) }
+      let(:users) { described_class.with_expiring_and_not_notified_personal_access_tokens(from) }
+
+      context 'in one day' do
+        let(:from) { 1.day.from_now }
+
+        it "doesn't include an user" do
+          expect(users).to be_empty
+        end
+      end
+
+      context 'in three days' do
+        let(:from) { 3.days.from_now }
+
+        it 'only includes user2' do
+          expect(users).to contain_exactly(user2)
+        end
       end
     end
   end
@@ -2790,11 +2894,11 @@ describe User, :do_not_mock_admin_mode do
     end
   end
 
-  describe '#full_private_access?' do
+  describe '#can_read_all_resources?' do
     it 'returns false for regular user' do
       user = build(:user)
 
-      expect(user.full_private_access?).to be_falsy
+      expect(user.can_read_all_resources?).to be_falsy
     end
 
     context 'for admin user' do
@@ -2804,17 +2908,18 @@ describe User, :do_not_mock_admin_mode do
 
       context 'when admin mode is disabled' do
         it 'returns false' do
-          expect(user.full_private_access?).to be_falsy
+          expect(user.can_read_all_resources?).to be_falsy
         end
       end
 
       context 'when admin mode is enabled' do
         before do
+          Gitlab::Auth::CurrentUserMode.new(user).request_admin_mode!
           Gitlab::Auth::CurrentUserMode.new(user).enable_admin_mode!(password: user.password)
         end
 
         it 'returns true' do
-          expect(user.full_private_access?).to be_truthy
+          expect(user.can_read_all_resources?).to be_truthy
         end
       end
     end
@@ -3184,7 +3289,7 @@ describe User, :do_not_mock_admin_mode do
 
             it 'causes the user save to fail' do
               expect(user.update(username: new_username)).to be_falsey
-              expect(user.namespace.errors.messages[:path].first).to eq('has already been taken')
+              expect(user.namespace.errors.messages[:path].first).to eq(_('has already been taken'))
             end
 
             it 'adds the namespace errors to the user' do

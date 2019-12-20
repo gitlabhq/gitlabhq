@@ -68,7 +68,7 @@ export const mockFrequentGroups = [
   },
 ];
 
-export const mockSearchedGroups = { data: [mockRawGroup] };
+export const mockSearchedGroups = [mockRawGroup];
 export const mockProcessedSearchedGroups = [mockGroup];
 
 export const mockProject = {

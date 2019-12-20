@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe Issuable do
+  include ProjectForksHelper
+
   let(:issuable_class) { Issue }
   let(:issue) { create(:issue, title: 'An issue', description: 'A description') }
   let(:user) { create(:user) }
@@ -850,6 +852,93 @@ describe Issuable do
       end
 
       it_behaves_like 'matches_cross_reference_regex? fails fast'
+    end
+  end
+
+  describe 'release scopes' do
+    let_it_be(:project) { create(:project) }
+    let(:forked_project) { fork_project(project) }
+
+    let_it_be(:release_1) { create(:release, tag: 'v1.0', project: project) }
+    let_it_be(:release_2) { create(:release, tag: 'v2.0', project: project) }
+    let_it_be(:release_3) { create(:release, tag: 'v3.0', project: project) }
+    let_it_be(:release_4) { create(:release, tag: 'v4.0', project: project) }
+
+    let_it_be(:milestone_1) { create(:milestone, releases: [release_1], title: 'm1', project: project) }
+    let_it_be(:milestone_2) { create(:milestone, releases: [release_1, release_2], title: 'm2', project: project) }
+    let_it_be(:milestone_3) { create(:milestone, releases: [release_2, release_4], title: 'm3', project: project) }
+    let_it_be(:milestone_4) { create(:milestone, releases: [release_3], title: 'm4', project: project) }
+    let_it_be(:milestone_5) { create(:milestone, releases: [release_3], title: 'm5', project: project) }
+    let_it_be(:milestone_6) { create(:milestone, title: 'm6', project: project) }
+
+    let_it_be(:issue_1) { create(:issue, milestone: milestone_1, project: project) }
+    let_it_be(:issue_2) { create(:issue, milestone: milestone_1, project: project) }
+    let_it_be(:issue_3) { create(:issue, milestone: milestone_2, project: project) }
+    let_it_be(:issue_4) { create(:issue, milestone: milestone_5, project: project) }
+    let_it_be(:issue_5) { create(:issue, milestone: milestone_6, project: project) }
+    let_it_be(:issue_6) { create(:issue, project: project) }
+
+    let(:mr_1) { create(:merge_request, milestone: milestone_1, target_project: project, source_project: project) }
+    let(:mr_2) { create(:merge_request, milestone: milestone_3, target_project: project, source_project: forked_project) }
+    let(:mr_3) { create(:merge_request, source_project: project) }
+
+    let_it_be(:issue_items) { Issue.all }
+    let(:mr_items) { MergeRequest.all }
+
+    describe '#without_release' do
+      it 'returns the issues or mrs not tied to any milestone and the ones tied to milestone with no release' do
+        expect(issue_items.without_release).to contain_exactly(issue_5, issue_6)
+        expect(mr_items.without_release).to contain_exactly(mr_3)
+      end
+    end
+
+    describe '#any_release' do
+      it 'returns all issues or all mrs tied to a release' do
+        expect(issue_items.any_release).to contain_exactly(issue_1, issue_2, issue_3, issue_4)
+        expect(mr_items.any_release).to contain_exactly(mr_1, mr_2)
+      end
+    end
+
+    describe '#with_release' do
+      it 'returns the issues tied to a specfic release' do
+        expect(issue_items.with_release('v1.0', project.id)).to contain_exactly(issue_1, issue_2, issue_3)
+      end
+
+      it 'returns the mrs tied to a specific release' do
+        expect(mr_items.with_release('v1.0', project.id)).to contain_exactly(mr_1)
+      end
+
+      context 'when a release has a milestone with one issue and another one with no issue' do
+        it 'returns that one issue' do
+          expect(issue_items.with_release('v2.0', project.id)).to contain_exactly(issue_3)
+        end
+
+        context 'when the milestone with no issue is added as a filter' do
+          it 'returns an empty list' do
+            expect(issue_items.with_release('v2.0', project.id).with_milestone('m3')).to be_empty
+          end
+        end
+
+        context 'when the milestone with the issue is added as a filter' do
+          it 'returns this issue' do
+            expect(issue_items.with_release('v2.0', project.id).with_milestone('m2')).to contain_exactly(issue_3)
+          end
+        end
+      end
+
+      context 'when there is no issue or mr under a specific release' do
+        it 'returns no issue or no mr' do
+          expect(issue_items.with_release('v4.0', project.id)).to be_empty
+          expect(mr_items.with_release('v4.0', project.id)).to be_empty
+        end
+      end
+
+      context 'when a non-existent release tag is passed in' do
+        it 'returns no issue or no mr' do
+          expect(issue_items.with_release('v999.0', project.id)).to be_empty
+          expect(mr_items.with_release('v999.0', project.id)).to be_empty
+        end
+      end
     end
   end
 end

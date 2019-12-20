@@ -9,100 +9,11 @@ describe SnippetsHelper do
   let_it_be(:public_personal_snippet) { create(:personal_snippet, :public) }
   let_it_be(:public_project_snippet) { create(:project_snippet, :public) }
 
-  describe '#reliable_snippet_path' do
-    subject { reliable_snippet_path(snippet) }
-
-    context 'personal snippets' do
-      let(:snippet) { public_personal_snippet }
-
-      context 'public' do
-        it 'returns a full path' do
-          expect(subject).to eq("/snippets/#{snippet.id}")
-        end
-      end
-    end
-
-    context 'project snippets' do
-      let(:snippet) { public_project_snippet }
-
-      it 'returns a full path' do
-        expect(subject).to eq("/#{snippet.project.full_path}/snippets/#{snippet.id}")
-      end
-    end
-  end
-
-  describe '#reliable_snippet_url' do
-    subject { reliable_snippet_url(snippet) }
-
-    context 'personal snippets' do
-      let(:snippet) { public_personal_snippet }
-
-      context 'public' do
-        it 'returns a full url' do
-          expect(subject).to eq("http://test.host/snippets/#{snippet.id}")
-        end
-      end
-    end
-
-    context 'project snippets' do
-      let(:snippet) { public_project_snippet }
-
-      it 'returns a full url' do
-        expect(subject).to eq("http://test.host/#{snippet.project.full_path}/snippets/#{snippet.id}")
-      end
-    end
-  end
-
-  describe '#reliable_raw_snippet_path' do
-    subject { reliable_raw_snippet_path(snippet) }
-
-    context 'personal snippets' do
-      let(:snippet) { public_personal_snippet }
-
-      context 'public' do
-        it 'returns a full path' do
-          expect(subject).to eq("/snippets/#{snippet.id}/raw")
-        end
-      end
-    end
-
-    context 'project snippets' do
-      let(:snippet) { public_project_snippet }
-
-      it 'returns a full path' do
-        expect(subject).to eq("/#{snippet.project.full_path}/snippets/#{snippet.id}/raw")
-      end
-    end
-  end
-
-  describe '#reliable_raw_snippet_url' do
-    subject { reliable_raw_snippet_url(snippet) }
-
-    context 'personal snippets' do
-      let(:snippet) { public_personal_snippet }
-
-      context 'public' do
-        it 'returns a full url' do
-          expect(subject).to eq("http://test.host/snippets/#{snippet.id}/raw")
-        end
-      end
-    end
-
-    context 'project snippets' do
-      let(:snippet) { public_project_snippet }
-
-      it 'returns a full url' do
-        expect(subject).to eq("http://test.host/#{snippet.project.full_path}/snippets/#{snippet.id}/raw")
-      end
-    end
-  end
-
   describe '#embedded_raw_snippet_button' do
     subject { embedded_raw_snippet_button.to_s }
 
     it 'returns view raw button of embedded snippets for personal snippets' do
       @snippet = create(:personal_snippet, :public)
-
       expect(subject).to eq(download_link("http://test.host/snippets/#{@snippet.id}/raw"))
     end
 
@@ -214,6 +125,30 @@ describe SnippetsHelper do
       it 'does not return anything' do
         expect(subject).to be_nil
       end
+    end
+  end
+
+  describe '#snippet_embed_input' do
+    subject { snippet_embed_input(snippet) }
+
+    context 'with PersonalSnippet' do
+      let(:snippet) { public_personal_snippet }
+
+      it 'returns the input component' do
+        expect(subject).to eq embed_input(snippet_url(snippet))
+      end
+    end
+
+    context 'with ProjectSnippet' do
+      let(:snippet) { public_project_snippet }
+
+      it 'returns the input component' do
+        expect(subject).to eq embed_input(project_snippet_url(snippet.project, snippet))
+      end
+    end
+
+    def embed_input(url)
+      "<input type=\"text\" readonly=\"readonly\" class=\"js-snippet-url-area snippet-embed-input form-control\" data-url=\"#{url}\" value=\"<script src=&quot;#{url}.js&quot;></script>\" autocomplete=\"off\"></input>"
     end
   end
 end

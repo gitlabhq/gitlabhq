@@ -34,8 +34,8 @@ module Gitlab
 
         def authorize
           message =
-            if @resource
-              ":wave: Hi there! Before I do anything for you, please [connect your GitLab account](#{@resource})."
+            if resource
+              ":wave: Hi there! Before I do anything for you, please [connect your GitLab account](#{resource})."
             else
               ":sweat_smile: Couldn't identify you, nor can I authorize you!"
             end

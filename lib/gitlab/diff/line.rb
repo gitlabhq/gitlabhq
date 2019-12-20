@@ -3,6 +3,9 @@
 module Gitlab
   module Diff
     class Line
+      # When SERIALIZE_KEYS is updated, to reset the redis cache entries you'll
+      #   need to bump the VERSION constant on Gitlab::Diff::HighlightCache
+      #
       SERIALIZE_KEYS = %i(line_code rich_text text type index old_pos new_pos).freeze
 
       attr_reader :line_code, :type, :old_pos, :new_pos
@@ -29,6 +32,14 @@ module Gitlab
             parent_file: hash[:parent_file],
             line_code: hash[:line_code],
             rich_text: hash[:rich_text])
+      end
+
+      def self.safe_init_from_hash(hash)
+        line = hash.with_indifferent_access
+        rich_text = line[:rich_text]
+        line[:rich_text] = rich_text&.html_safe
+
+        init_from_hash(line)
       end
 
       def to_hash

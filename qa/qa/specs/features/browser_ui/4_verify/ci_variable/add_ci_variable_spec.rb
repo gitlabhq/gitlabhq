@@ -4,8 +4,7 @@ module QA
   context 'Verify' do
     describe 'CI variable support' do
       it 'user adds a CI variable', :smoke do
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.perform(&:sign_in_using_credentials)
+        Flow::Login.sign_in
 
         project = Resource::Project.fabricate_via_api! do |project|
           project.name = 'project-with-ci-variables'

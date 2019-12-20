@@ -8,6 +8,7 @@ module Banzai
       include Gitlab::Utils::StrongMemoize
 
       METRICS_CSS_CLASS = '.js-render-metrics'
+      EMBED_LIMIT = 100
       URL = Gitlab::Metrics::Dashboard::Url
 
       Embed = Struct.new(:project_path, :permission)
@@ -35,9 +36,16 @@ module Banzai
       # Returns all nodes which the FE will identify as
       # a metrics embed placeholder element
       #
+      # Removes any nodes beyond the first 100
+      #
       # @return [Nokogiri::XML::NodeSet]
       def nodes
-        @nodes ||= doc.css(METRICS_CSS_CLASS)
+        strong_memoize(:nodes) do
+          nodes = doc.css(METRICS_CSS_CLASS)
+          nodes.drop(EMBED_LIMIT).each(&:remove)
+
+          nodes
+        end
       end
 
       # Maps a node to key properties of an embed.

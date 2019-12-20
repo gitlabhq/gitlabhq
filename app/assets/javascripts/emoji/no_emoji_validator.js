@@ -1,5 +1,5 @@
-import { __ } from '~/locale';
 import emojiRegex from 'emoji-regex';
+import { __ } from '~/locale';
 import InputValidator from '../validators/input_validator';
 
 export default class NoEmojiValidator extends InputValidator {

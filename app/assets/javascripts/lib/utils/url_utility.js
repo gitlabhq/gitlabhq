@@ -1,9 +1,42 @@
-import { join as joinPaths } from 'path';
+const PATH_SEPARATOR = '/';
+const PATH_SEPARATOR_LEADING_REGEX = new RegExp(`^${PATH_SEPARATOR}+`);
+const PATH_SEPARATOR_ENDING_REGEX = new RegExp(`${PATH_SEPARATOR}+$`);
 
 // Returns a decoded url parameter value
 // - Treats '+' as '%20'
 function decodeUrlParameter(val) {
   return decodeURIComponent(val.replace(/\+/g, '%20'));
+}
+
+function cleanLeadingSeparator(path) {
+  return path.replace(PATH_SEPARATOR_LEADING_REGEX, '');
+}
+
+function cleanEndingSeparator(path) {
+  return path.replace(PATH_SEPARATOR_ENDING_REGEX, '');
+}
+
+/**
+ * Safely joins the given paths which might both start and end with a `/`
+ *
+ * Example:
+ * - `joinPaths('abc/', '/def') === 'abc/def'`
+ * - `joinPaths(null, 'abc/def', 'zoo) === 'abc/def/zoo'`
+ *
+ * @param  {...String} paths
+ * @returns {String}
+ */
+export function joinPaths(...paths) {
+  return paths.reduce((acc, path) => {
+    if (!path) {
+      return acc;
+    }
+    if (!acc) {
+      return path;
+    }
+
+    return [cleanEndingSeparator(acc), PATH_SEPARATOR, cleanLeadingSeparator(path)].join('');
+  }, '');
 }
 
 // Returns an array containing the value(s) of the
@@ -181,4 +214,71 @@ export function getWebSocketUrl(path) {
   return `${getWebSocketProtocol()}//${joinPaths(window.location.host, path)}`;
 }
 
-export { joinPaths };
+/**
+ * Convert search query into an object
+ *
+ * @param {String} query from "document.location.search"
+ * @returns {Object}
+ *
+ * ex: "?one=1&two=2" into {one: 1, two: 2}
+ */
+export function queryToObject(query) {
+  const removeQuestionMarkFromQuery = String(query).startsWith('?') ? query.slice(1) : query;
+  return removeQuestionMarkFromQuery.split('&').reduce((accumulator, curr) => {
+    const p = curr.split('=');
+    accumulator[decodeURIComponent(p[0])] = decodeURIComponent(p[1]);
+    return accumulator;
+  }, {});
+}
+
+/**
+ * Convert search query object back into a search query
+ *
+ * @param {Object} obj that needs to be converted
+ * @returns {String}
+ *
+ * ex: {one: 1, two: 2} into "one=1&two=2"
+ *
+ */
+export function objectToQuery(obj) {
+  return Object.keys(obj)
+    .map(k => `${encodeURIComponent(k)}=${encodeURIComponent(obj[k])}`)
+    .join('&');
+}
+
+/**
+ * Sets query params for a given URL
+ * It adds new query params, updates existing params with a new value and removes params with value null/undefined
+ *
+ * @param {Object} params The query params to be set/updated
+ * @param {String} url The url to be operated on
+ * @param {Boolean} clearParams Indicates whether existing query params should be removed or not
+ * @returns {String} A copy of the original with the updated query params
+ */
+export const setUrlParams = (params, url = window.location.href, clearParams = false) => {
+  const urlObj = new URL(url);
+  const queryString = urlObj.search;
+  const searchParams = clearParams ? new URLSearchParams('') : new URLSearchParams(queryString);
+
+  Object.keys(params).forEach(key => {
+    if (params[key] === null || params[key] === undefined) {
+      searchParams.delete(key);
+    } else if (Array.isArray(params[key])) {
+      params[key].forEach((val, idx) => {
+        if (idx === 0) {
+          searchParams.set(key, val);
+        } else {
+          searchParams.append(key, val);
+        }
+      });
+    } else {
+      searchParams.set(key, params[key]);
+    }
+  });
+
+  urlObj.search = searchParams.toString();
+
+  return urlObj.toString();
+};
+
+export const escapeFileUrl = fileUrl => encodeURIComponent(fileUrl).replace(/%2F/g, '/');

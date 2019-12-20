@@ -651,6 +651,8 @@ procfile exec` to replicate the environment where your application will run.
 
 #### Workers
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/30628) in GitLab 12.6, `.gitlab/auto-deploy-values.yaml` will be used by default for Helm upgrades.
+
 Some web applications need to run extra deployments for "worker processes". For
 example, it is common in a Rails application to have a separate worker process
 to run background tasks like sending emails.
@@ -672,13 +674,18 @@ need to:
 - Set a CI variable `K8S_SECRET_REDIS_URL`, which the URL of this instance to
   ensure it's passed into your deployments.
 
-Once you have configured your worker to respond to health checks, you will
-need to configure a CI variable `HELM_UPGRADE_EXTRA_ARGS` with the value
-`--values helm-values.yaml`.
+Once you have configured your worker to respond to health checks, run a Sidekiq
+worker for your Rails application. For:
 
-Then you can, for example, run a Sidekiq worker for your Rails application
-by adding a file named `helm-values.yaml` to your repository with the following
-content:
+- GitLab 12.6 and later, either:
+  - Add a file named `.gitlab/auto-deploy-values.yaml` to your repository. It will
+    be automatically used if found.
+  - Add a file with a different name or path to the repository, and override the value of the
+    `HELM_UPGRADE_VALUES_FILE` variable with the path and name.
+- GitLab 12.5 and earlier, run the worker with the `--values` parameter that specifies
+  a file in the repository.
+
+In any case, the file must contain the following:
 
 ```yml
 workers:
@@ -766,10 +773,17 @@ or a `.buildpacks` file in your project:
   and add the URL of the buildpack to use on a line in the file. If you want to
   use multiple buildpacks, you can enter them in, one on each line.
 
-CAUTION: **Caution:**
-Using multiple buildpacks isn't yet supported by Auto DevOps.
+#### Multiple buildpacks
 
-CAUTION: **Caution:** When using the `.buildpacks` file, Auto Test will not work. The buildpack [heroku-buildpack-multi](https://github.com/heroku/heroku-buildpack-multi/) (which is used under the hood to parse the `.buildpacks` file) doesn't provide the necessary commands `bin/test-compile` and `bin/test`. Make sure to provide the project variable `BUILDPACK_URL` instead.
+Using multiple buildpacks isn't fully supported by Auto DevOps because, when using the `.buildpacks`
+file, Auto Test will not work.
+
+The buildpack [heroku-buildpack-multi](https://github.com/heroku/heroku-buildpack-multi/),
+which is used under the hood to parse the `.buildpacks` file, doesn't provide the necessary commands
+`bin/test-compile` and `bin/test`.
+
+If your goal is to use only a single custom buildpack, you should provide the project variable
+`BUILDPACK_URL` instead.
 
 ### Custom `Dockerfile`
 
@@ -976,6 +990,7 @@ applications.
 | `CANARY_PRODUCTION_REPLICAS`            | Number of canary replicas to deploy for [Canary Deployments](../../user/project/canary_deployments.md) in the production environment. Takes precedence over `CANARY_REPLICAS`. Defaults to 1. |
 | `CANARY_REPLICAS`                       | Number of canary replicas to deploy for [Canary Deployments](../../user/project/canary_deployments.md). Defaults to 1. |
 | `HELM_RELEASE_NAME`                     | From GitLab 12.1, allows the `helm` release name to be overridden. Can be used to assign unique release names when deploying multiple projects to a single namespace. |
+| `HELM_UPGRADE_VALUES_FILE`              | From GitLab 12.6, allows the `helm upgrade` values file to be overridden. Defaults to `.gitlab/auto-deploy-values.yaml`. |
 | `HELM_UPGRADE_EXTRA_ARGS`               | From GitLab 11.11, allows extra arguments in `helm` commands when deploying the application. Note that using quotes will not prevent word splitting. **Tip:** you can use this variable to [customize the Auto Deploy Helm chart](#custom-helm-chart) by applying custom override values with `--values my-values.yaml`. |
 | `INCREMENTAL_ROLLOUT_MODE`              | From GitLab 11.4, if present, can be used to enable an [incremental rollout](#incremental-rollout-to-production-premium) of your application for the production environment. Set to `manual` for manual deployment jobs or `timed` for automatic rollout deployments with a 5 minute delay each one. |
 | `K8S_SECRET_*`                          | From GitLab 11.7, any variable prefixed with [`K8S_SECRET_`](#application-secret-variables) will be made available by Auto DevOps as environment variables to the deployed application. |
@@ -1253,6 +1268,30 @@ Everything behaves the same way, except:
   1. `timed rollout 50%`
   1. `timed rollout 100%`
 
+### Auto DevOps banner
+
+The following Auto DevOps banner will show for maintainers+ on new projects when Auto DevOps is not
+enabled:
+
+![Auto DevOps banner](img/autodevops_banner_v12_6.png)
+
+The banner can be disabled for:
+
+- A user when they dismiss it themselves.
+- A project by explicitly [disabling Auto DevOps](#enablingdisabling-auto-devops).
+- An entire GitLab instance:
+  - By an administrator running the following in a Rails console:
+
+    ```ruby
+    Feature.get(:auto_devops_banner_disabled).enable
+    ```
+
+  - Through the REST API with an admin access token:
+
+    ```sh
+    curl --data "value=true" --header "PRIVATE-TOKEN: <personal_access_token>" https://gitlab.example.com/api/v4/features/auto_devops_banner_disabled
+    ```
+
 ## Currently supported languages
 
 Note that not all buildpacks support Auto Test yet, as it's a relatively new
@@ -1324,27 +1363,6 @@ spec:
 - Auto Deploy will fail if GitLab can not create a Kubernetes namespace and
   service account for your project. For help debugging this issue, see
   [Troubleshooting failed deployment jobs](../../user/project/clusters/index.md#troubleshooting).
-
-### Disable the banner instance wide
-
-If an administrator would like to disable the banners on an instance level, this
-feature can be disabled either through the console:
-
-```sh
-sudo gitlab-rails console
-```
-
-Then run:
-
-```ruby
-Feature.get(:auto_devops_banner_disabled).enable
-```
-
-Or through the HTTP API with an admin access token:
-
-```sh
-curl --data "value=true" --header "PRIVATE-TOKEN: personal_access_token" https://gitlab.example.com/api/v4/features/auto_devops_banner_disabled
-```
 
 [ce-37115]: https://gitlab.com/gitlab-org/gitlab-foss/issues/37115
 [docker-in-docker]: ../../docker/using_docker_build.md#use-docker-in-docker-executor

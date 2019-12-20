@@ -38,7 +38,7 @@ class CohortsService
 
       {
         registration_month: registration_month,
-        activity_months: activity_months,
+        activity_months: activity_months[1..-1],
         total: activity_months.first[:total],
         inactive: inactive
       }

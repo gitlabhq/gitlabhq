@@ -6,7 +6,7 @@ const newClusterViews = [':clusters:new', ':clusters:create_gcp', ':clusters:cre
 
 const isProjectLevelCluster = page => page.startsWith('project:clusters');
 
-export default (document, gon) => {
+export default document => {
   const { page } = document.body.dataset;
   const isNewClusterView = newClusterViews.some(view => page.endsWith(view));
 
@@ -19,17 +19,15 @@ export default (document, gon) => {
 
   initGkeDropdowns();
 
-  if (gon.features.createEksClusters) {
-    import(/* webpackChunkName: 'eks_cluster' */ '~/create_cluster/eks_cluster')
-      .then(({ default: initCreateEKSCluster }) => {
-        const el = document.querySelector('.js-create-eks-cluster-form-container');
+  import(/* webpackChunkName: 'eks_cluster' */ '~/create_cluster/eks_cluster')
+    .then(({ default: initCreateEKSCluster }) => {
+      const el = document.querySelector('.js-create-eks-cluster-form-container');
 
-        if (el) {
-          initCreateEKSCluster(el);
-        }
-      })
-      .catch(() => {});
-  }
+      if (el) {
+        initCreateEKSCluster(el);
+      }
+    })
+    .catch(() => {});
 
   if (isProjectLevelCluster(page)) {
     initGkeNamespace();

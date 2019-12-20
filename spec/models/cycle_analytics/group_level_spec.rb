@@ -22,7 +22,9 @@ describe CycleAnalytics::GroupLevel do
 
   describe '#stats' do
     before do
-      allow_any_instance_of(Gitlab::ReferenceExtractor).to receive(:issues).and_return([issue])
+      allow_next_instance_of(Gitlab::ReferenceExtractor) do |instance|
+        allow(instance).to receive(:issues).and_return([issue])
+      end
 
       create_cycle(user, project, issue, mr, milestone, pipeline)
       deploy_master(user, project)

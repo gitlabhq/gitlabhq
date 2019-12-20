@@ -23,7 +23,8 @@ describe ProjectAutoDevops do
         [
           { key: 'INCREMENTAL_ROLLOUT_MODE', value: 'manual' },
           { key: 'STAGING_ENABLED', value: '1' },
-          { key: 'INCREMENTAL_ROLLOUT_ENABLED', value: '1' }
+          { key: 'INCREMENTAL_ROLLOUT_ENABLED', value: '1' },
+          { key: 'AUTO_DEVOPS_EXPLICITLY_ENABLED', value: '1' }
         ]
       end
 
@@ -32,6 +33,8 @@ describe ProjectAutoDevops do
 
     context 'when deploy_strategy is continuous' do
       let(:auto_devops) { build_stubbed(:project_auto_devops, :continuous_deployment, project: project) }
+
+      it { expect(auto_devops.predefined_variables).to include(key: 'AUTO_DEVOPS_EXPLICITLY_ENABLED', value: '1') }
 
       it do
         expect(auto_devops.predefined_variables.map { |var| var[:key] })
@@ -44,10 +47,18 @@ describe ProjectAutoDevops do
 
       it { expect(auto_devops.predefined_variables).to include(key: 'INCREMENTAL_ROLLOUT_MODE', value: 'timed') }
 
+      it { expect(auto_devops.predefined_variables).to include(key: 'AUTO_DEVOPS_EXPLICITLY_ENABLED', value: '1') }
+
       it do
         expect(auto_devops.predefined_variables.map { |var| var[:key] })
           .not_to include("STAGING_ENABLED", "INCREMENTAL_ROLLOUT_ENABLED")
       end
+    end
+
+    context 'when auto-devops is explicitly disabled' do
+      let(:auto_devops) { build_stubbed(:project_auto_devops, :disabled, project: project) }
+
+      it { expect(auto_devops.predefined_variables.to_hash).to be_empty }
     end
   end
 

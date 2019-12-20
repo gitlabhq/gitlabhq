@@ -53,6 +53,12 @@ RSpec.describe Release do
     end
   end
 
+  describe 'callbacks' do
+    it 'creates a new Evidence object on after_commit', :sidekiq_inline do
+      expect { release }.to change(Evidence, :count).by(1)
+    end
+  end
+
   describe '#assets_count' do
     subject { release.assets_count }
 
@@ -92,20 +98,22 @@ RSpec.describe Release do
     end
   end
 
-  describe 'evidence', :sidekiq_might_not_need_inline do
+  describe 'evidence' do
+    let(:release_with_evidence) { create(:release, :with_evidence, project: project) }
+
     describe '#create_evidence!' do
       context 'when a release is created' do
         it 'creates one Evidence object too' do
-          expect { release }.to change(Evidence, :count).by(1)
+          expect { release_with_evidence }.to change(Evidence, :count).by(1)
         end
       end
     end
 
     context 'when a release is deleted' do
       it 'also deletes the associated evidence' do
-        release = create(:release)
+        release_with_evidence
 
-        expect { release.destroy }.to change(Evidence, :count).by(-1)
+        expect { release_with_evidence.destroy }.to change(Evidence, :count).by(-1)
       end
     end
   end
@@ -139,6 +147,38 @@ RSpec.describe Release do
       it 'returns tag' do
         expect(release.name).to eq(release.tag)
       end
+    end
+  end
+
+  describe '#evidence_sha' do
+    subject { release.evidence_sha }
+
+    context 'when a release was created before evidence collection existed' do
+      let!(:release) { create(:release) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when a release was created with evidence collection' do
+      let!(:release) { create(:release, :with_evidence) }
+
+      it { is_expected.to eq(release.evidence.summary_sha) }
+    end
+  end
+
+  describe '#evidence_summary' do
+    subject { release.evidence_summary }
+
+    context 'when a release was created before evidence collection existed' do
+      let!(:release) { create(:release) }
+
+      it { is_expected.to eq({}) }
+    end
+
+    context 'when a release was created with evidence collection' do
+      let!(:release) { create(:release, :with_evidence) }
+
+      it { is_expected.to eq(release.evidence.summary) }
     end
   end
 end

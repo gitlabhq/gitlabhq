@@ -41,4 +41,8 @@ class GroupMilestone < GlobalMilestone
   def legacy_group_milestone?
     true
   end
+
+  def merge_requests_enabled?
+    true
+  end
 end

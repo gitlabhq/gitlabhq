@@ -37,6 +37,7 @@ describe('notes/components/discussion_keyboard_navigator', () => {
       isDiff ? NEXT_DIFF_ID : NEXT_ID;
     notes.getters.previousUnresolvedDiscussionId = () => (currId, isDiff) =>
       isDiff ? PREV_DIFF_ID : PREV_ID;
+    notes.getters.getDiscussion = () => id => ({ id });
 
     storeOptions = {
       modules: {
@@ -63,14 +64,18 @@ describe('notes/components/discussion_keyboard_navigator', () => {
     it('calls jumpToNextDiscussion when pressing `n`', () => {
       Mousetrap.trigger('n');
 
-      expect(wrapper.vm.jumpToDiscussion).toHaveBeenCalledWith(expectedNextId);
+      expect(wrapper.vm.jumpToDiscussion).toHaveBeenCalledWith(
+        expect.objectContaining({ id: expectedNextId }),
+      );
       expect(wrapper.vm.currentDiscussionId).toEqual(expectedNextId);
     });
 
     it('calls jumpToPreviousDiscussion when pressing `p`', () => {
       Mousetrap.trigger('p');
 
-      expect(wrapper.vm.jumpToDiscussion).toHaveBeenCalledWith(expectedPrevId);
+      expect(wrapper.vm.jumpToDiscussion).toHaveBeenCalledWith(
+        expect.objectContaining({ id: expectedPrevId }),
+      );
       expect(wrapper.vm.currentDiscussionId).toEqual(expectedPrevId);
     });
   });

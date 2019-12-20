@@ -277,14 +277,81 @@ Here are the steps to gate a new feature in Gitaly behind a feature flag.
 
 ### GitLab Rails
 
-1. Add feature flag to `lib/gitlab/gitaly_client.rb` (in GitLab Rails):
+1. In GitLab Rails:
+
+   1. Add the feature flag to `SERVER_FEATURE_FLAGS` in `lib/feature/gitaly.rb`:
+
+      ```ruby
+      SERVER_FEATURE_FLAGS = %w[go-find-all-tags].freeze
+      ```
+
+   1. Search for `["gitaly"]["features"]` (currently in `spec/requests/api/internal/base_spec.rb`)
+      and fix the expected results for the tests by adding the new feature flag into it:
+
+      ```ruby
+      expect(json_response["gitaly"]["features"]).to eq('gitaly-feature-get-all-lfs-pointers-go' => 'true', 'gitaly-feature-go-find-all-tags' => 'true')
+      ```
+
+1. Test in a Rails console by setting the feature flag:
+
+   NOTE: **Note:**
+   Pay attention to the name of the flag and the one used in the Rails console.
+   There is a difference between them (dashes replaced by underscores and name
+   prefix is changed).
 
    ```ruby
-   SERVER_FEATURE_FLAGS = %w[go-find-all-tags].freeze
+   Feature.enable('gitaly_go_find_all_tags')
    ```
 
-1. Test in rails console by setting feature flag:
+### Testing with GDK
 
-   ```ruby
-   Feature.enable('gitaly_go-find-all-tags')
-   ```
+To be sure that the flag is set correctly and it goes into Gitaly, you can check
+the integration by using GDK:
+
+1. The state of the flag must be observable. To check it, you need to enable it
+   by fetching the Prometheus metrics:
+   1. Navigate to GDK's root directory.
+   1. Make sure you have the proper branch checked out for Gitaly.
+   1. Recompile it with `make gitaly-setup` and restart the service with `gdk restart gitaly`.
+   1. Make sure your setup is runnig: `gdk status | grep praefect`.
+   1. Check what config file is used: `cat ./services/praefect/run | grep praefect` value of the `-config` flag
+   1. Uncomment `prometheus_listen_addr` in the configuration file and run `gdk restart gitaly`.
+
+1. Make sure that the flag is not enabled yet:
+   1. Perform whatever action is required to trigger your changes (project creation,
+      submitting commit, observing history, etc.).
+   1. Check that the list of current metrics has the new counter for the feature flag:
+
+      ```sh
+      curl --silent http://localhost:9236/metrics | grep go_find_all_tags
+      ```
+
+1. Once you observe the metrics for the new feature flag and it increments, you
+   can enable the new feature:
+   1. Navigate to GDK's root directory.
+   1. Start a Rails console:
+
+      ```sh
+      bundle install && bundle exec rails console
+      ```
+
+   1. Check the list of feature flags:
+
+      ```ruby
+      Feature::Gitaly.server_feature_flags
+      ```
+
+      It should be disabled `"gitaly-feature-go-find-all-tags"=>"false"`.
+   1. Enable it:
+
+      ```ruby
+      Feature.enable('gitaly_go_find_all_tags')
+      ```
+
+   1. Exit the Rails console and perform whatever action is required to trigger
+      your changes (project creation, submitting commit, observing history, etc.).
+   1. Verify the feature is on by observing the metrics for it:
+
+      ```sh
+      curl --silent http://localhost:9236/metrics | grep go_find_all_tags
+      ```

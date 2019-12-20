@@ -21,10 +21,10 @@ module Gitlab
             rescue Gitlab::Ci::YamlProcessor::ValidationError => ex
               error(ex.message, config_error: true)
             rescue => ex
-              Gitlab::Sentry.track_acceptable_exception(ex, extra: {
+              Gitlab::ErrorTracking.track_exception(ex,
                 project_id: project.id,
                 sha: @pipeline.sha
-              })
+              )
 
               error("Undefined error (#{Labkit::Correlation::CorrelationId.current_id})",
                 config_error: true)

@@ -30,7 +30,7 @@ Pipelines for merge requests have the following requirements and limitations:
 
 ## Configuring pipelines for merge requests
 
-To configure pipelines for merge requests, add the `only: merge_requests` parameter to
+To configure pipelines for merge requests, add the `only: [merge_requests]` parameter to
 the jobs that you want to run only for merge requests.
 
 Then, when developers create or update merge requests, a pipeline runs
@@ -68,7 +68,7 @@ After the merge request is updated with new commits:
 - The pipeline fetches the latest code from the source branch and run tests against it.
 
 In the above example, the pipeline contains only a `test` job.
-Since the `build` and `deploy` jobs don't have the `only: merge_requests` parameter,
+Since the `build` and `deploy` jobs don't have the `only: [merge_requests]` parameter,
 they will not run in the merge request.
 
 Pipelines tagged with the **detached** badge indicate that they were triggered
@@ -86,7 +86,7 @@ Read the [documentation on Merge Trains](pipelines_for_merged_results/merge_trai
 
 ## Excluding certain jobs
 
-The behavior of the `only: merge_requests` parameter is such that _only_ jobs with
+The behavior of the `only: [merge_requests]` parameter is such that _only_ jobs with
 that parameter are run in the context of a merge request; no other jobs will be run.
 
 However, you may want to reverse this behavior, having all of your jobs to run _except_
@@ -133,6 +133,36 @@ As you can see, this will help you avoid a lot of boilerplate where you'd need
 to add that `only:` rule to all of your jobs in order to make them always run. You
 can use this for scenarios like having only pipelines with merge requests get a
 Review App set up, helping to save resources.
+
+## Excluding certain branches
+
+Pipelines for merge requests require special treatement when
+using [`only`/`except`](../yaml/README.md#onlyexcept-basic). Unlike ordinary
+branch refs (for example `refs/heads/my-feature-branch`), merge request refs
+use a special Git reference that looks like `refs/merge-requests/:iid/head`. Because
+of this, the following configuration will **not** work as expected:
+
+```yaml
+# Does not exclude a branch named "docs-my-fix"!
+test:
+  only: [merge_requests]
+  except: [/^docs-/]
+```
+
+Instead, you can use the
+[`$CI_COMMIT_REF_NAME` predefined environment
+variable](../variables/predefined_variables.md#variables-reference) in
+combination with
+[`only:variables`](../yaml/README.md#onlyvariablesexceptvariables) to
+accomplish this behavior:
+
+```yaml
+test:
+  only: [merge_requests]
+  except:
+    variables:
+      $CI_COMMIT_REF_NAME =~ /^docs-/
+```
 
 ## Important notes about merge requests from forked projects
 

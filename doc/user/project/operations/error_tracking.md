@@ -32,7 +32,7 @@ GitLab provides an easy way to connect Sentry to your project:
 1. Click **Save changes** for the changes to take effect.
 1. You can now visit **Operations > Error Tracking** in your project's sidebar to [view a list](#error-tracking-list) of Sentry errors.
 
-### Enabling Gitlab issues links
+### Enabling GitLab issues links
 
 You may also want to enable Sentry's GitLab integration by following the steps in the [Sentry documentation](https://docs.sentry.io/workflow/integrations/global-integrations/#gitlab)
 
@@ -42,9 +42,9 @@ NOTE: **Note:**
 You will need at least Reporter [permissions](../../permissions.md) to view the Error Tracking list.
 
 The Error Tracking list may be found at **Operations > Error Tracking** in your project's sidebar.
-Errors can be filtered by title.
+Errors can be filtered by title or sorted by Frequency, First Seen or Last Seen. Errors are always sorted in descending order by the field specified.
 
-![Error Tracking list](img/error_tracking_list.png)
+![Error Tracking list](img/error_tracking_list_v12_6.png)
 
 ## Error Details
 
@@ -52,7 +52,13 @@ From error list, users can navigate to the error details page by clicking the ti
 
 This page has:
 
-- A link to Sentry issue.
-- A full stack trace along with other details.
+- A link to the Sentry issue.
+- Other details about the issue, including a full stack trace.
 
-![Error Details](img/error_details_v12_5.png)
+If the error has not been linked to an existing GitLab issue, a 'Create Issue' button will be visible:
+
+![Error Details without Issue Link](img/error_details_v12_6.png)
+
+If a link does exist, it will be shown in the details and the 'Create Issue' button will be hidden:
+
+![Error Details with Issue Link](img/error_details_with_issue_v12_6.png)

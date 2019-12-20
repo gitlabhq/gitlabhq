@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import UserCallout from '~/user_callout';
 import Cookies from 'js-cookie';
+import UserCallout from '~/user_callout';
 import UserTabs from './user_tabs';
 
 function initUserProfile(action) {

@@ -1,7 +1,7 @@
 - @hide_top_links = true
 - @hide_breadcrumbs = true
 - @no_container = true
-- page_title       @user.name
+- page_title       @user.blocked? ? s_('UserProfile|Blocked user') : @user.name
 - page_description @user.bio
 - header_title     @user.name, user_path(@user)
 
@@ -36,50 +36,48 @@
         = link_to avatar_icon_for_user(@user, 400), target: '_blank', rel: 'noopener noreferrer' do
           = image_tag avatar_icon_for_user(@user, 90), class: "avatar s90", alt: ''
 
-      .user-info
-        .cover-title
-          = @user.name
+      - if @user.blocked?
+        .user-info
+          .cover-title
+            = s_('UserProfile|Blocked user')
+        = render "users/profile_basic_info"
+      - else
+        .user-info
+          .cover-title
+            = @user.name
 
-        - if @user.status
-          .cover-status
-            = emoji_icon(@user.status.emoji)
-            = markdown_field(@user.status, :message)
-
-        .cover-desc.member-date.cgray
-          %p
-            %span.middle-dot-divider
-              @#{@user.username}
-            - if can?(current_user, :read_user_profile, @user)
-              %span.middle-dot-divider
-                = s_('Member since %{date}') % { date: @user.created_at.to_date.to_s(:long) }
-
-        .cover-desc.cgray
-          - unless @user.public_email.blank?
-            .profile-link-holder.middle-dot-divider
-              = link_to @user.public_email, "mailto:#{@user.public_email}", class: 'text-link'
-          - unless @user.skype.blank?
-            .profile-link-holder.middle-dot-divider
-              = link_to "skype:#{@user.skype}", title: "Skype" do
-                = icon('skype')
-          - unless @user.linkedin.blank?
-            .profile-link-holder.middle-dot-divider
-              = link_to linkedin_url(@user), title: "LinkedIn", target: '_blank', rel: 'noopener noreferrer nofollow' do
-                = icon('linkedin-square')
-          - unless @user.twitter.blank?
-            .profile-link-holder.middle-dot-divider
-              = link_to twitter_url(@user), title: "Twitter", target: '_blank', rel: 'noopener noreferrer nofollow' do
-                = icon('twitter-square')
-          - unless @user.website_url.blank?
-            .profile-link-holder.middle-dot-divider
-              = link_to @user.short_website_url, @user.full_website_url, class: 'text-link', target: '_blank', rel: 'me noopener noreferrer nofollow'
-          - unless @user.location.blank?
-            .profile-link-holder.middle-dot-divider
-              = sprite_icon('location', size: 16, css_class: 'vertical-align-sub')
-              = @user.location
-          - unless @user.organization.blank?
-            .profile-link-holder.middle-dot-divider
-              = sprite_icon('work', size: 16, css_class: 'vertical-align-sub')
-              = @user.organization
+          - if @user.status
+            .cover-status
+              = emoji_icon(@user.status.emoji)
+              = markdown_field(@user.status, :message)
+          = render "users/profile_basic_info"
+          .cover-desc.cgray
+            - unless @user.public_email.blank?
+              .profile-link-holder.middle-dot-divider
+                = link_to @user.public_email, "mailto:#{@user.public_email}", class: 'text-link'
+            - unless @user.skype.blank?
+              .profile-link-holder.middle-dot-divider
+                = link_to "skype:#{@user.skype}", title: "Skype" do
+                  = icon('skype')
+            - unless @user.linkedin.blank?
+              .profile-link-holder.middle-dot-divider
+                = link_to linkedin_url(@user), title: "LinkedIn", target: '_blank', rel: 'noopener noreferrer nofollow' do
+                  = icon('linkedin-square')
+            - unless @user.twitter.blank?
+              .profile-link-holder.middle-dot-divider
+                = link_to twitter_url(@user), title: "Twitter", target: '_blank', rel: 'noopener noreferrer nofollow' do
+                  = icon('twitter-square')
+            - unless @user.website_url.blank?
+              .profile-link-holder.middle-dot-divider
+                = link_to @user.short_website_url, @user.full_website_url, class: 'text-link', target: '_blank', rel: 'me noopener noreferrer nofollow'
+            - unless @user.location.blank?
+              .profile-link-holder.middle-dot-divider
+                = sprite_icon('location', size: 16, css_class: 'vertical-align-sub')
+                = @user.location
+            - unless @user.organization.blank?
+              .profile-link-holder.middle-dot-divider
+                = sprite_icon('work', size: 16, css_class: 'vertical-align-sub')
+                = @user.organization
 
         - if @user.bio.present?
           .cover-desc.cgray
@@ -165,4 +163,8 @@
       .col-12.text-center
         .text-content
           %h4
-            = s_('UserProfile|This user has a private profile')
+            - if @user.blocked?
+              = s_('UserProfile|This user is blocked')
+            - else
+              = s_('UserProfile|This user has a private profile')
+

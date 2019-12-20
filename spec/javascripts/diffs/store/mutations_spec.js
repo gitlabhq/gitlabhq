@@ -10,11 +10,13 @@ describe('DiffsStoreMutations', () => {
       const state = {};
       const endpoint = '/diffs/endpoint';
       const projectPath = '/root/project';
+      const useSingleDiffStyle = false;
 
-      mutations[types.SET_BASE_CONFIG](state, { endpoint, projectPath });
+      mutations[types.SET_BASE_CONFIG](state, { endpoint, projectPath, useSingleDiffStyle });
 
       expect(state.endpoint).toEqual(endpoint);
       expect(state.projectPath).toEqual(projectPath);
+      expect(state.useSingleDiffStyle).toEqual(useSingleDiffStyle);
     });
   });
 
@@ -28,6 +30,16 @@ describe('DiffsStoreMutations', () => {
     });
   });
 
+  describe('SET_BATCH_LOADING', () => {
+    it('should set loading state', () => {
+      const state = {};
+
+      mutations[types.SET_BATCH_LOADING](state, false);
+
+      expect(state.isBatchLoading).toEqual(false);
+    });
+  });
+
   describe('SET_DIFF_DATA', () => {
     it('should set diff data type properly', () => {
       const state = {};
@@ -36,6 +48,23 @@ describe('DiffsStoreMutations', () => {
       };
 
       mutations[types.SET_DIFF_DATA](state, diffMock);
+
+      const firstLine = state.diffFiles[0].parallel_diff_lines[0];
+
+      expect(firstLine.right.text).toBeUndefined();
+      expect(state.diffFiles[0].renderIt).toEqual(true);
+      expect(state.diffFiles[0].collapsed).toEqual(false);
+    });
+  });
+
+  describe('SET_DIFFSET_DIFF_DATA_BATCH_DATA', () => {
+    it('should set diff data batch type properly', () => {
+      const state = { diffFiles: [] };
+      const diffMock = {
+        diff_files: [diffFileMockData],
+      };
+
+      mutations[types.SET_DIFF_DATA_BATCH](state, diffMock);
 
       const firstLine = state.diffFiles[0].parallel_diff_lines[0];
 

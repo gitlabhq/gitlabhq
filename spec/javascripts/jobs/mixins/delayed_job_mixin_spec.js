@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import delayedJobMixin from '~/jobs/mixins/delayed_job_mixin';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import delayedJobMixin from '~/jobs/mixins/delayed_job_mixin';
 
 describe('DelayedJobMixin', () => {
   const delayedJobFixture = getJSONFixture('jobs/delayed.json');

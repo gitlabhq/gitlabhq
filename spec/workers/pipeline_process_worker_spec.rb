@@ -8,7 +8,7 @@ describe PipelineProcessWorker do
       let(:pipeline) { create(:ci_pipeline) }
 
       it 'processes pipeline' do
-        expect_any_instance_of(Ci::Pipeline).to receive(:process!)
+        expect_any_instance_of(Ci::ProcessPipelineService).to receive(:execute)
 
         described_class.new.perform(pipeline.id)
       end
@@ -17,7 +17,7 @@ describe PipelineProcessWorker do
         let(:build) { create(:ci_build, pipeline: pipeline, name: 'my-build') }
 
         it 'processes pipeline with a list of builds' do
-          expect_any_instance_of(Ci::Pipeline).to receive(:process!)
+          expect_any_instance_of(Ci::ProcessPipelineService).to receive(:execute)
             .with([build.id])
 
           described_class.new.perform(pipeline.id, [build.id])

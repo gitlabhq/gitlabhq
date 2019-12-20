@@ -38,12 +38,44 @@ describe Gitlab::Ci::Build::Prerequisite::KubernetesNamespace do
               .and_return(double(execute: kubernetes_namespace))
           end
 
-          it { is_expected.to be_falsey }
-
-          context 'and the service_account_token is blank' do
-            let(:kubernetes_namespace) { instance_double(Clusters::KubernetesNamespace, service_account_token: nil) }
+          context 'and the knative-serving namespace is missing' do
+            before do
+              allow(Clusters::KnativeServingNamespaceFinder).to receive(:new)
+                .and_return(double(execute: false))
+            end
 
             it { is_expected.to be_truthy }
+          end
+
+          context 'and the knative-serving namespace exists' do
+            before do
+              allow(Clusters::KnativeServingNamespaceFinder).to receive(:new)
+                .and_return(double(execute: true))
+            end
+
+            context 'and the knative version role binding is missing' do
+              before do
+                allow(Clusters::KnativeVersionRoleBindingFinder).to receive(:new)
+                  .and_return(double(execute: nil))
+              end
+
+              it { is_expected.to be_truthy }
+            end
+
+            context 'and the knative version role binding already exists' do
+              before do
+                allow(Clusters::KnativeVersionRoleBindingFinder).to receive(:new)
+                  .and_return(double(execute: true))
+              end
+
+              it { is_expected.to be_falsey }
+
+              context 'and the service_account_token is blank' do
+                let(:kubernetes_namespace) { instance_double(Clusters::KubernetesNamespace, service_account_token: nil) }
+
+                it { is_expected.to be_truthy }
+              end
+            end
           end
         end
       end
@@ -96,6 +128,47 @@ describe Gitlab::Ci::Build::Prerequisite::KubernetesNamespace do
 
           subject
         end
+
+        context 'the build has a namespace configured via CI template' do
+          let(:kubernetes_namespace) { double(namespace: existing_namespace) }
+
+          before do
+            allow(build).to receive(:expanded_kubernetes_namespace)
+              .and_return(requested_namespace)
+          end
+
+          context 'the requested namespace matches the default' do
+            let(:requested_namespace) { 'production' }
+            let(:existing_namespace) { requested_namespace }
+
+            it 'creates a namespace' do
+              expect(Clusters::BuildKubernetesNamespaceService)
+                .to receive(:new)
+                .with(cluster, environment: deployment.environment)
+                .and_return(namespace_builder)
+
+              expect(Clusters::Kubernetes::CreateOrUpdateNamespaceService)
+                .to receive(:new)
+                .with(cluster: cluster, kubernetes_namespace: kubernetes_namespace)
+                .and_return(service)
+
+              expect(service).to receive(:execute).once
+
+              subject
+            end
+          end
+
+          context 'the requested namespace differs from the default' do
+            let(:requested_namespace) { 'production' }
+            let(:existing_namespace) { 'other-namespace' }
+
+            it 'does not create a namespace' do
+              expect(Clusters::Kubernetes::CreateOrUpdateNamespaceService).not_to receive(:new)
+
+              subject
+            end
+          end
+        end
       end
 
       context 'kubernetes namespace exists (but has no service_account_token)' do
@@ -107,6 +180,24 @@ describe Gitlab::Ci::Build::Prerequisite::KubernetesNamespace do
         it 'creates a namespace using the tokenless record' do
           expect(Clusters::BuildKubernetesNamespaceService).not_to receive(:new)
 
+          expect(Clusters::Kubernetes::CreateOrUpdateNamespaceService)
+            .to receive(:new)
+            .with(cluster: cluster, kubernetes_namespace: kubernetes_namespace)
+            .and_return(service)
+
+          subject
+        end
+      end
+
+      context 'knative version role binding is missing' do
+        before do
+          allow(Clusters::KubernetesNamespaceFinder).to receive(:new)
+            .and_return(double(execute: kubernetes_namespace))
+          allow(Clusters::KnativeVersionRoleBindingFinder).to receive(:new)
+            .and_return(double(execute: nil))
+        end
+
+        it 'creates the knative version role binding' do
           expect(Clusters::Kubernetes::CreateOrUpdateNamespaceService)
             .to receive(:new)
             .with(cluster: cluster, kubernetes_namespace: kubernetes_namespace)

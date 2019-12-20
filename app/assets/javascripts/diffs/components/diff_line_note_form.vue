@@ -1,7 +1,7 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
-import { s__ } from '~/locale';
 import diffLineNoteFormMixin from 'ee_else_ce/notes/mixins/diff_line_note_form';
+import { s__ } from '~/locale';
 import noteForm from '../../notes/components/note_form.vue';
 import autosave from '../../notes/mixins/autosave';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';

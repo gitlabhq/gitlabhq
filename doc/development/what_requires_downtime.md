@@ -37,11 +37,19 @@ information on how to use this method.
 ## Dropping Columns
 
 Removing columns is tricky because running GitLab processes may still be using
-the columns. To work around this you will need two separate merge requests and
-releases: one to ignore and then remove the column, and one to remove the ignore
-rule.
+the columns. To work around this safely, you will need three steps in three releases:
 
-### Step 1: Ignoring The Column
+1. Ignoring the column (release M)
+1. Dropping the column (release M+1)
+1. Removing the ignore rule (release M+2)
+
+The reason we spread this out across three releases is that dropping a column is
+a destructive operation that can't be rolled back easily.
+
+Following this procedure helps us to make sure there are no deployments to GitLab.com
+and upgrade processes for self-hosted installations that lump together any of these steps.
+
+### Step 1: Ignoring the column (release M)
 
 The first step is to ignore the column in the application code. This is
 necessary because Rails caches the columns and re-uses this cache in various
@@ -50,18 +58,46 @@ places. This can be done by defining the columns to ignore. For example, to igno
 
 ```ruby
 class User < ApplicationRecord
-  self.ignored_columns += %i[updated_at]
+  include IgnorableColumns
+  ignore_column :updated_at, remove_with: '12.7', remove_after: '2019-12-22'
 end
 ```
 
-Once added you should create a _post-deployment_ migration that removes the
-column. Both these changes should be submitted in the same merge request.
+Multiple columns can be ignored, too:
 
-### Step 2: Removing The Ignore Rule
+```ruby
+ignore_columns %i[updated_at created_at], remove_with: '12.7', remove_after: '2019-12-22'
+```
 
-Once the changes from step 1 have been released & deployed you can set up a
-separate merge request that removes the ignore rule. This merge request can
-simply remove the `self.ignored_columns` line.
+We require indication of when it is safe to remove the column ignore with:
+
+- `remove_with`: set to a GitLab release typically two releases (M+2) after adding the
+  column ignore.
+- `remove_after`: set to a date after which we consider it safe to remove the column
+  ignore, typically within the development cycle of release M+2.
+
+This information allows us to reason better about column ignores and makes sure we
+don't remove column ignores too early for both regular releases and deployments to GitLab.com. For
+example, this avoids a situation where we deploy a bulk of changes that include both changes
+to ignore the column and subsequently remove the column ignore (which would result in a downtime).
+
+In this example, the change to ignore the column went into release 12.5.
+
+### Step 2: Dropping the column (release M+1)
+
+Continuing our example, dropping the column goes into a _post-deployment_ migration in release 12.6:
+
+```ruby
+ remove_column :user, :updated_at
+```
+
+### Step 3: Removing the ignore rule (release M+2)
+
+With the next release, in this example 12.7, we set up another merge request to remove the ignore rule.
+This removes the `ignore_column` line and - if not needed anymore - also the inclusion of `IgnoreableColumns`.
+
+This should only get merged with the release indicated with `remove_with` and once
+the `remove_after` date has passed.
 
 ## Renaming Columns
 

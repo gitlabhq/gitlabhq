@@ -1,0 +1,5 @@
+- if project.archived?
+  .text-warning.center.prepend-top-20
+    %p
+      = icon("exclamation-triangle fw")
+      = _('Archived project! Repository and other project resources are read only')

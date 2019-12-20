@@ -207,4 +207,56 @@ describe('Board list component', () => {
         .catch(done.fail);
     });
   });
+
+  describe('max issue count warning', () => {
+    beforeEach(done => {
+      ({ mock, component } = createComponent({
+        done,
+        listProps: { type: 'closed', collapsed: true, issuesSize: 50 },
+      }));
+    });
+
+    afterEach(() => {
+      mock.restore();
+      component.$destroy();
+    });
+
+    describe('when issue count exceeds max issue count', () => {
+      it('sets background to bg-danger-100', done => {
+        component.list.issuesSize = 4;
+        component.list.maxIssueCount = 3;
+
+        Vue.nextTick(() => {
+          expect(component.$el.querySelector('.bg-danger-100')).not.toBeNull();
+
+          done();
+        });
+      });
+    });
+
+    describe('when list issue count does NOT exceed list max issue count', () => {
+      it('does not sets background to bg-danger-100', done => {
+        component.list.issuesSize = 2;
+        component.list.maxIssueCount = 3;
+
+        Vue.nextTick(() => {
+          expect(component.$el.querySelector('.bg-danger-100')).toBeNull();
+
+          done();
+        });
+      });
+    });
+
+    describe('when list max issue count is 0', () => {
+      it('does not sets background to bg-danger-100', done => {
+        component.list.maxIssueCount = 0;
+
+        Vue.nextTick(() => {
+          expect(component.$el.querySelector('.bg-danger-100')).toBeNull();
+
+          done();
+        });
+      });
+    });
+  });
 });

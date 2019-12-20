@@ -7,6 +7,7 @@ FactoryBot.define do
     content { generate(:title) }
     description { generate(:title) }
     file_name { generate(:filename) }
+    secret { false }
 
     trait :public do
       visibility_level { Snippet::PUBLIC }
@@ -27,5 +28,9 @@ FactoryBot.define do
   end
 
   factory :personal_snippet, parent: :snippet, class: :PersonalSnippet do
+    trait :secret do
+      visibility_level { Snippet::PUBLIC }
+      secret { true }
+    end
   end
 end

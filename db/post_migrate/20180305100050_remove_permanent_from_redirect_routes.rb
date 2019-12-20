@@ -14,11 +14,9 @@ class RemovePermanentFromRedirectRoutes < ActiveRecord::Migration[4.2]
     # These indexes were created on Postgres only in:
     # ReworkRedirectRoutesIndexes:
     # https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/16211
-    if Gitlab::Database.postgresql?
-      disable_statement_timeout do
-        execute "DROP INDEX CONCURRENTLY IF EXISTS #{INDEX_NAME_PERM};"
-        execute "DROP INDEX CONCURRENTLY IF EXISTS #{INDEX_NAME_TEMP};"
-      end
+    disable_statement_timeout do
+      execute "DROP INDEX CONCURRENTLY IF EXISTS #{INDEX_NAME_PERM};"
+      execute "DROP INDEX CONCURRENTLY IF EXISTS #{INDEX_NAME_TEMP};"
     end
 
     remove_column(:redirect_routes, :permanent)
@@ -27,11 +25,9 @@ class RemovePermanentFromRedirectRoutes < ActiveRecord::Migration[4.2]
   def down
     add_column(:redirect_routes, :permanent, :boolean)
 
-    if Gitlab::Database.postgresql?
-      disable_statement_timeout do
-        execute("CREATE INDEX CONCURRENTLY #{INDEX_NAME_PERM} ON redirect_routes (lower(path) varchar_pattern_ops) where (permanent);")
-        execute("CREATE INDEX CONCURRENTLY #{INDEX_NAME_TEMP} ON redirect_routes (lower(path) varchar_pattern_ops) where (not permanent or permanent is null) ;")
-      end
+    disable_statement_timeout do
+      execute("CREATE INDEX CONCURRENTLY #{INDEX_NAME_PERM} ON redirect_routes (lower(path) varchar_pattern_ops) where (permanent);")
+      execute("CREATE INDEX CONCURRENTLY #{INDEX_NAME_TEMP} ON redirect_routes (lower(path) varchar_pattern_ops) where (not permanent or permanent is null) ;")
     end
   end
 end

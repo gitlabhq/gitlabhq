@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Gitlab::Git::RemoteRepository, :seed_helper do
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
+
   subject { described_class.new(repository) }
 
   describe '#empty?' do

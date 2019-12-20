@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Performance bar' do
+  # https://gitlab.com/gitlab-org/gitlab/issues/38315
+  context 'Performance bar', :quarantine do
     context 'when logged in as an admin user', :requires_admin do
       before do
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.perform(&:sign_in_using_admin_credentials)
-        Page::Main::Menu.perform(&:click_admin_area)
+        Flow::Login.sign_in_as_admin
+        Page::Main::Menu.perform(&:go_to_admin_area)
         Page::Admin::Menu.perform(&:go_to_metrics_and_profiling_settings)
 
         Page::Admin::Settings::MetricsAndProfiling.perform do |setting|
@@ -23,10 +23,10 @@ module QA
           issue.title = 'Performance bar test'
         end
 
-        Page::Layout::PerformanceBar.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
-          expect(page).to have_performance_bar
-          expect(page).to have_detailed_metrics
-          expect(page).to have_request_for('realtime_changes') # Always requested on issue pages
+        Page::Layout::PerformanceBar.perform do |bar_component|
+          expect(bar_component).to have_performance_bar
+          expect(bar_component).to have_detailed_metrics
+          expect(bar_component).to have_request_for('realtime_changes') # Always requested on issue pages
         end
       end
     end

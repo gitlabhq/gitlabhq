@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import toolbar from '~/vue_shared/components/markdown/toolbar.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import toolbar from '~/vue_shared/components/markdown/toolbar.vue';
 
 describe('toolbar', () => {
   let vm;

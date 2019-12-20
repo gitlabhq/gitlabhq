@@ -1,5 +1,5 @@
-import RequestWarning from '~/performance_bar/components/request_warning.vue';
 import { shallowMount } from '@vue/test-utils';
+import RequestWarning from '~/performance_bar/components/request_warning.vue';
 
 describe('request warning', () => {
   const htmlId = 'request-123';

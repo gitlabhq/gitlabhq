@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 
-import ImageViewer from '~/vue_shared/components/content_viewer/viewers/image_viewer.vue';
 import { GREEN_BOX_IMAGE_URL } from 'spec/test_constants';
+import ImageViewer from '~/vue_shared/components/content_viewer/viewers/image_viewer.vue';
 
 describe('Image Viewer', () => {
   const requiredProps = {

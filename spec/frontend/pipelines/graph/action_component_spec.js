@@ -20,6 +20,7 @@ describe('pipeline graph action component', () => {
         actionIcon: 'cancel',
       },
       sync: false,
+      attachToDocument: true,
     });
   });
 

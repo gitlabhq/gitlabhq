@@ -16,6 +16,7 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
   it { is_expected.to have_many(:projects) }
   it { is_expected.to have_many(:cluster_groups) }
   it { is_expected.to have_many(:groups) }
+  it { is_expected.to have_many(:groups_projects) }
   it { is_expected.to have_one(:provider_gcp) }
   it { is_expected.to have_one(:provider_aws) }
   it { is_expected.to have_one(:platform_kubernetes) }
@@ -500,6 +501,48 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     end
   end
 
+  describe '.with_persisted_applications' do
+    let(:cluster) { create(:cluster) }
+    let!(:helm) { create(:clusters_applications_helm, :installed, cluster: cluster) }
+
+    it 'preloads persisted applications' do
+      query_rec = ActiveRecord::QueryRecorder.new do
+        described_class.with_persisted_applications.find_by_id(cluster.id).application_helm
+      end
+
+      expect(query_rec.count).to eq(1)
+    end
+  end
+
+  describe '#persisted_applications' do
+    let(:cluster) { create(:cluster) }
+
+    subject { cluster.persisted_applications }
+
+    context 'when all applications are created' do
+      let!(:helm) { create(:clusters_applications_helm, cluster: cluster) }
+      let!(:ingress) { create(:clusters_applications_ingress, cluster: cluster) }
+      let!(:cert_manager) { create(:clusters_applications_cert_manager, cluster: cluster) }
+      let!(:prometheus) { create(:clusters_applications_prometheus, cluster: cluster) }
+      let!(:runner) { create(:clusters_applications_runner, cluster: cluster) }
+      let!(:jupyter) { create(:clusters_applications_jupyter, cluster: cluster) }
+      let!(:knative) { create(:clusters_applications_knative, cluster: cluster) }
+
+      it 'returns a list of created applications' do
+        is_expected.to contain_exactly(helm, ingress, cert_manager, prometheus, runner, jupyter, knative)
+      end
+    end
+
+    context 'when not all were created' do
+      let!(:helm) { create(:clusters_applications_helm, cluster: cluster) }
+      let!(:ingress) { create(:clusters_applications_ingress, cluster: cluster) }
+
+      it 'returns a list of created applications' do
+        is_expected.to contain_exactly(helm, ingress)
+      end
+    end
+  end
+
   describe '#applications' do
     set(:cluster) { create(:cluster) }
 
@@ -574,6 +617,36 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     end
   end
 
+  describe '#all_projects' do
+    context 'cluster_type is project_type' do
+      let(:project) { create(:project) }
+      let(:cluster) { create(:cluster, :with_installed_helm, projects: [project]) }
+
+      it 'returns projects' do
+        expect(cluster.all_projects).to match_array [project]
+      end
+    end
+
+    context 'cluster_type is group_type' do
+      let(:group) { create(:group) }
+      let!(:project) { create(:project, group: group) }
+      let(:cluster) { create(:cluster_for_group, :with_installed_helm, groups: [group]) }
+
+      it 'returns group projects' do
+        expect(cluster.all_projects.ids).to match_array [project.id]
+      end
+    end
+
+    context 'cluster_type is instance_type' do
+      let!(:project) { create(:project) }
+      let(:cluster) { create(:cluster, :instance) }
+
+      it "returns all instance's projects" do
+        expect(cluster.all_projects.ids).to match_array [project.id]
+      end
+    end
+  end
+
   describe '#kube_ingress_domain' do
     let(:cluster) { create(:cluster, :provided_by_gcp) }
 
@@ -601,7 +674,8 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
 
   describe '#kubernetes_namespace_for' do
     let(:cluster) { create(:cluster, :group) }
-    let(:environment) { create(:environment) }
+    let(:environment) { create(:environment, last_deployable: build) }
+    let(:build) { create(:ci_build) }
 
     subject { cluster.kubernetes_namespace_for(environment) }
 
@@ -609,16 +683,15 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
       expect(Clusters::KubernetesNamespaceFinder).to receive(:new)
         .with(cluster, project: environment.project, environment_name: environment.name)
         .and_return(double(execute: persisted_namespace))
+
+      allow(build).to receive(:expanded_kubernetes_namespace)
+        .and_return(ci_configured_namespace)
     end
 
-    context 'a persisted namespace exists' do
-      let(:persisted_namespace) { create(:cluster_kubernetes_namespace) }
-
-      it { is_expected.to eq persisted_namespace.namespace }
-    end
-
-    context 'no persisted namespace exists' do
+    context 'no persisted namespace exists and namespace is not specified in CI template' do
       let(:persisted_namespace) { nil }
+      let(:ci_configured_namespace) { nil }
+
       let(:namespace_generator) { double }
       let(:default_namespace) { 'a-default-namespace' }
 
@@ -632,6 +705,27 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
       end
 
       it { is_expected.to eq default_namespace }
+    end
+
+    context 'persisted namespace exists' do
+      let(:persisted_namespace) { create(:cluster_kubernetes_namespace) }
+      let(:ci_configured_namespace) { nil }
+
+      it { is_expected.to eq persisted_namespace.namespace }
+    end
+
+    context 'namespace is specified in CI template' do
+      let(:persisted_namespace) { nil }
+      let(:ci_configured_namespace) { 'ci-configured-namespace' }
+
+      it { is_expected.to eq ci_configured_namespace }
+    end
+
+    context 'persisted namespace exists and namespace is also specifed in CI template' do
+      let(:persisted_namespace) { create(:cluster_kubernetes_namespace) }
+      let(:ci_configured_namespace) { 'ci-configured-namespace' }
+
+      it { is_expected.to eq persisted_namespace.namespace }
     end
   end
 
@@ -910,11 +1004,61 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
         it { is_expected.to eq(connection_status: :unknown_failure) }
 
         it 'notifies Sentry' do
-          expect(Gitlab::Sentry).to receive(:track_acceptable_exception)
-            .with(instance_of(StandardError), hash_including(extra: { cluster_id: cluster.id }))
+          expect(Gitlab::ErrorTracking).to receive(:track_exception)
+            .with(instance_of(StandardError), hash_including(cluster_id: cluster.id))
 
           subject
         end
+      end
+    end
+  end
+
+  describe '#delete_cached_resources!' do
+    let!(:cluster) { create(:cluster, :project) }
+    let!(:staging_namespace) { create(:cluster_kubernetes_namespace, cluster: cluster, namespace: 'staging') }
+    let!(:production_namespace) { create(:cluster_kubernetes_namespace, cluster: cluster, namespace: 'production') }
+
+    subject { cluster.delete_cached_resources! }
+
+    it 'deletes associated namespace records' do
+      expect(cluster.kubernetes_namespaces).to match_array([staging_namespace, production_namespace])
+
+      subject
+
+      expect(cluster.kubernetes_namespaces).to be_empty
+    end
+  end
+
+  describe '#clusterable' do
+    subject { cluster.clusterable }
+
+    context 'project type' do
+      let(:cluster) { create(:cluster, :project) }
+
+      it { is_expected.to eq(cluster.project) }
+    end
+
+    context 'group type' do
+      let(:cluster) { create(:cluster, :group) }
+
+      it { is_expected.to eq(cluster.group) }
+    end
+
+    context 'instance type' do
+      let(:cluster) { create(:cluster, :instance) }
+
+      it { is_expected.to be_a(Clusters::Instance) }
+    end
+
+    context 'unknown type' do
+      let(:cluster) { create(:cluster, :project) }
+
+      before do
+        allow(cluster).to receive(:cluster_type).and_return('unknown_type')
+      end
+
+      it 'raises NotImplementedError' do
+        expect { subject }.to raise_error(NotImplementedError)
       end
     end
   end

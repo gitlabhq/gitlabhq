@@ -1,9 +1,9 @@
 <script>
 import $ from 'jquery';
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import Clipboard from 'clipboard';
 import { __ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
-import Clipboard from 'clipboard';
 
 export default {
   components: {

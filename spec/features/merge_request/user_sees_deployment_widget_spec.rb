@@ -96,7 +96,7 @@ describe 'Merge request > User sees deployment widget', :js do
         visit project_merge_request_path(project, merge_request)
         wait_for_requests
 
-        expect(page).to have_content("Failed to deploy to #{environment.name}")
+        expect(page).to have_content("Canceled deploy to #{environment.name}")
         expect(page).not_to have_css('.js-deploy-time')
       end
     end

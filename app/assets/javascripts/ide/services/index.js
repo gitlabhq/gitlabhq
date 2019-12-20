@@ -1,6 +1,5 @@
 import axios from '~/lib/utils/axios_utils';
-import { joinPaths } from '~/lib/utils/url_utility';
-import { escapeFileUrl } from '../stores/utils';
+import { joinPaths, escapeFileUrl } from '~/lib/utils/url_utility';
 import Api from '~/api';
 
 export default {

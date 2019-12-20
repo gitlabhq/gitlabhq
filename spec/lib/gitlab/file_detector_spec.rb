@@ -82,5 +82,21 @@ describe Gitlab::FileDetector do
     it 'returns nil for an unknown file' do
       expect(described_class.type_of('foo.txt')).to be_nil
     end
+
+    it 'returns the type of an OpenAPI spec if file name is correct' do
+      openapi_types = [
+        'openapi.yml', 'openapi.yaml', 'openapi.json',
+        'swagger.yml', 'swagger.yaml', 'swagger.json',
+        'gitlab_swagger.yml', 'openapi_gitlab.yml',
+        'OpenAPI.YML', 'openapi.Yaml', 'openapi.JSON',
+        'openapi.gitlab.yml', 'gitlab.openapi.yml'
+      ]
+
+      openapi_types.each do |type_name|
+        expect(described_class.type_of(type_name)).to eq(:openapi)
+      end
+
+      expect(described_class.type_of('openapiyml')).to be_nil
+    end
   end
 end

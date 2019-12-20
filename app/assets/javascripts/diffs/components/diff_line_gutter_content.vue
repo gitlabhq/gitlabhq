@@ -72,7 +72,7 @@ export default {
     lineCode() {
       return (
         this.line.line_code ||
-        (this.line.left && this.line.line.left.line_code) ||
+        (this.line.left && this.line.left.line_code) ||
         (this.line.right && this.line.right.line_code)
       );
     },

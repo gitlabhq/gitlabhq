@@ -81,16 +81,24 @@ module QA
         find_element(name, class: 'active')
       end
 
-      def all_elements(name)
-        all(element_selector_css(name))
+      def all_elements(name, **kwargs)
+        all(element_selector_css(name), **kwargs)
       end
 
       def check_element(name)
-        find_element(name).set(true)
+        retry_until(sleep_interval: 1) do
+          find_element(name).set(true)
+
+          find_element(name).checked?
+        end
       end
 
       def uncheck_element(name)
-        find_element(name).set(false)
+        retry_until(sleep_interval: 1) do
+          find_element(name).set(false)
+
+          !find_element(name).checked?
+        end
       end
 
       # replace with (..., page = self.class)
@@ -125,16 +133,23 @@ module QA
         has_no_css?(element_selector_css(name, kwargs), wait: wait, text: text)
       end
 
-      def has_text?(text)
-        page.has_text? text
+      def has_text?(text, wait: Capybara.default_max_wait_time)
+        page.has_text?(text, wait: wait)
       end
 
       def has_no_text?(text)
         page.has_no_text? text
       end
 
+      def has_normalized_ws_text?(text, wait: Capybara.default_max_wait_time)
+        page.has_text?(text.gsub(/\s+/, " "), wait: wait)
+      end
+
       def finished_loading?
-        has_no_css?('.fa-spinner', wait: Capybara.default_max_wait_time)
+        # The number of selectors should be able to be reduced after
+        # migration to the new spinner is complete.
+        # https://gitlab.com/groups/gitlab-org/-/epics/956
+        has_no_css?('.gl-spinner, .fa-spinner, .spinner', wait: Capybara.default_max_wait_time)
       end
 
       def finished_loading_block?
@@ -191,12 +206,7 @@ module QA
       end
 
       def within_element_by_index(name, index)
-        # Finding all elements can be flaky if the elements don't all load
-        # immediately. So we wait for any to appear before trying to find a
-        # specific one.
-        has_element?(name)
-
-        page.within all_elements(name)[index] do
+        page.within all_elements(name, minimum: index + 1)[index] do
           yield
         end
       end

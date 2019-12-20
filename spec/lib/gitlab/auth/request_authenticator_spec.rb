@@ -66,4 +66,28 @@ describe Gitlab::Auth::RequestAuthenticator do
       expect(subject.find_sessionless_user([:api])).to be_blank
     end
   end
+
+  describe '#runner' do
+    let!(:runner) { build(:ci_runner) }
+
+    it 'returns the runner using #find_runner_from_token' do
+      expect_any_instance_of(described_class)
+        .to receive(:find_runner_from_token)
+        .and_return(runner)
+
+      expect(subject.runner).to eq runner
+    end
+
+    it 'returns nil if no runner is found' do
+      expect(subject.runner).to be_blank
+    end
+
+    it 'rescue Gitlab::Auth::AuthenticationError exceptions' do
+      expect_any_instance_of(described_class)
+        .to receive(:find_runner_from_token)
+        .and_raise(Gitlab::Auth::UnauthorizedError)
+
+      expect(subject.runner).to be_blank
+    end
+  end
 end

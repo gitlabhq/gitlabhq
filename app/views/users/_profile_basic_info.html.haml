@@ -1,0 +1,6 @@
+%p
+  %span.middle-dot-divider
+    @#{@user.username}
+  - if can?(current_user, :read_user_profile, @user)
+    %span.middle-dot-divider
+      = s_('Member since %{date}') % { date: @user.created_at.to_date.to_s(:long) }

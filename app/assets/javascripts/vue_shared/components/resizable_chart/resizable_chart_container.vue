@@ -1,6 +1,6 @@
 <script>
-import { debounceByAnimationFrame } from '~/lib/utils/common_utils';
 import $ from 'jquery';
+import { debounceByAnimationFrame } from '~/lib/utils/common_utils';
 
 export default {
   data() {

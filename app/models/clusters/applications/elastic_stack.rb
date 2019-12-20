@@ -71,6 +71,8 @@ module Clusters
           # `proxy_url` could raise an exception because gitlab can not communicate with the cluster.
           # We check for a nil client in downstream use and behaviour is equivalent to an empty state
           log_exception(error, :failed_to_create_elasticsearch_client)
+
+          nil
         end
       end
 

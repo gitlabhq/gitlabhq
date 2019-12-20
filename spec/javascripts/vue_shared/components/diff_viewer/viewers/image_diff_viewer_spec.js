@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import imageDiffViewer from '~/vue_shared/components/diff_viewer/viewers/image_diff_viewer.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { GREEN_BOX_IMAGE_URL, RED_BOX_IMAGE_URL } from 'spec/test_constants';
+import imageDiffViewer from '~/vue_shared/components/diff_viewer/viewers/image_diff_viewer.vue';
 
 describe('ImageDiffViewer', () => {
   const requiredProps = {

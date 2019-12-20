@@ -1,0 +1,5 @@
+---
+title: Show correct warning on issue when project is archived
+merge_request: 20078
+author:
+type: fixed

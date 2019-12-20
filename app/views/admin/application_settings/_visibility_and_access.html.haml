@@ -9,6 +9,7 @@
       = f.label s_('ProjectCreationLevel|Default project creation protection'), class: 'label-bold'
       = f.select :default_project_creation, options_for_select(Gitlab::Access.project_creation_options, @application_setting.default_project_creation), {}, class: 'form-control'
     = render_if_exists 'admin/application_settings/default_project_deletion_protection_setting', form: f
+    = render_if_exists 'admin/application_settings/default_project_deletion_adjourned_period_setting', form: f
     .form-group.visibility-level-setting
       = f.label :default_project_visibility, class: 'label-bold'
       = render('shared/visibility_radios', model_method: :default_project_visibility, form: f, selected_level: @application_setting.default_project_visibility, form_model: Project.new)
@@ -53,6 +54,7 @@
       = select(:application_setting, :enabled_git_access_protocol, [['Both SSH and HTTP(S)', nil], ['Only SSH', 'ssh'], ['Only HTTP(S)', 'http']], {}, class: 'form-control')
       %span.form-text.text-muted#clone-protocol-help
         = _('Allow only the selected protocols to be used for Git access.')
+
     .form-group
       = f.label :custom_http_clone_url_root, _('Custom Git clone URL for HTTP(S)'), class: 'label-bold'
       = f.text_field :custom_http_clone_url_root, class: 'form-control', placeholder: 'https://git.example.com', :'aria-describedby' => 'custom_http_clone_url_root_help_block'

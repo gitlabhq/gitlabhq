@@ -11,6 +11,7 @@ describe 'Merge request > User sees diff', :js do
 
   before do
     stub_feature_flags(single_mr_diff_view: false)
+    stub_feature_flags(diffs_batch_load: false)
   end
 
   it_behaves_like 'rendering a single diff version'

@@ -14,7 +14,7 @@ tasks such as:
 To request access to Chatops on GitLab.com:
 
 1. Log into <https://ops.gitlab.net/users/sign_in> **using the same username** as for GitLab.com (you may have to rename it).
-1. Ask [a project member in the `chatops` project](https://ops.gitlab.net/gitlab-com/chatops/-/project_members) to add you by running `/chatops run member add <username> gitlab-com/chatops --ops`.
+1. Ask in the [#production](https://gitlab.slack.com/messages/production) channel to add you by running `/chatops run member add <username> gitlab-com/chatops --ops`.
 
 ## See also
 

@@ -261,7 +261,7 @@ describe API::GroupClusters do
 
       it 'responds with 400' do
         expect(response).to have_gitlab_http_status(400)
-        expect(json_response['message']['base'].first).to include('Instance does not support multiple Kubernetes clusters')
+        expect(json_response['message']['base'].first).to eq(_('Instance does not support multiple Kubernetes clusters'))
       end
     end
 
@@ -372,7 +372,7 @@ describe API::GroupClusters do
           end
 
           it 'returns validation error' do
-            expect(json_response['message']['platform_kubernetes.base'].first).to eq('Cannot modify managed Kubernetes cluster')
+            expect(json_response['message']['platform_kubernetes.base'].first).to eq(_('Cannot modify managed Kubernetes cluster'))
           end
         end
 

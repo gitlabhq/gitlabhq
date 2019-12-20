@@ -171,8 +171,7 @@ describe Upload do
         it 'sends a message to Sentry' do
           upload = create(:upload, :issuable_upload)
 
-          expect(Gitlab::Sentry).to receive(:enabled?).and_return(true)
-          expect(Raven).to receive(:capture_message).with("Upload file does not exist", extra: upload.attributes)
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(instance_of(RuntimeError), upload.attributes)
 
           upload.exist?
         end

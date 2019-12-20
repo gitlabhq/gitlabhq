@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ServiceHook < WebHook
+  include Presentable
+
   belongs_to :service
   validates :service, presence: true
 

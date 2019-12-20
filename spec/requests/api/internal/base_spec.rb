@@ -193,7 +193,15 @@ describe API::Internal::Base do
     end
 
     it 'responds successfully when a user is not found' do
-      get(api("/internal/discover"), params: { username: 'noone', secret_token: secret_token })
+      get(api('/internal/discover'), params: { username: 'noone', secret_token: secret_token })
+
+      expect(response).to have_gitlab_http_status(200)
+
+      expect(response.body).to eq('null')
+    end
+
+    it 'response successfully when passing invalid params' do
+      get(api('/internal/discover'), params: { nothing: 'to find a user', secret_token: secret_token })
 
       expect(response).to have_gitlab_http_status(200)
 
@@ -318,7 +326,7 @@ describe API::Internal::Base do
           expect(json_response["gitaly"]["repository"]["relative_path"]).to eq(project.repository.gitaly_repository.relative_path)
           expect(json_response["gitaly"]["address"]).to eq(Gitlab::GitalyClient.address(project.repository_storage))
           expect(json_response["gitaly"]["token"]).to eq(Gitlab::GitalyClient.token(project.repository_storage))
-          expect(json_response["gitaly"]["features"]).to eq('gitaly-feature-get-all-lfs-pointers-go' => 'true', 'gitaly-feature-inforef-uploadpack-cache' => 'true')
+          expect(json_response["gitaly"]["features"]).to eq('gitaly-feature-inforef-uploadpack-cache' => 'true', 'gitaly-feature-get-tag-messages-go' => 'true', 'gitaly-feature-filter-shas-with-signatures-go' => 'true')
           expect(user.reload.last_activity_on).to eql(Date.today)
         end
       end
@@ -338,7 +346,7 @@ describe API::Internal::Base do
             expect(json_response["gitaly"]["repository"]["relative_path"]).to eq(project.repository.gitaly_repository.relative_path)
             expect(json_response["gitaly"]["address"]).to eq(Gitlab::GitalyClient.address(project.repository_storage))
             expect(json_response["gitaly"]["token"]).to eq(Gitlab::GitalyClient.token(project.repository_storage))
-            expect(json_response["gitaly"]["features"]).to eq('gitaly-feature-get-all-lfs-pointers-go' => 'true', 'gitaly-feature-inforef-uploadpack-cache' => 'true')
+            expect(json_response["gitaly"]["features"]).to eq('gitaly-feature-inforef-uploadpack-cache' => 'true', 'gitaly-feature-get-tag-messages-go' => 'true', 'gitaly-feature-filter-shas-with-signatures-go' => 'true')
             expect(user.reload.last_activity_on).to be_nil
           end
         end
@@ -580,7 +588,7 @@ describe API::Internal::Base do
           expect(json_response["gitaly"]["repository"]["relative_path"]).to eq(project.repository.gitaly_repository.relative_path)
           expect(json_response["gitaly"]["address"]).to eq(Gitlab::GitalyClient.address(project.repository_storage))
           expect(json_response["gitaly"]["token"]).to eq(Gitlab::GitalyClient.token(project.repository_storage))
-          expect(json_response["gitaly"]["features"]).to eq('gitaly-feature-get-all-lfs-pointers-go' => 'true', 'gitaly-feature-inforef-uploadpack-cache' => 'true')
+          expect(json_response["gitaly"]["features"]).to eq('gitaly-feature-inforef-uploadpack-cache' => 'true', 'gitaly-feature-get-tag-messages-go' => 'true', 'gitaly-feature-filter-shas-with-signatures-go' => 'true')
         end
       end
 
@@ -819,7 +827,6 @@ describe API::Internal::Base do
 
     before do
       project.add_developer(user)
-      allow(described_class).to receive(:identify).and_return(user)
       allow_any_instance_of(Gitlab::Identifier).to receive(:identify).and_return(user)
     end
 

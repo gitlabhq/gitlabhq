@@ -8,7 +8,7 @@ module QA
           raise ArgumentError unless traits.include?(:enabled)
 
           Page::Main::Login.perform(&:sign_in_using_credentials)
-          Page::Main::Menu.perform(&:click_admin_area)
+          Page::Main::Menu.perform(&:go_to_admin_area)
           Page::Admin::Menu.perform(&:go_to_repository_settings)
 
           Page::Admin::Settings::Repository.perform do |setting|

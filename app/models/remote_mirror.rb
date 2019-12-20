@@ -3,6 +3,7 @@
 class RemoteMirror < ApplicationRecord
   include AfterCommitQueue
   include MirrorAuthentication
+  include SafeUrl
 
   MAX_FIRST_RUNTIME = 3.hours
   MAX_INCREMENTAL_RUNTIME = 1.hour
@@ -194,13 +195,7 @@ class RemoteMirror < ApplicationRecord
   end
 
   def safe_url
-    return if url.nil?
-
-    result = URI.parse(url)
-    result.password = '*****' if result.password
-    result.user = '*****' if result.user && result.user != 'git' # tokens or other data may be saved as user
-    result.to_s
-  rescue URI::Error
+    super(usernames_whitelist: %w[git])
   end
 
   def ensure_remote!

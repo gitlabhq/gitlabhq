@@ -97,29 +97,15 @@ describe Groups::ClustersController do
         end
 
         before do
-          stub_feature_flags(create_eks_clusters: false)
           allow(SecureRandom).to receive(:hex).and_return(key)
         end
 
-        it 'has authorize_url' do
+        it 'redirects to gcp authorize_url' do
           go
 
           expect(assigns(:authorize_url)).to include(key)
-          expect(session[session_key_for_redirect_uri]).to eq(new_group_cluster_path(group))
-        end
-
-        context 'when create_eks_clusters feature flag is enabled' do
-          before do
-            stub_feature_flags(create_eks_clusters: true)
-          end
-
-          context 'when selected provider is gke and no valid gcp token exists' do
-            it 'redirects to gcp authorize_url' do
-              go
-
-              expect(response).to redirect_to(assigns(:authorize_url))
-            end
-          end
+          expect(session[session_key_for_redirect_uri]).to eq(new_group_cluster_path(group, provider: :gcp))
+          expect(response).to redirect_to(assigns(:authorize_url))
         end
       end
 
@@ -457,10 +443,15 @@ describe Groups::ClustersController do
       post :authorize_aws_role, params: params.merge(group_id: group)
     end
 
+    before do
+      allow(Clusters::Aws::FetchCredentialsService).to receive(:new)
+        .and_return(double(execute: double))
+    end
+
     it 'creates an Aws::Role record' do
       expect { go }.to change { Aws::Role.count }
 
-      expect(response.status).to eq 201
+      expect(response.status).to eq 200
 
       role = Aws::Role.last
       expect(role.user).to eq user
@@ -490,18 +481,28 @@ describe Groups::ClustersController do
     end
   end
 
-  describe 'DELETE revoke AWS role for EKS cluster' do
-    let!(:role) { create(:aws_role, user: user) }
-
-    def go
-      delete :revoke_aws_role, params: { group_id: group }
+  describe 'DELETE clear cluster cache' do
+    let(:cluster) { create(:cluster, :group, groups: [group]) }
+    let!(:kubernetes_namespace) do
+      create(:cluster_kubernetes_namespace,
+        cluster: cluster,
+        project: create(:project)
+      )
     end
 
-    it 'deletes the Aws::Role record' do
-      expect { go }.to change { Aws::Role.count }
+    def go
+      delete :clear_cache,
+        params: {
+          group_id: group,
+          id: cluster
+        }
+    end
 
-      expect(response.status).to eq 204
-      expect(user.reload_aws_role).to be_nil
+    it 'deletes the namespaces associated with the cluster' do
+      expect { go }.to change { Clusters::KubernetesNamespace.count }
+
+      expect(response).to redirect_to(group_cluster_path(group, cluster))
+      expect(cluster.kubernetes_namespaces).to be_empty
     end
 
     describe 'security' do

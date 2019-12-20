@@ -26,7 +26,7 @@ module QA
         end
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/mr_widget_merged.vue' do
-          element :merged_status, 'The changes were merged into' # rubocop:disable QA/ElementWithPattern
+          element :merged_status_content
         end
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/mr_widget_rebase.vue' do
@@ -60,16 +60,33 @@ module QA
           element :edit_button
         end
 
+        def add_comment_to_diff(text)
+          wait(interval: 5) do
+            has_text?("No newline at end of file")
+          end
+          all_elements(:new_diff_line).first.hover
+          click_element :diff_comment
+          fill_element :reply_input, text
+        end
+
         def click_discussions_tab
           click_element :notes_tab
+
+          finished_loading?
         end
 
         def click_diffs_tab
           click_element :diffs_tab
+
+          finished_loading?
         end
 
         def click_pipeline_link
           click_element :pipeline_link
+        end
+
+        def edit!
+          click_element :edit_button
         end
 
         def fast_forward_possible?
@@ -82,16 +99,64 @@ module QA
           has_element?(:merge_button)
         end
 
-        def has_merge_options?
-          has_element?(:merge_moment_dropdown)
+        def has_assignee?(username)
+          page.within(element_selector_css(:assignee_block)) do
+            has_text?(username)
+          end
         end
 
-        def merge_immediately
-          if has_merge_options?
-            click_element :merge_moment_dropdown
-            click_element :merge_immediately_option
-          else
-            click_element :merge_button
+        def has_label?(label)
+          within_element(:labels_block) do
+            !!has_element?(:label, label_name: label)
+          end
+        end
+
+        def has_pipeline_status?(text)
+          # Pipelines can be slow, so we wait a bit longer than the usual 10 seconds
+          has_element?(:merge_request_pipeline_info_content, text: text, wait: 30)
+        end
+
+        def has_title?(title)
+          has_element?(:title, text: title)
+        end
+
+        def has_description?(description)
+          has_element?(:description, text: description)
+        end
+
+        def mark_to_squash
+          # The squash checkbox is disabled on load
+          wait do
+            has_element?(:squash_checkbox)
+          end
+
+          # The squash checkbox is enabled via JS
+          wait(reload: false) do
+            !find_element(:squash_checkbox).disabled?
+          end
+
+          click_element :squash_checkbox
+        end
+
+        def merge!
+          click_element :merge_button if ready_to_merge?
+
+          raise "Merge did not appear to be successful" unless merged?
+        end
+
+        def merged?
+          has_element?(:merged_status_content, text: 'The changes were merged into', wait: 30)
+        end
+
+        def ready_to_merge?
+          # The merge button is disabled on load
+          wait do
+            has_element?(:merge_button)
+          end
+
+          # The merge button is enabled via JS
+          wait(reload: false) do
+            !find_element(:merge_button).disabled?
           end
         end
 
@@ -115,83 +180,8 @@ module QA
           raise "Rebase did not appear to be successful" unless success
         end
 
-        def has_assignee?(username)
-          page.within(element_selector_css(:assignee_block)) do
-            has_text?(username)
-          end
-        end
-
-        def has_label?(label)
-          page.within(element_selector_css(:labels_block)) do
-            element = find('span', text: label)
-            !element.nil?
-          end
-        end
-
-        def has_pipeline_status?(text)
-          # Pipelines can be slow, so we wait a bit longer than the usual 10 seconds
-          has_element?(:merge_request_pipeline_info_content, text: text, wait: 30)
-        end
-
-        def has_title?(title)
-          has_element?(:title, text: title)
-        end
-
-        def has_description?(description)
-          has_element?(:description, text: description)
-        end
-
         def try_to_merge!
-          merge_immediately if ready_to_merge?
-        end
-
-        def merge!
-          try_to_merge!
-
-          success = wait do
-            has_text?('The changes were merged into')
-          end
-
-          raise "Merge did not appear to be successful" unless success
-        end
-
-        def mark_to_squash
-          # The squash checkbox is disabled on load
-          wait do
-            has_element?(:squash_checkbox)
-          end
-
-          # The squash checkbox is enabled via JS
-          wait(reload: false) do
-            !find_element(:squash_checkbox).disabled?
-          end
-
-          click_element :squash_checkbox
-        end
-
-        def add_comment_to_diff(text)
-          wait(interval: 5) do
-            has_text?("No newline at end of file")
-          end
-          all_elements(:new_diff_line).first.hover
-          click_element :diff_comment
-          fill_element :reply_input, text
-        end
-
-        def edit!
-          click_element :edit_button
-        end
-
-        def ready_to_merge?
-          # The merge button is disabled on load
-          wait do
-            has_element?(:merge_button)
-          end
-
-          # The merge button is enabled via JS
-          wait(reload: false) do
-            !find_element(:merge_button).disabled?
-          end
+          click_element :merge_button if ready_to_merge?
         end
 
         def view_email_patches

@@ -1,5 +1,5 @@
 .broadcast-message-preview{ style: broadcast_message_style(@broadcast_message) }
-  = icon('bullhorn')
+  = sprite_icon('bullhorn', size: 16, css_class:'vertical-align-text-top mr-2')
   .js-broadcast-message-preview
     - if @broadcast_message.message.present?
       = render_broadcast_message(@broadcast_message)
@@ -38,6 +38,13 @@
       = f.label :font, "Font Color"
     .col-sm-10
       = f.color_field :font, class: "form-control text-font-color"
+  .form-group.row
+    .col-sm-2.col-form-label
+      = f.label :target_path, _('Target Path')
+    .col-sm-10
+      = f.text_field :target_path, class: "form-control"
+      .form-text.text-muted
+        = _('Paths can contain wildcards, like */welcome')
   .form-group.row
     .col-sm-2.col-form-label
       = f.label :starts_at, _("Starts at (UTC)")

@@ -32,11 +32,12 @@ module API
         success Entities::BroadcastMessage
       end
       params do
-        requires :message,   type: String,   desc: 'Message to display'
+        requires :message, type: String, desc: 'Message to display'
         optional :starts_at, type: DateTime, desc: 'Starting time', default: -> { Time.zone.now }
-        optional :ends_at,   type: DateTime, desc: 'Ending time',   default: -> { 1.hour.from_now }
-        optional :color,     type: String,   desc: 'Background color'
-        optional :font,      type: String,   desc: 'Foreground color'
+        optional :ends_at, type: DateTime, desc: 'Ending time', default: -> { 1.hour.from_now }
+        optional :color, type: String, desc: 'Background color'
+        optional :font, type: String, desc: 'Foreground color'
+        optional :target_path, type: String, desc: 'Target path'
       end
       post do
         message = BroadcastMessage.create(declared_params(include_missing: false))
@@ -66,12 +67,13 @@ module API
         success Entities::BroadcastMessage
       end
       params do
-        requires :id,        type: Integer,  desc: 'Broadcast message ID'
-        optional :message,   type: String,   desc: 'Message to display'
+        requires :id, type: Integer, desc: 'Broadcast message ID'
+        optional :message, type: String, desc: 'Message to display'
         optional :starts_at, type: DateTime, desc: 'Starting time'
-        optional :ends_at,   type: DateTime, desc: 'Ending time'
-        optional :color,     type: String,   desc: 'Background color'
-        optional :font,      type: String,   desc: 'Foreground color'
+        optional :ends_at, type: DateTime, desc: 'Ending time'
+        optional :color, type: String, desc: 'Background color'
+        optional :font, type: String, desc: 'Foreground color'
+        optional :target_path, type: String, desc: 'Target path'
       end
       put ':id' do
         message = find_message

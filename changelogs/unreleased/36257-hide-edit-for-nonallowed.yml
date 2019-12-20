@@ -1,0 +1,5 @@
+---
+title: Remove Release edit url for users not allowed to update a release
+merge_request: 20136
+author:
+type: fixed

@@ -1,5 +1,5 @@
-import AddRequest from '~/performance_bar/components/add_request.vue';
 import { shallowMount } from '@vue/test-utils';
+import AddRequest from '~/performance_bar/components/add_request.vue';
 
 describe('add request form', () => {
   let wrapper;

@@ -100,9 +100,6 @@ export default {
     hasOnlyOneJob(stage) {
       return stage.groups.length === 1;
     },
-    hasDownstream(index, length) {
-      return index === length - 1 && this.hasTriggered;
-    },
     hasUpstream(index) {
       return index === 0 && this.hasTriggeredBy;
     },
@@ -160,7 +157,6 @@ export default {
             :key="stage.name"
             :class="{
               'has-upstream prepend-left-64': hasUpstream(index),
-              'has-downstream': hasDownstream(index, graph.length),
               'has-only-one-job': hasOnlyOneJob(stage),
               'append-right-46': shouldAddRightMargin(index),
             }"

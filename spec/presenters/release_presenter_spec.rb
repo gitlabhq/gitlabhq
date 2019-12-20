@@ -90,10 +90,8 @@ describe ReleasePresenter do
       is_expected.to match /#{edit_project_release_url(project, release)}/
     end
 
-    context 'when release_edit_page feature flag is disabled' do
-      before do
-        stub_feature_flags(release_edit_page: false)
-      end
+    context 'when a user is not allowed to update a release' do
+      let(:presenter) { described_class.new(release, current_user: guest) }
 
       it { is_expected.to be_nil }
     end

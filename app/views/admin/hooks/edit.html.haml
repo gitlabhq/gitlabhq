@@ -1,21 +1,18 @@
-- add_to_breadcrumbs "System Hooks", admin_hooks_path
-- page_title 'Edit System Hook'
-%h3.page-title
-  Edit System Hook
+- add_to_breadcrumbs @hook.pluralized_name, admin_hooks_path
+- page_title _('Edit System Hook')
 
-%p.light
-  #{link_to 'System hooks ', help_page_path('system_hooks/system_hooks')} can be
-  used for binding events when GitLab creates a User or Project.
+.row.prepend-top-default
+  .col-lg-3
+    = render 'shared/web_hooks/title_and_docs', hook: @hook
 
-%hr
+  .col-lg-9.append-bottom-default
+    = form_for @hook, as: :hook, url: admin_hook_path do |f|
+      = render partial: 'form', locals: { form: f, hook: @hook }
+      .form-actions
+        %span>= f.submit _('Save changes'), class: 'btn btn-success append-right-8'
+        = render 'shared/web_hooks/test_button', hook: @hook
+        = link_to _('Delete'), admin_hook_path(@hook), method: :delete, class: 'btn btn-remove float-right', data: { confirm: _('Are you sure?') }
 
-= form_for @hook, as: :hook, url: admin_hook_path do |f|
-  = render partial: 'form', locals: { form: f, hook: @hook }
-  .form-actions
-    = f.submit 'Save changes', class: 'btn btn-success'
-    = render 'shared/web_hooks/test_button', triggers: SystemHook.triggers, hook: @hook
-    = link_to 'Remove', admin_hook_path(@hook), method: :delete, class: 'btn btn-remove float-right', data: { confirm: 'Are you sure?' }
+    %hr
 
-%hr
-
-= render partial: 'admin/hook_logs/index', locals: { hook: @hook, hook_logs: @hook_logs }
+    = render partial: 'admin/hook_logs/index', locals: { hook: @hook, hook_logs: @hook_logs }

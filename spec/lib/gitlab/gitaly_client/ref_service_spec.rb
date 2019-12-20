@@ -22,6 +22,7 @@ describe Gitlab::GitalyClient::RefService do
 
   describe '#remote_branches' do
     let(:remote_name) { 'my_remote' }
+
     subject { client.remote_branches(remote_name) }
 
     it 'sends a find_all_remote_branches message' do

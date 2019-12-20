@@ -6,6 +6,10 @@ describe 'Snippet', :js do
   let(:project) { create(:project, :repository) }
   let(:snippet) { create(:personal_snippet, :public, file_name: file_name, content: content) }
 
+  before do
+    stub_feature_flags(snippets_vue: false)
+  end
+
   context 'Ruby file' do
     let(:file_name) { 'popen.rb' }
     let(:content) { project.repository.blob_at('master', 'files/ruby/popen.rb').data }
@@ -157,5 +161,22 @@ describe 'Snippet', :js do
     let(:user_with_status) { snippet.author }
 
     subject { visit snippet_path(snippet) }
+  end
+
+  context 'when user cannot create snippets' do
+    let(:user) { create(:user, :external) }
+    let(:snippet) { create(:personal_snippet, :public) }
+
+    before do
+      sign_in(user)
+
+      visit snippet_path(snippet)
+
+      wait_for_requests
+    end
+
+    it 'does not show the "New Snippet" button' do
+      expect(page).not_to have_link('New snippet')
+    end
   end
 end

@@ -196,6 +196,12 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
         2.times { instance.exclusively_update_reactive_cache! }
       end
 
+      it 'does not delete the value key' do
+        expect(Rails.cache).to receive(:delete).with(cache_key).never
+
+        go!
+      end
+
       context 'and #calculate_reactive_cache raises an exception' do
         before do
           stub_reactive_cache(instance, "preexisting")
@@ -220,6 +226,12 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
     context 'when lifetime is exceeded' do
       it 'skips the calculation' do
         expect(instance).to receive(:calculate_reactive_cache).never
+
+        go!
+      end
+
+      it 'deletes the value key' do
+        expect(Rails.cache).to receive(:delete).with(cache_key).once
 
         go!
       end

@@ -267,13 +267,19 @@ This feature:
   kubectl -n gitlab-managed-apps exec -it $(kubectl get pods -n gitlab-managed-apps | grep 'ingress-controller' | awk '{print $1}') -- tail -f /var/log/modsec/audit.log
   ```
 
-There is a small performance overhead by enabling `modsecurity`. However, if this is
-considered significant for your application, you can toggle the feature flag back to
-false by running the following command within the Rails console:
+There is a small performance overhead by enabling `modsecurity`. If this is
+considered significant for your application, you can either:
 
-```ruby
-Feature.disable(:ingress_modsecurity)
-```
+- Disable ModSecurity's rule engine for your deployed application by setting
+  [the deployment variable](../../topics/autodevops/index.md)
+  `AUTO_DEVOPS_MODSECURITY_SEC_RULE_ENGINE` to `Off`. This will prevent ModSecurity from
+  processing any requests for the given application or environment.
+- Toggle the feature flag to false by running the following command within your
+  instance's Rails console:
+
+  ```ruby
+  Feature.disable(:ingress_modsecurity)
+  ```
 
 Once disabled, you must [uninstall](#uninstalling-applications) and reinstall your Ingress
 application for the changes to take effect.
@@ -429,6 +435,131 @@ administrator to run following command within a Rails console:
 Feature.enable(:enable_cluster_application_crossplane)
 ```
 
+## Install using GitLab CI (alpha)
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/20822) in GitLab 12.6.
+
+CAUTION: **Warning:**
+This is an _alpha_ feature, and it is subject to change at any time without
+prior notice.
+
+This alternative method allows users to install GitLab-managed
+applications using GitLab CI. It also allows customization of the
+install using Helm `values.yaml` files.
+
+Supported applications:
+
+- [Ingress](#install-ingress-using-gitlab-ci)
+- [Sentry](#install-sentry-using-gitlab-ci)
+
+### Usage
+
+To install applications using GitLab CI:
+
+1. Connect the cluster to a [cluster management project](management_project.md).
+1. In that project, add a `.gitlab-ci.yml` file with the following content:
+
+    ```yaml
+    include:
+      - template: Managed-Cluster-Applications.gitlab-ci.yml
+    ```
+
+1. Add a `.gitlab/managed-apps/config.yaml` file to define which
+  applications you would like to install. Define the `installed` key as
+  `true` to install the application and `false` to uninstall the
+  application. For example, to install Ingress:
+
+    ```yaml
+    ingress:
+      installed: true
+    ```
+
+1. Optionally, define `.gitlab/managed-apps/<application>/values.yaml` file to
+   customize values for the installed application.
+
+A GitLab CI pipeline will then run on the `master` branch to install the
+applications you have configured.
+
+### Install Ingress using GitLab CI
+
+To install Ingress, define the `.gitlab/managed-apps/config.yaml` file
+with:
+
+```yaml
+ingress:
+  installed: true
+```
+
+Ingress will then be installed into the `gitlab-managed-apps` namespace
+of your cluster.
+
+You can customize the installation of Ingress by defining
+`.gitlab/managed-apps/ingress/values.yaml` file in your cluster
+management project. Refer to the
+[chart](https://github.com/helm/charts/tree/master/stable/nginx-ingress)
+for the available configuration options.
+
+### Install Sentry using GitLab CI
+
+NOTE: **Note:**
+The Sentry Helm chart [recommends](https://github.com/helm/charts/blob/f6e5784f265dd459c5a77430185d0302ed372665/stable/sentry/values.yaml#L284-L285) at least 3GB of available RAM for database migrations.
+
+To install Sentry, define the `.gitlab/managed-apps/config.yaml` file
+with:
+
+```yaml
+sentry:
+  installed: true
+```
+
+Sentry will then be installed into the `gitlab-managed-apps` namespace
+of your cluster.
+
+You can customize the installation of Sentry by defining
+`.gitlab/managed-apps/sentry/values.yaml` file in your cluster
+management project. Refer to the
+[chart](https://github.com/helm/charts/tree/master/stable/sentry)
+for the available configuration options.
+
+We recommend you pay close attention to the following configuration options:
+
+- `email`. Needed to invite users to your Sentry instance and to send error emails.
+- `user`. Where you can set the login credentials for the default admin user.
+- `postgresql`. For a PostgreSQL password that can be used when running future updates.
+
+NOTE: **Note:**
+When upgrading it is important to provide the existing PostgreSQL password (given using the `postgresql.postgresqlPassword` key) or you will receive authentication errors. See the [PostgreSQL chart documentation](https://github.com/helm/charts/tree/master/stable/postgresql#upgrade) for more information.
+
+Here is an example configuration for Sentry:
+
+```yaml
+# Admin user to create
+user:
+  # Indicated to create the admin user or not,
+  # Default is true as the initial installation.
+  create: true
+  email: "<your email>"
+  password: "<your password>"
+
+email:
+  from_address: "<your from email>"
+  host: smtp
+  port: 25
+  use_tls: false
+  user: "<your email username>"
+  password: "<your email password>"
+  enable_replies: false
+
+ingress:
+  enabled: true
+  hostname: "<sentry.example.com>"
+
+# Needs to be here between runs.
+# See https://github.com/helm/charts/tree/master/stable/postgresql#upgrade for more info
+postgresql:
+  postgresqlPassword: example-postgresql-password
+```
+
 ## Upgrading applications
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/24789) in GitLab 11.8.
@@ -470,6 +601,7 @@ The applications below can be uninstalled.
 | Knative  | 12.1+         | The associated IP will be deleted and cannot be restored. |
 | Prometheus  | 11.11+         | All data will be deleted and cannot be restored. |
 | Crossplane  | 12.5+         | All data will be deleted and cannot be restored. |
+| Sentry  | 12.6+         | The PostgreSQL persistent volume will remain and should be manually removed for complete uninstall.  |
 
 To uninstall an application:
 

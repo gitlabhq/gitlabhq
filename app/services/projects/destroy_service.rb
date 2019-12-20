@@ -31,13 +31,6 @@ module Projects
 
       Projects::UnlinkForkService.new(project, current_user).execute
 
-      # The project is not necessarily a fork, so update the fork network originating
-      # from this project
-      if fork_network = project.root_of_fork_network
-        fork_network.update(root_project: nil,
-                            deleted_root_project_name: project.full_name)
-      end
-
       attempt_destroy_transaction(project)
 
       system_hook_service.execute_hooks_for(project, :destroy)

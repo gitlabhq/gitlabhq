@@ -1,8 +1,8 @@
 import $ from 'jquery';
 import Vue from 'vue';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import boardsStore from '~/boards/stores/boards_store';
 import boardForm from '~/boards/components/board_form.vue';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('board_form.vue', () => {
   const props = {

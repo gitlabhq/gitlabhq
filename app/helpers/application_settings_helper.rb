@@ -232,6 +232,7 @@ module ApplicationSettingsHelper
       :metrics_port,
       :metrics_sample_interval,
       :metrics_timeout,
+      :minimum_password_length,
       :mirror_available,
       :pages_domain_verification_enabled,
       :password_authentication_enabled_for_web,
@@ -301,7 +302,8 @@ module ApplicationSettingsHelper
       :snowplow_iglu_registry_url,
       :push_event_hooks_limit,
       :push_event_activities_limit,
-      :custom_http_clone_url_root
+      :custom_http_clone_url_root,
+      :snippet_size_limit
     ]
   end
 

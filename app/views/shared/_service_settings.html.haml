@@ -16,7 +16,7 @@
 
   - if @service.configurable_events.present?
     .form-group.row
-      .col-sm-2.text-right Trigger
+      %label.col-form-label.col-sm-2= _('Trigger')
 
       .col-sm-10
         - @service.configurable_events.each do |event|
@@ -34,6 +34,22 @@
 
             %p.text-muted
               = @service.class.event_description(event)
+
+  - if @service.configurable_event_actions.present?
+    .form-group.row
+      %label.col-form-label.col-sm-2= _('Event Actions')
+
+      .col-sm-10
+        - @service.configurable_event_actions.each do |action|
+          .form-group
+            .form-check
+              = form.check_box service_event_action_field_name(action), class: 'form-check-input'
+              = form.label service_event_action_field_name(action), class: 'form-check-label' do
+                %strong
+                  = event_action_description(action)
+
+            %p.text-muted
+              = event_action_description(action)
 
   - @service.global_fields.each do |field|
     - type = field[:type]

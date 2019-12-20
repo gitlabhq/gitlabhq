@@ -13,7 +13,7 @@ module Metrics
 
       def dashboard_path
         params[:dashboard_path].presence ||
-          ::Metrics::Dashboard::SystemDashboardService::SYSTEM_DASHBOARD_PATH
+          ::Metrics::Dashboard::SystemDashboardService::DASHBOARD_PATH
       end
 
       def group

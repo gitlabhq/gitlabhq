@@ -43,6 +43,8 @@ describe 'Database schema' do
     geo_nodes: %w[oauth_application_id],
     geo_repository_deleted_events: %w[project_id],
     geo_upload_deleted_events: %w[upload_id model_id],
+    gitlab_subscription_histories: %w[gitlab_subscription_id hosted_plan_id namespace_id],
+    import_failures: %w[project_id],
     identities: %w[user_id],
     issues: %w[last_edited_by_id state_id],
     jira_tracker_data: %w[jira_issue_transition_id],
@@ -79,7 +81,8 @@ describe 'Database schema' do
     vulnerability_identifiers: %w[external_id],
     vulnerability_scanners: %w[external_id],
     web_hooks: %w[service_id group_id],
-    suggestions: %w[commit_id]
+    suggestions: %w[commit_id],
+    commit_user_mentions: %w[commit_id]
   }.with_indifferent_access.freeze
 
   context 'for table' do

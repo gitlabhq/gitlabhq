@@ -39,6 +39,9 @@ export default class BlobViewer {
       case 'notebook':
         initViewer(import(/* webpackChunkName: 'notebook_viewer' */ '../notebook_viewer'));
         break;
+      case 'openapi':
+        initViewer(import(/* webpackChunkName: 'openapi_viewer' */ '../openapi_viewer'));
+        break;
       case 'pdf':
         initViewer(import(/* webpackChunkName: 'pdf_viewer' */ '../pdf_viewer'));
         break;

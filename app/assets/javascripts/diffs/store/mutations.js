@@ -12,20 +12,55 @@ import * as types from './mutation_types';
 
 export default {
   [types.SET_BASE_CONFIG](state, options) {
-    const { endpoint, projectPath, dismissEndpoint, showSuggestPopover } = options;
-    Object.assign(state, { endpoint, projectPath, dismissEndpoint, showSuggestPopover });
+    const {
+      endpoint,
+      endpointMetadata,
+      endpointBatch,
+      projectPath,
+      dismissEndpoint,
+      showSuggestPopover,
+      useSingleDiffStyle,
+    } = options;
+    Object.assign(state, {
+      endpoint,
+      endpointMetadata,
+      endpointBatch,
+      projectPath,
+      dismissEndpoint,
+      showSuggestPopover,
+      useSingleDiffStyle,
+    });
   },
 
   [types.SET_LOADING](state, isLoading) {
     Object.assign(state, { isLoading });
   },
 
+  [types.SET_BATCH_LOADING](state, isBatchLoading) {
+    Object.assign(state, { isBatchLoading });
+  },
+
   [types.SET_DIFF_DATA](state, data) {
-    prepareDiffData(data);
+    if (
+      !(
+        gon &&
+        gon.features &&
+        gon.features.diffsBatchLoad &&
+        window.location.search.indexOf('diff_id') === -1
+      )
+    ) {
+      prepareDiffData(data);
+    }
 
     Object.assign(state, {
       ...convertObjectPropsToCamelCase(data),
     });
+  },
+
+  [types.SET_DIFF_DATA_BATCH](state, data) {
+    prepareDiffData(data);
+
+    state.diffFiles.push(...data.diff_files);
   },
 
   [types.RENDER_FILE](state, file) {

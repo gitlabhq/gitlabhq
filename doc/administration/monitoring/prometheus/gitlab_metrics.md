@@ -25,8 +25,8 @@ The following metrics are available:
 
 | Metric                                                         | Type      |                  Since | Description                                                                                         | Labels                                              |
 |:---------------------------------------------------------------|:----------|-----------------------:|:----------------------------------------------------------------------------------------------------|:----------------------------------------------------|
-| `gitlab_banzai_cached_render_real_duration_seconds`            | Histogram |                    9.4 | Duration of rendering markdown into HTML when cached output exists                                  | controller, action                                  |
-| `gitlab_banzai_cacheless_render_real_duration_seconds`         | Histogram |                    9.4 | Duration of rendering markdown into HTML when cached outupt does not exist                          | controller, action                                  |
+| `gitlab_banzai_cached_render_real_duration_seconds`            | Histogram |                    9.4 | Duration of rendering Markdown into HTML when cached output exists                                  | controller, action                                  |
+| `gitlab_banzai_cacheless_render_real_duration_seconds`         | Histogram |                    9.4 | Duration of rendering Markdown into HTML when cached outupt does not exist                          | controller, action                                  |
 | `gitlab_cache_misses_total`                                    | Counter   |                   10.2 | Cache read miss                                                                                     | controller, action                                  |
 | `gitlab_cache_operation_duration_seconds`                      | Histogram |                   10.2 | Cache access time                                                                                   |                                                     |
 | `gitlab_cache_operations_total`                                | Counter   |                   12.2 | Cache operations by controller/action                                                               | controller, action, operation                       |
@@ -90,7 +90,6 @@ The following metrics can be controlled by feature flags:
 | Metric                                                         | Feature Flag                                                       |
 |:---------------------------------------------------------------|:-------------------------------------------------------------------|
 | `gitlab_method_call_duration_seconds`                          | `prometheus_metrics_method_instrumentation`                        |
-| `gitlab_transaction_allocated_memory_bytes`                    | `prometheus_metrics_transaction_allocated_memory`                  |
 | `gitlab_view_rendering_duration_seconds`                       | `prometheus_metrics_view_instrumentation`                          |
 
 ## Sidekiq Metrics available for Geo **(PREMIUM)**

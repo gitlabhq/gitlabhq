@@ -44,6 +44,7 @@ describe MarkupHelper do
 
     describe "override default project" do
       let(:actual) { issue.to_reference }
+
       set(:second_project) { create(:project, :public) }
       set(:second_issue) { create(:issue, project: second_project) }
 
@@ -55,6 +56,7 @@ describe MarkupHelper do
 
     describe 'uploads' do
       let(:text) { "![ImageTest](/uploads/test.png)" }
+
       set(:group) { create(:group) }
 
       subject { helper.markdown(text) }

@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import TreeList from '~/diffs/components/tree_list.vue';
 import createStore from '~/diffs/store/modules';
-import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 
 describe('Diffs tree list component', () => {
   let Component;

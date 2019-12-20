@@ -1882,6 +1882,7 @@ describe API::Projects do
 
   describe "POST /projects/:id/share" do
     let(:group) { create(:group) }
+
     before do
       group.add_developer(user)
     end

@@ -80,6 +80,17 @@ describe Commit do
       expect(commit.author).to eq(user)
     end
 
+    context 'with a user with an unconfirmed e-mail' do
+      before do
+        user = create(:user)
+        create(:email, user: user, email: commit.author_email)
+      end
+
+      it 'returns no user' do
+        expect(commit.author).to be_nil
+      end
+    end
+
     context 'using eager loading' do
       let!(:alice) { create(:user, email: 'alice@example.com') }
       let!(:bob) { create(:user, email: 'hunter2@example.com') }
@@ -115,7 +126,7 @@ describe Commit do
       let!(:commits) { [alice_commit, bob_commit, eve_commit, jeff_commit] }
 
       before do
-        create(:email, user: bob, email: 'bob@example.com')
+        create(:email, :confirmed, user: bob, email: 'bob@example.com')
       end
 
       it 'executes only two SQL queries' do
@@ -175,6 +186,32 @@ describe Commit do
         end
 
         expect(recorder.count).to be_zero
+      end
+    end
+  end
+
+  describe '#committer' do
+    context 'with a confirmed e-mail' do
+      it 'returns the user' do
+        user = create(:user, email: commit.committer_email)
+
+        expect(commit.committer).to eq(user)
+      end
+    end
+
+    context 'with an unconfirmed e-mail' do
+      let(:user) { create(:user) }
+
+      before do
+        create(:email, user: user, email: commit.committer_email)
+      end
+
+      it 'returns no user' do
+        expect(commit.committer).to be_nil
+      end
+
+      it 'returns the user' do
+        expect(commit.committer(confirmed: false)).to eq(user)
       end
     end
   end
@@ -359,7 +396,7 @@ eos
 
     it { expect(data).to be_a(Hash) }
     it { expect(data[:message]).to include('adds bar folder and branch-test text file to check Repository merged_to_root_ref method') }
-    it { expect(data[:timestamp]).to eq('2016-09-27T14:37:46Z') }
+    it { expect(data[:timestamp]).to eq('2016-09-27T14:37:46+00:00') }
     it { expect(data[:added]).to contain_exactly("bar/branch-test.txt") }
     it { expect(data[:modified]).to eq([]) }
     it { expect(data[:removed]).to eq([]) }

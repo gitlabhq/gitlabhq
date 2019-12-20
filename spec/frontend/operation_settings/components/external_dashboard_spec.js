@@ -1,11 +1,11 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import { GlButton, GlLink, GlFormGroup, GlFormInput } from '@gitlab/ui';
+import { TEST_HOST } from 'helpers/test_constants';
 import ExternalDashboard from '~/operation_settings/components/external_dashboard.vue';
 import store from '~/operation_settings/store';
 import axios from '~/lib/utils/axios_utils';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import createFlash from '~/flash';
-import { TEST_HOST } from 'helpers/test_constants';
 
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/flash');

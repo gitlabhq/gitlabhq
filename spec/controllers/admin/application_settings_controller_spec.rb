@@ -95,6 +95,13 @@ describe Admin::ApplicationSettingsController do
       expect(ApplicationSetting.current.default_project_creation).to eq(::Gitlab::Access::MAINTAINER_PROJECT_ACCESS)
     end
 
+    it 'updates minimum_password_length setting' do
+      put :update, params: { application_setting: { minimum_password_length: 10 } }
+
+      expect(response).to redirect_to(admin_application_settings_path)
+      expect(ApplicationSetting.current.minimum_password_length).to eq(10)
+    end
+
     context 'external policy classification settings' do
       let(:settings) do
         {

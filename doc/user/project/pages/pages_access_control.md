@@ -11,7 +11,7 @@ You can enable Pages access control on your project, so that only
 [members of your project](../../permissions.md#project-members-permissions)
 (at least Guest) can access your website:
 
-1. Navigate to your project's **Settings > General > Permissions**.
+1. Navigate to your project's **Settings > General** and expand **Visibility, project features, permissions**.
 1. Toggle the **Pages** button to enable the access control.
 
    NOTE: **Note:**

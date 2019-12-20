@@ -1,8 +1,9 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import dateFormat from 'dateformat';
-import { __, sprintf } from '~/locale';
-import { GlButton, GlLink, GlLoadingIcon } from '@gitlab/ui';
+import { GlFormInput, GlLink, GlLoadingIcon } from '@gitlab/ui';
+import { __, sprintf, n__ } from '~/locale';
+import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import Stacktrace from './stacktrace.vue';
@@ -12,7 +13,8 @@ import { trackClickErrorLinkToSentryOptions } from '../utils';
 
 export default {
   components: {
-    GlButton,
+    LoadingButton,
+    GlFormInput,
     GlLink,
     GlLoadingIcon,
     TooltipOnTruncate,
@@ -32,6 +34,19 @@ export default {
       type: String,
       required: true,
     },
+    projectIssuesPath: {
+      type: String,
+      required: true,
+    },
+    csrfToken: {
+      type: String,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      issueCreationInProgress: false,
+    };
   },
   computed: {
     ...mapState('details', ['error', 'loading', 'loadingStacktrace', 'stacktraceData']),
@@ -41,7 +56,7 @@ export default {
         __('Reported %{timeAgo} by %{reportedBy}'),
         {
           reportedBy: `<strong>${this.error.culprit}</strong>`,
-          timeAgo: this.timeFormated(this.stacktraceData.date_received),
+          timeAgo: this.timeFormatted(this.stacktraceData.date_received),
         },
         false,
       );
@@ -58,6 +73,27 @@ export default {
     showStacktrace() {
       return Boolean(!this.loadingStacktrace && this.stacktrace && this.stacktrace.length);
     },
+    issueTitle() {
+      return this.error.title;
+    },
+    issueDescription() {
+      return sprintf(
+        __(
+          '%{description}- Sentry event: %{errorUrl}- First seen: %{firstSeen}- Last seen: %{lastSeen} %{countLabel}: %{count}%{userCountLabel}: %{userCount}',
+        ),
+        {
+          description: '# Error Details:\n',
+          errorUrl: `${this.error.external_url}\n`,
+          firstSeen: `\n${this.error.first_seen}\n`,
+          lastSeen: `${this.error.last_seen}\n`,
+          countLabel: n__('- Event', '- Events', this.error.count),
+          count: `${this.error.count}\n`,
+          userCountLabel: n__('- User', '- Users', this.error.user_count),
+          userCount: `${this.error.user_count}\n`,
+        },
+        false,
+      );
+    },
   },
   mounted() {
     this.startPollingDetails(this.issueDetailsPath);
@@ -66,8 +102,12 @@ export default {
   methods: {
     ...mapActions('details', ['startPollingDetails', 'startPollingStacktrace']),
     trackClickErrorLinkToSentryOptions,
+    createIssue() {
+      this.issueCreationInProgress = true;
+      this.$refs.sentryIssueForm.submit();
+    },
     formatDate(date) {
-      return `${this.timeFormated(date)} (${dateFormat(date, 'UTC:yyyy-mm-dd h:MM:ssTT Z')})`;
+      return `${this.timeFormatted(date)} (${dateFormat(date, 'UTC:yyyy-mm-dd h:MM:ssTT Z')})`;
     },
   },
 };
@@ -78,13 +118,27 @@ export default {
     <div v-if="loading" class="py-3">
       <gl-loading-icon :size="3" />
     </div>
-
     <div v-else-if="showDetails" class="error-details">
       <div class="top-area align-items-center justify-content-between py-3">
         <span v-if="!loadingStacktrace && stacktrace" v-html="reported"></span>
-        <!--   <gl-button class="my-3 ml-auto" variant="success">
-             {{ __('Create Issue') }}
-           </gl-button>-->
+        <form ref="sentryIssueForm" :action="projectIssuesPath" method="POST">
+          <gl-form-input class="hidden" name="issue[title]" :value="issueTitle" />
+          <input name="issue[description]" :value="issueDescription" type="hidden" />
+          <gl-form-input
+            :value="error.id"
+            class="hidden"
+            name="issue[sentry_issue_attributes][sentry_issue_identifier]"
+          />
+          <gl-form-input :value="csrfToken" class="hidden" name="authenticity_token" />
+          <loading-button
+            v-if="!error.gitlab_issue"
+            class="btn-success"
+            :label="__('Create issue')"
+            :loading="issueCreationInProgress"
+            data-qa-selector="create_issue_button"
+            @click="createIssue"
+          />
+        </form>
       </div>
       <div>
         <tooltip-on-truncate :title="error.title" truncate-target="child" placement="top">
@@ -92,6 +146,12 @@ export default {
         </tooltip-on-truncate>
         <h3>{{ __('Error details') }}</h3>
         <ul>
+          <li v-if="error.gitlab_issue">
+            <span class="bold">{{ __('GitLab Issue') }}:</span>
+            <gl-link :href="error.gitlab_issue">
+              <span>{{ error.gitlab_issue }}</span>
+            </gl-link>
+          </li>
           <li>
             <span class="bold">{{ __('Sentry event') }}:</span>
             <gl-link

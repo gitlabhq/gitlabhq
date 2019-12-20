@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
+import { TEST_HOST } from 'helpers/test_constants';
 import UncollapsedAssigneeList from '~/sidebar/components/assignees/uncollapsed_assignee_list.vue';
 import AssigneeAvatarLink from '~/sidebar/components/assignees/assignee_avatar_link.vue';
-import { TEST_HOST } from 'helpers/test_constants';
 import userDataMock from '../../user_data_mock';
 import UsersMockHelper from '../../../helpers/user_mock_data_helper';
 

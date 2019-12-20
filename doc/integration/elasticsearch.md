@@ -158,7 +158,10 @@ If you select `Limit namespaces and projects that can be indexed`, more options 
 You can select namespaces and projects to index exclusively. Please note that if the namespace is a group it will include
 any sub-groups and projects belonging to those sub-groups to be indexed as well.
 
+Elasticsearch only provides cross-group code/commit search (global) if all name-spaces are indexed. In this particular scenario where only a subset of namespaces are indexed, a global search will not provide a code or commit scope. This will be possible only in the scope of an indexed namespace. Currently there is no way to code/commit search in multiple indexed namespaces (when only a subset of namespaces has been indexed). For example if two groups are indexed, there is no way to run a single code search on both. You can only run a code search on the first group and then on the second.
+
 You can filter the selection dropdown by writing part of the namespace or project name you're interested in.
+
 ![limit namespace filter](img/limit_namespace_filter.png)
 
 NOTE: **Note**:
@@ -270,7 +273,7 @@ or creating [extra Sidekiq processes](../administration/operations/extra_sidekiq
    decrease in indexing time. We'll enable them when indexing is done. This step is optional!
 
    ```bash
-   curl --request PUT localhost:9200/gitlab-production/_settings --data '{
+   curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' --data '{
        "index" : {
            "refresh_interval" : "-1",
            "number_of_replicas" : 0
@@ -352,7 +355,7 @@ or creating [extra Sidekiq processes](../administration/operations/extra_sidekiq
 1. Enable replication and refreshing again after indexing (only if you previously disabled it):
 
    ```bash
-   curl --request PUT localhost:9200/gitlab-production/_settings --data '{
+   curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' ---data '{
        "index" : {
            "number_of_replicas" : 1,
            "refresh_interval" : "1s"
@@ -364,7 +367,7 @@ or creating [extra Sidekiq processes](../administration/operations/extra_sidekiq
    For Elasticsearch 6.x, the index should be in read-only mode before proceeding with the force merge:
 
    ```bash
-   curl --request PUT localhost:9200/gitlab-production/_settings --data '{
+   curl --request PUT localhost:9200/gitlab-production/_settings ---header 'Content-Type: application/json' --data '{
      "settings": {
        "index.blocks.write": true
      } }'
@@ -373,13 +376,13 @@ or creating [extra Sidekiq processes](../administration/operations/extra_sidekiq
    Then, initiate the force merge:
 
    ```bash
-   curl --request POST 'http://localhost:9200/gitlab-production/_forcemerge?max_num_segments=5'
+   curl --request POST 'localhost:9200/gitlab-production/_forcemerge?max_num_segments=5'
    ```
 
    After this, if your index is in read-only mode, switch back to read-write:
 
    ```bash
-   curl --request PUT localhost:9200/gitlab-production/_settings --data '{
+   curl --request PUT localhost:9200/gitlab-production/_settings ---header 'Content-Type: application/json' --data '{
      "settings": {
        "index.blocks.write": false
      } }'
@@ -467,7 +470,7 @@ However, some larger installations may wish to tune the merge policy settings:
 - Consider reducing the `index.merge.policy.max_merged_segment` size from the default 5 GB to maybe 2 GB or 3 GB.  Merging only happens when a segment has at least 50% deletions.  Smaller segment sizes will allow merging to happen more frequently.
 
   ```bash
-  curl --request PUT http://localhost:9200/gitlab-production/_settings --data '{
+  curl --request PUT localhost:9200/gitlab-production/_settings ---header 'Content-Type: application/json' --data '{
     "index" : {
       "merge.policy.max_merged_segment": "2gb"
     }
@@ -477,7 +480,7 @@ However, some larger installations may wish to tune the merge policy settings:
 - You can also adjust `index.merge.policy.reclaim_deletes_weight`, which controls how aggressively deletions are targeted.  But this can lead to costly merge decisions, so we recommend not changing this unless you understand the tradeoffs.
 
   ```bash
-  curl --request PUT http://localhost:9200/gitlab-production/_settings --data '{
+  curl --request PUT localhost:9200/gitlab-production/_settings ---header 'Content-Type: application/json' --data '{
     "index" : {
       "merge.policy.reclaim_deletes_weight": "3.0"
     }
@@ -502,6 +505,9 @@ Here are some common pitfalls and how to overcome them:
 
   If you see `Elasticsearch::Model::Response::Records`, you are using Elasticsearch.
 
+  NOTE: **Note**:
+  The above instructions are used to verify that GitLab is using Elasticsearch only when indexing all namespaces. This is not to be used for scenarios that only index a [subset of namespaces](https://docs.gitlab.com/ee/integration/elasticsearch.html#limiting-namespaces-and-projects).
+
 - **I updated GitLab and now I can't find anything**
 
   We continuously make updates to our indexing strategies and aim to support
@@ -518,9 +524,12 @@ Here are some common pitfalls and how to overcome them:
 
   ```ruby
   u = User.find_by_username('your-username')
-  s = SearchService.new(u, {:search => 'search_term', :scope => ‘blobs’})
+  s = SearchService.new(u, {:search => 'search_term', :scope => 'blobs'})
   pp s.search_objects.to_a
   ```
+
+  NOTE: **Note**:
+  The above instructions are not to be used for scenarios that only index a [subset of namespaces](https://docs.gitlab.com/ee/integration/elasticsearch.html#limiting-namespaces-and-projects).
 
   See [Elasticsearch Index Scopes](#elasticsearch-index-scopes) for more information on searching for specific types of data.
 

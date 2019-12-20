@@ -139,10 +139,6 @@ class Discussion
     false
   end
 
-  def new_discussion?
-    notes.length == 1
-  end
-
   def last_note
     @last_note ||= notes.last
   end

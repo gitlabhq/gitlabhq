@@ -9,7 +9,9 @@ shared_examples 'base stage' do
 
   before do
     allow(stage).to receive(:project_median).and_return(1.12)
-    allow_any_instance_of(Gitlab::CycleAnalytics::BaseEventFetcher).to receive(:event_result).and_return({})
+    allow_next_instance_of(Gitlab::CycleAnalytics::BaseEventFetcher) do |instance|
+      allow(instance).to receive(:event_result).and_return({})
+    end
   end
 
   it 'has the median data value' do

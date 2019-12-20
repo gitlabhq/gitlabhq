@@ -6,6 +6,7 @@ last_update: 2019-07-03
 # Merge Trains **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9186) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.0.
+> [Squash and merge](../../../../user/project/merge_requests/squash_and_merge.md) support [introduced](https://gitlab.com/gitlab-org/gitlab/issues/13001) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.6.
 
 [Pipelines for merged results](../index.md#pipelines-for-merged-results-premium) introduces
 running a build on the result of the merged code prior to merging, as a way to keep master green.
@@ -36,7 +37,6 @@ Merge trains have the following requirements and limitations:
   If more than twenty merge requests are added to the merge train, the merge requests
   will be queued until a slot in the merge train is free. There is no limit to the
   number of merge requests that can be queued.
-- This feature does not support [squash and merge](../../../../user/project/merge_requests/squash_and_merge.md).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 Watch this video for a demonstration on [how parallel execution
@@ -86,12 +86,15 @@ In case, you have a high-priority merge request (e.g. critical patch) to be merg
 you can use **Merge Immediately** option for bypassing the merge train.
 This is the fastest option to get the change merged into the target branch.
 
-![Merge Immediately](img/merge_train_immediate_merge.png)
+![Merge Immediately](img/merge_train_immediate_merge_v12_6.png)
 
 However, every time you merge a merge request immediately, it could affect the
 existing merge train to be reconstructed, specifically, it regenerates expected
 merge commits and pipelines. This means, merging immediately essentially wastes
-CI resources.
+CI resources. Because of these downsides, you will be asked to confirm before
+the merge is initiated:
+
+![Merge immediately confirmation dialog](img/merge_train_immediate_merge_confirmation_dialog_v12_6.png)
 
 ## Troubleshooting
 

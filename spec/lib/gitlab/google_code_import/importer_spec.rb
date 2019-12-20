@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 
 describe Gitlab::GoogleCodeImport::Importer do
@@ -37,7 +39,7 @@ describe Gitlab::GoogleCodeImport::Importer do
         Performance Usability Maintainability Component-Panel Component-Taskbar Component-Battery
         Component-Systray Component-Clock Component-Launcher Component-Tint2conf Component-Docs Component-New
       ).each do |label|
-        label.sub!("-", ": ")
+        label = label.sub("-", ": ")
         expect(project.labels.find_by(name: label)).not_to be_nil
       end
     end

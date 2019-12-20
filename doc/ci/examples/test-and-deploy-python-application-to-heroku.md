@@ -83,7 +83,7 @@ gitlab-runner register \
   --description "python-3.5" \
   --executor "docker" \
   --docker-image python:3.5 \
-  --docker-postgres latest
+  --docker-services postgres:latest
 ```
 
 With the command above, you create a runner that uses the [`python:3.5`](https://hub.docker.com/_/python) image and uses a [PostgreSQL](https://hub.docker.com/_/postgres) database.

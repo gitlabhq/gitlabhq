@@ -1,0 +1,5 @@
+---
+title: Ensure forks count cache refresh for source project
+merge_request: 21771
+author:
+type: fixed

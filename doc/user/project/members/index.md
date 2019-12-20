@@ -10,6 +10,31 @@ or import a new user to your project.
 To view, edit, add, and remove project's members, go to your
 project's **Settings > Members**.
 
+## Inherited membership
+
+When your project belongs to the group, group members inherit the membership and permission
+level for the project from the group.
+
+![Project members page](img/project_members.png)
+
+From the image above, we can deduce the following things:
+
+- There are 3 members that have access to the project.
+- User0 is a Reporter and has inherited their permissions from group `demo`
+  which contains current project.
+- For User1 there is no indication of a group, therefore they belong directly
+  to the project we're inspecting.
+- Administrator is the Owner and member of **all** groups and for that reason,
+  there is an indication of an ancestor group and inherited Owner permissions.
+
+[From](https://gitlab.com/gitlab-org/gitlab/issues/21727), you can filter this list
+using dropdown on the right side:
+
+![Project members filter](img/project_members_filter_v12_6.png)
+
+- **Show only direct members** displays only User1.
+- **Show only inherited members** displays User0 and Administrator.
+
 ## Add a user
 
 Right next to **People**, start typing the name or username of the user you

@@ -7,23 +7,34 @@ class Projects::Environments::PrometheusApiController < Projects::ApplicationCon
   before_action :environment
 
   def proxy
-    result = Prometheus::ProxyService.new(
+    variable_substitution_result =
+      variable_substitution_service.new(environment, permit_params).execute
+
+    if variable_substitution_result[:status] == :error
+      return error_response(variable_substitution_result)
+    end
+
+    prometheus_result = Prometheus::ProxyService.new(
       environment,
       proxy_method,
       proxy_path,
-      proxy_params
+      variable_substitution_result[:params]
     ).execute
 
-    return continue_polling_response if result.nil?
-    return error_response(result) if result[:status] == :error
+    return continue_polling_response if prometheus_result.nil?
+    return error_response(prometheus_result) if prometheus_result[:status] == :error
 
-    success_response(result)
+    success_response(prometheus_result)
   end
 
   private
 
-  def query_context
-    Gitlab::Prometheus::QueryVariables.call(environment)
+  def variable_substitution_service
+    Prometheus::ProxyVariableSubstitutionService
+  end
+
+  def permit_params
+    params.permit!
   end
 
   def environment
@@ -36,16 +47,5 @@ class Projects::Environments::PrometheusApiController < Projects::ApplicationCon
 
   def proxy_path
     params[:proxy_path]
-  end
-
-  def proxy_params
-    substitute_query_variables(params).permit!
-  end
-
-  def substitute_query_variables(params)
-    query = params[:query]
-    return params unless query
-
-    params.merge(query: query % query_context)
   end
 end

@@ -46,7 +46,7 @@ describe 'GraphQL' do
       end
 
       it 'logs the exception in Sentry and continues with the request' do
-        expect(Gitlab::Sentry).to receive(:track_exception).at_least(1).times
+        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).at_least(1).times
         expect(Gitlab::GraphqlLogger).to receive(:info)
 
         post_graphql(query, variables: {})
@@ -146,7 +146,7 @@ describe 'GraphQL' do
       end
 
       it "logs a warning that the 'calls_gitaly' field declaration is missing" do
-        expect(Gitlab::Sentry).to receive(:track_exception).once
+        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).once
 
         post_graphql(query, current_user: user)
       end

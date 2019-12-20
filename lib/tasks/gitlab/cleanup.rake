@@ -92,7 +92,7 @@ namespace :gitlab do
               lookup_key_count = redis.scard(key)
 
               session_ids = ActiveSession.session_ids_for_user(user_id)
-              entries = ActiveSession.raw_active_session_entries(session_ids, user_id)
+              entries = ActiveSession.raw_active_session_entries(redis, session_ids, user_id)
               session_ids_and_entries = session_ids.zip(entries)
 
               inactive_session_ids = session_ids_and_entries.map do |session_id, session|

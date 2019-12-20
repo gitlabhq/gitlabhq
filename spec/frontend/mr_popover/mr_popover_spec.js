@@ -1,5 +1,5 @@
-import MRPopover from '~/mr_popover/components/mr_popover';
 import { shallowMount } from '@vue/test-utils';
+import MRPopover from '~/mr_popover/components/mr_popover';
 
 describe('MR Popover', () => {
   let wrapper;

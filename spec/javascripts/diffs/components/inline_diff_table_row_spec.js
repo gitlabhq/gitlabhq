@@ -1,7 +1,7 @@
 import Vue from 'vue';
+import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { createStore } from '~/mr_notes/stores';
 import InlineDiffTableRow from '~/diffs/components/inline_diff_table_row.vue';
-import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import diffFileMockData from '../mock_data/diff_file';
 
 describe('InlineDiffTableRow', () => {

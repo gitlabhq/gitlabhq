@@ -1,10 +1,10 @@
-- triggers = local_assigns.fetch(:triggers)
 - button_class = local_assigns.fetch(:button_class, '')
 - hook = local_assigns.fetch(:hook)
+- triggers = hook.class.triggers
 
-.hook-test-button.dropdown.inline
+.hook-test-button.dropdown.inline>
   %button.btn{ 'data-toggle' => 'dropdown', class: button_class }
-    Test
+    = _('Test')
     = icon('caret-down')
   %ul.dropdown-menu.dropdown-menu-right{ role: 'menu' }
     - triggers.each_value do |event|

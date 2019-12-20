@@ -83,12 +83,14 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   def play_rate_limit
     return unless current_user
 
-    limiter = ::Gitlab::ActionRateLimiter.new(action: :play_pipeline_schedule)
+    if rate_limiter.throttled?(:play_pipeline_schedule, scope: [current_user, schedule])
+      flash[:alert] = _('You cannot play this scheduled pipeline at the moment. Please wait a minute.')
+      redirect_to pipeline_schedules_path(@project)
+    end
+  end
 
-    return unless limiter.throttled?([current_user, schedule], 1)
-
-    flash[:alert] = _('You cannot play this scheduled pipeline at the moment. Please wait a minute.')
-    redirect_to pipeline_schedules_path(@project)
+  def rate_limiter
+    ::Gitlab::ApplicationRateLimiter
   end
 
   def schedule

@@ -1,6 +1,6 @@
+import { mount } from '@vue/test-utils';
 import PaginatedList from '~/vue_shared/components/paginated_list.vue';
 import { PREV, NEXT } from '~/vue_shared/components/pagination/constants';
-import { mount } from '@vue/test-utils';
 
 describe('Pagination links component', () => {
   let wrapper;
@@ -26,6 +26,8 @@ describe('Pagination links component', () => {
         list: [{ id: 'foo' }, { id: 'bar' }],
         props,
       },
+      attachToDocument: true,
+      sync: false,
     });
 
     [glPaginatedList] = wrapper.vm.$children;

@@ -21,6 +21,7 @@ const plugins = [
   '@babel/plugin-proposal-class-properties',
   '@babel/plugin-proposal-json-strings',
   '@babel/plugin-proposal-private-methods',
+  '@babel/plugin-proposal-optional-chaining',
 ];
 
 // add code coverage tooling if necessary

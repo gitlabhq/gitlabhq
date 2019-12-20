@@ -68,6 +68,10 @@ module API
         end
       end
 
+      def not_automatically_mergeable?(merge_when_pipeline_succeeds, merge_request)
+        merge_when_pipeline_succeeds && !merge_request.head_pipeline_active? && !merge_request.actual_head_pipeline_success?
+      end
+
       def serializer_options_for(merge_requests)
         options = { with: Entities::MergeRequestBasic, current_user: current_user }
 
@@ -391,12 +395,13 @@ module API
 
         merge_request = find_project_merge_request(params[:merge_request_iid])
         merge_when_pipeline_succeeds = to_boolean(params[:merge_when_pipeline_succeeds])
+        not_automatically_mergeable = not_automatically_mergeable?(merge_when_pipeline_succeeds, merge_request)
 
         # Merge request can not be merged
         # because user dont have permissions to push into target branch
         unauthorized! unless merge_request.can_be_merged_by?(current_user)
 
-        not_allowed! unless merge_request.mergeable_state?(skip_ci_check: merge_when_pipeline_succeeds)
+        not_allowed! if !merge_request.mergeable_state?(skip_ci_check: merge_when_pipeline_succeeds) || not_automatically_mergeable
 
         render_api_error!('Branch cannot be merged', 406) unless merge_request.mergeable?(skip_ci_check: merge_when_pipeline_succeeds)
 
@@ -411,7 +416,7 @@ module API
           sha: params[:sha] || merge_request.diff_head_sha
         )
 
-        if merge_when_pipeline_succeeds && merge_request.head_pipeline && merge_request.head_pipeline.active?
+        if merge_when_pipeline_succeeds
           AutoMergeService.new(merge_request.target_project, current_user, merge_params)
             .execute(merge_request, AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
         else

@@ -65,4 +65,26 @@ describe Gitaly::Server do
       end
     end
   end
+
+  describe '#expected_version?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:expected_version, :server_version, :result) do
+      '1.1.1'                                    | '1.1.1'               | true
+      '1.1.2'                                    | '1.1.1'               | false
+      '1.73.0'                                   | '1.73.0-18-gf756ebe2' | false
+      '594c3ea3e0e5540e5915bd1c49713a0381459dd6' | '1.55.6-45-g594c3ea3' | true
+      '594c3ea3e0e5540e5915bd1c49713a0381459dd6' | '1.55.6-46-gabc123ff' | false
+      '594c3ea3e0e5540e5915bd1c49713a0381459dd6' | '1.55.6'              | false
+    end
+
+    with_them do
+      it do
+        allow(Gitlab::GitalyClient).to receive(:expected_server_version).and_return(expected_version)
+        allow(server).to receive(:server_version).and_return(server_version)
+
+        expect(server.expected_version?).to eq(result)
+      end
+    end
+  end
 end

@@ -188,6 +188,10 @@ FactoryBot.define do
       end
     end
 
+    trait :sequence_source_branch do
+      sequence(:source_branch) { |n| "feature#{n}" }
+    end
+
     after(:build) do |merge_request|
       target_project = merge_request.target_project
       source_project = merge_request.source_project

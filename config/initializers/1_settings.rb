@@ -291,7 +291,7 @@ Settings.pages['url']               ||= Settings.__send__(:build_pages_url)
 Settings.pages['external_http']     ||= false unless Settings.pages['external_http'].present?
 Settings.pages['external_https']    ||= false unless Settings.pages['external_https'].present?
 Settings.pages['artifacts_server']  ||= Settings.pages['enabled'] if Settings.pages['artifacts_server'].nil?
-Settings.pages['secret_file'] ||= Rails.root.join('.gitlab_pages_shared_secret')
+Settings.pages['secret_file'] ||= Rails.root.join('.gitlab_pages_secret')
 
 #
 # Geo
@@ -407,6 +407,9 @@ Settings.cron_jobs['repository_check_worker']['job_class'] = 'RepositoryCheck::D
 Settings.cron_jobs['admin_email_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['admin_email_worker']['cron'] ||= '0 0 * * 0'
 Settings.cron_jobs['admin_email_worker']['job_class'] = 'AdminEmailWorker'
+Settings.cron_jobs['personal_access_tokens_expiring_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['personal_access_tokens_expiring_worker']['cron'] ||= '0 1 * * *'
+Settings.cron_jobs['personal_access_tokens_expiring_worker']['job_class'] = 'PersonalAccessTokens::ExpiringWorker'
 Settings.cron_jobs['repository_archive_cache_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['repository_archive_cache_worker']['cron'] ||= '0 * * * *'
 Settings.cron_jobs['repository_archive_cache_worker']['job_class'] = 'RepositoryArchiveCacheWorker'
@@ -466,9 +469,15 @@ Settings.cron_jobs['namespaces_prune_aggregation_schedules_worker']['cron'] ||= 
 Settings.cron_jobs['namespaces_prune_aggregation_schedules_worker']['job_class'] = 'Namespaces::PruneAggregationSchedulesWorker'
 
 Gitlab.ee do
+  Settings.cron_jobs['adjourned_group_deletion_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['adjourned_group_deletion_worker']['cron'] ||= '0 3 * * *'
+  Settings.cron_jobs['adjourned_group_deletion_worker']['job_class'] = 'AdjournedGroupDeletionWorker'
   Settings.cron_jobs['clear_shared_runners_minutes_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['clear_shared_runners_minutes_worker']['cron'] ||= '0 0 1 * *'
   Settings.cron_jobs['clear_shared_runners_minutes_worker']['job_class'] = 'ClearSharedRunnersMinutesWorker'
+  Settings.cron_jobs['adjourned_projects_deletion_cron_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['adjourned_projects_deletion_cron_worker']['cron'] ||= '0 4 * * *'
+  Settings.cron_jobs['adjourned_projects_deletion_cron_worker']['job_class'] = 'AdjournedProjectsDeletionCronWorker'
   Settings.cron_jobs['geo_file_download_dispatch_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['geo_file_download_dispatch_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['geo_file_download_dispatch_worker']['job_class'] ||= 'Geo::FileDownloadDispatchWorker'
@@ -645,6 +654,7 @@ Settings.rack_attack.git_basic_auth['ip_whitelist'] ||= %w{127.0.0.1}
 Settings.rack_attack.git_basic_auth['maxretry'] ||= 10
 Settings.rack_attack.git_basic_auth['findtime'] ||= 1.minute
 Settings.rack_attack.git_basic_auth['bantime'] ||= 1.hour
+Settings.rack_attack['admin_area_protected_paths_enabled'] ||= false
 
 #
 # Gitaly

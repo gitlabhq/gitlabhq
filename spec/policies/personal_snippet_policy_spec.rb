@@ -11,8 +11,7 @@ describe PersonalSnippetPolicy do
   let(:author_permissions) do
     [
       :update_personal_snippet,
-      :admin_personal_snippet,
-      :destroy_personal_snippet
+      :admin_personal_snippet
     ]
   end
 

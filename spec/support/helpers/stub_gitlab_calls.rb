@@ -19,22 +19,26 @@ module StubGitlabCalls
   end
 
   def stub_ci_pipeline_yaml_file(ci_yaml_content)
-    allow_any_instance_of(Repository).to receive(:gitlab_ci_yml_for).and_return(ci_yaml_content)
+    allow_any_instance_of(Repository)
+      .to receive(:gitlab_ci_yml_for)
+      .and_return(ci_yaml_content)
 
     # Ensure we don't hit auto-devops when config not found in repository
     unless ci_yaml_content
       allow_any_instance_of(Project).to receive(:auto_devops_enabled?).and_return(false)
     end
+
+    # Stub the first call to `include:[local: .gitlab-ci.yml]` when
+    # evaluating the CI root config content.
+    if Feature.enabled?(:ci_root_config_content, default_enabled: true)
+      allow_any_instance_of(Gitlab::Ci::Config::External::File::Local)
+        .to receive(:content)
+        .and_return(ci_yaml_content)
+    end
   end
 
   def stub_pipeline_modified_paths(pipeline, modified_paths)
     allow(pipeline).to receive(:modified_paths).and_return(modified_paths)
-  end
-
-  def stub_repository_ci_yaml_file(sha:, path: '.gitlab-ci.yml')
-    allow_any_instance_of(Repository)
-      .to receive(:gitlab_ci_yml_for).with(sha, path)
-      .and_return(gitlab_ci_yaml)
   end
 
   def stub_ci_builds_disabled

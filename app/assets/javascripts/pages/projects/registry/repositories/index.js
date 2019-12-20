@@ -1,3 +1,3 @@
-import initRegistryImages from '~/registry/index';
+import initRegistryImages from '~/registry/list/index';
 
 document.addEventListener('DOMContentLoaded', initRegistryImages);

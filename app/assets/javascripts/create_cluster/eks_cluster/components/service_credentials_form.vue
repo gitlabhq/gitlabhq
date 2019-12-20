@@ -1,8 +1,8 @@
 <script>
 import { GlFormInput } from '@gitlab/ui';
-import { sprintf, s__, __ } from '~/locale';
 import _ from 'underscore';
 import { mapState, mapActions } from 'vuex';
+import { sprintf, s__, __ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 
@@ -28,7 +28,7 @@ export default {
   },
   data() {
     return {
-      roleArn: '',
+      roleArn: this.$store.state.roleArn,
     };
   },
   computed: {

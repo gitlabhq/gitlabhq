@@ -5,6 +5,7 @@ require 'spec_helper'
 describe Backup::Repository do
   let(:progress) { StringIO.new }
   let!(:project) { create(:project, :wiki_repo) }
+
   subject { described_class.new(progress) }
 
   before do
@@ -12,7 +13,9 @@ describe Backup::Repository do
     allow(progress).to receive(:print)
     allow(FileUtils).to receive(:mv).and_return(true)
 
-    allow_any_instance_of(described_class).to receive(:progress).and_return(progress)
+    allow_next_instance_of(described_class) do |instance|
+      allow(instance).to receive(:progress).and_return(progress)
+    end
   end
 
   describe '#dump' do
@@ -47,7 +50,9 @@ describe Backup::Repository do
 
     describe 'command failure' do
       before do
-        allow_any_instance_of(Gitlab::Shell).to receive(:create_repository).and_return(false)
+        allow_next_instance_of(Gitlab::Shell) do |instance|
+          allow(instance).to receive(:create_repository).and_return(false)
+        end
       end
 
       context 'hashed storage' do

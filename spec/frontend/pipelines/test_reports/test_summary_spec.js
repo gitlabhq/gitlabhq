@@ -1,9 +1,13 @@
-import Summary from '~/pipelines/components/test_reports/test_summary.vue';
 import { mount } from '@vue/test-utils';
-import { testSuites } from './mock_data';
+import { getJSONFixture } from 'helpers/fixtures';
+import Summary from '~/pipelines/components/test_reports/test_summary.vue';
 
 describe('Test reports summary', () => {
   let wrapper;
+
+  const {
+    test_suites: [testSuite],
+  } = getJSONFixture('pipelines/test_report.json');
 
   const backButton = () => wrapper.find('.js-back-button');
   const totalTests = () => wrapper.find('.js-total-tests');
@@ -13,7 +17,7 @@ describe('Test reports summary', () => {
   const duration = () => wrapper.find('.js-duration');
 
   const defaultProps = {
-    report: testSuites[0],
+    report: testSuite,
     showBack: false,
   };
 
@@ -72,7 +76,28 @@ describe('Test reports summary', () => {
     });
 
     it('displays the correctly formatted duration', () => {
-      expect(duration().text()).toBe('00:01:00');
+      expect(duration().text()).toBe('00:00:00');
+    });
+  });
+
+  describe('success percentage calculation', () => {
+    it.each`
+      name                                     | successCount | totalCount | result
+      ${'displays 0 when there are no tests'}  | ${0}         | ${0}       | ${'0'}
+      ${'displays whole number when possible'} | ${10}        | ${50}      | ${'20'}
+      ${'rounds to 0.01'}                      | ${1}         | ${16604}   | ${'0.01'}
+      ${'correctly rounds to 50'}              | ${8302}      | ${16604}   | ${'50'}
+      ${'rounds down for large close numbers'} | ${16603}     | ${16604}   | ${'99.99'}
+      ${'correctly displays 100'}              | ${16604}     | ${16604}   | ${'100'}
+    `('$name', ({ successCount, totalCount, result }) => {
+      createComponent({
+        report: {
+          success_count: successCount,
+          total_count: totalCount,
+        },
+      });
+
+      expect(successRate().text()).toBe(`${result}% success rate`);
     });
   });
 });

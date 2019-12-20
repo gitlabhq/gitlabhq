@@ -9,5 +9,5 @@
     %ul.scopes-list.append-bottom-0
       - token.scopes.each do |scope|
         %li
-          %span.scope-name= scope
+          %span.bold= scope
           = "(#{t(scope, scope: [:doorkeeper, :scopes])})"

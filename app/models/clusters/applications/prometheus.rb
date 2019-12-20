@@ -13,15 +13,21 @@ module Clusters
       include ::Clusters::Concerns::ApplicationStatus
       include ::Clusters::Concerns::ApplicationVersion
       include ::Clusters::Concerns::ApplicationData
+      include AfterCommitQueue
 
       default_value_for :version, VERSION
 
-      after_destroy :disable_prometheus_integration
+      after_destroy do
+        run_after_commit do
+          disable_prometheus_integration
+        end
+      end
 
       state_machine :status do
         after_transition any => [:installed] do |application|
-          application.cluster.projects.each do |project|
-            project.find_or_initialize_service('prometheus').update!(active: true)
+          application.run_after_commit do
+            Clusters::Applications::ActivateServiceWorker
+              .perform_async(application.cluster_id, ::PrometheusService.to_param) # rubocop:disable CodeReuse/ServiceClass
           end
         end
       end
@@ -49,10 +55,10 @@ module Clusters
         )
       end
 
-      def upgrade_command(values)
-        ::Gitlab::Kubernetes::Helm::InstallCommand.new(
+      def patch_command(values)
+        ::Gitlab::Kubernetes::Helm::PatchCommand.new(
           name: name,
-          version: VERSION,
+          version: version,
           rbac: cluster.platform_kubernetes_rbac?,
           chart: chart,
           files: files_with_replaced_values(values)
@@ -84,19 +90,22 @@ module Clusters
         # ensures headers containing auth data are appended to original k8s client options
         options = kube_client.rest_client.options.merge(headers: kube_client.headers)
         Gitlab::PrometheusClient.new(proxy_url, options)
-      rescue Kubeclient::HttpError
+      rescue Kubeclient::HttpError, Errno::ECONNRESET, Errno::ECONNREFUSED
         # If users have mistakenly set parameters or removed the depended clusters,
         # `proxy_url` could raise an exception because gitlab can not communicate with the cluster.
         # Since `PrometheusAdapter#can_query?` is eargely loaded on environement pages in gitlab,
         # we need to silence the exceptions
       end
 
+      def configured?
+        kube_client.present? && available?
+      end
+
       private
 
       def disable_prometheus_integration
-        cluster.projects.each do |project|
-          project.prometheus_service&.update!(active: false)
-        end
+        ::Clusters::Applications::DeactivateServiceWorker
+          .perform_async(cluster_id, ::PrometheusService.to_param) # rubocop:disable CodeReuse/ServiceClass
       end
 
       def kube_client

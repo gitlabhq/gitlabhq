@@ -1,7 +1,7 @@
 import $ from 'jquery';
 
-import setupTransferEdit from '~/transfer_edit';
 import { loadHTMLFixture } from 'helpers/fixtures';
+import setupTransferEdit from '~/transfer_edit';
 
 describe('setupTransferEdit', () => {
   const formSelector = '.js-project-transfer-form';

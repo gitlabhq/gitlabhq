@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'fileutils'
 
@@ -5,10 +7,13 @@ describe Gitlab::ImportExport::Saver do
   let!(:project) { create(:project, :public, name: 'project') }
   let(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
   let(:shared) { project.import_export_shared }
+
   subject { described_class.new(exportable: project, shared: shared) }
 
   before do
-    allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
+    allow_next_instance_of(Gitlab::ImportExport) do |instance|
+      allow(instance).to receive(:storage_path).and_return(export_path)
+    end
 
     FileUtils.mkdir_p(shared.export_path)
     FileUtils.touch("#{shared.export_path}/tmp.bundle")

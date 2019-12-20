@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe ClustersFinder do
   let(:project) { create(:project) }
+
   set(:user) { create(:user) }
 
   describe '#execute' do

@@ -1,9 +1,9 @@
 /* eslint-disable no-underscore-dangle, class-methods-use-this, consistent-return, no-shadow */
 
+import ListIssue from 'ee_else_ce/boards/models/issue';
 import { __ } from '~/locale';
 import ListLabel from './label';
 import ListAssignee from './assignee';
-import ListIssue from 'ee_else_ce/boards/models/issue';
 import { urlParamsToObject } from '~/lib/utils/common_utils';
 import flash from '~/flash';
 import boardsStore from '../stores/boards_store';
@@ -52,6 +52,9 @@ class List {
     this.loadingMore = false;
     this.issues = obj.issues || [];
     this.issuesSize = obj.issuesSize ? obj.issuesSize : 0;
+    this.maxIssueCount = Object.hasOwnProperty.call(obj, 'max_issue_count')
+      ? obj.max_issue_count
+      : 0;
     this.defaultAvatar = defaultAvatar;
 
     if (obj.label) {
@@ -90,7 +93,7 @@ class List {
       entityType = 'milestone_id';
     }
 
-    return gl.boardService
+    return boardsStore
       .createList(entity.id, entityType)
       .then(res => res.data)
       .then(data => {
@@ -108,14 +111,14 @@ class List {
     boardsStore.state.lists.splice(index, 1);
     boardsStore.updateNewListDropdown(this.id);
 
-    gl.boardService.destroyList(this.id).catch(() => {
+    boardsStore.destroyList(this.id).catch(() => {
       // TODO: handle request error
     });
   }
 
   update() {
     const collapsed = !this.isExpanded;
-    return gl.boardService.updateList(this.id, this.position, collapsed).catch(() => {
+    return boardsStore.updateList(this.id, this.position, collapsed).catch(() => {
       // TODO: handle request error
     });
   }
@@ -144,7 +147,7 @@ class List {
       this.loading = true;
     }
 
-    return gl.boardService
+    return boardsStore
       .getIssuesForList(this.id, data)
       .then(res => res.data)
       .then(data => {
@@ -165,7 +168,7 @@ class List {
     this.addIssue(issue, null, 0);
     this.issuesSize += 1;
 
-    return gl.boardService
+    return boardsStore
       .newIssue(this.id, issue)
       .then(res => res.data)
       .then(data => this.onNewIssueResponse(issue, data));
@@ -273,7 +276,7 @@ class List {
     this.issues.splice(oldIndex, 1);
     this.issues.splice(newIndex, 0, issue);
 
-    gl.boardService.moveIssue(issue.id, null, null, moveBeforeId, moveAfterId).catch(() => {
+    boardsStore.moveIssue(issue.id, null, null, moveBeforeId, moveAfterId).catch(() => {
       // TODO: handle request error
     });
   }
@@ -284,7 +287,7 @@ class List {
     });
     this.issues.splice(newIndex, 0, ...issues);
 
-    gl.boardService
+    boardsStore
       .moveMultipleIssues({
         ids: issues.map(issue => issue.id),
         fromListId: null,
@@ -296,15 +299,13 @@ class List {
   }
 
   updateIssueLabel(issue, listFrom, moveBeforeId, moveAfterId) {
-    gl.boardService
-      .moveIssue(issue.id, listFrom.id, this.id, moveBeforeId, moveAfterId)
-      .catch(() => {
-        // TODO: handle request error
-      });
+    boardsStore.moveIssue(issue.id, listFrom.id, this.id, moveBeforeId, moveAfterId).catch(() => {
+      // TODO: handle request error
+    });
   }
 
   updateMultipleIssues(issues, listFrom, moveBeforeId, moveAfterId) {
-    gl.boardService
+    boardsStore
       .moveMultipleIssues({
         ids: issues.map(issue => issue.id),
         fromListId: listFrom.id,
@@ -356,7 +357,7 @@ class List {
 
     if (this.issuesSize > 1) {
       const moveBeforeId = this.issues[1].id;
-      gl.boardService.moveIssue(issue.id, null, null, null, moveBeforeId);
+      boardsStore.moveIssue(issue.id, null, null, null, moveBeforeId);
     }
   }
 }

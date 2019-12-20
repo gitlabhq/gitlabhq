@@ -1,8 +1,8 @@
 import MockAdapter from 'axios-mock-adapter';
+import testAction from 'spec/helpers/vuex_action_helper';
 import axios from '~/lib/utils/axios_utils';
 import * as types from '~/related_merge_requests/store/mutation_types';
 import actionsModule, * as actions from '~/related_merge_requests/store/actions';
-import testAction from 'spec/helpers/vuex_action_helper';
 
 describe('RelatedMergeRequest store actions', () => {
   let state;

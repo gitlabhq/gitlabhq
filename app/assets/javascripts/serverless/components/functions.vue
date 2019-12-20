@@ -1,7 +1,7 @@
 <script>
-import { sprintf, s__ } from '~/locale';
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { GlLoadingIcon } from '@gitlab/ui';
+import { sprintf, s__ } from '~/locale';
 import FunctionRow from './function_row.vue';
 import EnvironmentRow from './environment_row.vue';
 import EmptyState from './empty_state.vue';
@@ -44,12 +44,14 @@ export default {
           'Serverless|Your repository does not have a corresponding %{startTag}serverless.yml%{endTag} file.',
         ),
         { startTag: '<code>', endTag: '</code>' },
+        false,
       );
     },
     noGitlabYamlConfigured() {
       return sprintf(
         s__('Serverless|Your %{startTag}.gitlab-ci.yml%{endTag} file is not properly configured.'),
         { startTag: '<code>', endTag: '</code>' },
+        false,
       );
     },
     mismatchedServerlessFunctions() {
@@ -58,6 +60,7 @@ export default {
           "Serverless|The functions listed in the %{startTag}serverless.yml%{endTag} file don't match the namespace of your cluster.",
         ),
         { startTag: '<code>', endTag: '</code>' },
+        false,
       );
     },
   },
@@ -111,15 +114,9 @@ export default {
             }}
           </p>
           <ul>
-            <li>
-              {{ noServerlessConfigFile }}
-            </li>
-            <li>
-              {{ noGitlabYamlConfigured }}
-            </li>
-            <li>
-              {{ mismatchedServerlessFunctions }}
-            </li>
+            <li v-html="noServerlessConfigFile"></li>
+            <li v-html="noGitlabYamlConfigured"></li>
+            <li v-html="mismatchedServerlessFunctions"></li>
             <li>{{ s__('Serverless|The deploy job has not finished.') }}</li>
           </ul>
 

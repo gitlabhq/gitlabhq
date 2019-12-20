@@ -92,7 +92,7 @@ describe API::Notes do
         end
 
         context "current user can view the note" do
-          it "returns an empty array" do
+          it "returns a non-empty array" do
             get api("/projects/#{ext_proj.id}/issues/#{ext_issue.iid}/notes", private_user)
 
             expect(response).to have_gitlab_http_status(200)

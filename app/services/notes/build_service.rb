@@ -11,7 +11,7 @@ module Notes
 
         unless discussion && can?(current_user, :create_note, discussion.noteable)
           note = Note.new
-          note.errors.add(:base, 'Discussion to reply to cannot be found')
+          note.errors.add(:base, _('Discussion to reply to cannot be found'))
           return note
         end
 

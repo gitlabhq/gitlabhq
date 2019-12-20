@@ -362,7 +362,7 @@ Choose the AMI:
 
 You should choose an instance type based on your workload. Consult
 [the hardware requirements](../requirements.md#hardware-requirements) to choose
-one that fits your needs (at least `c4.xlarge`, which is enough to accommodate 100 users):
+one that fits your needs (at least `c5.xlarge`, which is enough to accommodate 100 users):
 
 1. Choose the your instance type.
 1. Click **Next: Configure Instance Details**.

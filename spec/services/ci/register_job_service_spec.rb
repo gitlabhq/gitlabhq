@@ -514,8 +514,8 @@ module Ci
         subject { execute(specific_runner, {}) }
 
         it 'does drop the build and logs both failures' do
-          expect(Gitlab::Sentry).to receive(:track_acceptable_exception)
-            .with(anything, a_hash_including(extra: a_hash_including(build_id: pending_job.id)))
+          expect(Gitlab::ErrorTracking).to receive(:track_exception)
+            .with(anything, a_hash_including(build_id: pending_job.id))
             .twice
             .and_call_original
 
@@ -540,8 +540,8 @@ module Ci
         subject { execute(specific_runner, {}) }
 
         it 'does drop the build and logs failure' do
-          expect(Gitlab::Sentry).to receive(:track_acceptable_exception)
-            .with(anything, a_hash_including(extra: a_hash_including(build_id: pending_job.id)))
+          expect(Gitlab::ErrorTracking).to receive(:track_exception)
+            .with(anything, a_hash_including(build_id: pending_job.id))
             .once
             .and_call_original
 

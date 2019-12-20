@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import UnresolvedDiscussions from '~/vue_merge_request_widget/components/states/unresolved_discussions.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import UnresolvedDiscussions from '~/vue_merge_request_widget/components/states/unresolved_discussions.vue';
 
 describe('UnresolvedDiscussions', () => {
   const Component = Vue.extend(UnresolvedDiscussions);

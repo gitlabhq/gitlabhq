@@ -102,7 +102,7 @@ Note that Kramdown-specific markup (e.g., `{:.class}`) will not render properly 
 
 Hard-coded HTML is valid, although it's discouraged to be used while we have `/help`. HTML is permitted as long as:
 
-- There's no equivalent markup in markdown.
+- There's no equivalent markup in Markdown.
 - Advanced tables are necessary.
 - Special styling is required.
 - Reviewed and approved by a technical writer.
@@ -111,10 +111,37 @@ Hard-coded HTML is valid, although it's discouraged to be used while we have `/h
 
 GitLab ensures that the Markdown used across all documentation is consistent, as
 well as easy to review and maintain, by [testing documentation changes](index.md#testing) with
-[`markdownlint`](index.md#markdownlint). This lint test fails when any document has an issue
+[markdownlint](index.md#markdownlint). This lint test fails when any document has an issue
 with Markdown formatting that may cause the page to render incorrectly within GitLab.
 It will also fail when a document is using non-standard Markdown (which may render
 correctly, but is not the current standard for GitLab documentation).
+
+#### Markdown rule `MD044/proper-names` (capitalization)
+
+A rule that could cause confusion is `MD044/proper-names`, as it might not be immediately
+clear what caused markdownlint to fail, or how to correct the failure. This rule
+checks a list of known words, listed in the `.markdownlint.json` file in each project,
+to verify that proper capitalization and backticks are used. Words in backticks will
+be ignored by markdownlint.
+
+In general, product names should follow the exact capitalization of the official names
+of the products, protocols, etc.
+
+Some examples that will fail if incorrect capitalization is used:
+
+- MinIO (needs capital `IO`)
+- NGINX (needs all capitals)
+- runit (needs lowercase `r`)
+
+Additionally, commands, parameters, values, filenames, etc. must be included in backticks.
+For example:
+
+- "Change the `needs` keyword in your `.gitlab.yml`..."
+  - `needs` is a parameter, and `.gitlab.yml` is a file, so both need backticks. Additionally,
+    `.gitlab.yml` will fail markdownlint without backticks as it does not have capital G or L.
+- "Run `git clone` to clone a Git repository..."
+  - `git clone` is a command, so it must be lowercase, while Git is the product, so
+    it must have a capital G.
 
 ## Structure
 
@@ -212,7 +239,7 @@ Do not include the same information in multiple places. [Link to a SSOT instead.
 
 - Use inclusive language and avoid jargon, as well as uncommon
   words. The docs should be clear and easy to understand.
-- Write in the 3rd person (use "we," "you," "us," "one," instead of "I" or "me").
+- Do not write in the first person singular. Instead of "I" or "me," use "we," "you," "us," or "one."
 - Be clear, concise, and stick to the goal of the doc.
 - Write in US English with US grammar.
 - Capitalize "G" and "L" in GitLab.
@@ -230,22 +257,27 @@ Do not include the same information in multiple places. [Link to a SSOT instead.
     "Create a new merge request for Z."
 
 - Avoid use of the future tense:
-  - Instead of, "After you execute this command, the result will be displayed," say "After you execute this command, the result is displayed."
+  - Instead of "after you execute this command, GitLab will display the result", use "after you execute this command, GitLab displays the result".
   - Only use the future tense to convey when the action or result will actually occur at a future time.
 - Do not use contractions:
-  - Instead of "don't," "can't," "doesn't," and so on, say "do not," "cannot," or "does not."
+  - Instead of "don't," "can't," "doesn't," and so on, use "do not," "cannot," or "does not."
   - Possible exceptions are cases when a more familiar tone is desired, such as a blog post or other casual context.
 - Do not use slashes to clump different words together or as a replacement for the word "or":
-  - Instead of "and/or," consider saying "or," or use another sensible construction.
+  - Instead of "and/or," consider using "or," or use another sensible construction.
   - Other examples include "clone/fetch," author/assignee," and "namespace/repository name." Break apart any such instances in an appropriate way.
   - Exceptions to this rule include commonly accepted technical terms such as CI/CD, TCP/IP, and so on.
 - Do not use "may" and "might" interchangeably:
   - Use "might" to indicate the probability of something occurring. "If you skip this step, the import process might fail."
   - Use "may" to indicate giving permission for someone to do something, or consider using "can" instead. "You may select either option on this screen." Or, "you can select either option on this screen."
+- We recommend avoiding Latin abbreviations, such as "e.g.," "i.e.," or "etc.,"
+as even native users of English might misunderstand them.
+  - Instead of "i.e.", use "that is."
+  - Instead of "e.g.", use "for example."
+  - Instead of "etc.", either use "and so on" or consider editing it out, since it can be vague.
 
 ## Text
 
-- [Write in markdown](#markdown).
+- [Write in Markdown](#markdown).
 - Splitting long lines (preferably up to 100 characters) can make it easier to provide feedback on small chunks of text.
 - Insert an empty line for new paragraphs.
 - Use sentence case for titles, headings, labels, menu items, and buttons.
@@ -453,7 +485,7 @@ to mix types, that is also possible, as long as you don't mix items at the same 
 
 ## Quotes
 
-Valid for markdown content only, not for frontmatter entries:
+Valid for Markdown content only, not for frontmatter entries:
 
 - Standard quotes: double quotes (`"`). Example: "This is wrapped in double quotes".
 - Quote within a quote: double quotes (`"`) wrap single quotes (`'`). Example: "I am 'quoting' something within a quote".
@@ -464,7 +496,7 @@ For other punctuation rules, please refer to the
 ## Headings
 
 - Add **only one H1** in each document, by adding `#` at the beginning of
-  it (when using markdown). The `h1` will be the document `<title>`.
+  it (when using Markdown). The `h1` will be the document `<title>`.
 - Start with an `h2` (`##`), and respect the order `h2` > `h3` > `h4` > `h5` > `h6`.
   Never skip the hierarchy level, such as `h2` > `h4`
 - Avoid putting numbers in headings. Numbers shift, hence documentation anchor
@@ -490,7 +522,7 @@ For other punctuation rules, please refer to the
 
 ## Links
 
-- Use inline link markdown markup `[Text](https://example.com)`.
+- Use inline link Markdown markup `[Text](https://example.com)`.
   It's easier to read, review, and maintain. **Do not** use `[Text][identifier]`.
 
 - Use [meaningful anchor texts](https://www.futurehosting.com/blog/links-should-have-meaningful-anchor-text-heres-why/).
@@ -533,7 +565,7 @@ For other punctuation rules, please refer to the
   [issue tags](../../issues/tags.md#stages)
   ```
 
-- Using the markdown extension is necessary for the [`/help`](index.md#gitlab-help)
+- Using the Markdown extension is necessary for the [`/help`](index.md#gitlab-help)
   section of GitLab.
 
 ### Links requiring permissions
@@ -656,7 +688,7 @@ to readers.
 To embed a video, follow the instructions below and make sure
 you have your MR reviewed and approved by a technical writer.
 
-1. Copy the code below and paste it into your markdown file.
+1. Copy the code below and paste it into your Markdown file.
    Leave a blank line above and below it. Do NOT edit the code
    (don't remove or add any spaces, etc).
 1. On YouTube, visit the video URL you want to display. Copy
@@ -694,12 +726,12 @@ This is how it renders on the GitLab Docs site:
 class is necessary to make sure the video is responsive and displays
 nicely on different mobile devices.
 > - The `<div class="video-fallback">` is a fallback necessary for GitLab's
-`/help`, as GitLab's markdown processor does not support iframes. It's hidden on the docs site but will be displayed on GitLab's `/help`.
+`/help`, as GitLab's Markdown processor does not support iframes. It's hidden on the docs site but will be displayed on GitLab's `/help`.
 
 ## Code blocks
 
 - Always wrap code added to a sentence in inline code blocks (`` ` ``).
-  E.g., `.gitlab-ci.yml`, `git add .`, `CODEOWNERS`, `only: master`.
+  E.g., `.gitlab-ci.yml`, `git add .`, `CODEOWNERS`, `only: [master]`.
   File names, commands, entries, and anything that refers to code should be added to code blocks.
   To make things easier for the user, always add a full code block for things that can be
   useful to copy and paste, as they can easily do it with the button on code blocks.
@@ -725,7 +757,7 @@ nicely on different mobile devices.
   ```
   ~~~
 
-- To display raw markdown instead of rendered markdown, you can use triple backticks
+- To display raw Markdown instead of rendered Markdown, you can use triple backticks
   with `md`, like the `Markdown code` example above, unless you want to include triple
   backticks in the code block as well. In that case, use triple tildes (`~~~`) instead.
 - For a complete reference on code blocks, check the [Kramdown guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/#code-blocks).
@@ -739,7 +771,7 @@ _Note that the alert boxes only work for one paragraph only. Multiple paragraphs
 lists, headers, etc will not render correctly. For multiple lines, use blockquotes instead._
 
 Alert boxes only render on the GitLab Docs site (<https://docs.gitlab.com>).
-Within GitLab itself, they will appear as plain markdown text (like the examples
+Within GitLab itself, they will appear as plain Markdown text (like the examples
 above the rendered versions, below).
 
 ### Note
@@ -1055,7 +1087,7 @@ Sometimes features are shipped with feature flags, either:
 - On by default, but providing the option to turn the feature off.
 - Off by default, but providing the option to turn the feature on.
 
-When documenting feature flags for a feature, it's important that users know:
+When documenting feature flags for a feature, include:
 
 - Why a feature flag is necessary. Some of the reasons are
   [outlined in the handbook](https://about.gitlab.com/handbook/product/#alpha-beta-ga).
@@ -1079,6 +1111,9 @@ migrated, ask a GitLab administrator with Rails console access to run the follow
 Feature.disable(:feature_flag)
 ```
 ````
+
+For guidance on developing with feature flags, see
+[Feature flags in development of GitLab](../feature_flags/index.md).
 
 ## API
 

@@ -10,7 +10,7 @@
   .key-list-item-info
     = link_to path_to_key(key, is_admin), class: "title" do
       = key.title
-    .description
+    %span.text-truncate
       = key.fingerprint
     .last-used-at
       last used:

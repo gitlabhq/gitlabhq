@@ -5,7 +5,7 @@
 With the GitLab [Maven](https://maven.apache.org) Repository, every
 project can have its own space to store its Maven artifacts.
 
-![GitLab Maven Repository](img/maven_package_view.png)
+![GitLab Maven Repository](img/maven_package_view_v12_6.png)
 
 ## Enabling the Maven Repository
 
@@ -37,7 +37,7 @@ credentials do not work.
 ### Authenticating with a personal access token
 
 To authenticate with a [personal access token](../../profile/personal_access_tokens.md),
-add a corresponding section to your
+set the scope to `api` and add a corresponding section to your
 [`settings.xml`](https://maven.apache.org/settings.html) file:
 
 ```xml

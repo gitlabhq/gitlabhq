@@ -259,6 +259,17 @@ describe Projects::NotesController do
         end
       end
 
+      context 'the note does not have commands_only errors' do
+        context 'for empty note' do
+          let(:note_text) { '' }
+          let(:extra_request_params) { { format: :json } }
+
+          it "returns status 422 for json" do
+            expect(response).to have_gitlab_http_status(422)
+          end
+        end
+      end
+
       context 'the project is a private project' do
         let(:project_visibility) { Gitlab::VisibilityLevel::PRIVATE }
 

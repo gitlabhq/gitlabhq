@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 
 describe Gitlab::Git::Repository, :seed_helper do
@@ -210,6 +212,7 @@ describe Gitlab::Git::Repository, :seed_helper do
 
   describe '#ref_names' do
     let(:ref_names) { repository.ref_names }
+
     subject { ref_names }
 
     it { is_expected.to be_kind_of Array }

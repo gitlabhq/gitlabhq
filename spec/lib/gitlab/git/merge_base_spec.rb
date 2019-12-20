@@ -5,6 +5,7 @@ require 'spec_helper'
 describe Gitlab::Git::MergeBase do
   set(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
+
   subject(:merge_base) { described_class.new(repository, refs) }
 
   shared_context 'existing refs with a merge base', :existing_refs do

@@ -61,6 +61,12 @@ describe Gitlab::Regex do
     it { is_expected.to match('my/image') }
     it { is_expected.to match('my/awesome/image-1') }
     it { is_expected.to match('my/awesome/image.test') }
+    it { is_expected.to match('my/awesome/image--test') }
+    # docker distribution allows for infinite `-`
+    # https://github.com/docker/distribution/blob/master/reference/regexp.go#L13
+    # but we have a range of 0,10 to add a reasonable limit.
+    it { is_expected.not_to match('my/image-----------test') }
+    it { is_expected.not_to match('my/image-.test') }
     it { is_expected.not_to match('.my/image') }
     it { is_expected.not_to match('my/image.') }
   end

@@ -42,11 +42,11 @@ describe RunPipelineScheduleWorker do
       before do
         allow(Ci::CreatePipelineService).to receive(:new) { raise ActiveRecord::StatementInvalid }
 
-        expect(Gitlab::Sentry)
-          .to receive(:track_exception)
+        expect(Gitlab::ErrorTracking)
+          .to receive(:track_and_raise_for_dev_exception)
           .with(ActiveRecord::StatementInvalid,
                 issue_url: 'https://gitlab.com/gitlab-org/gitlab-foss/issues/41231',
-                extra: { schedule_id: pipeline_schedule.id } ).once
+                schedule_id: pipeline_schedule.id).once
       end
 
       it 'increments Prometheus counter' do

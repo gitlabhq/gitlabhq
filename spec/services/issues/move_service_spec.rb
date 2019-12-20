@@ -131,7 +131,9 @@ describe Issues::MoveService do
         let!(:hook) { create(:project_hook, project: old_project, issues_events: true) }
 
         it 'executes project issue hooks' do
-          allow_any_instance_of(WebHookService).to receive(:execute)
+          allow_next_instance_of(WebHookService) do |instance|
+            allow(instance).to receive(:execute)
+          end
 
           # Ideally, we'd test that `WebHookWorker.jobs.size` increased by 1,
           # but since the entire spec run takes place in a transaction, we never
@@ -191,6 +193,7 @@ describe Issues::MoveService do
       context 'issue is not persisted' do
         include_context 'user can move issue'
         let(:old_issue) { build(:issue, project: old_project, author: author) }
+
         it { expect { move }.to raise_error(StandardError, /permissions/) }
       end
     end

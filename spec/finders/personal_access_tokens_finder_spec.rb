@@ -26,6 +26,16 @@ describe PersonalAccessTokensFinder do
           revoked_impersonation_token, expired_impersonation_token)
       end
 
+      describe 'with sort order' do
+        before do
+          params[:sort] = 'id_asc'
+        end
+
+        it 'sorts records as per the specified sort order' do
+          expect(subject).to match_array(PersonalAccessToken.all.order(id: :asc))
+        end
+      end
+
       describe 'without impersonation' do
         before do
           params[:impersonation] = false

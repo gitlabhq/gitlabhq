@@ -49,14 +49,16 @@ describe Projects::ErrorTrackingController do
       let(:list_issues_service) { spy(:list_issues_service) }
       let(:external_url) { 'http://example.com' }
 
-      before do
-        expect(ErrorTracking::ListIssuesService)
-          .to receive(:new).with(project, user)
-          .and_return(list_issues_service)
-      end
-
       context 'no data' do
+        let(:permitted_params) do
+          ActionController::Parameters.new({}).permit!
+        end
+
         before do
+          expect(ErrorTracking::ListIssuesService)
+            .to receive(:new).with(project, user, permitted_params)
+            .and_return(list_issues_service)
+
           expect(list_issues_service).to receive(:execute)
             .and_return(status: :error, http_status: :no_content)
         end
@@ -68,59 +70,109 @@ describe Projects::ErrorTrackingController do
         end
       end
 
-      context 'service result is successful' do
-        before do
-          expect(list_issues_service).to receive(:execute)
-            .and_return(status: :success, issues: [error])
-          expect(list_issues_service).to receive(:external_url)
-            .and_return(external_url)
+      context 'with extra params' do
+        let(:cursor) { '1572959139000:0:0' }
+        let(:search_term) { 'something' }
+        let(:sort) { 'last_seen' }
+        let(:params) { project_params(format: :json, search_term: search_term, sort: sort, cursor: cursor) }
+        let(:permitted_params) do
+          ActionController::Parameters.new(search_term: search_term, sort: sort, cursor: cursor).permit!
         end
 
-        let(:error) { build(:error_tracking_error) }
+        before do
+          expect(ErrorTracking::ListIssuesService)
+            .to receive(:new).with(project, user, permitted_params)
+            .and_return(list_issues_service)
+        end
 
-        it 'returns a list of errors' do
-          get :index, params: project_params(format: :json)
+        context 'service result is successful' do
+          before do
+            expect(list_issues_service).to receive(:execute)
+              .and_return(status: :success, issues: [error], pagination: {})
+            expect(list_issues_service).to receive(:external_url)
+              .and_return(external_url)
+          end
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to match_response_schema('error_tracking/index')
-          expect(json_response['external_url']).to eq(external_url)
-          expect(json_response['errors']).to eq([error].as_json)
+          let(:error) { build(:error_tracking_error) }
+
+          it 'returns a list of errors' do
+            get :index, params: params
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to match_response_schema('error_tracking/index')
+            expect(json_response).to eq(
+              'errors' => [error].as_json,
+              'pagination' => {},
+              'external_url' => external_url
+            )
+          end
         end
       end
 
-      context 'service result is erroneous' do
-        let(:error_message) { 'error message' }
+      context 'without extra params' do
+        before do
+          expect(ErrorTracking::ListIssuesService)
+            .to receive(:new).with(project, user, {})
+            .and_return(list_issues_service)
+        end
 
-        context 'without http_status' do
+        context 'service result is successful' do
           before do
             expect(list_issues_service).to receive(:execute)
-              .and_return(status: :error, message: error_message)
+              .and_return(status: :success, issues: [error], pagination: {})
+            expect(list_issues_service).to receive(:external_url)
+              .and_return(external_url)
           end
 
-          it 'returns 400 with message' do
+          let(:error) { build(:error_tracking_error) }
+
+          it 'returns a list of errors' do
             get :index, params: project_params(format: :json)
 
-            expect(response).to have_gitlab_http_status(:bad_request)
-            expect(json_response['message']).to eq(error_message)
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to match_response_schema('error_tracking/index')
+            expect(json_response).to eq(
+              'errors' => [error].as_json,
+              'pagination' => {},
+              'external_url' => external_url
+            )
           end
         end
 
-        context 'with explicit http_status' do
-          let(:http_status) { :no_content }
+        context 'service result is erroneous' do
+          let(:error_message) { 'error message' }
 
-          before do
-            expect(list_issues_service).to receive(:execute).and_return(
-              status: :error,
-              message: error_message,
-              http_status: http_status
-            )
+          context 'without http_status' do
+            before do
+              expect(list_issues_service).to receive(:execute)
+                .and_return(status: :error, message: error_message)
+            end
+
+            it 'returns 400 with message' do
+              get :index, params: project_params(format: :json)
+
+              expect(response).to have_gitlab_http_status(:bad_request)
+              expect(json_response['message']).to eq(error_message)
+            end
           end
 
-          it 'returns http_status with message' do
-            get :index, params: project_params(format: :json)
+          context 'with explicit http_status' do
+            let(:http_status) { :no_content }
 
-            expect(response).to have_gitlab_http_status(http_status)
-            expect(json_response['message']).to eq(error_message)
+            before do
+              expect(list_issues_service).to receive(:execute).and_return(
+                status: :error,
+                message: error_message,
+                http_status: http_status
+              )
+            end
+
+            it 'returns http_status with message' do
+              get :index, params: project_params(format: :json)
+
+              expect(response).to have_gitlab_http_status(http_status)
+              expect(json_response['message']).to eq(error_message)
+            end
           end
         end
       end
@@ -332,6 +384,10 @@ describe Projects::ErrorTrackingController do
       ).permit!
     end
 
+    subject(:get_stack_trace) do
+      get :stack_trace, params: issue_params(issue_id: issue_id, format: :json)
+    end
+
     before do
       expect(ErrorTracking::IssueLatestEventService)
         .to receive(:new).with(project, user, permitted_params)
@@ -346,7 +402,7 @@ describe Projects::ErrorTrackingController do
         end
 
         it 'returns no data' do
-          get :stack_trace, params: issue_params(issue_id: issue_id, format: :json)
+          get_stack_trace
 
           expect(response).to have_gitlab_http_status(:no_content)
         end
@@ -356,16 +412,21 @@ describe Projects::ErrorTrackingController do
         before do
           expect(issue_stack_trace_service).to receive(:execute)
             .and_return(status: :success, latest_event: error_event)
+
+          get_stack_trace
         end
 
         let(:error_event) { build(:error_tracking_error_event) }
 
         it 'returns an error' do
-          get :stack_trace, params: issue_params(issue_id: issue_id, format: :json)
-
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to match_response_schema('error_tracking/issue_stack_trace')
-          expect(json_response['error']).to eq(error_event.as_json)
+        end
+
+        it 'highlights stack trace source code' do
+          expect(json_response['error']).to eq(
+            Gitlab::ErrorTracking::StackTraceHighlightDecorator.decorate(error_event).as_json
+          )
         end
       end
 
@@ -379,7 +440,7 @@ describe Projects::ErrorTrackingController do
           end
 
           it 'returns 400 with message' do
-            get :stack_trace, params: issue_params(issue_id: issue_id, format: :json)
+            get_stack_trace
 
             expect(response).to have_gitlab_http_status(:bad_request)
             expect(json_response['message']).to eq(error_message)
@@ -398,7 +459,7 @@ describe Projects::ErrorTrackingController do
           end
 
           it 'returns http_status with message' do
-            get :stack_trace, params: issue_params(issue_id: issue_id, format: :json)
+            get_stack_trace
 
             expect(response).to have_gitlab_http_status(http_status)
             expect(json_response['message']).to eq(error_message)

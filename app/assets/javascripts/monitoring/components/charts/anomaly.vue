@@ -29,7 +29,7 @@ const AREA_COLOR_RGBA = `rgba(${hexToRgb(AREA_COLOR).join(',')},${AREA_OPACITY})
  * time series chart, the boundary band shows the normal
  * range of values the metric should take.
  *
- * This component accepts 3 queries, which contain the
+ * This component accepts 3 metrics, which contain the
  * "metric", "upper" limit and "lower" limit.
  *
  * The upper and lower series are "stacked areas" visually
@@ -62,10 +62,11 @@ export default {
   },
   computed: {
     series() {
-      return this.graphData.queries.map(query => {
-        const values = query.result[0] ? query.result[0].values : [];
+      return this.graphData.metrics.map(metric => {
+        const values = metric.result && metric.result[0] ? metric.result[0].values : [];
         return {
-          label: query.label,
+          label: metric.label,
+          // NaN values may disrupt avg., max. & min. calculations in the legend, filter them out
           data: values.filter(([, value]) => !Number.isNaN(value)),
         };
       });
@@ -82,7 +83,7 @@ export default {
       return min < 0 ? -min : 0;
     },
     metricData() {
-      const originalMetricQuery = this.graphData.queries[0];
+      const originalMetricQuery = this.graphData.metrics[0];
 
       const metricQuery = { ...originalMetricQuery };
       metricQuery.result[0].values = metricQuery.result[0].values.map(([x, y]) => [
@@ -92,7 +93,7 @@ export default {
       return {
         ...this.graphData,
         type: 'line-chart',
-        queries: [metricQuery],
+        metrics: [metricQuery],
       };
     },
     metricSeriesConfig() {

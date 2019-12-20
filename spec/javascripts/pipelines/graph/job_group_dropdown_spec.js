@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import JobGroupDropdown from '~/pipelines/components/graph/job_group_dropdown.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import JobGroupDropdown from '~/pipelines/components/graph/job_group_dropdown.vue';
 
 describe('job group dropdown component', () => {
   const Component = Vue.extend(JobGroupDropdown);

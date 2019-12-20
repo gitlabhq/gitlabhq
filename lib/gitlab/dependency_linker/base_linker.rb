@@ -62,7 +62,7 @@ module Gitlab
       end
 
       def link_tag(name, url)
-        %{<a href="#{ERB::Util.html_escape_once(url)}" rel="nofollow noreferrer noopener" target="_blank">#{ERB::Util.html_escape_once(name)}</a>}
+        %{<a href="#{ERB::Util.html_escape_once(url)}" rel="nofollow noreferrer noopener" target="_blank">#{ERB::Util.html_escape_once(name)}</a>}.html_safe
       end
 
       # Links package names based on regex.

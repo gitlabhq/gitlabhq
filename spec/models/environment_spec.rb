@@ -441,6 +441,16 @@ describe Environment, :use_clean_rails_memory_store_caching do
     end
   end
 
+  describe '#reset_auto_stop' do
+    subject { environment.reset_auto_stop }
+
+    let(:environment) { create(:environment, :auto_stopped) }
+
+    it 'nullifies the auto_stop_at' do
+      expect { subject }.to change(environment, :auto_stop_at).from(Time).to(nil)
+    end
+  end
+
   describe '#actions_for' do
     let(:deployment) { create(:deployment, :success, environment: environment) }
     let(:pipeline) { deployment.deployable.pipeline }
@@ -484,7 +494,9 @@ describe Environment, :use_clean_rails_memory_store_caching do
     subject { environment.last_deployment }
 
     before do
-      allow_any_instance_of(Deployment).to receive(:create_ref)
+      allow_next_instance_of(Deployment) do |instance|
+        allow(instance).to receive(:create_ref)
+      end
     end
 
     context 'when there is an old deployment record' do
@@ -822,6 +834,14 @@ describe Environment, :use_clean_rails_memory_store_caching do
         context 'and no deployments' do
           it { is_expected.to be_truthy }
         end
+
+        context 'and the prometheus adapter is not configured' do
+          before do
+            allow(environment.prometheus_adapter).to receive(:configured?).and_return(false)
+          end
+
+          it { is_expected.to be_falsy }
+        end
       end
 
       context 'without a monitoring service' do
@@ -855,6 +875,14 @@ describe Environment, :use_clean_rails_memory_store_caching do
           .and_return(:fake_metrics)
 
         is_expected.to eq(:fake_metrics)
+      end
+
+      context 'and the prometheus client is not present' do
+        before do
+          allow(environment.prometheus_adapter).to receive(:promethus_client).and_return(nil)
+        end
+
+        it { is_expected.to be_nil }
       end
     end
 
@@ -1031,7 +1059,9 @@ describe Environment, :use_clean_rails_memory_store_caching do
 
   describe '#prometheus_adapter' do
     it 'calls prometheus adapter service' do
-      expect_any_instance_of(Prometheus::AdapterService).to receive(:prometheus_adapter)
+      expect_next_instance_of(Prometheus::AdapterService) do |instance|
+        expect(instance).to receive(:prometheus_adapter)
+      end
 
       subject.prometheus_adapter
     end
@@ -1063,6 +1093,52 @@ describe Environment, :use_clean_rails_memory_store_caching do
             .with(cluster, environment).and_return(:finder)
 
           is_expected.to eq :finder
+        end
+      end
+    end
+  end
+
+  describe '#auto_stop_in' do
+    subject { environment.auto_stop_in }
+
+    context 'when environment will be expired' do
+      let(:environment) { build(:environment, :will_auto_stop) }
+
+      it 'returns when it will expire' do
+        Timecop.freeze { is_expected.to eq(1.day.to_i) }
+      end
+    end
+
+    context 'when environment is not expired' do
+      let(:environment) { build(:environment) }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#auto_stop_in=' do
+    subject { environment.auto_stop_in = value }
+
+    let(:environment) { build(:environment) }
+
+    where(:value, :expected_result) do
+      '2 days'   | 2.days.to_i
+      '1 week'   | 1.week.to_i
+      '2h20min'  | 2.hours.to_i + 20.minutes.to_i
+      'abcdef'   | ChronicDuration::DurationParseError
+      ''         | nil
+      nil        | nil
+    end
+    with_them do
+      it 'sets correct auto_stop_in' do
+        Timecop.freeze do
+          if expected_result.is_a?(Integer) || expected_result.nil?
+            subject
+
+            expect(environment.auto_stop_in).to eq(expected_result)
+          else
+            expect { subject }.to raise_error(expected_result)
+          end
         end
       end
     end

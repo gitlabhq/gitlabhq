@@ -847,7 +847,7 @@ describe Repository do
   end
 
   describe '#get_raw_changes' do
-    context `with non-UTF8 bytes in paths` do
+    context 'with non-UTF8 bytes in paths' do
       let(:old_rev) { 'd0888d297eadcd7a345427915c309413b1231e65' }
       let(:new_rev) { '19950f03c765f7ac8723a73a0599764095f52fc0' }
       let(:changes) { repository.raw_changes_between(old_rev, new_rev) }
@@ -1530,13 +1530,24 @@ describe Repository do
           expect(merge_request.reload.rebase_commit_sha).to eq(new_sha)
         end
 
-        it 'does rollback when an error is encountered in the second step' do
+        it 'does rollback when a PreReceiveError is encountered in the second step' do
           second_response = double(pre_receive_error: 'my_error', git_error: nil)
           mock_gitaly(second_response)
 
           expect do
             repository.rebase(user, merge_request)
           end.to raise_error(Gitlab::Git::PreReceiveError)
+
+          expect(merge_request.reload.rebase_commit_sha).to be_nil
+        end
+
+        it 'does rollback when a GitError is encountered in the second step' do
+          second_response = double(pre_receive_error: nil, git_error: 'git error')
+          mock_gitaly(second_response)
+
+          expect do
+            repository.rebase(user, merge_request)
+          end.to raise_error(Gitlab::Git::Repository::GitError)
 
           expect(merge_request.reload.rebase_commit_sha).to be_nil
         end
@@ -2388,7 +2399,40 @@ describe Repository do
   end
 
   describe '#ancestor? with Gitaly enabled' do
-    it_behaves_like "#ancestor?"
+    let(:commit) { repository.commit }
+    let(:ancestor) { commit.parents.first }
+    let(:cache_key) { "ancestor:#{ancestor.id}:#{commit.id}" }
+
+    it_behaves_like '#ancestor?'
+
+    context 'caching', :request_store, :clean_gitlab_redis_cache do
+      it 'only calls out to Gitaly once' do
+        expect(repository.raw_repository).to receive(:ancestor?).once
+
+        2.times { repository.ancestor?(commit.id, ancestor.id) }
+      end
+
+      it 'increments a counter with cache hits' do
+        counter = Gitlab::Metrics.counter(:repository_ancestor_calls_total, 'Repository ancestor calls')
+
+        expect do
+          2.times { repository.ancestor?(commit.id, ancestor.id) }
+        end.to change { counter.get(cache_hit: 'true') }.by(1)
+                 .and change { counter.get(cache_hit: 'false') }.by(1)
+      end
+
+      it 'returns the value from the request store' do
+        repository.__send__(:request_store_cache).write(cache_key, "it's apparent")
+
+        expect(repository.ancestor?(ancestor.id, commit.id)).to eq("it's apparent")
+      end
+
+      it 'returns the value from the redis cache' do
+        expect(repository.__send__(:cache)).to receive(:fetch).with(cache_key).and_return("it's apparent")
+
+        expect(repository.ancestor?(ancestor.id, commit.id)).to eq("it's apparent")
+      end
+    end
   end
 
   describe '#ancestor? with Rugged enabled', :enable_rugged do

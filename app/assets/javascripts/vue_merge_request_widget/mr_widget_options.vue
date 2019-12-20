@@ -1,16 +1,17 @@
 <script>
 import _ from 'underscore';
-import { sprintf, s__, __ } from '~/locale';
-import Project from '~/pages/projects/project';
-import SmartInterval from '~/smart_interval';
 import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
 import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
 import stateMaps from 'ee_else_ce/vue_merge_request_widget/stores/state_maps';
+import { sprintf, s__, __ } from '~/locale';
+import Project from '~/pages/projects/project';
+import SmartInterval from '~/smart_interval';
 import createFlash from '../flash';
+import Loading from './components/loading.vue';
 import WidgetHeader from './components/mr_widget_header.vue';
 import WidgetMergeHelp from './components/mr_widget_merge_help.vue';
 import MrWidgetPipelineContainer from './components/mr_widget_pipeline_container.vue';
-import Deployment from './components/deployment.vue';
+import Deployment from './components/deployment/deployment.vue';
 import WidgetRelatedLinks from './components/mr_widget_related_links.vue';
 import MrWidgetAlertMessage from './components/mr_widget_alert_message.vue';
 import MergedState from './components/states/mr_widget_merged.vue';
@@ -24,7 +25,6 @@ import NothingToMergeState from './components/states/nothing_to_merge.vue';
 import MissingBranchState from './components/states/mr_widget_missing_branch.vue';
 import NotAllowedState from './components/states/mr_widget_not_allowed.vue';
 import ReadyToMergeState from './components/states/ready_to_merge.vue';
-import ShaMismatchState from './components/states/sha_mismatch.vue';
 import UnresolvedDiscussionsState from './components/states/unresolved_discussions.vue';
 import PipelineBlockedState from './components/states/mr_widget_pipeline_blocked.vue';
 import PipelineFailedState from './components/states/pipeline_failed.vue';
@@ -44,6 +44,7 @@ export default {
   // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
   name: 'MRWidget',
   components: {
+    Loading,
     'mr-widget-header': WidgetHeader,
     'mr-widget-merge-help': WidgetMergeHelp,
     MrWidgetPipelineContainer,
@@ -61,7 +62,7 @@ export default {
     'mr-widget-not-allowed': NotAllowedState,
     'mr-widget-missing-branch': MissingBranchState,
     'mr-widget-ready-to-merge': ReadyToMergeState,
-    'sha-mismatch': ShaMismatchState,
+    'sha-mismatch': ReadyToMergeState,
     'mr-widget-checking': CheckingState,
     'mr-widget-unresolved-discussions': UnresolvedDiscussionsState,
     'mr-widget-pipeline-blocked': PipelineBlockedState,
@@ -80,12 +81,12 @@ export default {
     },
   },
   data() {
-    const store = new MRWidgetStore(this.mrData || window.gl.mrWidgetData);
-    const service = this.createService(store);
+    const store = this.mrData && new MRWidgetStore(this.mrData);
+
     return {
       mr: store,
-      state: store.state,
-      service,
+      state: store && store.state,
+      service: store && this.createService(store),
     };
   },
   computed: {
@@ -133,29 +134,58 @@ export default {
       }
     },
   },
-  created() {
-    this.initPolling();
-    this.bindEventHubListeners();
-    eventHub.$on('mr.discussion.updated', this.checkStatus);
-  },
   mounted() {
-    this.setFaviconHelper();
-    this.initDeploymentsPolling();
-
-    if (this.shouldRenderMergedPipeline) {
-      this.initPostMergeDeploymentsPolling();
+    if (gon && gon.features && gon.features.asyncMrWidget) {
+      MRWidgetService.fetchInitialData()
+        .then(({ data }) => this.initWidget(data))
+        .catch(() =>
+          createFlash(__('Unable to load the merge request widget. Try reloading the page.')),
+        );
+    } else {
+      this.initWidget();
     }
   },
   beforeDestroy() {
     eventHub.$off('mr.discussion.updated', this.checkStatus);
-    this.pollingInterval.destroy();
-    this.deploymentsInterval.destroy();
+    if (this.pollingInterval) {
+      this.pollingInterval.destroy();
+    }
+
+    if (this.deploymentsInterval) {
+      this.deploymentsInterval.destroy();
+    }
 
     if (this.postMergeDeploymentsInterval) {
       this.postMergeDeploymentsInterval.destroy();
     }
   },
   methods: {
+    initWidget(data = {}) {
+      if (this.mr) {
+        this.mr.setData({ ...window.gl.mrWidgetData, ...data });
+      } else {
+        this.mr = new MRWidgetStore({ ...window.gl.mrWidgetData, ...data });
+      }
+
+      if (!this.state) {
+        this.state = this.mr.state;
+      }
+
+      if (!this.service) {
+        this.service = this.createService(this.mr);
+      }
+
+      this.setFaviconHelper();
+      this.initDeploymentsPolling();
+
+      if (this.shouldRenderMergedPipeline) {
+        this.initPostMergeDeploymentsPolling();
+      }
+
+      this.initPolling();
+      this.bindEventHubListeners();
+      eventHub.$on('mr.discussion.updated', this.checkStatus);
+    },
     getServiceEndpoints(store) {
       return {
         mergePath: store.mergePath,
@@ -319,7 +349,7 @@ export default {
 };
 </script>
 <template>
-  <div class="mr-state-widget prepend-top-default">
+  <div v-if="mr" class="mr-state-widget prepend-top-default">
     <mr-widget-header :mr="mr" />
     <mr-widget-pipeline-container
       v-if="shouldRenderPipelines"
@@ -377,4 +407,5 @@ export default {
       :is-post-merge="true"
     />
   </div>
+  <loading v-else />
 </template>

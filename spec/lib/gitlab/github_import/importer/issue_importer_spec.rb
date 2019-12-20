@@ -99,7 +99,6 @@ describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redis_cach
               project_id: project.id,
               description: 'This is my issue',
               milestone_id: milestone.id,
-              state: :opened,
               state_id: 1,
               created_at: created_at,
               updated_at: updated_at
@@ -129,7 +128,6 @@ describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redis_cach
               project_id: project.id,
               description: "*Created by: alice*\n\nThis is my issue",
               milestone_id: milestone.id,
-              state: :opened,
               state_id: 1,
               created_at: created_at,
               updated_at: updated_at

@@ -89,12 +89,12 @@ describe 'Projects > Settings > Integration settings' do
         expect(current_path).to eq(integrations_path)
       end
 
-      context 'remove existing webhook' do
+      context 'delete existing webhook' do
         it 'from webhooks list page' do
           hook
           visit integrations_path
 
-          expect { click_link 'Remove' }.to change(ProjectHook, :count).by(-1)
+          expect { click_link 'Delete' }.to change(ProjectHook, :count).by(-1)
         end
 
         it 'from webhook edit page' do
@@ -102,7 +102,7 @@ describe 'Projects > Settings > Integration settings' do
           visit integrations_path
           click_link 'Edit'
 
-          expect { click_link 'Remove' }.to change(ProjectHook, :count).by(-1)
+          expect { click_link 'Delete' }.to change(ProjectHook, :count).by(-1)
         end
       end
     end

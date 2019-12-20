@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import MarkdownComponent from '~/notebook/cells/markdown.vue';
 import katex from 'katex';
+import MarkdownComponent from '~/notebook/cells/markdown.vue';
 
 const Component = Vue.extend(MarkdownComponent);
 
@@ -49,7 +49,7 @@ describe('Markdown component', () => {
     });
 
     Vue.nextTick(() => {
-      expect(vm.$el.querySelector('a')).toBeNull();
+      expect(vm.$el.querySelector('a').getAttribute('href')).toBeNull();
 
       done();
     });

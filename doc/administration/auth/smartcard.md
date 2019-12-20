@@ -6,6 +6,16 @@ type: reference
 
 GitLab supports authentication using smartcards.
 
+## Existing password authentication
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/33669) in GitLab 12.6.
+
+By default, existing users can continue to log in with a username and password when smartcard
+authentication is enabled.
+
+To force existing users to use only smartcard authentication,
+[disable username and password authentication](../../user/admin_area/settings/sign_in_restrictions.md#password-authentication-enabled).
+
 ## Authentication methods
 
 GitLab supports two authentication methods:
@@ -51,10 +61,14 @@ This is an experimental feature. Smartcard authentication against local database
 change or be removed completely in future releases.
 
 To use a smartcard with an X.509 certificate to authenticate against a local
-database with GitLab, at least one of the `subjectAltName` (SAN) extensions
-need to define the user identity (`email`) within the GitLab instance (`URI`).
+database with GitLab, in:
 
-`URI`: needs to match `Gitlab.config.host.gitlab`.
+- GitLab 12.4 and later, at least one of the `subjectAltName` (SAN) extensions
+  need to define the user identity (`email`) within the GitLab instance (`URI`).
+  `URI`: needs to match `Gitlab.config.host.gitlab`.
+- From [GitLab 12.5](https://gitlab.com/gitlab-org/gitlab/issues/33907),
+  if your certificate contains only **one** SAN email entry, you don't need to
+  add or modify it to match the `email` with the `URI`.
 
 For example:
 
@@ -80,10 +94,7 @@ Certificate:
 
 ### Authentication against an LDAP server
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7693) in
-[GitLab Premium](https://about.gitlab.com/pricing/) 11.8 as an experimental
-feature. Smartcard authentication against an LDAP server may change or be
-removed completely in future releases.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7693) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.8 as an experimental feature. Smartcard authentication against an LDAP server may change or be removed completely in future releases.
 
 GitLab implements a standard way of certificate matching following
 [RFC4523](https://tools.ietf.org/html/rfc4523). It uses the

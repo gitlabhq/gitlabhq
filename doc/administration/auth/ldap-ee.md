@@ -10,13 +10,16 @@ This section documents LDAP features specific to to GitLab Enterprise Edition
 For documentation relevant to both Community Edition and Enterprise Edition,
 see the main [LDAP documentation](ldap.md).
 
+NOTE: **Note:**
+[Microsoft Active Directory Trusts](https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-R2-and-2008/cc771568(v=ws.10)) are not supported
+
 ## Use cases
 
 - User sync: Once a day, GitLab will update users against LDAP.
 - Group sync: Once an hour, GitLab will update group membership
   based on LDAP group members.
 
-## Multiple LDAP servers **(STARTER ONLY)**
+## Multiple LDAP servers
 
 With GitLab Enterprise Edition Starter, you can configure multiple LDAP servers
 that your GitLab instance will connect to.
@@ -107,12 +110,23 @@ following.
 
 1. [Restart GitLab][restart] for the changes to take effect.
 
-To take advantage of group sync, group owners or maintainers will need to create an
-LDAP group link in their group **Settings > LDAP Groups** page.
+To take advantage of group sync, group owners or maintainers will need to [create one
+or more LDAP group links](#adding-group-links).
 
-Multiple LDAP groups and [filters](#filters-premium-only) can be linked with
-a single GitLab group. When the link is created, an access level/role is
-specified (Guest, Reporter, Developer, Maintainer, or Owner).
+### Adding group links
+
+Once [group sync has been configured](#group-sync) on the instance, one or more LDAP
+groups can be linked to a GitLab group to grant their members access to its
+contents.
+
+Group owners or maintainers can add and use LDAP group links by:
+
+1. Navigating to the group's **Settings > LDAP Synchronization** page. Here, one or more
+   LDAP groups and [filters](#filters-premium-only) can be linked to this GitLab group,
+   each one with a configured [permission level](../../user/permissions.md#group-members-permissions)
+   for its members.
+1. Updating the group's membership by navigating to the group's **Settings > Members**
+   page and clicking **Sync now**.
 
 ### Filters **(PREMIUM ONLY)**
 

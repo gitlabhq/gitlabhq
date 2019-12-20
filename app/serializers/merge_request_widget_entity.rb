@@ -3,6 +3,9 @@
 class MergeRequestWidgetEntity < Grape::Entity
   include RequestAwareEntity
 
+  expose :id
+  expose :iid
+
   expose :source_project_full_path do |merge_request|
     merge_request.source_project&.full_path
   end
@@ -65,6 +68,8 @@ class MergeRequestWidgetEntity < Grape::Entity
   end
 
   def as_json(options = {})
+    return super(options) if Feature.enabled?(:async_mr_widget)
+
     super(options)
       .merge(MergeRequestPollCachedWidgetEntity.new(object, **@options.opts_hash).as_json(options))
       .merge(MergeRequestPollWidgetEntity.new(object, **@options.opts_hash).as_json(options))

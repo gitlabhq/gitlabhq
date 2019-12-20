@@ -11,10 +11,17 @@ describe Gitlab::InsecureKeyFingerprint do
   end
 
   let(:fingerprint) { "3f:a2:ee:de:b5:de:53:c3:aa:2f:9c:45:24:4c:47:7b" }
+  let(:fingerprint_sha256) { "MQHWhS9nhzUezUdD42ytxubZoBKrZLbyBZzxCkmnxXc" }
 
   describe "#fingerprint" do
     it "generates the key's fingerprint" do
-      expect(described_class.new(key.split[1]).fingerprint).to eq(fingerprint)
+      expect(described_class.new(key.split[1]).fingerprint_md5).to eq(fingerprint)
+    end
+  end
+
+  describe "#fingerprint" do
+    it "generates the key's fingerprint" do
+      expect(described_class.new(key.split[1]).fingerprint_sha256).to eq(fingerprint_sha256)
     end
   end
 end

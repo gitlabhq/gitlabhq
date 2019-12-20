@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
   render(createElement) {
     return createElement('my-component', {
       props: {
-        endpoint: this.isLoading,
+        endpoint: this.endpoint,
       },
     });
   },
@@ -179,7 +179,7 @@ Check this [page](vuex.md) for more details.
 
 ## Style guide
 
-Please refer to the Vue section of our [style guide](style_guide_js.md#vuejs)
+Please refer to the Vue section of our [style guide](style/vue.md)
 for best practices while writing your Vue components and templates.
 
 ## Testing Vue Components
@@ -284,7 +284,7 @@ need to test the rendered output. [Vue][vue-test] guide's to unit test show us e
 
 One should apply to be a Vue.js expert by opening an MR when the Merge Request's they create and review show:
 
-- Deep understanding of Vue and Vuex reactivy
+- Deep understanding of Vue and Vuex reactivity
 - Vue and Vuex code are structured according to both official and our guidelines
 - Full understanding of testing a Vue and Vuex application
 - Vuex code follows the [documented pattern](vuex.md#actions-pattern-request-and-receive-namespaces)

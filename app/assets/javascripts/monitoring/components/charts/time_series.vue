@@ -1,9 +1,9 @@
 <script>
-import { s__, __ } from '~/locale';
 import _ from 'underscore';
 import { GlLink, GlButton, GlTooltip, GlResizeObserverDirective } from '@gitlab/ui';
 import { GlAreaChart, GlLineChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import dateFormat from 'dateformat';
+import { s__, __ } from '~/locale';
 import { roundOffFloat } from '~/lib/utils/common_utils';
 import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -105,7 +105,7 @@ export default {
       // Transforms & supplements query data to render appropriate labels & styles
       // Input: [{ queryAttributes1 }, { queryAttributes2 }]
       // Output: [{ seriesAttributes1 }, { seriesAttributes2 }]
-      return this.graphData.queries.reduce((acc, query) => {
+      return this.graphData.metrics.reduce((acc, query) => {
         const { appearance } = query;
         const lineType =
           appearance && appearance.line && appearance.line.type
@@ -121,7 +121,7 @@ export default {
               ? appearance.area.opacity
               : undefined,
         };
-        const series = makeDataSeries(query.result, {
+        const series = makeDataSeries(query.result || [], {
           name: this.formatLegendLabel(query),
           lineStyle: {
             type: lineType,
@@ -253,23 +253,25 @@ export default {
       this.tooltip.title = dateFormat(params.value, dateFormats.default);
       this.tooltip.content = [];
       params.seriesData.forEach(dataPoint => {
-        const [xVal, yVal] = dataPoint.value;
-        this.tooltip.isDeployment = dataPoint.componentSubType === graphTypes.deploymentData;
-        if (this.tooltip.isDeployment) {
-          const [deploy] = this.recentDeployments.filter(
-            deployment => deployment.createdAt === xVal,
-          );
-          this.tooltip.sha = deploy.sha.substring(0, 8);
-          this.tooltip.commitUrl = deploy.commitUrl;
-        } else {
-          const { seriesName, color, dataIndex } = dataPoint;
-          const value = yVal.toFixed(3);
-          this.tooltip.content.push({
-            name: seriesName,
-            dataIndex,
-            value,
-            color,
-          });
+        if (dataPoint.value) {
+          const [xVal, yVal] = dataPoint.value;
+          this.tooltip.isDeployment = dataPoint.componentSubType === graphTypes.deploymentData;
+          if (this.tooltip.isDeployment) {
+            const [deploy] = this.recentDeployments.filter(
+              deployment => deployment.createdAt === xVal,
+            );
+            this.tooltip.sha = deploy.sha.substring(0, 8);
+            this.tooltip.commitUrl = deploy.commitUrl;
+          } else {
+            const { seriesName, color, dataIndex } = dataPoint;
+            const value = yVal.toFixed(3);
+            this.tooltip.content.push({
+              name: seriesName,
+              dataIndex,
+              value,
+              color,
+            });
+          }
         }
       });
     },

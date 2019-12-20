@@ -18,13 +18,17 @@ Adjust your project's name, description, avatar, [default branch](../repository/
 
 ![general project settings](img/general_settings.png)
 
-The project description also partially supports [standard markdown](../../markdown.md#standard-markdown-and-extensions-in-gitlab). You can use [emphasis](../../markdown.md#emphasis), [links](../../markdown.md#links), and [line-breaks](../../markdown.md#line-breaks) to add more context to the project description.
+The project description also partially supports [standard Markdown](../../markdown.md#standard-markdown-and-extensions-in-gitlab). You can use [emphasis](../../markdown.md#emphasis), [links](../../markdown.md#links), and [line-breaks](../../markdown.md#line-breaks) to add more context to the project description.
 
 ### Sharing and permissions
 
 Set up your project's access, [visibility](../../../public_access/public_access.md), and enable [Container Registry](../../packages/container_registry/index.md) for your projects:
 
 ![projects sharing permissions](img/sharing_and_permissions_settings_v12_3.png)
+
+CAUTION: **Caution:**
+[Reducing a project's visibility level](../../../public_access/public_access.md#reducing-visibility)
+will remove the fork relationship between the project and any forked project.
 
 If Issues are disabled, or you can't access Issues because you're not a project member, then Labels and Milestones
 links will be missing from the sidebar UI.

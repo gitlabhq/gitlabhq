@@ -46,8 +46,8 @@ of your GitLab instance. These messages will appear on all projects and pages of
 instance, including the sign in / sign up page. The default color is white text on
 an orange background, but this can be customized by clicking on **Customize colors**.
 
-Limited [markdown](../markdown.md) is supported, such as bold, italics, and links, for
-example. Other markdown features, including lists, images and quotes, are not supported,
+Limited [Markdown](../markdown.md) is supported, such as bold, italics, and links, for
+example. Other Markdown features, including lists, images and quotes, are not supported,
 as the header and footer messages can only be a single line.
 
 ![header and footer screenshot](img/appearance_header_footer_v12_3.png)
@@ -61,7 +61,7 @@ to activate it in the GitLab instance.
 ## Sign in / Sign up pages
 
 You can replace the default message on the sign in / sign up page with your own message
-and logo. You can make full use of [markdown](../markdown.md) in the description:
+and logo. You can make full use of [Markdown](../markdown.md) in the description:
 
 ![sign in message screenshot](img/appearance_sign_in_v12_3.png)
 
@@ -81,7 +81,7 @@ You can add also add a [customized help message](settings/help_page.md) below th
 ## New project pages
 
 You can add a new project guidelines message to the **New project page** within GitLab.
-You can make full use of [markdown](../markdown.md) in the description:
+You can make full use of [Markdown](../markdown.md) in the description:
 
 ![new project message screenshot](img/appearance_new_project_v12_3.png)
 

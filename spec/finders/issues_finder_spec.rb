@@ -786,6 +786,7 @@ describe IssuesFinder do
 
   describe '#with_confidentiality_access_check' do
     let(:guest) { create(:user) }
+
     set(:authorized_user) { create(:user) }
     set(:project) { create(:project, namespace: authorized_user.namespace) }
     set(:public_issue) { create(:issue, project: project) }

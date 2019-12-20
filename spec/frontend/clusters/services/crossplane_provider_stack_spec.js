@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlDropdownItem } from '@gitlab/ui';
+import { GlDropdownItem, GlIcon } from '@gitlab/ui';
 import CrossplaneProviderStack from '~/clusters/components/crossplane_provider_stack.vue';
 
 describe('CrossplaneProviderStack component', () => {
@@ -72,7 +72,12 @@ describe('CrossplaneProviderStack component', () => {
     findFirstDropdownElement().vm.$emit('click');
     expect(wrapper.emitted().set[0][0].code).toEqual('gcp');
   });
-  it('it renders the correct dropdown text when no stack is selected', () => {
+
+  it('renders the correct dropdown text when no stack is selected', () => {
     expect(wrapper.vm.dropdownText).toBe('Select Stack');
+  });
+
+  it('renders an external link', () => {
+    expect(wrapper.find(GlIcon).props('name')).toBe('external-link');
   });
 });

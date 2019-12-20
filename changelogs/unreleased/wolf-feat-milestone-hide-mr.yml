@@ -1,0 +1,5 @@
+---
+title: Hide Merge Request information on milestones when MRs are disabled for project
+merge_request: 20985
+author: Wolfgang Faust
+type: changed

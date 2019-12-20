@@ -12,4 +12,8 @@ class DashboardMilestone < GlobalMilestone
   def project_milestone?
     true
   end
+
+  def merge_requests_enabled?
+    project.merge_requests_enabled?
+  end
 end

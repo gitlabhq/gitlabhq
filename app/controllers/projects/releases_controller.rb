@@ -6,10 +6,11 @@ class Projects::ReleasesController < Projects::ApplicationController
   before_action :release, only: %i[edit update]
   before_action :authorize_read_release!
   before_action do
-    push_frontend_feature_flag(:release_edit_page, project, default_enabled: true)
     push_frontend_feature_flag(:release_issue_summary, project)
+    push_frontend_feature_flag(:release_evidence_collection, project)
   end
   before_action :authorize_update_release!, only: %i[edit update]
+  before_action :authorize_download_code!, only: [:evidence]
 
   def index
     respond_to do |format|
@@ -17,6 +18,14 @@ class Projects::ReleasesController < Projects::ApplicationController
         require_non_empty_project
       end
       format.json { render json: releases }
+    end
+  end
+
+  def evidence
+    respond_to do |format|
+      format.json do
+        render json: release.evidence_summary
+      end
     end
   end
 
@@ -35,7 +44,6 @@ class Projects::ReleasesController < Projects::ApplicationController
   private
 
   def authorize_update_release!
-    access_denied! unless Feature.enabled?(:release_edit_page, project, default_enabled: true)
     access_denied! unless can?(current_user, :update_release, release)
   end
 

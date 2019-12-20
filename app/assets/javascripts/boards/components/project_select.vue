@@ -1,9 +1,9 @@
 <script>
-import { __ } from '~/locale';
 import $ from 'jquery';
 import _ from 'underscore';
-import Icon from '~/vue_shared/components/icon.vue';
 import { GlLoadingIcon } from '@gitlab/ui';
+import Icon from '~/vue_shared/components/icon.vue';
+import { __ } from '~/locale';
 import eventHub from '../eventhub';
 import Api from '../../api';
 import { featureAccessLevel } from '~/pages/projects/shared/permissions/constants';

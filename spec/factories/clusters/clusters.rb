@@ -90,6 +90,28 @@ FactoryBot.define do
       domain { 'example.com' }
     end
 
+    trait :with_environments do
+      transient do
+        environments { %i(staging production) }
+      end
+
+      cluster_type { Clusters::Cluster.cluster_types[:project_type] }
+
+      before(:create) do |cluster, evaluator|
+        cluster_project = create(:cluster_project, cluster: cluster)
+
+        evaluator.environments.each do |env_name|
+          environment = create(:environment, name: env_name, project: cluster_project.project)
+
+          cluster.kubernetes_namespaces << create(:cluster_kubernetes_namespace,
+            cluster: cluster,
+            cluster_project: cluster_project,
+            project: cluster_project.project,
+            environment: environment)
+        end
+      end
+    end
+
     trait :not_managed do
       managed { false }
     end

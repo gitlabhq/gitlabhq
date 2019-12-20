@@ -3,6 +3,7 @@
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/41766) in GitLab 11.7.
 > - Using this API you can manipulate GitLab's [Release](../../user/project/releases/index.md) entries.
 > - For manipulating links as a release asset, see [Release Links API](links.md).
+> - Release Evidences were [introduced](https://gitlab.com/gitlab-org/gitlab/issues/26019) in GitLab 12.5.
 
 ## List Releases
 
@@ -87,6 +88,7 @@ Example response:
       ],
       "commit_path":"/root/awesome-app/commit/588440f66559714280628a4f9799f0c4eb880a4a",
       "tag_path":"/root/awesome-app/-/tags/v0.11.1",
+      "evidence_sha":"760d6cdfb0879c3ffedec13af470e0f71cf52c6cde4d",
       "assets":{
          "count":6,
          "sources":[
@@ -120,7 +122,8 @@ Example response:
                "url":"http://192.168.10.15:3000",
                "external":true
             }
-         ]
+         ],
+         "evidence_file_path":"https://gitlab.example.com/root/awesome-app/-/releases/v0.2/evidence.json"
       },
    },
    {
@@ -154,6 +157,7 @@ Example response:
          "committer_email":"admin@example.com",
          "committed_date":"2019-01-03T01:53:28.000Z"
       },
+      "evidence_sha":"760d6cdfb0879c3ffedec13af470e0f71cf52c6cde4d",
       "assets":{
          "count":4,
          "sources":[
@@ -176,7 +180,8 @@ Example response:
          ],
          "links":[
 
-         ]
+         ],
+         "evidence_file_path":"https://gitlab.example.com/root/awesome-app/-/releases/v0.1/evidence.json"
       },
    }
 ]
@@ -265,8 +270,9 @@ Example response:
    ],
    "commit_path":"/root/awesome-app/commit/588440f66559714280628a4f9799f0c4eb880a4a",
    "tag_path":"/root/awesome-app/-/tags/v0.11.1",
+   "evidence_sha":"760d6cdfb0879c3ffedec13af470e0f71cf52c6cde4d",
    "assets":{
-      "count":4,
+      "count":5,
       "sources":[
          {
             "format":"zip",
@@ -287,7 +293,8 @@ Example response:
       ],
       "links":[
 
-      ]
+      ],
+      "evidence_url":"https://gitlab.example.com/root/awesome-app/-/releases/v0.1/evidence.json"
    },
 }
 ```
@@ -305,7 +312,7 @@ POST /projects/:id/releases
 | `id`               | integer/string  | yes                         | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding).                                              |
 | `name`             | string          | no                          | The release name.                                                                                                                |
 | `tag_name`         | string          | yes                         | The tag where the release will be created from.                                                                                  |
-| `description`      | string          | yes                         | The description of the release. You can use [markdown](../../user/markdown.md).                                                  |
+| `description`      | string          | yes                         | The description of the release. You can use [Markdown](../../user/markdown.md).                                                  |
 | `ref`              | string          | yes, if `tag_name` doesn't exist | If `tag_name` doesn't exist, the release will be created from `ref`. It can be a commit SHA, another tag name, or a branch name. |
 | `milestones`       | array of string | no                          | The title of each milestone the release is associated with.                                                                      |
 | `assets:links`     | array of hash   | no                          | An array of assets links.                                                                                                        |
@@ -385,6 +392,7 @@ Example response:
    ],
    "commit_path":"/root/awesome-app/commit/588440f66559714280628a4f9799f0c4eb880a4a",
    "tag_path":"/root/awesome-app/-/tags/v0.11.1",
+   "evidence_sha":"760d6cdfb0879c3ffedec13af470e0f71cf52c6cde4d",
    "assets":{
       "count":5,
       "sources":[
@@ -412,7 +420,8 @@ Example response:
             "url":"https://google.com",
             "external":true
          }
-      ]
+      ],
+      "evidence_file_path":"https://gitlab.example.com/root/awesome-app/-/releases/v0.3/evidence.json"
    },
 }
 ```
@@ -430,7 +439,7 @@ PUT /projects/:id/releases/:tag_name
 | `id`          | integer/string  | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding).                         |
 | `tag_name`    | string          | yes      | The tag where the release will be created from.                                                             |
 | `name`        | string          | no       | The release name.                                                                                           |
-| `description` | string          | no       | The description of the release. You can use [markdown](../../user/markdown.md).                             |
+| `description` | string          | no       | The description of the release. You can use [Markdown](../../user/markdown.md).                             |
 | `milestones`  | array of string | no       | The title of each milestone to associate with the release (`[]` to remove all milestones from the release). |
 | `released_at` | datetime        | no       | The date when the release will be/was ready. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`).          |
 
@@ -491,6 +500,7 @@ Example response:
    ],
    "commit_path":"/root/awesome-app/commit/588440f66559714280628a4f9799f0c4eb880a4a",
    "tag_path":"/root/awesome-app/-/tags/v0.11.1",
+   "evidence_sha":"760d6cdfb0879c3ffedec13af470e0f71cf52c6cde4d",
    "assets":{
       "count":4,
       "sources":[
@@ -513,7 +523,8 @@ Example response:
       ],
       "links":[
 
-      ]
+      ],
+      "evidence_file_path":"https://gitlab.example.com/root/awesome-app/-/releases/v0.1/evidence.json"
    },
 }
 ```
@@ -573,6 +584,7 @@ Example response:
    },
    "commit_path":"/root/awesome-app/commit/588440f66559714280628a4f9799f0c4eb880a4a",
    "tag_path":"/root/awesome-app/-/tags/v0.11.1",
+   "evidence_sha":"760d6cdfb0879c3ffedec13af470e0f71cf52c6cde4d",
    "assets":{
       "count":4,
       "sources":[
@@ -595,7 +607,8 @@ Example response:
       ],
       "links":[
 
-      ]
+      ],
+      "evidence_file_path":"https://gitlab.example.com/root/awesome-app/-/releases/v0.1/evidence.json"
    },
 }
 ```

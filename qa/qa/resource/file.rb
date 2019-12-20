@@ -27,11 +27,11 @@ module QA
 
         Page::Project::Show.perform(&:create_first_new_file!)
 
-        Page::File::Form.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
-          page.add_name(@name)
-          page.add_content(@content)
-          page.add_commit_message(@commit_message)
-          page.commit_changes
+        Page::File::Form.perform do |form|
+          form.add_name(@name)
+          form.add_content(@content)
+          form.add_commit_message(@commit_message)
+          form.commit_changes
         end
       end
 

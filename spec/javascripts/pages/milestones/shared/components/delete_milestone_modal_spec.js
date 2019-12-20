@@ -1,10 +1,9 @@
 import Vue from 'vue';
 
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import axios from '~/lib/utils/axios_utils';
 import deleteMilestoneModal from '~/pages/milestones/shared/components/delete_milestone_modal.vue';
 import eventHub from '~/pages/milestones/shared/event_hub';
-
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('delete_milestone_modal.vue', () => {
   const Component = Vue.extend(deleteMilestoneModal);

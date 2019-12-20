@@ -69,7 +69,7 @@ For example, to that on merge requests there is always a passing job even though
 
 ```yaml
 enable_merge:
-  only: merge_requests
+  only: [merge_requests]
   script:
     - echo true
 ```

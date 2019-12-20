@@ -53,6 +53,7 @@ describe 'projects/edit' do
         render
 
         expect(rendered).to have_content('Remove fork relationship')
+        expect(rendered).to have_link(source_project.full_name, href: project_path(source_project))
       end
 
       it 'hides the fork relationship settings from an unauthorized user' do
@@ -78,7 +79,7 @@ describe 'projects/edit' do
         render
 
         expect(rendered).to have_content('Remove fork relationship')
-        expect(rendered).to have_content(source_project.full_name)
+        expect(rendered).to have_link(source_project.full_name, href: project_path(source_project))
       end
     end
   end

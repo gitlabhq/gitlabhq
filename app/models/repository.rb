@@ -925,7 +925,22 @@ class Repository
   def ancestor?(ancestor_id, descendant_id)
     return false if ancestor_id.nil? || descendant_id.nil?
 
-    raw_repository.ancestor?(ancestor_id, descendant_id)
+    counter = Gitlab::Metrics.counter(
+      :repository_ancestor_calls_total,
+      'The number of times we call Repository#ancestor with valid arguments')
+    cache_hit = true
+
+    cache_key = "ancestor:#{ancestor_id}:#{descendant_id}"
+    result = request_store_cache.fetch(cache_key) do
+      cache.fetch(cache_key) do
+        cache_hit = false
+        raw_repository.ancestor?(ancestor_id, descendant_id)
+      end
+    end
+
+    counter.increment(cache_hit: cache_hit.to_s)
+
+    result
   end
 
   def fetch_as_mirror(url, forced: false, refmap: :all_refs, remote_name: nil, prune: true)
@@ -1052,18 +1067,19 @@ class Repository
       return rebase_deprecated(user, merge_request)
     end
 
-    MergeRequest.transaction do
-      raw.rebase(
-        user,
-        merge_request.id,
-        branch: merge_request.source_branch,
-        branch_sha: merge_request.source_branch_sha,
-        remote_repository: merge_request.target_project.repository.raw,
-        remote_branch: merge_request.target_branch
-      ) do |commit_id|
-        merge_request.update!(rebase_commit_sha: commit_id, merge_error: nil)
-      end
+    raw.rebase(
+      user,
+      merge_request.id,
+      branch: merge_request.source_branch,
+      branch_sha: merge_request.source_branch_sha,
+      remote_repository: merge_request.target_project.repository.raw,
+      remote_branch: merge_request.target_branch
+    ) do |commit_id|
+      merge_request.update!(rebase_commit_sha: commit_id, merge_error: nil)
     end
+  rescue StandardError => error
+    merge_request.update!(rebase_commit_sha: nil)
+    raise error
   end
 
   def squash(user, merge_request, message)

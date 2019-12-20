@@ -517,9 +517,3 @@ _namespaces_ that have a `project_id`.
 
 The `path` column for these rows will be renamed to their previous value followed
 by an integer. For example: `users` would turn into `users0`
-
-### Moving migrations from EE to CE
-
-When migrations need to be moved from GitLab Enterprise Edition to GitLab Community Edition,
-a migration file should be moved from `ee/db/{post_,}migrate` directory in the `gitlab` project to `db/{post_,}migrate` directory in the `gitlab-foss` project. This way
-the schema number remains intact, there is no need to modify old migrations, and proper columns, tables or data are added in the Community Edition.

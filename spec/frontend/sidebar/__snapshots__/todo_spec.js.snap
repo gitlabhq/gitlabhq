@@ -23,7 +23,7 @@ exports[`SidebarTodo template renders component container element with proper da
   <span
     class="issuable-todo-inner"
   >
-     Mark as done 
+    Mark as done
   </span>
    
   <glloadingicon-stub

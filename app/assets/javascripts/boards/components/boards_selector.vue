@@ -315,8 +315,7 @@ export default {
 
           <gl-dropdown-item
             v-if="showDelete"
-            class="text-danger"
-            data-qa-selector="delete_board_button"
+            class="text-danger js-delete-board"
             @click.prevent="showPage('delete')"
           >
             {{ s__('IssueBoards|Delete board') }}

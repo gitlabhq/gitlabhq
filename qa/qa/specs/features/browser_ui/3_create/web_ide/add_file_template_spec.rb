@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  # Failure issue: https://gitlab.com/gitlab-org/gitlab/issues/34551
-  context 'Create', :quarantine do
+  context 'Create' do
     describe 'Web IDE file templates' do
       include Runtime::Fixtures
 
@@ -50,19 +49,19 @@ module QA
           @project.visit!
 
           Page::Project::Show.perform(&:open_web_ide!)
-          Page::Project::WebIDE::Edit.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
-            page.create_new_file_from_template template[:file_name], template[:name]
+          Page::Project::WebIDE::Edit.perform do |ide|
+            ide.create_new_file_from_template template[:file_name], template[:name]
 
-            expect(page.has_file?(template[:file_name])).to be_truthy
+            expect(ide.has_file?(template[:file_name])).to be_truthy
+
+            expect(ide).to have_button('Undo')
+            expect(ide).to have_normalized_ws_text(content[0..100])
+
+            ide.commit_changes
+
+            expect(ide).to have_content(template[:file_name])
+            expect(ide).to have_normalized_ws_text(content[0..100])
           end
-
-          expect(page).to have_button('Undo')
-          expect(page).to have_content(content[0..100])
-
-          Page::Project::WebIDE::Edit.perform(&:commit_changes)
-
-          expect(page).to have_content(template[:file_name])
-          expect(page).to have_content(content[0..100])
         end
       end
     end

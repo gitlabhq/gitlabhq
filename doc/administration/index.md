@@ -80,7 +80,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
   - [Backup and restore](../raketasks/backup_restore.md): Backup and restore your GitLab instance.
 - [Operations](operations/index.md): Keeping GitLab up and running (clean up Redis sessions, moving repositories, Sidekiq MemoryKiller, Unicorn).
 - [Restart GitLab](restart_gitlab.md): Learn how to restart GitLab and its components.
-- [Invalidate markdown cache](invalidate_markdown_cache.md): Invalidate any cached markdown.
+- [Invalidate Markdown cache](invalidate_markdown_cache.md): Invalidate any cached Markdown.
 
 #### Updating GitLab
 
@@ -124,6 +124,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
   basic Postfix mail server with IMAP authentication on Ubuntu for incoming
   emails.
 - [Abuse reports](../user/admin_area/abuse_reports.md): View and resolve abuse reports from your users.
+- [Credentials Inventory](../user/admin_area/credentials_inventory.md): With Credentials inventory, GitLab administrators can keep track of the credentials used by their users in their GitLab self-managed instance. **(ULTIMATE ONLY)**
 
 ## Project settings
 
@@ -152,11 +153,16 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 - [Enable/disable GitLab CI/CD](../ci/enable_or_disable_ci.md#site-wide-admin-setting): Enable or disable GitLab CI/CD for your instance.
 - [GitLab CI/CD admin settings](../user/admin_area/settings/continuous_integration.md): Enable or disable Auto DevOps site-wide and define the artifacts' max size and expiration time.
+- [External Pipeline Validation](external_pipeline_validation.md): Enable, disable and configure external pipeline validation.
 - [Job artifacts](job_artifacts.md): Enable, disable, and configure job artifacts (a set of files and directories which are outputted by a job when it completes successfully).
 - [Job logs](job_logs.md): Information about the job logs.
 - [Register Shared and specific Runners](../ci/runners/README.md#registering-a-shared-runner): Learn how to register and configure Shared and specific Runners to your own instance.
 - [Shared Runners pipelines quota](../user/admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota-starter-only): Limit the usage of pipeline minutes for Shared Runners. **(STARTER ONLY)**
 - [Enable/disable Auto DevOps](../topics/autodevops/index.md#enablingdisabling-auto-devops): Enable or disable Auto DevOps for your instance.
+
+## Snippet settings
+
+- [Setting snippet content size limit](snippets/index.md): Set a maximum size limit for snippets' content.
 
 ## Git configuration options
 

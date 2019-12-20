@@ -8,6 +8,7 @@ describe 'projects/pages_domains/show' do
   before do
     assign(:project, project)
     assign(:domain, domain)
+    stub_pages_setting(external_https: true)
   end
 
   context 'when auto_ssl is enabled' do

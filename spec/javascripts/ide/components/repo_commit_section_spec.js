@@ -1,8 +1,8 @@
 import Vue from 'vue';
+import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import store from '~/ide/stores';
 import router from '~/ide/ide_router';
 import repoCommitSection from '~/ide/components/repo_commit_section.vue';
-import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { file, resetStore } from '../helpers';
 
 describe('RepoCommitSection', () => {

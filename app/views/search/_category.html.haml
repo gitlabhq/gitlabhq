@@ -27,7 +27,7 @@
       = search_filter_link 'snippet_blobs', _("Snippet Contents"), search: { snippets: true, group_id: nil, project_id: nil }
       = search_filter_link 'snippet_titles', _("Titles and Filenames"), search: { snippets: true, group_id: nil, project_id: nil }
     - else
-      = search_filter_link 'projects', _("Projects")
+      = search_filter_link 'projects', _("Projects"), data: { qa_selector: 'projects_tab' }
       = search_filter_link 'issues', _("Issues")
       = search_filter_link 'merge_requests', _("Merge requests")
       = search_filter_link 'milestones', _("Milestones")

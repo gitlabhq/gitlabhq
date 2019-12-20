@@ -13,7 +13,7 @@ describe Admin::IdentitiesController do
     let(:user) { create(:omniauth_user, provider: 'ldapmain', extern_uid: 'uid=myuser,ou=people,dc=example,dc=com') }
 
     it 'repairs ldap blocks' do
-      expect_next_instance_of(RepairLdapBlockedUserService) do |instance|
+      expect_next_instance_of(::Users::RepairLdapBlockedService) do |instance|
         expect(instance).to receive(:execute)
       end
 
@@ -25,7 +25,7 @@ describe Admin::IdentitiesController do
     let(:user) { create(:omniauth_user, provider: 'ldapmain', extern_uid: 'uid=myuser,ou=people,dc=example,dc=com') }
 
     it 'repairs ldap blocks' do
-      expect_next_instance_of(RepairLdapBlockedUserService) do |instance|
+      expect_next_instance_of(::Users::RepairLdapBlockedService) do |instance|
         expect(instance).to receive(:execute)
       end
 

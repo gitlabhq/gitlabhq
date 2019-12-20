@@ -1,7 +1,7 @@
 <script>
+import Cookies from 'js-cookie';
 import { __ } from '~/locale';
 import ListLabel from '~/boards/models/label';
-import Cookies from 'js-cookie';
 import boardsStore from '../stores/boards_store';
 
 export default {

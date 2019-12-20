@@ -1,0 +1,5 @@
+---
+title: Optimize loading the repository deploy keys page
+merge_request: 20970
+author:
+type: performance

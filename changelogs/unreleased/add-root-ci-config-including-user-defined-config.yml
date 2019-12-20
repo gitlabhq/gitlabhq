@@ -1,0 +1,5 @@
+---
+title: Allow CI config path to point to a URL or file in a different repository
+merge_request: 20179
+author:
+type: added

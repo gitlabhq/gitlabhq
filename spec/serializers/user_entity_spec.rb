@@ -7,6 +7,7 @@ describe UserEntity do
 
   let(:entity) { described_class.new(user) }
   let(:user) { create(:user) }
+
   subject { entity.as_json }
 
   it 'exposes user name and login' do

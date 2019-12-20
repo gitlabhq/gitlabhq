@@ -1,6 +1,6 @@
 <script>
-import Icon from '~/vue_shared/components/icon.vue';
 import { GlTooltipDirective, GlLink } from '@gitlab/ui';
+import Icon from '~/vue_shared/components/icon.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { __, sprintf } from '~/locale';
@@ -50,7 +50,7 @@ export default {
   },
   computed: {
     releasedAtTimeAgo() {
-      return this.timeFormated(this.releasedAt);
+      return this.timeFormatted(this.releasedAt);
     },
     userImageAltDescription() {
       return this.author && this.author.username

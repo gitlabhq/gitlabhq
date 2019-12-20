@@ -1,7 +1,7 @@
 import $ from 'jquery';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import Autosave from '~/autosave';
 import AccessorUtilities from '~/lib/utils/accessor';
-import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 
 describe('Autosave', () => {
   useLocalStorageSpy();
@@ -9,6 +9,7 @@ describe('Autosave', () => {
   let autosave;
   const field = $('<textarea></textarea>');
   const key = 'key';
+  const fallbackKey = 'fallbackKey';
 
   describe('class constructor', () => {
     beforeEach(() => {
@@ -18,6 +19,13 @@ describe('Autosave', () => {
 
     it('should set .isLocalStorageAvailable', () => {
       autosave = new Autosave(field, key);
+
+      expect(AccessorUtilities.isLocalStorageAccessSafe).toHaveBeenCalled();
+      expect(autosave.isLocalStorageAvailable).toBe(true);
+    });
+
+    it('should set .isLocalStorageAvailable if fallbackKey is passed', () => {
+      autosave = new Autosave(field, key, fallbackKey);
 
       expect(AccessorUtilities.isLocalStorageAccessSafe).toHaveBeenCalled();
       expect(autosave.isLocalStorageAvailable).toBe(true);
@@ -149,6 +157,35 @@ describe('Autosave', () => {
       it('should call .removeItem', () => {
         expect(window.localStorage.removeItem).toHaveBeenCalledWith(key);
       });
+    });
+  });
+
+  describe('restore with fallbackKey', () => {
+    beforeEach(() => {
+      autosave = {
+        field,
+        key,
+        fallbackKey,
+      };
+      autosave.isLocalStorageAvailable = true;
+    });
+
+    it('should call .getItem', () => {
+      Autosave.prototype.restore.call(autosave);
+
+      expect(window.localStorage.getItem).toHaveBeenCalledWith(fallbackKey);
+    });
+
+    it('should call .setItem for key and fallbackKey', () => {
+      Autosave.prototype.save.call(autosave);
+
+      expect(window.localStorage.setItem).toHaveBeenCalledTimes(2);
+    });
+
+    it('should call .removeItem for key and fallbackKey', () => {
+      Autosave.prototype.reset.call(autosave);
+
+      expect(window.localStorage.removeItem).toHaveBeenCalledTimes(2);
     });
   });
 });

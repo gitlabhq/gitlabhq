@@ -154,6 +154,7 @@ describe NotificationService, :mailer do
 
   describe '#async' do
     let(:async) { notification.async }
+
     set(:key) { create(:personal_key) }
 
     it 'returns an Async object with the correct parent' do
@@ -206,6 +207,18 @@ describe NotificationService, :mailer do
 
       it 'sends email to key owner' do
         expect { notification.new_gpg_key(key) }.to change { ActionMailer::Base.deliveries.size }.by(1)
+      end
+    end
+  end
+
+  describe 'AccessToken' do
+    describe '#access_token_about_to_expire' do
+      let_it_be(:user) { create(:user) }
+
+      it 'sends email to the token owner' do
+        expect(notification.access_token_about_to_expire(user)).to be_truthy
+
+        should_email user
       end
     end
   end

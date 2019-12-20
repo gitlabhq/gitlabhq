@@ -1,0 +1,8 @@
+fragment Author on Snippet {
+  author {
+    name,
+    avatarUrl,
+    username,
+    webUrl
+  }
+}

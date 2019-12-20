@@ -95,30 +95,28 @@ describe ProjectImportState, type: :model do
     end
   end
 
-  describe '#remove_jid', :clean_gitlab_redis_cache do
-    let(:project) {  }
-
+  describe 'clearing `jid` after finish', :clean_gitlab_redis_cache do
     context 'without an JID' do
       it 'does nothing' do
-        import_state = create(:import_state)
+        import_state = create(:import_state, :started)
 
         expect(Gitlab::SidekiqStatus)
           .not_to receive(:unset)
 
-        import_state.remove_jid
+        import_state.finish!
       end
     end
 
     context 'with an JID' do
       it 'unsets the JID' do
-        import_state = create(:import_state, jid: '123')
+        import_state = create(:import_state, :started, jid: '123')
 
         expect(Gitlab::SidekiqStatus)
           .to receive(:unset)
           .with('123')
           .and_call_original
 
-        import_state.remove_jid
+        import_state.finish!
 
         expect(import_state.jid).to be_nil
       end

@@ -1,5 +1,3 @@
-- public_project_count = ProjectsFinder.new(current_user: current_user).execute.count
-
 .blank-state-row
   - if current_user.can_create_project?
     = link_to new_project_path, class: "blank-state blank-state-link" do
@@ -30,19 +28,15 @@
         %p.blank-state-text
           Groups are the best way to manage projects and members.
 
-  - if public_project_count > 0
-    = link_to trending_explore_projects_path, class: "blank-state blank-state-link" do
-      .blank-state-icon
-        = custom_icon("globe", size: 50)
-      .blank-state-body
-        %h3.blank-state-title
-          Explore public projects
-        %p.blank-state-text
-          There are
-          = number_with_delimiter(public_project_count)
-          public projects on this server.
-          Public projects are an easy way to allow
-          everyone to have read-only access.
+  = link_to trending_explore_projects_path, class: "blank-state blank-state-link" do
+    .blank-state-icon
+      = custom_icon("globe", size: 50)
+    .blank-state-body
+      %h3.blank-state-title
+        Explore public projects
+      %p.blank-state-text
+        Public projects are an easy way to allow
+        everyone to have read-only access.
 
   = link_to "https://docs.gitlab.com/", class: "blank-state blank-state-link" do
     .blank-state-icon

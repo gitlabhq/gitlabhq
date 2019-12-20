@@ -32,9 +32,9 @@ module QA
 
         token_name = 'api-test-token'
 
-        Page::Profile::PersonalAccessTokens.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
-          while page.has_token_row_for_name?(token_name)
-            page.revoke_first_token_with_name(token_name)
+        Page::Profile::PersonalAccessTokens.perform do |tokens_page|
+          while tokens_page.has_token_row_for_name?(token_name)
+            tokens_page.revoke_first_token_with_name(token_name)
             print "\e[32m.\e[0m"
           end
         end

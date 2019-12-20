@@ -13,7 +13,7 @@ module Projects
         Projects::UpdateService.new(project, current_user, update_params).tap do |service|
           result = service.execute
           if result[:status] == :success
-            flash[:notice] = _("Pipelines settings for '%{project_name}' were successfully updated.") % { project_name: @project.name }
+            flash[:toast] = _("Pipelines settings for '%{project_name}' were successfully updated.") % { project_name: @project.name }
 
             run_autodevops_pipeline(service)
 
@@ -39,7 +39,7 @@ module Projects
       def reset_registration_token
         @project.reset_runners_token!
 
-        flash[:notice] = _('New runners registration token has been generated!')
+        flash[:toast] = _("New runners registration token has been generated!")
         redirect_to namespace_project_settings_ci_cd_path
       end
 
@@ -65,12 +65,14 @@ module Projects
         return unless service.run_auto_devops_pipeline?
 
         if @project.empty_repo?
-          flash[:warning] = _("This repository is currently empty. A new Auto DevOps pipeline will be created after a new file has been pushed to a branch.")
+          flash[:notice] = _("This repository is currently empty. A new Auto DevOps pipeline will be created after a new file has been pushed to a branch.")
           return
         end
 
         CreatePipelineWorker.perform_async(project.id, current_user.id, project.default_branch, :web, ignore_skip_ci: true, save_on_errors: false)
-        flash[:success] = "A new Auto DevOps pipeline has been created, go to <a href=\"#{project_pipelines_path(@project)}\">Pipelines page</a> for details".html_safe
+
+        pipelines_link_start = '<a href="%{url}">'.html_safe % { url: project_pipelines_path(@project) }
+        flash[:toast] = _("A new Auto DevOps pipeline has been created, go to %{pipelines_link_start}Pipelines page%{pipelines_link_end} for details") % { pipelines_link_start: pipelines_link_start, pipelines_link_end: "</a>".html_safe }
       end
 
       def define_variables

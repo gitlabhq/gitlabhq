@@ -1,6 +1,6 @@
 <script>
-import { __, sprintf } from '~/locale';
 import { mapActions } from 'vuex';
+import { __, sprintf } from '~/locale';
 
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import Icon from '~/vue_shared/components/icon.vue';

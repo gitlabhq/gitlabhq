@@ -1,9 +1,11 @@
-import Vue from 'vue';
-import issueSystemNote from '~/vue_shared/components/notes/system_note.vue';
+import { createLocalVue, mount } from '@vue/test-utils';
+import IssueSystemNote from '~/vue_shared/components/notes/system_note.vue';
 import createStore from '~/notes/stores';
 import initMRPopovers from '~/mr_popover/index';
 
 jest.mock('~/mr_popover/index', () => jest.fn());
+
+const localVue = createLocalVue();
 
 describe('system note component', () => {
   let vm;
@@ -30,34 +32,36 @@ describe('system note component', () => {
     const store = createStore();
     store.dispatch('setTargetNoteHash', `note_${props.note.id}`);
 
-    const Component = Vue.extend(issueSystemNote);
-    vm = new Component({
+    vm = mount(IssueSystemNote, {
       store,
+      localVue,
       propsData: props,
-    }).$mount();
+      attachToDocument: true,
+      sync: false,
+    });
   });
 
   afterEach(() => {
-    vm.$destroy();
+    vm.destroy();
   });
 
   it('should render a list item with correct id', () => {
-    expect(vm.$el.getAttribute('id')).toEqual(`note_${props.note.id}`);
+    expect(vm.attributes('id')).toEqual(`note_${props.note.id}`);
   });
 
   it('should render target class is note is target note', () => {
-    expect(vm.$el.classList).toContain('target');
+    expect(vm.classes()).toContain('target');
   });
 
   it('should render svg icon', () => {
-    expect(vm.$el.querySelector('.timeline-icon svg')).toBeDefined();
+    expect(vm.find('.timeline-icon svg').exists()).toBe(true);
   });
 
   // Redcarpet Markdown renderer wraps text in `<p>` tags
   // we need to strip them because they break layout of commit lists in system notes:
   // https://gitlab.com/gitlab-org/gitlab-foss/uploads/b07a10670919254f0220d3ff5c1aa110/jqzI.png
   it('removes wrapping paragraph from note HTML', () => {
-    expect(vm.$el.querySelector('.system-note-message').innerHTML).toContain('<span>closed</span>');
+    expect(vm.find('.system-note-message').html()).toContain('<span>closed</span>');
   });
 
   it('should initMRPopovers onMount', () => {

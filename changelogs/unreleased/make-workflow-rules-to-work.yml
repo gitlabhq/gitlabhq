@@ -1,0 +1,5 @@
+---
+title: Make `workflow:rules` to work well with Merge Requests
+merge_request: 21742
+author:
+type: changed

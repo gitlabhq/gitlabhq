@@ -32,18 +32,11 @@ module Gitlab
         class Connection < GraphQL::Relay::BaseConnection
           include Gitlab::Utils::StrongMemoize
 
-          # TODO https://gitlab.com/gitlab-org/gitlab/issues/35104
-          include Gitlab::Graphql::Connections::Keyset::LegacyKeysetConnection
-
           def cursor_from_node(node)
-            return legacy_cursor_from_node(node) if use_legacy_pagination?
-
             encoded_json_from_ordering(node)
           end
 
           def sliced_nodes
-            return legacy_sliced_nodes if use_legacy_pagination?
-
             @sliced_nodes ||=
               begin
                 OrderInfo.validate_ordering(ordered_nodes, order_list)
@@ -137,14 +130,7 @@ module Gitlab
           def ordering_from_encoded_json(cursor)
             JSON.parse(decode(cursor))
           rescue JSON::ParserError
-            # for the transition period where a client might request using an
-            # old style cursor.  Once removed, make it an error:
-            #   raise Gitlab::Graphql::Errors::ArgumentError, "Please provide a valid cursor"
-            # TODO can be removed in next release
-            # https://gitlab.com/gitlab-org/gitlab/issues/32933
-            field_name = order_list.first.attribute_name
-
-            { field_name => decode(cursor) }
+            raise Gitlab::Graphql::Errors::ArgumentError, "Please provide a valid cursor"
           end
         end
       end

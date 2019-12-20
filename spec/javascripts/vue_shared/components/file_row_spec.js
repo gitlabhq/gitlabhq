@@ -1,7 +1,7 @@
 import Vue from 'vue';
+import { file } from 'spec/ide/helpers';
 import FileRow from '~/vue_shared/components/file_row.vue';
 import FileRowExtra from '~/ide/components/file_row_extra.vue';
-import { file } from 'spec/ide/helpers';
 import mountComponent from '../../helpers/vue_mount_component_helper';
 
 describe('File row component', () => {

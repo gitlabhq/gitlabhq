@@ -1,0 +1,5 @@
+---
+title: Handle empty stacktrace and entries with no code
+merge_request: 20458
+author:
+type: fixed

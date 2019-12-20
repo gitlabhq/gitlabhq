@@ -19,7 +19,11 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['nextUnresolvedDiscussionId', 'previousUnresolvedDiscussionId']),
+    ...mapGetters([
+      'nextUnresolvedDiscussionId',
+      'previousUnresolvedDiscussionId',
+      'getDiscussion',
+    ]),
   },
   mounted() {
     Mousetrap.bind('n', () => this.jumpToNextDiscussion());
@@ -33,14 +37,14 @@ export default {
     ...mapActions(['expandDiscussion']),
     jumpToNextDiscussion() {
       const nextId = this.nextUnresolvedDiscussionId(this.currentDiscussionId, this.isDiffView);
-
-      this.jumpToDiscussion(nextId);
+      const nextDiscussion = this.getDiscussion(nextId);
+      this.jumpToDiscussion(nextDiscussion);
       this.currentDiscussionId = nextId;
     },
     jumpToPreviousDiscussion() {
       const prevId = this.previousUnresolvedDiscussionId(this.currentDiscussionId, this.isDiffView);
-
-      this.jumpToDiscussion(prevId);
+      const prevDiscussion = this.getDiscussion(prevId);
+      this.jumpToDiscussion(prevDiscussion);
       this.currentDiscussionId = prevId;
     },
   },

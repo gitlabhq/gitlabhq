@@ -17,21 +17,19 @@
           - else
             = link_to title, project_tree_path(@project, tree_join(@ref, path))
 
-  .tree-controls
+  .tree-controls<
     = render 'projects/find_file_link'
+    -# only show normal/blame view links for text files
+    - if blob.readable_text?
+      - if blame
+        = link_to 'Normal view', project_blob_path(@project, @id),
+            class: 'btn'
+      - else
+        = link_to 'Blame', project_blame_path(@project, @id),
+            class: 'btn js-blob-blame-link' unless blob.empty?
 
-    .btn-group{ role: "group" }<
-      -# only show normal/blame view links for text files
-      - if blob.readable_text?
-        - if blame
-          = link_to 'Normal view', project_blob_path(@project, @id),
-              class: 'btn'
-        - else
-          = link_to 'Blame', project_blame_path(@project, @id),
-              class: 'btn js-blob-blame-link' unless blob.empty?
+    = link_to 'History', project_commits_path(@project, @id),
+        class: 'btn'
 
-      = link_to 'History', project_commits_path(@project, @id),
-          class: 'btn'
-
-      = link_to 'Permalink', project_blob_path(@project,
-          tree_join(@commit.sha, @path)), class: 'btn js-data-file-blob-permalink-url'
+    = link_to 'Permalink', project_blob_path(@project,
+        tree_join(@commit.sha, @path)), class: 'btn js-data-file-blob-permalink-url'

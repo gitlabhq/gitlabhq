@@ -20,6 +20,7 @@ describe Search::GroupService do
       let!(:project3) { create(:project, :internal, namespace: nested_group.parent, name: "Outer #{term}") }
 
       let(:results) { described_class.new(user, search_group, search: term).execute }
+
       subject { results.objects('projects') }
 
       context 'in parent group' do

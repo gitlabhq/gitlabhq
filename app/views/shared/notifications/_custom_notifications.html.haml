@@ -18,7 +18,7 @@
               .col-lg-4
                 %h4.prepend-top-0= _('Notification events')
                 %p
-                  - notification_link = link_to _('notification emails'), help_page_path('workflow/notifications'), target: '_blank'
+                  - notification_link = link_to _('notification emails'), help_page_path('user/profile/notifications'), target: '_blank'
                   - paragraph = _('Custom notification levels are the same as participating levels. With custom notification levels you will also receive notifications for select events. To find out more, check out %{notification_link}.') % { notification_link: notification_link.html_safe }
                   #{ paragraph.html_safe }
               .col-lg-8

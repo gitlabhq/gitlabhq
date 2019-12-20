@@ -1,25 +1,32 @@
+- number_of_data_columns = @cohorts[:months_included] - 1
 .bs-callout.clearfix
   %p
-    User cohorts are shown for the last #{@cohorts[:months_included]}
-    months. Only users with activity are counted in the cohort total; inactive
-    users are counted separately.
+    = s_("Cohorts|User cohorts are shown for the last %{months_included} months. Only users with activity are counted in the 'New users' column; inactive users are counted separately.") % { months_included: @cohorts[:months_included] }
     = link_to icon('question-circle'), help_page_path('user/instance_statistics/user_cohorts', anchor: 'cohorts'), title: 'About this feature', target: '_blank'
 
-.table-holder
+.table-holder.d-xl-table
   %table.table
     %thead
       %tr
-        %th Registration month
-        %th Inactive users
-        %th Cohort total
-        - @cohorts[:months_included].times do |i|
-          %th Month #{i}
+        %th.border-right.pt-4{ colspan: 3 }
+        %th.font-weight-bold.pt-4{ colspan: number_of_data_columns }
+          = s_("Cohorts|Returning users")
+      %tr
+        %th.border-top-0
+          = s_("Cohorts|Registration month")
+        %th.border-top-0
+          = s_("Cohorts|Inactive users")
+        %th.border-top-0.border-right
+          = s_("Cohorts|New users")
+        - number_of_data_columns.times do |i|
+          %th.border-top-0
+            = s_("Cohorts|Month %{month_index}") % { month_index: i + 1 }
     %tbody
       - @cohorts[:cohorts].each do |cohort|
         %tr
           %td= cohort[:registration_month]
           %td= cohort[:inactive]
-          %td= cohort[:total]
+          %td.border-right= cohort[:total]
           - cohort[:activity_months].each do |activity_month|
             %td
               - next if cohort[:total] == '0'

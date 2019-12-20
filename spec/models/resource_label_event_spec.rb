@@ -49,9 +49,10 @@ RSpec.describe ResourceLabelEvent, type: :model do
 
   describe '#expire_etag_cache' do
     def expect_expiration(issue)
-      expect_any_instance_of(Gitlab::EtagCaching::Store)
-        .to receive(:touch)
-        .with("/#{issue.project.namespace.to_param}/#{issue.project.to_param}/noteable/issue/#{issue.id}/notes")
+      expect_next_instance_of(Gitlab::EtagCaching::Store) do |instance|
+        expect(instance).to receive(:touch)
+          .with("/#{issue.project.namespace.to_param}/#{issue.project.to_param}/noteable/issue/#{issue.id}/notes")
+      end
     end
 
     it 'expires resource note etag cache on event save' do

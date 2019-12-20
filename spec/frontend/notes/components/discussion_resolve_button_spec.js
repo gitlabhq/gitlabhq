@@ -1,5 +1,5 @@
-import resolveDiscussionButton from '~/notes/components/discussion_resolve_button.vue';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
+import resolveDiscussionButton from '~/notes/components/discussion_resolve_button.vue';
 
 const buttonTitle = 'Resolve discussion';
 

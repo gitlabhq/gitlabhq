@@ -26,7 +26,17 @@ If you don't exactly understand what we mean by **not everything needs to happen
 
 At GitLab we respect the [test pyramid](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/development/testing_guide/testing_levels.md), and so, we recommend you check the code coverage of a specific feature before writing end-to-end tests, for both [CE](https://gitlab-org.gitlab.io/gitlab-foss/coverage-ruby/#_AllFiles) and [EE](https://gitlab-org.gitlab.io/gitlab/coverage-ruby/#_AllFiles) projects.
 
-Sometimes you may notice that there is already good coverage in other test levels, and we can stay confident that if we break a feature, we will still have quick feedback about it, even without having end-to-end tests.
+Sometimes you may notice that there is already good coverage in lower test levels, and we can stay confident that if we break a feature, we will still have quick feedback about it, even without having end-to-end tests.
+
+> For analyzing the code coverage, you will also need to understand which application files implement specific functionalities.
+
+#### Some other guidelines are as follows
+
+- Take a look at the [How to test at the correct level?](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/development/testing_guide/testing_levels.md#how-to-test-at-the-correct-level) section of the [Testing levels](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/development/testing_guide/testing_levels.md) document
+
+- Look into the frequency in which such a feature is changed  (_Stable features that don't change very often might not be worth covering with end-to-end tests if they're already covered in lower levels_)
+
+- Finally, discuss with the developer(s) involved in developing the feature and the tests themselves, to get their feeling
 
 If after this analysis you still think that end-to-end tests are needed, keep reading.
 
@@ -581,7 +591,7 @@ filter_output = search_field_tag search_id, nil, class: "dropdown-input-field", 
 > `data-qa-*` data attributes and CSS classes starting with `qa-` are used solely for the purpose of QA and testing.
 > By defining these, we add **testability** to the application.
 >
-> When defining a data attribute like: `qa_selector: 'labels_block'`, it should match the element definition: `element :labels_block`. We use a [sanity test](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/qa/qa/page#how-did-we-solve-fragile-tests-problem) to check that defined elements have their respective selectors in the specified views.
+> When defining a data attribute like: `qa_selector: 'labels_block'`, it should match the element definition: `element :labels_block`. We use a [sanity test](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/doc/development/testing_guide/end_to_end/page_objects.md#how-did-we-solve-fragile-tests-problem) to check that defined elements have their respective selectors in the specified views.
 
 #### Updates in the `QA::Page::Base` class
 

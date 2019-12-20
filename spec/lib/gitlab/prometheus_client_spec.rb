@@ -327,6 +327,7 @@ describe Gitlab::PrometheusClient do
 
         context "without response code" do
           let(:response_error) { Gitlab::HTTP::ResponseError }
+
           it 'raises PrometheusClient::Error' do
             expect { subject.proxy('query', { query: prometheus_query }) }.to(
               raise_error(Gitlab::PrometheusClient::Error, 'Network connection error')

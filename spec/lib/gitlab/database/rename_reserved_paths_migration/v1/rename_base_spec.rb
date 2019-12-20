@@ -83,6 +83,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase, :delete
   describe '#rename_path_for_routable' do
     context 'for namespaces' do
       let(:namespace) { create(:namespace, path: 'the-path') }
+
       it "renames namespaces called the-path" do
         subject.rename_path_for_routable(migration_namespace(namespace))
 
@@ -159,6 +160,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase, :delete
   describe '#perform_rename' do
     describe 'for namespaces' do
       let(:namespace) { create(:namespace, path: 'the-path') }
+
       it 'renames the path' do
         subject.perform_rename(migration_namespace(namespace), 'the-path', 'renamed')
 

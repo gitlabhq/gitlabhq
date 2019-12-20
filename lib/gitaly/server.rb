@@ -2,6 +2,8 @@
 
 module Gitaly
   class Server
+    SHA_VERSION_REGEX = /\A\d+\.\d+\.\d+-\d+-g([a-f0-9]{8})\z/.freeze
+
     class << self
       def all
         Gitlab.config.repositories.storages.keys.map { |s| Gitaly::Server.new(s) }
@@ -30,9 +32,10 @@ module Gitaly
       info.git_version
     end
 
-    def up_to_date?
-      server_version == Gitlab::GitalyClient.expected_server_version
+    def expected_version?
+      server_version == Gitlab::GitalyClient.expected_server_version || matches_sha?
     end
+    alias_method :up_to_date?, :expected_version?
 
     def read_writeable?
       readable? && writeable?
@@ -60,6 +63,13 @@ module Gitaly
 
     def storage_status
       @storage_status ||= info.storage_statuses.find { |s| s.storage_name == storage }
+    end
+
+    def matches_sha?
+      match = server_version.match(SHA_VERSION_REGEX)
+      return false unless match
+
+      Gitlab::GitalyClient.expected_server_version.start_with?(match[1])
     end
 
     def info

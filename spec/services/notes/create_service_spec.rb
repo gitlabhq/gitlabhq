@@ -87,10 +87,28 @@ describe Notes::CreateService do
           .to receive(:unfolded_diff?) { true }
       end
 
-      it 'clears noteable diff cache when it was unfolded for the note position' do
-        expect_any_instance_of(Gitlab::Diff::HighlightCache).to receive(:clear)
+      context 'using Gitlab::Diff::DeprecatedHighlightCache' do
+        before do
+          stub_feature_flags(hset_redis_diff_caching: false)
+        end
 
-        described_class.new(project_with_repo, user, new_opts).execute
+        it 'clears noteable diff cache when it was unfolded for the note position' do
+          expect_any_instance_of(Gitlab::Diff::DeprecatedHighlightCache).to receive(:clear)
+
+          described_class.new(project_with_repo, user, new_opts).execute
+        end
+      end
+
+      context 'using Gitlab::Diff::HighlightCache' do
+        before do
+          stub_feature_flags(hset_redis_diff_caching: true)
+        end
+
+        it 'clears noteable diff cache when it was unfolded for the note position' do
+          expect_any_instance_of(Gitlab::Diff::HighlightCache).to receive(:clear)
+
+          described_class.new(project_with_repo, user, new_opts).execute
+        end
       end
 
       it 'does not clear cache when note is not the first of the discussion' do
@@ -363,6 +381,19 @@ describe Notes::CreateService do
           existing_note.reload
         end.to change { existing_note.type }.from(nil).to('DiscussionNote')
             .and change { existing_note.updated_at }
+      end
+
+      context 'discussion to reply cannot be found' do
+        before do
+          existing_note.delete
+        end
+
+        it 'returns an note with errors' do
+          note = subject
+
+          expect(note.errors).not_to be_empty
+          expect(note.errors[:base]).to eq(['Discussion to reply to cannot be found'])
+        end
       end
     end
 

@@ -22,7 +22,9 @@ The requirement for adding a new metric is to make each query to have an unique 
 
 ### Update existing metrics
 
-After you add or change existing _common_ metric you have to create a new database migration that will query and update all existing metrics.
+After you add or change an existing common metric, you must [re-run the import script](../administration/raketasks/maintenance.md#import-common-metrics) that will query and update all existing metrics.
+
+Or, you can create a database migration:
 
 NOTE: **Note:**
 If a query metric (which is identified by `id:`) is removed it will not be removed from database by default.

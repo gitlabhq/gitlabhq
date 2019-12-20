@@ -1,8 +1,9 @@
 import { mount } from '@vue/test-utils';
+import { first } from 'underscore';
+import EvidenceBlock from '~/releases/list/components/evidence_block.vue';
 import ReleaseBlock from '~/releases/list/components/release_block.vue';
 import ReleaseBlockFooter from '~/releases/list/components/release_block_footer.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
-import { first } from 'underscore';
 import { release } from '../../mock_data';
 import Icon from '~/vue_shared/components/icon.vue';
 import { scrollToElement } from '~/lib/utils/common_utils';
@@ -29,7 +30,6 @@ describe('Release block', () => {
       },
       provide: {
         glFeatures: {
-          releaseEditPage: true,
           releaseIssueSummary: true,
           ...featureFlags,
         },
@@ -68,7 +68,7 @@ describe('Release block', () => {
     });
 
     it('renders release date', () => {
-      expect(wrapper.text()).toContain(timeagoMixin.methods.timeFormated(release.released_at));
+      expect(wrapper.text()).toContain(timeagoMixin.methods.timeFormatted(release.released_at));
     });
 
     it('renders number of assets provided', () => {
@@ -117,35 +117,6 @@ describe('Release block', () => {
       });
     });
 
-    it('renders the milestone icon', () => {
-      expect(
-        milestoneListLabel()
-          .find(Icon)
-          .exists(),
-      ).toBe(true);
-    });
-
-    it('renders the label as "Milestones" if more than one milestone is passed in', () => {
-      expect(
-        milestoneListLabel()
-          .find('.js-label-text')
-          .text(),
-      ).toEqual('Milestones');
-    });
-
-    it('renders a link to the milestone with a tooltip', () => {
-      const milestone = first(release.milestones);
-      const milestoneLink = wrapper.find('.js-milestone-link');
-
-      expect(milestoneLink.exists()).toBe(true);
-
-      expect(milestoneLink.text()).toBe(milestone.title);
-
-      expect(milestoneLink.attributes('href')).toBe(milestone.web_url);
-
-      expect(milestoneLink.attributes('data-original-title')).toBe(milestone.description);
-    });
-
     it('renders the footer', () => {
       expect(wrapper.find(ReleaseBlockFooter).exists()).toBe(true);
     });
@@ -179,28 +150,11 @@ describe('Release block', () => {
     });
   });
 
-  it('does not render an edit button if the releaseEditPage feature flag is disabled', () =>
-    factory(releaseClone, { releaseEditPage: false }).then(() => {
-      expect(editButton().exists()).toBe(false);
-    }));
-
   it('does not render the milestone list if no milestones are associated to the release', () => {
     delete releaseClone.milestones;
 
     return factory(releaseClone).then(() => {
       expect(milestoneListLabel().exists()).toBe(false);
-    });
-  });
-
-  it('renders the label as "Milestone" if only a single milestone is passed in', () => {
-    releaseClone.milestones = releaseClone.milestones.slice(0, 1);
-
-    return factory(releaseClone).then(() => {
-      expect(
-        milestoneListLabel()
-          .find('.js-label-text')
-          .text(),
-      ).toEqual('Milestone');
     });
   });
 
@@ -217,6 +171,26 @@ describe('Release block', () => {
 
     return factory(releaseClone).then(() => {
       expect(wrapper.attributes().id).toBe('a-dangerous-tag-name-script-alert-hello-script-');
+    });
+  });
+
+  describe('evidence block', () => {
+    it('renders the evidence block when the evidence is available and the feature flag is true', () =>
+      factory(releaseClone, { releaseEvidenceCollection: true }).then(() =>
+        expect(wrapper.find(EvidenceBlock).exists()).toBe(true),
+      ));
+
+    it('does not render the evidence block when the evidence is available but the feature flag is false', () =>
+      factory(releaseClone, { releaseEvidenceCollection: true }).then(() =>
+        expect(wrapper.find(EvidenceBlock).exists()).toBe(true),
+      ));
+
+    it('does not render the evidence block when there is no evidence', () => {
+      releaseClone.evidence_sha = null;
+
+      return factory(releaseClone).then(() => {
+        expect(wrapper.find(EvidenceBlock).exists()).toBe(false);
+      });
     });
   });
 
@@ -263,6 +237,53 @@ describe('Release block', () => {
 
       return factory(release).then(() => {
         expect(hasTargetBlueBackground()).toBe(false);
+      });
+    });
+  });
+
+  describe('when the releaseIssueSummary feature flag is disabled', () => {
+    describe('with default props', () => {
+      beforeEach(() => factory(release, { releaseIssueSummary: false }));
+
+      it('renders the milestone icon', () => {
+        expect(
+          milestoneListLabel()
+            .find(Icon)
+            .exists(),
+        ).toBe(true);
+      });
+
+      it('renders the label as "Milestones" if more than one milestone is passed in', () => {
+        expect(
+          milestoneListLabel()
+            .find('.js-label-text')
+            .text(),
+        ).toEqual('Milestones');
+      });
+
+      it('renders a link to the milestone with a tooltip', () => {
+        const milestone = first(release.milestones);
+        const milestoneLink = wrapper.find('.js-milestone-link');
+
+        expect(milestoneLink.exists()).toBe(true);
+
+        expect(milestoneLink.text()).toBe(milestone.title);
+
+        expect(milestoneLink.attributes('href')).toBe(milestone.web_url);
+
+        expect(milestoneLink.attributes('data-original-title')).toBe(milestone.description);
+      });
+    });
+
+    it('renders the label as "Milestone" if only a single milestone is passed in', () => {
+      releaseClone.milestones = releaseClone.milestones.slice(0, 1);
+
+      return factory(releaseClone, { releaseIssueSummary: false }).then(() => {
+        expect(
+          milestoneListLabel()
+            .find('.js-label-text')
+            .text(),
+        ).toEqual('Milestone');
       });
     });
   });

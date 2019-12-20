@@ -1,11 +1,15 @@
 # frozen_string_literal: true
 
 module BroadcastMessagesHelper
+  def current_broadcast_messages
+    BroadcastMessage.current(request.path)
+  end
+
   def broadcast_message(message)
     return unless message.present?
 
     content_tag :div, dir: 'auto', class: 'broadcast-message', style: broadcast_message_style(message) do
-      icon('bullhorn') << ' ' << render_broadcast_message(message)
+      sprite_icon('bullhorn', size: 16, css_class: 'vertical-align-text-top mr-2') << ' ' << render_broadcast_message(message)
     end
   end
 

@@ -135,3 +135,32 @@ configured or there was an error reporting the status via the API.
 1. [Configure the Jenkins server](#configure-the-jenkins-server) for GitLab API access
 1. [Configure a Jenkins project](#configure-a-jenkins-project), including the
    'Publish build status to GitLab' post-build action.
+
+### Merge Request event does not trigger a Jenkins Pipeline
+
+Check the `/var/log/gitlab/gitlab-rails/production.log` file for messages like:
+
+```plaintext
+WebHook Error => Net::ReadTimeout
+```
+
+or
+
+```plaintext
+WebHook Error => execution expired
+```
+
+If those are present, the request is exceeding the
+[webhook timeout](../user/project/integrations/webhooks.md#receiving-duplicate-or-multiple-webhook-requests-triggered-by-one-event),
+which is set to 10 seconds by default.
+
+To fix this the `gitlab_rails['webhook_timeout']` value will need to be increased
+in the `gitlab.rb` config file, followed by the [`gitlab-ctl reconfigure` command](../administration/restart_gitlab.md).
+
+If you don't find the errors above, but do find *duplicate* entries like below (in `/var/log/gitlab/gitlab-rail`), this
+could also indicate that [webhook requests are timing out](../user/project/integrations/webhooks.md#receiving-duplicate-or-multiple-webhook-requests-triggered-by-one-event):
+
+```
+2019-10-25_04:22:41.25630 2019-10-25T04:22:41.256Z 1584 TID-ovowh4tek WebHookWorker JID-941fb7f40b69dff3d833c99b INFO: start
+2019-10-25_04:22:41.25630 2019-10-25T04:22:41.256Z 1584 TID-ovowh4tek WebHookWorker JID-941fb7f40b69dff3d833c99b INFO: start
+```

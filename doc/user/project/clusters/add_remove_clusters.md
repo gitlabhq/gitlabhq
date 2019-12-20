@@ -34,7 +34,7 @@ namespace.
 
 This service account will be:
 
-- Added to the installed Helm Tiller
+- Added to the installed Helm Tiller.
 - Used by Helm to install and run [GitLab managed applications](index.md#installing-applications).
 
 Helm will also create additional service accounts and other resources for each
@@ -110,6 +110,11 @@ If you don't want to use GitLab Runner in privileged mode, either:
      [using `docker+machine`](https://docs.gitlab.com/runner/executors/docker_machine.html).
 
 ## Add new cluster
+
+New clusters can be added using GitLab for:
+
+- Google Kubernetes Engine.
+- Amazon Elastic Kubernetes Service.
 
 ### GKE cluster
 
@@ -206,45 +211,8 @@ GitLab supports:
 Before creating your first cluster on Amazon EKS with GitLab's integration,
 make sure the following requirements are met:
 
-- Enable the `create_eks_clusters` feature flag for your GitLab instance.
 - An [Amazon Web Services](https://aws.amazon.com/) account is set up and you are able to log in.
 - You have permissions to manage IAM resources.
-
-#### Enable the `create_eks_clusters` feature flag **(CORE ONLY)**
-
-NOTE: **Note:**
-If you are running a self-managed instance, EKS cluster creation will not be available
-unless the feature flag `create_eks_clusters` is enabled. This can be done from the Rails console
-by instance administrators.
-
-Use these commands to start the Rails console:
-
-```sh
-# Omnibus GitLab
-gitlab-rails console
-
-# Installation from source
-cd /home/git/gitlab
-sudo -u git -H bin/rails console RAILS_ENV=production
-```
-
-Then run the following command to enable the feature flag:
-
-```
-Feature.enable(:create_eks_clusters)
-```
-
-You can also enable the feature flag only for specific projects with:
-
-```
-Feature.enable(:create_eks_clusters, Project.find_by_full_path('my_group/my_project'))
-```
-
-Run the following command to disable the feature flag:
-
-```
-Feature.disable(:create_eks_clusters)
-```
 
 ##### Additional requirements for self-managed instances
 
@@ -332,6 +300,7 @@ new Kubernetes cluster to your project:
                       "iam:AttachRolePolicy",
                       "iam:CreateRole",
                       "iam:CreateInstanceProfile",
+                      "iam:CreateServiceLinkedRole",
                       "iam:GetRole",
                       "iam:ListRoles",
                       "iam:PassRole",

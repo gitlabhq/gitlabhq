@@ -220,9 +220,9 @@ The Resource Classes allow you to define classes of service for a managed servic
 
 The Auto DevOps pipeline can be run with the following options:
 
-The Environment variables, `AUTO_DEVOPS_POSTGRES_MANAGED` and `AUTO_DEVOPS_POSTGRES_MANAGED_CLASS_SELECTOR` need to be set to provision PostgresQL using Crossplane
+The Environment variables, `AUTO_DEVOPS_POSTGRES_MANAGED` and `AUTO_DEVOPS_POSTGRES_MANAGED_CLASS_SELECTOR` need to be set to provision PostgreSQL using Crossplane
 
-Alertnatively, the following options can be overridden from the values for the helm chart.
+Alertnatively, the following options can be overridden from the values for the Helm chart.
 
 - `postgres.managed` set to true which will select a default resource class.
      The resource class needs to be marked with the annotation
@@ -237,7 +237,7 @@ Alertnatively, the following options can be overridden from the values for the h
 
 The Auto DevOps pipeline should provision a PostgresqlInstance when it runs succesfully.
 
-Verify creation of the PostgresQL Instance.
+Verify creation of the PostgreSQL Instance.
 
 ```sh
 kubectl get postgresqlinstance
@@ -286,7 +286,7 @@ serverCACertificateInstance:          41 bytes
 serverCACertificateSha1Fingerprint:   40 bytes
 ```
 
-## Connect to the PostgresQL instance
+## Connect to the PostgreSQL instance
 
 Follow this [GCP guide](https://cloud.google.com/sql/docs/postgres/connect-kubernetes-engine) if you
 would like to connect to the newly provisioned Postgres database instance on CloudSQL.

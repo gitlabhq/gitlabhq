@@ -618,6 +618,7 @@ describe ::SystemNotes::IssuablesService do
 
     context 'when notable is an ExternalIssue' do
       let(:noteable) { ExternalIssue.new('EXT-1234', project) }
+
       it 'is truthy' do
         mentioner = noteable.dup
         expect(service.cross_reference_disallowed?(mentioner))

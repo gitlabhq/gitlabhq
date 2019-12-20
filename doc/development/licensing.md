@@ -65,7 +65,6 @@ Libraries with the following licenses require legal approval for use:
 - [GNU GPL](https://choosealicense.com/licenses/gpl-3.0/) (version 1, [version 2][GPLv2], [version 3][GPLv3], or any future versions): GPL-licensed libraries cannot be linked to from non-GPL projects.
 - [GNU AGPLv3](https://choosealicense.com/licenses/agpl-3.0/): AGPL-licensed libraries cannot be linked to from non-GPL projects.
 - [Open Software License (OSL)][OSL]: is a copyleft license. In addition, the FSF [recommend against its use][OSL-GNU].
-- [Facebook BSD + PATENTS][Facebook]: is a 3-clause BSD license with a patent grant that has been deemed [Category X][x-list] by the Apache foundation.
 - [WTFPL][WTFPL]: is a public domain dedication [rejected by the OSI (3.2)][WTFPL-OSI]. Also has a strong language which is not in accordance with our diversity policy.
 
 ## GPL Cooperation Commitment
@@ -124,7 +123,6 @@ Dependencies which are only used in development or test environment are exempt f
 [Org-Repo]: https://gitlab.com/gitlab-com/organization
 [UNLICENSE]: https://unlicense.org
 [OWFa1]: http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0
-[Facebook]: https://code.facebook.com/pages/850928938376556
 [x-list]: https://www.apache.org/legal/resolved.html#category-x
 [Acceptable-Licenses]: #acceptable-licenses
 [Unacceptable-Licenses]: #unacceptable-licenses

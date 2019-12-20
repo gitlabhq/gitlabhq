@@ -1,9 +1,9 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
+import { GlLoadingIcon } from '@gitlab/ui';
 import List from '~/ide/components/merge_requests/list.vue';
 import Item from '~/ide/components/merge_requests/item.vue';
 import TokenedInput from '~/ide/components/shared/tokened_input.vue';
-import { GlLoadingIcon } from '@gitlab/ui';
 import { mergeRequests as mergeRequestsMock } from '../../mock_data';
 
 const localVue = createLocalVue();

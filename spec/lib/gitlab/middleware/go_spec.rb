@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Gitlab::Middleware::Go do
@@ -25,18 +27,18 @@ describe Gitlab::Middleware::Go do
     describe 'when go-get=1' do
       before do
         env['QUERY_STRING'] = 'go-get=1'
-        env['PATH_INFO'] = "/#{path}"
+        env['PATH_INFO'] = +"/#{path}"
       end
 
       shared_examples 'go-get=1' do |enabled_protocol:|
         context 'with simple 2-segment project path' do
-          let!(:project) { create(:project, :private) }
+          let!(:project) { create(:project, :private, :repository) }
 
           context 'with subpackages' do
             let(:path) { "#{project.full_path}/subpackage" }
 
             it 'returns the full project path' do
-              expect_response_with_path(go, enabled_protocol, project.full_path)
+              expect_response_with_path(go, enabled_protocol, project.full_path, project.default_branch)
             end
           end
 
@@ -44,19 +46,19 @@ describe Gitlab::Middleware::Go do
             let(:path) { project.full_path }
 
             it 'returns the full project path' do
-              expect_response_with_path(go, enabled_protocol, project.full_path)
+              expect_response_with_path(go, enabled_protocol, project.full_path, project.default_branch)
             end
           end
         end
 
         context 'with a nested project path' do
           let(:group) { create(:group, :nested) }
-          let!(:project) { create(:project, :public, namespace: group) }
+          let!(:project) { create(:project, :public, :repository, namespace: group) }
 
           shared_examples 'a nested project' do
             context 'when the project is public' do
               it 'returns the full project path' do
-                expect_response_with_path(go, enabled_protocol, project.full_path)
+                expect_response_with_path(go, enabled_protocol, project.full_path, project.default_branch)
               end
             end
 
@@ -67,7 +69,7 @@ describe Gitlab::Middleware::Go do
 
               shared_examples 'unauthorized' do
                 it 'returns the 2-segment group path' do
-                  expect_response_with_path(go, enabled_protocol, group.full_path)
+                  expect_response_with_path(go, enabled_protocol, group.full_path, project.default_branch)
                 end
               end
 
@@ -85,7 +87,7 @@ describe Gitlab::Middleware::Go do
                 shared_examples 'authenticated' do
                   context 'with access to the project' do
                     it 'returns the full project path' do
-                      expect_response_with_path(go, enabled_protocol, project.full_path)
+                      expect_response_with_path(go, enabled_protocol, project.full_path, project.default_branch)
                     end
                   end
 
@@ -160,6 +162,36 @@ describe Gitlab::Middleware::Go do
             go
           end
         end
+
+        context 'with a public project without a repository' do
+          let!(:project) { create(:project, :public) }
+          let(:path) { project.full_path }
+
+          it 'returns 404' do
+            response = go
+            expect(response[0]).to eq(404)
+            expect(response[1]['Content-Type']).to eq('text/html')
+            expected_body = %{<html><body>go get #{Gitlab.config.gitlab.url}/#{project.full_path}</body></html>}
+            expect(response[2].body).to eq([expected_body])
+          end
+        end
+
+        context 'with a non-standard head' do
+          let(:user) { create(:user) }
+          let!(:project) { create(:project, :public, :repository) }
+          let(:path) { project.full_path }
+          let(:default_branch) { 'default_branch' }
+
+          before do
+            project.add_maintainer(user)
+            project.repository.add_branch(user, default_branch, 'master')
+            project.change_head(default_branch)
+          end
+
+          it 'returns the full project path' do
+            expect_response_with_path(go, enabled_protocol, project.full_path, default_branch)
+          end
+        end
       end
 
       context 'with SSH disabled' do
@@ -199,16 +231,17 @@ describe Gitlab::Middleware::Go do
       middleware.call(env)
     end
 
-    def expect_response_with_path(response, protocol, path)
+    def expect_response_with_path(response, protocol, path, branch)
       repository_url = case protocol
                        when :ssh
                          "ssh://#{Gitlab.config.gitlab.user}@#{Gitlab.config.gitlab.host}/#{path}.git"
                        when :http, nil
                          "http://#{Gitlab.config.gitlab.host}/#{path}.git"
                        end
+      project_url = "http://#{Gitlab.config.gitlab.host}/#{path}"
       expect(response[0]).to eq(200)
       expect(response[1]['Content-Type']).to eq('text/html')
-      expected_body = %{<html><head><meta name="go-import" content="#{Gitlab.config.gitlab.host}/#{path} git #{repository_url}" /></head></html>}
+      expected_body = %{<html><head><meta name="go-import" content="#{Gitlab.config.gitlab.host}/#{path} git #{repository_url}" /><meta name="go-source" content="#{Gitlab.config.gitlab.host}/#{path} #{project_url} #{project_url}/tree/#{branch}{/dir} #{project_url}/blob/#{branch}{/dir}/{file}#L{line}" /></head><body>go get #{Gitlab.config.gitlab.url}/#{path}</body></html>}
       expect(response[2].body).to eq([expected_body])
     end
   end

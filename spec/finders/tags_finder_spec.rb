@@ -96,6 +96,7 @@ describe TagsFinder do
 
     context 'filter and sort' do
       let(:tags_to_compare) { %w[v1.0.0 v1.1.0] }
+
       subject { described_class.new(repository, params).execute.select { |tag| tags_to_compare.include?(tag.name) } }
 
       context 'when sort by updated_desc' do

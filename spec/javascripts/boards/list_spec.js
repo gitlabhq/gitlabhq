@@ -4,15 +4,14 @@
 /* global ListLabel */
 
 import MockAdapter from 'axios-mock-adapter';
-import axios from '~/lib/utils/axios_utils';
 import _ from 'underscore';
+import axios from '~/lib/utils/axios_utils';
 import '~/boards/models/label';
 import '~/boards/models/assignee';
 import '~/boards/models/issue';
 import '~/boards/models/list';
-import '~/boards/services/board_service';
 import boardsStore from '~/boards/stores/boards_store';
-import { listObj, listObjDuplicate, boardsMockInterceptor, mockBoardService } from './mock_data';
+import { listObj, listObjDuplicate, boardsMockInterceptor } from './mock_data';
 
 describe('List model', () => {
   let list;
@@ -21,9 +20,6 @@ describe('List model', () => {
   beforeEach(() => {
     mock = new MockAdapter(axios);
     mock.onAny().reply(boardsMockInterceptor);
-    gl.boardService = mockBoardService({
-      bulkUpdatePath: '/test/issue-boards/board/1/lists',
-    });
     boardsStore.create();
 
     list = new List(listObj);
@@ -110,11 +106,11 @@ describe('List model', () => {
     list.issues.push(issue);
     listDup.issues.push(issue);
 
-    spyOn(gl.boardService, 'moveIssue').and.callThrough();
+    spyOn(boardsStore, 'moveIssue').and.callThrough();
 
     listDup.updateIssueLabel(issue, list);
 
-    expect(gl.boardService.moveIssue).toHaveBeenCalledWith(
+    expect(boardsStore.moveIssue).toHaveBeenCalledWith(
       issue.id,
       list.id,
       listDup.id,
@@ -172,7 +168,7 @@ describe('List model', () => {
 
   describe('newIssue', () => {
     beforeEach(() => {
-      spyOn(gl.boardService, 'newIssue').and.returnValue(
+      spyOn(boardsStore, 'newIssue').and.returnValue(
         Promise.resolve({
           data: {
             id: 42,

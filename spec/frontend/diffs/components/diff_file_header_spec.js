@@ -92,6 +92,7 @@ describe('DiffFileHeader component', () => {
       localVue,
       store,
       sync: false,
+      attachToDocument: true,
     });
   };
 

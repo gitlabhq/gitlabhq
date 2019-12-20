@@ -44,7 +44,7 @@
 
             - if group_sidebar_link?(:contribution_analytics)
               = nav_link(path: 'analytics#show') do
-                = link_to group_analytics_path(@group), title: _('Contribution Analytics'), data: { placement: 'right' } do
+                = link_to group_analytics_path(@group), title: _('Contribution Analytics'), data: { placement: 'right', qa_selector: 'contribution_analytics_link' } do
                   %span
                     = _('Contribution Analytics')
 

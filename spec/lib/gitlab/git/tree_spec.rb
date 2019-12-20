@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 
 describe Gitlab::Git::Tree, :seed_helper do
@@ -143,7 +145,9 @@ describe Gitlab::Git::Tree, :seed_helper do
 
   describe '.where with Rugged enabled', :enable_rugged do
     it 'calls out to the Rugged implementation' do
-      allow_any_instance_of(Rugged).to receive(:lookup).with(SeedRepo::Commit::ID)
+      allow_next_instance_of(Rugged) do |instance|
+        allow(instance).to receive(:lookup).with(SeedRepo::Commit::ID)
+      end
 
       described_class.where(repository, SeedRepo::Commit::ID, 'files', false)
     end

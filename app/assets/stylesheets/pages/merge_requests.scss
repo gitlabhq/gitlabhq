@@ -51,6 +51,10 @@
   position: relative;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
+
+  .gl-skeleton-loader {
+    display: block;
+  }
 }
 
 .mr-widget-extension {
@@ -949,7 +953,6 @@
   .deployment-info {
     flex: 1;
     white-space: nowrap;
-    overflow: hidden;
     text-overflow: ellipsis;
     min-width: 100px;
 

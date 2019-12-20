@@ -16,7 +16,14 @@ describe Projects::UpdateService do
     let(:admin) { create(:admin) }
 
     context 'when changing visibility level' do
-      context 'when visibility_level is INTERNAL' do
+      def expect_to_call_unlink_fork_service
+        service = Projects::UnlinkForkService.new(project, user)
+
+        expect(Projects::UnlinkForkService).to receive(:new).with(project, user).and_return(service)
+        expect(service).to receive(:execute).and_call_original
+      end
+
+      context 'when visibility_level changes to INTERNAL' do
         it 'updates the project to internal' do
           expect(TodosDestroyer::ProjectPrivateWorker).not_to receive(:perform_in)
 
@@ -25,9 +32,21 @@ describe Projects::UpdateService do
           expect(result).to eq({ status: :success })
           expect(project).to be_internal
         end
+
+        context 'and project is PUBLIC' do
+          before do
+            project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+          end
+
+          it 'unlinks project from fork network' do
+            expect_to_call_unlink_fork_service
+
+            update_project(project, user, visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+          end
+        end
       end
 
-      context 'when visibility_level is PUBLIC' do
+      context 'when visibility_level changes to PUBLIC' do
         it 'updates the project to public' do
           expect(TodosDestroyer::ProjectPrivateWorker).not_to receive(:perform_in)
 
@@ -36,9 +55,17 @@ describe Projects::UpdateService do
           expect(result).to eq({ status: :success })
           expect(project).to be_public
         end
+
+        context 'and project is PRIVATE' do
+          it 'does not unlink project from fork network' do
+            expect(Projects::UnlinkForkService).not_to receive(:new)
+
+            update_project(project, user, visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+          end
+        end
       end
 
-      context 'when visibility_level is PRIVATE' do
+      context 'when visibility_level changes to PRIVATE' do
         before do
           project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
         end
@@ -51,6 +78,30 @@ describe Projects::UpdateService do
 
           expect(result).to eq({ status: :success })
           expect(project).to be_private
+        end
+
+        context 'and project is PUBLIC' do
+          before do
+            project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+          end
+
+          it 'unlinks project from fork network' do
+            expect_to_call_unlink_fork_service
+
+            update_project(project, user, visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+          end
+        end
+
+        context 'and project is INTERNAL' do
+          before do
+            project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+          end
+
+          it 'unlinks project from fork network' do
+            expect_to_call_unlink_fork_service
+
+            update_project(project, user, visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+          end
         end
       end
 
@@ -107,28 +158,48 @@ describe Projects::UpdateService do
       let(:project) { create(:project, :internal) }
       let(:forked_project) { fork_project(project) }
 
-      it 'updates forks visibility level when parent set to more restrictive' do
-        opts = { visibility_level: Gitlab::VisibilityLevel::PRIVATE }
+      context 'and unlink forks feature flag is off' do
+        before do
+          stub_feature_flags(unlink_fork_network_upon_visibility_decrease: false)
+        end
 
-        expect(project).to be_internal
-        expect(forked_project).to be_internal
+        it 'updates forks visibility level when parent set to more restrictive' do
+          opts = { visibility_level: Gitlab::VisibilityLevel::PRIVATE }
 
-        expect(update_project(project, admin, opts)).to eq({ status: :success })
+          expect(project).to be_internal
+          expect(forked_project).to be_internal
 
-        expect(project).to be_private
-        expect(forked_project.reload).to be_private
+          expect(update_project(project, admin, opts)).to eq({ status: :success })
+
+          expect(project).to be_private
+          expect(forked_project.reload).to be_private
+        end
+
+        it 'does not update forks visibility level when parent set to less restrictive' do
+          opts = { visibility_level: Gitlab::VisibilityLevel::PUBLIC }
+
+          expect(project).to be_internal
+          expect(forked_project).to be_internal
+
+          expect(update_project(project, admin, opts)).to eq({ status: :success })
+
+          expect(project).to be_public
+          expect(forked_project.reload).to be_internal
+        end
       end
 
-      it 'does not update forks visibility level when parent set to less restrictive' do
-        opts = { visibility_level: Gitlab::VisibilityLevel::PUBLIC }
+      context 'and unlink forks feature flag is on' do
+        it 'does not change visibility of forks' do
+          opts = { visibility_level: Gitlab::VisibilityLevel::PRIVATE }
 
-        expect(project).to be_internal
-        expect(forked_project).to be_internal
+          expect(project).to be_internal
+          expect(forked_project).to be_internal
 
-        expect(update_project(project, admin, opts)).to eq({ status: :success })
+          expect(update_project(project, admin, opts)).to eq({ status: :success })
 
-        expect(project).to be_public
-        expect(forked_project.reload).to be_internal
+          expect(project).to be_private
+          expect(forked_project.reload).to be_internal
+        end
       end
     end
 

@@ -5,7 +5,6 @@ class Gitlab::Seeder::Users
 
   RANDOM_USERS_COUNT = 20
   MASS_USERS_COUNT = ENV['CI'] ? 10 : 1_000_000
-  MASS_INSERT_USERNAME_START = 'mass_insert_user_'
 
   attr_reader :opts
 
@@ -29,7 +28,7 @@ class Gitlab::Seeder::Users
       ActiveRecord::Base.connection.execute <<~SQL
         INSERT INTO users (username, name, email, confirmed_at, projects_limit, encrypted_password)
         SELECT
-          '#{MASS_INSERT_USERNAME_START}' || seq,
+          '#{Gitlab::Seeder::MASS_INSERT_USER_START}' || seq,
           'Seed user ' || seq,
           'seed_user' || seq || '@example.com',
           to_timestamp(seq),

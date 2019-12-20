@@ -792,7 +792,7 @@
     }
 
     .btn {
-      margin-top: $gl-padding;
+      margin-top: $gl-padding-8;
       padding: $gl-btn-vert-padding $gl-btn-padding;
       line-height: $gl-btn-line-height;
 
@@ -811,6 +811,10 @@
   .stat-text {
     @extend .btn;
     @extend .btn-default;
+  }
+
+  .nav > li:not(:last-child) {
+    margin-right: $gl-padding-8;
   }
 }
 

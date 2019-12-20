@@ -6,17 +6,6 @@ describe 'Pipeline Badge' do
   set(:project) { create(:project, :repository, :public) }
   let(:ref) { project.default_branch }
 
-  # this can't be tested in the controller, as it bypasses the rails router
-  # and constructs a route based on the controller being tested
-  # Keep around until 10.0, see gitlab-org/gitlab-ce#35307
-  context 'when the deprecated badge is requested' do
-    it 'displays the badge' do
-      visit build_project_badges_path(project, ref: ref, format: :svg)
-
-      expect(page.status_code).to eq(200)
-    end
-  end
-
   context 'when the project has a pipeline' do
     let!(:pipeline) { create(:ci_empty_pipeline, project: project, ref: ref, sha: project.commit(ref).sha) }
     let!(:job) { create(:ci_build, pipeline: pipeline) }

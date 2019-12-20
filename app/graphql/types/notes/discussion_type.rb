@@ -7,10 +7,14 @@ module Types
 
       authorize :read_note
 
-      field :id, GraphQL::ID_TYPE, null: false # rubocop:disable Graphql/Descriptions
-      field :reply_id, GraphQL::ID_TYPE, null: false, description: 'The ID used to reply to this discussion'
-      field :created_at, Types::TimeType, null: false # rubocop:disable Graphql/Descriptions
-      field :notes, Types::Notes::NoteType.connection_type, null: false, description: "All notes in the discussion"
+      field :id, GraphQL::ID_TYPE, null: false,
+            description: "ID of this discussion"
+      field :reply_id, GraphQL::ID_TYPE, null: false,
+            description: 'ID used to reply to this discussion'
+      field :created_at, Types::TimeType, null: false,
+            description: "Timestamp of the discussion's creation"
+      field :notes, Types::Notes::NoteType.connection_type, null: false,
+            description: 'All notes in the discussion'
 
       # The gem we use to generate Global IDs is hard-coded to work with
       # `id` properties. To generate a GID for the `reply_id` property,

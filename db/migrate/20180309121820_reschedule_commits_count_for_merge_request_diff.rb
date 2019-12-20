@@ -18,7 +18,7 @@ class RescheduleCommitsCountForMergeRequestDiff < ActiveRecord::Migration[4.2]
   def up
     say 'Populating the MergeRequestDiff `commits_count` (reschedule)'
 
-    execute("SET statement_timeout TO '60s'") if Gitlab::Database.postgresql?
+    execute("SET statement_timeout TO '60s'")
 
     MergeRequestDiff.where(commits_count: nil).each_batch(of: BATCH_SIZE) do |relation, index|
       start_id, end_id = relation.pluck('MIN(id), MAX(id)').first

@@ -77,7 +77,8 @@
             }
           },
           "position": { "type": ["integer", "null"] },
-          "max_issue_count": { "type": "integer" }
+          "max_issue_count": { "type": "integer" },
+          "max_issue_weight": { "type": "integer" }
         },
         "additionalProperties": false
       }

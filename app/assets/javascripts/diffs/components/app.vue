@@ -1,11 +1,12 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
+import { GlLoadingIcon } from '@gitlab/ui';
+import Mousetrap from 'mousetrap';
 import Icon from '~/vue_shared/components/icon.vue';
 import { __ } from '~/locale';
 import createFlash from '~/flash';
-import { GlLoadingIcon } from '@gitlab/ui';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
-import Mousetrap from 'mousetrap';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import eventHub from '../../notes/event_hub';
 import CompareVersions from './compare_versions.vue';
 import DiffFile from './diff_file.vue';
@@ -36,8 +37,17 @@ export default {
     GlLoadingIcon,
     PanelResizer,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     endpoint: {
+      type: String,
+      required: true,
+    },
+    endpointMetadata: {
+      type: String,
+      required: true,
+    },
+    endpointBatch: {
       type: String,
       required: true,
     },
@@ -92,6 +102,7 @@ export default {
   computed: {
     ...mapState({
       isLoading: state => state.diffs.isLoading,
+      isBatchLoading: state => state.diffs.isBatchLoading,
       diffFiles: state => state.diffs.diffFiles,
       diffViewType: state => state.diffs.diffViewType,
       mergeRequestDiffs: state => state.diffs.mergeRequestDiffs,
@@ -133,6 +144,9 @@ export default {
     isLimitedContainer() {
       return !this.showTreeList && !this.isParallelView && !this.isFluidLayout;
     },
+    shouldSetDiscussions() {
+      return this.isNotesFetched && !this.assignedDiscussions && !this.isLoading;
+    },
   },
   watch: {
     diffViewType() {
@@ -149,13 +163,21 @@ export default {
     },
     isLoading: 'adjustView',
     showTreeList: 'adjustView',
+    shouldSetDiscussions(newVal) {
+      if (newVal) {
+        this.setDiscussions();
+      }
+    },
   },
   mounted() {
     this.setBaseConfig({
       endpoint: this.endpoint,
+      endpointMetadata: this.endpointMetadata,
+      endpointBatch: this.endpointBatch,
       projectPath: this.projectPath,
       dismissEndpoint: this.dismissEndpoint,
       showSuggestPopover: this.showSuggestPopover,
+      useSingleDiffStyle: this.glFeatures.singleMrDiffView,
     });
 
     if (this.shouldShow) {
@@ -185,6 +207,8 @@ export default {
     ...mapActions('diffs', [
       'setBaseConfig',
       'fetchDiffFiles',
+      'fetchDiffFilesMeta',
+      'fetchDiffFilesBatch',
       'startRenderDiffsQueue',
       'assignDiscussionsToDiff',
       'setHighlightedRow',
@@ -196,31 +220,56 @@ export default {
       this.assignedDiscussions = false;
       this.fetchData(false);
     },
+    startDiffRendering() {
+      requestIdleCallback(
+        () => {
+          this.startRenderDiffsQueue();
+        },
+        { timeout: 1000 },
+      );
+    },
     fetchData(toggleTree = true) {
-      this.fetchDiffFiles()
-        .then(() => {
-          if (toggleTree) {
-            this.hideTreeListIfJustOneFile();
-          }
+      if (this.glFeatures.diffsBatchLoad) {
+        this.fetchDiffFilesMeta()
+          .then(() => {
+            if (toggleTree) this.hideTreeListIfJustOneFile();
 
-          requestIdleCallback(
-            () => {
-              this.setDiscussions();
-              this.startRenderDiffsQueue();
-            },
-            { timeout: 1000 },
-          );
-        })
-        .catch(() => {
-          createFlash(__('Something went wrong on our end. Please try again!'));
-        });
+            this.startDiffRendering();
+          })
+          .catch(() => {
+            createFlash(__('Something went wrong on our end. Please try again!'));
+          });
+
+        this.fetchDiffFilesBatch()
+          .then(() => this.startDiffRendering())
+          .catch(() => {
+            createFlash(__('Something went wrong on our end. Please try again!'));
+          });
+      } else {
+        this.fetchDiffFiles()
+          .then(() => {
+            if (toggleTree) {
+              this.hideTreeListIfJustOneFile();
+            }
+
+            requestIdleCallback(
+              () => {
+                this.startRenderDiffsQueue();
+              },
+              { timeout: 1000 },
+            );
+          })
+          .catch(() => {
+            createFlash(__('Something went wrong on our end. Please try again!'));
+          });
+      }
 
       if (!this.isNotesFetched) {
         eventHub.$emit('fetchNotesData');
       }
     },
     setDiscussions() {
-      if (this.isNotesFetched && !this.assignedDiscussions && !this.isLoading) {
+      if (this.shouldSetDiscussions) {
         this.assignedDiscussions = true;
 
         requestIdleCallback(
@@ -324,7 +373,8 @@ export default {
           }"
         >
           <commit-widget v-if="commit" :commit="commit" />
-          <template v-if="renderDiffFiles">
+          <div v-if="isBatchLoading" class="loading"><gl-loading-icon /></div>
+          <template v-else-if="renderDiffFiles">
             <diff-file
               v-for="file in diffFiles"
               :key="file.newPath"

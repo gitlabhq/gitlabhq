@@ -23,7 +23,7 @@ module Gitlab
           milestone_id
           source_branch
           source_project_id
-          state
+          state_id
           target_branch
           target_project_id
           time_estimate
@@ -53,7 +53,8 @@ module Gitlab
           human_total_time_spent: merge_request.human_total_time_spent,
           human_time_estimate: merge_request.human_time_estimate,
           assignee_ids: merge_request.assignee_ids,
-          assignee_id: merge_request.assignee_ids.first # This key is deprecated
+          assignee_id: merge_request.assignee_ids.first, # This key is deprecated
+          state: merge_request.state # This key is deprecated
         }
 
         merge_request.attributes.with_indifferent_access.slice(*self.class.safe_hook_attributes)

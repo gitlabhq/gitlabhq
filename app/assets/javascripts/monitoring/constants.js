@@ -1,5 +1,52 @@
 import { __ } from '~/locale';
 
+export const PROMETHEUS_TIMEOUT = 120000; // TWO_MINUTES
+
+/**
+ * States and error states in Prometheus Queries (PromQL) for metrics
+ */
+export const metricStates = {
+  /**
+   * Metric data is available
+   */
+  OK: 'OK',
+
+  /**
+   * Metric data is being fetched
+   */
+  LOADING: 'LOADING',
+
+  /**
+   * Connection timed out to prometheus server
+   * the timeout is set to PROMETHEUS_TIMEOUT
+   *
+   */
+  TIMEOUT: 'TIMEOUT',
+
+  /**
+   * The prometheus server replies with an empty data set
+   */
+  NO_DATA: 'NO_DATA',
+
+  /**
+   * The prometheus server cannot be reached
+   */
+  CONNECTION_FAILED: 'CONNECTION_FAILED',
+
+  /**
+   * The prometheus server was reached but it cannot process
+   * the query. This can happen for several reasons:
+   * - PromQL syntax is incorrect
+   * - An operator is not supported
+   */
+  BAD_QUERY: 'BAD_QUERY',
+
+  /**
+   * No specific reason found for error
+   */
+  UNKNOWN_ERROR: 'UNKNOWN_ERROR',
+};
+
 export const sidebarAnimationDuration = 300; // milliseconds.
 
 export const chartHeight = 300;

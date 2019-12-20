@@ -1,4 +1,5 @@
 import _ from 'underscore';
+import { USER_TOKEN_TYPES } from 'ee_else_ce/filtered_search/constants';
 import FilteredSearchContainer from '~/filtered_search/container';
 import FilteredSearchVisualTokens from '~/filtered_search/filtered_search_visual_tokens';
 import AjaxCache from '~/lib/utils/ajax_cache';
@@ -6,7 +7,6 @@ import DropdownUtils from '~/filtered_search/dropdown_utils';
 import Flash from '~/flash';
 import UsersCache from '~/lib/utils/users_cache';
 import { __ } from '~/locale';
-import { USER_TOKEN_TYPES } from 'ee_else_ce/filtered_search/constants';
 
 export default class VisualTokenValue {
   constructor(tokenValue, tokenType) {

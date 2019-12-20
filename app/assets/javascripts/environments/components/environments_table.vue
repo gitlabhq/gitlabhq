@@ -5,6 +5,7 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import _ from 'underscore';
 import environmentTableMixin from 'ee_else_ce/environments/mixins/environments_table_mixin';
+import { s__ } from '~/locale';
 import EnvironmentItem from './environment_item.vue';
 
 export default {
@@ -40,6 +41,34 @@ export default {
           ? { ...env, children: this.sortEnvironments(env.children) }
           : env,
       );
+    },
+    tableData() {
+      return {
+        // percent spacing for cols, should add up to 100
+        name: {
+          title: s__('Environments|Environment'),
+          spacing: 'section-15',
+        },
+        deploy: {
+          title: s__('Environments|Deployment'),
+          spacing: 'section-10',
+        },
+        build: {
+          title: s__('Environments|Job'),
+          spacing: 'section-15',
+        },
+        commit: {
+          title: s__('Environments|Commit'),
+          spacing: 'section-20',
+        },
+        date: {
+          title: s__('Environments|Updated'),
+          spacing: 'section-10',
+        },
+        actions: {
+          spacing: 'section-30',
+        },
+      };
     },
   },
   methods: {
@@ -79,20 +108,20 @@ export default {
 <template>
   <div class="ci-table" role="grid">
     <div class="gl-responsive-table-row table-row-header" role="row">
-      <div class="table-section section-15 environments-name" role="columnheader">
-        {{ s__('Environments|Environment') }}
+      <div class="table-section" :class="tableData.name.spacing" role="columnheader">
+        {{ tableData.name.title }}
       </div>
-      <div class="table-section section-10 environments-deploy" role="columnheader">
-        {{ s__('Environments|Deployment') }}
+      <div class="table-section" :class="tableData.deploy.spacing" role="columnheader">
+        {{ tableData.deploy.title }}
       </div>
-      <div class="table-section section-15 environments-build" role="columnheader">
-        {{ s__('Environments|Job') }}
+      <div class="table-section" :class="tableData.build.spacing" role="columnheader">
+        {{ tableData.build.title }}
       </div>
-      <div class="table-section section-20 environments-commit" role="columnheader">
-        {{ s__('Environments|Commit') }}
+      <div class="table-section" :class="tableData.commit.spacing" role="columnheader">
+        {{ tableData.commit.title }}
       </div>
-      <div class="table-section section-10 environments-date" role="columnheader">
-        {{ s__('Environments|Updated') }}
+      <div class="table-section" :class="tableData.date.spacing" role="columnheader">
+        {{ tableData.date.title }}
       </div>
     </div>
     <template v-for="(model, i) in sortedEnvironments" :model="model">
@@ -101,6 +130,7 @@ export default {
         :key="`environment-item-${i}`"
         :model="model"
         :can-read-environment="canReadEnvironment"
+        :table-data="tableData"
       />
 
       <div
@@ -115,7 +145,8 @@ export default {
             :is-loading="model.isLoadingDeployBoard"
             :is-empty="model.isEmptyDeployBoard"
             :has-legacy-app-label="model.hasLegacyAppLabel"
-            :logs-path="model.logs_path"
+            :project-path="model.project_path"
+            :environment-name="model.name"
           />
         </div>
       </div>
@@ -132,6 +163,7 @@ export default {
             :key="`env-item-${i}-${index}`"
             :model="children"
             :can-read-environment="canReadEnvironment"
+            :table-data="tableData"
           />
 
           <div :key="`sub-div-${i}`">

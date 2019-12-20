@@ -54,6 +54,7 @@ Click on the service links to see further configuration instructions and details
 | [Prometheus](prometheus.md) | Monitor the performance of your deployed apps |
 | Pushover | Pushover makes it easy to get real-time notifications on your Android device, iPhone, iPad, and Desktop |
 | [Redmine](redmine.md) | Redmine issue tracker |
+| [Unify Circuit](unify_circuit.md) | Receive events notifications in Unify Circuit |
 | [YouTrack](youtrack.md) | YouTrack issue tracker |
 
 ## Push hooks limit

@@ -69,6 +69,7 @@ describe API::Boards do
     set(:group) { create(:group) }
     set(:board_parent) { create(:group, parent: group ) }
     let(:url) { "/groups/#{board_parent.id}/boards/#{board.id}/lists" }
+
     set(:board) { create(:board, group: board_parent) }
 
     it 'creates a new board list for ancestor group labels' do

@@ -1,8 +1,9 @@
 <script>
+import $ from 'jquery';
+import { GlIcon } from '@gitlab/ui';
 import DropdownSearchInput from '~/vue_shared/components/dropdown/dropdown_search_input.vue';
 import DropdownHiddenInput from '~/vue_shared/components/dropdown/dropdown_hidden_input.vue';
 import DropdownButton from '~/vue_shared/components/dropdown/dropdown_button.vue';
-import { GlIcon } from '@gitlab/ui';
 
 const toArray = value => [].concat(value);
 const itemsProp = (items, prop) => items.map(item => item[prop]);
@@ -106,6 +107,7 @@ export default {
   data() {
     return {
       searchQuery: '',
+      focusOnSearch: false,
     };
   },
   computed: {
@@ -141,6 +143,18 @@ export default {
       return itemsProp(this.selectedItems, this.valueProperty).join(', ');
     },
   },
+  mounted() {
+    $(this.$refs.dropdown)
+      .on('shown.bs.dropdown', () => {
+        this.focusOnSearch = true;
+      })
+      .on('hidden.bs.dropdown', () => {
+        this.focusOnSearch = false;
+      });
+  },
+  beforeDestroy() {
+    $(this.$refs.dropdown).off();
+  },
   methods: {
     getItemsOrEmptyList() {
       return this.items || [];
@@ -170,7 +184,7 @@ export default {
 
 <template>
   <div>
-    <div class="js-gcp-machine-type-dropdown dropdown">
+    <div ref="dropdown" class="dropdown">
       <dropdown-hidden-input :name="fieldName" :value="selectedItemsValues" />
       <dropdown-button
         :class="{ 'border-danger': hasErrors }"
@@ -179,7 +193,11 @@ export default {
         :toggle-text="toggleText"
       />
       <div class="dropdown-menu dropdown-select">
-        <dropdown-search-input v-model="searchQuery" :placeholder-text="searchFieldPlaceholder" />
+        <dropdown-search-input
+          v-model="searchQuery"
+          :focused="focusOnSearch"
+          :placeholder-text="searchFieldPlaceholder"
+        />
         <div class="dropdown-content">
           <ul>
             <li v-if="!results.length">

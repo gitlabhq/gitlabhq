@@ -406,6 +406,7 @@ describe 'Login' do
 
   describe 'with required two-factor authentication enabled' do
     let(:user) { create(:user) }
+
     #  TODO: otp_grace_period_started_at
 
     context 'global setting' do

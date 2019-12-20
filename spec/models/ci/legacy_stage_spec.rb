@@ -135,7 +135,7 @@ describe Ci::LegacyStage do
       let!(:stage_build) { create_job(:ci_build, status: :created) }
 
       it 'returns detailed status for created stage' do
-        expect(subject.text).to eq 'created'
+        expect(subject.text).to eq s_('CiStatusText|created')
       end
     end
 
@@ -143,7 +143,7 @@ describe Ci::LegacyStage do
       let!(:stage_build) { create_job(:ci_build, status: :pending) }
 
       it 'returns detailed status for pending stage' do
-        expect(subject.text).to eq 'pending'
+        expect(subject.text).to eq s_('CiStatusText|pending')
       end
     end
 
@@ -151,7 +151,7 @@ describe Ci::LegacyStage do
       let!(:stage_build) { create_job(:ci_build, status: :running) }
 
       it 'returns detailed status for running stage' do
-        expect(subject.text).to eq 'running'
+        expect(subject.text).to eq s_('CiStatus|running')
       end
     end
 
@@ -159,7 +159,7 @@ describe Ci::LegacyStage do
       let!(:stage_build) { create_job(:ci_build, status: :success) }
 
       it 'returns detailed status for successful stage' do
-        expect(subject.text).to eq 'passed'
+        expect(subject.text).to eq s_('CiStatusText|passed')
       end
     end
 
@@ -167,7 +167,7 @@ describe Ci::LegacyStage do
       let!(:stage_build) { create_job(:ci_build, status: :failed) }
 
       it 'returns detailed status for failed stage' do
-        expect(subject.text).to eq 'failed'
+        expect(subject.text).to eq s_('CiStatusText|failed')
       end
     end
 
@@ -175,7 +175,7 @@ describe Ci::LegacyStage do
       let!(:stage_build) { create_job(:ci_build, status: :canceled) }
 
       it 'returns detailed status for canceled stage' do
-        expect(subject.text).to eq 'canceled'
+        expect(subject.text).to eq s_('CiStatusText|canceled')
       end
     end
 
@@ -183,7 +183,7 @@ describe Ci::LegacyStage do
       let!(:stage_build) { create_job(:ci_build, status: :skipped) }
 
       it 'returns detailed status for skipped stage' do
-        expect(subject.text).to eq 'skipped'
+        expect(subject.text).to eq s_('CiStatusText|skipped')
       end
     end
   end

@@ -1,8 +1,8 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import _ from 'underscore';
-import Icon from '~/vue_shared/components/icon.vue';
 import { GlLoadingIcon } from '@gitlab/ui';
+import Icon from '~/vue_shared/components/icon.vue';
 import Item from './item.vue';
 
 export default {

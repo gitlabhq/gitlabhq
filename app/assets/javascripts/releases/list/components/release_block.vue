@@ -11,16 +11,20 @@ import { getLocationHash } from '~/lib/utils/url_utility';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ReleaseBlockFooter from './release_block_footer.vue';
+import EvidenceBlock from './evidence_block.vue';
+import ReleaseBlockMilestoneInfo from './release_block_milestone_info.vue';
 
 export default {
   name: 'ReleaseBlock',
   components: {
+    EvidenceBlock,
     GlLink,
     GlBadge,
     GlButton,
     Icon,
     UserAvatarLink,
     ReleaseBlockFooter,
+    ReleaseBlockMilestoneInfo,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -44,7 +48,7 @@ export default {
     },
     releasedTimeAgo() {
       return sprintf(__('released %{time}'), {
-        time: this.timeFormated(this.release.released_at),
+        time: this.timeFormatted(this.release.released_at),
       });
     },
     userImageAltDescription() {
@@ -70,6 +74,9 @@ export default {
     hasAuthor() {
       return !_.isEmpty(this.author);
     },
+    hasEvidence() {
+      return Boolean(this.release.evidence_sha);
+    },
     shouldRenderMilestones() {
       return !_.isEmpty(this.release.milestones);
     },
@@ -77,12 +84,19 @@ export default {
       return n__('Milestone', 'Milestones', this.release.milestones.length);
     },
     shouldShowEditButton() {
-      return Boolean(
-        this.glFeatures.releaseEditPage && this.release._links && this.release._links.edit_url,
-      );
+      return Boolean(this.release._links && this.release._links.edit_url);
+    },
+    shouldShowEvidence() {
+      return this.glFeatures.releaseEvidenceCollection;
     },
     shouldShowFooter() {
       return this.glFeatures.releaseIssueSummary;
+    },
+    shouldRenderReleaseMetaData() {
+      return !this.glFeatures.releaseIssueSummary;
+    },
+    shouldRenderMilestoneInfo() {
+      return Boolean(this.glFeatures.releaseIssueSummary && !_.isEmpty(this.release.milestones));
     },
   },
   mounted() {
@@ -100,26 +114,30 @@ export default {
 </script>
 <template>
   <div :id="id" :class="{ 'bg-line-target-blue': isHighlighted }" class="card release-block">
+    <div class="card-header d-flex align-items-center bg-white pr-0">
+      <h2 class="card-title my-2 mr-auto gl-font-size-20">
+        {{ release.name }}
+        <gl-badge v-if="release.upcoming_release" variant="warning" class="align-middle">{{
+          __('Upcoming Release')
+        }}</gl-badge>
+      </h2>
+      <gl-link
+        v-if="shouldShowEditButton"
+        v-gl-tooltip
+        class="btn btn-default append-right-10 js-edit-button ml-2"
+        :title="__('Edit this release')"
+        :href="release._links.edit_url"
+      >
+        <icon name="pencil" />
+      </gl-link>
+    </div>
     <div class="card-body">
-      <div class="d-flex align-items-start">
-        <h2 class="card-title mt-0 mr-auto">
-          {{ release.name }}
-          <gl-badge v-if="release.upcoming_release" variant="warning" class="align-middle">{{
-            __('Upcoming Release')
-          }}</gl-badge>
-        </h2>
-        <gl-link
-          v-if="shouldShowEditButton"
-          v-gl-tooltip
-          class="btn btn-default js-edit-button ml-2"
-          :title="__('Edit this release')"
-          :href="release._links.edit_url"
-        >
-          <icon name="pencil" />
-        </gl-link>
+      <div v-if="shouldRenderMilestoneInfo">
+        <release-block-milestone-info :milestones="release.milestones" />
+        <hr class="mb-3 mt-0" />
       </div>
 
-      <div class="card-subtitle d-flex flex-wrap text-secondary">
+      <div v-if="shouldRenderReleaseMetaData" class="card-subtitle d-flex flex-wrap text-secondary">
         <div class="append-right-8">
           <icon name="commit" class="align-middle" />
           <gl-link v-if="commitUrl" v-gl-tooltip.bottom :title="commit.title" :href="commitUrl">
@@ -216,6 +234,8 @@ export default {
           </div>
         </div>
       </div>
+
+      <evidence-block v-if="hasEvidence && shouldShowEvidence" :release="release" />
 
       <div class="card-text prepend-top-default">
         <div v-html="release.description_html"></div>

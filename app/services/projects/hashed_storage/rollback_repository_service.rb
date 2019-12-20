@@ -11,11 +11,7 @@ module Projects
 
         @new_disk_path = project.disk_path
 
-        result = move_repository(old_disk_path, new_disk_path)
-
-        if move_wiki
-          result &&= move_repository(old_wiki_disk_path, "#{new_disk_path}.wiki")
-        end
+        result = move_repositories
 
         if result
           project.write_repository_config

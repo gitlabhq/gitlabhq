@@ -1,0 +1,5 @@
+---
+title: Added lightweight check when retrieving Prometheus metrics.
+merge_request: 21099
+author:
+type: performance

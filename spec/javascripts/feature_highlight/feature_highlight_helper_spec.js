@@ -1,10 +1,9 @@
 import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
+import getSetTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
 import axios from '~/lib/utils/axios_utils';
 import { getSelector, dismiss, inserted } from '~/feature_highlight/feature_highlight_helper';
 import { togglePopover } from '~/shared/popover';
-
-import getSetTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
 
 describe('feature highlight helper', () => {
   describe('getSelector', () => {

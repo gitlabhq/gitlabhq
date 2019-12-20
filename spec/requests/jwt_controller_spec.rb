@@ -134,7 +134,9 @@ describe JwtController do
 
       context 'when internal auth is disabled' do
         it 'rejects the authorization attempt with personal access token message' do
-          allow_any_instance_of(ApplicationSetting).to receive(:password_authentication_enabled_for_git?) { false }
+          allow_next_instance_of(ApplicationSetting) do |instance|
+            allow(instance).to receive(:password_authentication_enabled_for_git?) { false }
+          end
           get '/jwt/auth', params: parameters, headers: headers
 
           expect(response).to have_gitlab_http_status(401)

@@ -1,0 +1,5 @@
+---
+title: Fix delete user dialog bypass caused by hitting enter
+merge_request: 17343
+author:
+type: fixed

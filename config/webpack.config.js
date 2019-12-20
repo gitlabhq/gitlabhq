@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
 const webpack = require('webpack');
@@ -7,8 +8,10 @@ const CompressionPlugin = require('compression-webpack-plugin');
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const vendorDllHash = require('./helpers/vendor_dll_hash');
 
 const ROOT_PATH = path.resolve(__dirname, '..');
+const VENDOR_DLL = process.env.WEBPACK_VENDOR_DLL && process.env.WEBPACK_VENDOR_DLL !== 'false';
 const CACHE_PATH = process.env.WEBPACK_CACHE_PATH || path.join(ROOT_PATH, 'tmp/cache');
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 const IS_DEV_SERVER = process.env.WEBPACK_DEV_SERVER === 'true';
@@ -23,6 +26,7 @@ const NO_SOURCEMAPS = process.env.NO_SOURCEMAPS;
 
 const VUE_VERSION = require('vue/package.json').version;
 const VUE_LOADER_VERSION = require('vue-loader/package.json').version;
+const WEBPACK_VERSION = require('webpack/package.json').version;
 
 const devtool = IS_PRODUCTION ? 'source-map' : 'cheap-module-eval-source-map';
 
@@ -102,12 +106,32 @@ const alias = {
 if (IS_EE) {
   Object.assign(alias, {
     ee: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
+    ee_component: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
     ee_empty_states: path.join(ROOT_PATH, 'ee/app/views/shared/empty_states'),
     ee_icons: path.join(ROOT_PATH, 'ee/app/views/shared/icons'),
     ee_images: path.join(ROOT_PATH, 'ee/app/assets/images'),
     ee_spec: path.join(ROOT_PATH, 'ee/spec/javascripts'),
     ee_else_ce: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
   });
+}
+
+// if there is a compiled DLL with a matching hash string, use it
+let dll;
+
+if (VENDOR_DLL && !IS_PRODUCTION) {
+  const dllHash = vendorDllHash();
+  const dllCachePath = path.join(ROOT_PATH, `tmp/cache/webpack-dlls/${dllHash}`);
+  if (fs.existsSync(dllCachePath)) {
+    console.log(`Using vendor DLL found at: ${dllCachePath}`);
+    dll = {
+      manifestPath: path.join(dllCachePath, 'vendor.dll.manifest.json'),
+      cacheFrom: dllCachePath,
+      cacheTo: path.join(ROOT_PATH, `public/assets/webpack/dll.${dllHash}/`),
+      publicPath: `dll.${dllHash}/vendor.dll.bundle.js`,
+    };
+  } else {
+    console.log(`Warning: No vendor DLL found at: ${dllCachePath}. DllPlugin disabled.`);
+  }
 }
 
 module.exports = {
@@ -182,7 +206,7 @@ module.exports = {
         options: { limit: 2048 },
       },
       {
-        test: /\_worker\.js$/,
+        test: /_worker\.js$/,
         use: [
           {
             loader: 'worker-loader',
@@ -264,6 +288,11 @@ module.exports = {
           modules: false,
           assets: true,
         });
+
+        // tell our rails helper where to find the DLL files
+        if (dll) {
+          stats.dllAssets = dll.publicPath;
+        }
         return JSON.stringify(stats, null, 2);
       },
     }),
@@ -283,16 +312,28 @@ module.exports = {
       jQuery: 'jquery',
     }),
 
-    new webpack.NormalModuleReplacementPlugin(/^ee_component\/(.*)\.vue/, function(resource) {
-      if (Object.keys(module.exports.resolve.alias).indexOf('ee') >= 0) {
-        resource.request = resource.request.replace(/^ee_component/, 'ee');
-      } else {
+    // reference our compiled DLL modules
+    dll &&
+      new webpack.DllReferencePlugin({
+        context: ROOT_PATH,
+        manifest: dll.manifestPath,
+      }),
+
+    dll &&
+      new CopyWebpackPlugin([
+        {
+          from: dll.cacheFrom,
+          to: dll.cacheTo,
+        },
+      ]),
+
+    !IS_EE &&
+      new webpack.NormalModuleReplacementPlugin(/^ee_component\/(.*)\.vue/, resource => {
         resource.request = path.join(
           ROOT_PATH,
           'app/assets/javascripts/vue_shared/components/empty_component.js',
         );
-      }
-    }),
+      }),
 
     new CopyWebpackPlugin([
       {
@@ -360,6 +401,21 @@ module.exports = {
           const toMB = bytes => Math.floor(bytes / 1024 / 1024);
 
           console.log(`Webpack heap size: ${toMB(memoryUsage)} MB`);
+
+          const webpackStatistics = {
+            memoryUsage,
+            date: Date.now(), // milliseconds
+            commitSHA: process.env.CI_COMMIT_SHA,
+            nodeVersion: process.versions.node,
+            webpackVersion: WEBPACK_VERSION,
+          };
+
+          console.log(webpackStatistics);
+
+          fs.writeFileSync(
+            path.join(ROOT_PATH, 'webpack-dev-server.json'),
+            JSON.stringify(webpackStatistics),
+          );
 
           // exit in case we're running webpack-dev-server
           IS_DEV_SERVER && process.exit();

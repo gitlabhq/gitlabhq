@@ -1,7 +1,7 @@
 # FIXME: git.info_for_file raises the following error
 # /usr/local/bundle/gems/git-1.4.0/lib/git/lib.rb:956:in `command':  (Danger::DSLError)
 # [!] Invalid `Dangerfile` file:
-# [!] Invalid `Dangerfile` file: git '--git-dir=/builds/gitlab-org/gitlab-foss/.git' '--work-tree=/builds/gitlab-org/gitlab-foss' cat-file '-t' ''  2>&1:fatal: Not a valid object name
+# [!] Invalid `Dangerfile` file: git '--git-dir=/builds/gitlab-org/gitlab/.git' '--work-tree=/builds/gitlab-org/gitlab' cat-file '-t' ''  2>&1:fatal: Not a valid object name
 # This seems to be the same as https://github.com/danger/danger/issues/535.
 
 # locale_files_updated = git.modified_files.select { |path| path.start_with?('locale') }

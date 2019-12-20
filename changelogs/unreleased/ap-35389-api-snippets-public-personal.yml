@@ -1,0 +1,6 @@
+---
+title: Improve performance of /api/:version/snippets/public API and only return public
+  personal snippets
+merge_request: 20339
+author:
+type: performance

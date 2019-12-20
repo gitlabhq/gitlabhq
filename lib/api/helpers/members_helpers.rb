@@ -13,18 +13,31 @@ module API
         authorize! :"admin_#{source_type}", source
       end
 
-      def find_all_members(source_type, source)
-        members = source_type == 'project' ? find_all_members_for_project(source) : find_all_members_for_group(source)
-        members.non_invite
-          .non_request
+      # rubocop: disable CodeReuse/ActiveRecord
+      def retrieve_members(source, params:, deep: false)
+        members = deep ? find_all_members(source) : source.members.where.not(user_id: nil)
+        members = members.includes(:user)
+        members = members.references(:user).merge(User.search(params[:query])) if params[:query].present?
+        members = members.where(user_id: params[:user_ids]) if params[:user_ids].present?
+        members
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
+
+      def find_all_members(source)
+        members = source.is_a?(Project) ? find_all_members_for_project(source) : find_all_members_for_group(source)
+        members.non_invite.non_request
       end
 
       def find_all_members_for_project(project)
-        MembersFinder.new(project, current_user).execute(include_invited_groups_members: true)
+        MembersFinder.new(project, current_user).execute(include_relations: [:inherited, :direct, :invited_groups_members])
       end
 
       def find_all_members_for_group(group)
         GroupMembersFinder.new(group).execute
+      end
+
+      def present_members(members)
+        present members, with: Entities::Member, current_user: current_user
       end
     end
   end

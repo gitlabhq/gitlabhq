@@ -25,3 +25,5 @@ module Issues
     end
   end
 end
+
+Issues::DuplicateService.prepend_if_ee('EE::Issues::DuplicateService')

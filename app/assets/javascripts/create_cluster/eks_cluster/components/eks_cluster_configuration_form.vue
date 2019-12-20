@@ -1,8 +1,8 @@
 <script>
 import { createNamespacedHelpers, mapState, mapActions } from 'vuex';
-import { sprintf, s__ } from '~/locale';
 import _ from 'underscore';
 import { GlFormInput, GlFormCheckbox } from '@gitlab/ui';
+import { sprintf, s__ } from '~/locale';
 import ClusterFormDropdown from './cluster_form_dropdown.vue';
 import { KUBERNETES_VERSIONS } from '../constants';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
@@ -22,10 +22,7 @@ const {
   mapState: mapSecurityGroupsState,
   mapActions: mapSecurityGroupsActions,
 } = createNamespacedHelpers('securityGroups');
-const {
-  mapState: mapInstanceTypesState,
-  mapActions: mapInstanceTypesActions,
-} = createNamespacedHelpers('instanceTypes');
+const { mapState: mapInstanceTypesState } = createNamespacedHelpers('instanceTypes');
 
 export default {
   components: {
@@ -265,12 +262,10 @@ export default {
   mounted() {
     this.fetchRegions();
     this.fetchRoles();
-    this.fetchInstanceTypes();
   },
   methods: {
     ...mapActions([
       'createCluster',
-      'signOut',
       'setClusterName',
       'setEnvironmentScope',
       'setKubernetesVersion',
@@ -290,7 +285,6 @@ export default {
     ...mapRolesActions({ fetchRoles: 'fetchItems' }),
     ...mapKeyPairsActions({ fetchKeyPairs: 'fetchItems' }),
     ...mapSecurityGroupsActions({ fetchSecurityGroups: 'fetchItems' }),
-    ...mapInstanceTypesActions({ fetchInstanceTypes: 'fetchItems' }),
     setRegionAndFetchVpcsAndKeyPairs(region) {
       this.setRegion({ region });
       this.setVpc({ vpc: null });
@@ -316,11 +310,6 @@ export default {
       {{ s__('ClusterIntegration|Enter the details for your Amazon EKS Kubernetes cluster') }}
     </h2>
     <div class="mb-3" v-html="kubernetesIntegrationHelpText"></div>
-    <div class="mb-3">
-      <button class="btn btn-link js-sign-out" @click.prevent="signOut()">
-        {{ s__('ClusterIntegration|Select a different AWS role') }}
-      </button>
-    </div>
     <div class="form-group">
       <label class="label-bold" for="eks-cluster-name">{{
         s__('ClusterIntegration|Kubernetes cluster name')

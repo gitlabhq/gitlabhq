@@ -46,7 +46,8 @@
             enabled: allow_signup?)
 
           = feature_entry(_('LDAP'),
-            enabled: Gitlab.config.ldap.enabled)
+            enabled: Gitlab.config.ldap.enabled,
+            doc_href: help_page_path('administration/auth/ldap'))
 
           = feature_entry(_('Gravatar'),
             href: admin_application_settings_path(anchor: 'js-account-settings'),
@@ -54,10 +55,12 @@
 
           = feature_entry(_('OmniAuth'),
             href: admin_application_settings_path(anchor: 'js-signin-settings'),
-            enabled: Gitlab::Auth.omniauth_enabled?)
+            enabled: Gitlab::Auth.omniauth_enabled?,
+            doc_href: help_page_path('integration/omniauth'))
 
           = feature_entry(_('Reply by email'),
-            enabled: Gitlab::IncomingEmail.enabled?)
+            enabled: Gitlab::IncomingEmail.enabled?,
+            doc_href: help_page_path('administration/reply_by_email'))
 
           = render_if_exists 'admin/dashboard/elastic_and_geo'
 

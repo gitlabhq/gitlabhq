@@ -53,6 +53,7 @@ describe 'Public Group access' do
 
   describe 'GET /groups/:path/merge_requests' do
     let(:project) { create(:project, :public, :repository, group: group) }
+
     subject { merge_requests_group_path(group) }
 
     it { is_expected.to be_allowed_for(:admin) }

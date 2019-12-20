@@ -1,9 +1,9 @@
 import Vue from 'vue';
-import ProjectAvatarDefault from '~/vue_shared/components/project_avatar/default.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { projectData } from 'spec/ide/mock_data';
-import { getFirstCharacterCapitalized } from '~/lib/utils/text_utility';
 import { TEST_HOST } from 'spec/test_constants';
+import { getFirstCharacterCapitalized } from '~/lib/utils/text_utility';
+import ProjectAvatarDefault from '~/vue_shared/components/project_avatar/default.vue';
 
 describe('ProjectAvatarDefault component', () => {
   const Component = Vue.extend(ProjectAvatarDefault);

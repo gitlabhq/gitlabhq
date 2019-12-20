@@ -6,6 +6,7 @@ describe MergeRequestTargetProjectFinder do
   include ProjectForksHelper
 
   let(:user) { create(:user) }
+
   subject(:finder) { described_class.new(current_user: user, source_project: forked_project) }
 
   shared_examples 'finding related projects' do
@@ -26,6 +27,22 @@ describe MergeRequestTargetProjectFinder do
       base_project.update!(archived: true)
 
       expect(finder.execute).to contain_exactly(other_fork, forked_project)
+    end
+
+    it 'does not include routes by default' do
+      row = finder.execute.first
+
+      expect(row.association(:route).loaded?).to be_falsey
+      expect(row.association(:namespace).loaded?).to be_falsey
+      expect(row.namespace.association(:route).loaded?).to be_falsey
+    end
+
+    it 'includes routes when requested' do
+      row = finder.execute(include_routes: true).first
+
+      expect(row.association(:route).loaded?).to be_truthy
+      expect(row.association(:namespace).loaded?).to be_truthy
+      expect(row.namespace.association(:route).loaded?).to be_truthy
     end
   end
 

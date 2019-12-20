@@ -159,7 +159,7 @@ export default {
       <div role="rowheader" class="table-mobile-header">{{ __('Created') }}</div>
       <div class="table-mobile-content text-secondary key-created-at">
         <span v-tooltip :title="tooltipTitle(deployKey.created_at)">
-          <icon name="calendar" /> <span>{{ timeFormated(deployKey.created_at) }}</span>
+          <icon name="calendar" /> <span>{{ timeFormatted(deployKey.created_at) }}</span>
         </span>
       </div>
     </div>

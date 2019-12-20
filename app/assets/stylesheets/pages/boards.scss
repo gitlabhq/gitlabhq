@@ -187,6 +187,10 @@
   font-size: 1em;
   border-bottom: 1px solid $border-color;
   padding: $gl-padding-8 $gl-padding;
+
+  .js-max-issue-size::before {
+    content: '/';
+  }
 }
 
 .board-title-text {

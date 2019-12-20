@@ -170,7 +170,7 @@ describe Projects::IssuesController do
     it 'redirects to signin if not logged in' do
       get :new, params: { namespace_id: project.namespace, project_id: project }
 
-      expect(flash[:alert]).to eq 'You need to sign in or sign up before continuing.'
+      expect(flash[:alert]).to eq I18n.t('devise.failure.unauthenticated')
       expect(response).to redirect_to(new_user_session_path)
     end
 
@@ -926,7 +926,7 @@ describe Projects::IssuesController do
       it 'sets a flash message' do
         post_issue(title: 'Hello')
 
-        expect(flash[:notice]).to eq('Resolved all discussions.')
+        expect(flash[:notice]).to eq(_('Resolved all discussions.'))
       end
 
       describe "resolving a single discussion" do
@@ -940,7 +940,7 @@ describe Projects::IssuesController do
         end
 
         it 'sets a flash message that one discussion was resolved' do
-          expect(flash[:notice]).to eq('Resolved 1 discussion.')
+          expect(flash[:notice]).to eq(_('Resolved 1 discussion.'))
         end
       end
     end
@@ -1073,6 +1073,24 @@ describe Projects::IssuesController do
         expect(issue.time_estimate).to eq(7200)
       end
     end
+
+    context 'when created from sentry error' do
+      subject { post_new_issue(sentry_issue_attributes: { sentry_issue_identifier: 1234567 }) }
+
+      it 'creates an issue' do
+        expect { subject }.to change(Issue, :count)
+      end
+
+      it 'creates a sentry issue' do
+        expect { subject }.to change(SentryIssue, :count)
+      end
+
+      it 'with existing issue it will not create an issue' do
+        post_new_issue(sentry_issue_attributes: { sentry_issue_identifier: 1234567 })
+
+        expect { subject }.not_to change(Issue, :count)
+      end
+    end
   end
 
   describe 'POST #mark_as_spam' do
@@ -1141,7 +1159,7 @@ describe Projects::IssuesController do
       end
 
       it "prevents deletion if destroy_confirm is not set" do
-        expect(Gitlab::Sentry).to receive(:track_acceptable_exception).and_call_original
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).and_call_original
 
         delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
 
@@ -1150,7 +1168,7 @@ describe Projects::IssuesController do
       end
 
       it "prevents deletion in JSON format if destroy_confirm is not set" do
-        expect(Gitlab::Sentry).to receive(:track_acceptable_exception).and_call_original
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).and_call_original
 
         delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: issue.iid, format: 'json' }
 
@@ -1314,7 +1332,7 @@ describe Projects::IssuesController do
       it "returns 302 for project members with developer role" do
         import_csv
 
-        expect(flash[:notice]).to include('Your issues are being imported')
+        expect(flash[:notice]).to eq(_("Your issues are being imported. Once finished, you'll get a confirmation email."))
         expect(response).to redirect_to(project_issues_path(project))
       end
 
@@ -1325,7 +1343,7 @@ describe Projects::IssuesController do
 
         import_csv
 
-        expect(flash[:alert]).to include('File upload error.')
+        expect(flash[:alert]).to include(_('File upload error.'))
         expect(response).to redirect_to(project_issues_path(project))
       end
     end

@@ -2,6 +2,8 @@
 
 module Resolvers
   class BaseResolver < GraphQL::Schema::Resolver
+    extend ::Gitlab::Utils::Override
+
     def self.single
       @single ||= Class.new(self) do
         def resolve(**args)
@@ -35,6 +37,14 @@ module Resolvers
       # Complexity is not increased when searching by specific ID(s), because
       # complexity difference is minimal in this case.
       [args[:iid], args[:iids]].any? ? 0 : 0.01
+    end
+
+    override :object
+    def object
+      super.tap do |obj|
+        # If the field this resolver is used in is wrapped in a presenter, go back to it's subject
+        break obj.subject if obj.is_a?(Gitlab::View::Presenter::Base)
+      end
     end
   end
 end

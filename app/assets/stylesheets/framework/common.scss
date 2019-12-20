@@ -433,6 +433,7 @@ img.emoji {
 .block { display: block; }
 .flex { display: flex; }
 .vertical-align-top { vertical-align: top; }
+.vertical-align-text-top { vertical-align: text-top; }
 .vertical-align-middle { vertical-align: middle; }
 .vertical-align-sub { vertical-align: sub; }
 .flex-align-self-center { align-self: center; }
@@ -442,6 +443,7 @@ img.emoji {
 .ws-normal { white-space: normal; }
 .ws-pre-wrap { white-space: pre-wrap; }
 .overflow-auto { overflow: auto; }
+.overflow-visible { overflow: visible; }
 
 .d-flex-center {
   display: flex;
@@ -512,6 +514,12 @@ img.emoji {
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+// this needs to use "!important" due to some very specific styles
+// around buttons
+.cursor-default {
+  cursor: default !important;
 }
 
 // Make buttons/dropdowns full-width on mobile

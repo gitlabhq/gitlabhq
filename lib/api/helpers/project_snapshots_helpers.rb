@@ -6,7 +6,7 @@ module API
       prepend_if_ee('::EE::API::Helpers::ProjectSnapshotsHelpers') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
       def authorize_read_git_snapshot!
-        authenticated_with_full_private_access!
+        authenticated_with_can_read_all_resources!
       end
 
       def send_git_snapshot(repository)

@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlFormGroup, GlFormInput, GlFormCheckbox, GlLink } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
 import { mapState, mapActions } from 'vuex';
+import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
   components: {

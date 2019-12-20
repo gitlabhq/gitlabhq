@@ -315,11 +315,11 @@ describe API::Files do
         expect(range['commit']['message'])
           .to eq("Files, encoding and much more\n\nSigned-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>\n")
 
-        expect(range['commit']['authored_date']).to eq('2014-02-27T08:14:56.000Z')
+        expect(range['commit']['authored_date']).to eq('2014-02-27T10:14:56.000+02:00')
         expect(range['commit']['author_name']).to eq('Dmitriy Zaporozhets')
         expect(range['commit']['author_email']).to eq('dmitriy.zaporozhets@gmail.com')
 
-        expect(range['commit']['committed_date']).to eq('2014-02-27T08:14:56.000Z')
+        expect(range['commit']['committed_date']).to eq('2014-02-27T10:14:56.000+02:00')
         expect(range['commit']['committer_name']).to eq('Dmitriy Zaporozhets')
         expect(range['commit']['committer_email']).to eq('dmitriy.zaporozhets@gmail.com')
       end
@@ -548,8 +548,9 @@ describe API::Files do
     end
 
     it "returns a 400 if editor fails to create file" do
-      allow_any_instance_of(Repository).to receive(:create_file)
-        .and_raise(Gitlab::Git::CommitError, 'Cannot create file')
+      allow_next_instance_of(Repository) do |instance|
+        allow(instance).to receive(:create_file).and_raise(Gitlab::Git::CommitError, 'Cannot create file')
+      end
 
       post api(route("any%2Etxt"), user), params: params
 
@@ -636,7 +637,7 @@ describe API::Files do
       put api(route(file_path), user), params: params_with_stale_id
 
       expect(response).to have_gitlab_http_status(400)
-      expect(json_response['message']).to eq('You are attempting to update a file that has changed since you started editing it.')
+      expect(json_response['message']).to eq(_('You are attempting to update a file that has changed since you started editing it.'))
     end
 
     it "updates existing file in project repo with accepts correct last commit id" do
@@ -698,7 +699,9 @@ describe API::Files do
     end
 
     it "returns a 400 if fails to delete file" do
-      allow_any_instance_of(Repository).to receive(:delete_file).and_raise(Gitlab::Git::CommitError, 'Cannot delete file')
+      allow_next_instance_of(Repository) do |instance|
+        allow(instance).to receive(:delete_file).and_raise(Gitlab::Git::CommitError, 'Cannot delete file')
+      end
 
       delete api(route(file_path), user), params: params
 

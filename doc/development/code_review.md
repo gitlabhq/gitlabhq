@@ -181,6 +181,10 @@ vulnerabilities must be either empty or containing:
 Maintainers should **never** dismiss vulnerabilities to "empty" the list,
 without duly verifying them.
 
+Note that certain Merge Requests may target a stable branch.  These are rare
+events.  These types of Merge Requests cannot be merged by the Maintainer.
+Instead these should be sent to the [Release Manager](https://about.gitlab.com/community/release-managers/).
+
 ## Best practices
 
 ### Everyone

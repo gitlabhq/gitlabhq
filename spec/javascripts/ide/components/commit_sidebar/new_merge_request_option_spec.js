@@ -1,9 +1,9 @@
 import Vue from 'vue';
-import store from '~/ide/stores';
-import NewMergeRequestOption from '~/ide/components/commit_sidebar/new_merge_request_option.vue';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { projectData, branches } from 'spec/ide/mock_data';
 import { resetStore } from 'spec/ide/helpers';
+import NewMergeRequestOption from '~/ide/components/commit_sidebar/new_merge_request_option.vue';
+import store from '~/ide/stores';
 import consts from '../../../../../app/assets/javascripts/ide/stores/modules/commit/constants';
 
 describe('create new MR checkbox', () => {

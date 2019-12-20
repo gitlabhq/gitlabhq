@@ -2,9 +2,19 @@
 
 module Sentry
   class Client
+    include Sentry::Client::Projects
+
     Error = Class.new(StandardError)
     MissingKeysError = Class.new(StandardError)
     ResponseInvalidSizeError = Class.new(StandardError)
+    BadRequestError = Class.new(StandardError)
+
+    SENTRY_API_SORT_VALUE_MAP = {
+      # <accepted_by_client> => <accepted_by_sentry_api>
+      'frequency' => 'freq',
+      'first_seen' => 'new',
+      'last_seen' => nil
+    }.freeze
 
     attr_accessor :url, :token
 
@@ -25,21 +35,19 @@ module Sentry
       map_to_event(latest_event)
     end
 
-    def list_issues(issue_status:, limit:)
-      issues = get_issues(issue_status: issue_status, limit: limit)
+    def list_issues(**keyword_args)
+      response = get_issues(keyword_args)
+
+      issues = response[:issues]
+      pagination = response[:pagination]
 
       validate_size(issues)
 
       handle_mapping_exceptions do
-        map_to_errors(issues)
-      end
-    end
-
-    def list_projects
-      projects = get_projects
-
-      handle_mapping_exceptions do
-        map_to_projects(projects)
+        {
+          issues: map_to_errors(issues),
+          pagination: pagination
+        }
       end
     end
 
@@ -48,14 +56,14 @@ module Sentry
     def validate_size(issues)
       return if Gitlab::Utils::DeepSize.new(issues).valid?
 
-      raise Client::ResponseInvalidSizeError, "Sentry API response is too big. Limit is #{Gitlab::Utils::DeepSize.human_default_max_size}."
+      raise ResponseInvalidSizeError, "Sentry API response is too big. Limit is #{Gitlab::Utils::DeepSize.human_default_max_size}."
     end
 
     def handle_mapping_exceptions(&block)
       yield
     rescue KeyError => e
-      Gitlab::Sentry.track_acceptable_exception(e)
-      raise Client::MissingKeysError, "Sentry API response is missing keys. #{e.message}"
+      Gitlab::ErrorTracking.track_exception(e)
+      raise MissingKeysError, "Sentry API response is missing keys. #{e.message}"
     end
 
     def request_params
@@ -71,33 +79,46 @@ module Sentry
       response = handle_request_exceptions do
         Gitlab::HTTP.get(url, **request_params.merge(params))
       end
-
       handle_response(response)
     end
 
-    def get_issues(issue_status:, limit:)
-      http_get(issues_api_url, query: {
-        query: "is:#{issue_status}",
-        limit: limit
-      })
+    def get_issues(**keyword_args)
+      response = http_get(
+        issues_api_url,
+        query: list_issue_sentry_query(keyword_args)
+      )
+
+      {
+        issues: response[:body],
+        pagination: Sentry::PaginationParser.parse(response[:headers])
+      }
+    end
+
+    def list_issue_sentry_query(issue_status:, limit:, sort: nil, search_term: '', cursor: nil)
+      unless SENTRY_API_SORT_VALUE_MAP.key?(sort)
+        raise BadRequestError, 'Invalid value for sort param'
+      end
+
+      {
+        query: "is:#{issue_status} #{search_term}".strip,
+        limit: limit,
+        sort: SENTRY_API_SORT_VALUE_MAP[sort],
+        cursor: cursor
+      }.compact
     end
 
     def get_issue(issue_id:)
-      http_get(issue_api_url(issue_id))
+      http_get(issue_api_url(issue_id))[:body]
     end
 
     def get_issue_latest_event(issue_id:)
-      http_get(issue_latest_event_api_url(issue_id))
-    end
-
-    def get_projects
-      http_get(projects_api_url)
+      http_get(issue_latest_event_api_url(issue_id))[:body]
     end
 
     def handle_request_exceptions
       yield
     rescue Gitlab::HTTP::Error => e
-      Gitlab::Sentry.track_acceptable_exception(e)
+      Gitlab::ErrorTracking.track_exception(e)
       raise_error 'Error when connecting to Sentry'
     rescue Net::OpenTimeout
       raise_error 'Connection to Sentry timed out'
@@ -108,7 +129,7 @@ module Sentry
     rescue Errno::ECONNREFUSED
       raise_error 'Connection refused'
     rescue => e
-      Gitlab::Sentry.track_acceptable_exception(e)
+      Gitlab::ErrorTracking.track_exception(e)
       raise_error "Sentry request failed due to #{e.class}"
     end
 
@@ -117,18 +138,11 @@ module Sentry
         raise_error "Sentry response status code: #{response.code}"
       end
 
-      response.parsed_response
+      { body: response.parsed_response, headers: response.headers }
     end
 
     def raise_error(message)
       raise Client::Error, message
-    end
-
-    def projects_api_url
-      projects_url = URI(@url)
-      projects_url.path = '/api/0/projects/'
-
-      projects_url
     end
 
     def issue_api_url(issue_id)
@@ -156,10 +170,6 @@ module Sentry
       issues.map(&method(:map_to_error))
     end
 
-    def map_to_projects(projects)
-      projects.map(&method(:map_to_project))
-    end
-
     def issue_url(id)
       issues_url = @url + "/issues/#{id}"
 
@@ -175,7 +185,7 @@ module Sentry
 
       uri = URI(url)
       uri.path.squeeze!('/')
-      # Remove trailing spaces
+      # Remove trailing slash
       uri = uri.to_s.gsub(/\/\z/, '')
 
       uri
@@ -202,6 +212,15 @@ module Sentry
       stack_trace_entry.dig('stacktrace', 'frames')
     end
 
+    def parse_gitlab_issue(plugin_issues)
+      return unless plugin_issues
+
+      gitlab_plugin = plugin_issues.detect { |item| item['id'] == 'gitlab' }
+      return unless gitlab_plugin
+
+      gitlab_plugin.dig('issue', 'url')
+    end
+
     def map_to_detailed_error(issue)
       Gitlab::ErrorTracking::DetailedError.new(
         id: issue.fetch('id'),
@@ -221,6 +240,7 @@ module Sentry
         project_id: issue.dig('project', 'id'),
         project_name: issue.dig('project', 'name'),
         project_slug: issue.dig('project', 'slug'),
+        gitlab_issue: parse_gitlab_issue(issue.fetch('pluginIssues', nil)),
         first_release_last_commit: issue.dig('firstRelease', 'lastCommit'),
         last_release_last_commit: issue.dig('lastRelease', 'lastCommit'),
         first_release_short_version: issue.dig('firstRelease', 'shortVersion'),
@@ -246,20 +266,6 @@ module Sentry
         project_id: issue.dig('project', 'id'),
         project_name: issue.dig('project', 'name'),
         project_slug: issue.dig('project', 'slug')
-      )
-    end
-
-    def map_to_project(project)
-      organization = project.fetch('organization')
-
-      Gitlab::ErrorTracking::Project.new(
-        id: project.fetch('id', nil),
-        name: project.fetch('name'),
-        slug: project.fetch('slug'),
-        status: project.dig('status'),
-        organization_name: organization.fetch('name'),
-        organization_id: organization.fetch('id', nil),
-        organization_slug: organization.fetch('slug')
       )
     end
   end

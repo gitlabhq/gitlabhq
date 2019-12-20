@@ -16,15 +16,16 @@ class ApplicationController < ActionController::Base
   include ConfirmEmailWarning
   include Gitlab::Tracking::ControllerConcern
   include Gitlab::Experimentation::ControllerConcern
+  include InitializesCurrentUserMode
 
   before_action :authenticate_user!, except: [:route_not_found]
   before_action :enforce_terms!, if: :should_enforce_terms?
   before_action :validate_user_service_ticket!
-  before_action :check_password_expiration
+  before_action :check_password_expiration, if: :html_request?
   before_action :ldap_security_check
-  before_action :sentry_context
+  around_action :sentry_context
   before_action :default_headers
-  before_action :add_gon_variables, unless: [:peek_request?, :json_request?]
+  before_action :add_gon_variables, if: :html_request?
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :require_email, unless: :devise_controller?
   before_action :active_user_check, unless: :devise_controller?
@@ -41,7 +42,6 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception, prepend: true
 
   helper_method :can?
-  helper_method :current_user_mode
   helper_method :import_sources_enabled?, :github_import_enabled?,
     :gitea_import_enabled?, :github_import_configured?,
     :gitlab_import_enabled?, :gitlab_import_configured?,
@@ -72,6 +72,18 @@ class ApplicationController < ActionController::Base
 
   rescue_from Gitlab::Access::AccessDeniedError do |exception|
     render_403
+  end
+
+  rescue_from Gitlab::Auth::IpBlacklisted do
+    Gitlab::AuthLogger.error(
+      message: 'Rack_Attack',
+      env: :blocklist,
+      remote_ip: request.ip,
+      request_method: request.request_method,
+      path: request.fullpath
+    )
+
+    head :forbidden
   end
 
   rescue_from Gitlab::Auth::TooManyIps do |e|
@@ -153,7 +165,7 @@ class ApplicationController < ActionController::Base
   end
 
   def log_exception(exception)
-    Gitlab::Sentry.track_acceptable_exception(exception)
+    Gitlab::ErrorTracking.track_exception(exception)
 
     backtrace_cleaner = request.env["action_dispatch.backtrace_cleaner"]
     application_trace = ActionDispatch::ExceptionWrapper.new(backtrace_cleaner, exception).application_trace
@@ -214,10 +226,6 @@ class ApplicationController < ActionController::Base
       format.js { render json: '', status: :not_found, content_type: 'application/json' }
       format.any { head :not_found }
     end
-  end
-
-  def respond_201
-    head :created
   end
 
   def respond_422
@@ -455,8 +463,8 @@ class ApplicationController < ActionController::Base
     response.headers['Page-Title'] = URI.escape(page_title('GitLab'))
   end
 
-  def peek_request?
-    request.path.start_with?('/-/peek')
+  def html_request?
+    request.format.html?
   end
 
   def json_request?
@@ -466,7 +474,7 @@ class ApplicationController < ActionController::Base
   def should_enforce_terms?
     return false unless Gitlab::CurrentSettings.current_application_settings.enforce_terms
 
-    !(peek_request? || devise_controller?)
+    html_request? && !devise_controller?
   end
 
   def set_usage_stats_consent_flag
@@ -524,18 +532,14 @@ class ApplicationController < ActionController::Base
     @impersonator ||= User.find(session[:impersonator_id]) if session[:impersonator_id]
   end
 
-  def sentry_context
-    Gitlab::Sentry.context(current_user)
+  def sentry_context(&block)
+    Gitlab::ErrorTracking.with_context(current_user, &block)
   end
 
   def allow_gitaly_ref_name_caching
     ::Gitlab::GitalyClient.allow_ref_name_caching do
       yield
     end
-  end
-
-  def current_user_mode
-    @current_user_mode ||= Gitlab::Auth::CurrentUserMode.new(current_user)
   end
 
   # A user requires a role and have the setup_for_company attribute set when they are part of the experimental signup

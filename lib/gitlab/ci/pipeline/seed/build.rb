@@ -10,7 +10,7 @@ module Gitlab
           delegate :dig, to: :@seed_attributes
 
           # When the `ci_dag_limit_needs` is enabled it uses the lower limit
-          LOW_NEEDS_LIMIT = 5
+          LOW_NEEDS_LIMIT = 10
           HARD_NEEDS_LIMIT = 50
 
           def initialize(pipeline, attributes, previous_stages)

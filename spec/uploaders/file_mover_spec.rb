@@ -22,6 +22,7 @@ describe FileMover do
   end
 
   let(:file) { fixture_file_upload('spec/fixtures/banana_sample.gif') }
+
   subject { described_class.new(temp_file_path, from_model: user, to_model: snippet).execute }
 
   describe '#execute' do

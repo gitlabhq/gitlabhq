@@ -1,7 +1,9 @@
 # Issuable-like Rails models utilities
 
-GitLab Rails codebase contains several models that hold common functionality and behave similarly to an [Issue]. Other
-examples of `Issuable`s are [Merge Requests] and [Epics].
+GitLab Rails codebase contains several models that hold common functionality and behave similarly to
+[Issues](https://docs.gitlab.com/ee/user/project/issues/). Other examples of "issuables"
+are [Merge Requests](https://docs.gitlab.com/ee/user/project/merge_requests/) and
+[Epics](https://docs.gitlab.com/ee/user/group/epics/).
 
 This guide accumulates guidelines on working with such Rails models.
 
@@ -13,7 +15,3 @@ There are max length constraints for the most important text fields for `Issuabl
 - `title_html`: 800 chars
 - `description`: 1 megabyte
 - `description_html`: 5 megabytes
-
-[Issue]: https://docs.gitlab.com/ee/user/project/issues
-[Merge Requests]: https://docs.gitlab.com/ee/user/project/merge_requests
-[Epics]: https://docs.gitlab.com/ee/user/group/epics

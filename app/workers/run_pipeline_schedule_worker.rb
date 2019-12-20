@@ -38,10 +38,10 @@ class RunPipelineScheduleWorker
     Rails.logger.error "Failed to create a scheduled pipeline. " \
                        "schedule_id: #{schedule.id} message: #{error.message}"
 
-    Gitlab::Sentry
-      .track_exception(error,
+    Gitlab::ErrorTracking
+      .track_and_raise_for_dev_exception(error,
                        issue_url: 'https://gitlab.com/gitlab-org/gitlab-foss/issues/41231',
-                       extra: { schedule_id: schedule.id })
+                       schedule_id: schedule.id)
   end
   # rubocop:enable Gitlab/RailsLogger
 

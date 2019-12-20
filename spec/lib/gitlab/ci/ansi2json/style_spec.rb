@@ -147,6 +147,10 @@ describe Gitlab::Ci::Ansi2json::Style do
         [%w[1], %w[0], '', 'resets style from format bold'],
         [%w[1 3], %w[0], '', 'resets style from format bold and italic'],
         [%w[1 3 term-fg-l-red term-bg-yellow], %w[0], '', 'resets all formats and colors'],
+        # default foreground
+        [%w[31 42], %w[39], 'term-bg-green', 'set foreground from red to default leaving background unchanged'],
+        # default background
+        [%w[31 42], %w[49], 'term-fg-red', 'set background from green to default leaving foreground unchanged'],
         # misc
         [[], %w[1 30 42 3], 'term-fg-l-black term-bg-green term-bold term-italic', 'adds fg color, bg color and formats from no style'],
         [%w[3 31], %w[23 1 43], 'term-fg-l-red term-bg-yellow term-bold', 'replaces format italic with bold and adds a yellow background']

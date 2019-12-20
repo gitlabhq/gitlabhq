@@ -38,7 +38,7 @@ class SubmitUsagePingService
   def store_metrics(response)
     return unless response['conv_index'].present?
 
-    ConversationalDevelopmentIndex::Metric.create!(
+    DevOpsScore::Metric.create!(
       response['conv_index'].slice(*METRICS)
     )
   end

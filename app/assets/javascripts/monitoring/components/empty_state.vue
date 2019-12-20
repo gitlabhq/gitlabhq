@@ -1,6 +1,6 @@
 <script>
-import { __ } from '~/locale';
 import { GlEmptyState } from '@gitlab/ui';
+import { __ } from '~/locale';
 
 export default {
   components: {
@@ -34,6 +34,10 @@ export default {
       required: true,
     },
     emptyNoDataSvgPath: {
+      type: String,
+      required: true,
+    },
+    emptyNoDataSmallSvgPath: {
       type: String,
       required: true,
     },

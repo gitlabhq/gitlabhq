@@ -18,8 +18,20 @@ module Clusters
       end
     end
 
-    def gke_cluster_url
-      "https://console.cloud.google.com/kubernetes/clusters/details/#{provider.zone}/#{name}" if gcp?
+    def provider_label
+      if aws?
+        s_('ClusterIntegration|Elastic Kubernetes Service')
+      elsif gcp?
+        s_('ClusterIntegration|Google Kubernetes Engine')
+      end
+    end
+
+    def provider_management_url
+      if aws?
+        "https://console.aws.amazon.com/eks/home?region=#{provider.region}\#/clusters/#{name}"
+      elsif gcp?
+        "https://console.cloud.google.com/kubernetes/clusters/details/#{provider.zone}/#{name}"
+      end
     end
 
     def can_read_cluster?

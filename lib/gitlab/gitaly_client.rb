@@ -67,8 +67,7 @@ module Gitlab
         File.read(cert_file).scan(PEM_REGEX).map do |cert|
           OpenSSL::X509::Certificate.new(cert).to_pem
         rescue OpenSSL::OpenSSLError => e
-          Rails.logger.error "Could not load certificate #{cert_file} #{e}" # rubocop:disable Gitlab/RailsLogger
-          Gitlab::Sentry.track_exception(e, extra: { cert_file: cert_file })
+          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, cert_file: cert_file)
           nil
         end.compact
       end.uniq.join("\n")

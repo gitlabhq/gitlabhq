@@ -53,7 +53,7 @@ module Boards
       service = Boards::Lists::GenerateService.new(board_parent, current_user)
 
       if service.execute(board)
-        lists = board.lists.movable.preload_associations
+        lists = board.lists.movable.preload_associated_models
 
         List.preload_preferences_for_user(lists, current_user)
 

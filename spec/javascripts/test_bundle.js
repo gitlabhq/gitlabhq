@@ -7,9 +7,9 @@ import 'core-js/features/set-immediate';
 import 'vendor/jasmine-jquery';
 import '~/commons';
 import Vue from 'vue';
-import Translate from '~/vue_shared/translate';
 import jasmineDiff from 'jasmine-diff';
 import { config as testUtilsConfig } from '@vue/test-utils';
+import Translate from '~/vue_shared/translate';
 
 import { getDefaultAdapter } from '~/lib/utils/axios_utils';
 import { FIXTURES_PATH, TEST_HOST } from './test_constants';
@@ -165,45 +165,3 @@ describe('test errors', () => {
     }
   });
 });
-
-// if we're generating coverage reports, make sure to include all files so
-// that we can catch files with 0% coverage
-// see: https://github.com/deepsweet/istanbul-instrumenter-loader/issues/15
-if (process.env.BABEL_ENV === 'coverage') {
-  // exempt these files from the coverage report
-  const troubleMakers = ['./pages/admin/application_settings/general/index.js'];
-
-  describe('Uncovered files', function() {
-    const sourceFilesContexts = [require.context('~', true, /\.(js|vue)$/)];
-
-    if (process.env.IS_EE) {
-      sourceFilesContexts.push(require.context('ee', true, /\.(js|vue)$/));
-    }
-
-    const allTestFiles = testContexts.reduce(
-      (accumulator, context) => accumulator.concat(context.keys()),
-      [],
-    );
-
-    $.holdReady(true);
-
-    sourceFilesContexts.forEach(context => {
-      context.keys().forEach(path => {
-        // ignore if there is a matching spec file
-        if (allTestFiles.indexOf(`${path.replace(/\.(js|vue)$/, '')}_spec`) > -1) {
-          return;
-        }
-
-        it(`includes '${path}'`, function() {
-          try {
-            context(path);
-          } catch (err) {
-            if (troubleMakers.indexOf(path) === -1) {
-              expect(err).toBeNull();
-            }
-          }
-        });
-      });
-    });
-  });
-}

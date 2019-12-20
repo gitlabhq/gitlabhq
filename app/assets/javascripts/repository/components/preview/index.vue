@@ -35,11 +35,13 @@ export default {
 
 <template>
   <article class="file-holder limited-width-container readme-holder">
-    <div class="file-title">
-      <i aria-hidden="true" class="fa fa-file-text-o fa-fw"></i>
-      <gl-link :href="blob.webUrl">
-        <strong>{{ blob.name }}</strong>
-      </gl-link>
+    <div class="js-file-title file-title-flex-parent">
+      <div class="file-header-content">
+        <i aria-hidden="true" class="fa fa-file-text-o fa-fw"></i>
+        <gl-link :href="blob.webUrl">
+          <strong>{{ blob.name }}</strong>
+        </gl-link>
+      </div>
     </div>
     <div class="blob-viewer">
       <gl-loading-icon v-if="loading > 0" size="md" class="my-4 mx-auto" />

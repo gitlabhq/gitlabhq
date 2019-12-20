@@ -1,8 +1,8 @@
 import Vue from 'vue';
 
+import mountComponent from 'helpers/vue_mount_component_helper';
 import dropdownButtonComponent from '~/vue_shared/components/sidebar/labels_select/dropdown_button.vue';
 
-import mountComponent from 'helpers/vue_mount_component_helper';
 import {
   mockConfig,
   mockLabels,

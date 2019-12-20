@@ -13,18 +13,26 @@ class PersonalAccessTokensFinder
     tokens = PersonalAccessToken.all
     tokens = by_user(tokens)
     tokens = by_impersonation(tokens)
-    by_state(tokens)
+    tokens = by_state(tokens)
+
+    sort(tokens)
   end
 
   private
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def by_user(tokens)
     return tokens unless @params[:user]
 
-    tokens.where(user: @params[:user])
+    tokens.for_user(@params[:user])
   end
-  # rubocop: enable CodeReuse/ActiveRecord
+
+  def sort(tokens)
+    available_sort_orders = PersonalAccessToken.simple_sorts.keys
+
+    return tokens unless available_sort_orders.include?(params[:sort])
+
+    tokens.order_by(params[:sort])
+  end
 
   def by_impersonation(tokens)
     case @params[:impersonation]

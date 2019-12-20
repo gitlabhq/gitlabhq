@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import urlComponent from '~/serverless/components/url.vue';
 import { shallowMount } from '@vue/test-utils';
+import urlComponent from '~/serverless/components/url.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
 const createComponent = uri =>

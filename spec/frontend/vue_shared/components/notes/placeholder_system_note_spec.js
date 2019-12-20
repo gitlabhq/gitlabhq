@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import placeholderSystemNote from '~/vue_shared/components/notes/placeholder_system_note.vue';
 import mountComponent from 'helpers/vue_mount_component_helper';
+import placeholderSystemNote from '~/vue_shared/components/notes/placeholder_system_note.vue';
 
 describe('placeholder system note component', () => {
   let PlaceholderSystemNote;

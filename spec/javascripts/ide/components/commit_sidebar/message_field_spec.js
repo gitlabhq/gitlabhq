@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import CommitMessageField from '~/ide/components/commit_sidebar/message_field.vue';
 import createComponent from 'spec/helpers/vue_mount_component_helper';
+import CommitMessageField from '~/ide/components/commit_sidebar/message_field.vue';
 
 describe('IDE commit message field', () => {
   const Component = Vue.extend(CommitMessageField);

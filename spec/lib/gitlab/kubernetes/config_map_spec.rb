@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Gitlab::Kubernetes::ConfigMap do
@@ -16,6 +18,7 @@ describe Gitlab::Kubernetes::ConfigMap do
 
   describe '#generate' do
     let(:resource) { ::Kubeclient::Resource.new(metadata: metadata, data: application.files) }
+
     subject { config_map.generate }
 
     it 'builds a Kubeclient Resource' do

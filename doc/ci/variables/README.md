@@ -284,6 +284,8 @@ export CI_PROJECT_PATH="gitlab-org/gitlab-foss"
 export CI_PROJECT_URL="https://example.com/gitlab-org/gitlab-foss"
 export CI_REGISTRY="registry.example.com"
 export CI_REGISTRY_IMAGE="registry.example.com/gitlab-org/gitlab-foss"
+export CI_REGISTRY_USER="gitlab-ci-token"
+export CI_REGISTRY_PASSWORD="longalfanumstring"
 export CI_RUNNER_ID="10"
 export CI_RUNNER_DESCRIPTION="my runner"
 export CI_RUNNER_TAGS="docker, linux"
@@ -295,10 +297,8 @@ export CI_SERVER_VERSION="8.9.0"
 export CI_SERVER_VERSION_MAJOR="8"
 export CI_SERVER_VERSION_MINOR="9"
 export CI_SERVER_VERSION_PATCH="0"
-export GITLAB_USER_ID="42"
 export GITLAB_USER_EMAIL="user@example.com"
-export CI_REGISTRY_USER="gitlab-ci-token"
-export CI_REGISTRY_PASSWORD="longalfanumstring"
+export GITLAB_USER_ID="42"
 ```
 
 ### `.gitlab-ci.yml` defined variables
@@ -699,8 +699,8 @@ Running on runner-8a2f473d-project-1796893-concurrent-0 via runner-8a2f473d-mach
 ++ CI_JOB_ID=7046507
 ++ export CI_JOB_TOKEN=xxxxxxxxxxxxxxxxxxxx
 ++ CI_JOB_TOKEN=xxxxxxxxxxxxxxxxxxxx
-++ export CI_COMMIT_REF=dd648b2e48ce6518303b0bb580b2ee32fadaf045
-++ CI_COMMIT_REF=dd648b2e48ce6518303b0bb580b2ee32fadaf045
+++ export CI_COMMIT_SHA=dd648b2e48ce6518303b0bb580b2ee32fadaf045
+++ CI_COMMIT_SHA=dd648b2e48ce6518303b0bb580b2ee32fadaf045
 ++ export CI_COMMIT_BEFORE_SHA=dd648b2e48ce6518303b0bb580b2ee32fadaf045
 ++ CI_COMMIT_BEFORE_SHA=dd648b2e48ce6518303b0bb580b2ee32fadaf045
 ++ export CI_COMMIT_REF_NAME=master

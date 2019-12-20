@@ -63,9 +63,7 @@ describe Projects::Environments::PrometheusApiController do
 
           context 'with nil query' do
             let(:params_without_query) do
-              params = environment_params
-              params.delete(:query)
-              params
+              environment_params.except(:query)
             end
 
             before do
@@ -88,8 +86,8 @@ describe Projects::Environments::PrometheusApiController do
         it 'returns 204 no_content' do
           get :proxy, params: environment_params
 
-          expect(json_response['status']).to eq('processing')
-          expect(json_response['message']).to eq('Not ready yet. Try again later.')
+          expect(json_response['status']).to eq(_('processing'))
+          expect(json_response['message']).to eq(_('Not ready yet. Try again later.'))
           expect(response).to have_gitlab_http_status(:no_content)
         end
       end

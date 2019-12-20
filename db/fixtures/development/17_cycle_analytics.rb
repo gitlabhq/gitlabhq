@@ -1,4 +1,4 @@
-require './spec/support/sidekiq'
+require './spec/support/sidekiq_middleware'
 require './spec/support/helpers/test_env'
 
 class Gitlab::Seeder::CycleAnalytics

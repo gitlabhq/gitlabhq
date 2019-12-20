@@ -10,8 +10,7 @@ module QA
         @job_log_json_flag_enabled = Runtime::Feature.enabled?('job_log_json')
         Runtime::Feature.disable('job_log_json') if @job_log_json_flag_enabled
 
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.perform(&:sign_in_using_credentials)
+        Flow::Login.sign_in
 
         @runner_name = "qa-runner-#{Time.now.to_i}"
 

@@ -1,7 +1,7 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex';
-import AccessorUtilities from '~/lib/utils/accessor';
 import { GlLoadingIcon } from '@gitlab/ui';
+import AccessorUtilities from '~/lib/utils/accessor';
 import eventHub from '../event_hub';
 import store from '../store/';
 import { FREQUENT_ITEMS, STORAGE_KEY } from '../constants';

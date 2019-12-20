@@ -39,7 +39,7 @@ module Gitlab
         private
 
         def delete_command
-          command = ['helm', 'delete', '--purge', name] + optional_tls_flags
+          command = ['helm', 'delete', '--purge', name] + tls_flags_if_remote_tiller
 
           command.shelljoin
         end

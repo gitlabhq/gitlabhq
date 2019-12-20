@@ -183,6 +183,34 @@ describe Gitlab::SSHPublicKey, lib: true do
     end
   end
 
+  describe '#fingerprint in SHA256 format' do
+    subject { public_key.fingerprint("SHA256").gsub("SHA256:", "") if public_key.fingerprint("SHA256") }
+
+    where(:factory, :fingerprint_sha256) do
+      [
+        [:rsa_key_2048, 'GdtgO0eHbwLB+mK47zblkoXujkqKRZjgMQrHH6Kks3E'],
+        [:rsa_key_4096, 'ByDU7hQ1JB95l6p53rHrffc4eXvEtqGUtQhS+Dhyy7g'],
+        [:rsa_key_5120, 'PCCupLbFHScm4AbEufbGDvhBU27IM0MVAor715qKQK8'],
+        [:rsa_key_8192, 'CtHFQAS+9Hb8z4vrv4gVQPsHjNN0WIZhWODaB1mQLs4'],
+        [:dsa_key_2048, '+a3DQ7cU5GM+gaYOfmc0VWNnykHQSuth3VRcCpWuYNI'],
+        [:ecdsa_key_256, 'C+I5k3D+IGeM6k5iBR1ZsphqTKV+7uvL/XZ5hcrTr7g'],
+        [:ed25519_key_256, 'DCKAjzxWrdOTjaGKBBjtCW8qY5++GaiAJflrHPmp6W0']
+      ]
+    end
+
+    with_them do
+      let(:key) { attributes_for(factory)[:key] }
+
+      it { is_expected.to eq(fingerprint_sha256) }
+    end
+
+    context 'with an invalid SSH key' do
+      let(:key) { 'this is not a key' }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe '#key_text' do
     let(:key) { 'this is not a key' }
 

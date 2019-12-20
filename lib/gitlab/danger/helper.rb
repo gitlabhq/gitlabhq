@@ -153,7 +153,10 @@ module Gitlab
 
         # Fallbacks in case the above patterns miss anything
         %r{\.rb\z} => :backend,
-        %r{\.(md|txt)\z} => :none, # To reinstate roulette for documentation, set to `:docs`.
+        %r{(
+          \.(md|txt)\z |
+          \.markdownlint\.json
+        )}x => :none, # To reinstate roulette for documentation, set to `:docs`.
         %r{\.js\z} => :frontend
       }.freeze
 

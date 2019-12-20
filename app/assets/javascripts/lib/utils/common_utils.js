@@ -5,7 +5,7 @@
 import $ from 'jquery';
 import axios from './axios_utils';
 import { getLocationHash } from './url_utility';
-import { convertToCamelCase } from './text_utility';
+import { convertToCamelCase, convertToSnakeCase } from './text_utility';
 import { isObject } from './type_utility';
 import breakpointInstance from '../../breakpoints';
 
@@ -490,6 +490,8 @@ export const historyPushState = newUrl => {
  */
 export const parseBoolean = value => (value && value.toString()) === 'true';
 
+export const BACKOFF_TIMEOUT = 'BACKOFF_TIMEOUT';
+
 /**
  * @callback backOffCallback
  * @param {Function} next
@@ -541,7 +543,7 @@ export const backOff = (fn, timeout = 60000) => {
         timeElapsed += nextInterval;
         nextInterval = Math.min(nextInterval + nextInterval, maxInterval);
       } else {
-        reject(new Error('BACKOFF_TIMEOUT'));
+        reject(new Error(BACKOFF_TIMEOUT));
       }
     };
 
@@ -696,6 +698,22 @@ export const convertObjectPropsToCamelCase = (obj = {}, options = {}) => {
     return acc;
   }, initial);
 };
+
+/**
+ * Converts all the object keys to snake case
+ *
+ * @param {Object} obj    Object to transform
+ * @returns {Object}
+ */
+// Follow up to add additional options param:
+// https://gitlab.com/gitlab-org/gitlab/issues/39173
+export const convertObjectPropsToSnakeCase = (obj = {}) =>
+  obj
+    ? Object.entries(obj).reduce(
+        (acc, [key, value]) => ({ ...acc, [convertToSnakeCase(key)]: value }),
+        {},
+      )
+    : {};
 
 export const imagePath = imgUrl =>
   `${gon.asset_host || ''}${gon.relative_url_root || ''}/assets/${imgUrl}`;

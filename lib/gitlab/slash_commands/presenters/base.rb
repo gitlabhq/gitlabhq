@@ -18,6 +18,8 @@ module Gitlab
 
         private
 
+        attr_reader :resource
+
         def header_with_list(header, items)
           message = [header]
 
@@ -67,11 +69,50 @@ module Gitlab
         def resource_url
           url_for(
             [
-              @resource.project.namespace.becomes(Namespace),
-              @resource.project,
-              @resource
+              resource.project.namespace.becomes(Namespace),
+              resource.project,
+              resource
             ]
           )
+        end
+
+        def project_link
+          "[#{project.full_name}](#{project.web_url})"
+        end
+
+        def author_profile_link
+          "[#{author.to_reference}](#{url_for(author)})"
+        end
+
+        def response_message(custom_pretext: pretext)
+          {
+            attachments: [
+              {
+                title:        "#{issue.title} · #{issue.to_reference}",
+                title_link:   resource_url,
+                author_name:  author.name,
+                author_icon:  author.avatar_url,
+                fallback:     fallback_message,
+                pretext:      custom_pretext,
+                text:         text,
+                color:        color(resource),
+                fields:       fields,
+                mrkdwn_in:    fields_with_markdown
+              }
+            ]
+          }
+        end
+
+        def pretext
+          ''
+        end
+
+        def text
+          ''
+        end
+
+        def fields_with_markdown
+          %i(title pretext fields)
         end
       end
     end

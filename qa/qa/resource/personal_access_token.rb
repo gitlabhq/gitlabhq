@@ -16,10 +16,10 @@ module QA
         Page::Main::Menu.perform(&:click_settings_link)
         Page::Profile::Menu.perform(&:click_access_tokens)
 
-        Page::Profile::PersonalAccessTokens.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
-          page.fill_token_name(name || 'api-test-token')
-          page.check_api
-          page.click_create_token_button
+        Page::Profile::PersonalAccessTokens.perform do |token_page|
+          token_page.fill_token_name(name || 'api-test-token')
+          token_page.check_api
+          token_page.click_create_token_button
         end
       end
     end

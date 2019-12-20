@@ -1,8 +1,8 @@
 import $ from 'jquery';
 import Vue from 'vue';
 import '~/behaviors/markdown/render_gfm';
-import Description from '~/issue_show/components/description.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import Description from '~/issue_show/components/description.vue';
 
 describe('Description component', () => {
   let vm;

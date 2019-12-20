@@ -1,11 +1,14 @@
 import Vue from 'vue';
+import MockAdapter from 'axios-mock-adapter';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import axios from '~/lib/utils/axios_utils';
 import mrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import notify from '~/lib/utils/notify';
 import { stateKey } from '~/vue_merge_request_widget/stores/state_maps';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import mockData from './mock_data';
 import { faviconDataUrl, overlayDataUrl } from '../lib/utils/mock_data';
+import { SUCCESS } from '~/vue_merge_request_widget/components/deployment/constants';
 
 const returnPromise = data =>
   new Promise(resolve => {
@@ -16,6 +19,7 @@ const returnPromise = data =>
 
 describe('mrWidgetOptions', () => {
   let vm;
+  let mock;
   let MrWidgetOptions;
 
   const COLLABORATION_MESSAGE = 'Allows commits from members who can merge to the target branch';
@@ -23,6 +27,13 @@ describe('mrWidgetOptions', () => {
   beforeEach(() => {
     // Prevent component mounting
     delete mrWidgetOptions.el;
+
+    gl.mrWidgetData = { ...mockData };
+    gon.features = { asyncMrWidget: true };
+
+    mock = new MockAdapter(axios);
+    mock.onGet(mockData.merge_request_widget_path).reply(() => [200, { ...mockData }]);
+    mock.onGet(mockData.merge_request_cached_widget_path).reply(() => [200, { ...mockData }]);
 
     MrWidgetOptions = Vue.extend(mrWidgetOptions);
     vm = mountComponent(MrWidgetOptions, {
@@ -32,6 +43,9 @@ describe('mrWidgetOptions', () => {
 
   afterEach(() => {
     vm.$destroy();
+    mock.restore();
+    gl.mrWidgetData = {};
+    gon.features = {};
   });
 
   describe('data', () => {
@@ -277,7 +291,9 @@ describe('mrWidgetOptions', () => {
 
     describe('fetchDeployments', () => {
       it('should fetch deployments', done => {
-        spyOn(vm.service, 'fetchDeployments').and.returnValue(returnPromise([{ id: 1 }]));
+        spyOn(vm.service, 'fetchDeployments').and.returnValue(
+          returnPromise([{ id: 1, status: SUCCESS }]),
+        );
 
         vm.fetchPreMergeDeployments();
 
@@ -305,59 +321,61 @@ describe('mrWidgetOptions', () => {
     });
 
     describe('bindEventHubListeners', () => {
-      it('should bind eventHub listeners', () => {
+      it('should bind eventHub listeners', done => {
         spyOn(vm, 'checkStatus').and.returnValue(() => {});
         spyOn(vm.service, 'checkStatus').and.returnValue(returnPromise(mockData));
         spyOn(vm, 'fetchActionsContent');
         spyOn(vm.mr, 'setData');
         spyOn(vm, 'resumePolling');
         spyOn(vm, 'stopPolling');
-        spyOn(eventHub, '$on');
+        spyOn(eventHub, '$on').and.callThrough();
 
-        vm.bindEventHubListeners();
+        setTimeout(() => {
+          eventHub.$emit('SetBranchRemoveFlag', ['flag']);
 
-        eventHub.$emit('SetBranchRemoveFlag', ['flag']);
+          expect(vm.mr.isRemovingSourceBranch).toEqual('flag');
 
-        expect(vm.mr.isRemovingSourceBranch).toEqual('flag');
+          eventHub.$emit('FailedToMerge');
 
-        eventHub.$emit('FailedToMerge');
+          expect(vm.mr.state).toEqual('failedToMerge');
 
-        expect(vm.mr.state).toEqual('failedToMerge');
+          eventHub.$emit('UpdateWidgetData', mockData);
 
-        eventHub.$emit('UpdateWidgetData', mockData);
+          expect(vm.mr.setData).toHaveBeenCalledWith(mockData);
 
-        expect(vm.mr.setData).toHaveBeenCalledWith(mockData);
+          eventHub.$emit('EnablePolling');
 
-        eventHub.$emit('EnablePolling');
+          expect(vm.resumePolling).toHaveBeenCalled();
 
-        expect(vm.resumePolling).toHaveBeenCalled();
+          eventHub.$emit('DisablePolling');
 
-        eventHub.$emit('DisablePolling');
+          expect(vm.stopPolling).toHaveBeenCalled();
 
-        expect(vm.stopPolling).toHaveBeenCalled();
+          const listenersWithServiceRequest = {
+            MRWidgetUpdateRequested: true,
+            FetchActionsContent: true,
+          };
 
-        const listenersWithServiceRequest = {
-          MRWidgetUpdateRequested: true,
-          FetchActionsContent: true,
-        };
+          const allArgs = eventHub.$on.calls.allArgs();
+          allArgs.forEach(params => {
+            const eventName = params[0];
+            const callback = params[1];
 
-        const allArgs = eventHub.$on.calls.allArgs();
-        allArgs.forEach(params => {
-          const eventName = params[0];
-          const callback = params[1];
+            if (listenersWithServiceRequest[eventName]) {
+              listenersWithServiceRequest[eventName] = callback;
+            }
+          });
 
-          if (listenersWithServiceRequest[eventName]) {
-            listenersWithServiceRequest[eventName] = callback;
-          }
+          listenersWithServiceRequest.MRWidgetUpdateRequested();
+
+          expect(vm.checkStatus).toHaveBeenCalled();
+
+          listenersWithServiceRequest.FetchActionsContent();
+
+          expect(vm.fetchActionsContent).toHaveBeenCalled();
+
+          done();
         });
-
-        listenersWithServiceRequest.MRWidgetUpdateRequested();
-
-        expect(vm.checkStatus).toHaveBeenCalled();
-
-        listenersWithServiceRequest.FetchActionsContent();
-
-        expect(vm.fetchActionsContent).toHaveBeenCalled();
       });
     });
 
@@ -448,22 +466,30 @@ describe('mrWidgetOptions', () => {
     });
 
     describe('resumePolling', () => {
-      it('should call stopTimer on pollingInterval', () => {
-        spyOn(vm.pollingInterval, 'resume');
+      it('should call stopTimer on pollingInterval', done => {
+        setTimeout(() => {
+          spyOn(vm.pollingInterval, 'resume');
 
-        vm.resumePolling();
+          vm.resumePolling();
 
-        expect(vm.pollingInterval.resume).toHaveBeenCalled();
+          expect(vm.pollingInterval.resume).toHaveBeenCalled();
+
+          done();
+        });
       });
     });
 
     describe('stopPolling', () => {
-      it('should call stopTimer on pollingInterval', () => {
-        spyOn(vm.pollingInterval, 'stopTimer');
+      it('should call stopTimer on pollingInterval', done => {
+        setTimeout(() => {
+          spyOn(vm.pollingInterval, 'stopTimer');
 
-        vm.stopPolling();
+          vm.stopPolling();
 
-        expect(vm.pollingInterval.stopTimer).toHaveBeenCalled();
+          expect(vm.pollingInterval.stopTimer).toHaveBeenCalled();
+
+          done();
+        });
       });
     });
   });
@@ -554,7 +580,7 @@ describe('mrWidgetOptions', () => {
       deployed_at: '2017-03-22T22:44:42.258Z',
       deployed_at_formatted: 'Mar 22, 2017 10:44pm',
       changes,
-      status: 'success',
+      status: SUCCESS,
     };
 
     beforeEach(done => {

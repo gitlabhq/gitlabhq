@@ -53,6 +53,7 @@ describe Gitlab::ProjectSearchResults do
 
     context "when #{entity_type} is disabled" do
       let(:project) { disabled_project }
+
       it "hides #{blob_kind} from members" do
         project.add_reporter(user)
 

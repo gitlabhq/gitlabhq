@@ -3,67 +3,54 @@
 require 'spec_helper'
 
 describe Deployments::CreateService do
-  let(:environment) do
-    double(
-      :environment,
-      deployment_platform: double(:platform, cluster_id: 1),
-      project_id: 2,
-      id: 3
-    )
-  end
-
-  let(:user) { double(:user) }
+  let(:user) { create(:user) }
 
   describe '#execute' do
-    let(:service) { described_class.new(environment, user, {}) }
+    let(:project) { create(:project, :repository) }
+    let(:environment) { create(:environment, project: project) }
 
-    it 'does not run the AfterCreateService service if the deployment is not persisted' do
-      deploy = double(:deployment, persisted?: false)
-
-      expect(service)
-        .to receive(:create_deployment)
-        .and_return(deploy)
-
-      expect(Deployments::AfterCreateService)
-        .not_to receive(:new)
-
-      expect(service.execute).to eq(deploy)
-    end
-
-    it 'runs the AfterCreateService service if the deployment is persisted' do
-      deploy = double(:deployment, persisted?: true)
-      after_service = double(:after_create_service)
-
-      expect(service)
-        .to receive(:create_deployment)
-        .and_return(deploy)
-
-      expect(Deployments::AfterCreateService)
-        .to receive(:new)
-        .with(deploy)
-        .and_return(after_service)
-
-      expect(after_service)
-        .to receive(:execute)
-
-      expect(service.execute).to eq(deploy)
-    end
-  end
-
-  describe '#create_deployment' do
     it 'creates a deployment' do
-      environment = build(:environment)
-      service = described_class.new(environment, user, {})
+      service = described_class.new(
+        environment,
+        user,
+        sha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0',
+        ref: 'master',
+        tag: false,
+        status: 'success'
+      )
 
-      expect(environment.deployments)
-        .to receive(:create)
-        .with(an_instance_of(Hash))
+      expect(Deployments::SuccessWorker).to receive(:perform_async)
+      expect(Deployments::FinishedWorker).to receive(:perform_async)
 
-      service.create_deployment
+      expect(service.execute).to be_persisted
+    end
+
+    it 'does not change the status if no status is given' do
+      service = described_class.new(
+        environment,
+        user,
+        sha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0',
+        ref: 'master',
+        tag: false
+      )
+
+      expect(Deployments::SuccessWorker).not_to receive(:perform_async)
+      expect(Deployments::FinishedWorker).not_to receive(:perform_async)
+
+      expect(service.execute).to be_persisted
     end
   end
 
   describe '#deployment_attributes' do
+    let(:environment) do
+      double(
+        :environment,
+        deployment_platform: double(:platform, cluster_id: 1),
+        project_id: 2,
+        id: 3
+      )
+    end
+
     it 'only includes attributes that we want to persist' do
       service = described_class.new(
         environment,
@@ -72,8 +59,7 @@ describe Deployments::CreateService do
         tag: true,
         sha: '123',
         foo: 'bar',
-        on_stop: 'stop',
-        status: 'running'
+        on_stop: 'stop'
       )
 
       expect(service.deployment_attributes).to eq(
@@ -84,8 +70,7 @@ describe Deployments::CreateService do
         tag: true,
         sha: '123',
         user: user,
-        on_stop: 'stop',
-        status: 'running'
+        on_stop: 'stop'
       )
     end
   end

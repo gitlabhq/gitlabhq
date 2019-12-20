@@ -27,9 +27,15 @@ describe Issues::ZoomLinkService do
     end
   end
 
-  shared_context 'insufficient permissions' do
+  shared_context 'insufficient issue update permissions' do
     before do
       project.add_guest(user)
+    end
+  end
+
+  shared_context 'insufficient issue create permissions' do
+    before do
+      expect(service).to receive(:can?).with(user, :create_issue, project).and_return(false)
     end
   end
 
@@ -69,16 +75,38 @@ describe Issues::ZoomLinkService do
     subject(:result) { service.add_link(zoom_link) }
 
     context 'without existing Zoom meeting' do
-      include_examples 'can add meeting'
+      context 'when updating an issue' do
+        before do
+          allow(issue).to receive(:persisted?).and_return(true)
+        end
+
+        include_examples 'can add meeting'
+
+        context 'with insufficient issue update permissions' do
+          include_context 'insufficient issue update permissions'
+          include_examples 'cannot add meeting'
+        end
+      end
+
+      context 'when creating an issue' do
+        before do
+          allow(issue).to receive(:persisted?).and_return(false)
+        end
+
+        it 'creates a new zoom meeting' do
+          expect(result).to be_success
+          expect(result.payload[:zoom_meetings][0].url).to eq(zoom_link)
+        end
+
+        context 'with insufficient issue create permissions' do
+          include_context 'insufficient issue create permissions'
+          include_examples 'cannot add meeting'
+        end
+      end
 
       context 'with invalid Zoom url' do
         let(:zoom_link) { 'https://not-zoom.link' }
 
-        include_examples 'cannot add meeting'
-      end
-
-      context 'with insufficient permissions' do
-        include_context 'insufficient permissions'
         include_examples 'cannot add meeting'
       end
     end
@@ -92,6 +120,7 @@ describe Issues::ZoomLinkService do
       include_context '"added" Zoom meeting'
       before do
         allow(service).to receive(:can_add_link?).and_return(true)
+        allow(issue).to receive(:persisted?).and_return(true)
       end
 
       include_examples 'cannot add meeting'
@@ -104,8 +133,8 @@ describe Issues::ZoomLinkService do
     context 'without "added" zoom meeting' do
       it { is_expected.to eq(true) }
 
-      context 'with insufficient permissions' do
-        include_context 'insufficient permissions'
+      context 'with insufficient issue update permissions' do
+        include_context 'insufficient issue update permissions'
 
         it { is_expected.to eq(false) }
       end
@@ -156,12 +185,24 @@ describe Issues::ZoomLinkService do
     context 'with Zoom meeting' do
       include_context '"added" Zoom meeting'
 
-      context 'removes the link' do
+      context 'with existing issue' do
+        before do
+          allow(issue).to receive(:persisted?).and_return(true)
+        end
+
         include_examples 'can remove meeting'
       end
 
-      context 'with insufficient permissions' do
-        include_context 'insufficient permissions'
+      context 'without existing issue' do
+        before do
+          allow(issue).to receive(:persisted?).and_return(false)
+        end
+
+        include_examples 'cannot remove meeting'
+      end
+
+      context 'with insufficient issue update permissions' do
+        include_context 'insufficient issue update permissions'
         include_examples 'cannot remove meeting'
       end
     end
@@ -193,8 +234,8 @@ describe Issues::ZoomLinkService do
         it { is_expected.to eq(true) }
       end
 
-      context 'with insufficient permissions' do
-        include_context 'insufficient permissions'
+      context 'with insufficient issue update permissions' do
+        include_context 'insufficient issue update permissions'
         it { is_expected.to eq(false) }
       end
     end

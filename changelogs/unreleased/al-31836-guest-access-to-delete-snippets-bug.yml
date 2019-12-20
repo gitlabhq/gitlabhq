@@ -1,0 +1,5 @@
+---
+title: Guest users should not delete project snippets they created
+merge_request: 20477
+author:
+type: fixed

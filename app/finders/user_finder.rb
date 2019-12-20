@@ -52,12 +52,6 @@ class UserFinder
     end
   end
 
-  def find_by_ssh_key_id
-    return unless input_is_id?
-
-    User.find_by_ssh_key_id(@username_or_id)
-  end
-
   def input_is_id?
     @username_or_id.is_a?(Numeric) || @username_or_id =~ /^\d+$/
   end

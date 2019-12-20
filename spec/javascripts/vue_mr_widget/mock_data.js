@@ -1,3 +1,5 @@
+import { SUCCESS } from '~/vue_merge_request_widget/components/deployment/constants';
+
 export default {
   id: 132,
   iid: 22,
@@ -183,6 +185,7 @@ export default {
     created_at: '2017-04-07T12:27:19.520Z',
     updated_at: '2017-04-07T15:28:44.800Z',
   },
+  pipelineCoverageDelta: '15.25',
   work_in_progress: false,
   source_branch_exists: false,
   mergeable_discussions_state: true,
@@ -220,6 +223,7 @@ export default {
   plain_diff_path: '/root/acets-app/merge_requests/22.diff',
   merge_request_basic_path: '/root/acets-app/merge_requests/22.json?serializer=basic',
   merge_request_widget_path: '/root/acets-app/merge_requests/22/widget.json',
+  merge_request_cached_widget_path: '/cached.json',
   merge_check_path: '/root/acets-app/merge_requests/22/merge_check',
   ci_environments_status_url: '/root/acets-app/merge_requests/22/ci_environments_status',
   project_archived: false,
@@ -284,8 +288,26 @@ export const mockStore = {
   targetBranch: 'target-branch',
   sourceBranch: 'source-branch',
   sourceBranchLink: 'source-branch-link',
-  deployments: [{ id: 0, name: 'bogus' }, { id: 1, name: 'bogus-docs' }],
-  postMergeDeployments: [{ id: 0, name: 'prod' }, { id: 1, name: 'prod-docs' }],
+  deployments: [
+    {
+      id: 0,
+      name: 'bogus',
+      external_url: 'https://fake.com',
+      external_url_formatted: 'https://fake.com',
+      status: SUCCESS,
+    },
+    {
+      id: 1,
+      name: 'bogus-docs',
+      external_url: 'https://fake.com',
+      external_url_formatted: 'https://fake.com',
+      status: SUCCESS,
+    },
+  ],
+  postMergeDeployments: [
+    { id: 0, name: 'prod', status: SUCCESS },
+    { id: 1, name: 'prod-docs', status: SUCCESS },
+  ],
   troubleshootingDocsPath: 'troubleshooting-docs-path',
   ciStatus: 'ci-status',
   hasCI: true,

@@ -1,0 +1,79 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GroupEmptyState Renders an empty state for BAD_QUERY 1`] = `
+<glemptystate-stub
+  compact="true"
+  primarybuttonlink="/path/to/settings"
+  primarybuttontext="Verify configuration"
+  svgpath="/path/to/empty-group-illustration.svg"
+  title="Query cannot be processed"
+/>
+`;
+
+exports[`GroupEmptyState Renders an empty state for BAD_QUERY 2`] = `"The Prometheus server responded with \\"bad request\\". Please check your queries are correct and are supported in your Prometheus version. <a href=\\"/path/to/docs\\">More information</a>"`;
+
+exports[`GroupEmptyState Renders an empty state for CONNECTION_FAILED 1`] = `
+<glemptystate-stub
+  compact="true"
+  description="We couldn't reach the Prometheus server. Either the server no longer exists or the configuration details need updating."
+  primarybuttonlink="/path/to/settings"
+  primarybuttontext="Verify configuration"
+  svgpath="/path/to/empty-group-illustration.svg"
+  title="Connection failed"
+/>
+`;
+
+exports[`GroupEmptyState Renders an empty state for CONNECTION_FAILED 2`] = `undefined`;
+
+exports[`GroupEmptyState Renders an empty state for FOO STATE 1`] = `
+<glemptystate-stub
+  compact="true"
+  description="An error occurred while loading the data. Please try again."
+  svgpath="/path/to/empty-group-illustration.svg"
+  title="An error has occurred"
+/>
+`;
+
+exports[`GroupEmptyState Renders an empty state for FOO STATE 2`] = `undefined`;
+
+exports[`GroupEmptyState Renders an empty state for LOADING 1`] = `
+<glemptystate-stub
+  compact="true"
+  description="Creating graphs uses the data from the Prometheus server. If this takes a long time, ensure that data is available."
+  svgpath="/path/to/empty-group-illustration.svg"
+  title="Waiting for performance data"
+/>
+`;
+
+exports[`GroupEmptyState Renders an empty state for LOADING 2`] = `undefined`;
+
+exports[`GroupEmptyState Renders an empty state for NO_DATA 1`] = `
+<glemptystate-stub
+  compact="true"
+  svgpath="/path/to/empty-group-illustration.svg"
+  title="No data to display"
+/>
+`;
+
+exports[`GroupEmptyState Renders an empty state for NO_DATA 2`] = `"The data source is connected, but there is no data to display. <a href=\\"/path/to/docs\\">More information</a>"`;
+
+exports[`GroupEmptyState Renders an empty state for TIMEOUT 1`] = `
+<glemptystate-stub
+  compact="true"
+  svgpath="/path/to/empty-group-illustration.svg"
+  title="Connection timed out"
+/>
+`;
+
+exports[`GroupEmptyState Renders an empty state for TIMEOUT 2`] = `"Charts can't be displayed as the request for data has timed out. <a href=\\"/path/to/docs\\">More information</a>"`;
+
+exports[`GroupEmptyState Renders an empty state for UNKNOWN_ERROR 1`] = `
+<glemptystate-stub
+  compact="true"
+  description="An error occurred while loading the data. Please try again."
+  svgpath="/path/to/empty-group-illustration.svg"
+  title="An error has occurred"
+/>
+`;
+
+exports[`GroupEmptyState Renders an empty state for UNKNOWN_ERROR 2`] = `undefined`;

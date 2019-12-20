@@ -25,7 +25,6 @@ class AutomatedCleanup
   def initialize(project_path: ENV['CI_PROJECT_PATH'], gitlab_token: ENV['GITLAB_BOT_REVIEW_APPS_CLEANUP_TOKEN'])
     @project_path = project_path
     @gitlab_token = gitlab_token
-    ENV['TILLER_NAMESPACE'] ||= review_apps_namespace
   end
 
   def gitlab
@@ -45,7 +44,9 @@ class AutomatedCleanup
   end
 
   def helm
-    @helm ||= Quality::HelmClient.new(namespace: review_apps_namespace)
+    @helm ||= Quality::HelmClient.new(
+      tiller_namespace: review_apps_namespace,
+      namespace: review_apps_namespace)
   end
 
   def kubernetes
@@ -75,9 +76,11 @@ class AutomatedCleanup
       deployed_at = Time.parse(last_deploy)
 
       if deployed_at < delete_threshold
-        delete_environment(environment, deployment)
-        release = Quality::HelmClient::Release.new(environment.slug, 1, deployed_at.to_s, nil, nil, review_apps_namespace)
-        releases_to_delete << release
+        deleted_environment = delete_environment(environment, deployment)
+        if deleted_environment
+          release = Quality::HelmClient::Release.new(environment.slug, 1, deployed_at.to_s, nil, nil, review_apps_namespace)
+          releases_to_delete << release
+        end
       elsif deployed_at < stop_threshold
         stop_environment(environment, deployment)
       else
@@ -116,11 +119,17 @@ class AutomatedCleanup
   def delete_environment(environment, deployment)
     print_release_state(subject: 'Review app', release_name: environment.slug, release_date: deployment.created_at, action: 'deleting')
     gitlab.delete_environment(project_path, environment.id)
+
+  rescue Gitlab::Error::Forbidden
+    puts "Review app '#{environment.slug}' is forbidden: skipping it"
   end
 
   def stop_environment(environment, deployment)
     print_release_state(subject: 'Review app', release_name: environment.slug, release_date: deployment.created_at, action: 'stopping')
     gitlab.stop_environment(project_path, environment.id)
+
+  rescue Gitlab::Error::Forbidden
+    puts "Review app '#{environment.slug}' is forbidden: skipping it"
   end
 
   def helm_releases

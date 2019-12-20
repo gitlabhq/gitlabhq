@@ -5,6 +5,19 @@ require 'spec_helper'
 describe Projects::MergeRequests::DiffsController do
   include ProjectForksHelper
 
+  shared_examples '404 for unexistent diffable' do
+    context 'when diffable does not exists' do
+      it 'returns 404' do
+        unexistent_diff_id = 9999
+
+        go(diff_id: unexistent_diff_id)
+
+        expect(MergeRequestDiff.find_by(id: unexistent_diff_id)).to be_nil
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+  end
+
   shared_examples 'forked project with submodules' do
     render_views
 
@@ -22,6 +35,16 @@ describe Projects::MergeRequests::DiffsController do
     it 'renders' do
       expect(response).to be_successful
       expect(response.body).to have_content('Subproject commit')
+    end
+  end
+
+  shared_examples 'cached diff collection' do
+    it 'ensures diff highlighting cache writing' do
+      expect_next_instance_of(Gitlab::Diff::HighlightCache) do |cache|
+        expect(cache).to receive(:write_if_empty).once
+      end
+
+      go
     end
   end
 
@@ -112,6 +135,7 @@ describe Projects::MergeRequests::DiffsController do
     end
 
     it_behaves_like 'persisted preferred diff view cookie'
+    it_behaves_like 'cached diff collection'
   end
 
   describe 'GET diffs_metadata' do
@@ -125,6 +149,8 @@ describe Projects::MergeRequests::DiffsController do
 
       get :diffs_metadata, params: params.merge(extra_params)
     end
+
+    it_behaves_like '404 for unexistent diffable'
 
     context 'when not authorized' do
       let(:another_user) { create(:user) }
@@ -143,14 +169,6 @@ describe Projects::MergeRequests::DiffsController do
         project.add_guest(another_user)
 
         go
-
-        expect(response).to have_gitlab_http_status(404)
-      end
-    end
-
-    context 'when diffable does not exists' do
-      it 'returns 404' do
-        go(diff_id: 9999)
 
         expect(response).to have_gitlab_http_status(404)
       end
@@ -317,16 +335,52 @@ describe Projects::MergeRequests::DiffsController do
   end
 
   describe 'GET diffs_batch' do
+    shared_examples_for 'serializes diffs with expected arguments' do
+      it 'serializes paginated merge request diff collection' do
+        expect_next_instance_of(PaginatedDiffSerializer) do |instance|
+          expect(instance).to receive(:represent)
+            .with(an_instance_of(collection), expected_options)
+            .and_call_original
+        end
+
+        subject
+      end
+    end
+
+    shared_examples_for 'successful request' do
+      it 'returns success' do
+        subject
+
+        expect(response).to have_gitlab_http_status(200)
+      end
+    end
+
+    def collection_arguments(pagination_data = {})
+      {
+        merge_request: merge_request,
+        diff_view: :inline,
+        pagination_data: {
+          current_page: nil,
+          next_page: nil,
+          total_pages: nil
+        }.merge(pagination_data)
+      }
+    end
+
     def go(extra_params = {})
       params = {
         namespace_id: project.namespace.to_param,
         project_id: project,
         id: merge_request.iid,
+        page: 1,
+        per_page: 20,
         format: 'json'
       }
 
       get :diffs_batch, params: params.merge(extra_params)
     end
+
+    it_behaves_like '404 for unexistent diffable'
 
     context 'when feature is disabled' do
       before do
@@ -354,56 +408,65 @@ describe Projects::MergeRequests::DiffsController do
       end
     end
 
-    context 'with default params' do
-      let(:expected_options) do
-        {
-          merge_request: merge_request,
-          diff_view: :inline,
-          pagination_data: {
-            current_page: 1,
-            next_page: nil,
-            total_pages: 1
-          }
-        }
+    context 'with valid diff_id' do
+      subject { go(diff_id: merge_request.merge_request_diff.id) }
+
+      it_behaves_like 'serializes diffs with expected arguments' do
+        let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
+        let(:expected_options) { collection_arguments(current_page: 1, total_pages: 1) }
       end
 
-      it 'serializes paginated merge request diff collection' do
-        expect_next_instance_of(PaginatedDiffSerializer) do |instance|
-          expect(instance).to receive(:represent)
-            .with(an_instance_of(Gitlab::Diff::FileCollection::MergeRequestDiffBatch), expected_options)
-            .and_call_original
-        end
+      it_behaves_like 'successful request'
+    end
 
-        go
+    context 'with commit_id param' do
+      subject { go(commit_id: merge_request.diff_head_sha) }
+
+      it_behaves_like 'serializes diffs with expected arguments' do
+        let(:collection) { Gitlab::Diff::FileCollection::Commit }
+        let(:expected_options) { collection_arguments }
       end
     end
 
+    context 'with diff_id and start_sha params' do
+      subject do
+        go(diff_id: merge_request.merge_request_diff.id,
+           start_sha: merge_request.merge_request_diff.start_commit_sha)
+      end
+
+      it_behaves_like 'serializes diffs with expected arguments' do
+        let(:collection) { Gitlab::Diff::FileCollection::Compare }
+        let(:expected_options) { collection_arguments }
+      end
+
+      it_behaves_like 'successful request'
+    end
+
+    context 'with default params' do
+      subject { go }
+
+      it_behaves_like 'serializes diffs with expected arguments' do
+        let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
+        let(:expected_options) { collection_arguments(current_page: 1, total_pages: 1) }
+      end
+
+      it_behaves_like 'successful request'
+    end
+
     context 'with smaller diff batch params' do
-      let(:expected_options) do
-        {
-          merge_request: merge_request,
-          diff_view: :inline,
-          pagination_data: {
-            current_page: 2,
-            next_page: 3,
-            total_pages: 4
-          }
-        }
+      subject { go(page: 2, per_page: 5) }
+
+      it_behaves_like 'serializes diffs with expected arguments' do
+        let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
+        let(:expected_options) { collection_arguments(current_page: 2, next_page: 3, total_pages: 4) }
       end
 
-      it 'serializes paginated merge request diff collection' do
-        expect_next_instance_of(PaginatedDiffSerializer) do |instance|
-          expect(instance).to receive(:represent)
-            .with(an_instance_of(Gitlab::Diff::FileCollection::MergeRequestDiffBatch), expected_options)
-            .and_call_original
-        end
-
-        go(page: 2, per_page: 5)
-      end
+      it_behaves_like 'successful request'
     end
 
     it_behaves_like 'forked project with submodules'
     it_behaves_like 'persisted preferred diff view cookie'
+    it_behaves_like 'cached diff collection'
 
     context 'diff unfolding' do
       let!(:unfoldable_diff_note) do

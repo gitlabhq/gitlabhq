@@ -3,7 +3,7 @@
 class PipelinesFinder
   attr_reader :project, :pipelines, :params, :current_user
 
-  ALLOWED_INDEXED_COLUMNS = %w[id status ref user_id].freeze
+  ALLOWED_INDEXED_COLUMNS = %w[id status ref updated_at user_id].freeze
 
   def initialize(project, current_user, params = {})
     @project = project
@@ -25,6 +25,7 @@ class PipelinesFinder
     items = by_name(items)
     items = by_username(items)
     items = by_yaml_errors(items)
+    items = by_updated_at(items)
     sort_items(items)
   end
 
@@ -127,6 +128,13 @@ class PipelinesFinder
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  def by_updated_at(items)
+    items = items.updated_before(params[:updated_before]) if params[:updated_before].present?
+    items = items.updated_after(params[:updated_after]) if params[:updated_after].present?
+
+    items
+  end
 
   # rubocop: disable CodeReuse/ActiveRecord
   def sort_items(items)

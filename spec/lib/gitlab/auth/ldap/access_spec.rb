@@ -136,7 +136,9 @@ describe Gitlab::Auth::LDAP::Access do
       context 'without ActiveDirectory enabled' do
         before do
           allow(Gitlab::Auth::LDAP::Config).to receive(:enabled?).and_return(true)
-          allow_any_instance_of(Gitlab::Auth::LDAP::Config).to receive(:active_directory).and_return(false)
+          allow_next_instance_of(Gitlab::Auth::LDAP::Config) do |instance|
+            allow(instance).to receive(:active_directory).and_return(false)
+          end
         end
 
         it 'returns true' do

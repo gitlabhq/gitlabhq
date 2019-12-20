@@ -98,7 +98,7 @@ back to both GitLab and GitHub when completed.
 
 1. The result of the job will be visible directly from the pipeline view:
 
-   ![Security Dashboard](../../application_security/security_dashboard/img/pipeline_security_dashboard_v12_3.png)
+   ![Security Dashboard](../../application_security/security_dashboard/img/pipeline_security_dashboard_v12_6.png)
 
 NOTE: **Note:**
 If you don't commit very often to your project, you may want to use

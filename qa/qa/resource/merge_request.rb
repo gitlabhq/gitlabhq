@@ -65,17 +65,17 @@ module QA
 
         project.visit!
         Page::Project::Show.perform(&:new_merge_request)
-        Page::MergeRequest::New.perform do |new|
-          new.fill_title(@title)
-          new.fill_description(@description)
-          new.choose_milestone(@milestone) if @milestone
-          new.assign_to_me if @assignee == 'me'
+        Page::MergeRequest::New.perform do |new_page|
+          new_page.fill_title(@title)
+          new_page.fill_description(@description)
+          new_page.choose_milestone(@milestone) if @milestone
+          new_page.assign_to_me if @assignee == 'me'
           labels.each do |label|
-            new.select_label(label)
+            new_page.select_label(label)
           end
-          new.add_approval_rules(approval_rules) if approval_rules
+          new_page.add_approval_rules(approval_rules) if approval_rules
 
-          new.create_merge_request
+          new_page.create_merge_request
         end
       end
 

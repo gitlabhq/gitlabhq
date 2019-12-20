@@ -1,0 +1,5 @@
+---
+title: Add ability to create new issue from sentry error detail page
+merge_request: 20337
+author:
+type: added

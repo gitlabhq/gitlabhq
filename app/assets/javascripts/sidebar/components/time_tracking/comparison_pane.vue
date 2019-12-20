@@ -1,7 +1,7 @@
 <script>
+import { GlProgressBar } from '@gitlab/ui';
 import { parseSeconds, stringifyTime } from '~/lib/utils/datetime_utility';
 import tooltip from '../../../vue_shared/directives/tooltip';
-import { GlProgressBar } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 
 export default {

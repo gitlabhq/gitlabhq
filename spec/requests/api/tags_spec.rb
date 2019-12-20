@@ -328,7 +328,9 @@ describe API::Tags do
     let(:route) { "/projects/#{project_id}/repository/tags/#{tag_name}" }
 
     before do
-      allow_any_instance_of(Repository).to receive(:rm_tag).and_return(true)
+      allow_next_instance_of(Repository) do |instance|
+        allow(instance).to receive(:rm_tag).and_return(true)
+      end
     end
 
     shared_examples_for 'repository delete tag' do

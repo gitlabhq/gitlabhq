@@ -12,6 +12,8 @@ describe Issue do
     it { is_expected.to belong_to(:duplicated_to).class_name('Issue') }
     it { is_expected.to belong_to(:closed_by).class_name('User') }
     it { is_expected.to have_many(:assignees) }
+    it { is_expected.to have_many(:user_mentions).class_name("IssueUserMention") }
+    it { is_expected.to have_one(:sentry_issue) }
   end
 
   describe 'modules' do

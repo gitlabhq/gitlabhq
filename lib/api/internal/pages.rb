@@ -25,7 +25,7 @@ module API
           end
           get "/" do
             host = Namespace.find_by_pages_host(params[:host]) || PagesDomain.find_by_domain(params[:host])
-            not_found! unless host
+            no_content! unless host
 
             virtual_domain = host.pages_virtual_domain
             no_content! unless virtual_domain

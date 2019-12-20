@@ -13,7 +13,9 @@ describe Groups::TransferService do
       let(:new_parent_group) { create(:group, :public) }
 
       before do
-        allow_any_instance_of(described_class).to receive(:update_group_attributes).and_raise(Gitlab::UpdatePathError, 'namespace directory cannot be moved')
+        allow_next_instance_of(described_class) do |instance|
+          allow(instance).to receive(:update_group_attributes).and_raise(Gitlab::UpdatePathError, 'namespace directory cannot be moved')
+        end
         create(:group_member, :owner, group: new_parent_group, user: user)
       end
 

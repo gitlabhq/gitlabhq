@@ -1,16 +1,18 @@
+- @no_breadcrumb_border = true
 - can_update_merge_request = can?(current_user, :update_merge_request, @merge_request)
 - can_reopen_merge_request = can?(current_user, :reopen_merge_request, @merge_request)
+- state_human_name, state_icon_name = state_name_with_icon(@merge_request)
 
 - if @merge_request.closed_without_fork?
   .alert.alert-danger
     The source project of this merge request has been removed.
 
-.detail-page-header
+.detail-page-header{ class: ("border-bottom-0 pt-0 pb-0" if mr_tabs_position_enabled?) }
   .detail-page-header-body
     .issuable-status-box.status-box{ class: status_box_class(@merge_request) }
-      = sprite_icon(@merge_request.state_icon_name, size: 16, css_class: 'd-block d-sm-none')
+      = sprite_icon(state_icon_name, size: 16, css_class: 'd-block d-sm-none')
       %span.d-none.d-sm-block
-        = @merge_request.state_human_name
+        = state_human_name
 
     .issuable-meta
       - if @merge_request.discussion_locked?

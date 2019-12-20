@@ -1,0 +1,5 @@
+---
+title: Fix award emoji tooltip being escaped twice if multiple people voted
+merge_request: 19273
+author: Brian T
+type: fixed

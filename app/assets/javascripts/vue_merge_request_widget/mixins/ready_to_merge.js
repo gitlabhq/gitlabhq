@@ -23,5 +23,8 @@ export default {
     shouldShowMergeImmediatelyDropdown() {
       return this.mr.isPipelineActive && !this.mr.onlyAllowMergeIfPipelineSucceeds;
     },
+    isMergeImmediatelyDangerous() {
+      return false;
+    },
   },
 };

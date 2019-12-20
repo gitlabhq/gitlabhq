@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import pipelineComponent from '~/vue_merge_request_widget/components/mr_widget_pipeline.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { trimText } from 'spec/helpers/text_helper';
+import pipelineComponent from '~/vue_merge_request_widget/components/mr_widget_pipeline.vue';
 import mockData from '../mock_data';
 
 describe('MRWidgetPipeline', () => {
@@ -62,6 +62,38 @@ describe('MRWidgetPipeline', () => {
         expect(vm.hasCIError).toEqual(true);
       });
     });
+
+    describe('coverageDeltaClass', () => {
+      it('should return no class if there is no coverage change', () => {
+        vm = mountComponent(Component, {
+          pipeline: mockData.pipeline,
+          pipelineCoverageDelta: '0',
+          troubleshootingDocsPath: 'help',
+        });
+
+        expect(vm.coverageDeltaClass).toEqual('');
+      });
+
+      it('should return text-success if the coverage increased', () => {
+        vm = mountComponent(Component, {
+          pipeline: mockData.pipeline,
+          pipelineCoverageDelta: '10',
+          troubleshootingDocsPath: 'help',
+        });
+
+        expect(vm.coverageDeltaClass).toEqual('text-success');
+      });
+
+      it('should return text-danger if the coverage decreased', () => {
+        vm = mountComponent(Component, {
+          pipeline: mockData.pipeline,
+          pipelineCoverageDelta: '-12',
+          troubleshootingDocsPath: 'help',
+        });
+
+        expect(vm.coverageDeltaClass).toEqual('text-danger');
+      });
+    });
   });
 
   describe('rendered output', () => {
@@ -96,6 +128,7 @@ describe('MRWidgetPipeline', () => {
           pipeline: mockData.pipeline,
           hasCi: true,
           ciStatus: 'success',
+          pipelineCoverageDelta: mockData.pipelineCoverageDelta,
           troubleshootingDocsPath: 'help',
         });
       });
@@ -130,6 +163,13 @@ describe('MRWidgetPipeline', () => {
       it('should render coverage information', () => {
         expect(vm.$el.querySelector('.media-body').textContent).toContain(
           `Coverage ${mockData.pipeline.coverage}`,
+        );
+      });
+
+      it('should render pipeline coverage delta information', () => {
+        expect(vm.$el.querySelector('.js-pipeline-coverage-delta.text-danger')).toBeDefined();
+        expect(vm.$el.querySelector('.js-pipeline-coverage-delta').textContent).toContain(
+          `(${mockData.pipelineCoverageDelta}%)`,
         );
       });
     });

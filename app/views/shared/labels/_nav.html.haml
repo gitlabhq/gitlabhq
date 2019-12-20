@@ -13,7 +13,7 @@
     = form_tag labels_filter_path, method: :get do
       = hidden_field_tag :subscribed, params[:subscribed]
       .input-group
-        = search_field_tag :search, params[:search], { placeholder: _('Filter'), id: 'label-search', class: 'form-control search-text-input input-short', spellcheck: false }
+        = search_field_tag :search, params[:search], { placeholder: _('Filter'), id: 'label-search', class: 'form-control search-text-input input-short', spellcheck: false, autofocus: true }
         %span.input-group-append
           %button.btn.btn-default{ type: "submit", "aria-label" => _('Submit search') }
             = icon("search")

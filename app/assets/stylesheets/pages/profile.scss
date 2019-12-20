@@ -17,12 +17,6 @@
   display: inline-block;
 }
 
-.account-btn-link,
-.profile-settings-sidebar a,
-.settings-sidebar a {
-  color: $blue-600;
-}
-
 .private-tokens-reset div.reset-action:not(:first-child) {
   padding-top: 15px;
 }
@@ -122,22 +116,10 @@
       float: left;
     }
   }
-
-  .description {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-  }
 }
 
 .key-created-at {
   line-height: 42px;
-}
-
-.profile-settings-content {
-  a {
-    color: $blue-600;
-  }
 }
 
 .provider-btn-group {
@@ -169,10 +151,6 @@
   margin-left: -3px;
   line-height: 22px;
   background-color: $gray-light;
-
-  &.not-active {
-    color: $blue-500;
-  }
 }
 
 .oauth-applications {
@@ -292,10 +270,6 @@ table.u2f-registrations {
 }
 
 .oauth-application-show {
-  .scope-name {
-    font-weight: $gl-font-weight-bold;
-  }
-
   .scopes-list {
     padding-left: 18px;
   }
@@ -317,52 +291,52 @@ table.u2f-registrations {
 
   .landing {
     padding: 32px;
+  }
 
-    .close {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      opacity: 1;
+  .close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    opacity: 1;
+
+    .dismiss-icon {
+      float: right;
+      cursor: pointer;
+      color: $blue-300;
+    }
+
+    &:hover {
+      background-color: transparent;
+      border: 0;
 
       .dismiss-icon {
-        float: right;
-        cursor: pointer;
-        color: $blue-300;
-      }
-
-      &:hover {
-        background-color: transparent;
-        border: 0;
-
-        .dismiss-icon {
-          color: $blue-400;
-        }
+        color: $blue-400;
       }
     }
+  }
 
-    .svg-container {
-      margin-right: 30px;
-      display: inline-block;
+  .svg-container {
+    margin-right: 30px;
+    display: inline-block;
+
+    svg {
+      height: 110px;
+      vertical-align: top;
+    }
+
+    &.convdev {
+      margin: 0 0 0 30px;
 
       svg {
-        height: 110px;
-        vertical-align: top;
-      }
-
-      &.convdev {
-        margin: 0 0 0 30px;
-
-        svg {
-          height: 127px;
-        }
+        height: 127px;
       }
     }
+  }
 
-    .user-callout-copy {
-      display: inline-block;
-      vertical-align: top;
-      max-width: 570px;
-    }
+  .user-callout-copy {
+    display: inline-block;
+    vertical-align: top;
+    max-width: 570px;
   }
 
   @include media-breakpoint-down(xs) {
@@ -372,40 +346,23 @@ table.u2f-registrations {
       display: block;
     }
 
-    .landing {
-      .svg-container,
-      .user-callout-copy {
-        margin: 0 auto;
-        display: block;
+    .svg-container,
+    .user-callout-copy {
+      margin: 0 auto;
+      display: block;
+
+      svg {
+        height: 75px;
+      }
+
+      &.convdev {
+        margin: $gl-padding auto 0;
 
         svg {
-          height: 75px;
-        }
-
-        &.convdev {
-          margin: $gl-padding auto 0;
-
-          svg {
-            height: 120px;
-          }
+          height: 120px;
         }
       }
     }
-  }
-}
-
-.nav-wip {
-  border: 1px solid $blue-500;
-  background: $blue-50;
-  padding: $gl-padding;
-  margin-bottom: $gl-padding;
-
-  a {
-    color: $blue-500;
-  }
-
-  p:last-child {
-    margin-bottom: 0;
   }
 }
 
@@ -433,10 +390,8 @@ table.u2f-registrations {
 }
 
 .edit-user {
-  .clear-user-status {
-    svg {
-      fill: $gl-text-color-secondary;
-    }
+  svg {
+    fill: $gl-text-color-secondary;
   }
 
   .form-group > label {
@@ -453,10 +408,6 @@ table.u2f-registrations {
 
     .no-emoji-placeholder {
       position: relative;
-
-      svg {
-        fill: $gl-text-color-secondary;
-      }
     }
   }
 

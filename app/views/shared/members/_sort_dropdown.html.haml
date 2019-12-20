@@ -8,3 +8,13 @@
       %li
         = link_to filter_group_project_member_path(sort: value), class: ("is-active" if @sort == value) do
           = title
+    %li.divider
+    %li{ data: { 'qa-selector': 'filter-members-with-inherited-permissions' } }
+      = link_to filter_group_project_member_path(with_inherited_permissions: nil), class: ("is-active" unless params[:with_inherited_permissions].present?) do
+        = _("Show all members")
+    %li{ data: { 'qa-selector': 'filter-members-with-inherited-permissions' } }
+      = link_to filter_group_project_member_path(with_inherited_permissions: 'exclude'), class: ("is-active" if params[:with_inherited_permissions] == 'exclude') do
+        = _("Show only direct members")
+    %li{ data: { 'qa-selector': 'filter-members-with-inherited-permissions' } }
+      = link_to filter_group_project_member_path(with_inherited_permissions: 'only'), class: ("is-active" if params[:with_inherited_permissions] == 'only') do
+        = _("Show only inherited members")

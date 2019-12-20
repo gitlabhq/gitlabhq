@@ -47,11 +47,11 @@ module LabelsHelper
     end
   end
 
-  def render_label(label, tooltip: true, link: nil, css: nil)
+  def render_label(label, tooltip: true, link: nil, css: nil, dataset: nil)
     # if scoped label is used then EE wraps label tag with scoped label
     # doc link
     html = render_colored_label(label, tooltip: tooltip)
-    html = link_to(html, link, class: css) if link
+    html = link_to(html, link, class: css, data: dataset) if link
 
     html
   end

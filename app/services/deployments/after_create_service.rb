@@ -29,6 +29,7 @@ module Deployments
           environment.external_url = url
         end
 
+        renew_auto_stop_in
         environment.fire_state_event(action)
 
         if environment.save && !environment.stopped?
@@ -62,6 +63,12 @@ module Deployments
 
     def action
       environment_options[:action] || 'start'
+    end
+
+    def renew_auto_stop_in
+      return unless deployable
+
+      environment.auto_stop_in = deployable.environment_auto_stop_in
     end
   end
 end

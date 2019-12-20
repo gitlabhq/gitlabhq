@@ -8,7 +8,6 @@ class Projects::PagesDomainsController < Projects::ApplicationController
   before_action :domain, except: [:new, :create]
 
   def show
-    redirect_to edit_project_pages_domain_path(@project, @domain)
   end
 
   def new
@@ -24,17 +23,18 @@ class Projects::PagesDomainsController < Projects::ApplicationController
       flash[:alert] = 'Failed to verify domain ownership'
     end
 
-    redirect_to edit_project_pages_domain_path(@project, @domain)
+    redirect_to project_pages_domain_path(@project, @domain)
   end
 
   def edit
+    redirect_to project_pages_domain_path(@project, @domain)
   end
 
   def create
     @domain = @project.pages_domains.create(create_params)
 
     if @domain.valid?
-      redirect_to edit_project_pages_domain_path(@project, @domain)
+      redirect_to project_pages_domain_path(@project, @domain)
     else
       render 'new'
     end
@@ -46,7 +46,7 @@ class Projects::PagesDomainsController < Projects::ApplicationController
         status: :found,
         notice: 'Domain was updated'
     else
-      render 'edit'
+      render 'show'
     end
   end
 
@@ -68,7 +68,7 @@ class Projects::PagesDomainsController < Projects::ApplicationController
       flash[:alert] = @domain.errors.full_messages.join(', ')
     end
 
-    redirect_to edit_project_pages_domain_path(@project, @domain)
+    redirect_to project_pages_domain_path(@project, @domain)
   end
 
   private

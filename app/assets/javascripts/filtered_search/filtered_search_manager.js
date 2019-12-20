@@ -1,7 +1,7 @@
 import _ from 'underscore';
+import recentSearchesStorageKeys from 'ee_else_ce/filtered_search/recent_searches_storage_keys';
 import { getParameterByName, getUrlParamsArray } from '~/lib/utils/common_utils';
 import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
-import recentSearchesStorageKeys from 'ee_else_ce/filtered_search/recent_searches_storage_keys';
 import { visitUrl } from '../lib/utils/url_utility';
 import Flash from '../flash';
 import FilteredSearchContainer from './container';

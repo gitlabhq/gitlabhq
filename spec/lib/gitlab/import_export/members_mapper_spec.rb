@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Gitlab::ImportExport::MembersMapper do
@@ -25,7 +27,7 @@ describe Gitlab::ImportExport::MembersMapper do
              "email" => user2.email,
              "username" => 'test'
            },
-          "user_id" => 19
+         "user_id" => 19
        },
        {
          "id" => 3,
@@ -45,7 +47,7 @@ describe Gitlab::ImportExport::MembersMapper do
 
     let(:members_mapper) do
       described_class.new(
-        exported_members: exported_members, user: user, project: project)
+        exported_members: exported_members, user: user, importable: project)
     end
 
     it 'includes the exported user ID in the map' do
@@ -81,7 +83,8 @@ describe Gitlab::ImportExport::MembersMapper do
     end
 
     it 'removes old user_id from member_hash to avoid conflict with user key' do
-      expect(ProjectMember).to receive(:create)
+      expect(ProjectMember)
+        .to receive(:create)
         .twice
         .with(hash_excluding('user_id'))
         .and_call_original
@@ -115,7 +118,7 @@ describe Gitlab::ImportExport::MembersMapper do
       let(:project) { create(:project, :public, name: 'searchable_project', namespace: group) }
       let(:members_mapper) do
         described_class.new(
-          exported_members: exported_members, user: user2, project: project)
+          exported_members: exported_members, user: user2, importable: project)
       end
 
       before do
@@ -138,7 +141,7 @@ describe Gitlab::ImportExport::MembersMapper do
       let(:project) { create(:project, namespace: group) }
       let(:members_mapper) do
         described_class.new(
-          exported_members: exported_members, user: user, project: project)
+          exported_members: exported_members, user: user, importable: project)
       end
 
       before do
@@ -161,7 +164,7 @@ describe Gitlab::ImportExport::MembersMapper do
       it 'includes importer specific error message' do
         expect(ProjectMember).to receive(:create!).and_raise(StandardError.new(exception_message))
 
-        expect { members_mapper.map }.to raise_error(StandardError, "Error adding importer user to project members. #{exception_message}")
+        expect { members_mapper.map }.to raise_error(StandardError, "Error adding importer user to Project members. #{exception_message}")
       end
     end
   end

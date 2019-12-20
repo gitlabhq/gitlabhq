@@ -39,17 +39,13 @@ module Gitlab
 
         private
 
-        def repository_update_command
-          'helm repo update'
-        end
-
         # Uses `helm upgrade --install` which means we can use this for both
         # installation and uprade of applications
         def install_command
           command = ['helm', 'upgrade', name, chart] +
             install_flag +
             reset_values_flag +
-            optional_tls_flags +
+            tls_flags_if_remote_tiller +
             optional_version_flag +
             rbac_create_flag +
             namespace_flag +

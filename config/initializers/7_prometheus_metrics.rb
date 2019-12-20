@@ -32,15 +32,8 @@ end
 
 Sidekiq.configure_server do |config|
   config.on(:startup) do
-    # webserver metrics are cleaned up in config.ru: `warmup` block
-    Prometheus::CleanupMultiprocDirService.new.execute
-    # In production, sidekiq is run in a multi-process setup where processes might interfere
-    # with each other cleaning up and reinitializing prometheus database files, which is why
-    # we're re-doing the work every time here.
-    # A cleaner solution would be to run the cleanup pre-fork, and the initialization once
-    # after all workers have forked, but I don't know how at this point.
-    ::Prometheus::Client.reinitialize_on_pid_change(force: true)
-
+    # Do not clean the metrics directory here - the supervisor script should
+    # have already taken care of that
     Gitlab::Metrics::Exporter::SidekiqExporter.instance.start
   end
 end

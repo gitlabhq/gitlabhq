@@ -35,7 +35,7 @@ The following guide assumes that:
 
 - You are using Omnibus and therefore you are using PostgreSQL 9.6 or later
   which includes the [`pg_basebackup` tool](https://www.postgresql.org/docs/9.6/app-pgbasebackup.html) and improved
-  [Foreign Data Wrapper][FDW](https://www.postgresql.org/docs/9.6/postgres-fdw.html) support.
+  [Foreign Data Wrapper](https://www.postgresql.org/docs/9.6/postgres-fdw.html) support.
 - You have a **primary** node already set up (the GitLab server you are
   replicating from), running Omnibus' PostgreSQL (or equivalent version), and
   you have a new **secondary** server set up with the same versions of the OS,
@@ -155,8 +155,8 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    | `postgresql['md5_auth_cidr_addresses']` | **Secondary** node's public or VPC private addresses. |
 
    If you are using Google Cloud Platform, SoftLayer, or any other vendor that
-   provides a virtual private cloud (VPC) you can use the **secondary** node's private
-   address (corresponds to "internal address" for Google Cloud Platform) for
+   provides a virtual private cloud (VPC) you can use the **primary** and **secondary** nodes
+   private addresses (corresponds to "internal address" for Google Cloud Platform) for
    `postgresql['md5_auth_cidr_addresses']` and `postgresql['listen_address']`.
 
    The `listen_address` option opens PostgreSQL up to network connections with the interface

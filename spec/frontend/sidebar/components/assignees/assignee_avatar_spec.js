@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import AssigneeAvatar from '~/sidebar/components/assignees/assignee_avatar.vue';
 import { TEST_HOST } from 'helpers/test_constants';
+import AssigneeAvatar from '~/sidebar/components/assignees/assignee_avatar.vue';
 import userDataMock from '../../user_data_mock';
 
 const TEST_AVATAR = `${TEST_HOST}/avatar.png`;

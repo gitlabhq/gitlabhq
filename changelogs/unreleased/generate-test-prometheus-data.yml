@@ -1,0 +1,6 @@
+---
+title: Genereate a set of sample prometheus metrics and route to the sample metrics
+  when enabled
+merge_request: 19987
+author:
+type: added

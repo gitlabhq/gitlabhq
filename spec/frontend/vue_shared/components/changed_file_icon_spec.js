@@ -19,6 +19,7 @@ describe('Changed file icon', () => {
         ...props,
       },
       sync: false,
+      attachToDocument: true,
     });
   };
 

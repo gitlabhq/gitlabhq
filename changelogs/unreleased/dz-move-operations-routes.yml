@@ -1,0 +1,5 @@
+---
+title: Move operations project routes under - scope
+merge_request: 20456
+author:
+type: deprecated

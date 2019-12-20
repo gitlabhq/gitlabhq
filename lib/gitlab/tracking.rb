@@ -29,14 +29,14 @@ module Gitlab
       def event(category, action, label: nil, property: nil, value: nil, context: nil)
         return unless enabled?
 
-        snowplow.track_struct_event(category, action, label, property, value, context, Time.now.to_i)
+        snowplow.track_struct_event(category, action, label, property, value, context, (Time.now.to_f * 1000).to_i)
       end
 
       def self_describing_event(schema_url, event_data_json, context: nil)
         return unless enabled?
 
         event_json = SnowplowTracker::SelfDescribingJson.new(schema_url, event_data_json)
-        snowplow.track_self_describing_event(event_json, context, Time.now.to_i)
+        snowplow.track_self_describing_event(event_json, context, (Time.now.to_f * 1000).to_i)
       end
 
       def snowplow_options(group)

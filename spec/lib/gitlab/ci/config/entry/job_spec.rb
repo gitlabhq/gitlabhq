@@ -24,7 +24,7 @@ describe Gitlab::Ci::Config::Entry::Job do
       let(:result) do
         %i[before_script script stage type after_script cache
            image services only except rules needs variables artifacts
-           environment coverage retry interruptible]
+           environment coverage retry interruptible timeout tags]
       end
 
       it { is_expected.to match_array result }
@@ -93,7 +93,7 @@ describe Gitlab::Ci::Config::Entry::Job do
 
       context 'when delayed job' do
         context 'when start_in is specified' do
-          let(:config) { { script: 'echo', when: 'delayed', start_in: '1 day' } }
+          let(:config) { { script: 'echo', when: 'delayed', start_in: '1 week' } }
 
           it { expect(entry).to be_valid }
         end
@@ -232,11 +232,9 @@ describe Gitlab::Ci::Config::Entry::Job do
 
       context 'when delayed job' do
         context 'when start_in is specified' do
-          let(:config) { { script: 'echo', when: 'delayed', start_in: '1 day' } }
+          let(:config) { { script: 'echo', when: 'delayed', start_in: '1 week' } }
 
-          it 'returns error about invalid type' do
-            expect(entry).to be_valid
-          end
+          it { expect(entry).to be_valid }
         end
 
         context 'when start_in is empty' do
@@ -257,8 +255,8 @@ describe Gitlab::Ci::Config::Entry::Job do
           end
         end
 
-        context 'when start_in is longer than one day' do
-          let(:config) { { when: 'delayed', start_in: '2 days' } }
+        context 'when start_in is longer than one week' do
+          let(:config) { { when: 'delayed', start_in: '8 days' } }
 
           it 'returns error about exceeding the limit' do
             expect(entry).not_to be_valid
@@ -417,21 +415,21 @@ describe Gitlab::Ci::Config::Entry::Job do
 
       context 'when timeout value is not correct' do
         context 'when it is higher than instance wide timeout' do
-          let(:config) { { timeout: '3 months' } }
+          let(:config) { { timeout: '3 months', script: 'test' } }
 
           it 'returns error about value too high' do
             expect(entry).not_to be_valid
             expect(entry.errors)
-              .to include "job timeout should not exceed the limit"
+              .to include "timeout config should not exceed the limit"
           end
         end
 
         context 'when it is not a duration' do
-          let(:config) { { timeout: 100 } }
+          let(:config) { { timeout: 100, script: 'test' } }
 
           it 'returns error about wrong value' do
             expect(entry).not_to be_valid
-            expect(entry.errors).to include 'job timeout should be a duration'
+            expect(entry.errors).to include 'timeout config should be a duration'
           end
         end
       end
@@ -463,7 +461,8 @@ describe Gitlab::Ci::Config::Entry::Job do
 
     let(:unspecified) { double('unspecified', 'specified?' => false) }
     let(:default) { double('default', '[]' => unspecified) }
-    let(:deps) { double('deps', 'default' => default, '[]' => unspecified) }
+    let(:workflow) { double('workflow', 'has_rules?' => false) }
+    let(:deps) { double('deps', 'default' => default, '[]' => unspecified, 'workflow' => workflow) }
 
     context 'when job config overrides default config' do
       before do
@@ -492,6 +491,49 @@ describe Gitlab::Ci::Config::Entry::Job do
       it 'uses config from default entry' do
         expect(entry[:image].value).to eq 'specified'
         expect(entry[:cache].value).to eq(key: 'test', policy: 'pull-push')
+      end
+    end
+
+    context 'with workflow rules' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:name, :has_workflow_rules?, :only, :rules, :result) do
+        "uses default only"    | false | nil          | nil    | { refs: %w[branches tags] }
+        "uses user only"       | false | %w[branches] | nil    | { refs: %w[branches] }
+        "does not define only" | false | nil          | []     | nil
+        "does not define only" | true  | nil          | nil    | nil
+        "uses user only"       | true  | %w[branches] | nil    | { refs: %w[branches] }
+        "does not define only" | true  | nil          | []     | nil
+      end
+
+      with_them do
+        let(:config) { { script: 'ls', rules: rules, only: only }.compact }
+
+        it "#{name}" do
+          expect(workflow).to receive(:has_rules?) { has_workflow_rules? }
+
+          entry.compose!(deps)
+
+          expect(entry.only_value).to eq(result)
+        end
+      end
+    end
+
+    context 'when workflow rules is used' do
+      context 'when rules are used' do
+        let(:config) { { script: 'ls', cache: { key: 'test' }, rules: [] } }
+
+        it 'does not define only' do
+          expect(entry).not_to be_only_defined
+        end
+      end
+
+      context 'when rules are not used' do
+        let(:config) { { script: 'ls', cache: { key: 'test' }, only: [] } }
+
+        it 'does not define only' do
+          expect(entry).not_to be_only_defined
+        end
       end
     end
   end

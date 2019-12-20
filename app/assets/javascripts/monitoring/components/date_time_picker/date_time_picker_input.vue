@@ -1,7 +1,7 @@
 <script>
 import _ from 'underscore';
-import { s__, sprintf } from '~/locale';
 import { GlFormGroup, GlFormInput } from '@gitlab/ui';
+import { s__, sprintf } from '~/locale';
 import { dateFormats } from '~/monitoring/constants';
 
 const inputGroupText = {

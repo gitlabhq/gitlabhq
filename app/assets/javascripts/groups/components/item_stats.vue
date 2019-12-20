@@ -1,5 +1,6 @@
 <script>
 import icon from '~/vue_shared/components/icon.vue';
+import { GlBadge } from '@gitlab/ui';
 import timeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import {
   ITEM_TYPE,
@@ -8,13 +9,16 @@ import {
   PROJECT_VISIBILITY_TYPE,
 } from '../constants';
 import itemStatsValue from './item_stats_value.vue';
+import isProjectPendingRemoval from 'ee_else_ce/groups/mixins/is_project_pending_removal';
 
 export default {
   components: {
     icon,
     timeAgoTooltip,
     itemStatsValue,
+    GlBadge,
   },
+  mixins: [isProjectPendingRemoval],
   props: {
     item: {
       type: Object,
@@ -70,6 +74,9 @@ export default {
       css-class="project-stars"
       icon-name="star"
     />
+    <div v-if="isProjectPendingRemoval">
+      <gl-badge variant="warning">{{ __('pending removal') }}</gl-badge>
+    </div>
     <div v-if="isProject" class="last-updated">
       <time-ago-tooltip :time="item.updatedAt" tooltip-placement="bottom" />
     </div>

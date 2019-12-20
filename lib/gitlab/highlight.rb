@@ -61,7 +61,7 @@ module Gitlab
       tokens = lexer.lex(text, continue: continue)
       Timeout.timeout(timeout_time) { @formatter.format(tokens, tag: tag).html_safe }
     rescue Timeout::Error => e
-      Gitlab::Sentry.track_exception(e)
+      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
       highlight_plain(text)
     rescue
       highlight_plain(text)

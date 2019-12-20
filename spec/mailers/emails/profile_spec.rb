@@ -122,4 +122,38 @@ describe Emails::Profile do
       it { expect { Notify.new_gpg_key_email('foo') }.not_to raise_error }
     end
   end
+
+  describe 'user personal access token is about to expire' do
+    let_it_be(:user) { create(:user) }
+
+    subject { Notify.access_token_about_to_expire_email(user) }
+
+    it_behaves_like 'an email sent from GitLab'
+    it_behaves_like 'it should not have Gmail Actions links'
+    it_behaves_like 'a user cannot unsubscribe through footer link'
+
+    it 'is sent to the user' do
+      is_expected.to deliver_to user.email
+    end
+
+    it 'has the correct subject' do
+      is_expected.to have_subject /^Your Personal Access Tokens will expire in 7 days or less$/i
+    end
+
+    it 'mentions the access tokens will expire' do
+      is_expected.to have_body_text /One or more of your personal access tokens will expire in 7 days or less/
+    end
+
+    it 'includes a link to personal access tokens page' do
+      is_expected.to have_body_text /#{profile_personal_access_tokens_path}/
+    end
+
+    it 'includes the email reason' do
+      is_expected.to have_body_text /You're receiving this email because of your account on localhost/
+    end
+
+    context 'with User does not exist' do
+      it { expect { Notify.access_token_about_to_expire_email('foo') }.not_to raise_error }
+    end
+  end
 end

@@ -9,6 +9,7 @@ describe 'User sorts merge requests' do
   let!(:merge_request2) do
     create(:merge_request_with_diffs, source_project: project, target_project: project, source_branch: 'merge-test')
   end
+
   set(:user) { create(:user) }
   set(:group) { create(:group) }
   set(:group_member) { create(:group_member, :maintainer, user: user, group: group) }

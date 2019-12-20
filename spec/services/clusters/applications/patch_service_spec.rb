@@ -51,7 +51,7 @@ describe Clusters::Applications::PatchService do
         service.execute
 
         expect(application).to be_update_errored
-        expect(application.status_reason).to match('Kubernetes error: 500')
+        expect(application.status_reason).to eq(_('Kubernetes error: %{error_code}') % { error_code: 500 })
       end
     end
 
@@ -73,7 +73,7 @@ describe Clusters::Applications::PatchService do
         service.execute
 
         expect(application).to be_update_errored
-        expect(application.status_reason).to eq('Failed to update.')
+        expect(application.status_reason).to eq(_('Failed to update.'))
       end
     end
   end

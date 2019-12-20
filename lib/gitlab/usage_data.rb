@@ -82,8 +82,10 @@ module Gitlab
             grafana_integrated_projects: count(GrafanaIntegration.enabled),
             groups: count(Group),
             issues: count(Issue),
+            issues_created_from_gitlab_error_tracking_ui: count(SentryIssue),
             issues_with_associated_zoom_link: count(ZoomMeeting.added_to_issue),
             issues_using_zoom_quick_actions: count(ZoomMeeting.select(:issue_id).distinct),
+            issues_with_embedded_grafana_charts_approx: ::Gitlab::GrafanaEmbedUsageData.issue_count,
             keys: count(Key),
             label_lists: count(List.label),
             lfs_objects: count(LfsObject),
@@ -107,7 +109,8 @@ module Gitlab
             services_usage,
             approximate_counts,
             usage_counters,
-            user_preferences_usage
+            user_preferences_usage,
+            ingress_modsecurity_usage
           )
         }
       end
@@ -167,6 +170,10 @@ module Gitlab
           gitlab_pages: { enabled: Gitlab.config.pages.enabled, version: Gitlab::Pages::VERSION },
           database: { adapter: Gitlab::Database.adapter_name, version: Gitlab::Database.version }
         }
+      end
+
+      def ingress_modsecurity_usage
+        ::Clusters::Applications::IngressModsecurityUsageService.new.execute
       end
 
       # rubocop: disable CodeReuse/ActiveRecord

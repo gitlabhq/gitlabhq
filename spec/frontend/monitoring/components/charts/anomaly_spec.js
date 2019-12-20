@@ -1,6 +1,7 @@
+import { shallowMount } from '@vue/test-utils';
+import { TEST_HOST } from 'helpers/test_constants';
 import Anomaly from '~/monitoring/components/charts/anomaly.vue';
 
-import { shallowMount } from '@vue/test-utils';
 import { colorValues } from '~/monitoring/constants';
 import {
   anomalyDeploymentData,
@@ -8,7 +9,6 @@ import {
   anomalyMockGraphData,
   anomalyMockResultValues,
 } from '../../mock_data';
-import { TEST_HOST } from 'helpers/test_constants';
 import MonitorTimeSeriesChart from '~/monitoring/components/charts/time_series.vue';
 
 const mockWidgets = 'mockWidgets';
@@ -17,8 +17,8 @@ const mockProjectPath = `${TEST_HOST}${mockProjectDir}`;
 jest.mock('~/lib/utils/icon_utils'); // mock getSvgIconPathContent
 
 const makeAnomalyGraphData = (datasetName, template = anomalyMockGraphData) => {
-  const queries = anomalyMockResultValues[datasetName].map((values, index) => ({
-    ...template.queries[index],
+  const metrics = anomalyMockResultValues[datasetName].map((values, index) => ({
+    ...template.metrics[index],
     result: [
       {
         metrics: {},
@@ -26,7 +26,7 @@ const makeAnomalyGraphData = (datasetName, template = anomalyMockGraphData) => {
       },
     ],
   }));
-  return { ...template, queries };
+  return { ...template, metrics };
 };
 
 describe('Anomaly chart component', () => {
@@ -67,19 +67,19 @@ describe('Anomaly chart component', () => {
       describe('graph-data', () => {
         it('receives a single "metric" series', () => {
           const { graphData } = getTimeSeriesProps();
-          expect(graphData.queries.length).toBe(1);
+          expect(graphData.metrics.length).toBe(1);
         });
 
         it('receives "metric" with all data', () => {
           const { graphData } = getTimeSeriesProps();
-          const query = graphData.queries[0];
-          const expectedQuery = makeAnomalyGraphData(dataSetName).queries[0];
+          const query = graphData.metrics[0];
+          const expectedQuery = makeAnomalyGraphData(dataSetName).metrics[0];
           expect(query).toEqual(expectedQuery);
         });
 
         it('receives the "metric" results', () => {
           const { graphData } = getTimeSeriesProps();
-          const { result } = graphData.queries[0];
+          const { result } = graphData.metrics[0];
           const { values } = result[0];
           const [metricDataset] = dataSet;
           expect(values).toEqual(expect.any(Array));
@@ -266,12 +266,12 @@ describe('Anomaly chart component', () => {
       describe('graph-data', () => {
         it('receives a single "metric" series', () => {
           const { graphData } = getTimeSeriesProps();
-          expect(graphData.queries.length).toBe(1);
+          expect(graphData.metrics.length).toBe(1);
         });
 
         it('receives "metric" results and applies the offset to them', () => {
           const { graphData } = getTimeSeriesProps();
-          const { result } = graphData.queries[0];
+          const { result } = graphData.metrics[0];
           const { values } = result[0];
           const [metricDataset] = dataSet;
           expect(values).toEqual(expect.any(Array));

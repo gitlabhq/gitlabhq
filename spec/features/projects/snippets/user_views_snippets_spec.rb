@@ -28,7 +28,7 @@ describe 'Projects > Snippets > User views snippets' do
   end
 
   it 'shows snippets' do
-    expect(page).to have_content(project_snippet.title)
+    expect(page).to have_link(project_snippet.title, href: project_snippet_path(project, project_snippet))
     expect(page).not_to have_content(snippet.title)
   end
 end

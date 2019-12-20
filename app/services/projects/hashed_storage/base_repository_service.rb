@@ -8,13 +8,12 @@ module Projects
     class BaseRepositoryService < BaseService
       include Gitlab::ShellAdapter
 
-      attr_reader :old_disk_path, :new_disk_path, :old_wiki_disk_path, :old_storage_version, :logger, :move_wiki
+      attr_reader :old_disk_path, :new_disk_path, :old_storage_version, :logger, :move_wiki
 
       def initialize(project:, old_disk_path:, logger: nil)
         @project = project
         @logger = logger || Gitlab::AppLogger
         @old_disk_path = old_disk_path
-        @old_wiki_disk_path = "#{old_disk_path}.wiki"
         @move_wiki = has_wiki?
       end
 
@@ -44,9 +43,21 @@ module Projects
         gitlab_shell.mv_repository(project.repository_storage, from_name, to_name)
       end
 
+      def move_repositories
+        result = move_repository(old_disk_path, new_disk_path)
+        project.reload_repository!
+
+        if move_wiki
+          result &&= move_repository(old_wiki_disk_path, new_wiki_disk_path)
+          project.clear_memoization(:wiki)
+        end
+
+        result
+      end
+
       def rollback_folder_move
         move_repository(new_disk_path, old_disk_path)
-        move_repository("#{new_disk_path}.wiki", old_wiki_disk_path)
+        move_repository(new_wiki_disk_path, old_wiki_disk_path)
       end
 
       def try_to_set_repository_read_only!
@@ -58,6 +69,20 @@ module Projects
           raise RepositoryInUseError, migration_error
         end
       end
+
+      def wiki_path_suffix
+        @wiki_path_suffix ||= Gitlab::GlRepository::WIKI.path_suffix
+      end
+
+      def old_wiki_disk_path
+        @old_wiki_disk_path ||= "#{old_disk_path}#{wiki_path_suffix}"
+      end
+
+      def new_wiki_disk_path
+        @new_wiki_disk_path ||= "#{new_disk_path}#{wiki_path_suffix}"
+      end
     end
   end
 end
+
+Projects::HashedStorage::BaseRepositoryService.prepend_if_ee('EE::Projects::HashedStorage::BaseRepositoryService')

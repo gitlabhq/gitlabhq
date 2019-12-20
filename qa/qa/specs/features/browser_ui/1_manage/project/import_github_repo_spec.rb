@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  # https://gitlab.com/gitlab-org/gitlab-foss/issues/58158
+  # https://gitlab.com/gitlab-org/gitlab/issues/26952
+  # BUG_IN_CODE
   context 'Manage', :github, :quarantine do
     describe 'Project import from GitHub' do
       let(:imported_project) do
@@ -23,8 +24,7 @@ module QA
       end
 
       it 'user imports a GitHub repo' do
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.perform(&:sign_in_using_credentials)
+        Flow::Login.sign_in
 
         imported_project # import the project
 

@@ -1,8 +1,8 @@
 <script>
 import { mapActions, mapState } from 'vuex';
+import { GlLoadingIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
-import { GlLoadingIcon } from '@gitlab/ui';
 import { PROJECT_BADGE } from '../constants';
 import Badge from './badge.vue';
 
@@ -43,13 +43,14 @@ export default {
     <badge
       :image-url="badge.renderedImageUrl"
       :link-url="badge.renderedLinkUrl"
-      class="table-section section-40"
+      class="table-section section-30"
     />
-    <span class="table-section section-30 str-truncated">{{ badge.linkUrl }}</span>
-    <div class="table-section section-15">
+    <div class="table-section section-30">
+      <label class="label-bold str-truncated mb-0">{{ badge.name }}</label>
       <span class="badge badge-pill">{{ badgeKindText }}</span>
     </div>
-    <div class="table-section section-15 table-button-footer">
+    <span class="table-section section-30 str-truncated">{{ badge.linkUrl }}</span>
+    <div class="table-section section-10 table-button-footer">
       <div v-if="canEditBadge" class="table-action-buttons">
         <button
           :disabled="badge.isDeleting"

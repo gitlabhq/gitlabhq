@@ -42,16 +42,16 @@ describe SubmitUsagePingService do
       subject.execute
     end
 
-    it 'saves conversational development index data from the response' do
+    it 'saves DevOps Score data from the response' do
       stub_response(with_conv_index_params)
 
       expect { subject.execute }
-        .to change { ConversationalDevelopmentIndex::Metric.count }
+        .to change { DevOpsScore::Metric.count }
         .by(1)
 
-      expect(ConversationalDevelopmentIndex::Metric.last.leader_issues).to eq 10.2
-      expect(ConversationalDevelopmentIndex::Metric.last.instance_issues).to eq 3.2
-      expect(ConversationalDevelopmentIndex::Metric.last.percentage_issues).to eq 31.37
+      expect(DevOpsScore::Metric.last.leader_issues).to eq 10.2
+      expect(DevOpsScore::Metric.last.instance_issues).to eq 3.2
+      expect(DevOpsScore::Metric.last.percentage_issues).to eq 31.37
     end
   end
 

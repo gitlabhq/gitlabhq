@@ -795,9 +795,11 @@ describe API::Jobs do
 
         before do
           stub_remote_url_206(url, file_path)
-          allow_any_instance_of(JobArtifactUploader).to receive(:file_storage?) { false }
-          allow_any_instance_of(JobArtifactUploader).to receive(:url) { url }
-          allow_any_instance_of(JobArtifactUploader).to receive(:size) { File.size(file_path) }
+          allow_next_instance_of(JobArtifactUploader) do |instance|
+            allow(instance).to receive(:file_storage?) { false }
+            allow(instance).to receive(:url) { url }
+            allow(instance).to receive(:size) { File.size(file_path) }
+          end
         end
 
         it 'returns specific job trace' do

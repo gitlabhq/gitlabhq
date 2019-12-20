@@ -42,13 +42,13 @@ describe ProjectPolicy do
       update_commit_status create_build update_build create_pipeline
       update_pipeline create_merge_request_from create_wiki push_code
       resolve_note create_container_image update_container_image destroy_container_image
-      create_environment create_deployment update_deployment create_release update_release
+      create_environment update_environment create_deployment update_deployment create_release update_release
     ]
   end
 
   let(:base_maintainer_permissions) do
     %i[
-      push_to_delete_protected_branch update_project_snippet update_environment
+      push_to_delete_protected_branch update_project_snippet
       admin_project_snippet admin_project_member admin_note admin_wiki admin_project
       admin_commit_status admin_build admin_container_image
       admin_pipeline admin_environment admin_deployment destroy_release add_cluster
@@ -307,6 +307,7 @@ describe ProjectPolicy do
 
   context 'for a guest in a private project' do
     let(:project) { create(:project, :private) }
+
     subject { described_class.new(guest, project) }
 
     it 'disallows the guest from reading the merge request and merge request iid' do
@@ -320,6 +321,7 @@ describe ProjectPolicy do
 
     describe 'for unconfirmed user' do
       let(:unconfirmed_user) { create(:user, confirmed_at: nil) }
+
       subject { described_class.new(unconfirmed_user, project) }
 
       it 'disallows to modify pipelines' do

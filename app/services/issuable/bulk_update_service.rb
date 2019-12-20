@@ -4,19 +4,18 @@ module Issuable
   class BulkUpdateService
     include Gitlab::Allowable
 
-    attr_accessor :current_user, :params
+    attr_accessor :parent, :current_user, :params
 
-    def initialize(user = nil, params = {})
-      @current_user, @params = user, params.dup
+    def initialize(parent, user = nil, params = {})
+      @parent, @current_user, @params = parent, user, params.dup
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def execute(type)
       model_class = type.classify.constantize
       update_class = type.classify.pluralize.constantize::UpdateService
 
       ids = params.delete(:issuable_ids).split(",")
-      items = model_class.where(id: ids)
+      items = find_issuables(parent, model_class, ids)
 
       permitted_attrs(type).each do |key|
         params.delete(key) unless params[key].present?
@@ -37,7 +36,6 @@ module Issuable
         success:  !items.count.zero?
       }
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     private
 
@@ -50,5 +48,15 @@ module Issuable
         attrs.push(:assignee_id)
       end
     end
+
+    def find_issuables(parent, model_class, ids)
+      if parent.is_a?(Project)
+        model_class.id_in(ids).of_projects(parent)
+      elsif parent.is_a?(Group)
+        model_class.id_in(ids).of_projects(parent.all_projects)
+      end
+    end
   end
 end
+
+Issuable::BulkUpdateService.prepend_if_ee('EE::Issuable::BulkUpdateService')

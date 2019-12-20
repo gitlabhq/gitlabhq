@@ -155,9 +155,9 @@ class Note < ApplicationRecord
   after_initialize :ensure_discussion_id
   before_validation :nullify_blank_type, :nullify_blank_line_code
   before_validation :set_discussion_id, on: :create
-  after_save :keep_around_commit, if: :for_project_noteable?
-  after_save :expire_etag_cache
-  after_save :touch_noteable
+  after_save :keep_around_commit, if: :for_project_noteable?, unless: :importing?
+  after_save :expire_etag_cache, unless: :importing?
+  after_save :touch_noteable, unless: :importing?
   after_destroy :expire_etag_cache
 
   class << self
@@ -413,6 +413,10 @@ class Note < ApplicationRecord
     full_discussion || to_discussion
   end
 
+  def start_of_discussion?
+    discussion.first_note == self
+  end
+
   def part_of_discussion?
     !to_discussion.individual_note?
   end
@@ -495,7 +499,17 @@ class Note < ApplicationRecord
     project
   end
 
+  def user_mentions
+    noteable.user_mentions.where(note: self)
+  end
+
   private
+
+  # Using this method followed by a call to `save` may result in ActiveRecord::RecordNotUnique exception
+  # in a multithreaded environment. Make sure to use it within a `safe_ensure_unique` block.
+  def model_user_mention
+    user_mentions.first_or_initialize
+  end
 
   def system_note_viewable_by?(user)
     return true unless system_note_metadata

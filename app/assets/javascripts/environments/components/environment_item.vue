@@ -1,12 +1,13 @@
 <script>
 /* eslint-disable @gitlab/vue-i18n/no-bare-strings */
-import { __, sprintf } from '~/locale';
-import Timeago from 'timeago.js';
+import { format } from 'timeago.js';
 import _ from 'underscore';
 import { GlTooltipDirective } from '@gitlab/ui';
+import environmentItemMixin from 'ee_else_ce/environments/mixins/environment_item_mixin';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import Icon from '~/vue_shared/components/icon.vue';
-import environmentItemMixin from 'ee_else_ce/environments/mixins/environment_item_mixin';
+import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
+import { __, sprintf } from '~/locale';
 import ActionsComponent from './environment_actions.vue';
 import ExternalUrlComponent from './environment_external_url.vue';
 import StopComponent from './environment_stop.vue';
@@ -22,11 +23,9 @@ import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
  *
  * Renders a table row for each environment.
  */
-const timeagoInstance = new Timeago();
 
 export default {
   components: {
-    UserAvatarLink,
     CommitComponent,
     Icon,
     ActionsComponent,
@@ -35,6 +34,8 @@ export default {
     RollbackComponent,
     TerminalButtonComponent,
     MonitoringButtonComponent,
+    TooltipOnTruncate,
+    UserAvatarLink,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -42,16 +43,21 @@ export default {
   mixins: [environmentItemMixin],
 
   props: {
+    canReadEnvironment: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
     model: {
       type: Object,
       required: true,
       default: () => ({}),
     },
 
-    canReadEnvironment: {
-      type: Boolean,
-      required: false,
-      default: false,
+    tableData: {
+      type: Object,
+      required: true,
     },
   },
 
@@ -121,7 +127,7 @@ export default {
      */
     deployedDate() {
       if (this.canShowDate) {
-        return timeagoInstance.format(this.model.last_deployment.deployed_at);
+        return format(this.model.last_deployment.deployed_at);
       }
       return '';
     },
@@ -446,9 +452,13 @@ export default {
     class="gl-responsive-table-row"
     role="row"
   >
-    <div class="table-section section-wrap section-15 text-truncate" role="gridcell">
+    <div
+      class="table-section section-wrap text-truncate"
+      :class="tableData.name.spacing"
+      role="gridcell"
+    >
       <div v-if="!model.isFolder" class="table-mobile-header" role="rowheader">
-        {{ s__('Environments|Environment') }}
+        {{ tableData.name.title }}
       </div>
 
       <span v-if="shouldRenderDeployBoard" class="deploy-board-icon" @click="toggleDeployBoard">
@@ -488,7 +498,8 @@ export default {
     </div>
 
     <div
-      class="table-section section-10 deployment-column d-none d-sm-none d-md-block"
+      class="table-section deployment-column d-none d-sm-none d-md-block"
+      :class="tableData.deploy.spacing"
       role="gridcell"
     >
       <span v-if="shouldRenderDeploymentID" class="text-break-word">
@@ -507,18 +518,32 @@ export default {
       </span>
     </div>
 
-    <div class="table-section section-15 d-none d-sm-none d-md-block" role="gridcell">
-      <a
-        v-if="shouldRenderBuildName"
-        :href="buildPath"
-        class="build-link cgray flex-truncate-parent"
-      >
-        <span class="flex-truncate-child">{{ buildName }}</span>
+    <div
+      class="table-section d-none d-sm-none d-md-block"
+      :class="tableData.build.spacing"
+      role="gridcell"
+    >
+      <a v-if="shouldRenderBuildName" :href="buildPath" class="build-link cgray">
+        <tooltip-on-truncate
+          :title="buildName"
+          truncate-target="child"
+          class="flex-truncate-parent"
+        >
+          <span class="flex-truncate-child">
+            {{ buildName }}
+          </span>
+        </tooltip-on-truncate>
       </a>
     </div>
 
-    <div v-if="!model.isFolder" class="table-section section-20" role="gridcell">
-      <div role="rowheader" class="table-mobile-header">{{ s__('Environments|Commit') }}</div>
+    <div
+      v-if="!model.isFolder"
+      class="table-section"
+      :class="tableData.commit.spacing"
+      role="gridcell"
+    >
+      <div role="rowheader" class="table-mobile-header">{{ tableData.commit.title }}</div>
+
       <div v-if="hasLastDeploymentKey" class="js-commit-component table-mobile-content">
         <commit-component
           :tag="commitTag"
@@ -534,8 +559,14 @@ export default {
       </div>
     </div>
 
-    <div v-if="!model.isFolder" class="table-section section-10" role="gridcell">
-      <div role="rowheader" class="table-mobile-header">{{ s__('Environments|Updated') }}</div>
+    <div
+      v-if="!model.isFolder"
+      class="table-section"
+      :class="tableData.date.spacing"
+      role="gridcell"
+    >
+      <div role="rowheader" class="table-mobile-header">{{ tableData.date.title }}</div>
+
       <span v-if="canShowDate" class="environment-created-date-timeago table-mobile-content">
         {{ deployedDate }}
       </span>
@@ -543,7 +574,8 @@ export default {
 
     <div
       v-if="!model.isFolder && displayEnvironmentActions"
-      class="table-section section-30 table-button-footer"
+      class="table-section table-button-footer"
+      :class="tableData.actions.spacing"
       role="gridcell"
     >
       <div class="btn-group table-action-buttons" role="group">

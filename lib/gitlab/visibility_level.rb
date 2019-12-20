@@ -29,7 +29,7 @@ module Gitlab
       def levels_for_user(user = nil)
         return [PUBLIC] unless user
 
-        if user.full_private_access?
+        if user.can_read_all_resources?
           [PRIVATE, INTERNAL, PUBLIC]
         elsif user.external?
           [PUBLIC]
@@ -113,6 +113,18 @@ module Gitlab
       def string_level(level)
         string_options.key(level)
       end
+    end
+
+    def visibility_level_decreased?
+      return false unless visibility_level_previous_changes
+
+      before, after = visibility_level_previous_changes
+
+      before && after && after < before
+    end
+
+    def visibility_level_previous_changes
+      previous_changes[:visibility_level]
     end
 
     def private?

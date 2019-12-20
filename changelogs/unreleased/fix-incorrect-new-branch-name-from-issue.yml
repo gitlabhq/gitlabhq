@@ -1,0 +1,5 @@
+---
+title: Fix incorrect new branch name from issue
+merge_request: 20677
+author: Lee Tickett
+type: fixed

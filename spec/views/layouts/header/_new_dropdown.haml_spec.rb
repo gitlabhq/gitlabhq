@@ -126,6 +126,16 @@ describe 'layouts/header/_new_dropdown' do
 
       expect(rendered).to have_link('New snippet', href: new_snippet_path)
     end
+
+    context 'when the user is not allowed to create snippets' do
+      let(:user) { create(:user, :external)}
+
+      it 'has no "New snippet" link' do
+        render
+
+        expect(rendered).not_to have_link('New snippet', href: new_snippet_path)
+      end
+    end
   end
 
   def stub_current_user(current_user)

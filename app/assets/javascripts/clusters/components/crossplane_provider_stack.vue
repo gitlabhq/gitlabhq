@@ -1,6 +1,5 @@
 <script>
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlDropdown, GlDropdownItem, GlIcon } from '@gitlab/ui';
 import { s__ } from '../../locale';
 
 export default {
@@ -8,7 +7,7 @@ export default {
   components: {
     GlDropdown,
     GlDropdownItem,
-    Icon,
+    GlIcon,
   },
   props: {
     stacks: {
@@ -86,8 +85,9 @@ export default {
         href="https://crossplane.io/docs/master/stacks-guide.html"
         target="_blank"
         rel="noopener noreferrer"
-        >{{ __('Crossplane') }}</a
-      >
+        >{{ __('Crossplane') }}
+        <gl-icon name="external-link" class="vertical-align-middle" />
+      </a>
     </p>
   </div>
 </template>

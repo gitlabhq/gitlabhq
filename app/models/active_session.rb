@@ -4,6 +4,7 @@ class ActiveSession
   include ActiveModel::Model
 
   SESSION_BATCH_SIZE = 200
+  ALLOWED_NUMBER_OF_ACTIVE_SESSIONS = 100
 
   attr_accessor :created_at, :updated_at,
     :session_id, :ip_address,
@@ -65,21 +66,22 @@ class ActiveSession
 
   def self.destroy(user, session_id)
     Gitlab::Redis::SharedState.with do |redis|
-      redis.srem(lookup_key_name(user.id), session_id)
-
-      deleted_keys = redis.del(key_name(user.id, session_id))
-
-      # only allow deleting the devise session if we could actually find a
-      # related active session. this prevents another user from deleting
-      # someone else's session.
-      if deleted_keys > 0
-        redis.del("#{Gitlab::Redis::SharedState::SESSION_NAMESPACE}:#{session_id}")
-      end
+      destroy_sessions(redis, user, [session_id])
     end
+  end
+
+  def self.destroy_sessions(redis, user, session_ids)
+    key_names = session_ids.map {|session_id| key_name(user.id, session_id) }
+    session_names = session_ids.map {|session_id| "#{Gitlab::Redis::SharedState::SESSION_NAMESPACE}:#{session_id}" }
+
+    redis.srem(lookup_key_name(user.id), session_ids)
+    redis.del(key_names)
+    redis.del(session_names)
   end
 
   def self.cleanup(user)
     Gitlab::Redis::SharedState.with do |redis|
+      clean_up_old_sessions(redis, user)
       cleaned_up_lookup_entries(redis, user)
     end
   end
@@ -118,19 +120,40 @@ class ActiveSession
     end
   end
 
-  def self.raw_active_session_entries(session_ids, user_id)
+  def self.raw_active_session_entries(redis, session_ids, user_id)
     return [] if session_ids.empty?
 
-    Gitlab::Redis::SharedState.with do |redis|
-      entry_keys = session_ids.map { |session_id| key_name(user_id, session_id) }
+    entry_keys = session_ids.map { |session_id| key_name(user_id, session_id) }
 
-      redis.mget(entry_keys)
+    redis.mget(entry_keys)
+  end
+
+  def self.active_session_entries(session_ids, user_id, redis)
+    return [] if session_ids.empty?
+
+    entry_keys = raw_active_session_entries(redis, session_ids, user_id)
+
+    entry_keys.compact.map do |raw_session|
+      Marshal.load(raw_session) # rubocop:disable Security/MarshalLoad
     end
+  end
+
+  def self.clean_up_old_sessions(redis, user)
+    session_ids = session_ids_for_user(user.id)
+
+    return if session_ids.count <= ALLOWED_NUMBER_OF_ACTIVE_SESSIONS
+
+    # remove sessions if there are more than ALLOWED_NUMBER_OF_ACTIVE_SESSIONS.
+    sessions = active_session_entries(session_ids, user.id, redis)
+    sessions.sort_by! {|session| session.updated_at }.reverse!
+    sessions = sessions.drop(ALLOWED_NUMBER_OF_ACTIVE_SESSIONS)
+    sessions = sessions.map { |session| session.session_id }
+    destroy_sessions(redis, user, sessions) if sessions.any?
   end
 
   def self.cleaned_up_lookup_entries(redis, user)
     session_ids = session_ids_for_user(user.id)
-    entries = raw_active_session_entries(session_ids, user.id)
+    entries = raw_active_session_entries(redis, session_ids, user.id)
 
     # remove expired keys.
     # only the single key entries are automatically expired by redis, the

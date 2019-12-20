@@ -29,7 +29,7 @@ describe 'User creates confidential merge request on issue page', :js do
       click_button 'Create confidential merge request'
 
       page.within '.create-confidential-merge-request-dropdown-menu' do
-        expect(page).to have_content('No forks available to you')
+        expect(page).to have_content('No forks are available to you')
       end
     end
   end

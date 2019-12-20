@@ -64,7 +64,7 @@ module QA
       end
 
       def visit!
-        Runtime::Logger.debug(%Q[Visiting #{self.class.name} at "#{web_url}"]) if Runtime::Env.debug?
+        Runtime::Logger.debug(%Q[Visiting #{self.class.name} at "#{web_url}"])
 
         Support::Retrier.retry_until do
           visit(web_url)

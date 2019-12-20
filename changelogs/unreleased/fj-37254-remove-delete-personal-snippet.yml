@@ -1,0 +1,5 @@
+---
+title: Remove destroy_personal_snippet ability
+merge_request: 20717
+author:
+type: fixed

@@ -1,0 +1,5 @@
+---
+title: Add protected branch permission check to run downstream pipelines
+merge_request: 20964
+author:
+type: fixed

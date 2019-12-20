@@ -3,13 +3,15 @@
 module Clusters
   module Applications
     class Knative < ApplicationRecord
-      VERSION = '0.7.0'
+      VERSION = '0.9.0'
       REPOSITORY = 'https://storage.googleapis.com/triggermesh-charts'
       METRICS_CONFIG = 'https://storage.googleapis.com/triggermesh-charts/istio-metrics.yaml'
       FETCH_IP_ADDRESS_DELAY = 30.seconds
-      API_RESOURCES_PATH = 'config/knative/api_resources.yml'
+      API_GROUPS_PATH = 'config/knative/api_groups.yml'
 
       self.table_name = 'clusters_applications_knative'
+
+      has_one :serverless_domain_cluster, class_name: 'Serverless::DomainCluster', foreign_key: 'clusters_applications_knative_id', inverse_of: :knative
 
       include ::Clusters::Concerns::ApplicationCore
       include ::Clusters::Concerns::ApplicationStatus
@@ -17,11 +19,11 @@ module Clusters
       include ::Clusters::Concerns::ApplicationData
       include AfterCommitQueue
 
+      alias_method :original_set_initial_status, :set_initial_status
       def set_initial_status
-        return unless not_installable?
-        return unless verify_cluster?
+        return unless cluster&.platform_kubernetes_rbac?
 
-        self.status = status_states[:installable]
+        original_set_initial_status
       end
 
       state_machine :status do
@@ -109,15 +111,15 @@ module Clusters
       end
 
       def delete_knative_and_istio_crds
-        api_resources.map do |crd|
-          Gitlab::Kubernetes::KubectlCmd.delete("--ignore-not-found", "crd", "#{crd}")
+        api_groups.map do |group|
+          Gitlab::Kubernetes::KubectlCmd.delete_crds_from_group(group)
         end
       end
 
       # returns an array of CRDs to be postdelete since helm does not
       # manage the CRDs it creates.
-      def api_resources
-        @api_resources ||= YAML.safe_load(File.read(Rails.root.join(API_RESOURCES_PATH)))
+      def api_groups
+        @api_groups ||= YAML.safe_load(File.read(Rails.root.join(API_GROUPS_PATH)))
       end
 
       def install_knative_metrics
@@ -130,10 +132,6 @@ module Clusters
         return [] unless cluster.application_prometheus_available?
 
         [Gitlab::Kubernetes::KubectlCmd.delete("--ignore-not-found", "-f", METRICS_CONFIG)]
-      end
-
-      def verify_cluster?
-        cluster&.application_helm_available? && cluster&.platform_kubernetes_rbac?
       end
     end
   end

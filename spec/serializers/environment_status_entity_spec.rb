@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe EnvironmentStatusEntity do
   let(:user)    { create(:user) }
-  let(:request) { double('request') }
+  let(:request) { double('request', project: project) }
 
   let(:deployment)    { create(:deployment, :succeed, :review_app) }
   let(:environment)   { deployment.environment }
@@ -28,6 +28,7 @@ describe EnvironmentStatusEntity do
   it { is_expected.to include(:external_url_formatted) }
   it { is_expected.to include(:deployed_at) }
   it { is_expected.to include(:deployed_at_formatted) }
+  it { is_expected.to include(:details) }
   it { is_expected.to include(:changes) }
   it { is_expected.to include(:status) }
 
@@ -72,7 +73,7 @@ describe EnvironmentStatusEntity do
 
       it 'returns metrics url' do
         expect(subject[:metrics_url])
-          .to eq("/#{project.full_path}/environments/#{environment.id}/deployments/#{deployment.iid}/metrics")
+          .to eq("/#{project.full_path}/-/environments/#{environment.id}/deployments/#{deployment.iid}/metrics")
       end
     end
 

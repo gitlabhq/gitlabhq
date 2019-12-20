@@ -1,4 +1,4 @@
-require './spec/support/sidekiq'
+require './spec/support/sidekiq_middleware'
 
 
 # Creating keys runs a gitlab-shell worker. Since we may not have the right

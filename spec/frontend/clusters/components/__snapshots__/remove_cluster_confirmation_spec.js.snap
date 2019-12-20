@@ -1,0 +1,80 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Remove cluster confirmation modal renders splitbutton with modal included 1`] = `
+<div>
+  <div
+    class="dropdown btn-group b-dropdown gl-dropdown"
+  >
+    <button
+      class="btn btn-danger"
+      type="button"
+    >
+      
+    Remove integration and resources
+    
+      <!---->
+    </button>
+    <button
+      aria-expanded="false"
+      aria-haspopup="true"
+      class="btn dropdown-toggle btn-danger dropdown-toggle-split"
+      type="button"
+    >
+      <span
+        class="sr-only"
+      >
+        Toggle Dropdown
+      </span>
+    </button>
+    <ul
+      class="dropdown-menu dropdown-menu-selectable dropdown-menu-large"
+      role="menu"
+      tabindex="-1"
+    >
+      <li>
+        <button
+          class="dropdown-item is-active"
+          role="menuitem"
+          type="button"
+        >
+          <strong>
+            Remove integration and resources
+          </strong>
+           
+          <div>
+            Deletes all GitLab resources attached to this cluster during removal
+          </div>
+        </button>
+      </li>
+       
+      <li>
+        <hr
+          aria-orientation="horizontal"
+          class="dropdown-divider"
+          role="separator"
+        />
+      </li>
+      <li>
+        <button
+          class="dropdown-item"
+          role="menuitem"
+          type="button"
+        >
+          <strong>
+            Remove integration
+          </strong>
+           
+          <div>
+            Removes cluster from project but keeps associated resources
+          </div>
+        </button>
+      </li>
+       
+      <!---->
+       
+    </ul>
+  </div>
+   
+  <!---->
+</div>
+`;

@@ -22,7 +22,7 @@ module QA
 
         def has_detailed_metrics?
           all_elements(:performance_bar_detailed_metric).all? do |metric|
-            metric.has_text?(%r{\d+ms / \d+})
+            metric.has_text?(%r{\d+})
           end
         end
 

@@ -1,0 +1,17 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+      {
+          "Effect": "Allow",
+          "Action": [
+              "iam:ListRoles",
+              "ec2:DescribeKeyPairs",
+              "ec2:DescribeRegions",
+              "ec2:DescribeSecurityGroups",
+              "ec2:DescribeSubnets",
+              "ec2:DescribeVpcs"
+          ],
+          "Resource": "*"
+      }
+  ]
+}

@@ -38,7 +38,7 @@
       "additionalProperties": false
     },
     "_links": {
-      "required": ["merge_requests_url", "issues_url", "edit_url"],
+      "required": ["merge_requests_url", "issues_url"],
       "properties": {
         "merge_requests_url": { "type": "string" },
         "issues_url": { "type": "string" },

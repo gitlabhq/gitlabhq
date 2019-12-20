@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import closedComponent from '~/vue_merge_request_widget/components/states/mr_widget_closed.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import closedComponent from '~/vue_merge_request_widget/components/states/mr_widget_closed.vue';
 
 describe('MRWidgetClosed', () => {
   let vm;

@@ -68,3 +68,11 @@ tag 'gitlab-puma-worker'
 # value is 60 seconds.
 #
 worker_timeout 60
+
+# Use json formatter
+require_relative "/home/git/gitlab/lib/gitlab/puma_logging/json_formatter"
+
+json_formatter = Gitlab::PumaLogging::JSONFormatter.new
+log_formatter do |str|
+  json_formatter.call(str)
+end

@@ -1,20 +1,35 @@
-import Vue from 'vue';
+import { shallowMount } from '@vue/test-utils';
 import $ from 'jquery';
-import headerComponent from '~/vue_shared/components/markdown/header.vue';
+import HeaderComponent from '~/vue_shared/components/markdown/header.vue';
+import ToolbarButton from '~/vue_shared/components/markdown/toolbar_button.vue';
 
 describe('Markdown field header component', () => {
-  let vm;
+  let wrapper;
 
-  beforeEach(done => {
-    const Component = Vue.extend(headerComponent);
-
-    vm = new Component({
+  const createWrapper = props => {
+    wrapper = shallowMount(HeaderComponent, {
       propsData: {
         previewMarkdown: false,
+        ...props,
       },
-    }).$mount();
+      sync: false,
+      attachToDocument: true,
+    });
+  };
 
-    Vue.nextTick(done);
+  const findToolbarButtons = () => wrapper.findAll(ToolbarButton);
+  const findToolbarButtonByProp = (prop, value) =>
+    findToolbarButtons()
+      .filter(button => button.props(prop) === value)
+      .at(0);
+
+  beforeEach(() => {
+    createWrapper();
+  });
+
+  afterEach(() => {
+    wrapper.destroy();
+    wrapper = null;
   });
 
   it('renders markdown header buttons', () => {
@@ -31,77 +46,72 @@ describe('Markdown field header component', () => {
       'Add a table',
       'Go full screen',
     ];
-    const elements = vm.$el.querySelectorAll('.toolbar-btn');
+    const elements = findToolbarButtons();
 
-    elements.forEach((buttonEl, index) => {
-      expect(buttonEl.getAttribute('data-original-title')).toBe(buttons[index]);
+    elements.wrappers.forEach((buttonEl, index) => {
+      expect(buttonEl.props('buttonTitle')).toBe(buttons[index]);
     });
   });
 
   it('renders `write` link as active when previewMarkdown is false', () => {
-    expect(vm.$el.querySelector('li:nth-child(1)').classList.contains('active')).toBeTruthy();
+    expect(wrapper.find('li:nth-child(1)').classes()).toContain('active');
   });
 
-  it('renders `preview` link as active when previewMarkdown is true', done => {
-    vm.previewMarkdown = true;
+  it('renders `preview` link as active when previewMarkdown is true', () => {
+    createWrapper({ previewMarkdown: true });
 
-    Vue.nextTick(() => {
-      expect(vm.$el.querySelector('li:nth-child(2)').classList.contains('active')).toBeTruthy();
-
-      done();
-    });
+    expect(wrapper.find('li:nth-child(2)').classes()).toContain('active');
   });
 
   it('emits toggle markdown event when clicking preview', () => {
-    jest.spyOn(vm, '$emit').mockImplementation();
+    wrapper.find('.js-preview-link').trigger('click');
 
-    vm.$el.querySelector('.js-preview-link').click();
+    expect(wrapper.emitted('preview-markdown').length).toEqual(1);
 
-    expect(vm.$emit).toHaveBeenCalledWith('preview-markdown');
+    wrapper.find('.js-write-link').trigger('click');
 
-    vm.$el.querySelector('.js-write-link').click();
-
-    expect(vm.$emit).toHaveBeenCalledWith('write-markdown');
+    expect(wrapper.emitted('write-markdown').length).toEqual(1);
   });
 
   it('does not emit toggle markdown event when triggered from another form', () => {
-    jest.spyOn(vm, '$emit').mockImplementation();
-
     $(document).triggerHandler('markdown-preview:show', [
       $(
         '<form><div class="js-vue-markdown-field"><textarea class="markdown-area"></textarea></div></form>',
       ),
     ]);
 
-    expect(vm.$emit).not.toHaveBeenCalled();
+    expect(wrapper.emitted('preview-markdown')).toBeFalsy();
+    expect(wrapper.emitted('write-markdown')).toBeFalsy();
   });
 
   it('blurs preview link after click', () => {
-    const link = vm.$el.querySelector('li:nth-child(2) button');
+    const link = wrapper.find('li:nth-child(2) button');
     jest.spyOn(HTMLElement.prototype, 'blur').mockImplementation();
 
-    link.click();
+    link.trigger('click');
 
-    expect(link.blur).toHaveBeenCalled();
+    expect(link.element.blur).toHaveBeenCalled();
   });
 
   it('renders markdown table template', () => {
-    expect(vm.mdTable).toEqual(
+    const tableButton = findToolbarButtonByProp('icon', 'table');
+
+    expect(tableButton.props('tag')).toEqual(
       '| header | header |\n| ------ | ------ |\n| cell | cell |\n| cell | cell |',
     );
   });
 
   it('renders suggestion template', () => {
-    vm.lineContent = 'Some content';
-
-    expect(vm.mdSuggestion).toEqual('```suggestion:-0+0\n{text}\n```');
+    expect(findToolbarButtonByProp('buttonTitle', 'Insert suggestion').props('tag')).toEqual(
+      '```suggestion:-0+0\n{text}\n```',
+    );
   });
 
   it('does not render suggestion button if `canSuggest` is set to false', () => {
-    vm.canSuggest = false;
-
-    Vue.nextTick(() => {
-      expect(vm.$el.querySelector('.js-suggestion-btn')).toBe(null);
+    createWrapper({
+      canSuggest: false,
     });
+
+    expect(wrapper.find('.js-suggestion-btn').exists()).toBe(false);
   });
 });

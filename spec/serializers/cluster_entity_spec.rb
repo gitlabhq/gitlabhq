@@ -39,6 +39,7 @@ describe ClusterEntity do
 
     context 'when no application has been installed' do
       let(:cluster) { create(:cluster) }
+
       subject { described_class.new(cluster).as_json[:applications]}
 
       it 'contains helm as not_installable' do

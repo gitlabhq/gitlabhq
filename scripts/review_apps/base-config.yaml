@@ -8,6 +8,8 @@ global:
     configureCertmanager: false
     tls:
       secretName: tls-cert
+  initialRootPassword:
+    secret: shared-gitlab-initial-root-password
 certmanager:
   install: false
 gitlab:
@@ -42,7 +44,7 @@ gitlab:
         memory: 37.5M
     maxReplicas: 3
     hpa:
-      targetAverageValue: 130m
+      targetAverageValue: 500m
     deployment:
       livenessProbe:
         timeoutSeconds: 5
@@ -50,10 +52,12 @@ gitlab:
     resources:
       requests:
         cpu: 650m
-        memory: 880M
+        memory: 970M
       limits:
         cpu: 975m
-        memory: 1320M
+        memory: 1450M
+    hpa:
+      targetAverageValue: 650m
   task-runner:
     resources:
       requests:
@@ -66,10 +70,10 @@ gitlab:
     resources:
       requests:
         cpu: 500m
-        memory: 1540M
+        memory: 1630M
       limits:
         cpu: 750m
-        memory: 2310M
+        memory: 2450M
     deployment:
       readinessProbe:
         initialDelaySeconds: 5  # Default is 0
@@ -78,10 +82,10 @@ gitlab:
     workhorse:
       resources:
         requests:
-          cpu: 250m
+          cpu: 400m
           memory: 50M
         limits:
-          cpu: 375m
+          cpu: 600m
           memory: 75M
       readinessProbe:
         initialDelaySeconds: 5  # Default is 0
@@ -90,18 +94,18 @@ gitlab:
 gitlab-runner:
   resources:
     requests:
-      cpu: 450m
+      cpu: 675m
       memory: 100M
     limits:
-      cpu: 675m
+      cpu: 1015m
       memory: 150M
 minio:
   resources:
     requests:
-      cpu: 5m
+      cpu: 9m
       memory: 128M
     limits:
-      cpu: 10m
+      cpu: 15m
       memory: 280M
 nginx-ingress:
   controller:

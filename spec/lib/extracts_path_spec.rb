@@ -88,7 +88,9 @@ describe ExtractsPath do
 
     context 'subclass overrides get_id' do
       it 'uses ref returned by get_id' do
-        allow_any_instance_of(self.class).to receive(:get_id) { '38008cb17ce1466d8fec2dfa6f6ab8dcfe5cf49e' }
+        allow_next_instance_of(self.class) do |instance|
+          allow(instance).to receive(:get_id) { '38008cb17ce1466d8fec2dfa6f6ab8dcfe5cf49e' }
+        end
 
         assign_ref_vars
 

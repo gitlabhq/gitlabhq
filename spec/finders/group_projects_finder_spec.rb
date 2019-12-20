@@ -132,11 +132,13 @@ describe GroupProjectsFinder do
 
     context "only shared" do
       let(:options) { { only_shared: true } }
+
       it            { is_expected.to eq([shared_project_3, shared_project_2, shared_project_1]) }
     end
 
     context "only owned" do
       let(:options) { { only_owned: true } }
+
       it            { is_expected.to eq([private_project, public_project]) }
     end
 
@@ -165,6 +167,22 @@ describe GroupProjectsFinder do
 
       context 'without subgroups projects' do
         it { is_expected.to eq([public_project]) }
+      end
+    end
+  end
+
+  describe 'limiting' do
+    context 'without limiting' do
+      it 'returns all projects' do
+        expect(subject.count).to eq(3)
+      end
+    end
+
+    context 'with limiting' do
+      let(:options) { { limit: 1 } }
+
+      it 'returns only the number of projects specified by the limit' do
+        expect(subject.count).to eq(1)
       end
     end
   end

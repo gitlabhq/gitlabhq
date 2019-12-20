@@ -20,6 +20,11 @@
   .well-segment.qa-pipeline-badges
     .icon-container
       = sprite_icon('flag')
+    - if @pipeline.child?
+      %span.js-pipeline-child.badge.badge-primary.has-tooltip{ title: s_("Pipelines|This is a child pipeline within the parent pipeline") }
+        = s_('Pipelines|Child pipeline')
+        = surround '(', ')' do
+          = link_to s_('Pipelines|parent'), pipeline_path(@pipeline.triggered_by_pipeline), class: 'text-white text-underline'
     - if @pipeline.latest?
       %span.js-pipeline-url-latest.badge.badge-success.has-tooltip{ title: _("Latest pipeline for the most recent commit on this branch") }
         latest

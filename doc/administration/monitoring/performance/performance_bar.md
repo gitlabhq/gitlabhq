@@ -16,9 +16,16 @@ It allows you to see (from left to right):
   ![Rugged profiling using the Performance Bar](img/performance_bar_rugged_calls.png)
 - time taken and number of Redis calls; click through for details of these calls
   ![Redis profiling using the Performance Bar](img/performance_bar_redis_calls.png)
+- total load timings of the page; click through for details of these calls. Values in the following order:
+  - Backend - Time that the actual base page took to load
+  - [First Contentful Paint](https://developers.google.com/web/tools/lighthouse/audits/first-contentful-paint) - Time until something was visible to the user
+  - [DomContentLoaded](https://developers.google.com/web/fundamentals/performance/critical-rendering-path/measure-crp) Event
+  - Number of Requests that the page loaded
+  ![Frontend requests using the Performance Bar](img/performance_bar_frontend.png)
 - a link to add a request's details to the performance bar; the request can be
   added by its full URL (authenticated as the current user), or by the value of
   its `X-Request-Id` header
+- a link to download the raw JSON used to generate the Performance Bar reports
 
 On the far right is a request selector that allows you to view the same metrics
 (excluding the page timing and line profiler) for any requests made while the

@@ -20,11 +20,13 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
   before_action only: [:show] do
     push_frontend_feature_flag(:diffs_batch_load, @project)
+    push_frontend_feature_flag(:single_mr_diff_view, @project)
   end
 
   before_action do
     push_frontend_feature_flag(:vue_issuable_sidebar, @project.group)
-    push_frontend_feature_flag(:release_search_filter, @project)
+    push_frontend_feature_flag(:release_search_filter, @project, default_enabled: true)
+    push_frontend_feature_flag(:async_mr_widget, @project)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :discussions]
@@ -218,11 +220,16 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def ci_environments_status
-    environments = if ci_environments_status_on_merge_result?
-                     EnvironmentStatus.after_merge_request(@merge_request, current_user)
-                   else
-                     EnvironmentStatus.for_merge_request(@merge_request, current_user)
-                   end
+    environments =
+      if ci_environments_status_on_merge_result?
+        if Feature.enabled?(:deployment_merge_requests_widget, @project)
+          EnvironmentStatus.for_deployed_merge_request(@merge_request, current_user)
+        else
+          EnvironmentStatus.after_merge_request(@merge_request, current_user)
+        end
+      else
+        EnvironmentStatus.for_merge_request(@merge_request, current_user)
+      end
 
     render json: EnvironmentStatusSerializer.new(current_user: current_user).represent(environments)
   end

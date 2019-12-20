@@ -10,6 +10,7 @@ module Gitlab
   #
   class InsecureKeyFingerprint
     attr_accessor :key
+    alias_attribute :fingerprint_md5, :fingerprint
 
     #
     # Gets the base64 encoded string representing a rsa or dsa key
@@ -20,6 +21,10 @@ module Gitlab
 
     def fingerprint
       OpenSSL::Digest::MD5.hexdigest(Base64.decode64(@key)).scan(/../).join(':')
+    end
+
+    def fingerprint_sha256
+      Digest::SHA256.base64digest(Base64.decode64(@key)).scan(/../).join('').delete("=")
     end
   end
 end

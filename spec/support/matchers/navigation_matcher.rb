@@ -9,6 +9,6 @@ end
 
 RSpec::Matchers.define :have_active_sub_navigation do |expected|
   match do |page|
-    expect(page.find('.sidebar-sub-level-items > li.active:not(.fly-out-top-item)')).to have_content(expected)
+    expect(page).to have_css('.sidebar-sub-level-items > li.active:not(.fly-out-top-item)', text: expected)
   end
 end

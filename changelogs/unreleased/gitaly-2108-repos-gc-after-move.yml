@@ -1,0 +1,5 @@
+---
+title: Run housekeeping after moving a repository between shards
+merge_request: 20863
+author:
+type: performance

@@ -7,9 +7,16 @@
       #signin-container
         = render 'admin/sessions/tabs_normal'
         .tab-content
-          - if password_authentication_enabled_for_web?
-            = render 'admin/sessions/signin_box'
-          - else
-            -# Show a message if none of the mechanisms above are enabled
+          - if !current_user.require_password_creation_for_web?
+            .login-box.tab-pane.active{ id: 'login-pane', role: 'tabpanel' }
+              .login-body
+                = render 'admin/sessions/new_base'
+
+          - if omniauth_enabled? && button_based_providers_enabled?
+            .clearfix
+              = render 'devise/shared/omniauth_box'
+
+          -# Show a message if none of the mechanisms above are enabled
+          - if current_user.require_password_creation_for_web? && !omniauth_enabled?
             .prepend-top-default.center
               = _('No authentication methods configured.')

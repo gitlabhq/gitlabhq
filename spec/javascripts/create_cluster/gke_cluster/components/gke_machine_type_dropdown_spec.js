@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import GkeMachineTypeDropdown from '~/create_cluster/gke_cluster/components/gke_machine_type_dropdown.vue';
 import { createStore } from '~/create_cluster/gke_cluster/store';
 import {
@@ -7,7 +8,6 @@ import {
   SET_ZONE,
   SET_MACHINE_TYPES,
 } from '~/create_cluster/gke_cluster/store/mutation_types';
-import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import {
   selectedZoneMock,
   selectedProjectMock,

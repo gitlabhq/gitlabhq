@@ -25,6 +25,23 @@ module QA
           end
         end
 
+        def self.as_admin
+          if Runtime::Env.admin_personal_access_token
+            Runtime::API::Client.new(:gitlab, personal_access_token: Runtime::Env.admin_personal_access_token)
+          else
+            user = Resource::User.fabricate_via_api! do |user|
+              user.username = Runtime::User.admin_username
+              user.password = Runtime::User.admin_password
+            end
+
+            unless user.admin?
+              raise AuthorizationError, "User '#{user.username}' is not an administrator."
+            end
+
+            Runtime::API::Client.new(:gitlab, user: user)
+          end
+        end
+
         private
 
         def enable_ip_limits
@@ -32,7 +49,7 @@ module QA
 
           Runtime::Browser.visit(@address, Page::Main::Login)
           Page::Main::Login.perform(&:sign_in_using_admin_credentials)
-          Page::Main::Menu.perform(&:click_admin_area)
+          Page::Main::Menu.perform(&:go_to_admin_area)
           Page::Admin::Menu.perform(&:go_to_network_settings)
 
           Page::Admin::Settings::Network.perform do |setting|

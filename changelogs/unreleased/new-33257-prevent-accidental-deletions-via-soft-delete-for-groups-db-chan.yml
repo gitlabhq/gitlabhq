@@ -1,0 +1,5 @@
+---
+title: Add migrations for 'soft-delete for groups' feature
+merge_request: 20276
+author:
+type: added

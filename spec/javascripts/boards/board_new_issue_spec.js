@@ -7,7 +7,7 @@ import boardNewIssue from '~/boards/components/board_new_issue.vue';
 import boardsStore from '~/boards/stores/boards_store';
 
 import '~/boards/models/list';
-import { listObj, boardsMockInterceptor, mockBoardService } from './mock_data';
+import { listObj, boardsMockInterceptor } from './mock_data';
 
 describe('Issue boards new issue form', () => {
   let vm;
@@ -36,7 +36,6 @@ describe('Issue boards new issue form', () => {
     mock = new MockAdapter(axios);
     mock.onAny().reply(boardsMockInterceptor);
 
-    gl.boardService = mockBoardService();
     boardsStore.create();
 
     list = new List(listObj);

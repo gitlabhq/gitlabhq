@@ -136,13 +136,13 @@ describe RegistrationsController do
         post(:create, params: user_params)
 
         expect(response).to render_template(:new)
-        expect(flash[:alert]).to include 'There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'
+        expect(flash[:alert]).to eq(_('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'))
       end
 
       it 'redirects to the dashboard when the recaptcha is solved' do
         post(:create, params: user_params)
 
-        expect(flash[:notice]).to include 'Welcome! You have signed up successfully.'
+        expect(flash[:notice]).to eq(I18n.t('devise.registrations.signed_up'))
       end
 
       it 'does not require reCAPTCHA if disabled by feature flag' do
@@ -152,7 +152,7 @@ describe RegistrationsController do
 
         expect(controller).not_to receive(:verify_recaptcha)
         expect(flash[:alert]).to be_nil
-        expect(flash[:notice]).to include 'Welcome! You have signed up successfully.'
+        expect(flash[:notice]).to eq(I18n.t('devise.registrations.signed_up'))
       end
     end
 
@@ -220,7 +220,7 @@ describe RegistrationsController do
               expect(Gitlab::AuthLogger).to receive(:error).with(auth_log_attributes).once
               expect { post(:create, params: user_params, session: session_params) }.not_to change(User, :count)
               expect(response).to redirect_to(new_user_session_path)
-              expect(flash[:alert]).to include 'That was a bit too quick! Please resubmit.'
+              expect(flash[:alert]).to eq(I18n.t('invisible_captcha.timestamp_error_message'))
             end
           end
         end
@@ -236,7 +236,7 @@ describe RegistrationsController do
               expect(Gitlab::AuthLogger).to receive(:error).with(auth_log_attributes).once
               expect { post(:create, params: user_params, session: session_params) }.not_to change(User, :count)
               expect(response).to redirect_to(new_user_session_path)
-              expect(flash[:alert]).to include 'That was a bit too quick! Please resubmit.'
+              expect(flash[:alert]).to eq(I18n.t('invisible_captcha.timestamp_error_message'))
             end
           end
         end
@@ -251,7 +251,7 @@ describe RegistrationsController do
       it 'redirects back with a notice when the checkbox was not checked' do
         post :create, params: user_params
 
-        expect(flash[:alert]).to match /you must accept our terms/i
+        expect(flash[:alert]).to eq(_('You must accept our Terms of Service and privacy policy in order to register an account'))
       end
 
       it 'creates the user with agreement when terms are accepted' do
@@ -322,15 +322,15 @@ describe RegistrationsController do
     end
 
     def expect_password_failure
-      expect_failure('Invalid password')
+      expect_failure(s_('Profiles|Invalid password'))
     end
 
     def expect_username_failure
-      expect_failure('Invalid username')
+      expect_failure(s_('Profiles|Invalid username'))
     end
 
     def expect_success
-      expect(flash[:notice]).to eq 'Account scheduled for removal.'
+      expect(flash[:notice]).to eq s_('Profiles|Account scheduled for removal.')
       expect(response.status).to eq(303)
       expect(response).to redirect_to new_user_session_path
     end

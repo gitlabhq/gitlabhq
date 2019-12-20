@@ -44,7 +44,7 @@ module API
     # Helper Methods for Grape Endpoint
     module HelperMethods
       prepend_if_ee('EE::API::APIGuard::HelperMethods') # rubocop: disable Cop/InjectEnterpriseEditionModule
-      include Gitlab::Auth::UserAuthFinders
+      include Gitlab::Auth::AuthFinders
 
       def find_current_user!
         user = find_user_from_sources
@@ -56,14 +56,18 @@ module API
 
         # Set admin mode for API requests (if admin)
         if Feature.enabled?(:user_mode_in_session)
-          Gitlab::Auth::CurrentUserMode.new(user).enable_admin_mode!(skip_password_validation: true)
+          current_user_mode = Gitlab::Auth::CurrentUserMode.new(user)
+
+          current_user_mode.enable_sessionless_admin_mode!
         end
 
         user
       end
 
       def find_user_from_sources
-        find_user_from_access_token || find_user_from_warden
+        find_user_from_access_token ||
+          find_user_from_job_token ||
+          find_user_from_warden
       end
 
       private

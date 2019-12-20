@@ -1,13 +1,9 @@
 import axios from '~/lib/utils/axios_utils';
 import types from './mutation_types';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 
 export const transformBackendBadge = badge => ({
-  id: badge.id,
-  imageUrl: badge.image_url,
-  kind: badge.kind,
-  linkUrl: badge.link_url,
-  renderedImageUrl: badge.rendered_image_url,
-  renderedLinkUrl: badge.rendered_link_url,
+  ...convertObjectPropsToCamelCase(badge, true),
   isDeleting: false,
 });
 
@@ -27,6 +23,7 @@ export default {
     dispatch('requestNewBadge');
     return axios
       .post(endpoint, {
+        name: newBadge.name,
         image_url: newBadge.imageUrl,
         link_url: newBadge.linkUrl,
       })
@@ -141,6 +138,7 @@ export default {
     dispatch('requestUpdatedBadge');
     return axios
       .put(endpoint, {
+        name: badge.name,
         image_url: badge.imageUrl,
         link_url: badge.linkUrl,
       })

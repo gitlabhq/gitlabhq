@@ -1,0 +1,5 @@
+---
+title: Add updated_before and updated_after filters to the Pipelines API endpoint
+merge_request: 21133
+author:
+type: added

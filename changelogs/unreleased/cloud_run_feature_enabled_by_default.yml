@@ -1,0 +1,5 @@
+---
+title: Re-enable the cloud run feature
+merge_request: https://gitlab.com/gitlab-org/gitlab/merge_requests/21762
+author:
+type: fixed

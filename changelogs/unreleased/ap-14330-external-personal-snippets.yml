@@ -1,0 +1,5 @@
+---
+title: Match external user new snippet button visibility to permissions
+merge_request: 21718
+author:
+type: fixed

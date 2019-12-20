@@ -17,16 +17,19 @@ module API
       end
       params do
         use :pagination
-        optional :order_by, type: String, values: %w[id iid created_at updated_at ref], default: 'id', desc: 'Return deployments ordered by `id` or `iid` or `created_at` or `updated_at` or `ref`'
-        optional :sort, type: String, values: %w[asc desc], default: 'asc', desc: 'Sort by asc (ascending) or desc (descending)'
+        optional :order_by, type: String, values: DeploymentsFinder::ALLOWED_SORT_VALUES, default: DeploymentsFinder::DEFAULT_SORT_VALUE, desc: 'Return deployments ordered by specified value'
+        optional :sort, type: String, values: DeploymentsFinder::ALLOWED_SORT_DIRECTIONS, default: DeploymentsFinder::DEFAULT_SORT_DIRECTION, desc: 'Sort by asc (ascending) or desc (descending)'
+        optional :updated_after, type: DateTime, desc: 'Return deployments updated after the specified date'
+        optional :updated_before, type: DateTime, desc: 'Return deployments updated before the specified date'
       end
-      # rubocop: disable CodeReuse/ActiveRecord
+
       get ':id/deployments' do
         authorize! :read_deployment, user_project
 
-        present paginate(user_project.deployments.order(params[:order_by] => params[:sort])), with: Entities::Deployment
+        deployments = DeploymentsFinder.new(user_project, params).execute
+
+        present paginate(deployments), with: Entities::Deployment
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Gets a specific deployment' do
         detail 'This feature was introduced in GitLab 8.11.'

@@ -8,6 +8,7 @@ namespace :gitlab do
         yarn:check
         gettext:po_to_json
         rake:assets:precompile
+        gitlab:assets:vendor
         webpack:compile
         gitlab:assets:fix_urls
       ].each(&Gitlab::TaskHelpers.method(:invoke_and_time_task))
@@ -47,6 +48,13 @@ namespace :gitlab do
             File.utime(mtime, mtime, f.path)
           end
         end
+      end
+    end
+
+    desc 'GitLab | Assets | Compile vendor assets'
+    task :vendor do
+      unless system('yarn webpack-vendor')
+        abort 'Error: Unable to compile webpack DLL.'.color(:red)
       end
     end
   end

@@ -108,19 +108,112 @@ class AddUsersLowerUsernameEmailIndexes < ActiveRecord::Migration[4.2]
   disable_ddl_transaction!
 
   def up
-    return unless Gitlab::Database.postgresql?
-
     execute 'CREATE INDEX CONCURRENTLY index_on_users_lower_username ON users (LOWER(username));'
     execute 'CREATE INDEX CONCURRENTLY index_on_users_lower_email ON users (LOWER(email));'
   end
 
   def down
-    return unless Gitlab::Database.postgresql?
-
     remove_index :users, :index_on_users_lower_username
     remove_index :users, :index_on_users_lower_email
   end
 end
+```
+
+## Reliably referencing database columns
+
+ActiveRecord by default returns all columns from the queried database table. In some cases the returned rows might need to be customized, for example:
+
+- Specify only a few columns to reduce the amount of data returned from the database.
+- Include columns from `JOIN` relations.
+- Perform calculations (`SUM`, `COUNT`).
+
+In this example we specify the columns, but not their tables:
+
+- `path` from the `projects` table
+- `user_id` from the `merge_requests` table
+
+The query:
+
+```ruby
+# bad, avoid
+Project.select("path, user_id").joins(:merge_requests) # SELECT path, user_id FROM "projects" ...
+```
+
+Later on, a new feature adds an extra column to the `projects` table: `user_id`. During deployment there might be a short time window where the database migration is already executed, but the new version of the application code is not deployed yet. When the query mentioned above executes during this period, the query will fail with the following error message: `PG::AmbiguousColumn: ERROR: column reference "user_id" is ambiguous`
+
+The problem is caused by the way the attributes are selected from the database. The `user_id` column is present in both the `users` and `merge_requests` tables. The query planner cannot decide which table to use when looking up the `user_id` column.
+
+When writing a customized `SELECT` statement, it's better to **explicitly specify the columns with the table name**.
+
+### Good (prefer)
+
+```ruby
+Project.select(:path, 'merge_requests.user_id').joins(:merge_requests)
+
+# SELECT "projects"."path", merge_requests.user_id as user_id FROM "projects" ...
+```
+
+```ruby
+Project.select(:path, :'merge_requests.user_id').joins(:merge_requests)
+
+# SELECT "projects"."path", "merge_requests"."id" as user_id FROM "projects" ...
+```
+
+Example using Arel (`arel_table`):
+
+```ruby
+Project.select(:path, MergeRequest.arel_table[:user_id]).joins(:merge_requests)
+
+# SELECT "projects"."path", "merge_requests"."user_id" FROM "projects" ...
+```
+
+When writing raw SQL query:
+
+```sql
+SELECT projects.path, merge_requests.user_id FROM "projects"...
+```
+
+When the raw SQL query is parameterized (needs escaping):
+
+```ruby
+include ActiveRecord::ConnectionAdapters::Quoting
+
+"""
+SELECT
+  #{quote_table_name('projects')}.#{quote_column_name('path')},
+  #{quote_table_name('merge_requests')}.#{quote_column_name('user_id')}
+FROM ...
+"""
+```
+
+### Bad (avoid)
+
+```ruby
+Project.select('id, path, user_id').joins(:merge_requests).to_sql
+
+# SELECT id, path, user_id FROM "projects" ...
+```
+
+```ruby
+Project.select("path", "user_id").joins(:merge_requests)
+# SELECT "projects"."path", "user_id" FROM "projects" ...
+
+# or
+
+Project.select(:path, :user_id).joins(:merge_requests)
+# SELECT "projects"."path", "user_id" FROM "projects" ...
+```
+
+When a column list is given, ActiveRecord tries to match the arguments against the columns defined in the `projects` table and prepend the table name automatically. In this case, the `id` column is not going to be a problem, but the `user_id` column could return unexpected data:
+
+```ruby
+Project.select(:id, :user_id).joins(:merge_requests)
+
+# Before deployment (user_id is taken from the merge_requests table):
+# SELECT "projects"."id", "user_id" FROM "projects" ...
+
+# After deployment (user_id is taken from the projects table):
+# SELECT "projects"."id", "projects"."user_id" FROM "projects" ...
 ```
 
 ## Plucking IDs

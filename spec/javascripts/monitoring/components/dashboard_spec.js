@@ -4,11 +4,14 @@ import { GlToast } from '@gitlab/ui';
 import VueDraggable from 'vuedraggable';
 import MockAdapter from 'axios-mock-adapter';
 import Dashboard from '~/monitoring/components/dashboard.vue';
+import { metricStates } from '~/monitoring/constants';
+import GroupEmptyState from '~/monitoring/components/group_empty_state.vue';
 import * as types from '~/monitoring/stores/mutation_types';
 import { createStore } from '~/monitoring/stores';
 import axios from '~/lib/utils/axios_utils';
 import {
   metricsGroupsAPIResponse,
+  mockedEmptyResult,
   mockedQueryResultPayload,
   mockedQueryResultPayloadCoresTotal,
   mockApiEndpoint,
@@ -29,6 +32,7 @@ const propsData = {
   emptyGettingStartedSvgPath: '/path/to/getting-started.svg',
   emptyLoadingSvgPath: '/path/to/loading.svg',
   emptyNoDataSvgPath: '/path/to/no-data.svg',
+  emptyNoDataSmallSvgPath: '/path/to/no-data-small.svg',
   emptyUnableToConnectSvgPath: '/path/to/unable-to-connect.svg',
   environmentsEndpoint: '/root/hello-prometheus/environments/35',
   currentEnvironmentName: 'production',
@@ -43,23 +47,30 @@ const resetSpy = spy => {
   }
 };
 
-export default propsData;
+let expectedPanelCount;
 
 function setupComponentStore(component) {
+  // Load 2 panel groups
   component.$store.commit(
     `monitoringDashboard/${types.RECEIVE_METRICS_DATA_SUCCESS}`,
     metricsGroupsAPIResponse,
   );
 
-  // Load 2 panels to the dashboard
+  // Load 3 panels to the dashboard, one with an empty result
   component.$store.commit(
-    `monitoringDashboard/${types.SET_QUERY_RESULT}`,
+    `monitoringDashboard/${types.RECEIVE_METRIC_RESULT_SUCCESS}`,
+    mockedEmptyResult,
+  );
+  component.$store.commit(
+    `monitoringDashboard/${types.RECEIVE_METRIC_RESULT_SUCCESS}`,
     mockedQueryResultPayload,
   );
   component.$store.commit(
-    `monitoringDashboard/${types.SET_QUERY_RESULT}`,
+    `monitoringDashboard/${types.RECEIVE_METRIC_RESULT_SUCCESS}`,
     mockedQueryResultPayloadCoresTotal,
   );
+
+  expectedPanelCount = 2;
 
   component.$store.commit(
     `monitoringDashboard/${types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS}`,
@@ -72,6 +83,17 @@ describe('Dashboard', () => {
   let mock;
   let store;
   let component;
+  let wrapper;
+
+  const createComponentWrapper = (props = {}, options = {}) => {
+    wrapper = shallowMount(localVue.extend(DashboardComponent), {
+      localVue,
+      sync: false,
+      propsData: { ...propsData, ...props },
+      store,
+      ...options,
+    });
+  };
 
   beforeEach(() => {
     setFixtures(`
@@ -81,12 +103,15 @@ describe('Dashboard', () => {
 
     store = createStore();
     mock = new MockAdapter(axios);
-    DashboardComponent = Vue.extend(Dashboard);
+    DashboardComponent = localVue.extend(Dashboard);
   });
 
   afterEach(() => {
     if (component) {
       component.$destroy();
+    }
+    if (wrapper) {
+      wrapper.destroy();
     }
     mock.restore();
   });
@@ -112,26 +137,15 @@ describe('Dashboard', () => {
 
   describe('no data found', () => {
     it('shows the environment selector dropdown', () => {
-      component = new DashboardComponent({
-        el: document.querySelector('.prometheus-graphs'),
-        propsData: { ...propsData, showEmptyState: true },
-        store,
-      });
+      createComponentWrapper();
 
-      expect(component.$el.querySelector('.js-environments-dropdown')).toBeTruthy();
+      expect(wrapper.find('.js-environments-dropdown').exists()).toBeTruthy();
     });
   });
 
   describe('cluster health', () => {
-    let wrapper;
-
     beforeEach(done => {
-      wrapper = shallowMount(DashboardComponent, {
-        localVue,
-        sync: false,
-        propsData: { ...propsData, hasMetrics: true },
-        store,
-      });
+      createComponentWrapper({ hasMetrics: true });
 
       // all_dashboards is not defined in health dashboards
       wrapper.vm.$store.commit(`monitoringDashboard/${types.SET_ALL_DASHBOARDS}`, undefined);
@@ -259,7 +273,7 @@ describe('Dashboard', () => {
         metricsGroupsAPIResponse,
       );
       component.$store.commit(
-        `monitoringDashboard/${types.SET_QUERY_RESULT}`,
+        `monitoringDashboard/${types.RECEIVE_METRIC_RESULT_SUCCESS}`,
         mockedQueryResultPayload,
       );
 
@@ -382,10 +396,36 @@ describe('Dashboard', () => {
     });
   });
 
-  describe('drag and drop function', () => {
-    let wrapper;
-    let expectedPanelCount; // also called metrics, naming to be improved: https://gitlab.com/gitlab-org/gitlab/issues/31565
+  describe('when one of the metrics is missing', () => {
+    beforeEach(() => {
+      mock.onGet(mockApiEndpoint).reply(200, metricsGroupsAPIResponse);
+    });
 
+    beforeEach(done => {
+      createComponentWrapper({ hasMetrics: true });
+      setupComponentStore(wrapper.vm);
+
+      wrapper.vm.$nextTick(done);
+    });
+
+    it('shows a group empty area', () => {
+      const emptyGroup = wrapper.findAll({ ref: 'empty-group' });
+
+      expect(emptyGroup).toHaveLength(1);
+      expect(emptyGroup.is(GroupEmptyState)).toBe(true);
+    });
+
+    it('group empty area displays a NO_DATA state', () => {
+      expect(
+        wrapper
+          .findAll({ ref: 'empty-group' })
+          .at(0)
+          .props('selectedState'),
+      ).toEqual(metricStates.NO_DATA);
+    });
+  });
+
+  describe('drag and drop function', () => {
     const findDraggables = () => wrapper.findAll(VueDraggable);
     const findEnabledDraggables = () => findDraggables().filter(f => !f.attributes('disabled'));
     const findDraggablePanels = () => wrapper.findAll('.js-draggable-panel');
@@ -393,20 +433,10 @@ describe('Dashboard', () => {
 
     beforeEach(() => {
       mock.onGet(mockApiEndpoint).reply(200, metricsGroupsAPIResponse);
-      expectedPanelCount = metricsGroupsAPIResponse.reduce(
-        (acc, group) => group.panels.length + acc,
-        0,
-      );
     });
 
     beforeEach(done => {
-      wrapper = shallowMount(DashboardComponent, {
-        localVue,
-        sync: false,
-        propsData: { ...propsData, hasMetrics: true },
-        store,
-        attachToDocument: true,
-      });
+      createComponentWrapper({ hasMetrics: true }, { attachToDocument: true });
 
       setupComponentStore(wrapper.vm);
 
@@ -455,22 +485,20 @@ describe('Dashboard', () => {
 
         it('metrics can be swapped', done => {
           const firstDraggable = findDraggables().at(0);
-          const mockMetrics = [...metricsGroupsAPIResponse[0].panels];
-          const value = () => firstDraggable.props('value');
+          const mockMetrics = [...metricsGroupsAPIResponse[1].panels];
 
-          expect(value().length).toBe(mockMetrics.length);
-          value().forEach((metric, i) => {
-            expect(metric.title).toBe(mockMetrics[i].title);
-          });
+          const firstTitle = mockMetrics[0].title;
+          const secondTitle = mockMetrics[1].title;
 
           // swap two elements and `input` them
           [mockMetrics[0], mockMetrics[1]] = [mockMetrics[1], mockMetrics[0]];
           firstDraggable.vm.$emit('input', mockMetrics);
 
-          firstDraggable.vm.$nextTick(() => {
-            value().forEach((metric, i) => {
-              expect(metric.title).toBe(mockMetrics[i].title);
-            });
+          wrapper.vm.$nextTick(() => {
+            const { panels } = wrapper.vm.dashboard.panel_groups[1];
+
+            expect(panels[1].title).toEqual(firstTitle);
+            expect(panels[0].title).toEqual(secondTitle);
             done();
           });
         });
@@ -502,7 +530,6 @@ describe('Dashboard', () => {
   // https://gitlab.com/gitlab-org/gitlab-ce/issues/66922
   // eslint-disable-next-line jasmine/no-disabled-tests
   xdescribe('link to chart', () => {
-    let wrapper;
     const currentDashboard = 'TEST_DASHBOARD';
     localVue.use(GlToast);
     const link = () => wrapper.find('.js-chart-link');
@@ -511,13 +538,7 @@ describe('Dashboard', () => {
     beforeEach(done => {
       mock.onGet(mockApiEndpoint).reply(200, metricsGroupsAPIResponse);
 
-      wrapper = shallowMount(DashboardComponent, {
-        localVue,
-        sync: false,
-        attachToDocument: true,
-        propsData: { ...propsData, hasMetrics: true, currentDashboard },
-        store,
-      });
+      createComponentWrapper({ hasMetrics: true, currentDashboard }, { attachToDocument: true });
 
       setTimeout(done);
     });
@@ -587,7 +608,7 @@ describe('Dashboard', () => {
       setupComponentStore(component);
 
       return Vue.nextTick().then(() => {
-        promPanel = component.$el.querySelector('.prometheus-panel');
+        [, promPanel] = component.$el.querySelectorAll('.prometheus-panel');
         promGroup = promPanel.querySelector('.prometheus-graph-group');
         panelToggle = promPanel.querySelector('.js-graph-group-toggle');
         chart = promGroup.querySelector('.position-relative svg');
@@ -614,19 +635,12 @@ describe('Dashboard', () => {
   });
 
   describe('dashboard edit link', () => {
-    let wrapper;
     const findEditLink = () => wrapper.find('.js-edit-link');
 
     beforeEach(done => {
       mock.onGet(mockApiEndpoint).reply(200, metricsGroupsAPIResponse);
 
-      wrapper = shallowMount(DashboardComponent, {
-        localVue,
-        sync: false,
-        attachToDocument: true,
-        propsData: { ...propsData, hasMetrics: true },
-        store,
-      });
+      createComponentWrapper({ hasMetrics: true }, { attachToDocument: true });
 
       wrapper.vm.$store.commit(
         `monitoringDashboard/${types.SET_ALL_DASHBOARDS}`,

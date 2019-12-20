@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import missingBranchComponent from '~/vue_merge_request_widget/components/states/mr_widget_missing_branch.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import missingBranchComponent from '~/vue_merge_request_widget/components/states/mr_widget_missing_branch.vue';
 
 describe('MRWidgetMissingBranch', () => {
   let vm;

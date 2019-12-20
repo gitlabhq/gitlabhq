@@ -68,8 +68,8 @@ If you are expanding from a few projects to a larger number of projects within t
 
 From the project milestone list page, you can promote a project milestone to a group milestone. This will merge all project milestones across all projects in this group with the same name into a single group milestones. All issues and merge requests that previously were assigned one of these project milestones will now be assigned the new group milestones. This action cannot be reversed and the changes are permanent.
 
->**Note:**
-Not all features on the project milestone view are available on the group milestone view. If you promote a project milestone to a group milestone, you will lose these features. See [Milestone view](#milestone-view) to see which features are missing from the group milestone view.
+CAUTION: **Caution:**
+From GitLab 12.4 and earlier, some information is lost when you promote a project milestone to a group milestone. Not all features on the project milestone view are available on the group milestone view. If you promote a project milestone to a group milestone, you will lose these features. See [Milestone view](#milestone-view) to see which features are missing from the group milestone view.
 
 ![Promote milestone](img/milestones_promote_milestone.png)
 
@@ -105,14 +105,17 @@ The milestone view shows the title and description.
 
 There are also tabs below these that show the following:
 
-- Issues
-  Shows all issues assigned to the milestone. These are displayed in three columns: Unstarted issues, ongoing issues, and completed issues.
-- Merge requests
-  Shows all merge requests assigned to the milestone. These are displayed in four columns: Work in progress merge requests, waiting for merge, rejected, and closed.
-- Participants
-  Shows all assignees of issues assigned to the milestone.
-- Labels
-  Shows all labels that are used in issues assigned to the milestone.
+- **Issues**: Shows all issues assigned to the milestone. These are displayed in three columns named:
+  - Unstarted Issues (open and unassigned)
+  - Ongoing Issues (open and assigned)
+  - Completed Issues (closed)
+- **Merge Requests**: Shows all merge requests assigned to the milestone. These are displayed in four columns named:
+  - Work in progress (open and unassigned)
+  - Waiting for merge (open and unassigned)
+  - Rejected (closed)
+  - Merged
+- **Participants**: Shows all assignees of issues assigned to the milestone.
+- **Labels**: Shows all labels that are used in issues assigned to the milestone.
 
 ### Project Burndown Charts **(STARTER)**
 

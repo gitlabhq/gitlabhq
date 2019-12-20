@@ -106,6 +106,40 @@ describe Milestone do
     end
   end
 
+  describe '#merge_requests_enabled?' do
+    context "per project" do
+      it "is true for projects with MRs enabled" do
+        project = create(:project, :merge_requests_enabled)
+        milestone = create(:milestone, project: project)
+
+        expect(milestone.merge_requests_enabled?).to be(true)
+      end
+
+      it "is false for projects with MRs disabled" do
+        project = create(:project, :repository_enabled, :merge_requests_disabled)
+        milestone = create(:milestone, project: project)
+
+        expect(milestone.merge_requests_enabled?).to be(false)
+      end
+
+      it "is false for projects with repository disabled" do
+        project = create(:project, :repository_disabled)
+        milestone = create(:milestone, project: project)
+
+        expect(milestone.merge_requests_enabled?).to be(false)
+      end
+    end
+
+    context "per group" do
+      let(:group) { create(:group) }
+      let(:milestone) { create(:milestone, group: group) }
+
+      it "is always true for groups, for performance reasons" do
+        expect(milestone.merge_requests_enabled?).to be(true)
+      end
+    end
+  end
+
   describe "unique milestone title" do
     context "per project" do
       it "does not accept the same title in a project twice" do

@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 module QA
-  # Failure issue: https://gitlab.com/gitlab-org/quality/staging/issues/66
+  # Failure issue: https://gitlab.com/gitlab-org/gitlab/issues/36817
+  # BUG_IN_CODE
   context 'Create', :quarantine do
     describe 'Merge request rebasing' do
       it 'user rebases source branch of merge request' do
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.perform(&:sign_in_using_credentials)
+        Flow::Login.sign_in
 
         project = Resource::Project.fabricate! do |project|
           project.name = "only-fast-forward"

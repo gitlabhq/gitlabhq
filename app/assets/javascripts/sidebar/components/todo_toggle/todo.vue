@@ -1,7 +1,7 @@
 <script>
+import { GlLoadingIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import tooltip from '~/vue_shared/directives/tooltip';
-import { GlLoadingIcon } from '@gitlab/ui';
 
 import Icon from '~/vue_shared/components/icon.vue';
 
@@ -59,6 +59,9 @@ export default {
     collapsedButtonIcon() {
       return this.isTodo ? 'todo-done' : 'todo-add';
     },
+    collapsedButtonIconVisible() {
+      return this.collapsed && !this.isActionActive;
+    },
   },
   methods: {
     handleButtonClick() {
@@ -82,8 +85,12 @@ export default {
     data-boundary="viewport"
     @click="handleButtonClick"
   >
-    <icon v-show="collapsed" :class="collapsedButtonIconClasses" :name="collapsedButtonIcon" />
-    <span v-show="!collapsed" class="issuable-todo-inner"> {{ buttonLabel }} </span>
+    <icon
+      v-show="collapsedButtonIconVisible"
+      :class="collapsedButtonIconClasses"
+      :name="collapsedButtonIcon"
+    />
+    <span v-show="!collapsed" class="issuable-todo-inner">{{ buttonLabel }}</span>
     <gl-loading-icon v-show="isActionActive" :inline="true" />
   </button>
 </template>

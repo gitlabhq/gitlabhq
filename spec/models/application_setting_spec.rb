@@ -66,6 +66,14 @@ describe ApplicationSetting do
     it { is_expected.not_to allow_value('three').for(:push_event_activities_limit) }
     it { is_expected.not_to allow_value(nil).for(:push_event_activities_limit) }
 
+    it { is_expected.to validate_numericality_of(:snippet_size_limit).only_integer.is_greater_than(0) }
+
+    it { is_expected.not_to allow_value(7).for(:minimum_password_length) }
+    it { is_expected.not_to allow_value(129).for(:minimum_password_length) }
+    it { is_expected.not_to allow_value(nil).for(:minimum_password_length) }
+    it { is_expected.not_to allow_value('abc').for(:minimum_password_length) }
+    it { is_expected.to allow_value(10).for(:minimum_password_length) }
+
     context 'when snowplow is enabled' do
       before do
         setting.snowplow_enabled = true

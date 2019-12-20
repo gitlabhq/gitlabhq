@@ -61,7 +61,7 @@ describe MergeRequests::MergeToRefService do
     end
 
     it 'does not delete the source branch' do
-      expect(DeleteBranchService).not_to receive(:new)
+      expect(::Branches::DeleteService).not_to receive(:new)
 
       process_merge_to_ref
     end

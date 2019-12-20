@@ -157,6 +157,7 @@ describe ProjectsHelper do
       allow(helper).to receive(:current_user).and_return(user)
       allow(helper).to receive(:can?).with(user, :read_cross_project) { true }
       allow(user).to receive(:max_member_access_for_project).and_return(40)
+      allow(Gitlab::I18n).to receive(:locale).and_return('es')
     end
 
     it "includes the route" do
@@ -201,6 +202,10 @@ describe ProjectsHelper do
       create(:ci_pipeline, :success, project: project, sha: project.commit.sha)
 
       expect(helper.project_list_cache_key(project)).to include("pipeline-status/#{project.commit.sha}-success")
+    end
+
+    it "includes the user locale" do
+      expect(helper.project_list_cache_key(project)).to include('es')
     end
 
     it "includes the user max member access" do
@@ -308,6 +313,7 @@ describe ProjectsHelper do
   describe '#link_to_project' do
     let(:group)   { create(:group, name: 'group name with space') }
     let(:project) { create(:project, group: group, name: 'project name with space') }
+
     subject { link_to_project(project) }
 
     it 'returns an HTML link to the project' do
@@ -501,7 +507,6 @@ describe ProjectsHelper do
 
     it 'returns the command to push to create project over SSH' do
       allow(Gitlab::CurrentSettings.current_application_settings).to receive(:enabled_git_access_protocol) { 'ssh' }
-      allow(Gitlab.config.gitlab_shell).to receive(:ssh_path_prefix).and_return('git@localhost:')
 
       expect(helper.push_to_create_project_command(user)).to eq("git push --set-upstream #{Gitlab.config.gitlab.user}@localhost:john/$(git rev-parse --show-toplevel | xargs basename).git $(git rev-parse --abbrev-ref HEAD)")
     end
@@ -540,6 +545,7 @@ describe ProjectsHelper do
 
   describe '#git_user_name' do
     let(:user) { double(:user, name: 'John "A" Doe53') }
+
     before do
       allow(helper).to receive(:current_user).and_return(user)
     end
@@ -562,6 +568,7 @@ describe ProjectsHelper do
 
     context 'user logged in' do
       let(:user) { create(:user) }
+
       before do
         allow(helper).to receive(:current_user).and_return(user)
       end

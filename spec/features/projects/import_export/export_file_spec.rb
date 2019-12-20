@@ -12,8 +12,6 @@ describe 'Import/Export - project export integration test', :js do
 
   let(:user) { create(:admin) }
   let(:export_path) { "#{Dir.tmpdir}/import_file_spec" }
-  let(:config_hash) { Gitlab::ImportExport::Config.new.to_h.deep_stringify_keys }
-
   let(:sensitive_words) { %w[pass secret token key encrypted html] }
   let(:safe_list) do
     {

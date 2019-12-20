@@ -37,6 +37,10 @@ class EnvironmentStatusEntity < Grape::Entity
     es.deployment.try(:formatted_deployment_time)
   end
 
+  expose :deployment, as: :details do |es, options|
+    DeploymentEntity.represent(es.deployment, options.merge(project: es.project, only: [:playable_build]))
+  end
+
   expose :changes
 
   private

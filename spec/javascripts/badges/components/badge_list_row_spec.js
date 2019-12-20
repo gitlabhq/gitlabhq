@@ -1,9 +1,9 @@
 import $ from 'jquery';
 import Vue from 'vue';
+import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { GROUP_BADGE, PROJECT_BADGE } from '~/badges/constants';
 import store from '~/badges/store';
 import BadgeListRow from '~/badges/components/badge_list_row.vue';
-import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { createDummyBadge } from '../dummy_badge';
 
 describe('BadgeListRow component', () => {
@@ -37,6 +37,10 @@ describe('BadgeListRow component', () => {
 
     expect(badgeElement).not.toBeNull();
     expect(badgeElement.getAttribute('src')).toBe(badge.renderedImageUrl);
+  });
+
+  it('renders the badge name', () => {
+    expect(vm.$el).toContainText(badge.name);
   });
 
   it('renders the badge link', () => {

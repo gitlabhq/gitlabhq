@@ -1,6 +1,6 @@
 <script>
-import { __ } from '~/locale';
 import $ from 'jquery';
+import { __ } from '~/locale';
 import eventHub from '../../event_hub';
 
 export default {

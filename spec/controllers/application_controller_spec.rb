@@ -90,18 +90,16 @@ describe ApplicationController do
       let(:format) { :html }
 
       it_behaves_like 'setting gon variables'
-
-      context 'for peek requests' do
-        before do
-          request.path = '/-/peek'
-        end
-
-        it_behaves_like 'not setting gon variables'
-      end
     end
 
     context 'with json format' do
       let(:format) { :json }
+
+      it_behaves_like 'not setting gon variables'
+    end
+
+    context 'with atom format' do
+      let(:format) { :atom }
 
       it_behaves_like 'not setting gon variables'
     end
@@ -816,6 +814,7 @@ describe ApplicationController do
 
       context 'that re-authenticated' do
         before do
+          Gitlab::Auth::CurrentUserMode.new(user).request_admin_mode!
           Gitlab::Auth::CurrentUserMode.new(user).enable_admin_mode!(password: user.password)
         end
 
@@ -868,6 +867,32 @@ describe ApplicationController do
       end
 
       it { is_expected.not_to redirect_to users_sign_up_welcome_path }
+    end
+
+    describe 'rescue_from Gitlab::Auth::IpBlacklisted' do
+      controller(described_class) do
+        skip_before_action :authenticate_user!
+
+        def index
+          raise Gitlab::Auth::IpBlacklisted
+        end
+      end
+
+      it 'returns a 403 and logs the request' do
+        expect(Gitlab::AuthLogger).to receive(:error).with({
+          message: 'Rack_Attack',
+          env: :blocklist,
+          remote_ip: '1.2.3.4',
+          request_method: 'GET',
+          path: '/anonymous'
+        })
+
+        request.remote_addr = '1.2.3.4'
+
+        get :index
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
     end
   end
 end

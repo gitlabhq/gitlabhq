@@ -29,7 +29,7 @@ describe API::BroadcastMessages do
       expect(response).to include_pagination_headers
       expect(json_response).to be_kind_of(Array)
       expect(json_response.first.keys)
-        .to match_array(%w(id message starts_at ends_at color font active))
+        .to match_array(%w(id message starts_at ends_at color font active target_path))
     end
   end
 
@@ -52,7 +52,7 @@ describe API::BroadcastMessages do
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['id']).to eq message.id
       expect(json_response.keys)
-        .to match_array(%w(id message starts_at ends_at color font active))
+        .to match_array(%w(id message starts_at ends_at color font active target_path))
     end
   end
 
@@ -99,6 +99,15 @@ describe API::BroadcastMessages do
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['color']).to eq attrs[:color]
         expect(json_response['font']).to eq attrs[:font]
+      end
+
+      it 'accepts a target path' do
+        attrs = attributes_for(:broadcast_message, target_path: "*/welcome")
+
+        post api('/broadcast_messages', admin), params: attrs
+
+        expect(response).to have_gitlab_http_status(201)
+        expect(json_response['target_path']).to eq attrs[:target_path]
       end
     end
   end
@@ -149,6 +158,15 @@ describe API::BroadcastMessages do
 
         expect(response).to have_gitlab_http_status(200)
         expect { message.reload }.to change { message.message }.to('new message')
+      end
+
+      it 'accepts a new target_path' do
+        attrs = { target_path: '*/welcome' }
+
+        put api("/broadcast_messages/#{message.id}", admin), params: attrs
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['target_path']).to eq attrs[:target_path]
       end
     end
   end

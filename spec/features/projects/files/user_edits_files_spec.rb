@@ -193,6 +193,7 @@ describe 'Projects > Files > User edits files', :js do
 
     context 'when the user already had a fork of the project', :js do
       let!(:forked_project) { fork_project(project2, user, namespace: user.namespace, repository: true) }
+
       before do
         visit(project2_tree_path_root_ref)
         wait_for_requests

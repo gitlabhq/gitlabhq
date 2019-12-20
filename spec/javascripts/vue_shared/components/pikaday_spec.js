@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import datePicker from '~/vue_shared/components/pikaday.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import datePicker from '~/vue_shared/components/pikaday.vue';
 
 describe('datePicker', () => {
   let vm;

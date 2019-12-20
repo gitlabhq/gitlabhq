@@ -44,5 +44,13 @@ FactoryBot.define do
       status { 'created' }
       self.when { 'manual' }
     end
+
+    trait :auto_stopped do
+      auto_stop_at { 1.day.ago }
+    end
+
+    trait :will_auto_stop do
+      auto_stop_at { 1.day.from_now }
+    end
   end
 end

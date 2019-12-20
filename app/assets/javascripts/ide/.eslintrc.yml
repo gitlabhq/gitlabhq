@@ -1,3 +1,5 @@
 rules:
+  # https://gitlab.com/gitlab-org/gitlab/issues/28717
+  import/no-cycle: off
   # https://gitlab.com/gitlab-org/gitlab/issues/33024
   promise/no-nesting: off

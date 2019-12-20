@@ -57,3 +57,45 @@ shared_examples 'unfoldable diff' do
     subject.unfold_diff_files([position])
   end
 end
+
+shared_examples 'cacheable diff collection' do
+  let(:cache) { instance_double(Gitlab::Diff::HighlightCache) }
+
+  before do
+    expect(Gitlab::Diff::HighlightCache).to receive(:new).with(subject) { cache }
+  end
+
+  describe '#write_cache' do
+    it 'calls Gitlab::Diff::HighlightCache#write_if_empty' do
+      expect(cache).to receive(:write_if_empty).once
+
+      subject.write_cache
+    end
+  end
+
+  describe '#clear_cache' do
+    it 'calls Gitlab::Diff::HighlightCache#clear' do
+      expect(cache).to receive(:clear).once
+
+      subject.clear_cache
+    end
+  end
+
+  describe '#cache_key' do
+    it 'calls Gitlab::Diff::HighlightCache#key' do
+      expect(cache).to receive(:key).once
+
+      subject.cache_key
+    end
+  end
+
+  describe '#diff_files' do
+    it 'calls Gitlab::Diff::HighlightCache#decorate' do
+      expect(cache).to receive(:decorate)
+        .with(instance_of(Gitlab::Diff::File))
+        .exactly(cacheable_files_count).times
+
+      subject.diff_files
+    end
+  end
+end

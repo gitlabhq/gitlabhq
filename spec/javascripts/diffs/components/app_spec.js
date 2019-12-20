@@ -2,10 +2,10 @@ import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { TEST_HOST } from 'spec/test_constants';
+import Mousetrap from 'mousetrap';
 import App from '~/diffs/components/app.vue';
 import NoChanges from '~/diffs/components/no_changes.vue';
 import DiffFile from '~/diffs/components/diff_file.vue';
-import Mousetrap from 'mousetrap';
 import CompareVersions from '~/diffs/components/compare_versions.vue';
 import HiddenFilesWarning from '~/diffs/components/hidden_files_warning.vue';
 import CommitWidget from '~/diffs/components/commit_widget.vue';
@@ -34,14 +34,22 @@ describe('diffs/components/app', () => {
       localVue,
       propsData: {
         endpoint: `${TEST_HOST}/diff/endpoint`,
+        endpointMetadata: `${TEST_HOST}/diff/endpointMetadata`,
+        endpointBatch: `${TEST_HOST}/diff/endpointBatch`,
         projectPath: 'namespace/project',
         currentUser: {},
         changesEmptyStateIllustration: '',
         dismissEndpoint: '',
         showSuggestPopover: true,
+        useSingleDiffStyle: false,
         ...props,
       },
       store,
+      methods: {
+        isLatestVersion() {
+          return true;
+        },
+      },
     });
   }
 
@@ -57,6 +65,57 @@ describe('diffs/components/app', () => {
 
     // reset component
     wrapper.destroy();
+  });
+
+  describe('fetch diff methods', () => {
+    beforeEach(() => {
+      spyOn(window, 'requestIdleCallback').and.callFake(fn => fn());
+      createComponent();
+      spyOn(wrapper.vm, 'fetchDiffFiles').and.callFake(() => Promise.resolve());
+      spyOn(wrapper.vm, 'fetchDiffFilesMeta').and.callFake(() => Promise.resolve());
+      spyOn(wrapper.vm, 'fetchDiffFilesBatch').and.callFake(() => Promise.resolve());
+      spyOn(wrapper.vm, 'setDiscussions');
+      spyOn(wrapper.vm, 'startRenderDiffsQueue');
+    });
+
+    it('calls fetchDiffFiles if diffsBatchLoad is not enabled', done => {
+      wrapper.vm.glFeatures.diffsBatchLoad = false;
+      wrapper.vm.fetchData(false);
+
+      expect(wrapper.vm.fetchDiffFiles).toHaveBeenCalled();
+      setTimeout(() => {
+        expect(wrapper.vm.startRenderDiffsQueue).toHaveBeenCalled();
+        expect(wrapper.vm.fetchDiffFilesMeta).not.toHaveBeenCalled();
+        expect(wrapper.vm.fetchDiffFilesBatch).not.toHaveBeenCalled();
+
+        done();
+      });
+    });
+
+    it('calls batch methods if diffsBatchLoad is enabled, and not latest version', () => {
+      wrapper.vm.glFeatures.diffsBatchLoad = true;
+      wrapper.vm.isLatestVersion = () => false;
+      wrapper.vm.fetchData(false);
+
+      expect(wrapper.vm.fetchDiffFiles).not.toHaveBeenCalled();
+      wrapper.vm.$nextTick(() => {
+        expect(wrapper.vm.startRenderDiffsQueue).toHaveBeenCalled();
+        expect(wrapper.vm.fetchDiffFilesMeta).toHaveBeenCalled();
+        expect(wrapper.vm.fetchDiffFilesBatch).toHaveBeenCalled();
+      });
+    });
+
+    it('calls batch methods if diffsBatchLoad is enabled, and latest version', () => {
+      wrapper.vm.glFeatures.diffsBatchLoad = true;
+      wrapper.vm.fetchData(false);
+
+      expect(wrapper.vm.fetchDiffFiles).not.toHaveBeenCalled();
+      wrapper.vm.$nextTick(() => {
+        expect(wrapper.vm.startRenderDiffsQueue).toHaveBeenCalled();
+        expect(wrapper.vm.fetchDiffFilesMeta).toHaveBeenCalled();
+        expect(wrapper.vm.fetchDiffFilesBatch).toHaveBeenCalled();
+      });
+    });
   });
 
   it('adds container-limiting classes when showFileTree is false with inline diffs', () => {
@@ -88,6 +147,14 @@ describe('diffs/components/app', () => {
   it('displays loading icon on loading', () => {
     createComponent({}, ({ state }) => {
       state.diffs.isLoading = true;
+    });
+
+    expect(wrapper.contains(GlLoadingIcon)).toBe(true);
+  });
+
+  it('displays loading icon on batch loading', () => {
+    createComponent({}, ({ state }) => {
+      state.diffs.isBatchLoading = true;
     });
 
     expect(wrapper.contains(GlLoadingIcon)).toBe(true);

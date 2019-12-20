@@ -146,13 +146,13 @@ describe API::Helpers do
       let(:personal_access_token) { create(:personal_access_token, user: user) }
 
       it "returns a 401 response for an invalid token" do
-        env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = 'invalid token'
+        env[Gitlab::Auth::AuthFinders::PRIVATE_TOKEN_HEADER] = 'invalid token'
 
         expect { current_user }.to raise_error /401/
       end
 
       it "returns a 403 response for a user without access" do
-        env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
+        env[Gitlab::Auth::AuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
         allow_any_instance_of(Gitlab::UserAccess).to receive(:allowed?).and_return(false)
 
         expect { current_user }.to raise_error /403/
@@ -160,7 +160,7 @@ describe API::Helpers do
 
       it 'returns a 403 response for a user who is blocked' do
         user.block!
-        env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
+        env[Gitlab::Auth::AuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
 
         expect { current_user }.to raise_error /403/
       end
@@ -168,7 +168,7 @@ describe API::Helpers do
       context 'when terms are enforced' do
         before do
           enforce_terms
-          env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
+          env[Gitlab::Auth::AuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
         end
 
         it 'returns a 403 when a user has not accepted the terms' do
@@ -183,27 +183,27 @@ describe API::Helpers do
       end
 
       it "sets current_user" do
-        env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
+        env[Gitlab::Auth::AuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
         expect(current_user).to eq(user)
       end
 
       it "does not allow tokens without the appropriate scope" do
         personal_access_token = create(:personal_access_token, user: user, scopes: ['read_user'])
-        env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
+        env[Gitlab::Auth::AuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
 
         expect { current_user }.to raise_error Gitlab::Auth::InsufficientScopeError
       end
 
       it 'does not allow revoked tokens' do
         personal_access_token.revoke!
-        env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
+        env[Gitlab::Auth::AuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
 
         expect { current_user }.to raise_error Gitlab::Auth::RevokedError
       end
 
       it 'does not allow expired tokens' do
         personal_access_token.update!(expires_at: 1.day.ago)
-        env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
+        env[Gitlab::Auth::AuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
 
         expect { current_user }.to raise_error Gitlab::Auth::ExpiredError
       end
@@ -213,7 +213,7 @@ describe API::Helpers do
 
         before do
           stub_config_setting(impersonation_enabled: false)
-          env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
+          env[Gitlab::Auth::AuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
         end
 
         it 'does not allow impersonation tokens' do
@@ -226,11 +226,11 @@ describe API::Helpers do
   describe '.handle_api_exception' do
     before do
       allow_any_instance_of(self.class).to receive(:rack_response)
-      allow(Gitlab::Sentry).to receive(:enabled?).and_return(true)
 
       stub_sentry_settings
 
-      configure_sentry
+      expect(Gitlab::ErrorTracking).to receive(:sentry_dsn).and_return(Gitlab.config.sentry.dsn)
+      Gitlab::ErrorTracking.configure
       Raven.client.configuration.encoding = 'json'
     end
 
@@ -478,7 +478,7 @@ describe API::Helpers do
 
       context 'passed as param' do
         before do
-          set_param(Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_PARAM, token.token)
+          set_param(Gitlab::Auth::AuthFinders::PRIVATE_TOKEN_PARAM, token.token)
         end
 
         it_behaves_like 'sudo'
@@ -486,7 +486,7 @@ describe API::Helpers do
 
       context 'passed as header' do
         before do
-          env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = token.token
+          env[Gitlab::Auth::AuthFinders::PRIVATE_TOKEN_HEADER] = token.token
         end
 
         it_behaves_like 'sudo'

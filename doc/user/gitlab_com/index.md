@@ -14,6 +14,17 @@ Below are the fingerprints for GitLab.com's SSH host keys.
 |  ED25519  | `2e:65:6a:c8:cf:bf:b2:8b:9a:bd:6d:9f:11:5c:12:16` | `eUXGGm1YGsMAS7vkcx6JOJdOGHPem5gQp4taiCfCLB8` |
 |  RSA      | `b6:03:0e:39:97:9e:d0:e7:24:ce:a3:77:3e:01:42:09` | `ROQFvPThGrW4RuWLoL9tq9I9zJ42fK4XywyRtbOz/EQ` |
 
+## SSH `known_hosts` entries
+
+Add the following to `.ssh/known_hosts` to skip manual fingerprint
+confirmation in SSH:
+
+```
+gitlab.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAfuCHKVTjquxvt6CM6tdG4SLp1Btn/nOeHHE5UOzRdf
+gitlab.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCsj2bNKTBSpIYDEGk9KxsGh3mySTRgMtXL583qmBpzeQ+jqCMRgBqB98u3z++J1sKlXHWfM9dyhSevkMwSbhoR8XIq/U0tCNyokEi/ueaBMCvbcTHhO7FcwzY92WK4Yt0aGROY5qX2UKSeOvuP4D6TPqKF1onrSzH9bx9XUf2lEdWT/ia1NEKjunUqu1xOB/StKDHMoX4/OKyIzuS0q/T1zOATthvasJFoPrAjkohTyaDUz2LN5JoH839hViyEG82yB+MjcFV5MU3N1l1QL3cVUCh93xSaua1N85qivl+siMkPGbO5xR/En4iEY6K2XPASUEMaieWVNTRCtJ4S8H+9
+gitlab.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBFSMqzJeV9rUzU4kWitGjeR4PWSa29SPqJ1fVkhtj3Hw9xjLVXVYrU9QlYWrOLXBpQ6KWjbjTDTdDkoohFzgbEY=
+```
+
 ## Mail configuration
 
 GitLab.com sends emails from the `mg.gitlab.com` domain via [Mailgun] and has
@@ -63,6 +74,7 @@ Below are the current settings regarding [GitLab CI/CD](../../ci/README.md).
 | -----------             | ----------------- | ------------- |
 | Artifacts maximum size (uncompressed) | 1G                | 100M          |
 | Artifacts [expiry time](../../ci/yaml/README.md#artifactsexpire_in)   | kept forever           | deleted after 30 days unless otherwise specified    |
+| Scheduled Pipeline Cron | `*/5 * * * *` | `*/19 * * * *` |
 
 ## Repository size limit
 
@@ -79,7 +91,7 @@ GitLab.com, CI/CD, and related services are deployed into Google Cloud Platform 
 IP based firewall can be configured by looking up all
 [IP address ranges or CIDR blocks for GCP](https://cloud.google.com/compute/docs/faq#where_can_i_find_product_name_short_ip_ranges).
 
-[Static endpoints](https://gitlab.com/gitlab-com/gl-infra/infrastructure/issues/5071) are being considered.
+[Static endpoints](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/97) are being considered.
 
 ## Shared Runners
 
@@ -94,6 +106,8 @@ All your CI/CD jobs run on [n1-standard-1 instances](https://cloud.google.com/co
 installed. Instances provide 1 vCPU and 25GB of HDD disk space. The default
 region of the VMs is US East1.
 Each instance is used only for one job, this ensures any sensitive data left on the system can't be accessed by other people their CI jobs.
+
+The `gitlab-shared-runners-manager-X.gitlab.com` fleet of Runners are dedicated for GitLab projects as well as community forks of them. They use a slightly larger machine type (n1-standard-2) and have a bigger SSD disk size. They will not run untagged jobs and unlike the general fleet of shared Runners, the instances are re-used up to 40 times.
 
 Jobs handled by the shared Runners on GitLab.com (`shared-runners-manager-X.gitlab.com`),
 **will be timed out after 3 hours**, regardless of the timeout configured in a
@@ -341,18 +355,43 @@ GitLab.com:
   set to the default.
 - Does not have the user and IP rate limits settings enabled.
 
+### Visibility settings
+
+On GitLab.com, projects, groups, and snippets created
+As of GitLab 12.2 (July 2019), projects, groups, and snippets have the
+[**Internal** visibility](../../public_access/public_access.md#internal-projects) setting [disabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/issues/12388).
+
+## GitLab.com Logging
+
+We use [Fluentd](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#fluentd) to parse our logs. Fluentd sends our logs to
+[Stackdriver Logging](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#stackdriver) and [Cloud Pub/Sub](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#cloud-pubsub).
+Stackdriver is used for storing logs long-term in Google Cold Storage (GCS). Cloud Pub/Sub
+is used to forward logs to an [Elastic cluster](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#elastic) using [pubsubbeat](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#pubsubbeat-vms).
+
+You can view more information in our runbooks such as:
+
+- A [detailed list of what we're logging](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#what-are-we-logging)
+- Our [current log retention policies](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#retention)
+- A [diagram of our logging infrastructure](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#logging-infrastructure-overview)
+
 ## GitLab.com at scale
 
 In addition to the GitLab Enterprise Edition Omnibus install, GitLab.com uses
 the following applications and settings to achieve scale. All settings are
 publicly available at [chef cookbooks](https://gitlab.com/gitlab-cookbooks).
 
-### ELK
+### Elastic Cluster
 
-We use Elasticsearch, logstash, and Kibana for part of our monitoring solution:
+We use Elasticsearch and Kibana for part of our monitoring solution:
 
 - [`gitlab-cookbooks` / `gitlab-elk` · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab-elk)
 - [`gitlab-cookbooks` / `gitlab_elasticsearch` · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab_elasticsearch)
+
+### Fluentd
+
+We use Fluentd to unify our GitLab logs:
+
+- [`gitlab-cookbooks` / `gitlab_fluentd` · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab_fluentd)
 
 ### Prometheus
 
@@ -393,11 +432,3 @@ High Performance TCP/HTTP Load Balancer:
 [unicorn-worker-killer]: https://rubygems.org/gems/unicorn-worker-killer "unicorn-worker-killer"
 [4010]: https://gitlab.com/gitlab-com/infrastructure/issues/4010 "Find a good value for maximum timeout for Shared Runners"
 [4070]: https://gitlab.com/gitlab-com/infrastructure/issues/4070 "Configure per-runner timeout for shared-runners-manager-X on GitLab.com"
-
-## Group and project settings
-
-On GitLab.com, projects, groups, and snippets created
-after July 2019 have the `Internal` visibility setting disabled.
-
-You can read more about the change in the
-[relevant issue](https://gitlab.com/gitlab-org/gitlab/issues/12388).

@@ -12,6 +12,7 @@ class Commit
   include StaticModel
   include Presentable
   include ::Gitlab::Utils::StrongMemoize
+  include ActsAsPaginatedDiff
   include CacheMarkdownField
 
   attr_mentionable :safe_message, pipeline: :single_line
@@ -246,7 +247,7 @@ class Commit
 
   def lazy_author
     BatchLoader.for(author_email.downcase).batch do |emails, loader|
-      users = User.by_any_email(emails).includes(:emails)
+      users = User.by_any_email(emails, confirmed: true).includes(:emails)
 
       emails.each do |email|
         user = users.find { |u| u.any_email?(email) }
@@ -263,8 +264,8 @@ class Commit
   end
   request_cache(:author) { author_email.downcase }
 
-  def committer
-    @committer ||= User.find_by_any_email(committer_email)
+  def committer(confirmed: true)
+    @committer ||= User.find_by_any_email(committer_email, confirmed: confirmed)
   end
 
   def parents
@@ -279,6 +280,10 @@ class Commit
 
   def notes
     project.notes.for_commit_id(self.id)
+  end
+
+  def user_mentions
+    CommitUserMention.where(commit_id: self.id)
   end
 
   def discussion_notes
@@ -464,7 +469,19 @@ class Commit
     "commit:#{sha}"
   end
 
+  def expire_note_etag_cache
+    super
+
+    expire_note_etag_cache_for_related_mrs
+  end
+
   private
+
+  def expire_note_etag_cache_for_related_mrs
+    MergeRequest.includes(target_project: :namespace).by_commit_sha(id).find_each do |mr|
+      mr.expire_note_etag_cache
+    end
+  end
 
   def commit_reference(from, referable_commit_id, full: false)
     reference = project.to_reference(from, full: full)

@@ -49,7 +49,7 @@ describe IssuablesHelper do
     let(:label2_entity) { LabelEntity.represent(label2).as_json }
 
     it 'returns label text with no labels' do
-      expect(issuable_labels_tooltip([])).to eq("Labels")
+      expect(issuable_labels_tooltip([])).to eq(_('Labels'))
     end
 
     it 'returns label text with labels within max limit' do
@@ -202,6 +202,26 @@ describe IssuablesHelper do
       expect(helper.issuable_initial_data(issue)).to match(hash_including(expected_data))
     end
 
+    describe '#sentryIssueIdentifier' do
+      let(:issue) { create(:issue, author: user) }
+
+      before do
+        assign(:project, issue.project)
+      end
+
+      it 'sets sentryIssueIdentifier to nil with no sentry issue ' do
+        expect(helper.issuable_initial_data(issue)[:sentryIssueIdentifier])
+          .to be_nil
+      end
+
+      it 'sets sentryIssueIdentifier to sentry_issue_identifier' do
+        sentry_issue = create(:sentry_issue, issue: issue)
+
+        expect(helper.issuable_initial_data(issue)[:sentryIssueIdentifier])
+          .to eq(sentry_issue.sentry_issue_identifier)
+      end
+    end
+
     describe '#zoomMeetingUrl in issue' do
       let(:issue) { create(:issue, author: user) }
 
@@ -258,6 +278,7 @@ describe IssuablesHelper do
   describe '#assignee_sidebar_data' do
     let(:user) { create(:user) }
     let(:merge_request) { nil }
+
     subject { helper.assignee_sidebar_data(user, merge_request: merge_request) }
 
     it 'returns hash of assignee data' do

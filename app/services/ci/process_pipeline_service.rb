@@ -1,14 +1,16 @@
 # frozen_string_literal: true
 
 module Ci
-  class ProcessPipelineService < BaseService
+  class ProcessPipelineService
     include Gitlab::Utils::StrongMemoize
 
     attr_reader :pipeline
 
-    def execute(pipeline, trigger_build_ids = nil)
+    def initialize(pipeline)
       @pipeline = pipeline
+    end
 
+    def execute(trigger_build_ids = nil)
       update_retried
 
       success = process_stages_without_needs
@@ -72,7 +74,7 @@ module Ci
 
     def process_build(build, current_status)
       Gitlab::OptimisticLocking.retry_lock(build) do |subject|
-        Ci::ProcessBuildService.new(project, @user)
+        Ci::ProcessBuildService.new(project, build.user)
           .execute(subject, current_status)
       end
     end
@@ -129,5 +131,9 @@ module Ci
         .update_all(retried: true) if latest_statuses.any?
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    def project
+      pipeline.project
+    end
   end
 end

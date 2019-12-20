@@ -11,7 +11,7 @@
     - if discussion.nil?
       commented
     - else
-      - if discussion.new_discussion?
+      - if note.start_of_discussion?
         started a new
       - else
         commented on a

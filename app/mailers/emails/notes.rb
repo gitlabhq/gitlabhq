@@ -38,7 +38,7 @@ module Emails
       setup_note_mail(note_id, recipient_id)
 
       @snippet = @note.noteable
-      @target_url = snippet_url(@note.noteable)
+      @target_url = gitlab_snippet_url(@note.noteable)
       mail_answer_note_thread(@snippet, @note, note_thread_options(recipient_id, reason))
     end
 

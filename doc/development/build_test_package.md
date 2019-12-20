@@ -9,16 +9,16 @@ that will create:
 - A deb package for Ubuntu 16.04, available as a build artifact, and
 - A docker image, which is pushed to [Omnibus GitLab's container
   registry](https://gitlab.com/gitlab-org/omnibus-gitlab/container_registry)
-  (images titled `gitlab-foss` and `gitlab-ee` respectively and image tag is the
+  (images titled `gitlab-ce` and `gitlab-ee` respectively and image tag is the
   commit which triggered the pipeline).
 
 When you push a commit to either the GitLab CE or GitLab EE project, the
 pipeline for that commit will have a `build-package` manual action you can
 trigger.
 
-![Manual actions](img/trigger_ss1.png)
+![Manual actions](img/build_package_v12_6.png)
 
-![Build package manual action](img/trigger_ss2.png)
+![Build package manual action](img/trigger_build_package_v12_6.png)
 
 ## Specifying versions of components
 

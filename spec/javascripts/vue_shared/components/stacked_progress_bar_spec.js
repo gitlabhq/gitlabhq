@@ -1,8 +1,7 @@
 import Vue from 'vue';
 
-import stackedProgressBarComponent from '~/vue_shared/components/stacked_progress_bar.vue';
-
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import stackedProgressBarComponent from '~/vue_shared/components/stacked_progress_bar.vue';
 
 const createComponent = config => {
   const Component = Vue.extend(stackedProgressBarComponent);
@@ -53,6 +52,12 @@ describe('StackedProgressBarComponent', () => {
 
       it('returns percentage as `< 1` from provided count based on `totalCount` when evaluated value is less than 1', () => {
         expect(vm.getPercent(10)).toBe('< 1');
+      });
+
+      it('returns 0 if totalCount is falsy', () => {
+        vm = createComponent({ totalCount: 0 });
+
+        expect(vm.getPercent(100)).toBe(0);
       });
     });
 
