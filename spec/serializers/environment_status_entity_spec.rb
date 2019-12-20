@@ -45,7 +45,7 @@ describe EnvironmentStatusEntity do
   end
 
   context 'when deployment has metrics' do
-    let(:prometheus_adapter) { double('prometheus_adapter', can_query?: true) }
+    let(:prometheus_adapter) { double('prometheus_adapter', can_query?: true, configured?: true) }
 
     let(:simple_metrics) do
       {

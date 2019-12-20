@@ -1,0 +1,5 @@
+---
+title: Prevent MergeRequestsController#ci_environment_status.json from making HTTP requests
+merge_request: 21812
+author:
+type: fixed

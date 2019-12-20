@@ -208,7 +208,7 @@ class Environment < ApplicationRecord
   end
 
   def metrics
-    prometheus_adapter.query(:environment, self) if has_metrics? && prometheus_adapter.can_query?
+    prometheus_adapter.query(:environment, self) if has_metrics_and_can_query?
   end
 
   def prometheus_status
@@ -216,7 +216,7 @@ class Environment < ApplicationRecord
   end
 
   def additional_metrics(*args)
-    return unless has_metrics?
+    return unless has_metrics_and_can_query?
 
     prometheus_adapter.query(:additional_metrics_environment, self, *args.map(&:to_f))
   end
@@ -284,6 +284,10 @@ class Environment < ApplicationRecord
   end
 
   private
+
+  def has_metrics_and_can_query?
+    has_metrics? && prometheus_adapter.can_query?
+  end
 
   def generate_slug
     self.slug = Gitlab::Slug::Environment.new(name).generate

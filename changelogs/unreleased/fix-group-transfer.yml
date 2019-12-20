@@ -1,0 +1,5 @@
+---
+title: Fix transferring groups to root when EE features are enabled
+merge_request: 21915
+author:
+type: fixed

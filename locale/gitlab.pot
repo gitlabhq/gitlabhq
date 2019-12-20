@@ -17283,6 +17283,9 @@ msgstr ""
 msgid "Subkeys"
 msgstr ""
 
+msgid "Submit a review"
+msgstr ""
+
 msgid "Submit as spam"
 msgstr ""
 
@@ -17296,6 +17299,12 @@ msgid "Submit review"
 msgstr ""
 
 msgid "Submit search"
+msgstr ""
+
+msgid "Submit the current review."
+msgstr ""
+
+msgid "Submitted the current review."
 msgstr ""
 
 msgid "Subscribe"

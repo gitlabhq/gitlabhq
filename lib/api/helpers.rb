@@ -363,6 +363,10 @@ module API
       render_api_error!('204 No Content', 204)
     end
 
+    def created!
+      render_api_error!('201 Created', 201)
+    end
+
     def accepted!
       render_api_error!('202 Accepted', 202)
     end

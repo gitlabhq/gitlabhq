@@ -421,6 +421,47 @@ etc. For example:
 {"severity":"DEBUG","time":"2019-10-17T06:23:13.227Z","correlation_id":null,"message":"redacted_search_result","class_name":"Milestone","id":2,"ability":"read_milestone","current_user_id":2,"query":"project"}
 ```
 
+## `exceptions_json.log`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/17819) in GitLab 12.6.
+
+This file lives in
+`/var/log/gitlab/gitlab-rails/exceptions_json.log` for Omnibus GitLab
+packages or in `/home/git/gitlab/log/exceptions_json.log` for installations
+from source.
+
+It logs the information about exceptions being tracked by `Gitlab::ErrorTracking` which provides standard and consistent way of [processing rescued exceptions](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/development/logging.md#exception-handling).
+
+Each line contains a JSON line that can be ingested by Elasticsearch. For example:
+
+```json
+{
+  "severity": "ERROR",
+  "time": "2019-12-17T11:49:29.485Z",
+  "correlation_id": "AbDVUrrTvM1",
+  "extra.server": {
+    "os": {
+      "name": "Darwin",
+      "version": "Darwin Kernel Version 19.2.0",
+      "build": "19.2.0",
+    },
+    "runtime": {
+      "name": "ruby",
+      "version": "ruby 2.6.3p62 (2019-04-16 revision 67580) [x86_64-darwin18]"
+    }
+  },
+  "extra.project_id": 55,
+  "extra.relation_key": "milestones",
+  "extra.relation_index": 1,
+  "exception.class": "NoMethodError",
+  "exception.message": "undefined method `strong_memoize' for #<Gitlab::ImportExport::RelationFactory:0x00007fb5d917c4b0>",
+  "exception.backtrace": [
+    "lib/gitlab/import_export/relation_factory.rb:329:in `unique_relation?'",
+    "lib/gitlab/import_export/relation_factory.rb:345:in `find_or_create_object!'"
+  ]
+}
+```
+
 [repocheck]: repository_checks.md
 [Rack Attack]: ../security/rack_attack.md
 [Rate Limit]: ../user/admin_area/settings/rate_limits_on_raw_endpoints.md

@@ -68,7 +68,8 @@ The following quick actions are applicable to descriptions, discussions and thre
 | `/remove_zoom`                        | ✓     |               |      | Remove Zoom meeting from this issue. ([Introduced in GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/merge_requests/16609)) |
 | `/target_branch <local branch name>`  |       | ✓             |      | Set target branch |
 | `/wip`                                |       | ✓             |      | Toggle the Work In Progress status |
-| `/approve`                            |       | ✓             |      | Approve the merge request |
+| `/approve`                            |       | ✓             |      | Approve the merge request **(STARTER)** |
+| `/submit_review`                      |       | ✓             |      | Submit a pending review. ([Introduced in GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/issues/8041)) **(PREMIUM)** |
 | `/merge`                              |       | ✓             |      | Merge (when pipeline succeeds) |
 | `/child_epic <epic>`                  |       |               | ✓    | Add child epic to `<epic>`. The `<epic>` value should be in the format of `&epic`, `group&epic`, or a URL to an epic. ([Introduced in GitLab 12.0](https://gitlab.com/gitlab-org/gitlab/issues/7330)) **(ULTIMATE)** |
 | `/remove_child_epic <epic>`           |       |               | ✓    | Remove child epic from `<epic>`. The `<epic>` value should be in the format of `&epic`, `group&epic`, or a URL to an epic. ([Introduced in GitLab 12.0](https://gitlab.com/gitlab-org/gitlab/issues/7330)) **(ULTIMATE)** |
