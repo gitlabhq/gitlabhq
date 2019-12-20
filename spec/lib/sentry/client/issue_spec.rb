@@ -74,6 +74,10 @@ describe Sentry::Client::Issue do
       it 'has a correct GitLab issue url' do
         expect(subject.gitlab_issue).to eq('https://gitlab.com/gitlab-org/gitlab/issues/1')
       end
+
+      it 'has the correct tags' do
+        expect(subject.tags).to eq({ level: issue_sample_response['level'], logger: issue_sample_response['logger'] })
+      end
     end
   end
 end

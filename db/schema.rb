@@ -1163,6 +1163,7 @@ ActiveRecord::Schema.define(version: 2019_12_18_225624) do
     t.text "status_reason"
     t.string "external_ip"
     t.string "external_hostname"
+    t.boolean "modsecurity_enabled"
     t.index ["cluster_id"], name: "index_clusters_applications_ingress_on_cluster_id", unique: true
   end
 

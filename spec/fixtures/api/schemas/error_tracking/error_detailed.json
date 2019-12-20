@@ -5,6 +5,7 @@
     "external_base_url",
     "last_seen",
     "message",
+    "tags",
     "type",
     "title",
     "project_id",
@@ -20,23 +21,38 @@
     "last_release_short_version"
   ],
   "properties" : {
-    "id": { "type": "string"},
+    "id": { "type": "string" },
     "first_seen": { "type": "string", "format": "date-time" },
     "last_seen": { "type": "string", "format": "date-time" },
     "type": { "type": "string" },
     "message": { "type": "string" },
     "culprit": { "type": "string" },
-    "count": { "type": "integer"},
+    "count": { "type": "integer" },
     "external_url": { "type": "string" },
     "external_base_url": { "type": "string" },
     "user_count": { "type": "integer"},
-    "title": { "type": "string"},
-    "project_id": { "type": "string"},
-    "project_name": { "type": "string"},
-    "project_slug": { "type": "string"},
-    "short_id": { "type": "string"},
-    "status": { "type": "string"},
-    "frequency": { "type": "array"},
+    "tags": {
+      "type": "object",
+      "required" : [
+        "level",
+        "logger"
+      ],
+      "properties": {
+        "level": {
+          "type": "string"
+        },
+        "logger": {
+          "type": "string"
+        }
+      }
+    },
+    "title": { "type": "string" },
+    "project_id": { "type": "string" },
+    "project_name": { "type": "string" },
+    "project_slug": { "type": "string" },
+    "short_id": { "type": "string" },
+    "status": { "type": "string" },
+    "frequency": { "type": "array" },
     "gitlab_issue": { "type": ["string", "null"] },
     "first_release_last_commit": { "type": ["string", "null"] },
     "last_release_last_commit": { "type": ["string", "null"] },

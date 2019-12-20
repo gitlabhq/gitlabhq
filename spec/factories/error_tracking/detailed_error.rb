@@ -18,6 +18,12 @@ FactoryBot.define do
     project_slug { 'project_name' }
     short_id { 'ID' }
     status { 'unresolved' }
+    tags do
+      {
+        level: 'error',
+        logger: 'rails'
+      }
+    end
     frequency do
       [
         [Time.now.to_i, 10]

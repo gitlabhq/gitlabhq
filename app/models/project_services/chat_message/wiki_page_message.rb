@@ -14,7 +14,7 @@ module ChatMessage
       obj_attr = HashWithIndifferentAccess.new(obj_attr)
       @title = obj_attr[:title]
       @wiki_page_url = obj_attr[:url]
-      @description = obj_attr[:content]
+      @description = obj_attr[:message]
 
       @action =
         case obj_attr[:action]

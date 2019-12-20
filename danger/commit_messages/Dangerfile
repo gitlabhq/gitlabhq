@@ -59,12 +59,6 @@ def subject_starts_with_capital?(subject)
   first_char.upcase == first_char
 end
 
-def ce_upstream?
-  return unless gitlab_danger.ci?
-
-  gitlab.mr_labels.any? { |label| label == 'CE upstream' }
-end
-
 def too_many_changed_lines?(commit)
   commit.diff_parent.stats[:total][:files] > 3 &&
     lines_changed_in_commit(commit) >= 30
@@ -291,11 +285,11 @@ def lint_commits(commits)
   end
 end
 
-if count_filtered_commits(git.commits) > 10 && !ce_upstream?
-  warn(
+lint_commits(git.commits)
+
+if count_filtered_commits(git.commits) > 10
+  fail(
     'This merge request includes more than 10 commits. ' \
       'Please rebase these commits into a smaller number of commits.'
   )
-else
-  lint_commits(git.commits)
 end

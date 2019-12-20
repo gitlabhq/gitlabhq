@@ -21,6 +21,7 @@ module ErrorTracking
            :project_slug,
            :short_id,
            :status,
+           :tags,
            :title,
            :type,
            :user_count

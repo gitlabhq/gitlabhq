@@ -36,6 +36,7 @@ module Sentry
           id: issue.fetch('id'),
           first_seen: issue.fetch('firstSeen', nil),
           last_seen: issue.fetch('lastSeen', nil),
+          tags: extract_tags(issue),
           title: issue.fetch('title', nil),
           type: issue.fetch('type', nil),
           user_count: issue.fetch('userCount', nil),
@@ -56,6 +57,13 @@ module Sentry
           first_release_short_version: issue.dig('firstRelease', 'shortVersion'),
           last_release_short_version: issue.dig('lastRelease', 'shortVersion')
         )
+      end
+
+      def extract_tags(issue)
+        {
+          level: issue.fetch('level', nil),
+          logger: issue.fetch('logger', nil)
+        }
       end
     end
   end
