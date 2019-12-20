@@ -164,31 +164,32 @@ export default {
       changedFiles: state.changedFiles.filter(f => f.path !== path),
     });
   },
-  [types.STAGE_CHANGE](state, path) {
+  [types.STAGE_CHANGE](state, { path, diffInfo }) {
     const stagedFile = state.stagedFiles.find(f => f.path === path);
 
     Object.assign(state, {
       changedFiles: state.changedFiles.filter(f => f.path !== path),
       entries: Object.assign(state.entries, {
         [path]: Object.assign(state.entries[path], {
-          staged: true,
+          staged: diffInfo.exists,
+          changed: diffInfo.changed,
+          tempFile: diffInfo.tempFile,
+          deleted: diffInfo.deleted,
         }),
       }),
     });
 
     if (stagedFile) {
-      Object.assign(stagedFile, {
-        ...state.entries[path],
-      });
+      Object.assign(stagedFile, { ...state.entries[path] });
     } else {
-      Object.assign(state, {
-        stagedFiles: state.stagedFiles.concat({
-          ...state.entries[path],
-        }),
-      });
+      state.stagedFiles = [...state.stagedFiles, { ...state.entries[path] }];
+    }
+
+    if (!diffInfo.exists) {
+      state.stagedFiles = state.stagedFiles.filter(f => f.path !== path);
     }
   },
-  [types.UNSTAGE_CHANGE](state, path) {
+  [types.UNSTAGE_CHANGE](state, { path, diffInfo }) {
     const changedFile = state.changedFiles.find(f => f.path === path);
     const stagedFile = state.stagedFiles.find(f => f.path === path);
 
@@ -201,9 +202,11 @@ export default {
         changed: true,
       });
 
-      Object.assign(state, {
-        changedFiles: state.changedFiles.concat(state.entries[path]),
-      });
+      state.changedFiles = state.changedFiles.concat(state.entries[path]);
+    }
+
+    if (!diffInfo.exists) {
+      state.changedFiles = state.changedFiles.filter(f => f.path !== path);
     }
 
     Object.assign(state, {
@@ -211,6 +214,9 @@ export default {
       entries: Object.assign(state.entries, {
         [path]: Object.assign(state.entries[path], {
           staged: false,
+          changed: diffInfo.changed,
+          tempFile: diffInfo.tempFile,
+          deleted: diffInfo.deleted,
         }),
       }),
     });

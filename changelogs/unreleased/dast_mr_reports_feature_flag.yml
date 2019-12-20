@@ -1,0 +1,5 @@
+---
+title: Turns on backend MR reports for DAST by default
+merge_request: 22001
+author:
+type: changed

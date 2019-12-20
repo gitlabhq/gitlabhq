@@ -25,7 +25,7 @@ describe('CollapsedAssigneeList component', () => {
   const findNoUsersIcon = () => wrapper.find('i[aria-label=None]');
   const findAvatarCounter = () => wrapper.find('.avatar-counter');
   const findAssignees = () => wrapper.findAll(CollapsedAssignee);
-  const getTooltipTitle = () => wrapper.attributes('data-original-title');
+  const getTooltipTitle = () => wrapper.attributes('title');
 
   afterEach(() => {
     wrapper.destroy();

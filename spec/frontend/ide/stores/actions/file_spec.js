@@ -1,20 +1,20 @@
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import store from '~/ide/stores';
+import { createStore } from '~/ide/stores';
 import * as actions from '~/ide/stores/actions/file';
 import * as types from '~/ide/stores/mutation_types';
 import service from '~/ide/services';
 import router from '~/ide/ide_router';
 import eventHub from '~/ide/eventhub';
-import { file, resetStore } from '../../helpers';
-import testAction from '../../../helpers/vuex_action_helper';
+import { file } from '../../helpers';
 
 const RELATIVE_URL_ROOT = '/gitlab';
 
 describe('IDE store file actions', () => {
   let mock;
   let originalGon;
+  let store;
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
@@ -24,12 +24,15 @@ describe('IDE store file actions', () => {
       relative_url_root: RELATIVE_URL_ROOT,
     };
 
+    store = createStore();
+
+    jest.spyOn(store, 'commit');
+    jest.spyOn(store, 'dispatch');
     jest.spyOn(router, 'push').mockImplementation(() => {});
   });
 
   afterEach(() => {
     mock.restore();
-    resetStore(store);
     window.gon = originalGon;
   });
 
@@ -663,30 +666,33 @@ describe('IDE store file actions', () => {
   });
 
   describe('stageChange', () => {
-    it('calls STAGE_CHANGE with file path', done => {
-      testAction(
-        actions.stageChange,
-        'path',
-        store.state,
-        [
-          { type: types.STAGE_CHANGE, payload: 'path' },
-          { type: types.SET_LAST_COMMIT_MSG, payload: '' },
-        ],
-        [],
-        done,
+    it('calls STAGE_CHANGE with file path', () => {
+      const f = { ...file('path'), content: 'old' };
+
+      store.state.entries[f.path] = f;
+
+      actions.stageChange(store, 'path');
+
+      expect(store.commit).toHaveBeenCalledWith(
+        types.STAGE_CHANGE,
+        expect.objectContaining({ path: 'path' }),
       );
+      expect(store.commit).toHaveBeenCalledWith(types.SET_LAST_COMMIT_MSG, '');
     });
   });
 
   describe('unstageChange', () => {
-    it('calls UNSTAGE_CHANGE with file path', done => {
-      testAction(
-        actions.unstageChange,
-        'path',
-        store.state,
-        [{ type: types.UNSTAGE_CHANGE, payload: 'path' }],
-        [],
-        done,
+    it('calls UNSTAGE_CHANGE with file path', () => {
+      const f = { ...file('path'), content: 'old' };
+
+      store.state.entries[f.path] = f;
+      store.state.stagedFiles.push({ f, content: 'new' });
+
+      actions.unstageChange(store, 'path');
+
+      expect(store.commit).toHaveBeenCalledWith(
+        types.UNSTAGE_CHANGE,
+        expect.objectContaining({ path: 'path' }),
       );
     });
   });

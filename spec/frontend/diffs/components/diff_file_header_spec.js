@@ -329,7 +329,7 @@ describe('DiffFileHeader component', () => {
             addMergeRequestButtons: true,
           });
           expect(findViewFileButton().attributes('href')).toBe(viewPath);
-          expect(findViewFileButton().attributes('data-original-title')).toEqual(
+          expect(findViewFileButton().attributes('title')).toEqual(
             `View file @ ${diffFile.content_sha.substr(0, 8)}`,
           );
         });

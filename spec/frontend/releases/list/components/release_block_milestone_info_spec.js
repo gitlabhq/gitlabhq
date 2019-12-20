@@ -61,7 +61,7 @@ describe('Release block milestone info', () => {
 
         expect(milestoneLink.text()).toBe(m.title);
         expect(milestoneLink.attributes('href')).toBe(m.web_url);
-        expect(milestoneLink.attributes('data-original-title')).toBe(m.description);
+        expect(milestoneLink.attributes('title')).toBe(m.description);
       });
     });
 

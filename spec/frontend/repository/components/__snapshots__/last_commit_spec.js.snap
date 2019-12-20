@@ -67,9 +67,8 @@ exports[`Repository last commit component renders commit widget 1`] = `
       >
         <gllink-stub
           class="js-commit-pipeline"
-          data-original-title="Commit: failed"
           href="https://test.com/pipeline"
-          title=""
+          title="Commit: failed"
         >
           <ciicon-stub
             aria-label="Commit: failed"
@@ -174,9 +173,8 @@ exports[`Repository last commit component renders the signature HTML as returned
       >
         <gllink-stub
           class="js-commit-pipeline"
-          data-original-title="Commit: failed"
           href="https://test.com/pipeline"
-          title=""
+          title="Commit: failed"
         >
           <ciicon-stub
             aria-label="Commit: failed"

@@ -135,7 +135,7 @@ describe('Issuable suggestions suggestion component', () => {
       const icon = vm.find(Icon);
 
       expect(icon.props('name')).toBe('eye-slash');
-      expect(icon.attributes('data-original-title')).toBe('Confidential');
+      expect(icon.attributes('title')).toBe('Confidential');
     });
   });
 });

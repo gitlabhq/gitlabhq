@@ -99,9 +99,9 @@ describe('User Avatar Link Component', () => {
     });
 
     it('should render text tooltip for <span>', () => {
-      expect(
-        wrapper.find('.js-user-avatar-link-username').attributes('data-original-title'),
-      ).toEqual(defaultProps.tooltipText);
+      expect(wrapper.find('.js-user-avatar-link-username').attributes('title')).toEqual(
+        defaultProps.tooltipText,
+      );
     });
 
     it('should render text tooltip placement for <span>', () => {

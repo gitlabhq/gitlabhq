@@ -100,7 +100,7 @@ describe('User Avatar Image Component', () => {
     it('does not render tooltip data attributes for on avatar image', () => {
       const avatarImg = wrapper.find('img');
 
-      expect(avatarImg.attributes('data-original-title')).toBeFalsy();
+      expect(avatarImg.attributes('title')).toBeFalsy();
       expect(avatarImg.attributes('data-placement')).not.toBeDefined();
       expect(avatarImg.attributes('data-container')).not.toBeDefined();
     });

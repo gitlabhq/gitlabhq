@@ -29,7 +29,7 @@ describe('Stop Component', () => {
 
   it('should render a button to stop the environment', () => {
     expect(findButton().exists()).toBe(true);
-    expect(wrapper.attributes('data-original-title')).toEqual('Stop environment');
+    expect(wrapper.attributes('title')).toEqual('Stop environment');
   });
 
   it('emits requestStopEnvironment in the event hub when button is clicked', () => {

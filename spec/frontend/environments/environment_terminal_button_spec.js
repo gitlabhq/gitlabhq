@@ -25,7 +25,7 @@ describe('Stop Component', () => {
 
   it('should render a link to open a web terminal with the provided path', () => {
     expect(wrapper.is('a')).toBe(true);
-    expect(wrapper.attributes('data-original-title')).toBe('Terminal');
+    expect(wrapper.attributes('title')).toBe('Terminal');
     expect(wrapper.attributes('aria-label')).toBe('Terminal');
     expect(wrapper.attributes('href')).toBe(terminalPath);
   });

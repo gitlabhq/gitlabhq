@@ -70,7 +70,7 @@ describe('Issuable component', () => {
   const findTaskStatus = () => wrapper.find('.task-status');
   const findOpenedAgoContainer = () => wrapper.find({ ref: 'openedAgoByContainer' });
   const findMilestone = () => wrapper.find('.js-milestone');
-  const findMilestoneTooltip = () => findMilestone().attributes('data-original-title');
+  const findMilestoneTooltip = () => findMilestone().attributes('title');
   const findDueDate = () => wrapper.find('.js-due-date');
   const findLabelContainer = () => wrapper.find('.js-labels');
   const findLabelLinks = () => findLabelContainer().findAll(GlLink);
@@ -240,7 +240,7 @@ describe('Issuable component', () => {
       const labels = findLabelLinks().wrappers.map(label => ({
         href: label.attributes('href'),
         text: label.text(),
-        tooltip: label.find('span').attributes('data-original-title'),
+        tooltip: label.find('span').attributes('title'),
       }));
 
       const expected = testLabels.map(label => ({

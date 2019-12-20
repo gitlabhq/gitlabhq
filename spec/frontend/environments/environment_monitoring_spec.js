@@ -33,7 +33,7 @@ describe('Monitoring Component', () => {
   it('should render a link to environment monitoring page', () => {
     expect(wrapper.attributes('href')).toEqual(monitoringUrl);
     expect(findIconsByName('chart').length).toBe(1);
-    expect(wrapper.attributes('data-original-title')).toBe('Monitoring');
+    expect(wrapper.attributes('title')).toBe('Monitoring');
     expect(wrapper.attributes('aria-label')).toBe('Monitoring');
   });
 });

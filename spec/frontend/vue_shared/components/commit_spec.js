@@ -160,7 +160,7 @@ describe('Commit component', () => {
 
       expect(refEl.attributes('href')).toBe(props.commitRef.ref_url);
 
-      expect(refEl.attributes('data-original-title')).toBe(props.commitRef.name);
+      expect(refEl.attributes('title')).toBe(props.commitRef.name);
 
       expect(wrapper.find('icon-stub[name="branch"]').exists()).toBe(true);
     });
@@ -193,7 +193,7 @@ describe('Commit component', () => {
 
       expect(refEl.attributes('href')).toBe(props.mergeRequestRef.path);
 
-      expect(refEl.attributes('data-original-title')).toBe(props.mergeRequestRef.title);
+      expect(refEl.attributes('title')).toBe(props.mergeRequestRef.title);
 
       expect(wrapper.find('icon-stub[name="git-merge"]').exists()).toBe(true);
     });

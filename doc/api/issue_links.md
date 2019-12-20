@@ -57,7 +57,7 @@ Parameters:
 Creates a two-way relation between two issues. User must be allowed to update both issues in order to succeed.
 
 ```
-POST /projects/:id/issues/:issue_iid/links/:target_project_id/:target_issue_iid
+POST /projects/:id/issues/:issue_iid/links
 ```
 
 | Attribute   | Type    | Required | Description                          |
@@ -66,6 +66,12 @@ POST /projects/:id/issues/:issue_iid/links/:target_project_id/:target_issue_iid
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 | `target_project_id` | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) of a target project  |
 | `target_issue_iid` | integer/string | yes      | The internal ID of a target project's issue |
+
+```bash
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/4/issues/1/links?target_project_id=5&target_issue_iid=1"
+```
+
+Example response:
 
 ```json
 {

@@ -271,7 +271,7 @@ describe('Release block', () => {
 
         expect(milestoneLink.attributes('href')).toBe(milestone.web_url);
 
-        expect(milestoneLink.attributes('data-original-title')).toBe(milestone.description);
+        expect(milestoneLink.attributes('title')).toBe(milestone.description);
       });
     });
 

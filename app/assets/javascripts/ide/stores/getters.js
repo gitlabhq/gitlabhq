@@ -64,6 +64,7 @@ export const allBlobs = state =>
 
 export const getChangedFile = state => path => state.changedFiles.find(f => f.path === path);
 export const getStagedFile = state => path => state.stagedFiles.find(f => f.path === path);
+export const getOpenFile = state => path => state.openFiles.find(f => f.path === path);
 
 export const lastOpenedFile = state =>
   [...state.changedFiles, ...state.stagedFiles].sort((a, b) => b.lastOpenedAt - a.lastOpenedAt)[0];

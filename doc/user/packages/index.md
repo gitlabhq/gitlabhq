@@ -22,3 +22,9 @@ guide you through the process. Or check out how other members of the commmunity
 are adding support for [PHP](https://gitlab.com/gitlab-org/gitlab/merge_requests/17417) or [Terraform](https://gitlab.com/gitlab-org/gitlab/merge_requests/18834).
 
 NOTE: **Note** We are especially interested in adding support for [PyPi](https://gitlab.com/gitlab-org/gitlab/issues/10483), [RubyGems](https://gitlab.com/gitlab-org/gitlab/issues/803), [Debian](https://gitlab.com/gitlab-org/gitlab/issues/5835), and [RPM](https://gitlab.com/gitlab-org/gitlab/issues/5932).
+
+## Package workflows
+
+Learning how to use the GitLab Package Registry will help you build your own custom package workflow.
+
+[Use a project as a package registry](./workflows/project_registry.md) to publish all of your packages to one project.

@@ -65,7 +65,7 @@ describe('Linked pipeline', () => {
 
     it('should render the tooltip text as the title attribute', () => {
       const tooltipRef = wrapper.find('.js-linked-pipeline-content');
-      const titleAttr = tooltipRef.attributes('data-original-title');
+      const titleAttr = tooltipRef.attributes('title');
 
       expect(titleAttr).toContain(mockPipeline.project.name);
       expect(titleAttr).toContain(mockPipeline.details.status.label);

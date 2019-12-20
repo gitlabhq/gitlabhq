@@ -25,7 +25,7 @@ describe('Time ago with tooltip component', () => {
     });
     const timeago = getTimeago();
 
-    expect(vm.attributes('data-original-title')).toEqual(formatDate(timestamp));
+    expect(vm.attributes('title')).toEqual(formatDate(timestamp));
     expect(vm.text()).toEqual(timeago.format(timestamp));
   });
 

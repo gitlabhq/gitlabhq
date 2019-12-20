@@ -105,8 +105,6 @@ describe('Pipeline Url Component', () => {
     });
 
     expect(wrapper.find('.js-pipeline-url-failure').text()).toContain('error');
-    expect(wrapper.find('.js-pipeline-url-failure').attributes('data-original-title')).toContain(
-      'some reason',
-    );
+    expect(wrapper.find('.js-pipeline-url-failure').attributes('title')).toContain('some reason');
   });
 });
