@@ -191,24 +191,33 @@ export const discardFileChanges = ({ dispatch, state, commit, getters }, path) =
     dispatch('restoreTree', file.parentPath);
   }
 
-  commit(types.DISCARD_FILE_CHANGES, path);
-  commit(types.REMOVE_FILE_FROM_CHANGED, path);
+  if (file.tempFile || file.prevPath) {
+    dispatch('closeFile', file);
 
-  if (file.prevPath) {
-    dispatch('discardFileChanges', file.prevPath);
-  }
-
-  if (file.tempFile && file.opened) {
-    commit(types.TOGGLE_FILE_OPEN, path);
-  } else if (getters.activeFile && file.path === getters.activeFile.path) {
-    dispatch('updateDelayViewerUpdated', true)
-      .then(() => {
-        router.push(`/project${file.url}`);
-      })
-      .catch(e => {
-        throw e;
+    if (file.tempFile) {
+      dispatch('deleteEntry', file.path);
+    } else {
+      dispatch('renameEntry', {
+        path: file.path,
+        name: file.prevName,
+        parentPath: file.prevParentPath,
       });
+    }
+  } else {
+    commit(types.DISCARD_FILE_CHANGES, path);
+
+    if (getters.activeFile && file.path === getters.activeFile.path) {
+      dispatch('updateDelayViewerUpdated', true)
+        .then(() => {
+          router.push(`/project${file.url}`);
+        })
+        .catch(e => {
+          throw e;
+        });
+    }
   }
+
+  commit(types.REMOVE_FILE_FROM_CHANGED, path);
 
   eventHub.$emit(`editor.update.model.new.content.${file.key}`, file.content);
   eventHub.$emit(`editor.update.model.dispose.unstaged-${file.key}`, file.content);

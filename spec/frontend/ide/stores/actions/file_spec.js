@@ -581,11 +581,13 @@ describe('IDE store file actions', () => {
       jest.spyOn(eventHub, '$on').mockImplementation(() => {});
       jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
 
-      tmpFile = file();
+      tmpFile = file('tempFile');
       tmpFile.content = 'testing';
 
       store.state.changedFiles.push(tmpFile);
       store.state.entries[tmpFile.path] = tmpFile;
+
+      jest.spyOn(store, 'dispatch');
     });
 
     it('resets file content', done => {
@@ -610,33 +612,35 @@ describe('IDE store file actions', () => {
         .catch(done.fail);
     });
 
-    it('closes temp file', done => {
+    it('closes temp file and deletes it', () => {
       tmpFile.tempFile = true;
       tmpFile.opened = true;
+      tmpFile.parentPath = 'parentFile';
+      store.state.entries.parentFile = file('parentFile');
 
-      store
-        .dispatch('discardFileChanges', tmpFile.path)
-        .then(() => {
-          expect(tmpFile.opened).toBeFalsy();
+      actions.discardFileChanges(store, tmpFile.path);
 
-          done();
-        })
-        .catch(done.fail);
+      expect(store.dispatch).toHaveBeenCalledWith('closeFile', tmpFile);
+      expect(store.dispatch).toHaveBeenCalledWith('deleteEntry', tmpFile.path);
     });
 
-    it('does not re-open a closed temp file', done => {
-      tmpFile.tempFile = true;
+    it('renames the file to its original name and closes it if it was open', () => {
+      Object.assign(tmpFile, {
+        prevPath: 'parentPath/old_name',
+        prevName: 'old_name',
+        prevParentPath: 'parentPath',
+      });
 
-      expect(tmpFile.opened).toBeFalsy();
+      store.state.entries.parentPath = file('parentPath');
 
-      store
-        .dispatch('discardFileChanges', tmpFile.path)
-        .then(() => {
-          expect(tmpFile.opened).toBeFalsy();
+      actions.discardFileChanges(store, tmpFile.path);
 
-          done();
-        })
-        .catch(done.fail);
+      expect(store.dispatch).toHaveBeenCalledWith('closeFile', tmpFile);
+      expect(store.dispatch).toHaveBeenCalledWith('renameEntry', {
+        path: 'tempFile',
+        name: 'old_name',
+        parentPath: 'parentPath',
+      });
     });
 
     it('pushes route for active file', done => {

@@ -1,0 +1,5 @@
+---
+title: Fix "Discard" for newly-created and renamed files
+merge_request: 21905
+author:
+type: fixed
