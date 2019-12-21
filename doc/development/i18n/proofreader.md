@@ -83,6 +83,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Alexy Lustin - [GitLab](https://gitlab.com/allustin), [Crowdin](https://crowdin.com/profile/lustin)
   - Mark Minakou - [GitLab](https://gitlab.com/sandzhaj), [Crowdin](https://crowdin.com/profile/sandzhaj)
   - NickVolynkin - [Crowdin](https://crowdin.com/profile/NickVolynkin)
+  - Andrey Komarov - [GitLab](https://gitlab.com/elkamarado), [Crowdin](https://crowdin.com/profile/kamarado)
 - Serbian (Cyrillic)
   - Proofreaders needed.
 - Serbian (Latin)
