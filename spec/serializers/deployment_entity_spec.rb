@@ -6,7 +6,7 @@ describe DeploymentEntity do
   let(:user) { developer }
   let(:developer) { create(:user) }
   let(:reporter) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:request) { double('request') }
   let(:deployment) { create(:deployment, deployable: build, project: project) }
   let(:build) { create(:ci_build, :manual, pipeline: pipeline) }

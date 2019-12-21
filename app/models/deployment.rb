@@ -23,6 +23,8 @@ class Deployment < ApplicationRecord
 
   validates :sha, presence: true
   validates :ref, presence: true
+  validate :valid_sha, on: :create
+  validate :valid_ref, on: :create
 
   delegate :name, to: :environment, prefix: true
 
@@ -232,6 +234,18 @@ class Deployment < ApplicationRecord
     else
       raise ArgumentError, "The status #{status.inspect} is invalid"
     end
+  end
+
+  def valid_sha
+    return if project&.commit(sha)
+
+    errors.add(:sha, _('The commit does not exist'))
+  end
+
+  def valid_ref
+    return if project&.commit(ref)
+
+    errors.add(:ref, _('The branch or tag does not exist'))
   end
 
   private

@@ -1054,7 +1054,7 @@ describe Ci::Build do
   end
 
   describe 'state transition as a deployable' do
-    let!(:build) { create(:ci_build, :with_deployment, :start_review_app) }
+    let!(:build) { create(:ci_build, :with_deployment, :start_review_app, project: project, pipeline: pipeline) }
     let(:deployment) { build.deployment }
     let(:environment) { deployment.environment }
 
@@ -3907,7 +3907,7 @@ describe Ci::Build do
     end
 
     context 'when build is a last deployment' do
-      let(:build) { create(:ci_build, :success, environment: 'production') }
+      let(:build) { create(:ci_build, :success, environment: 'production', pipeline: pipeline, project: project) }
       let(:environment) { create(:environment, name: 'production', project: build.project) }
       let!(:deployment) { create(:deployment, :success, environment: environment, project: environment.project, deployable: build) }
 
@@ -3915,7 +3915,7 @@ describe Ci::Build do
     end
 
     context 'when there is a newer build with deployment' do
-      let(:build) { create(:ci_build, :success, environment: 'production') }
+      let(:build) { create(:ci_build, :success, environment: 'production', pipeline: pipeline, project: project) }
       let(:environment) { create(:environment, name: 'production', project: build.project) }
       let!(:deployment) { create(:deployment, :success, environment: environment, project: environment.project, deployable: build) }
       let!(:last_deployment) { create(:deployment, :success, environment: environment, project: environment.project) }
@@ -3924,7 +3924,7 @@ describe Ci::Build do
     end
 
     context 'when build with deployment has failed' do
-      let(:build) { create(:ci_build, :failed, environment: 'production') }
+      let(:build) { create(:ci_build, :failed, environment: 'production', pipeline: pipeline, project: project) }
       let(:environment) { create(:environment, name: 'production', project: build.project) }
       let!(:deployment) { create(:deployment, :success, environment: environment, project: environment.project, deployable: build) }
 
@@ -3932,7 +3932,7 @@ describe Ci::Build do
     end
 
     context 'when build with deployment is running' do
-      let(:build) { create(:ci_build, environment: 'production') }
+      let(:build) { create(:ci_build, environment: 'production', pipeline: pipeline, project: project) }
       let(:environment) { create(:environment, name: 'production', project: build.project) }
       let!(:deployment) { create(:deployment, :success, environment: environment, project: environment.project, deployable: build) }
 

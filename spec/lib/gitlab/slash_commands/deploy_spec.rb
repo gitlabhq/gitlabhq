@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe Gitlab::SlashCommands::Deploy do
   describe '#execute' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:user) { create(:user) }
     let(:chat_name) { double(:chat_name, user: user) }
     let(:regex_match) { described_class.match('deploy staging to production') }

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe 'Environment' do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:role) { :developer }
 
@@ -17,6 +17,7 @@ describe 'Environment' do
     let!(:permissions) { }
     let!(:deployment) { }
     let!(:action) { }
+    let!(:cluster) { }
 
     before do
       visit_environment(environment)
@@ -94,19 +95,10 @@ describe 'Environment' do
 
         it 'does show build name' do
           expect(page).to have_link("#{build.name} (##{build.id})")
-          expect(page).not_to have_link('Re-deploy')
-          expect(page).not_to have_terminal_button
         end
 
-        context 'when user has ability to re-deploy' do
-          let(:permissions) do
-            create(:protected_branch, :developers_can_merge,
-                   name: build.ref, project: project)
-          end
-
-          it 'does show re-deploy' do
-            expect(page).to have_link('Re-deploy')
-          end
+        it 'shows the re-deploy button' do
+          expect(page).to have_button('Re-deploy to environment')
         end
 
         context 'with manual action' do
@@ -141,6 +133,11 @@ describe 'Environment' do
           end
 
           context 'when user has no ability to trigger a deployment' do
+            let(:permissions) do
+              create(:protected_branch, :no_one_can_merge,
+                     name: action.ref, project: project)
+            end
+
             it 'does not show a play button' do
               expect(page).not_to have_link(action.name)
             end
@@ -158,8 +155,9 @@ describe 'Environment' do
 
           context 'with terminal' do
             context 'when user configured kubernetes from CI/CD > Clusters' do
-              let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
-              let(:project) { cluster.project }
+              let!(:cluster) do
+                create(:cluster, :project, :provided_by_gcp, projects: [project])
+              end
 
               context 'for project maintainer' do
                 let(:role) { :maintainer }
@@ -228,6 +226,11 @@ describe 'Environment' do
               end
 
               context 'when user has no ability to stop environment' do
+                let(:permissions) do
+                  create(:protected_branch, :no_one_can_merge,
+                         name: action.ref, project: project)
+                end
+
                 it 'does not allow to stop environment' do
                   expect(page).not_to have_button('Stop')
                 end

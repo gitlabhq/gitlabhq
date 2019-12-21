@@ -33,10 +33,10 @@ describe 'Merge request > User sees deployment widget', :js do
       end
 
       context 'when a user created a new merge request with the same SHA' do
-        let(:pipeline2) { create(:ci_pipeline, sha: sha, project: project, ref: 'new-patch-1') }
+        let(:pipeline2) { create(:ci_pipeline, sha: sha, project: project, ref: 'video') }
         let(:build2) { create(:ci_build, :success, pipeline: pipeline2) }
         let(:environment2) { create(:environment, project: project) }
-        let!(:deployment2) { create(:deployment, environment: environment2, sha: sha, ref: 'new-patch-1', deployable: build2) }
+        let!(:deployment2) { create(:deployment, environment: environment2, sha: sha, ref: 'video', deployable: build2) }
 
         it 'displays one environment which is related to the pipeline' do
           visit project_merge_request_path(project, merge_request)

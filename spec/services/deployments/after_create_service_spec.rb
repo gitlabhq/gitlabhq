@@ -6,10 +6,18 @@ describe Deployments::AfterCreateService do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:options) { { name: 'production' } }
+  let(:pipeline) do
+    create(
+      :ci_pipeline,
+      sha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0',
+      project: project
+    )
+  end
 
   let(:job) do
     create(:ci_build,
       :with_deployment,
+      pipeline: pipeline,
       ref: 'master',
       tag: false,
       environment: 'production',
@@ -139,6 +147,7 @@ describe Deployments::AfterCreateService do
       let(:job) do
         create(:ci_build,
                :with_deployment,
+               pipeline: pipeline,
                ref: 'master',
                environment: 'production',
                project: project,
@@ -152,6 +161,7 @@ describe Deployments::AfterCreateService do
       let(:job) do
         create(:ci_build,
                :with_deployment,
+               pipeline: pipeline,
                ref: 'master',
                environment: 'prod-slug',
                project: project,
@@ -165,6 +175,7 @@ describe Deployments::AfterCreateService do
       let(:job) do
         create(:ci_build,
                :with_deployment,
+               pipeline: pipeline,
                yaml_variables: [{ key: :APP_HOST, value: 'host' }],
                environment: 'production',
                project: project,
@@ -175,7 +186,7 @@ describe Deployments::AfterCreateService do
     end
 
     context 'when yaml environment does not have url' do
-      let(:job) { create(:ci_build, :with_deployment, environment: 'staging', project: project) }
+      let(:job) { create(:ci_build, :with_deployment, pipeline: pipeline, environment: 'staging', project: project) }
 
       it 'returns the external_url from persisted environment' do
         is_expected.to be_nil
@@ -202,6 +213,7 @@ describe Deployments::AfterCreateService do
           let(:job) do
             create(:ci_build,
               :with_deployment,
+              pipeline: pipeline,
               ref: 'master',
               tag: false,
               environment: 'staging',

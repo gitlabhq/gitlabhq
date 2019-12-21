@@ -11,10 +11,10 @@ describe API::Deployments do
   end
 
   describe 'GET /projects/:id/deployments' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let!(:deployment_1) { create(:deployment, :success, project: project, iid: 11, ref: 'master', created_at: Time.now, updated_at: Time.now) }
-    let!(:deployment_2) { create(:deployment, :success, project: project, iid: 12, ref: 'feature', created_at: 1.day.ago, updated_at: 2.hours.ago) }
-    let!(:deployment_3) { create(:deployment, :success, project: project, iid: 8, ref: 'patch', created_at: 2.days.ago, updated_at: 1.hour.ago) }
+    let!(:deployment_2) { create(:deployment, :success, project: project, iid: 12, ref: 'master', created_at: 1.day.ago, updated_at: 2.hours.ago) }
+    let!(:deployment_3) { create(:deployment, :success, project: project, iid: 8, ref: 'master', created_at: 2.days.ago, updated_at: 1.hour.ago) }
 
     context 'as member of the project' do
       it 'returns projects deployments sorted by id asc' do
@@ -345,7 +345,7 @@ describe API::Deployments do
 
   context 'prevent N + 1 queries' do
     context 'when the endpoint returns multiple records' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :repository) }
 
       def create_record
         create(:deployment, :success, project: project)
@@ -372,9 +372,11 @@ describe API::Deployments do
       end
 
       it 'does not increase the query count' do
-        expect { create_record }.not_to change { request_with_query_count }
+        10.times { create_record }
 
-        expect(json_response.size).to eq(2)
+        expect { trigger_request }.not_to be_n_plus_1_query
+
+        expect(json_response.size).to eq(11)
       end
     end
   end

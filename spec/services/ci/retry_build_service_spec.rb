@@ -4,8 +4,11 @@ require 'spec_helper'
 
 describe Ci::RetryBuildService do
   set(:user) { create(:user) }
-  set(:project) { create(:project) }
-  set(:pipeline) { create(:ci_pipeline, project: project) }
+  set(:project) { create(:project, :repository) }
+  set(:pipeline) do
+    create(:ci_pipeline, project: project,
+           sha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0')
+  end
 
   let(:stage) do
     create(:ci_stage_entity, project: project,
@@ -207,7 +210,8 @@ describe Ci::RetryBuildService do
 
       context 'when build with deployment is retried' do
         let!(:build) do
-          create(:ci_build, :with_deployment, :deploy_to_production, pipeline: pipeline, stage_id: stage.id)
+          create(:ci_build, :with_deployment, :deploy_to_production,
+                 pipeline: pipeline, stage_id: stage.id, project: project)
         end
 
         it 'creates a new deployment' do

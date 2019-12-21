@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe Deployments::LinkMergeRequestsService do
+  let(:project) { create(:project, :repository) }
+
   describe '#execute' do
     context 'when the deployment did not succeed' do
       it 'does nothing' do
@@ -16,20 +18,29 @@ describe Deployments::LinkMergeRequestsService do
 
     context 'when there is a previous deployment' do
       it 'links all merge requests merged since the previous deployment' do
-        deploy1 = create(:deployment, :success, sha: 'foo')
+        deploy1 = create(
+          :deployment,
+          :success,
+          project: project,
+          sha: '7975be0116940bf2ad4321f79d02a55c5f7779aa'
+        )
+
         deploy2 = create(
           :deployment,
           :success,
-          sha: 'bar',
           project: deploy1.project,
-          environment: deploy1.environment
+          environment: deploy1.environment,
+          sha: 'ddd0f15ae83993f5cb66a927a28673882e99100b'
         )
 
         service = described_class.new(deploy2)
 
         expect(service)
           .to receive(:link_merge_requests_for_range)
-          .with('foo', 'bar')
+          .with(
+            '7975be0116940bf2ad4321f79d02a55c5f7779aa',
+            'ddd0f15ae83993f5cb66a927a28673882e99100b'
+          )
 
         service.execute
       end
@@ -37,7 +48,7 @@ describe Deployments::LinkMergeRequestsService do
 
     context 'when there are no previous deployments' do
       it 'links all merged merge requests' do
-        deploy = create(:deployment, :success)
+        deploy = create(:deployment, :success, project: project)
         service = described_class.new(deploy)
 
         expect(service).to receive(:link_all_merged_merge_requests)
@@ -49,7 +60,6 @@ describe Deployments::LinkMergeRequestsService do
 
   describe '#link_merge_requests_for_range' do
     it 'links merge requests' do
-      project = create(:project, :repository)
       environment = create(:environment, project: project)
       deploy =
         create(:deployment, :success, project: project, environment: environment)
@@ -81,7 +91,6 @@ describe Deployments::LinkMergeRequestsService do
 
   describe '#link_all_merged_merge_requests' do
     it 'links all merged merge requests targeting the deployed branch' do
-      project = create(:project, :repository)
       environment = create(:environment, project: project)
       deploy =
         create(:deployment, :success, project: project, environment: environment)

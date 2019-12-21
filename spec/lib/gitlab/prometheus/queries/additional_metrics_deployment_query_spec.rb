@@ -8,7 +8,8 @@ describe Gitlab::Prometheus::Queries::AdditionalMetricsDeploymentQuery do
   end
 
   include_examples 'additional metrics query' do
-    let(:deployment) { create(:deployment, environment: environment) }
+    let(:project) { create(:project, :repository) }
+    let(:deployment) { create(:deployment, environment: environment, project: project) }
     let(:query_params) { [deployment.id] }
 
     it 'queries using specific time' do

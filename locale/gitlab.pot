@@ -17849,6 +17849,9 @@ msgstr ""
 msgid "The branch for this project has no active pipeline configuration."
 msgstr ""
 
+msgid "The branch or tag does not exist"
+msgstr ""
+
 msgid "The character highlighter helps you keep the subject line to %{titleLength} characters and wrap the body at %{bodyLength} so they are readable in git."
 msgstr ""
 
@@ -17856,6 +17859,9 @@ msgid "The coding stage shows the time from the first commit to creating the mer
 msgstr ""
 
 msgid "The collection of events added to the data gathered for that stage."
+msgstr ""
+
+msgid "The commit does not exist"
 msgstr ""
 
 msgid "The configuration status of the table below only applies to the default branch and is based on the %{linkStart}latest pipeline%{linkEnd}. Once you've configured a scan for the default branch, any subsequent feature branch you create will include the scan."

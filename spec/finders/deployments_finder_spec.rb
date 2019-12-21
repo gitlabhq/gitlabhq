@@ -5,7 +5,7 @@ require 'spec_helper'
 describe DeploymentsFinder do
   subject { described_class.new(project, params).execute }
 
-  let(:project) { create(:project, :public, :repository) }
+  let(:project) { create(:project, :public, :test_repo) }
   let(:params) { {} }
 
   describe "#execute" do
@@ -34,7 +34,7 @@ describe DeploymentsFinder do
 
       let!(:deployment_1) { create(:deployment, :success, project: project, iid: 11, ref: 'master', created_at: 2.days.ago, updated_at: Time.now) }
       let!(:deployment_2) { create(:deployment, :success, project: project, iid: 12, ref: 'feature', created_at: 1.day.ago, updated_at: 2.hours.ago) }
-      let!(:deployment_3) { create(:deployment, :success, project: project, iid: 8, ref: 'patch', created_at: Time.now, updated_at: 1.hour.ago) }
+      let!(:deployment_3) { create(:deployment, :success, project: project, iid: 8, ref: 'video', created_at: Time.now, updated_at: 1.hour.ago) }
 
       where(:order_by, :sort, :ordered_deployments) do
         'created_at' | 'asc'  | [:deployment_1, :deployment_2, :deployment_3]

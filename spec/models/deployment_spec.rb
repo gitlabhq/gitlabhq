@@ -403,40 +403,37 @@ describe Deployment do
 
   describe '#previous_environment_deployment' do
     it 'returns the previous deployment of the same environment' do
-      deploy1 = create(:deployment, :success, ref: 'v1.0.0')
+      deploy1 = create(:deployment, :success)
       deploy2 = create(
         :deployment,
         :success,
         project: deploy1.project,
-        environment: deploy1.environment,
-        ref: 'v1.0.1'
+        environment: deploy1.environment
       )
 
       expect(deploy2.previous_environment_deployment).to eq(deploy1)
     end
 
     it 'ignores deployments that were not successful' do
-      deploy1 = create(:deployment, :failed, ref: 'v1.0.0')
+      deploy1 = create(:deployment, :failed)
       deploy2 = create(
         :deployment,
         :success,
         project: deploy1.project,
-        environment: deploy1.environment,
-        ref: 'v1.0.1'
+        environment: deploy1.environment
       )
 
       expect(deploy2.previous_environment_deployment).to be_nil
     end
 
     it 'ignores deployments for different environments' do
-      deploy1 = create(:deployment, :success, ref: 'v1.0.0')
+      deploy1 = create(:deployment, :success)
       preprod = create(:environment, project: deploy1.project, name: 'preprod')
       deploy2 = create(
         :deployment,
         :success,
         project: deploy1.project,
-        environment: preprod,
-        ref: 'v1.0.1'
+        environment: preprod
       )
 
       expect(deploy2.previous_environment_deployment).to be_nil
@@ -497,6 +494,38 @@ describe Deployment do
 
         expect(deploy.read_attribute(:finished_at)).to eq(Time.now)
       end
+    end
+  end
+
+  describe '#valid_sha' do
+    it 'does not add errors for a valid SHA' do
+      project = create(:project, :repository)
+      deploy = build(:deployment, project: project)
+
+      expect(deploy).to be_valid
+    end
+
+    it 'adds an error for an invalid SHA' do
+      deploy = build(:deployment, sha: 'foo')
+
+      expect(deploy).not_to be_valid
+      expect(deploy.errors[:sha]).not_to be_empty
+    end
+  end
+
+  describe '#valid_ref' do
+    it 'does not add errors for a valid ref' do
+      project = create(:project, :repository)
+      deploy = build(:deployment, project: project)
+
+      expect(deploy).to be_valid
+    end
+
+    it 'adds an error for an invalid ref' do
+      deploy = build(:deployment, ref: 'does-not-exist')
+
+      expect(deploy).not_to be_valid
+      expect(deploy.errors[:ref]).not_to be_empty
     end
   end
 end

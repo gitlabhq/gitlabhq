@@ -5107,7 +5107,7 @@ describe Project do
   describe '.deployments' do
     subject { project.deployments }
 
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
     before do
       allow_any_instance_of(Deployment).to receive(:create_ref)
