@@ -137,7 +137,7 @@ gem 'faraday_middleware-aws-signers-v4'
 
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 2.12'
-gem 'deckar01-task_list', '2.2.1'
+gem 'deckar01-task_list', '2.3.1'
 gem 'gitlab-markup', '~> 1.7.0'
 gem 'github-markup', '~> 1.7.0', require: 'github/markup'
 gem 'commonmarker', '~> 0.20'

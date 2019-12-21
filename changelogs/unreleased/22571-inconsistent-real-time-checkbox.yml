@@ -1,0 +1,5 @@
+---
+title: Tasks in HTML comments are no longer incorrectly detected
+merge_request: 21434
+author:
+type: fixed

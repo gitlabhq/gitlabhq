@@ -3637,10 +3637,10 @@ decamelize@^1.1.0, decamelize@^1.1.1, decamelize@^1.1.2, decamelize@^1.2.0:
   resolved "https://registry.yarnpkg.com/decamelize/-/decamelize-1.2.0.tgz#f6534d15148269b20352e7bee26f501f9a191290"
   integrity sha1-9lNNFRSCabIDUue+4m9QH5oZEpA=
 
-deckar01-task_list@^2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/deckar01-task_list/-/deckar01-task_list-2.2.1.tgz#e1e8a16c4fd6e153e51fd9258fdbee067ebcd86b"
-  integrity sha512-aNAVYAYwONXezSQy2p5M67wjZE+U7JpPotdegbyy1Wq35V6jDhF3qndJYA1rYnY3aI9ifCep6EMGPav/UQaBZw==
+deckar01-task_list@^2.3.1:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/deckar01-task_list/-/deckar01-task_list-2.3.1.tgz#f3ffd5319d7b9e27c596dc8d823b13f617ed7db7"
+  integrity sha512-046BmNx8e1Yia07SlSsyWb1h7wlGibcesRaw6Szw2qVppoe/EPtckFDRTY9P/laWiW3xjsfNLE1nOBOTAMKEWQ==
 
 decode-uri-component@^0.2.0:
   version "0.2.0"
