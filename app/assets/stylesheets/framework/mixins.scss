@@ -271,18 +271,13 @@
   }
 
   .btn-scroll.animate {
-    .first-triangle {
-      animation: blinking-scroll-button 1s ease infinite;
+    .scroll-arrow {
+      animation: blinking-scroll-button 1.5s ease-in-out infinite;
+    }
+
+    .scroll-dot {
+      animation: blinking-scroll-button 1.5s ease-in-out infinite;
       animation-delay: 0.3s;
-    }
-
-    .second-triangle {
-      animation: blinking-scroll-button 1s ease infinite;
-      animation-delay: 0.2s;
-    }
-
-    .third-triangle {
-      animation: blinking-scroll-button 1s ease infinite;
     }
 
     &:disabled {
