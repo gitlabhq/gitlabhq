@@ -8,3 +8,4 @@ export const SET_PAGINATION = 'SET_PAGINATION';
 export const SET_ENDPOINT = 'SET_ENDPOINT';
 export const SET_SORT_FIELD = 'SET_SORT_FIELD';
 export const SET_SEARCH_QUERY = 'SET_SEARCH_QUERY';
+export const SET_CURSOR = 'SET_CURSOR';

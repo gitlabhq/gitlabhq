@@ -47,6 +47,9 @@ export default {
   [types.SET_PAGINATION](state, pagination) {
     state.pagination = pagination;
   },
+  [types.SET_CURSOR](state, cursor) {
+    state.cursor = cursor;
+  },
   [types.SET_SORT_FIELD](state, field) {
     state.sortField = field;
   },

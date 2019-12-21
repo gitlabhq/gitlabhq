@@ -218,7 +218,9 @@ link in the issue sidebar.
 If you have [permissions](../../permissions.md) to close an issue and create an
 epic in the parent group, you can promote an issue to an epic with the `/promote`
 [quick action](../../project/quick_actions.md#quick-actions-for-issues-merge-requests-and-epics).
-Only issues from projects that are in groups can be promoted.
+Only issues from projects that are in groups can be promoted. When attempting to promote a confidential
+issue, a warning will display. Promoting a confidential issue to an epic will make all information
+related to the issue public as epics are public to group members.
 
 When the quick action is executed:
 

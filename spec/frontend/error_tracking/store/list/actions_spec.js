@@ -79,6 +79,7 @@ describe('error tracking actions', () => {
         query,
         {},
         [
+          { type: types.SET_CURSOR, payload: null },
           { type: types.SET_SEARCH_QUERY, payload: query },
           { type: types.ADD_RECENT_SEARCH, payload: query },
         ],
@@ -93,15 +94,15 @@ describe('error tracking actions', () => {
 
       testAction(
         actions.sortByField,
-        { field },
+        field,
         {},
-        [{ type: types.SET_SORT_FIELD, payload: { field } }],
+        [{ type: types.SET_CURSOR, payload: null }, { type: types.SET_SORT_FIELD, payload: field }],
         [{ type: 'stopPolling' }, { type: 'startPolling' }],
       );
     });
   });
 
-  describe('setEnpoint', () => {
+  describe('setEndpoint', () => {
     it('should set search endpoint', () => {
       const endpoint = 'https://sentry.io';
 
@@ -111,6 +112,19 @@ describe('error tracking actions', () => {
         {},
         [{ type: types.SET_ENDPOINT, payload: { endpoint } }],
         [],
+      );
+    });
+  });
+
+  describe('fetchPaginatedResults', () => {
+    it('should start polling the selected page cursor', () => {
+      const cursor = '1576637570000:1:1';
+      testAction(
+        actions.fetchPaginatedResults,
+        cursor,
+        {},
+        [{ type: types.SET_CURSOR, payload: cursor }],
+        [{ type: 'stopPolling' }, { type: 'startPolling' }],
       );
     });
   });

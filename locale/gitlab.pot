@@ -14420,10 +14420,10 @@ msgstr ""
 msgid "Promote"
 msgstr ""
 
-msgid "Promote issue to an epic"
+msgid "Promote confidential issue to a non-confidential epic"
 msgstr ""
 
-msgid "Promote issue to an epic."
+msgid "Promote issue to an epic"
 msgstr ""
 
 msgid "Promote these project milestones into a group milestone."
@@ -14442,6 +14442,9 @@ msgid "PromoteMilestone|Project does not belong to a group."
 msgstr ""
 
 msgid "PromoteMilestone|Promotion failed - %{message}"
+msgstr ""
+
+msgid "Promoted confidential issue to a non-confidential epic. Information in this issue is no longer confidential as epics are public to group members."
 msgstr ""
 
 msgid "Promoted issue to an epic."
@@ -21705,9 +21708,6 @@ msgid "math|The math in this entry is taking too long to render and may not be d
 msgstr ""
 
 msgid "math|There was an error rendering this math block"
-msgstr ""
-
-msgid "may expose confidential information"
 msgstr ""
 
 msgid "merge request"

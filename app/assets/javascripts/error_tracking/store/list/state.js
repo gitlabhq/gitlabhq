@@ -7,4 +7,5 @@ export default () => ({
   indexPath: '',
   recentSearches: [],
   pagination: {},
+  cursor: null,
 });

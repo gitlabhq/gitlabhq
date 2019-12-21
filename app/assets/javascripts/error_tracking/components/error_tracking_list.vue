@@ -113,6 +113,7 @@ export default {
       'sortField',
       'recentSearches',
       'pagination',
+      'cursor',
     ]),
     paginationRequired() {
       return !_.isEmpty(this.pagination);
@@ -142,6 +143,7 @@ export default {
       'clearRecentSearches',
       'loadRecentSearches',
       'setIndexPath',
+      'fetchPaginatedResults',
     ]),
     setSearchText(text) {
       this.errorSearchQuery = text;
@@ -152,10 +154,10 @@ export default {
     },
     goToNextPage() {
       this.pageValue = this.$options.NEXT_PAGE;
-      this.startPolling(`${this.indexPath}?cursor=${this.pagination.next.cursor}`);
+      this.fetchPaginatedResults(this.pagination.next.cursor);
     },
     goToPrevPage() {
-      this.startPolling(`${this.indexPath}?cursor=${this.pagination.previous.cursor}`);
+      this.fetchPaginatedResults(this.pagination.previous.cursor);
     },
     goToPage(page) {
       window.scrollTo(0, 0);

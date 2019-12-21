@@ -71,6 +71,7 @@ describe('ErrorTrackingList', () => {
       setEndpoint: jest.fn(),
       searchByQuery: jest.fn(),
       sortByField: jest.fn(),
+      fetchPaginatedResults: jest.fn(),
     };
 
     const state = {
@@ -305,10 +306,10 @@ describe('ErrorTrackingList', () => {
         it('fetches the previous page of results', () => {
           expect(wrapper.find('.prev-page-item').attributes('aria-disabled')).toBe(undefined);
           wrapper.vm.goToPrevPage();
-          expect(actions.startPolling).toHaveBeenCalledTimes(2);
-          expect(actions.startPolling).toHaveBeenLastCalledWith(
+          expect(actions.fetchPaginatedResults).toHaveBeenCalled();
+          expect(actions.fetchPaginatedResults).toHaveBeenLastCalledWith(
             expect.anything(),
-            '/path?cursor=previousCursor',
+            'previousCursor',
             undefined,
           );
         });
@@ -324,10 +325,10 @@ describe('ErrorTrackingList', () => {
           window.scrollTo = jest.fn();
           findPagination().vm.$emit('input', 2);
           expect(window.scrollTo).toHaveBeenCalledWith(0, 0);
-          expect(actions.startPolling).toHaveBeenCalledTimes(2);
-          expect(actions.startPolling).toHaveBeenLastCalledWith(
+          expect(actions.fetchPaginatedResults).toHaveBeenCalled();
+          expect(actions.fetchPaginatedResults).toHaveBeenLastCalledWith(
             expect.anything(),
-            '/path?cursor=nextCursor',
+            'nextCursor',
             undefined,
           );
         });
