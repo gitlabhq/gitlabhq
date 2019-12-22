@@ -35,6 +35,8 @@ def insert_data(path)
 
   files.each do |filename|
     puts "#{Time.now} Inserting #{filename}..."
+    # Strip file of NULL bytes to ensure data gets inserted
+    system("sed", "-i", "-e", "s/\\x00//g", filename)
     result = RspecProfiling::Collectors::PSQL::Result.copy_from(filename)
     puts "#{Time.now} Inserted #{result.cmd_tuples} lines in #{filename}, DB response: #{result.cmd_status}"
   end

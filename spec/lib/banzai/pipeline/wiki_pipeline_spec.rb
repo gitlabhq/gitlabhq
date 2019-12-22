@@ -230,7 +230,7 @@ describe Banzai::Pipeline::WikiPipeline do
         ]
 
         invalid_slugs.each do |slug|
-          context "with the invalid slug #{slug}" do
+          context "with the invalid slug #{slug.delete("\000")}" do
             invalid_js_links.each do |link|
               it "doesn't include a prohibited slug in a (.) relative link '#{link}'" do
                 output = described_class.to_html(
