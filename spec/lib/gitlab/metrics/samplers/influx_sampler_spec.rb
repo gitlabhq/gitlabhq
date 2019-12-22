@@ -63,7 +63,7 @@ describe Gitlab::Metrics::Samplers::InfluxSampler do
 
   describe '#add_metric' do
     it 'prefixes the series name for a Rails process' do
-      expect(sampler).to receive(:sidekiq?).and_return(false)
+      expect(Gitlab::Runtime).to receive(:sidekiq?).and_return(false)
 
       expect(Gitlab::Metrics::Metric).to receive(:new)
         .with('rails_cats', { value: 10 }, {})
@@ -73,7 +73,7 @@ describe Gitlab::Metrics::Samplers::InfluxSampler do
     end
 
     it 'prefixes the series name for a Sidekiq process' do
-      expect(sampler).to receive(:sidekiq?).and_return(true)
+      expect(Gitlab::Runtime).to receive(:sidekiq?).and_return(true)
 
       expect(Gitlab::Metrics::Metric).to receive(:new)
         .with('sidekiq_cats', { value: 10 }, {})

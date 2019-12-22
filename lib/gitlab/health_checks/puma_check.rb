@@ -18,7 +18,7 @@ module Gitlab
         end
 
         def check
-          return unless defined?(::Puma)
+          return unless Gitlab::Runtime.puma?
 
           stats = Puma.stats
           stats = JSON.parse(stats)

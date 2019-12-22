@@ -150,7 +150,7 @@ module Gitlab
 
         # Returns the prefix to use for the name of a series.
         def series_prefix
-          @series_prefix ||= Sidekiq.server? ? 'sidekiq_' : 'rails_'
+          @series_prefix ||= Gitlab::Runtime.sidekiq? ? 'sidekiq_' : 'rails_'
         end
 
         # Allow access from other metrics related middlewares

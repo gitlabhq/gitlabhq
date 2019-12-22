@@ -22,6 +22,7 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/current_settings')
     require_dependency Rails.root.join('lib/gitlab/middleware/read_only')
     require_dependency Rails.root.join('lib/gitlab/middleware/basic_health_check')
+    require_dependency Rails.root.join('lib/gitlab/runtime')
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -255,7 +256,7 @@ module Gitlab
     caching_config_hash[:compress] = false
     caching_config_hash[:namespace] = Gitlab::Redis::Cache::CACHE_NAMESPACE
     caching_config_hash[:expires_in] = 2.weeks # Cache should not grow forever
-    if Sidekiq.server? || defined?(::Puma) # threaded context
+    if Gitlab::Runtime.multi_threaded?
       caching_config_hash[:pool_size] = Gitlab::Redis::Cache.pool_size
       caching_config_hash[:pool_timeout] = 1
     end

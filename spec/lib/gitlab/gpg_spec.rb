@@ -236,7 +236,7 @@ describe Gitlab::Gpg do
 
     context 'when running in Sidekiq' do
       before do
-        allow(Sidekiq).to receive(:server?).and_return(true)
+        allow(Gitlab::Runtime).to receive(:sidekiq?).and_return(true)
       end
 
       it_behaves_like 'multiple deletion attempts of the tmp-dir', described_class::BG_CLEANUP_RUNTIME_S
