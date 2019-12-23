@@ -229,9 +229,9 @@ module KubernetesHelpers
       .to_return(kube_response(kube_v1_namespace_list_body))
   end
 
-  def stub_kubeclient_get_namespace(api_url, namespace: 'default')
+  def stub_kubeclient_get_namespace(api_url, namespace: 'default', response: kube_response({}))
     WebMock.stub_request(:get, api_url + "/api/v1/namespaces/#{namespace}")
-      .to_return(kube_response({}))
+      .to_return(response)
   end
 
   def stub_kubeclient_put_cluster_role(api_url, name)
