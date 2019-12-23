@@ -129,6 +129,64 @@ from a commit or MR by extending from the following CI definitions:
 **See <https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/global.gitlab-ci.yml>
 for the list of exact patterns.**
 
+## Rules conditions and changes patterns
+
+We're making use of the [`rules` keyword](https://docs.gitlab.com/ee/ci/yaml/#rules) but we're currently
+duplicating the `if` conditions and `changes` patterns lists since they cannot be shared accross
+`include`d files as we do with `extends`.
+
+**If you update an `if` condition or `changes`
+patterns list, make sure to mass-update those accross all the CI config files (i.e. `.gitlab/ci/*.yml`).**
+
+### Canonical commits only
+
+This condition limits jobs creation to commits under the `gitlab-org/` top-level group
+on GitLab.com only. This is similar to the `.only:variables-canonical-dot-com` CI definition:
+
+```yaml
+.if-canonical-gitlab: &if-canonical-gitlab
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/)/'
+```
+
+### Canonical merge requests only
+
+Same as the "Canonical commits only" condition above but further limits jobs creation
+to merge requests only (i.e. this won't run for `master`, stable or auto-deploy branches).
+This is similar to the `.only:variables-canonical-dot-com` + `.except:refs-master-tags-stable-deploy`
+CI definitions:
+
+```yaml
+.if-canonical-gitlab-and-merge-request: &if-canonical-gitlab-and-merge-request
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/)/ && $CI_MERGE_REQUEST_IID'
+```
+
+### Code changes patterns
+
+Similar patterns as for `.only:changes-code`:
+
+```yaml
+.code-patterns: &code-patterns
+  - ...
+```
+
+### QA changes patterns
+
+Similar patterns as for `.only:changes-qa`:
+
+```yaml
+.qa-patterns: &qa-patterns
+  - ...
+```
+
+### Code and QA changes patterns
+
+Similar patterns as for `.only:changes-code-qa`:
+
+```yaml
+.code-qa-patterns: &code-qa-patterns
+  - ...
+```
+
 ## Directed acyclic graph
 
 We're using the [`needs:`](../ci/yaml/README.md#needs) keyword to

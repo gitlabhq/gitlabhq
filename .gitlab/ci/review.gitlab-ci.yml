@@ -1,8 +1,34 @@
+# Make sure to update all the similar conditions in other CI config files if you modify these conditions
+.if-canonical-gitlab: &if-canonical-gitlab
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/)/'
+
+# Make sure to update all the similar conditions in other CI config files if you modify these conditions
+.if-canonical-gitlab-and-merge-request: &if-canonical-gitlab-and-merge-request
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/)/ && $CI_MERGE_REQUEST_IID'
+
+# Make sure to update all the similar patterns in other CI config files if you modify these patterns
+.code-qa-patterns: &code-qa-patterns
+  - ".gitlab/ci/**/*"
+  - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo,scss-lint}.yml"
+  - ".csscomb.json"
+  - "Dockerfile.assets"
+  - "*_VERSION"
+  - "Gemfile{,.lock}"
+  - "Rakefile"
+  - "{babel.config,jest.config}.js"
+  - "config.ru"
+  - "{package.json,yarn.lock}"
+  - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+  - "doc/api/graphql/reference/*" # Files in this folder are auto-generated
+  # QA changes
+  - ".dockerignore"
+  - "qa/**/*"
+
 .review-docker:
   extends:
     - .default-tags
     - .default-retry
-    - .default-only
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-qa-alpine
   services:
     - docker:19.03.0-dind
@@ -15,12 +41,12 @@
     GITLAB_EDITION: "ce"
 
 build-qa-image:
-  extends:
-    - .review-docker
-    - .only:variables-canonical-dot-com
-    - .except:refs-deploy
-    - .only:changes-code-qa
+  extends: .review-docker
   stage: prepare
+  rules:
+    - <<: *if-canonical-gitlab
+      changes: *code-qa-patterns
+      when: on_success
   script:
     - '[[ ! -d "ee/" ]] || export GITLAB_EDITION="ee"'
     - export QA_MASTER_IMAGE="${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab/gitlab-${GITLAB_EDITION}-qa:master"
@@ -173,11 +199,10 @@ review-stop:
     - delete_release
 
 .review-qa-base:
-  extends:
-    - .review-docker
-    - .only-review
-    - .only:changes-code-qa
+  extends: .review-docker
   stage: qa
+  needs: ["review-deploy"]
+  dependencies: ["review-deploy"]
   allow_failure: true
   variables:
     QA_ARTIFACTS_DIR: "${CI_PROJECT_DIR}/qa"
@@ -189,13 +214,6 @@ review-stop:
     GITLAB_ADMIN_PASSWORD: "${REVIEW_APPS_ROOT_PASSWORD}"
     GITHUB_ACCESS_TOKEN: "${REVIEW_APPS_QA_GITHUB_ACCESS_TOKEN}"
     EE_LICENSE: "${REVIEW_APPS_EE_LICENSE}"
-  needs: ["review-deploy"]
-  dependencies: ["review-deploy"]
-  artifacts:
-    paths:
-      - ./qa/gitlab-qa-run-*
-    expire_in: 7 days
-    when: always
   before_script:
     - '[[ ! -d "ee/" ]] || export GITLAB_EDITION="ee"'
     - export QA_IMAGE="${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab/gitlab-${GITLAB_EDITION}-qa:${CI_COMMIT_REF_SLUG}"
@@ -205,15 +223,27 @@ review-stop:
     - source scripts/utils.sh
     - install_api_client_dependencies_with_apk
     - gem install gitlab-qa --no-document ${GITLAB_QA_VERSION:+ --version ${GITLAB_QA_VERSION}}
+  artifacts:
+    paths:
+      - ./qa/gitlab-qa-run-*
+    expire_in: 7 days
+    when: always
 
 review-qa-smoke:
   extends: .review-qa-base
+  rules:
+    - <<: *if-canonical-gitlab-and-merge-request
+      changes: *code-qa-patterns
+      when: on_success
   script:
     - gitlab-qa Test::Instance::Smoke "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}"
 
 review-qa-all:
   extends: .review-qa-base
-  when: manual
+  rules:
+    - <<: *if-canonical-gitlab-and-merge-request
+      changes: *code-qa-patterns
+      when: manual
   parallel: 5
   script:
     - export KNAPSACK_REPORT_PATH=knapsack/master_report.json

@@ -63,10 +63,6 @@ class Project < ApplicationRecord
 
   cache_markdown_field :description, pipeline: :description
 
-  # TODO: remove once GitLab 12.5 is released
-  # https://gitlab.com/gitlab-org/gitlab/issues/34638
-  ignore_column :merge_requests_require_code_owner_approval, remove_after: '2019-12-01', remove_with: '12.6'
-
   default_value_for :archived, false
   default_value_for :resolve_outdated_diff_discussions, false
   default_value_for :container_registry_enabled, gitlab_config_features.container_registry

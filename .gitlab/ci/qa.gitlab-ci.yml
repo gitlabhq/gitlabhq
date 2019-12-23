@@ -1,3 +1,28 @@
+# Make sure to update all the similar conditions in other CI config files if you modify these conditions
+.if-canonical-gitlab-and-merge-request: &if-canonical-gitlab-and-merge-request
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/)/ && $CI_MERGE_REQUEST_IID'
+
+# Make sure to update all the similar patterns in other CI config files if you modify these patterns
+.code-patterns: &code-patterns
+  - ".gitlab/ci/**/*"
+  - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo,scss-lint}.yml"
+  - ".csscomb.json"
+  - "Dockerfile.assets"
+  - "*_VERSION"
+  - "Gemfile{,.lock}"
+  - "Rakefile"
+  - "{babel.config,jest.config}.js"
+  - "config.ru"
+  - "{package.json,yarn.lock}"
+  - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+  - "doc/api/graphql/reference/*" # Files in this folder are auto-generated
+
+# Make sure to update all the similar patterns in other CI config files if you modify these patterns
+.qa-patterns: &qa-patterns
+  - ".dockerignore"
+  - "qa/**/*"
+
 .qa-job-base:
   extends:
     - .default-tags
@@ -40,23 +65,15 @@ qa:selectors-foss:
     - install_gitlab_gem
     - ./scripts/trigger-build omnibus
 
-package-and-qa-manual:
-  extends:
-    - .package-and-qa-base
-    - .default-only
-    - .only:variables-canonical-dot-com
-    - .except:refs-deploy
-    - .only:changes-code
-  when: manual
-  needs: ["build-qa-image", "gitlab:assets:compile pull-cache"]
-
 package-and-qa:
-  extends:
-    - .package-and-qa-base
-    - .default-only
-    - .only:variables-canonical-dot-com
-    - .except:refs-master-tags-stable-deploy
-    - .only:changes-qa
+  extends: .package-and-qa-base
+  rules:
+    - <<: *if-canonical-gitlab-and-merge-request
+      changes: *qa-patterns
+      when: on_success
+    - <<: *if-canonical-gitlab-and-merge-request
+      changes: *code-patterns
+      when: manual
   needs: ["build-qa-image", "gitlab:assets:compile pull-cache"]
   allow_failure: true
 
