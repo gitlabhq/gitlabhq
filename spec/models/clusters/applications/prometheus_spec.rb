@@ -117,6 +117,12 @@ describe Clusters::Applications::Prometheus do
           let(:exception) { Errno::ECONNRESET }
         end
       end
+
+      context 'when the network is unreachable' do
+        it_behaves_like 'exception caught for prometheus client' do
+          let(:exception) { Errno::ENETUNREACH }
+        end
+      end
     end
   end
 

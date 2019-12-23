@@ -79,3 +79,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Email::Handler::ReplyProcessing.prepend_if_ee('::EE::Gitlab::Email::Handler::ReplyProcessing')
