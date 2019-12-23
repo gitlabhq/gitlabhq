@@ -12258,7 +12258,7 @@ msgstr ""
 msgid "Number of commits per MR"
 msgstr ""
 
-msgid "Number of employees?"
+msgid "Number of employees"
 msgstr ""
 
 msgid "Number of files touched"
@@ -17181,6 +17181,9 @@ msgstr ""
 msgid "Start thread & reopen %{noteable_name}"
 msgstr ""
 
+msgid "Start your Free Gold Trial"
+msgstr ""
+
 msgid "Start your free trial"
 msgstr ""
 
@@ -20290,9 +20293,6 @@ msgstr ""
 msgid "We heard back from your U2F device. You have been authenticated."
 msgstr ""
 
-msgid "We need some additional information to activate your free trial"
-msgstr ""
-
 msgid "We sent you an email with reset password instructions"
 msgstr ""
 
@@ -20977,6 +20977,9 @@ msgid "Your DevOps Score gives an overview of how you are using GitLab from a fe
 msgstr ""
 
 msgid "Your GPG keys (%{count})"
+msgstr ""
+
+msgid "Your Gitlab Gold trial will last 30 days after which point you can keep your free Gitlab account forever. We just need some additional information to activate your trial."
 msgstr ""
 
 msgid "Your Groups"

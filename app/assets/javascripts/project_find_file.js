@@ -55,26 +55,21 @@ export default class ProjectFindFile {
 
   initEvent() {
     this.inputElement.off('keyup');
-    this.inputElement.on(
-      'keyup',
-      (function(_this) {
-        return function(event) {
-          const target = $(event.target);
-          const value = target.val();
-          const ref = target.data('oldValue');
-          const oldValue = ref != null ? ref : '';
-          if (value !== oldValue) {
-            target.data('oldValue', value);
-            _this.findFile();
-            return _this.element
-              .find('tr.tree-item')
-              .eq(0)
-              .addClass('selected')
-              .focus();
-          }
-        };
-      })(this),
-    );
+    this.inputElement.on('keyup', event => {
+      const target = $(event.target);
+      const value = target.val();
+      const ref = target.data('oldValue');
+      const oldValue = ref != null ? ref : '';
+      if (value !== oldValue) {
+        target.data('oldValue', value);
+        this.findFile();
+        return this.element
+          .find('tr.tree-item')
+          .eq(0)
+          .addClass('selected')
+          .focus();
+      }
+    });
   }
 
   findFile() {

@@ -109,17 +109,16 @@ import createDefaultClient from '~/lib/graphql';
 Vue.use(VueApollo);
 
 const defaultClient = createDefaultClient({
-  Query: {
-    ...
-  },
-  Mutations: {
-    ...
-  },
+  resolvers: {}
 });
 
 defaultClient.cache.writeData({
   data: {
-    isLoading: true,
+    user: {
+      name: 'John',
+      surname: 'Doe',
+      age: 30
+    },
   },
 });
 
@@ -127,6 +126,85 @@ const apolloProvider = new VueApollo({
   defaultClient,
 });
 ```
+
+We can query local data with `@client` Apollo directive:
+
+```javascript
+// user.query.graphql
+
+query User {
+  user @client {
+    name
+    surname
+    age
+  }
+}
+```
+
+Along with creating local data, we can also extend existing GraphQL types with `@client` fields. This is extremely useful when we need to mock an API responses for fields not yet added to our GraphQL API.
+
+#### Mocking API response with local Apollo cache
+
+Using local Apollo Cache is handy when we have a need to mock some GraphQL API responses, queries or mutations locally (e.g. when they're still not added to our actual API).
+
+For example, we have a [fragment](#fragments) on `DesignVersion` used in our queries:
+
+```
+fragment VersionListItem on DesignVersion {
+  id
+  sha
+}
+```
+
+We need to fetch also version author and the 'created at' property to display them in the versions dropdown but these changes are still not implemented in our API. We can change the existing fragment to get a mocked response for these new fields:
+
+```
+fragment VersionListItem on DesignVersion {
+  id
+  sha
+  author @client {
+    avatarUrl
+    name
+  }
+  createdAt @client
+}
+```
+
+Now Apollo will try to find a _resolver_ for every field marked with `@client` directive. Let's create a resolver for `DesignVersion` type (why `DesignVersion`? because our fragment was created on this type).
+
+```javascript
+// resolvers.js
+
+const resolvers = {
+  DesignVersion: {
+    author: () => ({
+      avatarUrl:
+        'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+      name: 'Administrator',
+      __typename: 'User',
+    }),
+    createdAt: () => '2019-11-13T16:08:11Z',
+  },
+};
+
+export default resolvers;
+```
+
+We need to pass resolvers object to our existing Apollo Client:
+
+```javascript
+// graphql.js
+
+import createDefaultClient from '~/lib/graphql';
+import resolvers from './graphql/resolvers';
+
+const defaultClient = createDefaultClient(
+  {},
+  resolvers,
+);
+```
+
+Now every single time on attempt to fetch a version, our client will fetch `id` and `sha` from the remote API endpoint and will assign our hardcoded values to `author` and `createdAt` version properties. With this data, frontend developers are able to work on UI part without being blocked by backend. When actual response is added to the API, a custom local resolver can be removed fast and the only change to query/fragment is `@client` directive removal.
 
 Read more about local state management with Apollo in the [Vue Apollo documentation](https://vue-apollo.netlify.com/guide/local-state.html#local-state).
 
