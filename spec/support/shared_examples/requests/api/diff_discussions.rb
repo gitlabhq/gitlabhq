@@ -38,13 +38,24 @@ shared_examples 'diff discussions API' do |parent_type, noteable_type, id_name|
       expect(json_response['notes'].first['position']).to eq(position.stringify_keys)
     end
 
-    it "returns a 400 bad request error when position is invalid" do
-      position = diff_note.position.to_h.merge(new_line: '100000')
+    context "when position is invalid" do
+      it "returns a 400 bad request error when position is not plausible" do
+        position = diff_note.position.to_h.merge(new_line: '100000')
 
-      post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions", user),
-        params: { body: 'hi!', position: position }
+        post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions", user),
+          params: { body: 'hi!', position: position }
 
-      expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
+      end
+
+      it "returns a 400 bad request error when the position is not valid for this discussion" do
+        position = diff_note.position.to_h.merge(new_line: '588440f66559714280628a4f9799f0c4eb880a4a')
+
+        post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions", user),
+          params: { body: 'hi!', position: position }
+
+        expect(response).to have_gitlab_http_status(400)
+      end
     end
   end
 

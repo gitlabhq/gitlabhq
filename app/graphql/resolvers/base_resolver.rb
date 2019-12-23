@@ -9,6 +9,10 @@ module Resolvers
         def resolve(**args)
           super.first
         end
+
+        def single?
+          true
+        end
       end
     end
 
@@ -16,6 +20,10 @@ module Resolvers
       @last ||= Class.new(self) do
         def resolve(**args)
           super.last
+        end
+
+        def single?
+          true
         end
       end
     end
@@ -42,9 +50,13 @@ module Resolvers
     override :object
     def object
       super.tap do |obj|
-        # If the field this resolver is used in is wrapped in a presenter, go back to it's subject
+        # If the field this resolver is used in is wrapped in a presenter, unwrap its subject
         break obj.subject if obj.is_a?(Gitlab::View::Presenter::Base)
       end
+    end
+
+    def single?
+      false
     end
   end
 end

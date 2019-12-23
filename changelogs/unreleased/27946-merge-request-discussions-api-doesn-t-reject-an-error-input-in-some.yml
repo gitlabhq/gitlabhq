@@ -1,0 +1,6 @@
+---
+title: Resolve "Merge request discussions API doesn't reject an error input in some
+  case"
+merge_request: 21936
+author:
+type: fixed

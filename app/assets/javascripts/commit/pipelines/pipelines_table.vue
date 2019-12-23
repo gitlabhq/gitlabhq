@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlLoadingIcon } from '@gitlab/ui';
+import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import PipelinesService from '~/pipelines/services/pipelines_service';
 import PipelineStore from '~/pipelines/stores/pipelines_store';
 import pipelinesMixin from '~/pipelines/mixins/pipelines';
@@ -7,7 +8,6 @@ import eventHub from '~/pipelines/event_hub';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
 import { getParameterByName } from '~/lib/utils/common_utils';
 import CIPaginationMixin from '~/vue_shared/mixins/ci_pagination_api_mixin';
-import bp from '~/breakpoints';
 
 export default {
   components: {

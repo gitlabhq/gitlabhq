@@ -1,8 +1,8 @@
 import MockAdapter from 'axios-mock-adapter';
+import { GlBreakpointInstance as breakpointInstance } from '@gitlab/ui/dist/utils';
 import axios from '~/lib/utils/axios_utils';
 import * as commonUtils from '~/lib/utils/common_utils';
 import { faviconDataUrl, overlayDataUrl, faviconWithOverlayDataUrl } from './mock_data';
-import breakpointInstance from '~/breakpoints';
 
 const PIXEL_TOLERANCE = 0.2;
 

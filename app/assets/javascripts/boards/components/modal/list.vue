@@ -1,6 +1,6 @@
 <script>
+import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import Icon from '~/vue_shared/components/icon.vue';
-import bp from '../../../breakpoints';
 import ModalStore from '../../stores/modal_store';
 import IssueCardInner from '../issue_card_inner.vue';
 
@@ -105,9 +105,9 @@ export default {
     setColumnCount() {
       const breakpoint = bp.getBreakpointSize();
 
-      if (breakpoint === 'lg' || breakpoint === 'md') {
+      if (breakpoint === 'xl' || breakpoint === 'lg') {
         this.columns = 3;
-      } else if (breakpoint === 'sm') {
+      } else if (breakpoint === 'md') {
         this.columns = 2;
       } else {
         this.columns = 1;

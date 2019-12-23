@@ -8,7 +8,7 @@ end
 
 RSpec::Matchers.define :have_graphql_fields do |*expected|
   def expected_field_names
-    expected.map { |name| GraphqlHelpers.fieldnamerize(name) }
+    Array.wrap(expected).map { |name| GraphqlHelpers.fieldnamerize(name) }
   end
 
   match do |kls|

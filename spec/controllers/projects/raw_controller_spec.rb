@@ -56,10 +56,13 @@ describe Projects::RawController do
         stub_application_setting(raw_blob_request_limit: 5)
       end
 
-      it 'prevents from accessing the raw file' do
-        execute_raw_requests(requests: 6, project: project, file_path: file_path)
+      it 'prevents from accessing the raw file', :request_store do
+        execute_raw_requests(requests: 5, project: project, file_path: file_path)
 
-        expect(flash[:alert]).to eq(_('You cannot access the raw file. Please wait a minute.'))
+        expect { execute_raw_requests(requests: 1, project: project, file_path: file_path) }
+          .to change { Gitlab::GitalyClient.get_request_count }.by(0)
+
+        expect(response.body).to eq(_('You cannot access the raw file. Please wait a minute.'))
         expect(response).to have_gitlab_http_status(429)
       end
 
@@ -109,7 +112,7 @@ describe Projects::RawController do
 
           execute_raw_requests(requests: 3, project: project, file_path: modified_path)
 
-          expect(flash[:alert]).to eq(_('You cannot access the raw file. Please wait a minute.'))
+          expect(response.body).to eq(_('You cannot access the raw file. Please wait a minute.'))
           expect(response).to have_gitlab_http_status(429)
         end
       end
@@ -137,7 +140,7 @@ describe Projects::RawController do
           # Accessing downcase version of readme
           execute_raw_requests(requests: 6, project: project, file_path: file_path)
 
-          expect(flash[:alert]).to eq(_('You cannot access the raw file. Please wait a minute.'))
+          expect(response.body).to eq(_('You cannot access the raw file. Please wait a minute.'))
           expect(response).to have_gitlab_http_status(429)
 
           # Accessing upcase version of readme

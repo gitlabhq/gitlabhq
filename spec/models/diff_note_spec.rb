@@ -5,11 +5,11 @@ require 'spec_helper'
 describe DiffNote do
   include RepoHelpers
 
-  let!(:merge_request) { create(:merge_request) }
-  let(:project) { merge_request.project }
-  let(:commit) { project.commit(sample_commit.id) }
+  let_it_be(:merge_request) { create(:merge_request) }
+  let_it_be(:project) { merge_request.project }
+  let_it_be(:commit) { project.commit(sample_commit.id) }
 
-  let(:path) { "files/ruby/popen.rb" }
+  let_it_be(:path) { "files/ruby/popen.rb" }
 
   let(:diff_refs) { merge_request.diff_refs }
   let!(:position) do

@@ -2,12 +2,12 @@
  * @module common-utils
  */
 
+import { GlBreakpointInstance as breakpointInstance } from '@gitlab/ui/dist/utils';
 import $ from 'jquery';
 import axios from './axios_utils';
 import { getLocationHash } from './url_utility';
 import { convertToCamelCase, convertToSnakeCase } from './text_utility';
 import { isObject } from './type_utility';
-import breakpointInstance from '../../breakpoints';
 
 export const getPagePath = (index = 0) => {
   const page = $('body').attr('data-page') || '';

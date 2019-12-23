@@ -1,4 +1,4 @@
-import bp from './breakpoints';
+import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { SIDEBAR_COLLAPSED_CLASS } from './contextual_sidebar';
 
 const HIDE_INTERVAL_TIMEOUT = 300;
@@ -40,10 +40,7 @@ export const canShowActiveSubItems = el => {
   return true;
 };
 
-export const canShowSubItems = () =>
-  bp.getBreakpointSize() === 'sm' ||
-  bp.getBreakpointSize() === 'md' ||
-  bp.getBreakpointSize() === 'lg';
+export const canShowSubItems = () => ['md', 'lg', 'xl'].includes(bp.getBreakpointSize());
 
 export const getHideSubItemsInterval = () => {
   if (!currentOpenMenu || !mousePos.length) return 0;
