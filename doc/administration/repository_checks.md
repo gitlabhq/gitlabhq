@@ -37,7 +37,7 @@ in `repocheck.log`:
   - `/home/git/gitlab/log` for installations from source
 
 If the periodic repository check causes false alarms, you can clear all repository check states by
-navigating to **Admin area > Settings > Repository**
+navigating to **Admin Area > Settings > Repository**
 (`/admin/application_settings/repository`) and clicking **Clear all repository checks**.
 
 ---
