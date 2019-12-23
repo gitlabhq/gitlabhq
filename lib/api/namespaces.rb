@@ -32,6 +32,8 @@ module API
       get do
         namespaces = current_user.admin ? Namespace.all : current_user.namespaces
 
+        namespaces = namespaces.include_gitlab_subscription if Gitlab.ee?
+
         namespaces = namespaces.search(params[:search]) if params[:search].present?
 
         options = { with: Entities::Namespace, current_user: current_user }

@@ -18,16 +18,23 @@
 # runner, or network egress charges will apply:
 # https://cloud.google.com/storage/pricing
 cache-repo:
-  extends:
-    - .only:variables_refs-canonical-dot-com-schedules
   image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
   stage: sync
   allow_failure: true
   variables:
-    GIT_DEPTH: 0
+    GIT_STRATEGY: none
     TAR_FILENAME: /tmp/gitlab-master.tar
   script:
+    - cd ..
+    - rm -rf $CI_PROJECT_NAME
+    - git clone --progress $CI_REPOSITORY_URL $CI_PROJECT_NAME
+    - cd $CI_PROJECT_NAME
     - gcloud auth activate-service-account --key-file=$CI_REPO_CACHE_CREDENTIALS
     - tar cf $TAR_FILENAME .
     - gzip $TAR_FILENAME
     - gsutil cp $TAR_FILENAME.gz gs://gitlab-ci-git-repo-cache/project-$CI_PROJECT_ID/gitlab-master.tar.gz
+  only:
+    variables:
+      - $CI_REPO_CACHE_CREDENTIALS
+    refs:
+      - schedules

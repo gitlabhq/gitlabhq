@@ -1,5 +1,5 @@
+import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import domContentLoaded from '~/feature_highlight/feature_highlight_options';
-import bp from '~/breakpoints';
 
 describe('feature highlight options', () => {
   describe('domContentLoaded', () => {
@@ -21,8 +21,14 @@ describe('feature highlight options', () => {
       expect(domContentLoaded()).toBe(false);
     });
 
-    it('should call highlightFeatures when breakpoint is lg', () => {
+    it('should not call highlightFeatures when breakpoint is not xl', () => {
       jest.spyOn(bp, 'getBreakpointSize').mockReturnValue('lg');
+
+      expect(domContentLoaded()).toBe(false);
+    });
+
+    it('should call highlightFeatures when breakpoint is xl', () => {
+      jest.spyOn(bp, 'getBreakpointSize').mockReturnValue('xl');
 
       expect(domContentLoaded()).toBe(true);
     });
