@@ -160,6 +160,7 @@ ci_pipelines:
 - user
 - stages
 - statuses
+- latest_statuses_ordered_by_stage
 - builds
 - processables
 - trigger_requests
@@ -168,6 +169,7 @@ ci_pipelines:
 - auto_canceled_pipelines
 - auto_canceled_jobs
 - pending_builds
+- failed_builds
 - retryable_builds
 - cancelable_statuses
 - manual_actions

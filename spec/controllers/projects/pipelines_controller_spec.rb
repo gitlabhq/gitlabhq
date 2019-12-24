@@ -6,7 +6,7 @@ describe Projects::PipelinesController do
   include ApiHelpers
 
   let_it_be(:user) { create(:user) }
-  let(:project) { create(:project, :public, :repository) }
+  let_it_be(:project) { create(:project, :public, :repository) }
   let(:feature) { ProjectFeature::ENABLED }
 
   before do
@@ -19,12 +19,12 @@ describe Projects::PipelinesController do
 
   describe 'GET index.json' do
     before do
-      %w(pending running success failed canceled).each_with_index do |status, index|
-        create_pipeline(status, project.commit("HEAD~#{index}"))
-      end
+      create_all_pipeline_types
     end
 
     context 'when using persisted stages', :request_store do
+      render_views
+
       before do
         stub_feature_flags(ci_pipeline_persisted_stages: true)
       end
@@ -32,9 +32,7 @@ describe Projects::PipelinesController do
       it 'returns serialized pipelines', :request_store do
         expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original
 
-        queries = ActiveRecord::QueryRecorder.new do
-          get_pipelines_index_json
-        end
+        get_pipelines_index_json
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('pipeline')
@@ -49,8 +47,22 @@ describe Projects::PipelinesController do
         json_response.dig('pipelines', 0, 'details', 'stages').tap do |stages|
           expect(stages.count).to eq 3
         end
+      end
 
-        expect(queries.count).to be
+      it 'does not execute N+1 queries' do
+        get_pipelines_index_json
+
+        control_count = ActiveRecord::QueryRecorder.new do
+          get_pipelines_index_json
+        end.count
+
+        create_all_pipeline_types
+
+        # There appears to be one extra query for Pipelines#has_warnings? for some reason
+        expect { get_pipelines_index_json }.not_to exceed_query_limit(control_count + 1)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['pipelines'].count).to eq 10
       end
     end
 
@@ -133,19 +145,27 @@ describe Projects::PipelinesController do
                   format: :json
     end
 
-    def create_pipeline(status, sha)
-      pipeline = create(:ci_empty_pipeline, status: status,
-                                            project: project,
-                                            sha: sha)
-
-      create_build(pipeline, 'build', 1, 'build')
-      create_build(pipeline, 'test', 2, 'test')
-      create_build(pipeline, 'deploy', 3, 'deploy')
+    def create_all_pipeline_types
+      %w(pending running success failed canceled).each_with_index do |status, index|
+        create_pipeline(status, project.commit("HEAD~#{index}"))
+      end
     end
 
-    def create_build(pipeline, stage, stage_idx, name)
+    def create_pipeline(status, sha)
+      user = create(:user)
+      pipeline = create(:ci_empty_pipeline, status: status,
+                                            project: project,
+                                            sha: sha,
+                                            user: user)
+
+      create_build(pipeline, 'build', 1, 'build', user)
+      create_build(pipeline, 'test', 2, 'test', user)
+      create_build(pipeline, 'deploy', 3, 'deploy', user)
+    end
+
+    def create_build(pipeline, stage, stage_idx, name, user = nil)
       status = %w[created running pending success failed canceled].sample
-      create(:ci_build, pipeline: pipeline, stage: stage, stage_idx: stage_idx, name: name, status: status)
+      create(:ci_build, pipeline: pipeline, stage: stage, stage_idx: stage_idx, name: name, status: status, user: user)
     end
   end
 

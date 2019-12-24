@@ -1,0 +1,5 @@
+---
+title: Eliminate N+1 queries in PipelinesController#index
+merge_request: 22189
+author:
+type: performance

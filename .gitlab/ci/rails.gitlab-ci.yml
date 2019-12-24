@@ -57,7 +57,7 @@ setup-test-env:
   dependencies: ["setup-test-env", "retrieve-tests-metadata", "compile-assets pull-cache"]
   script:
     - source scripts/rspec_helpers.sh
-    - rspec_paralellized_job "--tag ~quarantine --tag ~geo"
+    - rspec_paralellized_job "--tag ~quarantine --tag ~geo --tag ~level:migration"
   artifacts:
     expire_in: 31d
     when: always
@@ -92,12 +92,21 @@ setup-test-env:
     - .use-pg10
     - .only-master
 
+.rspec-base-migration:
+  script:
+    - source scripts/rspec_helpers.sh
+    - rspec_paralellized_job "--tag ~quarantine --tag ~geo --tag level:migration"
+
 rspec migration pg9:
-  extends: .rspec-base-pg9
+  extends:
+    - .rspec-base-pg9
+    - .rspec-base-migration
   parallel: 4
 
 rspec migration pg9-foss:
-  extends: .rspec-base-pg9-foss
+  extends:
+    - .rspec-base-pg9-foss
+    - .rspec-base-migration
   parallel: 4
 
 rspec unit pg9:
@@ -149,7 +158,9 @@ rspec system pg10:
     - .use-pg10-ee
 
 rspec-ee migration pg9:
-  extends: .rspec-ee-base-pg9
+  extends:
+    - .rspec-ee-base-pg9
+    - .rspec-base-migration
   parallel: 2
 
 rspec-ee unit pg9:
@@ -167,6 +178,7 @@ rspec-ee system pg9:
 rspec-ee migration pg10:
   extends:
     - .rspec-ee-base-pg10
+    - .rspec-base-migration
     - .only-master
   parallel: 2
 
