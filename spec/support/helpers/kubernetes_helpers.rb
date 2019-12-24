@@ -33,6 +33,14 @@ module KubernetesHelpers
       .to_return(kube_response(kube_v1_rbac_authorization_discovery_body))
   end
 
+  def stub_kubeclient_discover_istio(api_url)
+    stub_kubeclient_discover_base(api_url)
+
+    WebMock
+      .stub_request(:get, api_url + '/apis/networking.istio.io/v1alpha3')
+      .to_return(kube_response(kube_istio_discovery_body))
+  end
+
   def stub_kubeclient_discover(api_url)
     stub_kubeclient_discover_base(api_url)
 
@@ -244,6 +252,16 @@ module KubernetesHelpers
       .to_return(kube_response({}))
   end
 
+  def stub_kubeclient_get_gateway(api_url, name, namespace: 'default')
+    WebMock.stub_request(:get, api_url + "/apis/networking.istio.io/v1alpha3/namespaces/#{namespace}/gateways/#{name}")
+      .to_return(kube_response(kube_istio_gateway_body(name, namespace)))
+  end
+
+  def stub_kubeclient_put_gateway(api_url, name, namespace: 'default')
+    WebMock.stub_request(:put, api_url + "/apis/networking.istio.io/v1alpha3/namespaces/#{namespace}/gateways/#{name}")
+      .to_return(kube_response({}))
+  end
+
   def kube_v1_secret_body(**options)
     {
       "kind" => "SecretList",
@@ -308,6 +326,115 @@ module KubernetesHelpers
         { "name" => "rolebindings", "namespaced" => true, "kind" => "RoleBinding" },
         { "name" => "roles", "namespaced" => true, "kind" => "Role" }
       ]
+    }
+  end
+
+  def kube_istio_discovery_body
+    {
+      "kind" => "APIResourceList",
+      "apiVersion" => "v1",
+      "groupVersion" => "networking.istio.io/v1alpha3",
+      "resources" => [
+        {
+          "name" => "gateways",
+          "singularName" => "gateway",
+          "namespaced" => true,
+          "kind" => "Gateway",
+          "verbs" => %w[delete deletecollection get list patch create update watch],
+          "shortNames" => %w[gw],
+          "categories" => %w[istio-io networking-istio-io]
+        },
+        {
+          "name" => "serviceentries",
+          "singularName" => "serviceentry",
+          "namespaced" => true,
+          "kind" => "ServiceEntry",
+          "verbs" => %w[delete deletecollection get list patch create update watch],
+          "shortNames" => %w[se],
+          "categories" => %w[istio-io networking-istio-io]
+        },
+        {
+          "name" => "destinationrules",
+          "singularName" => "destinationrule",
+          "namespaced" => true,
+          "kind" => "DestinationRule",
+          "verbs" => %w[delete deletecollection get list patch create update watch],
+          "shortNames" => %w[dr],
+          "categories" => %w[istio-io networking-istio-io]
+        },
+        {
+          "name" => "envoyfilters",
+          "singularName" => "envoyfilter",
+          "namespaced" => true,
+          "kind" => "EnvoyFilter",
+          "verbs" => %w[delete deletecollection get list patch create update watch],
+          "categories" => %w[istio-io networking-istio-io]
+        },
+        {
+          "name" => "sidecars",
+          "singularName" => "sidecar",
+          "namespaced" => true,
+          "kind" => "Sidecar",
+          "verbs" => %w[delete deletecollection get list patch create update watch],
+          "categories" => %w[istio-io networking-istio-io]
+        },
+        {
+          "name" => "virtualservices",
+          "singularName" => "virtualservice",
+          "namespaced" => true,
+          "kind" => "VirtualService",
+          "verbs" => %w[delete deletecollection get list patch create update watch],
+          "shortNames" => %w[vs],
+          "categories" => %w[istio-io networking-istio-io]
+        }
+      ]
+    }
+  end
+
+  def kube_istio_gateway_body(name, namespace)
+    {
+      "apiVersion" => "networking.istio.io/v1alpha3",
+      "kind" => "Gateway",
+      "metadata" => {
+        "generation" => 1,
+        "labels" => {
+          "networking.knative.dev/ingress-provider" => "istio",
+          "serving.knative.dev/release" => "v0.7.0"
+        },
+        "name" => name,
+        "namespace" => namespace,
+        "selfLink" => "/apis/networking.istio.io/v1alpha3/namespaces/#{namespace}/gateways/#{name}"
+      },
+      "spec" => {
+        "selector" => {
+          "istio" => "ingressgateway"
+        },
+        "servers" => [
+          {
+            "hosts" => [
+              "*"
+            ],
+            "port" => {
+              "name" => "http",
+              "number" => 80,
+              "protocol" => "HTTP"
+            }
+          },
+          {
+            "hosts" => [
+              "*"
+            ],
+            "port" => {
+              "name" => "https",
+              "number" => 443,
+              "protocol" => "HTTPS"
+            },
+            "tls" => {
+              "mode" => "PASSTHROUGH"
+            }
+          }
+        ]
+      }
     }
   end
 

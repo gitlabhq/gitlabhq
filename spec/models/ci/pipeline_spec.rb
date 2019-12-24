@@ -35,6 +35,7 @@ describe Ci::Pipeline, :mailer do
   it { is_expected.to have_one(:source_pipeline) }
   it { is_expected.to have_one(:triggered_by_pipeline) }
   it { is_expected.to have_one(:source_job) }
+  it { is_expected.to have_one(:pipeline_config) }
 
   it { is_expected.to validate_presence_of(:sha) }
   it { is_expected.to validate_presence_of(:status) }

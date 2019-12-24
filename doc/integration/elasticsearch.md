@@ -200,8 +200,7 @@ To backfill existing data, you can use one of the methods below to index it in b
 
 To index via the admin area:
 
-1. Navigate to the **Admin Area** (wrench icon), then **Settings > Integrations** and expand the **Elasticsearch** section.
-1. [Enable **Elasticsearch indexing** and configure your host and port](#enabling-elasticsearch).
+1. [Configure your Elasticsearch host and port](#enabling-elasticsearch).
 1. Create empty indexes using one of the following commands:
 
    ```sh
@@ -212,7 +211,8 @@ To index via the admin area:
    bundle exec rake gitlab:elastic:create_empty_index RAILS_ENV=production
    ```
 
-1. Click **Index all projects**.
+1. [Enable **Elasticsearch indexing**](#enabling-elasticsearch).
+1. Click **Index all projects** in **Admin Area > Settings > Integrations > Elasticsearch**.
 1. Click **Check progress** in the confirmation message to see the status of the background jobs.
 1. Personal snippets need to be indexed manually by running one of these commands:
 
@@ -255,7 +255,7 @@ Performing asynchronous indexing will generate a lot of Sidekiq jobs.
 Make sure to prepare for this task by either [Horizontally Scaling](../administration/high_availability/README.md#basic-scaling)
 or creating [extra Sidekiq processes](../administration/operations/extra_sidekiq_processes.md)
 
-1. [Enable **Elasticsearch indexing** and configure your host and port](#enabling-elasticsearch).
+1. [Configure your Elasticsearch host and port](#enabling-elasticsearch).
 1. Create empty indexes using one of the following commands:
 
    ```sh
@@ -266,6 +266,7 @@ or creating [extra Sidekiq processes](../administration/operations/extra_sidekiq
    bundle exec rake gitlab:elastic:create_empty_index RAILS_ENV=production
    ```
 
+1. [Enable **Elasticsearch indexing**](#enabling-elasticsearch).
 1. Indexing large Git repositories can take a while. To speed up the process, you
    can temporarily disable auto-refreshing and replicating. In our experience, you can expect a 20%
    decrease in indexing time. We'll enable them when indexing is done. This step is optional!

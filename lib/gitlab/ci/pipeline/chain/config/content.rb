@@ -24,8 +24,7 @@ module Gitlab
 
             def perform!
               if config = find_config
-                # TODO: we should persist config_content
-                # @pipeline.config_content = config.content
+                @pipeline.build_pipeline_config(content: config.content) if ci_root_config_content_enabled?
                 @command.config_content = config.content
                 @pipeline.config_source = config.source
               else
@@ -49,11 +48,11 @@ module Gitlab
             end
 
             def sources
-              if Feature.enabled?(:ci_root_config_content, @command.project, default_enabled: true)
-                SOURCES
-              else
-                LEGACY_SOURCES
-              end
+              ci_root_config_content_enabled? ? SOURCES : LEGACY_SOURCES
+            end
+
+            def ci_root_config_content_enabled?
+              Feature.enabled?(:ci_root_config_content, @command.project, default_enabled: true)
             end
           end
         end

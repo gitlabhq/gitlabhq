@@ -29,6 +29,7 @@ describe Gitlab::Ci::Pipeline::Chain::Config::Content do
           subject.perform!
 
           expect(pipeline.config_source).to eq 'repository_source'
+          expect(pipeline.pipeline_config).to be_nil
           expect(command.config_content).to eq('the-content')
         end
       end
@@ -40,6 +41,7 @@ describe Gitlab::Ci::Pipeline::Chain::Config::Content do
           subject.perform!
 
           expect(pipeline.config_source).to eq 'auto_devops_source'
+          expect(pipeline.pipeline_config).to be_nil
           template = Gitlab::Template::GitlabCiYmlTemplate.find('Beta/Auto-DevOps')
           expect(command.config_content).to eq(template.content)
         end
@@ -52,6 +54,7 @@ describe Gitlab::Ci::Pipeline::Chain::Config::Content do
           subject.perform!
 
           expect(pipeline.config_source).to eq 'auto_devops_source'
+          expect(pipeline.pipeline_config).to be_nil
           template = Gitlab::Template::GitlabCiYmlTemplate.find('Beta/Auto-DevOps')
           expect(command.config_content).to eq(template.content)
         end
@@ -71,6 +74,7 @@ describe Gitlab::Ci::Pipeline::Chain::Config::Content do
           subject.perform!
 
           expect(pipeline.config_source).to eq 'repository_source'
+          expect(pipeline.pipeline_config).to be_nil
           expect(command.config_content).to eq('the-content')
         end
       end
@@ -91,6 +95,7 @@ describe Gitlab::Ci::Pipeline::Chain::Config::Content do
             subject.perform!
 
             expect(pipeline.config_source).to eq 'auto_devops_source'
+            expect(pipeline.pipeline_config).to be_nil
             template = Gitlab::Template::GitlabCiYmlTemplate.find('Beta/Auto-DevOps')
             expect(command.config_content).to eq(template.content)
           end
@@ -105,6 +110,7 @@ describe Gitlab::Ci::Pipeline::Chain::Config::Content do
             subject.perform!
 
             expect(pipeline.config_source).to eq 'auto_devops_source'
+            expect(pipeline.pipeline_config).to be_nil
             template = Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps')
             expect(command.config_content).to eq(template.content)
           end
@@ -122,6 +128,7 @@ describe Gitlab::Ci::Pipeline::Chain::Config::Content do
           subject.perform!
 
           expect(pipeline.config_source).to eq('unknown_source')
+          expect(pipeline.pipeline_config).to be_nil
           expect(command.config_content).to be_nil
           expect(pipeline.errors.full_messages).to include('Missing CI config file')
         end
@@ -130,6 +137,13 @@ describe Gitlab::Ci::Pipeline::Chain::Config::Content do
 
     context 'when config is defined in a custom path in the repository' do
       let(:ci_config_path) { 'path/to/config.yml' }
+      let(:config_content_result) do
+        <<~EOY
+          ---
+          include:
+          - local: #{ci_config_path}
+        EOY
+      end
 
       before do
         expect(project.repository)
@@ -142,47 +156,59 @@ describe Gitlab::Ci::Pipeline::Chain::Config::Content do
         subject.perform!
 
         expect(pipeline.config_source).to eq 'repository_source'
-        expect(command.config_content).to eq(<<~EOY)
-          ---
-          include:
-          - local: #{ci_config_path}
-        EOY
+        expect(pipeline.pipeline_config.content).to eq(config_content_result)
+        expect(command.config_content).to eq(config_content_result)
       end
     end
 
     context 'when config is defined remotely' do
       let(:ci_config_path) { 'http://example.com/path/to/ci/config.yml' }
-
-      it 'builds root config including the remote config' do
-        subject.perform!
-
-        expect(pipeline.config_source).to eq 'remote_source'
-        expect(command.config_content).to eq(<<~EOY)
+      let(:config_content_result) do
+        <<~EOY
           ---
           include:
           - remote: #{ci_config_path}
         EOY
       end
+
+      it 'builds root config including the remote config' do
+        subject.perform!
+
+        expect(pipeline.config_source).to eq 'remote_source'
+        expect(pipeline.pipeline_config.content).to eq(config_content_result)
+        expect(command.config_content).to eq(config_content_result)
+      end
     end
 
     context 'when config is defined in a separate repository' do
       let(:ci_config_path) { 'path/to/.gitlab-ci.yml@another-group/another-repo' }
-
-      it 'builds root config including the path to another repository' do
-        subject.perform!
-
-        expect(pipeline.config_source).to eq 'external_project_source'
-        expect(command.config_content).to eq(<<~EOY)
+      let(:config_content_result) do
+        <<~EOY
           ---
           include:
           - project: another-group/another-repo
             file: path/to/.gitlab-ci.yml
         EOY
       end
+
+      it 'builds root config including the path to another repository' do
+        subject.perform!
+
+        expect(pipeline.config_source).to eq 'external_project_source'
+        expect(pipeline.pipeline_config.content).to eq(config_content_result)
+        expect(command.config_content).to eq(config_content_result)
+      end
     end
 
     context 'when config is defined in the default .gitlab-ci.yml' do
       let(:ci_config_path) { nil }
+      let(:config_content_result) do
+        <<~EOY
+          ---
+          include:
+          - local: ".gitlab-ci.yml"
+        EOY
+      end
 
       before do
         expect(project.repository)
@@ -195,16 +221,20 @@ describe Gitlab::Ci::Pipeline::Chain::Config::Content do
         subject.perform!
 
         expect(pipeline.config_source).to eq 'repository_source'
-        expect(command.config_content).to eq(<<~EOY)
-          ---
-          include:
-          - local: ".gitlab-ci.yml"
-        EOY
+        expect(pipeline.pipeline_config.content).to eq(config_content_result)
+        expect(command.config_content).to eq(config_content_result)
       end
     end
 
     context 'when config is the Auto-Devops template' do
       let(:ci_config_path) { nil }
+      let(:config_content_result) do
+        <<~EOY
+          ---
+          include:
+          - template: Beta/Auto-DevOps.gitlab-ci.yml
+        EOY
+      end
 
       before do
         expect(project).to receive(:auto_devops_enabled?).and_return(true)
@@ -219,11 +249,8 @@ describe Gitlab::Ci::Pipeline::Chain::Config::Content do
           subject.perform!
 
           expect(pipeline.config_source).to eq 'auto_devops_source'
-          expect(command.config_content).to eq(<<~EOY)
-            ---
-            include:
-            - template: Beta/Auto-DevOps.gitlab-ci.yml
-          EOY
+          expect(pipeline.pipeline_config.content).to eq(config_content_result)
+          expect(command.config_content).to eq(config_content_result)
         end
       end
 
@@ -232,15 +259,20 @@ describe Gitlab::Ci::Pipeline::Chain::Config::Content do
           stub_feature_flags(auto_devops_beta: false)
         end
 
-        it 'builds root config including the auto-devops template' do
-          subject.perform!
-
-          expect(pipeline.config_source).to eq 'auto_devops_source'
-          expect(command.config_content).to eq(<<~EOY)
+        let(:config_content_result) do
+          <<~EOY
             ---
             include:
             - template: Auto-DevOps.gitlab-ci.yml
           EOY
+        end
+
+        it 'builds root config including the auto-devops template' do
+          subject.perform!
+
+          expect(pipeline.config_source).to eq 'auto_devops_source'
+          expect(pipeline.pipeline_config.content).to eq(config_content_result)
+          expect(command.config_content).to eq(config_content_result)
         end
       end
     end
@@ -256,6 +288,7 @@ describe Gitlab::Ci::Pipeline::Chain::Config::Content do
         subject.perform!
 
         expect(pipeline.config_source).to eq('unknown_source')
+        expect(pipeline.pipeline_config).to be_nil
         expect(command.config_content).to be_nil
         expect(pipeline.errors.full_messages).to include('Missing CI config file')
       end

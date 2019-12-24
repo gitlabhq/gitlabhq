@@ -3,13 +3,12 @@
 require 'spec_helper'
 
 describe Prometheus::AdapterService do
-  let(:project) { create(:project) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:cluster, reload: true) { create(:cluster, :provided_by_user, environment_scope: '*', projects: [project]) }
 
-  subject { described_class.new(project) }
+  subject { described_class.new(project, cluster) }
 
   describe '#prometheus_adapter' do
-    let(:cluster) { create(:cluster, :provided_by_user, environment_scope: '*', projects: [project]) }
-
     context 'prometheus service can execute queries' do
       let(:prometheus_service) { double(:prometheus_service, can_query?: true) }
 

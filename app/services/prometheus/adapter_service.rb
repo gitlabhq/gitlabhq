@@ -2,17 +2,12 @@
 
 module Prometheus
   class AdapterService
-    def initialize(project, deployment_platform = nil)
+    attr_reader :project, :cluster
+
+    def initialize(project, cluster)
       @project = project
-
-      @deployment_platform = if deployment_platform
-                               deployment_platform
-                             else
-                               project.deployment_platform
-                             end
+      @cluster = cluster
     end
-
-    attr_reader :deployment_platform, :project
 
     def prometheus_adapter
       @prometheus_adapter ||= if service_prometheus_adapter.can_query?
@@ -27,7 +22,7 @@ module Prometheus
     end
 
     def cluster_prometheus_adapter
-      application = deployment_platform&.cluster&.application_prometheus
+      application = cluster&.application_prometheus
 
       application if application&.available?
     end

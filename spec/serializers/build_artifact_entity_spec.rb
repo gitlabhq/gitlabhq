@@ -4,8 +4,6 @@ require 'spec_helper'
 
 describe BuildArtifactEntity do
   let(:job) { create(:ci_build, name: 'test:job', artifacts_expire_at: 1.hour.from_now) }
-  let!(:archive) { create(:ci_job_artifact, :archive, job: job) }
-  let!(:metadata) { create(:ci_job_artifact, :metadata, job: job) }
 
   let(:entity) do
     described_class.new(job, request: double)

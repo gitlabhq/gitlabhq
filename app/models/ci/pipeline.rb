@@ -62,6 +62,8 @@ module Ci
     has_one :triggered_by_pipeline, through: :source_pipeline, source: :source_pipeline
     has_one :source_job, through: :source_pipeline, source: :source_job
 
+    has_one :pipeline_config, class_name: 'Ci::PipelineConfig', inverse_of: :pipeline
+
     accepts_nested_attributes_for :variables, reject_if: :persisted?
 
     delegate :id, to: :project, prefix: true

@@ -190,6 +190,7 @@ ci_pipelines:
 - job_artifacts
 - vulnerabilities_occurrence_pipelines
 - vulnerability_findings
+- pipeline_config
 pipeline_variables:
 - pipeline
 stages:

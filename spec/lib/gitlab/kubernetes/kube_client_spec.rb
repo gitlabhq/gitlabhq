@@ -136,6 +136,20 @@ describe Gitlab::Kubernetes::KubeClient do
     end
   end
 
+  describe '#istio_client' do
+    subject { client.istio_client }
+
+    it_behaves_like 'a Kubeclient'
+
+    it 'has the Istio API group endpoint' do
+      expect(subject.api_endpoint.to_s).to match(%r{\/apis\/networking.istio.io\Z})
+    end
+
+    it 'has the api_version' do
+      expect(subject.instance_variable_get(:@api_version)).to eq('v1alpha3')
+    end
+  end
+
   describe '#knative_client' do
     subject { client.knative_client }
 
@@ -229,6 +243,29 @@ describe Gitlab::Kubernetes::KubeClient do
 
       it 'responds to the method' do
         expect(client).to respond_to :get_deployments
+      end
+    end
+  end
+
+  describe 'istio API group' do
+    let(:istio_client) { client.istio_client }
+
+    [
+      :create_gateway,
+      :get_gateway,
+      :update_gateway
+    ].each do |method|
+      describe "##{method}" do
+        include_examples 'redirection not allowed', method
+        include_examples 'dns rebinding not allowed', method
+
+        it 'delegates to the istio client' do
+          expect(client).to delegate_method(method).to(:istio_client)
+        end
+
+        it 'responds to the method' do
+          expect(client).to respond_to method
+        end
       end
     end
   end

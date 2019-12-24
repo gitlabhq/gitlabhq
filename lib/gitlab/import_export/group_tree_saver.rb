@@ -3,7 +3,7 @@
 module Gitlab
   module ImportExport
     class GroupTreeSaver
-      attr_reader :full_path
+      attr_reader :full_path, :shared
 
       def initialize(group:, current_user:, shared:, params: {})
         @params       = params
