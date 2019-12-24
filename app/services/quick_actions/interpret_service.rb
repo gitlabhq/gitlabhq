@@ -84,7 +84,9 @@ module QuickActions
     # rubocop: enable CodeReuse/ActiveRecord
 
     def find_milestones(project, params = {})
-      MilestonesFinder.new(params.merge(project_ids: [project.id], group_ids: [project.group&.id])).execute
+      group_ids = project.group.self_and_ancestors.select(:id) if project.group
+
+      MilestonesFinder.new(params.merge(project_ids: [project.id], group_ids: group_ids)).execute
     end
 
     def parent

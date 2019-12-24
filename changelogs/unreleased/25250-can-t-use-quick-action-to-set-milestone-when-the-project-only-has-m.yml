@@ -1,0 +1,5 @@
+---
+title: Fix milestone quick action to handle ancestor group milestones
+merge_request: 22231
+author:
+type: fixed

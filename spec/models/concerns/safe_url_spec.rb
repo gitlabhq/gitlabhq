@@ -4,17 +4,19 @@ require 'spec_helper'
 
 describe SafeUrl do
   describe '#safe_url' do
-    class SafeUrlTestClass
-      include SafeUrl
+    let(:safe_url_test_class) do
+      Class.new do
+        include SafeUrl
 
-      attr_reader :url
+        attr_reader :url
 
-      def initialize(url)
-        @url = url
+        def initialize(url)
+          @url = url
+        end
       end
     end
 
-    let(:test_class) { SafeUrlTestClass.new(url) }
+    let(:test_class) { safe_url_test_class.new(url) }
     let(:url) { 'http://example.com' }
 
     subject { test_class.safe_url }

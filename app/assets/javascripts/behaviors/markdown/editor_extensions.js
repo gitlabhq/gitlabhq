@@ -53,7 +53,7 @@ import InlineHTML from './marks/inline_html';
 // The nodes and marks referenced here transform that same HTML to GFM to be copied to the clipboard.
 // Every filter in lib/banzai/pipeline/gfm_pipeline.rb that generates HTML
 // from GFM should have a node or mark here.
-// The GFM-to-HTML-to-GFM cycle is tested in spec/features/copy_as_gfm_spec.rb.
+// The GFM-to-HTML-to-GFM cycle is tested in spec/features/markdown/copy_as_gfm_spec.rb.
 
 export default [
   new Doc(),

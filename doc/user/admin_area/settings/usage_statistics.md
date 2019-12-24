@@ -10,7 +10,7 @@ to perform various actions.
 All statistics are opt-out, you can enable/disable them from the admin panel
 under **Admin area > Settings > Metrics and profiling > Usage statistics**.
 
-## Version check **(CORE ONLY)**
+## Version Check **(CORE ONLY)**
 
 If enabled, version check will inform you if a new version is available and the
 importance of it through a status. This is shown on the help page (i.e. `/help`)
@@ -33,7 +33,23 @@ secure.
 If you disable version check, this information will not be collected.  Enable or
 disable the version check at **Admin area > Settings > Metrics and profiling > Usage statistics**.
 
-## Usage ping **(CORE ONLY)**
+### Request flow example
+
+The following example shows a basic request/response flow between the self-managed GitLab instance
+and the GitLab Version Application:
+
+```mermaid
+sequenceDiagram
+    participant GitLab instance
+    participant Version Application
+    GitLab instance->>Version Application: Is there a version update?
+    loop Version Check
+        Version Application->>Version Application: Record version info
+    end
+    Version Application->>GitLab instance: Response (PNG/SVG)
+```
+
+## Usage Ping **(CORE ONLY)**
 
 > [Introduced][ee-557] in GitLab Enterprise Edition 8.10. More statistics
 [were added][ee-735] in GitLab Enterprise Edition
@@ -52,7 +68,32 @@ You can view the exact JSON payload in the administration panel. To view the pay
 1. Expand **Settings** in the left sidebar and click on **Metrics and profiling**.
 1. Expand **Usage statistics** and click on the **Preview payload** button.
 
-You can see how [the usage ping data maps to different stages of the product](https://gitlab.com/gitlab-data/analytics/blob/master/transform/snowflake-dbt/data/ping_metrics_to_stage_mapping_data.csv).
+You can see how [the usage ping data maps to different stages of the product](https://gitlab.com/gitlab-data/analytics/blob/master/transform/snowflake-dbt/data/version_usage_stats_to_stage_mappings.csv).
+
+### Request flow example
+
+The following example shows a basic request/response flow between the self-managed GitLab instance, GitLab Version Application,
+GitLab License Application and Salesforce:
+
+```mermaid
+sequenceDiagram
+    participant GitLab instance
+    participant Version Application
+    participant License Application
+    participant Salesforce
+    GitLab instance->>Version Application: Usage Ping data
+    loop Process Usage Data
+        Version Application->>Version Application: Parse Usage Data
+        Version Application->>Version Application: Record Usage Data
+        Version Application->>Version Application: Update license ping time
+    end
+    Version Application-xLicense Application: Request Zuora subscription id
+    License Application-xVersion Application: Zuora subscription id
+    Version Application-xSalesforce: Request Zuora account id  by Zuora subscription id
+    Salesforce-xVersion Application: Zuora account id
+    Version Application-xSalesforce: Usage data for the Zuora account
+    Version Application->>GitLab instance: Conversational Development Index
+```
 
 ### Deactivate the usage ping
 

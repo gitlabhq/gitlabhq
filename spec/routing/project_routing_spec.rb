@@ -579,6 +579,10 @@ describe 'project routing' do
                       namespace_id: 'gitlab', project_id: 'gitlabhq',
                       id: "blob/master/blob/#{newline_file}" })
     end
+
+    it 'to #show from scope routing' do
+      expect(get('/gitlab/gitlabhq/-/blob/master/app/models/project.rb')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
+    end
   end
 
   # project_tree GET    /:project_id/tree/:id(.:format) tree#show {id: /[^\0]+/, project_id: /[^\/]+/}
@@ -595,6 +599,10 @@ describe 'project routing' do
                     { controller: 'projects/tree', action: 'show',
                       namespace_id: 'gitlab', project_id: 'gitlabhq',
                       id: "master/#{newline_file}" })
+    end
+
+    it 'to #show from scope routing' do
+      expect(get('/gitlab/gitlabhq/-/tree/master/app/models/project.rb')).to route_to('projects/tree#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
     end
   end
 
