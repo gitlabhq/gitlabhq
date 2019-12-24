@@ -204,7 +204,11 @@ class Environment < ApplicationRecord
   end
 
   def has_metrics?
-    available? && prometheus_adapter&.configured?
+    available? && (prometheus_adapter&.configured? || has_sample_metrics?)
+  end
+
+  def has_sample_metrics?
+    !!ENV['USE_SAMPLE_METRICS']
   end
 
   def metrics

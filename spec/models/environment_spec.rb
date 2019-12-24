@@ -6,6 +6,7 @@ describe Environment, :use_clean_rails_memory_store_caching do
   include ReactiveCachingHelpers
   using RSpec::Parameterized::TableSyntax
   include RepoHelpers
+  include StubENV
 
   let(:project) { create(:project, :repository) }
 
@@ -849,6 +850,52 @@ describe Environment, :use_clean_rails_memory_store_caching do
       end
 
       context 'without a monitoring service' do
+        it { is_expected.to be_falsy }
+      end
+
+      context 'when sample metrics are enabled' do
+        before do
+          stub_env('USE_SAMPLE_METRICS', 'true')
+        end
+
+        context 'with no prometheus adapter configured' do
+          before do
+            allow(environment.prometheus_adapter).to receive(:configured?).and_return(false)
+          end
+
+          it { is_expected.to be_truthy }
+        end
+      end
+    end
+
+    describe '#has_sample_metrics?' do
+      subject { environment.has_metrics? }
+
+      let(:project) { create(:project) }
+
+      context 'when sample metrics are enabled' do
+        before do
+          stub_env('USE_SAMPLE_METRICS', 'true')
+        end
+
+        context 'with no prometheus adapter configured' do
+          before do
+            allow(environment.prometheus_adapter).to receive(:configured?).and_return(false)
+          end
+
+          it { is_expected.to be_truthy }
+        end
+
+        context 'with the environment stopped' do
+          before do
+            environment.stop
+          end
+
+          it { is_expected.to be_falsy }
+        end
+      end
+
+      context 'when sample metrics are not enabled' do
         it { is_expected.to be_falsy }
       end
     end

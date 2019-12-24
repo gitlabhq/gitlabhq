@@ -25,7 +25,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Victor Wu - [GitLab](https://gitlab.com/victorwuky), [Crowdin](https://crowdin.com/profile/victorwu)
   - Ivan Ip - [GitLab](https://gitlab.com/lifehome), [Crowdin](https://crowdin.com/profile/lifehome)
 - Czech
-  - Proofreaders needed.
+  - Jan Urbanec - [GitLab](https://gitlab.com/TatranskyMedved), [Crowdin](https://crowdin.com/profile/Tatranskymedved)
 - Danish
   - Saederup92 - [GitLab](https://gitlab.com/Saederup92), [Crowdin](https://crowdin.com/profile/Saederup92)
 - Dutch
