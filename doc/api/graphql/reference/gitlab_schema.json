@@ -12203,7 +12203,7 @@
             },
             {
               "name": "status",
-              "description": "Status of the pipeline (CREATED, PREPARING, PENDING, RUNNING, FAILED, SUCCESS, CANCELED, SKIPPED, MANUAL, SCHEDULED)",
+              "description": "Status of the pipeline (CREATED, WAITING_FOR_RESOURCE, PREPARING, PENDING, RUNNING, FAILED, SUCCESS, CANCELED, SKIPPED, MANUAL, SCHEDULED)",
               "args": [
 
               ],
@@ -12340,6 +12340,12 @@
           "enumValues": [
             {
               "name": "CREATED",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "WAITING_FOR_RESOURCE",
               "description": null,
               "isDeprecated": false,
               "deprecationReason": null

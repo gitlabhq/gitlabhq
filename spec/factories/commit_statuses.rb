@@ -35,6 +35,10 @@ FactoryBot.define do
       status { 'pending' }
     end
 
+    trait :waiting_for_resource do
+      status { 'waiting_for_resource' }
+    end
+
     trait :preparing do
       status { 'preparing' }
     end

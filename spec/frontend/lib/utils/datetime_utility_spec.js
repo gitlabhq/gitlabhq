@@ -341,6 +341,16 @@ describe('prettyTime methods', () => {
 
       assertTimeUnits(twoDays, 3, 48, 0, 0);
     });
+
+    it('should correctly parse values when limitedToDays is true', () => {
+      const sevenDays = datetimeUtility.parseSeconds(648750, {
+        hoursPerDay: 24,
+        daysPerWeek: 7,
+        limitToDays: true,
+      });
+
+      assertTimeUnits(sevenDays, 12, 12, 7, 0);
+    });
   });
 
   describe('stringifyTime', () => {
@@ -505,5 +515,34 @@ describe('secondsToDays', () => {
     expect(datetimeUtility.secondsToDays(0)).toBe(0);
     expect(datetimeUtility.secondsToDays(90000)).toBe(1);
     expect(datetimeUtility.secondsToDays(270000)).toBe(3);
+  });
+});
+
+describe('approximateDuration', () => {
+  it.each`
+    seconds
+    ${null}
+    ${{}}
+    ${[]}
+    ${-1}
+  `('returns a blank string for seconds=$seconds', ({ seconds }) => {
+    expect(datetimeUtility.approximateDuration(seconds)).toBe('');
+  });
+
+  it.each`
+    seconds   | approximation
+    ${0}      | ${'less than a minute'}
+    ${25}     | ${'less than a minute'}
+    ${45}     | ${'1 minute'}
+    ${90}     | ${'1 minute'}
+    ${100}    | ${'1 minute'}
+    ${150}    | ${'2 minutes'}
+    ${220}    | ${'3 minutes'}
+    ${3000}   | ${'about 1 hour'}
+    ${30000}  | ${'about 8 hours'}
+    ${100000} | ${'1 day'}
+    ${180000} | ${'2 days'}
+  `('converts $seconds seconds to $approximation', ({ seconds, approximation }) => {
+    expect(datetimeUtility.approximateDuration(seconds)).toBe(approximation);
   });
 });

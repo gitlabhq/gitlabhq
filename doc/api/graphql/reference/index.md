@@ -635,7 +635,7 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `iid` | String! | Internal ID of the pipeline |
 | `sha` | String! | SHA of the pipeline's commit |
 | `beforeSha` | String | Base SHA of the source branch |
-| `status` | PipelineStatusEnum! | Status of the pipeline (CREATED, PREPARING, PENDING, RUNNING, FAILED, SUCCESS, CANCELED, SKIPPED, MANUAL, SCHEDULED) |
+| `status` | PipelineStatusEnum! | Status of the pipeline (CREATED, WAITING_FOR_RESOURCE, PREPARING, PENDING, RUNNING, FAILED, SUCCESS, CANCELED, SKIPPED, MANUAL, SCHEDULED) |
 | `detailedStatus` | DetailedStatus! | Detailed status of the pipeline |
 | `duration` | Int | Duration of the pipeline in seconds |
 | `coverage` | Float | Coverage percentage |

@@ -62,6 +62,7 @@ module CiStatusHelper
     status.humanize
   end
 
+  # rubocop:disable Metrics/CyclomaticComplexity
   def ci_icon_for_status(status, size: 16)
     if detailed_status?(status)
       return sprite_icon(status.icon, size: size)
@@ -76,6 +77,8 @@ module CiStatusHelper
       when 'failed'
         'status_failed'
       when 'pending'
+        'status_pending'
+      when 'waiting_for_resource'
         'status_pending'
       when 'preparing'
         'status_preparing'
@@ -97,6 +100,7 @@ module CiStatusHelper
 
     sprite_icon(icon_name, size: size)
   end
+  # rubocop:enable Metrics/CyclomaticComplexity
 
   def ci_icon_class_for_status(status)
     group = detailed_status?(status) ? status.group : status.dasherize

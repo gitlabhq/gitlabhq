@@ -71,9 +71,7 @@ describe Gitlab::Git::Branch, :seed_helper do
     end
 
     let(:user) { create(:user) }
-    let(:committer) do
-      Gitlab::Git.committer_hash(email: user.email, name: user.name)
-    end
+    let(:committer) { { email: user.email, name: user.name } }
     let(:params) do
       parents = [rugged.head.target]
       tree = parents.first.tree

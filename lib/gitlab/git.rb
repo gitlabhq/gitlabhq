@@ -35,16 +35,6 @@ module Gitlab
         end
       end
 
-      def committer_hash(email:, name:)
-        return if email.nil? || name.nil?
-
-        {
-          email: email,
-          name: name,
-          time: Time.now
-        }
-      end
-
       def tag_name(ref)
         ref = ref.to_s
         if self.tag_ref?(ref)

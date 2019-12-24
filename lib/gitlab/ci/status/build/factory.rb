@@ -11,6 +11,7 @@ module Gitlab
               Status::Build::Manual,
               Status::Build::Canceled,
               Status::Build::Created,
+              Status::Build::WaitingForResource,
               Status::Build::Preparing,
               Status::Build::Pending,
               Status::Build::Skipped],

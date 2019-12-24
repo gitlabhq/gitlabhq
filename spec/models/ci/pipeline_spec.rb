@@ -1750,7 +1750,7 @@ describe Ci::Pipeline, :mailer do
     subject { described_class.bridgeable_statuses }
 
     it { is_expected.to be_an(Array) }
-    it { is_expected.not_to include('created', 'preparing', 'pending') }
+    it { is_expected.not_to include('created', 'waiting_for_resource', 'preparing', 'pending') }
   end
 
   describe '#status', :sidekiq_might_not_need_inline do
@@ -1759,6 +1759,17 @@ describe Ci::Pipeline, :mailer do
     end
 
     subject { pipeline.reload.status }
+
+    context 'on waiting for resource' do
+      before do
+        allow(build).to receive(:requires_resource?) { true }
+        allow(Ci::ResourceGroups::AssignResourceFromResourceGroupWorker).to receive(:perform_async)
+
+        build.enqueue
+      end
+
+      it { is_expected.to eq('waiting_for_resource') }
+    end
 
     context 'on prepare' do
       before do

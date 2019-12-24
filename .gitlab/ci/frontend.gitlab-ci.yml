@@ -14,9 +14,7 @@
     - .assets-compile-cache
     - .only:changes-code-backstage-qa
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.3-git-2.24-lfs-2.9-chrome-73.0-node-12.x-yarn-1.16-graphicsmagick-1.3.33-docker-19.03.1
-  stage: test
-  dependencies: ["setup-test-env"]
-  needs: ["setup-test-env"]
+  stage: prepare
   services:
     - docker:19.03.0-dind
   variables:

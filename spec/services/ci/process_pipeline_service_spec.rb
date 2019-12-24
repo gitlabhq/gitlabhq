@@ -261,12 +261,16 @@ describe Ci::ProcessPipelineService, '#execute' do
 
           expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'scheduled' })
 
-          enqueue_scheduled('rollout10%')
+          Timecop.travel 2.minutes.from_now do
+            enqueue_scheduled('rollout10%')
+          end
           succeed_pending
 
           expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'success', 'rollout100%': 'scheduled' })
 
-          enqueue_scheduled('rollout100%')
+          Timecop.travel 2.minutes.from_now do
+            enqueue_scheduled('rollout100%')
+          end
           succeed_pending
 
           expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'success', 'rollout100%': 'success', 'cleanup': 'pending' })
@@ -328,7 +332,9 @@ describe Ci::ProcessPipelineService, '#execute' do
 
           expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'scheduled' })
 
-          enqueue_scheduled('rollout10%')
+          Timecop.travel 2.minutes.from_now do
+            enqueue_scheduled('rollout10%')
+          end
           fail_running_or_pending
 
           expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'failed' })
@@ -394,7 +400,9 @@ describe Ci::ProcessPipelineService, '#execute' do
         expect(process_pipeline).to be_truthy
         expect(builds_names_and_statuses).to eq({ 'delayed1': 'scheduled', 'delayed2': 'scheduled' })
 
-        enqueue_scheduled('delayed1')
+        Timecop.travel 2.minutes.from_now do
+          enqueue_scheduled('delayed1')
+        end
 
         expect(builds_names_and_statuses).to eq({ 'delayed1': 'pending', 'delayed2': 'scheduled' })
         expect(pipeline.reload.status).to eq 'running'
@@ -413,7 +421,9 @@ describe Ci::ProcessPipelineService, '#execute' do
         expect(process_pipeline).to be_truthy
         expect(builds_names_and_statuses).to eq({ 'delayed': 'scheduled' })
 
-        enqueue_scheduled('delayed')
+        Timecop.travel 2.minutes.from_now do
+          enqueue_scheduled('delayed')
+        end
         fail_running_or_pending
 
         expect(builds_names_and_statuses).to eq({ 'delayed': 'failed', 'job': 'pending' })
@@ -906,7 +916,7 @@ describe Ci::ProcessPipelineService, '#execute' do
   end
 
   def enqueue_scheduled(name)
-    builds.scheduled.find_by(name: name).enqueue
+    builds.scheduled.find_by(name: name).enqueue_scheduled
   end
 
   def retry_build(name)

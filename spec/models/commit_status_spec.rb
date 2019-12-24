@@ -634,6 +634,30 @@ describe CommitStatus do
     end
   end
 
+  describe '#all_met_to_become_pending?' do
+    subject { commit_status.all_met_to_become_pending? }
+
+    let(:commit_status) { create(:commit_status) }
+
+    it { is_expected.to eq(true) }
+
+    context 'when build requires a resource' do
+      before do
+        allow(commit_status).to receive(:requires_resource?) { true }
+      end
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when build has a prerequisite' do
+      before do
+        allow(commit_status).to receive(:any_unmet_prerequisites?) { true }
+      end
+
+      it { is_expected.to eq(false) }
+    end
+  end
+
   describe '#enqueue' do
     let!(:current_time) { Time.new(2018, 4, 5, 14, 0, 0) }
 
@@ -650,12 +674,6 @@ describe CommitStatus do
 
     context 'when initial state is :created' do
       let(:commit_status) { create(:commit_status, :created) }
-
-      it_behaves_like 'commit status enqueued'
-    end
-
-    context 'when initial state is :preparing' do
-      let(:commit_status) { create(:commit_status, :preparing) }
 
       it_behaves_like 'commit status enqueued'
     end

@@ -26,6 +26,18 @@ describe Ci::RunScheduledBuildService do
 
           expect(build).to be_pending
         end
+
+        context 'when build requires resource' do
+          let(:resource_group) { create(:ci_resource_group, project: project) }
+
+          before do
+            build.update!(resource_group: resource_group)
+          end
+
+          it 'transits to waiting for resource status' do
+            expect { subject }.to change { build.status }.from('scheduled').to('waiting_for_resource')
+          end
+        end
       end
 
       context 'when scheduled_at is not expired' do

@@ -4443,7 +4443,8 @@ type Pipeline {
   startedAt: Time
 
   """
-  Status of the pipeline (CREATED, PREPARING, PENDING, RUNNING, FAILED, SUCCESS, CANCELED, SKIPPED, MANUAL, SCHEDULED)
+  Status of the pipeline (CREATED, WAITING_FOR_RESOURCE, PREPARING, PENDING,
+  RUNNING, FAILED, SUCCESS, CANCELED, SKIPPED, MANUAL, SCHEDULED)
   """
   status: PipelineStatusEnum!
 
@@ -4521,6 +4522,7 @@ enum PipelineStatusEnum {
   SCHEDULED
   SKIPPED
   SUCCESS
+  WAITING_FOR_RESOURCE
 }
 
 type Project {

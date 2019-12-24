@@ -206,7 +206,23 @@ module Ci
 
     state_machine :status do
       event :enqueue do
+        transition [:created, :skipped, :manual, :scheduled] => :waiting_for_resource, if: :requires_resource?
         transition [:created, :skipped, :manual, :scheduled] => :preparing, if: :any_unmet_prerequisites?
+      end
+
+      event :enqueue_scheduled do
+        transition scheduled: :waiting_for_resource, if: :requires_resource?
+        transition scheduled: :preparing, if: :any_unmet_prerequisites?
+        transition scheduled: :pending
+      end
+
+      event :enqueue_waiting_for_resource do
+        transition waiting_for_resource: :preparing, if: :any_unmet_prerequisites?
+        transition waiting_for_resource: :pending
+      end
+
+      event :enqueue_preparing do
+        transition preparing: :pending
       end
 
       event :actionize do
@@ -221,14 +237,8 @@ module Ci
         transition scheduled: :manual
       end
 
-      event :enqueue_scheduled do
-        transition scheduled: :preparing, if: ->(build) do
-          build.scheduled_at&.past? && build.any_unmet_prerequisites?
-        end
-
-        transition scheduled: :pending, if: ->(build) do
-          build.scheduled_at&.past? && !build.any_unmet_prerequisites?
-        end
+      before_transition on: :enqueue_scheduled do |build|
+        build.scheduled_at.nil? || build.scheduled_at.past? # If false is returned, it stops the transition
       end
 
       before_transition scheduled: any do |build|
@@ -237,6 +247,27 @@ module Ci
 
       before_transition created: :scheduled do |build|
         build.scheduled_at = build.options_scheduled_at
+      end
+
+      before_transition any => :waiting_for_resource do |build|
+        build.waiting_for_resource_at = Time.now
+      end
+
+      before_transition on: :enqueue_waiting_for_resource do |build|
+        next unless build.requires_resource?
+
+        build.resource_group.assign_resource_to(build) # If false is returned, it stops the transition
+      end
+
+      after_transition any => :waiting_for_resource do |build|
+        build.run_after_commit do
+          Ci::ResourceGroups::AssignResourceFromResourceGroupWorker
+            .perform_async(build.resource_group_id)
+        end
+      end
+
+      before_transition on: :enqueue_preparing do |build|
+        build.any_unmet_prerequisites? # If false is returned, it stops the transition
       end
 
       after_transition created: :scheduled do |build|
@@ -264,6 +295,16 @@ module Ci
           build.pipeline.persistent_ref.create
 
           BuildHooksWorker.perform_async(id)
+        end
+      end
+
+      after_transition any => ::Ci::Build.completed_statuses do |build|
+        next unless build.resource_group_id.present?
+        next unless build.resource_group.release_resource_from(build)
+
+        build.run_after_commit do
+          Ci::ResourceGroups::AssignResourceFromResourceGroupWorker
+            .perform_async(build.resource_group_id)
         end
       end
 
@@ -437,6 +478,11 @@ module Ci
           ExpandVariables.expand(namespace, -> { simple_variables })
         end
       end
+    end
+
+    def requires_resource?
+      Feature.enabled?(:ci_resource_group, project) &&
+        self.resource_group_id.present?
     end
 
     def has_environment?

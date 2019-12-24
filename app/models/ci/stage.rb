@@ -39,8 +39,12 @@ module Ci
 
     state_machine :status, initial: :created do
       event :enqueue do
-        transition [:created, :preparing] => :pending
+        transition [:created, :waiting_for_resource, :preparing] => :pending
         transition [:success, :failed, :canceled, :skipped] => :running
+      end
+
+      event :request_resource do
+        transition any - [:waiting_for_resource] => :waiting_for_resource
       end
 
       event :prepare do
@@ -81,6 +85,7 @@ module Ci
         new_status = latest_stage_status.to_s
         case new_status
         when 'created' then nil
+        when 'waiting_for_resource' then request_resource
         when 'preparing' then prepare
         when 'pending' then enqueue
         when 'running' then run

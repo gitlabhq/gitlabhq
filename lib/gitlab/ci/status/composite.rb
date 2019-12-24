@@ -25,6 +25,8 @@ module Gitlab
         # 2. In other cases we assume that status is of that type
         #    based on what statuses are no longer valid based on the
         #    data set that we have
+        # rubocop: disable Metrics/CyclomaticComplexity
+        # rubocop: disable Metrics/PerceivedComplexity
         def status
           return if none?
 
@@ -43,6 +45,8 @@ module Gitlab
               'pending'
             elsif any_of?(:running, :pending)
               'running'
+            elsif any_of?(:waiting_for_resource)
+              'waiting_for_resource'
             elsif any_of?(:manual)
               'manual'
             elsif any_of?(:scheduled)
@@ -56,6 +60,8 @@ module Gitlab
             end
           end
         end
+        # rubocop: enable Metrics/CyclomaticComplexity
+        # rubocop: enable Metrics/PerceivedComplexity
 
         def warnings?
           @status_set.include?(:success_with_warnings)

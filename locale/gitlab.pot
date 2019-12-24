@@ -548,7 +548,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "1 day"
-msgstr ""
+msgid_plural "%d days"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "1 group"
 msgid_plural "%d groups"
@@ -557,6 +559,11 @@ msgstr[1] ""
 
 msgid "1 merged merge request"
 msgid_plural "%{merge_requests} merged merge requests"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "1 minute"
+msgid_plural "%d minutes"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -3361,6 +3368,9 @@ msgstr ""
 msgid "CiStatusLabel|waiting for manual action"
 msgstr ""
 
+msgid "CiStatusLabel|waiting for resource"
+msgstr ""
+
 msgid "CiStatusText|blocked"
 msgstr ""
 
@@ -3389,6 +3399,9 @@ msgid "CiStatusText|preparing"
 msgstr ""
 
 msgid "CiStatusText|skipped"
+msgstr ""
+
+msgid "CiStatusText|waiting"
 msgstr ""
 
 msgid "CiStatus|running"
@@ -17457,7 +17470,7 @@ msgstr ""
 msgid "Successfully unlocked"
 msgstr ""
 
-msgid "Suggest code changes which are immediately applied. Try it out!"
+msgid "Suggest code changes which can be immediately applied in one click. Try it out!"
 msgstr ""
 
 msgid "Suggested change"
@@ -18509,6 +18522,9 @@ msgid "This job is stuck because you don't have any active runners online with a
 msgstr ""
 
 msgid "This job is stuck because you don't have any active runners that can run this job."
+msgstr ""
+
+msgid "This job is waiting for resource: "
 msgstr ""
 
 msgid "This job requires a manual action"
@@ -21114,6 +21130,11 @@ msgstr ""
 msgid "a design"
 msgstr ""
 
+msgid "about 1 hour"
+msgid_plural "about %d hours"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "added %{created_at_timeago}"
 msgstr ""
 
@@ -21702,6 +21723,9 @@ msgid "latest version"
 msgstr ""
 
 msgid "leave %{group_name}"
+msgstr ""
+
+msgid "less than a minute"
 msgstr ""
 
 msgid "limit of %{project_limit} reached"

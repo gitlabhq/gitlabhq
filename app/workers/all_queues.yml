@@ -103,6 +103,7 @@
 - pipeline_processing:stage_update
 - pipeline_processing:update_head_pipeline_for_merge_request
 - pipeline_processing:ci_build_schedule
+- pipeline_processing:ci_resource_groups_assign_resource_from_resource_group
 
 - deployment:deployments_success
 - deployment:deployments_finished

@@ -105,6 +105,18 @@ describe Ci::Stage, :models do
       end
     end
 
+    context 'when build is waiting for resource' do
+      before do
+        create(:ci_build, :waiting_for_resource, stage_id: stage.id)
+      end
+
+      it 'updates status to waiting for resource' do
+        expect { stage.update_status }
+          .to change { stage.reload.status }
+          .to 'waiting_for_resource'
+      end
+    end
+
     context 'when stage is skipped because is empty' do
       it 'updates status to skipped' do
         expect { stage.update_status }

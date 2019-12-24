@@ -5,16 +5,16 @@ module HasStatus
 
   DEFAULT_STATUS = 'created'
   BLOCKED_STATUS = %w[manual scheduled].freeze
-  AVAILABLE_STATUSES = %w[created preparing pending running success failed canceled skipped manual scheduled].freeze
+  AVAILABLE_STATUSES = %w[created waiting_for_resource preparing pending running success failed canceled skipped manual scheduled].freeze
   STARTED_STATUSES = %w[running success failed skipped manual scheduled].freeze
   ACTIVE_STATUSES = %w[preparing pending running].freeze
   COMPLETED_STATUSES = %w[success failed canceled skipped].freeze
-  ORDERED_STATUSES = %w[failed preparing pending running manual scheduled canceled success skipped created].freeze
+  ORDERED_STATUSES = %w[failed preparing pending running waiting_for_resource manual scheduled canceled success skipped created].freeze
   PASSED_WITH_WARNINGS_STATUSES = %w[failed canceled].to_set.freeze
   EXCLUDE_IGNORED_STATUSES = %w[manual failed canceled].to_set.freeze
   STATUSES_ENUM = { created: 0, pending: 1, running: 2, success: 3,
                     failed: 4, canceled: 5, skipped: 6, manual: 7,
-                    scheduled: 8, preparing: 9 }.freeze
+                    scheduled: 8, preparing: 9, waiting_for_resource: 10 }.freeze
 
   UnknownStatusError = Class.new(StandardError)
 
@@ -29,6 +29,7 @@ module HasStatus
       manual = scope_relevant.manual.select('count(*)').to_sql
       scheduled = scope_relevant.scheduled.select('count(*)').to_sql
       preparing = scope_relevant.preparing.select('count(*)').to_sql
+      waiting_for_resource = scope_relevant.waiting_for_resource.select('count(*)').to_sql
       pending = scope_relevant.pending.select('count(*)').to_sql
       running = scope_relevant.running.select('count(*)').to_sql
       skipped = scope_relevant.skipped.select('count(*)').to_sql
@@ -46,6 +47,7 @@ module HasStatus
           WHEN (#{builds})=(#{success})+(#{skipped})+(#{canceled}) THEN 'canceled'
           WHEN (#{builds})=(#{created})+(#{skipped})+(#{pending}) THEN 'pending'
           WHEN (#{running})+(#{pending})>0 THEN 'running'
+          WHEN (#{waiting_for_resource})>0 THEN 'waiting_for_resource'
           WHEN (#{manual})>0 THEN 'manual'
           WHEN (#{scheduled})>0 THEN 'scheduled'
           WHEN (#{preparing})>0 THEN 'preparing'
@@ -95,6 +97,7 @@ module HasStatus
 
     state_machine :status, initial: :created do
       state :created, value: 'created'
+      state :waiting_for_resource, value: 'waiting_for_resource'
       state :preparing, value: 'preparing'
       state :pending, value: 'pending'
       state :running, value: 'running'
@@ -107,6 +110,7 @@ module HasStatus
     end
 
     scope :created, -> { with_status(:created) }
+    scope :waiting_for_resource, -> { with_status(:waiting_for_resource) }
     scope :preparing, -> { with_status(:preparing) }
     scope :relevant, -> { without_status(:created) }
     scope :running, -> { with_status(:running) }
@@ -117,8 +121,8 @@ module HasStatus
     scope :skipped, -> { with_status(:skipped) }
     scope :manual, -> { with_status(:manual) }
     scope :scheduled, -> { with_status(:scheduled) }
-    scope :alive, -> { with_status(:created, :preparing, :pending, :running) }
-    scope :alive_or_scheduled, -> { with_status(:created, :preparing, :pending, :running, :scheduled) }
+    scope :alive, -> { with_status(:created, :waiting_for_resource, :preparing, :pending, :running) }
+    scope :alive_or_scheduled, -> { with_status(:created, :waiting_for_resource, :preparing, :pending, :running, :scheduled) }
     scope :created_or_pending, -> { with_status(:created, :pending) }
     scope :running_or_pending, -> { with_status(:running, :pending) }
     scope :finished, -> { with_status(:success, :failed, :canceled) }
@@ -126,7 +130,7 @@ module HasStatus
     scope :incomplete, -> { without_statuses(completed_statuses) }
 
     scope :cancelable, -> do
-      where(status: [:running, :preparing, :pending, :created, :scheduled])
+      where(status: [:running, :waiting_for_resource, :preparing, :pending, :created, :scheduled])
     end
 
     scope :without_statuses, -> (names) do
