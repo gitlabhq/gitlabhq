@@ -1,0 +1,5 @@
+---
+title: Fix stack trace highlight for PHP
+merge_request: 22258
+author:
+type: fixed
