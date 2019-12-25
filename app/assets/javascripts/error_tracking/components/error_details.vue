@@ -1,7 +1,7 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import dateFormat from 'dateformat';
-import { GlFormInput, GlLink, GlLoadingIcon } from '@gitlab/ui';
+import { GlFormInput, GlLink, GlLoadingIcon, GlBadge } from '@gitlab/ui';
 import { __, sprintf, n__ } from '~/locale';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -20,6 +20,7 @@ export default {
     TooltipOnTruncate,
     Icon,
     Stacktrace,
+    GlBadge,
   },
   directives: {
     TrackEvent: TrackEventDirective,
@@ -94,6 +95,9 @@ export default {
         false,
       );
     },
+    errorLevel() {
+      return sprintf(__('level: %{level}'), { level: this.error.tags.level });
+    },
   },
   mounted() {
     this.startPollingDetails(this.issueDetailsPath);
@@ -144,6 +148,15 @@ export default {
         <tooltip-on-truncate :title="error.title" truncate-target="child" placement="top">
           <h2 class="text-truncate">{{ error.title }}</h2>
         </tooltip-on-truncate>
+        <template v-if="error.tags">
+          <gl-badge v-if="error.tags.level" variant="danger" class="rounded-pill mr-2">{{
+            errorLevel
+          }}</gl-badge>
+          <gl-badge v-if="error.tags.logger" variant="light" class="rounded-pill">{{
+            error.tags.logger
+          }}</gl-badge>
+        </template>
+
         <h3>{{ __('Error details') }}</h3>
         <ul>
           <li v-if="error.gitlab_issue">

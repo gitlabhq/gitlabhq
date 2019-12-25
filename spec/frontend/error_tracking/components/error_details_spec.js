@@ -1,6 +1,6 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { GlLoadingIcon, GlLink } from '@gitlab/ui';
+import { GlLoadingIcon, GlLink, GlBadge } from '@gitlab/ui';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import Stacktrace from '~/error_tracking/components/stacktrace.vue';
 import ErrorDetails from '~/error_tracking/components/error_details.vue';
@@ -77,19 +77,35 @@ describe('ErrorDetails', () => {
   });
 
   describe('Error details', () => {
-    it('should show Sentry error details without stacktrace', () => {
+    beforeEach(() => {
       store.state.details.loading = false;
       store.state.details.error.id = 1;
+    });
+
+    it('should show Sentry error details without stacktrace', () => {
       mountComponent();
       expect(wrapper.find(GlLink).exists()).toBe(true);
       expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
       expect(wrapper.find(Stacktrace).exists()).toBe(false);
+      expect(wrapper.find(GlBadge).exists()).toBe(false);
+    });
+
+    describe('Badges', () => {
+      it('should show language and error level badges', () => {
+        store.state.details.error.tags = { level: 'error', logger: 'ruby' };
+        mountComponent();
+        expect(wrapper.findAll(GlBadge).length).toBe(2);
+      });
+
+      it('should NOT show the badge if the tag is not present', () => {
+        store.state.details.error.tags = { level: 'error' };
+        mountComponent();
+        expect(wrapper.findAll(GlBadge).length).toBe(1);
+      });
     });
 
     describe('Stacktrace', () => {
       it('should show stacktrace', () => {
-        store.state.details.loading = false;
-        store.state.details.error.id = 1;
         store.state.details.loadingStacktrace = false;
         mountComponent();
         expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
@@ -97,7 +113,6 @@ describe('ErrorDetails', () => {
       });
 
       it('should NOT show stacktrace if no entries', () => {
-        store.state.details.loading = false;
         store.state.details.loadingStacktrace = false;
         store.getters = { 'details/sentryUrl': () => 'sentry.io', 'details/stacktrace': () => [] };
         mountComponent();
@@ -108,7 +123,6 @@ describe('ErrorDetails', () => {
 
     describe('When a user clicks the create issue button', () => {
       beforeEach(() => {
-        store.state.details.loading = false;
         store.state.details.error = {
           id: 129381,
           title: 'Issue title',

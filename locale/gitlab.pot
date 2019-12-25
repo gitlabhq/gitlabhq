@@ -21728,6 +21728,9 @@ msgstr ""
 msgid "less than a minute"
 msgstr ""
 
+msgid "level: %{level}"
+msgstr ""
+
 msgid "limit of %{project_limit} reached"
 msgstr ""
 
