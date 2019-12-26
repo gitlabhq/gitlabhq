@@ -19,6 +19,7 @@ module API
         params do
           optional :query, type: String, desc: 'A query string to search for members'
           optional :user_ids, type: Array[Integer], desc: 'Array of user ids to look up for membership'
+          use :optional_filter_params_ee
           use :pagination
         end
 
@@ -157,5 +158,3 @@ module API
     end
   end
 end
-
-API::Members.prepend_if_ee('EE::API::Members')

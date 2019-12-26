@@ -5,6 +5,11 @@
 module API
   module Helpers
     module MembersHelpers
+      extend Grape::API::Helpers
+
+      params :optional_filter_params_ee do
+      end
+
       def find_source(source_type, id)
         public_send("find_#{source_type}!", id) # rubocop:disable GitlabSecurity/PublicSend
       end
@@ -42,3 +47,5 @@ module API
     end
   end
 end
+
+API::Helpers::MembersHelpers.prepend_if_ee('EE::API::Helpers::MembersHelpers')
