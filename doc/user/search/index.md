@@ -62,6 +62,7 @@ You can filter issues and merge requests by specific terms included in titles or
 - Limitation
   - For performance reasons, terms shorter than 3 chars are ignored. E.g.: searching
     issues for `included in titles` is same as `included titles`
+  - Search is limited to 4096 characters and 64 terms per query.
 
 ![filter issues by specific terms](img/issue_search_by_term.png)
 

@@ -92,6 +92,7 @@ describe SearchController do
     end
 
     context 'global search' do
+      using RSpec::Parameterized::TableSyntax
       render_views
 
       it 'omits pipeline status from load' do
@@ -101,6 +102,47 @@ describe SearchController do
         get :show, params: { scope: 'projects', search: project.name }
 
         expect(assigns[:search_objects].first).to eq project
+      end
+
+      context 'check search term length' do
+        let(:search_queries) do
+          char_limit = controller.class::NON_ES_SEARCH_CHAR_LIMIT
+          term_limit = controller.class::NON_ES_SEARCH_TERM_LIMIT
+          {
+            chars_under_limit: ('a' * (char_limit - 1)),
+            chars_over_limit: ('a' * (char_limit + 1)),
+            terms_under_limit: ('abc ' * (term_limit - 1)),
+            terms_over_limit: ('abc ' * (term_limit + 1))
+          }
+        end
+
+        where(:es_enabled, :string_name, :expectation) do
+          true  | :chars_under_limit | :not_to_set_flash
+          true  | :chars_over_limit  | :not_to_set_flash
+          true  | :terms_under_limit | :not_to_set_flash
+          true  | :terms_over_limit  | :not_to_set_flash
+          false | :chars_under_limit | :not_to_set_flash
+          false | :chars_over_limit  | :set_chars_flash
+          false | :terms_under_limit | :not_to_set_flash
+          false | :terms_over_limit  | :set_terms_flash
+        end
+
+        with_them do
+          it do
+            allow(Gitlab::CurrentSettings).to receive(:elasticsearch_search?).and_return(es_enabled)
+
+            get :show, params: { scope: 'projects', search: search_queries[string_name] }
+
+            case expectation
+            when :not_to_set_flash
+              expect(controller).not_to set_flash[:alert]
+            when :set_chars_flash
+              expect(controller).to set_flash[:alert].to(/characters/)
+            when :set_terms_flash
+              expect(controller).to set_flash[:alert].to(/terms/)
+            end
+          end
+        end
       end
     end
 

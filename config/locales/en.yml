@@ -195,6 +195,8 @@ en:
       wrong_length:
         one: is the wrong length (should be 1 character)
         other: is the wrong length (should be %{count} characters)
+      search_chars_too_long: Search query is too long (maximum is %{count} characters)
+      search_terms_too_long: Search query is too long (maximum is %{count} terms)
       other_than: must be other than %{count}
     template:
       body: 'There were problems with the following fields:'

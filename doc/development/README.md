@@ -111,7 +111,6 @@ description: 'Learn how to contribute to GitLab.'
 
 ### Best practices
 
-- [Merge Request checklist](database_merge_request_checklist.md)
 - [Adding database indexes](adding_database_indexes.md)
 - [Foreign keys & associations](foreign_keys.md)
 - [Single table inheritance](single_table_inheritance.md)
