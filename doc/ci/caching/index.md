@@ -59,7 +59,7 @@ Caches:
 - Are stored where the Runner is installed **and** uploaded to S3 if [distributed cache is enabled](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching).
 - If defined per job, are used:
   - By the same job in a subsequent pipeline.
-  - By subsequent jobs in the same pipeline, if the they have identical dependencies.
+  - By subsequent jobs in the same pipeline, if they have identical dependencies.
 
 Artifacts:
 
