@@ -25,12 +25,3 @@ sync-stable-branch:
   only:
     refs:
       - /^[\d-]+-stable-ee$/@gitlab-org/gitlab
-
-sync-security-branch:
-  extends: .merge-train-sync
-  variables:
-    SOURCE_PROJECT: gitlab-org/security/gitlab
-    TARGET_PROJECT: gitlab-org/security/gitlab-foss
-  only:
-    refs:
-      - /^[\d-]+-stable-ee$/@gitlab-org/security/gitlab
