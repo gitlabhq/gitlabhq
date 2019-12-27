@@ -11,7 +11,10 @@
   stage: review
   dependencies: []
   variables:
-    GIT_STRATEGY: none
+    # We're cloning the repo instead of downloading the script for now
+    # because some repos are private and CI_JOB_TOKEN cannot access files.
+    # See https://gitlab.com/gitlab-org/gitlab/issues/191273
+    GIT_DEPTH: 1
   environment:
     name: review-docs/$DOCS_GITLAB_REPO_SUFFIX-$CI_MERGE_REQUEST_IID
     # DOCS_REVIEW_APPS_DOMAIN and DOCS_GITLAB_REPO_SUFFIX are CI variables
@@ -19,11 +22,7 @@
     url: http://docs-preview-$DOCS_GITLAB_REPO_SUFFIX-$CI_MERGE_REQUEST_IID.$DOCS_REVIEW_APPS_DOMAIN/$DOCS_GITLAB_REPO_SUFFIX
     on_stop: review-docs-cleanup
   before_script:
-    # We don't clone the repo by using GIT_STRATEGY: none and only download the
-    # single script we need here so it's much faster than cloning.
     - apk add --update openssl
-    - wget $CI_PROJECT_URL/raw/$CI_COMMIT_SHA/scripts/trigger-build-docs
-    - chmod 755 trigger-build-docs
     - gem install httparty --no-document --version 0.17.3
     - gem install gitlab --no-document --version 4.13.0
 
@@ -32,7 +31,7 @@
 review-docs-deploy:
   extends: .review-docs
   script:
-    - ./trigger-build-docs deploy
+    - ./scripts/trigger-build-docs deploy
   when: manual
 
 # Cleanup remote environment of gitlab-docs
@@ -42,7 +41,7 @@ review-docs-cleanup:
     name: review-docs/$DOCS_GITLAB_REPO_SUFFIX-$CI_MERGE_REQUEST_IID
     action: stop
   script:
-    - ./trigger-build-docs cleanup
+    - ./scripts/trigger-build-docs cleanup
   when: manual
 
 docs lint:

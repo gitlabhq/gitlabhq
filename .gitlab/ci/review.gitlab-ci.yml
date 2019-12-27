@@ -171,15 +171,14 @@ schedule:review-deploy:
   environment:
     action: stop
   variables:
-    GIT_STRATEGY: none
+    # We're cloning the repo instead of downloading the script for now
+    # because some repos are private and CI_JOB_TOKEN cannot access files.
+    # See https://gitlab.com/gitlab-org/gitlab/issues/191273
+    GIT_DEPTH: 1
   before_script:
-    # We don't clone the repo by using GIT_STRATEGY: none and only download the
-    # single script we need here so it's much faster than cloning.
     - apk add --update openssl
-    - wget $CI_PROJECT_URL/raw/$CI_COMMIT_SHA/scripts/review_apps/review-apps.sh
-    - wget $CI_PROJECT_URL/raw/$CI_COMMIT_SHA/scripts/utils.sh
-    - source utils.sh
-    - source review-apps.sh
+    - source ./scripts/utils.sh
+    - source ./scripts/review_apps/review-apps.sh
 
 review-stop-failed-deployment:
   extends: .base-review-stop

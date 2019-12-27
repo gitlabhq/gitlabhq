@@ -11,7 +11,7 @@ class AddNamespacePerEnvironmentFlagToClusters < ActiveRecord::Migration[5.1]
   disable_ddl_transaction!
 
   def up
-    add_column_with_default :clusters, :namespace_per_environment, :boolean, default: false
+    add_column_with_default :clusters, :namespace_per_environment, :boolean, default: false # rubocop:disable Migration/AddColumnWithDefault
   end
 
   def down

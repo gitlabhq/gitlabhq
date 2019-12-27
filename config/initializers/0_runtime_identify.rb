@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 begin
-  current_runtime = Gitlab::Runtime.identify
-  Gitlab::AppLogger.info("Process #{Process.pid} (#{$0}) identified as: #{current_runtime}")
-rescue => e
+  Gitlab::Runtime.identify
+rescue Gitlab::Runtime::IdentificationError => e
   message = <<-NOTICE
   \n!! RUNTIME IDENTIFICATION FAILED: #{e}
   Runtime based configuration settings may not work properly.

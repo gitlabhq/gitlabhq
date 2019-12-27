@@ -12,7 +12,7 @@ class AddSourceToPagesDomains < ActiveRecord::Migration[5.1]
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:pages_domains, :certificate_source, :smallint, default: 0)
+    add_column_with_default(:pages_domains, :certificate_source, :smallint, default: 0) # rubocop:disable Migration/AddColumnWithDefault
   end
 
   def down

@@ -8,7 +8,7 @@ class AddVariableTypeToCiVariables < ActiveRecord::Migration[5.0]
   ENV_VAR_VARIABLE_TYPE = 1
 
   def up
-    add_column_with_default(:ci_variables, :variable_type, :smallint, default: ENV_VAR_VARIABLE_TYPE)
+    add_column_with_default(:ci_variables, :variable_type, :smallint, default: ENV_VAR_VARIABLE_TYPE) # rubocop:disable Migration/AddColumnWithDefault
   end
 
   def down

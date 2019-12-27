@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 describe Gitlab::Runtime do
+  before do
+    allow(described_class).to receive(:process_name).and_return('ruby')
+  end
+
   context "when unknown" do
     it "raises an exception when trying to identify" do
       expect { subject.identify }.to raise_error(subject::UnknownProcessError)
@@ -36,6 +40,8 @@ describe Gitlab::Runtime do
       expect(subject.unicorn?).to be(false)
       expect(subject.sidekiq?).to be(false)
       expect(subject.console?).to be(false)
+      expect(subject.rake?).to be(false)
+      expect(subject.rspec?).to be(false)
     end
   end
 
@@ -57,6 +63,8 @@ describe Gitlab::Runtime do
       expect(subject.puma?).to be(false)
       expect(subject.sidekiq?).to be(false)
       expect(subject.console?).to be(false)
+      expect(subject.rake?).to be(false)
+      expect(subject.rspec?).to be(false)
     end
   end
 
@@ -77,6 +85,8 @@ describe Gitlab::Runtime do
       expect(subject.unicorn?).to be(false)
       expect(subject.puma?).to be(false)
       expect(subject.console?).to be(false)
+      expect(subject.rake?).to be(false)
+      expect(subject.rspec?).to be(false)
     end
   end
 
@@ -95,6 +105,26 @@ describe Gitlab::Runtime do
     it "does not identify as others" do
       expect(subject.unicorn?).to be(false)
       expect(subject.sidekiq?).to be(false)
+      expect(subject.puma?).to be(false)
+      expect(subject.rake?).to be(false)
+      expect(subject.rspec?).to be(false)
+    end
+  end
+
+  context "rspec" do
+    before do
+      allow(described_class).to receive(:process_name).and_return('rspec')
+    end
+
+    it "identifies itself" do
+      expect(subject.identify).to eq(:rspec)
+      expect(subject.rspec?).to be(true)
+    end
+
+    it "does not identify as others" do
+      expect(subject.unicorn?).to be(false)
+      expect(subject.sidekiq?).to be(false)
+      expect(subject.rake?).to be(false)
       expect(subject.puma?).to be(false)
     end
   end

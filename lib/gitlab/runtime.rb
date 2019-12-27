@@ -4,8 +4,9 @@ module Gitlab
   # Provides routines to identify the current runtime as which the application
   # executes, such as whether it is an application server and which one.
   module Runtime
-    AmbiguousProcessError = Class.new(StandardError)
-    UnknownProcessError = Class.new(StandardError)
+    IdentificationError = Class.new(RuntimeError)
+    AmbiguousProcessError = Class.new(IdentificationError)
+    UnknownProcessError = Class.new(IdentificationError)
 
     class << self
       def identify
@@ -14,6 +15,8 @@ module Gitlab
         matches << :unicorn if unicorn?
         matches << :console if console?
         matches << :sidekiq if sidekiq?
+        matches << :rake if rake?
+        matches << :rspec if rspec?
 
         if matches.one?
           matches.first
@@ -41,6 +44,14 @@ module Gitlab
         !!(defined?(::Sidekiq) && Sidekiq.server?)
       end
 
+      def rake?
+        !!(defined?(::Rake) && Rake.application.top_level_tasks.any?)
+      end
+
+      def rspec?
+        Rails.env.test? && process_name == 'rspec'
+      end
+
       def console?
         !!defined?(::Rails::Console)
       end
@@ -51,6 +62,10 @@ module Gitlab
 
       def multi_threaded?
         puma? || sidekiq?
+      end
+
+      def process_name
+        File.basename($0)
       end
     end
   end

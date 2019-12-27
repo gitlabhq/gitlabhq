@@ -27,7 +27,7 @@ describe RuboCop::Cop::Migration::AddColumnWithDefault do
       allow(cop).to receive(:in_migration?).and_return(true)
     end
 
-    let(:offense) { '`add_column_with_default` with `allow_null: false` may cause prolonged lock situations and downtime, see https://gitlab.com/gitlab-org/gitlab/issues/38060' }
+    let(:offense) { '`add_column_with_default` without `allow_null: true` may cause prolonged lock situations and downtime, see https://gitlab.com/gitlab-org/gitlab/issues/38060' }
 
     it 'registers an offense when specifying allow_null: false' do
       expect_offense(<<~RUBY)
@@ -46,10 +46,11 @@ describe RuboCop::Cop::Migration::AddColumnWithDefault do
       RUBY
     end
 
-    it 'registers no offense when allow_null is not specified' do
-      expect_no_offenses(<<~RUBY)
+    it 'registers an offense when allow_null is not specified' do
+      expect_offense(<<~RUBY)
         def up
           add_column_with_default(:ci_build_needs, :artifacts, :boolean, default: true)
+          ^^^^^^^^^^^^^^^^^^^^^^^ #{offense}
         end
       RUBY
     end
