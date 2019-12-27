@@ -1,0 +1,5 @@
+---
+title: Preload project, user and group to reuse objects during project import
+merge_request: 21853
+author:
+type: performance

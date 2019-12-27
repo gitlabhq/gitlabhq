@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 describe Gitlab::ImportExport::RelationFactory do
-  let(:project) { create(:project) }
+  let(:group)   { create(:group) }
+  let(:project) { create(:project, :repository, group: group) }
   let(:members_mapper) { double('members_mapper').as_null_object }
   let(:merge_requests_mapping) { {} }
   let(:user) { create(:admin) }
@@ -59,7 +60,7 @@ describe Gitlab::ImportExport::RelationFactory do
     end
 
     it 'has the new project_id' do
-      expect(created_object.project_id).to eq(project.id)
+      expect(created_object.project_id).to eql(project.id)
     end
 
     it 'has a nil token' do
@@ -93,6 +94,100 @@ describe Gitlab::ImportExport::RelationFactory do
 
     def values
       instance_variables.map { |ivar| instance_variable_get(ivar) }
+    end
+  end
+
+  context 'merge_requset object' do
+    let(:relation_sym) { :merge_requests }
+
+    let(:exported_member) do
+      {
+        "id" => 111,
+        "access_level" => 30,
+        "source_id" => 1,
+        "source_type" => "Project",
+        "user_id" => 3,
+        "notification_level" => 3,
+        "created_at" => "2016-11-18T09:29:42.634Z",
+        "updated_at" => "2016-11-18T09:29:42.634Z",
+        "user" => {
+          "id" => user.id,
+          "email" => user.email,
+          "username" => user.username
+        }
+      }
+    end
+
+    let(:members_mapper) do
+      Gitlab::ImportExport::MembersMapper.new(
+        exported_members: [exported_member],
+        user: user,
+        importable: project)
+    end
+
+    let(:relation_hash) do
+      {
+        'id' => 27,
+        'target_branch' => "feature",
+        'source_branch' => "feature_conflict",
+        'source_project_id' => project.id,
+        'target_project_id' => project.id,
+        'author_id' => user.id,
+        'assignee_id' => user.id,
+        'updated_by_id' => user.id,
+        'title' => "MR1",
+        'created_at' => "2016-06-14T15:02:36.568Z",
+        'updated_at' => "2016-06-14T15:02:56.815Z",
+        'state' => "opened",
+        'merge_status' => "unchecked",
+        'description' => "Description",
+        'position' => 0,
+        'source_branch_sha' => "ABCD",
+        'target_branch_sha' => "DCBA",
+        'merge_when_pipeline_succeeds' => true
+      }
+    end
+
+    it 'has preloaded author' do
+      expect(created_object.author).to equal(user)
+    end
+
+    it 'has preloaded updated_by' do
+      expect(created_object.updated_by).to equal(user)
+    end
+
+    it 'has preloaded source project' do
+      expect(created_object.source_project).to equal(project)
+    end
+
+    it 'has preloaded target project' do
+      expect(created_object.source_project).to equal(project)
+    end
+  end
+
+  context 'label object' do
+    let(:relation_sym) { :labels }
+    let(:relation_hash) do
+      {
+        "id": 3,
+        "title": "test3",
+        "color": "#428bca",
+        "group_id": project.group.id,
+        "created_at": "2016-07-22T08:55:44.161Z",
+        "updated_at": "2016-07-22T08:55:44.161Z",
+        "template": false,
+        "description": "",
+        "project_id": project.id,
+        "type": "GroupLabel"
+      }
+    end
+
+    it 'has preloaded project' do
+      expect(created_object.project).to equal(project)
+    end
+
+    it 'has preloaded group' do
+      expect(created_object.group).to equal(project.group)
     end
   end
 

@@ -61,3 +61,29 @@ introduces non database logic to a model, and means we can no longer rely on
 foreign keys to remove the data as this would result in the filesystem data
 being left behind. In such a case you should use a service class instead that
 takes care of removing non database data.
+
+## Alternative primary keys with has_one associations
+
+Sometimes a `has_one` association is used to create a one-to-one relationship:
+
+```ruby
+class User < ActiveRecord::Base
+  has_one :user_config
+end
+
+class UserConfig < ActiveRecord::Base
+  belongs_to :user
+end
+```
+
+In these cases, there may be an opportunity to remove the unnecessary `id`
+column on the associated table, `user_config.id` in this example. Instead,
+the originating table ID can be used as the primary key for the associated
+table:
+
+```ruby
+create_table :user_configs, id: false do |t|
+  t.references :users, primary_key: true, default: nil, index: false, foreign_key: { on_delete: :cascade }
+  ...
+end
+```
