@@ -805,6 +805,17 @@ describe API::Issues do
     end
   end
 
+  describe 'GET /projects/:id/issues/:issue_iid' do
+    it 'exposes full reference path' do
+      get api("/projects/#{project.id}/issues/#{issue.iid}", user)
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(json_response['references']['short']).to eq("##{issue.iid}")
+      expect(json_response['references']['relative']).to eq("##{issue.iid}")
+      expect(json_response['references']['full']).to eq("#{project.parent.path}/#{project.path}##{issue.iid}")
+    end
+  end
+
   describe 'DELETE /projects/:id/issues/:issue_iid' do
     it 'rejects a non member from deleting an issue' do
       delete api("/projects/#{project.id}/issues/#{issue.iid}", non_member)

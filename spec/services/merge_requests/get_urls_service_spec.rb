@@ -45,6 +45,13 @@ describe MergeRequests::GetUrlsService do
       end
     end
 
+    context 'when project is nil' do
+      let(:project) { nil }
+      let(:changes) { default_branch_changes }
+
+      it_behaves_like 'no_merge_request_url'
+    end
+
     context 'pushing to default branch' do
       let(:changes) { default_branch_changes }
 

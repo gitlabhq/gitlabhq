@@ -245,8 +245,8 @@ module TestEnv
     end
   end
 
-  def copy_repo(project, bare_repo:, refs:)
-    target_repo_path = File.expand_path(repos_path + "/#{project.disk_path}.git")
+  def copy_repo(subject, bare_repo:, refs:)
+    target_repo_path = File.expand_path(repos_path + "/#{subject.disk_path}.git")
 
     FileUtils.mkdir_p(target_repo_path)
     FileUtils.cp_r("#{File.expand_path(bare_repo)}/.", target_repo_path)

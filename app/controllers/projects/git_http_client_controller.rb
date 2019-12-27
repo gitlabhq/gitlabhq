@@ -3,6 +3,7 @@
 class Projects::GitHttpClientController < Projects::ApplicationController
   include ActionController::HttpAuthentication::Basic
   include KerberosSpnegoHelper
+  include Gitlab::Utils::StrongMemoize
 
   attr_reader :authentication_result, :redirected_path
 
@@ -47,7 +48,7 @@ class Projects::GitHttpClientController < Projects::ApplicationController
         send_final_spnego_response
         return # Allow access
       end
-    elsif project && download_request? && http_allowed? && Guest.can?(:download_code, project)
+    elsif http_download_allowed?
 
       @authentication_result = Gitlab::Auth::Result.new(nil, project, :none, [:download_code])
 
@@ -89,11 +90,9 @@ class Projects::GitHttpClientController < Projects::ApplicationController
   end
 
   def repository
-    repo_type.repository_for(project)
-  end
-
-  def wiki?
-    repo_type.wiki?
+    strong_memoize(:repository) do
+      repo_type.repository_for(project)
+    end
   end
 
   def repo_type
@@ -113,8 +112,10 @@ class Projects::GitHttpClientController < Projects::ApplicationController
     authentication_result.ci?(project)
   end
 
-  def http_allowed?
-    Gitlab::ProtocolAccess.allowed?('http')
+  def http_download_allowed?
+    Gitlab::ProtocolAccess.allowed?('http') &&
+    download_request? &&
+    project && Guest.can?(:download_code, project)
   end
 end
 

@@ -23,7 +23,7 @@ module Gitlab
         detail_store << {
           cmd: args.first,
           duration: duration,
-          backtrace: ::Gitlab::Profiler.clean_backtrace(caller)
+          backtrace: ::Gitlab::BacktraceCleaner.clean_backtrace(caller)
         }
       end
 

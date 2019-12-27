@@ -42,7 +42,7 @@ module Gitlab
       end
 
       def store_pull_request_error(pull_request, ex)
-        backtrace = Gitlab::Profiler.clean_backtrace(ex.backtrace)
+        backtrace = Gitlab::BacktraceCleaner.clean_backtrace(ex.backtrace)
         error = { type: :pull_request, iid: pull_request.iid, errors: ex.message, trace: backtrace, raw_response: pull_request.raw }
 
         Gitlab::ErrorTracking.log_exception(ex, error)

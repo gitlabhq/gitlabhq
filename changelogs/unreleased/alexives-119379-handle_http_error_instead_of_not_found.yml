@@ -1,5 +1,0 @@
----
-title: Handle forbidden error when checking for knative
-merge_request: 22170
-author:
-type: fixed

@@ -2,6 +2,14 @@
 
 Every API call to merge requests must be authenticated.
 
+CAUTION: **Deprecation**
+> `reference` attribute in response is deprecated in favour of `references`.
+> Introduced [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/merge_requests/20354)
+
+NOTE: **Note**
+> `references.relative` is relative to the group / project that the merge request is being requested. When merge request is fetched from its project
+> `relative` format would be the same as `short` format and when requested across groups / projects it is expected to be the same as `full` format.
+
 ## List merge requests
 
 > [Introduced][ce-13060] in GitLab 9.5.
@@ -134,6 +142,11 @@ Parameters:
     "allow_collaboration": false,
     "allow_maintainer_to_push": false,
     "web_url": "http://gitlab.example.com/my-group/my-project/merge_requests/1",
+    "references": {
+      "short": "!1",
+      "relative": "my-group/my-project!1",
+      "full": "my-group/my-project!1"
+    },
     "time_stats": {
       "time_estimate": 0,
       "total_time_spent": 0,
@@ -296,6 +309,11 @@ Parameters:
     "allow_collaboration": false,
     "allow_maintainer_to_push": false,
     "web_url": "http://gitlab.example.com/my-group/my-project/merge_requests/1",
+    "references": {
+      "short": "!1",
+      "relative": "!1",
+      "full": "my-group/my-project!1"
+    },
     "time_stats": {
       "time_estimate": 0,
       "total_time_spent": 0,
@@ -448,6 +466,11 @@ Parameters:
     "should_remove_source_branch": true,
     "force_remove_source_branch": false,
     "web_url": "http://gitlab.example.com/my-group/my-project/merge_requests/1",
+    "references": {
+      "short": "!1",
+      "relative": "my-project!1",
+      "full": "my-group/my-project!1"
+    },
     "time_stats": {
       "time_estimate": 0,
       "total_time_spent": 0,
@@ -574,6 +597,11 @@ Parameters:
   "allow_collaboration": false,
   "allow_maintainer_to_push": false,
   "web_url": "http://gitlab.example.com/my-group/my-project/merge_requests/1",
+  "references": {
+    "short": "!1",
+    "relative": "!1",
+    "full": "my-group/my-project!1"
+  },
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,
@@ -779,7 +807,12 @@ Parameters:
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "squash": false,
-  "web_url": "http://example.com/example/example/merge_requests/1",
+  "web_url": "http://gitlab.example.com/my-group/my-project/merge_requests/1",
+  "references": {
+    "short": "!1",
+    "relative": "!1",
+    "full": "my-group/my-project!1"
+  },
   "discussion_locked": false,
   "time_stats": {
     "time_estimate": 0,
@@ -989,6 +1022,11 @@ order for it to take effect:
   "allow_collaboration": false,
   "allow_maintainer_to_push": false,
   "web_url": "http://gitlab.example.com/my-group/my-project/merge_requests/1",
+  "references": {
+    "short": "!1",
+    "relative": "!1",
+    "full": "my-group/my-project!1"
+  },
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,
@@ -1143,6 +1181,11 @@ Must include at least one non-required attribute from above.
   "allow_collaboration": false,
   "allow_maintainer_to_push": false,
   "web_url": "http://gitlab.example.com/my-group/my-project/merge_requests/1",
+  "references": {
+    "short": "!1",
+    "relative": "!1",
+    "full": "my-group/my-project!1"
+  },
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,
@@ -1313,6 +1356,11 @@ Parameters:
   "allow_collaboration": false,
   "allow_maintainer_to_push": false,
   "web_url": "http://gitlab.example.com/my-group/my-project/merge_requests/1",
+  "references": {
+    "short": "!1",
+    "relative": "!1",
+    "full": "my-group/my-project!1"
+  },
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,
@@ -1486,6 +1534,11 @@ Parameters:
   "allow_collaboration": false,
   "allow_maintainer_to_push": false,
   "web_url": "http://gitlab.example.com/my-group/my-project/merge_requests/1",
+  "references": {
+    "short": "!1",
+    "relative": "!1",
+    "full": "my-group/my-project!1"
+  },
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,
@@ -1772,6 +1825,11 @@ Example response:
   "allow_collaboration": false,
   "allow_maintainer_to_push": false,
   "web_url": "http://gitlab.example.com/my-group/my-project/merge_requests/1",
+  "references": {
+    "short": "!1",
+    "relative": "!1",
+    "full": "my-group/my-project!1"
+  },
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,
@@ -1918,6 +1976,11 @@ Example response:
   "allow_collaboration": false,
   "allow_maintainer_to_push": false,
   "web_url": "http://gitlab.example.com/my-group/my-project/merge_requests/1",
+  "references": {
+    "short": "!1",
+    "relative": "!1",
+    "full": "my-group/my-project!1"
+  },
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,
@@ -2078,7 +2141,12 @@ Example response:
     "should_remove_source_branch": true,
     "force_remove_source_branch": false,
     "squash": false,
-    "web_url": "http://example.com/example/example/merge_requests/1"
+    "web_url": "http://example.com/my-group/my-project/merge_requests/1",
+    "references": {
+      "short": "!1",
+      "relative": "!1",
+      "full": "my-group/my-project!1"
+    },
   },
   "target_url": "https://gitlab.example.com/gitlab-org/gitlab-ci/merge_requests/7",
   "body": "Et voluptas laudantium minus nihil recusandae ut accusamus earum aut non.",

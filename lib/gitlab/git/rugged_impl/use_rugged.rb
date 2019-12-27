@@ -27,7 +27,7 @@ module Gitlab
                 feature: method_name,
                 args: args,
                 duration: duration,
-                backtrace: Gitlab::Profiler.clean_backtrace(caller))
+                backtrace: Gitlab::BacktraceCleaner.clean_backtrace(caller))
             end
 
             result

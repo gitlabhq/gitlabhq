@@ -4,7 +4,15 @@ entry.
 
 ## 12.6.1
 
-- No changes.
+### Fixed (2 changes)
+
+- Handle forbidden error when checking for knative. !22170
+- Fix stack trace highlight for PHP. !22258
+
+### Performance (1 change)
+
+- Eliminate N+1 queries in PipelinesController#index. !22189
+
 
 ## 12.6.0
 

@@ -179,7 +179,7 @@ module Gitlab
       self.query_time += duration
       if Gitlab::PerformanceBar.enabled_for_request?
         add_call_details(feature: "#{service}##{rpc}", duration: duration, request: request_hash, rpc: rpc,
-                         backtrace: Gitlab::Profiler.clean_backtrace(caller))
+                         backtrace: Gitlab::BacktraceCleaner.clean_backtrace(caller))
       end
     end
 
@@ -438,7 +438,7 @@ module Gitlab
     def self.count_stack
       return unless Gitlab::SafeRequestStore.active?
 
-      stack_string = Gitlab::Profiler.clean_backtrace(caller).drop(1).join("\n")
+      stack_string = Gitlab::BacktraceCleaner.clean_backtrace(caller).drop(1).join("\n")
 
       Gitlab::SafeRequestStore[:stack_counter] ||= Hash.new
 

@@ -12,6 +12,14 @@ are paginated.
 
 Read more on [pagination](README.md#pagination).
 
+CAUTION: **Deprecation**
+> `reference` attribute in response is deprecated in favour of `references`.
+> Introduced [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/merge_requests/20354)
+
+NOTE: **Note**
+> `references.relative` is relative to the group / project that the issue is being requested. When issue is fetched from its project
+> `relative` format would be the same as `short` format and when requested across groups / projects it is expected to be the same as `full` format.
+
 ## List issues
 
 Get all issues the authenticated user has access to. By default it
@@ -121,7 +129,12 @@ Example response:
       "merge_requests_count": 0,
       "user_notes_count": 1,
       "due_date": "2016-07-22",
-      "web_url": "http://example.com/example/example/issues/6",
+      "web_url": "http://example.com/my-group/my-project/issues/6",
+      "references": {
+        "short": "#6",
+        "relative": "my-group/my-project#6",
+        "full": "my-group/my-project#6"
+      },
       "time_stats": {
          "time_estimate": 0,
          "total_time_spent": 0,
@@ -270,7 +283,12 @@ Example response:
       "closed_by" : null,
       "user_notes_count": 1,
       "due_date": null,
-      "web_url": "http://example.com/example/example/issues/1",
+      "web_url": "http://example.com/my-group/my-project/issues/1",
+      "references": {
+        "short": "#1",
+        "relative": "my-project#1",
+        "full": "my-group/my-project#1"
+      },
       "time_stats": {
          "time_estimate": 0,
          "total_time_spent": 0,
@@ -426,7 +444,12 @@ Example response:
       },
       "user_notes_count": 1,
       "due_date": "2016-07-22",
-      "web_url": "http://example.com/example/example/issues/1",
+      "web_url": "http://example.com/my-group/my-project/issues/1",
+      "references": {
+        "short": "#1",
+        "relative": "#1",
+        "full": "my-group/my-project#1"
+      },
       "time_stats": {
          "time_estimate": 0,
          "total_time_spent": 0,
@@ -543,7 +566,12 @@ Example response:
    "subscribed": false,
    "user_notes_count": 1,
    "due_date": null,
-   "web_url": "http://example.com/example/example/issues/1",
+   "web_url": "http://example.com/my-group/my-project/issues/1",
+   "references": {
+     "short": "#1",
+     "relative": "#1",
+     "full": "my-group/my-project#1"
+   },
    "time_stats": {
       "time_estimate": 0,
       "total_time_spent": 0,
@@ -668,7 +696,12 @@ Example response:
    "subscribed" : true,
    "user_notes_count": 0,
    "due_date": null,
-   "web_url": "http://example.com/example/example/issues/14",
+   "web_url": "http://example.com/my-group/my-project/issues/14",
+   "references": {
+     "short": "#14",
+     "relative": "#14",
+     "full": "my-group/my-project#14"
+   },
    "time_stats": {
       "time_estimate": 0,
       "total_time_spent": 0,
@@ -778,7 +811,12 @@ Example response:
    "subscribed" : true,
    "user_notes_count": 0,
    "due_date": "2016-07-22",
-   "web_url": "http://example.com/example/example/issues/15",
+   "web_url": "http://example.com/my-group/my-project/issues/15",
+   "references": {
+     "short": "#15",
+     "relative": "#15",
+     "full": "my-group/my-project#15"
+   },
    "time_stats": {
       "time_estimate": 0,
       "total_time_spent": 0,
@@ -900,7 +938,12 @@ Example response:
     "web_url": "https://gitlab.example.com/solon.cremin"
   },
   "due_date": null,
-  "web_url": "http://example.com/example/example/issues/11",
+  "web_url": "http://example.com/my-group/my-project/issues/11",
+  "references": {
+    "short": "#11",
+    "relative": "#11",
+    "full": "my-group/my-project#11"
+  },
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,
@@ -1001,7 +1044,12 @@ Example response:
     "web_url": "https://gitlab.example.com/solon.cremin"
   },
   "due_date": null,
-  "web_url": "http://example.com/example/example/issues/11",
+  "web_url": "http://example.com/my-group/my-project/issues/11",
+  "references": {
+    "short": "#11",
+    "relative": "#11",
+    "full": "my-group/my-project#11"
+  },
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,
@@ -1095,7 +1143,12 @@ Example response:
   },
   "subscribed": false,
   "due_date": null,
-  "web_url": "http://example.com/example/example/issues/12",
+  "web_url": "http://example.com/my-group/my-project/issues/12",
+  "references": {
+    "short": "#12",
+    "relative": "#12",
+    "full": "my-group/my-project#12"
+  },
   "confidential": false,
   "discussion_locked": false,
   "task_completion_status":{
@@ -1197,7 +1250,12 @@ Example response:
     "downvotes": 0,
     "merge_requests_count": 0,
     "due_date": null,
-    "web_url": "http://example.com/example/example/issues/110",
+    "web_url": "http://example.com/my-group/my-project/issues/10",
+    "references": {
+      "short": "#10",
+      "relative": "#10",
+      "full": "my-group/my-project#10"
+    },
     "confidential": false,
     "discussion_locked": false,
     "task_completion_status":{
@@ -1436,6 +1494,11 @@ Example response:
     "force_remove_source_branch": false,
     "reference": "!11",
     "web_url": "https://gitlab.example.com/twitter/flight/merge_requests/4",
+    "references": {
+      "short": "!4",
+      "relative": "!4",
+      "full": "twitter/flight!4"
+    },
     "time_stats": {
       "time_estimate": 0,
       "total_time_spent": 0,
@@ -1566,6 +1629,12 @@ Example response:
     "should_remove_source_branch": null,
     "force_remove_source_branch": false,
     "web_url": "https://gitlab.example.com/gitlab-org/gitlab-test/merge_requests/6432",
+    "reference": "!6432",
+    "references": {
+      "short": "!6432",
+      "relative": "!6432",
+      "full": "gitlab-org/gitlab-test!6432"
+    },
     "time_stats": {
       "time_estimate": 0,
       "total_time_spent": 0,

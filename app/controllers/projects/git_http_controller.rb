@@ -75,17 +75,19 @@ class Projects::GitHttpController < Projects::GitHttpClientController
   end
 
   def enqueue_fetch_statistics_update
-    return if wiki?
-    return unless project.daily_statistics_enabled?
+    return if repo_type.wiki?
+    return unless project&.daily_statistics_enabled?
 
     ProjectDailyStatisticsWorker.perform_async(project.id)
   end
 
   def access
-    @access ||= access_klass.new(access_actor, project,
-      'http', authentication_abilities: authentication_abilities,
-              namespace_path: params[:namespace_id], project_path: project_path,
-              redirected_path: redirected_path, auth_result_type: auth_result_type)
+    @access ||= access_klass.new(access_actor, project, 'http',
+      authentication_abilities: authentication_abilities,
+      namespace_path: params[:namespace_id],
+      project_path: project_path,
+      redirected_path: redirected_path,
+      auth_result_type: auth_result_type)
   end
 
   def access_actor

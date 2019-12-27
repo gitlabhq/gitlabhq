@@ -569,6 +569,20 @@ module API
       end
     end
 
+    class IssuableReferences < Grape::Entity
+      expose :short do |issuable|
+        issuable.to_reference
+      end
+
+      expose :relative do |issuable, options|
+        issuable.to_reference(options[:group] || options[:project])
+      end
+
+      expose :full do |issuable|
+        issuable.to_reference(full: true)
+      end
+    end
+
     class Diff < Grape::Entity
       expose :old_path, :new_path, :a_mode, :b_mode
       expose :new_file?, as: :new_file
@@ -674,6 +688,10 @@ module API
         expose :project do |issue|
           expose_url(api_v4_projects_path(id: issue.project_id))
         end
+      end
+
+      expose :references, with: IssuableReferences do |issue|
+        issue
       end
 
       # Calculating the value of subscribed field triggers Markdown
@@ -787,8 +805,14 @@ module API
       # Deprecated
       expose :allow_collaboration, as: :allow_maintainer_to_push, if: -> (merge_request, _) { merge_request.for_fork? }
 
+      # reference is deprecated in favour of references
+      # Introduced [Gitlab 12.6](https://gitlab.com/gitlab-org/gitlab/merge_requests/20354)
       expose :reference do |merge_request, options|
         merge_request.to_reference(options[:project])
+      end
+
+      expose :references, with: IssuableReferences do |merge_request|
+        merge_request
       end
 
       expose :web_url do |merge_request|

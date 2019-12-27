@@ -736,6 +736,33 @@ describe API::MergeRequests do
 
       it_behaves_like 'merge requests list'
     end
+
+    context "#to_reference" do
+      it 'exposes reference path in context of group' do
+        get api("/groups/#{group.id}/merge_requests", user)
+
+        expect(json_response.first['references']['short']).to eq("!#{merge_request_merged.iid}")
+        expect(json_response.first['references']['relative']).to eq("#{merge_request_merged.target_project.path}!#{merge_request_merged.iid}")
+        expect(json_response.first['references']['full']).to eq("#{merge_request_merged.target_project.full_path}!#{merge_request_merged.iid}")
+      end
+
+      context 'referencing from parent group' do
+        let(:parent_group) { create(:group) }
+
+        before do
+          group.update(parent_id: parent_group.id)
+          merge_request_merged.reload
+        end
+
+        it 'exposes reference path in context of parent group' do
+          get api("/groups/#{parent_group.id}/merge_requests")
+
+          expect(json_response.first['references']['short']).to eq("!#{merge_request_merged.iid}")
+          expect(json_response.first['references']['relative']).to eq("#{merge_request_merged.target_project.full_path}!#{merge_request_merged.iid}")
+          expect(json_response.first['references']['full']).to eq("#{merge_request_merged.target_project.full_path}!#{merge_request_merged.iid}")
+        end
+      end
+    end
   end
 
   describe "GET /projects/:id/merge_requests/:merge_request_iid" do
@@ -783,6 +810,9 @@ describe API::MergeRequests do
       expect(json_response).not_to include('rebase_in_progress')
       expect(json_response['has_conflicts']).to be_falsy
       expect(json_response['blocking_discussions_resolved']).to be_truthy
+      expect(json_response['references']['short']).to eq("!#{merge_request.iid}")
+      expect(json_response['references']['relative']).to eq("!#{merge_request.iid}")
+      expect(json_response['references']['full']).to eq("#{merge_request.target_project.full_path}!#{merge_request.iid}")
     end
 
     it 'exposes description and title html when render_html is true' do

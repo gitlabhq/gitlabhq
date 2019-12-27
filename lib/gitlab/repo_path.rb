@@ -32,9 +32,12 @@ module Gitlab
 
     def self.find_project(project_path)
       project = Project.find_by_full_path(project_path, follow_redirects: true)
-      was_redirected = project && project.full_path.casecmp(project_path) != 0
 
-      [project, was_redirected]
+      [project, redirected?(project, project_path)]
+    end
+
+    def self.redirected?(project, project_path)
+      project && project.full_path.casecmp(project_path) != 0
     end
   end
 end

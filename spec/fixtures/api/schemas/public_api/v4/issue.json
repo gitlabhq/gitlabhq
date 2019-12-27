@@ -84,6 +84,11 @@
       "total_time_spent": { "type": "integer" },
       "human_time_estimate": { "type": ["string", "null"] },
       "human_total_time_spent": { "type": ["string", "null"] }
+    },
+    "references": {
+      "short": {"type": "string"},
+      "relative": {"type": "string"},
+      "full": {"type": "string"}
     }
   },
   "required": [

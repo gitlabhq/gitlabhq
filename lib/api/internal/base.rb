@@ -224,9 +224,9 @@ module API
 
           response.add_merge_request_urls(merge_request_urls)
 
-          # A user is not guaranteed to be returned; an orphaned write deploy
+          # Neither User nor Project are guaranteed to be returned; an orphaned write deploy
           # key could be used
-          if user
+          if user && project
             redirect_message = Gitlab::Checks::ProjectMoved.fetch_message(user.id, project.id)
             project_created_message = Gitlab::Checks::ProjectCreated.fetch_message(user.id, project.id)
 

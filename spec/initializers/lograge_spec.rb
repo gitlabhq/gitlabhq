@@ -112,7 +112,7 @@ describe 'lograge', type: :request do
 
         expect(log_data['exception.class']).to eq('RuntimeError')
         expect(log_data['exception.message']).to eq('bad request')
-        expect(log_data['exception.backtrace']).to eq(Gitlab::Profiler.clean_backtrace(backtrace))
+        expect(log_data['exception.backtrace']).to eq(Gitlab::BacktraceCleaner.clean_backtrace(backtrace))
       end
     end
   end

@@ -1000,6 +1000,22 @@ describe API::Internal::Base do
       it 'does not try to notify that project moved' do
         allow_any_instance_of(Gitlab::Identifier).to receive(:identify).and_return(nil)
 
+        expect(Gitlab::Checks::ProjectMoved).not_to receive(:fetch_message)
+
+        post api('/internal/post_receive'), params: valid_params
+
+        expect(response).to have_gitlab_http_status(200)
+      end
+    end
+
+    context 'when project is nil' do
+      let(:gl_repository) { 'project-foo' }
+
+      it 'does not try to notify that project moved' do
+        allow(Gitlab::GlRepository).to receive(:parse).and_return([nil, Gitlab::GlRepository::PROJECT])
+
+        expect(Gitlab::Checks::ProjectMoved).not_to receive(:fetch_message)
+
         post api('/internal/post_receive'), params: valid_params
 
         expect(response).to have_gitlab_http_status(200)

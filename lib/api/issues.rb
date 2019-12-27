@@ -122,16 +122,15 @@ module API
         use :issues_params
       end
       get ":id/issues" do
-        group = find_group!(params[:id])
-
-        issues = paginate(find_issues(group_id: group.id, include_subgroups: true))
+        issues = paginate(find_issues(group_id: user_group.id, include_subgroups: true))
 
         options = {
           with: Entities::Issue,
           with_labels_details: declared_params[:with_labels_details],
           current_user: current_user,
           issuable_metadata: issuable_meta_data(issues, 'Issue', current_user),
-          include_subscribed: false
+          include_subscribed: false,
+          group: user_group
         }
 
         present issues, options
@@ -142,9 +141,7 @@ module API
         use :issues_stats_params
       end
       get ":id/issues_statistics" do
-        group = find_group!(params[:id])
-
-        present issues_statistics(group_id: group.id, include_subgroups: true), with: Grape::Presenters::Presenter
+        present issues_statistics(group_id: user_group.id, include_subgroups: true), with: Grape::Presenters::Presenter
       end
     end
 
@@ -161,9 +158,7 @@ module API
         use :issues_params
       end
       get ":id/issues" do
-        project = find_project!(params[:id])
-
-        issues = paginate(find_issues(project_id: project.id))
+        issues = paginate(find_issues(project_id: user_project.id))
 
         options = {
           with: Entities::Issue,
@@ -182,9 +177,7 @@ module API
         use :issues_stats_params
       end
       get ":id/issues_statistics" do
-        project = find_project!(params[:id])
-
-        present issues_statistics(project_id: project.id), with: Grape::Presenters::Presenter
+        present issues_statistics(project_id: user_project.id), with: Grape::Presenters::Presenter
       end
 
       desc 'Get a single project issue' do

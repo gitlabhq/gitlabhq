@@ -157,11 +157,9 @@ module API
         use :merge_requests_params
       end
       get ":id/merge_requests" do
-        group = find_group!(params[:id])
+        merge_requests = find_merge_requests(group_id: user_group.id, include_subgroups: true)
 
-        merge_requests = find_merge_requests(group_id: group.id, include_subgroups: true)
-
-        present merge_requests, serializer_options_for(merge_requests)
+        present merge_requests, serializer_options_for(merge_requests).merge(group: user_group)
       end
     end
 
@@ -215,7 +213,7 @@ module API
 
         merge_requests = find_merge_requests(project_id: user_project.id)
 
-        options = serializer_options_for(merge_requests)
+        options = serializer_options_for(merge_requests).merge(project: user_project)
         options[:project] = user_project
 
         present merge_requests, options

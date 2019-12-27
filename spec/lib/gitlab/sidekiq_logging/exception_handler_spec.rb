@@ -33,7 +33,7 @@ describe Gitlab::SidekiqLogging::ExceptionHandler do
         error_class: 'RuntimeError',
         error_message: exception_message,
         context: 'Test',
-        error_backtrace: Gitlab::Profiler.clean_backtrace(backtrace)
+        error_backtrace: Gitlab::BacktraceCleaner.clean_backtrace(backtrace)
       )
 
       expect(logger).to receive(:warn).with(expected_data)

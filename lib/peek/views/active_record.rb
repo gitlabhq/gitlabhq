@@ -32,7 +32,7 @@ module Peek
               detail_store << {
                 duration: finish - start,
                 sql: data[:sql].strip,
-                backtrace: Gitlab::Profiler.clean_backtrace(caller)
+                backtrace: Gitlab::BacktraceCleaner.clean_backtrace(caller)
               }
             end
           end

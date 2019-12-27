@@ -688,5 +688,32 @@ describe API::Issues do
         end
       end
     end
+
+    context "#to_reference" do
+      it 'exposes reference path in context of group' do
+        get api(base_url, user)
+
+        expect(json_response.first['references']['short']).to eq("##{group_closed_issue.iid}")
+        expect(json_response.first['references']['relative']).to eq("#{group_closed_issue.project.path}##{group_closed_issue.iid}")
+        expect(json_response.first['references']['full']).to eq("#{group_closed_issue.project.full_path}##{group_closed_issue.iid}")
+      end
+
+      context 'referencing from parent group' do
+        let(:parent_group) { create(:group) }
+
+        before do
+          group.update(parent_id: parent_group.id)
+          group_closed_issue.reload
+        end
+
+        it 'exposes reference path in context of parent group' do
+          get api("/groups/#{parent_group.id}/issues")
+
+          expect(json_response.first['references']['short']).to eq("##{group_closed_issue.iid}")
+          expect(json_response.first['references']['relative']).to eq("#{group_closed_issue.project.full_path}##{group_closed_issue.iid}")
+          expect(json_response.first['references']['full']).to eq("#{group_closed_issue.project.full_path}##{group_closed_issue.iid}")
+        end
+      end
+    end
   end
 end

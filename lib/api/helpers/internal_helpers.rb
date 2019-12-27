@@ -120,21 +120,13 @@ module API
       end
 
       def gl_project_path
-        if wiki?
-          project.wiki.full_path
-        else
-          project.full_path
-        end
+        repository.full_path
       end
 
       # Return the repository depending on whether we want the wiki or the
       # regular repository
       def repository
-        if repo_type.wiki?
-          project.wiki.repository
-        else
-          project.repository
-        end
+        @repository ||= repo_type.repository_for(project)
       end
 
       # Return the Gitaly Address if it is enabled

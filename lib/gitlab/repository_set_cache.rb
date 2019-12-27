@@ -7,7 +7,8 @@ module Gitlab
 
     def initialize(repository, extra_namespace: nil, expires_in: 2.weeks)
       @repository = repository
-      @namespace = "#{repository.full_path}:#{repository.project.id}"
+      @namespace = "#{repository.full_path}"
+      @namespace += ":#{repository.project.id}" if repository.project
       @namespace = "#{@namespace}:#{extra_namespace}" if extra_namespace
       @expires_in = expires_in
     end
