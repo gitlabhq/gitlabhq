@@ -12,6 +12,14 @@ module Clusters
       cluster.kubeclient&.get_namespace(Clusters::Kubernetes::KNATIVE_SERVING_NAMESPACE)
     rescue Kubeclient::ResourceNotFoundError
       nil
+    rescue Kubeclient::HttpError => e
+      # If the kubernetes auth engine is enabled, it will return 403
+      if e.error_code == 403
+        Gitlab::ErrorTracking.track_exception(e)
+        nil
+      else
+        raise
+      end
     end
   end
 end

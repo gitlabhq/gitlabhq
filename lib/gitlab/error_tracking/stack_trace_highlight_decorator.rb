@@ -28,7 +28,7 @@ module Gitlab
       end
 
       def highlight_entry_context(filename, context)
-        language = Rouge::Lexer.guess_by_filename(filename).tag
+        language = guess_language_by_filename(filename)
 
         context.map do |line_number, line_of_code|
           [
@@ -37,6 +37,12 @@ module Gitlab
             Gitlab::Highlight.highlight(nil, line_of_code, language: language)
           ]
         end
+      end
+
+      def guess_language_by_filename(filename)
+        Rouge::Lexer.guess_by_filename(filename).tag
+      rescue Rouge::Guesser::Ambiguous => e
+        e.alternatives.min_by(&:tag)&.tag
       end
     end
   end

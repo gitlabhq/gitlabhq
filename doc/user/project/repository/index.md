@@ -116,6 +116,35 @@ rendered to HTML when viewed.
 Interactive features, including JavaScript plots, will not work when viewed in
 GitLab.
 
+### OpenAPI viewer
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/19515) in GitLab 12.6.
+
+GitLab can render OpenAPI specification files with its file viewer, provided
+their filenames include `openapi` or `swagger` and their extension is `yaml`,
+`yml`, or `json`. The following examples are all correct:
+
+- `openapi.yml`
+- `openapi.yaml`
+- `openapi.json`
+- `swagger.yml`
+- `swagger.yaml`
+- `swagger.json`
+- `gitlab_swagger.yml`
+- `openapi_gitlab.yml`
+- `OpenAPI.YML`
+- `openapi.Yaml`
+- `openapi.JSON`
+- `openapi.gitlab.yml`
+- `gitlab.openapi.yml`
+
+Then, to render them:
+
+1. Navigate to the OpenAPI file in your repository in GitLab's UI.
+1. Click the "Display OpenAPI" button which is located between the "Display source"
+   and "Edit" buttons (when an OpenAPI file is found, it replaces the
+   "Display rendered file" button).
+
 ## Branches
 
 For details, see [Branches](branches/index.md).

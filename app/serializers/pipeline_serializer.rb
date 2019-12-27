@@ -40,7 +40,11 @@ class PipelineSerializer < BaseSerializer
 
   def preloaded_relations
     [
+      :latest_statuses_ordered_by_stage,
       :stages,
+      {
+        failed_builds: %i(project metadata)
+      },
       :retryable_builds,
       :cancelable_statuses,
       :trigger_requests,
@@ -48,6 +52,7 @@ class PipelineSerializer < BaseSerializer
       :scheduled_actions,
       :artifacts,
       :merge_request,
+      :user,
       {
         pending_builds: :project,
         project: [:route, { namespace: :route }],

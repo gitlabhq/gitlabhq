@@ -49,6 +49,16 @@ describe Gitlab::ErrorTracking::StackTraceHighlightDecorator do
             ]
           },
           {
+            'function' => 'print',
+            'lineNo' => 3,
+            'filename' => 'hello_world.php',
+              'context' => [
+                [1, '<span id="LC1" class="line" lang="hack"><span class="c1">// PHP/Hack example</span></span>'],
+                [2, '<span id="LC1" class="line" lang="hack"><span class="cp">&lt;?php</span></span>'],
+                [3, '<span id="LC1" class="line" lang="hack"><span class="k">echo</span> <span class="s1">\'Hello, World!\'</span><span class="p">;</span></span>']
+            ]
+          },
+          {
             'filename' => 'blank.txt'
           }
         ]

@@ -36,6 +36,16 @@ FactoryBot.define do
           ]
         },
         {
+          'function' => 'print',
+          'lineNo' => 3,
+          'filename' => 'hello_world.php',
+          'context' => [
+            [1, "// PHP/Hack example\n"],
+            [2, "<?php\n"],
+            [3, "echo 'Hello, World!';\n"]
+          ]
+        },
+        {
           'filename' => 'blank.txt'
         }
       ]
