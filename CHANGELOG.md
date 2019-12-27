@@ -4,6 +4,7 @@ entry.
 
 ## 12.6.1
 
+- No changes.
 ### Fixed (2 changes)
 
 - Handle forbidden error when checking for knative. !22170
