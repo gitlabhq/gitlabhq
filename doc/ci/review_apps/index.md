@@ -167,7 +167,7 @@ Ensure that the `anonymous_visual_review_feedback` feature flag is enabled.
 Administrators can enable with a Rails console as follows:
 
 ```ruby
-Feature.enabled(:anonymous_visual_review_feedback)
+Feature.enable(:anonymous_visual_review_feedback)
 ```
 
 The feedback form is served through a script you add to pages in your Review App.

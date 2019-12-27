@@ -19,8 +19,8 @@
       = link_to _('Edit'), edit_admin_user_path(user), id: "edit_#{dom_id(user)}", class: 'btn btn-default'
       - unless user == current_user
         %button.dropdown-new.btn.btn-default{ type: 'button', data: { toggle: 'dropdown' } }
-          = icon('cog')
-          = icon('caret-down')
+          = sprite_icon('settings')
+          = sprite_icon('chevron-down')
         %ul.dropdown-menu.dropdown-menu-right
           %li.dropdown-header
             = _('Settings')
