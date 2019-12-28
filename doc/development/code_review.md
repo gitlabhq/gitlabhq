@@ -259,24 +259,28 @@ Developers who have capacity can regularly check the list of [merge requests to 
 Since [unblocking others is always a top priority](https://about.gitlab.com/handbook/values/#global-optimization),
 reviewers are expected to review assigned merge requests in a timely manner,
 even when this may negatively impact their other tasks and priorities.
+
 Doing so allows everyone involved in the merge request to iterate faster as the
-context is fresh in memory, improves contributors' experiences significantly.
+context is fresh in memory, and improves contributors' experience significantly.
 
-A turnaround time of two working days is usually acceptable, since engineers
-will typically have other things to work on while they're waiting for review,
-but don't hesitate to ask the author if it's unclear what time frame would be
-acceptable, how urgent the review is, or how significant the blockage.
+#### Review-response SLO
 
-If you don't think you'll be able to review a merge request within a reasonable
+To ensure swift feedback to ready-to-review code, we maintain a `Review-response` Service-level Objective (SLO). The SLO is defined as:
+
+> - review-response SLO = (time when first review response is provided) - (time MR is assigned to reviewer) < 2 business days
+
+If you don't think you'll be able to review a merge request within the `Review-response` SLO
 time frame, let the author know as soon as possible and try to help them find
 another reviewer or maintainer who will be able to, so that they can be unblocked
-and get on with their work quickly. Of course, if you are out of office and have
+and get on with their work quickly.
+
+Of course, if you are out of office and have
 [communicated](https://about.gitlab.com/handbook/paid-time-off/#communicating-your-time-off)
 this through your GitLab.com Status, authors are expected to realize this and
 find a different reviewer themselves.
 
-When a merge request author feels like they have been blocked for longer than
-is reasonable, they are free to remind the reviewer through Slack or assign
+When a merge request author has been blocked for longer than
+the `Review-response` SLO, they are free to remind the reviewer through Slack or assign
 another reviewer.
 
 ### Reviewing code
