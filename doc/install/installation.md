@@ -250,11 +250,11 @@ page](https://golang.org/dl).
 # Remove former Go installation folder
 sudo rm -rf /usr/local/go
 
-curl --remote-name --progress https://dl.google.com/go/go1.11.10.linux-amd64.tar.gz
-echo 'aefaa228b68641e266d1f23f1d95dba33f17552ba132878b65bb798ffa37e6d0  go1.11.10.linux-amd64.tar.gz' | shasum -a256 -c - && \
-  sudo tar -C /usr/local -xzf go1.11.10.linux-amd64.tar.gz
+curl --remote-name --progress https://dl.google.com/go/go1.13.5.linux-amd64.tar.gz
+echo '512103d7ad296467814a6e3f635631bd35574cab3369a97a323c9a585ccaa569  go1.13.5.linux-amd64.tar.gz' | shasum -a256 -c - && \
+  sudo tar -C /usr/local -xzf go1.13.5.linux-amd64.tar.gz
 sudo ln -sf /usr/local/go/bin/{go,godoc,gofmt} /usr/local/bin/
-rm go1.11.10.linux-amd64.tar.gz
+rm go1.13.5.linux-amd64.tar.gz
 ```
 
 ## 4. Node
