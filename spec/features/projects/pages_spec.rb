@@ -347,7 +347,7 @@ shared_examples 'pages settings editing' do
         visit project_pages_path(project)
 
         expect(page).to have_field(:project_pages_https_only, disabled: true)
-        expect(page).not_to have_button('Save')
+        expect(page).to have_button('Save')
       end
     end
 

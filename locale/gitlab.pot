@@ -8669,6 +8669,9 @@ msgstr ""
 msgid "GitLabPages|Learn how to upload your static site and have it served by GitLab by following the %{link_start}documentation on GitLab Pages%{link_end}."
 msgstr ""
 
+msgid "GitLabPages|Maximum size of pages (MB)"
+msgstr ""
+
 msgid "GitLabPages|New Domain"
 msgstr ""
 
@@ -8691,6 +8694,9 @@ msgid "GitLabPages|Save"
 msgstr ""
 
 msgid "GitLabPages|Support for domains and certificates is disabled.  Ask your system's administrator to enable it."
+msgstr ""
+
+msgid "GitLabPages|The total size of deployed static content will be limited to this size.  0 for unlimited.  Leave empty to inherit the global value."
 msgstr ""
 
 msgid "GitLabPages|Unverified"
@@ -16639,6 +16645,9 @@ msgstr ""
 msgid "Size limit per repository (MB)"
 msgstr ""
 
+msgid "Size settings for static websites"
+msgstr ""
+
 msgid "Skip Trial (Continue with Free Account)"
 msgstr ""
 
@@ -18239,13 +18248,16 @@ msgstr ""
 msgid "There was an error fetching cycle analytics stages."
 msgstr ""
 
-msgid "There was an error fetching data for the chart"
-msgstr ""
-
 msgid "There was an error fetching data for the selected stage"
 msgstr ""
 
+msgid "There was an error fetching data for the tasks by type chart"
+msgstr ""
+
 msgid "There was an error fetching label data for the selected group"
+msgstr ""
+
+msgid "There was an error fetching median data for stages"
 msgstr ""
 
 msgid "There was an error fetching the Designs"

@@ -82,8 +82,13 @@ describe('Settings Form', () => {
 
     it(`${elementName} form element change updated ${modelName} with ${value}`, () => {
       const element = findFormElements(elementName, formGroup);
-      element.vm.$emit('input', value);
-      expect(wrapper.vm[modelName]).toBe(value);
+      const modelUpdateEvent = element.vm.$options.model
+        ? element.vm.$options.model.event
+        : 'input';
+      element.vm.$emit(modelUpdateEvent, value);
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.vm[modelName]).toBe(value);
+      });
     });
   });
 

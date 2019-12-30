@@ -53,4 +53,6 @@
   .settings-content
     = render 'groups/settings/advanced'
 
+= render_if_exists 'shared/groups/max_pages_size_setting'
+
 = render 'shared/confirm_modal', phrase: @group.path
