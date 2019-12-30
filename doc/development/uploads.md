@@ -42,7 +42,7 @@ We have three challenges here: performance, availability, and scalability.
 
 Rails process are expensive in terms of both CPU and memory. Ruby [global interpreter lock](https://en.wikipedia.org/wiki/Global_interpreter_lock) adds to cost too because the ruby process will spend time on I/O operations on step 3 causing incoming requests to pile up.
 
-In order to improve this, [workhorse disk acceleration](#workhorse-disk-acceleration) was implemented. With this, Rails no longer deals with writing uploaded files to disk.
+In order to improve this, [disk buffered upload](#disk-buffered-upload) was implemented. With this, Rails no longer deals with writing uploaded files to disk.
 
 ```mermaid
 graph TB
@@ -76,13 +76,13 @@ graph TB
 
 There's also an availability problem in this setup, NFS is a [single point of failure](https://en.wikipedia.org/wiki/Single_point_of_failure).
 
-To address this problem an HA object storage can be used and it's supported by [workhorse object storage acceleration](#workhorse-object-storage-acceleration)
+To address this problem an HA object storage can be used and it's supported by [direct upload](#direct-upload)
 
 ### Scalability
 
 Scaling NFS is outside of our support scope, and NFS is not a part of cloud native installations.
 
-All features that require Sidekiq and do not use object storage acceleration won't work without NFS. In Kubernetes, machine boundaries translate to PODs, and in this case the uploaded file will be written into the POD private disk. Since Sidekiq POD cannot reach into other pods, the operation will fail to read it.
+All features that require Sidekiq and do not use direct upload won't work without NFS. In Kubernetes, machine boundaries translate to PODs, and in this case the uploaded file will be written into the POD private disk. Since Sidekiq POD cannot reach into other pods, the operation will fail to read it.
 
 ## How to select the proper level of acceleration?
 
@@ -90,9 +90,9 @@ Selecting the proper acceleration is a tradeoff between speed of development and
 
 We can identify three major use-cases for an upload:
 
-1. **storage:** if we are uploading for storing a file (i.e. artifacts, packages, discussion attachments). In this case [object storage acceleration](#workhorse-object-storage-acceleration) is the proper level as it's the less resource-intensive operation. Additional information can be found on [File Storage in GitLab](file_storage.md).
-1. **in-controller/synchronous processing:** if we allow processing **small files** synchronously, using [disk acceleration](#workhorse-disk-acceleration) may speed up development.
-1. **Sidekiq/asynchronous processing:** Async processing must implement [object storage acceleration](#workhorse-object-storage-acceleration), the reason being that it's the only way to support Cloud Native deployments without a shared NFS.
+1. **storage:** if we are uploading for storing a file (i.e. artifacts, packages, discussion attachments). In this case [direct upload](#direct-upload) is the proper level as it's the less resource-intensive operation. Additional information can be found on [File Storage in GitLab](file_storage.md).
+1. **in-controller/synchronous processing:** if we allow processing **small files** synchronously, using [disk buffered upload](#disk-buffered-upload) may speed up development.
+1. **Sidekiq/asynchronous processing:** Async processing must implement [direct upload](#direct-upload), the reason being that it's the only way to support Cloud Native deployments without a shared NFS.
 
 For more details about currently broken feature see [epic &1802](https://gitlab.com/groups/gitlab-org/-/epics/1802).
 
@@ -122,7 +122,7 @@ By uploading technologies we mean how all the involved services interact with ea
 
 GitLab supports 3 kinds of uploading technologies, here follows a brief description with a sequence diagram for each one. Diagrams are not meant to be exhaustive.
 
-### Regular rails upload
+### Rack Multipart upload
 
 This is the default kind of upload, and it's most expensive in terms of resources.
 
@@ -148,7 +148,7 @@ sequenceDiagram
     deactivate w
 ```
 
-### Workhorse disk acceleration
+### Disk buffered upload
 
 This kind of upload avoids wasting resources caused by handling upload writes to `/tmp` in rails.
 
@@ -202,7 +202,7 @@ sequenceDiagram
     end
 ```
 
-### Workhorse object storage acceleration
+### Direct upload
 
 This is the more advanced acceleration technique we have in place.
 
@@ -212,9 +212,8 @@ In this setup an extra rails route needs to be implemented in order to handle au
 you can see an example of this in [`Projects::LfsStorageController`](https://gitlab.com/gitlab-org/gitlab/blob/cc723071ad337573e0360a879cbf99bc4fb7adb9/app/controllers/projects/lfs_storage_controller.rb)
 and [its routes](https://gitlab.com/gitlab-org/gitlab/blob/cc723071ad337573e0360a879cbf99bc4fb7adb9/config/routes/git_http.rb#L31-32).
 
-NOTE: **Note:**
-This will fall back to _Workhorse disk acceleration_ when object storage is not enabled
-in the GitLab instance. The answer to the `/authorize` call will only contain a file system path.
+**note:** this will fallback to _disk buffered upload_ when `direct_upload` is disabled inside the [object storage setting](../administration/uploads.md#object-storage-settings).
+The answer to the `/authorize` call will only contain a file system path.
 
 ```mermaid
 sequenceDiagram
@@ -262,11 +261,3 @@ sequenceDiagram
       deactivate sidekiq
     end
 ```
-
-## What does the `direct_upload` setting mean?
-
-[Object storage setting](../administration/uploads.md#object-storage-settings) allows instance administators to enable `direct_upload`, this in an option that only affects the behavior of [workhorse object storage acceleration](#workhorse-object-storage-acceleration).
-
-This option affect the response to the `/authorize` call. When not enabled, the API response will not contain presigned URLs and workhorse will write the file the shared disk, on the path is provided by rails, acting like object storage was disabled.
-
-Once the request reachs rails, it will schedule an object storage upload as a Sidekiq job.

@@ -5,8 +5,15 @@ import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vu
 import ResolveWithIssueButton from '~/notes/components/discussion_resolve_with_issue_button.vue';
 import NoteForm from '~/notes/components/note_form.vue';
 import '~/behaviors/markdown/render_gfm';
-import { noteableDataMock, discussionMock, notesDataMock } from '../mock_data';
+import {
+  noteableDataMock,
+  discussionMock,
+  notesDataMock,
+  loggedOutnoteableData,
+  userDataMock,
+} from '../mock_data';
 import mockDiffFile from '../../diffs/mock_data/diff_file';
+import { trimText } from '../../helpers/text_helper';
 
 const discussionWithTwoUnresolvedNotes = 'merge_requests/resolved_diff_discussion.json';
 
@@ -15,6 +22,7 @@ const localVue = createLocalVue();
 describe('noteable_discussion component', () => {
   let store;
   let wrapper;
+  let originalGon;
 
   preloadFixtures(discussionWithTwoUnresolvedNotes);
 
@@ -165,6 +173,57 @@ describe('noteable_discussion component', () => {
       const button = wrapper.find(ResolveWithIssueButton);
 
       expect(button.exists()).toBe(true);
+    });
+  });
+
+  describe('signout widget', () => {
+    beforeEach(() => {
+      originalGon = Object.assign({}, window.gon);
+      window.gon = window.gon || {};
+    });
+
+    afterEach(() => {
+      wrapper.destroy();
+      window.gon = originalGon;
+    });
+
+    describe('user is logged in', () => {
+      beforeEach(() => {
+        window.gon.current_user_id = userDataMock.id;
+        store.dispatch('setUserData', userDataMock);
+
+        wrapper = mount(localVue.extend(noteableDiscussion), {
+          store,
+          propsData: { discussion: discussionMock },
+          localVue,
+          sync: false,
+        });
+      });
+
+      it('should not render signed out widget', () => {
+        expect(Boolean(wrapper.vm.isLoggedIn)).toBe(true);
+        expect(trimText(wrapper.text())).not.toContain('Please register or sign in to reply');
+      });
+    });
+
+    describe('user is not logged in', () => {
+      beforeEach(() => {
+        window.gon.current_user_id = null;
+        store.dispatch('setNoteableData', loggedOutnoteableData);
+        store.dispatch('setNotesData', notesDataMock);
+
+        wrapper = mount(localVue.extend(noteableDiscussion), {
+          store,
+          propsData: { discussion: discussionMock },
+          localVue,
+          sync: false,
+        });
+      });
+
+      it('should render signed out widget', () => {
+        expect(Boolean(wrapper.vm.isLoggedIn)).toBe(false);
+        expect(trimText(wrapper.text())).toContain('Please register or sign in to reply');
+      });
     });
   });
 });
