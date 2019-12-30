@@ -7,6 +7,11 @@ type: concepts
 GitLab has strict policies governing version naming, as well as release pace for major, minor,
 patch and security releases. New releases are usually announced on the [GitLab blog](https://about.gitlab.com/blog/categories/releases/).
 
+Our current policy is:
+
+- Backporting bug fixes for **only the current stable release** at any given time, see [patch releases](#patch-releases).
+- Backporting to **to the previous two monthly releases in addition to the current stable release**, see [security releases](#security-releases).
+
 ## Versioning
 
 GitLab uses [Semantic Versioning](https://semver.org/) for its releases:
@@ -29,8 +34,6 @@ The following table describes the version types and their release cadence:
 | Patch        | For backward-compatible bug fixes that fix incorrect behavior. See [Patch releases](#patch-releases). | As needed. |
 
 ## Patch releases
-
-Our current policy is to support **only the current stable release** at any given time.
 
 Patch releases **only include bug fixes** for the current stable released version of
 GitLab.
@@ -97,10 +100,7 @@ To request backporting to more than one stable release for consideration, raise 
 ### Security releases
 
 Security releases are a special kind of patch release that only include security
-fixes and patches (see below).
-
-Our current policy is to backport security fixes to the previous two
-monthly releases in addition to the current stable release.
+fixes and patches (see below) for the previous two monthly releases in addition to the current stable release.
 
 For very serious security issues, there is
 [precedent](https://about.gitlab.com/blog/2016/05/02/cve-2016-4340-patches/)
