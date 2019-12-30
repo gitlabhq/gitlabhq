@@ -4,6 +4,9 @@
 
 This API supports managing of [group labels](../user/project/labels.md#project-labels-and-group-labels). It allows to list, create, update, and delete group labels. Furthermore, users can subscribe and unsubscribe to and from group labels.
 
+NOTE: **Note:**
+The `description_html` - was added to response JSON in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/merge_requests/21413).
+
 ## List group labels
 
 Get all labels for a given group.
@@ -32,6 +35,7 @@ Example response:
     "color": "#FF0000",
     "text_color" : "#FFFFFF",
     "description": null,
+    "description_html": null,
     "open_issues_count": 0,
     "closed_issues_count": 0,
     "open_merge_requests_count": 0,
@@ -43,6 +47,7 @@ Example response:
     "color": "#228B22",
     "text_color" : "#FFFFFF",
     "description": null,
+    "description_html": null,
     "open_issues_count": 0,
     "closed_issues_count": 0,
     "open_merge_requests_count": 0,
@@ -78,6 +83,7 @@ Example response:
   "color": "#FF0000",
   "text_color" : "#FFFFFF",
   "description": null,
+  "description_html": null,
   "open_issues_count": 0,
   "closed_issues_count": 0,
   "open_merge_requests_count": 0,
@@ -113,6 +119,7 @@ Example response:
   "color": "#FFA500",
   "text_color" : "#FFFFFF",
   "description": "Describes new ideas",
+  "description_html": "Describes new ideas",
   "open_issues_count": 0,
   "closed_issues_count": 0,
   "open_merge_requests_count": 0,
@@ -149,6 +156,7 @@ Example response:
   "color": "#FFA500",
   "text_color" : "#FFFFFF",
   "description": "Describes new ideas",
+  "description_html": "Describes new ideas",
   "open_issues_count": 0,
   "closed_issues_count": 0,
   "open_merge_requests_count": 0,
@@ -204,6 +212,7 @@ Example response:
   "color": "#FFA500",
   "text_color" : "#FFFFFF",
   "description": "Describes new ideas",
+  "description_html": "Describes new ideas",
   "open_issues_count": 0,
   "closed_issues_count": 0,
   "open_merge_requests_count": 0,
@@ -239,6 +248,7 @@ Example response:
   "color": "#FFA500",
   "text_color" : "#FFFFFF",
   "description": "Describes new ideas",
+  "description_html": "Describes new ideas",
   "open_issues_count": 0,
   "closed_issues_count": 0,
   "open_merge_requests_count": 0,

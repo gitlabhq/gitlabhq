@@ -12,10 +12,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   before_action :build_merge_request, except: [:create]
 
   def new
-    # n+1: https://gitlab.com/gitlab-org/gitlab-foss/issues/40934
-    Gitlab::GitalyClient.allow_n_plus_1_calls do
-      define_new_vars
-    end
+    define_new_vars
   end
 
   def create

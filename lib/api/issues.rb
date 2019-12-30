@@ -48,7 +48,7 @@ module API
       end
 
       params :issues_params do
-        optional :with_labels_details, type: Boolean, desc: 'Return more label data than just lable title', default: false
+        optional :with_labels_details, type: Boolean, desc: 'Return titles of labels and other details', default: false
         optional :state, type: String, values: %w[opened closed all], default: 'all',
                  desc: 'Return opened, closed, or all issues'
         optional :order_by, type: String, values: Helpers::IssuesHelpers.sort_options, default: 'created_at',

@@ -779,9 +779,12 @@ module API
       expose :author, :assignees, using: Entities::UserBasic
 
       expose :source_project_id, :target_project_id
-      expose :labels do |merge_request|
-        # Avoids an N+1 query since labels are preloaded
-        merge_request.labels.map(&:title).sort
+      expose :labels do |merge_request, options|
+        if options[:with_labels_details]
+          ::API::Entities::LabelBasic.represent(merge_request.labels.sort_by(&:title))
+        else
+          merge_request.labels.map(&:title).sort
+        end
       end
       expose :work_in_progress?, as: :work_in_progress
       expose :milestone, using: Entities::Milestone
@@ -1166,7 +1169,7 @@ module API
     end
 
     class LabelBasic < Grape::Entity
-      expose :id, :name, :color, :description, :text_color
+      expose :id, :name, :color, :description, :description_html, :text_color
     end
 
     class Label < LabelBasic

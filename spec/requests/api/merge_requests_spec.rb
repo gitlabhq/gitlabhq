@@ -88,6 +88,34 @@ describe API::MergeRequests do
           expect(json_response.first['merge_commit_sha']).not_to be_nil
           expect(json_response.first['merge_commit_sha']).to eq(merge_request_merged.merge_commit_sha)
         end
+
+        context 'with labels_details' do
+          it 'returns labels with details' do
+            path = endpoint_path + "?with_labels_details=true"
+
+            get api(path, user)
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(json_response.last['labels'].pluck('name')).to eq([label2.title, label.title])
+            expect(json_response.last['labels'].first).to match_schema('/public_api/v4/label_basic')
+          end
+
+          it 'avoids N+1 queries' do
+            path = endpoint_path + "?with_labels_details=true"
+
+            control = ActiveRecord::QueryRecorder.new do
+              get api(path, user)
+            end.count
+
+            mr = create(:merge_request)
+            create(:label_link, label: label, target: mr)
+            create(:label_link, label: label2, target: mr)
+
+            expect do
+              get api(path, user)
+            end.not_to exceed_query_limit(control)
+          end
+        end
       end
 
       it 'returns an array of all merge_requests using simple mode' do
