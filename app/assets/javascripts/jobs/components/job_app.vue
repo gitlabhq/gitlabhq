@@ -2,9 +2,9 @@
 import _ from 'underscore';
 import { mapGetters, mapState, mapActions } from 'vuex';
 import { GlLoadingIcon } from '@gitlab/ui';
+import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
 import { polyfillSticky } from '~/lib/utils/sticky';
-import bp from '~/breakpoints';
 import CiHeader from '~/vue_shared/components/header_ci_component.vue';
 import Callout from '~/vue_shared/components/callout.vue';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -200,7 +200,8 @@ export default {
       this.updateScroll();
     },
     updateSidebar() {
-      if (bp.getBreakpointSize() === 'xs') {
+      const breakpoint = bp.getBreakpointSize();
+      if (breakpoint === 'xs' || breakpoint === 'sm') {
         this.hideSidebar();
       } else if (!this.isSidebarOpen) {
         this.showSidebar();
