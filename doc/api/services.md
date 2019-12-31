@@ -373,6 +373,7 @@ Parameters:
 | `send_from_committer_email` | boolean | false | Send from committer |
 | `push_events` | boolean | false | Enable notifications for push events |
 | `tag_push_events` | boolean | false | Enable notifications for tag push events |
+| `branches_to_be_notified` | string | all | Branches to send notifications for. Valid options are "all", "default", "protected", and "default_and_protected". Notifications will be always fired for tag pushes. |
 
 ### Delete Emails on push service
 

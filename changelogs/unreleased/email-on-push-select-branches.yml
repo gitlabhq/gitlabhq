@@ -1,0 +1,5 @@
+---
+title: Add option to configure branches for which to send emails on push
+merge_request: 22196
+author:
+type: added
