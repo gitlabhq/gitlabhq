@@ -2,12 +2,11 @@
   extends:
     - .default-tags
     - .default-retry
-    - .only-docs-changes
+    - .only:variables-canonical-dot-com
+    - .only:changes-docs
   only:
     refs:
       - merge_requests
-    variables:
-      - $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org"
   image: ruby:2.6-alpine
   stage: review
   dependencies: []
@@ -50,7 +49,7 @@ docs lint:
     - .default-tags
     - .default-retry
     - .default-only
-    - .only-docs-changes
+    - .only:changes-docs
   image: "registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-docs-lint"
   stage: test
   dependencies: []
@@ -76,7 +75,7 @@ graphql-docs-verify:
     - .default-cache
     - .default-only
     - .default-before_script
-    - .only-graphql-changes
+    - .only:changes-graphql
   variables:
     SETUP_DB: "false"
   stage: test

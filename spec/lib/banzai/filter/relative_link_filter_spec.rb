@@ -124,6 +124,15 @@ describe Banzai::Filter::RelativeLinkFilter do
     expect { filter(act) }.not_to raise_error
   end
 
+  it 'does not raise an exception on URIs containing invalid utf-8 byte sequences in uploads' do
+    act = link("/uploads/%FF")
+    expect { filter(act) }.not_to raise_error
+  end
+
+  it 'does not raise an exception on URIs containing invalid utf-8 byte sequences in context requested path' do
+    expect { filter(link("files/test.md"), requested_path: '%FF') }.not_to raise_error
+  end
+
   it 'does not raise an exception with a garbled path' do
     act = link("open(/var/tmp/):%20/location%0Afrom:%20/test")
     expect { filter(act) }.not_to raise_error

@@ -6,6 +6,18 @@ describe 'GitlabSchema configurations' do
   set(:project) { create(:project) }
 
   shared_examples 'imposing query limits' do
+    describe 'timeouts' do
+      context 'when timeout is reached' do
+        it 'shows an error' do
+          Timecop.scale(50000000) do # ludicrously large number because the timeout has to happen before the query even begins
+            subject
+
+            expect_graphql_errors_to_include /Timeout/
+          end
+        end
+      end
+    end
+
     describe '#max_complexity' do
       context 'when complexity is too high' do
         it 'shows an error' do

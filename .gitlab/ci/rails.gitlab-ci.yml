@@ -22,7 +22,7 @@
     - .default-cache
     - .default-only
     - .default-before_script
-    - .only-code-changes
+    - .only:changes-code-backstage
 
 .only-code-qa-rails-job-base:
   extends:
@@ -31,7 +31,7 @@
     - .default-cache
     - .default-only
     - .default-before_script
-    - .only-code-qa-changes
+    - .only:changes-code-backstage-qa
 
 setup-test-env:
   extends:
@@ -251,13 +251,8 @@ static-analysis:
 downtime_check:
   extends:
     - .rake-exec
-    - .only-code-changes
-  except:
-    refs:
-      - master
-      - tags
-    variables:
-      - $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/
+    - .only:changes-code-backstage
+    - .except:refs-master-tags-stable-deploy
   stage: test
   needs: ["setup-test-env"]
   dependencies: ["setup-test-env"]
