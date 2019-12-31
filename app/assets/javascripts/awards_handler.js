@@ -266,7 +266,7 @@ export class AwardsHandler {
       top: `${$addBtn.offset().top + $addBtn.outerHeight()}px`,
     };
     // for xs screen we position the element on center
-    if (bp.getBreakpointSize() === 'xs') {
+    if (bp.getBreakpointSize() === 'xs' || bp.getBreakpointSize() === 'sm') {
       css.left = '5%';
     } else if (position === 'right') {
       css.left = `${$addBtn.offset().left - $menu.outerWidth() + 20}px`;
