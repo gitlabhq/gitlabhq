@@ -16,7 +16,7 @@ module Gitlab
             end
 
             def to_resource
-              return unless Feature.enabled?(:ci_resource_group, build.project)
+              return unless Feature.enabled?(:ci_resource_group, build.project, default_enabled: true)
               return unless resource_group_key.present?
 
               resource_group = build.project.resource_groups

@@ -119,6 +119,7 @@ The following table lists available parameters for jobs:
 | [`pages`](#pages)                                  | Upload the result of a job to use with GitLab Pages.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | [`variables`](#variables)                          | Define job variables on a job level.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | [`interruptible`](#interruptible)                  | Defines if a job can be canceled when made redundant by a newer run.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| [`resource_group`](#resource_group)                | Limit job concurrency.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 
 NOTE: **Note:**
 Parameters `types` and `type` are [deprecated](#deprecated-parameters).
@@ -2633,6 +2634,39 @@ In the example above, a new pipeline run will cause an existing running pipeline
 
 NOTE: **Note:**
 Once an uninterruptible job is running, the pipeline will never be canceled, regardless of the final job's state.
+
+### `resource_group`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/15536) in GitLab 12.7.
+
+Sometimes running multiples jobs or pipelines at the same time in an environment
+can lead to errors during the deployment.
+
+To avoid these errors, the `resource_group` attribute can be used to ensure that
+the Runner will not run certain jobs simultaneously.
+
+When the `resource_group` key is defined in a job in `.gitlab-ci.yml`,
+job runs are mutually exclusive across different pipelines in the same project.
+If multiple jobs belonging to the same resource group are enqueued simultaneously,
+only one of them will be picked by the Runner, and the other jobs will wait until the
+`resource_group` is free.
+
+Here is a simple example:
+
+```yaml
+deploy-to-production:
+  script: deploy
+  resource_group: production
+```
+
+In this case, if a `deploy-to-production` job is running in a pipeline, and a new
+`deploy-to-production` job is created in a different pipeline, it will not run until
+the currently running/pending `deploy-to-production` job is finished. As a result,
+you can ensure that concurrent deployments will never happen to the production environment.
+
+There can be multiple `resource_group`s defined per environment. A good use case for this
+is when deploying to physical devices. You may have more than one phyisical device, and each
+one can be deployed to, but there can be only one deployment per device at any given time.
 
 ### `include`
 

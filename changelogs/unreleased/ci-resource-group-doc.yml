@@ -1,0 +1,6 @@
+---
+title: Add 'resource_group' keyword to .gitlab-ci.yml for pipeline job concurrency
+  limitation
+merge_request: 21617
+author:
+type: added
