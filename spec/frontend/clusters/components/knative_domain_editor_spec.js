@@ -117,7 +117,9 @@ describe('KnativeDomainEditor', () => {
     it('displays an error banner indicating the operation failure', () => {
       wrapper.setProps({ knative: { updateFailed: true, ...knative } });
 
-      expect(wrapper.find('.js-cluster-knative-domain-name-failure-message').exists()).toBe(true);
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.find('.js-cluster-knative-domain-name-failure-message').exists()).toBe(true);
+      });
     });
   });
 

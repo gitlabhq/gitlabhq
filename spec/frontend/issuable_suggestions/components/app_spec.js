@@ -27,7 +27,9 @@ describe('Issuable suggestions app component', () => {
   it('does not render with empty search', () => {
     wrapper.setProps({ search: '' });
 
-    expect(wrapper.isVisible()).toBe(false);
+    return wrapper.vm.$nextTick().then(() => {
+      expect(wrapper.isVisible()).toBe(false);
+    });
   });
 
   describe('with data', () => {

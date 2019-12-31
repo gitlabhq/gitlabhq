@@ -20,7 +20,10 @@ describe('ClusterFormDropdown', () => {
   describe('when initial value is provided', () => {
     it('sets selectedItem to initial value', () => {
       vm.setProps({ items, value: secondItem.value });
-      expect(vm.find(DropdownButton).props('toggleText')).toEqual(secondItem.name);
+
+      return vm.vm.$nextTick().then(() => {
+        expect(vm.find(DropdownButton).props('toggleText')).toEqual(secondItem.name);
+      });
     });
   });
 
@@ -30,16 +33,22 @@ describe('ClusterFormDropdown', () => {
 
       vm.setProps({ placeholder });
 
-      expect(vm.find(DropdownButton).props('toggleText')).toEqual(placeholder);
+      return vm.vm.$nextTick().then(() => {
+        expect(vm.find(DropdownButton).props('toggleText')).toEqual(placeholder);
+      });
     });
   });
 
   describe('when an item is selected', () => {
     beforeEach(() => {
       vm.setProps({ items });
-      vm.findAll('.js-dropdown-item')
-        .at(1)
-        .trigger('click');
+
+      return vm.vm.$nextTick().then(() => {
+        vm.findAll('.js-dropdown-item')
+          .at(1)
+          .trigger('click');
+        return vm.vm.$nextTick();
+      });
     });
 
     it('emits input event with selected item', () => {
@@ -52,12 +61,15 @@ describe('ClusterFormDropdown', () => {
 
     beforeEach(() => {
       vm.setProps({ items, multiple: true, value });
-      vm.findAll('.js-dropdown-item')
-        .at(0)
-        .trigger('click');
-      vm.findAll('.js-dropdown-item')
-        .at(1)
-        .trigger('click');
+      return vm.vm.$nextTick().then(() => {
+        vm.findAll('.js-dropdown-item')
+          .at(0)
+          .trigger('click');
+        vm.findAll('.js-dropdown-item')
+          .at(1)
+          .trigger('click');
+        return vm.vm.$nextTick();
+      });
     });
 
     it('emits input event with an array of selected items', () => {
@@ -68,6 +80,7 @@ describe('ClusterFormDropdown', () => {
   describe('when multiple items can be selected', () => {
     beforeEach(() => {
       vm.setProps({ items, multiple: true, value: firstItem.value });
+      return vm.vm.$nextTick();
     });
 
     it('displays a checked GlIcon next to the item', () => {
@@ -85,7 +98,9 @@ describe('ClusterFormDropdown', () => {
 
       vm.setProps({ labelProperty, items: customLabelItems, value: currentValue });
 
-      expect(vm.find(DropdownButton).props('toggleText')).toEqual(label);
+      return vm.vm.$nextTick().then(() => {
+        expect(vm.find(DropdownButton).props('toggleText')).toEqual(label);
+      });
     });
   });
 
@@ -93,7 +108,9 @@ describe('ClusterFormDropdown', () => {
     it('dropdown button isLoading', () => {
       vm.setProps({ loading: true });
 
-      expect(vm.find(DropdownButton).props('isLoading')).toBe(true);
+      return vm.vm.$nextTick().then(() => {
+        expect(vm.find(DropdownButton).props('isLoading')).toBe(true);
+      });
     });
   });
 
@@ -103,7 +120,9 @@ describe('ClusterFormDropdown', () => {
 
       vm.setProps({ loading: true, loadingText });
 
-      expect(vm.find(DropdownButton).props('toggleText')).toEqual(loadingText);
+      return vm.vm.$nextTick().then(() => {
+        expect(vm.find(DropdownButton).props('toggleText')).toEqual(loadingText);
+      });
     });
   });
 
@@ -111,7 +130,9 @@ describe('ClusterFormDropdown', () => {
     it('dropdown button isDisabled', () => {
       vm.setProps({ disabled: true });
 
-      expect(vm.find(DropdownButton).props('isDisabled')).toBe(true);
+      return vm.vm.$nextTick().then(() => {
+        expect(vm.find(DropdownButton).props('isDisabled')).toBe(true);
+      });
     });
   });
 
@@ -121,7 +142,9 @@ describe('ClusterFormDropdown', () => {
 
       vm.setProps({ disabled: true, disabledText });
 
-      expect(vm.find(DropdownButton).props('toggleText')).toBe(disabledText);
+      return vm.vm.$nextTick().then(() => {
+        expect(vm.find(DropdownButton).props('toggleText')).toBe(disabledText);
+      });
     });
   });
 
@@ -129,7 +152,9 @@ describe('ClusterFormDropdown', () => {
     it('sets border-danger class selector to dropdown toggle', () => {
       vm.setProps({ hasErrors: true });
 
-      expect(vm.find(DropdownButton).classes('border-danger')).toBe(true);
+      return vm.vm.$nextTick().then(() => {
+        expect(vm.find(DropdownButton).classes('border-danger')).toBe(true);
+      });
     });
   });
 
@@ -139,7 +164,9 @@ describe('ClusterFormDropdown', () => {
 
       vm.setProps({ hasErrors: true, errorMessage });
 
-      expect(vm.find('.js-eks-dropdown-error-message').text()).toEqual(errorMessage);
+      return vm.vm.$nextTick().then(() => {
+        expect(vm.find('.js-eks-dropdown-error-message').text()).toEqual(errorMessage);
+      });
     });
   });
 
@@ -149,7 +176,9 @@ describe('ClusterFormDropdown', () => {
 
       vm.setProps({ items: [], emptyText });
 
-      expect(vm.find('.js-empty-text').text()).toEqual(emptyText);
+      return vm.vm.$nextTick().then(() => {
+        expect(vm.find('.js-empty-text').text()).toEqual(emptyText);
+      });
     });
   });
 
@@ -158,7 +187,9 @@ describe('ClusterFormDropdown', () => {
 
     vm.setProps({ searchFieldPlaceholder });
 
-    expect(vm.find(DropdownSearchInput).props('placeholderText')).toEqual(searchFieldPlaceholder);
+    return vm.vm.$nextTick().then(() => {
+      expect(vm.find(DropdownSearchInput).props('placeholderText')).toEqual(searchFieldPlaceholder);
+    });
   });
 
   it('it filters results by search query', () => {

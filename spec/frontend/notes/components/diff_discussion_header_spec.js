@@ -38,7 +38,9 @@ describe('diff_discussion_header component', () => {
 
     wrapper.setProps({ discussion });
 
-    expect(wrapper.find('.user-avatar-link').exists()).toBe(true);
+    return wrapper.vm.$nextTick().then(() => {
+      expect(wrapper.find('.user-avatar-link').exists()).toBe(true);
+    });
   });
 
   describe('action text', () => {

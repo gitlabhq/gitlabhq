@@ -83,13 +83,17 @@ describe('Time series component', () => {
     it('allows user to override max value label text using prop', () => {
       timeSeriesChart.setProps({ legendMaxText: 'legendMaxText' });
 
-      expect(timeSeriesChart.props().legendMaxText).toBe('legendMaxText');
+      return timeSeriesChart.vm.$nextTick().then(() => {
+        expect(timeSeriesChart.props().legendMaxText).toBe('legendMaxText');
+      });
     });
 
     it('allows user to override average value label text using prop', () => {
       timeSeriesChart.setProps({ legendAverageText: 'averageText' });
 
-      expect(timeSeriesChart.props().legendAverageText).toBe('averageText');
+      return timeSeriesChart.vm.$nextTick().then(() => {
+        expect(timeSeriesChart.props().legendAverageText).toBe('averageText');
+      });
     });
 
     describe('methods', () => {
@@ -267,7 +271,9 @@ describe('Time series component', () => {
               option: mockOption,
             });
 
-            expect(timeSeriesChart.vm.chartOptions).toEqual(expect.objectContaining(mockOption));
+            return timeSeriesChart.vm.$nextTick().then(() => {
+              expect(timeSeriesChart.vm.chartOptions).toEqual(expect.objectContaining(mockOption));
+            });
           });
 
           it('additional series', () => {
@@ -281,10 +287,12 @@ describe('Time series component', () => {
               },
             });
 
-            const optionSeries = timeSeriesChart.vm.chartOptions.series;
+            return timeSeriesChart.vm.$nextTick().then(() => {
+              const optionSeries = timeSeriesChart.vm.chartOptions.series;
 
-            expect(optionSeries.length).toEqual(2);
-            expect(optionSeries[0].name).toEqual(mockSeriesName);
+              expect(optionSeries.length).toEqual(2);
+              expect(optionSeries[0].name).toEqual(mockSeriesName);
+            });
           });
         });
 
