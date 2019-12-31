@@ -15,6 +15,21 @@ class Evidence < ApplicationRecord
     @milestones ||= release.milestones.includes(:issues)
   end
 
+  ##
+  # Return `summary` without sensitive information.
+  #
+  # Removing issues from summary in order to prevent leaking confidential ones.
+  # See more https://gitlab.com/gitlab-org/gitlab/issues/121930
+  def summary
+    safe_summary = read_attribute(:summary)
+
+    safe_summary.dig('release', 'milestones')&.each do |milestone|
+      milestone.delete('issues')
+    end
+
+    safe_summary
+  end
+
   private
 
   def generate_summary_and_sha
