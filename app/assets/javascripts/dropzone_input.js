@@ -2,6 +2,7 @@ import $ from 'jquery';
 import Dropzone from 'dropzone';
 import _ from 'underscore';
 import './behaviors/preview_markdown';
+import PasteMarkdownTable from './behaviors/markdown/paste_markdown_table';
 import csrf from './lib/utils/csrf';
 import axios from './lib/utils/axios_utils';
 import { n__, __ } from '~/locale';
@@ -173,14 +174,25 @@ export default function dropzoneInput(form) {
   // eslint-disable-next-line consistent-return
   handlePaste = event => {
     const pasteEvent = event.originalEvent;
-    if (pasteEvent.clipboardData && pasteEvent.clipboardData.items) {
-      const image = isImage(pasteEvent);
-      if (image) {
+    const { clipboardData } = pasteEvent;
+    if (clipboardData && clipboardData.items) {
+      // Apple Numbers copies a table as an image, HTML, and text, so
+      // we need to check for the presence of a table first.
+      if (PasteMarkdownTable.isTable(clipboardData)) {
         event.preventDefault();
-        const filename = getFilename(pasteEvent) || 'image.png';
-        const text = `{{${filename}}}`;
+        const converter = new PasteMarkdownTable(clipboardData);
+        const text = converter.convertToTableMarkdown();
         pasteText(text);
-        return uploadFile(image.getAsFile(), filename);
+      } else {
+        const image = isImage(pasteEvent);
+
+        if (image) {
+          event.preventDefault();
+          const filename = getFilename(pasteEvent) || 'image.png';
+          const text = `{{${filename}}}`;
+          pasteText(text);
+          return uploadFile(image.getAsFile(), filename);
+        }
       }
     }
   };

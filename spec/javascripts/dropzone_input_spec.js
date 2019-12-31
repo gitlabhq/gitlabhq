@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import { TEST_HOST } from 'spec/test_constants';
 import dropzoneInput from '~/dropzone_input';
+import PasteMarkdownTable from '~/behaviors/markdown/paste_markdown_table';
 
 const TEST_FILE = new File([], 'somefile.jpg');
 TEST_FILE.upload = {};
@@ -23,6 +24,34 @@ describe('dropzone_input', () => {
     const dropzone = dropzoneInput($(TEMPLATE));
 
     expect(dropzone.version).toBeTruthy();
+  });
+
+  describe('handlePaste', () => {
+    beforeEach(() => {
+      loadFixtures('issues/new-issue.html');
+
+      const form = $('#new_issue');
+      form.data('uploads-path', TEST_UPLOAD_PATH);
+      dropzoneInput(form);
+    });
+
+    it('pastes Markdown tables', () => {
+      const event = $.Event('paste');
+      const origEvent = new Event('paste');
+      const pasteData = new DataTransfer();
+      pasteData.setData('text/plain', 'hello world');
+      pasteData.setData('text/html', '<table></table>');
+      origEvent.clipboardData = pasteData;
+      event.originalEvent = origEvent;
+
+      spyOn(PasteMarkdownTable, 'isTable').and.callThrough();
+      spyOn(PasteMarkdownTable.prototype, 'convertToTableMarkdown').and.callThrough();
+
+      $('.js-gfm-input').trigger(event);
+
+      expect(PasteMarkdownTable.isTable).toHaveBeenCalled();
+      expect(PasteMarkdownTable.prototype.convertToTableMarkdown).toHaveBeenCalled();
+    });
   });
 
   describe('shows error message', () => {

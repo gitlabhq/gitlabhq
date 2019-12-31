@@ -395,9 +395,25 @@ Omnibus GitLab 11.1.
 
 ## Set maximum pages size
 
-The maximum size of the unpacked archive per project can be configured in the
-Admin area under the Application settings in the **Maximum size of pages (MB)**.
+You can configure the maximum size of the unpacked archive per project in the
+Admin area. Under Application settings, edit the **Maximum size of pages (MB)**.
 The default is 100MB.
+
+### Override maximum pages size per project or group **(PREMIUM ONLY)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/16610) in GitLab 12.7.
+
+To override the global maximum pages size for a specific project:
+
+1. Navigate to your project's **Settings > Pages** page.
+1. Edit the **Maximum size of pages**.
+1. Click **Save changes**.
+
+To override the global maximum pages size for a specific group:
+
+1. Navigate to your group's **Settings > General** page and expand **Pages**.
+1. Edit the **Maximum size of pages**.
+1. Click **Save changes**.
 
 ## Running GitLab Pages on a separate server
 
