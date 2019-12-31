@@ -17,7 +17,7 @@ branches, also called _feature branches_, to propose changes to
 the codebase without introducing them directly into the major
 version of the codebase.
 
-Branching is specially important when collaborating with others,
+Branching is especially important when collaborating with others,
 avoiding changes to be pushed directly to the default branch
 without prior reviews, tests, and approvals.
 
