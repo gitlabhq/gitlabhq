@@ -11,6 +11,7 @@ class Profiles::NotificationsController < Profiles::ApplicationController
       exclude_group_ids: @group_notifications.select(:source_id)
     ).execute.map { |group| current_user.notification_settings_for(group, inherit: true) }
     @project_notifications = current_user.notification_settings.for_projects.order(:id)
+                             .select { |notification| current_user.can?(:read_project, notification.source) }
     @global_notification_setting = current_user.global_notification_setting
   end
   # rubocop: enable CodeReuse/ActiveRecord

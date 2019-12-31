@@ -1,13 +1,16 @@
 - noteable = @sent_notification.noteable
 - noteable_type = @sent_notification.noteable_type.titleize.downcase
 - noteable_text = show_unsubscribe_title?(noteable) ? %(#{noteable.title} (#{noteable.to_reference})) : %(#{noteable.to_reference})
-- page_title _("Unsubscribe"), noteable_text, noteable_type.pluralize, @sent_notification.project.full_name
+- show_project_path = can_read_project?(@sent_notification.project)
+- project_path = show_project_path ? @sent_notification.project.full_name : _("GitLab / Unsubscribe")
+- noteable_url = show_project_path ? url_for([@sent_notification.project.namespace.becomes(Namespace), @sent_notification.project, noteable]) : breadcrumb_title_link
+- page_title _('Unsubscribe'), noteable_text, noteable_type.pluralize, project_path
 
 %h3.page-title
   = _("Unsubscribe from %{type}") % { type: noteable_type }
 
 %p
-  - link_to_noteable_text = link_to(noteable_text, url_for([@sent_notification.project.namespace.becomes(Namespace), @sent_notification.project, noteable]))
+  - link_to_noteable_text = link_to(noteable_text, noteable_url)
   = _("Are you sure you want to unsubscribe from the %{type}: %{link_to_noteable_text}?").html_safe % { type: noteable_type, link_to_noteable_text: link_to_noteable_text }
 
 %p

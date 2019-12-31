@@ -4,7 +4,6 @@ entry.
 
 ## 12.5.5
 
-- No changes.
 ### Security (1 change)
 
 - Upgrade Akismet gem to v3.0.0. !21786
