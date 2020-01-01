@@ -58,8 +58,9 @@ describe('DateTimePickerInput', () => {
   it('input event is emitted when focus is lost', () => {
     createComponent();
     jest.spyOn(wrapper.vm, '$emit');
-    wrapper.find('input').setValue(inputValue);
-    wrapper.find('input').trigger('blur');
+    const input = wrapper.find('input');
+    input.setValue(inputValue);
+    input.trigger('blur');
 
     expect(wrapper.vm.$emit).toHaveBeenCalledWith('input', inputValue);
   });

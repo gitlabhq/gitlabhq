@@ -339,7 +339,9 @@ describe('Issuable component', () => {
 
         findBulkCheckbox().trigger('click');
 
-        expect(wrapper.emitted().select).toEqual([[{ issuable, selected: !selected }]]);
+        return wrapper.vm.$nextTick().then(() => {
+          expect(wrapper.emitted().select).toEqual([[{ issuable, selected: !selected }]]);
+        });
       });
     });
   });

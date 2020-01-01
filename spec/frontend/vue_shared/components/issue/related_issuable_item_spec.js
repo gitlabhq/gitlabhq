@@ -192,10 +192,12 @@ describe('RelatedIssuableItem', () => {
     it('triggers onRemoveRequest when clicked', () => {
       removeBtn.trigger('click');
 
-      const { relatedIssueRemoveRequest } = wrapper.emitted();
+      return wrapper.vm.$nextTick().then(() => {
+        const { relatedIssueRemoveRequest } = wrapper.emitted();
 
-      expect(relatedIssueRemoveRequest.length).toBe(1);
-      expect(relatedIssueRemoveRequest[0]).toEqual([props.idKey]);
+        expect(relatedIssueRemoveRequest.length).toBe(1);
+        expect(relatedIssueRemoveRequest[0]).toEqual([props.idKey]);
+      });
     });
   });
 });

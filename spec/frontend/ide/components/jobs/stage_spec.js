@@ -52,7 +52,10 @@ describe('IDE pipeline stage', () => {
     const id = 5;
     createComponent({ stage: { ...defaultProps.stage, id } });
     findHeader().trigger('click');
-    expect(wrapper.emitted().toggleCollapsed[0][0]).toBe(id);
+
+    return wrapper.vm.$nextTick().then(() => {
+      expect(wrapper.emitted().toggleCollapsed[0][0]).toBe(id);
+    });
   });
 
   it('emits clickViewLog entity with job', () => {

@@ -290,7 +290,10 @@ describe('note_app', () => {
     it('should not render quick actions docs url', () => {
       wrapper.find('.js-note-edit').trigger('click');
       const { quickActionsDocsPath } = mockData.notesDataMock;
-      expect(wrapper.find(`.edit-note a[href="${quickActionsDocsPath}"]`).exists()).toBe(false);
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.find(`.edit-note a[href="${quickActionsDocsPath}"]`).exists()).toBe(false);
+      });
     });
   });
 

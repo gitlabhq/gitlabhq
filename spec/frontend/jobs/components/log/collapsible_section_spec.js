@@ -68,6 +68,9 @@ describe('Job Log Collapsible Section', () => {
     });
 
     findCollapsibleLine().trigger('click');
-    expect(wrapper.emitted('onClickCollapsibleLine').length).toBe(1);
+
+    return wrapper.vm.$nextTick().then(() => {
+      expect(wrapper.emitted('onClickCollapsibleLine').length).toBe(1);
+    });
   });
 });

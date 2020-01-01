@@ -42,7 +42,9 @@ describe('DiffGutterAvatars', () => {
     it('should emit toggleDiscussions event on button click', () => {
       findCollapseButton().trigger('click');
 
-      expect(wrapper.emitted().toggleLineDiscussions).toBeTruthy();
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.emitted().toggleLineDiscussions).toBeTruthy();
+      });
     });
   });
 
@@ -72,13 +74,17 @@ describe('DiffGutterAvatars', () => {
         .at(0)
         .trigger('click');
 
-      expect(wrapper.emitted().toggleLineDiscussions).toBeTruthy();
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.emitted().toggleLineDiscussions).toBeTruthy();
+      });
     });
 
     it('should emit toggleDiscussions event on more count text click', () => {
       findMoreCount().trigger('click');
 
-      expect(wrapper.emitted().toggleLineDiscussions).toBeTruthy();
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.emitted().toggleLineDiscussions).toBeTruthy();
+      });
     });
   });
 

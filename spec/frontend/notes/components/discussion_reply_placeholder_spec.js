@@ -25,8 +25,10 @@ describe('ReplyPlaceholder', () => {
   it('emits onClick even on button click', () => {
     findButton().trigger('click');
 
-    expect(wrapper.emitted()).toEqual({
-      onClick: [[]],
+    return wrapper.vm.$nextTick().then(() => {
+      expect(wrapper.emitted()).toEqual({
+        onClick: [[]],
+      });
     });
   });
 

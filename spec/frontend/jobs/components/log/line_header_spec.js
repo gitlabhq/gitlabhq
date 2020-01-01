@@ -79,7 +79,9 @@ describe('Job Log Header Line', () => {
     it('emits toggleLine event', () => {
       wrapper.trigger('click');
 
-      expect(wrapper.emitted().toggleLine.length).toBe(1);
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.emitted().toggleLine.length).toBe(1);
+      });
     });
   });
 

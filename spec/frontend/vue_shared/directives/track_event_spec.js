@@ -43,7 +43,10 @@ describe('Error Tracking directive', () => {
 
     wrapper.setData({ trackingOptions });
     const { category, action, label, property, value } = trackingOptions;
-    button.trigger('click');
-    expect(Tracking.event).toHaveBeenCalledWith(category, action, { label, property, value });
+
+    return wrapper.vm.$nextTick(() => {
+      button.trigger('click');
+      expect(Tracking.event).toHaveBeenCalledWith(category, action, { label, property, value });
+    });
   });
 });

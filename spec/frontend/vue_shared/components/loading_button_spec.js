@@ -80,7 +80,9 @@ describe('LoadingButton', () => {
 
       wrapper.trigger('click');
 
-      expect(wrapper.emitted('click')).toBeTruthy();
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.emitted('click')).toBeTruthy();
+      });
     });
 
     it('does not call given callback when disabled because of loading', () => {
@@ -90,7 +92,9 @@ describe('LoadingButton', () => {
 
       wrapper.trigger('click');
 
-      expect(wrapper.emitted('click')).toBeFalsy();
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.emitted('click')).toBeFalsy();
+      });
     });
   });
 });

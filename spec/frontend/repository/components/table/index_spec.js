@@ -53,9 +53,11 @@ describe('Repository table component', () => {
 
     vm.setData({ ref });
 
-    expect(vm.find('.table').attributes('aria-label')).toEqual(
-      `Files, directories, and submodules in the path ${path} for commit reference ${ref}`,
-    );
+    return vm.vm.$nextTick(() => {
+      expect(vm.find('.table').attributes('aria-label')).toEqual(
+        `Files, directories, and submodules in the path ${path} for commit reference ${ref}`,
+      );
+    });
   });
 
   it('shows loading icon', () => {

@@ -53,7 +53,10 @@ describe('Evidence Block', () => {
 
     it('renders the long sha after expansion', () => {
       wrapper.find('.js-text-expander-prepend').trigger('click');
-      expect(wrapper.find('.js-expanded').text()).toBe(release.evidence_sha);
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.find('.js-expanded').text()).toBe(release.evidence_sha);
+      });
     });
   });
 

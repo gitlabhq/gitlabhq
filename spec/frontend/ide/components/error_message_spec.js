@@ -90,8 +90,13 @@ describe('IDE error message component', () => {
     it('does not dispatch action when already loading', () => {
       wrapper.find('button').trigger('click');
       actionMock.mockReset();
-      wrapper.find('button').trigger('click');
-      expect(actionMock).not.toHaveBeenCalled();
+      return wrapper.vm.$nextTick(() => {
+        wrapper.find('button').trigger('click');
+
+        return wrapper.vm.$nextTick().then(() => {
+          expect(actionMock).not.toHaveBeenCalled();
+        });
+      });
     });
 
     it('shows loading icon when loading', () => {

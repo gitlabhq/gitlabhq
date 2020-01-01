@@ -78,21 +78,29 @@ describe('Confidential Issue Sidebar Block', () => {
     it('displays the edit form when editable', () => {
       wrapper.setData({ edit: false });
 
-      wrapper.find({ ref: 'editLink' }).trigger('click');
-
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.find(EditForm).exists()).toBe(true);
-      });
+      return wrapper.vm
+        .$nextTick()
+        .then(() => {
+          wrapper.find({ ref: 'editLink' }).trigger('click');
+          return wrapper.vm.$nextTick();
+        })
+        .then(() => {
+          expect(wrapper.find(EditForm).exists()).toBe(true);
+        });
     });
 
     it('displays the edit form when opened from collapsed state', () => {
       wrapper.setData({ edit: false });
 
-      wrapper.find({ ref: 'collapseIcon' }).trigger('click');
-
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.find(EditForm).exists()).toBe(true);
-      });
+      return wrapper.vm
+        .$nextTick()
+        .then(() => {
+          wrapper.find({ ref: 'collapseIcon' }).trigger('click');
+          return wrapper.vm.$nextTick();
+        })
+        .then(() => {
+          expect(wrapper.find(EditForm).exists()).toBe(true);
+        });
     });
 
     it('tracks the event when "Edit" is clicked', () => {

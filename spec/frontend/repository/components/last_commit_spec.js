@@ -58,7 +58,9 @@ describe('Repository last commit component', () => {
   `('$label when loading icon $loading is true', ({ loading }) => {
     factory(createCommitData(), loading);
 
-    expect(vm.find(GlLoadingIcon).exists()).toBe(loading);
+    return vm.vm.$nextTick(() => {
+      expect(vm.find(GlLoadingIcon).exists()).toBe(loading);
+    });
   });
 
   it('renders commit widget', () => {

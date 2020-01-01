@@ -64,7 +64,9 @@ describe('Commits header component', () => {
       createComponent();
       wrapper.setData({ expanded: false });
 
-      expect(findIcon().props('name')).toBe('chevron-right');
+      return wrapper.vm.$nextTick().then(() => {
+        expect(findIcon().props('name')).toBe('chevron-right');
+      });
     });
 
     describe('when squash is disabled', () => {

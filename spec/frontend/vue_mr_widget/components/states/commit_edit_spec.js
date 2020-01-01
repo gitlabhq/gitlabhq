@@ -55,8 +55,10 @@ describe('Commits edit component', () => {
       findTextarea().element.value = changedCommitMessage;
       findTextarea().trigger('input');
 
-      expect(wrapper.emitted().input[0]).toEqual([changedCommitMessage]);
-      expect(findTextarea().element.value).toBe(changedCommitMessage);
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.emitted().input[0]).toEqual([changedCommitMessage]);
+        expect(findTextarea().element.value).toBe(changedCommitMessage);
+      });
     });
   });
 

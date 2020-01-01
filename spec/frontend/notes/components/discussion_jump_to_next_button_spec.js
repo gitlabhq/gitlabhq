@@ -24,7 +24,9 @@ describe('JumpToNextDiscussionButton', () => {
 
     button.trigger('click');
 
-    expect(wrapper.emitted().onClick).toBeTruthy();
-    expect(wrapper.emitted().onClick.length).toBe(1);
+    return wrapper.vm.$nextTick().then(() => {
+      expect(wrapper.emitted().onClick).toBeTruthy();
+      expect(wrapper.emitted().onClick.length).toBe(1);
+    });
   });
 });

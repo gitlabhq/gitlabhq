@@ -46,7 +46,9 @@ describe('Repository table row component', () => {
       currentPath: '/',
     });
 
-    expect(vm.element).toMatchSnapshot();
+    return vm.vm.$nextTick().then(() => {
+      expect(vm.element).toMatchSnapshot();
+    });
   });
 
   it.each`
@@ -63,7 +65,9 @@ describe('Repository table row component', () => {
       currentPath: '/',
     });
 
-    expect(vm.find(component).exists()).toBe(true);
+    return vm.vm.$nextTick().then(() => {
+      expect(vm.find(component).exists()).toBe(true);
+    });
   });
 
   it.each`
@@ -80,13 +84,15 @@ describe('Repository table row component', () => {
       currentPath: '/',
     });
 
-    vm.trigger('click');
+    return vm.vm.$nextTick().then(() => {
+      vm.trigger('click');
 
-    if (pushes) {
-      expect($router.push).toHaveBeenCalledWith({ path: '/tree/master/test' });
-    } else {
-      expect($router.push).not.toHaveBeenCalled();
-    }
+      if (pushes) {
+        expect($router.push).toHaveBeenCalledWith({ path: '/tree/master/test' });
+      } else {
+        expect($router.push).not.toHaveBeenCalled();
+      }
+    });
   });
 
   it.each`
@@ -103,15 +109,17 @@ describe('Repository table row component', () => {
       currentPath: '/',
     });
 
-    vm.trigger('click');
+    return vm.vm.$nextTick().then(() => {
+      vm.trigger('click');
 
-    if (pushes) {
-      expect(visitUrl).not.toHaveBeenCalled();
-    } else {
-      const [url, external] = visitUrl.mock.calls[0];
-      expect(url).toBe('https://test.com');
-      expect(external).toBeFalsy();
-    }
+      if (pushes) {
+        expect(visitUrl).not.toHaveBeenCalled();
+      } else {
+        const [url, external] = visitUrl.mock.calls[0];
+        expect(url).toBe('https://test.com');
+        expect(external).toBeFalsy();
+      }
+    });
   });
 
   it('renders commit ID for submodule', () => {
@@ -123,7 +131,9 @@ describe('Repository table row component', () => {
       currentPath: '/',
     });
 
-    expect(vm.find('.commit-sha').text()).toContain('1');
+    return vm.vm.$nextTick().then(() => {
+      expect(vm.find('.commit-sha').text()).toContain('1');
+    });
   });
 
   it('renders link with href', () => {
@@ -136,7 +146,9 @@ describe('Repository table row component', () => {
       currentPath: '/',
     });
 
-    expect(vm.find('a').attributes('href')).toEqual('https://test.com');
+    return vm.vm.$nextTick().then(() => {
+      expect(vm.find('a').attributes('href')).toEqual('https://test.com');
+    });
   });
 
   it('renders LFS badge', () => {
@@ -149,7 +161,9 @@ describe('Repository table row component', () => {
       lfsOid: '1',
     });
 
-    expect(vm.find(GlBadge).exists()).toBe(true);
+    return vm.vm.$nextTick().then(() => {
+      expect(vm.find(GlBadge).exists()).toBe(true);
+    });
   });
 
   it('renders commit and web links with href for submodule', () => {
@@ -163,8 +177,10 @@ describe('Repository table row component', () => {
       currentPath: '/',
     });
 
-    expect(vm.find('a').attributes('href')).toEqual('https://test.com');
-    expect(vm.find(GlLink).attributes('href')).toEqual('https://test.com/commit');
+    return vm.vm.$nextTick().then(() => {
+      expect(vm.find('a').attributes('href')).toEqual('https://test.com');
+      expect(vm.find(GlLink).attributes('href')).toEqual('https://test.com/commit');
+    });
   });
 
   it('renders lock icon', () => {
@@ -178,6 +194,8 @@ describe('Repository table row component', () => {
 
     vm.setData({ commit: { lockLabel: 'Locked by Root', committedDate: '2019-01-01' } });
 
-    expect(vm.find(Icon).exists()).toBe(true);
+    return vm.vm.$nextTick().then(() => {
+      expect(vm.find(Icon).exists()).toBe(true);
+    });
   });
 });

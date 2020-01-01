@@ -33,7 +33,9 @@ describe('Repository file preview component', () => {
 
     vm.setData({ readme: { html: '<div class="blob">test</div>' } });
 
-    expect(vm.element).toMatchSnapshot();
+    return vm.vm.$nextTick(() => {
+      expect(vm.element).toMatchSnapshot();
+    });
   });
 
   it('renders loading icon', () => {
@@ -44,6 +46,8 @@ describe('Repository file preview component', () => {
 
     vm.setData({ loading: 1 });
 
-    expect(vm.find(GlLoadingIcon).exists()).toBe(true);
+    return vm.vm.$nextTick(() => {
+      expect(vm.find(GlLoadingIcon).exists()).toBe(true);
+    });
   });
 });

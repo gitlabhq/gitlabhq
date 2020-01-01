@@ -136,7 +136,10 @@ describe('Expand button', () => {
     it('clicking hides itself and shows prepend', () => {
       expect(expanderAppendEl().isVisible()).toBe(true);
       expanderAppendEl().trigger('click');
-      expect(expanderPrependEl().isVisible()).toBe(true);
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(expanderPrependEl().isVisible()).toBe(true);
+      });
     });
 
     it('clicking hides expanded text', () => {
@@ -147,12 +150,15 @@ describe('Expand button', () => {
           .trim(),
       ).toBe(text.expanded);
       expanderAppendEl().trigger('click');
-      expect(
-        wrapper
-          .find(ExpandButton)
-          .text()
-          .trim(),
-      ).not.toBe(text.expanded);
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(
+          wrapper
+            .find(ExpandButton)
+            .text()
+            .trim(),
+        ).not.toBe(text.expanded);
+      });
     });
 
     describe('when short text is provided', () => {
@@ -176,12 +182,15 @@ describe('Expand button', () => {
             .trim(),
         ).toBe(text.expanded);
         expanderAppendEl().trigger('click');
-        expect(
-          wrapper
-            .find(ExpandButton)
-            .text()
-            .trim(),
-        ).toBe(text.short);
+
+        return wrapper.vm.$nextTick().then(() => {
+          expect(
+            wrapper
+              .find(ExpandButton)
+              .text()
+              .trim(),
+          ).toBe(text.short);
+        });
       });
     });
   });

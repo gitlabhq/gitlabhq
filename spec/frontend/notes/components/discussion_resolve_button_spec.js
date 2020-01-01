@@ -33,8 +33,10 @@ describe('resolveDiscussionButton', () => {
 
     button.trigger('click');
 
-    expect(wrapper.emitted()).toEqual({
-      onClick: [[]],
+    return wrapper.vm.$nextTick().then(() => {
+      expect(wrapper.emitted()).toEqual({
+        onClick: [[]],
+      });
     });
   });
 

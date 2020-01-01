@@ -65,7 +65,9 @@ describe('Assignee component', () => {
       jest.spyOn(wrapper.vm, '$emit');
       wrapper.find('.assign-yourself .btn-link').trigger('click');
 
-      expect(wrapper.emitted('assign-self')).toBeTruthy();
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.emitted('assign-self')).toBeTruthy();
+      });
     });
   });
 

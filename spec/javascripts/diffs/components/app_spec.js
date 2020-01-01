@@ -68,7 +68,7 @@ describe('diffs/components/app', () => {
   });
 
   describe('fetch diff methods', () => {
-    beforeEach(() => {
+    beforeEach(done => {
       const fetchResolver = () => {
         store.state.diffs.retrievingBatches = false;
         return Promise.resolve();
@@ -82,6 +82,7 @@ describe('diffs/components/app', () => {
       spyOn(wrapper.vm, 'startRenderDiffsQueue');
       spyOn(wrapper.vm, 'unwatchDiscussions');
       store.state.diffs.retrievingBatches = true;
+      wrapper.vm.$nextTick(done);
     });
 
     it('calls fetchDiffFiles if diffsBatchLoad is not enabled', done => {
@@ -99,30 +100,32 @@ describe('diffs/components/app', () => {
       });
     });
 
-    it('calls batch methods if diffsBatchLoad is enabled, and not latest version', () => {
+    it('calls batch methods if diffsBatchLoad is enabled, and not latest version', done => {
       wrapper.vm.glFeatures.diffsBatchLoad = true;
       wrapper.vm.isLatestVersion = () => false;
       wrapper.vm.fetchData(false);
 
       expect(wrapper.vm.fetchDiffFiles).not.toHaveBeenCalled();
-      wrapper.vm.$nextTick(() => {
+      setTimeout(() => {
         expect(wrapper.vm.startRenderDiffsQueue).toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesMeta).toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesBatch).toHaveBeenCalled();
         expect(wrapper.vm.unwatchDiscussions).toHaveBeenCalled();
+        done();
       });
     });
 
-    it('calls batch methods if diffsBatchLoad is enabled, and latest version', () => {
+    it('calls batch methods if diffsBatchLoad is enabled, and latest version', done => {
       wrapper.vm.glFeatures.diffsBatchLoad = true;
       wrapper.vm.fetchData(false);
 
       expect(wrapper.vm.fetchDiffFiles).not.toHaveBeenCalled();
-      wrapper.vm.$nextTick(() => {
+      setTimeout(() => {
         expect(wrapper.vm.startRenderDiffsQueue).toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesMeta).toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesBatch).toHaveBeenCalled();
         expect(wrapper.vm.unwatchDiscussions).toHaveBeenCalled();
+        done();
       });
     });
   });

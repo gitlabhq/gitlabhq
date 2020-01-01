@@ -117,7 +117,10 @@ describe('DiffFileHeader component', () => {
   it('when header is clicked emits toggleFile', () => {
     createComponent();
     findHeader().trigger('click');
-    expect(wrapper.emitted().toggleFile).toBeDefined();
+
+    return wrapper.vm.$nextTick().then(() => {
+      expect(wrapper.emitted().toggleFile).toBeDefined();
+    });
   });
 
   it('when collapseIcon is clicked emits toggleFile', () => {
@@ -129,7 +132,10 @@ describe('DiffFileHeader component', () => {
   it('when other element in header is clicked does not emits toggleFile', () => {
     createComponent({ collapsible: true });
     findTitleLink().trigger('click');
-    expect(wrapper.emitted().toggleFile).not.toBeDefined();
+
+    return wrapper.vm.$nextTick().then(() => {
+      expect(wrapper.emitted().toggleFile).not.toBeDefined();
+    });
   });
 
   it('displays a copy to clipboard button', () => {

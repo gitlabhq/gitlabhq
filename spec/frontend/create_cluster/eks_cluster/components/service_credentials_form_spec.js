@@ -72,7 +72,9 @@ describe('ServiceCredentialsForm', () => {
   it('enables submit button when role ARN is not provided', () => {
     vm.setData({ roleArn: '123' });
 
-    expect(findSubmitButton().attributes('disabled')).toBeFalsy();
+    return vm.vm.$nextTick().then(() => {
+      expect(findSubmitButton().attributes('disabled')).toBeFalsy();
+    });
   });
 
   it('dispatches createRole action when form is submitted', () => {
@@ -86,6 +88,8 @@ describe('ServiceCredentialsForm', () => {
       vm.setData({ roleArn: '123' }); // set role ARN to enable button
 
       state.isCreatingRole = true;
+
+      return vm.vm.$nextTick();
     });
 
     it('disables submit button', () => {

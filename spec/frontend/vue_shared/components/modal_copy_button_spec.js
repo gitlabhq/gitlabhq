@@ -29,14 +29,20 @@ describe('modal copy button', () => {
         removeAllRanges: jest.fn(),
       }));
       wrapper.trigger('click');
-      expect(wrapper.emitted().success).not.toBeEmpty();
-      expect(document.execCommand).toHaveBeenCalledWith('copy');
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.emitted().success).not.toBeEmpty();
+        expect(document.execCommand).toHaveBeenCalledWith('copy');
+      });
     });
     it("should propagate the clipboard error event if execCommand doesn't work", () => {
       document.execCommand = jest.fn(() => false);
       wrapper.trigger('click');
-      expect(wrapper.emitted().error).not.toBeEmpty();
-      expect(document.execCommand).toHaveBeenCalledWith('copy');
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.emitted().error).not.toBeEmpty();
+        expect(document.execCommand).toHaveBeenCalledWith('copy');
+      });
     });
   });
 });

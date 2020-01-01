@@ -25,6 +25,7 @@ describe('KnativeDomainEditor', () => {
 
   afterEach(() => {
     wrapper.destroy();
+    wrapper = null;
   });
 
   describe('knative has an assigned IP address', () => {
@@ -101,11 +102,15 @@ describe('KnativeDomainEditor', () => {
 
   describe('when knative domain name input changes', () => {
     it('emits "set" event with updated domain name', () => {
+      createComponent({ knative });
+
       const newHostname = 'newhostname.com';
 
       wrapper.setData({ knativeHostname: newHostname });
 
-      expect(wrapper.emitted('set')[0]).toEqual([newHostname]);
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.emitted('set')[0]).toEqual([newHostname]);
+      });
     });
   });
 
