@@ -20,7 +20,7 @@ describe 'Merge requests > User filters by multiple criteria', :js do
 
   describe 'filtering by label:~"Won\'t fix" and assignee:~bug' do
     it 'applies the filters' do
-      input_filtered_search("label:~\"Won't fix\" assignee:@#{user.username}")
+      input_filtered_search("label=~\"Won't fix\" assignee=@#{user.username}")
 
       expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
       expect(page).to have_content 'Bugfix2'
@@ -30,7 +30,7 @@ describe 'Merge requests > User filters by multiple criteria', :js do
 
   describe 'filtering by text, author, assignee, milestone, and label' do
     it 'filters by text, author, assignee, milestone, and label' do
-      input_filtered_search_keys("author:@#{user.username} assignee:@#{user.username} milestone:%\"v1.1\" label:~\"Won't fix\" Bug")
+      input_filtered_search_keys("author=@#{user.username} assignee=@#{user.username} milestone=%\"v1.1\" label=~\"Won't fix\" Bug")
 
       expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
       expect(page).to have_content 'Bugfix2'

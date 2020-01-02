@@ -18,7 +18,7 @@ describe 'Merge Requests > User filters by assignees', :js do
 
   context 'filtering by assignee:none' do
     it 'applies the filter' do
-      input_filtered_search('assignee:none')
+      input_filtered_search('assignee=none')
 
       expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
       expect(page).not_to have_content 'Bugfix1'
@@ -26,9 +26,9 @@ describe 'Merge Requests > User filters by assignees', :js do
     end
   end
 
-  context 'filtering by assignee:@username' do
+  context 'filtering by assignee=@username' do
     it 'applies the filter' do
-      input_filtered_search("assignee:@#{user.username}")
+      input_filtered_search("assignee=@#{user.username}")
 
       expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
       expect(page).to have_content 'Bugfix1'

@@ -57,24 +57,22 @@
                 %li.input-token
                   %input.form-control.filtered-search{ search_filter_input_options('runners') }
             #js-dropdown-hint.filtered-search-input-dropdown-menu.dropdown-menu.hint-dropdown
-              %ul{ data: { dropdown: true } }
-                %li.filter-dropdown-item{ data: { action: 'submit' } }
-                  = button_tag class: %w[btn btn-link] do
-                    = sprite_icon('search')
-                    %span
-                      = _('Press Enter or click to search')
               %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
-                %li.filter-dropdown-item
+                %li.filter-dropdown-item{ data: {hint: "#{'{{hint}}'}", tag: "#{'{{tag}}'}", action: "#{'{{hint === \'search\' ? \'submit\' : \'\' }}'}" } }
                   = button_tag class: %w[btn btn-link] do
                     -# Encapsulate static class name `{{icon}}` inside #{} to bypass
                     -# haml lint's ClassAttributeWithStaticValue
                     %svg
                       %use{ 'xlink:href': "#{'{{icon}}'}" }
                     %span.js-filter-hint
-                      {{hint}}
-                    %span.js-filter-tag.dropdown-light-content
-                      {{tag}}
-
+                      {{formattedKey}}
+            #js-dropdown-operator.filtered-search-input-dropdown-menu.dropdown-menu
+              %ul.filter-dropdown{ data: { dropdown: true, dynamic: true } }
+                %li.filter-dropdown-item{ data: { value: "{{ title }}" } }
+                  %button.btn.btn-link{ type: 'button' }
+                    {{ title }}
+                    %span.btn-helptext
+                      {{ help }}
             #js-dropdown-admin-runner-status.filtered-search-input-dropdown-menu.dropdown-menu
               %ul{ data: { dropdown: true } }
                 - Ci::Runner::AVAILABLE_STATUSES.each do |status|

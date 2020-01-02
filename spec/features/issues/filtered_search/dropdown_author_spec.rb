@@ -20,13 +20,13 @@ describe 'Dropdown author', :js do
 
   describe 'behavior' do
     it 'loads all the authors when opened' do
-      input_filtered_search('author:', submit: false, extra_space: false)
+      input_filtered_search('author=', submit: false, extra_space: false)
 
       expect_filtered_search_dropdown_results(filter_dropdown, 2)
     end
 
     it 'shows current user at top of dropdown' do
-      input_filtered_search('author:', submit: false, extra_space: false)
+      input_filtered_search('author=', submit: false, extra_space: false)
 
       expect(filter_dropdown.first('.filter-dropdown-item')).to have_content(user.name)
     end
@@ -35,7 +35,7 @@ describe 'Dropdown author', :js do
   describe 'selecting from dropdown without Ajax call' do
     before do
       Gitlab::Testing::RequestBlockerMiddleware.block_requests!
-      input_filtered_search('author:', submit: false, extra_space: false)
+      input_filtered_search('author=', submit: false, extra_space: false)
     end
 
     after do

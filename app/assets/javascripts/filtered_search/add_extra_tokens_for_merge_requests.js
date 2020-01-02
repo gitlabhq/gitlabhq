@@ -2,6 +2,7 @@ import { __ } from '~/locale';
 
 export default IssuableTokenKeys => {
   const wipToken = {
+    formattedKey: __('WIP'),
     key: 'wip',
     type: 'string',
     param: '',
@@ -17,6 +18,7 @@ export default IssuableTokenKeys => {
   IssuableTokenKeys.tokenKeysWithAlternative.push(wipToken);
 
   const targetBranchToken = {
+    formattedKey: __('Target-Branch'),
     key: 'target-branch',
     type: 'string',
     param: '',

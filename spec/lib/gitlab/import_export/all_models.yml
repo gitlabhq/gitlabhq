@@ -8,6 +8,7 @@ issues:
 - milestone
 - notes
 - resource_label_events
+- resource_weight_events
 - sentry_issue
 - label_links
 - labels

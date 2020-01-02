@@ -16,7 +16,7 @@ describe RuboCop::Cop::Migration::AddColumnWithDefault do
     it 'does not register any offenses' do
       expect_no_offenses(<<~RUBY)
         def up
-          add_reference(:projects, :users)
+          add_column_with_default(:ci_build_needs, :artifacts, :boolean, default: true, allow_null: false)
         end
       RUBY
     end

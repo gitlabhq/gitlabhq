@@ -107,7 +107,7 @@ describe 'Dashboard Merge Requests' do
 
     it 'shows authored merge requests', :js do
       reset_filters
-      input_filtered_search("author:#{current_user.to_reference}")
+      input_filtered_search("author=#{current_user.to_reference}")
 
       expect(page).to have_content(authored_merge_request.title)
       expect(page).to have_content(authored_merge_request_from_fork.title)
@@ -120,7 +120,7 @@ describe 'Dashboard Merge Requests' do
 
     it 'shows labeled merge requests', :js do
       reset_filters
-      input_filtered_search("label:#{label.name}")
+      input_filtered_search("label=#{label.name}")
 
       expect(page).to have_content(labeled_merge_request.title)
 

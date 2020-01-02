@@ -138,6 +138,7 @@ describe('Issues Filtered Search Token Keys', () => {
       const conditions = IssuableFilteredSearchTokenKeys.getConditions();
       const result = IssuableFilteredSearchTokenKeys.searchByConditionKeyValue(
         conditions[0].tokenKey,
+        conditions[0].operator,
         conditions[0].value,
       );
 

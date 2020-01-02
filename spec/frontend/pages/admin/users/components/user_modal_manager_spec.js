@@ -1,4 +1,4 @@
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import UserModalManager from '~/pages/admin/users/components/user_modal_manager.vue';
 import ModalStub from './stubs/modal_stub';
 
@@ -22,16 +22,12 @@ describe('Users admin page Modal Manager', () => {
   let wrapper;
 
   const createComponent = (props = {}) => {
-    wrapper = shallowMount(UserModalManager, {
+    wrapper = mount(UserModalManager, {
       propsData: {
         actionModals,
         modalConfiguration,
         csrfToken: 'dummyCSRF',
         ...props,
-      },
-      stubs: {
-        dummyComponent1: true,
-        dummyComponent2: true,
       },
       sync: false,
     });

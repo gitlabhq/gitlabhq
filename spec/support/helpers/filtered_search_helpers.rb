@@ -26,7 +26,7 @@ module FilteredSearchHelpers
   # Select a label clicking in the search dropdown instead
   # of entering label names on the input.
   def select_label_on_dropdown(label_title)
-    input_filtered_search("label:", submit: false)
+    input_filtered_search("label=", submit: false)
 
     within('#js-dropdown-label') do
       wait_for_requests
@@ -71,7 +71,7 @@ module FilteredSearchHelpers
   end
 
   def init_label_search
-    filtered_search.set('label:')
+    filtered_search.set('label=')
     # This ensures the dropdown is shown
     expect(find('#js-dropdown-label')).not_to have_css('.filter-dropdown-loading')
   end
@@ -90,6 +90,7 @@ module FilteredSearchHelpers
         el = token_elements[index]
 
         expect(el.find('.name')).to have_content(token[:name])
+        expect(el.find('.operator')).to have_content(token[:operator]) if token[:operator].present?
         expect(el.find('.value')).to have_content(token[:value]) if token[:value].present?
 
         # gl-emoji content is blank when the emoji unicode is not supported
@@ -101,8 +102,8 @@ module FilteredSearchHelpers
     end
   end
 
-  def create_token(token_name, token_value = nil, symbol = nil)
-    { name: token_name, value: "#{symbol}#{token_value}" }
+  def create_token(token_name, token_value = nil, symbol = nil, token_operator = '=')
+    { name: token_name, operator: token_operator, value: "#{symbol}#{token_value}" }
   end
 
   def author_token(author_name = nil)
@@ -113,9 +114,9 @@ module FilteredSearchHelpers
     create_token('Assignee', assignee_name)
   end
 
-  def milestone_token(milestone_name = nil, has_symbol = true)
+  def milestone_token(milestone_name = nil, has_symbol = true, operator = '=')
     symbol = has_symbol ? '%' : nil
-    create_token('Milestone', milestone_name, symbol)
+    create_token('Milestone', milestone_name, symbol, operator)
   end
 
   def release_token(release_tag = nil)

@@ -66,10 +66,16 @@ module QA
       def visit!
         Runtime::Logger.debug(%Q[Visiting #{self.class.name} at "#{web_url}"])
 
+        # Just in case an async action is not yet complete
+        Support::WaitForRequests.wait_for_requests
+
         Support::Retrier.retry_until do
           visit(web_url)
           wait { current_url.include?(URI.parse(web_url).path.split('/').last || web_url) }
         end
+
+        # Wait until the new page is ready for us to interact with it
+        Support::WaitForRequests.wait_for_requests
       end
 
       def populate(*attributes)

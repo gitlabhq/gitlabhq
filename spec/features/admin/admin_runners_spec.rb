@@ -57,7 +57,7 @@ describe "Admin Runners" do
           expect(page).to have_content 'runner-active'
           expect(page).to have_content 'runner-paused'
 
-          input_filtered_search_keys('status:active')
+          input_filtered_search_keys('status=active')
           expect(page).to have_content 'runner-active'
           expect(page).not_to have_content 'runner-paused'
         end
@@ -68,7 +68,7 @@ describe "Admin Runners" do
 
           visit admin_runners_path
 
-          input_filtered_search_keys('status:offline')
+          input_filtered_search_keys('status=offline')
 
           expect(page).not_to have_content 'runner-active'
           expect(page).not_to have_content 'runner-paused'
@@ -83,12 +83,12 @@ describe "Admin Runners" do
 
           visit admin_runners_path
 
-          input_filtered_search_keys('status:active')
+          input_filtered_search_keys('status=active')
           expect(page).to have_content 'runner-a-1'
           expect(page).to have_content 'runner-b-1'
           expect(page).not_to have_content 'runner-a-2'
 
-          input_filtered_search_keys('status:active runner-a')
+          input_filtered_search_keys('status=active runner-a')
           expect(page).to have_content 'runner-a-1'
           expect(page).not_to have_content 'runner-b-1'
           expect(page).not_to have_content 'runner-a-2'
@@ -105,7 +105,7 @@ describe "Admin Runners" do
           expect(page).to have_content 'runner-project'
           expect(page).to have_content 'runner-group'
 
-          input_filtered_search_keys('type:project_type')
+          input_filtered_search_keys('type=project_type')
           expect(page).to have_content 'runner-project'
           expect(page).not_to have_content 'runner-group'
         end
@@ -116,7 +116,7 @@ describe "Admin Runners" do
 
           visit admin_runners_path
 
-          input_filtered_search_keys('type:instance_type')
+          input_filtered_search_keys('type=instance_type')
 
           expect(page).not_to have_content 'runner-project'
           expect(page).not_to have_content 'runner-group'
@@ -131,12 +131,12 @@ describe "Admin Runners" do
 
           visit admin_runners_path
 
-          input_filtered_search_keys('type:project_type')
+          input_filtered_search_keys('type=project_type')
           expect(page).to have_content 'runner-a-1'
           expect(page).to have_content 'runner-b-1'
           expect(page).not_to have_content 'runner-a-2'
 
-          input_filtered_search_keys('type:project_type runner-a')
+          input_filtered_search_keys('type=project_type runner-a')
           expect(page).to have_content 'runner-a-1'
           expect(page).not_to have_content 'runner-b-1'
           expect(page).not_to have_content 'runner-a-2'
@@ -153,7 +153,7 @@ describe "Admin Runners" do
           expect(page).to have_content 'runner-blue'
           expect(page).to have_content 'runner-red'
 
-          input_filtered_search_keys('tag:blue')
+          input_filtered_search_keys('tag=blue')
 
           expect(page).to have_content 'runner-blue'
           expect(page).not_to have_content 'runner-red'
@@ -165,7 +165,7 @@ describe "Admin Runners" do
 
           visit admin_runners_path
 
-          input_filtered_search_keys('tag:red')
+          input_filtered_search_keys('tag=red')
 
           expect(page).not_to have_content 'runner-blue'
           expect(page).not_to have_content 'runner-blue'
@@ -179,13 +179,13 @@ describe "Admin Runners" do
 
           visit admin_runners_path
 
-          input_filtered_search_keys('tag:blue')
+          input_filtered_search_keys('tag=blue')
 
           expect(page).to have_content 'runner-a-1'
           expect(page).to have_content 'runner-b-1'
           expect(page).not_to have_content 'runner-a-2'
 
-          input_filtered_search_keys('tag:blue runner-a')
+          input_filtered_search_keys('tag=blue runner-a')
 
           expect(page).to have_content 'runner-a-1'
           expect(page).not_to have_content 'runner-b-1'

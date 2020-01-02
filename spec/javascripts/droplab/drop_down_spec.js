@@ -398,14 +398,21 @@ describe('DropLab DropDown', function() {
 
   describe('render', function() {
     beforeEach(function() {
-      this.list = { querySelector: () => {}, dispatchEvent: () => {} };
-      this.dropdown = { renderChildren: () => {}, list: this.list };
       this.renderableList = {};
+      this.list = {
+        querySelector: q => {
+          if (q === '.filter-dropdown-loading') {
+            return false;
+          }
+          return this.renderableList;
+        },
+        dispatchEvent: () => {},
+      };
+      this.dropdown = { renderChildren: () => {}, list: this.list };
       this.data = [0, 1];
       this.customEvent = {};
 
       spyOn(this.dropdown, 'renderChildren').and.callFake(data => data);
-      spyOn(this.list, 'querySelector').and.returnValue(this.renderableList);
       spyOn(this.list, 'dispatchEvent');
       spyOn(this.data, 'map').and.callThrough();
       spyOn(window, 'CustomEvent').and.returnValue(this.customEvent);

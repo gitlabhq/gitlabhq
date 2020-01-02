@@ -27,14 +27,14 @@ describe 'Dropdown base', :js do
     it 'shows loading indicator when opened' do
       slow_requests do
         # We aren't using `input_filtered_search` because we want to see the loading indicator
-        filtered_search.set('assignee:')
+        filtered_search.set('assignee=')
 
         expect(page).to have_css("#{js_dropdown_assignee} .filter-dropdown-loading", visible: true)
       end
     end
 
     it 'hides loading indicator when loaded' do
-      input_filtered_search('assignee:', submit: false, extra_space: false)
+      input_filtered_search('assignee=', submit: false, extra_space: false)
 
       expect(find(js_dropdown_assignee)).not_to have_css('.filter-dropdown-loading')
     end
@@ -42,7 +42,7 @@ describe 'Dropdown base', :js do
 
   describe 'caching requests' do
     it 'caches requests after the first load' do
-      input_filtered_search('assignee:', submit: false, extra_space: false)
+      input_filtered_search('assignee=', submit: false, extra_space: false)
       initial_size = dropdown_assignee_size
 
       expect(initial_size).to be > 0
@@ -50,7 +50,7 @@ describe 'Dropdown base', :js do
       new_user = create(:user)
       project.add_maintainer(new_user)
       find('.filtered-search-box .clear-search').click
-      input_filtered_search('assignee:', submit: false, extra_space: false)
+      input_filtered_search('assignee=', submit: false, extra_space: false)
 
       expect(dropdown_assignee_size).to eq(initial_size)
     end

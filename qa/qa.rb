@@ -490,6 +490,7 @@ module QA
     autoload :Dates, 'qa/support/dates'
     autoload :Waiter, 'qa/support/waiter'
     autoload :Retrier, 'qa/support/retrier'
+    autoload :WaitForRequests, 'qa/support/wait_for_requests'
   end
 end
 

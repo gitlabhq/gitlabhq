@@ -90,7 +90,7 @@ module Boards
     end
 
     def filter_params
-      params.merge(board_id: params[:board_id], id: params[:list_id])
+      params.permit(*Boards::Issues::ListService.valid_params).merge(board_id: params[:board_id], id: params[:list_id])
         .reject { |_, value| value.nil? }
     end
 

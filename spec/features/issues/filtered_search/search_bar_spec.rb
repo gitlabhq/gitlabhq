@@ -34,7 +34,7 @@ describe 'Search bar', :js do
     it 'selects item' do
       filtered_search.native.send_keys(:down, :down, :enter)
 
-      expect_tokens([author_token])
+      expect_tokens([{ name: 'Assignee' }])
       expect_filtered_search_input_empty
     end
   end
@@ -78,7 +78,7 @@ describe 'Search bar', :js do
       filtered_search.click
       original_size = page.all('#js-dropdown-hint .filter-dropdown .filter-dropdown-item').size
 
-      filtered_search.set('author')
+      filtered_search.set('autho')
 
       expect(find('#js-dropdown-hint')).to have_selector('.filter-dropdown .filter-dropdown-item', count: 1)
 

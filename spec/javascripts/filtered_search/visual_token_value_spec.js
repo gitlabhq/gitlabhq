@@ -10,9 +10,11 @@ describe('Filtered Search Visual Tokens', () => {
     const tokenNameElement = tokenElement.querySelector('.name');
     const tokenValueContainer = tokenElement.querySelector('.value-container');
     const tokenValueElement = tokenValueContainer.querySelector('.value');
+    const tokenOperatorElement = tokenElement.querySelector('.operator');
     const tokenType = tokenNameElement.innerText.toLowerCase();
     const tokenValue = tokenValueElement.innerText;
-    const subject = new VisualTokenValue(tokenValue, tokenType);
+    const tokenOperator = tokenOperatorElement.innerText;
+    const subject = new VisualTokenValue(tokenValue, tokenType, tokenOperator);
     return { subject, tokenValueContainer, tokenValueElement };
   };
 
@@ -28,8 +30,8 @@ describe('Filtered Search Visual Tokens', () => {
     `);
     tokensContainer = document.querySelector('.tokens-container');
 
-    authorToken = FilteredSearchSpecHelper.createFilterVisualToken('author', '@user');
-    bugLabelToken = FilteredSearchSpecHelper.createFilterVisualToken('label', '~bug');
+    authorToken = FilteredSearchSpecHelper.createFilterVisualToken('author', '=', '@user');
+    bugLabelToken = FilteredSearchSpecHelper.createFilterVisualToken('label', '=', '~bug');
   });
 
   describe('updateUserTokenAppearance', () => {
@@ -140,10 +142,12 @@ describe('Filtered Search Visual Tokens', () => {
 
     const missingLabelToken = FilteredSearchSpecHelper.createFilterVisualToken(
       'label',
+      '=',
       '~doesnotexist',
     );
     const spaceLabelToken = FilteredSearchSpecHelper.createFilterVisualToken(
       'label',
+      '=',
       '~"some space"',
     );
 

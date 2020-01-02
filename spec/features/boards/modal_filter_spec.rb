@@ -211,7 +211,7 @@ describe 'Issue Boards add issue modal filtering', :js do
   end
 
   def set_filter(type, text = '')
-    find('.add-issues-modal .filtered-search').native.send_keys("#{type}:#{text}")
+    find('.add-issues-modal .filtered-search').native.send_keys("#{type}=#{text}")
   end
 
   def submit_filter

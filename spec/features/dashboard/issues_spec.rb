@@ -30,7 +30,7 @@ RSpec.describe 'Dashboard Issues' do
 
     it 'shows issues when current user is author', :js do
       reset_filters
-      input_filtered_search("author:#{current_user.to_reference}")
+      input_filtered_search("author=#{current_user.to_reference}")
 
       expect(page).to have_content(authored_issue.title)
       expect(page).to have_content(authored_issue_on_public_project.title)

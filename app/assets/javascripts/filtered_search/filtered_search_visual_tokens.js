@@ -3,6 +3,32 @@ import { objectToQueryString } from '~/lib/utils/common_utils';
 import FilteredSearchContainer from './container';
 
 export default class FilteredSearchVisualTokens {
+  static permissibleOperatorValues = ['=', '!='];
+
+  static getOperatorToken(value) {
+    let token = null;
+
+    FilteredSearchVisualTokens.permissibleOperatorValues.forEach(operatorToken => {
+      if (value.startsWith(operatorToken)) {
+        token = operatorToken;
+      }
+    });
+
+    return token;
+  }
+
+  static getValueToken(value) {
+    let newValue = value;
+
+    FilteredSearchVisualTokens.permissibleOperatorValues.forEach(operatorToken => {
+      if (value.startsWith(operatorToken)) {
+        newValue = value.slice(operatorToken.length);
+      }
+    });
+
+    return newValue;
+  }
+
   static getLastVisualTokenBeforeInput() {
     const inputLi = FilteredSearchContainer.container.querySelector('.input-token');
     const lastVisualToken = inputLi && inputLi.previousElementSibling;
@@ -12,7 +38,9 @@ export default class FilteredSearchVisualTokens {
       isLastVisualTokenValid:
         lastVisualToken === null ||
         lastVisualToken.className.indexOf('filtered-search-term') !== -1 ||
-        (lastVisualToken && lastVisualToken.querySelector('.value') !== null),
+        (lastVisualToken &&
+          lastVisualToken.querySelector('.operator') !== null &&
+          lastVisualToken.querySelector('.value') !== null),
     };
   }
 
@@ -42,11 +70,17 @@ export default class FilteredSearchVisualTokens {
   }
 
   static createVisualTokenElementHTML(options = {}) {
-    const { canEdit = true, uppercaseTokenName = false, capitalizeTokenValue = false } = options;
+    const {
+      canEdit = true,
+      hasOperator = false,
+      uppercaseTokenName = false,
+      capitalizeTokenValue = false,
+    } = options;
 
     return `
       <div class="${canEdit ? 'selectable' : 'hidden'}" role="button">
         <div class="${uppercaseTokenName ? 'text-uppercase' : ''} name"></div>
+        ${hasOperator ? '<div class="operator"></div>' : ''}
         <div class="value-container">
           <div class="${capitalizeTokenValue ? 'text-capitalize' : ''} value"></div>
           <div class="remove-token" role="button">
@@ -57,18 +91,18 @@ export default class FilteredSearchVisualTokens {
     `;
   }
 
-  static renderVisualTokenValue(parentElement, tokenName, tokenValue) {
+  static renderVisualTokenValue(parentElement, tokenName, tokenValue, tokenOperator) {
     const tokenType = tokenName.toLowerCase();
     const tokenValueContainer = parentElement.querySelector('.value-container');
     const tokenValueElement = tokenValueContainer.querySelector('.value');
     tokenValueElement.innerText = tokenValue;
 
-    const visualTokenValue = new VisualTokenValue(tokenValue, tokenType);
+    const visualTokenValue = new VisualTokenValue(tokenValue, tokenType, tokenOperator);
 
     visualTokenValue.render(tokenValueContainer, tokenValueElement);
   }
 
-  static addVisualTokenElement(name, value, options = {}) {
+  static addVisualTokenElement({ name, operator, value, options = {} }) {
     const {
       isSearchTerm = false,
       canEdit,
@@ -84,17 +118,32 @@ export default class FilteredSearchVisualTokens {
       li.classList.add(tokenClass);
     }
 
+    const hasOperator = Boolean(operator);
+
     if (value) {
       li.innerHTML = FilteredSearchVisualTokens.createVisualTokenElementHTML({
         canEdit,
         uppercaseTokenName,
+        operator,
+        hasOperator,
         capitalizeTokenValue,
       });
-      FilteredSearchVisualTokens.renderVisualTokenValue(li, name, value);
+      FilteredSearchVisualTokens.renderVisualTokenValue(li, name, value, operator);
     } else {
-      li.innerHTML = `<div class="${uppercaseTokenName ? 'text-uppercase' : ''} name"></div>`;
+      const nameHTML = `<div class="${uppercaseTokenName ? 'text-uppercase' : ''} name"></div>`;
+      let operatorHTML = '';
+
+      if (hasOperator) {
+        operatorHTML = '<div class="operator"></div>';
+      }
+
+      li.innerHTML = nameHTML + operatorHTML;
     }
+
     li.querySelector('.name').innerText = name;
+    if (hasOperator) {
+      li.querySelector('.operator').innerText = operator;
+    }
 
     const tokensContainer = FilteredSearchContainer.container.querySelector('.tokens-container');
     const input = FilteredSearchContainer.container.querySelector('.filtered-search');
@@ -109,14 +158,19 @@ export default class FilteredSearchVisualTokens {
 
     if (!isLastVisualTokenValid && lastVisualToken.classList.contains('filtered-search-token')) {
       const name = FilteredSearchVisualTokens.getLastTokenPartial();
-      lastVisualToken.innerHTML = FilteredSearchVisualTokens.createVisualTokenElementHTML();
+      const operator = FilteredSearchVisualTokens.getLastTokenOperator();
+      lastVisualToken.innerHTML = FilteredSearchVisualTokens.createVisualTokenElementHTML({
+        hasOperator: Boolean(operator),
+      });
       lastVisualToken.querySelector('.name').innerText = name;
-      FilteredSearchVisualTokens.renderVisualTokenValue(lastVisualToken, name, value);
+      lastVisualToken.querySelector('.operator').innerText = operator;
+      FilteredSearchVisualTokens.renderVisualTokenValue(lastVisualToken, name, value, operator);
     }
   }
 
   static addFilterVisualToken(
     tokenName,
+    tokenOperator,
     tokenValue,
     { canEdit, uppercaseTokenName = false, capitalizeTokenValue = false } = {},
   ) {
@@ -127,21 +181,51 @@ export default class FilteredSearchVisualTokens {
     const { addVisualTokenElement } = FilteredSearchVisualTokens;
 
     if (isLastVisualTokenValid) {
-      addVisualTokenElement(tokenName, tokenValue, {
-        canEdit,
-        uppercaseTokenName,
-        capitalizeTokenValue,
+      addVisualTokenElement({
+        name: tokenName,
+        operator: tokenOperator,
+        value: tokenValue,
+        options: {
+          canEdit,
+          uppercaseTokenName,
+          capitalizeTokenValue,
+        },
+      });
+    } else if (
+      !isLastVisualTokenValid &&
+      (lastVisualToken && !lastVisualToken.querySelector('.operator'))
+    ) {
+      const tokensContainer = FilteredSearchContainer.container.querySelector('.tokens-container');
+      tokensContainer.removeChild(lastVisualToken);
+      addVisualTokenElement({
+        name: tokenName,
+        operator: tokenOperator,
+        value: tokenValue,
+        options: {
+          canEdit,
+          uppercaseTokenName,
+          capitalizeTokenValue,
+        },
       });
     } else {
       const previousTokenName = lastVisualToken.querySelector('.name').innerText;
+      const previousTokenOperator = lastVisualToken.querySelector('.operator').innerText;
       const tokensContainer = FilteredSearchContainer.container.querySelector('.tokens-container');
       tokensContainer.removeChild(lastVisualToken);
 
-      const value = tokenValue || tokenName;
-      addVisualTokenElement(previousTokenName, value, {
-        canEdit,
-        uppercaseTokenName,
-        capitalizeTokenValue,
+      let value = tokenValue;
+      if (!value && !tokenOperator) {
+        value = tokenName;
+      }
+      addVisualTokenElement({
+        name: previousTokenName,
+        operator: previousTokenOperator,
+        value,
+        options: {
+          canEdit,
+          uppercaseTokenName,
+          capitalizeTokenValue,
+        },
       });
     }
   }
@@ -152,13 +236,18 @@ export default class FilteredSearchVisualTokens {
     if (lastVisualToken && lastVisualToken.classList.contains('filtered-search-term')) {
       lastVisualToken.querySelector('.name').innerText += ` ${searchTerm}`;
     } else {
-      FilteredSearchVisualTokens.addVisualTokenElement(searchTerm, null, {
-        isSearchTerm: true,
+      FilteredSearchVisualTokens.addVisualTokenElement({
+        name: searchTerm,
+        operator: null,
+        value: null,
+        options: {
+          isSearchTerm: true,
+        },
       });
     }
   }
 
-  static getLastTokenPartial() {
+  static getLastTokenPartial(includeOperator = false) {
     const { lastVisualToken } = FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 
     if (!lastVisualToken) return '';
@@ -175,7 +264,21 @@ export default class FilteredSearchVisualTokens {
     const valueText = value ? value.innerText : '';
     const nameText = name ? name.innerText : '';
 
+    if (includeOperator) {
+      const operator = lastVisualToken.querySelector('.operator');
+      const operatorText = operator ? operator.innerText : '';
+      return valueText || operatorText || nameText;
+    }
+
     return valueText || nameText;
+  }
+
+  static getLastTokenOperator() {
+    const { lastVisualToken } = FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
+
+    const operator = lastVisualToken && lastVisualToken.querySelector('.operator');
+
+    return operator?.innerText;
   }
 
   static removeLastTokenPartial() {
@@ -183,12 +286,14 @@ export default class FilteredSearchVisualTokens {
 
     if (lastVisualToken) {
       const value = lastVisualToken.querySelector('.value');
-
+      const operator = lastVisualToken.querySelector('.operator');
       if (value) {
         const button = lastVisualToken.querySelector('.selectable');
         const valueContainer = lastVisualToken.querySelector('.value-container');
         button.removeChild(valueContainer);
         lastVisualToken.innerHTML = button.innerHTML;
+      } else if (operator) {
+        lastVisualToken.removeChild(operator);
       } else {
         lastVisualToken.closest('.tokens-container').removeChild(lastVisualToken);
       }
@@ -236,12 +341,18 @@ export default class FilteredSearchVisualTokens {
     tokenContainer.replaceChild(inputLi, token);
 
     const nameElement = token.querySelector('.name');
+    const operatorElement = token.querySelector('.operator');
     let value;
 
     if (token.classList.contains('filtered-search-token')) {
-      FilteredSearchVisualTokens.addFilterVisualToken(nameElement.innerText, null, {
-        uppercaseTokenName: nameElement.classList.contains('text-uppercase'),
-      });
+      FilteredSearchVisualTokens.addFilterVisualToken(
+        nameElement.innerText,
+        operatorElement.innerText,
+        null,
+        {
+          uppercaseTokenName: nameElement.classList.contains('text-uppercase'),
+        },
+      );
 
       const valueContainerElement = token.querySelector('.value-container');
       value = valueContainerElement.dataset.originalValue;

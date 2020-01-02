@@ -628,7 +628,7 @@ describe 'Issue Boards', :js do
   end
 
   def set_filter(type, text)
-    find('.filtered-search').native.send_keys("#{type}:#{text}")
+    find('.filtered-search').native.send_keys("#{type}=#{text}")
   end
 
   def submit_filter

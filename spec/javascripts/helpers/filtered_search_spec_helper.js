@@ -1,15 +1,17 @@
 export default class FilteredSearchSpecHelper {
-  static createFilterVisualTokenHTML(name, value, isSelected) {
-    return FilteredSearchSpecHelper.createFilterVisualToken(name, value, isSelected).outerHTML;
+  static createFilterVisualTokenHTML(name, operator, value, isSelected) {
+    return FilteredSearchSpecHelper.createFilterVisualToken(name, operator, value, isSelected)
+      .outerHTML;
   }
 
-  static createFilterVisualToken(name, value, isSelected = false) {
+  static createFilterVisualToken(name, operator, value, isSelected = false) {
     const li = document.createElement('li');
     li.classList.add('js-visual-token', 'filtered-search-token', `search-token-${name}`);
 
     li.innerHTML = `
       <div class="selectable ${isSelected ? 'selected' : ''}" role="button">
         <div class="name">${name}</div>
+        <div class="operator">${operator}</div>
         <div class="value-container">
           <div class="value">${value}</div>
           <div class="remove-token" role="button">
@@ -26,6 +28,15 @@ export default class FilteredSearchSpecHelper {
     return `
       <li class="js-visual-token filtered-search-token">
         <div class="name">${name}</div>
+      </li>
+    `;
+  }
+
+  static createNameOperatorFilterVisualTokenHTML(name, operator) {
+    return `
+      <li class="js-visual-token filtered-search-token">
+        <div class="name">${name}</div>
+        <div class="operator">${operator}</div>
       </li>
     `;
   }

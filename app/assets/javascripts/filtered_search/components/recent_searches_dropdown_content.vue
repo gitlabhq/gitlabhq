@@ -29,6 +29,7 @@ export default {
 
         const resultantTokens = tokens.map(token => ({
           prefix: `${token.key}:`,
+          operator: token.operator,
           suffix: `${token.symbol}${token.value}`,
         }));
 
@@ -75,6 +76,7 @@ export default {
               class="filtered-search-history-dropdown-token"
             >
               <span class="name">{{ token.prefix }}</span>
+              <span class="name">{{ token.operator }}</span>
               <span class="value">{{ token.suffix }}</span>
             </span>
           </span>

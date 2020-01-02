@@ -20,4 +20,4 @@ schedule:package-and-qa:notify-failure:
     - 'notify_on_job_failure schedule:package-and-qa qa-master "${NOTIFICATION_MESSAGE}" ci_failing'
   needs: ["schedule:package-and-qa"]
   allow_failure: true
-  when: always
+  when: manual # TODO: remove notify job if not necessary

@@ -2032,6 +2032,9 @@ msgstr ""
 msgid "Approved the current merge request."
 msgstr ""
 
+msgid "Approver"
+msgstr ""
+
 msgid "Apr"
 msgstr ""
 
@@ -9948,6 +9951,12 @@ msgstr ""
 msgid "Invocations"
 msgstr ""
 
+msgid "Is"
+msgstr ""
+
+msgid "Is not"
+msgstr ""
+
 msgid "Is using license seat:"
 msgstr ""
 
@@ -11678,6 +11687,9 @@ msgstr ""
 msgid "Multiple uploaders found: %{uploader_types}"
 msgstr ""
 
+msgid "My-Reaction"
+msgstr ""
+
 msgid "Name"
 msgstr ""
 
@@ -13303,9 +13315,6 @@ msgid "Preferences|Use relative times"
 msgstr ""
 
 msgid "Press %{key}-C to copy"
-msgstr ""
-
-msgid "Press Enter or click to search"
 msgstr ""
 
 msgid "Prevent adding new members to project membership within this group"
@@ -15712,6 +15721,9 @@ msgstr ""
 msgid "Search for projects, issues, etc."
 msgstr ""
 
+msgid "Search for this text"
+msgstr ""
+
 msgid "Search forks"
 msgstr ""
 
@@ -17720,6 +17732,9 @@ msgid "Target Path"
 msgstr ""
 
 msgid "Target branch"
+msgstr ""
+
+msgid "Target-Branch"
 msgstr ""
 
 msgid "Team"
@@ -20289,6 +20304,9 @@ msgid "Vulnerability|Report Type"
 msgstr ""
 
 msgid "Vulnerability|Severity"
+msgstr ""
+
+msgid "WIP"
 msgstr ""
 
 msgid "Wait for the file to load to copy its contents"

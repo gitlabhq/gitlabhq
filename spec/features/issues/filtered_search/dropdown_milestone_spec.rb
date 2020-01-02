@@ -23,7 +23,7 @@ describe 'Dropdown milestone', :js do
 
   describe 'behavior' do
     before do
-      filtered_search.set('milestone:')
+      filtered_search.set('milestone=')
     end
 
     it 'loads all the milestones when opened' do

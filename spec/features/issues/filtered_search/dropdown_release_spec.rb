@@ -23,7 +23,7 @@ describe 'Dropdown release', :js do
 
   describe 'behavior' do
     before do
-      filtered_search.set('release:')
+      filtered_search.set('release=')
     end
 
     it 'loads all the releases when opened' do

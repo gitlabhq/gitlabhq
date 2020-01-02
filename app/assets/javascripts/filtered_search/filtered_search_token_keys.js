@@ -65,17 +65,20 @@ export default class FilteredSearchTokenKeys {
     return this.conditions.find(condition => condition.url === url) || null;
   }
 
-  searchByConditionKeyValue(key, value) {
+  searchByConditionKeyValue(key, operator, value) {
     return (
       this.conditions.find(
         condition =>
-          condition.tokenKey === key && condition.value.toLowerCase() === value.toLowerCase(),
+          condition.tokenKey === key &&
+          condition.operator === operator &&
+          condition.value.toLowerCase() === value.toLowerCase(),
       ) || null
     );
   }
 
   addExtraTokensForIssues() {
     const confidentialToken = {
+      formattedKey: __('Confidential'),
       key: 'confidential',
       type: 'string',
       param: '',

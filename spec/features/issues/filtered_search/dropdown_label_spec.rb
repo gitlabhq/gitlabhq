@@ -21,7 +21,7 @@ describe 'Dropdown label', :js do
   describe 'behavior' do
     it 'loads all the labels when opened' do
       create(:label, project: project, title: 'bug-label')
-      filtered_search.set('label:')
+      filtered_search.set('label=')
 
       expect_filtered_search_dropdown_results(filter_dropdown, 1)
     end

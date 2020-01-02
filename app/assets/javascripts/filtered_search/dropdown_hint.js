@@ -3,6 +3,7 @@ import FilteredSearchDropdown from './filtered_search_dropdown';
 import DropdownUtils from './dropdown_utils';
 import FilteredSearchDropdownManager from './filtered_search_dropdown_manager';
 import FilteredSearchVisualTokens from './filtered_search_visual_tokens';
+import { __ } from '~/locale';
 
 export default class DropdownHint extends FilteredSearchDropdown {
   constructor(options = {}) {
@@ -30,8 +31,8 @@ export default class DropdownHint extends FilteredSearchDropdown {
         this.dismissDropdown();
         this.dispatchFormSubmitEvent();
       } else {
-        const token = selected.querySelector('.js-filter-hint').innerText.trim();
-        const tag = selected.querySelector('.js-filter-tag').innerText.trim();
+        const filterItemEl = selected.closest('.filter-dropdown-item');
+        const { hint: token, tag } = filterItemEl.dataset;
 
         if (tag.length) {
           // Get previous input values in the input field and convert them into visual tokens
@@ -55,8 +56,13 @@ export default class DropdownHint extends FilteredSearchDropdown {
 
           const key = token.replace(':', '');
           const { uppercaseTokenName } = this.tokenKeys.searchByKey(key);
-          FilteredSearchDropdownManager.addWordToInput(key, '', false, {
-            uppercaseTokenName,
+
+          FilteredSearchDropdownManager.addWordToInput({
+            tokenName: key,
+            clicked: false,
+            options: {
+              uppercaseTokenName,
+            },
           });
         }
         this.dismissDropdown();
@@ -66,15 +72,30 @@ export default class DropdownHint extends FilteredSearchDropdown {
   }
 
   renderContent() {
-    const dropdownData = this.tokenKeys.get().map(tokenKey => ({
-      icon: `${gon.sprite_icons}#${tokenKey.icon}`,
-      hint: tokenKey.key,
-      tag: `:${tokenKey.tag}`,
-      type: tokenKey.type,
-    }));
+    const searchItem = [
+      {
+        hint: 'search',
+        tag: 'search',
+        formattedKey: __('Search for this text'),
+        icon: `${gon.sprite_icons}#search`,
+      },
+    ];
+
+    const dropdownData = this.tokenKeys
+      .get()
+      .map(tokenKey => ({
+        icon: `${gon.sprite_icons}#${tokenKey.icon}`,
+        hint: tokenKey.key,
+        tag: `:${tokenKey.tag}`,
+        type: tokenKey.type,
+        formattedKey: tokenKey.formattedKey,
+      }))
+      .concat(searchItem);
 
     this.droplab.changeHookList(this.hookId, this.dropdown, [Filter], this.config);
     this.droplab.setData(this.hookId, dropdownData);
+
+    super.renderContent();
   }
 
   init() {

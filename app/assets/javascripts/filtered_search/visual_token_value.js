@@ -9,9 +9,10 @@ import UsersCache from '~/lib/utils/users_cache';
 import { __ } from '~/locale';
 
 export default class VisualTokenValue {
-  constructor(tokenValue, tokenType) {
+  constructor(tokenValue, tokenType, tokenOperator) {
     this.tokenValue = tokenValue;
     this.tokenType = tokenType;
+    this.tokenOperator = tokenOperator;
   }
 
   render(tokenValueContainer, tokenValueElement) {

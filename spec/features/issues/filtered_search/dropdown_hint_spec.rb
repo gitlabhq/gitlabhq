@@ -9,9 +9,14 @@ describe 'Dropdown hint', :js do
   let!(:user) { create(:user) }
   let(:filtered_search) { find('.filtered-search') }
   let(:js_dropdown_hint) { '#js-dropdown-hint' }
+  let(:js_dropdown_operator) { '#js-dropdown-operator' }
 
   def click_hint(text)
     find('#js-dropdown-hint .filter-dropdown .filter-dropdown-item', text: text).click
+  end
+
+  def click_operator(op)
+    find("#js-dropdown-operator .filter-dropdown .filter-dropdown-item[data-value='#{op}']").click
   end
 
   before do
@@ -27,7 +32,7 @@ describe 'Dropdown hint', :js do
 
     it 'does not exist my-reaction dropdown item' do
       expect(page).to have_css(js_dropdown_hint, visible: false)
-      expect(page).not_to have_content('my-reaction')
+      expect(page).not_to have_content('My-reaction')
     end
   end
 
@@ -54,15 +59,6 @@ describe 'Dropdown hint', :js do
     end
 
     describe 'filtering' do
-      it 'does not filter `Press Enter or click to search`' do
-        filtered_search.set('randomtext')
-
-        hint_dropdown = find(js_dropdown_hint)
-
-        expect(hint_dropdown).to have_content('Press Enter or click to search')
-        expect(hint_dropdown).to have_selector('.filter-dropdown .filter-dropdown-item', count: 0)
-      end
-
       it 'filters with text' do
         filtered_search.set('a')
 
@@ -76,21 +72,27 @@ describe 'Dropdown hint', :js do
       end
 
       it 'opens the token dropdown when you click on it' do
-        click_hint('author')
+        click_hint('Author')
 
         expect(page).to have_css(js_dropdown_hint, visible: false)
+        expect(page).to have_css(js_dropdown_operator, visible: true)
+
+        click_operator('=')
+
+        expect(page).to have_css(js_dropdown_hint, visible: false)
+        expect(page).to have_css(js_dropdown_operator, visible: false)
         expect(page).to have_css('#js-dropdown-author', visible: true)
-        expect_tokens([{ name: 'Author' }])
+        expect_tokens([{ name: 'Author', operator: '=' }])
         expect_filtered_search_input_empty
       end
     end
 
     describe 'reselecting from dropdown' do
       it 'reuses existing token text' do
-        filtered_search.send_keys('author:')
+        filtered_search.send_keys('author')
         filtered_search.send_keys(:backspace)
         filtered_search.send_keys(:backspace)
-        click_hint('author')
+        click_hint('Author')
 
         expect_tokens([{ name: 'Author' }])
         expect_filtered_search_input_empty

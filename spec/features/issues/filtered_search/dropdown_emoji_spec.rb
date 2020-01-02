@@ -26,8 +26,8 @@ describe 'Dropdown emoji', :js do
     end
 
     describe 'behavior' do
-      it 'does not open when the search bar has my-reaction:' do
-        filtered_search.set('my-reaction:')
+      it 'does not open when the search bar has my-reaction=' do
+        filtered_search.set('my-reaction=')
 
         expect(page).not_to have_css(js_dropdown_emoji)
       end
@@ -42,20 +42,20 @@ describe 'Dropdown emoji', :js do
     end
 
     describe 'behavior' do
-      it 'opens when the search bar has my-reaction:' do
-        filtered_search.set('my-reaction:')
+      it 'opens when the search bar has my-reaction=' do
+        filtered_search.set('my-reaction=')
 
         expect(page).to have_css(js_dropdown_emoji, visible: true)
       end
 
       it 'loads all the emojis when opened' do
-        input_filtered_search('my-reaction:', submit: false, extra_space: false)
+        input_filtered_search('my-reaction=', submit: false, extra_space: false)
 
         expect_filtered_search_dropdown_results(filter_dropdown, 3)
       end
 
       it 'shows the most populated emoji at top of dropdown' do
-        input_filtered_search('my-reaction:', submit: false, extra_space: false)
+        input_filtered_search('my-reaction=', submit: false, extra_space: false)
 
         expect(first("#{js_dropdown_emoji} .filter-dropdown li")).to have_content(award_emoji_star.name)
       end

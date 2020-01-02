@@ -30,23 +30,22 @@
                   %li.input-token
                     %input.form-control.filtered-search{ search_filter_input_options(type) }
               #js-dropdown-hint.filtered-search-input-dropdown-menu.dropdown-menu.hint-dropdown
-                %ul{ data: { dropdown: true } }
-                  %li.filter-dropdown-item{ data: { action: 'submit' } }
-                    %button.btn.btn-link{ type: 'button' }
-                      = sprite_icon('search')
-                      %span
-                        = _('Press Enter or click to search')
                 %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
-                  %li.filter-dropdown-item
+                  %li.filter-dropdown-item{ data: {hint: "#{'{{hint}}'}", tag: "#{'{{tag}}'}", action: "#{'{{hint === \'search\' ? \'submit\' : \'\' }}'}" } }
                     %button.btn.btn-link{ type: 'button' }
                       -# Encapsulate static class name `{{icon}}` inside #{} to bypass
                       -# haml lint's ClassAttributeWithStaticValue
                       %svg
                         %use{ 'xlink:href': "#{'{{icon}}'}" }
                       %span.js-filter-hint
-                        {{hint}}
-                      %span.js-filter-tag.dropdown-light-content
-                        {{tag}}
+                        {{formattedKey}}
+              #js-dropdown-operator.filtered-search-input-dropdown-menu.dropdown-menu
+                %ul.filter-dropdown{ data: { dropdown: true, dynamic: true } }
+                  %li.filter-dropdown-item{ data: { value: "{{ title }}" } }
+                    %button.btn.btn-link{ type: 'button' }
+                      {{ title }}
+                      %span.btn-helptext
+                        {{ help }}
               #js-dropdown-author.filtered-search-input-dropdown-menu.dropdown-menu
                 - if current_user
                   %ul{ data: { dropdown: true } }

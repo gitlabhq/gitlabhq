@@ -18,14 +18,14 @@ describe 'Merge Requests > User filters by milestones', :js do
   end
 
   it 'filters by no milestone' do
-    input_filtered_search('milestone:none')
+    input_filtered_search('milestone=none')
 
     expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
     expect(page).to have_css('.merge-request', count: 1)
   end
 
   it 'filters by a specific milestone' do
-    input_filtered_search("milestone:%'#{milestone.title}'")
+    input_filtered_search("milestone=%'#{milestone.title}'")
 
     expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
     expect(page).to have_css('.merge-request', count: 1)
@@ -33,7 +33,7 @@ describe 'Merge Requests > User filters by milestones', :js do
 
   describe 'filters by upcoming milestone' do
     it 'does not show merge requests with no expiry' do
-      input_filtered_search('milestone:upcoming')
+      input_filtered_search('milestone=upcoming')
 
       expect(page).to have_issuable_counts(open: 0, closed: 0, all: 0)
       expect(page).to have_css('.merge-request', count: 0)
@@ -43,7 +43,7 @@ describe 'Merge Requests > User filters by milestones', :js do
       let(:milestone) { create(:milestone, project: project, due_date: Date.tomorrow) }
 
       it 'shows merge requests' do
-        input_filtered_search('milestone:upcoming')
+        input_filtered_search('milestone=upcoming')
 
         expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
         expect(page).to have_css('.merge-request', count: 1)
@@ -54,7 +54,7 @@ describe 'Merge Requests > User filters by milestones', :js do
       let(:milestone) { create(:milestone, project: project, due_date: Date.yesterday) }
 
       it 'does not show any merge requests' do
-        input_filtered_search('milestone:upcoming')
+        input_filtered_search('milestone=upcoming')
 
         expect(page).to have_issuable_counts(open: 0, closed: 0, all: 0)
         expect(page).to have_css('.merge-request', count: 0)

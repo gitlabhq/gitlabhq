@@ -87,7 +87,7 @@ class IssuableFinder
     end
 
     def valid_params
-      @valid_params ||= scalar_params + [array_params] + [{ not: [] }]
+      @valid_params ||= scalar_params + [array_params.merge(not: {})]
     end
   end
 

@@ -4,6 +4,7 @@ import DropdownNonUser from './dropdown_non_user';
 import DropdownEmoji from './dropdown_emoji';
 import NullDropdown from './null_dropdown';
 import DropdownAjaxFilter from './dropdown_ajax_filter';
+import DropdownOperator from './dropdown_operator';
 import DropdownUtils from './dropdown_utils';
 import { mergeUrlParams } from '../lib/utils/url_utility';
 
@@ -39,6 +40,11 @@ export default class AvailableDropdownMappings {
         reference: null,
         gl: DropdownHint,
         element: this.container.querySelector('#js-dropdown-hint'),
+      },
+      operator: {
+        reference: null,
+        gl: DropdownOperator,
+        element: this.container.querySelector('#js-dropdown-operator'),
       },
     };
 

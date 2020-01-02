@@ -8,6 +8,7 @@ module QA
       prepend Support::Page::Logging if Runtime::Env.debug?
       include Capybara::DSL
       include Scenario::Actable
+      include Support::WaitForRequests
       extend Validatable
       extend SingleForwardable
 
@@ -21,6 +22,8 @@ module QA
 
       def refresh
         page.refresh
+
+        wait_for_requests
       end
 
       def wait(max: 60, interval: 0.1, reload: true)
@@ -42,6 +45,8 @@ module QA
       end
 
       def scroll_to(selector, text: nil)
+        wait_for_requests
+
         page.execute_script <<~JS
           var elements = Array.from(document.querySelectorAll('#{selector}'));
           var text = '#{text}';
@@ -74,6 +79,8 @@ module QA
       end
 
       def find_element(name, **kwargs)
+        wait_for_requests
+
         find(element_selector_css(name), kwargs)
       end
 
@@ -82,6 +89,8 @@ module QA
       end
 
       def all_elements(name, **kwargs)
+        wait_for_requests
+
         all(element_selector_css(name), **kwargs)
       end
 
@@ -120,6 +129,8 @@ module QA
       end
 
       def has_element?(name, **kwargs)
+        wait_for_requests
+
         wait = kwargs[:wait] ? kwargs[:wait] && kwargs.delete(:wait) : Capybara.default_max_wait_time
         text = kwargs[:text] ? kwargs[:text] && kwargs.delete(:text) : nil
 
@@ -127,6 +138,8 @@ module QA
       end
 
       def has_no_element?(name, **kwargs)
+        wait_for_requests
+
         wait = kwargs[:wait] ? kwargs[:wait] && kwargs.delete(:wait) : Capybara.default_max_wait_time
         text = kwargs[:text] ? kwargs[:text] && kwargs.delete(:text) : nil
 
@@ -134,18 +147,24 @@ module QA
       end
 
       def has_text?(text, wait: Capybara.default_max_wait_time)
+        wait_for_requests
+
         page.has_text?(text, wait: wait)
       end
 
       def has_no_text?(text)
+        wait_for_requests
+
         page.has_no_text? text
       end
 
       def has_normalized_ws_text?(text, wait: Capybara.default_max_wait_time)
-        page.has_text?(text.gsub(/\s+/, " "), wait: wait)
+        has_text?(text.gsub(/\s+/, " "), wait: wait)
       end
 
       def finished_loading?
+        wait_for_requests
+
         # The number of selectors should be able to be reduced after
         # migration to the new spinner is complete.
         # https://gitlab.com/groups/gitlab-org/-/epics/956
@@ -153,6 +172,8 @@ module QA
       end
 
       def finished_loading_block?
+        wait_for_requests
+
         has_no_css?('.fa-spinner.block-loading', wait: Capybara.default_max_wait_time)
       end
 
@@ -220,10 +241,14 @@ module QA
       end
 
       def click_link_with_text(text)
+        wait_for_requests
+
         click_link text
       end
 
       def click_body
+        wait_for_requests
+
         find('body').click
       end
 

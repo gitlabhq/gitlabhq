@@ -13,7 +13,7 @@ shared_examples 'issuable user dropdown behaviors' do
       it 'only includes members of the project/group' do
         visit issuables_path
 
-        filtered_search.set("#{dropdown}:")
+        filtered_search.set("#{dropdown}=")
 
         expect(find("#js-dropdown-#{dropdown} .filter-dropdown")).to have_content(user_in_dropdown.name)
         expect(find("#js-dropdown-#{dropdown} .filter-dropdown")).not_to have_content(user_not_in_dropdown.name)
