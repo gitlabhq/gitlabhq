@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.5.6
+
+### Security (5 changes)
+
+- GraphQL: Add timeout to all queries.
+- Return only runners from groups where user is owner for user CI owned runners.
+- Filter out notification settings for projects that a user does not have at least read access.
+- Hide project name and path when unsusbcribing from an issue or merge request.
+- Fix 500 error caused by invalid byte sequences in uploads links.
+
+
 ## 12.5.5
 
 ### Security (1 change)

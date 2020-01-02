@@ -1,5 +1,0 @@
----
-title: Fix 500 error caused by invalid byte sequences in uploads links
-merge_request:
-author:
-type: security
