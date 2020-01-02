@@ -49,7 +49,9 @@ describe('DropdownSearchInputComponent', () => {
 
       wrapper.setProps({ focused: true });
 
-      expect(inputEl.focus).toHaveBeenCalled();
+      return wrapper.vm.$nextTick().then(() => {
+        expect(inputEl.focus).toHaveBeenCalled();
+      });
     });
   });
 });

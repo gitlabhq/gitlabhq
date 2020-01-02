@@ -7,6 +7,11 @@ describe('Commit component', () => {
   let props;
   let wrapper;
 
+  const findIcon = name => {
+    const icons = wrapper.findAll(Icon).filter(c => c.attributes('name') === name);
+    return icons.length ? icons.at(0) : icons;
+  };
+
   const findUserAvatar = () => wrapper.find(UserAvatarLink);
 
   const createComponent = propsData => {
@@ -71,7 +76,7 @@ describe('Commit component', () => {
     });
 
     it('should render a tag icon if it represents a tag', () => {
-      expect(wrapper.find('icon-stub[name="tag"]').exists()).toBe(true);
+      expect(findIcon('tag').exists()).toBe(true);
     });
 
     it('should render a link to the ref url', () => {
@@ -89,7 +94,7 @@ describe('Commit component', () => {
     });
 
     it('should render icon for commit', () => {
-      expect(wrapper.find('icon-stub[name="commit"]').exists()).toBe(true);
+      expect(findIcon('commit').exists()).toBe(true);
     });
 
     describe('Given commit title and author props', () => {
@@ -162,7 +167,7 @@ describe('Commit component', () => {
 
       expect(refEl.attributes('title')).toBe(props.commitRef.name);
 
-      expect(wrapper.find('icon-stub[name="branch"]').exists()).toBe(true);
+      expect(findIcon('branch').exists()).toBe(true);
     });
   });
 
@@ -195,7 +200,7 @@ describe('Commit component', () => {
 
       expect(refEl.attributes('title')).toBe(props.mergeRequestRef.title);
 
-      expect(wrapper.find('icon-stub[name="git-merge"]').exists()).toBe(true);
+      expect(findIcon('git-merge').exists()).toBe(true);
     });
   });
 

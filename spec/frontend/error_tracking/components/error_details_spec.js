@@ -1,6 +1,6 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { GlLoadingIcon, GlLink, GlBadge } from '@gitlab/ui';
+import { GlLoadingIcon, GlLink, GlBadge, GlFormInput } from '@gitlab/ui';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import Stacktrace from '~/error_tracking/components/stacktrace.vue';
 import ErrorDetails from '~/error_tracking/components/error_details.vue';
@@ -13,6 +13,11 @@ describe('ErrorDetails', () => {
   let wrapper;
   let actions;
   let getters;
+
+  const findInput = name => {
+    const inputs = wrapper.findAll(GlFormInput).filter(c => c.attributes('name') === name);
+    return inputs.length ? inputs.at(0) : inputs;
+  };
 
   function mountComponent() {
     wrapper = shallowMount(ErrorDetails, {
@@ -136,15 +141,15 @@ describe('ErrorDetails', () => {
       });
 
       it('should send sentry_issue_identifier', () => {
-        const sentryErrorIdInput = wrapper.find(
-          'glforminput-stub[name="issue[sentry_issue_attributes][sentry_issue_identifier]"',
+        const sentryErrorIdInput = findInput(
+          'issue[sentry_issue_attributes][sentry_issue_identifier]',
         );
         expect(sentryErrorIdInput.attributes('value')).toBe('129381');
       });
 
       it('should set the form values with title and description', () => {
-        const csrfTokenInput = wrapper.find('glforminput-stub[name="authenticity_token"]');
-        const issueTitleInput = wrapper.find('glforminput-stub[name="issue[title]"]');
+        const csrfTokenInput = findInput('authenticity_token');
+        const issueTitleInput = findInput('issue[title]');
         const issueDescriptionInput = wrapper.find('input[name="issue[description]"]');
         expect(csrfTokenInput.attributes('value')).toBe('fakeToken');
         expect(issueTitleInput.attributes('value')).toContain(wrapper.vm.issueTitle);

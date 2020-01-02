@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import Icon from '~/vue_shared/components/icon.vue';
 import DiffStats from '~/diffs/components/diff_stats.vue';
 
 describe('diff_stats', () => {
@@ -22,9 +23,16 @@ describe('diff_stats', () => {
         diffFilesLength: 300,
       },
     });
-    const additions = wrapper.find('icon-stub[name="file-addition"]').element.parentNode;
-    const deletions = wrapper.find('icon-stub[name="file-deletion"]').element.parentNode;
-    const filesChanged = wrapper.find('icon-stub[name="doc-code"]').element.parentNode;
+
+    const findIcon = name =>
+      wrapper
+        .findAll(Icon)
+        .filter(c => c.attributes('name') === name)
+        .at(0).element.parentNode;
+
+    const additions = findIcon('file-addition');
+    const deletions = findIcon('file-deletion');
+    const filesChanged = findIcon('doc-code');
 
     expect(additions.textContent).toContain('100');
     expect(deletions.textContent).toContain('200');

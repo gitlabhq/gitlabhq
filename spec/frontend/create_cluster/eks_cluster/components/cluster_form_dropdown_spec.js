@@ -216,6 +216,8 @@ describe('ClusterFormDropdown', () => {
 
     $(dropdownEl).trigger('shown.bs.dropdown');
 
-    expect(vm.find(DropdownSearchInput).props('focused')).toBe(true);
+    return vm.vm.$nextTick(() => {
+      expect(vm.find(DropdownSearchInput).props('focused')).toBe(true);
+    });
   });
 });

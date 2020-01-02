@@ -197,7 +197,9 @@ describe('EksClusterConfigurationForm', () => {
   it('sets RoleDropdown hasErrors to true when loading roles failed', () => {
     rolesState.loadingItemsError = new Error();
 
-    expect(findRoleDropdown().props('hasErrors')).toEqual(true);
+    return Vue.nextTick().then(() => {
+      expect(findRoleDropdown().props('hasErrors')).toEqual(true);
+    });
   });
 
   it('sets isLoadingRegions to RegionDropdown loading property', () => {
@@ -215,7 +217,9 @@ describe('EksClusterConfigurationForm', () => {
   it('sets loadingRegionsError to RegionDropdown error property', () => {
     regionsState.loadingItemsError = new Error();
 
-    expect(findRegionDropdown().props('hasErrors')).toEqual(true);
+    return Vue.nextTick().then(() => {
+      expect(findRegionDropdown().props('hasErrors')).toEqual(true);
+    });
   });
 
   it('disables KeyPairDropdown when no region is selected', () => {
@@ -245,7 +249,9 @@ describe('EksClusterConfigurationForm', () => {
   it('sets KeyPairDropdown hasErrors to true when loading key pairs fails', () => {
     keyPairsState.loadingItemsError = new Error();
 
-    expect(findKeyPairDropdown().props('hasErrors')).toEqual(true);
+    return Vue.nextTick().then(() => {
+      expect(findKeyPairDropdown().props('hasErrors')).toEqual(true);
+    });
   });
 
   it('disables VpcDropdown when no region is selected', () => {
@@ -275,7 +281,9 @@ describe('EksClusterConfigurationForm', () => {
   it('sets VpcDropdown hasErrors to true when loading vpcs fails', () => {
     vpcsState.loadingItemsError = new Error();
 
-    expect(findVpcDropdown().props('hasErrors')).toEqual(true);
+    return Vue.nextTick().then(() => {
+      expect(findVpcDropdown().props('hasErrors')).toEqual(true);
+    });
   });
 
   it('disables SubnetDropdown when no vpc is selected', () => {
@@ -305,7 +313,9 @@ describe('EksClusterConfigurationForm', () => {
   it('sets SubnetDropdown hasErrors to true when loading subnets fails', () => {
     subnetsState.loadingItemsError = new Error();
 
-    expect(findSubnetDropdown().props('hasErrors')).toEqual(true);
+    return Vue.nextTick().then(() => {
+      expect(findSubnetDropdown().props('hasErrors')).toEqual(true);
+    });
   });
 
   it('disables SecurityGroupDropdown when no vpc is selected', () => {
@@ -335,7 +345,9 @@ describe('EksClusterConfigurationForm', () => {
   it('sets SecurityGroupDropdown hasErrors to true when loading security groups fails', () => {
     securityGroupsState.loadingItemsError = new Error();
 
-    expect(findSecurityGroupDropdown().props('hasErrors')).toEqual(true);
+    return Vue.nextTick().then(() => {
+      expect(findSecurityGroupDropdown().props('hasErrors')).toEqual(true);
+    });
   });
 
   describe('when region is selected', () => {
