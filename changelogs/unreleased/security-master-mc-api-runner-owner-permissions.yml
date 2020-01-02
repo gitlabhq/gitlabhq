@@ -1,5 +1,0 @@
----
-title: Return only runners from groups where user is owner for user CI owned runners.
-merge_request:
-author:
-type: security
