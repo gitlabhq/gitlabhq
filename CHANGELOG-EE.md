@@ -1,5 +1,13 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.6.2
+
+### Security (2 changes)
+
+- Don't publish drafts if user can't create notes.
+- Remove protected tag access when group is removed.
+
+
 ## 12.6.1
 
 - No changes.
