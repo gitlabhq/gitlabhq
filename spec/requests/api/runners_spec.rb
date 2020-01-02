@@ -6,6 +6,7 @@ describe API::Runners do
   let(:admin) { create(:user, :admin) }
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
+  let(:group_maintainer) { create(:user) }
 
   let(:project) { create(:project, creator_id: user.id) }
   let(:project2) { create(:project, creator_id: user.id) }
@@ -20,6 +21,7 @@ describe API::Runners do
 
   before do
     # Set project access for users
+    create(:group_member, :maintainer, user: group_maintainer, group: group)
     create(:project_member, :maintainer, user: user, project: project)
     create(:project_member, :maintainer, user: user, project: project2)
     create(:project_member, :reporter, user: user2, project: project)
@@ -523,6 +525,20 @@ describe API::Runners do
 
             expect(response).to have_http_status(204)
           end.to change { Ci::Runner.project_type.count }.by(-1)
+        end
+
+        it 'does not delete group runner with maintainer access' do
+          delete api("/runners/#{group_runner.id}", group_maintainer)
+
+          expect(response).to have_http_status(403)
+        end
+
+        it 'deletes group runner with owner access' do
+          expect do
+            delete api("/runners/#{group_runner.id}", user)
+
+            expect(response).to have_http_status(204)
+          end.to change { Ci::Runner.group_type.count }.by(-1)
         end
 
         it_behaves_like '412 response' do

@@ -1336,7 +1336,7 @@ module API
       expose :author, using: Entities::UserBasic, if: -> (release, _) { release.author.present? }
       expose :commit, using: Entities::Commit, if: ->(_, _) { can_download_code? }
       expose :upcoming_release?, as: :upcoming_release
-      expose :milestones, using: Entities::Milestone, if: -> (release, _) { release.milestones.present? }
+      expose :milestones, using: Entities::Milestone, if: -> (release, _) { release.milestones.present? && can_read_milestone? }
       expose :commit_path, expose_nil: false
       expose :tag_path, expose_nil: false
       expose :evidence_sha, expose_nil: false, if: ->(_, _) { can_download_code? }
@@ -1361,6 +1361,10 @@ module API
 
       def can_download_code?
         Ability.allowed?(options[:current_user], :download_code, object.project)
+      end
+
+      def can_read_milestone?
+        Ability.allowed?(options[:current_user], :read_milestone, object.project)
       end
     end
 

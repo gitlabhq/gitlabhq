@@ -52,6 +52,35 @@ describe Profiles::NotificationsController do
         end.to exceed_query_limit(control)
       end
     end
+
+    context 'with project notifications' do
+      let!(:notification_setting) { create(:notification_setting, source: project, user: user, level: :watch) }
+
+      before do
+        sign_in(user)
+        get :show
+      end
+
+      context 'when project is public' do
+        let(:project) { create(:project, :public) }
+
+        it 'shows notification setting for project' do
+          expect(assigns(:project_notifications).map(&:source_id)).to include(project.id)
+        end
+      end
+
+      context 'when project is public' do
+        let(:project) { create(:project, :private) }
+
+        it 'shows notification setting for project' do
+          # notification settings for given project were created before project was set to private
+          expect(user.notification_settings.for_projects.map(&:source_id)).to include(project.id)
+
+          # check that notification settings for project where user does not have access are filtered
+          expect(assigns(:project_notifications)).to be_empty
+        end
+      end
+    end
   end
 
   describe 'POST update' do
