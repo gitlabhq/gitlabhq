@@ -167,7 +167,7 @@ describe Projects::ReleasesController do
   end
 
   describe 'GET #evidence' do
-    let(:tag_name) { "v1.1.0-evidence" }
+    let_it_be(:tag_name) { "v1.1.0-evidence" }
     let!(:release) { create(:release, :with_evidence, project: project, tag: tag_name) }
     let(:tag) { CGI.escape(release.tag) }
     let(:format) { :json }
@@ -218,6 +218,85 @@ describe Projects::ReleasesController do
 
       context 'when the project is public' do
         it_behaves_like 'successful request'
+      end
+    end
+
+    context 'when release is associated to a milestone which includes an issue' do
+      let_it_be(:project) { create(:project, :repository, :public) }
+      let_it_be(:issue) { create(:issue, project: project) }
+      let_it_be(:milestone) { create(:milestone, project: project, issues: [issue]) }
+      let_it_be(:release) { create(:release, project: project, tag: tag_name, milestones: [milestone]) }
+
+      before do
+        create(:evidence, release: release)
+      end
+
+      shared_examples_for 'does not show the issue in evidence' do
+        it do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['release']['milestones']
+            .all? { |milestone| milestone['issues'].nil? }).to eq(true)
+        end
+      end
+
+      shared_examples_for 'evidence not found' do
+        it do
+          subject
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      shared_examples_for 'safely expose evidence' do
+        it_behaves_like 'does not show the issue in evidence'
+
+        context 'when the issue is confidential' do
+          let(:issue) { create(:issue, :confidential, project: project) }
+
+          it_behaves_like 'does not show the issue in evidence'
+        end
+
+        context 'when the user is the author of the confidential issue' do
+          let(:issue) { create(:issue, :confidential, project: project, author: user) }
+
+          it_behaves_like 'does not show the issue in evidence'
+        end
+
+        context 'when project is private' do
+          let!(:project) { create(:project, :repository, :private) }
+
+          it_behaves_like 'evidence not found'
+        end
+
+        context 'when project restricts the visibility of issues to project members only' do
+          let!(:project) { create(:project, :repository, :issues_private) }
+
+          it_behaves_like 'evidence not found'
+        end
+      end
+
+      context 'when user is non-project member' do
+        let(:user) { create(:user) }
+
+        it_behaves_like 'safely expose evidence'
+      end
+
+      context 'when user is auditor', if: Gitlab.ee? do
+        let(:user) { create(:user, :auditor) }
+
+        it_behaves_like 'safely expose evidence'
+      end
+
+      context 'when external authorization control is enabled' do
+        let(:user) { create(:user) }
+
+        before do
+          stub_application_setting(external_authorization_service_enabled: true)
+        end
+
+        it_behaves_like 'evidence not found'
       end
     end
   end

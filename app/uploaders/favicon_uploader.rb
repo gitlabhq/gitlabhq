@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 class FaviconUploader < AttachmentUploader
+  include UploadTypeCheck::Concern
+
   EXTENSION_WHITELIST = %w[png ico].freeze
+
+  check_upload_type extensions: EXTENSION_WHITELIST
 
   def extension_whitelist
     EXTENSION_WHITELIST

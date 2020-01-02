@@ -46,4 +46,16 @@ describe AvatarUploader do
       expect(uploader.absolute_path).to eq(absolute_path)
     end
   end
+
+  context 'upload type check' do
+    AvatarUploader::SAFE_IMAGE_EXT.each do |ext|
+      context "#{ext} extension" do
+        it_behaves_like 'type checked uploads', filenames: "image.#{ext}"
+      end
+    end
+
+    context 'skip image/svg+xml integrity check' do
+      it_behaves_like 'skipped type checked uploads', filenames: 'image.svg'
+    end
+  end
 end

@@ -56,7 +56,7 @@ describe SentNotificationsController do
           get(:unsubscribe, params: { id: sent_notification.reply_key })
         end
 
-        shared_examples 'unsubscribing as anonymous' do
+        shared_examples 'unsubscribing as anonymous' do |project_visibility|
           it 'does not unsubscribe the user' do
             expect(noteable.subscribed?(user, target_project)).to be_truthy
           end
@@ -69,6 +69,18 @@ describe SentNotificationsController do
             expect(response.status).to eq(200)
             expect(response).to render_template :unsubscribe
           end
+
+          if project_visibility == :private
+            it 'does not show project name or path' do
+              expect(response.body).not_to include(noteable.project.name)
+              expect(response.body).not_to include(noteable.project.full_name)
+            end
+          else
+            it 'shows project name or path' do
+              expect(response.body).to include(noteable.project.name)
+              expect(response.body).to include(noteable.project.full_name)
+            end
+          end
         end
 
         context 'when project is public' do
@@ -79,7 +91,7 @@ describe SentNotificationsController do
               expect(response.body).to include(issue.title)
             end
 
-            it_behaves_like 'unsubscribing as anonymous'
+            it_behaves_like 'unsubscribing as anonymous', :public
           end
 
           context 'when unsubscribing from confidential issue' do
@@ -90,7 +102,7 @@ describe SentNotificationsController do
               expect(response.body).to include(confidential_issue.to_reference)
             end
 
-            it_behaves_like 'unsubscribing as anonymous'
+            it_behaves_like 'unsubscribing as anonymous', :public
           end
 
           context 'when unsubscribing from merge request' do
@@ -100,7 +112,12 @@ describe SentNotificationsController do
               expect(response.body).to include(merge_request.title)
             end
 
-            it_behaves_like 'unsubscribing as anonymous'
+            it 'shows project name or path' do
+              expect(response.body).to include(issue.project.name)
+              expect(response.body).to include(issue.project.full_name)
+            end
+
+            it_behaves_like 'unsubscribing as anonymous', :public
           end
         end
 
@@ -110,11 +127,11 @@ describe SentNotificationsController do
           context 'when unsubscribing from issue' do
             let(:noteable) { issue }
 
-            it 'shows issue title' do
+            it 'does not show issue title' do
               expect(response.body).not_to include(issue.title)
             end
 
-            it_behaves_like 'unsubscribing as anonymous'
+            it_behaves_like 'unsubscribing as anonymous', :private
           end
 
           context 'when unsubscribing from confidential issue' do
@@ -125,17 +142,17 @@ describe SentNotificationsController do
               expect(response.body).to include(confidential_issue.to_reference)
             end
 
-            it_behaves_like 'unsubscribing as anonymous'
+            it_behaves_like 'unsubscribing as anonymous', :private
           end
 
           context 'when unsubscribing from merge request' do
             let(:noteable) { merge_request }
 
-            it 'shows merge request title' do
+            it 'dos not show merge request title' do
               expect(response.body).not_to include(merge_request.title)
             end
 
-            it_behaves_like 'unsubscribing as anonymous'
+            it_behaves_like 'unsubscribing as anonymous', :private
           end
         end
       end

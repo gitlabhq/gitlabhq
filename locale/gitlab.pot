@@ -8579,6 +8579,9 @@ msgstr ""
 msgid "GitHub import"
 msgstr ""
 
+msgid "GitLab / Unsubscribe"
+msgstr ""
+
 msgid "GitLab CI Linter has been moved"
 msgstr ""
 
