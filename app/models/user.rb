@@ -1308,7 +1308,7 @@ class User < ApplicationRecord
         .select('ci_runners.*')
 
       group_runners = Ci::RunnerNamespace
-        .where(namespace_id: owned_or_maintainers_groups.select(:id))
+        .where(namespace_id: owned_groups.select(:id))
         .joins(:runner)
         .select('ci_runners.*')
 

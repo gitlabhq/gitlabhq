@@ -116,7 +116,7 @@ module Banzai
       end
 
       def process_link_to_upload_attr(html_attr)
-        path_parts = [Addressable::URI.unescape(html_attr.value)]
+        path_parts = [unescape_and_scrub_uri(html_attr.value)]
 
         if project
           path_parts.unshift(relative_url_root, project.full_path)
@@ -172,7 +172,7 @@ module Banzai
       end
 
       def cleaned_file_path(uri)
-        Addressable::URI.unescape(uri.path).scrub.delete("\0").chomp("/")
+        unescape_and_scrub_uri(uri.path).delete("\0").chomp("/")
       end
 
       def relative_file_path(uri)
@@ -184,7 +184,7 @@ module Banzai
       def request_path
         return unless context[:requested_path]
 
-        Addressable::URI.unescape(context[:requested_path]).chomp("/")
+        unescape_and_scrub_uri(context[:requested_path]).chomp("/")
       end
 
       # Convert a relative path into its correct location based on the currently
@@ -265,6 +265,12 @@ module Banzai
 
       def repository
         @repository ||= project&.repository
+      end
+
+      private
+
+      def unescape_and_scrub_uri(uri)
+        Addressable::URI.unescape(uri).scrub
       end
     end
   end

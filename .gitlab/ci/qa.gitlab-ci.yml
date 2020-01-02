@@ -3,7 +3,7 @@
     - .default-tags
     - .default-retry
     - .default-only
-    - .only-code-qa-changes
+    - .only:changes-code-qa
   stage: test
   dependencies: []
   cache:
@@ -31,7 +31,6 @@ qa:selectors-foss:
     - .only-ee-as-if-foss
 
 .package-and-qa-base:
-  extends: .default-only
   image: ruby:2.6-alpine
   stage: qa
   dependencies: []
@@ -40,35 +39,31 @@ qa:selectors-foss:
     - source scripts/utils.sh
     - install_gitlab_gem
     - ./scripts/trigger-build omnibus
-  only:
-    variables:
-      - $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/)/  # Matches the gitlab-org group or its subgroups
 
 package-and-qa-manual:
   extends:
     - .package-and-qa-base
-    - .only-code-changes
-  except:
-    refs:
-      - master
-      - /^\d+-\d+-auto-deploy-\d+$/
+    - .default-only
+    - .only:variables-canonical-dot-com
+    - .except:refs-deploy
+    - .only:changes-code
   when: manual
   needs: ["build-qa-image", "gitlab:assets:compile pull-cache"]
 
 package-and-qa:
   extends:
     - .package-and-qa-base
-    - .only-qa-changes
-  except:
-    refs:
-      - master
-      - /^\d+-\d+-auto-deploy-\d+$/
+    - .default-only
+    - .only:variables-canonical-dot-com
+    - .except:refs-master-tags-stable-deploy
+    - .only:changes-qa
   needs: ["build-qa-image", "gitlab:assets:compile pull-cache"]
   allow_failure: true
 
 schedule:package-and-qa:
   extends:
     - .package-and-qa-base
-    - .only-code-qa-changes
-    - .only-canonical-schedules
+    - .default-only
+    - .only:variables_refs-canonical-dot-com-schedules
   needs: ["build-qa-image", "gitlab:assets:compile pull-cache"]
+  allow_failure: true

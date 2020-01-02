@@ -12,7 +12,7 @@
     - .default-only
     - .default-before_script
     - .assets-compile-cache
-    - .only-code-qa-changes
+    - .only:changes-code-backstage-qa
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.3-git-2.22-chrome-73.0-node-12.x-yarn-1.16-graphicsmagick-1.3.33-docker-18.06.1
   stage: test
   dependencies: ["setup-test-env"]
@@ -73,7 +73,7 @@ gitlab:assets:compile pull-cache:
     - .default-only
     - .default-before_script
     - .assets-compile-cache
-    - .only-code-qa-changes
+    - .only:changes-code-backstage-qa
     - .use-pg9
   stage: prepare
   script:
@@ -128,7 +128,7 @@ compile-assets pull-cache foss:
     - .default-cache
     - .default-only
     - .default-before_script
-    - .only-code-changes
+    - .only:changes-code-backstage
     - .use-pg9
   stage: test
   needs: ["setup-test-env", "compile-assets pull-cache"]
@@ -205,7 +205,7 @@ jest-foss:
     - .default-retry
     - .default-cache
     - .default-only
-    - .only-code-changes
+    - .only:changes-code-backstage
   stage: test
   dependencies: []
   cache:
@@ -238,7 +238,7 @@ webpack-dev-server:
     - .default-retry
     - .default-cache
     - .default-only
-    - .only-code-changes
+    - .only:changes-code-backstage
   stage: test
   needs: ["setup-test-env", "compile-assets pull-cache"]
   dependencies: ["setup-test-env", "compile-assets pull-cache"]

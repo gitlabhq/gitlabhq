@@ -1,14 +1,8 @@
-.except-deploys:
-  except:
-    refs:
-      - /^\d+-\d+-auto-deploy-\d+$/
-
 .review-docker:
   extends:
     - .default-tags
     - .default-retry
     - .default-only
-    - .except-deploys
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-qa-alpine
   services:
     - docker:19.03.0-dind
@@ -23,10 +17,9 @@
 build-qa-image:
   extends:
     - .review-docker
-    - .only-code-qa-changes
-  only:
-    variables:
-      - $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org"
+    - .only:variables-canonical-dot-com
+    - .except:refs-deploy
+    - .only:changes-code-qa
   stage: prepare
   script:
     - '[[ ! -d "ee/" ]] || export GITLAB_EDITION="ee"'
@@ -35,14 +28,11 @@ build-qa-image:
     - echo "${CI_JOB_TOKEN}" | docker login --username gitlab-ci-token --password-stdin ${CI_REGISTRY}
     - time docker push ${QA_IMAGE}
 
-schedule:review-cleanup:
+.base-review-cleanup:
   extends:
     - .default-tags
     - .default-retry
     - .default-only
-    - .only-code-qa-changes
-    - .only-review-schedules
-    - .except-deploys
   stage: prepare
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
   allow_failure: true
@@ -55,11 +45,22 @@ schedule:review-cleanup:
   script:
     - ruby -rrubygems scripts/review_apps/automated_cleanup.rb
 
+schedule:review-cleanup:
+  extends:
+    - .base-review-cleanup
+    - .only-review-schedules
+
+manual:review-cleanup:
+  extends:
+    - .base-review-cleanup
+    - .only:changes-code-qa
+  when: manual
+
 .review-build-cng-base:
   extends:
+    - .default-tags
+    - .default-retry
     - .default-only
-    - .only-code-qa-changes
-    - .except-deploys
   image: ruby:2.6-alpine
   stage: review-prepare
   before_script:
@@ -74,6 +75,7 @@ review-build-cng:
   extends:
     - .review-build-cng-base
     - .only-review
+    - .only:changes-code-qa
   needs: ["gitlab:assets:compile pull-cache"]
 
 schedule:review-build-cng:
@@ -82,26 +84,30 @@ schedule:review-build-cng:
     - .only-review-schedules
   needs: ["gitlab:assets:compile pull-cache"]
 
-.review-deploy-base:
+.review-workflow-base:
   extends:
     - .default-tags
     - .default-retry
     - .default-only
-    - .only-code-qa-changes
-    - .except-deploys
-  stage: review
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
   dependencies: []
-  allow_failure: true
   variables:
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
     DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"
-    GITLAB_HELM_CHART_REF: "v2.3.7"
+    # v2.4.4 + two improvements:
+    # - Allow to pass an EE license when installing the chart: https://gitlab.com/gitlab-org/charts/gitlab/merge_requests/1008
+    # - Allow to customize the livenessProbe for `gitlab-shell`: https://gitlab.com/gitlab-org/charts/gitlab/merge_requests/1021
+    GITLAB_HELM_CHART_REF: "6c655ed77e60f1f7f533afb97bef8c9cb7dc61eb"
     GITLAB_EDITION: "ce"
   environment:
     name: review/${CI_COMMIT_REF_NAME}
     url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}
     on_stop: review-stop
+
+.review-deploy-base:
+  extends: .review-workflow-base
+  stage: review
+  allow_failure: true
   before_script:
     - '[[ ! -d "ee/" ]] || export GITLAB_EDITION="ee"'
     - export GITLAB_SHELL_VERSION=$(<GITLAB_SHELL_VERSION)
@@ -112,21 +118,13 @@ schedule:review-build-cng:
     - install_api_client_dependencies_with_apk
     - source scripts/review_apps/review-apps.sh
   script:
-    - date
     - check_kube_domain
-    - date
     - ensure_namespace
-    - date
     - install_tiller
-    - date
     - install_external_dns
-    - date
     - download_chart
     - date
     - deploy || (display_deployment_debug && exit 1)
-    - date
-    - add_license
-    - date
   artifacts:
     paths: [review_app_url.txt]
     expire_in: 2 days
@@ -136,6 +134,7 @@ review-deploy:
   extends:
     - .review-deploy-base
     - .only-review
+    - .only:changes-code-qa
   needs: ["review-build-cng"]
 
 schedule:review-deploy:
@@ -144,11 +143,11 @@ schedule:review-deploy:
     - .only-review-schedules
   needs: ["schedule:review-build-cng"]
 
-review-stop:
+.base-review-stop:
   extends:
-    - .review-deploy-base
+    - .review-workflow-base
     - .only-review
-  when: manual
+    - .only:changes-code-qa
   environment:
     action: stop
   variables:
@@ -161,24 +160,26 @@ review-stop:
     - wget $CI_PROJECT_URL/raw/$CI_COMMIT_SHA/scripts/utils.sh
     - source utils.sh
     - source review-apps.sh
-  script:
-    - delete_release
-  artifacts:
-    paths: []
 
-review-cleanup-failed-deployment:
-  extends: review-stop
+review-stop-failed-deployment:
+  extends: .base-review-stop
   stage: prepare
-  when: on_success
-  allow_failure: false
   script:
     - delete_failed_release
+
+review-stop:
+  extends: .base-review-stop
+  stage: review
+  when: manual
+  allow_failure: true
+  script:
+    - delete_release
 
 .review-qa-base:
   extends:
     - .review-docker
     - .only-review
-    - .only-code-qa-changes
+    - .only:changes-code-qa
   stage: qa
   allow_failure: true
   variables:
@@ -223,9 +224,7 @@ review-qa-all:
     - gitlab-qa Test::Instance::Any "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}" -- --format RspecJunitFormatter --out tmp/rspec-${CI_JOB_ID}.xml --format html --out tmp/rspec.htm --color --format documentation
 
 .review-performance-base:
-  extends:
-    - .review-docker
-    - .only-code-qa-changes
+  extends: .review-docker
   stage: qa
   allow_failure: true
   before_script:
@@ -248,6 +247,7 @@ review-performance:
   extends:
     - .review-performance-base
     - .only-review
+    - .only:changes-code-qa
   needs: ["review-deploy"]
   dependencies: ["review-deploy"]
   before_script:
@@ -277,9 +277,8 @@ parallel-spec-reports:
   extends:
     - .default-tags
     - .default-only
-    - .only-code-qa-changes
     - .only-review
-    - .except-deploys
+    - .only:changes-code-qa
   image: ruby:2.6-alpine
   stage: post-test
   dependencies: ["review-qa-all"]
@@ -310,18 +309,13 @@ danger-review:
     - .default-retry
     - .default-cache
     - .default-only
+    - .except:refs-master-tags-stable-deploy
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:danger
   stage: test
   dependencies: []
   only:
     variables:
       - $DANGER_GITLAB_API_TOKEN
-  except:
-    refs:
-      - master
-    variables:
-      - $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/
-      - $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/
   script:
     - git version
     - node --version

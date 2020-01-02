@@ -6,7 +6,8 @@ cache gems:
     - .default-retry
     - .default-cache
     - .default-before_script
-    - .only-code-qa-changes
+    - .only:variables-canonical-dot-com
+    - .only:changes-code-backstage-qa
   stage: test
   dependencies: ["setup-test-env"]
   needs: ["setup-test-env"]
@@ -21,15 +22,13 @@ cache gems:
     refs:
       - master
       - tags
-    variables:
-      - $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org"
 
 .minimal-job:
   extends:
     - .default-tags
     - .default-retry
     - .default-only
-    - .only-code-changes
+    - .only:changes-code-backstage
   dependencies: []
 
 gitlab_git_test:

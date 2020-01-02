@@ -38,7 +38,8 @@ The current stages are:
 ## Default image
 
 The default image is currently
-`gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.3-golang-1.11-git-2.22-chrome-73.0-node-12.x-yarn-1.16-postgresql-9.6-graphicsmagick-1.3.33`.
+`registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.3-golang-1.11-git-2.22-chrome-73.0-node-12.x-yarn-1.16-postgresql-9.6-graphicsmagick-1.3.33`.
+
 It includes Ruby 2.6.3, Go 1.11, Git 2.22, Chrome 73, Node 12, Yarn 1.16,
 PostgreSQL 9.6, and Graphics Magick 1.3.33.
 
@@ -48,24 +49,13 @@ project, which is push-mirrored to <https://dev.gitlab.org/gitlab/gitlab-build-i
 for redundancy.
 
 The current version of the build images can be found in the
-["Used by GitLab CE/EE section"](https://gitlab.com/gitlab-org/gitlab-build-images/blob/master/.gitlab-ci.yml).
+["Used by GitLab section"](https://gitlab.com/gitlab-org/gitlab-build-images/blob/master/.gitlab-ci.yml).
 
 ## Default variables
 
 In addition to the [predefined variables](../ci/variables/predefined_variables.md),
-each pipeline includes the following [variables](../ci/variables/README.md):
-
-- `RAILS_ENV: "test"`
-- `NODE_ENV: "test"`
-- `SIMPLECOV: "true"`
-- `GIT_DEPTH: "50"`
-- `GIT_SUBMODULE_STRATEGY: "none"`
-- `GET_SOURCES_ATTEMPTS: "3"`
-- `KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/rspec_report-master.json`
-- `FLAKY_RSPEC_SUITE_REPORT_PATH: rspec_flaky/report-suite.json`
-- `BUILD_ASSETS_IMAGE: "false"`
-- `ES_JAVA_OPTS: "-Xms256m -Xmx256m"`
-- `ELASTIC_URL: "http://elastic:changeme@docker.elastic.co-elasticsearch-elasticsearch:9200"`
+each pipeline includes default variables defined in
+<https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab-ci.yml>.
 
 ## Common job definitions
 
@@ -85,22 +75,35 @@ These common definitions are:
   Ruby/Rails and frontend tasks.
 - `.default-only`: Restricts the cases where a job is created. This currently
   includes `master`, `/^[\d-]+-stable(-ee)?$/` (stable branches),
-  `/^\d+-\d+-auto-deploy-\d+$/` (security branches), `merge_requests`, `tags`.
+  `/^\d+-\d+-auto-deploy-\d+$/` (auto-deploy branches), `/^security\//` (security branches), `merge_requests`, `tags`.
   Note that jobs won't be created for branches with this default configuration.
-- `.only-review`: Only creates a job for the `gitlab-org` namespace and if
-  Kubernetes integration is available. Also, prevents a job from being created
-  for `master` and auto-deploy branches.
-- `.only-review-schedules`: Same as `.only-review` but also restrict a job to
-  only run for [schedules](../user/project/pipelines/schedules.md).
-- `.only-canonical-schedules`: Only creates a job for scheduled pipelines in
-  the `gitlab-org/gitlab` and `gitlab-org/gitlab-foss` projects
+- `.only:variables-canonical-dot-com`: Only creates a job if the project is
+  located under <https://gitlab.com/gitlab-org>.
+- `.only:variables_refs-canonical-dot-com-schedules`: Same as
+  `.only:variables-canonical-dot-com` but add the condition that pipeline is scheduled.
+- `.except:refs-deploy`: Don't create a job if the `ref` is an auto-deploy branch.
+- `.except:refs-master-tags-stable-deploy`: Don't create a job if the `ref` is one of:
+  - `master`
+  - a tag
+  - a stable branch
+  - an auto-deploy branch
+- `.only:kubernetes`: Only creates a job if a Kubernetes integration is enabled
+  on the project.
+- `.only-review`: This extends from:
+  - `.only:variables-canonical-dot-com`
+  - `.only:kubernetes`
+  - `.except:refs-master-tags-stable-deploy`
+- `.only-review-schedules`: This extends from:
+  - `.only:variables_refs-canonical-dot-com-schedules`
+  - `.only:kubernetes`
+  - `.except:refs-deploy`
 - `.use-pg9`: Allows a job to use the `postgres:9.6` and `redis:alpine` services.
 - `.use-pg10`: Allows a job to use the `postgres:10.9` and `redis:alpine` services.
 - `.use-pg9-ee`: Same as `.use-pg9` but also use the
   `docker.elastic.co/elasticsearch/elasticsearch:5.6.12` services.
 - `.use-pg10-ee`: Same as `.use-pg10` but also use the
   `docker.elastic.co/elasticsearch/elasticsearch:5.6.12` services.
-- `.only-ee`: Only creates a job for the `gitlab` project.
+- `.only-ee`: Only creates a job for the `gitlab` or `gitlab-ee` project.
 - `.only-ee-as-if-foss`: Same as `.only-ee` but simulate the FOSS project by
   setting the `FOSS_ONLY='1'` environment variable.
 
@@ -111,11 +114,13 @@ the cases where it should be created
 [based on the changes](../ci/yaml/README.md#onlychangesexceptchanges)
 from a commit or MR by extending from the following CI definitions:
 
-- `.only-code-changes`: Allows a job to only be created upon code-related changes.
-- `.only-qa-changes`: Allows a job to only be created upon QA-related changes.
-- `.only-docs-changes`: Allows a job to only be created upon docs-related changes.
-- `.only-code-qa-changes`: Allows a job to only be created upon code-related or QA-related changes.
-- `.only-graphql-changes`: Allows a job to only be created upon graphql-related changes.
+- `.only:changes-code`: Allows a job to only be created upon code-related changes.
+- `.only:changes-qa`: Allows a job to only be created upon QA-related changes.
+- `.only:changes-docs`: Allows a job to only be created upon docs-related changes.
+- `.only:changes-graphql`: Allows a job to only be created upon GraphQL-related changes.
+- `.only:changes-code-backstage`: Allows a job to only be created upon code-related or backstage-related (e.g. Danger, RuboCop, specs) changes.
+- `.only:changes-code-qa`: Allows a job to only be created upon code-related or QA-related changes.
+- `.only:changes-code-backstage-qa`: Allows a job to only be created upon code-related, backstage-related (e.g. Danger, RuboCop, specs) or QA-related changes.
 
 **See <https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/global.gitlab-ci.yml>
 for the list of exact patterns.**
