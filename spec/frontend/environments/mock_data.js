@@ -63,6 +63,7 @@ const environment = {
   log_path: 'root/ci-folders/environments/31/logs',
   created_at: '2016-11-07T11:11:16.525Z',
   updated_at: '2016-11-10T15:55:58.778Z',
+  auto_stop_at: null,
 };
 
 const folder = {
@@ -97,6 +98,10 @@ const tableData = {
   date: {
     title: 'Updated',
     spacing: 'section-10',
+  },
+  autoStop: {
+    title: 'Auto stop in',
+    spacing: 'section-5',
   },
   actions: {
     spacing: 'section-25',

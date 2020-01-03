@@ -33,6 +33,9 @@ class Issue < ApplicationRecord
 
   has_internal_id :iid, scope: :project, init: ->(s) { s&.project&.issues&.maximum(:iid) }
 
+  has_many :issue_milestones
+  has_many :milestones, through: :issue_milestones
+
   has_many :events, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :merge_requests_closing_issues,

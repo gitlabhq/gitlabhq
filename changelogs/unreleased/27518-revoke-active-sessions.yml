@@ -1,0 +1,6 @@
+---
+title: Restores user's ability to revoke sessions from the active sessions
+  page.
+merge_request: 17462
+author: Jesse Hall @jessehall3
+type: changed

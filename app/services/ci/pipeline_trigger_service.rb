@@ -44,7 +44,7 @@ module Ci
       return error("400 Job has to be running", 400) unless job.running?
 
       pipeline = Ci::CreatePipelineService.new(project, job.user, ref: params[:ref])
-        .execute(:pipeline, ignore_skip_ci: true) do |pipeline|
+        .execute(:cross_project_pipeline, ignore_skip_ci: true) do |pipeline|
           source = job.sourced_pipelines.build(
             source_pipeline: job.pipeline,
             source_project: job.project,

@@ -5,6 +5,12 @@ require 'spec_helper'
 describe UserPreference do
   let(:user_preference) { create(:user_preference) }
 
+  describe 'notes filters global keys' do
+    it 'contains expected values' do
+      expect(UserPreference::NOTES_FILTERS.keys).to match_array([:all_notes, :only_comments, :only_activity])
+    end
+  end
+
   describe '#set_notes_filter' do
     let(:issuable) { build_stubbed(:issue) }
 

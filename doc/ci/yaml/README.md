@@ -2665,7 +2665,7 @@ the currently running/pending `deploy-to-production` job is finished. As a resul
 you can ensure that concurrent deployments will never happen to the production environment.
 
 There can be multiple `resource_group`s defined per environment. A good use case for this
-is when deploying to physical devices. You may have more than one phyisical device, and each
+is when deploying to physical devices. You may have more than one physical device, and each
 one can be deployed to, but there can be only one deployment per device at any given time.
 
 ### `include`

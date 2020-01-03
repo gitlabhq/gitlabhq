@@ -24,6 +24,8 @@ tree:
       - milestone:
         - events:
           - :push_event_payload
+      - issue_milestones:
+          - :milestone
       - resource_label_events:
         - label:
           - :priorities
@@ -57,6 +59,8 @@ tree:
       - milestone:
         - events:
           - :push_event_payload
+      - merge_request_milestones:
+          - :milestone
       - resource_label_events:
         - label:
           - :priorities
@@ -202,6 +206,12 @@ excluded_attributes:
     - :latest_merge_request_diff_id
     - :head_pipeline_id
     - :state_id
+  issue_milestones:
+    - :milestone_id
+    - :issue_id
+  merge_request_milestones:
+    - :milestone_id
+    - :merge_request_id
   award_emoji:
     - :awardable_id
   statuses:

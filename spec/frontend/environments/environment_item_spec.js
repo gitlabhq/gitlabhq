@@ -1,6 +1,8 @@
 import { mount } from '@vue/test-utils';
 import { format } from 'timeago.js';
 import EnvironmentItem from '~/environments/components/environment_item.vue';
+import PinComponent from '~/environments/components/environment_pin.vue';
+
 import { environment, folder, tableData } from './mock_data';
 
 describe('Environment item', () => {
@@ -25,6 +27,8 @@ describe('Environment item', () => {
       },
     });
   });
+
+  const findAutoStop = () => wrapper.find('.js-auto-stop');
 
   afterEach(() => {
     wrapper.destroy();
@@ -75,6 +79,79 @@ describe('Environment item', () => {
       describe('With commit information', () => {
         it('should render commit component', () => {
           expect(wrapper.find('.js-commit-component')).toBeDefined();
+        });
+      });
+
+      describe('Without auto-stop date', () => {
+        beforeEach(() => {
+          factory({
+            propsData: {
+              model: environment,
+              canReadEnvironment: true,
+              tableData,
+              shouldShowAutoStopDate: true,
+            },
+          });
+        });
+
+        it('should not render a date', () => {
+          expect(findAutoStop().exists()).toBe(false);
+        });
+
+        it('should not render the suto-stop button', () => {
+          expect(wrapper.find(PinComponent).exists()).toBe(false);
+        });
+      });
+
+      describe('With auto-stop date', () => {
+        describe('in the future', () => {
+          const futureDate = new Date(Date.now() + 100000);
+          beforeEach(() => {
+            factory({
+              propsData: {
+                model: {
+                  ...environment,
+                  auto_stop_at: futureDate,
+                },
+                canReadEnvironment: true,
+                tableData,
+                shouldShowAutoStopDate: true,
+              },
+            });
+          });
+
+          it('renders the date', () => {
+            expect(findAutoStop().text()).toContain(format(futureDate));
+          });
+
+          it('should render the auto-stop button', () => {
+            expect(wrapper.find(PinComponent).exists()).toBe(true);
+          });
+        });
+
+        describe('in the past', () => {
+          const pastDate = new Date(Date.now() - 100000);
+          beforeEach(() => {
+            factory({
+              propsData: {
+                model: {
+                  ...environment,
+                  auto_stop_at: pastDate,
+                },
+                canReadEnvironment: true,
+                tableData,
+                shouldShowAutoStopDate: true,
+              },
+            });
+          });
+
+          it('should not render a date', () => {
+            expect(findAutoStop().exists()).toBe(false);
+          });
+
+          it('should not render the suto-stop button', () => {
+            expect(wrapper.find(PinComponent).exists()).toBe(false);
+          });
         });
       });
     });

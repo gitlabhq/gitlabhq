@@ -2099,6 +2099,14 @@ ActiveRecord::Schema.define(version: 2019_12_29_140154) do
     t.index ["issue_id"], name: "index_issue_metrics"
   end
 
+  create_table "issue_milestones", id: false, force: :cascade do |t|
+    t.bigint "issue_id", null: false
+    t.bigint "milestone_id", null: false
+    t.index ["issue_id", "milestone_id"], name: "index_issue_milestones_on_issue_id_and_milestone_id", unique: true
+    t.index ["issue_id"], name: "index_issue_milestones_on_issue_id", unique: true
+    t.index ["milestone_id"], name: "index_issue_milestones_on_milestone_id"
+  end
+
   create_table "issue_tracker_data", force: :cascade do |t|
     t.integer "service_id", null: false
     t.datetime_with_timezone "created_at", null: false
@@ -2484,6 +2492,14 @@ ActiveRecord::Schema.define(version: 2019_12_29_140154) do
     t.index ["merged_at"], name: "index_merge_request_metrics_on_merged_at"
     t.index ["merged_by_id"], name: "index_merge_request_metrics_on_merged_by_id"
     t.index ["pipeline_id"], name: "index_merge_request_metrics_on_pipeline_id"
+  end
+
+  create_table "merge_request_milestones", id: false, force: :cascade do |t|
+    t.bigint "merge_request_id", null: false
+    t.bigint "milestone_id", null: false
+    t.index ["merge_request_id", "milestone_id"], name: "index_mrs_milestones_on_mr_id_and_milestone_id", unique: true
+    t.index ["merge_request_id"], name: "index_merge_request_milestones_on_merge_request_id", unique: true
+    t.index ["milestone_id"], name: "index_merge_request_milestones_on_milestone_id"
   end
 
   create_table "merge_request_user_mentions", force: :cascade do |t|
@@ -4595,6 +4611,8 @@ ActiveRecord::Schema.define(version: 2019_12_29_140154) do
   add_foreign_key "issue_links", "issues", column: "source_id", name: "fk_c900194ff2", on_delete: :cascade
   add_foreign_key "issue_links", "issues", column: "target_id", name: "fk_e71bb44f1f", on_delete: :cascade
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
+  add_foreign_key "issue_milestones", "issues", on_delete: :cascade
+  add_foreign_key "issue_milestones", "milestones", on_delete: :cascade
   add_foreign_key "issue_tracker_data", "services", on_delete: :cascade
   add_foreign_key "issue_user_mentions", "issues", on_delete: :cascade
   add_foreign_key "issue_user_mentions", "notes", on_delete: :cascade
@@ -4638,6 +4656,8 @@ ActiveRecord::Schema.define(version: 2019_12_29_140154) do
   add_foreign_key "merge_request_metrics", "merge_requests", on_delete: :cascade
   add_foreign_key "merge_request_metrics", "users", column: "latest_closed_by_id", name: "fk_ae440388cc", on_delete: :nullify
   add_foreign_key "merge_request_metrics", "users", column: "merged_by_id", name: "fk_7f28d925f3", on_delete: :nullify
+  add_foreign_key "merge_request_milestones", "merge_requests", on_delete: :cascade
+  add_foreign_key "merge_request_milestones", "milestones", on_delete: :cascade
   add_foreign_key "merge_request_user_mentions", "merge_requests", on_delete: :cascade
   add_foreign_key "merge_request_user_mentions", "notes", on_delete: :cascade
   add_foreign_key "merge_requests", "ci_pipelines", column: "head_pipeline_id", name: "fk_fd82eae0b9", on_delete: :nullify

@@ -35,6 +35,9 @@ class MergeRequest < ApplicationRecord
 
   has_many :merge_request_diffs
 
+  has_many :merge_request_milestones
+  has_many :milestones, through: :merge_request_milestones
+
   has_one :merge_request_diff,
     -> { order('merge_request_diffs.id DESC') }, inverse_of: :merge_request
 

@@ -84,4 +84,31 @@ describe 'Profile > Active Sessions', :clean_gitlab_redis_shared_state do
       expect(page).not_to have_content('Chrome on Windows')
     end
   end
+
+  it 'User can revoke a session', :js, :redis_session_store do
+    Capybara::Session.new(:session1)
+    Capybara::Session.new(:session2)
+
+    # set an additional session in another browser
+    using_session :session2 do
+      gitlab_sign_in(user)
+    end
+
+    using_session :session1 do
+      gitlab_sign_in(user)
+      visit profile_active_sessions_path
+
+      expect(page).to have_link('Revoke', count: 1)
+
+      accept_confirm { click_on 'Revoke' }
+
+      expect(page).not_to have_link('Revoke')
+    end
+
+    using_session :session2 do
+      visit profile_active_sessions_path
+
+      expect(page).to have_content('You need to sign in or sign up before continuing.')
+    end
+  end
 end

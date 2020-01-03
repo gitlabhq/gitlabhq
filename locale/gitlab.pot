@@ -2152,6 +2152,9 @@ msgstr ""
 msgid "Are you sure? Removing this GPG key does not affect already signed commits."
 msgstr ""
 
+msgid "Are you sure? The device will be signed out of GitLab."
+msgstr ""
+
 msgid "Are you sure? This will invalidate your registered applications and U2F devices."
 msgstr ""
 
@@ -6816,6 +6819,9 @@ msgstr ""
 msgid "EnvironmentsDashboard|The environments dashboard provides a summary of each project's environments' status, including pipeline and alert statuses."
 msgstr ""
 
+msgid "Environments|An error occurred while canceling the auto stop, please try again"
+msgstr ""
+
 msgid "Environments|An error occurred while fetching the environments."
 msgstr ""
 
@@ -6832,6 +6838,12 @@ msgid "Environments|An error occurred while stopping the environment, please try
 msgstr ""
 
 msgid "Environments|Are you sure you want to stop this environment?"
+msgstr ""
+
+msgid "Environments|Auto stop in"
+msgstr ""
+
+msgid "Environments|Auto stops %{auto_stop_time}"
 msgstr ""
 
 msgid "Environments|Commit"
@@ -11121,6 +11133,9 @@ msgstr ""
 msgid "May"
 msgstr ""
 
+msgid "Measured in bytes of code. Excludes generated and vendored code."
+msgstr ""
+
 msgid "Median"
 msgstr ""
 
@@ -13327,6 +13342,9 @@ msgid "Prevent approval of merge requests by merge request author"
 msgstr ""
 
 msgid "Prevent approval of merge requests by merge request committers"
+msgstr ""
+
+msgid "Prevent environment from auto-stopping"
 msgstr ""
 
 msgid "Preview"

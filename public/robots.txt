@@ -72,3 +72,4 @@ Disallow: /*/*/protected_branches
 Disallow: /*/*/uploads/
 Disallow: /*/-/group_members
 Disallow: /*/project_members
+Disallow: /groups/*/-/analytics

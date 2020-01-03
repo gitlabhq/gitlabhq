@@ -15,6 +15,9 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action only: [:metrics, :additional_metrics, :metrics_dashboard] do
     push_frontend_feature_flag(:prometheus_computed_alerts)
   end
+  before_action do
+    push_frontend_feature_flag(:auto_stop_environments)
+  end
   after_action :expire_etag_cache, only: [:cancel_auto_stop]
 
   def index
