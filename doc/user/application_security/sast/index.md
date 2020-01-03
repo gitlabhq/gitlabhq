@@ -100,7 +100,7 @@ Add the following to your `.gitlab-ci.yml` file:
 
 ```yaml
 include:
-  template: SAST.gitlab-ci.yml
+  - template: SAST.gitlab-ci.yml
 ```
 
 The included template will create a `sast` job in your CI/CD pipeline and scan
@@ -124,7 +124,7 @@ set the `SAST_GOSEC_LEVEL` variable to `2`:
 
 ```yaml
 include:
-  template: SAST.gitlab-ci.yml
+  - template: SAST.gitlab-ci.yml
 
 variables:
   SAST_GOSEC_LEVEL: 2
@@ -141,7 +141,7 @@ template inclusion and specify any additional keys under it. For example:
 
 ```yaml
 include:
-  template: SAST.gitlab-ci.yml
+  - template: SAST.gitlab-ci.yml
 
 sast:
   variables:
@@ -178,7 +178,7 @@ This does not require running the executor in privileged mode. For example:
 
 ```yaml
 include:
-  template: SAST.gitlab-ci.yml
+  - template: SAST.gitlab-ci.yml
 
 variables:
   SAST_DISABLE_DIND: "true"
@@ -196,7 +196,7 @@ kubesec analyzer. In `.gitlab-ci.yml`, define:
 
 ```yaml
 include:
-  template: SAST.gitlab-ci.yml
+  - template: SAST.gitlab-ci.yml
 
 variables:
   SCAN_KUBERNETES_MANIFESTS: "true"

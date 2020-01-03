@@ -21,7 +21,7 @@
 = form_tag personal_access_token_import_github_path, method: :post do
   .form-group
     %label.label-bold= _('Personal Access Token')
-    = text_field_tag :personal_access_token, '', class: 'form-control', placeholder: _('e.g. %{token}') % { token: '8d3f016698e...' }
+    = text_field_tag :personal_access_token, '', class: 'form-control', placeholder: _('e.g. %{token}') % { token: '8d3f016698e...' }, data: { qa_selector: 'personal_access_token_field' }
     %span.form-text.text-muted
       = import_github_personal_access_token_message
 
@@ -29,4 +29,4 @@
 
   .form-actions.d-flex.justify-content-end
     = link_to _('Cancel'), new_project_path, class: 'btn'
-    = submit_tag _('Authenticate'), class: 'btn btn-success ml-2'
+    = submit_tag _('Authenticate'), class: 'btn btn-success ml-2', data: { qa_selector: 'authenticate_button' }
