@@ -4687,7 +4687,7 @@ ActiveRecord::Schema.define(version: 2019_12_29_140154) do
   add_foreign_key "pages_domains", "projects", name: "fk_ea2f6dfc6f", on_delete: :cascade
   add_foreign_key "path_locks", "projects", name: "fk_5265c98f24", on_delete: :cascade
   add_foreign_key "path_locks", "users"
-  add_foreign_key "personal_access_tokens", "users"
+  add_foreign_key "personal_access_tokens", "users", name: "fk_personal_access_tokens_user_id", on_delete: :cascade
   add_foreign_key "plan_limits", "plans", on_delete: :cascade
   add_foreign_key "pool_repositories", "projects", column: "source_project_id", on_delete: :nullify
   add_foreign_key "pool_repositories", "shards", on_delete: :restrict

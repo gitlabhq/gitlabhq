@@ -121,7 +121,6 @@ This example code does the following:
    - Installs the Serverless Framework.
    - Deploys the serverless function to your AWS account using the AWS credentials
      defined above.
-   - Deploys the serverless function to your AWS account using the AWS credentials defined above
 
 ### Setting up your AWS credentials with your GitLab account
 

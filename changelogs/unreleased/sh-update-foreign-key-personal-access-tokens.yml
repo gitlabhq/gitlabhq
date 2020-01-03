@@ -1,0 +1,5 @@
+---
+title: Update foreign key constraint for personal access tokens
+merge_request: 22305
+author:
+type: fixed
