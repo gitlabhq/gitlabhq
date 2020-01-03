@@ -245,6 +245,12 @@ RSpec.configure do |config|
     Rails.cache = caching_store
   end
 
+  config.around do |example|
+    # Wrap each example in it's own context to make sure the contexts don't
+    # leak
+    Labkit::Context.with_context { example.run }
+  end
+
   config.around(:each, :clean_gitlab_redis_cache) do |example|
     redis_cache_cleanup!
 

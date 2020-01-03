@@ -107,8 +107,10 @@ module API
         if params[:gl_repository]
           @project, @repo_type = Gitlab::GlRepository.parse(params[:gl_repository])
           @redirected_path = nil
-        else
+        elsif params[:project]
           @project, @repo_type, @redirected_path = Gitlab::RepoPath.parse(params[:project])
+        else
+          @project, @repo_type, @redirected_path = nil, nil, nil
         end
       end
       # rubocop:enable Gitlab/ModuleWithInstanceVariables

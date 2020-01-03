@@ -33,6 +33,7 @@ class ApplicationController < ActionController::Base
   before_action :check_impersonation_availability
   before_action :required_signup_info
 
+  around_action :set_current_context
   around_action :set_locale
   around_action :set_session_storage
 
@@ -446,6 +447,14 @@ class ApplicationController < ActionController::Base
   # https://developers.yubico.com/U2F/App_ID.html
   def u2f_app_id
     request.base_url
+  end
+
+  def set_current_context(&block)
+    Gitlab::ApplicationContext.with_context(
+      user: -> { auth_user },
+      project: -> { @project },
+      namespace: -> { @group },
+      &block)
   end
 
   def set_locale(&block)

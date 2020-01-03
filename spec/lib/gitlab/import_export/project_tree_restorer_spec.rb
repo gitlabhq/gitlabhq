@@ -654,13 +654,10 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
     let(:user) { create(:user) }
     let!(:project) { create(:project, :builds_disabled, :issues_disabled, name: 'project', path: 'project') }
     let(:project_tree_restorer) { described_class.new(user: user, shared: shared, project: project) }
-    let(:correlation_id) { 'my-correlation-id' }
 
     before do
       setup_import_export_config('with_invalid_records')
 
-      # Import is running from the rake task, `correlation_id` is not assigned
-      expect(Labkit::Correlation::CorrelationId).to receive(:new_id).and_return(correlation_id)
       subject
     end
 
@@ -682,7 +679,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         expect(import_failure.relation_index).to be_present
         expect(import_failure.exception_class).to eq('ActiveRecord::RecordInvalid')
         expect(import_failure.exception_message).to be_present
-        expect(import_failure.correlation_id_value).to eq('my-correlation-id')
+        expect(import_failure.correlation_id_value).not_to be_empty
         expect(import_failure.created_at).to be_present
       end
     end

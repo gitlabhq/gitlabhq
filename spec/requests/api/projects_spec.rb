@@ -1626,6 +1626,14 @@ describe API::Projects do
         end
       end
     end
+
+    it_behaves_like 'storing arguments in the application context' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:project) { create(:project, :public) }
+      let(:expected_params) { { user: user.username, project: project.full_path } }
+
+      subject { get api("/projects/#{project.id}", user) }
+    end
   end
 
   describe 'GET /projects/:id/users' do

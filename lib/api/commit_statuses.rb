@@ -71,27 +71,27 @@ module API
 
         ref = params[:ref]
         ref ||= pipeline&.ref
-        ref ||= @project.repository.branch_names_contains(commit.sha).first
+        ref ||= user_project.repository.branch_names_contains(commit.sha).first
         not_found! 'References for commit' unless ref
 
         name = params[:name] || params[:context] || 'default'
 
         unless pipeline
-          pipeline = @project.ci_pipelines.create!(
+          pipeline = user_project.ci_pipelines.create!(
             source: :external,
             sha: commit.sha,
             ref: ref,
             user: current_user,
-            protected: @project.protected_for?(ref))
+            protected: user_project.protected_for?(ref))
         end
 
         status = GenericCommitStatus.running_or_pending.find_or_initialize_by(
-          project: @project,
+          project: user_project,
           pipeline: pipeline,
           name: name,
           ref: ref,
           user: current_user,
-          protected: @project.protected_for?(ref)
+          protected: user_project.protected_for?(ref)
         )
 
         optional_attributes =
@@ -117,7 +117,7 @@ module API
             render_api_error!('invalid state', 400)
           end
 
-          MergeRequest.where(source_project: @project, source_branch: ref)
+          MergeRequest.where(source_project: user_project, source_branch: ref)
             .update_all(head_pipeline_id: pipeline.id) if pipeline.latest?
 
           present status, with: Entities::CommitStatus

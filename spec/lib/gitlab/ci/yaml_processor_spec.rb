@@ -1270,6 +1270,19 @@ module Gitlab
             expect(builds.first[:options][:artifacts][:when]).to eq(when_state)
           end
         end
+
+        it "gracefully handles errors in artifacts type" do
+          config = <<~YAML
+          test:
+            script:
+              - echo "Hello world"
+            artifacts:
+              - paths:
+              - test/
+          YAML
+
+          expect { described_class.new(config) }.to raise_error(described_class::ValidationError)
+        end
       end
 
       describe '#environment' do

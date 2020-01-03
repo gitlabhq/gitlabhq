@@ -2,7 +2,7 @@
 
 if Labkit::Tracing.enabled?
   Rails.application.configure do |config|
-    config.middleware.insert_after Gitlab::Middleware::CorrelationId, ::Labkit::Tracing::RackMiddleware
+    config.middleware.insert_after Labkit::Middleware::Rack, ::Labkit::Tracing::RackMiddleware
   end
 
   # Instrument the Sidekiq client

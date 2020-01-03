@@ -54,6 +54,11 @@ module Gitlab
           def expose_as_present?
             return false unless Feature.enabled?(:ci_expose_arbitrary_artifacts_in_mr, default_enabled: true)
 
+            # This duplicates the `validates :config, type: Hash` above,
+            # but Validatable currently doesn't halt the validation
+            # chain if it encounters a validation error.
+            return false unless @config.is_a?(Hash)
+
             !@config[:expose_as].nil?
           end
         end

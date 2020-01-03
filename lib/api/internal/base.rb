@@ -6,6 +6,13 @@ module API
     class Base < Grape::API
       before { authenticate_by_gitlab_shell_token! }
 
+      before do
+        Gitlab::ApplicationContext.push(
+          user: -> { actor&.user },
+          project: -> { project }
+        )
+      end
+
       helpers ::API::Helpers::InternalHelpers
 
       UNKNOWN_CHECK_RESULT_ERROR = 'Unknown check result'.freeze
@@ -205,7 +212,12 @@ module API
           status 200
 
           response = Gitlab::InternalPostReceive::Response.new
+
+          # Try to load the project and users so we have the application context
+          # available for logging before we schedule any jobs.
           user = actor.user
+          project
+
           push_options = Gitlab::PushOptions.new(params[:push_options])
 
           response.reference_counter_decreased = Gitlab::ReferenceCounter.new(params[:gl_repository]).decrease

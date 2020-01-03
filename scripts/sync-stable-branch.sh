@@ -7,31 +7,31 @@ set -e
 
 if [[ "$MERGE_TRAIN_TRIGGER_TOKEN" == '' ]]
 then
-    echo 'The variable MERGE_TRAIN_TRIGGER_TOKEN must be set to a non-empy value'
+    echo 'The variable MERGE_TRAIN_TRIGGER_TOKEN must be set to a non-empty value'
     exit 1
 fi
 
 if [[ "$MERGE_TRAIN_TRIGGER_URL" == '' ]]
 then
-    echo 'The variable MERGE_TRAIN_TRIGGER_URL must be set to a non-empy value'
+    echo 'The variable MERGE_TRAIN_TRIGGER_URL must be set to a non-empty value'
     exit 1
 fi
 
 if [[ "$CI_COMMIT_REF_NAME" == '' ]]
 then
-    echo 'The variable CI_COMMIT_REF_NAME must be set to a non-empy value'
+    echo 'The variable CI_COMMIT_REF_NAME must be set to a non-empty value'
     exit 1
 fi
 
 if [[ "$SOURCE_PROJECT" == '' ]]
 then
-    echo 'The variable SOURCE_PROJECT must be set to a non-empy value'
+    echo 'The variable SOURCE_PROJECT must be set to a non-empty value'
     exit 1
 fi
 
 if [[ "$TARGET_PROJECT" == '' ]]
 then
-    echo 'The variable TARGET_PROJECT must be set to a non-empy value'
+    echo 'The variable TARGET_PROJECT must be set to a non-empty value'
     exit 1
 fi
 

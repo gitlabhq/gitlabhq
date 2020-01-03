@@ -389,6 +389,12 @@ describe API::Internal::Base do
           end
         end
       end
+
+      it_behaves_like 'storing arguments in the application context' do
+        let(:expected_params) { { user: key.user.username, project: project.full_path } }
+
+        subject { push(key, project) }
+      end
     end
 
     context "access denied" do
@@ -883,6 +889,12 @@ describe API::Internal::Base do
       expect(MergeRequests::PushOptionsHandlerService).not_to receive(:new)
 
       post api('/internal/post_receive'), params: valid_params
+    end
+
+    it_behaves_like 'storing arguments in the application context' do
+      let(:expected_params) { { user: user.username, project: project.full_path } }
+
+      subject { post api('/internal/post_receive'), params: valid_params }
     end
 
     context 'when there are merge_request push options' do

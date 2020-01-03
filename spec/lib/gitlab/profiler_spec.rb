@@ -84,7 +84,7 @@ describe Gitlab::Profiler do
           expect(severity).to eq(Logger::DEBUG)
           expect(message).to include('public').and include(described_class::FILTERED_STRING)
           expect(message).not_to include(private_token)
-        end.twice
+        end.at_least(1) # This spec could be wrapped in more blocks in the future
 
         custom_logger.debug("public #{private_token}")
       end

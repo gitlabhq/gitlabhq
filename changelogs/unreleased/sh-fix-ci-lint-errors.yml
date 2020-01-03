@@ -1,0 +1,5 @@
+---
+title: Gracefully error handle CI lint errors in artifacts section
+merge_request: 22388
+author:
+type: fixed

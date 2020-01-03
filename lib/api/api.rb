@@ -43,6 +43,14 @@ module API
       header['X-Content-Type-Options'] = 'nosniff'
     end
 
+    before do
+      Gitlab::ApplicationContext.push(
+        user: -> { current_user },
+        project: -> { @project },
+        namespace: -> { @group }
+      )
+    end
+
     # The locale is set to the current user's locale when `current_user` is loaded
     after { Gitlab::I18n.use_default_locale }
 

@@ -38,7 +38,7 @@ describe Gitlab::SidekiqMiddleware do
       [
        Gitlab::SidekiqMiddleware::Monitor,
        Gitlab::SidekiqMiddleware::BatchLoader,
-       Gitlab::SidekiqMiddleware::CorrelationLogger,
+       Labkit::Middleware::Sidekiq::Server,
        Gitlab::SidekiqMiddleware::InstrumentationLogger,
        Gitlab::SidekiqStatus::ServerMiddleware,
        Gitlab::SidekiqMiddleware::Metrics,
@@ -120,7 +120,7 @@ describe Gitlab::SidekiqMiddleware do
       # This test ensures that this does not happen
       it "invokes the chain" do
         expect_any_instance_of(Gitlab::SidekiqStatus::ClientMiddleware).to receive(:call).with(*middleware_expected_args).once.and_call_original
-        expect_any_instance_of(Gitlab::SidekiqMiddleware::CorrelationInjector).to receive(:call).with(*middleware_expected_args).once.and_call_original
+        expect_any_instance_of(Labkit::Middleware::Sidekiq::Client).to receive(:call).with(*middleware_expected_args).once.and_call_original
 
         expect { |b| chain.invoke(worker_class_arg, job, queue, redis_pool, &b) }.to yield_control.once
       end
