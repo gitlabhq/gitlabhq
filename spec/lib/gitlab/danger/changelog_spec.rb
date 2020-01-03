@@ -34,6 +34,7 @@ describe Gitlab::Danger::Changelog do
       { docs: nil, none: nil }
     ].each do |categories|
       let(:changes_by_category) { categories }
+
       it "is falsy when categories don't require a changelog" do
         is_expected.to be_falsy
       end
