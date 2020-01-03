@@ -10,6 +10,20 @@ describe Deployments::FinishedWorker do
       allow(ProjectServiceWorker).to receive(:perform_async)
     end
 
+    it 'links merge requests to the deployment' do
+      deployment = create(:deployment)
+      service = instance_double(Deployments::LinkMergeRequestsService)
+
+      expect(Deployments::LinkMergeRequestsService)
+        .to receive(:new)
+        .with(deployment)
+        .and_return(service)
+
+      expect(service).to receive(:execute)
+
+      worker.perform(deployment.id)
+    end
+
     it 'executes project services for deployment_hooks' do
       deployment = create(:deployment)
       project = deployment.project
@@ -34,6 +48,18 @@ describe Deployments::FinishedWorker do
       worker.perform(0)
 
       expect(ProjectServiceWorker).not_to have_received(:perform_async)
+    end
+
+    context 'when the tracking of merge requests is disabled' do
+      it 'does not track the deployed merge requests' do
+        stub_feature_flags(deployment_merge_requests: false)
+
+        deployment = create(:deployment)
+
+        expect(Deployments::LinkMergeRequestsService).not_to receive(:new)
+
+        worker.perform(deployment.id)
+      end
     end
   end
 end

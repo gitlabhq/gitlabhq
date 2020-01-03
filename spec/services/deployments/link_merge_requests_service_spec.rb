@@ -6,9 +6,12 @@ describe Deployments::LinkMergeRequestsService do
   let(:project) { create(:project, :repository) }
 
   describe '#execute' do
-    context 'when the deployment did not succeed' do
+    context 'when the deployment is for a review environment' do
       it 'does nothing' do
-        deploy = create(:deployment, :failed)
+        environment =
+          create(:environment, environment_type: 'review', name: 'review/foo')
+
+        deploy = create(:deployment, :success, environment: environment)
 
         expect(deploy).not_to receive(:link_merge_requests)
 

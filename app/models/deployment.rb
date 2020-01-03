@@ -212,10 +212,14 @@ class Deployment < ApplicationRecord
 
     # We don't use `Gitlab::Database.bulk_insert` here so that we don't need to
     # first pluck lots of IDs into memory.
+    #
+    # We also ignore any duplicates so this method can be called multiple times
+    # for the same deployment, only inserting any missing merge requests.
     DeploymentMergeRequest.connection.execute(<<~SQL)
       INSERT INTO #{DeploymentMergeRequest.table_name}
       (merge_request_id, deployment_id)
       #{select}
+      ON CONFLICT DO NOTHING
     SQL
   end
 

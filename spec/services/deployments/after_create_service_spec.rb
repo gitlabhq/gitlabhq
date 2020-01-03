@@ -61,14 +61,6 @@ describe Deployments::AfterCreateService do
       service.execute
     end
 
-    it 'links merge requests to deployment' do
-      expect_next_instance_of(Deployments::LinkMergeRequestsService, deployment) do |link_mr_service|
-        expect(link_mr_service).to receive(:execute)
-      end
-
-      service.execute
-    end
-
     it 'returns the deployment' do
       expect(subject.execute).to eq(deployment)
     end
@@ -269,32 +261,6 @@ describe Deployments::AfterCreateService do
             expect(merge_request.reload.metrics.first_deployed_to_production_at).to eq(previous_time)
           end
         end
-      end
-    end
-  end
-
-  describe '#update_environment' do
-    it 'links the merge requests' do
-      double = instance_double(Deployments::LinkMergeRequestsService)
-
-      allow(Deployments::LinkMergeRequestsService)
-        .to receive(:new)
-        .with(deployment)
-        .and_return(double)
-
-      expect(double).to receive(:execute)
-
-      service.update_environment(deployment)
-    end
-
-    context 'when the tracking of merge requests is disabled' do
-      it 'does nothing' do
-        stub_feature_flags(deployment_merge_requests: false)
-
-        expect(Deployments::LinkMergeRequestsService)
-          .not_to receive(:new)
-
-        service.update_environment(deployment)
       end
     end
   end

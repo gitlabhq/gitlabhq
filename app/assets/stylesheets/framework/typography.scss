@@ -179,15 +179,15 @@
 
     tbody {
       background-color: $white-light;
+
+      td {
+        border-color: $gray-200;
+      }
     }
 
     tr {
       th {
-        border-bottom: solid 2px $gl-gray-200;
-      }
-
-      td {
-        border-color: $gl-gray-200;
+        border-bottom: solid 2px $gray-300;
       }
     }
 

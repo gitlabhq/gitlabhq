@@ -399,6 +399,29 @@ describe Deployment do
 
       expect(deploy.merge_requests).to include(mr1, mr2)
     end
+
+    it 'ignores already linked merge requests' do
+      deploy = create(:deployment)
+      mr1 = create(
+        :merge_request,
+        :merged,
+        target_project: deploy.project,
+        source_project: deploy.project
+      )
+
+      deploy.link_merge_requests(deploy.project.merge_requests)
+
+      mr2 = create(
+        :merge_request,
+        :merged,
+        target_project: deploy.project,
+        source_project: deploy.project
+      )
+
+      deploy.link_merge_requests(deploy.project.merge_requests)
+
+      expect(deploy.merge_requests).to include(mr1, mr2)
+    end
   end
 
   describe '#previous_environment_deployment' do
