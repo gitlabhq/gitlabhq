@@ -35,7 +35,7 @@ def check_changelog(path)
   fail "`title` should be set, in #{gitlab.html_link(path)}! #{SEE_DOC}" if yaml["title"].nil?
   fail "`type` should be set, in #{gitlab.html_link(path)}! #{SEE_DOC}" if yaml["type"].nil?
 
-  if yaml["merge_request"].nil?
+  if yaml["merge_request"].nil? && !helper.security_mr?
     message "Consider setting `merge_request` to #{gitlab.mr_json["iid"]} in #{gitlab.html_link(path)}. #{SEE_DOC}"
   elsif yaml["merge_request"] != gitlab.mr_json["iid"] && !ce_port_changelog?(path)
     fail "Merge request ID was not set to #{gitlab.mr_json["iid"]}! #{SEE_DOC}"

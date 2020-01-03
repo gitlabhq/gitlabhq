@@ -171,6 +171,12 @@ module Gitlab
         labels - current_mr_labels
       end
 
+      def security_mr?
+        return false unless gitlab_helper
+
+        gitlab_helper.mr_json['web_url'].include?('/gitlab-org/security/')
+      end
+
       private
 
       def has_database_scoped_labels?(current_mr_labels)
