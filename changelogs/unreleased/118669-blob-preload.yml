@@ -1,0 +1,5 @@
+---
+title: Fix slow query on blob search when doing path filtering
+merge_request: 21996
+author:
+type: performance

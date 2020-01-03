@@ -65,7 +65,9 @@ describe('IDE pipeline stage', () => {
       .findAll(Item)
       .at(0)
       .vm.$emit('clickViewLog', job);
-    expect(wrapper.emitted().clickViewLog[0][0]).toBe(job);
+    return wrapper.vm.$nextTick().then(() => {
+      expect(wrapper.emitted().clickViewLog[0][0]).toBe(job);
+    });
   });
 
   it('renders stage details & icon', () => {

@@ -70,7 +70,9 @@ describe('CrossplaneProviderStack component', () => {
     };
     createComponent({ crossplane });
     findFirstDropdownElement().vm.$emit('click');
-    expect(wrapper.emitted().set[0][0].code).toEqual('gcp');
+    return wrapper.vm.$nextTick().then(() => {
+      expect(wrapper.emitted().set[0][0].code).toEqual('gcp');
+    });
   });
 
   it('renders the correct dropdown text when no stack is selected', () => {

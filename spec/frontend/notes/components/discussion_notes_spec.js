@@ -119,17 +119,26 @@ describe('DiscussionNotes', () => {
 
       it('emits deleteNote when first note emits handleDeleteNote', () => {
         findNoteAtIndex(0).vm.$emit('handleDeleteNote');
-        expect(wrapper.emitted().deleteNote).toBeTruthy();
+
+        return wrapper.vm.$nextTick().then(() => {
+          expect(wrapper.emitted().deleteNote).toBeTruthy();
+        });
       });
 
       it('emits startReplying when first note emits startReplying', () => {
         findNoteAtIndex(0).vm.$emit('startReplying');
-        expect(wrapper.emitted().startReplying).toBeTruthy();
+
+        return wrapper.vm.$nextTick().then(() => {
+          expect(wrapper.emitted().startReplying).toBeTruthy();
+        });
       });
 
       it('emits deleteNote when second note emits handleDeleteNote', () => {
         findNoteAtIndex(1).vm.$emit('handleDeleteNote');
-        expect(wrapper.emitted().deleteNote).toBeTruthy();
+
+        return wrapper.vm.$nextTick().then(() => {
+          expect(wrapper.emitted().deleteNote).toBeTruthy();
+        });
       });
     });
 
@@ -142,7 +151,10 @@ describe('DiscussionNotes', () => {
 
       it('emits deleteNote when first note emits handleDeleteNote', () => {
         note.vm.$emit('handleDeleteNote');
-        expect(wrapper.emitted().deleteNote).toBeTruthy();
+
+        return wrapper.vm.$nextTick().then(() => {
+          expect(wrapper.emitted().deleteNote).toBeTruthy();
+        });
       });
     });
   });

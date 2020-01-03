@@ -37,7 +37,7 @@ module Gitlab
 
     def find_by_path(query)
       search_paths(query).map do |path|
-        Gitlab::Search::FoundBlob.new(blob_path: path, project: project, ref: ref, repository: repository)
+        Gitlab::Search::FoundBlob.new(blob_path: path, path: path, project: project, ref: ref, repository: repository)
       end
     end
 

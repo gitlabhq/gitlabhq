@@ -35,9 +35,10 @@ describe('UninstallApplicationConfirmationModal', () => {
       wrapper.find(GlModal).vm.$emit('ok');
     });
 
-    it('emits confirm event', () => {
-      expect(wrapper.emitted('confirm')).toBeTruthy();
-    });
+    it('emits confirm event', () =>
+      wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.emitted('confirm')).toBeTruthy();
+      }));
 
     it('calls track uninstall button click mixin', () => {
       expect(wrapper.vm.trackUninstallButtonClick).toHaveBeenCalledWith(INGRESS);

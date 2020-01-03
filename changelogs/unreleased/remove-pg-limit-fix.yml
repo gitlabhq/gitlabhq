@@ -1,0 +1,5 @@
+---
+title: Remove ActiveRecord patch to ignore limit on text columns
+merge_request: 22406
+author:
+type: other

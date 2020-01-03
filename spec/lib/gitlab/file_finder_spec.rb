@@ -30,5 +30,11 @@ describe Gitlab::FileFinder do
 
       expect(results.count).to eq(1)
     end
+
+    it 'does not cause N+1 query' do
+      expect(Gitlab::GitalyClient).to receive(:call).at_most(10).times.and_call_original
+
+      subject.find(': filename:wm.svg')
+    end
   end
 end

@@ -56,6 +56,8 @@ describe('Commits message dropdown component', () => {
   it('should emit a commit title on selecting commit', () => {
     findFirstDropdownElement().vm.$emit('click');
 
-    expect(wrapper.emitted().input[0]).toEqual(['Update test.txt']);
+    return wrapper.vm.$nextTick().then(() => {
+      expect(wrapper.emitted().input[0]).toEqual(['Update test.txt']);
+    });
   });
 });
