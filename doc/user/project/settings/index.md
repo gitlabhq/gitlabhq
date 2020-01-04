@@ -22,31 +22,64 @@ The project description also partially supports [standard Markdown](../../markdo
 
 ### Sharing and permissions
 
-Set up your project's access, [visibility](../../../public_access/public_access.md), and enable [Container Registry](../../packages/container_registry/index.md) for your projects:
+For your repository, you can set up features such as public access, repository features,
+documentation, access permissions, and more. To do so from your project,
+go to **Settings** > **General**, and expand the **Visibility, project features, permissions**
+section.
 
-![projects sharing permissions](img/sharing_and_permissions_settings_v12_3.png)
+You can now change the [Project visibility](../../../public_access/public_access.md).
+If you set **Project Visibility** to public, you can limit access to some features
+to **Only Project Members**. In addition, you can select the option to
+[Allow users to request access](../members/index.md#project-membership-and-requesting-access).
 
 CAUTION: **Caution:**
-[Reducing a project's visibility level](../../../public_access/public_access.md#reducing-visibility)
-will remove the fork relationship between the project and any forked project.
+If you [reduce a project's visibility level](../../../public_access/public_access.md#reducing-visibility),
+that action unlinks all forks of that project.
 
-If Issues are disabled, or you can't access Issues because you're not a project member, then Labels and Milestones
-links will be missing from the sidebar UI.
+Use the switches to enable or disable the following features:
 
-You can still access them with direct links if you can access Merge Requests. This is deliberate, if you can see
-Issues or Merge Requests, both of which use Labels and Milestones, then you shouldn't be denied access to Labels and Milestones pages.
+| Option                            | More access limit options | Description                                                                                                                                                                                    |
+|:----------------------------------|:--------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Issues**                        | ✓                         | Activates the GitLab issues tracker                                                                                                                                                            |
+| **Repository**                    | ✓                         | Enables [repository](../repository/) functionality                                                                                                                                             |
+| **Merge Requests**                | ✓                         | Enables [merge request](../merge_requests/) functionality; also see [Merge request settings](#merge-request-settings)                                                                          |
+| **Pipelines**                     | ✓                         | Enables [CI/CD](../../../ci/README.md) functionality                                                                                                                                           |
+| **Container Registry**            |                           | Activates a [registry](../../packages/container_registry/) for your docker images                                                                                                              |
+| **Git Large File Storage**        |                           | Enables the use of [large files](../../../administration/lfs/manage_large_binaries_with_git_lfs.md#git-lfs)                                                                                    |
+| **Packages**                      |                           | Supports configuration of a [package registry](../../../administration/packages/index.md#gitlab-package-registry-administration-premium-only) functionality                                    |
+| **Wiki**                          | ✓                         | Enables a separate system for [documentation](../wiki/)                                                                                                                                        |
+| **Snippets**                      | ✓                         | Enables [sharing of code and text](../../snippets.md)                                                                                                                                          |
+| **Pages**                         | ✓                         | Allows you to [publish static websites](../pages/)                                                                                                                                             |
 
-Project [Snippets](../../snippets.md) are enabled by default.
+Some features depend on others:
+
+- If you disable the **Issues** option, GitLab also removes the following
+  features:
+  - **Issue Boards**
+  - [**Service Desk**](#service-desk-premium) **(PREMIUM)**
+
+  NOTE: **Note:**
+  When the **Issues** option is disabled, you can still access **Milestones**
+  from merge requests.
+
+- Additionally, if you disable both **Issues** and **Merge Requests**, you will no
+  longer have access to:
+  - **Labels**
+  - **Milestones**
+
+- If you disable **Repository** functionality, GitLab also disables the following
+  features for your project:
+
+  - **Merge Requests**
+  - **Pipelines**
+  - **Container Registry**
+  - **Git Large File Storage**
+  - **Packages**
 
 #### Disabling email notifications
 
-You can disable all email notifications related to the project by selecting the
-**Disable email notifications** checkbox.  Only the project owner is allowed to change
-this setting.
-
-### Issue settings
-
-Add an [issue description template](../description_templates.md#description-templates) to your project, so that every new issue will start with a custom template.
+Project owners can disable all [email notifications](../../profile/notifications.md#gitlab-notification-emails)
+related to the project by selecting the **Disable email notifications** checkbox.
 
 ### Merge request settings
 
