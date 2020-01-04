@@ -24,7 +24,7 @@ see the [system hooks] documentation.
 
 The plugins must be placed directly into the `plugins` directory, subdirectories
 will be ignored. There is an
-[`example` directory inside `plugins`](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/plugins/examples)
+[`example` directory inside `plugins`](https://gitlab.com/gitlab-org/gitlab/tree/master/plugins/examples)
 where you can find some basic examples.
 
 Follow the steps below to set up a custom hook:
