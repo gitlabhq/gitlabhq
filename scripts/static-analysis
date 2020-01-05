@@ -35,8 +35,7 @@ ALLOWED_WARNINGS = [
 
 def warning_count(static_analysis)
   static_analysis.warned_results
-    .reject { |result| ALLOWED_WARNINGS.include?(result.stderr.strip) }
-    .count
+    .count { |result| !ALLOWED_WARNINGS.include?(result.stderr.strip) }
 end
 
 def jobs_to_run(node_index, node_total)
