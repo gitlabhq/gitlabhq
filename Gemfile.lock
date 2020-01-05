@@ -532,8 +532,8 @@ GEM
       regexp_parser (~> 1.1)
       regexp_property_values (~> 0.3)
     json (1.8.6)
-    json-jwt (1.9.4)
-      activesupport
+    json-jwt (1.11.0)
+      activesupport (>= 4.2)
       aes_key_wrap
       bindata
     json-schema (2.8.0)
