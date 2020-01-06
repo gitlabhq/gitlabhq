@@ -35,14 +35,14 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
-| `id` | ID! |  |
-| `sha` | String! | Last commit sha for entry |
-| `name` | String! |  |
-| `type` | EntryType! |  |
-| `path` | String! |  |
-| `flatPath` | String! |  |
-| `webUrl` | String |  |
-| `lfsOid` | String |  |
+| `id` | ID! | ID of the entry |
+| `sha` | String! | Last commit sha for the entry |
+| `name` | String! | Name of the entry |
+| `type` | EntryType! | Type of tree entry |
+| `path` | String! | Path of the entry |
+| `flatPath` | String! | Flat path of the entry |
+| `webUrl` | String | Web URL of the blob |
+| `lfsOid` | String | LFS ID of the blob |
 
 ### Commit
 
@@ -856,14 +856,14 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
-| `id` | ID! |  |
-| `sha` | String! | Last commit sha for entry |
-| `name` | String! |  |
-| `type` | EntryType! |  |
-| `path` | String! |  |
-| `flatPath` | String! |  |
-| `webUrl` | String |  |
-| `treeUrl` | String |  |
+| `id` | ID! | ID of the entry |
+| `sha` | String! | Last commit sha for the entry |
+| `name` | String! | Name of the entry |
+| `type` | EntryType! | Type of tree entry |
+| `path` | String! | Path of the entry |
+| `flatPath` | String! | Flat path of the entry |
+| `webUrl` | String | Web URL for the sub-module |
+| `treeUrl` | String | Tree URL for the sub-module |
 
 ### TaskCompletionStatus
 
@@ -938,13 +938,13 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
-| `id` | ID! |  |
-| `sha` | String! | Last commit sha for entry |
-| `name` | String! |  |
-| `type` | EntryType! |  |
-| `path` | String! |  |
-| `flatPath` | String! |  |
-| `webUrl` | String |  |
+| `id` | ID! | ID of the entry |
+| `sha` | String! | Last commit sha for the entry |
+| `name` | String! | Name of the entry |
+| `type` | EntryType! | Type of tree entry |
+| `path` | String! | Path of the entry |
+| `flatPath` | String! | Flat path of the entry |
+| `webUrl` | String | Web URL for the tree entry (directory) |
 
 ### UpdateEpicPayload
 

@@ -52,7 +52,7 @@ module API
       def log_user_activity(actor)
         commands = Gitlab::GitAccess::DOWNLOAD_COMMANDS
 
-        ::Users::ActivityService.new(actor, 'Git SSH').execute if commands.include?(params[:action])
+        ::Users::ActivityService.new(actor).execute if commands.include?(params[:action])
       end
 
       def merge_request_urls

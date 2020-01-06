@@ -21,7 +21,7 @@ module RecordUserLastActivity
     return if Gitlab::Database.read_only?
 
     if current_user && current_user.last_activity_on != Date.today
-      Users::ActivityService.new(current_user, "visited #{request.path}").execute
+      Users::ActivityService.new(current_user).execute
     end
   end
 end

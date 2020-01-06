@@ -10,10 +10,13 @@ module Types
 
       graphql_name 'Blob'
 
-      field :web_url, GraphQL::STRING_TYPE, null: true # rubocop:disable Graphql/Descriptions
-      field :lfs_oid, GraphQL::STRING_TYPE, null: true, resolve: -> (blob, args, ctx) do # rubocop:disable Graphql/Descriptions
-        Gitlab::Graphql::Loaders::BatchLfsOidLoader.new(blob.repository, blob.id).find
-      end
+      field :web_url, GraphQL::STRING_TYPE, null: true,
+            description: 'Web URL of the blob'
+      field :lfs_oid, GraphQL::STRING_TYPE, null: true,
+            description: 'LFS ID of the blob',
+            resolve: -> (blob, args, ctx) do
+              Gitlab::Graphql::Loaders::BatchLfsOidLoader.new(blob.repository, blob.id).find
+            end
       # rubocop: enable Graphql/AuthorizeTypes
     end
   end

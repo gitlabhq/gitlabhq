@@ -109,7 +109,7 @@ class Projects::GitHttpController < Projects::GitHttpClientController
   end
 
   def log_user_activity
-    Users::ActivityService.new(user, 'pull').execute
+    Users::ActivityService.new(user).execute
   end
 end
 

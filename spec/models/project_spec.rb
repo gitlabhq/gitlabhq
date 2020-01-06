@@ -4721,6 +4721,13 @@ describe Project do
       expect(project.has_active_hooks?(:merge_request_events)).to be_falsey
       expect(project.has_active_hooks?).to be_truthy
     end
+
+    it 'returns true when a plugin exists' do
+      expect(Gitlab::Plugin).to receive(:any?).twice.and_return(true)
+
+      expect(project.has_active_hooks?(:merge_request_events)).to be_truthy
+      expect(project.has_active_hooks?).to be_truthy
+    end
   end
 
   describe '#has_active_services?' do

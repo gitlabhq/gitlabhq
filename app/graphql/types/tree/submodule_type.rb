@@ -8,8 +8,10 @@ module Types
 
       graphql_name 'Submodule'
 
-      field :web_url, type: GraphQL::STRING_TYPE, null: true # rubocop:disable Graphql/Descriptions
-      field :tree_url, type: GraphQL::STRING_TYPE, null: true # rubocop:disable Graphql/Descriptions
+      field :web_url, type: GraphQL::STRING_TYPE, null: true,
+            description: 'Web URL for the sub-module'
+      field :tree_url, type: GraphQL::STRING_TYPE, null: true,
+            description: 'Tree URL for the sub-module'
     end
     # rubocop: enable Graphql/AuthorizeTypes
   end

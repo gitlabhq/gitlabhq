@@ -262,7 +262,7 @@ class SessionsController < Devise::SessionsController
 
   def log_user_activity(user)
     login_counter.increment
-    Users::ActivityService.new(user, 'login').execute
+    Users::ActivityService.new(user).execute
   end
 
   def load_recaptcha

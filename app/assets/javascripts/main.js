@@ -19,7 +19,7 @@ import { getLocationHash, visitUrl } from './lib/utils/url_utility';
 
 // everything else
 import loadAwardsHandler from './awards_handler';
-import bp from './breakpoints';
+import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import Flash, { removeFlashClickListener } from './flash';
 import './gl_dropdown';
 import initTodoToggle from './header';
@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  if (bootstrapBreakpoint === 'xs') {
+  if (bootstrapBreakpoint === 'sm' || bootstrapBreakpoint === 'xs') {
     const $rightSidebar = $('aside.right-sidebar, .layout-page');
 
     $rightSidebar.removeClass('right-sidebar-expanded').addClass('right-sidebar-collapsed');
@@ -270,7 +270,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   $document.on('breakpoint:change', (e, breakpoint) => {
-    if (breakpoint === 'sm' || breakpoint === 'xs') {
+    const breakpointSizes = ['md', 'sm', 'xs'];
+    if (breakpointSizes.includes(breakpoint)) {
       const $gutterIcon = $sidebarGutterToggle.find('i');
       if ($gutterIcon.hasClass('fa-angle-double-right')) {
         $sidebarGutterToggle.trigger('click');

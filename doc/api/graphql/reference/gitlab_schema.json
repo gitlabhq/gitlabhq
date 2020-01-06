@@ -11428,7 +11428,7 @@
           "fields": [
             {
               "name": "blobs",
-              "description": null,
+              "description": "Blobs of the tree",
               "args": [
                 {
                   "name": "after",
@@ -11499,7 +11499,7 @@
             },
             {
               "name": "submodules",
-              "description": null,
+              "description": "Sub-modules of the tree",
               "args": [
                 {
                   "name": "after",
@@ -11556,7 +11556,7 @@
             },
             {
               "name": "trees",
-              "description": null,
+              "description": "Trees of the tree",
               "args": [
                 {
                   "name": "after",
@@ -12693,7 +12693,7 @@
           "fields": [
             {
               "name": "flatPath",
-              "description": null,
+              "description": "Flat path of the entry",
               "args": [
 
               ],
@@ -12711,7 +12711,7 @@
             },
             {
               "name": "id",
-              "description": null,
+              "description": "ID of the entry",
               "args": [
 
               ],
@@ -12729,7 +12729,7 @@
             },
             {
               "name": "name",
-              "description": null,
+              "description": "Name of the entry",
               "args": [
 
               ],
@@ -12747,7 +12747,7 @@
             },
             {
               "name": "path",
-              "description": null,
+              "description": "Path of the entry",
               "args": [
 
               ],
@@ -12765,7 +12765,7 @@
             },
             {
               "name": "sha",
-              "description": "Last commit sha for entry",
+              "description": "Last commit sha for the entry",
               "args": [
 
               ],
@@ -12783,7 +12783,7 @@
             },
             {
               "name": "type",
-              "description": null,
+              "description": "Type of tree entry",
               "args": [
 
               ],
@@ -12801,7 +12801,7 @@
             },
             {
               "name": "webUrl",
-              "description": null,
+              "description": "Web URL for the tree entry (directory)",
               "args": [
 
               ],
@@ -12832,7 +12832,7 @@
           "fields": [
             {
               "name": "flatPath",
-              "description": null,
+              "description": "Flat path of the entry",
               "args": [
 
               ],
@@ -12850,7 +12850,7 @@
             },
             {
               "name": "id",
-              "description": null,
+              "description": "ID of the entry",
               "args": [
 
               ],
@@ -12868,7 +12868,7 @@
             },
             {
               "name": "name",
-              "description": null,
+              "description": "Name of the entry",
               "args": [
 
               ],
@@ -12886,7 +12886,7 @@
             },
             {
               "name": "path",
-              "description": null,
+              "description": "Path of the entry",
               "args": [
 
               ],
@@ -12904,7 +12904,7 @@
             },
             {
               "name": "sha",
-              "description": "Last commit sha for entry",
+              "description": "Last commit sha for the entry",
               "args": [
 
               ],
@@ -12922,7 +12922,7 @@
             },
             {
               "name": "type",
-              "description": null,
+              "description": "Type of tree entry",
               "args": [
 
               ],
@@ -13108,7 +13108,7 @@
           "fields": [
             {
               "name": "flatPath",
-              "description": null,
+              "description": "Flat path of the entry",
               "args": [
 
               ],
@@ -13126,7 +13126,7 @@
             },
             {
               "name": "id",
-              "description": null,
+              "description": "ID of the entry",
               "args": [
 
               ],
@@ -13144,7 +13144,7 @@
             },
             {
               "name": "name",
-              "description": null,
+              "description": "Name of the entry",
               "args": [
 
               ],
@@ -13162,7 +13162,7 @@
             },
             {
               "name": "path",
-              "description": null,
+              "description": "Path of the entry",
               "args": [
 
               ],
@@ -13180,7 +13180,7 @@
             },
             {
               "name": "sha",
-              "description": "Last commit sha for entry",
+              "description": "Last commit sha for the entry",
               "args": [
 
               ],
@@ -13198,7 +13198,7 @@
             },
             {
               "name": "treeUrl",
-              "description": null,
+              "description": "Tree URL for the sub-module",
               "args": [
 
               ],
@@ -13212,7 +13212,7 @@
             },
             {
               "name": "type",
-              "description": null,
+              "description": "Type of tree entry",
               "args": [
 
               ],
@@ -13230,7 +13230,7 @@
             },
             {
               "name": "webUrl",
-              "description": null,
+              "description": "Web URL for the sub-module",
               "args": [
 
               ],
@@ -13373,7 +13373,7 @@
           "fields": [
             {
               "name": "flatPath",
-              "description": null,
+              "description": "Flat path of the entry",
               "args": [
 
               ],
@@ -13391,7 +13391,7 @@
             },
             {
               "name": "id",
-              "description": null,
+              "description": "ID of the entry",
               "args": [
 
               ],
@@ -13409,7 +13409,7 @@
             },
             {
               "name": "lfsOid",
-              "description": null,
+              "description": "LFS ID of the blob",
               "args": [
 
               ],
@@ -13423,7 +13423,7 @@
             },
             {
               "name": "name",
-              "description": null,
+              "description": "Name of the entry",
               "args": [
 
               ],
@@ -13441,7 +13441,7 @@
             },
             {
               "name": "path",
-              "description": null,
+              "description": "Path of the entry",
               "args": [
 
               ],
@@ -13459,7 +13459,7 @@
             },
             {
               "name": "sha",
-              "description": "Last commit sha for entry",
+              "description": "Last commit sha for the entry",
               "args": [
 
               ],
@@ -13477,7 +13477,7 @@
             },
             {
               "name": "type",
-              "description": null,
+              "description": "Type of tree entry",
               "args": [
 
               ],
@@ -13495,7 +13495,7 @@
             },
             {
               "name": "webUrl",
-              "description": null,
+              "description": "Web URL of the blob",
               "args": [
 
               ],

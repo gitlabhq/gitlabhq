@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe Projects::GitHttpController do
+  include GitHttpHelpers
+
   let_it_be(:project) { create(:project, :public, :repository) }
   let(:project_params) do
     {
@@ -29,6 +31,28 @@ describe Projects::GitHttpController do
       get :info_refs, params: params
 
       expect(response.status).to eq(401)
+    end
+
+    context 'with authorized user' do
+      let(:user) { project.owner }
+
+      before do
+        request.headers.merge! auth_env(user.username, user.password, nil)
+      end
+
+      it 'returns 200' do
+        get :info_refs, params: params
+
+        expect(response.status).to eq(200)
+      end
+
+      it 'updates the user activity' do
+        expect_next_instance_of(Users::ActivityService) do |activity_service|
+          expect(activity_service).to receive(:execute)
+        end
+
+        get :info_refs, params: params
+      end
     end
 
     context 'with exceptions' do

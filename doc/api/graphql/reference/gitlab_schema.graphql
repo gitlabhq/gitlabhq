@@ -71,17 +71,44 @@ type AwardEmoji {
 }
 
 type Blob implements Entry {
+  """
+  Flat path of the entry
+  """
   flatPath: String!
+
+  """
+  ID of the entry
+  """
   id: ID!
+
+  """
+  LFS ID of the blob
+  """
   lfsOid: String
+
+  """
+  Name of the entry
+  """
   name: String!
+
+  """
+  Path of the entry
+  """
   path: String!
 
   """
-  Last commit sha for entry
+  Last commit sha for the entry
   """
   sha: String!
+
+  """
+  Type of tree entry
+  """
   type: EntryType!
+
+  """
+  Web URL of the blob
+  """
   webUrl: String
 }
 
@@ -1290,15 +1317,34 @@ type DiscussionEdge {
 }
 
 interface Entry {
+  """
+  Flat path of the entry
+  """
   flatPath: String!
+
+  """
+  ID of the entry
+  """
   id: ID!
+
+  """
+  Name of the entry
+  """
   name: String!
+
+  """
+  Path of the entry
+  """
   path: String!
 
   """
-  Last commit sha for entry
+  Last commit sha for the entry
   """
   sha: String!
+
+  """
+  Type of tree entry
+  """
   type: EntryType!
 }
 
@@ -5857,17 +5903,44 @@ type SnippetPermissions {
 }
 
 type Submodule implements Entry {
+  """
+  Flat path of the entry
+  """
   flatPath: String!
+
+  """
+  ID of the entry
+  """
   id: ID!
+
+  """
+  Name of the entry
+  """
   name: String!
+
+  """
+  Path of the entry
+  """
   path: String!
 
   """
-  Last commit sha for entry
+  Last commit sha for the entry
   """
   sha: String!
+
+  """
+  Tree URL for the sub-module
+  """
   treeUrl: String
+
+  """
+  Type of tree entry
+  """
   type: EntryType!
+
+  """
+  Web URL for the sub-module
+  """
   webUrl: String
 }
 
@@ -6256,6 +6329,9 @@ type ToggleAwardEmojiPayload {
 }
 
 type Tree {
+  """
+  Blobs of the tree
+  """
   blobs(
     """
     Returns the elements in the list that come after the specified cursor.
@@ -6282,6 +6358,10 @@ type Tree {
   Last commit for the tree
   """
   lastCommit: Commit
+
+  """
+  Sub-modules of the tree
+  """
   submodules(
     """
     Returns the elements in the list that come after the specified cursor.
@@ -6303,6 +6383,10 @@ type Tree {
     """
     last: Int
   ): SubmoduleConnection!
+
+  """
+  Trees of the tree
+  """
   trees(
     """
     Returns the elements in the list that come after the specified cursor.
@@ -6330,16 +6414,39 @@ type Tree {
 Represents a directory
 """
 type TreeEntry implements Entry {
+  """
+  Flat path of the entry
+  """
   flatPath: String!
+
+  """
+  ID of the entry
+  """
   id: ID!
+
+  """
+  Name of the entry
+  """
   name: String!
+
+  """
+  Path of the entry
+  """
   path: String!
 
   """
-  Last commit sha for entry
+  Last commit sha for the entry
   """
   sha: String!
+
+  """
+  Type of tree entry
+  """
   type: EntryType!
+
+  """
+  Web URL for the tree entry (directory)
+  """
   webUrl: String
 }
 
