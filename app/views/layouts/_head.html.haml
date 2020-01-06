@@ -46,7 +46,7 @@
 
   = stylesheet_link_tag "application", media: "all"
   = stylesheet_link_tag "print", media: "print"
-  = stylesheet_link_tag "test", media: "all" if Rails.env.test?
+  = stylesheet_link_tag "disable_animations", media: "all" if Rails.env.test? || Gitlab.config.gitlab['disable_animations']
   = stylesheet_link_tag 'performance_bar' if performance_bar_enabled?
 
   = stylesheet_link_tag "highlight/themes/#{user_color_scheme}", media: "all"

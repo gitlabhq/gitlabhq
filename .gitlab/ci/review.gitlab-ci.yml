@@ -1,9 +1,9 @@
 # Make sure to update all the similar conditions in other CI config files if you modify these conditions
-.if-canonical-gitlab: &if-canonical-gitlab
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/)/'
+.if-canonical-gitlab-schedule: &if-canonical-gitlab-schedule
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/)/ && $CI_PIPELINE_SOURCE == "schedule"'
 
 # Make sure to update all the similar conditions in other CI config files if you modify these conditions
-.if-canonical-gitlab-and-merge-request: &if-canonical-gitlab-and-merge-request
+.if-canonical-gitlab-merge-request: &if-canonical-gitlab-merge-request
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/)/ && $CI_MERGE_REQUEST_IID'
 
 # Make sure to update all the similar patterns in other CI config files if you modify these patterns
@@ -44,8 +44,10 @@ build-qa-image:
   extends: .review-docker
   stage: prepare
   rules:
-    - <<: *if-canonical-gitlab
+    - <<: *if-canonical-gitlab-merge-request
       changes: *code-qa-patterns
+      when: on_success
+    - <<: *if-canonical-gitlab-schedule
       when: on_success
   script:
     - '[[ ! -d "ee/" ]] || export GITLAB_EDITION="ee"'
@@ -157,7 +159,7 @@ schedule:review-build-cng:
 review-deploy:
   extends: .review-deploy-base
   rules:
-    - <<: *if-canonical-gitlab-and-merge-request
+    - <<: *if-canonical-gitlab-merge-request
       changes: *code-qa-patterns
       when: on_success
 
@@ -184,7 +186,7 @@ review-stop-failed-deployment:
   extends: .base-review-stop
   stage: prepare
   rules:
-    - <<: *if-canonical-gitlab-and-merge-request
+    - <<: *if-canonical-gitlab-merge-request
       changes: *code-qa-patterns
       when: on_success
   script:
@@ -194,7 +196,7 @@ review-stop:
   extends: .base-review-stop
   stage: review
   rules:
-    - <<: *if-canonical-gitlab-and-merge-request
+    - <<: *if-canonical-gitlab-merge-request
       changes: *code-qa-patterns
       when: manual
   allow_failure: true
@@ -235,7 +237,7 @@ review-stop:
 review-qa-smoke:
   extends: .review-qa-base
   rules:
-    - <<: *if-canonical-gitlab-and-merge-request
+    - <<: *if-canonical-gitlab-merge-request
       changes: *code-qa-patterns
       when: on_success
   script:
@@ -244,7 +246,7 @@ review-qa-smoke:
 review-qa-all:
   extends: .review-qa-base
   rules:
-    - <<: *if-canonical-gitlab-and-merge-request
+    - <<: *if-canonical-gitlab-merge-request
       changes: *code-qa-patterns
       when: manual
   parallel: 5
@@ -276,7 +278,7 @@ review-qa-all:
 review-performance:
   extends: .review-performance-base
   rules:
-    - <<: *if-canonical-gitlab-and-merge-request
+    - <<: *if-canonical-gitlab-merge-request
       changes: *code-qa-patterns
       when: on_success
   needs: ["review-deploy"]

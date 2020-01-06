@@ -1,0 +1,5299 @@
+{
+  "eventID": "333b98e3b91341d8a6247edff171d8cf",
+  "dist": null,
+  "userReport": null,
+  "projectID": "1788822",
+  "previousEventID": "d32f1ce60de14911beec5109d9b5bdbd",
+  "message": null,
+  "id": "333b98e3b91341d8a6247edff171d8cf",
+  "size": 77202,
+  "errors": [
+    {
+      "data": {
+        "reason": "the cookie is missing a name/value pair",
+        "name": "request.cookies",
+        "value": "********"
+      },
+      "message": "Discarded invalid value",
+      "type": "invalid_data"
+    },
+    {
+      "data": {
+        "reason": "the cookie is missing a name/value pair",
+        "name": "request.cookies",
+        "value": "********"
+      },
+      "message": "Discarded invalid value",
+      "type": "invalid_data"
+    }
+  ],
+  "culprit": "/",
+  "title": "ActiveRecord::NoDatabaseError: FATAL:  database \"test_development\" does not exist",
+  "sdkUpdates": [],
+  "platform": "ruby",
+  "location": "active_record/connection_adapters/postgresql_adapter.rb",
+  "nextEventID": null,
+  "type": "error",
+  "metadata": {
+    "function": "rescue in connect",
+    "type": "ActiveRecord::NoDatabaseError",
+    "value": "FATAL:  database \"test_development\" does not exist\n",
+    "filename": "active_record/connection_adapters/postgresql_adapter.rb"
+  },
+  "groupingConfig": {
+    "enhancements": "eJybzDhxY3J-bm5-npWRgaGlroGxrpHxBABcTQcY",
+    "id": "newstyle:2019-05-08"
+  },
+  "crashFile": null,
+  "tags": [
+    {
+      "value": "Chrome 78.0.3904",
+      "key": "browser",
+      "_meta": null
+    },
+    {
+      "value": "Chrome",
+      "key": "browser.name",
+      "_meta": null
+    },
+    {
+      "value": "Mac OS X 10.15.1",
+      "key": "client_os",
+      "_meta": null
+    },
+    {
+      "value": "Mac OS X",
+      "key": "client_os.name",
+      "_meta": null
+    },
+    {
+      "value": "development",
+      "key": "environment",
+      "_meta": null
+    },
+    {
+      "value": "error",
+      "key": "level",
+      "_meta": null
+    },
+    {
+      "value": "ruby",
+      "key": "logger",
+      "_meta": null
+    },
+    {
+      "value": "b56ae26",
+      "key": "release",
+      "_meta": null
+    },
+    {
+      "value": "Seans-MBP.fritz.box",
+      "key": "server_name",
+      "_meta": null
+    },
+    {
+      "value": "/",
+      "key": "transaction",
+      "_meta": null
+    },
+    {
+      "value": "http://localhost:3001/",
+      "key": "url",
+      "_meta": null
+    },
+    {
+      "query": "user.ip:\"::1\"",
+      "value": "ip:::1",
+      "key": "user",
+      "_meta": null
+    }
+  ],
+  "dateCreated": "2019-12-08T21:48:07Z",
+  "dateReceived": "2019-12-08T21:48:08.579417Z",
+  "user": {
+    "username": null,
+    "name": null,
+    "ip_address": "::1",
+    "email": null,
+    "data": null,
+    "id": null
+  },
+  "entries": [
+    {
+      "type": "exception",
+      "data": {
+        "values": [
+          {
+            "stacktrace": {
+              "frames": [
+                {
+                  "function": "block in spawn_thread",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/puma-3.12.1/lib/puma/thread_pool.rb",
+                  "inApp": false,
+                  "lineNo": 135,
+                  "module": null,
+                  "filename": "puma/thread_pool.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      132,
+                      "          end\n"
+                    ],
+                    [
+                      133,
+                      "\n"
+                    ],
+                    [
+                      134,
+                      "          begin\n"
+                    ],
+                    [
+                      135,
+                      "            block.call(work, *extra)\n"
+                    ],
+                    [
+                      136,
+                      "          rescue Exception => e\n"
+                    ],
+                    [
+                      137,
+                      "            STDERR.puts \"Error reached top of thread-pool: #{e.message} (#{e.class})\"\n"
+                    ],
+                    [
+                      138,
+                      "          end\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "block in run",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/puma-3.12.1/lib/puma/server.rb",
+                  "inApp": false,
+                  "lineNo": 334,
+                  "module": null,
+                  "filename": "puma/server.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      331,
+                      "          client.close\n"
+                    ],
+                    [
+                      332,
+                      "        else\n"
+                    ],
+                    [
+                      333,
+                      "          if process_now\n"
+                    ],
+                    [
+                      334,
+                      "            process_client client, buffer\n"
+                    ],
+                    [
+                      335,
+                      "          else\n"
+                    ],
+                    [
+                      336,
+                      "            client.set_timeout @first_data_timeout\n"
+                    ],
+                    [
+                      337,
+                      "            @reactor.add client\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "process_client",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/puma-3.12.1/lib/puma/server.rb",
+                  "inApp": false,
+                  "lineNo": 474,
+                  "module": null,
+                  "filename": "puma/server.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      471,
+                      "        close_socket = true\n"
+                    ],
+                    [
+                      472,
+                      "\n"
+                    ],
+                    [
+                      473,
+                      "        while true\n"
+                    ],
+                    [
+                      474,
+                      "          case handle_request(client, buffer)\n"
+                    ],
+                    [
+                      475,
+                      "          when false\n"
+                    ],
+                    [
+                      476,
+                      "            return\n"
+                    ],
+                    [
+                      477,
+                      "          when :async\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "handle_request",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/puma-3.12.1/lib/puma/server.rb",
+                  "inApp": false,
+                  "lineNo": 660,
+                  "module": null,
+                  "filename": "puma/server.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      657,
+                      "\n"
+                    ],
+                    [
+                      658,
+                      "      begin\n"
+                    ],
+                    [
+                      659,
+                      "        begin\n"
+                    ],
+                    [
+                      660,
+                      "          status, headers, res_body = @app.call(env)\n"
+                    ],
+                    [
+                      661,
+                      "\n"
+                    ],
+                    [
+                      662,
+                      "          return :async if req.hijacked\n"
+                    ],
+                    [
+                      663,
+                      "\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/puma-3.12.1/lib/puma/configuration.rb",
+                  "inApp": false,
+                  "lineNo": 227,
+                  "module": null,
+                  "filename": "puma/configuration.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      224,
+                      "\n"
+                    ],
+                    [
+                      225,
+                      "      def call(env)\n"
+                    ],
+                    [
+                      226,
+                      "        env[Const::PUMA_CONFIG] = @config\n"
+                    ],
+                    [
+                      227,
+                      "        @app.call(env)\n"
+                    ],
+                    [
+                      228,
+                      "      end\n"
+                    ],
+                    [
+                      229,
+                      "    end\n"
+                    ],
+                    [
+                      230,
+                      "\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/prometheus-client-mmap-0.9.8/lib/prometheus/client/rack/collector.rb",
+                  "inApp": false,
+                  "lineNo": 24,
+                  "module": null,
+                  "filename": "prometheus/client/rack/collector.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      21,
+                      "        end\n"
+                    ],
+                    [
+                      22,
+                      "\n"
+                    ],
+                    [
+                      23,
+                      "        def call(env) # :nodoc:\n"
+                    ],
+                    [
+                      24,
+                      "          trace(env) { @app.call(env) }\n"
+                    ],
+                    [
+                      25,
+                      "        end\n"
+                    ],
+                    [
+                      26,
+                      "\n"
+                    ],
+                    [
+                      27,
+                      "        protected\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "trace",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/prometheus-client-mmap-0.9.8/lib/prometheus/client/rack/collector.rb",
+                  "inApp": false,
+                  "lineNo": 61,
+                  "module": null,
+                  "filename": "prometheus/client/rack/collector.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      58,
+                      "\n"
+                    ],
+                    [
+                      59,
+                      "        def trace(env)\n"
+                    ],
+                    [
+                      60,
+                      "          start = Time.now\n"
+                    ],
+                    [
+                      61,
+                      "          yield.tap do |response|\n"
+                    ],
+                    [
+                      62,
+                      "            duration = (Time.now - start).to_f\n"
+                    ],
+                    [
+                      63,
+                      "            record(labels(env, response), duration)\n"
+                    ],
+                    [
+                      64,
+                      "          end\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "block in call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/prometheus-client-mmap-0.9.8/lib/prometheus/client/rack/collector.rb",
+                  "inApp": false,
+                  "lineNo": 24,
+                  "module": null,
+                  "filename": "prometheus/client/rack/collector.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      21,
+                      "        end\n"
+                    ],
+                    [
+                      22,
+                      "\n"
+                    ],
+                    [
+                      23,
+                      "        def call(env) # :nodoc:\n"
+                    ],
+                    [
+                      24,
+                      "          trace(env) { @app.call(env) }\n"
+                    ],
+                    [
+                      25,
+                      "        end\n"
+                    ],
+                    [
+                      26,
+                      "\n"
+                    ],
+                    [
+                      27,
+                      "        protected\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/prometheus-client-mmap-0.9.8/lib/prometheus/client/rack/exporter.rb",
+                  "inApp": false,
+                  "lineNo": 29,
+                  "module": null,
+                  "filename": "prometheus/client/rack/exporter.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      26,
+                      "            format = negotiate(env['HTTP_ACCEPT'], @acceptable)\n"
+                    ],
+                    [
+                      27,
+                      "            format ? respond_with(format) : not_acceptable(FORMATS)\n"
+                    ],
+                    [
+                      28,
+                      "          else\n"
+                    ],
+                    [
+                      29,
+                      "            @app.call(env)\n"
+                    ],
+                    [
+                      30,
+                      "          end\n"
+                    ],
+                    [
+                      31,
+                      "        end\n"
+                    ],
+                    [
+                      32,
+                      "\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/railties-5.2.3/lib/rails/engine.rb",
+                  "inApp": false,
+                  "lineNo": 524,
+                  "module": null,
+                  "filename": "rails/engine.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      521,
+                      "    # Define the Rack API for this engine.\n"
+                    ],
+                    [
+                      522,
+                      "    def call(env)\n"
+                    ],
+                    [
+                      523,
+                      "      req = build_request env\n"
+                    ],
+                    [
+                      524,
+                      "      app.call req.env\n"
+                    ],
+                    [
+                      525,
+                      "    end\n"
+                    ],
+                    [
+                      526,
+                      "\n"
+                    ],
+                    [
+                      527,
+                      "    # Defines additional Rack env configuration that is added on each call.\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/sentry-raven-2.12.3/lib/raven/integrations/rack.rb",
+                  "inApp": false,
+                  "lineNo": 51,
+                  "module": null,
+                  "filename": "raven/integrations/rack.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      48,
+                      "      Raven.context.transaction.push(env[\"PATH_INFO\"]) if env[\"PATH_INFO\"]\n"
+                    ],
+                    [
+                      49,
+                      "\n"
+                    ],
+                    [
+                      50,
+                      "      begin\n"
+                    ],
+                    [
+                      51,
+                      "        response = @app.call(env)\n"
+                    ],
+                    [
+                      52,
+                      "      rescue Error\n"
+                    ],
+                    [
+                      53,
+                      "        raise # Don't capture Raven errors\n"
+                    ],
+                    [
+                      54,
+                      "      rescue Exception => e\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/rack-2.0.7/lib/rack/sendfile.rb",
+                  "inApp": false,
+                  "lineNo": 111,
+                  "module": null,
+                  "filename": "rack/sendfile.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      108,
+                      "    end\n"
+                    ],
+                    [
+                      109,
+                      "\n"
+                    ],
+                    [
+                      110,
+                      "    def call(env)\n"
+                    ],
+                    [
+                      111,
+                      "      status, headers, body = @app.call(env)\n"
+                    ],
+                    [
+                      112,
+                      "      if body.respond_to?(:to_path)\n"
+                    ],
+                    [
+                      113,
+                      "        case type = variation(env)\n"
+                    ],
+                    [
+                      114,
+                      "        when 'X-Accel-Redirect'\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/actionpack-5.2.3/lib/action_dispatch/middleware/static.rb",
+                  "inApp": false,
+                  "lineNo": 127,
+                  "module": null,
+                  "filename": "action_dispatch/middleware/static.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      124,
+                      "        end\n"
+                    ],
+                    [
+                      125,
+                      "      end\n"
+                    ],
+                    [
+                      126,
+                      "\n"
+                    ],
+                    [
+                      127,
+                      "      @app.call(req.env)\n"
+                    ],
+                    [
+                      128,
+                      "    end\n"
+                    ],
+                    [
+                      129,
+                      "  end\n"
+                    ],
+                    [
+                      130,
+                      "end\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/actionpack-5.2.3/lib/action_dispatch/middleware/executor.rb",
+                  "inApp": false,
+                  "lineNo": 14,
+                  "module": null,
+                  "filename": "action_dispatch/middleware/executor.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      11,
+                      "    def call(env)\n"
+                    ],
+                    [
+                      12,
+                      "      state = @executor.run!\n"
+                    ],
+                    [
+                      13,
+                      "      begin\n"
+                    ],
+                    [
+                      14,
+                      "        response = @app.call(env)\n"
+                    ],
+                    [
+                      15,
+                      "        returned = response << ::Rack::BodyProxy.new(response.pop) { state.complete! }\n"
+                    ],
+                    [
+                      16,
+                      "      ensure\n"
+                    ],
+                    [
+                      17,
+                      "        state.complete! unless returned\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activesupport-5.2.3/lib/active_support/cache/strategy/local_cache_middleware.rb",
+                  "inApp": false,
+                  "lineNo": 29,
+                  "module": null,
+                  "filename": "active_support/cache/strategy/local_cache_middleware.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      26,
+                      "\n"
+                    ],
+                    [
+                      27,
+                      "          def call(env)\n"
+                    ],
+                    [
+                      28,
+                      "            LocalCacheRegistry.set_cache_for(local_cache_key, LocalStore.new)\n"
+                    ],
+                    [
+                      29,
+                      "            response = @app.call(env)\n"
+                    ],
+                    [
+                      30,
+                      "            response[2] = ::Rack::BodyProxy.new(response[2]) do\n"
+                    ],
+                    [
+                      31,
+                      "              LocalCacheRegistry.set_cache_for(local_cache_key, nil)\n"
+                    ],
+                    [
+                      32,
+                      "            end\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/rack-2.0.7/lib/rack/runtime.rb",
+                  "inApp": false,
+                  "lineNo": 22,
+                  "module": null,
+                  "filename": "rack/runtime.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      19,
+                      "\n"
+                    ],
+                    [
+                      20,
+                      "    def call(env)\n"
+                    ],
+                    [
+                      21,
+                      "      start_time = Utils.clock_time\n"
+                    ],
+                    [
+                      22,
+                      "      status, headers, body = @app.call(env)\n"
+                    ],
+                    [
+                      23,
+                      "      request_time = Utils.clock_time - start_time\n"
+                    ],
+                    [
+                      24,
+                      "\n"
+                    ],
+                    [
+                      25,
+                      "      unless headers.has_key?(@header_name)\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/rack-2.0.7/lib/rack/method_override.rb",
+                  "inApp": false,
+                  "lineNo": 22,
+                  "module": null,
+                  "filename": "rack/method_override.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      19,
+                      "        end\n"
+                    ],
+                    [
+                      20,
+                      "      end\n"
+                    ],
+                    [
+                      21,
+                      "\n"
+                    ],
+                    [
+                      22,
+                      "      @app.call(env)\n"
+                    ],
+                    [
+                      23,
+                      "    end\n"
+                    ],
+                    [
+                      24,
+                      "\n"
+                    ],
+                    [
+                      25,
+                      "    def method_override(env)\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/actionpack-5.2.3/lib/action_dispatch/middleware/request_id.rb",
+                  "inApp": false,
+                  "lineNo": 27,
+                  "module": null,
+                  "filename": "action_dispatch/middleware/request_id.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      24,
+                      "    def call(env)\n"
+                    ],
+                    [
+                      25,
+                      "      req = ActionDispatch::Request.new env\n"
+                    ],
+                    [
+                      26,
+                      "      req.request_id = make_request_id(req.x_request_id)\n"
+                    ],
+                    [
+                      27,
+                      "      @app.call(env).tap { |_status, headers, _body| headers[X_REQUEST_ID] = req.request_id }\n"
+                    ],
+                    [
+                      28,
+                      "    end\n"
+                    ],
+                    [
+                      29,
+                      "\n"
+                    ],
+                    [
+                      30,
+                      "    private\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/actionpack-5.2.3/lib/action_dispatch/middleware/remote_ip.rb",
+                  "inApp": false,
+                  "lineNo": 81,
+                  "module": null,
+                  "filename": "action_dispatch/middleware/remote_ip.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      78,
+                      "    def call(env)\n"
+                    ],
+                    [
+                      79,
+                      "      req = ActionDispatch::Request.new env\n"
+                    ],
+                    [
+                      80,
+                      "      req.remote_ip = GetIp.new(req, check_ip, proxies)\n"
+                    ],
+                    [
+                      81,
+                      "      @app.call(req.env)\n"
+                    ],
+                    [
+                      82,
+                      "    end\n"
+                    ],
+                    [
+                      83,
+                      "\n"
+                    ],
+                    [
+                      84,
+                      "    # The GetIp class exists as a way to defer processing of the request data\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/sprockets-rails-3.2.1/lib/sprockets/rails/quiet_assets.rb",
+                  "inApp": false,
+                  "lineNo": 13,
+                  "module": null,
+                  "filename": "sprockets/rails/quiet_assets.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      10,
+                      "        if env['PATH_INFO'] =~ @assets_regex\n"
+                    ],
+                    [
+                      11,
+                      "          ::Rails.logger.silence { @app.call(env) }\n"
+                    ],
+                    [
+                      12,
+                      "        else\n"
+                    ],
+                    [
+                      13,
+                      "          @app.call(env)\n"
+                    ],
+                    [
+                      14,
+                      "        end\n"
+                    ],
+                    [
+                      15,
+                      "      end\n"
+                    ],
+                    [
+                      16,
+                      "    end\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/railties-5.2.3/lib/rails/rack/logger.rb",
+                  "inApp": false,
+                  "lineNo": 26,
+                  "module": null,
+                  "filename": "rails/rack/logger.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      23,
+                      "        request = ActionDispatch::Request.new(env)\n"
+                    ],
+                    [
+                      24,
+                      "\n"
+                    ],
+                    [
+                      25,
+                      "        if logger.respond_to?(:tagged)\n"
+                    ],
+                    [
+                      26,
+                      "          logger.tagged(compute_tags(request)) { call_app(request, env) }\n"
+                    ],
+                    [
+                      27,
+                      "        else\n"
+                    ],
+                    [
+                      28,
+                      "          call_app(request, env)\n"
+                    ],
+                    [
+                      29,
+                      "        end\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "tagged",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activesupport-5.2.3/lib/active_support/tagged_logging.rb",
+                  "inApp": false,
+                  "lineNo": 71,
+                  "module": null,
+                  "filename": "active_support/tagged_logging.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      68,
+                      "    delegate :push_tags, :pop_tags, :clear_tags!, to: :formatter\n"
+                    ],
+                    [
+                      69,
+                      "\n"
+                    ],
+                    [
+                      70,
+                      "    def tagged(*tags)\n"
+                    ],
+                    [
+                      71,
+                      "      formatter.tagged(*tags) { yield self }\n"
+                    ],
+                    [
+                      72,
+                      "    end\n"
+                    ],
+                    [
+                      73,
+                      "\n"
+                    ],
+                    [
+                      74,
+                      "    def flush\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "tagged",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activesupport-5.2.3/lib/active_support/tagged_logging.rb",
+                  "inApp": false,
+                  "lineNo": 28,
+                  "module": null,
+                  "filename": "active_support/tagged_logging.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      25,
+                      "\n"
+                    ],
+                    [
+                      26,
+                      "      def tagged(*tags)\n"
+                    ],
+                    [
+                      27,
+                      "        new_tags = push_tags(*tags)\n"
+                    ],
+                    [
+                      28,
+                      "        yield self\n"
+                    ],
+                    [
+                      29,
+                      "      ensure\n"
+                    ],
+                    [
+                      30,
+                      "        pop_tags(new_tags.size)\n"
+                    ],
+                    [
+                      31,
+                      "      end\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "block in tagged",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activesupport-5.2.3/lib/active_support/tagged_logging.rb",
+                  "inApp": false,
+                  "lineNo": 71,
+                  "module": null,
+                  "filename": "active_support/tagged_logging.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      68,
+                      "    delegate :push_tags, :pop_tags, :clear_tags!, to: :formatter\n"
+                    ],
+                    [
+                      69,
+                      "\n"
+                    ],
+                    [
+                      70,
+                      "    def tagged(*tags)\n"
+                    ],
+                    [
+                      71,
+                      "      formatter.tagged(*tags) { yield self }\n"
+                    ],
+                    [
+                      72,
+                      "    end\n"
+                    ],
+                    [
+                      73,
+                      "\n"
+                    ],
+                    [
+                      74,
+                      "    def flush\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "block in call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/railties-5.2.3/lib/rails/rack/logger.rb",
+                  "inApp": false,
+                  "lineNo": 26,
+                  "module": null,
+                  "filename": "rails/rack/logger.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      23,
+                      "        request = ActionDispatch::Request.new(env)\n"
+                    ],
+                    [
+                      24,
+                      "\n"
+                    ],
+                    [
+                      25,
+                      "        if logger.respond_to?(:tagged)\n"
+                    ],
+                    [
+                      26,
+                      "          logger.tagged(compute_tags(request)) { call_app(request, env) }\n"
+                    ],
+                    [
+                      27,
+                      "        else\n"
+                    ],
+                    [
+                      28,
+                      "          call_app(request, env)\n"
+                    ],
+                    [
+                      29,
+                      "        end\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call_app",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/railties-5.2.3/lib/rails/rack/logger.rb",
+                  "inApp": false,
+                  "lineNo": 38,
+                  "module": null,
+                  "filename": "rails/rack/logger.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      38,
+                      "          status, headers, body = @app.call(env)\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/actionpack-5.2.3/lib/action_dispatch/middleware/show_exceptions.rb",
+                  "inApp": false,
+                  "lineNo": 33,
+                  "module": null,
+                  "filename": "action_dispatch/middleware/show_exceptions.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      33,
+                      "      @app.call(env)\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/web-console-3.7.0/lib/web_console/middleware.rb",
+                  "inApp": false,
+                  "lineNo": 20,
+                  "module": null,
+                  "filename": "web_console/middleware.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      20,
+                      "      app_exception = catch :app_exception do\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "catch",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/web-console-3.7.0/lib/web_console/middleware.rb",
+                  "inApp": false,
+                  "lineNo": 20,
+                  "module": null,
+                  "filename": "web_console/middleware.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      17,
+                      "    end\n"
+                    ],
+                    [
+                      18,
+                      "\n"
+                    ],
+                    [
+                      19,
+                      "    def call(env)\n"
+                    ],
+                    [
+                      20,
+                      "      app_exception = catch :app_exception do\n"
+                    ],
+                    [
+                      21,
+                      "        request = create_regular_or_whiny_request(env)\n"
+                    ],
+                    [
+                      22,
+                      "        return call_app(env) unless request.from_whitelisted_ip?\n"
+                    ],
+                    [
+                      23,
+                      "\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "block in call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/web-console-3.7.0/lib/web_console/middleware.rb",
+                  "inApp": false,
+                  "lineNo": 30,
+                  "module": null,
+                  "filename": "web_console/middleware.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      27,
+                      "          return change_stack_trace(id, request)\n"
+                    ],
+                    [
+                      28,
+                      "        end\n"
+                    ],
+                    [
+                      29,
+                      "\n"
+                    ],
+                    [
+                      30,
+                      "        status, headers, body = call_app(env)\n"
+                    ],
+                    [
+                      31,
+                      "\n"
+                    ],
+                    [
+                      32,
+                      "        if (session = Session.from(Thread.current)) && acceptable_content_type?(headers)\n"
+                    ],
+                    [
+                      33,
+                      "          headers[\"X-Web-Console-Session-Id\"] = session.id\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call_app",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/web-console-3.7.0/lib/web_console/middleware.rb",
+                  "inApp": false,
+                  "lineNo": 135,
+                  "module": null,
+                  "filename": "web_console/middleware.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      132,
+                      "      end\n"
+                    ],
+                    [
+                      133,
+                      "\n"
+                    ],
+                    [
+                      134,
+                      "      def call_app(env)\n"
+                    ],
+                    [
+                      135,
+                      "        @app.call(env)\n"
+                    ],
+                    [
+                      136,
+                      "      rescue => e\n"
+                    ],
+                    [
+                      137,
+                      "        throw :app_exception, e\n"
+                    ],
+                    [
+                      138,
+                      "      end\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/actionpack-5.2.3/lib/action_dispatch/middleware/debug_exceptions.rb",
+                  "inApp": false,
+                  "lineNo": 61,
+                  "module": null,
+                  "filename": "action_dispatch/middleware/debug_exceptions.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      58,
+                      "\n"
+                    ],
+                    [
+                      59,
+                      "    def call(env)\n"
+                    ],
+                    [
+                      60,
+                      "      request = ActionDispatch::Request.new env\n"
+                    ],
+                    [
+                      61,
+                      "      _, headers, body = response = @app.call(env)\n"
+                    ],
+                    [
+                      62,
+                      "\n"
+                    ],
+                    [
+                      63,
+                      "      if headers[\"X-Cascade\"] == \"pass\"\n"
+                    ],
+                    [
+                      64,
+                      "        body.close if body.respond_to?(:close)\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/actionpack-5.2.3/lib/action_dispatch/middleware/executor.rb",
+                  "inApp": false,
+                  "lineNo": 14,
+                  "module": null,
+                  "filename": "action_dispatch/middleware/executor.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      11,
+                      "    def call(env)\n"
+                    ],
+                    [
+                      12,
+                      "      state = @executor.run!\n"
+                    ],
+                    [
+                      13,
+                      "      begin\n"
+                    ],
+                    [
+                      14,
+                      "        response = @app.call(env)\n"
+                    ],
+                    [
+                      15,
+                      "        returned = response << ::Rack::BodyProxy.new(response.pop) { state.complete! }\n"
+                    ],
+                    [
+                      16,
+                      "      ensure\n"
+                    ],
+                    [
+                      17,
+                      "        state.complete! unless returned\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/actionpack-5.2.3/lib/action_dispatch/middleware/callbacks.rb",
+                  "inApp": false,
+                  "lineNo": 26,
+                  "module": null,
+                  "filename": "action_dispatch/middleware/callbacks.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      23,
+                      "\n"
+                    ],
+                    [
+                      24,
+                      "    def call(env)\n"
+                    ],
+                    [
+                      25,
+                      "      error = nil\n"
+                    ],
+                    [
+                      26,
+                      "      result = run_callbacks :call do\n"
+                    ],
+                    [
+                      27,
+                      "        begin\n"
+                    ],
+                    [
+                      28,
+                      "          @app.call(env)\n"
+                    ],
+                    [
+                      29,
+                      "        rescue => error\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "run_callbacks",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activesupport-5.2.3/lib/active_support/callbacks.rb",
+                  "inApp": false,
+                  "lineNo": 98,
+                  "module": null,
+                  "filename": "active_support/callbacks.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      95,
+                      "      callbacks = __callbacks[kind.to_sym]\n"
+                    ],
+                    [
+                      96,
+                      "\n"
+                    ],
+                    [
+                      97,
+                      "      if callbacks.empty?\n"
+                    ],
+                    [
+                      98,
+                      "        yield if block_given?\n"
+                    ],
+                    [
+                      99,
+                      "      else\n"
+                    ],
+                    [
+                      100,
+                      "        env = Filters::Environment.new(self, false, nil)\n"
+                    ],
+                    [
+                      101,
+                      "        next_sequence = callbacks.compile\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "block in call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/actionpack-5.2.3/lib/action_dispatch/middleware/callbacks.rb",
+                  "inApp": false,
+                  "lineNo": 28,
+                  "module": null,
+                  "filename": "action_dispatch/middleware/callbacks.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      25,
+                      "      error = nil\n"
+                    ],
+                    [
+                      26,
+                      "      result = run_callbacks :call do\n"
+                    ],
+                    [
+                      27,
+                      "        begin\n"
+                    ],
+                    [
+                      28,
+                      "          @app.call(env)\n"
+                    ],
+                    [
+                      29,
+                      "        rescue => error\n"
+                    ],
+                    [
+                      30,
+                      "        end\n"
+                    ],
+                    [
+                      31,
+                      "      end\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activerecord-5.2.3/lib/active_record/migration.rb",
+                  "inApp": false,
+                  "lineNo": 554,
+                  "module": null,
+                  "filename": "active_record/migration.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      551,
+                      "      end\n"
+                    ],
+                    [
+                      552,
+                      "\n"
+                    ],
+                    [
+                      553,
+                      "      def call(env)\n"
+                    ],
+                    [
+                      554,
+                      "        mtime = ActiveRecord::Base.connection.migration_context.last_migration.mtime.to_i\n"
+                    ],
+                    [
+                      555,
+                      "        if @last_check < mtime\n"
+                    ],
+                    [
+                      556,
+                      "          ActiveRecord::Migration.check_pending!(connection)\n"
+                    ],
+                    [
+                      557,
+                      "          @last_check = mtime\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "connection",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activerecord-5.2.3/lib/active_record/connection_handling.rb",
+                  "inApp": false,
+                  "lineNo": 90,
+                  "module": null,
+                  "filename": "active_record/connection_handling.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      87,
+                      "    # also be used to \"borrow\" the connection to do database work unrelated\n"
+                    ],
+                    [
+                      88,
+                      "    # to any of the specific Active Records.\n"
+                    ],
+                    [
+                      89,
+                      "    def connection\n"
+                    ],
+                    [
+                      90,
+                      "      retrieve_connection\n"
+                    ],
+                    [
+                      91,
+                      "    end\n"
+                    ],
+                    [
+                      92,
+                      "\n"
+                    ],
+                    [
+                      93,
+                      "    attr_writer :connection_specification_name\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "retrieve_connection",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activerecord-5.2.3/lib/active_record/connection_handling.rb",
+                  "inApp": false,
+                  "lineNo": 118,
+                  "module": null,
+                  "filename": "active_record/connection_handling.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      115,
+                      "    end\n"
+                    ],
+                    [
+                      116,
+                      "\n"
+                    ],
+                    [
+                      117,
+                      "    def retrieve_connection\n"
+                    ],
+                    [
+                      118,
+                      "      connection_handler.retrieve_connection(connection_specification_name)\n"
+                    ],
+                    [
+                      119,
+                      "    end\n"
+                    ],
+                    [
+                      120,
+                      "\n"
+                    ],
+                    [
+                      121,
+                      "    # Returns +true+ if Active Record is connected.\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "retrieve_connection",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activerecord-5.2.3/lib/active_record/connection_adapters/abstract/connection_pool.rb",
+                  "inApp": false,
+                  "lineNo": 1014,
+                  "module": null,
+                  "filename": "active_record/connection_adapters/abstract/connection_pool.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      1011,
+                      "      def retrieve_connection(spec_name) #:nodoc:\n"
+                    ],
+                    [
+                      1012,
+                      "        pool = retrieve_connection_pool(spec_name)\n"
+                    ],
+                    [
+                      1013,
+                      "        raise ConnectionNotEstablished, \"No connection pool with '#{spec_name}' found.\" unless pool\n"
+                    ],
+                    [
+                      1014,
+                      "        pool.connection\n"
+                    ],
+                    [
+                      1015,
+                      "      end\n"
+                    ],
+                    [
+                      1016,
+                      "\n"
+                    ],
+                    [
+                      1017,
+                      "      # Returns true if a connection that's accessible to this class has\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "connection",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activerecord-5.2.3/lib/active_record/connection_adapters/abstract/connection_pool.rb",
+                  "inApp": false,
+                  "lineNo": 382,
+                  "module": null,
+                  "filename": "active_record/connection_adapters/abstract/connection_pool.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      379,
+                      "      # #connection can be called any number of times; the connection is\n"
+                    ],
+                    [
+                      380,
+                      "      # held in a cache keyed by a thread.\n"
+                    ],
+                    [
+                      381,
+                      "      def connection\n"
+                    ],
+                    [
+                      382,
+                      "        @thread_cached_conns[connection_cache_key(@lock_thread || Thread.current)] ||= checkout\n"
+                    ],
+                    [
+                      383,
+                      "      end\n"
+                    ],
+                    [
+                      384,
+                      "\n"
+                    ],
+                    [
+                      385,
+                      "      # Returns true if there is an open connection being used for the current thread.\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "checkout",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activerecord-5.2.3/lib/active_record/connection_adapters/abstract/connection_pool.rb",
+                  "inApp": false,
+                  "lineNo": 523,
+                  "module": null,
+                  "filename": "active_record/connection_adapters/abstract/connection_pool.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      520,
+                      "      # Raises:\n"
+                    ],
+                    [
+                      521,
+                      "      # - ActiveRecord::ConnectionTimeoutError no connection can be obtained from the pool.\n"
+                    ],
+                    [
+                      522,
+                      "      def checkout(checkout_timeout = @checkout_timeout)\n"
+                    ],
+                    [
+                      523,
+                      "        checkout_and_verify(acquire_connection(checkout_timeout))\n"
+                    ],
+                    [
+                      524,
+                      "      end\n"
+                    ],
+                    [
+                      525,
+                      "\n"
+                    ],
+                    [
+                      526,
+                      "      # Check-in a database connection back into the pool, indicating that you\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "acquire_connection",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activerecord-5.2.3/lib/active_record/connection_adapters/abstract/connection_pool.rb",
+                  "inApp": false,
+                  "lineNo": 795,
+                  "module": null,
+                  "filename": "active_record/connection_adapters/abstract/connection_pool.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      792,
+                      "          # <tt>synchronize { conn.lease }</tt> in this method, but by leaving it to <tt>@available.poll</tt>\n"
+                    ],
+                    [
+                      793,
+                      "          # and +try_to_checkout_new_connection+ we can piggyback on +synchronize+ sections\n"
+                    ],
+                    [
+                      794,
+                      "          # of the said methods and avoid an additional +synchronize+ overhead.\n"
+                    ],
+                    [
+                      795,
+                      "          if conn = @available.poll || try_to_checkout_new_connection\n"
+                    ],
+                    [
+                      796,
+                      "            conn\n"
+                    ],
+                    [
+                      797,
+                      "          else\n"
+                    ],
+                    [
+                      798,
+                      "            reap\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "try_to_checkout_new_connection",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activerecord-5.2.3/lib/active_record/connection_adapters/abstract/connection_pool.rb",
+                  "inApp": false,
+                  "lineNo": 834,
+                  "module": null,
+                  "filename": "active_record/connection_adapters/abstract/connection_pool.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      831,
+                      "            begin\n"
+                    ],
+                    [
+                      832,
+                      "              # if successfully incremented @now_connecting establish new connection\n"
+                    ],
+                    [
+                      833,
+                      "              # outside of synchronized section\n"
+                    ],
+                    [
+                      834,
+                      "              conn = checkout_new_connection\n"
+                    ],
+                    [
+                      835,
+                      "            ensure\n"
+                    ],
+                    [
+                      836,
+                      "              synchronize do\n"
+                    ],
+                    [
+                      837,
+                      "                if conn\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "checkout_new_connection",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activerecord-5.2.3/lib/active_record/connection_adapters/abstract/connection_pool.rb",
+                  "inApp": false,
+                  "lineNo": 855,
+                  "module": null,
+                  "filename": "active_record/connection_adapters/abstract/connection_pool.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      852,
+                      "\n"
+                    ],
+                    [
+                      853,
+                      "        def checkout_new_connection\n"
+                    ],
+                    [
+                      854,
+                      "          raise ConnectionNotEstablished unless @automatic_reconnect\n"
+                    ],
+                    [
+                      855,
+                      "          new_connection\n"
+                    ],
+                    [
+                      856,
+                      "        end\n"
+                    ],
+                    [
+                      857,
+                      "\n"
+                    ],
+                    [
+                      858,
+                      "        def checkout_and_verify(c)\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "new_connection",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activerecord-5.2.3/lib/active_record/connection_adapters/abstract/connection_pool.rb",
+                  "inApp": false,
+                  "lineNo": 811,
+                  "module": null,
+                  "filename": "active_record/connection_adapters/abstract/connection_pool.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      808,
+                      "        alias_method :release, :remove_connection_from_thread_cache\n"
+                    ],
+                    [
+                      809,
+                      "\n"
+                    ],
+                    [
+                      810,
+                      "        def new_connection\n"
+                    ],
+                    [
+                      811,
+                      "          Base.send(spec.adapter_method, spec.config).tap do |conn|\n"
+                    ],
+                    [
+                      812,
+                      "            conn.schema_cache = schema_cache.dup if schema_cache\n"
+                    ],
+                    [
+                      813,
+                      "          end\n"
+                    ],
+                    [
+                      814,
+                      "        end\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "postgresql_connection",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activerecord-5.2.3/lib/active_record/connection_adapters/postgresql_adapter.rb",
+                  "inApp": false,
+                  "lineNo": 48,
+                  "module": null,
+                  "filename": "active_record/connection_adapters/postgresql_adapter.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      45,
+                      "\n"
+                    ],
+                    [
+                      46,
+                      "      # The postgres drivers don't allow the creation of an unconnected PG::Connection object,\n"
+                    ],
+                    [
+                      47,
+                      "      # so just pass a nil connection object for the time being.\n"
+                    ],
+                    [
+                      48,
+                      "      ConnectionAdapters::PostgreSQLAdapter.new(nil, logger, conn_params, config)\n"
+                    ],
+                    [
+                      49,
+                      "    end\n"
+                    ],
+                    [
+                      50,
+                      "  end\n"
+                    ],
+                    [
+                      51,
+                      "\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "new",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activerecord-5.2.3/lib/active_record/connection_adapters/postgresql_adapter.rb",
+                  "inApp": false,
+                  "lineNo": 48,
+                  "module": null,
+                  "filename": "active_record/connection_adapters/postgresql_adapter.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      45,
+                      "\n"
+                    ],
+                    [
+                      46,
+                      "      # The postgres drivers don't allow the creation of an unconnected PG::Connection object,\n"
+                    ],
+                    [
+                      47,
+                      "      # so just pass a nil connection object for the time being.\n"
+                    ],
+                    [
+                      48,
+                      "      ConnectionAdapters::PostgreSQLAdapter.new(nil, logger, conn_params, config)\n"
+                    ],
+                    [
+                      49,
+                      "    end\n"
+                    ],
+                    [
+                      50,
+                      "  end\n"
+                    ],
+                    [
+                      51,
+                      "\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "initialize",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activerecord-5.2.3/lib/active_record/connection_adapters/postgresql_adapter.rb",
+                  "inApp": false,
+                  "lineNo": 223,
+                  "module": null,
+                  "filename": "active_record/connection_adapters/postgresql_adapter.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      220,
+                      "        @local_tz = nil\n"
+                    ],
+                    [
+                      221,
+                      "        @max_identifier_length = nil\n"
+                    ],
+                    [
+                      222,
+                      "\n"
+                    ],
+                    [
+                      223,
+                      "        connect\n"
+                    ],
+                    [
+                      224,
+                      "        add_pg_encoders\n"
+                    ],
+                    [
+                      225,
+                      "        @statements = StatementPool.new @connection,\n"
+                    ],
+                    [
+                      226,
+                      "                                        self.class.type_cast_config_to_integer(config[:statement_limit])\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "connect",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activerecord-5.2.3/lib/active_record/connection_adapters/postgresql_adapter.rb",
+                  "inApp": false,
+                  "lineNo": 692,
+                  "module": null,
+                  "filename": "active_record/connection_adapters/postgresql_adapter.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      689,
+                      "        # Connects to a PostgreSQL server and sets up the adapter depending on the\n"
+                    ],
+                    [
+                      690,
+                      "        # connected server's characteristics.\n"
+                    ],
+                    [
+                      691,
+                      "        def connect\n"
+                    ],
+                    [
+                      692,
+                      "          @connection = PG.connect(@connection_parameters)\n"
+                    ],
+                    [
+                      693,
+                      "          configure_connection\n"
+                    ],
+                    [
+                      694,
+                      "        rescue ::PG::Error => error\n"
+                    ],
+                    [
+                      695,
+                      "          if error.message.include?(\"does not exist\")\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "connect",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/pg-1.1.4/lib/pg.rb",
+                  "inApp": false,
+                  "lineNo": 56,
+                  "module": null,
+                  "filename": "pg.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      53,
+                      "\n"
+                    ],
+                    [
+                      54,
+                      "\t### Convenience alias for PG::Connection.new.\n"
+                    ],
+                    [
+                      55,
+                      "\tdef self::connect( *args )\n"
+                    ],
+                    [
+                      56,
+                      "\t\treturn PG::Connection.new( *args )\n"
+                    ],
+                    [
+                      57,
+                      "\tend\n"
+                    ],
+                    [
+                      58,
+                      "\n"
+                    ],
+                    [
+                      59,
+                      "\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "new",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/pg-1.1.4/lib/pg.rb",
+                  "inApp": false,
+                  "lineNo": 56,
+                  "module": null,
+                  "filename": "pg.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      53,
+                      "\n"
+                    ],
+                    [
+                      54,
+                      "\t### Convenience alias for PG::Connection.new.\n"
+                    ],
+                    [
+                      55,
+                      "\tdef self::connect( *args )\n"
+                    ],
+                    [
+                      56,
+                      "\t\treturn PG::Connection.new( *args )\n"
+                    ],
+                    [
+                      57,
+                      "\tend\n"
+                    ],
+                    [
+                      58,
+                      "\n"
+                    ],
+                    [
+                      59,
+                      "\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "initialize",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/pg-1.1.4/lib/pg.rb",
+                  "inApp": false,
+                  "lineNo": 56,
+                  "module": null,
+                  "filename": "pg.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      53,
+                      "\n"
+                    ],
+                    [
+                      54,
+                      "\t### Convenience alias for PG::Connection.new.\n"
+                    ],
+                    [
+                      55,
+                      "\tdef self::connect( *args )\n"
+                    ],
+                    [
+                      56,
+                      "\t\treturn PG::Connection.new( *args )\n"
+                    ],
+                    [
+                      57,
+                      "\tend\n"
+                    ],
+                    [
+                      58,
+                      "\n"
+                    ],
+                    [
+                      59,
+                      "\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                }
+              ],
+              "framesOmitted": null,
+              "registers": null,
+              "hasSystemFrames": false
+            },
+            "module": "PG",
+            "rawStacktrace": null,
+            "mechanism": null,
+            "threadId": null,
+            "value": "FATAL:  database \"test_development\" does not exist\n",
+            "type": "PG::ConnectionBad"
+          },
+          {
+            "stacktrace": {
+              "frames": [
+                {
+                  "function": "block in spawn_thread",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/puma-3.12.1/lib/puma/thread_pool.rb",
+                  "inApp": false,
+                  "lineNo": 135,
+                  "module": null,
+                  "filename": "puma/thread_pool.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      132,
+                      "          end\n"
+                    ],
+                    [
+                      133,
+                      "\n"
+                    ],
+                    [
+                      134,
+                      "          begin\n"
+                    ],
+                    [
+                      135,
+                      "            block.call(work, *extra)\n"
+                    ],
+                    [
+                      136,
+                      "          rescue Exception => e\n"
+                    ],
+                    [
+                      137,
+                      "            STDERR.puts \"Error reached top of thread-pool: #{e.message} (#{e.class})\"\n"
+                    ],
+                    [
+                      138,
+                      "          end\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "block in run",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/puma-3.12.1/lib/puma/server.rb",
+                  "inApp": false,
+                  "lineNo": 334,
+                  "module": null,
+                  "filename": "puma/server.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      331,
+                      "          client.close\n"
+                    ],
+                    [
+                      332,
+                      "        else\n"
+                    ],
+                    [
+                      333,
+                      "          if process_now\n"
+                    ],
+                    [
+                      334,
+                      "            process_client client, buffer\n"
+                    ],
+                    [
+                      335,
+                      "          else\n"
+                    ],
+                    [
+                      336,
+                      "            client.set_timeout @first_data_timeout\n"
+                    ],
+                    [
+                      337,
+                      "            @reactor.add client\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "process_client",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/puma-3.12.1/lib/puma/server.rb",
+                  "inApp": false,
+                  "lineNo": 474,
+                  "module": null,
+                  "filename": "puma/server.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      471,
+                      "        close_socket = true\n"
+                    ],
+                    [
+                      472,
+                      "\n"
+                    ],
+                    [
+                      473,
+                      "        while true\n"
+                    ],
+                    [
+                      474,
+                      "          case handle_request(client, buffer)\n"
+                    ],
+                    [
+                      475,
+                      "          when false\n"
+                    ],
+                    [
+                      476,
+                      "            return\n"
+                    ],
+                    [
+                      477,
+                      "          when :async\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "handle_request",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/puma-3.12.1/lib/puma/server.rb",
+                  "inApp": false,
+                  "lineNo": 660,
+                  "module": null,
+                  "filename": "puma/server.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      657,
+                      "\n"
+                    ],
+                    [
+                      658,
+                      "      begin\n"
+                    ],
+                    [
+                      659,
+                      "        begin\n"
+                    ],
+                    [
+                      660,
+                      "          status, headers, res_body = @app.call(env)\n"
+                    ],
+                    [
+                      661,
+                      "\n"
+                    ],
+                    [
+                      662,
+                      "          return :async if req.hijacked\n"
+                    ],
+                    [
+                      663,
+                      "\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/puma-3.12.1/lib/puma/configuration.rb",
+                  "inApp": false,
+                  "lineNo": 227,
+                  "module": null,
+                  "filename": "puma/configuration.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      224,
+                      "\n"
+                    ],
+                    [
+                      225,
+                      "      def call(env)\n"
+                    ],
+                    [
+                      226,
+                      "        env[Const::PUMA_CONFIG] = @config\n"
+                    ],
+                    [
+                      227,
+                      "        @app.call(env)\n"
+                    ],
+                    [
+                      228,
+                      "      end\n"
+                    ],
+                    [
+                      229,
+                      "    end\n"
+                    ],
+                    [
+                      230,
+                      "\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/prometheus-client-mmap-0.9.8/lib/prometheus/client/rack/collector.rb",
+                  "inApp": false,
+                  "lineNo": 24,
+                  "module": null,
+                  "filename": "prometheus/client/rack/collector.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      21,
+                      "        end\n"
+                    ],
+                    [
+                      22,
+                      "\n"
+                    ],
+                    [
+                      23,
+                      "        def call(env) # :nodoc:\n"
+                    ],
+                    [
+                      24,
+                      "          trace(env) { @app.call(env) }\n"
+                    ],
+                    [
+                      25,
+                      "        end\n"
+                    ],
+                    [
+                      26,
+                      "\n"
+                    ],
+                    [
+                      27,
+                      "        protected\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "trace",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/prometheus-client-mmap-0.9.8/lib/prometheus/client/rack/collector.rb",
+                  "inApp": false,
+                  "lineNo": 61,
+                  "module": null,
+                  "filename": "prometheus/client/rack/collector.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      58,
+                      "\n"
+                    ],
+                    [
+                      59,
+                      "        def trace(env)\n"
+                    ],
+                    [
+                      60,
+                      "          start = Time.now\n"
+                    ],
+                    [
+                      61,
+                      "          yield.tap do |response|\n"
+                    ],
+                    [
+                      62,
+                      "            duration = (Time.now - start).to_f\n"
+                    ],
+                    [
+                      63,
+                      "            record(labels(env, response), duration)\n"
+                    ],
+                    [
+                      64,
+                      "          end\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "block in call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/prometheus-client-mmap-0.9.8/lib/prometheus/client/rack/collector.rb",
+                  "inApp": false,
+                  "lineNo": 24,
+                  "module": null,
+                  "filename": "prometheus/client/rack/collector.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      21,
+                      "        end\n"
+                    ],
+                    [
+                      22,
+                      "\n"
+                    ],
+                    [
+                      23,
+                      "        def call(env) # :nodoc:\n"
+                    ],
+                    [
+                      24,
+                      "          trace(env) { @app.call(env) }\n"
+                    ],
+                    [
+                      25,
+                      "        end\n"
+                    ],
+                    [
+                      26,
+                      "\n"
+                    ],
+                    [
+                      27,
+                      "        protected\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/prometheus-client-mmap-0.9.8/lib/prometheus/client/rack/exporter.rb",
+                  "inApp": false,
+                  "lineNo": 29,
+                  "module": null,
+                  "filename": "prometheus/client/rack/exporter.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      26,
+                      "            format = negotiate(env['HTTP_ACCEPT'], @acceptable)\n"
+                    ],
+                    [
+                      27,
+                      "            format ? respond_with(format) : not_acceptable(FORMATS)\n"
+                    ],
+                    [
+                      28,
+                      "          else\n"
+                    ],
+                    [
+                      29,
+                      "            @app.call(env)\n"
+                    ],
+                    [
+                      30,
+                      "          end\n"
+                    ],
+                    [
+                      31,
+                      "        end\n"
+                    ],
+                    [
+                      32,
+                      "\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/railties-5.2.3/lib/rails/engine.rb",
+                  "inApp": false,
+                  "lineNo": 524,
+                  "module": null,
+                  "filename": "rails/engine.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      521,
+                      "    # Define the Rack API for this engine.\n"
+                    ],
+                    [
+                      522,
+                      "    def call(env)\n"
+                    ],
+                    [
+                      523,
+                      "      req = build_request env\n"
+                    ],
+                    [
+                      524,
+                      "      app.call req.env\n"
+                    ],
+                    [
+                      525,
+                      "    end\n"
+                    ],
+                    [
+                      526,
+                      "\n"
+                    ],
+                    [
+                      527,
+                      "    # Defines additional Rack env configuration that is added on each call.\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/sentry-raven-2.12.3/lib/raven/integrations/rack.rb",
+                  "inApp": false,
+                  "lineNo": 51,
+                  "module": null,
+                  "filename": "raven/integrations/rack.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      48,
+                      "      Raven.context.transaction.push(env[\"PATH_INFO\"]) if env[\"PATH_INFO\"]\n"
+                    ],
+                    [
+                      49,
+                      "\n"
+                    ],
+                    [
+                      50,
+                      "      begin\n"
+                    ],
+                    [
+                      51,
+                      "        response = @app.call(env)\n"
+                    ],
+                    [
+                      52,
+                      "      rescue Error\n"
+                    ],
+                    [
+                      53,
+                      "        raise # Don't capture Raven errors\n"
+                    ],
+                    [
+                      54,
+                      "      rescue Exception => e\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/rack-2.0.7/lib/rack/sendfile.rb",
+                  "inApp": false,
+                  "lineNo": 111,
+                  "module": null,
+                  "filename": "rack/sendfile.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      108,
+                      "    end\n"
+                    ],
+                    [
+                      109,
+                      "\n"
+                    ],
+                    [
+                      110,
+                      "    def call(env)\n"
+                    ],
+                    [
+                      111,
+                      "      status, headers, body = @app.call(env)\n"
+                    ],
+                    [
+                      112,
+                      "      if body.respond_to?(:to_path)\n"
+                    ],
+                    [
+                      113,
+                      "        case type = variation(env)\n"
+                    ],
+                    [
+                      114,
+                      "        when 'X-Accel-Redirect'\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/actionpack-5.2.3/lib/action_dispatch/middleware/static.rb",
+                  "inApp": false,
+                  "lineNo": 127,
+                  "module": null,
+                  "filename": "action_dispatch/middleware/static.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      124,
+                      "        end\n"
+                    ],
+                    [
+                      125,
+                      "      end\n"
+                    ],
+                    [
+                      126,
+                      "\n"
+                    ],
+                    [
+                      127,
+                      "      @app.call(req.env)\n"
+                    ],
+                    [
+                      128,
+                      "    end\n"
+                    ],
+                    [
+                      129,
+                      "  end\n"
+                    ],
+                    [
+                      130,
+                      "end\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/actionpack-5.2.3/lib/action_dispatch/middleware/executor.rb",
+                  "inApp": false,
+                  "lineNo": 14,
+                  "module": null,
+                  "filename": "action_dispatch/middleware/executor.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      11,
+                      "    def call(env)\n"
+                    ],
+                    [
+                      12,
+                      "      state = @executor.run!\n"
+                    ],
+                    [
+                      13,
+                      "      begin\n"
+                    ],
+                    [
+                      14,
+                      "        response = @app.call(env)\n"
+                    ],
+                    [
+                      15,
+                      "        returned = response << ::Rack::BodyProxy.new(response.pop) { state.complete! }\n"
+                    ],
+                    [
+                      16,
+                      "      ensure\n"
+                    ],
+                    [
+                      17,
+                      "        state.complete! unless returned\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activesupport-5.2.3/lib/active_support/cache/strategy/local_cache_middleware.rb",
+                  "inApp": false,
+                  "lineNo": 29,
+                  "module": null,
+                  "filename": "active_support/cache/strategy/local_cache_middleware.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      26,
+                      "\n"
+                    ],
+                    [
+                      27,
+                      "          def call(env)\n"
+                    ],
+                    [
+                      28,
+                      "            LocalCacheRegistry.set_cache_for(local_cache_key, LocalStore.new)\n"
+                    ],
+                    [
+                      29,
+                      "            response = @app.call(env)\n"
+                    ],
+                    [
+                      30,
+                      "            response[2] = ::Rack::BodyProxy.new(response[2]) do\n"
+                    ],
+                    [
+                      31,
+                      "              LocalCacheRegistry.set_cache_for(local_cache_key, nil)\n"
+                    ],
+                    [
+                      32,
+                      "            end\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/rack-2.0.7/lib/rack/runtime.rb",
+                  "inApp": false,
+                  "lineNo": 22,
+                  "module": null,
+                  "filename": "rack/runtime.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      19,
+                      "\n"
+                    ],
+                    [
+                      20,
+                      "    def call(env)\n"
+                    ],
+                    [
+                      21,
+                      "      start_time = Utils.clock_time\n"
+                    ],
+                    [
+                      22,
+                      "      status, headers, body = @app.call(env)\n"
+                    ],
+                    [
+                      23,
+                      "      request_time = Utils.clock_time - start_time\n"
+                    ],
+                    [
+                      24,
+                      "\n"
+                    ],
+                    [
+                      25,
+                      "      unless headers.has_key?(@header_name)\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/rack-2.0.7/lib/rack/method_override.rb",
+                  "inApp": false,
+                  "lineNo": 22,
+                  "module": null,
+                  "filename": "rack/method_override.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      19,
+                      "        end\n"
+                    ],
+                    [
+                      20,
+                      "      end\n"
+                    ],
+                    [
+                      21,
+                      "\n"
+                    ],
+                    [
+                      22,
+                      "      @app.call(env)\n"
+                    ],
+                    [
+                      23,
+                      "    end\n"
+                    ],
+                    [
+                      24,
+                      "\n"
+                    ],
+                    [
+                      25,
+                      "    def method_override(env)\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/actionpack-5.2.3/lib/action_dispatch/middleware/request_id.rb",
+                  "inApp": false,
+                  "lineNo": 27,
+                  "module": null,
+                  "filename": "action_dispatch/middleware/request_id.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      24,
+                      "    def call(env)\n"
+                    ],
+                    [
+                      25,
+                      "      req = ActionDispatch::Request.new env\n"
+                    ],
+                    [
+                      26,
+                      "      req.request_id = make_request_id(req.x_request_id)\n"
+                    ],
+                    [
+                      27,
+                      "      @app.call(env).tap { |_status, headers, _body| headers[X_REQUEST_ID] = req.request_id }\n"
+                    ],
+                    [
+                      28,
+                      "    end\n"
+                    ],
+                    [
+                      29,
+                      "\n"
+                    ],
+                    [
+                      30,
+                      "    private\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/actionpack-5.2.3/lib/action_dispatch/middleware/remote_ip.rb",
+                  "inApp": false,
+                  "lineNo": 81,
+                  "module": null,
+                  "filename": "action_dispatch/middleware/remote_ip.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      78,
+                      "    def call(env)\n"
+                    ],
+                    [
+                      79,
+                      "      req = ActionDispatch::Request.new env\n"
+                    ],
+                    [
+                      80,
+                      "      req.remote_ip = GetIp.new(req, check_ip, proxies)\n"
+                    ],
+                    [
+                      81,
+                      "      @app.call(req.env)\n"
+                    ],
+                    [
+                      82,
+                      "    end\n"
+                    ],
+                    [
+                      83,
+                      "\n"
+                    ],
+                    [
+                      84,
+                      "    # The GetIp class exists as a way to defer processing of the request data\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/sprockets-rails-3.2.1/lib/sprockets/rails/quiet_assets.rb",
+                  "inApp": false,
+                  "lineNo": 13,
+                  "module": null,
+                  "filename": "sprockets/rails/quiet_assets.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      10,
+                      "        if env['PATH_INFO'] =~ @assets_regex\n"
+                    ],
+                    [
+                      11,
+                      "          ::Rails.logger.silence { @app.call(env) }\n"
+                    ],
+                    [
+                      12,
+                      "        else\n"
+                    ],
+                    [
+                      13,
+                      "          @app.call(env)\n"
+                    ],
+                    [
+                      14,
+                      "        end\n"
+                    ],
+                    [
+                      15,
+                      "      end\n"
+                    ],
+                    [
+                      16,
+                      "    end\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/railties-5.2.3/lib/rails/rack/logger.rb",
+                  "inApp": false,
+                  "lineNo": 26,
+                  "module": null,
+                  "filename": "rails/rack/logger.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      23,
+                      "        request = ActionDispatch::Request.new(env)\n"
+                    ],
+                    [
+                      24,
+                      "\n"
+                    ],
+                    [
+                      25,
+                      "        if logger.respond_to?(:tagged)\n"
+                    ],
+                    [
+                      26,
+                      "          logger.tagged(compute_tags(request)) { call_app(request, env) }\n"
+                    ],
+                    [
+                      27,
+                      "        else\n"
+                    ],
+                    [
+                      28,
+                      "          call_app(request, env)\n"
+                    ],
+                    [
+                      29,
+                      "        end\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "tagged",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activesupport-5.2.3/lib/active_support/tagged_logging.rb",
+                  "inApp": false,
+                  "lineNo": 71,
+                  "module": null,
+                  "filename": "active_support/tagged_logging.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      68,
+                      "    delegate :push_tags, :pop_tags, :clear_tags!, to: :formatter\n"
+                    ],
+                    [
+                      69,
+                      "\n"
+                    ],
+                    [
+                      70,
+                      "    def tagged(*tags)\n"
+                    ],
+                    [
+                      71,
+                      "      formatter.tagged(*tags) { yield self }\n"
+                    ],
+                    [
+                      72,
+                      "    end\n"
+                    ],
+                    [
+                      73,
+                      "\n"
+                    ],
+                    [
+                      74,
+                      "    def flush\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "tagged",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activesupport-5.2.3/lib/active_support/tagged_logging.rb",
+                  "inApp": false,
+                  "lineNo": 28,
+                  "module": null,
+                  "filename": "active_support/tagged_logging.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      25,
+                      "\n"
+                    ],
+                    [
+                      26,
+                      "      def tagged(*tags)\n"
+                    ],
+                    [
+                      27,
+                      "        new_tags = push_tags(*tags)\n"
+                    ],
+                    [
+                      28,
+                      "        yield self\n"
+                    ],
+                    [
+                      29,
+                      "      ensure\n"
+                    ],
+                    [
+                      30,
+                      "        pop_tags(new_tags.size)\n"
+                    ],
+                    [
+                      31,
+                      "      end\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "block in tagged",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activesupport-5.2.3/lib/active_support/tagged_logging.rb",
+                  "inApp": false,
+                  "lineNo": 71,
+                  "module": null,
+                  "filename": "active_support/tagged_logging.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      68,
+                      "    delegate :push_tags, :pop_tags, :clear_tags!, to: :formatter\n"
+                    ],
+                    [
+                      69,
+                      "\n"
+                    ],
+                    [
+                      70,
+                      "    def tagged(*tags)\n"
+                    ],
+                    [
+                      71,
+                      "      formatter.tagged(*tags) { yield self }\n"
+                    ],
+                    [
+                      72,
+                      "    end\n"
+                    ],
+                    [
+                      73,
+                      "\n"
+                    ],
+                    [
+                      74,
+                      "    def flush\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "block in call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/railties-5.2.3/lib/rails/rack/logger.rb",
+                  "inApp": false,
+                  "lineNo": 26,
+                  "module": null,
+                  "filename": "rails/rack/logger.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      23,
+                      "        request = ActionDispatch::Request.new(env)\n"
+                    ],
+                    [
+                      24,
+                      "\n"
+                    ],
+                    [
+                      25,
+                      "        if logger.respond_to?(:tagged)\n"
+                    ],
+                    [
+                      26,
+                      "          logger.tagged(compute_tags(request)) { call_app(request, env) }\n"
+                    ],
+                    [
+                      27,
+                      "        else\n"
+                    ],
+                    [
+                      28,
+                      "          call_app(request, env)\n"
+                    ],
+                    [
+                      29,
+                      "        end\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call_app",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/railties-5.2.3/lib/rails/rack/logger.rb",
+                  "inApp": false,
+                  "lineNo": 38,
+                  "module": null,
+                  "filename": "rails/rack/logger.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      38,
+                      "          status, headers, body = @app.call(env)\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/actionpack-5.2.3/lib/action_dispatch/middleware/show_exceptions.rb",
+                  "inApp": false,
+                  "lineNo": 33,
+                  "module": null,
+                  "filename": "action_dispatch/middleware/show_exceptions.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      30,
+                      "\n"
+                    ],
+                    [
+                      31,
+                      "    def call(env)\n"
+                    ],
+                    [
+                      32,
+                      "      request = ActionDispatch::Request.new env\n"
+                    ],
+                    [
+                      33,
+                      "      @app.call(env)\n"
+                    ],
+                    [
+                      34,
+                      "    rescue Exception => exception\n"
+                    ],
+                    [
+                      35,
+                      "      if request.show_exceptions?\n"
+                    ],
+                    [
+                      36,
+                      "        render_exception(request, exception)\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/web-console-3.7.0/lib/web_console/middleware.rb",
+                  "inApp": false,
+                  "lineNo": 20,
+                  "module": null,
+                  "filename": "web_console/middleware.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      17,
+                      "    end\n"
+                    ],
+                    [
+                      18,
+                      "\n"
+                    ],
+                    [
+                      19,
+                      "    def call(env)\n"
+                    ],
+                    [
+                      20,
+                      "      app_exception = catch :app_exception do\n"
+                    ],
+                    [
+                      21,
+                      "        request = create_regular_or_whiny_request(env)\n"
+                    ],
+                    [
+                      22,
+                      "        return call_app(env) unless request.from_whitelisted_ip?\n"
+                    ],
+                    [
+                      23,
+                      "\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "catch",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/web-console-3.7.0/lib/web_console/middleware.rb",
+                  "inApp": false,
+                  "lineNo": 20,
+                  "module": null,
+                  "filename": "web_console/middleware.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      17,
+                      "    end\n"
+                    ],
+                    [
+                      18,
+                      "\n"
+                    ],
+                    [
+                      19,
+                      "    def call(env)\n"
+                    ],
+                    [
+                      20,
+                      "      app_exception = catch :app_exception do\n"
+                    ],
+                    [
+                      21,
+                      "        request = create_regular_or_whiny_request(env)\n"
+                    ],
+                    [
+                      22,
+                      "        return call_app(env) unless request.from_whitelisted_ip?\n"
+                    ],
+                    [
+                      23,
+                      "\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "block in call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/web-console-3.7.0/lib/web_console/middleware.rb",
+                  "inApp": false,
+                  "lineNo": 30,
+                  "module": null,
+                  "filename": "web_console/middleware.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      27,
+                      "          return change_stack_trace(id, request)\n"
+                    ],
+                    [
+                      28,
+                      "        end\n"
+                    ],
+                    [
+                      29,
+                      "\n"
+                    ],
+                    [
+                      30,
+                      "        status, headers, body = call_app(env)\n"
+                    ],
+                    [
+                      31,
+                      "\n"
+                    ],
+                    [
+                      32,
+                      "        if (session = Session.from(Thread.current)) && acceptable_content_type?(headers)\n"
+                    ],
+                    [
+                      33,
+                      "          headers[\"X-Web-Console-Session-Id\"] = session.id\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call_app",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/web-console-3.7.0/lib/web_console/middleware.rb",
+                  "inApp": false,
+                  "lineNo": 135,
+                  "module": null,
+                  "filename": "web_console/middleware.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      132,
+                      "      end\n"
+                    ],
+                    [
+                      133,
+                      "\n"
+                    ],
+                    [
+                      134,
+                      "      def call_app(env)\n"
+                    ],
+                    [
+                      135,
+                      "        @app.call(env)\n"
+                    ],
+                    [
+                      136,
+                      "      rescue => e\n"
+                    ],
+                    [
+                      137,
+                      "        throw :app_exception, e\n"
+                    ],
+                    [
+                      138,
+                      "      end\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/actionpack-5.2.3/lib/action_dispatch/middleware/debug_exceptions.rb",
+                  "inApp": false,
+                  "lineNo": 61,
+                  "module": null,
+                  "filename": "action_dispatch/middleware/debug_exceptions.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      58,
+                      "\n"
+                    ],
+                    [
+                      59,
+                      "    def call(env)\n"
+                    ],
+                    [
+                      60,
+                      "      request = ActionDispatch::Request.new env\n"
+                    ],
+                    [
+                      61,
+                      "      _, headers, body = response = @app.call(env)\n"
+                    ],
+                    [
+                      62,
+                      "\n"
+                    ],
+                    [
+                      63,
+                      "      if headers[\"X-Cascade\"] == \"pass\"\n"
+                    ],
+                    [
+                      64,
+                      "        body.close if body.respond_to?(:close)\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/actionpack-5.2.3/lib/action_dispatch/middleware/executor.rb",
+                  "inApp": false,
+                  "lineNo": 14,
+                  "module": null,
+                  "filename": "action_dispatch/middleware/executor.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      11,
+                      "    def call(env)\n"
+                    ],
+                    [
+                      12,
+                      "      state = @executor.run!\n"
+                    ],
+                    [
+                      13,
+                      "      begin\n"
+                    ],
+                    [
+                      14,
+                      "        response = @app.call(env)\n"
+                    ],
+                    [
+                      15,
+                      "        returned = response << ::Rack::BodyProxy.new(response.pop) { state.complete! }\n"
+                    ],
+                    [
+                      16,
+                      "      ensure\n"
+                    ],
+                    [
+                      17,
+                      "        state.complete! unless returned\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/actionpack-5.2.3/lib/action_dispatch/middleware/callbacks.rb",
+                  "inApp": false,
+                  "lineNo": 26,
+                  "module": null,
+                  "filename": "action_dispatch/middleware/callbacks.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      23,
+                      "\n"
+                    ],
+                    [
+                      24,
+                      "    def call(env)\n"
+                    ],
+                    [
+                      25,
+                      "      error = nil\n"
+                    ],
+                    [
+                      26,
+                      "      result = run_callbacks :call do\n"
+                    ],
+                    [
+                      27,
+                      "        begin\n"
+                    ],
+                    [
+                      28,
+                      "          @app.call(env)\n"
+                    ],
+                    [
+                      29,
+                      "        rescue => error\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "run_callbacks",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activesupport-5.2.3/lib/active_support/callbacks.rb",
+                  "inApp": false,
+                  "lineNo": 98,
+                  "module": null,
+                  "filename": "active_support/callbacks.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      95,
+                      "      callbacks = __callbacks[kind.to_sym]\n"
+                    ],
+                    [
+                      96,
+                      "\n"
+                    ],
+                    [
+                      97,
+                      "      if callbacks.empty?\n"
+                    ],
+                    [
+                      98,
+                      "        yield if block_given?\n"
+                    ],
+                    [
+                      99,
+                      "      else\n"
+                    ],
+                    [
+                      100,
+                      "        env = Filters::Environment.new(self, false, nil)\n"
+                    ],
+                    [
+                      101,
+                      "        next_sequence = callbacks.compile\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "block in call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/actionpack-5.2.3/lib/action_dispatch/middleware/callbacks.rb",
+                  "inApp": false,
+                  "lineNo": 28,
+                  "module": null,
+                  "filename": "action_dispatch/middleware/callbacks.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      25,
+                      "      error = nil\n"
+                    ],
+                    [
+                      26,
+                      "      result = run_callbacks :call do\n"
+                    ],
+                    [
+                      27,
+                      "        begin\n"
+                    ],
+                    [
+                      28,
+                      "          @app.call(env)\n"
+                    ],
+                    [
+                      29,
+                      "        rescue => error\n"
+                    ],
+                    [
+                      30,
+                      "        end\n"
+                    ],
+                    [
+                      31,
+                      "      end\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "call",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activerecord-5.2.3/lib/active_record/migration.rb",
+                  "inApp": false,
+                  "lineNo": 554,
+                  "module": null,
+                  "filename": "active_record/migration.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      551,
+                      "      end\n"
+                    ],
+                    [
+                      552,
+                      "\n"
+                    ],
+                    [
+                      553,
+                      "      def call(env)\n"
+                    ],
+                    [
+                      554,
+                      "        mtime = ActiveRecord::Base.connection.migration_context.last_migration.mtime.to_i\n"
+                    ],
+                    [
+                      555,
+                      "        if @last_check < mtime\n"
+                    ],
+                    [
+                      556,
+                      "          ActiveRecord::Migration.check_pending!(connection)\n"
+                    ],
+                    [
+                      557,
+                      "          @last_check = mtime\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "connection",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activerecord-5.2.3/lib/active_record/connection_handling.rb",
+                  "inApp": false,
+                  "lineNo": 90,
+                  "module": null,
+                  "filename": "active_record/connection_handling.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      87,
+                      "    # also be used to \"borrow\" the connection to do database work unrelated\n"
+                    ],
+                    [
+                      88,
+                      "    # to any of the specific Active Records.\n"
+                    ],
+                    [
+                      89,
+                      "    def connection\n"
+                    ],
+                    [
+                      90,
+                      "      retrieve_connection\n"
+                    ],
+                    [
+                      91,
+                      "    end\n"
+                    ],
+                    [
+                      92,
+                      "\n"
+                    ],
+                    [
+                      93,
+                      "    attr_writer :connection_specification_name\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "retrieve_connection",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activerecord-5.2.3/lib/active_record/connection_handling.rb",
+                  "inApp": false,
+                  "lineNo": 118,
+                  "module": null,
+                  "filename": "active_record/connection_handling.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      115,
+                      "    end\n"
+                    ],
+                    [
+                      116,
+                      "\n"
+                    ],
+                    [
+                      117,
+                      "    def retrieve_connection\n"
+                    ],
+                    [
+                      118,
+                      "      connection_handler.retrieve_connection(connection_specification_name)\n"
+                    ],
+                    [
+                      119,
+                      "    end\n"
+                    ],
+                    [
+                      120,
+                      "\n"
+                    ],
+                    [
+                      121,
+                      "    # Returns +true+ if Active Record is connected.\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "retrieve_connection",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activerecord-5.2.3/lib/active_record/connection_adapters/abstract/connection_pool.rb",
+                  "inApp": false,
+                  "lineNo": 1014,
+                  "module": null,
+                  "filename": "active_record/connection_adapters/abstract/connection_pool.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      1011,
+                      "      def retrieve_connection(spec_name) #:nodoc:\n"
+                    ],
+                    [
+                      1012,
+                      "        pool = retrieve_connection_pool(spec_name)\n"
+                    ],
+                    [
+                      1013,
+                      "        raise ConnectionNotEstablished, \"No connection pool with '#{spec_name}' found.\" unless pool\n"
+                    ],
+                    [
+                      1014,
+                      "        pool.connection\n"
+                    ],
+                    [
+                      1015,
+                      "      end\n"
+                    ],
+                    [
+                      1016,
+                      "\n"
+                    ],
+                    [
+                      1017,
+                      "      # Returns true if a connection that's accessible to this class has\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "connection",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activerecord-5.2.3/lib/active_record/connection_adapters/abstract/connection_pool.rb",
+                  "inApp": false,
+                  "lineNo": 382,
+                  "module": null,
+                  "filename": "active_record/connection_adapters/abstract/connection_pool.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      379,
+                      "      # #connection can be called any number of times; the connection is\n"
+                    ],
+                    [
+                      380,
+                      "      # held in a cache keyed by a thread.\n"
+                    ],
+                    [
+                      381,
+                      "      def connection\n"
+                    ],
+                    [
+                      382,
+                      "        @thread_cached_conns[connection_cache_key(@lock_thread || Thread.current)] ||= checkout\n"
+                    ],
+                    [
+                      383,
+                      "      end\n"
+                    ],
+                    [
+                      384,
+                      "\n"
+                    ],
+                    [
+                      385,
+                      "      # Returns true if there is an open connection being used for the current thread.\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "checkout",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activerecord-5.2.3/lib/active_record/connection_adapters/abstract/connection_pool.rb",
+                  "inApp": false,
+                  "lineNo": 523,
+                  "module": null,
+                  "filename": "active_record/connection_adapters/abstract/connection_pool.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      520,
+                      "      # Raises:\n"
+                    ],
+                    [
+                      521,
+                      "      # - ActiveRecord::ConnectionTimeoutError no connection can be obtained from the pool.\n"
+                    ],
+                    [
+                      522,
+                      "      def checkout(checkout_timeout = @checkout_timeout)\n"
+                    ],
+                    [
+                      523,
+                      "        checkout_and_verify(acquire_connection(checkout_timeout))\n"
+                    ],
+                    [
+                      524,
+                      "      end\n"
+                    ],
+                    [
+                      525,
+                      "\n"
+                    ],
+                    [
+                      526,
+                      "      # Check-in a database connection back into the pool, indicating that you\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "acquire_connection",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activerecord-5.2.3/lib/active_record/connection_adapters/abstract/connection_pool.rb",
+                  "inApp": false,
+                  "lineNo": 795,
+                  "module": null,
+                  "filename": "active_record/connection_adapters/abstract/connection_pool.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      792,
+                      "          # <tt>synchronize { conn.lease }</tt> in this method, but by leaving it to <tt>@available.poll</tt>\n"
+                    ],
+                    [
+                      793,
+                      "          # and +try_to_checkout_new_connection+ we can piggyback on +synchronize+ sections\n"
+                    ],
+                    [
+                      794,
+                      "          # of the said methods and avoid an additional +synchronize+ overhead.\n"
+                    ],
+                    [
+                      795,
+                      "          if conn = @available.poll || try_to_checkout_new_connection\n"
+                    ],
+                    [
+                      796,
+                      "            conn\n"
+                    ],
+                    [
+                      797,
+                      "          else\n"
+                    ],
+                    [
+                      798,
+                      "            reap\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "try_to_checkout_new_connection",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activerecord-5.2.3/lib/active_record/connection_adapters/abstract/connection_pool.rb",
+                  "inApp": false,
+                  "lineNo": 834,
+                  "module": null,
+                  "filename": "active_record/connection_adapters/abstract/connection_pool.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      831,
+                      "            begin\n"
+                    ],
+                    [
+                      832,
+                      "              # if successfully incremented @now_connecting establish new connection\n"
+                    ],
+                    [
+                      833,
+                      "              # outside of synchronized section\n"
+                    ],
+                    [
+                      834,
+                      "              conn = checkout_new_connection\n"
+                    ],
+                    [
+                      835,
+                      "            ensure\n"
+                    ],
+                    [
+                      836,
+                      "              synchronize do\n"
+                    ],
+                    [
+                      837,
+                      "                if conn\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "checkout_new_connection",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activerecord-5.2.3/lib/active_record/connection_adapters/abstract/connection_pool.rb",
+                  "inApp": false,
+                  "lineNo": 855,
+                  "module": null,
+                  "filename": "active_record/connection_adapters/abstract/connection_pool.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      852,
+                      "\n"
+                    ],
+                    [
+                      853,
+                      "        def checkout_new_connection\n"
+                    ],
+                    [
+                      854,
+                      "          raise ConnectionNotEstablished unless @automatic_reconnect\n"
+                    ],
+                    [
+                      855,
+                      "          new_connection\n"
+                    ],
+                    [
+                      856,
+                      "        end\n"
+                    ],
+                    [
+                      857,
+                      "\n"
+                    ],
+                    [
+                      858,
+                      "        def checkout_and_verify(c)\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "new_connection",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activerecord-5.2.3/lib/active_record/connection_adapters/abstract/connection_pool.rb",
+                  "inApp": false,
+                  "lineNo": 811,
+                  "module": null,
+                  "filename": "active_record/connection_adapters/abstract/connection_pool.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      808,
+                      "        alias_method :release, :remove_connection_from_thread_cache\n"
+                    ],
+                    [
+                      809,
+                      "\n"
+                    ],
+                    [
+                      810,
+                      "        def new_connection\n"
+                    ],
+                    [
+                      811,
+                      "          Base.send(spec.adapter_method, spec.config).tap do |conn|\n"
+                    ],
+                    [
+                      812,
+                      "            conn.schema_cache = schema_cache.dup if schema_cache\n"
+                    ],
+                    [
+                      813,
+                      "          end\n"
+                    ],
+                    [
+                      814,
+                      "        end\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "postgresql_connection",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activerecord-5.2.3/lib/active_record/connection_adapters/postgresql_adapter.rb",
+                  "inApp": false,
+                  "lineNo": 48,
+                  "module": null,
+                  "filename": "active_record/connection_adapters/postgresql_adapter.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      45,
+                      "\n"
+                    ],
+                    [
+                      46,
+                      "      # The postgres drivers don't allow the creation of an unconnected PG::Connection object,\n"
+                    ],
+                    [
+                      47,
+                      "      # so just pass a nil connection object for the time being.\n"
+                    ],
+                    [
+                      48,
+                      "      ConnectionAdapters::PostgreSQLAdapter.new(nil, logger, conn_params, config)\n"
+                    ],
+                    [
+                      49,
+                      "    end\n"
+                    ],
+                    [
+                      50,
+                      "  end\n"
+                    ],
+                    [
+                      51,
+                      "\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "new",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activerecord-5.2.3/lib/active_record/connection_adapters/postgresql_adapter.rb",
+                  "inApp": false,
+                  "lineNo": 48,
+                  "module": null,
+                  "filename": "active_record/connection_adapters/postgresql_adapter.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      45,
+                      "\n"
+                    ],
+                    [
+                      46,
+                      "      # The postgres drivers don't allow the creation of an unconnected PG::Connection object,\n"
+                    ],
+                    [
+                      47,
+                      "      # so just pass a nil connection object for the time being.\n"
+                    ],
+                    [
+                      48,
+                      "      ConnectionAdapters::PostgreSQLAdapter.new(nil, logger, conn_params, config)\n"
+                    ],
+                    [
+                      49,
+                      "    end\n"
+                    ],
+                    [
+                      50,
+                      "  end\n"
+                    ],
+                    [
+                      51,
+                      "\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "initialize",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activerecord-5.2.3/lib/active_record/connection_adapters/postgresql_adapter.rb",
+                  "inApp": false,
+                  "lineNo": 223,
+                  "module": null,
+                  "filename": "active_record/connection_adapters/postgresql_adapter.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      220,
+                      "        @local_tz = nil\n"
+                    ],
+                    [
+                      221,
+                      "        @max_identifier_length = nil\n"
+                    ],
+                    [
+                      222,
+                      "\n"
+                    ],
+                    [
+                      223,
+                      "        connect\n"
+                    ],
+                    [
+                      224,
+                      "        add_pg_encoders\n"
+                    ],
+                    [
+                      225,
+                      "        @statements = StatementPool.new @connection,\n"
+                    ],
+                    [
+                      226,
+                      "                                        self.class.type_cast_config_to_integer(config[:statement_limit])\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "connect",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activerecord-5.2.3/lib/active_record/connection_adapters/postgresql_adapter.rb",
+                  "inApp": false,
+                  "lineNo": 691,
+                  "module": null,
+                  "filename": "active_record/connection_adapters/postgresql_adapter.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      688,
+                      "\n"
+                    ],
+                    [
+                      689,
+                      "        # Connects to a PostgreSQL server and sets up the adapter depending on the\n"
+                    ],
+                    [
+                      690,
+                      "        # connected server's characteristics.\n"
+                    ],
+                    [
+                      691,
+                      "        def connect\n"
+                    ],
+                    [
+                      692,
+                      "          @connection = PG.connect(@connection_parameters)\n"
+                    ],
+                    [
+                      693,
+                      "          configure_connection\n"
+                    ],
+                    [
+                      694,
+                      "        rescue ::PG::Error => error\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                },
+                {
+                  "function": "rescue in connect",
+                  "errors": null,
+                  "colNo": null,
+                  "vars": null,
+                  "package": null,
+                  "absPath": "/Users/gitlab/.rvm/gems/ruby-2.6.3/gems/activerecord-5.2.3/lib/active_record/connection_adapters/postgresql_adapter.rb",
+                  "inApp": false,
+                  "lineNo": 696,
+                  "module": null,
+                  "filename": "active_record/connection_adapters/postgresql_adapter.rb",
+                  "platform": null,
+                  "instructionAddr": null,
+                  "context": [
+                    [
+                      693,
+                      "          configure_connection\n"
+                    ],
+                    [
+                      694,
+                      "        rescue ::PG::Error => error\n"
+                    ],
+                    [
+                      695,
+                      "          if error.message.include?(\"does not exist\")\n"
+                    ],
+                    [
+                      696,
+                      "            raise ActiveRecord::NoDatabaseError\n"
+                    ],
+                    [
+                      697,
+                      "          else\n"
+                    ],
+                    [
+                      698,
+                      "            raise\n"
+                    ],
+                    [
+                      699,
+                      "          end\n"
+                    ]
+                  ],
+                  "symbolAddr": null,
+                  "trust": null,
+                  "symbol": null,
+                  "rawFunction": null
+                }
+              ],
+              "framesOmitted": null,
+              "registers": null,
+              "hasSystemFrames": false
+            },
+            "module": "ActiveRecord",
+            "rawStacktrace": null,
+            "mechanism": null,
+            "threadId": null,
+            "value": "FATAL:  database \"test_development\" does not exist\n",
+            "type": "ActiveRecord::NoDatabaseError"
+          }
+        ],
+        "excOmitted": null,
+        "hasSystemFrames": false
+      }
+    },
+    {
+      "type": "request",
+      "data": {
+        "fragment": null,
+        "cookies": [],
+        "inferredContentType": null,
+        "env": {
+          "SERVER_PORT": "3001",
+          "SERVER_NAME": "localhost",
+          "REMOTE_ADDR": "::1"
+        },
+        "headers": [
+          [
+            "Accept",
+            "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3"
+          ],
+          [
+            "Accept-Encoding",
+            "gzip, deflate, br"
+          ],
+          [
+            "Accept-Language",
+            "en-GB,en-US;q=0.9,en;q=0.8"
+          ],
+          [
+            "Cache-Control",
+            "max-age=0"
+          ],
+          [
+            "Connection",
+            "keep-alive"
+          ],
+          [
+            "Host",
+            "localhost:3001"
+          ],
+          [
+            "Sec-Fetch-Mode",
+            "navigate"
+          ],
+          [
+            "Sec-Fetch-Site",
+            "none"
+          ],
+          [
+            "Sec-Fetch-User",
+            "?1"
+          ],
+          [
+            "Upgrade-Insecure-Requests",
+            "1"
+          ],
+          [
+            "User-Agent",
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"
+          ]
+        ],
+        "url": "http://localhost:3001/",
+        "query": [],
+        "data": null,
+        "method": "GET"
+      }
+    }
+  ],
+  "packages": {
+    "coffee-script": "2.4.1",
+    "uglifier": "4.1.20",
+    "ffi": "1.11.1",
+    "actioncable": "5.2.3",
+    "io-like": "0.3.0",
+    "rb-inotify": "0.10.0",
+    "spring": "2.1.0",
+    "loofah": "2.2.3",
+    "selenium-webdriver": "3.142.3",
+    "marcel": "0.3.3",
+    "sass-listen": "4.0.0",
+    "nokogiri": "1.10.4",
+    "activestorage": "5.2.3",
+    "activejob": "5.2.3",
+    "mimemagic": "0.3.3",
+    "faraday": "0.17.1",
+    "execjs": "2.7.0",
+    "activesupport": "5.2.3",
+    "rails-html-sanitizer": "1.2.0",
+    "byebug": "11.0.1",
+    "xpath": "3.2.0",
+    "msgpack": "1.3.1",
+    "childprocess": "1.0.1",
+    "rails-dom-testing": "2.0.3",
+    "public_suffix": "3.1.1",
+    "mini_mime": "1.0.2",
+    "arel": "9.0.0",
+    "coffee-rails": "4.2.2",
+    "bundler": "1.17.3",
+    "rails": "5.2.3",
+    "globalid": "0.4.2",
+    "sentry-raven": "2.12.3",
+    "concurrent-ruby": "1.1.5",
+    "capybara": "3.28.0",
+    "regexp_parser": "1.6.0",
+    "sprockets-rails": "3.2.1",
+    "tzinfo": "1.2.5",
+    "mail": "2.7.1",
+    "actionview": "5.2.3",
+    "rubyzip": "1.2.3",
+    "coffee-script-source": "1.12.2",
+    "listen": "3.1.5",
+    "i18n": "1.6.0",
+    "erubi": "1.8.0",
+    "rake": "12.3.3",
+    "nio4r": "2.4.0",
+    "activemodel": "5.2.3",
+    "web-console": "3.7.0",
+    "ruby_dep": "1.5.0",
+    "turbolinks": "5.2.0",
+    "archive-zip": "0.12.0",
+    "method_source": "0.9.2",
+    "minitest": "5.11.3",
+    "puma": "3.12.1",
+    "sass-rails": "5.1.0",
+    "chromedriver-helper": "2.1.1",
+    "sprockets": "3.7.2",
+    "bindex": "0.8.1",
+    "actionmailer": "5.2.3",
+    "rack-test": "1.1.0",
+    "bootsnap": "1.4.4",
+    "railties": "5.2.3",
+    "mini_portile2": "2.4.0",
+    "crass": "1.0.4",
+    "websocket-extensions": "0.1.4",
+    "multipart-post": "2.1.1",
+    "rb-fsevent": "0.10.3",
+    "jbuilder": "2.9.1",
+    "pg": "1.1.4",
+    "sass": "3.7.4",
+    "activerecord": "5.2.3",
+    "builder": "3.2.3",
+    "spring-watcher-listen": "2.0.1",
+    "websocket-driver": "0.7.1",
+    "thor": "0.20.3",
+    "thread_safe": "0.3.6",
+    "addressable": "2.6.0",
+    "prometheus-client-mmap": "0.9.8",
+    "tilt": "2.0.9",
+    "actionpack": "5.2.3",
+    "rack": "2.0.7",
+    "turbolinks-source": "5.2.0"
+  },
+  "sdk": {
+    "version": "2.12.3",
+    "name": "raven-ruby"
+  },
+  "_meta": {
+    "user": null,
+    "context": null,
+    "entries": {
+      "1": {
+        "data": {
+          "": null,
+          "cookies": {
+            "": {
+              "err": [
+                [
+                  "invalid_data",
+                  {
+                    "reason": "the cookie is missing a name/value pair"
+                  }
+                ]
+              ],
+              "val": "********"
+            }
+          },
+          "url": null,
+          "headers": null,
+          "env": null,
+          "query": null,
+          "data": null,
+          "method": null
+        }
+      }
+    },
+    "contexts": null,
+    "message": null,
+    "packages": null,
+    "tags": {},
+    "sdk": null
+  },
+  "contexts": {
+    "browser": {
+      "version": "78.0.3904",
+      "type": "browser",
+      "name": "Chrome"
+    },
+    "client_os": {
+      "version": "10.15.1",
+      "type": "os",
+      "name": "Mac OS X"
+    }
+  },
+  "fingerprints": [
+    "6aa133ea51857634f2d113de52b5cc61",
+    "e1613eeb169241eab95b76ab52a80c68"
+  ],
+  "context": {
+    "server": {
+      "runtime": {
+        "version": "ruby 2.6.3p62 (2019-04-16 revision 67580) [x86_64-darwin18]",
+        "name": "ruby"
+      },
+      "os": {
+        "kernel_version": "Darwin Seans-MBP.fritz.box 19.0.0 Darwin Kernel Version 19.0.0: Thu Oct 17 16:17:15 PDT 2019; root:xnu-6153.41.3~29/RELEASE_X86_64 x86_64",
+        "version": "Darwin Kernel Version 19.0.0: Thu Oct 17 16:17:15 PDT 2019; root:xnu-6153.41.3~29/RELEASE_X86_64",
+        "build": "19.0.0",
+        "name": "Darwin"
+      }
+    }
+  },
+  "release": {
+    "dateReleased": null,
+    "commitCount": 0,
+    "url": null,
+    "data": {},
+    "lastDeploy": null,
+    "deployCount": 0,
+    "dateCreated": "2019-12-08T21:47:47Z",
+    "lastEvent": "2019-12-09T21:52:05Z",
+    "version": "b56ae26",
+    "firstEvent": "2019-12-08T21:47:47Z",
+    "lastCommit": null,
+    "shortVersion": "b56ae26",
+    "authors": [],
+    "owner": null,
+    "newGroups": 26,
+    "ref": null,
+    "projects": [
+      {
+        "slug": "gitlab-03",
+        "name": "gitlab-03"
+      }
+    ]
+  },
+  "groupID": "1378364652"
+}

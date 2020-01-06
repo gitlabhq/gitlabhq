@@ -46,6 +46,8 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:vue_issuable_sidebar, project.group)
   end
 
+  around_action :allow_gitaly_ref_name_caching, only: [:discussions]
+
   respond_to :html
 
   alias_method :designs, :show

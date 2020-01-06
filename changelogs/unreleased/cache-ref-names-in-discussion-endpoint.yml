@@ -1,0 +1,5 @@
+---
+title: Reduce Gitaly calls needed for issue discussions
+merge_request:
+author:
+type: performance

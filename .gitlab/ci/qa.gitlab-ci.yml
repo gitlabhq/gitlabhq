@@ -1,5 +1,9 @@
 # Make sure to update all the similar conditions in other CI config files if you modify these conditions
-.if-canonical-gitlab-and-merge-request: &if-canonical-gitlab-and-merge-request
+.if-canonical-gitlab-schedule: &if-canonical-gitlab-schedule
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/)/ && $CI_PIPELINE_SOURCE == "schedule"'
+
+# Make sure to update all the similar conditions in other CI config files if you modify these conditions
+.if-canonical-gitlab-merge-request: &if-canonical-gitlab-merge-request
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/)/ && $CI_MERGE_REQUEST_IID'
 
 # Make sure to update all the similar patterns in other CI config files if you modify these patterns
@@ -68,19 +72,13 @@ qa:selectors-foss:
 package-and-qa:
   extends: .package-and-qa-base
   rules:
-    - <<: *if-canonical-gitlab-and-merge-request
+    - <<: *if-canonical-gitlab-merge-request
       changes: *qa-patterns
       when: on_success
-    - <<: *if-canonical-gitlab-and-merge-request
+    - <<: *if-canonical-gitlab-merge-request
       changes: *code-patterns
       when: manual
-  needs: ["build-qa-image", "gitlab:assets:compile pull-cache"]
-  allow_failure: true
-
-schedule:package-and-qa:
-  extends:
-    - .package-and-qa-base
-    - .default-only
-    - .only:variables_refs-canonical-dot-com-schedules
+    - <<: *if-canonical-gitlab-schedule
+      when: on_success
   needs: ["build-qa-image", "gitlab:assets:compile pull-cache"]
   allow_failure: true

@@ -24,7 +24,7 @@ const EMPTY_STAGE_TEXTS = {
     'The staging stage shows the time between merging the MR and deploying code to the production environment. The data will be automatically added once you deploy to production for the first time.',
   ),
   production: __(
-    'The production stage shows the total time it takes between creating an issue and deploying the code to production. The data will be automatically added once you have completed the full idea to production cycle.',
+    'The total stage shows the time it takes between creating an issue and deploying the code to production. The data will be automatically added once you have completed the full idea to production cycle.',
   ),
 };
 

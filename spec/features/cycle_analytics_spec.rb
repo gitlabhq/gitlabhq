@@ -76,7 +76,7 @@ describe 'Cycle Analytics', :js do
         click_stage('Staging')
         expect_build_to_be_present
 
-        click_stage('Production')
+        click_stage('Total')
         expect_issue_to_be_present
       end
 

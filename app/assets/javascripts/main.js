@@ -55,9 +55,18 @@ jQuery.ajaxSetup({
   },
 });
 
+function disableJQueryAnimations() {
+  $.fx.off = true;
+}
+
+// Disable jQuery animations
+if (gon && gon.disable_animations) {
+  disableJQueryAnimations();
+}
+
 // inject test utilities if necessary
 if (process.env.NODE_ENV !== 'production' && gon && gon.test_env) {
-  $.fx.off = true;
+  disableJQueryAnimations();
   import(/* webpackMode: "eager" */ './test_utils/');
 }
 

@@ -150,6 +150,9 @@ production: &base
     ## Impersonation settings
     impersonation_enabled: true
 
+    ## Disable jQuery and CSS animations
+    # disable_animations: true
+
   ## Reply by email
   # Allow users to comment on issues and merge requests by replying to notification emails.
   # For documentation on how to set this up, see http://doc.gitlab.com/ce/administration/reply_by_email.html
@@ -807,7 +810,7 @@ production: &base
     # CAUTION!
     # This allows users to login with the specified providers without two factor. Define the allowed providers
     # using an array, e.g. ["twitter", 'google_oauth2'], or as true/false to allow all providers or none.
-    # This option should only be configured for providers which already have two factor. 
+    # This option should only be configured for providers which already have two factor.
     # This configration dose not apply to SAML.
     # (default: false)
     allow_bypass_two_factor: ["twitter", 'google_oauth2']

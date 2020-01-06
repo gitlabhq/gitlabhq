@@ -1,3 +1,7 @@
+# Make sure to update all the similar conditions in other CI config files if you modify these conditions
+.if-canonical-gitlab-schedule: &if-canonical-gitlab-schedule
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/)/ && $CI_PIPELINE_SOURCE == "schedule"'
+
 .notify:
   image: ruby:2.6-alpine
   stage: notification
@@ -11,13 +15,13 @@
   variables:
     COMMIT_NOTES_URL: "https://${CI_SERVER_HOST}/${CI_PROJECT_PATH}/commit/${CI_COMMIT_SHA}#notes-list"
 
-schedule:package-and-qa:notify-failure:
-  extends:
-    - .only:variables_refs-canonical-dot-com-schedules
-    - .notify
+package-and-qa:notify-failure:
+  extends: .notify
+  rules:
+    - <<: *if-canonical-gitlab-schedule
+      when: manual # TODO: remove notify job if not necessary
   script:
     - 'export NOTIFICATION_MESSAGE=":skull_and_crossbones: Scheduled QA against master failed! :skull_and_crossbones: See ${CI_PIPELINE_URL}. For downstream pipelines, see ${COMMIT_NOTES_URL}"'
-    - 'notify_on_job_failure schedule:package-and-qa qa-master "${NOTIFICATION_MESSAGE}" ci_failing'
-  needs: ["schedule:package-and-qa"]
+    - 'notify_on_job_failure package-and-qa qa-master "${NOTIFICATION_MESSAGE}" ci_failing'
+  needs: ["package-and-qa"]
   allow_failure: true
-  when: manual # TODO: remove notify job if not necessary

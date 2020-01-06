@@ -5508,9 +5508,6 @@ msgstr ""
 msgid "CycleAnalyticsStage|Plan"
 msgstr ""
 
-msgid "CycleAnalyticsStage|Production"
-msgstr ""
-
 msgid "CycleAnalyticsStage|Review"
 msgstr ""
 
@@ -5518,6 +5515,9 @@ msgid "CycleAnalyticsStage|Staging"
 msgstr ""
 
 msgid "CycleAnalyticsStage|Test"
+msgstr ""
+
+msgid "CycleAnalyticsStage|Total"
 msgstr ""
 
 msgid "CycleAnalyticsStage|is not available for the selected group"
@@ -18158,6 +18158,9 @@ msgstr ""
 msgid "The time taken by each data entry gathered by that stage."
 msgstr ""
 
+msgid "The total stage shows the time it takes between creating an issue and deploying the code to production. The data will be automatically added once you have completed the full idea to production cycle."
+msgstr ""
+
 msgid "The unique identifier for the Geo node. Must match `geo_node_name` if it is set in gitlab.rb, otherwise it must match `external_url` with a trailing slash"
 msgstr ""
 
@@ -19144,9 +19147,6 @@ msgid "Total"
 msgstr ""
 
 msgid "Total Contributions"
-msgstr ""
-
-msgid "Total Time"
 msgstr ""
 
 msgid "Total artifacts size: %{total_size}"

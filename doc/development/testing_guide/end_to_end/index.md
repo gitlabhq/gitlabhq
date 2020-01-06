@@ -27,11 +27,11 @@ You can find these nightly pipelines at `https://gitlab.com/gitlab-org/quality/s
 
 ### Testing code in merge requests
 
-#### Using the `package-and-qa-manual` job
+#### Using the `package-and-qa` job
 
 It is possible to run end-to-end tests for a merge request, eventually being run in
 a pipeline in the [`gitlab-qa`](https://gitlab.com/gitlab-org/gitlab-qa/) project,
-by triggering the `package-and-qa-manual` manual action in the `test` stage (not
+by triggering the `package-and-qa` manual action in the `test` stage (not
 available for forks).
 
 **This runs end-to-end tests against a custom Omnibus package built from your
@@ -53,7 +53,7 @@ graph LR
     B2[`Trigger-qa` stage<br>`Trigger:qa-test` job] -.->|2. Triggers a gitlab-qa pipeline and wait for it to be done| A3
 
 subgraph "gitlab-foss/gitlab pipeline"
-    A1[`test` stage<br>`package-and-qa-manual` job]
+    A1[`test` stage<br>`package-and-qa` job]
     end
 
 subgraph "omnibus-gitlab pipeline"
@@ -61,7 +61,7 @@ subgraph "omnibus-gitlab pipeline"
     end
 
 subgraph "gitlab-qa pipeline"
-    A3>QA jobs run] -.->|3. Reports back the pipeline result to the `package-and-qa-manual` job<br>and post the result  on the original commit tested| A1
+    A3>QA jobs run] -.->|3. Reports back the pipeline result to the `package-and-qa` job<br>and post the result  on the original commit tested| A1
     end
 ```
 

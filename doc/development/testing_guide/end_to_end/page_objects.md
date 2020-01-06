@@ -40,7 +40,7 @@ the time it would take to build packages and test everything.
 That is why when someone changes `t.text_field :login` to
 `t.text_field :username` in the _new session_ view we won't know about this
 change until our GitLab QA nightly pipeline fails, or until someone triggers
-`package-and-qa-manual` action in their merge request.
+`package-and-qa` action in their merge request.
 
 Obviously such a change would break all tests. We call this problem a _fragile
 tests problem_.
@@ -171,8 +171,8 @@ and we should prefer the `data-qa-selector` method of definition.
 
 > Introduced in GitLab 12.5
 
-A common occurrence in automated testing is selecting a single "one-of-many" element.  
-In a list of several items, how do you differentiate what you are selecting on?  
+A common occurrence in automated testing is selecting a single "one-of-many" element.
+In a list of several items, how do you differentiate what you are selecting on?
 The most common workaround for this is via text matching.  Instead, a better practice is
 by matching on that specific element by a unique identifier, rather than by text.
 
