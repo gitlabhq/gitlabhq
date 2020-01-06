@@ -38,6 +38,7 @@ This is an optional way to deploy Gitaly which can benefit GitLab
 installations that are larger than a single machine. Most
 installations will be better served with the default configuration
 used by Omnibus and the GitLab source installation guide.
+Follow transition to Gitaly on its own server, [Gitaly servers will need to be upgraded before other servers in your cluster](https://docs.gitlab.com/omnibus/update/#upgrading-gitaly-servers).
 
 Starting with GitLab 11.4, Gitaly is able to serve all Git requests without
 requiring a shared NFS mount for Git repository data.

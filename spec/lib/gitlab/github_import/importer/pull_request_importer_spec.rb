@@ -50,6 +50,10 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
         .and_return([mr, false])
 
       expect(importer)
+        .to receive(:set_merge_request_assignees)
+        .with(mr)
+
+      expect(importer)
         .to receive(:insert_git_data)
         .with(mr, false)
 
@@ -75,11 +79,6 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
           .to receive(:author_id_for)
           .with(pull_request)
           .and_return([user.id, true])
-
-        allow(importer.user_finder)
-          .to receive(:assignee_id_for)
-          .with(pull_request)
-          .and_return(user.id)
       end
 
       it 'imports the pull request with the pull request author as the merge request author' do
@@ -97,7 +96,6 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
               state_id: 3,
               milestone_id: milestone.id,
               author_id: user.id,
-              assignee_id: user.id,
               created_at: created_at,
               updated_at: updated_at
             },
@@ -114,20 +112,72 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
         expect(mr).to be_instance_of(MergeRequest)
         expect(exists).to eq(false)
       end
+
+      context 'when the source and target branch are identical' do
+        before do
+          allow(pull_request).to receive_messages(
+            source_repository_id: pull_request.target_repository_id,
+            source_branch: 'master'
+          )
+        end
+
+        it 'uses a generated source branch name for the merge request' do
+          expect(importer)
+            .to receive(:insert_and_return_id)
+            .with(
+              {
+                iid: 42,
+                title: 'My Pull Request',
+                description: 'This is my pull request',
+                source_project_id: project.id,
+                target_project_id: project.id,
+                source_branch: 'master-42',
+                target_branch: 'master',
+                state_id: 3,
+                milestone_id: milestone.id,
+                author_id: user.id,
+                created_at: created_at,
+                updated_at: updated_at
+              },
+              project.merge_requests
+            )
+            .and_call_original
+
+          importer.create_merge_request
+        end
+      end
+
+      context 'when the import fails due to a foreign key error' do
+        it 'does not raise any errors' do
+          expect(importer)
+            .to receive(:insert_and_return_id)
+            .and_raise(ActiveRecord::InvalidForeignKey, 'invalid foreign key')
+
+          expect { importer.create_merge_request }.not_to raise_error
+        end
+      end
+
+      context 'when the merge request already exists' do
+        it 'returns the existing merge request' do
+          mr1, exists1 = importer.create_merge_request
+          mr2, exists2 = importer.create_merge_request
+
+          expect(mr2).to eq(mr1)
+          expect(exists1).to eq(false)
+          expect(exists2).to eq(true)
+        end
+      end
     end
 
     context 'when the author could not be found' do
-      it 'imports the pull request with the project creator as the merge request author' do
+      before do
         allow(importer.user_finder)
           .to receive(:author_id_for)
           .with(pull_request)
           .and_return([project.creator_id, false])
+      end
 
-        allow(importer.user_finder)
-          .to receive(:assignee_id_for)
-          .with(pull_request)
-          .and_return(user.id)
-
+      it 'imports the pull request with the project creator as the merge request author' do
         expect(importer)
           .to receive(:insert_and_return_id)
           .with(
@@ -142,7 +192,6 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
               state_id: 3,
               milestone_id: milestone.id,
               author_id: project.creator_id,
-              assignee_id: user.id,
               created_at: created_at,
               updated_at: updated_at
             },
@@ -153,93 +202,33 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
         importer.create_merge_request
       end
     end
+  end
 
-    context 'when the source and target branch are identical' do
-      it 'uses a generated source branch name for the merge request' do
-        allow(importer.user_finder)
-          .to receive(:author_id_for)
-          .with(pull_request)
-          .and_return([user.id, true])
+  describe '#set_merge_request_assignees' do
+    let_it_be(:merge_request) { create(:merge_request) }
 
-        allow(importer.user_finder)
-          .to receive(:assignee_id_for)
-          .with(pull_request)
-          .and_return(user.id)
+    before do
+      allow(importer.user_finder)
+        .to receive(:assignee_id_for)
+        .with(pull_request)
+        .and_return(user_id)
 
-        allow(pull_request)
-          .to receive(:source_repository_id)
-          .and_return(pull_request.target_repository_id)
+      importer.set_merge_request_assignees(merge_request)
+    end
 
-        allow(pull_request)
-          .to receive(:source_branch)
-          .and_return('master')
+    context 'when pull request has an assignee' do
+      let(:user_id) { user.id }
 
-        expect(importer)
-          .to receive(:insert_and_return_id)
-          .with(
-            {
-              iid: 42,
-              title: 'My Pull Request',
-              description: 'This is my pull request',
-              source_project_id: project.id,
-              target_project_id: project.id,
-              source_branch: 'master-42',
-              target_branch: 'master',
-              state_id: 3,
-              milestone_id: milestone.id,
-              author_id: user.id,
-              assignee_id: user.id,
-              created_at: created_at,
-              updated_at: updated_at
-            },
-            project.merge_requests
-          )
-          .and_call_original
-
-        importer.create_merge_request
+      it 'sets merge request assignees' do
+        expect(merge_request.assignee_ids).to eq [user.id]
       end
     end
 
-    context 'when the import fails due to a foreign key error' do
-      it 'does not raise any errors' do
-        allow(importer.user_finder)
-          .to receive(:author_id_for)
-          .with(pull_request)
-          .and_return([user.id, true])
+    context 'when pull request does not have any assignees' do
+      let(:user_id) { nil }
 
-        allow(importer.user_finder)
-          .to receive(:assignee_id_for)
-          .with(pull_request)
-          .and_return(user.id)
-
-        expect(importer)
-          .to receive(:insert_and_return_id)
-          .and_raise(ActiveRecord::InvalidForeignKey, 'invalid foreign key')
-
-        expect { importer.create_merge_request }.not_to raise_error
-      end
-    end
-
-    context 'when the merge request already exists' do
-      before do
-        allow(importer.user_finder)
-          .to receive(:author_id_for)
-          .with(pull_request)
-          .and_return([user.id, true])
-
-        allow(importer.user_finder)
-          .to receive(:assignee_id_for)
-          .with(pull_request)
-          .and_return(user.id)
-      end
-
-      it 'returns the existing merge request' do
-        mr1, exists1 = importer.create_merge_request
-        mr2, exists2 = importer.create_merge_request
-
-        expect(mr2).to eq(mr1)
-        expect(exists1).to eq(false)
-        expect(exists2).to eq(true)
+      it 'does not set merge request assignees' do
+        expect(merge_request.assignee_ids).to eq []
       end
     end
   end
@@ -255,11 +244,6 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
         .to receive(:author_id_for)
         .with(pull_request)
         .and_return([user.id, true])
-
-      allow(importer.user_finder)
-        .to receive(:assignee_id_for)
-        .with(pull_request)
-        .and_return(user.id)
     end
 
     it 'does not create the source branch if merge request is merged' do
