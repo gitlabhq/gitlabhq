@@ -13299,7 +13299,10 @@ msgstr ""
 msgid "Preferences|Project overview content"
 msgstr ""
 
-msgid "Preferences|Show whitespace in diffs"
+msgid "Preferences|Render whitespace characters in the Web IDE"
+msgstr ""
+
+msgid "Preferences|Show whitespace changes in diffs"
 msgstr ""
 
 msgid "Preferences|Sourcegraph"
@@ -18692,10 +18695,16 @@ msgstr ""
 msgid "ThreatMonitoring|A Web Application Firewall (WAF) provides monitoring and rules to protect production applications. GitLab adds the modsecurity WAF plug-in when you install the Ingress app in your Kubernetes cluster."
 msgstr ""
 
+msgid "ThreatMonitoring|Anomalous Requests"
+msgstr ""
+
 msgid "ThreatMonitoring|At this time, threat monitoring only supports WAF data."
 msgstr ""
 
 msgid "ThreatMonitoring|Environment"
+msgstr ""
+
+msgid "ThreatMonitoring|Requests"
 msgstr ""
 
 msgid "ThreatMonitoring|Something went wrong, unable to fetch WAF statistics"
@@ -18713,7 +18722,10 @@ msgstr ""
 msgid "ThreatMonitoring|Threat Monitoring help page link"
 msgstr ""
 
-msgid "ThreatMonitoring|View WAF documentation"
+msgid "ThreatMonitoring|Time"
+msgstr ""
+
+msgid "ThreatMonitoring|Total Requests"
 msgstr ""
 
 msgid "ThreatMonitoring|Web Application Firewall not enabled"
@@ -21319,14 +21331,6 @@ msgstr ""
 msgid "ciReport|%{reportType} %{status} detected no vulnerabilities for the source branch only"
 msgstr ""
 
-msgid "ciReport|%{reportType} detected %{vulnerabilityCount} vulnerability"
-msgid_plural "ciReport|%{reportType} detected %{vulnerabilityCount} vulnerabilities"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "ciReport|%{reportType} detected no vulnerabilities"
-msgstr ""
-
 msgid "ciReport|%{reportType} is loading"
 msgstr ""
 
@@ -21484,18 +21488,6 @@ msgid "ciReport|There was an error creating the merge request. Please try again.
 msgstr ""
 
 msgid "ciReport|There was an error dismissing the vulnerability. Please try again."
-msgstr ""
-
-msgid "ciReport|There was an error loading DAST report"
-msgstr ""
-
-msgid "ciReport|There was an error loading SAST report"
-msgstr ""
-
-msgid "ciReport|There was an error loading container scanning report"
-msgstr ""
-
-msgid "ciReport|There was an error loading dependency scanning report"
 msgstr ""
 
 msgid "ciReport|There was an error reverting the dismissal. Please try again."

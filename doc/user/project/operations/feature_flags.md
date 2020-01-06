@@ -1,6 +1,6 @@
 # Feature Flags **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/11845) in GitLab 11.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/7433) in GitLab 11.4.
 
 Feature flags allow you to ship a project in different flavors by
 dynamically toggling certain functionality.

@@ -52,6 +52,18 @@ describe('RepoEditor', () => {
     state.rightPanelCollapsed = !state.rightPanelCollapsed;
   };
 
+  it('sets renderWhitespace to `all`', () => {
+    vm.$store.state.renderWhitespaceInCode = true;
+
+    expect(vm.editorOptions.renderWhitespace).toEqual('all');
+  });
+
+  it('sets renderWhitespace to `none`', () => {
+    vm.$store.state.renderWhitespaceInCode = false;
+
+    expect(vm.editorOptions.renderWhitespace).toEqual('none');
+  });
+
   it('renders an ide container', () => {
     expect(vm.shouldHideEditor).toBeFalsy();
     expect(vm.showEditor).toBe(true);

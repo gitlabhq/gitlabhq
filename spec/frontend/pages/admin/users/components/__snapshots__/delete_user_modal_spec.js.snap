@@ -29,7 +29,7 @@ exports[`User Operation confirmation modal renders modal with form included 1`] 
       value="csrf"
     />
      
-    <glforminput-stub
+    <gl-form-input-stub
       autocomplete="off"
       autofocus=""
       name="username"
@@ -38,26 +38,26 @@ exports[`User Operation confirmation modal renders modal with form included 1`] 
     />
   </form>
    
-  <glbutton-stub
+  <gl-button-stub
     variant="secondary"
   >
     Cancel
-  </glbutton-stub>
+  </gl-button-stub>
    
-  <glbutton-stub
+  <gl-button-stub
     disabled="true"
     variant="warning"
   >
     
       secondaryAction
     
-  </glbutton-stub>
+  </gl-button-stub>
    
-  <glbutton-stub
+  <gl-button-stub
     disabled="true"
     variant="danger"
   >
     action
-  </glbutton-stub>
+  </gl-button-stub>
 </div>
 `;

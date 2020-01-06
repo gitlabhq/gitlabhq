@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`User Operation confirmation modal renders modal with form included 1`] = `
-<glmodal-stub
+<gl-modal-stub
   modalclass=""
   modalid="user-operation-modal"
   ok-title="action"
@@ -29,5 +29,5 @@ exports[`User Operation confirmation modal renders modal with form included 1`] 
       value="csrf"
     />
   </form>
-</glmodal-stub>
+</gl-modal-stub>
 `;

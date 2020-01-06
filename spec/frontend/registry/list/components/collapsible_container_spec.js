@@ -59,6 +59,7 @@ describe('collapsible registry container', () => {
     beforeEach(() => {
       const fetchList = jest.fn();
       wrapper.setMethods({ fetchList });
+      return wrapper.vm.$nextTick();
     });
 
     const expectIsClosed = () => {

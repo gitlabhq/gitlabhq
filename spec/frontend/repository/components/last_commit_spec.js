@@ -116,12 +116,16 @@ describe('Repository last commit component', () => {
   it('expands commit description when clicking expander', () => {
     factory(createCommitData({ description: 'Test description' }));
 
-    vm.find('.text-expander').vm.$emit('click');
-
-    return vm.vm.$nextTick().then(() => {
-      expect(vm.find('.commit-row-description').isVisible()).toBe(true);
-      expect(vm.find('.text-expander').classes('open')).toBe(true);
-    });
+    return vm.vm
+      .$nextTick()
+      .then(() => {
+        vm.find('.text-expander').vm.$emit('click');
+        return vm.vm.$nextTick();
+      })
+      .then(() => {
+        expect(vm.find('.commit-row-description').isVisible()).toBe(true);
+        expect(vm.find('.text-expander').classes('open')).toBe(true);
+      });
   });
 
   it('renders the signature HTML as returned by the backend', () => {

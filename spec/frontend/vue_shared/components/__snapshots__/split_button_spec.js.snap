@@ -1,13 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`SplitButton renders actionItems 1`] = `
-<gldropdown-stub
+<gl-dropdown-stub
   menu-class="dropdown-menu-selectable "
   split="true"
   text="professor"
   variant="secondary"
 >
-  <gldropdownitem-stub
+  <gl-dropdown-item-stub
     active="true"
     active-class="is-active"
   >
@@ -18,10 +18,10 @@ exports[`SplitButton renders actionItems 1`] = `
     <div>
       very symphonic
     </div>
-  </gldropdownitem-stub>
+  </gl-dropdown-item-stub>
    
-  <gldropdowndivider-stub />
-  <gldropdownitem-stub
+  <gl-dropdown-divider-stub />
+  <gl-dropdown-item-stub
     active-class="is-active"
   >
     <strong>
@@ -31,8 +31,8 @@ exports[`SplitButton renders actionItems 1`] = `
     <div>
       warp drive
     </div>
-  </gldropdownitem-stub>
+  </gl-dropdown-item-stub>
    
   <!---->
-</gldropdown-stub>
+</gl-dropdown-stub>
 `;

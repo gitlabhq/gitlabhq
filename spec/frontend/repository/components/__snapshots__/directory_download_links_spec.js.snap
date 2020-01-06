@@ -16,22 +16,22 @@ exports[`Repository directory download links component renders downloads links f
     <div
       class="btn-group ml-0 w-100"
     >
-      <gllink-stub
+      <gl-link-stub
         class="btn btn-xs btn-primary"
         href="http://test.com/?path=app"
       >
         
         zip
       
-      </gllink-stub>
-      <gllink-stub
+      </gl-link-stub>
+      <gl-link-stub
         class="btn btn-xs"
         href="http://test.com/?path=app"
       >
         
         tar
       
-      </gllink-stub>
+      </gl-link-stub>
     </div>
   </div>
 </section>
@@ -53,22 +53,22 @@ exports[`Repository directory download links component renders downloads links f
     <div
       class="btn-group ml-0 w-100"
     >
-      <gllink-stub
+      <gl-link-stub
         class="btn btn-xs btn-primary"
         href="http://test.com/?path=app/assets"
       >
         
         zip
       
-      </gllink-stub>
-      <gllink-stub
+      </gl-link-stub>
+      <gl-link-stub
         class="btn btn-xs"
         href="http://test.com/?path=app/assets"
       >
         
         tar
       
-      </gllink-stub>
+      </gl-link-stub>
     </div>
   </div>
 </section>

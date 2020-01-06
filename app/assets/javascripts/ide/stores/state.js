@@ -31,4 +31,5 @@ export default () => ({
     entry: {},
   },
   clientsidePreviewEnabled: false,
+  renderWhitespaceInCode: false,
 });

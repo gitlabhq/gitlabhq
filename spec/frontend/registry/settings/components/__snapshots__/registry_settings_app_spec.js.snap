@@ -20,6 +20,6 @@ exports[`Registry Settings App renders 1`] = `
     </li>
   </ul>
    
-  <settingsform-stub />
+  <settings-form-stub />
 </div>
 `;

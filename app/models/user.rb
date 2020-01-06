@@ -246,6 +246,7 @@ class User < ApplicationRecord
   delegate :show_whitespace_in_diffs, :show_whitespace_in_diffs=, to: :user_preference
   delegate :sourcegraph_enabled, :sourcegraph_enabled=, to: :user_preference
   delegate :setup_for_company, :setup_for_company=, to: :user_preference
+  delegate :render_whitespace_in_code, :render_whitespace_in_code=, to: :user_preference
 
   accepts_nested_attributes_for :user_preference, update_only: true
 

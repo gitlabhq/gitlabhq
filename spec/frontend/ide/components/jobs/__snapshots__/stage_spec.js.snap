@@ -7,7 +7,7 @@ exports[`IDE pipeline stage renders stage details & icon 1`] = `
   <div
     class="card-header"
   >
-    <ciicon-stub
+    <ci-icon-stub
       cssclasses=""
       size="24"
       status="[object Object]"

@@ -4038,6 +4038,7 @@ ActiveRecord::Schema.define(version: 2020_01_02_170221) do
     t.boolean "show_whitespace_in_diffs", default: true, null: false
     t.boolean "sourcegraph_enabled"
     t.boolean "setup_for_company"
+    t.boolean "render_whitespace_in_code"
     t.index ["user_id"], name: "index_user_preferences_on_user_id", unique: true
   end
 

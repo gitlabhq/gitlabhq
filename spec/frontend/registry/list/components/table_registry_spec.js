@@ -123,17 +123,17 @@ describe('table registry', () => {
     it('should delete multiple items when multiple items are selected', done => {
       const multiDeleteItems = jest.fn().mockResolvedValue();
       wrapper.setMethods({ multiDeleteItems });
-      const selectAll = findSelectAllCheckbox();
-      selectAll.trigger('click');
 
       Vue.nextTick(() => {
-        const deleteBtn = findDeleteButton();
-        expect(wrapper.vm.selectedItems).toEqual([0, 1]);
-        expect(deleteBtn.attributes('disabled')).toEqual(undefined);
-        wrapper.setData({ itemsToBeDeleted: [...wrapper.vm.selectedItems] });
-        wrapper.vm.handleMultipleDelete();
+        const selectAll = findSelectAllCheckbox();
+        selectAll.trigger('click');
 
         Vue.nextTick(() => {
+          const deleteBtn = findDeleteButton();
+          expect(wrapper.vm.selectedItems).toEqual([0, 1]);
+          expect(deleteBtn.attributes('disabled')).toEqual(undefined);
+          wrapper.setData({ itemsToBeDeleted: [...wrapper.vm.selectedItems] });
+          wrapper.vm.handleMultipleDelete();
           expect(wrapper.vm.selectedItems).toEqual([]);
           expect(wrapper.vm.itemsToBeDeleted).toEqual([]);
           expect(wrapper.vm.multiDeleteItems).toHaveBeenCalledWith({
@@ -179,10 +179,12 @@ describe('table registry', () => {
       const deleteSingleItem = jest.fn();
       const deleteItem = jest.fn().mockResolvedValue();
       wrapper.setMethods({ deleteSingleItem, deleteItem });
-      deleteBtns.at(0).trigger('click');
-      expect(wrapper.vm.deleteSingleItem).toHaveBeenCalledWith(0);
-      wrapper.vm.handleSingleDelete(1);
-      expect(wrapper.vm.deleteItem).toHaveBeenCalledWith(1);
+      return wrapper.vm.$nextTick().then(() => {
+        deleteBtns.at(0).trigger('click');
+        expect(wrapper.vm.deleteSingleItem).toHaveBeenCalledWith(0);
+        wrapper.vm.handleSingleDelete(1);
+        expect(wrapper.vm.deleteItem).toHaveBeenCalledWith(1);
+      });
     });
   });
 
