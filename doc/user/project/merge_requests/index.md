@@ -82,7 +82,7 @@ Learn [how to create a merge request](creating_merge_requests.md).
 
 ## Reviewing and managing merge requests
 
-See the features at your displosal to [review and manage merge requests](reviewing_and_managing_merge_requests.md).
+See the features at your disposal to [review and manage merge requests](reviewing_and_managing_merge_requests.md).
 
 ## Testing and reports in merge requests
 
