@@ -20423,6 +20423,9 @@ msgstr ""
 msgid "When a runner is locked, it cannot be assigned to other projects"
 msgstr ""
 
+msgid "When enabled, any user visiting %{host} will be able to create an account."
+msgstr ""
+
 msgid "When enabled, users cannot use GitLab until the terms have been accepted."
 msgstr ""
 

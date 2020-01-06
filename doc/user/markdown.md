@@ -160,7 +160,7 @@ It is possible to generate diagrams and flowcharts from text in GitLab using [Me
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/15107) in
 GitLab 10.3.
 
-Visit the [official page](https://mermaidjs.github.io/) for more details.
+Visit the [official page](https://mermaidjs.github.io/) for more details. If you are new to using Mermaid or need help identifying issues in your Mermaid code, the [Mermaid Live Editor](https://mermaid-js.github.io/mermaid-live-editor/) is a helpful tool for creating and resolving issues within Mermaid diagrams.
 
 In order to generate a diagram or flowchart, you should write your text inside the `mermaid` block:
 
