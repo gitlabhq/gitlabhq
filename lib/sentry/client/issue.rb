@@ -15,6 +15,10 @@ module Sentry
         http_get(issue_api_url(issue_id))[:body]
       end
 
+      def update_issue(issue_id:, params:)
+        http_put(issue_api_url(issue_id), params)[:body]
+      end
+
       def issue_api_url(issue_id)
         issue_url = URI(url)
         issue_url.path = "/api/0/issues/#{CGI.escape(issue_id.to_s)}/"

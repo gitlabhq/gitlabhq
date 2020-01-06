@@ -158,7 +158,7 @@ module Gitlab
       # name - The name of the foreign key.
       #
       # rubocop:disable Gitlab/RailsLogger
-      def add_concurrent_foreign_key(source, target, column:, on_delete: :cascade, name: nil)
+      def add_concurrent_foreign_key(source, target, column:, on_delete: :cascade, name: nil, validate: true)
         # Transactions would result in ALTER TABLE locks being held for the
         # duration of the transaction, defeating the purpose of this method.
         if transaction_open?
@@ -197,10 +197,16 @@ module Gitlab
         # Validate the existing constraint. This can potentially take a very
         # long time to complete, but fortunately does not lock the source table
         # while running.
+        # Disable this check by passing `validate: false` to the method call
+        # The check will be enforced for new data (inserts) coming in,
+        # but validating existing data is delayed.
         #
         # Note this is a no-op in case the constraint is VALID already
-        disable_statement_timeout do
-          execute("ALTER TABLE #{source} VALIDATE CONSTRAINT #{options[:name]};")
+
+        if validate
+          disable_statement_timeout do
+            execute("ALTER TABLE #{source} VALIDATE CONSTRAINT #{options[:name]};")
+          end
         end
       end
       # rubocop:enable Gitlab/RailsLogger

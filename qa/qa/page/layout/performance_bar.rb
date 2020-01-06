@@ -9,11 +9,12 @@ module QA
         end
 
         view 'app/assets/javascripts/performance_bar/components/detailed_metric.vue' do
-          element :performance_bar_detailed_metric
+          element :detailed_metric_content
         end
 
         view 'app/assets/javascripts/performance_bar/components/request_selector.vue' do
-          element :performance_bar_request
+          element :request_dropdown_option
+          element :request_dropdown
         end
 
         def has_performance_bar?
@@ -21,13 +22,18 @@ module QA
         end
 
         def has_detailed_metrics?
-          all_elements(:performance_bar_detailed_metric).all? do |metric|
-            metric.has_text?(%r{\d+})
+          retry_until(sleep_interval: 1) do
+            all_elements(:detailed_metric_content).all? do |metric|
+              metric.has_text?(%r{\d+})
+            end
           end
         end
 
         def has_request_for?(path)
-          has_element?(:performance_bar_request, text: path)
+          click_element(:request_dropdown)
+          retry_until(sleep_interval: 1) do
+            has_element?(:request_dropdown_option, text: path)
+          end
         end
       end
     end

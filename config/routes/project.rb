@@ -269,7 +269,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
               to: 'error_tracking#details',
               as: 'details'
             get ':issue_id/stack_trace',
-              to: 'error_tracking#stack_trace',
+              to: 'error_tracking/stack_traces#index',
               as: 'stack_trace'
           end
         end

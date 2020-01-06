@@ -206,6 +206,15 @@ describe ApplicationHelper do
       end
     end
 
+    context 'when @snippet is set' do
+      it 'returns the passed path' do
+        snippet = create(:snippet)
+        assign(:snippet, snippet)
+
+        expect(helper.external_storage_url_or_path('/foo/bar', project)).to eq('/foo/bar')
+      end
+    end
+
     context 'when external storage is enabled' do
       let(:user) { create(:user, static_object_token: 'hunter1') }
 

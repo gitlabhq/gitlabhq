@@ -59,7 +59,8 @@ export default {
   <div
     v-if="currentRequest.details && metricDetails"
     :id="`peek-view-${metric}`"
-    class="view qa-performance-bar-detailed-metric"
+    class="view"
+    data-qa-selector="detailed_metric_content"
   >
     <button
       :data-target="`#modal-peek-${metric}-details`"

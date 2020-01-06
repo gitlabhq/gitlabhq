@@ -45,13 +45,13 @@ export default {
 };
 </script>
 <template>
-  <div id="peek-request-selector">
+  <div id="peek-request-selector" data-qa-selector="request_dropdown">
     <select v-model="currentRequestId">
       <option
         v-for="request in requests"
         :key="request.id"
         :value="request.id"
-        class="qa-performance-bar-request"
+        data-qa-selector="request_dropdown_option"
       >
         {{ request.truncatedUrl }}
         <span v-if="request.hasWarnings">(!)</span>

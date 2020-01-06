@@ -71,9 +71,22 @@ module Sentry
     end
 
     def http_get(url, params = {})
-      response = handle_request_exceptions do
+      http_request do
         Gitlab::HTTP.get(url, **request_params.merge(params))
       end
+    end
+
+    def http_put(url, params = {})
+      http_request do
+        Gitlab::HTTP.put(url, **request_params.merge({ body: params }))
+      end
+    end
+
+    def http_request
+      response = handle_request_exceptions do
+        yield
+      end
+
       handle_response(response)
     end
 

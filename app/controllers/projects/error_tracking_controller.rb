@@ -2,7 +2,7 @@
 
 class Projects::ErrorTrackingController < Projects::ApplicationController
   before_action :authorize_read_sentry_issue!
-  before_action :set_issue_id, only: [:details, :stack_trace]
+  before_action :set_issue_id, only: :details
 
   POLLING_INTERVAL = 10_000
 
@@ -21,14 +21,6 @@ class Projects::ErrorTrackingController < Projects::ApplicationController
       format.html
       format.json do
         render_issue_detail_json
-      end
-    end
-  end
-
-  def stack_trace
-    respond_to do |format|
-      format.json do
-        render_issue_stack_trace_json
       end
     end
   end
@@ -60,19 +52,6 @@ class Projects::ErrorTrackingController < Projects::ApplicationController
 
     render json: {
       error: serialize_detailed_error(result[:issue])
-    }
-  end
-
-  def render_issue_stack_trace_json
-    service = ErrorTracking::IssueLatestEventService.new(project, current_user, issue_details_params)
-    result = service.execute
-
-    return if handle_errors(result)
-
-    result_with_syntax_highlight = Gitlab::ErrorTracking::StackTraceHighlightDecorator.decorate(result[:latest_event])
-
-    render json: {
-      error: serialize_error_event(result_with_syntax_highlight)
     }
   end
 
@@ -109,11 +88,5 @@ class Projects::ErrorTrackingController < Projects::ApplicationController
     ErrorTracking::DetailedErrorSerializer
       .new(project: project, user: current_user)
       .represent(error)
-  end
-
-  def serialize_error_event(event)
-    ErrorTracking::ErrorEventSerializer
-      .new(project: project, user: current_user)
-      .represent(event)
   end
 end
