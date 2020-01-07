@@ -8,7 +8,7 @@ They are accessible to all users by default (GitLab admins can restrict its
 visibility in the [admin area](../admin_area/settings/usage_statistics.md)),
 and can be accessed via the top bar.
 
-![Instance Statistics button](img/instance_statistics_button.png)
+![Analytics button](img/instance_statistics_button_v12_6.png)
 
 There are two kinds of statistics:
 

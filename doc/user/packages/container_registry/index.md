@@ -20,6 +20,9 @@ You can read more about Docker Registry at <https://docs.docker.com/registry/int
 
 ## Enable the Container Registry for your project
 
+CAUTION: **Warning:**
+The Container Registry follows the visibility settings of the project. If the project is public, so is the Container Registry.
+
 If you cannot find the **Packages > Container Registry** entry under your
 project's sidebar, it is not enabled in your GitLab instance. Ask your
 administrator to enable GitLab Container Registry following the
