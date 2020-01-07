@@ -28,6 +28,11 @@ export default {
       required: false,
       default: 7,
     },
+    showParticipantLabel: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -80,6 +85,7 @@ export default {
 <template>
   <div>
     <div
+      v-if="showParticipantLabel"
       v-tooltip
       :title="participantLabel"
       class="sidebar-collapsed-icon"
@@ -92,7 +98,7 @@ export default {
       <gl-loading-icon v-if="loading" class="js-participants-collapsed-loading-icon" />
       <span v-else class="js-participants-collapsed-count"> {{ participantCount }} </span>
     </div>
-    <div class="title hide-collapsed">
+    <div v-if="showParticipantLabel" class="title hide-collapsed">
       <gl-loading-icon
         v-if="loading"
         :inline="true"

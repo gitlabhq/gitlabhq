@@ -10,6 +10,37 @@ describe API::Services do
     create(:project, creator_id: user.id, namespace: user.namespace)
   end
 
+  describe "GET /projects/:id/services" do
+    it 'returns authentication error when unauthenticated' do
+      get api("/projects/#{project.id}/services")
+
+      expect(response).to have_gitlab_http_status(401)
+    end
+
+    it "returns error when authenticated but user is not a project owner" do
+      project.add_developer(user2)
+      get api("/projects/#{project.id}/services", user2)
+
+      expect(response).to have_gitlab_http_status(403)
+    end
+
+    context 'project with services' do
+      let!(:active_service) { create(:emails_on_push_service, project: project, active: true) }
+      let!(:service) { create(:custom_issue_tracker_service, project: project, active: false) }
+
+      it "returns a list of all active services" do
+        get api("/projects/#{project.id}/services", user)
+
+        aggregate_failures 'expect successful response with all active services' do
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response).to be_an Array
+          expect(json_response.count).to eq(1)
+          expect(response).to match_response_schema('public_api/v4/services')
+        end
+      end
+    end
+  end
+
   Service.available_services_names.each do |service|
     describe "PUT /projects/:id/services/#{service.dasherize}" do
       include_context service

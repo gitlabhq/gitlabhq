@@ -7,7 +7,7 @@ module HasStatus
   BLOCKED_STATUS = %w[manual scheduled].freeze
   AVAILABLE_STATUSES = %w[created waiting_for_resource preparing pending running success failed canceled skipped manual scheduled].freeze
   STARTED_STATUSES = %w[running success failed skipped manual scheduled].freeze
-  ACTIVE_STATUSES = %w[preparing pending running].freeze
+  ACTIVE_STATUSES = %w[waiting_for_resource preparing pending running].freeze
   COMPLETED_STATUSES = %w[success failed canceled skipped].freeze
   ORDERED_STATUSES = %w[failed preparing pending running waiting_for_resource manual scheduled canceled success skipped created].freeze
   PASSED_WITH_WARNINGS_STATUSES = %w[failed canceled].to_set.freeze

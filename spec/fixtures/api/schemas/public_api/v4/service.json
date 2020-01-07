@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "properties": {
+    "id": { "type": "integer" },
+    "title": { "type": "string" },
+    "created_at": { "type": "date-time" },
+    "updated_at": { "type": "date-time" },
+    "active": { "type": "boolean" },
+    "commit_events": { "type": "boolean" },
+    "push_events": { "type": "boolean" },
+    "issues_events": { "type": "boolean" },
+    "confidential_issues_events": { "type": "boolean" },
+    "merge_requests_events": { "type": "boolean" },
+    "tag_push_events": { "type": "boolean" },
+    "note_events": { "type": "boolean" },
+    "confidential_note_events": { "type": "boolean" },
+    "pipeline_events": { "type": "boolean" },
+    "wiki_page_events": { "type": "boolean" },
+    "job_events": { "type": "boolean" }
+  },
+  "additionalProperties": false
+}

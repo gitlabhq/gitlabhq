@@ -89,6 +89,34 @@ describe Projects::TreeController do
     end
   end
 
+  describe "GET show" do
+    context 'lfs_blob_ids instance variable' do
+      let(:id) { 'master' }
+
+      context 'with vue tree view enabled' do
+        before do
+          get(:show, params: { namespace_id: project.namespace.to_param, project_id: project, id: id })
+        end
+
+        it 'is not set' do
+          expect(assigns[:lfs_blob_ids]).to be_nil
+        end
+      end
+
+      context 'with vue tree view disabled' do
+        before do
+          stub_feature_flags(vue_file_list: false)
+
+          get(:show, params: { namespace_id: project.namespace.to_param, project_id: project, id: id })
+        end
+
+        it 'is set' do
+          expect(assigns[:lfs_blob_ids]).not_to be_nil
+        end
+      end
+    end
+  end
+
   describe 'GET show with whitespace in ref' do
     render_views
 

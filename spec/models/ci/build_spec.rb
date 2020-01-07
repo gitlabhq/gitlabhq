@@ -1610,6 +1610,12 @@ describe Ci::Build do
 
           it { is_expected.to be_cancelable }
         end
+
+        context 'when build is waiting for resource' do
+          let(:build) { create(:ci_build, :waiting_for_resource) }
+
+          it { is_expected.to be_cancelable }
+        end
       end
 
       context 'when build is not cancelable' do

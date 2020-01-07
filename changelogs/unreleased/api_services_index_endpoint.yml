@@ -1,0 +1,5 @@
+---
+title: New API endpoint GET /projects/:id/services
+merge_request: 21330
+author:
+type: added

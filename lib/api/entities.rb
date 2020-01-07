@@ -1109,12 +1109,15 @@ module API
       end
     end
 
-    class ProjectService < Grape::Entity
+    class ProjectServiceBasic < Grape::Entity
       expose :id, :title, :created_at, :updated_at, :active
       expose :commit_events, :push_events, :issues_events, :confidential_issues_events
       expose :merge_requests_events, :tag_push_events, :note_events
       expose :confidential_note_events, :pipeline_events, :wiki_page_events
       expose :job_events
+    end
+
+    class ProjectService < ProjectServiceBasic
       # Expose serialized properties
       expose :properties do |service, options|
         # TODO: Simplify as part of https://gitlab.com/gitlab-org/gitlab/issues/29404

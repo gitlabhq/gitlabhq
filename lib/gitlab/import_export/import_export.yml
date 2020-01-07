@@ -172,6 +172,8 @@ excluded_attributes:
     - :secret
     - :encrypted_secret_token
     - :encrypted_secret_token_iv
+    - :repository_storage
+    - :storage_version
   merge_request_diff:
     - :external_diff
     - :stored_externally

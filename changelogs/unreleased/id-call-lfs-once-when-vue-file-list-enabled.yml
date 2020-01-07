@@ -1,0 +1,5 @@
+---
+title: Execute Gitaly LFS call once when Vue file enabled
+merge_request: 22168
+author:
+type: performance

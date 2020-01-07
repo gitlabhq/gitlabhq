@@ -182,4 +182,21 @@ describe('Participants', function() {
       expect(vm.$emit).toHaveBeenCalledWith('toggleSidebar');
     });
   });
+
+  describe('when not showing participants label', () => {
+    beforeEach(() => {
+      vm = mountComponent(Participants, {
+        participants: PARTICIPANT_LIST,
+        showParticipantLabel: false,
+      });
+    });
+
+    it('does not show sidebar collapsed icon', () => {
+      expect(vm.$el.querySelector('.sidebar-collapsed-icon')).not.toBeTruthy();
+    });
+
+    it('does not show participants label title', () => {
+      expect(vm.$el.querySelector('.title')).not.toBeTruthy();
+    });
+  });
 });

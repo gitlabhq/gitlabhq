@@ -1,0 +1,5 @@
+---
+title: Make jobs with resource group cancellable
+merge_request: 22356
+author:
+type: fixed

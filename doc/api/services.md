@@ -2,6 +2,59 @@
 
 >**Note:** This API requires an access token with Maintainer or Owner permissions
 
+## List all active services
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/21330) in GitLab 12.7.
+
+Get a list of all active project services.
+
+```
+GET /projects/:id/services
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 75,
+    "title": "Jenkins CI",
+    "created_at": "2019-11-20T11:20:25.297Z",
+    "updated_at": "2019-11-20T12:24:37.498Z",
+    "active": true,
+    "commit_events": true,
+    "push_events": true,
+    "issues_events": true,
+    "confidential_issues_events": true,
+    "merge_requests_events": true,
+    "tag_push_events": false,
+    "note_events": true,
+    "confidential_note_events": true,
+    "pipeline_events": true,
+    "wiki_page_events": true,
+    "job_events": true
+  }
+  {
+    "id": 76,
+    "title": "Alerts endpoint",
+    "created_at": "2019-11-20T11:20:25.297Z",
+    "updated_at": "2019-11-20T12:24:37.498Z",
+    "active": true,
+    "commit_events": true,
+    "push_events": true,
+    "issues_events": true,
+    "confidential_issues_events": true,
+    "merge_requests_events": true,
+    "tag_push_events": true,
+    "note_events": true,
+    "confidential_note_events": true,
+    "pipeline_events": true,
+    "wiki_page_events": true,
+    "job_events": true
+  }
+]
+```
+
 ## Asana
 
 Asana - Teamwork without email
