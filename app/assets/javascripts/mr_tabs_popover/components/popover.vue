@@ -57,7 +57,12 @@ export default {
         <icon name="external-link" :size="10" />
       </gl-link>
     </p>
-    <gl-button variant="primary" size="sm" @click="onDismiss">
+    <gl-button
+      variant="primary"
+      size="sm"
+      data-qa-selector="dismiss_popover_button"
+      @click="onDismiss"
+    >
       {{ __('Got it') }}
     </gl-button>
   </gl-popover>
