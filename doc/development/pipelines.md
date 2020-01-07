@@ -42,9 +42,9 @@ The current stages are:
 ## Default image
 
 The default image is currently
-`registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.3-golang-1.12-git-2.24-lfs-2.9-chrome-73.0-node-12.x-yarn-1.16-postgresql-9.6-graphicsmagick-1.3.33`.
+`registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.5-golang-1.12-git-2.24-lfs-2.9-chrome-73.0-node-12.x-yarn-1.16-postgresql-9.6-graphicsmagick-1.3.33`.
 
-It includes Ruby 2.6.3, Go 1.12, Git 2.24, Git LFS 2.9, Chrome 73, Node 12, Yarn 1.16,
+It includes Ruby 2.6.5, Go 1.12, Git 2.24, Git LFS 2.9, Chrome 73, Node 12, Yarn 1.16,
 PostgreSQL 9.6, and Graphics Magick 1.3.33.
 
 The images used in our pipelines are configured in the

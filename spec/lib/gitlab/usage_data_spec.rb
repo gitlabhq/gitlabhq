@@ -339,12 +339,6 @@ describe Gitlab::UsageData do
       expect(described_class.count(relation)).to eq(1)
     end
 
-    it 'returns the count for count_by when provided' do
-      allow(relation).to receive(:count).with(:creator_id).and_return(2)
-
-      expect(described_class.count(relation, count_by: :creator_id)).to eq(2)
-    end
-
     it 'returns the fallback value when counting fails' do
       allow(relation).to receive(:count).and_raise(ActiveRecord::StatementInvalid.new(''))
 

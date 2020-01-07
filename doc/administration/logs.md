@@ -447,7 +447,7 @@ Each line contains a JSON line that can be ingested by Elasticsearch. For exampl
     },
     "runtime": {
       "name": "ruby",
-      "version": "ruby 2.6.3p62 (2019-04-16 revision 67580) [x86_64-darwin18]"
+      "version": "ruby 2.6.5p114 (2019-10-01 revision 67812) [x86_64-darwin18]"
     }
   },
   "extra.project_id": 55,

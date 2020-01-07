@@ -273,7 +273,7 @@ static-analysis:
   script:
     - scripts/static-analysis
   cache:
-    key: "debian-stretch-ruby-2.6.3-and-rubocop"
+    key: "debian-stretch-ruby-2.6-and-rubocop"
     paths:
       - vendor/ruby
       - tmp/rubocop_cache

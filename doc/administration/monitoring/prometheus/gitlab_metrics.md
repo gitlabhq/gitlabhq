@@ -157,7 +157,7 @@ Some basic Ruby runtime metrics are available:
 | `ruby_process_resident_memory_bytes` | Gauge     | 12.0  | Memory usage by process, measured in bytes |
 | `ruby_process_start_time_seconds`    | Gauge     | 12.0  | UNIX timestamp of process start time |
 
-[GC.stat]: https://ruby-doc.org/core-2.6.3/GC.html#method-c-stat
+[GC.stat]: https://ruby-doc.org/core-2.6.5/GC.html#method-c-stat
 
 ## Unicorn Metrics
 
