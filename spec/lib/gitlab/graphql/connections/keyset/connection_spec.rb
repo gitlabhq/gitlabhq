@@ -232,7 +232,9 @@ describe Gitlab::Graphql::Connections::Keyset::Connection do
     let_it_be(:all_nodes) { create_list(:project, 5) }
     let(:paged_nodes) { subject.paged_nodes }
 
-    it_behaves_like "connection with paged nodes"
+    it_behaves_like "connection with paged nodes" do
+      let(:paged_nodes_size) { 3 }
+    end
 
     context 'when both are passed' do
       let(:arguments) { { first: 2, last: 2 } }

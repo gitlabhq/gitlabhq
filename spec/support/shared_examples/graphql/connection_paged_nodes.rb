@@ -2,7 +2,7 @@
 
 RSpec.shared_examples 'connection with paged nodes' do
   it 'returns the collection limited to max page size' do
-    expect(paged_nodes.size).to eq(3)
+    expect(paged_nodes.size).to eq(paged_nodes_size)
   end
 
   it 'is a loaded memoized array' do
@@ -22,7 +22,7 @@ RSpec.shared_examples 'connection with paged nodes' do
     let(:arguments) { { last: 2 } }
 
     it 'returns only the last elements' do
-      expect(paged_nodes).to contain_exactly(all_nodes[3], all_nodes[4])
+      expect(paged_nodes).to contain_exactly(*all_nodes.last(2))
     end
   end
 end

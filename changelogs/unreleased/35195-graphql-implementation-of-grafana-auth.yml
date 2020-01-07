@@ -1,0 +1,5 @@
+---
+title: Add fetching of Grafana Auth via the GraphQL API
+merge_request: 21756
+author:
+type: changed

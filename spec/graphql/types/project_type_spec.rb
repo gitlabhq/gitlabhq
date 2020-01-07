@@ -23,6 +23,7 @@ describe GitlabSchema.types['Project'] do
       only_allow_merge_if_all_discussions_are_resolved printing_merge_request_link_enabled
       namespace group statistics repository merge_requests merge_request issues
       issue pipelines removeSourceBranchAfterMerge sentryDetailedError snippets
+      grafanaIntegration
     ]
 
     is_expected.to include_graphql_fields(*expected_fields)
@@ -31,45 +32,42 @@ describe GitlabSchema.types['Project'] do
   describe 'issue field' do
     subject { described_class.fields['issue'] }
 
-    it 'returns issue' do
-      is_expected.to have_graphql_type(Types::IssueType)
-      is_expected.to have_graphql_resolver(Resolvers::IssuesResolver.single)
-    end
+    it { is_expected.to have_graphql_type(Types::IssueType) }
+    it { is_expected.to have_graphql_resolver(Resolvers::IssuesResolver.single) }
   end
 
   describe 'issues field' do
     subject { described_class.fields['issues'] }
 
-    it 'returns issue' do
-      is_expected.to have_graphql_type(Types::IssueType.connection_type)
-      is_expected.to have_graphql_resolver(Resolvers::IssuesResolver)
-    end
+    it { is_expected.to have_graphql_type(Types::IssueType.connection_type) }
+    it { is_expected.to have_graphql_resolver(Resolvers::IssuesResolver) }
   end
 
   describe 'merge_requests field' do
     subject { described_class.fields['mergeRequest'] }
 
-    it 'returns merge requests' do
-      is_expected.to have_graphql_type(Types::MergeRequestType)
-      is_expected.to have_graphql_resolver(Resolvers::MergeRequestsResolver.single)
-    end
+    it { is_expected.to have_graphql_type(Types::MergeRequestType) }
+    it { is_expected.to have_graphql_resolver(Resolvers::MergeRequestsResolver.single) }
   end
 
   describe 'merge_request field' do
     subject { described_class.fields['mergeRequests'] }
 
-    it 'returns merge request' do
-      is_expected.to have_graphql_type(Types::MergeRequestType.connection_type)
-      is_expected.to have_graphql_resolver(Resolvers::MergeRequestsResolver)
-    end
+    it { is_expected.to have_graphql_type(Types::MergeRequestType.connection_type) }
+    it { is_expected.to have_graphql_resolver(Resolvers::MergeRequestsResolver) }
   end
 
   describe 'snippets field' do
     subject { described_class.fields['snippets'] }
 
-    it 'returns snippets' do
-      is_expected.to have_graphql_type(Types::SnippetType.connection_type)
-      is_expected.to have_graphql_resolver(Resolvers::Projects::SnippetsResolver)
-    end
+    it { is_expected.to have_graphql_type(Types::SnippetType.connection_type) }
+    it { is_expected.to have_graphql_resolver(Resolvers::Projects::SnippetsResolver) }
+  end
+
+  describe 'grafana_integration field' do
+    subject { described_class.fields['grafanaIntegration'] }
+
+    it { is_expected.to have_graphql_type(Types::GrafanaIntegrationType) }
+    it { is_expected.to have_graphql_resolver(Resolvers::Projects::GrafanaIntegrationResolver) }
   end
 end

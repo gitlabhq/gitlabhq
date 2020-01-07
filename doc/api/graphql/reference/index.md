@@ -317,6 +317,17 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `clientMutationId` | String | A unique identifier for the client performing the mutation. |
 | `errors` | String! => Array | Reasons why the mutation failed. |
 
+### GrafanaIntegration
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `id` | ID! | Internal ID of the Grafana integration |
+| `grafanaUrl` | String! | Url for the Grafana host for the Grafana integration |
+| `token` | String! | API token for the Grafana integration |
+| `enabled` | Boolean! | Indicates whether Grafana integration is enabled |
+| `createdAt` | Time! | Timestamp of the issue's creation |
+| `updatedAt` | Time! | Timestamp of the issue's last activity |
+
 ### Group
 
 | Name  | Type  | Description |
@@ -700,6 +711,7 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `mergeRequest` | MergeRequest | A single merge request of the project |
 | `issue` | Issue | A single issue of the project |
 | `sentryDetailedError` | SentryDetailedError | Detailed version of a Sentry error on the project |
+| `grafanaIntegration` | GrafanaIntegration | Grafana integration details for the project |
 | `serviceDeskEnabled` | Boolean | Indicates if the project has service desk enabled. |
 | `serviceDeskAddress` | String | E-mail address of the service desk. |
 

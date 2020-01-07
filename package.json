@@ -43,7 +43,7 @@
     "@gitlab/ui": "8.10.0",
     "@gitlab/visual-review-tools": "1.5.1",
     "@sentry/browser": "^5.10.2",
-    "@sourcegraph/code-host-integration": "^0.0.16",
+    "@sourcegraph/code-host-integration": "^0.0.18",
     "apollo-cache-inmemory": "^1.6.3",
     "apollo-client": "^2.6.4",
     "apollo-link": "^1.2.11",

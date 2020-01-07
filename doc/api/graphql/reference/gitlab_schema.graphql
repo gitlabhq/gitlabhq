@@ -2275,6 +2275,38 @@ type EpicTreeReorderPayload {
   errors: [String!]!
 }
 
+type GrafanaIntegration {
+  """
+  Timestamp of the issue's creation
+  """
+  createdAt: Time!
+
+  """
+  Indicates whether Grafana integration is enabled
+  """
+  enabled: Boolean!
+
+  """
+  Url for the Grafana host for the Grafana integration
+  """
+  grafanaUrl: String!
+
+  """
+  Internal ID of the Grafana integration
+  """
+  id: ID!
+
+  """
+  API token for the Grafana integration
+  """
+  token: String!
+
+  """
+  Timestamp of the issue's last activity
+  """
+  updatedAt: Time!
+}
+
 type Group {
   """
   Avatar URL of the group
@@ -4611,6 +4643,11 @@ type Project {
   Full path of the project
   """
   fullPath: ID!
+
+  """
+  Grafana integration details for the project
+  """
+  grafanaIntegration: GrafanaIntegration
 
   """
   Group of the project

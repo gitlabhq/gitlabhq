@@ -152,6 +152,12 @@ module Types
           description: 'Detailed version of a Sentry error on the project',
           resolver: Resolvers::ErrorTracking::SentryDetailedErrorResolver
 
+    field :grafana_integration,
+          Types::GrafanaIntegrationType,
+          null: true,
+          description: 'Grafana integration details for the project',
+          resolver: Resolvers::Projects::GrafanaIntegrationResolver
+
     field :snippets,
           Types::SnippetType.connection_type,
           null: true,

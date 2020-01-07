@@ -1460,6 +1460,7 @@ ActiveRecord::Schema.define(version: 2020_01_06_085831) do
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
     t.integer "namespace_id"
+    t.index ["created_at"], name: "index_elasticsearch_indexed_namespaces_on_created_at"
     t.index ["namespace_id"], name: "index_elasticsearch_indexed_namespaces_on_namespace_id", unique: true
   end
 
