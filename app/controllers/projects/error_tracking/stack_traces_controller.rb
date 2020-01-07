@@ -2,10 +2,10 @@
 
 module Projects
   module ErrorTracking
-    class StackTracesController < Projects::ApplicationController
+    class StackTracesController < Projects::ErrorTracking::BaseController
       respond_to :json
 
-      before_action :authorize_read_sentry_issue!
+      before_action :authorize_read_sentry_issue!, :set_polling_interval
 
       def index
         result = fetch_latest_event_issue

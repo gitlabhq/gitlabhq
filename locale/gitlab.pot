@@ -22106,6 +22106,9 @@ msgstr ""
 msgid "needs to be between 10 minutes and 1 month"
 msgstr ""
 
+msgid "never expires"
+msgstr ""
+
 msgid "new merge request"
 msgstr ""
 
@@ -22386,6 +22389,12 @@ msgid "vulnerability|dismissed"
 msgstr ""
 
 msgid "with %{additions} additions, %{deletions} deletions."
+msgstr ""
+
+msgid "with expiry changing from %{old_expiry} to %{new_expiry}"
+msgstr ""
+
+msgid "with expiry remaining unchanged at %{old_expiry}"
 msgstr ""
 
 msgid "yaml invalid"

@@ -34,6 +34,8 @@ describe Projects::ErrorTracking::StackTracesController do
       it 'responds with no data' do
         expect(response).to have_gitlab_http_status(:no_content)
       end
+
+      it_behaves_like 'sets the polling header'
     end
 
     context 'service result is successful' do
@@ -53,6 +55,8 @@ describe Projects::ErrorTracking::StackTracesController do
           Gitlab::ErrorTracking::StackTraceHighlightDecorator.decorate(error_event).as_json
         )
       end
+
+      it_behaves_like 'sets the polling header'
     end
 
     context 'service result is erroneous' do

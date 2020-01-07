@@ -823,7 +823,7 @@ GEM
       ffi (>= 1.0.6)
       msgpack (>= 0.4.3)
       optimist (>= 3.0.0)
-    rdoc (6.0.4)
+    rdoc (6.1.2)
     re2 (1.1.1)
     recaptcha (4.13.1)
       json
@@ -1308,7 +1308,7 @@ DEPENDENCIES
   raindrops (~> 0.18)
   rblineprof (~> 0.3.6)
   rbtrace (~> 0.4)
-  rdoc (~> 6.0)
+  rdoc (~> 6.1.2)
   re2 (~> 1.1.1)
   recaptcha (~> 4.11)
   redis (~> 4.0)

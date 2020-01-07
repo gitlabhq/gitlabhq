@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
-class Projects::ErrorTrackingController < Projects::ApplicationController
+class Projects::ErrorTrackingController < Projects::ErrorTracking::BaseController
   before_action :authorize_read_sentry_issue!
   before_action :set_issue_id, only: :details
-
-  POLLING_INTERVAL = 10_000
 
   def index
     respond_to do |format|
@@ -20,6 +18,7 @@ class Projects::ErrorTrackingController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
+        set_polling_interval
         render_issue_detail_json
       end
     end
@@ -72,10 +71,6 @@ class Projects::ErrorTrackingController < Projects::ApplicationController
 
   def set_issue_id
     @issue_id = issue_details_params[:issue_id]
-  end
-
-  def set_polling_interval
-    Gitlab::PollingInterval.set_header(response, interval: POLLING_INTERVAL)
   end
 
   def serialize_errors(errors)

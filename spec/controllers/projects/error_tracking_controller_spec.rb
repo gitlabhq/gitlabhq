@@ -91,13 +91,13 @@ describe Projects::ErrorTrackingController do
               .and_return(status: :success, issues: [error], pagination: {})
             expect(list_issues_service).to receive(:external_url)
               .and_return(external_url)
+
+            get :index, params: params
           end
 
           let(:error) { build(:error_tracking_error) }
 
           it 'returns a list of errors' do
-            get :index, params: params
-
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to match_response_schema('error_tracking/index')
             expect(json_response).to eq(
@@ -106,6 +106,8 @@ describe Projects::ErrorTrackingController do
               'external_url' => external_url
             )
           end
+
+          it_behaves_like 'sets the polling header'
         end
       end
 
@@ -201,30 +203,33 @@ describe Projects::ErrorTrackingController do
         before do
           expect(issue_details_service).to receive(:execute)
             .and_return(status: :error, http_status: :no_content)
+          get :details, params: issue_params(issue_id: issue_id, format: :json)
         end
 
         it 'returns no data' do
-          get :details, params: issue_params(issue_id: issue_id, format: :json)
-
           expect(response).to have_gitlab_http_status(:no_content)
         end
+
+        it_behaves_like 'sets the polling header'
       end
 
       context 'service result is successful' do
         before do
           expect(issue_details_service).to receive(:execute)
             .and_return(status: :success, issue: error)
+
+          get :details, params: issue_params(issue_id: issue_id, format: :json)
         end
 
         let(:error) { build(:detailed_error_tracking_error) }
 
         it 'returns an error' do
-          get :details, params: issue_params(issue_id: issue_id, format: :json)
-
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to match_response_schema('error_tracking/issue_detailed')
           expect(json_response['error']).to eq(error.as_json)
         end
+
+        it_behaves_like 'sets the polling header'
       end
 
       context 'service result is erroneous' do
