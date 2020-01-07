@@ -150,7 +150,7 @@ const DEFAULT_APPLICATION_STATE = {
 
 const APPLICATIONS_MOCK_STATE = {
   helm: { title: 'Helm Tiller', status: 'installable' },
-  ingress: { title: 'Ingress', status: 'installable' },
+  ingress: { title: 'Ingress', status: 'installable', modsecurity_enabled: false },
   crossplane: { title: 'Crossplane', status: 'installable', stack: '' },
   cert_manager: { title: 'Cert-Manager', status: 'installable' },
   runner: { title: 'GitLab Runner' },

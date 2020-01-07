@@ -142,11 +142,11 @@ describe Clusters::Applications::Ingress do
     let(:project) { build(:project) }
     let(:cluster) { build(:cluster, projects: [project]) }
 
-    context 'when ingress_modsecurity is enabled' do
+    context 'when modsecurity_enabled is enabled' do
       before do
-        stub_feature_flags(ingress_modsecurity: true)
-
         allow(subject).to receive(:cluster).and_return(cluster)
+
+        allow(subject).to receive(:modsecurity_enabled).and_return(true)
       end
 
       it 'includes modsecurity module enablement' do
@@ -173,10 +173,8 @@ describe Clusters::Applications::Ingress do
       end
     end
 
-    context 'when ingress_modsecurity is disabled' do
+    context 'when modsecurity_enabled is disabled' do
       before do
-        stub_feature_flags(ingress_modsecurity: false)
-
         allow(subject).to receive(:cluster).and_return(cluster)
       end
 

@@ -6,38 +6,26 @@ module Gitlab
       module Project
         class CreateService < ::BaseService
           include Stepable
-
-          STEPS_ALLOWED_TO_FAIL = [
-            :validate_application_settings, :validate_project_created, :validate_admins
-          ].freeze
+          include SelfMonitoring::Helpers
 
           VISIBILITY_LEVEL = Gitlab::VisibilityLevel::INTERNAL
           PROJECT_NAME = 'GitLab Instance Administration'
 
           steps :validate_application_settings,
-            :validate_project_created,
             :validate_admins,
             :create_group,
             :create_project,
             :save_project_id,
             :add_group_members,
-            :add_prometheus_manual_configuration
+            :add_prometheus_manual_configuration,
+            :track_event
 
           def initialize
             super(nil)
           end
 
-          def execute!
-            result = execute_steps
-            if result[:status] == :success
-              ::Gitlab::Tracking.event("self_monitoring", "project_created")
-              result
-            elsif STEPS_ALLOWED_TO_FAIL.include?(result[:last_step])
-              ::Gitlab::Tracking.event("self_monitoring", "project_created")
-              success
-            else
-              raise StandardError, result[:message]
-            end
+          def execute
+            execute_steps
           end
 
           private
@@ -47,13 +35,6 @@ module Gitlab
 
             log_error('No application_settings found')
             error(_('No application_settings found'))
-          end
-
-          def validate_project_created(result)
-            return success(result) unless project_created?
-
-            log_error('Project already created')
-            error(_('Project already created'))
           end
 
           def validate_admins(result)
@@ -68,7 +49,7 @@ module Gitlab
           def create_group(result)
             if project_created?
               log_info(_('Instance administrators group already exists'))
-              result[:group] = application_settings.instance_administration_project.owner
+              result[:group] = self_monitoring_project.owner
               return success(result)
             end
 
@@ -84,7 +65,7 @@ module Gitlab
           def create_project(result)
             if project_created?
               log_info('Instance administration project already exists')
-              result[:project] = application_settings.instance_administration_project
+              result[:project] = self_monitoring_project
               return success(result)
             end
 
@@ -99,7 +80,7 @@ module Gitlab
           end
 
           def save_project_id(result)
-            return success if project_created?
+            return success(result) if project_created?
 
             response = application_settings.update(
               instance_administration_project_id: result[:project].id
@@ -140,12 +121,10 @@ module Gitlab
             success(result)
           end
 
-          def application_settings
-            @application_settings ||= ApplicationSetting.current_without_cache
-          end
+          def track_event(result)
+            ::Gitlab::Tracking.event("self_monitoring", "project_created")
 
-          def project_created?
-            application_settings.instance_administration_project.present?
+            success(result)
           end
 
           def parse_url(uri_string)

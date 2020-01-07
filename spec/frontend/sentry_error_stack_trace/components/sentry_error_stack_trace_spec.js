@@ -69,15 +69,17 @@ describe('Sentry Error Stack Trace', () => {
   });
 
   describe('Stack trace', () => {
-    it('should show stacktrace', () => {
+    beforeEach(() => {
       store.state.details.loadingStacktrace = false;
+    });
+
+    it('should show stacktrace', () => {
       mountComponent({ stubs: {} });
       expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
       expect(wrapper.find(Stacktrace).exists()).toBe(true);
     });
 
     it('should not show stacktrace if it does not exist', () => {
-      store.state.details.loadingStacktrace = false;
       expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
       expect(wrapper.find(Stacktrace).exists()).toBe(false);
     });

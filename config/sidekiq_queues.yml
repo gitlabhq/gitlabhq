@@ -99,6 +99,7 @@
   - [chaos, 2]
   - [create_evidence, 2]
   - [group_export, 1]
+  - [self_monitoring_project_create, 2]
 
   # EE-specific queues
   - [analytics, 1]

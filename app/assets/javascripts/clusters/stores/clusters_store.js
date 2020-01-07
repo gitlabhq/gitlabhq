@@ -52,6 +52,7 @@ export default class ClusterStore {
         ingress: {
           ...applicationInitialState,
           title: s__('ClusterIntegration|Ingress'),
+          modsecurity_enabled: false,
           externalIp: null,
           externalHostname: null,
         },
@@ -108,6 +109,7 @@ export default class ClusterStore {
     helpPath,
     ingressHelpPath,
     ingressDnsHelpPath,
+    ingressModSecurityHelpPath,
     environmentsHelpPath,
     clustersHelpPath,
     deployBoardsHelpPath,
@@ -116,6 +118,7 @@ export default class ClusterStore {
     this.state.helpPath = helpPath;
     this.state.ingressHelpPath = ingressHelpPath;
     this.state.ingressDnsHelpPath = ingressDnsHelpPath;
+    this.state.ingressModSecurityHelpPath = ingressModSecurityHelpPath;
     this.state.environmentsHelpPath = environmentsHelpPath;
     this.state.clustersHelpPath = clustersHelpPath;
     this.state.deployBoardsHelpPath = deployBoardsHelpPath;
@@ -207,6 +210,8 @@ export default class ClusterStore {
       if (appId === INGRESS) {
         this.state.applications.ingress.externalIp = serverAppEntry.external_ip;
         this.state.applications.ingress.externalHostname = serverAppEntry.external_hostname;
+        this.state.applications.ingress.modsecurity_enabled =
+          serverAppEntry.modsecurity_enabled || this.state.applications.ingress.modsecurity_enabled;
       } else if (appId === CERT_MANAGER) {
         this.state.applications.cert_manager.email =
           this.state.applications.cert_manager.email || serverAppEntry.email;

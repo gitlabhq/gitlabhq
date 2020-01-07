@@ -71,6 +71,7 @@ FactoryBot.define do
     end
 
     factory :clusters_applications_ingress, class: Clusters::Applications::Ingress do
+      modsecurity_enabled { false }
       cluster factory: %i(cluster with_installed_helm provided_by_gcp)
     end
 

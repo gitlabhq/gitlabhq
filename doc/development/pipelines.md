@@ -264,10 +264,6 @@ subgraph "`qa` stage"
     dast -.-> |needs and depends on| G;
     end
 
-subgraph "`notification` stage"
-    NOTIFICATION2["package-and-qa:notify-failure<br>(manual)"] -.-> |needs| Q;
-    end
-
 subgraph "`post-test` stage"
     M
     end

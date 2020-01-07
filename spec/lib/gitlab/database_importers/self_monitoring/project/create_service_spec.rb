@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService do
   describe '#execute' do
-    let(:result) { subject.execute! }
+    let(:result) { subject.execute }
 
     let(:prometheus_settings) do
       {
@@ -18,10 +18,12 @@ describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService do
     end
 
     context 'without application_settings' do
-      it 'does not fail' do
+      it 'returns error' do
         expect(subject).to receive(:log_error).and_call_original
         expect(result).to eq(
-          status: :success
+          status: :error,
+          message: 'No application_settings found',
+          last_step: :validate_application_settings
         )
 
         expect(Project.count).to eq(0)
@@ -36,10 +38,12 @@ describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService do
         allow(ApplicationSetting).to receive(:current_without_cache) { application_setting }
       end
 
-      it 'does not fail' do
+      it 'returns error' do
         expect(subject).to receive(:log_error).and_call_original
         expect(result).to eq(
-          status: :success
+          status: :error,
+          message: 'No active admin user found',
+          last_step: :validate_admins
         )
 
         expect(Project.count).to eq(0)
@@ -47,7 +51,7 @@ describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService do
       end
     end
 
-    context 'with admin users' do
+    context 'with application settings and admin users' do
       let(:project) { result[:project] }
       let(:group) { result[:group] }
       let(:application_setting) { Gitlab::CurrentSettings.current_application_settings }
@@ -72,6 +76,13 @@ describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService do
       end
 
       it_behaves_like 'has prometheus service', 'http://localhost:9090'
+
+      it "tracks successful install" do
+        expect(::Gitlab::Tracking).to receive(:event)
+        expect(::Gitlab::Tracking).to receive(:event).with("self_monitoring", "project_created")
+
+        result
+      end
 
       it 'creates group' do
         expect(result[:status]).to eq(:success)
@@ -132,7 +143,11 @@ describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService do
       it 'returns error when saving project ID fails' do
         allow(application_setting).to receive(:save) { false }
 
-        expect { result }.to raise_error(StandardError, 'Could not save project ID')
+        expect(result).to eq(
+          status: :error,
+          message: 'Could not save project ID',
+          last_step: :save_project_id
+        )
       end
 
       context 'when project already exists' do
@@ -149,9 +164,8 @@ describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService do
           application_setting.instance_administration_project_id = existing_project.id
         end
 
-        it 'does not fail' do
-          expect(subject).to receive(:log_error).and_call_original
-          expect(result[:status]).to eq(:success)
+        it 'returns success' do
+          expect(result).to include(status: :success)
 
           expect(Project.count).to eq(1)
           expect(Group.count).to eq(1)
@@ -250,7 +264,11 @@ describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService do
 
         it 'returns error' do
           expect(subject).to receive(:log_error).and_call_original
-          expect { result }.to raise_error(StandardError, 'Could not create project')
+          expect(result).to eq(
+            status: :error,
+            message: 'Could not create project',
+            last_step: :create_project
+          )
         end
       end
 
@@ -261,7 +279,11 @@ describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService do
 
         it 'returns error' do
           expect(subject).to receive(:log_error).and_call_original
-          expect { result }.to raise_error(StandardError, 'Could not add admins as members')
+          expect(result).to eq(
+            status: :error,
+            message: 'Could not add admins as members',
+            last_step: :add_group_members
+          )
         end
       end
 
@@ -275,15 +297,13 @@ describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService do
 
         it 'returns error' do
           expect(subject).to receive(:log_error).and_call_original
-          expect { result }.to raise_error(StandardError, 'Could not save prometheus manual configuration')
+          expect(result).to eq(
+            status: :error,
+            message: 'Could not save prometheus manual configuration',
+            last_step: :add_prometheus_manual_configuration
+          )
         end
       end
-    end
-
-    it "tracks successful install" do
-      expect(Gitlab::Tracking).to receive(:event).with("self_monitoring", "project_created")
-
-      result
     end
   end
 end

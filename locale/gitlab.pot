@@ -2567,6 +2567,9 @@ msgstr ""
 msgid "BambooService|You must set up automatic revision labeling and a repository trigger in Bamboo."
 msgstr ""
 
+msgid "Batch operations"
+msgstr ""
+
 msgid "BatchComments|Delete all pending comments"
 msgstr ""
 
@@ -3848,6 +3851,9 @@ msgstr ""
 msgid "ClusterIntegration|Enable Cloud Run on GKE (beta)"
 msgstr ""
 
+msgid "ClusterIntegration|Enable Web Application Firewall"
+msgstr ""
+
 msgid "ClusterIntegration|Enable or disable GitLab's connection to your Kubernetes cluster."
 msgstr ""
 
@@ -4032,6 +4038,9 @@ msgid "ClusterIntegration|Learn more about %{help_link_start_machine_type}machin
 msgstr ""
 
 msgid "ClusterIntegration|Learn more about %{help_link_start}zones%{help_link_end}."
+msgstr ""
+
+msgid "ClusterIntegration|Learn more about %{startLink}ModSecurity%{endLink}"
 msgstr ""
 
 msgid "ClusterIntegration|Learn more about %{startLink}Regions %{externalLinkIcon}%{endLink}."
@@ -13827,9 +13836,6 @@ msgstr ""
 msgid "Project access must be granted explicitly to each user."
 msgstr ""
 
-msgid "Project already created"
-msgstr ""
-
 msgid "Project already deleted"
 msgstr ""
 
@@ -15432,6 +15438,12 @@ msgid "Resume"
 msgstr ""
 
 msgid "Resume replication"
+msgstr ""
+
+msgid "Resync"
+msgstr ""
+
+msgid "Resync all designs"
 msgstr ""
 
 msgid "Retry"
@@ -18330,6 +18342,9 @@ msgid "There was an error saving your notification settings."
 msgstr ""
 
 msgid "There was an error subscribing to this label."
+msgstr ""
+
+msgid "There was an error syncing the Design Repositories."
 msgstr ""
 
 msgid "There was an error trying to validate your query"

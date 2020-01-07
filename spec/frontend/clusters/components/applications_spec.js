@@ -190,6 +190,7 @@ describe('Applications', () => {
                 title: 'Ingress',
                 status: 'installed',
                 externalHostname: 'localhost.localdomain',
+                modsecurity_enabled: false,
               },
               helm: { title: 'Helm Tiller' },
               cert_manager: { title: 'Cert-Manager' },
@@ -473,7 +474,12 @@ describe('Applications', () => {
         vm = mountComponent(Applications, {
           applications: {
             ...APPLICATIONS_MOCK_STATE,
-            ingress: { title: 'Ingress', status: 'installed', externalIp: '1.1.1.1' },
+            ingress: {
+              title: 'Ingress',
+              status: 'installed',
+              externalIp: '1.1.1.1',
+              modsecurity_enabled: false,
+            },
             elastic_stack: { title: 'Elastic Stack', status: 'installed', kibana_hostname: '' },
           },
         });

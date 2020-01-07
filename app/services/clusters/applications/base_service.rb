@@ -31,6 +31,10 @@ module Clusters
             application.stack = params[:stack]
           end
 
+          if application.has_attribute?(:modsecurity_enabled)
+            application.modsecurity_enabled = params[:modsecurity_enabled] || false
+          end
+
           if application.respond_to?(:oauth_application)
             application.oauth_application = create_oauth_application(application, request)
           end

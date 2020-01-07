@@ -86,6 +86,7 @@ describe('Clusters Store', () => {
             uninstallSuccessful: false,
             uninstallFailed: false,
             validationError: null,
+            modsecurity_enabled: false,
           },
           runner: {
             title: 'GitLab Runner',
