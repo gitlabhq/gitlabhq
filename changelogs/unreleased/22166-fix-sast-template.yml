@@ -1,0 +1,5 @@
+---
+title: Check both SAST_DISABLE and SAST_DISABLE_DIND when executing SAST job template
+merge_request: 22166
+author:
+type: fixed

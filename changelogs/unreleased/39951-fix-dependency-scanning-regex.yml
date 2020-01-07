@@ -1,0 +1,5 @@
+---
+title: Fix regex matching for gemnasium dependency scanning jobs
+merge_request: 22025
+author: Maximilian Stendler
+type: fix

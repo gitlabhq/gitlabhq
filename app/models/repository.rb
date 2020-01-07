@@ -1127,8 +1127,8 @@ class Repository
 
   private
 
-  # TODO Generice finder, later split this on finders by Ref or Oid
-  # https://gitlab.com/gitlab-org/gitlab-foss/issues/39239
+  # TODO Genericize finder, later split this on finders by Ref or Oid
+  # https://gitlab.com/gitlab-org/gitlab/issues/19877
   def find_commit(oid_or_ref)
     commit = if oid_or_ref.is_a?(Gitlab::Git::Commit)
                oid_or_ref

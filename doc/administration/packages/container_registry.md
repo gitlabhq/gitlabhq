@@ -632,6 +632,29 @@ mounting the docker-daemon and setting `privileged = false` in the Runner's
 
 Additional information about this: [issue 18239](https://gitlab.com/gitlab-org/gitlab-foss/issues/18239).
 
+### `unauthorized: authentication required` when pushing large images
+
+Example error:
+
+```shell
+docker push gitlab.example.com/myproject/docs:latest
+The push refers to a repository [gitlab.example.com/myproject/docs]
+630816f32edb: Preparing
+530d5553aec8: Preparing
+...
+4b0bab9ff599: Waiting
+d1c800db26c7: Waiting
+42755cf4ee95: Waiting
+unauthorized: authentication required
+```
+
+GitLab has a default token expiration of 5 minutes for the registry. When pushing
+larger images, or images that take longer than 5 minutes to push, users may
+encounter this error.
+
+Administrators can increase the token duration in **Admin area > Settings >
+Container Registry > Authorization token duration (minutes)**.
+
 ### AWS S3 with the GitLab registry error when pushing large images
 
 When using AWS S3 with the GitLab registry, an error may occur when pushing

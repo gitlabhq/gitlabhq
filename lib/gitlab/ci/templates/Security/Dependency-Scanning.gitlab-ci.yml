@@ -88,7 +88,7 @@ gemnasium-dependency_scanning:
   only:
     variables:
       - $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
-        $DS_DEFAULT_ANALYZERS =~ /gemnasium/ &&
+        $DS_DEFAULT_ANALYZERS =~ /gemnasium([^-]|$)/ &&
         $CI_PROJECT_REPOSITORY_LANGUAGES =~ /ruby|javascript|php/
 
 gemnasium-maven-dependency_scanning:

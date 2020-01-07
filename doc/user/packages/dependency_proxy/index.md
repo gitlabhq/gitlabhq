@@ -12,7 +12,7 @@ receiving a request and returning the upstream image from a registry, acting
 as a pull-through cache.
 
 The dependency proxy is available in the group level. To access it, navigate to
-a group's **Overview > Dependency Proxy**.
+a group's **Packages > Dependency Proxy**.
 
 ![Dependency Proxy group page](img/group_dependency_proxy.png)
 
@@ -33,7 +33,7 @@ The following dependency proxies are supported.
 With the Docker dependency proxy, you can use GitLab as a source for a Docker image.
 To get a Docker image into the dependency proxy:
 
-1. Find the proxy URL on your group's page under **Overview > Dependency Proxy**,
+1. Find the proxy URL on your group's page under **Packages > Dependency Proxy**,
    for example `gitlab.com/groupname/dependency_proxy/containers`.
 1. Trigger GitLab to pull the Docker image you want (e.g., `alpine:latest` or
    `linuxserver/nextcloud:latest`) and store it in the proxy storage by using

@@ -36,6 +36,9 @@ it yourself or by using the
 service. Running Elasticsearch on the same server as GitLab is not recommended
 and it will likely cause performance degradation on the GitLab installation.
 
+NOTE: **Note:**
+**For a single node Elasticsearch cluster the functional cluster health status will be yellow** (will never be green) because the primary shard is allocated but replicas can not be as there is no other node to which Elasticsearch can assign a replica.
+
 Once the data is added to the database or repository and [Elasticsearch is
 enabled in the admin area](#enabling-elasticsearch) the search index will be
 updated automatically.
@@ -591,6 +594,23 @@ Here are some common pitfalls and how to overcome them:
   AWS has [fixed limits](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-limits.html)
   for this setting ("Maximum Size of HTTP Request Payloads"), based on the size of
   the underlying instance.
+  
+- **My single node Elasticsearch cluster status never goes from `yellow` to `green` even though everything seems to be running properly**
+
+  **For a single node Elasticsearch cluster the functional cluster health status will be yellow** (will never be green) because the primary shard is allocated but replicas can not be as there is no other node to which Elasticsearch can assign a replica. This also applies if you are using using the
+[Amazon Elasticsearch](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-handling-errors.html#aes-handling-errors-yellow-cluster-status) service.
+
+  CAUTION: **Warning**: Setting the number of replicas to `0` is not something that we recommend (this is not allowed in the GitLab Elasticsearch Integration menu). If you are planning to add more Elasticsearch nodes (for a total of more than 1 Elasticsearch) the number of replicas will need to be set to an integer value larger than `0`. Failure to do so will result in lack of redundancy (losing one node will corupt the index).
+
+  If you have a **hard requirement to have a green status for your single node Elasticsearch cluster**, please make sure you understand the risks outlined in the previous paragraph and then simply run the following query to set the number of replicas to `0`(the cluster will no longer try to create any shard replicas):
+
+  ```bash
+  curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' --data '{
+  "index" : {
+     "number_of_replicas" : 0
+    }
+  }'
+  ```
 
 ### Reverting to basic search
 

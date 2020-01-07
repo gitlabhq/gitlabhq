@@ -274,6 +274,12 @@ time frame, let the author know as soon as possible and try to help them find
 another reviewer or maintainer who will be able to, so that they can be unblocked
 and get on with their work quickly.
 
+If you think you are at capacity and are unable to accept any more reviews until
+some have been completed, communicate this through your GitLab status by setting
+the `:red_circle:` emoji and mentioning that you are at capacity in the status
+text. This will guide contributors to pick a different reviewer, helping us to
+meet the SLO.
+
 Of course, if you are out of office and have
 [communicated](https://about.gitlab.com/handbook/paid-time-off/#communicating-your-time-off)
 this through your GitLab.com Status, authors are expected to realize this and
