@@ -1,4 +1,4 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import { GlLink } from '@gitlab/ui';
 import { truncateSha } from '~/lib/utils/text_utility';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -10,10 +10,7 @@ describe('Evidence Block', () => {
   let wrapper;
 
   const factory = (options = {}) => {
-    const localVue = createLocalVue();
-
-    wrapper = mount(localVue.extend(EvidenceBlock), {
-      localVue,
+    wrapper = mount(EvidenceBlock, {
       ...options,
     });
   };

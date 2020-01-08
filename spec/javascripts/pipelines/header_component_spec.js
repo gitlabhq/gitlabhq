@@ -34,6 +34,7 @@ describe('Pipeline details header', () => {
           avatar_url: 'link',
         },
         retry_path: 'path',
+        delete_path: 'path',
       },
       isLoading: false,
     };
@@ -55,12 +56,22 @@ describe('Pipeline details header', () => {
   });
 
   describe('action buttons', () => {
-    it('should call postAction when button action is clicked', () => {
+    it('should call postAction when retry button action is clicked', done => {
       eventHub.$on('headerPostAction', action => {
         expect(action.path).toEqual('path');
+        done();
       });
 
-      vm.$el.querySelector('button').click();
+      vm.$el.querySelector('.js-retry-button').click();
+    });
+
+    it('should fire modal event when delete button action is clicked', done => {
+      vm.$root.$on('bv::modal::show', action => {
+        expect(action.componentId).toEqual('pipeline-delete-modal');
+        done();
+      });
+
+      vm.$el.querySelector('.js-btn-delete-pipeline').click();
     });
   });
 });

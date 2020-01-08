@@ -1,0 +1,5 @@
+---
+title: Fix Delete Selected button being active after uploading designs after a deletion
+merge_request: 22516
+author:
+type: fixed

@@ -54,10 +54,6 @@ module Ci
     def to_partial_path
       'projects/generic_commit_statuses/generic_commit_status'
     end
-
-    def yaml_for_downstream
-      nil
-    end
   end
 end
 

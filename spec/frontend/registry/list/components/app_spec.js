@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import { mount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
 import registry from '~/registry/list/components/app.vue';
@@ -35,12 +34,8 @@ describe('Registry List', () => {
   };
 
   beforeEach(() => {
-    // This is needed due to console.error called by vue to emit a warning that stop the tests.
-    // See https://github.com/vuejs/vue-test-utils/issues/532.
-    Vue.config.silent = true;
     wrapper = mount(registry, {
       attachToDocument: true,
-      sync: false,
       propsData,
       computed: {
         repos() {
@@ -52,7 +47,6 @@ describe('Registry List', () => {
   });
 
   afterEach(() => {
-    Vue.config.silent = false;
     wrapper.destroy();
   });
 
@@ -138,7 +132,7 @@ describe('Registry List', () => {
       wrapper = mount(registry, {
         propsData: {
           ...propsData,
-          endpoint: null,
+          endpoint: '',
           isGroupPage,
         },
         methods,
@@ -146,7 +140,7 @@ describe('Registry List', () => {
     });
 
     it('call the right vuex setters', () => {
-      expect(methods.setMainEndpoint).toHaveBeenLastCalledWith(null);
+      expect(methods.setMainEndpoint).toHaveBeenLastCalledWith('');
       expect(methods.setIsDeleteDisabled).toHaveBeenLastCalledWith(true);
     });
 

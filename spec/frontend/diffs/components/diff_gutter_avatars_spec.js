@@ -1,8 +1,7 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import DiffGutterAvatars from '~/diffs/components/diff_gutter_avatars.vue';
 import discussionsMockData from '../mock_data/diff_discussions';
 
-const localVue = createLocalVue();
 const getDiscussionsMockData = () => [Object.assign({}, discussionsMockData)];
 
 describe('DiffGutterAvatars', () => {
@@ -14,7 +13,6 @@ describe('DiffGutterAvatars', () => {
 
   const createComponent = (props = {}) => {
     wrapper = shallowMount(DiffGutterAvatars, {
-      localVue,
       propsData: {
         ...props,
       },

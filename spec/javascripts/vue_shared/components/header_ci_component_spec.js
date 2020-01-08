@@ -31,15 +31,7 @@ describe('Header CI Component', () => {
         {
           label: 'Retry',
           path: 'path',
-          type: 'button',
           cssClass: 'btn',
-          isLoading: false,
-        },
-        {
-          label: 'Go',
-          path: 'path',
-          type: 'link',
-          cssClass: 'link',
           isLoading: false,
         },
       ],
@@ -77,11 +69,10 @@ describe('Header CI Component', () => {
     });
 
     it('should render provided actions', () => {
-      expect(vm.$el.querySelector('.btn').tagName).toEqual('BUTTON');
-      expect(vm.$el.querySelector('.btn').textContent.trim()).toEqual(props.actions[0].label);
-      expect(vm.$el.querySelector('.link').tagName).toEqual('A');
-      expect(vm.$el.querySelector('.link').textContent.trim()).toEqual(props.actions[1].label);
-      expect(vm.$el.querySelector('.link').getAttribute('href')).toEqual(props.actions[0].path);
+      const btn = vm.$el.querySelector('.btn');
+
+      expect(btn.tagName).toEqual('BUTTON');
+      expect(btn.textContent.trim()).toEqual(props.actions[0].label);
     });
 
     it('should show loading icon', done => {

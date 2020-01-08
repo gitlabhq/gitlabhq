@@ -1,20 +1,18 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import environmentRowComponent from '~/serverless/components/environment_row.vue';
 
 import { mockServerlessFunctions, mockServerlessFunctionsDiffEnv } from '../mock_data';
 import { translate } from '~/serverless/utils';
 
-const createComponent = (localVue, env, envName) =>
-  shallowMount(environmentRowComponent, { localVue, propsData: { env, envName }, sync: false }).vm;
+const createComponent = (env, envName) =>
+  shallowMount(environmentRowComponent, { propsData: { env, envName }, sync: false }).vm;
 
 describe('environment row component', () => {
   describe('default global cluster case', () => {
-    let localVue;
     let vm;
 
     beforeEach(() => {
-      localVue = createLocalVue();
-      vm = createComponent(localVue, translate(mockServerlessFunctions.functions)['*'], '*');
+      vm = createComponent(translate(mockServerlessFunctions.functions)['*'], '*');
     });
 
     afterEach(() => vm.$destroy());
@@ -44,15 +42,9 @@ describe('environment row component', () => {
 
   describe('default named cluster case', () => {
     let vm;
-    let localVue;
 
     beforeEach(() => {
-      localVue = createLocalVue();
-      vm = createComponent(
-        localVue,
-        translate(mockServerlessFunctionsDiffEnv.functions).test,
-        'test',
-      );
+      vm = createComponent(translate(mockServerlessFunctionsDiffEnv.functions).test, 'test');
     });
 
     afterEach(() => vm.$destroy());

@@ -1,5 +1,0 @@
----
-title: Allow an upstream pipeline to create a downstream pipeline in the same project
-merge_request: 20930
-author:
-type: added

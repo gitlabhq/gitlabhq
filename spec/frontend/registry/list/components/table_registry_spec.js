@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import Vuex from 'vuex';
 import { mount, createLocalVue } from '@vue/test-utils';
 import createFlash from '~/flash';
@@ -29,13 +28,9 @@ describe('table registry', () => {
   const bulkDeletePath = 'path';
 
   const mountWithStore = config =>
-    mount(tableRegistry, { ...config, store, localVue, attachToDocument: true, sync: false });
+    mount(tableRegistry, { ...config, store, localVue, attachToDocument: true });
 
   beforeEach(() => {
-    // This is needed due to  console.error called by vue to emit a warning that stop the tests
-    // see  https://github.com/vuejs/vue-test-utils/issues/532
-    Vue.config.silent = true;
-
     store = new Vuex.Store({
       state: {
         isDeleteDisabled: false,
@@ -52,7 +47,6 @@ describe('table registry', () => {
   });
 
   afterEach(() => {
-    Vue.config.silent = false;
     wrapper.destroy();
   });
 
@@ -82,53 +76,53 @@ describe('table registry', () => {
   });
 
   describe('multi select', () => {
-    it('selecting a row should enable delete button', done => {
+    it('selecting a row should enable delete button', () => {
       const deleteBtn = findDeleteButton();
       const checkboxes = findSelectCheckboxes();
 
       expect(deleteBtn.attributes('disabled')).toBe('disabled');
 
       checkboxes.at(0).trigger('click');
-      Vue.nextTick(() => {
+      return wrapper.vm.$nextTick().then(() => {
         expect(deleteBtn.attributes('disabled')).toEqual(undefined);
-        done();
       });
     });
 
-    it('selecting all checkbox should select all rows and enable delete button', done => {
+    it('selecting all checkbox should select all rows and enable delete button', () => {
       const selectAll = findSelectAllCheckbox();
       selectAll.trigger('click');
 
-      Vue.nextTick(() => {
+      return wrapper.vm.$nextTick().then(() => {
         const checkboxes = findSelectCheckboxes();
         const checked = checkboxes.filter(w => w.element.checked);
         expect(checked.length).toBe(checkboxes.length);
-        done();
       });
     });
 
-    it('deselecting select all checkbox should deselect all rows and disable delete button', done => {
+    it('deselecting select all checkbox should deselect all rows and disable delete button', () => {
       const checkboxes = findSelectCheckboxes();
       const selectAll = findSelectAllCheckbox();
       selectAll.trigger('click');
       selectAll.trigger('click');
 
-      Vue.nextTick(() => {
+      return wrapper.vm.$nextTick().then(() => {
         const checked = checkboxes.filter(w => !w.element.checked);
         expect(checked.length).toBe(checkboxes.length);
-        done();
       });
     });
 
-    it('should delete multiple items when multiple items are selected', done => {
+    it('should delete multiple items when multiple items are selected', () => {
       const multiDeleteItems = jest.fn().mockResolvedValue();
       wrapper.setMethods({ multiDeleteItems });
 
-      Vue.nextTick(() => {
-        const selectAll = findSelectAllCheckbox();
-        selectAll.trigger('click');
-
-        Vue.nextTick(() => {
+      return wrapper.vm
+        .$nextTick()
+        .then(() => {
+          const selectAll = findSelectAllCheckbox();
+          selectAll.trigger('click');
+          return wrapper.vm.$nextTick();
+        })
+        .then(() => {
           const deleteBtn = findDeleteButton();
           expect(wrapper.vm.selectedItems).toEqual([0, 1]);
           expect(deleteBtn.attributes('disabled')).toEqual(undefined);
@@ -140,9 +134,7 @@ describe('table registry', () => {
             path: bulkDeletePath,
             items: [firstImage.tag, secondImage.tag],
           });
-          done();
         });
-      });
     });
 
     it('should show an error message if bulkDeletePath is not set', () => {

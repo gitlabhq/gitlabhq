@@ -1,8 +1,6 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import { GlLink } from '@gitlab/ui';
 import PinnedLinks from '~/issue_show/components/pinned_links.vue';
-
-const localVue = createLocalVue();
 
 const plainZoomUrl = 'https://zoom.us/j/123456789';
 
@@ -19,8 +17,7 @@ describe('PinnedLinks', () => {
   };
 
   const createComponent = props => {
-    wrapper = shallowMount(localVue.extend(PinnedLinks), {
-      localVue,
+    wrapper = shallowMount(PinnedLinks, {
       sync: false,
       propsData: {
         zoomMeetingUrl: null,

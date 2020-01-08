@@ -1,9 +1,8 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import ProjectFormGroup from '~/confidential_merge_request/components/project_form_group.vue';
 
-const localVue = createLocalVue();
 const mockData = [
   {
     id: 1,
@@ -30,7 +29,6 @@ function factory(projects = mockData) {
   mock.onGet(/api\/(.*)\/projects\/gitlab-org%2Fgitlab-ce\/forks/).reply(200, projects);
 
   vm = shallowMount(ProjectFormGroup, {
-    localVue,
     propsData: {
       namespacePath: 'gitlab-org',
       projectPath: 'gitlab-org/gitlab-ce',
@@ -49,7 +47,7 @@ describe('Confidential merge request project form group component', () => {
   it('renders fork dropdown', () => {
     factory();
 
-    return localVue.nextTick(() => {
+    return vm.vm.$nextTick(() => {
       expect(vm.element).toMatchSnapshot();
     });
   });
@@ -57,7 +55,7 @@ describe('Confidential merge request project form group component', () => {
   it('sets selected project as first fork', () => {
     factory();
 
-    return localVue.nextTick(() => {
+    return vm.vm.$nextTick(() => {
       expect(vm.vm.selectedProject).toEqual({
         id: 1,
         name: 'root / gitlab-ce',
@@ -70,7 +68,7 @@ describe('Confidential merge request project form group component', () => {
   it('renders empty state when response is empty', () => {
     factory([]);
 
-    return localVue.nextTick(() => {
+    return vm.vm.$nextTick(() => {
       expect(vm.element).toMatchSnapshot();
     });
   });

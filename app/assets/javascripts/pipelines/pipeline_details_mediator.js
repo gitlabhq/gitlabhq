@@ -35,7 +35,7 @@ export default class pipelinesMediator {
       if (!Visibility.hidden()) {
         this.poll.restart();
       } else {
-        this.poll.stop();
+        this.stopPipelinePoll();
       }
     });
   }
@@ -51,7 +51,7 @@ export default class pipelinesMediator {
   }
 
   refreshPipeline() {
-    this.poll.stop();
+    this.stopPipelinePoll();
 
     return this.service
       .getPipeline()
@@ -62,6 +62,10 @@ export default class pipelinesMediator {
           this.store.state.expandedPipelines ? this.getExpandedParameters() : undefined,
         ),
       );
+  }
+
+  stopPipelinePoll() {
+    this.poll.stop();
   }
 
   /**

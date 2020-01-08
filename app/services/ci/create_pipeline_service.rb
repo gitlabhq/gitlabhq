@@ -23,7 +23,7 @@ module Ci
                 Gitlab::Ci::Pipeline::Chain::Limit::JobActivity].freeze
 
     # rubocop: disable Metrics/ParameterLists
-    def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, merge_request: nil, external_pull_request: nil, bridge: nil, **options, &block)
+    def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, merge_request: nil, external_pull_request: nil, **options, &block)
       @pipeline = Ci::Pipeline.new
 
       command = Gitlab::Ci::Pipeline::Chain::Command.new(
@@ -46,7 +46,6 @@ module Ci
         current_user: current_user,
         push_options: params[:push_options] || {},
         chat_data: params[:chat_data],
-        bridge: bridge,
         **extra_options(options))
 
       sequence = Gitlab::Ci::Pipeline::Chain::Sequence
@@ -105,14 +104,14 @@ module Ci
       if Feature.enabled?(:ci_support_interruptible_pipelines, project, default_enabled: true)
         project.ci_pipelines
           .where(ref: pipeline.ref)
-          .where.not(id: pipeline.same_family_pipeline_ids)
+          .where.not(id: pipeline.id)
           .where.not(sha: project.commit(pipeline.ref).try(:id))
           .alive_or_scheduled
           .with_only_interruptible_builds
       else
         project.ci_pipelines
           .where(ref: pipeline.ref)
-          .where.not(id: pipeline.same_family_pipeline_ids)
+          .where.not(id: pipeline.id)
           .where.not(sha: project.commit(pipeline.ref).try(:id))
           .created_or_pending
       end

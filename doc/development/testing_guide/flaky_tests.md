@@ -98,6 +98,10 @@ This was originally implemented in: <https://gitlab.com/gitlab-org/gitlab-foss/m
 
 - Memory is through the roof! (TL;DR: Load images but block images requests!): <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/12003>
 
+#### Capybara expectation times out
+
+- [Test imports a project (via Sidekiq) that is growing over time, leading to timeouts when the import takes longer than 60 seconds](https://gitlab.com/gitlab-org/gitlab/merge_requests/22599)
+
 ## Resources
 
 - [Flaky Tests: Are You Sure You Want to Rerun Them?](http://semaphoreci.com/blog/2017/04/20/flaky-tests.html)

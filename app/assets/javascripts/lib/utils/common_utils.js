@@ -484,6 +484,16 @@ export const historyPushState = newUrl => {
 };
 
 /**
+ * Based on the current location and the string parameters provided
+ * overwrites the current entry in the history without reloading the page.
+ *
+ * @param {String} param
+ */
+export const historyReplaceState = newUrl => {
+  window.history.replaceState({}, document.title, newUrl);
+};
+
+/**
  * Returns true for a String value of "true" and false otherwise.
  * This is the opposite of Boolean(...).toString().
  * `parseBoolean` is idempotent.

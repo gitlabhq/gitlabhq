@@ -15,42 +15,6 @@ describe Gitlab::Ci::Pipeline::Chain::Config::Content do
         stub_feature_flags(ci_root_config_content: false)
       end
 
-      context 'when bridge job is passed in as parameter' do
-        let(:ci_config_path) { nil }
-        let(:bridge) { create(:ci_bridge) }
-
-        before do
-          command.bridge = bridge
-        end
-
-        context 'when bridge job has downstream yaml' do
-          before do
-            allow(bridge).to receive(:yaml_for_downstream).and_return('the-yaml')
-          end
-
-          it 'returns the content already available in command' do
-            subject.perform!
-
-            expect(pipeline.config_source).to eq 'bridge_source'
-            expect(command.config_content).to eq 'the-yaml'
-          end
-        end
-
-        context 'when bridge job does not have downstream yaml' do
-          before do
-            allow(bridge).to receive(:yaml_for_downstream).and_return(nil)
-          end
-
-          it 'returns the next available source' do
-            subject.perform!
-
-            expect(pipeline.config_source).to eq 'auto_devops_source'
-            template = Gitlab::Template::GitlabCiYmlTemplate.find('Beta/Auto-DevOps')
-            expect(command.config_content).to eq(template.content)
-          end
-        end
-      end
-
       context 'when config is defined in a custom path in the repository' do
         let(:ci_config_path) { 'path/to/config.yml' }
 
@@ -168,23 +132,6 @@ describe Gitlab::Ci::Pipeline::Chain::Config::Content do
           expect(command.config_content).to be_nil
           expect(pipeline.errors.full_messages).to include('Missing CI config file')
         end
-      end
-    end
-
-    context 'when bridge job is passed in as parameter' do
-      let(:ci_config_path) { nil }
-      let(:bridge) { create(:ci_bridge) }
-
-      before do
-        command.bridge = bridge
-        allow(bridge).to receive(:yaml_for_downstream).and_return('the-yaml')
-      end
-
-      it 'returns the content already available in command' do
-        subject.perform!
-
-        expect(pipeline.config_source).to eq 'bridge_source'
-        expect(command.config_content).to eq 'the-yaml'
       end
     end
 

@@ -1,8 +1,6 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import { GlColumnChart } from '@gitlab/ui/dist/charts';
 import ColumnChart from '~/monitoring/components/charts/column.vue';
-
-const localVue = createLocalVue();
 
 jest.mock('~/lib/utils/icon_utils', () => ({
   getSvgIconPathContent: jest.fn().mockResolvedValue('mockSvgPathContent'),
@@ -12,7 +10,7 @@ describe('Column component', () => {
   let columnChart;
 
   beforeEach(() => {
-    columnChart = shallowMount(localVue.extend(ColumnChart), {
+    columnChart = shallowMount(ColumnChart, {
       propsData: {
         graphData: {
           metrics: [
@@ -35,7 +33,6 @@ describe('Column component', () => {
         containerWidth: 100,
       },
       sync: false,
-      localVue,
     });
   });
 

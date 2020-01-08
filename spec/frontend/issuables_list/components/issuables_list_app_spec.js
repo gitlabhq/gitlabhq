@@ -1,6 +1,6 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import { GlEmptyState, GlPagination, GlSkeletonLoading } from '@gitlab/ui';
 import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'helpers/test_constants';
@@ -17,8 +17,6 @@ const TEST_LOCATION = `${TEST_HOST}/issues`;
 const TEST_ENDPOINT = '/issues';
 const TEST_CREATE_ISSUES_PATH = '/createIssue';
 const TEST_EMPTY_SVG_PATH = '/emptySvg';
-
-const localVue = createLocalVue();
 
 const MOCK_ISSUES = Array(PAGE_SIZE_MANUAL)
   .fill(0)
@@ -40,14 +38,13 @@ describe('Issuables list component', () => {
   };
 
   const factory = (props = { sortKey: 'priority' }) => {
-    wrapper = shallowMount(localVue.extend(IssuablesListApp), {
+    wrapper = shallowMount(IssuablesListApp, {
       propsData: {
         endpoint: TEST_ENDPOINT,
         createIssuePath: TEST_CREATE_ISSUES_PATH,
         emptySvgPath: TEST_EMPTY_SVG_PATH,
         ...props,
       },
-      localVue,
       sync: false,
       attachToDocument: true,
     });

@@ -1,7 +1,6 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import EditButton from '~/diffs/components/edit_button.vue';
 
-const localVue = createLocalVue();
 const editPath = 'test-path';
 
 describe('EditButton', () => {
@@ -9,7 +8,6 @@ describe('EditButton', () => {
 
   const createComponent = (props = {}) => {
     wrapper = shallowMount(EditButton, {
-      localVue,
       propsData: { ...props },
       sync: false,
       attachToDocument: true,

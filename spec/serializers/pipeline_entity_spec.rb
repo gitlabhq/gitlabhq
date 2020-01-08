@@ -123,6 +123,26 @@ describe PipelineEntity do
       end
     end
 
+    context 'delete path' do
+      context 'user has ability to delete pipeline' do
+        let(:project) { create(:project, namespace: user.namespace) }
+        let(:pipeline) { create(:ci_pipeline, project: project) }
+
+        it 'contains delete path' do
+          expect(subject[:delete_path]).to be_present
+        end
+      end
+
+      context 'user does not have ability to delete pipeline' do
+        let(:project) { create(:project) }
+        let(:pipeline) { create(:ci_pipeline, project: project) }
+
+        it 'does not contain delete path' do
+          expect(subject).not_to have_key(:delete_path)
+        end
+      end
+    end
+
     context 'when pipeline ref is empty' do
       let(:pipeline) { create(:ci_empty_pipeline) }
 

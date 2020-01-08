@@ -59,7 +59,8 @@ describe 'Pipeline', :js do
   describe 'GET /:project/pipelines/:id' do
     include_context 'pipeline builds'
 
-    let(:project) { create(:project, :repository) }
+    let(:group) { create(:group) }
+    let(:project) { create(:project, :repository, group: group) }
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id, user: user) }
 
     subject(:visit_pipeline) { visit project_pipeline_path(project, pipeline) }
@@ -325,6 +326,32 @@ describe 'Pipeline', :js do
 
         it 'does not show a "Cancel running" button', :sidekiq_might_not_need_inline do
           expect(page).not_to have_content('Cancel running')
+        end
+      end
+    end
+
+    context 'deleting pipeline' do
+      context 'when user can not delete' do
+        before do
+          visit_pipeline
+        end
+
+        it { expect(page).not_to have_button('Delete') }
+      end
+
+      context 'when deleting' do
+        before do
+          group.add_owner(user)
+
+          visit_pipeline
+
+          click_button 'Delete'
+          click_button 'Delete pipeline'
+        end
+
+        it 'redirects to pipeline overview page', :sidekiq_might_not_need_inline do
+          expect(page).to have_content('The pipeline has been deleted')
+          expect(current_path).to eq(project_pipelines_path(project))
         end
       end
     end

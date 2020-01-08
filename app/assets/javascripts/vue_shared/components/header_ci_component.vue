@@ -117,28 +117,7 @@ export default {
 
     <section v-if="actions.length" class="header-action-buttons">
       <template v-for="(action, i) in actions">
-        <gl-link
-          v-if="action.type === 'link'"
-          :key="i"
-          :href="action.path"
-          :class="action.cssClass"
-        >
-          {{ action.label }}
-        </gl-link>
-
-        <gl-link
-          v-else-if="action.type === 'ujs-link'"
-          :key="i"
-          :href="action.path"
-          :class="action.cssClass"
-          data-method="post"
-          rel="nofollow"
-        >
-          {{ action.label }}
-        </gl-link>
-
         <loading-button
-          v-else-if="action.type === 'button'"
           :key="i"
           :loading="action.isLoading"
           :disabled="action.isLoading"

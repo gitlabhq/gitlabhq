@@ -1,7 +1,6 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import HiddenFilesWarning from '~/diffs/components/hidden_files_warning.vue';
 
-const localVue = createLocalVue();
 const propsData = {
   total: '10',
   visible: 5,
@@ -14,7 +13,6 @@ describe('HiddenFilesWarning', () => {
 
   const createComponent = () => {
     wrapper = shallowMount(HiddenFilesWarning, {
-      localVue,
       sync: false,
       propsData,
     });
