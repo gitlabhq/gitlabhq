@@ -463,6 +463,7 @@ project:
 - import_failures
 - container_expiration_policy
 - resource_groups
+- autoclose_referenced_issues
 award_emoji:
 - awardable
 - user

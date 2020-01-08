@@ -50,6 +50,12 @@ module Gitlab
         .gsub(/(\A-+|-+\z)/, '')
     end
 
+    # Wraps ActiveSupport's Array#to_sentence to convert the given array to a
+    # comma-separated sentence joined with localized 'or' Strings instead of 'and'.
+    def to_exclusive_sentence(array)
+      array.to_sentence(two_words_connector: _(' or '), last_word_connector: _(', or '))
+    end
+
     # Converts newlines into HTML line break elements
     def nlbr(str)
       ActionView::Base.full_sanitizer.sanitize(+str, tags: []).gsub(/\r?\n/, '<br>').html_safe

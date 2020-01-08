@@ -8,6 +8,10 @@ describe ChatNotificationWorker do
     create(:ci_build, pipeline: create(:ci_pipeline, source: :chat))
   end
 
+  it 'instructs sidekiq not to retry on failure' do
+    expect(described_class.get_sidekiq_options['retry']).to eq(false)
+  end
+
   describe '#perform' do
     it 'does nothing when the build no longer exists' do
       expect(worker).not_to receive(:send_response)
@@ -23,16 +27,31 @@ describe ChatNotificationWorker do
       worker.perform(chat_build.id)
     end
 
-    it 'reschedules the job if the trace sections could not be found' do
-      expect(worker)
-        .to receive(:send_response)
-        .and_raise(Gitlab::Chat::Output::MissingBuildSectionError)
+    context 'when the trace sections could not be found' do
+      it 'reschedules the job' do
+        expect(worker)
+          .to receive(:send_response)
+          .and_raise(Gitlab::Chat::Output::MissingBuildSectionError)
 
-      expect(described_class)
-        .to receive(:perform_in)
-        .with(described_class::RESCHEDULE_INTERVAL, chat_build.id)
+        expect(described_class)
+          .to receive(:perform_in)
+          .with(described_class::RESCHEDULE_INTERVAL, chat_build.id, 1)
 
-      worker.perform(chat_build.id)
+        worker.perform(chat_build.id)
+      end
+
+      it "raises an error after #{described_class::RESCHEDULE_TIMEOUT} seconds of retrying" do
+        allow(described_class).to receive(:new).and_return(worker)
+        allow(worker).to receive(:send_response).and_raise(Gitlab::Chat::Output::MissingBuildSectionError)
+
+        worker.perform(chat_build.id)
+
+        expect { described_class.drain }.to raise_error(described_class::TimeoutExceeded)
+
+        max_reschedules = described_class::RESCHEDULE_TIMEOUT / described_class::RESCHEDULE_INTERVAL
+
+        expect(worker).to have_received(:send_response).exactly(max_reschedules + 1).times
+      end
     end
   end
 

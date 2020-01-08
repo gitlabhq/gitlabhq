@@ -1,0 +1,5 @@
+---
+title: Limit the amount of time ChatNotificationWorker waits for the build trace
+merge_request: 22132
+author:
+type: fixed

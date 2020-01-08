@@ -635,6 +635,7 @@ describe API::Projects do
         wiki_enabled: false,
         resolve_outdated_diff_discussions: false,
         remove_source_branch_after_merge: true,
+        autoclose_referenced_issues: true,
         only_allow_merge_if_pipeline_succeeds: false,
         request_access_enabled: true,
         only_allow_merge_if_all_discussions_are_resolved: false,
@@ -805,6 +806,22 @@ describe API::Projects do
       post api('/projects', user), params: project
 
       expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to be_truthy
+    end
+
+    it 'sets a project as enabling auto close referenced issues' do
+      project = attributes_for(:project, autoclose_referenced_issues: true)
+
+      post api('/projects', user), params: project
+
+      expect(json_response['autoclose_referenced_issues']).to be_truthy
+    end
+
+    it 'sets a project as disabling auto close referenced issues' do
+      project = attributes_for(:project, autoclose_referenced_issues: false)
+
+      post api('/projects', user), params: project
+
+      expect(json_response['autoclose_referenced_issues']).to be_falsey
     end
 
     it 'sets the merge method of a project to rebase merge' do

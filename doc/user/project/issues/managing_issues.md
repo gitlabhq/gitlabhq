@@ -211,6 +211,19 @@ as well as `#22` and `#23` in group/otherproject. `#17` won't be closed as it do
 not match the pattern. It works with multi-line commit messages as well as one-liners
 when used from the command line with `git commit -m`.
 
+#### Disabling automatic issue closing
+
+The automatic issue closing feature can be disabled on a per-project basis
+within the [project's repository settings](../settings/index.md). Referenced
+issues will still be displayed as such but won't be closed automatically.
+
+![disable issue auto close - settings](img/disable_issue_auto_close.png)
+
+This only applies to issues affected by new merge requests or commits. Already
+closed issues remain as-is. Disabling automatic issue closing only affects merge
+requests *within* the project and won't prevent other projects from closing it
+via cross-project issues.
+
 #### Customizing the issue closing pattern **(CORE ONLY)**
 
 In order to change the default issue closing pattern, GitLab administrators must edit the

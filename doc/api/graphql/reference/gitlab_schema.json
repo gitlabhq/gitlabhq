@@ -310,7 +310,21 @@
           "fields": [
             {
               "name": "archived",
-              "description": "Archived status of the project",
+              "description": "Indicates the archived status of the project",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "autocloseReferencedIssues",
+              "description": "Indicates if issues referenced by merge requests and commits within the default branch are closed automatically",
               "args": [
 
               ],
@@ -1600,7 +1614,7 @@
           "fields": [
             {
               "name": "adminOperations",
-              "description": "Whether or not a user can perform `admin_operations` on this resource",
+              "description": "Indicates the user can perform `admin_operations` on this resource",
               "args": [
 
               ],
@@ -1618,7 +1632,7 @@
             },
             {
               "name": "adminProject",
-              "description": "Whether or not a user can perform `admin_project` on this resource",
+              "description": "Indicates the user can perform `admin_project` on this resource",
               "args": [
 
               ],
@@ -1636,7 +1650,7 @@
             },
             {
               "name": "adminRemoteMirror",
-              "description": "Whether or not a user can perform `admin_remote_mirror` on this resource",
+              "description": "Indicates the user can perform `admin_remote_mirror` on this resource",
               "args": [
 
               ],
@@ -1654,7 +1668,7 @@
             },
             {
               "name": "adminWiki",
-              "description": "Whether or not a user can perform `admin_wiki` on this resource",
+              "description": "Indicates the user can perform `admin_wiki` on this resource",
               "args": [
 
               ],
@@ -1672,7 +1686,7 @@
             },
             {
               "name": "archiveProject",
-              "description": "Whether or not a user can perform `archive_project` on this resource",
+              "description": "Indicates the user can perform `archive_project` on this resource",
               "args": [
 
               ],
@@ -1690,7 +1704,7 @@
             },
             {
               "name": "changeNamespace",
-              "description": "Whether or not a user can perform `change_namespace` on this resource",
+              "description": "Indicates the user can perform `change_namespace` on this resource",
               "args": [
 
               ],
@@ -1708,7 +1722,7 @@
             },
             {
               "name": "changeVisibilityLevel",
-              "description": "Whether or not a user can perform `change_visibility_level` on this resource",
+              "description": "Indicates the user can perform `change_visibility_level` on this resource",
               "args": [
 
               ],
@@ -1726,7 +1740,7 @@
             },
             {
               "name": "createDeployment",
-              "description": "Whether or not a user can perform `create_deployment` on this resource",
+              "description": "Indicates the user can perform `create_deployment` on this resource",
               "args": [
 
               ],
@@ -1744,7 +1758,7 @@
             },
             {
               "name": "createDesign",
-              "description": "Whether or not a user can perform `create_design` on this resource",
+              "description": "Indicates the user can perform `create_design` on this resource",
               "args": [
 
               ],
@@ -1762,7 +1776,7 @@
             },
             {
               "name": "createIssue",
-              "description": "Whether or not a user can perform `create_issue` on this resource",
+              "description": "Indicates the user can perform `create_issue` on this resource",
               "args": [
 
               ],
@@ -1780,7 +1794,7 @@
             },
             {
               "name": "createLabel",
-              "description": "Whether or not a user can perform `create_label` on this resource",
+              "description": "Indicates the user can perform `create_label` on this resource",
               "args": [
 
               ],
@@ -1798,7 +1812,7 @@
             },
             {
               "name": "createMergeRequestFrom",
-              "description": "Whether or not a user can perform `create_merge_request_from` on this resource",
+              "description": "Indicates the user can perform `create_merge_request_from` on this resource",
               "args": [
 
               ],
@@ -1816,7 +1830,7 @@
             },
             {
               "name": "createMergeRequestIn",
-              "description": "Whether or not a user can perform `create_merge_request_in` on this resource",
+              "description": "Indicates the user can perform `create_merge_request_in` on this resource",
               "args": [
 
               ],
@@ -1834,7 +1848,7 @@
             },
             {
               "name": "createPages",
-              "description": "Whether or not a user can perform `create_pages` on this resource",
+              "description": "Indicates the user can perform `create_pages` on this resource",
               "args": [
 
               ],
@@ -1852,7 +1866,7 @@
             },
             {
               "name": "createPipeline",
-              "description": "Whether or not a user can perform `create_pipeline` on this resource",
+              "description": "Indicates the user can perform `create_pipeline` on this resource",
               "args": [
 
               ],
@@ -1870,7 +1884,7 @@
             },
             {
               "name": "createPipelineSchedule",
-              "description": "Whether or not a user can perform `create_pipeline_schedule` on this resource",
+              "description": "Indicates the user can perform `create_pipeline_schedule` on this resource",
               "args": [
 
               ],
@@ -1888,7 +1902,7 @@
             },
             {
               "name": "createSnippet",
-              "description": "Whether or not a user can perform `create_snippet` on this resource",
+              "description": "Indicates the user can perform `create_snippet` on this resource",
               "args": [
 
               ],
@@ -1906,7 +1920,7 @@
             },
             {
               "name": "createWiki",
-              "description": "Whether or not a user can perform `create_wiki` on this resource",
+              "description": "Indicates the user can perform `create_wiki` on this resource",
               "args": [
 
               ],
@@ -1924,7 +1938,7 @@
             },
             {
               "name": "destroyDesign",
-              "description": "Whether or not a user can perform `destroy_design` on this resource",
+              "description": "Indicates the user can perform `destroy_design` on this resource",
               "args": [
 
               ],
@@ -1942,7 +1956,7 @@
             },
             {
               "name": "destroyPages",
-              "description": "Whether or not a user can perform `destroy_pages` on this resource",
+              "description": "Indicates the user can perform `destroy_pages` on this resource",
               "args": [
 
               ],
@@ -1960,7 +1974,7 @@
             },
             {
               "name": "destroyWiki",
-              "description": "Whether or not a user can perform `destroy_wiki` on this resource",
+              "description": "Indicates the user can perform `destroy_wiki` on this resource",
               "args": [
 
               ],
@@ -1978,7 +1992,7 @@
             },
             {
               "name": "downloadCode",
-              "description": "Whether or not a user can perform `download_code` on this resource",
+              "description": "Indicates the user can perform `download_code` on this resource",
               "args": [
 
               ],
@@ -1996,7 +2010,7 @@
             },
             {
               "name": "downloadWikiCode",
-              "description": "Whether or not a user can perform `download_wiki_code` on this resource",
+              "description": "Indicates the user can perform `download_wiki_code` on this resource",
               "args": [
 
               ],
@@ -2014,7 +2028,7 @@
             },
             {
               "name": "forkProject",
-              "description": "Whether or not a user can perform `fork_project` on this resource",
+              "description": "Indicates the user can perform `fork_project` on this resource",
               "args": [
 
               ],
@@ -2032,7 +2046,7 @@
             },
             {
               "name": "pushCode",
-              "description": "Whether or not a user can perform `push_code` on this resource",
+              "description": "Indicates the user can perform `push_code` on this resource",
               "args": [
 
               ],
@@ -2050,7 +2064,7 @@
             },
             {
               "name": "pushToDeleteProtectedBranch",
-              "description": "Whether or not a user can perform `push_to_delete_protected_branch` on this resource",
+              "description": "Indicates the user can perform `push_to_delete_protected_branch` on this resource",
               "args": [
 
               ],
@@ -2068,7 +2082,7 @@
             },
             {
               "name": "readCommitStatus",
-              "description": "Whether or not a user can perform `read_commit_status` on this resource",
+              "description": "Indicates the user can perform `read_commit_status` on this resource",
               "args": [
 
               ],
@@ -2086,7 +2100,7 @@
             },
             {
               "name": "readCycleAnalytics",
-              "description": "Whether or not a user can perform `read_cycle_analytics` on this resource",
+              "description": "Indicates the user can perform `read_cycle_analytics` on this resource",
               "args": [
 
               ],
@@ -2104,7 +2118,7 @@
             },
             {
               "name": "readDesign",
-              "description": "Whether or not a user can perform `read_design` on this resource",
+              "description": "Indicates the user can perform `read_design` on this resource",
               "args": [
 
               ],
@@ -2122,7 +2136,7 @@
             },
             {
               "name": "readPagesContent",
-              "description": "Whether or not a user can perform `read_pages_content` on this resource",
+              "description": "Indicates the user can perform `read_pages_content` on this resource",
               "args": [
 
               ],
@@ -2140,7 +2154,7 @@
             },
             {
               "name": "readProject",
-              "description": "Whether or not a user can perform `read_project` on this resource",
+              "description": "Indicates the user can perform `read_project` on this resource",
               "args": [
 
               ],
@@ -2158,7 +2172,7 @@
             },
             {
               "name": "readProjectMember",
-              "description": "Whether or not a user can perform `read_project_member` on this resource",
+              "description": "Indicates the user can perform `read_project_member` on this resource",
               "args": [
 
               ],
@@ -2176,7 +2190,7 @@
             },
             {
               "name": "readWiki",
-              "description": "Whether or not a user can perform `read_wiki` on this resource",
+              "description": "Indicates the user can perform `read_wiki` on this resource",
               "args": [
 
               ],
@@ -2194,7 +2208,7 @@
             },
             {
               "name": "removeForkProject",
-              "description": "Whether or not a user can perform `remove_fork_project` on this resource",
+              "description": "Indicates the user can perform `remove_fork_project` on this resource",
               "args": [
 
               ],
@@ -2212,7 +2226,7 @@
             },
             {
               "name": "removePages",
-              "description": "Whether or not a user can perform `remove_pages` on this resource",
+              "description": "Indicates the user can perform `remove_pages` on this resource",
               "args": [
 
               ],
@@ -2230,7 +2244,7 @@
             },
             {
               "name": "removeProject",
-              "description": "Whether or not a user can perform `remove_project` on this resource",
+              "description": "Indicates the user can perform `remove_project` on this resource",
               "args": [
 
               ],
@@ -2248,7 +2262,7 @@
             },
             {
               "name": "renameProject",
-              "description": "Whether or not a user can perform `rename_project` on this resource",
+              "description": "Indicates the user can perform `rename_project` on this resource",
               "args": [
 
               ],
@@ -2266,7 +2280,7 @@
             },
             {
               "name": "requestAccess",
-              "description": "Whether or not a user can perform `request_access` on this resource",
+              "description": "Indicates the user can perform `request_access` on this resource",
               "args": [
 
               ],
@@ -2284,7 +2298,7 @@
             },
             {
               "name": "updatePages",
-              "description": "Whether or not a user can perform `update_pages` on this resource",
+              "description": "Indicates the user can perform `update_pages` on this resource",
               "args": [
 
               ],
@@ -2302,7 +2316,7 @@
             },
             {
               "name": "updateWiki",
-              "description": "Whether or not a user can perform `update_wiki` on this resource",
+              "description": "Indicates the user can perform `update_wiki` on this resource",
               "args": [
 
               ],
@@ -2320,7 +2334,7 @@
             },
             {
               "name": "uploadFile",
-              "description": "Whether or not a user can perform `upload_file` on this resource",
+              "description": "Indicates the user can perform `upload_file` on this resource",
               "args": [
 
               ],
@@ -3654,7 +3668,7 @@
           "fields": [
             {
               "name": "readGroup",
-              "description": "Whether or not a user can perform `read_group` on this resource",
+              "description": "Indicates the user can perform `read_group` on this resource",
               "args": [
 
               ],
@@ -4498,7 +4512,7 @@
             },
             {
               "name": "subscribed",
-              "description": "Boolean flag for whether the currently logged in user is subscribed to this epic",
+              "description": "Indicates the currently logged in user is subscribed to the epic",
               "args": [
 
               ],
@@ -5142,7 +5156,7 @@
           "fields": [
             {
               "name": "adminNote",
-              "description": "Whether or not a user can perform `admin_note` on this resource",
+              "description": "Indicates the user can perform `admin_note` on this resource",
               "args": [
 
               ],
@@ -5160,7 +5174,7 @@
             },
             {
               "name": "awardEmoji",
-              "description": "Whether or not a user can perform `award_emoji` on this resource",
+              "description": "Indicates the user can perform `award_emoji` on this resource",
               "args": [
 
               ],
@@ -5178,7 +5192,7 @@
             },
             {
               "name": "createNote",
-              "description": "Whether or not a user can perform `create_note` on this resource",
+              "description": "Indicates the user can perform `create_note` on this resource",
               "args": [
 
               ],
@@ -5196,7 +5210,7 @@
             },
             {
               "name": "readNote",
-              "description": "Whether or not a user can perform `read_note` on this resource",
+              "description": "Indicates the user can perform `read_note` on this resource",
               "args": [
 
               ],
@@ -5214,7 +5228,7 @@
             },
             {
               "name": "resolveNote",
-              "description": "Whether or not a user can perform `resolve_note` on this resource",
+              "description": "Indicates the user can perform `resolve_note` on this resource",
               "args": [
 
               ],
@@ -5604,7 +5618,7 @@
           "fields": [
             {
               "name": "createSnippet",
-              "description": "Whether or not a user can perform `create_snippet` on this resource",
+              "description": "Indicates the user can perform `create_snippet` on this resource",
               "args": [
 
               ],
@@ -6746,7 +6760,7 @@
           "fields": [
             {
               "name": "adminSnippet",
-              "description": "Whether or not a user can perform `admin_snippet` on this resource",
+              "description": "Indicates the user can perform `admin_snippet` on this resource",
               "args": [
 
               ],
@@ -6764,7 +6778,7 @@
             },
             {
               "name": "awardEmoji",
-              "description": "Whether or not a user can perform `award_emoji` on this resource",
+              "description": "Indicates the user can perform `award_emoji` on this resource",
               "args": [
 
               ],
@@ -6782,7 +6796,7 @@
             },
             {
               "name": "createNote",
-              "description": "Whether or not a user can perform `create_note` on this resource",
+              "description": "Indicates the user can perform `create_note` on this resource",
               "args": [
 
               ],
@@ -6800,7 +6814,7 @@
             },
             {
               "name": "readSnippet",
-              "description": "Whether or not a user can perform `read_snippet` on this resource",
+              "description": "Indicates the user can perform `read_snippet` on this resource",
               "args": [
 
               ],
@@ -6818,7 +6832,7 @@
             },
             {
               "name": "reportSnippet",
-              "description": "Whether or not a user can perform `report_snippet` on this resource",
+              "description": "Indicates the user can perform `report_snippet` on this resource",
               "args": [
 
               ],
@@ -6836,7 +6850,7 @@
             },
             {
               "name": "updateSnippet",
-              "description": "Whether or not a user can perform `update_snippet` on this resource",
+              "description": "Indicates the user can perform `update_snippet` on this resource",
               "args": [
 
               ],
@@ -7217,7 +7231,7 @@
           "fields": [
             {
               "name": "adminEpic",
-              "description": "Whether or not a user can perform `admin_epic` on this resource",
+              "description": "Indicates the user can perform `admin_epic` on this resource",
               "args": [
 
               ],
@@ -7235,7 +7249,7 @@
             },
             {
               "name": "awardEmoji",
-              "description": "Whether or not a user can perform `award_emoji` on this resource",
+              "description": "Indicates the user can perform `award_emoji` on this resource",
               "args": [
 
               ],
@@ -7253,7 +7267,7 @@
             },
             {
               "name": "createEpic",
-              "description": "Whether or not a user can perform `create_epic` on this resource",
+              "description": "Indicates the user can perform `create_epic` on this resource",
               "args": [
 
               ],
@@ -7271,7 +7285,7 @@
             },
             {
               "name": "createNote",
-              "description": "Whether or not a user can perform `create_note` on this resource",
+              "description": "Indicates the user can perform `create_note` on this resource",
               "args": [
 
               ],
@@ -7289,7 +7303,7 @@
             },
             {
               "name": "destroyEpic",
-              "description": "Whether or not a user can perform `destroy_epic` on this resource",
+              "description": "Indicates the user can perform `destroy_epic` on this resource",
               "args": [
 
               ],
@@ -7307,7 +7321,7 @@
             },
             {
               "name": "readEpic",
-              "description": "Whether or not a user can perform `read_epic` on this resource",
+              "description": "Indicates the user can perform `read_epic` on this resource",
               "args": [
 
               ],
@@ -7325,7 +7339,7 @@
             },
             {
               "name": "readEpicIid",
-              "description": "Whether or not a user can perform `read_epic_iid` on this resource",
+              "description": "Indicates the user can perform `read_epic_iid` on this resource",
               "args": [
 
               ],
@@ -7343,7 +7357,7 @@
             },
             {
               "name": "updateEpic",
-              "description": "Whether or not a user can perform `update_epic` on this resource",
+              "description": "Indicates the user can perform `update_epic` on this resource",
               "args": [
 
               ],
@@ -8597,7 +8611,7 @@
             },
             {
               "name": "subscribed",
-              "description": "Boolean flag for whether the currently logged in user is subscribed to this issue",
+              "description": "Indicates the currently logged in user is subscribed to the issue",
               "args": [
 
               ],
@@ -8840,7 +8854,7 @@
           "fields": [
             {
               "name": "adminIssue",
-              "description": "Whether or not a user can perform `admin_issue` on this resource",
+              "description": "Indicates the user can perform `admin_issue` on this resource",
               "args": [
 
               ],
@@ -8858,7 +8872,7 @@
             },
             {
               "name": "createDesign",
-              "description": "Whether or not a user can perform `create_design` on this resource",
+              "description": "Indicates the user can perform `create_design` on this resource",
               "args": [
 
               ],
@@ -8876,7 +8890,7 @@
             },
             {
               "name": "createNote",
-              "description": "Whether or not a user can perform `create_note` on this resource",
+              "description": "Indicates the user can perform `create_note` on this resource",
               "args": [
 
               ],
@@ -8894,7 +8908,7 @@
             },
             {
               "name": "destroyDesign",
-              "description": "Whether or not a user can perform `destroy_design` on this resource",
+              "description": "Indicates the user can perform `destroy_design` on this resource",
               "args": [
 
               ],
@@ -8912,7 +8926,7 @@
             },
             {
               "name": "readDesign",
-              "description": "Whether or not a user can perform `read_design` on this resource",
+              "description": "Indicates the user can perform `read_design` on this resource",
               "args": [
 
               ],
@@ -8930,7 +8944,7 @@
             },
             {
               "name": "readIssue",
-              "description": "Whether or not a user can perform `read_issue` on this resource",
+              "description": "Indicates the user can perform `read_issue` on this resource",
               "args": [
 
               ],
@@ -8948,7 +8962,7 @@
             },
             {
               "name": "reopenIssue",
-              "description": "Whether or not a user can perform `reopen_issue` on this resource",
+              "description": "Indicates the user can perform `reopen_issue` on this resource",
               "args": [
 
               ],
@@ -8966,7 +8980,7 @@
             },
             {
               "name": "updateIssue",
-              "description": "Whether or not a user can perform `update_issue` on this resource",
+              "description": "Indicates the user can perform `update_issue` on this resource",
               "args": [
 
               ],
@@ -9981,7 +9995,7 @@
             },
             {
               "name": "subscribed",
-              "description": "Boolean flag for whether the currently logged in user is subscribed to this issue",
+              "description": "Indicates the currently logged in user is subscribed to the issue",
               "args": [
 
               ],
@@ -12284,7 +12298,7 @@
           "fields": [
             {
               "name": "adminPipeline",
-              "description": "Whether or not a user can perform `admin_pipeline` on this resource",
+              "description": "Indicates the user can perform `admin_pipeline` on this resource",
               "args": [
 
               ],
@@ -12302,7 +12316,7 @@
             },
             {
               "name": "destroyPipeline",
-              "description": "Whether or not a user can perform `destroy_pipeline` on this resource",
+              "description": "Indicates the user can perform `destroy_pipeline` on this resource",
               "args": [
 
               ],
@@ -12320,7 +12334,7 @@
             },
             {
               "name": "updatePipeline",
-              "description": "Whether or not a user can perform `update_pipeline` on this resource",
+              "description": "Indicates the user can perform `update_pipeline` on this resource",
               "args": [
 
               ],
@@ -14828,7 +14842,7 @@
           "fields": [
             {
               "name": "adminMergeRequest",
-              "description": "Whether or not a user can perform `admin_merge_request` on this resource",
+              "description": "Indicates the user can perform `admin_merge_request` on this resource",
               "args": [
 
               ],
@@ -14846,7 +14860,7 @@
             },
             {
               "name": "cherryPickOnCurrentMergeRequest",
-              "description": "Whether or not a user can perform `cherry_pick_on_current_merge_request` on this resource",
+              "description": "Indicates the user can perform `cherry_pick_on_current_merge_request` on this resource",
               "args": [
 
               ],
@@ -14864,7 +14878,7 @@
             },
             {
               "name": "createNote",
-              "description": "Whether or not a user can perform `create_note` on this resource",
+              "description": "Indicates the user can perform `create_note` on this resource",
               "args": [
 
               ],
@@ -14882,7 +14896,7 @@
             },
             {
               "name": "pushToSourceBranch",
-              "description": "Whether or not a user can perform `push_to_source_branch` on this resource",
+              "description": "Indicates the user can perform `push_to_source_branch` on this resource",
               "args": [
 
               ],
@@ -14900,7 +14914,7 @@
             },
             {
               "name": "readMergeRequest",
-              "description": "Whether or not a user can perform `read_merge_request` on this resource",
+              "description": "Indicates the user can perform `read_merge_request` on this resource",
               "args": [
 
               ],
@@ -14918,7 +14932,7 @@
             },
             {
               "name": "removeSourceBranch",
-              "description": "Whether or not a user can perform `remove_source_branch` on this resource",
+              "description": "Indicates the user can perform `remove_source_branch` on this resource",
               "args": [
 
               ],
@@ -14936,7 +14950,7 @@
             },
             {
               "name": "revertOnCurrentMergeRequest",
-              "description": "Whether or not a user can perform `revert_on_current_merge_request` on this resource",
+              "description": "Indicates the user can perform `revert_on_current_merge_request` on this resource",
               "args": [
 
               ],
@@ -14954,7 +14968,7 @@
             },
             {
               "name": "updateMergeRequest",
-              "description": "Whether or not a user can perform `update_merge_request` on this resource",
+              "description": "Indicates the user can perform `update_merge_request` on this resource",
               "args": [
 
               ],
@@ -17089,7 +17103,7 @@
             },
             {
               "name": "toggledOn",
-              "description": "True when the emoji was awarded, false when it was removed",
+              "description": "Indicates the status of the emoji. True if the toggle awarded the emoji, and false if the toggle removed the emoji.",
               "args": [
 
               ],

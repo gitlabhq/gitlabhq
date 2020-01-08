@@ -438,6 +438,17 @@ describe Gitlab::ClosingIssueExtractor do
             .to match_array([issue])
       end
     end
+
+    context "with autoclose referenced issues disabled" do
+      before do
+        project.update!(autoclose_referenced_issues: false)
+      end
+
+      it do
+        message = "Awesome commit (Closes #{reference})"
+        expect(subject.closed_by_message(message)).to eq([])
+      end
+    end
   end
 
   def urls

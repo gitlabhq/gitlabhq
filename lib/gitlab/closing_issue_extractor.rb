@@ -11,11 +11,13 @@ module Gitlab
     end
 
     def initialize(project, current_user = nil)
+      @project = project
       @extractor = Gitlab::ReferenceExtractor.new(project, current_user)
     end
 
     def closed_by_message(message)
       return [] if message.nil?
+      return [] unless @project.autoclose_referenced_issues
 
       closing_statements = []
       message.scan(ISSUE_CLOSING_REGEX) do

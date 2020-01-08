@@ -46,7 +46,7 @@ module Types
           description: 'Timestamp of the project last activity'
 
     field :archived, GraphQL::BOOLEAN_TYPE, null: true,
-          description: 'Archived status of the project'
+          description: 'Indicates the archived status of the project'
 
     field :visibility, GraphQL::STRING_TYPE, null: true,
           description: 'Visibility of the project'
@@ -102,6 +102,8 @@ module Types
           description: 'Indicates if a link to create or view a merge request should display after a push to Git repositories of the project from the command line'
     field :remove_source_branch_after_merge, GraphQL::BOOLEAN_TYPE, null: true,
           description: 'Indicates if `Delete source branch` option should be enabled by default for all new merge requests of the project'
+    field :autoclose_referenced_issues, GraphQL::BOOLEAN_TYPE, null: true,
+          description: 'Indicates if issues referenced by merge requests and commits within the default branch are closed automatically'
 
     field :namespace, Types::NamespaceType, null: true,
           description: 'Namespace of the project'

@@ -25,7 +25,7 @@ module Types
         kword_args = kword_args.reverse_merge(
           name: name,
           type: GraphQL::BOOLEAN_TYPE,
-          description: "Whether or not a user can perform `#{name}` on this resource",
+          description: "Indicates the user can perform `#{name}` on this resource",
           null: false)
 
         field(**kword_args) # rubocop:disable Graphql/Descriptions

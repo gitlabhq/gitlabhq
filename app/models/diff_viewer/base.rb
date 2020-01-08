@@ -89,7 +89,7 @@ module DiffViewer
         {
           viewer: switcher_title,
           reason: render_error_reason,
-          options: render_error_options.to_sentence(two_words_connector: _(' or '), last_word_connector: _(', or '))
+          options: Gitlab::Utils.to_exclusive_sentence(render_error_options)
         }
     end
 

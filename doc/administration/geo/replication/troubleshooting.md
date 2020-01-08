@@ -318,6 +318,40 @@ Slots where `active` is `f` are not active.
   SELECT pg_drop_replication_slot('<name_of_extra_slot>');
   ```
 
+### Message: "ERROR: canceling statement due to conflict with recovery"
+
+This error may rarely occur under normal usage, and the system is resilient
+enough to recover.
+
+However, under certain conditions, some database queries on secondaries may run
+excessively long, which increases the frequency of this error. At some point,
+some of these queries will never be able to complete due to being canceled
+every time.
+
+These long-running queries are
+[planned to be removed in the future](https://gitlab.com/gitlab-org/gitlab/issues/34269),
+but as a workaround, we recommend enabling
+[hot_standby_feedback](https://www.postgresql.org/docs/10/hot-standby.html#HOT-STANDBY-CONFLICT).
+This increases the likelihood of bloat on the **primary** node as it prevents
+`VACUUM` from removing recently-dead rows. However, it has been used
+successfully in production on GitLab.com.
+
+To enable `hot_standby_feedback`, add the following to `/etc/gitlab/gitlab.rb`
+on the **secondary** node:
+
+```ruby
+postgresql['hot_standby_feedback'] = 'on'
+```
+
+Then reconfigure GitLab:
+
+```sh
+sudo gitlab-ctl reconfigure
+```
+
+To help us resolve this problem, consider commenting on
+[the issue](https://gitlab.com/gitlab-org/gitlab/issues/4489).
+
 ### Very large repositories never successfully synchronize on the **secondary** node
 
 GitLab places a timeout on all repository clones, including project imports

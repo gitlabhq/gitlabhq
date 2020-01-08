@@ -47,6 +47,7 @@ module API
         optional :ci_default_git_depth, type: Integer, desc: 'Default number of revisions for shallow cloning'
         optional :auto_devops_enabled, type: Boolean, desc: 'Flag indication if Auto DevOps is enabled'
         optional :auto_devops_deploy_strategy, type: String, values: %w(continuous manual timed_incremental), desc: 'Auto Deploy strategy'
+        optional :autoclose_referenced_issues, type: Boolean, desc: 'Flag indication if referenced issues auto-closing is enabled'
       end
 
       params :optional_project_params_ee do
@@ -85,6 +86,7 @@ module API
           :container_registry_enabled,
           :default_branch,
           :description,
+          :autoclose_referenced_issues,
           :issues_access_level,
           :lfs_enabled,
           :merge_requests_access_level,

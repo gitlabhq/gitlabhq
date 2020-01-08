@@ -474,6 +474,32 @@ describe Project do
     end
   end
 
+  describe '#autoclose_referenced_issues' do
+    context 'when DB entry is nil' do
+      let(:project) { create(:project, autoclose_referenced_issues: nil) }
+
+      it 'returns true' do
+        expect(project.autoclose_referenced_issues).to be_truthy
+      end
+    end
+
+    context 'when DB entry is true' do
+      let(:project) { create(:project, autoclose_referenced_issues: true) }
+
+      it 'returns true' do
+        expect(project.autoclose_referenced_issues).to be_truthy
+      end
+    end
+
+    context 'when DB entry is false' do
+      let(:project) { create(:project, autoclose_referenced_issues: false) }
+
+      it 'returns false' do
+        expect(project.autoclose_referenced_issues).to be_falsey
+      end
+    end
+  end
+
   describe 'project token' do
     it 'sets an random token if none provided' do
       project = FactoryBot.create(:project, runners_token: '')

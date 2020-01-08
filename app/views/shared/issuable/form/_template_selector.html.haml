@@ -2,7 +2,7 @@
 
 - return unless issuable && issuable_templates(issuable).any?
 
-.col-sm-3.col-lg-2
+.issuable-form-select-holder.selectbox.form-group
   .js-issuable-selector-wrap{ data: { issuable_type: issuable.to_ability_name } }
     = template_dropdown_tag(issuable) do
       %ul.dropdown-footer-list

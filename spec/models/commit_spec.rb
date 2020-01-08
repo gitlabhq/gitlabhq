@@ -390,6 +390,17 @@ eos
       expect(commit.closes_issues).to include(issue)
       expect(commit.closes_issues).to include(other_issue)
     end
+
+    it 'ignores referenced issues when auto-close is disabled' do
+      project.update!(autoclose_referenced_issues: false)
+
+      allow(commit).to receive_messages(
+        safe_message: "Fixes ##{issue.iid}",
+        committer_email: committer.email
+      )
+
+      expect(commit.closes_issues).to be_empty
+    end
   end
 
   it_behaves_like 'a mentionable' do

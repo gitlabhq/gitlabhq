@@ -534,6 +534,7 @@ Project:
 - pages_https_only
 - merge_requests_disable_committers_approval
 - require_password_to_approve
+- autoclose_referenced_issues
 ProjectTracingSetting:
 - external_url
 Author:

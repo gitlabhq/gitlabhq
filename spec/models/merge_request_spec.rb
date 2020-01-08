@@ -963,6 +963,15 @@ describe MergeRequest do
 
       expect(subject.closes_issues).to be_empty
     end
+
+    it 'ignores referenced issues when auto-close is disabled' do
+      subject.project.update!(autoclose_referenced_issues: false)
+
+      allow(subject.project).to receive(:default_branch)
+        .and_return(subject.target_branch)
+
+      expect(subject.closes_issues).to be_empty
+    end
   end
 
   describe '#issues_mentioned_but_not_closing' do

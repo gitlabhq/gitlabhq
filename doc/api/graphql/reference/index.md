@@ -239,7 +239,7 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `relativePosition` | Int | The relative position of the epic in the epic tree |
 | `relationPath` | String |  |
 | `reference` | String! |  |
-| `subscribed` | Boolean! | Boolean flag for whether the currently logged in user is subscribed to this epic |
+| `subscribed` | Boolean! | Indicates the currently logged in user is subscribed to the epic |
 | `descendantCounts` | EpicDescendantCount | Number of open and closed descendant epics and issues |
 
 ### EpicDescendantCount
@@ -274,7 +274,7 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `webPath` | String! | Web path of the issue |
 | `webUrl` | String! | Web URL of the issue |
 | `relativePosition` | Int | Relative position of the issue (used for positioning in epic tree and issue boards) |
-| `subscribed` | Boolean! | Boolean flag for whether the currently logged in user is subscribed to this issue |
+| `subscribed` | Boolean! | Indicates the currently logged in user is subscribed to the issue |
 | `timeEstimate` | Int! | Time estimate of the issue |
 | `totalTimeSpent` | Int! | Total time reported as spent on the issue |
 | `closedAt` | Time | Timestamp of when the issue was closed |
@@ -293,14 +293,14 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
-| `readEpic` | Boolean! | Whether or not a user can perform `read_epic` on this resource |
-| `readEpicIid` | Boolean! | Whether or not a user can perform `read_epic_iid` on this resource |
-| `updateEpic` | Boolean! | Whether or not a user can perform `update_epic` on this resource |
-| `destroyEpic` | Boolean! | Whether or not a user can perform `destroy_epic` on this resource |
-| `adminEpic` | Boolean! | Whether or not a user can perform `admin_epic` on this resource |
-| `createEpic` | Boolean! | Whether or not a user can perform `create_epic` on this resource |
-| `createNote` | Boolean! | Whether or not a user can perform `create_note` on this resource |
-| `awardEmoji` | Boolean! | Whether or not a user can perform `award_emoji` on this resource |
+| `readEpic` | Boolean! | Indicates the user can perform `read_epic` on this resource |
+| `readEpicIid` | Boolean! | Indicates the user can perform `read_epic_iid` on this resource |
+| `updateEpic` | Boolean! | Indicates the user can perform `update_epic` on this resource |
+| `destroyEpic` | Boolean! | Indicates the user can perform `destroy_epic` on this resource |
+| `adminEpic` | Boolean! | Indicates the user can perform `admin_epic` on this resource |
+| `createEpic` | Boolean! | Indicates the user can perform `create_epic` on this resource |
+| `createNote` | Boolean! | Indicates the user can perform `create_note` on this resource |
+| `awardEmoji` | Boolean! | Indicates the user can perform `award_emoji` on this resource |
 
 ### EpicSetSubscriptionPayload
 
@@ -355,7 +355,7 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
-| `readGroup` | Boolean! | Whether or not a user can perform `read_group` on this resource |
+| `readGroup` | Boolean! | Indicates the user can perform `read_group` on this resource |
 
 ### Issue
 
@@ -380,7 +380,7 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `webPath` | String! | Web path of the issue |
 | `webUrl` | String! | Web URL of the issue |
 | `relativePosition` | Int | Relative position of the issue (used for positioning in epic tree and issue boards) |
-| `subscribed` | Boolean! | Boolean flag for whether the currently logged in user is subscribed to this issue |
+| `subscribed` | Boolean! | Indicates the currently logged in user is subscribed to the issue |
 | `timeEstimate` | Int! | Time estimate of the issue |
 | `totalTimeSpent` | Int! | Total time reported as spent on the issue |
 | `closedAt` | Time | Timestamp of when the issue was closed |
@@ -396,14 +396,14 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
-| `readIssue` | Boolean! | Whether or not a user can perform `read_issue` on this resource |
-| `adminIssue` | Boolean! | Whether or not a user can perform `admin_issue` on this resource |
-| `updateIssue` | Boolean! | Whether or not a user can perform `update_issue` on this resource |
-| `createNote` | Boolean! | Whether or not a user can perform `create_note` on this resource |
-| `reopenIssue` | Boolean! | Whether or not a user can perform `reopen_issue` on this resource |
-| `readDesign` | Boolean! | Whether or not a user can perform `read_design` on this resource |
-| `createDesign` | Boolean! | Whether or not a user can perform `create_design` on this resource |
-| `destroyDesign` | Boolean! | Whether or not a user can perform `destroy_design` on this resource |
+| `readIssue` | Boolean! | Indicates the user can perform `read_issue` on this resource |
+| `adminIssue` | Boolean! | Indicates the user can perform `admin_issue` on this resource |
+| `updateIssue` | Boolean! | Indicates the user can perform `update_issue` on this resource |
+| `createNote` | Boolean! | Indicates the user can perform `create_note` on this resource |
+| `reopenIssue` | Boolean! | Indicates the user can perform `reopen_issue` on this resource |
+| `readDesign` | Boolean! | Indicates the user can perform `read_design` on this resource |
+| `createDesign` | Boolean! | Indicates the user can perform `create_design` on this resource |
+| `destroyDesign` | Boolean! | Indicates the user can perform `destroy_design` on this resource |
 
 ### IssueSetConfidentialPayload
 
@@ -506,14 +506,14 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
-| `readMergeRequest` | Boolean! | Whether or not a user can perform `read_merge_request` on this resource |
-| `adminMergeRequest` | Boolean! | Whether or not a user can perform `admin_merge_request` on this resource |
-| `updateMergeRequest` | Boolean! | Whether or not a user can perform `update_merge_request` on this resource |
-| `createNote` | Boolean! | Whether or not a user can perform `create_note` on this resource |
-| `pushToSourceBranch` | Boolean! | Whether or not a user can perform `push_to_source_branch` on this resource |
-| `removeSourceBranch` | Boolean! | Whether or not a user can perform `remove_source_branch` on this resource |
-| `cherryPickOnCurrentMergeRequest` | Boolean! | Whether or not a user can perform `cherry_pick_on_current_merge_request` on this resource |
-| `revertOnCurrentMergeRequest` | Boolean! | Whether or not a user can perform `revert_on_current_merge_request` on this resource |
+| `readMergeRequest` | Boolean! | Indicates the user can perform `read_merge_request` on this resource |
+| `adminMergeRequest` | Boolean! | Indicates the user can perform `admin_merge_request` on this resource |
+| `updateMergeRequest` | Boolean! | Indicates the user can perform `update_merge_request` on this resource |
+| `createNote` | Boolean! | Indicates the user can perform `create_note` on this resource |
+| `pushToSourceBranch` | Boolean! | Indicates the user can perform `push_to_source_branch` on this resource |
+| `removeSourceBranch` | Boolean! | Indicates the user can perform `remove_source_branch` on this resource |
+| `cherryPickOnCurrentMergeRequest` | Boolean! | Indicates the user can perform `cherry_pick_on_current_merge_request` on this resource |
+| `revertOnCurrentMergeRequest` | Boolean! | Indicates the user can perform `revert_on_current_merge_request` on this resource |
 
 ### MergeRequestSetAssigneesPayload
 
@@ -622,11 +622,11 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
-| `readNote` | Boolean! | Whether or not a user can perform `read_note` on this resource |
-| `createNote` | Boolean! | Whether or not a user can perform `create_note` on this resource |
-| `adminNote` | Boolean! | Whether or not a user can perform `admin_note` on this resource |
-| `resolveNote` | Boolean! | Whether or not a user can perform `resolve_note` on this resource |
-| `awardEmoji` | Boolean! | Whether or not a user can perform `award_emoji` on this resource |
+| `readNote` | Boolean! | Indicates the user can perform `read_note` on this resource |
+| `createNote` | Boolean! | Indicates the user can perform `create_note` on this resource |
+| `adminNote` | Boolean! | Indicates the user can perform `admin_note` on this resource |
+| `resolveNote` | Boolean! | Indicates the user can perform `resolve_note` on this resource |
+| `awardEmoji` | Boolean! | Indicates the user can perform `award_emoji` on this resource |
 
 ### PageInfo
 
@@ -660,9 +660,9 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
-| `updatePipeline` | Boolean! | Whether or not a user can perform `update_pipeline` on this resource |
-| `adminPipeline` | Boolean! | Whether or not a user can perform `admin_pipeline` on this resource |
-| `destroyPipeline` | Boolean! | Whether or not a user can perform `destroy_pipeline` on this resource |
+| `updatePipeline` | Boolean! | Indicates the user can perform `update_pipeline` on this resource |
+| `adminPipeline` | Boolean! | Indicates the user can perform `admin_pipeline` on this resource |
+| `destroyPipeline` | Boolean! | Indicates the user can perform `destroy_pipeline` on this resource |
 
 ### Project
 
@@ -684,7 +684,7 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `forksCount` | Int! | Number of times the project has been forked |
 | `createdAt` | Time | Timestamp of the project creation |
 | `lastActivityAt` | Time | Timestamp of the project last activity |
-| `archived` | Boolean | Archived status of the project |
+| `archived` | Boolean | Indicates the archived status of the project |
 | `visibility` | String | Visibility of the project |
 | `containerRegistryEnabled` | Boolean | Indicates if the project stores Docker container images in a container registry |
 | `sharedRunnersEnabled` | Boolean | Indicates if shared runners are enabled on the project |
@@ -704,6 +704,7 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `onlyAllowMergeIfAllDiscussionsAreResolved` | Boolean | Indicates if merge requests of the project can only be merged when all the discussions are resolved |
 | `printingMergeRequestLinkEnabled` | Boolean | Indicates if a link to create or view a merge request should display after a push to Git repositories of the project from the command line |
 | `removeSourceBranchAfterMerge` | Boolean | Indicates if `Delete source branch` option should be enabled by default for all new merge requests of the project |
+| `autocloseReferencedIssues` | Boolean | Indicates if issues referenced by merge requests and commits within the default branch are closed automatically |
 | `namespace` | Namespace | Namespace of the project |
 | `group` | Group | Group of the project |
 | `statistics` | ProjectStatistics | Statistics of the project |
@@ -719,47 +720,47 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
-| `changeNamespace` | Boolean! | Whether or not a user can perform `change_namespace` on this resource |
-| `changeVisibilityLevel` | Boolean! | Whether or not a user can perform `change_visibility_level` on this resource |
-| `renameProject` | Boolean! | Whether or not a user can perform `rename_project` on this resource |
-| `removeProject` | Boolean! | Whether or not a user can perform `remove_project` on this resource |
-| `archiveProject` | Boolean! | Whether or not a user can perform `archive_project` on this resource |
-| `removeForkProject` | Boolean! | Whether or not a user can perform `remove_fork_project` on this resource |
-| `removePages` | Boolean! | Whether or not a user can perform `remove_pages` on this resource |
-| `readProject` | Boolean! | Whether or not a user can perform `read_project` on this resource |
-| `createMergeRequestIn` | Boolean! | Whether or not a user can perform `create_merge_request_in` on this resource |
-| `readWiki` | Boolean! | Whether or not a user can perform `read_wiki` on this resource |
-| `readProjectMember` | Boolean! | Whether or not a user can perform `read_project_member` on this resource |
-| `createIssue` | Boolean! | Whether or not a user can perform `create_issue` on this resource |
-| `uploadFile` | Boolean! | Whether or not a user can perform `upload_file` on this resource |
-| `readCycleAnalytics` | Boolean! | Whether or not a user can perform `read_cycle_analytics` on this resource |
-| `downloadCode` | Boolean! | Whether or not a user can perform `download_code` on this resource |
-| `downloadWikiCode` | Boolean! | Whether or not a user can perform `download_wiki_code` on this resource |
-| `forkProject` | Boolean! | Whether or not a user can perform `fork_project` on this resource |
-| `readCommitStatus` | Boolean! | Whether or not a user can perform `read_commit_status` on this resource |
-| `requestAccess` | Boolean! | Whether or not a user can perform `request_access` on this resource |
-| `createPipeline` | Boolean! | Whether or not a user can perform `create_pipeline` on this resource |
-| `createPipelineSchedule` | Boolean! | Whether or not a user can perform `create_pipeline_schedule` on this resource |
-| `createMergeRequestFrom` | Boolean! | Whether or not a user can perform `create_merge_request_from` on this resource |
-| `createWiki` | Boolean! | Whether or not a user can perform `create_wiki` on this resource |
-| `pushCode` | Boolean! | Whether or not a user can perform `push_code` on this resource |
-| `createDeployment` | Boolean! | Whether or not a user can perform `create_deployment` on this resource |
-| `pushToDeleteProtectedBranch` | Boolean! | Whether or not a user can perform `push_to_delete_protected_branch` on this resource |
-| `adminWiki` | Boolean! | Whether or not a user can perform `admin_wiki` on this resource |
-| `adminProject` | Boolean! | Whether or not a user can perform `admin_project` on this resource |
-| `updatePages` | Boolean! | Whether or not a user can perform `update_pages` on this resource |
-| `adminRemoteMirror` | Boolean! | Whether or not a user can perform `admin_remote_mirror` on this resource |
-| `createLabel` | Boolean! | Whether or not a user can perform `create_label` on this resource |
-| `updateWiki` | Boolean! | Whether or not a user can perform `update_wiki` on this resource |
-| `destroyWiki` | Boolean! | Whether or not a user can perform `destroy_wiki` on this resource |
-| `createPages` | Boolean! | Whether or not a user can perform `create_pages` on this resource |
-| `destroyPages` | Boolean! | Whether or not a user can perform `destroy_pages` on this resource |
-| `readPagesContent` | Boolean! | Whether or not a user can perform `read_pages_content` on this resource |
-| `adminOperations` | Boolean! | Whether or not a user can perform `admin_operations` on this resource |
-| `createSnippet` | Boolean! | Whether or not a user can perform `create_snippet` on this resource |
-| `readDesign` | Boolean! | Whether or not a user can perform `read_design` on this resource |
-| `createDesign` | Boolean! | Whether or not a user can perform `create_design` on this resource |
-| `destroyDesign` | Boolean! | Whether or not a user can perform `destroy_design` on this resource |
+| `changeNamespace` | Boolean! | Indicates the user can perform `change_namespace` on this resource |
+| `changeVisibilityLevel` | Boolean! | Indicates the user can perform `change_visibility_level` on this resource |
+| `renameProject` | Boolean! | Indicates the user can perform `rename_project` on this resource |
+| `removeProject` | Boolean! | Indicates the user can perform `remove_project` on this resource |
+| `archiveProject` | Boolean! | Indicates the user can perform `archive_project` on this resource |
+| `removeForkProject` | Boolean! | Indicates the user can perform `remove_fork_project` on this resource |
+| `removePages` | Boolean! | Indicates the user can perform `remove_pages` on this resource |
+| `readProject` | Boolean! | Indicates the user can perform `read_project` on this resource |
+| `createMergeRequestIn` | Boolean! | Indicates the user can perform `create_merge_request_in` on this resource |
+| `readWiki` | Boolean! | Indicates the user can perform `read_wiki` on this resource |
+| `readProjectMember` | Boolean! | Indicates the user can perform `read_project_member` on this resource |
+| `createIssue` | Boolean! | Indicates the user can perform `create_issue` on this resource |
+| `uploadFile` | Boolean! | Indicates the user can perform `upload_file` on this resource |
+| `readCycleAnalytics` | Boolean! | Indicates the user can perform `read_cycle_analytics` on this resource |
+| `downloadCode` | Boolean! | Indicates the user can perform `download_code` on this resource |
+| `downloadWikiCode` | Boolean! | Indicates the user can perform `download_wiki_code` on this resource |
+| `forkProject` | Boolean! | Indicates the user can perform `fork_project` on this resource |
+| `readCommitStatus` | Boolean! | Indicates the user can perform `read_commit_status` on this resource |
+| `requestAccess` | Boolean! | Indicates the user can perform `request_access` on this resource |
+| `createPipeline` | Boolean! | Indicates the user can perform `create_pipeline` on this resource |
+| `createPipelineSchedule` | Boolean! | Indicates the user can perform `create_pipeline_schedule` on this resource |
+| `createMergeRequestFrom` | Boolean! | Indicates the user can perform `create_merge_request_from` on this resource |
+| `createWiki` | Boolean! | Indicates the user can perform `create_wiki` on this resource |
+| `pushCode` | Boolean! | Indicates the user can perform `push_code` on this resource |
+| `createDeployment` | Boolean! | Indicates the user can perform `create_deployment` on this resource |
+| `pushToDeleteProtectedBranch` | Boolean! | Indicates the user can perform `push_to_delete_protected_branch` on this resource |
+| `adminWiki` | Boolean! | Indicates the user can perform `admin_wiki` on this resource |
+| `adminProject` | Boolean! | Indicates the user can perform `admin_project` on this resource |
+| `updatePages` | Boolean! | Indicates the user can perform `update_pages` on this resource |
+| `adminRemoteMirror` | Boolean! | Indicates the user can perform `admin_remote_mirror` on this resource |
+| `createLabel` | Boolean! | Indicates the user can perform `create_label` on this resource |
+| `updateWiki` | Boolean! | Indicates the user can perform `update_wiki` on this resource |
+| `destroyWiki` | Boolean! | Indicates the user can perform `destroy_wiki` on this resource |
+| `createPages` | Boolean! | Indicates the user can perform `create_pages` on this resource |
+| `destroyPages` | Boolean! | Indicates the user can perform `destroy_pages` on this resource |
+| `readPagesContent` | Boolean! | Indicates the user can perform `read_pages_content` on this resource |
+| `adminOperations` | Boolean! | Indicates the user can perform `admin_operations` on this resource |
+| `createSnippet` | Boolean! | Indicates the user can perform `create_snippet` on this resource |
+| `readDesign` | Boolean! | Indicates the user can perform `read_design` on this resource |
+| `createDesign` | Boolean! | Indicates the user can perform `create_design` on this resource |
+| `destroyDesign` | Boolean! | Indicates the user can perform `destroy_design` on this resource |
 
 ### ProjectStatistics
 
@@ -857,12 +858,12 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
-| `createNote` | Boolean! | Whether or not a user can perform `create_note` on this resource |
-| `awardEmoji` | Boolean! | Whether or not a user can perform `award_emoji` on this resource |
-| `readSnippet` | Boolean! | Whether or not a user can perform `read_snippet` on this resource |
-| `updateSnippet` | Boolean! | Whether or not a user can perform `update_snippet` on this resource |
-| `adminSnippet` | Boolean! | Whether or not a user can perform `admin_snippet` on this resource |
-| `reportSnippet` | Boolean! | Whether or not a user can perform `report_snippet` on this resource |
+| `createNote` | Boolean! | Indicates the user can perform `create_note` on this resource |
+| `awardEmoji` | Boolean! | Indicates the user can perform `award_emoji` on this resource |
+| `readSnippet` | Boolean! | Indicates the user can perform `read_snippet` on this resource |
+| `updateSnippet` | Boolean! | Indicates the user can perform `update_snippet` on this resource |
+| `adminSnippet` | Boolean! | Indicates the user can perform `admin_snippet` on this resource |
+| `reportSnippet` | Boolean! | Indicates the user can perform `report_snippet` on this resource |
 
 ### Submodule
 
@@ -938,7 +939,7 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `clientMutationId` | String | A unique identifier for the client performing the mutation. |
 | `errors` | String! => Array | Reasons why the mutation failed. |
 | `awardEmoji` | AwardEmoji | The award emoji after mutation |
-| `toggledOn` | Boolean! | True when the emoji was awarded, false when it was removed |
+| `toggledOn` | Boolean! | Indicates the status of the emoji. True if the toggle awarded the emoji, and false if the toggle removed the emoji. |
 
 ### Tree
 
@@ -996,4 +997,4 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
-| `createSnippet` | Boolean! | Whether or not a user can perform `create_snippet` on this resource |
+| `createSnippet` | Boolean! | Indicates the user can perform `create_snippet` on this resource |
