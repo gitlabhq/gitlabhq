@@ -1,4 +1,4 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import DeploymentViewButton from '~/vue_merge_request_widget/components/deployment/deployment_view_button.vue';
 import ReviewAppLink from '~/vue_merge_request_widget/components/review_app_link.vue';
 import deploymentMockData from './deployment_mock_data';
@@ -7,10 +7,7 @@ describe('Deployment View App button', () => {
   let wrapper;
 
   const factory = (options = {}) => {
-    const localVue = createLocalVue();
-
-    wrapper = mount(localVue.extend(DeploymentViewButton), {
-      localVue,
+    wrapper = mount(DeploymentViewButton, {
       ...options,
     });
   };

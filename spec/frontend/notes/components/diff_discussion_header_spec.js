@@ -1,4 +1,4 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 
 import createStore from '~/notes/stores';
 import diffDiscussionHeader from '~/notes/components/diff_discussion_header.vue';
@@ -18,11 +18,9 @@ describe('diff_discussion_header component', () => {
     window.mrTabs = {};
     store = createStore();
 
-    const localVue = createLocalVue();
     wrapper = mount(diffDiscussionHeader, {
       store,
       propsData: { discussion: discussionMock },
-      localVue,
       sync: false,
     });
   });

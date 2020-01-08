@@ -1,8 +1,7 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import { GlDropdownItem } from '@gitlab/ui';
 import CommitMessageDropdown from '~/vue_merge_request_widget/components/states/commit_message_dropdown.vue';
 
-const localVue = createLocalVue();
 const commits = [
   {
     title: 'Commit 1',
@@ -25,8 +24,7 @@ describe('Commits message dropdown component', () => {
   let wrapper;
 
   const createComponent = () => {
-    wrapper = shallowMount(localVue.extend(CommitMessageDropdown), {
-      localVue,
+    wrapper = shallowMount(CommitMessageDropdown, {
       sync: false,
       propsData: {
         commits,

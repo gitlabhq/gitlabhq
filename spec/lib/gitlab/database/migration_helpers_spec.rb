@@ -347,6 +347,48 @@ describe Gitlab::Database::MigrationHelpers do
     end
   end
 
+  describe '#validate_foreign_key' do
+    context 'when name is provided' do
+      it 'does not infer the foreign key constraint name' do
+        expect(model).to receive(:foreign_key_exists?).with(:projects, name: :foo).and_return(true)
+
+        aggregate_failures do
+          expect(model).not_to receive(:concurrent_foreign_key_name)
+          expect(model).to receive(:disable_statement_timeout).and_call_original
+          expect(model).to receive(:execute).with(/statement_timeout/)
+          expect(model).to receive(:execute).ordered.with(/ALTER TABLE projects VALIDATE CONSTRAINT/)
+          expect(model).to receive(:execute).ordered.with(/RESET ALL/)
+        end
+
+        model.validate_foreign_key(:projects, :user_id, name: :foo)
+      end
+    end
+
+    context 'when name is not provided' do
+      it 'infers the foreign key constraint name' do
+        expect(model).to receive(:foreign_key_exists?).with(:projects, name: anything).and_return(true)
+
+        aggregate_failures do
+          expect(model).to receive(:concurrent_foreign_key_name)
+          expect(model).to receive(:disable_statement_timeout).and_call_original
+          expect(model).to receive(:execute).with(/statement_timeout/)
+          expect(model).to receive(:execute).ordered.with(/ALTER TABLE projects VALIDATE CONSTRAINT/)
+          expect(model).to receive(:execute).ordered.with(/RESET ALL/)
+        end
+
+        model.validate_foreign_key(:projects, :user_id)
+      end
+
+      context 'when the inferred foreign key constraint does not exist' do
+        it 'raises an error' do
+          expect(model).to receive(:foreign_key_exists?).and_return(false)
+
+          expect { model.validate_foreign_key(:projects, :user_id) }.to raise_error(/cannot find/)
+        end
+      end
+    end
+  end
+
   describe '#concurrent_foreign_key_name' do
     it 'returns the name for a foreign key' do
       name = model.concurrent_foreign_key_name(:this_is_a_very_long_table_name,

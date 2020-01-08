@@ -1,7 +1,7 @@
 import $ from 'helpers/jquery';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import Vue from 'vue';
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import { setTestTimeout } from 'helpers/timeout';
 import axios from '~/lib/utils/axios_utils';
 import NotesApp from '~/notes/components/notes_app.vue';
@@ -48,7 +48,6 @@ describe('note_app', () => {
         notesData: mockData.notesDataMock,
         userData: mockData.userDataMock,
       };
-      const localVue = createLocalVue();
 
       return mount(
         {
@@ -63,7 +62,6 @@ describe('note_app', () => {
           attachToDocument: true,
           propsData,
           store,
-          localVue,
           sync: false,
         },
       );

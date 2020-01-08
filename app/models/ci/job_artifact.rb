@@ -23,6 +23,7 @@ module Ci
       container_scanning: 'gl-container-scanning-report.json',
       dast: 'gl-dast-report.json',
       license_management: 'gl-license-management-report.json',
+      license_scanning: 'gl-license-management-report.json',
       performance: 'performance.json',
       metrics: 'metrics.txt'
     }.freeze
@@ -46,6 +47,7 @@ module Ci
       container_scanning: :raw,
       dast: :raw,
       license_management: :raw,
+      license_scanning: :raw,
       performance: :raw
     }.freeze
 
@@ -104,6 +106,7 @@ module Ci
       dast: 8, ## EE-specific
       codequality: 9, ## EE-specific
       license_management: 10, ## EE-specific
+      license_scanning: 101, ## EE-specific till 13.0
       performance: 11, ## EE-specific
       metrics: 12 ## EE-specific
     }

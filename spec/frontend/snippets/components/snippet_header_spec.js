@@ -2,11 +2,10 @@ import SnippetHeader from '~/snippets/components/snippet_header.vue';
 import DeleteSnippetMutation from '~/snippets/mutations/deleteSnippet.mutation.graphql';
 import { ApolloMutation } from 'vue-apollo';
 import { GlButton, GlModal } from '@gitlab/ui';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 
 describe('Snippet header component', () => {
   let wrapper;
-  const localVue = createLocalVue();
   const snippet = {
     snippet: {
       id: 'gid://gitlab/PersonalSnippet/50',
@@ -64,7 +63,6 @@ describe('Snippet header component', () => {
     wrapper = shallowMount(SnippetHeader, {
       sync: false,
       mocks: { $apollo },
-      localVue,
       propsData: {
         ...defaultProps,
       },

@@ -1,16 +1,13 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import resolveDiscussionButton from '~/notes/components/discussion_resolve_button.vue';
 
 const buttonTitle = 'Resolve discussion';
 
 describe('resolveDiscussionButton', () => {
   let wrapper;
-  let localVue;
 
   const factory = options => {
-    localVue = createLocalVue();
     wrapper = shallowMount(resolveDiscussionButton, {
-      localVue,
       ...options,
     });
   };
@@ -69,7 +66,7 @@ describe('resolveDiscussionButton', () => {
 
     const button = wrapper.find({ ref: 'isResolvingIcon' });
 
-    localVue.nextTick(() => {
+    wrapper.vm.$nextTick(() => {
       expect(button.exists()).toEqual(false);
     });
   });

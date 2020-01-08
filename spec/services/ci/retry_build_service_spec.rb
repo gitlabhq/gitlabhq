@@ -32,7 +32,8 @@ describe Ci::RetryBuildService do
        job_artifacts_metadata job_artifacts_trace job_artifacts_junit
        job_artifacts_sast job_artifacts_dependency_scanning
        job_artifacts_container_scanning job_artifacts_dast
-       job_artifacts_license_management job_artifacts_performance
+       job_artifacts_license_management job_artifacts_license_scanning
+       job_artifacts_performance
        job_artifacts_codequality job_artifacts_metrics scheduled_at
        job_variables waiting_for_resource_at].freeze
 

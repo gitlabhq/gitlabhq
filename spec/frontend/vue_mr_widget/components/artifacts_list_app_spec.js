@@ -29,7 +29,7 @@ describe('Merge Requests Artifacts list app', () => {
   });
 
   const createComponent = () => {
-    wrapper = mount(localVue.extend(ArtifactsListApp), {
+    wrapper = mount(ArtifactsListApp, {
       propsData: {
         endpoint: TEST_HOST,
       },

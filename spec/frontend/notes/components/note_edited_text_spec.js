@@ -1,7 +1,6 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import NoteEditedText from '~/notes/components/note_edited_text.vue';
 
-const localVue = createLocalVue();
 const propsData = {
   actionText: 'Edited',
   className: 'foo-bar',
@@ -21,7 +20,6 @@ describe('NoteEditedText', () => {
 
   beforeEach(() => {
     wrapper = shallowMount(NoteEditedText, {
-      localVue,
       propsData,
       sync: false,
       attachToDocument: true,

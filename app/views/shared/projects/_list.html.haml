@@ -6,7 +6,6 @@
 - merge_requests = true unless local_assigns[:merge_requests] == false
 - issues = true unless local_assigns[:issues] == false
 - pipeline_status = true unless local_assigns[:pipeline_status] == false
-- ci = false unless local_assigns[:ci] == true
 - skip_namespace = false unless local_assigns[:skip_namespace] == true
 - user = local_assigns[:user]
 - show_last_commit_as_description = false unless local_assigns[:show_last_commit_as_description] == true
@@ -40,7 +39,7 @@
       - projects.each_with_index do |project, i|
         - css_class = (i >= projects_limit) || project.pending_delete? ? 'hide' : nil
         = render "shared/projects/project", project: project, skip_namespace: skip_namespace,
-          avatar: avatar, stars: stars, css_class: css_class, ci: ci, use_creator_avatar: use_creator_avatar,
+          avatar: avatar, stars: stars, css_class: css_class, use_creator_avatar: use_creator_avatar,
           forks: forks, show_last_commit_as_description: show_last_commit_as_description, user: user, merge_requests: merge_requests,
           issues: issues, pipeline_status: pipeline_status, compact_mode: compact_mode
     = paginate_collection(projects, remote: remote) unless skip_pagination

@@ -2,11 +2,10 @@ import SnippetApp from '~/snippets/components/app.vue';
 import SnippetHeader from '~/snippets/components/snippet_header.vue';
 import { GlLoadingIcon } from '@gitlab/ui';
 
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 
 describe('Snippet view app', () => {
   let wrapper;
-  const localVue = createLocalVue();
   const defaultProps = {
     snippetGid: 'gid://gitlab/PersonalSnippet/42',
   };
@@ -23,7 +22,6 @@ describe('Snippet view app', () => {
     wrapper = shallowMount(SnippetApp, {
       sync: false,
       mocks: { $apollo },
-      localVue,
       propsData: {
         ...props,
       },

@@ -1,7 +1,6 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import CommitEdit from '~/vue_merge_request_widget/components/states/commit_edit.vue';
 
-const localVue = createLocalVue();
 const testCommitMessage = 'Test commit message';
 const testLabel = 'Test label';
 const testInputId = 'test-input-id';
@@ -10,8 +9,7 @@ describe('Commits edit component', () => {
   let wrapper;
 
   const createComponent = (slots = {}) => {
-    wrapper = shallowMount(localVue.extend(CommitEdit), {
-      localVue,
+    wrapper = shallowMount(CommitEdit, {
       sync: false,
       propsData: {
         value: testCommitMessage,

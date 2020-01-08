@@ -1,23 +1,21 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import { GlLink } from '@gitlab/ui';
 import ArtifactsList from '~/vue_merge_request_widget/components/artifacts_list.vue';
 import { artifactsList } from './mock_data';
 
 describe('Artifacts List', () => {
   let wrapper;
-  const localVue = createLocalVue();
 
   const data = {
     artifacts: artifactsList,
   };
 
   const mountComponent = props => {
-    wrapper = shallowMount(localVue.extend(ArtifactsList), {
+    wrapper = shallowMount(ArtifactsList, {
       propsData: {
         ...props,
       },
       sync: false,
-      localVue,
     });
   };
 

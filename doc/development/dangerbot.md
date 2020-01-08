@@ -119,4 +119,16 @@ at GitLab so far:
 ## Limitations
 
 - [`danger local` does not work on GitLab](https://github.com/danger/danger/issues/458)
-- Danger output is not added to a merge request comment if working on a fork.
+- Danger output is not added to a merge request comment if working on
+  a fork. This happens because the secret variable from the canonical
+  project is not shared to forks.
+  To work around this, you can add an [environment
+  variable](../ci/variables/README.md) called
+  `DANGER_GITLAB_API_TOKEN` with a personal API token to your
+  fork. That way the danger comments will be made from CI using that
+  API token instead.
+  Making the variable
+  [masked](../ci/variables/README.md#masked-variables) will make sure
+  it doesn't show up in the job logs. The variable cannot be
+  [protected](../ci/variables/README.md#protected-environment-variables),
+  as it needs to be present for all feature branches.

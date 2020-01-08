@@ -173,16 +173,8 @@ describe 'Dashboard Projects' do
       end
     end
 
-    context 'guest user of project and project has private pipelines' do
-      let(:guest_user) { create(:user) }
-
-      before do
-        project.update(public_builds: false)
-        project.add_guest(guest_user)
-        sign_in(guest_user)
-      end
-
-      it 'shows that the last pipeline passed' do
+    shared_examples 'hidden pipeline status' do
+      it 'does not show the pipeline status' do
         visit dashboard_projects_path
 
         page.within('.controls') do
@@ -192,6 +184,26 @@ describe 'Dashboard Projects' do
           expect(page).not_to have_link('Pipeline: passed')
         end
       end
+    end
+
+    context 'guest user of project and project has private pipelines' do
+      let(:guest_user) { create(:user) }
+
+      before do
+        project.update(public_builds: false)
+        project.add_guest(guest_user)
+        sign_in(guest_user)
+      end
+
+      it_behaves_like 'hidden pipeline status'
+    end
+
+    context 'when dashboard_pipeline_status is disabled' do
+      before do
+        stub_feature_flags(dashboard_pipeline_status: false)
+      end
+
+      it_behaves_like 'hidden pipeline status'
     end
   end
 

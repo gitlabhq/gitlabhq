@@ -211,6 +211,18 @@ module Gitlab
       end
       # rubocop:enable Gitlab/RailsLogger
 
+      def validate_foreign_key(source, column, name: nil)
+        fk_name = name || concurrent_foreign_key_name(source, column)
+
+        unless foreign_key_exists?(source, name: fk_name)
+          raise "cannot find #{fk_name} on #{source} table"
+        end
+
+        disable_statement_timeout do
+          execute("ALTER TABLE #{source} VALIDATE CONSTRAINT #{fk_name};")
+        end
+      end
+
       def foreign_key_exists?(source, target = nil, **options)
         foreign_keys(source).any? do |foreign_key|
           tables_match?(target.to_s, foreign_key.to_table.to_s) &&
