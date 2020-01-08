@@ -196,7 +196,7 @@ is a Unicorn worker that is spinning via `top`. Try to use the `gdb`
 techniques above. In addition, using `strace` may help isolate issues:
 
 ```shell
-strace -tt -T -f -s 1024 -p <PID of unicorn worker> -o /tmp/unicorn.txt
+strace -ttTfyyy -s 1024 -p <PID of unicorn worker> -o /tmp/unicorn.txt
 ```
 
 If you cannot isolate which Unicorn worker is the issue, try to run `strace`
@@ -204,7 +204,7 @@ on all the Unicorn workers to see where the `/internal/allowed` endpoint gets
 stuck:
 
 ```shell
-ps auwx | grep unicorn | awk '{ print " -p " $2}' | xargs strace -tt -T -f -s 1024 -o /tmp/unicorn.txt
+ps auwx | grep unicorn | awk '{ print " -p " $2}' | xargs  strace -ttTfyyy -s 1024 -o /tmp/unicorn.txt
 ```
 
 The output in `/tmp/unicorn.txt` may help diagnose the root cause.

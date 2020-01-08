@@ -1,0 +1,5 @@
+---
+title: Log database time in Sidekiq JSON logs
+merge_request: 22548
+author:
+type: other

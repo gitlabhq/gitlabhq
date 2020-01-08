@@ -249,7 +249,7 @@ Instead of the format above, you can opt to generate JSON logs for
 Sidekiq. For example:
 
 ```json
-{"severity":"INFO","time":"2018-04-03T22:57:22.071Z","queue":"cronjob:update_all_mirrors","args":[],"class":"UpdateAllMirrorsWorker","retry":false,"queue_namespace":"cronjob","jid":"06aeaa3b0aadacf9981f368e","created_at":"2018-04-03T22:57:21.930Z","enqueued_at":"2018-04-03T22:57:21.931Z","pid":10077,"message":"UpdateAllMirrorsWorker JID-06aeaa3b0aadacf9981f368e: done: 0.139 sec","job_status":"done","duration":0.139,"completed_at":"2018-04-03T22:57:22.071Z"}
+{"severity":"INFO","time":"2018-04-03T22:57:22.071Z","queue":"cronjob:update_all_mirrors","args":[],"class":"UpdateAllMirrorsWorker","retry":false,"queue_namespace":"cronjob","jid":"06aeaa3b0aadacf9981f368e","created_at":"2018-04-03T22:57:21.930Z","enqueued_at":"2018-04-03T22:57:21.931Z","pid":10077,"message":"UpdateAllMirrorsWorker JID-06aeaa3b0aadacf9981f368e: done: 0.139 sec","job_status":"done","duration":0.139,"completed_at":"2018-04-03T22:57:22.071Z","db_duration":0.05,"db_duration_s":0.0005,"gitaly_duration":0,"gitaly_calls":0}
 ```
 
 For Omnibus GitLab installations, add the configuration option:

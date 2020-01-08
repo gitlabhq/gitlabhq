@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require 'active_record'
+require 'active_record/log_subscriber'
+
 module Gitlab
   module SidekiqLogging
     class StructuredLogger
@@ -10,6 +13,7 @@ module Gitlab
       def call(job, queue)
         started_time = get_time
         base_payload = parse_job(job)
+        ActiveRecord::LogSubscriber.reset_runtime
 
         Sidekiq.logger.info log_job_start(base_payload)
 
@@ -62,6 +66,9 @@ module Gitlab
         end
 
         convert_to_iso8601(payload, DONE_TIMESTAMP_FIELDS)
+
+        payload['db_duration'] = ActiveRecord::LogSubscriber.runtime
+        payload['db_duration_s'] = payload['db_duration'] / 1000
 
         payload
       end
