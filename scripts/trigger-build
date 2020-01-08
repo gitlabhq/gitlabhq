@@ -18,11 +18,16 @@ module Trigger
 
   class Base
     def invoke!(post_comment: false, downstream_job_name: nil)
+      pipeline_variables = variables
+
+      puts "Triggering downstream pipeline on #{downstream_project_path}"
+      puts "with variables #{pipeline_variables}"
+
       pipeline = Gitlab.run_trigger(
         downstream_project_path,
         trigger_token,
         ref,
-        variables)
+        pipeline_variables)
 
       puts "Triggered downstream pipeline: #{pipeline.web_url}\n"
       puts "Waiting for downstream pipeline status"

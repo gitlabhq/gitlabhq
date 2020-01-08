@@ -10365,9 +10365,6 @@ msgstr ""
 msgid "Label"
 msgstr ""
 
-msgid "Label List"
-msgstr ""
-
 msgid "Label actions dropdown"
 msgstr ""
 
@@ -10789,6 +10786,9 @@ msgid "LinkedPipelines|%{counterLabel} more downstream pipelines"
 msgstr ""
 
 msgid "List"
+msgstr ""
+
+msgid "List Label"
 msgstr ""
 
 msgid "List Settings"
@@ -16882,6 +16882,9 @@ msgstr ""
 msgid "Something went wrong while stopping this environment. Please try again."
 msgstr ""
 
+msgid "Something went wrong while updating your list settings"
+msgstr ""
+
 msgid "Something went wrong, unable to add %{project} to dashboard"
 msgstr ""
 
@@ -20651,6 +20654,9 @@ msgid "With contribution analytics you can have an overview for the activity of 
 msgstr ""
 
 msgid "Withdraw Access Request"
+msgstr ""
+
+msgid "Work in Progress Limit"
 msgstr ""
 
 msgid "Workflow Help"

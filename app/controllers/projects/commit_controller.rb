@@ -8,7 +8,7 @@ class Projects::CommitController < Projects::ApplicationController
   include CreatesCommit
   include DiffForPath
   include DiffHelper
-  include SourcegraphGon
+  include SourcegraphDecorator
 
   # Authorize
   before_action :require_non_empty_project

@@ -8,7 +8,7 @@ class Projects::BlobController < Projects::ApplicationController
   include NotesHelper
   include ActionView::Helpers::SanitizeHelper
   include RedirectsForMissingPathOnTree
-  include SourcegraphGon
+  include SourcegraphDecorator
 
   prepend_before_action :authenticate_user!, only: [:edit]
 

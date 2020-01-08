@@ -130,6 +130,15 @@ describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
           gl_auth.find_for_git_client(user.username, user.password, project: nil, ip: 'ip')
         end
 
+        it 'rate limits a user by unique IPs' do
+          expect_next_instance_of(Gitlab::Auth::IpRateLimiter) do |rate_limiter|
+            expect(rate_limiter).to receive(:reset!)
+          end
+          expect(Gitlab::Auth::UniqueIpsLimiter).to receive(:limit_user!).twice.and_call_original
+
+          gl_auth.find_for_git_client(user.username, user.password, project: nil, ip: 'ip')
+        end
+
         it 'registers failure for failed auth' do
           expect_next_instance_of(Gitlab::Auth::IpRateLimiter) do |rate_limiter|
             expect(rate_limiter).to receive(:register_fail!)
@@ -413,6 +422,12 @@ describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
 
           expect(gl_auth.find_for_git_client('deployer', deploy_token.token, project: project, ip: 'ip'))
             .to eq(auth_success)
+        end
+
+        it 'does not attempt to rate limit unique IPs for a deploy token' do
+          expect(Gitlab::Auth::UniqueIpsLimiter).not_to receive(:limit_user!)
+
+          gl_auth.find_for_git_client(login, deploy_token.token, project: project, ip: 'ip')
         end
 
         it 'fails when login is not valid' do

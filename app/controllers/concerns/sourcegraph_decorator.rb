@@ -1,10 +1,19 @@
 # frozen_string_literal: true
 
-module SourcegraphGon
+module SourcegraphDecorator
   extend ActiveSupport::Concern
 
   included do
     before_action :push_sourcegraph_gon, if: :html_request?
+
+    content_security_policy do |p|
+      next if p.directives.blank?
+      next unless Gitlab::CurrentSettings.sourcegraph_enabled
+
+      default_connect_src = p.directives['connect-src'] || p.directives['default-src']
+      connect_src_values = Array.wrap(default_connect_src) | [Gitlab::CurrentSettings.sourcegraph_url]
+      p.connect_src(*connect_src_values)
+    end
   end
 
   private

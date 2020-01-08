@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SourcegraphGon do
+describe SourcegraphDecorator do
   let_it_be(:enabled_user) { create(:user, sourcegraph_enabled: true) }
   let_it_be(:disabled_user) { create(:user, sourcegraph_enabled: false) }
   let_it_be(:public_project) { create(:project, :public) }
@@ -17,7 +17,7 @@ describe SourcegraphGon do
   let(:project) { internal_project }
 
   controller(ApplicationController) do
-    include SourcegraphGon
+    include SourcegraphDecorator
 
     def index
       head :ok

@@ -1,0 +1,5 @@
+---
+title: Fix deploy tokens erroneously triggering unique IP limits
+merge_request: 22445
+author:
+type: fixed
