@@ -223,7 +223,7 @@ There are two ways to remove a Conan package from the GitLab Package Registry.
   ```sh
   conan remove Hello/0.2@user/channel --remote=gitlab
   ```
-  
+
   You need to explicitly include the remote in this command, otherwise the package will only be removed from your
   local system cache.
 
@@ -263,3 +263,25 @@ The GitLab Conan repository supports the following Conan CLI commands:
 - `conan search`: Search the GitLab Package Registry for public packages, and private packages you have permission to view.
 - `conan info`: View the info on a given package from the GitLab Package Registry.
 - `conan remove`: Delete the package from the GitLab Package Registry.
+
+## Using GitLab CI with Conan packages
+
+To work with Conan commands within [GitLab CI](./../../../ci/README.md), you can use
+`CI_JOB_TOKEN` in place of the personal access token in your commands.
+
+It is easiest to provide the `CONAN_LOGIN_USERNAME` and `CONAN_PASSWORD` with each
+Conan command in your `.gitlab-ci.yml` file:
+
+```yml
+image: conanio/gcc7
+
+create_package:
+  stage: deploy
+  script:
+    - conan remote add gitlab https://gitlab.example.com/api/v4/packages/conan
+    - conan create . my-group+my-project/beta
+    - CONAN_LOGIN_USERNAME=ci_user CONAN_PASSWORD=${CI_JOB_TOKEN} conan upload Hello/0.1@root+ci-conan/beta1 --all --remote=gitlab
+```
+
+You can find additional Conan images to use as the base of your CI file
+in the [Conan docs](https://docs.conan.io/en/latest/howtos/run_conan_in_docker.html#available-docker-images).

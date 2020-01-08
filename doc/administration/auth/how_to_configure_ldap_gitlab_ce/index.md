@@ -23,7 +23,7 @@ For example, [Active Directory](https://docs.microsoft.com/en-us/previous-versio
 - [Oracle Internet Directory](https://www.oracle.com/middleware/technologies/internet-directory.html)
 - [OpenLDAP](http://www.openldap.org/)
 - [389 Directory](http://directory.fedoraproject.org/)
-- [OpenDJ (Renamed to Foregerock Directory Services)](https://www.forgerock.com/platform/directory-services)
+- [OpenDJ (Renamed to Forgerock Directory Services)](https://www.forgerock.com/platform/directory-services)
 - [ApacheDS](https://directory.apache.org/)
 
 > GitLab uses the [Net::LDAP](https://rubygems.org/gems/net-ldap) library under the hood. This means it supports all [IETF](https://tools.ietf.org/html/rfc2251) compliant LDAPv3 servers.

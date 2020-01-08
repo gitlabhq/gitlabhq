@@ -830,7 +830,7 @@ In the example above, a pipeline could fail due to changes to a file in `service
 A later commit could then be pushed that does not include any changes to this file,
 but includes changes to the `Dockerfile`, and this pipeline could pass because it is only
 testing the changes to the `Dockerfile`. GitLab checks the **most recent pipeline**,
-that **passed**, and will show the merge request as mergable, despite the earlier
+that **passed**, and will show the merge request as mergeable, despite the earlier
 failed pipeline caused by a change that was not yet corrected.
 
 With this configuration, care must be taken to check that the most recent pipeline

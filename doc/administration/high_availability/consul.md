@@ -100,7 +100,7 @@ If it is necessary to restart the server cluster, it is important to do this in 
 
 To be safe, we recommend you only restart one server agent at a time to ensure the cluster remains intact.
 
-For larger clusters, it is possible to restart multiple agents at a time. See the [Consul consensus document](https://www.consul.io/docs/internals/consensus.html#deployment-table) for how many failures it can tolerate. This will be the number of simulateneous restarts it can sustain.
+For larger clusters, it is possible to restart multiple agents at a time. See the [Consul consensus document](https://www.consul.io/docs/internals/consensus.html#deployment-table) for how many failures it can tolerate. This will be the number of simultaneous restarts it can sustain.
 
 ## Upgrades for bundled Consul
 

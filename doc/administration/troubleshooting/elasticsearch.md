@@ -325,7 +325,7 @@ feel free to update that page with issues you encounter and solutions.
 
 ## Replication
 
-Setting up Elasticsearch isn't too bad, but it can be a bit finnicky and time consuming.
+Setting up Elasticsearch isn't too bad, but it can be a bit finicky and time consuming.
 
 The easiest method is to spin up a docker container with the required version and
 bind ports 9200/9300 so it can be used.

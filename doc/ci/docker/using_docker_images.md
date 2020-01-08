@@ -513,7 +513,7 @@ To define which should be used, the GitLab Runner process reads the configuratio
 
 NOTE: **Note:**
 GitLab Runner reads this configuration **only** from `config.toml` and ignores it if
-it's provided as an environment variable. This is because GitLab Runnner uses **only**
+it's provided as an environment variable. This is because GitLab Runner uses **only**
 `config.toml` configuration and doesn't interpolate **ANY** environment variables at
 runtime.
 

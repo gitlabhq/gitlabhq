@@ -45,7 +45,7 @@ requiring a shared NFS mount for Git repository data.
 Between 11.4 and 11.8 the exception was the
 [Elasticsearch indexer](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer).
 But since 11.8 the indexer uses Gitaly for data access as well. NFS can still
-be leveraged for redudancy on block level of the Git data. But only has to
+be leveraged for redundancy on block level of the Git data. But only has to
 be mounted on the Gitaly server.
 
 From GitLab v11.8 to v12.2, it is possible to use Elasticsearch in conjunction with
@@ -618,7 +618,7 @@ This will limit the number of in-flight RPC calls for the given RPC's.
 The limit is applied per repository. In the example above, each on the
 Gitaly server can have at most 20 simultaneous PostUploadPack calls in
 flight, and the same for SSHUploadPack. If another request comes in for
-a repository that hase used up its 20 slots, that request will get
+a repository that has used up its 20 slots, that request will get
 queued.
 
 You can observe the behavior of this queue via the Gitaly logs and via
@@ -762,7 +762,7 @@ Git implementation itself.
 
 Because Rugged+Unicorn was so efficient, GitLab's application code ended
 up with lots of duplicate Git object lookups (like looking up the
-`master` commmit a dozen times in one request). We could write
+`master` commit a dozen times in one request). We could write
 inefficient code without being punished for it.
 
 When we migrated these Git lookups to Gitaly calls, we were suddenly
@@ -927,7 +927,7 @@ Confirm the following are all true:
   ```
 
 - When any user adds or modifies a file from the repository using the GitLab
-  UI, it immediatley fails with a red `401 Unauthorized` banner.
+  UI, it immediately fails with a red `401 Unauthorized` banner.
 - Creating a new project and [initializing it with a README](../../gitlab-basics/create-project.md#blank-projects)
   successfully creates the project but doesn't create the README.
 - When [tailing the logs](https://docs.gitlab.com/omnibus/settings/logs.html#tail-logs-in-a-console-on-the-server) on an app node and reproducing the error, you get `401` errors

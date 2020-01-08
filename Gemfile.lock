@@ -1287,7 +1287,7 @@ DEPENDENCIES
   omniauth_crowd (~> 2.2.0)
   omniauth_openid_connect (~> 0.3.3)
   org-ruby (~> 0.9.12)
-  parallel (~> 1.17.0)
+  parallel (~> 1.19)
   peek (~> 1.1)
   pg (~> 1.1)
   png_quantizator (~> 0.2.1)

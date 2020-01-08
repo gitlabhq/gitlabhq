@@ -31,7 +31,7 @@ graph TB
 ```
 
 Where `GitLab` is the collection of clients that can request Git operations.
-The Praefect node has threestorage nodes attached. Praefect itself doesn't
+The Praefect node has three storage nodes attached. Praefect itself doesn't
 store data, but connects to three Gitaly nodes, `Gitaly-1`,  `Gitaly-2`, and `Gitaly-3`.
 
 Praefect may be enabled on its own node or can be run on the GitLab server.

@@ -238,8 +238,8 @@ and [projects APIs](../../api/projects.md).
 
 ## Troubleshooting: `Google::Apis::TransmissionError: execution expired`
 
-If LFS integration is configred with Google Cloud Storage and background uploads (`background_upload: true` and `direct_upload: false`),
-Sidekiq workers may encouter this error. This is because the uploading timed out with very large files.
+If LFS integration is configured with Google Cloud Storage and background uploads (`background_upload: true` and `direct_upload: false`),
+Sidekiq workers may encounter this error. This is because the uploading timed out with very large files.
 LFS files up to 6Gb can be uploaded without any extra steps, otherwise you need to use the following workaround.
 
 ```shell

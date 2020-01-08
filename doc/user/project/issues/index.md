@@ -97,7 +97,7 @@ and modify them if you have the necessary [permissions](../../permissions.md).
 
 On the Issues List, you can view all issues in the current project, or from multiple
 projects when opening the Issues List from the higher-level group context. Filter the
-issue list with a [search query](../../search/index.md#issues-and-merge-requests-per-project),
+issue list with a [search query](../../search/index.md#filtering-issue-and-merge-request-lists),
 including specific metadata, such as label(s), assignees(s), status, and more. From this
 view, you can also make certain changes [in bulk](../bulk_editing.md) to the displayed issues.
 

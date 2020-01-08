@@ -81,7 +81,7 @@ with one change: _the stored path of the first two phases is different_. This in
 log architecture stores chunks of logs in Redis and a persistent store (object storage or database) instead of
 file storage. Redis is used as first-class storage, and it stores up-to 128KB
 of data. Once the full chunk is sent, it is flushed to a persistent store, either object storage (temporary directory) or database.
-After a while, the data in Redis and a persitent store will be archived to [object storage](#uploading-logs-to-object-storage).
+After a while, the data in Redis and a persistent store will be archived to [object storage](#uploading-logs-to-object-storage).
 
 The data are stored in the following Redis namespace: `Gitlab::Redis::SharedState`.
 
