@@ -1,12 +1,8 @@
 import $ from 'jquery';
 import Cookies from 'js-cookie';
 import _ from 'underscore';
-import bp from './breakpoints';
+import { GlBreakpointInstance as bp, breakpoints } from '@gitlab/ui/dist/utils';
 import { parseBoolean } from '~/lib/utils/common_utils';
-
-// NOTE: at 1200px nav sidebar should not overlap the content
-// https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/24555#note_134136110
-const NAV_SIDEBAR_BREAKPOINT = 1200;
 
 export const SIDEBAR_COLLAPSED_CLASS = 'js-sidebar-collapsed';
 
@@ -50,9 +46,10 @@ export default class ContextualSidebar {
     $(window).on('resize', () => _.debounce(this.render(), 100));
   }
 
-  // TODO: use the breakpoints from breakpoints.js once they have been updated for bootstrap 4
   // See documentation: https://design.gitlab.com/regions/navigation#contextual-navigation
-  static isDesktopBreakpoint = () => bp.windowWidth() >= NAV_SIDEBAR_BREAKPOINT;
+  // NOTE: at 1200px nav sidebar should not overlap the content
+  // https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/24555#note_134136110
+  static isDesktopBreakpoint = () => bp.windowWidth() >= breakpoints.xl;
   static setCollapsedCookie(value) {
     if (!ContextualSidebar.isDesktopBreakpoint()) {
       return;
@@ -63,12 +60,13 @@ export default class ContextualSidebar {
   toggleSidebarNav(show) {
     const breakpoint = bp.getBreakpointSize();
     const dbp = ContextualSidebar.isDesktopBreakpoint();
+    const supportedSizes = ['xs', 'sm', 'md'];
 
     this.$sidebar.toggleClass(SIDEBAR_COLLAPSED_CLASS, !show);
     this.$sidebar.toggleClass('sidebar-expanded-mobile', !dbp ? show : false);
     this.$overlay.toggleClass(
       'mobile-nav-open',
-      breakpoint === 'xs' || breakpoint === 'sm' ? show : false,
+      supportedSizes.includes(breakpoint) ? show : false,
     );
     this.$sidebar.removeClass('sidebar-collapsed-desktop');
   }
@@ -76,13 +74,14 @@ export default class ContextualSidebar {
   toggleCollapsedSidebar(collapsed, saveCookie) {
     const breakpoint = bp.getBreakpointSize();
     const dbp = ContextualSidebar.isDesktopBreakpoint();
+    const supportedSizes = ['xs', 'sm', 'md'];
 
     if (this.$sidebar.length) {
       this.$sidebar.toggleClass(`sidebar-collapsed-desktop ${SIDEBAR_COLLAPSED_CLASS}`, collapsed);
       this.$sidebar.toggleClass('sidebar-expanded-mobile', !dbp ? !collapsed : false);
       this.$page.toggleClass(
         'page-with-icon-sidebar',
-        breakpoint === 'xs' || breakpoint === 'sm' ? true : collapsed,
+        supportedSizes.includes(breakpoint) ? true : collapsed,
       );
     }
 

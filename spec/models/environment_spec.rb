@@ -1112,7 +1112,7 @@ describe Environment, :use_clean_rails_memory_store_caching do
 
   describe '#prometheus_adapter' do
     it 'calls prometheus adapter service' do
-      expect_next_instance_of(Prometheus::AdapterService) do |instance|
+      expect_next_instance_of(Gitlab::Prometheus::Adapter) do |instance|
         expect(instance).to receive(:prometheus_adapter)
       end
 

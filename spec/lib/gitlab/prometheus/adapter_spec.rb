@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Prometheus::AdapterService do
+describe Gitlab::Prometheus::Adapter do
   let_it_be(:project) { create(:project) }
   let_it_be(:cluster, reload: true) { create(:cluster, :provided_by_user, environment_scope: '*', projects: [project]) }
 

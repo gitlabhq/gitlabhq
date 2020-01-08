@@ -59,4 +59,54 @@ describe ApplicationSettingsHelper do
       expect(helper.integration_expanded?('plantuml_')).to be_falsey
     end
   end
+
+  describe '.self_monitoring_project_data' do
+    context 'when self monitoring project does not exist' do
+      it 'returns create_self_monitoring_project_path' do
+        expect(helper.self_monitoring_project_data).to include(
+          'create_self_monitoring_project_path' =>
+            create_self_monitoring_project_admin_application_settings_path
+        )
+      end
+
+      it 'returns status_create_self_monitoring_project_path' do
+        expect(helper.self_monitoring_project_data).to include(
+          'status_create_self_monitoring_project_path' =>
+            status_create_self_monitoring_project_admin_application_settings_path
+        )
+      end
+
+      it 'returns self_monitoring_project_exists false' do
+        expect(helper.self_monitoring_project_data).to include(
+          'self_monitoring_project_exists' => false
+        )
+      end
+
+      it 'returns nil for project full_path' do
+        expect(helper.self_monitoring_project_data).to include(
+          'self_monitoring_project_full_path' => nil
+        )
+      end
+    end
+
+    context 'when self monitoring project exists' do
+      let(:project) { build(:project) }
+
+      before do
+        stub_application_setting(instance_administration_project: project)
+      end
+
+      it 'returns self_monitoring_project_exists true' do
+        expect(helper.self_monitoring_project_data).to include(
+          'self_monitoring_project_exists' => true
+        )
+      end
+
+      it 'returns project full_path' do
+        expect(helper.self_monitoring_project_data).to include(
+          'self_monitoring_project_full_path' => project.full_path
+        )
+      end
+    end
+  end
 end

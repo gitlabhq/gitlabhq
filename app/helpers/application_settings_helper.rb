@@ -334,6 +334,22 @@ module ApplicationSettingsHelper
   def omnibus_protected_paths_throttle?
     Rack::Attack.throttles.key?('protected paths')
   end
+
+  def self_monitoring_project_data
+    {
+      'create_self_monitoring_project_path' =>
+        create_self_monitoring_project_admin_application_settings_path,
+
+      'status_create_self_monitoring_project_path' =>
+        status_create_self_monitoring_project_admin_application_settings_path,
+
+      'self_monitoring_project_exists' =>
+        Gitlab::CurrentSettings.instance_administration_project.present?,
+
+      'self_monitoring_project_full_path' =>
+        Gitlab::CurrentSettings.instance_administration_project&.full_path
+    }
+  end
 end
 
 ApplicationSettingsHelper.prepend_if_ee('EE::ApplicationSettingsHelper') # rubocop: disable Cop/InjectEnterpriseEditionModule

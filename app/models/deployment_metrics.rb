@@ -34,18 +34,8 @@ class DeploymentMetrics
 
   def prometheus_adapter
     strong_memoize(:prometheus_adapter) do
-      service = project.find_or_initialize_service('prometheus')
-
-      if service.can_query?
-        service
-      else
-        cluster_prometheus
-      end
+      Gitlab::Prometheus::Adapter.new(project, cluster).prometheus_adapter
     end
-  end
-
-  def cluster_prometheus
-    cluster.application_prometheus if cluster&.application_prometheus_available?
   end
 
   def has_metrics_and_can_query?

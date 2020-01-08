@@ -108,7 +108,7 @@ describe Projects::Serverless::FunctionsFinder do
       let(:finder) { described_class.new(project) }
 
       before do
-        allow(Prometheus::AdapterService).to receive(:new).and_return(double(prometheus_adapter: prometheus_adapter))
+        allow(Gitlab::Prometheus::Adapter).to receive(:new).and_return(double(prometheus_adapter: prometheus_adapter))
         allow(prometheus_adapter).to receive(:query).and_return(prometheus_empty_body('matrix'))
       end
 

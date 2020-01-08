@@ -225,11 +225,9 @@ class Environment < ApplicationRecord
     prometheus_adapter.query(:additional_metrics_environment, self, *args.map(&:to_f))
   end
 
-  # rubocop: disable CodeReuse/ServiceClass
   def prometheus_adapter
-    @prometheus_adapter ||= Prometheus::AdapterService.new(project, deployment_platform&.cluster).prometheus_adapter
+    @prometheus_adapter ||= Gitlab::Prometheus::Adapter.new(project, deployment_platform&.cluster).prometheus_adapter
   end
-  # rubocop: enable CodeReuse/ServiceClass
 
   def slug
     super.presence || generate_slug
