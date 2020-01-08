@@ -5,16 +5,19 @@ require 'spec_helper'
 describe 'CycleAnalytics#test' do
   extend CycleAnalyticsHelpers::TestGeneration
 
-  let(:project) { create(:project, :repository) }
-  let(:from_date) { 10.days.ago }
-  let(:user) { create(:user, :admin) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:from_date) { 10.days.ago }
+  let_it_be(:user) { create(:user, :admin) }
+  let_it_be(:issue) { create(:issue, project: project) }
+  let_it_be(:project_level) { CycleAnalytics::ProjectLevel.new(project, options: { from: from_date }) }
+  let!(:merge_request) { create_merge_request_closing_issue(user, project, issue) }
 
-  subject { CycleAnalytics::ProjectLevel.new(project, options: { from: from_date }) }
+  subject { project_level }
 
   generate_cycle_analytics_spec(
     phase: :test,
     data_fn: lambda do |context|
-      issue = context.create(:issue, project: context.project)
+      issue = context.issue
       merge_request = context.create_merge_request_closing_issue(context.user, context.project, issue)
       pipeline = context.create(:ci_pipeline, ref: merge_request.source_branch, sha: merge_request.diff_head_sha, project: context.project, head_pipeline_of: merge_request)
       { pipeline: pipeline, issue: issue }
@@ -22,19 +25,14 @@ describe 'CycleAnalytics#test' do
     start_time_conditions: [["pipeline is started", -> (context, data) { data[:pipeline].run! }]],
     end_time_conditions:   [["pipeline is finished", -> (context, data) { data[:pipeline].succeed! }]],
     post_fn: -> (context, data) do
-      context.merge_merge_requests_closing_issue(context.user, context.project, data[:issue])
     end)
 
   context "when the pipeline is for a regular merge request (that doesn't close an issue)" do
     it "returns nil" do
-      issue = create(:issue, project: project)
-      merge_request = create_merge_request_closing_issue(user, project, issue)
       pipeline = create(:ci_pipeline, ref: "refs/heads/#{merge_request.source_branch}", sha: merge_request.diff_head_sha)
 
       pipeline.run!
       pipeline.succeed!
-
-      merge_merge_requests_closing_issue(user, project, issue)
 
       expect(subject[:test].project_median).to be_nil
     end
@@ -53,14 +51,10 @@ describe 'CycleAnalytics#test' do
 
   context "when the pipeline is dropped (failed)" do
     it "returns nil" do
-      issue = create(:issue, project: project)
-      merge_request = create_merge_request_closing_issue(user, project, issue)
       pipeline = create(:ci_pipeline, ref: "refs/heads/#{merge_request.source_branch}", sha: merge_request.diff_head_sha)
 
       pipeline.run!
       pipeline.drop!
-
-      merge_merge_requests_closing_issue(user, project, issue)
 
       expect(subject[:test].project_median).to be_nil
     end
@@ -68,14 +62,10 @@ describe 'CycleAnalytics#test' do
 
   context "when the pipeline is cancelled" do
     it "returns nil" do
-      issue = create(:issue, project: project)
-      merge_request = create_merge_request_closing_issue(user, project, issue)
       pipeline = create(:ci_pipeline, ref: "refs/heads/#{merge_request.source_branch}", sha: merge_request.diff_head_sha)
 
       pipeline.run!
       pipeline.cancel!
-
-      merge_merge_requests_closing_issue(user, project, issue)
 
       expect(subject[:test].project_median).to be_nil
     end

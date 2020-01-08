@@ -27,6 +27,8 @@ module CycleAnalyticsHelpers
 
       scenarios = combinations_of_start_time_conditions.product(combinations_of_end_time_conditions)
       scenarios.each do |start_time_conditions, end_time_conditions|
+        let_it_be(:other_project) { create(:project, :repository) }
+
         context "start condition: #{start_time_conditions.map(&:first).to_sentence}" do
           context "end condition: #{end_time_conditions.map(&:first).to_sentence}" do
             it "finds the median of available durations between the two conditions", :sidekiq_might_not_need_inline do
@@ -56,8 +58,6 @@ module CycleAnalyticsHelpers
             end
 
             context "when the data belongs to another project" do
-              let(:other_project) { create(:project, :repository) }
-
               it "returns nil" do
                 # Use a stub to "trick" the data/condition functions
                 # into using another project. This saves us from having to

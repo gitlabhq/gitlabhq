@@ -32,6 +32,9 @@ module API
         optional :resolve_outdated_diff_discussions, type: Boolean, desc: 'Automatically resolve merge request diffs discussions on lines changed with a push'
         optional :remove_source_branch_after_merge, type: Boolean, desc: 'Remove the source branch by default after merge'
         optional :container_registry_enabled, type: Boolean, desc: 'Flag indication if the container registry is enabled for that project'
+        optional :container_expiration_policy_attributes, type: Hash do
+          use :optional_container_expiration_policy_params
+        end
         optional :lfs_enabled, type: Boolean, desc: 'Flag indication if Git LFS is enabled for that project'
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The visibility of the project.'
         optional :public_builds, type: Boolean, desc: 'Perform public builds'
@@ -72,6 +75,14 @@ module API
       params :optional_update_params_ee do
       end
 
+      params :optional_container_expiration_policy_params do
+        optional :cadence, type: String, desc: 'Container expiration policy cadence for recurring job'
+        optional :keep_n, type: String, desc: 'Container expiration policy number of images to keep'
+        optional :older_than, type: String, desc: 'Container expiration policy remove images older than value'
+        optional :name_regex, type: String, desc: 'Container expiration policy regex for image removal'
+        optional :enabled, type: Boolean, desc: 'Flag indication if container expiration policy is enabled'
+      end
+
       def self.update_params_at_least_one_of
         [
           :auto_devops_enabled,
@@ -84,6 +95,7 @@ module API
           :ci_config_path,
           :ci_default_git_depth,
           :container_registry_enabled,
+          :container_expiration_policy_attributes,
           :default_branch,
           :description,
           :autoclose_referenced_issues,

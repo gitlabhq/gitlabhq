@@ -5121,6 +5121,9 @@ msgstr ""
 msgid "Could not delete chat nickname %{chat_name}."
 msgstr ""
 
+msgid "Could not delete project ID"
+msgstr ""
+
 msgid "Could not fetch projects"
 msgstr ""
 
@@ -7120,6 +7123,9 @@ msgid "Error creating epic"
 msgstr ""
 
 msgid "Error deleting  %{issuableType}"
+msgstr ""
+
+msgid "Error deleting project. Check logs for error details."
 msgstr ""
 
 msgid "Error details"
@@ -16260,6 +16266,9 @@ msgid "Selected levels cannot be used by non-admin users for groups, projects or
 msgstr ""
 
 msgid "Selecting a GitLab user will add a link to the GitLab user in the descriptions of issues and comments (e.g. \"By <a href=\"#\">@johnsmith</a>\"). It will also associate and/or assign these issues and comments with the selected user."
+msgstr ""
+
+msgid "Self monitoring project does not exist"
 msgstr ""
 
 msgid "Self-monitoring is not enabled on this GitLab server, contact your administrator."

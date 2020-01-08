@@ -10350,7 +10350,7 @@
           "fields": [
             {
               "name": "diffRefs",
-              "description": "Diff refs of the design",
+              "description": "The diff refs for this design",
               "args": [
 
               ],
@@ -10425,7 +10425,7 @@
             },
             {
               "name": "event",
-              "description": "Type of change made to the design at the version specified by the `atVersion` argument if supplied. Defaults to the latest version",
+              "description": "How this design was changed in the current version",
               "args": [
 
               ],
@@ -10443,7 +10443,7 @@
             },
             {
               "name": "filename",
-              "description": "Filename of the design file",
+              "description": "The filename of the design",
               "args": [
 
               ],
@@ -10461,7 +10461,7 @@
             },
             {
               "name": "fullPath",
-              "description": "Full path of the design file",
+              "description": "The full path to the design file",
               "args": [
 
               ],
@@ -10479,7 +10479,7 @@
             },
             {
               "name": "id",
-              "description": "ID of the design",
+              "description": "The ID of this design",
               "args": [
 
               ],
@@ -10497,7 +10497,7 @@
             },
             {
               "name": "image",
-              "description": "Image of the design",
+              "description": "The URL of the image",
               "args": [
 
               ],
@@ -10515,7 +10515,7 @@
             },
             {
               "name": "issue",
-              "description": "Issue associated with the design",
+              "description": "The issue the design belongs to",
               "args": [
 
               ],
@@ -10590,7 +10590,7 @@
             },
             {
               "name": "notesCount",
-              "description": "Total count of user-created notes for the design",
+              "description": "The total count of user-created notes for this design",
               "args": [
 
               ],
@@ -10608,7 +10608,7 @@
             },
             {
               "name": "project",
-              "description": "Project associated with the design",
+              "description": "The project the design belongs to",
               "args": [
 
               ],
@@ -10626,7 +10626,7 @@
             },
             {
               "name": "versions",
-              "description": "All versions related to the design, ordered newest first",
+              "description": "All versions related to this design ordered newest first",
               "args": [
                 {
                   "name": "after",
@@ -10688,10 +10688,194 @@
               "kind": "INTERFACE",
               "name": "Noteable",
               "ofType": null
+            },
+            {
+              "kind": "INTERFACE",
+              "name": "DesignFields",
+              "ofType": null
             }
           ],
           "enumValues": null,
           "possibleTypes": null
+        },
+        {
+          "kind": "INTERFACE",
+          "name": "DesignFields",
+          "description": null,
+          "fields": [
+            {
+              "name": "diffRefs",
+              "description": "The diff refs for this design",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "DiffRefs",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "event",
+              "description": "How this design was changed in the current version",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "DesignVersionEvent",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "filename",
+              "description": "The filename of the design",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "fullPath",
+              "description": "The full path to the design file",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "The ID of this design",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "image",
+              "description": "The URL of the image",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "issue",
+              "description": "The issue the design belongs to",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Issue",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "notesCount",
+              "description": "The total count of user-created notes for this design",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "project",
+              "description": "The project the design belongs to",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Project",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": [
+            {
+              "kind": "OBJECT",
+              "name": "Design",
+              "ofType": null
+            }
+          ]
         },
         {
           "kind": "ENUM",

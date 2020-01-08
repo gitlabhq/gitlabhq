@@ -5,11 +5,12 @@ require 'spec_helper'
 describe 'CycleAnalytics#code' do
   extend CycleAnalyticsHelpers::TestGeneration
 
-  let(:project) { create(:project, :repository) }
-  let(:from_date) { 10.days.ago }
-  let(:user) { create(:user, :admin) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:from_date) { 10.days.ago }
+  let_it_be(:user) { create(:user, :admin) }
+  let_it_be(:project_level) { CycleAnalytics::ProjectLevel.new(project, options: { from: from_date }) }
 
-  subject { CycleAnalytics::ProjectLevel.new(project, options: { from: from_date }) }
+  subject { project_level }
 
   context 'with deployment' do
     generate_cycle_analytics_spec(
@@ -24,8 +25,6 @@ describe 'CycleAnalytics#code' do
                                context.create_merge_request_closing_issue(context.user, context.project, data[:issue])
                              end]],
       post_fn: -> (context, data) do
-        context.merge_merge_requests_closing_issue(context.user, context.project, data[:issue])
-        context.deploy_master(context.user, context.project)
       end)
 
     context "when a regular merge request (that doesn't close the issue) is created" do
@@ -56,7 +55,6 @@ describe 'CycleAnalytics#code' do
                                context.create_merge_request_closing_issue(context.user, context.project, data[:issue])
                              end]],
       post_fn: -> (context, data) do
-        context.merge_merge_requests_closing_issue(context.user, context.project, data[:issue])
       end)
 
     context "when a regular merge request (that doesn't close the issue) is created" do

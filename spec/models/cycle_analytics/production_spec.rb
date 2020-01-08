@@ -5,11 +5,12 @@ require 'spec_helper'
 describe 'CycleAnalytics#production' do
   extend CycleAnalyticsHelpers::TestGeneration
 
-  let(:project) { create(:project, :repository) }
-  let(:from_date) { 10.days.ago }
-  let(:user) { create(:user, :admin) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:from_date) { 10.days.ago }
+  let_it_be(:user) { create(:user, :admin) }
+  let_it_be(:project_level) { CycleAnalytics::ProjectLevel.new(project, options: { from: from_date }) }
 
-  subject { CycleAnalytics::ProjectLevel.new(project, options: { from: from_date }) }
+  subject { project_level }
 
   generate_cycle_analytics_spec(
     phase: :production,
@@ -24,13 +25,7 @@ describe 'CycleAnalytics#production' do
        ["production deploy happens after merge request is merged (along with other changes)",
         lambda do |context, data|
           # Make other changes on master
-          sha = context.project.repository.create_file(
-            context.user,
-            context.generate(:branch),
-            'content',
-            message: 'commit message',
-            branch_name: 'master')
-          context.project.repository.commit(sha)
+          context.project.repository.commit("sha_that_does_not_matter")
 
           context.deploy_master(context.user, context.project)
         end]])
@@ -47,7 +42,7 @@ describe 'CycleAnalytics#production' do
 
   context "when the deployment happens to a non-production environment" do
     it "returns nil" do
-      issue = create(:issue, project: project)
+      issue = build(:issue, project: project)
       merge_request = create_merge_request_closing_issue(user, project, issue)
       MergeRequests::MergeService.new(project, user).execute(merge_request)
       deploy_master(user, project, environment: 'staging')

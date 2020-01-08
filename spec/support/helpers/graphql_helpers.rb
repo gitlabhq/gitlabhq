@@ -105,12 +105,15 @@ module GraphqlHelpers
   end
 
   def query_graphql_field(name, attributes = {}, fields = nil)
-    fields ||= all_graphql_fields_for(name.classify)
-    attributes = attributes_to_graphql(attributes)
-    attributes = "(#{attributes})" if attributes.present?
+    field_params = if attributes.present?
+                     "(#{attributes_to_graphql(attributes)})"
+                   else
+                     ''
+                   end
+
     <<~QUERY
-      #{name}#{attributes}
-      #{wrap_fields(fields)}
+      #{GraphqlHelpers.fieldnamerize(name.to_s)}#{field_params}
+      #{wrap_fields(fields || all_graphql_fields_for(name.to_s.classify))}
     QUERY
   end
 
@@ -300,6 +303,17 @@ module GraphqlHelpers
 
   def global_id_of(model)
     model.to_global_id.to_s
+  end
+
+  def missing_required_argument(path, argument)
+    a_hash_including(
+      'path' => ['query'].concat(path),
+      'extensions' => a_hash_including('code' => 'missingRequiredArguments', 'arguments' => argument.to_s)
+    )
+  end
+
+  def custom_graphql_error(path, msg)
+    a_hash_including('path' => path, 'message' => msg)
   end
 end
 

@@ -1,0 +1,5 @@
+---
+title: Added smart virtual list component to test reports to enhance rendering performance
+merge_request: 22381
+author:
+type: performance

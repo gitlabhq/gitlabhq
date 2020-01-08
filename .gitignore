@@ -86,4 +86,4 @@ jsdoc/
 .projections.json
 /qa/.rakeTasks
 webpack-dev-server.json
-.nvimrc
+/.nvimrc

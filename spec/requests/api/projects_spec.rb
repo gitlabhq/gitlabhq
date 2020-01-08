@@ -2251,6 +2251,22 @@ describe API::Projects do
         put api("/projects/#{project3.id}", user4), params: project_param
         expect(response).to have_gitlab_http_status(403)
       end
+
+      it 'updates container_expiration_policy' do
+        project_param = {
+          container_expiration_policy_attributes: {
+            cadence: '1month',
+            keep_n: 1
+          }
+        }
+
+        put api("/projects/#{project3.id}", user4), params: project_param
+
+        expect(response).to have_gitlab_http_status(200)
+
+        expect(json_response['container_expiration_policy']['cadence']).to eq('1month')
+        expect(json_response['container_expiration_policy']['keep_n']).to eq(1)
+      end
     end
 
     context 'when authenticated as project developer' do

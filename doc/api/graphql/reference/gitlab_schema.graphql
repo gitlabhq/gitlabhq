@@ -529,9 +529,9 @@ type CreateSnippetPayload {
   snippet: Snippet
 }
 
-type Design implements Noteable {
+type Design implements DesignFields & Noteable {
   """
-  Diff refs of the design
+  The diff refs for this design
   """
   diffRefs: DiffRefs!
 
@@ -561,33 +561,32 @@ type Design implements Noteable {
   ): DiscussionConnection!
 
   """
-  Type of change made to the design at the version specified by the `atVersion`
-  argument if supplied. Defaults to the latest version
+  How this design was changed in the current version
   """
   event: DesignVersionEvent!
 
   """
-  Filename of the design file
+  The filename of the design
   """
   filename: String!
 
   """
-  Full path of the design file
+  The full path to the design file
   """
   fullPath: String!
 
   """
-  ID of the design
+  The ID of this design
   """
   id: ID!
 
   """
-  Image of the design
+  The URL of the image
   """
   image: String!
 
   """
-  Issue associated with the design
+  The issue the design belongs to
   """
   issue: Issue!
 
@@ -617,17 +616,17 @@ type Design implements Noteable {
   ): NoteConnection!
 
   """
-  Total count of user-created notes for the design
+  The total count of user-created notes for this design
   """
   notesCount: Int!
 
   """
-  Project associated with the design
+  The project the design belongs to
   """
   project: Project!
 
   """
-  All versions related to the design, ordered newest first
+  All versions related to this design ordered newest first
   """
   versions(
     """
@@ -763,6 +762,53 @@ type DesignEdge {
   The item at the end of the edge.
   """
   node: Design
+}
+
+interface DesignFields {
+  """
+  The diff refs for this design
+  """
+  diffRefs: DiffRefs!
+
+  """
+  How this design was changed in the current version
+  """
+  event: DesignVersionEvent!
+
+  """
+  The filename of the design
+  """
+  filename: String!
+
+  """
+  The full path to the design file
+  """
+  fullPath: String!
+
+  """
+  The ID of this design
+  """
+  id: ID!
+
+  """
+  The URL of the image
+  """
+  image: String!
+
+  """
+  The issue the design belongs to
+  """
+  issue: Issue!
+
+  """
+  The total count of user-created notes for this design
+  """
+  notesCount: Int!
+
+  """
+  The project the design belongs to
+  """
+  project: Project!
 }
 
 """

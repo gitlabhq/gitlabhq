@@ -25,14 +25,21 @@ The most common architecture for Praefect is simplified in the diagram below:
 ```mermaid
 graph TB
   GitLab --> Praefect;
-  Praefect --> Gitaly-1;
-  Praefect --> Gitaly-2;
-  Praefect --> Gitaly-3;
+  Praefect --- PostgreSQL;
+  Praefect --> Gitaly1;
+  Praefect --> Gitaly2;
+  Praefect --> Gitaly3;
 ```
 
 Where `GitLab` is the collection of clients that can request Git operations.
 The Praefect node has three storage nodes attached. Praefect itself doesn't
 store data, but connects to three Gitaly nodes, `Gitaly-1`,  `Gitaly-2`, and `Gitaly-3`.
+
+In order to keep track of replication state, Praefect relies on a
+PostgreSQL database. This database is a single point of failure so you
+should use a highly available PostgreSQL server for this. GitLab
+itself needs a HA PostgreSQL server too, so you could optionally co-locate the Praefect
+SQL database on the PostgreSQL server you use for the rest of GitLab.
 
 Praefect may be enabled on its own node or can be run on the GitLab server.
 In the example below we will use a separate server, but the optimal configuration
@@ -62,6 +69,53 @@ We need to manage the following secrets and make them match across hosts:
     `PRAEFECT_EXTERNAL_TOKEN` because Gitaly clients must not be able to
     access internal nodes of the Praefect cluster directly; that could
     lead to data loss.
+1. `PRAEFECT_SQL_PASSWORD`: this password is used by Praefect to connect to
+    PostgreSQL.
+
+#### Network addresses
+
+1. `POSTGRESQL_SERVER`: the host name or IP address of your PostgreSQL server
+
+#### PostgreSQL
+
+To set up a Praefect cluster you need a highly available PostgreSQL
+server. You need PostgreSQL 9.6 or newer. Praefect needs to have a SQL
+user with the right to create databases.
+
+In the instructions below we assume you have administrative access to
+your PostgreSQL server via `psql`. Depending on your environment, you
+may also be able to do this via the web interface of your cloud
+platform, or via your configuration management system, etc.
+
+Below we assume that you have administrative access as the `postgres`
+user. First open a `psql` session as the `postgres` user:
+
+```shell
+psql -h POSTGRESQL_SERVER -U postgres -d template1
+```
+
+Once you are connected, run the following command. Replace
+`PRAEFECT_SQL_PASSWORD` with the actual (random) password you
+generated for the `praefect` SQL user:
+
+```sql
+CREATE ROLE praefect WITH LOGIN CREATEDB PASSWORD 'PRAEFECT_SQL_PASSWORD';
+\q # exit psql
+```
+
+Now connect as the `praefect` user to create the database. This has
+the side effect of verifying that you have access:
+
+```shell
+psql -h POSTGRESQL_SERVER -U praefect -d template1
+```
+
+Once you have connected as the `praefect` user, run:
+
+```sql
+CREATE DATABASE praefect_production WITH ENCODING=UTF8;
+\q # quit psql
+```
 
 #### Praefect
 
@@ -118,9 +172,38 @@ praefect['virtual_storages'] = {
     }
   }
 }
+
+praefect['database_host'] = 'POSTGRESQL_SERVER'
+praefect['database_port'] = 5432
+praefect['database_user'] = 'praefect'
+praefect['database_password'] = 'PRAEFECT_SQL_PASSWORD'
+praefect['database_dbname'] = 'praefect_production'
+
+# Uncomment the line below if you do not want to use an encrypted
+# connection to PostgreSQL
+# praefect['database_sslmode'] = 'disable'
+
+# Uncomment and modify these lines if you are using a TLS client
+# certificate to connect to PostgreSQL
+# praefect['database_sslcert'] = '/path/to/client-cert'
+# praefect['database_sslkey'] = '/path/to/client-key'
+
+# Uncomment and modify this line if your PostgreSQL server uses a custom
+# CA
+# praefect['database_sslrootcert'] = '/path/to/rootcert'
 ```
 
 Save the file and [reconfigure Praefect](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
+After you reconfigure, verify that Praefect can reach PostgreSQL:
+
+```shell
+sudo -u git /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml sql-ping
+```
+
+If the check fails, make sure you have followed the steps correctly. If you edit `/etc/gitlab/gitlab.rb`,
+remember to run `sudo gitlab-ctl reconfigure` again before trying the
+`sql-ping` command.
 
 #### Gitaly
 

@@ -104,15 +104,15 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
-| `id` | ID! | ID of the design |
-| `project` | Project! | Project associated with the design |
-| `issue` | Issue! | Issue associated with the design |
-| `notesCount` | Int! | Total count of user-created notes for the design |
-| `filename` | String! | Filename of the design file |
-| `fullPath` | String! | Full path of the design file |
-| `event` | DesignVersionEvent! | Type of change made to the design at the version specified by the `atVersion` argument if supplied. Defaults to the latest version |
-| `image` | String! | Image of the design |
-| `diffRefs` | DiffRefs! | Diff refs of the design |
+| `id` | ID! | The ID of this design |
+| `project` | Project! | The project the design belongs to |
+| `issue` | Issue! | The issue the design belongs to |
+| `filename` | String! | The filename of the design |
+| `fullPath` | String! | The full path to the design file |
+| `image` | String! | The URL of the image |
+| `diffRefs` | DiffRefs! | The diff refs for this design |
+| `event` | DesignVersionEvent! | How this design was changed in the current version |
+| `notesCount` | Int! | The total count of user-created notes for this design |
 
 ### DesignCollection
 

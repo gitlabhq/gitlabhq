@@ -32,14 +32,14 @@ A one-line example can be seen below:
 sudo gitlab-runner register \
   --url "https://gitlab.example.com/" \
   --registration-token "PROJECT_REGISTRATION_TOKEN" \
-  --description "docker-ruby-2.1" \
+  --description "docker-ruby:2.6" \
   --executor "docker" \
-  --docker-image ruby:2.1 \
+  --docker-image ruby:2.6 \
   --docker-services postgres:latest \
   --docker-services mysql:latest
 ```
 
-The registered runner will use the `ruby:2.1` Docker image and will run two
+The registered runner will use the `ruby:2.6` Docker image and will run two
 services, `postgres:latest` and `mysql:latest`, both of which will be
 accessible during the build process.
 
@@ -194,7 +194,7 @@ services that you want to use during build time:
 
 ```yaml
 default:
-  image: ruby:2.2
+  image: ruby:2.6
 
   services:
     - postgres:9.3
@@ -214,15 +214,15 @@ default:
   before_script:
     - bundle install
 
-test:2.1:
-  image: ruby:2.1
+test:2.6:
+  image: ruby:2.6
   services:
   - postgres:9.3
   script:
   - bundle exec rake spec
 
-test:2.2:
-  image: ruby:2.2
+test:2.7:
+  image: ruby:2.7
   services:
   - postgres:9.4
   script:
@@ -235,7 +235,7 @@ for `image` and `services`:
 ```yaml
 default:
   image:
-    name: ruby:2.2
+    name: ruby:2.6
     entrypoint: ["/bin/bash"]
 
   services:
@@ -277,7 +277,7 @@ services:
   command: ["postgres"]
 
 image:
-  name: ruby:2.2
+  name: ruby:2.6
   entrypoint: ["/bin/bash"]
 
 before_script:
@@ -773,7 +773,7 @@ time.
 
 1. Create any service container: `mysql`, `postgresql`, `mongodb`, `redis`.
 1. Create cache container to store all volumes as defined in `config.toml` and
-   `Dockerfile` of build image (`ruby:2.1` as in above example).
+   `Dockerfile` of build image (`ruby:2.6` as in above example).
 1. Create build container and link any service container to build container.
 1. Start build container and send job script to the container.
 1. Run job script.
@@ -818,11 +818,11 @@ Finally, create a build container by executing the `build_script` file we
 created earlier:
 
 ```sh
-docker run --name build -i --link=service-mysql:mysql --link=service-postgres:postgres ruby:2.1 /bin/bash < build_script
+docker run --name build -i --link=service-mysql:mysql --link=service-postgres:postgres ruby:2.6 /bin/bash < build_script
 ```
 
 The above command will create a container named `build` that is spawned from
-the `ruby:2.1` image and has two services linked to it. The `build_script` is
+the `ruby:2.6` image and has two services linked to it. The `build_script` is
 piped using STDIN to the bash interpreter which in turn executes the
 `build_script` in the `build` container.
 

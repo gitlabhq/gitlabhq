@@ -382,7 +382,7 @@ end
 ## String Freezing
 
 In recent Ruby versions calling `freeze` on a String leads to it being allocated
-only once and re-used. For example, on Ruby 2.3 this will only allocate the
+only once and re-used. For example, on Ruby 2.3 or later this will only allocate the
 "foo" String once:
 
 ```ruby
