@@ -2,10 +2,16 @@
 
 module Gitlab
   module Plugin
+    def self.any?
+      plugin_glob.any? { |entry| File.file?(entry) }
+    end
+
     def self.files
-      Dir.glob(Rails.root.join('plugins/*')).select do |entry|
-        File.file?(entry)
-      end
+      plugin_glob.select { |entry| File.file?(entry) }
+    end
+
+    def self.plugin_glob
+      Dir.glob(Rails.root.join('plugins/*'))
     end
 
     def self.execute_all_async(data)

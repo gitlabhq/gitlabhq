@@ -13,7 +13,4 @@ describe Clusters::Kubernetes do
   it { is_expected.to be_const_defined(:GITLAB_KNATIVE_SERVING_ROLE_BINDING_NAME) }
   it { is_expected.to be_const_defined(:GITLAB_CROSSPLANE_DATABASE_ROLE_NAME) }
   it { is_expected.to be_const_defined(:GITLAB_CROSSPLANE_DATABASE_ROLE_BINDING_NAME) }
-  it { is_expected.to be_const_defined(:GITLAB_KNATIVE_VERSION_ROLE_NAME) }
-  it { is_expected.to be_const_defined(:GITLAB_KNATIVE_VERSION_ROLE_BINDING_NAME) }
-  it { is_expected.to be_const_defined(:KNATIVE_SERVING_NAMESPACE) }
 end

@@ -43,6 +43,9 @@ if !Rails.env.test? && Gitlab::Metrics.prometheus_metrics_enabled?
     defined?(::Prometheus::Client.reinitialize_on_pid_change) && Prometheus::Client.reinitialize_on_pid_change
 
     Gitlab::Metrics::Samplers::RubySampler.initialize_instance(Settings.monitoring.ruby_sampler_interval).start
+  rescue IOError => e
+    Gitlab::ErrorTracking.track_exception(e)
+    Gitlab::Metrics.error_detected!
   end
 
   Gitlab::Cluster::LifecycleEvents.on_master_start do
@@ -55,6 +58,9 @@ if !Rails.env.test? && Gitlab::Metrics.prometheus_metrics_enabled?
     end
 
     Gitlab::Metrics::RequestsRackMiddleware.initialize_http_request_duration_seconds
+  rescue IOError => e
+    Gitlab::ErrorTracking.track_exception(e)
+    Gitlab::Metrics.error_detected!
   end
 end
 

@@ -1,0 +1,5 @@
+---
+title: Fix bug when trying to expose artifacts and no artifacts are produced by the job
+merge_request: 22378
+author:
+type: fixed

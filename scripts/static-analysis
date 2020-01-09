@@ -26,6 +26,19 @@ def emit_errors(static_analysis)
   end
 end
 
+ALLOWED_WARNINGS = [
+  # https://github.com/browserslist/browserslist/blob/d0ec62eb48c41c218478cd3ac28684df051cc865/node.js#L329
+  # warns if caniuse-lite package is older than 6 months. Ignore this
+  # warning message so that GitLab backports don't fail.
+  "Browserslist: caniuse-lite is outdated. Please run next command `yarn upgrade`"
+].freeze
+
+def warning_count(static_analysis)
+  static_analysis.warned_results
+    .reject { |result| ALLOWED_WARNINGS.include?(result.stderr.strip) }
+    .count
+end
+
 def jobs_to_run(node_index, node_total)
   all_tasks = [
     %w[bin/rake lint:all],
@@ -81,7 +94,7 @@ elsif static_analysis.all_success?
 
   emit_warnings(static_analysis)
 
-  exit 2
+  exit 2 if warning_count(static_analysis).nonzero?
 else
   puts 'Some static analyses failed:'
 

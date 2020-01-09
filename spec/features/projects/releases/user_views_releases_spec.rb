@@ -57,4 +57,14 @@ describe 'User views releases', :js do
       expect(page).to have_content('Upcoming Release')
     end
   end
+
+  context 'with a tag containing a slash' do
+    it 'sees the release' do
+      release = create :release, :with_evidence, project: project, tag: 'debian/2.4.0-1'
+      visit project_releases_path(project)
+
+      expect(page).to have_content(release.name)
+      expect(page).to have_content(release.tag)
+    end
+  end
 end

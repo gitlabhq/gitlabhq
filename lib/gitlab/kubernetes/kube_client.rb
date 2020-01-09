@@ -56,7 +56,6 @@ module Gitlab
       # group client
       delegate :create_cluster_role_binding,
         :get_cluster_role_binding,
-        :get_cluster_role_bindings,
         :update_cluster_role_binding,
         to: :rbac_client
 
@@ -65,13 +64,6 @@ module Gitlab
       delegate :create_role,
       :get_role,
       :update_role,
-      to: :rbac_client
-
-      # RBAC methods delegates to the apis/rbac.authorization.k8s.io api
-      # group client
-      delegate :create_cluster_role,
-      :get_cluster_role,
-      :update_cluster_role,
       to: :rbac_client
 
       # RBAC methods delegates to the apis/rbac.authorization.k8s.io api

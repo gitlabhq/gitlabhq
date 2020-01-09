@@ -38,8 +38,7 @@ module Clusters
       def credentials
         @credentials ||= Clusters::Aws::FetchCredentialsService.new(
           provision_role,
-          provider: provider,
-          region: provider.region
+          provider: provider
         ).execute
       end
 

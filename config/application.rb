@@ -260,6 +260,10 @@ module Gitlab
       caching_config_hash[:pool_timeout] = 1
     end
 
+    # Overrides RedisCacheStore's default value of 0
+    # This makes the default value the same with Gitlab::Redis::Cache
+    caching_config_hash[:reconnect_attempts] ||= ::Redis::Client::DEFAULTS[:reconnect_attempts]
+
     config.cache_store = :redis_cache_store, caching_config_hash
 
     config.active_job.queue_adapter = :sidekiq
