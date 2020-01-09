@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import ExpandButton from '~/vue_shared/components/expand_button.vue';
 
 const text = {
@@ -14,10 +14,7 @@ describe('Expand button', () => {
   const expanderAppendEl = () => wrapper.find('.js-text-expander-append');
 
   const factory = (options = {}) => {
-    const localVue = createLocalVue();
-
-    wrapper = mount(localVue.extend(ExpandButton), {
-      localVue,
+    wrapper = mount(ExpandButton, {
       ...options,
     });
   };

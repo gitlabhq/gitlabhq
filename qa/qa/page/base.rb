@@ -26,20 +26,20 @@ module QA
         wait_for_requests
       end
 
-      def wait(max: 60, interval: 0.1, reload: true)
-        QA::Support::Waiter.wait(max: max, interval: interval) do
+      def wait(max: 60, interval: 0.1, reload: true, raise_on_failure: false)
+        Support::Waiter.wait_until(max_duration: max, sleep_interval: interval, raise_on_failure: raise_on_failure) do
           yield || (reload && refresh && false)
         end
       end
 
-      def retry_until(max_attempts: 3, reload: false, sleep_interval: 0)
-        QA::Support::Retrier.retry_until(max_attempts: max_attempts, reload_page: (reload && self), sleep_interval: sleep_interval) do
+      def retry_until(max_attempts: 3, reload: false, sleep_interval: 0, raise_on_failure: false)
+        Support::Retrier.retry_until(max_attempts: max_attempts, reload_page: (reload && self), sleep_interval: sleep_interval, raise_on_failure: raise_on_failure) do
           yield
         end
       end
 
       def retry_on_exception(max_attempts: 3, reload: false, sleep_interval: 0.5)
-        QA::Support::Retrier.retry_on_exception(max_attempts: max_attempts, reload_page: (reload && self), sleep_interval: sleep_interval) do
+        Support::Retrier.retry_on_exception(max_attempts: max_attempts, reload_page: (reload && self), sleep_interval: sleep_interval) do
           yield
         end
       end

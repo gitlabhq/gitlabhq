@@ -1,8 +1,6 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import GraphGroup from '~/monitoring/components/graph_group.vue';
 import Icon from '~/vue_shared/components/icon.vue';
-
-const localVue = createLocalVue();
 
 describe('Graph group component', () => {
   let wrapper;
@@ -12,10 +10,9 @@ describe('Graph group component', () => {
   const findCaretIcon = () => wrapper.find(Icon);
 
   const createComponent = propsData => {
-    wrapper = shallowMount(localVue.extend(GraphGroup), {
+    wrapper = shallowMount(GraphGroup, {
       propsData,
       sync: false,
-      localVue,
     });
   };
 

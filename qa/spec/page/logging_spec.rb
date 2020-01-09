@@ -31,18 +31,18 @@ describe QA::Support::Page::Logging do
     expect { subject.wait(max: 0) {} }
       .to output(/next wait uses reload: true/).to_stdout_from_any_process
     expect { subject.wait(max: 0) {} }
-      .to output(/with wait/).to_stdout_from_any_process
+      .to output(/with wait_until/).to_stdout_from_any_process
     expect { subject.wait(max: 0) {} }
-      .to output(/ended wait after .* seconds$/).to_stdout_from_any_process
+      .to output(/ended wait_until$/).to_stdout_from_any_process
   end
 
   it 'logs wait with reload false' do
     expect { subject.wait(max: 0, reload: false) {} }
       .to output(/next wait uses reload: false/).to_stdout_from_any_process
     expect { subject.wait(max: 0, reload: false) {} }
-      .to output(/with wait/).to_stdout_from_any_process
+      .to output(/with wait_until/).to_stdout_from_any_process
     expect { subject.wait(max: 0, reload: false) {} }
-      .to output(/ended wait after .* seconds$/).to_stdout_from_any_process
+      .to output(/ended wait_until$/).to_stdout_from_any_process
   end
 
   it 'logs scroll_to' do

@@ -99,6 +99,7 @@ GEM
       childprocess (>= 0.5, < 4.0)
       rubyzip (>= 1.2.2)
     thread_safe (0.3.6)
+    timecop (0.9.1)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
     unf (0.1.4)
@@ -128,6 +129,7 @@ DEPENDENCIES
   rspec_junit_formatter (~> 0.4.1)
   ruby-debug-ide (~> 0.7.0)
   selenium-webdriver (~> 3.12)
+  timecop (~> 0.9.1)
 
 BUNDLED WITH
    1.17.3

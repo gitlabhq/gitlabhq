@@ -1,4 +1,4 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 
 import DroplabDropdownButton from '~/vue_shared/components/droplab_dropdown_button.vue';
 
@@ -18,11 +18,8 @@ const createComponent = ({
   dropdownClass = '',
   actions = mockActions,
   defaultAction = 0,
-}) => {
-  const localVue = createLocalVue();
-
-  return mount(DroplabDropdownButton, {
-    localVue,
+}) =>
+  mount(DroplabDropdownButton, {
     propsData: {
       size,
       dropdownClass,
@@ -30,7 +27,6 @@ const createComponent = ({
       defaultAction,
     },
   });
-};
 
 describe('DroplabDropdownButton', () => {
   let wrapper;

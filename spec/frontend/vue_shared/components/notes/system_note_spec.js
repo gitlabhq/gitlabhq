@@ -1,11 +1,9 @@
-import { createLocalVue, mount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import IssueSystemNote from '~/vue_shared/components/notes/system_note.vue';
 import createStore from '~/notes/stores';
 import initMRPopovers from '~/mr_popover/index';
 
 jest.mock('~/mr_popover/index', () => jest.fn());
-
-const localVue = createLocalVue();
 
 describe('system note component', () => {
   let vm;
@@ -34,7 +32,6 @@ describe('system note component', () => {
 
     vm = mount(IssueSystemNote, {
       store,
-      localVue,
       propsData: props,
       attachToDocument: true,
       sync: false,

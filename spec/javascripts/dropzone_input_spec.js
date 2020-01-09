@@ -39,17 +39,17 @@ describe('dropzone_input', () => {
       const event = $.Event('paste');
       const origEvent = new Event('paste');
       const pasteData = new DataTransfer();
-      pasteData.setData('text/plain', 'hello world');
-      pasteData.setData('text/html', '<table></table>');
+      pasteData.setData('text/plain', 'Hello World');
+      pasteData.setData('text/html', '<table><tr><td>Hello World</td></tr></table>');
       origEvent.clipboardData = pasteData;
       event.originalEvent = origEvent;
 
-      spyOn(PasteMarkdownTable, 'isTable').and.callThrough();
+      spyOn(PasteMarkdownTable.prototype, 'isTable').and.callThrough();
       spyOn(PasteMarkdownTable.prototype, 'convertToTableMarkdown').and.callThrough();
 
       $('.js-gfm-input').trigger(event);
 
-      expect(PasteMarkdownTable.isTable).toHaveBeenCalled();
+      expect(PasteMarkdownTable.prototype.isTable).toHaveBeenCalled();
       expect(PasteMarkdownTable.prototype.convertToTableMarkdown).toHaveBeenCalled();
     });
   });

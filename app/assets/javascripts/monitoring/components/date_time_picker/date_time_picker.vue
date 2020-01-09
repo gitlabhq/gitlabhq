@@ -5,13 +5,20 @@ import Icon from '~/vue_shared/components/icon.vue';
 import DateTimePickerInput from './date_time_picker_input.vue';
 import {
   getTimeDiff,
+  isValidDate,
   getTimeWindow,
   stringToISODate,
   ISODateToString,
   truncateZerosInDateTime,
   isDateTimePickerInputValid,
 } from '~/monitoring/utils';
+
 import { timeWindows } from '~/monitoring/constants';
+
+const events = {
+  apply: 'apply',
+  invalid: 'invalid',
+};
 
 export default {
   components: {
@@ -23,77 +30,94 @@ export default {
     GlDropdownItem,
   },
   props: {
+    start: {
+      type: String,
+      required: true,
+    },
+    end: {
+      type: String,
+      required: true,
+    },
     timeWindows: {
       type: Object,
       required: false,
       default: () => timeWindows,
     },
-    selectedTimeWindow: {
-      type: Object,
-      required: false,
-      default: () => {},
-    },
   },
   data() {
     return {
-      selectedTimeWindowText: '',
-      customTime: {
-        from: null,
-        to: null,
-      },
+      startDate: this.start,
+      endDate: this.end,
     };
   },
   computed: {
-    applyEnabled() {
-      return Boolean(this.inputState.from && this.inputState.to);
+    startInputValid() {
+      return isValidDate(this.startDate);
     },
-    inputState() {
-      const { from, to } = this.customTime;
-      return {
-        from: from && isDateTimePickerInputValid(from),
-        to: to && isDateTimePickerInputValid(to),
-      };
+    endInputValid() {
+      return isValidDate(this.endDate);
     },
-  },
-  watch: {
-    selectedTimeWindow() {
-      this.verifyTimeRange();
+    isValid() {
+      return this.startInputValid && this.endInputValid;
+    },
+
+    startInput: {
+      get() {
+        return this.startInputValid ? this.formatDate(this.startDate) : this.startDate;
+      },
+      set(val) {
+        // Attempt to set a formatted date if possible
+        this.startDate = isDateTimePickerInputValid(val) ? stringToISODate(val) : val;
+      },
+    },
+    endInput: {
+      get() {
+        return this.endInputValid ? this.formatDate(this.endDate) : this.endDate;
+      },
+      set(val) {
+        // Attempt to set a formatted date if possible
+        this.endDate = isDateTimePickerInputValid(val) ? stringToISODate(val) : val;
+      },
+    },
+
+    timeWindowText() {
+      const timeWindow = getTimeWindow({ start: this.start, end: this.end });
+      if (timeWindow) {
+        return this.timeWindows[timeWindow];
+      } else if (isValidDate(this.start) && isValidDate(this.end)) {
+        return sprintf(s__('%{start} to %{end}'), {
+          start: this.formatDate(this.start),
+          end: this.formatDate(this.end),
+        });
+      }
+      return '';
     },
   },
   mounted() {
-    this.verifyTimeRange();
+    // Validate on mounted, and trigger an update if needed
+    if (!this.isValid) {
+      this.$emit(events.invalid);
+    }
   },
   methods: {
-    activeTimeWindow(key) {
-      return this.timeWindows[key] === this.selectedTimeWindowText;
+    formatDate(date) {
+      return truncateZerosInDateTime(ISODateToString(date));
     },
-    setCustomTimeWindowParameter() {
-      this.$emit('onApply', {
-        start: stringToISODate(this.customTime.from),
-        end: stringToISODate(this.customTime.to),
-      });
-    },
-    setTimeWindowParameter(key) {
+    setTimeWindow(key) {
       const { start, end } = getTimeDiff(key);
-      this.$emit('onApply', {
-        start,
-        end,
-      });
+      this.startDate = start;
+      this.endDate = end;
+
+      this.apply();
     },
     closeDropdown() {
       this.$refs.dropdown.hide();
     },
-    verifyTimeRange() {
-      const range = getTimeWindow(this.selectedTimeWindow);
-      if (range) {
-        this.selectedTimeWindowText = this.timeWindows[range];
-      } else {
-        this.customTime = {
-          from: truncateZerosInDateTime(ISODateToString(this.selectedTimeWindow.start)),
-          to: truncateZerosInDateTime(ISODateToString(this.selectedTimeWindow.end)),
-        };
-        this.selectedTimeWindowText = sprintf(s__('%{from} to %{to}'), this.customTime);
-      }
+    apply() {
+      this.$emit(events.apply, {
+        start: this.startDate,
+        end: this.endDate,
+      });
     },
   },
 };
@@ -101,7 +125,7 @@ export default {
 <template>
   <gl-dropdown
     ref="dropdown"
-    :text="selectedTimeWindowText"
+    :text="timeWindowText"
     menu-class="time-window-dropdown-menu"
     class="js-time-window-dropdown"
   >
@@ -113,24 +137,21 @@ export default {
       >
         <date-time-picker-input
           id="custom-time-from"
-          v-model="customTime.from"
+          v-model="startInput"
           :label="__('From')"
-          :state="inputState.from"
+          :state="startInputValid"
         />
         <date-time-picker-input
           id="custom-time-to"
-          v-model="customTime.to"
+          v-model="endInput"
           :label="__('To')"
-          :state="inputState.to"
+          :state="endInputValid"
         />
         <gl-form-group>
           <gl-button @click="closeDropdown">{{ __('Cancel') }}</gl-button>
-          <gl-button
-            variant="success"
-            :disabled="!applyEnabled"
-            @click="setCustomTimeWindowParameter"
-            >{{ __('Apply') }}</gl-button
-          >
+          <gl-button variant="success" :disabled="!isValid" @click="apply()">
+            {{ __('Apply') }}
+          </gl-button>
         </gl-form-group>
       </gl-form-group>
       <gl-form-group
@@ -142,14 +163,14 @@ export default {
         <gl-dropdown-item
           v-for="(value, key) in timeWindows"
           :key="key"
-          :active="activeTimeWindow(key)"
+          :active="value === timeWindowText"
           active-class="active"
-          @click="setTimeWindowParameter(key)"
+          @click="setTimeWindow(key)"
         >
           <icon
             name="mobile-issue-close"
             class="align-bottom"
-            :class="{ invisible: !activeTimeWindow(key) }"
+            :class="{ invisible: value !== timeWindowText }"
           />
           {{ value }}
         </gl-dropdown-item>

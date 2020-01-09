@@ -1,8 +1,6 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import SuggestionDiffHeader from '~/vue_shared/components/markdown/suggestion_diff_header.vue';
-
-const localVue = createLocalVue();
 
 const DEFAULT_PROPS = {
   canApply: true,
@@ -14,12 +12,11 @@ describe('Suggestion Diff component', () => {
   let wrapper;
 
   const createComponent = props => {
-    wrapper = shallowMount(localVue.extend(SuggestionDiffHeader), {
+    wrapper = shallowMount(SuggestionDiffHeader, {
       propsData: {
         ...DEFAULT_PROPS,
         ...props,
       },
-      localVue,
       sync: false,
       attachToDocument: true,
     });

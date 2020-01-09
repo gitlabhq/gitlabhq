@@ -178,18 +178,17 @@ module Gitlab
 
       # rubocop: disable CodeReuse/ActiveRecord
       def services_usage
-        types = {
-          SlackService: :projects_slack_notifications_active,
-          SlackSlashCommandsService: :projects_slack_slash_active,
-          PrometheusService: :projects_prometheus_active,
-          CustomIssueTrackerService: :projects_custom_issue_tracker_active,
-          JenkinsService: :projects_jenkins_active,
-          MattermostService: :projects_mattermost_active
-        }
+        service_counts = count(Service.active.where(template: false).where.not(type: 'JiraService').group(:type), fallback: Hash.new(-1))
 
-        results = count(Service.active.by_type(types.keys).group(:type), fallback: Hash.new(-1))
-        types.each_with_object({}) { |(klass, key), response| response[key] = results[klass.to_s] || 0 }
-          .merge(jira_usage)
+        results = Service.available_services_names.each_with_object({}) do |service_name, response|
+          response["projects_#{service_name}_active".to_sym] = service_counts["#{service_name}_service".camelize] || 0
+        end
+
+        # Keep old Slack keys for backward compatibility, https://gitlab.com/gitlab-data/analytics/issues/3241
+        results[:projects_slack_notifications_active] = results[:projects_slack_active]
+        results[:projects_slack_slash_active] = results[:projects_slack_slash_commands_active]
+
+        results.merge(jira_usage)
       end
 
       def jira_usage
@@ -223,6 +222,7 @@ module Gitlab
 
         results
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def user_preferences_usage
         {} # augmented in EE
@@ -233,7 +233,6 @@ module Gitlab
       rescue ActiveRecord::StatementInvalid
         fallback
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       def approximate_counts
         approx_counts = Gitlab::Database::Count.approximate_counts(APPROXIMATE_COUNT_MODELS)

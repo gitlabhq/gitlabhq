@@ -17,8 +17,8 @@ describe Gitlab::UsageData do
       create(:service, project: projects[0], type: 'SlackSlashCommandsService', active: true)
       create(:service, project: projects[1], type: 'SlackService', active: true)
       create(:service, project: projects[2], type: 'SlackService', active: true)
-      create(:service, project: projects[2], type: 'MattermostService', active: true)
-      create(:service, project: projects[2], type: 'JenkinsService', active: true)
+      create(:service, project: projects[2], type: 'MattermostService', active: false)
+      create(:service, project: projects[2], type: 'MattermostService', active: true, template: true)
       create(:service, project: projects[2], type: 'CustomIssueTrackerService', active: true)
       create(:project_error_tracking_setting, project: projects[0])
       create(:project_error_tracking_setting, project: projects[1], enabled: false)
@@ -168,13 +168,15 @@ describe Gitlab::UsageData do
         pool_repositories
         projects
         projects_imported_from_github
+        projects_asana_active
         projects_jira_active
         projects_jira_server_active
         projects_jira_cloud_active
         projects_slack_notifications_active
         projects_slack_slash_active
+        projects_slack_active
+        projects_slack_slash_commands_active
         projects_custom_issue_tracker_active
-        projects_jenkins_active
         projects_mattermost_active
         projects_prometheus_active
         projects_with_repositories_enabled
@@ -203,15 +205,17 @@ describe Gitlab::UsageData do
       count_data = subject[:counts]
 
       expect(count_data[:projects]).to eq(4)
+      expect(count_data[:projects_asana_active]).to eq(0)
       expect(count_data[:projects_prometheus_active]).to eq(1)
       expect(count_data[:projects_jira_active]).to eq(4)
       expect(count_data[:projects_jira_server_active]).to eq(2)
       expect(count_data[:projects_jira_cloud_active]).to eq(2)
       expect(count_data[:projects_slack_notifications_active]).to eq(2)
       expect(count_data[:projects_slack_slash_active]).to eq(1)
+      expect(count_data[:projects_slack_active]).to eq(2)
+      expect(count_data[:projects_slack_slash_commands_active]).to eq(1)
       expect(count_data[:projects_custom_issue_tracker_active]).to eq(1)
-      expect(count_data[:projects_jenkins_active]).to eq(1)
-      expect(count_data[:projects_mattermost_active]).to eq(1)
+      expect(count_data[:projects_mattermost_active]).to eq(0)
       expect(count_data[:projects_with_repositories_enabled]).to eq(3)
       expect(count_data[:projects_with_error_tracking_enabled]).to eq(1)
       expect(count_data[:issues_created_from_gitlab_error_tracking_ui]).to eq(1)

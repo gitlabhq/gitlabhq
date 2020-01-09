@@ -1,17 +1,14 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import Callout from '~/vue_shared/components/callout.vue';
 
 const TEST_MESSAGE = 'This is a callout message!';
 const TEST_SLOT = '<button>This is a callout slot!</button>';
 
-const localVue = createLocalVue();
-
 describe('Callout Component', () => {
   let wrapper;
 
   const factory = options => {
-    wrapper = shallowMount(localVue.extend(Callout), {
-      localVue,
+    wrapper = shallowMount(Callout, {
       ...options,
     });
   };

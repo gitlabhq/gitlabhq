@@ -12,7 +12,7 @@ module QA
             fill_in 'password', with: QA::Runtime::Env.github_password
             click_on 'Sign in'
 
-            Support::Retrier.retry_until(exit_on_failure: true, sleep_interval: 35) do
+            Support::Retrier.retry_until(raise_on_failure: true, sleep_interval: 35) do
               otp = OnePassword::CLI.new.otp
 
               fill_in 'otp', with: otp

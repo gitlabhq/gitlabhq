@@ -269,9 +269,6 @@ msgstr ""
 msgid "%{firstLabel} +%{labelCount} more"
 msgstr ""
 
-msgid "%{from} to %{to}"
-msgstr ""
-
 msgid "%{global_id} is not a valid id for %{expected_type}."
 msgstr ""
 
@@ -368,6 +365,9 @@ msgid "%{size} bytes"
 msgstr ""
 
 msgid "%{spammable_titlecase} was submitted to Akismet successfully."
+msgstr ""
+
+msgid "%{start} to %{end}"
 msgstr ""
 
 msgid "%{state} epics"
@@ -557,6 +557,9 @@ msgid_plural "%d groups"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "1 hour"
+msgstr ""
+
 msgid "1 merged merge request"
 msgid_plural "%{merge_requests} merged merge requests"
 msgstr[0] ""
@@ -607,6 +610,9 @@ msgstr ""
 msgid "20-29 contributions"
 msgstr ""
 
+msgid "24 hours"
+msgstr ""
+
 msgid "2FA"
 msgstr ""
 
@@ -617,6 +623,9 @@ msgid "3 days"
 msgstr ""
 
 msgid "3 hours"
+msgstr ""
+
+msgid "30 days"
 msgstr ""
 
 msgid "30 minutes"
@@ -638,6 +647,9 @@ msgid "404|Page Not Found"
 msgstr ""
 
 msgid "404|Please contact your GitLab administrator if you think this is a mistake."
+msgstr ""
+
+msgid "7 days"
 msgstr ""
 
 msgid "8 hours"
@@ -11478,7 +11490,7 @@ msgstr ""
 msgid "Metrics|Legend label (optional)"
 msgstr ""
 
-msgid "Metrics|Link contains an invalid time window."
+msgid "Metrics|Link contains an invalid time window, please verify the link to see the requested time range."
 msgstr ""
 
 msgid "Metrics|Max"
@@ -18795,6 +18807,9 @@ msgid "ThreatMonitoring|Environment"
 msgstr ""
 
 msgid "ThreatMonitoring|Requests"
+msgstr ""
+
+msgid "ThreatMonitoring|Show last"
 msgstr ""
 
 msgid "ThreatMonitoring|Something went wrong, unable to fetch WAF statistics"

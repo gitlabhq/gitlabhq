@@ -22,8 +22,10 @@ import GraphGroup from './graph_group.vue';
 import EmptyState from './empty_state.vue';
 import GroupEmptyState from './group_empty_state.vue';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
-import { getTimeDiff, isValidDate, getAddMetricTrackingOptions } from '../utils';
+import { getTimeDiff, getAddMetricTrackingOptions } from '../utils';
 import { metricStates } from '../constants';
+
+const defaultTimeDiff = getTimeDiff();
 
 export default {
   components: {
@@ -168,9 +170,10 @@ export default {
     return {
       state: 'gettingStarted',
       formIsValid: null,
-      selectedTimeWindow: {},
-      isRearrangingPanels: false,
+      startDate: getParameterValues('start')[0] || defaultTimeDiff.start,
+      endDate: getParameterValues('end')[0] || defaultTimeDiff.end,
       hasValidDates: true,
+      isRearrangingPanels: false,
     };
   },
   computed: {
@@ -228,24 +231,10 @@ export default {
     if (!this.hasMetrics) {
       this.setGettingStartedEmptyState();
     } else {
-      const defaultRange = getTimeDiff();
-      const start = getParameterValues('start')[0] || defaultRange.start;
-      const end = getParameterValues('end')[0] || defaultRange.end;
-
-      const range = {
-        start,
-        end,
-      };
-
-      this.selectedTimeWindow = range;
-
-      if (!isValidDate(start) || !isValidDate(end)) {
-        this.hasValidDates = false;
-        this.showInvalidDateError();
-      } else {
-        this.hasValidDates = true;
-        this.fetchData(range);
-      }
+      this.fetchData({
+        start: this.startDate,
+        end: this.endDate,
+      });
     }
   },
   methods: {
@@ -267,9 +256,20 @@ export default {
         key,
       });
     },
-    showInvalidDateError() {
-      createFlash(s__('Metrics|Link contains an invalid time window.'));
+
+    onDateTimePickerApply(params) {
+      redirectTo(mergeUrlParams(params, window.location.href));
     },
+    onDateTimePickerInvalid() {
+      createFlash(
+        s__(
+          'Metrics|Link contains an invalid time window, please verify the link to see the requested time range.',
+        ),
+      );
+      this.startDate = defaultTimeDiff.start;
+      this.endDate = defaultTimeDiff.end;
+    },
+
     generateLink(group, title, yLabel) {
       const dashboard = this.currentDashboard || this.firstDashboard.path;
       const params = _.pick({ dashboard, group, title, y_label: yLabel }, value => value != null);
@@ -286,9 +286,6 @@ export default {
     },
     submitCustomMetricsForm() {
       this.$refs.customMetricsForm.submit();
-    },
-    onDateTimePickerApply(timeWindowUrlParams) {
-      return redirectTo(mergeUrlParams(timeWindowUrlParams, window.location.href));
     },
     /**
      * Return a single empty state for a group.
@@ -378,15 +375,16 @@ export default {
           </gl-form-group>
 
           <gl-form-group
-            v-if="hasValidDates"
             :label="s__('Metrics|Show last')"
             label-size="sm"
             label-for="monitor-time-window-dropdown"
             class="col-sm-6 col-md-6 col-lg-4"
           >
             <date-time-picker
-              :selected-time-window="selectedTimeWindow"
-              @onApply="onDateTimePickerApply"
+              :start="startDate"
+              :end="endDate"
+              @apply="onDateTimePickerApply"
+              @invalid="onDateTimePickerInvalid"
             />
           </gl-form-group>
         </template>

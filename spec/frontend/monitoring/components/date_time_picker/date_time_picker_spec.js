@@ -3,10 +3,8 @@ import DateTimePicker from '~/monitoring/components/date_time_picker/date_time_p
 import { timeWindows } from '~/monitoring/constants';
 
 const timeWindowsCount = Object.keys(timeWindows).length;
-const selectedTimeWindow = {
-  start: '2019-10-10T07:00:00.000Z',
-  end: '2019-10-13T07:00:00.000Z',
-};
+const start = '2019-10-10T07:00:00.000Z';
+const end = '2019-10-13T07:00:00.000Z';
 const selectedTimeWindowText = `3 days`;
 
 describe('DateTimePicker', () => {
@@ -28,7 +26,8 @@ describe('DateTimePicker', () => {
     dateTimePicker = mount(DateTimePicker, {
       propsData: {
         timeWindows,
-        selectedTimeWindow,
+        start,
+        end,
         ...props,
       },
       sync: false,
@@ -66,10 +65,8 @@ describe('DateTimePicker', () => {
 
   it('renders inputs with h/m/s truncated if its all 0s', done => {
     createComponent({
-      selectedTimeWindow: {
-        start: '2019-10-10T00:00:00.000Z',
-        end: '2019-10-14T00:10:00.000Z',
-      },
+      start: '2019-10-10T00:00:00.000Z',
+      end: '2019-10-14T00:10:00.000Z',
     });
     dateTimePicker.vm.$nextTick(() => {
       expect(dateTimePicker.find('#custom-time-from').element.value).toBe('2019-10-10');
@@ -98,8 +95,10 @@ describe('DateTimePicker', () => {
     });
   });
 
-  it('renders a disabled apply button on load', () => {
-    createComponent();
+  it('renders a disabled apply button on wrong input', () => {
+    createComponent({
+      start: 'invalid-input-date',
+    });
 
     expect(applyButtonElement().getAttribute('disabled')).toBe('disabled');
   });
@@ -131,29 +130,29 @@ describe('DateTimePicker', () => {
     fillInputAndBlur('#custom-time-from', '2019-10-01')
       .then(() => fillInputAndBlur('#custom-time-to', '2019-10-19'))
       .then(() => {
-        dateTimePicker.vm.$nextTick(() => {
-          expect(applyButtonElement().getAttribute('disabled')).toBeNull();
-          done();
-        });
+        expect(applyButtonElement().getAttribute('disabled')).toBeNull();
+        done();
       })
-      .catch(done);
+      .catch(done.fail);
   });
 
-  it('returns an object when apply is clicked', done => {
+  it('emits dates in an object when apply is clicked', done => {
     createComponent();
     fillInputAndBlur('#custom-time-from', '2019-10-01')
       .then(() => fillInputAndBlur('#custom-time-to', '2019-10-19'))
       .then(() => {
-        jest.spyOn(dateTimePicker.vm, '$emit');
         applyButtonElement().click();
 
-        expect(dateTimePicker.vm.$emit).toHaveBeenCalledWith('onApply', {
-          end: '2019-10-19T00:00:00Z',
-          start: '2019-10-01T00:00:00Z',
-        });
+        expect(dateTimePicker.emitted().apply).toHaveLength(1);
+        expect(dateTimePicker.emitted().apply[0]).toEqual([
+          {
+            end: '2019-10-19T00:00:00Z',
+            start: '2019-10-01T00:00:00Z',
+          },
+        ]);
         done();
       })
-      .catch(done);
+      .catch(done.fail);
   });
 
   it('hides the popover with cancel button', done => {

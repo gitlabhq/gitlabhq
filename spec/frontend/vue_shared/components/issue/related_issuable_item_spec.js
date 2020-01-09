@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import RelatedIssuableItem from '~/vue_shared/components/issue/related_issuable_item.vue';
 import {
@@ -29,10 +29,7 @@ describe('RelatedIssuableItem', () => {
   };
 
   beforeEach(() => {
-    const localVue = createLocalVue();
-
-    wrapper = mount(localVue.extend(RelatedIssuableItem), {
-      localVue,
+    wrapper = mount(RelatedIssuableItem, {
       slots,
       sync: false,
       attachToDocument: true,

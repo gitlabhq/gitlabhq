@@ -176,11 +176,11 @@ export default function dropzoneInput(form) {
     const pasteEvent = event.originalEvent;
     const { clipboardData } = pasteEvent;
     if (clipboardData && clipboardData.items) {
+      const converter = new PasteMarkdownTable(clipboardData);
       // Apple Numbers copies a table as an image, HTML, and text, so
       // we need to check for the presence of a table first.
-      if (PasteMarkdownTable.isTable(clipboardData)) {
+      if (converter.isTable()) {
         event.preventDefault();
-        const converter = new PasteMarkdownTable(clipboardData);
         const text = converter.convertToTableMarkdown();
         pasteText(text);
       } else {

@@ -1,4 +1,4 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import { GlDropdownItem } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
@@ -7,8 +7,6 @@ import Dashboard from '~/monitoring/components/dashboard.vue';
 import { createStore } from '~/monitoring/stores';
 import { propsData, setupComponentStore } from '../init_utils';
 import { metricsGroupsAPIResponse, mockApiEndpoint } from '../mock_data';
-
-const localVue = createLocalVue();
 
 jest.mock('~/lib/utils/url_utility', () => ({
   getParameterValues: jest.fn().mockImplementation(param => {
@@ -25,8 +23,7 @@ describe('dashboard time window', () => {
   let mock;
 
   const createComponentWrapperMounted = (props = {}, options = {}) => {
-    wrapper = mount(localVue.extend(Dashboard), {
-      localVue,
+    wrapper = mount(Dashboard, {
       sync: false,
       propsData: { ...propsData, ...props },
       store,

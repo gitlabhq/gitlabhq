@@ -1,4 +1,4 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { formatDate, getTimeago } from '~/lib/utils/datetime_utility';
 
@@ -10,7 +10,6 @@ describe('Time ago with tooltip component', () => {
       attachToDocument: true,
       sync: false,
       propsData,
-      localVue: createLocalVue(),
     });
   };
   const timestamp = '2017-05-08T14:57:39.781Z';

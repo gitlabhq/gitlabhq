@@ -488,8 +488,9 @@ module QA
     end
     autoload :Api, 'qa/support/api'
     autoload :Dates, 'qa/support/dates'
-    autoload :Waiter, 'qa/support/waiter'
+    autoload :Repeater, 'qa/support/repeater'
     autoload :Retrier, 'qa/support/retrier'
+    autoload :Waiter, 'qa/support/waiter'
     autoload :WaitForRequests, 'qa/support/wait_for_requests'
   end
 end

@@ -1,7 +1,5 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-
-const localVue = createLocalVue();
 
 describe('GitLab Feature Flags Mixin', () => {
   let wrapper;
@@ -20,7 +18,6 @@ describe('GitLab Feature Flags Mixin', () => {
     };
 
     wrapper = shallowMount(component, {
-      localVue,
       provide: {
         glFeatures: { ...(gon.features || {}) },
       },
