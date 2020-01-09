@@ -5,16 +5,16 @@ type: reference
 # Continuous Integration and Deployment Admin settings **(CORE ONLY)**
 
 In this area, you will find settings for Auto DevOps, Runners and job artifacts.
-You can find it in the admin area, under **Settings > Continuous Integration and Deployment**.
+You can find it in the **Admin Area > Settings > CI/CD**.
 
-![Admin area settings button](../img/admin_area_settings_button.png)
+![Admin Area settings button](../img/admin_area_settings_button.png)
 
 ## Auto DevOps **(CORE ONLY)**
 
 To enable (or disable) [Auto DevOps](../../../topics/autodevops/index.md)
 for all projects:
 
-1. Go to **Admin area > Settings > Continuous Integration and Deployment**
+1. Go to **Admin Area > Settings > CI/CD**
 1. Check (or uncheck to disable) the box that says "Default to Auto DevOps pipeline for all projects"
 1. Optionally, set up the [Auto DevOps base domain](../../../topics/autodevops/index.md#auto-devops-base-domain)
    which is going to be used for Auto Deploy and Auto Review Apps.
@@ -43,7 +43,7 @@ To change it at the:
 
 - Instance level:
 
-   1. Go to **Admin area > Settings > Continuous Integration and Deployment**.
+   1. Go to **Admin Area > Settings > CI/CD**.
    1. Change the value of maximum artifacts size (in MB).
    1. Hit **Save changes** for the changes to take effect.
 
@@ -65,12 +65,12 @@ The setting at all levels is only available to GitLab administrators.
 ## Default artifacts expiration **(CORE ONLY)**
 
 The default expiration time of the [job artifacts](../../../administration/job_artifacts.md)
-can be set in the Admin area of your GitLab instance. The syntax of duration is
+can be set in the Admin Area of your GitLab instance. The syntax of duration is
 described in [`artifacts:expire_in`](../../../ci/yaml/README.md#artifactsexpire_in)
 and the default value is `30 days`. On GitLab.com they
 [never expire](../../gitlab_com/index.md#gitlab-cicd).
 
-1. Go to **Admin area > Settings > Continuous Integration and Deployment**.
+1. Go to **Admin Area > Settings > CI/CD**.
 1. Change the value of default expiration time.
 1. Hit **Save changes** for the changes to take effect.
 
@@ -99,17 +99,17 @@ On GitLab.com, the quota is calculated based on your
 
 To change the pipelines minutes quota:
 
-1. Go to **Admin area > Settings > Continuous Integration and Deployment**
+1. Go to **Admin Area > Settings > CI/CD**
 1. Set the pipeline minutes quota limit.
 1. Hit **Save changes** for the changes to take effect
 
 ---
 
-While the setting in the Admin area has a global effect, as an admin you can
+While the setting in the Admin Area has a global effect, as an admin you can
 also change each group's pipeline minutes quota to override the global value.
 
-1. Navigate to the **Groups** admin area and hit the **Edit** button for the
-   group you wish to change the pipeline minutes quota.
+1. Navigate to the **Admin Area > Overview > Groups** and hit the **Edit**
+   button for the group you wish to change the pipeline minutes quota.
 1. Set the pipeline minutes quota to the desired value
 1. Hit **Save changes** for the changes to take effect.
 
@@ -132,8 +132,9 @@ but persisting the traces and artifacts for auditing purposes.
 
 To set the duration for which the jobs will be considered as old and expired:
 
-1. Go to **Admin area > Settings > CI/CD > Continuous Integration and Deployment**.
-1. Change the value of "Archive jobs".
+1. Go to **Admin Area > Settings > CI/CD**.
+1. Expand the **Continuous Integration and Deployment** section.
+1. Set the value of **Archive jobs**.
 1. Hit **Save changes** for the changes to take effect.
 
 Once that time passes, the jobs will be archived and no longer able to be
@@ -145,9 +146,9 @@ for example: <code>15 days</code>, <code>1 month</code>, <code>2 years</code>.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/18073) in GitLab 12.5.
 
 The default CI configuration file path for new projects can be set in the Admin
-area of your GitLab instance (`.gitlab-ci.yml` if not set):
+Area of your GitLab instance (`.gitlab-ci.yml` if not set):
 
-1. Go to **Admin area > Settings > Continuous Integration and Deployment**.
+1. Go to **Admin Area > Settings > CI/CD**.
 1. Input the new path in the **Default CI configuration path** field.
 1. Hit **Save changes** for the changes to take effect.
 
@@ -183,7 +184,7 @@ sourced from:
 
 To set required pipeline configuration:
 
-1. Go to **Admin area > Settings > CI/CD**.
+1. Go to **Admin Area > Settings > CI/CD**.
 1. Expand the **Required pipeline configuration** section.
 1. Select the required configuration from the provided dropdown.
 1. Click **Save changes**.

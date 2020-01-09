@@ -141,7 +141,7 @@ This check is being exempt from Rack Attack.
 > Access token has been deprecated in GitLab 9.4 in favor of [IP whitelist](#ip-whitelist).
 
 An access token needs to be provided while accessing the probe endpoints. The current
-accepted token can be found under the **Admin area ➔ Monitoring ➔ Health check**
+accepted token can be found under the **Admin Area ➔ Monitoring ➔ Health check**
 (`admin/health_check`) page of your GitLab instance.
 
 ![access token](img/health_check_token.png)

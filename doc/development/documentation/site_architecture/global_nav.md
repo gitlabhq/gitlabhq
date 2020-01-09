@@ -86,7 +86,7 @@ The available sections are described on the table below:
 | Section       | Description                                |
 | ------------- | ------------------------------------------ |
 | User          | Documentation for the GitLab's user UI.    |
-| Administrator | Documentation for the GitLab's admin area. |
+| Administrator | Documentation for the GitLab's Admin Area. |
 | Contributor   | Documentation for developing GitLab.       |
 
 The majority of the links available on the nav were added according to the UI.

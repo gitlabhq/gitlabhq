@@ -376,7 +376,7 @@ Global Shared Keys can provide greater security compared to Per-Project Deploy
 Keys since an administrator of the target integrated system is the only one
 who needs to know and configure the private key.
 
-GitLab administrators set up Global Deploy keys in the Admin area under the
+GitLab administrators set up Global Deploy keys in the Admin Area under the
 section **Deploy Keys**. Ensure keys have a meaningful title as that will be
 the primary way for project maintainers and owners to identify the correct Global
 Deploy key to add. For instance, if the key gives access to a SaaS CI instance,

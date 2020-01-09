@@ -35,7 +35,7 @@ describe Clusters::Aws::ProvisionService do
 
     before do
       allow(Clusters::Aws::FetchCredentialsService).to receive(:new)
-        .with(provision_role, provider: provider, region: provider.region)
+        .with(provision_role, provider: provider)
         .and_return(double(execute: credentials))
 
       allow(provider).to receive(:api_client)

@@ -52,7 +52,7 @@ If a user is deleted from the LDAP server, they will be blocked in GitLab as
 well. Users will be immediately blocked from logging in. However, there is an
 LDAP check cache time of one hour (see note) which means users that
 are already logged in or are using Git over SSH will still be able to access
-GitLab for up to one hour. Manually block the user in the GitLab Admin area to
+GitLab for up to one hour. Manually block the user in the GitLab Admin Area to
 immediately block all access.
 
 NOTE: **Note**:

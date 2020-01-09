@@ -27,9 +27,9 @@ include:
 
 NOTE: **Note:**
 You can change the [first day of the week](../../profile/preferences.md) for the entire GitLab instance
-in the **Localization** section of **Admin area > Settings > Preferences**.
+in the **Localization** section of **Admin Area > Settings > Preferences**.
 
-## GitLab.com admin area settings
+## GitLab.com Admin Area settings
 
 Most of the settings under the Admin Area change the behavior of the whole
 GitLab instance. For GitLab.com, the admin settings are available only for the

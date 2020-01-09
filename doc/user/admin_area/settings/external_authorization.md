@@ -40,7 +40,7 @@ Read more about logs GitLab keeps in the [omnibus documentation][omnibus-log-doc
 ## Configuration
 
 The external authorization service can be enabled by an admin on the GitLab's
-admin area under the settings page:
+**Admin Area > Settings > General** page:
 
 ![Enable external authorization service](img/external_authorization_service_settings.png)
 

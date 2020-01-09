@@ -5,7 +5,7 @@ require 'parallel'
 
 # The amount of variance (in bytes) allowed in
 # file size when testing for compression size
-TOLERANCE = 10
+TOLERANCE = 10000
 
 namespace :pngquant do
   # Returns an array of all images eligible for compression

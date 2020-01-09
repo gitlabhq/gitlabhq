@@ -433,8 +433,8 @@ are stored.
 
 ## Set maximum Pages size
 
-The maximum size of the unpacked archive per project can be configured in the
-Admin area under the Application settings in the **Maximum size of pages (MB)**.
+The maximum size of the unpacked archive per project can be configured in
+**Admin Area > Settings > Preferences > Pages**, in **Maximum size of pages (MB)**.
 The default is 100MB.
 
 ## Backup

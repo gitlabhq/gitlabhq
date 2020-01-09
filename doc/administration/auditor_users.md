@@ -9,7 +9,7 @@ resources on the GitLab instance.
 
 Auditor users can have full access to their own resources (projects, groups,
 snippets, etc.), and read-only access to **all** other resources, except the
-Admin area. To put another way, they are just regular users (who can be added
+Admin Area. To put another way, they are just regular users (who can be added
 to projects, create personal snippets, create milestones on their groups, etc.)
 who also happen to have read-only access to all projects on the system that
 they haven't been explicitly [given access][permissions] to.
@@ -28,7 +28,7 @@ To sum up, assuming you have logged-in as an Auditor user:
   have the same access as the [permissions] they were given to. For example, if
   they were added as a Developer, they could then push commits or comment on
   issues.
-- The Auditor cannot view the Admin area, or perform any admin actions.
+- The Auditor cannot view the Admin Area, or perform any admin actions.
 
 For more information about what an Auditor can or can't do, see the
 [Permissions and restrictions of an Auditor user](#permissions-and-restrictions-of-an-auditor-user)
@@ -73,7 +73,7 @@ instance, with the following permissions/restrictions:
 - Can read issues / MRs
 - Can read project snippets
 - Cannot be Admin and Auditor at the same time
-- Cannot access the Admin area
+- Cannot access the Admin Area
 - In a group / project they're not a member of:
   - Cannot access project settings
   - Cannot access group settings

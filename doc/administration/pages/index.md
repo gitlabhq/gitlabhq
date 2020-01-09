@@ -257,8 +257,8 @@ When adding a custom domain, users will be required to prove they own it by
 adding a GitLab-controlled verification code to the DNS records for that domain.
 
 If your userbase is private or otherwise trusted, you can disable the
-verification requirement. Navigate to `Admin area ➔ Settings` and uncheck
-**Require users to prove ownership of custom domains** in the Pages section.
+verification requirement. Navigate to **Admin Area > Settings > Preferences** and
+uncheck **Require users to prove ownership of custom domains** in the **Pages** section.
 This setting is enabled by default.
 
 ### Let's Encrypt integration
@@ -395,8 +395,8 @@ Omnibus GitLab 11.1.
 
 ## Set maximum pages size
 
-You can configure the maximum size of the unpacked archive per project in the
-Admin area. Under Application settings, edit the **Maximum size of pages (MB)**.
+You can configure the maximum size of the unpacked archive per project in
+**Admin Area > Settings > Preferences > Pages**, in **Maximum size of pages (MB)**.
 The default is 100MB.
 
 ### Override maximum pages size per project or group **(PREMIUM ONLY)**

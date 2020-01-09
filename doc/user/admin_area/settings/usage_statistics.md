@@ -7,8 +7,8 @@ type: reference
 GitLab Inc. will periodically collect information about your instance in order
 to perform various actions.
 
-All statistics are opt-out, you can enable/disable them from the admin panel
-under **Admin area > Settings > Metrics and profiling > Usage statistics**.
+All statistics are opt-out. You can enable/disable them in the
+**Admin Area > Settings > Metrics and profiling** section **Usage statistics**.
 
 ## Version Check **(CORE ONLY)**
 
@@ -31,7 +31,7 @@ patches will need to be backported, making sure active GitLab instances remain
 secure.
 
 If you disable version check, this information will not be collected.  Enable or
-disable the version check at **Admin area > Settings > Metrics and profiling > Usage statistics**.
+disable the version check in **Admin Area > Settings > Metrics and profiling > Usage statistics**.
 
 ### Request flow example
 
@@ -64,9 +64,9 @@ of the instance.
 
 You can view the exact JSON payload in the administration panel. To view the payload:
 
-1. Go to the **Admin area** (spanner symbol on the top bar).
-1. Expand **Settings** in the left sidebar and click on **Metrics and profiling**.
-1. Expand **Usage statistics** and click on the **Preview payload** button.
+1. Navigate to the **Admin Area > Settings > Metrics and profiling**.
+1. Expand the **Usage statistics** section.
+1. Click the **Preview payload** button.
 
 You can see how [the usage ping data maps to different stages of the product](https://gitlab.com/gitlab-data/analytics/blob/master/transform/snowflake-dbt/data/version_usage_stats_to_stage_mappings.csv).
 
@@ -125,8 +125,8 @@ Once usage ping is enabled, GitLab will gather data from other instances and
 will be able to show [usage statistics](../../instance_statistics/index.md)
 of your instance to your users.
 
-This can be restricted to admins by selecting "Only admins" in the Instance
-Statistics visibility section under **Admin area > Settings > Metrics and profiling > Usage statistics**.
+To make this visible only to admins, go to **Admin Area > Settings > Metrics and profiling**, expand
+**Usage statistics**, and set the **Instance Statistics visibility** option to **Only admins**.
 
 <!-- ## Troubleshooting
 

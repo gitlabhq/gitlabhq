@@ -8288,6 +8288,9 @@ msgstr ""
 msgid "GeoNodes|Node Authentication was successfully repaired."
 msgstr ""
 
+msgid "GeoNodes|Node URL"
+msgstr ""
+
 msgid "GeoNodes|Node was successfully removed."
 msgstr ""
 

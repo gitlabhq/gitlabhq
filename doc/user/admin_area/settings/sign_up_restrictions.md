@@ -68,7 +68,7 @@ addresses.
 
 To access this feature:
 
-1. Navigate to the **Settings > General** in the Admin area.
+1. Navigate to the **Admin Area > Settings > General**.
 1. Expand the **Sign-up restrictions** section.
 
 For the blacklist, you can enter the list manually or upload a `.txt` file that

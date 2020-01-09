@@ -184,7 +184,7 @@ The Auto DevOps base domain is required if you want to make use of
 places:
 
 - either under the cluster's settings, whether for [projects](../../user/project/clusters/index.md#base-domain) or [groups](../../user/group/clusters/index.md#base-domain)
-- or in instance-wide settings in the **admin area > Settings** under the "Continuous Integration and Delivery" section
+- or in instance-wide settings in the **Admin Area > Settings** under the "Continuous Integration and Delivery" section
 - or at the project level as a variable: `KUBE_INGRESS_BASE_DOMAIN`
 - or at the group level as a variable: `KUBE_INGRESS_BASE_DOMAIN`.
 
@@ -263,7 +263,7 @@ the subgroup or project.
 Even when disabled at the instance level, group owners and project maintainers can still enable
 Auto DevOps at the group and project level, respectively.
 
-1. Go to **Admin area > Settings > Continuous Integration and Deployment**.
+1. Go to **Admin Area > Settings > Continuous Integration and Deployment**.
 1. Toggle the checkbox labeled **Default to Auto DevOps pipeline for all projects**.
 1. If enabling, optionally set up the Auto DevOps [base domain](#auto-devops-base-domain) which will be used for Auto Deploy and Auto Review Apps.
 1. Click **Save changes** for the changes to take effect.

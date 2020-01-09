@@ -274,14 +274,14 @@ External users still count towards a license seat.
 An administrator can flag a user as external by either of the following methods:
 
 - Either [through the API](../api/users.md#user-modification).
-- Or by navigating to the **Admin area > Overview > Users** to create a new user
+- Or by navigating to the **Admin Area > Overview > Users** to create a new user
   or edit an existing one. There, you will find the option to flag the user as
   external.
 
 ### Setting new users to external
 
 By default, new users are not set as external users. This behavior can be changed
-by an administrator under the **Admin Area > Settings > General > Account and limit** page.
+by an administrator on the **Admin Area > Settings > General** page, under **Account and limit**.
 
 If you change the default behavior of creating new users as external, you will
 have the option to narrow it down by defining a set of internal users.

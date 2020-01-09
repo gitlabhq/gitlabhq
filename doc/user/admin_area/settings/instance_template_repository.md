@@ -17,10 +17,10 @@ while the project remains secure.
 
 ## Configuration
 
-As an administrator, navigate to **Admin area > Settings > Templates** and
+As an administrator, navigate to **Admin Area > Settings > Templates** and
 select the project to serve as the custom template repository.
 
-![File templates in the admin area](img/file_template_admin_area.png)
+![File templates in the Admin Area](img/file_template_admin_area.png)
 
 Once a project has been selected, you can add custom templates to the repository,
 and they will appear in the appropriate places in the

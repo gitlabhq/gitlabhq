@@ -32,4 +32,4 @@ we can gain early feedback before releasing it for everyone. To enable it:
    Feature.enable(:phabricator_import)
    ```
 
-1. Enable Phabricator as an [import source](../../admin_area/settings/visibility_and_access_controls.md#import-sources) in the Admin area.
+1. Enable Phabricator as an [import source](../../admin_area/settings/visibility_and_access_controls.md#import-sources) in the Admin Area.

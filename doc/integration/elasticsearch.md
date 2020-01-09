@@ -40,7 +40,7 @@ NOTE: **Note:**
 **For a single node Elasticsearch cluster the functional cluster health status will be yellow** (will never be green) because the primary shard is allocated but replicas can not be as there is no other node to which Elasticsearch can assign a replica.
 
 Once the data is added to the database or repository and [Elasticsearch is
-enabled in the admin area](#enabling-elasticsearch) the search index will be
+enabled in the Admin Area](#enabling-elasticsearch) the search index will be
 updated automatically.
 
 ## Elasticsearch repository indexer
@@ -201,7 +201,7 @@ To backfill existing data, you can use one of the methods below to index it in b
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/15390) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.3.
 
-To index via the admin area:
+To index via the Admin Area:
 
 1. [Configure your Elasticsearch host and port](#enabling-elasticsearch).
 1. Create empty indexes using one of the following commands:
