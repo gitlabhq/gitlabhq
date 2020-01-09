@@ -115,6 +115,16 @@ describe API::Releases do
       end
     end
 
+    context 'when tag contains a slash' do
+      let!(:release) { create(:release, project: project, tag: 'debian/2.4.0-1', description: "debian/2.4.0-1") }
+
+      it 'returns 200 HTTP status' do
+        get api("/projects/#{project.id}/releases", maintainer)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
     context 'when user is a guest' do
       let!(:release) do
         create(:release,

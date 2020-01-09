@@ -4,11 +4,10 @@ require 'spec_helper'
 
 describe ProjectPresenter do
   let(:user) { create(:user) }
+  let(:project) { create(:project) }
+  let(:presenter) { described_class.new(project, current_user: user) }
 
   describe '#license_short_name' do
-    let(:project) { create(:project) }
-    let(:presenter) { described_class.new(project, current_user: user) }
-
     context 'when project.repository has a license_key' do
       it 'returns the nickname of the license if present' do
         allow(project.repository).to receive(:license_key).and_return('agpl-3.0')
@@ -33,8 +32,6 @@ describe ProjectPresenter do
   end
 
   describe '#default_view' do
-    let(:presenter) { described_class.new(project, current_user: user) }
-
     context 'user not signed in' do
       let(:user) { nil }
 
@@ -125,7 +122,6 @@ describe ProjectPresenter do
 
   describe '#can_current_user_push_code?' do
     let(:project) { create(:project, :repository) }
-    let(:presenter) { described_class.new(project, current_user: user) }
 
     context 'empty repo' do
       let(:project) { create(:project) }
@@ -163,7 +159,6 @@ describe ProjectPresenter do
 
   context 'statistics anchors (empty repo)' do
     let(:project) { create(:project, :empty_repo) }
-    let(:presenter) { described_class.new(project, current_user: user) }
 
     describe '#files_anchor_data' do
       it 'returns files data' do
@@ -200,7 +195,6 @@ describe ProjectPresenter do
 
   context 'statistics anchors' do
     let(:project) { create(:project, :repository) }
-    let(:presenter) { described_class.new(project, current_user: user) }
 
     describe '#files_anchor_data' do
       it 'returns files data' do
@@ -416,7 +410,6 @@ describe ProjectPresenter do
 
   describe '#statistics_buttons' do
     let(:project) { build(:project) }
-    let(:presenter) { described_class.new(project, current_user: user) }
 
     it 'orders the items correctly' do
       allow(project.repository).to receive(:readme).and_return(double(name: 'readme'))
@@ -435,8 +428,6 @@ describe ProjectPresenter do
   end
 
   describe '#repo_statistics_buttons' do
-    let(:presenter) { described_class.new(project, current_user: user) }
-
     subject(:empty_repo_statistics_buttons) { presenter.empty_repo_statistics_buttons }
 
     before do
@@ -482,6 +473,75 @@ describe ProjectPresenter do
           a_string_including('CHANGELOG'),
           a_string_including('CONTRIBUTING')
         )
+      end
+    end
+  end
+
+  describe '#can_setup_review_app?' do
+    subject { presenter.can_setup_review_app? }
+
+    context 'when the ci/cd file is missing' do
+      before do
+        allow(presenter).to receive(:cicd_missing?).and_return(true)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when the ci/cd file is not missing' do
+      before do
+        allow(presenter).to receive(:cicd_missing?).and_return(false)
+      end
+
+      context 'and the user can create a cluster' do
+        before do
+          allow(Ability).to receive(:allowed?).and_call_original
+          allow(Ability).to receive(:allowed?).with(user, :create_cluster, project).and_return(true)
+        end
+
+        context 'and there is no cluster associated to this project' do
+          let(:project) { create(:project, clusters: []) }
+
+          it { is_expected.to be_truthy }
+        end
+
+        context 'and there is already a cluster associated to this project' do
+          let(:project) { create(:project, clusters: [build(:cluster, :providing_by_gcp)]) }
+
+          it { is_expected.to be_falsey }
+        end
+
+        context 'when a group cluster is instantiated' do
+          let_it_be(:cluster) { create(:cluster, :group) }
+          let_it_be(:group) { cluster.group }
+
+          context 'and the project belongs to this group' do
+            let!(:project) { create(:project, group: group) }
+
+            it { is_expected.to be_falsey }
+          end
+
+          context 'and the project does not belong to this group' do
+            it { is_expected.to be_truthy }
+          end
+        end
+
+        context 'and there is already an instance cluster' do
+          it 'is false' do
+            create(:cluster, :instance)
+
+            is_expected.to be_falsey
+          end
+        end
+      end
+
+      context 'and the user cannot create a cluster' do
+        before do
+          allow(Ability).to receive(:allowed?).and_call_original
+          allow(Ability).to receive(:allowed?).with(user, :create_cluster, project).and_return(false)
+        end
+
+        it { is_expected.to be_falsey }
       end
     end
   end

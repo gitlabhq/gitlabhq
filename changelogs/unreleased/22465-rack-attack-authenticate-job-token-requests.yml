@@ -1,0 +1,5 @@
+---
+title: Authenticate API requests with job tokens for Rack::Attack
+merge_request: 21412
+author:
+type: fixed

@@ -61,6 +61,14 @@ module Gitlab
           safe_provide_metric(:histogram, name, docstring, base_labels, buckets)
         end
 
+        def error_detected!
+          clear_memoization(:prometheus_metrics_enabled)
+
+          PROVIDER_MUTEX.synchronize do
+            @error = true
+          end
+        end
+
         private
 
         def safe_provide_metric(method, name, *args)
@@ -81,7 +89,7 @@ module Gitlab
         end
 
         def prometheus_metrics_enabled_unmemoized
-          metrics_folder_present? && Gitlab::CurrentSettings.prometheus_metrics_enabled || false
+          !error? && metrics_folder_present? && Gitlab::CurrentSettings.prometheus_metrics_enabled || false
         end
       end
     end

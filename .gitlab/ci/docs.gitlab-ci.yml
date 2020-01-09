@@ -50,7 +50,7 @@ docs lint:
     - .default-retry
     - .default-only
     - .only:changes-docs
-  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-docs-lint"
+  image: "registry.gitlab.com/gitlab-org/gitlab-docs:docs-lint"
   stage: test
   dependencies: []
   script:

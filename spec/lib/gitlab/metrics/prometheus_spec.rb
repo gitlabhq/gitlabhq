@@ -17,4 +17,21 @@ describe Gitlab::Metrics::Prometheus, :prometheus do
       expect(all_metrics.registry.metrics.count).to eq(0)
     end
   end
+
+  describe '#error_detected!' do
+    before do
+      allow(all_metrics).to receive(:metrics_folder_present?).and_return(true)
+      stub_application_setting(prometheus_metrics_enabled: true)
+    end
+
+    it 'disables Prometheus metrics' do
+      expect(all_metrics.error?).to be_falsey
+      expect(all_metrics.prometheus_metrics_enabled?).to be_truthy
+
+      all_metrics.error_detected!
+
+      expect(all_metrics.prometheus_metrics_enabled?).to be_falsey
+      expect(all_metrics.error?).to be_truthy
+    end
+  end
 end

@@ -8,6 +8,6 @@ module ClusterQueue
 
   included do
     queue_namespace :gcp_cluster
-    feature_category :kubernetes_configuration
+    feature_category :kubernetes_management
   end
 end

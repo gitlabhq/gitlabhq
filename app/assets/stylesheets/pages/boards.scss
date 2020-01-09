@@ -386,22 +386,19 @@
   margin: 5px;
 }
 
-.issue-boards-sidebar {
+.right-sidebar.issue-boards-sidebar {
   .gutter-toggle {
     bottom: 15px;
     width: 22px;
-    color: $gray-darkest;
+    padding-left: $gl-padding-32;
 
     svg {
       position: absolute;
       top: 50%;
+      right: 0;
       margin-top: (-11px / 2);
-    }
-
-    &:hover {
-      path {
-        fill: $gray-darkest;
-      }
+      height: $gl-font-size-12;
+      width: $gl-font-size-12;
     }
   }
 

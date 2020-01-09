@@ -8,10 +8,10 @@
 #
 ---
 - accessibility_testing
-- account-management
-- agile_portfolio_management
 - analysis
-- audit_management
+- attack_emulation
+- audit_events
+- audit_reports
 - authentication_and_authorization
 - auto_devops
 - backup_restore
@@ -25,25 +25,29 @@
 - code_quality
 - code_review
 - collection
+- compliance_controls
+- compliance_frameworks
 - container_network_security
 - container_registry
 - container_scanning
 - continuous_delivery
 - continuous_integration
 - data_loss_prevention
+- ddos_protection
 - dependency_proxy
 - dependency_scanning
 - design_management
 - devops_score
 - disaster_recovery
 - dynamic_application_security_testing
+- epics
 - error_tracking
 - feature_flags
 - fuzzing
 - geo_replication
 - gitaly
+- gitlab_handbook
 - gitter
-- groups
 - helm_chart_registry
 - importers
 - incident_management
@@ -55,12 +59,13 @@
 - internationalization
 - issue_tracking
 - kanban_boards
-- kubernetes_configuration
+- kubernetes_management
 - language_specific
 - license_compliance
 - live_coding
 - load_testing
 - logging
+- malware_scanning
 - metrics
 - omnibus_package
 - package_registry
@@ -69,7 +74,9 @@
 - release_governance
 - release_orchestration
 - requirements_management
+- responsible_disclosure
 - review_apps
+- roadmaps
 - runbooks
 - runner
 - runtime_application_self_protection
@@ -82,8 +89,9 @@
 - snippets
 - source_code_management
 - static_application_security_testing
+- static_site_editor
 - status_page
-- storage_security
+- subgroups
 - synthetic_monitoring
 - system_testing
 - templates
@@ -100,4 +108,3 @@
 - web_ide
 - web_performance
 - wiki
-- workflow_policies

@@ -173,6 +173,20 @@
     margin-top: 7px;
   }
 
+  .gutter-toggle {
+    margin-left: 20px;
+    padding-left: 10px;
+
+    &:hover {
+      color: $gl-text-color;
+    }
+
+    &:hover,
+    &:focus {
+      text-decoration: none;
+    }
+  }
+
   .block {
     @include clearfix;
     padding: $gl-padding 0;
@@ -193,20 +207,6 @@
 
     .select2-container span {
       margin-top: 0;
-    }
-
-    .gutter-toggle {
-      margin-left: 20px;
-      padding-left: 10px;
-
-      &:hover {
-        color: $gl-text-color;
-      }
-
-      &:hover,
-      &:focus {
-        text-decoration: none;
-      }
     }
 
     &.assignee {

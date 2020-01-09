@@ -96,4 +96,28 @@ describe ReleasePresenter do
       it { is_expected.to be_nil }
     end
   end
+
+  describe '#evidence_file_path' do
+    subject { presenter.evidence_file_path }
+
+    context 'without evidence' do
+      it { is_expected.to be_falsy }
+    end
+
+    context 'with evidence' do
+      let(:release) { create :release, :with_evidence, project: project }
+
+      specify do
+        is_expected.to match /#{evidence_project_release_url(project, release.tag, format: :json)}/
+      end
+    end
+
+    context 'when a tag contains a slash' do
+      let(:release) { create :release, :with_evidence, project: project, tag: 'debian/2.4.0-1' }
+
+      specify do
+        is_expected.to match /#{evidence_project_release_url(project, CGI.escape(release.tag), format: :json)}/
+      end
+    end
+  end
 end
