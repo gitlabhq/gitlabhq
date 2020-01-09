@@ -66,7 +66,7 @@ configured.
 
 When you click this link, an email address is generated and displayed, which should be used
 by **you only**, to create issues in this project. You can save this address as a
-contact in your email client for easy acceess.
+contact in your email client for easy access.
 
 CAUTION: **Caution:**
 This is a private email address, generated just for you. **Keep it to yourself**,
@@ -207,7 +207,7 @@ and https://gitlab.example.com/group/otherproject/issues/23.
 ```
 
 will close `#18`, `#19`, `#20`, and `#21` in the project this commit is pushed to,
-as well as `#22` and `#23` in group/otherproject. `#17` won't be closed as it does
+as well as `#22` and `#23` in `group/otherproject`. `#17` won't be closed as it does
 not match the pattern. It works with multi-line commit messages as well as one-liners
 when used from the command line with `git commit -m`.
 

@@ -106,7 +106,7 @@ To set a limit on how long personal access tokens are valid:
 
 1. Navigate to **Admin Area > Settings > General**.
 1. Expand the **Account and limit** section.
-1. Fill in the **Maximun allowable lifetime for personal access tokens (days)** field.
+1. Fill in the **Maximum allowable lifetime for personal access tokens (days)** field.
 1. Click **Save changes**.
 
 Once a lifetime for personal access tokens is set, GitLab will:

@@ -294,3 +294,149 @@ memory and disk I/O.
 [reconfigure gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"
 [restart gitlab]: restart_gitlab.md#installations-from-source "How to restart GitLab"
 [gitlab workhorse]: https://gitlab.com/gitlab-org/gitlab-workhorse "GitLab Workhorse repository"
+
+## Troubleshooting
+
+### Job artifacts using too much disk space
+
+Job artifacts can fill up your disk space quicker than expected. Some possible
+reasons are:
+
+- Users have configured job artifacts expiration to be longer than necessary.
+- The number of jobs run, and hence artifacts generated, is higher than expected.
+- Job logs are larger than expected, and have accumulated over time.
+
+In these and other cases, you'll need to identify the projects most responsible
+for disk space usage, figure out what types of artifacts are using the most
+space, and in some cases, manually delete job artifacts to reclaim disk space.
+
+#### List projects by total size of job artifacts stored
+
+List the top 20 projects, sorted by the total size of job artifacts stored, by
+running the following code in the Rails console (`sudo gitlab-rails console`):
+
+```ruby
+include ActionView::Helpers::NumberHelper
+ProjectStatistics.order(build_artifacts_size: :desc).limit(20).each do |s|
+  puts "#{number_to_human_size(s.build_artifacts_size)} \t #{s.project.full_path}"
+end
+```
+
+You can change the number of projects listed by modifying `.limit(20)` to the
+number you want.
+
+#### List largest artifacts in a single project
+
+List the 50 largest job artifacts in a single project by running the following
+code in the Rails console (`sudo gitlab-rails console`):
+
+```ruby
+include ActionView::Helpers::NumberHelper
+project = Project.find_by_full_path('path/to/project')
+Ci::JobArtifact.where(project: project).order(size: :desc).limit(50).map { |a| puts "ID: #{a.id} - #{a.file_type}: #{number_to_human_size(a.size)}" }
+```
+
+You can change the number of job artifacts listed by modifying `.limit(50)` to
+the number you want.
+
+#### Delete job artifacts from jobs completed before a specific date
+
+CAUTION: **CAUTION:**
+These commands remove data permanently from the database and from disk. We
+highly recommend running them only under the guidance of a Support Engineer, or
+running them in a test environment with a backup of the instance ready to be
+restored, just in case.
+
+If you need to manually remove job artifacts associated with multiple jobs while
+**retaining their job logs**, this can be done from the Rails console (`sudo gitlab-rails console`):
+
+1. Select jobs to be deleted:
+
+   To select all jobs with artifacts for a single project:
+
+   ```ruby
+   project = Project.find_by_full_path('path/to/project')
+   builds_with_artifacts =  project.builds.with_artifacts_archive
+   ```
+
+   To select all jobs with artifacts across the entire GitLab instance:
+
+   ```ruby
+   builds_with_artifacts = Ci::Build.with_artifacts_archive
+   ```
+
+1. Delete job artifacts older than a specific date:
+
+   NOTE: **NOTE:**
+   This step will also erase artifacts that users have chosen to
+   ["keep"](../user/project/pipelines/job_artifacts.html#browsing-artifacts).
+
+   ```ruby
+   builds_to_clear = builds_with_artifacts.where("finished_at < ?", 1.week.ago)
+   builds_to_clear.find_each do |build|
+     build.artifacts_expire_at = Time.now
+     build.erase_erasable_artifacts!
+   end
+   ```
+
+   `1.week.ago` is a Rails `ActiveSupport::Duration` method which calculates a new
+   date or time in the past. Other valid examples are:
+
+   - `7.days.ago`
+   - `3.months.ago`
+   - `1.year.ago`
+
+#### Delete job artifacts and logs from jobs completed before a specific date
+
+CAUTION: **CAUTION:**
+These commands remove data permanently from the database and from disk. We
+highly recommend running them only under the guidance of a Support Engineer, or
+running them in a test environment with a backup of the instance ready to be
+restored, just in case.
+
+If you need to manually remove ALL job artifacts associated with multiple jobs,
+**including job logs**, this can be done from the Rails console (`sudo gitlab-rails console`):
+
+1. Select jobs to be deleted:
+
+   To select jobs with artifacts for a single project:
+
+   ```ruby
+   project = Project.find_by_full_path('path/to/project')
+   builds_with_artifacts =  project.builds.with_existing_job_artifacts
+   ```
+
+   To select jobs with artifacts across the entire GitLab instance:
+
+   ```ruby
+   builds_with_artifacts = Ci::Build.with_existing_job_artifacts
+   ```
+
+1. Select the user which will be mentioned in the web UI as erasing the job:
+
+   ```ruby
+   admin_user = User.find_by(username: 'username')
+   ```
+
+1. Erase job artifacts and logs older than a specific date:
+
+   ```ruby
+   builds_to_clear = builds_with_artifacts.where("finished_at < ?", 1.week.ago)
+   builds_to_clear.find_each do |build|
+     print "Ci::Build ID #{build.id}... "
+
+     if build.erasable?
+       build.erase(erased_by: admin_user)
+       puts "Erased"
+     else
+       puts "Skipped (Nothing to erase or not erasable)"
+     end
+   end
+   ```
+
+   `1.week.ago` is a Rails `ActiveSupport::Duration` method which calculates a new
+   date or time in the past. Other valid examples are:
+
+   - `7.days.ago`
+   - `3.months.ago`
+   - `1.year.ago`

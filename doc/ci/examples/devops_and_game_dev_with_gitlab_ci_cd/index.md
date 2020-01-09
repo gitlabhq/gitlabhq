@@ -26,7 +26,7 @@ Creating a strong CI/CD pipeline at the beginning of developing another game, [D
 was essential for the fast pace the team worked at. This tutorial will build upon my
 [previous introductory article](https://ryanhallcs.wordpress.com/2017/03/15/devops-and-game-dev/) and go through the following steps:
 
-1. Using code from the previous article to start with a barebones [Phaser](https://phaser.io) game built by a gulp file
+1. Using code from the previous article to start with a bare-bones [Phaser](https://phaser.io) game built by a gulp file
 1. Adding and running unit tests
 1. Creating a `Weapon` class that can be triggered to spawn a `Bullet` in a given direction
 1. Adding a `Player` class that uses this weapon and moves around the screen

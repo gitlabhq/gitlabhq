@@ -3695,7 +3695,7 @@
         {
           "kind": "OBJECT",
           "name": "Epic",
-          "description": null,
+          "description": "Represents an epic.",
           "fields": [
             {
               "name": "author",
@@ -7384,7 +7384,7 @@
         {
           "kind": "ENUM",
           "name": "EpicState",
-          "description": "State of a GitLab epic",
+          "description": "State of an epic.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -8009,7 +8009,7 @@
         {
           "kind": "OBJECT",
           "name": "EpicIssue",
-          "description": null,
+          "description": "Relationship between an epic and an issue",
           "fields": [
             {
               "name": "assignees",
@@ -9230,7 +9230,7 @@
         {
           "kind": "OBJECT",
           "name": "DesignCollection",
-          "description": null,
+          "description": "A collection of designs.",
           "fields": [
             {
               "name": "designs",
@@ -10346,7 +10346,7 @@
         {
           "kind": "OBJECT",
           "name": "Design",
-          "description": null,
+          "description": "A single design",
           "fields": [
             {
               "name": "diffRefs",
@@ -10880,7 +10880,7 @@
         {
           "kind": "ENUM",
           "name": "DesignVersionEvent",
-          "description": "Mutation event of a Design within a Version",
+          "description": "Mutation event of a design within a version",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -11133,7 +11133,7 @@
         {
           "kind": "OBJECT",
           "name": "EpicDescendantCount",
-          "description": null,
+          "description": "Counts of descendent epics.",
           "fields": [
             {
               "name": "closedEpics",
@@ -16943,7 +16943,7 @@
         {
           "kind": "OBJECT",
           "name": "AwardEmoji",
-          "description": null,
+          "description": "An emoji awarded by a user.",
           "fields": [
             {
               "name": "description",
@@ -20689,7 +20689,7 @@
         {
           "kind": "INPUT_OBJECT",
           "name": "EpicTreeNodeFieldsInputType",
-          "description": null,
+          "description": "A node of an epic tree.",
           "fields": null,
           "inputFields": [
             {
@@ -20987,20 +20987,20 @@
         {
           "kind": "ENUM",
           "name": "EpicStateEvent",
-          "description": "State event of a GitLab Epic",
+          "description": "State event of an epic",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
           "enumValues": [
             {
               "name": "REOPEN",
-              "description": "Reopen the Epic",
+              "description": "Reopen the epic",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "CLOSE",
-              "description": "Close the Epic",
+              "description": "Close the epic",
               "isDeprecated": false,
               "deprecationReason": null
             }

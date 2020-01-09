@@ -134,7 +134,7 @@ If you're using CloudFlare, check
   `domain.com` to your GitLab Pages site. Use an `A` record instead.
 > - **Do not** add any special chars after the default Pages
   domain. E.g., don't point `subdomain.domain.com` to
-  or `namespace.gitlab.io/`. Some domain hosting providers may request a trailling dot (`namespace.gitlab.io.`), though.
+  or `namespace.gitlab.io/`. Some domain hosting providers may request a trailing dot (`namespace.gitlab.io.`), though.
 > - GitLab Pages IP on GitLab.com [was changed](https://about.gitlab.com/blog/2017/03/06/we-are-changing-the-ip-of-gitlab-pages-on-gitlab-com/) in 2017.
 > - GitLab Pages IP on GitLab.com [has changed](https://about.gitlab.com/blog/2018/07/19/gcp-move-update/#gitlab-pages-and-custom-domains)
   from `52.167.214.135` to `35.185.44.232` in 2018.

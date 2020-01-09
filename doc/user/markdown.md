@@ -275,7 +275,7 @@ In GitLab, front matter is only used in Markdown files and wiki pages, not the o
 places where Markdown formatting is supported. It must be at the very top of the document,
 and must be between delimiters, as explained below.
 
-The following delimeters are supported:
+The following delimiters are supported:
 
 - YAML (`---`):
 
@@ -601,7 +601,7 @@ Inline `code` has `back-ticks around` it.
 ---
 
 Similarly, a whole block of code can be fenced with triple backticks ```` ``` ````,
-triple tildes (`~~~`), or indended 4 or more spaces to achieve a similar effect for
+triple tildes (`~~~`), or indented 4 or more spaces to achieve a similar effect for
 a larger body of code.
 
 ~~~

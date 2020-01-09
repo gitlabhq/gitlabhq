@@ -743,6 +743,8 @@ Namespace.find_by_full_path("user/proj").namespace_statistics.update(shared_runn
 
 ### Remove artifacts more than a week old
 
+The Latest version of these steps can be found in the [job artifacts documentation](../job_artifacts.md)
+
 ```ruby
 ### SELECTING THE BUILDS TO CLEAR
 # For a single project:

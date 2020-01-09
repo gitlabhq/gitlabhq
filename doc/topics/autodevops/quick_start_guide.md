@@ -30,7 +30,7 @@ Google Kubernetes Engine Integration. All you have to do is [follow this link](h
 ## Creating a new project from a template
 
 We will use one of GitLab's project templates to get started. As the name suggests,
-those projects provide a barebones application built on some well-known frameworks.
+those projects provide a bare-bones application built on some well-known frameworks.
 
 1. In GitLab, click the plus icon (**+**) at the top of the navigation bar and select
    **New project**.

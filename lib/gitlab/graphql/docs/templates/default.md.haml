@@ -9,11 +9,15 @@
 
   The API can be explored interactively using the [GraphiQL IDE](../index.md#graphiql).
 
-  ## Objects
+Each table below documents a GraphQL type. Types match loosely to models, but not all
+fields and methods on a model are available via GraphQL.
 \
 - objects.each do |type|
   - unless type[:fields].empty?
-    = "### #{type[:name]}"
+    = "## #{type[:name]}"
+    - if type[:description]&.present?
+      \
+      = type[:description]
     \
     ~ "| Name  | Type  | Description |"
     ~ "| ---   |  ---- | ----------  |"

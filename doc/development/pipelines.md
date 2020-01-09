@@ -132,11 +132,11 @@ for the list of exact patterns.**
 ## Rules conditions and changes patterns
 
 We're making use of the [`rules` keyword](https://docs.gitlab.com/ee/ci/yaml/#rules) but we're currently
-duplicating the `if` conditions and `changes` patterns lists since they cannot be shared accross
+duplicating the `if` conditions and `changes` patterns lists since they cannot be shared across
 `include`d files as we do with `extends`.
 
 **If you update an `if` condition or `changes`
-patterns list, make sure to mass-update those accross all the CI config files (i.e. `.gitlab/ci/*.yml`).**
+patterns list, make sure to mass-update those across all the CI config files (i.e. `.gitlab/ci/*.yml`).**
 
 ### Canonical commits only
 

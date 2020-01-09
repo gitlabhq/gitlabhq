@@ -30,7 +30,7 @@ You can customize the payload by sending the following parameters. All fields ar
 | `start_time` | DateTime | The time of the incident. If none is provided, a timestamp of the issue will be used. |
 | `service` | String | The affected service. |
 | `monitoring_tool` | String |  The name of the associated monitoring tool. |
-| `hosts` | String or Array | One or more hosts, as to where this incident ocurred. |
+| `hosts` | String or Array | One or more hosts, as to where this incident occurred. |
 
 Example request:
 

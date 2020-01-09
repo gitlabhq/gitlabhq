@@ -10,7 +10,7 @@ module Gitlab
       # It uses graphql-docs helpers and schema parser, more information in https://github.com/gjtorikian/graphql-docs.
       #
       # Arguments:
-      #   schema - the GraphQL schema defition. For GitLab should be: GitlabSchema.graphql_definition
+      #   schema - the GraphQL schema definition. For GitLab should be: GitlabSchema.graphql_definition
       #   output_dir: The folder where the markdown files will be saved
       #   template: The path of the haml template to be parsed
       class Renderer

@@ -172,7 +172,7 @@ this feature. If it's not enabled to your instance, you may ask your GitLab
 administrator to do so.
 
 This is a private email address, generated just for you. **Keep it to yourself**
-as anyone who gets ahold of it can create issues or merge requests as if they were you.
+as anyone who has it can create issues or merge requests as if they were you.
 You can add this address to your contact list for easy access.
 
 ![Create new merge requests by email](img/create_from_email.png)

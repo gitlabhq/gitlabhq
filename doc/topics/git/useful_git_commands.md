@@ -74,7 +74,7 @@ message.
 git stash save
 ```
 
-The default behavor of `stash` is to save, so you can also use just:
+The default behavior of `stash` is to save, so you can also use just:
 
 ```sh
 git stash

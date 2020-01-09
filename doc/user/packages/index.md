@@ -18,7 +18,7 @@ The Packages feature allows GitLab to act as a repository for the following:
 TIP: **Tip:**
 Don't you see your package management system supported yet? Consider contributing
 to GitLab. This [development documentation](../../development/packages.md) will
-guide you through the process. Or check out how other members of the commmunity
+guide you through the process. Or check out how other members of the community
 are adding support for [PHP](https://gitlab.com/gitlab-org/gitlab/merge_requests/17417) or [Terraform](https://gitlab.com/gitlab-org/gitlab/merge_requests/18834).
 
 NOTE: **Note** We are especially interested in adding support for [PyPi](https://gitlab.com/gitlab-org/gitlab/issues/10483), [RubyGems](https://gitlab.com/gitlab-org/gitlab/issues/803), [Debian](https://gitlab.com/gitlab-org/gitlab/issues/5835), and [RPM](https://gitlab.com/gitlab-org/gitlab/issues/5932).

@@ -62,7 +62,7 @@ The available required properties are:
   requesting authorization if no specific label is defined on the project
 
 When using TLS Authentication with a self signed certificate, the CA certificate
-needs to be trused by the openssl installation. When using GitLab installed using
+needs to be trusted by the openssl installation. When using GitLab installed using
 Omnibus, learn to install a custom CA in the
 [omnibus documentation][omnibus-ssl-docs]. Alternatively learn where to install
 custom certificates using `openssl version -d`.

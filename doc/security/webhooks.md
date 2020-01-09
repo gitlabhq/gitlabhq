@@ -60,7 +60,7 @@ and expand **Outbound requests**:
 
 ![Outbound local requests whitelist](img/whitelist.png)
 
-The whilelist entries can be separated by semicolons, commas or whitespaces
+The whitelist entries can be separated by semicolons, commas or whitespaces
 (including newlines) and be in different formats like hostnames, IP addresses and/or
 IP ranges. IPv6 is supported. Hostnames that contain unicode characters should
 use IDNA encoding.

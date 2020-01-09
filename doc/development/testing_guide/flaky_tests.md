@@ -76,7 +76,7 @@ This was originally implemented in: <https://gitlab.com/gitlab-org/gitlab-foss/m
 
 ### Feature tests
 
-- [Be sure to create all the data the test need before starting exercize](https://gitlab.com/gitlab-org/gitlab-foss/issues/32622#note_31128195): <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/12059>
+- [Be sure to create all the data the test need before starting exercise](https://gitlab.com/gitlab-org/gitlab-foss/issues/32622#note_31128195): <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/12059>
 - [Bis](https://gitlab.com/gitlab-org/gitlab-foss/issues/34609#note_34048715): <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/12604>
 - [Bis](https://gitlab.com/gitlab-org/gitlab-foss/issues/34698#note_34276286): <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/12664>
 - [Assert against the underlying database state instead of against a page's content](https://gitlab.com/gitlab-org/gitlab-foss/issues/31437): <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/10934>

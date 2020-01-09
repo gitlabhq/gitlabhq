@@ -19,7 +19,7 @@ Git:
    said 'You need to stop work on that new feature and fix this security
    vulnerability' you can do so very easily in Git.
 1. Having a complete copy of the project and its history on your local machine
-   means every transaction is superfast and Git provides that. You can branch/merge
+   means every transaction is very fast and Git provides that. You can branch/merge
    and experiment in isolation, then clean up your mess before sharing your new
    cool stuff with everyone.
 1. Git also made code review simple because you could share your changes without

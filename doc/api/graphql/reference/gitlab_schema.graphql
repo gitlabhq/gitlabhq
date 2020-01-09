@@ -38,6 +38,9 @@ type AddAwardEmojiPayload {
   errors: [String!]!
 }
 
+"""
+An emoji awarded by a user.
+"""
 type AwardEmoji {
   """
   The emoji description
@@ -529,6 +532,9 @@ type CreateSnippetPayload {
   snippet: Snippet
 }
 
+"""
+A single design
+"""
 type Design implements DesignFields & Noteable {
   """
   The diff refs for this design
@@ -651,6 +657,9 @@ type Design implements DesignFields & Noteable {
   ): DesignVersionConnection!
 }
 
+"""
+A collection of designs.
+"""
 type DesignCollection {
   """
   All designs for the design collection
@@ -979,7 +988,7 @@ type DesignVersionEdge {
 }
 
 """
-Mutation event of a Design within a Version
+Mutation event of a design within a version
 """
 enum DesignVersionEvent {
   """
@@ -1403,6 +1412,9 @@ enum EntryType {
   tree
 }
 
+"""
+Represents an epic.
+"""
 type Epic implements Noteable {
   """
   Author of the epic
@@ -1761,6 +1773,9 @@ type EpicConnection {
   pageInfo: PageInfo!
 }
 
+"""
+Counts of descendent epics.
+"""
 type EpicDescendantCount {
   """
   Number of closed sub-epics
@@ -1798,6 +1813,9 @@ type EpicEdge {
   node: Epic
 }
 
+"""
+Relationship between an epic and an issue
+"""
 type EpicIssue implements Noteable {
   """
   Assignees of the issue
@@ -2246,7 +2264,7 @@ enum EpicSort {
 }
 
 """
-State of a GitLab epic
+State of an epic.
 """
 enum EpicState {
   all
@@ -2255,20 +2273,23 @@ enum EpicState {
 }
 
 """
-State event of a GitLab Epic
+State event of an epic
 """
 enum EpicStateEvent {
   """
-  Close the Epic
+  Close the epic
   """
   CLOSE
 
   """
-  Reopen the Epic
+  Reopen the epic
   """
   REOPEN
 }
 
+"""
+A node of an epic tree.
+"""
 input EpicTreeNodeFieldsInputType {
   """
   The id of the epic_issue or issue that the actual epic or issue is switched with

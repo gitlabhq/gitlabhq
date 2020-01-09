@@ -51,7 +51,7 @@ options to include straightaway (you can also add them later by
 clicking the **Edit** button on the merge request's page at the
 top-right side):
 
-- [Assign](#assignee) the merge request to a colleage for review.With GitLab Starter and higher tiers, you can [assign it to more than one person at a time](#multiple-assignees-starter).
+- [Assign](#assignee) the merge request to a colleague for review.With GitLab Starter and higher tiers, you can [assign it to more than one person at a time](#multiple-assignees-starter).
 - Set a [milestone](../milestones/index.md) to track time-sensitive changes.
 - Add [labels](../labels.md) to help contextualize and filter your merge requests over time.
 - Require [approval](merge_request_approvals.md) from your team. **(STARTER)**

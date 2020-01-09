@@ -129,11 +129,11 @@ successfully, you must replicate their data using some other means.
 | Application data in PostgreSQL                      | **Yes**                  | **Yes**                     |                                             |
 | Project repository                                  | **Yes**                  | **Yes**                     |                                             |
 | Project wiki repository                             | **Yes**                  | **Yes**                     |                                             |
-| Project designs repository                          | **Yes**                  | [No][design-verification]   | Behind feature flag (*1*)                   |
-| Uploads                                             | **Yes**                  | [No][upload-verification]   | Verified only on transfer, or manually (*2*)|
-| LFS objects                                         | **Yes**                  | [No][lfs-verification]      | Verified only on transfer, or manually (*2*)|
-| CI job artifacts (other than traces)                | **Yes**                  | [No][artifact-verification] | Verified only manually (*2*)                |
-| Archived traces                                     | **Yes**                  | [No][artifact-verification] | Verified only on transfer, or manually (*2*)|
+| Project designs repository                          | **Yes**                  | [No][design-verification]   |                                             |
+| Uploads                                             | **Yes**                  | [No][upload-verification]   | Verified only on transfer, or manually (*1*)|
+| LFS objects                                         | **Yes**                  | [No][lfs-verification]      | Verified only on transfer, or manually (*1*)|
+| CI job artifacts (other than traces)                | **Yes**                  | [No][artifact-verification] | Verified only manually (*1*)                |
+| Archived traces                                     | **Yes**                  | [No][artifact-verification] | Verified only on transfer, or manually (*1*)|
 | Personal snippets                                   | **Yes**                  | **Yes**                     |                                             |
 | Project snippets                                    | **Yes**                  | **Yes**                     |                                             |
 | Object pools for forked project deduplication       | **Yes**                  | No                          |                                             |
@@ -147,13 +147,7 @@ successfully, you must replicate their data using some other means.
 | [External merge request diffs][merge-request-diffs] | [No][diffs-replication]  | No                          |                                             |
 | Content in object storage                           | **Yes**                  | No                          |                                             |
 
-- (*1*): Enable the `enable_geo_design_sync` feature flag by running the following in a Rails console:
-
-  ```ruby
-  Feature.disable(:enable_geo_design_sync)
-  ```
-
-- (*2*): The integrity can be verified manually using
+- (*1*): The integrity can be verified manually using
   [Integrity Check Rake Task](../../raketasks/check.md) on both nodes and comparing the output between them.
 
 [design-replication]: https://gitlab.com/groups/gitlab-org/-/epics/1633
