@@ -1,0 +1,5 @@
+---
+title: 'Geo: Check current node in gitlab:geo:check Rake task'
+merge_request: 22436
+author:
+type: added

@@ -18,8 +18,10 @@ class HamService
   private
 
   def akismet
+    user = spam_log.user
     @akismet ||= AkismetService.new(
-      spam_log.user,
+      user.name,
+      user.email,
       spam_log.text,
       ip_address: spam_log.source_ip,
       user_agent: spam_log.user_agent

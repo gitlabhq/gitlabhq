@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 class AkismetService
-  attr_accessor :owner, :text, :options
+  attr_accessor :text, :options
 
-  def initialize(owner, text, options = {})
-    @owner = owner
+  def initialize(owner_name, owner_email, text, options = {})
+    @owner_name = owner_name
+    @owner_email = owner_email
     @text = text
     @options = options
   end
@@ -16,8 +17,8 @@ class AkismetService
       type: 'comment',
       text: text,
       created_at: DateTime.now,
-      author: owner.name,
-      author_email: owner.email,
+      author: owner_name,
+      author_email: owner_email,
       referrer: options[:referrer]
     }
 
@@ -40,6 +41,8 @@ class AkismetService
 
   private
 
+  attr_accessor :owner_name, :owner_email
+
   def akismet_client
     @akismet_client ||= ::Akismet::Client.new(Gitlab::CurrentSettings.akismet_api_key,
                                               Gitlab.config.gitlab.url)
@@ -55,8 +58,8 @@ class AkismetService
     params = {
       type: 'comment',
       text: text,
-      author: owner.name,
-      author_email: owner.email
+      author: owner_name,
+      author_email: owner_email
     }
 
     begin

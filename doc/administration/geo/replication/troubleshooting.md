@@ -51,6 +51,7 @@ Checking Geo ...
 
 GitLab Geo is available ... yes
 GitLab Geo is enabled ... yes
+This machine's Geo node name matches a database record ... yes, found a secondary node named "Shanghai"
 GitLab Geo secondary database is correctly configured ... yes
 Database replication enabled? ... yes
 Database replication working? ... yes
@@ -115,34 +116,36 @@ Any **secondary** nodes should point only to read-only instances.
 
 #### Can Geo detect the current node correctly?
 
-Geo finds the current machine's name in `/etc/gitlab/gitlab.rb` by:
+Geo finds the current machine's Geo node name in `/etc/gitlab/gitlab.rb` by:
 
 - Using the `gitlab_rails['geo_node_name']` setting.
 - If that is not defined, using the `external_url` setting.
 
-To get a machine's name, run:
-
-```sh
-sudo gitlab-rails runner "puts GeoNode.current_node_name"
-```
-
 This name is used to look up the node with the same **Name** in
 **Admin Area > Geo**.
 
-To check if current machine is correctly finding its node:
+To check if the current machine has a node name that matches a node in the
+database, run the check task:
 
 ```sh
-sudo gitlab-rails runner "puts Gitlab::Geo.current_node.inspect"
+sudo gitlab-rake gitlab:geo:check
 ```
 
-and expect something like:
+It displays the current machine's node name and whether the matching database
+record is a **primary** or **secondary** node.
 
-```ruby
-#<GeoNode id: 2, schema: "https", host: "gitlab.example.com", port: 443, relative_url_root: "", primary: false, ...>
+```
+This machine's Geo node name matches a database record ... yes, found a secondary node named "Shanghai"
 ```
 
-By running the command above, `primary` should be `true` when executed in
-the **primary** node, and `false` on any **secondary** node.
+```
+This machine's Geo node name matches a database record ... no
+  Try fixing it:
+  You could add or update a Geo node database record, setting the name to "https://example.com/".
+  Or you could set this machine's Geo node name to match the name of an existing database record: "London", "Shanghai"
+  For more information see:
+  doc/administration/geo/replication/troubleshooting.md#can-geo-detect-the-current-node-correctly
+```
 
 ## Fixing errors found when running the Geo check rake task
 

@@ -183,7 +183,7 @@ Now, it's time to add the newly created public key to your GitLab account.
 
 1. Add your **public** SSH key to your GitLab account by:
    1. Clicking your avatar in the upper right corner and selecting **Settings**.
-   1. Navigating to **SSH Keys** and pasting your **public** key in the **Key** field. If you:
+   1. Navigating to **SSH Keys** and pasting your **public** key from the clipboard into the **Key** field. If you:
       - Created the key with a comment, this will appear in the **Title** field.
       - Created the key without a comment, give your key an identifiable title like _Work Laptop_ or _Home Workstation_.
    1. Click the **Add key** button.

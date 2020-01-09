@@ -104,6 +104,7 @@ module API
 
     # Keep in alphabetical order
     mount ::API::AccessRequests
+    mount ::API::Appearance
     mount ::API::Applications
     mount ::API::Avatar
     mount ::API::AwardEmoji
