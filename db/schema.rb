@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_08_100603) do
+ActiveRecord::Schema.define(version: 2020_01_08_155731) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -3376,7 +3376,8 @@ ActiveRecord::Schema.define(version: 2020_01_08_100603) do
     t.index ["runners_token"], name: "index_projects_on_runners_token"
     t.index ["runners_token_encrypted"], name: "index_projects_on_runners_token_encrypted"
     t.index ["star_count"], name: "index_projects_on_star_count"
-    t.index ["visibility_level", "created_at", "id"], name: "index_projects_on_visibility_level_and_created_at_and_id"
+    t.index ["visibility_level", "created_at", "id"], name: "index_projects_on_visibility_level_created_at_desc_id_desc", order: { created_at: :desc, id: :desc }
+    t.index ["visibility_level", "created_at", "id"], name: "index_projects_on_visibility_level_created_at_id_desc", order: { id: :desc }
   end
 
   create_table "prometheus_alert_events", force: :cascade do |t|

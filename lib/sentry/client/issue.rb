@@ -34,6 +34,10 @@ module Sentry
         map_to_detailed_error(issue)
       end
 
+      def update_issue(issue_id:, params:)
+        http_put(issue_api_url(issue_id), params)[:body]
+      end
+
       private
 
       def get_issues(**keyword_args)
@@ -69,10 +73,6 @@ module Sentry
 
       def get_issue(issue_id:)
         http_get(issue_api_url(issue_id))[:body]
-      end
-
-      def update_issue(issue_id:, params:)
-        http_put(issue_api_url(issue_id), params)[:body]
       end
 
       def issues_api_url

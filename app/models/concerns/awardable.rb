@@ -67,7 +67,9 @@ module Awardable
         )
       ).join_sources
 
-      joins(join_clause).group(awardable_table[:id]).reorder("COUNT(award_emoji.id) #{direction}")
+      joins(join_clause).group(awardable_table[:id]).reorder(
+        Arel.sql("COUNT(award_emoji.id) #{direction}")
+      )
     end
   end
 

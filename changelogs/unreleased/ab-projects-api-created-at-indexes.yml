@@ -1,0 +1,5 @@
+---
+title: Create optimal indexes for created_at order (Projects API)
+merge_request: 22623
+author:
+type: performance

@@ -6,7 +6,9 @@ describe Sentry::Client::Issue do
   include SentryClientHelpers
 
   let(:token) { 'test-token' }
+  let(:sentry_url) { 'https://sentrytest.gitlab.com/api/0' }
   let(:client) { Sentry::Client.new(sentry_url, token) }
+  let(:issue_id) { 503504 }
 
   describe '#list_issues' do
     shared_examples 'issues have correct return type' do |klass|
@@ -225,14 +227,10 @@ describe Sentry::Client::Issue do
       )
     end
 
-    let(:issue_id) { 503504 }
-    let(:sentry_url) { 'https://sentrytest.gitlab.com/api/0' }
     let(:sentry_request_url) { "#{sentry_url}/issues/#{issue_id}/" }
     let!(:sentry_api_request) { stub_sentry_request(sentry_request_url, body: issue_sample_response) }
 
     subject { client.issue_details(issue_id: issue_id) }
-
-    it_behaves_like 'calls sentry api'
 
     it 'escapes issue ID' do
       allow(CGI).to receive(:escape).and_call_original
@@ -287,6 +285,43 @@ describe Sentry::Client::Issue do
 
       it 'has the correct tags' do
         expect(subject.tags).to eq({ level: issue_sample_response['level'], logger: issue_sample_response['logger'] })
+      end
+    end
+  end
+
+  describe '#update_issue' do
+    let(:sentry_url) { 'https://sentrytest.gitlab.com/api/0' }
+    let(:sentry_request_url) { "#{sentry_url}/issues/#{issue_id}/" }
+
+    before do
+      stub_sentry_request(sentry_request_url, :put)
+    end
+
+    let(:params) do
+      {
+        status: 'resolved'
+      }
+    end
+
+    subject { client.update_issue(issue_id: issue_id, params: params) }
+
+    it_behaves_like 'calls sentry api' do
+      let(:sentry_api_request) { stub_sentry_request(sentry_request_url, :put) }
+    end
+
+    it 'returns a truthy result' do
+      expect(subject).to be_truthy
+    end
+
+    context 'error encountered' do
+      let(:error) { StandardError.new('error') }
+
+      before do
+        allow(client).to receive(:update_issue).and_raise(error)
+      end
+
+      it 'raises the error' do
+        expect { subject }.to raise_error(error)
       end
     end
   end

@@ -43,7 +43,7 @@ module Sentry
 
     def http_put(url, params = {})
       http_request do
-        Gitlab::HTTP.put(url, **request_params.merge({ body: params }))
+        Gitlab::HTTP.put(url, **request_params.merge(body: params))
       end
     end
 

@@ -275,6 +275,9 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             get ':issue_id/stack_trace',
               to: 'error_tracking/stack_traces#index',
               as: 'stack_trace'
+            put ':issue_id',
+              to: 'error_tracking#update',
+              as: 'update'
           end
         end
 

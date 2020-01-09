@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Projects::ErrorTrackingController < Projects::ErrorTracking::BaseController
+  respond_to :json
+
   before_action :authorize_read_sentry_issue!
   before_action :set_issue_id, only: :details
 
@@ -22,6 +24,17 @@ class Projects::ErrorTrackingController < Projects::ErrorTracking::BaseControlle
         render_issue_detail_json
       end
     end
+  end
+
+  def update
+    service = ErrorTracking::IssueUpdateService.new(project, current_user, issue_update_params)
+    result = service.execute
+
+    return if handle_errors(result)
+
+    render json: {
+      result: result
+    }
   end
 
   private
@@ -63,6 +76,10 @@ class Projects::ErrorTrackingController < Projects::ErrorTracking::BaseControlle
 
   def list_issues_params
     params.permit(:search_term, :sort, :cursor)
+  end
+
+  def issue_update_params
+    params.permit(:issue_id, :status)
   end
 
   def issue_details_params

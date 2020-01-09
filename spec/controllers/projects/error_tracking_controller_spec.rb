@@ -271,6 +271,58 @@ describe Projects::ErrorTrackingController do
     end
   end
 
+  describe 'PUT #update' do
+    let(:issue_id) { 1234 }
+    let(:issue_update_service) { spy(:issue_update_service) }
+    let(:permitted_params) do
+      ActionController::Parameters.new(
+        { issue_id: issue_id.to_s, status: 'resolved' }
+      ).permit!
+    end
+
+    subject(:update_issue) do
+      put :update, params: issue_params(issue_id: issue_id, status: 'resolved', format: :json)
+    end
+
+    before do
+      expect(ErrorTracking::IssueUpdateService)
+        .to receive(:new).with(project, user, permitted_params)
+        .and_return(issue_update_service)
+    end
+
+    describe 'format json' do
+      context 'update result is successful' do
+        before do
+          expect(issue_update_service).to receive(:execute)
+            .and_return(status: :success, updated: true)
+
+          update_issue
+        end
+
+        it 'returns a success' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('error_tracking/update_issue')
+        end
+      end
+
+      context 'update result is erroneous' do
+        let(:error_message) { 'error message' }
+
+        before do
+          expect(issue_update_service).to receive(:execute)
+            .and_return(status: :error, message: error_message)
+
+          update_issue
+        end
+
+        it 'returns 400 with message' do
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq(error_message)
+        end
+      end
+    end
+  end
+
   private
 
   def issue_params(opts = {})

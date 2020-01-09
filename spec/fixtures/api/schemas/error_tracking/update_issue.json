@@ -1,0 +1,16 @@
+{
+  "type": "object",
+  "required" : [
+    "result"
+  ],
+  "properties" : {
+    "result": {
+      "type": "object",
+      "properties": {
+        "status": { "type": "string" },
+        "updated": { "type": "boolean" }
+      }
+    }
+  },
+  "additionalProperties": false
+}

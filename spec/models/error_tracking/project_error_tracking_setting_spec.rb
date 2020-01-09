@@ -210,6 +210,40 @@ describe ErrorTracking::ProjectErrorTrackingSetting do
     end
   end
 
+  describe '#update_issue' do
+    let(:opts) do
+      { status: 'resolved' }
+    end
+
+    let(:result) do
+      subject.update_issue(**opts)
+    end
+
+    let(:sentry_client) { spy(:sentry_client) }
+
+    context 'successful call to sentry' do
+      before do
+        allow(subject).to receive(:sentry_client).and_return(sentry_client)
+        allow(sentry_client).to receive(:update_issue).with(opts).and_return(true)
+      end
+
+      it 'returns the successful response' do
+        expect(result).to eq(updated: true)
+      end
+    end
+
+    context 'sentry raises an error' do
+      before do
+        allow(subject).to receive(:sentry_client).and_return(sentry_client)
+        allow(sentry_client).to receive(:update_issue).with(opts).and_raise(StandardError)
+      end
+
+      it 'returns the successful response' do
+        expect(result).to eq(error: 'Unexpected Error')
+      end
+    end
+  end
+
   context 'slugs' do
     shared_examples_for 'slug from api_url' do |method, slug|
       context 'when api_url is correct' do
