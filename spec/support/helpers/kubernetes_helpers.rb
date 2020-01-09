@@ -194,11 +194,6 @@ module KubernetesHelpers
       .to_return(kube_response({}))
   end
 
-  def stub_kubeclient_put_cluster_role_binding(api_url, name)
-    WebMock.stub_request(:put, api_url + "/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/#{name}")
-      .to_return(kube_response({}))
-  end
-
   def stub_kubeclient_get_role_binding(api_url, name, namespace: 'default')
     WebMock.stub_request(:get, api_url + "/apis/rbac.authorization.k8s.io/v1/namespaces/#{namespace}/rolebindings/#{name}")
       .to_return(kube_response({}))
@@ -224,18 +219,8 @@ module KubernetesHelpers
       .to_return(kube_response({}))
   end
 
-  def stub_kubeclient_get_namespaces(api_url)
-    WebMock.stub_request(:get, api_url + '/api/v1/namespaces')
-      .to_return(kube_response(kube_v1_namespace_list_body))
-  end
-
-  def stub_kubeclient_get_namespace(api_url, namespace: 'default', response: kube_response({}))
+  def stub_kubeclient_get_namespace(api_url, namespace: 'default')
     WebMock.stub_request(:get, api_url + "/api/v1/namespaces/#{namespace}")
-      .to_return(response)
-  end
-
-  def stub_kubeclient_put_cluster_role(api_url, name)
-    WebMock.stub_request(:put, api_url + "/apis/rbac.authorization.k8s.io/v1/clusterroles/#{name}")
       .to_return(kube_response({}))
   end
 
@@ -268,20 +253,6 @@ module KubernetesHelpers
         { "name" => "serviceaccounts", "namespaced" => true, "kind" => "ServiceAccount" },
         { "name" => "services", "namespaced" => true, "kind" => "Service" },
         { "name" => "namespaces", "namespaced" => true, "kind" => "Namespace" }
-      ]
-    }
-  end
-
-  def kube_v1_namespace_list_body
-    {
-      "kind" => "NamespaceList",
-      "apiVersion" => "v1",
-      "items" => [
-        {
-          "metadata" => {
-            "name" => "knative-serving"
-          }
-        }
       ]
     }
   end

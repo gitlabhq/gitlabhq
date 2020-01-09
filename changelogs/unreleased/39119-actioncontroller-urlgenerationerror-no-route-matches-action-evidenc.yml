@@ -1,0 +1,5 @@
+---
+title: Fix releases page when tag contains a slash
+merge_request: 22527
+author:
+type: fixed

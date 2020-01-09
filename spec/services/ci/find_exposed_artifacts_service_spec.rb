@@ -50,9 +50,38 @@ describe Ci::FindExposedArtifactsService do
       end
     end
 
+    shared_examples 'does not find any matches' do
+      it 'returns empty array' do
+        expect(subject).to eq []
+      end
+    end
+
     let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 
     subject { described_class.new(project, user).for_pipeline(pipeline) }
+
+    context 'with jobs having no exposed artifacts' do
+      let!(:job) do
+        create_job_with_artifacts(artifacts: {
+          paths: ['other_artifacts_0.1.2/doc_sample.txt', 'something-else.html']
+        })
+      end
+
+      it_behaves_like 'does not find any matches'
+    end
+
+    context 'with jobs having no artifacts (metadata)' do
+      let!(:job) do
+        create(:ci_build, pipeline: pipeline, options: {
+          artifacts: {
+            expose_as: 'Exposed artifact',
+            paths: ['other_artifacts_0.1.2/doc_sample.txt', 'something-else.html']
+          }
+        })
+      end
+
+      it_behaves_like 'does not find any matches'
+    end
 
     context 'with jobs having at most 1 matching exposed artifact' do
       let!(:job) do

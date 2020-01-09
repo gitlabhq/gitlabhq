@@ -46,6 +46,8 @@ module Ci
     # it could contain many. We only need to know whether it has 1 or more
     # artifacts, so fetching the first 2 would be sufficient.
     def first_2_metadata_entries_for_artifacts_paths(job)
+      return [] unless job.artifacts_metadata
+
       job.artifacts_paths
         .lazy
         .map { |path| job.artifacts_metadata_entry(path, recursive: true) }

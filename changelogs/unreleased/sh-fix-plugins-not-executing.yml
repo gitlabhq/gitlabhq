@@ -1,0 +1,5 @@
+---
+title: Fix GitLab plugins not working without hooks configured
+merge_request: 22409
+author:
+type: fixed
