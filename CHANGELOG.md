@@ -2,6 +2,25 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.6.3
+
+### Security (1 change)
+
+- Upgrade json-jwt to v1.11.0. !22440
+
+### Fixed (9 changes)
+
+- Fix RefreshMergeRequestsService raises an exception and unnecessary sidekiq retry. !22262
+- Disable Prometheus metrics if initialization fails. !22355
+- Fix bug when trying to expose artifacts and no artifacts are produced by the job. !22378
+- Gracefully error handle CI lint errors in artifacts section. !22388
+- Fix GitLab plugins not working without hooks configured. !22409
+- Fix releases page when tag contains a slash. !22527
+- Reverts Add RBAC permissions for getting knative version. !22560
+- Remove unused keyword from EKS provision service. !22633
+- Fix CAS users being signed out repeatedly. !22704
+
+
 ## 12.6.2
 
 ### Security (6 changes)
