@@ -1932,6 +1932,7 @@ class Project < ApplicationRecord
     Gitlab::Ci::Variables::Collection.new
       .append(key: 'CI', value: 'true')
       .append(key: 'GITLAB_CI', value: 'true')
+      .append(key: 'CI_SERVER_URL', value: Gitlab.config.gitlab.url)
       .append(key: 'CI_SERVER_HOST', value: Gitlab.config.gitlab.host)
       .append(key: 'CI_SERVER_NAME', value: 'GitLab')
       .append(key: 'CI_SERVER_VERSION', value: Gitlab::VERSION)

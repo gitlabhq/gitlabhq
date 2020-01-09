@@ -1,4 +1,4 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
 import { TEST_HOST } from 'spec/test_constants';
 import UserAvatarList from '~/vue_shared/components/user_avatar/user_avatar_list.vue';
@@ -20,8 +20,6 @@ const createList = n =>
     .fill(1)
     .map((x, id) => createUser(id));
 
-const localVue = createLocalVue();
-
 describe('UserAvatarList', () => {
   let props;
   let wrapper;
@@ -32,9 +30,8 @@ describe('UserAvatarList', () => {
       ...options.propsData,
     };
 
-    wrapper = shallowMount(localVue.extend(UserAvatarList), {
+    wrapper = shallowMount(UserAvatarList, {
       ...options,
-      localVue,
       propsData,
     });
   };

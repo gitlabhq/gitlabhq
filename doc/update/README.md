@@ -69,13 +69,8 @@ before continuing the upgrading procedure. While this won't require downtime
 between upgrading major/minor releases, allowing the background migrations to
 finish. The time necessary to complete these migrations can be reduced by
 increasing the number of Sidekiq workers that can process jobs in the
-`background_migration` queue. To check the size of this queue,
-[start a Rails console session](https://docs.gitlab.com/omnibus/maintenance/#starting-a-rails-console-session)
-and run the command below:
-
-```ruby
-Sidekiq::Queue.new('background_migration').size
-```
+`background_migration` queue. To see the size of this queue,
+[Check for background migrations before upgrading](#checking-for-background-migrations-before-upgrading).
 
 As a rule of thumb, any database smaller than 10 GB won't take too much time to
 upgrade; perhaps an hour at most per minor release. Larger databases however may
@@ -111,6 +106,36 @@ meet the other online upgrade requirements mentioned above.
 ### Steps
 
 Steps to [upgrade without downtime][omni-zero-downtime].
+
+## Checking for background migrations before upgrading
+
+Certain major/minor releases may require a set of background migrations to be
+finished. The number of remaining migrations jobs can be found by running the
+following command:
+
+**For Omnibus installations**
+
+```bash
+sudo gitlab-rails runner -e production 'puts Sidekiq::Queue.new("background_migration").size'
+```
+
+**For installations from source**
+
+```
+cd /home/git/gitlab
+sudo -u git -H bundle exec rails runner -e production 'puts Sidekiq::Queue.new("background_migration").size'
+```
+
+## Upgrading to a new major version
+
+Major versions are reserved for backwards incompatible changes. We recommend that
+you first upgrade to the latest available minor version within your major version.
+Please follow the [Upgrade Recommendations](../policy/maintenance.md#upgrade-recommendations)
+to identify the ideal upgrade path.
+
+Before upgrading to a new major version, you should ensure that any background
+migration jobs from previous releases have been completed. The number of remaining
+migrations jobs can be found by running the following command:
 
 ## Upgrading between editions
 

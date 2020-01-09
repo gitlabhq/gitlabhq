@@ -56,9 +56,9 @@ tier](https://about.gitlab.com/pricing/), as shown in the following table:
 
 | Tier     | Number of webhooks per project |
 |----------|--------------------------------|
-| Free     | 10                             |
-| Bronze   | 20                             |
-| Silver   | 30                             |
+| Free     | 100                            |
+| Bronze   | 100                            |
+| Silver   | 100                            |
 | Gold     | 100                            |
 
 ## Use-cases

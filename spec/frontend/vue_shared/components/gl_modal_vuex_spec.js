@@ -33,7 +33,7 @@ describe('GlModalVuex', () => {
       ...options.propsData,
     };
 
-    wrapper = shallowMount(localVue.extend(GlModalVuex), {
+    wrapper = shallowMount(GlModalVuex, {
       ...options,
       localVue,
       store,
@@ -123,8 +123,8 @@ describe('GlModalVuex', () => {
 
     state.isVisible = true;
 
-    localVue
-      .nextTick()
+    wrapper.vm
+      .$nextTick()
       .then(() => {
         expect(rootEmit).toHaveBeenCalledWith('bv::show::modal', TEST_MODAL_ID);
       })
@@ -140,8 +140,8 @@ describe('GlModalVuex', () => {
 
     state.isVisible = false;
 
-    localVue
-      .nextTick()
+    wrapper.vm
+      .$nextTick()
       .then(() => {
         expect(rootEmit).toHaveBeenCalledWith('bv::hide::modal', TEST_MODAL_ID);
       })

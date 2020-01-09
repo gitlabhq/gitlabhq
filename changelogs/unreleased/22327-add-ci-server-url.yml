@@ -1,0 +1,5 @@
+---
+title: Add CI variable to provide GitLab base URL
+merge_request: 22327
+author: Aidin Abedi
+type: added

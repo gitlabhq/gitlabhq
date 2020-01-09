@@ -1,4 +1,4 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import SuggestionDiffRow from '~/vue_shared/components/markdown/suggestion_diff_row.vue';
 
 const oldLine = {
@@ -27,10 +27,7 @@ describe('SuggestionDiffRow', () => {
   let wrapper;
 
   const factory = (options = {}) => {
-    const localVue = createLocalVue();
-
     wrapper = shallowMount(SuggestionDiffRow, {
-      localVue,
       ...options,
     });
   };

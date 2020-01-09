@@ -23,6 +23,17 @@ guide links by version.
 If you are changing from GitLab Community Edition to GitLab Enterprise Edition, see
 the [Upgrading from CE to EE](upgrading_from_ce_to_ee.md) documentation.
 
+## Upgrading to a new major version
+
+Major versions are reserved for backwards incompatible changes. We recommend that
+you first upgrade to the latest available minor version within your major version.
+Please follow the [Upgrade Recommendations](../policy/maintenance.md#upgrade-recommendations)
+to identify the ideal upgrade path.
+
+Before upgrading to a new major version, you should ensure that any background
+migration jobs from previous releases have been completed. To see the current size of the `background_migration` queue,
+[Check for background migrations before upgrading](README.md#checking-for-background-migrations-before-upgrading).
+
 ## Guidelines for all versions
 
 This section contains all the steps necessary to upgrade Community Edition or

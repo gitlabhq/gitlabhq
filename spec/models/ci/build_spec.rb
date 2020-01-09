@@ -2359,6 +2359,7 @@ describe Ci::Build do
           { key: 'CI_BUILD_STAGE', value: 'test', public: true, masked: false },
           { key: 'CI', value: 'true', public: true, masked: false },
           { key: 'GITLAB_CI', value: 'true', public: true, masked: false },
+          { key: 'CI_SERVER_URL', value: Gitlab.config.gitlab.url, public: true, masked: false },
           { key: 'CI_SERVER_HOST', value: Gitlab.config.gitlab.host, public: true, masked: false },
           { key: 'CI_SERVER_NAME', value: 'GitLab', public: true, masked: false },
           { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true, masked: false },
