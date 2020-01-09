@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :detailed_error_tracking_error, class: Gitlab::ErrorTracking::DetailedError do
+  factory :detailed_error_tracking_error, class: 'Gitlab::ErrorTracking::DetailedError' do
     id { '1' }
     title { 'title' }
     type { 'error' }

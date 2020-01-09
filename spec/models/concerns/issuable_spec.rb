@@ -326,7 +326,7 @@ describe Issuable do
 
     context 'when all of the results are level on the sort key' do
       let!(:issues) do
-        10.times { create(:issue, project: project) }
+        create_list(:issue, 10, project: project)
       end
 
       it 'has no duplicates across pages' do

@@ -83,9 +83,7 @@ describe 'issuable list' do
           create(:merge_request, title: FFaker::Lorem.sentence, source_project: project, source_branch: source_branch, head_pipeline: pipeline)
         end
 
-      2.times do
-        create(:note_on_issue, noteable: issuable, project: project)
-      end
+      create_list(:note_on_issue, 2, noteable: issuable, project: project)
 
       create(:award_emoji, :downvote, awardable: issuable)
       create(:award_emoji, :upvote, awardable: issuable)

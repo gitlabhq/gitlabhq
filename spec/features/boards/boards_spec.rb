@@ -163,9 +163,7 @@ describe 'Issue Boards', :js do
     end
 
     it 'infinite scrolls list' do
-      50.times do
-        create(:labeled_issue, project: project, labels: [planning])
-      end
+      create_list(:labeled_issue, 50, project: project, labels: [planning])
 
       visit project_board_path(project, board)
       wait_for_requests
@@ -475,9 +473,7 @@ describe 'Issue Boards', :js do
       end
 
       it 'infinite scrolls list with label filter' do
-        50.times do
-          create(:labeled_issue, project: project, labels: [planning, testing])
-        end
+        create_list(:labeled_issue, 50, project: project, labels: [planning, testing])
 
         set_filter("label", testing.title)
         click_filter_link(testing.title)

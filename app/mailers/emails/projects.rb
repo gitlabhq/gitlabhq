@@ -51,7 +51,7 @@ module Emails
       add_project_headers
       headers['X-GitLab-Author'] = @message.author_username
 
-      mail(from:      sender(@message.author_id, @message.send_from_committer_email?),
+      mail(from:      sender(@message.author_id, send_from_user_email: @message.send_from_committer_email?),
            reply_to:  @message.reply_to,
            subject:   @message.subject)
     end

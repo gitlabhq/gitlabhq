@@ -6,6 +6,10 @@ describe Gitlab::Metrics::Prometheus, :prometheus do
   let(:all_metrics) { Gitlab::Metrics }
   let(:registry) { all_metrics.registry }
 
+  after do
+    all_metrics.clear_errors!
+  end
+
   describe '#reset_registry!' do
     it 'clears existing metrics' do
       registry.counter(:test, 'test metric')

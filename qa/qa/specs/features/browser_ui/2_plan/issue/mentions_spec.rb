@@ -19,11 +19,10 @@ module QA
           members.add_member(@user.username)
         end
 
-        issue = Resource::Issue.fabricate_via_api! do |issue|
+        Resource::Issue.fabricate_via_api! do |issue|
           issue.title = 'issue to test mention'
           issue.project = project
-        end
-        issue.visit!
+        end.visit!
       end
 
       it 'user mentions another user in an issue' do

@@ -1348,9 +1348,7 @@ describe Project do
     let(:project2) { create(:project, :public, group: group) }
 
     before do
-      2.times do
-        create(:note_on_commit, project: project1)
-      end
+      create_list(:note_on_commit, 2, project: project1)
 
       create(:note_on_commit, project: project2)
 
@@ -1364,9 +1362,7 @@ describe Project do
     end
 
     it 'does not take system notes into account' do
-      10.times do
-        create(:note_on_commit, project: project2, system: true)
-      end
+      create_list(:note_on_commit, 10, project: project2, system: true)
 
       expect(described_class.trending.to_a).to eq([project1, project2])
     end

@@ -79,7 +79,10 @@ Example response:
       "web_path": "/namespace1/project1/-/packages/1",
       "delete_api_path": "/namespace1/project1/-/packages/1"
     },
-    "created_at": "2019-11-27T03:37:38.711Z"
+    "created_at": "2019-11-27T03:37:38.711Z",
+    "build_info": {
+      "pipeline_id": 123
+    }
   },
   {
     "id": 2,
@@ -90,7 +93,10 @@ Example response:
       "web_path": "/namespace1/project1/-/packages/1",
       "delete_api_path": "/namespace1/project1/-/packages/1"
     },
-    "created_at": "2019-11-27T03:37:38.711Z"
+    "created_at": "2019-11-27T03:37:38.711Z",
+    "build_info": {
+      "pipeline_id": 123
+    }
   }
 ]
 ```
@@ -133,7 +139,10 @@ Example response:
     "web_path": "/namespace1/project1/-/packages/1",
     "delete_api_path": "/namespace1/project1/-/packages/1"
   },
-  "created_at": "2019-11-27T03:37:38.711Z"
+  "created_at": "2019-11-27T03:37:38.711Z",
+  "build_info": {
+    "pipeline_id": 123
+  }
 }
 ```
 

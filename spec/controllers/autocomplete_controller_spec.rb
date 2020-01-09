@@ -112,9 +112,7 @@ describe AutocompleteController do
 
     context 'limited users per page' do
       before do
-        25.times do
-          create(:user)
-        end
+        create_list(:user, 25)
 
         sign_in(user)
         get(:users)

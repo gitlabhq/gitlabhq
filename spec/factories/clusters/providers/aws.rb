@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :cluster_provider_aws, class: Clusters::Providers::Aws do
+  factory :cluster_provider_aws, class: 'Clusters::Providers::Aws' do
     association :cluster, platform_type: :kubernetes, provider_type: :aws
 
     role_arn { 'arn:aws:iam::123456789012:role/role-name' }

@@ -62,10 +62,18 @@ module Gitlab
         end
 
         def error_detected!
+          set_error!(true)
+        end
+
+        def clear_errors!
+          set_error!(false)
+        end
+
+        def set_error!(status)
           clear_memoization(:prometheus_metrics_enabled)
 
           PROVIDER_MUTEX.synchronize do
-            @error = true
+            @error = status
           end
         end
 

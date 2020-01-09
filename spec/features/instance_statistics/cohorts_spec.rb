@@ -10,7 +10,7 @@ describe 'Cohorts page' do
   end
 
   it 'See users count per month' do
-    2.times { create(:user) }
+    create_list(:user, 2)
 
     visit instance_statistics_cohorts_path
 

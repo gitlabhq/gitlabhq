@@ -435,9 +435,7 @@ describe IssuesFinder do
         let(:params) { { label_name: described_class::FILTER_ANY } }
 
         it 'returns issues that have one or more label' do
-          2.times do
-            create(:label_link, label: create(:label, project: project2), target: issue3)
-          end
+          create_list(:label_link, 2, label: create(:label, project: project2), target: issue3)
 
           expect(issues).to contain_exactly(issue2, issue3)
         end

@@ -18,6 +18,7 @@ module Issuable
         new_entity.update(update_attributes)
 
         copy_resource_label_events
+        copy_resource_weight_events
       end
 
       private
@@ -57,6 +58,20 @@ module Issuable
           end
 
           Gitlab::Database.bulk_insert(ResourceLabelEvent.table_name, events)
+        end
+      end
+
+      def copy_resource_weight_events
+        return unless original_entity.respond_to?(:resource_weight_events)
+
+        original_entity.resource_weight_events.find_in_batches do |batch|
+          events = batch.map do |event|
+            event.attributes
+              .except('id', 'reference', 'reference_html')
+              .merge('issue_id' => new_entity.id)
+          end
+
+          Gitlab::Database.bulk_insert(ResourceWeightEvent.table_name, events)
         end
       end
 

@@ -48,15 +48,18 @@
         padding: 10px;
         border: 0;
         border-radius: 0;
-        font-family: $monospace-font;
-        font-size: $code-font-size;
-        line-height: $code-line-height;
         margin: 0;
         overflow: auto;
         overflow-y: hidden;
         white-space: pre;
         word-wrap: normal;
         border-left: $border-style;
+      }
+
+      code {
+        font-family: $monospace-font;
+        font-size: $code-font-size;
+        line-height: $code-line-height;
       }
     }
 

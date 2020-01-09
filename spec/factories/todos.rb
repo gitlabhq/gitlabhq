@@ -46,7 +46,7 @@ FactoryBot.define do
     end
   end
 
-  factory :on_commit_todo, class: Todo do
+  factory :on_commit_todo, class: 'Todo' do
     project
     author
     user

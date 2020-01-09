@@ -13,7 +13,7 @@ describe EachBatch do
     end
 
     before do
-      5.times { create(:user, updated_at: 1.day.ago) }
+      create_list(:user, 5, updated_at: 1.day.ago)
     end
 
     shared_examples 'each_batch handling' do |kwargs|

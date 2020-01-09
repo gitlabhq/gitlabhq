@@ -455,6 +455,23 @@ describe('getDateInPast', () => {
   });
 });
 
+describe('getDateInFuture', () => {
+  const date = new Date('2019-07-16T00:00:00.000Z');
+  const daysInFuture = 90;
+
+  it('returns the correct date in the future', () => {
+    const dateInFuture = datetimeUtility.getDateInFuture(date, daysInFuture);
+    const expectedDateInFuture = new Date('2019-10-14T00:00:00.000Z');
+
+    expect(dateInFuture).toStrictEqual(expectedDateInFuture);
+  });
+
+  it('does not modifiy the original date', () => {
+    datetimeUtility.getDateInFuture(date, daysInFuture);
+    expect(date).toStrictEqual(new Date('2019-07-16T00:00:00.000Z'));
+  });
+});
+
 describe('getDatesInRange', () => {
   it('returns an empty array if 1st or 2nd argument is not a Date object', () => {
     const d1 = new Date('2019-01-01');

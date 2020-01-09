@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :import_state, class: ProjectImportState do
+  factory :import_state, class: 'ProjectImportState' do
     status { :none }
     association :project, factory: :project
 

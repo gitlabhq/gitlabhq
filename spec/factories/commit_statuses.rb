@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :commit_status, class: CommitStatus do
+  factory :commit_status, class: 'CommitStatus' do
     name { 'default' }
     stage { 'test' }
     stage_idx { 0 }
@@ -59,7 +59,7 @@ FactoryBot.define do
       build.project = build.pipeline.project
     end
 
-    factory :generic_commit_status, class: GenericCommitStatus do
+    factory :generic_commit_status, class: 'GenericCommitStatus' do
       name { 'generic' }
       description { 'external commit status' }
     end

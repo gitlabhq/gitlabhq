@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :ci_bridge, class: Ci::Bridge do
+  factory :ci_bridge, class: 'Ci::Bridge' do
     name { 'bridge' }
     stage { 'test' }
     stage_idx { 0 }

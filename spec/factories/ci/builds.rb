@@ -3,7 +3,7 @@
 include ActionDispatch::TestProcess
 
 FactoryBot.define do
-  factory :ci_build, class: Ci::Build do
+  factory :ci_build, class: 'Ci::Build' do
     name { 'test' }
     stage { 'test' }
     stage_idx { 0 }

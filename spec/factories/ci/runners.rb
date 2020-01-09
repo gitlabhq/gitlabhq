@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :ci_runner, class: Ci::Runner do
+  factory :ci_runner, class: 'Ci::Runner' do
     sequence(:description) { |n| "My runner#{n}" }
 
     platform { "darwin" }

@@ -6,7 +6,7 @@ FactoryBot.define do
     color { "#990000" }
   end
 
-  factory :label, traits: [:base_label], class: ProjectLabel do
+  factory :label, traits: [:base_label], class: 'ProjectLabel' do
     project
 
     transient do

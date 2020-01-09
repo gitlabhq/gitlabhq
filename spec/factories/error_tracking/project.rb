@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :error_tracking_project, class: Gitlab::ErrorTracking::Project do
+  factory :error_tracking_project, class: 'Gitlab::ErrorTracking::Project' do
     id { '1' }
     name { 'Sentry Example' }
     slug { 'sentry-example' }

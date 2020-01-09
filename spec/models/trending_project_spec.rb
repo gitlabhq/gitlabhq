@@ -11,13 +11,9 @@ describe TrendingProject do
   let(:internal_project) { create(:project, :internal) }
 
   before do
-    3.times do
-      create(:note_on_commit, project: public_project1)
-    end
+    create_list(:note_on_commit, 3, project: public_project1)
 
-    2.times do
-      create(:note_on_commit, project: public_project2)
-    end
+    create_list(:note_on_commit, 2, project: public_project2)
 
     create(:note_on_commit, project: public_project3, created_at: 5.weeks.ago)
     create(:note_on_commit, project: private_project)

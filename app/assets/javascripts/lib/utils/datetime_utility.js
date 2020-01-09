@@ -555,6 +555,16 @@ export const calculateRemainingMilliseconds = endDate => {
 export const getDateInPast = (date, daysInPast) =>
   new Date(newDate(date).setDate(date.getDate() - daysInPast));
 
+/**
+ * Adds a given number of days to a given date and returns the new date.
+ *
+ * @param {Date} date the date that we will add days to
+ * @param {Number} daysInFuture number of days that are added to a given date
+ * @returns {Date} Date in future as Date object
+ */
+export const getDateInFuture = (date, daysInFuture) =>
+  new Date(newDate(date).setDate(date.getDate() + daysInFuture));
+
 /*
  * Appending T00:00:00 makes JS assume local time and prevents it from shifting the date
  * to match the user's time zone. We want to display the date in server time for now, to

@@ -301,12 +301,6 @@ RSpec/AnyInstanceOf:
   Enabled: false
 
 # Cops for upgrade to gitlab-styles 3.1.0
-FactoryBot/FactoryClassName:
-  Enabled: false
-
-FactoryBot/CreateList:
-  Enabled: false
-
 Rails/SafeNavigationWithBlank:
   Enabled: false
 
