@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class UpdateSnippetService < BaseService
-  include SpamCheckService
+  include SpamCheckMethods
 
   attr_accessor :snippet
 

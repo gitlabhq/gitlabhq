@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class CreateSnippetService < BaseService
-  include SpamCheckService
+  include SpamCheckMethods
 
   def execute
     filter_spam_check_params

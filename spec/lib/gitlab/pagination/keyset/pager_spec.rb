@@ -15,15 +15,37 @@ describe Gitlab::Pagination::Keyset::Pager do
   describe '#paginate' do
     subject { described_class.new(request).paginate(relation) }
 
-    it 'loads the result relation only once' do
+    it 'does not execute a query' do
       expect do
         subject
-      end.not_to exceed_query_limit(1)
+      end.not_to exceed_query_limit(0)
     end
 
+    it 'applies a LIMIT' do
+      expect(subject.limit_value).to eq(page.per_page)
+    end
+
+    it 'returns the limited relation' do
+      expect(subject).to eq(relation.limit(page.per_page))
+    end
+
+    context 'validating the order clause' do
+      let(:page) { Gitlab::Pagination::Keyset::Page.new(order_by: { created_at: :asc }, per_page: 3) }
+
+      it 'raises an error if has a different order clause than the page' do
+        expect { subject }.to raise_error(ArgumentError, /order_by does not match/)
+      end
+    end
+  end
+
+  describe '#finalize' do
+    let(:records) { relation.limit(page.per_page).load }
+
+    subject { described_class.new(request).finalize(records) }
+
     it 'passes information about next page to request' do
-      lower_bounds = relation.limit(page.per_page).last.slice(:id)
-      expect(page).to receive(:next).with(lower_bounds, false).and_return(next_page)
+      lower_bounds = records.last.slice(:id)
+      expect(page).to receive(:next).with(lower_bounds).and_return(next_page)
       expect(request).to receive(:apply_headers).with(next_page)
 
       subject
@@ -32,10 +54,10 @@ describe Gitlab::Pagination::Keyset::Pager do
     context 'when retrieving the last page' do
       let(:relation) { Project.where('id > ?', Project.maximum(:id) - page.per_page).order(id: :asc) }
 
-      it 'indicates this is the last page' do
-        expect(request).to receive(:apply_headers) do |next_page|
-          expect(next_page.end_reached?).to be_truthy
-        end
+      it 'indicates there is another (likely empty) page' do
+        lower_bounds = records.last.slice(:id)
+        expect(page).to receive(:next).with(lower_bounds).and_return(next_page)
+        expect(request).to receive(:apply_headers).with(next_page)
 
         subject
       end
@@ -45,23 +67,9 @@ describe Gitlab::Pagination::Keyset::Pager do
       let(:relation) { Project.where('id > ?', Project.maximum(:id) + 1).order(id: :asc) }
 
       it 'indicates this is the last page' do
-        expect(request).to receive(:apply_headers) do |next_page|
-          expect(next_page.end_reached?).to be_truthy
-        end
+        expect(request).not_to receive(:apply_headers)
 
         subject
-      end
-    end
-
-    it 'returns an array with the loaded records' do
-      expect(subject).to eq(relation.limit(page.per_page).to_a)
-    end
-
-    context 'validating the order clause' do
-      let(:page) { Gitlab::Pagination::Keyset::Page.new(order_by: { created_at: :asc }, per_page: 3) }
-
-      it 'raises an error if has a different order clause than the page' do
-        expect { subject }.to raise_error(ArgumentError, /order_by does not match/)
       end
     end
   end

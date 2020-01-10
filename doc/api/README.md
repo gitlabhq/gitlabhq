@@ -426,7 +426,7 @@ Status: 200 OK
 The link to the next page contains an additional filter `id_after=42` which excludes records we have retrieved already.
 Note the type of filter depends on the `order_by` option used and we may have more than one additional filter.
 
-The `Link` header is absent when the end of the collection has been reached and there are no additional records to retrieve.
+When the end of the collection has been reached and there are no additional records to retrieve, the `Link` header is absent and the resulting array is empty.
 
 We recommend using only the given link to retrieve the next page instead of building your own URL. Apart from the headers shown,
 we don't expose additional pagination headers.

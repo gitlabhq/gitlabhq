@@ -68,8 +68,6 @@ module Gitlab
         end
 
         def pagination_links(next_page)
-          return if next_page.end_reached?
-
           %(<#{page_href(next_page)}>; rel="next")
         end
 

@@ -30,16 +30,14 @@ describe Gitlab::Pagination::Keyset::Page do
   end
 
   describe '#next' do
-    let(:page) { described_class.new(order_by: order_by, lower_bounds: lower_bounds, per_page: per_page, end_reached: end_reached) }
-    subject { page.next(new_lower_bounds, new_end_reached) }
+    let(:page) { described_class.new(order_by: order_by, lower_bounds: lower_bounds, per_page: per_page) }
+    subject { page.next(new_lower_bounds) }
 
     let(:order_by) { { id: :desc } }
     let(:lower_bounds) { { id: 42 } }
     let(:per_page) { 10 }
-    let(:end_reached) { false }
 
     let(:new_lower_bounds) { { id: 21 } }
-    let(:new_end_reached) { true }
 
     it 'copies over order_by' do
       expect(subject.order_by).to eq(page.order_by)
@@ -56,11 +54,6 @@ describe Gitlab::Pagination::Keyset::Page do
     it 'sets lower_bounds only on new instance' do
       expect(subject.lower_bounds).to eq(new_lower_bounds)
       expect(page.lower_bounds).to eq(lower_bounds)
-    end
-
-    it 'sets end_reached only on new instance' do
-      expect(subject.end_reached?).to eq(new_end_reached)
-      expect(page.end_reached?).to eq(end_reached)
     end
   end
 end

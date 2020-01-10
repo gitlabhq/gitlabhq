@@ -2,7 +2,7 @@
 
 module Issues
   class UpdateService < Issues::BaseService
-    include SpamCheckService
+    include SpamCheckMethods
 
     def execute(issue)
       handle_move_between_ids(issue)

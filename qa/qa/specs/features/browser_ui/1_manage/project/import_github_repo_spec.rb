@@ -21,6 +21,8 @@ module QA
         delete delete_project_request.url
 
         expect_status(202)
+
+        Page::Main::Menu.perform(&:sign_out_if_signed_in)
       end
 
       it 'user imports a GitHub repo' do

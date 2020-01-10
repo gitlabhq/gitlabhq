@@ -4,6 +4,7 @@ module API
   module Helpers
     include Gitlab::Utils
     include Helpers::Pagination
+    include Helpers::PaginationStrategies
 
     SUDO_HEADER = "HTTP_SUDO"
     GITLAB_SHARED_SECRET_HEADER = "Gitlab-Shared-Secret"

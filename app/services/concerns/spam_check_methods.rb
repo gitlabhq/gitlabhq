@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-# SpamCheckService
+# SpamCheckMethods
 #
 # Provide helper methods for checking if a given spammable object has
 # potential spam data.
 #
 # Dependencies:
 # - params with :request
-#
-module SpamCheckService
+
+module SpamCheckMethods
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def filter_spam_check_params
     @request            = params.delete(:request)

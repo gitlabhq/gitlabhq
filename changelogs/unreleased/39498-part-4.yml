@@ -1,0 +1,5 @@
+---
+title: "Web IDE: Fix Incorrect diff of deletion and addition of the same file"
+merge_request: 21680
+author:
+type: fixed

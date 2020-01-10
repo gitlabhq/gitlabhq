@@ -202,6 +202,53 @@ describe('IDE store file actions', () => {
       };
     });
 
+    describe('call to service', () => {
+      const callExpectation = serviceCalled => {
+        store.dispatch('getFileData', { path: localFile.path });
+
+        if (serviceCalled) {
+          expect(service.getFileData).toHaveBeenCalled();
+        } else {
+          expect(service.getFileData).not.toHaveBeenCalled();
+        }
+      };
+
+      beforeEach(() => {
+        service.getFileData.mockImplementation(() => new Promise(() => {}));
+      });
+
+      it("isn't called if file.raw exists", () => {
+        localFile.raw = 'raw data';
+
+        callExpectation(false);
+      });
+
+      it("isn't called if file is a tempFile", () => {
+        localFile.raw = '';
+        localFile.tempFile = true;
+
+        callExpectation(false);
+      });
+
+      it('is called if file is a tempFile but also renamed', () => {
+        localFile.raw = '';
+        localFile.tempFile = true;
+        localFile.prevPath = 'old_path';
+
+        callExpectation(true);
+      });
+
+      it('is called if tempFile but file was deleted and readded', () => {
+        localFile.raw = '';
+        localFile.tempFile = true;
+        localFile.prevPath = 'old_path';
+
+        store.state.stagedFiles = [{ ...localFile, deleted: true }];
+
+        callExpectation(true);
+      });
+    });
+
     describe('success', () => {
       beforeEach(() => {
         mock.onGet(`${RELATIVE_URL_ROOT}/test/test/7297abc/${localFile.path}`).replyOnce(
@@ -332,10 +379,10 @@ describe('IDE store file actions', () => {
         mock.onGet(`${RELATIVE_URL_ROOT}/test/test/7297abc/${localFile.path}`).networkError();
       });
 
-      it('dispatches error action', done => {
+      it('dispatches error action', () => {
         const dispatch = jest.fn();
 
-        actions
+        return actions
           .getFileData(
             { state: store.state, commit() {}, dispatch, getters: store.getters },
             { path: localFile.path },
@@ -350,10 +397,7 @@ describe('IDE store file actions', () => {
                 makeFileActive: true,
               },
             });
-
-            done();
-          })
-          .catch(done.fail);
+          });
       });
     });
   });
@@ -446,12 +490,14 @@ describe('IDE store file actions', () => {
         mock.onGet(/(.*)/).networkError();
       });
 
-      it('dispatches error action', done => {
+      it('dispatches error action', () => {
         const dispatch = jest.fn();
 
-        actions
-          .getRawFileData({ state: store.state, commit() {}, dispatch }, { path: tmpFile.path })
-          .then(done.fail)
+        return actions
+          .getRawFileData(
+            { state: store.state, commit() {}, dispatch, getters: store.getters },
+            { path: tmpFile.path },
+          )
           .catch(() => {
             expect(dispatch).toHaveBeenCalledWith('setErrorMessage', {
               text: 'An error occurred whilst loading the file content.',
@@ -461,8 +507,6 @@ describe('IDE store file actions', () => {
                 path: tmpFile.path,
               },
             });
-
-            done();
           });
       });
     });

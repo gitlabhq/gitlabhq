@@ -940,7 +940,7 @@ describe Ci::CreatePipelineService do
           expect(resource_group.resources.first.build).to eq(nil)
         end
 
-        context 'when resourc group key includes predefined variables' do
+        context 'when resource group key includes predefined variables' do
           let(:resource_group_key) { '$CI_COMMIT_REF_NAME-$CI_JOB_NAME' }
 
           it 'interpolates the variables into the key correctly' do
@@ -965,6 +965,70 @@ describe Ci::CreatePipelineService do
 
           expect(pipeline).to be_persisted
           expect(pipeline.builds.find_by(name: 'rspec').options[:job_timeout]).to eq 123
+        end
+      end
+    end
+
+    context 'with release' do
+      shared_examples_for 'a successful release pipeline' do
+        before do
+          stub_feature_flags(ci_release_generation: true)
+          stub_ci_pipeline_yaml_file(YAML.dump(config))
+        end
+
+        it 'is valid config' do
+          pipeline = execute_service
+          build = pipeline.builds.first
+          expect(pipeline).to be_kind_of(Ci::Pipeline)
+          expect(pipeline).to be_valid
+          expect(pipeline.yaml_errors).not_to be_present
+          expect(pipeline).to be_persisted
+          expect(build).to be_kind_of(Ci::Build)
+          expect(build.options).to eq(config[:release].except(:stage, :only).with_indifferent_access)
+        end
+      end
+
+      context 'simple example' do
+        it_behaves_like 'a successful release pipeline' do
+          let(:config) do
+            {
+              release: {
+                script: ["make changelog | tee release_changelog.txt"],
+                release: {
+                  tag_name: "v0.06",
+                  description: "./release_changelog.txt"
+                }
+              }
+            }
+          end
+        end
+      end
+
+      context 'example with all release metadata' do
+        it_behaves_like 'a successful release pipeline' do
+          let(:config) do
+            {
+              release: {
+                script: ["make changelog | tee release_changelog.txt"],
+                release: {
+                  name: "Release $CI_TAG_NAME",
+                  tag_name: "v0.06",
+                  description: "./release_changelog.txt",
+                  assets: {
+                    links: [
+                      {
+                        name: "cool-app.zip",
+                        url: "http://my.awesome.download.site/1.0-$CI_COMMIT_SHORT_SHA.zip"
+                      },
+                      {
+                        url: "http://my.awesome.download.site/1.0-$CI_COMMIT_SHORT_SHA.exe"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          end
         end
       end
     end

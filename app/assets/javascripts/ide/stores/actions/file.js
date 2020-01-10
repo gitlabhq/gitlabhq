@@ -61,8 +61,10 @@ export const getFileData = (
   { path, makeFileActive = true, openFile = makeFileActive },
 ) => {
   const file = state.entries[path];
+  const fileDeletedAndReadded = getters.isFileDeletedAndReadded(path);
 
-  if (file.raw || (file.tempFile && !file.prevPath)) return Promise.resolve();
+  if (file.raw || (file.tempFile && !file.prevPath && !fileDeletedAndReadded))
+    return Promise.resolve();
 
   commit(types.TOGGLE_LOADING, { entry: file });
 
@@ -102,11 +104,16 @@ export const setFileMrChange = ({ commit }, { file, mrChange }) => {
 
 export const getRawFileData = ({ state, commit, dispatch, getters }, { path }) => {
   const file = state.entries[path];
+  const stagedFile = state.stagedFiles.find(f => f.path === path);
+
   return new Promise((resolve, reject) => {
+    const fileDeletedAndReadded = getters.isFileDeletedAndReadded(path);
     service
-      .getRawFileData(file)
+      .getRawFileData(fileDeletedAndReadded ? stagedFile : file)
       .then(raw => {
-        if (!(file.tempFile && !file.prevPath)) commit(types.SET_FILE_RAW_DATA, { file, raw });
+        if (!(file.tempFile && !file.prevPath && !fileDeletedAndReadded))
+          commit(types.SET_FILE_RAW_DATA, { file, raw, fileDeletedAndReadded });
+
         if (file.mrChange && file.mrChange.new_file === false) {
           const baseSha =
             (getters.currentMergeRequest && getters.currentMergeRequest.baseCommitSha) || '';
@@ -151,7 +158,7 @@ export const changeFileContent = ({ commit, dispatch, state }, { path, content }
 
   if (file.changed && indexOfChangedFile === -1) {
     commit(types.ADD_FILE_TO_CHANGED, path);
-  } else if (!file.changed && indexOfChangedFile !== -1) {
+  } else if (!file.changed && !file.tempFile && indexOfChangedFile !== -1) {
     commit(types.REMOVE_FILE_FROM_CHANGED, path);
   }
 

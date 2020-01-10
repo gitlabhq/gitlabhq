@@ -1285,6 +1285,59 @@ module Gitlab
         end
       end
 
+      describe "release" do
+        let(:processor) { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)) }
+        let(:config) do
+          {
+            stages: ["build", "test", "release"], # rubocop:disable Style/WordArray
+            release: {
+              stage: "release",
+              only: ["tags"],
+              script: ["make changelog | tee release_changelog.txt"],
+              release: {
+                tag_name: "$CI_COMMIT_TAG",
+                name: "Release $CI_TAG_NAME",
+                description: "./release_changelog.txt",
+                assets: {
+                  links: [
+                    {
+                      name: "cool-app.zip",
+                      url: "http://my.awesome.download.site/1.0-$CI_COMMIT_SHORT_SHA.zip"
+                    },
+                    {
+                      name: "cool-app.exe",
+                      url: "http://my.awesome.download.site/1.0-$CI_COMMIT_SHORT_SHA.exe"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        end
+
+        context 'with feature flag active' do
+          before do
+            stub_feature_flags(ci_release_generation: true)
+          end
+
+          it "returns release info" do
+            expect(processor.stage_builds_attributes('release').first[:options])
+              .to eq(config[:release].except(:stage, :only))
+          end
+        end
+
+        context 'with feature flag inactive' do
+          before do
+            stub_feature_flags(ci_release_generation: false)
+          end
+
+          it "returns release info" do
+            expect(processor.stage_builds_attributes('release').first[:options].include?(config[:release]))
+              .to be false
+          end
+        end
+      end
+
       describe '#environment' do
         let(:config) do
           {

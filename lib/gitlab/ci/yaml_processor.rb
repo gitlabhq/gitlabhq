@@ -81,8 +81,13 @@ module Gitlab
             instance: job[:instance],
             start_in: job[:start_in],
             trigger: job[:trigger],
-            bridge_needs: job.dig(:needs, :bridge)&.first
+            bridge_needs: job.dig(:needs, :bridge)&.first,
+            release: release(job)
           }.compact }.compact
+      end
+
+      def release(job)
+        job[:release] if Feature.enabled?(:ci_release_generation, default_enabled: false)
       end
 
       def stage_builds_attributes(stage)
@@ -133,7 +138,6 @@ module Gitlab
 
         @jobs.each do |name, job|
           # logical validation for job
-
           validate_job_stage!(name, job)
           validate_job_dependencies!(name, job)
           validate_job_needs!(name, job)

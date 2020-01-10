@@ -11,7 +11,7 @@ describe('IDE store file mutations', () => {
   beforeEach(() => {
     localStore = createStore();
     localState = localStore.state;
-    localFile = { ...file(), type: 'blob' };
+    localFile = { ...file('file'), type: 'blob', content: 'original' };
 
     localState.entries[localFile.path] = localFile;
   });
@@ -139,35 +139,68 @@ describe('IDE store file mutations', () => {
   });
 
   describe('SET_FILE_RAW_DATA', () => {
-    it('sets raw data', () => {
+    const callMutationForFile = f => {
       mutations.SET_FILE_RAW_DATA(localState, {
-        file: localFile,
+        file: f,
         raw: 'testing',
+        fileDeletedAndReadded: localStore.getters.isFileDeletedAndReadded(localFile.path),
       });
+    };
+
+    it('sets raw data', () => {
+      callMutationForFile(localFile);
 
       expect(localFile.raw).toBe('testing');
+    });
+
+    it('sets raw data to stagedFile if file was deleted and readded', () => {
+      localState.stagedFiles = [{ ...localFile, deleted: true }];
+      localFile.tempFile = true;
+
+      callMutationForFile(localFile);
+
+      expect(localFile.raw).toBeFalsy();
+      expect(localState.stagedFiles[0].raw).toBe('testing');
+    });
+
+    it("sets raw data to a file's content if tempFile is empty", () => {
+      localFile.tempFile = true;
+      localFile.content = '';
+
+      callMutationForFile(localFile);
+
+      expect(localFile.raw).toBeFalsy();
+      expect(localFile.content).toBe('testing');
     });
 
     it('adds raw data to open pending file', () => {
       localState.openFiles.push({ ...localFile, pending: true });
 
-      mutations.SET_FILE_RAW_DATA(localState, {
-        file: localFile,
-        raw: 'testing',
-      });
+      callMutationForFile(localFile);
 
       expect(localState.openFiles[0].raw).toBe('testing');
     });
 
-    it('does not add raw data to open pending tempFile file', () => {
-      localState.openFiles.push({ ...localFile, pending: true, tempFile: true });
+    it('sets raw to content of a renamed tempFile', () => {
+      localFile.tempFile = true;
+      localFile.prevPath = 'old_path';
+      localState.openFiles.push({ ...localFile, pending: true });
 
-      mutations.SET_FILE_RAW_DATA(localState, {
-        file: localFile,
-        raw: 'testing',
-      });
+      callMutationForFile(localFile);
 
       expect(localState.openFiles[0].raw).not.toBe('testing');
+      expect(localState.openFiles[0].content).toBe('testing');
+    });
+
+    it('adds raw data to a staged deleted file if unstaged change has a tempFile of the same name', () => {
+      localFile.tempFile = true;
+      localState.openFiles.push({ ...localFile, pending: true });
+      localState.stagedFiles = [{ ...localFile, deleted: true }];
+
+      callMutationForFile(localFile);
+
+      expect(localFile.raw).toBeFalsy();
+      expect(localState.stagedFiles[0].raw).toBe('testing');
     });
   });
 

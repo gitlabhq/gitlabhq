@@ -90,18 +90,22 @@ module API
       def present_projects(projects, options = {})
         projects = reorder_projects(projects)
         projects = apply_filters(projects)
-        projects = paginate(projects)
-        projects, options = with_custom_attributes(projects, options)
 
-        options = options.reverse_merge(
-          with: current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails,
-          statistics: params[:statistics],
-          current_user: current_user,
-          license: false
-        )
-        options[:with] = Entities::BasicProjectDetails if params[:simple]
+        records, options = paginate_with_strategies(projects) do |projects|
+          projects, options = with_custom_attributes(projects, options)
 
-        present options[:with].prepare_relation(projects, options), options
+          options = options.reverse_merge(
+            with: current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails,
+            statistics: params[:statistics],
+            current_user: current_user,
+            license: false
+          )
+          options[:with] = Entities::BasicProjectDetails if params[:simple]
+
+          [options[:with].prepare_relation(projects, options), options]
+        end
+
+        present records, options
       end
 
       def translate_params_for_compatibility(params)

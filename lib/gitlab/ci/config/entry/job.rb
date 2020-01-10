@@ -17,7 +17,7 @@ module Gitlab
                             allow_failure type stage when start_in artifacts cache
                             dependencies before_script needs after_script variables
                             environment coverage retry parallel extends interruptible timeout
-                            resource_group].freeze
+                            resource_group release].freeze
 
           REQUIRED_BY_NEEDS = %i[stage].freeze
 
@@ -151,14 +151,18 @@ module Gitlab
             description: 'Coverage configuration for this job.',
             inherit: false
 
+          entry :release, Entry::Release,
+            description: 'This job will produce a release.',
+            inherit: false
+
           helpers :before_script, :script, :stage, :type, :after_script,
                   :cache, :image, :services, :only, :except, :variables,
                   :artifacts, :environment, :coverage, :retry, :rules,
-                  :parallel, :needs, :interruptible
+                  :parallel, :needs, :interruptible, :release
 
           attributes :script, :tags, :allow_failure, :when, :dependencies,
                      :needs, :retry, :parallel, :extends, :start_in, :rules,
-                     :interruptible, :timeout, :resource_group
+                     :interruptible, :timeout, :resource_group, :release
 
           def self.matching?(name, config)
             !name.to_s.start_with?('.') &&
@@ -243,6 +247,7 @@ module Gitlab
               interruptible: interruptible_defined? ? interruptible_value : nil,
               timeout: has_timeout? ? ChronicDuration.parse(timeout.to_s) : nil,
               artifacts: artifacts_value,
+              release: release_value,
               after_script: after_script_value,
               ignore: ignored?,
               needs: needs_defined? ? needs_value : nil,

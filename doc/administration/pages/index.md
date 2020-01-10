@@ -32,11 +32,11 @@ In the case of [custom domains](#custom-domains) (but not
 ports `80` and/or `443`. For that reason, there is some flexibility in the way
 which you can set it up:
 
-1. Run the Pages daemon in the same server as GitLab, listening on a secondary IP.
-1. Run the Pages daemon in a separate server. In that case, the
+- Run the Pages daemon in the same server as GitLab, listening on a **secondary IP**.
+- Run the Pages daemon in a [separate server](#running-gitlab-pages-on-a-separate-server). In that case, the
    [Pages path](#change-storage-path) must also be present in the server that
    the Pages daemon is installed, so you will have to share it via network.
-1. Run the Pages daemon in the same server as GitLab, listening on the same IP
+- Run the Pages daemon in the same server as GitLab, listening on the same IP
    but on different ports. In that case, you will have to proxy the traffic with
    a loadbalancer. If you choose that route note that you should use TCP load
    balancing for HTTPS. If you use TLS-termination (HTTPS-load balancing) the
@@ -182,7 +182,7 @@ The [GitLab Pages README](https://gitlab.com/gitlab-org/gitlab-pages#caveats) ha
 In addition to the wildcard domains, you can also have the option to configure
 GitLab Pages to work with custom domains. Again, there are two options here:
 support custom domains with and without TLS certificates. The easiest setup is
-that without TLS certificates. In either case, you'll need a secondary IP. If
+that without TLS certificates. In either case, you'll need a **secondary IP**. If
 you have IPv6 as well as IPv4 addresses, you can use them both.
 
 ### Custom domains
