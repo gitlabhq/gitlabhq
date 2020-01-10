@@ -49,17 +49,5 @@ describe Deployments::FinishedWorker do
 
       expect(ProjectServiceWorker).not_to have_received(:perform_async)
     end
-
-    context 'when the tracking of merge requests is disabled' do
-      it 'does not track the deployed merge requests' do
-        stub_feature_flags(deployment_merge_requests: false)
-
-        deployment = create(:deployment)
-
-        expect(Deployments::LinkMergeRequestsService).not_to receive(:new)
-
-        worker.perform(deployment.id)
-      end
-    end
   end
 end

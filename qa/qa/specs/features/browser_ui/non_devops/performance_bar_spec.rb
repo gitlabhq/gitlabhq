@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  # https://gitlab.com/gitlab-org/gitlab/issues/38315
-  context 'Performance bar', :quarantine do
+  context 'Performance bar' do
     context 'when logged in as an admin user', :requires_admin do
       before do
         Flow::Login.sign_in_as_admin

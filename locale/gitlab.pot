@@ -12498,9 +12498,6 @@ msgstr ""
 msgid "Only project members will be imported. Group members will be skipped."
 msgstr ""
 
-msgid "Only these extensions are supported: %{extension_list}"
-msgstr ""
-
 msgid "Only users with an email address in this domain can be added to the group.<br>Example: <code>gitlab.com</code>. Some common domains are not allowed. %{read_more_link}."
 msgstr ""
 
@@ -21714,6 +21711,9 @@ msgid "detached"
 msgstr ""
 
 msgid "disabled"
+msgstr ""
+
+msgid "does not have a supported extension. Only %{extension_list} are supported"
 msgstr ""
 
 msgid "done"

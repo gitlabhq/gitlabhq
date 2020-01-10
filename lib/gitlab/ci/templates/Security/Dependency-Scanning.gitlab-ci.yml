@@ -49,6 +49,9 @@ dependency_scanning:
           DS_PYTHON_VERSION \
           DS_PIP_VERSION \
           DS_PIP_DEPENDENCY_PATH \
+          GEMNASIUM_DB_LOCAL_PATH \
+          GEMNASIUM_DB_REMOTE_URL \
+          GEMNASIUM_DB_REF_NAME \
           PIP_INDEX_URL \
           PIP_EXTRA_INDEX_URL \
           PIP_REQUIREMENTS_FILE \

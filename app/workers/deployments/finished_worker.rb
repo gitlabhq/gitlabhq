@@ -10,17 +10,9 @@ module Deployments
 
     def perform(deployment_id)
       if (deploy = Deployment.find_by_id(deployment_id))
-        link_merge_requests(deploy)
+        LinkMergeRequestsService.new(deploy).execute
         deploy.execute_hooks
       end
-    end
-
-    def link_merge_requests(deployment)
-      unless Feature.enabled?(:deployment_merge_requests, deployment.project)
-        return
-      end
-
-      LinkMergeRequestsService.new(deployment).execute
     end
   end
 end

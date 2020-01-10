@@ -1289,19 +1289,6 @@ describe Projects::MergeRequestsController do
       get_ci_environments_status(environment_target: 'merge_commit')
     end
 
-    context 'when the deployment_merge_requests_widget feature flag is disabled' do
-      it 'uses the deployments retrieved using CI builds' do
-        stub_feature_flags(deployment_merge_requests_widget: false)
-
-        expect(EnvironmentStatus)
-          .to receive(:after_merge_request)
-          .with(merge_request, user)
-          .and_call_original
-
-        get_ci_environments_status(environment_target: 'merge_commit')
-      end
-    end
-
     def get_ci_environments_status(extra_params = {})
       params = {
         namespace_id: merge_request.project.namespace.to_param,

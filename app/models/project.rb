@@ -1514,7 +1514,7 @@ class Project < ApplicationRecord
   end
 
   def default_branch
-    @default_branch ||= repository.root_ref if repository.exists?
+    @default_branch ||= repository.root_ref
   end
 
   def reload_default_branch

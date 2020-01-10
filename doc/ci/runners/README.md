@@ -68,7 +68,7 @@ You can only register a shared Runner if you are an admin of the GitLab instance
 
 Shared Runners are enabled by default as of GitLab 8.2, but can be disabled
 with the **Disable shared Runners** button which is present under each project's
-**Settings ➔ CI/CD** page. Previous versions of GitLab defaulted shared
+**Settings > CI/CD** page. Previous versions of GitLab defaulted shared
 Runners to disabled.
 
 ## Registering a specific Runner
@@ -402,7 +402,7 @@ different places.
 To view the IP address of a shared Runner you must have admin access to
 the GitLab instance. To determine this:
 
-1. Visit **Admin Area ➔ Overview ➔ Runners**
+1. Visit **Admin Area > Overview > Runners**
 1. Look for the Runner in the table and you should see a column for "IP Address"
 
 ![shared Runner IP address](img/shared_runner_ip_address.png)
@@ -411,7 +411,7 @@ the GitLab instance. To determine this:
 
 You can find the IP address of a Runner for a specific project by:
 
-1. Visit your project's **Settings ➔ CI/CD**
+1. Visit your project's **Settings > CI/CD**
 1. Find the Runner and click on it's ID which links you to the details page
 1. On the details page you should see a row for "IP Address"
 

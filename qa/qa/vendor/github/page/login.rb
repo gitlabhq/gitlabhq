@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'capybara/dsl'
+require 'benchmark'
 
 module QA
   module Vendor
@@ -13,9 +14,15 @@ module QA
             click_on 'Sign in'
 
             Support::Retrier.retry_until(raise_on_failure: true, sleep_interval: 35) do
-              otp = OnePassword::CLI.new.otp
+              fresh_otp = nil
 
-              fill_in 'otp', with: otp
+              time = Benchmark.realtime do
+                fresh_otp = OnePassword::CLI.instance.fresh_otp
+              end
+
+              QA::Runtime::Logger.info("Returned fresh_otp: #{fresh_otp} in #{time} seconds")
+
+              fill_in 'otp', with: fresh_otp
 
               click_on 'Verify'
 

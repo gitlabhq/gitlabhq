@@ -1331,6 +1331,13 @@ describe Repository do
       repository.root_ref
     end
 
+    it 'returns nil if the repository does not exist' do
+      repository = create(:project).repository
+
+      expect(repository).not_to be_exists
+      expect(repository.root_ref).to be_nil
+    end
+
     it_behaves_like 'asymmetric cached method', :root_ref
   end
 
