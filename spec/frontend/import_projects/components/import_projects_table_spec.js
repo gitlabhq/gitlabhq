@@ -45,7 +45,6 @@ describe('ImportProjectsTable', () => {
       propsData: {
         providerTitle,
       },
-      sync: false,
     });
 
     return component.vm;

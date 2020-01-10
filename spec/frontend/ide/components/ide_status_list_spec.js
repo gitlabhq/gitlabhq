@@ -27,7 +27,6 @@ describe('ide/components/ide_status_list', () => {
 
     wrapper = shallowMount(IdeStatusList, {
       localVue,
-      sync: false,
       store,
       ...options,
     });

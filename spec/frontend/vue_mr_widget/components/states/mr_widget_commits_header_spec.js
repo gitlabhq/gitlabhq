@@ -7,7 +7,6 @@ describe('Commits header component', () => {
 
   const createComponent = props => {
     wrapper = shallowMount(CommitsHeader, {
-      sync: false,
       propsData: {
         isSquashEnabled: false,
         targetBranch: 'master',

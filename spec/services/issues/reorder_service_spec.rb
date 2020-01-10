@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 describe Issues::ReorderService do
-  set(:user)    { create(:user) }
-  set(:project) { create(:project) }
-  set(:group)   { create(:group) }
+  let_it_be(:user)    { create(:user) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:group)   { create(:group) }
 
   shared_examples 'issues reorder service' do
     context 'when reordering issues' do

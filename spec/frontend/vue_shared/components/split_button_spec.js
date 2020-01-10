@@ -22,7 +22,6 @@ describe('SplitButton', () => {
   const createComponent = propsData => {
     wrapper = shallowMount(SplitButton, {
       propsData,
-      sync: false,
     });
   };
 

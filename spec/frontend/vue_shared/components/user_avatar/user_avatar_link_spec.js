@@ -26,7 +26,6 @@ describe('User Avatar Link Component', () => {
         ...defaultProps,
         ...props,
       },
-      sync: false,
       attachToDocument: true,
     });
   };

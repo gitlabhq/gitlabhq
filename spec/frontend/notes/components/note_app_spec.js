@@ -62,7 +62,6 @@ describe('note_app', () => {
           attachToDocument: true,
           propsData,
           store,
-          sync: false,
         },
       );
     };

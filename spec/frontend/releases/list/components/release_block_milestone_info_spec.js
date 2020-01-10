@@ -14,7 +14,6 @@ describe('Release block milestone info', () => {
       propsData: {
         milestones: milestonesProp,
       },
-      sync: false,
     });
 
     return wrapper.vm.$nextTick();

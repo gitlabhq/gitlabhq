@@ -11,7 +11,6 @@ describe('Stop Component', () => {
 
   const createWrapper = () => {
     wrapper = shallowMount(StopComponent, {
-      sync: false,
       attachToDocument: true,
       propsData: {
         environment: {},

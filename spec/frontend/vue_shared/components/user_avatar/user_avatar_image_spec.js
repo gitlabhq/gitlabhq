@@ -27,7 +27,6 @@ describe('User Avatar Image Component', () => {
         propsData: {
           ...DEFAULT_PROPS,
         },
-        sync: false,
       });
     });
 
@@ -54,7 +53,6 @@ describe('User Avatar Image Component', () => {
           ...DEFAULT_PROPS,
           lazy: true,
         },
-        sync: false,
       });
     });
 
@@ -69,7 +67,7 @@ describe('User Avatar Image Component', () => {
 
   describe('Initialization without src', () => {
     beforeEach(() => {
-      wrapper = shallowMount(UserAvatarImage, { sync: false });
+      wrapper = shallowMount(UserAvatarImage);
     });
 
     it('should have default avatar image', () => {
@@ -86,7 +84,10 @@ describe('User Avatar Image Component', () => {
     };
 
     beforeEach(() => {
-      wrapper = shallowMount(UserAvatarImage, { propsData: { props }, slots, sync: false });
+      wrapper = shallowMount(UserAvatarImage, {
+        propsData: { props },
+        slots,
+      });
     });
 
     it('renders the tooltip slot', () => {

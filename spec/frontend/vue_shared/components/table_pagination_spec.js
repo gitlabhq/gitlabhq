@@ -8,7 +8,6 @@ describe('Pagination component', () => {
 
   const mountComponent = props => {
     wrapper = shallowMount(TablePagination, {
-      sync: false,
       propsData: props,
     });
   };

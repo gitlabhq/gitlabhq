@@ -18,7 +18,6 @@ describe('PinnedLinks', () => {
 
   const createComponent = props => {
     wrapper = shallowMount(PinnedLinks, {
-      sync: false,
       propsData: {
         zoomMeetingUrl: null,
         ...props,

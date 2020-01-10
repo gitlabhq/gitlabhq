@@ -36,7 +36,6 @@ describe('Pagination links component', () => {
         change: changeMock,
         pageInfo,
       },
-      sync: false,
     });
   };
 

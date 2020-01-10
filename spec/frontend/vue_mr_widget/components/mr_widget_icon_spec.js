@@ -12,7 +12,6 @@ describe('MrWidgetIcon', () => {
       propsData: {
         name: TEST_ICON,
       },
-      sync: false,
     });
   });
 

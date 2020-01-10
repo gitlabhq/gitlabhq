@@ -29,7 +29,6 @@ describe('Users admin page Modal Manager', () => {
         csrfToken: 'dummyCSRF',
         ...props,
       },
-      sync: false,
     });
   };
 

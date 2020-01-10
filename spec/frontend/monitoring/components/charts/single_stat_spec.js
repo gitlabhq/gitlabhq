@@ -10,7 +10,6 @@ describe('Single Stat Chart component', () => {
       propsData: {
         graphData: graphDataPrometheusQuery,
       },
-      sync: false,
     });
   });
 

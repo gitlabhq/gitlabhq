@@ -19,7 +19,6 @@ describe('Linked pipeline', () => {
 
     beforeEach(() => {
       wrapper = mount(LinkedPipelineComponent, {
-        sync: false,
         attachToDocument: true,
         propsData: props,
       });
@@ -83,7 +82,6 @@ describe('Linked pipeline', () => {
 
     beforeEach(() => {
       wrapper = mount(LinkedPipelineComponent, {
-        sync: false,
         attachToDocument: true,
         propsData: props,
       });
@@ -101,7 +99,6 @@ describe('Linked pipeline', () => {
 
     beforeEach(() => {
       wrapper = mount(LinkedPipelineComponent, {
-        sync: false,
         attachToDocument: true,
         propsData: props,
       });

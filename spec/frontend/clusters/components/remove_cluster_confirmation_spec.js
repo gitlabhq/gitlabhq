@@ -13,7 +13,6 @@ describe('Remove cluster confirmation modal', () => {
         clusterName: 'clusterName',
         ...props,
       },
-      sync: false,
     });
   };
 

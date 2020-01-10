@@ -16,7 +16,6 @@ describe('noteActions', () => {
       store,
       propsData,
       localVue,
-      sync: false,
     });
   };
 

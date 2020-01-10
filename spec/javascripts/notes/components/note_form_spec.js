@@ -19,7 +19,6 @@ describe('issue_note_form component', () => {
       propsData: props,
       // see https://gitlab.com/gitlab-org/gitlab-foss/issues/56317 for the following
       localVue,
-      sync: false,
     });
   };
 

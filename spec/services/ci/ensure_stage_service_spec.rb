@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 describe Ci::EnsureStageService, '#execute' do
-  set(:project) { create(:project) }
-  set(:user) { create(:user) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
 
   let(:stage) { create(:ci_stage_entity) }
   let(:job) { build(:ci_build) }

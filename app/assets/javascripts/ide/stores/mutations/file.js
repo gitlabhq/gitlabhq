@@ -132,7 +132,7 @@ export default {
   [types.DISCARD_FILE_CHANGES](state, path) {
     const stagedFile = state.stagedFiles.find(f => f.path === path);
     const entry = state.entries[path];
-    const { deleted, prevPath } = entry;
+    const { deleted } = entry;
 
     Object.assign(state.entries[path], {
       content: stagedFile ? stagedFile.content : state.entries[path].raw,
@@ -146,12 +146,6 @@ export default {
         : state.trees[`${state.currentProjectId}/${state.currentBranchId}`];
 
       parent.tree = sortTree(parent.tree.concat(entry));
-    } else if (prevPath) {
-      const parent = entry.parentPath
-        ? state.entries[entry.parentPath]
-        : state.trees[`${state.currentProjectId}/${state.currentBranchId}`];
-
-      parent.tree = parent.tree.filter(f => f.path !== path);
     }
   },
   [types.ADD_FILE_TO_CHANGED](state, path) {

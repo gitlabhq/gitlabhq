@@ -25,7 +25,6 @@ describe('AssigneeAvatarLink component', () => {
     wrapper = shallowMount(AssigneeAvatarLink, {
       attachToDocument: true,
       propsData,
-      sync: false,
     });
   }
 

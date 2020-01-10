@@ -10,7 +10,6 @@ describe('ReplyButton', () => {
 
   beforeEach(() => {
     wrapper = mount(localVue.extend(ReplyButton), {
-      sync: false,
       localVue,
     });
   });

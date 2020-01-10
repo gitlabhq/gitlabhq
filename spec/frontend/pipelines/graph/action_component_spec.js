@@ -19,7 +19,6 @@ describe('pipeline graph action component', () => {
         link: 'foo',
         actionIcon: 'cancel',
       },
-      sync: false,
       attachToDocument: true,
     });
   });

@@ -3,9 +3,9 @@
 require "spec_helper"
 
 describe Projects::UpdatePagesService do
-  set(:project) { create(:project, :repository) }
-  set(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit('HEAD').sha) }
-  set(:build) { create(:ci_build, pipeline: pipeline, ref: 'HEAD') }
+  let_it_be(:project, refind: true) { create(:project, :repository) }
+  let_it_be(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit('HEAD').sha) }
+  let_it_be(:build) { create(:ci_build, pipeline: pipeline, ref: 'HEAD') }
   let(:invalid_file) { fixture_file_upload('spec/fixtures/dk.png') }
 
   let(:file) { fixture_file_upload("spec/fixtures/pages.zip") }

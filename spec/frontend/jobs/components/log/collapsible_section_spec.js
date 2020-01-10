@@ -12,7 +12,6 @@ describe('Job Log Collapsible Section', () => {
 
   const createComponent = (props = {}) => {
     wrapper = mount(CollpasibleSection, {
-      sync: true,
       propsData: {
         ...props,
       },

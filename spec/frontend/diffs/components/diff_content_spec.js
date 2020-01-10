@@ -84,7 +84,6 @@ describe('DiffContent', () => {
       },
       localVue,
       store: fakeStore,
-      sync: false,
     });
   };
 

@@ -37,7 +37,6 @@ function createComponent() {
       </textarea>
     </field-component>
     `,
-    sync: false,
   });
   return wrapper;
 }

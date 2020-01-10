@@ -19,7 +19,6 @@ describe('dashboard invalid url parameters', () => {
 
   const createMountedWrapper = (props = {}, options = {}) => {
     wrapper = mount(Dashboard, {
-      sync: false,
       propsData: { ...propsData, ...props },
       store,
       ...options,

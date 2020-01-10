@@ -45,7 +45,6 @@ describe('Issuables list component', () => {
         emptySvgPath: TEST_EMPTY_SVG_PATH,
         ...props,
       },
-      sync: false,
       attachToDocument: true,
     });
   };

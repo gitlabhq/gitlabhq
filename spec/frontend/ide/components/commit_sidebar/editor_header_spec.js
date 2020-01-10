@@ -23,7 +23,6 @@ describe('IDE commit editor header', () => {
     wrapper = mount(EditorHeader, {
       store,
       localVue,
-      sync: false,
       propsData: {
         activeFile: f,
       },

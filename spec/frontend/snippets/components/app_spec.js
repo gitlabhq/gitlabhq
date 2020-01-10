@@ -20,7 +20,6 @@ describe('Snippet view app', () => {
     };
 
     wrapper = shallowMount(SnippetApp, {
-      sync: false,
       mocks: { $apollo },
       propsData: {
         ...props,

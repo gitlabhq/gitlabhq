@@ -24,7 +24,6 @@ describe('dashboard time window', () => {
 
   const createComponentWrapperMounted = (props = {}, options = {}) => {
     wrapper = mount(Dashboard, {
-      sync: false,
       propsData: { ...propsData, ...props },
       store,
       ...options,

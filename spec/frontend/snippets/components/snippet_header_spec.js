@@ -61,7 +61,6 @@ describe('Snippet header component', () => {
     };
 
     wrapper = shallowMount(SnippetHeader, {
-      sync: false,
       mocks: { $apollo },
       propsData: {
         ...defaultProps,

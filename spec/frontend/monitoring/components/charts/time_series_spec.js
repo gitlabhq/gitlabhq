@@ -58,7 +58,6 @@ describe('Time series component', () => {
         slots: {
           default: mockWidgets,
         },
-        sync: false,
         store,
         attachToDocument: true,
       });

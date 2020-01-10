@@ -9,6 +9,7 @@ import router from '~/ide/ide_router';
 import eventHub from '~/ide/eventhub';
 import { file } from '../../helpers';
 
+const ORIGINAL_CONTENT = 'original content';
 const RELATIVE_URL_ROOT = '/gitlab';
 
 describe('IDE store file actions', () => {
@@ -583,6 +584,7 @@ describe('IDE store file actions', () => {
 
       tmpFile = file('tempFile');
       tmpFile.content = 'testing';
+      tmpFile.raw = ORIGINAL_CONTENT;
 
       store.state.changedFiles.push(tmpFile);
       store.state.entries[tmpFile.path] = tmpFile;
@@ -594,7 +596,7 @@ describe('IDE store file actions', () => {
       store
         .dispatch('discardFileChanges', tmpFile.path)
         .then(() => {
-          expect(tmpFile.content).not.toBe('testing');
+          expect(tmpFile.content).toBe(ORIGINAL_CONTENT);
 
           done();
         })
@@ -624,22 +626,30 @@ describe('IDE store file actions', () => {
       expect(store.dispatch).toHaveBeenCalledWith('deleteEntry', tmpFile.path);
     });
 
-    it('renames the file to its original name and closes it if it was open', () => {
-      Object.assign(tmpFile, {
-        prevPath: 'parentPath/old_name',
-        prevName: 'old_name',
-        prevParentPath: 'parentPath',
+    describe('with renamed file', () => {
+      beforeEach(() => {
+        Object.assign(tmpFile, {
+          prevPath: 'parentPath/old_name',
+          prevName: 'old_name',
+          prevParentPath: 'parentPath',
+        });
+
+        store.state.entries.parentPath = file('parentPath');
+
+        actions.discardFileChanges(store, tmpFile.path);
       });
 
-      store.state.entries.parentPath = file('parentPath');
+      it('renames the file to its original name and closes it if it was open', () => {
+        expect(store.dispatch).toHaveBeenCalledWith('closeFile', tmpFile);
+        expect(store.dispatch).toHaveBeenCalledWith('renameEntry', {
+          path: 'tempFile',
+          name: 'old_name',
+          parentPath: 'parentPath',
+        });
+      });
 
-      actions.discardFileChanges(store, tmpFile.path);
-
-      expect(store.dispatch).toHaveBeenCalledWith('closeFile', tmpFile);
-      expect(store.dispatch).toHaveBeenCalledWith('renameEntry', {
-        path: 'tempFile',
-        name: 'old_name',
-        parentPath: 'parentPath',
+      it('resets file content', () => {
+        expect(tmpFile.content).toBe(ORIGINAL_CONTENT);
       });
     });
 

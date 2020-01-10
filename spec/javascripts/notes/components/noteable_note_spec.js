@@ -23,7 +23,6 @@ describe('issue_note', () => {
       propsData: {
         note,
       },
-      sync: false,
       localVue,
     });
   });

@@ -7,9 +7,9 @@ describe SystemNoteService do
   include RepoHelpers
   include AssetsHelpers
 
-  set(:group)    { create(:group) }
-  set(:project)  { create(:project, :repository, group: group) }
-  set(:author)   { create(:user) }
+  let_it_be(:group)    { create(:group) }
+  let_it_be(:project)  { create(:project, :repository, group: group) }
+  let_it_be(:author)   { create(:user) }
   let(:noteable) { create(:issue, project: project) }
   let(:issue)    { noteable }
 

@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 describe Ci::RetryBuildService do
-  set(:user) { create(:user) }
-  set(:project) { create(:project, :repository) }
-  set(:pipeline) do
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:pipeline) do
     create(:ci_pipeline, project: project,
            sha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0')
   end

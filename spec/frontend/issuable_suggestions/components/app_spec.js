@@ -11,7 +11,6 @@ describe('Issuable suggestions app component', () => {
         search,
         projectPath: 'project',
       },
-      sync: false,
       attachToDocument: true,
     });
   }

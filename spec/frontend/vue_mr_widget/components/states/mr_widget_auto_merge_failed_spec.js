@@ -10,7 +10,6 @@ describe('MRWidgetAutoMergeFailed', () => {
 
   const createComponent = (props = {}) => {
     wrapper = shallowMount(AutoMergeFailedComponent, {
-      sync: false,
       propsData: { ...props },
     });
   };

@@ -16,7 +16,6 @@ describe('Area component', () => {
       slots: {
         default: mockWidgets,
       },
-      sync: false,
     });
   });
 

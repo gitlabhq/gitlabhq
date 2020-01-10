@@ -54,7 +54,6 @@ describe('IDE clientside preview', () => {
     });
 
     wrapper = shallowMount(Clientside, {
-      sync: false,
       store,
       localVue,
     });

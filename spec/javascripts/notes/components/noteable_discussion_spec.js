@@ -36,7 +36,6 @@ describe('noteable_discussion component', () => {
       store,
       propsData: { discussion: discussionMock },
       localVue,
-      sync: false,
     });
   });
 
@@ -196,7 +195,6 @@ describe('noteable_discussion component', () => {
           store,
           propsData: { discussion: discussionMock },
           localVue,
-          sync: false,
         });
       });
 
@@ -216,7 +214,6 @@ describe('noteable_discussion component', () => {
           store,
           propsData: { discussion: discussionMock },
           localVue,
-          sync: false,
         });
       });
 

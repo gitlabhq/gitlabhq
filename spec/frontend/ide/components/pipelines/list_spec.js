@@ -63,7 +63,6 @@ describe('IDE pipelines list', () => {
     wrapper = shallowMount(List, {
       localVue,
       store: fakeStore,
-      sync: false,
     });
   };
 

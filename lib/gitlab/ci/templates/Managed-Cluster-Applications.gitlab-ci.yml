@@ -1,6 +1,6 @@
 apply:
   stage: deploy
-  image: "registry.gitlab.com/gitlab-org/cluster-integration/cluster-applications:v0.3.0"
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/cluster-applications:v0.4.0"
   environment:
     name: production
   variables:
@@ -9,7 +9,6 @@ apply:
     INGRESS_VALUES_FILE: $CI_PROJECT_DIR/.gitlab/managed-apps/ingress/values.yaml
     SENTRY_VALUES_FILE: $CI_PROJECT_DIR/.gitlab/managed-apps/sentry/values.yaml
   script:
-    - kubectl get namespace "$TILLER_NAMESPACE" || kubectl create namespace "$TILLER_NAMESPACE"
     - gitlab-managed-apps /usr/local/share/gitlab-managed-apps/helmfile.yaml
   only:
     refs:

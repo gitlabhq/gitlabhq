@@ -20,7 +20,6 @@ describe('Manual Variables Form', () => {
     wrapper = shallowMount(localVue.extend(Form), {
       propsData: props,
       localVue,
-      sync: false,
     });
   };
 

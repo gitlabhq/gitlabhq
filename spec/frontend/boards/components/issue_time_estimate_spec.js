@@ -20,7 +20,6 @@ describe('Issue Time Estimate component', () => {
         propsData: {
           estimate: 374460,
         },
-        sync: false,
       });
     });
 
@@ -61,7 +60,6 @@ describe('Issue Time Estimate component', () => {
         propsData: {
           estimate: 374460,
         },
-        sync: false,
       });
     });
 

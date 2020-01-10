@@ -13,7 +13,6 @@ describe('HiddenFilesWarning', () => {
 
   const createComponent = () => {
     wrapper = shallowMount(HiddenFilesWarning, {
-      sync: false,
       propsData,
     });
   };

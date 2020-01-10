@@ -12,7 +12,6 @@ describe('Pipelines Table Row', () => {
         autoDevopsHelpPath: 'foo',
         viewType: 'root',
       },
-      sync: false,
     });
 
   let wrapper;

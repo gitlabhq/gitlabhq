@@ -45,7 +45,6 @@ describe('IDE file templates dropdown component', () => {
       },
       store: fakeStore,
       localVue,
-      sync: false,
     });
 
     ({ element } = wrapper);

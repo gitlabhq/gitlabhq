@@ -22,7 +22,6 @@ describe('Job Log Header Line', () => {
 
   const createComponent = (props = {}) => {
     wrapper = mount(LineHeader, {
-      sync: false,
       propsData: {
         ...props,
       },

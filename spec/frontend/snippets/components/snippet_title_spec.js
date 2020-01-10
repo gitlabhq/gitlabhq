@@ -17,7 +17,6 @@ describe('Snippet header component', () => {
     const defaultProps = Object.assign({}, props);
 
     wrapper = shallowMount(SnippetTitle, {
-      sync: false,
       propsData: {
         ...defaultProps,
       },

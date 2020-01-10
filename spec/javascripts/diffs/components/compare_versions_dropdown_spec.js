@@ -25,7 +25,6 @@ describe('CompareVersionsDropdown', () => {
   const createComponent = (props = {}) => {
     wrapper = shallowMount(localVue.extend(CompareVersionsDropdown), {
       localVue,
-      sync: false,
       propsData: { ...props },
     });
   };

@@ -67,7 +67,7 @@ describe MergeRequests::MergeToRefService do
     end
   end
 
-  set(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
   let(:merge_request) { create(:merge_request, :simple) }
   let(:project) { merge_request.project }
 
@@ -214,7 +214,7 @@ describe MergeRequests::MergeToRefService do
     end
 
     describe 'cascading merge refs' do
-      set(:project) { create(:project, :repository) }
+      let_it_be(:project) { create(:project, :repository) }
       let(:params) { { commit_message: 'Cascading merge', first_parent_ref: first_parent_ref, target_ref: target_ref, sha: merge_request.diff_head_sha } }
 
       context 'when first merge happens' do

@@ -25,7 +25,6 @@ describe('Commits message dropdown component', () => {
 
   const createComponent = () => {
     wrapper = shallowMount(CommitMessageDropdown, {
-      sync: false,
       propsData: {
         commits,
       },

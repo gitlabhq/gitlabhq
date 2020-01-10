@@ -25,7 +25,6 @@ const createComponent = (
       enableScopedLabels: true,
     },
     attachToDocument: true,
-    sync: false,
   });
 };
 

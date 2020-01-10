@@ -20,7 +20,6 @@ describe('Job Log Line', () => {
 
   const createComponent = (props = {}) => {
     wrapper = shallowMount(Line, {
-      sync: false,
       propsData: {
         ...props,
       },

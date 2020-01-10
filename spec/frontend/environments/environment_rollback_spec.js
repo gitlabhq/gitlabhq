@@ -14,7 +14,6 @@ describe('Rollback Component', () => {
         environment: {},
       },
       attachToDocument: true,
-      sync: false,
     });
 
     expect(wrapper.element).toHaveSpriteIcon('repeat');
@@ -28,7 +27,6 @@ describe('Rollback Component', () => {
         environment: {},
       },
       attachToDocument: true,
-      sync: false,
     });
 
     expect(wrapper.element).toHaveSpriteIcon('redo');

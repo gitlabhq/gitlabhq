@@ -28,7 +28,6 @@ const createComponent = (store, propsData = componentConfig) =>
     propsData,
     store,
     localVue,
-    sync: false,
   });
 
 const createStore = (initialState = {}, getters = {}) =>

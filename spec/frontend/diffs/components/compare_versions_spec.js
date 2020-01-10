@@ -22,7 +22,6 @@ describe('CompareVersions', () => {
     store.state.diffs.diffFiles.push('test');
 
     wrapper = mount(CompareVersionsComponent, {
-      sync: false,
       attachToDocument: true,
       localVue,
       store,

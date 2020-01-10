@@ -30,7 +30,6 @@ describe('DateTimePicker', () => {
         end,
         ...props,
       },
-      sync: false,
     });
   };
 

@@ -15,7 +15,6 @@ describe('Artifacts List', () => {
       propsData: {
         ...props,
       },
-      sync: false,
     });
   };
 

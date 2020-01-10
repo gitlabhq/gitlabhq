@@ -20,7 +20,6 @@ describe('AssigneeAvatar', () => {
 
     wrapper = shallowMount(AssigneeAvatar, {
       propsData,
-      sync: false,
     });
   }
 

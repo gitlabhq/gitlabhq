@@ -197,6 +197,7 @@ export const discardFileChanges = ({ dispatch, state, commit, getters }, path) =
     if (file.tempFile) {
       dispatch('deleteEntry', file.path);
     } else {
+      commit(types.DISCARD_FILE_CHANGES, file.path);
       dispatch('renameEntry', {
         path: file.path,
         name: file.prevName,

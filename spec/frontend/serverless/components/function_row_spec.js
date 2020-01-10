@@ -8,7 +8,9 @@ describe('functionRowComponent', () => {
   let wrapper;
 
   const createComponent = func => {
-    wrapper = shallowMount(functionRowComponent, { propsData: { func }, sync: false });
+    wrapper = shallowMount(functionRowComponent, {
+      propsData: { func },
+    });
   };
 
   afterEach(() => {

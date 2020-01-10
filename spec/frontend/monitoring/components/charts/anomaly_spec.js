@@ -38,7 +38,6 @@ describe('Anomaly chart component', () => {
       slots: {
         default: mockWidgets,
       },
-      sync: false,
     });
   };
   const findTimeSeries = () => wrapper.find(MonitorTimeSeriesChart);

@@ -39,7 +39,6 @@ describe('User Popover Component', () => {
         target: findTarget(),
         ...props,
       },
-      sync: false,
       ...options,
     });
   };

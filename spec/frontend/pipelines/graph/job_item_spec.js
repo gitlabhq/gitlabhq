@@ -6,7 +6,10 @@ describe('pipeline graph job item', () => {
   let wrapper;
 
   const createWrapper = propsData => {
-    wrapper = mount(JobItem, { sync: false, attachToDocument: true, propsData });
+    wrapper = mount(JobItem, {
+      attachToDocument: true,
+      propsData,
+    });
   };
 
   const delayedJobFixture = getJSONFixture('jobs/delayed.json');

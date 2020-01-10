@@ -26,7 +26,6 @@ describe('Panel Type component', () => {
         ...props,
       },
       store,
-      sync: false,
       attachToDocument: true,
     });
 
@@ -152,7 +151,6 @@ describe('Panel Type component', () => {
           graphData: graphDataPrometheusQueryRange,
         },
         store,
-        sync: false,
         attachToDocument: true,
       });
       panelType.vm.$nextTick(done);

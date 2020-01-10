@@ -33,7 +33,6 @@ describe('Commit pipeline status component', () => {
         ...defaultProps,
         ...props,
       },
-      sync: false,
     });
   };
 

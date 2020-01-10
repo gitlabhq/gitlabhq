@@ -26,7 +26,6 @@ describe('ImportedProjectTableRow', () => {
           ...project,
         },
       },
-      sync: false,
     });
 
     return component.vm;

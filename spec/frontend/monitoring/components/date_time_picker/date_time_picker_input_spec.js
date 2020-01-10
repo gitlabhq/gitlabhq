@@ -15,7 +15,6 @@ describe('DateTimePickerInput', () => {
         label: '',
         ...propsData,
       },
-      sync: false,
     });
   };
 

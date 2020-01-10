@@ -14,7 +14,6 @@ describe('SidebarTodo', () => {
 
   const createComponent = (props = {}) => {
     wrapper = shallowMount(SidebarTodos, {
-      sync: false,
       propsData: {
         ...defaultProps,
         ...props,

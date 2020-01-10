@@ -21,7 +21,6 @@ describe('diff_discussion_header component', () => {
     wrapper = mount(diffDiscussionHeader, {
       store,
       propsData: { discussion: discussionMock },
-      sync: false,
     });
   });
 

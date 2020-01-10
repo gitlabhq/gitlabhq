@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 describe Projects::ContainerRepository::DeleteTagsService do
-  set(:user) { create(:user) }
-  set(:project) { create(:project, :private) }
-  set(:repository) { create(:container_repository, :root, project: project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :private) }
+  let_it_be(:repository) { create(:container_repository, :root, project: project) }
 
   let(:params) { { tags: tags } }
   let(:service) { described_class.new(project, user, params) }

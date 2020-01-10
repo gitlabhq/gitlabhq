@@ -43,7 +43,6 @@ describe('functionsComponent', () => {
         helpPath: '',
         statusPath: '',
       },
-      sync: false,
     });
 
     expect(component.find(EmptyState).exists()).toBe(true);
@@ -59,7 +58,6 @@ describe('functionsComponent', () => {
         helpPath: '',
         statusPath: '',
       },
-      sync: false,
     });
 
     expect(component.find(GlLoadingIcon).exists()).toBe(true);
@@ -75,7 +73,6 @@ describe('functionsComponent', () => {
         helpPath: '',
         statusPath: '',
       },
-      sync: false,
     });
 
     expect(
@@ -102,7 +99,6 @@ describe('functionsComponent', () => {
         helpPath: '',
         statusPath: '',
       },
-      sync: false,
     });
 
     expect(component.find('.js-functions-wrapper').exists()).toBe(true);
@@ -118,7 +114,6 @@ describe('functionsComponent', () => {
         helpPath: 'helpPath',
         statusPath,
       },
-      sync: false,
     });
 
     component.vm.$store.dispatch('receiveFunctionsSuccess', mockServerlessFunctions);

@@ -8,7 +8,6 @@ describe('Time ago with tooltip component', () => {
   const buildVm = (propsData = {}) => {
     vm = shallowMount(TimeAgoTooltip, {
       attachToDocument: true,
-      sync: false,
       propsData,
     });
   };

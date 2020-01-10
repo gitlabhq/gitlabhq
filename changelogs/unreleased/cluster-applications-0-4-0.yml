@@ -1,0 +1,5 @@
+---
+title: Bump cluster-applications image to v0.4.0, adding support to install cert-manager
+merge_request: 22657
+author:
+type: changed

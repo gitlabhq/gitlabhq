@@ -21,7 +21,6 @@ describe('NoteEditedText', () => {
   beforeEach(() => {
     wrapper = shallowMount(NoteEditedText, {
       propsData,
-      sync: false,
       attachToDocument: true,
     });
   });

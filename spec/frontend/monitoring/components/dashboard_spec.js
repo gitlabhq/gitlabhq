@@ -30,7 +30,6 @@ describe('Dashboard', () => {
   const createShallowWrapper = (props = {}, options = {}) => {
     wrapper = shallowMount(Dashboard, {
       localVue,
-      sync: false,
       propsData: { ...propsData, ...props },
       store,
       ...options,
@@ -40,7 +39,6 @@ describe('Dashboard', () => {
   const createMountedWrapper = (props = {}, options = {}) => {
     wrapper = mount(Dashboard, {
       localVue,
-      sync: false,
       propsData: { ...propsData, ...props },
       store,
       ...options,

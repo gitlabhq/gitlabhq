@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 describe Notes::CreateService do
-  set(:project) { create(:project, :repository) }
-  set(:issue) { create(:issue, project: project) }
-  set(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:issue) { create(:issue, project: project) }
+  let_it_be(:user) { create(:user) }
   let(:opts) do
     { note: 'Awesome comment', noteable_type: 'Issue', noteable_id: issue.id }
   end
@@ -216,12 +216,12 @@ describe Notes::CreateService do
 
     context 'note with commands' do
       context 'all quick actions' do
-        set(:milestone) { create(:milestone, project: project, title: "sprint") }
-        set(:bug_label) { create(:label, project: project, title: 'bug') }
-        set(:to_be_copied_label) { create(:label, project: project, title: 'to be copied') }
-        set(:feature_label) { create(:label, project: project, title: 'feature') }
-        set(:issue) { create(:issue, project: project, labels: [bug_label], due_date: '2019-01-01') }
-        set(:issue_2) { create(:issue, project: project, labels: [bug_label, to_be_copied_label]) }
+        let_it_be(:milestone) { create(:milestone, project: project, title: "sprint") }
+        let_it_be(:bug_label) { create(:label, project: project, title: 'bug') }
+        let_it_be(:to_be_copied_label) { create(:label, project: project, title: 'to be copied') }
+        let_it_be(:feature_label) { create(:label, project: project, title: 'feature') }
+        let_it_be(:issue, reload: true) { create(:issue, project: project, labels: [bug_label], due_date: '2019-01-01') }
+        let_it_be(:issue_2) { create(:issue, project: project, labels: [bug_label, to_be_copied_label]) }
 
         context 'for issues' do
           let(:issuable) { issue }
@@ -272,7 +272,7 @@ describe Notes::CreateService do
         end
 
         context 'for merge requests' do
-          set(:merge_request) { create(:merge_request, source_project: project, labels: [bug_label]) }
+          let_it_be(:merge_request) { create(:merge_request, source_project: project, labels: [bug_label]) }
           let(:issuable) { merge_request }
           let(:note_params) { opts.merge(noteable_type: 'MergeRequest', noteable_id: merge_request.id) }
           let(:merge_request_quick_actions) do

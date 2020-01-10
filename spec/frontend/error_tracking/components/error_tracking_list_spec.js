@@ -29,7 +29,6 @@ describe('ErrorTrackingList', () => {
     wrapper = mount(ErrorTrackingList, {
       localVue,
       store,
-      sync: false,
       propsData: {
         indexPath: '/path',
         enableErrorTrackingLink: '/link',

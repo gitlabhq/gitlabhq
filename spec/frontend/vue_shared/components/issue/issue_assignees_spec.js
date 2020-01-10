@@ -17,7 +17,6 @@ describe('IssueAssigneesComponent', () => {
         assignees: mockAssigneesList,
         ...props,
       },
-      sync: false,
       attachToDocument: true,
     });
     vm = wrapper.vm; // eslint-disable-line

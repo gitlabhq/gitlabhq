@@ -17,7 +17,6 @@ describe('Registry Settings App', () => {
   const mountComponent = (options = {}) => {
     fetchSpy = jest.fn();
     wrapper = shallowMount(component, {
-      sync: false,
       store,
       methods: {
         fetchSettings: fetchSpy,

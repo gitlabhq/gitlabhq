@@ -24,7 +24,6 @@ describe('Settings Form', () => {
     saveSpy = jest.fn();
     resetSpy = jest.fn();
     wrapper = shallowMount(component, {
-      sync: false,
       store,
       methods: {
         saveSettings: saveSpy,

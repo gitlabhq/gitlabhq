@@ -10,7 +10,6 @@ describe('Commits edit component', () => {
 
   const createComponent = (slots = {}) => {
     wrapper = shallowMount(CommitEdit, {
-      sync: false,
       propsData: {
         value: testCommitMessage,
         label: testLabel,

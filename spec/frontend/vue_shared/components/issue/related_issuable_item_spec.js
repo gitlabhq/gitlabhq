@@ -31,7 +31,6 @@ describe('RelatedIssuableItem', () => {
   beforeEach(() => {
     wrapper = mount(RelatedIssuableItem, {
       slots,
-      sync: false,
       attachToDocument: true,
       propsData: props,
     });

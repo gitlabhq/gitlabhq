@@ -13,7 +13,6 @@ describe('Erased block', () => {
   const createComponent = props => {
     wrapper = mount(ErasedBlock, {
       propsData: props,
-      sync: false,
       attachToDocument: true,
     });
   };

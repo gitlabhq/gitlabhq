@@ -38,7 +38,6 @@ describe('Merge Requests Artifacts list app', () => {
         ...actionSpies,
       },
       localVue,
-      sync: false,
     });
   };
 

@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 describe AwardEmojis::AddService do
-  set(:user) { create(:user) }
-  set(:project) { create(:project) }
-  set(:awardable) { create(:note, project: project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:awardable) { create(:note, project: project) }
   let(:name) { 'thumbsup' }
 
   subject(:service) { described_class.new(awardable, name, user) }

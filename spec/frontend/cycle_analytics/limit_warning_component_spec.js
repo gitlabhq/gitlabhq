@@ -10,7 +10,6 @@ const createComponent = props =>
     propsData: {
       ...props,
     },
-    sync: false,
     attachToDocument: true,
   });
 

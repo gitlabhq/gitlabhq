@@ -16,7 +16,6 @@ describe('DiscussionNotesRepliesWrapper', () => {
   const createComponent = (props = {}) => {
     wrapper = mount(TestComponent, {
       propsData: props,
-      sync: false,
     });
   };
 

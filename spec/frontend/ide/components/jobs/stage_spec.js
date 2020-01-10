@@ -26,7 +26,6 @@ describe('IDE pipeline stage', () => {
         ...defaultProps,
         ...props,
       },
-      sync: false,
     });
   };
 

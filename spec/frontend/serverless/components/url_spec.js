@@ -8,7 +8,6 @@ const createComponent = uri =>
     propsData: {
       uri,
     },
-    sync: false,
   });
 
 describe('urlComponent', () => {

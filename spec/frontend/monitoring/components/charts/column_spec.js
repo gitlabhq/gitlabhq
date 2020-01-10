@@ -32,7 +32,6 @@ describe('Column component', () => {
         },
         containerWidth: 100,
       },
-      sync: false,
     });
   });
 

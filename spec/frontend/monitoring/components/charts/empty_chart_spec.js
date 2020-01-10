@@ -10,7 +10,6 @@ describe('Empty Chart component', () => {
       propsData: {
         graphTitle,
       },
-      sync: false,
     });
   });
 

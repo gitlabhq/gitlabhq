@@ -11,7 +11,6 @@ describe('Job Log Line Number', () => {
 
   const createComponent = (props = {}) => {
     wrapper = shallowMount(LineNumber, {
-      sync: false,
       propsData: {
         ...props,
       },

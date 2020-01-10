@@ -26,7 +26,6 @@ describe('IDE error message component', () => {
       },
       store: fakeStore,
       localVue,
-      sync: false,
     });
   };
 

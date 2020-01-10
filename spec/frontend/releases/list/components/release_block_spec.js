@@ -34,7 +34,6 @@ describe('Release block', () => {
           ...featureFlags,
         },
       },
-      sync: false,
     });
 
     return wrapper.vm.$nextTick();

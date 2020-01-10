@@ -19,7 +19,6 @@ describe('UncollapsedAssigneeList component', () => {
 
     wrapper = mount(UncollapsedAssigneeList, {
       attachToDocument: true,
-      sync: false,
       propsData,
     });
   }

@@ -17,7 +17,6 @@ describe('Commit component', () => {
   const createComponent = propsData => {
     wrapper = shallowMount(CommitComponent, {
       propsData,
-      sync: false,
       attachToDocument: true,
     });
   };

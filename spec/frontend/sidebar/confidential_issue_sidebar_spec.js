@@ -37,7 +37,6 @@ describe('Confidential Issue Sidebar Block', () => {
         service,
         ...propsData,
       },
-      sync: false,
     });
   };
 

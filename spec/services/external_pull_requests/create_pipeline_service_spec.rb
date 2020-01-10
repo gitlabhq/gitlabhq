@@ -4,8 +4,8 @@ require 'spec_helper'
 
 describe ExternalPullRequests::CreatePipelineService do
   describe '#execute' do
-    set(:project) { create(:project, :auto_devops, :repository) }
-    set(:user) { create(:user) }
+    let_it_be(:project) { create(:project, :auto_devops, :repository) }
+    let_it_be(:user) { create(:user) }
     let(:pull_request) { create(:external_pull_request, project: project) }
 
     before do

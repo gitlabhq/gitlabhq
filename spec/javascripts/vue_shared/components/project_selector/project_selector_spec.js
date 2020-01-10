@@ -33,7 +33,6 @@ describe('ProjectSelector component', () => {
         showLoadingIndicator: false,
         showSearchErrorMessage: false,
       },
-      sync: false,
       attachToDocument: true,
     });
 

@@ -22,7 +22,7 @@ let button;
 
 describe('Error Tracking directive', () => {
   beforeEach(() => {
-    wrapper = shallowMount(Component, {});
+    wrapper = shallowMount(Component);
     button = wrapper.find('#trackable');
   });
 

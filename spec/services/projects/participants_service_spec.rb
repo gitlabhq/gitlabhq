@@ -4,8 +4,8 @@ require 'spec_helper'
 
 describe Projects::ParticipantsService do
   describe '#groups' do
-    set(:user) { create(:user) }
-    set(:project) { create(:project, :public) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, :public) }
     let(:service) { described_class.new(project, user) }
 
     it 'avoids N+1 queries' do
@@ -62,10 +62,10 @@ describe Projects::ParticipantsService do
     subject(:usernames) { service.project_members.map { |member| member[:username] } }
 
     context 'when there is a project in group namespace' do
-      set(:public_group) { create(:group, :public) }
-      set(:public_project) { create(:project, :public, namespace: public_group)}
+      let_it_be(:public_group) { create(:group, :public) }
+      let_it_be(:public_project) { create(:project, :public, namespace: public_group)}
 
-      set(:public_group_owner) { create(:user) }
+      let_it_be(:public_group_owner) { create(:user) }
 
       let(:service) { described_class.new(public_project, create(:user)) }
 
@@ -79,18 +79,18 @@ describe Projects::ParticipantsService do
     end
 
     context 'when there is a private group and a public project' do
-      set(:public_group) { create(:group, :public) }
-      set(:private_group) { create(:group, :private, :nested) }
-      set(:public_project) { create(:project, :public, namespace: public_group)}
+      let_it_be(:public_group) { create(:group, :public) }
+      let_it_be(:private_group) { create(:group, :private, :nested) }
+      let_it_be(:public_project) { create(:project, :public, namespace: public_group)}
 
-      set(:project_issue) { create(:issue, project: public_project)}
+      let_it_be(:project_issue) { create(:issue, project: public_project)}
 
-      set(:public_group_owner) { create(:user) }
-      set(:private_group_member) { create(:user) }
-      set(:public_project_maintainer) { create(:user) }
-      set(:private_group_owner) { create(:user) }
+      let_it_be(:public_group_owner) { create(:user) }
+      let_it_be(:private_group_member) { create(:user) }
+      let_it_be(:public_project_maintainer) { create(:user) }
+      let_it_be(:private_group_owner) { create(:user) }
 
-      set(:group_ancestor_owner) { create(:user) }
+      let_it_be(:group_ancestor_owner) { create(:user) }
 
       before(:context) do
         public_group.add_owner public_group_owner

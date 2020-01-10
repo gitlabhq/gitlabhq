@@ -35,7 +35,7 @@ The following applications can be installed:
 
 - [Helm](#helm)
 - [Ingress](#ingress)
-- [Cert-Manager](#cert-manager)
+- [cert-manager](#cert-manager)
 - [Prometheus](#prometheus)
 - [GitLab Runner](#gitlab-runner)
 - [JupyterHub](#jupyterhub)
@@ -73,13 +73,13 @@ Installing Helm as a GitLab-managed App behind a proxy is not supported,
 but a [workaround](../../topics/autodevops/index.md#installing-helm-behind-a-proxy)
 is available.
 
-### Cert-Manager
+### cert-manager
 
 > Introduced in GitLab 11.6 for project- and group-level clusters.
 
-[Cert-Manager](https://docs.cert-manager.io/en/latest/) is a native
+[cert-manager](https://docs.cert-manager.io/en/latest/) is a native
 Kubernetes certificate management controller that helps with issuing
-certificates. Installing Cert-Manager on your cluster will issue a
+certificates. Installing cert-manager on your cluster will issue a
 certificate by [Let's Encrypt](https://letsencrypt.org/) and ensure that
 certificates are valid and up-to-date.
 
@@ -91,13 +91,13 @@ The chart used to install this application depends on the version of GitLab used
 - GitLab 12.2 and older, the [stable/cert-manager](https://github.com/helm/charts/tree/master/stable/cert-manager)
   chart was used.
 
-If you have installed Cert-Manager prior to GitLab 12.3, Let's Encrypt will
-[block requests from older versions of Cert-Manager](https://community.letsencrypt.org/t/blocking-old-cert-manager-versions/98753).
+If you have installed cert-manager prior to GitLab 12.3, Let's Encrypt will
+[block requests from older versions of cert-manager](https://community.letsencrypt.org/t/blocking-old-cert-manager-versions/98753).
 
 To resolve this:
 
-1. Uninstall Cert-Manager (consider [backing up any additional configuration](https://docs.cert-manager.io/en/latest/tasks/backup-restore-crds.html)).
-1. Install Cert-Manager again.
+1. Uninstall cert-manager (consider [backing up any additional configuration](https://docs.cert-manager.io/en/latest/tasks/backup-restore-crds.html)).
+1. Install cert-manager again.
 
 ### GitLab Runner
 
@@ -446,6 +446,7 @@ install using Helm `values.yaml` files.
 Supported applications:
 
 - [Ingress](#install-ingress-using-gitlab-ci)
+- [cert-manager](#install-cert-manager-using-gitlab-ci)
 - [Sentry](#install-sentry-using-gitlab-ci)
 
 ### Usage
@@ -498,6 +499,43 @@ You can customize the installation of Ingress by defining
 management project. Refer to the
 [chart](https://github.com/helm/charts/tree/master/stable/nginx-ingress)
 for the available configuration options.
+
+### Install cert-manager using GitLab CI
+
+cert-manager is installed using GitLab CI by defining configuration in
+`.gitlab/managed-apps/config.yaml`.
+
+cert-manager:
+
+- Is installed into the `gitlab-managed-apps` namespace of your cluster.
+- Can be installed with or without a default [Let's Encrypt `ClusterIssuer`](https://cert-manager.io/docs/configuration/acme/), which requires an
+  email address to be specified. The email address is used by Let's Encrypt to
+  contact you about expiring certificates and issues related to your account.
+
+The following configuration is required to install cert-manager using GitLab CI:
+
+```yaml
+certManager:
+  installed: true
+  letsEncryptClusterIssuer:
+    installed: true
+    email: "user@example.com"
+```
+
+The following installs cert-manager using GitLab CI without the default `ClusterIssuer`:
+
+```yaml
+certManager:
+  installed: true
+  letsEncryptClusterIssuer:
+    installed: false
+```
+
+You can customize the installation of Ingress by defining
+`.gitlab/managed-apps/cert-manager/values.yaml` file in your cluster
+management project. Refer to the
+[chart](https://hub.helm.sh/charts/jetstack/cert-manager) for the
+available configuration options.
 
 ### Install Sentry using GitLab CI
 
@@ -593,7 +631,7 @@ The applications below can be uninstalled.
 
 | Application | GitLab version | Notes |
 | ----------- | -------------- | ----- |
-| Cert-Manager | 12.2+         | The associated private key will be deleted and cannot be restored. Deployed applications will continue to use HTTPS, but certificates will not be renewed. Before uninstalling, you may wish to [back up your configuration](https://docs.cert-manager.io/en/latest/tasks/backup-restore-crds.html) or [revoke your certificates](https://letsencrypt.org/docs/revoking/). |
+| cert-manager | 12.2+         | The associated private key will be deleted and cannot be restored. Deployed applications will continue to use HTTPS, but certificates will not be renewed. Before uninstalling, you may wish to [back up your configuration](https://docs.cert-manager.io/en/latest/tasks/backup-restore-crds.html) or [revoke your certificates](https://letsencrypt.org/docs/revoking/). |
 | GitLab Runner  | 12.2+         | Any running pipelines will be canceled. |
 | Helm  | 12.2+         | The associated Tiller pod, the `gitlab-managed-apps` namespace, and all of its resources will be deleted and cannot be restored. |
 | Ingress  | 12.1+         | The associated load balancer and IP will be deleted and cannot be restored. Furthermore, it can only be uninstalled if JupyterHub is not installed. |

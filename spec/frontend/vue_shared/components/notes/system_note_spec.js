@@ -34,7 +34,6 @@ describe('system note component', () => {
       store,
       propsData: props,
       attachToDocument: true,
-      sync: false,
     });
   });
 

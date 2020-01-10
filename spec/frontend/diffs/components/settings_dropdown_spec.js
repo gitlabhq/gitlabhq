@@ -28,7 +28,6 @@ describe('Diff settiings dropdown component', () => {
     vm = mount(SettingsDropdown, {
       localVue,
       store,
-      sync: false,
     });
   }
 

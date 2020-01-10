@@ -12,7 +12,6 @@ describe('Graph group component', () => {
   const createComponent = propsData => {
     wrapper = shallowMount(GraphGroup, {
       propsData,
-      sync: false,
     });
   };
 

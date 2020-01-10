@@ -33,7 +33,6 @@ describe('IDE branches search list', () => {
     wrapper = shallowMount(List, {
       localVue,
       store: fakeStore,
-      sync: false,
     });
   };
 

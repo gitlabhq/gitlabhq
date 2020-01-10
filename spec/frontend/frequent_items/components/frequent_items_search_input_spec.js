@@ -5,7 +5,6 @@ import eventHub from '~/frequent_items/event_hub';
 const createComponent = (namespace = 'projects') =>
   shallowMount(searchComponent, {
     propsData: { namespace },
-    sync: false,
   });
 
 describe('FrequentItemsSearchInputComponent', () => {
