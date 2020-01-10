@@ -15,6 +15,7 @@
 
   %hr.clearfix
 
+  = render 'ssl_limitations_warning' if @project.pages_subdomain.include?(".")
   = render 'access'
   = render 'use'
   - if Gitlab.config.pages.external_http || Gitlab.config.pages.external_https

@@ -4,24 +4,22 @@ require 'spec_helper'
 
 describe BroadcastMessagesHelper do
   describe 'broadcast_message' do
+    let(:current_broadcast_message) { BroadcastMessage.new(message: 'Current Message') }
+
     it 'returns nil when no current message' do
       expect(helper.broadcast_message(nil)).to be_nil
     end
 
     it 'includes the current message' do
-      current = BroadcastMessage.new(message: 'Current Message')
-
       allow(helper).to receive(:broadcast_message_style).and_return(nil)
 
-      expect(helper.broadcast_message(current)).to include 'Current Message'
+      expect(helper.broadcast_message(current_broadcast_message)).to include 'Current Message'
     end
 
     it 'includes custom style' do
-      current = BroadcastMessage.new(message: 'Current Message')
-
       allow(helper).to receive(:broadcast_message_style).and_return('foo')
 
-      expect(helper.broadcast_message(current)).to include 'style="foo"'
+      expect(helper.broadcast_message(current_broadcast_message)).to include 'style="foo"'
     end
   end
 
@@ -32,11 +30,17 @@ describe BroadcastMessagesHelper do
       expect(helper.broadcast_message_style(broadcast_message)).to eq ''
     end
 
-    it 'allows custom style' do
-      broadcast_message = double(color: '#f2dede', font: '#b94a48')
+    it 'allows custom style for banner messages' do
+      broadcast_message = BroadcastMessage.new(color: '#f2dede', font: '#b94a48', broadcast_type: "banner")
 
       expect(helper.broadcast_message_style(broadcast_message))
         .to match('background-color: #f2dede; color: #b94a48')
+    end
+
+    it 'does not add style for notification messages' do
+      broadcast_message = BroadcastMessage.new(color: '#f2dede', broadcast_type: "notification")
+
+      expect(helper.broadcast_message_style(broadcast_message)).to eq ''
     end
   end
 

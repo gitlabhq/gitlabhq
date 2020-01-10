@@ -118,7 +118,7 @@ module QA
 
           def find_repository_row_index(target_url)
             wait(max: 5, reload: false) do
-              all_elements(:mirror_repository_url_cell).index do |url|
+              all_elements(:mirror_repository_url_cell, minimum: 1).index do |url|
                 # The url might be a sanitized url but the target_url won't be so
                 # we compare just the paths instead of the full url
                 URI.parse(url.text).path == target_url.path

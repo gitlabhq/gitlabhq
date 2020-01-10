@@ -91,4 +91,20 @@ describe QA::Page::Base do
       end
     end
   end
+
+  describe '#all_elements' do
+    before do
+      allow(subject).to receive(:all)
+    end
+
+    it 'raises an error if count or minimum are not specified' do
+      expect { subject.all_elements(:foo) }.to raise_error ArgumentError
+    end
+
+    it 'does not raise an error if :minimum, :maximum, :count, or :between is specified' do
+      [:minimum, :maximum, :count, :between].each do |param|
+        expect { subject.all_elements(:foo, param => 1) }.not_to raise_error
+      end
+    end
+  end
 end

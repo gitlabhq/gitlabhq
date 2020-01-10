@@ -45,17 +45,17 @@ module QA
           click_element :comment_button
         end
 
-        def toggle_comments
-          all_elements(:toggle_comments_button).last.click
+        def toggle_comments(position)
+          all_elements(:toggle_comments_button, minimum: position)[position - 1].click
         end
 
-        def type_reply_to_discussion(reply_text)
-          all_elements(:discussion_reply_tab).last.click
+        def type_reply_to_discussion(position, reply_text)
+          all_elements(:discussion_reply_tab, minimum: position)[position - 1].click
           fill_element :reply_input, reply_text
         end
 
-        def reply_to_discussion(reply_text)
-          type_reply_to_discussion(reply_text)
+        def reply_to_discussion(position, reply_text)
+          type_reply_to_discussion(position, reply_text)
           click_element :reply_comment_button
         end
 

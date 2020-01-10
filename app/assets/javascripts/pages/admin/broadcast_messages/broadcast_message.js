@@ -6,21 +6,31 @@ import { __ } from '~/locale';
 import { textColorForBackground } from '~/lib/utils/color_utils';
 
 export default () => {
-  const $broadcastMessageColor = $('input#broadcast_message_color');
-  const $broadcastMessagePreview = $('div.broadcast-message-preview');
+  const $broadcastMessageColor = $('.js-broadcast-message-color');
+  const $broadcastMessageType = $('.js-broadcast-message-type');
+  const $broadcastBannerMessagePreview = $('.js-broadcast-banner-message-preview');
+  const $broadcastMessage = $('.js-broadcast-message-message');
+  const previewPath = $broadcastMessage.data('previewPath');
+  const $jsBroadcastMessagePreview = $('.js-broadcast-message-preview');
+
   $broadcastMessageColor.on('input', function onMessageColorInput() {
     const previewColor = $(this).val();
-    $broadcastMessagePreview.css('background-color', previewColor);
+    $broadcastBannerMessagePreview.css('background-color', previewColor);
   });
 
   $('input#broadcast_message_font').on('input', function onMessageFontInput() {
     const previewColor = $(this).val();
-    $broadcastMessagePreview.css('color', previewColor);
+    $broadcastBannerMessagePreview.css('color', previewColor);
   });
 
-  const $broadcastMessage = $('textarea#broadcast_message_message');
-  const previewPath = $broadcastMessage.data('previewPath');
-  const $jsBroadcastMessagePreview = $('.js-broadcast-message-preview');
+  $broadcastMessageType.on('change', () => {
+    const $broadcastMessageColorFormGroup = $('.js-broadcast-message-background-color-form-group');
+    const $broadcastNotificationMessagePreview = $('.js-broadcast-notification-message-preview');
+
+    $broadcastMessageColorFormGroup.toggleClass('hidden');
+    $broadcastBannerMessagePreview.toggleClass('hidden');
+    $broadcastNotificationMessagePreview.toggleClass('hidden');
+  });
 
   $broadcastMessage.on(
     'input',
@@ -58,7 +68,7 @@ export default () => {
 
     $('.label-color-preview').css(selectedColorStyle);
 
-    return $broadcastMessagePreview.css(selectedColorStyle);
+    return $jsBroadcastMessagePreview.css(selectedColorStyle);
   };
 
   const setSuggestedColor = e => {
@@ -67,7 +77,10 @@ export default () => {
       .val(color)
       // Notify the form, that color has changed
       .trigger('input');
-    updateColorPreview();
+    // Only banner supports colors
+    if ($broadcastMessageType === 'banner') {
+      updateColorPreview();
+    }
     return e.preventDefault();
   };
 

@@ -25,7 +25,7 @@ module QA
 
         Page::Layout::PerformanceBar.perform do |bar_component|
           expect(bar_component).to have_performance_bar
-          expect(bar_component).to have_detailed_metrics
+          expect(bar_component).to have_detailed_metrics(4)
           expect(bar_component).to have_request_for('realtime_changes') # Always requested on issue pages
         end
       end

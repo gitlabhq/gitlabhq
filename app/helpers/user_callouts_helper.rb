@@ -27,7 +27,7 @@ module UserCalloutsHelper
   end
 
   def show_tabs_feature_highlight?
-    !user_dismissed?(TABS_POSITION_HIGHLIGHT) && !Rails.env.test?
+    current_user && !user_dismissed?(TABS_POSITION_HIGHLIGHT) && !Rails.env.test?
   end
 
   private

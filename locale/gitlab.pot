@@ -8762,6 +8762,9 @@ msgstr ""
 msgid "GitLabPages|Learn how to upload your static site and have it served by GitLab by following the %{link_start}documentation on GitLab Pages%{link_end}."
 msgstr ""
 
+msgid "GitLabPages|Learn more."
+msgstr ""
+
 msgid "GitLabPages|Maximum size of pages (MB)"
 msgstr ""
 
@@ -8796,6 +8799,9 @@ msgid "GitLabPages|Unverified"
 msgstr ""
 
 msgid "GitLabPages|Verified"
+msgstr ""
+
+msgid "GitLabPages|When using Pages under the general domain of a GitLab instance (%{pages_host}), you cannot use HTTPS with sub-subdomains. This means that if your username/groupname contains a dot it will not work. This is a limitation of the HTTP Over TLS protocol. HTTP pages will continue to work provided you don't redirect HTTP to HTTPS."
 msgstr ""
 
 msgid "GitLabPages|With GitLab Pages you can host your static websites on GitLab.  Combined with the power of GitLab CI and the help of GitLab Runner you can deploy static pages for your individual projects, your user or your group."
@@ -20457,6 +20463,9 @@ msgid "Waiting for performance data"
 msgstr ""
 
 msgid "Want to see the data? Please ask an administrator for access."
+msgstr ""
+
+msgid "Warning:"
 msgstr ""
 
 msgid "We could not determine the path to remove the epic"

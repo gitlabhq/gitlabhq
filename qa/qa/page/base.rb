@@ -89,6 +89,10 @@ module QA
       end
 
       def all_elements(name, **kwargs)
+        if kwargs.keys.none? { |key| [:minimum, :maximum, :count, :between].include?(key) }
+          raise ArgumentError, "Please use :minimum, :maximum, :count, or :between so that all is more reliable"
+        end
+
         wait_for_requests
 
         all(element_selector_css(name), **kwargs)

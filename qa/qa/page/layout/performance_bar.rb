@@ -23,7 +23,7 @@ module QA
 
         def has_detailed_metrics?
           retry_until(sleep_interval: 1) do
-            all_elements(:detailed_metric_content).all? do |metric|
+            all_elements(:detailed_metric_content, count: count).all? do |metric|
               metric.has_text?(%r{\d+})
             end
           end

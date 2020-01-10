@@ -17,7 +17,7 @@ module QA
         Page::Project::Issue::Show.perform do |show|
           show.select_all_activities_filter
           show.start_discussion('My first discussion')
-          show.reply_to_discussion(my_first_reply)
+          show.reply_to_discussion(1, my_first_reply)
         end
       end
 

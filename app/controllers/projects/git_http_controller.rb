@@ -75,6 +75,7 @@ class Projects::GitHttpController < Projects::GitHttpClientController
   end
 
   def enqueue_fetch_statistics_update
+    return if Gitlab::Database.read_only?
     return if repo_type.wiki?
     return unless project&.daily_statistics_enabled?
 

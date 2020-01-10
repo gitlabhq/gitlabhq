@@ -21,10 +21,6 @@ module QA
             element :closed_issues_link
           end
 
-          def assignee_link_count
-            all_elements(:assignee_link).count
-          end
-
           def avatar_counter
             find_element(:avatar_counter)
           end
@@ -35,6 +31,10 @@ module QA
 
           def click_closed_issues_link
             click_element :closed_issues_link
+          end
+
+          def has_assignee_link_count?(count)
+            all_elements(:assignee_link, count: count)
           end
 
           def has_issue?(issue)

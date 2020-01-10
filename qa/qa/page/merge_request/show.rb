@@ -76,7 +76,7 @@ module QA
           wait(interval: 5) do
             has_text?("No newline at end of file")
           end
-          all_elements(:new_diff_line).first.hover
+          all_elements(:new_diff_line, minimum: 1).first.hover
           click_element(:diff_comment)
           fill_element(:reply_input, text)
         end

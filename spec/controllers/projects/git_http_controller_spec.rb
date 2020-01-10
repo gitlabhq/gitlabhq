@@ -90,6 +90,16 @@ describe Projects::GitHttpController do
       post :git_upload_pack, params: params
     end
 
+    context 'on a read-only instance' do
+      before do
+        allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+      end
+
+      it 'does not update project statistics' do
+        expect(ProjectDailyStatisticsWorker).not_to receive(:perform_async)
+      end
+    end
+
     it 'updates project statistics' do
       expect(ProjectDailyStatisticsWorker).to receive(:perform_async)
     end

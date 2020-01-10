@@ -56,12 +56,6 @@ module QA
             element :new_note_form, 'attr: :note' # rubocop:disable QA/ElementWithPattern
           end
 
-          def avatar_image_count
-            wait_assignees_block_finish_loading do
-              all_elements(:avatar_image).count
-            end
-          end
-
           def click_milestone_link
             click_element(:milestone_link)
           end
@@ -86,6 +80,12 @@ module QA
             end
 
             click_element :comment_button
+          end
+
+          def has_avatar_image_count?(count)
+            wait_assignees_block_finish_loading do
+              all_elements(:avatar_image, count: count)
+            end
           end
 
           def has_comment?(comment_text)
