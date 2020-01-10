@@ -4,12 +4,12 @@ The ability to contribute conversationally is offered throughout GitLab.
 
 You can leave a comment in the following places:
 
-- issues
-- epics **(ULTIMATE)**
-- merge requests
-- snippets
-- commits
-- commit diffs
+- Issues
+- Epics **(ULTIMATE)**
+- Merge requests
+- Snippets
+- Commits
+- Commit diffs
 
 There are standard comments, and you also have the option to create a comment
 in the form of a thread. A comment can also be [turned into a thread](#start-a-thread-by-replying-to-a-standard-comment)
@@ -29,9 +29,7 @@ There is a limit of 5,000 comments for every object, for example: issue, epic, a
 
 ## Resolvable comments and threads
 
-> **Notes:**
->
-> - The main feature was [introduced][ce-5022] in GitLab 8.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/5022) in GitLab 8.11.
 > - Resolvable threads can be added only to merge request diffs.
 
 Thread resolution helps keep track of progress during planning or code review.
@@ -398,18 +396,21 @@ the Merge Request authored by the user that applied them.
 1. Choose a line of code to be changed, add a new comment, then click
    on the **Insert suggestion** icon in the toolbar:
 
-   ![Add a new comment](img/insert_suggestion.png)
+   ![Add a new comment](img/suggestion_button_v12_7.png)
 
 1. In the comment, add your suggestion to the pre-populated code block:
 
-   ![Add a suggestion into a code block tagged properly](img/make_suggestion.png)
+   ![Add a suggestion into a code block tagged properly](img/make_suggestion_v12_7.png)
 
 1. Click **Comment**.
+
+   NOTE: **Note:**
+   If you're using GitLab Premium, GitLab.com Silver, and higher tiers, the thread will display [Review](#merge-request-reviews-premium) options. Click either **Start a review**, **Add comment now**, or **Add to review** to obtain the same result.
 
    The suggestions in the comment can be applied by the merge request author
    directly from the merge request:
 
-   ![Apply suggestions](img/suggestion.png)
+   ![Apply suggestions](img/apply_suggestion_v12_7.png)
 
 Once the author applies a suggestion, it will be marked with the **Applied** label,
 the thread will be automatically resolved, and GitLab will create a new commit
@@ -464,7 +465,6 @@ to the original comment, so a note about when it was last edited will appear und
 This feature only exists for Issues, Merge requests, and Epics. Commits, Snippets and Merge request diff threads are
 not supported yet.
 
-[ce-5022]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/5022
 [ce-7125]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/7125
 [ce-7527]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/7527
 [ce-7180]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/7180

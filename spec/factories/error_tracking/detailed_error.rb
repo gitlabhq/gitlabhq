@@ -34,6 +34,7 @@ FactoryBot.define do
     last_release_last_commit { '9ad419c86' }
     first_release_short_version { 'abc123' }
     last_release_short_version { 'abc123' }
+    first_release_version { '123456' }
 
     skip_create
   end

@@ -210,7 +210,7 @@ For reference, GitLab.com's [auto-scaling shared runner](../user/gitlab_com/inde
 
 ## Supported web browsers
 
-We support the current and the previous major release of:
+GitLab supports the following web browsers:
 
 - Firefox
 - Chrome/Chromium
@@ -218,10 +218,11 @@ We support the current and the previous major release of:
 - Microsoft Edge
 - Internet Explorer 11
 
-The browser vendors release regular minor version updates with important bug fixes and security updates.
-Support is only provided for the current minor version of the major version you are running.
+For the listed web browsers, GitLab supports:
 
-Each time a new browser version is released, we begin supporting that version and stop supporting the third most recent version.
+- The current and previous major versions of browsers except Internet Explorer.
+- Only version 11 of Internet Explorer.
+- The current minor version of a supported major version.
 
 NOTE: **Note:** We do not support running GitLab with JavaScript disabled in the browser and have no plans of supporting that
 in the future because we have features such as Issue Boards which require JavaScript extensively.

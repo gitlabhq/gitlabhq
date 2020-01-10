@@ -6156,7 +6156,13 @@ msgstr ""
 msgid "DesignManagement|Adding a design with the same filename replaces the file in a new version."
 msgstr ""
 
+msgid "DesignManagement|Are you sure you want to cancel creating this comment?"
+msgstr ""
+
 msgid "DesignManagement|Are you sure you want to delete the selected designs?"
+msgstr ""
+
+msgid "DesignManagement|Cancel comment confirmation"
 msgstr ""
 
 msgid "DesignManagement|Could not add a new comment. Please try again."
@@ -6177,6 +6183,9 @@ msgstr ""
 msgid "DesignManagement|Deselect all"
 msgstr ""
 
+msgid "DesignManagement|Discard comment"
+msgstr ""
+
 msgid "DesignManagement|Error uploading a new design. Please try again."
 msgstr ""
 
@@ -6187,6 +6196,9 @@ msgid "DesignManagement|Go to next design"
 msgstr ""
 
 msgid "DesignManagement|Go to previous design"
+msgstr ""
+
+msgid "DesignManagement|Keep comment"
 msgstr ""
 
 msgid "DesignManagement|Requested design version does not exist. Showing latest version instead"
@@ -15016,10 +15028,10 @@ msgstr ""
 msgid "Releases"
 msgstr ""
 
-msgid "Releases are based on Git tags. We recommend naming tags that fit within semantic versioning, for example %{codeStart}v1.0%{codeEnd}, %{codeStart}v2.0-pre%{codeEnd}."
+msgid "Releases are based on Git tags and mark specific points in a project's development history. They can contain information about the type of changes and can also deliver binaries, like compiled versions of your software."
 msgstr ""
 
-msgid "Releases mark specific points in a project's development history, communicate information about the type of change, and deliver on prepared, often compiled, versions of the software to be reused elsewhere. Currently, releases can only be created through the API."
+msgid "Releases are based on Git tags. We recommend naming tags that fit within semantic versioning, for example %{codeStart}v1.0%{codeEnd}, %{codeStart}v2.0-pre%{codeEnd}."
 msgstr ""
 
 msgid "Release|Something went wrong while getting the release details"
@@ -18809,6 +18821,9 @@ msgstr ""
 msgid "ThreatMonitoring|Environment"
 msgstr ""
 
+msgid "ThreatMonitoring|No traffic to display"
+msgstr ""
+
 msgid "ThreatMonitoring|Requests"
 msgstr ""
 
@@ -18837,6 +18852,9 @@ msgid "ThreatMonitoring|Total Requests"
 msgstr ""
 
 msgid "ThreatMonitoring|Web Application Firewall not enabled"
+msgstr ""
+
+msgid "ThreatMonitoring|While it's rare to have no traffic coming to your application, it can happen. In any event, we ask that you double check your settings to make sure you've set up the WAF correctly."
 msgstr ""
 
 msgid "Thursday"

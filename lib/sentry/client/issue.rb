@@ -143,7 +143,7 @@ module Sentry
       end
 
       def map_to_detailed_error(issue)
-        Gitlab::ErrorTracking::DetailedError.new(
+        Gitlab::ErrorTracking::DetailedError.new({
           id: issue.fetch('id'),
           first_seen: issue.fetch('firstSeen', nil),
           last_seen: issue.fetch('lastSeen', nil),
@@ -159,15 +159,16 @@ module Sentry
           short_id: issue.fetch('shortId', nil),
           status: issue.fetch('status', nil),
           frequency: issue.dig('stats', '24h'),
+          gitlab_issue: parse_gitlab_issue(issue.fetch('pluginIssues', nil)),
           project_id: issue.dig('project', 'id'),
           project_name: issue.dig('project', 'name'),
           project_slug: issue.dig('project', 'slug'),
-          gitlab_issue: parse_gitlab_issue(issue.fetch('pluginIssues', nil)),
           first_release_last_commit: issue.dig('firstRelease', 'lastCommit'),
-          last_release_last_commit: issue.dig('lastRelease', 'lastCommit'),
           first_release_short_version: issue.dig('firstRelease', 'shortVersion'),
+          first_release_version: issue.dig('firstRelease', 'version'),
+          last_release_last_commit: issue.dig('lastRelease', 'lastCommit'),
           last_release_short_version: issue.dig('lastRelease', 'shortVersion')
-        )
+        })
       end
 
       def extract_tags(issue)

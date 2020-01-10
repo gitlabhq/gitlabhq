@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class Bridge < CommitStatus
-    include Ci::Processable
+  class Bridge < Ci::Processable
     include Ci::Contextable
     include Ci::PipelineDelegator
     include Importable

@@ -11,10 +11,13 @@ module Releases
       return error('params is empty', 400) if empty_params?
       return error("Milestone(s) not found: #{inexistent_milestones.join(', ')}", 400) if inexistent_milestones.any?
 
-      params[:milestones] = milestones if param_for_milestone_titles_provided?
+      if param_for_milestone_titles_provided?
+        previous_milestones = release.milestones.map(&:title)
+        params[:milestones] = milestones
+      end
 
       if release.update(params)
-        success(tag: existing_tag, release: release)
+        success(tag: existing_tag, release: release, milestones_updated: milestones_updated?(previous_milestones))
       else
         error(release.errors.messages || '400 Bad request', 400)
       end
@@ -28,6 +31,12 @@ module Releases
 
     def empty_params?
       params.except(:tag).empty?
+    end
+
+    def milestones_updated?(previous_milestones)
+      return false unless param_for_milestone_titles_provided?
+
+      previous_milestones.to_set != release.milestones.map(&:title)
     end
   end
 end

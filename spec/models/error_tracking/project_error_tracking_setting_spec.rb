@@ -210,6 +210,53 @@ describe ErrorTracking::ProjectErrorTrackingSetting do
     end
   end
 
+  describe '#issue_details' do
+    let(:issue) { build(:detailed_error_tracking_error) }
+    let(:sentry_client) { double('sentry_client', issue_details: issue) }
+    let(:commit_id) { '123456' }
+
+    let(:result) do
+      subject.issue_details
+    end
+
+    context 'when cached' do
+      before do
+        stub_reactive_cache(subject, issue, {})
+        synchronous_reactive_cache(subject)
+
+        expect(subject).to receive(:sentry_client).and_return(sentry_client)
+      end
+
+      it { expect(result).to eq(issue: issue) }
+      it { expect(result[:issue].first_release_version).to eq(commit_id) }
+      it { expect(result[:issue].gitlab_commit).to eq(nil) }
+
+      context 'when release version is nil' do
+        before do
+          issue.first_release_version = nil
+        end
+
+        it { expect(result[:issue].gitlab_commit).to eq(nil) }
+      end
+
+      context 'when repo commit matches first relase version' do
+        let(:commit) { double('commit', id: commit_id) }
+        let(:repository) { double('repository', commit: commit) }
+
+        before do
+          expect(project).to receive(:repository).and_return(repository)
+        end
+
+        it { expect(result[:issue].gitlab_commit).to eq(commit_id) }
+      end
+    end
+
+    context 'when not cached' do
+      it { expect(subject).not_to receive(:sentry_client) }
+      it { expect(result).to be_nil }
+    end
+  end
+
   describe '#update_issue' do
     let(:opts) do
       { status: 'resolved' }

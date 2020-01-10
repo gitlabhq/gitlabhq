@@ -5712,6 +5712,11 @@ type SentryDetailedError {
   frequency: [SentryErrorFrequency!]!
 
   """
+  GitLab commit SHA attributed to the Error based on the release version
+  """
+  gitlabCommit: String
+
+  """
   ID (global ID) of the error
   """
   id: ID!

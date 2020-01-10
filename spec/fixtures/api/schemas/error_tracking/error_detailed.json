@@ -1,6 +1,6 @@
 {
   "type": "object",
-  "required" : [
+  "required": [
     "external_url",
     "external_base_url",
     "last_seen",
@@ -18,9 +18,10 @@
     "first_release_last_commit",
     "last_release_last_commit",
     "first_release_short_version",
-    "last_release_short_version"
+    "last_release_short_version",
+    "gitlab_commit"
   ],
-  "properties" : {
+  "properties": {
     "id": { "type": "string" },
     "first_seen": { "type": "string", "format": "date-time" },
     "last_seen": { "type": "string", "format": "date-time" },
@@ -30,13 +31,10 @@
     "count": { "type": "integer" },
     "external_url": { "type": "string" },
     "external_base_url": { "type": "string" },
-    "user_count": { "type": "integer"},
+    "user_count": { "type": "integer" },
     "tags": {
       "type": "object",
-      "required" : [
-        "level",
-        "logger"
-      ],
+      "required": ["level", "logger"],
       "properties": {
         "level": {
           "type": "string"
@@ -57,7 +55,8 @@
     "first_release_last_commit": { "type": ["string", "null"] },
     "last_release_last_commit": { "type": ["string", "null"] },
     "first_release_short_version": { "type": ["string", "null"] },
-    "last_release_short_version": { "type": ["string", "null"] }
+    "last_release_short_version": { "type": ["string", "null"] },
+    "gitlab_commit": { "type": ["string", "null"] }
   },
   "additionalProperties": false
 }

@@ -20,5 +20,14 @@ FactoryBot.define do
         create(:evidence, release: release)
       end
     end
+
+    trait :with_milestones do
+      transient do
+        milestones_count { 2 }
+      end
+      after(:create) do |release, evaluator|
+        create_list(:milestone, evaluator.milestones_count, project: evaluator.project, releases: [release])
+      end
+    end
   end
 end

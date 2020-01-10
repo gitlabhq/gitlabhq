@@ -113,9 +113,8 @@ module ErrorTracking
         when 'list_issues'
           sentry_client.list_issues(**opts.symbolize_keys)
         when 'issue_details'
-          {
-            issue: sentry_client.issue_details(**opts.symbolize_keys)
-          }
+          issue = sentry_client.issue_details(**opts.symbolize_keys)
+          { issue: add_gitlab_issue_details(issue) }
         when 'issue_latest_event'
           {
             latest_event: sentry_client.issue_latest_event(**opts.symbolize_keys)
@@ -139,6 +138,20 @@ module ErrorTracking
     end
 
     private
+
+    def add_gitlab_issue_details(issue)
+      issue.gitlab_commit = match_gitlab_commit(issue.first_release_version)
+
+      issue
+    end
+
+    def match_gitlab_commit(release_version)
+      return unless release_version
+
+      commit = project.repository.commit(release_version)
+
+      commit&.id
+    end
 
     def handle_exceptions
       yield

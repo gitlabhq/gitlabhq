@@ -16,6 +16,7 @@ tree:
       - :timelogs
       - notes:
         - :author
+        - :award_emoji
         - events:
           - :push_event_payload
       - label_links:
@@ -32,18 +33,22 @@ tree:
       - :issue_assignees
       - :zoom_meetings
       - :sentry_issue
+      - :award_emoji
     - snippets:
       - :award_emoji
       - notes:
         - :author
+        - :award_emoji
     - releases:
       - :links
     - project_members:
       - :user
     - merge_requests:
       - :metrics
+      - :award_emoji
       - notes:
         - :author
+        - :award_emoji
         - events:
           - :push_event_payload
         - :suggestions

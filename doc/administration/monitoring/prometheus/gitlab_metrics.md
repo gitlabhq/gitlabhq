@@ -154,7 +154,7 @@ Some basic Ruby runtime metrics are available:
 | `ruby_sampler_duration_seconds`      | Counter   | 11.1  | Time spent collecting stats |
 | `ruby_process_cpu_seconds_total`     | Gauge     | 12.0  | Total amount of CPU time per process |
 | `ruby_process_max_fds`               | Gauge     | 12.0  | Maximum number of open file descriptors per process |
-| `ruby_process_resident_memory_bytes` | Gauge     | 12.0  | Memory usage by process, measured in bytes |
+| `ruby_process_resident_memory_bytes` | Gauge     | 12.0  | Memory usage by process |
 | `ruby_process_start_time_seconds`    | Gauge     | 12.0  | UNIX timestamp of process start time |
 
 [GC.stat]: https://ruby-doc.org/core-2.6.5/GC.html#method-c-stat

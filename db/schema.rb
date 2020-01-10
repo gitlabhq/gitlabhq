@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_08_155731) do
+ActiveRecord::Schema.define(version: 2020_01_08_233040) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -3199,7 +3199,6 @@ ActiveRecord::Schema.define(version: 2020_01_08_155731) do
     t.text "last_error"
     t.datetime_with_timezone "last_update_at"
     t.datetime_with_timezone "last_successful_update_at"
-    t.index ["jid"], name: "index_project_mirror_data_on_jid"
     t.index ["last_successful_update_at"], name: "index_project_mirror_data_on_last_successful_update_at"
     t.index ["last_update_at", "retry_count"], name: "index_project_mirror_data_on_last_update_at_and_retry_count"
     t.index ["next_execution_timestamp", "retry_count"], name: "index_mirror_data_on_next_execution_and_retry_count"
@@ -3824,6 +3823,8 @@ ActiveRecord::Schema.define(version: 2020_01_08_155731) do
     t.integer "project_id", null: false
     t.integer "software_license_id", null: false
     t.integer "classification", default: 0, null: false
+    t.datetime_with_timezone "created_at"
+    t.datetime_with_timezone "updated_at"
     t.index ["project_id", "software_license_id"], name: "index_software_license_policies_unique_per_project", unique: true
     t.index ["software_license_id"], name: "index_software_license_policies_on_software_license_id"
   end

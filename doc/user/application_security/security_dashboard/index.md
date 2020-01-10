@@ -26,7 +26,7 @@ The Security Dashboard supports the following reports:
 
 ## Requirements
 
-To use the group, project or pipeline security dashboard:
+To use the instance, group, project or pipeline security dashboard:
 
 1. At least one project inside a group must be configured with at least one of
    the [supported reports](#supported-reports).
@@ -109,6 +109,31 @@ Projects with no vulnerability tests configured will not appear in the list. Add
 vulnerabilities are not included either.
 
 Read more on how to [interact with the vulnerabilities](../index.md#interacting-with-the-vulnerabilities).
+
+## Instance Security Dashboard
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/6953) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.7.
+
+At the instance level, the Security Dashboard displays the vulnerabilities
+present in all of the projects that you have added to it.
+
+You can access the Instance Security Dashboard from the menu
+bar at the top of the page. Under **More**, select **Security**.
+
+![Instance Security Dashboard navigation link](img/instance_security_dashboard_link_v12_4.png)
+
+### Adding projects to the dashboard
+
+To add projects to the dashboard:
+
+1. Click the **Edit dashboard** button on the Instance Security Dashboard page.
+1. Search for and add one or more projects using the **Search your projects** field.
+1. Click the **Add projects** button.
+
+Once added, the dashboard will display the vulnerabilities found in your chosen
+projects.
+
+![Instance Security Dashboard with projects](img/instance_security_dashboard_with_projects_v12_7.png)
 
 ## Keeping the dashboards up to date
 

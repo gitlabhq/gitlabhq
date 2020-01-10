@@ -8,6 +8,7 @@ module ErrorTracking
            :external_url,
            :first_release_last_commit,
            :first_release_short_version,
+           :gitlab_commit,
            :first_seen,
            :frequency,
            :gitlab_issue,

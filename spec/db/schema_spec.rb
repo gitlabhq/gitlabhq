@@ -133,6 +133,7 @@ describe 'Database schema' do
     'Ci::BuildTraceChunk' => %w[data_store],
     'Ci::JobArtifact' => %w[file_type],
     'Ci::Pipeline' => %w[source config_source failure_reason],
+    'Ci::Processable' => %w[failure_reason],
     'Ci::Runner' => %w[access_level],
     'Ci::Stage' => %w[status],
     'Clusters::Applications::Ingress' => %w[ingress_type],

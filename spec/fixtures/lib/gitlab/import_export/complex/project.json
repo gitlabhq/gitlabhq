@@ -80,6 +80,17 @@
           "issue_id": 40
         }
       ],
+      "award_emoji": [
+        {
+          "id": 1,
+          "name": "musical_keyboard",
+          "user_id": 1,
+          "awardable_type": "Issue",
+          "awardable_id": 40,
+          "created_at": "2020-01-07T11:55:22.234Z",
+          "updated_at": "2020-01-07T11:55:22.234Z"
+        }
+      ],
       "zoom_meetings": [
         {
           "id": 1,
@@ -188,7 +199,18 @@
           "author": {
             "name": "User 4"
           },
-          "events": []
+          "events": [],
+          "award_emoji": [
+            {
+              "id": 1,
+              "name": "clapper",
+              "user_id": 1,
+              "awardable_type": "Note",
+              "awardable_id": 351,
+              "created_at": "2020-01-07T11:55:22.234Z",
+              "updated_at": "2020-01-07T11:55:22.234Z"
+            }
+          ]
         },
         {
           "id": 352,
@@ -2297,7 +2319,32 @@
           "updated_at": "2019-11-05T15:37:24.645Z"
         }
       ],
-      "notes": []
+      "notes": [
+        {
+          "id": 872,
+          "note": "This is a test note",
+          "noteable_type": "Snippet",
+          "author_id": 1,
+          "created_at": "2019-11-05T15:37:24.645Z",
+          "updated_at": "2019-11-05T15:37:24.645Z",
+          "noteable_id": 1,
+          "author": {
+            "name": "Random name"
+          },
+          "events": [],
+          "award_emoji": [
+            {
+              "id": 12,
+              "name": "thumbsup",
+              "user_id": 1,
+              "awardable_type": "Note",
+              "awardable_id": 872,
+              "created_at": "2019-11-05T15:37:21.287Z",
+              "updated_at": "2019-11-05T15:37:21.287Z"
+            }
+          ]
+        }
+      ]
     }
   ],
   "releases": [],
@@ -2434,7 +2481,18 @@
           "author": {
             "name": "User 4"
           },
-          "events": []
+          "events": [],
+          "award_emoji": [
+            {
+              "id": 1,
+              "name": "tada",
+              "user_id": 1,
+              "awardable_type": "Note",
+              "awardable_id": 1,
+              "created_at": "2019-11-05T15:37:21.287Z",
+              "updated_at": "2019-11-05T15:37:21.287Z"
+            }
+          ]
         },
         {
           "id": 672,
@@ -2840,7 +2898,27 @@
           "author_id": 1
         }
       ],
-      "approvals_before_merge": 1
+      "approvals_before_merge": 1,
+      "award_emoji": [
+        {
+          "id": 1,
+          "name": "thumbsup",
+          "user_id": 1,
+          "awardable_type": "MergeRequest",
+          "awardable_id": 27,
+          "created_at": "2020-01-07T11:21:21.235Z",
+          "updated_at": "2020-01-07T11:21:21.235Z"
+        },
+        {
+          "id": 2,
+          "name": "drum",
+          "user_id": 1,
+          "awardable_type": "MergeRequest",
+          "awardable_id": 27,
+          "created_at": "2020-01-07T11:21:21.235Z",
+          "updated_at": "2020-01-07T11:21:21.235Z"
+        }
+      ]
     },
     {
       "id": 26,

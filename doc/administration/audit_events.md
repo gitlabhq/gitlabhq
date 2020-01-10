@@ -80,6 +80,9 @@ From there, you can see the following actions:
 - Project was archived
 - Project was unarchived
 - Added/removed/updated protected branches
+- Release was added to a project
+- Release was updated
+- Release milestone associations changed
 
 ### Instance events **(PREMIUM ONLY)**
 

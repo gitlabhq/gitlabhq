@@ -56,6 +56,7 @@ describe 'getting a detailed sentry error' do
       expect(error_data['status']).to eql sentry_detailed_error.status.upcase
       expect(error_data['firstSeen']).to eql sentry_detailed_error.first_seen
       expect(error_data['lastSeen']).to eql sentry_detailed_error.last_seen
+      expect(error_data['gitlabCommit']).to be nil
     end
 
     it 'is expected to return the frequency correctly' do

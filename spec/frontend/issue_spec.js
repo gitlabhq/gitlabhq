@@ -6,7 +6,13 @@ import axios from '~/lib/utils/axios_utils';
 import Issue from '~/issue';
 import '~/lib/utils/text_utility';
 
-describe('Issue', function() {
+describe('Issue', () => {
+  let testContext;
+
+  beforeEach(() => {
+    testContext = {};
+  });
+
   let $boxClosed, $boxOpen, $btn;
 
   preloadFixtures('issues/closed-issue.html');
@@ -80,9 +86,17 @@ describe('Issue', function() {
   }
 
   [true, false].forEach(isIssueInitiallyOpen => {
-    describe(`with ${isIssueInitiallyOpen ? 'open' : 'closed'} issue`, function() {
+    describe(`with ${isIssueInitiallyOpen ? 'open' : 'closed'} issue`, () => {
       const action = isIssueInitiallyOpen ? 'close' : 'reopen';
       let mock;
+
+      function setup() {
+        testContext.issue = new Issue();
+        expectIssueState(isIssueInitiallyOpen);
+
+        testContext.$projectIssuesCounter = $('.issue_counter').first();
+        testContext.$projectIssuesCounter.text('1,001');
+      }
 
       function mockCloseButtonResponseSuccess(url, response) {
         mock.onPut(url).reply(() => {
@@ -103,7 +117,7 @@ describe('Issue', function() {
         });
       }
 
-      beforeEach(function() {
+      beforeEach(() => {
         if (isIssueInitiallyOpen) {
           loadFixtures('issues/open-issue.html');
         } else {
@@ -111,19 +125,11 @@ describe('Issue', function() {
         }
 
         mock = new MockAdapter(axios);
-
         mock.onGet(/(.*)\/related_branches$/).reply(200, {});
+        jest.spyOn(axios, 'get');
 
         findElements(isIssueInitiallyOpen);
-        this.issue = new Issue();
-        expectIssueState(isIssueInitiallyOpen);
-
-        this.$triggeredButton = $btn;
-
-        this.$projectIssuesCounter = $('.issue_counter').first();
-        this.$projectIssuesCounter.text('1,001');
-
-        spyOn(axios, 'get').and.callThrough();
+        testContext.$triggeredButton = $btn;
       });
 
       afterEach(() => {
@@ -131,82 +137,90 @@ describe('Issue', function() {
         $('div.flash-alert').remove();
       });
 
-      it(`${action}s the issue`, function(done) {
-        mockCloseButtonResponseSuccess(this.$triggeredButton.attr('href'), {
+      it(`${action}s the issue`, done => {
+        mockCloseButtonResponseSuccess(testContext.$triggeredButton.attr('href'), {
           id: 34,
         });
         mockCanCreateBranch(!isIssueInitiallyOpen);
 
-        this.$triggeredButton.trigger('click');
+        setup();
+        testContext.$triggeredButton.trigger('click');
 
-        setTimeout(() => {
+        setImmediate(() => {
           expectIssueState(!isIssueInitiallyOpen);
 
-          expect(this.$triggeredButton.get(0).getAttribute('disabled')).toBeNull();
-          expect(this.$projectIssuesCounter.text()).toBe(isIssueInitiallyOpen ? '1,000' : '1,002');
+          expect(testContext.$triggeredButton.get(0).getAttribute('disabled')).toBeNull();
+          expect(testContext.$projectIssuesCounter.text()).toBe(
+            isIssueInitiallyOpen ? '1,000' : '1,002',
+          );
           expectNewBranchButtonState(false, !isIssueInitiallyOpen);
 
           done();
         });
       });
 
-      it(`fails to ${action} the issue if saved:false`, function(done) {
-        mockCloseButtonResponseSuccess(this.$triggeredButton.attr('href'), {
+      it(`fails to ${action} the issue if saved:false`, done => {
+        mockCloseButtonResponseSuccess(testContext.$triggeredButton.attr('href'), {
           saved: false,
         });
         mockCanCreateBranch(isIssueInitiallyOpen);
 
-        this.$triggeredButton.trigger('click');
+        setup();
+        testContext.$triggeredButton.trigger('click');
 
-        setTimeout(() => {
+        setImmediate(() => {
           expectIssueState(isIssueInitiallyOpen);
 
-          expect(this.$triggeredButton.get(0).getAttribute('disabled')).toBeNull();
+          expect(testContext.$triggeredButton.get(0).getAttribute('disabled')).toBeNull();
           expectErrorMessage();
 
-          expect(this.$projectIssuesCounter.text()).toBe('1,001');
+          expect(testContext.$projectIssuesCounter.text()).toBe('1,001');
           expectNewBranchButtonState(false, isIssueInitiallyOpen);
 
           done();
         });
       });
 
-      it(`fails to ${action} the issue if HTTP error occurs`, function(done) {
-        mockCloseButtonResponseError(this.$triggeredButton.attr('href'));
+      it(`fails to ${action} the issue if HTTP error occurs`, done => {
+        mockCloseButtonResponseError(testContext.$triggeredButton.attr('href'));
         mockCanCreateBranch(isIssueInitiallyOpen);
 
-        this.$triggeredButton.trigger('click');
+        setup();
+        testContext.$triggeredButton.trigger('click');
 
-        setTimeout(() => {
+        setImmediate(() => {
           expectIssueState(isIssueInitiallyOpen);
 
-          expect(this.$triggeredButton.get(0).getAttribute('disabled')).toBeNull();
+          expect(testContext.$triggeredButton.get(0).getAttribute('disabled')).toBeNull();
           expectErrorMessage();
 
-          expect(this.$projectIssuesCounter.text()).toBe('1,001');
+          expect(testContext.$projectIssuesCounter.text()).toBe('1,001');
           expectNewBranchButtonState(false, isIssueInitiallyOpen);
 
           done();
         });
       });
 
-      it('disables the new branch button if Ajax call fails', function() {
-        mockCloseButtonResponseError(this.$triggeredButton.attr('href'));
+      it('disables the new branch button if Ajax call fails', () => {
+        mockCloseButtonResponseError(testContext.$triggeredButton.attr('href'));
         mock.onGet(/(.*)\/can_create_branch$/).networkError();
 
-        this.$triggeredButton.trigger('click');
+        setup();
+        testContext.$triggeredButton.trigger('click');
 
         expectNewBranchButtonState(false, false);
       });
 
-      it('does not trigger Ajax call if new branch button is missing', function(done) {
-        mockCloseButtonResponseError(this.$triggeredButton.attr('href'));
-        Issue.$btnNewBranch = $();
-        this.canCreateBranchDeferred = null;
+      it('does not trigger Ajax call if new branch button is missing', done => {
+        mockCloseButtonResponseError(testContext.$triggeredButton.attr('href'));
 
-        this.$triggeredButton.trigger('click');
+        document.querySelector('#related-branches').remove();
+        document.querySelector('.create-mr-dropdown-wrap').remove();
 
-        setTimeout(() => {
+        setup();
+        testContext.$triggeredButton.trigger('click');
+
+        setImmediate(() => {
           expect(axios.get).not.toHaveBeenCalled();
 
           done();

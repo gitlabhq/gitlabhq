@@ -10,5 +10,8 @@ lint-ci-gitlab:
       - "**/*.yml"
   image: sdesbure/yamllint:latest
   dependencies: []
+  variables:
+    LINT_PATHS: .gitlab-ci.yml .gitlab/ci lib/gitlab/ci/templates changelogs
   script:
-    - yamllint .gitlab-ci.yml .gitlab/ci lib/gitlab/ci/templates changelogs
+    - '[[ ! -d "ee/" ]] || export LINT_PATHS="$LINT_PATHS ee/changelogs"'
+    - yamllint $LINT_PATHS

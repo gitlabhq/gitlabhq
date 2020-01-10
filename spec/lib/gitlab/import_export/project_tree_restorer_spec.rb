@@ -219,6 +219,16 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         expect(award_emoji.map(&:name)).to contain_exactly('thumbsup', 'coffee')
       end
 
+      it 'snippet has notes' do
+        expect(@project.snippets.first.notes.count).to eq(1)
+      end
+
+      it 'snippet has award emojis on notes' do
+        award_emoji = @project.snippets.first.notes.first.award_emoji.first
+
+        expect(award_emoji.name).to eq('thumbsup')
+      end
+
       it 'restores `ci_cd_settings` : `group_runners_enabled` setting' do
         expect(@project.ci_cd_settings.group_runners_enabled?).to eq(false)
       end
@@ -238,6 +248,18 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         sentry_issue = @project.issues.first.sentry_issue
 
         expect(sentry_issue.sentry_issue_identifier).to eq(1234567891)
+      end
+
+      it 'has award emoji for an issue' do
+        award_emoji = @project.issues.first.award_emoji.first
+
+        expect(award_emoji.name).to eq('musical_keyboard')
+      end
+
+      it 'has award emoji for a note in an issue' do
+        award_emoji = @project.issues.first.notes.first.award_emoji.first
+
+        expect(award_emoji.name).to eq('clapper')
       end
 
       it 'restores container_expiration_policy' do
@@ -265,6 +287,20 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
         it 'has no source if source/target differ' do
           expect(MergeRequest.find_by_title('MR2').source_project_id).to be_nil
+        end
+
+        it 'has award emoji' do
+          award_emoji = MergeRequest.find_by_title('MR1').award_emoji
+
+          expect(award_emoji.map(&:name)).to contain_exactly('thumbsup', 'drum')
+        end
+
+        context 'notes' do
+          it 'has award emoji' do
+            award_emoji = MergeRequest.find_by_title('MR1').notes.first.award_emoji.first
+
+            expect(award_emoji.name).to eq('tada')
+          end
         end
       end
 

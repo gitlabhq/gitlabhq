@@ -15549,6 +15549,20 @@
               "deprecationReason": null
             },
             {
+              "name": "gitlabCommit",
+              "description": "GitLab commit SHA attributed to the Error based on the release version",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "id",
               "description": "ID (global ID) of the error",
               "args": [

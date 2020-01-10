@@ -76,6 +76,9 @@ module Types
       field :last_release_short_version, GraphQL::STRING_TYPE,
             null: true,
             description: "Release version the error was last seen"
+      field :gitlab_commit, GraphQL::STRING_TYPE,
+            null: true,
+            description: "GitLab commit SHA attributed to the Error based on the release version"
 
       def first_seen
         DateTime.parse(object.first_seen)

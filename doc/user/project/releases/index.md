@@ -16,8 +16,12 @@ GitLab's **Releases** are a way to track deliverables in your project. Consider 
 a snapshot in time of the source, build output, and other metadata or artifacts
 associated with a released version of your code.
 
-At the moment, you can create Release entries via the [Releases API](../../../api/releases/index.md);
-we recommend doing this as one of the last steps in your CI/CD release pipeline.
+There are several ways to create a Release:
+
+- In the interface, when you create a new Git tag.
+- In the interface, by adding a release note to an existing Git tag.
+- Using the [Releases API](../../../api/releases/index.md): we recommend doing this as one of the last
+  steps in your CI/CD release pipeline.
 
 ## Getting started with Releases
 
@@ -135,8 +139,9 @@ drag and drop files to it. Release notes are stored in GitLab's database.
 There are several ways to add release notes:
 
 - In the interface, when you create a new Git tag.
-- In the interface, by adding a note to an existing Git tag.
-- Using the GitLab API.
+- In the interface, by adding a release note to an existing Git tag.
+- Using the [Releases API](../../../api/releases/index.md): (we recommend doing this as one of the last
+  steps in your CI/CD release pipeline).
 
 To create a new tag, navigate to your project's **Repository > Tags** and
 click **New tag**. From there, you can fill the form with all the information

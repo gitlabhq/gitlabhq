@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class Build < CommitStatus
-    include Ci::Processable
+  class Build < Ci::Processable
     include Ci::Metadatable
     include Ci::Contextable
     include Ci::PipelineDelegator

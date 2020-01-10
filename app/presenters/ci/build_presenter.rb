@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class BuildPresenter < CommitStatusPresenter
+  class BuildPresenter < ProcessablePresenter
     def erased_by_user?
       # Build can be erased through API, therefore it does not have
       # `erased_by` user assigned in that case.
