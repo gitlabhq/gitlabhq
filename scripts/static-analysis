@@ -26,17 +26,48 @@ def emit_errors(static_analysis)
   end
 end
 
-tasks = [
-  %w[bin/rake lint:all],
-  %w[bundle exec license_finder],
-  %w[yarn run eslint],
-  %w[yarn run stylelint],
-  %w[yarn run prettier-all],
-  %w[bundle exec rubocop --parallel],
-  %w[scripts/lint-conflicts.sh],
-  %w[scripts/lint-rugged]
-]
+ALLOWED_WARNINGS = [
+  # https://github.com/browserslist/browserslist/blob/d0ec62eb48c41c218478cd3ac28684df051cc865/node.js#L329
+  # warns if caniuse-lite package is older than 6 months. Ignore this
+  # warning message so that GitLab backports don't fail.
+  "Browserslist: caniuse-lite is outdated. Please run next command `yarn upgrade`"
+].freeze
 
+def warning_count(static_analysis)
+  static_analysis.warned_results
+    .reject { |result| ALLOWED_WARNINGS.include?(result.stderr.strip) }
+    .count
+end
+
+def jobs_to_run(node_index, node_total)
+  all_tasks = [
+    %w[bin/rake lint:all],
+    %w[bundle exec license_finder],
+    %w[yarn run eslint],
+    %w[yarn run stylelint],
+    %w[yarn run prettier-all],
+    %w[bundle exec rubocop --parallel],
+    %w[scripts/lint-conflicts.sh],
+    %w[scripts/lint-rugged]
+  ]
+
+  case node_total
+  when 1
+    all_tasks
+  when 2
+    rake_lint_all, *rest_jobs = all_tasks
+    case node_index
+    when 1
+      [rake_lint_all]
+    else
+      rest_jobs
+    end
+  else
+    raise "Parallelization > 2 (currently set to #{node_total}) isn't supported yet!"
+  end
+end
+
+tasks = jobs_to_run((ENV['CI_NODE_INDEX'] || 1).to_i, (ENV['CI_NODE_TOTAL'] || 1).to_i)
 static_analysis = Gitlab::Popen::Runner.new
 
 static_analysis.run(tasks) do |cmd, &run|
@@ -62,7 +93,7 @@ elsif static_analysis.all_success?
 
   emit_warnings(static_analysis)
 
-  exit 2
+  exit 2 if warning_count(static_analysis).nonzero?
 else
   puts 'Some static analyses failed:'
 
