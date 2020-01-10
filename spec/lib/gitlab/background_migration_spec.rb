@@ -152,6 +152,17 @@ describe Gitlab::BackgroundMigration do
 
       described_class.perform('Foo', [10, 20])
     end
+
+    context 'backward compatibility' do
+      it 'performs a background migration for fully-qualified job classes' do
+        expect(migration).to receive(:perform).with(10, 20).once
+        expect(Gitlab::ErrorTracking)
+          .to receive(:track_and_raise_for_dev_exception)
+          .with(instance_of(StandardError), hash_including(:class_name))
+
+        described_class.perform('Gitlab::BackgroundMigration::Foo', [10, 20])
+      end
+    end
   end
 
   describe '.exists?' do

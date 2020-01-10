@@ -4514,6 +4514,9 @@ msgstr ""
 msgid "Code Owners to the merge request changes."
 msgstr ""
 
+msgid "Code Review"
+msgstr ""
+
 msgid "Code owner approval is required"
 msgstr ""
 
@@ -13905,6 +13908,9 @@ msgstr ""
 msgid "Project '%{project_name}' will be deleted on %{date}"
 msgstr ""
 
+msgid "Project Analytics"
+msgstr ""
+
 msgid "Project Badges"
 msgstr ""
 
@@ -15566,6 +15572,9 @@ msgid "Review"
 msgstr ""
 
 msgid "Review the process for configuring service providers in your identity provider — in this case, GitLab is the \"service provider\" or \"relying party\"."
+msgstr ""
+
+msgid "Review time is defined as the time it takes from first comment until merged."
 msgstr ""
 
 msgid "Reviewing"

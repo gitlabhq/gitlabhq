@@ -290,6 +290,8 @@
 
       = render_if_exists 'layouts/nav/sidebar/project_packages_link'
 
+      = render_if_exists 'layouts/nav/sidebar/project_analytics_link' # EE-specific
+
       - if project_nav_tab? :wiki
         - wiki_url = project_wiki_path(@project, :home)
         = nav_link(controller: :wikis) do

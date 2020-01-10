@@ -1,0 +1,5 @@
+---
+title: Make BackgroundMigrationWorker backward compatible
+merge_request: 22271
+author:
+type: fixed

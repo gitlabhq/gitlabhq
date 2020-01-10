@@ -101,6 +101,13 @@ ul.unstyled-list > li {
   border-bottom: 0;
 }
 
+ul.list-items-py-2 {
+  > li {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+}
+
 // Generic content list
 ul.content-list {
   @include basic-list;

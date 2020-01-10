@@ -136,6 +136,9 @@ using environment variables.
 | `DS_PYTHON_VERSION`                     | Version of Python. If set to 2, dependencies are installed using Python 2.7 instead of Python 3.6. ([Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12296) in GitLab 12.1)|
 | `DS_PIP_VERSION`                        | Force the install of a specific pip version (example: `"19.3"`), otherwise the pip installed in the docker image is used. |
 | `DS_PIP_DEPENDENCY_PATH`                | Path to load Python pip dependencies from. ([Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12412) in GitLab 12.2) |
+| `GEMNASIUM_DB_LOCAL_PATH`               | Path to local gemnasium database (default `/gemnasium-db`).
+| `GEMNASIUM_DB_REMOTE_URL`               | Repository URL for fetching the gemnasium database (default `https://gitlab.com/gitlab-org/security-products/gemnasium-db.git`).
+| `GEMNASIUM_DB_REF_NAME`                 | Branch name for remote repository database (default `master`). `GEMNASIUM_DB_REMOTE_URL` is required.
 | `DS_DEFAULT_ANALYZERS`                  | Override the names of the official default images. Read more about [customizing analyzers](analyzers.md). |
 | `DS_DISABLE_DIND`                       | Disable Docker in Docker and run analyzers [individually](#disabling-docker-in-docker-for-dependency-scanning).|
 | `DS_PULL_ANALYZER_IMAGES`               | Pull the images from the Docker registry (set to `0` to disable). |
