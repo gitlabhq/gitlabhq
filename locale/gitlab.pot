@@ -7278,9 +7278,6 @@ msgstr ""
 msgid "Error with Akismet. Please check the logs for more info."
 msgstr ""
 
-msgid "Error:"
-msgstr ""
-
 msgid "ErrorTracking|Active"
 msgstr ""
 

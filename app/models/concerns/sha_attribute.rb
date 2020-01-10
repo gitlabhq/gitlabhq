@@ -39,11 +39,7 @@ module ShaAttribute
     end
 
     def database_exists?
-      ApplicationRecord.connection
-
-      true
-    rescue
-      false
+      Gitlab::Database.exists?
     end
   end
 end

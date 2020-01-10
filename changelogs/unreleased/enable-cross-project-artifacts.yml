@@ -1,0 +1,5 @@
+---
+title: Download cross-project artifacts by using needs keyword in the CI file
+merge_request: 22161
+author:
+type: added

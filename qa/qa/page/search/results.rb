@@ -19,11 +19,11 @@ module QA::Page
       end
 
       def switch_to_code
-        click_element(:code_tab)
+        switch_to_tab(:code_tab)
       end
 
       def switch_to_projects
-        click_element(:projects_tab)
+        switch_to_tab(:projects_tab)
       end
 
       def has_file_in_project?(file_name, project_name)
@@ -32,7 +32,7 @@ module QA::Page
 
       def has_file_with_content?(file_name, file_text)
         within_element_by_index(:result_item_content, 0) do
-          false unless has_element?(:file_title_content, text: file_name)
+          break false unless has_element?(:file_title_content, text: file_name)
 
           has_element?(:file_text_content, text: file_text)
         end
@@ -40,6 +40,15 @@ module QA::Page
 
       def has_project?(project_name)
         has_element?(:project, project_name: project_name)
+      end
+
+      private
+
+      def switch_to_tab(tab)
+        retry_until do
+          click_element(tab)
+          has_active_element?(tab)
+        end
       end
     end
   end

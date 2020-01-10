@@ -499,7 +499,7 @@ describe Ci::CreatePipelineService do
         it 'pull it from Auto-DevOps' do
           pipeline = execute_service
           expect(pipeline).to be_auto_devops_source
-          expect(pipeline.builds.map(&:name)).to eq %w[test code_quality build]
+          expect(pipeline.builds.map(&:name)).to match_array(%w[test code_quality build])
         end
       end
 

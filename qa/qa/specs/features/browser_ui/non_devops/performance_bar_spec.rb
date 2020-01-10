@@ -2,7 +2,7 @@
 
 module QA
   context 'Performance bar' do
-    context 'when logged in as an admin user', :requires_admin do
+    context 'when logged in as an admin user', :requires_admin, quarantine: 'https://gitlab.com/gitlab-org/gitlab/issues/196141' do
       before do
         Flow::Login.sign_in_as_admin
         Page::Main::Menu.perform(&:go_to_admin_area)

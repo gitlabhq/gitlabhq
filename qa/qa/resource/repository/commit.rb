@@ -11,6 +11,8 @@ module QA
                       :file_path,
                       :sha
 
+        attribute :short_id
+
         attribute :project do
           Project.fabricate! do |resource|
             resource.name = 'project-with-commit'

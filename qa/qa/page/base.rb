@@ -132,20 +132,25 @@ module QA
         element.select value
       end
 
+      def has_active_element?(name, **kwargs)
+        has_element?(name, class: 'active', **kwargs)
+      end
+
       def has_element?(name, **kwargs)
         wait_for_requests
 
-        wait = kwargs[:wait] ? kwargs[:wait] && kwargs.delete(:wait) : Capybara.default_max_wait_time
-        text = kwargs[:text] ? kwargs[:text] && kwargs.delete(:text) : nil
+        wait = kwargs.delete(:wait) || Capybara.default_max_wait_time
+        text = kwargs.delete(:text)
+        klass = kwargs.delete(:class)
 
-        has_css?(element_selector_css(name, kwargs), text: text, wait: wait)
+        has_css?(element_selector_css(name, kwargs), text: text, wait: wait, class: klass)
       end
 
       def has_no_element?(name, **kwargs)
         wait_for_requests
 
-        wait = kwargs[:wait] ? kwargs[:wait] && kwargs.delete(:wait) : Capybara.default_max_wait_time
-        text = kwargs[:text] ? kwargs[:text] && kwargs.delete(:text) : nil
+        wait = kwargs.delete(:wait) || Capybara.default_max_wait_time
+        text = kwargs.delete(:text)
 
         has_no_css?(element_selector_css(name, kwargs), wait: wait, text: text)
       end

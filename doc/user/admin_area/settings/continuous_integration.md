@@ -169,9 +169,10 @@ but commented out to help encourage others to add to it in the future. -->
 ## Required pipeline configuration **(PREMIUM ONLY)**
 
 CAUTION: **Caution:**
-The Required Pipeline Configuration feature is deprecated and will be removed when an
-[improved compliance solution](https://gitlab.com/gitlab-org/gitlab/issues/34830)
-is added to GitLab. It is recommended to avoid using this feature.
+This feature is being re-evaluated in favor of a different
+[compliance solution](https://gitlab.com/gitlab-org/gitlab/issues/34830).
+We recommend that users who haven't yet implemented this feature wait for
+the new solution.
 
 GitLab administrators can force a pipeline configuration to run on every
 pipeline.

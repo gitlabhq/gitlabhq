@@ -173,6 +173,7 @@ module QA
         def log_has_element_or_not(method, name, found, **kwargs)
           msg = ["#{method} :#{name}"]
           msg << %Q(with text "#{kwargs[:text]}") if kwargs[:text]
+          msg << "class: #{kwargs[:class]}" if kwargs[:class]
           msg << "(wait: #{kwargs[:wait] || Capybara.default_max_wait_time})"
           msg << "returned: #{found}"
 

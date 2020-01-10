@@ -10,8 +10,8 @@ class Projects::Ci::LintsController < Projects::ApplicationController
     @content = params[:content]
     result   = Gitlab::Ci::YamlProcessor.new_with_validation_errors(@content, yaml_processor_options)
 
-    @error   = result.errors.join(', ')
-    @status  = result.valid?
+    @status = result.valid?
+    @errors = result.errors
 
     if result.valid?
       @config_processor = result.content
