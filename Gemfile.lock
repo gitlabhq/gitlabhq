@@ -770,7 +770,8 @@ GEM
       rack (>= 0.4)
     rack-attack (6.2.0)
       rack (>= 1.0, < 3)
-    rack-cors (1.0.2)
+    rack-cors (1.0.6)
+      rack (>= 1.6.0)
     rack-oauth2 (1.9.3)
       activesupport
       attr_required

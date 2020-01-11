@@ -467,6 +467,9 @@ Settings.cron_jobs['schedule_migrate_external_diffs_worker']['job_class'] = 'Sch
 Settings.cron_jobs['namespaces_prune_aggregation_schedules_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['namespaces_prune_aggregation_schedules_worker']['cron'] ||= '5 1 * * *'
 Settings.cron_jobs['namespaces_prune_aggregation_schedules_worker']['job_class'] = 'Namespaces::PruneAggregationSchedulesWorker'
+Settings.cron_jobs['container_expiration_policy_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['container_expiration_policy_worker']['cron'] ||= '50 * * * *'
+Settings.cron_jobs['container_expiration_policy_worker']['job_class'] = 'ContainerExpirationPolicyWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['adjourned_group_deletion_worker'] ||= Settingslogic.new({})

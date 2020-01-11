@@ -1,0 +1,5 @@
+---
+title: Update rack-cors to 1.0.6
+merge_request: 22809
+author:
+type: security

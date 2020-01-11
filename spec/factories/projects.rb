@@ -137,6 +137,12 @@ FactoryBot.define do
       end
     end
 
+    trait :without_container_expiration_policy do
+      after(:build) do |project|
+        project.class.skip_callback(:create, :after, :create_container_expiration_policy, raise: false)
+      end
+    end
+
     # Build a custom repository by specifying a hash of `filename => content` in
     # the transient `files` attribute. Each file will be created in its own
     # commit, operating against the master branch. So, the following call:

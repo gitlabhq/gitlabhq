@@ -10,6 +10,7 @@
 - chaos:chaos_sleep
 
 - cronjob:admin_email
+- cronjob:container_expiration_policy
 - cronjob:expire_build_artifacts
 - cronjob:gitlab_usage_ping
 - cronjob:import_export_project_cleanup

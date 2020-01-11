@@ -38,4 +38,39 @@ RSpec.describe ContainerExpirationPolicy, type: :model do
       it { is_expected.not_to allow_value('foo').for(:keep_n) }
     end
   end
+
+  describe '.preloaded' do
+    subject { described_class.preloaded }
+
+    before do
+      # container_expiration_policies are created for every new project
+      create_list(:project, 3)
+    end
+
+    it 'preloads the associations' do
+      subject
+
+      query = ActiveRecord::QueryRecorder.new { subject.each(&:project) }
+
+      expect(query.count).to eq(2)
+    end
+  end
+
+  describe '.runnable_schedules' do
+    subject { described_class.runnable_schedules }
+
+    let!(:policy) { create(:container_expiration_policy, :runnable) }
+
+    it 'returns the runnable schedule' do
+      is_expected.to eq([policy])
+    end
+
+    context 'when there are no runnable schedules' do
+      let!(:policy) { }
+
+      it 'returns an empty array' do
+        is_expected.to be_empty
+      end
+    end
+  end
 end
