@@ -6,8 +6,6 @@ require 'active_record/log_subscriber'
 module Gitlab
   module SidekiqLogging
     class StructuredLogger
-      START_TIMESTAMP_FIELDS = %w[created_at enqueued_at].freeze
-      DONE_TIMESTAMP_FIELDS = %w[started_at retried_at failed_at completed_at].freeze
       MAXIMUM_JOB_ARGUMENTS_LENGTH = 10.kilobytes
 
       def call(job, queue)
@@ -65,8 +63,6 @@ module Gitlab
           payload['job_status'] = 'done'
         end
 
-        convert_to_iso8601(payload, DONE_TIMESTAMP_FIELDS)
-
         payload['db_duration'] = ActiveRecord::LogSubscriber.runtime
         payload['db_duration_s'] = payload['db_duration'] / 1000
 
@@ -79,7 +75,7 @@ module Gitlab
         # ignore `cpu_s` if the platform does not support Process::CLOCK_THREAD_CPUTIME_ID (time[:cputime] == 0)
         # supported OS version can be found at: https://www.rubydoc.info/stdlib/core/2.1.6/Process:clock_gettime
         payload['cpu_s'] = time[:cputime].round(6) if time[:cputime] > 0
-        payload['completed_at'] = Time.now.utc
+        payload['completed_at'] = Time.now.utc.to_f
       end
 
       def parse_job(job)
@@ -91,15 +87,7 @@ module Gitlab
         job.delete('args') unless ENV['SIDEKIQ_LOG_ARGUMENTS']
         job['args'] = limited_job_args(job['args']) if job['args']
 
-        convert_to_iso8601(job, START_TIMESTAMP_FIELDS)
-
         job
-      end
-
-      def convert_to_iso8601(payload, keys)
-        keys.each do |key|
-          payload[key] = format_time(payload[key]) if payload[key]
-        end
       end
 
       def elapsed(t0)
@@ -119,12 +107,6 @@ module Gitlab
 
       def current_time
         Gitlab::Metrics::System.monotonic_time
-      end
-
-      def format_time(timestamp)
-        return timestamp if timestamp.is_a?(String)
-
-        Time.at(timestamp).utc.iso8601(3)
       end
 
       def limited_job_args(args)

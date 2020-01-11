@@ -3,7 +3,7 @@ import { createNamespacedHelpers, mapState, mapActions } from 'vuex';
 import _ from 'underscore';
 import { GlFormInput, GlFormCheckbox } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
-import ClusterFormDropdown from './cluster_form_dropdown.vue';
+import ClusterFormDropdown from '~/create_cluster/components/cluster_form_dropdown.vue';
 import { KUBERNETES_VERSIONS } from '../constants';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 

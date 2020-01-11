@@ -2,7 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import $ from 'jquery';
 
 import { GlIcon } from '@gitlab/ui';
-import ClusterFormDropdown from '~/create_cluster/eks_cluster/components/cluster_form_dropdown.vue';
+import ClusterFormDropdown from '~/create_cluster/components/cluster_form_dropdown.vue';
 import DropdownButton from '~/vue_shared/components/dropdown/dropdown_button.vue';
 import DropdownSearchInput from '~/vue_shared/components/dropdown/dropdown_search_input.vue';
 

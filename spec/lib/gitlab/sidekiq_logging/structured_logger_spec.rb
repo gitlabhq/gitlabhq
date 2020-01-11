@@ -30,8 +30,8 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
         'message' => 'TestWorker JID-da883554ee4fe414012f5f42: start',
         'job_status' => 'start',
         'pid' => Process.pid,
-        'created_at' => created_at.iso8601(3),
-        'enqueued_at' => created_at.iso8601(3),
+        'created_at' => created_at.to_f,
+        'enqueued_at' => created_at.to_f,
         'scheduling_latency_s' => scheduling_latency_s
       )
     end
@@ -40,7 +40,7 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
         'message' => 'TestWorker JID-da883554ee4fe414012f5f42: done: 0.0 sec',
         'job_status' => 'done',
         'duration' => 0.0,
-        'completed_at' => timestamp.iso8601(3),
+        'completed_at' => timestamp.to_f,
         'cpu_s' => 1.111112,
         'db_duration' => 0,
         'db_duration_s' => 0
@@ -227,17 +227,17 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
   describe '#add_time_keys!' do
     let(:time) { { duration: 0.1231234, cputime: 1.2342345 } }
     let(:payload) { { 'class' => 'my-class', 'message' => 'my-message', 'job_status' => 'my-job-status' } }
-    let(:current_utc_time) { '2019-09-23 10:00:58 UTC' }
-    let(:payload_with_time_keys) { { 'class' => 'my-class', 'message' => 'my-message', 'job_status' => 'my-job-status', 'duration' => 0.123123, 'cpu_s' => 1.234235, 'completed_at' => current_utc_time } }
+    let(:current_utc_time) { Time.now.utc }
+    let(:payload_with_time_keys) { { 'class' => 'my-class', 'message' => 'my-message', 'job_status' => 'my-job-status', 'duration' => 0.123123, 'cpu_s' => 1.234235, 'completed_at' => current_utc_time.to_f } }
 
     subject { described_class.new }
 
     it 'update payload correctly' do
-      expect(Time).to receive_message_chain(:now, :utc).and_return(current_utc_time)
+      Timecop.freeze(current_utc_time) do
+        subject.send(:add_time_keys!, time, payload)
 
-      subject.send(:add_time_keys!, time, payload)
-
-      expect(payload).to eq(payload_with_time_keys)
+        expect(payload).to eq(payload_with_time_keys)
+      end
     end
   end
 end

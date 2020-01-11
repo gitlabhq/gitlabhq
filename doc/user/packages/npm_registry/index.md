@@ -195,7 +195,7 @@ info Visit https://yarnpkg.com/en/docs/cli/install for documentation about this 
 ```
 
 In this case, try adding this to your `.npmrc` file (and replace `<your_oauth_token>`
-with your with your OAuth or personal access token):
+with your OAuth or personal access token):
 
 ```text
 //gitlab.com/api/v4/projects/:_authToken=<your_oauth_token>

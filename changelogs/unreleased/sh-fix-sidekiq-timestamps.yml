@@ -1,0 +1,5 @@
+---
+title: Make Sidekiq timestamps consistently ISO 8601
+merge_request: 22750
+author:
+type: fixed

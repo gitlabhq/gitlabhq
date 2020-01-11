@@ -4,6 +4,8 @@
       - vendor/ruby/
       - .yarn-cache/
       - tmp/cache/assets/sprockets
+      - tmp/cache/babel-loader
+      - tmp/cache/vue-loader
 
 .gitlab:assets:compile-metadata:
   extends:
@@ -28,7 +30,7 @@
     DOCKER_DRIVER: overlay2
     DOCKER_HOST: tcp://docker:2375
   cache:
-    key: "assets-compile:production:vendor_ruby:.yarn-cache:tmp_cache_assets_sprockets:v6"
+    key: "assets-compile:production:vendor_ruby:.yarn-cache:tmp_cache_assets_sprockets:tmp_cache_webpack:v7"
   artifacts:
     name: webpack-report
     expire_in: 31d
@@ -84,7 +86,7 @@ gitlab:assets:compile pull-cache:
     # we override the max_old_space_size to prevent OOM errors
     NODE_OPTIONS: --max_old_space_size=3584
   cache:
-    key: "assets-compile:v7"
+    key: "assets-compile:v8"
   artifacts:
     expire_in: 7d
     paths:
@@ -106,7 +108,7 @@ compile-assets pull-push-cache foss:
       - master
   cache:
     policy: pull-push
-    key: "assets-compile:v7:foss"
+    key: "assets-compile:v8:foss"
 
 compile-assets pull-cache:
   extends: .compile-assets-metadata
@@ -117,7 +119,7 @@ compile-assets pull-cache foss:
   extends: [".compile-assets-metadata", ".only-ee-as-if-foss"]
   cache:
     policy: pull
-    key: "assets-compile:v7:foss"
+    key: "assets-compile:v8:foss"
 
 .only-code-frontend-job-base:
   extends:

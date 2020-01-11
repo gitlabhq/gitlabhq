@@ -5,7 +5,7 @@ import { GlFormCheckbox } from '@gitlab/ui';
 
 import EksClusterConfigurationForm from '~/create_cluster/eks_cluster/components/eks_cluster_configuration_form.vue';
 import eksClusterFormState from '~/create_cluster/eks_cluster/store/state';
-import clusterDropdownStoreState from '~/create_cluster/eks_cluster/store/cluster_dropdown/state';
+import clusterDropdownStoreState from '~/create_cluster/store/cluster_dropdown/state';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

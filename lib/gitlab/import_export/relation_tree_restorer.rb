@@ -75,9 +75,6 @@ module Gitlab
 
         save_id_mapping(relation_key, data_hash, relation_object)
       rescue => e
-        # re-raise if not enabled
-        raise e unless Feature.enabled?(:import_graceful_failures, @importable.group, default_enabled: true)
-
         log_import_failure(relation_key, relation_index, e)
       end
 

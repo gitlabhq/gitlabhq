@@ -1,8 +1,8 @@
 import testAction from 'helpers/vuex_action_helper';
 
-import createState from '~/create_cluster/eks_cluster/store/cluster_dropdown/state';
-import * as types from '~/create_cluster/eks_cluster/store/cluster_dropdown/mutation_types';
-import actionsFactory from '~/create_cluster/eks_cluster/store/cluster_dropdown/actions';
+import createState from '~/create_cluster/store/cluster_dropdown/state';
+import * as types from '~/create_cluster/store/cluster_dropdown/mutation_types';
+import actionsFactory from '~/create_cluster/store/cluster_dropdown/actions';
 
 describe('Cluster dropdown Store Actions', () => {
   const items = [{ name: 'item 1' }];
