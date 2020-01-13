@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.5.7
+
+- No changes.
+
 ## 12.5.6
 
 ### Security (2 changes)
