@@ -31,6 +31,12 @@ describe('readmeFile', () => {
     });
   });
 
+  it('recognizes Readme.txt as a plain text README', () => {
+    expect(readmeFile([{ name: 'Readme.txt' }])).toEqual({
+      name: 'Readme.txt',
+    });
+  });
+
   it('returns undefined when there are no appropriate files', () => {
     expect(readmeFile([{ name: 'index.js' }, { name: 'md.README' }])).toBe(undefined);
     expect(readmeFile([])).toBe(undefined);

@@ -1,0 +1,5 @@
+---
+title: Fix README.txt not showing up on a project page
+merge_request: 21763
+author: Alexander Oleynikov
+type: fixed

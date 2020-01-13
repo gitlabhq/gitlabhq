@@ -410,7 +410,7 @@ describe MarkupHelper do
     end
 
     context 'when file has an unknown type' do
-      let(:file_name) { 'foo' }
+      let(:file_name) { 'foo.tex' }
 
       it 'returns html (rendered by Gitlab::OtherMarkup)' do
         expected_html = 'Noël'

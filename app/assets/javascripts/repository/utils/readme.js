@@ -24,7 +24,7 @@ const isRichReadme = file => {
 };
 
 const isPlainReadme = file => {
-  const re = new RegExp(`^(${FILENAMES.join('|')})$`, 'i');
+  const re = new RegExp(`^(${FILENAMES.join('|')})(\\.txt)?$`, 'i');
   return re.test(file.name);
 };
 
