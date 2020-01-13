@@ -98,6 +98,34 @@ describe Gitlab::Ci::Build::Policy::Refs do
             .not_to be_satisfied_by(pipeline)
         end
       end
+
+      context 'when source is pipeline' do
+        let(:pipeline) { build_stubbed(:ci_pipeline, source: :pipeline) }
+
+        it 'is satisfied with only: pipelines' do
+          expect(described_class.new(%w[pipelines]))
+            .to be_satisfied_by(pipeline)
+        end
+
+        it 'is satisfied with only: pipeline' do
+          expect(described_class.new(%w[pipeline]))
+            .to be_satisfied_by(pipeline)
+        end
+      end
+
+      context 'when source is parent_pipeline' do
+        let(:pipeline) { build_stubbed(:ci_pipeline, source: :parent_pipeline) }
+
+        it 'is satisfied with only: parent_pipelines' do
+          expect(described_class.new(%w[parent_pipelines]))
+            .to be_satisfied_by(pipeline)
+        end
+
+        it 'is satisfied with only: parent_pipeline' do
+          expect(described_class.new(%w[parent_pipeline]))
+            .to be_satisfied_by(pipeline)
+        end
+      end
     end
 
     context 'when matching a ref by a regular expression' do

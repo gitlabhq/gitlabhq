@@ -104,6 +104,8 @@ module Types
           description: 'Indicates if `Delete source branch` option should be enabled by default for all new merge requests of the project'
     field :autoclose_referenced_issues, GraphQL::BOOLEAN_TYPE, null: true,
           description: 'Indicates if issues referenced by merge requests and commits within the default branch are closed automatically'
+    field :suggestion_commit_message, GraphQL::STRING_TYPE, null: true,
+          description: 'The commit message used to apply merge request suggestions'
 
     field :namespace, Types::NamespaceType, null: true,
           description: 'Namespace of the project'

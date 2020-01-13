@@ -9,7 +9,7 @@ module Gitlab
             include Chain::Helpers
 
             SOURCES = [
-              Gitlab::Ci::Pipeline::Chain::Config::Content::Runtime,
+              Gitlab::Ci::Pipeline::Chain::Config::Content::Bridge,
               Gitlab::Ci::Pipeline::Chain::Config::Content::Repository,
               Gitlab::Ci::Pipeline::Chain::Config::Content::ExternalProject,
               Gitlab::Ci::Pipeline::Chain::Config::Content::Remote,
@@ -17,7 +17,7 @@ module Gitlab
             ].freeze
 
             LEGACY_SOURCES = [
-              Gitlab::Ci::Pipeline::Chain::Config::Content::Runtime,
+              Gitlab::Ci::Pipeline::Chain::Config::Content::Bridge,
               Gitlab::Ci::Pipeline::Chain::Config::Content::LegacyRepository,
               Gitlab::Ci::Pipeline::Chain::Config::Content::LegacyAutoDevops
             ].freeze

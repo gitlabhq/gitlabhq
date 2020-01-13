@@ -23,10 +23,13 @@ module Ci
         schedule: 4,
         api: 5,
         external: 6,
+        # TODO: Rename `pipeline` to `cross_project_pipeline` in 13.0
+        # https://gitlab.com/gitlab-org/gitlab/issues/195991
         pipeline: 7,
         chat: 8,
         merge_request_event: 10,
-        external_pull_request_event: 11
+        external_pull_request_event: 11,
+        parent_pipeline: 12
       }
     end
 
@@ -38,7 +41,8 @@ module Ci
         repository_source: 1,
         auto_devops_source: 2,
         remote_source: 4,
-        external_project_source: 5
+        external_project_source: 5,
+        bridge_source: 6
       }
     end
 

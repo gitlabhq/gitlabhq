@@ -5155,6 +5155,11 @@ type Project {
   statistics: ProjectStatistics
 
   """
+  The commit message used to apply merge request suggestions
+  """
+  suggestionCommitMessage: String
+
+  """
   List of project tags
   """
   tagList: String

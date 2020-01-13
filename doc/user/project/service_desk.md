@@ -81,6 +81,33 @@ navigation's **Issues** menu.
 
 ![Service Desk Navigation Item](img/service_desk_nav_item.png)
 
+### Using customized email templates
+
+ > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/2460) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.7.
+
+When a user submits a new issue using Service Desk, or when a new note is created on a Service Desk issue, an email is sent to the author.
+
+The body of these email messages can customized by using templates. To create a new customized template,
+create a new Markdown (`.md`) file inside the `.gitlab/service_desk_templates/`
+directory in your repository. Commit and push to your default branch.
+
+#### Thank you email
+
+The **Thank you email** is the email sent to a user after they submit an issue.
+The file name of the template has to be `thank_you.md`.
+You can use `%{ISSUE_ID}` placeholder which will be replaced by an issue iid in the email and
+`%{ISSUE_PATH}` placeholder which will be replaced by project path and the issue iid.
+As the service desk issues are created as confidential (only project members can see them)
+the response email doesn't provide the issue link.
+
+#### New note email
+
+The **New note email** is the email sent to a user when the issue they submitted has a new comment.
+The file name of the template has to be `new_note.md`.
+You can use `%{ISSUE_ID}` placeholder which will be replaced by an issue iid
+in the email, `%{ISSUE_PATH}` placeholder which will be replaced by
+ project path and the issue iid and `%{NOTE_TEXT}` placeholder which will be replaced by the note text.
+
 ## Using Service Desk
 
 ### As an end user (issue creator)

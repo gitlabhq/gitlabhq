@@ -165,21 +165,23 @@ export default {
 <template>
   <section class="media-section">
     <div class="media">
-      <status-icon :status="statusIconName" :size="24" />
-      <div class="media-body d-flex flex-align-self-center">
-        <span class="js-code-text code-text">
-          {{ headerText }}
-          <slot :name="slotName"></slot>
-
-          <popover v-if="hasPopover" :options="popoverOptions" class="prepend-left-5" />
-        </span>
+      <status-icon :status="statusIconName" :size="24" class="align-self-center" />
+      <div class="media-body d-flex flex-align-self-center align-items-center">
+        <div class="js-code-text code-text">
+          <div>
+            {{ headerText }}
+            <slot :name="slotName"></slot>
+            <popover v-if="hasPopover" :options="popoverOptions" class="prepend-left-5" />
+          </div>
+          <slot name="subHeading"></slot>
+        </div>
 
         <slot name="actionButtons"></slot>
 
         <button
           v-if="isCollapsible"
           type="button"
-          class="js-collapse-btn btn float-right btn-sm align-self-start qa-expand-report-button"
+          class="js-collapse-btn btn float-right btn-sm align-self-center qa-expand-report-button"
           @click="toggleCollapsed"
         >
           {{ collapseText }}

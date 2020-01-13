@@ -46,6 +46,7 @@ module API
         optional :avatar, type: File, desc: 'Avatar image for project' # rubocop:disable Scalability/FileUploads
         optional :printing_merge_request_link_enabled, type: Boolean, desc: 'Show link to create/view merge request when pushing from the command line'
         optional :merge_method, type: String, values: %w(ff rebase_merge merge), desc: 'The merge method used when merging merge requests'
+        optional :suggestion_commit_message, type: String, desc: 'The commit message used to apply merge request suggestions'
         optional :initialize_with_readme, type: Boolean, desc: "Initialize a project with a README.md"
         optional :ci_default_git_depth, type: Integer, desc: 'Default number of revisions for shallow cloning'
         optional :auto_devops_enabled, type: Boolean, desc: 'Flag indication if Auto DevOps is enabled'
@@ -119,6 +120,7 @@ module API
           :visibility,
           :wiki_access_level,
           :avatar,
+          :suggestion_commit_message,
 
           # TODO: remove in API v5, replaced by *_access_level
           :issues_enabled,

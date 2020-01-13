@@ -3348,6 +3348,7 @@ ActiveRecord::Schema.define(version: 2020_01_08_233040) do
     t.date "marked_for_deletion_at"
     t.integer "marked_for_deletion_by_user_id"
     t.boolean "autoclose_referenced_issues"
+    t.string "suggestion_commit_message", limit: 255
     t.index "lower((name)::text)", name: "index_projects_on_lower_name"
     t.index ["created_at", "id"], name: "index_projects_on_created_at_and_id"
     t.index ["creator_id"], name: "index_projects_on_creator_id"

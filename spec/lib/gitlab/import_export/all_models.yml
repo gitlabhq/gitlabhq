@@ -201,6 +201,8 @@ ci_pipelines:
 - sourced_pipelines
 - triggered_by_pipeline
 - triggered_pipelines
+- child_pipelines
+- parent_pipeline
 - downstream_bridges
 - job_artifacts
 - vulnerabilities_occurrence_pipelines

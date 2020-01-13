@@ -41,6 +41,7 @@ class PipelineSerializer < BaseSerializer
   def preloaded_relations
     [
       :latest_statuses_ordered_by_stage,
+      :project,
       :stages,
       {
         failed_builds: %i(project metadata)

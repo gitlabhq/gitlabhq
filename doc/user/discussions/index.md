@@ -414,9 +414,8 @@ the Merge Request authored by the user that applied them.
 
 Once the author applies a suggestion, it will be marked with the **Applied** label,
 the thread will be automatically resolved, and GitLab will create a new commit
-with the message `Apply suggestion to <file-name>` and push the suggested change
-directly into the codebase in the merge request's branch.
-[Developer permission](../permissions.md) is required to do so.
+and push the suggested change directly into the codebase in the merge request's
+branch. [Developer permission](../permissions.md) is required to do so.
 
 > **Note:**
 Custom commit messages will be introduced by
@@ -443,6 +442,24 @@ NOTE: **Note:**
 Suggestions covering multiple lines are limited to 100 lines _above_ and 100
 lines _below_ the commented diff line, allowing up to 200 changed lines per
 suggestion.
+
+### Configure the commit message for applied suggestions
+
+GitLab will use `Apply suggestion to %{file_path}` by default as commit messages
+when applying change suggestions. This commit message can be customized to
+follow any guidelines you might have. To do so, open the **Merge requests** tab
+within your project settings and change the **Merge suggestions** text.
+
+![Suggestion Commit Message Configuration](img/suggestion-commit-message-configuration.png)
+
+You can also use following variables besides static text:
+
+- `%{project_path}`: The full URL safe project path. E.g: *my-group/my-project*
+- `%{project_name}`: The human readable name of the project. E.g: *My Project*
+- `%{file_path}`: The full path of the file the suggestion is applied to. E.g: *docs/index.md*
+- `%{branch_name}`: The name of the branch the suggestion is applied on. E.g: *my-feature-branch*
+- `%{username}`: The username of the user applying the suggestion. E.g: *user_1*
+- `%{user_full_name}`: The full name of the user applying the suggestion. E.g: *User 1*
 
 ## Start a thread by replying to a standard comment
 

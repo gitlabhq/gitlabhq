@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class PipelineDetailsEntity < PipelineEntity
+  expose :project, using: ProjectEntity
+
   expose :flags do
     expose :latest?, as: :latest
   end

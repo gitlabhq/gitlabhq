@@ -1,0 +1,17 @@
+- form = local_assigns.fetch(:form)
+
+.form-group
+  %b= s_('ProjectSettings|Merge suggestions')
+  %p.text-secondary
+    = s_('ProjectSettings|The commit message used to apply merge request suggestions')
+    = link_to icon('question-circle'),
+      help_page_path('user/discussions/index.md',
+      anchor: 'configure-the-commit-message-for-applied-suggestions'),
+      target: '_blank'
+  .mb-2
+    = form.text_field :suggestion_commit_message, class: 'form-control mb-2', placeholder: Suggestions::ApplyService::DEFAULT_SUGGESTION_COMMIT_MESSAGE
+    %p.form-text.text-muted
+      = s_('ProjectSettings|The variables GitLab supports:')
+      - Suggestions::ApplyService::PLACEHOLDERS.keys.each do |placeholder|
+        %code
+          = "%{#{placeholder}}".html_safe

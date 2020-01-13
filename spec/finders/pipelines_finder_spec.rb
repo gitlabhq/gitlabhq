@@ -64,6 +64,19 @@ describe PipelinesFinder do
       end
     end
 
+    context 'when project has child pipelines' do
+      let!(:parent_pipeline) { create(:ci_pipeline, project: project) }
+      let!(:child_pipeline) { create(:ci_pipeline, project: project, source: :parent_pipeline) }
+
+      let!(:pipeline_source) do
+        create(:ci_sources_pipeline, pipeline: child_pipeline, source_pipeline: parent_pipeline)
+      end
+
+      it 'filters out child pipelines and show only the parents' do
+        is_expected.to eq([parent_pipeline])
+      end
+    end
+
     HasStatus::AVAILABLE_STATUSES.each do |target|
       context "when status is #{target}" do
         let(:params) { { status: target } }

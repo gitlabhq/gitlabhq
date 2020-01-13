@@ -1526,6 +1526,20 @@
               "deprecationReason": null
             },
             {
+              "name": "suggestionCommitMessage",
+              "description": "The commit message used to apply merge request suggestions",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "tagList",
               "description": "List of project tags",
               "args": [

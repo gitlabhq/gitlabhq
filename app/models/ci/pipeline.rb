@@ -60,7 +60,9 @@ module Ci
     has_one :chat_data, class_name: 'Ci::PipelineChatData'
 
     has_many :triggered_pipelines, through: :sourced_pipelines, source: :pipeline
+    has_many :child_pipelines, -> { merge(Ci::Sources::Pipeline.same_project) }, through: :sourced_pipelines, source: :pipeline
     has_one :triggered_by_pipeline, through: :source_pipeline, source: :source_pipeline
+    has_one :parent_pipeline, -> { merge(Ci::Sources::Pipeline.same_project) }, through: :source_pipeline, source: :source_pipeline
     has_one :source_job, through: :source_pipeline, source: :source_job
 
     has_one :pipeline_config, class_name: 'Ci::PipelineConfig', inverse_of: :pipeline
@@ -212,6 +214,7 @@ module Ci
     end
 
     scope :internal, -> { where(source: internal_sources) }
+    scope :no_child, -> { where.not(source: :parent_pipeline) }
     scope :ci_sources, -> { where(config_source: ::Ci::PipelineEnums.ci_config_sources_values) }
     scope :for_user, -> (user) { where(user: user) }
     scope :for_sha, -> (sha) { where(sha: sha) }
@@ -507,10 +510,6 @@ module Ci
       builds.skipped.after_stage(stage_idx).find_each(&:process)
     end
 
-    def child?
-      false
-    end
-
     def latest?
       return false unless git_ref && commit.present?
 
@@ -691,6 +690,24 @@ module Ci
 
     def all_merge_requests_by_recency
       all_merge_requests.order(id: :desc)
+    end
+
+    # If pipeline is a child of another pipeline, include the parent
+    # and the siblings, otherwise return only itself.
+    def same_family_pipeline_ids
+      if (parent = parent_pipeline)
+        [parent.id] + parent.child_pipelines.pluck(:id)
+      else
+        [self.id]
+      end
+    end
+
+    def child?
+      parent_pipeline.present?
+    end
+
+    def parent?
+      child_pipelines.exists?
     end
 
     def detailed_status(current_user)

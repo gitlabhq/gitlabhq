@@ -28,6 +28,33 @@ describe 'projects/edit' do
     end
   end
 
+  context 'merge suggestions settings' do
+    it 'displays all possible variables' do
+      render
+
+      expect(rendered).to have_content('%{project_path}')
+      expect(rendered).to have_content('%{project_name}')
+      expect(rendered).to have_content('%{file_path}')
+      expect(rendered).to have_content('%{branch_name}')
+      expect(rendered).to have_content('%{username}')
+      expect(rendered).to have_content('%{user_full_name}')
+    end
+
+    it 'displays a placeholder if none is set' do
+      render
+
+      expect(rendered).to have_field('project[suggestion_commit_message]', placeholder: 'Apply suggestion to %{file_path}')
+    end
+
+    it 'displays the user entered value' do
+      project.update!(suggestion_commit_message: 'refactor: changed %{file_path}')
+
+      render
+
+      expect(rendered).to have_field('project[suggestion_commit_message]', with: 'refactor: changed %{file_path}')
+    end
+  end
+
   context 'forking' do
     before do
       assign(:project, project)

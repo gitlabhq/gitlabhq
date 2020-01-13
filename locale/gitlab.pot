@@ -3854,6 +3854,9 @@ msgstr ""
 msgid "ClusterIntegration|Could not load instance types"
 msgstr ""
 
+msgid "ClusterIntegration|Could not load networks"
+msgstr ""
+
 msgid "ClusterIntegration|Could not load regions from your AWS account"
 msgstr ""
 
@@ -3861,6 +3864,9 @@ msgid "ClusterIntegration|Could not load security groups for the selected VPC"
 msgstr ""
 
 msgid "ClusterIntegration|Could not load subnets for the selected VPC"
+msgstr ""
+
+msgid "ClusterIntegration|Could not load subnetworks"
 msgstr ""
 
 msgid "ClusterIntegration|Create Kubernetes cluster"
@@ -4127,10 +4133,16 @@ msgstr ""
 msgid "ClusterIntegration|Loading instance types"
 msgstr ""
 
+msgid "ClusterIntegration|Loading networks"
+msgstr ""
+
 msgid "ClusterIntegration|Loading security groups"
 msgstr ""
 
 msgid "ClusterIntegration|Loading subnets"
+msgstr ""
+
+msgid "ClusterIntegration|Loading subnetworks"
 msgstr ""
 
 msgid "ClusterIntegration|Machine type"
@@ -4157,6 +4169,9 @@ msgstr ""
 msgid "ClusterIntegration|No machine types matched your search"
 msgstr ""
 
+msgid "ClusterIntegration|No networks found"
+msgstr ""
+
 msgid "ClusterIntegration|No projects found"
 msgstr ""
 
@@ -4170,6 +4185,9 @@ msgid "ClusterIntegration|No security group found"
 msgstr ""
 
 msgid "ClusterIntegration|No subnet found"
+msgstr ""
+
+msgid "ClusterIntegration|No subnetworks found"
 msgstr ""
 
 msgid "ClusterIntegration|No zones matched your search"
@@ -4268,6 +4286,9 @@ msgstr ""
 msgid "ClusterIntegration|Search machine types"
 msgstr ""
 
+msgid "ClusterIntegration|Search networks"
+msgstr ""
+
 msgid "ClusterIntegration|Search projects"
 msgstr ""
 
@@ -4278,6 +4299,9 @@ msgid "ClusterIntegration|Search security groups"
 msgstr ""
 
 msgid "ClusterIntegration|Search subnets"
+msgstr ""
+
+msgid "ClusterIntegration|Search subnetworks"
 msgstr ""
 
 msgid "ClusterIntegration|Search zones"
@@ -4298,6 +4322,9 @@ msgstr ""
 msgid "ClusterIntegration|Select a VPC to use for your EKS Cluster resources. To use a new VPC, first create one on %{startLink}Amazon Web Services %{externalLinkIcon} %{endLink}."
 msgstr ""
 
+msgid "ClusterIntegration|Select a network to choose a subnetwork"
+msgstr ""
+
 msgid "ClusterIntegration|Select a region to choose a Key Pair"
 msgstr ""
 
@@ -4305,6 +4332,9 @@ msgid "ClusterIntegration|Select a region to choose a VPC"
 msgstr ""
 
 msgid "ClusterIntegration|Select a stack to install Crossplane."
+msgstr ""
+
+msgid "ClusterIntegration|Select a zone to choose a network"
 msgstr ""
 
 msgid "ClusterIntegration|Select machine type"
@@ -4484,6 +4514,9 @@ msgstr ""
 msgid "ClusterIntergation|Select a VPC"
 msgstr ""
 
+msgid "ClusterIntergation|Select a network"
+msgstr ""
+
 msgid "ClusterIntergation|Select a region"
 msgstr ""
 
@@ -4491,6 +4524,9 @@ msgid "ClusterIntergation|Select a security group"
 msgstr ""
 
 msgid "ClusterIntergation|Select a subnet"
+msgstr ""
+
+msgid "ClusterIntergation|Select a subnetwork"
 msgstr ""
 
 msgid "ClusterIntergation|Select an instance type"
@@ -8330,7 +8366,7 @@ msgstr ""
 msgid "GeoNodes|Pausing replication stops the sync process. Are you sure?"
 msgstr ""
 
-msgid "GeoNodes|Removing a Geo primary node stops the synchronization to that node. Are you sure?"
+msgid "GeoNodes|Removing a Geo primary node stops the synchronization to all nodes. Are you sure?"
 msgstr ""
 
 msgid "GeoNodes|Removing a Geo secondary node stops the synchronization to that node. Are you sure?"
@@ -14130,10 +14166,10 @@ msgstr ""
 msgid "ProjectSettings|Build, test, and deploy your changes"
 msgstr ""
 
-msgid "ProjectSettings|Choose your merge method, merge options, and merge checks."
+msgid "ProjectSettings|Choose your merge method, merge options, merge checks, and merge suggestions."
 msgstr ""
 
-msgid "ProjectSettings|Choose your merge method, merge options, merge checks, and set up a default description template for merge requests."
+msgid "ProjectSettings|Choose your merge method, merge options, merge checks, merge suggestions, and set up a default description template for merge requests."
 msgstr ""
 
 msgid "ProjectSettings|Contact an admin to change this setting."
@@ -14217,6 +14253,9 @@ msgstr ""
 msgid "ProjectSettings|Merge requests"
 msgstr ""
 
+msgid "ProjectSettings|Merge suggestions"
+msgstr ""
+
 msgid "ProjectSettings|No merge commits are created"
 msgstr ""
 
@@ -14266,6 +14305,12 @@ msgid "ProjectSettings|Snippets"
 msgstr ""
 
 msgid "ProjectSettings|Submit changes to be merged upstream"
+msgstr ""
+
+msgid "ProjectSettings|The commit message used to apply merge request suggestions"
+msgstr ""
+
+msgid "ProjectSettings|The variables GitLab supports:"
 msgstr ""
 
 msgid "ProjectSettings|These checks must pass before merge requests can be merged"
@@ -16098,6 +16143,12 @@ msgid "Security configuration help link"
 msgstr ""
 
 msgid "Security dashboard"
+msgstr ""
+
+msgid "Security report is out of date. Please incorporate latest changes from %{targetBranchName}"
+msgstr ""
+
+msgid "Security report is out of date. Retry the pipeline for the target branch."
 msgstr ""
 
 msgid "SecurityConfiguration|Configured"

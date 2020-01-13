@@ -5,7 +5,8 @@
     = form_for(resource, as: "new_#{resource_name}", url: registration_path(resource_name), html: { class: "new_new_user gl-show-field-errors", "aria-live" => "assertive" }) do |f|
       .devise-errors.mt-0
         = render "devise/shared/error_messages", resource: resource
-      = invisible_captcha
+      - if Feature.enabled?(:invisible_captcha)
+        = invisible_captcha
       .username.form-group
         = f.label :username, class: 'label-bold'
         = f.text_field :username, class: "form-control middle js-block-emoji js-validate-length js-validate-username", :data => { :max_length => max_username_length, :max_length_message => s_("SignUp|Username is too long (maximum is %{max_length} characters).") % { max_length: max_username_length }, :qa_selector => 'new_user_username_field' }, pattern: Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS, required: true, title: _("Please create a username with only alphanumeric characters.")
@@ -27,5 +28,8 @@
             - accept_terms_label = _("I accept the %{terms_link}") % { terms_link: terms_link }
             = accept_terms_label.html_safe
       = render_if_exists 'devise/shared/email_opted_in', f: f
+      %div
+      - if show_recaptcha_sign_up?
+        = recaptcha_tags
       .submit-container.mt-3
         = f.submit _("Register"), class: "btn-register btn btn-block btn-success mb-0 p-2", data: { qa_selector: 'new_user_register_button' }

@@ -535,6 +535,7 @@ Project:
 - merge_requests_disable_committers_approval
 - require_password_to_approve
 - autoclose_referenced_issues
+- suggestion_commit_message
 ProjectTracingSetting:
 - external_url
 Author:
