@@ -1,13 +1,18 @@
+- access_levels = local_assigns[:access_levels]
+- default_access_level = local_assigns[:default_access_level]
+- submit_url = local_assigns[:submit_url]
+- group_link_field = local_assigns[:group_link_field]
+- group_access_field = local_assigns[:group_access_field]
 .row
   .col-sm-12
-    = form_tag project_group_links_path(@project), class: 'js-requires-input', method: :post do
+    = form_tag submit_url, class: 'invite-group-form js-requires-input', method: :post do
       .form-group
-        = label_tag :link_group_id, _("Select a group to invite"), class: "label-bold"
-        = groups_select_tag(:link_group_id, data: { skip_groups: @skip_groups }, class: "input-clamp qa-group-select-field", required: true)
+        = label_tag group_link_field, _("Select a group to invite"), class: "label-bold"
+        = groups_select_tag(group_link_field, data: { skip_groups: @skip_groups }, class: 'input-clamp qa-group-select-field', required: true)
       .form-group
-        = label_tag :link_group_access, _("Max access level"), class: "label-bold"
+        = label_tag group_access_field, _("Max access level"), class: "label-bold"
         .select-wrapper
-          = select_tag :link_group_access, options_for_select(ProjectGroupLink.access_options, ProjectGroupLink.default_access), class: "form-control select-control"
+          = select_tag group_access_field, options_for_select(access_levels, default_access_level), data: { qa_selector: 'group_access_field' }, class: "form-control select-control"
           = icon('chevron-down')
         .form-text.text-muted.append-bottom-10
           - permissions_docs_path = help_page_path('user/permissions')

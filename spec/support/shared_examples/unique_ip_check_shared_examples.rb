@@ -2,6 +2,8 @@
 
 shared_context 'unique ips sign in limit' do
   include StubENV
+  let(:request_context) { Gitlab::RequestContext.instance }
+
   before do
     Gitlab::Redis::Cache.with(&:flushall)
     Gitlab::Redis::Queues.with(&:flushall)
@@ -15,10 +17,13 @@ shared_context 'unique ips sign in limit' do
       unique_ips_limit_enabled: true,
       unique_ips_limit_time_window: 10000
     )
+
+    # Make sure we're working with the same reqeust context everywhere
+    allow(Gitlab::RequestContext).to receive(:instance).and_return(request_context)
   end
 
   def change_ip(ip)
-    allow(Gitlab::RequestContext).to receive(:client_ip).and_return(ip)
+    allow(request_context).to receive(:client_ip).and_return(ip)
   end
 
   def request_from_ip(ip)

@@ -1,6 +1,7 @@
 - group_link = local_assigns[:group_link]
-- group = group_link.group
-- can_admin_member = can?(current_user, :admin_project_member, @project)
+- group = group_link.shared_with_group
+- can_admin_member = local_assigns[:can_admin_member]
+- group_link_path = local_assigns[:group_link_path]
 - dom_id = "group_member_#{group_link.id}"
 
 -# Note this is just for groups. For individual members please see shared/members/_member
@@ -17,7 +18,7 @@
           %span{ class: ('text-warning' if group_link.expires_soon?) }
             = _("Expires in %{expires_at}").html_safe % { expires_at: distance_of_time_in_words_to_now(group_link.expires_at) }
   .controls.member-controls.align-items-center
-    = form_tag project_group_link_path(@project, group_link), method: :put, remote: true, class: 'js-edit-member-form form-group d-sm-flex' do
+    = form_tag group_link_path, method: :put, remote: true, class: 'js-edit-member-form form-group d-sm-flex' do
       = hidden_field_tag "group_link[group_access]", group_link.group_access
       .member-form-control.dropdown.mr-sm-2.d-sm-inline-block
         %button.dropdown-menu-toggle.js-member-permissions-dropdown{ type: "button",
@@ -39,7 +40,7 @@
         = text_field_tag 'group_link[expires_at]', group_link.expires_at, class: 'form-control js-access-expiration-date js-member-update-control', placeholder: _('Expiration date'), id: "member_expires_at_#{group.id}", disabled: !can_admin_member
         %i.clear-icon.js-clear-input
     - if can_admin_member
-      = link_to project_group_link_path(@project, group_link),
+      = link_to group_link_path,
         method: :delete,
         data: { confirm: _("Are you sure you want to remove %{group_name}?") % { group_name: group.name }, qa_selector: 'delete_group_access_link' },
         class: 'btn btn-remove m-0 ml-sm-2 align-self-center' do

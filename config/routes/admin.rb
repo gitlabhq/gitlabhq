@@ -119,6 +119,8 @@ namespace :admin do
 
     post :create_self_monitoring_project
     get :status_create_self_monitoring_project
+    delete :delete_self_monitoring_project
+    get :status_delete_self_monitoring_project
   end
 
   resources :labels

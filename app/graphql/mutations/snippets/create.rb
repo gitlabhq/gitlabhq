@@ -42,7 +42,7 @@ module Mutations
         if project_path.present?
           project = find_project!(project_path: project_path)
         elsif !can_create_personal_snippet?
-          raise_resource_not_avaiable_error!
+          raise_resource_not_available_error!
         end
 
         snippet = CreateSnippetService.new(project,

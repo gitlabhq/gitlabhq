@@ -1,10 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Settings Form renders 1`] = `
-<div
-  class="card"
->
-  <form>
+<form>
+  <div
+    class="card"
+  >
+    <!---->
     <div
       class="card-header"
     >
@@ -12,11 +13,13 @@ exports[`Settings Form renders 1`] = `
       Tag expiration policy
     
     </div>
-     
     <div
       class="card-body"
     >
-      <gl-form-group-stub
+      <!---->
+      <!---->
+        
+      <glformgroup-stub
         id="expiration-policy-toggle-group"
         label="Expiration policy:"
         label-align="right"
@@ -26,7 +29,7 @@ exports[`Settings Form renders 1`] = `
         <div
           class="d-flex align-items-start"
         >
-          <gl-toggle-stub
+          <gltoggle-stub
             id="expiration-policy-toggle"
             labeloff="Toggle Status: OFF"
             labelon="Toggle Status: ON"
@@ -41,81 +44,96 @@ exports[`Settings Form renders 1`] = `
             </strong>
           </span>
         </div>
-      </gl-form-group-stub>
+      </glformgroup-stub>
        
-      <gl-form-group-stub
+      <glformgroup-stub
         id="expiration-policy-interval-group"
         label="Expiration interval:"
         label-align="right"
         label-cols="3"
         label-for="expiration-policy-interval"
       >
-        <gl-form-select-stub
+        <glformselect-stub
+          disabled="true"
           id="expiration-policy-interval"
+          value="bar"
         >
           <option
-            value="1"
+            value="foo"
           >
-            Option 1
+            
+            Foo
+          
           </option>
-           
           <option
-            value="2"
+            value="bar"
           >
-            Option 2
+            
+            Bar
+          
           </option>
-        </gl-form-select-stub>
-      </gl-form-group-stub>
+        </glformselect-stub>
+      </glformgroup-stub>
        
-      <gl-form-group-stub
+      <glformgroup-stub
         id="expiration-policy-schedule-group"
         label="Expiration schedule:"
         label-align="right"
         label-cols="3"
         label-for="expiration-policy-schedule"
       >
-        <gl-form-select-stub
+        <glformselect-stub
+          disabled="true"
           id="expiration-policy-schedule"
+          value="bar"
         >
           <option
-            value="1"
+            value="foo"
           >
-            Option 1
+            
+            Foo
+          
           </option>
-           
           <option
-            value="2"
+            value="bar"
           >
-            Option 2
+            
+            Bar
+          
           </option>
-        </gl-form-select-stub>
-      </gl-form-group-stub>
+        </glformselect-stub>
+      </glformgroup-stub>
        
-      <gl-form-group-stub
+      <glformgroup-stub
         id="expiration-policy-latest-group"
         label="Expiration latest:"
         label-align="right"
         label-cols="3"
         label-for="expiration-policy-latest"
       >
-        <gl-form-select-stub
+        <glformselect-stub
+          disabled="true"
           id="expiration-policy-latest"
+          value="bar"
         >
           <option
-            value="1"
+            value="foo"
           >
-            Option 1
+            
+            Foo
+          
           </option>
-           
           <option
-            value="2"
+            value="bar"
           >
-            Option 2
+            
+            Bar
+          
           </option>
-        </gl-form-select-stub>
-      </gl-form-group-stub>
+        </glformselect-stub>
+      </glformgroup-stub>
        
-      <gl-form-group-stub
+      <glformgroup-stub
         id="expiration-policy-name-matching-group"
         invalid-feedback="The value of this input should be less than 255 characters"
         label="Expire Docker tags with name matching:"
@@ -123,33 +141,41 @@ exports[`Settings Form renders 1`] = `
         label-cols="3"
         label-for="expiration-policy-name-matching"
       >
-        <gl-form-textarea-stub
+        <glformtextarea-stub
+          disabled="true"
           id="expiration-policy-name-matching"
           placeholder=".*"
           trim=""
           value=""
         />
-      </gl-form-group-stub>
-    </div>
-     
-    <div
-      class="card-footer text-right"
-    >
-      <gl-button-stub
-        type="reset"
-      >
-        Cancel
-      </gl-button-stub>
+      </glformgroup-stub>
        
-      <gl-button-stub
-        type="submit"
-        variant="success"
-      >
-        
-        Save Expiration Policy
-      
-      </gl-button-stub>
     </div>
-  </form>
-</div>
+    <div
+      class="card-footer"
+    >
+      <div
+        class="d-flex justify-content-end"
+      >
+        <glbutton-stub
+          class="mr-2 d-block"
+          type="reset"
+        >
+          Cancel
+        </glbutton-stub>
+         
+        <glbutton-stub
+          class="d-block"
+          type="submit"
+          variant="success"
+        >
+          
+          Save expiration policy
+        
+        </glbutton-stub>
+      </div>
+    </div>
+    <!---->
+  </div>
+</form>
 `;

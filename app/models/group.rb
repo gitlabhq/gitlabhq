@@ -420,6 +420,12 @@ class Group < Namespace
     GroupMember.where(source_id: self_and_ancestors_ids, user_id: user.id).order(:access_level).last
   end
 
+  def related_group_ids
+    [id,
+     *ancestors.pluck(:id),
+     *shared_with_group_links.pluck(:shared_with_group_id)]
+  end
+
   def hashed_storage?(_feature)
     false
   end

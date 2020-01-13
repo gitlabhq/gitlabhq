@@ -98,12 +98,12 @@ describe "Admin::Projects" do
     it 'adds admin a to a project as developer', :js do
       visit project_project_members_path(project)
 
-      page.within '.users-project-form' do
+      page.within '.invite-users-form' do
         select2(current_user.id, from: '#user_ids', multiple: true)
         select 'Developer', from: 'access_level'
       end
 
-      click_button 'Add to project'
+      click_button 'Invite'
 
       page.within '.content-list' do
         expect(page).to have_content(current_user.name)

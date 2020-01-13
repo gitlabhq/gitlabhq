@@ -167,14 +167,14 @@ describe 'Admin Groups' do
     it 'adds admin a to a group as developer', :js do
       visit group_group_members_path(group)
 
-      page.within '.users-group-form' do
+      page.within '.invite-users-form' do
         select2(current_user.id, from: '#user_ids', multiple: true)
         select 'Developer', from: 'access_level'
       end
 
-      click_button 'Add to group'
+      click_button 'Invite'
 
-      page.within '.content-list' do
+      page.within '[data-qa-selector="members_list"]' do
         expect(page).to have_content(current_user.name)
         expect(page).to have_content('Developer')
       end
@@ -187,7 +187,7 @@ describe 'Admin Groups' do
 
       visit group_group_members_path(group)
 
-      page.within '.content-list' do
+      page.within '[data-qa-selector="members_list"]' do
         expect(page).to have_content(current_user.name)
         expect(page).to have_content('Developer')
       end
@@ -196,7 +196,7 @@ describe 'Admin Groups' do
 
       visit group_group_members_path(group)
 
-      page.within '.content-list' do
+      page.within '[data-qa-selector="members_list"]' do
         expect(page).not_to have_content(current_user.name)
         expect(page).not_to have_content('Developer')
       end

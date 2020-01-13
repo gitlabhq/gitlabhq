@@ -1,4 +1,4 @@
-# Uploads Migrate Rake Task
+# Uploads Migrate Rake Tasks
 
 ## Migrate to Object Storage
 
@@ -110,7 +110,15 @@ sudo -u git -H bundle exec rake "gitlab:uploads:migrate[FileUploader, MergeReque
 
 To migrate all uploads created by legacy uploaders, run:
 
-```shell
+**Omnibus Installation**
+
+```bash
+gitlab-rake gitlab:uploads:legacy:migrate
+```
+
+**Source Installation**
+
+```bash
 bundle exec rake gitlab:uploads:legacy:migrate
 ```
 

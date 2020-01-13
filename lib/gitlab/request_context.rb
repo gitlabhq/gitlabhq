@@ -2,34 +2,37 @@
 
 module Gitlab
   class RequestContext
+    include Singleton
+
+    RequestDeadlineExceeded = Class.new(StandardError)
+
+    attr_accessor :client_ip, :start_thread_cpu_time, :request_start_time
+
     class << self
-      def client_ip
-        Gitlab::SafeRequestStore[:client_ip]
-      end
-
-      def start_thread_cpu_time
-        Gitlab::SafeRequestStore[:start_thread_cpu_time]
+      def instance
+        Gitlab::SafeRequestStore[:request_context] ||= new
       end
     end
 
-    def initialize(app)
-      @app = app
+    def request_deadline
+      return unless request_start_time
+      return unless Feature.enabled?(:request_deadline)
+
+      @request_deadline ||= request_start_time + max_request_duration_seconds
     end
 
-    def call(env)
-      # We should be using ActionDispatch::Request instead of
-      # Rack::Request to be consistent with Rails, but due to a Rails
-      # bug described in
-      # https://gitlab.com/gitlab-org/gitlab-foss/issues/58573#note_149799010
-      # hosts behind a load balancer will only see 127.0.0.1 for the
-      # load balancer's IP.
-      req = Rack::Request.new(env)
+    def ensure_deadline_not_exceeded!
+      return unless request_deadline
+      return if Gitlab::Metrics::System.real_time < request_deadline
 
-      Gitlab::SafeRequestStore[:client_ip] = req.ip
+      raise RequestDeadlineExceeded,
+            "Request takes longer than #{max_request_duration_seconds}"
+    end
 
-      Gitlab::SafeRequestStore[:start_thread_cpu_time] = Gitlab::Metrics::System.thread_cpu_time
+    private
 
-      @app.call(env)
+    def max_request_duration_seconds
+      Settings.gitlab.max_request_duration_seconds
     end
   end
 end

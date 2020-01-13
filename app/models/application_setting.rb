@@ -169,7 +169,11 @@ class ApplicationSetting < ApplicationRecord
 
   validates :gitaly_timeout_default,
             presence: true,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+            numericality: {
+              only_integer: true,
+              greater_than_or_equal_to: 0,
+              less_than_or_equal_to: Settings.gitlab.max_request_duration_seconds
+            }
 
   validates :gitaly_timeout_medium,
             presence: true,

@@ -23,4 +23,8 @@ export default () => ({
    * Same structure as settings, above but Frozen object and used only in case the user clicks 'cancel'
    */
   original: {},
+  /*
+   * Contains the options used to populate the form selects
+   */
+  formOptions: {},
 });

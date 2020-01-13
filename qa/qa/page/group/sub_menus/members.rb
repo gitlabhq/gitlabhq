@@ -7,12 +7,9 @@ module QA
         class Members < Page::Base
           include Page::Component::UsersSelect
 
-          view 'app/views/groups/group_members/_new_group_member.html.haml' do
-            element :add_to_group_button
-          end
-
-          view 'app/helpers/groups/group_members_helper.rb' do
+          view 'app/views/shared/members/_invite_member.html.haml' do
             element :member_select_field
+            element :invite_member_button
           end
 
           view 'app/views/shared/members/_member.html.haml' do
@@ -24,7 +21,7 @@ module QA
 
           def add_member(username)
             select_user :member_select_field, username
-            click_element :add_to_group_button
+            click_element :invite_member_button
           end
 
           def update_access_level(username, access_level)

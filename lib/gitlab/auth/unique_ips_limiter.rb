@@ -8,7 +8,7 @@ module Gitlab
       class << self
         def limit_user_id!(user_id)
           if config.unique_ips_limit_enabled
-            ip = RequestContext.client_ip
+            ip = RequestContext.instance.client_ip
             unique_ips = update_and_return_ips_count(user_id, ip)
 
             raise TooManyIps.new(user_id, ip, unique_ips) if unique_ips > config.unique_ips_limit_per_user

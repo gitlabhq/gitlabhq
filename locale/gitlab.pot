@@ -1068,9 +1068,6 @@ msgstr ""
 msgid "Add new directory"
 msgstr ""
 
-msgid "Add new member to %{strong_start}%{group_name}%{strong_end}"
-msgstr ""
-
 msgid "Add or subtract spent time"
 msgstr ""
 
@@ -1093,9 +1090,6 @@ msgid "Add to merge train"
 msgstr ""
 
 msgid "Add to merge train when pipeline succeeds"
-msgstr ""
-
-msgid "Add to project"
 msgstr ""
 
 msgid "Add to review"
@@ -7458,10 +7452,10 @@ msgstr ""
 msgid "Excluding merge commits. Limited to 6,000 commits."
 msgstr ""
 
-msgid "Existing"
+msgid "Existing members and groups"
 msgstr ""
 
-msgid "Existing members and groups"
+msgid "Existing shares"
 msgstr ""
 
 msgid "Expand"
@@ -9122,6 +9116,9 @@ msgstr ""
 msgid "Group maintainers can register group runners in the %{link}"
 msgstr ""
 
+msgid "Group members"
+msgstr ""
+
 msgid "Group name"
 msgstr ""
 
@@ -9390,6 +9387,9 @@ msgid "Groups (%{count})"
 msgstr ""
 
 msgid "Groups can also be nested by creating %{subgroup_docs_link_start}subgroups%{subgroup_docs_link_end}."
+msgstr ""
+
+msgid "Groups with access to %{strong_start}%{group_name}%{strong_end}"
 msgstr ""
 
 msgid "Groups with access to <strong>%{project_name}</strong>"
@@ -10314,9 +10314,6 @@ msgstr ""
 msgid "Job has wrong arguments format."
 msgstr ""
 
-msgid "Job is in progress"
-msgstr ""
-
 msgid "Job is missing the `model_type` argument."
 msgstr ""
 
@@ -10324,6 +10321,12 @@ msgid "Job is stuck. Check runners."
 msgstr ""
 
 msgid "Job logs and artifacts"
+msgstr ""
+
+msgid "Job to create self-monitoring project is in progress"
+msgstr ""
+
+msgid "Job to delete self-monitoring project is in progress"
 msgstr ""
 
 msgid "Job was retried"
@@ -12637,12 +12640,6 @@ msgid "OperationsDashboard|Operations Dashboard"
 msgstr ""
 
 msgid "OperationsDashboard|The operations dashboard provides a summary of each project's operational health, including pipeline and alert statuses."
-msgstr ""
-
-msgid "Option 1"
-msgstr ""
-
-msgid "Option 2"
 msgstr ""
 
 msgid "Optional"
@@ -15784,9 +15781,6 @@ msgstr ""
 msgid "Save Changes"
 msgstr ""
 
-msgid "Save Expiration Policy"
-msgstr ""
-
 msgid "Save anyway"
 msgstr ""
 
@@ -15800,6 +15794,9 @@ msgid "Save changes before testing"
 msgstr ""
 
 msgid "Save comment"
+msgstr ""
+
+msgid "Save expiration policy"
 msgstr ""
 
 msgid "Save password"
@@ -16371,6 +16368,12 @@ msgid "Self-monitoring is not enabled on this GitLab server, contact your admini
 msgstr ""
 
 msgid "Self-monitoring project does not exist. Please check logs for any error messages"
+msgstr ""
+
+msgid "Self-monitoring project has been successfully deleted"
+msgstr ""
+
+msgid "Self-monitoring project was not deleted. Please check logs for any error messages"
 msgstr ""
 
 msgid "Send a separate email notification to Developers."

@@ -20,4 +20,8 @@ class GroupGroupLink < ApplicationRecord
   def self.default_access
     Gitlab::Access::DEVELOPER
   end
+
+  def human_access
+    Gitlab::Access.human_access(self.group_access)
+  end
 end

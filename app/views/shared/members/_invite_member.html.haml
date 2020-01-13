@@ -1,13 +1,18 @@
+- access_levels = local_assigns[:access_levels]
+- default_access_level = local_assigns[:default_access_level]
+- submit_url = local_assigns[:submit_url]
+- can_import_members = local_assigns[:can_import_members?]
+- import_path = local_assigns[:import_path]
 .row
   .col-sm-12
-    = form_for @project_member, as: :project_member, url: project_project_members_path(@project), html: { class: 'users-project-form' } do |f|
+    = form_tag submit_url, class: 'invite-users-form', method: :post do
       .form-group
         = label_tag :user_ids, _("GitLab member or Email address"), class: "label-bold"
-        = users_select_tag(:user_ids, multiple: true, class: "input-clamp qa-member-select-input", scope: :all, email_user: true, placeholder: "Search for members to update or invite")
+        = users_select_tag(:user_ids, multiple: true, class: 'input-clamp qa-member-select-field', scope: :all, email_user: true, placeholder: 'Search for members to update or invite')
       .form-group
         = label_tag :access_level, _("Choose a role permission"), class: "label-bold"
         .select-wrapper
-          = select_tag :access_level, options_for_select(ProjectMember.access_level_roles, @project_member.access_level), class: "form-control project-access-select select-control"
+          = select_tag :access_level, options_for_select(access_levels, default_access_level), class: "form-control project-access-select select-control"
           = icon('chevron-down')
         .form-text.text-muted.append-bottom-10
           - permissions_docs_path = help_page_path('user/permissions')
@@ -18,6 +23,6 @@
           = label_tag :expires_at, _('Access expiration date'), class: 'label-bold'
           = text_field_tag :expires_at, nil, class: 'form-control js-access-expiration-date', placeholder: 'Expiration date'
           %i.clear-icon.js-clear-input
-      = f.submit _("Add to project"), class: "btn btn-success qa-add-member-button"
-      - if can_import_members?
-        = link_to _("Import"), import_project_project_members_path(@project), class: "btn btn-default", title: _("Import members from another project")
+      = submit_tag _("Invite"), class: "btn btn-success", data: { qa_selector: 'invite_member_button' }
+      - if can_import_members
+        = link_to _("Import"), import_path, class: "btn btn-default", title: _("Import members from another project")

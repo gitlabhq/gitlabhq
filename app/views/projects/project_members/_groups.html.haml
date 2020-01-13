@@ -3,4 +3,6 @@
     = _("Groups with access to <strong>%{project_name}</strong>").html_safe % { project_name: sanitize(@project.name, tags: []) }
     %span.badge.badge-pill= group_links.size
   %ul.content-list.members-list
-    = render partial: 'shared/members/group', collection: group_links, as: :group_link
+    - can_admin_member = can?(current_user, :admin_project_member, @project)
+    - @group_links.each do |group_link|
+      = render 'shared/members/group', group_link: group_link, can_admin_member: can_admin_member, group_link_path: project_group_link_path(@project, group_link)

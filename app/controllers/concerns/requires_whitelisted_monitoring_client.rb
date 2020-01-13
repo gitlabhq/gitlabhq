@@ -18,7 +18,7 @@ module RequiresWhitelistedMonitoringClient
     # debugging purposes
     return true if Rails.env.development? && request.local?
 
-    ip_whitelist.any? { |e| e.include?(Gitlab::RequestContext.client_ip) }
+    ip_whitelist.any? { |e| e.include?(Gitlab::RequestContext.instance.client_ip) }
   end
 
   def ip_whitelist

@@ -1,8 +1,10 @@
 import Vuex from 'vuex';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { mount, createLocalVue } from '@vue/test-utils';
+import stubChildren from 'helpers/stub_children';
 import component from '~/registry/settings/components/settings_form.vue';
 import { createStore } from '~/registry/settings/store/';
 import { NAME_REGEX_LENGTH } from '~/registry/settings/constants';
+import { stringifiedFormOptions } from '../mock_data';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -13,7 +15,6 @@ describe('Settings Form', () => {
   let saveSpy;
   let resetSpy;
 
-  const helpPagePath = 'foo';
   const findFormGroup = name => wrapper.find(`#expiration-policy-${name}-group`);
   const findFormElements = (name, father = wrapper) => father.find(`#expiration-policy-${name}`);
   const findCancelButton = () => wrapper.find({ ref: 'cancel-button' });
@@ -23,7 +24,11 @@ describe('Settings Form', () => {
   const mountComponent = (options = {}) => {
     saveSpy = jest.fn();
     resetSpy = jest.fn();
-    wrapper = shallowMount(component, {
+    wrapper = mount(component, {
+      stubs: {
+        ...stubChildren(component),
+        GlCard: false,
+      },
       store,
       methods: {
         saveSettings: saveSpy,
@@ -35,7 +40,7 @@ describe('Settings Form', () => {
 
   beforeEach(() => {
     store = createStore();
-    store.dispatch('setInitialState', { helpPagePath });
+    store.dispatch('setInitialState', stringifiedFormOptions);
     mountComponent();
   });
 
@@ -48,13 +53,13 @@ describe('Settings Form', () => {
   });
 
   describe.each`
-    elementName        | modelName       | value
-    ${'toggle'}        | ${'enabled'}    | ${true}
-    ${'interval'}      | ${'older_than'} | ${'foo'}
-    ${'schedule'}      | ${'cadence'}    | ${'foo'}
-    ${'latest'}        | ${'keep_n'}     | ${'foo'}
-    ${'name-matching'} | ${'name_regex'} | ${'foo'}
-  `('%s form element', ({ elementName, modelName, value }) => {
+    elementName        | modelName       | value    | disabledByToggle
+    ${'toggle'}        | ${'enabled'}    | ${true}  | ${'not disabled'}
+    ${'interval'}      | ${'older_than'} | ${'foo'} | ${'disabled'}
+    ${'schedule'}      | ${'cadence'}    | ${'foo'} | ${'disabled'}
+    ${'latest'}        | ${'keep_n'}     | ${'foo'} | ${'disabled'}
+    ${'name-matching'} | ${'name_regex'} | ${'foo'} | ${'disabled'}
+  `('$elementName form element', ({ elementName, modelName, value, disabledByToggle }) => {
     let formGroup;
     beforeEach(() => {
       formGroup = findFormGroup(elementName);
@@ -88,6 +93,12 @@ describe('Settings Form', () => {
       return wrapper.vm.$nextTick().then(() => {
         expect(wrapper.vm[modelName]).toBe(value);
       });
+    });
+
+    it(`${elementName} is ${disabledByToggle} by enabled set to false`, () => {
+      store.dispatch('updateSettings', { enabled: false });
+      const expectation = disabledByToggle === 'disabled' ? 'true' : undefined;
+      expect(findFormElements(elementName, formGroup).attributes('disabled')).toBe(expectation);
     });
   });
 

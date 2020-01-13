@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MetricsController do
+describe MetricsController, :request_store do
   include StubENV
 
   let(:metrics_multiproc_dir) { @metrics_multiproc_dir }
@@ -53,7 +53,7 @@ describe MetricsController do
 
     context 'accessed from whitelisted ip' do
       before do
-        allow(Gitlab::RequestContext).to receive(:client_ip).and_return(whitelisted_ip)
+        allow(Gitlab::RequestContext.instance).to receive(:client_ip).and_return(whitelisted_ip)
       end
 
       it_behaves_like 'endpoint providing metrics'
@@ -61,7 +61,7 @@ describe MetricsController do
 
     context 'accessed from ip in whitelisted range' do
       before do
-        allow(Gitlab::RequestContext).to receive(:client_ip).and_return(ip_in_whitelisted_range)
+        allow(Gitlab::RequestContext.instance).to receive(:client_ip).and_return(ip_in_whitelisted_range)
       end
 
       it_behaves_like 'endpoint providing metrics'
@@ -69,7 +69,7 @@ describe MetricsController do
 
     context 'accessed from not whitelisted ip' do
       before do
-        allow(Gitlab::RequestContext).to receive(:client_ip).and_return(not_whitelisted_ip)
+        allow(Gitlab::RequestContext.instance).to receive(:client_ip).and_return(not_whitelisted_ip)
       end
 
       it 'returns the expected error response' do

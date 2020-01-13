@@ -344,6 +344,12 @@ module ApplicationSettingsHelper
       'status_create_self_monitoring_project_path' =>
         status_create_self_monitoring_project_admin_application_settings_path,
 
+      'delete_self_monitoring_project_path' =>
+        delete_self_monitoring_project_admin_application_settings_path,
+
+      'status_delete_self_monitoring_project_path' =>
+        status_delete_self_monitoring_project_admin_application_settings_path,
+
       'self_monitoring_project_exists' =>
         Gitlab::CurrentSettings.instance_administration_project.present?,
 

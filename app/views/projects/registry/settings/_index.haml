@@ -1,1 +1,4 @@
-#js-registry-settings{ data: { project_id: @project.id, } }
+#js-registry-settings{ data: { project_id: @project.id,
+    cadence_options: cadence_options.to_json,
+    keep_n_options: keep_n_options.to_json,
+    older_than_options: older_than_options.to_json} }

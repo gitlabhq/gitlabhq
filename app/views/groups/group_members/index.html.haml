@@ -1,17 +1,28 @@
-- page_title _("Members")
+- page_title _("Group members")
 - can_manage_members = can?(current_user, :admin_group_member, @group)
 - show_invited_members = can_manage_members && @invited_members.exists?
 - pending_active = params[:search_invited].present?
+- total_count = @members.count + @group.shared_with_group_links.count
 
 .project-members-page.prepend-top-default
   %h4
-    = _("Members")
+    = _("Group members")
   %hr
   - if can_manage_members
-    .project-members-new.append-bottom-default
-      %p.clearfix
-        = _("Add new member to %{strong_start}%{group_name}%{strong_end}").html_safe % { group_name: @group.name, strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }
-      = render "new_group_member"
+    - if Feature.enabled?(:share_group_with_group)
+      %ul.nav-links.nav.nav-tabs.gitlab-tabs{ role: 'tablist' }
+        %li.nav-tab{ role: 'presentation' }
+          %a.nav-link.active{ href: '#invite-member-pane', id: 'invite-member-tab', data: { toggle: 'tab' }, role: 'tab' }= _("Invite member")
+          %li.nav-tab{ role: 'presentation' }
+            %a.nav-link{ href: '#invite-group-pane', id: 'invite-group-tab', data: { toggle: 'tab', qa_selector: 'invite_group_tab' }, role: 'tab' }= _("Invite group")
+      .tab-content.gitlab-tab-content
+        .tab-pane.active{ id: 'invite-member-pane', role: 'tabpanel' }
+          = render_invite_member_for_group(@group, @group_member.access_level)
+        - if Feature.enabled?(:share_group_with_group)
+          .tab-pane{ id: 'invite-group-pane', role: 'tabpanel' }
+            = render 'shared/members/invite_group', submit_url: group_group_links_path(@group), access_levels: GroupMember.access_level_roles, default_access_level: @group_member.access_level, group_link_field: 'shared_with_group_id', group_access_field: 'shared_group_access'
+    - else
+      = render_invite_member_for_group(@group, @group_member.access_level)
 
     = render 'shared/members/requests', membership_source: @group, requesters: @requesters
 
@@ -19,10 +30,10 @@
 
   %ul.nav-links.mobile-separator.nav.nav-tabs.clearfix
     %li.nav-item
-      = link_to "#existing_members", class: ["nav-link", ("active" unless pending_active)] , 'data-toggle' => 'tab' do
+      = link_to "#existing_shares", class: ["nav-link", ("active" unless pending_active)] , 'data-toggle' => 'tab' do
         %span
-          = _("Existing")
-        %span.badge.badge-pill= @members.total_count
+          = _("Existing shares")
+        %span.badge.badge-pill= total_count
     - if show_invited_members
       %li.nav-item
         = link_to "#invited_members", class: ["nav-link", ("active" if pending_active)], 'data-toggle' => 'tab' do
@@ -31,7 +42,16 @@
           %span.badge.badge-pill= @invited_members.total_count
 
   .tab-content
-    #existing_members.tab-pane{ :class => ("active" unless pending_active) }
+    #existing_shares.tab-pane{ :class => ("active" unless pending_active) }
+      - if @group.shared_with_group_links.any?
+        .card.card-without-border
+          .d-flex.flex-column.flex-md-row.row-content-block.second-block
+            %span.flex-grow-1.align-self-md-center.col-form-label
+              = _("Groups with access to %{strong_start}%{group_name}%{strong_end}").html_safe % { group_name: @group.name, strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }
+          %ul.content-list.members-list{ data: { qa_selector: "groups_list" } }
+            - can_admin_member = can?(current_user, :admin_group_member, @group)
+            - @group.shared_with_group_links.each do |group_link|
+              = render 'shared/members/group', group_link: group_link, can_admin_member: can_admin_member, group_link_path: group_group_link_path(@group, group_link)
       .card.card-without-border
         .d-flex.flex-column.flex-md-row.row-content-block.second-block
           %span.flex-grow-1.align-self-md-center.col-form-label
@@ -46,7 +66,7 @@
                 = label_tag '2fa', '2FA', class: 'col-form-label label-bold pr-md-2'
                 = render 'shared/members/filter_2fa_dropdown'
               = render 'shared/members/sort_dropdown'
-        %ul.content-list.members-list
+        %ul.content-list.members-list{ data: { qa_selector: "members_list" } }
           = render partial: 'shared/members/member', collection: @members, as: :member
       = paginate @members, theme: 'gitlab'
 

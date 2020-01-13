@@ -319,6 +319,11 @@ describe ApplicationSetting do
     end
 
     context 'gitaly timeouts' do
+      it "validates that the default_timeout is lower than the max_request_duration" do
+        is_expected.to validate_numericality_of(:gitaly_timeout_default)
+          .is_less_than_or_equal_to(Settings.gitlab.max_request_duration_seconds)
+      end
+
       [:gitaly_timeout_default, :gitaly_timeout_medium, :gitaly_timeout_fast].each do |timeout_name|
         it do
           is_expected.to validate_presence_of(timeout_name)

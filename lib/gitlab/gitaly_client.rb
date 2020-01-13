@@ -160,6 +160,7 @@ module Gitlab
 
     def self.execute(storage, service, rpc, request, remote_storage:, timeout:)
       enforce_gitaly_request_limits(:call)
+      Gitlab::RequestContext.instance.ensure_deadline_not_exceeded!
 
       kwargs = request_kwargs(storage, timeout: timeout.to_f, remote_storage: remote_storage)
       kwargs = yield(kwargs) if block_given?
@@ -234,11 +235,27 @@ module Gitlab
       metadata['gitaly-session-id'] = session_id
       metadata.merge!(Feature::Gitaly.server_feature_flags)
 
-      result = { metadata: metadata }
+      deadline_info = request_deadline(timeout)
+      metadata.merge!(deadline_info.slice(:deadline_type))
 
-      result[:deadline] = real_time + timeout if timeout > 0
-      result
+      { metadata: metadata, deadline: deadline_info[:deadline] }
     end
+
+    def self.request_deadline(timeout)
+      # timeout being 0 means the request is allowed to run indefinitely.
+      # We can't allow that inside a request, but this won't count towards Gitaly
+      # error budgets
+      regular_deadline = real_time.to_i + timeout if timeout > 0
+
+      return { deadline: regular_deadline } if Sidekiq.server?
+      return { deadline: regular_deadline } unless Gitlab::RequestContext.instance.request_deadline
+
+      limited_deadline = [regular_deadline, Gitlab::RequestContext.instance.request_deadline].compact.min
+      limited = limited_deadline < regular_deadline
+
+      { deadline: limited_deadline, deadline_type: limited ? "limited" : "regular" }
+    end
+    private_class_method :request_deadline
 
     def self.session_id
       Gitlab::SafeRequestStore[:gitaly_session_id] ||= SecureRandom.uuid

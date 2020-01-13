@@ -24,7 +24,7 @@ describe 'Search group member' do
       find('.user-search-btn').click
     end
 
-    group_members_list = find(".card .content-list")
+    group_members_list = find('[data-qa-selector="members_list"]')
     expect(group_members_list).to have_content(member.name)
     expect(group_members_list).not_to have_content(user.name)
   end

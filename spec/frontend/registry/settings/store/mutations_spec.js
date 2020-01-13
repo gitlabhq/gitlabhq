@@ -1,6 +1,7 @@
 import mutations from '~/registry/settings/store/mutations';
 import * as types from '~/registry/settings/store/mutation_types';
 import createState from '~/registry/settings/store/state';
+import { formOptions, stringifiedFormOptions } from '../mock_data';
 
 describe('Mutations Registry Store', () => {
   let mockState;
@@ -11,11 +12,14 @@ describe('Mutations Registry Store', () => {
 
   describe('SET_INITIAL_STATE', () => {
     it('should set the initial state', () => {
-      const payload = { helpPagePath: 'foo', projectId: 'bar' };
-      const expectedState = { ...mockState, ...payload };
-      mutations[types.SET_INITIAL_STATE](mockState, payload);
+      const expectedState = { ...mockState, projectId: 'foo', formOptions };
+      mutations[types.SET_INITIAL_STATE](mockState, {
+        projectId: 'foo',
+        ...stringifiedFormOptions,
+      });
 
       expect(mockState.projectId).toEqual(expectedState.projectId);
+      expect(mockState.formOptions).toEqual(expectedState.formOptions);
     });
   });
 

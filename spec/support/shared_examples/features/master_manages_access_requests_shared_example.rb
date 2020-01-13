@@ -25,7 +25,7 @@ RSpec.shared_examples 'Maintainer manages access requests' do
 
     expect_no_visible_access_request(entity, user)
 
-    page.within('.members-list') do
+    page.within('[data-qa-selector="members_list"]') do
       expect(page).to have_content user.name
     end
   end

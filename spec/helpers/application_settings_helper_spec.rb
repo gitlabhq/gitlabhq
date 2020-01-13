@@ -76,6 +76,20 @@ describe ApplicationSettingsHelper do
         )
       end
 
+      it 'returns delete_self_monitoring_project_path' do
+        expect(helper.self_monitoring_project_data).to include(
+          'delete_self_monitoring_project_path' =>
+            delete_self_monitoring_project_admin_application_settings_path
+        )
+      end
+
+      it 'returns status_delete_self_monitoring_project_path' do
+        expect(helper.self_monitoring_project_data).to include(
+          'status_delete_self_monitoring_project_path' =>
+            status_delete_self_monitoring_project_admin_application_settings_path
+        )
+      end
+
       it 'returns self_monitoring_project_exists false' do
         expect(helper.self_monitoring_project_data).to include(
           'self_monitoring_project_exists' => false

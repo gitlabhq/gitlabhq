@@ -134,8 +134,8 @@ Please follow the [Upgrade Recommendations](../policy/maintenance.md#upgrade-rec
 to identify the ideal upgrade path.
 
 Before upgrading to a new major version, you should ensure that any background
-migration jobs from previous releases have been completed. The number of remaining
-migrations jobs can be found by running the following command:
+migration jobs from previous releases have been completed. To see the current size
+of the `background_migration` queue, [check for background migrations before upgrading](#checking-for-background-migrations-before-upgrading).
 
 ## Upgrading between editions
 

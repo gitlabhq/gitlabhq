@@ -209,6 +209,7 @@ Settings.gitlab['content_security_policy'] ||= Gitlab::ContentSecurityPolicy::Co
 Settings.gitlab['no_todos_messages'] ||= YAML.load_file(Rails.root.join('config', 'no_todos_messages.yml'))
 Settings.gitlab['impersonation_enabled'] ||= true if Settings.gitlab['impersonation_enabled'].nil?
 Settings.gitlab['usage_ping_enabled'] = true if Settings.gitlab['usage_ping_enabled'].nil?
+Settings.gitlab['max_request_duration_seconds'] ||= 57
 
 Gitlab.ee do
   Settings.gitlab['mirror_max_delay'] ||= 300

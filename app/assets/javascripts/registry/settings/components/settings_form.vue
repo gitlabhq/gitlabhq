@@ -1,6 +1,6 @@
 <script>
-import { mapActions } from 'vuex';
-import { GlFormGroup, GlToggle, GlFormSelect, GlFormTextarea, GlButton } from '@gitlab/ui';
+import { mapActions, mapState } from 'vuex';
+import { GlFormGroup, GlToggle, GlFormSelect, GlFormTextarea, GlButton, GlCard } from '@gitlab/ui';
 import { s__, __, sprintf } from '~/locale';
 import { NAME_REGEX_LENGTH } from '../constants';
 import { mapComputed } from '~/vuex_shared/bindings';
@@ -12,19 +12,25 @@ export default {
     GlFormSelect,
     GlFormTextarea,
     GlButton,
+    GlCard,
   },
   labelsConfig: {
     cols: 3,
     align: 'right',
   },
   computed: {
-    ...mapComputed('settings', 'updateSettings', [
-      'enabled',
-      'cadence',
-      'older_than',
-      'keep_n',
-      'name_regex',
-    ]),
+    ...mapState(['formOptions']),
+    ...mapComputed(
+      [
+        'enabled',
+        { key: 'cadence', getter: 'getCadence' },
+        { key: 'older_than', getter: 'getOlderThan' },
+        { key: 'keep_n', getter: 'getKeepN' },
+        'name_regex',
+      ],
+      'updateSettings',
+      'settings',
+    ),
     policyEnabledText() {
       return this.enabled ? __('enabled') : __('disabled');
     },
@@ -66,12 +72,12 @@ export default {
 </script>
 
 <template>
-  <div class="card">
-    <form ref="form-element" @submit.prevent="saveSettings" @reset.prevent="resetSettings">
-      <div class="card-header">
+  <form ref="form-element" @submit.prevent="saveSettings" @reset.prevent="resetSettings">
+    <gl-card>
+      <template #header>
         {{ s__('ContainerRegistry|Tag expiration policy') }}
-      </div>
-      <div class="card-body">
+      </template>
+      <template>
         <gl-form-group
           id="expiration-policy-toggle-group"
           :label-cols="$options.labelsConfig.cols"
@@ -92,9 +98,10 @@ export default {
           label-for="expiration-policy-interval"
           :label="s__('ContainerRegistry|Expiration interval:')"
         >
-          <gl-form-select id="expiration-policy-interval" v-model="older_than">
-            <option value="1">{{ __('Option 1') }}</option>
-            <option value="2">{{ __('Option 2') }}</option>
+          <gl-form-select id="expiration-policy-interval" v-model="older_than" :disabled="!enabled">
+            <option v-for="option in formOptions.olderThan" :key="option.key" :value="option.key">
+              {{ option.label }}
+            </option>
           </gl-form-select>
         </gl-form-group>
 
@@ -105,9 +112,10 @@ export default {
           label-for="expiration-policy-schedule"
           :label="s__('ContainerRegistry|Expiration schedule:')"
         >
-          <gl-form-select id="expiration-policy-schedule" v-model="cadence">
-            <option value="1">{{ __('Option 1') }}</option>
-            <option value="2">{{ __('Option 2') }}</option>
+          <gl-form-select id="expiration-policy-schedule" v-model="cadence" :disabled="!enabled">
+            <option v-for="option in formOptions.cadence" :key="option.key" :value="option.key">
+              {{ option.label }}
+            </option>
           </gl-form-select>
         </gl-form-group>
 
@@ -118,9 +126,10 @@ export default {
           label-for="expiration-policy-latest"
           :label="s__('ContainerRegistry|Expiration latest:')"
         >
-          <gl-form-select id="expiration-policy-latest" v-model="keep_n">
-            <option value="1">{{ __('Option 1') }}</option>
-            <option value="2">{{ __('Option 2') }}</option>
+          <gl-form-select id="expiration-policy-latest" v-model="keep_n" :disabled="!enabled">
+            <option v-for="option in formOptions.keepN" :key="option.key" :value="option.key">
+              {{ option.label }}
+            </option>
           </gl-form-select>
         </gl-form-group>
 
@@ -140,19 +149,30 @@ export default {
             v-model="name_regex"
             :placeholder="nameRegexPlaceholder"
             :state="nameRegexState"
+            :disabled="!enabled"
             trim
           />
           <template #description>
             <span ref="regex-description" v-html="regexHelpText"></span>
           </template>
         </gl-form-group>
-      </div>
-      <div class="card-footer text-right">
-        <gl-button ref="cancel-button" type="reset">{{ __('Cancel') }}</gl-button>
-        <gl-button ref="save-button" type="submit" :disabled="formIsValid" variant="success">
-          {{ __('Save Expiration Policy') }}
-        </gl-button>
-      </div>
-    </form>
-  </div>
+      </template>
+      <template #footer>
+        <div class="d-flex justify-content-end">
+          <gl-button ref="cancel-button" type="reset" class="mr-2 d-block">{{
+            __('Cancel')
+          }}</gl-button>
+          <gl-button
+            ref="save-button"
+            type="submit"
+            :disabled="formIsValid"
+            variant="success"
+            class="d-block"
+          >
+            {{ __('Save expiration policy') }}
+          </gl-button>
+        </div>
+      </template>
+    </gl-card>
+  </form>
 </template>

@@ -111,4 +111,100 @@ describe Groups::GroupLinksController do
       end
     end
   end
+
+  describe '#update' do
+    let!(:link) do
+      create(:group_group_link, { shared_group: shared_group,
+                                  shared_with_group: shared_with_group })
+    end
+
+    let(:expiry_date) { 1.month.from_now.to_date }
+
+    subject do
+      post(:update, params: { group_id: shared_group,
+                               id: link.id,
+                               group_link: { group_access: Gitlab::Access::GUEST,
+                                             expires_at: expiry_date } })
+    end
+
+    context 'when user has admin access to the shared group' do
+      before do
+        shared_group.add_owner(user)
+      end
+
+      it 'updates existing link' do
+        expect(link.group_access).to eq(Gitlab::Access::DEVELOPER)
+        expect(link.expires_at).to be_nil
+
+        subject
+
+        link.reload
+
+        expect(link.group_access).to eq(Gitlab::Access::GUEST)
+        expect(link.expires_at).to eq(expiry_date)
+      end
+    end
+
+    context 'when user does not have admin access to the shared group' do
+      it 'renders 404' do
+        subject
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(share_group_with_group: false)
+      end
+
+      it 'renders 404' do
+        subject
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+  end
+
+  describe '#destroy' do
+    let!(:link) do
+      create(:group_group_link, { shared_group: shared_group,
+                                  shared_with_group: shared_with_group })
+    end
+
+    subject do
+      post(:destroy, params: { group_id: shared_group,
+                               id: link.id })
+    end
+
+    context 'when user has admin access to the shared group' do
+      before do
+        shared_group.add_owner(user)
+      end
+
+      it 'deletes existing link' do
+        expect { subject }.to change(GroupGroupLink, :count).by(-1)
+      end
+    end
+
+    context 'when user does not have admin access to the shared group' do
+      it 'renders 404' do
+        subject
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(share_group_with_group: false)
+      end
+
+      it 'renders 404' do
+        subject
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+  end
 end

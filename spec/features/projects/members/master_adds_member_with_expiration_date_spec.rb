@@ -20,10 +20,10 @@ describe 'Projects > Members > Maintainer adds member with expiration date', :js
       date = 4.days.from_now
       visit project_project_members_path(project)
 
-      page.within '.users-project-form' do
+      page.within '.invite-users-form' do
         select2(new_member.id, from: '#user_ids', multiple: true)
         fill_in 'expires_at', with: date.to_s(:medium) + "\n"
-        click_on 'Add to project'
+        click_on 'Invite'
       end
 
       page.within "#project_member_#{new_member.project_members.first.id}" do
