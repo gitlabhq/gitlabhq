@@ -2,9 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.6.4
+
+### Security (1 change)
+
+- Fix private objects exposure when using Project Import functionality.
+
+
 ## 12.6.3
 
-- No changes.
 ### Security (1 change)
 
 - Upgrade json-jwt to v1.11.0. !22440
