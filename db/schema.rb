@@ -365,9 +365,11 @@ ActiveRecord::Schema.define(version: 2020_01_08_233040) do
     t.text "encrypted_slack_app_verification_token"
     t.string "encrypted_slack_app_verification_token_iv", limit: 255
     t.boolean "updating_name_disabled_for_users", default: false, null: false
+    t.integer "instance_administrators_group_id"
     t.index ["custom_project_templates_group_id"], name: "index_application_settings_on_custom_project_templates_group_id"
     t.index ["file_template_project_id"], name: "index_application_settings_on_file_template_project_id"
     t.index ["instance_administration_project_id"], name: "index_applicationsettings_on_instance_administration_project_id"
+    t.index ["instance_administrators_group_id"], name: "index_application_settings_on_instance_administrators_group_id"
     t.index ["usage_stats_set_by_user_id"], name: "index_application_settings_on_usage_stats_set_by_user_id"
   end
 
@@ -4414,6 +4416,7 @@ ActiveRecord::Schema.define(version: 2020_01_08_233040) do
   add_foreign_key "analytics_repository_file_edits", "projects", on_delete: :cascade
   add_foreign_key "analytics_repository_files", "projects", on_delete: :cascade
   add_foreign_key "application_settings", "namespaces", column: "custom_project_templates_group_id", on_delete: :nullify
+  add_foreign_key "application_settings", "namespaces", column: "instance_administrators_group_id", name: "fk_e8a145f3a7", on_delete: :nullify
   add_foreign_key "application_settings", "projects", column: "file_template_project_id", name: "fk_ec757bd087", on_delete: :nullify
   add_foreign_key "application_settings", "projects", column: "instance_administration_project_id", on_delete: :nullify
   add_foreign_key "application_settings", "users", column: "usage_stats_set_by_user_id", name: "fk_964370041d", on_delete: :nullify

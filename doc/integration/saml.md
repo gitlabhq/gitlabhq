@@ -155,7 +155,7 @@ Identity Provider.
 ### Requirements
 
 First you need to tell GitLab where to look for group information. For this you
-need to make sure that your IdP server sends a specific `AttributeStament` along
+need to make sure that your IdP server sends a specific `AttributeStatement` along
 with the regular SAML response. Here is an example:
 
 ```xml

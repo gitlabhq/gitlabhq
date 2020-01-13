@@ -166,6 +166,38 @@ describe MergeRequestsFinder do
 
           expect(scalar_params).to include(:wip, :assignee_id)
         end
+
+        context 'filter by deployment' do
+          let_it_be(:project_with_repo) { create(:project, :repository) }
+
+          it 'returns the relevant merge requests' do
+            deployment1 = create(
+              :deployment,
+              project: project_with_repo,
+              sha: project_with_repo.commit.id,
+              merge_requests: [merge_request1, merge_request2]
+            )
+            create(
+              :deployment,
+              project: project_with_repo,
+              sha: project_with_repo.commit.id,
+              merge_requests: [merge_request3]
+            )
+            params = { deployment_id: deployment1.id }
+            merge_requests = described_class.new(user, params).execute
+
+            expect(merge_requests).to contain_exactly(merge_request1, merge_request2)
+          end
+
+          context 'when a deployment does not contain any merge requests' do
+            it 'returns an empty result' do
+              params = { deployment_id: create(:deployment, project: project_with_repo, sha: project_with_repo.commit.sha).id }
+              merge_requests = described_class.new(user, params).execute
+
+              expect(merge_requests).to be_empty
+            end
+          end
+        end
       end
 
       context 'assignee filtering' do

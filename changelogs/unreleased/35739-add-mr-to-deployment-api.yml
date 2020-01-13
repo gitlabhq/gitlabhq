@@ -1,0 +1,5 @@
+---
+title: Add API support for retrieving merge requests deployed in a deployment
+merge_request: 21837
+author:
+type: added

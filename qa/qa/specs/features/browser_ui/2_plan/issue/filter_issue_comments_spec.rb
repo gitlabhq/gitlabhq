@@ -8,11 +8,9 @@ module QA
       before do
         Flow::Login.sign_in
 
-        issue = Resource::Issue.fabricate_via_api! do |issue|
+        Resource::Issue.fabricate_via_api! do |issue|
           issue.title = issue_title
-        end
-
-        issue.visit!
+        end.visit!
       end
 
       it 'user filters comments and activities in an issue' do

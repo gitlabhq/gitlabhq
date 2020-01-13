@@ -127,6 +127,88 @@ importer progresses. Here's what to do:
    logger.info(message: "Import error", error_code: 1, error: "I/O failure")
    ```
 
+## Multi-destination Logging
+
+GitLab is transitioning from unstructured/plaintext logs to structured/JSON logs.  During this transition period some logs will be recorded in multiple formats through multi-destination logging.
+
+### How to use multi-destination logging
+
+Create a new logger class, inheriting from `MultiDestinationLogger` and add an array of loggers to a `LOGGERS` constant. The loggers should be classes that descend from `Gitlab::Logger`. e.g. the user defined loggers in the following examples, could be inheriting from `Gitlab::Logger` and `Gitlab::JsonLogger`, respectively.
+
+You must specify one of the loggers as the `primary_logger`. The `primary_logger` will be used when information about this multi-destination logger is displayed in the app, e.g. using the `Gitlab::Logger.read_latest` method.
+
+The following example sets one of the defined `LOGGERS` as a `primary_logger`.
+
+```ruby
+module Gitlab
+  class FancyMultiLogger < Gitlab::MultiDestinationLogger
+    LOGGERS = [UnstructuredLogger, StructuredLogger].freeze
+
+    def self.loggers
+      LOGGERS
+    end
+
+    def primary_logger
+      UnstructuredLogger
+    end
+  end
+end
+```
+
+You can now call the usual logging methods on this multi-logger, e.g.
+
+```ruby
+FancyMultiLogger.info(message: "Information")
+```
+
+This message will be logged by each logger registered in `FancyMultiLogger.loggers`.
+
+### Passing a string or hash for logging
+
+When passing a string or hash to a `MultiDestinationLogger`, the log lines could be formatted differently, depending on the kinds of `LOGGERS` set.
+
+e.g. let's partially define the loggers from the previous example:
+
+```ruby
+module Gitlab
+  # Similar to AppTextLogger
+  class UnstructuredLogger < Gitlab::Logger
+    ...
+  end
+
+  # Similar to AppJsonLogger
+  class StructuredLogger < Gitlab::JsonLogger
+    ...
+  end
+end
+```
+
+Here are some examples of how messages would be handled by both the loggers.
+
+1. When passing a string
+
+```ruby
+FancyMultiLogger.info("Information")
+
+# UnstructuredLogger
+I, [2020-01-13T12:02:41.566219 #6652]  INFO -- : Information
+
+# StructuredLogger
+{:severity=>"INFO", :time=>"2020-01-13T11:02:41.559Z", :correlation_id=>"b1701f7ecc4be4bcd4c2d123b214e65a", :message=>"Information"}
+```
+
+1. When passing a hash
+
+```ruby
+FancyMultiLogger.info({:message=>"This is my message", :project_id=>123})
+
+# UnstructuredLogger
+I, [2020-01-13T12:06:09.856766 #8049]  INFO -- : {:message=>"This is my message", :project_id=>123}
+
+# StructuredLogger
+{:severity=>"INFO", :time=>"2020-01-13T11:06:09.851Z", :correlation_id=>"d7e0886f096db9a8526a4f89da0e45f6", :message=>"This is my message", :project_id=>123}
+```
+
 ## Exception Handling
 
 It often happens that you catch the exception and want to track it.

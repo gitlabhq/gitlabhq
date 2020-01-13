@@ -1,13 +1,15 @@
 # frozen_string_literal: true
 
 module Gitlab
-  class AppLogger < Gitlab::Logger
-    def self.file_name_noext
-      'application'
+  class AppLogger < Gitlab::MultiDestinationLogger
+    LOGGERS = [Gitlab::AppTextLogger, Gitlab::AppJsonLogger].freeze
+
+    def self.loggers
+      LOGGERS
     end
 
-    def format_message(severity, timestamp, progname, msg)
-      "#{timestamp.to_s(:long)}: #{msg}\n"
+    def self.primary_logger
+      Gitlab::AppTextLogger
     end
   end
 end

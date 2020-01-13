@@ -127,6 +127,26 @@ module API
           render_validation_error!(deployment)
         end
       end
+
+      helpers Helpers::MergeRequestsHelpers
+
+      desc 'Get all merge requests of a deployment' do
+        detail 'This feature was introduced in GitLab 12.7.'
+        success Entities::MergeRequestBasic
+      end
+      params do
+        requires :deployment_id, type: Integer, desc: 'The deployment ID'
+        use :merge_requests_base_params
+      end
+
+      get ':id/deployments/:deployment_id/merge_requests' do
+        authorize! :read_deployment, user_project
+
+        mr_params = declared_params.merge(deployment_id: params[:deployment_id])
+        merge_requests = MergeRequestsFinder.new(current_user, mr_params).execute
+
+        present merge_requests, { with: Entities::MergeRequestBasic, current_user: current_user }
+      end
     end
   end
 end

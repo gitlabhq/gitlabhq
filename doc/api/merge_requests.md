@@ -550,7 +550,7 @@ Parameters:
   },
   "user" : {
     "can_merge" : false
-   }
+  },
   "assignee": {
     "id": 1,
     "name": "Administrator",

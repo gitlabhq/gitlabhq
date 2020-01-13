@@ -343,6 +343,48 @@ describe API::Deployments do
     end
   end
 
+  describe 'GET /projects/:id/deployments/:deployment_id/merge_requests' do
+    let(:project) { create(:project, :repository) }
+    let!(:deployment) { create(:deployment, :success, project: project) }
+
+    subject { get api("/projects/#{project.id}/deployments/#{deployment.id}/merge_requests", user) }
+
+    context 'when a user is not a member of the deployment project' do
+      let(:user) { build(:user) }
+
+      it 'returns a 404 status code' do
+        subject
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    context 'when a user member of the deployment project' do
+      let_it_be(:project2) { create(:project) }
+      let!(:merge_request1) { create(:merge_request, source_project: project, target_project: project) }
+      let!(:merge_request2) { create(:merge_request, source_project: project, target_project: project, state: 'closed') }
+      let!(:merge_request3) { create(:merge_request, source_project: project2, target_project: project2) }
+
+      it 'returns the relevant merge requests linked to a deployment for a project' do
+        deployment.merge_requests << [merge_request1, merge_request2]
+
+        subject
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response.map { |d| d['id'] }).to contain_exactly(merge_request1.id, merge_request2.id)
+      end
+
+      context 'when a deployment is not associated to any existing merge requests' do
+        it 'returns an empty array' do
+          subject
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response).to eq([])
+        end
+      end
+    end
+  end
+
   context 'prevent N + 1 queries' do
     context 'when the endpoint returns multiple records' do
       let(:project) { create(:project, :repository) }

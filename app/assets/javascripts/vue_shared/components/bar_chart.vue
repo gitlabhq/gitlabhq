@@ -124,9 +124,7 @@ export default {
     },
   },
   mounted() {
-    if (!this.allValuesEmpty) {
-      this.draw();
-    }
+    this.draw();
   },
   methods: {
     draw() {
@@ -153,7 +151,14 @@ export default {
       this.yScale = d3.scaleLinear().rangeRound([this.vbHeight, 0]);
 
       this.xScale.domain(this.graphData.map(d => d.name));
-      this.yScale.domain([0, d3.max(this.graphData.map(d => d.value))]);
+      /*
+      If we have all-zero graph we want graph to center 0 on axis and not to draw
+      any kind of ticks on Y axis. Infinity allows us to do that.
+
+      See https://gitlab.com/gitlab-org/gitlab/merge_requests/20627#note_251484582
+      for detailed explanation
+      */
+      this.yScale.domain([0, d3.max(this.graphData.map(d => d.value)) || Infinity]);
 
       // Zoom/Panning Function
       this.zoom = d3

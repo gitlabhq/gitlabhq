@@ -1,0 +1,5 @@
+---
+title: Save Instance Administrators group ID in DB
+merge_request: 22600
+author:
+type: changed

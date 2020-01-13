@@ -34,8 +34,8 @@ a pipeline in the [`gitlab-qa`](https://gitlab.com/gitlab-org/gitlab-qa/) projec
 by triggering the `package-and-qa` manual action in the `test` stage (not
 available for forks).
 
-**This runs end-to-end tests against a custom Omnibus package built from your
-merge request's changes.**
+**This runs end-to-end tests against a custom CE and EE (with an Ultimate license)
+Omnibus package built from your merge request's changes.**
 
 Manual action that starts end-to-end tests is also available in merge requests
 in [Omnibus GitLab][omnibus-gitlab].

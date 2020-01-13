@@ -28,11 +28,9 @@ module QA
         end
 
         before do
-          issue = Resource::Issue.fabricate_via_api! do |issue|
+          Resource::Issue.fabricate_via_api! do |issue|
             issue.title = issue_title
-          end
-
-          issue.visit!
+          end.visit!
         end
 
         it 'user comments on an issue with an attachment' do

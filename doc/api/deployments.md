@@ -349,3 +349,19 @@ Example of a response:
   "deployable": null
 }
 ```
+
+## List of merge requests associated with a deployment
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/35739) in GitLab 12.7.
+
+This API retrieves the list of merge requests shipped with a given deployment:
+
+```
+GET /projects/:id/deployments/:deployment_id/merge_requests
+```
+
+It supports the same parameters as the [Merge Requests API](./merge_requests.md#list-merge-requests) and will return a response using the same format:
+
+```bash
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/deployments/42"
+```

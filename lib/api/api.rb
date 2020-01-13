@@ -117,6 +117,7 @@ module API
     mount ::API::DeployKeys
     mount ::API::Deployments
     mount ::API::Environments
+    mount ::API::ErrorTracking
     mount ::API::Events
     mount ::API::Features
     mount ::API::Files
