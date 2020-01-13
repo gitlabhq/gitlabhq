@@ -264,7 +264,7 @@ This feature:
   For example:
 
   ```sh
-  kubectl -n gitlab-managed-apps exec -it $(kubectl get pods -n gitlab-managed-apps | grep 'ingress-controller' | awk '{print $1}') -- tail -f /var/log/modsec/audit.log
+  kubectl logs -n gitlab-managed-apps $(kubectl get pod -n gitlab-managed-apps -l app=nginx-ingress,component=controller --no-headers=true -o custom-columns=:metadata.name) modsecurity-log -f
   ```
 
 To enable ModSecurity, check the **Enable Web Application Firewall** checkbox

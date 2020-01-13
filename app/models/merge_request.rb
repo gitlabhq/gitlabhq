@@ -258,7 +258,7 @@ class MergeRequest < ApplicationRecord
   alias_method :issuing_parent, :target_project
 
   delegate :active?, to: :head_pipeline, prefix: true, allow_nil: true
-  delegate :success?, to: :actual_head_pipeline, prefix: true, allow_nil: true
+  delegate :success?, :active?, to: :actual_head_pipeline, prefix: true, allow_nil: true
 
   RebaseLockTimeout = Class.new(StandardError)
 

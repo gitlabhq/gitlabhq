@@ -68,8 +68,17 @@ module API
         end
       end
 
-      def not_automatically_mergeable?(merge_when_pipeline_succeeds, merge_request)
-        merge_when_pipeline_succeeds && !merge_request.head_pipeline_active? && !merge_request.actual_head_pipeline_success?
+      def automatically_mergeable?(merge_when_pipeline_succeeds, merge_request)
+        pipeline_active = merge_request.head_pipeline_active? || merge_request.actual_head_pipeline_active?
+        merge_when_pipeline_succeeds && merge_request.mergeable_state?(skip_ci_check: true) && pipeline_active
+      end
+
+      def immediately_mergeable?(merge_when_pipeline_succeeds, merge_request)
+        if merge_when_pipeline_succeeds
+          merge_request.actual_head_pipeline_success?
+        else
+          merge_request.mergeable_state?
+        end
       end
 
       def serializer_options_for(merge_requests)
@@ -393,16 +402,18 @@ module API
         Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42317')
 
         merge_request = find_project_merge_request(params[:merge_request_iid])
-        merge_when_pipeline_succeeds = to_boolean(params[:merge_when_pipeline_succeeds])
-        not_automatically_mergeable = not_automatically_mergeable?(merge_when_pipeline_succeeds, merge_request)
 
         # Merge request can not be merged
         # because user dont have permissions to push into target branch
         unauthorized! unless merge_request.can_be_merged_by?(current_user)
 
-        not_allowed! if !merge_request.mergeable_state?(skip_ci_check: merge_when_pipeline_succeeds) || not_automatically_mergeable
+        merge_when_pipeline_succeeds = to_boolean(params[:merge_when_pipeline_succeeds])
+        automatically_mergeable = automatically_mergeable?(merge_when_pipeline_succeeds, merge_request)
+        immediately_mergeable = immediately_mergeable?(merge_when_pipeline_succeeds, merge_request)
 
-        render_api_error!('Branch cannot be merged', 406) unless merge_request.mergeable?(skip_ci_check: merge_when_pipeline_succeeds)
+        not_allowed! if !immediately_mergeable && !automatically_mergeable
+
+        render_api_error!('Branch cannot be merged', 406) unless merge_request.mergeable?(skip_ci_check: automatically_mergeable)
 
         check_sha_param!(params, merge_request)
 
@@ -415,13 +426,13 @@ module API
           sha: params[:sha] || merge_request.diff_head_sha
         )
 
-        if merge_when_pipeline_succeeds
-          AutoMergeService.new(merge_request.target_project, current_user, merge_params)
-            .execute(merge_request, AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
-        else
+        if immediately_mergeable
           ::MergeRequests::MergeService
             .new(merge_request.target_project, current_user, merge_params)
             .execute(merge_request)
+        elsif automatically_mergeable
+          AutoMergeService.new(merge_request.target_project, current_user, merge_params)
+            .execute(merge_request, AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
         end
 
         present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project

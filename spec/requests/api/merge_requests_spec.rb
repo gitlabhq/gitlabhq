@@ -1549,7 +1549,7 @@ describe API::MergeRequests do
     end
   end
 
-  describe "PUT /projects/:id/merge_requests/:merge_request_iid/merge" do
+  describe "PUT /projects/:id/merge_requests/:merge_request_iid/merge", :clean_gitlab_redis_cache do
     let(:pipeline) { create(:ci_pipeline) }
 
     it "returns merge_request in case of success" do
@@ -1635,6 +1635,15 @@ describe API::MergeRequests do
 
       expect(response).to have_gitlab_http_status(405)
       expect(merge_request.reload.state).to eq('opened')
+    end
+
+    it 'merges if the head pipeline already succeeded and `merge_when_pipeline_succeeds` is passed' do
+      create(:ci_pipeline, :success, sha: merge_request.diff_head_sha, merge_requests_as_head_pipeline: [merge_request])
+
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: { merge_when_pipeline_succeeds: true }
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(json_response['state']).to eq('merged')
     end
 
     it "enables merge when pipeline succeeds if the pipeline is active" do

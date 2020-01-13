@@ -1,0 +1,5 @@
+---
+title: Fix private objects exposure when using Project Import functionality
+merge_request:
+author:
+type: security

@@ -18,3 +18,19 @@ added so that the history of events is not lost, but user-submitted comments
 will fail.
 
 - **Max limit:** 5.000 comments
+
+## Number of pipelines per Git push
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/51401) in GitLab 11.10.
+
+The number of pipelines that can be created in a single push is 4.
+This is to prevent the accidental creation of pipelines when `git push --all`
+or `git push --mirror` is used.
+
+Read more in the [CI documentation](../ci/yaml/README.md#processing-git-pushes).
+
+## Retention of activity history
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/21164) in GitLab 8.12.
+
+Activity history for projects and individuals' profiles was limited to one year until [GitLab 11.4](https://gitlab.com/gitlab-org/gitlab-foss/issues/52246) when it was extended to two years, and in [GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/issues/33840) to three years.

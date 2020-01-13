@@ -10,6 +10,7 @@ module QA
           end
 
           view 'app/views/projects/issues/_issue.html.haml' do
+            element :issue
             element :issue_link, 'link_to issue.title' # rubocop:disable QA/ElementWithPattern
           end
 
@@ -38,7 +39,7 @@ module QA
           end
 
           def has_issue?(issue)
-            has_element? :issue, issue_title: issue.to_s
+            has_element? :issue, issue_title: issue.title
           end
         end
       end

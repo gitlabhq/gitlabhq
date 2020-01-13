@@ -25,11 +25,21 @@ describe Gitlab::ImportExport::AttributeCleaner do
       'legit_html' => '<p>legit html</p>',
       '_html' => '<p>perfectly ordinary html</p>',
       'cached_markdown_version' => 12345,
+      'custom_attributes' => 'whatever',
+      'some_attributes_metadata' => 'whatever',
       'group_id' => 99,
       'commit_id' => 99,
       'issue_ids' => [1, 2, 3],
       'merge_request_ids' => [1, 2, 3],
-      'note_ids' => [1, 2, 3]
+      'note_ids' => [1, 2, 3],
+      'attributes' => {
+        'issue_ids' => [1, 2, 3],
+        'merge_request_ids' => [1, 2, 3],
+        'note_ids' => [1, 2, 3]
+      },
+      'variables_attributes' => {
+        'id' => 1
+      }
     }
   end
 
@@ -40,7 +50,8 @@ describe Gitlab::ImportExport::AttributeCleaner do
       'random_id_in_the_middle' => 99,
       'notid' => 99,
       'group_id' => 99,
-      'commit_id' => 99
+      'commit_id' => 99,
+      'custom_attributes' => 'whatever'
     }
   end
 
