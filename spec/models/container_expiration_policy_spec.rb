@@ -43,8 +43,7 @@ RSpec.describe ContainerExpirationPolicy, type: :model do
     subject { described_class.preloaded }
 
     before do
-      # container_expiration_policies are created for every new project
-      create_list(:project, 3)
+      create_list(:container_expiration_policy, 3)
     end
 
     it 'preloads the associations' do
