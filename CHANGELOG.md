@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.5.7
+
+### Security (1 change)
+
+- Fix private objects exposure when using Project Import functionality.
+
+
 ## 12.5.6
 
 ### Security (5 changes)
