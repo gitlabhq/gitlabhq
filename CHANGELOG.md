@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.6.4
+
+### Security (1 change)
+
+- Fix private objects exposure when using Project Import functionality.
+
+
 ## 12.6.2
 
 ### Security (6 changes)
@@ -815,6 +822,13 @@ entry.
 - Dependency Scanning template that doesn't rely on Docker-in-Docker.
 - Adding dropdown arrow icon and updated text alignment.
 - Change selects from default browser style to custom style.
+
+
+## 12.4.8
+
+### Security (1 change)
+
+- Fix private objects exposure when using Project Import functionality.
 
 
 ## 12.4.5
