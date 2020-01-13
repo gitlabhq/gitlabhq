@@ -283,6 +283,7 @@ module ApplicationSettingsHelper
       :unique_ips_limit_enabled,
       :unique_ips_limit_per_user,
       :unique_ips_limit_time_window,
+      :updating_name_disabled_for_users,
       :usage_ping_enabled,
       :instance_statistics_visibility_private,
       :user_default_external,

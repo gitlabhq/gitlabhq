@@ -48,4 +48,36 @@ describe UserPolicy do
   describe "updating a user" do
     it_behaves_like 'changing a user', :update_user
   end
+
+  describe "updating a user's name" do
+    context 'when the ability to update their name is not disabled for users' do
+      before do
+        stub_application_setting(updating_name_disabled_for_users: false)
+      end
+
+      it_behaves_like 'changing a user', :update_name
+    end
+
+    context 'when the ability to update their name is disabled for users' do
+      before do
+        stub_application_setting(updating_name_disabled_for_users: true)
+      end
+
+      context 'for a regular user' do
+        it { is_expected.not_to be_allowed(:update_name) }
+      end
+
+      context 'for a ghost user' do
+        let(:current_user) { create(:user, :ghost) }
+
+        it { is_expected.not_to be_allowed(:update_name) }
+      end
+
+      context 'for an admin user' do
+        let(:current_user) { create(:admin) }
+
+        it { is_expected.to be_allowed(:update_name) }
+      end
+    end
+  end
 end

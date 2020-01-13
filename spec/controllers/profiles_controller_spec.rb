@@ -81,6 +81,54 @@ describe ProfilesController, :request_store do
       expect(ldap_user.location).to eq('City, Country')
     end
 
+    context 'updating name' do
+      subject { put :update, params: { user: { name: 'New Name' } } }
+
+      context 'when the ability to update thier name is not disabled for users' do
+        before do
+          stub_application_setting(updating_name_disabled_for_users: false)
+          sign_in(user)
+        end
+
+        it 'updates the name' do
+          subject
+
+          expect(response.status).to eq(302)
+          expect(user.reload.name).to eq('New Name')
+        end
+      end
+
+      context 'when the ability to update their name is disabled for users' do
+        before do
+          stub_application_setting(updating_name_disabled_for_users: true)
+        end
+
+        context 'as a regular user' do
+          it 'does not update the name' do
+            sign_in(user)
+
+            subject
+
+            expect(response.status).to eq(302)
+            expect(user.reload.name).not_to eq('New Name')
+          end
+        end
+
+        context 'as an admin user' do
+          it 'updates the name' do
+            admin = create(:admin)
+
+            sign_in(admin)
+
+            subject
+
+            expect(response.status).to eq(302)
+            expect(admin.reload.name).to eq('New Name')
+          end
+        end
+      end
+    end
+
     it 'allows setting a user status' do
       sign_in(user)
 

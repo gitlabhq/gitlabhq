@@ -102,6 +102,13 @@ describe Admin::ApplicationSettingsController do
       expect(ApplicationSetting.current.minimum_password_length).to eq(10)
     end
 
+    it 'updates updating_name_disabled_for_users setting' do
+      put :update, params: { application_setting: { updating_name_disabled_for_users: true } }
+
+      expect(response).to redirect_to(admin_application_settings_path)
+      expect(ApplicationSetting.current.updating_name_disabled_for_users).to eq(true)
+    end
+
     context 'external policy classification settings' do
       let(:settings) do
         {

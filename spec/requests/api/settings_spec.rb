@@ -136,6 +136,14 @@ describe API::Settings, 'Settings' do
       expect(json_response['performance_bar_allowed_group_id']).to eq(group.id)
     end
 
+    it "supports updating_name_disabled_for_users" do
+      put api("/application/settings", admin),
+        params: { updating_name_disabled_for_users: true }
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(json_response['updating_name_disabled_for_users']).to eq(true)
+    end
+
     it "supports legacy performance_bar_enabled" do
       put api("/application/settings", admin),
         params: {

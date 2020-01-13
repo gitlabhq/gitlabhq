@@ -645,6 +645,21 @@ describe API::Users do
       expect(response).to have_gitlab_http_status(200)
     end
 
+    context 'updating name' do
+      context 'when the ability to update their name is disabled for users' do
+        before do
+          stub_application_setting(updating_name_disabled_for_users: true)
+        end
+
+        it 'updates the user with new name' do
+          put api("/users/#{user.id}", admin), params: { name: 'New Name' }
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response['name']).to eq('New Name')
+        end
+      end
+    end
+
     it "updates user with new bio" do
       put api("/users/#{user.id}", admin), params: { bio: 'new test bio' }
 

@@ -116,3 +116,17 @@ Once a lifetime for personal access tokens is set, GitLab will:
 - After three hours, revoke old tokens with no expiration date or with a lifetime longer than the
   allowed lifetime. Three hours is given to allow administrators to change the allowed lifetime,
   or remove it, before revocation takes place.
+
+## Disabling user profile name changes **(CORE ONLY)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/24605) in GitLab 12.7.
+
+To maintain integrity of user details in [Audit Events](../../../administration/audit_events.md), GitLab administrators can choose to disable a user's ability to change their profile name.
+
+To do this:
+
+1. Navigate to **Admin Area > Settings > General**, then expand **Account and Limit**.
+1. Check the **Prevent users from changing their profile name** checkbox.
+
+NOTE: **Note:**
+When this ability is disabled, GitLab administrators will still be able to update the name of any user in their instance via the [Admin UI](../index.md#administering-users) or the [API](../../../api/users.md#user-modification)

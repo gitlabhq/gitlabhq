@@ -94,7 +94,7 @@
     "jszip-utils": "^0.0.2",
     "katex": "^0.10.0",
     "marked": "^0.3.12",
-    "mermaid": "^8.4.2",
+    "mermaid": "^8.4.5",
     "monaco-editor": "^0.18.1",
     "monaco-editor-webpack-plugin": "^1.7.0",
     "mousetrap": "^1.4.6",

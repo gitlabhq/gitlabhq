@@ -51,6 +51,12 @@
         = f.check_box :user_show_add_ssh_key_message, class: 'form-check-input'
         = f.label :user_show_add_ssh_key_message, class: 'form-check-label' do
           = _("Inform users without uploaded SSH keys that they can't push over SSH until one is added")
+    .form-group
+      = f.label :updating_name_disabled_for_users, _('User restrictions'), class: 'label-bold'
+      .form-check
+        = f.check_box :updating_name_disabled_for_users, class: 'form-check-input'
+        = f.label :updating_name_disabled_for_users, class: 'form-check-label' do
+          = _("Prevent users from changing their profile name")
 
     = render_if_exists 'admin/application_settings/availability_on_namespace_setting', form: f
 

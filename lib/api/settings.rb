@@ -142,6 +142,7 @@ module API
         requires :sourcegraph_url, type: String, desc: 'The configured Sourcegraph instance URL'
       end
       optional :terminal_max_session_time, type: Integer, desc: 'Maximum time for web terminal websocket connection (in seconds). Set to 0 for unlimited time.'
+      optional :updating_name_disabled_for_users, type: Boolean, desc: 'Flag indicating if users are permitted to update their profile name'
       optional :usage_ping_enabled, type: Boolean, desc: 'Every week GitLab will report license usage back to GitLab, Inc.'
       optional :instance_statistics_visibility_private, type: Boolean, desc: 'When set to `true` Instance statistics will only be available to admins'
       optional :local_markdown_version, type: Integer, desc: 'Local markdown version, increase this value when any cached markdown should be invalidated'

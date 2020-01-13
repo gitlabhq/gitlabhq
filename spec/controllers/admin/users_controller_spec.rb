@@ -257,6 +257,28 @@ describe Admin::UsersController do
   end
 
   describe 'POST update' do
+    context 'updating name' do
+      context 'when the ability to update their name is disabled for users' do
+        before do
+          stub_application_setting(updating_name_disabled_for_users: true)
+        end
+
+        it 'updates the name' do
+          params = {
+            id: user.to_param,
+            user: {
+              name: 'New Name'
+            }
+          }
+
+          put :update, params: params
+
+          expect(response).to redirect_to(admin_user_path(user))
+          expect(user.reload.name).to eq('New Name')
+        end
+      end
+    end
+
     context 'when the password has changed' do
       def update_password(user, password, password_confirmation = nil)
         params = {

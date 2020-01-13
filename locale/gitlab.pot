@@ -13449,6 +13449,9 @@ msgstr ""
 msgid "Prevent environment from auto-stopping"
 msgstr ""
 
+msgid "Prevent users from changing their profile name"
+msgstr ""
+
 msgid "Preview"
 msgstr ""
 
@@ -13750,6 +13753,9 @@ msgid "Profiles|Static object token was successfully reset"
 msgstr ""
 
 msgid "Profiles|Tell us about yourself in fewer than 250 characters"
+msgstr ""
+
+msgid "Profiles|The ability to update your name has been disabled by your administrator."
 msgstr ""
 
 msgid "Profiles|The maximum file size allowed is 200KB."
@@ -19930,6 +19936,9 @@ msgid "User map"
 msgstr ""
 
 msgid "User pipeline minutes were successfully reset."
+msgstr ""
+
+msgid "User restrictions"
 msgstr ""
 
 msgid "User settings"

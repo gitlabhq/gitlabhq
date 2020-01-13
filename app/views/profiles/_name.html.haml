@@ -1,0 +1,8 @@
+- if user.read_only_attribute?(:name)
+  = form.text_field :name, required: true, readonly: true, wrapper: { class: 'col-md-9 qa-full-name rspec-full-name' },
+  help: s_("Profiles|Your name was automatically set based on your %{provider_label} account, so people you know can recognize you") % { provider_label: attribute_provider_label(:name) }
+- elsif can?(current_user, :update_name, user)
+  = form.text_field :name, label: s_('Profiles|Full name'), required: true, title: s_("Profiles|Using emojis in names seems fun, but please try to set a status message instead"), wrapper: { class: 'col-md-9 qa-full-name rspec-full-name' }, help: s_("Profiles|Enter your name, so people you know can recognize you")
+- else
+  = form.text_field :name, required: true, readonly: true, wrapper: { class: 'col-md-9 qa-full-name rspec-full-name' },
+  help: s_("Profiles|The ability to update your name has been disabled by your administrator.")
