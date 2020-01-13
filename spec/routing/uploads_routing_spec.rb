@@ -28,4 +28,12 @@ describe 'Uploads', 'routing' do
       expect(post("/uploads/#{model}?id=1")).not_to be_routable
     end
   end
+
+  describe 'legacy paths' do
+    include RSpec::Rails::RequestExampleGroup
+
+    it 'redirects project uploads to canonical path under project namespace' do
+      expect(get('/uploads/namespace/project/12345/test.png')).to redirect_to('/namespace/project/uploads/12345/test.png')
+    end
+  end
 end

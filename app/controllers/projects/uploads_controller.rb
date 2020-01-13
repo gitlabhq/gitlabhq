@@ -29,4 +29,14 @@ class Projects::UploadsController < Projects::ApplicationController
 
     Project.find_by_full_path("#{namespace}/#{id}")
   end
+
+  # Overrides ApplicationController#build_canonical_path since there are
+  # multiple routes that match project uploads:
+  # https://gitlab.com/gitlab-org/gitlab/issues/196396
+  def build_canonical_path(project)
+    return super unless action_name == 'show'
+    return super unless params[:secret] && params[:filename]
+
+    show_namespace_project_uploads_url(project.namespace.to_param, project.to_param, params[:secret], params[:filename])
+  end
 end

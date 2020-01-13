@@ -1154,6 +1154,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           expect(job.reload.trace.raw).to eq 'BUILD TRACE appended'
           expect(response.header).to have_key 'Range'
           expect(response.header).to have_key 'Job-Status'
+          expect(response.header).to have_key 'X-GitLab-Trace-Update-Interval'
         end
 
         context 'when job has been updated recently' do
@@ -1289,6 +1290,41 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
           it 'receives status in header' do
             expect(response.header['Job-Status']).to eq 'canceled'
+          end
+        end
+
+        context 'when build trace is being watched' do
+          before do
+            job.trace.being_watched!
+          end
+
+          it 'returns X-GitLab-Trace-Update-Interval as 3' do
+            patch_the_trace
+
+            expect(response.status).to eq 202
+            expect(response.header['X-GitLab-Trace-Update-Interval']).to eq('3')
+          end
+        end
+
+        context 'when build trace is not being watched' do
+          it 'returns X-GitLab-Trace-Update-Interval as 30' do
+            patch_the_trace
+
+            expect(response.status).to eq 202
+            expect(response.header['X-GitLab-Trace-Update-Interval']).to eq('30')
+          end
+        end
+
+        context 'when feature flag runner_job_trace_update_interval_header is disabled' do
+          before do
+            stub_feature_flags(runner_job_trace_update_interval_header: { enabled: false })
+          end
+
+          it 'does not return X-GitLab-Trace-Update-Interval header' do
+            patch_the_trace
+
+            expect(response.status).to eq 202
+            expect(response.header).not_to have_key 'X-GitLab-Trace-Update-Interval'
           end
         end
       end

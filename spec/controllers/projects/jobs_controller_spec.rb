@@ -556,6 +556,12 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         expect(json_response['status']).to eq job.status
         expect(json_response['lines']).to eq [{ 'content' => [{ 'text' => 'BUILD TRACE' }], 'offset' => 0 }]
       end
+
+      it 'sets being-watched flag for the job' do
+        expect(response).to have_gitlab_http_status(:ok)
+
+        expect(job.trace.being_watched?).to be(true)
+      end
     end
 
     context 'when job has no traces' do

@@ -1,0 +1,5 @@
+---
+title: Request less frequent updates from Runner when job log is not being watched
+merge_request: 20841
+author:
+type: performance
