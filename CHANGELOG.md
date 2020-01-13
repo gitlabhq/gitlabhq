@@ -821,6 +821,13 @@ entry.
 - Change selects from default browser style to custom style.
 
 
+## 12.4.8
+
+### Security (1 change)
+
+- Fix private objects exposure when using Project Import functionality.
+
+
 ## 12.4.5
 
 - No changes.
