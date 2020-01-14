@@ -24,7 +24,7 @@ namespace :admin do
   end
 
   resource :session, only: [:new, :create] do
-    get 'destroy', action: :destroy, as: :destroy
+    post 'destroy', action: :destroy, as: :destroy
   end
 
   resource :impersonation, only: :destroy

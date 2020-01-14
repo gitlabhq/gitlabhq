@@ -84,23 +84,26 @@ export default {
     state.emptyState = 'loading';
     state.showEmptyState = true;
   },
-  [types.RECEIVE_METRICS_DATA_SUCCESS](state, groupData) {
-    state.dashboard.panel_groups = groupData.map((group, i) => {
-      const key = `${slugify(group.group || 'default')}-${i}`;
-      let { panels = [] } = group;
+  [types.RECEIVE_METRICS_DATA_SUCCESS](state, dashboard) {
+    state.dashboard = {
+      ...dashboard,
+      panel_groups: dashboard.panel_groups.map((group, i) => {
+        const key = `${slugify(group.group || 'default')}-${i}`;
+        let { panels = [] } = group;
 
-      // each panel has metric information that needs to be normalized
-      panels = panels.map(panel => ({
-        ...panel,
-        metrics: normalizePanelMetrics(panel.metrics, panel.y_label),
-      }));
+        // each panel has metric information that needs to be normalized
+        panels = panels.map(panel => ({
+          ...panel,
+          metrics: normalizePanelMetrics(panel.metrics, panel.y_label),
+        }));
 
-      return {
-        ...group,
-        panels,
-        key,
-      };
-    });
+        return {
+          ...group,
+          panels,
+          key,
+        };
+      }),
+    };
 
     if (!state.dashboard.panel_groups.length) {
       state.emptyState = 'noData';

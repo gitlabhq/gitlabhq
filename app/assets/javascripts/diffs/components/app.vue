@@ -6,6 +6,7 @@ import { __ } from '~/locale';
 import createFlash from '~/flash';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { isSingleViewStyle } from '~/helpers/diffs_helper';
 import eventHub from '../../notes/event_hub';
 import CompareVersions from './compare_versions.vue';
 import DiffFile from './diff_file.vue';
@@ -145,6 +146,9 @@ export default {
   },
   watch: {
     diffViewType() {
+      if (this.needsReload() || this.needsFirstLoad()) {
+        this.refetchDiffData();
+      }
       this.adjustView();
     },
     shouldShow() {
@@ -224,6 +228,16 @@ export default {
         { timeout: 1000 },
       );
     },
+    needsReload() {
+      return (
+        this.glFeatures.singleMrDiffView &&
+        this.diffFiles.length &&
+        isSingleViewStyle(this.diffFiles[0])
+      );
+    },
+    needsFirstLoad() {
+      return this.glFeatures.singleMrDiffView && !this.diffFiles.length;
+    },
     fetchData(toggleTree = true) {
       if (this.glFeatures.diffsBatchLoad) {
         this.fetchDiffFilesMeta()
@@ -237,6 +251,13 @@ export default {
           });
 
         this.fetchDiffFilesBatch()
+          .then(() => {
+            // Guarantee the discussions are assigned after the batch finishes.
+            // Just watching the length of the discussions or the diff files
+            // isn't enough, because with split diff loading, neither will
+            // change when loading the other half of the diff files.
+            this.setDiscussions();
+          })
           .then(() => this.startDiffRendering())
           .catch(() => {
             createFlash(__('Something went wrong on our end. Please try again!'));
@@ -250,6 +271,7 @@ export default {
 
             requestIdleCallback(
               () => {
+                this.setDiscussions();
                 this.startRenderDiffsQueue();
               },
               { timeout: 1000 },

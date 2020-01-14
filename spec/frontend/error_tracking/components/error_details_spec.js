@@ -13,6 +13,7 @@ describe('ErrorDetails', () => {
   let wrapper;
   let actions;
   let getters;
+  let mocks;
 
   const findInput = name => {
     const inputs = wrapper.findAll(GlFormInput).filter(c => c.attributes('name') === name);
@@ -24,11 +25,25 @@ describe('ErrorDetails', () => {
       stubs: { LoadingButton },
       localVue,
       store,
+      mocks,
       propsData: {
+        issueId: '123',
+        projectPath: '/root/gitlab-test',
         issueDetailsPath: '/123/details',
         issueStackTracePath: '/stacktrace',
         projectIssuesPath: '/test-project/issues/',
         csrfToken: 'fakeToken',
+      },
+    });
+    wrapper.setData({
+      GQLerror: {
+        id: 129381,
+        title: 'Issue title',
+        externalUrl: 'http://sentry.gitlab.net/gitlab',
+        firstSeen: '2017-05-26T13:32:48Z',
+        lastSeen: '2018-05-26T13:32:48Z',
+        count: 12,
+        userCount: 2,
       },
     });
   }
@@ -61,6 +76,19 @@ describe('ErrorDetails', () => {
         },
       },
     });
+
+    const query = jest.fn();
+    mocks = {
+      $apollo: {
+        query,
+        queries: {
+          GQLerror: {
+            loading: true,
+            stopPolling: jest.fn(),
+          },
+        },
+      },
+    };
   });
 
   afterEach(() => {
@@ -85,10 +113,11 @@ describe('ErrorDetails', () => {
     beforeEach(() => {
       store.state.details.loading = false;
       store.state.details.error.id = 1;
+      mocks.$apollo.queries.GQLerror.loading = false;
+      mountComponent();
     });
 
     it('should show Sentry error details without stacktrace', () => {
-      mountComponent();
       expect(wrapper.find(GlLink).exists()).toBe(true);
       expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
       expect(wrapper.find(Stacktrace).exists()).toBe(false);
@@ -99,13 +128,17 @@ describe('ErrorDetails', () => {
       it('should show language and error level badges', () => {
         store.state.details.error.tags = { level: 'error', logger: 'ruby' };
         mountComponent();
-        expect(wrapper.findAll(GlBadge).length).toBe(2);
+        return wrapper.vm.$nextTick().then(() => {
+          expect(wrapper.findAll(GlBadge).length).toBe(2);
+        });
       });
 
       it('should NOT show the badge if the tag is not present', () => {
         store.state.details.error.tags = { level: 'error' };
         mountComponent();
-        expect(wrapper.findAll(GlBadge).length).toBe(1);
+        return wrapper.vm.$nextTick().then(() => {
+          expect(wrapper.findAll(GlBadge).length).toBe(1);
+        });
       });
     });
 
@@ -113,8 +146,10 @@ describe('ErrorDetails', () => {
       it('should show stacktrace', () => {
         store.state.details.loadingStacktrace = false;
         mountComponent();
-        expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
-        expect(wrapper.find(Stacktrace).exists()).toBe(true);
+        return wrapper.vm.$nextTick().then(() => {
+          expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
+          expect(wrapper.find(Stacktrace).exists()).toBe(true);
+        });
       });
 
       it('should NOT show stacktrace if no entries', () => {
@@ -128,15 +163,6 @@ describe('ErrorDetails', () => {
 
     describe('When a user clicks the create issue button', () => {
       beforeEach(() => {
-        store.state.details.error = {
-          id: 129381,
-          title: 'Issue title',
-          external_url: 'http://sentry.gitlab.net/gitlab',
-          first_seen: '2017-05-26T13:32:48Z',
-          last_seen: '2018-05-26T13:32:48Z',
-          count: 12,
-          user_count: 2,
-        };
         mountComponent();
       });
 

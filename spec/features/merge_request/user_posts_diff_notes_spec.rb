@@ -14,14 +14,11 @@ describe 'Merge request > User posts diff notes', :js do
   let(:test_note_comment) { 'this is a test note!' }
 
   before do
-    stub_feature_flags(single_mr_diff_view: false)
     set_cookie('sidebar_collapsed', 'true')
 
     project.add_developer(user)
     sign_in(user)
   end
-
-  it_behaves_like 'rendering a single diff version'
 
   context 'when hovering over a parallel view diff file' do
     before do

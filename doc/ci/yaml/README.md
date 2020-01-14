@@ -2600,14 +2600,17 @@ job split into three separate jobs.
 from `trigger` definition is started by GitLab, a downstream pipeline gets
 created.
 
-Learn more about [multi-project pipelines](../multi_project_pipelines.md#creating-multi-project-pipelines-from-gitlab-ciyml).
+This keyword allows the creation of two different types of downstream pipelines:
+
+- [Multi-project pipelines](../multi_project_pipelines.md#creating-multi-project-pipelines-from-gitlab-ciyml)
+- [Child pipelines](../parent_child_pipelines.md)
 
 NOTE: **Note:**
 Using a `trigger` with `when:manual` together results in the error `jobs:#{job-name}
 when should be on_success, on_failure or always`, because `when:manual` prevents
 triggers being used.
 
-#### Simple `trigger` syntax
+#### Simple `trigger` syntax for multi-project pipelines
 
 The simplest way to configure a downstream trigger is to use `trigger` keyword
 with a full path to a downstream project:
@@ -2622,7 +2625,7 @@ staging:
   trigger: my/deployment
 ```
 
-#### Complex `trigger` syntax
+#### Complex `trigger` syntax for multi-project pipelines
 
 It is possible to configure a branch name that GitLab will use to create
 a downstream pipeline with:
@@ -2655,6 +2658,28 @@ upstream_bridge:
   stage: test
   needs:
     pipeline: other/project
+```
+
+#### `trigger` syntax for child pipeline
+
+To create a [child pipeline](../parent_child_pipelines.md), specify the path to the
+YAML file containing the CI config of the child pipeline:
+
+```yaml
+trigger_job:
+  trigger:
+    include: path/to/child-pipeline.yml
+```
+
+Similar to [multi-project pipelines](../multi_project_pipelines.md#mirroring-status-from-triggered-pipeline),
+it is possible to mirror the status from a triggered pipeline:
+
+```yaml
+trigger_job:
+  trigger:
+    include:
+      - local: path/to/child-pipeline.yml
+    strategy: depend
 ```
 
 ### `interruptible`

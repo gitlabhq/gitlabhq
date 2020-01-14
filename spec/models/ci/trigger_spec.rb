@@ -11,6 +11,10 @@ describe Ci::Trigger do
     it { is_expected.to have_many(:trigger_requests) }
   end
 
+  describe 'validations' do
+    it { is_expected.to validate_presence_of(:owner) }
+  end
+
   describe 'before_validation' do
     it 'sets an random token if none provided' do
       trigger = create(:ci_trigger_without_token, project: project)
@@ -35,63 +39,22 @@ describe Ci::Trigger do
     end
   end
 
-  describe '#legacy?' do
-    let(:trigger) { create(:ci_trigger, owner: owner, project: project) }
-
-    subject { trigger }
-
-    context 'when owner is blank' do
-      let(:owner) { nil }
-
-      it { is_expected.to be_legacy }
-    end
-
-    context 'when owner is set' do
-      let(:owner) { create(:user) }
-
-      it { is_expected.not_to be_legacy }
-    end
-  end
-
   describe '#can_access_project?' do
     let(:owner) { create(:user) }
     let(:trigger) { create(:ci_trigger, owner: owner, project: project) }
 
-    context 'when owner is blank' do
+    subject { trigger.can_access_project? }
+
+    context 'and is member of the project' do
       before do
-        stub_feature_flags(use_legacy_pipeline_triggers: false)
-        trigger.update_attribute(:owner, nil)
+        project.add_developer(owner)
       end
 
-      subject { trigger.can_access_project? }
-
-      it { is_expected.to eq(false) }
-
-      context 'when :use_legacy_pipeline_triggers feature flag is enabled' do
-        before do
-          stub_feature_flags(use_legacy_pipeline_triggers: true)
-        end
-
-        subject { trigger.can_access_project? }
-
-        it { is_expected.to eq(true) }
-      end
+      it { is_expected.to eq(true) }
     end
 
-    context 'when owner is set' do
-      subject { trigger.can_access_project? }
-
-      context 'and is member of the project' do
-        before do
-          project.add_developer(owner)
-        end
-
-        it { is_expected.to eq(true) }
-      end
-
-      context 'and is not member of the project' do
-        it { is_expected.to eq(false) }
-      end
+    context 'and is not member of the project' do
+      it { is_expected.to eq(false) }
     end
   end
 end

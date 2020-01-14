@@ -55,7 +55,7 @@
           - if Feature.enabled?(:user_mode_in_session)
             - if header_link?(:admin_mode)
               = nav_link(controller: 'admin/sessions') do
-                = link_to destroy_admin_session_path, class: 'd-lg-none lock-open-icon' do
+                = link_to destroy_admin_session_path, method: :post, class: 'd-lg-none lock-open-icon' do
                   = _('Leave Admin Mode')
             - elsif current_user.admin?
               = nav_link(controller: 'admin/sessions') do

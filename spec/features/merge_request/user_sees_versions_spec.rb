@@ -16,15 +16,12 @@ describe 'Merge request > User sees versions', :js do
   let!(:params) { {} }
 
   before do
-    stub_feature_flags(single_mr_diff_view: false)
     stub_feature_flags(diffs_batch_load: false)
 
     project.add_maintainer(user)
     sign_in(user)
     visit diffs_project_merge_request_path(project, merge_request, params)
   end
-
-  it_behaves_like 'rendering a single diff version'
 
   shared_examples 'allows commenting' do |file_id:, line_code:, comment:|
     it do

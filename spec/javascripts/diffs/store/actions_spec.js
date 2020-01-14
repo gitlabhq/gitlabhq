@@ -120,7 +120,7 @@ describe('DiffsStoreActions', () => {
 
   describe('fetchDiffFiles', () => {
     it('should fetch diff files', done => {
-      const endpoint = '/fetch/diff/files?w=1';
+      const endpoint = '/fetch/diff/files?view=inline&w=1';
       const mock = new MockAdapter(axios);
       const res = { diff_files: 1, merge_request_diffs: [] };
       mock.onGet(endpoint).reply(200, res);
@@ -128,7 +128,7 @@ describe('DiffsStoreActions', () => {
       testAction(
         fetchDiffFiles,
         {},
-        { endpoint },
+        { endpoint, diffFiles: [], showWhitespace: false, diffViewType: 'inline' },
         [
           { type: types.SET_LOADING, payload: true },
           { type: types.SET_LOADING, payload: false },

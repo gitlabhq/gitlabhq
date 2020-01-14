@@ -246,6 +246,13 @@ Pipelines for different projects can be combined and visualized together.
 
 For more information, see [Multi-project pipelines](multi_project_pipelines.md).
 
+## Parent-child pipelines
+
+Complex pipelines can be broken down into one parent pipeline that can trigger
+multiple child sub-pipelines, which all run in the same project and with the same SHA.
+
+For more information, see [Parent-Child pipelines](parent_child_pipelines.md).
+
 ## Working with pipelines
 
 In general, pipelines are executed automatically and require no intervention once created.

@@ -1,9 +1,0 @@
-- if Feature.enabled?(:use_legacy_pipeline_triggers, @project)
-  %p.append-bottom-default
-    Triggers with the
-    %span.badge.badge-primary legacy
-    label do not have an associated user and only have access to the current project.
-    %br
-    = succeed '.' do
-      Learn more in the
-      = link_to 'triggers documentation', help_page_path('ci/triggers/README'), target: '_blank'

@@ -345,7 +345,7 @@ describe('Dashboard', () => {
 
         it('metrics can be swapped', done => {
           const firstDraggable = findDraggables().at(0);
-          const mockMetrics = [...metricsGroupsAPIResponse[1].panels];
+          const mockMetrics = [...metricsGroupsAPIResponse.panel_groups[1].panels];
 
           const firstTitle = mockMetrics[0].title;
           const secondTitle = mockMetrics[1].title;

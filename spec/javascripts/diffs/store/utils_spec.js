@@ -314,11 +314,29 @@ describe('DiffsStoreUtils', () => {
   });
 
   describe('prepareDiffData', () => {
+    let mock;
     let preparedDiff;
+    let splitInlineDiff;
+    let splitParallelDiff;
+    let completedDiff;
 
     beforeEach(() => {
-      preparedDiff = { diff_files: [getDiffFileMock()] };
+      mock = getDiffFileMock();
+      preparedDiff = { diff_files: [mock] };
+      splitInlineDiff = {
+        diff_files: [Object.assign({}, mock, { parallel_diff_lines: undefined })],
+      };
+      splitParallelDiff = {
+        diff_files: [Object.assign({}, mock, { highlighted_diff_lines: undefined })],
+      };
+      completedDiff = {
+        diff_files: [Object.assign({}, mock, { highlighted_diff_lines: undefined })],
+      };
+
       utils.prepareDiffData(preparedDiff);
+      utils.prepareDiffData(splitInlineDiff);
+      utils.prepareDiffData(splitParallelDiff);
+      utils.prepareDiffData(completedDiff, [mock]);
     });
 
     it('sets the renderIt and collapsed attribute on files', () => {
@@ -358,6 +376,19 @@ describe('DiffsStoreUtils', () => {
       const firstLine = preparedDiff.diff_files[0].parallel_diff_lines[0];
 
       expect(firstLine.line_code).toEqual(firstLine.right.line_code);
+    });
+
+    it('guarantees an empty array for both diff styles', () => {
+      expect(splitInlineDiff.diff_files[0].parallel_diff_lines.length).toEqual(0);
+      expect(splitInlineDiff.diff_files[0].highlighted_diff_lines.length).toBeGreaterThan(0);
+      expect(splitParallelDiff.diff_files[0].parallel_diff_lines.length).toBeGreaterThan(0);
+      expect(splitParallelDiff.diff_files[0].highlighted_diff_lines.length).toEqual(0);
+    });
+
+    it('merges existing diff files with newly loaded diff files to ensure split diffs are eventually completed', () => {
+      expect(completedDiff.diff_files.length).toEqual(1);
+      expect(completedDiff.diff_files[0].parallel_diff_lines.length).toBeGreaterThan(0);
+      expect(completedDiff.diff_files[0].highlighted_diff_lines.length).toBeGreaterThan(0);
     });
   });
 

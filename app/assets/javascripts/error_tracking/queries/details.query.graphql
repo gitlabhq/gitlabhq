@@ -1,0 +1,18 @@
+query errorDetails($fullPath: ID!, $errorId: ID!) {
+    project(fullPath: $fullPath) {
+        sentryDetailedError(id: $errorId) {
+            id
+            sentryId
+            title
+            userCount
+            count
+            firstSeen
+            lastSeen
+            message
+            culprit
+            externalUrl
+            firstReleaseShortVersion
+            lastReleaseShortVersion
+        }
+    }
+}

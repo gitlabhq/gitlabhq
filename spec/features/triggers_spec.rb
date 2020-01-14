@@ -65,22 +65,6 @@ describe 'Triggers', :js do
       expect(page.find('.triggers-list')).to have_content new_trigger_title
       expect(page.find('.triggers-list .trigger-owner')).to have_content user.name
     end
-
-    it 'edit "legacy" trigger and save' do
-      # Create new trigger without owner association, i.e. Legacy trigger
-      create(:ci_trigger, owner: user, project: @project).update_attribute(:owner, nil)
-      visit project_settings_ci_cd_path(@project)
-
-      # See if the trigger can be edited and description is blank
-      find('a[title="Edit"]').send_keys(:return)
-      expect(page.find('#trigger_description').value).to have_content ''
-
-      # See if trigger can be updated with description and saved successfully
-      fill_in 'trigger_description', with: new_trigger_title
-      click_button 'Save trigger'
-      expect(page.find('.flash-notice')).to have_content 'Trigger was successfully updated.'
-      expect(page.find('.triggers-list')).to have_content new_trigger_title
-    end
   end
 
   describe 'trigger "Revoke" workflow' do
@@ -106,40 +90,15 @@ describe 'Triggers', :js do
   end
 
   describe 'show triggers workflow' do
-    before do
-      stub_feature_flags(use_legacy_pipeline_triggers: false)
-    end
-
     it 'contains trigger description placeholder' do
       expect(page.find('#trigger_description')['placeholder']).to eq 'Trigger description'
-    end
-
-    it 'show "invalid" badge for legacy trigger' do
-      create(:ci_trigger, owner: user, project: @project).update_attribute(:owner, nil)
-      visit project_settings_ci_cd_path(@project)
-
-      expect(page.find('.triggers-list')).to have_content 'invalid'
     end
 
     it 'show "invalid" badge for trigger with owner having insufficient permissions' do
       create(:ci_trigger, owner: guest_user, project: @project, description: trigger_title)
       visit project_settings_ci_cd_path(@project)
 
-      # See if trigger without owner (i.e. legacy) shows "legacy" badge and is non-editable
       expect(page.find('.triggers-list')).to have_content 'invalid'
-      expect(page.find('.triggers-list')).not_to have_selector('a[title="Edit"]')
-    end
-
-    it 'do not show "Edit" or full token for legacy trigger' do
-      create(:ci_trigger, owner: user, project: @project, description: trigger_title)
-        .update_attribute(:owner, nil)
-      visit project_settings_ci_cd_path(@project)
-
-      # See if trigger not owned shows only first few token chars and doesn't have copy-to-clipboard button
-      expect(page.find('.triggers-list')).to have_content(@project.triggers.first.token[0..3])
-      expect(page.find('.triggers-list')).not_to have_selector('button.btn-clipboard')
-
-      # See if trigger is non-editable
       expect(page.find('.triggers-list')).not_to have_selector('a[title="Edit"]')
     end
 
@@ -168,57 +127,6 @@ describe 'Triggers', :js do
       # See if trigger owner name matches with current_user and is editable
       expect(page.find('.triggers-list .trigger-owner')).to have_content user.name
       expect(page.find('.triggers-list')).to have_selector('a[title="Edit"]')
-    end
-
-    context 'when :use_legacy_pipeline_triggers feature flag is enabled' do
-      before do
-        stub_feature_flags(use_legacy_pipeline_triggers: true)
-      end
-
-      it 'show "legacy" badge for legacy trigger' do
-        create(:ci_trigger, owner: nil, project: @project)
-        visit project_settings_ci_cd_path(@project)
-
-        # See if trigger without owner (i.e. legacy) shows "legacy" badge and is editable
-        expect(page.find('.triggers-list')).to have_content 'legacy'
-        expect(page.find('.triggers-list')).to have_selector('a[title="Edit"]')
-      end
-
-      it 'show "invalid" badge for trigger with owner having insufficient permissions' do
-        create(:ci_trigger, owner: guest_user, project: @project, description: trigger_title)
-        visit project_settings_ci_cd_path(@project)
-
-        # See if trigger without owner (i.e. legacy) shows "legacy" badge and is non-editable
-        expect(page.find('.triggers-list')).to have_content 'invalid'
-        expect(page.find('.triggers-list')).not_to have_selector('a[title="Edit"]')
-      end
-
-      it 'do not show "Edit" or full token for not owned trigger' do
-        # Create trigger with user different from current_user
-        create(:ci_trigger, owner: user2, project: @project, description: trigger_title)
-        visit project_settings_ci_cd_path(@project)
-
-        # See if trigger not owned by current_user shows only first few token chars and doesn't have copy-to-clipboard button
-        expect(page.find('.triggers-list')).to have_content(@project.triggers.first.token[0..3])
-        expect(page.find('.triggers-list')).not_to have_selector('button.btn-clipboard')
-
-        # See if trigger owner name doesn't match with current_user and trigger is non-editable
-        expect(page.find('.triggers-list .trigger-owner')).not_to have_content user.name
-        expect(page.find('.triggers-list')).not_to have_selector('a[title="Edit"]')
-      end
-
-      it 'show "Edit" and full token for owned trigger' do
-        create(:ci_trigger, owner: user, project: @project, description: trigger_title)
-        visit project_settings_ci_cd_path(@project)
-
-        # See if trigger shows full token and has copy-to-clipboard button
-        expect(page.find('.triggers-list')).to have_content @project.triggers.first.token
-        expect(page.find('.triggers-list')).to have_selector('button.btn-clipboard')
-
-        # See if trigger owner name matches with current_user and is editable
-        expect(page.find('.triggers-list .trigger-owner')).to have_content user.name
-        expect(page.find('.triggers-list')).to have_selector('a[title="Edit"]')
-      end
     end
   end
 end

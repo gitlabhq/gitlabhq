@@ -108,9 +108,9 @@ module QA
             # Click :commit_button and keep retrying just in case part of the
             # animation is still in process even when the buttons have the
             # expected visibility.
-            commit_success_msg_shown = retry_until do
-              click_element :commit_to_current_branch_radio
-              click_element :commit_button
+            commit_success_msg_shown = retry_until(sleep_interval: 5) do
+              click_element(:commit_to_current_branch_radio) if has_element?(:commit_to_current_branch_radio)
+              click_element(:commit_button) if has_element?(:commit_button)
 
               wait(reload: false) do
                 has_text?('Your changes have been committed')

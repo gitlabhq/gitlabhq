@@ -766,3 +766,33 @@ ContainerExpirationPolicy:
 - older_than
 - keep_n
 - enabled
+Epic:
+  - id
+  - milestone_id
+  - group_id
+  - author_id
+  - assignee_id
+  - iid
+  - updated_by_id
+  - last_edited_by_id
+  - lock_version
+  - start_date
+  - end_date
+  - last_edited_at
+  - created_at
+  - updated_at
+  - title
+  - description
+  - start_date_sourcing_milestone_id
+  - due_date_sourcing_milestone_id
+  - start_date_fixed
+  - due_date_fixed
+  - start_date_is_fixed
+  - due_date_is_fixed
+  - closed_by_id
+  - closed_at
+  - parent_id
+  - relative_position
+  - state_id
+  - start_date_sourcing_epic_id
+  - due_date_sourcing_epic_id

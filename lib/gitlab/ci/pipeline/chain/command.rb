@@ -22,12 +22,6 @@ module Gitlab
             end
           end
 
-          def uses_unsupported_legacy_trigger?
-            trigger_request.present? &&
-              trigger_request.trigger.legacy? &&
-              !trigger_request.trigger.supports_legacy_tokens?
-          end
-
           def branch_exists?
             strong_memoize(:is_branch) do
               project.repository.branch_exists?(ref)

@@ -26,6 +26,8 @@ module Gitlab
       end
 
       def find
+        return if epic? && group.nil?
+
         find_object || klass.create(project_attributes)
       end
 
@@ -54,10 +56,10 @@ module Gitlab
       # or, if group is present:
       # `"{table_name}"."project_id" = {project.id} OR "{table_name}"."group_id" = {group.id}`
       def where_clause_base
-        clause = table[:project_id].eq(project.id) if project
-        clause = clause.or(table[:group_id].eq(group.id)) if group
-
-        clause
+        [].tap do |clauses|
+          clauses << table[:project_id].eq(project.id) if project
+          clauses << table[:group_id].eq(group.id) if group
+        end.reduce(:or)
       end
 
       # Returns Arel clause `"{table_name}"."title" = '{attributes['title']}'`
@@ -106,6 +108,10 @@ module Gitlab
 
       def merge_request?
         klass == MergeRequest
+      end
+
+      def epic?
+        klass == Epic
       end
 
       # If an existing group milestone used the IID

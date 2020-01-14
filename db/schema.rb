@@ -994,7 +994,7 @@ ActiveRecord::Schema.define(version: 2020_01_08_233040) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "project_id"
-    t.integer "owner_id"
+    t.integer "owner_id", null: false
     t.string "description"
     t.string "ref"
     t.index ["owner_id"], name: "index_ci_triggers_on_owner_id"

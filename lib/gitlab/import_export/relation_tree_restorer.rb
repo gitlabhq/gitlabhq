@@ -4,7 +4,7 @@ module Gitlab
   module ImportExport
     class RelationTreeRestorer
       # Relations which cannot be saved at project level (and have a group assigned)
-      GROUP_MODELS = [GroupLabel, Milestone].freeze
+      GROUP_MODELS = [GroupLabel, Milestone, Epic].freeze
 
       attr_reader :user
       attr_reader :shared

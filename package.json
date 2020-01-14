@@ -82,6 +82,7 @@
     "fuzzaldrin-plus": "^0.5.0",
     "glob": "^7.1.2",
     "graphql": "^14.0.2",
+    "immer": "^5.2.1",
     "imports-loader": "^0.8.0",
     "jed": "^1.1.1",
     "jest-transform-graphql": "^2.1.0",

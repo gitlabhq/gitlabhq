@@ -39,7 +39,7 @@ export const requestMetricsDashboard = ({ commit }) => {
 };
 export const receiveMetricsDashboardSuccess = ({ commit, dispatch }, { response, params }) => {
   commit(types.SET_ALL_DASHBOARDS, response.all_dashboards);
-  commit(types.RECEIVE_METRICS_DATA_SUCCESS, response.dashboard.panel_groups);
+  commit(types.RECEIVE_METRICS_DATA_SUCCESS, response.dashboard);
   return dispatch('fetchPrometheusMetrics', params);
 };
 export const receiveMetricsDashboardFailure = ({ commit }, error) => {

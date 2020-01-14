@@ -1123,21 +1123,6 @@ describe Ci::CreatePipelineService do
       it_behaves_like 'when ref is protected'
     end
 
-    context 'when ref is not protected' do
-      context 'when trigger belongs to no one' do
-        let(:user) {}
-        let(:trigger) { create(:ci_trigger, owner: nil) }
-        let(:trigger_request) { create(:ci_trigger_request, trigger: trigger) }
-        let(:pipeline) { execute_service(trigger_request: trigger_request) }
-
-        it 'creates an unprotected pipeline' do
-          expect(pipeline).to be_persisted
-          expect(pipeline).not_to be_protected
-          expect(Ci::Pipeline.count).to eq(1)
-        end
-      end
-    end
-
     context 'when pipeline is running for a tag' do
       before do
         config = YAML.dump(test: { script: 'test', only: ['branches'] },

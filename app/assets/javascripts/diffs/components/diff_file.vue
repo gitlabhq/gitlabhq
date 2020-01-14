@@ -4,6 +4,7 @@ import _ from 'underscore';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import createFlash from '~/flash';
+import { hasDiff } from '~/helpers/diffs_helper';
 import eventHub from '../../notes/event_hub';
 import DiffFileHeader from './diff_file_header.vue';
 import DiffContent from './diff_content.vue';
@@ -55,12 +56,7 @@ export default {
       return this.isLoadingCollapsedDiff || (!this.file.renderIt && !this.isCollapsed);
     },
     hasDiff() {
-      return (
-        (this.file.highlighted_diff_lines &&
-          this.file.parallel_diff_lines &&
-          this.file.parallel_diff_lines.length > 0) ||
-        !this.file.blob.readable_text
-      );
+      return hasDiff(this.file);
     },
     isFileTooLarge() {
       return this.file.viewer.error === diffViewerErrors.too_large;

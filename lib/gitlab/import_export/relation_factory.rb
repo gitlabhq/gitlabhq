@@ -40,7 +40,21 @@ module Gitlab
 
       IMPORTED_OBJECT_MAX_RETRIES = 5.freeze
 
-      EXISTING_OBJECT_CHECK = %i[milestone milestones label labels project_label project_labels group_label group_labels project_feature merge_request ProjectCiCdSetting container_expiration_policy].freeze
+      EXISTING_OBJECT_CHECK = %i[
+        milestone
+        milestones
+        label
+        labels
+        project_label
+        project_labels
+        group_label
+        group_labels
+        project_feature
+        merge_request
+        epic
+        ProjectCiCdSetting
+        container_expiration_policy
+      ].freeze
 
       TOKEN_RESET_MODELS = %i[Project Namespace Ci::Trigger Ci::Build Ci::Runner ProjectHook].freeze
 
@@ -85,9 +99,6 @@ module Gitlab
       # the "members_mapper" object, also updating notes if required.
       def create
         return if unknown_service?
-
-        # Do not import legacy triggers
-        return if !Feature.enabled?(:use_legacy_pipeline_triggers, @project) && legacy_trigger?
 
         setup_models
 
@@ -343,10 +354,6 @@ module Gitlab
       def unknown_service?
         @relation_name == :services && parsed_relation_hash['type'] &&
           !Object.const_defined?(parsed_relation_hash['type'])
-      end
-
-      def legacy_trigger?
-        @relation_name == :'Ci::Trigger' && @relation_hash['owner_id'].nil?
       end
 
       def find_or_create_object!

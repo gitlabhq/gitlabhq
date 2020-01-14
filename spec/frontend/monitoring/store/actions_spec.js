@@ -298,7 +298,7 @@ describe('Monitoring store actions', () => {
       );
       expect(commit).toHaveBeenCalledWith(
         types.RECEIVE_METRICS_DATA_SUCCESS,
-        metricsDashboardResponse.dashboard.panel_groups,
+        metricsDashboardResponse.dashboard,
       );
       expect(dispatch).toHaveBeenCalledWith('fetchPrometheusMetrics', params);
     });
@@ -441,7 +441,7 @@ describe('Monitoring store actions', () => {
     beforeEach(() => {
       state = storeState();
       [metric] = metricsDashboardResponse.dashboard.panel_groups[0].panels[0].metrics;
-      [data] = metricsGroupsAPIResponse[0].panels[0].metrics;
+      [data] = metricsGroupsAPIResponse.panel_groups[0].panels[0].metrics;
     });
 
     it('commits result', done => {

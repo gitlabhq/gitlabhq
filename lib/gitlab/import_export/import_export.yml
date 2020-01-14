@@ -322,6 +322,13 @@ excluded_attributes:
     - :board_id
     - :label_id
     - :milestone_id
+  epic:
+    - :start_date_sourcing_milestone_id
+    - :due_date_sourcing_milestone_id
+    - :parent_id
+    - :state_id
+    - :start_date_sourcing_epic_id
+    - :due_date_sourcing_epic_id
 methods:
   notes:
     - :type
@@ -374,6 +381,7 @@ ee:
         - design_versions:
           - actions:
             - :design # Duplicate export of issues.designs in order to link the record to both Issue and Action
+        - :epic
       - protected_branches:
         - :unprotect_access_levels
       - protected_environments:

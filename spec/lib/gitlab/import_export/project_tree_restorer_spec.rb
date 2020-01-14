@@ -36,10 +36,6 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
     end
 
     context 'JSON' do
-      before do
-        stub_feature_flags(use_legacy_pipeline_triggers: false)
-      end
-
       it 'restores models based on JSON' do
         expect(@restored_project_json).to be_truthy
       end
@@ -502,7 +498,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       end
 
       it_behaves_like 'restores project successfully',
-                      issues: 2,
+                      issues: 3,
                       labels: 2,
                       label_with_priorities: 'A project label',
                       milestones: 2,
@@ -515,7 +511,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
       it 'restores issue states' do
         expect(project.issues.with_state(:closed).count).to eq(1)
-        expect(project.issues.with_state(:opened).count).to eq(1)
+        expect(project.issues.with_state(:opened).count).to eq(2)
       end
     end
 

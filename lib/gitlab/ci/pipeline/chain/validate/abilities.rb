@@ -14,16 +14,12 @@ module Gitlab
                 return error('Pipelines are disabled!')
               end
 
-              if @command.uses_unsupported_legacy_trigger?
-                return error('Trigger token is invalid because is not owned by any user')
+              unless allowed_to_create_pipeline?
+                return error('Insufficient permissions to create a new pipeline')
               end
 
-              unless allowed_to_trigger_pipeline?
-                if can?(current_user, :create_pipeline, project)
-                  return error("Insufficient permissions for protected ref '#{command.ref}'")
-                else
-                  return error('Insufficient permissions to create a new pipeline')
-                end
+              unless allowed_to_write_ref?
+                return error("Insufficient permissions for protected ref '#{command.ref}'")
               end
             end
 
@@ -31,17 +27,13 @@ module Gitlab
               @pipeline.errors.any?
             end
 
-            def allowed_to_trigger_pipeline?
-              if current_user
-                allowed_to_create?
-              else # legacy triggers don't have a corresponding user
-                !@command.protected_ref?
-              end
+            private
+
+            def allowed_to_create_pipeline?
+              can?(current_user, :create_pipeline, project)
             end
 
-            def allowed_to_create?
-              return unless can?(current_user, :create_pipeline, project)
-
+            def allowed_to_write_ref?
               access = Gitlab::UserAccess.new(current_user, project: project)
 
               if @command.branch_exists?

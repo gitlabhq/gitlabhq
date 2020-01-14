@@ -161,3 +161,17 @@ describe Admin::GroupsController, "routing" do
     expect(get("/admin/groups/#{name}/edit")).to route_to('admin/groups#edit', id: name)
   end
 end
+
+describe Admin::SessionsController, "routing" do
+  it "to #new" do
+    expect(get("/admin/session/new")).to route_to('admin/sessions#new')
+  end
+
+  it "to #create" do
+    expect(post("/admin/session")).to route_to('admin/sessions#create')
+  end
+
+  it "to #destroy" do
+    expect(post("/admin/session/destroy")).to route_to('admin/sessions#destroy')
+  end
+end

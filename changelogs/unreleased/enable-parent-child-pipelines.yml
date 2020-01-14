@@ -1,0 +1,5 @@
+---
+title: Allow a pipeline (parent) to create a child pipeline as downstream pipeline within the same project
+merge_request: 21830
+author:
+type: added

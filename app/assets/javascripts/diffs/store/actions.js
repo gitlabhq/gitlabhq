@@ -65,6 +65,10 @@ export const fetchDiffFiles = ({ state, commit }) => {
     w: state.showWhitespace ? '0' : '1',
   };
 
+  if (state.useSingleDiffStyle) {
+    urlParams.view = state.diffViewType;
+  }
+
   commit(types.SET_LOADING, true);
 
   worker.addEventListener('message', ({ data }) => {
@@ -90,13 +94,22 @@ export const fetchDiffFiles = ({ state, commit }) => {
 };
 
 export const fetchDiffFilesBatch = ({ commit, state }) => {
+  const urlParams = {
+    per_page: DIFFS_PER_PAGE,
+    w: state.showWhitespace ? '0' : '1',
+  };
+
+  if (state.useSingleDiffStyle) {
+    urlParams.view = state.diffViewType;
+  }
+
   commit(types.SET_BATCH_LOADING, true);
   commit(types.SET_RETRIEVING_BATCHES, true);
 
   const getBatch = page =>
     axios
       .get(state.endpointBatch, {
-        params: { page, per_page: DIFFS_PER_PAGE, w: state.showWhitespace ? '0' : '1' },
+        params: { ...urlParams, page },
       })
       .then(({ data: { pagination, diff_files } }) => {
         commit(types.SET_DIFF_DATA_BATCH, { diff_files });
@@ -150,7 +163,10 @@ export const assignDiscussionsToDiff = (
   { commit, state, rootState },
   discussions = rootState.notes.discussions,
 ) => {
-  const diffPositionByLineCode = getDiffPositionByLineCode(state.diffFiles);
+  const diffPositionByLineCode = getDiffPositionByLineCode(
+    state.diffFiles,
+    state.useSingleDiffStyle,
+  );
   const hash = getLocationHash();
 
   discussions
@@ -339,24 +355,23 @@ export const toggleFileDiscussions = ({ getters, dispatch }, diff) => {
 
 export const toggleFileDiscussionWrappers = ({ commit }, diff) => {
   const discussionWrappersExpanded = allDiscussionWrappersExpanded(diff);
-  let linesWithDiscussions;
-  if (diff.highlighted_diff_lines) {
-    linesWithDiscussions = diff.highlighted_diff_lines.filter(line => line.discussions.length);
-  }
-  if (diff.parallel_diff_lines) {
-    linesWithDiscussions = diff.parallel_diff_lines.filter(
-      line =>
-        (line.left && line.left.discussions.length) ||
-        (line.right && line.right.discussions.length),
-    );
-  }
+  const lineCodesWithDiscussions = new Set();
+  const { parallel_diff_lines: parallelLines, highlighted_diff_lines: inlineLines } = diff;
+  const allLines = inlineLines.concat(
+    parallelLines.map(line => line.left),
+    parallelLines.map(line => line.right),
+  );
+  const lineHasDiscussion = line => Boolean(line?.discussions.length);
+  const registerDiscussionLine = line => lineCodesWithDiscussions.add(line.line_code);
 
-  if (linesWithDiscussions.length) {
-    linesWithDiscussions.forEach(line => {
+  allLines.filter(lineHasDiscussion).forEach(registerDiscussionLine);
+
+  if (lineCodesWithDiscussions.size) {
+    Array.from(lineCodesWithDiscussions).forEach(lineCode => {
       commit(types.TOGGLE_LINE_DISCUSSIONS, {
         fileHash: diff.file_hash,
-        lineCode: line.line_code,
         expanded: !discussionWrappersExpanded,
+        lineCode,
       });
     });
   }
