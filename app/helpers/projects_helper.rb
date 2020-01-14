@@ -587,6 +587,7 @@ module ProjectsHelper
       lfsHelpPath: help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs'),
       pagesAvailable: Gitlab.config.pages.enabled,
       pagesAccessControlEnabled: Gitlab.config.pages.access_control,
+      pagesAccessControlForced: ::Gitlab::Pages.access_control_is_forced?,
       pagesHelpPath: help_page_path('user/project/pages/introduction', anchor: 'gitlab-pages-access-control-core')
     }
   end

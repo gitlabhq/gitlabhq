@@ -332,6 +332,12 @@ msgstr ""
 msgid "%{openOrClose} %{noteable}"
 msgstr ""
 
+msgid "%{openedEpics} open, %{closedEpics} closed"
+msgstr ""
+
+msgid "%{openedIssues} open, %{closedIssues} closed"
+msgstr ""
+
 msgid "%{percent}%% complete"
 msgstr ""
 
@@ -839,6 +845,9 @@ msgid "Access forbidden. Check your access level."
 msgstr ""
 
 msgid "Access to '%{classification_label}' not allowed"
+msgstr ""
+
+msgid "Access to Pages websites are controlled based on the user's membership to a given project. By checking this box, users will be required to be logged in to have access to all Pages websites in your instance."
 msgstr ""
 
 msgid "AccessDropdown|Groups"
@@ -6318,6 +6327,9 @@ msgstr ""
 msgid "Disable group Runners"
 msgstr ""
 
+msgid "Disable public access to Pages sites"
+msgstr ""
+
 msgid "Disable shared Runners"
 msgstr ""
 
@@ -6999,6 +7011,9 @@ msgstr ""
 msgid "Environments|Environments are places where code gets deployed, such as staging or production."
 msgstr ""
 
+msgid "Environments|Install Elastic Stack on your cluster to enable advanced querying capabilities such as full text search."
+msgstr ""
+
 msgid "Environments|Job"
 msgstr ""
 
@@ -7117,9 +7132,6 @@ msgid "Epics and Issues"
 msgstr ""
 
 msgid "Epics let you manage your portfolio of projects more efficiently and with less effort"
-msgstr ""
-
-msgid "Epics|%{epicsCount} epics and %{issuesCount} issues"
 msgstr ""
 
 msgid "Epics|Add an epic"
@@ -9752,6 +9764,9 @@ msgid "If your HTTP repository is not publicly accessible, add your credentials.
 msgstr ""
 
 msgid "Iglu registry URL (optional)"
+msgstr ""
+
+msgid "Image %{imageName} was scheduled for deletion from the registry."
 msgstr ""
 
 msgid "ImageDiffViewer|2-up"
@@ -18629,9 +18644,6 @@ msgstr ""
 msgid "This commit was signed with an <strong>unverified</strong> signature."
 msgstr ""
 
-msgid "This container registry has been scheduled for deletion."
-msgstr ""
-
 msgid "This date is after the due date, so this epic won't appear in the roadmap."
 msgstr ""
 
@@ -20365,6 +20377,9 @@ msgid "Version"
 msgstr ""
 
 msgid "Very helpful"
+msgstr ""
+
+msgid "View Documentation"
 msgstr ""
 
 msgid "View app"

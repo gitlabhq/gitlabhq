@@ -34,3 +34,11 @@ Read more in the [CI documentation](../ci/yaml/README.md#processing-git-pushes).
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/21164) in GitLab 8.12.
 
 Activity history for projects and individuals' profiles was limited to one year until [GitLab 11.4](https://gitlab.com/gitlab-org/gitlab-foss/issues/52246) when it was extended to two years, and in [GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/issues/33840) to three years.
+
+## Number of project webhooks
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/20730) in GitLab 12.6.
+
+A maximum number of project webhooks applies to each GitLab.com tier. Check the
+[Maximum number of webhooks (per tier)](../user/project/integrations/webhooks.md#maximum-number-of-webhooks-per-tier)
+section in the Webhooks page.

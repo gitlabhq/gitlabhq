@@ -18,6 +18,11 @@ module Gitlab
       def secret_path
         Gitlab.config.pages.secret_file
       end
+
+      def access_control_is_forced?
+        ::Gitlab.config.pages.access_control &&
+          ::Gitlab::CurrentSettings.current_application_settings.force_pages_access_control
+      end
     end
   end
 end

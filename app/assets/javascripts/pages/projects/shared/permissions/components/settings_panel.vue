@@ -82,6 +82,11 @@ export default {
       required: false,
       default: false,
     },
+    pagesAccessControlForced: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     pagesHelpPath: {
       type: String,
       required: false,
@@ -130,10 +135,22 @@ export default {
     },
 
     pagesFeatureAccessLevelOptions() {
-      if (this.visibilityLevel !== visibilityOptions.PUBLIC) {
-        return this.featureAccessLevelOptions.concat([[30, PAGE_FEATURE_ACCESS_LEVEL]]);
+      const options = [featureAccessLevelMembers];
+
+      if (this.pagesAccessControlForced) {
+        if (this.visibilityLevel === visibilityOptions.INTERNAL) {
+          options.push(featureAccessLevelEveryone);
+        }
+      } else {
+        if (this.visibilityLevel !== visibilityOptions.PRIVATE) {
+          options.push(featureAccessLevelEveryone);
+        }
+
+        if (this.visibilityLevel !== visibilityOptions.PUBLIC) {
+          options.push([30, PAGE_FEATURE_ACCESS_LEVEL]);
+        }
       }
-      return this.featureAccessLevelOptions;
+      return options;
     },
 
     repositoryEnabled() {

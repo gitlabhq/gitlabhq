@@ -40,6 +40,7 @@ An epic's page contains the following tabs:
 
 - **Epics and Issues**: epics and issues added to this epic. Child epics, and their issues, are shown in a tree view.
   - Click on the <kbd>></kbd> beside a parent epic to reveal the child epics and issues.
+  - Hover over the total counts to see a breakdown of open and closed items.
 - **Roadmap**: a roadmap view of child epics which have start and due dates.
 
 ![epic view](img/epic_view_v12.3.png)

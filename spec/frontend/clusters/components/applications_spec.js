@@ -17,7 +17,6 @@ describe('Applications', () => {
 
     gon.features = gon.features || {};
     gon.features.enableClusterApplicationElasticStack = true;
-    gon.features.enableClusterApplicationCrossplane = true;
   });
 
   afterEach(() => {

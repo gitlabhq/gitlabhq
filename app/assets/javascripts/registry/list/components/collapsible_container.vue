@@ -14,7 +14,7 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import TableRegistry from './table_registry.vue';
 import { DELETE_REPO_ERROR_MESSAGE } from '../constants';
-import { __ } from '~/locale';
+import { __, sprintf } from '~/locale';
 
 export default {
   name: 'CollapsibeContainerRegisty',
@@ -55,6 +55,11 @@ export default {
     canDeleteRepo() {
       return this.repo.canDelete && !this.isDeleteDisabled;
     },
+    deleteImageConfirmationMessage() {
+      return sprintf(__('Image %{imageName} was scheduled for deletion from the registry.'), {
+        imageName: this.repo.name,
+      });
+    },
   },
   methods: {
     ...mapActions(['fetchRepos', 'fetchList', 'deleteItem']),
@@ -69,7 +74,7 @@ export default {
       this.track('confirm_delete');
       return this.deleteItem(this.repo)
         .then(() => {
-          createFlash(__('This container registry has been scheduled for deletion.'), 'notice');
+          createFlash(this.deleteImageConfirmationMessage, 'notice');
           this.fetchRepos();
         })
         .catch(() => createFlash(DELETE_REPO_ERROR_MESSAGE));

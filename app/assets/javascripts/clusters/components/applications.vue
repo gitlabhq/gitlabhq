@@ -129,9 +129,6 @@ export default {
     crossplaneInstalled() {
       return this.applications.crossplane.status === APPLICATION_STATUS.INSTALLED;
     },
-    enableClusterApplicationCrossplane() {
-      return gon.features && gon.features.enableClusterApplicationCrossplane;
-    },
     enableClusterApplicationElasticStack() {
       return gon.features && gon.features.enableClusterApplicationElasticStack;
     },
@@ -519,7 +516,6 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
         </div>
       </application-row>
       <application-row
-        v-if="enableClusterApplicationCrossplane"
         id="crossplane"
         :logo-url="crossplaneLogo"
         :title="applications.crossplane.title"

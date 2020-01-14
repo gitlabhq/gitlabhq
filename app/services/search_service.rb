@@ -3,6 +3,9 @@
 class SearchService
   include Gitlab::Allowable
 
+  SEARCH_TERM_LIMIT = 64
+  SEARCH_CHAR_LIMIT = 4096
+
   def initialize(current_user, params = {})
     @current_user = current_user
     @params = params.dup
@@ -40,6 +43,14 @@ class SearchService
     return @show_snippets if defined?(@show_snippets)
 
     @show_snippets = params[:snippets] == 'true'
+  end
+
+  def valid_query_length?
+    params[:search].length <= SEARCH_CHAR_LIMIT
+  end
+
+  def valid_terms_count?
+    params[:search].split.count { |word| word.length >= 3 } <= SEARCH_TERM_LIMIT
   end
 
   delegate :scope, to: :search_service

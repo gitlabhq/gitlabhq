@@ -89,18 +89,30 @@ describe('collapsible registry container', () => {
   });
 
   describe('delete repo', () => {
+    beforeEach(() => {
+      const deleteItem = jest.fn().mockResolvedValue();
+      const fetchRepos = jest.fn().mockResolvedValue();
+      wrapper.setMethods({ deleteItem, fetchRepos });
+    });
+
     it('should be possible to delete a repo', () => {
       const deleteBtn = findDeleteBtn();
       expect(deleteBtn.exists()).toBe(true);
     });
 
     it('should call deleteItem when confirming deletion', () => {
-      const deleteItem = jest.fn().mockResolvedValue();
-      const fetchRepos = jest.fn().mockResolvedValue();
-      wrapper.setMethods({ deleteItem, fetchRepos });
       wrapper.vm.handleDeleteRepository();
       expect(wrapper.vm.deleteItem).toHaveBeenCalledWith(wrapper.vm.repo);
     });
+
+    it('should show a flash with a success notice', () =>
+      wrapper.vm.handleDeleteRepository().then(() => {
+        expect(wrapper.vm.deleteImageConfirmationMessage).toContain(wrapper.vm.repo.name);
+        expect(createFlash).toHaveBeenCalledWith(
+          wrapper.vm.deleteImageConfirmationMessage,
+          'notice',
+        );
+      }));
 
     it('should show an error when there is API error', () => {
       const deleteItem = jest.fn().mockRejectedValue('error');

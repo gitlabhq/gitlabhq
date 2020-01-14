@@ -420,18 +420,6 @@ install Crossplane using the
 [`values.yaml`](https://github.com/crossplaneio/crossplane/blob/master/cluster/charts/crossplane/values.yaml.tmpl)
 file.
 
-#### Enabling installation
-
-This is a preliminary release of Crossplane as a GitLab-managed application. By default,
-the ability to install it is disabled.
-
-To allow installation of Crossplane as a GitLab-managed application, ask a GitLab
-administrator to run following command within a Rails console:
-
-```ruby
-Feature.enable(:enable_cluster_application_crossplane)
-```
-
 ### Elastic Stack
 
 > Introduced in GitLab 12.7 for project- and group-level clusters.

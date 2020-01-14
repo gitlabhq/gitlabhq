@@ -307,6 +307,27 @@ Pages access control is disabled by default. To enable it:
 1. [Reconfigure GitLab][reconfigure].
 1. Users can now configure it in their [projects' settings](../../user/project/pages/pages_access_control.md).
 
+#### Disabling public access to all Pages websites
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/32095) in GitLab 12.7.
+
+You can enforce [Access Control](#access-control) for all GitLab Pages websites hosted
+on your GitLab instance. By doing so, only logged-in users will have access to them.
+This setting overrides Access Control set by users in individual projects.
+
+This can be useful to preserve information published with Pages websites to the users
+of your instance only.
+To do that:
+
+1. Navigate to your instance's **Admin Area > Settings > Preferences** and expand **Pages** settings.
+1. Check the **Disable public access to Pages sites** checkbox.
+1. Click **Save changes**.
+
+CAUTION: **Warning:**
+This action will not make all currently public web-sites private until they redeployed.
+This issue among others will be resolved by
+[changing GitLab Pages configuration mechanism](https://gitlab.com/gitlab-org/gitlab-pages/issues/282).
+
 ### Running behind a proxy
 
 Like the rest of GitLab, Pages can be used in those environments where external

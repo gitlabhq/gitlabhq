@@ -106,8 +106,8 @@ describe SearchController do
 
       context 'check search term length' do
         let(:search_queries) do
-          char_limit = controller.class::NON_ES_SEARCH_CHAR_LIMIT
-          term_limit = controller.class::NON_ES_SEARCH_TERM_LIMIT
+          char_limit = SearchService::SEARCH_CHAR_LIMIT
+          term_limit = SearchService::SEARCH_TERM_LIMIT
           {
             chars_under_limit: ('a' * (char_limit - 1)),
             chars_over_limit: ('a' * (char_limit + 1)),
@@ -116,21 +116,15 @@ describe SearchController do
           }
         end
 
-        where(:es_enabled, :string_name, :expectation) do
-          true  | :chars_under_limit | :not_to_set_flash
-          true  | :chars_over_limit  | :not_to_set_flash
-          true  | :terms_under_limit | :not_to_set_flash
-          true  | :terms_over_limit  | :not_to_set_flash
-          false | :chars_under_limit | :not_to_set_flash
-          false | :chars_over_limit  | :set_chars_flash
-          false | :terms_under_limit | :not_to_set_flash
-          false | :terms_over_limit  | :set_terms_flash
+        where(:string_name, :expectation) do
+          :chars_under_limit | :not_to_set_flash
+          :chars_over_limit  | :set_chars_flash
+          :terms_under_limit | :not_to_set_flash
+          :terms_over_limit  | :set_terms_flash
         end
 
         with_them do
           it do
-            allow(Gitlab::CurrentSettings).to receive(:elasticsearch_search?).and_return(es_enabled)
-
             get :show, params: { scope: 'projects', search: search_queries[string_name] }
 
             case expectation

@@ -153,7 +153,7 @@ You can also edit an existing tag to add release notes:
 
 ![tags](img/tags_12_5.png "Addition of note to an existing tag")
 
-## Release evidence
+## Release Evidence
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/26019) in GitLab 12.6.
 
@@ -215,6 +215,22 @@ Here is what this object can look like:
   }
 }
 ```
+
+### Enabling Release Evidence display **(CORE ONLY)**
+
+This feature comes with the `:release_evidence_collection` feature flag
+disabled by default in GitLab self-managed instances. To turn it on,
+ask a GitLab administrator with Rails console access to run the following
+command:
+
+```ruby
+Feature.enable(:release_evidence_collection)
+```
+
+NOTE: **Note:**
+Please note that Release Evidence's data is collected regardless of this
+feature flag, which only enables or disables the display of the data on the
+Releases page.
 
 <!-- ## Troubleshooting
 

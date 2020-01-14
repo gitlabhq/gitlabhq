@@ -5,9 +5,6 @@ class SearchController < ApplicationController
   include SearchHelper
   include RendersCommits
 
-  NON_ES_SEARCH_TERM_LIMIT = 64
-  NON_ES_SEARCH_CHAR_LIMIT = 4096
-
   around_action :allow_gitaly_ref_name_caching
 
   skip_before_action :authenticate_user!
@@ -68,19 +65,13 @@ class SearchController < ApplicationController
   private
 
   def search_term_valid?
-    return true if Gitlab::CurrentSettings.elasticsearch_search?
-
-    chars_count = params[:search].length
-    if chars_count > NON_ES_SEARCH_CHAR_LIMIT
-      flash[:alert] = t('errors.messages.search_chars_too_long', count: NON_ES_SEARCH_CHAR_LIMIT)
-
+    unless search_service.valid_query_length?
+      flash[:alert] = t('errors.messages.search_chars_too_long', count: SearchService::SEARCH_CHAR_LIMIT)
       return false
     end
 
-    search_terms_count = params[:search].split.count { |word| word.length >= 3 }
-    if search_terms_count > NON_ES_SEARCH_TERM_LIMIT
-      flash[:alert] = t('errors.messages.search_terms_too_long', count: NON_ES_SEARCH_TERM_LIMIT)
-
+    unless search_service.valid_terms_count?
+      flash[:alert] = t('errors.messages.search_terms_too_long', count: SearchService::SEARCH_TERM_LIMIT)
       return false
     end
 

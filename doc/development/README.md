@@ -72,6 +72,7 @@ description: 'Learn how to contribute to GitLab.'
 - [Mass Inserting Models](mass_insert.md)
 - [Cycle Analytics development guide](cycle_analytics.md)
 - [Issue types vs first-class types](issue_types.md)
+- [Application limits](application_limits.md)
 
 ## Performance guides
 

@@ -15,6 +15,15 @@
       .form-text.text-muted
         = _("Domain verification is an essential security measure for public GitLab sites. Users are required to demonstrate they control a domain before it is enabled")
         = link_to icon('question-circle'), help_page_path('user/project/pages/custom_domains_ssl_tls_certification/index.md', anchor: '4-verify-the-domains-ownership')
+    - if Gitlab.config.pages.access_control
+      .form-group
+        .form-check
+          = f.check_box :force_pages_access_control, class: 'form-check-input'
+          = f.label :force_pages_access_control, class: 'form-check-label' do
+            = _("Disable public access to Pages sites")
+        .form-text.text-muted
+          = _("Access to Pages websites are controlled based on the user's membership to a given project. By checking this box, users will be required to be logged in to have access to all Pages websites in your instance.")
+          = link_to icon('question-circle'), help_page_path('administration/pages/index.md', anchor: 'disabling-public-access-to-all-pages-websites')
     %h5
       = _("Configure Let's Encrypt")
     %p

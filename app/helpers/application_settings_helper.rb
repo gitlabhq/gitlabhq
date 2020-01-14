@@ -202,6 +202,7 @@ module ApplicationSettingsHelper
       :enabled_git_access_protocol,
       :enforce_terms,
       :first_day_of_week,
+      :force_pages_access_control,
       :gitaly_timeout_default,
       :gitaly_timeout_medium,
       :gitaly_timeout_fast,
