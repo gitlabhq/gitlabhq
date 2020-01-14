@@ -141,6 +141,13 @@ describe('DiffsStoreActions', () => {
           done();
         },
       );
+
+      fetchDiffFiles({ state: { endpoint }, commit: () => null })
+        .then(data => {
+          expect(data).toEqual(res);
+          done();
+        })
+        .catch(done.fail);
     });
   });
 

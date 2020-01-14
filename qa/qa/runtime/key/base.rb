@@ -4,7 +4,7 @@ module QA
   module Runtime
     module Key
       class Base
-        attr_reader :name, :bits, :private_key, :public_key, :fingerprint
+        attr_reader :name, :bits, :private_key, :public_key, :md5_fingerprint
 
         def initialize(name, bits)
           @name = name
@@ -29,7 +29,7 @@ module QA
         def populate_key_data(path)
           @private_key = ::File.binread(path)
           @public_key = ::File.binread("#{path}.pub")
-          @fingerprint =
+          @md5_fingerprint =
             `ssh-keygen -l -E md5 -f #{path} | cut -d' ' -f2 | cut -d: -f2-`.chomp
         end
       end

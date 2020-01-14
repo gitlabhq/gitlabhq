@@ -629,7 +629,7 @@ GEM
     nakayoshi_fork (0.0.4)
     nap (1.1.0)
     nenv (0.3.0)
-    net-ldap (0.16.0)
+    net-ldap (0.16.2)
     net-ntp (2.1.3)
     net-ssh (5.2.0)
     netrc (0.11.0)

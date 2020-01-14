@@ -64,6 +64,7 @@ export const fetchDiffFiles = ({ state, commit }) => {
   const urlParams = {
     w: state.showWhitespace ? '0' : '1',
   };
+  let returnData;
 
   if (state.useSingleDiffStyle) {
     urlParams.view = state.diffViewType;
@@ -87,9 +88,13 @@ export const fetchDiffFiles = ({ state, commit }) => {
 
       worker.postMessage(state.diffFiles);
 
+      returnData = res.data;
       return Vue.nextTick();
     })
-    .then(handleLocationHash)
+    .then(() => {
+      handleLocationHash();
+      return returnData;
+    })
     .catch(() => worker.terminate());
 };
 
@@ -147,6 +152,7 @@ export const fetchDiffFilesMeta = ({ commit, state }) => {
 
       prepareDiffData(data);
       worker.postMessage(data.diff_files);
+      return data;
     })
     .catch(() => worker.terminate());
 };

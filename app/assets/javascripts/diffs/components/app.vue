@@ -95,6 +95,7 @@ export default {
 
     return {
       treeWidth,
+      diffFilesLength: 0,
     };
   },
   computed: {
@@ -241,7 +242,8 @@ export default {
     fetchData(toggleTree = true) {
       if (this.glFeatures.diffsBatchLoad) {
         this.fetchDiffFilesMeta()
-          .then(() => {
+          .then(({ real_size }) => {
+            this.diffFilesLength = parseInt(real_size, 10);
             if (toggleTree) this.hideTreeListIfJustOneFile();
 
             this.startDiffRendering();
@@ -264,7 +266,8 @@ export default {
           });
       } else {
         this.fetchDiffFiles()
-          .then(() => {
+          .then(({ real_size }) => {
+            this.diffFilesLength = parseInt(real_size, 10);
             if (toggleTree) {
               this.hideTreeListIfJustOneFile();
             }
@@ -351,6 +354,7 @@ export default {
         :merge-request-diff="mergeRequestDiff"
         :target-branch="targetBranch"
         :is-limited-container="isLimitedContainer"
+        :diff-files-length="diffFilesLength"
       />
 
       <hidden-files-warning

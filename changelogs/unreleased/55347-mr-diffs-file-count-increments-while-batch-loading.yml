@@ -1,0 +1,5 @@
+---
+title: Fix MR diffs file count increments while batch loading
+merge_request: 21764
+author:
+type: fixed

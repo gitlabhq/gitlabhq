@@ -18,7 +18,7 @@ module QA
           view 'app/assets/javascripts/deploy_keys/components/key.vue' do
             element :key
             element :key_title
-            element :key_fingerprint
+            element :key_md5_fingerprint
           end
 
           def add_key
@@ -33,29 +33,23 @@ module QA
             fill_in 'deploy_key_key', with: key
           end
 
-          def find_fingerprint(title)
+          def find_md5_fingerprint(title)
             within_project_deploy_keys do
               find_element(:key, text: title)
-                .find(element_selector_css(:key_fingerprint)).text
+                .find(element_selector_css(:key_md5_fingerprint)).text.delete_prefix('MD5:')
             end
           end
 
-          def has_key?(title, fingerprint)
+          def has_key?(title, md5_fingerprint)
             within_project_deploy_keys do
               find_element(:key, text: title)
-                .has_css?(element_selector_css(:key_fingerprint), text: fingerprint)
+                .has_css?(element_selector_css(:key_md5_fingerprint), text: "MD5:#{md5_fingerprint}")
             end
           end
 
           def key_title
             within_project_deploy_keys do
               find_element(:key_title).text
-            end
-          end
-
-          def key_fingerprint
-            within_project_deploy_keys do
-              find_element(:key_fingerprint).text
             end
           end
 

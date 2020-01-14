@@ -77,7 +77,7 @@ describe('diffs/components/app', () => {
     beforeEach(done => {
       const fetchResolver = () => {
         store.state.diffs.retrievingBatches = false;
-        return Promise.resolve();
+        return Promise.resolve({ real_size: 100 });
       };
       spyOn(window, 'requestIdleCallback').and.callFake(fn => fn());
       createComponent();
@@ -229,6 +229,7 @@ describe('diffs/components/app', () => {
     });
 
     it('calls fetchDiffFiles if diffsBatchLoad is not enabled', done => {
+      expect(wrapper.vm.diffFilesLength).toEqual(0);
       wrapper.vm.glFeatures.diffsBatchLoad = false;
       wrapper.vm.fetchData(false);
 
@@ -238,12 +239,14 @@ describe('diffs/components/app', () => {
         expect(wrapper.vm.fetchDiffFilesMeta).not.toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesBatch).not.toHaveBeenCalled();
         expect(wrapper.vm.unwatchDiscussions).toHaveBeenCalled();
+        expect(wrapper.vm.diffFilesLength).toEqual(100);
 
         done();
       });
     });
 
     it('calls batch methods if diffsBatchLoad is enabled, and not latest version', done => {
+      expect(wrapper.vm.diffFilesLength).toEqual(0);
       wrapper.vm.glFeatures.diffsBatchLoad = true;
       wrapper.vm.isLatestVersion = () => false;
       wrapper.vm.fetchData(false);
@@ -254,11 +257,13 @@ describe('diffs/components/app', () => {
         expect(wrapper.vm.fetchDiffFilesMeta).toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesBatch).toHaveBeenCalled();
         expect(wrapper.vm.unwatchDiscussions).toHaveBeenCalled();
+        expect(wrapper.vm.diffFilesLength).toEqual(100);
         done();
       });
     });
 
     it('calls batch methods if diffsBatchLoad is enabled, and latest version', done => {
+      expect(wrapper.vm.diffFilesLength).toEqual(0);
       wrapper.vm.glFeatures.diffsBatchLoad = true;
       wrapper.vm.fetchData(false);
 
@@ -268,6 +273,7 @@ describe('diffs/components/app', () => {
         expect(wrapper.vm.fetchDiffFilesMeta).toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesBatch).toHaveBeenCalled();
         expect(wrapper.vm.unwatchDiscussions).toHaveBeenCalled();
+        expect(wrapper.vm.diffFilesLength).toEqual(100);
         done();
       });
     });

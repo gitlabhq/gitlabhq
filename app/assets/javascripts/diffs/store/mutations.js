@@ -179,16 +179,19 @@ export default {
     const mapDiscussions = (line, extraCheck = () => true) => ({
       ...line,
       discussions: extraCheck()
-        ? line.discussions
+        ? line.discussions &&
+          line.discussions
             .filter(() => !line.discussions.some(({ id }) => discussion.id === id))
             .concat(lineCheck(line) ? discussion : line.discussions)
         : [],
     });
 
     const setDiscussionsExpanded = line => {
-      const isLineNoteTargeted = line.discussions.some(
-        disc => disc.notes && disc.notes.find(note => hash === `note_${note.id}`),
-      );
+      const isLineNoteTargeted =
+        line.discussions &&
+        line.discussions.some(
+          disc => disc.notes && disc.notes.find(note => hash === `note_${note.id}`),
+        );
 
       return {
         ...line,

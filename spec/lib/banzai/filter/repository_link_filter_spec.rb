@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Filter::RelativeLinkFilter do
+describe Banzai::Filter::RepositoryLinkFilter do
   include GitHelpers
   include RepoHelpers
 
@@ -128,11 +128,6 @@ describe Banzai::Filter::RelativeLinkFilter do
     expect { filter(act) }.not_to raise_error
   end
 
-  it 'does not raise an exception on URIs containing invalid utf-8 byte sequences in uploads' do
-    act = link("/uploads/%FF")
-    expect { filter(act) }.not_to raise_error
-  end
-
   it 'does not raise an exception on URIs containing invalid utf-8 byte sequences in context requested path' do
     expect { filter(link("files/test.md"), requested_path: '%FF') }.not_to raise_error
   end
@@ -144,11 +139,6 @@ describe Banzai::Filter::RelativeLinkFilter do
 
   it 'does not explode with an escaped null byte' do
     act = link("/%00")
-    expect { filter(act) }.not_to raise_error
-  end
-
-  it 'does not raise an exception with a space in the path' do
-    act = link("/uploads/d18213acd3732630991986120e167e3d/Landscape_8.jpg  \nBut here's some more unexpected text :smile:)")
     expect { filter(act) }.not_to raise_error
   end
 
@@ -349,167 +339,5 @@ describe Banzai::Filter::RelativeLinkFilter do
     let(:commit) { nil }
 
     include_examples :valid_repository
-  end
-
-  context 'with a /upload/ URL' do
-    # not needed
-    let(:commit) { nil }
-    let(:ref) { nil }
-    let(:requested_path) { nil }
-    let(:upload_path) { '/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg' }
-    let(:relative_path) { "/#{project.full_path}#{upload_path}" }
-
-    context 'to a project upload' do
-      shared_examples 'rewrite project uploads' do
-        context 'with an absolute URL' do
-          let(:absolute_path) { Gitlab.config.gitlab.url + relative_path }
-          let(:only_path) { false }
-
-          it 'rewrites the link correctly' do
-            doc = filter(link(upload_path))
-
-            expect(doc.at_css('a')['href']).to eq(absolute_path)
-          end
-        end
-
-        it 'rebuilds relative URL for a link' do
-          doc = filter(link(upload_path))
-          expect(doc.at_css('a')['href']).to eq(relative_path)
-
-          doc = filter(nested(link(upload_path)))
-          expect(doc.at_css('a')['href']).to eq(relative_path)
-        end
-
-        it 'rebuilds relative URL for an image' do
-          doc = filter(image(upload_path))
-          expect(doc.at_css('img')['src']).to eq(relative_path)
-
-          doc = filter(nested(image(upload_path)))
-          expect(doc.at_css('img')['src']).to eq(relative_path)
-        end
-
-        it 'does not modify absolute URL' do
-          doc = filter(link('http://example.com'))
-          expect(doc.at_css('a')['href']).to eq 'http://example.com'
-        end
-
-        it 'supports unescaped Unicode filenames' do
-          path = '/uploads/한글.png'
-          doc = filter(link(path))
-
-          expect(doc.at_css('a')['href']).to eq("/#{project.full_path}/uploads/%ED%95%9C%EA%B8%80.png")
-        end
-
-        it 'supports escaped Unicode filenames' do
-          path = '/uploads/한글.png'
-          escaped = Addressable::URI.escape(path)
-          doc = filter(image(escaped))
-
-          expect(doc.at_css('img')['src']).to eq("/#{project.full_path}/uploads/%ED%95%9C%EA%B8%80.png")
-        end
-      end
-
-      context 'without project repository access' do
-        let(:project) { create(:project, :repository, repository_access_level: ProjectFeature::PRIVATE) }
-
-        it_behaves_like 'rewrite project uploads'
-      end
-
-      context 'with project repository access' do
-        it_behaves_like 'rewrite project uploads'
-      end
-    end
-
-    context 'to a group upload' do
-      let(:upload_link) { link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg') }
-      let(:group) { create(:group) }
-      let(:project) { nil }
-      let(:relative_path) { "/groups/#{group.full_path}/-/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg" }
-
-      context 'with an absolute URL' do
-        let(:absolute_path) { Gitlab.config.gitlab.url + relative_path }
-        let(:only_path) { false }
-
-        it 'rewrites the link correctly' do
-          doc = filter(upload_link)
-
-          expect(doc.at_css('a')['href']).to eq(absolute_path)
-        end
-      end
-
-      it 'rewrites the link correctly' do
-        doc = filter(upload_link)
-
-        expect(doc.at_css('a')['href']).to eq(relative_path)
-      end
-
-      it 'rewrites the link correctly for subgroup' do
-        group.update!(parent: create(:group))
-
-        doc = filter(upload_link)
-
-        expect(doc.at_css('a')['href']).to eq(relative_path)
-      end
-
-      it 'does not modify absolute URL' do
-        doc = filter(link('http://example.com'))
-
-        expect(doc.at_css('a')['href']).to eq 'http://example.com'
-      end
-    end
-
-    context 'to a personal snippet' do
-      let(:group) { nil }
-      let(:project) { nil }
-      let(:relative_path) { '/uploads/-/system/personal_snippet/6/674e4f07fbf0a7736c3439212896e51a/example.tar.gz' }
-
-      context 'with an absolute URL' do
-        let(:absolute_path) { Gitlab.config.gitlab.url + relative_path }
-        let(:only_path) { false }
-
-        it 'rewrites the link correctly' do
-          doc = filter(link(relative_path))
-
-          expect(doc.at_css('a')['href']).to eq(absolute_path)
-        end
-      end
-
-      context 'with a relative URL root' do
-        let(:gitlab_root) { '/gitlab' }
-        let(:absolute_path) { Gitlab.config.gitlab.url + gitlab_root + relative_path }
-
-        before do
-          stub_config_setting(relative_url_root: gitlab_root)
-        end
-
-        context 'with an absolute URL' do
-          let(:only_path) { false }
-
-          it 'rewrites the link correctly' do
-            doc = filter(link(relative_path))
-
-            expect(doc.at_css('a')['href']).to eq(absolute_path)
-          end
-        end
-
-        it 'rewrites the link correctly' do
-          doc = filter(link(relative_path))
-
-          expect(doc.at_css('a')['href']).to eq(gitlab_root + relative_path)
-        end
-      end
-
-      it 'rewrites the link correctly' do
-        doc = filter(link(relative_path))
-
-        expect(doc.at_css('a')['href']).to eq(relative_path)
-      end
-
-      it 'does not modify absolute URL' do
-        doc = filter(link('http://example.com'))
-
-        expect(doc.at_css('a')['href']).to eq 'http://example.com'
-      end
-    end
   end
 end

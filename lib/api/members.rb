@@ -101,12 +101,12 @@ module API
           user = User.find_by_id(params[:user_id])
           not_found!('User') unless user
 
-          member = source.add_user(user, params[:access_level], current_user: current_user, expires_at: params[:expires_at])
+          member = create_member(current_user, user, source, params)
 
           if !member
             not_allowed! # This currently can only be reached in EE
           elsif member.persisted? && member.valid?
-            present_members member
+            present_members(member)
           else
             render_validation_error!(member)
           end

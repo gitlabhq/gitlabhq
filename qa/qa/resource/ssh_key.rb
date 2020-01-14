@@ -7,7 +7,7 @@ module QA
 
       attr_accessor :title
 
-      def_delegators :key, :private_key, :public_key, :fingerprint
+      def_delegators :key, :private_key, :public_key, :md5_fingerprint
 
       def key
         @key ||= Runtime::Key::RSA.new

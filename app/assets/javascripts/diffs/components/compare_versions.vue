@@ -42,9 +42,13 @@ export default {
       required: false,
       default: false,
     },
+    diffFilesLength: {
+      type: Number,
+      required: true,
+    },
   },
   computed: {
-    ...mapGetters('diffs', ['hasCollapsedFile', 'diffFilesLength']),
+    ...mapGetters('diffs', ['hasCollapsedFile']),
     ...mapState('diffs', [
       'commit',
       'showTreeList',

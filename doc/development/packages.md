@@ -21,6 +21,7 @@ The goal of the Package group is to build a set of features that, within three y
 | Format | Use case |
 | ------ | ------ |
 | [Bower](https://gitlab.com/gitlab-org/gitlab/issues/36888) | Boost your front end development by hosting your own Bower components.  |
+| [Cargo](https://gitlab.com/gitlab-org/gitlab/issues/33060) | Cargo is the Rust package manager. Build, publish and share Rust packages  |
 | [Chef](https://gitlab.com/gitlab-org/gitlab/issues/36889) | Configuration management with Chef using all the benefits of a repository manager. |
 | [CocoaPods](https://gitlab.com/gitlab-org/gitlab/issues/36890) | Speed up development with Xcode and CocoaPods. |
 | [Conda](https://gitlab.com/gitlab-org/gitlab/issues/36891) | Secure and private local Conda repositories. |

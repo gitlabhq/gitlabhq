@@ -298,7 +298,7 @@ log data to build up in `pg_xlog`. Removing the unused slots can reduce the amou
 1. Start a PostgreSQL console session:
 
    ```sh
-   sudo gitlab-psql gitlabhq_production
+   sudo gitlab-psql
    ```
 
    Note: **Note:** Using `gitlab-rails dbconsole` will not work, because managing replication slots requires superuser permissions.

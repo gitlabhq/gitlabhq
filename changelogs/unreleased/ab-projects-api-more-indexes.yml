@@ -1,0 +1,5 @@
+---
+title: Add more indexes for other order_by options (Projects API)
+merge_request: 22784
+author:
+type: performance

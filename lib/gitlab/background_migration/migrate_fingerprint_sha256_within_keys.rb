@@ -24,12 +24,14 @@ module Gitlab
 
           fingerprints = []
           Key.where(id: start_id..stop_id, fingerprint_sha256: nil).find_each do |regular_key|
-            fingerprint = Base64.decode64(generate_ssh_public_key(regular_key.key))
+            if fingerprint = generate_ssh_public_key(regular_key.key)
+              bytea = ActiveRecord::Base.connection.escape_bytea(Base64.decode64(fingerprint))
 
-            fingerprints << {
-              id: regular_key.id,
-              fingerprint_sha256: ActiveRecord::Base.connection.escape_bytea(fingerprint)
-            }
+              fingerprints << {
+                id: regular_key.id,
+                fingerprint_sha256: bytea
+              }
+            end
           end
 
           Gitlab::Database.bulk_insert(TEMP_TABLE, fingerprints)
@@ -48,7 +50,7 @@ module Gitlab
       private
 
       def generate_ssh_public_key(regular_key)
-        Gitlab::SSHPublicKey.new(regular_key).fingerprint("SHA256").gsub("SHA256:", "")
+        Gitlab::SSHPublicKey.new(regular_key).fingerprint("SHA256")&.gsub("SHA256:", "")
       end
 
       def execute(query)

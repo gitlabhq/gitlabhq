@@ -4,19 +4,17 @@ require 'uri'
 
 module Banzai
   module Filter
-    # HTML filter that "fixes" relative links to uploads or files in a repository.
+    # HTML filter that "fixes" relative links to files in a repository.
     #
     # Context options:
     #   :commit
-    #   :group
     #   :current_user
     #   :project
     #   :project_wiki
     #   :ref
     #   :requested_path
-    class RelativeLinkFilter < HTML::Pipeline::Filter
-      include Gitlab::Utils::StrongMemoize
-
+    #   :system_note
+    class RepositoryLinkFilter < BaseRelativeLinkFilter
       def call
         return doc if context[:system_note]
 
@@ -26,7 +24,9 @@ module Banzai
         load_uri_types
 
         linkable_attributes.each do |attr|
-          process_link_attr(attr)
+          if linkable_files? && repo_visible_to_user?
+            process_link_to_repository_attr(attr)
+          end
         end
 
         doc
@@ -35,8 +35,8 @@ module Banzai
       protected
 
       def load_uri_types
-        return unless linkable_files?
         return unless linkable_attributes.present?
+        return unless linkable_files?
         return {} unless repository
 
         @uri_types = request_path.present? ? get_uri_types([request_path]) : {}
@@ -54,24 +54,6 @@ module Banzai
       def linkable_files?
         strong_memoize(:linkable_files) do
           context[:project_wiki].nil? && repository.try(:exists?) && !repository.empty?
-        end
-      end
-
-      def linkable_attributes
-        strong_memoize(:linkable_attributes) do
-          attrs = []
-
-          attrs += doc.search('a:not(.gfm)').map do |el|
-            el.attribute('href')
-          end
-
-          attrs += doc.search('img, video, audio').flat_map do |el|
-            [el.attribute('src'), el.attribute('data-src')]
-          end
-
-          attrs.reject do |attr|
-            attr.blank? || attr.value.start_with?('//')
-          end
         end
       end
 
@@ -105,39 +87,6 @@ module Banzai
 
         uri if uri.relative? && uri.path.present?
       rescue URI::Error, Addressable::URI::InvalidURIError
-      end
-
-      def process_link_attr(html_attr)
-        if html_attr.value.start_with?('/uploads/')
-          process_link_to_upload_attr(html_attr)
-        elsif linkable_files? && repo_visible_to_user?
-          process_link_to_repository_attr(html_attr)
-        end
-      end
-
-      def process_link_to_upload_attr(html_attr)
-        path_parts = [unescape_and_scrub_uri(html_attr.value)]
-
-        if project
-          path_parts.unshift(relative_url_root, project.full_path)
-        elsif group
-          path_parts.unshift(relative_url_root, 'groups', group.full_path, '-')
-        else
-          path_parts.unshift(relative_url_root)
-        end
-
-        begin
-          path = Addressable::URI.escape(File.join(*path_parts))
-        rescue Addressable::URI::InvalidURIError
-          return
-        end
-
-        html_attr.value =
-          if context[:only_path]
-            path
-          else
-            Addressable::URI.join(Gitlab.config.gitlab.base_url, path).to_s
-          end
       end
 
       def process_link_to_repository_attr(html_attr)
@@ -239,10 +188,6 @@ module Banzai
         @current_commit ||= context[:commit] || repository.commit(ref)
       end
 
-      def relative_url_root
-        Gitlab.config.gitlab.relative_url_root.presence || '/'
-      end
-
       def repo_visible_to_user?
         project && Ability.allowed?(current_user, :download_code, project)
       end
@@ -251,26 +196,12 @@ module Banzai
         context[:ref] || project.default_branch
       end
 
-      def group
-        context[:group]
-      end
-
-      def project
-        context[:project]
-      end
-
       def current_user
         context[:current_user]
       end
 
       def repository
         @repository ||= project&.repository
-      end
-
-      private
-
-      def unescape_and_scrub_uri(uri)
-        Addressable::URI.unescape(uri).scrub
       end
     end
   end

@@ -13,7 +13,7 @@ module QA
         end
 
         expect(page).to have_content("Title: #{key_title}")
-        expect(page).to have_content(key.fingerprint)
+        expect(page).to have_content(key.md5_fingerprint)
 
         Page::Main::Menu.perform(&:click_settings_link)
         Page::Profile::Menu.perform(&:click_ssh_keys)
@@ -23,7 +23,7 @@ module QA
         end
 
         expect(page).not_to have_content("Title: #{key_title}")
-        expect(page).not_to have_content(key.fingerprint)
+        expect(page).not_to have_content(key.md5_fingerprint)
       end
     end
   end

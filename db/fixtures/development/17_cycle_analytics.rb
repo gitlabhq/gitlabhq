@@ -208,7 +208,7 @@ class Gitlab::Seeder::CycleAnalytics
       job = merge_request.head_pipeline.builds.where.not(environment: nil).last
 
       job.success!
-      pipeline.update_status
+      job.pipeline.update_status
     end
   end
 end

@@ -3,6 +3,54 @@
 In order to interact with Geo node endpoints, you need to authenticate yourself
 as an admin.
 
+## Create a new Geo node
+
+Creates a new Geo node.
+
+```
+POST /geo_nodes
+```
+
+| Attribute                   | Type    | Required | Description                                                      |
+| ----------------------------| ------- | -------- | -----------------------------------------------------------------|
+| `primary`                   | boolean | no       | Specifying whether this node will be primary. Defaults to false. |
+| `enabled`                   | boolean | no       | Flag indicating if the Geo node is enabled. Defaults to true.    |
+| `name`                      | string  | yes      | The unique identifier for the Geo node. Must match `geo_node_name` if it is set in `gitlab.rb`, otherwise it must match `external_url` |
+| `url`                       | string  | yes      | The user-facing URL for the Geo node. |
+| `internal_url`              | string  | no       | The URL defined on the primary node that secondary nodes should use to contact it. Returns `url` if not set. |
+| `files_max_capacity`        | integer | no       | Control the maximum concurrency of LFS/attachment backfill for this secondary node. Defaults to 10. |
+| `repos_max_capacity`        | integer | no       | Control the maximum concurrency of repository backfill for this secondary node. Defaults to 25. |
+| `verification_max_capacity` | integer | no       | Control the maximum concurrency of repository verification for this node. Defaults to 100. |
+| `container_repositories_max_capacity` | integer  | no | Control the maximum concurrency of container repository sync for this node. Defaults to 10. |
+| `sync_object_storage`       | boolean | no       | Flag indicating if the secondary Geo node will replicate blobs in Object Storage. Defaults to false. |
+
+Example response:
+
+```json
+{
+  "id": 3,
+  "name": "Test Node 1",
+  "url": "https://secondary.example.com/",
+  "internal_url": "https://secondary.example.com/",
+  "primary": false,
+  "enabled": true,
+  "current": false,
+  "files_max_capacity": 10,
+  "repos_max_capacity": 25,
+  "verification_max_capacity": 100,
+  "container_repositories_max_capacity": 10,
+  "sync_object_storage": false,
+  "clone_protocol": "http",
+  "web_edit_url": "https://primary.example.com/admin/geo/nodes/3/edit",
+  "web_geo_projects_url": "http://secondary.example.com/admin/geo/projects",
+  "_links": {
+     "self": "https://primary.example.com/api/v4/geo_nodes/3",
+     "status": "https://primary.example.com/api/v4/geo_nodes/3/status",
+     "repair": "https://primary.example.com/api/v4/geo_nodes/3/repair"
+  }
+}
+```
+
 ## Retrieve configuration about all Geo nodes
 
 ```

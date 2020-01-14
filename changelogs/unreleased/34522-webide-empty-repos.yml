@@ -1,0 +1,5 @@
+---
+title: 'Fix: WebIDE doesn''t work on empty repositories again'
+merge_request: 22950
+author:
+type: fixed

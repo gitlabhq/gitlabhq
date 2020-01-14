@@ -53,60 +53,55 @@ export const setResizingStatus = ({ commit }, resizing) => {
 export const createTempEntry = (
   { state, commit, dispatch },
   { name, type, content = '', base64 = false, binary = false, rawPath = '' },
-) =>
-  new Promise(resolve => {
-    const fullName = name.slice(-1) !== '/' && type === 'tree' ? `${name}/` : name;
+) => {
+  const fullName = name.slice(-1) !== '/' && type === 'tree' ? `${name}/` : name;
 
-    if (state.entries[name] && !state.entries[name].deleted) {
-      flash(
-        `The name "${name.split('/').pop()}" is already taken in this directory.`,
-        'alert',
-        document,
-        null,
-        false,
-        true,
-      );
+  if (state.entries[name] && !state.entries[name].deleted) {
+    flash(
+      sprintf(__('The name "%{name}" is already taken in this directory.'), {
+        name: name.split('/').pop(),
+      }),
+      'alert',
+      document,
+      null,
+      false,
+      true,
+    );
 
-      resolve();
+    return;
+  }
 
-      return null;
-    }
-
-    const data = decorateFiles({
-      data: [fullName],
-      projectId: state.currentProjectId,
-      branchId: state.currentBranchId,
-      type,
-      tempFile: true,
-      content,
-      base64,
-      binary,
-      rawPath,
-    });
-    const { file, parentPath } = data;
-
-    commit(types.CREATE_TMP_ENTRY, {
-      data,
-      projectId: state.currentProjectId,
-      branchId: state.currentBranchId,
-    });
-
-    if (type === 'blob') {
-      commit(types.TOGGLE_FILE_OPEN, file.path);
-      commit(types.ADD_FILE_TO_CHANGED, file.path);
-      dispatch('setFileActive', file.path);
-      dispatch('triggerFilesChange');
-      dispatch('burstUnusedSeal');
-    }
-
-    if (parentPath && !state.entries[parentPath].opened) {
-      commit(types.TOGGLE_TREE_OPEN, parentPath);
-    }
-
-    resolve(file);
-
-    return null;
+  const data = decorateFiles({
+    data: [fullName],
+    projectId: state.currentProjectId,
+    branchId: state.currentBranchId,
+    type,
+    tempFile: true,
+    content,
+    base64,
+    binary,
+    rawPath,
   });
+  const { file, parentPath } = data;
+
+  commit(types.CREATE_TMP_ENTRY, {
+    data,
+    projectId: state.currentProjectId,
+    branchId: state.currentBranchId,
+  });
+
+  if (type === 'blob') {
+    commit(types.TOGGLE_FILE_OPEN, file.path);
+    commit(types.ADD_FILE_TO_CHANGED, file.path);
+    dispatch('setFileActive', file.path);
+    dispatch('triggerFilesChange');
+    dispatch('burstUnusedSeal');
+  }
+
+  if (parentPath && !state.entries[parentPath].opened) {
+    commit(types.TOGGLE_TREE_OPEN, parentPath);
+  }
+};
 
 export const scrollToTab = () => {
   Vue.nextTick(() => {
@@ -211,8 +206,9 @@ export const deleteEntry = ({ commit, dispatch, state }, path) => {
   const entry = state.entries[path];
   const { prevPath, prevName, prevParentPath } = entry;
   const isTree = entry.type === 'tree';
+  const prevEntry = prevPath && state.entries[prevPath];
 
-  if (prevPath) {
+  if (prevPath && (!prevEntry || prevEntry.deleted)) {
     dispatch('renameEntry', {
       path,
       name: prevName,
@@ -245,6 +241,11 @@ export const resetOpenFiles = ({ commit }) => commit(types.RESET_OPEN_FILES);
 export const renameEntry = ({ dispatch, commit, state }, { path, name, parentPath }) => {
   const entry = state.entries[path];
   const newPath = parentPath ? `${parentPath}/${name}` : name;
+  const existingParent = parentPath && state.entries[parentPath];
+
+  if (parentPath && (!existingParent || existingParent.deleted)) {
+    dispatch('createTempEntry', { name: parentPath, type: 'tree' });
+  }
 
   commit(types.RENAME_ENTRY, { path, name, parentPath });
 

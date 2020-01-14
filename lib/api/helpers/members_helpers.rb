@@ -41,6 +41,10 @@ module API
         GroupMembersFinder.new(group).execute
       end
 
+      def create_member(current_user, user, source, params)
+        source.add_user(user, params[:access_level], current_user: current_user, expires_at: params[:expires_at])
+      end
+
       def present_members(members)
         present members, with: Entities::Member, current_user: current_user
       end

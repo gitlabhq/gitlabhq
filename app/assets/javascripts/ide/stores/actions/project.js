@@ -83,8 +83,11 @@ export const showBranchNotFoundError = ({ dispatch }, branchId) => {
   });
 };
 
-export const showEmptyState = ({ commit, state }, { projectId, branchId }) => {
+export const showEmptyState = ({ commit, state, dispatch }, { projectId, branchId }) => {
   const treePath = `${projectId}/${branchId}`;
+
+  dispatch('setCurrentBranchId', branchId);
+
   commit(types.CREATE_TREE, { treePath });
   commit(types.TOGGLE_LOADING, {
     entry: state.trees[treePath],

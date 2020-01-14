@@ -1,0 +1,5 @@
+---
+title: Avoid making Gitaly calls when some Markdown text links to an uploaded file
+merge_request: 22631
+author:
+type: performance

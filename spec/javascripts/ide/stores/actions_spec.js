@@ -206,13 +206,17 @@ describe('Multi-file store actions', () => {
 
     describe('blob', () => {
       it('creates temp file', done => {
+        const name = 'test';
+
         store
           .dispatch('createTempEntry', {
-            name: 'test',
+            name,
             branchId: 'mybranch',
             type: 'blob',
           })
-          .then(f => {
+          .then(() => {
+            const f = store.state.entries[name];
+
             expect(f.tempFile).toBeTruthy();
             expect(store.state.trees['abcproject/mybranch'].tree.length).toBe(1);
 
@@ -222,13 +226,17 @@ describe('Multi-file store actions', () => {
       });
 
       it('adds tmp file to open files', done => {
+        const name = 'test';
+
         store
           .dispatch('createTempEntry', {
-            name: 'test',
+            name,
             branchId: 'mybranch',
             type: 'blob',
           })
-          .then(f => {
+          .then(() => {
+            const f = store.state.entries[name];
+
             expect(store.state.openFiles.length).toBe(1);
             expect(store.state.openFiles[0].name).toBe(f.name);
 
@@ -238,13 +246,17 @@ describe('Multi-file store actions', () => {
       });
 
       it('adds tmp file to changed files', done => {
+        const name = 'test';
+
         store
           .dispatch('createTempEntry', {
-            name: 'test',
+            name,
             branchId: 'mybranch',
             type: 'blob',
           })
-          .then(f => {
+          .then(() => {
+            const f = store.state.entries[name];
+
             expect(store.state.changedFiles.length).toBe(1);
             expect(store.state.changedFiles[0].name).toBe(f.name);
 
@@ -292,7 +304,9 @@ describe('Multi-file store actions', () => {
             type: 'blob',
           })
           .then(() => {
-            expect(document.querySelector('.flash-alert')).not.toBeNull();
+            expect(document.querySelector('.flash-alert')?.textContent.trim()).toEqual(
+              `The name "${f.name}" is already taken in this directory.`,
+            );
 
             done();
           })
@@ -604,36 +618,98 @@ describe('Multi-file store actions', () => {
       );
     });
 
-    it('if renamed, reverts the rename before deleting', () => {
-      const testEntry = {
-        path: 'test',
-        name: 'test',
-        prevPath: 'lorem/ipsum',
-        prevName: 'ipsum',
-        prevParentPath: 'lorem',
-      };
+    describe('when renamed', () => {
+      let testEntry;
 
-      store.state.entries = { test: testEntry };
-      testAction(
-        deleteEntry,
-        testEntry.path,
-        store.state,
-        [],
-        [
-          {
-            type: 'renameEntry',
-            payload: {
-              path: testEntry.path,
-              name: testEntry.prevName,
-              parentPath: testEntry.prevParentPath,
-            },
-          },
-          {
-            type: 'deleteEntry',
-            payload: testEntry.prevPath,
-          },
-        ],
-      );
+      beforeEach(() => {
+        testEntry = {
+          path: 'test',
+          name: 'test',
+          prevPath: 'test_old',
+          prevName: 'test_old',
+          prevParentPath: '',
+        };
+
+        store.state.entries = { test: testEntry };
+      });
+
+      describe('and previous does not exist', () => {
+        it('reverts the rename before deleting', done => {
+          testAction(
+            deleteEntry,
+            testEntry.path,
+            store.state,
+            [],
+            [
+              {
+                type: 'renameEntry',
+                payload: {
+                  path: testEntry.path,
+                  name: testEntry.prevName,
+                  parentPath: testEntry.prevParentPath,
+                },
+              },
+              {
+                type: 'deleteEntry',
+                payload: testEntry.prevPath,
+              },
+            ],
+            done,
+          );
+        });
+      });
+
+      describe('and previous exists', () => {
+        beforeEach(() => {
+          const oldEntry = {
+            path: testEntry.prevPath,
+            name: testEntry.prevName,
+          };
+
+          store.state.entries[oldEntry.path] = oldEntry;
+        });
+
+        it('does not revert rename before deleting', done => {
+          testAction(
+            deleteEntry,
+            testEntry.path,
+            store.state,
+            [{ type: types.DELETE_ENTRY, payload: testEntry.path }],
+            [
+              { type: 'burstUnusedSeal' },
+              { type: 'stageChange', payload: testEntry.path },
+              { type: 'triggerFilesChange' },
+            ],
+            done,
+          );
+        });
+
+        it('when previous is deleted, it reverts rename before deleting', done => {
+          store.state.entries[testEntry.prevPath].deleted = true;
+
+          testAction(
+            deleteEntry,
+            testEntry.path,
+            store.state,
+            [],
+            [
+              {
+                type: 'renameEntry',
+                payload: {
+                  path: testEntry.path,
+                  name: testEntry.prevName,
+                  parentPath: testEntry.prevParentPath,
+                },
+              },
+              {
+                type: 'deleteEntry',
+                payload: testEntry.prevPath,
+              },
+            ],
+            done,
+          );
+        });
+      });
     });
 
     it('bursts unused seal', done => {
@@ -917,6 +993,103 @@ describe('Multi-file store actions', () => {
           })
           .then(done)
           .catch(done.fail);
+      });
+
+      describe('with file in directory', () => {
+        const parentPath = 'original-dir';
+        const newParentPath = 'new-dir';
+        const fileName = 'test.md';
+        const filePath = `${parentPath}/${fileName}`;
+
+        let rootDir;
+
+        beforeEach(() => {
+          const parentEntry = file(parentPath, parentPath, 'tree');
+          const fileEntry = file(filePath, filePath, 'blob', parentEntry);
+          rootDir = {
+            tree: [],
+          };
+
+          Object.assign(store.state, {
+            entries: {
+              [parentPath]: {
+                ...parentEntry,
+                tree: [fileEntry],
+              },
+              [filePath]: fileEntry,
+            },
+            trees: {
+              '/': rootDir,
+            },
+          });
+        });
+
+        it('creates new directory', done => {
+          expect(store.state.entries[newParentPath]).toBeUndefined();
+
+          store
+            .dispatch('renameEntry', { path: filePath, name: fileName, parentPath: newParentPath })
+            .then(() => {
+              expect(store.state.entries[newParentPath]).toEqual(
+                jasmine.objectContaining({
+                  path: newParentPath,
+                  type: 'tree',
+                  tree: jasmine.arrayContaining([
+                    store.state.entries[`${newParentPath}/${fileName}`],
+                  ]),
+                }),
+              );
+            })
+            .then(done)
+            .catch(done.fail);
+        });
+
+        describe('when new directory exists', () => {
+          let newDir;
+
+          beforeEach(() => {
+            newDir = file(newParentPath, newParentPath, 'tree');
+
+            store.state.entries[newDir.path] = newDir;
+            rootDir.tree.push(newDir);
+          });
+
+          it('inserts in new directory', done => {
+            expect(newDir.tree).toEqual([]);
+
+            store
+              .dispatch('renameEntry', {
+                path: filePath,
+                name: fileName,
+                parentPath: newParentPath,
+              })
+              .then(() => {
+                expect(newDir.tree).toEqual([store.state.entries[`${newParentPath}/${fileName}`]]);
+              })
+              .then(done)
+              .catch(done.fail);
+          });
+
+          it('when new directory is deleted, it undeletes it', done => {
+            store.dispatch('deleteEntry', newParentPath);
+
+            expect(store.state.entries[newParentPath].deleted).toBe(true);
+            expect(rootDir.tree.some(x => x.path === newParentPath)).toBe(false);
+
+            store
+              .dispatch('renameEntry', {
+                path: filePath,
+                name: fileName,
+                parentPath: newParentPath,
+              })
+              .then(() => {
+                expect(store.state.entries[newParentPath].deleted).toBe(false);
+                expect(rootDir.tree.some(x => x.path === newParentPath)).toBe(true);
+              })
+              .then(done)
+              .catch(done.fail);
+          });
+        });
       });
     });
   });

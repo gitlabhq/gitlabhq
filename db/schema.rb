@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_08_233040) do
+ActiveRecord::Schema.define(version: 2020_01_10_144316) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -3353,6 +3353,8 @@ ActiveRecord::Schema.define(version: 2020_01_08_233040) do
     t.boolean "autoclose_referenced_issues"
     t.string "suggestion_commit_message", limit: 255
     t.index "lower((name)::text)", name: "index_projects_on_lower_name"
+    t.index ["created_at", "id"], name: "index_projects_api_vis20_created_at", where: "(visibility_level = 20)"
+    t.index ["created_at", "id"], name: "index_projects_api_vis20_created_at_id_desc", order: { id: :desc }, where: "(visibility_level = 20)"
     t.index ["created_at", "id"], name: "index_projects_on_created_at_and_id"
     t.index ["creator_id"], name: "index_projects_on_creator_id"
     t.index ["description"], name: "index_projects_on_description_trigram", opclass: :gin_trgm_ops, using: :gin
@@ -3360,6 +3362,8 @@ ActiveRecord::Schema.define(version: 2020_01_08_233040) do
     t.index ["id"], name: "index_on_id_partial_with_legacy_storage", where: "((storage_version < 2) OR (storage_version IS NULL))"
     t.index ["id"], name: "index_projects_on_id_partial_for_visibility", unique: true, where: "(visibility_level = ANY (ARRAY[10, 20]))"
     t.index ["id"], name: "index_projects_on_mirror_and_mirror_trigger_builds_both_true", where: "((mirror IS TRUE) AND (mirror_trigger_builds IS TRUE))"
+    t.index ["last_activity_at", "id"], name: "index_projects_api_vis20_last_activity_at", where: "(visibility_level = 20)"
+    t.index ["last_activity_at", "id"], name: "index_projects_api_vis20_last_activity_at_id_desc", order: { id: :desc }, where: "(visibility_level = 20)"
     t.index ["last_activity_at"], name: "index_projects_on_last_activity_at"
     t.index ["last_repository_check_at"], name: "index_projects_on_last_repository_check_at", where: "(last_repository_check_at IS NOT NULL)"
     t.index ["last_repository_check_failed"], name: "index_projects_on_last_repository_check_failed"
@@ -3368,8 +3372,12 @@ ActiveRecord::Schema.define(version: 2020_01_08_233040) do
     t.index ["marked_for_deletion_by_user_id"], name: "index_projects_on_marked_for_deletion_by_user_id", where: "(marked_for_deletion_by_user_id IS NOT NULL)"
     t.index ["mirror_last_successful_update_at"], name: "index_projects_on_mirror_last_successful_update_at"
     t.index ["mirror_user_id"], name: "index_projects_on_mirror_user_id"
+    t.index ["name", "id"], name: "index_projects_api_vis20_name", where: "(visibility_level = 20)"
+    t.index ["name", "id"], name: "index_projects_api_vis20_name_id_desc", order: { id: :desc }, where: "(visibility_level = 20)"
     t.index ["name"], name: "index_projects_on_name_trigram", opclass: :gin_trgm_ops, using: :gin
     t.index ["namespace_id"], name: "index_projects_on_namespace_id"
+    t.index ["path", "id"], name: "index_projects_api_vis20_path", where: "(visibility_level = 20)"
+    t.index ["path", "id"], name: "index_projects_api_vis20_path_id_desc", order: { id: :desc }, where: "(visibility_level = 20)"
     t.index ["path"], name: "index_projects_on_path"
     t.index ["path"], name: "index_projects_on_path_trigram", opclass: :gin_trgm_ops, using: :gin
     t.index ["pending_delete"], name: "index_projects_on_pending_delete"
@@ -3379,8 +3387,8 @@ ActiveRecord::Schema.define(version: 2020_01_08_233040) do
     t.index ["runners_token"], name: "index_projects_on_runners_token"
     t.index ["runners_token_encrypted"], name: "index_projects_on_runners_token_encrypted"
     t.index ["star_count"], name: "index_projects_on_star_count"
-    t.index ["visibility_level", "created_at", "id"], name: "index_projects_on_visibility_level_created_at_desc_id_desc", order: { created_at: :desc, id: :desc }
-    t.index ["visibility_level", "created_at", "id"], name: "index_projects_on_visibility_level_created_at_id_desc", order: { id: :desc }
+    t.index ["updated_at", "id"], name: "index_projects_api_vis20_updated_at", where: "(visibility_level = 20)"
+    t.index ["updated_at", "id"], name: "index_projects_api_vis20_updated_at_id_desc", order: { id: :desc }, where: "(visibility_level = 20)"
   end
 
   create_table "prometheus_alert_events", force: :cascade do |t|

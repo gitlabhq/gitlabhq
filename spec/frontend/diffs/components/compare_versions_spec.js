@@ -28,6 +28,7 @@ describe('CompareVersions', () => {
       propsData: {
         mergeRequestDiffs: diffsMockData,
         mergeRequestDiff: diffsMockData[0],
+        diffFilesLength: 0,
         targetBranch,
         ...props,
       },
