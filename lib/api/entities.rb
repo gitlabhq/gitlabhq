@@ -1132,7 +1132,7 @@ module API
       expose :commit_events, :push_events, :issues_events, :confidential_issues_events
       expose :merge_requests_events, :tag_push_events, :note_events
       expose :confidential_note_events, :pipeline_events, :wiki_page_events
-      expose :job_events
+      expose :job_events, :comment_on_event_enabled
     end
 
     class ProjectService < ProjectServiceBasic

@@ -31,7 +31,7 @@ class Issue < ApplicationRecord
   belongs_to :duplicated_to, class_name: 'Issue'
   belongs_to :closed_by, class_name: 'User'
 
-  has_internal_id :iid, scope: :project, init: ->(s) { s&.project&.issues&.maximum(:iid) }
+  has_internal_id :iid, scope: :project, track_if: -> { !importing? }, init: ->(s) { s&.project&.issues&.maximum(:iid) }
 
   has_many :issue_milestones
   has_many :milestones, through: :issue_milestones
@@ -78,8 +78,8 @@ class Issue < ApplicationRecord
 
   ignore_column :state, remove_with: '12.7', remove_after: '2019-12-22'
 
-  after_commit :expire_etag_cache
-  after_save :ensure_metrics, unless: :imported?
+  after_commit :expire_etag_cache, unless: :importing?
+  after_save :ensure_metrics, unless: :importing?
 
   attr_spammable :title, spam_title: true
   attr_spammable :description, spam_description: true

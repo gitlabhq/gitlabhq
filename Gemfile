@@ -283,7 +283,7 @@ gem 'rack-proxy', '~> 0.6.0'
 gem 'sassc-rails', '~> 2.1.0'
 gem 'uglifier', '~> 2.7.2'
 
-gem 'addressable', '~> 2.5.2'
+gem 'addressable', '~> 2.7'
 gem 'font-awesome-rails', '~> 4.7'
 gem 'gemojione', '~> 3.3'
 gem 'gon', '~> 6.2'
@@ -419,7 +419,7 @@ group :test do
   gem 'guard-rspec'
 end
 
-gem 'octokit', '~> 4.9'
+gem 'octokit', '~> 4.15'
 
 gem 'mail_room', '~> 0.10.0'
 

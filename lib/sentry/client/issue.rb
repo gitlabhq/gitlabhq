@@ -35,14 +35,14 @@ module Sentry
       end
 
       def update_issue(issue_id:, params:)
-        http_put(issue_api_url(issue_id), params)[:body]
+        http_put(api_urls.issue_url(issue_id), params)[:body]
       end
 
       private
 
       def get_issues(**keyword_args)
         response = http_get(
-          issues_api_url,
+          api_urls.issues_url,
           query: list_issue_sentry_query(keyword_args)
         )
 
@@ -72,21 +72,7 @@ module Sentry
       end
 
       def get_issue(issue_id:)
-        http_get(issue_api_url(issue_id))[:body]
-      end
-
-      def issues_api_url
-        issues_url = URI("#{url}/issues/")
-        issues_url.path.squeeze!('/')
-
-        issues_url
-      end
-
-      def issue_api_url(issue_id)
-        issue_url = URI(url)
-        issue_url.path = "/api/0/issues/#{CGI.escape(issue_id.to_s)}/"
-
-        issue_url
+        http_get(api_urls.issue_url(issue_id))[:body]
       end
 
       def parse_gitlab_issue(plugin_issues)

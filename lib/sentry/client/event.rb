@@ -4,19 +4,12 @@ module Sentry
   class Client
     module Event
       def issue_latest_event(issue_id:)
-        latest_event = http_get(issue_latest_event_api_url(issue_id))[:body]
+        latest_event = http_get(api_urls.issue_latest_event_url(issue_id))[:body]
 
         map_to_event(latest_event)
       end
 
       private
-
-      def issue_latest_event_api_url(issue_id)
-        latest_event_url = URI(url)
-        latest_event_url.path = "/api/0/issues/#{issue_id}/events/latest/"
-
-        latest_event_url
-      end
 
       def map_to_event(event)
         stack_trace = parse_stack_trace(event)

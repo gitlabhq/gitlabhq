@@ -464,6 +464,11 @@ chart is used to install this application with a
 [`values.yaml`](https://gitlab.com/gitlab-org/gitlab/blob/master/vendor/elastic_stack/values.yaml)
 file.
 
+NOTE: **Note:**
+The chart will deploy 4 Elasticsearch nodes: 2 masters, 1 data and 1 client node,
+with resource requests totalling 0.1 CPU and 3GB RAM. Each data node requests 1.5GB of memory,
+which makes it incompatible with clusters of `f1-micro` and `g1-small` instance types.
+
 ## Install using GitLab CI (alpha)
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/20822) in GitLab 12.6.

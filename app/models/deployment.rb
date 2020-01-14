@@ -5,6 +5,7 @@ class Deployment < ApplicationRecord
   include IidRoutes
   include AfterCommitQueue
   include UpdatedAtFilterable
+  include Importable
   include Gitlab::Utils::StrongMemoize
 
   belongs_to :project, required: true
@@ -17,7 +18,7 @@ class Deployment < ApplicationRecord
   has_many :merge_requests,
     through: :deployment_merge_requests
 
-  has_internal_id :iid, scope: :project, init: ->(s) do
+  has_internal_id :iid, scope: :project, track_if: -> { !importing? }, init: ->(s) do
     Deployment.where(project: s.project).maximum(:iid) if s&.project
   end
 

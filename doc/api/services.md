@@ -32,7 +32,8 @@ Example response:
     "confidential_note_events": true,
     "pipeline_events": true,
     "wiki_page_events": true,
-    "job_events": true
+    "job_events": true,
+    "comment_on_event_enabled": true
   }
   {
     "id": 76,
@@ -50,7 +51,8 @@ Example response:
     "confidential_note_events": true,
     "pipeline_events": true,
     "wiki_page_events": true,
-    "job_events": true
+    "job_events": true,
+    "comment_on_event_enabled": true
   }
 ]
 ```
@@ -723,6 +725,7 @@ Parameters:
 | `jira_issue_transition_id` | string | no | The ID of a transition that moves issues to a closed state. You can find this number under the Jira workflow administration (**Administration > Issues > Workflows**) by selecting **View** under **Operations** of the desired workflow of your project. The ID of each state can be found inside the parenthesis of each transition name under the **Transitions (id)** column. By default, this ID is set to `2`. |
 | `commit_events` | boolean | false | Enable notifications for commit events |
 | `merge_requests_events` | boolean | false | Enable notifications for merge request events |
+| `comment_on_event_enabled` | boolean | false | Enable comments inside Jira issues on each GitLab event (commit / merge request) |
 
 ### Delete Jira service
 
@@ -761,6 +764,7 @@ Example response:
   "note_events": true,
   "job_events": true,
   "pipeline_events": true,
+  "comment_on_event_enabled": false,
   "properties": {
     "token": "<your_access_token>"
   }

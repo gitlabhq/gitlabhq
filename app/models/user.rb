@@ -20,6 +20,7 @@ class User < ApplicationRecord
   include WithUploads
   include OptionallySearch
   include FromUnion
+  include BatchDestroyDependentAssociations
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 

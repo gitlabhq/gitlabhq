@@ -1,5 +1,5 @@
 import { shallowMount, RouterLinkStub } from '@vue/test-utils';
-import { GlBadge, GlLink } from '@gitlab/ui';
+import { GlBadge, GlLink, GlLoadingIcon } from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
 import TableRow from '~/repository/components/table/row.vue';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -197,5 +197,18 @@ describe('Repository table row component', () => {
     return vm.vm.$nextTick().then(() => {
       expect(vm.find(Icon).exists()).toBe(true);
     });
+  });
+
+  it('renders loading icon when path is loading', () => {
+    factory({
+      id: '1',
+      sha: '1',
+      path: 'test',
+      type: 'tree',
+      currentPath: '/',
+      loadingPath: 'test',
+    });
+
+    expect(vm.find(GlLoadingIcon).exists()).toBe(true);
   });
 });

@@ -19,6 +19,10 @@ module Sentry
 
     private
 
+    def api_urls
+      @api_urls ||= Sentry::ApiUrls.new(@url)
+    end
+
     def handle_mapping_exceptions(&block)
       yield
     rescue KeyError => e

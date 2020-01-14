@@ -220,18 +220,22 @@ module API
 
         issue_params = convert_parameters_from_legacy_format(issue_params)
 
-        issue = ::Issues::CreateService.new(user_project,
-                                            current_user,
-                                            issue_params.merge(request: request, api: true)).execute
+        begin
+          issue = ::Issues::CreateService.new(user_project,
+                                              current_user,
+                                              issue_params.merge(request: request, api: true)).execute
 
-        if issue.spam?
-          render_api_error!({ error: 'Spam detected' }, 400)
-        end
+          if issue.spam?
+            render_api_error!({ error: 'Spam detected' }, 400)
+          end
 
-        if issue.valid?
-          present issue, with: Entities::Issue, current_user: current_user, project: user_project
-        else
-          render_validation_error!(issue)
+          if issue.valid?
+            present issue, with: Entities::Issue, current_user: current_user, project: user_project
+          else
+            render_validation_error!(issue)
+          end
+        rescue ::ActiveRecord::RecordNotUnique
+          render_api_error!('Duplicated issue', 409)
         end
       end
 

@@ -109,28 +109,6 @@ describe Sentry::Client::Issue do
       it_behaves_like 'no Sentry redirects'
     end
 
-    # Sentry API returns 404 if there are extra slashes in the URL!
-    context 'extra slashes in URL' do
-      let(:sentry_url) { 'https://sentrytest.gitlab.com/api/0/projects//sentry-org/sentry-project/' }
-
-      let(:sentry_request_url) do
-        'https://sentrytest.gitlab.com/api/0/projects/sentry-org/sentry-project/' \
-          'issues/?limit=20&query=is:unresolved'
-      end
-
-      it 'removes extra slashes in api url' do
-        expect(client.url).to eq(sentry_url)
-        expect(Gitlab::HTTP).to receive(:get).with(
-          URI('https://sentrytest.gitlab.com/api/0/projects/sentry-org/sentry-project/issues/'),
-          anything
-        ).and_call_original
-
-        subject
-
-        expect(sentry_api_request).to have_been_requested
-      end
-    end
-
     context 'requests with sort parameter in sentry api' do
       let(:sentry_request_url) do
         'https://sentrytest.gitlab.com/api/0/projects/sentry-org/sentry-project/' \
@@ -231,14 +209,6 @@ describe Sentry::Client::Issue do
     let!(:sentry_api_request) { stub_sentry_request(sentry_request_url, body: issue_sample_response) }
 
     subject { client.issue_details(issue_id: issue_id) }
-
-    it 'escapes issue ID' do
-      allow(CGI).to receive(:escape).and_call_original
-
-      subject
-
-      expect(CGI).to have_received(:escape).with(issue_id.to_s)
-    end
 
     context 'error object created from sentry response' do
       using RSpec::Parameterized::TableSyntax

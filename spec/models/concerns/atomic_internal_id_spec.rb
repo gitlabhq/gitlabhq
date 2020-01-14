@@ -9,6 +9,32 @@ describe AtomicInternalId do
   let(:scope_attrs) { { project: milestone.project } }
   let(:usage) { :milestones }
 
+  describe '#save!' do
+    context 'when IID is provided' do
+      before do
+        milestone.iid = external_iid
+      end
+
+      it 'tracks the value' do
+        expect(milestone).to receive(:track_project_iid!)
+
+        milestone.save!
+      end
+
+      context 'when importing' do
+        before do
+          milestone.importing = true
+        end
+
+        it 'does not track the value' do
+          expect(milestone).not_to receive(:track_project_iid!)
+
+          milestone.save!
+        end
+      end
+    end
+  end
+
   describe '#track_project_iid!' do
     subject { milestone.track_project_iid! }
 

@@ -41,6 +41,11 @@ describe "User browses files" do
 
     it "shows the `Browse Directory` link" do
       click_link("files")
+
+      page.within('.repo-breadcrumb') do
+        expect(page).to have_link('files')
+      end
+
       click_link("History")
 
       expect(page).to have_link("Browse Directory").and have_no_link("Browse Code")

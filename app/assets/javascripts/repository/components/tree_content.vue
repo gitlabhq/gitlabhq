@@ -27,6 +27,11 @@ export default {
       required: false,
       default: '/',
     },
+    loadingPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -109,7 +114,12 @@ export default {
 
 <template>
   <div>
-    <file-table :path="path" :entries="entries" :is-loading="isLoadingFiles" />
+    <file-table
+      :path="path"
+      :entries="entries"
+      :is-loading="isLoadingFiles"
+      :loading-path="loadingPath"
+    />
     <file-preview v-if="readme" :blob="readme" />
   </div>
 </template>

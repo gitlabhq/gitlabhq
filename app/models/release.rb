@@ -3,6 +3,7 @@
 class Release < ApplicationRecord
   include Presentable
   include CacheMarkdownField
+  include Importable
   include Gitlab::Utils::StrongMemoize
 
   cache_markdown_field :description
@@ -33,8 +34,8 @@ class Release < ApplicationRecord
 
   delegate :repository, to: :project
 
-  after_commit :create_evidence!, on: :create
-  after_commit :notify_new_release, on: :create
+  after_commit :create_evidence!, on: :create, unless: :importing?
+  after_commit :notify_new_release, on: :create, unless: :importing?
 
   MAX_NUMBER_TO_DISPLAY = 3
 

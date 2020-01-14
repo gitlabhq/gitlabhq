@@ -518,6 +518,28 @@ module Gitlab
           end
         end
 
+        context 'when repository is passed into the context' do
+          let(:wiki_repo) { project.wiki.repository }
+          let(:include_path) { 'wiki_file.adoc' }
+
+          before do
+            project.create_wiki
+            context.merge!(repository: wiki_repo)
+          end
+
+          context 'when the file exists' do
+            before do
+              create_file(include_path, 'Content from wiki', repository: wiki_repo)
+            end
+
+            it { is_expected.to include('<p>Content from wiki</p>') }
+          end
+
+          context 'when the file does not exist' do
+            it { is_expected.to include("[ERROR: include::#{include_path}[] - unresolved directive]")}
+          end
+        end
+
         context 'recursive includes with relative paths' do
           let(:input) do
             <<~ADOC
@@ -562,8 +584,8 @@ module Gitlab
           end
         end
 
-        def create_file(path, content)
-          project.repository.create_file(project.creator, path, content,
+        def create_file(path, content, repository: project.repository)
+          repository.create_file(project.creator, path, content,
             message: "Add #{path}", branch_name: 'asciidoc')
         end
       end

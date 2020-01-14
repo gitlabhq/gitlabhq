@@ -191,7 +191,7 @@ Here are some examples of how messages would be handled by both the loggers.
 FancyMultiLogger.info("Information")
 
 # UnstructuredLogger
-I, [2020-01-13T12:02:41.566219 #6652]  INFO -- : Information
+I, [2020-01-13T18:48:49.201Z #5647]  INFO -- : Information
 
 # StructuredLogger
 {:severity=>"INFO", :time=>"2020-01-13T11:02:41.559Z", :correlation_id=>"b1701f7ecc4be4bcd4c2d123b214e65a", :message=>"Information"}
@@ -203,7 +203,7 @@ I, [2020-01-13T12:02:41.566219 #6652]  INFO -- : Information
 FancyMultiLogger.info({:message=>"This is my message", :project_id=>123})
 
 # UnstructuredLogger
-I, [2020-01-13T12:06:09.856766 #8049]  INFO -- : {:message=>"This is my message", :project_id=>123}
+I, [2020-01-13T19:01:17.091Z #11056]  INFO -- : {"message"=>"Message", "project_id"=>"123"}
 
 # StructuredLogger
 {:severity=>"INFO", :time=>"2020-01-13T11:06:09.851Z", :correlation_id=>"d7e0886f096db9a8526a4f89da0e45f6", :message=>"This is my message", :project_id=>123}

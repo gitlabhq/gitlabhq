@@ -1,3 +1,38 @@
+# Make sure to update all the similar conditions in other CI config files if you modify these conditions
+.if-default: &if-default
+  if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\// || $CI_MERGE_REQUEST_IID || $CI_COMMIT_TAG'
+
+# Make sure to update all the similar conditions in other CI config files if you modify these conditions
+.if-default-ee: &if-default-ee
+  if: '($CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\// || $CI_MERGE_REQUEST_IID || $CI_COMMIT_TAG) && $CI_PROJECT_NAME =~ /^gitlab(-ee)?$/'
+
+# Make sure to update all the similar conditions in other CI config files if you modify these conditions
+.if-master: &if-master
+  if: '$CI_COMMIT_REF_NAME == "master"'
+
+# Make sure to update all the similar patterns in other CI config files if you modify these patterns
+.code-backstage-patterns: &code-backstage-patterns
+  - ".gitlab/ci/**/*"
+  - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo,scss-lint}.yml"
+  - ".csscomb.json"
+  - "Dockerfile.assets"
+  - "*_VERSION"
+  - "Gemfile{,.lock}"
+  - "Rakefile"
+  - "{babel.config,jest.config}.js"
+  - "config.ru"
+  - "{package.json,yarn.lock}"
+  - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+  - "doc/api/graphql/reference/*" # Files in this folder are auto-generated
+  # Backstage changes
+  - "Dangerfile"
+  - "danger/**/*"
+  - "{,ee/}fixtures/**/*"
+  - "{,ee/}rubocop/**/*"
+  - "{,ee/}spec/**/*"
+  - "doc/README.md"  # Some RSpec test rely on this file
+
 .assets-compile-cache:
   cache:
     paths:
@@ -132,7 +167,6 @@ compile-assets pull-cache foss:
     - .use-pg9
   stage: test
   needs: ["setup-test-env", "compile-assets pull-cache"]
-  dependencies: ["setup-test-env", "compile-assets pull-cache"]
 
 .karma-base:
   extends: .only-code-frontend-job-base
@@ -204,9 +238,10 @@ jest-foss:
     - .default-tags
     - .default-retry
     - .default-cache
-    - .default-only
-    - .only:changes-code-backstage
   stage: test
+  rules:
+    - <<: *if-master
+      when: on_success
   dependencies: []
   cache:
     key: "$CI_JOB_NAME"
@@ -237,11 +272,12 @@ webpack-dev-server:
     - .default-tags
     - .default-retry
     - .default-cache
-    - .default-only
-    - .only:changes-code-backstage
   stage: test
+  rules:
+    - <<: *if-default
+      changes: *code-backstage-patterns
+      when: on_success
   needs: ["setup-test-env", "compile-assets pull-cache"]
-  dependencies: ["setup-test-env", "compile-assets pull-cache"]
   variables:
     WEBPACK_MEMORY_TEST: "true"
     WEBPACK_VENDOR_DLL: "true"

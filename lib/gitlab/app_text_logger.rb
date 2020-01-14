@@ -7,7 +7,7 @@ module Gitlab
     end
 
     def format_message(severity, timestamp, progname, msg)
-      "#{timestamp.to_s(:long)}: #{msg}\n"
+      "#{timestamp.utc.iso8601(3)}: #{msg}\n"
     end
   end
 end

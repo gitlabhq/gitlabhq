@@ -34,6 +34,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    loadingPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -69,7 +74,12 @@ export default {
       <table :aria-label="tableCaption" class="table tree-table qa-file-tree" aria-live="polite">
         <table-header v-once />
         <tbody>
-          <parent-row v-show="showParentRow" :commit-ref="ref" :path="path" />
+          <parent-row
+            v-show="showParentRow"
+            :commit-ref="ref"
+            :path="path"
+            :loading-path="loadingPath"
+          />
           <template v-for="val in entries">
             <table-row
               v-for="entry in val"
@@ -84,6 +94,7 @@ export default {
               :url="entry.webUrl"
               :submodule-tree-url="entry.treeUrl"
               :lfs-oid="entry.lfsOid"
+              :loading-path="loadingPath"
             />
           </template>
           <template v-if="isLoading">

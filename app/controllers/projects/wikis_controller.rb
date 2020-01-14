@@ -39,6 +39,10 @@ class Projects::WikisController < Projects::ApplicationController
     if @page
       set_encoding_error unless valid_encoding?
 
+      # Assign vars expected by MarkupHelper
+      @ref = params[:version_id]
+      @path = @page.path
+
       render 'show'
     elsif file_blob
       send_blob(@project_wiki.repository, file_blob)

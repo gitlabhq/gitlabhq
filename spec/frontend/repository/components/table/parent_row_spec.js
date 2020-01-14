@@ -1,10 +1,11 @@
 import { shallowMount, RouterLinkStub } from '@vue/test-utils';
+import { GlLoadingIcon } from '@gitlab/ui';
 import ParentRow from '~/repository/components/table/parent_row.vue';
 
 let vm;
 let $router;
 
-function factory(path) {
+function factory(path, loadingPath) {
   $router = {
     push: jest.fn(),
   };
@@ -13,6 +14,7 @@ function factory(path) {
     propsData: {
       commitRef: 'master',
       path,
+      loadingPath,
     },
     stubs: {
       RouterLink: RouterLinkStub,
@@ -60,5 +62,11 @@ describe('Repository parent row component', () => {
     expect($router.push).not.toHaveBeenCalledWith({
       path: '/tree/master/app',
     });
+  });
+
+  it('renders loading icon when loading parent', () => {
+    factory('app/assets', 'app');
+
+    expect(vm.find(GlLoadingIcon).exists()).toBe(true);
   });
 });

@@ -26,7 +26,7 @@ module Ci
     belongs_to :merge_request, class_name: 'MergeRequest'
     belongs_to :external_pull_request
 
-    has_internal_id :iid, scope: :project, presence: false, ensure_if: -> { !importing? }, init: ->(s) do
+    has_internal_id :iid, scope: :project, presence: false, track_if: -> { !importing? }, ensure_if: -> { !importing? }, init: ->(s) do
       s&.project&.all_pipelines&.maximum(:iid) || s&.project&.all_pipelines&.count
     end
 

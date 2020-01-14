@@ -31,7 +31,7 @@ class MergeRequest < ApplicationRecord
   belongs_to :source_project, class_name: "Project"
   belongs_to :merge_user, class_name: "User"
 
-  has_internal_id :iid, scope: :target_project, init: ->(s) { s&.target_project&.merge_requests&.maximum(:iid) }
+  has_internal_id :iid, scope: :target_project, track_if: -> { !importing? }, init: ->(s) { s&.target_project&.merge_requests&.maximum(:iid) }
 
   has_many :merge_request_diffs
 
@@ -97,8 +97,8 @@ class MergeRequest < ApplicationRecord
   after_create :ensure_merge_request_diff
   after_update :clear_memoized_shas
   after_update :reload_diff_if_branch_changed
-  after_save :ensure_metrics
-  after_commit :expire_etag_cache
+  after_save :ensure_metrics, unless: :importing?
+  after_commit :expire_etag_cache, unless: :importing?
 
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests

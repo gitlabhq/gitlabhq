@@ -38,13 +38,39 @@ GitLab is developed for Linux-based operating systems.
 It does **not** run on Microsoft Windows, and we have no plans to support it in the near future. For the latest development status view this [issue](https://gitlab.com/gitlab-org/gitlab/issues/22337).
 Please consider using a virtual machine to run GitLab.
 
-## Ruby versions
+## Software requirements
 
-GitLab requires Ruby (MRI) 2.6. Support for Ruby versions below 2.6 (2.4, 2.5) will stop with GitLab 12.2.
+### Ruby versions
 
-You will have to use the standard MRI implementation of Ruby.
-We love [JRuby](https://www.jruby.org/) and [Rubinius](https://rubinius.com) but GitLab
+GitLab requires Ruby (MRI) 2.6. Beginning in GitLab 12.2, we  no longer support Ruby 2.5 and lower.
+
+You must use the standard MRI implementation of Ruby.
+We love [JRuby](https://www.jruby.org/) and [Rubinius](https://rubinius.com), but GitLab
 needs several Gems that have native extensions.
+
+### Go versions
+
+The minimum required Go version is 1.12.
+
+### Git versions
+
+GitLab 11.11 and higher only supports Git 2.21.x and newer, and
+[dropped support for older versions](https://gitlab.com/gitlab-org/gitlab-foss/issues/54255).
+
+### Node.js versions
+
+Beginning in GitLab 11.8, we only support Node.js 8.10.0 or higher, and dropped
+support for Node.js 6.
+
+We recommend Node 12.x, as it is faster.
+
+GitLab uses [webpack](https://webpack.js.org/) to compile frontend assets, which requires a minimum
+version of Node.js 8.10.0.
+
+You can check which version you are running with `node -v`. If you are running
+a version older than `v8.10.0`, you need to update to a newer version. You
+can find instructions to install from community maintained packages or compile
+from source at the [Node.js website](https://nodejs.org/en/download).
 
 ## Hardware requirements
 

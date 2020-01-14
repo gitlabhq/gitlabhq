@@ -14,14 +14,7 @@ module Sentry
       private
 
       def get_projects
-        http_get(projects_api_url)[:body]
-      end
-
-      def projects_api_url
-        projects_url = URI(url)
-        projects_url.path = '/api/0/projects/'
-
-        projects_url
+        http_get(api_urls.projects_url)[:body]
       end
 
       def map_to_projects(projects)

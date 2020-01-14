@@ -1,11 +1,13 @@
 <script>
 import TreeContent from '../components/tree_content.vue';
 import { updateElementsVisibility } from '../utils/dom';
+import preloadMixin from '../mixins/preload';
 
 export default {
   components: {
     TreeContent,
   },
+  mixins: [preloadMixin],
   props: {
     path: {
       type: String,
@@ -34,5 +36,5 @@ export default {
 </script>
 
 <template>
-  <tree-content :path="path" />
+  <tree-content :path="path" :loading-path="loadingPath" />
 </template>

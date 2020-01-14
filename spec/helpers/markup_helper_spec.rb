@@ -273,16 +273,19 @@ describe MarkupHelper do
 
   describe '#render_wiki_content' do
     let(:wiki) { double('WikiPage', path: "file.#{extension}") }
+    let(:wiki_repository) { double('Repository') }
     let(:context) do
       {
         pipeline: :wiki, project: project, project_wiki: wiki,
-        page_slug: 'nested/page', issuable_state_filter_enabled: true
+        page_slug: 'nested/page', issuable_state_filter_enabled: true,
+        repository: wiki_repository
       }
     end
 
     before do
       expect(wiki).to receive(:content).and_return('wiki content')
       expect(wiki).to receive(:slug).and_return('nested/page')
+      expect(wiki).to receive(:repository).and_return(wiki_repository)
       helper.instance_variable_set(:@project_wiki, wiki)
     end
 
