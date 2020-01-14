@@ -1991,6 +1991,19 @@ describe User, :do_not_mock_admin_mode do
         expect(user.blocked?).to be_truthy
         expect(user.ldap_blocked?).to be_truthy
       end
+
+      context 'on a read-only instance' do
+        before do
+          allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+        end
+
+        it 'does not block user' do
+          user.ldap_block
+
+          expect(user.blocked?).to be_falsey
+          expect(user.ldap_blocked?).to be_falsey
+        end
+      end
     end
   end
 

@@ -7,6 +7,7 @@ apply:
     TILLER_NAMESPACE: gitlab-managed-apps
     GITLAB_MANAGED_APPS_FILE: $CI_PROJECT_DIR/.gitlab/managed-apps/config.yaml
     INGRESS_VALUES_FILE: $CI_PROJECT_DIR/.gitlab/managed-apps/ingress/values.yaml
+    CERT_MANAGER_VALUES_FILE: $CI_PROJECT_DIR/.gitlab/managed-apps/cert-manager/values.yaml
     SENTRY_VALUES_FILE: $CI_PROJECT_DIR/.gitlab/managed-apps/sentry/values.yaml
   script:
     - gitlab-managed-apps /usr/local/share/gitlab-managed-apps/helmfile.yaml

@@ -4,7 +4,7 @@ class SpamService
   attr_accessor :spammable, :request, :options
   attr_reader :spam_log
 
-  def initialize(spammable, request = nil)
+  def initialize(spammable:, request: nil)
     @spammable = spammable
     @request = request
     @options = {}

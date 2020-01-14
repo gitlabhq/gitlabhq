@@ -286,6 +286,10 @@ class User < ApplicationRecord
       end
     end
 
+    before_transition do
+      !Gitlab::Database.read_only?
+    end
+
     # rubocop: disable CodeReuse/ServiceClass
     # Ideally we should not call a service object here but user.block
     # is also bcalled by Users::MigrateToGhostUserService which references

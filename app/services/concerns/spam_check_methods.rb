@@ -24,7 +24,7 @@ module SpamCheckMethods
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   # rubocop: disable CodeReuse/ActiveRecord
   def spam_check(spammable, user)
-    spam_service = SpamService.new(spammable, @request)
+    spam_service = SpamService.new(spammable: spammable, request: @request)
 
     spam_service.when_recaptcha_verified(@recaptcha_verified, @api) do
       user.spam_logs.find_by(id: @spam_log_id)&.update!(recaptcha_verified: true)

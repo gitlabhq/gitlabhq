@@ -5,7 +5,7 @@ require 'spec_helper'
 describe SpamService do
   describe '#when_recaptcha_verified' do
     def check_spam(issue, request, recaptcha_verified)
-      described_class.new(issue, request).when_recaptcha_verified(recaptcha_verified) do
+      described_class.new(spammable: issue, request: request).when_recaptcha_verified(recaptcha_verified) do
         'yielded'
       end
     end
