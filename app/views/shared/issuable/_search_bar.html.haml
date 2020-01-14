@@ -1,5 +1,6 @@
 - type = local_assigns.fetch(:type)
 - board = local_assigns.fetch(:board, nil)
+- show_sorting_dropdown = local_assigns.fetch(:show_sorting_dropdown, true)
 - is_not_boards_modal_or_productivity_analytics = type != :boards_modal && type != :productivity_analytics
 - block_css_class = is_not_boards_modal_or_productivity_analytics ? 'row-content-block second-block' : ''
 - user_can_admin_list = board && can?(current_user, :admin_list, board.resource_parent)
@@ -169,5 +170,5 @@
           - if @project
             #js-add-issues-btn.prepend-left-10{ data: { can_admin_list: can?(current_user, :admin_list, @project) } }
         #js-toggle-focus-btn
-      - elsif is_not_boards_modal_or_productivity_analytics
+      - elsif is_not_boards_modal_or_productivity_analytics && show_sorting_dropdown
         = render 'shared/issuable/sort_dropdown'

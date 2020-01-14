@@ -191,38 +191,47 @@ export const setFileViewMode = ({ commit }, { file, viewMode }) => {
   commit(types.SET_FILE_VIEWMODE, { file, viewMode });
 };
 
-export const discardFileChanges = ({ dispatch, state, commit, getters }, path) => {
+export const restoreOriginalFile = ({ dispatch, state, commit }, path) => {
   const file = state.entries[path];
+  const isDestructiveDiscard = file.tempFile || file.prevPath;
 
   if (file.deleted && file.parentPath) {
     dispatch('restoreTree', file.parentPath);
   }
 
-  if (file.tempFile || file.prevPath) {
+  if (isDestructiveDiscard) {
     dispatch('closeFile', file);
+  }
 
-    if (file.tempFile) {
-      dispatch('deleteEntry', file.path);
-    } else {
-      commit(types.DISCARD_FILE_CHANGES, file.path);
-      dispatch('renameEntry', {
-        path: file.path,
-        name: file.prevName,
-        parentPath: file.prevParentPath,
-      });
-    }
+  if (file.tempFile) {
+    dispatch('deleteEntry', file.path);
   } else {
-    commit(types.DISCARD_FILE_CHANGES, path);
+    commit(types.DISCARD_FILE_CHANGES, file.path);
+  }
 
-    if (getters.activeFile && file.path === getters.activeFile.path) {
-      dispatch('updateDelayViewerUpdated', true)
-        .then(() => {
-          router.push(`/project${file.url}`);
-        })
-        .catch(e => {
-          throw e;
-        });
-    }
+  if (file.prevPath) {
+    dispatch('renameEntry', {
+      path: file.path,
+      name: file.prevName,
+      parentPath: file.prevParentPath,
+    });
+  }
+};
+
+export const discardFileChanges = ({ dispatch, state, commit, getters }, path) => {
+  const file = state.entries[path];
+  const isDestructiveDiscard = file.tempFile || file.prevPath;
+
+  dispatch('restoreOriginalFile', path);
+
+  if (!isDestructiveDiscard && file.path === getters.activeFile?.path) {
+    dispatch('updateDelayViewerUpdated', true)
+      .then(() => {
+        router.push(`/project${file.url}`);
+      })
+      .catch(e => {
+        throw e;
+      });
   }
 
   commit(types.REMOVE_FILE_FROM_CHANGED, path);

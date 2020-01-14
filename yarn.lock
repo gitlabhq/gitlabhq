@@ -3461,44 +3461,7 @@ d3-zoom@1:
     d3-selection "1"
     d3-transition "1"
 
-d3@^5.12.0, d3@^5.7.0:
-  version "5.12.0"
-  resolved "https://registry.yarnpkg.com/d3/-/d3-5.12.0.tgz#0ddeac879c28c882317cd439b495290acd59ab61"
-  integrity sha512-flYVMoVuhPFHd9zVCe2BxIszUWqBcd5fvQGMNRmSiBrgdnh6Vlruh60RJQTouAK9xPbOB0plxMvBm4MoyODXNg==
-  dependencies:
-    d3-array "1"
-    d3-axis "1"
-    d3-brush "1"
-    d3-chord "1"
-    d3-collection "1"
-    d3-color "1"
-    d3-contour "1"
-    d3-dispatch "1"
-    d3-drag "1"
-    d3-dsv "1"
-    d3-ease "1"
-    d3-fetch "1"
-    d3-force "1"
-    d3-format "1"
-    d3-geo "1"
-    d3-hierarchy "1"
-    d3-interpolate "1"
-    d3-path "1"
-    d3-polygon "1"
-    d3-quadtree "1"
-    d3-random "1"
-    d3-scale "2"
-    d3-scale-chromatic "1"
-    d3-selection "1"
-    d3-shape "1"
-    d3-time "1"
-    d3-time-format "2"
-    d3-timer "1"
-    d3-transition "1"
-    d3-voronoi "1"
-    d3-zoom "1"
-
-d3@^5.14:
+d3@^5.12.0, d3@^5.14, d3@^5.7.0:
   version "5.15.0"
   resolved "https://registry.yarnpkg.com/d3/-/d3-5.15.0.tgz#ffd44958e6a3cb8a59a84429c45429b8bca5677a"
   integrity sha512-C+E80SL2nLLtmykZ6klwYj5rPqB5nlfN5LdWEAVdWPppqTD8taoJi2PxLZjPeYT8FFRR2yucXq+kBlOnnvZeLg==

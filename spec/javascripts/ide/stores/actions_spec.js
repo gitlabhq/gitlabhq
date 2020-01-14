@@ -61,24 +61,25 @@ describe('Multi-file store actions', () => {
   });
 
   describe('discardAllChanges', () => {
-    let f;
-    beforeEach(() => {
-      f = file('discardAll');
-      f.changed = true;
+    const paths = ['to_discard', 'another_one_to_discard'];
 
-      store.state.openFiles.push(f);
-      store.state.changedFiles.push(f);
-      store.state.entries[f.path] = f;
+    beforeEach(() => {
+      paths.forEach(path => {
+        const f = file(path);
+        f.changed = true;
+
+        store.state.openFiles.push(f);
+        store.state.changedFiles.push(f);
+        store.state.entries[f.path] = f;
+      });
     });
 
-    it('discards changes in file', done => {
-      store
-        .dispatch('discardAllChanges')
-        .then(() => {
-          expect(store.state.openFiles.changed).toBeFalsy();
-        })
-        .then(done)
-        .catch(done.fail);
+    it('discards all changes in file', () => {
+      const expectedCalls = paths.map(path => ['restoreOriginalFile', path]);
+
+      discardAllChanges(store);
+
+      expect(store.dispatch.calls.allArgs()).toEqual(jasmine.arrayContaining(expectedCalls));
     });
 
     it('removes all files from changedFiles state', done => {
@@ -86,63 +87,10 @@ describe('Multi-file store actions', () => {
         .dispatch('discardAllChanges')
         .then(() => {
           expect(store.state.changedFiles.length).toBe(0);
-          expect(store.state.openFiles.length).toBe(1);
+          expect(store.state.openFiles.length).toBe(2);
         })
         .then(done)
         .catch(done.fail);
-    });
-
-    it('closes the temp file and deletes it if it was open', done => {
-      f.tempFile = true;
-
-      testAction(
-        discardAllChanges,
-        undefined,
-        store.state,
-        [{ type: types.REMOVE_ALL_CHANGES_FILES }],
-        [
-          { type: 'closeFile', payload: jasmine.objectContaining({ path: 'discardAll' }) },
-          { type: 'deleteEntry', payload: 'discardAll' },
-        ],
-        done,
-      );
-    });
-
-    it('renames the file to its original name and closes it if it was open', done => {
-      Object.assign(f, {
-        prevPath: 'parent/path/old_name',
-        prevName: 'old_name',
-        prevParentPath: 'parent/path',
-      });
-
-      testAction(
-        discardAllChanges,
-        undefined,
-        store.state,
-        [{ type: types.REMOVE_ALL_CHANGES_FILES }],
-        [
-          { type: 'closeFile', payload: jasmine.objectContaining({ path: 'discardAll' }) },
-          {
-            type: 'renameEntry',
-            payload: { path: 'discardAll', name: 'old_name', parentPath: 'parent/path' },
-          },
-        ],
-        done,
-      );
-    });
-
-    it('discards file changes on all other files', done => {
-      testAction(
-        discardAllChanges,
-        undefined,
-        store.state,
-        [
-          { type: types.DISCARD_FILE_CHANGES, payload: 'discardAll' },
-          { type: types.REMOVE_ALL_CHANGES_FILES },
-        ],
-        [],
-        done,
-      );
     });
   });
 

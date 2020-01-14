@@ -155,11 +155,10 @@ Rails/ApplicationRecord:
     # as they need to be as decoupled from application code as possible
     - db/**/*.rb
     - lib/gitlab/background_migration/**/*.rb
+    - ee/lib/ee/gitlab/background_migration/**/*.rb
     - lib/gitlab/database/**/*.rb
     - spec/**/*.rb
     - ee/db/**/*.rb
-    - ee/lib/gitlab/background_migration/**/*.rb
-    - ee/lib/ee/gitlab/background_migration/**/*.rb
     - ee/spec/**/*.rb
 
 # GitLab ###################################################################
@@ -233,7 +232,8 @@ RSpec/FactoriesInMigrationSpecs:
     - 'spec/migrations/**/*.rb'
     - 'ee/spec/migrations/**/*.rb'
     - 'spec/lib/gitlab/background_migration/**/*.rb'
-    - 'ee/spec/lib/gitlab/background_migration/**/*.rb'
+    - 'spec/lib/ee/gitlab/background_migration/**/*.rb'
+    - 'ee/spec/lib/ee/gitlab/background_migration/**/*.rb'
 
 Cop/IncludeActionViewContext:
   Enabled: true

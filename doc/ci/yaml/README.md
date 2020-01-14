@@ -2719,10 +2719,10 @@ can lead to errors during the deployment.
 To avoid these errors, the `resource_group` attribute can be used to ensure that
 the Runner will not run certain jobs simultaneously.
 
-When the `resource_group` key is defined in a job in `.gitlab-ci.yml`,
-job runs are mutually exclusive across different pipelines in the same project.
+When the `resource_group` key is defined for a job in `.gitlab-ci.yml`,
+job executions are mutually exclusive across different pipelines for the same project.
 If multiple jobs belonging to the same resource group are enqueued simultaneously,
-only one of them will be picked by the Runner, and the other jobs will wait until the
+only one of the jobs will be picked by the Runner, and the other jobs will wait until the
 `resource_group` is free.
 
 Here is a simple example:

@@ -17,34 +17,29 @@ NOTE: **Note:**
 Coming over to GitLab from Jenkins? Check out our [reference](../jenkins/index.md)
 for converting your pre-existing pipelines over to our format.
 
-GitLab offers a [continuous integration][ci] service. If you
-[add a `.gitlab-ci.yml` file][yaml] to the root directory of your repository,
-and configure your GitLab project to use a [Runner], then each commit or
-push triggers your CI [pipeline].
+GitLab offers a [continuous integration](https://about.gitlab.com/product/continuous-integration/) service. For each commit or push to trigger your CI
+[pipeline](../pipelines.md), you must:
 
-The `.gitlab-ci.yml` file tells the GitLab Runner what to do. By default it runs
-a pipeline with three [stages]: `build`, `test`, and `deploy`. You don't need to
-use all three stages; stages with no jobs are simply ignored.
+- Add a [`.gitlab-ci.yml` file](#creating-a-gitlab-ciyml-file) to your repository's root directory.
+- Ensure your project is configured to use a [Runner](#configuring-a-runner).
 
-If everything runs OK (no non-zero return values), you'll get a nice green
-checkmark associated with the commit. This makes it
-easy to see whether a commit caused any of the tests to fail before
-you even look at the code.
+The `.gitlab-ci.yml` file tells the GitLab Runner what to do. A simple pipeline commonly has
+three [stages](../yaml/README.md#stages):
 
-Most projects use GitLab's CI service to run the test suite so that
-developers get immediate feedback if they broke something.
+- `build`
+- `test`
+- `deploy`
 
-There's a growing trend to use continuous delivery and continuous deployment to
-automatically deploy tested code to staging and production environments.
+You do not need to use all three stages; stages with no jobs are ignored.
 
-So in brief, the steps needed to have a working CI can be summed up to:
+The pipeline appears under the project's **CI/CD > Pipelines** page. If everything runs OK (no non-zero
+return values), you get a green check mark associated with the commit. This makes it easy to see
+whether a commit caused any of the tests to fail before you even look at the job (test) log. Many projects use
+GitLab's CI service to run the test suite, so developers get immediate feedback if they broke
+something.
 
-1. Add `.gitlab-ci.yml` to the root directory of your repository
-1. Configure a Runner
-
-From there on, on every push to your Git repository, the Runner will
-automatically start the pipeline and the pipeline will appear under the
-project's **Pipelines** page.
+It's also common to use pipelines to automatically deploy
+tested code to staging and production environments.
 
 ---
 
@@ -237,9 +232,4 @@ CI with various languages.
 [runner-install]: https://docs.gitlab.com/runner/install/
 [blog-ci]: https://about.gitlab.com/blog/2015/05/06/why-were-replacing-gitlab-ci-jobs-with-gitlab-ci-dot-yml/
 [examples]: ../examples/README.md
-[ci]: https://about.gitlab.com/product/continuous-integration/
-[yaml]: ../yaml/README.md
-[runner]: ../runners/README.md
 [enabled]: ../enable_or_disable_ci.md
-[stages]: ../yaml/README.md#stages
-[pipeline]: ../pipelines.md

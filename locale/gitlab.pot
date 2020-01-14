@@ -5639,10 +5639,28 @@ msgstr ""
 msgid "CycleAnalytics|No stages selected"
 msgstr ""
 
+msgid "CycleAnalytics|Number of tasks"
+msgstr ""
+
+msgid "CycleAnalytics|Showing %{subject} and %{selectedLabelsCount} labels"
+msgstr ""
+
+msgid "CycleAnalytics|Showing data for group '%{groupName}' and %{selectedProjectCount} projects from %{startDate} to %{endDate}"
+msgstr ""
+
+msgid "CycleAnalytics|Showing data for group '%{groupName}' from %{startDate} to %{endDate}"
+msgstr ""
+
 msgid "CycleAnalytics|Stages"
 msgstr ""
 
+msgid "CycleAnalytics|Tasks by type"
+msgstr ""
+
 msgid "CycleAnalytics|Total days to completion"
+msgstr ""
+
+msgid "CycleAnalytics|Type of work"
 msgstr ""
 
 msgid "CycleAnalytics|group dropdown filter"
@@ -5685,6 +5703,9 @@ msgid "Dashboard|Unable to add %{invalidProjects}. This dashboard is available f
 msgstr ""
 
 msgid "Data is still calculating..."
+msgstr ""
+
+msgid "Date"
 msgstr ""
 
 msgid "Date picker"

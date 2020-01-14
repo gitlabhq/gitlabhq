@@ -16,21 +16,7 @@ export const redirectToUrl = (self, url) => visitUrl(url);
 export const setInitialData = ({ commit }, data) => commit(types.SET_INITIAL_DATA, data);
 
 export const discardAllChanges = ({ state, commit, dispatch }) => {
-  state.changedFiles.forEach(file => {
-    if (file.tempFile || file.prevPath) dispatch('closeFile', file);
-
-    if (file.tempFile) {
-      dispatch('deleteEntry', file.path);
-    } else if (file.prevPath) {
-      dispatch('renameEntry', {
-        path: file.path,
-        name: file.prevName,
-        parentPath: file.prevParentPath,
-      });
-    } else {
-      commit(types.DISCARD_FILE_CHANGES, file.path);
-    }
-  });
+  state.changedFiles.forEach(file => dispatch('restoreOriginalFile', file.path));
 
   commit(types.REMOVE_ALL_CHANGES_FILES);
 };

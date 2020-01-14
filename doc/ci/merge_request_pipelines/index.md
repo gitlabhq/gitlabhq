@@ -161,7 +161,7 @@ test:
   only: [merge_requests]
   except:
     variables:
-      $CI_COMMIT_REF_NAME =~ /^docs-/
+      - $CI_COMMIT_REF_NAME =~ /^docs-/
 ```
 
 ## Important notes about merge requests from forked projects

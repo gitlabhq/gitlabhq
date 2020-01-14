@@ -9,7 +9,7 @@ module Gitlab
         @message = message
       end
 
-      def execute(project)
+      def execute(upload_parent:, uploader_class:)
         attachments = []
 
         message.attachments.each do |attachment|
@@ -23,7 +23,7 @@ module Gitlab
               content_type: attachment.content_type
             }
 
-            uploader = UploadService.new(project, file).execute
+            uploader = UploadService.new(upload_parent, file, uploader_class).execute
             attachments << uploader.to_h if uploader
           ensure
             tmp.close!
