@@ -163,8 +163,7 @@ describe Clusters::Applications::CreateService do
       context 'elastic stack application' do
         let(:params) do
           {
-            application: 'elastic_stack',
-            kibana_hostname: 'example.com'
+            application: 'elastic_stack'
           }
         end
 
@@ -181,10 +180,6 @@ describe Clusters::Applications::CreateService do
 
             cluster.reload
           end.to change(cluster, :application_elastic_stack)
-        end
-
-        it 'sets the kibana_hostname' do
-          expect(subject.kibana_hostname).to eq('example.com')
         end
       end
     end

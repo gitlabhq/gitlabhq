@@ -41,6 +41,7 @@ The following applications can be installed:
 - [JupyterHub](#jupyterhub)
 - [Knative](#knative)
 - [Crossplane](#crossplane)
+- [Elastic Stack](#elastic-stack)
 
 With the exception of Knative, the applications will be installed in a dedicated
 namespace called `gitlab-managed-apps`.
@@ -431,6 +432,38 @@ administrator to run following command within a Rails console:
 Feature.enable(:enable_cluster_application_crossplane)
 ```
 
+### Elastic Stack
+
+> Introduced in GitLab 12.7 for project- and group-level clusters.
+
+[Elastic Stack](https://www.elastic.co/products/elastic-stack) is a complete end-to-end
+log analysis solution which helps in deep searching, analyzing and visualizing the logs
+generated from different machines.
+
+GitLab is able to gather logs from pods in your cluster automatically.
+Filebeat will run as a DaemonSet on each node in your cluster, and it will ship container logs to Elasticsearch for querying.
+GitLab will then connect to Elasticsearch for logs instead of the Kubernetes API,
+and you will have access to more advanced querying capabilities.
+
+This is a preliminary release of Elastic Stack as a GitLab-managed application. By default,
+the ability to install it is disabled.
+
+To allow installation of Elastic Stack as a GitLab-managed application, ask a GitLab
+administrator to run following command within a Rails console:
+
+```ruby
+Feature.enable(:enable_cluster_application_elastic_stack)
+```
+
+Once the feature flag is set, to enable log shipping, install Elastic Stack into the cluster with the
+**Install** button.
+
+NOTE: **Note:**
+The [`stable/elastic-stack`](https://github.com/helm/charts/tree/master/stable/elastic-stack)
+chart is used to install this application with a
+[`values.yaml`](https://gitlab.com/gitlab-org/gitlab/blob/master/vendor/elastic_stack/values.yaml)
+file.
+
 ## Install using GitLab CI (alpha)
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/20822) in GitLab 12.6.
@@ -639,6 +672,7 @@ The applications below can be uninstalled.
 | Knative  | 12.1+         | The associated IP will be deleted and cannot be restored. |
 | Prometheus  | 11.11+         | All data will be deleted and cannot be restored. |
 | Crossplane  | 12.5+         | All data will be deleted and cannot be restored. |
+| Elastic Stack  | 12.7+         | All data will be deleted and cannot be restored. |
 | Sentry  | 12.6+         | The PostgreSQL persistent volume will remain and should be manually removed for complete uninstall.  |
 
 To uninstall an application:

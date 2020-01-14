@@ -24,6 +24,7 @@ describe DeployKeyEntity do
         user_id: deploy_key.user_id,
         title: deploy_key.title,
         fingerprint: deploy_key.fingerprint,
+        fingerprint_sha256: deploy_key.fingerprint_sha256,
         destroyed_when_orphaned: true,
         almost_orphaned: false,
         created_at: deploy_key.created_at,

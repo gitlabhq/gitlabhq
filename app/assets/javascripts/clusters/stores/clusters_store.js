@@ -5,7 +5,6 @@ import {
   JUPYTER,
   KNATIVE,
   CERT_MANAGER,
-  ELASTIC_STACK,
   CROSSPLANE,
   RUNNER,
   APPLICATION_INSTALLED_STATUSES,
@@ -97,7 +96,6 @@ export default class ClusterStore {
         elastic_stack: {
           ...applicationInitialState,
           title: s__('ClusterIntegration|Elastic Stack'),
-          kibana_hostname: null,
         },
       },
       environments: [],
@@ -236,12 +234,6 @@ export default class ClusterStore {
       } else if (appId === RUNNER) {
         this.state.applications.runner.version = version;
         this.state.applications.runner.updateAvailable = updateAvailable;
-      } else if (appId === ELASTIC_STACK) {
-        this.state.applications.elastic_stack.kibana_hostname = this.updateHostnameIfUnset(
-          this.state.applications.elastic_stack.kibana_hostname,
-          serverAppEntry.kibana_hostname,
-          'kibana',
-        );
       }
     });
   }

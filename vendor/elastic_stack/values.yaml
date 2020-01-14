@@ -11,14 +11,7 @@ elasticsearch:
     replicas: 1
 
 kibana:
-  enabled: true
-  env:
-    ELASTICSEARCH_HOSTS: http://elastic-stack-elasticsearch-client:9200
-  ingress:
-    enabled: true
-    annotations:
-      kubernetes.io/ingress.class: "nginx"
-      kubernetes.io/tls-acme: "true"
+  enabled: false
 
 logstash:
   enabled: false

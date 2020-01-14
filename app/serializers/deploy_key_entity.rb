@@ -5,6 +5,7 @@ class DeployKeyEntity < Grape::Entity
   expose :user_id
   expose :title
   expose :fingerprint
+  expose :fingerprint_sha256
   expose :destroyed_when_orphaned?, as: :destroyed_when_orphaned
   expose :almost_orphaned?, as: :almost_orphaned
   expose :created_at

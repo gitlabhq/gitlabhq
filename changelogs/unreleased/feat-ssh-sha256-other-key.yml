@@ -1,0 +1,5 @@
+---
+title: Display SHA fingerprint for Deploy Keys and extend api to query those
+merge_request: 22665
+author: Roger Meier <r.meier@siemens.com>
+type: added

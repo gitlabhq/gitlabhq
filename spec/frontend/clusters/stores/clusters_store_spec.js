@@ -167,7 +167,6 @@ describe('Clusters Store', () => {
             installFailed: true,
             statusReason: mockResponseData.applications[7].status_reason,
             requestReason: null,
-            kibana_hostname: '',
             installed: false,
             uninstallable: false,
             uninstallSuccessful: false,
@@ -214,17 +213,6 @@ describe('Clusters Store', () => {
 
       expect(store.state.applications.jupyter.hostname).toEqual(
         `jupyter.${store.state.applications.ingress.externalIp}.nip.io`,
-      );
-    });
-
-    it('sets default hostname for elastic stack when ingress has a ip address', () => {
-      const mockResponseData =
-        CLUSTERS_MOCK_DATA.GET['/gitlab-org/gitlab-shell/clusters/2/status.json'].data;
-
-      store.updateStateFromServer(mockResponseData);
-
-      expect(store.state.applications.elastic_stack.kibana_hostname).toEqual(
-        `kibana.${store.state.applications.ingress.externalIp}.nip.io`,
       );
     });
   });

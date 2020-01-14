@@ -924,6 +924,10 @@ module API
       expose :user, using: Entities::UserPublic
     end
 
+    class DeployKeyWithUser < SSHKeyWithUser
+      expose :deploy_keys_projects
+    end
+
     class DeployKeysProject < Grape::Entity
       expose :deploy_key, merge: true, using: Entities::SSHKey
       expose :can_push

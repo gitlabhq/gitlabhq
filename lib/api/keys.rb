@@ -26,12 +26,15 @@ module API
       get do
         authenticated_with_can_read_all_resources!
 
-        finder_params = params.merge(key_type: 'ssh')
-
-        key = KeysFinder.new(current_user, finder_params).execute
+        key = KeysFinder.new(current_user, params).execute
 
         not_found!('Key') unless key
-        present key, with: Entities::SSHKeyWithUser, current_user: current_user
+
+        if key.type == "DeployKey"
+          present key, with: Entities::DeployKeyWithUser, current_user: current_user
+        else
+          present key, with: Entities::SSHKeyWithUser, current_user: current_user
+        end
       rescue KeysFinder::InvalidFingerprint
         render_api_error!('Failed to return the key', 400)
       end

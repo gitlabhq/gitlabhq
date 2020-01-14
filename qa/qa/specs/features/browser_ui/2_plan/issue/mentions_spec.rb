@@ -12,12 +12,8 @@ module QA
           resource.name = 'project-to-test-mention'
           resource.visibility = 'private'
         end
-        project.visit!
 
-        Page::Project::Show.perform(&:go_to_members_settings)
-        Page::Project::Settings::Members.perform do |members|
-          members.add_member(@user.username)
-        end
+        project.add_member(@user)
 
         Resource::Issue.fabricate_via_api! do |issue|
           issue.title = 'issue to test mention'

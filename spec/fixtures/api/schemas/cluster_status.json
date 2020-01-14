@@ -35,7 +35,6 @@
         "external_ip": { "type": ["string", "null"] },
         "external_hostname": { "type": ["string", "null"] },
         "hostname": { "type": ["string", "null"] },
-        "kibana_hostname": { "type": ["string", "null"] },
         "email": { "type": ["string", "null"] },
         "stack": { "type": ["string", "null"] },
         "modsecurity_enabled": { "type": ["boolean", "null"] },

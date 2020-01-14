@@ -181,11 +181,8 @@ shared_examples "installing applications on a cluster" do
     context 'when user installs Elastic Stack' do
       before do
         allow(ClusterInstallAppWorker).to receive(:perform_async)
-        allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_in)
-        allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_async)
 
         create(:clusters_applications_helm, :installed, cluster: cluster)
-        create(:clusters_applications_ingress, :installed, external_ip: '127.0.0.1', cluster: cluster)
 
         page.within('.js-cluster-application-row-elastic_stack') do
           click_button 'Install'

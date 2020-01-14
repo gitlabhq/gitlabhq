@@ -115,7 +115,12 @@ export default {
       <div role="rowheader" class="table-mobile-header">{{ s__('DeployKeys|Deploy key') }}</div>
       <div class="table-mobile-content qa-key">
         <strong class="title qa-key-title"> {{ deployKey.title }} </strong>
-        <div class="fingerprint qa-key-fingerprint">{{ deployKey.fingerprint }}</div>
+        <div class="fingerprint qa-key-fingerprint">
+          {{ __('MD5') }}:{{ deployKey.fingerprint }}
+        </div>
+        <div class="fingerprint qa-key-fingerprint">
+          {{ __('SHA256') }}:{{ deployKey.fingerprint_sha256 }}
+        </div>
       </div>
     </div>
     <div class="table-section section-30 section-wrap">

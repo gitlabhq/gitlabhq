@@ -222,9 +222,6 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
     elasticStackInstalled() {
       return this.applications.elastic_stack.status === APPLICATION_STATUS.INSTALLED;
     },
-    elasticStackKibanaHostname() {
-      return this.applications.elastic_stack.kibana_hostname;
-    },
     knative() {
       return this.applications.knative;
     },
@@ -681,9 +678,6 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
         :uninstall-successful="applications.elastic_stack.uninstallSuccessful"
         :uninstall-failed="applications.elastic_stack.uninstallFailed"
         :disabled="!helmInstalled"
-        :install-application-request-params="{
-          kibana_hostname: applications.elastic_stack.kibana_hostname,
-        }"
         title-link="https://github.com/helm/charts/tree/master/stable/elastic-stack"
       >
         <div slot="description">
@@ -694,40 +688,6 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
               )
             }}
           </p>
-
-          <template v-if="ingressExternalEndpoint">
-            <div class="form-group">
-              <label for="elastic-stack-kibana-hostname">{{
-                s__('ClusterIntegration|Kibana Hostname')
-              }}</label>
-
-              <div class="input-group">
-                <input
-                  v-model="applications.elastic_stack.kibana_hostname"
-                  :readonly="elasticStackInstalled"
-                  type="text"
-                  class="form-control js-hostname"
-                />
-                <span class="input-group-btn">
-                  <clipboard-button
-                    :text="elasticStackKibanaHostname"
-                    :title="s__('ClusterIntegration|Copy Kibana Hostname')"
-                    class="js-clipboard-btn"
-                  />
-                </span>
-              </div>
-
-              <p v-if="ingressInstalled" class="form-text text-muted">
-                {{
-                  s__(`ClusterIntegration|Replace this with your own hostname if you want.
-                                If you do so, point hostname to Ingress IP Address from above.`)
-                }}
-                <a :href="ingressDnsHelpPath" target="_blank" rel="noopener noreferrer">
-                  {{ __('More information') }}
-                </a>
-              </p>
-            </div>
-          </template>
         </div>
       </application-row>
     </div>

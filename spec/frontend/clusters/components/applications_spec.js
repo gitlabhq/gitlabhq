@@ -199,7 +199,7 @@ describe('Applications', () => {
               prometheus: { title: 'Prometheus' },
               jupyter: { title: 'JupyterHub', hostname: '' },
               knative: { title: 'Knative', hostname: '' },
-              elastic_stack: { title: 'Elastic Stack', kibana_hostname: '' },
+              elastic_stack: { title: 'Elastic Stack' },
             },
           });
 
@@ -433,79 +433,33 @@ describe('Applications', () => {
   });
 
   describe('Elastic Stack application', () => {
-    describe('with ingress installed with ip & elastic stack installable', () => {
+    describe('with elastic stack installable', () => {
       it('renders hostname active input', () => {
         vm = mountComponent(Applications, {
           applications: {
             ...APPLICATIONS_MOCK_STATE,
-            ingress: {
-              title: 'Ingress',
-              status: 'installed',
-              externalIp: '1.1.1.1',
-            },
           },
         });
 
         expect(
           vm.$el
-            .querySelector('.js-cluster-application-row-elastic_stack .js-hostname')
-            .getAttribute('readonly'),
-        ).toEqual(null);
+            .querySelector(
+              '.js-cluster-application-row-elastic_stack .js-cluster-application-install-button',
+            )
+            .getAttribute('disabled'),
+        ).toEqual('disabled');
       });
     });
 
-    describe('with ingress installed without external ip', () => {
-      it('does not render hostname input', () => {
+    describe('elastic stack installed', () => {
+      it('renders uninstall button', () => {
         vm = mountComponent(Applications, {
           applications: {
             ...APPLICATIONS_MOCK_STATE,
-            ingress: { title: 'Ingress', status: 'installed' },
+            elastic_stack: { title: 'Elastic Stack', status: 'installed' },
           },
         });
 
-        expect(vm.$el.querySelector('.js-cluster-application-row-elastic_stack .js-hostname')).toBe(
-          null,
-        );
-      });
-    });
-
-    describe('with ingress & elastic stack installed', () => {
-      it('renders readonly input', () => {
-        vm = mountComponent(Applications, {
-          applications: {
-            ...APPLICATIONS_MOCK_STATE,
-            ingress: {
-              title: 'Ingress',
-              status: 'installed',
-              externalIp: '1.1.1.1',
-              modsecurity_enabled: false,
-            },
-            elastic_stack: { title: 'Elastic Stack', status: 'installed', kibana_hostname: '' },
-          },
-        });
-
-        expect(
-          vm.$el
-            .querySelector('.js-cluster-application-row-elastic_stack .js-hostname')
-            .getAttribute('readonly'),
-        ).toEqual('readonly');
-      });
-    });
-
-    describe('without ingress installed', () => {
-      beforeEach(() => {
-        vm = mountComponent(Applications, {
-          applications: APPLICATIONS_MOCK_STATE,
-        });
-      });
-
-      it('does not render input', () => {
-        expect(vm.$el.querySelector('.js-cluster-application-row-elastic_stack .js-hostname')).toBe(
-          null,
-        );
-      });
-
-      it('renders disabled install button', () => {
         expect(
           vm.$el
             .querySelector(

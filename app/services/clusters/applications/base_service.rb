@@ -19,10 +19,6 @@ module Clusters
             application.hostname = params[:hostname]
           end
 
-          if application.has_attribute?(:kibana_hostname)
-            application.kibana_hostname = params[:kibana_hostname]
-          end
-
           if application.has_attribute?(:email)
             application.email = params[:email]
           end

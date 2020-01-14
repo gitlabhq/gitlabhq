@@ -8,7 +8,6 @@ class ClusterApplicationEntity < Grape::Entity
   expose :external_ip, if: -> (e, _) { e.respond_to?(:external_ip) }
   expose :external_hostname, if: -> (e, _) { e.respond_to?(:external_hostname) }
   expose :hostname, if: -> (e, _) { e.respond_to?(:hostname) }
-  expose :kibana_hostname, if: -> (e, _) { e.respond_to?(:kibana_hostname) }
   expose :email, if: -> (e, _) { e.respond_to?(:email) }
   expose :stack, if: -> (e, _) { e.respond_to?(:stack) }
   expose :modsecurity_enabled, if: -> (e, _) { e.respond_to?(:modsecurity_enabled) }

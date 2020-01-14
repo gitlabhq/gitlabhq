@@ -3824,9 +3824,6 @@ msgstr ""
 msgid "ClusterIntegration|Copy Jupyter Hostname"
 msgstr ""
 
-msgid "ClusterIntegration|Copy Kibana Hostname"
-msgstr ""
-
 msgid "ClusterIntegration|Copy Knative Endpoint"
 msgstr ""
 
@@ -4041,9 +4038,6 @@ msgid "ClusterIntegration|JupyterHub, a multi-user Hub, spawns, manages, and pro
 msgstr ""
 
 msgid "ClusterIntegration|Key pair name"
-msgstr ""
-
-msgid "ClusterIntegration|Kibana Hostname"
 msgstr ""
 
 msgid "ClusterIntegration|Knative"
@@ -6927,10 +6921,16 @@ msgstr ""
 msgid "EnvironmentsDashboard|More actions"
 msgstr ""
 
+msgid "EnvironmentsDashboard|Read more."
+msgstr ""
+
 msgid "EnvironmentsDashboard|Remove"
 msgstr ""
 
 msgid "EnvironmentsDashboard|The environments dashboard provides a summary of each project's environments' status, including pipeline and alert statuses."
+msgstr ""
+
+msgid "EnvironmentsDashboard|This dashboard displays a maximum of 7 projects and 3 environments per project. %{readMoreLink}"
 msgstr ""
 
 msgid "Environments|An error occurred while canceling the auto stop, please try again"

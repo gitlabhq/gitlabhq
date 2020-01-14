@@ -7,6 +7,10 @@ describe UsersHelper do
 
   let(:user) { create(:user) }
 
+  def filter_ee_badges(badges)
+    badges.reject { |badge| badge[:text] == 'Is using seat' }
+  end
+
   describe '#user_link' do
     subject { helper.user_link(user) }
 
@@ -118,7 +122,7 @@ describe UsersHelper do
 
         badges = helper.user_badges_in_admin_section(blocked_user)
 
-        expect(badges).to eq([text: "Blocked", variant: "danger"])
+        expect(filter_ee_badges(badges)).to eq([text: "Blocked", variant: "danger"])
       end
     end
 
@@ -128,7 +132,7 @@ describe UsersHelper do
 
         badges = helper.user_badges_in_admin_section(admin_user)
 
-        expect(badges).to eq([text: "Admin", variant: "success"])
+        expect(filter_ee_badges(badges)).to eq([text: "Admin", variant: "success"])
       end
     end
 
@@ -138,7 +142,7 @@ describe UsersHelper do
 
         badges = helper.user_badges_in_admin_section(external_user)
 
-        expect(badges).to eq([text: "External", variant: "secondary"])
+        expect(filter_ee_badges(badges)).to eq([text: "External", variant: "secondary"])
       end
     end
 
@@ -146,7 +150,7 @@ describe UsersHelper do
       it 'returns the "It\'s You" badge' do
         badges = helper.user_badges_in_admin_section(user)
 
-        expect(badges).to eq([text: "It's you!", variant: nil])
+        expect(filter_ee_badges(badges)).to eq([text: "It's you!", variant: nil])
       end
     end
 
@@ -170,7 +174,7 @@ describe UsersHelper do
 
         badges = helper.user_badges_in_admin_section(user)
 
-        expect(badges).to be_empty
+        expect(filter_ee_badges(badges)).to be_empty
       end
     end
   end

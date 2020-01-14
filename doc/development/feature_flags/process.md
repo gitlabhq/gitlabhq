@@ -15,7 +15,9 @@ should be leveraged:
 - Feature flags should remain in the codebase for as short period as possible
   to reduce the need for feature flag accounting.
 - The person operating with feature flags is responsible for clearly communicating
-  the status of a feature behind the feature flag with responsible stakeholders.
+  the status of a feature behind the feature flag with responsible stakeholders. The
+  issue description should be updated with the feature flag name and whether it is
+  defaulted on or off as soon it is evident that a feature flag is needed.
 - Merge requests that make changes hidden behind a feature flag, or remove an
   existing feature flag because a feature is deemed stable must have the
   ~"feature flag" label assigned.

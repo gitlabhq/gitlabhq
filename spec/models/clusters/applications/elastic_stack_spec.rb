@@ -10,45 +10,8 @@ describe Clusters::Applications::ElasticStack do
   include_examples 'cluster application version specs', :clusters_applications_elastic_stack
   include_examples 'cluster application helm specs', :clusters_applications_elastic_stack
 
-  describe '#can_uninstall?' do
-    let(:ingress) { create(:clusters_applications_ingress, :installed, external_hostname: 'localhost.localdomain') }
-    let(:elastic_stack) { create(:clusters_applications_elastic_stack, cluster: ingress.cluster) }
-
-    subject { elastic_stack.can_uninstall? }
-
-    it { is_expected.to be_truthy }
-  end
-
-  describe '#set_initial_status' do
-    before do
-      elastic_stack.set_initial_status
-    end
-
-    context 'when ingress is not installed' do
-      let(:cluster) { create(:cluster, :provided_by_gcp) }
-      let(:elastic_stack) { create(:clusters_applications_elastic_stack, cluster: cluster) }
-
-      it { expect(elastic_stack).to be_not_installable }
-    end
-
-    context 'when ingress is installed and external_ip is assigned' do
-      let(:ingress) { create(:clusters_applications_ingress, :installed, external_ip: '127.0.0.1') }
-      let(:elastic_stack) { create(:clusters_applications_elastic_stack, cluster: ingress.cluster) }
-
-      it { expect(elastic_stack).to be_installable }
-    end
-
-    context 'when ingress is installed and external_hostname is assigned' do
-      let(:ingress) { create(:clusters_applications_ingress, :installed, external_hostname: 'localhost.localdomain') }
-      let(:elastic_stack) { create(:clusters_applications_elastic_stack, cluster: ingress.cluster) }
-
-      it { expect(elastic_stack).to be_installable }
-    end
-  end
-
   describe '#install_command' do
-    let!(:ingress) { create(:clusters_applications_ingress, :installed, external_ip: '127.0.0.1') }
-    let!(:elastic_stack) { create(:clusters_applications_elastic_stack, cluster: ingress.cluster) }
+    let!(:elastic_stack) { create(:clusters_applications_elastic_stack) }
 
     subject { elastic_stack.install_command }
 
@@ -80,8 +43,7 @@ describe Clusters::Applications::ElasticStack do
   end
 
   describe '#uninstall_command' do
-    let!(:ingress) { create(:clusters_applications_ingress, :installed, external_ip: '127.0.0.1') }
-    let!(:elastic_stack) { create(:clusters_applications_elastic_stack, cluster: ingress.cluster) }
+    let!(:elastic_stack) { create(:clusters_applications_elastic_stack) }
 
     subject { elastic_stack.uninstall_command }
 
@@ -97,19 +59,6 @@ describe Clusters::Applications::ElasticStack do
       expect(subject.postdelete).to eq([
         'kubectl delete pvc --selector release\\=elastic-stack'
       ])
-    end
-  end
-
-  describe '#files' do
-    let!(:ingress) { create(:clusters_applications_ingress, :installed, external_ip: '127.0.0.1') }
-    let!(:elastic_stack) { create(:clusters_applications_elastic_stack, cluster: ingress.cluster) }
-
-    let(:values) { subject[:'values.yaml'] }
-
-    subject { elastic_stack.files }
-
-    it 'includes elastic stack specific keys in the values.yaml file' do
-      expect(values).to include('ELASTICSEARCH_HOSTS')
     end
   end
 
