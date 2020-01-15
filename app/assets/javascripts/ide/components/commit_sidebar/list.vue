@@ -41,10 +41,6 @@ export default {
       type: String,
       required: true,
     },
-    itemActionComponent: {
-      type: String,
-      required: true,
-    },
     stagedList: {
       type: Boolean,
       required: false,
@@ -142,7 +138,6 @@ export default {
       <li v-for="file in fileList" :key="file.key">
         <list-item
           :file="file"
-          :action-component="itemActionComponent"
           :key-prefix="keyPrefix"
           :staged-list="stagedList"
           :active-file-key="activeFileKey"

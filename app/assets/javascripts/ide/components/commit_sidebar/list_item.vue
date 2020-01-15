@@ -19,10 +19,6 @@ export default {
       type: Object,
       required: true,
     },
-    actionComponent: {
-      type: String,
-      required: true,
-    },
     keyPrefix: {
       type: String,
       required: false,

@@ -2690,6 +2690,9 @@ msgstr ""
 msgid "Blocked"
 msgstr ""
 
+msgid "Blocks"
+msgstr ""
+
 msgid "Blog"
 msgstr ""
 
@@ -10137,6 +10140,9 @@ msgstr ""
 msgid "Is"
 msgstr ""
 
+msgid "Is blocked by"
+msgstr ""
+
 msgid "Is not"
 msgstr ""
 
@@ -10939,6 +10945,9 @@ msgid "Link copied"
 msgstr ""
 
 msgid "Linked emails (%{email_count})"
+msgstr ""
+
+msgid "Linked issues"
 msgstr ""
 
 msgid "LinkedIn"
@@ -15104,6 +15113,9 @@ msgstr ""
 msgid "Related merge requests"
 msgstr ""
 
+msgid "Relates to"
+msgstr ""
+
 msgid "Release"
 msgid_plural "Releases"
 msgstr[0] ""
@@ -17380,9 +17392,6 @@ msgstr ""
 msgid "Stage all changes"
 msgstr ""
 
-msgid "Stage changes"
-msgstr ""
-
 msgid "Stage data updated"
 msgstr ""
 
@@ -18181,6 +18190,9 @@ msgid "The connection will time out after %{timeout}. For repositories that take
 msgstr ""
 
 msgid "The content of this page is not encoded in UTF-8. Edits can only be made via the Git repository."
+msgstr ""
+
+msgid "The current issue"
 msgstr ""
 
 msgid "The data source is connected, but there is no data to display. %{documentationLink}"
@@ -19735,9 +19747,6 @@ msgid "Unstage"
 msgstr ""
 
 msgid "Unstage all changes"
-msgstr ""
-
-msgid "Unstage changes"
 msgstr ""
 
 msgid "Unstaged"
@@ -21510,6 +21519,9 @@ msgstr ""
 msgid "authored"
 msgstr ""
 
+msgid "blocks"
+msgstr ""
+
 msgid "branch name"
 msgstr ""
 
@@ -21996,6 +22008,9 @@ msgstr ""
 msgid "is an invalid IP address range"
 msgstr ""
 
+msgid "is blocked by"
+msgstr ""
+
 msgid "is enabled."
 msgstr ""
 
@@ -22471,6 +22486,9 @@ msgstr ""
 msgid "register"
 msgstr ""
 
+msgid "relates to"
+msgstr ""
+
 msgid "released %{time}"
 msgstr ""
 
@@ -22585,6 +22603,9 @@ msgid "syntax is incorrect"
 msgstr ""
 
 msgid "tag name"
+msgstr ""
+
+msgid "the following issue(s)"
 msgstr ""
 
 msgid "this document"

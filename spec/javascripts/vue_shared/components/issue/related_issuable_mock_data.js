@@ -6,40 +6,43 @@ export const defaultProps = {
 
 export const issuable1 = {
   id: 200,
-  epic_issue_id: 1,
+  epicIssueId: 1,
   confidential: false,
   reference: 'foo/bar#123',
   displayReference: '#123',
   title: 'some title',
   path: '/foo/bar/issues/123',
   state: 'opened',
+  linkType: 'relates_to',
 };
 
 export const issuable2 = {
   id: 201,
-  epic_issue_id: 2,
+  epicIssueId: 2,
   confidential: false,
   reference: 'foo/bar#124',
   displayReference: '#124',
   title: 'some other thing',
   path: '/foo/bar/issues/124',
   state: 'opened',
+  linkType: 'blocks',
 };
 
 export const issuable3 = {
   id: 202,
-  epic_issue_id: 3,
+  epicIssueId: 3,
   confidential: false,
   reference: 'foo/bar#125',
   displayReference: '#125',
   title: 'some other other thing',
   path: '/foo/bar/issues/125',
   state: 'opened',
+  linkType: 'is_blocked_by',
 };
 
 export const issuable4 = {
   id: 203,
-  epic_issue_id: 4,
+  epicIssueId: 4,
   confidential: false,
   reference: 'foo/bar#126',
   displayReference: '#126',
@@ -50,7 +53,7 @@ export const issuable4 = {
 
 export const issuable5 = {
   id: 204,
-  epic_issue_id: 5,
+  epicIssueId: 5,
   confidential: false,
   reference: 'foo/bar#127',
   displayReference: '#127',
