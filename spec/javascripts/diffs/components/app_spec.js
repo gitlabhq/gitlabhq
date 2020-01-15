@@ -77,6 +77,7 @@ describe('diffs/components/app', () => {
     beforeEach(done => {
       const fetchResolver = () => {
         store.state.diffs.retrievingBatches = false;
+        store.state.notes.discussions = 'test';
         return Promise.resolve({ real_size: 100 });
       };
       spyOn(window, 'requestIdleCallback').and.callFake(fn => fn());
@@ -87,6 +88,7 @@ describe('diffs/components/app', () => {
       spyOn(wrapper.vm, 'setDiscussions');
       spyOn(wrapper.vm, 'startRenderDiffsQueue');
       spyOn(wrapper.vm, 'unwatchDiscussions');
+      spyOn(wrapper.vm, 'unwatchRetrievingBatches');
       store.state.diffs.retrievingBatches = true;
       store.state.diffs.diffFiles = [];
       wrapper.vm.$nextTick(done);
@@ -240,6 +242,7 @@ describe('diffs/components/app', () => {
         expect(wrapper.vm.fetchDiffFilesBatch).not.toHaveBeenCalled();
         expect(wrapper.vm.unwatchDiscussions).toHaveBeenCalled();
         expect(wrapper.vm.diffFilesLength).toEqual(100);
+        expect(wrapper.vm.unwatchRetrievingBatches).toHaveBeenCalled();
 
         done();
       });
@@ -258,6 +261,7 @@ describe('diffs/components/app', () => {
         expect(wrapper.vm.fetchDiffFilesBatch).toHaveBeenCalled();
         expect(wrapper.vm.unwatchDiscussions).toHaveBeenCalled();
         expect(wrapper.vm.diffFilesLength).toEqual(100);
+        expect(wrapper.vm.unwatchRetrievingBatches).toHaveBeenCalled();
         done();
       });
     });
@@ -274,6 +278,7 @@ describe('diffs/components/app', () => {
         expect(wrapper.vm.fetchDiffFilesBatch).toHaveBeenCalled();
         expect(wrapper.vm.unwatchDiscussions).toHaveBeenCalled();
         expect(wrapper.vm.diffFilesLength).toEqual(100);
+        expect(wrapper.vm.unwatchRetrievingBatches).toHaveBeenCalled();
         done();
       });
     });

@@ -10959,9 +10959,6 @@ msgstr ""
 msgid "List"
 msgstr ""
 
-msgid "List Label"
-msgstr ""
-
 msgid "List Settings"
 msgstr ""
 

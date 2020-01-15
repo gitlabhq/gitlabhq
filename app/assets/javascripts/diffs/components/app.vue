@@ -163,9 +163,6 @@ export default {
     },
     isLoading: 'adjustView',
     showTreeList: 'adjustView',
-    retrievingBatches(newVal) {
-      if (!newVal) this.unwatchDiscussions();
-    },
   },
   mounted() {
     this.setBaseConfig({
@@ -197,6 +194,16 @@ export default {
     this.unwatchDiscussions = this.$watch(
       () => `${this.diffFiles.length}:${this.$store.state.notes.discussions.length}`,
       () => this.setDiscussions(),
+    );
+
+    this.unwatchRetrievingBatches = this.$watch(
+      () => `${this.retrievingBatches}:${this.$store.state.notes.discussions.length}`,
+      () => {
+        if (!this.retrievingBatches && this.$store.state.notes.discussions.length) {
+          this.unwatchDiscussions();
+          this.unwatchRetrievingBatches();
+        }
+      },
     );
   },
   beforeDestroy() {
