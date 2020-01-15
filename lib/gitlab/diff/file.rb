@@ -358,6 +358,10 @@ module Gitlab
         end
       end
 
+      def modified_file?
+        new_file? || deleted_file? || content_changed?
+      end
+
       # We can't use Object#try because Blob doesn't inherit from Object, but
       # from BasicObject (via SimpleDelegator).
       def try_blobs(meth)
@@ -393,33 +397,16 @@ module Gitlab
       end
 
       def simple_viewer_class
+        return DiffViewer::Collapsed if collapsed?
         return DiffViewer::NotDiffable unless diffable?
+        return DiffViewer::Text if modified_file? && text?
+        return DiffViewer::NoPreview if content_changed?
+        return DiffViewer::Added if new_file?
+        return DiffViewer::Deleted if deleted_file?
+        return DiffViewer::Renamed if renamed_file?
+        return DiffViewer::ModeChanged if mode_changed?
 
-        if content_changed?
-          if text?
-            DiffViewer::Text
-          else
-            DiffViewer::NoPreview
-          end
-        elsif new_file?
-          if text?
-            DiffViewer::Text
-          else
-            DiffViewer::Added
-          end
-        elsif deleted_file?
-          if text?
-            DiffViewer::Text
-          else
-            DiffViewer::Deleted
-          end
-        elsif renamed_file?
-          DiffViewer::Renamed
-        elsif mode_changed?
-          DiffViewer::ModeChanged
-        else
-          DiffViewer::NoPreview
-        end
+        DiffViewer::NoPreview
       end
 
       def rich_viewer_class
@@ -427,8 +414,9 @@ module Gitlab
       end
 
       def viewer_class_from(classes)
+        return if collapsed?
         return unless diffable?
-        return unless new_file? || deleted_file? || content_changed?
+        return unless modified_file?
         return if different_type? || external_storage_error?
 
         verify_binary = !stored_externally?

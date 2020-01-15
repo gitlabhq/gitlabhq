@@ -198,6 +198,7 @@ describe('ErrorDetails', () => {
       const gitlabIssue = 'https://gitlab.example.com/issues/1';
       const findGitLabLink = () => wrapper.find(`[href="${gitlabIssue}"]`);
       const findCreateIssueButton = () => wrapper.find('[data-qa-selector="create_issue_button"]');
+      const findViewIssueButton = () => wrapper.find('[data-qa-selector="view_issue_button"]');
 
       describe('is present', () => {
         beforeEach(() => {
@@ -207,6 +208,10 @@ describe('ErrorDetails', () => {
             gitlab_issue: gitlabIssue,
           };
           mountComponent();
+        });
+
+        it('should display the View issue button', () => {
+          expect(findViewIssueButton().exists()).toBe(true);
         });
 
         it('should display the issue link', () => {
@@ -228,9 +233,14 @@ describe('ErrorDetails', () => {
           mountComponent();
         });
 
+        it('should not display the View issue button', () => {
+          expect(findViewIssueButton().exists()).toBe(false);
+        });
+
         it('should not display an issue link', () => {
           expect(findGitLabLink().exists()).toBe(false);
         });
+
         it('should display the create issue button', () => {
           expect(findCreateIssueButton().exists()).toBe(true);
         });

@@ -44,7 +44,7 @@
         - @group_notifications.each do |setting|
           = render 'group_settings', setting: setting, group: setting.source
       %h5
-        = _('Projects (%{count})') % { count: @project_notifications.count }
+        = _('Projects (%{count})') % { count: @project_notifications.size }
       %p.account-well
         = _('To specify the notification level per project of a group you belong to, you need to visit project page and change notification level there.')
       .append-bottom-default

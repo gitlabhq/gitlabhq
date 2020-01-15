@@ -9,15 +9,7 @@ describe 'projects/diffs/_viewer.html.haml' do
   let(:commit) { project.commit('570e7b2abdd848b95f2f578043fc23bd6f6fd24d') }
   let(:diff_file) { commit.diffs.diff_file_with_new_path('files/ruby/popen.rb') }
 
-  let(:viewer_class) do
-    Class.new(DiffViewer::Base) do
-      include DiffViewer::Rich
-
-      self.partial_name = 'text'
-    end
-  end
-
-  let(:viewer) { viewer_class.new(diff_file) }
+  let(:viewer) { diff_file.simple_viewer }
 
   before do
     assign(:project, project)
@@ -53,7 +45,7 @@ describe 'projects/diffs/_viewer.html.haml' do
     it 'renders the collapsed view' do
       render_view
 
-      expect(view).to render_template('projects/diffs/_collapsed')
+      expect(view).to render_template('projects/diffs/viewers/_collapsed')
     end
   end
 

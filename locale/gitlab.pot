@@ -20480,6 +20480,9 @@ msgstr ""
 msgid "View group labels"
 msgstr ""
 
+msgid "View issue"
+msgstr ""
+
 msgid "View it on GitLab"
 msgstr ""
 

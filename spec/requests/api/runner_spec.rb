@@ -1828,6 +1828,58 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               end
             end
           end
+
+          context 'when artifact_type is metrics_referee' do
+            context 'when artifact_format is gzip' do
+              let(:file_upload) { fixture_file_upload('spec/fixtures/referees/metrics_referee.json.gz') }
+              let(:params) { { artifact_type: :metrics_referee, artifact_format: :gzip } }
+
+              it 'stores metrics_referee data' do
+                upload_artifacts(file_upload, headers_with_token, params)
+
+                expect(response).to have_gitlab_http_status(201)
+                expect(job.reload.job_artifacts_metrics_referee).not_to be_nil
+              end
+            end
+
+            context 'when artifact_format is raw' do
+              let(:file_upload) { fixture_file_upload('spec/fixtures/referees/metrics_referee.json.gz') }
+              let(:params) { { artifact_type: :metrics_referee, artifact_format: :raw } }
+
+              it 'returns an error' do
+                upload_artifacts(file_upload, headers_with_token, params)
+
+                expect(response).to have_gitlab_http_status(400)
+                expect(job.reload.job_artifacts_metrics_referee).to be_nil
+              end
+            end
+          end
+
+          context 'when artifact_type is network_referee' do
+            context 'when artifact_format is gzip' do
+              let(:file_upload) { fixture_file_upload('spec/fixtures/referees/network_referee.json.gz') }
+              let(:params) { { artifact_type: :network_referee, artifact_format: :gzip } }
+
+              it 'stores network_referee data' do
+                upload_artifacts(file_upload, headers_with_token, params)
+
+                expect(response).to have_gitlab_http_status(201)
+                expect(job.reload.job_artifacts_network_referee).not_to be_nil
+              end
+            end
+
+            context 'when artifact_format is raw' do
+              let(:file_upload) { fixture_file_upload('spec/fixtures/referees/network_referee.json.gz') }
+              let(:params) { { artifact_type: :network_referee, artifact_format: :raw } }
+
+              it 'returns an error' do
+                upload_artifacts(file_upload, headers_with_token, params)
+
+                expect(response).to have_gitlab_http_status(400)
+                expect(job.reload.job_artifacts_network_referee).to be_nil
+              end
+            end
+          end
         end
 
         context 'when artifacts are being stored outside of tmp path' do

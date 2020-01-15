@@ -16,6 +16,8 @@ module Ci
       archive: nil,
       metadata: nil,
       trace: nil,
+      metrics_referee: nil,
+      network_referee: nil,
       junit: 'junit.xml',
       codequality: 'gl-code-quality-report.json',
       sast: 'gl-sast-report.json',
@@ -37,6 +39,8 @@ module Ci
     REPORT_TYPES = {
       junit: :gzip,
       metrics: :gzip,
+      metrics_referee: :gzip,
+      network_referee: :gzip,
 
       # All these file formats use `raw` as we need to store them uncompressed
       # for Frontend to fetch the files and do analysis
@@ -108,7 +112,9 @@ module Ci
       license_management: 10, ## EE-specific
       license_scanning: 101, ## EE-specific till 13.0
       performance: 11, ## EE-specific
-      metrics: 12 ## EE-specific
+      metrics: 12, ## EE-specific
+      metrics_referee: 13, ## runner referees
+      network_referee: 14 ## runner referees
     }
 
     enum file_format: {

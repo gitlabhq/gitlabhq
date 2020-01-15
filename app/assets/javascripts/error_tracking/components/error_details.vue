@@ -2,7 +2,7 @@
 import { mapActions, mapGetters, mapState } from 'vuex';
 import dateFormat from 'dateformat';
 import createFlash from '~/flash';
-import { GlFormInput, GlLink, GlLoadingIcon, GlBadge } from '@gitlab/ui';
+import { GlButton, GlFormInput, GlLink, GlLoadingIcon, GlBadge } from '@gitlab/ui';
 import { __, sprintf, n__ } from '~/locale';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -17,6 +17,7 @@ import query from '../queries/details.query.graphql';
 export default {
   components: {
     LoadingButton,
+    GlButton,
     GlFormInput,
     GlLink,
     GlLoadingIcon,
@@ -188,6 +189,15 @@ export default {
             :loading="updatingResolveStatus"
             @click="updateIssueStatus('resolved')"
           />
+          <gl-button
+            v-if="error.gitlab_issue"
+            class="ml-2"
+            data-qa-selector="view_issue_button"
+            :href="error.gitlab_issue"
+            variant="success"
+          >
+            {{ __('View issue') }}
+          </gl-button>
           <form
             ref="sentryIssueForm"
             :action="projectIssuesPath"

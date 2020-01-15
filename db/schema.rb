@@ -1573,6 +1573,7 @@ ActiveRecord::Schema.define(version: 2020_01_14_113341) do
     t.index ["author_id"], name: "index_epics_on_author_id"
     t.index ["closed_by_id"], name: "index_epics_on_closed_by_id"
     t.index ["due_date_sourcing_epic_id"], name: "index_epics_on_due_date_sourcing_epic_id", where: "(due_date_sourcing_epic_id IS NOT NULL)"
+    t.index ["due_date_sourcing_milestone_id"], name: "index_epics_on_due_date_sourcing_milestone_id"
     t.index ["end_date"], name: "index_epics_on_end_date"
     t.index ["group_id"], name: "index_epics_on_group_id"
     t.index ["iid"], name: "index_epics_on_iid"
@@ -1580,6 +1581,7 @@ ActiveRecord::Schema.define(version: 2020_01_14_113341) do
     t.index ["parent_id"], name: "index_epics_on_parent_id"
     t.index ["start_date"], name: "index_epics_on_start_date"
     t.index ["start_date_sourcing_epic_id"], name: "index_epics_on_start_date_sourcing_epic_id", where: "(start_date_sourcing_epic_id IS NOT NULL)"
+    t.index ["start_date_sourcing_milestone_id"], name: "index_epics_on_start_date_sourcing_milestone_id"
   end
 
   create_table "events", id: :serial, force: :cascade do |t|
@@ -4587,6 +4589,8 @@ ActiveRecord::Schema.define(version: 2020_01_14_113341) do
   add_foreign_key "epics", "epics", column: "due_date_sourcing_epic_id", name: "fk_013c9f36ca", on_delete: :nullify
   add_foreign_key "epics", "epics", column: "parent_id", name: "fk_25b99c1be3", on_delete: :cascade
   add_foreign_key "epics", "epics", column: "start_date_sourcing_epic_id", name: "fk_9d480c64b2", on_delete: :nullify
+  add_foreign_key "epics", "milestones", column: "due_date_sourcing_milestone_id", name: "fk_3c1fd1cccc", on_delete: :nullify
+  add_foreign_key "epics", "milestones", column: "start_date_sourcing_milestone_id", name: "fk_1fbed67632", on_delete: :nullify
   add_foreign_key "epics", "milestones", on_delete: :nullify
   add_foreign_key "epics", "namespaces", column: "group_id", name: "fk_f081aa4489", on_delete: :cascade
   add_foreign_key "epics", "users", column: "assignee_id", name: "fk_dccd3f98fc", on_delete: :nullify

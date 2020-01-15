@@ -62,3 +62,15 @@ If the error has not been linked to an existing GitLab issue, a 'Create Issue' b
 If a link does exist, it will be shown in the details and the 'Create Issue' button will be hidden:
 
 ![Error Details with Issue Link](img/error_details_with_issue_v12_6.png)
+
+## Taking Action on errors
+
+You can take action on Sentry Errors from within the GitLab UI.
+
+### Ignoring errors
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/39665) in GitLab 12.7.
+
+From within the [Error Details](#error-details) page you can ignore a Sentry error by simply clicking the **Ignore** button near the top of the page.
+
+Ignoring an error will prevent it from appearing in the [Error Tracking List](#error-tracking-list), and will silence notifications that were set up within Sentry.

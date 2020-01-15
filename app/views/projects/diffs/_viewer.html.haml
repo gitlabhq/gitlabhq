@@ -3,8 +3,6 @@
 .diff-viewer{ data: { type: viewer.type }, class: ('hidden' if hidden) }
   - if viewer.render_error
     = render 'projects/diffs/render_error', viewer: viewer
-  - elsif viewer.collapsed?
-    = render 'projects/diffs/collapsed', viewer: viewer
   - else
     - viewer.prepare!
 
