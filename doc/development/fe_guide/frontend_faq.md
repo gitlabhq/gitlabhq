@@ -73,3 +73,8 @@ Ensure a [Product Designer](https://about.gitlab.com/company/team/?department=ux
 reviews the use of the non-conforming component as part of the MR review. Make a
 follow up issue and attach it to the component implementation epic found within the
 [Components of Pajamas Design System epic](https://gitlab.com/groups/gitlab-org/-/epics/973).
+
+### 4. My submit form button becomes disabled after submitting
+
+If you are using a submit button inside a form and you attach an `onSubmit` event listener on the form element, [this piece of code](https://gitlab.com/gitlab-org/gitlab/blob/794c247a910e2759ce9b401356432a38a4535d49/app/assets/javascripts/main.js#L225) will add a `disabled` class selector to the submit button when the form is submitted.
+To avoid this behavior, add the class `js-no-auto-disable` to the button.

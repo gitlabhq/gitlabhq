@@ -160,6 +160,12 @@ describe Clusters::Applications::CheckInstallationProgressService, '#execute' do
         expect(application).to be_installed
         expect(application.status_reason).to be_nil
       end
+
+      it 'tracks application install' do
+        expect(Gitlab::Tracking).to receive(:event).with('cluster:applications', "cluster_application_helm_installed")
+
+        service.execute
+      end
     end
 
     context 'when installation POD failed' do

@@ -494,16 +494,55 @@ The following steps are for Omnibus installs only. Using Geo with source-based i
 
 To check the configuration:
 
+1. SSH into an app node in the **secondary**:
+
+   ```sh
+   sudo -i
+   ```
+
+   Note: An app node is any machine running at least one of the following services:
+
+   - `puma`
+   - `unicorn`
+   - `sidekiq`
+   - `geo-logcursor`
+
 1. Enter the database console:
+
+   If the tracking database is running on the same node:
 
    ```sh
    gitlab-geo-psql
    ```
 
-1. Check whether any tables are present. If everything is working, you
-   should see something like this:
+   Or, if the tracking database is running on a different node, you must specify
+   the user and host when entering the database console:
+
+   ```sh
+   gitlab-geo-psql -U gitlab_geo -h <IP of tracking database>
+   ```
+
+   You will be prompted for the password of the `gitlab_geo` user. You can find
+   it in plaintext in `/etc/gitlab/gitlab.rb` at:
+
+   ```ruby
+   geo_secondary['db_password'] = '<geo_tracking_db_password>'
+   ```
+
+   This password is normally set on the tracking database during
+   [Step 3: Configure the tracking database on the secondary node](high_availability.md#step-3-configure-the-tracking-database-on-the-secondary-node),
+   and it is set on the app nodes during
+   [Step 4: Configure the frontend application servers on the secondary node](high_availability.md#step-4-configure-the-frontend-application-servers-on-the-secondary-node).
+
+1. Check whether any tables are present with the following statement:
 
    ```sql
+   SELECT * from information_schema.foreign_tables;
+   ```
+
+   If everything is working, you should see something like this:
+
+   ```
    gitlabhq_geo_production=# SELECT * from information_schema.foreign_tables;
      foreign_table_catalog  | foreign_table_schema |               foreign_table_name                | foreign_server_catalog  | foreign_server_name
    -------------------------+----------------------+-------------------------------------------------+-------------------------+---------------------
@@ -519,7 +558,7 @@ To check the configuration:
 1. Check that the foreign server mapping is correct via `\des+`. The
    results should look something like this:
 
-   ```sql
+   ```
    gitlabhq_geo_production=# \des+
    List of foreign servers
    -[ RECORD 1 ]--------+------------------------------------------------------------
@@ -555,7 +594,7 @@ To check the configuration:
 
 1. Check that the user mapping is configured properly via `\deu+`:
 
-   ```sql
+   ```
    gitlabhq_geo_production=# \deu+
                                                 List of user mappings
          Server      | User name  |                                  FDW Options

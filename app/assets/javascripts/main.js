@@ -222,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Disable form buttons while a form is submitting
   $body.on('ajax:complete, ajax:beforeSend, submit', 'form', function ajaxCompleteCallback(e) {
-    const $buttons = $('[type="submit"], .js-disable-on-submit', this);
+    const $buttons = $('[type="submit"], .js-disable-on-submit', this).not('.js-no-auto-disable');
     switch (e.type) {
       case 'ajax:beforeSend':
       case 'submit':

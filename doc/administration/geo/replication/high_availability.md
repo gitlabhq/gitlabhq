@@ -123,6 +123,20 @@ a single node only, rather than as a PostgreSQL cluster.
 Configure the [**secondary** database](database.md) as a read-only replica of
 the **primary** database. Use the following as a guide.
 
+1. Generate an MD5 hash of the desired password for the database user that the
+   GitLab application will use to access the read-replica database:
+
+   Note that the username (`gitlab` by default) is incorporated into the hash.
+
+   ```sh
+   gitlab-ctl pg-password-md5 gitlab
+   # Enter password: <your_password_here>
+   # Confirm password: <your_password_here>
+   # fca0b89a972d69f00eb3ec98a5838484
+   ```
+
+   Use this hash to fill in `<md5_hash_of_your_password>` in the next step.
+
 1. Edit `/etc/gitlab/gitlab.rb` in the replica database machine, and add the
    following:
 
@@ -166,6 +180,22 @@ NOTE: **Note:** This documentation assumes the tracking database will be run on
 only a single machine, rather than as a PostgreSQL cluster.
 
 Configure the tracking database.
+
+1. Generate an MD5 hash of the desired password for the database user that the
+   GitLab application will use to access the tracking database:
+
+   Note that the username (`gitlab_geo` by default) is incorporated into the
+   hash.
+
+   ```sh
+   gitlab-ctl pg-password-md5 gitlab_geo
+   # Enter password: <your_password_here>
+   # Confirm password: <your_password_here>
+   # fca0b89a972d69f00eb3ec98a5838484
+   ```
+
+   Use this hash to fill in `<tracking_database_password_md5_hash>` in the next
+   step.
 
 1. Edit `/etc/gitlab/gitlab.rb` in the tracking database machine, and add the
    following:

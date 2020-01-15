@@ -46,8 +46,8 @@ describe('Stacktrace Entry', () => {
     expect(wrapper.findAll('.line_content.old').length).toBe(1);
   });
 
-  describe('no code block', () => {
-    const findFileHeaderContent = () => wrapper.find('.file-header-content').html();
+  describe('entry caption', () => {
+    const findFileHeaderContent = () => wrapper.find('.file-header-content').text();
 
     it('should hide collapse icon and render error fn name and error line when there is no code block', () => {
       const extraInfo = { errorLine: 34, errorFn: 'errorFn', errorColumn: 77 };

@@ -373,6 +373,12 @@ msgstr ""
 msgid "%{spammable_titlecase} was submitted to Akismet successfully."
 msgstr ""
 
+msgid "%{spanStart}at line%{spanEnd} %{errorLine}%{errorColumn}"
+msgstr ""
+
+msgid "%{spanStart}in%{spanEnd} %{errorFn}"
+msgstr ""
+
 msgid "%{start} to %{end}"
 msgstr ""
 
@@ -4542,9 +4548,6 @@ msgid "ClusterIntergation|Select role name"
 msgstr ""
 
 msgid "Code"
-msgstr ""
-
-msgid "Code Analytics"
 msgstr ""
 
 msgid "Code Owners"
@@ -21522,9 +21525,6 @@ msgstr ""
 msgid "assign yourself"
 msgstr ""
 
-msgid "at line %{errorLine}%{errorColumn}"
-msgstr ""
-
 msgid "attach a new file"
 msgstr ""
 
@@ -21995,9 +21995,6 @@ msgid "import flow"
 msgstr ""
 
 msgid "importing"
-msgstr ""
-
-msgid "in %{errorFn} "
 msgstr ""
 
 msgid "in group %{link_to_group}"

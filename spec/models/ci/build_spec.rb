@@ -341,6 +341,36 @@ describe Ci::Build do
     end
   end
 
+  describe '#enqueue_preparing' do
+    let(:build) { create(:ci_build, :preparing) }
+
+    subject { build.enqueue_preparing }
+
+    before do
+      allow(build).to receive(:any_unmet_prerequisites?).and_return(has_unmet_prerequisites)
+    end
+
+    context 'build completed prerequisites' do
+      let(:has_unmet_prerequisites) { false }
+
+      it 'transitions to pending' do
+        subject
+
+        expect(build).to be_pending
+      end
+    end
+
+    context 'build did not complete prerequisites' do
+      let(:has_unmet_prerequisites) { true }
+
+      it 'remains in preparing' do
+        subject
+
+        expect(build).to be_preparing
+      end
+    end
+  end
+
   describe '#actionize' do
     context 'when build is a created' do
       before do

@@ -35,7 +35,7 @@ production: &base
     https: false # Set to true if using HTTPS, see installation.md#using-https for additional HTTPS configuration details
     # The maximum time unicorn/puma can spend on the request. This needs to be smaller than the worker timeout.
     # Default is 95% of the worker timeout
-    max_request_duration: 57
+    max_request_duration_seconds: 57
 
     # Uncomment this line below if your ssh host is different from HTTP/HTTPS one
     # (you'd obviously need to replace ssh.host_example.com with your own host).

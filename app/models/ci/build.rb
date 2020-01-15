@@ -266,7 +266,7 @@ module Ci
       end
 
       before_transition on: :enqueue_preparing do |build|
-        build.any_unmet_prerequisites? # If false is returned, it stops the transition
+        !build.any_unmet_prerequisites? # If false is returned, it stops the transition
       end
 
       after_transition created: :scheduled do |build|

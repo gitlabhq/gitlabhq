@@ -11,6 +11,8 @@ module Clusters
 
       def on_success
         app.make_installed!
+
+        Gitlab::Tracking.event('cluster:applications', "cluster_application_#{app.name}_installed")
       ensure
         remove_installation_pod
       end
