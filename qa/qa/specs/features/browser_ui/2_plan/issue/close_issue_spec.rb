@@ -27,7 +27,7 @@ module QA
         issue.visit!
 
         Page::Project::Issue::Show.perform do |show|
-          reopen_issue_button_visible = show.wait(reload: true) do
+          reopen_issue_button_visible = show.wait_until(reload: true) do
             show.has_element?(:reopen_issue_button, wait: 1.0)
           end
           expect(reopen_issue_button_visible).to be_truthy

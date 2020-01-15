@@ -89,9 +89,7 @@ module QA
           end
 
           def has_comment?(comment_text)
-            wait(reload: false) do
-              has_element?(:noteable_note_item, text: comment_text)
-            end
+            has_element?(:noteable_note_item, text: comment_text, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
           end
 
           def more_assignees_link
@@ -155,7 +153,7 @@ module QA
 
           def wait_assignees_block_finish_loading
             within_element(:assignee_block) do
-              wait(reload: false, max: 10, interval: 1) do
+              wait_until(reload: false, max_duration: 10, sleep_interval: 1) do
                 finished_loading_block?
                 yield
               end

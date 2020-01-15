@@ -11,7 +11,7 @@ module QA
         elements.each do |element|
           next unless element.required?
 
-          unless base_page.wait(reload: false) { base_page.has_element?(element.name, wait: 15) }
+          unless base_page.has_element?(element.name, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
             raise Validatable::PageValidationError, "#{element.name} did not appear on #{self.name} as expected"
           end
         end

@@ -30,7 +30,7 @@ module QA
         private
 
         def choose_repository_clone(kind, detect_text)
-          wait(reload: false) do
+          wait_until(reload: false) do
             click_element :clone_dropdown
 
             page.within('.clone-options-dropdown') do

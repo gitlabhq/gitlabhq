@@ -28,20 +28,20 @@ describe QA::Support::Page::Logging do
   end
 
   it 'logs wait' do
-    expect { subject.wait(max: 0) {} }
+    expect { subject.wait_until(max_duration: 0) {} }
       .to output(/next wait uses reload: true/).to_stdout_from_any_process
-    expect { subject.wait(max: 0) {} }
+    expect { subject.wait_until(max_duration: 0) {} }
       .to output(/with wait_until/).to_stdout_from_any_process
-    expect { subject.wait(max: 0) {} }
+    expect { subject.wait_until(max_duration: 0) {} }
       .to output(/ended wait_until$/).to_stdout_from_any_process
   end
 
   it 'logs wait with reload false' do
-    expect { subject.wait(max: 0, reload: false) {} }
+    expect { subject.wait_until(max_duration: 0, reload: false) {} }
       .to output(/next wait uses reload: false/).to_stdout_from_any_process
-    expect { subject.wait(max: 0, reload: false) {} }
+    expect { subject.wait_until(max_duration: 0, reload: false) {} }
       .to output(/with wait_until/).to_stdout_from_any_process
-    expect { subject.wait(max: 0, reload: false) {} }
+    expect { subject.wait_until(max_duration: 0, reload: false) {} }
       .to output(/ended wait_until$/).to_stdout_from_any_process
   end
 
@@ -121,10 +121,10 @@ describe QA::Support::Page::Logging do
   end
 
   it 'logs has_no_text?' do
-    allow(page).to receive(:has_no_text?).with('foo').and_return(true)
+    allow(page).to receive(:has_no_text?).with('foo', any_args).and_return(true)
 
     expect { subject.has_no_text? 'foo' }
-      .to output(/has_no_text\?\('foo'\) returned true/).to_stdout_from_any_process
+      .to output(/has_no_text\?\('foo', wait: #{QA::Runtime::Browser::CAPYBARA_MAX_WAIT_TIME}\) returned true/).to_stdout_from_any_process
   end
 
   it 'logs finished_loading?' do

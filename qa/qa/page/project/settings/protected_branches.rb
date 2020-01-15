@@ -46,7 +46,7 @@ module QA
           end
 
           def protect_branch
-            click_element :protect_button
+            click_element(:protect_button, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
           end
 
           private

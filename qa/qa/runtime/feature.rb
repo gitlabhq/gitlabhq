@@ -33,7 +33,7 @@ module QA
 
           is_enabled = false
 
-          QA::Support::Waiter.wait(interval: 1) do
+          QA::Support::Waiter.wait_until(sleep_interval: 1) do
             is_enabled = enabled?(key)
           end
 

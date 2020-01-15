@@ -26,8 +26,8 @@ module QA
         wait_for_requests
       end
 
-      def wait(max: 60, interval: 0.1, reload: true, raise_on_failure: false)
-        Support::Waiter.wait_until(max_duration: max, sleep_interval: interval, raise_on_failure: raise_on_failure) do
+      def wait_until(max_duration: 60, sleep_interval: 0.1, reload: true, raise_on_failure: false)
+        Support::Waiter.wait_until(max_duration: max_duration, sleep_interval: sleep_interval, raise_on_failure: raise_on_failure) do
           yield || (reload && refresh && false)
         end
       end
@@ -71,7 +71,7 @@ module QA
           xhr.send();
         JS
 
-        return false unless wait(interval: 0.5, max: 60, reload: false) do
+        return false unless wait_until(sleep_interval: 0.5, max_duration: 60, reload: false) do
           page.evaluate_script('xhr.readyState == XMLHttpRequest.DONE')
         end
 
@@ -115,8 +115,8 @@ module QA
       end
 
       # replace with (..., page = self.class)
-      def click_element(name, page = nil, text: nil)
-        find_element(name, text: text).click
+      def click_element(name, page = nil, text: nil, wait: Capybara.default_max_wait_time)
+        find_element(name, text: text, wait: wait).click
         page.validate_elements_present! if page
       end
 
@@ -161,10 +161,10 @@ module QA
         page.has_text?(text, wait: wait)
       end
 
-      def has_no_text?(text)
+      def has_no_text?(text, wait: Capybara.default_max_wait_time)
         wait_for_requests
 
-        page.has_no_text? text
+        page.has_no_text?(text, wait: wait)
       end
 
       def has_normalized_ws_text?(text, wait: Capybara.default_max_wait_time)
@@ -191,7 +191,7 @@ module QA
         # This loop gives time for the img tags to be rendered and for
         # images to start loading.
         previous_total_images = 0
-        wait(interval: 1) do
+        wait_until(sleep_interval: 1) do
           current_total_images = all("img").size
           result = previous_total_images == current_total_images
           previous_total_images = current_total_images

@@ -24,7 +24,7 @@ module QA::Page
       def output(wait: 5)
         result = ''
 
-        wait(reload: false, max: wait, interval: 1) do
+        wait_until(reload: false, max_duration: wait, sleep_interval: 1) do
           result = find_element(:job_log_content).text
 
           result.include?('Job')
@@ -36,7 +36,7 @@ module QA::Page
       private
 
       def loaded?(wait: 60)
-        wait(reload: true, max: wait, interval: 1) do
+        wait_until(reload: true, max_duration: wait, sleep_interval: 1) do
           has_element?(:job_log_content, wait: 1)
         end
       end

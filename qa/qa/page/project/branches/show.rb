@@ -29,7 +29,7 @@ module QA
           end
 
           def has_no_branch?(branch_name, reload: false)
-            wait(reload: reload) do
+            wait_until(reload: reload) do
               within_element(:all_branches) do
                 has_no_element?(:branch_name, text: branch_name)
               end

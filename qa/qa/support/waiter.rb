@@ -7,12 +7,6 @@ module QA
 
       module_function
 
-      def wait(max: singleton_class::DEFAULT_MAX_WAIT_TIME, interval: 0.1)
-        wait_until(max_duration: max, sleep_interval: interval, raise_on_failure: false) do
-          yield
-        end
-      end
-
       def wait_until(max_duration: singleton_class::DEFAULT_MAX_WAIT_TIME, reload_page: nil, sleep_interval: 0.1, raise_on_failure: false, retry_on_exception: false)
         QA::Runtime::Logger.debug(
           <<~MSG.tr("\n", ' ')

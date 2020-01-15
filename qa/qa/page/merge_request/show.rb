@@ -73,7 +73,7 @@ module QA
         end
 
         def add_comment_to_diff(text)
-          wait(interval: 5) do
+          wait_until(sleep_interval: 5) do
             has_text?("No newline at end of file")
           end
           all_elements(:new_diff_line, minimum: 1).first.hover
@@ -140,12 +140,12 @@ module QA
 
         def mark_to_squash
           # The squash checkbox is disabled on load
-          wait do
+          wait_until do
             has_element?(:squash_checkbox)
           end
 
           # The squash checkbox is enabled via JS
-          wait(reload: false) do
+          wait_until(reload: false) do
             !find_element(:squash_checkbox).disabled?
           end
 
@@ -164,30 +164,30 @@ module QA
 
         def ready_to_merge?
           # The merge button is disabled on load
-          wait do
+          wait_until do
             has_element?(:merge_button)
           end
 
           # The merge button is enabled via JS
-          wait(reload: false) do
+          wait_until(reload: false) do
             !find_element(:merge_button).disabled?
           end
         end
 
         def rebase!
           # The rebase button is disabled on load
-          wait do
+          wait_until do
             has_element?(:mr_rebase_button)
           end
 
           # The rebase button is enabled via JS
-          wait(reload: false) do
+          wait_until(reload: false) do
             !find_element(:mr_rebase_button).disabled?
           end
 
           click_element :mr_rebase_button
 
-          success = wait do
+          success = wait_until do
             has_text?('Fast-forward merge without a merge commit')
           end
 
@@ -209,7 +209,7 @@ module QA
         end
 
         def wait_for_merge_request_error_message
-          wait(max: 30, reload: false) do
+          wait_until(max_duration: 30, reload: false) do
             has_element?(:merge_request_error_content)
           end
         end

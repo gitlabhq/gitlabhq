@@ -69,7 +69,7 @@ module QA
             # Wait for the modal to fade out too
             has_no_element?(:new_file_modal)
 
-            wait(reload: false) do
+            wait_until(reload: false) do
               within_element(:file_templates_bar) do
                 click_element :file_template_dropdown
                 fill_element :dropdown_filter_input, template
@@ -97,7 +97,7 @@ module QA
             #
             # Wait for the animation to complete before clicking :commit_button
             # otherwise the click will quietly do nothing.
-            wait(reload: false) do
+            wait_until(reload: false) do
               has_no_element?(:begin_commit_button) &&
                 has_element?(:commit_button)
             end
@@ -112,7 +112,7 @@ module QA
               click_element(:commit_to_current_branch_radio) if has_element?(:commit_to_current_branch_radio)
               click_element(:commit_button) if has_element?(:commit_button)
 
-              wait(reload: false) do
+              wait_until(reload: false) do
                 has_text?('Your changes have been committed')
               end
             end

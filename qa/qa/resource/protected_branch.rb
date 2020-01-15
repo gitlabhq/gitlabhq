@@ -49,11 +49,6 @@ module QA
             page.select_branch(branch_name)
             page.select_allowed_to_merge(allowed_to_merge)
             page.select_allowed_to_push(allowed_to_push)
-
-            page.wait(reload: false) do
-              !page.first('.btn-success').disabled?
-            end
-
             page.protect_branch
           end
         end

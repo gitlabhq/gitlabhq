@@ -35,7 +35,7 @@ module QA
           private
 
           def within_repo_path(full_path)
-            wait(reload: false) do
+            wait_until(reload: false) do
               has_element?(:project_import_row, text: full_path)
             end
 
@@ -67,7 +67,7 @@ module QA
           end
 
           def wait_for_success
-            wait(max: 60, interval: 1.0, reload: false) do
+            wait_until(max_duration: 60, sleep_interval: 1.0, reload: false) do
               page.has_content?('Done', wait: 1.0)
             end
           end

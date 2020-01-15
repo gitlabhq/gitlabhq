@@ -71,7 +71,7 @@ module QA
 
         Support::Retrier.retry_until do
           visit(web_url)
-          wait { current_url.include?(URI.parse(web_url).path.split('/').last || web_url) }
+          wait_until { current_url.include?(URI.parse(web_url).path.split('/').last || web_url) }
         end
 
         # Wait until the new page is ready for us to interact with it
@@ -82,8 +82,8 @@ module QA
         attributes.each(&method(:public_send))
       end
 
-      def wait(max: 60, interval: 0.1)
-        QA::Support::Waiter.wait(max: max, interval: interval) do
+      def wait_until(max_duration: 60, sleep_interval: 0.1)
+        QA::Support::Waiter.wait_until(max_duration: max_duration, sleep_interval: sleep_interval) do
           yield
         end
       end

@@ -24,7 +24,7 @@ module QA
         private
 
         def repository_clone_location(kind)
-          wait(reload: false) do
+          wait_until(reload: false) do
             click_element :clone_dropdown
 
             within_element :clone_options do

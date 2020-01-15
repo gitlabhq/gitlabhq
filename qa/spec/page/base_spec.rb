@@ -3,7 +3,7 @@
 describe QA::Page::Base do
   describe 'page helpers' do
     it 'exposes helpful page helpers' do
-      expect(subject).to respond_to :refresh, :wait, :scroll_to
+      expect(subject).to respond_to :refresh, :wait_until, :scroll_to
     end
   end
 
@@ -69,11 +69,11 @@ describe QA::Page::Base do
       it 'does not refresh' do
         expect(subject).not_to receive(:refresh)
 
-        subject.wait(max: 0.01, raise_on_failure: false) { true }
+        subject.wait_until(max_duration: 0.01, raise_on_failure: false) { true }
       end
 
       it 'returns true' do
-        expect(subject.wait(max: 0.1, raise_on_failure: false) { true }).to be_truthy
+        expect(subject.wait_until(max_duration: 0.1, raise_on_failure: false) { true }).to be_truthy
       end
     end
 
@@ -81,13 +81,13 @@ describe QA::Page::Base do
       it 'refreshes' do
         expect(subject).to receive(:refresh).at_least(:once)
 
-        subject.wait(max: 0.01, raise_on_failure: false) { false }
+        subject.wait_until(max_duration: 0.01, raise_on_failure: false) { false }
       end
 
       it 'returns false' do
         allow(subject).to receive(:refresh)
 
-        expect(subject.wait(max: 0.01, raise_on_failure: false) { false }).to be_falsey
+        expect(subject.wait_until(max_duration: 0.01, raise_on_failure: false) { false }).to be_falsey
       end
     end
   end

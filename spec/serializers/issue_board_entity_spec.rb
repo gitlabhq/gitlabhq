@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 describe IssueBoardEntity do
-  let(:project)   { create(:project) }
-  let(:resource)  { create(:issue, project: project) }
-  let(:user)      { create(:user) }
-  let(:milestone) { create(:milestone, project: project) }
-  let(:label)     { create(:label, project: project, title: 'Test Label') }
-  let(:request)   { double('request', current_user: user) }
+  let_it_be(:project)   { create(:project) }
+  let_it_be(:resource)  { create(:issue, project: project) }
+  let_it_be(:user)      { create(:user) }
+  let_it_be(:milestone) { create(:milestone, project: project) }
+  let_it_be(:label)     { create(:label, project: project, title: 'Test Label') }
+  let(:request)         { double('request', current_user: user) }
 
   subject { described_class.new(resource, request: request).as_json }
 

@@ -61,9 +61,7 @@ module QA
         end
 
         def wait_for_viewers_to_load
-          wait(reload: false) do
-            has_no_element?(:spinner)
-          end
+          has_no_element?(:spinner, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
         end
 
         def create_first_new_file!
@@ -103,7 +101,7 @@ module QA
         end
 
         def new_merge_request
-          wait(reload: true) do
+          wait_until(reload: true) do
             has_css?(element_selector_css(:create_merge_request))
           end
 
@@ -127,7 +125,7 @@ module QA
         end
 
         def wait_for_import
-          wait(reload: true) do
+          wait_until(reload: true) do
             has_css?('.tree-holder')
           end
         end

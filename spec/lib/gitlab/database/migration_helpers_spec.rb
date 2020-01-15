@@ -1475,7 +1475,11 @@ describe Gitlab::Database::MigrationHelpers do
 
   describe '#index_exists_by_name?' do
     it 'returns true if an index exists' do
-      expect(model.index_exists_by_name?(:projects, 'index_projects_on_path'))
+      ActiveRecord::Base.connection.execute(
+        'CREATE INDEX test_index_for_index_exists ON projects (path);'
+      )
+
+      expect(model.index_exists_by_name?(:projects, 'test_index_for_index_exists'))
         .to be_truthy
     end
 

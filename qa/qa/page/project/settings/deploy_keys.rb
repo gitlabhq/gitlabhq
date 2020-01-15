@@ -56,9 +56,7 @@ module QA
           private
 
           def within_project_deploy_keys
-            wait(reload: false) do
-              has_element?(:project_deploy_keys)
-            end
+            has_element?(:project_deploy_keys, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
 
             within_element(:project_deploy_keys) do
               yield

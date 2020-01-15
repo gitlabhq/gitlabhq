@@ -209,6 +209,36 @@ I, [2020-01-13T19:01:17.091Z #11056]  INFO -- : {"message"=>"Message", "project_
 {:severity=>"INFO", :time=>"2020-01-13T11:06:09.851Z", :correlation_id=>"d7e0886f096db9a8526a4f89da0e45f6", :message=>"This is my message", :project_id=>123}
 ```
 
+### Logging context metadata (through Rails or Grape requests)
+
+`Gitlab::ApplicationContext` stores metadata in a request
+lifecycle, which can then be added to the web request
+or Sidekiq logs.
+
+Entry points can be seen at:
+
+- [`ApplicationController`](https://gitlab.com/gitlab-org/gitlab/blob/master/app/controllers/application_controller.rb)
+- [External API](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/api/api.rb)
+- [Internal API](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/api/internal/base.rb)
+
+#### Adding attributes
+
+When adding new attributes, make sure they're exposed within the context of the entry points above and:
+
+- Pass them within the hash to the `with_context` (or `push`) method (make sure to pass a Proc if the
+method or variable shouldn't be evaluated right away)
+- Change `Gitlab::ApplicationContext` to accept these new values
+- Make sure the new attributes are accepted at [`Labkit::Context`](https://gitlab.com/gitlab-org/labkit-ruby/blob/master/lib/labkit/context.rb)
+
+See our [HOWTO: Use Sidekiq metadata logs](https://www.youtube.com/watch?v=_wDllvO_IY0) for further knowledge on
+creating visualizations in Kibana.
+
+**Note:**
+The fields of the context are currently only logged for Sidekiq jobs triggered
+through web requests. See the
+[follow-up work](https://gitlab.com/gitlab-com/gl-infra/scalability/issues/68)
+for more information.
+
 ## Exception Handling
 
 It often happens that you catch the exception and want to track it.

@@ -11,9 +11,7 @@ module QA
             end
 
             def click_environment_link(environment_name)
-              wait(reload: false) do
-                find(element_selector_css(:environment_link), text: environment_name).click
-              end
+              click_element(:environment_link, text: environment_name)
             end
           end
         end
