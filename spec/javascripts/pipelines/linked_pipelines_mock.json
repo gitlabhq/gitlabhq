@@ -341,6 +341,9 @@
     "commit_url": "https://gitlab.com/gitlab-org/gitlab-runner/commit/8083eb0a920572214d0dccedd7981f05d535ad46",
     "commit_path": "/gitlab-org/gitlab-runner/commit/8083eb0a920572214d0dccedd7981f05d535ad46"
   },
+  "project": {
+    "id": 1794617
+  },
   "triggered_by": {
     "id": 12,
     "user": {

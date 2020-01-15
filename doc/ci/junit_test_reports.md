@@ -25,7 +25,7 @@ Consider the following workflow:
 
 1. Your `master` branch is rock solid, your project is using GitLab CI/CD and
    your pipelines indicate that there isn't anything broken.
-1. Someone from you team submits a merge request, a test fails and the pipeline
+1. Someone from your team submits a merge request, a test fails and the pipeline
    gets the known red icon. To investigate more, you have to go through the job
    logs to figure out the cause of the failed test, which usually contain
    thousands of lines.

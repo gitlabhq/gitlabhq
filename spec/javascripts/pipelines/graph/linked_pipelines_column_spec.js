@@ -9,6 +9,7 @@ describe('Linked Pipelines Column', () => {
     columnTitle: 'Upstream',
     linkedPipelines: mockData.triggered,
     graphPosition: 'right',
+    projectId: 19,
   };
   let vm;
 

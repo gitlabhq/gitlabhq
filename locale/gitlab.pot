@@ -3344,6 +3344,9 @@ msgstr ""
 msgid "Cherry-pick this merge request"
 msgstr ""
 
+msgid "Child"
+msgstr ""
+
 msgid "Child epic does not exist."
 msgstr ""
 
@@ -11370,6 +11373,9 @@ msgstr ""
 msgid "Merge Requests created"
 msgstr ""
 
+msgid "Merge Requests in Review"
+msgstr ""
+
 msgid "Merge commit message"
 msgstr ""
 
@@ -12874,6 +12880,9 @@ msgid "Parameter"
 msgstr ""
 
 msgid "Parameter \"job_id\" cannot exceed length of %{job_id_max_size}"
+msgstr ""
+
+msgid "Parent"
 msgstr ""
 
 msgid "Parent epic doesn't exist."
@@ -18873,6 +18882,12 @@ msgid "This pipeline makes use of a predefined CI/CD configuration enabled by %{
 msgstr ""
 
 msgid "This pipeline makes use of a predefined CI/CD configuration enabled by <b>Auto DevOps.</b>"
+msgstr ""
+
+msgid "This pipeline triggered a child pipeline"
+msgstr ""
+
+msgid "This pipeline was triggered by a parent pipeline"
 msgstr ""
 
 msgid "This project"

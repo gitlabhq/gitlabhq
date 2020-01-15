@@ -19,6 +19,10 @@ export default {
       type: String,
       required: true,
     },
+    projectId: {
+      type: Number,
+      required: true,
+    },
   },
   computed: {
     columnClass() {
@@ -28,8 +32,14 @@ export default {
       };
       return `graph-position-${this.graphPosition} ${positionValues[this.graphPosition]}`;
     },
+    // Refactor string match when BE returns Upstream/Downstream indicators
     isUpstream() {
       return this.columnTitle === __('Upstream');
+    },
+  },
+  methods: {
+    onPipelineClick(downstreamNode, pipeline, index) {
+      this.$emit('linkedPipelineClick', pipeline, index, downstreamNode);
     },
   },
 };
@@ -48,7 +58,9 @@ export default {
           'left-connector': pipeline.isExpanded && graphPosition === 'left',
         }"
         :pipeline="pipeline"
-        @pipelineClicked="$emit('linkedPipelineClick', pipeline, index)"
+        :column-title="columnTitle"
+        :project-id="projectId"
+        @pipelineClicked="onPipelineClick($event, pipeline, index)"
       />
     </ul>
   </div>

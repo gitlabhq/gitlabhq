@@ -190,6 +190,7 @@ describe('graph component', () => {
         describe('on click', () => {
           it('should emit `onClickTriggered`', () => {
             spyOn(component, '$emit');
+            spyOn(component, 'calculateMarginTop').and.callFake(() => '16px');
 
             component.$el.querySelector('#js-linked-pipeline-34993051').click();
 
