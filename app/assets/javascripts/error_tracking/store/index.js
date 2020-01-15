@@ -1,6 +1,9 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
+import * as actions from './actions';
+import mutations from './mutations';
+
 import * as listActions from './list/actions';
 import listMutations from './list/mutations';
 import listState from './list/state';
@@ -24,8 +27,8 @@ export const createStore = () =>
       details: {
         namespaced: true,
         state: detailsState(),
-        actions: detailsActions,
-        mutations: detailsMutations,
+        actions: { ...actions, ...detailsActions },
+        mutations: { ...mutations, ...detailsMutations },
         getters: detailsGetters,
       },
     },

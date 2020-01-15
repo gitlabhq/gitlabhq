@@ -29,6 +29,8 @@ describe('ErrorDetails', () => {
       propsData: {
         issueId: '123',
         projectPath: '/root/gitlab-test',
+        listPath: '/error_tracking',
+        issueUpdatePath: '/123',
         issueDetailsPath: '/123/details',
         issueStackTracePath: '/stacktrace',
         projectIssuesPath: '/test-project/issues/',
@@ -122,6 +124,7 @@ describe('ErrorDetails', () => {
       expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
       expect(wrapper.find(Stacktrace).exists()).toBe(false);
       expect(wrapper.find(GlBadge).exists()).toBe(false);
+      expect(wrapper.findAll('button').length).toBe(3);
     });
 
     describe('Badges', () => {
@@ -185,7 +188,7 @@ describe('ErrorDetails', () => {
       it('should submit the form', () => {
         window.HTMLFormElement.prototype.submit = () => {};
         const submitSpy = jest.spyOn(wrapper.vm.$refs.sentryIssueForm, 'submit');
-        wrapper.find('button').trigger('click');
+        wrapper.find('[data-qa-selector="create_issue_button"]').trigger('click');
         expect(submitSpy).toHaveBeenCalled();
         submitSpy.mockRestore();
       });

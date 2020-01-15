@@ -86,6 +86,16 @@ describe Gitlab::Metrics::Dashboard::Processor do
           expect(metrics).to eq %w(metric_b metric_a2 metric_a1)
         end
       end
+
+      context 'when sample_metrics are requested' do
+        let(:process_params) { [project, dashboard_yml, sequence, { environment: environment, sample_metrics: true }] }
+
+        it 'includes a sample metrics path for the prometheus endpoint with each metric' do
+          expect(all_metrics).to satisfy_all do |metric|
+            metric[:prometheus_endpoint_path] == sample_metrics_path(metric[:id])
+          end
+        end
+      end
     end
 
     shared_examples_for 'errors with message' do |expected_message|
@@ -145,6 +155,14 @@ describe Gitlab::Metrics::Dashboard::Processor do
       environment,
       proxy_path: :query_range,
       query: query
+    )
+  end
+
+  def sample_metrics_path(metric)
+    Gitlab::Routing.url_helpers.sample_metrics_project_environment_path(
+      project,
+      environment,
+      identifier: metric
     )
   end
 end

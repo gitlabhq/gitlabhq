@@ -51,7 +51,7 @@ class ProjectsController < Projects::ApplicationController
 
   def edit
     @badge_api_endpoint = expose_url(api_v4_projects_badges_path(id: @project.id))
-    render 'edit'
+    render_edit
   end
 
   def create
@@ -85,7 +85,7 @@ class ProjectsController < Projects::ApplicationController
       else
         flash.now[:alert] = result[:message]
 
-        format.html { render 'edit' }
+        format.html { render_edit }
       end
 
       format.js
@@ -387,7 +387,6 @@ class ProjectsController < Projects::ApplicationController
       :merge_method,
       :initialize_with_readme,
       :autoclose_referenced_issues,
-      :suggestion_commit_message,
 
       project_feature_attributes: %i[
         builds_access_level
@@ -487,6 +486,10 @@ class ProjectsController < Projects::ApplicationController
 
   def rate_limiter
     ::Gitlab::ApplicationRateLimiter
+  end
+
+  def render_edit
+    render 'edit'
   end
 end
 

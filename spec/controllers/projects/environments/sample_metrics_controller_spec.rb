@@ -9,17 +9,6 @@ describe Projects::Environments::SampleMetricsController do
   let_it_be(:environment) { create(:environment, project: project) }
   let_it_be(:user) { create(:user) }
 
-  before(:context) do
-    RSpec::Mocks.with_temporary_scope do
-      stub_env('USE_SAMPLE_METRICS', 'true')
-      Rails.application.reload_routes!
-    end
-  end
-
-  after(:context) do
-    Rails.application.reload_routes!
-  end
-
   before do
     project.add_reporter(user)
     sign_in(user)

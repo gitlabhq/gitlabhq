@@ -39,8 +39,25 @@ Some credentials are required to be able to run `aws` commands:
    ```yml
    deploy:
      stage: deploy
-     image: registry.gitlab.com/gitlab-org/cloud-deploy:latest
+     image: registry.gitlab.com/gitlab-org/cloud-deploy:latest # see the note below
      script:
        - aws s3 ...
        - aws create-deployment ...
    ```
+
+   NOTE: **Note:**
+   Please note that the image used in the example above
+   (`registry.gitlab.com/gitlab-org/cloud-deploy:latest`) is hosted on the [GitLab
+   Container Registry](../../user/packages/container_registry/index.md) and is
+   ready to use. Alternatively, replace the image with another one hosted on [AWS ECR](#aws-ecr).
+
+### AWS ECR
+
+Instead of referencing an image hosted on the GitLab Registry, you are free to
+reference any other image hosted on any third-party registry, such as
+[Amazon Elastic Container Registry (ECR)](https://aws.amazon.com/ecr).
+
+To do so, please make sure to [push your image into your ECR
+repository](https://docs.aws.amazon.com/AmazonECR/latest/userguide/docker-push-ecr-image.html)
+before referencing it in your `.gitlab-ci.yml` file and replace the `image`
+path to point to your ECR.

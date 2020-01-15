@@ -6,6 +6,8 @@ import * as actions from '~/error_tracking/store/details/actions';
 import * as types from '~/error_tracking/store/details/mutation_types';
 
 jest.mock('~/flash.js');
+jest.mock('~/lib/utils/url_utility');
+
 let mock;
 
 describe('Sentry error details store actions', () => {

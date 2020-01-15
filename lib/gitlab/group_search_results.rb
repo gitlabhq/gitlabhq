@@ -30,7 +30,7 @@ module Gitlab
     # rubocop:enable CodeReuse/ActiveRecord
 
     def issuable_params
-      super.merge(group_id: group.id)
+      super.merge(group_id: group.id, include_subgroups: true)
     end
   end
 end

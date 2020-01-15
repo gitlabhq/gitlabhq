@@ -17,9 +17,10 @@ special searches:
 
 | GitLab version | Elasticsearch version |
 | -------------- | --------------------- |
-| GitLab Enterprise Edition 8.4 - 8.17  | Elasticsearch 2.4 with [Delete By Query Plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/2.4/plugins-delete-by-query.html) installed |
+| GitLab Enterprise Edition 8.4 - 8.17   | Elasticsearch 2.4 with [Delete By Query Plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/2.4/plugins-delete-by-query.html) installed |
 | GitLab Enterprise Edition 9.0 - 11.4   | Elasticsearch 5.1 - 5.5 |
-| GitLab Enterprise Edition 11.5+        | Elasticsearch 5.6 - 6.x |
+| GitLab Enterprise Edition 11.5 - 12.6  | Elasticsearch 5.6 - 6.x |
+| GitLab Enterprise Edition 12.7+        | Elasticsearch 6.x - 7.x |
 
 ## Installing Elasticsearch
 

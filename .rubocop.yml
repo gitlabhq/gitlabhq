@@ -361,6 +361,9 @@ RSpec/MissingExampleGroupArgument:
 RSpec/UnspecifiedException:
   Enabled: false
 
+RSpec/HaveGitlabHttpStatus:
+  Enabled: false
+
 Style/MultilineWhenThen:
   Enabled: false
 

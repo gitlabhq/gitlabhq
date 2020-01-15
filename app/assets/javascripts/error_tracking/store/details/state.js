@@ -3,4 +3,6 @@ export default () => ({
   stacktraceData: {},
   loading: true,
   loadingStacktrace: true,
+  updatingResolveStatus: false,
+  updatingIgnoreStatus: false,
 });

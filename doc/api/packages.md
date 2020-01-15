@@ -81,7 +81,15 @@ Example response:
     },
     "created_at": "2019-11-27T03:37:38.711Z",
     "build_info": {
-      "pipeline_id": 123
+      "pipeline": {
+        "id": 123,
+        "status": "pending",
+        "ref": "new-pipeline",
+        "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
+        "web_url": "https://example.com/foo/bar/pipelines/47",
+        "created_at": "2016-08-11T11:28:34.085Z",
+        "updated_at": "2016-08-11T11:32:35.169Z",
+      }
     }
   },
   {
@@ -95,7 +103,15 @@ Example response:
     },
     "created_at": "2019-11-27T03:37:38.711Z",
     "build_info": {
-      "pipeline_id": 123
+      "pipeline": {
+        "id": 123,
+        "status": "pending",
+        "ref": "new-pipeline",
+        "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
+        "web_url": "https://example.com/foo/bar/pipelines/47",
+        "created_at": "2016-08-11T11:28:34.085Z",
+        "updated_at": "2016-08-11T11:32:35.169Z",
+      }
     }
   }
 ]
@@ -141,7 +157,15 @@ Example response:
   },
   "created_at": "2019-11-27T03:37:38.711Z",
   "build_info": {
-    "pipeline_id": 123
+    "pipeline": {
+      "id": 123,
+      "status": "pending",
+      "ref": "new-pipeline",
+      "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
+      "web_url": "https://example.com/foo/bar/pipelines/47",
+      "created_at": "2016-08-11T11:28:34.085Z",
+      "updated_at": "2016-08-11T11:32:35.169Z",
+    }
   }
 }
 ```

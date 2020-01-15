@@ -10,6 +10,8 @@ module ProtectedRef
     validates :project, presence: true
 
     delegate :matching, :matches?, :wildcard?, to: :ref_matcher
+
+    scope :for_project, ->(project) { where(project: project) }
   end
 
   def commit

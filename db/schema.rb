@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_13_133352) do
+ActiveRecord::Schema.define(version: 2020_01_14_113341) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -435,6 +435,13 @@ ActiveRecord::Schema.define(version: 2020_01_13_133352) do
     t.integer "group_id", null: false
     t.index ["approval_project_rule_id", "group_id"], name: "index_approval_project_rules_groups_1", unique: true
     t.index ["group_id"], name: "index_approval_project_rules_groups_2"
+  end
+
+  create_table "approval_project_rules_protected_branches", id: false, force: :cascade do |t|
+    t.bigint "approval_project_rule_id", null: false
+    t.bigint "protected_branch_id", null: false
+    t.index ["approval_project_rule_id", "protected_branch_id"], name: "index_approval_project_rules_protected_branches_unique", unique: true
+    t.index ["protected_branch_id"], name: "index_approval_project_rules_protected_branches_pb_id"
   end
 
   create_table "approval_project_rules_users", force: :cascade do |t|
@@ -3769,6 +3776,7 @@ ActiveRecord::Schema.define(version: 2020_01_13_133352) do
     t.string "description", limit: 500
     t.boolean "comment_on_event_enabled", default: true, null: false
     t.index ["project_id"], name: "index_services_on_project_id"
+    t.index ["project_id"], name: "tmp_index_on_project_id_partial_with_prometheus_services", where: "((type)::text = 'PrometheusService'::text)"
     t.index ["template"], name: "index_services_on_template"
     t.index ["type"], name: "index_services_on_type"
   end
@@ -4448,6 +4456,8 @@ ActiveRecord::Schema.define(version: 2020_01_13_133352) do
   add_foreign_key "approval_project_rules", "projects", on_delete: :cascade
   add_foreign_key "approval_project_rules_groups", "approval_project_rules", on_delete: :cascade
   add_foreign_key "approval_project_rules_groups", "namespaces", column: "group_id", on_delete: :cascade
+  add_foreign_key "approval_project_rules_protected_branches", "approval_project_rules", on_delete: :cascade
+  add_foreign_key "approval_project_rules_protected_branches", "protected_branches", on_delete: :cascade
   add_foreign_key "approval_project_rules_users", "approval_project_rules", on_delete: :cascade
   add_foreign_key "approval_project_rules_users", "users", on_delete: :cascade
   add_foreign_key "approvals", "merge_requests", name: "fk_310d714958", on_delete: :cascade

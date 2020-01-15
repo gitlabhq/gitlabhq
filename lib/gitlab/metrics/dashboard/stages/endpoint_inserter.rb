@@ -16,7 +16,7 @@ module Gitlab
           private
 
           def endpoint_for_metric(metric)
-            if ENV['USE_SAMPLE_METRICS']
+            if params[:sample_metrics]
               Gitlab::Routing.url_helpers.sample_metrics_project_environment_path(
                 project,
                 params[:environment],

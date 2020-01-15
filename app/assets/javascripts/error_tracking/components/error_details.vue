@@ -30,6 +30,14 @@ export default {
   },
   mixins: [timeagoMixin],
   props: {
+    listPath: {
+      type: String,
+      required: true,
+    },
+    issueUpdatePath: {
+      type: String,
+      required: true,
+    },
     issueId: {
       type: String,
       required: true,
@@ -81,7 +89,14 @@ export default {
     };
   },
   computed: {
-    ...mapState('details', ['error', 'loading', 'loadingStacktrace', 'stacktraceData']),
+    ...mapState('details', [
+      'error',
+      'loading',
+      'loadingStacktrace',
+      'stacktraceData',
+      'updatingResolveStatus',
+      'updatingIgnoreStatus',
+    ]),
     ...mapGetters('details', ['stacktrace']),
     reported() {
       return sprintf(
@@ -137,11 +152,14 @@ export default {
     this.startPollingStacktrace(this.issueStackTracePath);
   },
   methods: {
-    ...mapActions('details', ['startPollingDetails', 'startPollingStacktrace']),
+    ...mapActions('details', ['startPollingDetails', 'startPollingStacktrace', 'updateStatus']),
     trackClickErrorLinkToSentryOptions,
     createIssue() {
       this.issueCreationInProgress = true;
       this.$refs.sentryIssueForm.submit();
+    },
+    updateIssueStatus(status) {
+      this.updateStatus({ endpoint: this.issueUpdatePath, redirectUrl: this.listPath, status });
     },
     formatDate(date) {
       return `${this.timeFormatted(date)} (${dateFormat(date, 'UTC:yyyy-mm-dd h:MM:ssTT Z')})`;
@@ -158,24 +176,42 @@ export default {
     <div v-else-if="showDetails" class="error-details">
       <div class="top-area align-items-center justify-content-between py-3">
         <span v-if="!loadingStacktrace && stacktrace" v-html="reported"></span>
-        <form ref="sentryIssueForm" :action="projectIssuesPath" method="POST">
-          <gl-form-input class="hidden" name="issue[title]" :value="issueTitle" />
-          <input name="issue[description]" :value="issueDescription" type="hidden" />
-          <gl-form-input
-            :value="GQLerror.id"
-            class="hidden"
-            name="issue[sentry_issue_attributes][sentry_issue_identifier]"
-          />
-          <gl-form-input :value="csrfToken" class="hidden" name="authenticity_token" />
+        <div class="d-inline-flex">
           <loading-button
-            v-if="!error.gitlab_issue"
-            class="btn-success"
-            :label="__('Create issue')"
-            :loading="issueCreationInProgress"
-            data-qa-selector="create_issue_button"
-            @click="createIssue"
+            :label="__('Ignore')"
+            :loading="updatingIgnoreStatus"
+            @click="updateIssueStatus('ignored')"
           />
-        </form>
+          <loading-button
+            class="btn-outline-info ml-2"
+            :label="__('Resolve')"
+            :loading="updatingResolveStatus"
+            @click="updateIssueStatus('resolved')"
+          />
+          <form
+            ref="sentryIssueForm"
+            :action="projectIssuesPath"
+            method="POST"
+            class="d-inline-block ml-2"
+          >
+            <gl-form-input class="hidden" name="issue[title]" :value="issueTitle" />
+            <input name="issue[description]" :value="issueDescription" type="hidden" />
+            <gl-form-input
+              :value="GQLerror.id"
+              class="hidden"
+              name="issue[sentry_issue_attributes][sentry_issue_identifier]"
+            />
+            <gl-form-input :value="csrfToken" class="hidden" name="authenticity_token" />
+            <loading-button
+              v-if="!error.gitlab_issue"
+              class="btn-success"
+              :label="__('Create issue')"
+              :loading="issueCreationInProgress"
+              data-qa-selector="create_issue_button"
+              @click="createIssue"
+            />
+          </form>
+        </div>
       </div>
       <div>
         <tooltip-on-truncate :title="GQLerror.title" truncate-target="child" placement="top">

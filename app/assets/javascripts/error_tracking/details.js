@@ -25,6 +25,8 @@ export default () => {
       const {
         issueId,
         projectPath,
+        listPath,
+        issueUpdatePath,
         issueDetailsPath,
         issueStackTracePath,
         projectIssuesPath,
@@ -34,6 +36,8 @@ export default () => {
         props: {
           issueId,
           projectPath,
+          listPath,
+          issueUpdatePath,
           issueDetailsPath,
           issueStackTracePath,
           projectIssuesPath,

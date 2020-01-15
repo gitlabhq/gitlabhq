@@ -3,6 +3,7 @@
   "properties": {
     "id": { "type": "integer" },
     "title": { "type": "string" },
+    "slug": { "type": "string" },
     "created_at": { "type": "date-time" },
     "updated_at": { "type": "date-time" },
     "active": { "type": "boolean" },

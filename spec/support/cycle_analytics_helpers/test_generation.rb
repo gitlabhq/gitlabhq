@@ -117,7 +117,7 @@ module CycleAnalyticsHelpers
               data = data_fn[self]
               end_time = rand(1..10).days.from_now
 
-              end_time_conditions.each_with_index do |(condition_name, condition_fn), index|
+              end_time_conditions.each_with_index do |(_condition_name, condition_fn), index|
                 Timecop.freeze(end_time + index.days) { condition_fn[self, data] }
               end
 

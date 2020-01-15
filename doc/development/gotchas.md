@@ -26,7 +26,7 @@ describe API::Labels do
 
     get api("/projects/#{project.id}/labels", user)
 
-    expect(response).to have_http_status(200)
+    expect(response).to have_gitlab_http_status(:ok)
     expect(json_response.first['name']).to eq('label1')
   end
 
@@ -35,7 +35,7 @@ describe API::Labels do
 
     get api("/projects/#{project.id}/labels", user)
 
-    expect(response).to have_http_status(200)
+    expect(response).to have_gitlab_http_status(:ok)
     expect(json_response.first['name']).to eq('label1')
   end
 end
@@ -77,7 +77,7 @@ describe API::Labels do
 
     get api("/projects/#{project.id}/labels", user)
 
-    expect(response).to have_http_status(200)
+    expect(response).to have_gitlab_http_status(:ok)
     expect(json_response.first['name']).to eq('foo')
   end
 
@@ -86,7 +86,7 @@ describe API::Labels do
 
     get api("/projects/#{project.id}/labels", user)
 
-    expect(response).to have_http_status(200)
+    expect(response).to have_gitlab_http_status(:ok)
     expect(json_response.first['name']).to eq('bar')
   end
 end

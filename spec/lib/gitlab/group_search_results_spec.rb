@@ -67,5 +67,11 @@ describe Gitlab::GroupSearchResults do
 
       expect(result).to eq []
     end
+
+    it 'sets include_subgroups flag by default' do
+      result = described_class.new(user, anything, group, 'gob')
+
+      expect(result.issuable_params[:include_subgroups]).to eq(true)
+    end
   end
 end

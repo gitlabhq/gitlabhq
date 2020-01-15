@@ -213,7 +213,7 @@
     - name: postgres:9.6
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
     - name: redis:alpine
-    - name: elasticsearch:5.6.12
+    - name: elasticsearch:6.4.2
 
 .use-pg10-ee:
   image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.5-golang-1.12-git-2.24-lfs-2.9-chrome-73.0-node-12.x-yarn-1.16-postgresql-10-graphicsmagick-1.3.33"
@@ -221,7 +221,7 @@
     - name: postgres:10.9
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
     - name: redis:alpine
-    - name: elasticsearch:5.6.12
+    - name: elasticsearch:6.4.2
 
 .only-ee:
   only:

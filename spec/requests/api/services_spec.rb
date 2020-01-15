@@ -35,6 +35,7 @@ describe API::Services do
           expect(response).to have_gitlab_http_status(200)
           expect(json_response).to be_an Array
           expect(json_response.count).to eq(1)
+          expect(json_response.first['slug']).to eq('emails-on-push')
           expect(response).to match_response_schema('public_api/v4/services')
         end
       end
@@ -61,6 +62,7 @@ describe API::Services do
         put api("/projects/#{project.id}/services/#{dashed_service}?#{query_strings}", user), params: service_attrs
 
         expect(response).to have_gitlab_http_status(200)
+        expect(json_response['slug']).to eq(dashed_service)
         events.each do |event|
           next if event == "foo"
 

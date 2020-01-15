@@ -7782,6 +7782,9 @@ msgstr ""
 msgid "Failed to update environment!"
 msgstr ""
 
+msgid "Failed to update issue status"
+msgstr ""
+
 msgid "Failed to update issues, please try again."
 msgstr ""
 
@@ -9776,6 +9779,9 @@ msgid "If your HTTP repository is not publicly accessible, add your credentials.
 msgstr ""
 
 msgid "Iglu registry URL (optional)"
+msgstr ""
+
+msgid "Ignore"
 msgstr ""
 
 msgid "Image %{imageName} was scheduled for deletion from the registry."
@@ -15564,6 +15570,9 @@ msgid "Resetting the authorization key for this project will require updating th
 msgstr ""
 
 msgid "Resetting the authorization key will invalidate the previous key. Existing alert configurations will need to be updated with the new key."
+msgstr ""
+
+msgid "Resolve"
 msgstr ""
 
 msgid "Resolve all threads in new issue"

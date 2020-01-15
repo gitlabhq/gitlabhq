@@ -19,6 +19,7 @@ Example response:
   {
     "id": 75,
     "title": "Jenkins CI",
+    "slug": "jenkins",
     "created_at": "2019-11-20T11:20:25.297Z",
     "updated_at": "2019-11-20T12:24:37.498Z",
     "active": true,
@@ -38,6 +39,7 @@ Example response:
   {
     "id": 76,
     "title": "Alerts endpoint",
+    "slug": "alerts",
     "created_at": "2019-11-20T11:20:25.297Z",
     "updated_at": "2019-11-20T12:24:37.498Z",
     "active": true,
@@ -753,6 +755,7 @@ Example response:
 {
   "id": 4,
   "title": "Slack slash commands",
+  "slug": "slack-slash-commands",
   "created_at": "2017-06-27T05:51:39-07:00",
   "updated_at": "2017-06-27T05:51:39-07:00",
   "active": true,

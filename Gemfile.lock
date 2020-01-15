@@ -432,7 +432,7 @@ GEM
     grape-entity (0.7.1)
       activesupport (>= 4.0)
       multi_json (>= 1.3.2)
-    grape-path-helpers (1.1.0)
+    grape-path-helpers (1.2.0)
       activesupport
       grape (~> 1.0)
       rake (~> 12)
@@ -1230,7 +1230,7 @@ DEPENDENCIES
   gpgme (~> 2.0.19)
   grape (~> 1.1.0)
   grape-entity (~> 0.7.1)
-  grape-path-helpers (~> 1.1)
+  grape-path-helpers (~> 1.2)
   grape_logging (~> 1.7)
   graphiql-rails (~> 1.4.10)
   graphql (~> 1.9.11)

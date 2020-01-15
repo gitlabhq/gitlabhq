@@ -613,6 +613,7 @@ module API
     end
 
     class ProtectedBranch < Grape::Entity
+      expose :id
       expose :name
       expose :push_access_levels, using: Entities::ProtectedRefAccess
       expose :merge_access_levels, using: Entities::ProtectedRefAccess
@@ -1128,7 +1129,11 @@ module API
     end
 
     class ProjectServiceBasic < Grape::Entity
-      expose :id, :title, :created_at, :updated_at, :active
+      expose :id, :title
+      expose :slug do |service|
+        service.to_param.dasherize
+      end
+      expose :created_at, :updated_at, :active
       expose :commit_events, :push_events, :issues_events, :confidential_issues_events
       expose :merge_requests_events, :tag_push_events, :note_events
       expose :confidential_note_events, :pipeline_events, :wiki_page_events
