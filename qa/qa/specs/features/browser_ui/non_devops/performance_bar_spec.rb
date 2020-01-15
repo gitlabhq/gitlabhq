@@ -2,7 +2,7 @@
 
 module QA
   context 'Non-devops' do
-    describe 'Performance bar display', :requires_admin, quarantine: 'https://gitlab.com/gitlab-org/gitlab/issues/196141' do
+    describe 'Performance bar display', :requires_admin do
       context 'when logged in as an admin user' do
         # 4 metrics: pg, gitaly, redis, total
         let(:metrics_count) { 4 }

@@ -732,15 +732,15 @@
   dependencies:
     vue-eslint-parser "^6.0.4"
 
-"@gitlab/svgs@^1.88.0":
-  version "1.88.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.88.0.tgz#0a9b72e9591264fcac592ebf9944665c70f48de2"
-  integrity sha512-ZgepCvZoB/lFdgttHtu8+9YlRZlVc9MnHDbbqcQCFBvrfOjY1wq12ikxnNbwKj8QNA47TRJvSS0TkHgMWYnbsA==
+"@gitlab/svgs@^1.89.0":
+  version "1.89.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.89.0.tgz#5bdaff1b0af1cc07ed34e89c21c34c7c6a3e1caa"
+  integrity sha512-vI6VobZs6mq2Bbiej5bYMHyvtn8kD1O/uHSlyY9jgJoa2TXU+jFI9DqUpJmx8EIHt+o0qm/8G3XsFGEr5gLb7Q==
 
-"@gitlab/ui@8.10.0":
-  version "8.10.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-8.10.0.tgz#885ea8fe695ccff859821bd4ad4cefbea086e3b6"
-  integrity sha512-bbq+7iiptsNUWtPBQs/ek5uDnkSQ7QGzJwddfZSvQPMuq+50fDSy3Gab1cwvZtSj1fSvAny0ksqbpQl1w+5AgA==
+"@gitlab/ui@8.15.0":
+  version "8.15.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-8.15.0.tgz#51fa3f2b4ccb8454bcb9680acb334bc88fe15f3d"
+  integrity sha512-M9hnLVRMUF5DDfwPtR5CLsCyiWgjslqg2p37a6qwjdjZ+ST5t0Vr/44Mg4Lz4y2zxqjDaSmR4KtmipvykeQx1A==
   dependencies:
     "@babel/standalone" "^7.0.0"
     "@gitlab/vue-toasted" "^1.3.0"
@@ -750,6 +750,7 @@
     highlight.js "^9.13.1"
     js-beautify "^1.8.8"
     lodash "^4.17.14"
+    portal-vue "^2.1.6"
     resize-observer-polyfill "^1.5.1"
     url-search-params-polyfill "^5.0.0"
     vue "^2.6.10"
@@ -8742,10 +8743,10 @@ popper.js@^1.14.7, popper.js@^1.15.0:
   resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.15.0.tgz#5560b99bbad7647e9faa475c6b8056621f5a4ff2"
   integrity sha512-w010cY1oCUmI+9KwwlWki+r5jxKfTFDVoadl7MSrIujHU5MJ5OR6HTDj6Xo8aoR/QsA56x8jKjA59qGH4ELtrA==
 
-portal-vue@^2.1.5:
-  version "2.1.5"
-  resolved "https://registry.yarnpkg.com/portal-vue/-/portal-vue-2.1.5.tgz#ecd0997cb32958205151cb72f40fd4f38d175e5c"
-  integrity sha512-vZmdMn0mOo7puvxoMQ5zju6S29aFD+9yygJxyWQtPaMXS9xunAeoYdnx6yzfL9J8HD8pMZYgSieEIbioAKhrSQ==
+portal-vue@^2.1.5, portal-vue@^2.1.6:
+  version "2.1.7"
+  resolved "https://registry.yarnpkg.com/portal-vue/-/portal-vue-2.1.7.tgz#ea08069b25b640ca08a5b86f67c612f15f4e4ad4"
+  integrity sha512-+yCno2oB3xA7irTt0EU5Ezw22L2J51uKAacE/6hMPMoO/mx3h4rXFkkBkT4GFsMDv/vEe8TNKC3ujJJ0PTwb6g==
 
 portfinder@^1.0.24:
   version "1.0.24"

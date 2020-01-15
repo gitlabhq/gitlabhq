@@ -207,6 +207,21 @@ To use a custom Gitaly repository in CI, for instance if you want your
 GitLab fork to always use your own Gitaly fork, set `GITALY_REPO_URL`
 as a [CI environment variable](../ci/variables/README.md#gitlab-cicd-environment-variables).
 
+### Use a locally modified version of Gitaly RPC client
+
+If you are making changes to the RPC client, such as adding a new endpoint or adding a new
+parameter to an existing endpoint, follow the guide for
+[Gitaly proto](https://gitlab.com/gitlab-org/gitaly/blob/master/proto/README.md). After pushing
+the branch with the changes (`new-feature-branch`, for example):
+
+1. Change the `gitaly` line in the Rails' `Gemfile` to:
+
+   ```ruby
+   gem 'gitaly', git: 'https://gitlab.com/gitlab-org/gitaly.git', branch: 'new-feature-branch'
+   ```
+
+1. Run `bundle install` to use the modified RPC client.
+
 ---
 
 [Return to Development documentation](README.md)
