@@ -58,10 +58,9 @@ module QA
 
             within_element(:"allowed_to_#{action}_dropdown") do
               click_on allowed[:roles]
+              allowed[:users].each { |user| click_on user.username } if allowed.key?(:users)
+              allowed[:groups].each { |group| click_on group.name } if allowed.key?(:groups)
             end
-
-            # Click the select element again to close the dropdown
-            click_element :"allowed_to_#{action}_select"
           end
         end
       end

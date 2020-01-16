@@ -28,7 +28,6 @@ module QA
         Flow::Project.add_member(project: project, username: user.username)
 
         Resource::Issue.fabricate_via_api! do |issue|
-          issue.title = 'issue title'
           issue.project = project
         end.visit!
 

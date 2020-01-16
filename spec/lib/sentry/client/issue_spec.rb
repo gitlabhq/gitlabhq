@@ -30,7 +30,7 @@ describe Sentry::Client::Issue do
     let(:default_httparty_options) do
       {
         follow_redirects: false,
-        headers: { "Authorization" => "Bearer test-token" }
+        headers: { 'Content-Type' => 'application/json', 'Authorization' => "Bearer test-token" }
       }
     end
 

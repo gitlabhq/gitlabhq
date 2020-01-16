@@ -8,9 +8,7 @@ module QA
       before do
         Flow::Login.sign_in
 
-        Resource::Issue.fabricate_via_api! do |issue|
-          issue.title = 'issue title'
-        end.visit!
+        Resource::Issue.fabricate_via_api!.visit!
 
         Page::Project::Issue::Show.perform do |show|
           show.select_all_activities_filter

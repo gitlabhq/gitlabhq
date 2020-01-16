@@ -6,9 +6,7 @@ module QA
       before do
         Flow::Login.sign_in
 
-        Resource::Issue.fabricate_via_api! do |issue|
-          issue.title = 'issue title'
-        end.visit!
+        Resource::Issue.fabricate_via_api!.visit!
       end
 
       it 'user comments on an issue and edits the comment' do

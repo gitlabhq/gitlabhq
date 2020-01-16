@@ -16,7 +16,6 @@ module QA
         project.add_member(@user)
 
         Resource::Issue.fabricate_via_api! do |issue|
-          issue.title = 'issue to test mention'
           issue.project = project
         end.visit!
       end

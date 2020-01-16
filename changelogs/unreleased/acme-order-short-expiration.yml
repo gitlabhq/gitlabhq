@@ -1,0 +1,5 @@
+---
+title: Retry obtaining Let's Encrypt certificates every 2 hours if it wasn't successful
+merge_request: 22336
+author:
+type: fixed

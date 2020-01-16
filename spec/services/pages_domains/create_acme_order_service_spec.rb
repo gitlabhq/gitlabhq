@@ -45,12 +45,34 @@ describe PagesDomains::CreateAcmeOrderService do
     expect { OpenSSL::PKey::RSA.new(saved_order.private_key) }.not_to raise_error
   end
 
-  it 'properly saves order attributes' do
+  it 'properly saves order url' do
     service.execute
 
     saved_order = PagesDomainAcmeOrder.last
     expect(saved_order.url).to eq(order_double.url)
-    expect(saved_order.expires_at).to be_like_time(order_double.expires)
+  end
+
+  context 'when order expires in 2 days' do
+    it 'sets expiration time in 2 hours' do
+      Timecop.freeze do
+        service.execute
+
+        saved_order = PagesDomainAcmeOrder.last
+        expect(saved_order.expires_at).to be_like_time(2.hours.from_now)
+      end
+    end
+  end
+
+  context 'when order expires in an hour' do
+    it 'sets expiration time accordingly to order' do
+      Timecop.freeze do
+        allow(order_double).to receive(:expires).and_return(1.hour.from_now)
+        service.execute
+
+        saved_order = PagesDomainAcmeOrder.last
+        expect(saved_order.expires_at).to be_like_time(1.hour.from_now)
+      end
+    end
   end
 
   it 'properly saves challenge attributes' do

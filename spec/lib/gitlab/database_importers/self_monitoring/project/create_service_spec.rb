@@ -39,11 +39,10 @@ describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService do
       end
 
       it 'returns error' do
-        expect(subject).to receive(:log_error).and_call_original
         expect(result).to eq(
           status: :error,
           message: 'No active admin user found',
-          last_step: :validate_admins
+          last_step: :create_group
         )
 
         expect(Project.count).to eq(0)
@@ -78,8 +77,8 @@ describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService do
       it_behaves_like 'has prometheus service', 'http://localhost:9090'
 
       it "tracks successful install" do
-        expect(::Gitlab::Tracking).to receive(:event)
-        expect(::Gitlab::Tracking).to receive(:event).with("self_monitoring", "project_created")
+        expect(::Gitlab::Tracking).to receive(:event).twice
+        expect(::Gitlab::Tracking).to receive(:event).with('self_monitoring', 'project_created')
 
         result
       end
@@ -87,10 +86,6 @@ describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService do
       it 'creates group' do
         expect(result[:status]).to eq(:success)
         expect(group).to be_persisted
-        expect(group.name).to eq('GitLab Instance Administrators')
-        expect(group.path).to start_with('gitlab-instance-administrators')
-        expect(group.path.split('-').last.length).to eq(8)
-        expect(group.visibility_level).to eq(described_class::VISIBILITY_LEVEL)
       end
 
       it 'creates project with internal visibility' do
@@ -120,19 +115,9 @@ describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService do
         expect(File).to exist("doc/#{path}.md")
       end
 
-      it 'adds all admins as maintainers' do
-        admin1 = create(:user, :admin)
-        admin2 = create(:user, :admin)
-        create(:user)
-
+      it 'creates project with group as owner' do
         expect(result[:status]).to eq(:success)
         expect(project.owner).to eq(group)
-        expect(group.members.collect(&:user)).to contain_exactly(user, admin1, admin2)
-        expect(group.members.collect(&:access_level)).to contain_exactly(
-          Gitlab::Access::OWNER,
-          Gitlab::Access::MAINTAINER,
-          Gitlab::Access::MAINTAINER
-        )
       end
 
       it 'saves the project id' do
@@ -141,7 +126,10 @@ describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService do
       end
 
       it 'returns error when saving project ID fails' do
-        allow(application_setting).to receive(:save) { false }
+        allow(application_setting).to receive(:update).and_call_original
+        allow(application_setting).to receive(:update)
+          .with(instance_administration_project_id: anything)
+          .and_return(false)
 
         expect(result).to eq(
           status: :error,
@@ -155,12 +143,7 @@ describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService do
         let(:existing_project) { create(:project, namespace: existing_group) }
 
         before do
-          admin1 = create(:user, :admin)
-          admin2 = create(:user, :admin)
-
-          existing_group.add_owner(user)
-          existing_group.add_users([admin1, admin2], Gitlab::Access::MAINTAINER)
-
+          application_setting.instance_administrators_group_id = existing_group.id
           application_setting.instance_administration_project_id = existing_project.id
         end
 
@@ -268,21 +251,6 @@ describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService do
             status: :error,
             message: 'Could not create project',
             last_step: :create_project
-          )
-        end
-      end
-
-      context 'when user cannot be added to project' do
-        before do
-          subject.instance_variable_set(:@instance_admins, [user, build(:user, :admin)])
-        end
-
-        it 'returns error' do
-          expect(subject).to receive(:log_error).and_call_original
-          expect(result).to eq(
-            status: :error,
-            message: 'Could not add admins as members',
-            last_step: :add_group_members
           )
         end
       end

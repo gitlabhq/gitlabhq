@@ -5202,6 +5202,9 @@ msgstr ""
 msgid "Could not revoke personal access token %{personal_access_token_name}."
 msgstr ""
 
+msgid "Could not save group ID"
+msgstr ""
+
 msgid "Could not save project ID"
 msgstr ""
 
