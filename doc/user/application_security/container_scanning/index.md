@@ -269,6 +269,15 @@ it highlighted:
     }
   ],
   "remediations": [
+    {
+      "fixes": [
+        {
+          "cve": "debian:9:apt:CVE-2019-3462"
+        }
+      ],
+      "summary": "Upgrade apt from 1.4.8 to 1.4.9",
+      "diff": "YXB0LWdldCB1cGRhdGUgJiYgYXB0LWdldCB1cGdyYWRlIC15IGFwdA=="
+    }
   ]
 }
 ```
@@ -305,7 +314,11 @@ the report JSON unless stated otherwise. Presence of optional fields depends on 
 | `vulnerabilities[].links`                            | An array of references to external documentation pieces or articles that describe the vulnerability further. Optional.                                                                                                                                                                                                                                                                     |
 | `vulnerabilities[].links[].name`                     | Name of the vulnerability details link. Optional.                                                                                                                                                                                                                                                                                                                                          |
 | `vulnerabilities[].links[].url`                      | URL of the vulnerability details document. Optional.                                                                                                                                                                                                                                                                                                                                       |
-| `remediations`                                       | Not supported yet.                                                                                                                                                                                                                                                                                                                                                                         |
+| `remediations`                                       | An array of objects containing information on cured vulnerabilities along with patch diffs to apply. Empty if no remediations provided by an underlying analyzer.                                                                                                                                                                                                                          |
+| `remediations[].fixes`                               | An array of strings that represent references to vulnerabilities fixed by this particular remediation.                                                                                                                                                                                                                                                                                     |
+| `remediations[].fixes[].cve`                         | A string value that describes a fixed vulnerability occurrence in the same format as `vulnerabilities[].cve`.                                                                                                                                                                                                                                                                              |
+| `remediations[].summary`                             | Overview of how the vulnerabilities have been fixed.                                                                                                                                                                                                                                                                                                                                       |
+| `remediations[].diff`                                | base64-encoded remediation code diff, compatible with [`git apply`](https://git-scm.com/docs/git-format-patch#_discussion).                                                                                                                                                                                                                                                                |
 
 ## Troubleshooting
 

@@ -244,7 +244,7 @@ Once the database is created, connect to your new RDS instance to verify access
 and to install a required extension.
 
 You can find the host or endpoint by selecting the instance you just created and
-after the details drop down you'll find it labeled as 'Endpoint'. Do not to
+after the details dropdown menu you'll find it labeled as 'Endpoint'. Do not to
 include the colon and port number:
 
 ```sh

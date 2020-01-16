@@ -158,7 +158,7 @@
 - pages
 - pages_domain_verification
 - pages_domain_ssl_renewal
-- plugin
+- file_hook
 - post_receive
 - process_commit
 - project_cache

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gitlab
-  module Plugin
+  module FileHook
     def self.any?
       plugin_glob.any? { |entry| File.file?(entry) }
     end
@@ -17,7 +17,7 @@ module Gitlab
     def self.execute_all_async(data)
       args = files.map { |file| [file, data] }
 
-      PluginWorker.bulk_perform_async(args)
+      FileHookWorker.bulk_perform_async(args)
     end
 
     def self.execute(file, data)

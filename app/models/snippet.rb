@@ -14,7 +14,11 @@ class Snippet < ApplicationRecord
   include Editable
   include Gitlab::SQL::Pattern
   include FromUnion
+  include IgnorableColumns
+
   extend ::Gitlab::Utils::Override
+
+  ignore_column :storage_version, remove_with: '12.9', remove_after: '2020-03-22'
 
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :description

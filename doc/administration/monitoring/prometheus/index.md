@@ -245,7 +245,7 @@ To add a Prometheus dashboard for a single server GitLab setup:
 
 1. Create a new data source in Grafana.
 1. Name your data source i.e GitLab.
-1. Select `Prometheus` in the type drop down.
+1. Select `Prometheus` in the type dropdown box.
 1. Add your Prometheus listen address as the URL and set access to `Browser`.
 1. Set the HTTP method to `GET`.
 1. Save & Test your configuration to verify that it works.

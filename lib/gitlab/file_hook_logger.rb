@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gitlab
-  class PluginLogger < Gitlab::Logger
+  class FileHookLogger < Gitlab::Logger
     def self.file_name_noext
       'plugin'
     end

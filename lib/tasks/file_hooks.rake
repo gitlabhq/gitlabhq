@@ -1,10 +1,10 @@
-namespace :plugins do
+namespace :file_hooks do
   desc 'Validate existing plugins'
   task validate: :environment do
-    puts 'Validating plugins from /plugins directory'
+    puts 'Validating file hooks from /plugins directory'
 
-    Gitlab::Plugin.files.each do |file|
-      success, message = Gitlab::Plugin.execute(file, Gitlab::DataBuilder::Push::SAMPLE_DATA)
+    Gitlab::FileHook.files.each do |file|
+      success, message = Gitlab::FileHook.execute(file, Gitlab::DataBuilder::Push::SAMPLE_DATA)
 
       if success
         puts "* #{file} succeed (zero exit code)."

@@ -28,11 +28,11 @@ describe 'Admin::Hooks' do
     end
 
     it 'renders plugins list as well' do
-      allow(Gitlab::Plugin).to receive(:files).and_return(['foo.rb', 'bar.clj'])
+      allow(Gitlab::FileHook).to receive(:files).and_return(['foo.rb', 'bar.clj'])
 
       visit admin_hooks_path
 
-      expect(page).to have_content('Plugins')
+      expect(page).to have_content('File Hooks')
       expect(page).to have_content('foo.rb')
       expect(page).to have_content('bar.clj')
     end

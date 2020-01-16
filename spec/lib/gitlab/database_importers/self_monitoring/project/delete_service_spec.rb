@@ -4,12 +4,8 @@ require 'spec_helper'
 
 describe Gitlab::DatabaseImporters::SelfMonitoring::Project::DeleteService do
   describe '#execute' do
+    let!(:application_setting) { create(:application_setting) }
     let(:result) { subject.execute }
-    let(:application_setting) { Gitlab::CurrentSettings.current_application_settings }
-
-    before do
-      allow(ApplicationSetting).to receive(:current_without_cache) { application_setting }
-    end
 
     context 'when project does not exist' do
       it 'returns error' do
@@ -21,24 +17,16 @@ describe Gitlab::DatabaseImporters::SelfMonitoring::Project::DeleteService do
       end
     end
 
-    context 'with project destroyed but ID still present in application settings' do
-      before do
-        application_setting.instance_administration_project_id = 1
-      end
-
-      it 'deletes project ID from application settings' do
-        subject.execute
-
-        expect(application_setting.instance_administration_project_id).to be_nil
-      end
-    end
-
     context 'when self monitoring project exists' do
       let(:group) { create(:group) }
       let(:project) { create(:project, namespace: group) }
 
-      before do
-        application_setting.instance_administration_project = project
+      let(:application_setting) do
+        create(
+          :application_setting,
+          instance_administration_project_id: project.id,
+          instance_administrators_group_id: group.id
+        )
       end
 
       it 'destroys project' do
@@ -50,7 +38,13 @@ describe Gitlab::DatabaseImporters::SelfMonitoring::Project::DeleteService do
       it 'deletes project ID from application settings' do
         subject.execute
 
-        expect(application_setting.instance_administration_project_id).to be_nil
+        expect(application_setting.reload.instance_administration_project_id).to be_nil
+      end
+
+      it 'does not delete group' do
+        subject.execute
+
+        expect(application_setting.instance_administrators_group).to eq(group)
       end
     end
   end

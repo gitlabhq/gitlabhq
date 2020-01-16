@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-describe Gitlab::Plugin do
-  let(:plugin) { Rails.root.join('plugins', 'test.rb') }
-  let(:tmp_file) { Tempfile.new('plugin-dump') }
+describe Gitlab::FileHook do
+  let(:file_hook) { Rails.root.join('plugins', 'test.rb') }
+  let(:tmp_file) { Tempfile.new('file_hook-dump') }
 
-  let(:plugin_source) do
+  let(:file_hook_source) do
     <<~EOS
       #!/usr/bin/env ruby
       x = STDIN.read
@@ -14,13 +14,13 @@ describe Gitlab::Plugin do
     EOS
   end
 
-  context 'with plugins present' do
+  context 'with file_hooks present' do
     before do
-      File.write(plugin, plugin_source)
+      File.write(file_hook, file_hook_source)
     end
 
     after do
-      FileUtils.rm(plugin)
+      FileUtils.rm(file_hook)
     end
 
     describe '.any?' do
@@ -30,13 +30,13 @@ describe Gitlab::Plugin do
     end
 
     describe '.files?' do
-      it 'returns a list of plugins' do
-        expect(described_class.files).to match_array([plugin.to_s])
+      it 'returns a list of file_hooks' do
+        expect(described_class.files).to match_array([file_hook.to_s])
       end
     end
   end
 
-  context 'without any plugins' do
+  context 'without any file_hooks' do
     describe '.any?' do
       it 'returns false' do
         expect(described_class.any?).to be false
@@ -52,21 +52,21 @@ describe Gitlab::Plugin do
 
   describe '.execute' do
     let(:data) { Gitlab::DataBuilder::Push::SAMPLE_DATA }
-    let(:result) { described_class.execute(plugin.to_s, data) }
+    let(:result) { described_class.execute(file_hook.to_s, data) }
     let(:success) { result.first }
     let(:message) { result.last }
 
     before do
-      File.write(plugin, plugin_source)
+      File.write(file_hook, file_hook_source)
     end
 
     after do
-      FileUtils.rm(plugin)
+      FileUtils.rm(file_hook)
     end
 
     context 'successful execution' do
       before do
-        File.chmod(0o777, plugin)
+        File.chmod(0o777, file_hook)
       end
 
       after do
@@ -76,7 +76,7 @@ describe Gitlab::Plugin do
       it { expect(success).to be true }
       it { expect(message).to be_empty }
 
-      it 'ensures plugin received data via stdin' do
+      it 'ensures file_hook received data via stdin' do
         result
 
         expect(File.read(tmp_file.path)).to eq(data.to_json)
@@ -89,7 +89,7 @@ describe Gitlab::Plugin do
     end
 
     context 'non-zero exit' do
-      let(:plugin_source) do
+      let(:file_hook_source) do
         <<~EOS
           #!/usr/bin/env ruby
           exit 1
@@ -97,7 +97,7 @@ describe Gitlab::Plugin do
       end
 
       before do
-        File.chmod(0o777, plugin)
+        File.chmod(0o777, file_hook)
       end
 
       it { expect(success).to be false }

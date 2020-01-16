@@ -57,6 +57,14 @@ describe GroupMembersFinder, '#execute' do
     expect(result.to_a).to match_array([member1])
   end
 
+  it 'does not return nil if `inherited only` relation is requested on root group' do
+    group.add_developer(user2)
+
+    result = described_class.new(group).execute(include_relations: [:inherited])
+
+    expect(result).not_to be_nil
+  end
+
   it 'returns members for descendant groups if requested' do
     member1 = group.add_maintainer(user2)
     member2 = group.add_maintainer(user1)
@@ -71,25 +79,41 @@ describe GroupMembersFinder, '#execute' do
 
   it 'returns searched members if requested' do
     group.add_maintainer(user2)
-    nested_group.add_maintainer(user2)
-    nested_group.add_maintainer(user3)
-    nested_group.add_maintainer(user4)
+    group.add_developer(user3)
     member = group.add_maintainer(user1)
 
-    result = described_class.new(group).execute(include_relations: [:direct, :descendants], params: { search: user1.name })
+    result = described_class.new(group).execute(params: { search: user1.name })
 
     expect(result.to_a).to match_array([member])
+  end
+
+  it 'returns nothing if search only in inherited relation' do
+    group.add_maintainer(user2)
+    group.add_developer(user3)
+    group.add_maintainer(user1)
+
+    result = described_class.new(group).execute(include_relations: [:inherited], params: { search: user1.name })
+
+    expect(result.to_a).to match_array([])
+  end
+
+  it 'returns searched member only from nested_group if search only in inherited relation' do
+    group.add_maintainer(user2)
+    group.add_developer(user3)
+    nested_group.add_maintainer(create(:user, name: user1.name))
+    member = group.add_maintainer(user1)
+
+    result = described_class.new(nested_group).execute(include_relations: [:inherited], params: { search: member.user.name })
+
+    expect(result.to_a).to contain_exactly(member)
   end
 
   it 'returns members with two-factor auth if requested by owner' do
     group.add_owner(user2)
     group.add_maintainer(user1)
-    nested_group.add_maintainer(user2)
-    nested_group.add_maintainer(user3)
-    nested_group.add_maintainer(user4)
     member = group.add_maintainer(user5)
 
-    result = described_class.new(group, user2).execute(include_relations: [:direct, :descendants], params: { two_factor: 'enabled' })
+    result = described_class.new(group, user2).execute(params: { two_factor: 'enabled' })
 
     expect(result.to_a).to contain_exactly(member)
   end
@@ -97,14 +121,11 @@ describe GroupMembersFinder, '#execute' do
   it 'returns members without two-factor auth if requested by owner' do
     member1 = group.add_owner(user2)
     member2 = group.add_maintainer(user1)
-    nested_group.add_maintainer(user2)
-    member3 = nested_group.add_maintainer(user3)
-    member4 = nested_group.add_maintainer(user4)
     member_with_2fa = group.add_maintainer(user5)
 
-    result = described_class.new(group, user2).execute(include_relations: [:direct, :descendants], params: { two_factor: 'disabled' })
+    result = described_class.new(group, user2).execute(params: { two_factor: 'disabled' })
 
     expect(result.to_a).not_to include(member_with_2fa)
-    expect(result.to_a).to match_array([member1, member2, member3, member4])
+    expect(result.to_a).to match_array([member1, member2])
   end
 end

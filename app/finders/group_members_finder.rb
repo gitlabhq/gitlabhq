@@ -36,6 +36,8 @@ class GroupMembersFinder < UnionFinder
       relations << descendant_members
     end
 
+    return GroupMember.none if relations.empty?
+
     members = find_union(relations, GroupMember)
     filter_members(members, params)
   end

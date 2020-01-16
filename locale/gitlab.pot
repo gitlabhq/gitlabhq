@@ -5187,9 +5187,6 @@ msgstr ""
 msgid "Could not delete chat nickname %{chat_name}."
 msgstr ""
 
-msgid "Could not delete project ID"
-msgstr ""
-
 msgid "Could not fetch projects"
 msgstr ""
 
@@ -7992,6 +7989,12 @@ msgstr ""
 msgid "Fetching licenses failed. You are not permitted to perform this action."
 msgstr ""
 
+msgid "File Hooks"
+msgstr ""
+
+msgid "File Hooks (%{count})"
+msgstr ""
+
 msgid "File added"
 msgstr ""
 
@@ -7999,6 +8002,9 @@ msgid "File browser"
 msgstr ""
 
 msgid "File deleted"
+msgstr ""
+
+msgid "File hooks are similar to system hooks but are executed as files instead of sending data to a URL."
 msgstr ""
 
 msgid "File mode changed from %{a_mode} to %{b_mode}"
@@ -8164,6 +8170,9 @@ msgid "For more information, go to the "
 msgstr ""
 
 msgid "For more information, please review %{link_start_tag}Jaeger's configuration doc%{link_end_tag}"
+msgstr ""
+
+msgid "For more information, see the File Hooks documentation."
 msgstr ""
 
 msgid "For more information, see the documentation on %{deactivating_usage_ping_link_start}deactivating the usage ping%{deactivating_usage_ping_link_end}."
@@ -12203,6 +12212,9 @@ msgstr ""
 msgid "No file chosen"
 msgstr ""
 
+msgid "No file hooks found."
+msgstr ""
+
 msgid "No file selected"
 msgstr ""
 
@@ -12775,6 +12787,18 @@ msgstr ""
 msgid "Package was removed"
 msgstr ""
 
+msgid "PackageRegistry|Add Conan Remote"
+msgstr ""
+
+msgid "PackageRegistry|Conan Command"
+msgstr ""
+
+msgid "PackageRegistry|Copy Conan Command"
+msgstr ""
+
+msgid "PackageRegistry|Copy Conan Setup Command"
+msgstr ""
+
 msgid "PackageRegistry|Copy Maven XML"
 msgstr ""
 
@@ -12803,6 +12827,9 @@ msgid "PackageRegistry|Delete Package Version"
 msgstr ""
 
 msgid "PackageRegistry|Delete package"
+msgstr ""
+
+msgid "PackageRegistry|For more information on the Conan registry, %{linkStart}see the documentation%{linkEnd}."
 msgstr ""
 
 msgid "PackageRegistry|For more information on the Maven registry, %{linkStart}see the documentation%{linkEnd}."
@@ -18640,6 +18667,9 @@ msgid "There was an error while fetching cycle analytics data."
 msgstr ""
 
 msgid "There was an error while fetching cycle analytics duration data."
+msgstr ""
+
+msgid "There was an error while fetching cycle analytics duration median data."
 msgstr ""
 
 msgid "There was an error while fetching cycle analytics summary data."

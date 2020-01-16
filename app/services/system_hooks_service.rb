@@ -14,7 +14,7 @@ class SystemHooksService
       hook.async_execute(data, 'system_hooks')
     end
 
-    Gitlab::Plugin.execute_all_async(data)
+    Gitlab::FileHook.execute_all_async(data)
   end
 
   private

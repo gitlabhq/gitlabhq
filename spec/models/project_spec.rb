@@ -4745,7 +4745,7 @@ describe Project do
     end
 
     it 'returns true when a plugin exists' do
-      expect(Gitlab::Plugin).to receive(:any?).twice.and_return(true)
+      expect(Gitlab::FileHook).to receive(:any?).twice.and_return(true)
 
       expect(project.has_active_hooks?(:merge_request_events)).to be_truthy
       expect(project.has_active_hooks?).to be_truthy
