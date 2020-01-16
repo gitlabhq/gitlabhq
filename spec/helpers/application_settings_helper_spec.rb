@@ -92,7 +92,7 @@ describe ApplicationSettingsHelper do
 
       it 'returns self_monitoring_project_exists false' do
         expect(helper.self_monitoring_project_data).to include(
-          'self_monitoring_project_exists' => false
+          'self_monitoring_project_exists' => "false"
         )
       end
 
@@ -112,7 +112,7 @@ describe ApplicationSettingsHelper do
 
       it 'returns self_monitoring_project_exists true' do
         expect(helper.self_monitoring_project_data).to include(
-          'self_monitoring_project_exists' => true
+          'self_monitoring_project_exists' => "true"
         )
       end
 

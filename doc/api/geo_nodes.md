@@ -11,6 +11,13 @@ Creates a new Geo node.
 POST /geo_nodes
 ```
 
+```bash
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://primary.example.com/api/v4/geo_nodes \
+     --request POST \
+     -d "name=himynameissomething" \
+     -d "url=https://another-node.example.com/"
+```
+
 | Attribute                   | Type    | Required | Description                                                      |
 | ----------------------------| ------- | -------- | -----------------------------------------------------------------|
 | `primary`                   | boolean | no       | Specifying whether this node will be primary. Defaults to false. |

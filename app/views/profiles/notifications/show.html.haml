@@ -39,7 +39,7 @@
 
       %hr
       %h5
-        = _('Groups (%{count})') % { count: @group_notifications.count }
+        = _('Groups (%{count})') % { count: @group_notifications.size }
       %div
         - @group_notifications.each do |setting|
           = render 'group_settings', setting: setting, group: setting.source
