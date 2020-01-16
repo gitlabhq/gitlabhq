@@ -9,7 +9,6 @@ describe('clipboard button', () => {
   const createWrapper = propsData => {
     wrapper = shallowMount(ClipboardButton, {
       propsData,
-      attachToDocument: true,
     });
   };
 

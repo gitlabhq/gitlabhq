@@ -346,8 +346,9 @@ module API
         key = user.gpg_keys.find_by(id: params[:key_id])
         not_found!('GPG Key') unless key
 
-        status 204
         key.destroy
+
+        no_content!
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
@@ -760,8 +761,9 @@ module API
         key = current_user.gpg_keys.find_by(id: params[:key_id])
         not_found!('GPG Key') unless key
 
-        status 204
         key.destroy
+
+        no_content!
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

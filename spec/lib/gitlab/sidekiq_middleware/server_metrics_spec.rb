@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
-describe Gitlab::SidekiqMiddleware::Metrics do
+describe Gitlab::SidekiqMiddleware::ServerMetrics do
   context "with worker attribution" do
     subject { described_class.new }
 

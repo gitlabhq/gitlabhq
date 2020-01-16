@@ -33,7 +33,6 @@ describe('system note component', () => {
     vm = mount(IssueSystemNote, {
       store,
       propsData: props,
-      attachToDocument: true,
     });
   });
 

@@ -59,7 +59,6 @@ describe('User Popover Component', () => {
               status: null,
             },
           },
-          attachToDocument: true,
         },
       );
     });

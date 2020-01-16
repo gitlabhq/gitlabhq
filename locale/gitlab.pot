@@ -691,16 +691,7 @@ msgstr ""
 msgid "<strong>%{changedFilesLength} unstaged</strong> and <strong>%{stagedFilesLength} staged</strong> changes"
 msgstr ""
 
-msgid "<strong>%{created_count}</strong> created, <strong>%{accepted_count}</strong> accepted."
-msgstr ""
-
-msgid "<strong>%{created_count}</strong> created, <strong>%{closed_count}</strong> closed."
-msgstr ""
-
 msgid "<strong>%{group_name}</strong> group members"
-msgstr ""
-
-msgid "<strong>%{pushes}</strong> pushes, more than <strong>%{commits}</strong> commits by <strong>%{people}</strong> contributors."
 msgstr ""
 
 msgid "<strong>%{stagedFilesLength} staged</strong> and <strong>%{changedFilesLength} unstaged</strong> changes"
@@ -740,6 +731,9 @@ msgid "A default branch cannot be chosen for an empty project."
 msgstr ""
 
 msgid "A deleted user"
+msgstr ""
+
+msgid "A file with '%{file_name}' already exists in %{branch} branch"
 msgstr ""
 
 msgid "A fork is a copy of a project.<br />Forking a repository allows you to make changes without affecting the original project."
@@ -2423,6 +2417,9 @@ msgstr ""
 msgid "AutoDevOps|Auto DevOps"
 msgstr ""
 
+msgid "AutoDevOps|Auto DevOps can automatically build, test, and deploy applications based on predefined continuous integration and delivery configuration. %{auto_devops_start}Learn more about Auto DevOps%{auto_devops_end} or use our %{quickstart_start}quick start guide%{quickstart_end} to get started right away."
+msgstr ""
+
 msgid "AutoDevOps|Auto DevOps documentation"
 msgstr ""
 
@@ -2999,9 +2996,6 @@ msgstr ""
 msgid "CICD|Auto DevOps"
 msgstr ""
 
-msgid "CICD|Auto DevOps will automatically build, test, and deploy your application based on a predefined Continuous Integration and Delivery configuration."
-msgstr ""
-
 msgid "CICD|Automatic deployment to staging, manual deployment to production"
 msgstr ""
 
@@ -3021,9 +3015,6 @@ msgid "CICD|Deployment strategy"
 msgstr ""
 
 msgid "CICD|Jobs"
-msgstr ""
-
-msgid "CICD|Learn more about Auto DevOps"
 msgstr ""
 
 msgid "CICD|The Auto DevOps pipeline will run if no alternative CI configuration file is found."
@@ -4672,6 +4663,9 @@ msgstr ""
 msgid "Commit message"
 msgstr ""
 
+msgid "Commit message (optional)"
+msgstr ""
+
 msgid "Commit statistics for %{ref} %{start_time} - %{end_time}"
 msgstr ""
 
@@ -5044,6 +5038,42 @@ msgid "Contribution Analytics"
 msgstr ""
 
 msgid "Contribution Charts"
+msgstr ""
+
+msgid "ContributionAnalytics|<strong>%{created_count}</strong> created, <strong>%{accepted_count}</strong> accepted."
+msgstr ""
+
+msgid "ContributionAnalytics|<strong>%{created_count}</strong> created, <strong>%{closed_count}</strong> closed."
+msgstr ""
+
+msgid "ContributionAnalytics|<strong>%{pushes}</strong> pushes, more than <strong>%{commits}</strong> commits by <strong>%{people}</strong> contributors."
+msgstr ""
+
+msgid "ContributionAnalytics|Contribution analytics for issues, merge requests and push events since %{start_date}"
+msgstr ""
+
+msgid "ContributionAnalytics|Issues"
+msgstr ""
+
+msgid "ContributionAnalytics|Last 3 months"
+msgstr ""
+
+msgid "ContributionAnalytics|Last month"
+msgstr ""
+
+msgid "ContributionAnalytics|Last week"
+msgstr ""
+
+msgid "ContributionAnalytics|Merge Requests"
+msgstr ""
+
+msgid "ContributionAnalytics|No issues for the selected time period."
+msgstr ""
+
+msgid "ContributionAnalytics|No merge requests for the selected time period."
+msgstr ""
+
+msgid "ContributionAnalytics|No pushes for the selected time period."
 msgstr ""
 
 msgid "Contributions for <strong>%{calendar_date}</strong>"
@@ -6930,9 +6960,6 @@ msgstr ""
 msgid "Enter zen mode"
 msgstr ""
 
-msgid "EnviornmentDashboard|You are looking at the last updated environment"
-msgstr ""
-
 msgid "Environment"
 msgstr ""
 
@@ -6949,6 +6976,9 @@ msgid "EnvironmentDashboard|API"
 msgstr ""
 
 msgid "EnvironmentDashboard|Created through the Deployment API"
+msgstr ""
+
+msgid "EnvironmentDashboard|You are looking at the last updated environment"
 msgstr ""
 
 msgid "Environments"
@@ -8011,6 +8041,9 @@ msgid "File mode changed from %{a_mode} to %{b_mode}"
 msgstr ""
 
 msgid "File moved"
+msgstr ""
+
+msgid "File name"
 msgstr ""
 
 msgid "File templates"
@@ -9343,9 +9376,6 @@ msgid "GroupSAML|should be a random persistent ID, emails are discouraged"
 msgstr ""
 
 msgid "GroupSettings|Auto DevOps pipeline was updated for the group"
-msgstr ""
-
-msgid "GroupSettings|Auto DevOps will automatically build, test and deploy your application based on a predefined Continuous Integration and Delivery configuration. %{auto_devops_start}Learn more about Auto DevOps%{auto_devops_end}"
 msgstr ""
 
 msgid "GroupSettings|Badges"
@@ -11605,6 +11635,9 @@ msgstr ""
 msgid "Metrics|Check out the CI/CD documentation on deploying to an environment"
 msgstr ""
 
+msgid "Metrics|Create custom dashboard %{fileName}"
+msgstr ""
+
 msgid "Metrics|Create metric"
 msgstr ""
 
@@ -11612,6 +11645,15 @@ msgid "Metrics|Delete metric"
 msgstr ""
 
 msgid "Metrics|Delete metric?"
+msgstr ""
+
+msgid "Metrics|Duplicate"
+msgstr ""
+
+msgid "Metrics|Duplicate dashboard"
+msgstr ""
+
+msgid "Metrics|Duplicating..."
 msgstr ""
 
 msgid "Metrics|Edit metric"
@@ -11648,6 +11690,12 @@ msgid "Metrics|Prometheus Query Documentation"
 msgstr ""
 
 msgid "Metrics|Show last"
+msgstr ""
+
+msgid "Metrics|There was an error creating the dashboard."
+msgstr ""
+
+msgid "Metrics|There was an error creating the dashboard. %{error}"
 msgstr ""
 
 msgid "Metrics|There was an error fetching the environments data, please try again"
@@ -11687,6 +11735,9 @@ msgid "Metrics|Validating query"
 msgstr ""
 
 msgid "Metrics|Y-axis label"
+msgstr ""
+
+msgid "Metrics|You can save a copy of this dashboard to your repository so it can be customized. Select a file name and branch to save it."
 msgstr ""
 
 msgid "Metrics|You're about to permanently delete this metric. This cannot be undone."
@@ -12227,9 +12278,6 @@ msgstr ""
 msgid "No forks are available to you."
 msgstr ""
 
-msgid "No issues for the selected time period."
-msgstr ""
-
 msgid "No job log"
 msgstr ""
 
@@ -12246,9 +12294,6 @@ msgid "No licenses found."
 msgstr ""
 
 msgid "No matching results"
-msgstr ""
-
-msgid "No merge requests for the selected time period."
 msgstr ""
 
 msgid "No merge requests found"
@@ -12276,9 +12321,6 @@ msgid "No prioritized labels with such name or description"
 msgstr ""
 
 msgid "No public groups"
-msgstr ""
-
-msgid "No pushes for the selected time period."
 msgstr ""
 
 msgid "No repository"
@@ -15542,6 +15584,9 @@ msgstr ""
 msgid "Request Access"
 msgstr ""
 
+msgid "Request parameter %{param} is missing."
+msgstr ""
+
 msgid "Request to link SAML account must be authorized"
 msgstr ""
 
@@ -15726,6 +15771,12 @@ msgid "Revert this merge request"
 msgstr ""
 
 msgid "Review"
+msgstr ""
+
+msgid "Review App|View app"
+msgstr ""
+
+msgid "Review App|View latest app"
 msgstr ""
 
 msgid "Review the process for configuring service providers in your identity provider — in this case, GitLab is the \"service provider\" or \"relying party\"."
@@ -18283,6 +18334,9 @@ msgstr ""
 msgid "The file has been successfully deleted."
 msgstr ""
 
+msgid "The file name should have a .yml extension"
+msgstr ""
+
 msgid "The following items will NOT be exported:"
 msgstr ""
 
@@ -18592,6 +18646,12 @@ msgid "There was an error %{message} todo."
 msgstr ""
 
 msgid "There was an error adding a To Do."
+msgstr ""
+
+msgid "There was an error creating the dashboard, branch name is invalid."
+msgstr ""
+
+msgid "There was an error creating the dashboard, branch named: %{branch} already exists."
 msgstr ""
 
 msgid "There was an error creating the issue"
@@ -20485,9 +20545,6 @@ msgstr ""
 msgid "View Documentation"
 msgstr ""
 
-msgid "View app"
-msgstr ""
-
 msgid "View blame prior to this change"
 msgstr ""
 
@@ -20547,9 +20604,6 @@ msgstr ""
 msgid "View open merge request"
 msgstr ""
 
-msgid "View previous app"
-msgstr ""
-
 msgid "View project"
 msgstr ""
 
@@ -20560,6 +20614,9 @@ msgid "View replaced file @ "
 msgstr ""
 
 msgid "View the documentation"
+msgstr ""
+
+msgid "View the latest successful deployment to this environment"
 msgstr ""
 
 msgid "Viewing commit"
@@ -21164,6 +21221,9 @@ msgstr ""
 msgid "You can try again using %{begin_link}basic search%{end_link}"
 msgstr ""
 
+msgid "You can't commit to this project"
+msgstr ""
+
 msgid "You cannot access the raw file. Please wait a minute."
 msgstr ""
 
@@ -21489,6 +21549,9 @@ msgid "Your comment could not be submitted! Please check your network connection
 msgstr ""
 
 msgid "Your comment could not be updated! Please check your network connection and try again."
+msgstr ""
+
+msgid "Your dashboard has been copied. You can %{web_ide_link_start}edit it here%{web_ide_link_end}."
 msgstr ""
 
 msgid "Your deployment services will be broken, you will need to manually fix the services after renaming."

@@ -941,7 +941,7 @@ a helpful link back to how the feature was developed.
 Over time, version text will reference a progressively older version of GitLab. In cases where version text
 refers to versions of GitLab four or more major versions back, consider removing the text.
 
-For example, if the current major version is 11.x, version text referencing versions of GitLab 7.x
+For example, if the current major version is 12.x, version text referencing versions of GitLab 8.x
 and older are candidates for removal.
 
 NOTE: **Note:**

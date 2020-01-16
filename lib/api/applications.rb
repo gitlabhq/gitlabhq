@@ -38,7 +38,7 @@ module API
         application = ApplicationsFinder.new(params).execute
         application.destroy
 
-        status 204
+        no_content!
       end
     end
   end

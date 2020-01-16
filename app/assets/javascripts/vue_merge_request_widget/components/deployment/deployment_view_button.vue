@@ -11,12 +11,12 @@ export default {
       import('ee_component/vue_merge_request_widget/components/visual_review_app_link.vue'),
   },
   props: {
-    deployment: {
+    appButtonText: {
       type: Object,
       required: true,
     },
-    isCurrent: {
-      type: Boolean,
+    deployment: {
+      type: Object,
       required: true,
     },
     showVisualReviewApp: {
@@ -60,7 +60,7 @@ export default {
     >
       <template slot="mainAction" slot-scope="slotProps">
         <review-app-link
-          :is-current="isCurrent"
+          :display="appButtonText"
           :link="deploymentExternalUrl"
           :css-class="`deploy-link js-deploy-url inline ${slotProps.className}`"
         />
@@ -85,7 +85,7 @@ export default {
     </filtered-search-dropdown>
     <template v-else>
       <review-app-link
-        :is-current="isCurrent"
+        :display="appButtonText"
         :link="deploymentExternalUrl"
         css-class="js-deploy-url deploy-link btn btn-default btn-sm inline"
       />

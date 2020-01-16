@@ -3,6 +3,8 @@
 module Gitlab
   module ImportExport
     class RelationFactory
+      include Gitlab::Utils::StrongMemoize
+
       prepend_if_ee('::EE::Gitlab::ImportExport::RelationFactory') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
       OVERRIDES = { snippets: :project_snippets,
@@ -40,7 +42,7 @@ module Gitlab
 
       IMPORTED_OBJECT_MAX_RETRIES = 5.freeze
 
-      EXISTING_OBJECT_CHECK = %i[
+      EXISTING_OBJECT_RELATIONS = %i[
         milestone
         milestones
         label
@@ -57,9 +59,6 @@ module Gitlab
       ].freeze
 
       TOKEN_RESET_MODELS = %i[Project Namespace Ci::Trigger Ci::Build Ci::Runner ProjectHook].freeze
-
-      # This represents all relations that have unique key on `project_id`
-      UNIQUE_RELATIONS = %i[project_feature ProjectCiCdSetting container_expiration_policy].freeze
 
       def self.create(*args)
         new(*args).create
@@ -115,11 +114,17 @@ module Gitlab
         OVERRIDES
       end
 
-      def self.existing_object_check
-        EXISTING_OBJECT_CHECK
+      def self.existing_object_relations
+        EXISTING_OBJECT_RELATIONS
       end
 
       private
+
+      def existing_object?
+        strong_memoize(:_existing_object) do
+          self.class.existing_object_relations.include?(@relation_name) || unique_relation?
+        end
+      end
 
       def setup_models
         case @relation_name
@@ -229,7 +234,7 @@ module Gitlab
       end
 
       def update_group_references
-        return unless self.class.existing_object_check.include?(@relation_name)
+        return unless existing_object?
         return unless @relation_hash['group_id']
 
         @relation_hash['group_id'] = @project.namespace_id
@@ -322,7 +327,7 @@ module Gitlab
         # Only find existing records to avoid mapping tables such as milestones
         # Otherwise always create the record, skipping the extra SELECT clause.
         @existing_or_new_object ||= begin
-          if self.class.existing_object_check.include?(@relation_name)
+          if existing_object?
             attribute_hash = attribute_hash_for(['events'])
 
             existing_object.assign_attributes(attribute_hash) if attribute_hash.any?
@@ -356,8 +361,43 @@ module Gitlab
           !Object.const_defined?(parsed_relation_hash['type'])
       end
 
+      def unique_relation?
+        strong_memoize(:unique_relation) do
+          project_foreign_key.present? &&
+            (has_unique_index_on_project_fk? || uses_project_fk_as_primary_key?)
+        end
+      end
+
+      def has_unique_index_on_project_fk?
+        cache = cached_has_unique_index_on_project_fk
+        table_name = relation_class.table_name
+        return cache[table_name] if cache.has_key?(table_name)
+
+        index_exists =
+          ActiveRecord::Base.connection.index_exists?(
+            relation_class.table_name,
+            project_foreign_key,
+            unique: true)
+
+        cache[table_name] = index_exists
+      end
+
+      # Avoid unnecessary DB requests
+      def cached_has_unique_index_on_project_fk
+        Thread.current[:cached_has_unique_index_on_project_fk] ||= {}
+      end
+
+      def uses_project_fk_as_primary_key?
+        relation_class.primary_key == project_foreign_key
+      end
+
+      # Should be `:project_id` for most of the cases, but this is more general
+      def project_foreign_key
+        relation_class.reflect_on_association(:project)&.foreign_key
+      end
+
       def find_or_create_object!
-        if UNIQUE_RELATIONS.include?(@relation_name)
+        if unique_relation?
           unique_relation_object = relation_class.find_or_create_by(project_id: @project.id)
           unique_relation_object.assign_attributes(parsed_relation_hash)
 

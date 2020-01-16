@@ -1,5 +1,5 @@
 <script>
-import { GlTooltipDirective } from '@gitlab/ui';
+import { __, s__ } from '~/locale';
 import DeploymentInfo from './deployment_info.vue';
 import DeploymentViewButton from './deployment_view_button.vue';
 import DeploymentStopButton from './deployment_stop_button.vue';
@@ -13,9 +13,6 @@ export default {
     DeploymentInfo,
     DeploymentStopButton,
     DeploymentViewButton,
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
   },
   props: {
     deployment: {
@@ -43,6 +40,14 @@ export default {
     },
   },
   computed: {
+    appButtonText() {
+      return {
+        text: this.isCurrent ? s__('Review App|View app') : s__('Review App|View latest app'),
+        tooltip: this.isCurrent
+          ? ''
+          : __('View the latest successful deployment to this environment'),
+      };
+    },
     canBeManuallyDeployed() {
       return this.computedDeploymentStatus === MANUAL_DEPLOY;
     },
@@ -54,9 +59,6 @@ export default {
     },
     hasExternalUrls() {
       return Boolean(this.deployment.external_url && this.deployment.external_url_formatted);
-    },
-    hasPreviousDeployment() {
-      return Boolean(!this.isCurrent && this.deployment.deployed_at);
     },
     isCurrent() {
       return this.computedDeploymentStatus === SUCCESS;
@@ -89,7 +91,7 @@ export default {
             <!-- show appropriate version of review app button  -->
             <deployment-view-button
               v-if="hasExternalUrls"
-              :is-current="isCurrent"
+              :app-button-text="appButtonText"
               :deployment="deployment"
               :show-visual-review-app="showVisualReviewApp"
               :visual-review-app-metadata="visualReviewAppMeta"

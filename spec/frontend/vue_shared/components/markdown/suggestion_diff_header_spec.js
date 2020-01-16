@@ -17,7 +17,6 @@ describe('Suggestion Diff component', () => {
         ...DEFAULT_PROPS,
         ...props,
       },
-      attachToDocument: true,
     });
   };
 

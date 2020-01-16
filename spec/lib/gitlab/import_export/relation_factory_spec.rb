@@ -213,6 +213,10 @@ describe Gitlab::ImportExport::RelationFactory do
       attr_accessor :service_id, :moved_to_id, :namespace_id, :ci_id, :random_project_id, :random_id, :milestone_id, :project_id
     end
 
+    before do
+      allow(HazardousFooModel).to receive(:reflect_on_association).and_return(nil)
+    end
+
     it 'does not preserve any foreign key IDs' do
       expect(created_object.values).not_to include(99)
     end
@@ -245,6 +249,10 @@ describe Gitlab::ImportExport::RelationFactory do
 
     class ProjectFooModel < FooModel
       attr_accessor(*Gitlab::ImportExport::RelationFactory::PROJECT_REFERENCES)
+    end
+
+    before do
+      allow(ProjectFooModel).to receive(:reflect_on_association).and_return(nil)
     end
 
     it 'does not preserve any project foreign key IDs' do

@@ -44,7 +44,6 @@ describe('Issuable component', () => {
         baseUrl: TEST_BASE_URL,
         ...props,
       },
-      attachToDocument: true,
     });
   };
 

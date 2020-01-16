@@ -1,18 +1,21 @@
 <script>
-import { __ } from '~/locale';
+import { GlTooltipDirective } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
   components: {
     Icon,
   },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   props: {
     cssClass: {
       type: String,
       required: true,
     },
-    isCurrent: {
-      type: Boolean,
+    display: {
+      type: Object,
       required: true,
     },
     link: {
@@ -20,15 +23,12 @@ export default {
       required: true,
     },
   },
-  computed: {
-    linkText() {
-      return this.isCurrent ? __('View app') : __('View previous app');
-    },
-  },
 };
 </script>
 <template>
   <a
+    v-gl-tooltip
+    :title="display.tooltip"
     :href="link"
     target="_blank"
     rel="noopener noreferrer nofollow"
@@ -36,6 +36,6 @@ export default {
     data-track-event="open_review_app"
     data-track-label="review_app"
   >
-    {{ linkText }} <icon class="fgray" name="external-link" />
+    {{ display.text }} <icon class="fgray" name="external-link" />
   </a>
 </template>

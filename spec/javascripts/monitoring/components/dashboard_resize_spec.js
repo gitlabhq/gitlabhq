@@ -22,6 +22,7 @@ const propsData = {
   clustersPath: '/path/to/clusters',
   tagsPath: '/path/to/tags',
   projectPath: '/path/to/project',
+  defaultBranch: 'master',
   metricsEndpoint: mockApiEndpoint,
   deploymentsEndpoint: null,
   emptyGettingStartedSvgPath: '/path/to/getting-started.svg',

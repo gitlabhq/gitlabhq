@@ -307,6 +307,8 @@ class User < ApplicationRecord
   scope :blocked, -> { with_states(:blocked, :ldap_blocked) }
   scope :external, -> { where(external: true) }
   scope :active, -> { with_state(:active).non_internal }
+  scope :active_without_ghosts, -> { with_state(:active).without_ghosts }
+  scope :without_ghosts, -> { where('ghost IS NOT TRUE') }
   scope :deactivated, -> { with_state(:deactivated).non_internal }
   scope :without_projects, -> { joins('LEFT JOIN project_authorizations ON users.id = project_authorizations.user_id').where(project_authorizations: { user_id: nil }) }
   scope :order_recent_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'DESC')) }
@@ -470,7 +472,7 @@ class User < ApplicationRecord
       when 'deactivated'
         deactivated
       else
-        active
+        active_without_ghosts
       end
     end
 
@@ -614,7 +616,7 @@ class User < ApplicationRecord
   end
 
   def self.non_internal
-    where('ghost IS NOT TRUE')
+    without_ghosts
   end
 
   #

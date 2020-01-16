@@ -23,7 +23,7 @@ describe GitlabSchema.types['Project'] do
       only_allow_merge_if_all_discussions_are_resolved printing_merge_request_link_enabled
       namespace group statistics repository merge_requests merge_request issues
       issue pipelines removeSourceBranchAfterMerge sentryDetailedError snippets
-      grafanaIntegration autocloseReferencedIssues suggestion_commit_message
+      grafanaIntegration autocloseReferencedIssues suggestion_commit_message environments
     ]
 
     is_expected.to include_graphql_fields(*expected_fields)
@@ -69,5 +69,12 @@ describe GitlabSchema.types['Project'] do
 
     it { is_expected.to have_graphql_type(Types::GrafanaIntegrationType) }
     it { is_expected.to have_graphql_resolver(Resolvers::Projects::GrafanaIntegrationResolver) }
+  end
+
+  describe 'environments field' do
+    subject { described_class.fields['environments'] }
+
+    it { is_expected.to have_graphql_type(Types::EnvironmentType.connection_type) }
+    it { is_expected.to have_graphql_resolver(Resolvers::EnvironmentsResolver) }
   end
 end

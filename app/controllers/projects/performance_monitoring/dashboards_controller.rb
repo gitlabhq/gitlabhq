@@ -7,90 +7,53 @@ module Projects
 
       before_action :check_repository_available!
       before_action :validate_required_params!
-      before_action :validate_dashboard_template!
-      before_action :authorize_push!
 
-      USER_DASHBOARDS_DIR = ::Metrics::Dashboard::ProjectDashboardService::DASHBOARD_ROOT
-      DASHBOARD_TEMPLATES = {
-        ::Metrics::Dashboard::SystemDashboardService::DASHBOARD_PATH => ::Metrics::Dashboard::SystemDashboardService::DASHBOARD_PATH
-      }.freeze
+      rescue_from ActionController::ParameterMissing do |exception|
+        respond_error(http_status: :bad_request, message: _('Request parameter %{param} is missing.') % { param: exception.param })
+      end
 
       def create
-        result = ::Files::CreateService.new(project, current_user, dashboard_attrs).execute
+        result = ::Metrics::Dashboard::CloneDashboardService.new(project, current_user, dashboard_params).execute
 
         if result[:status] == :success
-          respond_success
+          respond_success(result)
         else
-          respond_error(result[:message])
+          respond_error(result)
         end
       end
 
       private
 
-      def respond_success
+      def respond_success(result)
+        set_web_ide_link_notice(result.dig(:dashboard, :path))
         respond_to do |format|
-          format.html { redirect_to ide_edit_path(project, redirect_safe_branch_name, new_dashboard_path) }
-          format.json { render json: { redirect_to: ide_edit_path(project, redirect_safe_branch_name, new_dashboard_path) }, status: :created }
+          format.json { render status: result.delete(:http_status), json: result }
         end
       end
 
-      def respond_error(message)
-        flash[:alert] = message
-
+      def respond_error(result)
         respond_to do |format|
-          format.html { redirect_back_or_default(default: namespace_project_environments_path) }
-          format.json { render json: { error: message }, status: :bad_request }
+          format.json { render json: { error: result[:message] }, status: result[:http_status] }
         end
       end
 
-      def authorize_push!
-        access_denied!(%q(You can't commit to this project)) unless user_access(project).can_push_to_branch?(params[:branch])
+      def set_web_ide_link_notice(new_dashboard_path)
+        web_ide_link_start = "<a href=\"#{ide_edit_path(project, redirect_safe_branch_name, new_dashboard_path)}\">"
+        message = _("Your dashboard has been copied. You can %{web_ide_link_start}edit it here%{web_ide_link_end}.") % { web_ide_link_start: web_ide_link_start, web_ide_link_end: "</a>" }
+        flash[:notice] = message.html_safe
       end
 
       def validate_required_params!
-        params.require(%i(branch file_name dashboard))
-      end
-
-      def validate_dashboard_template!
-        access_denied! unless dashboard_template
-      end
-
-      def dashboard_attrs
-        {
-          commit_message: commit_message,
-          file_path: new_dashboard_path,
-          file_content: new_dashboard_content,
-          encoding: 'text',
-          branch_name: params[:branch],
-          start_branch: repository.branch_exists?(params[:branch]) ? params[:branch] : project.default_branch
-        }
-      end
-
-      def commit_message
-        params[:commit_message] || "Create custom dashboard #{params[:file_name]}"
-      end
-
-      def new_dashboard_path
-        File.join(USER_DASHBOARDS_DIR, params[:file_name])
-      end
-
-      def new_dashboard_content
-        File.read(Rails.root.join(dashboard_template))
-      end
-
-      def dashboard_template
-        dashboard_templates[params[:dashboard]]
-      end
-
-      def dashboard_templates
-        DASHBOARD_TEMPLATES
+        params.require(%i(branch file_name dashboard commit_message))
       end
 
       def redirect_safe_branch_name
         repository.find_branch(params[:branch]).name
       end
+
+      def dashboard_params
+        params.permit(%i(branch file_name dashboard commit_message)).to_h
+      end
     end
   end
 end
-
-Projects::PerformanceMonitoring::DashboardsController.prepend_if_ee('EE::Projects::PerformanceMonitoring::DashboardsController')

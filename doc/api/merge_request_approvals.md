@@ -6,7 +6,7 @@ Configuration for approvals on all Merge Requests (MR) in the project. Must be a
 
 ### Get Configuration
 
->**Note:** This API endpoint is only available on 10.6 Starter and above.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/183) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.6.
 
 You can request information about a project's approval configuration using the
 following endpoint:
@@ -31,7 +31,7 @@ GET /projects/:id/approvals
 
 ### Change configuration
 
->**Note:** This API endpoint is only available on 10.6 Starter and above.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/183) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.6.
 
 If you are allowed to, you can change approval configuration using the following
 endpoint:
@@ -63,7 +63,7 @@ POST /projects/:id/approvals
 
 ### Get project-level rules
 
->**Note:** This API endpoint is only available on 12.3 Starter and above.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/11877) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.3.
 
 You can request information about a project's approval rules using the following endpoint:
 
@@ -137,7 +137,7 @@ GET /projects/:id/approval_rules
 
 ### Create project-level rule
 
->**Note:** This API endpoint is only available on 12.3 Starter and above.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/11877) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.3.
 
 You can create project approval rules using the following endpoint:
 
@@ -213,7 +213,7 @@ POST /projects/:id/approval_rules
 
 ### Update project-level rule
 
->**Note:** This API endpoint is only available on 12.3 Starter and above.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/11877) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.3.
 
 You can update project approval rules using the following endpoint:
 
@@ -292,7 +292,7 @@ PUT /projects/:id/approval_rules/:approval_rule_id
 
 ### Delete project-level rule
 
->**Note:** This API endpoint is only available on 12.3 Starter and above.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/11877) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.3.
 
 You can delete project approval rules using the following endpoint:
 
@@ -310,7 +310,7 @@ DELETE /projects/:id/approval_rules/:approval_rule_id
 ### Change allowed approvers
 
 >**Note:** This API endpoint has been deprecated. Please use Approval Rule API instead.
->**Note:** This API endpoint is only available on 10.6 Starter and above.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/183) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.6.
 
 If you are allowed to, you can change approvers and approver groups using
 the following endpoint:
@@ -373,7 +373,7 @@ Configuration for approvals on a specific Merge Request. Must be authenticated f
 
 ### Get Configuration
 
->**Note:** This API endpoint is only available on 8.9 Starter and above.
+> Introduced in [GitLab Starter](https://about.gitlab.com/pricing/) 8.9.
 
 You can request information about a merge request's approval status using the
 following endpoint:
@@ -419,7 +419,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/approvals
 
 ### Change approval configuration
 
->**Note:** This API endpoint is only available on 10.6 Starter and above.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/183) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.6.
 
 If you are allowed to, you can change `approvals_required` using the following
 endpoint:
@@ -456,7 +456,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/approvals
 ### Change allowed approvers for Merge Request
 
 >**Note:** This API endpoint has been deprecated. Please use Approval Rule API instead.
->**Note:** This API endpoint is only available on 10.6 Starter and above.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/183) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.6.
 
 If you are allowed to, you can change approvers and approver groups using
 the following endpoint:
@@ -598,7 +598,7 @@ This includes additional information about the users who have already approved
 
 ### Get merge request level rules
 
->**Note:** This API endpoint is only available on 12.3 Starter and above.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/13712) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.3.
 
 You can request information about a merge request's approval rules using the following endpoint:
 
@@ -674,7 +674,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/approval_rules
 
 ### Create merge request level rule
 
->**Note:** This API endpoint is only available on 12.3 Starter and above.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/11877) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.3.
 
 You can create merge request approval rules using the following endpoint:
 
@@ -757,7 +757,7 @@ will be used.
 
 ### Update merge request level rule
 
->**Note:** This API endpoint is only available on 12.3 Starter and above.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/11877) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.3.
 
 You can update merge request approval rules using the following endpoint:
 
@@ -841,7 +841,7 @@ These are system generated rules.
 
 ### Delete merge request level rule
 
->**Note:** This API endpoint is only available on 12.3 Starter and above.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/11877) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.3.
 
 You can delete merge request approval rules using the following endpoint:
 
@@ -862,7 +862,7 @@ These are system generated rules.
 
 ## Approve Merge Request
 
->**Note:** This API endpoint is only available on 8.9 Starter and above.
+> Introduced in [GitLab Starter](https://about.gitlab.com/pricing/) 8.9.
 
 If you are allowed to, you can approve a merge request using the following
 endpoint:
@@ -925,7 +925,7 @@ does not match, the response code will be `409`.
 
 ## Unapprove Merge Request
 
->**Note:** This API endpoint is only available on 9.0 Starter and above.
+>Introduced in [GitLab Starter](https://about.gitlab.com/pricing/) 9.0.
 
 If you did approve a merge request, you can unapprove it using the following
 endpoint:

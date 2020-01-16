@@ -12,7 +12,6 @@ describe('Markdown field header component', () => {
         previewMarkdown: false,
         ...props,
       },
-      attachToDocument: true,
     });
   };
 

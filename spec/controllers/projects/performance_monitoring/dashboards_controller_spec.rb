@@ -37,142 +37,70 @@ describe Projects::PerformanceMonitoring::DashboardsController do
           end
 
           context 'valid parameters' do
-            it 'delegates commit creation to service' do
+            it 'delegates cloning to ::Metrics::Dashboard::CloneDashboardService' do
               allow(controller).to receive(:repository).and_return(repository)
               allow(repository).to receive(:find_branch).and_return(branch)
               dashboard_attrs = {
+                dashboard: dashboard,
+                file_name: file_name,
                 commit_message: commit_message,
-                branch_name: branch_name,
-                start_branch: 'master',
-                encoding: 'text',
-                file_path: '.gitlab/dashboards/custom_dashboard.yml',
-                file_content: File.read('config/prometheus/common_metrics.yml')
+                branch: branch_name
               }
 
-              service_instance = instance_double(::Files::CreateService)
-              expect(::Files::CreateService).to receive(:new).with(project, user, dashboard_attrs).and_return(service_instance)
-              expect(service_instance).to receive(:execute).and_return(status: :success)
+              service_instance = instance_double(::Metrics::Dashboard::CloneDashboardService)
+              expect(::Metrics::Dashboard::CloneDashboardService).to receive(:new).with(project, user, dashboard_attrs).and_return(service_instance)
+              expect(service_instance).to receive(:execute).and_return(status: :success, http_status: :created, dashboard: { path: 'dashboard/path' })
 
               post :create, params: params
-            end
-
-            it 'extends dashboard template path to absolute url' do
-              allow(::Files::CreateService).to receive(:new).and_return(double(execute: { status: :success }))
-              allow(controller).to receive(:repository).and_return(repository)
-              allow(repository).to receive(:find_branch).and_return(branch)
-
-              expect(File).to receive(:read).with(Rails.root.join('config/prometheus/common_metrics.yml')).and_return('')
-
-              post :create, params: params
-            end
-
-            context 'selected branch already exists' do
-              it 'responds with :created status code', :aggregate_failures do
-                repository.add_branch(user, branch_name, 'master')
-
-                post :create, params: params
-
-                expect(response).to have_gitlab_http_status :created
-              end
             end
 
             context 'request format json' do
-              it 'returns path to new file' do
-                allow(::Files::CreateService).to receive(:new).and_return(double(execute: { status: :success }))
+              it 'returns services response' do
+                allow(::Metrics::Dashboard::CloneDashboardService).to receive(:new).and_return(double(execute: { status: :success, dashboard: { path: ".gitlab/dashboards/#{file_name}" }, http_status: :created }))
                 allow(controller).to receive(:repository).and_return(repository)
-
-                expect(repository).to receive(:find_branch).with(branch_name).and_return(branch)
+                allow(repository).to receive(:find_branch).and_return(branch)
 
                 post :create, params: params
 
                 expect(response).to have_gitlab_http_status :created
-                expect(json_response).to eq('redirect_to' => "/-/ide/project/#{namespace.path}/#{project.name}/edit/#{branch_name}/-/.gitlab/dashboards/#{file_name}")
+                expect(response).to set_flash[:notice].to eq("Your dashboard has been copied. You can <a href=\"/-/ide/project/#{namespace.path}/#{project.name}/edit/#{branch_name}/-/.gitlab/dashboards/#{file_name}\">edit it here</a>.")
+                expect(json_response).to eq('status' => 'success', 'dashboard' => { 'path' => ".gitlab/dashboards/#{file_name}" })
               end
 
-              context 'files create service failure' do
-                it 'returns json with failure message' do
-                  allow(::Files::CreateService).to receive(:new).and_return(double(execute: { status: false, message: 'something went wrong' }))
+              context 'Metrics::Dashboard::CloneDashboardService failure' do
+                it 'returns json with failure message', :aggregate_failures do
+                  allow(::Metrics::Dashboard::CloneDashboardService).to receive(:new).and_return(double(execute: { status: :error, message: 'something went wrong', http_status: :bad_request }))
 
                   post :create, params: params
 
                   expect(response).to have_gitlab_http_status :bad_request
-                  expect(response).to set_flash[:alert].to eq('something went wrong')
                   expect(json_response).to eq('error' => 'something went wrong')
                 end
               end
-            end
 
-            context 'request format html' do
-              before do
-                params.delete(:format)
-              end
+              %w(commit_message file_name dashboard).each do |param|
+                context "param #{param} is missing" do
+                  let(param.to_s) { nil }
 
-              it 'redirects to ide with new file' do
-                allow(::Files::CreateService).to receive(:new).and_return(double(execute: { status: :success }))
-                allow(controller).to receive(:repository).and_return(repository)
+                  it 'responds with bad request status and error message', :aggregate_failures do
+                    post :create, params: params
 
-                expect(repository).to receive(:find_branch).with(branch_name).and_return(branch)
-
-                post :create, params: params
-
-                expect(response).to redirect_to "/-/ide/project/#{namespace.path}/#{project.name}/edit/#{branch_name}/-/.gitlab/dashboards/#{file_name}"
-              end
-
-              context 'files create service failure' do
-                it 'redirects back and sets alert' do
-                  allow(::Files::CreateService).to receive(:new).and_return(double(execute: { status: false, message: 'something went wrong' }))
-                  allow(controller).to receive(:repository).and_return(repository)
-                  allow(repository).to receive(:find_branch).and_return(branch)
-
-                  post :create, params: params
-
-                  expect(response).to set_flash[:alert].to eq('something went wrong')
-                  expect(response).to redirect_to namespace_project_environments_path
+                    expect(response).to have_gitlab_http_status :bad_request
+                    expect(json_response).to eq('error' => "Request parameter #{param} is missing.")
+                  end
                 end
               end
-            end
-          end
 
-          context 'invalid dashboard template' do
-            let(:dashboard) { 'config/database.yml' }
+              context "param branch_name is missing" do
+                let(:branch_name) { nil }
 
-            it 'responds 404 not found' do
-              post :create, params: params
+                it 'responds with bad request status and error message', :aggregate_failures do
+                  post :create, params: params
 
-              expect(response).to have_gitlab_http_status :not_found
-            end
-          end
-
-          context 'missing commit message' do
-            before do
-              params.delete(:commit_message)
-            end
-
-            it 'use default commit message' do
-              allow(controller).to receive(:repository).and_return(repository)
-              allow(repository).to receive(:find_branch).and_return(branch)
-              dashboard_attrs = {
-                commit_message: 'Create custom dashboard custom_dashboard.yml',
-                branch_name: branch_name,
-                start_branch: 'master',
-                encoding: 'text',
-                file_path: ".gitlab/dashboards/custom_dashboard.yml",
-                file_content: File.read('config/prometheus/common_metrics.yml')
-              }
-
-              service_instance = instance_double(::Files::CreateService)
-              expect(::Files::CreateService).to receive(:new).with(project, user, dashboard_attrs).and_return(service_instance)
-              expect(service_instance).to receive(:execute).and_return(status: :success)
-
-              post :create, params: params
-            end
-          end
-
-          context 'missing branch' do
-            let(:branch_name) { nil }
-
-            it 'raises ActionController::ParameterMissing' do
-              expect { post :create, params: params }.to raise_error ActionController::ParameterMissing
+                  expect(response).to have_gitlab_http_status :bad_request
+                  expect(json_response).to eq('error' => "Request parameter branch is missing.")
+                end
+              end
             end
           end
         end

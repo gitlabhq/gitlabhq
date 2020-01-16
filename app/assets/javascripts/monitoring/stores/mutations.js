@@ -175,6 +175,7 @@ export default {
     state.environmentsEndpoint = endpoints.environmentsEndpoint;
     state.deploymentsEndpoint = endpoints.deploymentsEndpoint;
     state.dashboardEndpoint = endpoints.dashboardEndpoint;
+    state.dashboardsEndpoint = endpoints.dashboardsEndpoint;
     state.currentDashboard = endpoints.currentDashboard;
     state.projectPath = endpoints.projectPath;
   },

@@ -17,10 +17,13 @@ import createFlash from '~/flash';
 import Icon from '~/vue_shared/components/icon.vue';
 import { getParameterValues, mergeUrlParams, redirectTo } from '~/lib/utils/url_utility';
 import invalidUrl from '~/lib/utils/invalid_url';
+
 import DateTimePicker from './date_time_picker/date_time_picker.vue';
 import GraphGroup from './graph_group.vue';
 import EmptyState from './empty_state.vue';
 import GroupEmptyState from './group_empty_state.vue';
+import DashboardsDropdown from './dashboards_dropdown.vue';
+
 import TrackEventDirective from '~/vue_shared/directives/track_event';
 import { getTimeDiff, getAddMetricTrackingOptions } from '../utils';
 import { metricStates } from '../constants';
@@ -31,16 +34,18 @@ export default {
   components: {
     VueDraggable,
     PanelType,
-    GraphGroup,
-    EmptyState,
-    GroupEmptyState,
     Icon,
     GlButton,
     GlDropdown,
     GlDropdownItem,
     GlFormGroup,
     GlModal,
+
     DateTimePicker,
+    GraphGroup,
+    EmptyState,
+    GroupEmptyState,
+    DashboardsDropdown,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -80,6 +85,10 @@ export default {
       required: true,
     },
     projectPath: {
+      type: String,
+      required: true,
+    },
+    defaultBranch: {
       type: String,
       required: true,
     },
@@ -136,6 +145,11 @@ export default {
       default: invalidUrl,
     },
     dashboardEndpoint: {
+      type: String,
+      required: false,
+      default: invalidUrl,
+    },
+    dashboardsEndpoint: {
       type: String,
       required: false,
       default: invalidUrl,
@@ -199,9 +213,6 @@ export default {
     selectedDashboard() {
       return this.allDashboards.find(d => d.path === this.currentDashboard) || this.firstDashboard;
     },
-    selectedDashboardText() {
-      return this.selectedDashboard.display_name;
-    },
     showRearrangePanelsBtn() {
       return !this.showEmptyState && this.rearrangePanelsAvailable;
     },
@@ -223,6 +234,7 @@ export default {
       environmentsEndpoint: this.environmentsEndpoint,
       deploymentsEndpoint: this.deploymentsEndpoint,
       dashboardEndpoint: this.dashboardEndpoint,
+      dashboardsEndpoint: this.dashboardsEndpoint,
       currentDashboard: this.currentDashboard,
       projectPath: this.projectPath,
     });
@@ -314,6 +326,13 @@ export default {
       return !this.getMetricStates(groupKey).includes(metricStates.OK);
     },
     getAddMetricTrackingOptions,
+
+    selectDashboard(dashboard) {
+      const params = {
+        dashboard: dashboard.path,
+      };
+      redirectTo(mergeUrlParams(params, window.location.href));
+    },
   },
   addMetric: {
     title: s__('Metrics|Add metric'),
@@ -333,21 +352,14 @@ export default {
             label-for="monitor-dashboards-dropdown"
             class="col-sm-12 col-md-6 col-lg-2"
           >
-            <gl-dropdown
+            <dashboards-dropdown
               id="monitor-dashboards-dropdown"
-              class="mb-0 d-flex js-dashboards-dropdown"
+              class="mb-0 d-flex"
               toggle-class="dropdown-menu-toggle"
-              :text="selectedDashboardText"
-            >
-              <gl-dropdown-item
-                v-for="dashboard in allDashboards"
-                :key="dashboard.path"
-                :active="dashboard.path === currentDashboard"
-                active-class="is-active"
-                :href="`?dashboard=${dashboard.path}`"
-                >{{ dashboard.display_name || dashboard.path }}</gl-dropdown-item
-              >
-            </gl-dropdown>
+              :default-branch="defaultBranch"
+              :selected-dashboard="selectedDashboard"
+              @selectDashboard="selectDashboard($event)"
+            />
           </gl-form-group>
 
           <gl-form-group

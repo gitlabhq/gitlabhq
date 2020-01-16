@@ -38,9 +38,13 @@ rescue StandardError => e
   warn "There was a problem trying to check the Changelog. Exception: #{e.name} - #{e.message}"
 end
 
+def sanitized_mr_title
+  helper.sanitize_mr_title(gitlab.mr_json["title"])
+end
+
 if git.modified_files.include?("CHANGELOG.md")
   fail "**CHANGELOG.md was edited.** Please remove the additions and create a CHANGELOG entry.\n\n" +
-    format(CREATE_CHANGELOG_MESSAGE, mr_iid: gitlab.mr_json["iid"], mr_title: changelog.sanitized_mr_title, labels: changelog.presented_no_changelog_labels)
+    format(CREATE_CHANGELOG_MESSAGE, mr_iid: gitlab.mr_json["iid"], mr_title: sanitized_mr_title, labels: changelog.presented_no_changelog_labels)
 end
 
 changelog_found = changelog.found
@@ -50,6 +54,6 @@ if changelog.needed?
     check_changelog(changelog_found)
   else
     message "**[CHANGELOG missing](https://docs.gitlab.com/ce/development/changelog.html)**: If this merge request [doesn't need a CHANGELOG entry](https://docs.gitlab.com/ee/development/changelog.html#what-warrants-a-changelog-entry), feel free to ignore this message.\n\n" +
-      format(CREATE_CHANGELOG_MESSAGE, mr_iid: gitlab.mr_json["iid"], mr_title: changelog.sanitized_mr_title, labels: changelog.presented_no_changelog_labels)
+      format(CREATE_CHANGELOG_MESSAGE, mr_iid: gitlab.mr_json["iid"], mr_title: sanitized_mr_title, labels: changelog.presented_no_changelog_labels)
   end
 end

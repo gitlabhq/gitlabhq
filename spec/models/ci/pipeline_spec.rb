@@ -1183,6 +1183,38 @@ describe Ci::Pipeline, :mailer do
       end
     end
 
+    describe 'auto devops pipeline metrics' do
+      using RSpec::Parameterized::TableSyntax
+
+      let(:pipeline) { create(:ci_empty_pipeline, config_source: config_source) }
+      let(:config_source) { :auto_devops_source }
+
+      where(:action, :status) do
+        :succeed | 'success'
+        :drop    | 'failed'
+        :skip    | 'skipped'
+        :cancel  | 'canceled'
+      end
+
+      with_them do
+        context "when pipeline receives action '#{params[:action]}'" do
+          subject { pipeline.public_send(action) }
+
+          it { expect { subject }.to change { auto_devops_pipelines_completed_total(status) }.by(1) }
+
+          context 'when not auto_devops_source?' do
+            let(:config_source) { :repository_source }
+
+            it { expect { subject }.not_to change { auto_devops_pipelines_completed_total(status) } }
+          end
+        end
+      end
+
+      def auto_devops_pipelines_completed_total(status)
+        Gitlab::Metrics.counter(:auto_devops_pipelines_completed_total, 'Number of completed auto devops pipelines').get(status: status)
+      end
+    end
+
     def create_build(name, *traits, queued_at: current, started_from: 0, **opts)
       create(:ci_build, *traits,
              name: name,

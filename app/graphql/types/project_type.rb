@@ -138,6 +138,12 @@ module Types
           description: 'Issues of the project',
           resolver: Resolvers::IssuesResolver
 
+    field :environments,
+          Types::EnvironmentType.connection_type,
+          null: true,
+          description: 'Environments of the project',
+          resolver: Resolvers::EnvironmentsResolver
+
     field :issue,
           Types::IssueType,
           null: true,

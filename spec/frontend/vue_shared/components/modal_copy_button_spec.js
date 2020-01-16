@@ -16,7 +16,6 @@ describe('modal copy button', () => {
         text: 'copy me',
         title: 'Copy this value',
       },
-      attachToDocument: true,
     });
   });
 

@@ -6,6 +6,8 @@ import axios from '~/lib/utils/axios_utils';
 import statusCodes from '~/lib/utils/http_status';
 import { metricStates } from '~/monitoring/constants';
 import Dashboard from '~/monitoring/components/dashboard.vue';
+
+import DashboardsDropdown from '~/monitoring/components/dashboards_dropdown.vue';
 import DateTimePicker from '~/monitoring/components/date_time_picker/date_time_picker.vue';
 import GroupEmptyState from '~/monitoring/components/group_empty_state.vue';
 import { createStore } from '~/monitoring/stores';
@@ -465,7 +467,7 @@ describe('Dashboard', () => {
       wrapper.vm
         .$nextTick()
         .then(() => {
-          const dashboardDropdown = wrapper.find('.js-dashboards-dropdown');
+          const dashboardDropdown = wrapper.find(DashboardsDropdown);
 
           expect(dashboardDropdown.exists()).toBe(true);
           done();

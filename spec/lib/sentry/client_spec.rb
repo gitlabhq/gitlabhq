@@ -12,4 +12,6 @@ describe Sentry::Client do
   it { is_expected.to respond_to :list_issues }
   it { is_expected.to respond_to :issue_details }
   it { is_expected.to respond_to :issue_latest_event }
+  it { is_expected.to respond_to :repos }
+  it { is_expected.to respond_to :create_issue_link }
 end

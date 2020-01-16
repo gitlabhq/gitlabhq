@@ -69,7 +69,7 @@ module API
         milestone = user_project.milestones.find(params[:milestone_id])
         Milestones::DestroyService.new(user_project, current_user).execute(milestone)
 
-        status(204)
+        no_content!
       end
 
       desc 'Get all issues for a single project milestone' do

@@ -10,7 +10,7 @@ RSpec.shared_examples 'calls sentry api' do
 end
 
 # Requires sentry_api_url and subject to be defined
-RSpec.shared_examples 'no Sentry redirects' do
+RSpec.shared_examples 'no Sentry redirects' do |http_method|
   let(:redirect_to) { 'https://redirected.example.com' }
   let(:other_url) { 'https://other.example.org' }
 
@@ -19,6 +19,7 @@ RSpec.shared_examples 'no Sentry redirects' do
   let!(:redirect_req_stub) do
     stub_sentry_request(
       sentry_api_url,
+      http_method || :get,
       status: 302,
       headers: { location: redirect_to }
     )
@@ -31,7 +32,7 @@ RSpec.shared_examples 'no Sentry redirects' do
   end
 end
 
-RSpec.shared_examples 'maps Sentry exceptions' do
+RSpec.shared_examples 'maps Sentry exceptions' do |http_method|
   exceptions = {
     Gitlab::HTTP::Error => 'Error when connecting to Sentry',
     Net::OpenTimeout => 'Connection to Sentry timed out',
@@ -44,7 +45,10 @@ RSpec.shared_examples 'maps Sentry exceptions' do
   exceptions.each do |exception, message|
     context "#{exception}" do
       before do
-        stub_request(:get, sentry_request_url).to_raise(exception)
+        stub_request(
+          http_method || :get,
+          sentry_request_url
+        ).to_raise(exception)
       end
 
       it do

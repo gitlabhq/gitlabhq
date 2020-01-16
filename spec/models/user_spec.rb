@@ -633,6 +633,27 @@ describe User, :do_not_mock_admin_mode do
         end
       end
     end
+
+    describe '.active_without_ghosts' do
+      let_it_be(:user1) { create(:user, :external) }
+      let_it_be(:user2) { create(:user, state: 'blocked') }
+      let_it_be(:user3) { create(:user, ghost: true) }
+      let_it_be(:user4) { create(:user) }
+
+      it 'returns all active users but ghost users' do
+        expect(described_class.active_without_ghosts).to match_array([user1, user4])
+      end
+    end
+
+    describe '.without_ghosts' do
+      let_it_be(:user1) { create(:user, :external) }
+      let_it_be(:user2) { create(:user, state: 'blocked') }
+      let_it_be(:user3) { create(:user, ghost: true) }
+
+      it 'returns users without ghosts users' do
+        expect(described_class.without_ghosts).to match_array([user1, user2])
+      end
+    end
   end
 
   describe "Respond to" do
@@ -1252,7 +1273,7 @@ describe User, :do_not_mock_admin_mode do
     let(:user) { double }
 
     it 'filters by active users by default' do
-      expect(described_class).to receive(:active).and_return([user])
+      expect(described_class).to receive(:active_without_ghosts).and_return([user])
 
       expect(described_class.filter_items(nil)).to include user
     end

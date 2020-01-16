@@ -1,0 +1,15 @@
+[
+  {
+    "status": "active",
+    "integrationId": "48066",
+    "externalSlug": 139,
+    "name": "test / tanuki-inc",
+    "provider": {
+      "id": "integrations:gitlab",
+      "name": "Gitlab"
+    },
+    "url": "https://gitlab.com/test/tanuki-inc",
+    "id": "52480",
+    "dateCreated": "2020-01-08T21:15:17.181520Z"
+  }
+]

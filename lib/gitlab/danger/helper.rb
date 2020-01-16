@@ -174,6 +174,10 @@ module Gitlab
         labels - current_mr_labels
       end
 
+      def sanitize_mr_title(title)
+        title.gsub(/^WIP: */, '').gsub(/`/, '\\\`')
+      end
+
       def security_mr?
         return false unless gitlab_helper
 

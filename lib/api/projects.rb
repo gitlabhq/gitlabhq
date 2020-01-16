@@ -447,7 +447,7 @@ module API
           ::Projects::UnlinkForkService.new(user_project, current_user).execute
         end
 
-        result ? status(204) : not_modified!
+        not_modified! unless result
       end
 
       desc 'Share the project with a group' do

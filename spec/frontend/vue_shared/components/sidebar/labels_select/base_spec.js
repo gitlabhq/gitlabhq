@@ -12,7 +12,6 @@ import {
 const createComponent = (config = mockConfig) =>
   shallowMount(BaseComponent, {
     propsData: config,
-    attachToDocument: true,
   });
 
 describe('BaseComponent', () => {

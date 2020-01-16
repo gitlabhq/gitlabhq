@@ -107,8 +107,9 @@ module API
       delete ':id/wikis/:slug' do
         authorize! :admin_wiki, user_project
 
-        status 204
         WikiPages::DestroyService.new(user_project, current_user).execute(wiki_page)
+
+        no_content!
       end
 
       desc 'Upload an attachment to the wiki repository' do

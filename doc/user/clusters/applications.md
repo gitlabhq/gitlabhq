@@ -433,6 +433,8 @@ Filebeat will run as a DaemonSet on each node in your cluster, and it will ship 
 GitLab will then connect to Elasticsearch for logs instead of the Kubernetes API,
 and you will have access to more advanced querying capabilities.
 
+Log data is automatically deleted after 15 days using [Curator](https://www.elastic.co/guide/en/elasticsearch/client/curator/5.5/about.html).
+
 This is a preliminary release of Elastic Stack as a GitLab-managed application. By default,
 the ability to install it is disabled.
 

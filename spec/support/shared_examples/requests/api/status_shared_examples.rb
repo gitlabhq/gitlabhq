@@ -59,8 +59,9 @@ shared_examples_for '412 response' do
       delete request, params: params, headers: { 'HTTP_IF_UNMODIFIED_SINCE' => '1990-01-12T00:00:48-0600' }
     end
 
-    it 'returns 412' do
+    it 'returns 412 with a JSON error' do
       expect(response).to have_gitlab_http_status(412)
+      expect(json_response).to eq('message' => '412 Precondition Failed')
     end
   end
 
@@ -69,8 +70,9 @@ shared_examples_for '412 response' do
       delete request, params: params, headers: { 'HTTP_IF_UNMODIFIED_SINCE' => Time.now }
     end
 
-    it 'returns accepted' do
+    it 'returns 204 with an empty body' do
       expect(response).to have_gitlab_http_status(success_status)
+      expect(response.body).to eq('') if success_status == 204
     end
   end
 end

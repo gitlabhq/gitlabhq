@@ -197,6 +197,10 @@ module Ci
 
             AutoMergeProcessWorker.perform_async(merge_request.id)
           end
+
+          if pipeline.auto_devops_source?
+            self.class.auto_devops_pipelines_completed_total.increment(status: pipeline.status)
+          end
         end
       end
 
@@ -328,6 +332,10 @@ module Ci
 
     def self.bridgeable_statuses
       ::Ci::Pipeline::AVAILABLE_STATUSES - %w[created waiting_for_resource preparing pending]
+    end
+
+    def self.auto_devops_pipelines_completed_total
+      @auto_devops_pipelines_completed_total ||= Gitlab::Metrics.counter(:auto_devops_pipelines_completed_total, 'Number of completed auto devops pipelines')
     end
 
     def stages_count
