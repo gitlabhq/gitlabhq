@@ -16,6 +16,7 @@ module Gitlab
                     :first_seen,
                     :frequency,
                     :gitlab_commit,
+                    :gitlab_commit_path,
                     :gitlab_issue,
                     :gitlab_project,
                     :id,

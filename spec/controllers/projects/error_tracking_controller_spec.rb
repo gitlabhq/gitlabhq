@@ -224,7 +224,12 @@ describe Projects::ErrorTrackingController do
         let(:error) { build(:detailed_error_tracking_error) }
 
         it 'returns an error' do
-          expected_error = error.as_json.except('first_release_version').merge({ 'gitlab_commit' => nil })
+          expected_error = error.as_json.except('first_release_version').merge(
+            {
+              'gitlab_commit' => nil,
+              'gitlab_commit_path' => nil
+            }
+          )
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to match_response_schema('error_tracking/issue_detailed')

@@ -79,6 +79,9 @@ module Types
       field :gitlab_commit, GraphQL::STRING_TYPE,
             null: true,
             description: "GitLab commit SHA attributed to the Error based on the release version"
+      field :gitlab_commit_path, GraphQL::STRING_TYPE,
+            null: true,
+            description: "Path to the GitLab page for the GitLab commit attributed to the error"
 
       def first_seen
         DateTime.parse(object.first_seen)

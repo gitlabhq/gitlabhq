@@ -6,46 +6,6 @@ describe Users::UpdateService do
   let(:user) { create(:user) }
 
   describe '#execute' do
-    context 'updating name' do
-      context 'when the ability to update their name is not disabled for users' do
-        before do
-          stub_application_setting(updating_name_disabled_for_users: false)
-        end
-
-        it 'updates the name' do
-          result = update_user(user, name: 'New Name')
-
-          expect(result).to eq(status: :success)
-          expect(user.name).to eq('New Name')
-        end
-      end
-
-      context 'when the ability to update their name is disabled for users' do
-        before do
-          stub_application_setting(updating_name_disabled_for_users: true)
-        end
-
-        context 'executing as a regular user' do
-          it 'does not update the name' do
-            result = update_user(user, name: 'New Name')
-
-            expect(result).to eq(status: :success)
-            expect(user.name).not_to eq('New Name')
-          end
-        end
-
-        context 'executing as an admin user' do
-          it 'updates the name' do
-            admin = create(:admin)
-            result = described_class.new(admin, { user: user, name: 'New Name' }).execute
-
-            expect(result).to eq(status: :success)
-            expect(user.name).to eq('New Name')
-          end
-        end
-      end
-    end
-
     it 'updates time preferences' do
       result = update_user(user, timezone: 'Europe/Warsaw', time_display_relative: true, time_format_in_24h: false)
 

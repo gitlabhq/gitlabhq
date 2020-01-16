@@ -54,7 +54,6 @@ module Users
 
     def discard_read_only_attributes
       discard_synced_attributes
-      discard_name unless name_updatable?
     end
 
     def discard_synced_attributes
@@ -63,14 +62,6 @@ module Users
 
         params.reject! { |key, _| read_only.include?(key.to_sym) }
       end
-    end
-
-    def discard_name
-      params.delete(:name)
-    end
-
-    def name_updatable?
-      can?(current_user, :update_name, @user)
     end
 
     def assign_attributes

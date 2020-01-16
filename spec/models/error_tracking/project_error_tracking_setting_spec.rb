@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe ErrorTracking::ProjectErrorTrackingSetting do
   include ReactiveCachingHelpers
+  include Gitlab::Routing
 
   let_it_be(:project) { create(:project) }
 
@@ -213,7 +214,7 @@ describe ErrorTracking::ProjectErrorTrackingSetting do
   describe '#issue_details' do
     let(:issue) { build(:detailed_error_tracking_error) }
     let(:sentry_client) { double('sentry_client', issue_details: issue) }
-    let(:commit_id) { '123456' }
+    let(:commit_id) { issue.first_release_version }
 
     let(:result) do
       subject.issue_details
@@ -230,6 +231,7 @@ describe ErrorTracking::ProjectErrorTrackingSetting do
       it { expect(result).to eq(issue: issue) }
       it { expect(result[:issue].first_release_version).to eq(commit_id) }
       it { expect(result[:issue].gitlab_commit).to eq(nil) }
+      it { expect(result[:issue].gitlab_commit_path).to eq(nil) }
 
       context 'when release version is nil' do
         before do
@@ -237,6 +239,7 @@ describe ErrorTracking::ProjectErrorTrackingSetting do
         end
 
         it { expect(result[:issue].gitlab_commit).to eq(nil) }
+        it { expect(result[:issue].gitlab_commit_path).to eq(nil) }
       end
 
       context 'when repo commit matches first relase version' do
@@ -248,6 +251,7 @@ describe ErrorTracking::ProjectErrorTrackingSetting do
         end
 
         it { expect(result[:issue].gitlab_commit).to eq(commit_id) }
+        it { expect(result[:issue].gitlab_commit_path).to eq("/#{project.namespace.path}/#{project.path}/commit/#{commit_id}") }
       end
     end
 

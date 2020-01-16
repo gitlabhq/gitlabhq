@@ -5722,6 +5722,11 @@ type SentryDetailedError {
   gitlabCommit: String
 
   """
+  Path to the GitLab page for the GitLab commit attributed to the error
+  """
+  gitlabCommitPath: String
+
+  """
   ID (global ID) of the error
   """
   id: ID!

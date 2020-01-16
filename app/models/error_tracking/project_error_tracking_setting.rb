@@ -4,6 +4,7 @@ module ErrorTracking
   class ProjectErrorTrackingSetting < ApplicationRecord
     include Gitlab::Utils::StrongMemoize
     include ReactiveCaching
+    include Gitlab::Routing
 
     SENTRY_API_ERROR_TYPE_BAD_REQUEST = 'bad_request_for_sentry_api'
     SENTRY_API_ERROR_TYPE_MISSING_KEYS = 'missing_keys_in_sentry_response'
@@ -141,6 +142,7 @@ module ErrorTracking
 
     def add_gitlab_issue_details(issue)
       issue.gitlab_commit = match_gitlab_commit(issue.first_release_version)
+      issue.gitlab_commit_path = project_commit_path(project, issue.gitlab_commit) if issue.gitlab_commit
 
       issue
     end

@@ -56,7 +56,8 @@
     "last_release_last_commit": { "type": ["string", "null"] },
     "first_release_short_version": { "type": ["string", "null"] },
     "last_release_short_version": { "type": ["string", "null"] },
-    "gitlab_commit": { "type": ["string", "null"] }
+    "gitlab_commit": { "type": ["string", "null"] },
+    "gitlab_commit_path": { "type": ["string", "null"] }
   },
   "additionalProperties": false
 }

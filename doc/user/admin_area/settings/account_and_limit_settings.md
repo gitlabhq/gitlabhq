@@ -117,7 +117,7 @@ Once a lifetime for personal access tokens is set, GitLab will:
   allowed lifetime. Three hours is given to allow administrators to change the allowed lifetime,
   or remove it, before revocation takes place.
 
-## Disabling user profile name changes **(CORE ONLY)**
+## Disabling user profile name changes **(PREMIUM ONLY)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/24605) in GitLab 12.7.
 

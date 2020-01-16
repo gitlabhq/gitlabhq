@@ -6576,6 +6576,9 @@ msgstr ""
 msgid "Edit Deploy Key"
 msgstr ""
 
+msgid "Edit Geo Node"
+msgstr ""
+
 msgid "Edit Group Hook"
 msgstr ""
 
@@ -8301,6 +8304,9 @@ msgid "Geo"
 msgstr ""
 
 msgid "Geo Designs"
+msgstr ""
+
+msgid "Geo Node Form"
 msgstr ""
 
 msgid "Geo Nodes"
@@ -11967,6 +11973,9 @@ msgid "New Application"
 msgstr ""
 
 msgid "New Environment"
+msgstr ""
+
+msgid "New Geo Node"
 msgstr ""
 
 msgid "New Group"
