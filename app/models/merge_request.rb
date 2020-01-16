@@ -449,7 +449,7 @@ class MergeRequest < ApplicationRecord
 
   # Set off a rebase asynchronously, atomically updating the `rebase_jid` of
   # the MR so that the status of the operation can be tracked.
-  def rebase_async(user_id)
+  def rebase_async(user_id, skip_ci: false)
     with_rebase_lock do
       raise ActiveRecord::StaleObjectError if !open? || rebase_in_progress?
 
@@ -458,7 +458,7 @@ class MergeRequest < ApplicationRecord
       # attribute is set *and* that the sidekiq job is still running. So a JID
       # for a completed RebaseWorker is equivalent to a nil JID.
       jid = Sidekiq::Worker.skipping_transaction_check do
-        RebaseWorker.perform_async(id, user_id)
+        RebaseWorker.perform_async(id, user_id, skip_ci)
       end
 
       update_column(:rebase_jid, jid)

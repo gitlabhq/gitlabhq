@@ -186,7 +186,11 @@ class Namespace < ApplicationRecord
   # any ancestor can disable emails for all descendants
   def emails_disabled?
     strong_memoize(:emails_disabled) do
-      self_and_ancestors.where(emails_disabled: true).exists?
+      if parent_id
+        self_and_ancestors.where(emails_disabled: true).exists?
+      else
+        !!emails_disabled
+      end
     end
   end
 

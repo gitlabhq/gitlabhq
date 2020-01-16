@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_14_113341) do
+ActiveRecord::Schema.define(version: 2020_01_14_204949) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -3732,6 +3732,7 @@ ActiveRecord::Schema.define(version: 2020_01_14_113341) do
     t.bigint "issue_id", null: false
     t.bigint "sentry_issue_identifier", null: false
     t.index ["issue_id"], name: "index_sentry_issues_on_issue_id", unique: true
+    t.index ["sentry_issue_identifier"], name: "index_sentry_issues_on_sentry_issue_identifier"
   end
 
   create_table "serverless_domain_cluster", primary_key: "uuid", id: :string, limit: 14, force: :cascade do |t|

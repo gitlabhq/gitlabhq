@@ -457,7 +457,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC protocol definitions
-gem 'gitaly', '~> 1.73.0'
+gem 'gitaly', '~> 1.81.0'
 
 gem 'grpc', '~> 1.24.0'
 

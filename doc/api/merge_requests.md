@@ -1613,6 +1613,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid/rebase
 | ---------           | ----    | -------- | -----------                          |
 | `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user                  |
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request |
+| `skip_ci`           | boolean | no       | Set to `true` to skip creating a CI pipeline |
 
 ```bash
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/76/merge_requests/1/rebase

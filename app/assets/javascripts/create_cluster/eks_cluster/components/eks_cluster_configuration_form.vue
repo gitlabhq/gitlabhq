@@ -149,7 +149,7 @@ export default {
     roleDropdownHelpText() {
       return sprintf(
         s__(
-          'ClusterIntegration|Select the IAM Role to allow Amazon EKS and the Kubernetes control plane to manage AWS resources on your behalf. To use a new role name, first create one on %{startLink}Amazon Web Services %{externalLinkIcon} %{endLink}.',
+          'ClusterIntegration|Your service role is distinct from the provision role used when authenticating. It will allow Amazon EKS and the Kubernetes control plane to manage AWS resources on your behalf. To use a new role, first create one on %{startLink}Amazon Web Services %{externalLinkIcon} %{endLink}.',
         ),
         {
           startLink:
@@ -344,7 +344,7 @@ export default {
       />
     </div>
     <div class="form-group">
-      <label class="label-bold" for="eks-role">{{ s__('ClusterIntegration|Role name') }}</label>
+      <label class="label-bold" for="eks-role">{{ s__('ClusterIntegration|Service role') }}</label>
       <cluster-form-dropdown
         field-id="eks-role"
         field-name="eks-role"
@@ -352,7 +352,7 @@ export default {
         :items="roles"
         :loading="isLoadingRoles"
         :loading-text="s__('ClusterIntegration|Loading IAM Roles')"
-        :placeholder="s__('ClusterIntergation|Select role name')"
+        :placeholder="s__('ClusterIntergation|Select service role')"
         :search-field-placeholder="s__('ClusterIntegration|Search IAM Roles')"
         :empty-text="s__('ClusterIntegration|No IAM Roles found')"
         :has-errors="Boolean(loadingRolesError)"

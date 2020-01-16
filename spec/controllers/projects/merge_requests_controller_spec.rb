@@ -1376,7 +1376,7 @@ describe Projects::MergeRequestsController do
     end
 
     def expect_rebase_worker_for(user)
-      expect(RebaseWorker).to receive(:perform_async).with(merge_request.id, user.id)
+      expect(RebaseWorker).to receive(:perform_async).with(merge_request.id, user.id, false)
     end
 
     context 'successfully' do

@@ -233,7 +233,7 @@ module Gitlab
         end
       end
 
-      def rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:)
+      def rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:, push_options: [])
         request_enum = QueueEnumerator.new
         rebase_sha = nil
 
@@ -256,7 +256,8 @@ module Gitlab
               branch: encode_binary(branch),
               branch_sha: branch_sha,
               remote_repository: remote_repository.gitaly_repository,
-              remote_branch: encode_binary(remote_branch)
+              remote_branch: encode_binary(remote_branch),
+              git_push_options: push_options
             )
           )
         )

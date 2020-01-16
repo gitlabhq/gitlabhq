@@ -439,12 +439,15 @@ module API
       desc 'Rebase the merge request against its target branch' do
         detail 'This feature was added in GitLab 11.6'
       end
+      params do
+        optional :skip_ci, type: Boolean, desc: 'Do not create CI pipeline'
+      end
       put ':id/merge_requests/:merge_request_iid/rebase' do
         merge_request = find_project_merge_request(params[:merge_request_iid])
 
         authorize_push_to_merge_request!(merge_request)
 
-        merge_request.rebase_async(current_user.id)
+        merge_request.rebase_async(current_user.id, skip_ci: params[:skip_ci])
 
         status :accepted
         present rebase_in_progress: merge_request.rebase_in_progress?

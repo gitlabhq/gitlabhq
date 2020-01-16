@@ -923,6 +923,12 @@ describe Namespace do
 
         expect(group.emails_disabled?).to be_truthy
       end
+
+      it 'does not query the db when there is no parent group' do
+        group = create(:group, emails_disabled: true)
+
+        expect { group.emails_disabled? }.not_to exceed_query_limit(0)
+      end
     end
 
     context 'when a subgroup' do

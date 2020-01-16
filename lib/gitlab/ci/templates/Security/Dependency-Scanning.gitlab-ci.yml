@@ -93,7 +93,7 @@ gemnasium-dependency_scanning:
     variables:
       - $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
         $DS_DEFAULT_ANALYZERS =~ /gemnasium([^-]|$)/ &&
-        $CI_PROJECT_REPOSITORY_LANGUAGES =~ /ruby|javascript|php/
+        $CI_PROJECT_REPOSITORY_LANGUAGES =~ /ruby|javascript|php|\bgo\b/
 
 gemnasium-maven-dependency_scanning:
   extends: .ds-analyzer

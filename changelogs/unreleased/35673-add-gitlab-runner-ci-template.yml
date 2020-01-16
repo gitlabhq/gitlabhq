@@ -1,0 +1,5 @@
+---
+title: Bump cluster-applications image to v0.5.0 (Adds GitLab Runner support)
+merge_request: 23110
+author:
+type: added

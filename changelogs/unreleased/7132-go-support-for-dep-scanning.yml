@@ -1,0 +1,5 @@
+---
+title: Detect go when doing dependency scanning
+merge_request: 22712
+author:
+type: added

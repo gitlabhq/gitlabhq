@@ -94,6 +94,18 @@ module QA
             select_element(:project_creation_level_dropdown, value)
             click_element :save_permissions_changes_button
           end
+
+          def toggle_request_access
+            expand_section :permission_lfs_2fa_section
+
+            if find_element(:request_access_checkbox).checked?
+              uncheck_element :request_access_checkbox
+            else
+              check_element :request_access_checkbox
+            end
+
+            click_element :save_permissions_changes_button
+          end
         end
       end
     end

@@ -2222,16 +2222,34 @@ describe API::MergeRequests do
   end
 
   describe 'PUT :id/merge_requests/:merge_request_iid/rebase' do
-    it 'enqueues a rebase of the merge request against the target branch' do
-      Sidekiq::Testing.fake! do
-        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/rebase", user)
+    context 'when rebase can be performed' do
+      it 'enqueues a rebase of the merge request against the target branch' do
+        Sidekiq::Testing.fake! do
+          expect do
+            put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/rebase", user)
+          end.to change { RebaseWorker.jobs.size }.by(1)
+        end
+
+        expect(response).to have_gitlab_http_status(202)
+        expect(merge_request.reload).to be_rebase_in_progress
+        expect(json_response['rebase_in_progress']).to be(true)
       end
 
-      expect(response).to have_gitlab_http_status(202)
-      expect(RebaseWorker.jobs.size).to eq(1)
+      context 'when skip_ci parameter is set' do
+        it 'enqueues a rebase of the merge request with skip_ci flag set' do
+          expect(RebaseWorker).to receive(:perform_async).with(merge_request.id, user.id, true).and_call_original
 
-      expect(merge_request.reload).to be_rebase_in_progress
-      expect(json_response['rebase_in_progress']).to be(true)
+          Sidekiq::Testing.fake! do
+            expect do
+              put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/rebase", user), params: { skip_ci: true }
+            end.to change { RebaseWorker.jobs.size }.by(1)
+          end
+
+          expect(response).to have_gitlab_http_status(202)
+          expect(merge_request.reload).to be_rebase_in_progress
+          expect(json_response['rebase_in_progress']).to be(true)
+        end
+      end
     end
 
     it 'returns 403 if the user cannot push to the branch' do
