@@ -514,6 +514,8 @@ describe('IDE store file actions', () => {
 
   describe('changeFileContent', () => {
     let tmpFile;
+    const callAction = (content = 'content\n') =>
+      store.dispatch('changeFileContent', { path: tmpFile.path, content });
 
     beforeEach(() => {
       tmpFile = file('tmpFile');
@@ -523,11 +525,7 @@ describe('IDE store file actions', () => {
     });
 
     it('updates file content', done => {
-      store
-        .dispatch('changeFileContent', {
-          path: tmpFile.path,
-          content: 'content\n',
-        })
+      callAction()
         .then(() => {
           expect(tmpFile.content).toBe('content\n');
 
@@ -537,11 +535,7 @@ describe('IDE store file actions', () => {
     });
 
     it('adds a newline to the end of the file if it doesnt already exist', done => {
-      store
-        .dispatch('changeFileContent', {
-          path: tmpFile.path,
-          content: 'content',
-        })
+      callAction('content')
         .then(() => {
           expect(tmpFile.content).toBe('content\n');
 
@@ -551,11 +545,7 @@ describe('IDE store file actions', () => {
     });
 
     it('adds file into changedFiles array', done => {
-      store
-        .dispatch('changeFileContent', {
-          path: tmpFile.path,
-          content: 'content',
-        })
+      callAction()
         .then(() => {
           expect(store.state.changedFiles.length).toBe(1);
 
@@ -564,7 +554,7 @@ describe('IDE store file actions', () => {
         .catch(done.fail);
     });
 
-    it('adds file once into changedFiles array', done => {
+    it('adds file not more than once into changedFiles array', done => {
       store
         .dispatch('changeFileContent', {
           path: tmpFile.path,
@@ -602,6 +592,52 @@ describe('IDE store file actions', () => {
           done();
         })
         .catch(done.fail);
+    });
+
+    describe('when `gon.feature.stageAllByDefault` is true', () => {
+      const originalGonFeatures = Object.assign({}, gon.features);
+
+      beforeAll(() => {
+        gon.features = { stageAllByDefault: true };
+      });
+
+      afterAll(() => {
+        gon.features = originalGonFeatures;
+      });
+
+      it('adds file into stagedFiles array', done => {
+        store
+          .dispatch('changeFileContent', {
+            path: tmpFile.path,
+            content: 'content',
+          })
+          .then(() => {
+            expect(store.state.stagedFiles.length).toBe(1);
+
+            done();
+          })
+          .catch(done.fail);
+      });
+
+      it('adds file not more than once into stagedFiles array', done => {
+        store
+          .dispatch('changeFileContent', {
+            path: tmpFile.path,
+            content: 'content',
+          })
+          .then(() =>
+            store.dispatch('changeFileContent', {
+              path: tmpFile.path,
+              content: 'content 123',
+            }),
+          )
+          .then(() => {
+            expect(store.state.stagedFiles.length).toBe(1);
+
+            done();
+          })
+          .catch(done.fail);
+      });
     });
 
     it('bursts unused seal', done => {

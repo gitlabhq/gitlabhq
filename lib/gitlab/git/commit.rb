@@ -254,7 +254,7 @@ module Gitlab
       end
 
       def no_commit_message
-        "--no commit message"
+        "No commit message"
       end
 
       def to_hash

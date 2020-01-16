@@ -46,7 +46,7 @@ export default {
     regexHelpText() {
       return sprintf(
         s__(
-          'ContainerRegistry|Wildcards such as %{codeStart}*-stable%{codeEnd} or %{codeStart}production/*%{codeEnd} are supported',
+          'ContainerRegistry|Wildcards such as %{codeStart}*-stable%{codeEnd} or %{codeStart}production/*%{codeEnd} are supported.  To select all tags, use %{codeStart}.*%{codeEnd}',
         ),
         {
           codeStart: '<code>',
@@ -61,7 +61,7 @@ export default {
     nameRegexState() {
       return this.name_regex ? this.name_regex.length <= NAME_REGEX_LENGTH : null;
     },
-    formIsValid() {
+    formIsInvalid() {
       return this.nameRegexState === false;
     },
   },
@@ -124,7 +124,7 @@ export default {
           :label-cols="$options.labelsConfig.cols"
           :label-align="$options.labelsConfig.align"
           label-for="expiration-policy-latest"
-          :label="s__('ContainerRegistry|Expiration latest:')"
+          :label="s__('ContainerRegistry|Number of tags to retain:')"
         >
           <gl-form-select id="expiration-policy-latest" v-model="keep_n" :disabled="!enabled">
             <option v-for="option in formOptions.keepN" :key="option.key" :value="option.key">
@@ -138,7 +138,7 @@ export default {
           :label-cols="$options.labelsConfig.cols"
           :label-align="$options.labelsConfig.align"
           label-for="expiration-policy-name-matching"
-          :label="s__('ContainerRegistry|Expire Docker tags with name matching:')"
+          :label="s__('ContainerRegistry|Expire Docker tags that match this regex:')"
           :state="nameRegexState"
           :invalid-feedback="
             s__('ContainerRegistry|The value of this input should be less than 255 characters')
@@ -165,7 +165,7 @@ export default {
           <gl-button
             ref="save-button"
             type="submit"
-            :disabled="formIsValid"
+            :disabled="formIsInvalid"
             variant="success"
             class="d-block"
           >

@@ -225,6 +225,35 @@ describe('Multi-file store actions', () => {
           .catch(done.fail);
       });
 
+      describe('when `gon.feature.stageAllByDefault` is true', () => {
+        const originalGonFeatures = Object.assign({}, gon.features);
+
+        beforeAll(() => {
+          gon.features = { stageAllByDefault: true };
+        });
+
+        afterAll(() => {
+          gon.features = originalGonFeatures;
+        });
+
+        it('adds tmp file to staged files', done => {
+          const name = 'test';
+
+          store
+            .dispatch('createTempEntry', {
+              name,
+              branchId: 'mybranch',
+              type: 'blob',
+            })
+            .then(() => {
+              expect(store.state.stagedFiles).toEqual([jasmine.objectContaining({ name })]);
+
+              done();
+            })
+            .catch(done.fail);
+        });
+      });
+
       it('adds tmp file to open files', done => {
         const name = 'test';
 
@@ -255,41 +284,25 @@ describe('Multi-file store actions', () => {
             type: 'blob',
           })
           .then(() => {
-            const f = store.state.entries[name];
-
-            expect(store.state.changedFiles.length).toBe(1);
-            expect(store.state.changedFiles[0].name).toBe(f.name);
+            expect(store.state.changedFiles).toEqual([
+              jasmine.objectContaining({ name, tempFile: true }),
+            ]);
 
             done();
           })
           .catch(done.fail);
       });
 
-      it('sets tmp file as active', done => {
-        testAction(
-          createTempEntry,
-          {
-            name: 'test',
-            branchId: 'mybranch',
-            type: 'blob',
-          },
-          store.state,
-          [
-            { type: types.CREATE_TMP_ENTRY, payload: jasmine.any(Object) },
-            { type: types.TOGGLE_FILE_OPEN, payload: 'test' },
-            { type: types.ADD_FILE_TO_CHANGED, payload: 'test' },
-          ],
-          jasmine.arrayContaining([
-            {
-              type: 'setFileActive',
-              payload: 'test',
-            },
-            {
-              type: 'triggerFilesChange',
-            },
-          ]),
-          done,
+      it('sets tmp file as active', () => {
+        const dispatch = jasmine.createSpy();
+        const commit = jasmine.createSpy();
+
+        createTempEntry(
+          { state: store.state, getters: store.getters, dispatch, commit },
+          { name: 'test', branchId: 'mybranch', type: 'blob' },
         );
+
+        expect(dispatch).toHaveBeenCalledWith('setFileActive', 'test');
       });
 
       it('creates flash message if file already exists', done => {
@@ -800,6 +813,33 @@ describe('Multi-file store actions', () => {
         });
       });
 
+      describe('when `gon.feature.stageAllByDefault` is true', () => {
+        const originalGonFeatures = Object.assign({}, gon.features);
+
+        beforeAll(() => {
+          gon.features = { stageAllByDefault: true };
+        });
+
+        afterAll(() => {
+          gon.features = originalGonFeatures;
+        });
+
+        it('by default renames an entry and stages it', () => {
+          const dispatch = jasmine.createSpy();
+          const commit = jasmine.createSpy();
+
+          renameEntry(
+            { dispatch, commit, state: store.state, getters: store.getters },
+            { path: 'orig', name: 'renamed' },
+          );
+
+          expect(commit.calls.allArgs()).toEqual([
+            [types.RENAME_ENTRY, { path: 'orig', name: 'renamed', parentPath: undefined }],
+            [types.STAGE_CHANGE, jasmine.objectContaining({ path: 'renamed' })],
+          ]);
+        });
+      });
+
       it('by default renames an entry and adds to changed', done => {
         testAction(
           renameEntry,
@@ -819,12 +859,12 @@ describe('Multi-file store actions', () => {
               payload: 'renamed',
             },
           ],
-          [{ type: 'burstUnusedSeal' }, { type: 'triggerFilesChange' }],
+          jasmine.any(Object),
           done,
         );
       });
 
-      it('if not changed, completely unstages entry if renamed to original', done => {
+      it('if not changed, completely unstages and discards entry if renamed to original', done => {
         testAction(
           renameEntry,
           { path: 'renamed', name: 'orig' },

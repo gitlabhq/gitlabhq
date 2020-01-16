@@ -57,7 +57,7 @@ describe Gitlab::Git::Commit, :seed_helper do
     it { expect(@commit.different_committer?).to be_truthy }
     it { expect(@commit.parents).to eq(@gitlab_parents) }
     it { expect(@commit.parent_id).to eq(@parents.first.oid) }
-    it { expect(@commit.no_commit_message).to eq("--no commit message") }
+    it { expect(@commit.no_commit_message).to eq("No commit message") }
 
     after do
       # Erase the new commit so other tests get the original repo

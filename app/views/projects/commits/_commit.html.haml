@@ -21,9 +21,9 @@
   .commit-detail.flex-list
     .commit-content.qa-commit-content
       - if view_details && merge_request
-        = link_to commit.title, project_commit_path(project, commit.id, merge_request_iid: merge_request.iid), class: "commit-row-message item-title js-onboarding-commit-item"
+        = link_to commit.title, project_commit_path(project, commit.id, merge_request_iid: merge_request.iid), class: ["commit-row-message item-title js-onboarding-commit-item", ("font-italic" if commit.message.empty?)]
       - else
-        = link_to_markdown_field(commit, :title, link, class: "commit-row-message item-title js-onboarding-commit-item")
+        = link_to_markdown_field(commit, :title, link, class: "commit-row-message item-title js-onboarding-commit-item #{"font-italic" if commit.message.empty?}")
       %span.commit-row-message.d-inline.d-sm-none
         &middot;
         = commit.short_id

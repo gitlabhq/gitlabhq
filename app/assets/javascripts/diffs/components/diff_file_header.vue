@@ -123,6 +123,20 @@ export default {
       }
       return s__('MRDiff|Show full file');
     },
+    changedFile() {
+      const {
+        new_path: changed,
+        deleted_file: deleted,
+        new_file: tempFile,
+        ...diffFile
+      } = this.diffFile;
+      return {
+        ...diffFile,
+        changed: Boolean(changed),
+        deleted,
+        tempFile,
+      };
+    },
   },
   mounted() {
     polyfillSticky(this.$refs.header);
@@ -221,7 +235,7 @@ export default {
 
     <div
       v-if="!diffFile.submodule && addMergeRequestButtons"
-      class="file-actions d-none d-sm-block"
+      class="file-actions d-none d-sm-flex align-items-center"
     >
       <diff-stats :added-lines="diffFile.added_lines" :removed-lines="diffFile.removed_lines" />
       <div class="btn-group" role="group">

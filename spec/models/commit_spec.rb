@@ -277,7 +277,7 @@ describe Commit do
   describe '#title' do
     it "returns no_commit_message when safe_message is blank" do
       allow(commit).to receive(:safe_message).and_return('')
-      expect(commit.title).to eq("--no commit message")
+      expect(commit.title).to eq("No commit message")
     end
 
     it 'truncates a message without a newline at natural break to 80 characters' do
@@ -308,7 +308,7 @@ eos
   describe '#full_title' do
     it "returns no_commit_message when safe_message is blank" do
       allow(commit).to receive(:safe_message).and_return('')
-      expect(commit.full_title).to eq("--no commit message")
+      expect(commit.full_title).to eq("No commit message")
     end
 
     it "returns entire message if there is no newline" do
@@ -330,7 +330,7 @@ eos
     it 'returns no_commit_message when safe_message is blank' do
       allow(commit).to receive(:safe_message).and_return(nil)
 
-      expect(commit.description).to eq('--no commit message')
+      expect(commit.description).to eq('No commit message')
     end
 
     it 'returns description of commit message if title less than 100 characters' do

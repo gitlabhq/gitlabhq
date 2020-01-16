@@ -357,10 +357,10 @@ describe MarkupHelper do
   describe '#markup_unsafe' do
     subject { helper.markup_unsafe(file_name, text, context) }
 
+    let_it_be(:project_base) { create(:project, :repository) }
+    let_it_be(:context) { { project: project_base } }
     let(:file_name) { 'foo.bar' }
     let(:text) { 'Noël' }
-    let(:project_base) { build(:project, :repository) }
-    let(:context) { { project: project_base } }
 
     context 'when text is missing' do
       let(:text) { nil }
@@ -383,11 +383,20 @@ describe MarkupHelper do
 
       context 'when renderer returns an error' do
         before do
-          allow(Banzai).to receive(:render).and_raise("An error")
+          allow(Banzai).to receive(:render).and_raise(StandardError, "An error")
         end
 
         it 'returns html (rendered by ActionView:TextHelper)' do
           is_expected.to eq('<p>Noël</p>')
+        end
+
+        it 'logs the error' do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+            instance_of(StandardError),
+            project_id: project.id, file_name: 'foo.md', context: context
+          )
+
+          subject
         end
       end
     end

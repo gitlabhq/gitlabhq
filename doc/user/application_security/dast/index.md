@@ -103,6 +103,10 @@ always take the latest DAST artifact available. Behind the scenes, the
 [GitLab DAST Docker image](https://gitlab.com/gitlab-org/security-products/dast)
 is used to run the tests on the specified URL and scan it for possible vulnerabilities.
 
+By default, the DAST template will use the latest major version of the DAST Docker image. Using the `DAST_VERSION` variable,
+you can choose to automatically update DAST with new features and fixes by pinning to a major version (e.g. 1), only update fixes by pinning to a minor version (e.g. 1.6) or prevent all updates by pinning to a specific version (e.g. 1.6.4).
+Find the latest DAST versions on the [Releases](https://gitlab.com/gitlab-org/security-products/dast/-/releases) page.
+
 ### Authenticated scan
 
 It's also possible to authenticate the user before performing the DAST checks:

@@ -1,0 +1,5 @@
+---
+title: Fix Error 500 in parsing invalid CI needs and dependencies
+merge_request: 22567
+author:
+type: fixed

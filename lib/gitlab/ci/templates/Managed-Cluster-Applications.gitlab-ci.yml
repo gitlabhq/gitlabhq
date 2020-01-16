@@ -14,3 +14,7 @@ apply:
   only:
     refs:
       - master
+  artifacts:
+    when: on_failure
+    paths:
+      - tiller.log

@@ -37,7 +37,7 @@ export default {
         }}
       </li>
     </ul>
-    <gl-loading-icon v-if="isLoading" ref="loading-icon" />
+    <gl-loading-icon v-if="isLoading" ref="loading-icon" size="xl" />
     <settings-form v-else ref="settings-form" />
   </div>
 </template>

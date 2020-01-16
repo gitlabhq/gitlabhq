@@ -44,7 +44,9 @@ describe('Actions Registry Store', () => {
     };
 
     const payload = {
-      tag_expiration_policies: 'foo',
+      data: {
+        container_expiration_policy: 'foo',
+      },
     };
 
     it('should fetch the data from the API', done => {
@@ -56,7 +58,7 @@ describe('Actions Registry Store', () => {
         [],
         [
           { type: 'toggleLoading' },
-          { type: 'receiveSettingsSuccess', payload: payload.tag_expiration_policies },
+          { type: 'receiveSettingsSuccess', payload: payload.data.container_expiration_policy },
           { type: 'toggleLoading' },
         ],
         done,
@@ -83,7 +85,9 @@ describe('Actions Registry Store', () => {
     };
 
     const payload = {
-      tag_expiration_policies: 'foo',
+      data: {
+        tag_expiration_policies: 'foo',
+      },
     };
 
     it('should fetch the data from the API', done => {
@@ -95,11 +99,11 @@ describe('Actions Registry Store', () => {
         [],
         [
           { type: 'toggleLoading' },
-          { type: 'receiveSettingsSuccess', payload: payload.tag_expiration_policies },
+          { type: 'receiveSettingsSuccess', payload: payload.data.container_expiration_policy },
           { type: 'toggleLoading' },
         ],
         () => {
-          expect(createFlash).toHaveBeenCalledWith(UPDATE_SETTINGS_SUCCESS_MESSAGE);
+          expect(createFlash).toHaveBeenCalledWith(UPDATE_SETTINGS_SUCCESS_MESSAGE, 'success');
           done();
         },
       );

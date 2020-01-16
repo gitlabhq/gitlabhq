@@ -154,7 +154,9 @@ module MarkupHelper
     else
       other_markup_unsafe(file_name, text, context)
     end
-  rescue RuntimeError
+  rescue StandardError => e
+    Gitlab::ErrorTracking.track_exception(e, project_id: @project&.id, file_name: file_name, context: context)
+
     simple_format(text)
   end
 

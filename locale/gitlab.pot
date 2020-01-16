@@ -379,6 +379,9 @@ msgstr ""
 msgid "%{spanStart}in%{spanEnd} %{errorFn}"
 msgstr ""
 
+msgid "%{staged} staged and %{unstaged} unstaged changes"
+msgstr ""
+
 msgid "%{start} to %{end}"
 msgstr ""
 
@@ -698,6 +701,9 @@ msgid "<strong>%{group_name}</strong> group members"
 msgstr ""
 
 msgid "<strong>%{pushes}</strong> pushes, more than <strong>%{commits}</strong> commits by <strong>%{people}</strong> contributors."
+msgstr ""
+
+msgid "<strong>%{stagedFilesLength} staged</strong> and <strong>%{changedFilesLength} unstaged</strong> changes"
 msgstr ""
 
 msgid "<strong>Deletes</strong> source branch"
@@ -4912,9 +4918,6 @@ msgstr ""
 msgid "ContainerRegistry|Expiration interval:"
 msgstr ""
 
-msgid "ContainerRegistry|Expiration latest:"
-msgstr ""
-
 msgid "ContainerRegistry|Expiration policy successfully saved."
 msgstr ""
 
@@ -4924,7 +4927,7 @@ msgstr ""
 msgid "ContainerRegistry|Expiration schedule:"
 msgstr ""
 
-msgid "ContainerRegistry|Expire Docker tags with name matching:"
+msgid "ContainerRegistry|Expire Docker tags that match this regex:"
 msgstr ""
 
 msgid "ContainerRegistry|If you are not already logged in, you need to authenticate to the Container Registry by using your GitLab username and password. If you have %{twofaDocLinkStart}Two-Factor Authentication%{twofaDocLinkEnd} enabled, use a %{personalAccessTokensDocLinkStart}Personal Access Token%{personalAccessTokensDocLinkEnd} instead of a password."
@@ -4937,6 +4940,9 @@ msgid "ContainerRegistry|Keep and protect the images that matter most."
 msgstr ""
 
 msgid "ContainerRegistry|Last Updated"
+msgstr ""
+
+msgid "ContainerRegistry|Number of tags to retain:"
 msgstr ""
 
 msgid "ContainerRegistry|Quick Start"
@@ -4989,7 +4995,7 @@ msgstr ""
 msgid "ContainerRegistry|We are having trouble connecting to Docker, which could be due to an issue with your project name or path. %{docLinkStart}More Information%{docLinkEnd}"
 msgstr ""
 
-msgid "ContainerRegistry|Wildcards such as %{codeStart}*-stable%{codeEnd} or %{codeStart}production/*%{codeEnd} are supported"
+msgid "ContainerRegistry|Wildcards such as %{codeStart}*-stable%{codeEnd} or %{codeStart}production/*%{codeEnd} are supported.  To select all tags, use %{codeStart}.*%{codeEnd}"
 msgstr ""
 
 msgid "ContainerRegistry|With the Container Registry, every project can have its own space to store its Docker images. %{docLinkStart}More Information%{docLinkEnd}"
@@ -7985,11 +7991,6 @@ msgstr ""
 
 msgid "Fetching licenses failed. You are not permitted to perform this action."
 msgstr ""
-
-msgid "File"
-msgid_plural "Files"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "File added"
 msgstr ""
@@ -11529,10 +11530,10 @@ msgstr ""
 msgid "MergeRequest|Error loading full diff. Please try again."
 msgstr ""
 
-msgid "MergeRequest|Filter files or search with %{modifier_key}+p"
+msgid "MergeRequest|No files found"
 msgstr ""
 
-msgid "MergeRequest|No files found"
+msgid "MergeRequest|Search files (%{modifier_key}P)"
 msgstr ""
 
 msgid "Merged"
@@ -21543,6 +21544,9 @@ msgstr ""
 msgid "among other things"
 msgstr ""
 
+msgid "and"
+msgstr ""
+
 msgid "archived"
 msgstr ""
 
@@ -21969,6 +21973,11 @@ msgstr ""
 
 msgid "failed to dismiss associated finding(id=%{finding_id}): %{message}"
 msgstr ""
+
+msgid "file"
+msgid_plural "files"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "finding is not found or is already attached to a vulnerability"
 msgstr ""

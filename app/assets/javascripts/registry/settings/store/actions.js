@@ -18,8 +18,8 @@ export const resetSettings = ({ commit }) => commit(types.RESET_SETTINGS);
 export const fetchSettings = ({ dispatch, state }) => {
   dispatch('toggleLoading');
   return Api.project(state.projectId)
-    .then(({ tag_expiration_policies }) =>
-      dispatch('receiveSettingsSuccess', tag_expiration_policies),
+    .then(({ data: { container_expiration_policy } }) =>
+      dispatch('receiveSettingsSuccess', container_expiration_policy),
     )
     .catch(() => dispatch('receiveSettingsError'))
     .finally(() => dispatch('toggleLoading'));
@@ -27,10 +27,12 @@ export const fetchSettings = ({ dispatch, state }) => {
 
 export const saveSettings = ({ dispatch, state }) => {
   dispatch('toggleLoading');
-  return Api.updateProject(state.projectId, { tag_expiration_policies: state.settings })
-    .then(({ tag_expiration_policies }) => {
-      dispatch('receiveSettingsSuccess', tag_expiration_policies);
-      createFlash(UPDATE_SETTINGS_SUCCESS_MESSAGE);
+  return Api.updateProject(state.projectId, {
+    container_expiration_policy_attributes: state.settings,
+  })
+    .then(({ data: { container_expiration_policy } }) => {
+      dispatch('receiveSettingsSuccess', container_expiration_policy);
+      createFlash(UPDATE_SETTINGS_SUCCESS_MESSAGE, 'success');
     })
     .catch(() => dispatch('updateSettingsError'))
     .finally(() => dispatch('toggleLoading'));

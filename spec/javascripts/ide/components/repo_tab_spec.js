@@ -93,13 +93,13 @@ describe('RepoTab', () => {
 
     Vue.nextTick()
       .then(() => {
-        expect(vm.$el.querySelector('.file-modified')).toBeNull();
+        expect(vm.$el.querySelector('.file-modified-solid')).toBeNull();
 
         vm.$el.dispatchEvent(new Event('mouseout'));
       })
       .then(Vue.nextTick)
       .then(() => {
-        expect(vm.$el.querySelector('.file-modified')).not.toBeNull();
+        expect(vm.$el.querySelector('.file-modified-solid')).not.toBeNull();
 
         done();
       })

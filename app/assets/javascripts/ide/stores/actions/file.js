@@ -147,7 +147,7 @@ export const getRawFileData = ({ state, commit, dispatch, getters }, { path }) =
   });
 };
 
-export const changeFileContent = ({ commit, dispatch, state }, { path, content }) => {
+export const changeFileContent = ({ commit, dispatch, state, getters }, { path, content }) => {
   const file = state.entries[path];
   commit(types.UPDATE_FILE_CONTENT, {
     path,
@@ -157,7 +157,9 @@ export const changeFileContent = ({ commit, dispatch, state }, { path, content }
   const indexOfChangedFile = state.changedFiles.findIndex(f => f.path === path);
 
   if (file.changed && indexOfChangedFile === -1) {
-    commit(types.ADD_FILE_TO_CHANGED, path);
+    if (gon.features?.stageAllByDefault)
+      commit(types.STAGE_CHANGE, { path, diffInfo: getters.getDiffInfo(path) });
+    else commit(types.ADD_FILE_TO_CHANGED, path);
   } else if (!file.changed && !file.tempFile && indexOfChangedFile !== -1) {
     commit(types.REMOVE_FILE_FROM_CHANGED, path);
   }

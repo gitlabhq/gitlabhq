@@ -390,8 +390,8 @@ As a reviewer, you're able to suggest code changes with a simple
 Markdown syntax in Merge Request Diff threads. Then, the
 Merge Request author (or other users with appropriate
 [permission](../permissions.md)) is able to apply these
-suggestions with a click, which will generate a commit in
-the Merge Request authored by the user that applied them.
+Suggestions with a click, which will generate a commit in
+the merge request authored by the user that applied them.
 
 1. Choose a line of code to be changed, add a new comment, then click
    on the **Insert suggestion** icon in the toolbar:
@@ -407,32 +407,28 @@ the Merge Request authored by the user that applied them.
    NOTE: **Note:**
    If you're using GitLab Premium, GitLab.com Silver, and higher tiers, the thread will display [Review](#merge-request-reviews-premium) options. Click either **Start a review**, **Add comment now**, or **Add to review** to obtain the same result.
 
-   The suggestions in the comment can be applied by the merge request author
+   The Suggestion in the comment can be applied by the merge request author
    directly from the merge request:
 
    ![Apply suggestions](img/apply_suggestion_v12_7.png)
 
-Once the author applies a suggestion, it will be marked with the **Applied** label,
+Once the author applies a Suggestion, it will be marked with the **Applied** label,
 the thread will be automatically resolved, and GitLab will create a new commit
 and push the suggested change directly into the codebase in the merge request's
 branch. [Developer permission](../permissions.md) is required to do so.
 
-> **Note:**
-Custom commit messages will be introduced by
-[#54404](https://gitlab.com/gitlab-org/gitlab-foss/issues/54404).
-
-### Multi-line suggestions
+### Multi-line Suggestions
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/53310) in GitLab 11.10.
 
-Reviewers can also suggest changes to multiple lines with a single suggestion
-within Merge Request diff threads by adjusting the range offsets. The
+Reviewers can also suggest changes to multiple lines with a single Suggestion
+within merge request diff threads by adjusting the range offsets. The
 offsets are relative to the position of the diff thread, and specify the
 range to be replaced by the suggestion when it is applied.
 
 ![Multi-line suggestion syntax](img/multi-line-suggestion-syntax.png)
 
-In the example above, the suggestion covers three lines above and four lines
+In the example above, the Suggestion covers three lines above and four lines
 below the commented line. When applied, it would replace from 3 lines _above_
 to 4 lines _below_ the commented line, with the suggested change.
 
@@ -443,23 +439,36 @@ Suggestions covering multiple lines are limited to 100 lines _above_ and 100
 lines _below_ the commented diff line, allowing up to 200 changed lines per
 suggestion.
 
-### Configure the commit message for applied suggestions
+### Configure the commit message for applied Suggestions
 
-GitLab will use `Apply suggestion to %{file_path}` by default as commit messages
-when applying change suggestions. This commit message can be customized to
-follow any guidelines you might have. To do so, open the **Merge requests** tab
-within your project settings and change the **Merge suggestions** text.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/13086) in GitLab 12.7.
 
-![Suggestion Commit Message Configuration](img/suggestion-commit-message-configuration.png)
+GitLab uses `Apply suggestion to %{file_path}` by default as commit messages
+when applying Suggestions. This commit message can be customized to
+follow any guidelines you might have. To do so, expand the **Merge requests**
+tab within your project's **General** settings and change the
+**Merge suggestions** text:
+
+![Custom commit message for applied Suggestions](img/suggestions_custom_commit_messages_v12_7.png)
 
 You can also use following variables besides static text:
 
-- `%{project_path}`: The full URL safe project path. E.g: *my-group/my-project*
-- `%{project_name}`: The human readable name of the project. E.g: *My Project*
-- `%{file_path}`: The full path of the file the suggestion is applied to. E.g: *docs/index.md*
-- `%{branch_name}`: The name of the branch the suggestion is applied on. E.g: *my-feature-branch*
-- `%{username}`: The username of the user applying the suggestion. E.g: *user_1*
-- `%{user_full_name}`: The full name of the user applying the suggestion. E.g: *User 1*
+| Variable | Description | Output example |
+|---|---|---|
+| `%{project_path}` | The project path. | `my-group/my-project` |
+| `%{project_name}` | The human-readable name of the project. | **My Project** |
+| `%{file_path}` | The path of the file the Suggestion is applied to. | `docs/index.md` |
+| `%{branch_name}` | The name of the branch the Suggestion is applied on. | `my-feature-branch` |
+| `%{username}` | The username of the user applying the Suggestion. | `user_1` |
+| `%{user_full_name}` | The full name of the user applying the Suggestion. | `**User 1** |
+
+For example, to customize the commit message to output
+**Addresses user_1's review**, set the custom text to
+`Adresses %{username}'s review`.
+
+NOTE: **Note:**
+Custom commit messages for each applied Suggestion will be
+introduced by [#25381](https://gitlab.com/gitlab-org/gitlab/issues/25381).
 
 ## Start a thread by replying to a standard comment
 

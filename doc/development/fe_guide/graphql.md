@@ -208,6 +208,41 @@ Now every single time on attempt to fetch a version, our client will fetch `id` 
 
 Read more about local state management with Apollo in the [Vue Apollo documentation](https://vue-apollo.netlify.com/guide/local-state.html#local-state).
 
+### Feature flags in queries
+
+Sometimes it may be useful to have an entity in the GraphQL query behind a feature flag.
+For example, when working on a feature where the backend has already been merged but the frontend
+hasn't you might want to put the GraphQL entity behind a feature flag to allow for smaller
+merge requests to be created and merged.
+
+To do this we can use the `@include` directive to exclude an entity if the `if` statement passes.
+
+```graphql
+query getAuthorData($authorNameEnabled: Boolean = false) {
+  username
+  name @include(if: $authorNameEnabled)
+}
+```
+
+Then in the Vue (or JavaScript) call to the query we can pass in our feature flag. This feature
+flag will need to be already setup correctly. See the [feature flag documentation](../feature_flags/development.md)
+for the correct way to do this.
+
+```javascript
+export default {
+  apollo: {
+    user: {
+      query: QUERY_IMPORT,
+      variables() {
+        return {
+          authorNameEnabled: gon?.features?.authorNameEnabled,
+        };
+      },
+    }
+  },
+};
+```
+
 ### Testing
 
 #### Mocking response as component data

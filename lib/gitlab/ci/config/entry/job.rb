@@ -55,11 +55,12 @@ module Gitlab
             validates :start_in, duration: { limit: '1 week' }, if: :delayed?
             validates :start_in, absence: true, if: -> { has_rules? || !delayed? }
 
-            validate do
+            validate on: :composed do
               next unless dependencies.present?
-              next unless needs.present?
+              next unless needs_value.present?
 
-              missing_needs = dependencies - needs
+              missing_needs = dependencies - needs_value[:job].pluck(:name) # rubocop:disable CodeReuse/ActiveRecord (Array#pluck)
+
               if missing_needs.any?
                 errors.add(:dependencies, "the #{missing_needs.join(", ")} should be part of needs")
               end

@@ -6,7 +6,7 @@ import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link
 let vm;
 
 function createCommitData(data = {}) {
-  return {
+  const defaultData = {
     sha: '123456789',
     title: 'Commit title',
     message: 'Commit message',
@@ -26,8 +26,8 @@ function createCommitData(data = {}) {
         group: {},
       },
     },
-    ...data,
   };
+  return Object.assign(defaultData, data);
 }
 
 function factory(commit = createCommitData(), loading = false) {
@@ -45,6 +45,8 @@ function factory(commit = createCommitData(), loading = false) {
   vm.setData({ commit });
   vm.vm.$apollo.queries.commit.loading = loading;
 }
+
+const emptyMessageClass = 'font-italic';
 
 describe('Repository last commit component', () => {
   afterEach(() => {
@@ -133,6 +135,14 @@ describe('Repository last commit component', () => {
 
     return vm.vm.$nextTick().then(() => {
       expect(vm.element).toMatchSnapshot();
+    });
+  });
+
+  it('sets correct CSS class if the commit message is empty', () => {
+    factory(createCommitData({ message: '' }));
+
+    return vm.vm.$nextTick().then(() => {
+      expect(vm.find('.item-title').classes()).toContain(emptyMessageClass);
     });
   });
 });
