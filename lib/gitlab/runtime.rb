@@ -67,6 +67,16 @@ module Gitlab
       def process_name
         File.basename($0)
       end
+
+      def max_threads
+        if puma?
+          Puma.cli_config.options[:max_threads]
+        elsif sidekiq?
+          Sidekiq.options[:concurrency]
+        else
+          1
+        end
+      end
     end
   end
 end

@@ -2260,7 +2260,7 @@ describe API::MergeRequests do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/rebase", user)
 
       expect(response).to have_gitlab_http_status(409)
-      expect(json_response['message']).to eq(MergeRequest::REBASE_LOCK_MESSAGE)
+      expect(json_response['message']).to eq('Failed to enqueue the rebase operation, possibly due to a long-lived transaction. Try again later.')
     end
   end
 

@@ -38,7 +38,7 @@ automatically. For example, a title of `docs/my-page` will create a wiki
 page with a path `/wikis/docs/my-page`.
 
 Once you enter the page name, it's time to fill in its content. GitLab wikis
-support Markdown, RDoc and AsciiDoc. For Markdown based pages, all the
+support Markdown, RDoc, AsciiDoc and Org. For Markdown based pages, all the
 [Markdown features](../../markdown.md) are supported and for links there is
 some [wiki specific](../../markdown.md#wiki-specific-markdown) behavior.
 

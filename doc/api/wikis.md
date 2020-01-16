@@ -86,7 +86,7 @@ POST /projects/:id/wikis
 | `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `content`       | string  | yes      | The content of the wiki page |
 | `title`        | string  | yes      | The title of the wiki page        |
-| `format` | string  | no       | The format of the wiki page. Available formats are: `markdown` (default), `rdoc`, and `asciidoc` |
+| `format` | string  | no       | The format of the wiki page. Available formats are: `markdown` (default), `rdoc`, `asciidoc` and `org` |
 
 ```bash
 curl --data "format=rdoc&title=Hello&content=Hello world" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/wikis"
@@ -116,7 +116,7 @@ PUT /projects/:id/wikis/:slug
 | `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `content`       | string  | yes if `title` is not provided     | The content of the wiki page |
 | `title`        | string  | yes if `content` is not provided      | The title of the wiki page        |
-| `format` | string  | no       | The format of the wiki page. Available formats are: `markdown` (default), `rdoc`, and `asciidoc` |
+| `format` | string  | no       | The format of the wiki page. Available formats are: `markdown` (default), `rdoc`, `asciidoc` and `org` |
 | `slug` | string  | yes       | The slug (a unique string) of the wiki page |
 
 ```bash

@@ -26,7 +26,7 @@ module API
           type: String,
           values: ProjectWiki::MARKUPS.values.map(&:to_s),
           default: 'markdown',
-          desc: 'Format of a wiki page. Available formats are markdown, rdoc, and asciidoc'
+          desc: 'Format of a wiki page. Available formats are markdown, rdoc, asciidoc and org'
       end
     end
 

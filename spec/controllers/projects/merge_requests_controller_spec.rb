@@ -1412,7 +1412,7 @@ describe Projects::MergeRequestsController do
         post_rebase
 
         expect(response.status).to eq(409)
-        expect(json_response['merge_error']).to eq(MergeRequest::REBASE_LOCK_MESSAGE)
+        expect(json_response['merge_error']).to eq('Failed to enqueue the rebase operation, possibly due to a long-lived transaction. Try again later.')
       end
     end
 

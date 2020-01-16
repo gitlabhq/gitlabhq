@@ -26,9 +26,15 @@ describe Gitlab::Runtime do
 
   context "puma" do
     let(:puma_type) { double('::Puma') }
+    let(:options) do
+      {
+        max_threads: 2
+      }
+    end
 
     before do
       stub_const('::Puma', puma_type)
+      allow(puma_type).to receive_message_chain(:cli_config, :options).and_return(options)
     end
 
     it "identifies itself" do
@@ -42,6 +48,10 @@ describe Gitlab::Runtime do
       expect(subject.console?).to be(false)
       expect(subject.rake?).to be(false)
       expect(subject.rspec?).to be(false)
+    end
+
+    it "reports its maximum concurrency" do
+      expect(subject.max_threads).to eq(2)
     end
   end
 
@@ -66,14 +76,24 @@ describe Gitlab::Runtime do
       expect(subject.rake?).to be(false)
       expect(subject.rspec?).to be(false)
     end
+
+    it "reports its maximum concurrency" do
+      expect(subject.max_threads).to eq(1)
+    end
   end
 
   context "sidekiq" do
     let(:sidekiq_type) { double('::Sidekiq') }
+    let(:options) do
+      {
+        concurrency: 2
+      }
+    end
 
     before do
       stub_const('::Sidekiq', sidekiq_type)
       allow(sidekiq_type).to receive(:server?).and_return(true)
+      allow(sidekiq_type).to receive(:options).and_return(options)
     end
 
     it "identifies itself" do
@@ -87,6 +107,10 @@ describe Gitlab::Runtime do
       expect(subject.console?).to be(false)
       expect(subject.rake?).to be(false)
       expect(subject.rspec?).to be(false)
+    end
+
+    it "reports its maximum concurrency" do
+      expect(subject.max_threads).to eq(2)
     end
   end
 
@@ -109,6 +133,10 @@ describe Gitlab::Runtime do
       expect(subject.rake?).to be(false)
       expect(subject.rspec?).to be(false)
     end
+
+    it "reports its maximum concurrency" do
+      expect(subject.max_threads).to eq(1)
+    end
   end
 
   context "rspec" do
@@ -126,6 +154,10 @@ describe Gitlab::Runtime do
       expect(subject.sidekiq?).to be(false)
       expect(subject.rake?).to be(false)
       expect(subject.puma?).to be(false)
+    end
+
+    it "reports its maximum concurrency" do
+      expect(subject.max_threads).to eq(1)
     end
   end
 end

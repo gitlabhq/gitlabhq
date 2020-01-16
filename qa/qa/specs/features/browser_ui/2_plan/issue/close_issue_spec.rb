@@ -4,12 +4,9 @@ module QA
   context 'Plan' do
     describe 'Close issue' do
       let(:issue) do
-        Resource::Issue.fabricate_via_api! do |issue|
-          issue.title = 'Issue to be closed via pushing a commit'
-        end
+        Resource::Issue.fabricate_via_api!
       end
 
-      let(:project) { issue.project }
       let(:issue_id) { issue.api_response[:iid] }
 
       before do
@@ -39,7 +36,7 @@ module QA
           push.commit_message = commit_message
           push.new_branch = new_branch
           push.file_content = commit_message
-          push.project = project
+          push.project = issue.project
         end
       end
     end

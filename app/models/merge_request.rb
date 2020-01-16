@@ -262,8 +262,6 @@ class MergeRequest < ApplicationRecord
 
   RebaseLockTimeout = Class.new(StandardError)
 
-  REBASE_LOCK_MESSAGE = _("Failed to enqueue the rebase operation, possibly due to a long-lived transaction. Try again later.")
-
   def self.reference_prefix
     '!'
   end
@@ -1514,7 +1512,7 @@ class MergeRequest < ApplicationRecord
     end
   rescue ActiveRecord::LockWaitTimeout => e
     Gitlab::ErrorTracking.track_exception(e)
-    raise RebaseLockTimeout, REBASE_LOCK_MESSAGE
+    raise RebaseLockTimeout, _('Failed to enqueue the rebase operation, possibly due to a long-lived transaction. Try again later.')
   end
 
   def source_project_variables
