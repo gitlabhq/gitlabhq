@@ -60,7 +60,7 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def update_registration
-    user_params = params.require(:user).permit(:name, :role, :setup_for_company)
+    user_params = params.require(:user).permit(:role, :setup_for_company)
     result = ::Users::SignupService.new(current_user, user_params).execute
 
     if result[:status] == :success
@@ -152,13 +152,7 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def sign_up_params
-    clean_params = params.require(:user).permit(:username, :email, :email_confirmation, :name, :password)
-
-    if experiment_enabled?(:signup_flow)
-      clean_params[:name] = clean_params[:username]
-    end
-
-    clean_params
+    params.require(:user).permit(:username, :email, :email_confirmation, :name, :first_name, :last_name, :password)
   end
 
   def resource_name

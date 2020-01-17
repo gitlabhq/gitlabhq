@@ -76,6 +76,25 @@ describe('IDE commit form', () => {
         done();
       });
     });
+
+    it('collapses if lastCommitMsg is set to empty and current view is not commit view', done => {
+      store.state.lastCommitMsg = 'abc';
+      store.state.currentActivityView = activityBarViews.edit;
+
+      vm.$nextTick(() => {
+        // if commit message is set, form is uncollapsed
+        expect(vm.isCompact).toBe(false);
+
+        store.state.lastCommitMsg = '';
+
+        vm.$nextTick(() => {
+          // collapsed when set to empty
+          expect(vm.isCompact).toBe(true);
+
+          done();
+        });
+      });
+    });
   });
 
   describe('full', () => {

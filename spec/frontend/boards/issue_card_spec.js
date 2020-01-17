@@ -50,7 +50,6 @@ describe('Issue card component', () => {
         rootPath: '/',
       },
       store,
-      attachToDocument: true,
     });
   });
 

@@ -147,15 +147,15 @@ describe User, :do_not_mock_admin_mode do
 
     describe 'name' do
       it { is_expected.to validate_presence_of(:name) }
-      it { is_expected.to validate_length_of(:name).is_at_most(128) }
+      it { is_expected.to validate_length_of(:name).is_at_most(255) }
     end
 
     describe 'first name' do
-      it { is_expected.to validate_length_of(:first_name).is_at_most(255) }
+      it { is_expected.to validate_length_of(:first_name).is_at_most(127) }
     end
 
     describe 'last name' do
-      it { is_expected.to validate_length_of(:last_name).is_at_most(255) }
+      it { is_expected.to validate_length_of(:last_name).is_at_most(127) }
     end
 
     describe 'username' do

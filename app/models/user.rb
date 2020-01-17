@@ -164,9 +164,9 @@ class User < ApplicationRecord
   # Validations
   #
   # Note: devise :validatable above adds validations for :email and :password
-  validates :name, presence: true, length: { maximum: 128 }
-  validates :first_name, length: { maximum: 255 }
-  validates :last_name, length: { maximum: 255 }
+  validates :name, presence: true, length: { maximum: 255 }
+  validates :first_name, length: { maximum: 127 }
+  validates :last_name, length: { maximum: 127 }
   validates :email, confirmation: true
   validates :notification_email, presence: true
   validates :notification_email, devise_email: true, if: ->(user) { user.notification_email != user.email }

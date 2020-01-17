@@ -31,7 +31,6 @@ describe('Release detail component', () => {
 
     wrapper = mount(ReleaseDetailApp, {
       store,
-      attachToDocument: true,
     });
 
     return wrapper.vm.$nextTick();

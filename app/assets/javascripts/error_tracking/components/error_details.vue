@@ -235,18 +235,23 @@ export default {
             >{{ error.tags.logger }}
           </gl-badge>
         </template>
-
-        <h3>{{ __('Error details') }}</h3>
         <ul>
+          <li v-if="GQLerror.gitlabCommit">
+            <strong class="bold">{{ __('GitLab commit') }}:</strong>
+            <gl-link :href="GQLerror.gitlabCommitPath">
+              <span>{{ GQLerror.gitlabCommit.substr(0, 10) }}</span>
+            </gl-link>
+          </li>
           <li v-if="error.gitlab_issue">
-            <span class="bold">{{ __('GitLab Issue') }}:</span>
+            <strong class="bold">{{ __('GitLab Issue') }}:</strong>
             <gl-link :href="error.gitlab_issue">
               <span>{{ error.gitlab_issue }}</span>
             </gl-link>
           </li>
           <li>
-            <span class="bold">{{ __('Sentry event') }}:</span>
+            <strong class="bold">{{ __('Sentry event') }}:</strong>
             <gl-link
+              class="d-inline-flex align-items-center"
               v-track-event="trackClickErrorLinkToSentryOptions(GQLerror.externalUrl)"
               :href="GQLerror.externalUrl"
               target="_blank"
@@ -256,25 +261,25 @@ export default {
             </gl-link>
           </li>
           <li v-if="GQLerror.firstReleaseShortVersion">
-            <span class="bold">{{ __('First seen') }}:</span>
+            <strong class="bold">{{ __('First seen') }}:</strong>
             {{ formatDate(GQLerror.firstSeen) }}
             <gl-link :href="firstReleaseLink" target="_blank">
-              <span>{{ __('Release') }}: {{ GQLerror.firstReleaseShortVersion }}</span>
+              <span>{{ __('Release') }}: {{ GQLerror.firstReleaseShortVersion.substr(0, 10) }}</span>
             </gl-link>
           </li>
           <li v-if="GQLerror.lastReleaseShortVersion">
-            <span class="bold">{{ __('Last seen') }}:</span>
+            <strong class="bold">{{ __('Last seen') }}:</strong>
             {{ formatDate(GQLerror.lastSeen) }}
             <gl-link :href="lastReleaseLink" target="_blank">
-              <span>{{ __('Release') }}: {{ GQLerror.lastReleaseShortVersion }}</span>
+              <span>{{ __('Release') }}: {{ GQLerror.lastReleaseShortVersion.substr(0, 10) }}</span>
             </gl-link>
           </li>
           <li>
-            <span class="bold">{{ __('Events') }}:</span>
+            <strong class="bold">{{ __('Events') }}:</strong>
             <span>{{ GQLerror.count }}</span>
           </li>
           <li>
-            <span class="bold">{{ __('Users') }}:</span>
+            <strong class="bold">{{ __('Users') }}:</strong>
             <span>{{ GQLerror.userCount }}</span>
           </li>
         </ul>

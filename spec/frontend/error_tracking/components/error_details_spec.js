@@ -246,5 +246,37 @@ describe('ErrorDetails', () => {
         });
       });
     });
+
+    describe('GitLab commit link', () => {
+      const gitlabCommit = '7975be0116940bf2ad4321f79d02a55c5f7779aa';
+      const gitlabCommitPath =
+        '/gitlab-org/gitlab-test/commit/7975be0116940bf2ad4321f79d02a55c5f7779aa';
+      const findGitLabCommitLink = () => wrapper.find(`[href$="${gitlabCommitPath}"]`);
+
+      it('should display a link', () => {
+        mocks.$apollo.queries.GQLerror.loading = false;
+        wrapper.setData({
+          GQLerror: {
+            gitlabCommit,
+            gitlabCommitPath,
+          },
+        });
+        return wrapper.vm.$nextTick().then(() => {
+          expect(findGitLabCommitLink().exists()).toBe(true);
+        });
+      });
+
+      it('should display a link', () => {
+        mocks.$apollo.queries.GQLerror.loading = false;
+        wrapper.setData({
+          GQLerror: {
+            gitlabCommit: null,
+          },
+        });
+        return wrapper.vm.$nextTick().then(() => {
+          expect(findGitLabCommitLink().exists()).toBe(false);
+        });
+      });
+    });
   });
 });

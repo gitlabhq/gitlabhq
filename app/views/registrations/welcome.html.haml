@@ -1,5 +1,4 @@
-- content_for(:page_title, _('Welcome to GitLab @%{username}!') % { username: current_user.username })
-- max_name_length = 128
+- content_for(:page_title, _('Welcome to GitLab %{name}!') % { name: current_user.name })
 .text-center.mb-3
   = _('In order to tailor your experience with GitLab we<br>would like to know a bit more about you.').html_safe
 .signup-box.p-3.mb-2
@@ -7,9 +6,6 @@
     = form_for(current_user, url: users_sign_up_update_registration_path, html: { class: 'new_new_user gl-show-field-errors', 'aria-live' => 'assertive' }) do |f|
       .devise-errors.mt-0
         = render 'devise/shared/error_messages', resource: current_user
-      .name.form-group
-        = f.label :name, _('Full name'), class: 'label-bold'
-        = f.text_field :name, class: 'form-control top js-block-emoji js-validate-length', :data => { :max_length => max_name_length, :max_length_message => s_('Name is too long (maximum is %{max_length} characters).') % { max_length: max_name_length }, :qa_selector => 'new_user_name_field' }, required: true, title: _('This field is required.')
       .form-group
         = f.label :role, _('Role'), class: 'label-bold'
         = f.select :role, ::User.roles.keys.map { |role| [role.titleize, role] }, {}, class: 'form-control'

@@ -33,10 +33,10 @@ describe ProjectPresenter do
 
   describe '#default_view' do
     context 'user not signed in' do
-      let(:user) { nil }
+      let_it_be(:user) { nil }
 
       context 'when repository is empty' do
-        let(:project) { create(:project_empty_repo, :public) }
+        let_it_be(:project) { create(:project_empty_repo, :public) }
 
         it 'returns activity if user has repository access' do
           allow(presenter).to receive(:can?).with(nil, :download_code, project).and_return(true)
@@ -52,7 +52,8 @@ describe ProjectPresenter do
       end
 
       context 'when repository is not empty' do
-        let(:project) { create(:project, :public, :repository) }
+        let_it_be(:project) { create(:project, :public, :repository) }
+        let(:release) { create(:release, project: project, author: user) }
 
         it 'returns files and readme if user has repository access' do
           allow(presenter).to receive(:can?).with(nil, :download_code, project).and_return(true)
@@ -64,6 +65,15 @@ describe ProjectPresenter do
           allow(presenter).to receive(:can?).with(nil, :download_code, project).and_return(false)
 
           expect(presenter.default_view).to eq('activity')
+        end
+
+        it 'returns releases anchor' do
+          expect(release).to be_truthy
+          expect(presenter.releases_anchor_data).to have_attributes(
+            is_link: true,
+            label:  a_string_including("#{project.releases.count}"),
+            link: presenter.project_releases_path(project)
+          )
         end
       end
     end
@@ -121,10 +131,8 @@ describe ProjectPresenter do
   end
 
   describe '#can_current_user_push_code?' do
-    let(:project) { create(:project, :repository) }
-
     context 'empty repo' do
-      let(:project) { create(:project) }
+      let_it_be(:project) { create(:project) }
 
       it 'returns true if user can push_code' do
         project.add_developer(user)
@@ -150,6 +158,7 @@ describe ProjectPresenter do
 
       it 'returns false if default branch is protected' do
         project.add_developer(user)
+
         create(:protected_branch, project: project, name: project.default_branch)
 
         expect(presenter.can_current_user_push_code?).to be(false)
@@ -158,73 +167,125 @@ describe ProjectPresenter do
   end
 
   context 'statistics anchors (empty repo)' do
-    let(:project) { create(:project, :empty_repo) }
+    let_it_be(:project) { create(:project, :empty_repo) }
 
     describe '#files_anchor_data' do
       it 'returns files data' do
-        expect(presenter.files_anchor_data).to have_attributes(is_link: true,
-                                                               label:  a_string_including('0 Bytes'),
-                                                               link: nil)
+        expect(presenter.files_anchor_data).to have_attributes(
+          is_link: true,
+          label:  a_string_including('0 Bytes'),
+          link: nil
+        )
+      end
+    end
+
+    describe '#releases_anchor_data' do
+      it 'does not return release count' do
+        expect(presenter.releases_anchor_data).to be_nil
       end
     end
 
     describe '#commits_anchor_data' do
       it 'returns commits data' do
-        expect(presenter.commits_anchor_data).to have_attributes(is_link: true,
-                                                                 label: a_string_including('0'),
-                                                                 link: nil)
+        expect(presenter.commits_anchor_data).to have_attributes(
+          is_link: true,
+          label: a_string_including('0'),
+          link: nil
+        )
       end
     end
 
     describe '#branches_anchor_data' do
       it 'returns branches data' do
-        expect(presenter.branches_anchor_data).to have_attributes(is_link: true,
-                                                                  label: a_string_including('0'),
-                                                                  link: nil)
+        expect(presenter.branches_anchor_data).to have_attributes(
+          is_link: true,
+          label: a_string_including('0'),
+          link: nil
+        )
       end
     end
 
     describe '#tags_anchor_data' do
       it 'returns tags data' do
-        expect(presenter.tags_anchor_data).to have_attributes(is_link: true,
-                                                              label: a_string_including('0'),
-                                                              link: nil)
+        expect(presenter.tags_anchor_data).to have_attributes(
+          is_link: true,
+          label: a_string_including('0'),
+          link: nil
+        )
       end
     end
   end
 
   context 'statistics anchors' do
-    let(:project) { create(:project, :repository) }
+    let_it_be(:user)    { create(:user) }
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:release) { create(:release, project: project, author: user) }
+    let(:presenter) { described_class.new(project, current_user: user) }
 
     describe '#files_anchor_data' do
       it 'returns files data' do
-        expect(presenter.files_anchor_data).to have_attributes(is_link: true,
-                                                               label:  a_string_including('0 Bytes'),
-                                                               link: presenter.project_tree_path(project))
+        expect(presenter.files_anchor_data).to have_attributes(
+          is_link: true,
+          label:  a_string_including('0 Bytes'),
+          link: presenter.project_tree_path(project)
+        )
+      end
+    end
+
+    describe '#releases_anchor_data' do
+      it 'returns release count if user can read release' do
+        project.add_maintainer(user)
+
+        expect(release).to be_truthy
+        expect(presenter.releases_anchor_data).to have_attributes(
+          is_link: true,
+          label:  a_string_including("#{project.releases.count}"),
+          link: presenter.project_releases_path(project)
+        )
+      end
+
+      it 'returns nil if user cannot read release' do
+        expect(release).to be_truthy
+        expect(presenter.releases_anchor_data).to be_nil
+      end
+
+      context 'user not signed in' do
+        let_it_be(:user) { nil }
+
+        it 'returns nil if user is signed out' do
+          expect(release).to be_truthy
+          expect(presenter.releases_anchor_data).to be_nil
+        end
       end
     end
 
     describe '#commits_anchor_data' do
       it 'returns commits data' do
-        expect(presenter.commits_anchor_data).to have_attributes(is_link: true,
-                                                                 label: a_string_including('0'),
-                                                                 link: presenter.project_commits_path(project, project.repository.root_ref))
+        expect(presenter.commits_anchor_data).to have_attributes(
+          is_link: true,
+          label: a_string_including('0'),
+          link: presenter.project_commits_path(project, project.repository.root_ref)
+        )
       end
     end
 
     describe '#branches_anchor_data' do
       it 'returns branches data' do
-        expect(presenter.branches_anchor_data).to have_attributes(is_link: true,
-                                                                  label: a_string_including("#{project.repository.branches.size}"),
-                                                                  link: presenter.project_branches_path(project))
+        expect(presenter.branches_anchor_data).to have_attributes(
+          is_link: true,
+          label: a_string_including("#{project.repository.branches.size}"),
+          link: presenter.project_branches_path(project)
+        )
       end
     end
 
     describe '#tags_anchor_data' do
       it 'returns tags data' do
-        expect(presenter.tags_anchor_data).to have_attributes(is_link: true,
-                                                              label: a_string_including("#{project.repository.tags.size}"),
-                                                              link: presenter.project_tags_path(project))
+        expect(presenter.tags_anchor_data).to have_attributes(
+          is_link: true,
+          label: a_string_including("#{project.repository.tags.size}"),
+          link: presenter.project_tags_path(project)
+        )
       end
     end
 
@@ -232,10 +293,12 @@ describe ProjectPresenter do
       it 'returns new file data if user can push' do
         project.add_developer(user)
 
-        expect(presenter.new_file_anchor_data).to have_attributes(is_link: false,
-                                                                  label: a_string_including("New file"),
-                                                                  link: presenter.project_new_blob_path(project, 'master'),
-                                                                  class_modifier: 'success')
+        expect(presenter.new_file_anchor_data).to have_attributes(
+          is_link: false,
+          label: a_string_including("New file"),
+          link: presenter.project_new_blob_path(project, 'master'),
+          class_modifier: 'success'
+        )
       end
 
       it 'returns nil if user cannot push' do
@@ -243,7 +306,7 @@ describe ProjectPresenter do
       end
 
       context 'when the project is empty' do
-        let(:project) { create(:project, :empty_repo) }
+        let_it_be(:project) { create(:project, :empty_repo) }
 
         # Since we protect the default branch for empty repos
         it 'is empty for a developer' do
@@ -258,11 +321,14 @@ describe ProjectPresenter do
       context 'when user can push and README does not exists' do
         it 'returns anchor data' do
           project.add_developer(user)
+
           allow(project.repository).to receive(:readme).and_return(nil)
 
-          expect(presenter.readme_anchor_data).to have_attributes(is_link: false,
-                                                                  label: a_string_including('Add README'),
-                                                                  link: presenter.add_readme_path)
+          expect(presenter.readme_anchor_data).to have_attributes(
+            is_link: false,
+            label: a_string_including('Add README'),
+            link: presenter.add_readme_path
+          )
         end
       end
 
@@ -270,9 +336,11 @@ describe ProjectPresenter do
         it 'returns anchor data' do
           allow(project.repository).to receive(:readme).and_return(double(name: 'readme'))
 
-          expect(presenter.readme_anchor_data).to have_attributes(is_link: false,
-                                                                  label: a_string_including('README'),
-                                                                  link: presenter.readme_path)
+          expect(presenter.readme_anchor_data).to have_attributes(
+            is_link: false,
+            label: a_string_including('README'),
+            link: presenter.readme_path
+          )
         end
       end
     end
@@ -281,11 +349,14 @@ describe ProjectPresenter do
       context 'when user can push and CHANGELOG does not exist' do
         it 'returns anchor data' do
           project.add_developer(user)
+
           allow(project.repository).to receive(:changelog).and_return(nil)
 
-          expect(presenter.changelog_anchor_data).to have_attributes(is_link: false,
-                                                                     label: a_string_including('Add CHANGELOG'),
-                                                                     link: presenter.add_changelog_path)
+          expect(presenter.changelog_anchor_data).to have_attributes(
+            is_link: false,
+            label: a_string_including('Add CHANGELOG'),
+            link: presenter.add_changelog_path
+          )
         end
       end
 
@@ -293,9 +364,11 @@ describe ProjectPresenter do
         it 'returns anchor data' do
           allow(project.repository).to receive(:changelog).and_return(double(name: 'foo'))
 
-          expect(presenter.changelog_anchor_data).to have_attributes(is_link: false,
-                                                                     label: a_string_including('CHANGELOG'),
-                                                                     link: presenter.changelog_path)
+          expect(presenter.changelog_anchor_data).to have_attributes(
+            is_link: false,
+            label: a_string_including('CHANGELOG'),
+            link: presenter.changelog_path
+          )
         end
       end
     end
@@ -304,11 +377,14 @@ describe ProjectPresenter do
       context 'when user can push and LICENSE does not exist' do
         it 'returns anchor data' do
           project.add_developer(user)
+
           allow(project.repository).to receive(:license_blob).and_return(nil)
 
-          expect(presenter.license_anchor_data).to have_attributes(is_link: false,
-                                                                   label: a_string_including('Add LICENSE'),
-                                                                   link: presenter.add_license_path)
+          expect(presenter.license_anchor_data).to have_attributes(
+            is_link: false,
+            label: a_string_including('Add LICENSE'),
+            link: presenter.add_license_path
+          )
         end
       end
 
@@ -316,9 +392,11 @@ describe ProjectPresenter do
         it 'returns anchor data' do
           allow(project.repository).to receive(:license_blob).and_return(double(name: 'foo'))
 
-          expect(presenter.license_anchor_data).to have_attributes(is_link: false,
-                                                                   label: a_string_including(presenter.license_short_name),
-                                                                   link: presenter.license_path)
+          expect(presenter.license_anchor_data).to have_attributes(
+            is_link: false,
+            label: a_string_including(presenter.license_short_name),
+            link: presenter.license_path
+          )
         end
       end
     end
@@ -327,11 +405,14 @@ describe ProjectPresenter do
       context 'when user can push and CONTRIBUTING does not exist' do
         it 'returns anchor data' do
           project.add_developer(user)
+
           allow(project.repository).to receive(:contribution_guide).and_return(nil)
 
-          expect(presenter.contribution_guide_anchor_data).to have_attributes(is_link: false,
-                                                                              label: a_string_including('Add CONTRIBUTING'),
-                                                                              link: presenter.add_contribution_guide_path)
+          expect(presenter.contribution_guide_anchor_data).to have_attributes(
+            is_link: false,
+            label: a_string_including('Add CONTRIBUTING'),
+            link: presenter.add_contribution_guide_path
+          )
         end
       end
 
@@ -339,9 +420,11 @@ describe ProjectPresenter do
         it 'returns anchor data' do
           allow(project.repository).to receive(:contribution_guide).and_return(double(name: 'foo'))
 
-          expect(presenter.contribution_guide_anchor_data).to have_attributes(is_link: false,
-                                                                              label: a_string_including('CONTRIBUTING'),
-                                                                              link: presenter.contribution_guide_path)
+          expect(presenter.contribution_guide_anchor_data).to have_attributes(
+            is_link: false,
+            label: a_string_including('CONTRIBUTING'),
+            link: presenter.contribution_guide_path
+          )
         end
       end
     end
@@ -351,21 +434,26 @@ describe ProjectPresenter do
         it 'returns anchor data' do
           allow(project).to receive(:auto_devops_enabled?).and_return(true)
 
-          expect(presenter.autodevops_anchor_data).to have_attributes(is_link: false,
-                                                                      label: a_string_including('Auto DevOps enabled'),
-                                                                      link: nil)
+          expect(presenter.autodevops_anchor_data).to have_attributes(
+            is_link: false,
+            label: a_string_including('Auto DevOps enabled'),
+            link: nil
+          )
         end
       end
 
       context 'when user can admin pipeline and CI yml does not exist' do
         it 'returns anchor data' do
           project.add_maintainer(user)
+
           allow(project).to receive(:auto_devops_enabled?).and_return(false)
           allow(project.repository).to receive(:gitlab_ci_yml).and_return(nil)
 
-          expect(presenter.autodevops_anchor_data).to have_attributes(is_link: false,
-                                                                      label: a_string_including('Enable Auto DevOps'),
-                                                                      link: presenter.project_settings_ci_cd_path(project, anchor: 'autodevops-settings'))
+          expect(presenter.autodevops_anchor_data).to have_attributes(
+            is_link: false,
+            label: a_string_including('Enable Auto DevOps'),
+            link: presenter.project_settings_ci_cd_path(project, anchor: 'autodevops-settings')
+          )
         end
       end
     end
@@ -374,29 +462,37 @@ describe ProjectPresenter do
       context 'when user can create Kubernetes cluster' do
         it 'returns link to cluster if only one exists' do
           project.add_maintainer(user)
+
           cluster = create(:cluster, projects: [project])
 
-          expect(presenter.kubernetes_cluster_anchor_data).to have_attributes(is_link: false,
-                                                                              label: a_string_including('Kubernetes configured'),
-                                                                              link: presenter.project_cluster_path(project, cluster))
+          expect(presenter.kubernetes_cluster_anchor_data).to have_attributes(
+            is_link: false,
+            label: a_string_including('Kubernetes configured'),
+            link: presenter.project_cluster_path(project, cluster)
+          )
         end
 
         it 'returns link to clusters page if more than one exists' do
           project.add_maintainer(user)
+
           create(:cluster, :production_environment, projects: [project])
           create(:cluster, projects: [project])
 
-          expect(presenter.kubernetes_cluster_anchor_data).to have_attributes(is_link: false,
-                                                                              label: a_string_including('Kubernetes configured'),
-                                                                              link: presenter.project_clusters_path(project))
+          expect(presenter.kubernetes_cluster_anchor_data).to have_attributes(
+            is_link: false,
+            label: a_string_including('Kubernetes configured'),
+            link: presenter.project_clusters_path(project)
+          )
         end
 
         it 'returns link to create a cluster if no cluster exists' do
           project.add_maintainer(user)
 
-          expect(presenter.kubernetes_cluster_anchor_data).to have_attributes(is_link: false,
-                                                                              label: a_string_including('Add Kubernetes cluster'),
-                                                                              link: presenter.new_project_cluster_path(project))
+          expect(presenter.kubernetes_cluster_anchor_data).to have_attributes(
+            is_link: false,
+            label: a_string_including('Add Kubernetes cluster'),
+            link: presenter.new_project_cluster_path(project)
+          )
         end
       end
 
@@ -464,7 +560,7 @@ describe ProjectPresenter do
     end
 
     context 'initialized repo' do
-      let(:project) { create(:project, :repository) }
+      let_it_be(:project) { create(:project, :repository) }
 
       it 'orders the items correctly' do
         expect(empty_repo_statistics_buttons.map(&:label)).to start_with(

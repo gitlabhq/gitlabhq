@@ -60,6 +60,11 @@ export default {
         );
       }
     },
+
+    lastCommitMsg() {
+      this.isCompact =
+        this.currentActivityView !== activityBarViews.commit && this.lastCommitMsg === '';
+    },
   },
   methods: {
     ...mapActions(['updateActivityBarView']),

@@ -1,7 +1,9 @@
 # GitLab instance administration project
 
 NOTE: **Note:**
-This feature is not yet available and is [planned for 12.6](https://gitlab.com/gitlab-org/gitlab/issues/32351).
+This feature is available behind a feature flag called `self_monitoring_project`
+since [12.7](https://gitlab.com/gitlab-org/gitlab/issues/32351). The feature flag
+will be removed once we [add dashboards to display metrics](https://gitlab.com/groups/gitlab-org/-/epics/2367).
 
 GitLab has been adding the ability for administrators to see insights into the health of
 their GitLab instance. In order to surface this experience in a native way, similar to how

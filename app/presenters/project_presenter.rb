@@ -24,7 +24,8 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       commits_anchor_data,
       branches_anchor_data,
       tags_anchor_data,
-      files_anchor_data
+      files_anchor_data,
+      releases_anchor_data
     ].compact.select(&:is_link)
   end
 
@@ -151,6 +152,22 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
                      strong_end: '</strong>'.html_safe
                    },
                    empty_repo? ? nil : project_tree_path(project))
+  end
+
+  def releases_anchor_data
+    return unless can?(current_user, :read_release, project)
+
+    releases_count = project.releases.count
+    return if releases_count < 1
+
+    AnchorData.new(true,
+                   statistic_icon('rocket') +
+                   n_('%{strong_start}%{release_count}%{strong_end} Release', '%{strong_start}%{release_count}%{strong_end} Releases', releases_count).html_safe % {
+                     release_count: number_with_delimiter(releases_count),
+                     strong_start: '<strong class="project-stat-value">'.html_safe,
+                     strong_end: '</strong>'.html_safe
+                   },
+                  project_releases_path(project))
   end
 
   def commits_anchor_data

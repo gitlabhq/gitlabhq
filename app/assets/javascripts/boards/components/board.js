@@ -3,7 +3,7 @@ import Sortable from 'sortablejs';
 import Vue from 'vue';
 import { GlButtonGroup, GlButton, GlTooltip } from '@gitlab/ui';
 import isWipLimitsOn from 'ee_else_ce/boards/mixins/is_wip_limits';
-import { n__, s__ } from '~/locale';
+import { s__, __, sprintf } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import Tooltip from '~/vue_shared/directives/tooltip';
 import AccessorUtilities from '../../lib/utils/accessor';
@@ -67,10 +67,13 @@ export default Vue.extend({
         !this.disabled && this.list.type !== ListType.closed && this.list.type !== ListType.blank
       );
     },
-    counterTooltip() {
+    issuesTooltip() {
       const { issuesSize } = this.list;
-      return `${n__('%d issue', '%d issues', issuesSize)}`;
+
+      return sprintf(__('%{issuesSize} issues'), { issuesSize });
     },
+    // Only needed to make karma pass.
+    weightCountToolTip() {}, // eslint-disable-line vue/return-in-computed-property
     caretTooltip() {
       return this.list.isExpanded ? s__('Boards|Collapse') : s__('Boards|Expand');
     },

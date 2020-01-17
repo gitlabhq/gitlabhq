@@ -284,6 +284,12 @@ msgstr ""
 msgid "%{issuableType} will be removed! Are you sure?"
 msgstr ""
 
+msgid "%{issuesSize} issues"
+msgstr ""
+
+msgid "%{issuesSize} issues with a limit of %{maxIssueCount}"
+msgstr ""
+
 msgid "%{label_for_message} unavailable"
 msgstr ""
 
@@ -401,6 +407,11 @@ msgstr[1] ""
 msgid "%{strong_start}%{human_size}%{strong_end} Files"
 msgstr ""
 
+msgid "%{strong_start}%{release_count}%{strong_end} Release"
+msgid_plural "%{strong_start}%{release_count}%{strong_end} Releases"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{strong_start}%{tag_count}%{strong_end} Tag"
 msgid_plural "%{strong_start}%{tag_count}%{strong_end} Tags"
 msgstr[0] ""
@@ -433,6 +444,9 @@ msgid "%{title} %{operator} %{threshold}"
 msgstr ""
 
 msgid "%{title} changes"
+msgstr ""
+
+msgid "%{totalWeight} total weight"
 msgstr ""
 
 msgid "%{total} open issue weight"
@@ -3299,7 +3313,19 @@ msgstr ""
 msgid "Checkout"
 msgstr ""
 
+msgid "Checkout|$%{selectedPlanPrice} per user per year"
+msgstr ""
+
+msgid "Checkout|%{name}'s GitLab subscription"
+msgstr ""
+
 msgid "Checkout|%{selectedPlanText} plan"
+msgstr ""
+
+msgid "Checkout|%{startDate} - %{endDate}"
+msgstr ""
+
+msgid "Checkout|(x%{numberOfUsers})"
 msgstr ""
 
 msgid "Checkout|1. Your profile"
@@ -3338,7 +3364,19 @@ msgstr ""
 msgid "Checkout|Subscription details"
 msgstr ""
 
+msgid "Checkout|Subtotal"
+msgstr ""
+
+msgid "Checkout|Tax"
+msgstr ""
+
+msgid "Checkout|Total"
+msgstr ""
+
 msgid "Checkout|Users"
+msgstr ""
+
+msgid "Checkout|Your organization"
 msgstr ""
 
 msgid "Checkout|company or team"
@@ -7275,9 +7313,6 @@ msgstr ""
 msgid "Error deleting project. Check logs for error details."
 msgstr ""
 
-msgid "Error details"
-msgstr ""
-
 msgid "Error fetching diverging counts for branches. Please try again."
 msgstr ""
 
@@ -8139,6 +8174,9 @@ msgstr ""
 msgid "Finished"
 msgstr ""
 
+msgid "First Name is too long (maximum is %{max_length} characters)."
+msgstr ""
+
 msgid "First Seen"
 msgstr ""
 
@@ -8836,6 +8874,9 @@ msgid "GitLab User"
 msgstr ""
 
 msgid "GitLab allows you to continue using your license even if you exceed the number of seats you purchased. You will be required to pay for these seats when you renew your license."
+msgstr ""
+
+msgid "GitLab commit"
 msgstr ""
 
 msgid "GitLab for Slack"
@@ -10668,6 +10709,9 @@ msgstr ""
 msgid "Last Accessed On"
 msgstr ""
 
+msgid "Last Name is too long (maximum is %{max_length} characters)."
+msgstr ""
+
 msgid "Last Pipeline"
 msgstr ""
 
@@ -11989,9 +12033,6 @@ msgid "Name"
 msgstr ""
 
 msgid "Name has already been taken"
-msgstr ""
-
-msgid "Name is too long (maximum is %{max_length} characters)."
 msgstr ""
 
 msgid "Name new label"
@@ -20461,6 +20502,9 @@ msgstr ""
 msgid "Username is available."
 msgstr ""
 
+msgid "Username is too long (maximum is %{max_length} characters)."
+msgstr ""
+
 msgid "Username or email"
 msgstr ""
 
@@ -20835,7 +20879,7 @@ msgstr ""
 msgid "Welcome to GitLab"
 msgstr ""
 
-msgid "Welcome to GitLab @%{username}!"
+msgid "Welcome to GitLab %{name}!"
 msgstr ""
 
 msgid "Welcome to the Guided GitLab Tour"
