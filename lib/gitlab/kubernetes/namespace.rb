@@ -3,11 +3,12 @@
 module Gitlab
   module Kubernetes
     class Namespace
-      attr_accessor :name
+      attr_accessor :name, :labels
 
-      def initialize(name, client)
+      def initialize(name, client, labels: nil)
         @name = name
         @client = client
+        @labels = labels
       end
 
       def exists?
@@ -17,7 +18,7 @@ module Gitlab
       end
 
       def create!
-        resource = ::Kubeclient::Resource.new(metadata: { name: name })
+        resource = ::Kubeclient::Resource.new(metadata: { name: name, labels: labels })
 
         log_event(:begin_create)
         @client.create_namespace(resource)

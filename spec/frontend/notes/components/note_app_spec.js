@@ -59,7 +59,6 @@ describe('note_app', () => {
           </div>`,
         },
         {
-          attachToDocument: true,
           propsData,
           store,
         },

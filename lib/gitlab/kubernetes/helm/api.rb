@@ -6,7 +6,11 @@ module Gitlab
       class Api
         def initialize(kubeclient)
           @kubeclient = kubeclient
-          @namespace = Gitlab::Kubernetes::Namespace.new(Gitlab::Kubernetes::Helm::NAMESPACE, kubeclient)
+          @namespace = Gitlab::Kubernetes::Namespace.new(
+            Gitlab::Kubernetes::Helm::NAMESPACE,
+            kubeclient,
+            labels: Gitlab::Kubernetes::Helm::NAMESPACE_LABELS
+          )
         end
 
         def install(command)

@@ -86,6 +86,14 @@ to help summarize changes between versions.
 | Modified (in the selected version) | ![Design Modified](img/design_modified_v12_3.png) |
 | Added (in the selected version) | ![Design Added](img/design_added_v12_3.png) |
 
+### Exploring designs by zooming
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/13217) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.7.
+
+Designs can be explored in greater detail by zooming in and out of the image. Control the amount of zoom with the `+` and `-` buttons at the bottom of the image. While zoomed, you can still [add new annotations](#adding-annotations-to-designs) to the image, and see any existing ones.
+
+![Design zooming](img/design_zooming_v12_7.png)
+
 ## Deleting designs
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/11089) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.4.

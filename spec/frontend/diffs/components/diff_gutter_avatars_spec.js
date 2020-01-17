@@ -16,7 +16,6 @@ describe('DiffGutterAvatars', () => {
       propsData: {
         ...props,
       },
-      attachToDocument: true,
     });
   };
 

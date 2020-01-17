@@ -54,10 +54,15 @@ const Api = {
     });
   },
 
-  groupMembers(id) {
+  groupMembers(id, options) {
     const url = Api.buildUrl(this.groupMembersPath).replace(':id', encodeURIComponent(id));
 
-    return axios.get(url);
+    return axios.get(url, {
+      params: {
+        per_page: DEFAULT_PER_PAGE,
+        ...options,
+      },
+    });
   },
 
   // Return groups list. Filtered by query

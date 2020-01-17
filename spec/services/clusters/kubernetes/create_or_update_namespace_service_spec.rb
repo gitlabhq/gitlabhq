@@ -57,11 +57,21 @@ describe Clusters::Kubernetes::CreateOrUpdateNamespaceService, '#execute' do
       end.to change(Clusters::KubernetesNamespace, :count).by(1)
     end
 
-    it 'creates project service account' do
-      expect_next_instance_of(Clusters::Kubernetes::CreateOrUpdateServiceAccountService) do |instance|
-        expect(instance).to receive(:execute).once
-      end
-
+    it 'creates project service account and namespace' do
+      account_service = double(Clusters::Kubernetes::CreateOrUpdateServiceAccountService)
+      expect(Clusters::Kubernetes::CreateOrUpdateServiceAccountService).to(
+        receive(:namespace_creator).with(
+          cluster.platform.kubeclient,
+          service_account_name: "#{namespace}-service-account",
+          service_account_namespace: namespace,
+          service_account_namespace_labels: {
+            'app.gitlab.com/app' => project.full_path_slug,
+            'app.gitlab.com/env' => environment.slug
+          },
+          rbac: true
+        ).and_return(account_service)
+      )
+      expect(account_service).to receive(:execute).once
       subject
     end
 
@@ -72,6 +82,29 @@ describe Clusters::Kubernetes::CreateOrUpdateNamespaceService, '#execute' do
       expect(kubernetes_namespace.namespace).to eq(namespace)
       expect(kubernetes_namespace.service_account_name).to eq("#{namespace}-service-account")
       expect(kubernetes_namespace.encrypted_service_account_token).to be_present
+    end
+
+    context 'without environment' do
+      before do
+        kubernetes_namespace.environment = nil
+      end
+
+      it 'creates project service account and namespace' do
+        account_service = double(Clusters::Kubernetes::CreateOrUpdateServiceAccountService)
+        expect(Clusters::Kubernetes::CreateOrUpdateServiceAccountService).to(
+          receive(:namespace_creator).with(
+            cluster.platform.kubeclient,
+            service_account_name: "#{namespace}-service-account",
+            service_account_namespace: namespace,
+            service_account_namespace_labels: {
+              'app.gitlab.com/app' => project.full_path_slug
+            },
+            rbac: true
+          ).and_return(account_service)
+        )
+        expect(account_service).to receive(:execute).once
+        subject
+      end
     end
   end
 

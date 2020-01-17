@@ -5,9 +5,7 @@ describe('JumpToNextDiscussionButton', () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallowMount(JumpToNextDiscussionButton, {
-      attachToDocument: true,
-    });
+    wrapper = shallowMount(JumpToNextDiscussionButton);
   });
 
   afterEach(() => {
