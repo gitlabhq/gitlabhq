@@ -266,7 +266,7 @@ describe('ErrorDetails', () => {
         });
       });
 
-      it('should display a link', () => {
+      it('should not display a link', () => {
         mocks.$apollo.queries.GQLerror.loading = false;
         wrapper.setData({
           GQLerror: {

@@ -200,6 +200,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Log system](logs.md): Where to look for logs.
 - [Sidekiq Troubleshooting](troubleshooting/sidekiq.md): Debug when Sidekiq appears hung and is not processing jobs.
 - [Troubleshooting Elasticsearch](troubleshooting/elasticsearch.md)
+- [GitLab application limits](instance_limits.md)
 
 ### Support Team Docs
 

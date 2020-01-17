@@ -6,7 +6,6 @@ describe('Registry Project Empty state', () => {
 
   beforeEach(() => {
     wrapper = mount(projectEmptyState, {
-      attachToDocument: true,
       propsData: {
         noContainersImage: 'imageUrl',
         helpPagePath: 'help',

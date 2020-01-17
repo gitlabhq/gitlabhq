@@ -53,6 +53,6 @@ class Groups::GroupLinksController < Groups::ApplicationController
   end
 
   def check_feature_flag!
-    render_404 unless Feature.enabled?(:share_group_with_group)
+    render_404 unless Feature.enabled?(:share_group_with_group, default_enabled: true)
   end
 end

@@ -251,8 +251,8 @@ export default {
           <li>
             <strong class="bold">{{ __('Sentry event') }}:</strong>
             <gl-link
-              class="d-inline-flex align-items-center"
               v-track-event="trackClickErrorLinkToSentryOptions(GQLerror.externalUrl)"
+              class="d-inline-flex align-items-center"
               :href="GQLerror.externalUrl"
               target="_blank"
             >
@@ -264,7 +264,9 @@ export default {
             <strong class="bold">{{ __('First seen') }}:</strong>
             {{ formatDate(GQLerror.firstSeen) }}
             <gl-link :href="firstReleaseLink" target="_blank">
-              <span>{{ __('Release') }}: {{ GQLerror.firstReleaseShortVersion.substr(0, 10) }}</span>
+              <span>
+                {{ __('Release') }}: {{ GQLerror.firstReleaseShortVersion.substr(0, 10) }}
+              </span>
             </gl-link>
           </li>
           <li v-if="GQLerror.lastReleaseShortVersion">

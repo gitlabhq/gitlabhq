@@ -28,7 +28,11 @@ describe('table registry', () => {
   const bulkDeletePath = 'path';
 
   const mountWithStore = config =>
-    mount(tableRegistry, { ...config, store, localVue, attachToDocument: true });
+    mount(tableRegistry, {
+      ...config,
+      store,
+      localVue,
+    });
 
   beforeEach(() => {
     store = new Vuex.Store({

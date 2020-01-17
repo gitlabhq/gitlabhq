@@ -26,7 +26,6 @@ describe('collapsible registry container', () => {
       ...config,
       store,
       localVue,
-      attachToDocument: true,
     });
 
   beforeEach(() => {
