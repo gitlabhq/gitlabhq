@@ -37,6 +37,13 @@ Design Management requires that projects are using
 [hashed storage](../../../administration/repository_storage_types.html#hashed-storage)
 (the default storage type since v10.0).
 
+### Feature Flags
+
+- Reference Parsing
+
+  Designs support short references in Markdown, but this needs to be enabled by setting
+  the `:design_management_reference_filter_gfm_pipeline` feature flag.
+
 ## Limitations
 
 - Files uploaded must have a file extension of either `png`, `jpg`, `jpeg`, `gif`, `bmp`, `tiff` or `ico`.
@@ -137,3 +144,32 @@ Different discussions have different badge numbers:
 
 From GitLab 12.5 on, new annotations will be outputted to the issue activity,
 so that everyone involved can participate in the discussion.
+
+## References
+
+GitLab Flavored Markdown supports references to designs. The syntax for this is:
+
+  `#123[file.jpg]` - the issue reference, with the filename in square braces
+
+File names may contain a variety of odd characters, so two escaping mechanisms are supported:
+
+### Quoting
+
+File names may be quoted with double quotation marks, eg:
+
+  `#123["file.jpg"]`
+
+This is useful if, for instance, your filename has square braces in its name. In this scheme, all
+double quotation marks in the file name need to be escaped with backslashes, and backslashes need
+to be escaped likewise:
+
+  `#123["with with \"quote\" marks and a backslash \\.png"]`
+
+### Base64 Encoding
+
+In the case of file names that include HTML elements, you will need to escape these names to avoid
+them being processed as HTML literals. To do this, we support base64 encoding, eg.
+
+  The file `<a>.jpg` can be referenced as `#123[base64:PGE+LmpwZwo=]`
+
+Obviously we would advise against using such filenames.

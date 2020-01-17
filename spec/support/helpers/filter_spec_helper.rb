@@ -28,6 +28,17 @@ module FilterSpecHelper
     described_class.call(html, context)
   end
 
+  # Get an instance of the Filter class
+  #
+  # Use this for testing instance methods, but remember to test the result of
+  # the full pipeline by calling #call using the other methods in this helper.
+  def filter_instance
+    render_context = Banzai::RenderContext.new(project, current_user)
+    context = { project: project, current_user: current_user, render_context: render_context }
+
+    described_class.new(input_text, context)
+  end
+
   # Run text through HTML::Pipeline with the current filter and return the
   # result Hash
   #

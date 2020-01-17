@@ -30,6 +30,11 @@ class Deployment < ApplicationRecord
   delegate :name, to: :environment, prefix: true
 
   scope :for_environment, -> (environment) { where(environment_id: environment) }
+  scope :for_environment_name, -> (name) do
+    joins(:environment).where(environments: { name: name })
+  end
+
+  scope :for_status, -> (status) { where(status: status) }
 
   scope :visible, -> { where(status: %i[running success failed canceled]) }
 

@@ -15,6 +15,16 @@ GET /projects/:id/deployments
 | `sort`    | string  | no       | Return deployments sorted in `asc` or `desc` order. Default is `asc` |
 | `updated_after` | datetime | no | Return deployments updated after the specified date |
 | `updated_before` | datetime | no | Return deployments updated before the specified date |
+| `environment` | string | no | The name of the environment to filter deployments by |
+| `status` | string | no | The status to filter deployments by |
+
+The status attribute can be one of the following values:
+
+- created
+- running
+- success
+- failed
+- canceled
 
 ```bash
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/deployments"

@@ -29,8 +29,8 @@ describe('Monitoring mutations', () => {
       mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, payload);
       const groups = getGroups();
 
-      expect(groups[0].key).toBe('response-metrics-nginx-ingress-vts--0');
-      expect(groups[1].key).toBe('system-metrics-kubernetes--1');
+      expect(groups[0].key).toBe('response-metrics-nginx-ingress-vts-0');
+      expect(groups[1].key).toBe('system-metrics-kubernetes-1');
     });
     it('normalizes values', () => {
       mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, payload);

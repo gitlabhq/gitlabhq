@@ -57,6 +57,8 @@ class Group < Namespace
 
   has_one :import_export_upload
 
+  has_many :import_failures, inverse_of: :group
+
   accepts_nested_attributes_for :variables, allow_destroy: true
 
   validate :visibility_level_allowed_by_projects

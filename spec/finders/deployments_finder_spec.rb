@@ -25,6 +25,42 @@ describe DeploymentsFinder do
           is_expected.to match_array([deployment_1])
         end
       end
+
+      context 'when the environment name is specified' do
+        let!(:environment1) { create(:environment, project: project) }
+        let!(:environment2) { create(:environment, project: project) }
+        let!(:deployment1) do
+          create(:deployment, project: project, environment: environment1)
+        end
+
+        let!(:deployment2) do
+          create(:deployment, project: project, environment: environment2)
+        end
+
+        let(:params) { { environment: environment1.name } }
+
+        it 'returns deployments for the given environment' do
+          is_expected.to match_array([deployment1])
+        end
+      end
+
+      context 'when the deployment status is specified' do
+        let!(:deployment1) { create(:deployment, :success, project: project) }
+        let!(:deployment2) { create(:deployment, :failed, project: project) }
+        let(:params) { { status: 'success' } }
+
+        it 'returns deployments for the given environment' do
+          is_expected.to match_array([deployment1])
+        end
+      end
+
+      context 'when using an invalid deployment status' do
+        let(:params) { { status: 'kittens' } }
+
+        it 'raises ArgumentError' do
+          expect { subject }.to raise_error(ArgumentError)
+        end
+      end
     end
 
     describe 'ordering' do

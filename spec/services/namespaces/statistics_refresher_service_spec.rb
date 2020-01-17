@@ -17,7 +17,9 @@ describe Namespaces::StatisticsRefresherService, '#execute' do
     end
 
     it 'recalculate the namespace statistics' do
-      expect_any_instance_of(Namespace::RootStorageStatistics).to receive(:recalculate!).once
+      expect_next_instance_of(Namespace::RootStorageStatistics) do |instance|
+        expect(instance).to receive(:recalculate!).once
+      end
 
       service.execute(group)
     end
@@ -45,8 +47,9 @@ describe Namespaces::StatisticsRefresherService, '#execute' do
 
   context 'when something goes wrong' do
     before do
-      allow_any_instance_of(Namespace::RootStorageStatistics)
-        .to receive(:recalculate!).and_raise(ActiveRecord::ActiveRecordError)
+      allow_next_instance_of(Namespace::RootStorageStatistics) do |instance|
+        allow(instance).to receive(:recalculate!).and_raise(ActiveRecord::ActiveRecordError)
+      end
     end
 
     it 'raises RefreshError' do

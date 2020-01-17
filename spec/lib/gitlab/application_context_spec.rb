@@ -28,7 +28,7 @@ describe Gitlab::ApplicationContext do
   describe '.push' do
     it 'passes the expected context on to labkit' do
       fake_proc = duck_type(:call)
-      expected_context = hash_including(user: fake_proc, project: fake_proc, root_namespace: fake_proc)
+      expected_context = { user: fake_proc }
 
       expect(Labkit::Context).to receive(:push).with(expected_context)
 
@@ -77,6 +77,28 @@ describe Gitlab::ApplicationContext do
 
       expect(result(context))
         .to include(project: project.full_path, root_namespace: project.full_path_components.first)
+    end
+
+    context 'only include values for which an option was specified' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:provided_options, :expected_context_keys) do
+        [:user, :namespace, :project] | [:user, :project, :root_namespace]
+        [:user, :project]             | [:user, :project, :root_namespace]
+        [:user, :namespace]           | [:user, :root_namespace]
+        [:user]                       | [:user]
+        []                            | []
+      end
+
+      with_them do
+        it do
+          # Build a hash that has all `provided_options` as keys, and `nil` as value
+          provided_values = provided_options.map { |key| [key, nil] }.to_h
+          context = described_class.new(provided_values)
+
+          expect(context.to_lazy_hash.keys).to contain_exactly(*expected_context_keys)
+        end
+      end
     end
   end
 end

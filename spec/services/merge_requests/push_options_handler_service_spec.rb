@@ -714,9 +714,9 @@ describe MergeRequests::PushOptionsHandlerService do
     let(:exception) { StandardError.new('My standard error') }
 
     def run_service_with_exception
-      allow_any_instance_of(
-        MergeRequests::BuildService
-      ).to receive(:execute).and_raise(exception)
+      allow_next_instance_of(MergeRequests::BuildService) do |instance|
+        allow(instance).to receive(:execute).and_raise(exception)
+      end
 
       service.execute
     end
@@ -766,9 +766,9 @@ describe MergeRequests::PushOptionsHandlerService do
       invalid_merge_request = MergeRequest.new
       invalid_merge_request.errors.add(:base, 'my error')
 
-      expect_any_instance_of(
-        MergeRequests::CreateService
-      ).to receive(:execute).and_return(invalid_merge_request)
+      expect_next_instance_of(MergeRequests::CreateService) do |instance|
+        expect(instance).to receive(:execute).and_return(invalid_merge_request)
+      end
 
       service.execute
 

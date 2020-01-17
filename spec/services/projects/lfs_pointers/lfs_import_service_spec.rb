@@ -16,7 +16,9 @@ describe Projects::LfsPointers::LfsImportService do
 
     it 'downloads lfs objects' do
       service = double
-      expect_any_instance_of(Projects::LfsPointers::LfsObjectDownloadListService).to receive(:execute).and_return(oid_download_links)
+      expect_next_instance_of(Projects::LfsPointers::LfsObjectDownloadListService) do |instance|
+        expect(instance).to receive(:execute).and_return(oid_download_links)
+      end
       expect(Projects::LfsPointers::LfsDownloadService).to receive(:new).and_return(service).twice
       expect(service).to receive(:execute).twice
 
@@ -27,7 +29,9 @@ describe Projects::LfsPointers::LfsImportService do
 
     context 'when no downloadable lfs object links' do
       it 'does not call LfsDownloadService' do
-        expect_any_instance_of(Projects::LfsPointers::LfsObjectDownloadListService).to receive(:execute).and_return({})
+        expect_next_instance_of(Projects::LfsPointers::LfsObjectDownloadListService) do |instance|
+          expect(instance).to receive(:execute).and_return({})
+        end
         expect(Projects::LfsPointers::LfsDownloadService).not_to receive(:new)
 
         result = subject.execute
@@ -39,7 +43,9 @@ describe Projects::LfsPointers::LfsImportService do
     context 'when an exception is raised' do
       it 'returns error' do
         error_message = "error message"
-        expect_any_instance_of(Projects::LfsPointers::LfsObjectDownloadListService).to receive(:execute).and_raise(StandardError, error_message)
+        expect_next_instance_of(Projects::LfsPointers::LfsObjectDownloadListService) do |instance|
+          expect(instance).to receive(:execute).and_raise(StandardError, error_message)
+        end
 
         result = subject.execute
 

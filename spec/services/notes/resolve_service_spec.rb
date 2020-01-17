@@ -17,7 +17,9 @@ describe Notes::ResolveService do
     end
 
     it "sends notifications if all discussions are resolved" do
-      expect_any_instance_of(MergeRequests::ResolvedDiscussionNotificationService).to receive(:execute).with(merge_request)
+      expect_next_instance_of(MergeRequests::ResolvedDiscussionNotificationService) do |instance|
+        expect(instance).to receive(:execute).with(merge_request)
+      end
 
       described_class.new(merge_request.project, user).execute(note)
     end

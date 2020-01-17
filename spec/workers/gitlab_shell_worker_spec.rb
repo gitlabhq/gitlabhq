@@ -7,7 +7,9 @@ describe GitlabShellWorker do
 
   describe '#perform with add_key' do
     it 'calls add_key on Gitlab::Shell' do
-      expect_any_instance_of(Gitlab::Shell).to receive(:add_key).with('foo', 'bar')
+      expect_next_instance_of(Gitlab::Shell) do |instance|
+        expect(instance).to receive(:add_key).with('foo', 'bar')
+      end
       worker.perform(:add_key, 'foo', 'bar')
     end
   end

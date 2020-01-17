@@ -1,14 +1,45 @@
 import $ from 'jquery';
 import { addSelectOnFocusBehaviour } from '../lib/utils/common_utils';
-import { slugify } from '../lib/utils/text_utility';
+import { convertToTitleCase, humanize, slugify } from '../lib/utils/text_utility';
 import { s__ } from '~/locale';
 
 let hasUserDefinedProjectPath = false;
+let hasUserDefinedProjectName = false;
+
+const onProjectNameChange = ($projectNameInput, $projectPathInput) => {
+  const slug = slugify($projectNameInput.val());
+  $projectPathInput.val(slug);
+};
+
+const onProjectPathChange = ($projectNameInput, $projectPathInput, hasExistingProjectName) => {
+  const slug = $projectPathInput.val();
+
+  if (!hasExistingProjectName) {
+    $projectNameInput.val(convertToTitleCase(humanize(slug, '[-_]')));
+  }
+};
+
+const setProjectNamePathHandlers = ($projectNameInput, $projectPathInput) => {
+  $projectNameInput.off('keyup change').on('keyup change', () => {
+    onProjectNameChange($projectNameInput, $projectPathInput);
+    hasUserDefinedProjectName = $projectNameInput.val().trim().length > 0;
+    hasUserDefinedProjectPath = $projectPathInput.val().trim().length > 0;
+  });
+
+  $projectPathInput.off('keyup change').on('keyup change', () => {
+    onProjectPathChange($projectNameInput, $projectPathInput, hasUserDefinedProjectName);
+    hasUserDefinedProjectPath = $projectPathInput.val().trim().length > 0;
+  });
+};
 
 const deriveProjectPathFromUrl = $projectImportUrl => {
+  const $currentProjectName = $projectImportUrl
+    .parents('.toggle-import-form')
+    .find('#project_name');
   const $currentProjectPath = $projectImportUrl
     .parents('.toggle-import-form')
     .find('#project_path');
+
   if (hasUserDefinedProjectPath) {
     return;
   }
@@ -30,12 +61,8 @@ const deriveProjectPathFromUrl = $projectImportUrl => {
   const pathMatch = /\/([^/]+)$/.exec(importUrl);
   if (pathMatch) {
     $currentProjectPath.val(pathMatch[1]);
+    onProjectPathChange($currentProjectName, $currentProjectPath, false);
   }
-};
-
-const onProjectNameChange = ($projectNameInput, $projectPathInput) => {
-  const slug = slugify($projectNameInput.val());
-  $projectPathInput.val(slug);
 };
 
 const bindEvents = () => {
@@ -202,10 +229,7 @@ const bindEvents = () => {
     const $activeTabProjectName = $('.tab-pane.active #project_name');
     const $activeTabProjectPath = $('.tab-pane.active #project_path');
     $activeTabProjectName.focus();
-    $activeTabProjectName.keyup(() => {
-      onProjectNameChange($activeTabProjectName, $activeTabProjectPath);
-      hasUserDefinedProjectPath = $activeTabProjectPath.val().trim().length > 0;
-    });
+    setProjectNamePathHandlers($activeTabProjectName, $activeTabProjectPath);
   }
 
   $useTemplateBtn.on('change', chooseTemplate);
@@ -220,26 +244,24 @@ const bindEvents = () => {
     $projectPath.val($projectPath.val().trim());
   });
 
-  $projectPath.on('keyup', () => {
-    hasUserDefinedProjectPath = $projectPath.val().trim().length > 0;
-  });
-
   $projectImportUrl.keyup(() => deriveProjectPathFromUrl($projectImportUrl));
 
   $('.js-import-git-toggle-button').on('click', () => {
     const $projectMirror = $('#project_mirror');
 
     $projectMirror.attr('disabled', !$projectMirror.attr('disabled'));
+    setProjectNamePathHandlers(
+      $('.tab-pane.active #project_name'),
+      $('.tab-pane.active #project_path'),
+    );
   });
 
-  $projectName.on('keyup change', () => {
-    onProjectNameChange($projectName, $projectPath);
-    hasUserDefinedProjectPath = $projectPath.val().trim().length > 0;
-  });
+  setProjectNamePathHandlers($projectName, $projectPath);
 };
 
 export default {
   bindEvents,
   deriveProjectPathFromUrl,
   onProjectNameChange,
+  onProjectPathChange,
 };

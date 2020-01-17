@@ -265,7 +265,9 @@ describe ::SystemNotes::IssuablesService do
 
     context 'when cross-reference disallowed' do
       before do
-        expect_any_instance_of(described_class).to receive(:cross_reference_disallowed?).and_return(true)
+        expect_next_instance_of(described_class) do |instance|
+          expect(instance).to receive(:cross_reference_disallowed?).and_return(true)
+        end
       end
 
       it 'returns nil' do
@@ -279,7 +281,9 @@ describe ::SystemNotes::IssuablesService do
 
     context 'when cross-reference allowed' do
       before do
-        expect_any_instance_of(described_class).to receive(:cross_reference_disallowed?).and_return(false)
+        expect_next_instance_of(described_class) do |instance|
+          expect(instance).to receive(:cross_reference_disallowed?).and_return(false)
+        end
       end
 
       it_behaves_like 'a system note' do

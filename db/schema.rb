@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_14_204949) do
+ActiveRecord::Schema.define(version: 2020_01_17_112554) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -2037,14 +2037,17 @@ ActiveRecord::Schema.define(version: 2020_01_14_204949) do
 
   create_table "import_failures", force: :cascade do |t|
     t.integer "relation_index"
-    t.bigint "project_id", null: false
+    t.bigint "project_id"
     t.datetime_with_timezone "created_at", null: false
     t.string "relation_key", limit: 64
     t.string "exception_class", limit: 128
     t.string "correlation_id_value", limit: 128
     t.string "exception_message", limit: 255
+    t.integer "retry_count"
+    t.integer "group_id"
     t.index ["correlation_id_value"], name: "index_import_failures_on_correlation_id_value"
-    t.index ["project_id"], name: "index_import_failures_on_project_id"
+    t.index ["group_id"], name: "index_import_failures_on_group_id_not_null", where: "(group_id IS NOT NULL)"
+    t.index ["project_id"], name: "index_import_failures_on_project_id_not_null", where: "(project_id IS NOT NULL)"
   end
 
   create_table "index_statuses", id: :serial, force: :cascade do |t|
@@ -4645,6 +4648,7 @@ ActiveRecord::Schema.define(version: 2020_01_14_204949) do
   add_foreign_key "identities", "saml_providers", name: "fk_aade90f0fc", on_delete: :cascade
   add_foreign_key "import_export_uploads", "namespaces", column: "group_id", name: "fk_83319d9721", on_delete: :cascade
   add_foreign_key "import_export_uploads", "projects", on_delete: :cascade
+  add_foreign_key "import_failures", "namespaces", column: "group_id", name: "fk_24b824da43", on_delete: :cascade
   add_foreign_key "index_statuses", "projects", name: "fk_74b2492545", on_delete: :cascade
   add_foreign_key "insights", "namespaces", on_delete: :cascade
   add_foreign_key "insights", "projects", on_delete: :cascade

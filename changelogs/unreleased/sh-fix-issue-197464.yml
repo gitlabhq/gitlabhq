@@ -1,0 +1,5 @@
+---
+title: Fix analytics tracking for new merge request notes
+merge_request: 23273
+author:
+type: fixed

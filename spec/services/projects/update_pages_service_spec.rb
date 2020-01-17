@@ -110,8 +110,9 @@ describe Projects::UpdatePagesService do
 
       context 'when timeout happens by DNS error' do
         before do
-          allow_any_instance_of(described_class)
-            .to receive(:extract_zip_archive!).and_raise(SocketError)
+          allow_next_instance_of(described_class) do |instance|
+            allow(instance).to receive(:extract_zip_archive!).and_raise(SocketError)
+          end
         end
 
         it 'raises an error' do
@@ -125,9 +126,10 @@ describe Projects::UpdatePagesService do
 
       context 'when failed to extract zip artifacts' do
         before do
-          expect_any_instance_of(described_class)
-            .to receive(:extract_zip_archive!)
-            .and_raise(Projects::UpdatePagesService::FailedToExtractError)
+          expect_next_instance_of(described_class) do |instance|
+            expect(instance).to receive(:extract_zip_archive!)
+              .and_raise(Projects::UpdatePagesService::FailedToExtractError)
+          end
         end
 
         it 'raises an error' do

@@ -28,29 +28,38 @@ export default {
     {
       key: 'error',
       label: __('Error'),
-      thClass: 'w-70p',
-      tdClass: 'table-col d-flex align-items-center d-sm-table-cell',
+      thClass: 'w-60p',
+      tdClass: 'table-col d-flex d-sm-table-cell px-3',
     },
     {
       key: 'events',
       label: __('Events'),
-      tdClass: 'table-col d-flex align-items-center d-sm-table-cell',
+      thClass: 'text-right',
+      tdClass: 'table-col d-flex d-sm-table-cell',
     },
     {
       key: 'users',
       label: __('Users'),
-      tdClass: 'table-col d-flex align-items-center d-sm-table-cell',
+      thClass: 'text-right',
+      tdClass: 'table-col d-flex d-sm-table-cell',
     },
     {
       key: 'lastSeen',
       label: __('Last seen'),
-      thClass: 'w-15p',
-      tdClass: 'table-col d-flex align-items-center d-sm-table-cell',
+      thClass: '',
+      tdClass: 'table-col d-flex d-sm-table-cell',
     },
     {
       key: 'ignore',
       label: '',
-      tdClass: 'table-col d-flex align-items-center d-sm-table-cell',
+      thClass: 'w-3rem',
+      tdClass: 'table-col d-flex pl-0 d-sm-table-cell',
+    },
+    {
+      key: 'resolved',
+      label: '',
+      thClass: 'w-3rem',
+      tdClass: 'table-col d-flex pl-0 d-sm-table-cell',
     },
     {
       key: 'details',
@@ -197,9 +206,7 @@ export default {
 <template>
   <div class="error-list">
     <div v-if="errorTrackingEnabled">
-      <div
-        class="row flex-column flex-sm-row align-items-sm-center row-top m-0 mt-sm-2 mx-sm-1 p-0 p-sm-3"
-      >
+      <div class="row flex-column flex-sm-row align-items-sm-center row-top m-0 mt-sm-2 p-0 p-sm-3">
         <div class="search-box flex-fill mr-sm-2 my-3 m-sm-0 p-3 p-sm-0">
           <div class="filtered-search-box mb-0">
             <gl-dropdown
@@ -331,6 +338,16 @@ export default {
               @click="updateIssueStatus(errors.item.id, 'ignored')"
             >
               <gl-icon name="eye-slash" :size="12" />
+            </gl-button>
+          </template>
+          <template v-slot:resolved="errors">
+            <gl-button
+              ref="resolveError"
+              v-gl-tooltip
+              :title="__('Resolve')"
+              @click="updateIssueStatus(errors.item.id, 'resolved')"
+            >
+              <gl-icon name="check-circle" :size="12" />
             </gl-button>
           </template>
           <template v-slot:details="errors">

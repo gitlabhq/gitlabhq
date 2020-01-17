@@ -172,4 +172,34 @@ describe('New Project', () => {
       expect($projectPath.val()).toEqual('my-dash-delimited-awesome-project');
     });
   });
+
+  describe('derivesProjectNameFromSlug', () => {
+    const dummyProjectPath = 'my-awesome-project';
+    const dummyProjectName = 'Original Awesome Project';
+
+    beforeEach(() => {
+      projectNew.bindEvents();
+      $projectPath.val('').change();
+    });
+
+    it('converts slug to humanized project name', () => {
+      $projectPath.val(dummyProjectPath);
+
+      projectNew.onProjectPathChange($projectName, $projectPath);
+
+      expect($projectName.val()).toEqual('My Awesome Project');
+    });
+
+    it('does not convert slug to humanized project name if a project name already exists', () => {
+      $projectName.val(dummyProjectName);
+      $projectPath.val(dummyProjectPath);
+      projectNew.onProjectPathChange(
+        $projectName,
+        $projectPath,
+        $projectName.val().trim().length > 0,
+      );
+
+      expect($projectName.val()).toEqual(dummyProjectName);
+    });
+  });
 });

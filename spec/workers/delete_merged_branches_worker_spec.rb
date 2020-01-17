@@ -9,7 +9,9 @@ describe DeleteMergedBranchesWorker do
 
   describe "#perform" do
     it "delegates to Branches::DeleteMergedService" do
-      expect_any_instance_of(::Branches::DeleteMergedService).to receive(:execute).and_return(true)
+      expect_next_instance_of(::Branches::DeleteMergedService) do |instance|
+        expect(instance).to receive(:execute).and_return(true)
+      end
 
       worker.perform(project.id, project.owner.id)
     end

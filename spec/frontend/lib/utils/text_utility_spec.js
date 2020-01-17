@@ -27,6 +27,9 @@ describe('text_utility', () => {
     it('should remove underscores and uppercase the first letter', () => {
       expect(textUtils.humanize('foo_bar')).toEqual('Foo bar');
     });
+    it('should remove underscores and dashes and uppercase the first letter', () => {
+      expect(textUtils.humanize('foo_bar-foo', '[_-]')).toEqual('Foo bar foo');
+    });
   });
 
   describe('dasherize', () => {
@@ -52,13 +55,19 @@ describe('text_utility', () => {
       expect(textUtils.slugify(' a new project ')).toEqual('a-new-project');
     });
     it('should only remove non-allowed special characters', () => {
-      expect(textUtils.slugify('test!_pro-ject~')).toEqual('test-_pro-ject-');
+      expect(textUtils.slugify('test!_pro-ject~')).toEqual('test-_pro-ject');
     });
     it('should squash multiple hypens', () => {
-      expect(textUtils.slugify('test!!!!_pro-ject~')).toEqual('test-_pro-ject-');
+      expect(textUtils.slugify('test!!!!_pro-ject~')).toEqual('test-_pro-ject');
     });
     it('should return empty string if only non-allowed characters', () => {
       expect(textUtils.slugify('здрасти')).toEqual('');
+    });
+    it('should squash multiple separators', () => {
+      expect(textUtils.slugify('Test:-)')).toEqual('test');
+    });
+    it('should trim any separators from the beginning and end of the slug', () => {
+      expect(textUtils.slugify('-Test:-)-')).toEqual('test');
     });
   });
 
@@ -106,6 +115,12 @@ describe('text_utility', () => {
   describe('convertToSentenceCase', () => {
     it('converts Sentence Case to Sentence case', () => {
       expect(textUtils.convertToSentenceCase('Hello World')).toBe('Hello world');
+    });
+  });
+
+  describe('convertToTitleCase', () => {
+    it('converts sentence case to Sentence Case', () => {
+      expect(textUtils.convertToTitleCase('hello world')).toBe('Hello World');
     });
   });
 

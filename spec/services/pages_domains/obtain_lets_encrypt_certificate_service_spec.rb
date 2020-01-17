@@ -32,9 +32,9 @@ describe PagesDomains::ObtainLetsEncryptCertificateService do
   def stub_lets_encrypt_order(url, status)
     order = ::Gitlab::LetsEncrypt::Order.new(acme_order_double(status: status))
 
-    allow_any_instance_of(::Gitlab::LetsEncrypt::Client).to(
-      receive(:load_order).with(url).and_return(order)
-    )
+    allow_next_instance_of(::Gitlab::LetsEncrypt::Client) do |instance|
+      allow(instance).to receive(:load_order).with(url).and_return(order)
+    end
 
     order
   end

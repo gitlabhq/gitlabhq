@@ -21,6 +21,14 @@ module API
         optional :sort, type: String, values: DeploymentsFinder::ALLOWED_SORT_DIRECTIONS, default: DeploymentsFinder::DEFAULT_SORT_DIRECTION, desc: 'Sort by asc (ascending) or desc (descending)'
         optional :updated_after, type: DateTime, desc: 'Return deployments updated after the specified date'
         optional :updated_before, type: DateTime, desc: 'Return deployments updated before the specified date'
+        optional :environment,
+          type: String,
+          desc: 'The name of the environment to filter deployments by'
+
+        optional :status,
+          type: String,
+          values: Deployment.statuses.keys,
+          desc: 'The status to filter deployments by'
       end
 
       get ':id/deployments' do

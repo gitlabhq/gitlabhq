@@ -21,12 +21,17 @@ export const addDelimiter = text =>
 export const highCountTrim = count => (count > 99 ? '99+' : count);
 
 /**
- * Converts first char to uppercase and replaces undercores with spaces
- * @param {String} string
+ * Converts first char to uppercase and replaces the given separator with spaces
+ * @param {String} string - The string to humanize
+ * @param {String} separator - The separator used to separate words (defaults to "_")
  * @requires {String}
+ * @returns {String}
  */
-export const humanize = string =>
-  string.charAt(0).toUpperCase() + string.replace(/_/g, ' ').slice(1);
+export const humanize = (string, separator = '_') => {
+  const replaceRegex = new RegExp(separator, 'g');
+
+  return string.charAt(0).toUpperCase() + string.replace(replaceRegex, ' ').slice(1);
+};
 
 /**
  * Replaces underscores with dashes
@@ -45,7 +50,11 @@ export const slugify = (str, separator = '-') => {
   const slug = str
     .trim()
     .toLowerCase()
-    .replace(/[^a-zA-Z0-9_.-]+/g, separator);
+    .replace(/[^a-zA-Z0-9_.-]+/g, separator)
+    // Remove any duplicate separators or separator prefixes/suffixes
+    .split(separator)
+    .filter(Boolean)
+    .join(separator);
 
   return slug === separator ? '' : slug;
 };
@@ -158,6 +167,15 @@ export const convertToSentenceCase = string => {
 
   return splitWord.join(' ');
 };
+
+/**
+ * Converts a sentence to title case
+ * e.g. Hello world => Hello World
+ *
+ * @param {String} string
+ * @returns {String}
+ */
+export const convertToTitleCase = string => string.replace(/\b[a-z]/g, s => s.toUpperCase());
 
 /**
  * Splits camelCase or PascalCase words

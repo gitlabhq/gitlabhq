@@ -40,6 +40,18 @@ describe API::Deployments do
         end
       end
 
+      context 'with the environment filter specifed' do
+        it 'returns deployments for the environment' do
+          get(
+            api("/projects/#{project.id}/deployments", user),
+            params: { environment: deployment_1.environment.name }
+          )
+
+          expect(json_response.size).to eq(1)
+          expect(json_response.first['iid']).to eq(deployment_1.iid)
+        end
+      end
+
       describe 'ordering' do
         let(:order_by) { 'iid' }
         let(:sort) { 'desc' }

@@ -169,7 +169,7 @@ describe('Release block', () => {
     releaseClone.tag_name = 'a dangerous tag name <script>alert("hello")</script>';
 
     return factory(releaseClone).then(() => {
-      expect(wrapper.attributes().id).toBe('a-dangerous-tag-name-script-alert-hello-script-');
+      expect(wrapper.attributes().id).toBe('a-dangerous-tag-name-script-alert-hello-script');
     });
   });
 

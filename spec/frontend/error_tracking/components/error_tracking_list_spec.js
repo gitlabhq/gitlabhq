@@ -143,10 +143,14 @@ describe('ErrorTrackingList', () => {
     });
 
     it('each error in the list should have an ignore button', () => {
-      const error = wrapper.findAll('tbody tr');
+      findErrorListRows().wrappers.forEach(row => {
+        expect(row.contains('glicon-stub[name="eye-slash"]')).toBe(true);
+      });
+    });
 
-      error.wrappers.forEach((_, index) => {
-        expect(error.at(index).exists('glicon-stub[name="eye-slash"]')).toBe(true);
+    it('each error in the list should have a resolve button', () => {
+      findErrorListRows().wrappers.forEach(row => {
+        expect(row.contains('glicon-stub[name="check-circle"]')).toBe(true);
       });
     });
 
@@ -231,14 +235,41 @@ describe('ErrorTrackingList', () => {
     });
 
     it('sends the "ignored" status and error ID', () => {
-      const ignoreButton = wrapper.find({ ref: 'ignoreError' });
-      ignoreButton.trigger('click');
+      wrapper.find({ ref: 'ignoreError' }).trigger('click');
       expect(actions.updateStatus).toHaveBeenCalledWith(
         expect.anything(),
         {
           endpoint: '/project/test/-/error_tracking/3.json',
           redirectUrl: '/error_tracking',
           status: 'ignored',
+        },
+        undefined,
+      );
+    });
+  });
+
+  describe('When the resolve button on an error is clicked', () => {
+    beforeEach(() => {
+      store.state.list.loading = false;
+      store.state.list.errors = errorsList;
+
+      mountComponent({
+        stubs: {
+          GlTable: false,
+          GlLink: false,
+          GlButton: false,
+        },
+      });
+    });
+
+    it('sends "resolved" status and error ID', () => {
+      wrapper.find({ ref: 'resolveError' }).trigger('click');
+      expect(actions.updateStatus).toHaveBeenCalledWith(
+        expect.anything(),
+        {
+          endpoint: '/project/test/-/error_tracking/3.json',
+          redirectUrl: '/error_tracking',
+          status: 'resolved',
         },
         undefined,
       );

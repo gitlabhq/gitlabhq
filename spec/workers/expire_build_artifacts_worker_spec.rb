@@ -7,7 +7,9 @@ describe ExpireBuildArtifactsWorker do
 
   describe '#perform' do
     it 'executes a service' do
-      expect_any_instance_of(Ci::DestroyExpiredJobArtifactsService).to receive(:execute)
+      expect_next_instance_of(Ci::DestroyExpiredJobArtifactsService) do |instance|
+        expect(instance).to receive(:execute)
+      end
 
       worker.perform
     end

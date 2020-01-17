@@ -21,9 +21,9 @@ describe Gitlab::GithubImport::Stage::ImportRepositoryWorker do
       it 'schedules the importing of the base data' do
         client = double(:client)
 
-        expect_any_instance_of(Gitlab::GithubImport::Importer::RepositoryImporter)
-          .to receive(:execute)
-          .and_return(true)
+        expect_next_instance_of(Gitlab::GithubImport::Importer::RepositoryImporter) do |instance|
+          expect(instance).to receive(:execute).and_return(true)
+        end
 
         expect(Gitlab::GithubImport::Stage::ImportBaseDataWorker)
           .to receive(:perform_async)
@@ -37,9 +37,9 @@ describe Gitlab::GithubImport::Stage::ImportRepositoryWorker do
       it 'does not schedule the importing of the base data' do
         client = double(:client)
 
-        expect_any_instance_of(Gitlab::GithubImport::Importer::RepositoryImporter)
-          .to receive(:execute)
-          .and_return(false)
+        expect_next_instance_of(Gitlab::GithubImport::Importer::RepositoryImporter) do |instance|
+          expect(instance).to receive(:execute).and_return(false)
+        end
 
         expect(Gitlab::GithubImport::Stage::ImportBaseDataWorker)
           .not_to receive(:perform_async)
