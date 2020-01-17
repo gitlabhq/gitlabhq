@@ -7,7 +7,6 @@ describe('pipeline graph job item', () => {
 
   const createWrapper = propsData => {
     wrapper = mount(JobItem, {
-      attachToDocument: true,
       propsData,
     });
   };

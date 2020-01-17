@@ -66,6 +66,7 @@ The following table depicts the various user permission levels in a project.
 | View confidential issues                          | (*2*)   | ✓          | ✓           | ✓        | ✓      |
 | Assign issues                                     |         | ✓          | ✓           | ✓        | ✓      |
 | Label issues                                      |         | ✓          | ✓           | ✓        | ✓      |
+| Set issue weight                                  |         | ✓          | ✓           | ✓        | ✓      |
 | Lock issue threads                                |         | ✓          | ✓           | ✓        | ✓      |
 | Manage issue tracker                              |         | ✓          | ✓           | ✓        | ✓      |
 | Manage related issues **(STARTER)**               |         | ✓          | ✓           | ✓        | ✓      |

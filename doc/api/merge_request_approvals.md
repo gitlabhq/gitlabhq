@@ -762,7 +762,7 @@ will be used.
 You can update merge request approval rules using the following endpoint:
 
 ```
-PUT /projects/:id/merge_request/:merge_request_iid/approval_rules/:approval_rule_id
+PUT /projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rule_id
 ```
 
 **Important:** Approvers and groups not in the `users`/`groups` param will be **removed**

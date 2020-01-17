@@ -10,7 +10,6 @@ describe('Pipeline Url Component', () => {
 
   const createComponent = props => {
     wrapper = shallowMount(PipelineUrlComponent, {
-      attachToDocument: true,
       propsData: props,
     });
   };

@@ -460,11 +460,11 @@ You can also use following variables besides static text:
 | `%{file_path}` | The path of the file the Suggestion is applied to. | `docs/index.md` |
 | `%{branch_name}` | The name of the branch the Suggestion is applied on. | `my-feature-branch` |
 | `%{username}` | The username of the user applying the Suggestion. | `user_1` |
-| `%{user_full_name}` | The full name of the user applying the Suggestion. | `**User 1** |
+| `%{user_full_name}` | The full name of the user applying the Suggestion. | **User 1** |
 
 For example, to customize the commit message to output
 **Addresses user_1's review**, set the custom text to
-`Adresses %{username}'s review`.
+`Addresses %{username}'s review`.
 
 NOTE: **Note:**
 Custom commit messages for each applied Suggestion will be

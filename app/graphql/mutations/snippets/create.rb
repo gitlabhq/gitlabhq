@@ -45,9 +45,10 @@ module Mutations
           raise_resource_not_available_error!
         end
 
-        snippet = CreateSnippetService.new(project,
+        service_response = ::Snippets::CreateService.new(project,
                                            context[:current_user],
                                            args).execute
+        snippet = service_response.payload[:snippet]
 
         {
           snippet: snippet.valid? ? snippet : nil,

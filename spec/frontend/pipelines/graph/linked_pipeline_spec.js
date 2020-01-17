@@ -10,7 +10,6 @@ describe('Linked pipeline', () => {
 
   const createWrapper = propsData => {
     wrapper = mount(LinkedPipelineComponent, {
-      attachToDocument: true,
       propsData,
     });
   };

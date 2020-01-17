@@ -22,6 +22,7 @@ describe API::ErrorTracking do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to eq(
+          'active' => setting.enabled,
           'project_name' => setting.project_name,
           'sentry_external_url' => setting.sentry_external_url,
           'api_url' => setting.api_url

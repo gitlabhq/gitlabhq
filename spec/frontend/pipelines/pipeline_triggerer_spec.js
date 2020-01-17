@@ -24,7 +24,6 @@ describe('Pipelines Triggerer', () => {
   const createComponent = () => {
     wrapper = shallowMount(pipelineTriggerer, {
       propsData: mockData,
-      attachToDocument: true,
     });
   };
 

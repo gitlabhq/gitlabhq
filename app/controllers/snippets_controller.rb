@@ -50,8 +50,8 @@ class SnippetsController < ApplicationController
 
   def create
     create_params = snippet_params.merge(spammable_params)
-
-    @snippet = CreateSnippetService.new(nil, current_user, create_params).execute
+    service_response = Snippets::CreateService.new(nil, current_user, create_params).execute
+    @snippet = service_response.payload[:snippet]
 
     move_temporary_files if @snippet.valid? && params[:files]
 
@@ -61,7 +61,8 @@ class SnippetsController < ApplicationController
   def update
     update_params = snippet_params.merge(spammable_params)
 
-    UpdateSnippetService.new(nil, current_user, @snippet, update_params).execute
+    service_response = Snippets::UpdateService.new(nil, current_user, update_params).execute(@snippet)
+    @snippet = service_response.payload[:snippet]
 
     recaptcha_check_with_fallback { render :edit }
   end
@@ -96,11 +97,17 @@ class SnippetsController < ApplicationController
   end
 
   def destroy
-    return access_denied! unless can?(current_user, :admin_personal_snippet, @snippet)
+    service_response = Snippets::DestroyService.new(current_user, @snippet).execute
 
-    @snippet.destroy
-
-    redirect_to snippets_path, status: :found
+    if service_response.success?
+      redirect_to dashboard_snippets_path, status: :found
+    elsif service_response.http_status == 403
+      access_denied!
+    else
+      redirect_to snippet_path(@snippet),
+                  status: :found,
+                  alert: service_response.message
+    end
   end
 
   protected

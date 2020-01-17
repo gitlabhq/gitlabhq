@@ -740,6 +740,7 @@ $ide-commit-header-height: 48px;
 .ide-sidebar-link {
   display: flex;
   align-items: center;
+  justify-content: center;
   position: relative;
   height: 60px;
   width: 100%;
@@ -1076,10 +1077,12 @@ $ide-commit-header-height: 48px;
   }
 }
 
-.ide-right-sidebar {
+.ide-sidebar {
   width: auto;
   min-width: 60px;
+}
 
+.ide-right-sidebar {
   .ide-activity-bar {
     border-left: 1px solid $white-dark;
   }

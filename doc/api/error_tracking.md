@@ -24,6 +24,7 @@ Example response:
 
 ```json
 {
+  "active": true,
   "project_name": "sample sentry project",
   "sentry_external_url": "https://sentry.io/myawesomeproject/project",
   "api_url": "https://sentry.io/api/0/projects/myawesomeproject/project"

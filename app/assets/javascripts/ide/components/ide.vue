@@ -1,6 +1,6 @@
 <script>
 import Vue from 'vue';
-import { mapActions, mapState, mapGetters } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import FindFile from '~/vue_shared/components/file_finder/index.vue';

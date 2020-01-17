@@ -484,3 +484,6 @@ gem 'countries', '~> 3.0'
 gem 'retriable', '~> 3.1.2'
 
 gem 'liquid', '~> 4.0'
+
+# LRU cache
+gem 'lru_redux'

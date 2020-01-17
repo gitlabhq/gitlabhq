@@ -18,7 +18,7 @@ permission level, who added a new user, or who removed a user.
 
 ## Use-cases
 
-- Check who was the person who changed the permission level of a particular
+- Check who the person was that changed the permission level of a particular
   user for a project in GitLab.
 - Use it to track which users have access to a certain group of projects
   in  GitLab, and who gave them that permission level.

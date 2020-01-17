@@ -15,8 +15,8 @@ module Mutations
       def resolve(id:)
         snippet = authorized_find!(id: id)
 
-        result = snippet.destroy
-        errors = result ? [] : [ERROR_MSG]
+        response = ::Snippets::DestroyService.new(current_user, snippet).execute
+        errors = response.success? ? [] : [ERROR_MSG]
 
         {
           errors: errors

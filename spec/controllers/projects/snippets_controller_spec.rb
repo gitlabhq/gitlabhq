@@ -445,4 +445,64 @@ describe Projects::SnippetsController do
       end
     end
   end
+
+  describe 'DELETE #destroy' do
+    let!(:snippet) { create(:project_snippet, :private, project: project, author: user) }
+
+    let(:params) do
+      {
+        namespace_id: project.namespace.to_param,
+        project_id: project,
+        id: snippet.to_param
+      }
+    end
+
+    context 'when current user has ability to destroy the snippet' do
+      before do
+        sign_in(user)
+      end
+
+      it 'removes the snippet' do
+        delete :destroy, params: params
+
+        expect { snippet.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      context 'when snippet is succesfuly destroyed' do
+        it 'redirects to the project snippets page' do
+          delete :destroy, params: params
+
+          expect(response).to redirect_to(project_snippets_path(project))
+        end
+      end
+
+      context 'when snippet is not destroyed' do
+        before do
+          allow(snippet).to receive(:destroy).and_return(false)
+          controller.instance_variable_set(:@snippet, snippet)
+        end
+
+        it 'renders the snippet page with errors' do
+          delete :destroy, params: params
+
+          expect(flash[:alert]).to eq('Failed to remove snippet.')
+          expect(response).to redirect_to(project_snippet_path(project, snippet))
+        end
+      end
+    end
+
+    context 'when current_user does not have ability to destroy the snippet' do
+      let(:another_user) { create(:user) }
+
+      before do
+        sign_in(another_user)
+      end
+
+      it 'responds with status 404' do
+        delete :destroy, params: params
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+  end
 end

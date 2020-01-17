@@ -1,89 +1,124 @@
 import Vue from 'vue';
-import '~/behaviors/markdown/render_gfm';
-import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
+import Vuex from 'vuex';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { createStore } from '~/ide/stores';
 import RightPane from '~/ide/components/panes/right.vue';
+import CollapsibleSidebar from '~/ide/components/panes/collapsible_sidebar.vue';
 import { rightSidebarViews } from '~/ide/constants';
 
-describe('IDE right pane', () => {
-  let Component;
-  let vm;
+const localVue = createLocalVue();
+localVue.use(Vuex);
 
-  beforeAll(() => {
-    Component = Vue.extend(RightPane);
-  });
+describe('ide/components/panes/right.vue', () => {
+  let wrapper;
+  let store;
+
+  const createComponent = props => {
+    wrapper = shallowMount(RightPane, {
+      localVue,
+      store,
+      propsData: {
+        ...props,
+      },
+    });
+  };
 
   beforeEach(() => {
-    const store = createStore();
-
-    vm = createComponentWithStore(Component, store).$mount();
+    store = createStore();
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
+    wrapper = null;
   });
 
-  describe('active', () => {
-    it('renders merge request button as active', done => {
-      vm.$store.state.rightPane.isOpen = true;
-      vm.$store.state.rightPane.currentView = rightSidebarViews.mergeRequestInfo.name;
-      vm.$store.state.currentMergeRequestId = '123';
-      vm.$store.state.currentProjectId = 'gitlab-ce';
-      vm.$store.state.currentMergeRequestId = 1;
-      vm.$store.state.projects['gitlab-ce'] = {
-        mergeRequests: {
-          1: {
-            iid: 1,
-            title: 'Testing',
-            title_html: '<span class="title-html">Testing</span>',
-            description: 'Description',
-            description_html: '<p class="description-html">Description HTML</p>',
-          },
+  it('allows tabs to be added via extensionTabs prop', () => {
+    createComponent({
+      extensionTabs: [
+        {
+          show: true,
+          title: 'FakeTab',
         },
-      };
+      ],
+    });
 
-      vm.$nextTick()
-        .then(() => {
-          expect(vm.$el.querySelector('.ide-sidebar-link.active')).not.toBe(null);
-          expect(
-            vm.$el.querySelector('.ide-sidebar-link.active').getAttribute('data-original-title'),
-          ).toBe('Merge Request');
-        })
-        .then(done)
-        .catch(done.fail);
+    expect(wrapper.find(CollapsibleSidebar).props('extensionTabs')).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          show: true,
+          title: 'FakeTab',
+        }),
+      ]),
+    );
+  });
+
+  describe('pipelines tab', () => {
+    it('is always shown', () => {
+      createComponent();
+
+      expect(wrapper.find(CollapsibleSidebar).props('extensionTabs')).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            show: true,
+            title: 'Pipelines',
+            views: expect.arrayContaining([
+              expect.objectContaining({
+                name: rightSidebarViews.pipelines.name,
+              }),
+              expect.objectContaining({
+                name: rightSidebarViews.jobsDetail.name,
+              }),
+            ]),
+          }),
+        ]),
+      );
     });
   });
 
-  describe('click', () => {
-    beforeEach(() => {
-      jest.spyOn(vm, 'open').mockReturnValue();
-    });
+  describe('merge request tab', () => {
+    it('is shown if there is a currentMergeRequestId', () => {
+      store.state.currentMergeRequestId = 1;
 
-    it('sets view to merge request', done => {
-      vm.$store.state.currentMergeRequestId = '123';
+      createComponent();
 
-      vm.$nextTick(() => {
-        vm.$el.querySelector('.ide-sidebar-link').click();
-
-        expect(vm.open).toHaveBeenCalledWith(rightSidebarViews.mergeRequestInfo);
-
-        done();
-      });
+      expect(wrapper.find(CollapsibleSidebar).props('extensionTabs')).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            show: true,
+            title: 'Merge Request',
+            views: expect.arrayContaining([
+              expect.objectContaining({
+                name: rightSidebarViews.mergeRequestInfo.name,
+              }),
+            ]),
+          }),
+        ]),
+      );
     });
   });
 
-  describe('live preview', () => {
-    it('renders live preview button', done => {
-      Vue.set(vm.$store.state.entries, 'package.json', {
+  describe('clientside live preview tab', () => {
+    it('is shown if there is a packageJson and clientsidePreviewEnabled', () => {
+      Vue.set(store.state.entries, 'package.json', {
         name: 'package.json',
       });
-      vm.$store.state.clientsidePreviewEnabled = true;
+      store.state.clientsidePreviewEnabled = true;
 
-      vm.$nextTick(() => {
-        expect(vm.$el.querySelector('button[aria-label="Live preview"]')).not.toBeNull();
+      createComponent();
 
-        done();
-      });
+      expect(wrapper.find(CollapsibleSidebar).props('extensionTabs')).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            show: true,
+            title: 'Live preview',
+            views: expect.arrayContaining([
+              expect.objectContaining({
+                name: rightSidebarViews.clientSidePreview.name,
+              }),
+            ]),
+          }),
+        ]),
+      );
     });
   });
 });

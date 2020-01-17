@@ -46,8 +46,8 @@ class Projects::SnippetsController < Projects::ApplicationController
 
   def create
     create_params = snippet_params.merge(spammable_params)
-
-    @snippet = CreateSnippetService.new(@project, current_user, create_params).execute
+    service_response = Snippets::CreateService.new(project, current_user, create_params).execute
+    @snippet = service_response.payload[:snippet]
 
     recaptcha_check_with_fallback { render :new }
   end
@@ -55,7 +55,8 @@ class Projects::SnippetsController < Projects::ApplicationController
   def update
     update_params = snippet_params.merge(spammable_params)
 
-    UpdateSnippetService.new(project, current_user, @snippet, update_params).execute
+    service_response = Snippets::UpdateService.new(project, current_user, update_params).execute(@snippet)
+    @snippet = service_response.payload[:snippet]
 
     recaptcha_check_with_fallback { render :edit }
   end
@@ -89,11 +90,17 @@ class Projects::SnippetsController < Projects::ApplicationController
   end
 
   def destroy
-    return access_denied! unless can?(current_user, :admin_project_snippet, @snippet)
+    service_response = Snippets::DestroyService.new(current_user, @snippet).execute
 
-    @snippet.destroy
-
-    redirect_to project_snippets_path(@project), status: :found
+    if service_response.success?
+      redirect_to project_snippets_path(project), status: :found
+    elsif service_response.http_status == 403
+      access_denied!
+    else
+      redirect_to project_snippet_path(project, @snippet),
+                  status: :found,
+                  alert: service_response.message
+    end
   end
 
   protected
