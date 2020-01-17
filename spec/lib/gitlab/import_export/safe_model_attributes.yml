@@ -333,6 +333,7 @@ CommitStatus:
 - scheduled_at
 - upstream_pipeline_id
 - interruptible
+- processed
 Ci::Variable:
 - id
 - project_id

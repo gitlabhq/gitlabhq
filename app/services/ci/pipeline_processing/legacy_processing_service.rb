@@ -18,7 +18,7 @@ module Ci
         # only when the another job has finished
         success = process_builds_with_needs(trigger_build_ids) || success
 
-        @pipeline.update_status
+        @pipeline.update_legacy_status
 
         success
       end

@@ -63,6 +63,42 @@ describe CommitStatus do
     end
   end
 
+  describe '#processed' do
+    subject { commit_status.processed }
+
+    context 'when ci_atomic_processing is disabled' do
+      before do
+        stub_feature_flags(ci_atomic_processing: false)
+
+        commit_status.save!
+      end
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when ci_atomic_processing is enabled' do
+      before do
+        stub_feature_flags(ci_atomic_processing: true)
+      end
+
+      context 'status is latest' do
+        before do
+          commit_status.update!(retried: false, status: :pending)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'status is retried' do
+        before do
+          commit_status.update!(retried: true, status: :pending)
+        end
+
+        it { is_expected.to be_truthy }
+      end
+    end
+  end
+
   describe '#started?' do
     subject { commit_status.started? }
 

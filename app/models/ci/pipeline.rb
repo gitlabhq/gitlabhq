@@ -515,7 +515,9 @@ module Ci
     # rubocop: enable CodeReuse/ServiceClass
 
     def mark_as_processable_after_stage(stage_idx)
-      builds.skipped.after_stage(stage_idx).find_each(&:process)
+      builds.skipped.after_stage(stage_idx).find_each do |build|
+        Gitlab::OptimisticLocking.retry_lock(build, &:process)
+      end
     end
 
     def latest?
@@ -554,6 +556,13 @@ module Ci
       end
     end
 
+    def needs_processing?
+      statuses
+        .where(processed: [false, nil])
+        .latest
+        .exists?
+    end
+
     # TODO: this logic is duplicate with Pipeline::Chain::Config::Content
     # we should persist this is `ci_pipelines.config_path`
     def config_path
@@ -583,9 +592,8 @@ module Ci
       project.notes.for_commit_id(sha)
     end
 
-    def update_status
+    def set_status(new_status)
       retry_optimistic_lock(self) do
-        new_status = latest_builds_status.to_s
         case new_status
         when 'created' then nil
         when 'waiting_for_resource' then request_resource
@@ -603,6 +611,10 @@ module Ci
                 "Unknown status `#{new_status}`"
         end
       end
+    end
+
+    def update_legacy_status
+      set_status(latest_builds_status.to_s)
     end
 
     def protected_ref?

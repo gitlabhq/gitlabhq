@@ -216,6 +216,7 @@ stages:
 - project
 - pipeline
 - statuses
+- processables
 - builds
 - bridges
 statuses:

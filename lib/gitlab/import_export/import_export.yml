@@ -240,6 +240,7 @@ excluded_attributes:
     - :upstream_pipeline_id
     - :resource_group_id
     - :waiting_for_resource_at
+    - :processed
   sentry_issue:
     - :issue_id
   push_event_payload:

@@ -587,7 +587,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "1 hour"
-msgstr ""
+msgid_plural "%d hours"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "1 merged merge request"
 msgid_plural "%{merge_requests} merged merge requests"
@@ -682,6 +684,9 @@ msgid "7 days"
 msgstr ""
 
 msgid "8 hours"
+msgstr ""
+
+msgid "< 1 hour"
 msgstr ""
 
 msgid "<code>\"johnsmith@example.com\": \"@johnsmith\"</code> will add \"By <a href=\"#\">@johnsmith</a>\" to all issues and comments originally created by johnsmith@example.com, and will set <a href=\"#\">@johnsmith</a> as the assignee on all issues originally assigned to johnsmith@example.com."
@@ -1772,6 +1777,9 @@ msgid "An error occurred while loading group members."
 msgstr ""
 
 msgid "An error occurred while loading issues"
+msgstr ""
+
+msgid "An error occurred while loading merge requests."
 msgstr ""
 
 msgid "An error occurred while loading the data. Please try again."
@@ -11058,6 +11066,9 @@ msgid_plural "Limited to showing %d events at most"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Line changes"
+msgstr ""
+
 msgid "Link copied"
 msgstr ""
 
@@ -15833,6 +15844,9 @@ msgid "Review App|View latest app"
 msgstr ""
 
 msgid "Review the process for configuring service providers in your identity provider — in this case, GitLab is the \"service provider\" or \"relying party\"."
+msgstr ""
+
+msgid "Review time"
 msgstr ""
 
 msgid "Review time is defined as the time it takes from first comment until merged."
@@ -22625,6 +22639,9 @@ msgid "nounSeries|%{item}, and %{lastItem}"
 msgstr ""
 
 msgid "opened %{timeAgoString} by %{user}"
+msgstr ""
+
+msgid "opened %{timeAgo}"
 msgstr ""
 
 msgid "out of %d total test"

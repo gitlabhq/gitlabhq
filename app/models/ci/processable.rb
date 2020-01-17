@@ -8,7 +8,25 @@ module Ci
 
     scope :preload_needs, -> { preload(:needs) }
 
+    def self.select_with_aggregated_needs(project)
+      return all unless Feature.enabled?(:ci_dag_support, project, default_enabled: true)
+
+      aggregated_needs_names = Ci::BuildNeed
+        .scoped_build
+        .select("ARRAY_AGG(name)")
+        .to_sql
+
+      all.select(
+        '*',
+        "(#{aggregated_needs_names}) as aggregated_needs_names"
+      )
+    end
+
     validates :type, presence: true
+
+    def aggregated_needs_names
+      read_attribute(:aggregated_needs_names)
+    end
 
     def schedulable?
       raise NotImplementedError

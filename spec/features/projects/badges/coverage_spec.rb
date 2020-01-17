@@ -63,7 +63,7 @@ describe 'test coverage badge' do
 
     create(:ci_pipeline, opts).tap do |pipeline|
       yield pipeline
-      pipeline.update_status
+      pipeline.update_legacy_status
     end
   end
 

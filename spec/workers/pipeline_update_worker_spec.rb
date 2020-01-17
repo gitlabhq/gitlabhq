@@ -8,7 +8,7 @@ describe PipelineUpdateWorker do
       let(:pipeline) { create(:ci_pipeline) }
 
       it 'updates pipeline status' do
-        expect_any_instance_of(Ci::Pipeline).to receive(:update_status)
+        expect_any_instance_of(Ci::Pipeline).to receive(:set_status).with('skipped')
 
         described_class.new.perform(pipeline.id)
       end

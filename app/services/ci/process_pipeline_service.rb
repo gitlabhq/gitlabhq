@@ -11,9 +11,15 @@ module Ci
     def execute(trigger_build_ids = nil)
       update_retried
 
-      Ci::PipelineProcessing::LegacyProcessingService
-        .new(pipeline)
-        .execute(trigger_build_ids)
+      if Feature.enabled?(:ci_atomic_processing, pipeline.project)
+        Ci::PipelineProcessing::AtomicProcessingService
+          .new(pipeline)
+          .execute
+      else
+        Ci::PipelineProcessing::LegacyProcessingService
+          .new(pipeline)
+          .execute(trigger_build_ids)
+      end
     end
 
     private

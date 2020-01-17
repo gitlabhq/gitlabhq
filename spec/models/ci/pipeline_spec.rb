@@ -1008,22 +1008,22 @@ describe Ci::Pipeline, :mailer do
       end
     end
 
-    describe '#duration', :sidekiq_might_not_need_inline do
+    describe '#duration', :sidekiq_inline do
       context 'when multiple builds are finished' do
         before do
           travel_to(current + 30) do
             build.run!
-            build.success!
+            build.reload.success!
             build_b.run!
             build_c.run!
           end
 
           travel_to(current + 40) do
-            build_b.drop!
+            build_b.reload.drop!
           end
 
           travel_to(current + 70) do
-            build_c.success!
+            build_c.reload.success!
           end
         end
 
@@ -1044,7 +1044,7 @@ describe Ci::Pipeline, :mailer do
           end
 
           travel_to(current + 5.minutes) do
-            build.success!
+            build.reload.success!
           end
         end
 
@@ -1585,6 +1585,30 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#needs_processing?' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { pipeline.needs_processing? }
+
+    where(:processed, :result) do
+      nil   | true
+      false | true
+      true  | false
+    end
+
+    with_them do
+      let(:build) do
+        create(:ci_build, :success, pipeline: pipeline, name: 'rubocop')
+      end
+
+      before do
+        build.update_column(:processed, processed)
+      end
+
+      it { is_expected.to eq(result) }
+    end
+  end
+
   shared_context 'with some outdated pipelines' do
     before do
       create_pipeline(:canceled, 'ref', 'A', project)
@@ -1785,7 +1809,7 @@ describe Ci::Pipeline, :mailer do
     it { is_expected.not_to include('created', 'waiting_for_resource', 'preparing', 'pending') }
   end
 
-  describe '#status', :sidekiq_might_not_need_inline do
+  describe '#status', :sidekiq_inline do
     let(:build) do
       create(:ci_build, :created, pipeline: pipeline, name: 'test')
     end
@@ -1826,7 +1850,7 @@ describe Ci::Pipeline, :mailer do
     context 'on run' do
       before do
         build.enqueue
-        build.run
+        build.reload.run
       end
 
       it { is_expected.to eq('running') }
@@ -1885,7 +1909,7 @@ describe Ci::Pipeline, :mailer do
       it 'updates does not change pipeline status' do
         expect(pipeline.statuses.latest.slow_composite_status).to be_nil
 
-        expect { pipeline.update_status }
+        expect { pipeline.update_legacy_status }
           .to change { pipeline.reload.status }
           .from('created')
           .to('skipped')
@@ -1898,7 +1922,7 @@ describe Ci::Pipeline, :mailer do
       end
 
       it 'updates pipeline status to running' do
-        expect { pipeline.update_status }
+        expect { pipeline.update_legacy_status }
           .to change { pipeline.reload.status }
           .from('created')
           .to('running')
@@ -1911,7 +1935,7 @@ describe Ci::Pipeline, :mailer do
       end
 
       it 'updates pipeline status to scheduled' do
-        expect { pipeline.update_status }
+        expect { pipeline.update_legacy_status }
           .to change { pipeline.reload.status }
           .from('created')
           .to('scheduled')
@@ -1926,7 +1950,7 @@ describe Ci::Pipeline, :mailer do
       end
 
       it 'raises an exception' do
-        expect { pipeline.update_status }
+        expect { pipeline.update_legacy_status }
           .to raise_error(HasStatus::UnknownStatusError)
       end
     end
@@ -2214,11 +2238,11 @@ describe Ci::Pipeline, :mailer do
         stub_full_request(hook.url, method: :post)
       end
 
-      context 'with multiple builds', :sidekiq_might_not_need_inline do
+      context 'with multiple builds', :sidekiq_inline do
         context 'when build is queued' do
           before do
-            build_a.enqueue
-            build_b.enqueue
+            build_a.reload.enqueue
+            build_b.reload.enqueue
           end
 
           it 'receives a pending event once' do
@@ -2228,10 +2252,10 @@ describe Ci::Pipeline, :mailer do
 
         context 'when build is run' do
           before do
-            build_a.enqueue
-            build_a.run
-            build_b.enqueue
-            build_b.run
+            build_a.reload.enqueue
+            build_a.reload.run!
+            build_b.reload.enqueue
+            build_b.reload.run!
           end
 
           it 'receives a running event once' do
@@ -2292,6 +2316,7 @@ describe Ci::Pipeline, :mailer do
              :created,
              pipeline: pipeline,
              name: name,
+             stage: "stage:#{stage_idx}",
              stage_idx: stage_idx)
     end
   end

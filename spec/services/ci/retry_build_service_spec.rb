@@ -45,7 +45,8 @@ describe Ci::RetryBuildService do
        user_id auto_canceled_by_id retried failure_reason
        sourced_pipelines artifacts_file_store artifacts_metadata_store
        metadata runner_session trace_chunks upstream_pipeline_id
-       artifacts_file artifacts_metadata artifacts_size commands resource resource_group_id].freeze
+       artifacts_file artifacts_metadata artifacts_size commands
+       resource resource_group_id processed].freeze
 
   shared_examples 'build duplication' do
     let(:another_pipeline) { create(:ci_empty_pipeline, project: project) }
@@ -202,12 +203,13 @@ describe Ci::RetryBuildService do
 
       it 'does not enqueue the new build' do
         expect(new_build).to be_created
+        expect(new_build).not_to be_processed
       end
 
-      it 'does mark old build as retried in the database and on the instance' do
+      it 'does mark old build as retried' do
         expect(new_build).to be_latest
         expect(build).to be_retried
-        expect(build.reload).to be_retried
+        expect(build).to be_processed
       end
 
       context 'when build with deployment is retried' do

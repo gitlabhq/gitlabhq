@@ -410,7 +410,7 @@ This method is controlled by the following parameters:
 In the example below, we list 50 [projects](projects.md) per page, ordered by `id` ascending.
 
 ```bash
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects?pagination=keyset&per_page=50&order_by=id&sort=asc"
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects?pagination=keyset&per_page=50&order_by=id&sort=asc"
 ```
 
 The response header includes a link to the next page. For example:

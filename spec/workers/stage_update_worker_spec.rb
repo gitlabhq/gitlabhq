@@ -8,7 +8,7 @@ describe StageUpdateWorker do
       let(:stage) { create(:ci_stage_entity) }
 
       it 'updates stage status' do
-        expect_any_instance_of(Ci::Stage).to receive(:update_status)
+        expect_any_instance_of(Ci::Stage).to receive(:set_status).with('skipped')
 
         described_class.new.perform(stage.id)
       end

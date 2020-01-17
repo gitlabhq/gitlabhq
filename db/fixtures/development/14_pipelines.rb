@@ -57,7 +57,7 @@ class Gitlab::Seeder::Pipelines
       BUILDS.each { |opts| build_create!(pipeline, opts) }
       EXTERNAL_JOBS.each { |opts| commit_status_create!(pipeline, opts) }
       pipeline.update_duration
-      pipeline.update_status
+      pipeline.update_legacy_status
     end
   end
 

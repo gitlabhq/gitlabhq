@@ -604,7 +604,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
     context 'when traces are archived' do
       let(:subject) do
         project.builds.each do |build|
-          build.success!
+          build.reset.success!
         end
       end
 

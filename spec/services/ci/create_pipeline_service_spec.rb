@@ -362,11 +362,11 @@ describe Ci::CreatePipelineService do
 
             context 'when build that is not marked as interruptible is running' do
               it 'cancels running outdated pipelines', :sidekiq_might_not_need_inline do
-                pipeline_on_previous_commit
-                  .builds
-                  .find_by_name('build_2_1')
-                  .tap(&:enqueue!)
-                  .run!
+                build_2_1 = pipeline_on_previous_commit
+                  .builds.find_by_name('build_2_1')
+
+                build_2_1.enqueue!
+                build_2_1.reset.run!
 
                 pipeline
 
@@ -377,12 +377,12 @@ describe Ci::CreatePipelineService do
           end
 
           context 'when an uninterruptible build is running' do
-            it 'does not cancel running outdated pipelines', :sidekiq_might_not_need_inline do
-              pipeline_on_previous_commit
-                .builds
-                .find_by_name('build_3_1')
-                .tap(&:enqueue!)
-                .run!
+            it 'does not cancel running outdated pipelines', :sidekiq_inline do
+              build_3_1 = pipeline_on_previous_commit
+                .builds.find_by_name('build_3_1')
+
+              build_3_1.enqueue!
+              build_3_1.reset.run!
 
               pipeline
 

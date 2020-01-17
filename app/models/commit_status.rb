@@ -40,6 +40,7 @@ class CommitStatus < ApplicationRecord
   scope :latest, -> { where(retried: [false, nil]) }
   scope :retried, -> { where(retried: true) }
   scope :ordered, -> { order(:name) }
+  scope :ordered_by_stage, -> { order(stage_idx: :asc) }
   scope :latest_ordered, -> { latest.ordered.includes(project: :namespace) }
   scope :retried_ordered, -> { retried.ordered.includes(project: :namespace) }
   scope :before_stage, -> (index) { where('stage_idx < ?', index) }
@@ -57,6 +58,10 @@ class CommitStatus < ApplicationRecord
     preload(:project, :user)
   end
 
+  scope :with_project_preload, -> do
+    preload(project: :namespace)
+  end
+
   scope :with_needs, -> (names = nil) do
     needs = Ci::BuildNeed.scoped_build.select(1)
     needs = needs.where(name: names) if names
@@ -67,6 +72,15 @@ class CommitStatus < ApplicationRecord
     needs = Ci::BuildNeed.scoped_build.select(1)
     needs = needs.where(name: names) if names
     where('NOT EXISTS (?)', needs)
+  end
+
+  scope :match_id_and_lock_version, -> (slice) do
+    # it expects that items are an array of attributes to match
+    # each hash needs to have `id` and `lock_version`
+    slice.inject(self) do |relation, item|
+      match = CommitStatus.where(item.slice(:id, :lock_version))
+      relation.or(match)
+    end
   end
 
   # We use `CommitStatusEnums.failure_reasons` here so that EE can more easily
@@ -84,6 +98,16 @@ class CommitStatus < ApplicationRecord
       self.run_after_commit { StageUpdateWorker.perform_async(stage.id) }
     end
     # rubocop: enable CodeReuse/ServiceClass
+  end
+
+  before_save if: :status_changed?, unless: :importing? do
+    if Feature.disabled?(:ci_atomic_processing, project)
+      self.processed = nil
+    elsif latest?
+      self.processed = false # force refresh of all dependent ones
+    elsif retried?
+      self.processed = true # retried are considered to be already processed
+    end
   end
 
   state_machine :status do
@@ -136,19 +160,13 @@ class CommitStatus < ApplicationRecord
     end
 
     after_transition do |commit_status, transition|
-      next unless commit_status.project
       next if transition.loopback?
+      next if commit_status.processed?
+      next unless commit_status.project
 
       commit_status.run_after_commit do
-        if pipeline_id
-          if complete? || manual?
-            PipelineProcessWorker.perform_async(pipeline_id, [id])
-          else
-            PipelineUpdateWorker.perform_async(pipeline_id)
-          end
-        end
+        schedule_stage_and_pipeline_update
 
-        StageUpdateWorker.perform_async(stage_id)
         ExpireJobCacheWorker.perform_async(id)
       end
     end
@@ -177,6 +195,11 @@ class CommitStatus < ApplicationRecord
     where(name: names).latest.slow_composite_status || 'success'
   end
 
+  def self.update_as_processed!
+    # Marks items as processed, and increases `lock_version` (Optimisitc Locking)
+    update_all('processed=TRUE, lock_version=COALESCE(lock_version,0)+1')
+  end
+
   def locking_enabled?
     will_save_change_to_status?
   end
@@ -191,6 +214,10 @@ class CommitStatus < ApplicationRecord
 
   def duration
     calculate_duration
+  end
+
+  def latest?
+    !retried?
   end
 
   def playable?
@@ -242,6 +269,23 @@ class CommitStatus < ApplicationRecord
   def sortable_name
     name.to_s.split(/(\d+)/).map do |v|
       v =~ /\d+/ ? v.to_i : v
+    end
+  end
+
+  private
+
+  def schedule_stage_and_pipeline_update
+    if Feature.enabled?(:ci_atomic_processing, project)
+      # Atomic Processing requires only single Worker
+      PipelineProcessWorker.perform_async(pipeline_id, [id])
+    else
+      if complete? || manual?
+        PipelineProcessWorker.perform_async(pipeline_id, [id])
+      else
+        PipelineUpdateWorker.perform_async(pipeline_id)
+      end
+
+      StageUpdateWorker.perform_async(stage_id)
     end
   end
 end

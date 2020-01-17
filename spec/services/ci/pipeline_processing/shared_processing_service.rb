@@ -879,19 +879,27 @@ shared_examples 'Pipeline Processing Service' do
   end
 
   def succeed_pending
-    builds.pending.map(&:success)
+    builds.pending.each do |build|
+      build.reset.success
+    end
   end
 
   def succeed_running_or_pending
-    pipeline.builds.running_or_pending.each(&:success)
+    pipeline.builds.running_or_pending.each do |build|
+      build.reset.success
+    end
   end
 
   def fail_running_or_pending
-    pipeline.builds.running_or_pending.each(&:drop)
+    pipeline.builds.running_or_pending.each do |build|
+      build.reset.drop
+    end
   end
 
   def cancel_running_or_pending
-    pipeline.builds.running_or_pending.each(&:cancel)
+    pipeline.builds.running_or_pending.each do |build|
+      build.reset.cancel
+    end
   end
 
   def play_manual_action(name)
@@ -911,11 +919,15 @@ shared_examples 'Pipeline Processing Service' do
   end
 
   def create_build(name, **opts)
-    create(:ci_build, :created, pipeline: pipeline, name: name, **opts)
+    create(:ci_build, :created, pipeline: pipeline, name: name, **with_stage_opts(opts))
   end
 
   def successful_build(name, **opts)
-    create(:ci_build, :success, pipeline: pipeline, name: name, **opts)
+    create(:ci_build, :success, pipeline: pipeline, name: name, **with_stage_opts(opts))
+  end
+
+  def with_stage_opts(opts)
+    { stage: "stage-#{opts[:stage_idx].to_i}" }.merge(opts)
   end
 
   def delayed_options

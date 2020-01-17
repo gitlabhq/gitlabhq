@@ -7,10 +7,7 @@ class PipelineUpdateWorker
   queue_namespace :pipeline_processing
   latency_sensitive_worker!
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def perform(pipeline_id)
-    Ci::Pipeline.find_by(id: pipeline_id)
-      .try(:update_status)
+    Ci::Pipeline.find_by_id(pipeline_id)&.update_legacy_status
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 end

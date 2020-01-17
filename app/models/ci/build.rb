@@ -447,10 +447,6 @@ module Ci
         options_retry_when.include?('always')
     end
 
-    def latest?
-      !retried?
-    end
-
     def any_unmet_prerequisites?
       prerequisites.present?
     end
