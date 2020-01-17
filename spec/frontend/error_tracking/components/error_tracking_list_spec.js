@@ -31,6 +31,8 @@ describe('ErrorTrackingList', () => {
       store,
       propsData: {
         indexPath: '/path',
+        listPath: '/error_tracking',
+        projectPath: 'project/test',
         enableErrorTrackingLink: '/link',
         userCanEnableErrorTracking,
         errorTrackingEnabled,
@@ -59,6 +61,7 @@ describe('ErrorTrackingList', () => {
       searchByQuery: jest.fn(),
       sortByField: jest.fn(),
       fetchPaginatedResults: jest.fn(),
+      updateStatus: jest.fn(),
     };
 
     const state = {
@@ -139,6 +142,14 @@ describe('ErrorTrackingList', () => {
       });
     });
 
+    it('each error in the list should have an ignore button', () => {
+      const error = wrapper.findAll('tbody tr');
+
+      error.wrappers.forEach((_, index) => {
+        expect(error.at(index).exists('glicon-stub[name="eye-slash"]')).toBe(true);
+      });
+    });
+
     describe('filtering', () => {
       const findSearchBox = () => wrapper.find(GlFormInput);
 
@@ -202,6 +213,35 @@ describe('ErrorTrackingList', () => {
       expect(findLoadingIcon().exists()).toBe(false);
       expect(findErrorListTable().exists()).toBe(false);
       expect(findSortDropdown().exists()).toBe(false);
+    });
+  });
+
+  describe('When the ignore button on an error is clicked', () => {
+    beforeEach(() => {
+      store.state.list.loading = false;
+      store.state.list.errors = errorsList;
+
+      mountComponent({
+        stubs: {
+          GlTable: false,
+          GlLink: false,
+          GlButton: false,
+        },
+      });
+    });
+
+    it('sends the "ignored" status and error ID', () => {
+      const ignoreButton = wrapper.find({ ref: 'ignoreError' });
+      ignoreButton.trigger('click');
+      expect(actions.updateStatus).toHaveBeenCalledWith(
+        expect.anything(),
+        {
+          endpoint: '/project/test/-/error_tracking/3.json',
+          redirectUrl: '/error_tracking',
+          status: 'ignored',
+        },
+        undefined,
+      );
     });
   });
 

@@ -11,6 +11,8 @@ describe Projects::ErrorTrackingHelper do
   describe '#error_tracking_data' do
     let(:can_enable_error_tracking) { true }
     let(:setting_path) { project_settings_operations_path(project) }
+    let(:list_path) { project_error_tracking_index_path(project) }
+    let(:project_path) { project.full_path }
 
     let(:index_path) do
       project_error_tracking_index_path(project, format: :json)
@@ -30,6 +32,8 @@ describe Projects::ErrorTrackingHelper do
           'user-can-enable-error-tracking' => 'true',
           'enable-error-tracking-link' => setting_path,
           'error-tracking-enabled' => 'false',
+          'list-path' => list_path,
+          'project-path' => project_path,
           'illustration-path' => match_asset_path('/assets/illustrations/cluster_popover.svg')
         )
       end

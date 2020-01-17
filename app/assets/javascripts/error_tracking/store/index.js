@@ -21,8 +21,8 @@ export const createStore = () =>
       list: {
         namespaced: true,
         state: listState(),
-        actions: listActions,
-        mutations: listMutations,
+        actions: { ...actions, ...listActions },
+        mutations: { ...mutations, ...listMutations },
       },
       details: {
         namespaced: true,

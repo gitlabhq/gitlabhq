@@ -10,6 +10,8 @@ module Projects::ErrorTrackingHelper
       'user-can-enable-error-tracking' => can?(current_user, :admin_operations, project).to_s,
       'enable-error-tracking-link' => project_settings_operations_path(project),
       'error-tracking-enabled' => error_tracking_enabled.to_s,
+      'project-path' => project.full_path,
+      'list-path' => project_error_tracking_index_path(project),
       'illustration-path' => image_path('illustrations/cluster_popover.svg')
     }
   end

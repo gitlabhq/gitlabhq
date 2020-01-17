@@ -13,7 +13,13 @@ export default () => {
     store,
     render(createElement) {
       const domEl = document.querySelector(this.$options.el);
-      const { indexPath, enableErrorTrackingLink, illustrationPath } = domEl.dataset;
+      const {
+        indexPath,
+        enableErrorTrackingLink,
+        illustrationPath,
+        projectPath,
+        listPath,
+      } = domEl.dataset;
       let { errorTrackingEnabled, userCanEnableErrorTracking } = domEl.dataset;
 
       errorTrackingEnabled = parseBoolean(errorTrackingEnabled);
@@ -26,6 +32,8 @@ export default () => {
           errorTrackingEnabled,
           illustrationPath,
           userCanEnableErrorTracking,
+          projectPath,
+          listPath,
         },
       });
     },

@@ -48,6 +48,11 @@ export default {
       tdClass: 'table-col d-flex align-items-center d-sm-table-cell',
     },
     {
+      key: 'ignore',
+      label: '',
+      tdClass: 'table-col d-flex align-items-center d-sm-table-cell',
+    },
+    {
       key: 'details',
       tdClass: 'table-col d-sm-none d-flex align-items-center',
       thClass: 'invisible w-0',
@@ -97,6 +102,14 @@ export default {
       type: Boolean,
       required: true,
     },
+    projectPath: {
+      type: String,
+      required: true,
+    },
+    listPath: {
+      type: String,
+      required: true,
+    },
   },
   hasLocalStorage: AccessorUtils.isLocalStorageAccessSafe(),
   data() {
@@ -144,6 +157,7 @@ export default {
       'loadRecentSearches',
       'setIndexPath',
       'fetchPaginatedResults',
+      'updateStatus',
     ]),
     setSearchText(text) {
       this.errorSearchQuery = text;
@@ -165,6 +179,16 @@ export default {
     },
     isCurrentSortField(field) {
       return field === this.sortField;
+    },
+    getIssueUpdatePath(errorId) {
+      return `/${this.projectPath}/-/error_tracking/${errorId}.json`;
+    },
+    updateIssueStatus(errorId, status) {
+      this.updateStatus({
+        endpoint: this.getIssueUpdatePath(errorId),
+        redirectUrl: this.listPath,
+        status,
+      });
     },
   },
 };
@@ -298,6 +322,16 @@ export default {
             <div class="text-md-left text-right">
               <time-ago :time="errors.item.lastSeen" class="text-secondary" />
             </div>
+          </template>
+          <template v-slot:ignore="errors">
+            <gl-button
+              ref="ignoreError"
+              v-gl-tooltip.hover
+              :title="__('Ignore')"
+              @click="updateIssueStatus(errors.item.id, 'ignored')"
+            >
+              <gl-icon name="eye-slash" :size="12" />
+            </gl-button>
           </template>
           <template v-slot:details="errors">
             <gl-button
