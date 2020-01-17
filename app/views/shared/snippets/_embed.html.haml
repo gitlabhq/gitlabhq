@@ -10,10 +10,8 @@
 
       %small
         = number_to_human_size(blob.raw_size)
-      %a.gitlab-logo{ href: url_for(only_path: false, overwrite_params: nil), title: 'view on gitlab' }
-        on &nbsp;
-        %span.logo-text
-          GitLab
+      %a.gitlab-logo-wrapper{ href: url_for(only_path: false, overwrite_params: nil), title: 'view on gitlab' }
+        %img.gitlab-logo{ src: image_url('ext_snippet_icons/logo.svg'), alt: "GitLab logo" }
 
     .file-actions.d-none.d-sm-block
       .btn-group{ role: "group" }<

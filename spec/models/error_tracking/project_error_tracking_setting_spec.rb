@@ -64,6 +64,22 @@ describe ErrorTracking::ProjectErrorTrackingSetting do
     end
   end
 
+  describe '.extract_sentry_external_url' do
+    subject { described_class.extract_sentry_external_url(sentry_url) }
+
+    describe 'when passing a URL' do
+      let(:sentry_url) { 'https://sentrytest.gitlab.com/api/0/projects/sentry-org/sentry-project' }
+
+      it { is_expected.to eq('https://sentrytest.gitlab.com/sentry-org/sentry-project') }
+    end
+
+    describe 'when passing nil' do
+      let(:sentry_url) { nil }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe '#sentry_external_url' do
     let(:sentry_url) { 'https://sentrytest.gitlab.com/api/0/projects/sentry-org/sentry-project' }
 

@@ -224,6 +224,19 @@ describe Projects::ForkService do
           end
         end
       end
+
+      context 'when forking is disabled' do
+        before do
+          @from_project.project_feature.update_attribute(
+            :forking_access_level, ProjectFeature::DISABLED)
+        end
+
+        it 'fails' do
+          to_project = fork_project(@from_project, @to_user, namespace: @to_user.namespace)
+
+          expect(to_project.errors[:forked_from_project_id]).to eq(['is forbidden'])
+        end
+      end
     end
 
     describe 'fork to namespace' do

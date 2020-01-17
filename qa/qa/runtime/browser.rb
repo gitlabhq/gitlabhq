@@ -15,6 +15,10 @@ module QA
 
       CAPYBARA_MAX_WAIT_TIME = 10
 
+      class << self
+        attr_accessor :rspec_configured, :capybara_configured
+      end
+
       def initialize
         self.class.configure!
       end
@@ -45,11 +49,40 @@ module QA
       end
 
       def self.configure!
+        configure_rspec!
+        configure_capybara!
+      end
+
+      def self.configure_rspec!
+        # We don't want to enter this infinite loop:
+        #   Runtime::Release.perform_before_hooks -> `QA::Runtime::Browser.visit` -> configure! -> configure_rspec! -> Runtime::Release.perform_before_hooks
+        # So we make sure this method is called only once.
+        return if self.rspec_configured
+
+        browser = self
+
         RSpec.configure do |config|
           config.define_derived_metadata(file_path: %r{/qa/specs/features/}) do |metadata|
             metadata[:type] = :feature
           end
+
+          config.before do
+            unless browser.rspec_configured
+              browser.rspec_configured = true
+
+              ##
+              # Perform before hooks, which are different for CE and EE
+              #
+              Runtime::Release.perform_before_hooks
+            end
+          end
         end
+      end
+
+      def self.configure_capybara!
+        return if self.capybara_configured
+
+        self.capybara_configured = true
 
         Capybara.server_port = 9887 + ENV['TEST_ENV_NUMBER'].to_i
 

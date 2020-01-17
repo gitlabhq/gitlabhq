@@ -128,7 +128,7 @@ module ErrorTracking
     # ->
     # http://HOST/ORG/PROJECT
     def self.extract_sentry_external_url(url)
-      url.sub('api/0/projects/', '')
+      url&.sub('api/0/projects/', '')
     end
 
     def api_host

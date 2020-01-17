@@ -2595,6 +2595,11 @@ type Group {
   lfsEnabled: Boolean
 
   """
+  Indicates if a group is disabled from getting mentioned
+  """
+  mentionsDisabled: Boolean
+
+  """
   Name of the namespace
   """
   name: String!

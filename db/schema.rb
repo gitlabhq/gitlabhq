@@ -3167,6 +3167,7 @@ ActiveRecord::Schema.define(version: 2020_01_14_204949) do
     t.datetime "updated_at"
     t.integer "repository_access_level", default: 20, null: false
     t.integer "pages_access_level", null: false
+    t.integer "forking_access_level"
     t.index ["project_id"], name: "index_project_features_on_project_id", unique: true
   end
 

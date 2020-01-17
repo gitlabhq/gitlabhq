@@ -12,6 +12,21 @@ describe Projects::ForksController do
     group.add_owner(user)
   end
 
+  shared_examples 'forking disabled' do
+    let(:project) { create(:project, :private, :repository, :forking_disabled) }
+
+    before do
+      project.add_developer(user)
+      sign_in(user)
+    end
+
+    it 'returns with 404' do
+      subject
+
+      expect(response).to have_gitlab_http_status(404)
+    end
+  end
+
   describe 'GET index' do
     def get_forks(search: nil)
       get :index,
@@ -138,19 +153,19 @@ describe Projects::ForksController do
   end
 
   describe 'GET new' do
-    def get_new
+    subject do
       get :new,
-        params: {
-          namespace_id: project.namespace,
-          project_id: project
-        }
+          params: {
+            namespace_id: project.namespace,
+            project_id: project
+          }
     end
 
     context 'when user is signed in' do
       it 'responds with status 200' do
         sign_in(user)
 
-        get_new
+        subject
 
         expect(response).to have_gitlab_http_status(200)
       end
@@ -160,21 +175,26 @@ describe Projects::ForksController do
       it 'redirects to the sign-in page' do
         sign_out(user)
 
-        get_new
+        subject
 
         expect(response).to redirect_to(new_user_session_path)
       end
     end
+
+    it_behaves_like 'forking disabled'
   end
 
   describe 'POST create' do
-    def post_create(params = {})
-      post :create,
-        params: {
-          namespace_id: project.namespace,
-          project_id: project,
-          namespace_key: user.namespace.id
-        }.merge(params)
+    let(:params) do
+      {
+        namespace_id: project.namespace,
+        project_id: project,
+        namespace_key: user.namespace.id
+      }
+    end
+
+    subject do
+      post :create, params: params
     end
 
     context 'when user is signed in' do
@@ -183,18 +203,34 @@ describe Projects::ForksController do
       end
 
       it 'responds with status 302' do
-        post_create
+        subject
 
         expect(response).to have_gitlab_http_status(302)
         expect(response).to redirect_to(namespace_project_import_path(user.namespace, project))
       end
 
-      it 'passes continue params to the redirect' do
-        continue_params = { to: '/-/ide/project/path', notice: 'message' }
-        post_create continue: continue_params
+      context 'continue params' do
+        let(:params) do
+          {
+            namespace_id: project.namespace,
+            project_id: project,
+            namespace_key: user.namespace.id,
+            continue: continue_params
+          }
+        end
+        let(:continue_params) do
+          {
+            to: '/-/ide/project/path',
+            notice: 'message'
+          }
+        end
 
-        expect(response).to have_gitlab_http_status(302)
-        expect(response).to redirect_to(namespace_project_import_path(user.namespace, project, continue: continue_params))
+        it 'passes continue params to the redirect' do
+          subject
+
+          expect(response).to have_gitlab_http_status(302)
+          expect(response).to redirect_to(namespace_project_import_path(user.namespace, project, continue: continue_params))
+        end
       end
     end
 
@@ -202,10 +238,12 @@ describe Projects::ForksController do
       it 'redirects to the sign-in page' do
         sign_out(user)
 
-        post_create
+        subject
 
         expect(response).to redirect_to(new_user_session_path)
       end
     end
+
+    it_behaves_like 'forking disabled'
   end
 end

@@ -204,6 +204,25 @@ and give all group members access to the project at once.
 
 Alternatively, you can [lock the sharing with group feature](#share-with-group-lock).
 
+## Sharing a group with another group
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/18328) in GitLab 12.7.
+
+Similarly to [sharing a project with a group](#sharing-a-project-with-a-group),
+you can share a group with another group to give direct group members access
+to the shared group. This is not valid for inherited members.
+
+To share a given group, for example, 'Frontend' with another group, for example,
+'Engineering':
+
+1. Navigate to your 'Frontend' group page and use the left navigation menu to go
+   to your group **Members**.
+1. Select the **Invite group** tab.
+1. Add 'Engineering' with the maximum access level of your choice.
+1. Click **Invite**.
+
+All the members of the 'Engineering' group will have been added to 'Frontend'.
+
 ## Manage group memberships via LDAP
 
 In GitLab Enterprise Edition, it is possible to manage GitLab group memberships using LDAP groups.

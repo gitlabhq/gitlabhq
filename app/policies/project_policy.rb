@@ -83,6 +83,11 @@ class ProjectPolicy < BasePolicy
     project.merge_requests_allowing_push_to_user(user).any?
   end
 
+  with_scope :subject
+  condition(:forking_allowed) do
+    @subject.feature_available?(:forking, @user)
+  end
+
   with_scope :global
   condition(:mirror_available, score: 0) do
     ::Gitlab::CurrentSettings.current_application_settings.mirror_available
@@ -203,7 +208,6 @@ class ProjectPolicy < BasePolicy
     enable :download_code
     enable :read_statistics
     enable :download_wiki_code
-    enable :fork_project
     enable :create_project_snippet
     enable :update_issue
     enable :reopen_issue
@@ -232,10 +236,13 @@ class ProjectPolicy < BasePolicy
     enable :public_access
     enable :guest_access
 
-    enable :fork_project
     enable :build_download_code
     enable :build_read_container_image
     enable :request_access
+  end
+
+  rule { can?(:download_code) & forking_allowed }.policy do
+    enable :fork_project
   end
 
   rule { owner | admin | guest | group_member }.prevent :request_access

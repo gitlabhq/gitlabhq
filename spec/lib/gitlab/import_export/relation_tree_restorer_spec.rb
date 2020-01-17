@@ -27,6 +27,7 @@ describe Gitlab::ImportExport::RelationTreeRestorer do
       shared:           shared,
       tree_hash:        tree_hash,
       importable:       importable,
+      object_builder:   object_builder,
       members_mapper:   members_mapper,
       relation_factory: relation_factory,
       reader:           reader
@@ -38,7 +39,8 @@ describe Gitlab::ImportExport::RelationTreeRestorer do
   context 'when restoring a project' do
     let(:path) { 'spec/fixtures/lib/gitlab/import_export/complex/project.json' }
     let(:importable) { create(:project, :builds_enabled, :issues_disabled, name: 'project', path: 'project') }
-    let(:relation_factory) { Gitlab::ImportExport::RelationFactory }
+    let(:object_builder) { Gitlab::ImportExport::GroupProjectObjectBuilder }
+    let(:relation_factory) { Gitlab::ImportExport::ProjectRelationFactory }
     let(:reader) { Gitlab::ImportExport::Reader.new(shared: shared) }
     let(:tree_hash) { importable_hash }
 

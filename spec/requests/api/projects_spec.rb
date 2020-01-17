@@ -2858,6 +2858,20 @@ describe API::Projects do
         expect(json_response['message']).to eq('401 Unauthorized')
       end
     end
+
+    context 'forking disabled' do
+      before do
+        project.project_feature.update_attribute(
+          :forking_access_level, ProjectFeature::DISABLED)
+      end
+
+      it 'denies project to be forked' do
+        post api("/projects/#{project.id}/fork", admin)
+
+        expect(response).to have_gitlab_http_status(409)
+        expect(json_response['message']['forked_from_project_id']).to eq(['is forbidden'])
+      end
+    end
   end
 
   describe 'POST /projects/:id/housekeeping' do

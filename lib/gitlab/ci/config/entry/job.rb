@@ -35,6 +35,12 @@ module Gitlab
                 message: 'key may not be used with `rules`'
               },
               if: :has_rules?
+            validates :config,
+              disallowed_keys: {
+                in: %i[release],
+                message: 'release features are not enabled'
+              },
+              unless: -> { Feature.enabled?(:ci_release_generation, default_enabled: false) }
 
             with_options allow_nil: true do
               validates :allow_failure, boolean: true

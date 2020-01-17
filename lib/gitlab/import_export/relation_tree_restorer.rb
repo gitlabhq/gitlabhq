@@ -11,12 +11,13 @@ module Gitlab
       attr_reader :importable
       attr_reader :tree_hash
 
-      def initialize(user:, shared:, importable:, tree_hash:, members_mapper:, relation_factory:, reader:)
+      def initialize(user:, shared:, importable:, tree_hash:, members_mapper:, object_builder:, relation_factory:, reader:)
         @user = user
         @shared = shared
         @importable = importable
         @tree_hash = tree_hash
         @members_mapper = members_mapper
+        @object_builder = object_builder
         @relation_factory = relation_factory
         @reader = reader
       end
@@ -221,15 +222,16 @@ module Gitlab
 
       def relation_factory_params(relation_key, data_hash)
         base_params = {
-          relation_sym:   relation_key.to_sym,
-          relation_hash:  data_hash,
+          relation_sym: relation_key.to_sym,
+          relation_hash: data_hash,
+          importable: @importable,
           members_mapper: @members_mapper,
-          user:           @user,
-          excluded_keys:  excluded_keys_for_relation(relation_key)
+          object_builder: @object_builder,
+          user: @user,
+          excluded_keys: excluded_keys_for_relation(relation_key)
         }
 
         base_params[:merge_requests_mapping] = merge_requests_mapping if importable_class == Project
-        base_params[importable_class_sym] = @importable
         base_params
       end
     end

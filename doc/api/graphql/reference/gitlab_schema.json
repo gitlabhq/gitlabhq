@@ -3461,6 +3461,20 @@
               "deprecationReason": null
             },
             {
+              "name": "mentionsDisabled",
+              "description": "Indicates if a group is disabled from getting mentioned",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "name",
               "description": "Name of the namespace",
               "args": [

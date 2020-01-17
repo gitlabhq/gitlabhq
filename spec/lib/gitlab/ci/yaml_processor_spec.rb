@@ -1331,9 +1331,9 @@ module Gitlab
             stub_feature_flags(ci_release_generation: false)
           end
 
-          it "returns release info" do
-            expect(processor.stage_builds_attributes('release').first[:options].include?(config[:release]))
-              .to be false
+          it 'raises error' do
+            expect { processor }.to raise_error(
+              'jobs:release config release features are not enabled: release')
           end
         end
       end

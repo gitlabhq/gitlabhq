@@ -9,6 +9,7 @@ class Projects::ForksController < Projects::ApplicationController
   before_action :require_non_empty_project
   before_action :authorize_download_code!
   before_action :authenticate_user!, only: [:new, :create]
+  before_action :authorize_fork_project!, only: [:new, :create]
 
   # rubocop: disable CodeReuse/ActiveRecord
   def index
@@ -60,6 +61,8 @@ class Projects::ForksController < Projects::ApplicationController
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  private
 
   def whitelist_query_limiting
     Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42335')

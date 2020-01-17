@@ -17,7 +17,7 @@ description: 'Learn how to contribute to GitLab.'
 - [GitLab core team & GitLab Inc. contribution process](https://gitlab.com/gitlab-org/gitlab/blob/master/PROCESS.md)
 - [Generate a changelog entry with `bin/changelog`](changelog.md)
 - [Code review guidelines](code_review.md) for reviewing code and having code reviewed
-- [Database review guidelines](database_review.md) for reviewing database-related changes and complex SQL queries
+- [Database review guidelines](database_review.md) for reviewing database-related changes and complex SQL queries, and having them reviewed
 - [Pipelines for the GitLab project](pipelines.md)
 - [Guidelines for implementing Enterprise Edition features](ee_features.md)
 - [Security process for developers](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md#security-releases-critical-non-critical-as-a-developer)

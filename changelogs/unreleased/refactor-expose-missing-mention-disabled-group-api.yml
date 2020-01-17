@@ -1,0 +1,5 @@
+---
+title: Expose mentions_disabled value via group API
+merge_request: 23070
+author: Fabio Huser
+type: added

@@ -22,7 +22,7 @@ class ProjectFeature < ApplicationRecord
   ENABLED  = 20
   PUBLIC   = 30
 
-  FEATURES = %i(issues merge_requests wiki snippets builds repository pages).freeze
+  FEATURES = %i(issues forking merge_requests wiki snippets builds repository pages).freeze
   PRIVATE_FEATURES_MIN_ACCESS_LEVEL = { merge_requests: Gitlab::Access::REPORTER }.freeze
   PRIVATE_FEATURES_MIN_ACCESS_LEVEL_FOR_PRIVATE_PROJECT = { repository: Gitlab::Access::REPORTER }.freeze
   STRING_OPTIONS = HashWithIndifferentAccess.new({
@@ -92,6 +92,7 @@ class ProjectFeature < ApplicationRecord
 
   default_value_for :builds_access_level,         value: ENABLED, allows_nil: false
   default_value_for :issues_access_level,         value: ENABLED, allows_nil: false
+  default_value_for :forking_access_level,        value: ENABLED, allows_nil: false
   default_value_for :merge_requests_access_level, value: ENABLED, allows_nil: false
   default_value_for :snippets_access_level,       value: ENABLED, allows_nil: false
   default_value_for :wiki_access_level,           value: ENABLED, allows_nil: false
@@ -130,6 +131,10 @@ class ProjectFeature < ApplicationRecord
 
   def merge_requests_enabled?
     merge_requests_access_level > DISABLED
+  end
+
+  def forking_enabled?
+    forking_access_level > DISABLED
   end
 
   def issues_enabled?
