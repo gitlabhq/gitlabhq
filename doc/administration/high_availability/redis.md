@@ -391,7 +391,7 @@ The prerequisites for a HA Redis setup are the following:
    prevent database migrations from running on upgrade, add the following
    configuration to your `/etc/gitlab/gitlab.rb` file:
 
-   ```
+   ```ruby
    gitlab_rails['auto_migrate'] = false
    ```
 
@@ -439,7 +439,7 @@ The prerequisites for a HA Redis setup are the following:
 
 1. To prevent reconfigure from running automatically on upgrade, run:
 
-   ```
+   ```shell
    sudo touch /etc/gitlab/skip-auto-reconfigure
    ```
 
@@ -569,7 +569,7 @@ multiple machines with the Sentinel daemon.
 
 1. To prevent database migrations from running on upgrade, run:
 
-   ```
+   ```shell
    sudo touch /etc/gitlab/skip-auto-reconfigure
    ```
 
@@ -898,14 +898,14 @@ Before proceeding with the troubleshooting below, check your firewall rules:
 You can check if everything is correct by connecting to each server using
 `redis-cli` application, and sending the `info replication` command as below.
 
-```
+```shell
 /opt/gitlab/embedded/bin/redis-cli -h <redis-host-or-ip> -a '<redis-password>' info replication
 ```
 
 When connected to a `master` Redis, you will see the number of connected
 `slaves`, and a list of each with connection details:
 
-```
+```plaintext
 # Replication
 role:master
 connected_slaves:1
@@ -920,7 +920,7 @@ repl_backlog_histlen:1048576
 When it's a `slave`, you will see details of the master connection and if
 its `up` or `down`:
 
-```
+```plaintext
 # Replication
 role:slave
 master_host:10.133.1.58
@@ -959,7 +959,7 @@ To make sure your configuration is correct:
 1. SSH into your GitLab application server
 1. Enter the Rails console:
 
-   ```
+   ```shell
    # For Omnibus installations
    sudo gitlab-rails console
 
@@ -985,7 +985,7 @@ To make sure your configuration is correct:
 
 1. Then back in the Rails console from the first step, run:
 
-   ```
+   ```ruby
    redis.info
    ```
 

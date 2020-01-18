@@ -132,7 +132,7 @@ For supported database architecture, please see our documentation on
 Below is an example of an NFS mount point defined in `/etc/fstab` we use on
 GitLab.com:
 
-```
+```plaintext
 10.1.1.1:/var/opt/gitlab/git-data /var/opt/gitlab/git-data nfs4 defaults,soft,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
 ```
 
@@ -149,7 +149,7 @@ Note there are several options that you should consider using:
 It's recommended to nest all GitLab data dirs within a mount, that allows automatic
 restore of backups without manually moving existing data.
 
-```
+```plaintext
 mountpoint
 └── gitlab-data
     ├── builds

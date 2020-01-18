@@ -229,7 +229,7 @@ available database connections.
 
 In this document we are assuming 3 database nodes, which makes this configuration:
 
-```
+```ruby
 postgresql['max_wal_senders'] = 4
 ```
 
@@ -352,7 +352,7 @@ When installing the GitLab package, do not supply `EXTERNAL_URL` value.
    to inform `gitlab-ctl` that they are standby nodes initially and it need not
    attempt to register them as primary node
 
-   ```
+   ```ruby
    # HA setting to specify if a node should attempt to be master on initialization
    repmgr['master_on_initialization'] = false
    ```
@@ -396,7 +396,7 @@ Select one node as a primary node.
 
    The output should be similar to the following:
 
-   ```
+   ```plaintext
    Role      | Name     | Upstream | Connection String
    ----------+----------|----------|----------------------------------------
    * master  | HOSTNAME |          | host=HOSTNAME user=gitlab_repmgr dbname=gitlab_repmgr
@@ -442,7 +442,7 @@ Select one node as a primary node.
 
    The output should be similar to the following:
 
-   ```
+   ```plaintext
    Role      | Name    | Upstream  | Connection String
    ----------+---------|-----------|------------------------------------------------
    * master  | MASTER  |           | host=MASTER_NODE_NAME user=gitlab_repmgr dbname=gitlab_repmgr
@@ -463,7 +463,7 @@ gitlab-ctl repmgr cluster show
 
 The output should be similar to:
 
-```
+```plaintext
 Role      | Name         | Upstream     | Connection String
 ----------+--------------|--------------|--------------------------------------------------------------------
 * master  | MASTER  |        | host=MASTER port=5432 user=gitlab_repmgr dbname=gitlab_repmgr
@@ -652,7 +652,7 @@ On secondary nodes, edit `/etc/gitlab/gitlab.rb` and add all the configuration
 added to primary node, noted above. In addition, append the following
 configuration:
 
-```
+```ruby
 # HA setting to specify if a node should attempt to be master on initialization
 repmgr['master_on_initialization'] = false
 ```
@@ -706,7 +706,7 @@ After deploying the configuration follow these steps:
    gitlab-psql -d gitlabhq_production
    ```
 
-   ```
+   ```shell
    CREATE EXTENSION pg_trgm;
    ```
 
@@ -804,7 +804,7 @@ consul['configuration'] = {
 On secondary nodes, edit `/etc/gitlab/gitlab.rb` and add all the information added
 to primary node, noted above. In addition, append the following configuration
 
-```
+```ruby
 # HA setting to specify if a node should attempt to be master on initialization
 repmgr['master_on_initialization'] = false
 ```
@@ -908,7 +908,7 @@ after it has been restored to service.
 
   It will output something like:
 
-  ```
+  ```plaintext
   959789412
   ```
 
@@ -1052,7 +1052,7 @@ Now there should not be errors. If errors still occur then there is another prob
 You may get this error when running `gitlab-rake gitlab:db:configure` or you
 may see the error in the PgBouncer log file.
 
-```
+```plaintext
 PG::ConnectionBad: ERROR:  pgbouncer cannot connect to server
 ```
 
@@ -1063,13 +1063,13 @@ You can confirm that this is the issue by checking the PostgreSQL log on the mas
 database node. If you see the following error then `trust_auth_cidr_addresses`
 is the problem.
 
-```
+```plaintext
 2018-03-29_13:59:12.11776 FATAL:  no pg_hba.conf entry for host "123.123.123.123", user "pgbouncer", database "gitlabhq_production", SSL off
 ```
 
 To fix the problem, add the IP address to `/etc/gitlab/gitlab.rb`.
 
-```
+```ruby
 postgresql['trust_auth_cidr_addresses'] = %w(123.123.123.123/32 <other_cidrs>)
 ```
 

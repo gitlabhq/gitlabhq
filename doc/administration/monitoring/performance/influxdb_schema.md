@@ -43,7 +43,7 @@ while the method name is stored in the tag `method`. The tag `action` contains
 the full name of the transaction action. Both the `method` and `action` fields
 are in the following format:
 
-```
+```plaintext
 ClassName#method_name
 ```
 

@@ -57,14 +57,14 @@ repository.
 
 To use this repository you must first clone it:
 
-```
+```shell
 git clone https://gitlab.com/gitlab-org/influxdb-management.git
 cd influxdb-management
 ```
 
 Next you must install the required dependencies:
 
-```
+```shell
 gem install bundler
 bundle install
 ```
@@ -139,7 +139,7 @@ echo "0" > /var/opt/gitlab/grafana/CVE_reset_status
 
 To reinstate your old data, move it back into its original location:
 
-```
+```shell
 sudo mv /var/opt/gitlab/grafana/data.bak.xxxx/ /var/opt/gitlab/grafana/data/
 ```
 

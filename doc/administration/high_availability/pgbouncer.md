@@ -83,7 +83,7 @@ In a HA setup, it's recommended to run a PgBouncer node separately for each data
 
    The output should be similar to the following:
 
-   ```
+   ```plaintext
            name         |  host       | port |      database       | force_user | pool_size | reserve_pool | pool_mode | max_connections | current_connections
    ---------------------+-------------+------+---------------------+------------+-----------+--------------+-----------+-----------------+---------------------
     gitlabhq_production | MASTER_HOST | 5432 | gitlabhq_production |            |        20 |            0 |           |               0 |                   0
@@ -102,7 +102,7 @@ If you're running more than one PgBouncer node as recommended, then at this time
 
 As an example here's how you could do it with [HAProxy](https://www.haproxy.org/):
 
-```
+```plaintext
 global
     log /dev/log local0
     log localhost local1 notice

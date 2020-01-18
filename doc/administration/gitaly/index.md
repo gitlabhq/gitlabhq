@@ -208,7 +208,7 @@ Git operations in GitLab will result in an API error.
 
    On `gitaly1.internal`:
 
-   ```
+   ```ruby
    git_data_dirs({
      'default' => {
        'path' => '/var/opt/gitlab/git-data'
@@ -221,7 +221,7 @@ Git operations in GitLab will result in an API error.
 
    On `gitaly2.internal`:
 
-   ```
+   ```ruby
    git_data_dirs({
      'storage2' => {
        'path' => '/srv/gitlab/git-data'
@@ -519,7 +519,7 @@ To configure Gitaly with TLS:
 To observe what type of connections are actually being used in a
 production environment you can use the following Prometheus query:
 
-```
+```prometheus
 sum(rate(gitaly_connections_total[5m])) by (type)
 ```
 
@@ -648,14 +648,14 @@ machine.
 Use Prometheus to see what the current authentication behavior of your
 GitLab installation is.
 
-```
+```prometheus
 sum(rate(gitaly_authentications_total[5m])) by (enforced, status)
 ```
 
 In a system where authentication is configured correctly, and where you
 have live traffic, you will see something like this:
 
-```
+```prometheus
 {enforced="true",status="ok"}  4424.985419441742
 ```
 
@@ -684,7 +684,7 @@ gitaly['auth_transitioning'] = true
 After you have applied this, your Prometheus query should return
 something like this:
 
-```
+```prometheus
 {enforced="false",status="would be ok"}  4424.985419441742
 ```
 
@@ -730,7 +730,7 @@ gitaly['auth_transitioning'] = false
 Refresh your Prometheus query. You should now see the same kind of
 result as you did in the beginning:
 
-```
+```prometheus
 {enforced="true",status="ok"}  4424.985419441742
 ```
 
@@ -870,7 +870,7 @@ gitaly-debug -h
 
 ### Commits, pushes, and clones return a 401
 
-```
+```plaintext
 remote: GitLab: 401 Unauthorized
 ```
 
@@ -902,7 +902,7 @@ Assuming your `grpc_client_handled_total` counter only observes Gitaly,
 the following query shows you RPCs are (most likely) internally
 implemented as calls to `gitaly-ruby`:
 
-```
+```prometheus
 sum(rate(grpc_client_handled_total[5m])) by (grpc_method) > 0
 ```
 

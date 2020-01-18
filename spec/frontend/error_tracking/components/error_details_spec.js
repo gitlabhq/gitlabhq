@@ -39,7 +39,8 @@ describe('ErrorDetails', () => {
     });
     wrapper.setData({
       GQLerror: {
-        id: 129381,
+        id: 'gid://gitlab/Gitlab::ErrorTracking::DetailedError/129381',
+        sentryId: 129381,
         title: 'Issue title',
         externalUrl: 'http://sentry.gitlab.net/gitlab',
         firstSeen: '2017-05-26T13:32:48Z',

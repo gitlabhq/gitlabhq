@@ -64,7 +64,7 @@ command to verify all server nodes are communicating:
 
 The output should be similar to:
 
-```
+```plaintext
 Node                 Address               Status  Type    Build  Protocol  DC
 CONSUL_NODE_ONE      XXX.XXX.XXX.YYY:8301  alive   server  0.9.2  2         gitlab_consul
 CONSUL_NODE_TWO      XXX.XXX.XXX.YYY:8301  alive   server  0.9.2  2         gitlab_consul
@@ -80,8 +80,8 @@ check the [Troubleshooting section](#troubleshooting) before proceeding.
 
 To see which nodes are part of the cluster, run the following on any member in the cluster
 
-```
-# /opt/gitlab/embedded/bin/consul members
+```shell
+$ /opt/gitlab/embedded/bin/consul members
 Node            Address               Status  Type    Build  Protocol  DC
 consul-b        XX.XX.X.Y:8301        alive   server  0.9.0  2         gitlab_consul
 consul-c        XX.XX.X.Y:8301        alive   server  0.9.0  2         gitlab_consul
@@ -127,7 +127,7 @@ By default, the server agents will attempt to [bind](https://www.consul.io/docs/
 
 You will see messages like the following in `gitlab-ctl tail consul` output if you are running into this issue:
 
-```
+```plaintext
 2017-09-25_19:53:39.90821     2017/09/25 19:53:39 [WARN] raft: no known peers, aborting election
 2017-09-25_19:53:41.74356     2017/09/25 19:53:41 [ERR] agent: failed to sync remote state: No cluster leader
 ```
@@ -154,7 +154,7 @@ In the case that a node has multiple private IPs the agent be confused as to whi
 
 You will see messages like the following in `gitlab-ctl tail consul` output if you are running into this issue:
 
-```
+```plaintext
 2017-11-09_17:41:45.52876 ==> Starting Consul agent...
 2017-11-09_17:41:45.53057 ==> Error creating agent: Failed to get advertise address: Multiple private IPs found. Please configure one.
 ```
@@ -181,10 +181,10 @@ If you lost enough server agents in the cluster to break quorum, then the cluste
 
 By default, GitLab does not store anything in the Consul cluster that cannot be recreated. To erase the Consul database and reinitialize
 
-```
-# gitlab-ctl stop consul
-# rm -rf /var/opt/gitlab/consul/data
-# gitlab-ctl start consul
+```shell
+gitlab-ctl stop consul
+rm -rf /var/opt/gitlab/consul/data
+gitlab-ctl start consul
 ```
 
 After this, the cluster should start back up, and the server agents rejoin. Shortly after that, the client agents should rejoin as well.

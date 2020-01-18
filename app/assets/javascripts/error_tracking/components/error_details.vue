@@ -207,7 +207,7 @@ export default {
             <gl-form-input class="hidden" name="issue[title]" :value="issueTitle" />
             <input name="issue[description]" :value="issueDescription" type="hidden" />
             <gl-form-input
-              :value="GQLerror.id"
+              :value="GQLerror.sentryId"
               class="hidden"
               name="issue[sentry_issue_attributes][sentry_issue_identifier]"
             />

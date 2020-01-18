@@ -13,13 +13,13 @@ developed and tested. We aim to be compatible with most external
 
 1. SSH into a GitLab **primary** application server and login as root:
 
-   ```sh
+   ```bash
    sudo -i
    ```
 
 1. Execute the command below to define the node as **primary** node:
 
-   ```sh
+   ```bash
    gitlab-ctl set-geo-primary-node
    ```
 
@@ -47,7 +47,7 @@ configures the **primary** node's database to be replicated by making changes to
 `pg_hba.conf` and `postgresql.conf`. Make the following configuration changes
 manually to your external database configuration:
 
-```
+```plaintext
 ##
 ## Geo Primary Role
 ## - pg_hba.conf
@@ -55,7 +55,7 @@ manually to your external database configuration:
 host    replication gitlab_replicator <trusted secondary IP>/32     md5
 ```
 
-```
+```plaintext
 ##
 ## Geo Primary Role
 ## - postgresql.conf
@@ -75,7 +75,7 @@ hot_standby = on
 Make the following configuration changes manually to your `postgresql.conf`
 of external replica database:
 
-```
+```plaintext
 ##
 ## Geo Secondary Role
 ## - postgresql.conf

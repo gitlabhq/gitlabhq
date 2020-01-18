@@ -47,8 +47,12 @@ An epic's page contains the following tabs:
 
 ## Adding an issue to an epic
 
-Any issue that belongs to a project in the epic's group, or any of the epic's
-subgroups, are eligible to be added.  New issues appear at the top of the list of issues in the **Epics and Issues** tab.
+You can add an existing issue to an epic, or, from an epic's page, create a new issue that is automatically added to the epic.
+
+### Adding an existing issue to an epic
+
+Existing issues that belong to a project in an epic's group, or any of the epic's
+subgroups, are eligible to be added to the epic. Newly added issues appear at the top of the list of issues in the **Epics and Issues** tab.
 
 An epic contains a list of issues and an issue can be associated with at most
 one epic. When you add an issue that is already linked to an epic,
@@ -63,6 +67,19 @@ To add an issue to an epic:
 
    If there are multiple issues to be added, press <kbd>Spacebar</kbd> and repeat this step.
 1. Click **Add**.
+
+### Creating an issue from an epic
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5419) in GitLab 12.7.
+
+Creating an issue from an epic enables you to maintain focus on the broader context of the epic while dividing work into smaller parts.
+
+To create an issue from an epic:
+
+1. On the epic's page, under **Epics and Issues**, click the arrow next to **Add an issue** and select **Create new issue**.
+1. Under **Title**, enter the title for the new issue.
+1. From the **Project** dropdown, select the project in which the issue should be created.
+1. Click **Create issue**.
 
 To remove an issue from an epic:
 

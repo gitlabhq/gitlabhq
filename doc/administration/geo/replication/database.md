@@ -266,13 +266,13 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
 
 1. SSH into your GitLab **secondary** server and login as root:
 
-   ```
+   ```sh
    sudo -i
    ```
 
 1. Stop application server and Sidekiq
 
-   ```
+   ```sh
    gitlab-ctl stop unicorn
    gitlab-ctl stop sidekiq
    ```
@@ -295,7 +295,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
 
 1. Create a file `server.crt` in the **secondary** server, with the content you got on the last step of the **primary** node's setup:
 
-   ```
+   ```sh
    editor server.crt
    ```
 

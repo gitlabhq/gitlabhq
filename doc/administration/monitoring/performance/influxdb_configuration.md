@@ -48,7 +48,7 @@ upcoming InfluxDB releases.
 
 Make sure you have the following in your configuration file:
 
-```
+```toml
 [data]
   dir = "/var/lib/influxdb/data"
   engine = "tsm1"
@@ -60,7 +60,7 @@ Production environments should have the InfluxDB admin panel **disabled**. This
 feature can be disabled by adding the following to your InfluxDB configuration
 file:
 
-```
+```toml
 [admin]
   enabled = false
 ```
@@ -71,7 +71,7 @@ HTTP is required when using the [InfluxDB CLI] or other tools such as Grafana,
 thus it should be enabled. When enabling make sure to _also_ enable
 authentication:
 
-```
+```toml
 [http]
   enabled = true
   auth-enabled = true
@@ -85,7 +85,7 @@ admin user](#create-a-new-admin-user)._
 GitLab writes data to InfluxDB via UDP and thus this must be enabled. Enabling
 UDP can be done using the following settings:
 
-```
+```toml
 [[udp]]
   enabled = true
   bind-address = ":8089"
@@ -138,7 +138,7 @@ allowing traffic from members of said VLAN.
 If you want to [enable authentication](#http), you might want to [create an
 admin user][influx-admin]:
 
-```
+```shell
 influx -execute "CREATE USER jeff WITH PASSWORD '1234' WITH ALL PRIVILEGES"
 ```
 
@@ -168,7 +168,7 @@ influx -execute 'SHOW DATABASES'
 
 The output should be similar to:
 
-```
+```plaintext
 name: databases
 ---------------
 name
