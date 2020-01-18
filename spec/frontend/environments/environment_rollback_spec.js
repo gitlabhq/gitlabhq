@@ -13,7 +13,6 @@ describe('Rollback Component', () => {
         isLastDeployment: true,
         environment: {},
       },
-      attachToDocument: true,
     });
 
     expect(wrapper.element).toHaveSpriteIcon('repeat');
@@ -26,7 +25,6 @@ describe('Rollback Component', () => {
         isLastDeployment: false,
         environment: {},
       },
-      attachToDocument: true,
     });
 
     expect(wrapper.element).toHaveSpriteIcon('redo');

@@ -59,7 +59,6 @@ describe('Time series component', () => {
           default: mockWidgets,
         },
         store,
-        attachToDocument: true,
       });
   });
 

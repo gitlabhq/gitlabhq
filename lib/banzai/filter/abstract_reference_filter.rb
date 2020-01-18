@@ -297,8 +297,8 @@ module Banzai
         @references_per[parent_type] ||= begin
           refs = Hash.new { |hash, key| hash[key] = Set.new }
           regex = [
-            object_class.reference_pattern,
-            object_class.link_reference_pattern
+            object_class.link_reference_pattern,
+            object_class.reference_pattern
           ].compact.reduce { |a, b| Regexp.union(a, b) }
 
           nodes.each do |node|

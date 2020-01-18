@@ -45,10 +45,7 @@ describe('dashboard time window', () => {
   it('shows an error message if invalid url parameters are passed', done => {
     mock.onGet(mockApiEndpoint).reply(statusCodes.OK, metricsGroupsAPIResponse);
 
-    createComponentWrapperMounted(
-      { hasMetrics: true },
-      { attachToDocument: true, stubs: ['graph-group', 'panel-type'] },
-    );
+    createComponentWrapperMounted({ hasMetrics: true }, { stubs: ['graph-group', 'panel-type'] });
 
     setupComponentStore(wrapper);
 

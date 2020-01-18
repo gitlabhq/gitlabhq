@@ -38,10 +38,7 @@ describe('dashboard invalid url parameters', () => {
   });
 
   it('shows an error message if invalid url parameters are passed', done => {
-    createMountedWrapper(
-      { hasMetrics: true },
-      { attachToDocument: true, stubs: ['graph-group', 'panel-type'] },
-    );
+    createMountedWrapper({ hasMetrics: true }, { stubs: ['graph-group', 'panel-type'] });
 
     wrapper.vm
       .$nextTick()

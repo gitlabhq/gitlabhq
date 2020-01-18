@@ -53,11 +53,12 @@ From error list, users can navigate to the error details page by clicking the ti
 This page has:
 
 - A link to the Sentry issue.
+- A link to the GitLab commit if the Sentry [release id/version](https://docs.sentry.io/workflow/releases/?platform=javascript#configure-sdk) on the Sentry Issue's first release matches a commit SHA in your GitLab hosted project.
 - Other details about the issue, including a full stack trace.
 
-If the error has not been linked to an existing GitLab issue, a 'Create issue' button will be visible:
+By default, a **Create issue** button is displayed. Once you have used it to create an issue, the button is hidden.
 
-![Error Details without Issue Link](img/error_details_v12_6.png)
+![Error Details without Issue Link](img/error_details_v12_7.png)
 
 If a link does exist, it will be shown in the details and the 'Create issue' button will change to a 'View issue' button:
 

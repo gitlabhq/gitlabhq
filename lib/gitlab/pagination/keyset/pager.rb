@@ -3,7 +3,7 @@
 module Gitlab
   module Pagination
     module Keyset
-      class Pager
+      class Pager < Gitlab::Pagination::Base
         attr_reader :request
 
         def initialize(request)

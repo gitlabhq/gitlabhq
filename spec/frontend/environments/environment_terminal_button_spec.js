@@ -7,7 +7,6 @@ describe('Stop Component', () => {
 
   const mountWithProps = props => {
     wrapper = shallowMount(TerminalComponent, {
-      attachToDocument: true,
       propsData: props,
     });
   };

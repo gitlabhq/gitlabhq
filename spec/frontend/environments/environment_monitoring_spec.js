@@ -9,7 +9,6 @@ describe('Monitoring Component', () => {
 
   const createWrapper = () => {
     wrapper = shallowMount(MonitoringComponent, {
-      attachToDocument: true,
       propsData: {
         monitoringUrl,
       },

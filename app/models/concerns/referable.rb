@@ -74,7 +74,7 @@ module Referable
           #{Regexp.escape(Gitlab.config.gitlab.url)}
           \/#{Project.reference_pattern}
           (?:\/\-)?
-          \/#{Regexp.escape(route)}
+          \/#{route.is_a?(Regexp) ? route : Regexp.escape(route)}
           \/#{pattern}
           (?<path>
             (\/[a-z0-9_=-]+)*
