@@ -229,7 +229,7 @@ class Snippet < ApplicationRecord
       (public? && (title_changed? || content_changed?))
   end
 
-  # snippers are the biggest sources of spam
+  # snippets are the biggest sources of spam
   override :allow_possible_spam?
   def allow_possible_spam?
     false

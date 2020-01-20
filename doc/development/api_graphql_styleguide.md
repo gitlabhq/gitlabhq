@@ -220,7 +220,7 @@ end
   them non-nullable. These options can still be overridden by adding
   them as arguments.
 - **`ability_field`**: Expose an ability defined in our policies. This
-  takes behaves the same way as `permission_field` and the same
+  behaves the same way as `permission_field` and the same
   arguments can be overridden.
 - **`abilities`**: Allows exposing several abilities defined in our
   policies at once. The fields for these will all have be non-nullable
