@@ -127,6 +127,18 @@ For groups the `--group` flag is available:
 /chatops run feature set --group=gitlab-org some_feature true
 ```
 
+Note that actor-based gates are applied before percentages. For example, considering the
+`group/project` as `gitlab-org/gitlab` and a given example feature as `some_feature`, if
+you run these 2 commands:
+
+```
+/chatops run feature set --project=gitlab-org/gitlab some_feature true
+/chatops run feature set some_feature 25
+```
+
+Then `some_feature` will be enabled for 25% of the users interacting with
+`gitlab-org/gitlab`, and no one else.
+
 ## Cleaning up
 
 Once the change is deemed stable, submit a new merge request to remove the

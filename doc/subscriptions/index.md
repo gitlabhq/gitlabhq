@@ -272,6 +272,19 @@ main quota. Additional minutes:
 - Are only used once the shared quota included in your subscription runs out.
 - Roll over month to month.
 
+Each month, any minutes that you used will be deducted from your balance of additional minutes.
+Therefore, the number of minutes used and available will reflect your *current*
+month's usage and availability. Purchased remaining minutes not used in the
+current month will be rolled out over to the next month.
+
+For example:
+
+- February 15: A group buys 4000 minutes. The count reads 0/4000 minutes.
+- February 28: The group has used 1500 minutes. The count reads 1500/4000 minutes. Thus, there are 2500 minutes remaining.
+- March 1: The counter reads: 0/2500 minutes rolled out from February's remaining quota.
+
+##### Purchasing additional minutes
+
 In order to purchase additional minutes, you should follow these steps:
 
 1. Go to **Group > Settings > Pipelines quota**. Once you are on that page, click on **Buy additional minutes**.

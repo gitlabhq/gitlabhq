@@ -4825,6 +4825,9 @@ msgstr ""
 msgid "Complete"
 msgstr ""
 
+msgid "Confidence: %{confidence}"
+msgstr ""
+
 msgid "Confidential"
 msgstr ""
 
@@ -6400,6 +6403,9 @@ msgid "Details (default)"
 msgstr ""
 
 msgid "Detect host keys"
+msgstr ""
+
+msgid "Detected %{timeago} in pipeline %{pipeline_link}"
 msgstr ""
 
 msgid "DevOps Score"
@@ -9857,6 +9863,9 @@ msgstr ""
 msgid "Identifier"
 msgstr ""
 
+msgid "Identifiers"
+msgstr ""
+
 msgid "Identities"
 msgstr ""
 
@@ -9912,6 +9921,9 @@ msgid "Ignore"
 msgstr ""
 
 msgid "Image %{imageName} was scheduled for deletion from the registry."
+msgstr ""
+
+msgid "Image: %{image}"
 msgstr ""
 
 msgid "ImageDiffViewer|2-up"
@@ -11104,6 +11116,9 @@ msgstr ""
 msgid "LinkedPipelines|%{counterLabel} more downstream pipelines"
 msgstr ""
 
+msgid "Links"
+msgstr ""
+
 msgid "List"
 msgstr ""
 
@@ -12076,6 +12091,9 @@ msgid "Name your individual key via a title"
 msgstr ""
 
 msgid "Name:"
+msgstr ""
+
+msgid "Namespace: %{namespace}"
 msgstr ""
 
 msgid "Namespaces to index"
@@ -15569,6 +15587,9 @@ msgstr ""
 msgid "Repo by URL"
 msgstr ""
 
+msgid "Report Type: %{report_type}"
+msgstr ""
+
 msgid "Report abuse to admin"
 msgstr ""
 
@@ -16942,6 +16963,9 @@ msgid "Sets weight to %{weight}."
 msgstr ""
 
 msgid "Settings"
+msgstr ""
+
+msgid "Severity: %{severity}"
 msgstr ""
 
 msgid "Share"

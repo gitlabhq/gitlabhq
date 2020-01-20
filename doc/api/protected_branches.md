@@ -34,6 +34,7 @@ Example response:
 ```json
 [
   {
+    "id": 1,
     "name": "master",
     "push_access_levels": [
       {
@@ -61,6 +62,7 @@ Example response:
 ```json
 [
   {
+    "id": 1,
     "name": "master",
     "push_access_levels": [
       {
@@ -105,6 +107,7 @@ Example response:
 
 ```json
 {
+  "id": 1,
   "name": "master",
   "push_access_levels": [
     {
@@ -129,6 +132,7 @@ Example response:
 
 ```json
 {
+  "id": 1,
   "name": "master",
   "push_access_levels": [
     {
@@ -179,6 +183,7 @@ Example response:
 
 ```json
 {
+  "id": 1,
   "name": "*-stable",
   "push_access_levels": [
     {
@@ -209,6 +214,7 @@ Example response:
 
 ```json
 {
+  "id": 1,
   "name": "*-stable",
   "push_access_levels": [
     {
@@ -251,6 +257,7 @@ Example response:
 
 ```json
 {
+  "id": 1,
   "name": "*-stable",
   "push_access_levels": [
     {

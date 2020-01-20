@@ -10,15 +10,29 @@ describe Gitlab::RequestContext, :request_store do
   describe '#request_deadline' do
     let(:request_start_time) { 1575982156.206008 }
 
-    it "sets the time to #{Settings.gitlab.max_request_duration_seconds} seconds in the future" do
+    before do
       allow(subject).to receive(:request_start_time).and_return(request_start_time)
+    end
 
-      expect(subject.request_deadline).to eq(1575982156.206008 + Settings.gitlab.max_request_duration_seconds)
+    it "sets the time to #{Settings.gitlab.max_request_duration_seconds} seconds in the future" do
+      expect(subject.request_deadline).to eq(request_start_time + Settings.gitlab.max_request_duration_seconds)
       expect(subject.request_deadline).to be_a(Float)
     end
 
     it 'returns nil if there is no start time' do
       allow(subject).to receive(:request_start_time).and_return(nil)
+
+      expect(subject.request_deadline).to be_nil
+    end
+
+    it 'only checks the feature once per request-instance' do
+      expect(Feature).to receive(:enabled?).with(:request_deadline).once
+
+      2.times { subject.request_deadline }
+    end
+
+    it 'returns nil when the feature is disabled' do
+      stub_feature_flags(request_deadline: false)
 
       expect(subject.request_deadline).to be_nil
     end

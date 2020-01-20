@@ -1,0 +1,5 @@
+---
+title: Fix premailer and S/MIME emailer hooks order
+merge_request: 23293
+author: Diego Louzán
+type: fixed

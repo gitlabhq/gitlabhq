@@ -2,6 +2,7 @@
 
 module Gitlab
   class RequestContext
+    include Gitlab::Utils::StrongMemoize
     include Singleton
 
     RequestDeadlineExceeded = Class.new(StandardError)
@@ -15,10 +16,12 @@ module Gitlab
     end
 
     def request_deadline
-      return unless request_start_time
-      return unless Feature.enabled?(:request_deadline)
+      strong_memoize(:request_deadline) do
+        next unless request_start_time
+        next unless Feature.enabled?(:request_deadline)
 
-      @request_deadline ||= request_start_time + max_request_duration_seconds
+        request_start_time + max_request_duration_seconds
+      end
     end
 
     def ensure_deadline_not_exceeded!

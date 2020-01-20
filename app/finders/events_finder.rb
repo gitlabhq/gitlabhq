@@ -43,16 +43,17 @@ class EventsFinder
     events = sort(events)
 
     events = events.with_associations if params[:with_associations]
-
     paginated_filtered_by_user_visibility(events)
   end
 
   private
 
   def get_events
-    return EventCollection.new(current_user.authorized_projects).all_project_events if scope == 'all'
-
-    source.events
+    if current_user && scope == 'all'
+      EventCollection.new(current_user.authorized_projects).all_project_events
+    else
+      source.events
+    end
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

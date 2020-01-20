@@ -241,7 +241,7 @@ class ProjectPolicy < BasePolicy
     enable :request_access
   end
 
-  rule { can?(:download_code) & forking_allowed }.policy do
+  rule { (can?(:public_user_access) | can?(:reporter_access)) & forking_allowed }.policy do
     enable :fork_project
   end
 

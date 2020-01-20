@@ -508,6 +508,34 @@ describe ProjectPolicy do
     end
   end
 
+  context 'forking a project' do
+    subject { described_class.new(current_user, project) }
+
+    context 'anonymous user' do
+      let(:current_user) { nil }
+
+      it { is_expected.to be_disallowed(:fork_project) }
+    end
+
+    context 'project member' do
+      let_it_be(:project) { create(:project, :private) }
+
+      context 'guest' do
+        let(:current_user) { guest }
+
+        it { is_expected.to be_disallowed(:fork_project) }
+      end
+
+      %w(reporter developer maintainer).each do |role|
+        context role do
+          let(:current_user) { send(role) }
+
+          it { is_expected.to be_allowed(:fork_project) }
+        end
+      end
+    end
+  end
+
   describe 'update_max_artifacts_size' do
     subject { described_class.new(current_user, project) }
 

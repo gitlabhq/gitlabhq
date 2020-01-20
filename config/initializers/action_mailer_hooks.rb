@@ -11,6 +11,9 @@ ActionMailer::Base.register_interceptors(
 
 ActionMailer::Base.register_observer(::Gitlab::Email::Hook::DeliveryMetricsObserver)
 
+# Force premailer loading so that it's not configured to run after the S/MIME interceptor
+::Premailer::Rails.register_interceptors
+
 if Gitlab.config.gitlab.email_enabled && Gitlab.config.gitlab.email_smime.enabled
   ActionMailer::Base.register_interceptor(::Gitlab::Email::Hook::SmimeSignatureInterceptor)
   Gitlab::AppLogger.debug "S/MIME signing of outgoing emails enabled"
