@@ -2714,4 +2714,10 @@ describe Repository do
         .to change { Gitlab::GitalyClient.get_request_count }.by(1)
     end
   end
+
+  describe '#submodule_links' do
+    it 'returns an instance of Gitlab::SubmoduleLinks' do
+      expect(repository.submodule_links).to be_a(Gitlab::SubmoduleLinks)
+    end
+  end
 end

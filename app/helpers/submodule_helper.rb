@@ -7,9 +7,7 @@ module SubmoduleHelper
 
   # links to files listing for submodule if submodule is a project on this server
   def submodule_links(submodule_item, ref = nil, repository = @repository)
-    url = repository.submodule_url_for(ref, submodule_item.path)
-
-    submodule_links_for_url(submodule_item.id, url, repository)
+    repository.submodule_links.for(submodule_item, ref)
   end
 
   def submodule_links_for_url(submodule_item_id, url, repository)
