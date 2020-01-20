@@ -6,27 +6,25 @@
 
 - if can?(current_user, :admin_cluster, @cluster)
   - unless @cluster.provided_by_user?
-    .append-bottom-20
-      %label.append-bottom-10
+    .sub-section.form-group
+      %h4
         = @cluster.provider_label
       %p
         - provider_link = link_to(@cluster.provider_label, @cluster.provider_management_url, target: '_blank', rel: 'noopener noreferrer')
         = s_('ClusterIntegration|Manage your Kubernetes cluster by visiting %{provider_link}').html_safe % { provider_link: provider_link }
 
-  = form_for @cluster, url: clusterable.cluster_path(@cluster), as: :cluster, html: { class: 'cluster_management_form' } do |field|
+  .sub-section.form-group
+    = form_for @cluster, url: clusterable.cluster_path(@cluster), as: :cluster, html: { class: 'cluster_management_form' } do |field|
+      %h4
+        = s_('ClusterIntegration|Cluster management project (alpha)')
 
-    %h5
-      = s_('ClusterIntegration|Cluster management project (alpha)')
-
-    .form-group
-      .form-text.text-muted
-      = project_select_tag('cluster[management_project_id]', class: 'hidden-filter-value', toggle_class: 'js-project-search js-project-filter js-filter-submit', dropdown_class: 'dropdown-menu-selectable dropdown-menu-project js-filter-submit',
-          placeholder: _('Select project'), idAttribute: 'id', data: { order_by: 'last_activity_at', idattribute: 'id', simple_filter: true, allow_clear: true, include_groups: false, include_projects_in_subgroups: true, group_id: group_id, user_id: user_id }, value: @cluster.management_project_id)
-      .text-muted
-        = s_('ClusterIntegration|A cluster management project can be used to run deployment jobs with Kubernetes <code>cluster-admin</code> privileges.').html_safe
-        = link_to _('More information'), help_page_path('user/clusters/management_project.md'), target: '_blank'
-    .form-group
-      = field.submit _('Save changes'), class: 'btn btn-success qa-save-domain'
+      %p
+        = project_select_tag('cluster[management_project_id]', class: 'hidden-filter-value', toggle_class: 'js-project-search js-project-filter js-filter-submit', dropdown_class: 'dropdown-menu-selectable dropdown-menu-project js-filter-submit',
+            placeholder: _('Select project'), idAttribute: 'id', data: { order_by: 'last_activity_at', idattribute: 'id', simple_filter: true, allow_clear: true, include_groups: false, include_projects_in_subgroups: true, group_id: group_id, user_id: user_id }, value: @cluster.management_project_id)
+        .text-muted
+          = s_('ClusterIntegration|A cluster management project can be used to run deployment jobs with Kubernetes <code>cluster-admin</code> privileges.').html_safe
+          = link_to _('More information'), help_page_path('user/clusters/management_project.md'), target: '_blank'
+      = field.submit _('Save changes'), class: 'btn btn-success'
 
   - if @cluster.managed?
     .sub-section.form-group

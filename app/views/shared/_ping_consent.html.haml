@@ -1,6 +1,6 @@
 - if session[:ask_for_usage_stats_consent]
   .ping-consent-message.alert.alert-warning.flex-alert
-    - settings_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer" class="alert-link">'.html_safe % { url: admin_application_settings_path(anchor: 'js-usage-settings') }
+    - settings_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer" class="alert-link">'.html_safe % { url: metrics_and_profiling_admin_application_settings_path(anchor: 'js-usage-settings') }
     - info_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer" class="alert-link">'.html_safe % { url: help_page_path('user/admin_area/settings/usage_statistics.md') }
     .alert-message
       = s_('To help improve GitLab, we would like to periodically collect usage information. This can be changed at any time in %{settings_link_start}Settings%{link_end}. %{info_link_start}More Information%{link_end}').html_safe % { settings_link_start: settings_link_start, info_link_start: info_link_start, link_end: '</a>'.html_safe }

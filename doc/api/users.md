@@ -677,12 +677,12 @@ Parameters:
 Get a list of a specified user's SSH keys.
 
 ```
-GET /users/:id/keys
+GET /users/:id_or_username/keys
 ```
 
-Parameters:
-
-- `id` (required) - id of specified user
+| Attribute        | Type   | Required | Description |
+| ---------------- | ------ | -------- | ----------- |
+| `id_or_username` | string | yes      | The id or username of the user to get the SSH keys for. |
 
 ## Single SSH key
 

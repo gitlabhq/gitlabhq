@@ -913,6 +913,27 @@ describe API::Users do
     end
   end
 
+  describe 'GET /user/:user_id/keys' do
+    it 'returns 404 for non-existing user' do
+      get api("/users/#{not_existing_user_id}/keys")
+
+      expect(response).to have_gitlab_http_status(404)
+      expect(json_response['message']).to eq('404 User Not Found')
+    end
+
+    it 'returns array of ssh keys' do
+      user.keys << key
+      user.save
+
+      get api("/users/#{user.username}/keys")
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.first['title']).to eq(key.title)
+    end
+  end
+
   describe 'DELETE /user/:id/keys/:key_id' do
     before do
       admin

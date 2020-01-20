@@ -638,6 +638,12 @@ msgstr ""
 msgid "1st contribution!"
 msgstr ""
 
+msgid "2 days"
+msgstr ""
+
+msgid "2 weeks"
+msgstr ""
+
 msgid "20-29 contributions"
 msgstr ""
 
@@ -663,6 +669,9 @@ msgid "30 minutes"
 msgstr ""
 
 msgid "30+ contributions"
+msgstr ""
+
+msgid "4 hours"
 msgstr ""
 
 msgid "403|Please contact your GitLab administrator to get permission."
@@ -7183,6 +7192,9 @@ msgstr ""
 msgid "Environments|Show all"
 msgstr ""
 
+msgid "Environments|Show last"
+msgstr ""
+
 msgid "Environments|Stop"
 msgstr ""
 
@@ -13080,6 +13092,9 @@ msgid "Password was successfully updated. Please login with it"
 msgstr ""
 
 msgid "Past due"
+msgstr ""
+
+msgid "Past week"
 msgstr ""
 
 msgid "Paste a machine public key here. Read more about how to generate it %{link_start}here%{link_end}"
@@ -21776,6 +21791,9 @@ msgstr ""
 msgid "ciReport|%{linkStartTag}Learn more about SAST %{linkEndTag}"
 msgstr ""
 
+msgid "ciReport|%{linkStartTag}Learn more about codequality reports %{linkEndTag}"
+msgstr ""
+
 msgid "ciReport|%{namespace} is affected by %{vulnerability}."
 msgstr ""
 
@@ -21862,6 +21880,9 @@ msgid "ciReport|All severities"
 msgstr ""
 
 msgid "ciReport|Automatically apply the patch in a new branch"
+msgstr ""
+
+msgid "ciReport|Base pipeline codequality artifact not found"
 msgstr ""
 
 msgid "ciReport|Class"

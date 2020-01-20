@@ -12,13 +12,13 @@ shared_examples 'todos actions' do
         post_create
       end.to change { user.todos.count }.by(1)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
 
     it 'returns todo path and pending count' do
       post_create
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['count']).to eq 1
       expect(json_response['delete_path']).to match(%r{/dashboard/todos/\d{1}})
     end
@@ -31,7 +31,7 @@ shared_examples 'todos actions' do
         post_create
       end.to change { user.todos.count }.by(0)
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it 'does not create todo when user is not logged in' do
@@ -39,7 +39,7 @@ shared_examples 'todos actions' do
         post_create
       end.to change { user.todos.count }.by(0)
 
-      expect(response).to have_gitlab_http_status(302)
+      expect(response).to have_gitlab_http_status(:found)
     end
   end
 end

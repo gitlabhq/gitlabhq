@@ -223,19 +223,19 @@ class User < ApplicationRecord
   after_initialize :set_projects_limit
 
   # User's Layout preference
-  enum layout: [:fixed, :fluid]
+  enum layout: { fixed: 0, fluid: 1 }
 
   # User's Dashboard preference
   # Note: When adding an option, it MUST go on the end of the array.
-  enum dashboard: [:projects, :stars, :project_activity, :starred_project_activity, :groups, :todos, :issues, :merge_requests, :operations]
+  enum dashboard: { projects: 0, stars: 1, project_activity: 2, starred_project_activity: 3, groups: 4, todos: 5, issues: 6, merge_requests: 7, operations: 8 }
 
   # User's Project preference
   # Note: When adding an option, it MUST go on the end of the array.
-  enum project_view: [:readme, :activity, :files]
+  enum project_view: { readme: 0, activity: 1, files: 2 }
 
   # User's role
   # Note: When adding an option, it MUST go on the end of the array.
-  enum role: [:software_developer, :development_team_lead, :devops_engineer, :systems_administrator, :security_analyst, :data_analyst, :product_manager, :product_designer, :other], _suffix: true
+  enum role: { software_developer: 0, development_team_lead: 1, devops_engineer: 2, systems_administrator: 3, security_analyst: 4, data_analyst: 5, product_manager: 6, product_designer: 7, other: 8 }, _suffix: true
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
   delegate :notes_filter_for, to: :user_preference

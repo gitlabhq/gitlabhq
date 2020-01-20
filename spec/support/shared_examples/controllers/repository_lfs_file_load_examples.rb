@@ -51,7 +51,7 @@ shared_examples 'a controller that can serve LFS files' do |options = {}|
 
         subject
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       context 'and lfs uses object storage' do
@@ -65,7 +65,7 @@ shared_examples 'a controller that can serve LFS files' do |options = {}|
         it 'responds with redirect to file' do
           subject
 
-          expect(response).to have_gitlab_http_status(302)
+          expect(response).to have_gitlab_http_status(:found)
           expect(response.location).to include(lfs_object.reload.file.path)
         end
 
@@ -84,7 +84,7 @@ shared_examples 'a controller that can serve LFS files' do |options = {}|
       it 'does not serve the file' do
         subject
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -97,7 +97,7 @@ shared_examples 'a controller that can serve LFS files' do |options = {}|
         it 'does not serve the file if no members are linked to the LfsObject' do
           subject
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
 
         it 'serves the file when the fork network root is linked to the LfsObject' do
@@ -105,7 +105,7 @@ shared_examples 'a controller that can serve LFS files' do |options = {}|
 
           subject
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
 
         it 'serves the file when the fork network member is linked to the LfsObject' do
@@ -113,7 +113,7 @@ shared_examples 'a controller that can serve LFS files' do |options = {}|
 
           subject
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
 
@@ -154,7 +154,7 @@ shared_examples 'a controller that can serve LFS files' do |options = {}|
 
       subject
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response.header['Content-Type']).to eq('text/plain; charset=utf-8')
       expect(response.header['Content-Disposition'])
           .to eq('inline')

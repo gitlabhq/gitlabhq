@@ -85,6 +85,35 @@ subgraph "gitlab-qa pipeline"
 1. The result of the GitLab QA pipeline is being
    propagated upstream, through Omnibus, back to the CE / EE merge request.
 
+Please note, we plan to [add more specific information](https://gitlab.com/gitlab-org/quality/team-tasks/issues/156)
+about the tests included in each job/scenario that runs in `gitlab-qa`.
+
+##### Running custom tests
+
+The [existing scenarios](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md)
+that run in the downstream `gitlab-qa` pipeline include many tests, but there are times when you might want to run a
+test or a group of tests that are different than the groups in any of the existing scenarios.
+
+For example, when we [dequarantine](https://about.gitlab.com/handbook/engineering/quality/guidelines/debugging-qa-test-failures/#dequarantining-tests)
+a flaky test we first want to make sure that it's no longer flaky.
+We can do that using the `ce:custom-parallel` and `ee:custom-parallel` jobs.
+Both are manual jobs that you can configure using custom variables.
+When you click the name (not the play icon) of one of the parallel jobs,
+you'll be prompted to enter variables. You can use any of [the variables
+that can be used with `gitlab-qa`](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md#supported-gitlab-environment-variables)
+as well as these:
+
+| Variable | Description |
+|-|-|
+| `QA_SCENARIO` | The scenario to run (default `Test::Instance::Image`) |
+| `QA_TESTS` | The test(s) to run (no default, which means run all the tests in the scenario). Use file paths as you would when running tests via RSpec, e.g., `qa/specs/features/ee/browser_ui` would include all the `EE` UI tests. |
+| `QA_RSPEC_TAGS` | The RSpec tags to add (no default) |
+
+For now [manual jobs with custom variables will not use the same variable
+when retried](https://gitlab.com/gitlab-org/gitlab/issues/31367), so if you want to run the same test(s) multiple times,
+specify the same variables in each `custom-parallel` job (up to as
+many of the 10 available jobs that you want to run).
+
 #### Using the `review-qa-all` jobs
 
 On every pipeline during the `test` stage, the `review-qa-smoke` job is
@@ -105,8 +134,9 @@ See [Review Apps][review-apps] for more details about Review Apps.
 
 ## How do I run the tests?
 
-There are two main options for running the tests. If you simply want to run the
-existing tests against a live GitLab instance or against a pre-built docker image
+If you are not [testing code in a merge request](#testing-code-in-merge-requests),
+there are two main options for running the tests. If you simply want to run
+the existing tests against a live GitLab instance or against a pre-built docker image
 you can use the [GitLab QA orchestrator][gitlab-qa-readme]. See also [examples
 of the test scenarios you can run via the orchestrator](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md#examples).
 

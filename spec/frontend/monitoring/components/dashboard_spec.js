@@ -124,9 +124,6 @@ describe('Dashboard', () => {
         .then(() => {
           expect(wrapper.vm.showEmptyState).toEqual(false);
           expect(wrapper.vm.$el.querySelector('.prometheus-panel')).toEqual(null);
-          // TODO: The last expectation doesn't belong here, it belongs in a `group_group_spec.js` file
-          // Issue: https://gitlab.com/gitlab-org/gitlab/issues/118780
-          // expect(wrapper.vm.$el.querySelector('.prometheus-graph-group')).toBeTruthy();
 
           done();
         })

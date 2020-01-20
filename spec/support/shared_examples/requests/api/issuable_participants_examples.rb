@@ -6,7 +6,7 @@ shared_examples 'issuable participants endpoint' do
   it 'returns participants' do
     get api("/projects/#{project.id}/#{area}/#{entity.iid}/participants", user)
 
-    expect(response).to have_gitlab_http_status(200)
+    expect(response).to have_gitlab_http_status(:ok)
     expect(response).to include_pagination_headers
     expect(json_response).to be_an Array
     expect(json_response.size).to eq(entity.participants.size)
@@ -20,12 +20,12 @@ shared_examples 'issuable participants endpoint' do
   it 'returns a 404 when iid does not exist' do
     get api("/projects/#{project.id}/#{area}/999/participants", user)
 
-    expect(response).to have_gitlab_http_status(404)
+    expect(response).to have_gitlab_http_status(:not_found)
   end
 
   it 'returns a 404 when id is used instead of iid' do
     get api("/projects/#{project.id}/#{area}/#{entity.id}/participants", user)
 
-    expect(response).to have_gitlab_http_status(404)
+    expect(response).to have_gitlab_http_status(:not_found)
   end
 end

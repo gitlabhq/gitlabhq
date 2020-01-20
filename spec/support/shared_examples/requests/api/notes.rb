@@ -82,7 +82,7 @@ shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
     it "returns an array of notes" do
       get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.first['body']).to eq(note.note)
@@ -91,7 +91,7 @@ shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
     it "returns a 404 error when noteable id not found" do
       get api("/#{parent_type}/#{parent.id}/#{noteable_type}/12345/notes", user)
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it "returns 404 when not authorized" do
@@ -99,7 +99,7 @@ shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
 
       get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", private_user)
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
   end
 
@@ -107,14 +107,14 @@ shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
     it "returns a note by id" do
       get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes/#{note.id}", user)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['body']).to eq(note.note)
     end
 
     it "returns a 404 error if note not found" do
       get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes/12345", user)
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
   end
 
@@ -122,7 +122,7 @@ shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
     it "creates a new note" do
       post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user), params: { body: 'hi!' }
 
-      expect(response).to have_gitlab_http_status(201)
+      expect(response).to have_gitlab_http_status(:created)
       expect(json_response['body']).to eq('hi!')
       expect(json_response['author']['username']).to eq(user.username)
     end
@@ -130,13 +130,13 @@ shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
     it "returns a 400 bad request error if body not given" do
       post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user)
 
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
     end
 
     it "returns a 401 unauthorized error if user not authenticated" do
       post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes"), params: { body: 'hi!' }
 
-      expect(response).to have_gitlab_http_status(401)
+      expect(response).to have_gitlab_http_status(:unauthorized)
     end
 
     it "creates an activity event when a note is created", :sidekiq_might_not_need_inline do
@@ -154,7 +154,7 @@ shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
           admin = create(:admin)
           post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", admin), params: params
 
-          expect(response).to have_gitlab_http_status(201)
+          expect(response).to have_gitlab_http_status(:created)
           expect(json_response['body']).to eq('hi!')
           expect(json_response['author']['username']).to eq(admin.username)
           expect(Time.parse(json_response['created_at'])).to be_like_time(creation_time)
@@ -167,7 +167,7 @@ shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
           it 'sets the creation time on the new note' do
             post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user), params: params
 
-            expect(response).to have_gitlab_http_status(201)
+            expect(response).to have_gitlab_http_status(:created)
             expect(json_response['body']).to eq('hi!')
             expect(json_response['author']['username']).to eq(user.username)
             expect(Time.parse(json_response['created_at'])).to be_like_time(creation_time)
@@ -185,7 +185,7 @@ shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
 
             post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user2), params: params
 
-            expect(response).to have_gitlab_http_status(201)
+            expect(response).to have_gitlab_http_status(:created)
             expect(json_response['body']).to eq('hi!')
             expect(json_response['author']['username']).to eq(user2.username)
             expect(Time.parse(json_response['created_at'])).to be_like_time(creation_time)
@@ -197,7 +197,7 @@ shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
           it 'sets the creation time on the new note' do
             post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user), params: params
 
-            expect(response).to have_gitlab_http_status(201)
+            expect(response).to have_gitlab_http_status(:created)
             expect(json_response['body']).to eq('hi!')
             expect(json_response['author']['username']).to eq(user.username)
             expect(Time.parse(json_response['created_at'])).to be_like_time(creation_time)
@@ -212,7 +212,7 @@ shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
           parent.add_developer(user2)
           post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user2), params: params
 
-          expect(response).to have_gitlab_http_status(201)
+          expect(response).to have_gitlab_http_status(:created)
           expect(json_response['body']).to eq('hi!')
           expect(json_response['author']['username']).to eq(user2.username)
           expect(Time.parse(json_response['created_at'])).not_to be_like_time(creation_time)
@@ -226,7 +226,7 @@ shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
         parent.add_developer(private_user)
         post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", private_user), params: { body: ':+1:' }
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(json_response['body']).to eq(':+1:')
       end
     end
@@ -235,7 +235,7 @@ shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
       it 'creates a new note' do
         post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user), params: { body: ':+1:' }
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(json_response['body']).to eq(':+1:')
       end
     end
@@ -249,7 +249,7 @@ shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
         post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", private_user),
           params: { body: 'Foo' }
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -259,7 +259,7 @@ shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
       put api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
                 "notes/#{note.id}", user), params: { body: 'Hello!' }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['body']).to eq('Hello!')
     end
 
@@ -267,14 +267,14 @@ shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
       put api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes/12345", user),
               params: { body: 'Hello!' }
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it 'returns a 400 bad request error if body not given' do
       put api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
                 "notes/#{note.id}", user)
 
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
     end
   end
 
@@ -283,17 +283,17 @@ shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
       delete api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
                  "notes/#{note.id}", user)
 
-      expect(response).to have_gitlab_http_status(204)
+      expect(response).to have_gitlab_http_status(:no_content)
       # Check if note is really deleted
       delete api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
                  "notes/#{note.id}", user)
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it 'returns a 404 error when note id not found' do
       delete api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes/12345", user)
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it_behaves_like '412 response' do

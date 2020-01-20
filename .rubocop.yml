@@ -301,24 +301,6 @@ RSpec/AnyInstanceOf:
   Enabled: false
 
 # Cops for upgrade to gitlab-styles 3.1.0
-Rails/SafeNavigationWithBlank:
-  Enabled: false
-
-Rails/ApplicationController:
-  Enabled: false
-
-Rails/ApplicationMailer:
-  Enabled: false
-
-Rails/RakeEnvironment:
-  Enabled: false
-
-Rails/HelperInstanceVariable:
-  Enabled: false
-
-Rails/EnumHash:
-  Enabled: false
-
 RSpec/ReceiveCounts:
   Enabled: false
 
@@ -362,10 +344,13 @@ RSpec/UnspecifiedException:
   Enabled: false
 
 RSpec/HaveGitlabHttpStatus:
-  Enabled: false
+  Enabled: true
+  Include:
+    - 'spec/support/shared_examples/**/*'
 
 Style/MultilineWhenThen:
   Enabled: false
 
 Style/FloatDivision:
   Enabled: false
+  

@@ -27,7 +27,7 @@ shared_examples 'handle uploads' do
         it "returns an error" do
           post :create, params: params, format: :json
 
-          expect(response).to have_gitlab_http_status(422)
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
         end
       end
 
@@ -84,7 +84,7 @@ shared_examples 'handle uploads' do
 
         show_upload
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -110,7 +110,7 @@ shared_examples 'handle uploads' do
           it "responds with status 200" do
             show_upload
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
           end
         end
 
@@ -123,7 +123,7 @@ shared_examples 'handle uploads' do
           it "responds with status 404" do
             show_upload
 
-            expect(response).to have_gitlab_http_status(404)
+            expect(response).to have_gitlab_http_status(:not_found)
           end
         end
 
@@ -135,7 +135,7 @@ shared_examples 'handle uploads' do
           it "responds with status 404" do
             show_upload
 
-            expect(response).to have_gitlab_http_status(404)
+            expect(response).to have_gitlab_http_status(:not_found)
           end
         end
       end
@@ -149,7 +149,7 @@ shared_examples 'handle uploads' do
           it "responds with status 200" do
             show_upload
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
           end
         end
 
@@ -161,7 +161,7 @@ shared_examples 'handle uploads' do
           it "responds with status 404" do
             show_upload
 
-            expect(response).to have_gitlab_http_status(404)
+            expect(response).to have_gitlab_http_status(:not_found)
           end
         end
       end
@@ -182,7 +182,7 @@ shared_examples 'handle uploads' do
             it "responds with status 200" do
               show_upload
 
-              expect(response).to have_gitlab_http_status(200)
+              expect(response).to have_gitlab_http_status(:ok)
             end
           end
 
@@ -226,7 +226,7 @@ shared_examples 'handle uploads' do
             it "responds with status 200" do
               show_upload
 
-              expect(response).to have_gitlab_http_status(200)
+              expect(response).to have_gitlab_http_status(:ok)
             end
           end
 
@@ -238,7 +238,7 @@ shared_examples 'handle uploads' do
             it "responds with status 404" do
               show_upload
 
-              expect(response).to have_gitlab_http_status(404)
+              expect(response).to have_gitlab_http_status(:not_found)
             end
           end
         end
@@ -253,7 +253,7 @@ shared_examples 'handle uploads' do
               it "responds with status 200" do
                 show_upload
 
-                expect(response).to have_gitlab_http_status(200)
+                expect(response).to have_gitlab_http_status(:ok)
               end
             end
 
@@ -265,7 +265,7 @@ shared_examples 'handle uploads' do
               it "responds with status 404" do
                 show_upload
 
-                expect(response).to have_gitlab_http_status(404)
+                expect(response).to have_gitlab_http_status(:not_found)
               end
             end
           end
@@ -278,7 +278,7 @@ shared_examples 'handle uploads' do
             it "responds with status 404" do
               show_upload
 
-              expect(response).to have_gitlab_http_status(404)
+              expect(response).to have_gitlab_http_status(:not_found)
             end
           end
         end
@@ -321,7 +321,7 @@ shared_examples 'handle uploads authorize' do
           end
 
           it 'responds with status 200' do
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
           end
 
           it 'uses the gitlab-workhorse content type' do

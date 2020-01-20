@@ -9,6 +9,6 @@
       - usage_ping_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: usage_ping_path }
       = s_('User Cohorts are only shown when the %{usage_ping_link_start}usage ping%{usage_ping_link_end} is enabled.').html_safe % { usage_ping_link_start: usage_ping_link_start, usage_ping_link_end: '</a>'.html_safe }
       - if current_user.admin?
-        - application_settings_path = admin_application_settings_path(anchor: 'usage-statistics')
+        - application_settings_path = metrics_and_profiling_admin_application_settings_path(anchor: 'js-usage-settings')
         - application_settings_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: application_settings_path }
         = s_('To enable it and see User Cohorts, visit %{application_settings_link_start}application settings%{application_settings_link_end}.').html_safe % { application_settings_link_start: application_settings_link_start, application_settings_link_end: '</a>'.html_safe }

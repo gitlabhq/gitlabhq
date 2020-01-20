@@ -6,7 +6,7 @@ shared_examples 'resolvable discussions API' do |parent_type, noteable_type, id_
       put api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
               "discussions/#{note.discussion_id}", user), params: { resolved: true }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['notes'].size).to eq(1)
       expect(json_response['notes'][0]['resolved']).to eq(true)
     end
@@ -15,7 +15,7 @@ shared_examples 'resolvable discussions API' do |parent_type, noteable_type, id_
       put api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
               "discussions/#{note.discussion_id}", user), params: { resolved: false }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['notes'].size).to eq(1)
       expect(json_response['notes'][0]['resolved']).to eq(false)
     end
@@ -24,21 +24,21 @@ shared_examples 'resolvable discussions API' do |parent_type, noteable_type, id_
       put api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
               "discussions/#{note.discussion_id}", user)
 
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
     end
 
     it "returns a 401 unauthorized error if user is not authenticated" do
       put api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
               "discussions/#{note.discussion_id}"), params: { resolved: true }
 
-      expect(response).to have_gitlab_http_status(401)
+      expect(response).to have_gitlab_http_status(:unauthorized)
     end
 
     it "returns a 403 error if user resolves discussion of someone else" do
       put api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
               "discussions/#{note.discussion_id}", private_user), params: { resolved: true }
 
-      expect(response).to have_gitlab_http_status(403)
+      expect(response).to have_gitlab_http_status(:forbidden)
     end
 
     context 'when user does not have access to read the discussion' do
@@ -50,7 +50,7 @@ shared_examples 'resolvable discussions API' do |parent_type, noteable_type, id_
         put api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
                 "discussions/#{note.discussion_id}", private_user), params: { resolved: true }
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -60,7 +60,7 @@ shared_examples 'resolvable discussions API' do |parent_type, noteable_type, id_
       put api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
               "discussions/#{note.discussion_id}/notes/#{note.id}", user), params: { resolved: true }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['resolved']).to eq(true)
     end
 
@@ -69,21 +69,21 @@ shared_examples 'resolvable discussions API' do |parent_type, noteable_type, id_
               "discussions/#{note.discussion_id}/notes/12345", user),
               params: { body: 'Hello!' }
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it 'returns a 400 bad request error if neither body nor resolved parameter is given' do
       put api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
               "discussions/#{note.discussion_id}/notes/#{note.id}", user)
 
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
     end
 
     it "returns a 403 error if user resolves note of someone else" do
       put api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
               "discussions/#{note.discussion_id}/notes/#{note.id}", private_user), params: { resolved: true }
 
-      expect(response).to have_gitlab_http_status(403)
+      expect(response).to have_gitlab_http_status(:forbidden)
     end
   end
 end

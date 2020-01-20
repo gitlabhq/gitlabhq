@@ -41,6 +41,7 @@
 .mh-50vh { max-height: 50vh; }
 
 .gl-w-64 { width: px-to-rem($grid-size * 8); }
+.gl-h-32 { height: px-to-rem($grid-size * 4); }
 .gl-h-64 { height: px-to-rem($grid-size * 8); }
 
 .gl-text-purple { color: $purple; }
@@ -59,4 +60,3 @@
 .gl-text-red-700 { @include gl-text-red-700; }
 .gl-text-orange-700 { @include gl-text-orange-700; }
 .gl-text-green-700 { @include gl-text-green-700; }
-

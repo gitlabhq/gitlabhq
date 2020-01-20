@@ -7,7 +7,7 @@ shared_examples 'diff discussions API' do |parent_type, noteable_type, id_name|
 
       discussion = json_response.find { |record| record['id'] == diff_note.discussion_id }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(discussion).not_to be_nil
       expect(discussion['individual_note']).to eq(false)
       expect(discussion['notes'].first['body']).to eq(diff_note.note)
@@ -18,7 +18,7 @@ shared_examples 'diff discussions API' do |parent_type, noteable_type, id_name|
     it "returns a discussion by id" do
       get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions/#{diff_note.discussion_id}", user)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['id']).to eq(diff_note.discussion_id)
       expect(json_response['notes'].first['body']).to eq(diff_note.note)
       expect(json_response['notes'].first['position']).to eq(diff_note.position.to_h.stringify_keys)
@@ -32,7 +32,7 @@ shared_examples 'diff discussions API' do |parent_type, noteable_type, id_name|
       post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions", user),
         params: { body: 'hi!', position: position }
 
-      expect(response).to have_gitlab_http_status(201)
+      expect(response).to have_gitlab_http_status(:created)
       expect(json_response['notes'].first['body']).to eq('hi!')
       expect(json_response['notes'].first['type']).to eq('DiffNote')
       expect(json_response['notes'].first['position']).to eq(position.stringify_keys)
@@ -45,7 +45,7 @@ shared_examples 'diff discussions API' do |parent_type, noteable_type, id_name|
         post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions", user),
           params: { body: 'hi!', position: position }
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it "returns a 400 bad request error when the position is not valid for this discussion" do
@@ -54,7 +54,7 @@ shared_examples 'diff discussions API' do |parent_type, noteable_type, id_name|
         post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions", user),
           params: { body: 'hi!', position: position }
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
     end
   end
@@ -64,7 +64,7 @@ shared_examples 'diff discussions API' do |parent_type, noteable_type, id_name|
       post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
                "discussions/#{diff_note.discussion_id}/notes", user), params: { body: 'hi!' }
 
-      expect(response).to have_gitlab_http_status(201)
+      expect(response).to have_gitlab_http_status(:created)
       expect(json_response['body']).to eq('hi!')
       expect(json_response['type']).to eq('DiffNote')
     end

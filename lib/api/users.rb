@@ -252,17 +252,15 @@ module API
         success Entities::SSHKey
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the user'
+        requires :user_id, type: String, desc: 'The ID or username of the user'
         use :pagination
       end
-      # rubocop: disable CodeReuse/ActiveRecord
-      get ':id/keys' do
-        user = User.find_by(id: params[:id])
+      get ':user_id/keys', requirements: API::USER_REQUIREMENTS do
+        user = find_user(params[:user_id])
         not_found!('User') unless user && can?(current_user, :read_user, user)
 
         present paginate(user.keys), with: Entities::SSHKey
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Delete an existing SSH key from a specified user. Available only for admins.' do
         success Entities::SSHKey

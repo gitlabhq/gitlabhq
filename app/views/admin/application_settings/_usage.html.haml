@@ -9,7 +9,7 @@
           Enable version check
         .form-text.text-muted
           GitLab will inform you if a new version is available.
-          = link_to 'Learn more', help_page_path("user/admin_area/settings/usage_statistics", anchor: "version-check")
+          = link_to 'Learn more', help_page_path('user/admin_area/settings/usage_statistics', anchor: 'version-check-core-only')
           about what information is shared with GitLab Inc.
     .form-group
       - can_be_configured = @application_setting.usage_ping_can_be_configured?
@@ -21,7 +21,7 @@
           - if can_be_configured
             %p.mb-2= _('To help improve GitLab and its user experience, GitLab will periodically collect usage information.')
 
-            - usage_ping_path = help_page_path('user/admin_area/settings/usage_statistics', anchor: 'usage-ping')
+            - usage_ping_path = help_page_path('user/admin_area/settings/usage_statistics', anchor: 'usage-ping-core-only')
             - usage_ping_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: usage_ping_path }
             %p.mb-2= s_('%{usage_ping_link_start}Learn more%{usage_ping_link_end} about what information is shared with GitLab Inc.').html_safe % { usage_ping_link_start: usage_ping_link_start, usage_ping_link_end: '</a>'.html_safe }
 
