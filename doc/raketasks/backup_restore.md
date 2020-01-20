@@ -740,6 +740,7 @@ running:
 
 ```shell
 sudo gitlab-ctl stop unicorn
+sudo gitlab-ctl stop puma
 sudo gitlab-ctl stop sidekiq
 # Verify
 sudo gitlab-ctl status

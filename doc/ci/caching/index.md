@@ -320,8 +320,8 @@ cache:
     - vendor/ruby
 
 before_script:
-  - ruby -v                                   # Print out ruby version for debugging
-  - bundle install -j $(nproc) --path vendor  # Install dependencies into ./vendor/ruby
+  - ruby -v                                        # Print out ruby version for debugging
+  - bundle install -j $(nproc) --path vendor/ruby  # Install dependencies into ./vendor/ruby
 
 rspec:
   script:
