@@ -40,8 +40,6 @@ describe Gitlab::ImportExport::MergeRequestParser do
       allow(instance).to receive(:branch_exists?).with(merge_request.source_branch).and_return(false)
       allow(instance).to receive(:fork_merge_request?).and_return(true)
     end
-    allow(Gitlab::GitalyClient).to receive(:migrate).and_call_original
-    allow(Gitlab::GitalyClient).to receive(:migrate).with(:fetch_ref).and_return([nil, 0])
 
     expect(parsed_merge_request).to eq(merge_request)
   end

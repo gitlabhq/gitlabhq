@@ -143,6 +143,7 @@
 - delete_user
 - email_receiver
 - emails_on_push
+- error_tracking_issue_link
 - expire_build_instance_artifacts
 - git_garbage_collect
 - gitlab_shell

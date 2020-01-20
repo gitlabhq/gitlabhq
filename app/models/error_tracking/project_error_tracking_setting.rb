@@ -73,7 +73,9 @@ module ErrorTracking
     end
 
     def sentry_client
-      Sentry::Client.new(api_url, token)
+      strong_memoize(:sentry_client) do
+        Sentry::Client.new(api_url, token)
+      end
     end
 
     def sentry_external_url

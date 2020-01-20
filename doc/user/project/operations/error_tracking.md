@@ -10,7 +10,7 @@ Error tracking allows developers to easily discover and view the errors that the
 
 ### Deploying Sentry
 
-You may sign up to the cloud hosted <https://sentry.io> or deploy your own [on-premise instance](https://docs.sentry.io/server/installation/).
+You may sign up to the cloud hosted <https://sentry.io>, deploy your own [on-premise instance](https://docs.sentry.io/server/installation/) or use GitLab to [install Sentry to a Kubernetes cluster](../../clusters/applications.md#install-sentry-using-gitlab-ci).
 
 ### Enabling Sentry
 

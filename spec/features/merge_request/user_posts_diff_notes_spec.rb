@@ -56,7 +56,7 @@ describe 'Merge request > User posts diff notes', :js do
     end
 
     context 'with an unchanged line on the left and an unchanged line on the right' do
-      it 'allows commenting on the left side' do
+      it 'allows commenting on the left side', quarantine: 'https://gitlab.com/gitlab-org/gitlab/issues/196826' do
         should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]', match: :first).find(:xpath, '..'), 'left')
       end
 

@@ -15,6 +15,18 @@ describe SentryIssue do
     it { is_expected.to validate_presence_of(:sentry_issue_identifier) }
   end
 
+  describe 'callbacks' do
+    context 'after create commit do' do
+      it 'updates Sentry with a reciprocal link on creation' do
+        issue = create(:issue)
+
+        expect(ErrorTrackingIssueLinkWorker).to receive(:perform_async).with(issue.id)
+
+        create(:sentry_issue, issue: issue)
+      end
+    end
+  end
+
   describe '.for_project_and_identifier' do
     let!(:sentry_issue) { create(:sentry_issue) }
     let(:project) { sentry_issue.issue.project }

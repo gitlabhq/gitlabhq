@@ -52,9 +52,9 @@ will get rejected.
 ### Custom Push Rules **(CORE ONLY)**
 
 It's possible to create custom push rules rather than the push rules available in
-**Admin Area > Push Rules** by using more advanced server-side Git hooks.
+**Admin Area > Push Rules** by using more advanced server hooks.
 
-See [custom server-side Git hooks](../administration/custom_hooks.md) for more information.
+See [server hooks](../administration/server_hooks.md) for more information.
 
 ## Enabling push rules
 

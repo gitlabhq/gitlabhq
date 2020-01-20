@@ -190,6 +190,7 @@
   min-width: 0;
   border: 1px solid $border-color;
   background-color: $white-light;
+  border-radius: $border-radius-default 0 0 $border-radius-default;
 
   @include media-breakpoint-down(sm) {
     flex: 1 1 auto;
@@ -287,7 +288,7 @@
 .filtered-search-history-dropdown-toggle-button {
   flex: 1;
   width: auto;
-  border-radius: 0;
+  border-radius: $border-radius-default 0 0 $border-radius-default;
   border: 0;
   border-right: 1px solid $border-color;
   color: $gl-text-color-secondary;
@@ -296,8 +297,7 @@
   &:hover,
   &:focus {
     color: $gl-text-color;
-    border-color: $blue-300;
-    outline: none;
+    border-color: $border-color;
   }
 
   svg {

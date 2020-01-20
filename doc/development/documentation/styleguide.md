@@ -256,12 +256,18 @@ Do not include the same information in multiple places. [Link to a SSOT instead.
     Some features are also objects. For example, "GitLab's Merge Requests support X" and
     "Create a new merge request for Z."
 
+- Use common contractions when it helps create a friendly and informal tone, especially in tutorials and [UIs](https://design.gitlab.com/content/punctuation/#contractions).
+  - Do use contractions like: _it's_, _can't_, _wouldn't_, _you're_, _you've_, _haven't_, don't, _we're_, _that's_, and _won't_. Contractions in instructional documentation such as tutorials can help create a friendly and informal tone.
+  - Avoid less common contractions such as: _he'd_, _it'll_, _should've_, and _there'd_.
+  - Do not use contractions in reference documentation. Examples:
+    - You cannot set a limit higher than 1000.
+    - For `parameter1`, the default is 10.
+  - Do not use contractions with a proper noun and a verb, such as _GitLab's creating X_.
+  - Avoid using contractions when you need to emphasize a negative, such as "Do **not** install X with Y."
+
 - Avoid use of the future tense:
   - Instead of "after you execute this command, GitLab will display the result", use "after you execute this command, GitLab displays the result".
   - Only use the future tense to convey when the action or result will actually occur at a future time.
-- Do not use contractions:
-  - Instead of "don't," "can't," "doesn't," and so on, use "do not," "cannot," or "does not."
-  - Possible exceptions are cases when a more familiar tone is desired, such as a blog post or other casual context.
 - Do not use slashes to clump different words together or as a replacement for the word "or":
   - Instead of "and/or," consider using "or," or use another sensible construction.
   - Other examples include "clone/fetch," author/assignee," and "namespace/repository name." Break apart any such instances in an appropriate way.

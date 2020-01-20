@@ -352,9 +352,9 @@ coming in. One sure way to trigger a Gitaly request is to clone a repository
 from your GitLab server over HTTP.
 
 DANGER: **Danger:**
-If you have [custom server-side Git hooks](../custom_hooks.md) configured,
+If you have [Server hooks](../server_hooks.md) configured,
 either per repository or globally, you must move these to the Gitaly node.
-If you have multiple Gitaly nodes, copy your custom hook(s) to all nodes.
+If you have multiple Gitaly nodes, copy your server hook(s) to all nodes.
 
 ### Disabling the Gitaly service in a cluster environment
 

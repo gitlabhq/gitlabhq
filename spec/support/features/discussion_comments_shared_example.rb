@@ -269,7 +269,7 @@ shared_examples 'thread comments' do |resource_name|
             end
           end
 
-          it 'has "Comment" selected when opening the menu' do
+          it 'has "Comment" selected when opening the menu', quarantine: 'https://gitlab.com/gitlab-org/gitlab/issues/196825' do
             find(toggle_selector).click
 
             find("#{menu_selector} li", match: :first)
