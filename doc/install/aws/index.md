@@ -238,32 +238,7 @@ Now, it's time to create the database:
    auto updates to minor versions. You may want to turn it off.
 1. When done, click **Create database**.
 
-### Installing the `pg_trgm` extension for PostgreSQL
-
-Once the database is created, connect to your new RDS instance to verify access
-and to install a required extension.
-
-You can find the host or endpoint by selecting the instance you just created and
-after the details dropdown menu you'll find it labeled as 'Endpoint'. Do not to
-include the colon and port number:
-
-```sh
-sudo /opt/gitlab/embedded/bin/psql -U gitlab -h <rds-endpoint> -d gitlabhq_production
-```
-
-At the psql prompt create the extension and then quit the session:
-
-```sh
-psql (9.4.7)
-Type "help" for help.
-
-gitlab=# CREATE EXTENSION pg_trgm;
-gitlab=# \q
-```
-
----
-
-Now that the database is created, let's move on setting up Redis with ElasticCache.
+Now that the database is created, let's move on to setting up Redis with ElasticCache.
 
 ## Redis with ElastiCache
 
@@ -435,14 +410,31 @@ we intended.
 After a few minutes, the instances should be up and accessible via the internet.
 Let's connect to the primary and configure some things before logging in.
 
-### Configuring GitLab to connect with postgres and Redis
+### Installing the `pg_trgm` extension for PostgreSQL
 
-While connected to your server, let's connect to the RDS instance to verify
-access and to install a required extension:
+Connect to the RDS instance to verify access and to install the required `pg_trgm` extension.
+
+To find the host or endpoint, naviagate to **Amazon RDS > Databases** and click on the database you created earlier. Look for the endpoint under the **Connectivity & security** tab.
+
+Do not to include the colon and port number:
 
 ```sh
 sudo /opt/gitlab/embedded/bin/psql -U gitlab -h <rds-endpoint> -d gitlabhq_production
 ```
+
+At the psql prompt create the extension and then quit the session:
+
+```sh
+psql (10.9)
+Type "help" for help.
+
+gitlab=# CREATE EXTENSION pg_trgm;
+gitlab=# \q
+```
+
+---
+
+### Configuring GitLab to connect with postgres and Redis
 
 Edit the `gitlab.rb` file at `/etc/gitlab/gitlab.rb`
 find the `external_url 'http://gitlab.example.com'` option and change it

@@ -1177,7 +1177,7 @@ class Repository
   def initialize_raw_repository
     Gitlab::Git::Repository.new(project.repository_storage,
                                 disk_path + '.git',
-                                repo_type.identifier_for_subject(project),
+                                repo_type.identifier_for_repositorable(project),
                                 project.full_path)
   end
 end

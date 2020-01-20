@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 shared_examples 'a repo type' do
-  describe "#identifier_for_subject" do
-    subject { described_class.identifier_for_subject(project) }
+  describe "#identifier_for_repositorable" do
+    subject { described_class.identifier_for_repositorable(project) }
 
     it { is_expected.to eq(expected_identifier) }
   end

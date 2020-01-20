@@ -13,8 +13,8 @@ module Gitlab
         @repository_accessor = repository_accessor
       end
 
-      def identifier_for_subject(subject)
-        "#{name}-#{subject.id}"
+      def identifier_for_repositorable(repositorable)
+        "#{name}-#{repositorable.id}"
       end
 
       def fetch_id(identifier)
@@ -34,8 +34,8 @@ module Gitlab
         project? ? "" : ".#{name}"
       end
 
-      def repository_for(subject)
-        repository_accessor.call(subject)
+      def repository_for(repositorable)
+        repository_accessor.call(repositorable)
       end
     end
   end

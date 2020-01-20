@@ -40,7 +40,6 @@ function rspec_simple_job() {
   local rspec_opts="${1}"
 
   export NO_KNAPSACK="1"
-  export CACHE_CLASSES="true"
 
   scripts/gitaly-test-spawn
 
@@ -59,7 +58,6 @@ function rspec_paralellized_job() {
     spec_folder_prefix="ee/"
   fi
 
-  export CACHE_CLASSES="true"
   export KNAPSACK_LOG_LEVEL="debug"
   export KNAPSACK_REPORT_PATH="knapsack/${test_tool}_${test_level}_${database}_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json"
 

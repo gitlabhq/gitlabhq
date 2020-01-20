@@ -100,6 +100,6 @@ class PipelinesEmailService < Service
   end
 
   def retrieve_recipients(data)
-    recipients.to_s.split(/[,(?:\r?\n) ]+/).reject(&:empty?)
+    recipients.to_s.split(/[,\r\n ]+/).reject(&:empty?)
   end
 end

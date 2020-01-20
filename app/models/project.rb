@@ -2203,7 +2203,7 @@ class Project < ApplicationRecord
   end
 
   def reference_counter(type: Gitlab::GlRepository::PROJECT)
-    Gitlab::ReferenceCounter.new(type.identifier_for_subject(self))
+    Gitlab::ReferenceCounter.new(type.identifier_for_repositorable(self))
   end
 
   def badges

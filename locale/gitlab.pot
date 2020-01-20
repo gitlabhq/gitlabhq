@@ -173,6 +173,11 @@ msgid_plural "%d staged changes"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d tag"
+msgid_plural "%d tags"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d unstaged change"
 msgid_plural "%d unstaged changes"
 msgstr[0] ""
@@ -3081,7 +3086,7 @@ msgstr ""
 msgid "Callback URL"
 msgstr ""
 
-msgid "Can deploy manually to"
+msgid "Can be manually deployed to"
 msgstr ""
 
 msgid "Can override approvers and approvals required per merge request"
@@ -3114,7 +3119,7 @@ msgstr ""
 msgid "Cancel this job"
 msgstr ""
 
-msgid "Canceled deploy to"
+msgid "Canceled deployment to"
 msgstr ""
 
 msgid "Cancelling Preview"
