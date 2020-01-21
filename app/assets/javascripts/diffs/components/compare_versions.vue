@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable @gitlab/vue-i18n/no-bare-strings */
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlTooltipDirective, GlLink, GlButton } from '@gitlab/ui';
 import { __ } from '~/locale';
@@ -62,6 +63,9 @@ export default {
     showDropdowns() {
       return !this.commit && this.mergeRequestDiffs.length;
     },
+    fileTreeIcon() {
+      return this.showTreeList ? 'collapse-left' : 'expand-left';
+    },
     toggleFileBrowserTitle() {
       return this.showTreeList ? __('Hide file browser') : __('Show file browser');
     },
@@ -87,7 +91,7 @@ export default {
 </script>
 
 <template>
-  <div class="mr-version-controls border-top">
+  <div class="mr-version-controls border-top border-bottom">
     <div
       class="mr-version-menus-container content-block"
       :class="{
@@ -104,17 +108,17 @@ export default {
         :title="toggleFileBrowserTitle"
         @click="toggleShowTreeList"
       >
-        <icon name="file-tree" />
+        <icon :name="fileTreeIcon" />
       </button>
       <div v-if="showDropdowns" class="d-flex align-items-center compare-versions-container">
-        {{ __('Compare') }}
+        Changes between
         <compare-versions-dropdown
           :other-versions="mergeRequestDiffs"
           :merge-request-version="mergeRequestDiff"
           :show-commit-count="true"
           class="mr-version-dropdown"
         />
-        {{ __('and') }}
+        and
         <compare-versions-dropdown
           :other-versions="comparableDiffs"
           :base-version-path="baseVersionPath"

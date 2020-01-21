@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 describe RspecFlaky::Report, :aggregate_failures do
-  let(:a_hundred_days) { 3600 * 24 * 100 }
+  let(:thirty_one_days) { 3600 * 24 * 31 }
   let(:collection_hash) do
     {
       a: { example_id: 'spec/foo/bar_spec.rb:2' },
-      b: { example_id: 'spec/foo/baz_spec.rb:3', first_flaky_at: (Time.now - a_hundred_days).to_s, last_flaky_at: (Time.now - a_hundred_days).to_s }
+      b: { example_id: 'spec/foo/baz_spec.rb:3', first_flaky_at: (Time.now - thirty_one_days).to_s, last_flaky_at: (Time.now - thirty_one_days).to_s }
     }
   end
   let(:suite_flaky_example_report) do
@@ -109,7 +109,7 @@ describe RspecFlaky::Report, :aggregate_failures do
   end
 
   describe '#prune_outdated' do
-    it 'returns a new collection without the examples older than 90 days by default' do
+    it 'returns a new collection without the examples older than 30 days by default' do
       new_report = flaky_examples.to_h.dup.tap { |r| r.delete(:b) }
       new_flaky_examples = report.prune_outdated
 
@@ -119,7 +119,7 @@ describe RspecFlaky::Report, :aggregate_failures do
     end
 
     it 'accepts a given number of days' do
-      new_flaky_examples = report.prune_outdated(days: 200)
+      new_flaky_examples = report.prune_outdated(days: 32)
 
       expect(new_flaky_examples.to_h).to eq(report.to_h)
     end

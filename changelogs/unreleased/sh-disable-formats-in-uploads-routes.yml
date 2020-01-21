@@ -1,5 +1,0 @@
----
-title: Fix upload redirections when project has moved
-merge_request: 22822
-author:
-type: fixed

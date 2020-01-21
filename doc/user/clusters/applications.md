@@ -664,7 +664,7 @@ available configuration options.
 
 ### Install Cilium using GitLab CI
 
-> [Introduced](https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/merge_requests/22) in GitLab 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/merge_requests/22) in GitLab 12.8.
 
 [Cilium](https://cilium.io/) is a networking plugin for Kubernetes
 that you can use to implement support for

@@ -1,6 +1,0 @@
----
-title: Fix group issue list and group issue board filters not showing ancestor group
-  milestones
-merge_request: 23038
-author:
-type: fixed

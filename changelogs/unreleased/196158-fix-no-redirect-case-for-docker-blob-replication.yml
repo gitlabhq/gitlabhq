@@ -1,5 +1,0 @@
----
-title: 'Geo: Fix Docker repository synchronization for local storage'
-merge_request: 22981
-author:
-type: fixed

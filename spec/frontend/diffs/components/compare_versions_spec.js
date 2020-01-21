@@ -49,7 +49,8 @@ describe('CompareVersions', () => {
 
       expect(treeListBtn.exists()).toBe(true);
       expect(treeListBtn.attributes('title')).toBe('Hide file browser');
-      expect(treeListBtn.find(Icon).props('name')).toBe('file-tree');
+      expect(treeListBtn.findAll(Icon).length).not.toBe(0);
+      expect(treeListBtn.find(Icon).props('name')).toBe('collapse-left');
     });
 
     it('should render comparison dropdowns with correct values', () => {

@@ -83,27 +83,7 @@ class List {
   }
 
   save() {
-    const entity = this.label || this.assignee || this.milestone;
-    let entityType = '';
-    if (this.label) {
-      entityType = 'label_id';
-    } else if (this.assignee) {
-      entityType = 'assignee_id';
-    } else if (IS_EE && this.milestone) {
-      entityType = 'milestone_id';
-    }
-
-    return boardsStore
-      .createList(entity.id, entityType)
-      .then(res => res.data)
-      .then(data => {
-        this.id = data.id;
-        this.type = data.list_type;
-        this.position = data.position;
-        this.label = data.label;
-
-        return this.getIssues();
-      });
+    return boardsStore.saveList(this);
   }
 
   destroy() {

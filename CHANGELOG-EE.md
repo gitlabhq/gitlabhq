@@ -1,5 +1,93 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.7.0
+
+### Removed (2 changes)
+
+- Remove `project_ci_cd_settings.merge_trains_enabled` column. !19701
+- Remove old pipeline security report view in favor of the Security Dashboard. !22152
+
+### Fixed (20 changes, 1 of them is from the community)
+
+- Add error flashes to Design view. !20889
+- Pending (unsubmitted) review comments with multiple lines now display whitespace before being submitted. !21435
+- Fixed GitLab admin not seeing merge requests in Jira Development Panel Integration. !21467
+- fix CSS shadowbox on focus. !21785 (allenlai18)
+- Fix GraphQL access to groups with SAML SSO Enforcement. !21922
+- Remove spinner when approval require input is changed. !22186
+- Add billing plans box to profiles. !22270
+- Use full reference in Epic Issue GraphQL query. !22292
+- Support new Azure SCIM pre-setup check. !22348
+- Show expiry details in Audit events when changing acesss levels. !22412
+- Fix PruneOrphanedGeoEvents to pass in demodulized name to BackgroundMigrationWorker. !22451
+- Update widget on click dropdown item when creating epic from epic. !22511
+- Ensure When userWithId Is Picked User IDs are Sent. !22528
+- Fix initial sorting of non-persisted Cycle Analytics stages. !22541
+- The Active tab on the Admin Users page should include bots. !22543
+- Fix reply emails with attachments for epics. !22547
+- Fix child epics depth validation. !22729
+- Users without a license do not use a seat. !23146
+- Fix access to horizontal scrollbar when zooming in on a design.
+- fix positioning of design overlay pins when viewing design.
+
+### Changed (13 changes)
+
+- Rename "Production" stage in Cycle Analytics to "Total". !21450
+- Update copy for start a free gold trial screen. !21820
+- Show Geo node's name in admin page. !21876
+- Improve validation message when a design extension is unsupported. !21888
+- Prevent spiders indexing contribution analytics. !21896
+- Replace depricatedModal (Geo) with GlModal. !22125
+- Allow namespaces in a trial to upgrade to any plan. !22273
+- DAST vendored template pins DAST to latest major version. !22371
+- Rename productivity analytics date parameters. !22377
+- Rename Contribution Analytics endpoint URL. !22877
+- Move 'Allow admins to disable users ability to change profile name' feature to Premium tier. !23034
+- Change security dashboard's filters bar background. !23094
+- Add First & last name on the trial form. !33742
+
+### Performance (3 changes)
+
+- Cache vulnerability summary per project/group. !21373
+- Fix N+1 SQL queries with protected environments. !22101
+- Optimize Group#for_epics scope. !22375
+
+### Added (26 changes)
+
+- GitLab Pages - Storage size Limitations by Project or Group. !17725
+- Add Instance Security Dashboard feature. !18008
+- Add NPM dist-tag support. !20636
+- Track resource weight changes. !21515
+- Add support for custom email templates for service desk. !21745
+- members list to group sso page. !21852
+- Alow to filter by saml identity linked for group members API. !21931
+- Added submit_review quick action. !22061
+- Adds project_id and project_path to package group api. !22089
+- Add trial_ends_on to Namespaces API. !22121
+- Uniquifies path slug creation from trial new group name. !22147
+- Capture Release actions in the audit log page. !22167
+- Add ability to cancel a design discussion. !22241
+- Enable License compliance feature for all instances. !22250
+- Add support for license_scanning artifact report. !22277
+- Add trial counters to usage ping. !22279
+- Support gl-license-scanning-report.json file. !22312
+- Includes _link object in packages list api. !22503
+- Geo - Replicate project designs repositories. !22544
+- Add information about epic to Issue list csv export. !22662
+- Scope approval rules by protected branches via API. !22673
+- Prevent a child pipeline to create further child pipelines. !22675
+- Adds pipeline object to package API. !22854
+- Add zooming functionality to designs in Design view. !22863
+- Introduce Code Review Analytics page. !23031
+- Add support for work in progress limits - Max issue count only.
+
+### Other (3 changes, 1 of them is from the community)
+
+- Generate appropriate Vue key for licenses list table. !21566 (allenlai18)
+- Limit size of search query for non ES searches. !22208
+- Remove "creations" in gitlab_subscription_histories on gitlab.com. !22278
+
+
 ## 12.6.4
 
 - No changes.

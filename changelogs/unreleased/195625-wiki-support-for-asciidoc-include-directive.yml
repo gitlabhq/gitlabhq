@@ -1,5 +1,0 @@
----
-title: Fix error in Wiki when rendering the AsciiDoc include directive
-merge_request: 22565
-author:
-type: fixed

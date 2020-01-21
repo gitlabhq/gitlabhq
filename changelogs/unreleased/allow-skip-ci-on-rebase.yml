@@ -1,5 +1,0 @@
----
-title: Allow "skip_ci" flag to be passed to rebase operation
-merge_request: 22800
-author:
-type: added

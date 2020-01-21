@@ -1,5 +1,0 @@
----
-title: Display login or register widget only if user is not logged in
-merge_request: 22211
-author:
-type: fixed

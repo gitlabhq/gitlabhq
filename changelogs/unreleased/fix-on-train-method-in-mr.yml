@@ -1,5 +1,0 @@
----
-title: Fix RefreshMergeRequestsService raises an exception and unnecessary sidekiq retry
-merge_request: 22262
-author:
-type: fixed

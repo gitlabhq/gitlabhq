@@ -1,5 +1,0 @@
----
-title: Stop exposing MR refs in favor of persistent pipeline refs
-merge_request: 22198
-author:
-type: fixed

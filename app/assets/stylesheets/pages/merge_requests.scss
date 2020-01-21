@@ -708,7 +708,7 @@
 .mr-version-controls {
   position: relative;
   z-index: 203;
-  background: $white-light;
+  background: $gray-light;
   color: $gl-text-color;
   margin-top: -1px;
 
@@ -732,7 +732,7 @@
   }
 
   .content-block {
-    padding: $gl-padding;
+    padding: $gl-padding-top $gl-padding;
     border-bottom: 0;
   }
 

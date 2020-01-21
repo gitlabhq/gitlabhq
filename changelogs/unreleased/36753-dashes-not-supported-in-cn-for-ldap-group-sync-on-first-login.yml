@@ -1,5 +1,0 @@
----
-title: Support dashes in LDAP group CN for sync on users first log in
-merge_request: 20402
-author:
-type: fixed

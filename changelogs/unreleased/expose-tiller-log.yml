@@ -1,5 +1,0 @@
----
-title: Exposes tiller.log as artifact in Managed-Cluster-Applications GitLab CI template
-merge_request: 22940
-author:
-type: changed

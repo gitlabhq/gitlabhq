@@ -64,4 +64,4 @@ flaky-examples-check:
   script:
     - '[[ -f $NEW_FLAKY_SPECS_REPORT ]] || echo "{}" > ${NEW_FLAKY_SPECS_REPORT}'
     - scripts/merge-reports ${NEW_FLAKY_SPECS_REPORT} rspec_flaky/new_*_*.json
-    - scripts/detect-new-flaky-examples $NEW_FLAKY_SPECS_REPORT
+    - scripts/flaky_examples/detect-new-flaky-examples $NEW_FLAKY_SPECS_REPORT

@@ -1,5 +1,0 @@
----
-title: "Prevent omniauth signup redirect loop"
-merge_request: 22432
-author: Balazs Nagy
-type: fixed

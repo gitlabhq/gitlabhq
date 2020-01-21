@@ -1,6 +1,0 @@
----
-title: Add returning relation from GroupMembersFinder if called on root group with
-  only inherited param
-merge_request: 23161
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Update IDE discard of renamed entry to also discard file changes
-merge_request: 22573
-author:
-type: fixed

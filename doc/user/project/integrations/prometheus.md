@@ -151,21 +151,24 @@ There are 2 methods to specify a variable in a query or dashboard:
 By default, all projects include a GitLab-defined Prometheus dashboard, which
 includes a few key metrics, but you can also define your own custom dashboards.
 
+You may create a new file from scratch or duplicate a GitLab-defined Prometheus
+dashboard.
+
 NOTE: **Note:**
 The custom metrics as defined below do not support alerts, unlike
 [additional metrics](#adding-additional-metrics-premium).
 
 #### Adding a new dashboard to your project
 
-You can configure a custom dashboard by adding a new `.yml` file into a project's repository. Only `.yml` files present in the projects **default** branch are displayed on the project's **Operations > Metrics** section.
+You can configure a custom dashboard by adding a new YAML file into your project's
+`.gitlab/dashboards/` directory. In order for the dashboards to be displayed on
+the project's **Operations > Metrics** page, the files must have a `.yml`
+extension and should be present in the project's **default** branch.
 
-You may create a new file from scratch or duplicate a GitLab-defined dashboard.
+For example:
 
-**Add a `.yml` file manually**
-
-1. Create a YAML file with the `.yml` extension under your repository's root
-   directory inside `.gitlab/dashboards/`. For example, create
-   `.gitlab/dashboards/prom_alerts.yml` with the following contents:
+1. Create `.gitlab/dashboards/prom_alerts.yml` under your repository's root
+   directory with the following contents:
 
    ```yaml
    dashboard: 'Dashboard Title'
@@ -194,7 +197,7 @@ NOTE: **Note:**
 Configuration files nested under subdirectories of `.gitlab/dashboards` are not
 supported and will not be available in the UI.
 
-**Duplicate a GitLab-defined dashboard as a new `.yml` file**
+#### Duplicating a GitLab-defined dashboard
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/37238) in GitLab 12.7.
 

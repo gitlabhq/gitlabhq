@@ -1,5 +1,0 @@
----
-title: Fix issue CSV export failing for some projects
-merge_request: 23223
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Display fn, line num and column in stacktrace entry caption
-merge_request: 22905
-author:
-type: added

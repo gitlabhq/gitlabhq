@@ -4,6 +4,7 @@ import { GlTooltipDirective } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import FileRow from '~/vue_shared/components/file_row.vue';
+import FileRowStats from './file_row_stats.vue';
 
 export default {
   directives: {
@@ -47,6 +48,9 @@ export default {
         return acc;
       }, []);
     },
+    fileRowExtraComponent() {
+      return this.hideFileStats ? null : FileRowStats;
+    },
   },
   methods: {
     ...mapActions('diffs', ['toggleTreeOpen', 'scrollToFile']),
@@ -54,8 +58,8 @@ export default {
       this.search = '';
     },
   },
-  searchPlaceholder: sprintf(s__('MergeRequest|Search files (%{modifier_key}P)'), {
-    modifier_key: /Mac/i.test(navigator.userAgent) ? '⌘' : 'Ctrl+',
+  searchPlaceholder: sprintf(s__('MergeRequest|Filter files or search with %{modifier_key}+p'), {
+    modifier_key: /Mac/i.test(navigator.userAgent) ? 'cmd' : 'ctrl',
   }),
 };
 </script>
@@ -93,6 +97,7 @@ export default {
           :file="file"
           :level="0"
           :hide-extra-on-tree="true"
+          :extra-component="fileRowExtraComponent"
           :show-changed-icon="true"
           @toggleTreeOpen="toggleTreeOpen"
           @clickFile="scrollToFile"

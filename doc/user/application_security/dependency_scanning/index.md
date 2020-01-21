@@ -135,7 +135,7 @@ using environment variables.
 | `DS_ANALYZER_IMAGE_PREFIX`              | Override the name of the Docker registry providing the official default images (proxy). Read more about [customizing analyzers](analyzers.md). |
 | `DS_ANALYZER_IMAGE_TAG`                 | Override the Docker tag of the official default images. Read more about [customizing analyzers](analyzers.md). |
 | `DS_PYTHON_VERSION`                     | Version of Python. If set to 2, dependencies are installed using Python 2.7 instead of Python 3.6. ([Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12296) in GitLab 12.1)|
-| `DS_PIP_VERSION`                        | Force the install of a specific pip version (example: `"19.3"`), otherwise the pip installed in the docker image is used. |
+| `DS_PIP_VERSION`                        | Force the install of a specific pip version (example: `"19.3"`), otherwise the pip installed in the Docker image is used. ([Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12811) in GitLab 12.7) |
 | `DS_PIP_DEPENDENCY_PATH`                | Path to load Python pip dependencies from. ([Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12412) in GitLab 12.2) |
 | `GEMNASIUM_DB_LOCAL_PATH`               | Path to local gemnasium database (default `/gemnasium-db`).
 | `GEMNASIUM_DB_REMOTE_URL`               | Repository URL for fetching the gemnasium database (default `https://gitlab.com/gitlab-org/security-products/gemnasium-db.git`).

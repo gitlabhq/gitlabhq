@@ -1,5 +1,0 @@
----
-title: Remove N+1 query issue when checking group root ancestor.
-merge_request:
-author:
-type: performance
