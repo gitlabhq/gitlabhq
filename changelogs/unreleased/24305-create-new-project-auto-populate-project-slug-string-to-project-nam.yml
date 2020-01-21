@@ -1,6 +1,0 @@
----
-title: 'Resolve Create new project: Auto-populate project slug string to project name
-  if name is empty'
-merge_request: 22627
-author:
-type: changed

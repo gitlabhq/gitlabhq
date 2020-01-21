@@ -1,5 +1,0 @@
----
-title: Remove unused index on project_mirror_data
-merge_request: 22647
-author:
-type: performance

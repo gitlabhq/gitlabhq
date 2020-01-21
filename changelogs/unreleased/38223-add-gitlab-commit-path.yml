@@ -1,5 +1,0 @@
----
-title: Add gitlab_commit_path to Sentry Error Details Response
-merge_request: 22803
-author:
-type: added

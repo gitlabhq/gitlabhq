@@ -1,5 +1,0 @@
----
-title: 'fix: EKS credentials form does not reset after error'
-merge_request: 21958
-author:
-type: other

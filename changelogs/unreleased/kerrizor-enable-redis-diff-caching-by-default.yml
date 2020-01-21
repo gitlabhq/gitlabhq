@@ -1,5 +1,0 @@
----
-title: Enable redis HSET diff caching by default
-merge_request: 23105
-author:
-type: performance

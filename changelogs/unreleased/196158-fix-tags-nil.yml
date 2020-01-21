@@ -1,5 +1,0 @@
----
-title: 'Geo: Handle repositories in Docker Registry with no tags gracefully'
-merge_request: 23022
-author:
-type: fixed

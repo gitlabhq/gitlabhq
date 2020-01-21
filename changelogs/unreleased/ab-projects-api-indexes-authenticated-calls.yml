@@ -1,5 +1,0 @@
----
-title: Add indexes for authenticated Project API calls
-merge_request: 22886
-author:
-type: performance

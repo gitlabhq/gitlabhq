@@ -1,5 +1,0 @@
----
-title: 'Fix: undefined background migration classes for EE-CE downgrades'
-merge_request: 22160
-author:
-type: fixed

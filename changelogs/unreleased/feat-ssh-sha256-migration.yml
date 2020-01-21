@@ -1,5 +1,0 @@
----
-title: add background migration for sha256 fingerprints of ssh keys
-merge_request: 21579
-author: Roger Meier
-type: added

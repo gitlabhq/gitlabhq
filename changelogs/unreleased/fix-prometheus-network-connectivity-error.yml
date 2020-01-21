@@ -1,5 +1,0 @@
----
-title: Return 503 error when metrics dashboard has no connectivity
-merge_request: 22140
-author:
-type: fixed

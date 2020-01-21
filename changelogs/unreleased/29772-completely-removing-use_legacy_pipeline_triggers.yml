@@ -1,5 +1,0 @@
----
-title: Remove feature flag 'use_legacy_pipeline_triggers' and remove legacy tokens
-merge_request: 21732
-author:
-type: removed

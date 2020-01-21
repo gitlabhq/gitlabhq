@@ -1,5 +1,0 @@
----
-title: 'Fix issue: Discard button in Web IDE does nothing'
-merge_request: 21902
-author:
-type: fixed

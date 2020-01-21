@@ -1,5 +1,0 @@
----
-title: Prevent builds from halting unnecessarily when completing prerequisites
-merge_request: 22938
-author:
-type: fixed

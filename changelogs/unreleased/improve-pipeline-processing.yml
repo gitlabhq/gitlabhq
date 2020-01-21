@@ -1,5 +1,0 @@
----
-title: Implement Atomic Processing that updates status of builds, stages and pipelines in one go
-merge_request: 20229
-author:
-type: performance

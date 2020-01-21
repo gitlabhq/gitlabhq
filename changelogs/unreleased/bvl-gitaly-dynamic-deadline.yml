@@ -1,5 +1,0 @@
----
-title: Don't let Gitaly calls exceed a request time of 55 seconds
-merge_request: 21492
-author:
-type: performance

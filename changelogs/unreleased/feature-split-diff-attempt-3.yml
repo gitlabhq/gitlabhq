@@ -1,5 +1,0 @@
----
-title: Load MR diff types lazily to reduce initial diff payload size
-merge_request: 19930
-author:
-type: added
