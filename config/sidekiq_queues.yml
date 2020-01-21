@@ -102,6 +102,7 @@
   - [self_monitoring_project_create, 2]
   - [self_monitoring_project_delete, 2]
   - [error_tracking_issue_link, 2]
+  - [merge_request_mergeability_check, 5]
 
   # EE-specific queues
   - [analytics, 1]

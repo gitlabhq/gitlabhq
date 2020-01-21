@@ -12,6 +12,13 @@ module MergeRequests
       @merge_request = merge_request
     end
 
+    def async_execute
+      return service_error if service_error
+      return unless merge_request.mark_as_checking
+
+      MergeRequestMergeabilityCheckWorker.perform_async(merge_request.id)
+    end
+
     # Updates the MR merge_status. Whenever it switches to a can_be_merged state,
     # the merge-ref is refreshed.
     #
@@ -30,8 +37,7 @@ module MergeRequests
     # and the merge-ref is synced. Success in case of being/becoming mergeable,
     # error otherwise.
     def execute(recheck: false, retry_lease: true)
-      return ServiceResponse.error(message: 'Invalid argument') unless merge_request
-      return ServiceResponse.error(message: 'Unsupported operation') if Gitlab::Database.read_only?
+      return service_error if service_error
       return check_mergeability(recheck) unless merge_ref_auto_sync_lock_enabled?
 
       in_write_lock(retry_lease: retry_lease) do |retried|
@@ -154,6 +160,16 @@ module MergeRequests
 
     def merge_ref_auto_sync_lock_enabled?
       Feature.enabled?(:merge_ref_auto_sync_lock, project, default_enabled: true)
+    end
+
+    def service_error
+      strong_memoize(:service_error) do
+        if !merge_request
+          ServiceResponse.error(message: 'Invalid argument')
+        elsif Gitlab::Database.read_only?
+          ServiceResponse.error(message: 'Unsupported operation')
+        end
+      end
     end
   end
 end

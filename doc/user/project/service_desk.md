@@ -69,7 +69,7 @@ Follow these steps to do so:
    have access to your GitLab instance. We recommend **putting this behind an alias** so it can be
    changed if needed, and **[enabling Akismet](../../integration/akismet.md)** on your GitLab
    instance to add spam checking to this service. Unblocked email spam would result in many spam
-   issues being created, and may disrupt your GitLab service.
+   issues being created.
 
    If you have [templates](description_templates.md) in your repository, you can optionally select
    one from the selector menu to append it to all Service Desk issues.

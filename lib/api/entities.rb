@@ -811,7 +811,7 @@ module API
       # See https://gitlab.com/gitlab-org/gitlab-foss/issues/42344 for more
       # information.
       expose :merge_status do |merge_request|
-        merge_request.check_mergeability
+        merge_request.check_mergeability(async: true)
         merge_request.merge_status
       end
       expose :diff_head_sha, as: :sha

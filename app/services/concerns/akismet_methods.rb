@@ -2,16 +2,7 @@
 
 module AkismetMethods
   def spammable_owner
-    @user ||= User.find(spammable_owner_id)
-  end
-
-  def spammable_owner_id
-    @owner_id ||=
-      if spammable.respond_to?(:author_id)
-        spammable.author_id
-      elsif spammable.respond_to?(:creator_id)
-        spammable.creator_id
-      end
+    @user ||= User.find(spammable.author_id)
   end
 
   def akismet

@@ -1,0 +1,5 @@
+---
+title: Fix POST method in dashboard link for disabling admin mode
+merge_request: 23363
+author: Diego Louzán
+type: fixed

@@ -9,7 +9,7 @@ describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_not_moc
 
   let(:admin) { create(:admin) }
 
-  context 'feature flag :user_mode_in_session is enabled' do
+  context 'feature flag :user_mode_in_session is enabled', :request_store do
     before do
       stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
       sign_in(admin)
@@ -486,10 +486,24 @@ describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_not_moc
         end
       end
 
-      it 'can leave admin mode' do
+      it 'can leave admin mode using main dashboard link', :js do
         page.within('.navbar-sub-nav') do
-          # Select first, link is also included in mobile view list
-          click_on 'Leave Admin Mode', match: :first
+          click_on 'Leave Admin Mode'
+
+          expect(page).to have_link(href: new_admin_session_path)
+        end
+      end
+
+      it 'can leave admin mode using dropdown menu on smaller screens', :js do
+        resize_screen_xs
+        visit root_dashboard_path
+
+        find('.header-more').click
+
+        page.within '.navbar-sub-nav' do
+          click_on 'Leave Admin Mode'
+
+          find('.header-more').click
 
           expect(page).to have_link(href: new_admin_session_path)
         end

@@ -191,3 +191,4 @@
 - group_export
 - self_monitoring_project_create
 - self_monitoring_project_delete
+- merge_request_mergeability_check

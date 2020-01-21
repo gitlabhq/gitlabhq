@@ -44,6 +44,21 @@ describe Projects::MergeRequestsController do
       get :show, params: params.merge(extra_params)
     end
 
+    context 'when merge request is unchecked' do
+      before do
+        merge_request.mark_as_unchecked!
+      end
+
+      it 'checks mergeability asynchronously' do
+        expect_next_instance_of(MergeRequests::MergeabilityCheckService) do |service|
+          expect(service).not_to receive(:execute)
+          expect(service).to receive(:async_execute)
+        end
+
+        go
+      end
+    end
+
     describe 'as html' do
       context 'when diff files were cleaned' do
         render_views

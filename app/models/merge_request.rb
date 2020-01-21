@@ -160,20 +160,25 @@ class MergeRequest < ApplicationRecord
 
   state_machine :merge_status, initial: :unchecked do
     event :mark_as_unchecked do
-      transition [:can_be_merged, :unchecked] => :unchecked
+      transition [:can_be_merged, :checking, :unchecked] => :unchecked
       transition [:cannot_be_merged, :cannot_be_merged_recheck] => :cannot_be_merged_recheck
     end
 
+    event :mark_as_checking do
+      transition [:unchecked, :cannot_be_merged_recheck] => :checking
+    end
+
     event :mark_as_mergeable do
-      transition [:unchecked, :cannot_be_merged_recheck] => :can_be_merged
+      transition [:unchecked, :cannot_be_merged_recheck, :checking] => :can_be_merged
     end
 
     event :mark_as_unmergeable do
-      transition [:unchecked, :cannot_be_merged_recheck] => :cannot_be_merged
+      transition [:unchecked, :cannot_be_merged_recheck, :checking] => :cannot_be_merged
     end
 
     state :unchecked
     state :cannot_be_merged_recheck
+    state :checking
     state :can_be_merged
     state :cannot_be_merged
 
@@ -191,7 +196,7 @@ class MergeRequest < ApplicationRecord
     # rubocop: enable CodeReuse/ServiceClass
 
     def check_state?(merge_status)
-      [:unchecked, :cannot_be_merged_recheck].include?(merge_status.to_sym)
+      [:unchecked, :cannot_be_merged_recheck, :checking].include?(merge_status.to_sym)
     end
   end
 
@@ -812,10 +817,16 @@ class MergeRequest < ApplicationRecord
     MergeRequests::ReloadDiffsService.new(self, current_user).execute
   end
 
-  def check_mergeability
+  def check_mergeability(async: false)
     return if Feature.enabled?(:merge_requests_conditional_mergeability_check, default_enabled: true) && !recheck_merge_status?
 
-    MergeRequests::MergeabilityCheckService.new(self).execute(retry_lease: false)
+    check_service = MergeRequests::MergeabilityCheckService.new(self)
+
+    if async && Feature.enabled?(:async_merge_request_check_mergeability, project)
+      check_service.async_execute
+    else
+      check_service.execute(retry_lease: false)
+    end
   end
   # rubocop: enable CodeReuse/ServiceClass
 

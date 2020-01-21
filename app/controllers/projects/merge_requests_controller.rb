@@ -45,7 +45,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   def show
     close_merge_request_if_no_source_project
-    @merge_request.check_mergeability
+    @merge_request.check_mergeability(async: true)
 
     respond_to do |format|
       format.html do

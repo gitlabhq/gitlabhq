@@ -2103,7 +2103,7 @@ The `codequality` report collects [CodeQuality issues](../../user/project/merge_
 as artifacts.
 
 The collected Code Quality report will be uploaded to GitLab as an artifact and will
-be automatically shown in merge requests.
+be summarized in merge requests. It is not available for download through the web interface.
 
 ##### `artifacts:reports:sast` **(ULTIMATE)**
 
@@ -2113,8 +2113,8 @@ The `sast` report collects [SAST vulnerabilities](../../user/application_securit
 as artifacts.
 
 The collected SAST report will be uploaded to GitLab as an artifact and will
-be automatically shown in merge requests, pipeline view and provide data for security
-dashboards.
+be summarized in the merge requests and pipeline view. It is also used to provide data for security
+dashboards. It is not available for download through the web interface.
 
 ##### `artifacts:reports:dependency_scanning` **(ULTIMATE)**
 
@@ -2124,8 +2124,8 @@ The `dependency_scanning` report collects [Dependency Scanning vulnerabilities](
 as artifacts.
 
 The collected Dependency Scanning report will be uploaded to GitLab as an artifact and will
-be automatically shown in merge requests, pipeline view and provide data for security
-dashboards.
+be summarized in the merge requests and pipeline view. It is also used to provide data for security
+dashboards. It is not available for download through the web interface.
 
 ##### `artifacts:reports:container_scanning` **(ULTIMATE)**
 
@@ -2135,8 +2135,8 @@ The `container_scanning` report collects [Container Scanning vulnerabilities](..
 as artifacts.
 
 The collected Container Scanning report will be uploaded to GitLab as an artifact and will
-be automatically shown in merge requests, pipeline view and provide data for security
-dashboards.
+be summarized in the merge requests and pipeline view. It is also used to provide data for security
+dashboards. It is not available for download through the web interface.
 
 ##### `artifacts:reports:dast` **(ULTIMATE)**
 
@@ -2146,8 +2146,8 @@ The `dast` report collects [DAST vulnerabilities](../../user/application_securit
 as artifacts.
 
 The collected DAST report will be uploaded to GitLab as an artifact and will
-be automatically shown in merge requests, pipeline view and provide data for security
-dashboards.
+be summarized in the merge requests and pipeline view. It is also used to provide data for security
+dashboards. It is not available for download through the web interface.
 
 ##### `artifacts:reports:license_management` **(ULTIMATE)**
 
@@ -2157,8 +2157,8 @@ The `license_management` report collects [Licenses](../../user/application_secur
 as artifacts.
 
 The collected License Compliance report will be uploaded to GitLab as an artifact and will
-be automatically shown in merge requests, pipeline view and provide data for security
-dashboards.
+be summarized in the merge requests and pipeline view. It is also used to provide data for security
+dashboards. It is not available for download through the web interface.
 
 ##### `artifacts:reports:performance` **(PREMIUM)**
 
@@ -2168,7 +2168,7 @@ The `performance` report collects [Performance metrics](../../user/project/merge
 as artifacts.
 
 The collected Performance report will be uploaded to GitLab as an artifact and will
-be automatically shown in merge requests.
+be automatically shown in merge requests. It is not available for download through the web interface.
 
 ##### `artifacts:reports:metrics` **(PREMIUM)**
 
@@ -2178,7 +2178,7 @@ The `metrics` report collects [Metrics](../../ci/metrics_reports.md)
 as artifacts.
 
 The collected Metrics report will be uploaded to GitLab as an artifact and will
-be automatically shown in merge requests.
+be automatically shown in merge requests. It is not available for download through the web interface.
 
 ### `dependencies`
 

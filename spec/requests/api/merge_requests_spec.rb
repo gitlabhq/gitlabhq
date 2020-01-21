@@ -65,6 +65,21 @@ describe API::MergeRequests do
         end.not_to exceed_query_limit(control)
       end
 
+      context 'when merge request is unchecked' do
+        before do
+          merge_request.mark_as_unchecked!
+        end
+
+        it 'checks mergeability asynchronously' do
+          expect_next_instance_of(MergeRequests::MergeabilityCheckService) do |service|
+            expect(service).not_to receive(:execute)
+            expect(service).to receive(:async_execute)
+          end
+
+          get api(endpoint_path, user)
+        end
+      end
+
       context 'with labels' do
         include_context 'with labels'
 
@@ -1002,6 +1017,21 @@ describe API::MergeRequests do
       get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user2)
 
       expect(json_response['user']['can_merge']).to be_falsy
+    end
+
+    context 'when merge request is unchecked' do
+      before do
+        merge_request.mark_as_unchecked!
+      end
+
+      it 'checks mergeability asynchronously' do
+        expect_next_instance_of(MergeRequests::MergeabilityCheckService) do |service|
+          expect(service).not_to receive(:execute)
+          expect(service).to receive(:async_execute)
+        end
+
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user)
+      end
     end
   end
 

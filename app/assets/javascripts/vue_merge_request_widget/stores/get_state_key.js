@@ -7,7 +7,7 @@ export default function deviseState(data) {
     return stateKey.missingBranch;
   } else if (!data.commits_count) {
     return stateKey.nothingToMerge;
-  } else if (this.mergeStatus === 'unchecked') {
+  } else if (this.mergeStatus === 'unchecked' || this.mergeStatus === 'checking') {
     return stateKey.checking;
   } else if (data.has_conflicts) {
     return stateKey.conflicts;

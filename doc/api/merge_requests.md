@@ -61,6 +61,12 @@ Parameters:
 | `in`                | string         | no       | Modify the scope of the `search` attribute. `title`, `description`, or a string joining them with comma. Default is `title,description` |
 | `wip`               | string         | no       | Filter merge requests against their `wip` status. `yes` to return *only* WIP merge requests, `no` to return *non* WIP merge requests |
 
+NOTE: **Note:**
+[Starting in GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/issues/29984),
+the mergeability (`merge_status`) of each merge request will be checked
+asynchronously when a request is made to this endpoint. Poll this API endpoint
+to get updated status.
+
 ```json
 [
   {
@@ -525,6 +531,12 @@ Parameters:
 - `render_html` (optional) - If `true` response includes rendered HTML for title and description
 - `include_diverged_commits_count` (optional) - If `true` response includes the commits behind the target branch
 - `include_rebase_in_progress` (optional) - If `true` response includes whether a rebase operation is in progress
+
+NOTE: **Note:**
+[Starting in GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/issues/29984),
+the mergeability (`merge_status`) of a merge request will be checked
+asynchronously when a request is made to this endpoint. Poll this API endpoint
+to get updated status.
 
 ```json
 {

@@ -19,7 +19,7 @@ describe 'Merge request > User sees merge widget', :js do
     sign_in(user)
   end
 
-  context 'new merge request' do
+  context 'new merge request', :sidekiq_might_not_need_inline do
     before do
       visit project_new_merge_request_path(
         project,

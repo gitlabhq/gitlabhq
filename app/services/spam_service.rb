@@ -53,7 +53,7 @@ class SpamService
   def create_spam_log(api)
     @spam_log = SpamLog.create!(
       {
-        user_id: spammable_owner_id,
+        user_id: spammable.author_id,
         title: spammable.spam_title,
         description: spammable.spam_description,
         source_ip: options[:ip_address],

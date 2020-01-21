@@ -4951,7 +4951,7 @@ msgstr ""
 msgid "Container registry images"
 msgstr ""
 
-msgid "Container registry is not enabled on this GitLab instance. Ask an administrator to enable it in order for AutoDevOps to work."
+msgid "Container registry is not enabled on this GitLab instance. Ask an administrator to enable it in order for Auto DevOps to work."
 msgstr ""
 
 msgid "ContainerRegistry|Automatically remove extra images that aren't designed to be kept."
@@ -5759,13 +5759,22 @@ msgstr ""
 msgid "CycleAnalytics|Days to completion"
 msgstr ""
 
+msgid "CycleAnalytics|Display chart filters"
+msgstr ""
+
 msgid "CycleAnalytics|No stages selected"
 msgstr ""
 
 msgid "CycleAnalytics|Number of tasks"
 msgstr ""
 
-msgid "CycleAnalytics|Showing %{subject} and %{selectedLabelsCount} labels"
+msgid "CycleAnalytics|Select labels"
+msgstr ""
+
+msgid "CycleAnalytics|Show"
+msgstr ""
+
+msgid "CycleAnalytics|Showing %{subjectFilterText} and %{selectedLabelsCount} labels"
 msgstr ""
 
 msgid "CycleAnalytics|Showing data for group '%{groupName}' and %{selectedProjectCount} projects from %{startDate} to %{endDate}"
@@ -17051,6 +17060,9 @@ msgid_plural "Showing %d events"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Showing %{limit} of %{total_count} issues. "
+msgstr ""
+
 msgid "Showing %{pageSize} of %{total} issues"
 msgstr ""
 
@@ -20671,6 +20683,9 @@ msgstr ""
 msgid "View Documentation"
 msgstr ""
 
+msgid "View all issues"
+msgstr ""
+
 msgid "View blame prior to this change"
 msgstr ""
 
@@ -22442,7 +22457,7 @@ msgstr ""
 msgid "mrWidget|Check out branch"
 msgstr ""
 
-msgid "mrWidget|Checking ability to merge automatically"
+msgid "mrWidget|Checking ability to merge automatically…"
 msgstr ""
 
 msgid "mrWidget|Cherry-pick"

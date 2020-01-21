@@ -277,6 +277,7 @@ describe MergeRequest do
 
   describe 'respond to' do
     it { is_expected.to respond_to(:unchecked?) }
+    it { is_expected.to respond_to(:checking?) }
     it { is_expected.to respond_to(:can_be_merged?) }
     it { is_expected.to respond_to(:cannot_be_merged?) }
     it { is_expected.to respond_to(:merge_params) }
@@ -2084,43 +2085,75 @@ describe MergeRequest do
   describe '#check_mergeability' do
     let(:mergeability_service) { double }
 
+    subject { create(:merge_request, merge_status: 'unchecked') }
+
     before do
       allow(MergeRequests::MergeabilityCheckService).to receive(:new) do
         mergeability_service
       end
     end
 
-    context 'if the merge status is unchecked' do
-      before do
-        subject.mark_as_unchecked!
-      end
-
+    shared_examples_for 'method that executes MergeabilityCheckService' do
       it 'executes MergeabilityCheckService' do
         expect(mergeability_service).to receive(:execute)
 
         subject.check_mergeability
       end
+
+      context 'when async is true' do
+        context 'and async_merge_request_check_mergeability feature flag is enabled' do
+          it 'executes MergeabilityCheckService asynchronously' do
+            expect(mergeability_service).to receive(:async_execute)
+
+            subject.check_mergeability(async: true)
+          end
+        end
+
+        context 'and async_merge_request_check_mergeability feature flag is disabled' do
+          before do
+            stub_feature_flags(async_merge_request_check_mergeability: false)
+          end
+
+          it 'executes MergeabilityCheckService' do
+            expect(mergeability_service).to receive(:execute)
+
+            subject.check_mergeability(async: true)
+          end
+        end
+      end
+    end
+
+    context 'if the merge status is unchecked' do
+      it_behaves_like 'method that executes MergeabilityCheckService'
+    end
+
+    context 'if the merge status is checking' do
+      before do
+        subject.mark_as_checking!
+      end
+
+      it_behaves_like 'method that executes MergeabilityCheckService'
     end
 
     context 'if the merge status is checked' do
-      context 'and feature flag is enabled' do
-        it 'executes MergeabilityCheckService' do
-          expect(mergeability_service).not_to receive(:execute)
+      before do
+        subject.mark_as_mergeable!
+      end
+
+      context 'and merge_requests_conditional_mergeability_check feature flag is enabled' do
+        it 'does not call MergeabilityCheckService' do
+          expect(MergeRequests::MergeabilityCheckService).not_to receive(:new)
 
           subject.check_mergeability
         end
       end
 
-      context 'and feature flag is disabled' do
+      context 'and merge_requests_conditional_mergeability_check feature flag is disabled' do
         before do
           stub_feature_flags(merge_requests_conditional_mergeability_check: false)
         end
 
-        it 'does not execute MergeabilityCheckService' do
-          expect(mergeability_service).to receive(:execute)
-
-          subject.check_mergeability
-        end
+        it_behaves_like 'method that executes MergeabilityCheckService'
       end
     end
   end
@@ -3145,7 +3178,7 @@ describe MergeRequest do
     describe 'check_state?' do
       it 'indicates whether MR is still checking for mergeability' do
         state_machine = described_class.state_machines[:merge_status]
-        check_states = [:unchecked, :cannot_be_merged_recheck]
+        check_states = [:unchecked, :cannot_be_merged_recheck, :checking]
 
         check_states.each do |merge_status|
           expect(state_machine.check_state?(merge_status)).to be true
