@@ -5,22 +5,27 @@ require 'spec_helper'
 describe Gitlab::Email::Receiver do
   include_context :email_shared_context
 
-  context "when the email contains a valid email address in a Delivered-To header" do
-    let(:email_raw) { fixture_file('emails/forwarded_new_issue.eml') }
+  context 'when the email contains a valid email address in a header' do
     let(:handler) { double(:handler) }
 
     before do
-      stub_incoming_email_setting(enabled: true, address: "incoming+%{key}@appmail.adventuretime.ooo")
-
       allow(handler).to receive(:execute)
       allow(handler).to receive(:metrics_params)
       allow(handler).to receive(:metrics_event)
+
+      stub_incoming_email_setting(enabled: true, address: "incoming+%{key}@appmail.example.com")
     end
 
-    it "finds the mail key" do
-      expect(Gitlab::Email::Handler).to receive(:for).with(an_instance_of(Mail::Message), 'gitlabhq/gitlabhq+auth_token').and_return(handler)
+    context 'when in a Delivered-To header' do
+      let(:email_raw) { fixture_file('emails/forwarded_new_issue.eml') }
 
-      receiver.execute
+      it_behaves_like 'correctly finds the mail key'
+    end
+
+    context 'when in an Envelope-To header' do
+      let(:email_raw) { fixture_file('emails/envelope_to_header.eml') }
+
+      it_behaves_like 'correctly finds the mail key'
     end
   end
 

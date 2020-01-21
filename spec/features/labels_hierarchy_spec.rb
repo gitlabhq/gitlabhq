@@ -70,7 +70,7 @@ describe 'Labels Hierarchy', :js do
     end
 
     it 'does not filter by descendant group labels' do
-      filtered_search.set("label:")
+      filtered_search.set("label=")
 
       wait_for_requests
 
@@ -134,7 +134,7 @@ describe 'Labels Hierarchy', :js do
     end
 
     it 'does not filter by descendant group project labels' do
-      filtered_search.set("label:")
+      filtered_search.set("label=")
 
       wait_for_requests
 
@@ -227,7 +227,7 @@ describe 'Labels Hierarchy', :js do
       it_behaves_like 'filtering by ancestor labels for projects'
 
       it 'does not filter by descendant group labels' do
-        filtered_search.set("label:")
+        filtered_search.set("label=")
 
         wait_for_requests
 

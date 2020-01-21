@@ -20,7 +20,7 @@ Milestones can be used as Agile sprints so that you can track all issues and mer
 
 ## Milestones as releases
 
-Similarily, milestones can be used as releases. To do so:
+Similarly, milestones can be used as releases. To do so:
 
 1. Set the milestone due date to represent the release date of your release and leave the milestone start date blank.
 1. Set the milestone title to the version of your release, such as `Version 9.4`.

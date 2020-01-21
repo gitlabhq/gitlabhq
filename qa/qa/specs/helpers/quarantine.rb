@@ -43,7 +43,23 @@ module QA::Specs::Helpers
         # the quarantined tests when they're not run so that we're aware of them
         skip("Only running tests tagged with :quarantine and any of #{included_filters.keys}") if should_skip_when_focused?(example.metadata, included_filters)
       else
-        skip('In quarantine') if example.metadata.key?(:quarantine)
+        if example.metadata.key?(:quarantine)
+          quarantine_message = %w(In quarantine)
+          quarantine_tag = example.metadata[:quarantine]
+
+          if !!quarantine_tag
+            quarantine_message << case quarantine_tag
+                                  when String
+                                    ": #{quarantine_tag}"
+                                  when Hash
+                                    ": #{quarantine_tag[:issue]}"
+                                  else
+                                    ''
+                                  end
+          end
+
+          skip(quarantine_message.join(' ').strip)
+        end
       end
     end
 

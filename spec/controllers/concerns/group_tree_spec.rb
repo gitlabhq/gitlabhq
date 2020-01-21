@@ -8,7 +8,7 @@ describe GroupTree do
 
   controller(ApplicationController) do
     # `described_class` is not available in this context
-    include GroupTree # rubocop:disable RSpec/DescribedClass
+    include GroupTree
 
     def index
       render_group_tree GroupsFinder.new(current_user).execute

@@ -32,12 +32,10 @@ for review.
 
 ### Roles and process
 
-A Merge Request author's role is to:
+A Merge Request **author**'s role is to:
 
 - Decide whether a database review is needed.
 - If database review is needed, add the ~database label.
-- Use the [database changes](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/merge_request_templates/Database%20changes.md)
-  merge request template, or include the appropriate items in the MR description.
 - [Prepare the merge request for a database review](#how-to-prepare-the-merge-request-for-a-database-review).
 
 A database **reviewer**'s role is to:
@@ -78,15 +76,54 @@ make sure you have applied the ~database label and rerun the
 
 ### How to prepare the merge request for a database review
 
-In order to make reviewing easier and therefore faster, please consider preparing a comment
-and details for a database reviewer:
+In order to make reviewing easier and therefore faster, please take
+the following preparations into account.
 
-- Provide queries in SQL form rather than ActiveRecord.
-- Format any queries with a SQL query formatter, for example with [sqlformat.darold.net](http://sqlformat.darold.net).
-- Consider providing query plans via a link to [explain.depesz.com](https://explain.depesz.com) or another tool instead of textual form.
-- For query changes, it is best to provide the SQL query along with a plan *before* and *after* the change. This helps to spot differences quickly.
-- When providing query plans, make sure to use good parameter values, so that the query executed is a good example and also hits enough data.
-  - Usually, the `gitlab-org` namespace (`namespace_id = 9970`) and the `gitlab-org/gitlab-foss` (`project_id = 13083`) or the `gitlab-org/gitlab` (`project_id = 278964`) projects provide enough data to serve as a good example.
+#### Preparation when adding migrations
+
+- Ensure `db/schema.rb` is updated.
+- Make migrations reversible by using the `change` method or include a `down` method when using `up`.
+  - Include either a rollback procedure or describe how to rollback changes.
+- Add the output of the migration(s) to the MR description.
+- Add tests for the migration in `spec/migrations` if necessary. See [Testing Rails migrations at GitLab](testing_guide/testing_migrations_guide.html) for more details.
+
+#### Preparation when adding or modifying queries
+
+- Write the raw SQL in the MR description. Preferably formatted
+  nicely with [sqlformat.darold.net](http://sqlformat.darold.net) or
+  [paste.depesz.com](https://paste.depesz.com).
+- Include the output of `EXPLAIN (ANALYZE, BUFFERS)` of the relevant
+  queries in the description. If the output is too long, wrap it in
+  `<details>` blocks, paste it in a GitLab Snippet, or provide the
+  link to the plan at: [explain.depesz.com](https://explain.depesz.com).
+- When providing query plans, make sure it hits enough data:
+  - You can use a GitLab production replica to test your queries on a large scale,
+  through the `#database-lab` Slack channel or through [chatops](understanding_explain_plans.md#chatops).
+  - Usually, the `gitlab-org` namespace (`namespace_id = 9970`) and the
+  `gitlab-org/gitlab-foss` (`project_id = 13083`) or the `gitlab-org/gitlab` (`project_id = 278964`)
+   projects provide enough data to serve as a good example.
+- For query changes, it is best to provide the SQL query along with a
+  plan _before_ and _after_ the change. This helps to spot differences
+  quickly.
+- Include data that shows the performance improvement, preferably in
+  the form of a benchmark.
+
+#### Preparation when adding foreign keys to existing tables
+
+- Include a migration to remove orphaned rows in the source table **before** adding the foreign key.
+- Remove any instances of `dependent: ...` that may no longer be necessary.
+
+#### Preparation when adding tables
+
+- Order columns based on the [Ordering Table Columns](ordering_table_columns.md) guidelines.
+- Add foreign keys to any columns pointing to data in other tables, including [an index](migration_style_guide.md#adding-foreign-key-constraints).
+- Add indexes for fields that are used in statements such as `WHERE`, `ORDER BY`, `GROUP BY`, and `JOIN`s.
+
+#### Preparation when removing columns, tables, indexes or other structures
+
+- Follow the [guidelines on dropping columns](what_requires_downtime.md#dropping-columns).
+- Generally it's best practice, but not a hard rule, to remove indexes and foreign keys in a post-deployment migration.
+  - Exceptions include removing indexes and foreign keys for small tables.
 
 ### How to review for database
 
@@ -136,6 +173,7 @@ and details for a database reviewer:
     (eg indexes, columns), you can use a [one-off instance from the restore
     pipeline](https://ops.gitlab.net/gitlab-com/gl-infra/gitlab-restore/postgres-gprd)
     in order to establish a proper testing environment.
+  - Avoid N+1 problems and minimalize the [query count](merge_request_performance_guidelines.md#query-counts).
 
 ### Timing guidelines for migrations
 

@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class Bridge < CommitStatus
-    include Ci::Processable
+  class Bridge < Ci::Processable
     include Ci::Contextable
     include Ci::PipelineDelegator
     include Importable
@@ -53,6 +52,10 @@ module Ci
 
     def to_partial_path
       'projects/generic_commit_statuses/generic_commit_status'
+    end
+
+    def yaml_for_downstream
+      nil
     end
   end
 end

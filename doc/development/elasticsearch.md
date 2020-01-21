@@ -37,20 +37,6 @@ brew install elasticsearch@5.6
 
 There is no need to install any plugins
 
-## New repo indexer (beta)
-
-If you're interested on working with the new beta repo indexer, all you need to do is:
-
-```sh
-git clone git@gitlab.com:gitlab-org/gitlab-elasticsearch-indexer.git
-make
-make install
-```
-
-this adds `gitlab-elasticsearch-indexer` to `$GOPATH/bin`, please make sure that is in your `$PATH`. After that GitLab will find it and you'll be able to enable it in the admin settings area.
-
-**note:** `make` will not recompile the executable unless you do `make clean` beforehand
-
 ## Helpful rake tasks
 
 - `gitlab:elastic:test:index_size`: Tells you how much space the current index is using, as well as how many documents are in the index.

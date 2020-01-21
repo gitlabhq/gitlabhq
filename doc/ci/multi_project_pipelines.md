@@ -93,8 +93,8 @@ gets created. If you want to display the downstream pipeline's status instead, s
 
 NOTE: **Note:**
 Bridge jobs do not support every configuration entry that a user can use
-in the case of regular jobs. Bridge jobs will not to be picked by a Runner,
-thus there is no point in adding support for `script`, for example. If a user
+in the case of regular jobs. Bridge jobs will not be picked by a Runner,
+so there is no point in adding support for `script`, for example. If a user
 tries to use unsupported configuration syntax, YAML validation will fail upon
 pipeline creation.
 
@@ -221,6 +221,7 @@ Some features are not implemented yet. For example, support for environments.
 - `trigger` (to define a downstream pipeline trigger)
 - `stage`
 - `allow_failure`
+- [`rules`](yaml/README.md#rules)
 - `only` and `except`
 - `when` (only with `on_success`, `on_failure`, and `always` values)
 - `extends`

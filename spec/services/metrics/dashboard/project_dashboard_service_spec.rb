@@ -5,9 +5,9 @@ require 'spec_helper'
 describe Metrics::Dashboard::ProjectDashboardService, :use_clean_rails_memory_store_caching do
   include MetricsDashboardHelpers
 
-  set(:user) { create(:user) }
-  set(:project) { create(:project) }
-  set(:environment) { create(:environment, project: project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:environment) { create(:environment, project: project) }
 
   before do
     project.add_maintainer(user)

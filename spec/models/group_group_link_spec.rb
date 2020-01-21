@@ -33,4 +33,12 @@ describe GroupGroupLink do
         validate_inclusion_of(:group_access).in_array(Gitlab::Access.values))
     end
   end
+
+  describe '#human_access' do
+    it 'delegates to Gitlab::Access' do
+      expect(Gitlab::Access).to receive(:human_access).with(group_group_link.group_access)
+
+      group_group_link.human_access
+    end
+  end
 end

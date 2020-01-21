@@ -26,7 +26,7 @@ describe Gitlab::GitalyClient do
 
     context 'running in Unicorn' do
       before do
-        stub_const('Unicorn', 1)
+        allow(Gitlab::Runtime).to receive(:unicorn?).and_return(true)
       end
 
       it { expect(subject.long_timeout).to eq(55) }
@@ -34,7 +34,7 @@ describe Gitlab::GitalyClient do
 
     context 'running in Puma' do
       before do
-        stub_const('Puma', 1)
+        allow(Gitlab::Runtime).to receive(:puma?).and_return(true)
       end
 
       it { expect(subject.long_timeout).to eq(55) }
@@ -227,6 +227,59 @@ describe Gitlab::GitalyClient do
             expect(described_class.request_kwargs('default', timeout: 1)[:metadata]['gitaly-session-id']).to eq(gitaly_session_id)
           end
         end
+      end
+    end
+
+    context 'deadlines', :request_store do
+      let(:request_deadline) { real_time + 10.0 }
+
+      before do
+        allow(Gitlab::RequestContext.instance).to receive(:request_deadline).and_return(request_deadline)
+      end
+
+      it 'includes the deadline information' do
+        kword_args = described_class.request_kwargs('default', timeout: 2)
+
+        expect(kword_args[:deadline])
+          .to be_within(1).of(real_time + 2)
+        expect(kword_args[:metadata][:deadline_type]).to eq("regular")
+      end
+
+      it 'limits the deadline do the request deadline if that is closer', :aggregate_failures do
+        kword_args = described_class.request_kwargs('default', timeout: 15)
+
+        expect(kword_args[:deadline]).to eq(request_deadline)
+        expect(kword_args[:metadata][:deadline_type]).to eq("limited")
+      end
+
+      it 'does not limit calls in sidekiq' do
+        expect(Sidekiq).to receive(:server?).and_return(true)
+
+        kword_args = described_class.request_kwargs('default', timeout: 6.hours.to_i)
+
+        expect(kword_args[:deadline]).to be_within(1).of(real_time + 6.hours.to_i)
+        expect(kword_args[:metadata][:deadline_type]).to be_nil
+      end
+
+      it 'does not limit calls in sidekiq when allowed unlimited' do
+        expect(Sidekiq).to receive(:server?).and_return(true)
+
+        kword_args = described_class.request_kwargs('default', timeout: 0)
+
+        expect(kword_args[:deadline]).to be_nil
+        expect(kword_args[:metadata][:deadline_type]).to be_nil
+      end
+
+      it 'includes only the deadline specified by the timeout when there was no deadline' do
+        allow(Gitlab::RequestContext.instance).to receive(:request_deadline).and_return(nil)
+        kword_args = described_class.request_kwargs('default', timeout: 6.hours.to_i)
+
+        expect(kword_args[:deadline]).to be_within(1).of(Gitlab::Metrics::System.real_time + 6.hours.to_i)
+        expect(kword_args[:metadata][:deadline_type]).to be_nil
+      end
+
+      def real_time
+        Gitlab::Metrics::System.real_time
       end
     end
   end

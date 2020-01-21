@@ -10,7 +10,7 @@ module Gitlab
       def initialize(user:, shared:, project:)
         @path = File.join(shared.export_path, 'project.json')
         @user = user
-        @shared  = shared
+        @shared = shared
         @project = project
       end
 
@@ -48,6 +48,7 @@ module Gitlab
           shared: @shared,
           importable: @project,
           tree_hash: @tree_hash,
+          object_builder: object_builder,
           members_mapper: members_mapper,
           relation_factory: relation_factory,
           reader: reader
@@ -60,8 +61,12 @@ module Gitlab
                                                                     importable: @project)
       end
 
+      def object_builder
+        Gitlab::ImportExport::GroupProjectObjectBuilder
+      end
+
       def relation_factory
-        Gitlab::ImportExport::RelationFactory
+        Gitlab::ImportExport::ProjectRelationFactory
       end
 
       def reader

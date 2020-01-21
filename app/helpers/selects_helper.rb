@@ -85,7 +85,8 @@ module SelectsHelper
       first_user: opts[:first_user] && current_user ? current_user.username : false,
       current_user: opts[:current_user] || false,
       author_id: opts[:author_id] || '',
-      skip_users: opts[:skip_users] ? opts[:skip_users].map(&:id) : nil
+      skip_users: opts[:skip_users] ? opts[:skip_users].map(&:id) : nil,
+      qa_selector: opts[:qa_selector] || ''
     }
   end
 end

@@ -392,15 +392,21 @@ export const getTimeframeWindowFrom = (initialStartDate, length) => {
  * @param {Date} date
  * @param {Array} quarter
  */
-export const dayInQuarter = (date, quarter) =>
-  quarter.reduce((acc, month) => {
-    if (date.getMonth() > month.getMonth()) {
+export const dayInQuarter = (date, quarter) => {
+  const dateValues = {
+    date: date.getDate(),
+    month: date.getMonth(),
+  };
+
+  return quarter.reduce((acc, month) => {
+    if (dateValues.month > month.getMonth()) {
       return acc + totalDaysInMonth(month);
-    } else if (date.getMonth() === month.getMonth()) {
-      return acc + date.getDate();
+    } else if (dateValues.month === month.getMonth()) {
+      return acc + dateValues.date;
     }
     return acc + 0;
   }, 0);
+};
 
 window.gl = window.gl || {};
 window.gl.utils = {
@@ -464,7 +470,7 @@ export const pikadayToString = date => {
  */
 export const parseSeconds = (
   seconds,
-  { daysPerWeek = 5, hoursPerDay = 8, limitToHours = false } = {},
+  { daysPerWeek = 5, hoursPerDay = 8, limitToHours = false, limitToDays = false } = {},
 ) => {
   const DAYS_PER_WEEK = daysPerWeek;
   const HOURS_PER_DAY = hoursPerDay;
@@ -480,8 +486,11 @@ export const parseSeconds = (
     minutes: 1,
   };
 
-  if (limitToHours) {
+  if (limitToDays || limitToHours) {
     timePeriodConstraints.weeks = 0;
+  }
+
+  if (limitToHours) {
     timePeriodConstraints.days = 0;
   }
 
@@ -546,6 +555,16 @@ export const calculateRemainingMilliseconds = endDate => {
 export const getDateInPast = (date, daysInPast) =>
   new Date(newDate(date).setDate(date.getDate() - daysInPast));
 
+/**
+ * Adds a given number of days to a given date and returns the new date.
+ *
+ * @param {Date} date the date that we will add days to
+ * @param {Number} daysInFuture number of days that are added to a given date
+ * @returns {Date} Date in future as Date object
+ */
+export const getDateInFuture = (date, daysInFuture) =>
+  new Date(newDate(date).setDate(date.getDate() + daysInFuture));
+
 /*
  * Appending T00:00:00 makes JS assume local time and prevents it from shifting the date
  * to match the user's time zone. We want to display the date in server time for now, to
@@ -606,3 +625,44 @@ export const secondsToDays = seconds => Math.round(seconds / 86400);
  * @return {Date} the date following the date provided
  */
 export const dayAfter = date => new Date(newDate(date).setDate(date.getDate() + 1));
+
+/**
+ * Mimics the behaviour of the rails distance_of_time_in_words function
+ * https://api.rubyonrails.org/v6.0.1/classes/ActionView/Helpers/DateHelper.html#method-i-distance_of_time_in_words
+ * 0 < -> 29 secs                                         => less than a minute
+ * 30 secs < -> 1 min, 29 secs                            => 1 minute
+ * 1 min, 30 secs < -> 44 mins, 29 secs                   => [2..44] minutes
+ * 44 mins, 30 secs < -> 89 mins, 29 secs                 => about 1 hour
+ * 89 mins, 30 secs < -> 23 hrs, 59 mins, 29 secs         => about[2..24]hours
+ * 23 hrs, 59 mins, 30 secs < -> 41 hrs, 59 mins, 29 secs => 1 day
+ * 41 hrs, 59 mins, 30 secs                               => x days
+ *
+ * @param {Number} seconds
+ * @return {String} approximated time
+ */
+export const approximateDuration = (seconds = 0) => {
+  if (!_.isNumber(seconds) || seconds < 0) {
+    return '';
+  }
+
+  const ONE_MINUTE_LIMIT = 90; // 1 minute 30s
+  const MINUTES_LIMIT = 2670; // 44 minutes 30s
+  const ONE_HOUR_LIMIT = 5370; // 89 minutes 30s
+  const HOURS_LIMIT = 86370; // 23 hours 59 minutes 30s
+  const ONE_DAY_LIMIT = 151170; // 41 hours 59 minutes 30s
+
+  const { days = 0, hours = 0, minutes = 0 } = parseSeconds(seconds, {
+    daysPerWeek: 7,
+    hoursPerDay: 24,
+    limitToDays: true,
+  });
+
+  if (seconds < 30) {
+    return __('less than a minute');
+  } else if (seconds < MINUTES_LIMIT) {
+    return n__('1 minute', '%d minutes', seconds < ONE_MINUTE_LIMIT ? 1 : minutes);
+  } else if (seconds < HOURS_LIMIT) {
+    return n__('about 1 hour', 'about %d hours', seconds < ONE_HOUR_LIMIT ? 1 : hours);
+  }
+  return n__('1 day', '%d days', seconds < ONE_DAY_LIMIT ? 1 : days);
+};

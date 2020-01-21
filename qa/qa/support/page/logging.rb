@@ -16,7 +16,7 @@ module QA
           super
         end
 
-        def wait(max: 60, interval: 0.1, reload: true)
+        def wait_until(max_duration: 60, sleep_interval: 0.1, reload: true, raise_on_failure: false)
           log("next wait uses reload: #{reload}")
           # Logging of wait start/end/duration is handled by QA::Support::Waiter
 
@@ -119,10 +119,10 @@ module QA
           found
         end
 
-        def has_no_text?(text)
+        def has_no_text?(text, **kwargs)
           found = super
 
-          log(%Q{has_no_text?('#{text}') returned #{found}})
+          log(%Q{has_no_text?('#{text}', wait: #{kwargs[:wait] || Capybara.default_max_wait_time}) returned #{found}})
 
           found
         end
@@ -173,6 +173,7 @@ module QA
         def log_has_element_or_not(method, name, found, **kwargs)
           msg = ["#{method} :#{name}"]
           msg << %Q(with text "#{kwargs[:text]}") if kwargs[:text]
+          msg << "class: #{kwargs[:class]}" if kwargs[:class]
           msg << "(wait: #{kwargs[:wait] || Capybara.default_max_wait_time})"
           msg << "returned: #{found}"
 

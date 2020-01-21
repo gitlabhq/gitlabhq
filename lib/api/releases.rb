@@ -66,6 +66,8 @@ module API
           .execute
 
         if result[:status] == :success
+          log_release_created_audit_event(result[:release])
+
           present result[:release], with: Entities::Release, current_user: current_user
         else
           render_api_error!(result[:message], result[:http_status])
@@ -91,6 +93,9 @@ module API
           .execute
 
         if result[:status] == :success
+          log_release_updated_audit_event
+          log_release_milestones_updated_audit_event if result[:milestones_updated]
+
           present result[:release], with: Entities::Release, current_user: current_user
         else
           render_api_error!(result[:message], result[:http_status])
@@ -147,6 +152,20 @@ module API
       def release
         @release ||= user_project.releases.find_by_tag(params[:tag])
       end
+
+      def log_release_created_audit_event(release)
+        # This is a separate method so that EE can extend its behaviour
+      end
+
+      def log_release_updated_audit_event
+        # This is a separate method so that EE can extend its behaviour
+      end
+
+      def log_release_milestones_updated_audit_event
+        # This is a separate method so that EE can extend its behaviour
+      end
     end
   end
 end
+
+API::Releases.prepend_if_ee('EE::API::Releases')

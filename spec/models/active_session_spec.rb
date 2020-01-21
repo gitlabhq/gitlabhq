@@ -44,6 +44,19 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_shared_state do
     end
   end
 
+  describe '#public_id' do
+    it 'returns an encrypted, url-encoded session id' do
+      original_session_id = "!*'();:@&\n=+$,/?%abcd#123[4567]8"
+      active_session = ActiveSession.new(session_id: original_session_id)
+      encrypted_encoded_id = active_session.public_id
+
+      encrypted_id = CGI.unescape(encrypted_encoded_id)
+      derived_session_id = Gitlab::CryptoHelper.aes256_gcm_decrypt(encrypted_id)
+
+      expect(original_session_id).to eq derived_session_id
+    end
+  end
+
   describe '.list' do
     it 'returns all sessions by user' do
       Gitlab::Redis::SharedState.with do |redis|
@@ -139,7 +152,7 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_shared_state do
       redis = double(:redis)
       expect(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis)
 
-      sessions = ['session-a', 'session-b']
+      sessions = %w[session-a session-b]
       mget_responses = sessions.map { |session| [Marshal.dump(session)]}
       expect(redis).to receive(:mget).twice.and_return(*mget_responses)
 
@@ -173,8 +186,7 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_shared_state do
           device_name: 'iPhone 6',
           device_type: 'smartphone',
           created_at: Time.zone.parse('2018-03-12 09:06'),
-          updated_at: Time.zone.parse('2018-03-12 09:06'),
-          session_id: '6919a6f1bb119dd7396fadc38fd18d0d'
+          updated_at: Time.zone.parse('2018-03-12 09:06')
         )
       end
     end
@@ -241,6 +253,40 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_shared_state do
       Gitlab::Redis::SharedState.with do |redis|
         expect(redis.scan_each(match: "session:gitlab:*").to_a).to be_empty
       end
+    end
+  end
+
+  describe '.destroy_with_public_id' do
+    it 'receives a user and public id and destroys the associated session' do
+      ActiveSession.set(user, request)
+      session = ActiveSession.list(user).first
+
+      ActiveSession.destroy_with_public_id(user, session.public_id)
+
+      total_sessions = ActiveSession.list(user).count
+      expect(total_sessions).to eq 0
+    end
+
+    it 'handles invalid input for public id' do
+      expect do
+        ActiveSession.destroy_with_public_id(user, nil)
+      end.not_to raise_error
+
+      expect do
+        ActiveSession.destroy_with_public_id(user, "")
+      end.not_to raise_error
+
+      expect do
+        ActiveSession.destroy_with_public_id(user, "aaaaaaaa")
+      end.not_to raise_error
+    end
+
+    it 'does not attempt to destroy session when given invalid input for public id' do
+      expect(ActiveSession).not_to receive(:destroy)
+
+      ActiveSession.destroy_with_public_id(user, nil)
+      ActiveSession.destroy_with_public_id(user, "")
+      ActiveSession.destroy_with_public_id(user, "aaaaaaaa")
     end
   end
 

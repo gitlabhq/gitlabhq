@@ -1,6 +1,6 @@
 <script>
 import { flatten, isNumber } from 'underscore';
-import { GlLineChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
+import { GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import { roundOffFloat } from '~/lib/utils/common_utils';
 import { hexToRgb } from '~/lib/utils/color_utils';
 import { areaOpacityValues, symbolSizes, colorValues } from '../../constants';
@@ -48,7 +48,6 @@ const AREA_COLOR_RGBA = `rgba(${hexToRgb(AREA_COLOR).join(',')},${AREA_OPACITY})
  */
 export default {
   components: {
-    GlLineChart,
     GlChartSeriesLabel,
     MonitorTimeSeriesChart,
   },

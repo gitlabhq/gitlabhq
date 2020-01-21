@@ -330,7 +330,7 @@ describe Ci::RetryPipelineService, '#execute' do
                       stage: "stage_#{stage_num}",
                       stage_idx: stage_num,
                       pipeline: pipeline, **opts) do |build|
-      pipeline.update_status
+      pipeline.update_legacy_status
     end
   end
 end

@@ -90,16 +90,19 @@ export default {
       Flash(s__('Environments|An error occurred while fetching the environments.'));
     },
 
-    postAction({ endpoint, errorMessage }) {
+    postAction({
+      endpoint,
+      errorMessage = s__('Environments|An error occurred while making the request.'),
+    }) {
       if (!this.isMakingRequest) {
         this.isLoading = true;
 
         this.service
           .postAction(endpoint)
           .then(() => this.fetchEnvironments())
-          .catch(() => {
+          .catch(err => {
             this.isLoading = false;
-            Flash(errorMessage || s__('Environments|An error occurred while making the request.'));
+            Flash(_.isFunction(errorMessage) ? errorMessage(err.response.data) : errorMessage);
           });
       }
     },
@@ -137,6 +140,13 @@ export default {
             'Environments|An error occurred while rolling back the environment, please try again',
           );
       this.postAction({ endpoint: retryUrl, errorMessage });
+    },
+
+    cancelAutoStop(autoStopPath) {
+      const errorMessage = ({ message }) =>
+        message ||
+        s__('Environments|An error occurred while canceling the auto stop, please try again');
+      this.postAction({ endpoint: autoStopPath, errorMessage });
     },
   },
 
@@ -199,6 +209,8 @@ export default {
 
     eventHub.$on('requestRollbackEnvironment', this.updateRollbackModal);
     eventHub.$on('rollbackEnvironment', this.rollbackEnvironment);
+
+    eventHub.$on('cancelAutoStop', this.cancelAutoStop);
   },
 
   beforeDestroy() {
@@ -208,5 +220,7 @@ export default {
 
     eventHub.$off('requestRollbackEnvironment', this.updateRollbackModal);
     eventHub.$off('rollbackEnvironment', this.rollbackEnvironment);
+
+    eventHub.$off('cancelAutoStop', this.cancelAutoStop);
   },
 };

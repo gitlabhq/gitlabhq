@@ -22,7 +22,7 @@ describe 'Merge Requests > User filters by labels', :js do
 
   context 'filtering by label:none' do
     it 'applies the filter' do
-      input_filtered_search('label:none')
+      input_filtered_search('label=none')
 
       expect(page).to have_issuable_counts(open: 0, closed: 0, all: 0)
       expect(page).not_to have_content 'Bugfix1'
@@ -32,7 +32,7 @@ describe 'Merge Requests > User filters by labels', :js do
 
   context 'filtering by label:~enhancement' do
     it 'applies the filter' do
-      input_filtered_search('label:~enhancement')
+      input_filtered_search('label=~enhancement')
 
       expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
       expect(page).to have_content 'Bugfix2'
@@ -42,7 +42,7 @@ describe 'Merge Requests > User filters by labels', :js do
 
   context 'filtering by label:~enhancement and label:~bug' do
     it 'applies the filters' do
-      input_filtered_search('label:~bug label:~enhancement')
+      input_filtered_search('label=~bug label=~enhancement')
 
       expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
       expect(page).to have_content 'Bugfix2'

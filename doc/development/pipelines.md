@@ -42,9 +42,9 @@ The current stages are:
 ## Default image
 
 The default image is currently
-`registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.3-golang-1.12-git-2.24-lfs-2.9-chrome-73.0-node-12.x-yarn-1.16-postgresql-9.6-graphicsmagick-1.3.33`.
+`registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.5-golang-1.12-git-2.24-lfs-2.9-chrome-73.0-node-12.x-yarn-1.16-postgresql-9.6-graphicsmagick-1.3.33`.
 
-It includes Ruby 2.6.3, Go 1.12, Git 2.24, Git LFS 2.9, Chrome 73, Node 12, Yarn 1.16,
+It includes Ruby 2.6.5, Go 1.12, Git 2.24, Git LFS 2.9, Chrome 73, Node 12, Yarn 1.16,
 PostgreSQL 9.6, and Graphics Magick 1.3.33.
 
 The images used in our pipelines are configured in the
@@ -129,6 +129,64 @@ from a commit or MR by extending from the following CI definitions:
 **See <https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/global.gitlab-ci.yml>
 for the list of exact patterns.**
 
+## Rules conditions and changes patterns
+
+We're making use of the [`rules` keyword](https://docs.gitlab.com/ee/ci/yaml/#rules) but we're currently
+duplicating the `if` conditions and `changes` patterns lists since they cannot be shared across
+`include`d files as we do with `extends`.
+
+**If you update an `if` condition or `changes`
+patterns list, make sure to mass-update those across all the CI config files (i.e. `.gitlab/ci/*.yml`).**
+
+### Canonical commits only
+
+This condition limits jobs creation to commits under the `gitlab-org/` top-level group
+on GitLab.com only. This is similar to the `.only:variables-canonical-dot-com` CI definition:
+
+```yaml
+.if-canonical-gitlab: &if-canonical-gitlab
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/)/'
+```
+
+### Canonical merge requests only
+
+Same as the "Canonical commits only" condition above but further limits jobs creation
+to merge requests only (i.e. this won't run for `master`, stable or auto-deploy branches).
+This is similar to the `.only:variables-canonical-dot-com` + `.except:refs-master-tags-stable-deploy`
+CI definitions:
+
+```yaml
+.if-canonical-gitlab-merge-request: &if-canonical-gitlab-merge-request
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/)/ && $CI_MERGE_REQUEST_IID'
+```
+
+### Code changes patterns
+
+Similar patterns as for `.only:changes-code`:
+
+```yaml
+.code-patterns: &code-patterns
+  - ...
+```
+
+### QA changes patterns
+
+Similar patterns as for `.only:changes-qa`:
+
+```yaml
+.qa-patterns: &qa-patterns
+  - ...
+```
+
+### Code and QA changes patterns
+
+Similar patterns as for `.only:changes-code-qa`:
+
+```yaml
+.code-qa-patterns: &code-qa-patterns
+  - ...
+```
+
 ## Directed acyclic graph
 
 We're using the [`needs:`](../ci/yaml/README.md#needs) keyword to
@@ -152,14 +210,14 @@ graph RL;
   M[coverage];
   N[pages];
   O[static-analysis];
-  P["schedule:package-and-qa<br/>(master schedule only)"];
   Q[package-and-qa];
-  R[package-and-qa-manual];
   S["RSpec<br/>(e.g. rspec unit pg9)"]
   T[retrieve-tests-metadata];
 
 subgraph "`prepare` stage"
     A
+    B
+    C
     F
     K
     J
@@ -167,8 +225,6 @@ subgraph "`prepare` stage"
     end
 
 subgraph "`test` stage"
-    B --> |needs| A;
-    C --> |needs| A;
     D --> |needs| A;
     H -.-> |needs and depends on| A;
     H -.-> |needs and depends on| K;
@@ -201,20 +257,11 @@ subgraph "`review` stage"
 subgraph "`qa` stage"
     Q --> |needs| C;
     Q --> |needs| F;
-    R --> |needs| C;
-    R --> |needs| F;
-    P --> |needs| C;
-    P --> |needs| F;
     review-qa-smoke -.-> |needs and depends on| G;
     review-qa-all -.-> |needs and depends on| G;
     review-performance -.-> |needs and depends on| G;
     X2["schedule:review-performance<br/>(master only)"] -.-> |needs and depends on| G2;
     dast -.-> |needs and depends on| G;
-    end
-
-subgraph "`notification` stage"
-    NOTIFICATION1["schedule:package-and-qa:notify-success<br>(on_success)"] -.-> |needs| P;
-    NOTIFICATION2["schedule:package-and-qa:notify-failure<br>(on_failure)"] -.-> |needs| P;
     end
 
 subgraph "`post-test` stage"

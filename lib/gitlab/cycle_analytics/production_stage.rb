@@ -18,7 +18,7 @@ module Gitlab
       end
 
       def title
-        s_('CycleAnalyticsStage|Production')
+        s_('CycleAnalyticsStage|Total')
       end
 
       def legend

@@ -9,13 +9,23 @@
       = _('Select the branch you want to set as the default for this project. All merge requests and commits will automatically be made against this branch unless you specify a different one.')
 
   .settings-content
-    - if @project.empty_repo?
-      .text-secondary
-        = _('A default branch cannot be chosen for an empty project.')
-    - else
-      = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, anchor: 'default-branch-settings' }, authenticity_token: true do |f|
-        %fieldset
+    = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, anchor: 'default-branch-settings' }, authenticity_token: true do |f|
+      %fieldset
+        - if @project.empty_repo?
+          .text-secondary
+            = _('A default branch cannot be chosen for an empty project.')
+        - else
           .form-group
             = f.label :default_branch, "Default Branch", class: 'label-bold'
             = f.select(:default_branch, @project.repository.branch_names, {}, {class: 'select2 select-wide'})
-        = f.submit 'Save changes', class: "btn btn-success"
+
+        .form-group
+          .form-check
+            = f.check_box :autoclose_referenced_issues, class: 'form-check-input'
+            = f.label :autoclose_referenced_issues, class: 'form-check-label' do
+              %strong= _("Auto-close referenced issues on default branch")
+            .form-text.text-muted
+              = _("Issues referenced by merge requests and commits within the default branch will be closed automatically")
+              = link_to icon('question-circle'), help_page_path('user/project/issues/managing_issues.html', anchor: 'disabling-automatic-issue-closing'), target: '_blank'
+
+      = f.submit 'Save changes', class: "btn btn-success"

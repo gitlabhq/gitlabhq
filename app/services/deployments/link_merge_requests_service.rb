@@ -13,7 +13,10 @@ module Deployments
     end
 
     def execute
-      return unless deployment.success?
+      # Review apps have the environment type set (e.g. to `review`, though the
+      # exact value may differ). We don't want to link merge requests to review
+      # app deployments, as this is not useful.
+      return if deployment.environment.environment_type
 
       if (prev = deployment.previous_environment_deployment)
         link_merge_requests_for_range(prev.sha, deployment.sha)

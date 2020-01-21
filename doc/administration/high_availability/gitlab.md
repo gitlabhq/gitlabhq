@@ -11,7 +11,7 @@ these additional steps before proceeding with GitLab installation.
 1. If necessary, install the NFS client utility packages using the following
    commands:
 
-   ```
+   ```shell
    # Ubuntu/Debian
    apt-get install nfs-common
 
@@ -24,7 +24,7 @@ these additional steps before proceeding with GitLab installation.
    to configure your NFS server. See [NFS documentation](nfs.md) for the various
    options. Here is an example snippet to add to `/etc/fstab`:
 
-   ```
+   ```plaintext
    10.1.0.1:/var/opt/gitlab/.ssh /var/opt/gitlab/.ssh nfs4 defaults,soft,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
    10.1.0.1:/var/opt/gitlab/gitlab-rails/uploads /var/opt/gitlab/gitlab-rails/uploads nfs4 defaults,soft,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
    10.1.0.1:/var/opt/gitlab/gitlab-rails/shared /var/opt/gitlab/gitlab-rails/shared nfs4 defaults,soft,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
@@ -35,7 +35,7 @@ these additional steps before proceeding with GitLab installation.
 1. Create the shared directories. These may be different depending on your NFS
    mount locations.
 
-   ```
+   ```shell
    mkdir -p /var/opt/gitlab/.ssh /var/opt/gitlab/gitlab-rails/uploads /var/opt/gitlab/gitlab-rails/shared /var/opt/gitlab/gitlab-ci/builds /var/opt/gitlab/git-data
    ```
 

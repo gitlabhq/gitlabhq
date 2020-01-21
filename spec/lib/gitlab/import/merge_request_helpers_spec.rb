@@ -19,8 +19,7 @@ describe Gitlab::Import::MergeRequestHelpers, type: :helper do
         source_branch: 'master-42',
         target_branch: 'master',
         state_id: 3,
-        author_id: user.id,
-        assignee_id: user.id
+        author_id: user.id
       }
     end
 

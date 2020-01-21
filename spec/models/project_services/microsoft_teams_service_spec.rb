@@ -38,6 +38,7 @@ describe MicrosoftTeamsService do
 
   describe "#execute" do
     let(:user)    { create(:user) }
+
     set(:project) { create(:project, :repository, :wiki_repo) }
 
     before do

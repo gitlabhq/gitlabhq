@@ -1,0 +1,4 @@
+- return unless dashboard_nav_link?(:analytics)
+= nav_link(controller: [:dev_ops_score, :cohorts], html_options: { class: "d-none d-xl-block"}) do
+  = link_to instance_statistics_root_path, class: 'chart-icon', title: _('Analytics'), aria: { label: _('Analytics') }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+    = sprite_icon('chart', size: 18)

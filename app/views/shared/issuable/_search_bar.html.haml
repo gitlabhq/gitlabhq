@@ -1,5 +1,6 @@
 - type = local_assigns.fetch(:type)
 - board = local_assigns.fetch(:board, nil)
+- show_sorting_dropdown = local_assigns.fetch(:show_sorting_dropdown, true)
 - is_not_boards_modal_or_productivity_analytics = type != :boards_modal && type != :productivity_analytics
 - block_css_class = is_not_boards_modal_or_productivity_analytics ? 'row-content-block second-block' : ''
 - user_can_admin_list = board && can?(current_user, :admin_list, board.resource_parent)
@@ -30,23 +31,22 @@
                   %li.input-token
                     %input.form-control.filtered-search{ search_filter_input_options(type) }
               #js-dropdown-hint.filtered-search-input-dropdown-menu.dropdown-menu.hint-dropdown
-                %ul{ data: { dropdown: true } }
-                  %li.filter-dropdown-item{ data: { action: 'submit' } }
-                    %button.btn.btn-link{ type: 'button' }
-                      = sprite_icon('search')
-                      %span
-                        = _('Press Enter or click to search')
                 %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
-                  %li.filter-dropdown-item
+                  %li.filter-dropdown-item{ data: {hint: "#{'{{hint}}'}", tag: "#{'{{tag}}'}", action: "#{'{{hint === \'search\' ? \'submit\' : \'\' }}'}" } }
                     %button.btn.btn-link{ type: 'button' }
                       -# Encapsulate static class name `{{icon}}` inside #{} to bypass
                       -# haml lint's ClassAttributeWithStaticValue
                       %svg
                         %use{ 'xlink:href': "#{'{{icon}}'}" }
                       %span.js-filter-hint
-                        {{hint}}
-                      %span.js-filter-tag.dropdown-light-content
-                        {{tag}}
+                        {{formattedKey}}
+              #js-dropdown-operator.filtered-search-input-dropdown-menu.dropdown-menu
+                %ul.filter-dropdown{ data: { dropdown: true, dynamic: true } }
+                  %li.filter-dropdown-item{ data: { value: "{{ title }}" } }
+                    %button.btn.btn-link{ type: 'button' }
+                      {{ title }}
+                      %span.btn-helptext
+                        {{ help }}
               #js-dropdown-author.filtered-search-input-dropdown-menu.dropdown-menu
                 - if current_user
                   %ul{ data: { dropdown: true } }
@@ -170,5 +170,5 @@
           - if @project
             #js-add-issues-btn.prepend-left-10{ data: { can_admin_list: can?(current_user, :admin_list, @project) } }
         #js-toggle-focus-btn
-      - elsif is_not_boards_modal_or_productivity_analytics
+      - elsif is_not_boards_modal_or_productivity_analytics && show_sorting_dropdown
         = render 'shared/issuable/sort_dropdown'

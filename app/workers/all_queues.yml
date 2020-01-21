@@ -10,6 +10,7 @@
 - chaos:chaos_sleep
 
 - cronjob:admin_email
+- cronjob:container_expiration_policy
 - cronjob:expire_build_artifacts
 - cronjob:gitlab_usage_ping
 - cronjob:import_export_project_cleanup
@@ -103,6 +104,7 @@
 - pipeline_processing:stage_update
 - pipeline_processing:update_head_pipeline_for_merge_request
 - pipeline_processing:ci_build_schedule
+- pipeline_processing:ci_resource_groups_assign_resource_from_resource_group
 
 - deployment:deployments_success
 - deployment:deployments_finished
@@ -156,7 +158,7 @@
 - pages
 - pages_domain_verification
 - pages_domain_ssl_renewal
-- plugin
+- file_hook
 - post_receive
 - process_commit
 - project_cache
@@ -186,3 +188,5 @@
 - project_daily_statistics
 - create_evidence
 - group_export
+- self_monitoring_project_create
+- self_monitoring_project_delete

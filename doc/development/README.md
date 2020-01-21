@@ -17,7 +17,7 @@ description: 'Learn how to contribute to GitLab.'
 - [GitLab core team & GitLab Inc. contribution process](https://gitlab.com/gitlab-org/gitlab/blob/master/PROCESS.md)
 - [Generate a changelog entry with `bin/changelog`](changelog.md)
 - [Code review guidelines](code_review.md) for reviewing code and having code reviewed
-- [Database review guidelines](database_review.md) for reviewing database-related changes and complex SQL queries
+- [Database review guidelines](database_review.md) for reviewing database-related changes and complex SQL queries, and having them reviewed
 - [Pipelines for the GitLab project](pipelines.md)
 - [Guidelines for implementing Enterprise Edition features](ee_features.md)
 - [Security process for developers](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md#security-releases-critical-non-critical-as-a-developer)
@@ -71,6 +71,8 @@ description: 'Learn how to contribute to GitLab.'
 - [Auto DevOps development guide](auto_devops.md)
 - [Mass Inserting Models](mass_insert.md)
 - [Cycle Analytics development guide](cycle_analytics.md)
+- [Issue types vs first-class types](issue_types.md)
+- [Application limits](application_limits.md)
 
 ## Performance guides
 
@@ -106,10 +108,10 @@ description: 'Learn how to contribute to GitLab.'
 ### Debugging
 
 - Tracing the source of an SQL query using query comments with [Marginalia](database_query_comments.md)
+- Tracing the source of an SQL query in Rails console using [Verbose Query Logs](https://guides.rubyonrails.org/debugging_rails_applications.html#verbose-query-logs)
 
 ### Best practices
 
-- [Merge Request checklist](database_merge_request_checklist.md)
 - [Adding database indexes](adding_database_indexes.md)
 - [Foreign keys & associations](foreign_keys.md)
 - [Single table inheritance](single_table_inheritance.md)

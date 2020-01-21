@@ -1,0 +1,5 @@
+---
+title: Move instance statistics into analytics namespace
+merge_request: 21112
+author:
+type: changed

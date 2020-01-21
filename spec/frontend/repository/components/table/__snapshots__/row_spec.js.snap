@@ -32,7 +32,7 @@ exports[`Repository table row component renders table row 1`] = `
   <td
     class="d-none d-sm-table-cell tree-commit"
   >
-    <glskeletonloading-stub
+    <gl-skeleton-loading-stub
       class="h-auto"
       lines="1"
     />
@@ -41,7 +41,7 @@ exports[`Repository table row component renders table row 1`] = `
   <td
     class="tree-time-ago text-right"
   >
-    <glskeletonloading-stub
+    <gl-skeleton-loading-stub
       class="ml-auto h-auto w-50"
       lines="1"
     />

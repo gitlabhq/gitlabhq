@@ -27,17 +27,7 @@ module Boards
       issues = list_service.execute
       issues = issues.page(params[:page]).per(params[:per] || 20).without_count
       Issue.move_nulls_to_end(issues) if Gitlab::Database.read_write?
-      issues = issues.preload(:milestone,
-                              :assignees,
-                              project: [
-                                  :route,
-                                  {
-                                      namespace: [:route]
-                                  }
-                              ],
-                              labels: [:priorities],
-                              notes: [:award_emoji, :author]
-                             )
+      issues = issues.preload(associations_to_preload)
 
       render_issues(issues, list_service.metadata)
     end
@@ -74,6 +64,21 @@ module Boards
 
     private
 
+    def associations_to_preload
+      [
+        :milestone,
+        :assignees,
+        project: [
+            :route,
+            {
+                namespace: [:route]
+            }
+        ],
+        labels: [:priorities],
+        notes: [:award_emoji, :author]
+      ]
+    end
+
     def can_move_issues?
       head(:forbidden) unless can?(current_user, :admin_issue, board)
     end
@@ -90,7 +95,7 @@ module Boards
     end
 
     def filter_params
-      params.merge(board_id: params[:board_id], id: params[:list_id])
+      params.permit(*Boards::Issues::ListService.valid_params).merge(board_id: params[:board_id], id: params[:list_id])
         .reject { |_, value| value.nil? }
     end
 
@@ -139,3 +144,5 @@ module Boards
     end
   end
 end
+
+Boards::IssuesController.prepend_if_ee('EE::Boards::IssuesController')

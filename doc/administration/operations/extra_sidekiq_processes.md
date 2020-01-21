@@ -59,8 +59,8 @@ To start extra Sidekiq processes, you must enable `sidekiq-cluster`:
    sudo gitlab-ctl reconfigure
    ```
 
-Once the extra Sidekiq processes are added, you can visit the "Background Jobs"
-section under the admin area in GitLab (`/admin/background_jobs`).
+Once the extra Sidekiq processes are added, you can visit the
+**Admin Area > Monitoring > Background Jobs** (`/admin/background_jobs`) in GitLab.
 
 ![Extra Sidekiq processes](img/sidekiq-cluster.png)
 

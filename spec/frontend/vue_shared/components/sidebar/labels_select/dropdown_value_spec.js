@@ -24,8 +24,6 @@ const createComponent = (
       labelFilterBasePath,
       enableScopedLabels: true,
     },
-    attachToDocument: true,
-    sync: false,
   });
 };
 

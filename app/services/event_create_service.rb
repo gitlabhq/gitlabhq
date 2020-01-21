@@ -101,7 +101,7 @@ class EventCreateService
     Users::LastPushEventService.new(current_user)
       .cache_last_push_event(event)
 
-    Users::ActivityService.new(current_user, 'push').execute
+    Users::ActivityService.new(current_user).execute
   end
 
   def create_event(resource_parent, current_user, status, attributes = {})

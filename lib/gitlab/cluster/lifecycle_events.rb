@@ -149,10 +149,10 @@ module Gitlab
 
         def in_clustered_environment?
           # Sidekiq doesn't fork
-          return false if Sidekiq.server?
+          return false if Gitlab::Runtime.sidekiq?
 
           # Unicorn always forks
-          return true if defined?(::Unicorn)
+          return true if Gitlab::Runtime.unicorn?
 
           # Puma sometimes forks
           return true if in_clustered_puma?
@@ -162,7 +162,7 @@ module Gitlab
         end
 
         def in_clustered_puma?
-          return false unless defined?(::Puma)
+          return false unless Gitlab::Runtime.puma?
 
           @puma_options && @puma_options[:workers] && @puma_options[:workers] > 0
         end

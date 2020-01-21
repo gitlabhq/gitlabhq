@@ -115,7 +115,7 @@ describe API::Wikis do
     end
 
     [:title, :content, :format].each do |part|
-      it "it updates with wiki with missing #{part}" do
+      it "updates with wiki with missing #{part}" do
         payload.delete(part)
 
         put(api(url, user), params: payload)

@@ -77,8 +77,8 @@ end
 
 Some start/end event pairs are not "compatible" with each other. For example:
 
-- "Issue created" to "Merge Request created": The event classes are defined on different  domain models, the `object_type` method is different.
-- "Issue closed" to "Issue created": Issue must be created first before it can be  closed.
+- "Issue created" to "Merge Request created": The event classes are defined on different domain models, the `object_type` method is different.
+- "Issue closed" to "Issue created": Issue must be created first before it can be closed.
 - "Issue closed" to "Issue closed": Duration is always 0.
 
 The `StageEvents` module describes the allowed `start_event` and `end_event` pairings (`PAIRING_RULES` constant). If a new event is added, it needs to be registered in this module.

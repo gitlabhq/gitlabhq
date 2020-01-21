@@ -14,7 +14,6 @@ describe('RecaptchaModal', () => {
 
   beforeEach(() => {
     wrapper = shallowMount(RecaptchaModal, {
-      sync: false,
       propsData: {
         html: recaptchaHtml,
       },

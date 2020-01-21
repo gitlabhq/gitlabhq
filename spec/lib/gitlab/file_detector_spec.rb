@@ -16,21 +16,28 @@ describe Gitlab::FileDetector do
   end
 
   describe '.type_of' do
-    it 'returns the type of a README file' do
-      filenames = Gitlab::MarkupHelper::PLAIN_FILENAMES + Gitlab::MarkupHelper::PLAIN_FILENAMES.map(&:upcase)
-      extensions = Gitlab::MarkupHelper::EXTENSIONS + Gitlab::MarkupHelper::EXTENSIONS.map(&:upcase)
+    it 'returns the type of a README without extension' do
+      expect(described_class.type_of('README')).to eq(:readme)
+      expect(described_class.type_of('INDEX')).to eq(:readme)
+    end
 
-      filenames.each do |filename|
-        expect(described_class.type_of(filename)).to eq(:readme)
+    it 'returns the type of a README file with a recognized extension' do
+      extensions = ['txt', *Gitlab::MarkupHelper::EXTENSIONS]
 
-        extensions.each do |extname|
-          expect(described_class.type_of("#{filename}.#{extname}")).to eq(:readme)
+      extensions.each do |ext|
+        %w(index readme).each do |file|
+          expect(described_class.type_of("#{file}.#{ext}")).to eq(:readme)
         end
       end
     end
 
-    it 'returns nil for a README.rb file' do
+    it 'returns nil for a README with unrecognized extension' do
       expect(described_class.type_of('README.rb')).to be_nil
+    end
+
+    it 'is case insensitive' do
+      expect(described_class.type_of('ReadMe')).to eq(:readme)
+      expect(described_class.type_of('index.TXT')).to eq(:readme)
     end
 
     it 'returns nil for a README file in a directory' do

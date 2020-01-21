@@ -6,38 +6,24 @@ module Gitlab
       module Project
         class CreateService < ::BaseService
           include Stepable
-
-          STEPS_ALLOWED_TO_FAIL = [
-            :validate_application_settings, :validate_project_created, :validate_admins
-          ].freeze
+          include SelfMonitoring::Helpers
 
           VISIBILITY_LEVEL = Gitlab::VisibilityLevel::INTERNAL
           PROJECT_NAME = 'GitLab Instance Administration'
 
           steps :validate_application_settings,
-            :validate_project_created,
-            :validate_admins,
             :create_group,
             :create_project,
             :save_project_id,
-            :add_group_members,
-            :add_prometheus_manual_configuration
+            :add_prometheus_manual_configuration,
+            :track_event
 
           def initialize
             super(nil)
           end
 
-          def execute!
-            result = execute_steps
-            if result[:status] == :success
-              ::Gitlab::Tracking.event("self_monitoring", "project_created")
-              result
-            elsif STEPS_ALLOWED_TO_FAIL.include?(result[:last_step])
-              ::Gitlab::Tracking.event("self_monitoring", "project_created")
-              success
-            else
-              raise StandardError, result[:message]
-            end
+          def execute
+            execute_steps
           end
 
           private
@@ -49,46 +35,27 @@ module Gitlab
             error(_('No application_settings found'))
           end
 
-          def validate_project_created(result)
-            return success(result) unless project_created?
-
-            log_error('Project already created')
-            error(_('Project already created'))
-          end
-
-          def validate_admins(result)
-            unless instance_admins.any?
-              log_error('No active admin user found')
-              return error(_('No active admin user found'))
-            end
-
-            success(result)
-          end
-
           def create_group(result)
-            if project_created?
-              log_info(_('Instance administrators group already exists'))
-              result[:group] = application_settings.instance_administration_project.owner
-              return success(result)
-            end
+            create_group_response =
+              Gitlab::DatabaseImporters::InstanceAdministrators::CreateGroup.new.execute
 
-            result[:group] = ::Groups::CreateService.new(group_owner, create_group_params).execute
-
-            if result[:group].persisted?
-              success(result)
+            if create_group_response[:status] == :success
+              success(result.merge(create_group_response))
             else
-              error(_('Could not create group'))
+              error(create_group_response[:message])
             end
           end
 
           def create_project(result)
             if project_created?
               log_info('Instance administration project already exists')
-              result[:project] = application_settings.instance_administration_project
+              result[:project] = self_monitoring_project
               return success(result)
             end
 
-            result[:project] = ::Projects::CreateService.new(group_owner, create_project_params(result[:group])).execute
+            owner = result[:group].owners.first
+
+            result[:project] = ::Projects::CreateService.new(owner, create_project_params(result[:group])).execute
 
             if result[:project].persisted?
               success(result)
@@ -99,7 +66,7 @@ module Gitlab
           end
 
           def save_project_id(result)
-            return success if project_created?
+            return success(result) if project_created?
 
             response = application_settings.update(
               instance_administration_project_id: result[:project].id
@@ -110,19 +77,6 @@ module Gitlab
             else
               log_error("Could not save instance administration project ID, errors: %{errors}" % { errors: application_settings.errors.full_messages })
               error(_('Could not save project ID'))
-            end
-          end
-
-          def add_group_members(result)
-            group = result[:group]
-            members = group.add_users(members_to_add(group), Gitlab::Access::MAINTAINER)
-            errors = members.flat_map { |member| member.errors.full_messages }
-
-            if errors.any?
-              log_error('Could not add admins as members to self-monitoring project. Errors: %{errors}' % { errors: errors })
-              error(_('Could not add admins as members'))
-            else
-              success(result)
             end
           end
 
@@ -140,12 +94,10 @@ module Gitlab
             success(result)
           end
 
-          def application_settings
-            @application_settings ||= ApplicationSetting.current_without_cache
-          end
+          def track_event(result)
+            ::Gitlab::Tracking.event("self_monitoring", "project_created")
 
-          def project_created?
-            application_settings.instance_administration_project.present?
+            success(result)
           end
 
           def parse_url(uri_string)
@@ -159,29 +111,6 @@ module Gitlab
 
           def prometheus_listen_address
             ::Gitlab::Prometheus::Internal.listen_address
-          end
-
-          def instance_admins
-            @instance_admins ||= User.admins.active
-          end
-
-          def group_owner
-            instance_admins.first
-          end
-
-          def members_to_add(group)
-            # Exclude admins who are already members of group because
-            # `group.add_users(users)` returns an error if the users parameter contains
-            # users who are already members of the group.
-            instance_admins - group.members.collect(&:user)
-          end
-
-          def create_group_params
-            {
-              name: 'GitLab Instance Administrators',
-              path: "gitlab-instance-administrators-#{SecureRandom.hex(4)}",
-              visibility_level: VISIBILITY_LEVEL
-            }
           end
 
           def docs_path

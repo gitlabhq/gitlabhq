@@ -25,6 +25,7 @@ FactoryBot.define do
       builds_access_level { ProjectFeature::ENABLED }
       snippets_access_level { ProjectFeature::ENABLED }
       issues_access_level { ProjectFeature::ENABLED }
+      forking_access_level { ProjectFeature::ENABLED }
       merge_requests_access_level { ProjectFeature::ENABLED }
       repository_access_level { ProjectFeature::ENABLED }
       pages_access_level do
@@ -48,6 +49,7 @@ FactoryBot.define do
         builds_access_level: builds_access_level,
         snippets_access_level: evaluator.snippets_access_level,
         issues_access_level: evaluator.issues_access_level,
+        forking_access_level: evaluator.forking_access_level,
         merge_requests_access_level: merge_requests_access_level,
         repository_access_level: evaluator.repository_access_level
       }
@@ -134,6 +136,12 @@ FactoryBot.define do
     trait :broken_storage do
       after(:create) do |project|
         project.update_column(:repository_storage, 'broken')
+      end
+    end
+
+    trait :without_container_expiration_policy do
+      after(:build) do |project|
+        project.class.skip_callback(:create, :after, :create_container_expiration_policy, raise: false)
       end
     end
 
@@ -258,6 +266,9 @@ FactoryBot.define do
     trait(:issues_disabled)         { issues_access_level { ProjectFeature::DISABLED } }
     trait(:issues_enabled)          { issues_access_level { ProjectFeature::ENABLED } }
     trait(:issues_private)          { issues_access_level { ProjectFeature::PRIVATE } }
+    trait(:forking_disabled)         { forking_access_level { ProjectFeature::DISABLED } }
+    trait(:forking_enabled)          { forking_access_level { ProjectFeature::ENABLED } }
+    trait(:forking_private)          { forking_access_level { ProjectFeature::PRIVATE } }
     trait(:merge_requests_enabled)  { merge_requests_access_level { ProjectFeature::ENABLED } }
     trait(:merge_requests_disabled) { merge_requests_access_level { ProjectFeature::DISABLED } }
     trait(:merge_requests_private)  { merge_requests_access_level { ProjectFeature::PRIVATE } }

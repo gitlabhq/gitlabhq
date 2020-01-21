@@ -208,6 +208,8 @@ describe 'GitLab Markdown', :aggregate_failures do
     @group = @feat.group
   end
 
+  let(:project) { @feat.project } # Shadow this so matchers can use it
+
   context 'default pipeline' do
     before do
       @html = markdown(@feat.raw_markdown)
@@ -216,8 +218,12 @@ describe 'GitLab Markdown', :aggregate_failures do
     it_behaves_like 'all pipelines'
 
     it 'includes custom filters' do
-      aggregate_failures 'RelativeLinkFilter' do
-        expect(doc).to parse_relative_links
+      aggregate_failures 'UploadLinkFilter' do
+        expect(doc).to parse_upload_links
+      end
+
+      aggregate_failures 'RepositoryLinkFilter' do
+        expect(doc).to parse_repository_links
       end
 
       aggregate_failures 'EmojiFilter' do
@@ -277,8 +283,12 @@ describe 'GitLab Markdown', :aggregate_failures do
     it_behaves_like 'all pipelines'
 
     it 'includes custom filters' do
-      aggregate_failures 'RelativeLinkFilter' do
-        expect(doc).not_to parse_relative_links
+      aggregate_failures 'UploadLinkFilter' do
+        expect(doc).to parse_upload_links
+      end
+
+      aggregate_failures 'RepositoryLinkFilter' do
+        expect(doc).not_to parse_repository_links
       end
 
       aggregate_failures 'EmojiFilter' do

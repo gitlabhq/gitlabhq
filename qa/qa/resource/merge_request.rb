@@ -54,7 +54,7 @@ module QA
         @assignee = nil
         @milestone = nil
         @labels = []
-        @file_name = "added_file.txt"
+        @file_name = "added_file-#{SecureRandom.hex(8)}.txt"
         @file_content = "File Added"
         @target_new_branch = true
         @no_preparation = false

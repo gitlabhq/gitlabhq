@@ -3,7 +3,8 @@
 *.rake @gitlab-org/maintainers/rails-backend
 
 # Technical writing team are the default reviewers for everything in `doc/`
-/doc/ @gl-docsteam
+*.md @gl-docsteam
+doc/ @gl-docsteam
 
 # Frontend maintainers should see everything in `app/assets/`
 app/assets/ @gitlab-org/maintainers/frontend

@@ -1,0 +1,5 @@
+---
+title: Speed up path generation with build artifacts
+merge_request: 22257
+author:
+type: performance

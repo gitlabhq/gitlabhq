@@ -1,7 +1,6 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import CommitEdit from '~/vue_merge_request_widget/components/states/commit_edit.vue';
 
-const localVue = createLocalVue();
 const testCommitMessage = 'Test commit message';
 const testLabel = 'Test label';
 const testInputId = 'test-input-id';
@@ -10,9 +9,7 @@ describe('Commits edit component', () => {
   let wrapper;
 
   const createComponent = (slots = {}) => {
-    wrapper = shallowMount(localVue.extend(CommitEdit), {
-      localVue,
-      sync: false,
+    wrapper = shallowMount(CommitEdit, {
       propsData: {
         value: testCommitMessage,
         label: testLabel,
@@ -55,8 +52,10 @@ describe('Commits edit component', () => {
       findTextarea().element.value = changedCommitMessage;
       findTextarea().trigger('input');
 
-      expect(wrapper.emitted().input[0]).toEqual([changedCommitMessage]);
-      expect(findTextarea().element.value).toBe(changedCommitMessage);
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.emitted().input[0]).toEqual([changedCommitMessage]);
+        expect(findTextarea().element.value).toBe(changedCommitMessage);
+      });
     });
   });
 

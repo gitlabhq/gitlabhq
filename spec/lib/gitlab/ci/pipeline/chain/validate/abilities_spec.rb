@@ -76,45 +76,8 @@ describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities do
     end
   end
 
-  context 'when pipeline triggered by legacy trigger' do
-    let(:user) { nil }
-    let(:trigger_request) do
-      build_stubbed(:ci_trigger_request, trigger: build_stubbed(:ci_trigger, owner: nil))
-    end
-
-    context 'when :use_legacy_pipeline_triggers feature flag is enabled' do
-      before do
-        stub_feature_flags(use_legacy_pipeline_triggers: true)
-        step.perform!
-      end
-
-      it 'allows legacy triggers to create a pipeline' do
-        expect(pipeline).to be_valid
-      end
-
-      it 'does not break the chain' do
-        expect(step.break?).to eq false
-      end
-    end
-
-    context 'when :use_legacy_pipeline_triggers feature flag is disabled' do
-      before do
-        stub_feature_flags(use_legacy_pipeline_triggers: false)
-        step.perform!
-      end
-
-      it 'prevents legacy triggers from creating a pipeline' do
-        expect(pipeline.errors.to_a).to include /Trigger token is invalid/
-      end
-
-      it 'breaks the pipeline builder chain' do
-        expect(step.break?).to eq true
-      end
-    end
-  end
-
-  describe '#allowed_to_create?' do
-    subject { step.allowed_to_create? }
+  describe '#allowed_to_write_ref?' do
+    subject { step.send(:allowed_to_write_ref?) }
 
     context 'when user is a developer' do
       before do

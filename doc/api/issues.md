@@ -12,6 +12,14 @@ are paginated.
 
 Read more on [pagination](README.md#pagination).
 
+CAUTION: **Deprecation**
+> `reference` attribute in response is deprecated in favour of `references`.
+> Introduced [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/merge_requests/20354)
+
+NOTE: **Note**
+> `references.relative` is relative to the group / project that the issue is being requested. When issue is fetched from its project
+> `relative` format would be the same as `short` format and when requested across groups / projects it is expected to be the same as `full` format.
+
 ## List issues
 
 Get all issues the authenticated user has access to. By default it
@@ -39,7 +47,7 @@ GET /issues?confidential=true
 | ------------------- | ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `state`             | string           | no         | Return `all` issues or just those that are `opened` or `closed`                                                                                       |
 | `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `None` lists all issues with no labels. `Any` lists all issues with at least one label. `No+Label` (Deprecated) lists all issues with no labels. Predefined names are case-insensitive. |
-| `with_labels_details` | Boolean        | no         | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:text_color`. Default is `false`. |
+| `with_labels_details` | Boolean        | no         | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. The `description_html` attribute was introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/merge_requests/21413)|
 | `milestone`         | string           | no         | The milestone title. `None` lists all issues with no milestone. `Any` lists all issues that have an assigned milestone.                             |
 | `scope`             | string           | no         | Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`. Defaults to `created_by_me`<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced][ce-13004] in GitLab 9.5. [Changed to snake_case][ce-18935] in GitLab 11.0)_ |
 | `author_id`         | integer          | no         | Return issues created by the given user `id`. Mutually exclusive with `author_username`. Combine with `scope=all` or `scope=assigned_to_me`. _([Introduced][ce-13004] in GitLab 9.5)_ |
@@ -121,7 +129,12 @@ Example response:
       "merge_requests_count": 0,
       "user_notes_count": 1,
       "due_date": "2016-07-22",
-      "web_url": "http://example.com/example/example/issues/6",
+      "web_url": "http://example.com/my-group/my-project/issues/6",
+      "references": {
+        "short": "#6",
+        "relative": "my-group/my-project#6",
+        "full": "my-group/my-project#6"
+      },
       "time_stats": {
          "time_estimate": 0,
          "total_time_spent": 0,
@@ -190,7 +203,7 @@ GET /groups/:id/issues?confidential=true
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                 |
 | `state`             | string           | no         | Return all issues or just those that are `opened` or `closed`                                                                 |
 | `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `None` lists all issues with no labels. `Any` lists all issues with at least one label. `No+Label` (Deprecated) lists all issues with no labels. Predefined names are case-insensitive. |
-| `with_labels_details` | Boolean        | no         | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:text_color`. Default is `false`. |
+| `with_labels_details` | Boolean        | no         | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. The `description_html` attribute was introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/merge_requests/21413) |
 | `iids[]`            | integer array    | no         | Return only the issues having the given `iid`                                                                                 |
 | `milestone`         | string           | no         | The milestone title. `None` lists all issues with no milestone. `Any` lists all issues that have an assigned milestone.       |
 | `scope`             | string           | no         | Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`.<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced][ce-13004] in GitLab 9.5. [Changed to snake_case][ce-18935] in GitLab 11.0)_ |
@@ -270,7 +283,12 @@ Example response:
       "closed_by" : null,
       "user_notes_count": 1,
       "due_date": null,
-      "web_url": "http://example.com/example/example/issues/1",
+      "web_url": "http://example.com/my-group/my-project/issues/1",
+      "references": {
+        "short": "#1",
+        "relative": "my-project#1",
+        "full": "my-group/my-project#1"
+      },
       "time_stats": {
          "time_estimate": 0,
          "total_time_spent": 0,
@@ -340,7 +358,7 @@ GET /projects/:id/issues?confidential=true
 | `iids[]`            | integer array    | no         | Return only the milestone having the given `iid`                                                                              |
 | `state`             | string           | no         | Return all issues or just those that are `opened` or `closed`                                                                 |
 | `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `None` lists all issues with no labels. `Any` lists all issues with at least one label. `No+Label` (Deprecated) lists all issues with no labels. Predefined names are case-insensitive. |
-| `with_labels_details` | Boolean        | no         | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:text_color`. Default is `false`. |
+| `with_labels_details` | Boolean        | no         | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. `description_html` Introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/merge_requests/21413) |
 | `milestone`         | string           | no         | The milestone title. `None` lists all issues with no milestone. `Any` lists all issues that have an assigned milestone.       |
 | `scope`             | string           | no         | Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`.<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced][ce-13004] in GitLab 9.5. [Changed to snake_case][ce-18935] in GitLab 11.0)_ |
 | `author_id`         | integer          | no         | Return issues created by the given user `id`. Mutually exclusive with `author_username`. Combine with `scope=all` or `scope=assigned_to_me`. _([Introduced][ce-13004] in GitLab 9.5)_ |
@@ -426,7 +444,12 @@ Example response:
       },
       "user_notes_count": 1,
       "due_date": "2016-07-22",
-      "web_url": "http://example.com/example/example/issues/1",
+      "web_url": "http://example.com/my-group/my-project/issues/1",
+      "references": {
+        "short": "#1",
+        "relative": "#1",
+        "full": "my-group/my-project#1"
+      },
       "time_stats": {
          "time_estimate": 0,
          "total_time_spent": 0,
@@ -543,7 +566,12 @@ Example response:
    "subscribed": false,
    "user_notes_count": 1,
    "due_date": null,
-   "web_url": "http://example.com/example/example/issues/1",
+   "web_url": "http://example.com/my-group/my-project/issues/1",
+   "references": {
+     "short": "#1",
+     "relative": "#1",
+     "full": "my-group/my-project#1"
+   },
    "time_stats": {
       "time_estimate": 0,
       "total_time_spent": 0,
@@ -668,7 +696,12 @@ Example response:
    "subscribed" : true,
    "user_notes_count": 0,
    "due_date": null,
-   "web_url": "http://example.com/example/example/issues/14",
+   "web_url": "http://example.com/my-group/my-project/issues/14",
+   "references": {
+     "short": "#14",
+     "relative": "#14",
+     "full": "my-group/my-project#14"
+   },
    "time_stats": {
       "time_estimate": 0,
       "total_time_spent": 0,
@@ -778,7 +811,12 @@ Example response:
    "subscribed" : true,
    "user_notes_count": 0,
    "due_date": "2016-07-22",
-   "web_url": "http://example.com/example/example/issues/15",
+   "web_url": "http://example.com/my-group/my-project/issues/15",
+   "references": {
+     "short": "#15",
+     "relative": "#15",
+     "full": "my-group/my-project#15"
+   },
    "time_stats": {
       "time_estimate": 0,
       "total_time_spent": 0,
@@ -900,7 +938,12 @@ Example response:
     "web_url": "https://gitlab.example.com/solon.cremin"
   },
   "due_date": null,
-  "web_url": "http://example.com/example/example/issues/11",
+  "web_url": "http://example.com/my-group/my-project/issues/11",
+  "references": {
+    "short": "#11",
+    "relative": "#11",
+    "full": "my-group/my-project#11"
+  },
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,
@@ -1001,7 +1044,12 @@ Example response:
     "web_url": "https://gitlab.example.com/solon.cremin"
   },
   "due_date": null,
-  "web_url": "http://example.com/example/example/issues/11",
+  "web_url": "http://example.com/my-group/my-project/issues/11",
+  "references": {
+    "short": "#11",
+    "relative": "#11",
+    "full": "my-group/my-project#11"
+  },
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,
@@ -1095,7 +1143,12 @@ Example response:
   },
   "subscribed": false,
   "due_date": null,
-  "web_url": "http://example.com/example/example/issues/12",
+  "web_url": "http://example.com/my-group/my-project/issues/12",
+  "references": {
+    "short": "#12",
+    "relative": "#12",
+    "full": "my-group/my-project#12"
+  },
   "confidential": false,
   "discussion_locked": false,
   "task_completion_status":{
@@ -1197,7 +1250,12 @@ Example response:
     "downvotes": 0,
     "merge_requests_count": 0,
     "due_date": null,
-    "web_url": "http://example.com/example/example/issues/110",
+    "web_url": "http://example.com/my-group/my-project/issues/10",
+    "references": {
+      "short": "#10",
+      "relative": "#10",
+      "full": "my-group/my-project#10"
+    },
     "confidential": false,
     "discussion_locked": false,
     "task_completion_status":{
@@ -1436,6 +1494,11 @@ Example response:
     "force_remove_source_branch": false,
     "reference": "!11",
     "web_url": "https://gitlab.example.com/twitter/flight/merge_requests/4",
+    "references": {
+      "short": "!4",
+      "relative": "!4",
+      "full": "twitter/flight!4"
+    },
     "time_stats": {
       "time_estimate": 0,
       "total_time_spent": 0,
@@ -1566,6 +1629,12 @@ Example response:
     "should_remove_source_branch": null,
     "force_remove_source_branch": false,
     "web_url": "https://gitlab.example.com/gitlab-org/gitlab-test/merge_requests/6432",
+    "reference": "!6432",
+    "references": {
+      "short": "!6432",
+      "relative": "!6432",
+      "full": "gitlab-org/gitlab-test!6432"
+    },
     "time_stats": {
       "time_estimate": 0,
       "total_time_spent": 0,

@@ -24,6 +24,11 @@ review the sessions, and revoke any you don't recognize.
 GitLab allows users to have up to 100 active sessions at once. If the number of active sessions
 exceeds 100, the oldest ones are deleted.
 
+## Revoking a session
+
+1. Use the previous steps to navigate to **Active Sessions**.
+1. Click on **Revoke** besides a session. The current session cannot be revoked, as this would sign you out of GitLab.
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

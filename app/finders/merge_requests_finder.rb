@@ -39,6 +39,7 @@ class MergeRequestsFinder < IssuableFinder
 
   def filter_items(_items)
     items = by_commit(super)
+    items = by_deployment(items)
     items = by_source_branch(items)
     items = by_wip(items)
     items = by_target_branch(items)
@@ -100,6 +101,17 @@ class MergeRequestsFinder < IssuableFinder
     table[:title].matches('WIP:%')
         .or(table[:title].matches('WIP %'))
         .or(table[:title].matches('[WIP]%'))
+  end
+
+  def by_deployment(items)
+    return items unless deployment_id
+
+    items.includes(:deployment_merge_requests)
+         .where(deployment_merge_requests: { deployment_id: deployment_id })
+  end
+
+  def deployment_id
+    @deployment_id ||= params[:deployment_id].presence
   end
 end
 

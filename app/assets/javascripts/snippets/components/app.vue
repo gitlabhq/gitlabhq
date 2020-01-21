@@ -1,11 +1,13 @@
 <script>
 import GetSnippetQuery from '../queries/snippet.query.graphql';
 import SnippetHeader from './snippet_header.vue';
+import SnippetTitle from './snippet_title.vue';
 import { GlLoadingIcon } from '@gitlab/ui';
 
 export default {
   components: {
     SnippetHeader,
+    SnippetTitle,
     GlLoadingIcon,
   },
   apollo: {
@@ -45,6 +47,9 @@ export default {
       :size="2"
       class="loading-animation prepend-top-20 append-bottom-20"
     />
-    <snippet-header v-else :snippet="snippet" />
+    <template v-else>
+      <snippet-header :snippet="snippet" />
+      <snippet-title :snippet="snippet" />
+    </template>
   </div>
 </template>

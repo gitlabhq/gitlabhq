@@ -50,8 +50,6 @@ describe('Issue card component', () => {
         rootPath: '/',
       },
       store,
-      sync: false,
-      attachToDocument: true,
     });
   });
 
@@ -267,17 +265,13 @@ describe('Issue card component', () => {
     });
 
     it('renders label', () => {
-      const nodes = wrapper
-        .findAll('.badge')
-        .wrappers.map(label => label.attributes('data-original-title'));
+      const nodes = wrapper.findAll('.badge').wrappers.map(label => label.attributes('title'));
 
       expect(nodes.includes(label1.description)).toBe(true);
     });
 
     it('sets label description as title', () => {
-      expect(wrapper.find('.badge').attributes('data-original-title')).toContain(
-        label1.description,
-      );
+      expect(wrapper.find('.badge').attributes('title')).toContain(label1.description);
     });
 
     it('sets background color of button', () => {

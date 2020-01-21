@@ -6,6 +6,7 @@ import CommitMessageField from './message_field.vue';
 import Actions from './actions.vue';
 import SuccessMessage from './success_message.vue';
 import { activityBarViews, MAX_WINDOW_HEIGHT_COMPACT } from '../../constants';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   components: {
@@ -14,6 +15,7 @@ export default {
     CommitMessageField,
     SuccessMessage,
   },
+  mixins: [glFeatureFlagsMixin()],
   data() {
     return {
       isCompact: true,
@@ -27,9 +29,13 @@ export default {
     ...mapGetters('commit', ['discardDraftButtonDisabled', 'preBuiltCommitMessage']),
     overviewText() {
       return sprintf(
-        __(
-          '<strong>%{changedFilesLength} unstaged</strong> and <strong>%{stagedFilesLength} staged</strong> changes',
-        ),
+        this.glFeatures.stageAllByDefault
+          ? __(
+              '<strong>%{stagedFilesLength} staged</strong> and <strong>%{changedFilesLength} unstaged</strong> changes',
+            )
+          : __(
+              '<strong>%{changedFilesLength} unstaged</strong> and <strong>%{stagedFilesLength} staged</strong> changes',
+            ),
         {
           stagedFilesLength: this.stagedFiles.length,
           changedFilesLength: this.changedFiles.length,
@@ -39,6 +45,10 @@ export default {
     commitButtonText() {
       return this.stagedFiles.length ? __('Commit') : __('Stage & Commit');
     },
+
+    currentViewIsCommitView() {
+      return this.currentActivityView === activityBarViews.commit;
+    },
   },
   watch: {
     currentActivityView() {
@@ -46,11 +56,11 @@ export default {
         this.isCompact = false;
       } else {
         this.isCompact = !(
-          this.currentActivityView === activityBarViews.commit &&
-          window.innerHeight >= MAX_WINDOW_HEIGHT_COMPACT
+          this.currentViewIsCommitView && window.innerHeight >= MAX_WINDOW_HEIGHT_COMPACT
         );
       }
     },
+
     lastCommitMsg() {
       this.isCompact =
         this.currentActivityView !== activityBarViews.commit && this.lastCommitMsg === '';
@@ -59,14 +69,18 @@ export default {
   methods: {
     ...mapActions(['updateActivityBarView']),
     ...mapActions('commit', ['updateCommitMessage', 'discardDraft', 'commitChanges']),
-    toggleIsSmall() {
-      this.updateActivityBarView(activityBarViews.commit)
-        .then(() => {
-          this.isCompact = !this.isCompact;
-        })
-        .catch(e => {
-          throw e;
-        });
+    toggleIsCompact() {
+      if (this.currentViewIsCommitView) {
+        this.isCompact = !this.isCompact;
+      } else {
+        this.updateActivityBarView(activityBarViews.commit)
+          .then(() => {
+            this.isCompact = false;
+          })
+          .catch(e => {
+            throw e;
+          });
+      }
     },
     beforeEnterTransition() {
       const elHeight = this.isCompact
@@ -114,7 +128,7 @@ export default {
           :disabled="!hasChanges"
           type="button"
           class="btn btn-primary btn-sm btn-block qa-begin-commit-button"
-          @click="toggleIsSmall"
+          @click="toggleIsCompact"
         >
           {{ __('Commit…') }}
         </button>
@@ -148,7 +162,7 @@ export default {
             v-else
             type="button"
             class="btn btn-default btn-sm float-right"
-            @click="toggleIsSmall"
+            @click="toggleIsCompact"
           >
             {{ __('Collapse') }}
           </button>

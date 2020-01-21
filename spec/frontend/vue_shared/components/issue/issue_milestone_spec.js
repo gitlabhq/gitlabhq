@@ -13,8 +13,6 @@ const createComponent = (milestone = mockMilestone) => {
     propsData: {
       milestone,
     },
-    sync: false,
-    attachToDocument: true,
   });
 };
 

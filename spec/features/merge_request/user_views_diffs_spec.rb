@@ -9,7 +9,6 @@ describe 'User views diffs', :js do
   let(:project) { create(:project, :public, :repository) }
 
   before do
-    stub_feature_flags(single_mr_diff_view: false)
     stub_feature_flags(diffs_batch_load: false)
     visit(diffs_project_merge_request_path(project, merge_request))
 
@@ -17,8 +16,6 @@ describe 'User views diffs', :js do
 
     find('.js-toggle-tree-list').click
   end
-
-  it_behaves_like 'rendering a single diff version'
 
   shared_examples 'unfold diffs' do
     it 'unfolds diffs upwards' do

@@ -253,3 +253,25 @@ questions that you know someone might ask.
 Each scenario can be a third-level heading, e.g. `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->
+
+## License list
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/13582) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.7.
+
+The License list allows you to see your project's licenses and key
+details about them.
+
+In order for the licenses to appear under the license list, the following
+requirements must be met:
+
+1. The License Compliance CI job must be [configured](#configuration) for your project.
+1. Your project must use at least one of the
+   [supported languages and package managers](#supported-languages-and-package-managers).
+
+Once everything is set, navigate to **Security & Compliance > License Compliance**
+in your project's sidebar, and you'll see the licenses displayed, where:
+
+- **Name:** The name of the license.
+- **Component:** The components which have this license.
+
+![License List](img/license_list_v12_6.png)

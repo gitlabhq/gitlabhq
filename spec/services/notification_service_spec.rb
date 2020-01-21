@@ -155,7 +155,7 @@ describe NotificationService, :mailer do
   describe '#async' do
     let(:async) { notification.async }
 
-    set(:key) { create(:personal_key) }
+    let_it_be(:key) { create(:personal_key) }
 
     it 'returns an Async object with the correct parent' do
       expect(async).to be_a(described_class::Async)
@@ -2508,14 +2508,14 @@ describe NotificationService, :mailer do
   end
 
   describe 'Pages domains' do
-    set(:project) { create(:project) }
-    set(:domain) { create(:pages_domain, project: project) }
-    set(:u_blocked) { create(:user, :blocked) }
-    set(:u_silence) { create_user_with_notification(:disabled, 'silent', project) }
-    set(:u_owner)   { project.owner }
-    set(:u_maintainer1) { create(:user) }
-    set(:u_maintainer2) { create(:user) }
-    set(:u_developer) { create(:user) }
+    let_it_be(:project, reload: true) { create(:project) }
+    let_it_be(:domain, reload: true) { create(:pages_domain, project: project) }
+    let_it_be(:u_blocked) { create(:user, :blocked) }
+    let_it_be(:u_silence) { create_user_with_notification(:disabled, 'silent', project) }
+    let_it_be(:u_owner) { project.owner }
+    let_it_be(:u_maintainer1) { create(:user) }
+    let_it_be(:u_maintainer2) { create(:user) }
+    let_it_be(:u_developer) { create(:user) }
 
     before do
       project.add_maintainer(u_blocked)
@@ -2707,7 +2707,7 @@ describe NotificationService, :mailer do
     # User to be participant by default
     # This user does not contain any record in notification settings table
     # It should be treated with a :participating notification_level
-    @u_lazy_participant      = create(:user, username: 'lazy-participant')
+    @u_lazy_participant = create(:user, username: 'lazy-participant')
 
     @u_guest_watcher = create_user_with_notification(:watch, 'guest_watching')
     @u_guest_custom = create_user_with_notification(:custom, 'guest_custom')

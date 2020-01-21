@@ -6,8 +6,10 @@ describe Environment, :use_clean_rails_memory_store_caching do
   include ReactiveCachingHelpers
   using RSpec::Parameterized::TableSyntax
   include RepoHelpers
+  include StubENV
 
-  let(:project) { create(:project, :stubbed_repository) }
+  let(:project) { create(:project, :repository) }
+
   subject(:environment) { create(:environment, project: project) }
 
   it { is_expected.to be_kind_of(ReactiveCaching) }
@@ -28,7 +30,6 @@ describe Environment, :use_clean_rails_memory_store_caching do
   it { is_expected.to validate_length_of(:external_url).is_at_most(255) }
 
   describe '.order_by_last_deployed_at' do
-    let(:project) { create(:project, :repository) }
     let!(:environment1) { create(:environment, project: project) }
     let!(:environment2) { create(:environment, project: project) }
     let!(:environment3) { create(:environment, project: project) }
@@ -36,8 +37,12 @@ describe Environment, :use_clean_rails_memory_store_caching do
     let!(:deployment2) { create(:deployment, environment: environment2) }
     let!(:deployment3) { create(:deployment, environment: environment1) }
 
-    it 'returns the environments in order of having been last deployed' do
+    it 'returns the environments in ascending order of having been last deployed' do
       expect(project.environments.order_by_last_deployed_at.to_a).to eq([environment3, environment2, environment1])
+    end
+
+    it 'returns the environments in descending order of having been last deployed' do
+      expect(project.environments.order_by_last_deployed_at_desc.to_a).to eq([environment1, environment2, environment3])
     end
   end
 
@@ -134,8 +139,8 @@ describe Environment, :use_clean_rails_memory_store_caching do
   describe '.with_deployment' do
     subject { described_class.with_deployment(sha) }
 
-    let(:environment) { create(:environment) }
-    let(:sha) { RepoHelpers.sample_commit.id }
+    let(:environment) { create(:environment, project: project) }
+    let(:sha) { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
 
     context 'when deployment has the specified sha' do
       let!(:deployment) { create(:deployment, environment: environment, sha: sha) }
@@ -144,7 +149,7 @@ describe Environment, :use_clean_rails_memory_store_caching do
     end
 
     context 'when deployment does not have the specified sha' do
-      let!(:deployment) { create(:deployment, environment: environment, sha: 'abc') }
+      let!(:deployment) { create(:deployment, environment: environment, sha: 'ddd0f15ae83993f5cb66a927a28673882e99100b') }
 
       it { is_expected.to be_empty }
     end
@@ -153,7 +158,7 @@ describe Environment, :use_clean_rails_memory_store_caching do
   describe '#folder_name' do
     context 'when it is inside a folder' do
       subject(:environment) do
-        create(:environment, name: 'staging/review-1')
+        create(:environment, name: 'staging/review-1', project: project)
       end
 
       it 'returns a top-level folder name' do
@@ -667,11 +672,11 @@ describe Environment, :use_clean_rails_memory_store_caching do
     context 'when the environment is available' do
       context 'with a deployment service' do
         context 'when user configured kubernetes from CI/CD > Clusters' do
-          let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
-          let(:project) { cluster.project }
+          let!(:cluster) { create(:cluster, :project, :provided_by_gcp, projects: [project]) }
 
           context 'with deployment' do
             let!(:deployment) { create(:deployment, :success, environment: environment) }
+
             it { is_expected.to be_truthy }
           end
 
@@ -788,10 +793,9 @@ describe Environment, :use_clean_rails_memory_store_caching do
   end
 
   describe '#calculate_reactive_cache' do
-    let(:cluster) { create(:cluster, :project, :provided_by_user) }
-    let(:project) { cluster.project }
-    let(:environment) { create(:environment, project: project) }
-    let!(:deployment) { create(:deployment, :success, environment: environment) }
+    let!(:cluster) { create(:cluster, :project, :provided_by_user, projects: [project]) }
+    let!(:environment) { create(:environment, project: project) }
+    let!(:deployment) { create(:deployment, :success, environment: environment, project: project) }
 
     subject { environment.calculate_reactive_cache }
 
@@ -824,10 +828,11 @@ describe Environment, :use_clean_rails_memory_store_caching do
 
     context 'when the environment is available' do
       context 'with a deployment service' do
-        let(:project) { create(:prometheus_project) }
+        let(:project) { create(:prometheus_project, :repository) }
 
         context 'and a deployment' do
           let!(:deployment) { create(:deployment, environment: environment) }
+
           it { is_expected.to be_truthy }
         end
 
@@ -847,6 +852,52 @@ describe Environment, :use_clean_rails_memory_store_caching do
       context 'without a monitoring service' do
         it { is_expected.to be_falsy }
       end
+
+      context 'when sample metrics are enabled' do
+        before do
+          stub_env('USE_SAMPLE_METRICS', 'true')
+        end
+
+        context 'with no prometheus adapter configured' do
+          before do
+            allow(environment.prometheus_adapter).to receive(:configured?).and_return(false)
+          end
+
+          it { is_expected.to be_truthy }
+        end
+      end
+    end
+
+    describe '#has_sample_metrics?' do
+      subject { environment.has_metrics? }
+
+      let(:project) { create(:project) }
+
+      context 'when sample metrics are enabled' do
+        before do
+          stub_env('USE_SAMPLE_METRICS', 'true')
+        end
+
+        context 'with no prometheus adapter configured' do
+          before do
+            allow(environment.prometheus_adapter).to receive(:configured?).and_return(false)
+          end
+
+          it { is_expected.to be_truthy }
+        end
+
+        context 'with the environment stopped' do
+          before do
+            environment.stop
+          end
+
+          it { is_expected.to be_falsy }
+        end
+      end
+
+      context 'when sample metrics are not enabled' do
+        it { is_expected.to be_falsy }
+      end
     end
 
     context 'when the environment is unavailable' do
@@ -862,6 +913,7 @@ describe Environment, :use_clean_rails_memory_store_caching do
 
   describe '#metrics' do
     let(:project) { create(:prometheus_project) }
+
     subject { environment.metrics }
 
     context 'when the environment has metrics' do
@@ -943,6 +995,7 @@ describe Environment, :use_clean_rails_memory_store_caching do
   describe '#additional_metrics' do
     let(:project) { create(:prometheus_project) }
     let(:metric_params) { [] }
+
     subject { environment.additional_metrics(*metric_params) }
 
     context 'when the environment has additional metrics' do
@@ -1059,7 +1112,7 @@ describe Environment, :use_clean_rails_memory_store_caching do
 
   describe '#prometheus_adapter' do
     it 'calls prometheus adapter service' do
-      expect_next_instance_of(Prometheus::AdapterService) do |instance|
+      expect_next_instance_of(Gitlab::Prometheus::Adapter) do |instance|
         expect(instance).to receive(:prometheus_adapter)
       end
 

@@ -5,6 +5,7 @@ class Deployment < ApplicationRecord
   include IidRoutes
   include AfterCommitQueue
   include UpdatedAtFilterable
+  include Importable
   include Gitlab::Utils::StrongMemoize
 
   belongs_to :project, required: true
@@ -17,16 +18,23 @@ class Deployment < ApplicationRecord
   has_many :merge_requests,
     through: :deployment_merge_requests
 
-  has_internal_id :iid, scope: :project, init: ->(s) do
+  has_internal_id :iid, scope: :project, track_if: -> { !importing? }, init: ->(s) do
     Deployment.where(project: s.project).maximum(:iid) if s&.project
   end
 
   validates :sha, presence: true
   validates :ref, presence: true
+  validate :valid_sha, on: :create
+  validate :valid_ref, on: :create
 
   delegate :name, to: :environment, prefix: true
 
   scope :for_environment, -> (environment) { where(environment_id: environment) }
+  scope :for_environment_name, -> (name) do
+    joins(:environment).where(environments: { name: name })
+  end
+
+  scope :for_status, -> (status) { where(status: status) }
 
   scope :visible, -> { where(status: %i[running success failed canceled]) }
 
@@ -210,10 +218,14 @@ class Deployment < ApplicationRecord
 
     # We don't use `Gitlab::Database.bulk_insert` here so that we don't need to
     # first pluck lots of IDs into memory.
+    #
+    # We also ignore any duplicates so this method can be called multiple times
+    # for the same deployment, only inserting any missing merge requests.
     DeploymentMergeRequest.connection.execute(<<~SQL)
       INSERT INTO #{DeploymentMergeRequest.table_name}
       (merge_request_id, deployment_id)
       #{select}
+      ON CONFLICT DO NOTHING
     SQL
   end
 
@@ -232,6 +244,18 @@ class Deployment < ApplicationRecord
     else
       raise ArgumentError, "The status #{status.inspect} is invalid"
     end
+  end
+
+  def valid_sha
+    return if project&.commit(sha)
+
+    errors.add(:sha, _('The commit does not exist'))
+  end
+
+  def valid_ref
+    return if project&.commit(ref)
+
+    errors.add(:ref, _('The branch or tag does not exist'))
   end
 
   private

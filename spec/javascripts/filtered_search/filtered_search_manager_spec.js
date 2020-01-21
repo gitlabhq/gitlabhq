@@ -201,8 +201,8 @@ describe('Filtered Search Manager', function() {
 
     it('removes duplicated tokens', done => {
       tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
-        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug')}
-        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug')}
+        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '=', '~bug')}
+        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '=', '~bug')}
       `);
 
       spyOnDependency(FilteredSearchManager, 'visitUrl').and.callFake(url => {
@@ -234,7 +234,7 @@ describe('Filtered Search Manager', function() {
 
     it('should not render placeholder when there are tokens and no input', () => {
       tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
-        FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug'),
+        FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '=', '~bug'),
       );
 
       const event = new Event('input');
@@ -252,7 +252,7 @@ describe('Filtered Search Manager', function() {
     describe('tokens and no input', () => {
       beforeEach(() => {
         tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
-          FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug'),
+          FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '=', '~bug'),
         );
       });
 
@@ -306,7 +306,7 @@ describe('Filtered Search Manager', function() {
 
     it('removes token even when it is already selected', () => {
       tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
-        FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', 'none', true),
+        FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', '=', 'none', true),
       );
 
       tokensContainer.querySelector('.js-visual-token .remove-token').click();
@@ -319,7 +319,7 @@ describe('Filtered Search Manager', function() {
         spyOn(FilteredSearchManager.prototype, 'removeSelectedToken').and.callThrough();
 
         tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
-          FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', 'none'),
+          FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', '=', 'none'),
         );
         tokensContainer.querySelector('.js-visual-token .remove-token').click();
       });
@@ -338,7 +338,7 @@ describe('Filtered Search Manager', function() {
     beforeEach(() => {
       initializeManager();
       tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
-        FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', 'none', true),
+        FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', '=', 'none', true),
       );
     });
 
@@ -424,7 +424,7 @@ describe('Filtered Search Manager', function() {
     });
 
     it('Clicking the "x" clear button, clears the input', () => {
-      const inputValue = 'label:~bug ';
+      const inputValue = 'label:=~bug';
       manager.filteredSearchInput.value = inputValue;
       manager.filteredSearchInput.dispatchEvent(new Event('input'));
 

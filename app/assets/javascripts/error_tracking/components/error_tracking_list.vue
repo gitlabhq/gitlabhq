@@ -25,10 +25,47 @@ export default {
   PREV_PAGE: 1,
   NEXT_PAGE: 2,
   fields: [
-    { key: 'error', label: __('Open errors'), thClass: 'w-70p' },
-    { key: 'events', label: __('Events') },
-    { key: 'users', label: __('Users') },
-    { key: 'lastSeen', label: __('Last seen'), thClass: 'w-15p' },
+    {
+      key: 'error',
+      label: __('Error'),
+      thClass: 'w-60p',
+      tdClass: 'table-col d-flex d-sm-table-cell px-3',
+    },
+    {
+      key: 'events',
+      label: __('Events'),
+      thClass: 'text-right',
+      tdClass: 'table-col d-flex d-sm-table-cell',
+    },
+    {
+      key: 'users',
+      label: __('Users'),
+      thClass: 'text-right',
+      tdClass: 'table-col d-flex d-sm-table-cell',
+    },
+    {
+      key: 'lastSeen',
+      label: __('Last seen'),
+      thClass: '',
+      tdClass: 'table-col d-flex d-sm-table-cell',
+    },
+    {
+      key: 'ignore',
+      label: '',
+      thClass: 'w-3rem',
+      tdClass: 'table-col d-flex pl-0 d-sm-table-cell',
+    },
+    {
+      key: 'resolved',
+      label: '',
+      thClass: 'w-3rem',
+      tdClass: 'table-col d-flex pl-0 d-sm-table-cell',
+    },
+    {
+      key: 'details',
+      tdClass: 'table-col d-sm-none d-flex align-items-center',
+      thClass: 'invisible w-0',
+    },
   ],
   sortFields: {
     last_seen: __('Last Seen'),
@@ -74,6 +111,14 @@ export default {
       type: Boolean,
       required: true,
     },
+    projectPath: {
+      type: String,
+      required: true,
+    },
+    listPath: {
+      type: String,
+      required: true,
+    },
   },
   hasLocalStorage: AccessorUtils.isLocalStorageAccessSafe(),
   data() {
@@ -90,6 +135,7 @@ export default {
       'sortField',
       'recentSearches',
       'pagination',
+      'cursor',
     ]),
     paginationRequired() {
       return !_.isEmpty(this.pagination);
@@ -119,6 +165,8 @@ export default {
       'clearRecentSearches',
       'loadRecentSearches',
       'setIndexPath',
+      'fetchPaginatedResults',
+      'updateStatus',
     ]),
     setSearchText(text) {
       this.errorSearchQuery = text;
@@ -129,10 +177,10 @@ export default {
     },
     goToNextPage() {
       this.pageValue = this.$options.NEXT_PAGE;
-      this.startPolling(`${this.indexPath}?cursor=${this.pagination.next.cursor}`);
+      this.fetchPaginatedResults(this.pagination.next.cursor);
     },
     goToPrevPage() {
-      this.startPolling(`${this.indexPath}?cursor=${this.pagination.previous.cursor}`);
+      this.fetchPaginatedResults(this.pagination.previous.cursor);
     },
     goToPage(page) {
       window.scrollTo(0, 0);
@@ -141,6 +189,16 @@ export default {
     isCurrentSortField(field) {
       return field === this.sortField;
     },
+    getIssueUpdatePath(errorId) {
+      return `/${this.projectPath}/-/error_tracking/${errorId}.json`;
+    },
+    updateIssueStatus(errorId, status) {
+      this.updateStatus({
+        endpoint: this.getIssueUpdatePath(errorId),
+        redirectUrl: this.listPath,
+        status,
+      });
+    },
   },
 };
 </script>
@@ -148,62 +206,62 @@ export default {
 <template>
   <div class="error-list">
     <div v-if="errorTrackingEnabled">
-      <div
-        class="d-flex flex-row justify-content-around align-items-center bg-secondary border mt-2"
-      >
-        <div class="filtered-search-box flex-grow-1 my-3 ml-3 mr-2">
-          <gl-dropdown
-            :text="__('Recent searches')"
-            class="filtered-search-history-dropdown-wrapper d-none d-md-block"
-            toggle-class="filtered-search-history-dropdown-toggle-button"
-            :disabled="loading"
-          >
-            <div v-if="!$options.hasLocalStorage" class="px-3">
-              {{ __('This feature requires local storage to be enabled') }}
-            </div>
-            <template v-else-if="recentSearches.length > 0">
-              <gl-dropdown-item
-                v-for="searchQuery in recentSearches"
-                :key="searchQuery"
-                @click="setSearchText(searchQuery)"
-                >{{ searchQuery }}</gl-dropdown-item
-              >
-              <gl-dropdown-divider />
-              <gl-dropdown-item ref="clearRecentSearches" @click="clearRecentSearches">{{
-                __('Clear recent searches')
-              }}</gl-dropdown-item>
-            </template>
-            <div v-else class="px-3">{{ __("You don't have any recent searches") }}</div>
-          </gl-dropdown>
-          <div class="filtered-search-input-container flex-fill">
-            <gl-form-input
-              v-model="errorSearchQuery"
-              class="pl-2 filtered-search"
+      <div class="row flex-column flex-sm-row align-items-sm-center row-top m-0 mt-sm-2 p-0 p-sm-3">
+        <div class="search-box flex-fill mr-sm-2 my-3 m-sm-0 p-3 p-sm-0">
+          <div class="filtered-search-box mb-0">
+            <gl-dropdown
+              :text="__('Recent searches')"
+              class="filtered-search-history-dropdown-wrapper"
+              toggle-class="filtered-search-history-dropdown-toggle-button"
               :disabled="loading"
-              :placeholder="__('Search or filter results…')"
-              autofocus
-              @keyup.enter.native="searchByQuery(errorSearchQuery)"
-            />
-          </div>
-          <div class="gl-search-box-by-type-right-icons">
-            <gl-button
-              v-if="errorSearchQuery.length > 0"
-              v-gl-tooltip.hover
-              :title="__('Clear')"
-              class="clear-search text-secondary"
-              name="clear"
-              @click="errorSearchQuery = ''"
             >
-              <gl-icon name="close" :size="12" />
-            </gl-button>
+              <div v-if="!$options.hasLocalStorage" class="px-3">
+                {{ __('This feature requires local storage to be enabled') }}
+              </div>
+              <template v-else-if="recentSearches.length > 0">
+                <gl-dropdown-item
+                  v-for="searchQuery in recentSearches"
+                  :key="searchQuery"
+                  @click="setSearchText(searchQuery)"
+                  >{{ searchQuery }}
+                </gl-dropdown-item>
+                <gl-dropdown-divider />
+                <gl-dropdown-item ref="clearRecentSearches" @click="clearRecentSearches"
+                  >{{ __('Clear recent searches') }}
+                </gl-dropdown-item>
+              </template>
+              <div v-else class="px-3">{{ __("You don't have any recent searches") }}</div>
+            </gl-dropdown>
+            <div class="filtered-search-input-container flex-fill">
+              <gl-form-input
+                v-model="errorSearchQuery"
+                class="pl-2 filtered-search"
+                :disabled="loading"
+                :placeholder="__('Search or filter results…')"
+                autofocus
+                @keyup.enter.native="searchByQuery(errorSearchQuery)"
+              />
+            </div>
+            <div class="gl-search-box-by-type-right-icons">
+              <gl-button
+                v-if="errorSearchQuery.length > 0"
+                v-gl-tooltip.hover
+                :title="__('Clear')"
+                class="clear-search text-secondary"
+                name="clear"
+                @click="errorSearchQuery = ''"
+              >
+                <gl-icon name="close" :size="12" />
+              </gl-button>
+            </div>
           </div>
         </div>
 
         <gl-dropdown
+          class="sort-control"
           :text="$options.sortFields[sortField]"
           left
           :disabled="loading"
-          class="mr-3"
           menu-class="sort-dropdown"
         >
           <gl-dropdown-item
@@ -227,62 +285,97 @@ export default {
         <gl-loading-icon size="md" />
       </div>
 
-      <gl-table
-        v-else
-        class="mt-3"
-        :items="errors"
-        :fields="$options.fields"
-        :show-empty="true"
-        fixed
-        stacked="sm"
-      >
-        <template slot="HEAD_events" slot-scope="data">
-          <div class="text-md-right">{{ data.label }}</div>
-        </template>
-        <template slot="HEAD_users" slot-scope="data">
-          <div class="text-md-right">{{ data.label }}</div>
-        </template>
-        <template slot="error" slot-scope="errors">
-          <div class="d-flex flex-column">
-            <gl-link class="d-flex text-dark" :href="getDetailsLink(errors.item.id)">
-              <strong class="text-truncate">{{ errors.item.title.trim() }}</strong>
-            </gl-link>
-            <span class="text-secondary text-truncate">
-              {{ errors.item.culprit }}
-            </span>
-          </div>
-        </template>
-        <template slot="events" slot-scope="errors">
-          <div class="text-md-right">{{ errors.item.count }}</div>
-        </template>
+      <template v-else>
+        <h4 class="d-block d-sm-none my-3">{{ __('Open errors') }}</h4>
 
-        <template slot="users" slot-scope="errors">
-          <div class="text-md-right">{{ errors.item.userCount }}</div>
-        </template>
+        <gl-table
+          class="mt-3"
+          :items="errors"
+          :fields="$options.fields"
+          :show-empty="true"
+          fixed
+          stacked="sm"
+          tbody-tr-class="table-row mb-4"
+        >
+          <template v-slot:head(error)>
+            <div class="d-none d-sm-block">{{ __('Open errors') }}</div>
+          </template>
+          <template v-slot:head(events)="data">
+            <div class="text-sm-right">{{ data.label }}</div>
+          </template>
+          <template v-slot:head(users)="data">
+            <div class="text-sm-right">{{ data.label }}</div>
+          </template>
 
-        <template slot="lastSeen" slot-scope="errors">
-          <div class="d-flex align-items-center">
-            <time-ago :time="errors.item.lastSeen" class="text-secondary" />
-          </div>
-        </template>
-        <template slot="empty">
-          <div ref="empty">
+          <template v-slot:error="errors">
+            <div class="d-flex flex-column">
+              <gl-link class="d-flex mw-100 text-dark" :href="getDetailsLink(errors.item.id)">
+                <strong class="text-truncate">{{ errors.item.title.trim() }}</strong>
+              </gl-link>
+              <span class="text-secondary text-truncate mw-100">
+                {{ errors.item.culprit }}
+              </span>
+            </div>
+          </template>
+          <template v-slot:events="errors">
+            <div class="text-right">{{ errors.item.count }}</div>
+          </template>
+
+          <template v-slot:users="errors">
+            <div class="text-right">{{ errors.item.userCount }}</div>
+          </template>
+
+          <template v-slot:lastSeen="errors">
+            <div class="text-md-left text-right">
+              <time-ago :time="errors.item.lastSeen" class="text-secondary" />
+            </div>
+          </template>
+          <template v-slot:ignore="errors">
+            <gl-button
+              ref="ignoreError"
+              v-gl-tooltip.hover
+              :title="__('Ignore')"
+              @click="updateIssueStatus(errors.item.id, 'ignored')"
+            >
+              <gl-icon name="eye-slash" :size="12" />
+            </gl-button>
+          </template>
+          <template v-slot:resolved="errors">
+            <gl-button
+              ref="resolveError"
+              v-gl-tooltip
+              :title="__('Resolve')"
+              @click="updateIssueStatus(errors.item.id, 'resolved')"
+            >
+              <gl-icon name="check-circle" :size="12" />
+            </gl-button>
+          </template>
+          <template v-slot:details="errors">
+            <gl-button
+              :href="getDetailsLink(errors.item.id)"
+              variant="outline-info"
+              class="d-block"
+            >
+              {{ __('More details') }}
+            </gl-button>
+          </template>
+          <template v-slot:empty>
             {{ __('No errors to display.') }}
             <gl-link class="js-try-again" @click="restartPolling">
               {{ __('Check again') }}
             </gl-link>
-          </div>
-        </template>
-      </gl-table>
-      <gl-pagination
-        v-show="!loading"
-        v-if="paginationRequired"
-        :prev-page="$options.PREV_PAGE"
-        :next-page="$options.NEXT_PAGE"
-        :value="pageValue"
-        align="center"
-        @input="goToPage"
-      />
+          </template>
+        </gl-table>
+        <gl-pagination
+          v-show="!loading"
+          v-if="paginationRequired"
+          :prev-page="$options.PREV_PAGE"
+          :next-page="$options.NEXT_PAGE"
+          :value="pageValue"
+          align="center"
+          @input="goToPage"
+        />
+      </template>
     </div>
     <div v-else-if="userCanEnableErrorTracking">
       <gl-empty-state

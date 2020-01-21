@@ -1,0 +1,5 @@
+---
+title: Identify correct sentry id in error tracking detail
+merge_request: 23280
+author:
+type: fixed

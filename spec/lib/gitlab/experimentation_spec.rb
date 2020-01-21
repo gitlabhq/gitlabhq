@@ -54,7 +54,7 @@ describe Gitlab::Experimentation do
     describe '#experiment_enabled?' do
       context 'cookie is not present' do
         it 'calls Gitlab::Experimentation.enabled_for_user? with the name of the experiment and an experimentation_subject_index of nil' do
-          expect(Gitlab::Experimentation).to receive(:enabled_for_user?).with(:test_experiment, nil) # rubocop:disable RSpec/DescribedClass
+          expect(Gitlab::Experimentation).to receive(:enabled_for_user?).with(:test_experiment, nil)
           controller.experiment_enabled?(:test_experiment)
         end
       end
@@ -67,7 +67,7 @@ describe Gitlab::Experimentation do
 
         it 'calls Gitlab::Experimentation.enabled_for_user? with the name of the experiment and an experimentation_subject_index of the modulo 100 of the hex value of the uuid' do
           # 'abcd1234'.hex % 100 = 76
-          expect(Gitlab::Experimentation).to receive(:enabled_for_user?).with(:test_experiment, 76) # rubocop:disable RSpec/DescribedClass
+          expect(Gitlab::Experimentation).to receive(:enabled_for_user?).with(:test_experiment, 76)
           controller.experiment_enabled?(:test_experiment)
         end
       end

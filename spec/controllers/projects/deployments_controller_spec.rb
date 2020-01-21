@@ -6,7 +6,7 @@ describe Projects::DeploymentsController do
   include ApiHelpers
 
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:environment) { create(:environment, name: 'production', project: project) }
 
   before do

@@ -6,13 +6,6 @@ describe Users::UpdateService do
   let(:user) { create(:user) }
 
   describe '#execute' do
-    it 'updates the name' do
-      result = update_user(user, name: 'New Name')
-
-      expect(result).to eq(status: :success)
-      expect(user.name).to eq('New Name')
-    end
-
     it 'updates time preferences' do
       result = update_user(user, timezone: 'Europe/Warsaw', time_display_relative: true, time_format_in_24h: false)
 

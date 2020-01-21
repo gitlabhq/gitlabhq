@@ -43,13 +43,44 @@ module Banzai
       # Returns a String replaced with the return of the block.
       def self.references_in(text, pattern = object_class.reference_pattern)
         text.gsub(pattern) do |match|
-          symbol = $~[object_sym]
-          if object_class.reference_valid?(symbol)
-            yield match, symbol.to_i, $~[:project], $~[:namespace], $~
+          if ident = identifier($~)
+            yield match, ident, $~[:project], $~[:namespace], $~
           else
             match
           end
         end
+      end
+
+      def self.identifier(match_data)
+        symbol = symbol_from_match(match_data)
+
+        parse_symbol(symbol, match_data) if object_class.reference_valid?(symbol)
+      end
+
+      def identifier(match_data)
+        self.class.identifier(match_data)
+      end
+
+      def self.symbol_from_match(match)
+        key = object_sym
+        match[key] if match.names.include?(key.to_s)
+      end
+
+      # Transform a symbol extracted from the text to a meaningful value
+      # In most cases these will be integers, so we call #to_i by default
+      #
+      # This method has the contract that if a string `ref` refers to a
+      # record `record`, then `parse_symbol(ref) == record_identifier(record)`.
+      def self.parse_symbol(symbol, match_data)
+        symbol.to_i
+      end
+
+      # We assume that most classes are identifying records by ID.
+      #
+      # This method has the contract that if a string `ref` refers to a
+      # record `record`, then `class.parse_symbol(ref) == record_identifier(record)`.
+      def record_identifier(record)
+        record.id
       end
 
       def object_class
@@ -265,8 +296,10 @@ module Banzai
 
         @references_per[parent_type] ||= begin
           refs = Hash.new { |hash, key| hash[key] = Set.new }
-
-          regex = Regexp.union(object_class.reference_pattern, object_class.link_reference_pattern)
+          regex = [
+            object_class.link_reference_pattern,
+            object_class.reference_pattern
+          ].compact.reduce { |a, b| Regexp.union(a, b) }
 
           nodes.each do |node|
             node.to_html.scan(regex) do
@@ -276,8 +309,9 @@ module Banzai
                        full_group_path($~[:group])
                      end
 
-              symbol = $~[object_sym]
-              refs[path] << symbol if object_class.reference_valid?(symbol)
+              if ident = identifier($~)
+                refs[path] << ident
+              end
             end
           end
 

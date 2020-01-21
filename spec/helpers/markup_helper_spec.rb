@@ -273,16 +273,19 @@ describe MarkupHelper do
 
   describe '#render_wiki_content' do
     let(:wiki) { double('WikiPage', path: "file.#{extension}") }
+    let(:wiki_repository) { double('Repository') }
     let(:context) do
       {
         pipeline: :wiki, project: project, project_wiki: wiki,
-        page_slug: 'nested/page', issuable_state_filter_enabled: true
+        page_slug: 'nested/page', issuable_state_filter_enabled: true,
+        repository: wiki_repository
       }
     end
 
     before do
       expect(wiki).to receive(:content).and_return('wiki content')
       expect(wiki).to receive(:slug).and_return('nested/page')
+      expect(wiki).to receive(:repository).and_return(wiki_repository)
       helper.instance_variable_set(:@project_wiki, wiki)
     end
 
@@ -354,10 +357,10 @@ describe MarkupHelper do
   describe '#markup_unsafe' do
     subject { helper.markup_unsafe(file_name, text, context) }
 
+    let_it_be(:project_base) { create(:project, :repository) }
+    let_it_be(:context) { { project: project_base } }
     let(:file_name) { 'foo.bar' }
     let(:text) { 'Noël' }
-    let(:project_base) { build(:project, :repository) }
-    let(:context) { { project: project_base } }
 
     context 'when text is missing' do
       let(:text) { nil }
@@ -380,11 +383,20 @@ describe MarkupHelper do
 
       context 'when renderer returns an error' do
         before do
-          allow(Banzai).to receive(:render).and_raise("An error")
+          allow(Banzai).to receive(:render).and_raise(StandardError, "An error")
         end
 
         it 'returns html (rendered by ActionView:TextHelper)' do
           is_expected.to eq('<p>Noël</p>')
+        end
+
+        it 'logs the error' do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+            instance_of(StandardError),
+            project_id: project.id, file_name: 'foo.md', context: context
+          )
+
+          subject
         end
       end
     end
@@ -410,7 +422,7 @@ describe MarkupHelper do
     end
 
     context 'when file has an unknown type' do
-      let(:file_name) { 'foo' }
+      let(:file_name) { 'foo.tex' }
 
       it 'returns html (rendered by Gitlab::OtherMarkup)' do
         expected_html = 'Noël'

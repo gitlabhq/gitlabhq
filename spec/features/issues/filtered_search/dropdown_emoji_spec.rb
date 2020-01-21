@@ -11,30 +11,13 @@ describe 'Dropdown emoji', :js do
   let!(:award_emoji_star) { create(:award_emoji, name: 'star', user: user, awardable: issue) }
   let(:filtered_search) { find('.filtered-search') }
   let(:js_dropdown_emoji) { '#js-dropdown-my-reaction' }
-
-  def send_keys_to_filtered_search(input)
-    input.split("").each do |i|
-      filtered_search.send_keys(i)
-    end
-
-    sleep 0.5
-    wait_for_requests
-  end
-
-  def dropdown_emoji_size
-    all('gl-emoji[data-name]').size
-  end
-
-  def click_emoji(text)
-    find('#js-dropdown-my-reaction .filter-dropdown .filter-dropdown-item', text: text).click
-  end
+  let(:filter_dropdown) { find("#{js_dropdown_emoji} .filter-dropdown") }
 
   before do
     project.add_maintainer(user)
     create_list(:award_emoji, 2, user: user, name: 'thumbsup')
     create_list(:award_emoji, 1, user: user, name: 'thumbsdown')
     create_list(:award_emoji, 3, user: user, name: 'star')
-    create_list(:award_emoji, 1, user: user, name: 'tea')
   end
 
   context 'when user not logged in' do
@@ -43,8 +26,8 @@ describe 'Dropdown emoji', :js do
     end
 
     describe 'behavior' do
-      it 'does not open when the search bar has my-reaction:' do
-        filtered_search.set('my-reaction:')
+      it 'does not open when the search bar has my-reaction=' do
+        filtered_search.set('my-reaction=')
 
         expect(page).not_to have_css(js_dropdown_emoji)
       end
@@ -59,143 +42,22 @@ describe 'Dropdown emoji', :js do
     end
 
     describe 'behavior' do
-      it 'opens when the search bar has my-reaction:' do
-        filtered_search.set('my-reaction:')
+      it 'opens when the search bar has my-reaction=' do
+        filtered_search.set('my-reaction=')
 
         expect(page).to have_css(js_dropdown_emoji, visible: true)
-      end
-
-      it 'closes when the search bar is unfocused' do
-        find('body').click
-
-        expect(page).to have_css(js_dropdown_emoji, visible: false)
-      end
-
-      it 'shows loading indicator when opened' do
-        slow_requests do
-          filtered_search.set('my-reaction:')
-
-          expect(page).to have_css('#js-dropdown-my-reaction .filter-dropdown-loading', visible: true)
-        end
-      end
-
-      it 'hides loading indicator when loaded' do
-        send_keys_to_filtered_search('my-reaction:')
-
-        expect(page).not_to have_css('#js-dropdown-my-reaction .filter-dropdown-loading')
       end
 
       it 'loads all the emojis when opened' do
-        send_keys_to_filtered_search('my-reaction:')
+        input_filtered_search('my-reaction=', submit: false, extra_space: false)
 
-        expect(dropdown_emoji_size).to eq(4)
+        expect_filtered_search_dropdown_results(filter_dropdown, 3)
       end
 
       it 'shows the most populated emoji at top of dropdown' do
-        send_keys_to_filtered_search('my-reaction:')
+        input_filtered_search('my-reaction=', submit: false, extra_space: false)
 
-        expect(first('#js-dropdown-my-reaction .filter-dropdown li')).to have_content(award_emoji_star.name)
-      end
-    end
-
-    describe 'filtering' do
-      before do
-        filtered_search.set('my-reaction')
-        send_keys_to_filtered_search(':')
-      end
-
-      it 'filters by name' do
-        send_keys_to_filtered_search('up')
-
-        expect(dropdown_emoji_size).to eq(1)
-      end
-
-      it 'filters by case insensitive name' do
-        send_keys_to_filtered_search('Up')
-
-        expect(dropdown_emoji_size).to eq(1)
-      end
-    end
-
-    describe 'selecting from dropdown' do
-      before do
-        filtered_search.set('my-reaction')
-        send_keys_to_filtered_search(':')
-      end
-
-      it 'selects `None`' do
-        find('#js-dropdown-my-reaction .filter-dropdown-item', text: 'None').click
-
-        expect(page).to have_css(js_dropdown_emoji, visible: false)
-        expect_tokens([reaction_token('None', false)])
-        expect_filtered_search_input_empty
-      end
-
-      it 'selects `Any`' do
-        find('#js-dropdown-my-reaction .filter-dropdown-item', text: 'Any').click
-
-        expect(page).to have_css(js_dropdown_emoji, visible: false)
-        expect_tokens([reaction_token('Any', false)])
-        expect_filtered_search_input_empty
-      end
-
-      it 'fills in the my-reaction name' do
-        click_emoji('thumbsup')
-
-        wait_for_requests
-
-        expect(page).to have_css(js_dropdown_emoji, visible: false)
-        expect_tokens([reaction_token('thumbsup')])
-        expect_filtered_search_input_empty
-      end
-    end
-
-    describe 'input has existing content' do
-      it 'opens my-reaction dropdown with existing search term' do
-        filtered_search.set('searchTerm my-reaction:')
-
-        expect(page).to have_css(js_dropdown_emoji, visible: true)
-      end
-
-      it 'opens my-reaction dropdown with existing assignee' do
-        filtered_search.set('assignee:@user my-reaction:')
-
-        expect(page).to have_css(js_dropdown_emoji, visible: true)
-      end
-
-      it 'opens my-reaction dropdown with existing label' do
-        filtered_search.set('label:~bug my-reaction:')
-
-        expect(page).to have_css(js_dropdown_emoji, visible: true)
-      end
-
-      it 'opens my-reaction dropdown with existing milestone' do
-        filtered_search.set('milestone:%v1.0 my-reaction:')
-
-        expect(page).to have_css(js_dropdown_emoji, visible: true)
-      end
-
-      it 'opens my-reaction dropdown with existing my-reaction' do
-        filtered_search.set('my-reaction:star my-reaction:')
-
-        expect(page).to have_css(js_dropdown_emoji, visible: true)
-      end
-    end
-
-    describe 'caching requests' do
-      it 'caches requests after the first load' do
-        filtered_search.set('my-reaction')
-        send_keys_to_filtered_search(':')
-        initial_size = dropdown_emoji_size
-
-        expect(initial_size).to be > 0
-
-        create_list(:award_emoji, 1, user: user, name: 'smile')
-        find('.filtered-search-box .clear-search').click
-        filtered_search.set('my-reaction')
-        send_keys_to_filtered_search(':')
-
-        expect(dropdown_emoji_size).to eq(initial_size)
+        expect(first("#{js_dropdown_emoji} .filter-dropdown li")).to have_content(award_emoji_star.name)
       end
     end
   end

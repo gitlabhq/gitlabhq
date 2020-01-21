@@ -76,8 +76,14 @@ module QA
         end
 
         def sign_out
-          within_user_menu do
-            click_element :sign_out_link
+          retry_until do
+            break true unless signed_in?
+
+            within_user_menu do
+              click_element :sign_out_link
+            end
+
+            has_no_element?(:user_avatar)
           end
         end
 

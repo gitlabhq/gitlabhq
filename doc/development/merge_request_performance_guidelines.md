@@ -93,7 +93,7 @@ the following:
 The query plan can answer the questions whether we need additional
 indexes, or whether we perform expensive filtering (i.e. using sequential scans).
 
-Each query plan should be run against substantional size of data set.
+Each query plan should be run against substantial size of data set.
 For example if you look for issues with specific conditions,
 you should consider validating the query against
 a small number (a few hundred) and a big number (100_000) of issues.
@@ -318,7 +318,7 @@ Take into consideration the following when choosing a pagination strategy:
 
 1. It is very inefficient to calculate amount of objects that pass the filtering,
    this operation usually can take seconds, and can time out,
-1. It is very inefficent to get entries for page at higher ordinals, like 1000.
+1. It is very inefficient to get entries for page at higher ordinals, like 1000.
    The database has to sort and iterate all previous items, and this operation usually
    can result in substantial load put on database.
 
@@ -363,7 +363,7 @@ The intent of quotas could be different:
 
 1. We want to provide higher quotas for higher tiers of features:
    we want to provide on GitLab.com more capabilities for different tiers,
-1. We want to prevent misuse of the feature: someone accidentially creates
+1. We want to prevent misuse of the feature: someone accidentally creates
    10000 deploy tokens, because of a broken API script,
 1. We want to prevent abuse of the feature: someone purposely creates
    a 10000 pipelines to take advantage of the system.
@@ -374,7 +374,7 @@ Examples:
    more than 50 schedules.
    In such cases it is rather expected that this is either misuse
    or abuse of the feature. Lack of the upper limit can result
-   in service degredation as the system will try to process all schedules
+   in service degradation as the system will try to process all schedules
    assigned the the project.
 
 1. GitLab CI includes: We started with the limit of maximum of 50 nested includes.

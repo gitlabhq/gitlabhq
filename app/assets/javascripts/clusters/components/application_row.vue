@@ -2,7 +2,6 @@
 /* eslint-disable vue/require-default-prop */
 /* eslint-disable @gitlab/vue-i18n/no-bare-strings */
 import { GlLink, GlModalDirective } from '@gitlab/ui';
-import TimeagoTooltip from '../../vue_shared/components/time_ago_tooltip.vue';
 import { s__, __, sprintf } from '~/locale';
 import eventHub from '../event_hub';
 import identicon from '../../vue_shared/components/identicon.vue';
@@ -16,7 +15,6 @@ export default {
   components: {
     loadingButton,
     identicon,
-    TimeagoTooltip,
     GlLink,
     UninstallApplicationButton,
     UninstallApplicationConfirmationModal,
@@ -292,6 +290,7 @@ export default {
       disabled && 'cluster-application-disabled',
     ]"
     class="cluster-application-row gl-responsive-table-row gl-responsive-table-row-col-span"
+    :data-qa-selector="id"
   >
     <div class="gl-responsive-table-row-layout" role="row">
       <div class="table-section append-right-8 section-align-top" role="gridcell">
@@ -383,12 +382,16 @@ export default {
             :disabled="disabled || installButtonDisabled"
             :label="installButtonLabel"
             class="js-cluster-application-install-button"
+            data-qa-selector="install_button"
+            :data-qa-application="id"
             @click="installClicked"
           />
           <uninstall-application-button
             v-if="displayUninstallButton"
             v-gl-modal-directive="'uninstall-' + id"
             :status="status"
+            data-qa-selector="uninstall_button"
+            :data-qa-application="id"
             class="js-cluster-application-uninstall-button"
           />
           <uninstall-application-confirmation-modal

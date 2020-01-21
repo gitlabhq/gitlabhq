@@ -29,7 +29,7 @@ the affected files to find someone.
 We also use [GitLab Triage](https://gitlab.com/gitlab-org/gitlab-triage) to automate
 some triaging policies. This is currently set up as a scheduled pipeline
 (`https://gitlab.com/gitlab-org/quality/triage-ops/pipeline_schedules/10512/editpipeline_schedules/10512/edit`,
-must have at least developer access to the project) running on [quality/triage-ops](https://gitlab.com/gitlab-org/quality/triage-ops)
+must have at least Developer access to the project) running on [quality/triage-ops](https://gitlab.com/gitlab-org/quality/triage-ops)
 project.
 
 ## Labels
@@ -185,9 +185,9 @@ their color is `#428BCA`.
 `<Category Name>` is the category name as it is in the single source of truth for categories at
 <https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/categories.yml>.
 
-For instance, the "Code Analytics" category is represented by the
-~"Category:Code Analytics" label in the `gitlab-org` group since its
-`code_analytics.name` value is "Code Analytics".
+For instance, the "DevOps Score" category is represented by the
+~"Category:DevOps Score" label in the `gitlab-org` group since its
+`devops_score.name` value is "DevOps Score".
 
 If a category's label doesn't respect this naming convention, it should be specified
 with [the `label` attribute](https://about.gitlab.com/handbook/marketing/website/#category-attributes)

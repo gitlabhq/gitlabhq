@@ -183,29 +183,81 @@ describe Ci::BuildRunnerPresenter do
       let(:pipeline) { merge_request.all_pipelines.first }
       let(:build) { create(:ci_build, ref: pipeline.ref, pipeline: pipeline) }
 
-      it 'returns the correct refspecs' do
-        is_expected
-          .to contain_exactly('+refs/merge-requests/1/head:refs/merge-requests/1/head')
-      end
-
-      context 'when GIT_DEPTH is zero' do
+      context 'when depend_on_persistent_pipeline_ref feature flag is enabled' do
         before do
-          create(:ci_pipeline_variable, key: 'GIT_DEPTH', value: 0, pipeline: build.pipeline)
+          stub_feature_flags(ci_force_exposing_merge_request_refs: false)
+          pipeline.persistent_ref.create
         end
 
         it 'returns the correct refspecs' do
           is_expected
-            .to contain_exactly('+refs/merge-requests/1/head:refs/merge-requests/1/head',
-                                '+refs/heads/*:refs/remotes/origin/*',
-                                '+refs/tags/*:refs/tags/*')
+            .to contain_exactly("+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}")
+        end
+
+        context 'when ci_force_exposing_merge_request_refs feature flag is enabled' do
+          before do
+            stub_feature_flags(ci_force_exposing_merge_request_refs: true)
+          end
+
+          it 'returns the correct refspecs' do
+            is_expected
+              .to contain_exactly("+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}",
+                                  '+refs/merge-requests/1/head:refs/merge-requests/1/head')
+          end
+        end
+
+        context 'when GIT_DEPTH is zero' do
+          before do
+            create(:ci_pipeline_variable, key: 'GIT_DEPTH', value: 0, pipeline: build.pipeline)
+          end
+
+          it 'returns the correct refspecs' do
+            is_expected
+              .to contain_exactly("+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}",
+                                  '+refs/heads/*:refs/remotes/origin/*',
+                                  '+refs/tags/*:refs/tags/*')
+          end
+        end
+
+        context 'when pipeline is legacy detached merge request pipeline' do
+          let(:merge_request) { create(:merge_request, :with_legacy_detached_merge_request_pipeline) }
+
+          it 'returns the correct refspecs' do
+            is_expected.to contain_exactly("+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}",
+                                           "+refs/heads/#{build.ref}:refs/remotes/origin/#{build.ref}")
+          end
         end
       end
 
-      context 'when pipeline is legacy detached merge request pipeline' do
-        let(:merge_request) { create(:merge_request, :with_legacy_detached_merge_request_pipeline) }
+      context 'when depend_on_persistent_pipeline_ref feature flag is disabled' do
+        before do
+          stub_feature_flags(depend_on_persistent_pipeline_ref: false)
+        end
 
         it 'returns the correct refspecs' do
-          is_expected.to contain_exactly("+refs/heads/#{build.ref}:refs/remotes/origin/#{build.ref}")
+          is_expected
+            .to contain_exactly('+refs/merge-requests/1/head:refs/merge-requests/1/head')
+        end
+
+        context 'when GIT_DEPTH is zero' do
+          before do
+            create(:ci_pipeline_variable, key: 'GIT_DEPTH', value: 0, pipeline: build.pipeline)
+          end
+
+          it 'returns the correct refspecs' do
+            is_expected
+              .to contain_exactly('+refs/merge-requests/1/head:refs/merge-requests/1/head',
+                                  '+refs/heads/*:refs/remotes/origin/*',
+                                  '+refs/tags/*:refs/tags/*')
+          end
+        end
+
+        context 'when pipeline is legacy detached merge request pipeline' do
+          let(:merge_request) { create(:merge_request, :with_legacy_detached_merge_request_pipeline) }
+
+          it 'returns the correct refspecs' do
+            is_expected.to contain_exactly("+refs/heads/#{build.ref}:refs/remotes/origin/#{build.ref}")
+          end
         end
       end
     end

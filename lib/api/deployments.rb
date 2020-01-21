@@ -21,6 +21,14 @@ module API
         optional :sort, type: String, values: DeploymentsFinder::ALLOWED_SORT_DIRECTIONS, default: DeploymentsFinder::DEFAULT_SORT_DIRECTION, desc: 'Sort by asc (ascending) or desc (descending)'
         optional :updated_after, type: DateTime, desc: 'Return deployments updated after the specified date'
         optional :updated_before, type: DateTime, desc: 'Return deployments updated before the specified date'
+        optional :environment,
+          type: String,
+          desc: 'The name of the environment to filter deployments by'
+
+        optional :status,
+          type: String,
+          values: Deployment.statuses.keys,
+          desc: 'The status to filter deployments by'
       end
 
       get ':id/deployments' do
@@ -126,6 +134,26 @@ module API
         else
           render_validation_error!(deployment)
         end
+      end
+
+      helpers Helpers::MergeRequestsHelpers
+
+      desc 'Get all merge requests of a deployment' do
+        detail 'This feature was introduced in GitLab 12.7.'
+        success Entities::MergeRequestBasic
+      end
+      params do
+        requires :deployment_id, type: Integer, desc: 'The deployment ID'
+        use :merge_requests_base_params
+      end
+
+      get ':id/deployments/:deployment_id/merge_requests' do
+        authorize! :read_deployment, user_project
+
+        mr_params = declared_params.merge(deployment_id: params[:deployment_id])
+        merge_requests = MergeRequestsFinder.new(current_user, mr_params).execute
+
+        present merge_requests, { with: Entities::MergeRequestBasic, current_user: current_user }
       end
     end
   end

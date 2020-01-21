@@ -1,0 +1,5 @@
+---
+title: Add deprecation warning to Rake tasks in sidekiq namespace
+merge_request:
+author:
+type: removed

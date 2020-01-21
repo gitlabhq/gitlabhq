@@ -24,7 +24,8 @@ export default {
       {{ line.new_line }}
     </td>
     <td class="line_content" :class="lineType">
-      <span v-if="line.text">{{ line.text }}</span>
+      <span v-if="line.rich_text" v-html="line.rich_text"></span>
+      <span v-else-if="line.text">{{ line.text }}</span>
       <!-- TODO: replace this hack with zero-width whitespace when we have rich_text from BE -->
       <span v-else>&#8203;</span>
     </td>

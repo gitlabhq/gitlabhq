@@ -66,7 +66,7 @@ describe BranchesFinder do
       end
 
       it 'filters branches by provided names' do
-        branches_finder = described_class.new(repository, { names: ['fix', 'csv', 'lfs', 'does-not-exist'] })
+        branches_finder = described_class.new(repository, { names: %w[fix csv lfs does-not-exist] })
 
         result = branches_finder.execute
 

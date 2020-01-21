@@ -10,8 +10,6 @@ describe('Pipeline Url Component', () => {
 
   const createComponent = props => {
     wrapper = shallowMount(PipelineUrlComponent, {
-      sync: false,
-      attachToDocument: true,
       propsData: props,
     });
   };
@@ -105,8 +103,6 @@ describe('Pipeline Url Component', () => {
     });
 
     expect(wrapper.find('.js-pipeline-url-failure').text()).toContain('error');
-    expect(wrapper.find('.js-pipeline-url-failure').attributes('data-original-title')).toContain(
-      'some reason',
-    );
+    expect(wrapper.find('.js-pipeline-url-failure').attributes('title')).toContain('some reason');
   });
 });

@@ -31,11 +31,11 @@ export default new MyThing();
 
 export default class MyThing {
   constructor() {
-    if (!this.prototype.singleton) {
+    if (!MyThing.prototype.singleton) {
       this.init();
-      this.prototype.singleton = this;
+      MyThing.prototype.singleton = this;
     }
-    return this.prototype.singleton;
+    return MyThing.prototype.singleton;
   }
 
   init() {

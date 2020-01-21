@@ -14,7 +14,6 @@ describe('SlotSwitch', () => {
     wrapper = shallowMount(SlotSwitch, {
       propsData,
       slots,
-      sync: false,
     });
   };
 

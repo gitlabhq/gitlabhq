@@ -1,0 +1,5 @@
+---
+title: Add language and error urgency level for Sentry issue details page
+merge_request: 22122
+author:
+type: added

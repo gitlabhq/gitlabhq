@@ -41,6 +41,14 @@ module QA
         resource_web_url(api_get)
       rescue ResourceNotFoundError
         super
+
+        # If the group was just created the runners token might not be
+        # available via the API immediately.
+        Support::Retrier.retry_on_exception(sleep_interval: 5) do
+          resource = resource_web_url(api_get)
+          populate(:runners_token)
+          resource
+        end
       end
 
       def api_get_path

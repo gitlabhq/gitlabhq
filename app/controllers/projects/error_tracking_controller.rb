@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-class Projects::ErrorTrackingController < Projects::ApplicationController
-  before_action :authorize_read_sentry_issue!
-  before_action :set_issue_id, only: [:details, :stack_trace]
+class Projects::ErrorTrackingController < Projects::ErrorTracking::BaseController
+  respond_to :json
 
-  POLLING_INTERVAL = 10_000
+  before_action :authorize_read_sentry_issue!
+  before_action :set_issue_id, only: :details
 
   def index
     respond_to do |format|
@@ -20,25 +20,21 @@ class Projects::ErrorTrackingController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
+        set_polling_interval
         render_issue_detail_json
       end
     end
   end
 
-  def stack_trace
-    respond_to do |format|
-      format.json do
-        render_issue_stack_trace_json
-      end
-    end
-  end
+  def update
+    service = ErrorTracking::IssueUpdateService.new(project, current_user, issue_update_params)
+    result = service.execute
 
-  def list_projects
-    respond_to do |format|
-      format.json do
-        render_project_list_json
-      end
-    end
+    return if handle_errors(result)
+
+    render json: {
+      result: result
+    }
   end
 
   private
@@ -71,41 +67,6 @@ class Projects::ErrorTrackingController < Projects::ApplicationController
     }
   end
 
-  def render_issue_stack_trace_json
-    service = ErrorTracking::IssueLatestEventService.new(project, current_user, issue_details_params)
-    result = service.execute
-
-    return if handle_errors(result)
-
-    result_with_syntax_highlight = Gitlab::ErrorTracking::StackTraceHighlightDecorator.decorate(result[:latest_event])
-
-    render json: {
-      error: serialize_error_event(result_with_syntax_highlight)
-    }
-  end
-
-  def render_project_list_json
-    service = ErrorTracking::ListProjectsService.new(
-      project,
-      current_user,
-      list_projects_params
-    )
-    result = service.execute
-
-    if result[:status] == :success
-      render json: {
-        projects: serialize_projects(result[:projects])
-      }
-    else
-      return render(
-        status: result[:http_status] || :bad_request,
-        json: {
-          message: result[:message]
-        }
-      )
-    end
-  end
-
   def handle_errors(result)
     unless result[:status] == :success
       render json: { message: result[:message] },
@@ -117,8 +78,8 @@ class Projects::ErrorTrackingController < Projects::ApplicationController
     params.permit(:search_term, :sort, :cursor)
   end
 
-  def list_projects_params
-    params.require(:error_tracking_setting).permit([:api_host, :token])
+  def issue_update_params
+    params.permit(:issue_id, :status)
   end
 
   def issue_details_params
@@ -127,10 +88,6 @@ class Projects::ErrorTrackingController < Projects::ApplicationController
 
   def set_issue_id
     @issue_id = issue_details_params[:issue_id]
-  end
-
-  def set_polling_interval
-    Gitlab::PollingInterval.set_header(response, interval: POLLING_INTERVAL)
   end
 
   def serialize_errors(errors)
@@ -143,17 +100,5 @@ class Projects::ErrorTrackingController < Projects::ApplicationController
     ErrorTracking::DetailedErrorSerializer
       .new(project: project, user: current_user)
       .represent(error)
-  end
-
-  def serialize_error_event(event)
-    ErrorTracking::ErrorEventSerializer
-      .new(project: project, user: current_user)
-      .represent(event)
-  end
-
-  def serialize_projects(projects)
-    ErrorTracking::ProjectSerializer
-      .new(project: project, user: current_user)
-      .represent(projects)
   end
 end

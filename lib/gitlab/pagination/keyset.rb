@@ -3,10 +3,6 @@
 module Gitlab
   module Pagination
     module Keyset
-      def self.paginate(request_context, relation)
-        Gitlab::Pagination::Keyset::Pager.new(request_context).paginate(relation)
-      end
-
       def self.available?(request_context, relation)
         order_by = request_context.page.order_by
 

@@ -53,8 +53,8 @@ differentiate the new cluster from the rest.
 
 ## GitLab-managed clusters
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22011) in GitLab 11.5.
-> Became [optional](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/26565) in GitLab 11.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22011) in GitLab 11.5.
+> - Became [optional](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/26565) in GitLab 11.11.
 
 You can choose to allow GitLab to manage your cluster for you. If your cluster is
 managed by GitLab, resources for your projects will be automatically created. See the
@@ -169,6 +169,11 @@ For important information about securely configuring GitLab Runners, see
 [Security of
 Runners](../../project/clusters/add_remove_clusters.md#security-of-gitlab-runners)
 documentation for project-level clusters.
+
+## More information
+
+For information on integrating GitLab and Kubernetes, see
+[Kubernetes clusters](../../project/clusters/index.md).
 
 <!-- ## Troubleshooting
 

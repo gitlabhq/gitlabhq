@@ -6,6 +6,7 @@
 
 <!-- Who will use this feature? If known, include any of the following: types of users (e.g. Developer), personas, or specific company roles (e.g. Release Manager). It's okay to write "Unknown" and fill this field in later.
 
+* [Rachel (Release Manager)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#rachel-release-manager)
 * [Parker (Product Manager)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#parker-product-manager)
 * [Delaney (Development Team Lead)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#delaney-development-team-lead)
 * [Sasha (Software Developer)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#sasha-software-developer)

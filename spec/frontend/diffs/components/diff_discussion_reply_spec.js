@@ -16,7 +16,6 @@ describe('DiffDiscussionReply', () => {
     wrapper = shallowMount(DiffDiscussionReply, {
       store,
       localVue,
-      sync: false,
       propsData: {
         ...props,
       },

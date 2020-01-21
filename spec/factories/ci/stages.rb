@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :ci_stage, class: Ci::LegacyStage do
+  factory :ci_stage, class: 'Ci::LegacyStage' do
     skip_create
 
     transient do
@@ -18,7 +18,7 @@ FactoryBot.define do
     end
   end
 
-  factory :ci_stage_entity, class: Ci::Stage do
+  factory :ci_stage_entity, class: 'Ci::Stage' do
     project factory: :project
     pipeline factory: :ci_empty_pipeline
 

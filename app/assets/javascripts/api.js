@@ -54,10 +54,15 @@ const Api = {
     });
   },
 
-  groupMembers(id) {
+  groupMembers(id, options) {
     const url = Api.buildUrl(this.groupMembersPath).replace(':id', encodeURIComponent(id));
 
-    return axios.get(url);
+    return axios.get(url, {
+      params: {
+        per_page: DEFAULT_PER_PAGE,
+        ...options,
+      },
+    });
   },
 
   // Return groups list. Filtered by query
@@ -140,6 +145,12 @@ const Api = {
     const url = Api.buildUrl(Api.projectPath).replace(':id', encodeURIComponent(projectPath));
 
     return axios.get(url);
+  },
+
+  // Update a single project
+  updateProject(projectPath, data) {
+    const url = Api.buildUrl(Api.projectPath).replace(':id', encodeURIComponent(projectPath));
+    return axios.put(url, data);
   },
 
   /**

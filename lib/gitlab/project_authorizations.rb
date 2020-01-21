@@ -68,7 +68,7 @@ module Gitlab
         .select([namespaces[:id], members[:access_level]])
         .except(:order)
 
-      if Feature.enabled?(:share_group_with_group)
+      if Feature.enabled?(:share_group_with_group, default_enabled: true)
         # Namespaces shared with any of the group
         cte << Group.select([namespaces[:id], 'group_group_links.group_access AS access_level'])
                     .joins(join_group_group_links)

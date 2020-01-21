@@ -1,15 +1,17 @@
 import mutations from '~/ide/stores/mutations/file';
-import state from '~/ide/stores/state';
+import { createStore } from '~/ide/stores';
 import { FILE_VIEW_MODE_PREVIEW } from '~/ide/constants';
 import { file } from '../../helpers';
 
 describe('IDE store file mutations', () => {
   let localState;
+  let localStore;
   let localFile;
 
   beforeEach(() => {
-    localState = state();
-    localFile = { ...file(), type: 'blob' };
+    localStore = createStore();
+    localState = localStore.state;
+    localFile = { ...file('file'), type: 'blob', content: 'original' };
 
     localState.entries[localFile.path] = localFile;
   });
@@ -137,35 +139,68 @@ describe('IDE store file mutations', () => {
   });
 
   describe('SET_FILE_RAW_DATA', () => {
-    it('sets raw data', () => {
+    const callMutationForFile = f => {
       mutations.SET_FILE_RAW_DATA(localState, {
-        file: localFile,
+        file: f,
         raw: 'testing',
+        fileDeletedAndReadded: localStore.getters.isFileDeletedAndReadded(localFile.path),
       });
+    };
+
+    it('sets raw data', () => {
+      callMutationForFile(localFile);
 
       expect(localFile.raw).toBe('testing');
+    });
+
+    it('sets raw data to stagedFile if file was deleted and readded', () => {
+      localState.stagedFiles = [{ ...localFile, deleted: true }];
+      localFile.tempFile = true;
+
+      callMutationForFile(localFile);
+
+      expect(localFile.raw).toBeFalsy();
+      expect(localState.stagedFiles[0].raw).toBe('testing');
+    });
+
+    it("sets raw data to a file's content if tempFile is empty", () => {
+      localFile.tempFile = true;
+      localFile.content = '';
+
+      callMutationForFile(localFile);
+
+      expect(localFile.raw).toBeFalsy();
+      expect(localFile.content).toBe('testing');
     });
 
     it('adds raw data to open pending file', () => {
       localState.openFiles.push({ ...localFile, pending: true });
 
-      mutations.SET_FILE_RAW_DATA(localState, {
-        file: localFile,
-        raw: 'testing',
-      });
+      callMutationForFile(localFile);
 
       expect(localState.openFiles[0].raw).toBe('testing');
     });
 
-    it('does not add raw data to open pending tempFile file', () => {
-      localState.openFiles.push({ ...localFile, pending: true, tempFile: true });
+    it('sets raw to content of a renamed tempFile', () => {
+      localFile.tempFile = true;
+      localFile.prevPath = 'old_path';
+      localState.openFiles.push({ ...localFile, pending: true });
 
-      mutations.SET_FILE_RAW_DATA(localState, {
-        file: localFile,
-        raw: 'testing',
-      });
+      callMutationForFile(localFile);
 
       expect(localState.openFiles[0].raw).not.toBe('testing');
+      expect(localState.openFiles[0].content).toBe('testing');
+    });
+
+    it('adds raw data to a staged deleted file if unstaged change has a tempFile of the same name', () => {
+      localFile.tempFile = true;
+      localState.openFiles.push({ ...localFile, pending: true });
+      localState.stagedFiles = [{ ...localFile, deleted: true }];
+
+      callMutationForFile(localFile);
+
+      expect(localFile.raw).toBeFalsy();
+      expect(localState.stagedFiles[0].raw).toBe('testing');
     });
   });
 
@@ -333,44 +368,154 @@ describe('IDE store file mutations', () => {
     });
   });
 
-  describe('STAGE_CHANGE', () => {
-    beforeEach(() => {
-      mutations.STAGE_CHANGE(localState, localFile.path);
-    });
+  describe.each`
+    mutationName        | mutation                    | addedTo           | removedFrom       | staged   | changedFilesCount | stagedFilesCount
+    ${'STAGE_CHANGE'}   | ${mutations.STAGE_CHANGE}   | ${'stagedFiles'}  | ${'changedFiles'} | ${true}  | ${0}              | ${1}
+    ${'UNSTAGE_CHANGE'} | ${mutations.UNSTAGE_CHANGE} | ${'changedFiles'} | ${'stagedFiles'}  | ${false} | ${1}              | ${0}
+  `(
+    '$mutationName',
+    ({ mutation, changedFilesCount, removedFrom, addedTo, staged, stagedFilesCount }) => {
+      let unstagedFile;
+      let stagedFile;
 
-    it('adds file into stagedFiles array', () => {
-      expect(localState.stagedFiles.length).toBe(1);
-      expect(localState.stagedFiles[0]).toEqual(localFile);
-    });
+      beforeEach(() => {
+        unstagedFile = {
+          ...file('file'),
+          type: 'blob',
+          raw: 'original content',
+          content: 'changed content',
+        };
 
-    it('updates stagedFile if it is already staged', () => {
-      localFile.raw = 'testing 123';
+        stagedFile = {
+          ...unstagedFile,
+          content: 'staged content',
+          staged: true,
+        };
 
-      mutations.STAGE_CHANGE(localState, localFile.path);
+        localState.changedFiles.push(unstagedFile);
+        localState.stagedFiles.push(stagedFile);
+        localState.entries[unstagedFile.path] = unstagedFile;
+      });
 
-      expect(localState.stagedFiles.length).toBe(1);
-      expect(localState.stagedFiles[0].raw).toEqual('testing 123');
-    });
-  });
+      it('removes all changes of a file if staged and unstaged change contents are equal', () => {
+        unstagedFile.content = 'original content';
 
-  describe('UNSTAGE_CHANGE', () => {
-    let f;
+        mutation(localState, {
+          path: unstagedFile.path,
+          diffInfo: localStore.getters.getDiffInfo(unstagedFile.path),
+        });
 
-    beforeEach(() => {
-      f = { ...file(), type: 'blob', staged: true };
+        expect(localState.entries.file).toEqual(
+          expect.objectContaining({
+            content: 'original content',
+            staged: false,
+            changed: false,
+          }),
+        );
 
-      localState.stagedFiles.push(f);
-      localState.changedFiles.push(f);
-      localState.entries[f.path] = f;
-    });
+        expect(localState.stagedFiles.length).toBe(0);
+        expect(localState.changedFiles.length).toBe(0);
+      });
 
-    it('removes from stagedFiles array', () => {
-      mutations.UNSTAGE_CHANGE(localState, f.path);
+      it('removes all changes of a file if a file is deleted and a new file with same content is added', () => {
+        stagedFile.deleted = true;
+        unstagedFile.tempFile = true;
+        unstagedFile.content = 'original content';
 
-      expect(localState.stagedFiles.length).toBe(0);
-      expect(localState.changedFiles.length).toBe(1);
-    });
-  });
+        mutation(localState, {
+          path: unstagedFile.path,
+          diffInfo: localStore.getters.getDiffInfo(unstagedFile.path),
+        });
+
+        expect(localState.stagedFiles.length).toBe(0);
+        expect(localState.changedFiles.length).toBe(0);
+
+        expect(localState.entries.file).toEqual(
+          expect.objectContaining({
+            content: 'original content',
+            deleted: false,
+            tempFile: false,
+          }),
+        );
+      });
+
+      it('merges deleted and added file into a changed file if the contents differ', () => {
+        stagedFile.deleted = true;
+        unstagedFile.tempFile = true;
+        unstagedFile.content = 'hello';
+
+        mutation(localState, {
+          path: unstagedFile.path,
+          diffInfo: localStore.getters.getDiffInfo(unstagedFile.path),
+        });
+
+        expect(localState.stagedFiles.length).toBe(stagedFilesCount);
+        expect(localState.changedFiles.length).toBe(changedFilesCount);
+
+        expect(unstagedFile).toEqual(
+          expect.objectContaining({
+            content: 'hello',
+            staged,
+            deleted: false,
+            tempFile: false,
+            changed: true,
+          }),
+        );
+      });
+
+      it('does not remove file from stagedFiles and changedFiles if the file was renamed, even if the contents are equal', () => {
+        unstagedFile.content = 'original content';
+        unstagedFile.prevPath = 'old_file';
+
+        mutation(localState, {
+          path: unstagedFile.path,
+          diffInfo: localStore.getters.getDiffInfo(unstagedFile.path),
+        });
+
+        expect(localState.entries.file).toEqual(
+          expect.objectContaining({
+            content: 'original content',
+            staged,
+            changed: false,
+            prevPath: 'old_file',
+          }),
+        );
+
+        expect(localState.stagedFiles.length).toBe(stagedFilesCount);
+        expect(localState.changedFiles.length).toBe(changedFilesCount);
+      });
+
+      it(`removes file from ${removedFrom} array and adds it into ${addedTo} array`, () => {
+        localState.stagedFiles.length = 0;
+
+        mutation(localState, {
+          path: unstagedFile.path,
+          diffInfo: localStore.getters.getDiffInfo(unstagedFile.path),
+        });
+
+        expect(localState.stagedFiles.length).toBe(stagedFilesCount);
+        expect(localState.changedFiles.length).toBe(changedFilesCount);
+
+        const f = localState.stagedFiles[0] || localState.changedFiles[0];
+        expect(f).toEqual(unstagedFile);
+      });
+
+      it(`updates file in ${addedTo} array if it is was already present in it`, () => {
+        unstagedFile.raw = 'testing 123';
+
+        mutation(localState, {
+          path: unstagedFile.path,
+          diffInfo: localStore.getters.getDiffInfo(unstagedFile.path),
+        });
+
+        expect(localState.stagedFiles.length).toBe(stagedFilesCount);
+        expect(localState.changedFiles.length).toBe(changedFilesCount);
+
+        const f = localState.stagedFiles[0] || localState.changedFiles[0];
+        expect(f.raw).toEqual('testing 123');
+      });
+    },
+  );
 
   describe('TOGGLE_FILE_CHANGED', () => {
     it('updates file changed status', () => {

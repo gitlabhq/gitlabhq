@@ -1,0 +1,5 @@
+---
+title: Add Index to help Hashed Storage migration on big instances
+merge_request: 22391
+author:
+type: performance

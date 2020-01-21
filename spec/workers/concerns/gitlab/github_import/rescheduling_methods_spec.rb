@@ -57,9 +57,9 @@ describe Gitlab::GithubImport::ReschedulingMethods do
         expect(worker)
           .not_to receive(:notify_waiter)
 
-        expect_any_instance_of(Gitlab::GithubImport::Client)
-          .to receive(:rate_limit_resets_in)
-          .and_return(14)
+        expect_next_instance_of(Gitlab::GithubImport::Client) do |instance|
+          expect(instance).to receive(:rate_limit_resets_in).and_return(14)
+        end
 
         expect(worker.class)
           .to receive(:perform_in)

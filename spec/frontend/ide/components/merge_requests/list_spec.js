@@ -42,7 +42,6 @@ describe('IDE merge requests list', () => {
     wrapper = shallowMount(List, {
       store: fakeStore,
       localVue,
-      sync: false,
     });
   };
 

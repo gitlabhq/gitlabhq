@@ -165,6 +165,7 @@ describe Project do
       let(:project) { create(:project, :public) }
       let(:requester) { create(:user) }
       let(:developer) { create(:user) }
+
       before do
         project.request_access(requester)
         project.add_developer(developer)
@@ -210,6 +211,7 @@ describe Project do
     it { is_expected.to validate_presence_of(:creator) }
     it { is_expected.to validate_presence_of(:namespace) }
     it { is_expected.to validate_presence_of(:repository_storage) }
+    it { is_expected.to validate_numericality_of(:max_artifacts_size).only_integer.is_greater_than(0) }
 
     it 'validates build timeout constraints' do
       is_expected.to validate_numericality_of(:build_timeout)
@@ -468,6 +470,32 @@ describe Project do
       it 'returns .external pipelines' do
         expect(project.ci_pipelines).to all(have_attributes(source: 'external'))
         expect(project.ci_pipelines.size).to eq(1)
+      end
+    end
+  end
+
+  describe '#autoclose_referenced_issues' do
+    context 'when DB entry is nil' do
+      let(:project) { create(:project, autoclose_referenced_issues: nil) }
+
+      it 'returns true' do
+        expect(project.autoclose_referenced_issues).to be_truthy
+      end
+    end
+
+    context 'when DB entry is true' do
+      let(:project) { create(:project, autoclose_referenced_issues: true) }
+
+      it 'returns true' do
+        expect(project.autoclose_referenced_issues).to be_truthy
+      end
+    end
+
+    context 'when DB entry is false' do
+      let(:project) { create(:project, autoclose_referenced_issues: false) }
+
+      it 'returns false' do
+        expect(project.autoclose_referenced_issues).to be_falsey
       end
     end
   end
@@ -815,6 +843,7 @@ describe Project do
 
     context 'with external issues tracker' do
       let!(:internal_issue) { create(:issue, project: project) }
+
       before do
         allow(project).to receive(:external_issue_tracker).and_return(true)
       end
@@ -1319,9 +1348,7 @@ describe Project do
     let(:project2) { create(:project, :public, group: group) }
 
     before do
-      2.times do
-        create(:note_on_commit, project: project1)
-      end
+      create_list(:note_on_commit, 2, project: project1)
 
       create(:note_on_commit, project: project2)
 
@@ -1335,9 +1362,7 @@ describe Project do
     end
 
     it 'does not take system notes into account' do
-      10.times do
-        create(:note_on_commit, project: project2, system: true)
-      end
+      create_list(:note_on_commit, 10, project: project2, system: true)
 
       expect(described_class.trending.to_a).to eq([project1, project2])
     end
@@ -2334,6 +2359,7 @@ describe Project do
 
   describe '#has_remote_mirror?' do
     let(:project) { create(:project, :remote_mirror, :import_started) }
+
     subject { project.has_remote_mirror? }
 
     before do
@@ -2353,6 +2379,7 @@ describe Project do
 
   describe '#update_remote_mirrors' do
     let(:project) { create(:project, :remote_mirror, :import_started) }
+
     delegate :update_remote_mirrors, to: :project
 
     before do
@@ -3460,6 +3487,7 @@ describe Project do
 
   describe '#pipeline_status' do
     let(:project) { create(:project, :repository) }
+
     it 'builds a pipeline status' do
       expect(project.pipeline_status).to be_a(Gitlab::Cache::Ci::ProjectPipelineStatus)
     end
@@ -4638,6 +4666,7 @@ describe Project do
 
   describe '#execute_hooks' do
     let(:data) { { ref: 'refs/heads/master', data: 'data' } }
+
     it 'executes active projects hooks with the specified scope' do
       hook = create(:project_hook, merge_requests_events: false, push_events: true)
       expect(ProjectHook).to receive(:select_active)
@@ -4716,7 +4745,7 @@ describe Project do
     end
 
     it 'returns true when a plugin exists' do
-      expect(Gitlab::Plugin).to receive(:any?).twice.and_return(true)
+      expect(Gitlab::FileHook).to receive(:any?).twice.and_return(true)
 
       expect(project.has_active_hooks?(:merge_request_events)).to be_truthy
       expect(project.has_active_hooks?).to be_truthy
@@ -4975,6 +5004,7 @@ describe Project do
 
     context 'when there is a gitlab deploy token associated but is has been revoked' do
       let!(:deploy_token) { create(:deploy_token, :gitlab_deploy_token, :revoked, projects: [project]) }
+
       it { is_expected.to be_nil }
     end
 
@@ -5018,6 +5048,7 @@ describe Project do
 
   context '#members_among' do
     let(:users) { create_list(:user, 3) }
+
     set(:group) { create(:group) }
     set(:project) { create(:project, namespace: group) }
 
@@ -5105,7 +5136,7 @@ describe Project do
   describe '.deployments' do
     subject { project.deployments }
 
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
     before do
       allow_any_instance_of(Deployment).to receive(:create_ref)

@@ -48,13 +48,14 @@ class Environment < ApplicationRecord
 
   scope :available, -> { with_state(:available) }
   scope :stopped, -> { with_state(:stopped) }
+
   scope :order_by_last_deployed_at, -> do
-    max_deployment_id_sql =
-      Deployment.select(Deployment.arel_table[:id].maximum)
-      .where(Deployment.arel_table[:environment_id].eq(arel_table[:id]))
-      .to_sql
     order(Gitlab::Database.nulls_first_order("(#{max_deployment_id_sql})", 'ASC'))
   end
+  scope :order_by_last_deployed_at_desc, -> do
+    order(Gitlab::Database.nulls_last_order("(#{max_deployment_id_sql})", 'DESC'))
+  end
+
   scope :in_review_folder, -> { where(environment_type: "review") }
   scope :for_name, -> (name) { where(name: name) }
   scope :preload_cluster, -> { preload(last_deployment: :cluster) }
@@ -88,6 +89,12 @@ class Environment < ApplicationRecord
     after_transition do |environment|
       environment.expire_etag_cache
     end
+  end
+
+  def self.max_deployment_id_sql
+    Deployment.select(Deployment.arel_table[:id].maximum)
+    .where(Deployment.arel_table[:environment_id].eq(arel_table[:id]))
+    .to_sql
   end
 
   def self.pluck_names
@@ -197,11 +204,15 @@ class Environment < ApplicationRecord
   end
 
   def has_metrics?
-    available? && prometheus_adapter&.configured?
+    available? && (prometheus_adapter&.configured? || has_sample_metrics?)
+  end
+
+  def has_sample_metrics?
+    !!ENV['USE_SAMPLE_METRICS']
   end
 
   def metrics
-    prometheus_adapter.query(:environment, self) if has_metrics? && prometheus_adapter.can_query?
+    prometheus_adapter.query(:environment, self) if has_metrics_and_can_query?
   end
 
   def prometheus_status
@@ -209,16 +220,14 @@ class Environment < ApplicationRecord
   end
 
   def additional_metrics(*args)
-    return unless has_metrics?
+    return unless has_metrics_and_can_query?
 
     prometheus_adapter.query(:additional_metrics_environment, self, *args.map(&:to_f))
   end
 
-  # rubocop: disable CodeReuse/ServiceClass
   def prometheus_adapter
-    @prometheus_adapter ||= Prometheus::AdapterService.new(project, deployment_platform).prometheus_adapter
+    @prometheus_adapter ||= Gitlab::Prometheus::Adapter.new(project, deployment_platform&.cluster).prometheus_adapter
   end
-  # rubocop: enable CodeReuse/ServiceClass
 
   def slug
     super.presence || generate_slug
@@ -277,6 +286,10 @@ class Environment < ApplicationRecord
   end
 
   private
+
+  def has_metrics_and_can_query?
+    has_metrics? && prometheus_adapter.can_query?
+  end
 
   def generate_slug
     self.slug = Gitlab::Slug::Environment.new(name).generate

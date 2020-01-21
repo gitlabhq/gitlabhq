@@ -127,7 +127,7 @@ module SnippetsHelper
     return unless attrs = snippet_badge_attributes(snippet)
 
     css_class, text = attrs
-    tag.span(class: ['badge', 'badge-gray']) do
+    tag.span(class: %w[badge badge-gray]) do
       concat(tag.i(class: ['fa', css_class]))
       concat(' ')
       concat(text)

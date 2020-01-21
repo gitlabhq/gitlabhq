@@ -52,6 +52,7 @@
         = f.label :user_show_add_ssh_key_message, class: 'form-check-label' do
           = _("Inform users without uploaded SSH keys that they can't push over SSH until one is added")
 
+    = render_if_exists 'admin/application_settings/updating_name_disabled_for_users', form: f
     = render_if_exists 'admin/application_settings/availability_on_namespace_setting', form: f
 
   = f.submit _('Save changes'), class: 'btn btn-success qa-save-changes-button'

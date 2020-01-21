@@ -5,9 +5,9 @@ require 'spec_helper'
 describe Metrics::Dashboard::DefaultEmbedService, :use_clean_rails_memory_store_caching do
   include MetricsDashboardHelpers
 
-  set(:project) { build(:project) }
-  set(:user) { create(:user) }
-  set(:environment) { create(:environment, project: project) }
+  let_it_be(:project) { build(:project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:environment) { create(:environment, project: project) }
 
   before do
     project.add_maintainer(user)

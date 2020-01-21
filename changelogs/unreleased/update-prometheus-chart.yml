@@ -1,0 +1,5 @@
+---
+title: Update prometheus chart version to 9.5.2
+merge_request: 21935
+author:
+type: changed

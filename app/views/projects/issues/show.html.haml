@@ -71,6 +71,9 @@
 
       = edited_time_ago_with_tooltip(@issue, placement: 'bottom', html_class: 'issue-edited-ago js-issue-edited-ago')
 
+    - if @issue.sentry_issue.present?
+      #js-sentry-error-stack-trace{ data: error_details_data(@project, @issue.sentry_issue.sentry_issue_identifier) }
+
     = render_if_exists 'projects/issues/related_issues'
 
     #js-related-merge-requests{ data: { endpoint: expose_path(api_v4_projects_issues_related_merge_requests_path(id: @project.id, issue_iid: @issue.iid)), project_namespace: @project.namespace.path, project_path: @project.path } }

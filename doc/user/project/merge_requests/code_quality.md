@@ -66,6 +66,19 @@ will scan your source code for code quality issues. The report will be saved as 
 that you can later download and analyze. Due to implementation limitations we always
 take the latest Code Quality artifact available.
 
+It is also possible to override the URL to the Code Quality image by
+setting the `CODE_QUALITY_IMAGE` variable. This is particularly useful if you want
+to lock in a specific version of Code Quality, or use a fork of it:
+
+```yaml
+include:
+  - template: Code-Quality.gitlab-ci.yml
+
+code_quality:
+  variables:
+    CODE_QUALITY_IMAGE: "registry.example.com/codequality-fork:latest"
+```
+
 By default, report artifacts are not downloadable. If you need them downloadable on the
 job details page, you can add `gl-code-quality-report.json` to the artifact paths like so:
 
@@ -115,6 +128,33 @@ code_quality:
     - docker:stable-dind
   script:
     - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
+    - docker run
+        --env SOURCE_CODE="$PWD"
+        --volume "$PWD":/code
+        --volume /var/run/docker.sock:/var/run/docker.sock
+        "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
+  artifacts:
+    reports:
+      codequality: gl-code-quality-report.json
+```
+
+In GitLab 12.6, Code Quality switched to the
+[new versioning scheme](https://gitlab.com/gitlab-org/security-products/codequality/merge_requests/38).
+It is highly recommended to include the Code Quality template as shown in the
+[example configuration](#example-configuration), which uses the new versioning scheme.
+If not using the template, the `SP_VERSION` variable can be hardcoded to use the
+new image versions:
+
+```yaml
+code_quality:
+  image: docker:stable
+  variables:
+    DOCKER_DRIVER: overlay2
+    SP_VERSION: 0.85.6
+  allow_failure: true
+  services:
+    - docker:stable-dind
+  script:
     - docker run
         --env SOURCE_CODE="$PWD"
         --volume "$PWD":/code

@@ -18,6 +18,7 @@ module API
         optional :auto_devops_enabled, type: Boolean, desc: 'Default to Auto DevOps pipeline for all projects within this group'
         optional :subgroup_creation_level, type: String, values: ::Gitlab::Access.subgroup_creation_string_values, desc: 'Allowed to create subgroups', as: :subgroup_creation_level_str
         optional :emails_disabled, type: Boolean, desc: 'Disable email notifications'
+        optional :mentions_disabled, type: Boolean, desc: 'Disable a group from getting mentioned'
         optional :lfs_enabled, type: Boolean, desc: 'Enable/disable LFS for the projects in this group'
         optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'
       end

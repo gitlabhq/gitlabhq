@@ -107,8 +107,13 @@ class GfmAutoComplete {
         if (value.params.length > 0) {
           tpl += ' <small class="params"><%- params.join(" ") %></small>';
         }
-        if (value.description !== '') {
-          tpl += '<small class="description"><i><%- description %> <%- warningText %></i></small>';
+        if (value.warning && value.icon && value.icon === 'confidential') {
+          tpl +=
+            '<small class="description"><em><i class="fa fa-eye-slash" aria-hidden="true"/><%- warning %></em></small>';
+        } else if (value.warning) {
+          tpl += '<small class="description"><em><%- warning %></em></small>';
+        } else if (value.description !== '') {
+          tpl += '<small class="description"><em><%- description %></em></small>';
         }
         tpl += '</li>';
 
@@ -119,7 +124,6 @@ class GfmAutoComplete {
         return _.template(tpl)({
           ...value,
           className: cssClasses.join(' '),
-          warningText: value.warning ? `(${value.warning})` : '',
         });
       },
       insertTpl(value) {
@@ -150,6 +154,7 @@ class GfmAutoComplete {
               params: c.params,
               description: c.description,
               warning: c.warning,
+              icon: c.icon,
               search,
             };
           });

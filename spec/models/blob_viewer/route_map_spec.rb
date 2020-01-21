@@ -14,6 +14,7 @@ describe BlobViewer::RouteMap do
     MAP
   end
   let(:blob) { fake_blob(path: '.gitlab/route-map.yml', data: data) }
+
   subject { described_class.new(blob) }
 
   describe '#validation_message' do

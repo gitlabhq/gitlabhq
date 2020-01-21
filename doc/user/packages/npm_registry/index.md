@@ -73,20 +73,20 @@ If you have 2FA enabled, you need to use a [personal access token](../../profile
 ### Authenticating with an OAuth token
 
 To authenticate with an [OAuth token](../../../api/oauth2.md#resource-owner-password-credentials-flow)
-or [personal access token](../../profile/personal_access_tokens.md), add a corresponding section to your `.npmrc` file:
+or [personal access token](../../profile/personal_access_tokens.md), set your NPM configuration:
 
-```ini
-; Set URL for your scoped packages.
-; For example package with name `@foo/bar` will use this URL for download
-@foo:registry=https://gitlab.com/api/v4/packages/npm/
+```bash
+# Set URL for your scoped packages.
+# For example package with name `@foo/bar` will use this URL for download
+npm config set @foo:registry https://gitlab.com/api/v4/packages/npm/
 
-; Add the token for the scoped packages URL. This will allow you to download
-; `@foo/` packages from private projects.
-//gitlab.com/api/v4/packages/npm/:_authToken=<your_token>
+# Add the token for the scoped packages URL. This will allow you to download
+# `@foo/` packages from private projects.
+npm config set '//gitlab.com/api/v4/projects/<your_project_id>/packages/npm/:_authToken' "<your_token>"
 
-; Add token for uploading to the registry. Replace <your_project_id>
-; with the project you want your package to be uploaded to.
-//gitlab.com/api/v4/projects/<your_project_id>/packages/npm/:_authToken=<your_token>
+# Add token for uploading to the registry. Replace <your_project_id>
+# with the project you want your package to be uploaded to.
+npm config set '//gitlab.com/api/v4/packages/npm/:_authToken' "<your_token>"
 ```
 
 Replace `<your_project_id>` with your project ID which can be found on the home page
@@ -103,13 +103,11 @@ If you encounter an error message with [Yarn](https://yarnpkg.com/en/), see the
 
 ### Using variables to avoid hard-coding auth token values
 
-To avoid hard-coding the `authToken` value, you may use a variables in its place.
-In your `.npmrc` file, you would add:
+To avoid hard-coding the `authToken` value, you may use a variables in its place:
 
-```ini
-@foo:registry=https://gitlab.com/api/v4/packages/npm/
-//gitlab.com/api/v4/packages/npm/:_authToken=${NPM_TOKEN}
-//gitlab.com/api/v4/projects/<your_project_id>/packages/npm/:_authToken=${NPM_TOKEN}
+```bash
+npm config set '//gitlab.com/api/v4/projects/<your_project_id>/packages/npm/:_authToken' "${NPM_TOKEN}"
+npm config set '//gitlab.com/api/v4/packages/npm/:_authToken' "${NPM_TOKEN}"
 ```
 
 Then, you could run `npm publish` either locally or via GitLab CI/CD:
@@ -134,8 +132,8 @@ Add a corresponding section to your `.npmrc` file:
 
 ```ini
 @foo:registry=https://gitlab.com/api/v4/packages/npm/
-//gitlab.com/api/v4/packages/npm/:_authToken=${env.CI_JOB_TOKEN}
-//gitlab.com/api/v4/projects/{env.CI_PROJECT_ID>/packages/npm/:_authToken=${env.CI_JOB_TOKEN}
+//gitlab.com/api/v4/packages/npm/:_authToken=${CI_JOB_TOKEN}
+//gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}
 ```
 
 ## Uploading packages
@@ -195,7 +193,7 @@ info Visit https://yarnpkg.com/en/docs/cli/install for documentation about this 
 ```
 
 In this case, try adding this to your `.npmrc` file (and replace `<your_oauth_token>`
-with your with your OAuth or personal access token):
+with your OAuth or personal access token):
 
 ```text
 //gitlab.com/api/v4/projects/:_authToken=<your_oauth_token>
@@ -227,6 +225,14 @@ And the `.npmrc` file should look like:
 @foo:registry=https://gitlab.com/api/v4/packages/npm/
 ```
 
+### `npm install` returns `Error: Failed to replace env in config: ${NPM_TOKEN}`
+
+You do not need a token to run `npm install` unless your project is private (the token is only required to publish). If the `.npmrc` file was checked in with a reference to `$NPM_TOKEN`, you can remove it. If you prefer to leave the reference in, you'll need to set a value prior to running `npm install` or set the value using [GitLab environment variables](./../../../ci/variables/README.md):
+
+```bash
+NPM_TOKEN=<your_token> npm install
+```
+
 ## NPM dependencies metadata
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/11867) in GitLab Premium 12.6.
@@ -242,3 +248,27 @@ Starting from GitLab 12.6, new packages published to the GitLab NPM Registry exp
   - bundleDependencies
   - peerDependencies
   - deprecated
+
+## NPM distribution tags
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9425) in GitLab Premium 12.7.
+
+Dist Tags for newly published packages are supported, and they follow NPM's convention where they are optional, and each tag can only be assigned to 1 package at
+You can add [distribution tags](https://docs.npmjs.com/cli/dist-tag) for newly
+published packages. They follow NPM's convention where they are optional, and
+each tag can only be assigned to one package at a time. The latest tag is added
+by default when a package is published without a tag. The same goes to installing
+a package without specifying the tag or version.
+
+Examples of the supported `dist-tag` commands and using tags in general:
+
+```sh
+npm publish @scope/package --tag               # Publish new package with new tag
+npm dist-tag add @scope/package@version my-tag # Add a tag to an existing package
+npm dist-tag ls @scope/package                 # List all tags under the package
+npm dist-tag rm @scope/package@version my-tag  # Delete a tag from the package
+npm install @scope/package@my-tag              # Install a specific tag
+```
+
+CAUTION: **Warning:**
+Due to a bug in NPM 6.9.0, deleting dist tags fails. Make sure your NPM version is greater than 6.9.1.

@@ -18,7 +18,6 @@ describe('CollapsedAssignee assignee component', () => {
 
     wrapper = shallowMount(CollapsedAssignee, {
       propsData,
-      sync: false,
     });
   }
 

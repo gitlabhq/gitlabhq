@@ -139,7 +139,10 @@ GitLab supports a limited set of [CI variables](../../../ci/variables/README.htm
 - CI_ENVIRONMENT_SLUG
 - KUBE_NAMESPACE
 
-To specify a variable in a query, enclose it in quotation marks with curly braces with a leading percent. For example: `"%{ci_environment_slug}"`.
+There are 2 methods to specify a variable in a query or dashboard:
+
+1. Variables can be specified using the [Liquid template format](https://help.shopify.com/en/themes/liquid/basics), for example `{{ci_environment_slug}}` ([added](https://gitlab.com/gitlab-org/gitlab/merge_requests/20793) in GitLab 12.6).
+1. You can also enclose it in quotation marks with curly braces with a leading percent, for example `"%{ci_environment_slug}"`. This method is deprecated  though and support will be [removed in the next major release](https://gitlab.com/gitlab-org/gitlab/issues/37990).
 
 ### Defining custom dashboards per project
 
@@ -152,12 +155,13 @@ NOTE: **Note:**
 The custom metrics as defined below do not support alerts, unlike
 [additional metrics](#adding-additional-metrics-premium).
 
-Dashboards have several components:
+#### Adding a new dashboard to your project
 
-- Panel groups, which comprise panels.
-- Panels, which support one or more metrics.
+You can configure a custom dashboard by adding a new `.yml` file into a project's repository. Only `.yml` files present in the projects **default** branch are displayed on the project's **Operations > Metrics** section.
 
-To configure a custom dashboard:
+You may create a new file from scratch or duplicate a GitLab-defined dashboard.
+
+**Add a `.yml` file manually**
 
 1. Create a YAML file with the `.yml` extension under your repository's root
    directory inside `.gitlab/dashboards/`. For example, create
@@ -182,13 +186,35 @@ To configure a custom dashboard:
    define the layout of the dashboard and the Prometheus queries used to populate
    data.
 
-1. Save the file, commit, and push to your repository.
+1. Save the file, commit, and push to your repository. The file must be present in your **default** branch.
 1. Navigate to your project's **Operations > Metrics** and choose the custom
    dashboard from the dropdown.
 
 NOTE: **Note:**
 Configuration files nested under subdirectories of `.gitlab/dashboards` are not
 supported and will not be available in the UI.
+
+**Duplicate a GitLab-defined dashboard as a new `.yml` file**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/37238) in GitLab 12.7.
+
+You can save a copy of a GitLab defined dashboard that can be customized and adapted to your project. You can decide to save the dashboard new `.yml` file in the project's **default** branch or in a newly created branch with a name of your choosing.
+
+1. Click on the "Duplicate dashboard" in the dashboard dropdown.
+
+   NOTE:**Note:**
+   Only GitLab-defined dashboards can be duplicated.
+
+1. Input the file name and other information, such as a new commit message, and click on "Duplicate".
+
+If you select your **default** branch, the new dashboard will become immediately available. If you select another branch, this branch should be merged to your **default** branch first.
+
+#### Dashboard YAML properties
+
+Dashboards have several components:
+
+- Panel groups, which comprise of panels.
+- Panels, which support one or more metrics.
 
 The following tables outline the details of expected properties.
 

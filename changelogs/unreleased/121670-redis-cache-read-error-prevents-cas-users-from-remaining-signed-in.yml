@@ -1,0 +1,5 @@
+---
+title: Fix CAS users being signed out repeatedly
+merge_request: 22704
+author:
+type: fixed

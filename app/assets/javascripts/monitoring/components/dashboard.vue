@@ -17,28 +17,35 @@ import createFlash from '~/flash';
 import Icon from '~/vue_shared/components/icon.vue';
 import { getParameterValues, mergeUrlParams, redirectTo } from '~/lib/utils/url_utility';
 import invalidUrl from '~/lib/utils/invalid_url';
+
 import DateTimePicker from './date_time_picker/date_time_picker.vue';
 import GraphGroup from './graph_group.vue';
 import EmptyState from './empty_state.vue';
 import GroupEmptyState from './group_empty_state.vue';
+import DashboardsDropdown from './dashboards_dropdown.vue';
+
 import TrackEventDirective from '~/vue_shared/directives/track_event';
-import { getTimeDiff, isValidDate, getAddMetricTrackingOptions } from '../utils';
+import { getTimeDiff, getAddMetricTrackingOptions } from '../utils';
 import { metricStates } from '../constants';
+
+const defaultTimeDiff = getTimeDiff();
 
 export default {
   components: {
     VueDraggable,
     PanelType,
-    GraphGroup,
-    EmptyState,
-    GroupEmptyState,
     Icon,
     GlButton,
     GlDropdown,
     GlDropdownItem,
     GlFormGroup,
     GlModal,
+
     DateTimePicker,
+    GraphGroup,
+    EmptyState,
+    GroupEmptyState,
+    DashboardsDropdown,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -78,6 +85,10 @@ export default {
       required: true,
     },
     projectPath: {
+      type: String,
+      required: true,
+    },
+    defaultBranch: {
       type: String,
       required: true,
     },
@@ -138,6 +149,11 @@ export default {
       required: false,
       default: invalidUrl,
     },
+    dashboardsEndpoint: {
+      type: String,
+      required: false,
+      default: invalidUrl,
+    },
     currentDashboard: {
       type: String,
       required: false,
@@ -168,9 +184,10 @@ export default {
     return {
       state: 'gettingStarted',
       formIsValid: null,
-      selectedTimeWindow: {},
-      isRearrangingPanels: false,
+      startDate: getParameterValues('start')[0] || defaultTimeDiff.start,
+      endDate: getParameterValues('end')[0] || defaultTimeDiff.end,
       hasValidDates: true,
+      isRearrangingPanels: false,
     };
   },
   computed: {
@@ -196,9 +213,6 @@ export default {
     selectedDashboard() {
       return this.allDashboards.find(d => d.path === this.currentDashboard) || this.firstDashboard;
     },
-    selectedDashboardText() {
-      return this.selectedDashboard.display_name;
-    },
     showRearrangePanelsBtn() {
       return !this.showEmptyState && this.rearrangePanelsAvailable;
     },
@@ -220,6 +234,7 @@ export default {
       environmentsEndpoint: this.environmentsEndpoint,
       deploymentsEndpoint: this.deploymentsEndpoint,
       dashboardEndpoint: this.dashboardEndpoint,
+      dashboardsEndpoint: this.dashboardsEndpoint,
       currentDashboard: this.currentDashboard,
       projectPath: this.projectPath,
     });
@@ -228,24 +243,10 @@ export default {
     if (!this.hasMetrics) {
       this.setGettingStartedEmptyState();
     } else {
-      const defaultRange = getTimeDiff();
-      const start = getParameterValues('start')[0] || defaultRange.start;
-      const end = getParameterValues('end')[0] || defaultRange.end;
-
-      const range = {
-        start,
-        end,
-      };
-
-      this.selectedTimeWindow = range;
-
-      if (!isValidDate(start) || !isValidDate(end)) {
-        this.hasValidDates = false;
-        this.showInvalidDateError();
-      } else {
-        this.hasValidDates = true;
-        this.fetchData(range);
-      }
+      this.fetchData({
+        start: this.startDate,
+        end: this.endDate,
+      });
     }
   },
   methods: {
@@ -267,9 +268,20 @@ export default {
         key,
       });
     },
-    showInvalidDateError() {
-      createFlash(s__('Metrics|Link contains an invalid time window.'));
+
+    onDateTimePickerApply(params) {
+      redirectTo(mergeUrlParams(params, window.location.href));
     },
+    onDateTimePickerInvalid() {
+      createFlash(
+        s__(
+          'Metrics|Link contains an invalid time window, please verify the link to see the requested time range.',
+        ),
+      );
+      this.startDate = defaultTimeDiff.start;
+      this.endDate = defaultTimeDiff.end;
+    },
+
     generateLink(group, title, yLabel) {
       const dashboard = this.currentDashboard || this.firstDashboard.path;
       const params = _.pick({ dashboard, group, title, y_label: yLabel }, value => value != null);
@@ -286,9 +298,6 @@ export default {
     },
     submitCustomMetricsForm() {
       this.$refs.customMetricsForm.submit();
-    },
-    onDateTimePickerApply(timeWindowUrlParams) {
-      return redirectTo(mergeUrlParams(timeWindowUrlParams, window.location.href));
     },
     /**
      * Return a single empty state for a group.
@@ -317,6 +326,13 @@ export default {
       return !this.getMetricStates(groupKey).includes(metricStates.OK);
     },
     getAddMetricTrackingOptions,
+
+    selectDashboard(dashboard) {
+      const params = {
+        dashboard: dashboard.path,
+      };
+      redirectTo(mergeUrlParams(params, window.location.href));
+    },
   },
   addMetric: {
     title: s__('Metrics|Add metric'),
@@ -336,21 +352,14 @@ export default {
             label-for="monitor-dashboards-dropdown"
             class="col-sm-12 col-md-6 col-lg-2"
           >
-            <gl-dropdown
+            <dashboards-dropdown
               id="monitor-dashboards-dropdown"
-              class="mb-0 d-flex js-dashboards-dropdown"
+              class="mb-0 d-flex"
               toggle-class="dropdown-menu-toggle"
-              :text="selectedDashboardText"
-            >
-              <gl-dropdown-item
-                v-for="dashboard in allDashboards"
-                :key="dashboard.path"
-                :active="dashboard.path === currentDashboard"
-                active-class="is-active"
-                :href="`?dashboard=${dashboard.path}`"
-                >{{ dashboard.display_name || dashboard.path }}</gl-dropdown-item
-              >
-            </gl-dropdown>
+              :default-branch="defaultBranch"
+              :selected-dashboard="selectedDashboard"
+              @selectDashboard="selectDashboard($event)"
+            />
           </gl-form-group>
 
           <gl-form-group
@@ -378,15 +387,16 @@ export default {
           </gl-form-group>
 
           <gl-form-group
-            v-if="hasValidDates"
             :label="s__('Metrics|Show last')"
             label-size="sm"
             label-for="monitor-time-window-dropdown"
             class="col-sm-6 col-md-6 col-lg-4"
           >
             <date-time-picker
-              :selected-time-window="selectedTimeWindow"
-              @onApply="onDateTimePickerApply"
+              :start="startDate"
+              :end="endDate"
+              @apply="onDateTimePickerApply"
+              @invalid="onDateTimePickerInvalid"
             />
           </gl-form-group>
         </template>

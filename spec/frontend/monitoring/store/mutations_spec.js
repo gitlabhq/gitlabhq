@@ -29,8 +29,8 @@ describe('Monitoring mutations', () => {
       mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, payload);
       const groups = getGroups();
 
-      expect(groups[0].key).toBe('response-metrics-nginx-ingress-vts--0');
-      expect(groups[1].key).toBe('system-metrics-kubernetes--1');
+      expect(groups[0].key).toBe('response-metrics-nginx-ingress-vts-0');
+      expect(groups[1].key).toBe('system-metrics-kubernetes-1');
     });
     it('normalizes values', () => {
       mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, payload);
@@ -100,12 +100,12 @@ describe('Monitoring mutations', () => {
         values: [[0, 1], [1, 1], [1, 3]],
       },
     ];
-    const dashboardGroups = metricsDashboardResponse.dashboard.panel_groups;
+    const { dashboard } = metricsDashboardResponse;
     const getMetric = () => stateCopy.dashboard.panel_groups[0].panels[0].metrics[0];
 
     describe('REQUEST_METRIC_RESULT', () => {
       beforeEach(() => {
-        mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, dashboardGroups);
+        mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, dashboard);
       });
       it('stores a loading state on a metric', () => {
         expect(stateCopy.showEmptyState).toBe(true);
@@ -128,7 +128,7 @@ describe('Monitoring mutations', () => {
 
     describe('RECEIVE_METRIC_RESULT_SUCCESS', () => {
       beforeEach(() => {
-        mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, dashboardGroups);
+        mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, dashboard);
       });
       it('clears empty state', () => {
         expect(stateCopy.showEmptyState).toBe(true);
@@ -161,7 +161,7 @@ describe('Monitoring mutations', () => {
 
     describe('RECEIVE_METRIC_RESULT_FAILURE', () => {
       beforeEach(() => {
-        mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, dashboardGroups);
+        mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, dashboard);
       });
       it('maintains the loading state when a metric fails', () => {
         expect(stateCopy.showEmptyState).toBe(true);

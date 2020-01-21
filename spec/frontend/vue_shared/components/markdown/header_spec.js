@@ -12,8 +12,6 @@ describe('Markdown field header component', () => {
         previewMarkdown: false,
         ...props,
       },
-      sync: false,
-      attachToDocument: true,
     });
   };
 
@@ -66,11 +64,17 @@ describe('Markdown field header component', () => {
   it('emits toggle markdown event when clicking preview', () => {
     wrapper.find('.js-preview-link').trigger('click');
 
-    expect(wrapper.emitted('preview-markdown').length).toEqual(1);
+    return wrapper.vm
+      .$nextTick()
+      .then(() => {
+        expect(wrapper.emitted('preview-markdown').length).toEqual(1);
 
-    wrapper.find('.js-write-link').trigger('click');
-
-    expect(wrapper.emitted('write-markdown').length).toEqual(1);
+        wrapper.find('.js-write-link').trigger('click');
+        return wrapper.vm.$nextTick();
+      })
+      .then(() => {
+        expect(wrapper.emitted('write-markdown').length).toEqual(1);
+      });
   });
 
   it('does not emit toggle markdown event when triggered from another form', () => {

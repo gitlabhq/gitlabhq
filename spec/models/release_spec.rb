@@ -181,4 +181,10 @@ RSpec.describe Release do
       it { is_expected.to eq(release.evidence.summary) }
     end
   end
+
+  describe '#milestone_titles' do
+    let(:release) { create(:release, :with_milestones) }
+
+    it { expect(release.milestone_titles).to eq(release.milestones.map {|m| m.title }.sort.join(", "))}
+  end
 end

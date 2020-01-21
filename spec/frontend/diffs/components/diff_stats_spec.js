@@ -22,12 +22,12 @@ describe('diff_stats', () => {
         diffFilesLength: 300,
       },
     });
-    const additions = wrapper.find('icon-stub[name="file-addition"]').element.parentNode;
-    const deletions = wrapper.find('icon-stub[name="file-deletion"]').element.parentNode;
-    const filesChanged = wrapper.find('icon-stub[name="doc-code"]').element.parentNode;
 
-    expect(additions.textContent).toContain('100');
-    expect(deletions.textContent).toContain('200');
-    expect(filesChanged.textContent).toContain('300');
+    const findFileLine = name => wrapper.find(name);
+    const additions = findFileLine('.js-file-addition-line');
+    const deletions = findFileLine('.js-file-deletion-line');
+
+    expect(additions.text()).toBe('100');
+    expect(deletions.text()).toBe('200');
   });
 });

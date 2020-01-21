@@ -25,9 +25,8 @@ describe('ide/components/ide_status_list', () => {
       },
     });
 
-    wrapper = shallowMount(localVue.extend(IdeStatusList), {
+    wrapper = shallowMount(IdeStatusList, {
       localVue,
-      sync: false,
       store,
       ...options,
     });

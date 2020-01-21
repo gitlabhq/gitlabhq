@@ -1,6 +1,6 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { GlLoadingIcon, GlLink } from '@gitlab/ui';
+import { GlLoadingIcon, GlLink, GlBadge, GlFormInput } from '@gitlab/ui';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import Stacktrace from '~/error_tracking/components/stacktrace.vue';
 import ErrorDetails from '~/error_tracking/components/error_details.vue';
@@ -13,17 +13,40 @@ describe('ErrorDetails', () => {
   let wrapper;
   let actions;
   let getters;
+  let mocks;
+
+  const findInput = name => {
+    const inputs = wrapper.findAll(GlFormInput).filter(c => c.attributes('name') === name);
+    return inputs.length ? inputs.at(0) : inputs;
+  };
 
   function mountComponent() {
     wrapper = shallowMount(ErrorDetails, {
       stubs: { LoadingButton },
       localVue,
       store,
+      mocks,
       propsData: {
+        issueId: '123',
+        projectPath: '/root/gitlab-test',
+        listPath: '/error_tracking',
+        issueUpdatePath: '/123',
         issueDetailsPath: '/123/details',
         issueStackTracePath: '/stacktrace',
         projectIssuesPath: '/test-project/issues/',
         csrfToken: 'fakeToken',
+      },
+    });
+    wrapper.setData({
+      GQLerror: {
+        id: 'gid://gitlab/Gitlab::ErrorTracking::DetailedError/129381',
+        sentryId: 129381,
+        title: 'Issue title',
+        externalUrl: 'http://sentry.gitlab.net/gitlab',
+        firstSeen: '2017-05-26T13:32:48Z',
+        lastSeen: '2018-05-26T13:32:48Z',
+        count: 12,
+        userCount: 2,
       },
     });
   }
@@ -56,6 +79,19 @@ describe('ErrorDetails', () => {
         },
       },
     });
+
+    const query = jest.fn();
+    mocks = {
+      $apollo: {
+        query,
+        queries: {
+          GQLerror: {
+            loading: true,
+            stopPolling: jest.fn(),
+          },
+        },
+      },
+    };
   });
 
   afterEach(() => {
@@ -77,27 +113,50 @@ describe('ErrorDetails', () => {
   });
 
   describe('Error details', () => {
-    it('should show Sentry error details without stacktrace', () => {
+    beforeEach(() => {
       store.state.details.loading = false;
       store.state.details.error.id = 1;
+      mocks.$apollo.queries.GQLerror.loading = false;
       mountComponent();
+    });
+
+    it('should show Sentry error details without stacktrace', () => {
       expect(wrapper.find(GlLink).exists()).toBe(true);
       expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
       expect(wrapper.find(Stacktrace).exists()).toBe(false);
+      expect(wrapper.find(GlBadge).exists()).toBe(false);
+      expect(wrapper.findAll('button').length).toBe(3);
+    });
+
+    describe('Badges', () => {
+      it('should show language and error level badges', () => {
+        store.state.details.error.tags = { level: 'error', logger: 'ruby' };
+        mountComponent();
+        return wrapper.vm.$nextTick().then(() => {
+          expect(wrapper.findAll(GlBadge).length).toBe(2);
+        });
+      });
+
+      it('should NOT show the badge if the tag is not present', () => {
+        store.state.details.error.tags = { level: 'error' };
+        mountComponent();
+        return wrapper.vm.$nextTick().then(() => {
+          expect(wrapper.findAll(GlBadge).length).toBe(1);
+        });
+      });
     });
 
     describe('Stacktrace', () => {
       it('should show stacktrace', () => {
-        store.state.details.loading = false;
-        store.state.details.error.id = 1;
         store.state.details.loadingStacktrace = false;
         mountComponent();
-        expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
-        expect(wrapper.find(Stacktrace).exists()).toBe(true);
+        return wrapper.vm.$nextTick().then(() => {
+          expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
+          expect(wrapper.find(Stacktrace).exists()).toBe(true);
+        });
       });
 
       it('should NOT show stacktrace if no entries', () => {
-        store.state.details.loading = false;
         store.state.details.loadingStacktrace = false;
         store.getters = { 'details/sentryUrl': () => 'sentry.io', 'details/stacktrace': () => [] };
         mountComponent();
@@ -108,29 +167,19 @@ describe('ErrorDetails', () => {
 
     describe('When a user clicks the create issue button', () => {
       beforeEach(() => {
-        store.state.details.loading = false;
-        store.state.details.error = {
-          id: 129381,
-          title: 'Issue title',
-          external_url: 'http://sentry.gitlab.net/gitlab',
-          first_seen: '2017-05-26T13:32:48Z',
-          last_seen: '2018-05-26T13:32:48Z',
-          count: 12,
-          user_count: 2,
-        };
         mountComponent();
       });
 
       it('should send sentry_issue_identifier', () => {
-        const sentryErrorIdInput = wrapper.find(
-          'glforminput-stub[name="issue[sentry_issue_attributes][sentry_issue_identifier]"',
+        const sentryErrorIdInput = findInput(
+          'issue[sentry_issue_attributes][sentry_issue_identifier]',
         );
         expect(sentryErrorIdInput.attributes('value')).toBe('129381');
       });
 
       it('should set the form values with title and description', () => {
-        const csrfTokenInput = wrapper.find('glforminput-stub[name="authenticity_token"]');
-        const issueTitleInput = wrapper.find('glforminput-stub[name="issue[title]"]');
+        const csrfTokenInput = findInput('authenticity_token');
+        const issueTitleInput = findInput('issue[title]');
         const issueDescriptionInput = wrapper.find('input[name="issue[description]"]');
         expect(csrfTokenInput.attributes('value')).toBe('fakeToken');
         expect(issueTitleInput.attributes('value')).toContain(wrapper.vm.issueTitle);
@@ -140,7 +189,7 @@ describe('ErrorDetails', () => {
       it('should submit the form', () => {
         window.HTMLFormElement.prototype.submit = () => {};
         const submitSpy = jest.spyOn(wrapper.vm.$refs.sentryIssueForm, 'submit');
-        wrapper.find('button').trigger('click');
+        wrapper.find('[data-qa-selector="create_issue_button"]').trigger('click');
         expect(submitSpy).toHaveBeenCalled();
         submitSpy.mockRestore();
       });
@@ -150,6 +199,7 @@ describe('ErrorDetails', () => {
       const gitlabIssue = 'https://gitlab.example.com/issues/1';
       const findGitLabLink = () => wrapper.find(`[href="${gitlabIssue}"]`);
       const findCreateIssueButton = () => wrapper.find('[data-qa-selector="create_issue_button"]');
+      const findViewIssueButton = () => wrapper.find('[data-qa-selector="view_issue_button"]');
 
       describe('is present', () => {
         beforeEach(() => {
@@ -159,6 +209,10 @@ describe('ErrorDetails', () => {
             gitlab_issue: gitlabIssue,
           };
           mountComponent();
+        });
+
+        it('should display the View issue button', () => {
+          expect(findViewIssueButton().exists()).toBe(true);
         });
 
         it('should display the issue link', () => {
@@ -180,11 +234,48 @@ describe('ErrorDetails', () => {
           mountComponent();
         });
 
+        it('should not display the View issue button', () => {
+          expect(findViewIssueButton().exists()).toBe(false);
+        });
+
         it('should not display an issue link', () => {
           expect(findGitLabLink().exists()).toBe(false);
         });
+
         it('should display the create issue button', () => {
           expect(findCreateIssueButton().exists()).toBe(true);
+        });
+      });
+    });
+
+    describe('GitLab commit link', () => {
+      const gitlabCommit = '7975be0116940bf2ad4321f79d02a55c5f7779aa';
+      const gitlabCommitPath =
+        '/gitlab-org/gitlab-test/commit/7975be0116940bf2ad4321f79d02a55c5f7779aa';
+      const findGitLabCommitLink = () => wrapper.find(`[href$="${gitlabCommitPath}"]`);
+
+      it('should display a link', () => {
+        mocks.$apollo.queries.GQLerror.loading = false;
+        wrapper.setData({
+          GQLerror: {
+            gitlabCommit,
+            gitlabCommitPath,
+          },
+        });
+        return wrapper.vm.$nextTick().then(() => {
+          expect(findGitLabCommitLink().exists()).toBe(true);
+        });
+      });
+
+      it('should not display a link', () => {
+        mocks.$apollo.queries.GQLerror.loading = false;
+        wrapper.setData({
+          GQLerror: {
+            gitlabCommit: null,
+          },
+        });
+        return wrapper.vm.$nextTick().then(() => {
+          expect(findGitLabCommitLink().exists()).toBe(false);
         });
       });
     });

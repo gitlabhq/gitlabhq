@@ -6,9 +6,10 @@ describe('Filtered Search Visual Tokens', () => {
 
   const findElements = tokenElement => {
     const tokenNameElement = tokenElement.querySelector('.name');
+    const tokenOperatorElement = tokenElement.querySelector('.operator');
     const tokenValueContainer = tokenElement.querySelector('.value-container');
     const tokenValueElement = tokenValueContainer.querySelector('.value');
-    return { tokenNameElement, tokenValueContainer, tokenValueElement };
+    return { tokenNameElement, tokenOperatorElement, tokenValueContainer, tokenValueElement };
   };
 
   let tokensContainer;
@@ -23,8 +24,8 @@ describe('Filtered Search Visual Tokens', () => {
     `);
     tokensContainer = document.querySelector('.tokens-container');
 
-    authorToken = FilteredSearchSpecHelper.createFilterVisualToken('author', '@user');
-    bugLabelToken = FilteredSearchSpecHelper.createFilterVisualToken('label', '~bug');
+    authorToken = FilteredSearchSpecHelper.createFilterVisualToken('author', '=', '@user');
+    bugLabelToken = FilteredSearchSpecHelper.createFilterVisualToken('label', '=', '~bug');
   });
 
   describe('getLastVisualTokenBeforeInput', () => {
@@ -62,7 +63,7 @@ describe('Filtered Search Visual Tokens', () => {
         tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
           ${bugLabelToken.outerHTML}
           ${FilteredSearchSpecHelper.createSearchVisualTokenHTML('search term')}
-          ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('author', '@root')}
+          ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('author', '=', '@root')}
         `);
 
         const { lastVisualToken, isLastVisualTokenValid } = subject.getLastVisualTokenBeforeInput();
@@ -92,7 +93,7 @@ describe('Filtered Search Visual Tokens', () => {
         tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
           ${bugLabelToken.outerHTML}
           ${FilteredSearchSpecHelper.createInputHTML()}
-          ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('author', '@root')}
+          ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('author', '=', '@root')}
         `);
 
         const { lastVisualToken, isLastVisualTokenValid } = subject.getLastVisualTokenBeforeInput();
@@ -105,7 +106,7 @@ describe('Filtered Search Visual Tokens', () => {
         tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
           ${FilteredSearchSpecHelper.createNameFilterVisualTokenHTML('label')}
           ${FilteredSearchSpecHelper.createInputHTML()}
-          ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('author', '@root')}
+          ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('author', '=', '@root')}
         `);
 
         const { lastVisualToken, isLastVisualTokenValid } = subject.getLastVisualTokenBeforeInput();
@@ -150,8 +151,8 @@ describe('Filtered Search Visual Tokens', () => {
 
     it('removes the selected class from buttons', () => {
       tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
-        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('author', '@author')}
-        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', '%123', true)}
+        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('author', '=', '@author')}
+        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', '=', '%123', true)}
       `);
 
       const selected = tokensContainer.querySelector('.js-visual-token .selected');
@@ -169,7 +170,7 @@ describe('Filtered Search Visual Tokens', () => {
       tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
         ${bugLabelToken.outerHTML}
         ${FilteredSearchSpecHelper.createSearchVisualTokenHTML('search term')}
-        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~awesome')}
+        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '=', '~awesome')}
       `);
     });
 
@@ -206,7 +207,7 @@ describe('Filtered Search Visual Tokens', () => {
   describe('removeSelectedToken', () => {
     it('does not remove when there are no selected tokens', () => {
       tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
-        FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', 'none'),
+        FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', '=', 'none'),
       );
 
       expect(tokensContainer.querySelector('.js-visual-token .selectable')).not.toEqual(null);
@@ -218,7 +219,7 @@ describe('Filtered Search Visual Tokens', () => {
 
     it('removes selected token', () => {
       tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
-        FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', 'none', true),
+        FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', '=', 'none', true),
       );
 
       expect(tokensContainer.querySelector('.js-visual-token .selectable')).not.toEqual(null);
@@ -281,16 +282,22 @@ describe('Filtered Search Visual Tokens', () => {
 
   describe('addVisualTokenElement', () => {
     it('renders search visual tokens', () => {
-      subject.addVisualTokenElement('search term', null, { isSearchTerm: true });
+      subject.addVisualTokenElement({
+        name: 'search term',
+        operator: '=',
+        value: null,
+        options: { isSearchTerm: true },
+      });
       const token = tokensContainer.querySelector('.js-visual-token');
 
       expect(token.classList.contains('filtered-search-term')).toEqual(true);
       expect(token.querySelector('.name').innerText).toEqual('search term');
+      expect(token.querySelector('.operator').innerText).toEqual('=');
       expect(token.querySelector('.value')).toEqual(null);
     });
 
     it('renders filter visual token name', () => {
-      subject.addVisualTokenElement('milestone');
+      subject.addVisualTokenElement({ name: 'milestone' });
       const token = tokensContainer.querySelector('.js-visual-token');
 
       expect(token.classList.contains('search-token-milestone')).toEqual(true);
@@ -299,22 +306,23 @@ describe('Filtered Search Visual Tokens', () => {
       expect(token.querySelector('.value')).toEqual(null);
     });
 
-    it('renders filter visual token name and value', () => {
-      subject.addVisualTokenElement('label', 'Frontend');
+    it('renders filter visual token name, operator, and value', () => {
+      subject.addVisualTokenElement({ name: 'label', operator: '!=', value: 'Frontend' });
       const token = tokensContainer.querySelector('.js-visual-token');
 
       expect(token.classList.contains('search-token-label')).toEqual(true);
       expect(token.classList.contains('filtered-search-token')).toEqual(true);
       expect(token.querySelector('.name').innerText).toEqual('label');
+      expect(token.querySelector('.operator').innerText).toEqual('!=');
       expect(token.querySelector('.value').innerText).toEqual('Frontend');
     });
 
     it('inserts visual token before input', () => {
       tokensContainer.appendChild(
-        FilteredSearchSpecHelper.createFilterVisualToken('assignee', '@root'),
+        FilteredSearchSpecHelper.createFilterVisualToken('assignee', '=', '@root'),
       );
 
-      subject.addVisualTokenElement('label', 'Frontend');
+      subject.addVisualTokenElement({ name: 'label', operator: '!=', value: 'Frontend' });
       const tokens = tokensContainer.querySelectorAll('.js-visual-token');
       const labelToken = tokens[0];
       const assigneeToken = tokens[1];
@@ -323,18 +331,20 @@ describe('Filtered Search Visual Tokens', () => {
       expect(labelToken.classList.contains('filtered-search-token')).toEqual(true);
       expect(labelToken.querySelector('.name').innerText).toEqual('label');
       expect(labelToken.querySelector('.value').innerText).toEqual('Frontend');
+      expect(labelToken.querySelector('.operator').innerText).toEqual('!=');
 
       expect(assigneeToken.classList.contains('search-token-assignee')).toEqual(true);
       expect(assigneeToken.classList.contains('filtered-search-token')).toEqual(true);
       expect(assigneeToken.querySelector('.name').innerText).toEqual('assignee');
       expect(assigneeToken.querySelector('.value').innerText).toEqual('@root');
+      expect(assigneeToken.querySelector('.operator').innerText).toEqual('=');
     });
   });
 
   describe('addValueToPreviousVisualTokenElement', () => {
     it('does not add when previous visual token element has no value', () => {
       tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
-        FilteredSearchSpecHelper.createFilterVisualTokenHTML('author', '@root'),
+        FilteredSearchSpecHelper.createFilterVisualTokenHTML('author', '=', '@root'),
       );
 
       const original = tokensContainer.innerHTML;
@@ -345,7 +355,7 @@ describe('Filtered Search Visual Tokens', () => {
 
     it('does not add when previous visual token element is a search', () => {
       tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
-        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('author', '@root')}
+        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('author', '=', '@root')}
         ${FilteredSearchSpecHelper.createSearchVisualTokenHTML('search term')}
       `);
 
@@ -357,7 +367,7 @@ describe('Filtered Search Visual Tokens', () => {
 
     it('adds value to previous visual filter token', () => {
       tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
-        FilteredSearchSpecHelper.createNameFilterVisualTokenHTML('label'),
+        FilteredSearchSpecHelper.createNameOperatorFilterVisualTokenHTML('label', '='),
       );
 
       const original = tokensContainer.innerHTML;
@@ -377,25 +387,28 @@ describe('Filtered Search Visual Tokens', () => {
 
       expect(token.classList.contains('filtered-search-token')).toEqual(true);
       expect(token.querySelector('.name').innerText).toEqual('milestone');
+      expect(token.querySelector('.operator')).toEqual(null);
       expect(token.querySelector('.value')).toEqual(null);
     });
 
     it('creates visual token with just tokenValue', () => {
-      subject.addFilterVisualToken('milestone');
+      subject.addFilterVisualToken('milestone', '=');
       subject.addFilterVisualToken('%8.17');
       const token = tokensContainer.querySelector('.js-visual-token');
 
       expect(token.classList.contains('filtered-search-token')).toEqual(true);
       expect(token.querySelector('.name').innerText).toEqual('milestone');
+      expect(token.querySelector('.operator').innerText).toEqual('=');
       expect(token.querySelector('.value').innerText).toEqual('%8.17');
     });
 
     it('creates full visual token', () => {
-      subject.addFilterVisualToken('assignee', '@john');
+      subject.addFilterVisualToken('assignee', '=', '@john');
       const token = tokensContainer.querySelector('.js-visual-token');
 
       expect(token.classList.contains('filtered-search-token')).toEqual(true);
       expect(token.querySelector('.name').innerText).toEqual('assignee');
+      expect(token.querySelector('.operator').innerText).toEqual('=');
       expect(token.querySelector('.value').innerText).toEqual('@john');
     });
   });
@@ -412,7 +425,7 @@ describe('Filtered Search Visual Tokens', () => {
 
     it('appends to previous search visual token if previous token was a search token', () => {
       tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
-        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('author', '@root')}
+        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('author', '=', '@root')}
         ${FilteredSearchSpecHelper.createSearchVisualTokenHTML('search term')}
       `);
 
@@ -467,7 +480,11 @@ describe('Filtered Search Visual Tokens', () => {
   describe('removeLastTokenPartial', () => {
     it('should remove the last token value if it exists', () => {
       tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
-        FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~"Community Contribution"'),
+        FilteredSearchSpecHelper.createFilterVisualTokenHTML(
+          'label',
+          '=',
+          '~"Community Contribution"',
+        ),
       );
 
       expect(tokensContainer.querySelector('.js-visual-token .value')).not.toEqual(null);
@@ -507,7 +524,7 @@ describe('Filtered Search Visual Tokens', () => {
 
     it('adds search visual token if previous visual token is valid', () => {
       tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
-        FilteredSearchSpecHelper.createFilterVisualTokenHTML('assignee', 'none'),
+        FilteredSearchSpecHelper.createFilterVisualTokenHTML('assignee', '=', 'none'),
       );
 
       const input = document.querySelector('.filtered-search');
@@ -523,7 +540,7 @@ describe('Filtered Search Visual Tokens', () => {
 
     it('adds value to previous visual token element if previous visual token is invalid', () => {
       tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
-        FilteredSearchSpecHelper.createNameFilterVisualTokenHTML('assignee'),
+        FilteredSearchSpecHelper.createNameOperatorFilterVisualTokenHTML('assignee', '='),
       );
 
       const input = document.querySelector('.filtered-search');
@@ -534,6 +551,7 @@ describe('Filtered Search Visual Tokens', () => {
 
       expect(input.value).toEqual('');
       expect(updatedToken.querySelector('.name').innerText).toEqual('assignee');
+      expect(updatedToken.querySelector('.operator').innerText).toEqual('=');
       expect(updatedToken.querySelector('.value').innerText).toEqual('@john');
     });
   });
@@ -544,9 +562,9 @@ describe('Filtered Search Visual Tokens', () => {
 
     beforeEach(() => {
       tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
-        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', 'none')}
+        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '=', 'none')}
         ${FilteredSearchSpecHelper.createSearchVisualTokenHTML('search')}
-        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', 'upcoming')}
+        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', '=', 'upcoming')}
       `);
 
       input = document.querySelector('.filtered-search');
@@ -614,7 +632,7 @@ describe('Filtered Search Visual Tokens', () => {
   describe('moveInputTotheRight', () => {
     it('does nothing if the input is already the right most element', () => {
       tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
-        FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', 'none'),
+        FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '=', 'none'),
       );
 
       spyOn(subject, 'tokenizeInput').and.callFake(() => {});
@@ -628,12 +646,12 @@ describe('Filtered Search Visual Tokens', () => {
 
     it("tokenize's input", () => {
       tokensContainer.innerHTML = `
-        ${FilteredSearchSpecHelper.createNameFilterVisualTokenHTML('label')}
+        ${FilteredSearchSpecHelper.createNameOperatorFilterVisualTokenHTML('label', '=')}
         ${FilteredSearchSpecHelper.createInputHTML()}
         ${bugLabelToken.outerHTML}
       `;
 
-      document.querySelector('.filtered-search').value = 'none';
+      tokensContainer.querySelector('.filtered-search').value = 'none';
 
       subject.moveInputToTheRight();
       const value = tokensContainer.querySelector('.js-visual-token .value');
@@ -643,7 +661,7 @@ describe('Filtered Search Visual Tokens', () => {
 
     it('converts input into search term token if last token is valid', () => {
       tokensContainer.innerHTML = `
-        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', 'none')}
+        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '=', 'none')}
         ${FilteredSearchSpecHelper.createInputHTML()}
         ${bugLabelToken.outerHTML}
       `;
@@ -658,7 +676,7 @@ describe('Filtered Search Visual Tokens', () => {
 
     it('moves the input to the right most element', () => {
       tokensContainer.innerHTML = `
-        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', 'none')}
+        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '=', 'none')}
         ${FilteredSearchSpecHelper.createInputHTML()}
         ${bugLabelToken.outerHTML}
       `;
@@ -670,8 +688,8 @@ describe('Filtered Search Visual Tokens', () => {
 
     it('tokenizes input even if input is the right most element', () => {
       tokensContainer.innerHTML = `
-        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', 'none')}
-        ${FilteredSearchSpecHelper.createNameFilterVisualTokenHTML('label')}
+        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '=', 'none')}
+        ${FilteredSearchSpecHelper.createNameOperatorFilterVisualTokenHTML('label')}
         ${FilteredSearchSpecHelper.createInputHTML('', '~bug')}
       `;
 

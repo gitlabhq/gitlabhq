@@ -6,7 +6,6 @@ const createComponent = count =>
     propsData: {
       count,
     },
-    sync: false,
   }).vm;
 
 describe('podBoxComponent', () => {

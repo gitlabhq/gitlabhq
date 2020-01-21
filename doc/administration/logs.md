@@ -96,7 +96,7 @@ request that have been performed and how much time it took. This task is
 more useful for GitLab contributors and developers. Use part of this log
 file when you are going to report bug. For example:
 
-```
+```plaintext
 Started GET "/gitlabhq/yaml_db/tree/master" for 168.111.56.1 at 2015-02-12 19:34:53 +0200
 Processing by Projects::TreeController#show as HTML
   Parameters: {"project_id"=>"gitlabhq/yaml_db", "id"=>"master"}
@@ -151,7 +151,7 @@ installations from source.
 It helps you discover events happening in your instance such as user creation,
 project removing and so on. For example:
 
-```
+```plaintext
 October 06, 2014 11:56: User "Administrator" (admin@example.com) was created
 October 06, 2014 11:56: Documentcloud created a new project "Documentcloud / Underscore"
 October 06, 2014 11:56: Gitlab Org created a new project "Gitlab Org / Gitlab Ce"
@@ -167,7 +167,7 @@ installations from source.
 
 It contains information about [integrations](../user/project/integrations/project_services.md) activities such as Jira, Asana and Irker services. It uses JSON format like the example below:
 
-``` json
+```json
 {"severity":"ERROR","time":"2018-09-06T14:56:20.439Z","service_class":"JiraService","project_id":8,"project_path":"h5bp/html5-boilerplate","message":"Error sending message","client_url":"http://jira.gitlap.com:8080","error":"execution expired"}
 {"severity":"INFO","time":"2018-09-06T17:15:16.365Z","service_class":"JiraService","project_id":3,"project_path":"namespace2/project2","message":"Successfully posted","client_url":"http://jira.example.com"}
 ```
@@ -249,7 +249,7 @@ Instead of the format above, you can opt to generate JSON logs for
 Sidekiq. For example:
 
 ```json
-{"severity":"INFO","time":"2018-04-03T22:57:22.071Z","queue":"cronjob:update_all_mirrors","args":[],"class":"UpdateAllMirrorsWorker","retry":false,"queue_namespace":"cronjob","jid":"06aeaa3b0aadacf9981f368e","created_at":"2018-04-03T22:57:21.930Z","enqueued_at":"2018-04-03T22:57:21.931Z","pid":10077,"message":"UpdateAllMirrorsWorker JID-06aeaa3b0aadacf9981f368e: done: 0.139 sec","job_status":"done","duration":0.139,"completed_at":"2018-04-03T22:57:22.071Z"}
+{"severity":"INFO","time":"2018-04-03T22:57:22.071Z","queue":"cronjob:update_all_mirrors","args":[],"class":"UpdateAllMirrorsWorker","retry":false,"queue_namespace":"cronjob","jid":"06aeaa3b0aadacf9981f368e","created_at":"2018-04-03T22:57:21.930Z","enqueued_at":"2018-04-03T22:57:21.931Z","pid":10077,"message":"UpdateAllMirrorsWorker JID-06aeaa3b0aadacf9981f368e: done: 0.139 sec","job_status":"done","duration":0.139,"completed_at":"2018-04-03T22:57:22.071Z","db_duration":0.05,"db_duration_s":0.0005,"gitaly_duration":0,"gitaly_calls":0}
 ```
 
 For Omnibus GitLab installations, add the configuration option:
@@ -276,7 +276,7 @@ installations from source.
 GitLab Shell is used by GitLab for executing Git commands and provide
 SSH access to Git repositories. For example:
 
-```
+```plaintext
 I, [2015-02-13T06:17:00.671315 #9291]  INFO -- : Adding project root/example.git at </var/opt/gitlab/git-data/repositories/root/dcdcdcdcd.git>.
 I, [2015-02-13T06:17:00.679433 #9291]  INFO -- : Moving existing hooks directory and symlinking global hooks directory for /var/opt/gitlab/git-data/repositories/root/example.git.
 ```
@@ -294,7 +294,7 @@ serving the GitLab application. You can look at this log if, for
 example, your application does not respond. This log contains all
 information about the state of Unicorn processes at any given time.
 
-```
+```plaintext
 I, [2015-02-13T06:14:46.680381 #9047]  INFO -- : Refreshing Gem list
 I, [2015-02-13T06:14:56.931002 #9047]  INFO -- : listening on addr=127.0.0.1:8080 fd=12
 I, [2015-02-13T06:14:56.931381 #9047]  INFO -- : listening on addr=/var/opt/gitlab/gitlab-rails/sockets/gitlab.socket fd=13
@@ -419,6 +419,47 @@ etc. For example:
 
 ```json
 {"severity":"DEBUG","time":"2019-10-17T06:23:13.227Z","correlation_id":null,"message":"redacted_search_result","class_name":"Milestone","id":2,"ability":"read_milestone","current_user_id":2,"query":"project"}
+```
+
+## `exceptions_json.log`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/17819) in GitLab 12.6.
+
+This file lives in
+`/var/log/gitlab/gitlab-rails/exceptions_json.log` for Omnibus GitLab
+packages or in `/home/git/gitlab/log/exceptions_json.log` for installations
+from source.
+
+It logs the information about exceptions being tracked by `Gitlab::ErrorTracking` which provides standard and consistent way of [processing rescued exceptions](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/development/logging.md#exception-handling).
+
+Each line contains a JSON line that can be ingested by Elasticsearch. For example:
+
+```json
+{
+  "severity": "ERROR",
+  "time": "2019-12-17T11:49:29.485Z",
+  "correlation_id": "AbDVUrrTvM1",
+  "extra.server": {
+    "os": {
+      "name": "Darwin",
+      "version": "Darwin Kernel Version 19.2.0",
+      "build": "19.2.0",
+    },
+    "runtime": {
+      "name": "ruby",
+      "version": "ruby 2.6.5p114 (2019-10-01 revision 67812) [x86_64-darwin18]"
+    }
+  },
+  "extra.project_id": 55,
+  "extra.relation_key": "milestones",
+  "extra.relation_index": 1,
+  "exception.class": "NoMethodError",
+  "exception.message": "undefined method `strong_memoize' for #<Gitlab::ImportExport::RelationFactory:0x00007fb5d917c4b0>",
+  "exception.backtrace": [
+    "lib/gitlab/import_export/relation_factory.rb:329:in `unique_relation?'",
+    "lib/gitlab/import_export/relation_factory.rb:345:in `find_or_create_object!'"
+  ]
+}
 ```
 
 [repocheck]: repository_checks.md

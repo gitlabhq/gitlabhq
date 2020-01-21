@@ -8,7 +8,7 @@ module Gitlab
   module FileDetector
     PATTERNS = {
       # Project files
-      readme: /\A(#{Regexp.union(*Gitlab::MarkupHelper::PLAIN_FILENAMES).source})(\.(#{Regexp.union(*Gitlab::MarkupHelper::EXTENSIONS).source}))?\z/i,
+      readme: /\A(#{Regexp.union(*Gitlab::MarkupHelper::PLAIN_FILENAMES).source})(\.(txt|#{Regexp.union(*Gitlab::MarkupHelper::EXTENSIONS).source}))?\z/i,
       changelog: %r{\A(changelog|history|changes|news)[^/]*\z}i,
       license: %r{\A((un)?licen[sc]e|copying)(\.[^/]+)?\z}i,
       contributing: %r{\Acontributing[^/]*\z}i,
@@ -25,6 +25,7 @@ module Gitlab
       route_map: '.gitlab/route-map.yml',
 
       # Dependency files
+      cargo_toml: 'Cargo.toml',
       cartfile: %r{\ACartfile[^/]*\z},
       composer_json: 'composer.json',
       gemfile: /\A(Gemfile|gems\.rb)\z/,

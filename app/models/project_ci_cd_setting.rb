@@ -4,7 +4,6 @@ class ProjectCiCdSetting < ApplicationRecord
   include IgnorableColumns
   # https://gitlab.com/gitlab-org/gitlab/issues/36651
   ignore_column :merge_trains_enabled, remove_with: '12.7', remove_after: '2019-12-22'
-
   belongs_to :project, inverse_of: :ci_cd_settings
 
   # The version of the schema that first introduced this model/table.

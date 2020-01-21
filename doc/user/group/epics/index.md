@@ -40,14 +40,19 @@ An epic's page contains the following tabs:
 
 - **Epics and Issues**: epics and issues added to this epic. Child epics, and their issues, are shown in a tree view.
   - Click on the <kbd>></kbd> beside a parent epic to reveal the child epics and issues.
+  - Hover over the total counts to see a breakdown of open and closed items.
 - **Roadmap**: a roadmap view of child epics which have start and due dates.
 
 ![epic view](img/epic_view_v12.3.png)
 
 ## Adding an issue to an epic
 
-Any issue that belongs to a project in the epic's group, or any of the epic's
-subgroups, are eligible to be added.  New issues appear at the top of the list of issues in the **Epics and Issues** tab.
+You can add an existing issue to an epic, or, from an epic's page, create a new issue that is automatically added to the epic.
+
+### Adding an existing issue to an epic
+
+Existing issues that belong to a project in an epic's group, or any of the epic's
+subgroups, are eligible to be added to the epic. Newly added issues appear at the top of the list of issues in the **Epics and Issues** tab.
 
 An epic contains a list of issues and an issue can be associated with at most
 one epic. When you add an issue that is already linked to an epic,
@@ -62,6 +67,19 @@ To add an issue to an epic:
 
    If there are multiple issues to be added, press <kbd>Spacebar</kbd> and repeat this step.
 1. Click **Add**.
+
+### Creating an issue from an epic
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5419) in GitLab 12.7.
+
+Creating an issue from an epic enables you to maintain focus on the broader context of the epic while dividing work into smaller parts.
+
+To create an issue from an epic:
+
+1. On the epic's page, under **Epics and Issues**, click the arrow next to **Add an issue** and select **Create new issue**.
+1. Under **Title**, enter the title for the new issue.
+1. From the **Project** dropdown, select the project in which the issue should be created.
+1. Click **Create issue**.
 
 To remove an issue from an epic:
 
@@ -218,7 +236,9 @@ link in the issue sidebar.
 If you have [permissions](../../permissions.md) to close an issue and create an
 epic in the parent group, you can promote an issue to an epic with the `/promote`
 [quick action](../../project/quick_actions.md#quick-actions-for-issues-merge-requests-and-epics).
-Only issues from projects that are in groups can be promoted.
+Only issues from projects that are in groups can be promoted. When attempting to promote a confidential
+issue, a warning will display. Promoting a confidential issue to an epic will make all information
+related to the issue public as epics are public to group members.
 
 When the quick action is executed:
 

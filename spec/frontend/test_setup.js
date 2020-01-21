@@ -57,6 +57,11 @@ Object.assign(global, {
 
 // custom-jquery-matchers was written for an old Jest version, we need to make it compatible
 Object.entries(jqueryMatchers).forEach(([matcherName, matcherFactory]) => {
+  // Don't override existing Jest matcher
+  if (matcherName === 'toHaveLength') {
+    return;
+  }
+
   expect.extend({
     [matcherName]: matcherFactory().compare,
   });

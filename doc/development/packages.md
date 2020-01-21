@@ -21,6 +21,7 @@ The goal of the Package group is to build a set of features that, within three y
 | Format | Use case |
 | ------ | ------ |
 | [Bower](https://gitlab.com/gitlab-org/gitlab/issues/36888) | Boost your front end development by hosting your own Bower components.  |
+| [Cargo](https://gitlab.com/gitlab-org/gitlab/issues/33060) | Cargo is the Rust package manager. Build, publish and share Rust packages  |
 | [Chef](https://gitlab.com/gitlab-org/gitlab/issues/36889) | Configuration management with Chef using all the benefits of a repository manager. |
 | [CocoaPods](https://gitlab.com/gitlab-org/gitlab/issues/36890) | Speed up development with Xcode and CocoaPods. |
 | [Conda](https://gitlab.com/gitlab-org/gitlab/issues/36891) | Secure and private local Conda repositories. |
@@ -110,7 +111,7 @@ File uploads should be handled by GitLab Workhorse using object accelerated uplo
 the workhorse proxy that checks all incoming requests to GitLab will intercept the upload request,
 upload the file, and forward a request to the main GitLab codebase only containing the metadata
 and file location rather than the file itself. An overview of this process can be found in the
-[development documentation](uploads.md#workhorse-object-storage-acceleration).
+[development documentation](uploads.md#direct-upload).
 
 In terms of code, this means a route will need to be added to the
 [GitLab Workhorse project](https://gitlab.com/gitlab-org/gitlab-workhorse) for each level of remote being added
@@ -183,7 +184,7 @@ These changes represent all that is needed to deliver a minimally usable package
 1. Empty file structure (API file, base service for this package)
 1. Authentication system for 'logging in' to the package manager
 1. Identify metadata and create applicable tables
-1. Workhorse route for [object storage accelerated uploads](uploads.md#workhorse-object-storage-acceleration)
+1. Workhorse route for [object storage direct upload](uploads.md#direct-upload)
 1. Endpoints required for upload/publish
 1. Endpoints required for install/download
 1. Endpoints required for remove/delete

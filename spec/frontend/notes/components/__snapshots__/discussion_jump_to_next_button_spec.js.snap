@@ -7,8 +7,7 @@ exports[`JumpToNextDiscussionButton matches the snapshot 1`] = `
 >
   <button
     class="btn btn-default discussion-next-btn"
-    data-original-title="Jump to next unresolved discussion"
-    title=""
+    title="Jump to next unresolved discussion"
   >
     <icon-stub
       name="comment-next"

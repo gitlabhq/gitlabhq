@@ -86,7 +86,6 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
     "value": "new value",
     "protected": false,
     "variable_type": "env_var",
-    "protected": false,
     "masked": false,
     "environment_scope": "*"
 }

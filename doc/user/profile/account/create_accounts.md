@@ -15,7 +15,7 @@ If you have [sign-up enabled](../../admin_area/settings/sign_up_restrictions.md)
 
 ![Register Tab](img/register_tab.png)
 
-## Create users in admin area
+## Create users in Admin Area
 
 As an admin user, you can manually create users by:
 

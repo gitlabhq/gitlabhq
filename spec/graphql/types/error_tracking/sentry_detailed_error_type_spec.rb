@@ -30,6 +30,8 @@ describe GitlabSchema.types['SentryDetailedError'] do
       lastReleaseLastCommit
       firstReleaseShortVersion
       lastReleaseShortVersion
+      gitlabCommit
+      gitlabCommitPath
     ]
 
     is_expected.to have_graphql_fields(*expected_fields)

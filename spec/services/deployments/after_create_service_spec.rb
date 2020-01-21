@@ -6,10 +6,18 @@ describe Deployments::AfterCreateService do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:options) { { name: 'production' } }
+  let(:pipeline) do
+    create(
+      :ci_pipeline,
+      sha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0',
+      project: project
+    )
+  end
 
   let(:job) do
     create(:ci_build,
       :with_deployment,
+      pipeline: pipeline,
       ref: 'master',
       tag: false,
       environment: 'production',
@@ -49,14 +57,6 @@ describe Deployments::AfterCreateService do
     it 'updates merge request metrics' do
       expect_any_instance_of(Deployment)
         .to receive(:update_merge_request_metrics!)
-
-      service.execute
-    end
-
-    it 'links merge requests to deployment' do
-      expect_next_instance_of(Deployments::LinkMergeRequestsService, deployment) do |link_mr_service|
-        expect(link_mr_service).to receive(:execute)
-      end
 
       service.execute
     end
@@ -139,6 +139,7 @@ describe Deployments::AfterCreateService do
       let(:job) do
         create(:ci_build,
                :with_deployment,
+               pipeline: pipeline,
                ref: 'master',
                environment: 'production',
                project: project,
@@ -152,6 +153,7 @@ describe Deployments::AfterCreateService do
       let(:job) do
         create(:ci_build,
                :with_deployment,
+               pipeline: pipeline,
                ref: 'master',
                environment: 'prod-slug',
                project: project,
@@ -165,6 +167,7 @@ describe Deployments::AfterCreateService do
       let(:job) do
         create(:ci_build,
                :with_deployment,
+               pipeline: pipeline,
                yaml_variables: [{ key: :APP_HOST, value: 'host' }],
                environment: 'production',
                project: project,
@@ -175,7 +178,7 @@ describe Deployments::AfterCreateService do
     end
 
     context 'when yaml environment does not have url' do
-      let(:job) { create(:ci_build, :with_deployment, environment: 'staging', project: project) }
+      let(:job) { create(:ci_build, :with_deployment, pipeline: pipeline, environment: 'staging', project: project) }
 
       it 'returns the external_url from persisted environment' do
         is_expected.to be_nil
@@ -202,6 +205,7 @@ describe Deployments::AfterCreateService do
           let(:job) do
             create(:ci_build,
               :with_deployment,
+              pipeline: pipeline,
               ref: 'master',
               tag: false,
               environment: 'staging',
@@ -257,32 +261,6 @@ describe Deployments::AfterCreateService do
             expect(merge_request.reload.metrics.first_deployed_to_production_at).to eq(previous_time)
           end
         end
-      end
-    end
-  end
-
-  describe '#update_environment' do
-    it 'links the merge requests' do
-      double = instance_double(Deployments::LinkMergeRequestsService)
-
-      allow(Deployments::LinkMergeRequestsService)
-        .to receive(:new)
-        .with(deployment)
-        .and_return(double)
-
-      expect(double).to receive(:execute)
-
-      service.update_environment(deployment)
-    end
-
-    context 'when the tracking of merge requests is disabled' do
-      it 'does nothing' do
-        stub_feature_flags(deployment_merge_requests: false)
-
-        expect(Deployments::LinkMergeRequestsService)
-          .not_to receive(:new)
-
-        service.update_environment(deployment)
       end
     end
   end

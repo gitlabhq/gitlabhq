@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :group, class: Group, parent: :namespace do
+  factory :group, class: 'Group', parent: :namespace do
     sequence(:name) { |n| "group#{n}" }
     path { name.downcase.gsub(/\s/, '_') }
     type { 'Group' }

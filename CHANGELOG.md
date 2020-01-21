@@ -9,25 +9,6 @@ entry.
 - Fix private objects exposure when using Project Import functionality.
 
 
-## 12.6.3
-
-### Security (1 change)
-
-- Upgrade json-jwt to v1.11.0. !22440
-
-### Fixed (9 changes)
-
-- Fix RefreshMergeRequestsService raises an exception and unnecessary sidekiq retry. !22262
-- Disable Prometheus metrics if initialization fails. !22355
-- Fix bug when trying to expose artifacts and no artifacts are produced by the job. !22378
-- Gracefully error handle CI lint errors in artifacts section. !22388
-- Fix GitLab plugins not working without hooks configured. !22409
-- Fix releases page when tag contains a slash. !22527
-- Reverts Add RBAC permissions for getting knative version. !22560
-- Remove unused keyword from EKS provision service. !22633
-- Fix CAS users being signed out repeatedly. !22704
-
-
 ## 12.6.2
 
 ### Security (6 changes)
@@ -264,7 +245,7 @@ entry.
 - Skip updating LFS objects in mirror updates if repository has not changed. !21744
 - Add indexes on deployments to improve environments search. !21789
 
-### Added (117 changes, 16 of them are from the community)
+### Added (119 changes, 18 of them are from the community)
 
 - Add upvote/downvotes attributes to GraphQL Epic query. !14311
 - Delete kubernetes cluster association and resources. !16954
@@ -383,6 +364,8 @@ entry.
 - Added migration which adds service desk username column. !21733
 - Add SentryIssue table to store a link between issue and sentry issue. !37026
 - Add path based targeting to broadcast messages.
+- Add allow failure in pipeline webhook event. !20978 (Gaetan Semet)
+- Add runner information in build web hook event. !20709 (Gaetan Semet)
 
 ### Other (51 changes, 28 of them are from the community)
 
@@ -509,7 +492,7 @@ entry.
 - Do not display project labels that are not visible for user accessing group labels.
 - Standardize error response when route is missing.
 
-### Fixed (99 changes, 14 of them are from the community)
+### Fixed (100 changes, 15 of them are from the community)
 
 - Fix incorrect selection of custom templates. !17205
 - Smaller width for design comments layout, truncate image title. !17547
@@ -610,6 +593,7 @@ entry.
 - Only allow confirmed users to run pipelines.
 - Fix scroll to bottom with new job log.
 - Fixed protected branches flash styling.
+- Show tag link whenever it's a tag in chat message integration for push events and pipeline events. !18126 (Mats Estensen)
 
 ### Deprecated (2 changes)
 
@@ -838,6 +822,13 @@ entry.
 - Dependency Scanning template that doesn't rely on Docker-in-Docker.
 - Adding dropdown arrow icon and updated text alignment.
 - Change selects from default browser style to custom style.
+
+
+## 12.4.8
+
+### Security (1 change)
+
+- Fix private objects exposure when using Project Import functionality.
 
 
 ## 12.4.5

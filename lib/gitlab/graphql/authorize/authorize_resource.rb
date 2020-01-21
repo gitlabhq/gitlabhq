@@ -40,7 +40,7 @@ module Gitlab
 
         def authorize!(object)
           unless authorized_resource?(object)
-            raise_resource_not_avaiable_error!
+            raise_resource_not_available_error!
           end
         end
 
@@ -63,7 +63,7 @@ module Gitlab
           end
         end
 
-        def raise_resource_not_avaiable_error!
+        def raise_resource_not_available_error!
           raise Gitlab::Graphql::Errors::ResourceNotAvailable, RESOURCE_ACCESS_ERROR
         end
       end

@@ -5,8 +5,9 @@ require 'spec_helper'
 describe Gitlab::Kubernetes::Namespace do
   let(:name) { 'a_namespace' }
   let(:client) { double('kubernetes client') }
+  let(:labels) { nil }
 
-  subject { described_class.new(name, client) }
+  subject { described_class.new(name, client, labels: labels) }
 
   it { expect(subject.name).to eq(name) }
 
@@ -48,6 +49,17 @@ describe Gitlab::Kubernetes::Namespace do
       expect(client).to receive(:create_namespace).with(matcher).once
 
       expect { subject.create! }.not_to raise_error
+    end
+
+    context 'with labels' do
+      let(:labels) { { foo: :bar } }
+
+      it 'creates a namespace with labels' do
+        matcher = have_attributes(metadata: have_attributes(name: name, labels: have_attributes(foo: :bar)))
+        expect(client).to receive(:create_namespace).with(matcher).once
+
+        expect { subject.create! }.not_to raise_error
+      end
     end
   end
 

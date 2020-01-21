@@ -3,49 +3,61 @@
 module QA
   module Support
     module Retrier
+      extend Repeater
+
       module_function
 
       def retry_on_exception(max_attempts: 3, reload_page: nil, sleep_interval: 0.5)
-        QA::Runtime::Logger.debug("with retry_on_exception: max_attempts #{max_attempts}; sleep_interval #{sleep_interval}")
+        QA::Runtime::Logger.debug(
+          <<~MSG.tr("\n", ' ')
+            with retry_on_exception: max_attempts: #{max_attempts};
+            reload_page: #{reload_page};
+            sleep_interval: #{sleep_interval}
+        MSG
+        )
 
-        attempts = 0
+        result = nil
+        repeat_until(
+          max_attempts: max_attempts,
+          reload_page: reload_page,
+          sleep_interval: sleep_interval,
+          retry_on_exception: true
+        ) do
+          result = yield
 
-        begin
-          QA::Runtime::Logger.debug("Attempt number #{attempts + 1}")
-          yield
-        rescue StandardError, RSpec::Expectations::ExpectationNotMetError
-          sleep sleep_interval
-          reload_page.refresh if reload_page
-          attempts += 1
-
-          retry if attempts < max_attempts
-          QA::Runtime::Logger.debug("Raising exception after #{max_attempts} attempts")
-          raise
+          # This method doesn't care what the return value of the block is.
+          # We set it to `true` so that it doesn't repeat if there's no exception
+          true
         end
+        QA::Runtime::Logger.debug("ended retry_on_exception")
+
+        result
       end
 
-      def retry_until(max_attempts: 3, reload_page: nil, sleep_interval: 0, exit_on_failure: false)
-        QA::Runtime::Logger.debug("with retry_until: max_attempts #{max_attempts}; sleep_interval #{sleep_interval}; reload_page:#{reload_page}")
-        attempts = 0
+      def retry_until(max_attempts: nil, max_duration: nil, reload_page: nil, sleep_interval: 0, raise_on_failure: false, retry_on_exception: false)
+        # For backwards-compatibility
+        max_attempts = 3 if max_attempts.nil? && max_duration.nil?
 
-        while attempts < max_attempts
-          QA::Runtime::Logger.debug("Attempt number #{attempts + 1}")
+        start_msg ||= ["with retry_until:"]
+        start_msg << "max_attempts: #{max_attempts};" if max_attempts
+        start_msg << "max_duration: #{max_duration};" if max_duration
+        start_msg << "reload_page: #{reload_page}; sleep_interval: #{sleep_interval}; raise_on_failure: #{raise_on_failure}; retry_on_exception: #{retry_on_exception}"
+        QA::Runtime::Logger.debug(start_msg.join(' '))
+
+        result = nil
+        repeat_until(
+          max_attempts: max_attempts,
+          max_duration: max_duration,
+          reload_page: reload_page,
+          sleep_interval: sleep_interval,
+          raise_on_failure: raise_on_failure,
+          retry_on_exception: retry_on_exception
+        ) do
           result = yield
-          return result if result
-
-          sleep sleep_interval
-
-          reload_page.refresh if reload_page
-
-          attempts += 1
         end
+        QA::Runtime::Logger.debug("ended retry_until")
 
-        if exit_on_failure
-          QA::Runtime::Logger.debug("Raising exception after #{max_attempts} attempts")
-          raise
-        end
-
-        false
+        result
       end
     end
   end

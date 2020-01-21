@@ -43,34 +43,6 @@ describe DiffViewer::Base do
       end
     end
 
-    context 'when the file type is supported' do
-      let(:commit) { project.commit('1a0b36b3cdad1d2ee32457c102a8c0b7056fa863') }
-      let(:diff_file) { commit.diffs.diff_file_with_new_path('LICENSE') }
-
-      before do
-        viewer_class.file_types = %i(license)
-        viewer_class.binary = false
-      end
-
-      context 'when the binaryness matches' do
-        it 'returns true' do
-          expect(viewer_class.can_render?(diff_file)).to be_truthy
-        end
-      end
-
-      context 'when the binaryness does not match' do
-        before do
-          allow_next_instance_of(Blob) do |instance|
-            allow(instance).to receive(:binary_in_repo?).and_return(true)
-          end
-        end
-
-        it 'returns false' do
-          expect(viewer_class.can_render?(diff_file)).to be_falsey
-        end
-      end
-    end
-
     context 'when the extension and file type are not supported' do
       it 'returns false' do
         expect(viewer_class.can_render?(diff_file)).to be_falsey

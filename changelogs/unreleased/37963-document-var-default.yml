@@ -1,0 +1,5 @@
+---
+title: Document MAVEN_CLI_OPTS defaults for maven project dependency scanning and update when the variable is used
+merge_request: 22126
+author:
+type: added

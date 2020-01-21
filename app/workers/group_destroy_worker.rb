@@ -4,7 +4,7 @@ class GroupDestroyWorker
   include ApplicationWorker
   include ExceptionBacktrace
 
-  feature_category :groups
+  feature_category :subgroups
 
   def perform(group_id, user_id)
     begin

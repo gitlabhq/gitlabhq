@@ -10,12 +10,12 @@ module Gitlab
     def self.server_configurator(metrics: true, arguments_logger: true, memory_killer: true, request_store: true)
       lambda do |chain|
         chain.add Gitlab::SidekiqMiddleware::Monitor
-        chain.add Gitlab::SidekiqMiddleware::Metrics if metrics
+        chain.add Gitlab::SidekiqMiddleware::ServerMetrics if metrics
         chain.add Gitlab::SidekiqMiddleware::ArgumentsLogger if arguments_logger
         chain.add Gitlab::SidekiqMiddleware::MemoryKiller if memory_killer
         chain.add Gitlab::SidekiqMiddleware::RequestStoreMiddleware if request_store
         chain.add Gitlab::SidekiqMiddleware::BatchLoader
-        chain.add Gitlab::SidekiqMiddleware::CorrelationLogger
+        chain.add Labkit::Middleware::Sidekiq::Server
         chain.add Gitlab::SidekiqMiddleware::InstrumentationLogger
         chain.add Gitlab::SidekiqStatus::ServerMiddleware
       end
@@ -27,7 +27,8 @@ module Gitlab
     def self.client_configurator
       lambda do |chain|
         chain.add Gitlab::SidekiqStatus::ClientMiddleware
-        chain.add Gitlab::SidekiqMiddleware::CorrelationInjector
+        chain.add Gitlab::SidekiqMiddleware::ClientMetrics
+        chain.add Labkit::Middleware::Sidekiq::Client
       end
     end
   end

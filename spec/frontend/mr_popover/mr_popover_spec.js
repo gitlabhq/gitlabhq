@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import MRPopover from '~/mr_popover/components/mr_popover';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 
 describe('MR Popover', () => {
   let wrapper;
@@ -23,7 +24,9 @@ describe('MR Popover', () => {
   it('shows skeleton-loader while apollo is loading', () => {
     wrapper.vm.$apollo.loading = true;
 
-    expect(wrapper.element).toMatchSnapshot();
+    return wrapper.vm.$nextTick().then(() => {
+      expect(wrapper.element).toMatchSnapshot();
+    });
   });
 
   describe('loaded state', () => {
@@ -41,7 +44,9 @@ describe('MR Popover', () => {
         },
       });
 
-      expect(wrapper.element).toMatchSnapshot();
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.element).toMatchSnapshot();
+      });
     });
 
     it('does not show CI Icon if there is no pipeline data', () => {
@@ -55,7 +60,9 @@ describe('MR Popover', () => {
         },
       });
 
-      expect(wrapper.contains('ciicon-stub')).toBe(false);
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.contains(CiIcon)).toBe(false);
+      });
     });
   });
 });

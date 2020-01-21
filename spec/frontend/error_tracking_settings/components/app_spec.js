@@ -57,7 +57,9 @@ describe('error tracking settings app', () => {
     it('disables the button when saving', () => {
       store.state.settingsLoading = true;
 
-      expect(wrapper.find('.js-error-tracking-button').attributes('disabled')).toBeTruthy();
+      return wrapper.vm.$nextTick(() => {
+        expect(wrapper.find('.js-error-tracking-button').attributes('disabled')).toBeTruthy();
+      });
     });
   });
 });

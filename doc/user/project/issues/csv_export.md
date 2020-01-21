@@ -69,6 +69,8 @@ Data will be encoded with a comma as the column delimiter, with `"` used to quot
 | Labels | Title of any labels joined with a `,` |
 | Time Estimate | [Time estimate](../time_tracking.md#estimates) in seconds |
 | Time Spent | [Time spent](../time_tracking.md#time-spent) in seconds |
+| Epic ID | Id of the parent epic **(ULTIMATE)**, introduced in 12.7 |
+| Epic Title | Title of the parent epic **(ULTIMATE)**, introduced in 12.7 |
 
 ## Limitations
 

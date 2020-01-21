@@ -62,28 +62,42 @@ export default class DropdownUtils {
     const lastKey = lastToken.key || lastToken || '';
     const allowMultiple = item.type === 'array';
     const itemInExistingTokens = tokens.some(t => t.key === item.hint);
+    const isSearchItem = updatedItem.hint === 'search';
+
+    if (isSearchItem) {
+      updatedItem.droplab_hidden = true;
+    }
 
     if (!allowMultiple && itemInExistingTokens) {
       updatedItem.droplab_hidden = true;
-    } else if (!lastKey || _.last(searchInput.split('')) === ' ') {
+    } else if (!isSearchItem && (!lastKey || _.last(searchInput.split('')) === ' ')) {
       updatedItem.droplab_hidden = false;
     } else if (lastKey) {
       const split = lastKey.split(':');
       const tokenName = _.last(split[0].split(' '));
 
-      const match = updatedItem.hint.indexOf(tokenName.toLowerCase()) === -1;
+      const match = isSearchItem
+        ? allowedKeys.some(key => key.startsWith(tokenName.toLowerCase()))
+        : updatedItem.hint.indexOf(tokenName.toLowerCase()) === -1;
+
       updatedItem.droplab_hidden = tokenName ? match : false;
     }
 
     return updatedItem;
   }
 
-  static setDataValueIfSelected(filter, selected) {
+  static setDataValueIfSelected(filter, operator, selected) {
     const dataValue = selected.getAttribute('data-value');
 
     if (dataValue) {
-      FilteredSearchDropdownManager.addWordToInput(filter, dataValue, true, {
-        capitalizeTokenValue: selected.hasAttribute('data-capitalize'),
+      FilteredSearchDropdownManager.addWordToInput({
+        tokenName: filter,
+        tokenOperator: operator,
+        tokenValue: dataValue,
+        clicked: true,
+        options: {
+          capitalizeTokenValue: selected.hasAttribute('data-capitalize'),
+        },
       });
     }
 
@@ -101,7 +115,11 @@ export default class DropdownUtils {
       // remove leading symbol and wrapping quotes
       tokenValue = tokenValue.replace(/^~("|')?(.*)/, '$2').replace(/("|')$/, '');
     }
-    return { tokenName, tokenValue };
+
+    const operatorEl = visualToken && visualToken.querySelector('.operator');
+    const tokenOperator = operatorEl && operatorEl.textContent.trim();
+
+    return { tokenName, tokenOperator, tokenValue };
   }
 
   // Determines the full search query (visual tokens + input)
@@ -119,10 +137,16 @@ export default class DropdownUtils {
     tokens.forEach(token => {
       if (token.classList.contains('js-visual-token')) {
         const name = token.querySelector('.name');
+        const operatorContainer = token.querySelector('.operator');
         const value = token.querySelector('.value');
         const valueContainer = token.querySelector('.value-container');
         const symbol = value && value.dataset.symbol ? value.dataset.symbol : '';
         let valueText = '';
+        let operator = '';
+
+        if (operatorContainer) {
+          operator = operatorContainer.textContent.trim();
+        }
 
         if (valueContainer && valueContainer.dataset.originalValue) {
           valueText = valueContainer.dataset.originalValue;
@@ -131,7 +155,7 @@ export default class DropdownUtils {
         }
 
         if (token.className.indexOf('filtered-search-token') !== -1) {
-          values.push(`${name.innerText.toLowerCase()}:${symbol}${valueText}`);
+          values.push(`${name.innerText.toLowerCase()}:${operator}${symbol}${valueText}`);
         } else {
           values.push(name.innerText);
         }

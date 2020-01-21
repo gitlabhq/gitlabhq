@@ -66,6 +66,7 @@ describe Clusters::Applications::Prometheus do
 
     context "cluster doesn't have kubeclient" do
       let(:cluster) { create(:cluster) }
+
       subject { create(:clusters_applications_prometheus, cluster: cluster) }
 
       it 'returns nil' do
@@ -116,6 +117,12 @@ describe Clusters::Applications::Prometheus do
           let(:exception) { Errno::ECONNRESET }
         end
       end
+
+      context 'when the network is unreachable' do
+        it_behaves_like 'exception caught for prometheus client' do
+          let(:exception) { Errno::ENETUNREACH }
+        end
+      end
     end
   end
 
@@ -129,7 +136,7 @@ describe Clusters::Applications::Prometheus do
     it 'is initialized with 3 arguments' do
       expect(subject.name).to eq('prometheus')
       expect(subject.chart).to eq('stable/prometheus')
-      expect(subject.version).to eq('6.7.3')
+      expect(subject.version).to eq('9.5.2')
       expect(subject).to be_rbac
       expect(subject.files).to eq(prometheus.files)
     end
@@ -146,7 +153,7 @@ describe Clusters::Applications::Prometheus do
       let(:prometheus) { create(:clusters_applications_prometheus, :errored, version: '2.0.0') }
 
       it 'is initialized with the locked version' do
-        expect(subject.version).to eq('6.7.3')
+        expect(subject.version).to eq('9.5.2')
       end
     end
 
@@ -217,7 +224,7 @@ describe Clusters::Applications::Prometheus do
     it 'is initialized with 3 arguments' do
       expect(patch_command.name).to eq('prometheus')
       expect(patch_command.chart).to eq('stable/prometheus')
-      expect(patch_command.version).to eq('6.7.3')
+      expect(patch_command.version).to eq('9.5.2')
       expect(patch_command.files).to eq(prometheus.files)
     end
   end

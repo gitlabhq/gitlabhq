@@ -14,6 +14,7 @@ module Clusters
       include AfterCommitQueue
 
       default_value_for :ingress_type, :nginx
+      default_value_for :modsecurity_enabled, false
       default_value_for :version, VERSION
 
       enum ingress_type: {
@@ -41,7 +42,7 @@ module Clusters
       end
 
       def allowed_to_uninstall?
-        external_ip_or_hostname? && application_jupyter_nil_or_installable? && application_elastic_stack_nil_or_installable?
+        external_ip_or_hostname? && application_jupyter_nil_or_installable?
       end
 
       def install_command
@@ -73,7 +74,7 @@ module Clusters
       private
 
       def specification
-        return {} unless Feature.enabled?(:ingress_modsecurity)
+        return {} unless modsecurity_enabled
 
         {
           "controller" => {
@@ -153,10 +154,6 @@ module Clusters
 
       def application_jupyter_nil_or_installable?
         cluster.application_jupyter.nil? || cluster.application_jupyter&.installable?
-      end
-
-      def application_elastic_stack_nil_or_installable?
-        cluster.application_elastic_stack.nil? || cluster.application_elastic_stack&.installable?
       end
     end
   end

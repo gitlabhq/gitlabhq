@@ -33,13 +33,13 @@ module Mutations
       def resolve(args)
         snippet = authorized_find!(id: args.delete(:id))
 
-        result = UpdateSnippetService.new(snippet.project,
+        result = ::Snippets::UpdateService.new(snippet.project,
                                           context[:current_user],
-                                          snippet,
-                                          args).execute
+                                          args).execute(snippet)
+        snippet = result.payload[:snippet]
 
         {
-          snippet: result ? snippet : snippet.reset,
+          snippet: result.success? ? snippet : snippet.reset,
           errors: errors_on_object(snippet)
         }
       end

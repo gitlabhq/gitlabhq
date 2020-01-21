@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe 'Environment' do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:role) { :developer }
 
@@ -12,11 +12,16 @@ describe 'Environment' do
     project.add_role(user, role)
   end
 
+  def auto_stop_button_selector
+    %q{button[title="Prevent environment from auto-stopping"]}
+  end
+
   describe 'environment details page' do
     let!(:environment) { create(:environment, project: project) }
     let!(:permissions) { }
     let!(:deployment) { }
     let!(:action) { }
+    let!(:cluster) { }
 
     before do
       visit_environment(environment)
@@ -24,6 +29,40 @@ describe 'Environment' do
 
     it 'shows environment name' do
       expect(page).to have_content(environment.name)
+    end
+
+    context 'without auto-stop' do
+      it 'does not show auto-stop text' do
+        expect(page).not_to have_content('Auto stops')
+      end
+
+      it 'does not show auto-stop button' do
+        expect(page).not_to have_selector(auto_stop_button_selector)
+      end
+    end
+
+    context 'with auto-stop' do
+      let!(:environment) { create(:environment, :will_auto_stop, name: 'staging', project: project) }
+
+      before do
+        visit_environment(environment)
+      end
+
+      it 'shows auto stop info' do
+        expect(page).to have_content('Auto stops')
+      end
+
+      it 'shows auto stop button' do
+        expect(page).to have_selector(auto_stop_button_selector)
+        expect(page.find(auto_stop_button_selector).find(:xpath, '..')['action']).to have_content(cancel_auto_stop_project_environment_path(environment.project, environment))
+      end
+
+      it 'allows user to cancel auto stop', :js do
+        page.find(auto_stop_button_selector).click
+        wait_for_all_requests
+        expect(page).to have_content('Auto stop successfully canceled.')
+        expect(page).not_to have_selector(auto_stop_button_selector)
+      end
     end
 
     context 'without deployments' do
@@ -94,19 +133,10 @@ describe 'Environment' do
 
         it 'does show build name' do
           expect(page).to have_link("#{build.name} (##{build.id})")
-          expect(page).not_to have_link('Re-deploy')
-          expect(page).not_to have_terminal_button
         end
 
-        context 'when user has ability to re-deploy' do
-          let(:permissions) do
-            create(:protected_branch, :developers_can_merge,
-                   name: build.ref, project: project)
-          end
-
-          it 'does show re-deploy' do
-            expect(page).to have_link('Re-deploy')
-          end
+        it 'shows the re-deploy button' do
+          expect(page).to have_button('Re-deploy to environment')
         end
 
         context 'with manual action' do
@@ -141,6 +171,11 @@ describe 'Environment' do
           end
 
           context 'when user has no ability to trigger a deployment' do
+            let(:permissions) do
+              create(:protected_branch, :no_one_can_merge,
+                     name: action.ref, project: project)
+            end
+
             it 'does not show a play button' do
               expect(page).not_to have_link(action.name)
             end
@@ -158,8 +193,9 @@ describe 'Environment' do
 
           context 'with terminal' do
             context 'when user configured kubernetes from CI/CD > Clusters' do
-              let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
-              let(:project) { cluster.project }
+              let!(:cluster) do
+                create(:cluster, :project, :provided_by_gcp, projects: [project])
+              end
 
               context 'for project maintainer' do
                 let(:role) { :maintainer }
@@ -228,6 +264,11 @@ describe 'Environment' do
               end
 
               context 'when user has no ability to stop environment' do
+                let(:permissions) do
+                  create(:protected_branch, :no_one_can_merge,
+                         name: action.ref, project: project)
+                end
+
                 it 'does not allow to stop environment' do
                   expect(page).not_to have_button('Stop')
                 end

@@ -86,6 +86,8 @@ module Users
         :email_confirmation,
         :password_automatically_set,
         :name,
+        :first_name,
+        :last_name,
         :password,
         :username
       ]
@@ -106,6 +108,12 @@ module Users
         user_params = params.slice(*allowed_signup_params)
         if user_params[:skip_confirmation].nil?
           user_params[:skip_confirmation] = skip_user_confirmation_email_from_setting
+        end
+
+        fallback_name = "#{user_params[:first_name]} #{user_params[:last_name]}"
+
+        if user_params[:name].blank? && fallback_name.present?
+          user_params = user_params.merge(name: fallback_name)
         end
       end
 

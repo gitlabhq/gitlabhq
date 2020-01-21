@@ -19,6 +19,7 @@ module API
         params do
           optional :query, type: String, desc: 'A query string to search for members'
           optional :user_ids, type: Array[Integer], desc: 'Array of user ids to look up for membership'
+          use :optional_filter_params_ee
           use :pagination
         end
 
@@ -100,12 +101,12 @@ module API
           user = User.find_by_id(params[:user_id])
           not_found!('User') unless user
 
-          member = source.add_user(user, params[:access_level], current_user: current_user, expires_at: params[:expires_at])
+          member = create_member(current_user, user, source, params)
 
           if !member
             not_allowed! # This currently can only be reached in EE
           elsif member.persisted? && member.valid?
-            present_members member
+            present_members(member)
           else
             render_validation_error!(member)
           end
@@ -157,5 +158,3 @@ module API
     end
   end
 end
-
-API::Members.prepend_if_ee('EE::API::Members')

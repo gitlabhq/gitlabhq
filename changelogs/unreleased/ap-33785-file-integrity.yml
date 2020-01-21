@@ -1,0 +1,5 @@
+---
+title: Ensure content matches extension on image uploads
+merge_request: 20697
+author:
+type: security

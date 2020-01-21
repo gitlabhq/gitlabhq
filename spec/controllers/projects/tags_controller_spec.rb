@@ -29,11 +29,13 @@ describe Projects::TagsController do
 
     context "valid tag" do
       let(:id) { 'v1.0.0' }
+
       it { is_expected.to respond_with(:success) }
     end
 
     context "invalid tag" do
       let(:id) { 'latest' }
+
       it { is_expected.to respond_with(:not_found) }
     end
   end

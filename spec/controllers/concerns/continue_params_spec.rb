@@ -12,6 +12,7 @@ describe ContinueParams do
       end
     end
   end
+
   subject(:controller) { controller_class.new }
 
   def strong_continue_params(params)

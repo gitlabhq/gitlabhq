@@ -1,0 +1,5 @@
+---
+title: Show sample metrics for an environment without prometheus configured
+merge_request: 22133
+author:
+type: added

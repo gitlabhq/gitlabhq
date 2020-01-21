@@ -12,6 +12,10 @@ module Gitlab
           Gitlab::Graphql::FilterableArray,
           Gitlab::Graphql::Connections::FilterableArrayConnection
         )
+        GraphQL::Relay::BaseConnection.register_connection_implementation(
+          Gitlab::Graphql::ExternallyPaginatedArray,
+          Gitlab::Graphql::Connections::ExternallyPaginatedArrayConnection
+        )
       end
     end
   end

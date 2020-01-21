@@ -1289,19 +1289,6 @@ describe Projects::MergeRequestsController do
       get_ci_environments_status(environment_target: 'merge_commit')
     end
 
-    context 'when the deployment_merge_requests_widget feature flag is disabled' do
-      it 'uses the deployments retrieved using CI builds' do
-        stub_feature_flags(deployment_merge_requests_widget: false)
-
-        expect(EnvironmentStatus)
-          .to receive(:after_merge_request)
-          .with(merge_request, user)
-          .and_call_original
-
-        get_ci_environments_status(environment_target: 'merge_commit')
-      end
-    end
-
     def get_ci_environments_status(extra_params = {})
       params = {
         namespace_id: merge_request.project.namespace.to_param,
@@ -1389,7 +1376,7 @@ describe Projects::MergeRequestsController do
     end
 
     def expect_rebase_worker_for(user)
-      expect(RebaseWorker).to receive(:perform_async).with(merge_request.id, user.id)
+      expect(RebaseWorker).to receive(:perform_async).with(merge_request.id, user.id, false)
     end
 
     context 'successfully' do
@@ -1425,7 +1412,7 @@ describe Projects::MergeRequestsController do
         post_rebase
 
         expect(response.status).to eq(409)
-        expect(json_response['merge_error']).to eq(MergeRequest::REBASE_LOCK_MESSAGE)
+        expect(json_response['merge_error']).to eq('Failed to enqueue the rebase operation, possibly due to a long-lived transaction. Try again later.')
       end
     end
 

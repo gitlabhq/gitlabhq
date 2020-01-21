@@ -5,7 +5,7 @@ require 'spec_helper'
 describe DeploymentsFinder do
   subject { described_class.new(project, params).execute }
 
-  let(:project) { create(:project, :public, :repository) }
+  let(:project) { create(:project, :public, :test_repo) }
   let(:params) { {} }
 
   describe "#execute" do
@@ -25,6 +25,42 @@ describe DeploymentsFinder do
           is_expected.to match_array([deployment_1])
         end
       end
+
+      context 'when the environment name is specified' do
+        let!(:environment1) { create(:environment, project: project) }
+        let!(:environment2) { create(:environment, project: project) }
+        let!(:deployment1) do
+          create(:deployment, project: project, environment: environment1)
+        end
+
+        let!(:deployment2) do
+          create(:deployment, project: project, environment: environment2)
+        end
+
+        let(:params) { { environment: environment1.name } }
+
+        it 'returns deployments for the given environment' do
+          is_expected.to match_array([deployment1])
+        end
+      end
+
+      context 'when the deployment status is specified' do
+        let!(:deployment1) { create(:deployment, :success, project: project) }
+        let!(:deployment2) { create(:deployment, :failed, project: project) }
+        let(:params) { { status: 'success' } }
+
+        it 'returns deployments for the given environment' do
+          is_expected.to match_array([deployment1])
+        end
+      end
+
+      context 'when using an invalid deployment status' do
+        let(:params) { { status: 'kittens' } }
+
+        it 'raises ArgumentError' do
+          expect { subject }.to raise_error(ArgumentError)
+        end
+      end
     end
 
     describe 'ordering' do
@@ -34,7 +70,7 @@ describe DeploymentsFinder do
 
       let!(:deployment_1) { create(:deployment, :success, project: project, iid: 11, ref: 'master', created_at: 2.days.ago, updated_at: Time.now) }
       let!(:deployment_2) { create(:deployment, :success, project: project, iid: 12, ref: 'feature', created_at: 1.day.ago, updated_at: 2.hours.ago) }
-      let!(:deployment_3) { create(:deployment, :success, project: project, iid: 8, ref: 'patch', created_at: Time.now, updated_at: 1.hour.ago) }
+      let!(:deployment_3) { create(:deployment, :success, project: project, iid: 8, ref: 'video', created_at: Time.now, updated_at: 1.hour.ago) }
 
       where(:order_by, :sort, :ordered_deployments) do
         'created_at' | 'asc'  | [:deployment_1, :deployment_2, :deployment_3]

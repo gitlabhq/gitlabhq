@@ -19,6 +19,7 @@ describe('add request form', () => {
   describe('when clicking the button', () => {
     beforeEach(() => {
       wrapper.find('button').trigger('click');
+      return wrapper.vm.$nextTick();
     });
 
     it('shows the form', () => {
@@ -28,6 +29,7 @@ describe('add request form', () => {
     describe('when pressing escape', () => {
       beforeEach(() => {
         wrapper.find('input').trigger('keyup.esc');
+        return wrapper.vm.$nextTick();
       });
 
       it('hides the input', () => {
@@ -38,7 +40,10 @@ describe('add request form', () => {
     describe('when submitting the form', () => {
       beforeEach(() => {
         wrapper.find('input').setValue('http://gitlab.example.com/users/root/calendar.json');
-        wrapper.find('input').trigger('keyup.enter');
+        return wrapper.vm.$nextTick().then(() => {
+          wrapper.find('input').trigger('keyup.enter');
+          return wrapper.vm.$nextTick();
+        });
       });
 
       it('emits an event to add the request', () => {
@@ -54,8 +59,9 @@ describe('add request form', () => {
 
       it('clears the value for next time', () => {
         wrapper.find('button').trigger('click');
-
-        expect(wrapper.find('input').text()).toEqual('');
+        return wrapper.vm.$nextTick().then(() => {
+          expect(wrapper.find('input').text()).toEqual('');
+        });
       });
     });
   });

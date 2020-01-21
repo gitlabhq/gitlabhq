@@ -5,8 +5,14 @@ require 'spec_helper'
 describe Prometheus::ProxyService do
   include ReactiveCachingHelpers
 
-  set(:project) { create(:project) }
-  set(:environment) { create(:environment, project: project) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:environment) { create(:environment, project: project) }
+
+  describe 'configuration' do
+    it 'ReactiveCaching refresh is not needed' do
+      expect(described_class.reactive_cache_refresh_interval).to be > described_class.reactive_cache_lifetime
+    end
+  end
 
   describe '#initialize' do
     let(:params) { ActionController::Parameters.new(query: '1').permit! }

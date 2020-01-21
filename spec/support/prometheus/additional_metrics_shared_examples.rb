@@ -14,7 +14,7 @@ RSpec.shared_examples 'additional metrics query' do
 
   let(:client) { double('prometheus_client') }
   let(:query_result) { described_class.new(client).query(*query_params) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:environment) { create(:environment, slug: 'environment-slug', project: project) }
 
   before do
@@ -47,8 +47,7 @@ RSpec.shared_examples 'additional metrics query' do
 
     describe 'project has Kubernetes service' do
       context 'when user configured kubernetes from CI/CD > Clusters' do
-        let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
-        let(:project) { cluster.project }
+        let!(:cluster) { create(:cluster, :project, :provided_by_gcp, projects: [project]) }
         let(:environment) { create(:environment, slug: 'environment-slug', project: project) }
         let(:kube_namespace) { environment.deployment_namespace }
 

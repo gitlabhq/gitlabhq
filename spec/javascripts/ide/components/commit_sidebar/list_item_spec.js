@@ -20,7 +20,6 @@ describe('Multi-file editor commit sidebar list item', () => {
 
     vm = createComponentWithStore(Component, store, {
       file: f,
-      actionComponent: 'stage-button',
       activeFileKey: `staged-${f.key}`,
     }).$mount();
 

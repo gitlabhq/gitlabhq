@@ -231,6 +231,15 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
           end
         end
       end
+
+      context 'when job belongs to a resource group' do
+        let(:attributes) { { name: 'rspec', ref: 'master', resource_group_key: 'iOS' } }
+
+        it 'returns a job with resource group' do
+          expect(subject.resource_group).not_to be_nil
+          expect(subject.resource_group.key).to eq('iOS')
+        end
+      end
     end
 
     context 'when job is a bridge' do

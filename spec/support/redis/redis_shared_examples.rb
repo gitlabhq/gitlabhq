@@ -116,9 +116,9 @@ RSpec.shared_examples "redis_shared_examples" do
       clear_pool
     end
 
-    context 'when running not on sidekiq workers' do
+    context 'when running on single-threaded runtime' do
       before do
-        allow(Sidekiq).to receive(:server?).and_return(false)
+        allow(Gitlab::Runtime).to receive(:multi_threaded?).and_return(false)
       end
 
       it 'instantiates a connection pool with size 5' do
@@ -128,10 +128,10 @@ RSpec.shared_examples "redis_shared_examples" do
       end
     end
 
-    context 'when running on sidekiq workers' do
+    context 'when running on multi-threaded runtime' do
       before do
-        allow(Sidekiq).to receive(:server?).and_return(true)
-        allow(Sidekiq).to receive(:options).and_return({ concurrency: 18 })
+        allow(Gitlab::Runtime).to receive(:multi_threaded?).and_return(true)
+        allow(Gitlab::Runtime).to receive(:max_threads).and_return(18)
       end
 
       it 'instantiates a connection pool with a size based on the concurrency of the worker' do

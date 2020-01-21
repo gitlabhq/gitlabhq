@@ -32,9 +32,14 @@
           = button_to stop_project_environment_path(@project, @environment), class: 'btn btn-danger has-tooltip', method: :post do
             = s_('Environments|Stop environment')
 
-.top-area
-  %h3.page-title= @environment.name
-  .nav-controls.ml-auto.my-2
+.top-area.justify-content-between
+  .d-flex
+    %h3.page-title= @environment.name
+    - if @environment.auto_stop_at?
+      %p.align-self-end.prepend-left-8
+        = s_('Environments|Auto stops %{auto_stop_time}').html_safe % {auto_stop_time: time_ago_with_tooltip(@environment.auto_stop_at)}
+  .nav-controls.my-2
+    = render 'projects/environments/pin_button', environment: @environment
     = render 'projects/environments/terminal_button', environment: @environment
     = render 'projects/environments/external_url', environment: @environment
     = render 'projects/environments/metrics_button', environment: @environment

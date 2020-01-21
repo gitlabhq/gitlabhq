@@ -5,7 +5,6 @@ import {
   JUPYTER,
   KNATIVE,
   CERT_MANAGER,
-  ELASTIC_STACK,
   CROSSPLANE,
   RUNNER,
   APPLICATION_INSTALLED_STATUSES,
@@ -52,6 +51,7 @@ export default class ClusterStore {
         ingress: {
           ...applicationInitialState,
           title: s__('ClusterIntegration|Ingress'),
+          modsecurity_enabled: false,
           externalIp: null,
           externalHostname: null,
         },
@@ -96,7 +96,6 @@ export default class ClusterStore {
         elastic_stack: {
           ...applicationInitialState,
           title: s__('ClusterIntegration|Elastic Stack'),
-          kibana_hostname: null,
         },
       },
       environments: [],
@@ -108,6 +107,7 @@ export default class ClusterStore {
     helpPath,
     ingressHelpPath,
     ingressDnsHelpPath,
+    ingressModSecurityHelpPath,
     environmentsHelpPath,
     clustersHelpPath,
     deployBoardsHelpPath,
@@ -116,6 +116,7 @@ export default class ClusterStore {
     this.state.helpPath = helpPath;
     this.state.ingressHelpPath = ingressHelpPath;
     this.state.ingressDnsHelpPath = ingressDnsHelpPath;
+    this.state.ingressModSecurityHelpPath = ingressModSecurityHelpPath;
     this.state.environmentsHelpPath = environmentsHelpPath;
     this.state.clustersHelpPath = clustersHelpPath;
     this.state.deployBoardsHelpPath = deployBoardsHelpPath;
@@ -207,6 +208,8 @@ export default class ClusterStore {
       if (appId === INGRESS) {
         this.state.applications.ingress.externalIp = serverAppEntry.external_ip;
         this.state.applications.ingress.externalHostname = serverAppEntry.external_hostname;
+        this.state.applications.ingress.modsecurity_enabled =
+          serverAppEntry.modsecurity_enabled || this.state.applications.ingress.modsecurity_enabled;
       } else if (appId === CERT_MANAGER) {
         this.state.applications.cert_manager.email =
           this.state.applications.cert_manager.email || serverAppEntry.email;
@@ -231,12 +234,6 @@ export default class ClusterStore {
       } else if (appId === RUNNER) {
         this.state.applications.runner.version = version;
         this.state.applications.runner.updateAvailable = updateAvailable;
-      } else if (appId === ELASTIC_STACK) {
-        this.state.applications.elastic_stack.kibana_hostname = this.updateHostnameIfUnset(
-          this.state.applications.elastic_stack.kibana_hostname,
-          serverAppEntry.kibana_hostname,
-          'kibana',
-        );
       }
     });
   }

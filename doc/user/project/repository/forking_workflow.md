@@ -14,7 +14,7 @@ document more information about using branches to work together.
 
 Forking a project is in most cases a two-step process.
 
-1. Click on the fork button located located in between the star and clone buttons on the project's home page.
+1. Click on the fork button located in between the star and clone buttons on the project's home page.
 
    ![Fork button](img/forking_workflow_fork_button.png)
 
@@ -40,6 +40,10 @@ access, so you can set it up as you please.
 CAUTION: **CAUTION:**
 From GitLab 12.6 onwards, if the [visibility of an upstream project is reduced](../../../public_access/public_access.md#reducing-visibility)
 in any way, the fork relationship with all its forks will be removed.
+
+CAUTION: **Caution:**
+[Repository mirroring](repository_mirroring.md) will help to keep your fork synced with the original repository.
+Before approving a merge request you'll likely to be asked to sync before getting approval, hence automating it is recommend.
 
 ## Merging upstream
 

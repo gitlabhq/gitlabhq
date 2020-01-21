@@ -71,7 +71,7 @@ module Gitlab
         # Convert from an indexed by name to an array indexed by path
         # If a submodule doesn't have a path, it is considered bogus
         # and is ignored
-        submodules_by_name.each_with_object({}) do |(name, data), results|
+        submodules_by_name.each_with_object({}) do |(_name, data), results|
           path = data.delete 'path'
           next unless path
 

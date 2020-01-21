@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe RoutableActions do
   controller(::ApplicationController) do
-    include RoutableActions # rubocop:disable RSpec/DescribedClass
+    include RoutableActions
 
     before_action :routable
 

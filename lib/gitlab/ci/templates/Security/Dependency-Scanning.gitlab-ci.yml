@@ -49,6 +49,9 @@ dependency_scanning:
           DS_PYTHON_VERSION \
           DS_PIP_VERSION \
           DS_PIP_DEPENDENCY_PATH \
+          GEMNASIUM_DB_LOCAL_PATH \
+          GEMNASIUM_DB_REMOTE_URL \
+          GEMNASIUM_DB_REF_NAME \
           PIP_INDEX_URL \
           PIP_EXTRA_INDEX_URL \
           PIP_REQUIREMENTS_FILE \
@@ -77,6 +80,7 @@ dependency_scanning:
   services: []
   except:
     variables:
+      - $DEPENDENCY_SCANNING_DISABLED
       - $DS_DISABLE_DIND == 'false'
   script:
     - /analyzer run
@@ -88,8 +92,8 @@ gemnasium-dependency_scanning:
   only:
     variables:
       - $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
-        $DS_DEFAULT_ANALYZERS =~ /gemnasium/ &&
-        $CI_PROJECT_REPOSITORY_LANGUAGES =~ /ruby|javascript|php/
+        $DS_DEFAULT_ANALYZERS =~ /gemnasium([^-]|$)/ &&
+        $CI_PROJECT_REPOSITORY_LANGUAGES =~ /ruby|javascript|php|\bgo\b/
 
 gemnasium-maven-dependency_scanning:
   extends: .ds-analyzer

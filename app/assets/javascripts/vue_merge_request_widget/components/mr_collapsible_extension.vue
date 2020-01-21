@@ -1,12 +1,11 @@
 <script>
-import { GlButton, GlLink, GlLoadingIcon } from '@gitlab/ui';
+import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
   components: {
     GlButton,
-    GlLink,
     GlLoadingIcon,
     Icon,
   },

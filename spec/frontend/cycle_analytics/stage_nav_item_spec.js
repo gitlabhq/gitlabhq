@@ -92,7 +92,9 @@ describe('StageNavItem', () => {
     it('emits the `select` event when clicked', () => {
       expect(wrapper.emitted().select).toBeUndefined();
       wrapper.trigger('click');
-      expect(wrapper.emitted().select.length).toBe(1);
+      return wrapper.vm.$nextTick(() => {
+        expect(wrapper.emitted().select.length).toBe(1);
+      });
     });
   });
 

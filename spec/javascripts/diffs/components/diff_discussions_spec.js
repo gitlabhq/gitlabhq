@@ -24,7 +24,6 @@ describe('DiffDiscussions', () => {
         ...props,
       },
       localVue,
-      sync: false,
     });
   };
 

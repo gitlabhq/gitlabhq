@@ -1,0 +1,5 @@
+---
+title: User signout and admin mode disable use now POST instead of GET
+merge_request: 22113
+author: Diego Louzán
+type: other

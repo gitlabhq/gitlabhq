@@ -201,7 +201,7 @@ module.exports = {
         loader: 'raw-loader',
       },
       {
-        test: /\.(gif|png)$/,
+        test: /\.(gif|png|mp4)$/,
         loader: 'url-loader',
         options: { limit: 2048 },
       },

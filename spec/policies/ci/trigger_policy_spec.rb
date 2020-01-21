@@ -10,60 +10,6 @@ describe Ci::TriggerPolicy do
   subject { described_class.new(user, trigger) }
 
   describe '#rules' do
-    context 'when owner is undefined' do
-      before do
-        stub_feature_flags(use_legacy_pipeline_triggers: false)
-        trigger.update_attribute(:owner, nil)
-      end
-
-      context 'when user is maintainer of the project' do
-        before do
-          project.add_maintainer(user)
-        end
-
-        it { is_expected.to be_allowed(:manage_trigger) }
-        it { is_expected.not_to be_allowed(:admin_trigger) }
-      end
-
-      context 'when user is developer of the project' do
-        before do
-          project.add_developer(user)
-        end
-
-        it { is_expected.not_to be_allowed(:manage_trigger) }
-        it { is_expected.not_to be_allowed(:admin_trigger) }
-      end
-
-      context 'when :use_legacy_pipeline_triggers feature flag is enabled' do
-        before do
-          stub_feature_flags(use_legacy_pipeline_triggers: true)
-        end
-
-        context 'when user is maintainer of the project' do
-          before do
-            project.add_maintainer(user)
-          end
-
-          it { is_expected.to be_allowed(:manage_trigger) }
-          it { is_expected.to be_allowed(:admin_trigger) }
-        end
-
-        context 'when user is developer of the project' do
-          before do
-            project.add_developer(user)
-          end
-
-          it { is_expected.not_to be_allowed(:manage_trigger) }
-          it { is_expected.not_to be_allowed(:admin_trigger) }
-        end
-
-        context 'when user is not member of the project' do
-          it { is_expected.not_to be_allowed(:manage_trigger) }
-          it { is_expected.not_to be_allowed(:admin_trigger) }
-        end
-      end
-    end
-
     context 'when owner is an user' do
       before do
         trigger.update!(owner: user)

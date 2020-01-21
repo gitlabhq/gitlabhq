@@ -3,6 +3,7 @@
 class GraphqlController < ApplicationController
   # Unauthenticated users have access to the API for public data
   skip_before_action :authenticate_user!
+  skip_around_action :set_session_storage
 
   # Allow missing CSRF tokens, this would mean that if a CSRF is invalid or missing,
   # the user won't be authenticated but can proceed as an anonymous user.

@@ -1,10 +1,9 @@
 <script>
-import { GlLink, GlTooltip } from '@gitlab/ui';
+import { GlTooltip } from '@gitlab/ui';
 
 export default {
   components: {
     GlTooltip,
-    GlLink,
   },
   props: {
     label: {

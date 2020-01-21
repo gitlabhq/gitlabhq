@@ -42,9 +42,10 @@
             %button.board-delete.no-drag.p-0.border-0.has-tooltip.float-right{ type: "button", title: _("Delete list"), ":class": "{ 'd-none': !list.isExpanded }", "aria-label" => _("Delete list"), data: { placement: "bottom" }, "@click.stop" => "deleteBoard" }
               = icon("trash")
 
-        .issue-count-badge.pr-0.no-drag.text-secondary{ "v-if" => "showBoardListAndBoardInfo", ":title": "counterTooltip", "v-tooltip": true, data: { placement: "top" } }
+        .issue-count-badge.pr-0.no-drag.text-secondary{ "v-if" => "showBoardListAndBoardInfo" }
           %span.d-inline-flex
-            %span.issue-count-badge-count
+            %gl-tooltip{ ":target" => "() => $refs.issueCount", ":title" => "issuesTooltip" }
+            %span.issue-count-badge-count{ "ref" => "issueCount" }
               %icon.mr-1{ name: "issues" }
               %issue-count{ ":maxIssueCount" => "list.maxIssueCount",
                 ":issuesSize" => "list.issuesSize" }

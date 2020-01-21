@@ -7,7 +7,16 @@ describe GitlabSchema.types['Query'] do
     expect(described_class.graphql_name).to eq('Query')
   end
 
-  it { is_expected.to have_graphql_fields(:project, :namespace, :group, :echo, :metadata, :current_user, :snippets) }
+  it do
+    is_expected.to have_graphql_fields(:project,
+                                       :namespace,
+                                       :group,
+                                       :echo,
+                                       :metadata,
+                                       :current_user,
+                                       :snippets
+                                      ).at_least
+  end
 
   describe 'namespace field' do
     subject { described_class.fields['namespace'] }

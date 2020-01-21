@@ -424,6 +424,7 @@ describe Blob do
 
   describe 'policy' do
     let(:project) { build(:project) }
+
     subject { described_class.new(fake_blob(path: 'foo'), project) }
 
     it 'works with policy' do

@@ -106,6 +106,36 @@ describe API::Keys do
 
         expect(json_response['user']['is_admin']).to be_nil
       end
+
+      context 'when searching a DeployKey' do
+        let(:project) { create(:project, :repository) }
+        let(:project_push) { create(:project, :repository) }
+        let(:deploy_key) { create(:deploy_key) }
+
+        let!(:deploy_keys_project) do
+          create(:deploy_keys_project, project: project, deploy_key: deploy_key)
+        end
+
+        let!(:deploy_keys_project_push) do
+          create(:deploy_keys_project, project: project_push, deploy_key: deploy_key, can_push: true)
+        end
+
+        it 'returns user and projects if SSH sha256 fingerprint for DeployKey found' do
+          user.keys << deploy_key
+
+          get api("/keys?fingerprint=#{URI.encode_www_form_component("SHA256:" + deploy_key.fingerprint_sha256)}", admin)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response['title']).to eq(deploy_key.title)
+          expect(json_response['user']['id']).to eq(user.id)
+
+          expect(json_response['deploy_keys_projects'].count).to eq(2)
+          expect(json_response['deploy_keys_projects'][0]['project_id']).to eq(deploy_keys_project.project.id)
+          expect(json_response['deploy_keys_projects'][0]['can_push']).to eq(deploy_keys_project.can_push)
+          expect(json_response['deploy_keys_projects'][1]['project_id']).to eq(deploy_keys_project_push.project.id)
+          expect(json_response['deploy_keys_projects'][1]['can_push']).to eq(deploy_keys_project_push.can_push)
+        end
+      end
     end
   end
 end

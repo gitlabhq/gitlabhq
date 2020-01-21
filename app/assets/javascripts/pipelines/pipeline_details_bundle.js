@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Flash from '~/flash';
 import Translate from '~/vue_shared/translate';
 import { __ } from '~/locale';
+import { setUrlFragment, redirectTo } from '~/lib/utils/url_utility';
 import pipelineGraph from './components/graph/graph_component.vue';
 import GraphBundleMixin from './mixins/graph_pipeline_bundle_mixin';
 import PipelinesMediator from './pipeline_details_mediator';
@@ -62,9 +63,11 @@ export default () => {
     },
     created() {
       eventHub.$on('headerPostAction', this.postAction);
+      eventHub.$on('headerDeleteAction', this.deleteAction);
     },
     beforeDestroy() {
       eventHub.$off('headerPostAction', this.postAction);
+      eventHub.$off('headerDeleteAction', this.deleteAction);
     },
     methods: {
       postAction(action) {
@@ -72,6 +75,13 @@ export default () => {
           .postAction(action.path)
           .then(() => this.mediator.refreshPipeline())
           .catch(() => Flash(__('An error occurred while making the request.')));
+      },
+      deleteAction(action) {
+        this.mediator.stopPipelinePoll();
+        this.mediator.service
+          .deleteAction(action.path)
+          .then(({ request }) => redirectTo(setUrlFragment(request.responseURL, 'delete_success')))
+          .catch(() => Flash(__('An error occurred while deleting the pipeline.')));
       },
     },
     render(createElement) {

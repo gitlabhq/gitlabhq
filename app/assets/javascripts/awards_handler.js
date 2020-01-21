@@ -2,13 +2,13 @@
 
 import $ from 'jquery';
 import _ from 'underscore';
+import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import Cookies from 'js-cookie';
 import { __ } from './locale';
 import { updateTooltipTitle } from './lib/utils/common_utils';
 import { isInVueNoteablePage } from './lib/utils/dom_utils';
 import flash from './flash';
 import axios from './lib/utils/axios_utils';
-import bp from './breakpoints';
 
 const animationEndEventString = 'animationend webkitAnimationEnd MSAnimationEnd oAnimationEnd';
 const transitionEndEventString = 'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd';
@@ -266,7 +266,7 @@ export class AwardsHandler {
       top: `${$addBtn.offset().top + $addBtn.outerHeight()}px`,
     };
     // for xs screen we position the element on center
-    if (bp.getBreakpointSize() === 'xs') {
+    if (bp.getBreakpointSize() === 'xs' || bp.getBreakpointSize() === 'sm') {
       css.left = '5%';
     } else if (position === 'right') {
       css.left = `${$addBtn.offset().left - $menu.outerWidth() + 20}px`;
@@ -506,6 +506,8 @@ export class AwardsHandler {
     const options = {
       scrollTop: $('.awards').offset().top - 110,
     };
+
+    // eslint-disable-next-line no-jquery/no-animate
     return $('body, html').animate(options, 200);
   }
 

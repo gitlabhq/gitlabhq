@@ -25,7 +25,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Victor Wu - [GitLab](https://gitlab.com/victorwuky), [Crowdin](https://crowdin.com/profile/victorwu)
   - Ivan Ip - [GitLab](https://gitlab.com/lifehome), [Crowdin](https://crowdin.com/profile/lifehome)
 - Czech
-  - Proofreaders needed.
+  - Jan Urbanec - [GitLab](https://gitlab.com/TatranskyMedved), [Crowdin](https://crowdin.com/profile/Tatranskymedved)
 - Danish
   - Saederup92 - [GitLab](https://gitlab.com/Saederup92), [Crowdin](https://crowdin.com/profile/Saederup92)
 - Dutch
@@ -58,6 +58,7 @@ are very appreciative of the work done by translators and proofreaders!
 - Japanese
   - Hiroyuki Sato - [GitLab](https://gitlab.com/hiroponz), [Crowdin](https://crowdin.com/profile/hiroponz)
   - Tomo Dote - [GitLab](https://gitlab.com/fu7mu4), [Crowdin](https://crowdin.com/profile/fu7mu4)
+  - Hiromi Nozawa - [GitLab](https://gitlab.com/hir0mi), [Crowdin](https://crowdin.com/profile/hir0mi)
 - Korean
   - Chang-Ho Cha - [GitLab](https://gitlab.com/changho-cha), [Crowdin](https://crowdin.com/profile/zzazang)
   - Ji Hun Oh - [GitLab](https://gitlab.com/Baw-Appie), [Crowdin](https://crowdin.com/profile/BawAppie)
@@ -82,6 +83,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Alexy Lustin - [GitLab](https://gitlab.com/allustin), [Crowdin](https://crowdin.com/profile/lustin)
   - Mark Minakou - [GitLab](https://gitlab.com/sandzhaj), [Crowdin](https://crowdin.com/profile/sandzhaj)
   - NickVolynkin - [Crowdin](https://crowdin.com/profile/NickVolynkin)
+  - Andrey Komarov - [GitLab](https://gitlab.com/elkamarado), [Crowdin](https://crowdin.com/profile/kamarado)
 - Serbian (Cyrillic)
   - Proofreaders needed.
 - Serbian (Latin)

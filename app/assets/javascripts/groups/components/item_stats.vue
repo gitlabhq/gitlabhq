@@ -1,5 +1,4 @@
 <script>
-import icon from '~/vue_shared/components/icon.vue';
 import { GlBadge } from '@gitlab/ui';
 import timeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import {
@@ -13,7 +12,6 @@ import isProjectPendingRemoval from 'ee_else_ce/groups/mixins/is_project_pending
 
 export default {
   components: {
-    icon,
     timeAgoTooltip,
     itemStatsValue,
     GlBadge,

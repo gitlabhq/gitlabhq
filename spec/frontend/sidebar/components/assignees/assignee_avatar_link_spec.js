@@ -23,9 +23,7 @@ describe('AssigneeAvatarLink component', () => {
     };
 
     wrapper = shallowMount(AssigneeAvatarLink, {
-      attachToDocument: true,
       propsData,
-      sync: false,
     });
   }
 
@@ -33,7 +31,7 @@ describe('AssigneeAvatarLink component', () => {
     wrapper.destroy();
   });
 
-  const findTooltipText = () => wrapper.attributes('data-original-title');
+  const findTooltipText = () => wrapper.attributes('title');
 
   it('has the root url present in the assigneeUrl method', () => {
     createComponent();

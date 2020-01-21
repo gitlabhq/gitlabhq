@@ -8,7 +8,7 @@ class AddMaxIssueWeightToList < ActiveRecord::Migration[5.2]
   DOWNTIME = false
 
   def up
-    add_column_with_default :lists, :max_issue_weight, :integer, default: 0
+    add_column_with_default :lists, :max_issue_weight, :integer, default: 0 # rubocop:disable Migration/AddColumnWithDefault
   end
 
   def down

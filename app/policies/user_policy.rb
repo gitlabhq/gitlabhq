@@ -25,3 +25,5 @@ class UserPolicy < BasePolicy
   rule { default }.enable :read_user_profile
   rule { (private_profile | blocked_user) & ~(user_is_self | admin) }.prevent :read_user_profile
 end
+
+UserPolicy.prepend_if_ee('EE::UserPolicy')

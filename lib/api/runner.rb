@@ -200,6 +200,10 @@ module API
         status 202
         header 'Job-Status', job.status
         header 'Range', "0-#{stream_size}"
+
+        if Feature.enabled?(:runner_job_trace_update_interval_header, default_enabled: true)
+          header 'X-GitLab-Trace-Update-Interval', job.trace.update_interval.to_s
+        end
       end
 
       desc 'Authorize artifacts uploading for job' do

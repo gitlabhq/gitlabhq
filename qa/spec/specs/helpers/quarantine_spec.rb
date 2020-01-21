@@ -155,6 +155,26 @@ describe QA::Specs::Helpers::Quarantine do
 
         expect(group.examples.first.execution_result.status).to eq(:passed)
       end
+
+      context 'quarantine message' do
+        shared_examples 'test with quarantine message' do |quarantine_tag|
+          it 'outputs the quarantine message' do
+            group = describe_successfully do
+              it('is quarantined', quarantine: quarantine_tag) {}
+            end
+
+            expect(group.examples.first.execution_result.pending_message)
+              .to eq('In quarantine : for a reason')
+          end
+        end
+
+        it_behaves_like 'test with quarantine message', 'for a reason'
+
+        it_behaves_like 'test with quarantine message', {
+          issue: 'for a reason',
+          environment: [:nightly, :staging]
+        }
+      end
     end
 
     context 'with :quarantine focused' do

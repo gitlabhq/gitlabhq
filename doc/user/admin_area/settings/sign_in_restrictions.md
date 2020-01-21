@@ -40,7 +40,7 @@ this message after logging-in.
 
 To access this feature:
 
-1. Navigate to the **Settings > General** in the Admin area.
+1. Navigate to the **Admin Area > Settings > General**.
 1. Expand the **Sign-in restrictions** section.
 
 <!-- ## Troubleshooting

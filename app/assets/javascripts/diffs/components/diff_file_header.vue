@@ -1,7 +1,7 @@
 <script>
 import _ from 'underscore';
 import { mapActions, mapGetters } from 'vuex';
-import { GlButton, GlTooltipDirective, GlTooltip, GlLoadingIcon } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
 import { polyfillSticky } from '~/lib/utils/sticky';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -15,7 +15,6 @@ import { scrollToElement } from '~/lib/utils/common_utils';
 
 export default {
   components: {
-    GlTooltip,
     GlLoadingIcon,
     GlButton,
     ClipboardButton,
@@ -124,6 +123,20 @@ export default {
       }
       return s__('MRDiff|Show full file');
     },
+    changedFile() {
+      const {
+        new_path: changed,
+        deleted_file: deleted,
+        new_file: tempFile,
+        ...diffFile
+      } = this.diffFile;
+      return {
+        ...diffFile,
+        changed: Boolean(changed),
+        deleted,
+        tempFile,
+      };
+    },
   },
   mounted() {
     polyfillSticky(this.$refs.header);
@@ -222,7 +235,7 @@ export default {
 
     <div
       v-if="!diffFile.submodule && addMergeRequestButtons"
-      class="file-actions d-none d-sm-block"
+      class="file-actions d-none d-sm-flex align-items-center"
     >
       <diff-stats :added-lines="diffFile.added_lines" :removed-lines="diffFile.removed_lines" />
       <div class="btn-group" role="group">

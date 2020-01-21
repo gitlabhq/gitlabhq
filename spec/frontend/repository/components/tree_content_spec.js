@@ -30,7 +30,9 @@ describe('Repository table component', () => {
 
     vm.setData({ entries: { blobs: [{ name: 'README.md' }] } });
 
-    expect(vm.find(FilePreview).exists()).toBe(true);
+    return vm.vm.$nextTick().then(() => {
+      expect(vm.find(FilePreview).exists()).toBe(true);
+    });
   });
 
   describe('normalizeData', () => {

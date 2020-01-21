@@ -63,7 +63,7 @@ describe Ci::Stage, :models do
       end
 
       it 'updates stage status correctly' do
-        expect { stage.update_status }
+        expect { stage.update_legacy_status }
           .to change { stage.reload.status }
           .to eq 'running'
       end
@@ -87,7 +87,7 @@ describe Ci::Stage, :models do
       end
 
       it 'updates status to skipped' do
-        expect { stage.update_status }
+        expect { stage.update_legacy_status }
           .to change { stage.reload.status }
           .to eq 'skipped'
       end
@@ -99,15 +99,27 @@ describe Ci::Stage, :models do
       end
 
       it 'updates status to scheduled' do
-        expect { stage.update_status }
+        expect { stage.update_legacy_status }
           .to change { stage.reload.status }
           .to 'scheduled'
       end
     end
 
+    context 'when build is waiting for resource' do
+      before do
+        create(:ci_build, :waiting_for_resource, stage_id: stage.id)
+      end
+
+      it 'updates status to waiting for resource' do
+        expect { stage.update_legacy_status }
+          .to change { stage.reload.status }
+          .to 'waiting_for_resource'
+      end
+    end
+
     context 'when stage is skipped because is empty' do
       it 'updates status to skipped' do
-        expect { stage.update_status }
+        expect { stage.update_legacy_status }
           .to change { stage.reload.status }
           .to eq('skipped')
       end
@@ -121,7 +133,7 @@ describe Ci::Stage, :models do
       it 'retries a lock to update a stage status' do
         stage.lock_version = 100
 
-        stage.update_status
+        stage.update_legacy_status
 
         expect(stage.reload).to be_failed
       end
@@ -135,7 +147,7 @@ describe Ci::Stage, :models do
       end
 
       it 'raises an exception' do
-        expect { stage.update_status }
+        expect { stage.update_legacy_status }
           .to raise_error(HasStatus::UnknownStatusError)
       end
     end
@@ -146,6 +158,7 @@ describe Ci::Stage, :models do
 
     let(:user) { create(:user) }
     let(:stage) { create(:ci_stage_entity, status: :created) }
+
     subject { stage.detailed_status(user) }
 
     where(:statuses, :label) do
@@ -166,7 +179,7 @@ describe Ci::Stage, :models do
                                  stage_id: stage.id,
                                  status: status)
 
-          stage.update_status
+          stage.update_legacy_status
         end
       end
 
@@ -183,7 +196,7 @@ describe Ci::Stage, :models do
                           status: :failed,
                           allow_failure: true)
 
-        stage.update_status
+        stage.update_legacy_status
       end
 
       it 'is passed with warnings' do
@@ -230,7 +243,7 @@ describe Ci::Stage, :models do
         it 'recalculates index before updating status' do
           expect(stage.reload.position).to be_nil
 
-          stage.update_status
+          stage.update_legacy_status
 
           expect(stage.reload.position).to eq 10
         end
@@ -240,7 +253,7 @@ describe Ci::Stage, :models do
         it 'fallbacks to zero' do
           expect(stage.reload.position).to be_nil
 
-          stage.update_status
+          stage.update_legacy_status
 
           expect(stage.reload.position).to eq 0
         end

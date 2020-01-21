@@ -8,7 +8,7 @@ class AddCommentActionsToServices < ActiveRecord::Migration[5.2]
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:services, :comment_on_event_enabled, :boolean, default: true)
+    add_column_with_default(:services, :comment_on_event_enabled, :boolean, default: true) # rubocop:disable Migration/AddColumnWithDefault
   end
 
   def down

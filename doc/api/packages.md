@@ -31,13 +31,15 @@ Example response:
     "id": 1,
     "name": "com/mycompany/my-app",
     "version": "1.0-SNAPSHOT",
-    "package_type": "maven"
+    "package_type": "maven",
+    "created_at": "2019-11-27T03:37:38.711Z"
   },
   {
     "id": 2,
     "name": "@foo/bar",
     "version": "1.0.3",
-    "package_type": "npm"
+    "package_type": "npm",
+    "created_at": "2019-11-27T03:37:38.711Z"
   }
 ]
 ```
@@ -76,6 +78,18 @@ Example response:
     "_links": {
       "web_path": "/namespace1/project1/-/packages/1",
       "delete_api_path": "/namespace1/project1/-/packages/1"
+    },
+    "created_at": "2019-11-27T03:37:38.711Z",
+    "build_info": {
+      "pipeline": {
+        "id": 123,
+        "status": "pending",
+        "ref": "new-pipeline",
+        "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
+        "web_url": "https://example.com/foo/bar/pipelines/47",
+        "created_at": "2016-08-11T11:28:34.085Z",
+        "updated_at": "2016-08-11T11:32:35.169Z",
+      }
     }
   },
   {
@@ -86,6 +100,18 @@ Example response:
     "_links": {
       "web_path": "/namespace1/project1/-/packages/1",
       "delete_api_path": "/namespace1/project1/-/packages/1"
+    },
+    "created_at": "2019-11-27T03:37:38.711Z",
+    "build_info": {
+      "pipeline": {
+        "id": 123,
+        "status": "pending",
+        "ref": "new-pipeline",
+        "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
+        "web_url": "https://example.com/foo/bar/pipelines/47",
+        "created_at": "2016-08-11T11:28:34.085Z",
+        "updated_at": "2016-08-11T11:32:35.169Z",
+      }
     }
   }
 ]
@@ -128,6 +154,18 @@ Example response:
   "_links": {
     "web_path": "/namespace1/project1/-/packages/1",
     "delete_api_path": "/namespace1/project1/-/packages/1"
+  },
+  "created_at": "2019-11-27T03:37:38.711Z",
+  "build_info": {
+    "pipeline": {
+      "id": 123,
+      "status": "pending",
+      "ref": "new-pipeline",
+      "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
+      "web_url": "https://example.com/foo/bar/pipelines/47",
+      "created_at": "2016-08-11T11:28:34.085Z",
+      "updated_at": "2016-08-11T11:32:35.169Z",
+    }
   }
 }
 ```

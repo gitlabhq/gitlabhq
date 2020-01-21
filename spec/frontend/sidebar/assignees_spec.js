@@ -15,8 +15,6 @@ describe('Assignee component', () => {
   const createWrapper = (propsData = getDefaultProps()) => {
     wrapper = mount(Assignee, {
       propsData,
-      sync: false,
-      attachToDocument: true,
     });
   };
 
@@ -65,7 +63,9 @@ describe('Assignee component', () => {
       jest.spyOn(wrapper.vm, '$emit');
       wrapper.find('.assign-yourself .btn-link').trigger('click');
 
-      expect(wrapper.emitted('assign-self')).toBeTruthy();
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.emitted('assign-self')).toBeTruthy();
+      });
     });
   });
 
@@ -178,7 +178,7 @@ describe('Assignee component', () => {
       const userItems = wrapper.findAll('.user-list .user-item a');
 
       expect(userItems.length).toBe(3);
-      expect(userItems.at(0).attributes('data-original-title')).toBe(users[2].name);
+      expect(userItems.at(0).attributes('title')).toBe(users[2].name);
     });
 
     it('passes the sorted assignees to the collapsed-assignee-list', () => {

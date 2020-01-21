@@ -1,0 +1,5 @@
+---
+title: Implement saving config content for pipelines in a new table 'ci_pipelines_config'
+merge_request: 21827
+author:
+type: other

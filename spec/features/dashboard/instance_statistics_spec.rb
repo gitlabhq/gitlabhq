@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Showing instance statistics' do
+describe 'Showing analytics' do
   before do
     sign_in user if user
   end
@@ -13,10 +13,10 @@ describe 'Showing instance statistics' do
   context 'for unauthenticated users' do
     let(:user) { nil }
 
-    it 'does not show the instance statistics link' do
+    it 'does not show the Analytics link' do
       subject
 
-      expect(page).not_to have_link('Instance Statistics')
+      expect(page).not_to have_link('Analytics')
     end
   end
 
@@ -28,10 +28,10 @@ describe 'Showing instance statistics' do
         stub_application_setting(instance_statistics_visibility_private: false)
       end
 
-      it 'shows the instance statistics link' do
+      it 'shows the analytics link' do
         subject
 
-        expect(page).to have_link('Instance Statistics')
+        expect(page).to have_link('Analytics')
       end
     end
 
@@ -40,10 +40,14 @@ describe 'Showing instance statistics' do
         stub_application_setting(instance_statistics_visibility_private: true)
       end
 
-      it 'shows the instance statistics link' do
+      it 'does not show the analytics link' do
         subject
 
-        expect(page).not_to have_link('Instance Statistics')
+        # Skipping this test on EE as there is an EE specifc spec for this functionality
+        # ee/spec/features/dashboards/analytics_spec.rb
+        skip if Gitlab.ee?
+
+        expect(page).not_to have_link('Analytics')
       end
     end
   end
@@ -51,10 +55,10 @@ describe 'Showing instance statistics' do
   context 'for admins' do
     let(:user) { create(:admin) }
 
-    it 'shows the instance statistics link' do
+    it 'shows the analytics link' do
       subject
 
-      expect(page).to have_link('Instance Statistics')
+      expect(page).to have_link('Analytics')
     end
   end
 end

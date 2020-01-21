@@ -12,7 +12,6 @@ describe('ResolveWithIssueButton', () => {
   beforeEach(() => {
     wrapper = shallowMount(ResolveWithIssueButton, {
       localVue,
-      sync: false,
       propsData: {
         url,
       },

@@ -134,7 +134,7 @@ describe('Deployment component', () => {
             if (status === SUCCESS) {
               expect(wrapper.find(DeploymentViewButton).text()).toContain('View app');
             } else {
-              expect(wrapper.find(DeploymentViewButton).text()).toContain('View previous app');
+              expect(wrapper.find(DeploymentViewButton).text()).toContain('View latest app');
             }
           });
         }

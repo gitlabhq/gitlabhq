@@ -2,7 +2,6 @@
 import { mapState, mapGetters, mapActions } from 'vuex';
 import Select2Select from '~/vue_shared/components/select2_select.vue';
 import { __ } from '~/locale';
-import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import eventHub from '../event_hub';
 import { STATUSES } from '../constants';
 import ImportStatus from './import_status.vue';
@@ -11,7 +10,6 @@ export default {
   name: 'ProviderRepoTableRow',
   components: {
     Select2Select,
-    LoadingButton,
     ImportStatus,
   },
   props: {

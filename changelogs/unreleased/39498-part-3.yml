@@ -1,0 +1,5 @@
+---
+title: "!21542 Part 3: Handle edge cases in stage and unstage mutations"
+merge_request: 21676
+author:
+type: fixed

@@ -66,7 +66,7 @@ export default {
       :svg-path="illustrationPath"
       :description="
         __(
-          'Releases mark specific points in a project\'s development history, communicate information about the type of change, and deliver on prepared, often compiled, versions of the software to be reused elsewhere. Currently, releases can only be created through the API.',
+          'Releases are based on Git tags and mark specific points in a project\'s development history. They can contain information about the type of changes and can also deliver binaries, like compiled versions of your software.',
         )
       "
       :primary-button-link="documentationLink"

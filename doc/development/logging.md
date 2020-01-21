@@ -127,6 +127,118 @@ importer progresses. Here's what to do:
    logger.info(message: "Import error", error_code: 1, error: "I/O failure")
    ```
 
+## Multi-destination Logging
+
+GitLab is transitioning from unstructured/plaintext logs to structured/JSON logs.  During this transition period some logs will be recorded in multiple formats through multi-destination logging.
+
+### How to use multi-destination logging
+
+Create a new logger class, inheriting from `MultiDestinationLogger` and add an array of loggers to a `LOGGERS` constant. The loggers should be classes that descend from `Gitlab::Logger`. e.g. the user defined loggers in the following examples, could be inheriting from `Gitlab::Logger` and `Gitlab::JsonLogger`, respectively.
+
+You must specify one of the loggers as the `primary_logger`. The `primary_logger` will be used when information about this multi-destination logger is displayed in the app, e.g. using the `Gitlab::Logger.read_latest` method.
+
+The following example sets one of the defined `LOGGERS` as a `primary_logger`.
+
+```ruby
+module Gitlab
+  class FancyMultiLogger < Gitlab::MultiDestinationLogger
+    LOGGERS = [UnstructuredLogger, StructuredLogger].freeze
+
+    def self.loggers
+      LOGGERS
+    end
+
+    def primary_logger
+      UnstructuredLogger
+    end
+  end
+end
+```
+
+You can now call the usual logging methods on this multi-logger, e.g.
+
+```ruby
+FancyMultiLogger.info(message: "Information")
+```
+
+This message will be logged by each logger registered in `FancyMultiLogger.loggers`.
+
+### Passing a string or hash for logging
+
+When passing a string or hash to a `MultiDestinationLogger`, the log lines could be formatted differently, depending on the kinds of `LOGGERS` set.
+
+e.g. let's partially define the loggers from the previous example:
+
+```ruby
+module Gitlab
+  # Similar to AppTextLogger
+  class UnstructuredLogger < Gitlab::Logger
+    ...
+  end
+
+  # Similar to AppJsonLogger
+  class StructuredLogger < Gitlab::JsonLogger
+    ...
+  end
+end
+```
+
+Here are some examples of how messages would be handled by both the loggers.
+
+1. When passing a string
+
+```ruby
+FancyMultiLogger.info("Information")
+
+# UnstructuredLogger
+I, [2020-01-13T18:48:49.201Z #5647]  INFO -- : Information
+
+# StructuredLogger
+{:severity=>"INFO", :time=>"2020-01-13T11:02:41.559Z", :correlation_id=>"b1701f7ecc4be4bcd4c2d123b214e65a", :message=>"Information"}
+```
+
+1. When passing a hash
+
+```ruby
+FancyMultiLogger.info({:message=>"This is my message", :project_id=>123})
+
+# UnstructuredLogger
+I, [2020-01-13T19:01:17.091Z #11056]  INFO -- : {"message"=>"Message", "project_id"=>"123"}
+
+# StructuredLogger
+{:severity=>"INFO", :time=>"2020-01-13T11:06:09.851Z", :correlation_id=>"d7e0886f096db9a8526a4f89da0e45f6", :message=>"This is my message", :project_id=>123}
+```
+
+### Logging context metadata (through Rails or Grape requests)
+
+`Gitlab::ApplicationContext` stores metadata in a request
+lifecycle, which can then be added to the web request
+or Sidekiq logs.
+
+Entry points can be seen at:
+
+- [`ApplicationController`](https://gitlab.com/gitlab-org/gitlab/blob/master/app/controllers/application_controller.rb)
+- [External API](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/api/api.rb)
+- [Internal API](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/api/internal/base.rb)
+
+#### Adding attributes
+
+When adding new attributes, make sure they're exposed within the context of the entry points above and:
+
+- Pass them within the hash to the `with_context` (or `push`) method (make sure to pass a Proc if the
+method or variable shouldn't be evaluated right away)
+- Change `Gitlab::ApplicationContext` to accept these new values
+- Make sure the new attributes are accepted at [`Labkit::Context`](https://gitlab.com/gitlab-org/labkit-ruby/blob/master/lib/labkit/context.rb)
+
+See our [HOWTO: Use Sidekiq metadata logs](https://www.youtube.com/watch?v=_wDllvO_IY0) for further knowledge on
+creating visualizations in Kibana.
+
+**Note:**
+The fields of the context are currently only logged for Sidekiq jobs triggered
+through web requests. See the
+[follow-up work](https://gitlab.com/gitlab-com/gl-infra/scalability/issues/68)
+for more information.
+
 ## Exception Handling
 
 It often happens that you catch the exception and want to track it.

@@ -15,7 +15,6 @@ describe('TooltipOnTruncate component', () => {
   const createComponent = ({ propsData, ...options } = {}) => {
     wrapper = shallowMount(localVue.extend(TooltipOnTruncate), {
       localVue,
-      sync: false,
       attachToDocument: true,
       propsData: {
         title: TEST_TITLE,

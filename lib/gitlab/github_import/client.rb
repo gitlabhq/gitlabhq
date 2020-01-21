@@ -189,7 +189,7 @@ module Gitlab
       end
 
       def default_api_endpoint
-        OmniAuth::Strategies::GitHub.default_options[:client_options][:site]
+        OmniAuth::Strategies::GitHub.default_options[:client_options][:site] || ::Octokit::Default.api_endpoint
       end
 
       def verify_ssl

@@ -20,6 +20,11 @@ export default {
     Suggestions,
   },
   props: {
+    isSubmitting: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     markdownPreviewPath: {
       type: String,
       required: false,
@@ -133,6 +138,20 @@ export default {
       );
     },
   },
+  watch: {
+    isSubmitting(isSubmitting) {
+      if (!isSubmitting || !this.$refs['markdown-preview'].querySelectorAll) {
+        return;
+      }
+      const mediaInPreview = this.$refs['markdown-preview'].querySelectorAll('video, audio');
+
+      if (mediaInPreview) {
+        mediaInPreview.forEach(media => {
+          media.pause();
+        });
+      }
+    },
+  },
   mounted() {
     /*
         GLForm class handles all the toolbar buttons
@@ -177,7 +196,6 @@ export default {
         this.renderMarkdown();
       }
     },
-
     showWriteTab() {
       this.markdownPreview = '';
       this.previewMarkdown = false;

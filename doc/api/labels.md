@@ -1,5 +1,8 @@
 # Labels API
 
+NOTE: **Note:**
+The `description_html` - was added to response JSON in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/merge_requests/21413).
+
 ## List labels
 
 Get all labels for a given project.
@@ -28,6 +31,7 @@ Example response:
     "color" : "#d9534f",
     "text_color" : "#FFFFFF",
     "description": "Bug reported by user",
+    "description_html": "Bug reported by user",
     "open_issues_count": 1,
     "closed_issues_count": 0,
     "open_merge_requests_count": 1,
@@ -41,6 +45,7 @@ Example response:
     "text_color" : "#FFFFFF",
     "name" : "confirmed",
     "description": "Confirmed issue",
+    "description_html": "Confirmed issue",
     "open_issues_count": 2,
     "closed_issues_count": 5,
     "open_merge_requests_count": 0,
@@ -54,6 +59,7 @@ Example response:
     "color" : "#d9534f",
     "text_color" : "#FFFFFF",
     "description": "Critical issue. Need fix ASAP",
+    "description_html": "Critical issue. Need fix ASAP",
     "open_issues_count": 1,
     "closed_issues_count": 3,
     "open_merge_requests_count": 1,
@@ -67,6 +73,7 @@ Example response:
     "color" : "#f0ad4e",
     "text_color" : "#FFFFFF",
     "description": "Issue about documentation",
+    "description_html": "Issue about documentation",
     "open_issues_count": 1,
     "closed_issues_count": 0,
     "open_merge_requests_count": 2,
@@ -80,6 +87,7 @@ Example response:
     "text_color" : "#FFFFFF",
     "name" : "enhancement",
     "description": "Enhancement proposal",
+    "description_html": "Enhancement proposal",
     "open_issues_count": 1,
     "closed_issues_count": 0,
     "open_merge_requests_count": 1,
@@ -117,6 +125,7 @@ Example response:
   "color" : "#d9534f",
   "text_color" : "#FFFFFF",
   "description": "Bug reported by user",
+  "description_html": "Bug reported by user",
   "open_issues_count": 1,
   "closed_issues_count": 0,
   "open_merge_requests_count": 1,
@@ -155,6 +164,7 @@ Example response:
   "color" : "#5843AD",
   "text_color" : "#FFFFFF",
   "description":null,
+  "description_html":null,
   "open_issues_count": 0,
   "closed_issues_count": 0,
   "open_merge_requests_count": 0,
@@ -214,6 +224,7 @@ Example response:
   "color" : "#8E44AD",
   "text_color" : "#FFFFFF",
   "description": "Documentation",
+  "description_html": "Documentation",
   "open_issues_count": 1,
   "closed_issues_count": 0,
   "open_merge_requests_count": 2,
@@ -252,6 +263,7 @@ Example response:
   "name" : "documentation",
   "color" : "#8E44AD",
   "description": "Documentation",
+  "description_html": "Documentation",
   "open_issues_count": 1,
   "closed_issues_count": 0,
   "open_merge_requests_count": 2,
@@ -289,6 +301,7 @@ Example response:
   "color" : "#d9534f",
   "text_color" : "#FFFFFF",
   "description": "Bug reported by user",
+  "description_html": "Bug reported by user",
   "open_issues_count": 1,
   "closed_issues_count": 0,
   "open_merge_requests_count": 1,

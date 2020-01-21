@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :cluster_provider_gcp, class: Clusters::Providers::Gcp do
+  factory :cluster_provider_gcp, class: 'Clusters::Providers::Gcp' do
     association :cluster, platform_type: :kubernetes, provider_type: :gcp
     gcp_project_id { 'test-gcp-project' }
 

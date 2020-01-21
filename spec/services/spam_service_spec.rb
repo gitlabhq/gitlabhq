@@ -5,7 +5,7 @@ require 'spec_helper'
 describe SpamService do
   describe '#when_recaptcha_verified' do
     def check_spam(issue, request, recaptcha_verified)
-      described_class.new(issue, request).when_recaptcha_verified(recaptcha_verified) do
+      described_class.new(spammable: issue, request: request).when_recaptcha_verified(recaptcha_verified) do
         'yielded'
       end
     end
@@ -45,7 +45,7 @@ describe SpamService do
 
         context 'when indicated as spam by akismet' do
           shared_examples 'akismet spam' do
-            it 'doesnt check as spam when request is missing' do
+            it "doesn't check as spam when request is missing" do
               check_spam(issue, nil, false)
 
               expect(issue).not_to be_spam

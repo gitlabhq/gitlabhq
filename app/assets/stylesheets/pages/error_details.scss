@@ -2,6 +2,11 @@
   li {
     @include gl-line-height-32;
   }
+
+  .btn-outline-info {
+    color: $blue-500;
+    border-color: $blue-500;
+  }
 }
 
 .stacktrace {

@@ -45,7 +45,6 @@ describe('ProviderRepoTableRow', () => {
       propsData: {
         repo,
       },
-      sync: false,
     });
 
     return component.vm;

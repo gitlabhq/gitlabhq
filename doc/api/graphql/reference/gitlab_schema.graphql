@@ -38,6 +38,9 @@ type AddAwardEmojiPayload {
   errors: [String!]!
 }
 
+"""
+An emoji awarded by a user.
+"""
 type AwardEmoji {
   """
   The emoji description
@@ -71,17 +74,44 @@ type AwardEmoji {
 }
 
 type Blob implements Entry {
+  """
+  Flat path of the entry
+  """
   flatPath: String!
+
+  """
+  ID of the entry
+  """
   id: ID!
+
+  """
+  LFS ID of the blob
+  """
   lfsOid: String
+
+  """
+  Name of the entry
+  """
   name: String!
+
+  """
+  Path of the entry
+  """
   path: String!
 
   """
-  Last commit sha for entry
+  Last commit sha for the entry
   """
   sha: String!
+
+  """
+  Type of tree entry
+  """
   type: EntryType!
+
+  """
+  Web URL of the blob
+  """
   webUrl: String
 }
 
@@ -502,7 +532,13 @@ type CreateSnippetPayload {
   snippet: Snippet
 }
 
-type Design implements Noteable {
+"""
+A single design
+"""
+type Design implements DesignFields & Noteable {
+  """
+  The diff refs for this design
+  """
   diffRefs: DiffRefs!
 
   """
@@ -531,13 +567,33 @@ type Design implements Noteable {
   ): DiscussionConnection!
 
   """
-  The change that happened to the design at this version
+  How this design was changed in the current version
   """
   event: DesignVersionEvent!
+
+  """
+  The filename of the design
+  """
   filename: String!
+
+  """
+  The full path to the design file
+  """
   fullPath: String!
+
+  """
+  The ID of this design
+  """
   id: ID!
+
+  """
+  The URL of the image
+  """
   image: String!
+
+  """
+  The issue the design belongs to
+  """
   issue: Issue!
 
   """
@@ -569,6 +625,10 @@ type Design implements Noteable {
   The total count of user-created notes for this design
   """
   notesCount: Int!
+
+  """
+  The project the design belongs to
+  """
   project: Project!
 
   """
@@ -597,9 +657,12 @@ type Design implements Noteable {
   ): DesignVersionConnection!
 }
 
+"""
+A collection of designs.
+"""
 type DesignCollection {
   """
-  All designs for this collection
+  All designs for the design collection
   """
   designs(
     """
@@ -638,11 +701,19 @@ type DesignCollection {
     """
     last: Int
   ): DesignConnection!
+
+  """
+  Issue associated with the design collection
+  """
   issue: Issue!
+
+  """
+  Project associated with the design collection
+  """
   project: Project!
 
   """
-  All versions related to all designs ordered newest first
+  All versions related to all designs, ordered newest first
   """
   versions(
     """
@@ -700,6 +771,53 @@ type DesignEdge {
   The item at the end of the edge.
   """
   node: Design
+}
+
+interface DesignFields {
+  """
+  The diff refs for this design
+  """
+  diffRefs: DiffRefs!
+
+  """
+  How this design was changed in the current version
+  """
+  event: DesignVersionEvent!
+
+  """
+  The filename of the design
+  """
+  filename: String!
+
+  """
+  The full path to the design file
+  """
+  fullPath: String!
+
+  """
+  The ID of this design
+  """
+  id: ID!
+
+  """
+  The URL of the image
+  """
+  image: String!
+
+  """
+  The issue the design belongs to
+  """
+  issue: Issue!
+
+  """
+  The total count of user-created notes for this design
+  """
+  notesCount: Int!
+
+  """
+  The project the design belongs to
+  """
+  project: Project!
 }
 
 """
@@ -799,7 +917,7 @@ type DesignManagementUploadPayload {
 
 type DesignVersion {
   """
-  All designs that were changed in this version
+  All designs that were changed in the version
   """
   designs(
     """
@@ -822,7 +940,15 @@ type DesignVersion {
     """
     last: Int
   ): DesignConnection!
+
+  """
+  ID of the design version
+  """
   id: ID!
+
+  """
+  SHA of the design version
+  """
   sha: ID!
 }
 
@@ -862,7 +988,7 @@ type DesignVersionEdge {
 }
 
 """
-Mutation event of a Design within a Version
+Mutation event of a design within a version
 """
 enum DesignVersionEvent {
   """
@@ -957,13 +1083,44 @@ type DestroySnippetPayload {
 }
 
 type DetailedStatus {
+  """
+  Path of the details for the pipeline status
+  """
   detailsPath: String!
+
+  """
+  Favicon of the pipeline status
+  """
   favicon: String!
+
+  """
+  Group of the pipeline status
+  """
   group: String!
+
+  """
+  Indicates if the pipeline status has further details
+  """
   hasDetails: Boolean!
+
+  """
+  Icon of the pipeline status
+  """
   icon: String!
+
+  """
+  Label of the pipeline status
+  """
   label: String!
+
+  """
+  Text of the pipeline status
+  """
   text: String!
+
+  """
+  Tooltip associated with the pipeline status
+  """
   tooltip: String!
 }
 
@@ -1215,15 +1372,34 @@ type DiscussionEdge {
 }
 
 interface Entry {
+  """
+  Flat path of the entry
+  """
   flatPath: String!
+
+  """
+  ID of the entry
+  """
   id: ID!
+
+  """
+  Name of the entry
+  """
   name: String!
+
+  """
+  Path of the entry
+  """
   path: String!
 
   """
-  Last commit sha for entry
+  Last commit sha for the entry
   """
   sha: String!
+
+  """
+  Type of tree entry
+  """
   type: EntryType!
 }
 
@@ -1236,6 +1412,59 @@ enum EntryType {
   tree
 }
 
+"""
+Describes where code is deployed for a project
+"""
+type Environment {
+  """
+  ID of the environment
+  """
+  id: ID!
+
+  """
+  Human-readable name of the environment
+  """
+  name: String!
+}
+
+"""
+The connection type for Environment.
+"""
+type EnvironmentConnection {
+  """
+  A list of edges.
+  """
+  edges: [EnvironmentEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [Environment]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type EnvironmentEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: Environment
+}
+
+"""
+Represents an epic.
+"""
 type Epic implements Noteable {
   """
   Author of the epic
@@ -1547,7 +1776,7 @@ type Epic implements Noteable {
   state: EpicState!
 
   """
-  Boolean flag for whether the currently logged in user is subscribed to this epic
+  Indicates the currently logged in user is subscribed to the epic
   """
   subscribed: Boolean!
 
@@ -1594,6 +1823,9 @@ type EpicConnection {
   pageInfo: PageInfo!
 }
 
+"""
+Counts of descendent epics.
+"""
 type EpicDescendantCount {
   """
   Number of closed sub-epics
@@ -1631,6 +1863,9 @@ type EpicEdge {
   node: Epic
 }
 
+"""
+Relationship between an epic and an issue
+"""
 type EpicIssue implements Noteable {
   """
   Assignees of the issue
@@ -1693,7 +1928,7 @@ type EpicIssue implements Noteable {
   designCollection: DesignCollection
 
   """
-  Deprecated. Use `design_collection`.
+  Deprecated. Use `design_collection`
   """
   designs: DesignCollection @deprecated(reason: "use design_collection")
 
@@ -1863,7 +2098,7 @@ type EpicIssue implements Noteable {
   state: IssueState!
 
   """
-  Boolean flag for whether the currently logged in user is subscribed to this issue
+  Indicates the currently logged in user is subscribed to the issue
   """
   subscribed: Boolean!
 
@@ -1968,42 +2203,42 @@ Check permissions for the current user on an epic
 """
 type EpicPermissions {
   """
-  Whether or not a user can perform `admin_epic` on this resource
+  Indicates the user can perform `admin_epic` on this resource
   """
   adminEpic: Boolean!
 
   """
-  Whether or not a user can perform `award_emoji` on this resource
+  Indicates the user can perform `award_emoji` on this resource
   """
   awardEmoji: Boolean!
 
   """
-  Whether or not a user can perform `create_epic` on this resource
+  Indicates the user can perform `create_epic` on this resource
   """
   createEpic: Boolean!
 
   """
-  Whether or not a user can perform `create_note` on this resource
+  Indicates the user can perform `create_note` on this resource
   """
   createNote: Boolean!
 
   """
-  Whether or not a user can perform `destroy_epic` on this resource
+  Indicates the user can perform `destroy_epic` on this resource
   """
   destroyEpic: Boolean!
 
   """
-  Whether or not a user can perform `read_epic` on this resource
+  Indicates the user can perform `read_epic` on this resource
   """
   readEpic: Boolean!
 
   """
-  Whether or not a user can perform `read_epic_iid` on this resource
+  Indicates the user can perform `read_epic_iid` on this resource
   """
   readEpicIid: Boolean!
 
   """
-  Whether or not a user can perform `update_epic` on this resource
+  Indicates the user can perform `update_epic` on this resource
   """
   updateEpic: Boolean!
 }
@@ -2079,7 +2314,7 @@ enum EpicSort {
 }
 
 """
-State of a GitLab epic
+State of an epic.
 """
 enum EpicState {
   all
@@ -2088,20 +2323,23 @@ enum EpicState {
 }
 
 """
-State event of a GitLab Epic
+State event of an epic
 """
 enum EpicStateEvent {
   """
-  Close the Epic
+  Close the epic
   """
   CLOSE
 
   """
-  Reopen the Epic
+  Reopen the epic
   """
   REOPEN
 }
 
+"""
+A node of an epic tree.
+"""
 input EpicTreeNodeFieldsInputType {
   """
   The id of the epic_issue or issue that the actual epic or issue is switched with
@@ -2152,6 +2390,38 @@ type EpicTreeReorderPayload {
   Reasons why the mutation failed.
   """
   errors: [String!]!
+}
+
+type GrafanaIntegration {
+  """
+  Timestamp of the issue's creation
+  """
+  createdAt: Time!
+
+  """
+  Indicates whether Grafana integration is enabled
+  """
+  enabled: Boolean!
+
+  """
+  Url for the Grafana host for the Grafana integration
+  """
+  grafanaUrl: String!
+
+  """
+  Internal ID of the Grafana integration
+  """
+  id: ID!
+
+  """
+  API token for the Grafana integration
+  """
+  token: String!
+
+  """
+  Timestamp of the issue's last activity
+  """
+  updatedAt: Time!
 }
 
 type Group {
@@ -2325,6 +2595,11 @@ type Group {
   lfsEnabled: Boolean
 
   """
+  Indicates if a group is disabled from getting mentioned
+  """
+  mentionsDisabled: Boolean
+
+  """
   Name of the namespace
   """
   name: String!
@@ -2432,7 +2707,7 @@ type Group {
 
 type GroupPermissions {
   """
-  Whether or not a user can perform `read_group` on this resource
+  Indicates the user can perform `read_group` on this resource
   """
   readGroup: Boolean!
 }
@@ -2508,7 +2783,7 @@ type Issue implements Noteable {
   designCollection: DesignCollection
 
   """
-  Deprecated. Use `design_collection`.
+  Deprecated. Use `design_collection`
   """
   designs: DesignCollection @deprecated(reason: "use design_collection")
 
@@ -2663,7 +2938,7 @@ type Issue implements Noteable {
   state: IssueState!
 
   """
-  Boolean flag for whether the currently logged in user is subscribed to this issue
+  Indicates the currently logged in user is subscribed to the issue
   """
   subscribed: Boolean!
 
@@ -2768,42 +3043,42 @@ Check permissions for the current user on a issue
 """
 type IssuePermissions {
   """
-  Whether or not a user can perform `admin_issue` on this resource
+  Indicates the user can perform `admin_issue` on this resource
   """
   adminIssue: Boolean!
 
   """
-  Whether or not a user can perform `create_design` on this resource
+  Indicates the user can perform `create_design` on this resource
   """
   createDesign: Boolean!
 
   """
-  Whether or not a user can perform `create_note` on this resource
+  Indicates the user can perform `create_note` on this resource
   """
   createNote: Boolean!
 
   """
-  Whether or not a user can perform `destroy_design` on this resource
+  Indicates the user can perform `destroy_design` on this resource
   """
   destroyDesign: Boolean!
 
   """
-  Whether or not a user can perform `read_design` on this resource
+  Indicates the user can perform `read_design` on this resource
   """
   readDesign: Boolean!
 
   """
-  Whether or not a user can perform `read_issue` on this resource
+  Indicates the user can perform `read_issue` on this resource
   """
   readIssue: Boolean!
 
   """
-  Whether or not a user can perform `reopen_issue` on this resource
+  Indicates the user can perform `reopen_issue` on this resource
   """
   reopenIssue: Boolean!
 
   """
-  Whether or not a user can perform `update_issue` on this resource
+  Indicates the user can perform `update_issue` on this resource
   """
   updateIssue: Boolean!
 }
@@ -3561,42 +3836,42 @@ Check permissions for the current user on a merge request
 """
 type MergeRequestPermissions {
   """
-  Whether or not a user can perform `admin_merge_request` on this resource
+  Indicates the user can perform `admin_merge_request` on this resource
   """
   adminMergeRequest: Boolean!
 
   """
-  Whether or not a user can perform `cherry_pick_on_current_merge_request` on this resource
+  Indicates the user can perform `cherry_pick_on_current_merge_request` on this resource
   """
   cherryPickOnCurrentMergeRequest: Boolean!
 
   """
-  Whether or not a user can perform `create_note` on this resource
+  Indicates the user can perform `create_note` on this resource
   """
   createNote: Boolean!
 
   """
-  Whether or not a user can perform `push_to_source_branch` on this resource
+  Indicates the user can perform `push_to_source_branch` on this resource
   """
   pushToSourceBranch: Boolean!
 
   """
-  Whether or not a user can perform `read_merge_request` on this resource
+  Indicates the user can perform `read_merge_request` on this resource
   """
   readMergeRequest: Boolean!
 
   """
-  Whether or not a user can perform `remove_source_branch` on this resource
+  Indicates the user can perform `remove_source_branch` on this resource
   """
   removeSourceBranch: Boolean!
 
   """
-  Whether or not a user can perform `revert_on_current_merge_request` on this resource
+  Indicates the user can perform `revert_on_current_merge_request` on this resource
   """
   revertOnCurrentMergeRequest: Boolean!
 
   """
-  Whether or not a user can perform `update_merge_request` on this resource
+  Indicates the user can perform `update_merge_request` on this resource
   """
   updateMergeRequest: Boolean!
 }
@@ -4209,27 +4484,27 @@ type NoteEdge {
 
 type NotePermissions {
   """
-  Whether or not a user can perform `admin_note` on this resource
+  Indicates the user can perform `admin_note` on this resource
   """
   adminNote: Boolean!
 
   """
-  Whether or not a user can perform `award_emoji` on this resource
+  Indicates the user can perform `award_emoji` on this resource
   """
   awardEmoji: Boolean!
 
   """
-  Whether or not a user can perform `create_note` on this resource
+  Indicates the user can perform `create_note` on this resource
   """
   createNote: Boolean!
 
   """
-  Whether or not a user can perform `read_note` on this resource
+  Indicates the user can perform `read_note` on this resource
   """
   readNote: Boolean!
 
   """
-  Whether or not a user can perform `resolve_note` on this resource
+  Indicates the user can perform `resolve_note` on this resource
   """
   resolveNote: Boolean!
 }
@@ -4312,26 +4587,70 @@ type PageInfo {
 }
 
 type Pipeline {
+  """
+  Base SHA of the source branch
+  """
   beforeSha: String
+
+  """
+  Timestamp of the pipeline's commit
+  """
   committedAt: Time
 
   """
   Coverage percentage
   """
   coverage: Float
+
+  """
+  Timestamp of the pipeline's creation
+  """
   createdAt: Time!
+
+  """
+  Detailed status of the pipeline
+  """
   detailedStatus: DetailedStatus!
 
   """
   Duration of the pipeline in seconds
   """
   duration: Int
+
+  """
+  Timestamp of the pipeline's completion
+  """
   finishedAt: Time
+
+  """
+  ID of the pipeline
+  """
   id: ID!
+
+  """
+  Internal ID of the pipeline
+  """
   iid: String!
+
+  """
+  SHA of the pipeline's commit
+  """
   sha: String!
+
+  """
+  Timestamp when the pipeline was started
+  """
   startedAt: Time
+
+  """
+  Status of the pipeline (CREATED, WAITING_FOR_RESOURCE, PREPARING, PENDING,
+  RUNNING, FAILED, SUCCESS, CANCELED, SKIPPED, MANUAL, SCHEDULED)
+  """
   status: PipelineStatusEnum!
+
+  """
+  Timestamp of the pipeline's last activity
+  """
   updatedAt: Time!
 
   """
@@ -4377,17 +4696,17 @@ type PipelineEdge {
 
 type PipelinePermissions {
   """
-  Whether or not a user can perform `admin_pipeline` on this resource
+  Indicates the user can perform `admin_pipeline` on this resource
   """
   adminPipeline: Boolean!
 
   """
-  Whether or not a user can perform `destroy_pipeline` on this resource
+  Indicates the user can perform `destroy_pipeline` on this resource
   """
   destroyPipeline: Boolean!
 
   """
-  Whether or not a user can perform `update_pipeline` on this resource
+  Indicates the user can perform `update_pipeline` on this resource
   """
   updatePipeline: Boolean!
 }
@@ -4403,13 +4722,19 @@ enum PipelineStatusEnum {
   SCHEDULED
   SKIPPED
   SUCCESS
+  WAITING_FOR_RESOURCE
 }
 
 type Project {
   """
-  Archived status of the project
+  Indicates the archived status of the project
   """
   archived: Boolean
+
+  """
+  Indicates if issues referenced by merge requests and commits within the default branch are closed automatically
+  """
+  autocloseReferencedIssues: Boolean
 
   """
   URL to avatar image file of the project
@@ -4437,6 +4762,41 @@ type Project {
   descriptionHtml: String
 
   """
+  Environments of the project
+  """
+  environments(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Name of the environment
+    """
+    name: String
+
+    """
+    Search query
+    """
+    search: String
+  ): EnvironmentConnection
+
+  """
   Number of times the project has been forked
   """
   forksCount: Int!
@@ -4445,6 +4805,11 @@ type Project {
   Full path of the project
   """
   fullPath: ID!
+
+  """
+  Grafana integration details for the project
+  """
+  grafanaIntegration: GrafanaIntegration
 
   """
   Group of the project
@@ -4880,6 +5245,11 @@ type Project {
   statistics: ProjectStatistics
 
   """
+  The commit message used to apply merge request suggestions
+  """
+  suggestionCommitMessage: String
+
+  """
   List of project tags
   """
   tagList: String
@@ -4942,207 +5312,207 @@ type ProjectEdge {
 
 type ProjectPermissions {
   """
-  Whether or not a user can perform `admin_operations` on this resource
+  Indicates the user can perform `admin_operations` on this resource
   """
   adminOperations: Boolean!
 
   """
-  Whether or not a user can perform `admin_project` on this resource
+  Indicates the user can perform `admin_project` on this resource
   """
   adminProject: Boolean!
 
   """
-  Whether or not a user can perform `admin_remote_mirror` on this resource
+  Indicates the user can perform `admin_remote_mirror` on this resource
   """
   adminRemoteMirror: Boolean!
 
   """
-  Whether or not a user can perform `admin_wiki` on this resource
+  Indicates the user can perform `admin_wiki` on this resource
   """
   adminWiki: Boolean!
 
   """
-  Whether or not a user can perform `archive_project` on this resource
+  Indicates the user can perform `archive_project` on this resource
   """
   archiveProject: Boolean!
 
   """
-  Whether or not a user can perform `change_namespace` on this resource
+  Indicates the user can perform `change_namespace` on this resource
   """
   changeNamespace: Boolean!
 
   """
-  Whether or not a user can perform `change_visibility_level` on this resource
+  Indicates the user can perform `change_visibility_level` on this resource
   """
   changeVisibilityLevel: Boolean!
 
   """
-  Whether or not a user can perform `create_deployment` on this resource
+  Indicates the user can perform `create_deployment` on this resource
   """
   createDeployment: Boolean!
 
   """
-  Whether or not a user can perform `create_design` on this resource
+  Indicates the user can perform `create_design` on this resource
   """
   createDesign: Boolean!
 
   """
-  Whether or not a user can perform `create_issue` on this resource
+  Indicates the user can perform `create_issue` on this resource
   """
   createIssue: Boolean!
 
   """
-  Whether or not a user can perform `create_label` on this resource
+  Indicates the user can perform `create_label` on this resource
   """
   createLabel: Boolean!
 
   """
-  Whether or not a user can perform `create_merge_request_from` on this resource
+  Indicates the user can perform `create_merge_request_from` on this resource
   """
   createMergeRequestFrom: Boolean!
 
   """
-  Whether or not a user can perform `create_merge_request_in` on this resource
+  Indicates the user can perform `create_merge_request_in` on this resource
   """
   createMergeRequestIn: Boolean!
 
   """
-  Whether or not a user can perform `create_pages` on this resource
+  Indicates the user can perform `create_pages` on this resource
   """
   createPages: Boolean!
 
   """
-  Whether or not a user can perform `create_pipeline` on this resource
+  Indicates the user can perform `create_pipeline` on this resource
   """
   createPipeline: Boolean!
 
   """
-  Whether or not a user can perform `create_pipeline_schedule` on this resource
+  Indicates the user can perform `create_pipeline_schedule` on this resource
   """
   createPipelineSchedule: Boolean!
 
   """
-  Whether or not a user can perform `create_snippet` on this resource
+  Indicates the user can perform `create_snippet` on this resource
   """
   createSnippet: Boolean!
 
   """
-  Whether or not a user can perform `create_wiki` on this resource
+  Indicates the user can perform `create_wiki` on this resource
   """
   createWiki: Boolean!
 
   """
-  Whether or not a user can perform `destroy_design` on this resource
+  Indicates the user can perform `destroy_design` on this resource
   """
   destroyDesign: Boolean!
 
   """
-  Whether or not a user can perform `destroy_pages` on this resource
+  Indicates the user can perform `destroy_pages` on this resource
   """
   destroyPages: Boolean!
 
   """
-  Whether or not a user can perform `destroy_wiki` on this resource
+  Indicates the user can perform `destroy_wiki` on this resource
   """
   destroyWiki: Boolean!
 
   """
-  Whether or not a user can perform `download_code` on this resource
+  Indicates the user can perform `download_code` on this resource
   """
   downloadCode: Boolean!
 
   """
-  Whether or not a user can perform `download_wiki_code` on this resource
+  Indicates the user can perform `download_wiki_code` on this resource
   """
   downloadWikiCode: Boolean!
 
   """
-  Whether or not a user can perform `fork_project` on this resource
+  Indicates the user can perform `fork_project` on this resource
   """
   forkProject: Boolean!
 
   """
-  Whether or not a user can perform `push_code` on this resource
+  Indicates the user can perform `push_code` on this resource
   """
   pushCode: Boolean!
 
   """
-  Whether or not a user can perform `push_to_delete_protected_branch` on this resource
+  Indicates the user can perform `push_to_delete_protected_branch` on this resource
   """
   pushToDeleteProtectedBranch: Boolean!
 
   """
-  Whether or not a user can perform `read_commit_status` on this resource
+  Indicates the user can perform `read_commit_status` on this resource
   """
   readCommitStatus: Boolean!
 
   """
-  Whether or not a user can perform `read_cycle_analytics` on this resource
+  Indicates the user can perform `read_cycle_analytics` on this resource
   """
   readCycleAnalytics: Boolean!
 
   """
-  Whether or not a user can perform `read_design` on this resource
+  Indicates the user can perform `read_design` on this resource
   """
   readDesign: Boolean!
 
   """
-  Whether or not a user can perform `read_pages_content` on this resource
+  Indicates the user can perform `read_pages_content` on this resource
   """
   readPagesContent: Boolean!
 
   """
-  Whether or not a user can perform `read_project` on this resource
+  Indicates the user can perform `read_project` on this resource
   """
   readProject: Boolean!
 
   """
-  Whether or not a user can perform `read_project_member` on this resource
+  Indicates the user can perform `read_project_member` on this resource
   """
   readProjectMember: Boolean!
 
   """
-  Whether or not a user can perform `read_wiki` on this resource
+  Indicates the user can perform `read_wiki` on this resource
   """
   readWiki: Boolean!
 
   """
-  Whether or not a user can perform `remove_fork_project` on this resource
+  Indicates the user can perform `remove_fork_project` on this resource
   """
   removeForkProject: Boolean!
 
   """
-  Whether or not a user can perform `remove_pages` on this resource
+  Indicates the user can perform `remove_pages` on this resource
   """
   removePages: Boolean!
 
   """
-  Whether or not a user can perform `remove_project` on this resource
+  Indicates the user can perform `remove_project` on this resource
   """
   removeProject: Boolean!
 
   """
-  Whether or not a user can perform `rename_project` on this resource
+  Indicates the user can perform `rename_project` on this resource
   """
   renameProject: Boolean!
 
   """
-  Whether or not a user can perform `request_access` on this resource
+  Indicates the user can perform `request_access` on this resource
   """
   requestAccess: Boolean!
 
   """
-  Whether or not a user can perform `update_pages` on this resource
+  Indicates the user can perform `update_pages` on this resource
   """
   updatePages: Boolean!
 
   """
-  Whether or not a user can perform `update_wiki` on this resource
+  Indicates the user can perform `update_wiki` on this resource
   """
   updateWiki: Boolean!
 
   """
-  Whether or not a user can perform `upload_file` on this resource
+  Indicates the user can perform `upload_file` on this resource
   """
   uploadFile: Boolean!
 }
@@ -5437,6 +5807,16 @@ type SentryDetailedError {
   frequency: [SentryErrorFrequency!]!
 
   """
+  GitLab commit SHA attributed to the Error based on the release version
+  """
+  gitlabCommit: String
+
+  """
+  Path to the GitLab page for the GitLab commit attributed to the error
+  """
+  gitlabCommitPath: String
+
+  """
   ID (global ID) of the error
   """
   id: ID!
@@ -5706,48 +6086,75 @@ type SnippetEdge {
 
 type SnippetPermissions {
   """
-  Whether or not a user can perform `admin_snippet` on this resource
+  Indicates the user can perform `admin_snippet` on this resource
   """
   adminSnippet: Boolean!
 
   """
-  Whether or not a user can perform `award_emoji` on this resource
+  Indicates the user can perform `award_emoji` on this resource
   """
   awardEmoji: Boolean!
 
   """
-  Whether or not a user can perform `create_note` on this resource
+  Indicates the user can perform `create_note` on this resource
   """
   createNote: Boolean!
 
   """
-  Whether or not a user can perform `read_snippet` on this resource
+  Indicates the user can perform `read_snippet` on this resource
   """
   readSnippet: Boolean!
 
   """
-  Whether or not a user can perform `report_snippet` on this resource
+  Indicates the user can perform `report_snippet` on this resource
   """
   reportSnippet: Boolean!
 
   """
-  Whether or not a user can perform `update_snippet` on this resource
+  Indicates the user can perform `update_snippet` on this resource
   """
   updateSnippet: Boolean!
 }
 
 type Submodule implements Entry {
+  """
+  Flat path of the entry
+  """
   flatPath: String!
+
+  """
+  ID of the entry
+  """
   id: ID!
+
+  """
+  Name of the entry
+  """
   name: String!
+
+  """
+  Path of the entry
+  """
   path: String!
 
   """
-  Last commit sha for entry
+  Last commit sha for the entry
   """
   sha: String!
+
+  """
+  Tree URL for the sub-module
+  """
   treeUrl: String
+
+  """
+  Type of tree entry
+  """
   type: EntryType!
+
+  """
+  Web URL for the sub-module
+  """
   webUrl: String
 }
 
@@ -6130,12 +6537,15 @@ type ToggleAwardEmojiPayload {
   errors: [String!]!
 
   """
-  True when the emoji was awarded, false when it was removed
+  Indicates the status of the emoji. True if the toggle awarded the emoji, and false if the toggle removed the emoji.
   """
   toggledOn: Boolean!
 }
 
 type Tree {
+  """
+  Blobs of the tree
+  """
   blobs(
     """
     Returns the elements in the list that come after the specified cursor.
@@ -6162,6 +6572,10 @@ type Tree {
   Last commit for the tree
   """
   lastCommit: Commit
+
+  """
+  Sub-modules of the tree
+  """
   submodules(
     """
     Returns the elements in the list that come after the specified cursor.
@@ -6183,6 +6597,10 @@ type Tree {
     """
     last: Int
   ): SubmoduleConnection!
+
+  """
+  Trees of the tree
+  """
   trees(
     """
     Returns the elements in the list that come after the specified cursor.
@@ -6210,16 +6628,39 @@ type Tree {
 Represents a directory
 """
 type TreeEntry implements Entry {
+  """
+  Flat path of the entry
+  """
   flatPath: String!
+
+  """
+  ID of the entry
+  """
   id: ID!
+
+  """
+  Name of the entry
+  """
   name: String!
+
+  """
+  Path of the entry
+  """
   path: String!
 
   """
-  Last commit sha for entry
+  Last commit sha for the entry
   """
   sha: String!
+
+  """
+  Type of tree entry
+  """
   type: EntryType!
+
+  """
+  Web URL for the tree entry (directory)
+  """
   webUrl: String
 }
 
@@ -6609,7 +7050,7 @@ type UserEdge {
 
 type UserPermissions {
   """
-  Whether or not a user can perform `create_snippet` on this resource
+  Indicates the user can perform `create_snippet` on this resource
   """
   createSnippet: Boolean!
 }

@@ -222,7 +222,7 @@ describe('Dropdown Utils', () => {
         hasAttribute: () => false,
       };
 
-      DropdownUtils.setDataValueIfSelected(null, selected);
+      DropdownUtils.setDataValueIfSelected(null, '=', selected);
 
       expect(FilteredSearchDropdownManager.addWordToInput.calls.count()).toEqual(1);
     });
@@ -233,9 +233,11 @@ describe('Dropdown Utils', () => {
         hasAttribute: () => false,
       };
 
-      const result = DropdownUtils.setDataValueIfSelected(null, selected);
+      const result = DropdownUtils.setDataValueIfSelected(null, '=', selected);
+      const result2 = DropdownUtils.setDataValueIfSelected(null, '!=', selected);
 
       expect(result).toBe(true);
+      expect(result2).toBe(true);
     });
 
     it('returns false when dataValue does not exist', () => {
@@ -243,9 +245,11 @@ describe('Dropdown Utils', () => {
         getAttribute: () => null,
       };
 
-      const result = DropdownUtils.setDataValueIfSelected(null, selected);
+      const result = DropdownUtils.setDataValueIfSelected(null, '=', selected);
+      const result2 = DropdownUtils.setDataValueIfSelected(null, '!=', selected);
 
       expect(result).toBe(false);
+      expect(result2).toBe(false);
     });
   });
 
@@ -349,7 +353,7 @@ describe('Dropdown Utils', () => {
     beforeEach(() => {
       loadFixtures(issueListFixture);
 
-      authorToken = FilteredSearchSpecHelper.createFilterVisualToken('author', '@user');
+      authorToken = FilteredSearchSpecHelper.createFilterVisualToken('author', '=', '@user');
       const searchTermToken = FilteredSearchSpecHelper.createSearchVisualToken('search term');
 
       const tokensContainer = document.querySelector('.tokens-container');
@@ -364,7 +368,7 @@ describe('Dropdown Utils', () => {
 
       const searchQuery = DropdownUtils.getSearchQuery();
 
-      expect(searchQuery).toBe(' search term author:original dance');
+      expect(searchQuery).toBe(' search term author:=original dance');
     });
   });
 });

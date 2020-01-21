@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Gitlab::PhabricatorImport::UserFinder, :clean_gitlab_redis_cache do
   let(:project) { create(:project, namespace: create(:group)) }
 
-  subject(:finder) { described_class.new(project, ['first-phid', 'second-phid']) }
+  subject(:finder) { described_class.new(project, %w[first-phid second-phid]) }
 
   before do
     project.namespace.add_developer(existing_user)

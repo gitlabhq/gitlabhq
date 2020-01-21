@@ -17,6 +17,9 @@ module Types
             group.avatar_url(only_path: false)
           end
 
+    field :mentions_disabled, GraphQL::BOOLEAN_TYPE, null: true,
+          description: 'Indicates if a group is disabled from getting mentioned'
+
     field :parent, GroupType, null: true,
           description: 'Parent group',
           resolve: -> (obj, _args, _ctx) { Gitlab::Graphql::Loaders::BatchModelLoader.new(Group, obj.parent_id).find }

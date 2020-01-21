@@ -18,6 +18,11 @@ class Appearance < ApplicationRecord
 
   validate :single_appearance_row, on: :create
 
+  default_value_for :title, ''
+  default_value_for :description, ''
+  default_value_for :new_project_guidelines, ''
+  default_value_for :header_message, ''
+  default_value_for :footer_message, ''
   default_value_for :message_background_color, '#E75E40'
   default_value_for :message_font_color, '#FFFFFF'
   default_value_for :email_header_and_footer_enabled, false

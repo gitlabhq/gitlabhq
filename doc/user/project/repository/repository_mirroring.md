@@ -22,7 +22,7 @@ There are two kinds of repository mirroring supported by GitLab:
 When the mirror repository is updated, all new branches, tags, and commits will be visible in the
 project's activity feed.
 
-Users with at least [developer access](../../permissions.md) to the project can also force an
+Users with at least [Developer access](../../permissions.md) to the project can also force an
 immediate update, unless:
 
 - The mirror is already being updated.

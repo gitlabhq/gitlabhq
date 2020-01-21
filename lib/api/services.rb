@@ -66,6 +66,15 @@ module API
         end
       end
 
+      desc 'Get all active project services' do
+        success Entities::ProjectServiceBasic
+      end
+      get ":id/services" do
+        services = user_project.services.active
+
+        present services, with: Entities::ProjectServiceBasic
+      end
+
       SERVICES.each do |service_slug, settings|
         desc "Set #{service_slug} service for project"
         params do

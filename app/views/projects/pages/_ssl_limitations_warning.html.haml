@@ -1,0 +1,7 @@
+.bs-callout.bs-callout-warning
+  %i.fa.fa-warning
+  %strong= _("Warning:")
+  - pages_host = Gitlab.config.pages.host
+  = s_("GitLabPages|When using Pages under the general domain of a GitLab instance (%{pages_host}), you cannot use HTTPS with sub-subdomains. This means that if your username/groupname contains a dot it will not work. This is a limitation of the HTTP Over TLS protocol. HTTP pages will continue to work provided you don't redirect HTTP to HTTPS.").html_safe % { pages_host: pages_host }
+
+  %strong= external_link(s_("GitLabPages|Learn more."), "https://docs.gitlab.com/ee/user/project/pages/introduction.html#limitations")

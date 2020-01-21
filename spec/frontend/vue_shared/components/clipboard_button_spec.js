@@ -9,8 +9,6 @@ describe('clipboard button', () => {
   const createWrapper = propsData => {
     wrapper = shallowMount(ClipboardButton, {
       propsData,
-      sync: false,
-      attachToDocument: true,
     });
   };
 
@@ -35,7 +33,7 @@ describe('clipboard button', () => {
     });
 
     it('should have a tooltip with default values', () => {
-      expect(wrapper.attributes('data-original-title')).toBe('Copy this value');
+      expect(wrapper.attributes('title')).toBe('Copy this value');
     });
 
     it('should render provided classname', () => {

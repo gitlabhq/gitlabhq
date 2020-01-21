@@ -634,20 +634,18 @@ describe('ReadyToMerge', () => {
     });
 
     describe('when user can merge and can delete branch', () => {
-      let customVm;
-
       beforeEach(() => {
-        customVm = createComponent({
+        vm = createComponent({
           mr: { canRemoveSourceBranch: true },
         });
       });
 
       it('isRemoveSourceBranchButtonDisabled should be false', () => {
-        expect(customVm.isRemoveSourceBranchButtonDisabled).toBe(false);
+        expect(vm.isRemoveSourceBranchButtonDisabled).toBe(false);
       });
 
-      it('should be enabled in rendered output', () => {
-        const checkboxElement = customVm.$el.querySelector('#remove-source-branch-input');
+      it('removed source branch should be enabled in rendered output', () => {
+        const checkboxElement = vm.$el.querySelector('#remove-source-branch-input');
 
         expect(checkboxElement).not.toBeNull();
       });
@@ -926,22 +924,36 @@ describe('ReadyToMerge', () => {
   });
 
   describe('Commit message area', () => {
-    it('when using merge commits, should show "Modify commit message" button', () => {
-      const customVm = createComponent({
-        mr: { ffOnlyEnabled: false },
+    describe('when using merge commits', () => {
+      beforeEach(() => {
+        vm = createComponent({
+          mr: { ffOnlyEnabled: false },
+        });
       });
 
-      expect(customVm.$el.querySelector('.mr-fast-forward-message')).toBeNull();
-      expect(customVm.$el.querySelector('.js-modify-commit-message-button')).toBeDefined();
+      it('should not show fast forward message', () => {
+        expect(vm.$el.querySelector('.mr-fast-forward-message')).toBeNull();
+      });
+
+      it('should show "Modify commit message" button', () => {
+        expect(vm.$el.querySelector('.js-modify-commit-message-button')).toBeDefined();
+      });
     });
 
-    it('when fast-forward merge is enabled, only show fast-forward message', () => {
-      const customVm = createComponent({
-        mr: { ffOnlyEnabled: true },
+    describe('when fast-forward merge is enabled', () => {
+      beforeEach(() => {
+        vm = createComponent({
+          mr: { ffOnlyEnabled: true },
+        });
       });
 
-      expect(customVm.$el.querySelector('.mr-fast-forward-message')).toBeDefined();
-      expect(customVm.$el.querySelector('.js-modify-commit-message-button')).toBeNull();
+      it('should show fast forward message', () => {
+        expect(vm.$el.querySelector('.mr-fast-forward-message')).toBeDefined();
+      });
+
+      it('should not show "Modify commit message" button', () => {
+        expect(vm.$el.querySelector('.js-modify-commit-message-button')).toBeNull();
+      });
     });
   });
 

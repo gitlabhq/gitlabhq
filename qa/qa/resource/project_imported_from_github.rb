@@ -23,7 +23,6 @@ module QA
 
         Page::Project::Import::Github.perform do |import_page|
           import_page.add_personal_access_token(@personal_access_token)
-          import_page.list_repos
           import_page.import!(@github_repository_path, @name)
         end
       end

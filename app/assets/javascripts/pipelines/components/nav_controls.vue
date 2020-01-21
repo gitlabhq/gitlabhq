@@ -1,12 +1,11 @@
 <script>
-import { GlLink, GlButton } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import LoadingButton from '../../vue_shared/components/loading_button.vue';
 
 export default {
   name: 'PipelineNavControls',
   components: {
     LoadingButton,
-    GlLink,
     GlButton,
   },
   props: {

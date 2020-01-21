@@ -95,8 +95,6 @@ export const allBlobs = (state, getters) =>
     return acc;
   }, []);
 
-export const diffFilesLength = state => state.diffFiles.length;
-
 export const getCommentFormForDiffFile = state => fileHash =>
   state.commentForms.find(form => form.fileHash === fileHash);
 

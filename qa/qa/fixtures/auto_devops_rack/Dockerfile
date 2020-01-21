@@ -1,4 +1,4 @@
-FROM ruby:2.6.3-alpine
+FROM ruby:2.6.5-alpine
 ADD ./ /app/
 WORKDIR /app
 ENV RACK_ENV production

@@ -13,7 +13,7 @@ module Gitlab
         super(logger: Gitlab::AppLogger)
 
         @context = context
-        @repository = context[:project].try(:repository)
+        @repository = context[:repository] || context[:project].try(:repository)
 
         # Note: Asciidoctor calls #freeze on extensions, so we can't set new
         # instance variables after initialization.
@@ -111,7 +111,7 @@ module Gitlab
       end
 
       def ref
-        context[:ref] || context[:project].default_branch
+        context[:ref] || repository&.root_ref
       end
 
       def requested_path

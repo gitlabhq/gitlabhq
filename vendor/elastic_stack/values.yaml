@@ -11,14 +11,7 @@ elasticsearch:
     replicas: 1
 
 kibana:
-  enabled: true
-  env:
-    ELASTICSEARCH_HOSTS: http://elastic-stack-elasticsearch-client:9200
-  ingress:
-    enabled: true
-    annotations:
-      kubernetes.io/ingress.class: "nginx"
-      kubernetes.io/tls-acme: "true"
+  enabled: false
 
 logstash:
   enabled: false
@@ -41,7 +34,35 @@ nginx-ldapauth-proxy:
   enabled: false
 
 elasticsearch-curator:
-  enabled: false
+  enabled: true
+  configMaps:
+    config_yml: |-
+      ---
+      client:
+        hosts:
+          - elastic-stack-elasticsearch-client
+        port: 9200
+    action_file_yml: |-
+      ---
+      actions:
+        1:
+          action: delete_indices
+          description: >-
+            Delete indices older than 15 days (based on index name), for filebeat-
+            prefixed indices. Ignore the error if the filter does not result in an
+            actionable list of indices (ignore_empty_list) and exit cleanly.
+          options:
+            ignore_empty_list: True
+          filters:
+          - filtertype: pattern
+            kind: prefix
+            value: filebeat-
+          - filtertype: age
+            source: name
+            direction: older
+            timestring: '%Y.%m.%d'
+            unit: days
+            unit_count: 15
 
 elasticsearch-exporter:
   enabled: false

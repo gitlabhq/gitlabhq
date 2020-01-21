@@ -87,22 +87,6 @@ describe API::Triggers do
           expect(pipeline.variables.map { |v| { v.key => v.value } }.last).to eq(variables)
         end
       end
-
-      context 'when legacy trigger' do
-        before do
-          trigger.update(owner: nil)
-        end
-
-        it 'creates pipeline' do
-          post api("/projects/#{project.id}/trigger/pipeline"), params: options.merge(ref: 'master')
-
-          expect(response).to have_gitlab_http_status(201)
-          expect(json_response).to include('id' => pipeline.id)
-          pipeline.builds.reload
-          expect(pipeline.builds.pending.size).to eq(2)
-          expect(pipeline.builds.size).to eq(5)
-        end
-      end
     end
 
     context 'when triggering a pipeline from a trigger token' do

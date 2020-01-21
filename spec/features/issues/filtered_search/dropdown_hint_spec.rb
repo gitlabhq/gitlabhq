@@ -9,9 +9,14 @@ describe 'Dropdown hint', :js do
   let!(:user) { create(:user) }
   let(:filtered_search) { find('.filtered-search') }
   let(:js_dropdown_hint) { '#js-dropdown-hint' }
+  let(:js_dropdown_operator) { '#js-dropdown-operator' }
 
   def click_hint(text)
     find('#js-dropdown-hint .filter-dropdown .filter-dropdown-item', text: text).click
+  end
+
+  def click_operator(op)
+    find("#js-dropdown-operator .filter-dropdown .filter-dropdown-item[data-value='#{op}']").click
   end
 
   before do
@@ -27,7 +32,7 @@ describe 'Dropdown hint', :js do
 
     it 'does not exist my-reaction dropdown item' do
       expect(page).to have_css(js_dropdown_hint, visible: false)
-      expect(page).not_to have_content('my-reaction')
+      expect(page).not_to have_content('My-reaction')
     end
   end
 
@@ -46,9 +51,7 @@ describe 'Dropdown hint', :js do
 
       it 'opens when the search bar is first focused' do
         expect(page).to have_css(js_dropdown_hint, visible: true)
-      end
 
-      it 'closes when the search bar is unfocused' do
         find('body').click
 
         expect(page).to have_css(js_dropdown_hint, visible: false)
@@ -56,15 +59,6 @@ describe 'Dropdown hint', :js do
     end
 
     describe 'filtering' do
-      it 'does not filter `Press Enter or click to search`' do
-        filtered_search.set('randomtext')
-
-        hint_dropdown = find(js_dropdown_hint)
-
-        expect(hint_dropdown).to have_content('Press Enter or click to search')
-        expect(hint_dropdown).to have_selector('.filter-dropdown .filter-dropdown-item', count: 0)
-      end
-
       it 'filters with text' do
         filtered_search.set('a')
 
@@ -77,189 +71,32 @@ describe 'Dropdown hint', :js do
         filtered_search.click
       end
 
-      it 'opens the author dropdown when you click on author' do
-        click_hint('author')
+      it 'opens the token dropdown when you click on it' do
+        click_hint('Author')
 
         expect(page).to have_css(js_dropdown_hint, visible: false)
+        expect(page).to have_css(js_dropdown_operator, visible: true)
+
+        click_operator('=')
+
+        expect(page).to have_css(js_dropdown_hint, visible: false)
+        expect(page).to have_css(js_dropdown_operator, visible: false)
         expect(page).to have_css('#js-dropdown-author', visible: true)
-        expect_tokens([{ name: 'Author' }])
-        expect_filtered_search_input_empty
-      end
-
-      it 'opens the assignee dropdown when you click on assignee' do
-        click_hint('assignee')
-
-        expect(page).to have_css(js_dropdown_hint, visible: false)
-        expect(page).to have_css('#js-dropdown-assignee', visible: true)
-        expect_tokens([{ name: 'Assignee' }])
-        expect_filtered_search_input_empty
-      end
-
-      it 'opens the milestone dropdown when you click on milestone' do
-        click_hint('milestone')
-
-        expect(page).to have_css(js_dropdown_hint, visible: false)
-        expect(page).to have_css('#js-dropdown-milestone', visible: true)
-        expect_tokens([{ name: 'Milestone' }])
-        expect_filtered_search_input_empty
-      end
-
-      it 'opens the release dropdown when you click on release' do
-        click_hint('release')
-
-        expect(page).to have_css(js_dropdown_hint, visible: false)
-        expect(page).to have_css('#js-dropdown-release', visible: true)
-        expect_tokens([{ name: 'Release' }])
-        expect_filtered_search_input_empty
-      end
-
-      it 'opens the label dropdown when you click on label' do
-        click_hint('label')
-
-        expect(page).to have_css(js_dropdown_hint, visible: false)
-        expect(page).to have_css('#js-dropdown-label', visible: true)
-        expect_tokens([{ name: 'Label' }])
-        expect_filtered_search_input_empty
-      end
-
-      it 'opens the emoji dropdown when you click on my-reaction' do
-        click_hint('my-reaction')
-
-        expect(page).to have_css(js_dropdown_hint, visible: false)
-        expect(page).to have_css('#js-dropdown-my-reaction', visible: true)
-        expect_tokens([{ name: 'My-reaction' }])
-        expect_filtered_search_input_empty
-      end
-
-      it 'opens the yes-no dropdown when you click on confidential' do
-        click_hint('confidential')
-
-        expect(page).to have_css(js_dropdown_hint, visible: false)
-        expect(page).to have_css('#js-dropdown-confidential', visible: true)
-        expect_tokens([{ name: 'Confidential' }])
-        expect_filtered_search_input_empty
-      end
-    end
-
-    describe 'selecting from dropdown with some input' do
-      it 'opens the author dropdown when you click on author' do
-        filtered_search.set('auth')
-        click_hint('author')
-
-        expect(page).to have_css(js_dropdown_hint, visible: false)
-        expect(page).to have_css('#js-dropdown-author', visible: true)
-        expect_tokens([{ name: 'Author' }])
-        expect_filtered_search_input_empty
-      end
-
-      it 'opens the assignee dropdown when you click on assignee' do
-        filtered_search.set('assign')
-        click_hint('assignee')
-
-        expect(page).to have_css(js_dropdown_hint, visible: false)
-        expect(page).to have_css('#js-dropdown-assignee', visible: true)
-        expect_tokens([{ name: 'Assignee' }])
-        expect_filtered_search_input_empty
-      end
-
-      it 'opens the milestone dropdown when you click on milestone' do
-        filtered_search.set('mile')
-        click_hint('milestone')
-
-        expect(page).to have_css(js_dropdown_hint, visible: false)
-        expect(page).to have_css('#js-dropdown-milestone', visible: true)
-        expect_tokens([{ name: 'Milestone' }])
-        expect_filtered_search_input_empty
-      end
-
-      it 'opens the label dropdown when you click on label' do
-        filtered_search.set('lab')
-        click_hint('label')
-
-        expect(page).to have_css(js_dropdown_hint, visible: false)
-        expect(page).to have_css('#js-dropdown-label', visible: true)
-        expect_tokens([{ name: 'Label' }])
-        expect_filtered_search_input_empty
-      end
-
-      it 'opens the emoji dropdown when you click on my-reaction' do
-        filtered_search.set('my')
-        click_hint('my-reaction')
-
-        expect(page).to have_css(js_dropdown_hint, visible: false)
-        expect(page).to have_css('#js-dropdown-my-reaction', visible: true)
-        expect_tokens([{ name: 'My-reaction' }])
+        expect_tokens([{ name: 'Author', operator: '=' }])
         expect_filtered_search_input_empty
       end
     end
 
     describe 'reselecting from dropdown' do
-      it 'reuses existing author text' do
-        filtered_search.send_keys('author:')
+      it 'reuses existing token text' do
+        filtered_search.send_keys('author')
         filtered_search.send_keys(:backspace)
         filtered_search.send_keys(:backspace)
-        click_hint('author')
+        click_hint('Author')
 
         expect_tokens([{ name: 'Author' }])
         expect_filtered_search_input_empty
       end
-
-      it 'reuses existing assignee text' do
-        filtered_search.send_keys('assignee:')
-        filtered_search.send_keys(:backspace)
-        filtered_search.send_keys(:backspace)
-        click_hint('assignee')
-
-        expect_tokens([{ name: 'Assignee' }])
-        expect_filtered_search_input_empty
-      end
-
-      it 'reuses existing milestone text' do
-        filtered_search.send_keys('milestone:')
-        filtered_search.send_keys(:backspace)
-        filtered_search.send_keys(:backspace)
-        click_hint('milestone')
-
-        expect_tokens([{ name: 'Milestone' }])
-        expect_filtered_search_input_empty
-      end
-
-      it 'reuses existing label text' do
-        filtered_search.send_keys('label:')
-        filtered_search.send_keys(:backspace)
-        filtered_search.send_keys(:backspace)
-        click_hint('label')
-
-        expect_tokens([{ name: 'Label' }])
-        expect_filtered_search_input_empty
-      end
-
-      it 'reuses existing emoji text' do
-        filtered_search.send_keys('my-reaction:')
-        filtered_search.send_keys(:backspace)
-        filtered_search.send_keys(:backspace)
-        click_hint('my-reaction')
-
-        expect_tokens([{ name: 'My-reaction' }])
-        expect_filtered_search_input_empty
-      end
-    end
-  end
-
-  context 'merge request page' do
-    before do
-      sign_in(user)
-      visit project_merge_requests_path(project)
-      filtered_search.click
-    end
-
-    it 'shows the WIP menu item and opens the WIP options dropdown' do
-      click_hint('wip')
-
-      expect(page).to have_css(js_dropdown_hint, visible: false)
-      expect(page).to have_css('#js-dropdown-wip', visible: true)
-      expect_tokens([{ name: 'WIP' }])
-      expect_filtered_search_input_empty
     end
   end
 end

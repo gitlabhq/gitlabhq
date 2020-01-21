@@ -365,6 +365,12 @@ module API
               name: :send_from_committer_email,
               type: Boolean,
               desc: 'Send from committer'
+            },
+            {
+              required: false,
+              name: :branches_to_be_notified,
+              type: String,
+              desc: 'Branches for which notifications are to be sent'
             }
           ],
           'external-wiki' => [

@@ -47,6 +47,33 @@ describe Clusters::Applications::CreateService do
         create(:clusters_applications_helm, :installed, cluster: cluster)
       end
 
+      context 'ingress application' do
+        let(:params) do
+          {
+            application: 'ingress',
+            modsecurity_enabled: true
+          }
+        end
+
+        before do
+          expect_any_instance_of(Clusters::Applications::Ingress)
+            .to receive(:make_scheduled!)
+            .and_call_original
+        end
+
+        it 'creates the application' do
+          expect do
+            subject
+
+            cluster.reload
+          end.to change(cluster, :application_ingress)
+        end
+
+        it 'sets modsecurity_enabled' do
+          expect(subject.modsecurity_enabled).to eq(true)
+        end
+      end
+
       context 'cert manager application' do
         let(:params) do
           {
@@ -136,8 +163,7 @@ describe Clusters::Applications::CreateService do
       context 'elastic stack application' do
         let(:params) do
           {
-            application: 'elastic_stack',
-            kibana_hostname: 'example.com'
+            application: 'elastic_stack'
           }
         end
 
@@ -154,10 +180,6 @@ describe Clusters::Applications::CreateService do
 
             cluster.reload
           end.to change(cluster, :application_elastic_stack)
-        end
-
-        it 'sets the kibana_hostname' do
-          expect(subject.kibana_hostname).to eq('example.com')
         end
       end
     end

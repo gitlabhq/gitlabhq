@@ -74,7 +74,9 @@ describe MergeRequests::Conflicts::ListService do
     it 'returns a falsey value when the MR has a missing ref after a force push' do
       merge_request = create_merge_request('conflict-resolvable')
       service = conflicts_service(merge_request)
-      allow_any_instance_of(Gitlab::GitalyClient::ConflictsService).to receive(:list_conflict_files).and_raise(GRPC::Unknown)
+      allow_next_instance_of(Gitlab::GitalyClient::ConflictsService) do |instance|
+        allow(instance).to receive(:list_conflict_files).and_raise(GRPC::Unknown)
+      end
 
       expect(service.can_be_resolved_in_ui?).to be_falsey
     end

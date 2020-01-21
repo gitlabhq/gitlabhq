@@ -1,13 +1,11 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
-import Icon from '~/vue_shared/components/icon.vue';
 import IdeTreeList from './ide_tree_list.vue';
 import Upload from './new_dropdown/upload.vue';
 import NewEntryButton from './new_dropdown/button.vue';
 
 export default {
   components: {
-    Icon,
     Upload,
     IdeTreeList,
     NewEntryButton,

@@ -5,7 +5,7 @@ class Gitlab::Seeder::CycleAnalytics
   def initialize(project, perf: false)
     @project = project
     @user = User.admins.first
-    @issue_count = perf ? 1000 : 5
+    @issue_count = perf ? 1000 : ENV.fetch('CYCLE_ANALYTICS_ISSUE_COUNT', 5).to_i
   end
 
   def seed_metrics!
@@ -187,7 +187,7 @@ class Gitlab::Seeder::CycleAnalytics
 
       pipeline.builds.each(&:enqueue) # make sure all pipelines in pending state
       pipeline.builds.each(&:run!)
-      pipeline.update_status
+      pipeline.update_legacy_status
     end
   end
 
@@ -208,7 +208,7 @@ class Gitlab::Seeder::CycleAnalytics
       job = merge_request.head_pipeline.builds.where.not(environment: nil).last
 
       job.success!
-      pipeline.update_status
+      job.pipeline.update_legacy_status
     end
   end
 end

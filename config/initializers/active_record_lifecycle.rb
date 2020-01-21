@@ -2,7 +2,7 @@
 
 # Don't handle sidekiq configuration as it
 # has its own special active record configuration here
-if defined?(ActiveRecord::Base) && !Sidekiq.server?
+if defined?(ActiveRecord::Base) && !Gitlab::Runtime.sidekiq?
   Gitlab::Cluster::LifecycleEvents.on_worker_start do
     ActiveSupport.on_load(:active_record) do
       ActiveRecord::Base.establish_connection

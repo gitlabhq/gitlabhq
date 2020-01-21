@@ -76,37 +76,13 @@ describe 'gitlab:import_export:import rake task', :sidekiq do
     let(:not_imported_message) { /Total number of not imported relations: 1/ }
     let(:error) { /Validation failed: Notes is invalid/ }
 
-    context 'when import_graceful_failures feature flag is enabled' do
-      before do
-        stub_feature_flags(import_graceful_failures: true)
-      end
+    it 'performs project import successfully' do
+      expect { subject }.to output(not_imported_message).to_stdout
+      expect { subject }.not_to raise_error
 
-      it 'performs project import successfully' do
-        expect { subject }.to output(not_imported_message).to_stdout
-        expect { subject }.not_to raise_error
-
-        expect(project.merge_requests).to be_empty
-        expect(project.import_state.last_error).to be_nil
-        expect(project.import_state.status).to eq('finished')
-      end
-    end
-
-    context 'when import_graceful_failures feature flag is disabled' do
-      before do
-        stub_feature_flags(import_graceful_failures: false)
-      end
-
-      it 'fails project import with an error' do
-        # Catch exit call, and raise exception instead
-        expect_any_instance_of(GitlabProjectImport).to receive(:exit)
-          .with(1).and_raise(SystemExit)
-
-        expect { subject }.to raise_error(SystemExit).and output(error).to_stdout
-
-        expect(project.merge_requests).to be_empty
-        expect(project.import_state.last_error).to match(error)
-        expect(project.import_state.status).to eq('failed')
-      end
+      expect(project.merge_requests).to be_empty
+      expect(project.import_state.last_error).to be_nil
+      expect(project.import_state.status).to eq('finished')
     end
   end
 end

@@ -26,7 +26,7 @@ The 'GitLab Importer' feature is also using the OAuth protocol to give access
 to repositories without sharing user credentials to your GitLab.com account.
 
 GitLab supports two ways of adding a new OAuth2 application to an instance. You
-can either add an application as a regular user or add it in the admin area.
+can either add an application as a regular user or add it in the Admin Area.
 What this means is that GitLab can actually have instance-wide and a user-wide
 applications. There is no difference between them except for the different
 permission levels they are set (user/admin). The default callback URL is
@@ -51,14 +51,14 @@ connects to GitLab.
 
 ![OAuth application ID and secret](img/oauth_provider_application_id_secret.png)
 
-## OAuth applications in the admin area
+## OAuth applications in the Admin Area
 
 To create an application that does not belong to a certain user, you can create
-it from the admin area.
+it from the Admin Area.
 
 ![OAuth admin_applications](img/oauth_provider_admin_application.png)
 
-You're also able to mark an application as _trusted_ when creating it through the admin area. By doing that,
+You're also able to mark an application as _trusted_ when creating it through the Admin Area. By doing that,
 the user authorization step is automatically skipped for this application.
 
 ## Authorized applications

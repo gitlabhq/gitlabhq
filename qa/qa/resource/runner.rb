@@ -54,7 +54,7 @@ module QA
         @id = this_runner[:id]
 
         super
-
+      ensure
         Service::DockerRun::GitlabRunner.new(name).remove!
       end
 

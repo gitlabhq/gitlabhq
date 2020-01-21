@@ -124,6 +124,7 @@ describe('Filtered Search Token Keys', () => {
       const condition = new FilteredSearchTokenKeys([], [], conditions).searchByConditionKeyValue(
         null,
         null,
+        null,
       );
 
       expect(condition).toBeNull();
@@ -132,6 +133,7 @@ describe('Filtered Search Token Keys', () => {
     it('should return condition when found by tokenKey and value', () => {
       const result = new FilteredSearchTokenKeys([], [], conditions).searchByConditionKeyValue(
         conditions[0].tokenKey,
+        conditions[0].operator,
         conditions[0].value,
       );
 

@@ -11,35 +11,29 @@ module Gitlab
     #    finds or initializes a label with the given attributes.
     #
     # It also adds some logic around Group Labels/Milestones for edge cases.
-    class GroupProjectObjectBuilder
+    class GroupProjectObjectBuilder < BaseObjectBuilder
       def self.build(*args)
         Project.transaction do
-          new(*args).find
+          super
         end
       end
 
       def initialize(klass, attributes)
-        @klass = klass < Label ? Label : klass
-        @attributes = attributes
+        super
+
         @group = @attributes['group']
         @project = @attributes['project']
       end
 
       def find
-        find_object || klass.create(project_attributes)
+        return if epic? && group.nil?
+
+        super
       end
 
       private
 
-      attr_reader :klass, :attributes, :group, :project
-
-      def find_object
-        klass.where(where_clause).first
-      end
-
-      def where_clause
-        where_clauses.reduce(:and)
-      end
+      attr_reader :group, :project
 
       def where_clauses
         [
@@ -54,32 +48,18 @@ module Gitlab
       # or, if group is present:
       # `"{table_name}"."project_id" = {project.id} OR "{table_name}"."group_id" = {group.id}`
       def where_clause_base
-        clause = table[:project_id].eq(project.id) if project
-        clause = clause.or(table[:group_id].eq(group.id)) if group
-
-        clause
+        [].tap do |clauses|
+          clauses << table[:project_id].eq(project.id) if project
+          clauses << table[:group_id].eq(group.id) if group
+        end.reduce(:or)
       end
 
-      # Returns Arel clause `"{table_name}"."title" = '{attributes['title']}'`
-      # if attributes has 'title key, otherwise `nil`.
-      def where_clause_for_title
-        attrs_to_arel(attributes.slice('title'))
+      # Returns Arel clause for a particular model or `nil`.
+      def where_clause_for_klass
+        attrs_to_arel(attributes.slice('iid')) if merge_request?
       end
 
-      # Returns Arel clause:
-      # `"{table_name}"."{attrs.keys[0]}" = '{attrs.values[0]} AND {table_name}"."{attrs.keys[1]}" = '{attrs.values[1]}"`
-      # from the given Hash of attributes.
-      def attrs_to_arel(attrs)
-        attrs.map do |key, value|
-          table[key].eq(value)
-        end.reduce(:and)
-      end
-
-      def table
-        @table ||= klass.arel_table
-      end
-
-      def project_attributes
+      def prepare_attributes
         attributes.except('group').tap do |atts|
           if label?
             atts['type'] = 'ProjectLabel' # Always create project labels
@@ -108,6 +88,10 @@ module Gitlab
         klass == MergeRequest
       end
 
+      def epic?
+        klass == Epic
+      end
+
       # If an existing group milestone used the IID
       # claim the IID back and set the group milestone to use one available
       # This is necessary to fix situations like the following:
@@ -123,13 +107,6 @@ module Gitlab
         milestone.iid = nil
         milestone.ensure_project_iid!
         milestone.save!
-      end
-
-      protected
-
-      # Returns Arel clause for a particular model or `nil`.
-      def where_clause_for_klass
-        return attrs_to_arel(attributes.slice('iid')) if merge_request?
       end
     end
   end

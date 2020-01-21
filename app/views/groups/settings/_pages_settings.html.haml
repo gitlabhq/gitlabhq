@@ -1,0 +1,5 @@
+= form_for @group, html: { multipart: true, class: 'gl-show-field-errors' }, authenticity_token: true do |f|
+  = render_if_exists 'shared/pages/max_pages_size_input', form: f
+
+  .prepend-top-10
+    = f.submit s_('GitLabPages|Save'), class: 'btn btn-success'

@@ -1,0 +1,5 @@
+---
+title: When sidekiq-cluster is asked to shutdown, actively terminate any sidekiq processes that don't finish cleanly in short order
+merge_request: 21796
+author:
+type: fixed

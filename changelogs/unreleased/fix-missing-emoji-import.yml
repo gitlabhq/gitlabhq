@@ -1,0 +1,5 @@
+---
+title: Add support to export and import award emojis for issues, issue notes, MR, MR notes and snippet notes
+merge_request: 22493
+author:
+type: fixed

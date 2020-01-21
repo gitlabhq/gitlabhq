@@ -4,7 +4,7 @@ module Gitlab
   module QuickActions
     class CommandDefinition
       attr_accessor :name, :aliases, :description, :explanation, :execution_message,
-        :params, :condition_block, :parse_params_block, :action_block, :warning, :types
+        :params, :condition_block, :parse_params_block, :action_block, :warning, :icon, :types
 
       def initialize(name, attributes = {})
         @name = name
@@ -12,6 +12,7 @@ module Gitlab
         @aliases = attributes[:aliases] || []
         @description = attributes[:description] || ''
         @warning = attributes[:warning] || ''
+        @icon = attributes[:icon] || ''
         @explanation = attributes[:explanation] || ''
         @execution_message = attributes[:execution_message] || ''
         @params = attributes[:params] || []
@@ -45,7 +46,13 @@ module Gitlab
                     explanation
                   end
 
-        warning.empty? ? message : "#{message} (#{warning})"
+        warning_text = if warning.respond_to?(:call)
+                         execute_block(warning, context, arg)
+                       else
+                         warning
+                       end
+
+        warning.empty? ? message : "#{message} (#{warning_text})"
       end
 
       def execute(context, arg)
@@ -72,6 +79,11 @@ module Gitlab
           desc = context.instance_exec(&desc) rescue ''
         end
 
+        warn = warning
+        if warn.respond_to?(:call)
+          warn = context.instance_exec(&warn) rescue ''
+        end
+
         prms = params
         if prms.respond_to?(:call)
           prms = Array(context.instance_exec(&prms)) rescue params
@@ -81,7 +93,8 @@ module Gitlab
           name: name,
           aliases: aliases,
           description: desc,
-          warning: warning,
+          warning: warn,
+          icon: icon,
           params: prms
         }
       end

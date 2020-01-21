@@ -9,7 +9,10 @@ module Deployments
     worker_resource_boundary :cpu
 
     def perform(deployment_id)
-      Deployment.find_by_id(deployment_id).try(:execute_hooks)
+      if (deploy = Deployment.find_by_id(deployment_id))
+        LinkMergeRequestsService.new(deploy).execute
+        deploy.execute_hooks
+      end
     end
   end
 end

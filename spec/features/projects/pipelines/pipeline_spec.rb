@@ -59,7 +59,8 @@ describe 'Pipeline', :js do
   describe 'GET /:project/pipelines/:id' do
     include_context 'pipeline builds'
 
-    let(:project) { create(:project, :repository) }
+    let(:group) { create(:group) }
+    let(:project) { create(:project, :repository, group: group) }
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id, user: user) }
 
     subject(:visit_pipeline) { visit project_pipeline_path(project, pipeline) }
@@ -325,6 +326,32 @@ describe 'Pipeline', :js do
 
         it 'does not show a "Cancel running" button', :sidekiq_might_not_need_inline do
           expect(page).not_to have_content('Cancel running')
+        end
+      end
+    end
+
+    context 'deleting pipeline' do
+      context 'when user can not delete' do
+        before do
+          visit_pipeline
+        end
+
+        it { expect(page).not_to have_button('Delete') }
+      end
+
+      context 'when deleting' do
+        before do
+          group.add_owner(user)
+
+          visit_pipeline
+
+          click_button 'Delete'
+          click_button 'Delete pipeline'
+        end
+
+        it 'redirects to pipeline overview page', :sidekiq_might_not_need_inline do
+          expect(page).to have_content('The pipeline has been deleted')
+          expect(current_path).to eq(project_pipelines_path(project))
         end
       end
     end
@@ -602,6 +629,117 @@ describe 'Pipeline', :js do
       it 'shows a bridge job on a list' do
         expect(page).to have_content('cross-build')
         expect(page).to have_content(bridge.id)
+      end
+    end
+  end
+
+  context 'when build requires resource', :sidekiq_inline do
+    let_it_be(:project) { create(:project, :repository) }
+    let(:pipeline) { create(:ci_pipeline, project: project) }
+    let(:resource_group) { create(:ci_resource_group, project: project) }
+
+    let!(:test_job) do
+      create(:ci_build, :pending, stage: 'test', name: 'test',
+        stage_idx: 1, pipeline: pipeline, project: project)
+    end
+
+    let!(:deploy_job) do
+      create(:ci_build, :created, stage: 'deploy', name: 'deploy',
+        stage_idx: 2, pipeline: pipeline, project: project, resource_group: resource_group)
+    end
+
+    describe 'GET /:project/pipelines/:id' do
+      subject { visit project_pipeline_path(project, pipeline) }
+
+      it 'shows deploy job as created' do
+        subject
+
+        within('.pipeline-header-container') do
+          expect(page).to have_content('pending')
+        end
+
+        within('.pipeline-graph') do
+          within '.stage-column:nth-child(1)' do
+            expect(page).to have_content('test')
+            expect(page).to have_css('.ci-status-icon-pending')
+          end
+
+          within '.stage-column:nth-child(2)' do
+            expect(page).to have_content('deploy')
+            expect(page).to have_css('.ci-status-icon-created')
+          end
+        end
+      end
+
+      context 'when test job succeeded' do
+        before do
+          test_job.success!
+        end
+
+        it 'shows deploy job as pending' do
+          subject
+
+          within('.pipeline-header-container') do
+            expect(page).to have_content('running')
+          end
+
+          within('.pipeline-graph') do
+            within '.stage-column:nth-child(1)' do
+              expect(page).to have_content('test')
+              expect(page).to have_css('.ci-status-icon-success')
+            end
+
+            within '.stage-column:nth-child(2)' do
+              expect(page).to have_content('deploy')
+              expect(page).to have_css('.ci-status-icon-pending')
+            end
+          end
+        end
+      end
+
+      context 'when test job succeeded but there are no available resources' do
+        let(:another_job) { create(:ci_build, :running, project: project, resource_group: resource_group) }
+
+        before do
+          resource_group.assign_resource_to(another_job)
+          test_job.success!
+        end
+
+        it 'shows deploy job as waiting for resource' do
+          subject
+
+          within('.pipeline-header-container') do
+            expect(page).to have_content('waiting')
+          end
+
+          within('.pipeline-graph') do
+            within '.stage-column:nth-child(2)' do
+              expect(page).to have_content('deploy')
+              expect(page).to have_css('.ci-status-icon-waiting-for-resource')
+            end
+          end
+        end
+
+        context 'when resource is released from another job' do
+          before do
+            another_job.success!
+          end
+
+          it 'shows deploy job as pending' do
+            subject
+
+            within('.pipeline-header-container') do
+              expect(page).to have_content('running')
+            end
+
+            within('.pipeline-graph') do
+              within '.stage-column:nth-child(2)' do
+                expect(page).to have_content('deploy')
+                expect(page).to have_css('.ci-status-icon-pending')
+              end
+            end
+          end
+        end
       end
     end
   end

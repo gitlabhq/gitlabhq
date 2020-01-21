@@ -19,8 +19,6 @@ describe('pipeline graph action component', () => {
         link: 'foo',
         actionIcon: 'cancel',
       },
-      sync: false,
-      attachToDocument: true,
     });
   });
 
@@ -30,7 +28,7 @@ describe('pipeline graph action component', () => {
   });
 
   it('should render the provided title as a bootstrap tooltip', () => {
-    expect(wrapper.attributes('data-original-title')).toBe('bar');
+    expect(wrapper.attributes('title')).toBe('bar');
   });
 
   it('should update bootstrap tooltip when title changes', done => {
@@ -39,7 +37,7 @@ describe('pipeline graph action component', () => {
     wrapper.vm
       .$nextTick()
       .then(() => {
-        expect(wrapper.attributes('data-original-title')).toBe('changed');
+        expect(wrapper.attributes('title')).toBe('changed');
       })
       .then(done)
       .catch(done.fail);

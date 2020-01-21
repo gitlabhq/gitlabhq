@@ -1,0 +1,5 @@
+---
+title: Add enable_modsecurity setting to managed ingress
+merge_request: 21966
+author:
+type: added

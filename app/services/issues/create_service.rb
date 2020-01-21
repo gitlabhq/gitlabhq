@@ -2,7 +2,7 @@
 
 module Issues
   class CreateService < Issues::BaseService
-    include SpamCheckService
+    include SpamCheckMethods
     include ResolveDiscussions
 
     def execute

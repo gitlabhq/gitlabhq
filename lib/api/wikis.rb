@@ -26,7 +26,7 @@ module API
           type: String,
           values: ProjectWiki::MARKUPS.values.map(&:to_s),
           default: 'markdown',
-          desc: 'Format of a wiki page. Available formats are markdown, rdoc, and asciidoc'
+          desc: 'Format of a wiki page. Available formats are markdown, rdoc, asciidoc and org'
       end
     end
 
@@ -107,8 +107,9 @@ module API
       delete ':id/wikis/:slug' do
         authorize! :admin_wiki, user_project
 
-        status 204
         WikiPages::DestroyService.new(user_project, current_user).execute(wiki_page)
+
+        no_content!
       end
 
       desc 'Upload an attachment to the wiki repository' do

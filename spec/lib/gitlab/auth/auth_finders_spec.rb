@@ -446,6 +446,93 @@ describe Gitlab::Auth::AuthFinders do
     end
   end
 
+  describe '#find_user_from_job_token' do
+    let(:job) { create(:ci_build, user: user) }
+    let(:route_authentication_setting) { { job_token_allowed: true } }
+
+    subject { find_user_from_job_token }
+
+    context 'when the job token is in the headers' do
+      it 'returns the user if valid job token' do
+        env[described_class::JOB_TOKEN_HEADER] = job.token
+
+        is_expected.to eq(user)
+        expect(@current_authenticated_job).to eq(job)
+      end
+
+      it 'returns nil without job token' do
+        env[described_class::JOB_TOKEN_HEADER] = ''
+
+        is_expected.to be_nil
+      end
+
+      it 'returns exception if invalid job token' do
+        env[described_class::JOB_TOKEN_HEADER] = 'invalid token'
+
+        expect { subject }.to raise_error(Gitlab::Auth::UnauthorizedError)
+      end
+
+      context 'when route is not allowed to be authenticated' do
+        let(:route_authentication_setting) { { job_token_allowed: false } }
+
+        it 'sets current_user to nil' do
+          env[described_class::JOB_TOKEN_HEADER] = job.token
+
+          allow_any_instance_of(Gitlab::UserAccess).to receive(:allowed?).and_return(true)
+
+          is_expected.to be_nil
+        end
+      end
+    end
+
+    context 'when the job token is in the params' do
+      shared_examples 'job token params' do |token_key_name|
+        before do
+          set_param(token_key_name, token)
+        end
+
+        context 'with valid job token' do
+          let(:token) { job.token }
+
+          it 'returns the user' do
+            is_expected.to eq(user)
+            expect(@current_authenticated_job).to eq(job)
+          end
+        end
+
+        context 'with empty job token' do
+          let(:token) { '' }
+
+          it 'returns nil' do
+            is_expected.to be_nil
+          end
+        end
+
+        context 'with invalid job token' do
+          let(:token) { 'invalid token' }
+
+          it 'returns exception' do
+            expect { subject }.to raise_error(Gitlab::Auth::UnauthorizedError)
+          end
+        end
+
+        context 'when route is not allowed to be authenticated' do
+          let(:route_authentication_setting) { { job_token_allowed: false } }
+          let(:token) { job.token }
+
+          it 'sets current_user to nil' do
+            allow_any_instance_of(Gitlab::UserAccess).to receive(:allowed?).and_return(true)
+
+            is_expected.to be_nil
+          end
+        end
+      end
+
+      it_behaves_like 'job token params', described_class::JOB_TOKEN_PARAM
+      it_behaves_like 'job token params', described_class::RUNNER_JOB_TOKEN_PARAM
+    end
+  end
+
   describe '#find_runner_from_token' do
     let(:runner) { create(:ci_runner) }
 

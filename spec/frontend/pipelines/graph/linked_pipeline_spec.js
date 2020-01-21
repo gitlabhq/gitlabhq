@@ -8,6 +8,12 @@ const mockPipeline = mockData.triggered[0];
 describe('Linked pipeline', () => {
   let wrapper;
 
+  const createWrapper = propsData => {
+    wrapper = mount(LinkedPipelineComponent, {
+      propsData,
+    });
+  };
+
   afterEach(() => {
     wrapper.destroy();
   });
@@ -15,14 +21,12 @@ describe('Linked pipeline', () => {
   describe('rendered output', () => {
     const props = {
       pipeline: mockPipeline,
+      projectId: 20,
+      columnTitle: 'Downstream',
     };
 
     beforeEach(() => {
-      wrapper = mount(LinkedPipelineComponent, {
-        sync: false,
-        attachToDocument: true,
-        propsData: props,
-      });
+      createWrapper(props);
     });
 
     it('should render a list item as the containing element', () => {
@@ -65,7 +69,7 @@ describe('Linked pipeline', () => {
 
     it('should render the tooltip text as the title attribute', () => {
       const tooltipRef = wrapper.find('.js-linked-pipeline-content');
-      const titleAttr = tooltipRef.attributes('data-original-title');
+      const titleAttr = tooltipRef.attributes('title');
 
       expect(titleAttr).toContain(mockPipeline.project.name);
       expect(titleAttr).toContain(mockPipeline.details.status.label);
@@ -74,19 +78,50 @@ describe('Linked pipeline', () => {
     it('does not render the loading icon when isLoading is false', () => {
       expect(wrapper.find('.js-linked-pipeline-loading').exists()).toBe(false);
     });
+
+    it('should not display child label when pipeline project id is not the same as triggered pipeline project id', () => {
+      const labelContainer = wrapper.find('.parent-child-label-container');
+      expect(labelContainer.exists()).toBe(false);
+    });
+  });
+
+  describe('parent/child', () => {
+    const downstreamProps = {
+      pipeline: mockPipeline,
+      projectId: 19,
+      columnTitle: 'Downstream',
+    };
+
+    const upstreamProps = {
+      ...downstreamProps,
+      columnTitle: 'Upstream',
+    };
+
+    it('parent/child label container should exist', () => {
+      createWrapper(downstreamProps);
+      expect(wrapper.find('.parent-child-label-container').exists()).toBe(true);
+    });
+
+    it('should display child label when pipeline project id is the same as triggered pipeline project id', () => {
+      createWrapper(downstreamProps);
+      expect(wrapper.find('.parent-child-label-container').text()).toContain('Child');
+    });
+
+    it('should display parent label when pipeline project id is the same as triggered_by pipeline project id', () => {
+      createWrapper(upstreamProps);
+      expect(wrapper.find('.parent-child-label-container').text()).toContain('Parent');
+    });
   });
 
   describe('when isLoading is true', () => {
     const props = {
       pipeline: { ...mockPipeline, isLoading: true },
+      projectId: 19,
+      columnTitle: 'Downstream',
     };
 
     beforeEach(() => {
-      wrapper = mount(LinkedPipelineComponent, {
-        sync: false,
-        attachToDocument: true,
-        propsData: props,
-      });
+      createWrapper(props);
     });
 
     it('renders a loading icon', () => {
@@ -97,21 +132,19 @@ describe('Linked pipeline', () => {
   describe('on click', () => {
     const props = {
       pipeline: mockPipeline,
+      projectId: 19,
+      columnTitle: 'Downstream',
     };
 
     beforeEach(() => {
-      wrapper = mount(LinkedPipelineComponent, {
-        sync: false,
-        attachToDocument: true,
-        propsData: props,
-      });
+      createWrapper(props);
     });
 
     it('emits `pipelineClicked` event', () => {
       jest.spyOn(wrapper.vm, '$emit');
       wrapper.find('button').trigger('click');
 
-      expect(wrapper.vm.$emit).toHaveBeenCalledWith('pipelineClicked');
+      expect(wrapper.emitted().pipelineClicked).toBeTruthy();
     });
 
     it('should emit `bv::hide::tooltip` to close the tooltip', () => {

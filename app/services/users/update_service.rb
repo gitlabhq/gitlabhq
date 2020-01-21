@@ -17,6 +17,8 @@ module Users
       yield(@user) if block_given?
 
       user_exists = @user.persisted?
+
+      discard_read_only_attributes
       assign_attributes
       assign_identity
 
@@ -50,13 +52,19 @@ module Users
       success
     end
 
-    def assign_attributes
+    def discard_read_only_attributes
+      discard_synced_attributes
+    end
+
+    def discard_synced_attributes
       if (metadata = @user.user_synced_attributes_metadata)
         read_only = metadata.read_only_attributes
 
         params.reject! { |key, _| read_only.include?(key.to_sym) }
       end
+    end
 
+    def assign_attributes
       @user.assign_attributes(params.except(*identity_attributes)) unless params.empty?
     end
 

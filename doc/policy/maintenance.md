@@ -7,6 +7,11 @@ type: concepts
 GitLab has strict policies governing version naming, as well as release pace for major, minor,
 patch and security releases. New releases are usually announced on the [GitLab blog](https://about.gitlab.com/blog/categories/releases/).
 
+Our current policy is:
+
+- Backporting bug fixes for **only the current stable release** at any given time, see [patch releases](#patch-releases).
+- Backporting to **to the previous two monthly releases in addition to the current stable release**, see [security releases](#security-releases).
+
 ## Versioning
 
 GitLab uses [Semantic Versioning](https://semver.org/) for its releases:
@@ -29,8 +34,6 @@ The following table describes the version types and their release cadence:
 | Patch        | For backward-compatible bug fixes that fix incorrect behavior. See [Patch releases](#patch-releases). | As needed. |
 
 ## Patch releases
-
-Our current policy is to support **only the current stable release** at any given time.
 
 Patch releases **only include bug fixes** for the current stable released version of
 GitLab.
@@ -97,10 +100,7 @@ To request backporting to more than one stable release for consideration, raise 
 ### Security releases
 
 Security releases are a special kind of patch release that only include security
-fixes and patches (see below).
-
-Our current policy is to backport security fixes to the previous two
-monthly releases in addition to the current stable release.
+fixes and patches (see below) for the previous two monthly releases in addition to the current stable release.
 
 For very serious security issues, there is
 [precedent](https://about.gitlab.com/blog/2016/05/02/cve-2016-4340-patches/)
@@ -139,6 +139,11 @@ We cannot guarantee that upgrading between major versions will be seamless. As p
 We recommend that you first upgrade to the latest available minor version within
 your major version. By doing this, you can address any deprecation messages
 that could change behavior in the next major release.
+
+It's also important to ensure that any background migrations have been fully completed
+before upgrading to a new major version. To see the current size of the `background_migration` queue,
+[Check for background migrations before upgrading](../update/README.md#checking-for-background-migrations-before-upgrading).
+
 To ensure background migrations are successful, increment by one minor version during the version jump before installing newer releases.
 
 For example: `11.11.x` -> `12.0.x`
@@ -150,9 +155,6 @@ Please see the table below for some examples:
 | 10.1.4                | 8.13.4       | `8.13.4 -> 8.17.7 -> 9.5.10 -> 10.1.4`                   | `8.17.7` is the last version in version `8`, `9.5.10` is the last version in version `9` |
 | 11.3.4                | 8.13.4       | `8.13.4` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> `11.3.4` | `8.17.7` is the last version in version `8`, `9.5.10` is the last version in version `9`, `10.8.7` is the last version in version `10` |
 | 12.5.8                | 11.3.4       | `11.3.4` -> `11.11.8` -> `12.0.9` -> `12.5.8`            | `11.11.8` is the last version in version `11` |
-
-To check the size of `background_migration` queue and to learn more about background migrations
-see [Upgrading without downtime](../update/README.md#upgrading-without-downtime).
 
 More information about the release procedures can be found in our
 [release documentation](https://gitlab.com/gitlab-org/release/docs). You may also want to read our

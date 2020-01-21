@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 describe ErrorTracking::ListIssuesService do
-  set(:user) { create(:user) }
-  set(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project) }
   let(:params) { { search_term: 'something', sort: 'last_seen', cursor: 'some-cursor' } }
   let(:list_sentry_issues_args) do
     {

@@ -15,6 +15,7 @@ describe BlobViewer::PodspecJson do
     SPEC
   end
   let(:blob) { fake_blob(path: 'AFNetworking.podspec.json', data: data) }
+
   subject { described_class.new(blob) }
 
   describe '#package_name' do

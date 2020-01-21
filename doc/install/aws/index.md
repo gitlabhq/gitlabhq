@@ -211,7 +211,7 @@ create the actual RDS instance.
 
 Now, it's time to create the database:
 
-1. Select **Instances** from the left menu and click **Create database**.
+1. Select **Databases** from the left menu and click **Create database**.
 1. Select PostgreSQL and click **Next**.
 1. Since this is a production server, let's choose "Production". Click **Next**.
 1. Let's see the instance specifications:
@@ -244,7 +244,7 @@ Once the database is created, connect to your new RDS instance to verify access
 and to install a required extension.
 
 You can find the host or endpoint by selecting the instance you just created and
-after the details drop down you'll find it labeled as 'Endpoint'. Do not to
+after the details dropdown menu you'll find it labeled as 'Endpoint'. Do not to
 include the colon and port number:
 
 ```sh

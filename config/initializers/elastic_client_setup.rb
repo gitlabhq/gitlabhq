@@ -18,6 +18,32 @@ Gitlab.ee do
   Elasticsearch::Model::ClassMethods.prepend GemExtensions::Elasticsearch::Model::Client
   Elasticsearch::Model.singleton_class.prepend GemExtensions::Elasticsearch::Model::Client
 
+  # This monkey patch cannot be handled by prepend like the above since this
+  # module is included into other classes.
+  module Elasticsearch
+    module Model
+      module Response
+        module Base
+          if Gem::Version.new(Elasticsearch::Model::VERSION) >= Gem::Version.new('7.0.0')
+            raise "elasticsearch-model was upgraded, please remove this monkey patch in #{__FILE__}"
+          end
+
+          # Handle ES7 API where total is returned as an object. This
+          # change is taken from the V7 gem
+          # https://github.com/elastic/elasticsearch-rails/commit/9c40f630e1b549f0b7889fe33dcd826b485af6fc
+          # and can be removed when we upgrade the gem to V7
+          def total
+            if response.response['hits']['total'].respond_to?(:keys)
+              response.response['hits']['total']['value']
+            else
+              response.response['hits']['total']
+            end
+          end
+        end
+      end
+    end
+  end
+
   ### Modified from elasticsearch-model/lib/elasticsearch/model.rb
 
   [

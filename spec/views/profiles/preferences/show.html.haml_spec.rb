@@ -12,6 +12,16 @@ describe 'profiles/preferences/show' do
     allow(controller).to receive(:current_user).and_return(user)
   end
 
+  context 'behavior' do
+    before do
+      render
+    end
+
+    it 'has option for Render whitespace characters in the Web IDE' do
+      expect(rendered).to have_unchecked_field('Render whitespace characters in the Web IDE')
+    end
+  end
+
   context 'sourcegraph' do
     def have_sourcegraph_field(*args)
       have_field('user_sourcegraph_enabled', *args)

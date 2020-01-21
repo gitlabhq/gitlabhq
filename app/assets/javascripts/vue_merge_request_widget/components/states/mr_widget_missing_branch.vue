@@ -2,7 +2,6 @@
 import { sprintf, s__ } from '~/locale';
 import tooltip from '~/vue_shared/directives/tooltip';
 import statusIcon from '../mr_widget_status_icon.vue';
-import mrWidgetMergeHelp from '../../components/mr_widget_merge_help.vue';
 
 export default {
   name: 'MRWidgetMissingBranch',
@@ -10,7 +9,6 @@ export default {
     tooltip,
   },
   components: {
-    mrWidgetMergeHelp,
     statusIcon,
   },
   props: {

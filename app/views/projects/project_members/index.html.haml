@@ -23,13 +23,13 @@
 
           .tab-content.gitlab-tab-content
             .tab-pane.active{ id: 'invite-member-pane', role: 'tabpanel' }
-              = render 'projects/project_members/new_project_member', tab_title: _('Invite member')
+              = render 'shared/members/invite_member', submit_url: project_project_members_path(@project), access_levels: ProjectMember.access_level_roles, default_access_level: @project_member.access_level, can_import_members?: can_import_members?, import_path: import_project_project_members_path(@project)
             .tab-pane{ id: 'invite-group-pane', role: 'tabpanel', class: ('active' if membership_locked?) }
-              = render 'projects/project_members/new_project_group', tab_title: _('Invite group')
+              = render 'shared/members/invite_group', submit_url: project_group_links_path(@project), access_levels: ProjectGroupLink.access_options, default_access_level: ProjectGroupLink.default_access, group_link_field: 'link_group_id', group_access_field: 'link_group_access'
         - elsif !membership_locked?
-          .invite-member= render 'projects/project_members/new_project_member', tab_title: _('Invite member')
+          .invite-member= render 'shared/members/invite_member', submit_url: project_project_members_path(@project), access_levels: ProjectMember.access_level_roles, default_access_level: @project_member.access_level, can_import_members?: can_import_members?, import_path: import_project_project_members_path(@project)
         - elsif @project.allowed_to_share_with_group?
-          .invite-group= render 'projects/project_members/new_project_group', tab_title: _('Invite group')
+          .invite-group= render 'shared/members/invite_group', access_levels: ProjectGroupLink.access_options, default_access_level: ProjectGroupLink.default_access, submit_url: project_group_links_path(@project), group_link_field: 'link_group_id', group_access_field: 'link_group_access'
 
         = render 'shared/members/requests', membership_source: @project, requesters: @requesters
         .clearfix

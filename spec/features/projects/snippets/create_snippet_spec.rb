@@ -50,7 +50,7 @@ describe 'Projects > Snippets > Create Snippet', :js do
       wait_for_requests
 
       link = find('a.no-attachment-icon img[alt="banana_sample"]')['src']
-      expect(link).to match(%r{/#{Regexp.escape(project.full_path) }/uploads/\h{32}/banana_sample\.gif\z})
+      expect(link).to match(%r{/#{Regexp.escape(project.full_path)}/uploads/\h{32}/banana_sample\.gif\z})
     end
 
     it 'creates a snippet when all required fields are filled in after validation failing' do
@@ -72,7 +72,7 @@ describe 'Projects > Snippets > Create Snippet', :js do
         expect(page).to have_selector('strong')
       end
       link = find('a.no-attachment-icon img[alt="banana_sample"]')['src']
-      expect(link).to match(%r{/#{Regexp.escape(project.full_path) }/uploads/\h{32}/banana_sample\.gif\z})
+      expect(link).to match(%r{/#{Regexp.escape(project.full_path)}/uploads/\h{32}/banana_sample\.gif\z})
     end
   end
 

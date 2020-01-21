@@ -1,0 +1,5 @@
+---
+title: Implement ability to ignore Sentry errrors from the list view
+merge_request: 22819
+author:
+type: added

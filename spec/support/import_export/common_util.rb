@@ -3,7 +3,9 @@
 module ImportExport
   module CommonUtil
     def setup_symlink(tmpdir, symlink_name)
-      allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(tmpdir)
+      allow_next_instance_of(Gitlab::ImportExport) do |instance|
+        allow(instance).to receive(:storage_path).and_return(tmpdir)
+      end
 
       File.open("#{tmpdir}/test", 'w') { |file| file.write("test") }
       FileUtils.ln_s("#{tmpdir}/test", "#{tmpdir}/#{symlink_name}")

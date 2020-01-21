@@ -57,6 +57,8 @@ class Group < Namespace
 
   has_one :import_export_upload
 
+  has_many :import_failures, inverse_of: :group
+
   accepts_nested_attributes_for :variables, allow_destroy: true
 
   validate :visibility_level_allowed_by_projects
@@ -420,6 +422,12 @@ class Group < Namespace
     GroupMember.where(source_id: self_and_ancestors_ids, user_id: user.id).order(:access_level).last
   end
 
+  def related_group_ids
+    [id,
+     *ancestors.pluck(:id),
+     *shared_with_group_links.pluck(:shared_with_group_id)]
+  end
+
   def hashed_storage?(_feature)
     false
   end
@@ -490,7 +498,7 @@ class Group < Namespace
   end
 
   def max_member_access_for_user_from_shared_groups(user)
-    return unless Feature.enabled?(:share_group_with_group)
+    return unless Feature.enabled?(:share_group_with_group, default_enabled: true)
 
     group_group_link_table = GroupGroupLink.arel_table
     group_member_table = GroupMember.arel_table

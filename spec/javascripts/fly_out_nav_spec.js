@@ -1,3 +1,4 @@
+import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import {
   calculateTop,
   showSubLevelItems,
@@ -15,7 +16,6 @@ import {
   subItemsMouseLeave,
 } from '~/fly_out_nav';
 import { SIDEBAR_COLLAPSED_CLASS } from '~/contextual_sidebar';
-import bp from '~/breakpoints';
 
 describe('Fly out sidebar navigation', () => {
   let el;
@@ -26,7 +26,7 @@ describe('Fly out sidebar navigation', () => {
     el.style.position = 'relative';
     document.body.appendChild(el);
 
-    spyOn(bp, 'getBreakpointSize').and.callFake(() => breakpointSize);
+    spyOn(GlBreakpointInstance, 'getBreakpointSize').and.callFake(() => breakpointSize);
 
     setOpenMenu(null);
   });

@@ -1,0 +1,5 @@
+---
+title: Return empty body for 204 responses in API
+merge_request: 22086
+author:
+type: fixed

@@ -1,16 +1,6 @@
 # frozen_string_literal: true
 
 shared_examples 'cluster application status specs' do |application_name|
-  describe '#status' do
-    let(:cluster) { create(:cluster, :provided_by_gcp) }
-
-    subject { described_class.new(cluster: cluster) }
-
-    it 'sets a default status' do
-      expect(subject.status_name).to be(:not_installable)
-    end
-  end
-
   describe '#status_states' do
     let(:cluster) { create(:cluster, :provided_by_gcp) }
 

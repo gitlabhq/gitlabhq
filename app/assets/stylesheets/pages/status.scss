@@ -42,6 +42,7 @@
   }
 
   &.ci-pending,
+  &.ci-waiting-for-resource,
   &.ci-failed-with-warnings,
   &.ci-success-with-warnings {
     @include status-color($orange-100, $orange-500, $orange-700);

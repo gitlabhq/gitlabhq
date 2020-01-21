@@ -9,6 +9,10 @@ module Gitlab
       LOCK_TTL = 10.minutes
       LOCK_RETRIES = 2
       LOCK_SLEEP = 0.001.seconds
+      WATCH_FLAG_TTL = 10.seconds
+
+      UPDATE_FREQUENCY_DEFAULT = 30.seconds
+      UPDATE_FREQUENCY_WHEN_BEING_WATCHED = 3.seconds
 
       ArchiveError = Class.new(StandardError)
       AlreadyArchivedError = Class.new(StandardError)
@@ -116,6 +120,22 @@ module Gitlab
       def archive!
         in_write_lock do
           unsafe_archive!
+        end
+      end
+
+      def update_interval
+        being_watched? ? UPDATE_FREQUENCY_WHEN_BEING_WATCHED : UPDATE_FREQUENCY_DEFAULT
+      end
+
+      def being_watched!
+        Gitlab::Redis::SharedState.with do |redis|
+          redis.set(being_watched_cache_key, true, ex: WATCH_FLAG_TTL)
+        end
+      end
+
+      def being_watched?
+        Gitlab::Redis::SharedState.with do |redis|
+          redis.exists(being_watched_cache_key)
         end
       end
 
@@ -235,6 +255,10 @@ module Gitlab
 
       def trace_artifact
         job.job_artifacts_trace
+      end
+
+      def being_watched_cache_key
+        "gitlab:ci:trace:#{job.id}:watched"
       end
     end
   end

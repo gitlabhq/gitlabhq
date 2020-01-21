@@ -57,7 +57,7 @@ module API
           requires :branch, type: String, desc: 'The name of the branch'
         end
         head do
-          user_project.repository.branch_exists?(params[:branch]) ? status(204) : status(404)
+          user_project.repository.branch_exists?(params[:branch]) ? no_content! : not_found!
         end
         get do
           branch = find_branch!(params[:branch])

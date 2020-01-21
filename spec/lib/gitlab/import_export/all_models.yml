@@ -6,8 +6,11 @@ issues:
 - assignees
 - updated_by
 - milestone
+- issue_milestones
+- milestones
 - notes
 - resource_label_events
+- resource_weight_events
 - sentry_issue
 - label_links
 - labels
@@ -35,6 +38,8 @@ issues:
 - vulnerability_links
 - related_vulnerabilities
 - user_mentions
+- blocked_by_issue_links
+- blocked_by_issues
 events:
 - author
 - project
@@ -77,6 +82,8 @@ milestone:
 - boards
 - milestone_releases
 - releases
+- issue_milestones
+- merge_request_milestones
 snippets:
 - author
 - project
@@ -105,6 +112,8 @@ merge_requests:
 - assignee
 - updated_by
 - milestone
+- merge_request_milestones
+- milestones
 - notes
 - resource_label_events
 - label_links
@@ -145,6 +154,12 @@ merge_requests:
 - deployment_merge_requests
 - deployments
 - user_mentions
+issue_milestones:
+- milestone
+- issue
+merge_request_milestones:
+- milestone
+- merge_request
 external_pull_requests:
 - project
 merge_request_diff:
@@ -188,16 +203,20 @@ ci_pipelines:
 - sourced_pipelines
 - triggered_by_pipeline
 - triggered_pipelines
+- child_pipelines
+- parent_pipeline
 - downstream_bridges
 - job_artifacts
 - vulnerabilities_occurrence_pipelines
 - vulnerability_findings
+- pipeline_config
 pipeline_variables:
 - pipeline
 stages:
 - project
 - pipeline
 - statuses
+- processables
 - builds
 - bridges
 statuses:
@@ -446,6 +465,8 @@ project:
 - service_desk_setting
 - import_failures
 - container_expiration_policy
+- resource_groups
+- autoclose_referenced_issues
 award_emoji:
 - awardable
 - user
@@ -560,3 +581,30 @@ zoom_meetings:
 sentry_issue:
 - issue
 design_versions: *version
+epic:
+- subscriptions
+- award_emoji
+- description_versions
+- author
+- assignee
+- issues
+- epic_issues
+- milestone
+- notes
+- label_links
+- labels
+- todos
+- metrics
+- group
+- parent
+- children
+- updated_by
+- last_edited_by
+- closed_by
+- start_date_sourcing_milestone
+- due_date_sourcing_milestone
+- start_date_sourcing_epic
+- due_date_sourcing_epic
+- events
+- resource_label_events
+- user_mentions

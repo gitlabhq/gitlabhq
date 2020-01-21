@@ -1,10 +1,11 @@
 {
   "type": "object",
-  "required" : [
+  "required": [
     "external_url",
     "external_base_url",
     "last_seen",
     "message",
+    "tags",
     "type",
     "title",
     "project_id",
@@ -17,31 +18,46 @@
     "first_release_last_commit",
     "last_release_last_commit",
     "first_release_short_version",
-    "last_release_short_version"
+    "last_release_short_version",
+    "gitlab_commit"
   ],
-  "properties" : {
-    "id": { "type": "string"},
+  "properties": {
+    "id": { "type": "string" },
     "first_seen": { "type": "string", "format": "date-time" },
     "last_seen": { "type": "string", "format": "date-time" },
     "type": { "type": "string" },
     "message": { "type": "string" },
     "culprit": { "type": "string" },
-    "count": { "type": "integer"},
+    "count": { "type": "integer" },
     "external_url": { "type": "string" },
     "external_base_url": { "type": "string" },
-    "user_count": { "type": "integer"},
-    "title": { "type": "string"},
-    "project_id": { "type": "string"},
-    "project_name": { "type": "string"},
-    "project_slug": { "type": "string"},
-    "short_id": { "type": "string"},
-    "status": { "type": "string"},
-    "frequency": { "type": "array"},
+    "user_count": { "type": "integer" },
+    "tags": {
+      "type": "object",
+      "required": ["level", "logger"],
+      "properties": {
+        "level": {
+          "type": "string"
+        },
+        "logger": {
+          "type": "string"
+        }
+      }
+    },
+    "title": { "type": "string" },
+    "project_id": { "type": "string" },
+    "project_name": { "type": "string" },
+    "project_slug": { "type": "string" },
+    "short_id": { "type": "string" },
+    "status": { "type": "string" },
+    "frequency": { "type": "array" },
     "gitlab_issue": { "type": ["string", "null"] },
     "first_release_last_commit": { "type": ["string", "null"] },
     "last_release_last_commit": { "type": ["string", "null"] },
     "first_release_short_version": { "type": ["string", "null"] },
-    "last_release_short_version": { "type": ["string", "null"] }
+    "last_release_short_version": { "type": ["string", "null"] },
+    "gitlab_commit": { "type": ["string", "null"] },
+    "gitlab_commit_path": { "type": ["string", "null"] }
   },
   "additionalProperties": false
 }

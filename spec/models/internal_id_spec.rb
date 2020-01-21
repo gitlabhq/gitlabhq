@@ -170,6 +170,7 @@ describe InternalId do
 
   describe '.track_greatest' do
     let(:value) { 9001 }
+
     subject { described_class.track_greatest(issue, scope, usage, value, init) }
 
     context 'in the absence of a record' do
@@ -210,6 +211,7 @@ describe InternalId do
 
   describe '#increment_and_save!' do
     let(:id) { create(:internal_id) }
+
     subject { id.increment_and_save! }
 
     it 'returns incremented iid' do
@@ -236,6 +238,7 @@ describe InternalId do
   describe '#track_greatest_and_save!' do
     let(:id) { create(:internal_id) }
     let(:new_last_value) { 9001 }
+
     subject { id.track_greatest_and_save!(new_last_value) }
 
     it 'returns new last value' do

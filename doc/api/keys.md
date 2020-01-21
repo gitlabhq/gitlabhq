@@ -128,3 +128,65 @@ Example response:
   }
 }
 ```
+
+Deploy Keys are bound to the creating user, so if you query with a deploy key
+fingerprint you get additional information about the projects using that key:
+
+```sh
+curl --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/keys?fingerprint=SHA256%3AnUhzNyftwADy8AH3wFY31tAKs7HufskYTte2aXo%2FlCg
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "title": "Sample key 1",
+  "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt1016k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=",
+  "created_at": "2019-11-14T15:11:13.222Z",
+  "user": {
+    "id": 1,
+    "name": "Administrator",
+    "username": "root",
+    "state": "active",
+    "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+    "web_url": "http://0.0.0.0:3000/root",
+    "created_at": "2019-11-14T15:09:34.831Z",
+    "bio": null,
+    "location": null,
+    "public_email": "",
+    "skype": "",
+    "linkedin": "",
+    "twitter": "",
+    "website_url": "",
+    "organization": null,
+    "last_sign_in_at": "2019-11-16T22:41:26.663Z",
+    "confirmed_at": "2019-11-14T15:09:34.575Z",
+    "last_activity_on": "2019-11-20",
+    "email": "admin@example.com",
+    "theme_id": 1,
+    "color_scheme_id": 1,
+    "projects_limit": 100000,
+    "current_sign_in_at": "2019-11-19T14:42:18.078Z",
+    "identities": [
+    ],
+    "can_create_group": true,
+    "can_create_project": true,
+    "two_factor_enabled": false,
+    "external": false,
+    "private_profile": false,
+    "shared_runners_minutes_limit": null,
+    "extra_shared_runners_minutes_limit": null
+  },
+  "deploy_keys_projects": [
+    {
+      "id": 1,
+      "deploy_key_id": 1,
+      "project_id": 1,
+      "created_at": "2020-01-09T07:32:52.453Z",
+      "updated_at": "2020-01-09T07:32:52.453Z",
+      "can_push": false
+    }
+  ]
+}
+```

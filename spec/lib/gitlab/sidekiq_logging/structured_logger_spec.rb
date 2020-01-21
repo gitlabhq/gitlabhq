@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
 describe Gitlab::SidekiqLogging::StructuredLogger do
   describe '#call' do
-    let(:timestamp) { Time.iso8601('2018-01-01T12:00:00Z') }
+    let(:timestamp) { Time.iso8601('2018-01-01T12:00:00.000Z') }
     let(:created_at) { timestamp - 1.second }
     let(:scheduling_latency_s) { 1.0 }
 
@@ -30,8 +30,8 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
         'message' => 'TestWorker JID-da883554ee4fe414012f5f42: start',
         'job_status' => 'start',
         'pid' => Process.pid,
-        'created_at' => created_at.iso8601(6),
-        'enqueued_at' => created_at.iso8601(6),
+        'created_at' => created_at.to_f,
+        'enqueued_at' => created_at.to_f,
         'scheduling_latency_s' => scheduling_latency_s
       )
     end
@@ -40,8 +40,10 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
         'message' => 'TestWorker JID-da883554ee4fe414012f5f42: done: 0.0 sec',
         'job_status' => 'done',
         'duration' => 0.0,
-        "completed_at" => timestamp.iso8601(6),
-        "cpu_s" => 1.111112
+        'completed_at' => timestamp.to_f,
+        'cpu_s' => 1.111112,
+        'db_duration' => 0,
+        'db_duration_s' => 0
       )
     end
     let(:exception_payload) do
@@ -145,7 +147,7 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
     end
 
     context 'with latency' do
-      let(:created_at) { Time.iso8601('2018-01-01T10:00:00Z') }
+      let(:created_at) { Time.iso8601('2018-01-01T10:00:00.000Z') }
       let(:scheduling_latency_s) { 7200.0 }
 
       it 'logs with scheduling latency' do
@@ -183,22 +185,59 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
         end
       end
     end
+
+    context 'when the job performs database queries' do
+      before do
+        allow(Time).to receive(:now).and_return(timestamp)
+        allow(Process).to receive(:clock_gettime).and_call_original
+      end
+
+      let(:expected_start_payload) { start_payload.except('args') }
+
+      let(:expected_end_payload) do
+        end_payload.except('args').merge('cpu_s' => a_value > 0)
+      end
+
+      let(:expected_end_payload_with_db) do
+        expected_end_payload.merge(
+          'db_duration' => a_value >= 100,
+          'db_duration_s' => a_value >= 0.1
+        )
+      end
+
+      it 'logs the database time' do
+        expect(logger).to receive(:info).with(expected_start_payload).ordered
+        expect(logger).to receive(:info).with(expected_end_payload_with_db).ordered
+
+        subject.call(job, 'test_queue') { ActiveRecord::Base.connection.execute('SELECT pg_sleep(0.1);') }
+      end
+
+      it 'prevents database time from leaking to the next job' do
+        expect(logger).to receive(:info).with(expected_start_payload).ordered
+        expect(logger).to receive(:info).with(expected_end_payload_with_db).ordered
+        expect(logger).to receive(:info).with(expected_start_payload).ordered
+        expect(logger).to receive(:info).with(expected_end_payload).ordered
+
+        subject.call(job, 'test_queue') { ActiveRecord::Base.connection.execute('SELECT pg_sleep(0.1);') }
+        subject.call(job, 'test_queue') { }
+      end
+    end
   end
 
   describe '#add_time_keys!' do
     let(:time) { { duration: 0.1231234, cputime: 1.2342345 } }
     let(:payload) { { 'class' => 'my-class', 'message' => 'my-message', 'job_status' => 'my-job-status' } }
-    let(:current_utc_time) { '2019-09-23 10:00:58 UTC' }
-    let(:payload_with_time_keys) { { 'class' => 'my-class', 'message' => 'my-message', 'job_status' => 'my-job-status', 'duration' => 0.123123, 'cpu_s' => 1.234235, 'completed_at' => current_utc_time } }
+    let(:current_utc_time) { Time.now.utc }
+    let(:payload_with_time_keys) { { 'class' => 'my-class', 'message' => 'my-message', 'job_status' => 'my-job-status', 'duration' => 0.123123, 'cpu_s' => 1.234235, 'completed_at' => current_utc_time.to_f } }
 
     subject { described_class.new }
 
     it 'update payload correctly' do
-      expect(Time).to receive_message_chain(:now, :utc).and_return(current_utc_time)
+      Timecop.freeze(current_utc_time) do
+        subject.send(:add_time_keys!, time, payload)
 
-      subject.send(:add_time_keys!, time, payload)
-
-      expect(payload).to eq(payload_with_time_keys)
+        expect(payload).to eq(payload_with_time_keys)
+      end
     end
   end
 end

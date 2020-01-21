@@ -7,7 +7,6 @@ describe 'User expands diff', :js do
   let(:merge_request) { create(:merge_request, source_branch: 'expand-collapse-files', source_project: project, target_project: project) }
 
   before do
-    stub_feature_flags(single_mr_diff_view: false)
     stub_feature_flags(diffs_batch_load: false)
 
     allow(Gitlab::Git::Diff).to receive(:size_limit).and_return(100.kilobytes)
@@ -17,8 +16,6 @@ describe 'User expands diff', :js do
 
     wait_for_requests
   end
-
-  it_behaves_like 'rendering a single diff version'
 
   it 'allows user to expand diff' do
     page.within find('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9"]') do

@@ -1,7 +1,6 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 
-const localVue = createLocalVue();
 const buttonText = 'Test Button Text';
 
 describe('ReplyPlaceholder', () => {
@@ -11,7 +10,6 @@ describe('ReplyPlaceholder', () => {
 
   beforeEach(() => {
     wrapper = shallowMount(ReplyPlaceholder, {
-      localVue,
       propsData: {
         buttonText,
       },
@@ -25,8 +23,10 @@ describe('ReplyPlaceholder', () => {
   it('emits onClick even on button click', () => {
     findButton().trigger('click');
 
-    expect(wrapper.emitted()).toEqual({
-      onClick: [[]],
+    return wrapper.vm.$nextTick().then(() => {
+      expect(wrapper.emitted()).toEqual({
+        onClick: [[]],
+      });
     });
   });
 

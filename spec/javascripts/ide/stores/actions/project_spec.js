@@ -201,35 +201,30 @@ describe('IDE store project actions', () => {
   });
 
   describe('showEmptyState', () => {
-    it('commits proper mutations when supplied error is 404', done => {
+    it('creates a blank tree and sets loading state to false', done => {
       testAction(
         showEmptyState,
-        {
-          err: {
-            response: {
-              status: 404,
-            },
-          },
-          projectId: 'abc/def',
-          branchId: 'master',
-        },
+        { projectId: 'abc/def', branchId: 'master' },
         store.state,
         [
-          {
-            type: 'CREATE_TREE',
-            payload: {
-              treePath: 'abc/def/master',
-            },
-          },
+          { type: 'CREATE_TREE', payload: { treePath: 'abc/def/master' } },
           {
             type: 'TOGGLE_LOADING',
-            payload: {
-              entry: store.state.trees['abc/def/master'],
-              forceValue: false,
-            },
+            payload: { entry: store.state.trees['abc/def/master'], forceValue: false },
           },
         ],
-        [],
+        jasmine.any(Object),
+        done,
+      );
+    });
+
+    it('sets the currentBranchId to the branchId that was passed', done => {
+      testAction(
+        showEmptyState,
+        { projectId: 'abc/def', branchId: 'master' },
+        store.state,
+        jasmine.any(Object),
+        [{ type: 'setCurrentBranchId', payload: 'master' }],
         done,
       );
     });
@@ -285,16 +280,21 @@ describe('IDE store project actions', () => {
   describe('loadBranch', () => {
     const projectId = 'abc/def';
     const branchId = '123-lorem';
+    const ref = 'abcd2322';
 
     it('fetches branch data', done => {
+      const mockGetters = { findBranch: () => ({ commit: { id: ref } }) };
       spyOn(store, 'dispatch').and.returnValue(Promise.resolve());
 
-      loadBranch(store, { projectId, branchId })
+      loadBranch(
+        { getters: mockGetters, state: store.state, dispatch: store.dispatch },
+        { projectId, branchId },
+      )
         .then(() => {
           expect(store.dispatch.calls.allArgs()).toEqual([
             ['getBranchData', { projectId, branchId }],
             ['getMergeRequestsForBranch', { projectId, branchId }],
-            ['getFiles', { projectId, branchId }],
+            ['getFiles', { projectId, branchId, ref }],
           ]);
         })
         .then(done)

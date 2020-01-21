@@ -7,6 +7,7 @@ describe BlobViewer::Readme do
 
   let(:project) { create(:project, :repository, :wiki_repo) }
   let(:blob) { fake_blob(path: 'README.md') }
+
   subject { described_class.new(blob) }
 
   describe '#render_error' do

@@ -13,6 +13,7 @@ end
 
 describe User, 'TokenAuthenticatable' do
   let(:token_field) { :feed_token }
+
   it_behaves_like 'TokenAuthenticatable'
 
   describe 'ensures authentication token' do

@@ -41,8 +41,8 @@ describe 'Recent searches', :js do
 
     items = all('.filtered-search-history-dropdown-item', visible: false, count: 2)
 
-    expect(items[0].text).to eq('label: ~qux garply')
-    expect(items[1].text).to eq('label: ~foo bar')
+    expect(items[0].text).to eq('label: = ~qux garply')
+    expect(items[1].text).to eq('label: = ~foo bar')
   end
 
   it 'saved recent searches are restored last on the list' do

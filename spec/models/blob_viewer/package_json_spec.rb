@@ -15,6 +15,7 @@ describe BlobViewer::PackageJson do
     SPEC
   end
   let(:blob) { fake_blob(path: 'package.json', data: data) }
+
   subject { described_class.new(blob) }
 
   describe '#package_name' do
@@ -54,6 +55,7 @@ describe BlobViewer::PackageJson do
       SPEC
     end
     let(:blob) { fake_blob(path: 'package.json', data: data) }
+
     subject { described_class.new(blob) }
 
     describe '#package_url' do

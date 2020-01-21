@@ -8,8 +8,8 @@ module QA
           include Page::Component::Select2
 
           view 'app/views/import/github/new.html.haml' do
-            element :personal_access_token_field, 'text_field_tag :personal_access_token' # rubocop:disable QA/ElementWithPattern
-            element :authenticate_button, "submit_tag _('Authenticate')" # rubocop:disable QA/ElementWithPattern
+            element :personal_access_token_field
+            element :authenticate_button
           end
 
           view 'app/assets/javascripts/import_projects/components/provider_repo_table_row.vue' do
@@ -20,11 +20,9 @@ module QA
           end
 
           def add_personal_access_token(personal_access_token)
-            fill_in 'personal_access_token', with: personal_access_token
-          end
-
-          def list_repos
-            click_button 'List your GitHub repositories'
+            fill_element(:personal_access_token_field, personal_access_token)
+            click_element(:authenticate_button)
+            finished_loading?
           end
 
           def import!(full_path, name)
@@ -37,7 +35,7 @@ module QA
           private
 
           def within_repo_path(full_path)
-            wait(reload: false) do
+            wait_until(reload: false) do
               has_element?(:project_import_row, text: full_path)
             end
 
@@ -69,7 +67,7 @@ module QA
           end
 
           def wait_for_success
-            wait(max: 60, interval: 1.0, reload: false) do
+            wait_until(max_duration: 60, sleep_interval: 1.0, reload: false) do
               page.has_content?('Done', wait: 1.0)
             end
           end

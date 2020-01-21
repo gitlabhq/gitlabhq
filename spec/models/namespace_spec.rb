@@ -26,6 +26,7 @@ describe Namespace do
     it { is_expected.to validate_presence_of(:path) }
     it { is_expected.to validate_length_of(:path).is_at_most(255) }
     it { is_expected.to validate_presence_of(:owner) }
+    it { is_expected.to validate_numericality_of(:max_artifacts_size).only_integer.is_greater_than(0) }
 
     it 'does not allow too deep nesting' do
       ancestors = (1..21).to_a
@@ -921,6 +922,12 @@ describe Namespace do
         group = create(:group, emails_disabled: true)
 
         expect(group.emails_disabled?).to be_truthy
+      end
+
+      it 'does not query the db when there is no parent group' do
+        group = create(:group, emails_disabled: true)
+
+        expect { group.emails_disabled? }.not_to exceed_query_limit(0)
       end
     end
 

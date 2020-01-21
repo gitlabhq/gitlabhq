@@ -15,7 +15,6 @@ describe('Job Log', () => {
 
   const createComponent = () => {
     wrapper = mount(Log, {
-      sync: false,
       localVue,
       store,
     });

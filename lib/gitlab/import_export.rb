@@ -50,6 +50,14 @@ module Gitlab
       'VERSION'
     end
 
+    def gitlab_version_filename
+      'GITLAB_VERSION'
+    end
+
+    def gitlab_revision_filename
+      'GITLAB_REVISION'
+    end
+
     def export_filename(exportable:)
       basename = "#{Time.now.strftime('%Y-%m-%d_%H-%M-%3N')}_#{exportable.full_path.tr('/', '_')}"
 

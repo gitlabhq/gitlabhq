@@ -213,6 +213,7 @@ describe Projects::WikisController do
   describe 'PATCH #update' do
     let(:new_title) { 'New title' }
     let(:new_content) { 'New content' }
+
     subject do
       patch(:update,
             params: {

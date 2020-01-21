@@ -10,6 +10,6 @@ export default {
 </script>
 <template>
   <div class="prometheus-graph-header">
-    <h5 class="prometheus-graph-title js-graph-title">{{ graphTitle }}</h5>
+    <h5 ref="title" class="prometheus-graph-title">{{ graphTitle }}</h5>
   </div>
 </template>

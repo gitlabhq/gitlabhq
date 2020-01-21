@@ -119,6 +119,7 @@ The following table lists available parameters for jobs:
 | [`pages`](#pages)                                  | Upload the result of a job to use with GitLab Pages.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | [`variables`](#variables)                          | Define job variables on a job level.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | [`interruptible`](#interruptible)                  | Defines if a job can be canceled when made redundant by a newer run.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| [`resource_group`](#resource_group)                | Limit job concurrency.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 
 NOTE: **Note:**
 Parameters `types` and `type` are [deprecated](#deprecated-parameters).
@@ -728,7 +729,18 @@ Learn more about [variables expressions](../variables/README.md#environment-vari
 Using the `changes` keyword with `only` or `except` makes it possible to define if
 a job should be created based on files modified by a Git push event.
 
-For example:
+This means the `only:changes` policy is useful for pipelines where:
+
+- `$CI_PIPELINE_SOURCE == 'push'`
+- `$CI_PIPELINE_SOURCE == 'merge_request_event'`
+- `$CI_PIPELINE_SOURCE == 'external_pull_request_event'`
+
+If there is no Git push event, such as for pipelines with
+[sources other than the three above](../variables/predefined_variables.html#variables-reference),
+`changes` cannot determine if a given file is new or old, and will always
+return true.
+
+A basic example of using `only: changes`:
 
 ```yaml
 docker build:
@@ -829,7 +841,7 @@ In the example above, a pipeline could fail due to changes to a file in `service
 A later commit could then be pushed that does not include any changes to this file,
 but includes changes to the `Dockerfile`, and this pipeline could pass because it is only
 testing the changes to the `Dockerfile`. GitLab checks the **most recent pipeline**,
-that **passed**, and will show the merge request as mergable, despite the earlier
+that **passed**, and will show the merge request as mergeable, despite the earlier
 failed pipeline caused by a change that was not yet corrected.
 
 With this configuration, care must be taken to check that the most recent pipeline
@@ -909,8 +921,9 @@ at all, the behavior defaults to `job:when`, which continues to default to
 
 #### `rules:changes`
 
-`changes` works exactly the same way as [`only`/`except`](#onlychangesexceptchanges),
-accepting an array of paths.
+`rules: changes` works exactly the same way as `only: changes` and `except: changes`,
+accepting an array of paths. Similarly, it will always return true if there is no
+Git push event. See [`only/except: changes`](#onlychangesexceptchanges) for more information.
 
 For example:
 
@@ -2312,6 +2325,23 @@ This example creates three paths of execution:
 - Related to the above, stages must be explicitly defined for all jobs
   that have the keyword `needs:` or are referred to by one.
 
+##### Changing the `needs:` job limit
+
+The maximum number of jobs that can be defined within `needs:` defaults to 10, but
+can be changed to 50 via a feature flag. To change the limit to 50,
+[start a Rails console session](https://docs.gitlab.com/omnibus/maintenance/#starting-a-rails-console-session)
+and run:
+
+```ruby
+Feature::disable(:ci_dag_limit_needs)
+```
+
+To set it back to 10, run the opposite command:
+
+```ruby
+Feature::enable(:ci_dag_limit_needs)
+```
+
 #### Artifact downloads with `needs`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/14311) in GitLab v12.6.
@@ -2354,6 +2384,51 @@ rspec:
     - job: build_job_2
     - build_job_3
 ```
+
+#### Cross project artifact downloads with `needs` **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/14311) in GitLab v12.7.
+
+`needs` can be used to download artifacts from up to five jobs in pipelines on
+[other refs in the same project](#artifact-downloads-between-pipelines-in-the-same-project),
+or pipelines in different projects:
+
+```yaml
+build_job:
+  stage: build
+  script:
+    - ls -lhR
+  needs:
+    - project: group/project-name
+      job: build-1
+      ref: master
+      artifacts: true
+```
+
+`build_job` will download the artifacts from the latest successful `build-1` job
+on the `master` branch in the `group/project-name` project.
+
+##### Artifact downloads between pipelines in the same project
+
+`needs` can be used to download artifacts from different pipelines in the current project
+by setting the `project` keyword as the current project's name, and specifying a ref.
+In the example below, `build_job` will download the artifacts for the latest successful
+`build-1` job with the `other-ref` ref:
+
+```yaml
+build_job:
+  stage: build
+  script:
+    - ls -lhR
+  needs:
+    - project: group/same-project-name
+      job: build-1
+      ref: other-ref
+      artifacts: true
+```
+
+NOTE: **Note:**
+Downloading artifacts from jobs that are run in [`parallel:`](#parallel) is not supported.
 
 ### `coverage`
 
@@ -2525,14 +2600,17 @@ job split into three separate jobs.
 from `trigger` definition is started by GitLab, a downstream pipeline gets
 created.
 
-Learn more about [multi-project pipelines](../multi_project_pipelines.md#creating-multi-project-pipelines-from-gitlab-ciyml).
+This keyword allows the creation of two different types of downstream pipelines:
+
+- [Multi-project pipelines](../multi_project_pipelines.md#creating-multi-project-pipelines-from-gitlab-ciyml)
+- [Child pipelines](../parent_child_pipelines.md)
 
 NOTE: **Note:**
 Using a `trigger` with `when:manual` together results in the error `jobs:#{job-name}
 when should be on_success, on_failure or always`, because `when:manual` prevents
 triggers being used.
 
-#### Simple `trigger` syntax
+#### Simple `trigger` syntax for multi-project pipelines
 
 The simplest way to configure a downstream trigger is to use `trigger` keyword
 with a full path to a downstream project:
@@ -2547,7 +2625,7 @@ staging:
   trigger: my/deployment
 ```
 
-#### Complex `trigger` syntax
+#### Complex `trigger` syntax for multi-project pipelines
 
 It is possible to configure a branch name that GitLab will use to create
 a downstream pipeline with:
@@ -2580,6 +2658,28 @@ upstream_bridge:
   stage: test
   needs:
     pipeline: other/project
+```
+
+#### `trigger` syntax for child pipeline
+
+To create a [child pipeline](../parent_child_pipelines.md), specify the path to the
+YAML file containing the CI config of the child pipeline:
+
+```yaml
+trigger_job:
+  trigger:
+    include: path/to/child-pipeline.yml
+```
+
+Similar to [multi-project pipelines](../multi_project_pipelines.md#mirroring-status-from-triggered-pipeline),
+it is possible to mirror the status from a triggered pipeline:
+
+```yaml
+trigger_job:
+  trigger:
+    include:
+      - local: path/to/child-pipeline.yml
+    strategy: depend
 ```
 
 ### `interruptible`
@@ -2633,6 +2733,39 @@ In the example above, a new pipeline run will cause an existing running pipeline
 
 NOTE: **Note:**
 Once an uninterruptible job is running, the pipeline will never be canceled, regardless of the final job's state.
+
+### `resource_group`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/15536) in GitLab 12.7.
+
+Sometimes running multiples jobs or pipelines at the same time in an environment
+can lead to errors during the deployment.
+
+To avoid these errors, the `resource_group` attribute can be used to ensure that
+the Runner will not run certain jobs simultaneously.
+
+When the `resource_group` key is defined for a job in `.gitlab-ci.yml`,
+job executions are mutually exclusive across different pipelines for the same project.
+If multiple jobs belonging to the same resource group are enqueued simultaneously,
+only one of the jobs will be picked by the Runner, and the other jobs will wait until the
+`resource_group` is free.
+
+Here is a simple example:
+
+```yaml
+deploy-to-production:
+  script: deploy
+  resource_group: production
+```
+
+In this case, if a `deploy-to-production` job is running in a pipeline, and a new
+`deploy-to-production` job is created in a different pipeline, it will not run until
+the currently running/pending `deploy-to-production` job is finished. As a result,
+you can ensure that concurrent deployments will never happen to the production environment.
+
+There can be multiple `resource_group`s defined per environment. A good use case for this
+is when deploying to physical devices. You may have more than one physical device, and each
+one can be deployed to, but there can be only one deployment per device at any given time.
 
 ### `include`
 
@@ -3594,7 +3727,7 @@ having their own custom `script` defined:
 
 ```yaml
 .job_template: &job_definition  # Hidden key that defines an anchor named 'job_definition'
-  image: ruby:2.1
+  image: ruby:2.6
   services:
     - postgres
     - redis
@@ -3616,13 +3749,13 @@ given hash into the current one", and `*` includes the named anchor
 
 ```yaml
 .job_template:
-  image: ruby:2.1
+  image: ruby:2.6
   services:
     - postgres
     - redis
 
 test1:
-  image: ruby:2.1
+  image: ruby:2.6
   services:
     - postgres
     - redis
@@ -3630,7 +3763,7 @@ test1:
     - test1 project
 
 test2:
-  image: ruby:2.1
+  image: ruby:2.6
   services:
     - postgres
     - redis

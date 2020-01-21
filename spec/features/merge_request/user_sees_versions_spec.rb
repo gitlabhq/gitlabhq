@@ -16,15 +16,12 @@ describe 'Merge request > User sees versions', :js do
   let!(:params) { {} }
 
   before do
-    stub_feature_flags(single_mr_diff_view: false)
     stub_feature_flags(diffs_batch_load: false)
 
     project.add_maintainer(user)
     sign_in(user)
     visit diffs_project_merge_request_path(project, merge_request, params)
   end
-
-  it_behaves_like 'rendering a single diff version'
 
   shared_examples 'allows commenting' do |file_id:, line_code:, comment:|
     it do
@@ -53,7 +50,7 @@ describe 'Merge request > User sees versions', :js do
         expect(page).to have_content 'latest version'
       end
 
-      expect(page).to have_content '8 Files'
+      expect(page).to have_content '8 files'
     end
 
     it_behaves_like 'allows commenting',
@@ -87,7 +84,7 @@ describe 'Merge request > User sees versions', :js do
     end
 
     it 'shows comments that were last relevant at that version' do
-      expect(page).to have_content '5 Files'
+      expect(page).to have_content '5 files'
 
       position = Gitlab::Diff::Position.new(
         old_path: ".gitmodules",
@@ -131,12 +128,10 @@ describe 'Merge request > User sees versions', :js do
         diff_id: merge_request_diff3.id,
         start_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9'
       )
-      expect(page).to have_content '4 Files'
+      expect(page).to have_content '4 files'
 
-      additions_content = page.find('.diff-stats.is-compare-versions-header .diff-stats-group svg.ic-file-addition')
-                              .ancestor('.diff-stats-group').text
-      deletions_content = page.find('.diff-stats.is-compare-versions-header .diff-stats-group svg.ic-file-deletion')
-                              .ancestor('.diff-stats-group').text
+      additions_content = page.find('.diff-stats.is-compare-versions-header .diff-stats-group .js-file-addition-line').text
+      deletions_content = page.find('.diff-stats.is-compare-versions-header .diff-stats-group .js-file-deletion-line').text
 
       expect(additions_content).to eq '15'
       expect(deletions_content).to eq '6'
@@ -159,12 +154,10 @@ describe 'Merge request > User sees versions', :js do
     end
 
     it 'show diff between new and old version' do
-      additions_content = page.find('.diff-stats.is-compare-versions-header .diff-stats-group svg.ic-file-addition')
-                              .ancestor('.diff-stats-group').text
-      deletions_content = page.find('.diff-stats.is-compare-versions-header .diff-stats-group svg.ic-file-deletion')
-                              .ancestor('.diff-stats-group').text
+      additions_content = page.find('.diff-stats.is-compare-versions-header .diff-stats-group .js-file-addition-line').text
+      deletions_content = page.find('.diff-stats.is-compare-versions-header .diff-stats-group .js-file-deletion-line').text
 
-      expect(page).to have_content '4 Files'
+      expect(page).to have_content '4 files'
       expect(additions_content).to eq '15'
       expect(deletions_content).to eq '6'
     end
@@ -174,7 +167,7 @@ describe 'Merge request > User sees versions', :js do
       page.within '.mr-version-dropdown' do
         expect(page).to have_content 'latest version'
       end
-      expect(page).to have_content '8 Files'
+      expect(page).to have_content '8 files'
     end
 
     it_behaves_like 'allows commenting',
@@ -200,7 +193,7 @@ describe 'Merge request > User sees versions', :js do
         find('.btn-default').click
         click_link 'version 1'
       end
-      expect(page).to have_content '0 Files'
+      expect(page).to have_content '0 files'
     end
   end
 
@@ -226,7 +219,7 @@ describe 'Merge request > User sees versions', :js do
         expect(page).to have_content 'version 1'
       end
 
-      expect(page).to have_content '0 Files'
+      expect(page).to have_content '0 files'
     end
   end
 

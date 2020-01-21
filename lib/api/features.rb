@@ -74,7 +74,7 @@ module API
       delete ':name' do
         Feature.get(params[:name]).remove
 
-        status 204
+        no_content!
       end
     end
   end

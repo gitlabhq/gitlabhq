@@ -8,8 +8,9 @@ module MergeRequests
 
     attr_reader :merge_request
 
-    def execute(merge_request)
+    def execute(merge_request, skip_ci: false)
       @merge_request = merge_request
+      @skip_ci = skip_ci
 
       if rebase
         success
@@ -25,7 +26,7 @@ module MergeRequests
         return false
       end
 
-      repository.rebase(current_user, merge_request)
+      repository.rebase(current_user, merge_request, skip_ci: @skip_ci)
 
       true
     rescue => e

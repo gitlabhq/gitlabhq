@@ -11,6 +11,8 @@ describe Projects::ErrorTrackingHelper do
   describe '#error_tracking_data' do
     let(:can_enable_error_tracking) { true }
     let(:setting_path) { project_settings_operations_path(project) }
+    let(:list_path) { project_error_tracking_index_path(project) }
+    let(:project_path) { project.full_path }
 
     let(:index_path) do
       project_error_tracking_index_path(project, format: :json)
@@ -30,6 +32,8 @@ describe Projects::ErrorTrackingHelper do
           'user-can-enable-error-tracking' => 'true',
           'enable-error-tracking-link' => setting_path,
           'error-tracking-enabled' => 'false',
+          'list-path' => list_path,
+          'project-path' => project_path,
           'illustration-path' => match_asset_path('/assets/illustrations/cluster_popover.svg')
         )
       end
@@ -79,11 +83,25 @@ describe Projects::ErrorTrackingHelper do
   describe '#error_details_data' do
     let(:issue_id) { 1234 }
     let(:route_params) { [project.owner, project, issue_id, { format: :json }] }
+    let(:list_path) { project_error_tracking_index_path(project) }
     let(:details_path) { details_namespace_project_error_tracking_index_path(*route_params) }
+    let(:project_path) { project.full_path }
     let(:stack_trace_path) { stack_trace_namespace_project_error_tracking_index_path(*route_params) }
     let(:issues_path) { project_issues_path(project) }
 
     let(:result) { helper.error_details_data(project, issue_id) }
+
+    it 'returns the correct list path' do
+      expect(result['list-path']).to eq list_path
+    end
+
+    it 'returns the correct issue id' do
+      expect(result['issue-id']).to eq issue_id
+    end
+
+    it 'returns the correct project path' do
+      expect(result['project-path']).to eq project_path
+    end
 
     it 'returns the correct details path' do
       expect(result['issue-details-path']).to eq details_path

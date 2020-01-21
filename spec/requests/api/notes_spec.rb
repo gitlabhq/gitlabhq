@@ -101,6 +101,75 @@ describe API::Notes do
             expect(json_response.first['body']).to eq(cross_reference_note.note)
           end
         end
+
+        context "activity filters" do
+          let!(:user_reference_note) do
+            create :note,
+                   noteable: ext_issue, project: ext_proj,
+                   note: "Hello there general!",
+                   system: false
+          end
+
+          let(:test_url) {"/projects/#{ext_proj.id}/issues/#{ext_issue.iid}/notes"}
+
+          shared_examples 'a notes request' do
+            it 'is a note array response' do
+              expect(response).to have_gitlab_http_status(200)
+              expect(response).to include_pagination_headers
+              expect(json_response).to be_an Array
+            end
+          end
+
+          context "when not provided" do
+            let(:count) { 2 }
+
+            before do
+              get api(test_url, private_user)
+            end
+
+            it_behaves_like 'a notes request'
+
+            it 'returns all the notes' do
+              expect(json_response.count).to eq(count)
+            end
+          end
+
+          context "when all_notes provided" do
+            let(:count) { 2 }
+
+            before do
+              get api(test_url + "?activity_filter=all_notes", private_user)
+            end
+
+            it_behaves_like 'a notes request'
+
+            it 'returns all the notes' do
+              expect(json_response.count).to eq(count)
+            end
+          end
+
+          context "when provided" do
+            using RSpec::Parameterized::TableSyntax
+
+            where(:filter, :count, :system_notable) do
+              "only_comments" | 1  | false
+              "only_activity" | 1  | true
+            end
+
+            with_them do
+              before do
+                get api(test_url + "?activity_filter=#{filter}", private_user)
+              end
+
+              it_behaves_like 'a notes request'
+
+              it "properly filters the returned notables" do
+                expect(json_response.count).to eq(count)
+                expect(json_response.first["system"]).to be system_notable
+              end
+            end
+          end
+        end
       end
 
       describe "GET /projects/:id/noteable/:noteable_id/notes/:note_id" do

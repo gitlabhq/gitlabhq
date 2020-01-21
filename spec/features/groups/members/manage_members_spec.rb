@@ -113,7 +113,8 @@ describe 'Groups > Members > Manage members' do
 
     visit group_group_members_path(group)
 
-    expect(page).not_to have_button 'Add to group'
+    expect(page).not_to have_selector '.invite-users-form'
+    expect(page).not_to have_selector '.invite-group-form'
 
     page.within(second_row) do
       # Can not modify user2 role
@@ -125,11 +126,10 @@ describe 'Groups > Members > Manage members' do
   end
 
   def add_user(id, role)
-    page.within ".users-group-form" do
+    page.within ".invite-users-form" do
       select2(id, from: "#user_ids", multiple: true)
       select(role, from: "access_level")
+      click_button "Invite"
     end
-
-    click_button "Add to group"
   end
 end

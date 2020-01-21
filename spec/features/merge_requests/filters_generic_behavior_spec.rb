@@ -23,7 +23,7 @@ describe 'Merge Requests > Filters generic behavior', :js do
 
   context 'when filtered by a label' do
     before do
-      input_filtered_search('label:~bug')
+      input_filtered_search('label=~bug')
     end
 
     describe 'state tabs' do

@@ -39,6 +39,22 @@ describe HasStatus do
         it { is_expected.to eq 'running' }
       end
 
+      context 'all waiting for resource' do
+        let!(:statuses) do
+          [create(type, status: :waiting_for_resource), create(type, status: :waiting_for_resource)]
+        end
+
+        it { is_expected.to eq 'waiting_for_resource' }
+      end
+
+      context 'at least one waiting for resource' do
+        let!(:statuses) do
+          [create(type, status: :success), create(type, status: :waiting_for_resource)]
+        end
+
+        it { is_expected.to eq 'waiting_for_resource' }
+      end
+
       context 'all preparing' do
         let!(:statuses) do
           [create(type, status: :preparing), create(type, status: :preparing)]
@@ -219,7 +235,7 @@ describe HasStatus do
       end
     end
 
-    %i[created preparing running pending success
+    %i[created waiting_for_resource preparing running pending success
        failed canceled skipped].each do |status|
       it_behaves_like 'having a job', status
     end
@@ -265,7 +281,7 @@ describe HasStatus do
     describe '.alive' do
       subject { CommitStatus.alive }
 
-      %i[running pending preparing created].each do |status|
+      %i[running pending waiting_for_resource preparing created].each do |status|
         it_behaves_like 'containing the job', status
       end
 
@@ -277,7 +293,7 @@ describe HasStatus do
     describe '.alive_or_scheduled' do
       subject { CommitStatus.alive_or_scheduled }
 
-      %i[running pending preparing created scheduled].each do |status|
+      %i[running pending waiting_for_resource preparing created scheduled].each do |status|
         it_behaves_like 'containing the job', status
       end
 
@@ -313,7 +329,7 @@ describe HasStatus do
     describe '.cancelable' do
       subject { CommitStatus.cancelable }
 
-      %i[running pending preparing created scheduled].each do |status|
+      %i[running pending waiting_for_resource preparing created scheduled].each do |status|
         it_behaves_like 'containing the job', status
       end
 

@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 describe ErrorTracking::ListProjectsService do
-  set(:user) { create(:user) }
-  set(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project, reload: true) { create(:project) }
 
   let(:sentry_url) { 'https://sentrytest.gitlab.com/api/0/projects/sentry-org/sentry-project' }
   let(:token) { 'test-token' }

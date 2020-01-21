@@ -100,7 +100,7 @@ Add the following to your `.gitlab-ci.yml` file:
 
 ```yaml
 include:
-  template: SAST.gitlab-ci.yml
+  - template: SAST.gitlab-ci.yml
 ```
 
 The included template will create a `sast` job in your CI/CD pipeline and scan
@@ -124,7 +124,7 @@ set the `SAST_GOSEC_LEVEL` variable to `2`:
 
 ```yaml
 include:
-  template: SAST.gitlab-ci.yml
+  - template: SAST.gitlab-ci.yml
 
 variables:
   SAST_GOSEC_LEVEL: 2
@@ -141,7 +141,7 @@ template inclusion and specify any additional keys under it. For example:
 
 ```yaml
 include:
-  template: SAST.gitlab-ci.yml
+  - template: SAST.gitlab-ci.yml
 
 sast:
   variables:
@@ -178,7 +178,7 @@ This does not require running the executor in privileged mode. For example:
 
 ```yaml
 include:
-  template: SAST.gitlab-ci.yml
+  - template: SAST.gitlab-ci.yml
 
 variables:
   SAST_DISABLE_DIND: "true"
@@ -196,11 +196,62 @@ kubesec analyzer. In `.gitlab-ci.yml`, define:
 
 ```yaml
 include:
+  - template: SAST.gitlab-ci.yml
+
+variables:
+  SAST_DISABLE_DIND: "true"
+  SCAN_KUBERNETES_MANIFESTS: "true"
+```
+
+#### Pre-compilation
+
+If your project requires custom build configurations, it can be preferable to avoid
+compilation during your SAST execution and instead pass all job artifacts from an
+earlier stage within the pipeline.
+
+To pass your project's dependencies as artifacts, the dependencies must be included
+in the project's working directory and specified using the `artifacts:path` configuration.
+If all dependencies are present, the `-compile=false` flag can be provided to the
+analyzer and compilation will be skipped:
+
+```yaml
+image: maven:3.6-jdk-8-alpine
+
+stages:
+ - build
+ - test
+
+include:
   template: SAST.gitlab-ci.yml
 
 variables:
-  SCAN_KUBERNETES_MANIFESTS: "true"
+  SAST_DISABLE_DIND: "true"
+
+build:
+  stage: build
+  script:
+    - mvn package -Dmaven.repo.local=./.m2/repository
+  artifacts:
+    paths:
+      - .m2/
+      - target/
+
+spotbugs-sast:
+  dependencies: build
+  script:
+    - /analyzer run -compile=false
+  variables:
+    MAVEN_REPO_PATH: ./.m2/repository
+  artifacts:
+    reports:
+      sast: gl-sast-report.json
 ```
+
+NOTE: **Note:**
+The path to the vendored directory must be specified explicitly to allow
+the analyzer to recognize the compiled artifacts. This configuration can vary per
+analyzer but in the case of Java above, `MAVEN_REPO_PATH` can be used.
+See [Analyzer settings](#analyzer-settings) for the complete list of available options.
 
 ### Available variables
 

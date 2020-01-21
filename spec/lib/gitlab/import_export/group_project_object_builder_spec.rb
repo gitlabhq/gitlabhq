@@ -12,6 +12,59 @@ describe Gitlab::ImportExport::GroupProjectObjectBuilder do
            group: create(:group))
   end
 
+  let(:lru_cache) { subject.send(:lru_cache) }
+  let(:cache_key) { subject.send(:cache_key) }
+
+  context 'request store is not active' do
+    subject do
+      described_class.new(Label,
+                          'title' => 'group label',
+                          'project' => project,
+                          'group' => project.group)
+    end
+
+    it 'ignore cache initialize' do
+      expect(lru_cache).to be_nil
+      expect(cache_key).to be_nil
+    end
+  end
+
+  context 'request store is active', :request_store do
+    subject do
+      described_class.new(Label,
+                          'title' => 'group label',
+                          'project' => project,
+                          'group' => project.group)
+    end
+
+    it 'initialize cache in memory' do
+      expect(lru_cache).not_to be_nil
+      expect(cache_key).not_to be_nil
+    end
+
+    it 'cache object when first time find the object' do
+      group_label = create(:group_label, name: 'group label', group: project.group)
+
+      expect(subject).to receive(:find_object).and_call_original
+      expect { subject.find }
+        .to change { lru_cache[cache_key] }
+        .from(nil).to(group_label)
+
+      expect(subject.find).to eq(group_label)
+    end
+
+    it 'read from cache when object has been cached' do
+      group_label = create(:group_label, name: 'group label', group: project.group)
+
+      subject.find
+
+      expect(subject).not_to receive(:find_object)
+      expect { subject.find }.not_to change { lru_cache[cache_key] }
+
+      expect(subject.find).to eq(group_label)
+    end
+  end
+
   context 'labels' do
     it 'finds the existing group label' do
       group_label = create(:group_label, name: 'group label', group: project.group)

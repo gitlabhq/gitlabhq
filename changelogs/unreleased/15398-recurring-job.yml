@@ -1,0 +1,5 @@
+---
+title: Add a cron job and worker to run the Container Expiration Policies
+merge_request: 21593
+author:
+type: added

@@ -8,7 +8,7 @@ class AddLegacyAbacToClusterProvidersGcp < ActiveRecord::Migration[4.2]
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:cluster_providers_gcp, :legacy_abac, :boolean, default: true)
+    add_column_with_default(:cluster_providers_gcp, :legacy_abac, :boolean, default: true) # rubocop:disable Migration/AddColumnWithDefault
   end
 
   def down

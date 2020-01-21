@@ -241,6 +241,14 @@ module Gitlab
       row['version']
     end
 
+    def self.exists?
+      connection
+
+      true
+    rescue
+      false
+    end
+
     private_class_method :database_version
 
     def self.add_post_migrate_path_to_rails(force: false)

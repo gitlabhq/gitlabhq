@@ -1,0 +1,5 @@
+---
+title: Fix discarding renamed directories in Web IDE
+merge_request: 22943
+author:
+type: fixed

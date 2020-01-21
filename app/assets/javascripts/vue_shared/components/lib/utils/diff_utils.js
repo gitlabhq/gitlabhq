@@ -12,6 +12,7 @@ function cleanSuggestionLine(line = {}) {
   return {
     ...line,
     text: trimFirstCharOfLineContent(line.text),
+    rich_text: trimFirstCharOfLineContent(line.rich_text),
   };
 }
 

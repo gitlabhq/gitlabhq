@@ -6,7 +6,7 @@ exports[`IDE pipelines list when loaded renders empty state when no latestPipeli
 >
   <!---->
    
-  <emptystate-stub
+  <empty-state-stub
     cansetci="true"
     emptystatesvgpath="http://test.host"
     helppagepath="http://test.host"

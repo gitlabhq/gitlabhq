@@ -1,0 +1,5 @@
+---
+title: Don't run Auto DevOps when no dockerfile or matching buildpack exists
+merge_request: 20267
+author:
+type: changed

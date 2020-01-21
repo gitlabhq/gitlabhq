@@ -1,16 +1,12 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import CommitsHeader from '~/vue_merge_request_widget/components/states/commits_header.vue';
 import Icon from '~/vue_shared/components/icon.vue';
-
-const localVue = createLocalVue();
 
 describe('Commits header component', () => {
   let wrapper;
 
   const createComponent = props => {
-    wrapper = shallowMount(localVue.extend(CommitsHeader), {
-      localVue,
-      sync: false,
+    wrapper = shallowMount(CommitsHeader, {
       propsData: {
         isSquashEnabled: false,
         targetBranch: 'master',
@@ -64,7 +60,9 @@ describe('Commits header component', () => {
       createComponent();
       wrapper.setData({ expanded: false });
 
-      expect(findIcon().props('name')).toBe('chevron-right');
+      return wrapper.vm.$nextTick().then(() => {
+        expect(findIcon().props('name')).toBe('chevron-right');
+      });
     });
 
     describe('when squash is disabled', () => {

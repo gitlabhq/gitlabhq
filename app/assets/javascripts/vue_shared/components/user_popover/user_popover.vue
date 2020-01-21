@@ -30,11 +30,16 @@ export default {
   },
   computed: {
     statusHtml() {
+      if (!this.user.status) {
+        return '';
+      }
+
       if (this.user.status.emoji && this.user.status.message_html) {
         return `${glEmojiTag(this.user.status.emoji)} ${this.user.status.message_html}`;
       } else if (this.user.status.message_html) {
         return this.user.status.message_html;
       }
+
       return '';
     },
     nameIsLoading() {
@@ -97,7 +102,9 @@ export default {
             class="animation-container-small mb-1"
           />
         </div>
-        <div v-if="user.status" class="mt-2"><span v-html="statusHtml"></span></div>
+        <div v-if="statusHtml" class="js-user-status mt-2">
+          <span v-html="statusHtml"></span>
+        </div>
       </div>
     </div>
   </gl-popover>

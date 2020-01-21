@@ -89,6 +89,9 @@ export default {
     currentUser() {
       return this.getUserData;
     },
+    isLoggedIn() {
+      return Boolean(gon.current_user_id);
+    },
     autosaveKey() {
       return getDiscussionReplyKey(this.firstNote.noteable_type, this.discussion.id);
     },
@@ -314,7 +317,7 @@ export default {
                       @cancelForm="cancelReplyForm"
                     />
                   </div>
-                  <note-signed-out-widget v-if="!userCanReply" />
+                  <note-signed-out-widget v-if="!isLoggedIn" />
                 </div>
               </template>
             </discussion-notes>

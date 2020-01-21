@@ -9,7 +9,7 @@ describe Gitlab::Email::AttachmentUploader do
     let(:message) { Mail::Message.new(message_raw) }
 
     it "uploads all attachments and returns their links" do
-      links = described_class.new(message).execute(project)
+      links = described_class.new(message).execute(upload_parent: project, uploader_class: FileUploader)
       link = links.first
 
       expect(link).not_to be_nil

@@ -1,6 +1,6 @@
 ---
 type: reference
-last_updated: 2018-06-04
+last_updated: 2020-01-06
 ---
 
 # Exploring GitLab Pages
@@ -156,7 +156,7 @@ Below is a copy of `.gitlab-ci.yml` where the most significant line is the last
 one, specifying to execute everything in the `pages` branch:
 
 ```
-image: ruby:2.1
+image: ruby:2.6
 
 pages:
   script:

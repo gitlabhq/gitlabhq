@@ -14,7 +14,6 @@ describe('SidebarTodo', () => {
 
   const createComponent = (props = {}) => {
     wrapper = shallowMount(SidebarTodos, {
-      sync: false,
       propsData: {
         ...defaultProps,
         ...props,
@@ -60,7 +59,9 @@ describe('SidebarTodo', () => {
       createComponent();
       wrapper.find('button').trigger('click');
 
-      expect(wrapper.emitted().toggleTodo).toBeTruthy();
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.emitted().toggleTodo).toBeTruthy();
+      });
     });
 
     it('renders component container element with proper data attributes', () => {

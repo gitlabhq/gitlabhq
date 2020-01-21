@@ -10,6 +10,7 @@ import CompareVersions from '~/diffs/components/compare_versions.vue';
 import HiddenFilesWarning from '~/diffs/components/hidden_files_warning.vue';
 import CommitWidget from '~/diffs/components/commit_widget.vue';
 import TreeList from '~/diffs/components/tree_list.vue';
+import { INLINE_DIFF_VIEW_TYPE, PARALLEL_DIFF_VIEW_TYPE } from '~/diffs/constants';
 import createDiffsStore from '../create_diffs_store';
 import diffsMockData from '../mock_data/merge_request_diffs';
 
@@ -41,7 +42,6 @@ describe('diffs/components/app', () => {
         changesEmptyStateIllustration: '',
         dismissEndpoint: '',
         showSuggestPopover: true,
-        useSingleDiffStyle: false,
         ...props,
       },
       store,
@@ -51,6 +51,12 @@ describe('diffs/components/app', () => {
         },
       },
     });
+  }
+
+  function getOppositeViewType(currentViewType) {
+    return currentViewType === INLINE_DIFF_VIEW_TYPE
+      ? PARALLEL_DIFF_VIEW_TYPE
+      : INLINE_DIFF_VIEW_TYPE;
   }
 
   beforeEach(() => {
@@ -68,17 +74,164 @@ describe('diffs/components/app', () => {
   });
 
   describe('fetch diff methods', () => {
-    beforeEach(() => {
+    beforeEach(done => {
+      const fetchResolver = () => {
+        store.state.diffs.retrievingBatches = false;
+        store.state.notes.discussions = 'test';
+        return Promise.resolve({ real_size: 100 });
+      };
       spyOn(window, 'requestIdleCallback').and.callFake(fn => fn());
       createComponent();
-      spyOn(wrapper.vm, 'fetchDiffFiles').and.callFake(() => Promise.resolve());
-      spyOn(wrapper.vm, 'fetchDiffFilesMeta').and.callFake(() => Promise.resolve());
-      spyOn(wrapper.vm, 'fetchDiffFilesBatch').and.callFake(() => Promise.resolve());
+      spyOn(wrapper.vm, 'fetchDiffFiles').and.callFake(fetchResolver);
+      spyOn(wrapper.vm, 'fetchDiffFilesMeta').and.callFake(fetchResolver);
+      spyOn(wrapper.vm, 'fetchDiffFilesBatch').and.callFake(fetchResolver);
       spyOn(wrapper.vm, 'setDiscussions');
       spyOn(wrapper.vm, 'startRenderDiffsQueue');
+      spyOn(wrapper.vm, 'unwatchDiscussions');
+      spyOn(wrapper.vm, 'unwatchRetrievingBatches');
+      store.state.diffs.retrievingBatches = true;
+      store.state.diffs.diffFiles = [];
+      wrapper.vm.$nextTick(done);
+    });
+
+    describe('when the diff view type changes and it should load a single diff view style', () => {
+      const noLinesDiff = {
+        highlighted_diff_lines: [],
+        parallel_diff_lines: [],
+      };
+      const parallelLinesDiff = {
+        highlighted_diff_lines: [],
+        parallel_diff_lines: ['line'],
+      };
+      const inlineLinesDiff = {
+        highlighted_diff_lines: ['line'],
+        parallel_diff_lines: [],
+      };
+      const fullDiff = {
+        highlighted_diff_lines: ['line'],
+        parallel_diff_lines: ['line'],
+      };
+
+      function expectFetchToOccur({
+        vueInstance,
+        done = () => {},
+        batch = false,
+        existingFiles = 1,
+      } = {}) {
+        vueInstance.$nextTick(() => {
+          expect(vueInstance.diffFiles.length).toEqual(existingFiles);
+
+          if (!batch) {
+            expect(vueInstance.fetchDiffFiles).toHaveBeenCalled();
+            expect(vueInstance.fetchDiffFilesBatch).not.toHaveBeenCalled();
+          } else {
+            expect(vueInstance.fetchDiffFiles).not.toHaveBeenCalled();
+            expect(vueInstance.fetchDiffFilesBatch).toHaveBeenCalled();
+          }
+
+          done();
+        });
+      }
+
+      beforeEach(() => {
+        wrapper.vm.glFeatures.singleMrDiffView = true;
+      });
+
+      it('fetches diffs if it has none', done => {
+        wrapper.vm.isLatestVersion = () => false;
+
+        store.state.diffs.diffViewType = getOppositeViewType(wrapper.vm.diffViewType);
+
+        expectFetchToOccur({ vueInstance: wrapper.vm, batch: false, existingFiles: 0, done });
+      });
+
+      it('fetches diffs if it has both view styles, but no lines in either', done => {
+        wrapper.vm.isLatestVersion = () => false;
+
+        store.state.diffs.diffFiles.push(noLinesDiff);
+        store.state.diffs.diffViewType = getOppositeViewType(wrapper.vm.diffViewType);
+
+        expectFetchToOccur({ vueInstance: wrapper.vm, done });
+      });
+
+      it('fetches diffs if it only has inline view style', done => {
+        wrapper.vm.isLatestVersion = () => false;
+
+        store.state.diffs.diffFiles.push(inlineLinesDiff);
+        store.state.diffs.diffViewType = getOppositeViewType(wrapper.vm.diffViewType);
+
+        expectFetchToOccur({ vueInstance: wrapper.vm, done });
+      });
+
+      it('fetches diffs if it only has parallel view style', done => {
+        wrapper.vm.isLatestVersion = () => false;
+
+        store.state.diffs.diffFiles.push(parallelLinesDiff);
+        store.state.diffs.diffViewType = getOppositeViewType(wrapper.vm.diffViewType);
+
+        expectFetchToOccur({ vueInstance: wrapper.vm, done });
+      });
+
+      it('fetches batch diffs if it has none', done => {
+        wrapper.vm.glFeatures.diffsBatchLoad = true;
+
+        store.state.diffs.diffViewType = getOppositeViewType(wrapper.vm.diffViewType);
+
+        expectFetchToOccur({ vueInstance: wrapper.vm, batch: true, existingFiles: 0, done });
+      });
+
+      it('fetches batch diffs if it has both view styles, but no lines in either', done => {
+        wrapper.vm.glFeatures.diffsBatchLoad = true;
+
+        store.state.diffs.diffFiles.push(noLinesDiff);
+        store.state.diffs.diffViewType = getOppositeViewType(wrapper.vm.diffViewType);
+
+        expectFetchToOccur({ vueInstance: wrapper.vm, batch: true, done });
+      });
+
+      it('fetches batch diffs if it only has inline view style', done => {
+        wrapper.vm.glFeatures.diffsBatchLoad = true;
+
+        store.state.diffs.diffFiles.push(inlineLinesDiff);
+        store.state.diffs.diffViewType = getOppositeViewType(wrapper.vm.diffViewType);
+
+        expectFetchToOccur({ vueInstance: wrapper.vm, batch: true, done });
+      });
+
+      it('fetches batch diffs if it only has parallel view style', done => {
+        wrapper.vm.glFeatures.diffsBatchLoad = true;
+
+        store.state.diffs.diffFiles.push(parallelLinesDiff);
+        store.state.diffs.diffViewType = getOppositeViewType(wrapper.vm.diffViewType);
+
+        expectFetchToOccur({ vueInstance: wrapper.vm, batch: true, done });
+      });
+
+      it('does not fetch diffs if it has already fetched both styles of diff', () => {
+        wrapper.vm.glFeatures.diffsBatchLoad = false;
+
+        store.state.diffs.diffFiles.push(fullDiff);
+        store.state.diffs.diffViewType = getOppositeViewType(wrapper.vm.diffViewType);
+
+        expect(wrapper.vm.diffFiles.length).toEqual(1);
+        expect(wrapper.vm.fetchDiffFiles).not.toHaveBeenCalled();
+        expect(wrapper.vm.fetchDiffFilesBatch).not.toHaveBeenCalled();
+      });
+
+      it('does not fetch batch diffs if it has already fetched both styles of diff', () => {
+        wrapper.vm.glFeatures.diffsBatchLoad = true;
+
+        store.state.diffs.diffFiles.push(fullDiff);
+        store.state.diffs.diffViewType = getOppositeViewType(wrapper.vm.diffViewType);
+
+        expect(wrapper.vm.diffFiles.length).toEqual(1);
+        expect(wrapper.vm.fetchDiffFiles).not.toHaveBeenCalled();
+        expect(wrapper.vm.fetchDiffFilesBatch).not.toHaveBeenCalled();
+      });
     });
 
     it('calls fetchDiffFiles if diffsBatchLoad is not enabled', done => {
+      expect(wrapper.vm.diffFilesLength).toEqual(0);
       wrapper.vm.glFeatures.diffsBatchLoad = false;
       wrapper.vm.fetchData(false);
 
@@ -87,33 +240,46 @@ describe('diffs/components/app', () => {
         expect(wrapper.vm.startRenderDiffsQueue).toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesMeta).not.toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesBatch).not.toHaveBeenCalled();
+        expect(wrapper.vm.unwatchDiscussions).toHaveBeenCalled();
+        expect(wrapper.vm.diffFilesLength).toEqual(100);
+        expect(wrapper.vm.unwatchRetrievingBatches).toHaveBeenCalled();
 
         done();
       });
     });
 
-    it('calls batch methods if diffsBatchLoad is enabled, and not latest version', () => {
+    it('calls batch methods if diffsBatchLoad is enabled, and not latest version', done => {
+      expect(wrapper.vm.diffFilesLength).toEqual(0);
       wrapper.vm.glFeatures.diffsBatchLoad = true;
       wrapper.vm.isLatestVersion = () => false;
       wrapper.vm.fetchData(false);
 
       expect(wrapper.vm.fetchDiffFiles).not.toHaveBeenCalled();
-      wrapper.vm.$nextTick(() => {
+      setTimeout(() => {
         expect(wrapper.vm.startRenderDiffsQueue).toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesMeta).toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesBatch).toHaveBeenCalled();
+        expect(wrapper.vm.unwatchDiscussions).toHaveBeenCalled();
+        expect(wrapper.vm.diffFilesLength).toEqual(100);
+        expect(wrapper.vm.unwatchRetrievingBatches).toHaveBeenCalled();
+        done();
       });
     });
 
-    it('calls batch methods if diffsBatchLoad is enabled, and latest version', () => {
+    it('calls batch methods if diffsBatchLoad is enabled, and latest version', done => {
+      expect(wrapper.vm.diffFilesLength).toEqual(0);
       wrapper.vm.glFeatures.diffsBatchLoad = true;
       wrapper.vm.fetchData(false);
 
       expect(wrapper.vm.fetchDiffFiles).not.toHaveBeenCalled();
-      wrapper.vm.$nextTick(() => {
+      setTimeout(() => {
         expect(wrapper.vm.startRenderDiffsQueue).toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesMeta).toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesBatch).toHaveBeenCalled();
+        expect(wrapper.vm.unwatchDiscussions).toHaveBeenCalled();
+        expect(wrapper.vm.diffFilesLength).toEqual(100);
+        expect(wrapper.vm.unwatchRetrievingBatches).toHaveBeenCalled();
+        done();
       });
     });
   });

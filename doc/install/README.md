@@ -87,3 +87,7 @@ the above methods, provided the cloud provider supports it.
 - [Install GitLab on DigitalOcean](https://about.gitlab.com/blog/2016/04/27/getting-started-with-gitlab-and-digitalocean/): Install Omnibus GitLab on DigitalOcean.
 - _Testing only!_ [DigitalOcean and Docker Machine](digitaloceandocker.md):
   Quickly test any version of GitLab on DigitalOcean using Docker Machine.
+
+## Securing your GitLab installation
+
+After completing your installation, check out our [recommended practices to secure your GitLab instance](../security/README.md#securing-your-gitlab-installation).

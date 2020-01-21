@@ -9,17 +9,6 @@ describe Projects::Environments::SampleMetricsController do
   let_it_be(:environment) { create(:environment, project: project) }
   let_it_be(:user) { create(:user) }
 
-  before(:context) do
-    RSpec::Mocks.with_temporary_scope do
-      stub_env('USE_SAMPLE_METRICS', 'true')
-      Rails.application.reload_routes!
-    end
-  end
-
-  after(:context) do
-    Rails.application.reload_routes!
-  end
-
   before do
     project.add_reporter(user)
     sign_in(user)
@@ -58,7 +47,9 @@ describe Projects::Environments::SampleMetricsController do
       id: environment.id.to_s,
       namespace_id: project.namespace.full_path,
       project_id: project.name,
-      identifier: 'sample_metric_query_result'
+      identifier: 'sample_metric_query_result',
+      start: '2019-12-02T23:31:45.000Z',
+      end: '2019-12-03T00:01:45.000Z'
     }.merge(params)
   end
 end

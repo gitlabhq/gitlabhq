@@ -9,8 +9,7 @@ Gitlab::Seeder.quiet do
         state: [:active, :closed].sample,
       }
 
-      milestone = Milestones::CreateService.new(
-        project, project.team.users.sample, milestone_params).execute
+      Milestones::CreateService.new(project, project.team.users.sample, milestone_params).execute
 
       print '.'
     end

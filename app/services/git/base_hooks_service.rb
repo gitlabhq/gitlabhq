@@ -163,7 +163,7 @@ module Git
     end
 
     def logger
-      if Sidekiq.server?
+      if Gitlab::Runtime.sidekiq?
         Sidekiq.logger
       else
         # This service runs in Sidekiq, so this shouldn't ever be

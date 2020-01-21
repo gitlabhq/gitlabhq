@@ -54,18 +54,20 @@ We follow a simple formula roughly based on hungarian notation.
 *Formula*: `element :<descriptor>_<type>`
 
 - `descriptor`: The natural-language description of what the element is. On the login page, this could be `username`, or `password`.
-- `type`: A physical control on the page that can be seen by a user.
+- `type`: A generic control on the page that can be seen by a user.
   - `_button`
-  - `_link`
-  - `_tab`
-  - `_dropdown`
-  - `_field`
   - `_checkbox`
+  - `_container`: an element that includes other elements, but doesn't present visible content itself. E.g., an element that has a third-party editor inside it, but which isn't the editor itself and so doesn't include the editor's content.
+  - `_content`: any element that contains text, images, or any other content displayed to the user.
+  - `_dropdown`
+  - `_field`: a text input element.
+  - `_link`
+  - `_modal`: a popup modal dialog, e.g., a confirmation prompt.
+  - `_placeholder`: a temporary element that appears while content is loading. For example, the elements that are displayed instead of discussions while the discussions are being fetched.
   - `_radio`
-  - `_content`
+  - `_tab`
 
-*Note: This list is a work in progress. This list will eventually be the end-all enumeration of all available types.
-        I.e., any element that does not end with something in this list is bad form.*
+*Note: If none of the listed types are suitable, please open a merge request to add an appropriate type to the list.*
 
 ### Examples
 

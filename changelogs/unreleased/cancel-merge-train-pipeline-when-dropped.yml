@@ -1,0 +1,5 @@
+---
+title: Cancel running pipelines when merge request is dropped from merge train
+merge_request: 22146
+author:
+type: fixed

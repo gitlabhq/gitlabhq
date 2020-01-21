@@ -27,16 +27,29 @@ describe Gitlab::Ci::Config::Entry::Root do
   context 'when configuration is valid' do
     context 'when top-level entries are defined' do
       let(:hash) do
-        { before_script: %w(ls pwd),
+        {
+          before_script: %w(ls pwd),
           image: 'ruby:2.2',
           default: {},
           services: ['postgres:9.1', 'mysql:5.5'],
           variables: { VAR: 'value' },
           after_script: ['make clean'],
-          stages: %w(build pages),
+          stages: %w(build pages release),
           cache: { key: 'k', untracked: true, paths: ['public/'] },
           rspec: { script: %w[rspec ls] },
-          spinach: { before_script: [], variables: {}, script: 'spinach' } }
+          spinach: { before_script: [], variables: {}, script: 'spinach' },
+          release: {
+            stage: 'release',
+            before_script: [],
+            after_script: [],
+            script: ["make changelog | tee release_changelog.txt"],
+            release: {
+              tag_name: 'v0.06',
+              name: "Release $CI_TAG_NAME",
+              description: "./release_changelog.txt"
+            }
+          }
+        }
       end
 
       describe '#compose!' do
@@ -87,7 +100,7 @@ describe Gitlab::Ci::Config::Entry::Root do
         describe '#stages_value' do
           context 'when stages key defined' do
             it 'returns array of stages' do
-              expect(root.stages_value).to eq %w[build pages]
+              expect(root.stages_value).to eq %w[build pages release]
             end
           end
 
@@ -105,8 +118,9 @@ describe Gitlab::Ci::Config::Entry::Root do
 
         describe '#jobs_value' do
           it 'returns jobs configuration' do
-            expect(root.jobs_value).to eq(
-              rspec: { name: :rspec,
+            expect(root.jobs_value.keys).to eq([:rspec, :spinach, :release])
+            expect(root.jobs_value[:rspec]).to eq(
+              { name: :rspec,
                        script: %w[rspec ls],
                        before_script: %w(ls pwd),
                        image: { name: 'ruby:2.2' },
@@ -116,8 +130,10 @@ describe Gitlab::Ci::Config::Entry::Root do
                        variables: {},
                        ignore: false,
                        after_script: ['make clean'],
-                       only: { refs: %w[branches tags] } },
-              spinach: { name: :spinach,
+                       only: { refs: %w[branches tags] } }
+            )
+            expect(root.jobs_value[:spinach]).to eq(
+              { name: :spinach,
                          before_script: [],
                          script: %w[spinach],
                          image: { name: 'ruby:2.2' },
@@ -128,6 +144,20 @@ describe Gitlab::Ci::Config::Entry::Root do
                          ignore: false,
                          after_script: ['make clean'],
                          only: { refs: %w[branches tags] } }
+            )
+            expect(root.jobs_value[:release]).to eq(
+              { name: :release,
+                         stage: 'release',
+                         before_script: [],
+                         script: ["make changelog | tee release_changelog.txt"],
+                         release: { name: "Release $CI_TAG_NAME", tag_name: 'v0.06', description: "./release_changelog.txt" },
+                         image: { name: "ruby:2.2" },
+                         services: [{ name: "postgres:9.1" }, { name: "mysql:5.5" }],
+                         cache: { key: "k", untracked: true, paths: ["public/"], policy: "pull-push" },
+                         only: { refs: %w(branches tags) },
+                         variables: {},
+                         after_script: [],
+                         ignore: false }
             )
           end
         end
@@ -261,7 +291,7 @@ describe Gitlab::Ci::Config::Entry::Root do
     # despite the fact, that key is present. See issue #18775 for more
     # details.
     #
-    context 'when entires specified but not defined' do
+    context 'when entries are specified but not defined' do
       before do
         root.compose!
       end

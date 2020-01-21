@@ -160,7 +160,7 @@ It is possible to generate diagrams and flowcharts from text in GitLab using [Me
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/15107) in
 GitLab 10.3.
 
-Visit the [official page](https://mermaidjs.github.io/) for more details.
+Visit the [official page](https://mermaidjs.github.io/) for more details. If you are new to using Mermaid or need help identifying issues in your Mermaid code, the [Mermaid Live Editor](https://mermaid-js.github.io/mermaid-live-editor/) is a helpful tool for creating and resolving issues within Mermaid diagrams.
 
 In order to generate a diagram or flowchart, you should write your text inside the `mermaid` block:
 
@@ -275,7 +275,7 @@ In GitLab, front matter is only used in Markdown files and wiki pages, not the o
 places where Markdown formatting is supported. It must be at the very top of the document,
 and must be between delimiters, as explained below.
 
-The following delimeters are supported:
+The following delimiters are supported:
 
 - YAML (`---`):
 
@@ -407,6 +407,7 @@ GFM will recognize the following:
 | merge request                   | `!123`                     | `namespace/project!123`                 | `project!123`                  |
 | snippet                         | `$123`                     | `namespace/project$123`                 | `project$123`                  |
 | epic **(ULTIMATE)**             | `&123`                     | `group1/subgroup&123`                   |                                |
+| design **(PREMIUM)**            | `#123[file.jpg]` or `#123["file.png"]` | `group1/subgroup#123[file.png]`         | `project#123[file.png]`         |
 | label by ID                     | `~123`                     | `namespace/project~123`                 | `project~123`                  |
 | one-word label by name          | `~bug`                     | `namespace/project~bug`                 | `project~bug`                  |
 | multi-word label by name        | `~"feature request"`       | `namespace/project~"feature request"`   | `project~"feature request"`    |
@@ -601,7 +602,7 @@ Inline `code` has `back-ticks around` it.
 ---
 
 Similarly, a whole block of code can be fenced with triple backticks ```` ``` ````,
-triple tildes (`~~~`), or indended 4 or more spaces to achieve a similar effect for
+triple tildes (`~~~`), or indented 4 or more spaces to achieve a similar effect for
 a larger body of code.
 
 ~~~
@@ -773,17 +774,33 @@ do*this*and*do*that*and*another thing
 
 ### Footnotes
 
-Footnotes add a link to a note rendered at the end of a Markdown file:
+Footnotes add a link to a note that will be rendered at the end of a Markdown file.
+
+To make a footnote, you need both a reference tag and a separate line (anywhere in the file) with the note content.
+
+Regardless of the tag names, the relative order of the reference tags determines the rendered numbering.
 
 ```markdown
-You can add footnotes to your text as follows.[^1]
+A footnote reference tag looks like this:[^1]
 
-[^1]: This is my awesome footnote (later in file).
+[^1]: This is the contents of a footnote.
+
+Reference tags can use letters and other characters.[^footnote-note]
+
+[^footnote-note]: Avoid using lowercase `w` or an underscore (`_`)
+in your footnote tag name until an
+[upstream bug](https://gitlab.com/gitlab-org/gitlab/issues/24423) is resolved.
 ```
 
-You can add footnotes to your text as follows.[^1]
+A footnote reference tag looks like this:[^1]
 
-[^1]: This is my awesome footnote (later in file).
+[^1]: This is the contents of a footnote.
+
+Reference tags can use letters and other characters.[^footnote-note]
+
+[^footnote-note]: Avoid using lowercase `w` or an underscore (`_`)
+in your footnote tag name until an
+[upstream bug](https://gitlab.com/gitlab-org/gitlab/issues/24423) is resolved.
 
 ### Headers
 

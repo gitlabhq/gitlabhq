@@ -50,6 +50,10 @@ module ProjectFeaturesCompatibility
     write_feature_attribute_string(:merge_requests_access_level, value)
   end
 
+  def forking_access_level=(value)
+    write_feature_attribute_string(:forking_access_level, value)
+  end
+
   def issues_access_level=(value)
     write_feature_attribute_string(:issues_access_level, value)
   end

@@ -856,9 +856,10 @@ describe QuickActions::InterpretService do
     end
 
     context 'only group milestones available' do
-      let(:group) { create(:group) }
+      let(:ancestor_group) { create(:group) }
+      let(:group) { create(:group, parent: ancestor_group) }
       let(:project) { create(:project, :public, namespace: group) }
-      let(:milestone) { create(:milestone, group: group, title: '10.0') }
+      let(:milestone) { create(:milestone, group: ancestor_group, title: '10.0') }
 
       it_behaves_like 'milestone command' do
         let(:content) { "/milestone %#{milestone.title}" }

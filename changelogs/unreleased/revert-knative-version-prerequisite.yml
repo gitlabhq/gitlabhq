@@ -1,0 +1,5 @@
+---
+title: Reverts Add RBAC permissions for getting knative version
+merge_request: 22560
+author:
+type: fixed

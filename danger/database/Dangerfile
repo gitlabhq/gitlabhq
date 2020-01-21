@@ -20,8 +20,8 @@ changes are reviewed, take the following steps:
 
 1. Ensure the merge request has ~database and ~"database::review pending" labels.
    If the merge request modifies database files, Danger will do this for you.
-1. Use the [Database changes checklist](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/merge_request_templates/Database%20changes.md)
-   template or add the appropriate items to the MR description.
+1. Prepare your MR for database review according to the
+   [docs](https://docs.gitlab.com/ee/development/database_review.html#how-to-prepare-the-merge-request-for-a-database-review).
 1. Assign and mention the database reviewer suggested by Reviewer Roulette.
 MSG
 

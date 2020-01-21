@@ -4,12 +4,9 @@ module QA
   context 'Plan' do
     describe 'Close issue' do
       let(:issue) do
-        Resource::Issue.fabricate_via_api! do |issue|
-          issue.title = 'Issue to be closed via pushing a commit'
-        end
+        Resource::Issue.fabricate_via_api!
       end
 
-      let(:project) { issue.project }
       let(:issue_id) { issue.api_response[:iid] }
 
       before do
@@ -27,7 +24,7 @@ module QA
         issue.visit!
 
         Page::Project::Issue::Show.perform do |show|
-          reopen_issue_button_visible = show.wait(reload: true) do
+          reopen_issue_button_visible = show.wait_until(reload: true) do
             show.has_element?(:reopen_issue_button, wait: 1.0)
           end
           expect(reopen_issue_button_visible).to be_truthy
@@ -39,7 +36,7 @@ module QA
           push.commit_message = commit_message
           push.new_branch = new_branch
           push.file_content = commit_message
-          push.project = project
+          push.project = issue.project
         end
       end
     end

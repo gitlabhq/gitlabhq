@@ -92,6 +92,7 @@ describe CacheMarkdownField, :clean_gitlab_redis_cache do
 
     describe '#latest_cached_markdown_version' do
       let(:thing) { klass.new }
+
       subject { thing.latest_cached_markdown_version }
 
       it 'returns default version' do
@@ -151,6 +152,7 @@ describe CacheMarkdownField, :clean_gitlab_redis_cache do
 
     describe '#banzai_render_context' do
       let(:thing) { klass.new(title: markdown, title_html: html, cached_markdown_version: cache_version) }
+
       subject(:context) { thing.banzai_render_context(:title) }
 
       it 'sets project to nil if the object lacks a project' do

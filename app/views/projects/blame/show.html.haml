@@ -20,8 +20,14 @@
                 .commit-row-title
                   %span.item-title.str-truncated-100
                     = link_to commit.title, project_commit_path(@project, commit.id), class: "cdark", title: commit.title
-                  .float-right
-                    = link_to commit.short_id, project_commit_path(@project, commit), class: "commit-sha"
+                  %span
+                    - previous_commit_id = commit.parent_id
+                    - if previous_commit_id
+                      = link_to project_blame_path(@project, tree_join(previous_commit_id, @path)),
+                                title: _('View blame prior to this change'),
+                                aria: { label: _('View blame prior to this change') },
+                                data: { toggle: 'tooltip', placement: 'right', container: 'body' } do
+                        = sprite_icon('doc-versions', size: 16, css_class: 'doc-versions align-text-bottom')
                   &nbsp;
                 .light
                   = commit_author_link(commit, avatar: false)

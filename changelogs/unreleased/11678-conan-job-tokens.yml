@@ -1,0 +1,5 @@
+---
+title: Allow CI_JOB_TOKENS for Conan package registry authentication
+merge_request: 22184
+author:
+type: added

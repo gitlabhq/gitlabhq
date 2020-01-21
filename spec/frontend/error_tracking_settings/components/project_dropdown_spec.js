@@ -66,6 +66,8 @@ describe('error tracking settings project dropdown', () => {
   describe('populated project list', () => {
     beforeEach(() => {
       wrapper.setProps({ projects: _.clone(projectList), hasProjects: true });
+
+      return wrapper.vm.$nextTick();
     });
 
     it('renders the dropdown', () => {
@@ -84,6 +86,7 @@ describe('error tracking settings project dropdown', () => {
 
     beforeEach(() => {
       wrapper.setProps({ projects: _.clone(projectList), selectedProject, hasProjects: true });
+      return wrapper.vm.$nextTick();
     });
 
     it('does not show helper text', () => {
@@ -99,6 +102,7 @@ describe('error tracking settings project dropdown', () => {
         selectedProject: staleProject,
         isProjectInvalid: true,
       });
+      return wrapper.vm.$nextTick();
     });
 
     it('displays a error', () => {

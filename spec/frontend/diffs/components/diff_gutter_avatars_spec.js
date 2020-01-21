@@ -1,8 +1,7 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import DiffGutterAvatars from '~/diffs/components/diff_gutter_avatars.vue';
 import discussionsMockData from '../mock_data/diff_discussions';
 
-const localVue = createLocalVue();
 const getDiscussionsMockData = () => [Object.assign({}, discussionsMockData)];
 
 describe('DiffGutterAvatars', () => {
@@ -14,12 +13,9 @@ describe('DiffGutterAvatars', () => {
 
   const createComponent = (props = {}) => {
     wrapper = shallowMount(DiffGutterAvatars, {
-      localVue,
       propsData: {
         ...props,
       },
-      sync: false,
-      attachToDocument: true,
     });
   };
 
@@ -42,7 +38,9 @@ describe('DiffGutterAvatars', () => {
     it('should emit toggleDiscussions event on button click', () => {
       findCollapseButton().trigger('click');
 
-      expect(wrapper.emitted().toggleLineDiscussions).toBeTruthy();
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.emitted().toggleLineDiscussions).toBeTruthy();
+      });
     });
   });
 
@@ -72,13 +70,17 @@ describe('DiffGutterAvatars', () => {
         .at(0)
         .trigger('click');
 
-      expect(wrapper.emitted().toggleLineDiscussions).toBeTruthy();
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.emitted().toggleLineDiscussions).toBeTruthy();
+      });
     });
 
     it('should emit toggleDiscussions event on more count text click', () => {
       findMoreCount().trigger('click');
 
-      expect(wrapper.emitted().toggleLineDiscussions).toBeTruthy();
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.emitted().toggleLineDiscussions).toBeTruthy();
+      });
     });
   });
 

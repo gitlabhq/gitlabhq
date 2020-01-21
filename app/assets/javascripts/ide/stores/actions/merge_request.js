@@ -141,7 +141,7 @@ export const getMergeRequestVersions = (
   });
 
 export const openMergeRequest = (
-  { dispatch, state },
+  { dispatch, state, getters },
   { projectId, targetProjectId, mergeRequestId } = {},
 ) =>
   dispatch('getMergeRequestData', {
@@ -152,17 +152,18 @@ export const openMergeRequest = (
     .then(mr => {
       dispatch('setCurrentBranchId', mr.source_branch);
 
-      // getFiles needs to be called after getting the branch data
-      // since files are fetched using the last commit sha of the branch
       return dispatch('getBranchData', {
         projectId,
         branchId: mr.source_branch,
-      }).then(() =>
-        dispatch('getFiles', {
+      }).then(() => {
+        const branch = getters.findBranch(projectId, mr.source_branch);
+
+        return dispatch('getFiles', {
           projectId,
           branchId: mr.source_branch,
-        }),
-      );
+          ref: branch.commit.id,
+        });
+      });
     })
     .then(() =>
       dispatch('getMergeRequestVersions', {

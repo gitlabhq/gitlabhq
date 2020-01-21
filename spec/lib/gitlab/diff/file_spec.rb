@@ -347,6 +347,16 @@ describe Gitlab::Diff::File do
   end
 
   describe '#simple_viewer' do
+    context 'when the file is collapsed' do
+      before do
+        allow(diff_file).to receive(:collapsed?).and_return(true)
+      end
+
+      it 'returns a Collapsed viewer' do
+        expect(diff_file.simple_viewer).to be_a(DiffViewer::Collapsed)
+      end
+    end
+
     context 'when the file is not diffable' do
       before do
         allow(diff_file).to receive(:diffable?).and_return(false)

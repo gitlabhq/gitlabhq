@@ -11,7 +11,7 @@ describe 'projects/commit/branches.html.haml' do
 
   context 'when branches and tags are available' do
     before do
-      assign(:branches, ['master', 'test-branch'])
+      assign(:branches, %w[master test-branch])
       assign(:branches_limit_exceeded, false)
       assign(:tags, ['tag1'])
       assign(:tags_limit_exceeded, false)
@@ -35,7 +35,7 @@ describe 'projects/commit/branches.html.haml' do
 
   context 'when branches are available but no tags' do
     before do
-      assign(:branches, ['master', 'test-branch'])
+      assign(:branches, %w[master test-branch])
       assign(:branches_limit_exceeded, false)
       assign(:tags, [])
       assign(:tags_limit_exceeded, true)

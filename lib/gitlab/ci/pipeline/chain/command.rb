@@ -10,7 +10,7 @@ module Gitlab
           :trigger_request, :schedule, :merge_request, :external_pull_request,
           :ignore_skip_ci, :save_incompleted,
           :seeds_block, :variables_attributes, :push_options,
-          :chat_data, :allow_mirror_update,
+          :chat_data, :allow_mirror_update, :bridge,
           # These attributes are set by Chains during processing:
           :config_content, :config_processor, :stage_seeds
         ) do
@@ -20,12 +20,6 @@ module Gitlab
             params.each do |key, value|
               self[key] = value
             end
-          end
-
-          def uses_unsupported_legacy_trigger?
-            trigger_request.present? &&
-              trigger_request.trigger.legacy? &&
-              !trigger_request.trigger.supports_legacy_tokens?
           end
 
           def branch_exists?

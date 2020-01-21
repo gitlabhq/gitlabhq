@@ -50,6 +50,7 @@ export function initIde(el, options = {}) {
       });
       this.setInitialData({
         clientsidePreviewEnabled: parseBoolean(el.dataset.clientsidePreviewEnabled),
+        renderWhitespaceInCode: parseBoolean(el.dataset.renderWhitespaceInCode),
       });
     },
     methods: {

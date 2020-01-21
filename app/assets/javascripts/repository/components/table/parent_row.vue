@@ -1,5 +1,10 @@
 <script>
+import { GlLoadingIcon } from '@gitlab/ui';
+
 export default {
+  components: {
+    GlLoadingIcon,
+  },
   props: {
     commitRef: {
       type: String,
@@ -9,13 +14,21 @@ export default {
       type: String,
       required: true,
     },
+    loadingPath: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   computed: {
-    parentRoute() {
+    parentPath() {
       const splitArray = this.path.split('/');
       splitArray.pop();
 
-      return { path: `/tree/${this.commitRef}/${splitArray.join('/')}` };
+      return splitArray.join('/');
+    },
+    parentRoute() {
+      return { path: `/tree/${this.commitRef}/${this.parentPath}` };
     },
   },
   methods: {
@@ -29,7 +42,13 @@ export default {
 <template>
   <tr class="tree-item">
     <td colspan="3" class="tree-item-file-name" @click.self="clickRow">
-      <router-link :to="parentRoute" :aria-label="__('Go to parent')">
+      <gl-loading-icon
+        v-if="parentPath === loadingPath"
+        size="sm"
+        inline
+        class="d-inline-block align-text-bottom"
+      />
+      <router-link v-else :to="parentRoute" :aria-label="__('Go to parent')">
         ..
       </router-link>
     </td>

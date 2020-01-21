@@ -396,6 +396,20 @@ describe Gitlab::Database do
     end
   end
 
+  describe '.exists?' do
+    it 'returns true if `ActiveRecord::Base.connection` succeeds' do
+      expect(ActiveRecord::Base).to receive(:connection)
+
+      expect(described_class.exists?).to be(true)
+    end
+
+    it 'returns false if `ActiveRecord::Base.connection` fails' do
+      expect(ActiveRecord::Base).to receive(:connection) { raise ActiveRecord::NoDatabaseError, 'broken' }
+
+      expect(described_class.exists?).to be(false)
+    end
+  end
+
   describe '#true_value' do
     it 'returns correct value' do
       expect(described_class.true_value).to eq "'t'"

@@ -143,7 +143,7 @@ module SearchHelper
 
   # Autocomplete results for the current project, if it's defined
   def project_autocomplete
-    if @project && @project.repository.exists? && @project.repository.root_ref
+    if @project && @project.repository.root_ref
       ref = @ref || @project.repository.root_ref
 
       [

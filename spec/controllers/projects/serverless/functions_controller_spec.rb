@@ -7,9 +7,9 @@ describe Projects::Serverless::FunctionsController do
   include ReactiveCachingHelpers
 
   let(:user) { create(:user) }
-  let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+  let(:project) { create(:project, :repository) }
+  let(:cluster) { create(:cluster, :project, :provided_by_gcp, projects: [project]) }
   let(:service) { cluster.platform_kubernetes }
-  let(:project) { cluster.project }
   let(:environment) { create(:environment, project: project) }
   let!(:deployment) { create(:deployment, :success, environment: environment, cluster: cluster) }
   let(:knative_services_finder) { environment.knative_services_finder }

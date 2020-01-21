@@ -1,19 +1,15 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import SingleStatChart from '~/monitoring/components/charts/single_stat.vue';
 import { graphDataPrometheusQuery } from '../../mock_data';
-
-const localVue = createLocalVue();
 
 describe('Single Stat Chart component', () => {
   let singleStatChart;
 
   beforeEach(() => {
-    singleStatChart = shallowMount(localVue.extend(SingleStatChart), {
+    singleStatChart = shallowMount(SingleStatChart, {
       propsData: {
         graphData: graphDataPrometheusQuery,
       },
-      sync: false,
-      localVue,
     });
   });
 

@@ -10,6 +10,11 @@ export default class PipelineService {
   }
 
   // eslint-disable-next-line class-methods-use-this
+  deleteAction(endpoint) {
+    return axios.delete(`${endpoint}.json`);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
   postAction(endpoint) {
     return axios.post(`${endpoint}.json`);
   }

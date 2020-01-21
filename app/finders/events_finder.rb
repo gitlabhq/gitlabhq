@@ -6,7 +6,7 @@ class EventsFinder
 
   MAX_PER_PAGE = 100
 
-  attr_reader :source, :params, :current_user
+  attr_reader :source, :params, :current_user, :scope
 
   requires_cross_project_access unless: -> { source.is_a?(Project) }, model: Event
 
@@ -15,6 +15,7 @@ class EventsFinder
   # Arguments:
   #   source - which user or project to looks for events on
   #   current_user - only return events for projects visible to this user
+  #   scope - return all events across a user's projects
   #   params:
   #     action: string
   #     target_type: string
@@ -27,11 +28,12 @@ class EventsFinder
   def initialize(params = {})
     @source = params.delete(:source)
     @current_user = params.delete(:current_user)
+    @scope = params.delete(:scope)
     @params = params
   end
 
   def execute
-    events = source.events
+    events = get_events
 
     events = by_current_user_access(events)
     events = by_action(events)
@@ -46,6 +48,12 @@ class EventsFinder
   end
 
   private
+
+  def get_events
+    return EventCollection.new(current_user.authorized_projects).all_project_events if scope == 'all'
+
+    source.events
+  end
 
   # rubocop: disable CodeReuse/ActiveRecord
   def by_current_user_access(events)

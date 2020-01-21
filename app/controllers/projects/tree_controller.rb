@@ -15,6 +15,10 @@ class Projects::TreeController < Projects::ApplicationController
   before_action :authorize_download_code!
   before_action :authorize_edit_tree!, only: [:create_dir]
 
+  before_action only: [:show] do
+    push_frontend_feature_flag(:vue_file_list_lfs_badge)
+  end
+
   def show
     return render_404 unless @repository.commit(@ref)
 
@@ -28,7 +32,8 @@ class Projects::TreeController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        lfs_blob_ids
+        lfs_blob_ids if Feature.disabled?(:vue_file_list, @project)
+
         @last_commit = @repository.last_commit_for_path(@commit.id, @tree.path) || @commit
       end
     end

@@ -19,3 +19,9 @@ type: index
 - [Send email confirmation on sign-up](user_email_confirmation.md)
 - [Security of running jobs](https://docs.gitlab.com/runner/security/)
 - [Proxying images](asset_proxy.md)
+
+## Securing your GitLab installation
+
+To make sure your GitLab instance is safe and secure, please consider implementing
+[Sign up restrictions](../user/admin_area/settings/sign_up_restrictions.md) to avoid
+malicious users creating accounts.

@@ -36,7 +36,8 @@
     "real_path": { "type": "string" },
     "issue_sidebar_endpoint": { "type": "string" },
     "toggle_subscription_endpoint": { "type": "string" },
-    "assignable_labels_endpoint": { "type": "string" }
+    "assignable_labels_endpoint": { "type": "string" },
+    "blocked": { "type": "boolean" }
   },
   "additionalProperties": false
 }

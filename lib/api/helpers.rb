@@ -4,6 +4,7 @@ module API
   module Helpers
     include Gitlab::Utils
     include Helpers::Pagination
+    include Helpers::PaginationStrategies
 
     SUDO_HEADER = "HTTP_SUDO"
     GITLAB_SHARED_SECRET_HEADER = "Gitlab-Shared-Secret"
@@ -30,6 +31,7 @@ module API
       check_unmodified_since!(last_updated)
 
       status 204
+      body false
 
       if block_given?
         yield resource
@@ -361,6 +363,10 @@ module API
 
     def no_content!
       render_api_error!('204 No Content', 204)
+    end
+
+    def created!
+      render_api_error!('201 Created', 201)
     end
 
     def accepted!

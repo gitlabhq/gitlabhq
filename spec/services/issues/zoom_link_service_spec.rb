@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 describe Issues::ZoomLinkService do
-  set(:user) { create(:user) }
-  set(:issue) { create(:issue) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:issue) { create(:issue) }
 
   let(:project) { issue.project }
   let(:service) { described_class.new(issue, user) }

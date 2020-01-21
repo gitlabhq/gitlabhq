@@ -54,14 +54,14 @@ describe Boards::Issues::MoveService do
     end
 
     describe '#execute_multiple' do
-      set(:group)  { create(:group) }
-      set(:user)   { create(:user) }
-      set(:project) { create(:project, namespace: group) }
-      set(:board1) { create(:board, group: group) }
-      set(:development) { create(:group_label, group: group, name: 'Development') }
-      set(:testing) { create(:group_label, group: group, name: 'Testing') }
-      set(:list1) { create(:list, board: board1, label: development, position: 0) }
-      set(:list2) { create(:list, board: board1, label: testing, position: 1) }
+      let_it_be(:group)  { create(:group) }
+      let_it_be(:user)   { create(:user) }
+      let_it_be(:project) { create(:project, namespace: group) }
+      let_it_be(:board1) { create(:board, group: group) }
+      let_it_be(:development) { create(:group_label, group: group, name: 'Development') }
+      let_it_be(:testing) { create(:group_label, group: group, name: 'Testing') }
+      let_it_be(:list1) { create(:list, board: board1, label: development, position: 0) }
+      let_it_be(:list2) { create(:list, board: board1, label: testing, position: 1) }
       let(:params) { { board_id: board1.id, from_list_id: list1.id, to_list_id: list2.id } }
 
       before do

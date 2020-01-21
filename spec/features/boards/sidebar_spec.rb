@@ -318,7 +318,9 @@ describe 'Issue Boards', :js do
         wait_for_requests
 
         click_link bug.title
-        within('.dropdown-menu-labels') { expect(page).to have_selector('.is-active', count: 3) }
+
+        wait_for_requests
+
         click_link regression.title
 
         wait_for_requests

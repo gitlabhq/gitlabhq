@@ -1,0 +1,5 @@
+---
+title: Fix for 500 when error stack trace is empty
+merge_request: 119205
+author:
+type: fixed

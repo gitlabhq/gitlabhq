@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :environment, class: Environment do
+  factory :environment, class: 'Environment' do
     sequence(:name) { |n| "environment#{n}" }
 
     association :project, :repository

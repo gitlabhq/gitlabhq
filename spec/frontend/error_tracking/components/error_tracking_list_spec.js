@@ -1,15 +1,7 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { createLocalVue, mount } from '@vue/test-utils';
 import Vuex from 'vuex';
-import {
-  GlEmptyState,
-  GlLoadingIcon,
-  GlTable,
-  GlLink,
-  GlFormInput,
-  GlDropdown,
-  GlDropdownItem,
-  GlPagination,
-} from '@gitlab/ui';
+import { GlEmptyState, GlLoadingIcon, GlFormInput, GlPagination } from '@gitlab/ui';
+import stubChildren from 'helpers/stub_children';
 import ErrorTrackingList from '~/error_tracking/components/error_tracking_list.vue';
 import errorsList from './list_mock.json';
 
@@ -32,27 +24,24 @@ describe('ErrorTrackingList', () => {
   function mountComponent({
     errorTrackingEnabled = true,
     userCanEnableErrorTracking = true,
-    sync = true,
-    stubs = {
-      'gl-link': GlLink,
-      'gl-table': GlTable,
-      'gl-pagination': GlPagination,
-      'gl-dropdown': GlDropdown,
-      'gl-dropdown-item': GlDropdownItem,
-    },
+    stubs = {},
   } = {}) {
-    wrapper = shallowMount(ErrorTrackingList, {
+    wrapper = mount(ErrorTrackingList, {
       localVue,
       store,
-      sync,
       propsData: {
         indexPath: '/path',
+        listPath: '/error_tracking',
+        projectPath: 'project/test',
         enableErrorTrackingLink: '/link',
         userCanEnableErrorTracking,
         errorTrackingEnabled,
         illustrationPath: 'illustration/path',
       },
-      stubs,
+      stubs: {
+        ...stubChildren(ErrorTrackingList),
+        ...stubs,
+      },
       data() {
         return { errorSearchQuery: 'search' };
       },
@@ -71,6 +60,8 @@ describe('ErrorTrackingList', () => {
       setEndpoint: jest.fn(),
       searchByQuery: jest.fn(),
       sortByField: jest.fn(),
+      fetchPaginatedResults: jest.fn(),
+      updateStatus: jest.fn(),
     };
 
     const state = {
@@ -121,7 +112,14 @@ describe('ErrorTrackingList', () => {
     beforeEach(() => {
       store.state.list.loading = false;
       store.state.list.errors = errorsList;
-      mountComponent();
+      mountComponent({
+        stubs: {
+          GlTable: false,
+          GlDropdown: false,
+          GlDropdownItem: false,
+          GlLink: false,
+        },
+      });
     });
 
     it('shows table', () => {
@@ -141,6 +139,18 @@ describe('ErrorTrackingList', () => {
         expect(errorTitle.at(index).attributes('href')).toEqual(
           expect.stringMatching(/error_tracking\/\d+\/details$/),
         );
+      });
+    });
+
+    it('each error in the list should have an ignore button', () => {
+      findErrorListRows().wrappers.forEach(row => {
+        expect(row.contains('glicon-stub[name="eye-slash"]')).toBe(true);
+      });
+    });
+
+    it('each error in the list should have a resolve button', () => {
+      findErrorListRows().wrappers.forEach(row => {
+        expect(row.contains('glicon-stub[name="check-circle"]')).toBe(true);
       });
     });
 
@@ -172,7 +182,13 @@ describe('ErrorTrackingList', () => {
       store.state.list.loading = false;
       store.state.list.errors = [];
 
-      mountComponent();
+      mountComponent({
+        stubs: {
+          GlTable: false,
+          GlDropdown: false,
+          GlDropdownItem: false,
+        },
+      });
     });
 
     it('shows empty table', () => {
@@ -186,7 +202,7 @@ describe('ErrorTrackingList', () => {
     });
 
     it('restarts polling', () => {
-      findRefreshLink().trigger('click');
+      findRefreshLink().vm.$emit('click');
       expect(actions.restartPolling).toHaveBeenCalled();
     });
   });
@@ -204,14 +220,70 @@ describe('ErrorTrackingList', () => {
     });
   });
 
+  describe('When the ignore button on an error is clicked', () => {
+    beforeEach(() => {
+      store.state.list.loading = false;
+      store.state.list.errors = errorsList;
+
+      mountComponent({
+        stubs: {
+          GlTable: false,
+          GlLink: false,
+          GlButton: false,
+        },
+      });
+    });
+
+    it('sends the "ignored" status and error ID', () => {
+      wrapper.find({ ref: 'ignoreError' }).trigger('click');
+      expect(actions.updateStatus).toHaveBeenCalledWith(
+        expect.anything(),
+        {
+          endpoint: '/project/test/-/error_tracking/3.json',
+          redirectUrl: '/error_tracking',
+          status: 'ignored',
+        },
+        undefined,
+      );
+    });
+  });
+
+  describe('When the resolve button on an error is clicked', () => {
+    beforeEach(() => {
+      store.state.list.loading = false;
+      store.state.list.errors = errorsList;
+
+      mountComponent({
+        stubs: {
+          GlTable: false,
+          GlLink: false,
+          GlButton: false,
+        },
+      });
+    });
+
+    it('sends "resolved" status and error ID', () => {
+      wrapper.find({ ref: 'resolveError' }).trigger('click');
+      expect(actions.updateStatus).toHaveBeenCalledWith(
+        expect.anything(),
+        {
+          endpoint: '/project/test/-/error_tracking/3.json',
+          redirectUrl: '/error_tracking',
+          status: 'resolved',
+        },
+        undefined,
+      );
+    });
+  });
+
   describe('When error tracking is disabled and user is not allowed to enable it', () => {
     beforeEach(() => {
       mountComponent({
         errorTrackingEnabled: false,
         userCanEnableErrorTracking: false,
         stubs: {
-          'gl-link': GlLink,
-          'gl-empty-state': GlEmptyState,
+          GlLink: false,
+          GlEmptyState: false,
         },
       });
     });
@@ -225,7 +297,12 @@ describe('ErrorTrackingList', () => {
 
   describe('recent searches', () => {
     beforeEach(() => {
-      mountComponent();
+      mountComponent({
+        stubs: {
+          GlDropdown: false,
+          GlDropdownItem: false,
+        },
+      });
     });
 
     it('shows empty message', () => {
@@ -237,11 +314,12 @@ describe('ErrorTrackingList', () => {
     it('shows items', () => {
       store.state.list.recentSearches = ['great', 'search'];
 
-      const dropdownItems = wrapper.findAll('.filtered-search-box li');
-
-      expect(dropdownItems.length).toBe(3);
-      expect(dropdownItems.at(0).text()).toBe('great');
-      expect(dropdownItems.at(1).text()).toBe('search');
+      return wrapper.vm.$nextTick().then(() => {
+        const dropdownItems = wrapper.findAll('.filtered-search-box li');
+        expect(dropdownItems.length).toBe(3);
+        expect(dropdownItems.at(0).text()).toBe('great');
+        expect(dropdownItems.at(1).text()).toBe('search');
+      });
     });
 
     describe('clear', () => {
@@ -256,22 +334,27 @@ describe('ErrorTrackingList', () => {
       it('is visible when list has items', () => {
         store.state.list.recentSearches = ['some', 'searches'];
 
-        expect(clearRecentButton().exists()).toBe(true);
-        expect(clearRecentButton().text()).toBe('Clear recent searches');
+        return wrapper.vm.$nextTick().then(() => {
+          expect(clearRecentButton().exists()).toBe(true);
+          expect(clearRecentButton().text()).toBe('Clear recent searches');
+        });
       });
 
       it('clears items on click', () => {
         store.state.list.recentSearches = ['some', 'searches'];
 
-        clearRecentButton().vm.$emit('click');
+        return wrapper.vm.$nextTick().then(() => {
+          clearRecentButton().vm.$emit('click');
 
-        expect(actions.clearRecentSearches).toHaveBeenCalledTimes(1);
+          expect(actions.clearRecentSearches).toHaveBeenCalledTimes(1);
+        });
       });
     });
   });
 
   describe('When pagination is not required', () => {
     beforeEach(() => {
+      store.state.list.loading = false;
       store.state.list.pagination = {};
       mountComponent();
     });
@@ -284,7 +367,12 @@ describe('ErrorTrackingList', () => {
   describe('When pagination is required', () => {
     describe('and the user is on the first page', () => {
       beforeEach(() => {
-        mountComponent({ sync: false });
+        store.state.list.loading = false;
+        mountComponent({
+          stubs: {
+            GlPagination: false,
+          },
+        });
       });
 
       it('shows a disabled Prev button', () => {
@@ -295,17 +383,24 @@ describe('ErrorTrackingList', () => {
     describe('and the user is not on the first page', () => {
       describe('and the previous button is clicked', () => {
         beforeEach(() => {
-          mountComponent({ sync: false });
+          store.state.list.loading = false;
+          mountComponent({
+            stubs: {
+              GlTable: false,
+              GlPagination: false,
+            },
+          });
           wrapper.setData({ pageValue: 2 });
+          return wrapper.vm.$nextTick();
         });
 
         it('fetches the previous page of results', () => {
           expect(wrapper.find('.prev-page-item').attributes('aria-disabled')).toBe(undefined);
           wrapper.vm.goToPrevPage();
-          expect(actions.startPolling).toHaveBeenCalledTimes(2);
-          expect(actions.startPolling).toHaveBeenLastCalledWith(
+          expect(actions.fetchPaginatedResults).toHaveBeenCalled();
+          expect(actions.fetchPaginatedResults).toHaveBeenLastCalledWith(
             expect.anything(),
-            '/path?cursor=previousCursor',
+            'previousCursor',
             undefined,
           );
         });
@@ -313,17 +408,18 @@ describe('ErrorTrackingList', () => {
 
       describe('and the next page button is clicked', () => {
         beforeEach(() => {
-          mountComponent({ sync: false });
+          store.state.list.loading = false;
+          mountComponent();
         });
 
         it('fetches the next page of results', () => {
           window.scrollTo = jest.fn();
           findPagination().vm.$emit('input', 2);
           expect(window.scrollTo).toHaveBeenCalledWith(0, 0);
-          expect(actions.startPolling).toHaveBeenCalledTimes(2);
-          expect(actions.startPolling).toHaveBeenLastCalledWith(
+          expect(actions.fetchPaginatedResults).toHaveBeenCalled();
+          expect(actions.fetchPaginatedResults).toHaveBeenLastCalledWith(
             expect.anything(),
-            '/path?cursor=nextCursor',
+            'nextCursor',
             undefined,
           );
         });

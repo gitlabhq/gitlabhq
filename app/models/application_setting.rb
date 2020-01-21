@@ -11,6 +11,7 @@ class ApplicationSetting < ApplicationRecord
   add_authentication_token_field :static_objects_external_storage_auth_token
 
   belongs_to :instance_administration_project, class_name: "Project"
+  belongs_to :instance_administrators_group, class_name: "Group"
 
   # Include here so it can override methods from
   # `add_authentication_token_field`
@@ -121,6 +122,11 @@ class ApplicationSetting < ApplicationRecord
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
 
+  validates :max_pages_size,
+            presence: true,
+            numericality: { only_integer: true, greater_than: 0,
+                            less_than: ::Gitlab::Pages::MAX_SIZE / 1.megabyte }
+
   validates :default_artifacts_expire_in, presence: true, duration: true
 
   validates :container_registry_token_expire_delay,
@@ -164,7 +170,11 @@ class ApplicationSetting < ApplicationRecord
 
   validates :gitaly_timeout_default,
             presence: true,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+            numericality: {
+              only_integer: true,
+              greater_than_or_equal_to: 0,
+              less_than_or_equal_to: Settings.gitlab.max_request_duration_seconds
+            }
 
   validates :gitaly_timeout_medium,
             presence: true,

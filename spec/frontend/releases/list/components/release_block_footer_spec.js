@@ -27,7 +27,6 @@ describe('Release block footer', () => {
         ...convertObjectPropsToCamelCase(releaseClone),
         ...props,
       },
-      sync: false,
     });
 
     return wrapper.vm.$nextTick();

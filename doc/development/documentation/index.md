@@ -208,7 +208,7 @@ available online on 2018-09-15, but, as the feature freeze date has passed, if
 the MR does not have a "pick into 11.3" label, the milestone has to be changed
 to 11.4 and it will be shipped with all GitLab packages only on 2018-10-22,
 with GitLab 11.4. Meaning, it will only be available under `/help` from GitLab
-11.4 onwards, but available on <https://docs.gitlab.com/> on the same day it was merged.
+11.4 onward, but available on <https://docs.gitlab.com/> on the same day it was merged.
 
 ### Linking to `/help`
 

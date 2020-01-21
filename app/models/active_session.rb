@@ -6,9 +6,11 @@ class ActiveSession
   SESSION_BATCH_SIZE = 200
   ALLOWED_NUMBER_OF_ACTIVE_SESSIONS = 100
 
+  attr_writer :session_id
+
   attr_accessor :created_at, :updated_at,
-    :session_id, :ip_address,
-    :browser, :os, :device_name, :device_type,
+    :ip_address, :browser, :os,
+    :device_name, :device_type,
     :is_impersonated
 
   def current?(session)
@@ -19,6 +21,11 @@ class ActiveSession
 
   def human_device_type
     device_type&.titleize
+  end
+
+  def public_id
+    encrypted_id = Gitlab::CryptoHelper.aes256_gcm_encrypt(session_id)
+    CGI.escape(encrypted_id)
   end
 
   def self.set(user, request)
@@ -68,6 +75,11 @@ class ActiveSession
     Gitlab::Redis::SharedState.with do |redis|
       destroy_sessions(redis, user, [session_id])
     end
+  end
+
+  def self.destroy_with_public_id(user, public_id)
+    session_id = decrypt_public_id(public_id)
+    destroy(user, session_id) unless session_id.nil?
   end
 
   def self.destroy_sessions(redis, user, session_ids)
@@ -146,9 +158,9 @@ class ActiveSession
     # remove sessions if there are more than ALLOWED_NUMBER_OF_ACTIVE_SESSIONS.
     sessions = active_session_entries(session_ids, user.id, redis)
     sessions.sort_by! {|session| session.updated_at }.reverse!
-    sessions = sessions.drop(ALLOWED_NUMBER_OF_ACTIVE_SESSIONS)
-    sessions = sessions.map { |session| session.session_id }
-    destroy_sessions(redis, user, sessions) if sessions.any?
+    destroyable_sessions = sessions.drop(ALLOWED_NUMBER_OF_ACTIVE_SESSIONS)
+    destroyable_session_ids = destroyable_sessions.map { |session| session.send :session_id } # rubocop:disable GitlabSecurity/PublicSend
+    destroy_sessions(redis, user, destroyable_session_ids) if destroyable_session_ids.any?
   end
 
   def self.cleaned_up_lookup_entries(redis, user)
@@ -167,4 +179,15 @@ class ActiveSession
 
     entries.compact
   end
+
+  private_class_method def self.decrypt_public_id(public_id)
+    decoded_id = CGI.unescape(public_id)
+    Gitlab::CryptoHelper.aes256_gcm_decrypt(decoded_id)
+  rescue
+    nil
+  end
+
+  private
+
+  attr_reader :session_id
 end

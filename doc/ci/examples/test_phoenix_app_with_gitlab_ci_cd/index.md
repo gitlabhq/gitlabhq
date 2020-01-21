@@ -10,7 +10,7 @@ last_updated: 2019-03-06
 
 # Testing a Phoenix application with GitLab CI/CD
 
-[Phoenix][phoenix-site] is a web development framework written in [Elixir][elixir-site], which is a
+[Phoenix](https://phoenixframework.org) is a web development framework written in [Elixir](https://elixir-lang.org), which is a
 functional language designed for productivity and maintainability that runs on the
 [Erlang VM](https://www.erlang.org). Erlang VM is really really fast and can handle very large numbers of
 simultaneous users.
@@ -27,8 +27,8 @@ and the GitLab UI.
 
 ### What is Phoenix?
 
-[Phoenix][phoenix-site] is a web development framework written in [Elixir][elixir-site] very useful
- to build fast, reliable, and high-performance applications, as it uses [Erlang VM](https://www.erlang.org).
+[Phoenix](https://phoenixframework.org) is a web development framework written in [Elixir](https://elixir-lang.org) it's very useful
+ for building fast, reliable, and high-performance applications, as it uses [Erlang VM](https://www.erlang.org).
 
 Many components and concepts are similar to Ruby on Rails or Python's Django. High developer
 productivity and high application performance are only a few advantages on learning how to use it.
@@ -45,27 +45,27 @@ Phoenix can run in any OS where Erlang is supported:
 - Fedora
 - Raspbian
 
-Check the [Phoenix learning guide][phoenix-learning-guide] for more information.
+Check the [Phoenix learning guide](https://hexdocs.pm/phoenix/learning.html) for more information.
 
 ### What is Elixir?
 
-[Elixir][elixir-site] is a dynamic, functional language created to use all the maturity of Erlang
+[Elixir](https://elixir-lang.org) is a dynamic, functional language created to use all the maturity of Erlang
 (30 years old!) in these days, in an easy way. It has similarities with Ruby, specially on syntax,
 so Ruby developers are quite excited with the rapid growing of Elixir. A full-stack Ruby developer
 can learn how to use Elixir and Phoenix in just a few weeks!
 
 In Elixir we have a command called `mix`, which is a helper to create projects, testing, run
-migrations and [much more][elixir-mix]. We'll use it later on in this tutorial.
+migrations and [much more](https://elixir-lang.org/getting-started/mix-otp/introduction-to-mix). We'll use it later on in this tutorial.
 
-Check the [Elixir documentation][elixir-docs] for more information.
+Check the [Elixir documentation](https://elixir-lang.org/getting-started/introduction) for more information.
 
 ## Requirements
 
 To follow this tutorial, you'll need to have installed:
 
-- Elixir [installation instructions][elixir-install]
-- Phoenix Framework [installation instructions][phoenix-install]
-- PostgreSQL (if you need to use MySQL server, check [Phoenix instructions][phoenix-mysql])
+- Elixir [installation instructions](https://elixir-lang.org/install)
+- Phoenix Framework [installation instructions](https://hexdocs.pm/phoenix/installation.html)
+- PostgreSQL (if you need to use MySQL server, check [Phoenix instructions](https://hexdocs.pm/phoenix/ecto.html#using-mysql))
 
 ### Create a new Phoenix project
 
@@ -100,7 +100,7 @@ this case, we'll only create an empty database.
 
 First, we need to navigate to our recently created project's directory, and then execute again
 `mix`. This time, `mix` will receive the parameter `ecto.create`, which is the task to create our
-new database. [Ecto][ecto] is the database wrapper for Elixir.
+new database. [Ecto](https://hexdocs.pm/ecto/Ecto.html) is the database wrapper for Elixir.
 
 When we do run `mix` the first time after creating our project, it will compile our files to
 bytecode, which will be interpreted by Erlang VM. In the next times, it will only compile our
@@ -123,7 +123,7 @@ The database for HelloGitlabCi.Repo has been created
 > **Note:**
 Phoenix assumes that our PostgreSQL database will have a `postgres` user account with the correct
 permissions and a password of `postgres`. If it's not your case, check
-[Ecto's instructions][ecto-repo].
+[Ecto's instructions](https://hexdocs.pm/ecto/Ecto.html#module-repositories).
 
 ### Start Phoenix server
 
@@ -151,7 +151,7 @@ point `localhost` to `127.0.0.1`.
 
 Great, now we have a local Phoenix Server running our app.
 
-Locally, our application is running in an `iex` session. [iex][iex] stands for Interactive Elixir.
+Locally, our application is running in an `iex` session. [iex](https://elixir-lang.org/getting-started/introduction.html#interactive-mode) stands for Interactive Elixir.
 In this interactive mode, we can type any Elixir expression and get its result. To exit `iex`, we
 need to press `Ctrl+C` twice. So, when we need to stop the Phoenix server, we have to hit `Ctrl+C`
 twice.
@@ -245,17 +245,16 @@ Our test was successful. It's time to push our files to GitLab.
 The first step is to create a new file called `.gitlab-ci.yml` in `hello_gitlab_ci` directory of our
 project.
 
-- The fastest and easiest way to do this, is to click on **Set up CI** on project's main page:
+- The easiest way to do this is to click on **Set up CI/CD** on project's main page:
 
-  ![Set up CI](img/setup-ci.png)
+  ![Set up CI](img/set_up_ci_v12_6.png)
 
-- On next screen, we can select a template ready to go. Click on **Apply a GitLab CI/CD Yaml
-  template** and select **Elixir**:
+- On the next screen, we can use a template with Elixir tests already included. Click on **Apply a template** and select **Elixir**:
 
-  ![Select template](img/select-template.png)
+  ![Select template](img/select_template_v12_6.png)
 
   This template file tells GitLab CI/CD about what we wish to do every time a new commit is made.
-  However, we have to adapt it to run a Phoenix app.
+  However, we have to adapt it slightly to run a Phoenix app.
 
 - The first line tells GitLab what Docker image will be used.
 
@@ -263,21 +262,21 @@ project.
   our application? This virtual machine must have all dependencies to run our application. This is
   where a Docker image is needed. The correct image will provide the entire system for us.
 
-  As a suggestion, you can use [trenpixster's elixir image][docker-image], which already has all
-  dependencies for Phoenix installed, such as Elixir, Erlang, NodeJS and PostgreSQL:
+  As we are focusing on testing (not deploying), you can use the [elixir:latest](https://hub.docker.com/_/elixir) docker image, which already has the
+  dependencies for running Phoenix tests installed, such as Elixir and Erlang:
 
   ```yml
-  image: trenpixster/elixir:latest
+  image: elixir:latest
   ```
 
-- At `services` session, we'll only use `postgres`, so we'll delete `mysql` and `redis` lines:
+- We'll only use `postgres`, so we can delete the `mysql` and `redis` lines from the `services` section:
 
   ```yml
   services:
     - postgres:latest
   ```
 
-- Now, we'll create a new entry called `variables`, before `before_script` session:
+- Now, we'll create a new section called `variables`, before the `before_script` section:
 
   ```yml
   variables:
@@ -288,54 +287,56 @@ project.
     MIX_ENV: "test"
   ```
 
-  Here, we are setting up the values for GitLab CI/CD authenticate into PostgreSQL, as we did on
-  `config/test.exs` earlier.
+  Above, we set up the values for GitLab CI/CD to authenticate into PostgreSQL, like we did in
+  `config/test.exs` earlier. The `POSTGRES_USER` and `POSTGRES_PASSWORD` values
+  are used by the `postgres` service to create a user with those credentials.
 
-- In `before_script` session, we'll add some commands to prepare everything to the test:
+- In the `before_script` section, we'll add some commands to prepare everything for the test:
 
   ```yml
   before_script:
-    - apt-get update && apt-get -y install postgresql-client
+    - mix local.rebar --force
     - mix local.hex --force
     - mix deps.get --only test
     - mix ecto.create
     - mix ecto.migrate
    ```
 
-  It's important to install `postgresql-client` to let GitLab CI/CD access PostgreSQL and create our
-  database with the login information provided earlier. More important is to respect the indentation,
-  to avoid syntax errors when running the build.
+  This ensures that [rebar3](https://www.rebar3.org) and [hex](https://hex.pm) are both installed
+  before attempting to fetch the dependencies that are required to run the tests. Next, the `postgres` db
+  is created and migrated with `ecto`, to ensure it's up-to-date.
 
-- And finally, we'll let `mix` session intact.
+- Finally, we'll leave the `mix` section unchanged.
 
-Let's take a look at the completed file after the editions:
+Let's take a look at the updated file after the changes:
 
 ```yml
-image: trenpixster/elixir:latest
+image: elixir:latest
 
 services:
   - postgres:latest
 
 variables:
-  POSTGRES_DB: test_test
+  POSTGRES_DB: hello_gitlab_ci_test
   POSTGRES_HOST: postgres
   POSTGRES_USER: postgres
   POSTGRES_PASSWORD: "postgres"
   MIX_ENV: "test"
 
 before_script:
-  - apt-get update && apt-get -y install postgresql-client
-  - mix deps.get
+  - mix local.rebar --force
+  - mix local.hex --force
+  - mix deps.get --only test
   - mix ecto.create
   - mix ecto.migrate
 
 mix:
   script:
-  - mix test
+    - mix test
 ```
 
 For safety, we can check if we get any syntax errors before submitting this file to GitLab. Copy the
-contents of `.gitlab-ci.yml` and paste it on [GitLab CI/CD Lint tool][ci-lint]. Please note that
+contents of `.gitlab-ci.yml` and paste it on [GitLab CI/CD Lint tool](https://gitlab.com/ci/lint). Please note that
 this link will only work for logged in users.
 
 ## Watching the build
@@ -374,7 +375,7 @@ see if our latest code is running without errors.
 When we finish this edition, GitLab will start another build and show a **build running** badge. It
 is expected, after all we just configured GitLab CI/CD to do this for every push! But you may think
 "Why run build and tests for simple things like editing README.md?" and it is a good question.
-For changes that don't affect your application, you can add the keyword [`[ci skip]`][skipping-jobs]
+For changes that don't affect your application, you can add the keyword [`[ci skip]`](../../yaml/README.md#skipping-jobs)
 to commit message and the build related to that commit will be skipped.
 
 In the end, we finally got our pretty green build succeeded badge! By outputting the result on the
@@ -389,34 +390,12 @@ code permanently working. GitLab CI/CD is a time saving powerful tool to help us
 organized and working.
 
 As we could see in this post, GitLab CI/CD is really really easy to configure and use. We have [many
-other reasons][ci-reasons] to keep using GitLab CI/CD. The benefits to our teams will be huge!
+other reasons](https://about.gitlab.com/blog/2015/02/03/7-reasons-why-you-should-be-using-ci/) to keep
+using GitLab CI/CD. The benefits to our teams will be huge!
 
 ## References
 
-- [GitLab CI/CD introductory guide][ci-guide]
-- [GitLab CI/CD full Documentation][ci-docs]
-- [GitLab Runners documentation][gitlab-runners]
-- [Using Docker images documentation][using-docker]
-- [Example project: Hello GitLab CI/CD on GitLab][hello-gitlab]
-
-[phoenix-site]: https://phoenixframework.org/ "Phoenix Framework"
-[phoenix-learning-guide]: https://hexdocs.pm/phoenix/learning.html "Phoenix Learning Guide"
-[phoenix-install]: https://hexdocs.pm/phoenix/installation.html "Phoenix Installation"
-[phoenix-mysql]: https://hexdocs.pm/phoenix/ecto.html#using-mysql "Phoenix with MySQL"
-[elixir-site]: https://elixir-lang.org/ "Elixir"
-[elixir-mix]: https://elixir-lang.org/getting-started/mix-otp/introduction-to-mix.html "Introduction to mix"
-[elixir-docs]: https://elixir-lang.org/getting-started/introduction.html "Elixir Documentation"
-[elixir-install]: https://elixir-lang.org/install.html "Elixir Installation"
-[ecto]: https://hexdocs.pm/ecto/Ecto.html "Ecto"
-[ecto-repo]: https://hexdocs.pm/ecto/Ecto.html#module-repositories "Ecto Repositories"
-[mix-ecto]: https://hexdocs.pm/ecto/Mix.Tasks.Ecto.Create.html "mix and Ecto"
-[iex]: https://elixir-lang.org/getting-started/introduction.html#interactive-mode "Interactive Mode"
-[ci-lint]: https://gitlab.com/ci/lint "CI Lint Tool"
-[ci-reasons]: https://about.gitlab.com/blog/2015/02/03/7-reasons-why-you-should-be-using-ci/ "7 Reasons Why You Should Be Using CI"
-[ci-guide]: https://about.gitlab.com/blog/2015/12/14/getting-started-with-gitlab-and-gitlab-ci/ "Getting Started With GitLab And GitLab CI/CD"
-[ci-docs]: ../../README.md "GitLab CI/CD Documentation"
-[skipping-jobs]: ../../yaml/README.md#skipping-jobs "Skipping Jobs"
-[gitlab-runners]: ../../runners/README.md "GitLab Runners Documentation"
-[docker-image]: https://hub.docker.com/r/trenpixster/elixir/ "Elixir Docker Image"
-[using-docker]: ../../docker/using_docker_images.md "Using Docker Images"
-[hello-gitlab]: https://gitlab.com/Hostert/hello_gitlab_ci "Hello GitLab CI/CD"
+- [GitLab CI/CD introductory guide](https://about.gitlab.com/blog/2015/12/14/getting-started-with-gitlab-and-gitlab-ci)
+- [GitLab CI/CD full Documentation](../../README.md)
+- [GitLab Runners documentation](../../runners/README.md)
+- [Using Docker images documentation](../../docker/using_docker_images.md)

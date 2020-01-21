@@ -9,7 +9,7 @@
   image: alpine:edge
   stage: sync
   before_script:
-    - apk add --no-cache --update curl bash
+    - apk add --no-cache --update curl bash jq
   after_script: []
   script:
     - bash scripts/sync-stable-branch.sh

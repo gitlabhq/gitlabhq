@@ -14,7 +14,6 @@ describe('File Icon component', () => {
 
   const createComponent = (props = {}) => {
     wrapper = shallowMount(FileIcon, {
-      sync: false,
       propsData: { ...props },
     });
   };

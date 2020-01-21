@@ -8,7 +8,7 @@ class Projects::CommitController < Projects::ApplicationController
   include CreatesCommit
   include DiffForPath
   include DiffHelper
-  include SourcegraphGon
+  include SourcegraphDecorator
 
   # Authorize
   before_action :require_non_empty_project
@@ -151,7 +151,7 @@ class Projects::CommitController < Projects::ApplicationController
     @diffs = commit.diffs(opts)
     @notes_count = commit.notes.count
 
-    @environment = EnvironmentsFinder.new(@project, current_user, commit: @commit).execute.last
+    @environment = EnvironmentsFinder.new(@project, current_user, commit: @commit, find_latest: true).execute.last
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

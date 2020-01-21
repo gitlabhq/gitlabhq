@@ -895,4 +895,50 @@ describe ApplicationController do
       end
     end
   end
+
+  context '#set_current_context' do
+    controller(described_class) do
+      def index
+        Labkit::Context.with_context do |context|
+          render json: context.to_h
+        end
+      end
+    end
+
+    let_it_be(:user) { create(:user) }
+
+    before do
+      sign_in(user)
+    end
+
+    it 'does not break anything when no group or project method is defined' do
+      get :index
+
+      expect(response).to have_gitlab_http_status(:success)
+    end
+
+    it 'sets the username in the context when signed in' do
+      get :index
+
+      expect(json_response['meta.user']).to eq(user.username)
+    end
+
+    it 'sets the group if it was available' do
+      group = build_stubbed(:group)
+      controller.instance_variable_set(:@group, group)
+
+      get :index, format: :json
+
+      expect(json_response['meta.root_namespace']).to eq(group.path)
+    end
+
+    it 'sets the project if one was available' do
+      project = build_stubbed(:project)
+      controller.instance_variable_set(:@project, project)
+
+      get :index, format: :json
+
+      expect(json_response['meta.project']).to eq(project.full_path)
+    end
+  end
 end

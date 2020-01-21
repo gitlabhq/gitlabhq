@@ -1,10 +1,8 @@
 <script>
-import Icon from '~/vue_shared/components/icon.vue';
 import ItemButton from './button.vue';
 
 export default {
   components: {
-    Icon,
     ItemButton,
   },
   props: {

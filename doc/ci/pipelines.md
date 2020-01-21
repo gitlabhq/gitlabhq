@@ -246,6 +246,13 @@ Pipelines for different projects can be combined and visualized together.
 
 For more information, see [Multi-project pipelines](multi_project_pipelines.md).
 
+## Parent-child pipelines
+
+Complex pipelines can be broken down into one parent pipeline that can trigger
+multiple child sub-pipelines, which all run in the same project and with the same SHA.
+
+For more information, see [Parent-Child pipelines](parent_child_pipelines.md).
+
 ## Working with pipelines
 
 In general, pipelines are executed automatically and require no intervention once created.
@@ -305,12 +312,14 @@ For example, the query string
 ### Accessing pipelines
 
 You can find the current and historical pipeline runs under your project's
-**CI/CD > Pipelines** page. Clicking on a pipeline will show the jobs that were run for
-that pipeline.
+**CI/CD > Pipelines** page. You can also access pipelines for a merge request by navigating
+to its **Pipelines** tab.
 
 ![Pipelines index page](img/pipelines_index.png)
 
-You can also access pipelines for a merge request by navigating to its **Pipelines** tab.
+Clicking on a pipeline will bring you to the **Pipeline Details** page and show
+the jobs that were run for that pipeline. From here you can cancel a running pipeline,
+retry jobs on a failed pipeline, or [delete a pipeline](#deleting-a-single-pipeline).
 
 ### Accessing individual jobs
 
@@ -409,6 +418,20 @@ This functionality is only available:
 
 - For users with at least Developer access.
 - If the the stage contains [manual actions](#manual-actions-from-pipeline-graphs).
+
+### Deleting a single pipeline
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/24851) in GitLab 12.7.
+
+Users with [owner permissions](../user/permissions.md) in a project can delete a pipeline
+by clicking on the pipeline in the **CI/CD > Pipelines** to get to the **Pipeline Details**
+page, then using the **Delete** button.
+
+![Pipeline Delete Button](img/pipeline-delete.png)
+
+CAUTION: **Warning:**
+Deleting a pipeline will expire all pipeline caches, and delete all related objects,
+such as builds, logs, artifacts, and triggers. **This action cannot be undone.**
 
 ## Most Recent Pipeline
 

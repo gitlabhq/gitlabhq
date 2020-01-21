@@ -1,0 +1,5 @@
+---
+title: Add internal API to update Sentry error status
+merge_request: 22454
+author:
+type: added

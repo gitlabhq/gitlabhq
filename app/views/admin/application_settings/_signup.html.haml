@@ -7,6 +7,8 @@
         = f.check_box :signup_enabled, class: 'form-check-input'
         = f.label :signup_enabled, class: 'form-check-label' do
           Sign-up enabled
+          .form-text.text-muted
+            = _("When enabled, any user visiting %{host} will be able to create an account.") % { host: "#{new_user_session_url(host: Gitlab.config.gitlab.host)}" }
     .form-group
       .form-check
         = f.check_box :send_user_confirmation_email, class: 'form-check-input'

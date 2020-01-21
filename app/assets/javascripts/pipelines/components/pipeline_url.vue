@@ -2,7 +2,6 @@
 import { GlLink, GlTooltipDirective } from '@gitlab/ui';
 import _ from 'underscore';
 import { __, sprintf } from '~/locale';
-import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import popover from '~/vue_shared/directives/popover';
 
 const popoverTitle = sprintf(
@@ -17,7 +16,6 @@ const popoverTitle = sprintf(
 
 export default {
   components: {
-    UserAvatarLink,
     GlLink,
   },
   directives: {

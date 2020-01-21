@@ -18,10 +18,10 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/redis/cache')
     require_dependency Rails.root.join('lib/gitlab/redis/queues')
     require_dependency Rails.root.join('lib/gitlab/redis/shared_state')
-    require_dependency Rails.root.join('lib/gitlab/request_context')
     require_dependency Rails.root.join('lib/gitlab/current_settings')
     require_dependency Rails.root.join('lib/gitlab/middleware/read_only')
     require_dependency Rails.root.join('lib/gitlab/middleware/basic_health_check')
+    require_dependency Rails.root.join('lib/gitlab/runtime')
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -165,7 +165,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/xterm.css"
     config.assets.precompile << "performance_bar.css"
     config.assets.precompile << "lib/ace.js"
-    config.assets.precompile << "test.css"
+    config.assets.precompile << "disable_animations.css"
     config.assets.precompile << "snippets.css"
     config.assets.precompile << "locale/**/app.js"
     config.assets.precompile << "emoji_sprites.css"
@@ -228,13 +228,15 @@ module Gitlab
 
     # Allow access to GitLab API from other domains
     config.middleware.insert_before Warden::Manager, Rack::Cors do
+      headers_to_expose = %w[Link X-Total X-Total-Pages X-Per-Page X-Page X-Next-Page X-Prev-Page X-Gitlab-Blob-Id X-Gitlab-Commit-Id X-Gitlab-Content-Sha256 X-Gitlab-Encoding X-Gitlab-File-Name X-Gitlab-File-Path X-Gitlab-Last-Commit-Id X-Gitlab-Ref X-Gitlab-Size]
+
       allow do
         origins Gitlab.config.gitlab.url
         resource '/api/*',
           credentials: true,
           headers: :any,
           methods: :any,
-          expose: ['Link', 'X-Total', 'X-Total-Pages', 'X-Per-Page', 'X-Page', 'X-Next-Page', 'X-Prev-Page']
+          expose: headers_to_expose
       end
 
       # Cross-origin requests must not have the session cookie available
@@ -244,7 +246,7 @@ module Gitlab
           credentials: false,
           headers: :any,
           methods: :any,
-          expose: ['Link', 'X-Total', 'X-Total-Pages', 'X-Per-Page', 'X-Page', 'X-Next-Page', 'X-Prev-Page']
+          expose: headers_to_expose
       end
     end
 
@@ -255,7 +257,7 @@ module Gitlab
     caching_config_hash[:compress] = false
     caching_config_hash[:namespace] = Gitlab::Redis::Cache::CACHE_NAMESPACE
     caching_config_hash[:expires_in] = 2.weeks # Cache should not grow forever
-    if Sidekiq.server? || defined?(::Puma) # threaded context
+    if Gitlab::Runtime.multi_threaded?
       caching_config_hash[:pool_size] = Gitlab::Redis::Cache.pool_size
       caching_config_hash[:pool_timeout] = 1
     end

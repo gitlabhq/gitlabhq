@@ -13,8 +13,11 @@ module Ci
     belongs_to :pipeline
 
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :stage_id
+    has_many :processables, class_name: 'Ci::Processable', foreign_key: :stage_id
     has_many :builds, foreign_key: :stage_id
     has_many :bridges, foreign_key: :stage_id
+
+    scope :ordered, -> { order(position: :asc) }
 
     with_options unless: :importing? do
       validates :project, presence: true
@@ -39,8 +42,12 @@ module Ci
 
     state_machine :status, initial: :created do
       event :enqueue do
-        transition [:created, :preparing] => :pending
+        transition [:created, :waiting_for_resource, :preparing] => :pending
         transition [:success, :failed, :canceled, :skipped] => :running
+      end
+
+      event :request_resource do
+        transition any - [:waiting_for_resource] => :waiting_for_resource
       end
 
       event :prepare do
@@ -76,11 +83,11 @@ module Ci
       end
     end
 
-    def update_status
+    def set_status(new_status)
       retry_optimistic_lock(self) do
-        new_status = latest_stage_status.to_s
         case new_status
         when 'created' then nil
+        when 'waiting_for_resource' then request_resource
         when 'preparing' then prepare
         when 'pending' then enqueue
         when 'running' then run
@@ -95,6 +102,10 @@ module Ci
                 "Unknown status `#{new_status}`"
         end
       end
+    end
+
+    def update_legacy_status
+      set_status(latest_stage_status.to_s)
     end
 
     def groups

@@ -1,0 +1,69 @@
+$gray-border: 1px solid $border-color;
+
+.error-list {
+  .sort-control {
+    .btn {
+      padding-right: 2rem;
+    }
+
+    .gl-dropdown-caret {
+      position: absolute;
+      right: 0.5rem;
+      top: 0.5rem;
+    }
+  }
+
+  @include media-breakpoint-up(sm) {
+    .row-top {
+      border: $gray-border;
+      background-color: $gray-50;
+    }
+  }
+
+  @include media-breakpoint-down(xs) {
+    .table-row {
+      border: $gray-border;
+      border-radius: 4px;
+    }
+
+    .search-box {
+      border-top: $gray-border;
+      border-bottom: $gray-border;
+      background-color: $gray-50;
+    }
+
+    .table-col {
+      min-height: 68px;
+
+      &::before {
+        text-align: left !important;
+      }
+
+      &:first-child {
+        div {
+          padding: 0 !important;
+          align-items: flex-end;
+        }
+      }
+
+      &:last-child {
+        height: 64px;
+        background-color: $gray-normal;
+
+        &::before {
+          content: none !important;
+        }
+
+        div {
+          width: 100% !important;
+          padding: 0 !important;
+
+          a {
+            color: $blue-500;
+            border-color: $blue-500;
+          }
+        }
+      }
+    }
+  }
+}

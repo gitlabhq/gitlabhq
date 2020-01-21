@@ -5,8 +5,10 @@ require 'spec_helper'
 describe EventsFinder do
   let(:user) { create(:user) }
   let(:other_user) { create(:user) }
+
   let(:project1) { create(:project, :private, creator_id: user.id, namespace: user.namespace) }
   let(:project2) { create(:project, :private, creator_id: user.id, namespace: user.namespace) }
+
   let(:closed_issue) { create(:closed_issue, project: project1, author: user) }
   let(:opened_merge_request) { create(:merge_request, source_project: project2, author: user) }
   let!(:closed_issue_event) { create(:event, project: project1, author: user, target: closed_issue, action: Event::CLOSED, created_at: Date.new(2016, 12, 30)) }
@@ -15,6 +17,8 @@ describe EventsFinder do
   let(:opened_merge_request2) { create(:merge_request, source_project: project2, author: user) }
   let!(:closed_issue_event2) { create(:event, project: project1, author: user, target: closed_issue, action: Event::CLOSED, created_at: Date.new(2016, 2, 2)) }
   let!(:opened_merge_request_event2) { create(:event, project: project2, author: user, target: opened_merge_request, action: Event::CREATED, created_at: Date.new(2017, 2, 2)) }
+  let(:opened_merge_request3) { create(:merge_request, source_project: project1, author: other_user) }
+  let!(:other_developer_event) { create(:event, project: project1, author: other_user, target: opened_merge_request3, action: Event::CREATED) }
 
   let(:public_project) { create(:project, :public, creator_id: user.id, namespace: user.namespace) }
   let(:confidential_issue) { create(:closed_issue, confidential: true, project: public_project, author: user) }
@@ -52,6 +56,28 @@ describe EventsFinder do
       events = described_class.new(source: user, current_user: user).execute
 
       expect(events).to be_empty
+    end
+  end
+
+  context 'dashboard events' do
+    before do
+      project1.add_developer(other_user)
+    end
+
+    context 'scope is `all`' do
+      it 'includes activity of other users' do
+        events = described_class.new(source: user, current_user: user, scope: 'all').execute
+
+        expect(events).to include(other_developer_event)
+      end
+    end
+
+    context 'scope is not `all`' do
+      it 'does not include activity of other users' do
+        events = described_class.new(source: user, current_user: user, scope: '').execute
+
+        expect(events).not_to include(other_developer_event)
+      end
     end
   end
 

@@ -11,7 +11,9 @@ describe ImportIssuesCsvWorker do
 
   describe '#perform' do
     it 'calls #execute on Issues::ImportCsvService and destroys upload' do
-      expect_any_instance_of(Issues::ImportCsvService).to receive(:execute).and_return({ success: 5, errors: [], valid_file: true })
+      expect_next_instance_of(Issues::ImportCsvService) do |instance|
+        expect(instance).to receive(:execute).and_return({ success: 5, errors: [], valid_file: true })
+      end
 
       worker.perform(user.id, project.id, upload.id)
 

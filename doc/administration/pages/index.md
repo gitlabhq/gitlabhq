@@ -32,11 +32,11 @@ In the case of [custom domains](#custom-domains) (but not
 ports `80` and/or `443`. For that reason, there is some flexibility in the way
 which you can set it up:
 
-1. Run the Pages daemon in the same server as GitLab, listening on a secondary IP.
-1. Run the Pages daemon in a separate server. In that case, the
+- Run the Pages daemon in the same server as GitLab, listening on a **secondary IP**.
+- Run the Pages daemon in a [separate server](#running-gitlab-pages-on-a-separate-server). In that case, the
    [Pages path](#change-storage-path) must also be present in the server that
    the Pages daemon is installed, so you will have to share it via network.
-1. Run the Pages daemon in the same server as GitLab, listening on the same IP
+- Run the Pages daemon in the same server as GitLab, listening on the same IP
    but on different ports. In that case, you will have to proxy the traffic with
    a loadbalancer. If you choose that route note that you should use TCP load
    balancing for HTTPS. If you use TLS-termination (HTTPS-load balancing) the
@@ -182,7 +182,7 @@ The [GitLab Pages README](https://gitlab.com/gitlab-org/gitlab-pages#caveats) ha
 In addition to the wildcard domains, you can also have the option to configure
 GitLab Pages to work with custom domains. Again, there are two options here:
 support custom domains with and without TLS certificates. The easiest setup is
-that without TLS certificates. In either case, you'll need a secondary IP. If
+that without TLS certificates. In either case, you'll need a **secondary IP**. If
 you have IPv6 as well as IPv4 addresses, you can use them both.
 
 ### Custom domains
@@ -257,8 +257,8 @@ When adding a custom domain, users will be required to prove they own it by
 adding a GitLab-controlled verification code to the DNS records for that domain.
 
 If your userbase is private or otherwise trusted, you can disable the
-verification requirement. Navigate to `Admin area ➔ Settings` and uncheck
-**Require users to prove ownership of custom domains** in the Pages section.
+verification requirement. Navigate to **Admin Area > Settings > Preferences** and
+uncheck **Require users to prove ownership of custom domains** in the **Pages** section.
 This setting is enabled by default.
 
 ### Let's Encrypt integration
@@ -306,6 +306,27 @@ Pages access control is disabled by default. To enable it:
 
 1. [Reconfigure GitLab][reconfigure].
 1. Users can now configure it in their [projects' settings](../../user/project/pages/pages_access_control.md).
+
+#### Disabling public access to all Pages websites
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/32095) in GitLab 12.7.
+
+You can enforce [Access Control](#access-control) for all GitLab Pages websites hosted
+on your GitLab instance. By doing so, only logged-in users will have access to them.
+This setting overrides Access Control set by users in individual projects.
+
+This can be useful to preserve information published with Pages websites to the users
+of your instance only.
+To do that:
+
+1. Navigate to your instance's **Admin Area > Settings > Preferences** and expand **Pages** settings.
+1. Check the **Disable public access to Pages sites** checkbox.
+1. Click **Save changes**.
+
+CAUTION: **Warning:**
+This action will not make all currently public web-sites private until they redeployed.
+This issue among others will be resolved by
+[changing GitLab Pages configuration mechanism](https://gitlab.com/gitlab-org/gitlab-pages/issues/282).
 
 ### Running behind a proxy
 
@@ -395,9 +416,25 @@ Omnibus GitLab 11.1.
 
 ## Set maximum pages size
 
-The maximum size of the unpacked archive per project can be configured in the
-Admin area under the Application settings in the **Maximum size of pages (MB)**.
+You can configure the maximum size of the unpacked archive per project in
+**Admin Area > Settings > Preferences > Pages**, in **Maximum size of pages (MB)**.
 The default is 100MB.
+
+### Override maximum pages size per project or group **(PREMIUM ONLY)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/16610) in GitLab 12.7.
+
+To override the global maximum pages size for a specific project:
+
+1. Navigate to your project's **Settings > Pages** page.
+1. Edit the **Maximum size of pages**.
+1. Click **Save changes**.
+
+To override the global maximum pages size for a specific group:
+
+1. Navigate to your group's **Settings > General** page and expand **Pages**.
+1. Edit the **Maximum size of pages**.
+1. Click **Save changes**.
 
 ## Running GitLab Pages on a separate server
 

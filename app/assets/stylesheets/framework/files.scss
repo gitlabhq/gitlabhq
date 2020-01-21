@@ -207,6 +207,14 @@
           border-left-color: mix($blame-gray, $blame-cyan, $i / 4 * 100%);
         }
       }
+
+      .doc-versions {
+        color: $gray-600;
+
+        &:hover {
+          color: $gray-900;
+        }
+      }
     }
 
     &.logs {

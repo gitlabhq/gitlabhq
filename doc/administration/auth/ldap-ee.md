@@ -452,7 +452,7 @@ things to check to debug the situation.
   links by visiting the GitLab group, then **Settings dropdown > LDAP groups**.
 - Check that the user has an LDAP identity:
   1. Sign in to GitLab as an administrator user.
-  1. Navigate to **Admin area > Users**.
+  1. Navigate to **Admin Area > Users**.
   1. Search for the user
   1. Open the user, by clicking on their name. Do not click 'Edit'.
   1. Navigate to the **Identities** tab. There should be an LDAP identity with

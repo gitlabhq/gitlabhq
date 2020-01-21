@@ -113,6 +113,29 @@ describe GitlabRoutingHelper do
     end
   end
 
+  context 'artifacts' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:job) { create(:ci_build, project: project, name: 'test:job', artifacts_expire_at: 1.hour.from_now) }
+
+    describe '#fast_download_project_job_artifacts_path' do
+      it 'matches the Rails download path' do
+        expect(fast_download_project_job_artifacts_path(project, job)).to eq(download_project_job_artifacts_path(project, job))
+      end
+    end
+
+    describe '#fast_keep_project_job_artifacts_path' do
+      it 'matches the Rails keep path' do
+        expect(fast_keep_project_job_artifacts_path(project, job)).to eq(keep_project_job_artifacts_path(project, job))
+      end
+    end
+
+    describe '#fast_browse_project_job_artifacts_path' do
+      it 'matches the Rails browse path' do
+        expect(fast_browse_project_job_artifacts_path(project, job)).to eq(browse_project_job_artifacts_path(project, job))
+      end
+    end
+  end
+
   context 'snippets' do
     let_it_be(:personal_snippet) { create(:personal_snippet) }
     let_it_be(:project_snippet) { create(:project_snippet) }

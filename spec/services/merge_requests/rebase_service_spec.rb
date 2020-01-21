@@ -15,6 +15,7 @@ describe MergeRequests::RebaseService do
   end
   let(:project) { merge_request.project }
   let(:repository) { project.repository.raw }
+  let(:skip_ci) { false }
 
   subject(:service) { described_class.new(project, user, {}) }
 
@@ -115,7 +116,7 @@ describe MergeRequests::RebaseService do
     context 'valid params' do
       shared_examples_for 'a service that can execute a successful rebase' do
         before do
-          service.execute(merge_request)
+          service.execute(merge_request, skip_ci: skip_ci)
         end
 
         it 'rebases source branch' do
@@ -151,6 +152,12 @@ describe MergeRequests::RebaseService do
         before do
           stub_feature_flags(two_step_rebase: false)
         end
+
+        it_behaves_like 'a service that can execute a successful rebase'
+      end
+
+      context 'when skip_ci flag is set' do
+        let(:skip_ci) { true }
 
         it_behaves_like 'a service that can execute a successful rebase'
       end

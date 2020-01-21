@@ -31,9 +31,12 @@ class MergeRequest < ApplicationRecord
   belongs_to :source_project, class_name: "Project"
   belongs_to :merge_user, class_name: "User"
 
-  has_internal_id :iid, scope: :target_project, init: ->(s) { s&.target_project&.merge_requests&.maximum(:iid) }
+  has_internal_id :iid, scope: :target_project, track_if: -> { !importing? }, init: ->(s) { s&.target_project&.merge_requests&.maximum(:iid) }
 
   has_many :merge_request_diffs
+
+  has_many :merge_request_milestones
+  has_many :milestones, through: :merge_request_milestones
 
   has_one :merge_request_diff,
     -> { order('merge_request_diffs.id DESC') }, inverse_of: :merge_request
@@ -94,8 +97,8 @@ class MergeRequest < ApplicationRecord
   after_create :ensure_merge_request_diff
   after_update :clear_memoized_shas
   after_update :reload_diff_if_branch_changed
-  after_save :ensure_metrics
-  after_commit :expire_etag_cache
+  after_save :ensure_metrics, unless: :importing?
+  after_commit :expire_etag_cache, unless: :importing?
 
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
@@ -255,11 +258,9 @@ class MergeRequest < ApplicationRecord
   alias_method :issuing_parent, :target_project
 
   delegate :active?, to: :head_pipeline, prefix: true, allow_nil: true
-  delegate :success?, to: :actual_head_pipeline, prefix: true, allow_nil: true
+  delegate :success?, :active?, to: :actual_head_pipeline, prefix: true, allow_nil: true
 
   RebaseLockTimeout = Class.new(StandardError)
-
-  REBASE_LOCK_MESSAGE = _("Failed to enqueue the rebase operation, possibly due to a long-lived transaction. Try again later.")
 
   def self.reference_prefix
     '!'
@@ -448,7 +449,7 @@ class MergeRequest < ApplicationRecord
 
   # Set off a rebase asynchronously, atomically updating the `rebase_jid` of
   # the MR so that the status of the operation can be tracked.
-  def rebase_async(user_id)
+  def rebase_async(user_id, skip_ci: false)
     with_rebase_lock do
       raise ActiveRecord::StaleObjectError if !open? || rebase_in_progress?
 
@@ -457,7 +458,7 @@ class MergeRequest < ApplicationRecord
       # attribute is set *and* that the sidekiq job is still running. So a JID
       # for a completed RebaseWorker is equivalent to a nil JID.
       jid = Sidekiq::Worker.skipping_transaction_check do
-        RebaseWorker.perform_async(id, user_id)
+        RebaseWorker.perform_async(id, user_id, skip_ci)
       end
 
       update_column(:rebase_jid, jid)
@@ -1122,22 +1123,18 @@ class MergeRequest < ApplicationRecord
     actual_head_pipeline.success?
   end
 
-  def environments_for(current_user)
+  def environments_for(current_user, latest: false)
     return [] unless diff_head_commit
 
-    @environments ||= Hash.new do |h, current_user|
-      envs = EnvironmentsFinder.new(target_project, current_user,
-        ref: target_branch, commit: diff_head_commit, with_tags: true).execute
+    envs = EnvironmentsFinder.new(target_project, current_user,
+      ref: target_branch, commit: diff_head_commit, with_tags: true, find_latest: latest).execute
 
-      if source_project
-        envs.concat EnvironmentsFinder.new(source_project, current_user,
-          ref: source_branch, commit: diff_head_commit).execute
-      end
-
-      h[current_user] = envs.uniq
+    if source_project
+      envs.concat EnvironmentsFinder.new(source_project, current_user,
+        ref: source_branch, commit: diff_head_commit, find_latest: latest).execute
     end
 
-    @environments[current_user]
+    envs.uniq
   end
 
   ##
@@ -1515,7 +1512,7 @@ class MergeRequest < ApplicationRecord
     end
   rescue ActiveRecord::LockWaitTimeout => e
     Gitlab::ErrorTracking.track_exception(e)
-    raise RebaseLockTimeout, REBASE_LOCK_MESSAGE
+    raise RebaseLockTimeout, _('Failed to enqueue the rebase operation, possibly due to a long-lived transaction. Try again later.')
   end
 
   def source_project_variables

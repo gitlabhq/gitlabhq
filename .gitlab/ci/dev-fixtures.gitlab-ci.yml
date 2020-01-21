@@ -1,0 +1,30 @@
+.run-dev-fixtures:
+  extends:
+    - .only-code-rails-job-base
+    - .use-pg9
+  stage: test
+  needs: ["setup-test-env"]
+  dependencies: ["setup-test-env"]
+  variables:
+    FIXTURE_PATH: "db/fixtures/development"
+    SEED_CYCLE_ANALYTICS: "true"
+    SEED_PRODUCTIVITY_ANALYTICS: "true"
+    CYCLE_ANALYTICS_ISSUE_COUNT: 1
+    SIZE: 0 # number of external projects to fork, requires network connection
+    # SEED_NESTED_GROUPS: "false" # requires network connection
+
+run-dev-fixtures-foss:
+  extends: .run-dev-fixtures
+  script:
+    - scripts/gitaly-test-spawn
+    - RAILS_ENV=test bundle exec rake db:seed_fu
+
+run-dev-fixtures-ee:
+  extends:
+    - .only-ee
+    - .use-pg9-ee
+    - .run-dev-fixtures
+  script:
+    - scripts/gitaly-test-spawn
+    - cp ee/db/fixtures/development/* $FIXTURE_PATH
+    - RAILS_ENV=test bundle exec rake db:seed_fu

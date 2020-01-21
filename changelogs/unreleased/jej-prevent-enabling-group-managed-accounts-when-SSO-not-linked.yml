@@ -1,0 +1,5 @@
+---
+title: Require group owner to have linked SAML before enabling Group Managed Accounts
+merge_request: 21721
+author:
+type: fixed

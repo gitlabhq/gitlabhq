@@ -100,7 +100,7 @@ There are no special requirements if you are using GitLab.com.
    every 60 minutes.
 
    > **Note:**
-   > In the future, we plan on implementating real-time integration. If you need
+   > In the future, we plan on implementing real-time integration. If you need
    > to refresh the data manually, you can do this from the `Applications -> DVCS
    > accounts` screen where you initially set up the integration:
    >

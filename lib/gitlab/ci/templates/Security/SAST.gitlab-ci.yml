@@ -55,6 +55,7 @@ sast:
   services: []
   except:
     variables:
+      - $SAST_DISABLED
       - $SAST_DISABLE_DIND == 'false'
   script:
     - /analyzer run

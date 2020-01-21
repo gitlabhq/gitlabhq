@@ -12,7 +12,7 @@ describe Gitlab::GitalyClient::BlobService do
   describe '#get_new_lfs_pointers' do
     let(:revision) { 'master' }
     let(:limit) { 5 }
-    let(:not_in) { ['branch-a', 'branch-b'] }
+    let(:not_in) { %w[branch-a branch-b] }
     let(:expected_params) do
       { revision: revision, limit: limit, not_in_refs: not_in, not_in_all: false }
     end

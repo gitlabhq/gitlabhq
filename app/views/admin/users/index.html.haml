@@ -9,7 +9,7 @@
     = nav_link(html_options: { class: active_when(params[:filter].nil?) }) do
       = link_to admin_users_path do
         = s_('AdminUsers|Active')
-        %small.badge.badge-pill= limited_counter_with_delimiter(User.active)
+        %small.badge.badge-pill= limited_counter_with_delimiter(User.active_without_ghosts)
     = nav_link(html_options: { class: active_when(params[:filter] == 'admins') }) do
       = link_to admin_users_path(filter: "admins") do
         = s_('AdminUsers|Admins')

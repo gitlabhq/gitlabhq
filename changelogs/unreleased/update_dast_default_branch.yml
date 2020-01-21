@@ -1,0 +1,5 @@
+---
+title: Update auto-deploy-image to v0.8.3 for DAST default branch deploy
+merge_request: 22227
+author:
+type: changed

@@ -1,0 +1,5 @@
+---
+title: Add pipeline deletion button to pipeline details page
+merge_request: 21365
+author: Fabio Huser
+type: added

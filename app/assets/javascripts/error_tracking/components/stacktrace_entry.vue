@@ -1,4 +1,5 @@
 <script>
+import _ from 'underscore';
 import { GlTooltip } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
@@ -56,16 +57,35 @@ export default {
     collapseIcon() {
       return this.isExpanded ? 'chevron-down' : 'chevron-right';
     },
-    noCodeFn() {
-      return this.errorFn ? sprintf(__('in %{errorFn} '), { errorFn: this.errorFn }) : '';
-    },
-    noCodeLine() {
-      return this.errorLine
-        ? sprintf(__('at line %{errorLine}%{errorColumn}'), {
-            errorLine: this.errorLine,
-            errorColumn: this.errorColumn ? `:${this.errorColumn}` : '',
-          })
+    errorFnText() {
+      return this.errorFn
+        ? sprintf(
+            __(`%{spanStart}in%{spanEnd} %{errorFn}`),
+            {
+              errorFn: `<strong>${_.escape(this.errorFn)}</strong>`,
+              spanStart: `<span class="text-tertiary">`,
+              spanEnd: `</span>`,
+            },
+            false,
+          )
         : '';
+    },
+    errorPositionText() {
+      return this.errorLine
+        ? sprintf(
+            __(`%{spanStart}at line%{spanEnd} %{errorLine}%{errorColumn}`),
+            {
+              errorLine: `<strong>${this.errorLine}</strong>`,
+              errorColumn: this.errorColumn ? `:<strong>${this.errorColumn}</strong>` : ``,
+              spanStart: `<span class="text-tertiary">`,
+              spanEnd: `</span>`,
+            },
+            false,
+          )
+        : '';
+    },
+    errorInfo() {
+      return `${this.errorFnText} ${this.errorPositionText}`;
     },
   },
   methods: {
@@ -102,8 +122,7 @@ export default {
         <strong
           v-gl-tooltip
           :title="filePath"
-          class="file-title-name d-inline-block overflow-hidden text-truncate"
-          :class="{ 'limited-width': !hasCode }"
+          class="file-title-name d-inline-block overflow-hidden text-truncate limited-width"
           data-container="body"
         >
           {{ filePath }}
@@ -113,7 +132,7 @@ export default {
           :text="filePath"
           css-class="btn-default btn-transparent btn-clipboard position-static"
         />
-        <span v-if="!hasCode" class="text-tertiary">{{ noCodeFn }}{{ noCodeLine }}</span>
+        <span v-html="errorInfo"></span>
       </div>
     </div>
 

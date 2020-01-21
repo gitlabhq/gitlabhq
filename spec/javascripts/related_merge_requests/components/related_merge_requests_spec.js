@@ -22,7 +22,6 @@ describe('RelatedMergeRequests', () => {
 
     wrapper = mount(localVue.extend(RelatedMergeRequests), {
       localVue,
-      sync: false,
       store: createStore(),
       propsData: {
         endpoint: API_ENDPOINT,

@@ -24,7 +24,8 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       commits_anchor_data,
       branches_anchor_data,
       tags_anchor_data,
-      files_anchor_data
+      files_anchor_data,
+      releases_anchor_data
     ].compact.select(&:is_link)
   end
 
@@ -153,6 +154,22 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
                    empty_repo? ? nil : project_tree_path(project))
   end
 
+  def releases_anchor_data
+    return unless can?(current_user, :read_release, project)
+
+    releases_count = project.releases.count
+    return if releases_count < 1
+
+    AnchorData.new(true,
+                   statistic_icon('rocket') +
+                   n_('%{strong_start}%{release_count}%{strong_end} Release', '%{strong_start}%{release_count}%{strong_end} Releases', releases_count).html_safe % {
+                     release_count: number_with_delimiter(releases_count),
+                     strong_start: '<strong class="project-stat-value">'.html_safe,
+                     strong_end: '</strong>'.html_safe
+                   },
+                  project_releases_path(project))
+  end
+
   def commits_anchor_data
     AnchorData.new(true,
                    statistic_icon('commit') +
@@ -276,8 +293,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def kubernetes_cluster_anchor_data
-    if current_user && can?(current_user, :create_cluster, project)
-
+    if can_instantiate_cluster?
       if clusters.empty?
         AnchorData.new(false,
                        statistic_icon + _('Add Kubernetes cluster'),
@@ -294,7 +310,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def gitlab_ci_anchor_data
-    if current_user && can_current_user_push_code? && repository.gitlab_ci_yml.blank? && !auto_devops_enabled?
+    if cicd_missing?
       AnchorData.new(false,
                      statistic_icon + _('Set up CI/CD'),
                      add_ci_yml_path)
@@ -326,7 +342,27 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     count_of_extra_topics_not_shown > 0
   end
 
+  def can_setup_review_app?
+    strong_memoize(:can_setup_review_app) do
+      (can_instantiate_cluster? && all_clusters_empty?) || cicd_missing?
+    end
+  end
+
+  def all_clusters_empty?
+    strong_memoize(:all_clusters_empty) do
+      project.all_clusters.empty?
+    end
+  end
+
   private
+
+  def cicd_missing?
+    current_user && can_current_user_push_code? && repository.gitlab_ci_yml.blank? && !auto_devops_enabled?
+  end
+
+  def can_instantiate_cluster?
+    current_user && can?(current_user, :create_cluster, project)
+  end
 
   def filename_path(filename)
     if blob = repository.public_send(filename) # rubocop:disable GitlabSecurity/PublicSend

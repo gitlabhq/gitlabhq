@@ -11,8 +11,6 @@ describe('Issuable suggestions app component', () => {
         search,
         projectPath: 'project',
       },
-      sync: false,
-      attachToDocument: true,
     });
   }
 
@@ -27,7 +25,9 @@ describe('Issuable suggestions app component', () => {
   it('does not render with empty search', () => {
     wrapper.setProps({ search: '' });
 
-    expect(wrapper.isVisible()).toBe(false);
+    return wrapper.vm.$nextTick().then(() => {
+      expect(wrapper.isVisible()).toBe(false);
+    });
   });
 
   describe('with data', () => {
@@ -40,14 +40,18 @@ describe('Issuable suggestions app component', () => {
     it('renders component', () => {
       wrapper.setData(data);
 
-      expect(wrapper.isEmpty()).toBe(false);
+      return wrapper.vm.$nextTick(() => {
+        expect(wrapper.isEmpty()).toBe(false);
+      });
     });
 
     it('does not render with empty search', () => {
       wrapper.setProps({ search: '' });
       wrapper.setData(data);
 
-      expect(wrapper.isVisible()).toBe(false);
+      return wrapper.vm.$nextTick(() => {
+        expect(wrapper.isVisible()).toBe(false);
+      });
     });
 
     it('does not render when loading', () => {
@@ -56,13 +60,17 @@ describe('Issuable suggestions app component', () => {
         loading: 1,
       });
 
-      expect(wrapper.isVisible()).toBe(false);
+      return wrapper.vm.$nextTick(() => {
+        expect(wrapper.isVisible()).toBe(false);
+      });
     });
 
     it('does not render with empty issues data', () => {
       wrapper.setData({ issues: [] });
 
-      expect(wrapper.isVisible()).toBe(false);
+      return wrapper.vm.$nextTick(() => {
+        expect(wrapper.isVisible()).toBe(false);
+      });
     });
 
     it('renders list of issues', () => {

@@ -8,7 +8,7 @@ describe ContainerExpirationPoliciesHelper do
       expected_result = [
         { key: 1, label: '1 tag per image name' },
         { key: 5, label: '5 tags per image name' },
-        { key: 10, label: '10 tags per image name' },
+        { key: 10, label: '10 tags per image name', default: true },
         { key: 25, label: '25 tags per image name' },
         { key: 50, label: '50 tags per image name' },
         { key: 100, label: '100 tags per image name' }
@@ -21,7 +21,7 @@ describe ContainerExpirationPoliciesHelper do
   describe '#cadence_options' do
     it 'returns cadence options formatted for dropdown usage' do
       expected_result = [
-        { key: '1d', label: 'Every day' },
+        { key: '1d', label: 'Every day', default: true },
         { key: '7d', label: 'Every week' },
         { key: '14d', label: 'Every two weeks' },
         { key: '1month', label: 'Every month' },
@@ -37,7 +37,7 @@ describe ContainerExpirationPoliciesHelper do
       expected_result = [
         { key: '7d', label: '7 days until tags are automatically removed' },
         { key: '14d', label: '14 days until tags are automatically removed' },
-        { key: '30d', label: '30 days until tags are automatically removed' },
+        { key: '30d', label: '30 days until tags are automatically removed', default: true },
         { key: '90d', label: '90 days until tags are automatically removed' }
       ]
 

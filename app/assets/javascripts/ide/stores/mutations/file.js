@@ -54,27 +54,29 @@ export default {
       }
     });
   },
-  [types.SET_FILE_RAW_DATA](state, { file, raw }) {
+  [types.SET_FILE_RAW_DATA](state, { file, raw, fileDeletedAndReadded = false }) {
     const openPendingFile = state.openFiles.find(
-      f => f.path === file.path && f.pending && !(f.tempFile && !f.prevPath),
+      f =>
+        f.path === file.path && f.pending && !(f.tempFile && !f.prevPath && !fileDeletedAndReadded),
     );
+    const stagedFile = state.stagedFiles.find(f => f.path === file.path);
 
-    if (file.tempFile && file.content === '') {
-      Object.assign(state.entries[file.path], {
-        content: raw,
-      });
+    if (file.tempFile && file.content === '' && !fileDeletedAndReadded) {
+      Object.assign(state.entries[file.path], { content: raw });
+    } else if (fileDeletedAndReadded) {
+      Object.assign(stagedFile, { raw });
     } else {
-      Object.assign(state.entries[file.path], {
-        raw,
-      });
+      Object.assign(state.entries[file.path], { raw });
     }
 
     if (!openPendingFile) return;
 
     if (!openPendingFile.tempFile) {
       openPendingFile.raw = raw;
-    } else if (openPendingFile.tempFile) {
+    } else if (openPendingFile.tempFile && !fileDeletedAndReadded) {
       openPendingFile.content = raw;
+    } else if (fileDeletedAndReadded) {
+      Object.assign(stagedFile, { raw });
     }
   },
   [types.SET_FILE_BASE_RAW_DATA](state, { file, baseRaw }) {
@@ -132,7 +134,7 @@ export default {
   [types.DISCARD_FILE_CHANGES](state, path) {
     const stagedFile = state.stagedFiles.find(f => f.path === path);
     const entry = state.entries[path];
-    const { deleted, prevPath } = entry;
+    const { deleted } = entry;
 
     Object.assign(state.entries[path], {
       content: stagedFile ? stagedFile.content : state.entries[path].raw,
@@ -146,12 +148,6 @@ export default {
         : state.trees[`${state.currentProjectId}/${state.currentBranchId}`];
 
       parent.tree = sortTree(parent.tree.concat(entry));
-    } else if (prevPath) {
-      const parent = entry.parentPath
-        ? state.entries[entry.parentPath]
-        : state.trees[`${state.currentProjectId}/${state.currentBranchId}`];
-
-      parent.tree = parent.tree.filter(f => f.path !== path);
     }
   },
   [types.ADD_FILE_TO_CHANGED](state, path) {
@@ -164,31 +160,32 @@ export default {
       changedFiles: state.changedFiles.filter(f => f.path !== path),
     });
   },
-  [types.STAGE_CHANGE](state, path) {
+  [types.STAGE_CHANGE](state, { path, diffInfo }) {
     const stagedFile = state.stagedFiles.find(f => f.path === path);
 
     Object.assign(state, {
       changedFiles: state.changedFiles.filter(f => f.path !== path),
       entries: Object.assign(state.entries, {
         [path]: Object.assign(state.entries[path], {
-          staged: true,
+          staged: diffInfo.exists,
+          changed: diffInfo.changed,
+          tempFile: diffInfo.tempFile,
+          deleted: diffInfo.deleted,
         }),
       }),
     });
 
     if (stagedFile) {
-      Object.assign(stagedFile, {
-        ...state.entries[path],
-      });
+      Object.assign(stagedFile, { ...state.entries[path] });
     } else {
-      Object.assign(state, {
-        stagedFiles: state.stagedFiles.concat({
-          ...state.entries[path],
-        }),
-      });
+      state.stagedFiles = [...state.stagedFiles, { ...state.entries[path] }];
+    }
+
+    if (!diffInfo.exists) {
+      state.stagedFiles = state.stagedFiles.filter(f => f.path !== path);
     }
   },
-  [types.UNSTAGE_CHANGE](state, path) {
+  [types.UNSTAGE_CHANGE](state, { path, diffInfo }) {
     const changedFile = state.changedFiles.find(f => f.path === path);
     const stagedFile = state.stagedFiles.find(f => f.path === path);
 
@@ -201,9 +198,11 @@ export default {
         changed: true,
       });
 
-      Object.assign(state, {
-        changedFiles: state.changedFiles.concat(state.entries[path]),
-      });
+      state.changedFiles = state.changedFiles.concat(state.entries[path]);
+    }
+
+    if (!diffInfo.exists) {
+      state.changedFiles = state.changedFiles.filter(f => f.path !== path);
     }
 
     Object.assign(state, {
@@ -211,6 +210,9 @@ export default {
       entries: Object.assign(state.entries, {
         [path]: Object.assign(state.entries[path], {
           staged: false,
+          changed: diffInfo.changed,
+          tempFile: diffInfo.tempFile,
+          deleted: diffInfo.deleted,
         }),
       }),
     });

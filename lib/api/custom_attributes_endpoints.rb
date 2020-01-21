@@ -77,7 +77,7 @@ module API
 
         resource.custom_attributes.find_by!(key: params[:key]).destroy
 
-        status 204
+        no_content!
       end
       # rubocop: enable CodeReuse/ActiveRecord
     end

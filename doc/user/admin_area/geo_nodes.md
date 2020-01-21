@@ -2,12 +2,12 @@
 type: howto
 ---
 
-# Geo nodes admin area **(PREMIUM ONLY)**
+# Geo nodes Admin Area **(PREMIUM ONLY)**
 
 You can configure various settings for GitLab Geo nodes. For more information, see
 [Geo documentation](../../administration/geo/replication/index.md).
 
-On the primary node, go to **Admin area > Geo**. On secondary nodes, go to **Admin area > Geo > Nodes**.
+On the primary node, go to **Admin Area > Geo**. On secondary nodes, go to **Admin Area > Geo > Nodes**.
 
 ## Common settings
 
@@ -59,7 +59,7 @@ The **primary** node's Internal URL is used by **secondary** nodes to contact it
 which is used by users. Internal URL does not need to be a private address.
 
 Internal URL defaults to External URL, but you can customize it under
-**Admin area > Geo Nodes**.
+**Admin Area > Geo > Nodes**.
 
 CAUTION: **Warning:**
 We recommend using an HTTPS connection while configuring the Geo nodes. To avoid

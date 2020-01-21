@@ -52,6 +52,10 @@ class Feature
     # use `default_enabled: true` to default the flag to being `enabled`
     # unless set explicitly.  The default is `disabled`
     def enabled?(key, thing = nil, default_enabled: false)
+      # During setup the database does not exist yet. So we haven't stored a value
+      # for the feature yet and return the default.
+      return default_enabled unless Gitlab::Database.exists?
+
       feature = Feature.get(key)
 
       # If we're not default enabling the flag or the feature has been set, always evaluate.

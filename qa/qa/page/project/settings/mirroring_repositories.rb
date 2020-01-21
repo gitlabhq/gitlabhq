@@ -77,9 +77,7 @@ module QA
 
             # The host key detection process is interrupted if we navigate away
             # from the page before the fingerprint appears.
-            wait(max: 5) do
-              find_element(:fingerprints_list).has_text? /.*/
-            end
+            find_element(:fingerprints_list, text: /.*/)
           end
 
           def mirror_repository
@@ -100,7 +98,7 @@ module QA
             sleep 5
             refresh
 
-            wait(interval: 1) do
+            wait_until(sleep_interval: 1) do
               within_element_by_index(:mirrored_repository_row, row_index) do
                 last_update = find_element(:mirror_last_update_at_cell, wait: 0)
                 last_update.has_text?('just now') || last_update.has_text?('seconds')
@@ -117,8 +115,8 @@ module QA
           private
 
           def find_repository_row_index(target_url)
-            wait(max: 5, reload: false) do
-              all_elements(:mirror_repository_url_cell).index do |url|
+            wait_until(max_duration: 5, reload: false) do
+              all_elements(:mirror_repository_url_cell, minimum: 1).index do |url|
                 # The url might be a sanitized url but the target_url won't be so
                 # we compare just the paths instead of the full url
                 URI.parse(url.text).path == target_url.path

@@ -24,7 +24,7 @@ describe Gitlab::Ci::Config::Entry::Job do
       let(:result) do
         %i[before_script script stage type after_script cache
            image services only except rules needs variables artifacts
-           environment coverage retry interruptible timeout tags]
+           environment coverage retry interruptible timeout release tags]
       end
 
       it { is_expected.to match_array result }
@@ -117,6 +117,21 @@ describe Gitlab::Ci::Config::Entry::Job do
               script: 'echo',
               dependencies: ['another-job'],
               needs: ['another-job']
+            }
+          end
+
+          it { expect(entry).to be_valid }
+        end
+
+        context 'when it is a release' do
+          let(:config) do
+            {
+              script: ["make changelog | tee release_changelog.txt"],
+              release: {
+                tag_name: "v0.06",
+                name: "Release $CI_TAG_NAME",
+                description: "./release_changelog.txt"
+              }
             }
           end
 
@@ -441,6 +456,25 @@ describe Gitlab::Ci::Config::Entry::Job do
           expect(entry).to be_valid
           expect(entry.errors).to be_empty
           expect(entry.timeout).to eq('1m 1s')
+        end
+      end
+
+      context 'when it is a release' do
+        context 'when `release:description` is missing' do
+          let(:config) do
+            {
+              script: ["make changelog | tee release_changelog.txt"],
+              release: {
+                tag_name: "v0.06",
+                name: "Release $CI_TAG_NAME"
+              }
+            }
+          end
+
+          it "returns error" do
+            expect(entry).not_to be_valid
+            expect(entry.errors).to include "release description can't be blank"
+          end
         end
       end
     end

@@ -81,6 +81,7 @@ describe UsersController do
 
     context 'json with events' do
       let(:project) { create(:project) }
+
       before do
         project.add_developer(user)
         Gitlab::DataBuilder::Push.build_sample(project, user)

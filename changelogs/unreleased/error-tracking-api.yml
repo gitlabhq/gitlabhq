@@ -1,0 +1,5 @@
+---
+title: Add API for getting sentry error tracking settings of a project
+merge_request: 21788
+author: raju249
+type: added

@@ -1,14 +1,11 @@
 <script>
-import { GlDropdown, GlDropdownHeader, GlDropdownItem } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { getDisplayName } from '../utils';
 
 export default {
   components: {
     GlDropdown,
-    GlDropdownHeader,
     GlDropdownItem,
-    Icon,
   },
   props: {
     dropdownLabel: {

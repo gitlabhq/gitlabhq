@@ -23,6 +23,11 @@ noted information:
 If you hover over a commit in the UI, you'll see a precise date and time
 for that commit.
 
+![Blame previous commit](img/file_blame_previous_commit_v12_7.png "Blame previous commit")
+
+To see earlier revisions of a specific line, click **View blame prior to this change**
+until you've found the changes you're interested in viewing.
+
 ## Associated `git` command
 
 If you're running `git` from the command line, the equivalent command is

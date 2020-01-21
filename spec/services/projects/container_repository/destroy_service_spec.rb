@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 describe Projects::ContainerRepository::DestroyService do
-  set(:user) { create(:user) }
-  set(:project) { create(:project, :private) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :private) }
 
   subject { described_class.new(project, user) }
 

@@ -1,0 +1,6 @@
+---
+title: 'Fix Issue API: creating with manual IID returns conflict when IID already
+  in use'
+merge_request: 22788
+author: Mara Sophie Grosch
+type: fixed

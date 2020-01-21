@@ -36,10 +36,6 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
     end
 
     context 'JSON' do
-      before do
-        stub_feature_flags(use_legacy_pipeline_triggers: false)
-      end
-
       it 'restores models based on JSON' do
         expect(@restored_project_json).to be_truthy
       end
@@ -118,6 +114,15 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       it 'has multiple issue assignees' do
         expect(Issue.find_by(title: 'Voluptatem').assignees).to contain_exactly(@user, *@existing_members)
         expect(Issue.find_by(title: 'Issue without assignees').assignees).to be_empty
+      end
+
+      it 'restores timelogs for issues' do
+        timelog = Issue.find_by(title: 'issue_with_timelogs').timelogs.last
+
+        aggregate_failures do
+          expect(timelog.time_spent).to eq(72000)
+          expect(timelog.spent_at).to eq("2019-12-27T00:00:00.000Z")
+        end
       end
 
       it 'contains the merge access levels on a protected branch' do
@@ -219,8 +224,23 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         expect(award_emoji.map(&:name)).to contain_exactly('thumbsup', 'coffee')
       end
 
+      it 'snippet has notes' do
+        expect(@project.snippets.first.notes.count).to eq(1)
+      end
+
+      it 'snippet has award emojis on notes' do
+        award_emoji = @project.snippets.first.notes.first.award_emoji.first
+
+        expect(award_emoji.name).to eq('thumbsup')
+      end
+
       it 'restores `ci_cd_settings` : `group_runners_enabled` setting' do
         expect(@project.ci_cd_settings.group_runners_enabled?).to eq(false)
+      end
+
+      it 'restores `auto_devops`' do
+        expect(@project.auto_devops_enabled?).to eq(true)
+        expect(@project.auto_devops.deploy_strategy).to eq('continuous')
       end
 
       it 'restores the correct service' do
@@ -240,6 +260,18 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         expect(sentry_issue.sentry_issue_identifier).to eq(1234567891)
       end
 
+      it 'has award emoji for an issue' do
+        award_emoji = @project.issues.first.award_emoji.first
+
+        expect(award_emoji.name).to eq('musical_keyboard')
+      end
+
+      it 'has award emoji for a note in an issue' do
+        award_emoji = @project.issues.first.notes.first.award_emoji.first
+
+        expect(award_emoji.name).to eq('clapper')
+      end
+
       it 'restores container_expiration_policy' do
         policy = Project.find_by_path('project').container_expiration_policy
 
@@ -247,6 +279,55 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
           expect(policy).to be_an_instance_of(ContainerExpirationPolicy)
           expect(policy).to be_persisted
           expect(policy.cadence).to eq('3month')
+        end
+      end
+
+      it 'restores error_tracking_setting' do
+        setting = @project.error_tracking_setting
+
+        aggregate_failures do
+          expect(setting.api_url).to eq("https://gitlab.example.com/api/0/projects/sentry-org/sentry-project")
+          expect(setting.project_name).to eq("Sentry Project")
+          expect(setting.organization_name).to eq("Sentry Org")
+        end
+      end
+
+      it 'restores external pull requests' do
+        external_pr = @project.external_pull_requests.last
+
+        aggregate_failures do
+          expect(external_pr.pull_request_iid).to eq(4)
+          expect(external_pr.source_branch).to eq("feature")
+          expect(external_pr.target_branch).to eq("master")
+          expect(external_pr.status).to eq("open")
+        end
+      end
+
+      it 'restores pipeline schedules' do
+        pipeline_schedule = @project.pipeline_schedules.last
+
+        aggregate_failures do
+          expect(pipeline_schedule.description).to eq('Schedule Description')
+          expect(pipeline_schedule.ref).to eq('master')
+          expect(pipeline_schedule.cron).to eq('0 4 * * 0')
+          expect(pipeline_schedule.cron_timezone).to eq('UTC')
+          expect(pipeline_schedule.active).to eq(true)
+        end
+      end
+
+      it 'restores releases with links' do
+        release = @project.releases.last
+        link = release.links.last
+
+        aggregate_failures do
+          expect(release.tag).to eq('release-1.1')
+          expect(release.description).to eq('Some release notes')
+          expect(release.name).to eq('release-1.1')
+          expect(release.sha).to eq('901de3a8bd5573f4a049b1457d28bc1592ba6bf9')
+          expect(release.released_at).to eq('2019-12-26T10:17:14.615Z')
+
+          expect(link.url).to eq('http://localhost/namespace6/project6/-/jobs/140463678/artifacts/download')
+          expect(link.name).to eq('release-1.1.dmg')
         end
       end
 
@@ -265,6 +346,20 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
         it 'has no source if source/target differ' do
           expect(MergeRequest.find_by_title('MR2').source_project_id).to be_nil
+        end
+
+        it 'has award emoji' do
+          award_emoji = MergeRequest.find_by_title('MR1').award_emoji
+
+          expect(award_emoji.map(&:name)).to contain_exactly('thumbsup', 'drum')
+        end
+
+        context 'notes' do
+          it 'has award emoji' do
+            award_emoji = MergeRequest.find_by_title('MR1').notes.first.award_emoji.first
+
+            expect(award_emoji.name).to eq('tada')
+          end
         end
       end
 
@@ -289,9 +384,9 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         end
 
         it 'has the correct number of pipelines and statuses' do
-          expect(@project.ci_pipelines.size).to eq(6)
+          expect(@project.ci_pipelines.size).to eq(7)
 
-          @project.ci_pipelines.order(:id).zip([2, 2, 2, 2, 2, 0])
+          @project.ci_pipelines.order(:id).zip([2, 2, 2, 2, 2, 0, 0])
             .each do |(pipeline, expected_status_size)|
             expect(pipeline.statuses.size).to eq(expected_status_size)
           end
@@ -300,7 +395,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
       context 'when restoring hierarchy of pipeline, stages and jobs' do
         it 'restores pipelines' do
-          expect(Ci::Pipeline.all.count).to be 6
+          expect(Ci::Pipeline.all.count).to be 7
         end
 
         it 'restores pipeline stages' do
@@ -325,6 +420,12 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
         it 'restores a Hash for CommitStatus options' do
           expect(CommitStatus.all.map(&:options).compact).to all(be_a(Hash))
+        end
+
+        it 'restores external pull request for the restored pipeline' do
+          pipeline_with_external_pr = @project.ci_pipelines.order(:id).last
+
+          expect(pipeline_with_external_pr.external_pull_request).to be_persisted
         end
       end
     end
@@ -466,7 +567,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       end
 
       it_behaves_like 'restores project successfully',
-                      issues: 2,
+                      issues: 3,
                       labels: 2,
                       label_with_priorities: 'A project label',
                       milestones: 2,
@@ -479,7 +580,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
       it 'restores issue states' do
         expect(project.issues.with_state(:closed).count).to eq(1)
-        expect(project.issues.with_state(:opened).count).to eq(1)
+        expect(project.issues.with_state(:opened).count).to eq(2)
       end
     end
 
@@ -654,13 +755,10 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
     let(:user) { create(:user) }
     let!(:project) { create(:project, :builds_disabled, :issues_disabled, name: 'project', path: 'project') }
     let(:project_tree_restorer) { described_class.new(user: user, shared: shared, project: project) }
-    let(:correlation_id) { 'my-correlation-id' }
 
     before do
       setup_import_export_config('with_invalid_records')
 
-      # Import is running from the rake task, `correlation_id` is not assigned
-      expect(Labkit::Correlation::CorrelationId).to receive(:new_id).and_return(correlation_id)
       subject
     end
 
@@ -682,7 +780,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         expect(import_failure.relation_index).to be_present
         expect(import_failure.exception_class).to eq('ActiveRecord::RecordInvalid')
         expect(import_failure.exception_message).to be_present
-        expect(import_failure.correlation_id_value).to eq('my-correlation-id')
+        expect(import_failure.correlation_id_value).not_to be_empty
         expect(import_failure.created_at).to be_present
       end
     end

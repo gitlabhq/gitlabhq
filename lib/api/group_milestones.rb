@@ -67,7 +67,7 @@ module API
         milestone = user_group.milestones.find(params[:milestone_id])
         Milestones::DestroyService.new(user_group, current_user).execute(milestone)
 
-        status(204)
+        no_content!
       end
 
       desc 'Get all issues for a single group milestone' do

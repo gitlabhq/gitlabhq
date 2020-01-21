@@ -1,0 +1,5 @@
+---
+title: Hide merge request tab popover for anonymous users
+merge_request: 22613
+author:
+type: fixed

@@ -51,6 +51,7 @@ Checking Geo ...
 
 GitLab Geo is available ... yes
 GitLab Geo is enabled ... yes
+This machine's Geo node name matches a database record ... yes, found a secondary node named "Shanghai"
 GitLab Geo secondary database is correctly configured ... yes
 Database replication enabled? ... yes
 Database replication working? ... yes
@@ -115,34 +116,36 @@ Any **secondary** nodes should point only to read-only instances.
 
 #### Can Geo detect the current node correctly?
 
-Geo finds the current machine's name in `/etc/gitlab/gitlab.rb` by:
+Geo finds the current machine's Geo node name in `/etc/gitlab/gitlab.rb` by:
 
 - Using the `gitlab_rails['geo_node_name']` setting.
 - If that is not defined, using the `external_url` setting.
 
-To get a machine's name, run:
-
-```sh
-sudo gitlab-rails runner "puts GeoNode.current_node_name"
-```
-
 This name is used to look up the node with the same **Name** in
 **Admin Area > Geo**.
 
-To check if current machine is correctly finding its node:
+To check if the current machine has a node name that matches a node in the
+database, run the check task:
 
 ```sh
-sudo gitlab-rails runner "puts Gitlab::Geo.current_node.inspect"
+sudo gitlab-rake gitlab:geo:check
 ```
 
-and expect something like:
+It displays the current machine's node name and whether the matching database
+record is a **primary** or **secondary** node.
 
-```ruby
-#<GeoNode id: 2, schema: "https", host: "gitlab.example.com", port: 443, relative_url_root: "", primary: false, ...>
+```
+This machine's Geo node name matches a database record ... yes, found a secondary node named "Shanghai"
 ```
 
-By running the command above, `primary` should be `true` when executed in
-the **primary** node, and `false` on any **secondary** node.
+```
+This machine's Geo node name matches a database record ... no
+  Try fixing it:
+  You could add or update a Geo node database record, setting the name to "https://example.com/".
+  Or you could set this machine's Geo node name to match the name of an existing database record: "London", "Shanghai"
+  For more information see:
+  doc/administration/geo/replication/troubleshooting.md#can-geo-detect-the-current-node-correctly
+```
 
 ## Fixing errors found when running the Geo check rake task
 
@@ -208,9 +211,9 @@ sudo gitlab-rake gitlab:geo:check
     Checking Geo ... Finished
     ```
 
-    - Ensure that you have added the secondary node in the admin area of the primary node.
+    - Ensure that you have added the secondary node in the Admin Area of the primary node.
     - Ensure that you entered the `external_url` or `gitlab_rails['geo_node_name']` when adding the secondary node in the admin are of the primary node.
-    - Prior to GitLab 12.4, edit the secondary node in the admin area of the primary node and ensure that there is a trailing `/` in the `Name` field.
+    - Prior to GitLab 12.4, edit the secondary node in the Admin Area of the primary node and ensure that there is a trailing `/` in the `Name` field.
 
 1. Check returns Exception: PG::UndefinedTable: ERROR:  relation "geo_nodes" does not exist
 
@@ -295,7 +298,7 @@ log data to build up in `pg_xlog`. Removing the unused slots can reduce the amou
 1. Start a PostgreSQL console session:
 
    ```sh
-   sudo gitlab-psql gitlabhq_production
+   sudo gitlab-psql
    ```
 
    Note: **Note:** Using `gitlab-rails dbconsole` will not work, because managing replication slots requires superuser permissions.
@@ -317,6 +320,40 @@ Slots where `active` is `f` are not active.
   ```sql
   SELECT pg_drop_replication_slot('<name_of_extra_slot>');
   ```
+
+### Message: "ERROR: canceling statement due to conflict with recovery"
+
+This error may rarely occur under normal usage, and the system is resilient
+enough to recover.
+
+However, under certain conditions, some database queries on secondaries may run
+excessively long, which increases the frequency of this error. At some point,
+some of these queries will never be able to complete due to being canceled
+every time.
+
+These long-running queries are
+[planned to be removed in the future](https://gitlab.com/gitlab-org/gitlab/issues/34269),
+but as a workaround, we recommend enabling
+[hot_standby_feedback](https://www.postgresql.org/docs/10/hot-standby.html#HOT-STANDBY-CONFLICT).
+This increases the likelihood of bloat on the **primary** node as it prevents
+`VACUUM` from removing recently-dead rows. However, it has been used
+successfully in production on GitLab.com.
+
+To enable `hot_standby_feedback`, add the following to `/etc/gitlab/gitlab.rb`
+on the **secondary** node:
+
+```ruby
+postgresql['hot_standby_feedback'] = 'on'
+```
+
+Then reconfigure GitLab:
+
+```sh
+sudo gitlab-ctl reconfigure
+```
+
+To help us resolve this problem, consider commenting on
+[the issue](https://gitlab.com/gitlab-org/gitlab/issues/4489).
 
 ### Very large repositories never successfully synchronize on the **secondary** node
 
@@ -457,16 +494,55 @@ The following steps are for Omnibus installs only. Using Geo with source-based i
 
 To check the configuration:
 
+1. SSH into an app node in the **secondary**:
+
+   ```sh
+   sudo -i
+   ```
+
+   Note: An app node is any machine running at least one of the following services:
+
+   - `puma`
+   - `unicorn`
+   - `sidekiq`
+   - `geo-logcursor`
+
 1. Enter the database console:
+
+   If the tracking database is running on the same node:
 
    ```sh
    gitlab-geo-psql
    ```
 
-1. Check whether any tables are present. If everything is working, you
-   should see something like this:
+   Or, if the tracking database is running on a different node, you must specify
+   the user and host when entering the database console:
+
+   ```sh
+   gitlab-geo-psql -U gitlab_geo -h <IP of tracking database>
+   ```
+
+   You will be prompted for the password of the `gitlab_geo` user. You can find
+   it in plaintext in `/etc/gitlab/gitlab.rb` at:
+
+   ```ruby
+   geo_secondary['db_password'] = '<geo_tracking_db_password>'
+   ```
+
+   This password is normally set on the tracking database during
+   [Step 3: Configure the tracking database on the secondary node](high_availability.md#step-3-configure-the-tracking-database-on-the-secondary-node),
+   and it is set on the app nodes during
+   [Step 4: Configure the frontend application servers on the secondary node](high_availability.md#step-4-configure-the-frontend-application-servers-on-the-secondary-node).
+
+1. Check whether any tables are present with the following statement:
 
    ```sql
+   SELECT * from information_schema.foreign_tables;
+   ```
+
+   If everything is working, you should see something like this:
+
+   ```
    gitlabhq_geo_production=# SELECT * from information_schema.foreign_tables;
      foreign_table_catalog  | foreign_table_schema |               foreign_table_name                | foreign_server_catalog  | foreign_server_name
    -------------------------+----------------------+-------------------------------------------------+-------------------------+---------------------
@@ -482,7 +558,7 @@ To check the configuration:
 1. Check that the foreign server mapping is correct via `\des+`. The
    results should look something like this:
 
-   ```sql
+   ```
    gitlabhq_geo_production=# \des+
    List of foreign servers
    -[ RECORD 1 ]--------+------------------------------------------------------------
@@ -518,7 +594,7 @@ To check the configuration:
 
 1. Check that the user mapping is configured properly via `\deu+`:
 
-   ```sql
+   ```
    gitlabhq_geo_production=# \deu+
                                                 List of user mappings
          Server      | User name  |                                  FDW Options

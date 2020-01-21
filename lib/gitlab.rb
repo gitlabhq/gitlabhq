@@ -100,8 +100,8 @@ module Gitlab
   end
 
   def self.process_name
-    return 'sidekiq' if Sidekiq.server?
-    return 'console' if defined?(Rails::Console)
+    return 'sidekiq' if Gitlab::Runtime.sidekiq?
+    return 'console' if Gitlab::Runtime.console?
     return 'test' if Rails.env.test?
 
     'web'

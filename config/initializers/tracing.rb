@@ -2,7 +2,7 @@
 
 if Labkit::Tracing.enabled?
   Rails.application.configure do |config|
-    config.middleware.insert_after Gitlab::Middleware::CorrelationId, ::Labkit::Tracing::RackMiddleware
+    config.middleware.insert_after Labkit::Middleware::Rack, ::Labkit::Tracing::RackMiddleware
   end
 
   # Instrument the Sidekiq client
@@ -13,7 +13,7 @@ if Labkit::Tracing.enabled?
   end
 
   # Instrument Sidekiq server calls when running Sidekiq server
-  if Sidekiq.server?
+  if Gitlab::Runtime.sidekiq?
     Sidekiq.configure_server do |config|
       config.server_middleware do |chain|
         chain.add Labkit::Tracing::Sidekiq::ServerMiddleware

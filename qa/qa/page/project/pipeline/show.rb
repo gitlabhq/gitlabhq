@@ -67,13 +67,7 @@ module QA::Page
       end
 
       def click_on_first_job
-        css = '.js-pipeline-graph-job-link'
-
-        wait(reload: false) do
-          has_css?(css)
-        end
-
-        first(css).click
+        first('.js-pipeline-graph-job-link', wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME).click
       end
     end
   end

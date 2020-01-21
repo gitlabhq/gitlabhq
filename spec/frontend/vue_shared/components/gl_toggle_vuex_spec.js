@@ -20,7 +20,6 @@ describe('GlToggleVuex component', () => {
         stateProperty: 'toggleState',
         ...props,
       },
-      sync: false,
     });
   };
 

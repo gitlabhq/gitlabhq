@@ -53,7 +53,7 @@ Tracking can be enabled at:
 
 We utilize Snowplow for the majority of our tracking strategy, and it can be enabled by navigating to:
 
-- **Admin area > Settings > Integrations** in the UI.
+- **Admin Area > Settings > Integrations** in the UI.
 - `admin/application_settings/integrations` in your browser.
 
 The following configuration is required:

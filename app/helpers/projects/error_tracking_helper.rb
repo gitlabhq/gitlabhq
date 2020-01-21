@@ -10,6 +10,8 @@ module Projects::ErrorTrackingHelper
       'user-can-enable-error-tracking' => can?(current_user, :admin_operations, project).to_s,
       'enable-error-tracking-link' => project_settings_operations_path(project),
       'error-tracking-enabled' => error_tracking_enabled.to_s,
+      'project-path' => project.full_path,
+      'list-path' => project_error_tracking_index_path(project),
       'illustration-path' => image_path('illustrations/cluster_popover.svg')
     }
   end
@@ -18,8 +20,12 @@ module Projects::ErrorTrackingHelper
     opts = [project, issue_id, { format: :json }]
 
     {
-      'project-issues-path' => project_issues_path(project),
+      'issue-id' => issue_id,
+      'project-path' => project.full_path,
+      'list-path' => project_error_tracking_index_path(project),
       'issue-details-path' => details_project_error_tracking_index_path(*opts),
+      'issue-update-path' => update_project_error_tracking_index_path(*opts),
+      'project-issues-path' => project_issues_path(project),
       'issue-stack-trace-path' => stack_trace_project_error_tracking_index_path(*opts)
     }
   end

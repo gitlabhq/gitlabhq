@@ -101,6 +101,11 @@ class DropDown {
 
   render(data) {
     const children = data ? data.map(this.renderChildren.bind(this)) : [];
+
+    if (this.list.querySelector('.filter-dropdown-loading')) {
+      return;
+    }
+
     const renderableList = this.list.querySelector('ul[data-dynamic]') || this.list;
 
     renderableList.innerHTML = children.join('');

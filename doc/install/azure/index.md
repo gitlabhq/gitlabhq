@@ -226,7 +226,7 @@ connections:
 ![Azure - Add inbound security rules - HTTP](img/azure-add-inbound-sec-rule-http.png)
 
 1. Enter **"HTTP"** in the `Name` field
-1. Select **HTTP** from the options in the `Service` drop-down
+1. Select **HTTP** from the options in the `Service` dropdown list
 1. Make sure the `Action` is set to **Allow**
 1. Click **"OK"**
 
@@ -238,7 +238,7 @@ accept [SSH] connections:
 ![Azure - Add inbound security rules - SSH](img/azure-add-inbound-sec-rule-ssh.png)
 
 1. Enter **"SSH"** in the `Name` field
-1. Select **SSH** from the options in the `Service` drop-down
+1. Select **SSH** from the options in the `Service` dropdown list
 1. Make sure the `Action` is set to **Allow**
 1. Click **"OK"**
 

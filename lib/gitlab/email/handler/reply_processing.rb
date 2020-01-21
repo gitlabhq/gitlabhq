@@ -41,11 +41,18 @@ module Gitlab
         end
 
         def add_attachments(reply)
-          attachments = Email::AttachmentUploader.new(mail).execute(project)
+          attachments = Email::AttachmentUploader.new(mail).execute(upload_params)
 
           reply + attachments.map do |link|
             "\n\n#{link[:markdown]}"
           end.join
+        end
+
+        def upload_params
+          {
+            upload_parent: project,
+            uploader_class: FileUploader
+          }
         end
 
         def validate_permission!(permission)
@@ -79,3 +86,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Email::Handler::ReplyProcessing.prepend_if_ee('::EE::Gitlab::Email::Handler::ReplyProcessing')

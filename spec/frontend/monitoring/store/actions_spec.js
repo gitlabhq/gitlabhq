@@ -18,6 +18,7 @@ import {
   fetchPrometheusMetric,
   setEndpoints,
   setGettingStartedEmptyState,
+  duplicateSystemDashboard,
 } from '~/monitoring/stores/actions';
 import storeState from '~/monitoring/stores/state';
 import {
@@ -298,7 +299,7 @@ describe('Monitoring store actions', () => {
       );
       expect(commit).toHaveBeenCalledWith(
         types.RECEIVE_METRICS_DATA_SUCCESS,
-        metricsDashboardResponse.dashboard.panel_groups,
+        metricsDashboardResponse.dashboard,
       );
       expect(dispatch).toHaveBeenCalledWith('fetchPrometheusMetrics', params);
     });
@@ -441,7 +442,7 @@ describe('Monitoring store actions', () => {
     beforeEach(() => {
       state = storeState();
       [metric] = metricsDashboardResponse.dashboard.panel_groups[0].panels[0].metrics;
-      [data] = metricsGroupsAPIResponse[0].panels[0].metrics;
+      [data] = metricsGroupsAPIResponse.panel_groups[0].panels[0].metrics;
     });
 
     it('commits result', done => {
@@ -540,6 +541,87 @@ describe('Monitoring store actions', () => {
       ).catch(e => {
         expect(mock.history.get).toHaveLength(4);
         expect(e).toEqual(error);
+        done();
+      });
+    });
+  });
+
+  describe('duplicateSystemDashboard', () => {
+    let state;
+
+    beforeEach(() => {
+      state = storeState();
+      state.dashboardsEndpoint = '/dashboards.json';
+    });
+
+    it('Succesful POST request resolves', done => {
+      mock.onPost(state.dashboardsEndpoint).reply(statusCodes.CREATED, {
+        dashboard: dashboardGitResponse[1],
+      });
+
+      testAction(duplicateSystemDashboard, {}, state, [], [])
+        .then(() => {
+          expect(mock.history.post).toHaveLength(1);
+          done();
+        })
+        .catch(done.fail);
+    });
+
+    it('Succesful POST request resolves to a dashboard', done => {
+      const mockCreatedDashboard = dashboardGitResponse[1];
+
+      const params = {
+        dashboard: 'my-dashboard',
+        fileName: 'file-name.yml',
+        branch: 'my-new-branch',
+        commitMessage: 'A new commit message',
+      };
+
+      const expectedPayload = JSON.stringify({
+        dashboard: 'my-dashboard',
+        file_name: 'file-name.yml',
+        branch: 'my-new-branch',
+        commit_message: 'A new commit message',
+      });
+
+      mock.onPost(state.dashboardsEndpoint).reply(statusCodes.CREATED, {
+        dashboard: mockCreatedDashboard,
+      });
+
+      testAction(duplicateSystemDashboard, params, state, [], [])
+        .then(result => {
+          expect(mock.history.post).toHaveLength(1);
+          expect(mock.history.post[0].data).toEqual(expectedPayload);
+          expect(result).toEqual(mockCreatedDashboard);
+
+          done();
+        })
+        .catch(done.fail);
+    });
+
+    it('Failed POST request throws an error', done => {
+      mock.onPost(state.dashboardsEndpoint).reply(statusCodes.BAD_REQUEST);
+
+      testAction(duplicateSystemDashboard, {}, state, [], []).catch(err => {
+        expect(mock.history.post).toHaveLength(1);
+        expect(err).toEqual(expect.any(String));
+
+        done();
+      });
+    });
+
+    it('Failed POST request throws an error with a description', done => {
+      const backendErrorMsg = 'This file already exists!';
+
+      mock.onPost(state.dashboardsEndpoint).reply(statusCodes.BAD_REQUEST, {
+        error: backendErrorMsg,
+      });
+
+      testAction(duplicateSystemDashboard, {}, state, [], []).catch(err => {
+        expect(mock.history.post).toHaveLength(1);
+        expect(err).toEqual(expect.any(String));
+        expect(err).toEqual(expect.stringContaining(backendErrorMsg));
+
         done();
       });
     });

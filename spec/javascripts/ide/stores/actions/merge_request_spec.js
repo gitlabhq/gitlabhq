@@ -348,6 +348,8 @@ describe('IDE store merge request actions', () => {
     let testMergeRequest;
     let testMergeRequestChanges;
 
+    const mockGetters = { findBranch: () => ({ commit: { id: 'abcd2322' } }) };
+
     beforeEach(() => {
       testMergeRequest = {
         source_branch: 'abcbranch',
@@ -406,8 +408,8 @@ describe('IDE store merge request actions', () => {
       );
     });
 
-    it('dispatch actions for merge request data', done => {
-      openMergeRequest(store, mr)
+    it('dispatches actions for merge request data', done => {
+      openMergeRequest({ state: store.state, dispatch: store.dispatch, getters: mockGetters }, mr)
         .then(() => {
           expect(store.dispatch.calls.allArgs()).toEqual([
             ['getMergeRequestData', mr],
@@ -424,6 +426,7 @@ describe('IDE store merge request actions', () => {
               {
                 projectId: mr.projectId,
                 branchId: testMergeRequest.source_branch,
+                ref: 'abcd2322',
               },
             ],
             ['getMergeRequestVersions', mr],
@@ -449,7 +452,7 @@ describe('IDE store merge request actions', () => {
         { new_path: 'bar', path: 'bar' },
       ];
 
-      openMergeRequest(store, mr)
+      openMergeRequest({ state: store.state, dispatch: store.dispatch, getters: mockGetters }, mr)
         .then(() => {
           expect(store.dispatch).toHaveBeenCalledWith(
             'updateActivityBarView',

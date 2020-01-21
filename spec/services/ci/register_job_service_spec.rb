@@ -4,9 +4,9 @@ require 'spec_helper'
 
 module Ci
   describe RegisterJobService do
-    set(:group) { create(:group) }
-    set(:project) { create(:project, group: group, shared_runners_enabled: false, group_runners_enabled: false) }
-    set(:pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project, reload: true) { create(:project, group: group, shared_runners_enabled: false, group_runners_enabled: false) }
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
     let!(:shared_runner) { create(:ci_runner, :instance) }
     let!(:specific_runner) { create(:ci_runner, :project, projects: [project]) }
     let!(:group_runner) { create(:ci_runner, :group, groups: [group]) }

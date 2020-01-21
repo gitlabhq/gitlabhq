@@ -37,7 +37,7 @@ describe 'Projects > Settings > User manages project members' do
 
     visit(project_project_members_path(project))
 
-    page.within('.users-project-form') do
+    page.within('.invite-users-form') do
       click_link('Import')
     end
 

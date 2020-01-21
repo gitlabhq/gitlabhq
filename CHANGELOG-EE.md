@@ -4,10 +4,6 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 - No changes.
 
-## 12.6.3
-
-- No changes.
-
 ## 12.6.2
 
 ### Security (2 changes)
@@ -235,6 +231,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Remove plaintext tokens for feature flags clients. !18923
 - Remove IIFEs from jira_connect.js file. !19248 (nuwe1)
 
+
+## 12.4.8
+
+- No changes.
 
 ## 12.4.5
 

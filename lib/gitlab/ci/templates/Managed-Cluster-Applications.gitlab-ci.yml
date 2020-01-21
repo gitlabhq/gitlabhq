@@ -1,16 +1,21 @@
 apply:
   stage: deploy
-  image: "registry.gitlab.com/gitlab-org/cluster-integration/cluster-applications:v0.3.0"
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/cluster-applications:v0.5.0"
   environment:
     name: production
   variables:
     TILLER_NAMESPACE: gitlab-managed-apps
     GITLAB_MANAGED_APPS_FILE: $CI_PROJECT_DIR/.gitlab/managed-apps/config.yaml
     INGRESS_VALUES_FILE: $CI_PROJECT_DIR/.gitlab/managed-apps/ingress/values.yaml
+    CERT_MANAGER_VALUES_FILE: $CI_PROJECT_DIR/.gitlab/managed-apps/cert-manager/values.yaml
     SENTRY_VALUES_FILE: $CI_PROJECT_DIR/.gitlab/managed-apps/sentry/values.yaml
+    GITLAB_RUNNER_VALUES_FILE: $CI_PROJECT_DIR/.gitlab/managed-apps/gitlab-runner/values.yaml
   script:
-    - kubectl get namespace "$TILLER_NAMESPACE" || kubectl create namespace "$TILLER_NAMESPACE"
     - gitlab-managed-apps /usr/local/share/gitlab-managed-apps/helmfile.yaml
   only:
     refs:
       - master
+  artifacts:
+    when: on_failure
+    paths:
+      - tiller.log

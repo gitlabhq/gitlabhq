@@ -57,7 +57,8 @@ describe Clusters::Applications::Jupyter do
     it 'is initialized with 4 arguments' do
       expect(subject.name).to eq('jupyter')
       expect(subject.chart).to eq('jupyter/jupyterhub')
-      expect(subject.version).to eq('0.9-174bbd5')
+      expect(subject.version).to eq('0.9.0-beta.2')
+
       expect(subject).to be_rbac
       expect(subject.repository).to eq('https://jupyterhub.github.io/helm-chart/')
       expect(subject.files).to eq(jupyter.files)
@@ -75,7 +76,7 @@ describe Clusters::Applications::Jupyter do
       let(:jupyter) { create(:clusters_applications_jupyter, :errored, version: '0.0.1') }
 
       it 'is initialized with the locked version' do
-        expect(subject.version).to eq('0.9-174bbd5')
+        expect(subject.version).to eq('0.9.0-beta.2')
       end
     end
   end

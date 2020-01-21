@@ -1,0 +1,6 @@
+---
+title: refactor javascript to remove Immediately Invoked Function Expression from
+  project file search
+merge_request: 19192
+author: Brian Luckenbill
+type: other

@@ -30,17 +30,24 @@ class EventCollection
     relation = if groups
                  project_and_group_events
                else
-                 relation_with_join_lateral('project_id', projects)
+                 project_events
                end
 
     relation = paginate_events(relation)
     relation.with_associations.to_a
   end
 
+  def all_project_events
+    Event.from_union([project_events]).recent
+  end
+
   private
 
+  def project_events
+    relation_with_join_lateral('project_id', projects)
+  end
+
   def project_and_group_events
-    project_events = relation_with_join_lateral('project_id', projects)
     group_events = relation_with_join_lateral('group_id', groups)
 
     Event.from_union([project_events, group_events]).recent

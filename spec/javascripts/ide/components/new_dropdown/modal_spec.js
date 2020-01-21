@@ -52,19 +52,6 @@ describe('new file modal component', () => {
           expect(templateFilesEl instanceof Element).toBeTruthy();
         }
       });
-
-      describe('createEntryInStore', () => {
-        it('$emits create', () => {
-          spyOn(vm, 'createTempEntry');
-
-          vm.submitForm();
-
-          expect(vm.createTempEntry).toHaveBeenCalledWith({
-            name: 'testing',
-            type,
-          });
-        });
-      });
     });
   });
 
@@ -145,31 +132,19 @@ describe('new file modal component', () => {
 
       vm = createComponentWithStore(Component, store).$mount();
       const flashSpy = spyOnDependency(modal, 'flash');
+
+      expect(flashSpy).not.toHaveBeenCalled();
+
       vm.submitForm();
 
-      expect(flashSpy).toHaveBeenCalled();
-    });
-
-    it('calls createTempEntry when target path does not exist', () => {
-      const store = createStore();
-      store.state.entryModal = {
-        type: 'rename',
-        path: 'test-path/test',
-        entry: {
-          name: 'test',
-          type: 'blob',
-          path: 'test-path1/test',
-        },
-      };
-
-      vm = createComponentWithStore(Component, store).$mount();
-      spyOn(vm, 'createTempEntry').and.callFake(() => Promise.resolve());
-      vm.submitForm();
-
-      expect(vm.createTempEntry).toHaveBeenCalledWith({
-        name: 'test-path1',
-        type: 'tree',
-      });
+      expect(flashSpy).toHaveBeenCalledWith(
+        'The name "test-path/test" is already taken in this directory.',
+        'alert',
+        jasmine.anything(),
+        null,
+        false,
+        true,
+      );
     });
   });
 });

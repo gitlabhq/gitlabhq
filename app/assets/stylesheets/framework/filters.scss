@@ -88,6 +88,7 @@
   }
 
   .name,
+  .operator,
   .value {
     display: inline-block;
     padding: 2px 7px;
@@ -99,6 +100,12 @@
     border-radius: 2px 0 0 2px;
     margin-right: 1px;
     text-transform: capitalize;
+  }
+
+  .operator {
+    background-color: $white-normal;
+    color: $filter-value-text-color;
+    margin-right: 1px;
   }
 
   .value-container {
@@ -145,6 +152,10 @@
 .filtered-search-term .selected {
   .name {
     background-color: $filter-name-selected-color;
+  }
+
+  .operator {
+    box-shadow: inset 0 0 0 100px $filtered-search-term-shadow-color;
   }
 
   .value-container {
@@ -259,6 +270,11 @@
     right: 0;
     max-width: none;
     min-width: 100%;
+  }
+
+  .btn-helptext {
+    margin-left: auto;
+    color: var(--gray);
   }
 }
 

@@ -2,8 +2,8 @@
 require 'spec_helper'
 
 describe Groups::AutoDevopsService, '#execute' do
-  set(:group) { create(:group) }
-  set(:user) { create(:user) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:user) { create(:user) }
   let(:group_params) { { auto_devops_enabled: '0' } }
   let(:service) { described_class.new(group, user, group_params) }
 

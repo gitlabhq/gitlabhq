@@ -10,7 +10,6 @@ describe('Job Log Duration Badge', () => {
 
   const createComponent = (props = {}) => {
     wrapper = shallowMount(DurationBadge, {
-      sync: false,
       propsData: {
         ...props,
       },

@@ -39,7 +39,7 @@ module QA
           end
 
           def wait_for_page_to_load
-            QA::Support::Waiter.wait(interval: 1.0) do
+            QA::Support::Waiter.wait_until(sleep_interval: 1.0) do
               page.has_css?('.setting-name', text: "Description")
             end
           end

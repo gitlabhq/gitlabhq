@@ -17,7 +17,6 @@ describe('User Operation confirmation modal', () => {
         method: 'method',
         ...props,
       },
-      sync: false,
     });
   };
 

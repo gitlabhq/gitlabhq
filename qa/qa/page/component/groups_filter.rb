@@ -23,9 +23,7 @@ module QA
           # Since we submitted after filtering, the presence of
           # groups_list_tree_container means we have the complete filtered list
           # of groups
-          wait(reload: false) do
-            page.has_css?(element_selector_css(:groups_list_tree_container))
-          end
+          has_element?(:groups_list_tree_container, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
 
           # If there are no groups we'll know immediately because we filtered the list
           return false if page.has_text?('No groups or projects matched your search', wait: 0)

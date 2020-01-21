@@ -8,7 +8,9 @@ describe GitlabUsagePingWorker do
   it 'delegates to SubmitUsagePingService' do
     allow(subject).to receive(:try_obtain_lease).and_return(true)
 
-    expect_any_instance_of(SubmitUsagePingService).to receive(:execute)
+    expect_next_instance_of(SubmitUsagePingService) do |instance|
+      expect(instance).to receive(:execute)
+    end
 
     subject.perform
   end

@@ -51,6 +51,27 @@ describe 'Task Lists' do
     EOT
   end
 
+  let(:commented_tasks_markdown) do
+    <<-EOT.strip_heredoc
+    <!--
+    - [ ] a
+    -->
+
+    - [ ] b
+    EOT
+  end
+
+  let(:summary_no_blank_line_markdown) do
+    <<-EOT.strip_heredoc
+    <details>
+    <summary>No blank line after summary element breaks task list</summary>
+    1. [ ] People Ops: do such and such
+    </details>
+
+    * [ ] Task 1
+    EOT
+  end
+
   before do
     Warden.test_mode!
 
@@ -288,6 +309,54 @@ describe 'Task Lists' do
       it 'provides a summary on MergeRequests#index' do
         visit project_merge_requests_path(project)
         expect(page).to have_content("1 of 1 task completed")
+      end
+    end
+  end
+
+  describe 'markdown task edge cases' do
+    describe 'commented tasks', :js do
+      let!(:issue) { create(:issue, description: commented_tasks_markdown, author: user, project: project) }
+
+      it 'renders' do
+        visit_issue(project, issue)
+        wait_for_requests
+
+        expect(page).to have_selector('ul.task-list',      count: 1)
+        expect(page).to have_selector('li.task-list-item', count: 1)
+        expect(page).to have_selector('ul input[checked]', count: 0)
+
+        find('.task-list-item-checkbox').click
+        wait_for_requests
+
+        visit_issue(project, issue)
+        wait_for_requests
+
+        expect(page).to have_selector('ul.task-list',      count: 1)
+        expect(page).to have_selector('li.task-list-item', count: 1)
+        expect(page).to have_selector('ul input[checked]', count: 1)
+      end
+    end
+
+    describe 'summary with no blank line', :js do
+      let!(:issue) { create(:issue, description: summary_no_blank_line_markdown, author: user, project: project) }
+
+      it 'renders' do
+        visit_issue(project, issue)
+        wait_for_requests
+
+        expect(page).to have_selector('ul.task-list',      count: 1)
+        expect(page).to have_selector('li.task-list-item', count: 1)
+        expect(page).to have_selector('ul input[checked]', count: 0)
+
+        find('.task-list-item-checkbox').click
+        wait_for_requests
+
+        visit_issue(project, issue)
+        wait_for_requests
+
+        expect(page).to have_selector('ul.task-list',      count: 1)
+        expect(page).to have_selector('li.task-list-item', count: 1)
+        expect(page).to have_selector('ul input[checked]', count: 1)
       end
     end
   end

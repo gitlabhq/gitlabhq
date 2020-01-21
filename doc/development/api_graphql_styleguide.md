@@ -210,7 +210,7 @@ class MergeRequestPermissionsType < BasePermissionType
   abilities :admin_merge_request, :update_merge_request, :create_note
 
   ability_field :resolve_note,
-                description: 'Whether or not the user can resolve disussions on the merge request'
+                description: 'Indicates the user can resolve discussions on the merge request'
   permission_field :push_to_source_branch, method: :can_push_to_source_branch?
 end
 ```

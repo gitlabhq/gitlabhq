@@ -224,9 +224,9 @@ Download Ruby and compile it:
 
 ```sh
 mkdir /tmp/ruby && cd /tmp/ruby
-curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.6/ruby-2.6.3.tar.gz
-echo '2347ed6ca5490a104ebd5684d2b9b5eefa6cd33c  ruby-2.6.3.tar.gz' | shasum -c - && tar xzf ruby-2.6.3.tar.gz
-cd ruby-2.6.3
+curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.6/ruby-2.6.5.tar.gz
+echo '1416ce288fb8bfeae07a12b608540318c9cace71  ruby-2.6.5.tar.gz' | shasum -c - && tar xzf ruby-2.6.5.tar.gz
+cd ruby-2.6.5
 
 ./configure --disable-install-rdoc
 make
@@ -250,11 +250,11 @@ page](https://golang.org/dl).
 # Remove former Go installation folder
 sudo rm -rf /usr/local/go
 
-curl --remote-name --progress https://dl.google.com/go/go1.11.10.linux-amd64.tar.gz
-echo 'aefaa228b68641e266d1f23f1d95dba33f17552ba132878b65bb798ffa37e6d0  go1.11.10.linux-amd64.tar.gz' | shasum -a256 -c - && \
-  sudo tar -C /usr/local -xzf go1.11.10.linux-amd64.tar.gz
+curl --remote-name --progress https://dl.google.com/go/go1.13.5.linux-amd64.tar.gz
+echo '512103d7ad296467814a6e3f635631bd35574cab3369a97a323c9a585ccaa569  go1.13.5.linux-amd64.tar.gz' | shasum -a256 -c - && \
+  sudo tar -C /usr/local -xzf go1.13.5.linux-amd64.tar.gz
 sudo ln -sf /usr/local/go/bin/{go,godoc,gofmt} /usr/local/bin/
-rm go1.11.10.linux-amd64.tar.gz
+rm go1.13.5.linux-amd64.tar.gz
 ```
 
 ## 4. Node

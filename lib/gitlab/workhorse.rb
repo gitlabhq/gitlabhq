@@ -22,18 +22,16 @@ module Gitlab
       def git_http_ok(repository, repo_type, user, action, show_all_refs: false)
         raise "Unsupported action: #{action}" unless ALLOWED_GIT_HTTP_ACTIONS.include?(action.to_s)
 
-        project = repository.project
-
         attrs = {
           GL_ID: Gitlab::GlId.gl_id(user),
-          GL_REPOSITORY: repo_type.identifier_for_subject(project),
+          GL_REPOSITORY: repo_type.identifier_for_subject(repository.project),
           GL_USERNAME: user&.username,
           ShowAllRefs: show_all_refs,
           Repository: repository.gitaly_repository.to_h,
           GitConfigOptions: [],
           GitalyServer: {
-            address: Gitlab::GitalyClient.address(project.repository_storage),
-            token: Gitlab::GitalyClient.token(project.repository_storage),
+            address: Gitlab::GitalyClient.address(repository.storage),
+            token: Gitlab::GitalyClient.token(repository.storage),
             features: Feature::Gitaly.server_feature_flags
           }
         }

@@ -46,8 +46,6 @@ describe 'Multi-file editor new directory', :js do
 
     find('.js-ide-commit-mode').click
 
-    click_button 'Stage'
-
     fill_in('commit-message', with: 'commit message ide')
 
     find(:css, ".js-ide-commit-new-mr input").set(false)

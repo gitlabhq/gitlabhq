@@ -178,6 +178,15 @@ module API
       expose :only_protected_branches
     end
 
+    class ContainerExpirationPolicy < Grape::Entity
+      expose :cadence
+      expose :enabled
+      expose :keep_n
+      expose :older_than
+      expose :name_regex
+      expose :next_run_at
+    end
+
     class ProjectImportStatus < ProjectIdentity
       expose :import_status
 
@@ -276,6 +285,8 @@ module API
       expose :owner, using: Entities::UserBasic, unless: ->(project, options) { project.group }
       expose :resolve_outdated_diff_discussions
       expose :container_registry_enabled
+      expose :container_expiration_policy, using: Entities::ContainerExpirationPolicy,
+        if: -> (project, _) { project.container_expiration_policy }
 
       # Expose old field names with the new permissions methods to keep API compatible
       # TODO: remove in API v5, replaced by *_access_level
@@ -324,6 +335,7 @@ module API
       expose :remove_source_branch_after_merge
       expose :printing_merge_request_link_enabled
       expose :merge_method
+      expose :suggestion_commit_message
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: -> (project, options) {
         options[:statistics] && Ability.allowed?(options[:current_user], :read_statistics, project)
       }
@@ -331,6 +343,7 @@ module API
       expose :auto_devops_deploy_strategy do |project, options|
         project.auto_devops.nil? ? 'continuous' : project.auto_devops.deploy_strategy
       end
+      expose :autoclose_referenced_issues
 
       # rubocop: disable CodeReuse/ActiveRecord
       def self.preload_relation(projects_relation, options = {})
@@ -340,6 +353,7 @@ module API
         # MR describing the solution: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/20555
         super(projects_relation).preload(:group)
                                 .preload(:ci_cd_settings)
+                                .preload(:container_expiration_policy)
                                 .preload(:auto_devops)
                                 .preload(project_group_links: { group: :route },
                                          fork_network: :root_project,
@@ -400,6 +414,7 @@ module API
       expose :auto_devops_enabled
       expose :subgroup_creation_level_str, as: :subgroup_creation_level
       expose :emails_disabled
+      expose :mentions_disabled
       expose :lfs_enabled?, as: :lfs_enabled
       expose :avatar_url do |group, options|
         group.avatar_url(only_path: false)
@@ -569,6 +584,20 @@ module API
       end
     end
 
+    class IssuableReferences < Grape::Entity
+      expose :short do |issuable|
+        issuable.to_reference
+      end
+
+      expose :relative do |issuable, options|
+        issuable.to_reference(options[:group] || options[:project])
+      end
+
+      expose :full do |issuable|
+        issuable.to_reference(full: true)
+      end
+    end
+
     class Diff < Grape::Entity
       expose :old_path, :new_path, :a_mode, :b_mode
       expose :new_file?, as: :new_file
@@ -585,6 +614,7 @@ module API
     end
 
     class ProtectedBranch < Grape::Entity
+      expose :id
       expose :name
       expose :push_access_levels, using: Entities::ProtectedRefAccess
       expose :merge_access_levels, using: Entities::ProtectedRefAccess
@@ -676,6 +706,10 @@ module API
         end
       end
 
+      expose :references, with: IssuableReferences do |issue|
+        issue
+      end
+
       # Calculating the value of subscribed field triggers Markdown
       # processing. We can't do that for multiple issues / merge
       # requests in a single API request.
@@ -761,9 +795,12 @@ module API
       expose :author, :assignees, using: Entities::UserBasic
 
       expose :source_project_id, :target_project_id
-      expose :labels do |merge_request|
-        # Avoids an N+1 query since labels are preloaded
-        merge_request.labels.map(&:title).sort
+      expose :labels do |merge_request, options|
+        if options[:with_labels_details]
+          ::API::Entities::LabelBasic.represent(merge_request.labels.sort_by(&:title))
+        else
+          merge_request.labels.map(&:title).sort
+        end
       end
       expose :work_in_progress?, as: :work_in_progress
       expose :milestone, using: Entities::Milestone
@@ -787,8 +824,14 @@ module API
       # Deprecated
       expose :allow_collaboration, as: :allow_maintainer_to_push, if: -> (merge_request, _) { merge_request.for_fork? }
 
+      # reference is deprecated in favour of references
+      # Introduced [Gitlab 12.6](https://gitlab.com/gitlab-org/gitlab/merge_requests/20354)
       expose :reference do |merge_request, options|
         merge_request.to_reference(options[:project])
+      end
+
+      expose :references, with: IssuableReferences do |merge_request|
+        merge_request
       end
 
       expose :web_url do |merge_request|
@@ -881,6 +924,10 @@ module API
 
     class SSHKeyWithUser < SSHKey
       expose :user, using: Entities::UserPublic
+    end
+
+    class DeployKeyWithUser < SSHKeyWithUser
+      expose :deploy_keys_projects
     end
 
     class DeployKeysProject < Grape::Entity
@@ -1082,12 +1129,19 @@ module API
       end
     end
 
-    class ProjectService < Grape::Entity
-      expose :id, :title, :created_at, :updated_at, :active
+    class ProjectServiceBasic < Grape::Entity
+      expose :id, :title
+      expose :slug do |service|
+        service.to_param.dasherize
+      end
+      expose :created_at, :updated_at, :active
       expose :commit_events, :push_events, :issues_events, :confidential_issues_events
       expose :merge_requests_events, :tag_push_events, :note_events
       expose :confidential_note_events, :pipeline_events, :wiki_page_events
-      expose :job_events
+      expose :job_events, :comment_on_event_enabled
+    end
+
+    class ProjectService < ProjectServiceBasic
       # Expose serialized properties
       expose :properties do |service, options|
         # TODO: Simplify as part of https://gitlab.com/gitlab-org/gitlab/issues/29404
@@ -1142,7 +1196,7 @@ module API
     end
 
     class LabelBasic < Grape::Entity
-      expose :id, :name, :color, :description, :text_color
+      expose :id, :name, :color, :description, :description_html, :text_color
     end
 
     class Label < LabelBasic
@@ -1298,6 +1352,30 @@ module API
       expose :password_authentication_enabled_for_web, as: :password_authentication_enabled
       expose :password_authentication_enabled_for_web, as: :signin_enabled
       expose :allow_local_requests_from_web_hooks_and_services, as: :allow_local_requests_from_hooks_and_services
+    end
+
+    class Appearance < Grape::Entity
+      expose :title
+      expose :description
+
+      expose :logo do |appearance, options|
+        appearance.logo.url
+      end
+
+      expose :header_logo do |appearance, options|
+        appearance.header_logo.url
+      end
+
+      expose :favicon do |appearance, options|
+        appearance.favicon.url
+      end
+
+      expose :new_project_guidelines
+      expose :header_message
+      expose :footer_message
+      expose :message_background_color
+      expose :message_font_color
+      expose :email_header_and_footer_enabled
     end
 
     # deprecated old Release representation

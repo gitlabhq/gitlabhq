@@ -10,7 +10,7 @@ module Gitlab
       MAX_TAG_MESSAGE_DISPLAY_SIZE = 10.megabytes
       SERIALIZE_KEYS = %i[name target target_commit message].freeze
 
-      attr_accessor *SERIALIZE_KEYS # rubocop:disable Lint/AmbiguousOperator
+      attr_accessor(*SERIALIZE_KEYS)
 
       class << self
         def get_message(repository, tag_id)

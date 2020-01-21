@@ -24,17 +24,17 @@ will be locked.
 
 The very first time you visit your GitLab EE installation signed in as an admin,
 you should see a note urging you to upload a license with a link that takes you
-straight to the License admin area.
+straight to **Admin Area > License**.
 
 Otherwise, you can:
 
 1. Navigate manually to the **Admin Area** by clicking the wrench icon in the menu bar.
 
-   ![Admin area icon](img/admin_wrench.png)
+   ![Admin Area icon](img/admin_wrench.png)
 
 1. And then going to the **License** tab and click on **Upload New License**.
 
-   ![License admin area](img/license_admin_area.png)
+   ![License Admin Area](img/license_admin_area.png)
 
 1. If you've received a `.gitlab-license` file, you should have already downloaded
    it in your local machine. You can then upload it directly by choosing the
@@ -69,7 +69,7 @@ gitlab_rails['license_file'] = "/path/to/license/file"
 
 CAUTION: **Caution:**
 These methods will only add a license at the time of installation. Use the
-admin area in the web ui to renew or upgrade licenses.
+Admin Area in the web ui to renew or upgrade licenses.
 
 ---
 

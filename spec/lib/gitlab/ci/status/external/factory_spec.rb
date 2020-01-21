@@ -22,7 +22,7 @@ describe Gitlab::Ci::Status::External::Factory do
         end
 
         let(:expected_status) do
-          Gitlab::Ci::Status.const_get(simple_status.capitalize, false)
+          Gitlab::Ci::Status.const_get(simple_status.to_s.camelize, false)
         end
 
         it "fabricates a core status #{simple_status}" do

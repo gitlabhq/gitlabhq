@@ -1,7 +1,6 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex';
 import tooltip from '~/vue_shared/directives/tooltip';
-import Icon from '~/vue_shared/components/icon.vue';
 import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
 import CommitFilesList from './commit_sidebar/list.vue';
 import EmptyState from './commit_sidebar/empty_state.vue';
@@ -11,7 +10,6 @@ import { activityBarViews, stageKeys } from '../constants';
 export default {
   components: {
     DeprecatedModal,
-    Icon,
     CommitFilesList,
     EmptyState,
   },
@@ -96,7 +94,6 @@ export default {
         :empty-state-text="__('There are no unstaged changes')"
         action="stageAllChanges"
         action-btn-icon="stage-all"
-        item-action-component="stage-button"
         class="is-first"
         icon-name="unstaged"
       />
@@ -110,7 +107,6 @@ export default {
         :empty-state-text="__('There are no staged changes')"
         action="unstageAllChanges"
         action-btn-icon="unstage-all"
-        item-action-component="unstage-button"
         icon-name="staged"
       />
     </template>

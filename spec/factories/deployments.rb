@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :deployment, class: Deployment do
+  factory :deployment, class: 'Deployment' do
     sha { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
     ref { 'master' }
     tag { false }

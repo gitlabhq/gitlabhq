@@ -1,0 +1,5 @@
+---
+title: Drop redundant index on ci_pipelines.project_id
+merge_request: 22325
+author:
+type: other

@@ -11,13 +11,10 @@ describe 'Merge request > User sees MR with deleted source branch', :js do
   let(:user) { project.creator }
 
   before do
-    stub_feature_flags(single_mr_diff_view: false)
     merge_request.update!(source_branch: 'this-branch-does-not-exist')
     sign_in(user)
     visit project_merge_request_path(project, merge_request)
   end
-
-  it_behaves_like 'rendering a single diff version'
 
   it 'shows a message about missing source branch' do
     expect(page).to have_content('Source branch does not exist.')

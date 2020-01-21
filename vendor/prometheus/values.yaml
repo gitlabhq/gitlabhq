@@ -1,7 +1,5 @@
 alertmanager:
   enabled: false
-  image:
-    tag: v0.15.2
 
 kubeStateMetrics:
   enabled: true
@@ -14,8 +12,6 @@ pushgateway:
 
 server:
   fullnameOverride: "prometheus-prometheus-server"
-  image:
-    tag: v2.4.3
 
 serverFiles:
   alerts: {}

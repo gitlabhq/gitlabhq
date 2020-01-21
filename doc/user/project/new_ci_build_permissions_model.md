@@ -48,7 +48,7 @@ It is important to note that we have a few types of users:
   via another project's job.
 
 - **External users**: CI jobs created by [external users](../permissions.md#external-users-core-only) will have
-  access only to projects to which user has at least reporter access. This
+  access only to projects to which the user has at least Reporter access. This
   rules out accessing all internal projects by default.
 
 This allows us to make the CI and permission system more trustworthy.
@@ -114,7 +114,7 @@ docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
 
 Using single token had multiple security implications:
 
-- The token would be readable to anyone who had developer access to a project
+- The token would be readable to anyone who had Developer access to a project
   that could run CI jobs, allowing the developer to register any specific
   Runner for that project.
 - The token would allow to access only the project's sources, forbidding from

@@ -5,11 +5,12 @@ require 'spec_helper'
 describe 'CycleAnalytics#staging' do
   extend CycleAnalyticsHelpers::TestGeneration
 
-  let(:project) { create(:project, :repository) }
-  let(:from_date) { 10.days.ago }
-  let(:user) { create(:user, :admin) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:from_date) { 10.days.ago }
+  let_it_be(:user) { create(:user, :admin) }
+  let_it_be(:project_level) { CycleAnalytics::ProjectLevel.new(project, options: { from: from_date }) }
 
-  subject { CycleAnalytics::ProjectLevel.new(project, options: { from: from_date }) }
+  subject { project_level }
 
   generate_cycle_analytics_spec(
     phase: :staging,
@@ -28,14 +29,7 @@ describe 'CycleAnalytics#staging' do
                             ["production deploy happens after merge request is merged (along with other changes)",
                              lambda do |context, data|
                                # Make other changes on master
-                               sha = context.project.repository.create_file(
-                                 context.user,
-                                 context.generate(:branch),
-                                 'content',
-                                 message: 'commit message',
-                                 branch_name: 'master')
-                               context.project.repository.commit(sha)
-
+                               context.project.repository.commit("this_sha_apparently_does_not_matter")
                                context.deploy_master(context.user, context.project)
                              end]])
 

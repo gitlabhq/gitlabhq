@@ -8,7 +8,7 @@ class AddManagedToCluster < ActiveRecord::Migration[5.0]
   DOWNTIME = false
 
   def up
-    add_column_with_default(:clusters, :managed, :boolean, default: true)
+    add_column_with_default(:clusters, :managed, :boolean, default: true) # rubocop:disable Migration/AddColumnWithDefault
   end
 
   def down

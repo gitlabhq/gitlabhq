@@ -24,7 +24,7 @@ CAUTION: **Caution:**
 This setting is experimental. An increased maximum will increase resource
 consumption of your instance. Keep this in mind when adjusting the maximum.
 
-1. Go to **Admin area > Settings > General**.
+1. Go to **Admin Area > Settings > General**.
 1. Expand **Diff limits**.
 1. Enter a value for **Maximum diff patch size**, measured in bytes.
 1. Click on **Save changes**.

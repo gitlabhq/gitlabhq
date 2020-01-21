@@ -5,7 +5,7 @@ type: howto, reference
 # Email from GitLab **(STARTER ONLY)**
 
 GitLab provides a simple tool to administrators for emailing all users, or users of
-a chosen group or project, right from the admin area. Users will receive the email
+a chosen group or project, right from the Admin Area. Users will receive the email
 at their primary email address.
 
 ## Use-cases
@@ -16,8 +16,8 @@ at their primary email address.
 
 ## Sending emails to users from within GitLab
 
-1. Go to the admin area using the wrench icon in the top right corner and
-   navigate to **Overview > Users > Send email to users**.
+1. Navigate to the **Admin Area > Overview > Users** and press the
+   **Send email to users** button.
 
    ![admin users](email1.png)
 

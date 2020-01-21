@@ -120,7 +120,7 @@ describe('DiffsStoreActions', () => {
 
   describe('fetchDiffFiles', () => {
     it('should fetch diff files', done => {
-      const endpoint = '/fetch/diff/files?w=1';
+      const endpoint = '/fetch/diff/files?view=inline&w=1';
       const mock = new MockAdapter(axios);
       const res = { diff_files: 1, merge_request_diffs: [] };
       mock.onGet(endpoint).reply(200, res);
@@ -128,7 +128,7 @@ describe('DiffsStoreActions', () => {
       testAction(
         fetchDiffFiles,
         {},
-        { endpoint },
+        { endpoint, diffFiles: [], showWhitespace: false, diffViewType: 'inline' },
         [
           { type: types.SET_LOADING, payload: true },
           { type: types.SET_LOADING, payload: false },
@@ -141,6 +141,13 @@ describe('DiffsStoreActions', () => {
           done();
         },
       );
+
+      fetchDiffFiles({ state: { endpoint }, commit: () => null })
+        .then(data => {
+          expect(data).toEqual(res);
+          done();
+        })
+        .catch(done.fail);
     });
   });
 
@@ -163,10 +170,12 @@ describe('DiffsStoreActions', () => {
         { endpointBatch },
         [
           { type: types.SET_BATCH_LOADING, payload: true },
+          { type: types.SET_RETRIEVING_BATCHES, payload: true },
           { type: types.SET_DIFF_DATA_BATCH, payload: { diff_files: res1.diff_files } },
           { type: types.SET_BATCH_LOADING, payload: false },
           { type: types.SET_DIFF_DATA_BATCH, payload: { diff_files: [] } },
           { type: types.SET_BATCH_LOADING, payload: false },
+          { type: types.SET_RETRIEVING_BATCHES, payload: false },
         ],
         [],
         () => {
@@ -215,6 +224,8 @@ describe('DiffsStoreActions', () => {
 
   describe('assignDiscussionsToDiff', () => {
     it('should merge discussions into diffs', done => {
+      window.location.hash = 'ABC_123';
+
       const state = {
         diffFiles: [
           {

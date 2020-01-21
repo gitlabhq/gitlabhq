@@ -14,7 +14,9 @@ describe Gitlab::Graphql::Connections::FilterableArrayConnection do
   describe '#paged_nodes' do
     let(:paged_nodes) { subject.paged_nodes }
 
-    it_behaves_like "connection with paged nodes"
+    it_behaves_like "connection with paged nodes" do
+      let(:paged_nodes_size) { 3 }
+    end
 
     context 'when callback filters some nodes' do
       let(:callback) { proc { |nodes| nodes[1..-1] } }

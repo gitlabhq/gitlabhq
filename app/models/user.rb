@@ -20,6 +20,7 @@ class User < ApplicationRecord
   include WithUploads
   include OptionallySearch
   include FromUnion
+  include BatchDestroyDependentAssociations
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
@@ -163,9 +164,9 @@ class User < ApplicationRecord
   # Validations
   #
   # Note: devise :validatable above adds validations for :email and :password
-  validates :name, presence: true, length: { maximum: 128 }
-  validates :first_name, length: { maximum: 255 }
-  validates :last_name, length: { maximum: 255 }
+  validates :name, presence: true, length: { maximum: 255 }
+  validates :first_name, length: { maximum: 127 }
+  validates :last_name, length: { maximum: 127 }
   validates :email, confirmation: true
   validates :notification_email, presence: true
   validates :notification_email, devise_email: true, if: ->(user) { user.notification_email != user.email }
@@ -246,6 +247,7 @@ class User < ApplicationRecord
   delegate :show_whitespace_in_diffs, :show_whitespace_in_diffs=, to: :user_preference
   delegate :sourcegraph_enabled, :sourcegraph_enabled=, to: :user_preference
   delegate :setup_for_company, :setup_for_company=, to: :user_preference
+  delegate :render_whitespace_in_code, :render_whitespace_in_code=, to: :user_preference
 
   accepts_nested_attributes_for :user_preference, update_only: true
 
@@ -285,6 +287,10 @@ class User < ApplicationRecord
       end
     end
 
+    before_transition do
+      !Gitlab::Database.read_only?
+    end
+
     # rubocop: disable CodeReuse/ServiceClass
     # Ideally we should not call a service object here but user.block
     # is also bcalled by Users::MigrateToGhostUserService which references
@@ -301,6 +307,8 @@ class User < ApplicationRecord
   scope :blocked, -> { with_states(:blocked, :ldap_blocked) }
   scope :external, -> { where(external: true) }
   scope :active, -> { with_state(:active).non_internal }
+  scope :active_without_ghosts, -> { with_state(:active).without_ghosts }
+  scope :without_ghosts, -> { where('ghost IS NOT TRUE') }
   scope :deactivated, -> { with_state(:deactivated).non_internal }
   scope :without_projects, -> { joins('LEFT JOIN project_authorizations ON users.id = project_authorizations.user_id').where(project_authorizations: { user_id: nil }) }
   scope :order_recent_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'DESC')) }
@@ -464,7 +472,7 @@ class User < ApplicationRecord
       when 'deactivated'
         deactivated
       else
-        active
+        active_without_ghosts
       end
     end
 
@@ -608,7 +616,7 @@ class User < ApplicationRecord
   end
 
   def self.non_internal
-    where('ghost IS NOT TRUE')
+    without_ghosts
   end
 
   #

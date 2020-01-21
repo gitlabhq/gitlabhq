@@ -8,9 +8,9 @@ module QA
           include Page::Component::UsersSelect
           include QA::Page::Component::Select2
 
-          view 'app/views/projects/project_members/_new_project_member.html.haml' do
-            element :member_select_input
-            element :add_member_button
+          view 'app/views/shared/members/_invite_member.html.haml' do
+            element :member_select_field
+            element :invite_member_button
           end
 
           view 'app/views/projects/project_members/_team.html.haml' do
@@ -21,7 +21,7 @@ module QA
             element :invite_group_tab
           end
 
-          view 'app/views/projects/project_members/_new_project_group.html.haml' do
+          view 'app/views/shared/members/_invite_group.html.haml' do
             element :group_select_field
             element :invite_group_button
           end
@@ -43,8 +43,8 @@ module QA
           end
 
           def add_member(username)
-            select_user :member_select_input, username
-            click_element :add_member_button
+            select_user :member_select_field, username
+            click_element :invite_member_button
           end
 
           def remove_group(group_name)

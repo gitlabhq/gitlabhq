@@ -6,7 +6,7 @@ describe 'search/_results' do
   before do
     controller.params[:action] = 'show'
 
-    3.times { create(:issue) }
+    create_list(:issue, 3)
 
     @search_objects = Issue.page(1).per(2)
     @scope = 'issues'

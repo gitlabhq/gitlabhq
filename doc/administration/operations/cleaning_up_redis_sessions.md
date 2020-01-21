@@ -22,7 +22,7 @@ settings outlined in
 
 First we define a shell function with the proper Redis connection details.
 
-```
+```shell
 rcli() {
   # This example works for Omnibus installations of GitLab 7.3 or newer. For an
   # installation from source you will have to change the socket path and the
@@ -37,7 +37,7 @@ rcli ping
 Now we do a search to see if there are any session keys in the old format for
 us to clean up.
 
-```
+```shell
 # returns the number of old-format session keys in Redis
 rcli keys '*' | grep '^[a-f0-9]\{32\}$' | wc -l
 ```
@@ -45,7 +45,7 @@ rcli keys '*' | grep '^[a-f0-9]\{32\}$' | wc -l
 If the number is larger than zero, you can proceed to expire the keys from
 Redis. If the number is zero there is nothing to clean up.
 
-```
+```shell
 # Tell Redis to expire each matched key after 600 seconds.
 rcli keys '*' | grep '^[a-f0-9]\{32\}$' | awk '{ print "expire", $0, 600 }' | rcli
 # This will print '(integer) 1' for each key that gets expired.

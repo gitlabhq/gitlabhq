@@ -323,7 +323,7 @@ In this particular case, the default value exists and we're just changing the me
 in the `namespaces` table. Only when creating a new column with a default, all the records are going be rewritten.
 
 NOTE: **Note:**  A faster [ALTER TABLE ADD COLUMN with a non-null default](https://www.depesz.com/2018/04/04/waiting-for-postgresql-11-fast-alter-table-add-column-with-a-non-null-default/)
-was introduced on PostgresSQL 11.0, removing the need of rewritting the table when a new column with a default value is added.
+was introduced on PostgresSQL 11.0, removing the need of rewriting the table when a new column with a default value is added.
 
 For the reasons mentioned above, it's safe to use `change_column_default` in a single-transaction migration
 without requiring `disable_ddl_transaction!`.

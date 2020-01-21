@@ -73,7 +73,15 @@ describe KeysFinder do
       end
 
       context 'with valid fingerprints' do
-        context 'with valid MD5 params' do
+        let!(:deploy_key) do
+          create(:deploy_key,
+            user: user,
+            key: 'ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt1017k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=',
+            fingerprint: '8a:4a:12:92:0b:50:47:02:d4:5a:8e:a9:44:4e:08:b4',
+            fingerprint_sha256: '4DPHOVNh53i9dHb5PpY2vjfyf5qniTx1/pBFPoZLDdk')
+        end
+
+        context 'personal key with valid MD5 params' do
           context 'with an existent fingerprint' do
             before do
               params[:fingerprint] = 'ba:81:59:68:d7:6c:cd:02:02:bf:6a:9b:55:4e:af:d1'
@@ -81,6 +89,17 @@ describe KeysFinder do
 
             it 'returns the key' do
               expect(subject).to eq(key_1)
+              expect(subject.user).to eq(user)
+            end
+          end
+
+          context 'deploy key with an existent fingerprint' do
+            before do
+              params[:fingerprint] = '8a:4a:12:92:0b:50:47:02:d4:5a:8e:a9:44:4e:08:b4'
+            end
+
+            it 'returns the key' do
+              expect(subject).to eq(deploy_key)
               expect(subject.user).to eq(user)
             end
           end
@@ -96,7 +115,7 @@ describe KeysFinder do
           end
         end
 
-        context 'with valid SHA256 params' do
+        context 'personal key with valid SHA256 params' do
           context 'with an existent fingerprint' do
             before do
               params[:fingerprint] = 'SHA256:nUhzNyftwADy8AH3wFY31tAKs7HufskYTte2aXo/lCg'
@@ -104,6 +123,17 @@ describe KeysFinder do
 
             it 'returns key' do
               expect(subject).to eq(key_1)
+              expect(subject.user).to eq(user)
+            end
+          end
+
+          context 'deploy key with an existent fingerprint' do
+            before do
+              params[:fingerprint] = 'SHA256:4DPHOVNh53i9dHb5PpY2vjfyf5qniTx1/pBFPoZLDdk'
+            end
+
+            it 'returns key' do
+              expect(subject).to eq(deploy_key)
               expect(subject.user).to eq(user)
             end
           end

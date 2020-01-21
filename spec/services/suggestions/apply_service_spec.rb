@@ -48,10 +48,34 @@ describe Suggestions::ApplyService do
       expect(commit.committer_email).to eq(user.commit_email)
       expect(commit.author_name).to eq(user.name)
     end
+
+    context 'when a custom suggestion commit message' do
+      before do
+        project.update!(suggestion_commit_message: message)
+
+        apply(suggestion)
+      end
+
+      context 'is not specified' do
+        let(:message) { nil }
+
+        it 'sets default commit message' do
+          expect(project.repository.commit.message).to eq("Apply suggestion to files/ruby/popen.rb")
+        end
+      end
+
+      context 'is specified' do
+        let(:message) { 'refactor: %{project_path} %{project_name} %{file_path} %{branch_name} %{username} %{user_full_name}' }
+
+        it 'sets custom commit message' do
+          expect(project.repository.commit.message).to eq("refactor: project-1 Project_1 files/ruby/popen.rb master test.user Test User")
+        end
+      end
+    end
   end
 
-  let(:project) { create(:project, :repository) }
-  let(:user) { create(:user, :commit_email) }
+  let(:project) { create(:project, :repository, path: 'project-1', name: 'Project_1') }
+  let(:user) { create(:user, :commit_email, name: 'Test User', username: 'test.user') }
 
   let(:position) { build_position }
 
@@ -113,7 +137,8 @@ describe Suggestions::ApplyService do
     context 'non-fork project' do
       let(:merge_request) do
         create(:merge_request, source_project: project,
-                               target_project: project)
+                               target_project: project,
+                               source_branch: 'master')
       end
 
       before do

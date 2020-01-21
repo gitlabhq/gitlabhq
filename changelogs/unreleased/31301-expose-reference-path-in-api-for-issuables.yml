@@ -1,0 +1,5 @@
+---
+title: Expose full reference path for issuables in API
+merge_request: 20354
+author:
+type: changed

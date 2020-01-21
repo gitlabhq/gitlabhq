@@ -48,7 +48,6 @@ describe('User Operation confirmation modal', () => {
       stubs: {
         GlModal: ModalStub,
       },
-      sync: false,
     });
   };
 

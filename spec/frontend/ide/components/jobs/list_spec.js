@@ -44,7 +44,6 @@ describe('IDE stages list', () => {
       },
       localVue,
       store,
-      sync: false,
     });
   };
 
@@ -93,7 +92,6 @@ describe('IDE stages list', () => {
       wrapper = mount(StageList, {
         propsData: { ...defaultProps, stages },
         store,
-        sync: false,
         localVue,
       });
     });

@@ -55,6 +55,10 @@
   background-color: $gray-light;
 }
 
+.bg-white {
+  background-color: $white;
+}
+
 .bg-line-target-blue {
   background: $line-target-blue;
 }
@@ -456,6 +460,8 @@ img.emoji {
 .w-8em { width: 8em; }
 .w-3rem { width: 3rem; }
 .w-15p { width: 15%; }
+.w-30p { width: 30%; }
+.w-60p { width: 60%; }
 .w-70p { width: 70%; }
 
 .h-12em { height: 12em; }
@@ -573,6 +579,7 @@ img.emoji {
 .gl-font-size-large { font-size: $gl-font-size-large; }
 
 .gl-line-height-24 { line-height: $gl-line-height-24; }
+.gl-line-height-14 { line-height: $gl-line-height-14; }
 
 .gl-font-size-12 { font-size: $gl-font-size-12; }
 .gl-font-size-14 { font-size: $gl-font-size-14; }

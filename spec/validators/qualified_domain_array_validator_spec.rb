@@ -3,18 +3,19 @@
 require 'spec_helper'
 
 describe QualifiedDomainArrayValidator do
-  class QualifiedDomainArrayValidatorTestClass
-    include ActiveModel::Validations
+  let(:qualified_domain_array_validator_test_class) do
+    Class.new do
+      include ActiveModel::Validations
 
-    attr_accessor :domain_array
+      attr_accessor :domain_array
 
-    def initialize(domain_array)
-      self.domain_array = domain_array
+      def initialize(domain_array)
+        self.domain_array = domain_array
+      end
     end
   end
-
   let!(:record) do
-    QualifiedDomainArrayValidatorTestClass.new(['gitlab.com'])
+    qualified_domain_array_validator_test_class.new(['gitlab.com'])
   end
 
   subject { validator.validate(record) }

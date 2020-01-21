@@ -7,6 +7,7 @@
 .bundle
 .chef
 .directory
+.eslintcache
 /.envrc
 eslint-report.html
 /.gitlab_shell_secret
@@ -85,3 +86,4 @@ jsdoc/
 .projections.json
 /qa/.rakeTasks
 webpack-dev-server.json
+/.nvimrc

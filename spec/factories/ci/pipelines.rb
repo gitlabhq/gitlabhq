@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   # TODO: we can remove this factory in favour of :ci_pipeline
-  factory :ci_empty_pipeline, class: Ci::Pipeline do
+  factory :ci_empty_pipeline, class: 'Ci::Pipeline' do
     source { :push }
     ref { 'master' }
     sha { '97de212e80737a608d939f648d959671fb0a0142' }

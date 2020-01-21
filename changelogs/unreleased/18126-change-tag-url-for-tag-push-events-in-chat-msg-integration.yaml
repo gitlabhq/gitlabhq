@@ -1,5 +1,0 @@
----
-title: "Show tag link whenever it's a tag in chat message integration for push events and pipeline events"
-merge_request: 18126
-author: Mats Estensen
-type: fixed

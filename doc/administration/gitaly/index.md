@@ -38,19 +38,21 @@ This is an optional way to deploy Gitaly which can benefit GitLab
 installations that are larger than a single machine. Most
 installations will be better served with the default configuration
 used by Omnibus and the GitLab source installation guide.
+Follow transition to Gitaly on its own server, [Gitaly servers will need to be upgraded before other servers in your cluster](https://docs.gitlab.com/omnibus/update/#upgrading-gitaly-servers).
 
 Starting with GitLab 11.4, Gitaly is able to serve all Git requests without
 requiring a shared NFS mount for Git repository data.
 Between 11.4 and 11.8 the exception was the
 [Elasticsearch indexer](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer).
 But since 11.8 the indexer uses Gitaly for data access as well. NFS can still
-be leveraged for redudancy on block level of the Git data. But only has to
+be leveraged for redundancy on block level of the Git data. But only has to
 be mounted on the Gitaly server.
 
-Starting with GitLab 11.8, it is possible to use Elasticsearch in conjunction with
+From GitLab v11.8 to v12.2, it is possible to use Elasticsearch in conjunction with
 a Gitaly setup that isn't utilising NFS. In order to use Elasticsearch in this
-scenario, the [new repository indexer](../../integration/elasticsearch.md#elasticsearch-repository-indexer-beta)
-needs to be enabled in your GitLab configuration.
+scenario, the [new repository indexer](../../integration/elasticsearch.md#elasticsearch-repository-indexer)
+needs to be enabled in your GitLab configuration. [Since GitLab v12.3](https://gitlab.com/gitlab-org/gitlab/issues/6481),
+the new indexer becomes the default and no configuration is required.
 
 NOTE: **Note:** While Gitaly can be used as a replacement for NFS, it's not recommended
 to use EFS as it may impact GitLab's performance. Review the [relevant documentation](../high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs)
@@ -162,10 +164,20 @@ Git operations in GitLab will result in an API error.
    postgresql['enable'] = false
    redis['enable'] = false
    nginx['enable'] = false
-   prometheus['enable'] = false
    unicorn['enable'] = false
    sidekiq['enable'] = false
    gitlab_workhorse['enable'] = false
+
+   # If you don't want to run monitoring services uncomment the following (not recommended)
+   # alertmanager['enable'] = false
+   # gitlab_exporter['enable'] = false
+   # grafana['enable'] = false
+   # node_exporter['enable'] = false
+   # prometheus['enable'] = false
+
+   # Enable prometheus monitoring - comment out if you disable monitoring services above.
+   # This makes Prometheus listen on all interfaces. You must use firewalls to restrict access to this address/port.
+   prometheus['listen_address'] = '0.0.0.0:9090'
 
    # Prevent database connections during 'gitlab-ctl reconfigure'
    gitlab_rails['rake_cache_clear'] = false
@@ -189,9 +201,14 @@ Git operations in GitLab will result in an API error.
 
 1. Append the following to `/etc/gitlab/gitlab.rb` for each respective server:
 
+   <!--
+   updates to following example must also be made at
+   https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab
+   -->
+
    On `gitaly1.internal`:
 
-   ```
+   ```ruby
    git_data_dirs({
      'default' => {
        'path' => '/var/opt/gitlab/git-data'
@@ -204,7 +221,7 @@ Git operations in GitLab will result in an API error.
 
    On `gitaly2.internal`:
 
-   ```
+   ```ruby
    git_data_dirs({
      'storage2' => {
        'path' => '/srv/gitlab/git-data'
@@ -502,7 +519,7 @@ To configure Gitaly with TLS:
 To observe what type of connections are actually being used in a
 production environment you can use the following Prometheus query:
 
-```
+```prometheus
 sum(rate(gitaly_connections_total[5m])) by (type)
 ```
 
@@ -559,14 +576,14 @@ a few things that you need to do:
 
 1. Make sure the [`git` user home directory](https://docs.gitlab.com/omnibus/settings/configuration.html#moving-the-home-directory-for-a-user) is on local disk.
 1. Configure [database lookup of SSH keys](../operations/fast_ssh_key_lookup.md)
-   to eliminate the need for a shared authorized_keys file.
+   to eliminate the need for a shared `authorized_keys` file.
 1. Configure [object storage for job artifacts](../job_artifacts.md#using-object-storage)
    including [incremental logging](../job_logs.md#new-incremental-logging-architecture).
 1. Configure [object storage for LFS objects](../lfs/lfs_administration.md#storing-lfs-objects-in-remote-object-storage).
 1. Configure [object storage for uploads](../uploads.md#using-object-storage-core-only).
-1. Configure [object storage for Merge Request Diffs](../merge_request_diffs.md#using-object-storage).
-1. Configure [object storage for Packages](../packages/index.md#using-object-storage) (Optional Feature).
-1. Configure [object storage for Dependency Proxy](../packages/dependency_proxy.md#using-object-storage) (Optional Feature).
+1. Configure [object storage for merge request diffs](../merge_request_diffs.md#using-object-storage).
+1. Configure [object storage for packages](../packages/index.md#using-object-storage) (optional feature).
+1. Configure [object storage for dependency proxy](../packages/dependency_proxy.md#using-object-storage) (optional feature).
 
 NOTE: **Note:**
 One current feature of GitLab that still requires a shared directory (NFS) is
@@ -601,7 +618,7 @@ This will limit the number of in-flight RPC calls for the given RPC's.
 The limit is applied per repository. In the example above, each on the
 Gitaly server can have at most 20 simultaneous PostUploadPack calls in
 flight, and the same for SSHUploadPack. If another request comes in for
-a repository that hase used up its 20 slots, that request will get
+a repository that has used up its 20 slots, that request will get
 queued.
 
 You can observe the behavior of this queue via the Gitaly logs and via
@@ -631,14 +648,14 @@ machine.
 Use Prometheus to see what the current authentication behavior of your
 GitLab installation is.
 
-```
+```prometheus
 sum(rate(gitaly_authentications_total[5m])) by (enforced, status)
 ```
 
 In a system where authentication is configured correctly, and where you
 have live traffic, you will see something like this:
 
-```
+```prometheus
 {enforced="true",status="ok"}  4424.985419441742
 ```
 
@@ -667,7 +684,7 @@ gitaly['auth_transitioning'] = true
 After you have applied this, your Prometheus query should return
 something like this:
 
-```
+```prometheus
 {enforced="false",status="would be ok"}  4424.985419441742
 ```
 
@@ -713,7 +730,7 @@ gitaly['auth_transitioning'] = false
 Refresh your Prometheus query. You should now see the same kind of
 result as you did in the beginning:
 
-```
+```prometheus
 {enforced="true",status="ok"}  4424.985419441742
 ```
 
@@ -745,7 +762,7 @@ Git implementation itself.
 
 Because Rugged+Unicorn was so efficient, GitLab's application code ended
 up with lots of duplicate Git object lookups (like looking up the
-`master` commmit a dozen times in one request). We could write
+`master` commit a dozen times in one request). We could write
 inefficient code without being punished for it.
 
 When we migrated these Git lookups to Gitaly calls, we were suddenly
@@ -853,14 +870,14 @@ gitaly-debug -h
 
 ### Commits, pushes, and clones return a 401
 
-```
+```plaintext
 remote: GitLab: 401 Unauthorized
 ```
 
 You will need to sync your `gitlab-secrets.json` file with your GitLab
 app nodes.
 
-### Client side GRPC logs
+### Client side gRPC logs
 
 Gitaly uses the [gRPC](https://grpc.io/) RPC framework. The Ruby gRPC
 client has its own log file which may contain useful information when
@@ -885,7 +902,7 @@ Assuming your `grpc_client_handled_total` counter only observes Gitaly,
 the following query shows you RPCs are (most likely) internally
 implemented as calls to `gitaly-ruby`:
 
-```
+```prometheus
 sum(rate(grpc_client_handled_total[5m])) by (grpc_method) > 0
 ```
 
@@ -910,7 +927,7 @@ Confirm the following are all true:
   ```
 
 - When any user adds or modifies a file from the repository using the GitLab
-  UI, it immediatley fails with a red `401 Unauthorized` banner.
+  UI, it immediately fails with a red `401 Unauthorized` banner.
 - Creating a new project and [initializing it with a README](../../gitlab-basics/create-project.md#blank-projects)
   successfully creates the project but doesn't create the README.
 - When [tailing the logs](https://docs.gitlab.com/omnibus/settings/logs.html#tail-logs-in-a-console-on-the-server) on an app node and reproducing the error, you get `401` errors

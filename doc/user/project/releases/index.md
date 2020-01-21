@@ -6,7 +6,7 @@ type: reference, howto
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/41766) in GitLab 11.7.
 
-It's typical to create a [Git tag](../../../university/training/topics/tags.md) at
+It is typical to create a [Git tag](../../../university/training/topics/tags.md) at
 the moment of release to introduce a checkpoint in your source code
 history, but in most cases your users will need compiled objects or other
 assets output by your CI system to use them, not just the raw source
@@ -16,8 +16,12 @@ GitLab's **Releases** are a way to track deliverables in your project. Consider 
 a snapshot in time of the source, build output, and other metadata or artifacts
 associated with a released version of your code.
 
-At the moment, you can create Release entries via the [Releases API](../../../api/releases/index.md);
-we recommend doing this as one of the last steps in your CI/CD release pipeline.
+There are several ways to create a Release:
+
+- In the interface, when you create a new Git tag.
+- In the interface, by adding a release note to an existing Git tag.
+- Using the [Releases API](../../../api/releases/index.md): we recommend doing this as one of the last
+  steps in your CI/CD release pipeline.
 
 ## Getting started with Releases
 
@@ -38,7 +42,7 @@ Release descriptions are unrelated. Description supports [Markdown](../../markdo
 
 You can currently add the following types of assets to each Release:
 
-- [Source code](#source-code): state of the repo at the time of the Release
+- [Source code](#source-code): state of the repository at the time of the Release
 - [Links](#links): to content such as built binaries or documentation
 
 GitLab will support more asset types in the future, including objects such
@@ -117,11 +121,14 @@ of GitLab.
 
 You can be notified by email when a new Release is created for your project.
 
-To subscribe to these notifications, navigate to your **Project**'s landing page, then click on the
-bell icon. Choose **Custom** from the dropdown menu. The
-following modal window will be then displayed, from which you can select **New release** to complete your subscription to new Releases notifications.
+To subscribe to Release notifications:
 
-![Custom notification - New release](img/custom_notifications_new_release_v12_4.png)
+1. Navigate to your **Project**'s landing page.
+1. Click the bell icon (**Notification setting**).
+1. Select **Custom** from the dropdown menu.
+   ![Custom notification - Dropdown menu](img/custom_notifications_dropdown_v12_5.png)
+1. Select **New release**.
+   ![Custom notification - New release](img/custom_notifications_new_release_v12_5.png)
 
 ## Add release notes to Git tags
 
@@ -132,8 +139,9 @@ drag and drop files to it. Release notes are stored in GitLab's database.
 There are several ways to add release notes:
 
 - In the interface, when you create a new Git tag.
-- In the interface, by adding a note to an existing Git tag.
-- Using the GitLab API.
+- In the interface, by adding a release note to an existing Git tag.
+- Using the [Releases API](../../../api/releases/index.md): (we recommend doing this as one of the last
+  steps in your CI/CD release pipeline).
 
 To create a new tag, navigate to your project's **Repository > Tags** and
 click **New tag**. From there, you can fill the form with all the information
@@ -154,11 +162,11 @@ parallel. This dataset will be a snapshot this new release (including linked
 milestones and issues) at moment of creation. Such collection of data will
 provide a chain of custody and facilitate processes like external audits, for example.
 
-The gathered Evidence data is stored in the database upon creation of a new
+The gathered evidence data is stored in the database upon creation of a new
 release as a JSON object. In GitLab 12.6, a link to
-the Evidence data is provided for [each Release](#releases-list).
+the evidence data is provided for [each Release](#releases-list).
 
-Here's what this object can look like:
+Here is what this object can look like:
 
 ```json
 {
@@ -207,6 +215,22 @@ Here's what this object can look like:
   }
 }
 ```
+
+### Enabling Release Evidence display **(CORE ONLY)**
+
+This feature comes with the `:release_evidence_collection` feature flag
+disabled by default in GitLab self-managed instances. To turn it on,
+ask a GitLab administrator with Rails console access to run the following
+command:
+
+```ruby
+Feature.enable(:release_evidence_collection)
+```
+
+NOTE: **Note:**
+Please note that Release Evidence's data is collected regardless of this
+feature flag, which only enables or disables the display of the data on the
+Releases page.
 
 <!-- ## Troubleshooting
 

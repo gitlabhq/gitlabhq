@@ -28,6 +28,7 @@ describe Group do
     describe '#members & #requesters' do
       let(:requester) { create(:user) }
       let(:developer) { create(:user) }
+
       before do
         group.request_access(requester)
         group.add_developer(developer)
@@ -998,6 +999,57 @@ describe Group do
 
       it 'returns the group member with the highest access level' do
         expect(highest_group_member.access_level).to eq(Gitlab::Access::OWNER)
+      end
+    end
+  end
+
+  describe '#related_group_ids' do
+    let(:nested_group) { create(:group, parent: group) }
+    let(:shared_with_group) { create(:group, parent: group) }
+
+    before do
+      create(:group_group_link, shared_group: nested_group,
+                                shared_with_group: shared_with_group)
+    end
+
+    subject(:related_group_ids) { nested_group.related_group_ids }
+
+    it 'returns id' do
+      expect(related_group_ids).to include(nested_group.id)
+    end
+
+    it 'returns ancestor id' do
+      expect(related_group_ids).to include(group.id)
+    end
+
+    it 'returns shared with group id' do
+      expect(related_group_ids).to include(shared_with_group.id)
+    end
+
+    context 'with more than one ancestor group' do
+      let(:ancestor_group) { create(:group) }
+
+      before do
+        group.update(parent: ancestor_group)
+      end
+
+      it 'returns all ancestor group ids' do
+        expect(related_group_ids).to(
+          include(group.id, ancestor_group.id))
+      end
+    end
+
+    context 'with more than one shared with group' do
+      let(:another_shared_with_group) { create(:group, parent: group) }
+
+      before do
+        create(:group_group_link, shared_group: nested_group,
+               shared_with_group: another_shared_with_group)
+      end
+
+      it 'returns all shared with group ids' do
+        expect(related_group_ids).to(
+          include(shared_with_group.id, another_shared_with_group.id))
       end
     end
   end

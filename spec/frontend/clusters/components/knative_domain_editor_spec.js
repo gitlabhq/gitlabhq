@@ -25,6 +25,7 @@ describe('KnativeDomainEditor', () => {
 
   afterEach(() => {
     wrapper.destroy();
+    wrapper = null;
   });
 
   describe('knative has an assigned IP address', () => {
@@ -78,7 +79,9 @@ describe('KnativeDomainEditor', () => {
 
     it('triggers save event and pass current knative hostname', () => {
       wrapper.find(LoadingButton).vm.$emit('click');
-      expect(wrapper.emitted('save')[0]).toEqual([knative.hostname]);
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.emitted('save')[0]).toEqual([knative.hostname]);
+      });
     });
   });
 
@@ -101,11 +104,15 @@ describe('KnativeDomainEditor', () => {
 
   describe('when knative domain name input changes', () => {
     it('emits "set" event with updated domain name', () => {
+      createComponent({ knative });
+
       const newHostname = 'newhostname.com';
 
       wrapper.setData({ knativeHostname: newHostname });
 
-      expect(wrapper.emitted('set')[0]).toEqual([newHostname]);
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.emitted('set')[0]).toEqual([newHostname]);
+      });
     });
   });
 
@@ -117,7 +124,9 @@ describe('KnativeDomainEditor', () => {
     it('displays an error banner indicating the operation failure', () => {
       wrapper.setProps({ knative: { updateFailed: true, ...knative } });
 
-      expect(wrapper.find('.js-cluster-knative-domain-name-failure-message').exists()).toBe(true);
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.find('.js-cluster-knative-domain-name-failure-message').exists()).toBe(true);
+      });
     });
   });
 

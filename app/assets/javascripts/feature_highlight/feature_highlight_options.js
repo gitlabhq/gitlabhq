@@ -1,8 +1,8 @@
+import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { highlightFeatures } from './feature_highlight';
-import bp from '../breakpoints';
 
 export default function domContentLoaded() {
-  if (bp.getBreakpointSize() === 'lg') {
+  if (bp.getBreakpointSize() === 'xl') {
     highlightFeatures();
     return true;
   }

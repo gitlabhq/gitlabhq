@@ -1,4 +1,4 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 
 import createStore from '~/notes/stores';
 import diffDiscussionHeader from '~/notes/components/diff_discussion_header.vue';
@@ -18,12 +18,9 @@ describe('diff_discussion_header component', () => {
     window.mrTabs = {};
     store = createStore();
 
-    const localVue = createLocalVue();
     wrapper = mount(diffDiscussionHeader, {
       store,
       propsData: { discussion: discussionMock },
-      localVue,
-      sync: false,
     });
   });
 
@@ -38,7 +35,9 @@ describe('diff_discussion_header component', () => {
 
     wrapper.setProps({ discussion });
 
-    expect(wrapper.find('.user-avatar-link').exists()).toBe(true);
+    return wrapper.vm.$nextTick().then(() => {
+      expect(wrapper.find('.user-avatar-link').exists()).toBe(true);
+    });
   });
 
   describe('action text', () => {

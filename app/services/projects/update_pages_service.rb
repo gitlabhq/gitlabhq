@@ -6,7 +6,6 @@ module Projects
     FailedToExtractError = Class.new(StandardError)
 
     BLOCK_SIZE = 32.kilobytes
-    MAX_SIZE = 1.terabyte
     PUBLIC_DIR = 'public'
 
     # this has to be invalid group name,
@@ -130,12 +129,16 @@ module Projects
       1 + max_size / BLOCK_SIZE
     end
 
+    def max_size_from_settings
+      Gitlab::CurrentSettings.max_pages_size.megabytes
+    end
+
     def max_size
-      max_pages_size = Gitlab::CurrentSettings.max_pages_size.megabytes
+      max_pages_size = max_size_from_settings
 
-      return MAX_SIZE if max_pages_size.zero?
+      return ::Gitlab::Pages::MAX_SIZE if max_pages_size.zero?
 
-      [max_pages_size, MAX_SIZE].min
+      max_pages_size
     end
 
     def tmp_path
@@ -200,3 +203,5 @@ module Projects
     end
   end
 end
+
+Projects::UpdatePagesService.prepend_if_ee('EE::Projects::UpdatePagesService')

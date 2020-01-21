@@ -155,11 +155,10 @@ Rails/ApplicationRecord:
     # as they need to be as decoupled from application code as possible
     - db/**/*.rb
     - lib/gitlab/background_migration/**/*.rb
+    - ee/lib/ee/gitlab/background_migration/**/*.rb
     - lib/gitlab/database/**/*.rb
     - spec/**/*.rb
     - ee/db/**/*.rb
-    - ee/lib/gitlab/background_migration/**/*.rb
-    - ee/lib/ee/gitlab/background_migration/**/*.rb
     - ee/spec/**/*.rb
 
 # GitLab ###################################################################
@@ -233,7 +232,8 @@ RSpec/FactoriesInMigrationSpecs:
     - 'spec/migrations/**/*.rb'
     - 'ee/spec/migrations/**/*.rb'
     - 'spec/lib/gitlab/background_migration/**/*.rb'
-    - 'ee/spec/lib/gitlab/background_migration/**/*.rb'
+    - 'spec/lib/ee/gitlab/background_migration/**/*.rb'
+    - 'ee/spec/lib/ee/gitlab/background_migration/**/*.rb'
 
 Cop/IncludeActionViewContext:
   Enabled: true
@@ -298,4 +298,74 @@ Graphql/Descriptions:
     - 'ee/app/graphql/**/*'
 
 RSpec/AnyInstanceOf:
+  Enabled: false
+
+# Cops for upgrade to gitlab-styles 3.1.0
+Rails/SafeNavigationWithBlank:
+  Enabled: false
+
+Rails/ApplicationController:
+  Enabled: false
+
+Rails/ApplicationMailer:
+  Enabled: false
+
+Rails/RakeEnvironment:
+  Enabled: false
+
+Rails/HelperInstanceVariable:
+  Enabled: false
+
+Rails/EnumHash:
+  Enabled: false
+
+RSpec/ReceiveCounts:
+  Enabled: false
+
+RSpec/ContextMethod:
+  Enabled: false
+
+RSpec/ImplicitSubject:
+  Enabled: false
+
+RSpec/LeakyConstantDeclaration:
+  Enabled: false
+
+RSpec/EmptyLineAfterHook:
+  Enabled: false
+
+RSpec/HooksBeforeExamples:
+  Enabled: false
+
+RSpec/EmptyLineAfterExample:
+  Enabled: false
+
+RSpec/Be:
+  Enabled: false
+
+RSpec/DescribedClass:
+  Enabled: false
+
+RSpec/SharedExamples:
+  Enabled: false
+
+RSpec/EmptyLineAfterExampleGroup:
+  Enabled: false
+
+RSpec/ReceiveNever:
+  Enabled: false
+
+RSpec/MissingExampleGroupArgument:
+  Enabled: false
+
+RSpec/UnspecifiedException:
+  Enabled: false
+
+RSpec/HaveGitlabHttpStatus:
+  Enabled: false
+
+Style/MultilineWhenThen:
+  Enabled: false
+
+Style/FloatDivision:
   Enabled: false

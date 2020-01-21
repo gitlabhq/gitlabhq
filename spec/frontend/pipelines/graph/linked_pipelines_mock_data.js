@@ -1,4 +1,7 @@
 export default {
+  project: {
+    id: 19,
+  },
   triggered_by: {
     id: 129,
     active: true,
@@ -63,6 +66,7 @@ export default {
       path: '/gitlab-org/gitlab-foss/pipelines/132',
       project: {
         name: 'GitLabCE',
+        id: 19,
       },
       details: {
         status: {

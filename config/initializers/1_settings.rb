@@ -162,8 +162,8 @@ Settings.gitlab['default_projects_limit'] ||= 100000
 Settings.gitlab['default_branch_protection'] ||= 2
 Settings.gitlab['default_can_create_group'] = true if Settings.gitlab['default_can_create_group'].nil?
 Settings.gitlab['default_theme'] = Gitlab::Themes::APPLICATION_DEFAULT if Settings.gitlab['default_theme'].nil?
-Settings.gitlab['host']       ||= ENV['GITLAB_HOST'] || 'localhost'
-Settings.gitlab['ssh_host']   ||= Settings.gitlab.host
+Settings.gitlab['host'] ||= ENV['GITLAB_HOST'] || 'localhost'
+Settings.gitlab['ssh_host'] ||= Settings.gitlab.host
 Settings.gitlab['https']        = false if Settings.gitlab['https'].nil?
 Settings.gitlab['port']       ||= ENV['GITLAB_PORT'] || (Settings.gitlab.https ? 443 : 80)
 Settings.gitlab['relative_url_root'] ||= ENV['RAILS_RELATIVE_URL_ROOT'] || ''
@@ -176,10 +176,10 @@ Settings.gitlab['email_display_name'] ||= ENV['GITLAB_EMAIL_DISPLAY_NAME'] || 'G
 Settings.gitlab['email_reply_to'] ||= ENV['GITLAB_EMAIL_REPLY_TO'] || "noreply@#{Settings.gitlab.host}"
 Settings.gitlab['email_subject_suffix'] ||= ENV['GITLAB_EMAIL_SUBJECT_SUFFIX'] || ""
 Settings.gitlab['email_smime'] = SmimeSignatureSettings.parse(Settings.gitlab['email_smime'])
-Settings.gitlab['base_url']   ||= Settings.__send__(:build_base_gitlab_url)
-Settings.gitlab['url']        ||= Settings.__send__(:build_gitlab_url)
-Settings.gitlab['user']       ||= 'git'
-Settings.gitlab['user_home']  ||= begin
+Settings.gitlab['base_url'] ||= Settings.__send__(:build_base_gitlab_url)
+Settings.gitlab['url'] ||= Settings.__send__(:build_gitlab_url)
+Settings.gitlab['user'] ||= 'git'
+Settings.gitlab['user_home'] ||= begin
   Etc.getpwnam(Settings.gitlab['user']).dir
 rescue ArgumentError # no user configured
   '/home/' + Settings.gitlab['user']
@@ -209,6 +209,7 @@ Settings.gitlab['content_security_policy'] ||= Gitlab::ContentSecurityPolicy::Co
 Settings.gitlab['no_todos_messages'] ||= YAML.load_file(Rails.root.join('config', 'no_todos_messages.yml'))
 Settings.gitlab['impersonation_enabled'] ||= true if Settings.gitlab['impersonation_enabled'].nil?
 Settings.gitlab['usage_ping_enabled'] = true if Settings.gitlab['usage_ping_enabled'].nil?
+Settings.gitlab['max_request_duration_seconds'] ||= 57
 
 Gitlab.ee do
   Settings.gitlab['mirror_max_delay'] ||= 300
@@ -257,13 +258,13 @@ Settings.artifacts['object_store'] = ObjectStoreSettings.parse(Settings.artifact
 # Registry
 #
 Settings['registry'] ||= Settingslogic.new({})
-Settings.registry['enabled']       ||= false
-Settings.registry['host']          ||= "example.com"
-Settings.registry['port']          ||= nil
-Settings.registry['api_url']       ||= "http://localhost:5000/"
-Settings.registry['key']           ||= nil
-Settings.registry['issuer']        ||= nil
-Settings.registry['host_port']     ||= [Settings.registry['host'], Settings.registry['port']].compact.join(':')
+Settings.registry['enabled'] ||= false
+Settings.registry['host'] ||= "example.com"
+Settings.registry['port'] ||= nil
+Settings.registry['api_url'] ||= "http://localhost:5000/"
+Settings.registry['key'] ||= nil
+Settings.registry['issuer'] ||= nil
+Settings.registry['host_port'] ||= [Settings.registry['host'], Settings.registry['port']].compact.join(':')
 Settings.registry['path']            = Settings.absolute(Settings.registry['path'] || File.join(Settings.shared['path'], 'registry'))
 Settings.registry['notifications'] ||= []
 
@@ -284,13 +285,13 @@ Settings.pages['enabled']           = false if Settings.pages['enabled'].nil?
 Settings.pages['access_control']    = false if Settings.pages['access_control'].nil?
 Settings.pages['path']              = Settings.absolute(Settings.pages['path'] || File.join(Settings.shared['path'], "pages"))
 Settings.pages['https']             = false if Settings.pages['https'].nil?
-Settings.pages['host']              ||= "example.com"
-Settings.pages['port']              ||= Settings.pages.https ? 443 : 80
-Settings.pages['protocol']          ||= Settings.pages.https ? "https" : "http"
-Settings.pages['url']               ||= Settings.__send__(:build_pages_url)
-Settings.pages['external_http']     ||= false unless Settings.pages['external_http'].present?
-Settings.pages['external_https']    ||= false unless Settings.pages['external_https'].present?
-Settings.pages['artifacts_server']  ||= Settings.pages['enabled'] if Settings.pages['artifacts_server'].nil?
+Settings.pages['host'] ||= "example.com"
+Settings.pages['port'] ||= Settings.pages.https ? 443 : 80
+Settings.pages['protocol'] ||= Settings.pages.https ? "https" : "http"
+Settings.pages['url'] ||= Settings.__send__(:build_pages_url)
+Settings.pages['external_http'] ||= false unless Settings.pages['external_http'].present?
+Settings.pages['external_https'] ||= false unless Settings.pages['external_https'].present?
+Settings.pages['artifacts_server'] ||= Settings.pages['enabled'] if Settings.pages['artifacts_server'].nil?
 Settings.pages['secret_file'] ||= Rails.root.join('.gitlab_pages_secret')
 
 #
@@ -364,7 +365,7 @@ Gitlab.ee do
   # To ensure acceptable performance we only allow feature to be used with
   # multithreaded web-server Puma. This will be removed once download logic is moved
   # to GitLab workhorse
-  Settings.dependency_proxy['enabled'] = false unless defined?(::Puma)
+  Settings.dependency_proxy['enabled'] = false unless Gitlab::Runtime.puma?
 end
 
 #
@@ -467,6 +468,9 @@ Settings.cron_jobs['schedule_migrate_external_diffs_worker']['job_class'] = 'Sch
 Settings.cron_jobs['namespaces_prune_aggregation_schedules_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['namespaces_prune_aggregation_schedules_worker']['cron'] ||= '5 1 * * *'
 Settings.cron_jobs['namespaces_prune_aggregation_schedules_worker']['job_class'] = 'Namespaces::PruneAggregationSchedulesWorker'
+Settings.cron_jobs['container_expiration_policy_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['container_expiration_policy_worker']['cron'] ||= '50 * * * *'
+Settings.cron_jobs['container_expiration_policy_worker']['job_class'] = 'ContainerExpirationPolicyWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['adjourned_group_deletion_worker'] ||= Settingslogic.new({})
@@ -590,7 +594,7 @@ end
 # Backup
 #
 Settings['backup'] ||= Settingslogic.new({})
-Settings.backup['keep_time']  ||= 0
+Settings.backup['keep_time'] ||= 0
 Settings.backup['pg_schema']    = nil
 Settings.backup['path']         = Settings.absolute(Settings.backup['path'] || "tmp/backups/")
 Settings.backup['archive_permissions'] ||= 0600

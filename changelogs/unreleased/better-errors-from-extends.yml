@@ -1,0 +1,5 @@
+---
+title: Add JSON error context to extends error in CI lint
+merge_request: 30066
+author:
+type: changed

@@ -3,16 +3,10 @@
 module QA
   context 'Plan' do
     describe 'filter issue comments activities' do
-      let(:issue_title) { 'issue title' }
-
       before do
         Flow::Login.sign_in
 
-        issue = Resource::Issue.fabricate_via_api! do |issue|
-          issue.title = issue_title
-        end
-
-        issue.visit!
+        Resource::Issue.fabricate_via_api!.visit!
       end
 
       it 'user filters comments and activities in an issue' do

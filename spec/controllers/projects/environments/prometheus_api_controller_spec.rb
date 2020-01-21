@@ -78,6 +78,40 @@ describe Projects::Environments::PrometheusApiController do
             end
           end
         end
+
+        context 'with variables' do
+          let(:pod_name) { "pod1" }
+
+          before do
+            expected_params[:query] = %{up{pod_name="#{pod_name}"}}
+            expected_params[:variables] = ['pod_name', pod_name]
+          end
+
+          it 'replaces variables with values' do
+            get :proxy, params: environment_params.merge(
+              query: 'up{pod_name="{{pod_name}}"}', variables: ['pod_name', pod_name]
+            )
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(Prometheus::ProxyService).to have_received(:new)
+              .with(environment, 'GET', 'query', expected_params)
+          end
+
+          context 'with invalid variables' do
+            let(:params_with_invalid_variables) do
+              environment_params.merge(
+                query: 'up{pod_name="{{pod_name}}"}', variables: ['a']
+              )
+            end
+
+            it 'returns 400' do
+              get :proxy, params: params_with_invalid_variables
+
+              expect(response).to have_gitlab_http_status(:bad_request)
+              expect(Prometheus::ProxyService).not_to receive(:new)
+            end
+          end
+        end
       end
 
       context 'with nil result' do

@@ -30,7 +30,7 @@ and corresponding views / partials / selectors in CE / EE.
 
 Whenever `qa:selectors` job fails in your merge request, you are supposed to
 fix [page objects](../doc/development/testing_guide/end_to_end/page_objects.md). You should also trigger end-to-end tests
-using `package-and-qa-manual` manual action, to test if everything works fine.
+using `package-and-qa` manual action, to test if everything works fine.
 
 ## How can I use it?
 

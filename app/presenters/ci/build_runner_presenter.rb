@@ -34,7 +34,7 @@ module Ci
 
     def refspecs
       specs = []
-      specs << refspec_for_pipeline_ref if merge_request_ref?
+      specs << refspec_for_pipeline_ref if should_expose_merge_request_ref?
       specs << refspec_for_persistent_ref if persistent_ref_exist?
 
       if git_depth > 0
@@ -49,6 +49,19 @@ module Ci
     end
 
     private
+
+    # We will stop exposing merge request refs when we fully depend on persistent refs
+    # (i.e. remove `refspec_for_pipeline_ref` when we remove `depend_on_persistent_pipeline_ref` feature flag.)
+    # `ci_force_exposing_merge_request_refs` is an extra feature flag that allows us to
+    # forcibly expose MR refs even if the `depend_on_persistent_pipeline_ref` feature flag enabled.
+    # This is useful when we see an unexpected behaviors/reports from users.
+    # See https://gitlab.com/gitlab-org/gitlab/issues/35140.
+    def should_expose_merge_request_ref?
+      return false unless merge_request_ref?
+      return true if Feature.enabled?(:ci_force_exposing_merge_request_refs, project)
+
+      Feature.disabled?(:depend_on_persistent_pipeline_ref, project, default_enabled: true)
+    end
 
     def create_archive(artifacts)
       return unless artifacts[:untracked] || artifacts[:paths]

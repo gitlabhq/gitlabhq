@@ -47,4 +47,4 @@
   - if current_user_menu?(:sign_out)
     %li.divider
     %li
-      = link_to _("Sign out"), destroy_user_session_path, class: "sign-out-link", data: { qa_selector: 'sign_out_link' }
+      = link_to _("Sign out"), destroy_user_session_path, method: :post, class: "sign-out-link", data: { qa_selector: 'sign_out_link' }

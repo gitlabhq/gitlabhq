@@ -88,6 +88,34 @@ describe API::MergeRequests do
           expect(json_response.first['merge_commit_sha']).not_to be_nil
           expect(json_response.first['merge_commit_sha']).to eq(merge_request_merged.merge_commit_sha)
         end
+
+        context 'with labels_details' do
+          it 'returns labels with details' do
+            path = endpoint_path + "?with_labels_details=true"
+
+            get api(path, user)
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(json_response.last['labels'].pluck('name')).to eq([label2.title, label.title])
+            expect(json_response.last['labels'].first).to match_schema('/public_api/v4/label_basic')
+          end
+
+          it 'avoids N+1 queries' do
+            path = endpoint_path + "?with_labels_details=true"
+
+            control = ActiveRecord::QueryRecorder.new do
+              get api(path, user)
+            end.count
+
+            mr = create(:merge_request)
+            create(:label_link, label: label, target: mr)
+            create(:label_link, label: label2, target: mr)
+
+            expect do
+              get api(path, user)
+            end.not_to exceed_query_limit(control)
+          end
+        end
       end
 
       it 'returns an array of all merge_requests using simple mode' do
@@ -736,6 +764,33 @@ describe API::MergeRequests do
 
       it_behaves_like 'merge requests list'
     end
+
+    context "#to_reference" do
+      it 'exposes reference path in context of group' do
+        get api("/groups/#{group.id}/merge_requests", user)
+
+        expect(json_response.first['references']['short']).to eq("!#{merge_request_merged.iid}")
+        expect(json_response.first['references']['relative']).to eq("#{merge_request_merged.target_project.path}!#{merge_request_merged.iid}")
+        expect(json_response.first['references']['full']).to eq("#{merge_request_merged.target_project.full_path}!#{merge_request_merged.iid}")
+      end
+
+      context 'referencing from parent group' do
+        let(:parent_group) { create(:group) }
+
+        before do
+          group.update(parent_id: parent_group.id)
+          merge_request_merged.reload
+        end
+
+        it 'exposes reference path in context of parent group' do
+          get api("/groups/#{parent_group.id}/merge_requests")
+
+          expect(json_response.first['references']['short']).to eq("!#{merge_request_merged.iid}")
+          expect(json_response.first['references']['relative']).to eq("#{merge_request_merged.target_project.full_path}!#{merge_request_merged.iid}")
+          expect(json_response.first['references']['full']).to eq("#{merge_request_merged.target_project.full_path}!#{merge_request_merged.iid}")
+        end
+      end
+    end
   end
 
   describe "GET /projects/:id/merge_requests/:merge_request_iid" do
@@ -783,6 +838,9 @@ describe API::MergeRequests do
       expect(json_response).not_to include('rebase_in_progress')
       expect(json_response['has_conflicts']).to be_falsy
       expect(json_response['blocking_discussions_resolved']).to be_truthy
+      expect(json_response['references']['short']).to eq("!#{merge_request.iid}")
+      expect(json_response['references']['relative']).to eq("!#{merge_request.iid}")
+      expect(json_response['references']['full']).to eq("#{merge_request.target_project.full_path}!#{merge_request.iid}")
     end
 
     it 'exposes description and title html when render_html is true' do
@@ -1491,7 +1549,7 @@ describe API::MergeRequests do
     end
   end
 
-  describe "PUT /projects/:id/merge_requests/:merge_request_iid/merge" do
+  describe "PUT /projects/:id/merge_requests/:merge_request_iid/merge", :clean_gitlab_redis_cache do
     let(:pipeline) { create(:ci_pipeline) }
 
     it "returns merge_request in case of success" do
@@ -1577,6 +1635,15 @@ describe API::MergeRequests do
 
       expect(response).to have_gitlab_http_status(405)
       expect(merge_request.reload.state).to eq('opened')
+    end
+
+    it 'merges if the head pipeline already succeeded and `merge_when_pipeline_succeeds` is passed' do
+      create(:ci_pipeline, :success, sha: merge_request.diff_head_sha, merge_requests_as_head_pipeline: [merge_request])
+
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: { merge_when_pipeline_succeeds: true }
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(json_response['state']).to eq('merged')
     end
 
     it "enables merge when pipeline succeeds if the pipeline is active" do
@@ -2155,16 +2222,34 @@ describe API::MergeRequests do
   end
 
   describe 'PUT :id/merge_requests/:merge_request_iid/rebase' do
-    it 'enqueues a rebase of the merge request against the target branch' do
-      Sidekiq::Testing.fake! do
-        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/rebase", user)
+    context 'when rebase can be performed' do
+      it 'enqueues a rebase of the merge request against the target branch' do
+        Sidekiq::Testing.fake! do
+          expect do
+            put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/rebase", user)
+          end.to change { RebaseWorker.jobs.size }.by(1)
+        end
+
+        expect(response).to have_gitlab_http_status(202)
+        expect(merge_request.reload).to be_rebase_in_progress
+        expect(json_response['rebase_in_progress']).to be(true)
       end
 
-      expect(response).to have_gitlab_http_status(202)
-      expect(RebaseWorker.jobs.size).to eq(1)
+      context 'when skip_ci parameter is set' do
+        it 'enqueues a rebase of the merge request with skip_ci flag set' do
+          expect(RebaseWorker).to receive(:perform_async).with(merge_request.id, user.id, true).and_call_original
 
-      expect(merge_request.reload).to be_rebase_in_progress
-      expect(json_response['rebase_in_progress']).to be(true)
+          Sidekiq::Testing.fake! do
+            expect do
+              put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/rebase", user), params: { skip_ci: true }
+            end.to change { RebaseWorker.jobs.size }.by(1)
+          end
+
+          expect(response).to have_gitlab_http_status(202)
+          expect(merge_request.reload).to be_rebase_in_progress
+          expect(json_response['rebase_in_progress']).to be(true)
+        end
+      end
     end
 
     it 'returns 403 if the user cannot push to the branch' do
@@ -2193,7 +2278,7 @@ describe API::MergeRequests do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/rebase", user)
 
       expect(response).to have_gitlab_http_status(409)
-      expect(json_response['message']).to eq(MergeRequest::REBASE_LOCK_MESSAGE)
+      expect(json_response['message']).to eq('Failed to enqueue the rebase operation, possibly due to a long-lived transaction. Try again later.')
     end
   end
 

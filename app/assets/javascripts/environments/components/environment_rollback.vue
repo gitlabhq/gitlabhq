@@ -8,7 +8,6 @@
 import { GlTooltipDirective, GlLoadingIcon, GlModalDirective, GlButton } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
-import ConfirmRollbackModal from './confirm_rollback_modal.vue';
 import eventHub from '../event_hub';
 
 export default {
@@ -16,7 +15,6 @@ export default {
     Icon,
     GlLoadingIcon,
     GlButton,
-    ConfirmRollbackModal,
   },
   directives: {
     GlTooltip: GlTooltipDirective,

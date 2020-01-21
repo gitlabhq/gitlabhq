@@ -1,5 +1,9 @@
 # GitLab Performance Monitoring
 
+CAUTION: **InfluxDB is deprecated in favor of Prometheus:**
+InfluxDB support is scheduled to be removed in GitLab 13.0.
+You are advised to use [Prometheus](../prometheus/index.md) instead.
+
 GitLab comes with its own application performance measuring system as of GitLab
 8.4, simply called "GitLab Performance Monitoring". GitLab Performance Monitoring is available in both the
 Community and Enterprise editions.

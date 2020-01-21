@@ -67,7 +67,7 @@ describe 'Filter issues', :js do
   it 'filters by all available tokens' do
     search_term = 'issue'
 
-    input_filtered_search("assignee:@#{user.username} author:@#{user.username} label:~#{caps_sensitive_label.title} milestone:%#{milestone.title} #{search_term}")
+    input_filtered_search("assignee=@#{user.username} author=@#{user.username} label=~#{caps_sensitive_label.title} milestone=%#{milestone.title} #{search_term}")
 
     wait_for_requests
 
@@ -84,7 +84,7 @@ describe 'Filter issues', :js do
   describe 'filter issues by author' do
     context 'only author' do
       it 'filters issues by searched author' do
-        input_filtered_search("author:@#{user.username}")
+        input_filtered_search("author=@#{user.username}")
 
         wait_for_requests
 
@@ -98,7 +98,7 @@ describe 'Filter issues', :js do
   describe 'filter issues by assignee' do
     context 'only assignee' do
       it 'filters issues by searched assignee' do
-        input_filtered_search("assignee:@#{user.username}")
+        input_filtered_search("assignee=@#{user.username}")
 
         wait_for_requests
 
@@ -108,7 +108,7 @@ describe 'Filter issues', :js do
       end
 
       it 'filters issues by no assignee' do
-        input_filtered_search('assignee:none')
+        input_filtered_search('assignee=none')
 
         expect_tokens([assignee_token('None')])
         expect_issues_list_count(3)
@@ -122,7 +122,7 @@ describe 'Filter issues', :js do
       it 'filters issues by multiple assignees' do
         create(:issue, project: project, author: user, assignees: [user2, user])
 
-        input_filtered_search("assignee:@#{user.username} assignee:@#{user2.username}")
+        input_filtered_search("assignee=@#{user.username} assignee=@#{user2.username}")
 
         expect_tokens([
           assignee_token(user.name),
@@ -138,15 +138,31 @@ describe 'Filter issues', :js do
   describe 'filter issues by label' do
     context 'only label' do
       it 'filters issues by searched label' do
-        input_filtered_search("label:~#{bug_label.title}")
+        input_filtered_search("label=~#{bug_label.title}")
 
         expect_tokens([label_token(bug_label.title)])
         expect_issues_list_count(2)
         expect_filtered_search_input_empty
       end
 
+      it 'filters issues not containing searched label' do
+        input_filtered_search("label!=~#{bug_label.title}")
+
+        expect_tokens([label_token(bug_label.title)])
+        expect_issues_list_count(6)
+        expect_filtered_search_input_empty
+      end
+
       it 'filters issues by no label' do
-        input_filtered_search('label:none')
+        input_filtered_search('label=none')
+
+        expect_tokens([label_token('None', false)])
+        expect_issues_list_count(4)
+        expect_filtered_search_input_empty
+      end
+
+      it 'filters issues by no label' do
+        input_filtered_search('label!=none')
 
         expect_tokens([label_token('None', false)])
         expect_issues_list_count(4)
@@ -154,7 +170,18 @@ describe 'Filter issues', :js do
       end
 
       it 'filters issues by multiple labels' do
-        input_filtered_search("label:~#{bug_label.title} label:~#{caps_sensitive_label.title}")
+        input_filtered_search("label=~#{bug_label.title} label=~#{caps_sensitive_label.title}")
+
+        expect_tokens([
+          label_token(bug_label.title),
+          label_token(caps_sensitive_label.title)
+        ])
+        expect_issues_list_count(1)
+        expect_filtered_search_input_empty
+      end
+
+      it 'filters issues by multiple labels with not operator' do
+        input_filtered_search("label!=~#{bug_label.title} label=~#{caps_sensitive_label.title}")
 
         expect_tokens([
           label_token(bug_label.title),
@@ -169,20 +196,40 @@ describe 'Filter issues', :js do
         special_issue = create(:issue, title: "Issue with special character label", project: project)
         special_issue.labels << special_label
 
-        input_filtered_search("label:~#{special_label.title}")
+        input_filtered_search("label=~#{special_label.title}")
 
         expect_tokens([label_token(special_label.title)])
         expect_issues_list_count(1)
         expect_filtered_search_input_empty
       end
 
+      it 'filters issues by label not containing special characters' do
+        special_label = create(:label, project: project, title: '!@#{$%^&*()-+[]<>?/:{}|\}')
+        special_issue = create(:issue, title: "Issue with special character label", project: project)
+        special_issue.labels << special_label
+
+        input_filtered_search("label!=~#{special_label.title}")
+
+        expect_tokens([label_token(special_label.title)])
+        expect_issues_list_count(8)
+        expect_filtered_search_input_empty
+      end
+
       it 'does not show issues for unused labels' do
         new_label = create(:label, project: project, title: 'new_label')
 
-        input_filtered_search("label:~#{new_label.title}")
+        input_filtered_search("label=~#{new_label.title}")
 
         expect_tokens([label_token(new_label.title)])
         expect_no_issues_list
+        expect_filtered_search_input_empty
+      end
+
+      it 'does show issues for bug label' do
+        input_filtered_search("label!=~#{bug_label.title}")
+
+        expect_tokens([label_token(bug_label.title)])
+        expect_issues_list_count(6)
         expect_filtered_search_input_empty
       end
     end
@@ -193,7 +240,7 @@ describe 'Filter issues', :js do
         special_multiple_issue = create(:issue, title: "Issue with special character multiple words label", project: project)
         special_multiple_issue.labels << special_multiple_label
 
-        input_filtered_search("label:~'#{special_multiple_label.title}'")
+        input_filtered_search("label=~'#{special_multiple_label.title}'")
 
         # Check for search results (which makes sure that the page has changed)
         expect_issues_list_count(1)
@@ -205,7 +252,7 @@ describe 'Filter issues', :js do
       end
 
       it 'single quotes' do
-        input_filtered_search("label:~'#{multiple_words_label.title}'")
+        input_filtered_search("label=~'#{multiple_words_label.title}'")
 
         expect_issues_list_count(1)
         expect_tokens([label_token("\"#{multiple_words_label.title}\"")])
@@ -213,7 +260,7 @@ describe 'Filter issues', :js do
       end
 
       it 'double quotes' do
-        input_filtered_search("label:~\"#{multiple_words_label.title}\"")
+        input_filtered_search("label=~\"#{multiple_words_label.title}\"")
 
         expect_tokens([label_token("\"#{multiple_words_label.title}\"")])
         expect_issues_list_count(1)
@@ -225,7 +272,7 @@ describe 'Filter issues', :js do
         double_quotes_label_issue = create(:issue, title: "Issue with double quotes label", project: project)
         double_quotes_label_issue.labels << double_quotes_label
 
-        input_filtered_search("label:~'#{double_quotes_label.title}'")
+        input_filtered_search("label=~'#{double_quotes_label.title}'")
 
         expect_tokens([label_token("'#{double_quotes_label.title}'")])
         expect_issues_list_count(1)
@@ -237,7 +284,7 @@ describe 'Filter issues', :js do
         single_quotes_label_issue = create(:issue, title: "Issue with single quotes label", project: project)
         single_quotes_label_issue.labels << single_quotes_label
 
-        input_filtered_search("label:~\"#{single_quotes_label.title}\"")
+        input_filtered_search("label=~\"#{single_quotes_label.title}\"")
 
         expect_tokens([label_token("\"#{single_quotes_label.title}\"")])
         expect_issues_list_count(1)
@@ -249,7 +296,7 @@ describe 'Filter issues', :js do
       it 'filters issues by searched label, label2, author, assignee, milestone and text' do
         search_term = 'bug'
 
-        input_filtered_search("label:~#{bug_label.title} label:~#{caps_sensitive_label.title} author:@#{user.username} assignee:@#{user.username} milestone:%#{milestone.title} #{search_term}")
+        input_filtered_search("label=~#{bug_label.title} label=~#{caps_sensitive_label.title} author=@#{user.username} assignee=@#{user.username} milestone=%#{milestone.title} #{search_term}")
 
         wait_for_requests
 
@@ -261,6 +308,24 @@ describe 'Filter issues', :js do
           milestone_token(milestone.title)
         ])
         expect_issues_list_count(1)
+        expect_filtered_search_input(search_term)
+      end
+
+      it 'filters issues by searched label, label2, author, assignee, not included in a milestone' do
+        search_term = 'bug'
+
+        input_filtered_search("label=~#{bug_label.title} label=~#{caps_sensitive_label.title} author=@#{user.username} assignee=@#{user.username} milestone!=%#{milestone.title} #{search_term}")
+
+        wait_for_requests
+
+        expect_tokens([
+          label_token(bug_label.title),
+          label_token(caps_sensitive_label.title),
+          author_token(user.name),
+          assignee_token(user.name),
+          milestone_token(milestone.title, false, '!=')
+        ])
+        expect_issues_list_count(0)
         expect_filtered_search_input(search_term)
       end
     end
@@ -279,7 +344,7 @@ describe 'Filter issues', :js do
   describe 'filter issues by milestone' do
     context 'only milestone' do
       it 'filters issues by searched milestone' do
-        input_filtered_search("milestone:%#{milestone.title}")
+        input_filtered_search("milestone=%#{milestone.title}")
 
         expect_tokens([milestone_token(milestone.title)])
         expect_issues_list_count(5)
@@ -287,10 +352,18 @@ describe 'Filter issues', :js do
       end
 
       it 'filters issues by no milestone' do
-        input_filtered_search("milestone:none")
+        input_filtered_search("milestone=none")
 
         expect_tokens([milestone_token('None', false)])
         expect_issues_list_count(3)
+        expect_filtered_search_input_empty
+      end
+
+      it 'filters issues by negation of no milestone' do
+        input_filtered_search("milestone!=none ")
+
+        expect_tokens([milestone_token('None', false, '!=')])
+        expect_issues_list_count(5)
         expect_filtered_search_input_empty
       end
 
@@ -299,18 +372,38 @@ describe 'Filter issues', :js do
           create(:issue, project: project, milestone: future_milestone, author: user)
         end
 
-        input_filtered_search("milestone:upcoming")
+        input_filtered_search("milestone=upcoming")
 
         expect_tokens([milestone_token('Upcoming', false)])
         expect_issues_list_count(1)
         expect_filtered_search_input_empty
       end
 
+      it 'filters issues by negation of upcoming milestones' do
+        create(:milestone, project: project, due_date: 1.month.from_now) do |future_milestone|
+          create(:issue, project: project, milestone: future_milestone, author: user)
+        end
+
+        input_filtered_search("milestone!=upcoming")
+
+        expect_tokens([milestone_token('Upcoming', false, '!=')])
+        expect_issues_list_count(8)
+        expect_filtered_search_input_empty
+      end
+
       it 'filters issues by started milestones' do
-        input_filtered_search("milestone:started")
+        input_filtered_search("milestone=started")
 
         expect_tokens([milestone_token('Started', false)])
         expect_issues_list_count(5)
+        expect_filtered_search_input_empty
+      end
+
+      it 'filters issues by negation of started milestones' do
+        input_filtered_search("milestone!=started")
+
+        expect_tokens([milestone_token('Started', false, '!=')])
+        expect_issues_list_count(3)
         expect_filtered_search_input_empty
       end
 
@@ -318,20 +411,41 @@ describe 'Filter issues', :js do
         special_milestone = create(:milestone, title: '!@\#{$%^&*()}', project: project)
         create(:issue, project: project, milestone: special_milestone)
 
-        input_filtered_search("milestone:%#{special_milestone.title}")
+        input_filtered_search("milestone=%#{special_milestone.title}")
 
         expect_tokens([milestone_token(special_milestone.title)])
         expect_issues_list_count(1)
         expect_filtered_search_input_empty
       end
 
+      it 'filters issues by milestone not containing special characters' do
+        special_milestone = create(:milestone, title: '!@\#{$%^&*()}', project: project)
+        create(:issue, project: project, milestone: special_milestone)
+
+        input_filtered_search("milestone!=%#{special_milestone.title}")
+
+        expect_tokens([milestone_token(special_milestone.title, false, '!=')])
+        expect_issues_list_count(8)
+        expect_filtered_search_input_empty
+      end
+
       it 'does not show issues for unused milestones' do
         new_milestone = create(:milestone, title: 'new', project: project)
 
-        input_filtered_search("milestone:%#{new_milestone.title}")
+        input_filtered_search("milestone=%#{new_milestone.title}")
 
         expect_tokens([milestone_token(new_milestone.title)])
         expect_no_issues_list
+        expect_filtered_search_input_empty
+      end
+
+      it 'show issues for unused milestones' do
+        new_milestone = create(:milestone, title: 'new', project: project)
+
+        input_filtered_search("milestone!=%#{new_milestone.title}")
+
+        expect_tokens([milestone_token(new_milestone.title, false, '!=')])
+        expect_issues_list_count(8)
         expect_filtered_search_input_empty
       end
     end
@@ -407,7 +521,7 @@ describe 'Filter issues', :js do
 
     context 'searched text with other filters' do
       it 'filters issues by searched text, author, text, assignee, text, label1, text, label2, text, milestone and text' do
-        input_filtered_search("bug author:@#{user.username} report label:~#{bug_label.title} label:~#{caps_sensitive_label.title} milestone:%#{milestone.title} foo")
+        input_filtered_search("bug author=@#{user.username} report label=~#{bug_label.title} label=~#{caps_sensitive_label.title} milestone=%#{milestone.title} foo")
 
         expect_issues_list_count(1)
         expect_filtered_search_input('bug report foo')
@@ -475,65 +589,13 @@ describe 'Filter issues', :js do
     end
   end
 
-  describe 'RSS feeds' do
-    let(:group) { create(:group) }
-    let(:project) { create(:project, group: group) }
-
-    before do
-      group.add_developer(user)
-    end
-
-    shared_examples 'updates atom feed link' do |type|
-      it "for #{type}" do
-        visit path
-
-        link = find_link('Subscribe to RSS feed')
-        params = CGI.parse(URI.parse(link[:href]).query)
-        auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
-        auto_discovery_params = CGI.parse(URI.parse(auto_discovery_link[:href]).query)
-
-        expected = {
-          'feed_token' => [user.feed_token],
-          'milestone_title' => [milestone.title],
-          'assignee_id' => [user.id.to_s]
-        }
-
-        expect(params).to include(expected)
-        expect(auto_discovery_params).to include(expected)
-      end
-    end
-
-    it_behaves_like 'updates atom feed link', :project do
-      let(:path) { project_issues_path(project, milestone_title: milestone.title, assignee_id: user.id) }
-    end
-
-    it_behaves_like 'updates atom feed link', :group do
-      let(:path) { issues_group_path(group, milestone_title: milestone.title, assignee_id: user.id) }
-    end
-
-    it 'updates atom feed link for group issues' do
-      visit issues_group_path(group, milestone_title: milestone.title, assignee_id: user.id)
-      link = find('.nav-controls a[title="Subscribe to RSS feed"]', visible: false)
-      params = CGI.parse(URI.parse(link[:href]).query)
-      auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
-      auto_discovery_params = CGI.parse(URI.parse(auto_discovery_link[:href]).query)
-
-      expect(params).to include('feed_token' => [user.feed_token])
-      expect(params).to include('milestone_title' => [milestone.title])
-      expect(params).to include('assignee_id' => [user.id.to_s])
-      expect(auto_discovery_params).to include('feed_token' => [user.feed_token])
-      expect(auto_discovery_params).to include('milestone_title' => [milestone.title])
-      expect(auto_discovery_params).to include('assignee_id' => [user.id.to_s])
-    end
-  end
-
   context 'URL has a trailing slash' do
     before do
       visit "#{project_issues_path(project)}/"
     end
 
     it 'milestone dropdown loads milestones' do
-      input_filtered_search("milestone:", submit: false)
+      input_filtered_search("milestone=", submit: false)
 
       within('#js-dropdown-milestone') do
         expect(page).to have_selector('.filter-dropdown .filter-dropdown-item', count: 1)
@@ -541,7 +603,7 @@ describe 'Filter issues', :js do
     end
 
     it 'label dropdown load labels' do
-      input_filtered_search("label:", submit: false)
+      input_filtered_search("label=", submit: false)
 
       within('#js-dropdown-label') do
         expect(page).to have_selector('.filter-dropdown .filter-dropdown-item', count: 3)

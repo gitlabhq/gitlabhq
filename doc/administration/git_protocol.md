@@ -37,10 +37,9 @@ service is already configured to accept the `GIT_PROTOCOL` environment and users
 need not do anything more.
 
 For Omnibus GitLab and installations from source, you have to manually update
-the SSH configuration of your server:
+the SSH configuration of your server by adding the line below to the `/etc/ssh/sshd_config` file:
 
-```
-# /etc/ssh/sshd_config
+```plaintext
 AcceptEnv GIT_PROTOCOL
 ```
 
@@ -69,7 +68,7 @@ GIT_TRACE_CURL=1 git -c protocol.version=2 ls-remote https://your-gitlab-instanc
 
 You should see that the `Git-Protocol` header is sent:
 
-```
+```plaintext
 16:29:44.577888 http.c:657              => Send header: Git-Protocol: version=2
 ```
 
@@ -105,7 +104,7 @@ GIT_SSH_COMMAND="ssh -v" git -c protocol.version=2 ls-remote ssh://your-gitlab-i
 
 You should see that the `GIT_PROTOCOL` environment variable is sent:
 
-```
+```plaintext
 debug1: Sending env GIT_PROTOCOL = version=2
 ```
 

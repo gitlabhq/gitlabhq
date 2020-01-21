@@ -17,7 +17,11 @@ exports[`Contributors charts should render charts when loading completed and the
       <glareachart-stub
         data="[object Object]"
         height="264"
+        includelegendavgmax="true"
+        legendaveragetext="Avg"
+        legendmaxtext="Max"
         option="[object Object]"
+        thresholds=""
       />
     </div>
      
@@ -38,7 +42,11 @@ exports[`Contributors charts should render charts when loading completed and the
         <glareachart-stub
           data="[object Object]"
           height="216"
+          includelegendavgmax="true"
+          legendaveragetext="Avg"
+          legendmaxtext="Max"
           option="[object Object]"
+          thresholds=""
         />
       </div>
     </div>

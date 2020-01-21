@@ -22,11 +22,20 @@
   }
 }
 
+@each $index, $size in $type-scale {
+  #{'.lh-#{$index}'} {
+    line-height: $size;
+  }
+}
+
 .border-width-1px { border-width: 1px; }
+.border-bottom-width-1px { border-bottom-width: 1px; }
 .border-style-dashed { border-style: dashed; }
 .border-style-solid { border-style: solid; }
+.border-bottom-style-solid { border-bottom-style: solid; }
 .border-color-blue-300 { border-color: $blue-300; }
 .border-color-default { border-color: $border-color; }
+.border-bottom-color-default { border-bottom-color: $border-color; }
 .box-shadow-default { box-shadow: 0 2px 4px 0 $black-transparent; }
 
 .mh-50vh { max-height: 50vh; }

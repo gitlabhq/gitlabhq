@@ -18,7 +18,7 @@ permission level, who added a new user, or who removed a user.
 
 ## Use-cases
 
-- Check who was the person who changed the permission level of a particular
+- Check who the person was that changed the permission level of a particular
   user for a project in GitLab.
 - Use it to track which users have access to a certain group of projects
   in  GitLab, and who gave them that permission level.
@@ -80,6 +80,9 @@ From there, you can see the following actions:
 - Project was archived
 - Project was unarchived
 - Added/removed/updated protected branches
+- Release was added to a project
+- Release was updated
+- Release milestone associations changed
 
 ### Instance events **(PREMIUM ONLY)**
 
@@ -104,7 +107,7 @@ recorded:
 - Started/stopped user impersonation
 
 It is possible to filter particular actions by choosing an audit data type from
-the filter drop-down. You can further filter by specific group, project or user
+the filter dropdown box. You can further filter by specific group, project or user
 (for authentication events).
 
 ![audit log](img/audit_log.png)

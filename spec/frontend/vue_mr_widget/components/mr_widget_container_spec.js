@@ -1,4 +1,4 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import MrWidgetContainer from '~/vue_merge_request_widget/components/mr_widget_container.vue';
 
 const BODY_HTML = '<div class="test-body">Hello World</div>';
@@ -8,10 +8,7 @@ describe('MrWidgetContainer', () => {
   let wrapper;
 
   const factory = (options = {}) => {
-    const localVue = createLocalVue();
-
-    wrapper = shallowMount(localVue.extend(MrWidgetContainer), {
-      localVue,
+    wrapper = shallowMount(MrWidgetContainer, {
       ...options,
     });
   };

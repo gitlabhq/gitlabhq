@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlFormGroup, GlFormInput, GlFormCheckbox, GlLink } from '@gitlab/ui';
+import { GlButton, GlFormGroup, GlFormInput, GlFormCheckbox } from '@gitlab/ui';
 import { mapState, mapActions } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 
@@ -9,7 +9,6 @@ export default {
     GlFormCheckbox,
     GlFormGroup,
     GlFormInput,
-    GlLink,
     Icon,
   },
   data() {

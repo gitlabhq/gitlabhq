@@ -4,7 +4,7 @@ import * as getters from './getters';
 import mutations from './mutations';
 import state from './state';
 
-import clusterDropdownStore from './cluster_dropdown';
+import clusterDropdownStore from '~/create_cluster/store/cluster_dropdown';
 
 import {
   fetchRoles,

@@ -48,7 +48,7 @@ module API
       end
 
       params :issues_params do
-        optional :with_labels_details, type: Boolean, desc: 'Return more label data than just lable title', default: false
+        optional :with_labels_details, type: Boolean, desc: 'Return titles of labels and other details', default: false
         optional :state, type: String, values: %w[opened closed all], default: 'all',
                  desc: 'Return opened, closed, or all issues'
         optional :order_by, type: String, values: Helpers::IssuesHelpers.sort_options, default: 'created_at',
@@ -122,16 +122,15 @@ module API
         use :issues_params
       end
       get ":id/issues" do
-        group = find_group!(params[:id])
-
-        issues = paginate(find_issues(group_id: group.id, include_subgroups: true))
+        issues = paginate(find_issues(group_id: user_group.id, include_subgroups: true))
 
         options = {
           with: Entities::Issue,
           with_labels_details: declared_params[:with_labels_details],
           current_user: current_user,
           issuable_metadata: issuable_meta_data(issues, 'Issue', current_user),
-          include_subscribed: false
+          include_subscribed: false,
+          group: user_group
         }
 
         present issues, options
@@ -142,9 +141,7 @@ module API
         use :issues_stats_params
       end
       get ":id/issues_statistics" do
-        group = find_group!(params[:id])
-
-        present issues_statistics(group_id: group.id, include_subgroups: true), with: Grape::Presenters::Presenter
+        present issues_statistics(group_id: user_group.id, include_subgroups: true), with: Grape::Presenters::Presenter
       end
     end
 
@@ -161,9 +158,7 @@ module API
         use :issues_params
       end
       get ":id/issues" do
-        project = find_project!(params[:id])
-
-        issues = paginate(find_issues(project_id: project.id))
+        issues = paginate(find_issues(project_id: user_project.id))
 
         options = {
           with: Entities::Issue,
@@ -182,9 +177,7 @@ module API
         use :issues_stats_params
       end
       get ":id/issues_statistics" do
-        project = find_project!(params[:id])
-
-        present issues_statistics(project_id: project.id), with: Grape::Presenters::Presenter
+        present issues_statistics(project_id: user_project.id), with: Grape::Presenters::Presenter
       end
 
       desc 'Get a single project issue' do
@@ -227,18 +220,22 @@ module API
 
         issue_params = convert_parameters_from_legacy_format(issue_params)
 
-        issue = ::Issues::CreateService.new(user_project,
-                                            current_user,
-                                            issue_params.merge(request: request, api: true)).execute
+        begin
+          issue = ::Issues::CreateService.new(user_project,
+                                              current_user,
+                                              issue_params.merge(request: request, api: true)).execute
 
-        if issue.spam?
-          render_api_error!({ error: 'Spam detected' }, 400)
-        end
+          if issue.spam?
+            render_api_error!({ error: 'Spam detected' }, 400)
+          end
 
-        if issue.valid?
-          present issue, with: Entities::Issue, current_user: current_user, project: user_project
-        else
-          render_validation_error!(issue)
+          if issue.valid?
+            present issue, with: Entities::Issue, current_user: current_user, project: user_project
+          else
+            render_validation_error!(issue)
+          end
+        rescue ::ActiveRecord::RecordNotUnique
+          render_api_error!('Duplicated issue', 409)
         end
       end
 

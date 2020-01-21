@@ -1,4 +1,4 @@
-import bp from '../../../breakpoints';
+import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { s__, sprintf } from '~/locale';
 
 export default class Wikis {
@@ -52,7 +52,7 @@ export default class Wikis {
 
   static sidebarCanCollapse() {
     const bootstrapBreakpoint = bp.getBreakpointSize();
-    return bootstrapBreakpoint === 'xs';
+    return bootstrapBreakpoint === 'xs' || bootstrapBreakpoint === 'sm';
   }
 
   renderSidebar() {

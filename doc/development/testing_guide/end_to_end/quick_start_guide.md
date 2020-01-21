@@ -445,7 +445,7 @@ end
 
 By defining the `resource_web_url(resource)` method, we override the one from the [`ApiFabricator`](https://gitlab.com/gitlab-org/gitlab/blob/master/qa/qa/resource/api_fabricator.rb#L44) module. We do that to avoid failing the test due to this particular resource not exposing a `web_url` property.
 
-By defining the `api_get_path` method, we **would** allow for the [`ApiFabricator`](https://gitlab.com/gitlab-org/gitlab/blob/master/qa/qa/resource/api_fabricator.rb) module to know which path to use to get a single label, but since there's no path available for that in the publich API, we raise a `NotImplementedError` instead.
+By defining the `api_get_path` method, we **would** allow for the [`ApiFabricator`](https://gitlab.com/gitlab-org/gitlab/blob/master/qa/qa/resource/api_fabricator.rb) module to know which path to use to get a single label, but since there's no path available for that in the public API, we raise a `NotImplementedError` instead.
 
 By defining the `api_post_path` method, we allow for the [`ApiFabricator`](https://gitlab.com/gitlab-org/gitlab/blob/master/qa/qa/resource/api_fabricator.rb) module to know which path to use to create a new label in a specific project.
 

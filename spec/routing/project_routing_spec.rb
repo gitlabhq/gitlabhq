@@ -314,6 +314,12 @@ describe 'project routing' do
       expect(get('/gitlab/gitlabhq/merge_requests/1/pipelines')).to route_to('projects/merge_requests#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', tab: 'pipelines')
     end
 
+    it 'to #show from scoped route' do
+      expect(get('/gitlab/gitlabhq/-/merge_requests/1.diff')).to route_to('projects/merge_requests#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', format: 'diff')
+      expect(get('/gitlab/gitlabhq/-/merge_requests/1.patch')).to route_to('projects/merge_requests#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', format: 'patch')
+      expect(get('/gitlab/gitlabhq/-/merge_requests/1/diffs')).to route_to('projects/merge_requests#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', tab: 'diffs')
+    end
+
     it_behaves_like 'RESTful project resources' do
       let(:controller) { 'merge_requests' }
       let(:actions) { [:index, :edit, :show, :update] }
@@ -573,6 +579,10 @@ describe 'project routing' do
                       namespace_id: 'gitlab', project_id: 'gitlabhq',
                       id: "blob/master/blob/#{newline_file}" })
     end
+
+    it 'to #show from scope routing' do
+      expect(get('/gitlab/gitlabhq/-/blob/master/app/models/project.rb')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
+    end
   end
 
   # project_tree GET    /:project_id/tree/:id(.:format) tree#show {id: /[^\0]+/, project_id: /[^\/]+/}
@@ -589,6 +599,10 @@ describe 'project routing' do
                     { controller: 'projects/tree', action: 'show',
                       namespace_id: 'gitlab', project_id: 'gitlabhq',
                       id: "master/#{newline_file}" })
+    end
+
+    it 'to #show from scope routing' do
+      expect(get('/gitlab/gitlabhq/-/tree/master/app/models/project.rb')).to route_to('projects/tree#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
     end
   end
 

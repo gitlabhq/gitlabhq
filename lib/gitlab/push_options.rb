@@ -32,6 +32,8 @@ module Gitlab
 
     OPTION_MATCHER = /(?<namespace>[^\.]+)\.(?<key>[^=]+)=?(?<value>.*)/.freeze
 
+    CI_SKIP = 'ci.skip'
+
     attr_reader :options
 
     def initialize(options = [])

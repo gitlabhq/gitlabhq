@@ -110,6 +110,7 @@ describe MergeRequest do
 
   describe '#squash?' do
     let(:merge_request) { build(:merge_request, squash: squash) }
+
     subject { merge_request.squash? }
 
     context 'disabled in database' do
@@ -383,7 +384,7 @@ describe MergeRequest do
     end
 
     it 'returns target branches sort by updated at desc' do
-      expect(described_class.recent_target_branches).to match_array(['feature', 'merge-test', 'fix'])
+      expect(described_class.recent_target_branches).to match_array(%w[feature merge-test fix])
     end
   end
 
@@ -851,6 +852,7 @@ describe MergeRequest do
 
   describe '#modified_paths' do
     let(:paths) { double(:paths) }
+
     subject(:merge_request) { build(:merge_request) }
 
     before do
@@ -879,6 +881,7 @@ describe MergeRequest do
 
     context 'when no arguments provided' do
       let(:diff) { merge_request.merge_request_diff }
+
       subject(:merge_request) { create(:merge_request, source_branch: 'feature', target_branch: 'master') }
 
       it 'returns affected file paths for merge_request_diff' do
@@ -957,6 +960,15 @@ describe MergeRequest do
     it 'only lists issues as to be closed if it targets the default branch' do
       allow(subject.project).to receive(:default_branch).and_return('master')
       subject.target_branch = 'something-else'
+
+      expect(subject.closes_issues).to be_empty
+    end
+
+    it 'ignores referenced issues when auto-close is disabled' do
+      subject.project.update!(autoclose_referenced_issues: false)
+
+      allow(subject.project).to receive(:default_branch)
+        .and_return(subject.target_branch)
 
       expect(subject.closes_issues).to be_empty
     end
@@ -1554,6 +1566,7 @@ describe MergeRequest do
   describe '#calculate_reactive_cache' do
     let(:project) { create(:project, :repository) }
     let(:merge_request) { create(:merge_request, source_project: project) }
+
     subject { merge_request.calculate_reactive_cache(service_class_name) }
 
     context 'when given an unknown service class name' do
@@ -2009,7 +2022,7 @@ describe MergeRequest do
     it 'atomically enqueues a RebaseWorker job and updates rebase_jid' do
       expect(RebaseWorker)
         .to receive(:perform_async)
-        .with(merge_request.id, user_id)
+        .with(merge_request.id, user_id, false)
         .and_return(rebase_jid)
 
       expect(merge_request).to receive(:expire_etag_cache)
@@ -2201,6 +2214,16 @@ describe MergeRequest do
     end
   end
 
+  describe "#actual_head_pipeline_active? " do
+    it do
+      is_expected
+        .to delegate_method(:active?)
+        .to(:actual_head_pipeline)
+        .with_prefix
+        .with_arguments(allow_nil: true)
+    end
+  end
+
   describe '#mergeable_ci_state?' do
     let(:project) { create(:project, only_allow_merge_if_pipeline_succeeds: true) }
     let(:pipeline) { create(:ci_empty_pipeline) }
@@ -2322,6 +2345,10 @@ describe MergeRequest do
     let(:project)       { create(:project, :repository) }
     let(:user)          { project.creator }
     let(:merge_request) { create(:merge_request, source_project: project) }
+    let(:source_branch) { merge_request.source_branch }
+    let(:target_branch) { merge_request.target_branch }
+    let(:source_oid) { project.commit(source_branch).id }
+    let(:target_oid) { project.commit(target_branch).id }
 
     before do
       merge_request.source_project.add_maintainer(user)
@@ -2332,12 +2359,20 @@ describe MergeRequest do
       let(:environments) { create_list(:environment, 3, project: project) }
 
       before do
-        create(:deployment, :success, environment: environments.first, ref: 'master', sha: project.commit('master').id)
-        create(:deployment, :success, environment: environments.second, ref: 'feature', sha: project.commit('feature').id)
+        create(:deployment, :success, environment: environments.first, ref: source_branch, sha: source_oid)
+        create(:deployment, :success, environment: environments.second, ref: target_branch, sha: target_oid)
       end
 
       it 'selects deployed environments' do
         expect(merge_request.environments_for(user)).to contain_exactly(environments.first)
+      end
+
+      it 'selects latest deployed environment' do
+        latest_environment = create(:environment, project: project)
+        create(:deployment, :success, environment: latest_environment, ref: source_branch, sha: source_oid)
+
+        expect(merge_request.environments_for(user)).to eq([environments.first, latest_environment])
+        expect(merge_request.environments_for(user, latest: true)).to contain_exactly(latest_environment)
       end
     end
 
@@ -3032,6 +3067,7 @@ describe MergeRequest do
     describe 'transition to cannot_be_merged' do
       let(:notification_service) { double(:notification_service) }
       let(:todo_service) { double(:todo_service) }
+
       subject { create(:merge_request, state, merge_status: :unchecked) }
 
       before do
@@ -3241,6 +3277,7 @@ describe MergeRequest do
     describe 'when merge_when_pipeline_succeeds? is true' do
       describe 'when merge user is author' do
         let(:user) { create(:user) }
+
         subject do
           create(:merge_request,
                  merge_when_pipeline_succeeds: true,
@@ -3255,6 +3292,7 @@ describe MergeRequest do
 
       describe 'when merge user and author are different users' do
         let(:merge_user) { create(:user) }
+
         subject do
           create(:merge_request,
                  merge_when_pipeline_succeeds: true,

@@ -21,7 +21,8 @@ class KeyRestrictionValidator < ActiveModel::EachValidator
 
   def supported_sizes_message
     sizes = self.class.supported_sizes(options[:type])
-    sizes.to_sentence(last_word_connector: ', or ', two_words_connector: ' or ')
+
+    Gitlab::Utils.to_exclusive_sentence(sizes)
   end
 
   def valid_restriction?(value)

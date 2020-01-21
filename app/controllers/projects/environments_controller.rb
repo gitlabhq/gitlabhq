@@ -15,11 +15,15 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action only: [:metrics, :additional_metrics, :metrics_dashboard] do
     push_frontend_feature_flag(:prometheus_computed_alerts)
   end
+  before_action do
+    push_frontend_feature_flag(:auto_stop_environments)
+  end
   after_action :expire_etag_cache, only: [:cancel_auto_stop]
 
   def index
     @environments = project.environments
       .with_state(params[:scope] || :available)
+    @project = ProjectPresenter.new(project, current_user: current_user)
 
     respond_to do |format|
       format.html
@@ -28,6 +32,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
         render json: {
           environments: serialize_environments(request, response, params[:nested]),
+          review_app: serialize_review_app,
           available_count: project.environments.available.count,
           stopped_count: project.environments.stopped.count
         }
@@ -217,7 +222,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   def metrics_dashboard_params
     params
-      .permit(:embedded, :group, :title, :y_label, :dashboard_path, :environment)
+      .permit(:embedded, :group, :title, :y_label, :dashboard_path, :environment, :sample_metrics)
       .merge(dashboard_path: params[:dashboard], environment: environment)
   end
 
@@ -237,6 +242,10 @@ class Projects::EnvironmentsController < Projects::ApplicationController
       .tap { |serializer| serializer.within_folders if nested }
       .with_pagination(request, response)
       .represent(@environments)
+  end
+
+  def serialize_review_app
+    ReviewAppSetupSerializer.new(current_user: @current_user).represent(@project)
   end
 
   def authorize_stop_environment!

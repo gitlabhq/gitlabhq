@@ -241,6 +241,21 @@ module Gitlab
             end
           end
         end
+
+        describe 'resource group' do
+          context 'when resource group is defined' do
+            let(:config) do
+              YAML.dump(rspec: {
+                script:   'test',
+                resource_group: 'iOS'
+              })
+            end
+
+            it 'has the attributes' do
+              expect(subject[:resource_group_key]).to eq 'iOS'
+            end
+          end
+        end
       end
 
       describe '#stages_attributes' do
@@ -1270,6 +1285,59 @@ module Gitlab
         end
       end
 
+      describe "release" do
+        let(:processor) { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)) }
+        let(:config) do
+          {
+            stages: ["build", "test", "release"], # rubocop:disable Style/WordArray
+            release: {
+              stage: "release",
+              only: ["tags"],
+              script: ["make changelog | tee release_changelog.txt"],
+              release: {
+                tag_name: "$CI_COMMIT_TAG",
+                name: "Release $CI_TAG_NAME",
+                description: "./release_changelog.txt",
+                assets: {
+                  links: [
+                    {
+                      name: "cool-app.zip",
+                      url: "http://my.awesome.download.site/1.0-$CI_COMMIT_SHORT_SHA.zip"
+                    },
+                    {
+                      name: "cool-app.exe",
+                      url: "http://my.awesome.download.site/1.0-$CI_COMMIT_SHORT_SHA.exe"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        end
+
+        context 'with feature flag active' do
+          before do
+            stub_feature_flags(ci_release_generation: true)
+          end
+
+          it "returns release info" do
+            expect(processor.stage_builds_attributes('release').first[:options])
+              .to eq(config[:release].except(:stage, :only))
+          end
+        end
+
+        context 'with feature flag inactive' do
+          before do
+            stub_feature_flags(ci_release_generation: false)
+          end
+
+          it 'raises error' do
+            expect { processor }.to raise_error(
+              'jobs:release config release features are not enabled: release')
+          end
+        end
+      end
+
       describe '#environment' do
         let(:config) do
           {
@@ -1666,6 +1734,39 @@ module Gitlab
           let(:dependencies) { %w(build2) }
 
           it { expect { subject }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, 'jobs:test1 dependencies the build2 should be part of needs') }
+        end
+
+        context 'needs with a Hash type and dependencies with a string type that are mismatching' do
+          let(:needs) do
+            [
+              "build1",
+              { job: "build2" }
+            ]
+          end
+          let(:dependencies) { %w(build3) }
+
+          it { expect { subject }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, 'jobs:test1 dependencies the build3 should be part of needs') }
+        end
+
+        context 'needs with an array type and dependency with a string type' do
+          let(:needs) { %w(build1) }
+          let(:dependencies) { 'deploy' }
+
+          it { expect { subject }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, 'jobs:test1 dependencies should be an array of strings') }
+        end
+
+        context 'needs with a string type and dependency with an array type' do
+          let(:needs) { 'build1' }
+          let(:dependencies) { %w(deploy) }
+
+          it { expect { subject }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, 'jobs:test1:needs config can only be a hash or an array') }
+        end
+
+        context 'needs with a Hash type and dependency with a string type' do
+          let(:needs) { { job: 'build1' } }
+          let(:dependencies) { 'deploy' }
+
+          it { expect { subject }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, 'jobs:test1 dependencies should be an array of strings') }
         end
       end
 

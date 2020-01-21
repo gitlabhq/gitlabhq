@@ -15,6 +15,7 @@ describe BlobViewer::Podspec do
     SPEC
   end
   let(:blob) { fake_blob(path: 'Reachability.podspec', data: data) }
+
   subject { described_class.new(blob) }
 
   describe '#package_name' do

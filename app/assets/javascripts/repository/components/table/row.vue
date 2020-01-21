@@ -1,5 +1,5 @@
 <script>
-import { GlBadge, GlLink, GlSkeletonLoading, GlTooltipDirective } from '@gitlab/ui';
+import { GlBadge, GlLink, GlSkeletonLoading, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -12,6 +12,7 @@ export default {
     GlBadge,
     GlLink,
     GlSkeletonLoading,
+    GlLoadingIcon,
     TimeagoTooltip,
     Icon,
   },
@@ -76,6 +77,11 @@ export default {
       required: false,
       default: null,
     },
+    loadingPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -125,7 +131,13 @@ export default {
 <template>
   <tr :class="`file_${id}`" class="tree-item" @click="openRow">
     <td class="tree-item-file-name">
-      <i :aria-label="type" role="img" :class="iconName" class="fa fa-fw"></i>
+      <gl-loading-icon
+        v-if="path === loadingPath"
+        size="sm"
+        inline
+        class="d-inline-block align-text-bottom fa-fw"
+      />
+      <i v-else :aria-label="type" role="img" :class="iconName" class="fa fa-fw"></i>
       <component :is="linkComponent" :to="routerLinkTo" :href="url" class="str-truncated">
         {{ fullPath }}
       </component>

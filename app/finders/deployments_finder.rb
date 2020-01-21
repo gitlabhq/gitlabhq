@@ -17,6 +17,8 @@ class DeploymentsFinder
   def execute
     items = init_collection
     items = by_updated_at(items)
+    items = by_environment(items)
+    items = by_status(items)
     sort(items)
   end
 
@@ -56,6 +58,24 @@ class DeploymentsFinder
     items = items.updated_after(params[:updated_after]) if params[:updated_after].present?
 
     items
+  end
+
+  def by_environment(items)
+    if params[:environment].present?
+      items.for_environment_name(params[:environment])
+    else
+      items
+    end
+  end
+
+  def by_status(items)
+    return items unless params[:status].present?
+
+    unless Deployment.statuses.key?(params[:status])
+      raise ArgumentError, "The deployment status #{params[:status]} is invalid"
+    end
+
+    items.for_status(params[:status])
   end
 
   def sort_params

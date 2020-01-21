@@ -51,9 +51,7 @@ module QA
           private
 
           def within_new_project_deploy_token
-            wait(reload: false) do
-              has_css?(element_selector_css(:created_deploy_token_section))
-            end
+            has_element?(:created_deploy_token_section, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
 
             within_element(:created_deploy_token_section) do
               yield

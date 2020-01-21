@@ -7,7 +7,7 @@ code_quality:
   variables:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
-    CODE_QUALITY_IMAGE: "registry.gitlab.com/gitlab-org/security-products/codequality:0.85.5"
+    CODE_QUALITY_IMAGE: "registry.gitlab.com/gitlab-org/security-products/codequality:0.85.6"
   script:
     - |
       if ! docker info &>/dev/null; then

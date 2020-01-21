@@ -1359,7 +1359,8 @@ export default class Notes {
       const $systemNote = $(systemNote);
       const headerMessage = $systemNote
         .find('.note-text')
-        .find('p:first')
+        .find('p')
+        .first()
         .text()
         .replace(':', '');
 

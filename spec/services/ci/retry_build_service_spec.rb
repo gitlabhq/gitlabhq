@@ -3,9 +3,12 @@
 require 'spec_helper'
 
 describe Ci::RetryBuildService do
-  set(:user) { create(:user) }
-  set(:project) { create(:project) }
-  set(:pipeline) { create(:ci_pipeline, project: project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:pipeline) do
+    create(:ci_pipeline, project: project,
+           sha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0')
+  end
 
   let(:stage) do
     create(:ci_stage_entity, project: project,
@@ -29,9 +32,11 @@ describe Ci::RetryBuildService do
        job_artifacts_metadata job_artifacts_trace job_artifacts_junit
        job_artifacts_sast job_artifacts_dependency_scanning
        job_artifacts_container_scanning job_artifacts_dast
-       job_artifacts_license_management job_artifacts_performance
+       job_artifacts_license_management job_artifacts_license_scanning
+       job_artifacts_performance
        job_artifacts_codequality job_artifacts_metrics scheduled_at
-       job_variables].freeze
+       job_variables waiting_for_resource_at job_artifacts_metrics_referee
+       job_artifacts_network_referee].freeze
 
   IGNORE_ACCESSORS =
     %i[type lock_version target_url base_tags trace_sections
@@ -40,14 +45,15 @@ describe Ci::RetryBuildService do
        user_id auto_canceled_by_id retried failure_reason
        sourced_pipelines artifacts_file_store artifacts_metadata_store
        metadata runner_session trace_chunks upstream_pipeline_id
-       artifacts_file artifacts_metadata artifacts_size commands].freeze
+       artifacts_file artifacts_metadata artifacts_size commands
+       resource resource_group_id processed].freeze
 
   shared_examples 'build duplication' do
     let(:another_pipeline) { create(:ci_empty_pipeline, project: project) }
 
     let(:build) do
       create(:ci_build, :failed, :expired, :erased, :queued, :coverage, :tags,
-             :allowed_to_fail, :on_tag, :triggered, :teardown_environment,
+             :allowed_to_fail, :on_tag, :triggered, :teardown_environment, :resource_group,
              description: 'my-job', stage: 'test', stage_id: stage.id,
              pipeline: pipeline, auto_canceled_by: another_pipeline,
              scheduled_at: 10.seconds.since)
@@ -197,17 +203,19 @@ describe Ci::RetryBuildService do
 
       it 'does not enqueue the new build' do
         expect(new_build).to be_created
+        expect(new_build).not_to be_processed
       end
 
-      it 'does mark old build as retried in the database and on the instance' do
+      it 'does mark old build as retried' do
         expect(new_build).to be_latest
         expect(build).to be_retried
-        expect(build.reload).to be_retried
+        expect(build).to be_processed
       end
 
       context 'when build with deployment is retried' do
         let!(:build) do
-          create(:ci_build, :with_deployment, :deploy_to_production, pipeline: pipeline, stage_id: stage.id)
+          create(:ci_build, :with_deployment, :deploy_to_production,
+                 pipeline: pipeline, stage_id: stage.id, project: project)
         end
 
         it 'creates a new deployment' do

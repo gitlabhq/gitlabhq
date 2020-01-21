@@ -45,7 +45,6 @@ describe('IDE file templates dropdown component', () => {
       },
       store: fakeStore,
       localVue,
-      sync: false,
     });
 
     ({ element } = wrapper);
@@ -62,7 +61,9 @@ describe('IDE file templates dropdown component', () => {
     const item = findItemButtons().at(0);
     item.trigger('click');
 
-    expect(wrapper.emitted().click[0][0]).toBe(itemData);
+    return wrapper.vm.$nextTick().then(() => {
+      expect(wrapper.emitted().click[0][0]).toBe(itemData);
+    });
   });
 
   it('renders dropdown title', () => {

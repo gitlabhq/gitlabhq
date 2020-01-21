@@ -1,0 +1,5 @@
+---
+title: Check both DEPENDENCY_SCANNING_DISABLED and DS_DISABLE_DIND when executing Dependency Scanning job template
+merge_request: 22172
+author:
+type: fixed

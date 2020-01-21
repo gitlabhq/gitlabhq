@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe ProjectFeature do
+  using RSpec::Parameterized::TableSyntax
+
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 
@@ -121,13 +123,14 @@ describe ProjectFeature do
   end
 
   context 'public features' do
-    it "does not allow public for other than pages" do
-      features = %w(issues wiki builds merge_requests snippets repository)
-      project_feature = project.project_feature
+    features = %w(issues wiki builds merge_requests snippets repository)
 
-      features.each do |feature|
+    features.each do |feature|
+      it "does not allow public access level for #{feature}" do
+        project_feature = project.project_feature
         field = "#{feature}_access_level".to_sym
         project_feature.update_attribute(field, ProjectFeature::PUBLIC)
+
         expect(project_feature.valid?).to be_falsy
       end
     end
@@ -158,12 +161,13 @@ describe ProjectFeature do
   end
 
   describe 'default pages access level' do
-    subject { project.project_feature.pages_access_level }
+    subject { project_feature.pages_access_level }
 
-    before do
+    let(:project_feature) do
       # project factory overrides all values in project_feature after creation
       project.project_feature.destroy!
       project.build_project_feature.save!
+      project.project_feature
     end
 
     context 'when new project is private' do
@@ -182,6 +186,14 @@ describe ProjectFeature do
       let(:project) { create(:project, :public) }
 
       it { is_expected.to eq(ProjectFeature::ENABLED) }
+
+      context 'when access control is forced on the admin level' do
+        before do
+          allow(::Gitlab::Pages).to receive(:access_control_is_forced?).and_return(true)
+        end
+
+        it { is_expected.to eq(ProjectFeature::PRIVATE) }
+      end
     end
   end
 
@@ -189,53 +201,59 @@ describe ProjectFeature do
     it 'returns true if Pages access controll is not enabled' do
       stub_config(pages: { access_control: false })
 
-      project_feature = described_class.new
+      project_feature = described_class.new(pages_access_level: described_class::PRIVATE)
 
       expect(project_feature.public_pages?).to eq(true)
     end
 
-    context 'Pages access control is enabled' do
+    context 'when Pages access control is enabled' do
       before do
         stub_config(pages: { access_control: true })
       end
 
-      it 'returns true if Pages access level is public' do
-        project_feature = described_class.new(pages_access_level: described_class::PUBLIC)
-
-        expect(project_feature.public_pages?).to eq(true)
+      where(:project_visibility, :pages_access_level, :result) do
+        :private  | ProjectFeature::PUBLIC  | true
+        :internal | ProjectFeature::PUBLIC  | true
+        :internal | ProjectFeature::ENABLED | false
+        :public   | ProjectFeature::ENABLED | true
+        :private  | ProjectFeature::PRIVATE | false
+        :public   | ProjectFeature::PRIVATE | false
       end
 
-      it 'returns true if Pages access level is enabled and the project is public' do
-        project = build(:project, :public)
+      with_them do
+        let(:project_feature) do
+          project = build(:project, project_visibility)
+          project_feature = project.project_feature
+          project_feature.update!(pages_access_level: pages_access_level)
+          project_feature
+        end
 
-        project_feature = described_class.new(project: project, pages_access_level: described_class::ENABLED)
+        it 'properly handles project and Pages visibility settings' do
+          expect(project_feature.public_pages?).to eq(result)
+        end
 
-        expect(project_feature.public_pages?).to eq(true)
-      end
+        it 'returns false if access_control is forced on the admin level' do
+          stub_application_setting(force_pages_access_control: true)
 
-      it 'returns false if pages or the project are not public' do
-        project = build(:project, :private)
-
-        project_feature = described_class.new(project: project, pages_access_level: described_class::ENABLED)
-
-        expect(project_feature.public_pages?).to eq(false)
+          expect(project_feature.public_pages?).to eq(false)
+        end
       end
     end
+  end
 
-    describe '#private_pages?' do
-      subject(:project_feature) { described_class.new }
+  describe '#private_pages?' do
+    subject(:project_feature) { described_class.new }
 
-      it 'returns false if public_pages? is true' do
-        expect(project_feature).to receive(:public_pages?).and_return(true)
+    it 'returns false if public_pages? is true' do
+      expect(project_feature).to receive(:public_pages?).and_return(true)
 
-        expect(project_feature.private_pages?).to eq(false)
-      end
+      expect(project_feature.private_pages?).to eq(false)
+    end
 
-      it 'returns true if public_pages? is false' do
-        expect(project_feature).to receive(:public_pages?).and_return(false)
+    it 'returns true if public_pages? is false' do
+      expect(project_feature).to receive(:public_pages?).and_return(false)
 
-        expect(project_feature.private_pages?).to eq(true)
-      end
+      expect(project_feature.private_pages?).to eq(true)
     end
   end
 

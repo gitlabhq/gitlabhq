@@ -15,7 +15,7 @@ class AddStatusToDeployments < ActiveRecord::Migration[4.2]
   # However, we have to use the default value for avoiding `NOT NULL` violation during the transition period.
   # The default value should be removed in the future release.
   def up
-    add_column_with_default(:deployments,
+    add_column_with_default(:deployments, # rubocop:disable Migration/AddColumnWithDefault
       :status,
       :integer,
       limit: 2,

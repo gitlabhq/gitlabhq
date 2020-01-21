@@ -7,7 +7,7 @@ type: reference, howto
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/22323) in GitLab 9.0
 
 [Vault](https://www.vaultproject.io/) is a secrets management application offered by HashiCorp.
-It allows you to store and manage sensitive information such secret environment variables, encryption keys, and authentication tokens.
+It allows you to store and manage sensitive information such as secret environment variables, encryption keys, and authentication tokens.
 Vault offers Identity-based Access, which means Vault users can authenticate through several of their preferred cloud providers.
 
 In this document, we'll explain how Vault users can authenticate themselves through GitLab by utilizing our OpenID authentication feature.

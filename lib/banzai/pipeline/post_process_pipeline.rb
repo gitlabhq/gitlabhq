@@ -16,7 +16,10 @@ module Banzai
         [
           Filter::ReferenceRedactorFilter,
           Filter::InlineMetricsRedactorFilter,
-          Filter::RelativeLinkFilter,
+          # UploadLinkFilter must come before RepositoryLinkFilter to
+          # prevent unnecessary Gitaly calls from being made.
+          Filter::UploadLinkFilter,
+          Filter::RepositoryLinkFilter,
           Filter::IssuableStateFilter,
           Filter::SuggestionFilter
         ]

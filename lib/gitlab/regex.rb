@@ -5,7 +5,7 @@ module Gitlab
     extend self
 
     def project_name_regex
-      @project_name_regex ||= /\A[\p{Alnum}\u{00A9}-\u{1f9c0}_][\p{Alnum}\p{Pd}\u{00A9}-\u{1f9c0}_\. ]*\z/.freeze
+      @project_name_regex ||= /\A[\p{Alnum}\u{00A9}-\u{1f9ff}_][\p{Alnum}\p{Pd}\u{00A9}-\u{1f9ff}_\. ]*\z/.freeze
     end
 
     def project_name_regex_message

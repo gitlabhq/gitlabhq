@@ -63,10 +63,6 @@ class Project < ApplicationRecord
 
   cache_markdown_field :description, pipeline: :description
 
-  # TODO: remove once GitLab 12.5 is released
-  # https://gitlab.com/gitlab-org/gitlab/issues/34638
-  ignore_column :merge_requests_require_code_owner_approval, remove_after: '2019-12-01', remove_with: '12.6'
-
   default_value_for :archived, false
   default_value_for :resolve_outdated_diff_discussions, false
   default_value_for :container_registry_enabled, gitlab_config_features.container_registry
@@ -79,6 +75,7 @@ class Project < ApplicationRecord
   default_value_for :snippets_enabled, gitlab_config_features.snippets
   default_value_for :only_allow_merge_if_all_discussions_are_resolved, false
   default_value_for :remove_source_branch_after_merge, true
+  default_value_for :autoclose_referenced_issues, true
   default_value_for(:ci_config_path) { Gitlab::CurrentSettings.default_ci_config_path }
 
   add_authentication_token_field :runners_token, encrypted: -> { Feature.enabled?(:projects_tokens_optional_encryption, default_enabled: true) ? :optional : :required }
@@ -285,6 +282,7 @@ class Project < ApplicationRecord
   has_many :pipeline_schedules, class_name: 'Ci::PipelineSchedule'
   has_many :project_deploy_tokens
   has_many :deploy_tokens, through: :project_deploy_tokens
+  has_many :resource_groups, class_name: 'Ci::ResourceGroup', inverse_of: :project
 
   has_one :auto_devops, class_name: 'ProjectAutoDevops', inverse_of: :project, autosave: true
   has_many :custom_attributes, class_name: 'ProjectCustomAttribute'
@@ -319,10 +317,12 @@ class Project < ApplicationRecord
   accepts_nested_attributes_for :metrics_setting, update_only: true, allow_destroy: true
   accepts_nested_attributes_for :grafana_integration, update_only: true, allow_destroy: true
 
-  delegate :feature_available?, :builds_enabled?, :wiki_enabled?, :merge_requests_enabled?,
-    :issues_enabled?, :pages_enabled?, :public_pages?, :private_pages?,
-    :merge_requests_access_level, :issues_access_level, :wiki_access_level,
-    :snippets_access_level, :builds_access_level, :repository_access_level,
+  delegate :feature_available?, :builds_enabled?, :wiki_enabled?,
+    :merge_requests_enabled?, :forking_enabled?, :issues_enabled?,
+    :pages_enabled?, :public_pages?, :private_pages?,
+    :merge_requests_access_level, :forking_access_level, :issues_access_level,
+    :wiki_access_level, :snippets_access_level, :builds_access_level,
+    :repository_access_level,
     to: :project_feature, allow_nil: true
   delegate :scheduled?, :started?, :in_progress?, :failed?, :finished?,
     prefix: :import, to: :import_state, allow_nil: true
@@ -334,7 +334,7 @@ class Project < ApplicationRecord
   delegate :add_guest, :add_reporter, :add_developer, :add_maintainer, :add_role, to: :team
   delegate :add_master, to: :team # @deprecated
   delegate :group_runners_enabled, :group_runners_enabled=, :group_runners_enabled?, to: :ci_cd_settings
-  delegate :root_ancestor, :actual_limits, to: :namespace, allow_nil: true
+  delegate :root_ancestor, to: :namespace, allow_nil: true
   delegate :last_pipeline, to: :commit, allow_nil: true
   delegate :external_dashboard_url, to: :metrics_setting, allow_nil: true, prefix: true
   delegate :default_git_depth, :default_git_depth=, to: :ci_cd_settings, prefix: :ci
@@ -374,6 +374,7 @@ class Project < ApplicationRecord
     inclusion: { in: ->(_object) { Gitlab.config.repositories.storages.keys } }
   validates :variables, variable_duplicates: { scope: :environment_scope }
   validates :bfg_object_map, file_size: { maximum: :max_attachment_size }
+  validates :max_artifacts_size, numericality: { only_integer: true, greater_than: 0, allow_nil: true }
 
   # Scopes
   scope :pending_delete, -> { where(pending_delete: true) }
@@ -679,6 +680,12 @@ class Project < ApplicationRecord
     else
       super.external
     end
+  end
+
+  def autoclose_referenced_issues
+    return true if super.nil?
+
+    super
   end
 
   def preload_protected_branches
@@ -1320,7 +1327,7 @@ class Project < ApplicationRecord
   end
 
   def has_active_hooks?(hooks_scope = :push_hooks)
-    hooks.hooks_for(hooks_scope).any? || SystemHook.hooks_for(hooks_scope).any? || Gitlab::Plugin.any?
+    hooks.hooks_for(hooks_scope).any? || SystemHook.hooks_for(hooks_scope).any? || Gitlab::FileHook.any?
   end
 
   def has_active_services?(hooks_scope = :push_hooks)
@@ -1509,7 +1516,7 @@ class Project < ApplicationRecord
   end
 
   def default_branch
-    @default_branch ||= repository.root_ref if repository.exists?
+    @default_branch ||= repository.root_ref
   end
 
   def reload_default_branch
@@ -1927,6 +1934,7 @@ class Project < ApplicationRecord
     Gitlab::Ci::Variables::Collection.new
       .append(key: 'CI', value: 'true')
       .append(key: 'GITLAB_CI', value: 'true')
+      .append(key: 'CI_SERVER_URL', value: Gitlab.config.gitlab.url)
       .append(key: 'CI_SERVER_HOST', value: Gitlab.config.gitlab.host)
       .append(key: 'CI_SERVER_NAME', value: 'GitLab')
       .append(key: 'CI_SERVER_VERSION', value: Gitlab::VERSION)

@@ -1,11 +1,9 @@
 <script>
-import Icon from '~/vue_shared/components/icon.vue';
 import DiffExpansionCell from './diff_expansion_cell.vue';
 import { MATCH_LINE_TYPE } from '../constants';
 
 export default {
   components: {
-    Icon,
     DiffExpansionCell,
   },
   props: {

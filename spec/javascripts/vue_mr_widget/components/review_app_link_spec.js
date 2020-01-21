@@ -8,7 +8,10 @@ describe('review app link', () => {
   const props = {
     link: '/review',
     cssClass: 'js-link',
-    isCurrent: true,
+    display: {
+      text: 'View app',
+      tooltip: '',
+    },
   };
   let vm;
   let el;

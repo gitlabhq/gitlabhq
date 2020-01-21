@@ -1,8 +1,8 @@
 import MockAdapter from 'axios-mock-adapter';
+import { GlBreakpointInstance as breakpointInstance } from '@gitlab/ui/dist/utils';
 import axios from '~/lib/utils/axios_utils';
 import * as commonUtils from '~/lib/utils/common_utils';
 import { faviconDataUrl, overlayDataUrl, faviconWithOverlayDataUrl } from './mock_data';
-import breakpointInstance from '~/breakpoints';
 
 const PIXEL_TOLERANCE = 0.2;
 
@@ -88,10 +88,12 @@ describe('common_utils', () => {
   describe('handleLocationHash', () => {
     beforeEach(() => {
       spyOn(window.document, 'getElementById').and.callThrough();
+      jasmine.clock().install();
     });
 
     afterEach(() => {
       window.history.pushState({}, null, '');
+      jasmine.clock().uninstall();
     });
 
     function expectGetElementIdToHaveBeenCalledWith(elementId) {
@@ -171,6 +173,7 @@ describe('common_utils', () => {
 
       window.history.pushState({}, null, '#test');
       commonUtils.handleLocationHash();
+      jasmine.clock().tick(1);
 
       expectGetElementIdToHaveBeenCalledWith('test');
       expectGetElementIdToHaveBeenCalledWith('user-content-test');

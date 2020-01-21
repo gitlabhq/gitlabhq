@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe HealthCheckController do
+describe HealthCheckController, :request_store do
   include StubENV
 
   let(:xml_response) { Hash.from_xml(response.body)['hash'] }
@@ -18,7 +18,7 @@ describe HealthCheckController do
   describe 'GET #index' do
     context 'when services are up but accessed from outside whitelisted ips' do
       before do
-        allow(Gitlab::RequestContext).to receive(:client_ip).and_return(not_whitelisted_ip)
+        allow(Gitlab::RequestContext.instance).to receive(:client_ip).and_return(not_whitelisted_ip)
       end
 
       it 'returns a not found page' do
@@ -48,7 +48,7 @@ describe HealthCheckController do
 
     context 'when services are up and accessed from whitelisted ips' do
       before do
-        allow(Gitlab::RequestContext).to receive(:client_ip).and_return(whitelisted_ip)
+        allow(Gitlab::RequestContext.instance).to receive(:client_ip).and_return(whitelisted_ip)
       end
 
       it 'supports successful plaintext response' do
@@ -95,7 +95,7 @@ describe HealthCheckController do
       before do
         allow(HealthCheck::Utils).to receive(:process_checks).with(['standard']).and_return('The server is on fire')
         allow(HealthCheck::Utils).to receive(:process_checks).with(['email']).and_return('Email is on fire')
-        allow(Gitlab::RequestContext).to receive(:client_ip).and_return(whitelisted_ip)
+        allow(Gitlab::RequestContext.instance).to receive(:client_ip).and_return(whitelisted_ip)
       end
 
       it 'supports failure plaintext response' do

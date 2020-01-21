@@ -53,7 +53,7 @@ describe Gitlab::Pagination::Keyset::RequestContext do
     let(:request) { double('request', url: "http://#{Gitlab.config.gitlab.host}/api/v4/projects?foo=bar") }
     let(:params) { { foo: 'bar' } }
     let(:request_context) { double('request context', params: params, request: request) }
-    let(:next_page) { double('next page', order_by: { id: :asc }, lower_bounds: { id: 42 }, end_reached?: false) }
+    let(:next_page) { double('next page', order_by: { id: :asc }, lower_bounds: { id: 42 }) }
 
     subject { described_class.new(request_context).apply_headers(next_page) }
 
@@ -92,7 +92,7 @@ describe Gitlab::Pagination::Keyset::RequestContext do
     end
 
     context 'with descending order' do
-      let(:next_page) { double('next page', order_by: { id: :desc }, lower_bounds: { id: 42 }, end_reached?: false) }
+      let(:next_page) { double('next page', order_by: { id: :desc }, lower_bounds: { id: 42 }) }
 
       it 'sets Links header with a link to the next page' do
         orig_uri = URI.parse(request_context.request.url)

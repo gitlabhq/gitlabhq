@@ -1,301 +1,162 @@
 # frozen_string_literal: true
 
-require 'json'
+require_relative File.expand_path('../../lib/gitlab/danger/commit_linter', __dir__)
 
-URL_LIMIT_SUBJECT = "https://chris.beams.io/posts/git-commit/#limit-50"
 URL_GIT_COMMIT = "https://chris.beams.io/posts/git-commit/"
-
-# rubocop: disable Style/SignalException
-# rubocop: disable Metrics/CyclomaticComplexity
-# rubocop: disable Metrics/PerceivedComplexity
-
-# Perform various checks against commits. We're not using
-# https://github.com/jonallured/danger-commit_lint because its output is not
-# very helpful, and it doesn't offer the means of ignoring merge commits.
-
-class EmojiChecker
-  DIGESTS = File.expand_path('../../fixtures/emojis/digests.json', __dir__)
-  ALIASES = File.expand_path('../../fixtures/emojis/aliases.json', __dir__)
-
-  # A regex that indicates a piece of text _might_ include an Emoji. The regex
-  # alone is not enough, as we'd match `:foo:bar:baz`. Instead, we use this
-  # regex to save us from having to check for all possible emoji names when we
-  # know one definitely is not included.
-  LIKELY_EMOJI = /:[\+a-z0-9_\-]+:/.freeze
-
-  def initialize
-    names = JSON.parse(File.read(DIGESTS)).keys +
-      JSON.parse(File.read(ALIASES)).keys
-
-    @emoji = names.map { |name| ":#{name}:" }
-  end
-
-  def includes_emoji?(text)
-    return false unless text.match?(LIKELY_EMOJI)
-
-    @emoji.any? { |emoji| text.include?(emoji) }
-  end
-end
+MAX_COMMITS_COUNT = 10
 
 def gitlab_danger
   @gitlab_danger ||= GitlabDanger.new(helper.gitlab_helper)
 end
 
 def fail_commit(commit, message)
-  fail("#{commit.sha}: #{message}")
+  self.fail("#{commit.sha}: #{message}")
 end
 
 def warn_commit(commit, message)
-  warn("#{commit.sha}: #{message}")
+  self.warn("#{commit.sha}: #{message}")
 end
 
-def lines_changed_in_commit(commit)
-  commit.diff_parent.stats[:total][:lines]
+def squash_mr?
+  gitlab_danger.ci? ? gitlab.mr_json['squash'] : false
 end
 
-def subject_starts_with_capital?(subject)
-  first_char = subject.chars.first
-
-  first_char.upcase == first_char
+def wip_mr?
+  gitlab_danger.ci? ? gitlab.mr_json['work_in_progress'] : false
 end
 
-def ce_upstream?
-  return unless gitlab_danger.ci?
+# Perform various checks against commits. We're not using
+# https://github.com/jonallured/danger-commit_lint because its output is not
+# very helpful, and it doesn't offer the means of ignoring merge commits.
+def lint_commit(commit)
+  linter = Gitlab::Danger::CommitLinter.new(commit)
 
-  gitlab.mr_labels.any? { |label| label == 'CE upstream' }
-end
-
-def too_many_changed_lines?(commit)
-  commit.diff_parent.stats[:total][:files] > 3 &&
-    lines_changed_in_commit(commit) >= 30
-end
-
-def emoji_checker
-  @emoji_checker ||= EmojiChecker.new
-end
-
-def unicode_emoji_regex
-  @unicode_emoji_regex ||= %r((
-    [\u{1F300}-\u{1F5FF}] |
-    [\u{1F1E6}-\u{1F1FF}] |
-    [\u{2700}-\u{27BF}] |
-    [\u{1F900}-\u{1F9FF}] |
-    [\u{1F600}-\u{1F64F}] |
-    [\u{1F680}-\u{1F6FF}] |
-    [\u{2600}-\u{26FF}]
-  ))x
-end
-
-def count_filtered_commits(commits)
-  commits.count do |commit|
-    !commit.message.start_with?('fixup!', 'squash!')
-  end
-end
-
-def lint_commit(commit) # rubocop:disable Metrics/AbcSize
   # For now we'll ignore merge commits, as getting rid of those is a problem
   # separate from enforcing good commit messages.
-  return false if commit.message.start_with?('Merge branch')
+  return linter if linter.merge?
 
   # We ignore revert commits as they are well structured by Git already
-  return false if commit.message.start_with?('Revert "')
+  return linter if linter.revert?
 
-  is_squash = gitlab_danger.ci? ? gitlab.mr_json['squash'] : false
-  is_wip = gitlab_danger.ci? ? gitlab.mr_json['work_in_progress'] : false
-  is_fixup = commit.message.start_with?('fixup!', 'squash!')
+  # If MR is set to squash, we ignore fixup commits
+  return linter if linter.fixup? && squash_mr?
 
-  if is_fixup
-    # The MR is set to squash - Danger adds an informative notice
-    # The MR is not set to squash - Danger fails. if also WIP warn only, not error
-    if is_squash
-      return false
-    end
-
-    if is_wip
-      warn_commit(
-        commit,
-        'Squash or Fixup commits must be squashed before merge, or enable squash merge option'
-      )
+  if linter.fixup?
+    msg = 'Squash or fixup commits must be squashed before merge, or enable squash merge option'
+    if wip_mr? || squash_mr?
+      warn_commit(commit, msg)
     else
-      fail_commit(
-        commit,
-        'Squash or Fixup commits must be squashed before merge, or enable squash merge option'
-      )
+      fail_commit(commit, msg)
     end
 
     # Makes no sense to process other rules for fixup commits, they trigger just more noise
-    return false
+    return linter
   end
 
   # Fail if a suggestion commit is used and squash is not enabled
-  if commit.message.start_with?('Apply suggestion to')
-    if is_squash
-      return false
-    else
-      fail_commit(
-        commit,
-        'If you are applying suggestions, enable squash in the merge request and re-run the failed job'
-      )
-      return true
+  if linter.suggestion?
+    unless squash_mr?
+      fail_commit(commit, "If you are applying suggestions, enable squash in the merge request and re-run the `danger-review` job")
     end
+
+    return linter
   end
 
-  failures = false
-  subject, separator, details = commit.message.split("\n", 3)
+  linter.lint
+end
 
-  if subject.split.length < 3
-    fail_commit(
-      commit,
-      'The commit subject must contain at least three words'
-    )
+def lint_mr_title(mr_title)
+  commit = Struct.new(:message, :sha).new(mr_title)
 
-    failures = true
-  end
+  Gitlab::Danger::CommitLinter.new(commit).lint_subject("merge request title")
+end
 
-  if subject.length > 72
-    fail_commit(
-      commit,
-      'The commit subject may not be longer than 72 characters'
-    )
-
-    failures = true
-  elsif subject.length > 50
-    warn_commit(
-      commit,
-      "This commit's subject line is acceptable, but please try to [reduce it to 50 characters](#{URL_LIMIT_SUBJECT})."
-    )
-  end
-
-  unless subject_starts_with_capital?(subject)
-    fail_commit(commit, 'The commit subject must start with a capital letter')
-    failures = true
-  end
-
-  if subject.end_with?('.')
-    fail_commit(commit, 'The commit subject must not end with a period')
-    failures = true
-  end
-
-  if separator && !separator.empty?
-    fail_commit(
-      commit,
-      'The commit subject and body must be separated by a blank line'
-    )
-
-    failures = true
-  end
-
-  details&.each_line do |line|
-    line = line.strip
-
-    next if line.length <= 72
-
-    url_size = line.scan(%r((https?://\S+))).sum { |(url)| url.length }
-
-    # If the line includes a URL, we'll allow it to exceed 72 characters, but
-    # only if the line _without_ the URL does not exceed this limit.
-    next if line.length - url_size <= 72
-
-    fail_commit(
-      commit,
-      'The commit body should not contain more than 72 characters per line'
-    )
-
-    failures = true
-  end
-
-  if !details && too_many_changed_lines?(commit)
-    fail_commit(
-      commit,
-      'Commits that change 30 or more lines across at least three files ' \
-        'must describe these changes in the commit body'
-    )
-
-    failures = true
-  end
-
-  if emoji_checker.includes_emoji?(commit.message)
-    warn_commit(
-      commit,
-      'Avoid the use of Markdown Emoji such as `:+1:`. ' \
-        'These add limited value to the commit message, ' \
-        'and are displayed as plain text outside of GitLab'
-    )
-
-    failures = true
-  end
-
-  if commit.message.match?(unicode_emoji_regex)
-    fail_commit(
-      commit,
-      'Avoid the use of Unicode Emoji. ' \
-        'These add no value to the commit message, ' \
-        'and may not be displayed properly everywhere'
-    )
-
-    failures = true
-  end
-
-  if commit.message.match?(%r(([\w\-\/]+)?(#|!|&|%)\d+\b))
-    fail_commit(
-      commit,
-      'Use full URLs instead of short references ' \
-        '(`gitlab-org/gitlab#123` or `!123`), as short references are ' \
-        'displayed as plain text outside of GitLab'
-    )
-
-    failures = true
-  end
-
-  failures
+def count_non_fixup_commits(commit_linters)
+  commit_linters.count { |commit_linter| !commit_linter.fixup? }
 end
 
 def lint_commits(commits)
-  failed = commits.select do |commit|
-    lint_commit(commit)
+  commit_linters = commits.map { |commit| lint_commit(commit) }
+  failed_commit_linters = commit_linters.select { |commit_linter| commit_linter.failed? }
+  warn_or_fail_commits(failed_commit_linters, default_to_fail: !squash_mr?)
+
+  if count_non_fixup_commits(commit_linters) > MAX_COMMITS_COUNT
+    level = squash_mr? ? :warn : :fail
+    self.__send__(level, # rubocop:disable GitlabSecurity/PublicSend
+      "This merge request includes more than #{MAX_COMMITS_COUNT} commits. " \
+        'Please rebase these commits into a smaller number of commits or split ' \
+        'this merge request into multiple smaller merge requests.')
   end
 
-  if failed.any?
-    markdown(<<~MARKDOWN)
-      ## Commit message standards
+  if squash_mr?
+    multi_line_commit_linter = commit_linters.detect { |commit_linter| commit_linter.multi_line? }
 
-      One or more commit messages do not meet our Git commit message standards.
-      For more information on how to write a good commit message, take a look at
-      [How to Write a Git Commit Message](#{URL_GIT_COMMIT}).
-
-      Here is an example of a good commit message:
-
-          Reject ruby interpolation in externalized strings
-
-          When using ruby interpolation in externalized strings, they can't be
-          detected. Which means they will never be presented to be translated.
-
-          To mix variables into translations we need to use `sprintf`
-          instead.
-
-          Instead of:
-
-              _("Hello \#{subject}")
-
-          Use:
-
-              _("Hello %{subject}") % { subject: 'world' }
-
-      This is an example of a bad commit message:
-
-          updated README.md
-
-      This commit message is bad because although it tells us that README.md is
-      updated, it doesn't tell us why or how it was updated.
-    MARKDOWN
+    if multi_line_commit_linter && multi_line_commit_linter.lint.failed?
+      warn_or_fail_commits(multi_line_commit_linter)
+      fail_message('The commit message that will be used in the squash commit does not meet our Git commit message standards.')
+    else
+      title_linter = lint_mr_title(gitlab.mr_json['title'])
+      if title_linter.failed?
+        warn_or_fail_commits(title_linter)
+        fail_message('The merge request title that will be used in the squash commit does not meet our Git commit message standards.')
+      end
+    end
+  else
+    if failed_commit_linters.any?
+      fail_message('One or more commit messages do not meet our Git commit message standards.')
+    end
   end
 end
 
-if count_filtered_commits(git.commits) > 10 && !ce_upstream?
-  warn(
-    'This merge request includes more than 10 commits. ' \
-      'Please rebase these commits into a smaller number of commits.'
-  )
-else
-  lint_commits(git.commits)
+def warn_or_fail_commits(failed_linters, default_to_fail: true)
+  level = default_to_fail ? :fail : :warn
+
+  Array(failed_linters).each do |linter|
+    linter.problems.each do |problem_key, problem_desc|
+      case problem_key
+      when :subject_above_warning
+        warn_commit(linter.commit, problem_desc)
+      else
+        self.__send__("#{level}_commit", linter.commit, problem_desc) # rubocop:disable GitlabSecurity/PublicSend
+      end
+    end
+  end
 end
+
+def fail_message(intro)
+  markdown(<<~MARKDOWN)
+    ## Commit message standards
+
+    #{intro}
+
+    For more information on how to write a good commit message, take a look at
+    [How to Write a Git Commit Message](#{URL_GIT_COMMIT}).
+
+    Here is an example of a good commit message:
+
+        Reject ruby interpolation in externalized strings
+
+        When using ruby interpolation in externalized strings, they can't be
+        detected. Which means they will never be presented to be translated.
+
+        To mix variables into translations we need to use `sprintf`
+        instead.
+
+        Instead of:
+
+            _("Hello \#{subject}")
+
+        Use:
+
+            _("Hello %{subject}") % { subject: 'world' }
+
+    This is an example of a bad commit message:
+
+        updated README.md
+
+    This commit message is bad because although it tells us that README.md is
+    updated, it doesn't tell us why or how it was updated.
+  MARKDOWN
+end
+
+lint_commits(git.commits)

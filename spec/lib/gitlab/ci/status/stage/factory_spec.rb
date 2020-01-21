@@ -34,7 +34,7 @@ describe Gitlab::Ci::Status::Stage::Factory do
 
         it "fabricates a core status #{core_status}" do
           expect(status).to be_a(
-            Gitlab::Ci::Status.const_get(core_status.capitalize, false))
+            Gitlab::Ci::Status.const_get(core_status.camelize, false))
         end
 
         it 'extends core status with common stage methods' do

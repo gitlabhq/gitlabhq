@@ -119,7 +119,9 @@ class Groups::MilestonesController < Groups::ApplicationController
   end
 
   def search_params
-    params.permit(:state, :search_title).merge(group_ids: group.id)
+    groups = request.format.json? ? group.self_and_ancestors.select(:id) : group.id
+
+    params.permit(:state, :search_title).merge(group_ids: groups)
   end
 end
 

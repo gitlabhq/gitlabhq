@@ -151,6 +151,21 @@ describe('Api', () => {
     });
   });
 
+  describe('updateProject', () => {
+    it('update a project with the given payload', done => {
+      const projectPath = 'foo';
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectPath}`;
+      mock.onPut(expectedUrl).reply(200, { foo: 'bar' });
+
+      Api.updateProject(projectPath, { foo: 'bar' })
+        .then(({ data }) => {
+          expect(data.foo).toBe('bar');
+          done();
+        })
+        .catch(done.fail);
+    });
+  });
+
   describe('projectUsers', () => {
     it('fetches all users of a particular project', done => {
       const query = 'dummy query';

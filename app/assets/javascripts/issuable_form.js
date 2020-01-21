@@ -8,19 +8,23 @@ import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
 import { parsePikadayDate, pikadayToString } from './lib/utils/datetime_utility';
 import { queryToObject, objectToQuery } from './lib/utils/url_utility';
 
+const MR_SOURCE_BRANCH = 'merge_request[source_branch]';
+const MR_TARGET_BRANCH = 'merge_request[target_branch]';
+
 function organizeQuery(obj, isFallbackKey = false) {
-  const sourceBranch = 'merge_request[source_branch]';
-  const targetBranch = 'merge_request[target_branch]';
+  if (!obj[MR_SOURCE_BRANCH] && !obj[MR_TARGET_BRANCH]) {
+    return obj;
+  }
 
   if (isFallbackKey) {
     return {
-      [sourceBranch]: obj[sourceBranch],
+      [MR_SOURCE_BRANCH]: obj[MR_SOURCE_BRANCH],
     };
   }
 
   return {
-    [sourceBranch]: obj[sourceBranch],
-    [targetBranch]: obj[targetBranch],
+    [MR_SOURCE_BRANCH]: obj[MR_SOURCE_BRANCH],
+    [MR_TARGET_BRANCH]: obj[MR_TARGET_BRANCH],
   };
 }
 
@@ -87,7 +91,8 @@ export default class IssuableForm {
   }
 
   initAutosave() {
-    const searchTerm = format(document.location.search);
+    const { search } = document.location;
+    const searchTerm = format(search);
     const fallbackKey = getFallbackKey();
 
     this.autosave = new Autosave(

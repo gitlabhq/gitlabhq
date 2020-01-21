@@ -1,7 +1,5 @@
 .broadcast-message {
-  @extend .alert-warning;
-  padding: 10px;
-  text-align: center;
+  padding: $gl-padding-8;
 
   div,
   p {
@@ -15,9 +13,29 @@
   }
 }
 
-.broadcast-message-preview {
+.broadcast-banner-message {
   @extend .broadcast-message;
-  margin-bottom: 20px;
+  @extend .alert-warning;
+  text-align: center;
+}
+
+.broadcast-notification-message {
+  @extend .broadcast-message;
+
+  position: fixed;
+  bottom: $gl-padding;
+  right: $gl-padding;
+  max-width: 300px;
+  width: auto;
+  background: $white-light;
+  border: 1px solid $gray-200;
+  box-shadow: 0 1px 2px 0 rgba($black, 0.1);
+  border-radius: $border-radius-default;
+  z-index: 999;
+
+  &.preview {
+    position: static;
+  }
 }
 
 .toggle-colors {

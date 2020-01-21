@@ -10,8 +10,21 @@ module MarkdownMatchers
   extend RSpec::Matchers::DSL
   include Capybara::Node::Matchers
 
-  # RelativeLinkFilter
-  matcher :parse_relative_links do
+  # UploadLinkFilter
+  matcher :parse_upload_links do
+    set_default_markdown_messages
+
+    match do |actual|
+      link = actual.at_css('a:contains("Relative Upload Link")')
+      image = actual.at_css('img[alt="Relative Upload Image"]')
+
+      expect(link['href']).to eq("/#{project.full_path}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg")
+      expect(image['data-src']).to eq("/#{project.full_path}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg")
+    end
+  end
+
+  # RepositoryLinkFilter
+  matcher :parse_repository_links do
     set_default_markdown_messages
 
     match do |actual|

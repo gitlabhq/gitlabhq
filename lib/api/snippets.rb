@@ -75,7 +75,8 @@ module API
       end
       post do
         attrs = declared_params(include_missing: false).merge(request: request, api: true)
-        snippet = CreateSnippetService.new(nil, current_user, attrs).execute
+        service_response = ::Snippets::CreateService.new(nil, current_user, attrs).execute
+        snippet = service_response.payload[:snippet]
 
         render_spam_error! if snippet.spam?
 
@@ -108,8 +109,8 @@ module API
         authorize! :update_personal_snippet, snippet
 
         attrs = declared_params(include_missing: false).merge(request: request, api: true)
-
-        UpdateSnippetService.new(nil, current_user, snippet, attrs).execute
+        service_response = ::Snippets::UpdateService.new(nil, current_user, attrs).execute(snippet)
+        snippet = service_response.payload[:snippet]
 
         render_spam_error! if snippet.spam?
 
@@ -133,7 +134,14 @@ module API
 
         authorize! :admin_personal_snippet, snippet
 
-        destroy_conditionally!(snippet)
+        destroy_conditionally!(snippet) do |snippet|
+          service = ::Snippets::DestroyService.new(current_user, snippet)
+          response = service.execute
+
+          if response.error?
+            render_api_error!({ error: response.message }, response.http_status)
+          end
+        end
       end
 
       desc 'Get a raw snippet' do

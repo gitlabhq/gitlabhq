@@ -252,74 +252,13 @@ This list of limitations only reflects the latest version of GitLab. If you are 
 
 ### Limitations on replication/verification
 
-The following table lists the GitLab features along with their replication
-and verification status on a **secondary** node.
-
 You can keep track of the progress to implement the missing items in
 these epics/issues:
 
 - [Unreplicated Data Types](https://gitlab.com/groups/gitlab-org/-/epics/893)
 - [Verify all replicated data](https://gitlab.com/groups/gitlab-org/-/epics/1430)
 
-| Feature                                             | Replicated               | Verified                    | Notes                                      |
-|-----------------------------------------------------|--------------------------|-----------------------------|--------------------------------------------|
-| All database content                                | **Yes**                  | **Yes**                     |                                            |
-| Project repository                                  | **Yes**                  | **Yes**                     |                                            |
-| Project wiki repository                             | **Yes**                  | **Yes**                     |                                            |
-| Project designs repository                          | **Yes**                  | [No][design-verification]   | Behind feature flag (2)                    |
-| Uploads                                             | **Yes**                  | [No][upload-verification]   | Verified only on transfer, or manually (1) |
-| LFS Objects                                         | **Yes**                  | [No][lfs-verification]      | Verified only on transfer, or manually (1) |
-| CI job artifacts (other than traces)                | **Yes**                  | [No][artifact-verification] | Verified only manually (1)                 |
-| Archived traces                                     | **Yes**                  | [No][artifact-verification] | Verified only on transfer, or manually (1) |
-| Personal snippets                                   | **Yes**                  | **Yes**                     |                                            |
-| Version-controlled personal snippets                | No                       | No                          | [Not yet supported][unsupported-snippets]  |
-| Project snippets                                    | **Yes**                  | **Yes**                     |                                            |
-| Version-controlled project snippets                 | No                       | No                          | [Not yet supported][unsupported-snippets]  |
-| Object pools for forked project deduplication       | **Yes**                  | No                          |                                            |
-| [Server-side Git Hooks][custom-hooks]               | No                       | No                          |                                            |
-| [Elasticsearch integration][elasticsearch]          | No                       | No                          |                                            |
-| [GitLab Pages][gitlab-pages]                        | [No][pages-replication]  | No                          |                                            |
-| [Container Registry][container-registry]            | **Yes**                  | No                          |                                            |
-| [NPM Registry][npm-registry]                        | No                       | No                          |                                            |
-| [Maven Repository][maven-repository]                | No                       | No                          |                                            |
-| [Conan Repository][conan-repository]                | No                       | No                          |                                            |
-| [External merge request diffs][merge-request-diffs] | [No][diffs-replication]  | No                          |                                            |
-| Content in object storage                           | **Yes**                  | No                          |                                            |
-
-[design-replication]: https://gitlab.com/groups/gitlab-org/-/epics/1633
-[design-verification]: https://gitlab.com/gitlab-org/gitlab/issues/32467
-[upload-verification]: https://gitlab.com/groups/gitlab-org/-/epics/1817
-[lfs-verification]: https://gitlab.com/gitlab-org/gitlab/issues/8922
-[artifact-verification]: https://gitlab.com/gitlab-org/gitlab/issues/8923
-[diffs-replication]: https://gitlab.com/gitlab-org/gitlab/issues/33817
-[pages-replication]: https://gitlab.com/groups/gitlab-org/-/epics/589
-
-[unsupported-snippets]: https://gitlab.com/gitlab-org/gitlab/issues/14228
-[custom-hooks]: ../../custom_hooks.md
-[elasticsearch]: ../../../integration/elasticsearch.md
-[gitlab-pages]: ../../pages/index.md
-[container-registry]: ../../packages/container_registry.md
-[npm-registry]: ../../../user/packages/npm_registry/index.md
-[maven-repository]: ../../../user/packages/maven_repository/index.md
-[conan-repository]: ../../../user/packages/conan_repository/index.md
-[merge-request-diffs]: ../../merge_request_diffs.md
-
-1. The integrity can be verified manually using
-[Integrity Check Rake Task](../../raketasks/check.md)
-on both nodes and comparing the output between them.
-1. Enable the `enable_geo_design_sync` feature flag by running the
-following in a Rails console:
-
-    ```ruby
-    Feature.disable(:enable_geo_design_sync)
-    ```
-
-DANGER: **DANGER**
-Features not on this list, or with **No** in the **Replicated** column,
-are not replicated on the **secondary** node. Failing over without manually
-replicating data from those features will cause the data to be **lost**.
-If you wish to use those features on a **secondary** node, or to execute a failover
-successfully, you must replicate their data using some other means.
+There is a complete list of all GitLab [data types](datatypes.md) and [existing support for replication and verification](datatypes.md#limitations-on-replicationverification).
 
 ## Frequently Asked Questions
 

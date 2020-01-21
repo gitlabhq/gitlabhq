@@ -2,11 +2,11 @@
 import { mapState, mapGetters, mapActions } from 'vuex';
 import { GlLoadingIcon } from '@gitlab/ui';
 import Mousetrap from 'mousetrap';
-import Icon from '~/vue_shared/components/icon.vue';
 import { __ } from '~/locale';
 import createFlash from '~/flash';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { isSingleViewStyle } from '~/helpers/diffs_helper';
 import eventHub from '../../notes/event_hub';
 import CompareVersions from './compare_versions.vue';
 import DiffFile from './diff_file.vue';
@@ -27,7 +27,6 @@ import {
 export default {
   name: 'DiffsApp',
   components: {
-    Icon,
     CompareVersions,
     DiffFile,
     NoChanges,
@@ -95,8 +94,8 @@ export default {
       parseInt(localStorage.getItem(TREE_LIST_WIDTH_STORAGE_KEY), 10) || INITIAL_TREE_WIDTH;
 
     return {
-      assignedDiscussions: false,
       treeWidth,
+      diffFilesLength: 0,
     };
   },
   computed: {
@@ -114,6 +113,7 @@ export default {
       numVisibleFiles: state => state.diffs.size,
       plainDiffPath: state => state.diffs.plainDiffPath,
       emailPatchPath: state => state.diffs.emailPatchPath,
+      retrievingBatches: state => state.diffs.retrievingBatches,
     }),
     ...mapState('diffs', ['showTreeList', 'isLoading', 'startVersion']),
     ...mapGetters('diffs', ['isParallelView', 'currentDiffIndex']),
@@ -144,12 +144,12 @@ export default {
     isLimitedContainer() {
       return !this.showTreeList && !this.isParallelView && !this.isFluidLayout;
     },
-    shouldSetDiscussions() {
-      return this.isNotesFetched && !this.assignedDiscussions && !this.isLoading;
-    },
   },
   watch: {
     diffViewType() {
+      if (this.needsReload() || this.needsFirstLoad()) {
+        this.refetchDiffData();
+      }
       this.adjustView();
     },
     shouldShow() {
@@ -163,11 +163,6 @@ export default {
     },
     isLoading: 'adjustView',
     showTreeList: 'adjustView',
-    shouldSetDiscussions(newVal) {
-      if (newVal) {
-        this.setDiscussions();
-      }
-    },
   },
   mounted() {
     this.setBaseConfig({
@@ -192,10 +187,24 @@ export default {
   },
   created() {
     this.adjustView();
-    eventHub.$once('fetchedNotesData', this.setDiscussions);
     eventHub.$once('fetchDiffData', this.fetchData);
     eventHub.$on('refetchDiffData', this.refetchDiffData);
     this.CENTERED_LIMITED_CONTAINER_CLASSES = CENTERED_LIMITED_CONTAINER_CLASSES;
+
+    this.unwatchDiscussions = this.$watch(
+      () => `${this.diffFiles.length}:${this.$store.state.notes.discussions.length}`,
+      () => this.setDiscussions(),
+    );
+
+    this.unwatchRetrievingBatches = this.$watch(
+      () => `${this.retrievingBatches}:${this.$store.state.notes.discussions.length}`,
+      () => {
+        if (!this.retrievingBatches && this.$store.state.notes.discussions.length) {
+          this.unwatchDiscussions();
+          this.unwatchRetrievingBatches();
+        }
+      },
+    );
   },
   beforeDestroy() {
     eventHub.$off('fetchDiffData', this.fetchData);
@@ -217,7 +226,6 @@ export default {
       'toggleShowTreeList',
     ]),
     refetchDiffData() {
-      this.assignedDiscussions = false;
       this.fetchData(false);
     },
     startDiffRendering() {
@@ -228,10 +236,21 @@ export default {
         { timeout: 1000 },
       );
     },
+    needsReload() {
+      return (
+        this.glFeatures.singleMrDiffView &&
+        this.diffFiles.length &&
+        isSingleViewStyle(this.diffFiles[0])
+      );
+    },
+    needsFirstLoad() {
+      return this.glFeatures.singleMrDiffView && !this.diffFiles.length;
+    },
     fetchData(toggleTree = true) {
       if (this.glFeatures.diffsBatchLoad) {
         this.fetchDiffFilesMeta()
-          .then(() => {
+          .then(({ real_size }) => {
+            this.diffFilesLength = parseInt(real_size, 10);
             if (toggleTree) this.hideTreeListIfJustOneFile();
 
             this.startDiffRendering();
@@ -241,19 +260,28 @@ export default {
           });
 
         this.fetchDiffFilesBatch()
+          .then(() => {
+            // Guarantee the discussions are assigned after the batch finishes.
+            // Just watching the length of the discussions or the diff files
+            // isn't enough, because with split diff loading, neither will
+            // change when loading the other half of the diff files.
+            this.setDiscussions();
+          })
           .then(() => this.startDiffRendering())
           .catch(() => {
             createFlash(__('Something went wrong on our end. Please try again!'));
           });
       } else {
         this.fetchDiffFiles()
-          .then(() => {
+          .then(({ real_size }) => {
+            this.diffFilesLength = parseInt(real_size, 10);
             if (toggleTree) {
               this.hideTreeListIfJustOneFile();
             }
 
             requestIdleCallback(
               () => {
+                this.setDiscussions();
                 this.startRenderDiffsQueue();
               },
               { timeout: 1000 },
@@ -269,17 +297,13 @@ export default {
       }
     },
     setDiscussions() {
-      if (this.shouldSetDiscussions) {
-        this.assignedDiscussions = true;
-
-        requestIdleCallback(
-          () =>
-            this.assignDiscussionsToDiff()
-              .then(this.$nextTick)
-              .then(this.startTaskList),
-          { timeout: 1000 },
-        );
-      }
+      requestIdleCallback(
+        () =>
+          this.assignDiscussionsToDiff()
+            .then(this.$nextTick)
+            .then(this.startTaskList),
+        { timeout: 1000 },
+      );
     },
     adjustView() {
       if (this.shouldShow) {
@@ -337,6 +361,7 @@ export default {
         :merge-request-diff="mergeRequestDiff"
         :target-branch="targetBranch"
         :is-limited-container="isLimitedContainer"
+        :diff-files-length="diffFilesLength"
       />
 
       <hidden-files-warning
@@ -349,7 +374,7 @@ export default {
 
       <div
         :data-can-create-note="getNoteableData.current_user.can_create_note"
-        class="files d-flex prepend-top-default"
+        class="files d-flex"
       >
         <div
           v-show="showTreeList"

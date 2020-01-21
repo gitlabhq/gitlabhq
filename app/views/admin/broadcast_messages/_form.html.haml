@@ -1,23 +1,38 @@
-.broadcast-message-preview{ style: broadcast_message_style(@broadcast_message) }
-  = sprite_icon('bullhorn', size: 16, css_class:'vertical-align-text-top mr-2')
+.broadcast-banner-message.js-broadcast-banner-message-preview.mt-2{ style: broadcast_message_style(@broadcast_message), class: ('hidden' unless @broadcast_message.banner? ) }
+  = sprite_icon('bullhorn', size: 16, css_class:'vertical-align-text-top')
   .js-broadcast-message-preview
     - if @broadcast_message.message.present?
       = render_broadcast_message(@broadcast_message)
     - else
       Your message here
+- if Feature.enabled?(:broadcast_notification_type)
+  .d-flex.justify-content-center
+    .broadcast-notification-message.preview.js-broadcast-notification-message-preview.mt-2{ class: ('hidden' unless @broadcast_message.notification? ) }
+      = sprite_icon('bullhorn', size: 16, css_class:'vertical-align-text-top')
+      .js-broadcast-message-preview
+        - if @broadcast_message.message.present?
+          = render_broadcast_message(@broadcast_message)
+        - else
+          Your message here
 
 = form_for [:admin, @broadcast_message], html: { class: 'broadcast-message-form js-quick-submit js-requires-input'} do |f|
   = form_errors(@broadcast_message)
 
-  .form-group.row
+  .form-group.row.mt-4
     .col-sm-2.col-form-label
       = f.label :message
     .col-sm-10
-      = f.text_area :message, class: "form-control js-autosize",
+      = f.text_area :message, class: "form-control js-autosize js-broadcast-message-message",
         required: true,
         dir: 'auto',
         data: { preview_path: preview_admin_broadcast_messages_path }
-  .form-group.row
+  - if Feature.enabled?(:broadcast_notification_type)
+    .form-group.row
+      .col-sm-2.col-form-label
+        = f.label :broadcast_type, _('Type')
+      .col-sm-10
+        = f.select :broadcast_type, broadcast_type_options, {}, class: 'form-control js-broadcast-message-type'
+  .form-group.row.js-broadcast-message-background-color-form-group{ class: ('hidden' unless @broadcast_message.banner? ) }
     .col-sm-2.col-form-label
       = f.label :color, _("Background color")
     .col-sm-10
@@ -25,7 +40,7 @@
         .input-group-prepend
           .input-group-text.label-color-preview{ :style => 'background-color: ' + @broadcast_message.color + '; color: ' + @broadcast_message.font }
             = '&nbsp;'.html_safe
-        = f.text_field :color, class: "form-control"
+        = f.text_field :color, class: "form-control js-broadcast-message-color"
       .form-text.text-muted
         = _('Choose any color.')
         %br

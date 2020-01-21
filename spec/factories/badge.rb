@@ -6,11 +6,11 @@ FactoryBot.define do
     image_url { generate(:url) }
   end
 
-  factory :project_badge, traits: [:base_badge], class: ProjectBadge do
+  factory :project_badge, traits: [:base_badge], class: 'ProjectBadge' do
     project
   end
 
-  factory :group_badge, aliases: [:badge], traits: [:base_badge], class: GroupBadge do
+  factory :group_badge, aliases: [:badge], traits: [:base_badge], class: 'GroupBadge' do
     group
   end
 end

@@ -3,7 +3,6 @@ import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import MergeRequestTabs from '~/merge_request_tabs';
 import '~/commit/pipelines/pipelines_bundle';
-import '~/breakpoints';
 import '~/lib/utils/common_utils';
 import 'vendor/jquery.scrollTo';
 import initMrPage from './helpers/init_vue_mr_page_helper';

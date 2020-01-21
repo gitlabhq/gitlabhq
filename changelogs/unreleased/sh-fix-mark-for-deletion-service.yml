@@ -1,0 +1,5 @@
+---
+title: Gracefully handle marking a project deletion multiple times
+merge_request: 22949
+author:
+type: fixed

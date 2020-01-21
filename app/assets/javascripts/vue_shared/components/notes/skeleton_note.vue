@@ -12,7 +12,7 @@ export default {
 </script>
 
 <template>
-  <timeline-entry-item class="note note-wrapper">
+  <timeline-entry-item class="note note-wrapper" data-qa-selector="skeleton_note">
     <div class="timeline-icon"></div>
     <div class="timeline-content">
       <div class="note-header"></div>

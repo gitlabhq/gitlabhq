@@ -17,7 +17,8 @@ describe ChatMessage::WikiPageMessage do
       object_attributes: {
         title: 'Wiki page title',
         url: 'http://url.com',
-        content: 'Wiki page description'
+        content: 'Wiki page content',
+        message: 'Wiki page commit message'
       }
     }
   end
@@ -57,10 +58,10 @@ describe ChatMessage::WikiPageMessage do
           args[:object_attributes][:action] = 'create'
         end
 
-        it 'returns the attachment for a new wiki page' do
+        it 'returns the commit message for a new wiki page' do
           expect(subject.attachments).to eq([
             {
-              text: "Wiki page description",
+              text: "Wiki page commit message",
               color: color
             }
           ])
@@ -72,10 +73,10 @@ describe ChatMessage::WikiPageMessage do
           args[:object_attributes][:action] = 'update'
         end
 
-        it 'returns the attachment for an updated wiki page' do
+        it 'returns the commit message for an updated wiki page' do
           expect(subject.attachments).to eq([
             {
-              text: "Wiki page description",
+              text: "Wiki page commit message",
               color: color
             }
           ])
@@ -119,8 +120,8 @@ describe ChatMessage::WikiPageMessage do
           args[:object_attributes][:action] = 'create'
         end
 
-        it 'returns the attachment for a new wiki page' do
-          expect(subject.attachments).to eq('Wiki page description')
+        it 'returns the commit message for a new wiki page' do
+          expect(subject.attachments).to eq('Wiki page commit message')
         end
       end
 
@@ -129,8 +130,8 @@ describe ChatMessage::WikiPageMessage do
           args[:object_attributes][:action] = 'update'
         end
 
-        it 'returns the attachment for an updated wiki page' do
-          expect(subject.attachments).to eq('Wiki page description')
+        it 'returns the commit message for an updated wiki page' do
+          expect(subject.attachments).to eq('Wiki page commit message')
         end
       end
     end

@@ -312,6 +312,12 @@ describe Banzai::ReferenceParser::BaseParser do
         expect(subject.collection_objects_for_ids(Project, [project.id]))
           .to eq([project])
       end
+
+      it 'will not overflow the stack' do
+        ids = 1.upto(1_000_000).to_a
+
+        expect { subject.collection_objects_for_ids(User, ids) }.not_to raise_error
+      end
     end
   end
 

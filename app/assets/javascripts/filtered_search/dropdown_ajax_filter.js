@@ -45,7 +45,7 @@ export default class DropdownAjaxFilter extends FilteredSearchDropdown {
 
   getSearchInput() {
     const query = DropdownUtils.getSearchInput(this.input);
-    const { lastToken } = FilteredSearchTokenizer.processTokens(query, this.tokenKeys.get());
+    const { lastToken } = FilteredSearchTokenizer.processTokens(query, this.tokenKeys.getKeys());
 
     let value = lastToken || '';
 

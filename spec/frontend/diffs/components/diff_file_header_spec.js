@@ -91,8 +91,6 @@ describe('DiffFileHeader component', () => {
       },
       localVue,
       store,
-      sync: false,
-      attachToDocument: true,
     });
   };
 
@@ -117,19 +115,27 @@ describe('DiffFileHeader component', () => {
   it('when header is clicked emits toggleFile', () => {
     createComponent();
     findHeader().trigger('click');
-    expect(wrapper.emitted().toggleFile).toBeDefined();
+
+    return wrapper.vm.$nextTick().then(() => {
+      expect(wrapper.emitted().toggleFile).toBeDefined();
+    });
   });
 
   it('when collapseIcon is clicked emits toggleFile', () => {
     createComponent({ collapsible: true });
     findCollapseIcon().vm.$emit('click', new Event('click'));
-    expect(wrapper.emitted().toggleFile).toBeDefined();
+    return wrapper.vm.$nextTick().then(() => {
+      expect(wrapper.emitted().toggleFile).toBeDefined();
+    });
   });
 
   it('when other element in header is clicked does not emits toggleFile', () => {
     createComponent({ collapsible: true });
     findTitleLink().trigger('click');
-    expect(wrapper.emitted().toggleFile).not.toBeDefined();
+
+    return wrapper.vm.$nextTick().then(() => {
+      expect(wrapper.emitted().toggleFile).not.toBeDefined();
+    });
   });
 
   it('displays a copy to clipboard button', () => {
@@ -194,7 +200,9 @@ describe('DiffFileHeader component', () => {
         addMergeRequestButtons: true,
       });
       wrapper.find(EditButton).vm.$emit('showForkMessage');
-      expect(wrapper.emitted().showForkMessage).toBeDefined();
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.emitted().showForkMessage).toBeDefined();
+      });
     });
 
     it('for mode_changed file mode displays mode changes', () => {
@@ -329,7 +337,7 @@ describe('DiffFileHeader component', () => {
             addMergeRequestButtons: true,
           });
           expect(findViewFileButton().attributes('href')).toBe(viewPath);
-          expect(findViewFileButton().attributes('data-original-title')).toEqual(
+          expect(findViewFileButton().attributes('title')).toEqual(
             `View file @ ${diffFile.content_sha.substr(0, 8)}`,
           );
         });

@@ -181,10 +181,21 @@ describe Gitlab::Email::Handler::CreateNoteHandler do
     it_behaves_like 'a reply to existing comment'
 
     it "adds all attachments" do
+      expect_next_instance_of(Gitlab::Email::AttachmentUploader) do |uploader|
+        expect(uploader).to receive(:execute).with(upload_parent: project, uploader_class: FileUploader).and_return(
+          [
+            {
+              url: "uploads/image.png",
+              alt: "image",
+              markdown: markdown
+            }
+          ]
+        )
+      end
+
       receiver.execute
 
       note = noteable.notes.last
-
       expect(note.note).to include(markdown)
     end
 

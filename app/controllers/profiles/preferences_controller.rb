@@ -48,7 +48,8 @@ class Profiles::PreferencesController < Profiles::ApplicationController
       :time_display_relative,
       :time_format_in_24h,
       :show_whitespace_in_diffs,
-      :sourcegraph_enabled
+      :sourcegraph_enabled,
+      :render_whitespace_in_code
     ]
   end
 end

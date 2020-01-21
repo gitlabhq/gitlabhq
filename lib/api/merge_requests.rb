@@ -7,6 +7,7 @@ module API
     before { authenticate_non_get! }
 
     helpers ::Gitlab::IssuableMetadata
+    helpers Helpers::MergeRequestsHelpers
 
     # EE::API::MergeRequests would override the following helpers
     helpers do
@@ -68,12 +69,21 @@ module API
         end
       end
 
-      def not_automatically_mergeable?(merge_when_pipeline_succeeds, merge_request)
-        merge_when_pipeline_succeeds && !merge_request.head_pipeline_active? && !merge_request.actual_head_pipeline_success?
+      def automatically_mergeable?(merge_when_pipeline_succeeds, merge_request)
+        pipeline_active = merge_request.head_pipeline_active? || merge_request.actual_head_pipeline_active?
+        merge_when_pipeline_succeeds && merge_request.mergeable_state?(skip_ci_check: true) && pipeline_active
+      end
+
+      def immediately_mergeable?(merge_when_pipeline_succeeds, merge_request)
+        if merge_when_pipeline_succeeds
+          merge_request.actual_head_pipeline_success?
+        else
+          merge_request.mergeable_state?
+        end
       end
 
       def serializer_options_for(merge_requests)
-        options = { with: Entities::MergeRequestBasic, current_user: current_user }
+        options = { with: Entities::MergeRequestBasic, current_user: current_user, with_labels_details: declared_params[:with_labels_details] }
 
         if params[:view] == 'simple'
           options[:with] = Entities::MergeRequestSimple
@@ -98,32 +108,7 @@ module API
       end
 
       params :merge_requests_params do
-        optional :state, type: String, values: %w[opened closed locked merged all], default: 'all',
-                         desc: 'Return opened, closed, locked, merged, or all merge requests'
-        optional :order_by, type: String, values: %w[created_at updated_at], default: 'created_at',
-                            desc: 'Return merge requests ordered by `created_at` or `updated_at` fields.'
-        optional :sort, type: String, values: %w[asc desc], default: 'desc',
-                        desc: 'Return merge requests sorted in `asc` or `desc` order.'
-        optional :milestone, type: String, desc: 'Return merge requests for a specific milestone'
-        optional :labels, type: Array[String], coerce_with: Validations::Types::LabelsList.coerce, desc: 'Comma-separated list of label names'
-        optional :created_after, type: DateTime, desc: 'Return merge requests created after the specified time'
-        optional :created_before, type: DateTime, desc: 'Return merge requests created before the specified time'
-        optional :updated_after, type: DateTime, desc: 'Return merge requests updated after the specified time'
-        optional :updated_before, type: DateTime, desc: 'Return merge requests updated before the specified time'
-        optional :view, type: String, values: %w[simple], desc: 'If simple, returns the `iid`, URL, title, description, and basic state of merge request'
-        optional :author_id, type: Integer, desc: 'Return merge requests which are authored by the user with the given ID'
-        optional :assignee_id, types: [Integer, String], integer_none_any: true,
-                               desc: 'Return merge requests which are assigned to the user with the given ID'
-        optional :scope, type: String, values: %w[created-by-me assigned-to-me created_by_me assigned_to_me all],
-                         desc: 'Return merge requests for the given scope: `created_by_me`, `assigned_to_me` or `all`'
-        optional :my_reaction_emoji, type: String, desc: 'Return issues reacted by the authenticated user by the given emoji'
-        optional :source_branch, type: String, desc: 'Return merge requests with the given source branch'
-        optional :source_project_id, type: Integer, desc: 'Return merge requests with the given source project id'
-        optional :target_branch, type: String, desc: 'Return merge requests with the given target branch'
-        optional :search, type: String, desc: 'Search merge requests for text present in the title, description, or any combination of these'
-        optional :in, type: String, desc: '`title`, `description`, or a string joining them with comma'
-        optional :wip, type: String, values: %w[yes no], desc: 'Search merge requests for WIP in the title'
-
+        use :merge_requests_base_params
         use :optional_merge_requests_search_params
         use :pagination
       end
@@ -135,8 +120,7 @@ module API
       end
       params do
         use :merge_requests_params
-        optional :scope, type: String, values: %w[created-by-me assigned-to-me created_by_me assigned_to_me all], default: 'created_by_me',
-                         desc: 'Return merge requests for the given scope: `created_by_me`, `assigned_to_me` or `all`'
+        use :optional_scope_param
       end
       get do
         authenticate! unless params[:scope] == 'all'
@@ -157,11 +141,9 @@ module API
         use :merge_requests_params
       end
       get ":id/merge_requests" do
-        group = find_group!(params[:id])
+        merge_requests = find_merge_requests(group_id: user_group.id, include_subgroups: true)
 
-        merge_requests = find_merge_requests(group_id: group.id, include_subgroups: true)
-
-        present merge_requests, serializer_options_for(merge_requests)
+        present merge_requests, serializer_options_for(merge_requests).merge(group: user_group)
       end
     end
 
@@ -215,7 +197,7 @@ module API
 
         merge_requests = find_merge_requests(project_id: user_project.id)
 
-        options = serializer_options_for(merge_requests)
+        options = serializer_options_for(merge_requests).merge(project: user_project)
         options[:project] = user_project
 
         present merge_requests, options
@@ -394,16 +376,18 @@ module API
         Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42317')
 
         merge_request = find_project_merge_request(params[:merge_request_iid])
-        merge_when_pipeline_succeeds = to_boolean(params[:merge_when_pipeline_succeeds])
-        not_automatically_mergeable = not_automatically_mergeable?(merge_when_pipeline_succeeds, merge_request)
 
         # Merge request can not be merged
         # because user dont have permissions to push into target branch
         unauthorized! unless merge_request.can_be_merged_by?(current_user)
 
-        not_allowed! if !merge_request.mergeable_state?(skip_ci_check: merge_when_pipeline_succeeds) || not_automatically_mergeable
+        merge_when_pipeline_succeeds = to_boolean(params[:merge_when_pipeline_succeeds])
+        automatically_mergeable = automatically_mergeable?(merge_when_pipeline_succeeds, merge_request)
+        immediately_mergeable = immediately_mergeable?(merge_when_pipeline_succeeds, merge_request)
 
-        render_api_error!('Branch cannot be merged', 406) unless merge_request.mergeable?(skip_ci_check: merge_when_pipeline_succeeds)
+        not_allowed! if !immediately_mergeable && !automatically_mergeable
+
+        render_api_error!('Branch cannot be merged', 406) unless merge_request.mergeable?(skip_ci_check: automatically_mergeable)
 
         check_sha_param!(params, merge_request)
 
@@ -416,13 +400,13 @@ module API
           sha: params[:sha] || merge_request.diff_head_sha
         )
 
-        if merge_when_pipeline_succeeds
-          AutoMergeService.new(merge_request.target_project, current_user, merge_params)
-            .execute(merge_request, AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
-        else
+        if immediately_mergeable
           ::MergeRequests::MergeService
             .new(merge_request.target_project, current_user, merge_params)
             .execute(merge_request)
+        elsif automatically_mergeable
+          AutoMergeService.new(merge_request.target_project, current_user, merge_params)
+            .execute(merge_request, AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
         end
 
         present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
@@ -455,12 +439,15 @@ module API
       desc 'Rebase the merge request against its target branch' do
         detail 'This feature was added in GitLab 11.6'
       end
+      params do
+        optional :skip_ci, type: Boolean, desc: 'Do not create CI pipeline'
+      end
       put ':id/merge_requests/:merge_request_iid/rebase' do
         merge_request = find_project_merge_request(params[:merge_request_iid])
 
         authorize_push_to_merge_request!(merge_request)
 
-        merge_request.rebase_async(current_user.id)
+        merge_request.rebase_async(current_user.id, skip_ci: params[:skip_ci])
 
         status :accepted
         present rebase_in_progress: merge_request.rebase_in_progress?

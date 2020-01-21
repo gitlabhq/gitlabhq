@@ -9,7 +9,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   include ToggleAwardEmoji
   include IssuableCollections
   include RecordUserLastActivity
-  include SourcegraphGon
+  include SourcegraphDecorator
 
   skip_before_action :merge_request, only: [:index, :bulk_update]
   before_action :whitelist_query_limiting, only: [:assign_related_issues, :update]
@@ -25,7 +25,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   before_action do
     push_frontend_feature_flag(:vue_issuable_sidebar, @project.group)
-    push_frontend_feature_flag(:release_search_filter, @project, default_enabled: true)
     push_frontend_feature_flag(:async_mr_widget, @project)
   end
 
@@ -222,11 +221,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   def ci_environments_status
     environments =
       if ci_environments_status_on_merge_result?
-        if Feature.enabled?(:deployment_merge_requests_widget, @project)
-          EnvironmentStatus.for_deployed_merge_request(@merge_request, current_user)
-        else
-          EnvironmentStatus.after_merge_request(@merge_request, current_user)
-        end
+        EnvironmentStatus.for_deployed_merge_request(@merge_request, current_user)
       else
         EnvironmentStatus.for_merge_request(@merge_request, current_user)
       end

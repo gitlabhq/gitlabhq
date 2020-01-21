@@ -30,7 +30,7 @@ module Projects
         settings = params[:error_tracking_setting_attributes]
         return {} if settings.blank?
 
-        api_url = ErrorTracking::ProjectErrorTrackingSetting.build_api_url_from(
+        api_url = ::ErrorTracking::ProjectErrorTrackingSetting.build_api_url_from(
           api_host: settings[:api_host],
           project_slug: settings.dig(:project, :slug),
           organization_slug: settings.dig(:project, :organization_slug)

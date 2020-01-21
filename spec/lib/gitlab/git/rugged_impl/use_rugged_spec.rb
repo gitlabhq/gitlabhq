@@ -53,30 +53,46 @@ describe Gitlab::Git::RuggedImpl::UseRugged, :seed_helper do
       allow(Feature).to receive(:persisted?).with(feature_flag).and_return(false)
     end
 
-    it 'returns true when gitaly matches disk' do
-      expect(subject.use_rugged?(repository, feature_flag_name)).to be true
+    context 'when running puma with multiple threads' do
+      before do
+        allow(subject).to receive(:running_puma_with_multiple_threads?).and_return(true)
+      end
+
+      it 'returns false' do
+        expect(subject.use_rugged?(repository, feature_flag_name)).to be false
+      end
     end
 
-    it 'returns false when disk access fails' do
-      allow(Gitlab::GitalyClient).to receive(:storage_metadata_file_path).and_return("/fake/path/doesnt/exist")
+    context 'when not running puma with multiple threads' do
+      before do
+        allow(subject).to receive(:running_puma_with_multiple_threads?).and_return(false)
+      end
 
-      expect(subject.use_rugged?(repository, feature_flag_name)).to be false
-    end
+      it 'returns true when gitaly matches disk' do
+        expect(subject.use_rugged?(repository, feature_flag_name)).to be true
+      end
 
-    it "returns false when gitaly doesn't match disk" do
-      allow(Gitlab::GitalyClient).to receive(:storage_metadata_file_path).and_return(temp_gitaly_metadata_file)
+      it 'returns false when disk access fails' do
+        allow(Gitlab::GitalyClient).to receive(:storage_metadata_file_path).and_return("/fake/path/doesnt/exist")
 
-      expect(subject.use_rugged?(repository, feature_flag_name)).to be_falsey
+        expect(subject.use_rugged?(repository, feature_flag_name)).to be false
+      end
 
-      File.delete(temp_gitaly_metadata_file)
-    end
+      it "returns false when gitaly doesn't match disk" do
+        allow(Gitlab::GitalyClient).to receive(:storage_metadata_file_path).and_return(temp_gitaly_metadata_file)
 
-    it "doesn't lead to a second rpc call because gitaly client should use the cached value" do
-      expect(subject.use_rugged?(repository, feature_flag_name)).to be true
+        expect(subject.use_rugged?(repository, feature_flag_name)).to be_falsey
 
-      expect(Gitlab::GitalyClient).not_to receive(:filesystem_id)
+        File.delete(temp_gitaly_metadata_file)
+      end
 
-      subject.use_rugged?(repository, feature_flag_name)
+      it "doesn't lead to a second rpc call because gitaly client should use the cached value" do
+        expect(subject.use_rugged?(repository, feature_flag_name)).to be true
+
+        expect(Gitlab::GitalyClient).not_to receive(:filesystem_id)
+
+        subject.use_rugged?(repository, feature_flag_name)
+      end
     end
   end
 
@@ -96,6 +112,37 @@ describe Gitlab::Git::RuggedImpl::UseRugged, :seed_helper do
       allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_return(false)
 
       expect(subject.use_rugged?(repository, feature_flag_name)).to be true
+    end
+  end
+
+  describe '#running_puma_with_multiple_threads?' do
+    context 'when using Puma' do
+      before do
+        stub_const('::Puma', class_double('Puma'))
+        allow(Gitlab::Runtime).to receive(:puma?).and_return(true)
+      end
+
+      it 'returns false for single thread Puma' do
+        allow(::Puma).to receive_message_chain(:cli_config, :options).and_return(max_threads: 1)
+
+        expect(subject.running_puma_with_multiple_threads?).to be false
+      end
+
+      it 'returns true for multi-threaded Puma' do
+        allow(::Puma).to receive_message_chain(:cli_config, :options).and_return(max_threads: 2)
+
+        expect(subject.running_puma_with_multiple_threads?).to be true
+      end
+    end
+
+    context 'when not using Puma' do
+      before do
+        allow(Gitlab::Runtime).to receive(:puma?).and_return(false)
+      end
+
+      it 'returns false' do
+        expect(subject.running_puma_with_multiple_threads?).to be false
+      end
     end
   end
 

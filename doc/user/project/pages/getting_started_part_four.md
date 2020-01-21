@@ -1,5 +1,5 @@
 ---
-last_updated: 2019-06-04
+last_updated: 2020-01-06
 type: reference, howto
 ---
 
@@ -158,7 +158,7 @@ first thing GitLab Runner will look for in your `.gitlab-ci.yml` is a
 your container to run that script:
 
 ```yaml
-image: ruby:2.3
+image: ruby:2.7
 
 pages:
   script:
@@ -170,9 +170,9 @@ pages:
 ```
 
 In this case, you're telling the Runner to pull this image, which
-contains Ruby 2.3 as part of its file system. When you don't specify
+contains Ruby 2.7 as part of its file system. When you don't specify
 this image in your configuration, the Runner will use a default
-image, which is Ruby 2.1.
+image, which is Ruby 2.6.
 
 If your SSG needs [NodeJS](https://nodejs.org/) to build, you'll
 need to specify which image you want to use, and this image should
@@ -198,7 +198,7 @@ To do that, we need to add another line to our CI, telling the Runner
 to only perform that _job_ called `pages` on the `master` branch `only`:
 
 ```yaml
-image: ruby:2.3
+image: ruby:2.6
 
 pages:
   script:
@@ -221,7 +221,7 @@ and deploy. To specify which stage your _job_ is running,
 simply add another line to your CI:
 
 ```yaml
-image: ruby:2.3
+image: ruby:2.6
 
 pages:
   stage: deploy
@@ -244,7 +244,7 @@ let's add another task (_job_) to our CI, telling it to
 test every push to other branches, `except` the `master` branch:
 
 ```yaml
-image: ruby:2.3
+image: ruby:2.6
 
 pages:
   stage: deploy
@@ -294,7 +294,7 @@ every single _job_. In our example, notice that we run
 We don't need to repeat it:
 
 ```yaml
-image: ruby:2.3
+image: ruby:2.6
 
 before_script:
   - bundle install
@@ -329,7 +329,7 @@ cache Jekyll dependencies in a `vendor` directory
 when we run `bundle install`:
 
 ```yaml
-image: ruby:2.3
+image: ruby:2.6
 
 cache:
   paths:

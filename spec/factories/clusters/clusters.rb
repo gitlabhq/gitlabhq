@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :cluster, class: Clusters::Cluster do
+  factory :cluster, class: 'Clusters::Cluster' do
     user
     name { 'test-cluster' }
     cluster_type { :project_type }

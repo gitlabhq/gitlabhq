@@ -18,7 +18,6 @@ describe('ProjectListItem component', () => {
         project,
         selected: false,
       },
-      sync: false,
       localVue,
     };
   });

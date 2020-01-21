@@ -132,6 +132,7 @@ module MarkupHelper
       pipeline: :wiki,
       project: @project,
       project_wiki: @project_wiki,
+      repository: @project_wiki.repository,
       page_slug: wiki_page.slug,
       issuable_state_filter_enabled: true
     )
@@ -153,7 +154,9 @@ module MarkupHelper
     else
       other_markup_unsafe(file_name, text, context)
     end
-  rescue RuntimeError
+  rescue StandardError => e
+    Gitlab::ErrorTracking.track_exception(e, project_id: @project&.id, file_name: file_name, context: context)
+
     simple_format(text)
   end
 
@@ -280,7 +283,7 @@ module MarkupHelper
     context.reverse_merge!(
       current_user: (current_user if defined?(current_user)),
 
-      # RelativeLinkFilter
+      # RepositoryLinkFilter and UploadLinkFilter
       commit:         @commit,
       project_wiki:   @project_wiki,
       ref:            @ref,

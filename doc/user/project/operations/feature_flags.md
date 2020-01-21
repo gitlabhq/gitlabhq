@@ -1,6 +1,6 @@
 # Feature Flags **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/11845) in GitLab 11.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/7433) in GitLab 11.4.
 
 Feature flags allow you to ship a project in different flavors by
 dynamically toggling certain functionality.
@@ -51,7 +51,10 @@ with ability to edit or remove them.
 To make a feature flag active or inactive, click the pencil icon to edit it,
 and toggle the status for each [spec](#define-environment-specs).
 
-![Feature flags list](img/feature_flags_list.png)
+The toggles next to each feature flag on the list page function as global shutoff switches.
+If a toggle is off, that feature flag is disabled for every environment.
+
+![Feature flags list](img/feature_flags_list_v12_7.png)
 
 ## Define environment specs
 

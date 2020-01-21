@@ -103,6 +103,10 @@ always take the latest DAST artifact available. Behind the scenes, the
 [GitLab DAST Docker image](https://gitlab.com/gitlab-org/security-products/dast)
 is used to run the tests on the specified URL and scan it for possible vulnerabilities.
 
+By default, the DAST template will use the latest major version of the DAST Docker image. Using the `DAST_VERSION` variable,
+you can choose to automatically update DAST with new features and fixes by pinning to a major version (e.g. 1), only update fixes by pinning to a minor version (e.g. 1.6) or prevent all updates by pinning to a specific version (e.g. 1.6.4).
+Find the latest DAST versions on the [Releases](https://gitlab.com/gitlab-org/security-products/dast/-/releases) page.
+
 ### Authenticated scan
 
 It's also possible to authenticate the user before performing the DAST checks:
@@ -311,6 +315,15 @@ variable value.
 | `DAST_TARGET_AVAILABILITY_TIMEOUT` | no | Time limit in seconds to wait for target availability. Scan is attempted nevertheless if it runs out. Integer. Defaults to `60`. |
 | `DAST_FULL_SCAN_ENABLED` | no | Switches the tool to execute [ZAP Full Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Full-Scan) instead of [ZAP Baseline Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Baseline-Scan). Boolean. `true`, `True`, or `1` are considered as true value, otherwise false. Defaults to `false`. |
 | `DAST_FULL_SCAN_DOMAIN_VALIDATION_REQUIRED` | no | Requires [domain validation](#domain-validation) when running DAST full scans. Boolean. `true`, `True`, or `1` are considered as true value, otherwise false. Defaults to `false`. |
+
+## Reports JSON format
+
+CAUTION: **Caution:**
+The JSON report artifacts are not a public API of DAST and their format may change in the future.
+
+The DAST tool emits a JSON report report file. Sample report files can be found in the [DAST repository](https://gitlab.com/gitlab-org/security-products/dast/tree/master/test/end-to-end/expect).
+
+There are two formats of data in the JSON document that are used side by side: the proprietary ZAP format which will be eventually deprecated, and a "common" format which will be the default in the future.
 
 ## Security Dashboard
 

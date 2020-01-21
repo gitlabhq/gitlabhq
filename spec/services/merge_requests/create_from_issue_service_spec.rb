@@ -55,7 +55,9 @@ describe MergeRequests::CreateFromIssueService do
       end
 
       it 'creates the new_issue_branch system note when the branch could be created but the merge_request cannot be created', :sidekiq_might_not_need_inline do
-        expect_any_instance_of(MergeRequest).to receive(:valid?).at_least(:once).and_return(false)
+        expect_next_instance_of(MergeRequest) do |instance|
+          expect(instance).to receive(:valid?).at_least(:once).and_return(false)
+        end
 
         expect(SystemNoteService).to receive(:new_issue_branch).with(issue, project, user, issue.to_branch_name, branch_project: target_project)
 

@@ -67,6 +67,7 @@ describe('Multi-file editor library', () => {
         },
         readOnly: true,
         scrollBeyondLastLine: false,
+        renderWhitespace: 'none',
         quickSuggestions: false,
         occurrencesHighlight: false,
         wordWrap: 'on',

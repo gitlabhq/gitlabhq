@@ -19,16 +19,16 @@ module Clusters
             application.hostname = params[:hostname]
           end
 
-          if application.has_attribute?(:kibana_hostname)
-            application.kibana_hostname = params[:kibana_hostname]
-          end
-
           if application.has_attribute?(:email)
             application.email = params[:email]
           end
 
           if application.has_attribute?(:stack)
             application.stack = params[:stack]
+          end
+
+          if application.has_attribute?(:modsecurity_enabled)
+            application.modsecurity_enabled = params[:modsecurity_enabled] || false
           end
 
           if application.respond_to?(:oauth_application)
@@ -68,7 +68,7 @@ module Clusters
       end
 
       def invalid_application?
-        unknown_application? || (application_name == Applications::ElasticStack.application_name && !Feature.enabled?(:enable_cluster_application_elastic_stack)) || (application_name == Applications::Crossplane.application_name && !Feature.enabled?(:enable_cluster_application_crossplane))
+        unknown_application? || (application_name == Applications::ElasticStack.application_name && !Feature.enabled?(:enable_cluster_application_elastic_stack))
       end
 
       def unknown_application?

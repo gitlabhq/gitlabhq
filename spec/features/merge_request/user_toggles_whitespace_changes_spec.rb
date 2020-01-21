@@ -8,15 +8,12 @@ describe 'Merge request > User toggles whitespace changes', :js do
   let(:user) { project.creator }
 
   before do
-    stub_feature_flags(single_mr_diff_view: false)
     project.add_maintainer(user)
     sign_in(user)
     visit diffs_project_merge_request_path(project, merge_request)
 
     find('.js-show-diff-settings').click
   end
-
-  it_behaves_like 'rendering a single diff version'
 
   it 'has a button to toggle whitespace changes' do
     expect(page).to have_content 'Show whitespace changes'

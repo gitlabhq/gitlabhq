@@ -717,6 +717,7 @@ describe Repository do
 
   describe "search_files_by_content" do
     let(:results) { repository.search_files_by_content('feature', 'master') }
+
     subject { results }
 
     it { is_expected.to be_an Array }
@@ -1328,6 +1329,13 @@ describe Repository do
 
       repository.root_ref
       repository.root_ref
+    end
+
+    it 'returns nil if the repository does not exist' do
+      repository = create(:project).repository
+
+      expect(repository).not_to be_exists
+      expect(repository.root_ref).to be_nil
     end
 
     it_behaves_like 'asymmetric cached method', :root_ref

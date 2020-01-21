@@ -1,0 +1,6 @@
+export const SET_ENABLED = 'SET_ENABLED';
+export const SET_PROJECT_CREATED = 'SET_PROJECT_CREATED';
+export const SET_SHOW_ALERT = 'SET_SHOW_ALERT';
+export const SET_PROJECT_URL = 'SET_PROJECT_URL';
+export const SET_LOADING = 'SET_LOADING';
+export const SET_ALERT_CONTENT = 'SET_ALERT_CONTENT';

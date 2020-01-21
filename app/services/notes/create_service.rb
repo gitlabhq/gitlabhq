@@ -4,9 +4,7 @@ module Notes
   class CreateService < ::Notes::BaseService
     # rubocop:disable Metrics/CyclomaticComplexity
     def execute
-      merge_request_diff_head_sha = params.delete(:merge_request_diff_head_sha)
-
-      note = Notes::BuildService.new(project, current_user, params).execute
+      note = Notes::BuildService.new(project, current_user, params.except(:merge_request_diff_head_sha)).execute
 
       # n+1: https://gitlab.com/gitlab-org/gitlab-foss/issues/37440
       note_valid = Gitlab::GitalyClient.allow_n_plus_1_calls do
@@ -23,8 +21,7 @@ module Notes
       quick_actions_service = QuickActionsService.new(project, current_user)
 
       if quick_actions_service.supported?(note)
-        options = { merge_request_diff_head_sha: merge_request_diff_head_sha }
-        content, update_params, message = quick_actions_service.execute(note, options)
+        content, update_params, message = quick_actions_service.execute(note, quick_action_options)
 
         only_commands = content.empty?
 
@@ -74,6 +71,11 @@ module Notes
 
     private
 
+    # EE::Notes::CreateService would override this method
+    def quick_action_options
+      { merge_request_diff_head_sha: params[:merge_request_diff_head_sha] }
+    end
+
     def tracking_data_for(note)
       label = Gitlab.ee? && note.author == User.visual_review_bot ? 'anonymous_visual_review_note' : 'note'
 
@@ -84,3 +86,5 @@ module Notes
     end
   end
 end
+
+Notes::CreateService.prepend_if_ee('EE::Notes::CreateService')

@@ -35,6 +35,7 @@ describe Projects::BranchesController do
       context "valid branch name, valid source" do
         let(:branch) { "merge_branch" }
         let(:ref) { "master" }
+
         it 'redirects' do
           expect(subject)
             .to redirect_to("/#{project.full_path}/tree/merge_branch")
@@ -44,6 +45,7 @@ describe Projects::BranchesController do
       context "invalid branch name, valid ref" do
         let(:branch) { "<script>alert('merge');</script>" }
         let(:ref) { "master" }
+
         it 'redirects' do
           expect(subject)
             .to redirect_to("/#{project.full_path}/tree/alert('merge');")
@@ -53,18 +55,21 @@ describe Projects::BranchesController do
       context "valid branch name, invalid ref" do
         let(:branch) { "merge_branch" }
         let(:ref) { "<script>alert('ref');</script>" }
+
         it { is_expected.to render_template('new') }
       end
 
       context "invalid branch name, invalid ref" do
         let(:branch) { "<script>alert('merge');</script>" }
         let(:ref) { "<script>alert('ref');</script>" }
+
         it { is_expected.to render_template('new') }
       end
 
       context "valid branch name with encoded slashes" do
         let(:branch) { "feature%2Ftest" }
         let(:ref) { "<script>alert('ref');</script>" }
+
         it { is_expected.to render_template('new') }
         it { project.repository.branch_exists?('feature/test') }
       end
@@ -586,7 +591,7 @@ describe Projects::BranchesController do
           params: {
             namespace_id: project.namespace,
             project_id: project,
-            names: ['fix', 'add-pdf-file', 'branch-merged']
+            names: %w[fix add-pdf-file branch-merged]
           }
 
       expect(response).to have_gitlab_http_status(200)
@@ -634,7 +639,7 @@ describe Projects::BranchesController do
             params: {
               namespace_id: project.namespace,
               project_id: project,
-              names: ['fix', 'add-pdf-file', 'branch-merged']
+              names: %w[fix add-pdf-file branch-merged]
             }
 
         expect(response).to have_gitlab_http_status(200)

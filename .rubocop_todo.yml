@@ -268,11 +268,6 @@ Naming/RescuedExceptionsVariableName:
 RSpec/ContextWording:
   Enabled: false
 
-# Offense count: 407
-# Cop supports --auto-correct.
-RSpec/EmptyLineAfterFinalLet:
-  Enabled: false
-
 # Offense count: 719
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.

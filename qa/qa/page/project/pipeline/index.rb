@@ -18,7 +18,7 @@ module QA::Page
       end
 
       def wait_for_latest_pipeline_success
-        wait(reload: false, max: 300) do
+        wait_until(reload: false, max_duration: 300) do
           within_element_by_index(:pipeline_commit_status, 0) do
             has_text?('passed')
           end

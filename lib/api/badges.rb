@@ -135,7 +135,6 @@ module API
           end
 
           destroy_conditionally!(badge)
-          body false
         end
       end
     end

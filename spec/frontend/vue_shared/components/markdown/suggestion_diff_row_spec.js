@@ -1,4 +1,4 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import SuggestionDiffRow from '~/vue_shared/components/markdown/suggestion_diff_row.vue';
 
 const oldLine = {
@@ -7,8 +7,8 @@ const oldLine = {
   meta_data: null,
   new_line: null,
   old_line: 5,
-  rich_text: '-oldtext',
-  text: '-oldtext',
+  rich_text: 'oldrichtext',
+  text: 'oldplaintext',
   type: 'old',
 };
 
@@ -18,8 +18,8 @@ const newLine = {
   meta_data: null,
   new_line: 6,
   old_line: null,
-  rich_text: '-newtext',
-  text: '-newtext',
+  rich_text: 'newrichtext',
+  text: 'newplaintext',
   type: 'new',
 };
 
@@ -27,10 +27,7 @@ describe('SuggestionDiffRow', () => {
   let wrapper;
 
   const factory = (options = {}) => {
-    const localVue = createLocalVue();
-
     wrapper = shallowMount(SuggestionDiffRow, {
-      localVue,
       ...options,
     });
   };
@@ -42,14 +39,46 @@ describe('SuggestionDiffRow', () => {
     wrapper.destroy();
   });
 
-  it('renders correctly', () => {
-    factory({
-      propsData: {
-        line: oldLine,
-      },
+  describe('renders correctly', () => {
+    it('has the right classes on the wrapper', () => {
+      factory({
+        propsData: {
+          line: oldLine,
+        },
+      });
+
+      expect(wrapper.is('.line_holder')).toBe(true);
     });
 
-    expect(wrapper.is('.line_holder')).toBe(true);
+    it('renders the rich text when it is available', () => {
+      factory({
+        propsData: {
+          line: newLine,
+        },
+      });
+
+      expect(wrapper.find('td.line_content').text()).toEqual('newrichtext');
+    });
+
+    it('renders the plain text when it is available but rich text is not', () => {
+      factory({
+        propsData: {
+          line: Object.assign({}, newLine, { rich_text: undefined }),
+        },
+      });
+
+      expect(wrapper.find('td.line_content').text()).toEqual('newplaintext');
+    });
+
+    it('renders a zero-width space when it has no plain or rich texts', () => {
+      factory({
+        propsData: {
+          line: Object.assign({}, newLine, { rich_text: undefined, text: undefined }),
+        },
+      });
+
+      expect(wrapper.find('td.line_content').text()).toEqual('\u200B');
+    });
   });
 
   describe('when passed line has type old', () => {

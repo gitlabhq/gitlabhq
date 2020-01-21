@@ -15,6 +15,7 @@ describe Uploads::Local do
 
     describe '#keys' do
       let!(:uploads) { create_list(:upload, 2, uploader: FileUploader, model: project) }
+
       subject { data_store.keys(relation) }
 
       it 'returns keys' do
@@ -25,6 +26,7 @@ describe Uploads::Local do
     describe '#delete_keys' do
       let(:keys) { data_store.keys(relation) }
       let!(:uploads) { create_list(:upload, 2, :with_file, :issuable_upload, model: project) }
+
       subject { data_store.delete_keys(keys) }
 
       it 'deletes multiple data' do

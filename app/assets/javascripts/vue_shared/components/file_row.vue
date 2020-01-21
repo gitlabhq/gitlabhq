@@ -1,5 +1,4 @@
 <script>
-import Icon from '~/vue_shared/components/icon.vue';
 import FileHeader from '~/vue_shared/components/file_row_header.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import ChangedFileIcon from '~/vue_shared/components/changed_file_icon.vue';
@@ -9,7 +8,6 @@ export default {
   components: {
     FileHeader,
     FileIcon,
-    Icon,
     ChangedFileIcon,
   },
   props: {
@@ -26,6 +24,7 @@ export default {
       required: false,
       default: null,
     },
+
     hideExtraOnTree: {
       type: Boolean,
       required: false,
@@ -143,17 +142,17 @@ export default {
       @mouseleave="toggleDropdown(false)"
     >
       <div class="file-row-name-container">
-        <span ref="textOutput" :style="levelIndentation" class="file-row-name str-truncated">
+        <span ref="textOutput" :style="levelIndentation" class="file-row-name str-truncated d-flex">
           <file-icon
             v-if="!showChangedIcon || file.type === 'tree'"
-            class="file-row-icon"
+            class="file-row-icon text-secondary mr-1"
             :file-name="file.name"
             :loading="file.loading"
             :folder="isTree"
             :opened="file.opened"
             :size="16"
           />
-          <changed-file-icon v-else :file="file" :size="16" class="append-right-5" />
+          <file-icon v-else :file-name="file.name" :size="16" css-classes="top mr-1" />
           {{ file.name }}
         </span>
         <component
@@ -163,6 +162,7 @@ export default {
           :dropdown-open="dropdownOpen"
           @toggle="toggleDropdown($event)"
         />
+        <changed-file-icon :file="file" :size="16" class="append-right-5" />
       </div>
     </div>
     <template v-if="file.opened || file.isHeader">
@@ -172,7 +172,6 @@ export default {
         :file="childFile"
         :level="childFilesLevel"
         :hide-extra-on-tree="hideExtraOnTree"
-        :extra-component="extraComponent"
         :show-changed-icon="showChangedIcon"
         @toggleTreeOpen="toggleTreeOpen"
         @clickFile="clickedFile"

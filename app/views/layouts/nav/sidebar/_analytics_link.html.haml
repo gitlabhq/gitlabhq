@@ -1,0 +1,4 @@
+- return unless dashboard_nav_link?(:analytics)
+= nav_link(controller: [:dev_ops_score, :cohorts]) do
+  = link_to instance_statistics_root_path, class: 'd-xl-none' do
+    = _('Analytics')

@@ -10,8 +10,6 @@ const createComponent = props =>
     propsData: {
       ...props,
     },
-    sync: false,
-    attachToDocument: true,
   });
 
 describe('Limit warning component', () => {

@@ -306,6 +306,21 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
     end
 
+    context 'when job is waiting for resource', :js do
+      let(:job) { create(:ci_build, :waiting_for_resource, pipeline: pipeline, resource_group: resource_group) }
+      let(:resource_group) { create(:ci_resource_group, project: project) }
+
+      before do
+        visit project_job_path(project, job)
+        wait_for_requests
+      end
+
+      it 'shows correct UI components' do
+        expect(page).to have_content("This job is waiting for resource: #{resource_group.key}")
+        expect(page).to have_link("Cancel this job")
+      end
+    end
+
     context "Job from other project" do
       before do
         visit project_job_path(project, job2)

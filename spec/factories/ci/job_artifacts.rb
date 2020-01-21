@@ -3,7 +3,7 @@
 include ActionDispatch::TestProcess
 
 FactoryBot.define do
-  factory :ci_job_artifact, class: Ci::JobArtifact do
+  factory :ci_job_artifact, class: 'Ci::JobArtifact' do
     job factory: :ci_build
     file_type { :archive }
     file_format { :zip }

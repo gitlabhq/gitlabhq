@@ -28,14 +28,14 @@ describe 'Dashboard Issues filtering', :js do
 
   context 'filtering by milestone' do
     it 'shows all issues with no milestone' do
-      input_filtered_search("milestone:none")
+      input_filtered_search("milestone=none")
 
       expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
       expect(page).to have_selector('.issue', count: 1)
     end
 
     it 'shows all issues with the selected milestone' do
-      input_filtered_search("milestone:%\"#{milestone.title}\"")
+      input_filtered_search("milestone=%\"#{milestone.title}\"")
 
       expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
       expect(page).to have_selector('.issue', count: 1)
@@ -63,7 +63,7 @@ describe 'Dashboard Issues filtering', :js do
     let!(:label_link) { create(:label_link, label: label, target: issue) }
 
     it 'shows all issues with the selected label' do
-      input_filtered_search("label:~#{label.title}")
+      input_filtered_search("label=~#{label.title}")
 
       page.within 'ul.content-list' do
         expect(page).to have_content issue.title

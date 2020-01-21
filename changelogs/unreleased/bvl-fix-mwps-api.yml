@@ -1,0 +1,6 @@
+---
+title: Merge a merge request immediately when passing merge when pipeline succeeds
+  to the merge API when the head pipeline already succeeded
+merge_request: 22777
+author:
+type: fixed

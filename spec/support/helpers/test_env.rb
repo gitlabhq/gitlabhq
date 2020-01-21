@@ -154,7 +154,6 @@ module TestEnv
       install_dir: gitaly_dir,
       version: Gitlab::GitalyClient.expected_server_version,
       task: "gitlab:gitaly:install[#{install_gitaly_args}]") do
-
         Gitlab::SetupHelper.create_gitaly_configuration(gitaly_dir, { 'default' => repos_path }, force: true)
         start_gitaly(gitaly_dir)
       end
@@ -246,8 +245,8 @@ module TestEnv
     end
   end
 
-  def copy_repo(project, bare_repo:, refs:)
-    target_repo_path = File.expand_path(repos_path + "/#{project.disk_path}.git")
+  def copy_repo(subject, bare_repo:, refs:)
+    target_repo_path = File.expand_path(repos_path + "/#{subject.disk_path}.git")
 
     FileUtils.mkdir_p(target_repo_path)
     FileUtils.cp_r("#{File.expand_path(bare_repo)}/.", target_repo_path)

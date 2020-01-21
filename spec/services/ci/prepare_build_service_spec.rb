@@ -14,7 +14,7 @@ describe Ci::PrepareBuildService do
 
     shared_examples 'build enqueueing' do
       it 'enqueues the build' do
-        expect(build).to receive(:enqueue).once
+        expect(build).to receive(:enqueue_preparing).once
 
         subject
       end
@@ -34,7 +34,7 @@ describe Ci::PrepareBuildService do
 
       context 'prerequisites fail to complete' do
         before do
-          allow(build).to receive(:enqueue).and_return(false)
+          allow(build).to receive(:enqueue_preparing).and_return(false)
         end
 
         it 'drops the build' do

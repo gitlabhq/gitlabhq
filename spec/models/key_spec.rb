@@ -25,6 +25,7 @@ describe Key, :mailer do
 
   describe "Methods" do
     let(:user) { create(:user) }
+
     it { is_expected.to respond_to :projects }
     it { is_expected.to respond_to :publishable_key }
 

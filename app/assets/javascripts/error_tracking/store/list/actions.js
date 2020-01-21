@@ -17,12 +17,14 @@ export function startPolling({ state, commit, dispatch }) {
       params: {
         search_term: state.searchQuery,
         sort: state.sortField,
+        cursor: state.cursor,
       },
     },
     successCallback: ({ data }) => {
       if (!data) {
         return;
       }
+
       commit(types.SET_PAGINATION, data.pagination);
       commit(types.SET_ERRORS, data.errors);
       commit(types.SET_LOADING, false);
@@ -74,6 +76,7 @@ export function clearRecentSearches({ commit }) {
 
 export const searchByQuery = ({ commit, dispatch }, query) => {
   const searchQuery = query.trim();
+  commit(types.SET_CURSOR, null);
   commit(types.SET_SEARCH_QUERY, searchQuery);
   commit(types.ADD_RECENT_SEARCH, searchQuery);
   dispatch('stopPolling');
@@ -81,6 +84,7 @@ export const searchByQuery = ({ commit, dispatch }, query) => {
 };
 
 export const sortByField = ({ commit, dispatch }, field) => {
+  commit(types.SET_CURSOR, null);
   commit(types.SET_SORT_FIELD, field);
   dispatch('stopPolling');
   dispatch('startPolling');
@@ -88,6 +92,12 @@ export const sortByField = ({ commit, dispatch }, field) => {
 
 export const setEndpoint = ({ commit }, endpoint) => {
   commit(types.SET_ENDPOINT, endpoint);
+};
+
+export const fetchPaginatedResults = ({ commit, dispatch }, cursor) => {
+  commit(types.SET_CURSOR, cursor);
+  dispatch('stopPolling');
+  dispatch('startPolling');
 };
 
 export default () => {};

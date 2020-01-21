@@ -2,7 +2,6 @@
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import CIIcon from '~/vue_shared/components/ci_icon.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
 import initUserPopovers from '../../user_popovers';
@@ -25,7 +24,6 @@ export default {
     UserAvatarLink,
     Icon,
     ClipboardButton,
-    CIIcon,
     TimeAgoTooltip,
     CommitPipelineStatus,
   },

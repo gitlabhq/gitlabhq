@@ -34,7 +34,7 @@ describe AutoMerge::MergeWhenPipelineSucceedsService do
 
     it { is_expected.to be_truthy }
 
-    context 'when the head piipeline succeeded' do
+    context 'when the head pipeline succeeded' do
       let(:pipeline_status) { :success }
 
       it { is_expected.to be_falsy }

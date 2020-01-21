@@ -165,9 +165,9 @@ describe 'Merge request > User posts notes', :js do
         find('.js-note-edit').click
 
         page.within('.current-note-edit-form') do
-          expect(find('#note_note').value).to eq('This is the new content')
+          expect(find('#note_note').value).to include('This is the new content')
           first('.js-md').click
-          expect(find('#note_note').value).to eq('This is the new content****')
+          expect(find('#note_note').value).to include('This is the new content****')
         end
       end
 

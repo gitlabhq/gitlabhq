@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import RelatedIssuableItem from '~/vue_shared/components/issue/related_issuable_item.vue';
 import {
@@ -29,13 +29,8 @@ describe('RelatedIssuableItem', () => {
   };
 
   beforeEach(() => {
-    const localVue = createLocalVue();
-
-    wrapper = mount(localVue.extend(RelatedIssuableItem), {
-      localVue,
+    wrapper = mount(RelatedIssuableItem, {
       slots,
-      sync: false,
-      attachToDocument: true,
       propsData: props,
     });
   });
@@ -192,10 +187,12 @@ describe('RelatedIssuableItem', () => {
     it('triggers onRemoveRequest when clicked', () => {
       removeBtn.trigger('click');
 
-      const { relatedIssueRemoveRequest } = wrapper.emitted();
+      return wrapper.vm.$nextTick().then(() => {
+        const { relatedIssueRemoveRequest } = wrapper.emitted();
 
-      expect(relatedIssueRemoveRequest.length).toBe(1);
-      expect(relatedIssueRemoveRequest[0]).toEqual([props.idKey]);
+        expect(relatedIssueRemoveRequest.length).toBe(1);
+        expect(relatedIssueRemoveRequest[0]).toEqual([props.idKey]);
+      });
     });
   });
 });

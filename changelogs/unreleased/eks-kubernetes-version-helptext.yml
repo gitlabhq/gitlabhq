@@ -1,0 +1,5 @@
+---
+title: Removes incorrect help text from EKS Kubernetes version field
+merge_request:
+author:
+type: fixed

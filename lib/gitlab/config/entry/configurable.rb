@@ -5,7 +5,7 @@ module Gitlab
     module Entry
       ##
       # This mixin is responsible for adding DSL, which purpose is to
-      # simplifly process of adding child nodes.
+      # simplify the process of adding child nodes.
       #
       # This can be used only if parent node is a configuration entry that
       # holds a hash as a configuration value, for example:

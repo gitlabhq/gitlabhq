@@ -183,7 +183,7 @@ export class CopyAsGFM {
 }
 
 // Export CopyAsGFM as a global for rspec to access
-// see /spec/features/copy_as_gfm_spec.rb
+// see /spec/features/markdown/copy_as_gfm_spec.rb
 if (process.env.NODE_ENV !== 'production') {
   window.CopyAsGFM = CopyAsGFM;
 }

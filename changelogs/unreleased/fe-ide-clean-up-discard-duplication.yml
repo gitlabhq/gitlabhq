@@ -1,0 +1,5 @@
+---
+title: Fix discard all to behave like discard single file in Web IDE
+merge_request: 22572
+author:
+type: fixed

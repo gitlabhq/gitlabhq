@@ -1,0 +1,5 @@
+---
+title: Add capability to disable issue auto-close feature per project
+merge_request: 21704
+author: Fabio Huser
+type: added

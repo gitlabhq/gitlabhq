@@ -11,7 +11,6 @@ describe('Graphql Pagination component', () => {
         hasNextPage,
         hasPreviousPage,
       },
-      sync: false,
       localVue,
     });
   }

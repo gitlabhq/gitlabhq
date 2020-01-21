@@ -1,0 +1,6 @@
+---
+title: Display SSL limitations warning for project's pages under namespace that contains
+  dot
+merge_request: 21874
+author:
+type: other

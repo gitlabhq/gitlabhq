@@ -66,12 +66,13 @@ Parameters:
 | `target_type` | string | no | Include only events of a particular [target type][target-types] |
 | `before` | date | no |  Include only events created before a particular date. Please see [here for the supported format][date-formatting] |
 | `after` | date | no |  Include only events created after a particular date. Please see [here for the supported format][date-formatting]  |
+| `scope` | string | no | Include all events across a user's projects. |
 | `sort` | string | no | Sort events in `asc` or `desc` order by `created_at`. Default is `desc` |
 
 Example request:
 
 ```bash
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/events?target_type=issue&action=created&after=2017-01-31&before=2017-03-01
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/events?target_type=issue&action=created&after=2017-01-31&before=2017-03-01&scope=all
 ```
 
 Example response:

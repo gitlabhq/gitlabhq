@@ -21,7 +21,9 @@ export default class TreeView {
       }
     });
     // Show the "Loading commit data" for only the first element
-    $('span.log_loading:first').removeClass('hide');
+    $('span.log_loading')
+      .first()
+      .removeClass('hide');
   }
 
   initKeyNav() {

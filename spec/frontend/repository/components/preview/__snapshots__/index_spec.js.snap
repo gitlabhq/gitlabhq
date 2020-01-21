@@ -15,13 +15,13 @@ exports[`Repository file preview component renders file HTML 1`] = `
         class="fa fa-file-text-o fa-fw"
       />
        
-      <gllink-stub
+      <gl-link-stub
         href="http://test.com"
       >
         <strong>
           README.md
         </strong>
-      </gllink-stub>
+      </gl-link-stub>
     </div>
   </div>
    

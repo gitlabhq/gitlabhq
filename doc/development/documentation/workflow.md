@@ -284,7 +284,7 @@ To update GitLab documentation:
 1. Follow GitLab's [Merge Request Guidelines](../contributing/merge_request_workflow.md#merge-request-guidelines).
 
 TIP: **Tip:**
-Work in a fork if you do not have developer access to the GitLab project.
+Work in a fork if you do not have Developer access to the GitLab project.
 
 Request help from the Technical Writing team if you:
 
@@ -297,8 +297,7 @@ To request help:
 1. Locate the the Technical Writer for the relevant
    [DevOps stage group](https://about.gitlab.com/handbook/product/technical-writing/index.html#assignments).
 1. Either:
-   - If urgent help is required, directly assign the Technical Writer in the issue or
-     [in the merge request](../../user/project/merge_requests/creating_merge_requests.md#multiple-assignees-starter).
+   - If urgent help is required, directly assign the Technical Writer in the issue or in the merge request.
    - If non-urgent help is required, ping the Technical Writer in the issue or merge request.
 
 If you are a member of GitLab's Slack workspace, you can request help in `#docs`.

@@ -1,5 +1,9 @@
 # InfluxDB Schema
 
+CAUTION: **InfluxDB is deprecated in favor of Prometheus:**
+InfluxDB support is scheduled to be removed in GitLab 13.0.
+You are advised to use [Prometheus](../prometheus/index.md) instead.
+
 The following measurements are currently stored in InfluxDB:
 
 - `PROCESS_file_descriptors`
@@ -39,7 +43,7 @@ while the method name is stored in the tag `method`. The tag `action` contains
 the full name of the transaction action. Both the `method` and `action` fields
 are in the following format:
 
-```
+```plaintext
 ClassName#method_name
 ```
 
@@ -91,7 +95,7 @@ Depending on the event type additional tags may be available as well.
 
 Read more on:
 
-- [Introduction to GitLab Performance Monitoring](introduction.md)
+- [Introduction to GitLab Performance Monitoring](index.md)
 - [GitLab Configuration](gitlab_configuration.md)
 - [InfluxDB Configuration](influxdb_configuration.md)
 - [Grafana Install/Configuration](grafana_configuration.md)

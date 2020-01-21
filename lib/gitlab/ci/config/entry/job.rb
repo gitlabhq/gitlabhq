@@ -16,7 +16,8 @@ module Gitlab
           ALLOWED_KEYS = %i[tags script only except rules type image services
                             allow_failure type stage when start_in artifacts cache
                             dependencies before_script needs after_script variables
-                            environment coverage retry parallel extends interruptible timeout].freeze
+                            environment coverage retry parallel extends interruptible timeout
+                            resource_group release].freeze
 
           REQUIRED_BY_NEEDS = %i[stage].freeze
 
@@ -34,6 +35,12 @@ module Gitlab
                 message: 'key may not be used with `rules`'
               },
               if: :has_rules?
+            validates :config,
+              disallowed_keys: {
+                in: %i[release],
+                message: 'release features are not enabled'
+              },
+              unless: -> { Feature.enabled?(:ci_release_generation, default_enabled: false) }
 
             with_options allow_nil: true do
               validates :allow_failure, boolean: true
@@ -48,16 +55,18 @@ module Gitlab
               validates :dependencies, array_of_strings: true
               validates :extends, array_of_strings_or_string: true
               validates :rules, array_of_hashes: true
+              validates :resource_group, type: String
             end
 
             validates :start_in, duration: { limit: '1 week' }, if: :delayed?
             validates :start_in, absence: true, if: -> { has_rules? || !delayed? }
 
-            validate do
+            validate on: :composed do
               next unless dependencies.present?
-              next unless needs.present?
+              next unless needs_value.present?
 
-              missing_needs = dependencies - needs
+              missing_needs = dependencies - needs_value[:job].pluck(:name) # rubocop:disable CodeReuse/ActiveRecord (Array#pluck)
+
               if missing_needs.any?
                 errors.add(:dependencies, "the #{missing_needs.join(", ")} should be part of needs")
               end
@@ -149,14 +158,18 @@ module Gitlab
             description: 'Coverage configuration for this job.',
             inherit: false
 
+          entry :release, Entry::Release,
+            description: 'This job will produce a release.',
+            inherit: false
+
           helpers :before_script, :script, :stage, :type, :after_script,
                   :cache, :image, :services, :only, :except, :variables,
                   :artifacts, :environment, :coverage, :retry, :rules,
-                  :parallel, :needs, :interruptible
+                  :parallel, :needs, :interruptible, :release
 
           attributes :script, :tags, :allow_failure, :when, :dependencies,
                      :needs, :retry, :parallel, :extends, :start_in, :rules,
-                     :interruptible, :timeout
+                     :interruptible, :timeout, :resource_group, :release
 
           def self.matching?(name, config)
             !name.to_s.start_with?('.') &&
@@ -241,9 +254,11 @@ module Gitlab
               interruptible: interruptible_defined? ? interruptible_value : nil,
               timeout: has_timeout? ? ChronicDuration.parse(timeout.to_s) : nil,
               artifacts: artifacts_value,
+              release: release_value,
               after_script: after_script_value,
               ignore: ignored?,
-              needs: needs_defined? ? needs_value : nil }
+              needs: needs_defined? ? needs_value : nil,
+              resource_group: resource_group }
           end
         end
       end

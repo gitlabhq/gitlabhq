@@ -1,7 +1,7 @@
 import $ from 'helpers/jquery';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import Vue from 'vue';
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import { setTestTimeout } from 'helpers/timeout';
 import axios from '~/lib/utils/axios_utils';
 import NotesApp from '~/notes/components/notes_app.vue';
@@ -48,7 +48,6 @@ describe('note_app', () => {
         notesData: mockData.notesDataMock,
         userData: mockData.userDataMock,
       };
-      const localVue = createLocalVue();
 
       return mount(
         {
@@ -60,11 +59,8 @@ describe('note_app', () => {
           </div>`,
         },
         {
-          attachToDocument: true,
           propsData,
           store,
-          localVue,
-          sync: false,
         },
       );
     };
@@ -290,7 +286,10 @@ describe('note_app', () => {
     it('should not render quick actions docs url', () => {
       wrapper.find('.js-note-edit').trigger('click');
       const { quickActionsDocsPath } = mockData.notesDataMock;
-      expect(wrapper.find(`.edit-note a[href="${quickActionsDocsPath}"]`).exists()).toBe(false);
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.find(`.edit-note a[href="${quickActionsDocsPath}"]`).exists()).toBe(false);
+      });
     });
   });
 

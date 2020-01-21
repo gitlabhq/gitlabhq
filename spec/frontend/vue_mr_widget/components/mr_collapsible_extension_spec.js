@@ -42,6 +42,7 @@ describe('Merge Request Collapsible Extension', () => {
     describe('onClick', () => {
       beforeEach(() => {
         wrapper.find('button').trigger('click');
+        return wrapper.vm.$nextTick();
       });
 
       it('rendes the provided slot', () => {

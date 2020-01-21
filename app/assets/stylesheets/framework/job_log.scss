@@ -22,6 +22,7 @@
   min-width: $job-line-number-width;
   margin-left: -$job-line-number-margin;
   padding-right: 1em;
+  user-select: none;
 
   &:hover,
   &:active,

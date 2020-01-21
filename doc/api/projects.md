@@ -156,6 +156,8 @@ When the user is authenticated and `simple` is not set this returns something li
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
     "merge_method": "merge",
+    "autoclose_referenced_issues": true,
+    "suggestion_commit_message": null,
     "statistics": {
       "commit_count": 37,
       "storage_size": 1038090,
@@ -254,6 +256,8 @@ When the user is authenticated and `simple` is not set this returns something li
     "packages_enabled": true,
     "service_desk_enabled": false,
     "service_desk_address": null,
+    "autoclose_referenced_issues": true,
+    "suggestion_commit_message": null,
     "statistics": {
       "commit_count": 12,
       "storage_size": 2066080,
@@ -385,6 +389,8 @@ This endpoint supports [keyset pagination](README.md#keyset-based-pagination) fo
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
     "merge_method": "merge",
+    "autoclose_referenced_issues": true,
+    "suggestion_commit_message": null,
     "statistics": {
       "commit_count": 37,
       "storage_size": 1038090,
@@ -483,6 +489,8 @@ This endpoint supports [keyset pagination](README.md#keyset-based-pagination) fo
     "packages_enabled": true,
     "service_desk_enabled": false,
     "service_desk_address": null,
+    "autoclose_referenced_issues": true,
+    "suggestion_commit_message": null,
     "statistics": {
       "commit_count": 12,
       "storage_size": 2066080,
@@ -593,6 +601,8 @@ Example response:
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
     "merge_method": "merge",
+    "autoclose_referenced_issues": true,
+    "suggestion_commit_message": null,
     "statistics": {
       "commit_count": 37,
       "storage_size": 1038090,
@@ -688,6 +698,8 @@ Example response:
     "packages_enabled": true,
     "service_desk_enabled": false,
     "service_desk_address": null,
+    "autoclose_referenced_issues": true,
+    "suggestion_commit_message": null,
     "statistics": {
       "commit_count": 12,
       "storage_size": 2066080,
@@ -755,6 +767,14 @@ GET /projects/:id
   "snippets_enabled": false,
   "resolve_outdated_diff_discussions": false,
   "container_registry_enabled": false,
+  "container_expiration_policy": {
+    "cadence": "7d",
+    "enabled": false,
+    "keep_n": null,
+    "older_than": null,
+    "name_regex": null,
+    "next_run_at": "2020-01-07T21:42:58.658Z"
+  },
   "created_at": "2013-09-30T13:46:02Z",
   "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
@@ -829,6 +849,8 @@ GET /projects/:id
   "packages_enabled": true,
   "service_desk_enabled": false,
   "service_desk_address": null,
+  "autoclose_referenced_issues": true,
+  "suggestion_commit_message": null,
   "statistics": {
     "commit_count": 37,
     "storage_size": 1038090,
@@ -979,6 +1001,7 @@ POST /projects
 | `snippets_access_level` | string | no | One of `disabled`, `private` or `enabled` |
 | `resolve_outdated_diff_discussions` | boolean | no | Automatically resolve merge request diffs discussions on lines changed with a push |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
+| `container_expiration_policy_attributes` | hash | no | Update the container expiration policy for this project. Accepts: `cadence` (string), `keep_n` (string), `older_than` (string), `name_regex` (string), `enabled` (boolean) |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
 | `visibility` | string | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
@@ -986,6 +1009,7 @@ POST /projects
 | `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful jobs |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `merge_method` | string | no | Set the [merge method](#project-merge-method) used |
+| `autoclose_referenced_issues` | boolean | no | Set whether auto-closing referenced issues on default branch |
 | `remove_source_branch_after_merge` | boolean | no | Enable `Delete source branch` option by default for all new merge requests |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
@@ -1050,6 +1074,8 @@ POST /projects/user/:user_id
 | `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful jobs |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `merge_method` | string | no | Set the [merge method](#project-merge-method) used |
+| `autoclose_referenced_issues` | boolean | no | Set whether auto-closing referenced issues on default branch |
+| `suggestion_commit_message` | string | no | The commit message used to apply merge request suggestions |
 | `remove_source_branch_after_merge` | boolean | no | Enable `Delete source branch` option by default for all new merge requests |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
@@ -1106,6 +1132,7 @@ PUT /projects/:id
 | `snippets_access_level` | string | no | One of `disabled`, `private` or `enabled` |
 | `resolve_outdated_diff_discussions` | boolean | no | Automatically resolve merge request diffs discussions on lines changed with a push |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
+| `container_expiration_policy_attributes` | hash | no | Update the container expiration policy for this project. Accepts: `cadence` (string), `keep_n` (string), `older_than` (string), `name_regex` (string), `enabled` (boolean) |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
 | `visibility` | string | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
@@ -1113,6 +1140,8 @@ PUT /projects/:id
 | `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful jobs |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `merge_method` | string | no | Set the [merge method](#project-merge-method) used |
+| `autoclose_referenced_issues` | boolean | no | Set whether auto-closing referenced issues on default branch |
+| `suggestion_commit_message` | string | no | The commit message used to apply merge request suggestions |
 | `remove_source_branch_after_merge` | boolean | no | Enable `Delete source branch` option by default for all new merge requests |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
@@ -1244,6 +1273,8 @@ Example responses:
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
     "merge_method": "merge",
+    "autoclose_referenced_issues": true,
+    "suggestion_commit_message": null,
     "_links": {
       "self": "http://example.com/api/v4/projects",
       "issues": "http://example.com/api/v4/projects/1/issues",
@@ -1332,6 +1363,8 @@ Example response:
   "remove_source_branch_after_merge": false,
   "request_access_enabled": false,
   "merge_method": "merge",
+  "autoclose_referenced_issues": true,
+  "suggestion_commit_message": null,
   "_links": {
     "self": "http://example.com/api/v4/projects",
     "issues": "http://example.com/api/v4/projects/1/issues",
@@ -1419,6 +1452,8 @@ Example response:
   "remove_source_branch_after_merge": false,
   "request_access_enabled": false,
   "merge_method": "merge",
+  "autoclose_referenced_issues": true,
+  "suggestion_commit_message": null,
   "_links": {
     "self": "http://example.com/api/v4/projects",
     "issues": "http://example.com/api/v4/projects/1/issues",
@@ -1593,6 +1628,8 @@ Example response:
   "remove_source_branch_after_merge": false,
   "request_access_enabled": false,
   "merge_method": "merge",
+  "autoclose_referenced_issues": true,
+  "suggestion_commit_message": null,
   "_links": {
     "self": "http://example.com/api/v4/projects",
     "issues": "http://example.com/api/v4/projects/1/issues",
@@ -1699,6 +1736,8 @@ Example response:
   "remove_source_branch_after_merge": false,
   "request_access_enabled": false,
   "merge_method": "merge",
+  "autoclose_referenced_issues": true,
+  "suggestion_commit_message": null,
   "_links": {
     "self": "http://example.com/api/v4/projects",
     "issues": "http://example.com/api/v4/projects/1/issues",

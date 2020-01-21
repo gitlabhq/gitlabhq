@@ -12,10 +12,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   before_action :build_merge_request, except: [:create]
 
   def new
-    # n+1: https://gitlab.com/gitlab-org/gitlab-foss/issues/40934
-    Gitlab::GitalyClient.allow_n_plus_1_calls do
-      define_new_vars
-    end
+    define_new_vars
   end
 
   def create
@@ -52,7 +49,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
 
     @diff_notes_disabled = true
 
-    @environment = @merge_request.environments_for(current_user).last
+    @environment = @merge_request.environments_for(current_user, latest: true).last
 
     render json: { html: view_to_html_string('projects/merge_requests/creations/_diffs', diffs: @diffs, environment: @environment) }
   end

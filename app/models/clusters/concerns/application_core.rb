@@ -15,7 +15,7 @@ module Clusters
         def set_initial_status
           return unless not_installable?
 
-          self.status = status_states[:installable] if cluster&.application_helm_available?
+          self.status = status_states[:installable] if cluster&.application_helm_available? || Feature.enabled?(:managed_apps_local_tiller)
         end
 
         def can_uninstall?

@@ -60,6 +60,7 @@ module Gitlab
         diff.importing = true
         diff.save
         diff.save_git_content
+        diff.set_as_latest_diff
       end
     end
   end

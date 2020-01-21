@@ -11,7 +11,6 @@ describe('MrWidgetAlertMessage', () => {
     wrapper = shallowMount(localVue.extend(MrWidgetAlertMessage), {
       propsData: {},
       localVue,
-      sync: false,
     });
   });
 

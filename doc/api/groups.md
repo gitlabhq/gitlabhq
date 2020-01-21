@@ -40,6 +40,7 @@ GET /groups
     "auto_devops_enabled": null,
     "subgroup_creation_level": "owner",
     "emails_disabled": null,
+    "mentions_disabled": null,
     "lfs_enabled": true,
     "avatar_url": "http://localhost:3000/uploads/group/avatar/1/foo.jpg",
     "web_url": "http://localhost:3000/groups/foo-bar",
@@ -73,6 +74,7 @@ GET /groups?statistics=true
     "auto_devops_enabled": null,
     "subgroup_creation_level": "owner",
     "emails_disabled": null,
+    "mentions_disabled": null,
     "lfs_enabled": true,
     "avatar_url": "http://localhost:3000/uploads/group/avatar/1/foo.jpg",
     "web_url": "http://localhost:3000/groups/foo-bar",
@@ -144,6 +146,7 @@ GET /groups/:id/subgroups
     "auto_devops_enabled": null,
     "subgroup_creation_level": "owner",
     "emails_disabled": null,
+    "mentions_disabled": null,
     "lfs_enabled": true,
     "avatar_url": "http://gitlab.example.com/uploads/group/avatar/1/foo.jpg",
     "web_url": "http://gitlab.example.com/groups/foo-bar",
@@ -486,6 +489,7 @@ Parameters:
 | `auto_devops_enabled`                | boolean | no       | Default to Auto DevOps pipeline for all projects within this group. |
 | `subgroup_creation_level`            | integer | no       | Allowed to create subgroups. Can be `owner` (Owners), or `maintainer` (Maintainers). |
 | `emails_disabled`                    | boolean | no       | Disable email notifications |
+| `mentions_disabled`                  | boolean | no       | Disable the capability of a group from getting mentioned |
 | `lfs_enabled`                        | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
 | `request_access_enabled`             | boolean | no       | Allow users to request member access. |
 | `parent_id`                          | integer | no       | The parent group ID for creating nested group. |
@@ -531,6 +535,7 @@ PUT /groups/:id
 | `auto_devops_enabled`                | boolean | no       | Default to Auto DevOps pipeline for all projects within this group. |
 | `subgroup_creation_level`            | integer | no       | Allowed to create subgroups. Can be `owner` (Owners), or `maintainer` (Maintainers). |
 | `emails_disabled`                    | boolean | no       | Disable email notifications |
+| `mentions_disabled`                  | boolean | no       | Disable the capability of a group from getting mentioned |
 | `lfs_enabled` (optional)             | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
 | `request_access_enabled`             | boolean | no       | Allow users to request member access. |
 | `file_template_project_id`           | integer | no       | **(PREMIUM)** The ID of a project to load custom file templates from. |

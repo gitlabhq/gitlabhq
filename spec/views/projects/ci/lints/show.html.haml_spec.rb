@@ -75,6 +75,7 @@ describe 'projects/ci/lints/show' do
     it 'shows the correct values' do
       render
 
+      expect(rendered).to have_content('Status: syntax is correct')
       expect(rendered).to have_content('Tag list: dotnet')
       expect(rendered).to have_content('Only policy: refs, test@dude/repo')
       expect(rendered).to have_content('Except policy: refs, deploy')
@@ -87,14 +88,14 @@ describe 'projects/ci/lints/show' do
     before do
       assign(:project, project)
       assign(:status, false)
-      assign(:error, 'Undefined error')
+      assign(:errors, ['Undefined error'])
     end
 
     it 'shows error message' do
       render
 
       expect(rendered).to have_content('Status: syntax is incorrect')
-      expect(rendered).to have_content('Error: Undefined error')
+      expect(rendered).to have_content('Undefined error')
       expect(rendered).not_to have_content('Tag list:')
     end
   end

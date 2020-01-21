@@ -77,6 +77,10 @@ class PipelineEntity < Grape::Entity
     cancel_project_pipeline_path(pipeline.project, pipeline)
   end
 
+  expose :delete_path, if: -> (*) { can_delete? } do |pipeline|
+    project_pipeline_path(pipeline.project, pipeline)
+  end
+
   expose :failed_builds, if: -> (*) { can_retry? }, using: JobEntity do |pipeline|
     pipeline.failed_builds
   end
@@ -93,6 +97,10 @@ class PipelineEntity < Grape::Entity
   def can_cancel?
     can?(request.current_user, :update_pipeline, pipeline) &&
       pipeline.cancelable?
+  end
+
+  def can_delete?
+    can?(request.current_user, :destroy_pipeline, pipeline)
   end
 
   def has_presentable_merge_request?

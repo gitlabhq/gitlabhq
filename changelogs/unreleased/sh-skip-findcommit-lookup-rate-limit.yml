@@ -1,0 +1,5 @@
+---
+title: Avoid Gitaly RPCs in rate-limited raw blob requests
+merge_request: 22123
+author:
+type: performance

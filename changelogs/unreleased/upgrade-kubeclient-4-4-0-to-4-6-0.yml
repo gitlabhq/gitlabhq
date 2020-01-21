@@ -1,0 +1,5 @@
+---
+title: Bump kubeclient version from 4.4.0 to 4.6.0
+merge_request: 22347
+author:
+type: added

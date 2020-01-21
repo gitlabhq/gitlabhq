@@ -122,7 +122,7 @@ describe Admin::SessionsController, :do_not_mock_admin_mode do
   describe '#destroy' do
     context 'for regular users' do
       it 'shows error page' do
-        get :destroy
+        post :destroy
 
         expect(response).to have_gitlab_http_status(404)
         expect(controller.current_user_mode.admin_mode?).to be(false)
@@ -139,7 +139,7 @@ describe Admin::SessionsController, :do_not_mock_admin_mode do
         post :create, params: { password: user.password }
         expect(controller.current_user_mode.admin_mode?).to be(true)
 
-        get :destroy
+        post :destroy
 
         expect(response).to have_gitlab_http_status(:found)
         expect(response).to redirect_to(root_path)

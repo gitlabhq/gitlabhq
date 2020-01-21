@@ -107,21 +107,13 @@ module Gitlab
 
             super
 
-            Gitlab::Profiler.clean_backtrace(caller).each do |caller_line|
+            Gitlab::BacktraceCleaner.clean_backtrace(caller).each do |caller_line|
               stripped_caller_line = caller_line.sub("#{Rails.root}/", '')
 
               super("  ↳ #{stripped_caller_line}")
             end
           end
         end
-      end
-    end
-
-    def self.clean_backtrace(backtrace)
-      return unless backtrace
-
-      Array(Rails.backtrace_cleaner.clean(backtrace)).reject do |line|
-        line.match(Regexp.union(IGNORE_BACKTRACES))
       end
     end
 

@@ -21,6 +21,8 @@ class ProjectGroupLink < ApplicationRecord
 
   after_commit :refresh_group_members_authorized_projects
 
+  alias_method :shared_with_group, :group
+
   def self.access_options
     Gitlab::Access.options
   end

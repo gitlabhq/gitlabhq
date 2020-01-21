@@ -14,7 +14,7 @@ module QA
           def visit!
             super
 
-            QA::Support::Retrier.retry_until(sleep_interval: 3, reload_page: page, max_attempts: 20, exit_on_failure: true) do
+            QA::Support::Retrier.retry_until(sleep_interval: 3, reload_page: page, max_attempts: 20, raise_on_failure: true) do
               page.has_text? 'Welcome to Jenkins!'
             end
           end

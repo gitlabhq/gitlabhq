@@ -1,0 +1,5 @@
+---
+title: Fix extracting Sentry external URL when URL is nil
+merge_request: 23162
+author:
+type: fixed

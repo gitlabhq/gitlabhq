@@ -9,7 +9,7 @@ class AddCleanupStatusToCluster < ActiveRecord::Migration[5.2]
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:clusters, :cleanup_status,
+    add_column_with_default(:clusters, :cleanup_status, # rubocop:disable Migration/AddColumnWithDefault
       :smallint,
       default: 1,
       allow_null: false)

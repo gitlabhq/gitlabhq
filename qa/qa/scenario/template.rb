@@ -23,11 +23,6 @@ module QA
       def perform(options, *args)
         extract_address(:gitlab_address, options, args)
 
-        ##
-        # Perform before hooks, which are different for CE and EE
-        #
-        Runtime::Release.perform_before_hooks
-
         Runtime::Feature.enable(options[:enable_feature]) if options.key?(:enable_feature)
 
         Specs::Runner.perform do |specs|

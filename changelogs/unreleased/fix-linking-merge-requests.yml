@@ -1,0 +1,5 @@
+---
+title: Enable the linking of merge requests to all non review app deployments
+merge_request:
+author:
+type: added

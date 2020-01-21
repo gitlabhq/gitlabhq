@@ -136,7 +136,11 @@ export default {
             >
               <strong>{{ __('New! Suggest changes directly') }}</strong>
               <p class="mb-2">
-                {{ __('Suggest code changes which are immediately applied. Try it out!') }}
+                {{
+                  __(
+                    'Suggest code changes which can be immediately applied in one click. Try it out!',
+                  )
+                }}
               </p>
               <gl-button variant="primary" size="sm" @click="handleSuggestDismissed">
                 {{ __('Got it') }}

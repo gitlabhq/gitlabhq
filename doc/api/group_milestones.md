@@ -98,7 +98,7 @@ Parameters:
 
 ## Delete group milestone
 
-Only for user with developer access to the group.
+Only for users with Developer access to the group.
 
 ```
 DELETE /groups/:id/milestones/:milestone_id

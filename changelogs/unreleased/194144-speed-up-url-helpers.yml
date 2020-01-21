@@ -1,0 +1,5 @@
+---
+title: Improve link generation performance
+merge_request: 22426
+author:
+type: performance

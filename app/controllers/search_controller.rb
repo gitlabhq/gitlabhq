@@ -21,6 +21,8 @@ class SearchController < ApplicationController
 
     return if params[:search].blank?
 
+    return unless search_term_valid?
+
     @search_term = params[:search]
 
     @scope = search_service.scope
@@ -61,6 +63,20 @@ class SearchController < ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   private
+
+  def search_term_valid?
+    unless search_service.valid_query_length?
+      flash[:alert] = t('errors.messages.search_chars_too_long', count: SearchService::SEARCH_CHAR_LIMIT)
+      return false
+    end
+
+    unless search_service.valid_terms_count?
+      flash[:alert] = t('errors.messages.search_terms_too_long', count: SearchService::SEARCH_TERM_LIMIT)
+      return false
+    end
+
+    true
+  end
 
   def render_commits
     @search_objects = prepare_commits_for_rendering(@search_objects)

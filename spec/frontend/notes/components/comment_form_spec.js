@@ -37,8 +37,6 @@ describe('issue_comment_form component', () => {
         noteableType,
       },
       store,
-      sync: false,
-      attachToDocument: true,
     });
   };
 

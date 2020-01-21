@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 describe SystemNotes::CommitService do
-  set(:group)    { create(:group) }
-  set(:project)  { create(:project, :repository, group: group) }
-  set(:author)   { create(:user) }
+  let_it_be(:group)    { create(:group) }
+  let_it_be(:project)  { create(:project, :repository, group: group) }
+  let_it_be(:author)   { create(:user) }
 
   let(:commit_service) { described_class.new(noteable: noteable, project: project, author: author) }
 

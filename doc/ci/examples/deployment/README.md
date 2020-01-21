@@ -4,7 +4,7 @@ type: tutorial
 
 # Using Dpl as deployment tool
 
-[Dpl](https://github.com/travis-ci/dpl) (prouncounced like the letters D-P-L) is a deploy tool made for
+[Dpl](https://github.com/travis-ci/dpl) (pronounced like the letters D-P-L) is a deploy tool made for
 continuous deployment that's developed and used by Travis CI, but can also be
 used with GitLab CI.
 

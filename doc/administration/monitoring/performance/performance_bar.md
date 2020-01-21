@@ -52,8 +52,9 @@ And requests with warnings are indicated in the request selector with a
 ## Enable the Performance Bar via the Admin panel
 
 GitLab Performance Bar is disabled by default. To enable it for a given group,
-navigate to the Admin area in **Settings > Metrics and Profiling > Profiling - Performance bar**
-(`admin/application_settings/metrics_and_profiling`).
+navigate to **Admin Area > Settings > Metrics and profiling**
+(`admin/application_settings/metrics_and_profiling`), and expand the section
+**Profiling - Performance bar**.
 
 The only required setting you need to set is the full path of the group that
 will be allowed to display the Performance Bar.

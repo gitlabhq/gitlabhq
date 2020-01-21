@@ -244,7 +244,7 @@ describe API::Jobs do
           get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), params: query
         end.count
 
-        3.times { create(:ci_build, :trace_artifact, :artifacts, :test_reports, pipeline: pipeline) }
+        create_list(:ci_build, 3, :trace_artifact, :artifacts, :test_reports, pipeline: pipeline)
 
         expect do
           get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), params: query

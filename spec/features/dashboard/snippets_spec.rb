@@ -91,6 +91,7 @@ describe 'Dashboard snippets' do
 
   context 'as an external user' do
     let(:user) { create(:user, :external) }
+
     before do
       sign_in(user)
       visit dashboard_snippets_path

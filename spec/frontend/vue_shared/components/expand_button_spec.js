@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import ExpandButton from '~/vue_shared/components/expand_button.vue';
 
 const text = {
@@ -14,10 +14,7 @@ describe('Expand button', () => {
   const expanderAppendEl = () => wrapper.find('.js-text-expander-append');
 
   const factory = (options = {}) => {
-    const localVue = createLocalVue();
-
-    wrapper = mount(localVue.extend(ExpandButton), {
-      localVue,
+    wrapper = mount(ExpandButton, {
       ...options,
     });
   };
@@ -136,7 +133,10 @@ describe('Expand button', () => {
     it('clicking hides itself and shows prepend', () => {
       expect(expanderAppendEl().isVisible()).toBe(true);
       expanderAppendEl().trigger('click');
-      expect(expanderPrependEl().isVisible()).toBe(true);
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(expanderPrependEl().isVisible()).toBe(true);
+      });
     });
 
     it('clicking hides expanded text', () => {
@@ -147,12 +147,15 @@ describe('Expand button', () => {
           .trim(),
       ).toBe(text.expanded);
       expanderAppendEl().trigger('click');
-      expect(
-        wrapper
-          .find(ExpandButton)
-          .text()
-          .trim(),
-      ).not.toBe(text.expanded);
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(
+          wrapper
+            .find(ExpandButton)
+            .text()
+            .trim(),
+        ).not.toBe(text.expanded);
+      });
     });
 
     describe('when short text is provided', () => {
@@ -176,12 +179,15 @@ describe('Expand button', () => {
             .trim(),
         ).toBe(text.expanded);
         expanderAppendEl().trigger('click');
-        expect(
-          wrapper
-            .find(ExpandButton)
-            .text()
-            .trim(),
-        ).toBe(text.short);
+
+        return wrapper.vm.$nextTick().then(() => {
+          expect(
+            wrapper
+              .find(ExpandButton)
+              .text()
+              .trim(),
+          ).toBe(text.short);
+        });
       });
     });
   });

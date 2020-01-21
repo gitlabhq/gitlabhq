@@ -10,10 +10,13 @@ stages:
   - deploy
   - dast
 
+variables:
+  DAST_VERSION: 1
+
 dast:
   stage: dast
   image:
-    name: "registry.gitlab.com/gitlab-org/security-products/dast:$CI_SERVER_VERSION_MAJOR-$CI_SERVER_VERSION_MINOR-stable"
+    name: "registry.gitlab.com/gitlab-org/security-products/dast:$DAST_VERSION"
   variables:
   # URL to scan:
   # DAST_WEBSITE: https://example.com/

@@ -160,6 +160,16 @@ describe API::Issues do
           expect(json_response['iid']).not_to eq 9001
         end
       end
+
+      context 'when an issue with the same IID exists on database' do
+        it 'returns 409' do
+          post api("/projects/#{project.id}/issues", admin),
+            params: { title: 'new issue', iid: issue.iid }
+
+          expect(response).to have_gitlab_http_status(409)
+          expect(json_response['message']).to eq 'Duplicated issue'
+        end
+      end
     end
 
     it 'creates a new project issue' do

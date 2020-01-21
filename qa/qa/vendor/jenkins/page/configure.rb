@@ -18,7 +18,7 @@ module QA
 
             dropdown_element = find('.setting-name', text: "Credentials").find(:xpath, "..").find('select')
 
-            QA::Support::Retrier.retry_until(exit_on_failure: true) do
+            QA::Support::Retrier.retry_until(raise_on_failure: true) do
               dropdown_element.select "GitLab API token (#{token_description})"
               dropdown_element.value != ''
             end

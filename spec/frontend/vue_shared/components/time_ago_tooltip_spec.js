@@ -1,4 +1,4 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { formatDate, getTimeago } from '~/lib/utils/datetime_utility';
 
@@ -7,10 +7,7 @@ describe('Time ago with tooltip component', () => {
 
   const buildVm = (propsData = {}) => {
     vm = shallowMount(TimeAgoTooltip, {
-      attachToDocument: true,
-      sync: false,
       propsData,
-      localVue: createLocalVue(),
     });
   };
   const timestamp = '2017-05-08T14:57:39.781Z';
@@ -25,7 +22,7 @@ describe('Time ago with tooltip component', () => {
     });
     const timeago = getTimeago();
 
-    expect(vm.attributes('data-original-title')).toEqual(formatDate(timestamp));
+    expect(vm.attributes('title')).toEqual(formatDate(timestamp));
     expect(vm.text()).toEqual(timeago.format(timestamp));
   });
 

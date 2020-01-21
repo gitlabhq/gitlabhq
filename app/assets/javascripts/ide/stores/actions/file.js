@@ -61,8 +61,10 @@ export const getFileData = (
   { path, makeFileActive = true, openFile = makeFileActive },
 ) => {
   const file = state.entries[path];
+  const fileDeletedAndReadded = getters.isFileDeletedAndReadded(path);
 
-  if (file.raw || (file.tempFile && !file.prevPath)) return Promise.resolve();
+  if (file.raw || (file.tempFile && !file.prevPath && !fileDeletedAndReadded))
+    return Promise.resolve();
 
   commit(types.TOGGLE_LOADING, { entry: file });
 
@@ -102,11 +104,16 @@ export const setFileMrChange = ({ commit }, { file, mrChange }) => {
 
 export const getRawFileData = ({ state, commit, dispatch, getters }, { path }) => {
   const file = state.entries[path];
+  const stagedFile = state.stagedFiles.find(f => f.path === path);
+
   return new Promise((resolve, reject) => {
+    const fileDeletedAndReadded = getters.isFileDeletedAndReadded(path);
     service
-      .getRawFileData(file)
+      .getRawFileData(fileDeletedAndReadded ? stagedFile : file)
       .then(raw => {
-        if (!(file.tempFile && !file.prevPath)) commit(types.SET_FILE_RAW_DATA, { file, raw });
+        if (!(file.tempFile && !file.prevPath && !fileDeletedAndReadded))
+          commit(types.SET_FILE_RAW_DATA, { file, raw, fileDeletedAndReadded });
+
         if (file.mrChange && file.mrChange.new_file === false) {
           const baseSha =
             (getters.currentMergeRequest && getters.currentMergeRequest.baseCommitSha) || '';
@@ -140,7 +147,7 @@ export const getRawFileData = ({ state, commit, dispatch, getters }, { path }) =
   });
 };
 
-export const changeFileContent = ({ commit, dispatch, state }, { path, content }) => {
+export const changeFileContent = ({ commit, dispatch, state, getters }, { path, content }) => {
   const file = state.entries[path];
   commit(types.UPDATE_FILE_CONTENT, {
     path,
@@ -150,8 +157,10 @@ export const changeFileContent = ({ commit, dispatch, state }, { path, content }
   const indexOfChangedFile = state.changedFiles.findIndex(f => f.path === path);
 
   if (file.changed && indexOfChangedFile === -1) {
-    commit(types.ADD_FILE_TO_CHANGED, path);
-  } else if (!file.changed && indexOfChangedFile !== -1) {
+    if (gon.features?.stageAllByDefault)
+      commit(types.STAGE_CHANGE, { path, diffInfo: getters.getDiffInfo(path) });
+    else commit(types.ADD_FILE_TO_CHANGED, path);
+  } else if (!file.changed && !file.tempFile && indexOfChangedFile !== -1) {
     commit(types.REMOVE_FILE_FROM_CHANGED, path);
   }
 
@@ -184,23 +193,40 @@ export const setFileViewMode = ({ commit }, { file, viewMode }) => {
   commit(types.SET_FILE_VIEWMODE, { file, viewMode });
 };
 
-export const discardFileChanges = ({ dispatch, state, commit, getters }, path) => {
+export const restoreOriginalFile = ({ dispatch, state, commit }, path) => {
   const file = state.entries[path];
+  const isDestructiveDiscard = file.tempFile || file.prevPath;
 
   if (file.deleted && file.parentPath) {
     dispatch('restoreTree', file.parentPath);
   }
 
-  commit(types.DISCARD_FILE_CHANGES, path);
-  commit(types.REMOVE_FILE_FROM_CHANGED, path);
-
-  if (file.prevPath) {
-    dispatch('discardFileChanges', file.prevPath);
+  if (isDestructiveDiscard) {
+    dispatch('closeFile', file);
   }
 
-  if (file.tempFile && file.opened) {
-    commit(types.TOGGLE_FILE_OPEN, path);
-  } else if (getters.activeFile && file.path === getters.activeFile.path) {
+  if (file.tempFile) {
+    dispatch('deleteEntry', file.path);
+  } else {
+    commit(types.DISCARD_FILE_CHANGES, file.path);
+  }
+
+  if (file.prevPath) {
+    dispatch('renameEntry', {
+      path: file.path,
+      name: file.prevName,
+      parentPath: file.prevParentPath,
+    });
+  }
+};
+
+export const discardFileChanges = ({ dispatch, state, commit, getters }, path) => {
+  const file = state.entries[path];
+  const isDestructiveDiscard = file.tempFile || file.prevPath;
+
+  dispatch('restoreOriginalFile', path);
+
+  if (!isDestructiveDiscard && file.path === getters.activeFile?.path) {
     dispatch('updateDelayViewerUpdated', true)
       .then(() => {
         router.push(`/project${file.url}`);
@@ -210,24 +236,26 @@ export const discardFileChanges = ({ dispatch, state, commit, getters }, path) =
       });
   }
 
+  commit(types.REMOVE_FILE_FROM_CHANGED, path);
+
   eventHub.$emit(`editor.update.model.new.content.${file.key}`, file.content);
   eventHub.$emit(`editor.update.model.dispose.unstaged-${file.key}`, file.content);
 };
 
-export const stageChange = ({ commit, state, dispatch }, path) => {
-  const stagedFile = state.stagedFiles.find(f => f.path === path);
-  const openFile = state.openFiles.find(f => f.path === path);
+export const stageChange = ({ commit, dispatch, getters }, path) => {
+  const stagedFile = getters.getStagedFile(path);
+  const openFile = getters.getOpenFile(path);
 
-  commit(types.STAGE_CHANGE, path);
+  commit(types.STAGE_CHANGE, { path, diffInfo: getters.getDiffInfo(path) });
   commit(types.SET_LAST_COMMIT_MSG, '');
 
   if (stagedFile) {
     eventHub.$emit(`editor.update.model.new.content.staged-${stagedFile.key}`, stagedFile.content);
   }
 
-  if (openFile && openFile.active) {
-    const file = state.stagedFiles.find(f => f.path === path);
+  const file = getters.getStagedFile(path);
 
+  if (openFile && openFile.active && file) {
     dispatch('openPendingTab', {
       file,
       keyPrefix: stageKeys.staged,
@@ -235,14 +263,14 @@ export const stageChange = ({ commit, state, dispatch }, path) => {
   }
 };
 
-export const unstageChange = ({ commit, dispatch, state }, path) => {
-  const openFile = state.openFiles.find(f => f.path === path);
+export const unstageChange = ({ commit, dispatch, getters }, path) => {
+  const openFile = getters.getOpenFile(path);
 
-  commit(types.UNSTAGE_CHANGE, path);
+  commit(types.UNSTAGE_CHANGE, { path, diffInfo: getters.getDiffInfo(path) });
 
-  if (openFile && openFile.active) {
-    const file = state.changedFiles.find(f => f.path === path);
+  const file = getters.getChangedFile(path);
 
+  if (openFile && openFile.active && file) {
     dispatch('openPendingTab', {
       file,
       keyPrefix: stageKeys.unstaged,

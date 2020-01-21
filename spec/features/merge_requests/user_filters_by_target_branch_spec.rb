@@ -17,7 +17,7 @@ describe 'Merge Requests > User filters by target branch', :js do
 
   context 'filtering by target-branch:master' do
     it 'applies the filter' do
-      input_filtered_search('target-branch:master')
+      input_filtered_search('target-branch=master')
 
       expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
       expect(page).to have_content mr1.title
@@ -27,7 +27,7 @@ describe 'Merge Requests > User filters by target branch', :js do
 
   context 'filtering by target-branch:merged-target' do
     it 'applies the filter' do
-      input_filtered_search('target-branch:merged-target')
+      input_filtered_search('target-branch=merged-target')
 
       expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
       expect(page).not_to have_content mr1.title
@@ -37,7 +37,7 @@ describe 'Merge Requests > User filters by target branch', :js do
 
   context 'filtering by target-branch:feature' do
     it 'applies the filter' do
-      input_filtered_search('target-branch:feature')
+      input_filtered_search('target-branch=feature')
 
       expect(page).to have_issuable_counts(open: 0, closed: 0, all: 0)
       expect(page).not_to have_content mr1.title

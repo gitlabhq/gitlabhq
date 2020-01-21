@@ -113,7 +113,12 @@
         "human_total_time_spent": { "type": ["string", "null"] }
       },
       "allow_collaboration": { "type": ["boolean", "null"] },
-      "allow_maintainer_to_push": { "type": ["boolean", "null"] }
+      "allow_maintainer_to_push": { "type": ["boolean", "null"] },
+      "references": {
+        "short": {"type": "string"},
+        "relative": {"type": "string"},
+        "full": {"type": "string"}
+      }
     },
     "required": [
       "id", "iid", "project_id", "title", "description",

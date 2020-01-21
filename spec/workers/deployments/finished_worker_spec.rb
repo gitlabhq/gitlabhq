@@ -10,6 +10,20 @@ describe Deployments::FinishedWorker do
       allow(ProjectServiceWorker).to receive(:perform_async)
     end
 
+    it 'links merge requests to the deployment' do
+      deployment = create(:deployment)
+      service = instance_double(Deployments::LinkMergeRequestsService)
+
+      expect(Deployments::LinkMergeRequestsService)
+        .to receive(:new)
+        .with(deployment)
+        .and_return(service)
+
+      expect(service).to receive(:execute)
+
+      worker.perform(deployment.id)
+    end
+
     it 'executes project services for deployment_hooks' do
       deployment = create(:deployment)
       project = deployment.project

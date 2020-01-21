@@ -18,7 +18,6 @@ describe('FrequentItemsListItemComponent', () => {
         avatarUrl: mockProject.avatarUrl,
         ...props,
       },
-      sync: false,
       localVue,
     });
   };

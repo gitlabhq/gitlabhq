@@ -248,6 +248,10 @@ module QA
         raise ArgumentError, "Please provide GITHUB_ACCESS_TOKEN"
       end
 
+      def require_admin_access_token!
+        admin_personal_access_token || (raise ArgumentError, "GITLAB_QA_ADMIN_ACCESS_TOKEN is required!")
+      end
+
       # Returns true if there is an environment variable that indicates that
       # the feature is supported in the environment under test.
       # All features are supported by default.

@@ -4,7 +4,7 @@ module DiffViewer
   class Base
     PARTIAL_PATH_PREFIX = 'projects/diffs/viewers'
 
-    class_attribute :partial_name, :type, :extensions, :file_types, :binary, :switcher_icon, :switcher_title
+    class_attribute :partial_name, :type, :extensions, :binary, :switcher_icon, :switcher_title
 
     # These limits relate to the sum of the old and new blob sizes.
     # Limits related to the actual size of the diff are enforced in Gitlab::Diff::File.
@@ -50,7 +50,6 @@ module DiffViewer
       return true if blob.nil?
       return false if verify_binary && binary? != blob.binary_in_repo?
       return true if extensions&.include?(blob.extension)
-      return true if file_types&.include?(blob.file_type)
 
       false
     end
@@ -89,7 +88,7 @@ module DiffViewer
         {
           viewer: switcher_title,
           reason: render_error_reason,
-          options: render_error_options.to_sentence(two_words_connector: _(' or '), last_word_connector: _(', or '))
+          options: Gitlab::Utils.to_exclusive_sentence(render_error_options)
         }
     end
 

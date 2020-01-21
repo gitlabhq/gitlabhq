@@ -56,12 +56,6 @@ module QA
             element :new_note_form, 'attr: :note' # rubocop:disable QA/ElementWithPattern
           end
 
-          def avatar_image_count
-            wait_assignees_block_finish_loading do
-              all_elements(:avatar_image).count
-            end
-          end
-
           def click_milestone_link
             click_element(:milestone_link)
           end
@@ -88,10 +82,14 @@ module QA
             click_element :comment_button
           end
 
-          def has_comment?(comment_text)
-            wait(reload: false) do
-              has_element?(:noteable_note_item, text: comment_text)
+          def has_avatar_image_count?(count)
+            wait_assignees_block_finish_loading do
+              all_elements(:avatar_image, count: count)
             end
+          end
+
+          def has_comment?(comment_text)
+            has_element?(:noteable_note_item, text: comment_text, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
           end
 
           def more_assignees_link
@@ -155,7 +153,7 @@ module QA
 
           def wait_assignees_block_finish_loading
             within_element(:assignee_block) do
-              wait(reload: false, max: 10, interval: 1) do
+              wait_until(reload: false, max_duration: 10, sleep_interval: 1) do
                 finished_loading_block?
                 yield
               end

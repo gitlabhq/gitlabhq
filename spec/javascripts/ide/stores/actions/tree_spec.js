@@ -17,6 +17,7 @@ describe('Multi-file store tree actions', () => {
     projectId: 'abcproject',
     branch: 'master',
     branchId: 'master',
+    ref: '12345678',
   };
 
   beforeEach(() => {
@@ -29,14 +30,6 @@ describe('Multi-file store tree actions', () => {
     store.state.currentBranchId = 'master';
     store.state.projects.abcproject = {
       web_url: '',
-      branches: {
-        master: {
-          workingReference: '12345678',
-          commit: {
-            id: '12345678',
-          },
-        },
-      },
     };
   });
 

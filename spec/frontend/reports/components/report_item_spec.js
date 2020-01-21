@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import { STATUS_SUCCESS } from '~/reports/constants';
 import ReportItem from '~/reports/components/report_item.vue';
+import IssueStatusIcon from '~/reports/components/issue_status_icon.vue';
 import { componentNames } from '~/reports/components/issue_body';
 
 describe('ReportItem', () => {
@@ -15,7 +16,7 @@ describe('ReportItem', () => {
         },
       });
 
-      expect(wrapper.find('issuestatusicon-stub').exists()).toBe(false);
+      expect(wrapper.find(IssueStatusIcon).exists()).toBe(false);
     });
 
     it('shows status icon when unspecified', () => {
@@ -27,7 +28,7 @@ describe('ReportItem', () => {
         },
       });
 
-      expect(wrapper.find('issuestatusicon-stub').exists()).toBe(true);
+      expect(wrapper.find(IssueStatusIcon).exists()).toBe(true);
     });
   });
 });

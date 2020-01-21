@@ -1,14 +1,12 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlSkeletonLoading } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
 import FileRow from '~/vue_shared/components/file_row.vue';
 import NavDropdown from './nav_dropdown.vue';
 import FileRowExtra from './file_row_extra.vue';
 
 export default {
   components: {
-    Icon,
     GlSkeletonLoading,
     NavDropdown,
     FileRow,

@@ -5,6 +5,7 @@
     "name",
     "color",
     "description",
+    "description_html",
     "text_color"
   ],
   "properties": {
@@ -15,6 +16,7 @@
       "pattern": "^#[0-9A-Fa-f]{3}{1,2}$"
     },
     "description": { "type": ["string", "null"] },
+    "description_html": { "type": ["string", "null"] },
     "text_color": {
       "type": "string",
       "pattern": "^#[0-9A-Fa-f]{3}{1,2}$"

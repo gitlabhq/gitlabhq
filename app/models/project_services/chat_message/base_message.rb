@@ -4,6 +4,8 @@ require 'slack-notifier'
 
 module ChatMessage
   class BaseMessage
+    RELATIVE_LINK_REGEX = /!\[[^\]]*\]\((\/uploads\/[^\)]*)\)/.freeze
+
     attr_reader :markdown
     attr_reader :user_full_name
     attr_reader :user_name
@@ -59,7 +61,11 @@ module ChatMessage
     end
 
     def format(string)
-      Slack::Notifier::LinkFormatter.format(string)
+      Slack::Notifier::LinkFormatter.format(format_relative_links(string))
+    end
+
+    def format_relative_links(string)
+      string.gsub(RELATIVE_LINK_REGEX, "#{project_url}\\1")
     end
 
     def attachment_color

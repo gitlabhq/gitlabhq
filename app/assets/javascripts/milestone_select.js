@@ -52,6 +52,7 @@ export default class MilestoneSelect {
       const $block = $selectBox.closest('.block');
       const $sidebarCollapsedValue = $block.find('.sidebar-collapsed-icon');
       const $value = $block.find('.value');
+      // eslint-disable-next-line no-jquery/no-fade
       const $loading = $block.find('.block-loading').fadeOut();
       selectedMilestoneDefault = showAny ? '' : null;
       selectedMilestoneDefault =
@@ -202,15 +203,18 @@ export default class MilestoneSelect {
             }
 
             $dropdown.trigger('loading.gl.dropdown');
+            // eslint-disable-next-line no-jquery/no-fade
             $loading.removeClass('hidden').fadeIn();
 
             boardsStore.detail.issue
               .update($dropdown.attr('data-issue-update'))
               .then(() => {
                 $dropdown.trigger('loaded.gl.dropdown');
+                // eslint-disable-next-line no-jquery/no-fade
                 $loading.fadeOut();
               })
               .catch(() => {
+                // eslint-disable-next-line no-jquery/no-fade
                 $loading.fadeOut();
               });
           } else {
@@ -218,12 +222,14 @@ export default class MilestoneSelect {
             data = {};
             data[abilityName] = {};
             data[abilityName].milestone_id = selected != null ? selected : null;
+            // eslint-disable-next-line no-jquery/no-fade
             $loading.removeClass('hidden').fadeIn();
             $dropdown.trigger('loading.gl.dropdown');
             return axios
               .put(issueUpdateURL, data)
               .then(({ data }) => {
                 $dropdown.trigger('loaded.gl.dropdown');
+                // eslint-disable-next-line no-jquery/no-fade
                 $loading.fadeOut();
                 $selectBox.hide();
                 $value.css('display', '');
@@ -247,6 +253,7 @@ export default class MilestoneSelect {
                 }
               })
               .catch(() => {
+                // eslint-disable-next-line no-jquery/no-fade
                 $loading.fadeOut();
               });
           }

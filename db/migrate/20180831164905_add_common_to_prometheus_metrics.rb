@@ -8,7 +8,7 @@ class AddCommonToPrometheusMetrics < ActiveRecord::Migration[4.2]
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:prometheus_metrics, :common, :boolean, default: false)
+    add_column_with_default(:prometheus_metrics, :common, :boolean, default: false) # rubocop:disable Migration/AddColumnWithDefault
   end
 
   def down

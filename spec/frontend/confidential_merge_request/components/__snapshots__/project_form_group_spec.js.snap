@@ -18,11 +18,11 @@ exports[`Confidential merge request project form group component renders empty s
         No forks are available to you.
       <br />
        
-      <glsprintf-stub
+      <gl-sprintf-stub
         message="To protect this issue's confidentiality, %{forkLink} and set the fork's visibility to private."
       />
        
-      <gllink-stub
+      <gl-link-stub
         class="w-auto p-0 d-inline-block text-primary bg-transparent"
         href="/help"
         target="_blank"
@@ -37,7 +37,7 @@ exports[`Confidential merge request project form group component renders empty s
           aria-hidden="true"
           class="fa fa-question-circle"
         />
-      </gllink-stub>
+      </gl-link-stub>
     </p>
   </div>
 </div>
@@ -61,11 +61,11 @@ exports[`Confidential merge request project form group component renders fork dr
         No forks are available to you.
       <br />
        
-      <glsprintf-stub
+      <gl-sprintf-stub
         message="To protect this issue's confidentiality, %{forkLink} and set the fork's visibility to private."
       />
        
-      <gllink-stub
+      <gl-link-stub
         class="w-auto p-0 d-inline-block text-primary bg-transparent"
         href="/help"
         target="_blank"
@@ -80,7 +80,7 @@ exports[`Confidential merge request project form group component renders fork dr
           aria-hidden="true"
           class="fa fa-question-circle"
         />
-      </gllink-stub>
+      </gl-link-stub>
     </p>
   </div>
 </div>

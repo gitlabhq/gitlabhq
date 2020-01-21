@@ -9,7 +9,7 @@ describe 'Auto-DevOps.gitlab-ci.yml' do
     let(:user) { create(:admin) }
     let(:default_branch) { 'master' }
     let(:pipeline_branch) { default_branch }
-    let(:project) { create(:project, :custom_repo, files: { 'README.md' => '' }) }
+    let(:project) { create(:project, :auto_devops, :custom_repo, files: { 'README.md' => '' }) }
     let(:service) { Ci::CreatePipelineService.new(project, user, ref: pipeline_branch ) }
     let(:pipeline) { service.execute!(:push) }
     let(:build_names) { pipeline.builds.pluck(:name) }
@@ -104,6 +104,54 @@ describe 'Auto-DevOps.gitlab-ci.yml' do
             expect(build_names).not_to include(a_string_matching(/rollout \d+%/))
           end
         end
+      end
+    end
+  end
+
+  describe 'build-pack detection' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:case_name, :files, :variables, :include_build_names, :not_include_build_names) do
+      'No match'        | { 'README.md' => '' }                   | {}                                          | %w()           | %w(build test)
+      'Buildpack'       | { 'README.md' => '' }                   | { 'BUILDPACK_URL' => 'http://example.com' } | %w(build test) | %w()
+      'Explicit set'    | { 'README.md' => '' }                   | { 'AUTO_DEVOPS_EXPLICITLY_ENABLED' => '1' } | %w(build test) | %w()
+      'Explicit unset'  | { 'README.md' => '' }                   | { 'AUTO_DEVOPS_EXPLICITLY_ENABLED' => '0' } | %w()           | %w(build test)
+      'Dockerfile'      | { 'Dockerfile' => '' }                  | {}                                          | %w(build test) | %w()
+      'Clojure'         | { 'project.clj' => '' }                 | {}                                          | %w(build test) | %w()
+      'Go modules'      | { 'go.mod' => '' }                      | {}                                          | %w(build test) | %w()
+      'Go gb'           | { 'src/gitlab.com/gopackage.go' => '' } | {}                                          | %w(build test) | %w()
+      'Gradle'          | { 'gradlew' => '' }                     | {}                                          | %w(build test) | %w()
+      'Java'            | { 'pom.xml' => '' }                     | {}                                          | %w(build test) | %w()
+      'Multi-buildpack' | { '.buildpacks' => '' }                 | {}                                          | %w(build test) | %w()
+      'NodeJS'          | { 'package.json' => '' }                | {}                                          | %w(build test) | %w()
+      'PHP'             | { 'composer.json' => '' }               | {}                                          | %w(build test) | %w()
+      'Play'            | { 'conf/application.conf' => '' }       | {}                                          | %w(build test) | %w()
+      'Python'          | { 'Pipfile' => '' }                     | {}                                          | %w(build test) | %w()
+      'Ruby'            | { 'Gemfile' => '' }                     | {}                                          | %w(build test) | %w()
+      'Scala'           | { 'build.sbt' => '' }                   | {}                                          | %w(build test) | %w()
+      'Static'          | { '.static' => '' }                     | {}                                          | %w(build test) | %w()
+    end
+
+    with_them do
+      subject(:template) { Gitlab::Template::GitlabCiYmlTemplate.find('Beta/Auto-DevOps') }
+
+      let(:user) { create(:admin) }
+      let(:project) { create(:project, :custom_repo, files: files) }
+      let(:service) { Ci::CreatePipelineService.new(project, user, ref: 'master' ) }
+      let(:pipeline) { service.execute(:push) }
+      let(:build_names) { pipeline.builds.pluck(:name) }
+
+      before do
+        stub_ci_pipeline_yaml_file(template.content)
+        allow_any_instance_of(Ci::BuildScheduleWorker).to receive(:perform).and_return(true)
+        variables.each do |(key, value)|
+          create(:ci_variable, project: project, key: key, value: value)
+        end
+      end
+
+      it 'creates a pipeline with the expected jobs' do
+        expect(build_names).to include(*include_build_names)
+        expect(build_names).not_to include(*not_include_build_names)
       end
     end
   end

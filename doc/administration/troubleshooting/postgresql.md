@@ -41,7 +41,7 @@ This section is for links to information elsewhere in the GitLab documentation.
 
 - [Using Slony to update PostgreSQL](../../update/upgrading_postgresql_using_slony.md)
   - Uses replication to handle PostgreSQL upgrades - providing the schemas are the same.
-  - Reduces downtime to a short window for swinging over to the newer vewrsion.
+  - Reduces downtime to a short window for swinging over to the newer version.
 
 - Managing Omnibus PostgreSQL versions [from the development docs](https://docs.gitlab.com/omnibus/development/managing-postgresql-versions.html)
 

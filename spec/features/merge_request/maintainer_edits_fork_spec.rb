@@ -32,8 +32,6 @@ describe 'a maintainer edits files on a source-branch of an MR from a fork', :js
     wait_for_requests
   end
 
-  it_behaves_like 'rendering a single diff version'
-
   it 'mentions commits will go to the source branch' do
     expect(page).to have_content('Your changes can be committed to fix because a merge request is open.')
   end

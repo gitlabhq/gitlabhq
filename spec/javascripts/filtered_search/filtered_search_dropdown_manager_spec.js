@@ -27,7 +27,7 @@ describe('Filtered Search Dropdown Manager', () => {
 
     describe('input has no existing value', () => {
       it('should add just tokenName', () => {
-        FilteredSearchDropdownManager.addWordToInput('milestone');
+        FilteredSearchDropdownManager.addWordToInput({ tokenName: 'milestone' });
 
         const token = document.querySelector('.tokens-container .js-visual-token');
 
@@ -36,8 +36,8 @@ describe('Filtered Search Dropdown Manager', () => {
         expect(getInputValue()).toBe('');
       });
 
-      it('should add tokenName and tokenValue', () => {
-        FilteredSearchDropdownManager.addWordToInput('label');
+      it('should add tokenName, tokenOperator, and tokenValue', () => {
+        FilteredSearchDropdownManager.addWordToInput({ tokenName: 'label' });
 
         let token = document.querySelector('.tokens-container .js-visual-token');
 
@@ -45,13 +45,27 @@ describe('Filtered Search Dropdown Manager', () => {
         expect(token.querySelector('.name').innerText).toBe('label');
         expect(getInputValue()).toBe('');
 
-        FilteredSearchDropdownManager.addWordToInput('label', 'none');
+        FilteredSearchDropdownManager.addWordToInput({ tokenName: 'label', tokenOperator: '=' });
+
+        token = document.querySelector('.tokens-container .js-visual-token');
+
+        expect(token.classList.contains('filtered-search-token')).toEqual(true);
+        expect(token.querySelector('.name').innerText).toBe('label');
+        expect(token.querySelector('.operator').innerText).toBe('=');
+        expect(getInputValue()).toBe('');
+
+        FilteredSearchDropdownManager.addWordToInput({
+          tokenName: 'label',
+          tokenOperator: '=',
+          tokenValue: 'none',
+        });
         // We have to get that reference again
         // Because FilteredSearchDropdownManager deletes the previous token
         token = document.querySelector('.tokens-container .js-visual-token');
 
         expect(token.classList.contains('filtered-search-token')).toEqual(true);
         expect(token.querySelector('.name').innerText).toBe('label');
+        expect(token.querySelector('.operator').innerText).toBe('=');
         expect(token.querySelector('.value').innerText).toBe('none');
         expect(getInputValue()).toBe('');
       });
@@ -60,7 +74,7 @@ describe('Filtered Search Dropdown Manager', () => {
     describe('input has existing value', () => {
       it('should be able to just add tokenName', () => {
         setInputValue('a');
-        FilteredSearchDropdownManager.addWordToInput('author');
+        FilteredSearchDropdownManager.addWordToInput({ tokenName: 'author' });
 
         const token = document.querySelector('.tokens-container .js-visual-token');
 
@@ -70,29 +84,40 @@ describe('Filtered Search Dropdown Manager', () => {
       });
 
       it('should replace tokenValue', () => {
-        FilteredSearchDropdownManager.addWordToInput('author');
+        FilteredSearchDropdownManager.addWordToInput({ tokenName: 'author' });
+        FilteredSearchDropdownManager.addWordToInput({ tokenName: 'author', tokenOperator: '=' });
 
         setInputValue('roo');
-        FilteredSearchDropdownManager.addWordToInput(null, '@root');
+        FilteredSearchDropdownManager.addWordToInput({
+          tokenName: null,
+          tokenOperator: '=',
+          tokenValue: '@root',
+        });
 
         const token = document.querySelector('.tokens-container .js-visual-token');
 
         expect(token.classList.contains('filtered-search-token')).toEqual(true);
         expect(token.querySelector('.name').innerText).toBe('author');
+        expect(token.querySelector('.operator').innerText).toBe('=');
         expect(token.querySelector('.value').innerText).toBe('@root');
         expect(getInputValue()).toBe('');
       });
 
       it('should add tokenValues containing spaces', () => {
-        FilteredSearchDropdownManager.addWordToInput('label');
+        FilteredSearchDropdownManager.addWordToInput({ tokenName: 'label' });
 
         setInputValue('"test ');
-        FilteredSearchDropdownManager.addWordToInput('label', '~\'"test me"\'');
+        FilteredSearchDropdownManager.addWordToInput({
+          tokenName: 'label',
+          tokenOperator: '=',
+          tokenValue: '~\'"test me"\'',
+        });
 
         const token = document.querySelector('.tokens-container .js-visual-token');
 
         expect(token.classList.contains('filtered-search-token')).toEqual(true);
         expect(token.querySelector('.name').innerText).toBe('label');
+        expect(token.querySelector('.operator').innerText).toBe('=');
         expect(token.querySelector('.value').innerText).toBe('~\'"test me"\'');
         expect(getInputValue()).toBe('');
       });

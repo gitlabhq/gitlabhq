@@ -39,7 +39,7 @@ module QA
             end
 
             # Ensure that the group was actually created
-            group_show.wait(interval: 1) do
+            group_show.wait_until(sleep_interval: 1) do
               group_show.has_text?(path) &&
                 group_show.has_new_project_or_subgroup_dropdown?
             end

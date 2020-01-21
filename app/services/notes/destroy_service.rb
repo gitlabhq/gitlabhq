@@ -11,3 +11,5 @@ module Notes
     end
   end
 end
+
+Notes::DestroyService.prepend_if_ee('EE::Notes::DestroyService')

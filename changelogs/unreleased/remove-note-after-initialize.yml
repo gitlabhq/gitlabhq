@@ -1,0 +1,5 @@
+---
+title: Remove after_initialize and before_validation for Note
+merge_request: 22128
+author:
+type: performance

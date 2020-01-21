@@ -11,10 +11,10 @@ describe API::Deployments do
   end
 
   describe 'GET /projects/:id/deployments' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let!(:deployment_1) { create(:deployment, :success, project: project, iid: 11, ref: 'master', created_at: Time.now, updated_at: Time.now) }
-    let!(:deployment_2) { create(:deployment, :success, project: project, iid: 12, ref: 'feature', created_at: 1.day.ago, updated_at: 2.hours.ago) }
-    let!(:deployment_3) { create(:deployment, :success, project: project, iid: 8, ref: 'patch', created_at: 2.days.ago, updated_at: 1.hour.ago) }
+    let!(:deployment_2) { create(:deployment, :success, project: project, iid: 12, ref: 'master', created_at: 1.day.ago, updated_at: 2.hours.ago) }
+    let!(:deployment_3) { create(:deployment, :success, project: project, iid: 8, ref: 'master', created_at: 2.days.ago, updated_at: 1.hour.ago) }
 
     context 'as member of the project' do
       it 'returns projects deployments sorted by id asc' do
@@ -37,6 +37,18 @@ describe API::Deployments do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to include_pagination_headers
           expect(json_response.first['id']).to eq(deployment_3.id)
+        end
+      end
+
+      context 'with the environment filter specifed' do
+        it 'returns deployments for the environment' do
+          get(
+            api("/projects/#{project.id}/deployments", user),
+            params: { environment: deployment_1.environment.name }
+          )
+
+          expect(json_response.size).to eq(1)
+          expect(json_response.first['iid']).to eq(deployment_1.iid)
         end
       end
 
@@ -343,38 +355,70 @@ describe API::Deployments do
     end
   end
 
-  context 'prevent N + 1 queries' do
-    context 'when the endpoint returns multiple records' do
-      let(:project) { create(:project) }
+  describe 'GET /projects/:id/deployments/:deployment_id/merge_requests' do
+    let(:project) { create(:project, :repository) }
+    let!(:deployment) { create(:deployment, :success, project: project) }
 
-      def create_record
-        create(:deployment, :success, project: project)
+    subject { get api("/projects/#{project.id}/deployments/#{deployment.id}/merge_requests", user) }
+
+    context 'when a user is not a member of the deployment project' do
+      let(:user) { build(:user) }
+
+      it 'returns a 404 status code' do
+        subject
+
+        expect(response).to have_gitlab_http_status(404)
       end
+    end
 
-      def request_with_query_count
-        ActiveRecord::QueryRecorder.new { trigger_request }.count
-      end
+    context 'when a user member of the deployment project' do
+      let_it_be(:project2) { create(:project) }
+      let!(:merge_request1) { create(:merge_request, source_project: project, target_project: project) }
+      let!(:merge_request2) { create(:merge_request, source_project: project, target_project: project, state: 'closed') }
+      let!(:merge_request3) { create(:merge_request, source_project: project2, target_project: project2) }
 
-      def trigger_request
-        get api("/projects/#{project.id}/deployments?order_by=updated_at&sort=asc", user)
-      end
+      it 'returns the relevant merge requests linked to a deployment for a project' do
+        deployment.merge_requests << [merge_request1, merge_request2]
 
-      before do
-        create_record
-      end
-
-      it 'succeeds' do
-        trigger_request
+        subject
 
         expect(response).to have_gitlab_http_status(200)
+        expect(json_response.map { |d| d['id'] }).to contain_exactly(merge_request1.id, merge_request2.id)
+      end
 
+      context 'when a deployment is not associated to any existing merge requests' do
+        it 'returns an empty array' do
+          subject
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response).to eq([])
+        end
+      end
+    end
+  end
+
+  context 'prevent N + 1 queries' do
+    context 'when the endpoint returns multiple records' do
+      let(:project) { create(:project, :repository) }
+      let!(:deployment) { create(:deployment, :success, project: project) }
+
+      subject { get api("/projects/#{project.id}/deployments?order_by=updated_at&sort=asc", user) }
+
+      it 'succeeds', :aggregate_failures do
+        subject
+
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response.size).to eq(1)
       end
 
-      it 'does not increase the query count' do
-        expect { create_record }.not_to change { request_with_query_count }
+      context 'with 10 more records' do
+        it 'does not increase the query count', :aggregate_failures do
+          create_list(:deployment, 10, :success, project: project)
 
-        expect(json_response.size).to eq(2)
+          expect { subject }.not_to be_n_plus_1_query
+
+          expect(json_response.size).to eq(11)
+        end
       end
     end
   end

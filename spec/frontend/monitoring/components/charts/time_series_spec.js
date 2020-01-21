@@ -58,9 +58,7 @@ describe('Time series component', () => {
         slots: {
           default: mockWidgets,
         },
-        sync: false,
         store,
-        attachToDocument: true,
       });
   });
 
@@ -83,13 +81,17 @@ describe('Time series component', () => {
     it('allows user to override max value label text using prop', () => {
       timeSeriesChart.setProps({ legendMaxText: 'legendMaxText' });
 
-      expect(timeSeriesChart.props().legendMaxText).toBe('legendMaxText');
+      return timeSeriesChart.vm.$nextTick().then(() => {
+        expect(timeSeriesChart.props().legendMaxText).toBe('legendMaxText');
+      });
     });
 
     it('allows user to override average value label text using prop', () => {
       timeSeriesChart.setProps({ legendAverageText: 'averageText' });
 
-      expect(timeSeriesChart.props().legendAverageText).toBe('averageText');
+      return timeSeriesChart.vm.$nextTick().then(() => {
+        expect(timeSeriesChart.props().legendAverageText).toBe('averageText');
+      });
     });
 
     describe('methods', () => {
@@ -267,7 +269,9 @@ describe('Time series component', () => {
               option: mockOption,
             });
 
-            expect(timeSeriesChart.vm.chartOptions).toEqual(expect.objectContaining(mockOption));
+            return timeSeriesChart.vm.$nextTick().then(() => {
+              expect(timeSeriesChart.vm.chartOptions).toEqual(expect.objectContaining(mockOption));
+            });
           });
 
           it('additional series', () => {
@@ -281,10 +285,12 @@ describe('Time series component', () => {
               },
             });
 
-            const optionSeries = timeSeriesChart.vm.chartOptions.series;
+            return timeSeriesChart.vm.$nextTick().then(() => {
+              const optionSeries = timeSeriesChart.vm.chartOptions.series;
 
-            expect(optionSeries.length).toEqual(2);
-            expect(optionSeries[0].name).toEqual(mockSeriesName);
+              expect(optionSeries.length).toEqual(2);
+              expect(optionSeries[0].name).toEqual(mockSeriesName);
+            });
           });
         });
 
@@ -340,11 +346,10 @@ describe('Time series component', () => {
     glChartComponents.forEach(dynamicComponent => {
       describe(`GitLab UI: ${dynamicComponent.chartType}`, () => {
         let timeSeriesAreaChart;
-        let glChart;
+        const findChart = () => timeSeriesAreaChart.find(dynamicComponent.component);
 
         beforeEach(done => {
           timeSeriesAreaChart = makeTimeSeriesChart(mockGraphData, dynamicComponent.chartType);
-          glChart = timeSeriesAreaChart.find(dynamicComponent.component);
           timeSeriesAreaChart.vm.$nextTick(done);
         });
 
@@ -353,12 +358,12 @@ describe('Time series component', () => {
         });
 
         it('is a Vue instance', () => {
-          expect(glChart.exists()).toBe(true);
-          expect(glChart.isVueInstance()).toBe(true);
+          expect(findChart().exists()).toBe(true);
+          expect(findChart().isVueInstance()).toBe(true);
         });
 
         it('receives data properties needed for proper chart render', () => {
-          const props = glChart.props();
+          const props = findChart().props();
 
           expect(props.data).toBe(timeSeriesAreaChart.vm.chartData);
           expect(props.option).toBe(timeSeriesAreaChart.vm.chartOptions);
@@ -371,7 +376,9 @@ describe('Time series component', () => {
           timeSeriesAreaChart.vm.tooltip.title = mockTitle;
 
           timeSeriesAreaChart.vm.$nextTick(() => {
-            expect(shallowWrapperContainsSlotText(glChart, 'tooltipTitle', mockTitle)).toBe(true);
+            expect(shallowWrapperContainsSlotText(findChart(), 'tooltipTitle', mockTitle)).toBe(
+              true,
+            );
             done();
           });
         });
@@ -386,7 +393,9 @@ describe('Time series component', () => {
           });
 
           it('uses deployment title', () => {
-            expect(shallowWrapperContainsSlotText(glChart, 'tooltipTitle', 'Deployed')).toBe(true);
+            expect(shallowWrapperContainsSlotText(findChart(), 'tooltipTitle', 'Deployed')).toBe(
+              true,
+            );
           });
 
           it('renders clickable commit sha in tooltip content', done => {

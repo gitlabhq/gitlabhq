@@ -2,6 +2,14 @@
 
 Every API call to merge requests must be authenticated.
 
+CAUTION: **Deprecation**
+> `reference` attribute in response is deprecated in favour of `references`.
+> Introduced [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/merge_requests/20354)
+
+NOTE: **Note**
+> `references.relative` is relative to the group / project that the merge request is being requested. When merge request is fetched from its project
+> `relative` format would be the same as `short` format and when requested across groups / projects it is expected to be the same as `full` format.
+
 ## List merge requests
 
 > [Introduced][ce-13060] in GitLab 9.5.
@@ -37,6 +45,7 @@ Parameters:
 | `milestone`         | string         | no       | Return merge requests for a specific milestone. `None` returns merge requests with no milestone. `Any` returns merge requests that have an assigned milestone. |
 | `view`              | string         | no       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request                              |
 | `labels`            | string         | no       | Return merge requests matching a comma separated list of labels. `None` lists all merge requests with no labels. `Any` lists all merge requests with at least one label. `No+Label` (Deprecated) lists all merge requests with no labels. Predefined names are case-insensitive. |
+| `with_labels_details` | Boolean        | no         | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. Introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/merge_requests/21413) |
 | `created_after`     | datetime       | no       | Return merge requests created on or after the given time                                                               |
 | `created_before`    | datetime       | no       | Return merge requests created on or before the given time                                                              |
 | `updated_after`     | datetime       | no       | Return merge requests updated on or after the given time                                                               |
@@ -134,6 +143,11 @@ Parameters:
     "allow_collaboration": false,
     "allow_maintainer_to_push": false,
     "web_url": "http://gitlab.example.com/my-group/my-project/merge_requests/1",
+    "references": {
+      "short": "!1",
+      "relative": "my-group/my-project!1",
+      "full": "my-group/my-project!1"
+    },
     "time_stats": {
       "time_estimate": 0,
       "total_time_spent": 0,
@@ -200,6 +214,7 @@ Parameters:
 | `milestone`         | string         | no       | Return merge requests for a specific milestone. `None` returns merge requests with no milestone. `Any` returns merge requests that have an assigned milestone. |
 | `view`              | string         | no       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request                                      |
 | `labels`            | string         | no       | Return merge requests matching a comma separated list of labels. `None` lists all merge requests with no labels. `Any` lists all merge requests with at least one label. `No+Label` (Deprecated) lists all merge requests with no labels. Predefined names are case-insensitive. |
+| `with_labels_details` | Boolean        | no         | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. Introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/merge_requests/21413) |
 | `created_after`     | datetime       | no       | Return merge requests created on or after the given time                                                                       |
 | `created_before`    | datetime       | no       | Return merge requests created on or before the given time                                                                      |
 | `updated_after`     | datetime       | no       | Return merge requests updated on or after the given time                                                                       |
@@ -296,6 +311,11 @@ Parameters:
     "allow_collaboration": false,
     "allow_maintainer_to_push": false,
     "web_url": "http://gitlab.example.com/my-group/my-project/merge_requests/1",
+    "references": {
+      "short": "!1",
+      "relative": "!1",
+      "full": "my-group/my-project!1"
+    },
     "time_stats": {
       "time_estimate": 0,
       "total_time_spent": 0,
@@ -355,6 +375,7 @@ Parameters:
 | `milestone`         | string         | no       | Return merge requests for a specific milestone. `None` returns merge requests with no milestone. `Any` returns merge requests that have an assigned milestone. |
 | `view`              | string         | no       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request                                      |
 | `labels`            | string         | no       | Return merge requests matching a comma separated list of labels. `None` lists all merge requests with no labels. `Any` lists all merge requests with at least one label. `No+Label` (Deprecated) lists all merge requests with no labels. Predefined names are case-insensitive. |
+| `with_labels_details` | Boolean        | no         | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. Introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/merge_requests/21413)|
 | `created_after`     | datetime       | no       | Return merge requests created on or after the given time                                                                       |
 | `created_before`    | datetime       | no       | Return merge requests created on or before the given time                                                                      |
 | `updated_after`     | datetime       | no       | Return merge requests updated on or after the given time                                                                       |
@@ -448,6 +469,11 @@ Parameters:
     "should_remove_source_branch": true,
     "force_remove_source_branch": false,
     "web_url": "http://gitlab.example.com/my-group/my-project/merge_requests/1",
+    "references": {
+      "short": "!1",
+      "relative": "my-project!1",
+      "full": "my-group/my-project!1"
+    },
     "time_stats": {
       "time_estimate": 0,
       "total_time_spent": 0,
@@ -524,7 +550,7 @@ Parameters:
   },
   "user" : {
     "can_merge" : false
-   }
+  },
   "assignee": {
     "id": 1,
     "name": "Administrator",
@@ -574,6 +600,11 @@ Parameters:
   "allow_collaboration": false,
   "allow_maintainer_to_push": false,
   "web_url": "http://gitlab.example.com/my-group/my-project/merge_requests/1",
+  "references": {
+    "short": "!1",
+    "relative": "!1",
+    "full": "my-group/my-project!1"
+  },
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,
@@ -779,7 +810,12 @@ Parameters:
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "squash": false,
-  "web_url": "http://example.com/example/example/merge_requests/1",
+  "web_url": "http://gitlab.example.com/my-group/my-project/merge_requests/1",
+  "references": {
+    "short": "!1",
+    "relative": "!1",
+    "full": "my-group/my-project!1"
+  },
   "discussion_locked": false,
   "time_stats": {
     "time_estimate": 0,
@@ -989,6 +1025,11 @@ order for it to take effect:
   "allow_collaboration": false,
   "allow_maintainer_to_push": false,
   "web_url": "http://gitlab.example.com/my-group/my-project/merge_requests/1",
+  "references": {
+    "short": "!1",
+    "relative": "!1",
+    "full": "my-group/my-project!1"
+  },
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,
@@ -1143,6 +1184,11 @@ Must include at least one non-required attribute from above.
   "allow_collaboration": false,
   "allow_maintainer_to_push": false,
   "web_url": "http://gitlab.example.com/my-group/my-project/merge_requests/1",
+  "references": {
+    "short": "!1",
+    "relative": "!1",
+    "full": "my-group/my-project!1"
+  },
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,
@@ -1313,6 +1359,11 @@ Parameters:
   "allow_collaboration": false,
   "allow_maintainer_to_push": false,
   "web_url": "http://gitlab.example.com/my-group/my-project/merge_requests/1",
+  "references": {
+    "short": "!1",
+    "relative": "!1",
+    "full": "my-group/my-project!1"
+  },
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,
@@ -1486,6 +1537,11 @@ Parameters:
   "allow_collaboration": false,
   "allow_maintainer_to_push": false,
   "web_url": "http://gitlab.example.com/my-group/my-project/merge_requests/1",
+  "references": {
+    "short": "!1",
+    "relative": "!1",
+    "full": "my-group/my-project!1"
+  },
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,
@@ -1557,6 +1613,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid/rebase
 | ---------           | ----    | -------- | -----------                          |
 | `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user                  |
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request |
+| `skip_ci`           | boolean | no       | Set to `true` to skip creating a CI pipeline |
 
 ```bash
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/76/merge_requests/1/rebase
@@ -1772,6 +1829,11 @@ Example response:
   "allow_collaboration": false,
   "allow_maintainer_to_push": false,
   "web_url": "http://gitlab.example.com/my-group/my-project/merge_requests/1",
+  "references": {
+    "short": "!1",
+    "relative": "!1",
+    "full": "my-group/my-project!1"
+  },
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,
@@ -1918,6 +1980,11 @@ Example response:
   "allow_collaboration": false,
   "allow_maintainer_to_push": false,
   "web_url": "http://gitlab.example.com/my-group/my-project/merge_requests/1",
+  "references": {
+    "short": "!1",
+    "relative": "!1",
+    "full": "my-group/my-project!1"
+  },
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,
@@ -2078,7 +2145,12 @@ Example response:
     "should_remove_source_branch": true,
     "force_remove_source_branch": false,
     "squash": false,
-    "web_url": "http://example.com/example/example/merge_requests/1"
+    "web_url": "http://example.com/my-group/my-project/merge_requests/1",
+    "references": {
+      "short": "!1",
+      "relative": "!1",
+      "full": "my-group/my-project!1"
+    },
   },
   "target_url": "https://gitlab.example.com/gitlab-org/gitlab-ci/merge_requests/7",
   "body": "Et voluptas laudantium minus nihil recusandae ut accusamus earum aut non.",

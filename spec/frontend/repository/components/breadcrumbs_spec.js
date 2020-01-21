@@ -49,7 +49,9 @@ describe('Repository breadcrumbs component', () => {
 
     vm.setData({ userPermissions: { forkProject: false, createMergeRequestIn: false } });
 
-    expect(vm.find(GlDropdown).exists()).toBe(false);
+    return vm.vm.$nextTick(() => {
+      expect(vm.find(GlDropdown).exists()).toBe(false);
+    });
   });
 
   it('renders add to tree dropdown when permissions are true', () => {
@@ -57,6 +59,8 @@ describe('Repository breadcrumbs component', () => {
 
     vm.setData({ userPermissions: { forkProject: true, createMergeRequestIn: true } });
 
-    expect(vm.find(GlDropdown).exists()).toBe(true);
+    return vm.vm.$nextTick(() => {
+      expect(vm.find(GlDropdown).exists()).toBe(true);
+    });
   });
 });

@@ -24,6 +24,8 @@ module API
                               desc: 'Return notes ordered by `created_at` or `updated_at` fields.'
           optional :sort, type: String, values: %w[asc desc], default: 'desc',
                           desc: 'Return notes sorted in `asc` or `desc` order.'
+          optional :activity_filter, type: String, values: UserPreference::NOTES_FILTERS.stringify_keys.keys, default: 'all_notes',
+                           desc: 'The type of notables which are returned.'
           use :pagination
         end
         # rubocop: disable CodeReuse/ActiveRecord
@@ -35,7 +37,8 @@ module API
           # at the DB query level (which we cannot in that case), the current
           # page can have less elements than :per_page even if
           # there's more than one page.
-          raw_notes = noteable.notes.with_metadata.reorder(order_options_with_tie_breaker)
+          notes_filter = UserPreference::NOTES_FILTERS[params[:activity_filter].to_sym]
+          raw_notes = noteable.notes.with_metadata.with_notes_filter(notes_filter).reorder(order_options_with_tie_breaker)
 
           # paginate() only works with a relation. This could lead to a
           # mismatch between the pagination headers info and the actual notes

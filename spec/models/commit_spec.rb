@@ -63,6 +63,20 @@ describe Commit do
     end
   end
 
+  describe '#diff_refs' do
+    it 'is equal to itself' do
+      expect(commit.diff_refs).to eq(commit.diff_refs)
+    end
+
+    context 'from a factory' do
+      let(:commit) { create(:commit) }
+
+      it 'is equal to itself' do
+        expect(commit.diff_refs).to eq(commit.diff_refs)
+      end
+    end
+  end
+
   describe '#author', :request_store do
     it 'looks up the author in a case-insensitive way' do
       user = create(:user, email: commit.author_email.upcase)
@@ -263,7 +277,7 @@ describe Commit do
   describe '#title' do
     it "returns no_commit_message when safe_message is blank" do
       allow(commit).to receive(:safe_message).and_return('')
-      expect(commit.title).to eq("--no commit message")
+      expect(commit.title).to eq("No commit message")
     end
 
     it 'truncates a message without a newline at natural break to 80 characters' do
@@ -294,7 +308,7 @@ eos
   describe '#full_title' do
     it "returns no_commit_message when safe_message is blank" do
       allow(commit).to receive(:safe_message).and_return('')
-      expect(commit.full_title).to eq("--no commit message")
+      expect(commit.full_title).to eq("No commit message")
     end
 
     it "returns entire message if there is no newline" do
@@ -316,7 +330,7 @@ eos
     it 'returns no_commit_message when safe_message is blank' do
       allow(commit).to receive(:safe_message).and_return(nil)
 
-      expect(commit.description).to eq('--no commit message')
+      expect(commit.description).to eq('No commit message')
     end
 
     it 'returns description of commit message if title less than 100 characters' do
@@ -375,6 +389,17 @@ eos
 
       expect(commit.closes_issues).to include(issue)
       expect(commit.closes_issues).to include(other_issue)
+    end
+
+    it 'ignores referenced issues when auto-close is disabled' do
+      project.update!(autoclose_referenced_issues: false)
+
+      allow(commit).to receive_messages(
+        safe_message: "Fixes ##{issue.iid}",
+        committer_email: committer.email
+      )
+
+      expect(commit.closes_issues).to be_empty
     end
   end
 

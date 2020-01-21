@@ -263,14 +263,6 @@ describe('Diffs Module Getters', () => {
     });
   });
 
-  describe('diffFilesLength', () => {
-    it('returns length of diff files', () => {
-      localState.diffFiles.push('test', 'test 2');
-
-      expect(getters.diffFilesLength(localState)).toBe(2);
-    });
-  });
-
   describe('currentDiffIndex', () => {
     it('returns index of currently selected diff in diffList', () => {
       localState.diffFiles = [{ file_hash: '111' }, { file_hash: '222' }, { file_hash: '333' }];

@@ -26,7 +26,7 @@ module QA
         private
 
         def completed?(timeout: 60)
-          wait(reload: false, max: timeout) do
+          wait_until(reload: false, max_duration: timeout) do
             COMPLETED_STATUSES.include?(status_badge)
           end
         end

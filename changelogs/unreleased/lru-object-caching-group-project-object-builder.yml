@@ -1,0 +1,5 @@
+---
+title: LRU object caching for GroupProjectObjectBuilder
+merge_request: 21823
+author:
+type: performance

@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 describe EnvironmentsHelper do
-  set(:environment) { create(:environment) }
-  set(:project) { environment.project }
   set(:user) { create(:user) }
+  set(:project) { create(:project, :repository) }
+  set(:environment) { create(:environment, project: project) }
 
   describe '#metrics_data' do
     before do
@@ -28,6 +28,7 @@ describe EnvironmentsHelper do
         'empty-unable-to-connect-svg-path' => match_asset_path('/assets/illustrations/monitoring/unable_to_connect.svg'),
         'metrics-endpoint' => additional_metrics_project_environment_path(project, environment, format: :json),
         'deployments-endpoint' => project_environment_deployments_path(project, environment, format: :json),
+        'default-branch' => 'master',
         'environments-endpoint': project_environments_path(project, format: :json),
         'project-path' => project_path(project),
         'tags-path' => project_tags_path(project),

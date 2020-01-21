@@ -8,20 +8,12 @@ module QA
       before do
         Flow::Login.sign_in
 
-        issue = Resource::Issue.fabricate_via_api! do |issue|
-          issue.title = 'issue title'
-        end
-
-        issue.visit!
+        Resource::Issue.fabricate_via_api!.visit!
 
         Page::Project::Issue::Show.perform do |show|
-          my_first_discussion = 'My first discussion'
-
           show.select_all_activities_filter
-          show.start_discussion(my_first_discussion)
-          page.assert_text(my_first_discussion)
-          show.reply_to_discussion(my_first_reply)
-          page.assert_text(my_first_reply)
+          show.start_discussion('My first discussion')
+          show.reply_to_discussion(1, my_first_reply)
         end
       end
 

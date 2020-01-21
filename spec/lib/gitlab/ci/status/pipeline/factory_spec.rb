@@ -18,7 +18,7 @@ describe Gitlab::Ci::Status::Pipeline::Factory do
         let(:pipeline) { create(:ci_pipeline, status: simple_status) }
 
         let(:expected_status) do
-          Gitlab::Ci::Status.const_get(simple_status.capitalize, false)
+          Gitlab::Ci::Status.const_get(simple_status.camelize, false)
         end
 
         it "matches correct core status for #{simple_status}" do

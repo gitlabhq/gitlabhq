@@ -8,8 +8,8 @@ for new projects only.
 
 ## Enable a service template
 
-In GitLab's Admin area, navigate to **Service Templates** and choose the
-service template you wish to create.
+Navigate to the **Admin Area > Service Templates** and choose the service
+template you wish to create.
 
 ## Services for external issue trackers
 

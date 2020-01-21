@@ -3,10 +3,11 @@
 module Clusters
   module Kubernetes
     class CreateOrUpdateServiceAccountService
-      def initialize(kubeclient, service_account_name:, service_account_namespace:, token_name:, rbac:, namespace_creator: false, role_binding_name: nil)
+      def initialize(kubeclient, service_account_name:, service_account_namespace:, service_account_namespace_labels: nil, token_name:, rbac:, namespace_creator: false, role_binding_name: nil)
         @kubeclient = kubeclient
         @service_account_name = service_account_name
         @service_account_namespace = service_account_namespace
+        @service_account_namespace_labels = service_account_namespace_labels
         @token_name = token_name
         @rbac = rbac
         @namespace_creator = namespace_creator
@@ -23,11 +24,12 @@ module Clusters
         )
       end
 
-      def self.namespace_creator(kubeclient, service_account_name:, service_account_namespace:, rbac:)
+      def self.namespace_creator(kubeclient, service_account_name:, service_account_namespace:, service_account_namespace_labels:, rbac:)
         self.new(
           kubeclient,
           service_account_name: service_account_name,
           service_account_namespace: service_account_namespace,
+          service_account_namespace_labels: service_account_namespace_labels,
           token_name: "#{service_account_namespace}-token",
           rbac: rbac,
           namespace_creator: true,
@@ -55,12 +57,13 @@ module Clusters
 
       private
 
-      attr_reader :kubeclient, :service_account_name, :service_account_namespace, :token_name, :rbac, :namespace_creator, :role_binding_name
+      attr_reader :kubeclient, :service_account_name, :service_account_namespace, :service_account_namespace_labels, :token_name, :rbac, :namespace_creator, :role_binding_name
 
       def ensure_project_namespace_exists
         Gitlab::Kubernetes::Namespace.new(
           service_account_namespace,
-          kubeclient
+          kubeclient,
+          labels: service_account_namespace_labels
         ).ensure_exists!
       end
 

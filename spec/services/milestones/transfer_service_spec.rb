@@ -71,7 +71,9 @@ describe Milestones::TransferService do
 
         context 'when find_or_create_milestone returns nil' do
           before do
-            allow_any_instance_of(Milestones::FindOrCreateService).to receive(:execute).and_return(nil)
+            allow_next_instance_of(Milestones::FindOrCreateService) do |instance|
+              allow(instance).to receive(:execute).and_return(nil)
+            end
           end
 
           it 'removes issues group milestone' do

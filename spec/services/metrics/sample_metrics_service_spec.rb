@@ -4,7 +4,10 @@ require 'spec_helper'
 
 describe Metrics::SampleMetricsService do
   describe 'query' do
-    subject { described_class.new(identifier).query }
+    let(:range_start) { '2019-12-02T23:31:45.000Z' }
+    let(:range_end) { '2019-12-03T00:01:45.000Z' }
+
+    subject { described_class.new(identifier, range_start: range_start, range_end: range_end).query }
 
     context 'when the file is not found' do
       let(:identifier) { nil }
@@ -26,10 +29,10 @@ describe Metrics::SampleMetricsService do
         FileUtils.rm(destination)
       end
 
-      subject { described_class.new(identifier).query }
+      subject { described_class.new(identifier, range_start: range_start, range_end: range_end).query }
 
       it 'loads data from the sample file correctly' do
-        expect(subject).to eq(YAML.load_file(source))
+        expect(subject).to eq(YAML.load_file(source)[30])
       end
     end
 

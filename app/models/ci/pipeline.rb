@@ -26,15 +26,14 @@ module Ci
     belongs_to :merge_request, class_name: 'MergeRequest'
     belongs_to :external_pull_request
 
-    has_internal_id :iid, scope: :project, presence: false, ensure_if: -> { !importing? }, init: ->(s) do
+    has_internal_id :iid, scope: :project, presence: false, track_if: -> { !importing? }, ensure_if: -> { !importing? }, init: ->(s) do
       s&.project&.all_pipelines&.maximum(:iid) || s&.project&.all_pipelines&.count
     end
 
     has_many :stages, -> { order(position: :asc) }, inverse_of: :pipeline
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
     has_many :latest_statuses_ordered_by_stage, -> { latest.order(:stage_idx, :stage) }, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
-    has_many :processables, -> { processables },
-             class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
+    has_many :processables, class_name: 'Ci::Processable', foreign_key: :commit_id, inverse_of: :pipeline
     has_many :builds, foreign_key: :commit_id, inverse_of: :pipeline
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id # rubocop:disable Cop/ActiveRecordDependent
     has_many :variables, class_name: 'Ci::PipelineVariable'
@@ -61,8 +60,12 @@ module Ci
     has_one :chat_data, class_name: 'Ci::PipelineChatData'
 
     has_many :triggered_pipelines, through: :sourced_pipelines, source: :pipeline
+    has_many :child_pipelines, -> { merge(Ci::Sources::Pipeline.same_project) }, through: :sourced_pipelines, source: :pipeline
     has_one :triggered_by_pipeline, through: :source_pipeline, source: :source_pipeline
+    has_one :parent_pipeline, -> { merge(Ci::Sources::Pipeline.same_project) }, through: :source_pipeline, source: :source_pipeline
     has_one :source_job, through: :source_pipeline, source: :source_job
+
+    has_one :pipeline_config, class_name: 'Ci::PipelineConfig', inverse_of: :pipeline
 
     accepts_nested_attributes_for :variables, reject_if: :persisted?
 
@@ -97,8 +100,12 @@ module Ci
 
     state_machine :status, initial: :created do
       event :enqueue do
-        transition [:created, :preparing, :skipped, :scheduled] => :pending
+        transition [:created, :waiting_for_resource, :preparing, :skipped, :scheduled] => :pending
         transition [:success, :failed, :canceled] => :running
+      end
+
+      event :request_resource do
+        transition any - [:waiting_for_resource] => :waiting_for_resource
       end
 
       event :prepare do
@@ -137,7 +144,7 @@ module Ci
       # Do not add any operations to this state_machine
       # Create a separate worker for each new operation
 
-      before_transition [:created, :preparing, :pending] => :running do |pipeline|
+      before_transition [:created, :waiting_for_resource, :preparing, :pending] => :running do |pipeline|
         pipeline.started_at = Time.now
       end
 
@@ -160,7 +167,7 @@ module Ci
         end
       end
 
-      after_transition [:created, :preparing, :pending] => :running do |pipeline|
+      after_transition [:created, :waiting_for_resource, :preparing, :pending] => :running do |pipeline|
         pipeline.run_after_commit { PipelineMetricsWorker.perform_async(pipeline.id) }
       end
 
@@ -168,7 +175,7 @@ module Ci
         pipeline.run_after_commit { PipelineMetricsWorker.perform_async(pipeline.id) }
       end
 
-      after_transition [:created, :preparing, :pending, :running] => :success do |pipeline|
+      after_transition [:created, :waiting_for_resource, :preparing, :pending, :running] => :success do |pipeline|
         pipeline.run_after_commit { PipelineSuccessWorker.perform_async(pipeline.id) }
       end
 
@@ -190,6 +197,10 @@ module Ci
 
             AutoMergeProcessWorker.perform_async(merge_request.id)
           end
+
+          if pipeline.auto_devops_source?
+            self.class.auto_devops_pipelines_completed_total.increment(status: pipeline.status)
+          end
         end
       end
 
@@ -207,6 +218,7 @@ module Ci
     end
 
     scope :internal, -> { where(source: internal_sources) }
+    scope :no_child, -> { where.not(source: :parent_pipeline) }
     scope :ci_sources, -> { where(config_source: ::Ci::PipelineEnums.ci_config_sources_values) }
     scope :for_user, -> (user) { where(user: user) }
     scope :for_sha, -> (sha) { where(sha: sha) }
@@ -319,7 +331,11 @@ module Ci
     end
 
     def self.bridgeable_statuses
-      ::Ci::Pipeline::AVAILABLE_STATUSES - %w[created preparing pending]
+      ::Ci::Pipeline::AVAILABLE_STATUSES - %w[created waiting_for_resource preparing pending]
+    end
+
+    def self.auto_devops_pipelines_completed_total
+      @auto_devops_pipelines_completed_total ||= Gitlab::Metrics.counter(:auto_devops_pipelines_completed_total, 'Number of completed auto devops pipelines')
     end
 
     def stages_count
@@ -499,11 +515,9 @@ module Ci
     # rubocop: enable CodeReuse/ServiceClass
 
     def mark_as_processable_after_stage(stage_idx)
-      builds.skipped.after_stage(stage_idx).find_each(&:process)
-    end
-
-    def child?
-      false
+      builds.skipped.after_stage(stage_idx).find_each do |build|
+        Gitlab::OptimisticLocking.retry_lock(build, &:process)
+      end
     end
 
     def latest?
@@ -542,6 +556,13 @@ module Ci
       end
     end
 
+    def needs_processing?
+      statuses
+        .where(processed: [false, nil])
+        .latest
+        .exists?
+    end
+
     # TODO: this logic is duplicate with Pipeline::Chain::Config::Content
     # we should persist this is `ci_pipelines.config_path`
     def config_path
@@ -571,11 +592,11 @@ module Ci
       project.notes.for_commit_id(sha)
     end
 
-    def update_status
+    def set_status(new_status)
       retry_optimistic_lock(self) do
-        new_status = latest_builds_status.to_s
         case new_status
         when 'created' then nil
+        when 'waiting_for_resource' then request_resource
         when 'preparing' then prepare
         when 'pending' then enqueue
         when 'running' then run
@@ -590,6 +611,10 @@ module Ci
                 "Unknown status `#{new_status}`"
         end
       end
+    end
+
+    def update_legacy_status
+      set_status(latest_builds_status.to_s)
     end
 
     def protected_ref?
@@ -685,6 +710,24 @@ module Ci
 
     def all_merge_requests_by_recency
       all_merge_requests.order(id: :desc)
+    end
+
+    # If pipeline is a child of another pipeline, include the parent
+    # and the siblings, otherwise return only itself.
+    def same_family_pipeline_ids
+      if (parent = parent_pipeline)
+        [parent.id] + parent.child_pipelines.pluck(:id)
+      else
+        [self.id]
+      end
+    end
+
+    def child?
+      parent_pipeline.present?
+    end
+
+    def parent?
+      child_pipelines.exists?
     end
 
     def detailed_status(current_user)

@@ -76,7 +76,7 @@
   - [pages_domain_ssl_renewal, 1]
   - [object_storage_upload, 1]
   - [object_storage, 1]
-  - [plugin, 1]
+  - [file_hook, 1]
   - [pipeline_background, 1]
   - [repository_update_remote_mirror, 1]
   - [repository_remove_remote, 1]
@@ -99,6 +99,8 @@
   - [chaos, 2]
   - [create_evidence, 2]
   - [group_export, 1]
+  - [self_monitoring_project_create, 2]
+  - [self_monitoring_project_delete, 2]
 
   # EE-specific queues
   - [analytics, 1]
@@ -116,6 +118,7 @@
   - [elastic_full_index, 1]
   - [elastic_commit_indexer, 1]
   - [elastic_namespace_indexer, 1]
+  - [elastic_namespace_rollout, 1]
   - [export_csv, 1]
   - [incident_management, 2]
   - [jira_connect, 1]

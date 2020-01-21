@@ -1,0 +1,26 @@
+- access_levels = local_assigns[:access_levels]
+- default_access_level = local_assigns[:default_access_level]
+- submit_url = local_assigns[:submit_url]
+- group_link_field = local_assigns[:group_link_field]
+- group_access_field = local_assigns[:group_access_field]
+.row
+  .col-sm-12
+    = form_tag submit_url, class: 'invite-group-form js-requires-input', method: :post do
+      .form-group
+        = label_tag group_link_field, _("Select a group to invite"), class: "label-bold"
+        = groups_select_tag(group_link_field, data: { skip_groups: @skip_groups }, class: 'input-clamp qa-group-select-field', required: true)
+      .form-group
+        = label_tag group_access_field, _("Max access level"), class: "label-bold"
+        .select-wrapper
+          = select_tag group_access_field, options_for_select(access_levels, default_access_level), data: { qa_selector: 'group_access_field' }, class: "form-control select-control"
+          = icon('chevron-down')
+        .form-text.text-muted.append-bottom-10
+          - permissions_docs_path = help_page_path('user/permissions')
+          - link_start = %q{<a href="%{url}">}.html_safe % { url: permissions_docs_path }
+          = _("%{link_start}Read more%{link_end} about role permissions").html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
+      .form-group
+        = label_tag :expires_at, _('Access expiration date'), class: 'label-bold'
+        .clearable-input
+          = text_field_tag :expires_at, nil, class: 'form-control js-access-expiration-date-groups', placeholder: _('Expiration date'), id: 'expires_at_groups'
+          %i.clear-icon.js-clear-input
+      = submit_tag _("Invite"), class: "btn btn-success", data: { qa_selector: 'invite_group_button' }

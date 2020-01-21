@@ -6,7 +6,8 @@ describe Gitlab::Kubernetes::Helm::Api do
   let(:client) { double('kubernetes client') }
   let(:helm) { described_class.new(client) }
   let(:gitlab_namespace) { Gitlab::Kubernetes::Helm::NAMESPACE }
-  let(:namespace) { Gitlab::Kubernetes::Namespace.new(gitlab_namespace, client) }
+  let(:gitlab_namespace_labels) { Gitlab::Kubernetes::Helm::NAMESPACE_LABELS }
+  let(:namespace) { Gitlab::Kubernetes::Namespace.new(gitlab_namespace, client, labels: gitlab_namespace_labels) }
   let(:application_name) { 'app-name' }
   let(:rbac) { false }
   let(:files) { {} }
@@ -23,13 +24,17 @@ describe Gitlab::Kubernetes::Helm::Api do
   subject { helm }
 
   before do
-    allow(Gitlab::Kubernetes::Namespace).to receive(:new).with(gitlab_namespace, client).and_return(namespace)
+    allow(Gitlab::Kubernetes::Namespace).to(
+      receive(:new).with(gitlab_namespace, client, labels: gitlab_namespace_labels).and_return(namespace)
+    )
     allow(client).to receive(:create_config_map)
   end
 
   describe '#initialize' do
     it 'creates a namespace object' do
-      expect(Gitlab::Kubernetes::Namespace).to receive(:new).with(gitlab_namespace, client)
+      expect(Gitlab::Kubernetes::Namespace).to(
+        receive(:new).with(gitlab_namespace, client, labels: gitlab_namespace_labels)
+      )
 
       subject
     end

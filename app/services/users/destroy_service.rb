@@ -56,6 +56,13 @@ module Users
 
       MigrateToGhostUserService.new(user).execute unless options[:hard_delete]
 
+      if Feature.enabled?(:destroy_user_associations_in_batches)
+        # Rails attempts to load all related records into memory before
+        # destroying: https://github.com/rails/rails/issues/22510
+        # This ensures we delete records in batches.
+        user.destroy_dependent_associations_in_batches
+      end
+
       # Destroy the namespace after destroying the user since certain methods may depend on the namespace existing
       user_data = user.destroy
       namespace.destroy

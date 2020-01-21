@@ -131,6 +131,7 @@ describe Clusters::Applications::Knative do
 
   describe '#update_command' do
     let!(:current_installed_version) { knative.version = '0.1.0' }
+
     subject { knative.update_command }
 
     it 'is initialized with current version' do

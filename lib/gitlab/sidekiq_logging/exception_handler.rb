@@ -18,7 +18,7 @@ module Gitlab
           data.merge!(job_data) if job_data.present?
         end
 
-        data[:error_backtrace] = Gitlab::Profiler.clean_backtrace(job_exception.backtrace) if job_exception.backtrace.present?
+        data[:error_backtrace] = Gitlab::BacktraceCleaner.clean_backtrace(job_exception.backtrace) if job_exception.backtrace.present?
 
         Sidekiq.logger.warn(data)
       end

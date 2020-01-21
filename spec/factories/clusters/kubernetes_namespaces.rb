@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :cluster_kubernetes_namespace, class: Clusters::KubernetesNamespace do
+  factory :cluster_kubernetes_namespace, class: 'Clusters::KubernetesNamespace' do
     association :cluster, :project, :provided_by_gcp
 
     after(:build) do |kubernetes_namespace|

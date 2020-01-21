@@ -4,6 +4,6 @@ After you've reviewed these contribution guidelines, you'll be all set to
 - options = contribution_options(viewer.project)
 - if options.any?
   = succeed '.' do
-    = options.to_sentence(two_words_connector: ' or ', last_word_connector: ', or ').html_safe
+    = Gitlab::Utils.to_exclusive_sentence(options).html_safe
 - else
   contribute to this project.

@@ -111,9 +111,10 @@ module API
         variable = user_project.variables.find_by(key: params[:key])
         not_found!('Variable') unless variable
 
-        # Variables don't have any timestamp. Therfore, destroy unconditionally.
-        status 204
+        # Variables don't have a timestamp. Therefore, destroy unconditionally.
         variable.destroy
+
+        no_content!
       end
       # rubocop: enable CodeReuse/ActiveRecord
     end

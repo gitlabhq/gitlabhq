@@ -5,6 +5,10 @@ module Boards
     class ListService < Boards::BaseService
       include Gitlab::Utils::StrongMemoize
 
+      def self.valid_params
+        IssuesFinder.valid_params
+      end
+
       def execute
         fetch_issues.order_by_position_and_priority
       end

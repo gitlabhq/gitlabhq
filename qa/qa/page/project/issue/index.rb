@@ -10,6 +10,7 @@ module QA
           end
 
           view 'app/views/projects/issues/_issue.html.haml' do
+            element :issue
             element :issue_link, 'link_to issue.title' # rubocop:disable QA/ElementWithPattern
           end
 
@@ -19,10 +20,6 @@ module QA
 
           view 'app/views/shared/issuable/_nav.html.haml' do
             element :closed_issues_link
-          end
-
-          def assignee_link_count
-            all_elements(:assignee_link).count
           end
 
           def avatar_counter
@@ -37,8 +34,12 @@ module QA
             click_element :closed_issues_link
           end
 
+          def has_assignee_link_count?(count)
+            all_elements(:assignee_link, count: count)
+          end
+
           def has_issue?(issue)
-            has_element? :issue, issue_title: issue.to_s
+            has_element? :issue, issue_title: issue.title
           end
         end
       end

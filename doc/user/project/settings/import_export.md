@@ -100,7 +100,7 @@ For more details on the specific data persisted in a project export, see the
    ![Email download link](img/import_export_mail_link.png)
 
 1. Alternatively, you can come back to the project settings and download the
-   file from there, or generate a new export. Once the file available, the page
+   file from there, or generate a new export. Once the file is available, the page
    should show the **Download export** button:
 
    ![Download export](img/import_export_download_export.png)

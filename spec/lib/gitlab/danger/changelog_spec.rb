@@ -106,18 +106,6 @@ describe Gitlab::Danger::Changelog do
     end
   end
 
-  describe '#sanitized_mr_title' do
-    subject { changelog.sanitized_mr_title }
-
-    [
-      'WIP: My MR title',
-      'My MR title'
-    ].each do |mr_title|
-      let(:mr_json) { { "title" => mr_title } }
-      it { is_expected.to eq("My MR title") }
-    end
-  end
-
   describe '#ee_changelog?' do
     context 'is ee changelog' do
       [

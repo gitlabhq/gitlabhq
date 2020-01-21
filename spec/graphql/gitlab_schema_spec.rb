@@ -124,12 +124,24 @@ describe GitlabSchema do
 
   describe '.object_from_id' do
     context 'for subclasses of `ApplicationRecord`' do
-      it 'returns the correct record' do
-        user = create(:user)
+      let_it_be(:user) { create(:user) }
 
+      it 'returns the correct record' do
         result = described_class.object_from_id(user.to_global_id.to_s)
 
         expect(result.sync).to eq(user)
+      end
+
+      it 'returns the correct record, of the expected type' do
+        result = described_class.object_from_id(user.to_global_id.to_s, expected_type: ::User)
+
+        expect(result.sync).to eq(user)
+      end
+
+      it 'fails if the type does not match' do
+        expect do
+          described_class.object_from_id(user.to_global_id.to_s, expected_type: ::Project)
+        end.to raise_error(Gitlab::Graphql::Errors::ArgumentError)
       end
 
       it 'batchloads the queries' do

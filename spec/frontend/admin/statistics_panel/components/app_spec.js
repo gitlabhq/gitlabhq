@@ -21,7 +21,6 @@ describe('Admin statistics app', () => {
     wrapper = shallowMount(StatisticsPanelApp, {
       localVue,
       store,
-      sync: false,
     });
   };
 

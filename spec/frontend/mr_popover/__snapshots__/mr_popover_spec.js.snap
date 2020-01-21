@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`MR Popover loaded state matches the snapshot 1`] = `
-<glpopover-stub
+<gl-popover-stub
   boundary="viewport"
   cssclasses=""
   placement="top"
@@ -35,7 +35,7 @@ exports[`MR Popover loaded state matches the snapshot 1`] = `
         </span>
       </div>
        
-      <ciicon-stub
+      <ci-icon-stub
         cssclasses=""
         size="16"
         status="[object Object]"
@@ -56,11 +56,11 @@ exports[`MR Popover loaded state matches the snapshot 1`] = `
     
     </div>
   </div>
-</glpopover-stub>
+</gl-popover-stub>
 `;
 
 exports[`MR Popover shows skeleton-loader while apollo is loading 1`] = `
-<glpopover-stub
+<gl-popover-stub
   boundary="viewport"
   cssclasses=""
   placement="top"
@@ -71,7 +71,7 @@ exports[`MR Popover shows skeleton-loader while apollo is loading 1`] = `
     class="mr-popover"
   >
     <div>
-      <glskeletonloading-stub
+      <gl-skeleton-loading-stub
         class="animation-container-small mt-1"
         lines="1"
       />
@@ -91,5 +91,5 @@ exports[`MR Popover shows skeleton-loader while apollo is loading 1`] = `
     
     </div>
   </div>
-</glpopover-stub>
+</gl-popover-stub>
 `;

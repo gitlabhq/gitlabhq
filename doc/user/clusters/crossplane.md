@@ -222,7 +222,7 @@ The Auto DevOps pipeline can be run with the following options:
 
 The Environment variables, `AUTO_DEVOPS_POSTGRES_MANAGED` and `AUTO_DEVOPS_POSTGRES_MANAGED_CLASS_SELECTOR` need to be set to provision PostgreSQL using Crossplane
 
-Alertnatively, the following options can be overridden from the values for the Helm chart.
+Alternatively, the following options can be overridden from the values for the Helm chart.
 
 - `postgres.managed` set to true which will select a default resource class.
      The resource class needs to be marked with the annotation
@@ -235,7 +235,7 @@ Alertnatively, the following options can be overridden from the values for the H
      will select the CloudSQLInstance class `cloudsqlinstancepostgresql-standard`
      to satisfy the claim request.
 
-The Auto DevOps pipeline should provision a PostgresqlInstance when it runs succesfully.
+The Auto DevOps pipeline should provision a PostgresqlInstance when it runs successfully.
 
 Verify creation of the PostgreSQL Instance.
 

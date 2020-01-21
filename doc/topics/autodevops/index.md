@@ -19,12 +19,20 @@ For an introduction to Auto DevOps, watch [AutoDevOps in GitLab 11.0](https://yo
 
 ## Enabled by default
 
-Starting with GitLab 11.3, the Auto DevOps pipeline is enabled by default for all
-projects. If it has not been explicitly enabled for the project, Auto DevOps will be automatically
-disabled on the first pipeline failure. Your project will continue to use an alternative
-[CI/CD configuration file](../../ci/yaml/README.md) if one is found. A GitLab
-administrator can [change this setting](../../user/admin_area/settings/continuous_integration.md#auto-devops-core-only)
-in the admin area.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/41729) in GitLab 11.3.
+
+Auto DevOps is enabled by default for all projects and will attempt to run on all pipelines
+in each project. This default can be enabled or disabled by an instance administrator in the
+[Auto DevOps settings](../../user/admin_area/settings/continuous_integration.md#auto-devops-core-only).
+It will be automatically disabled in individual projects on their first pipeline failure,
+if it has not been explicitly enabled for the project.
+
+Since [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/issues/26655), Auto DevOps
+will run on pipelines automatically only if a [`Dockerfile` or matching buildpack](#auto-build)
+exists.
+
+If a [CI/CD configuration file](../../ci/yaml/README.md) is present in the project,
+it will continue to be used, whether or not Auto DevOps is enabled.
 
 ## Quick start
 
@@ -176,7 +184,7 @@ The Auto DevOps base domain is required if you want to make use of
 places:
 
 - either under the cluster's settings, whether for [projects](../../user/project/clusters/index.md#base-domain) or [groups](../../user/group/clusters/index.md#base-domain)
-- or in instance-wide settings in the **admin area > Settings** under the "Continuous Integration and Delivery" section
+- or in instance-wide settings in the **Admin Area > Settings** under the "Continuous Integration and Delivery" section
 - or at the project level as a variable: `KUBE_INGRESS_BASE_DOMAIN`
 - or at the group level as a variable: `KUBE_INGRESS_BASE_DOMAIN`.
 
@@ -255,7 +263,7 @@ the subgroup or project.
 Even when disabled at the instance level, group owners and project maintainers can still enable
 Auto DevOps at the group and project level, respectively.
 
-1. Go to **Admin area > Settings > Continuous Integration and Deployment**.
+1. Go to **Admin Area > Settings > Continuous Integration and Deployment**.
 1. Toggle the checkbox labeled **Default to Auto DevOps pipeline for all projects**.
 1. If enabling, optionally set up the Auto DevOps [base domain](#auto-devops-base-domain) which will be used for Auto Deploy and Auto Review Apps.
 1. Click **Save changes** for the changes to take effect.

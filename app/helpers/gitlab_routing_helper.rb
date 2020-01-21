@@ -153,6 +153,29 @@ module GitlabRoutingHelper
 
   # Artifacts
 
+  # Rails path generators are slow because they need to do large regex comparisons
+  # against the arguments. We can speed this up 10x by generating the strings directly.
+
+  # /*namespace_id/:project_id/-/jobs/:job_id/artifacts/download(.:format)
+  def fast_download_project_job_artifacts_path(project, job)
+    expose_fast_artifacts_path(project, job, :download)
+  end
+
+  # /*namespace_id/:project_id/-/jobs/:job_id/artifacts/keep(.:format)
+  def fast_keep_project_job_artifacts_path(project, job)
+    expose_fast_artifacts_path(project, job, :keep)
+  end
+
+  #  /*namespace_id/:project_id/-/jobs/:job_id/artifacts/browse(/*path)
+  def fast_browse_project_job_artifacts_path(project, job)
+    expose_fast_artifacts_path(project, job, :browse)
+  end
+
+  def expose_fast_artifacts_path(project, job, action)
+    path = "#{project.full_path}/-/jobs/#{job.id}/artifacts/#{action}"
+    Gitlab::Utils.append_path(Gitlab.config.gitlab.relative_url_root, path)
+  end
+
   def artifacts_action_path(path, project, build)
     action, path_params = path.split('/', 2)
     args = [project, build, path_params]

@@ -297,11 +297,11 @@ shared_examples 'thread comments' do |resource_name|
         find("#{form_selector} .note-textarea").send_keys('a')
       end
 
-      it "should show a 'Comment & reopen #{resource_name}' button" do
+      it "shows a 'Comment & reopen #{resource_name}' button" do
         expect(find("#{form_selector} .js-note-target-reopen")).to have_content "Comment & reopen #{resource_name}"
       end
 
-      it "should show a 'Start thread & reopen #{resource_name}' button when 'Start thread' is selected" do
+      it "shows a 'Start thread & reopen #{resource_name}' button when 'Start thread' is selected" do
         find(toggle_selector).click
 
         find("#{menu_selector} li", match: :first)

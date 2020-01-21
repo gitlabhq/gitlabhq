@@ -5,7 +5,6 @@ import SuggestionDiff from './suggestion_diff.vue';
 import Flash from '~/flash';
 
 export default {
-  components: { SuggestionDiff },
   props: {
     lineType: {
       type: String,

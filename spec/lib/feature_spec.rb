@@ -171,6 +171,13 @@ describe Feature do
       end
     end
 
+    it 'returns the default value when the database does not exist' do
+      fake_default = double('fake default')
+      expect(ActiveRecord::Base).to receive(:connection) { raise ActiveRecord::NoDatabaseError, "No database" }
+
+      expect(described_class.enabled?(:a_feature, default_enabled: fake_default)).to eq(fake_default)
+    end
+
     context 'cached feature flag', :request_store do
       let(:flag) { :some_feature_flag }
 

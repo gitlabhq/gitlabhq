@@ -16,7 +16,6 @@ describe('MrWidgetPipelineContainer', () => {
         ...props,
       },
       localVue,
-      sync: false,
     });
   };
 

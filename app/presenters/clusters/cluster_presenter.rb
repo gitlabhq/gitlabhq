@@ -10,11 +10,11 @@ module Clusters
 
     # We do not want to show the group path for clusters belonging to the
     # clusterable, only for the ancestor clusters.
-    def item_link(clusterable_presenter)
+    def item_link(clusterable_presenter, *html_options)
       if cluster.group_type? && clusterable != clusterable_presenter.subject
         contracted_group_name(cluster.group) + ' / ' + link_to_cluster
       else
-        link_to_cluster
+        link_to_cluster(*html_options)
       end
     end
 
@@ -84,8 +84,8 @@ module Clusters
       sprite_icon('ellipsis_h', size: 12, css_class: 'vertical-align-middle')
     end
 
-    def link_to_cluster
-      link_to_if(can_read_cluster?, cluster.name, show_path)
+    def link_to_cluster(html_options: {})
+      link_to_if(can_read_cluster?, cluster.name, show_path, html_options)
     end
   end
 end

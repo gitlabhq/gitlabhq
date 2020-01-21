@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "nokogiri"
-require "asciidoctor-plantuml/plantuml"
+require "asciidoctor_plantuml/plantuml"
 
 module Banzai
   module Filter

@@ -33,8 +33,12 @@ module Gitlab
           @description = block_given? ? block : text
         end
 
-        def warning(message = '')
-          @warning = message
+        def warning(text = '', &block)
+          @warning = block_given? ? block : text
+        end
+
+        def icon(string = '')
+          @icon = string
         end
 
         # Allows to define params for the next quick action.
@@ -192,6 +196,7 @@ module Gitlab
             aliases: aliases,
             description: @description,
             warning: @warning,
+            icon: @icon,
             explanation: @explanation,
             execution_message: @execution_message,
             params: @params,
@@ -213,6 +218,7 @@ module Gitlab
           @params = nil
           @condition_block = nil
           @warning = nil
+          @icon = nil
           @parse_params_block = nil
           @types = nil
         end

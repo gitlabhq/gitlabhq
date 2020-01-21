@@ -80,7 +80,7 @@ module Gitlab
         if host.present? && api_version.present?
           "#{host}/api/#{api_version}"
         else
-          github_options[:site]
+          github_options[:site] || ::Octokit::Default.api_endpoint
         end
       end
 

@@ -9,7 +9,6 @@ const createComponent = missingData =>
       helpPath: '/help',
       missingData,
     },
-    sync: false,
   });
 
 describe('missingPrometheusComponent', () => {

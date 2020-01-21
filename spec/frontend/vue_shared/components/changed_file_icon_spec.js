@@ -18,8 +18,6 @@ describe('Changed file icon', () => {
         showTooltip: true,
         ...props,
       },
-      sync: false,
-      attachToDocument: true,
     });
   };
 
@@ -30,7 +28,7 @@ describe('Changed file icon', () => {
   const findIcon = () => wrapper.find(Icon);
   const findIconName = () => findIcon().props('name');
   const findIconClasses = () => findIcon().classes();
-  const findTooltipText = () => wrapper.attributes('data-original-title');
+  const findTooltipText = () => wrapper.attributes('title');
 
   it('with isCentered true, adds center class', () => {
     factory({
@@ -58,10 +56,10 @@ describe('Changed file icon', () => {
 
   describe.each`
     file                      | iconName                 | tooltipText                           | desc
-    ${changedFile()}          | ${'file-modified'}       | ${'Unstaged modification'}            | ${'with file changed'}
+    ${changedFile()}          | ${'file-modified-solid'} | ${'Unstaged modification'}            | ${'with file changed'}
     ${stagedFile()}           | ${'file-modified-solid'} | ${'Staged modification'}              | ${'with file staged'}
-    ${changedAndStagedFile()} | ${'file-modified'}       | ${'Unstaged and staged modification'} | ${'with file changed and staged'}
-    ${newFile()}              | ${'file-addition'}       | ${'Unstaged addition'}                | ${'with file new'}
+    ${changedAndStagedFile()} | ${'file-modified-solid'} | ${'Unstaged and staged modification'} | ${'with file changed and staged'}
+    ${newFile()}              | ${'file-addition-solid'} | ${'Unstaged addition'}                | ${'with file new'}
   `('$desc', ({ file, iconName, tooltipText }) => {
     beforeEach(() => {
       factory({ file });
@@ -89,7 +87,7 @@ describe('Changed file icon', () => {
     });
 
     it('does not have tooltip text', () => {
-      expect(findTooltipText()).toBe('');
+      expect(findTooltipText()).toBeFalsy();
     });
   });
 

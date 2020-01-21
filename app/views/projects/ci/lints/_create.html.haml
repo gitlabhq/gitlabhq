@@ -1,8 +1,8 @@
 - if @status
-  %p
-    %b= _("Status:")
-    = _("syntax is correct")
-    %i.fa.fa-ok.correct-syntax
+  .bs-callout.bs-callout-success
+    %p
+      %b= _("Status:")
+      = _("syntax is correct")
 
   .table-holder
     %table.table.table-bordered
@@ -40,9 +40,10 @@
                   %b= _("Allowed to fail")
 
 - else
-  %p
-    %b= _("Status:")
-    = _("syntax is incorrect")
-    %i.fa.fa-remove.incorrect-syntax
-  %b= _("Error:")
-  = @error
+  .bs-callout.bs-callout-danger
+    %p
+      %b= _("Status:")
+      = _("syntax is incorrect")
+  %pre
+    - @errors.each do |message|
+      %p= message

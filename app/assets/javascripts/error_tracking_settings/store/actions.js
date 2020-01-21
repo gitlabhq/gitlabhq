@@ -25,8 +25,8 @@ export const receiveProjectsError = ({ commit }) => {
 export const fetchProjects = ({ dispatch, state }) => {
   dispatch('requestProjects');
   return axios
-    .post(state.listProjectsEndpoint, {
-      error_tracking_setting: {
+    .get(state.listProjectsEndpoint, {
+      params: {
         api_host: state.apiHost,
         token: state.token,
       },

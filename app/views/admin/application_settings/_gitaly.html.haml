@@ -8,6 +8,9 @@
       .form-text.text-muted
         Timeout for Gitaly calls from the GitLab application (in seconds). This timeout is not enforced
         for git fetch/push operations or Sidekiq jobs.
+        This timeout should be less than the worker timeout. If a Gitaly call timeout would exceed the
+        worker timeout, the remaining time from the worker timeout would be used to avoid having to terminate
+        the worker.
     .form-group
       = f.label :gitaly_timeout_fast, 'Fast Timeout Period', class: 'label-bold'
       = f.number_field :gitaly_timeout_fast, class: 'form-control'

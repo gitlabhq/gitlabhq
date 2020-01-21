@@ -148,6 +148,19 @@ describe Groups::MilestonesController do
         expect(response).to have_gitlab_http_status(200)
         expect(response.content_type).to eq 'application/json'
       end
+
+      context 'for a subgroup' do
+        let(:subgroup) { create(:group, parent: group) }
+
+        it 'includes ancestor group milestones' do
+          get :index, params: { group_id: subgroup.to_param }, format: :json
+
+          milestones = json_response
+
+          expect(milestones.count).to eq(1)
+          expect(milestones.first['title']).to eq('group milestone')
+        end
+      end
     end
 
     context 'external authorization' do

@@ -4,7 +4,7 @@ module Users
   class ActivityService
     LEASE_TIMEOUT = 1.minute.to_i
 
-    def initialize(author, activity)
+    def initialize(author)
       @user = if author.respond_to?(:username)
                 author
               elsif author.respond_to?(:user)
@@ -12,7 +12,6 @@ module Users
               end
 
       @user = nil unless @user.is_a?(User)
-      @activity = activity
     end
 
     def execute

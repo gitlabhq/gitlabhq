@@ -5,10 +5,10 @@ module QA
     class DeployKey < Base
       attr_accessor :title, :key
 
-      attribute :fingerprint do
+      attribute :md5_fingerprint do
         Page::Project::Settings::Repository.perform do |setting|
           setting.expand_deploy_keys do |key|
-            key.find_fingerprint(title)
+            key.find_md5_fingerprint(title)
           end
         end
       end

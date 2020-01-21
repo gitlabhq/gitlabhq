@@ -1,0 +1,5 @@
+---
+title: Include subgroups when searching inside a group
+merge_request: 22991
+author:
+type: fixed
