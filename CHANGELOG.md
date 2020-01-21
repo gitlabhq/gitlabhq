@@ -4,6 +4,7 @@ entry.
 
 ## 12.7.0
 
+- No changes.
 ### Security (6 changes, 2 of them are from the community)
 
 - Ensure content matches extension on image uploads. !20697
