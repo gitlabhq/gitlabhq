@@ -163,6 +163,15 @@ This chart uses the global page filters for displaying data based on the selecte
 group, projects, and timeframe. In addition, specific stages can be selected
 from within the chart itself.
 
+### Chart median line
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/36675) in GitLab 12.7.
+
+The median line on the chart displays data that is offset by the number of days selected.
+For example, if 30 days worth of data has been selected (for example, 2019-12-16 to 2020-01-15) the
+median line will represent the previous 30 days worth of data (2019-11-16 to 2019-12-16)
+as a metric to compare against.
+
 ### Enabling chart
 
 By default, this chart is disabled for self-managed instances. To enable it, ask an

@@ -131,14 +131,14 @@ attribute. As a prerequisite, you must use an LDAP server that:
    - The additional NGINX server context must be configured to run on a different
      port:
 
-     ```
+     ```plaintext
      listen *:3444 ssl;
      ```
 
    - The additional NGINX server context must be configured to require the client
      side certificate:
 
-     ```
+     ```plaintext
      ssl_verify_depth 2;
      ssl_client_certificate /etc/ssl/certs/CA.pem;
      ssl_verify_client on;
@@ -147,14 +147,14 @@ attribute. As a prerequisite, you must use an LDAP server that:
    - The additional NGINX server context must be configured to forward the client
      side certificate:
 
-     ```
+     ```plaintext
      proxy_set_header    X-SSL-Client-Certificate    $ssl_client_escaped_cert;
      ```
 
    For example, the following is an example server context in an NGINX
    configuration file (eg. in `/etc/nginx/sites-available/gitlab-ssl`):
 
-   ```
+   ```plaintext
    server {
        listen *:3444 ssl;
 

@@ -56,7 +56,7 @@ Using PowerShell you can output the **OU** structure as a table (_all names are 
 Get-ADObject -LDAPFilter "(objectClass=*)" -SearchBase 'OU=GitLab INT,DC=GitLab,DC=org' -Properties CanonicalName | Format-Table Name,CanonicalName -A
 ```
 
-```
+```plaintext
 OU                CanonicalName
 ----              -------------
 GitLab INT        GitLab.org/GitLab INT
@@ -109,7 +109,7 @@ The two Active Directory specific values are `active_directory: true` and `uid: 
 
 ### Example `gitlab.rb` LDAP
 
-```
+```ruby
 gitlab_rails['ldap_enabled'] = true
 gitlab_rails['ldap_servers'] = {
 'main' => {
@@ -186,7 +186,7 @@ ldapsearch -D "CN=GitLabSRV,CN=Users,DC=GitLab,DC=org" -w Password1 -p 389 -h ad
 
 **Full output of `ldapsearch` command:** - Filtering for _CN=Leroy Fox_
 
-```
+```plaintext
 # LDAPv3
 # base <OU=GitLab INT,DC=GitLab,DC=org> with scope subtree
 # filter: CN=Leroy Fox

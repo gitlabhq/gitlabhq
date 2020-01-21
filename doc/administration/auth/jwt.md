@@ -45,7 +45,7 @@ JWT will provide you with a secret key for you to use.
 
    For installation from source:
 
-   ```
+   ```yaml
    - { name: 'jwt',
        args: {
          secret: 'YOUR_APP_SECRET',

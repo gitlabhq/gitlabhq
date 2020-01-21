@@ -129,8 +129,14 @@ Example response:
 }
 ```
 
-Deploy Keys are bound to the creating user, so if you query with a deploy key
-fingerprint you get additional information about the projects using that key:
+## Get user by deploy key fingerprint
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/119209) in GitLab 12.7.
+
+Deploy keys are bound to the creating user, so if you query with a deploy key
+fingerprint you get additional information about the projects using that key.
+
+Example request:
 
 ```sh
 curl --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/keys?fingerprint=SHA256%3AnUhzNyftwADy8AH3wFY31tAKs7HufskYTte2aXo%2FlCg
