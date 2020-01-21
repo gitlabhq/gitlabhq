@@ -213,7 +213,7 @@ class ChangeUsersUsernameStringToTextCleanup < ActiveRecord::Migration[4.2]
   disable_ddl_transaction!
 
   def up
-    cleanup_concurrent_column_type_change :users
+    cleanup_concurrent_column_type_change :users, :username
   end
 
   def down

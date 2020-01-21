@@ -23,6 +23,8 @@ module QA
       def perform(options, *args)
         extract_address(:gitlab_address, options, args)
 
+        QA::Runtime::Browser.configure!
+
         Runtime::Feature.enable(options[:enable_feature]) if options.key?(:enable_feature)
 
         Specs::Runner.perform do |specs|

@@ -96,10 +96,10 @@ describe Gitlab::Experimentation do
             expect(Gitlab::Tracking).to receive(:event).with(
               'Team',
               'start',
-              label: nil,
-              property: 'experimental_group'
+              property: 'experimental_group',
+              value: 'team_id'
             )
-            controller.track_experiment_event(:test_experiment, 'start')
+            controller.track_experiment_event(:test_experiment, 'start', 'team_id')
           end
         end
 
@@ -112,10 +112,10 @@ describe Gitlab::Experimentation do
             expect(Gitlab::Tracking).to receive(:event).with(
               'Team',
               'start',
-              label: nil,
-              property: 'control_group'
+              property: 'control_group',
+              value: 'team_id'
             )
-            controller.track_experiment_event(:test_experiment, 'start')
+            controller.track_experiment_event(:test_experiment, 'start', 'team_id')
           end
         end
       end
@@ -144,13 +144,13 @@ describe Gitlab::Experimentation do
           end
 
           it 'pushes the right parameters to gon' do
-            controller.frontend_experimentation_tracking_data(:test_experiment, 'start')
+            controller.frontend_experimentation_tracking_data(:test_experiment, 'start', 'team_id')
             expect(Gon.tracking_data).to eq(
               {
                 category: 'Team',
                 action: 'start',
-                label: nil,
-                property: 'experimental_group'
+                property: 'experimental_group',
+                value: 'team_id'
               }
             )
           end
@@ -164,12 +164,23 @@ describe Gitlab::Experimentation do
           end
 
           it 'pushes the right parameters to gon' do
+            controller.frontend_experimentation_tracking_data(:test_experiment, 'start', 'team_id')
+            expect(Gon.tracking_data).to eq(
+              {
+                category: 'Team',
+                action: 'start',
+                property: 'control_group',
+                value: 'team_id'
+              }
+            )
+          end
+
+          it 'does not send nil value to gon' do
             controller.frontend_experimentation_tracking_data(:test_experiment, 'start')
             expect(Gon.tracking_data).to eq(
               {
                 category: 'Team',
                 action: 'start',
-                label: nil,
                 property: 'control_group'
               }
             )

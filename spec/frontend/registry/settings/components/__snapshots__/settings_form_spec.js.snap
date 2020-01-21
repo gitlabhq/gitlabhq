@@ -161,17 +161,20 @@ exports[`Settings Form renders 1`] = `
           class="mr-2 d-block"
           type="reset"
         >
+          
           Cancel
+        
         </glbutton-stub>
          
         <glbutton-stub
-          class="d-block"
+          class="d-flex justify-content-center align-items-center js-no-auto-disable"
           type="submit"
           variant="success"
         >
           
           Save expiration policy
-        
+          
+          <!---->
         </glbutton-stub>
       </div>
     </div>

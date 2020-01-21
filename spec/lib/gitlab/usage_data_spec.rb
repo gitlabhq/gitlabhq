@@ -49,6 +49,7 @@ describe Gitlab::UsageData do
       create(:clusters_applications_runner, :installed, cluster: gcp_cluster)
       create(:clusters_applications_knative, :installed, cluster: gcp_cluster)
       create(:clusters_applications_elastic_stack, :installed, cluster: gcp_cluster)
+      create(:clusters_applications_jupyter, :installed, cluster: gcp_cluster)
 
       create(:grafana_integration, project: projects[0], enabled: true)
       create(:grafana_integration, project: projects[1], enabled: true)
@@ -149,6 +150,7 @@ describe Gitlab::UsageData do
         clusters_applications_runner
         clusters_applications_knative
         clusters_applications_elastic_stack
+        clusters_applications_jupyter
         in_review_folder
         grafana_integrated_projects
         groups
@@ -242,6 +244,7 @@ describe Gitlab::UsageData do
       expect(count_data[:clusters_applications_knative]).to eq(1)
       expect(count_data[:clusters_applications_elastic_stack]).to eq(1)
       expect(count_data[:grafana_integrated_projects]).to eq(2)
+      expect(count_data[:clusters_applications_jupyter]).to eq(1)
     end
 
     it 'works when queries time out' do

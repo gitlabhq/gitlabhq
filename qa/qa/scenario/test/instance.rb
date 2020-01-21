@@ -20,6 +20,8 @@ module QA
         def self.do_perform(address, *rspec_options)
           Runtime::Scenario.define(:gitlab_address, address)
 
+          QA::Runtime::Browser.configure!
+
           Specs::Runner.perform do |specs|
             specs.tty = true
             specs.options = rspec_options if rspec_options.any?

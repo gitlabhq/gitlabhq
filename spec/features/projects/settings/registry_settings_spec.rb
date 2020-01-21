@@ -17,10 +17,10 @@ describe 'Project > Settings > CI/CD > Container registry tag expiration policy'
       expect(settings_block).to have_text 'Container Registry tag expiration policy'
     end
 
-    it 'Save expiration policy submit the form', :js do
+    it 'Save expiration policy submit the form' do
       within '#js-registry-policies' do
         within '.card-body' do
-          click_button(class: 'gl-toggle')
+          find('#expiration-policy-toggle button:not(.is-disabled)').click
           select('7 days until tags are automatically removed', from: 'expiration-policy-interval')
           select('Every day', from: 'expiration-policy-schedule')
           select('50 tags per image name', from: 'expiration-policy-latest')
@@ -30,8 +30,8 @@ describe 'Project > Settings > CI/CD > Container registry tag expiration policy'
         expect(submit_button).not_to be_disabled
         submit_button.click
       end
-      flash_text = find('.flash-text')
-      expect(flash_text).to have_content('Expiration policy successfully saved.')
+      toast = find('.gl-toast')
+      expect(toast).to have_content('Expiration policy successfully saved.')
     end
   end
 end

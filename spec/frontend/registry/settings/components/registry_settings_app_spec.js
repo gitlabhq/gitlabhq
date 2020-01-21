@@ -1,55 +1,55 @@
-import Vuex from 'vuex';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import component from '~/registry/settings/components/registry_settings_app.vue';
 import { createStore } from '~/registry/settings/store/';
-
-const localVue = createLocalVue();
-localVue.use(Vuex);
+import { FETCH_SETTINGS_ERROR_MESSAGE } from '~/registry/settings/constants';
 
 describe('Registry Settings App', () => {
   let wrapper;
   let store;
-  let fetchSpy;
 
   const findSettingsComponent = () => wrapper.find({ ref: 'settings-form' });
-  const findLoadingComponent = () => wrapper.find({ ref: 'loading-icon' });
 
-  const mountComponent = (options = {}) => {
-    fetchSpy = jest.fn();
+  const mountComponent = ({ dispatchMock } = {}) => {
+    store = createStore();
+    const dispatchSpy = jest.spyOn(store, 'dispatch');
+    if (dispatchMock) {
+      dispatchSpy[dispatchMock]();
+    }
     wrapper = shallowMount(component, {
-      store,
-      methods: {
-        fetchSettings: fetchSpy,
+      mocks: {
+        $toast: {
+          show: jest.fn(),
+        },
       },
-      ...options,
+      store,
     });
   };
-
-  beforeEach(() => {
-    store = createStore();
-    mountComponent();
-  });
 
   afterEach(() => {
     wrapper.destroy();
   });
 
   it('renders', () => {
+    mountComponent({ dispatchMock: 'mockResolvedValue' });
     expect(wrapper.element).toMatchSnapshot();
   });
 
   it('call the store function to load the data on mount', () => {
-    expect(fetchSpy).toHaveBeenCalled();
+    mountComponent({ dispatchMock: 'mockResolvedValue' });
+    expect(store.dispatch).toHaveBeenCalledWith('fetchSettings');
   });
 
-  it('renders a loader if isLoading is true', () => {
-    store.dispatch('toggleLoading');
-    return wrapper.vm.$nextTick().then(() => {
-      expect(findLoadingComponent().exists()).toBe(true);
-      expect(findSettingsComponent().exists()).toBe(false);
-    });
+  it('show a toast if fetchSettings fails', () => {
+    mountComponent({ dispatchMock: 'mockRejectedValue' });
+    return wrapper.vm.$nextTick().then(() =>
+      expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(FETCH_SETTINGS_ERROR_MESSAGE, {
+        type: 'error',
+      }),
+    );
   });
+
   it('renders the setting form', () => {
+    mountComponent({ dispatchMock: 'mockResolvedValue' });
     expect(findSettingsComponent().exists()).toBe(true);
   });
 });

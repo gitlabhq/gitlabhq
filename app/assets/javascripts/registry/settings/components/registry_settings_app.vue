@@ -1,20 +1,17 @@
 <script>
-import { mapState, mapActions } from 'vuex';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { mapActions } from 'vuex';
+import { FETCH_SETTINGS_ERROR_MESSAGE } from '../constants';
+
 import SettingsForm from './settings_form.vue';
 
 export default {
   components: {
-    GlLoadingIcon,
     SettingsForm,
   },
-  computed: {
-    ...mapState({
-      isLoading: 'isLoading',
-    }),
-  },
   mounted() {
-    this.fetchSettings();
+    this.fetchSettings().catch(() =>
+      this.$toast.show(FETCH_SETTINGS_ERROR_MESSAGE, { type: 'error' }),
+    );
   },
   methods: {
     ...mapActions(['fetchSettings']),
@@ -37,7 +34,6 @@ export default {
         }}
       </li>
     </ul>
-    <gl-loading-icon v-if="isLoading" ref="loading-icon" size="xl" />
-    <settings-form v-else ref="settings-form" />
+    <settings-form ref="settings-form" />
   </div>
 </template>

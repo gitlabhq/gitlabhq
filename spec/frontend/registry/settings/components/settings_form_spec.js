@@ -1,39 +1,44 @@
-import Vuex from 'vuex';
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import stubChildren from 'helpers/stub_children';
 import component from '~/registry/settings/components/settings_form.vue';
 import { createStore } from '~/registry/settings/store/';
-import { NAME_REGEX_LENGTH } from '~/registry/settings/constants';
+import {
+  NAME_REGEX_LENGTH,
+  UPDATE_SETTINGS_ERROR_MESSAGE,
+  UPDATE_SETTINGS_SUCCESS_MESSAGE,
+} from '~/registry/settings/constants';
 import { stringifiedFormOptions } from '../mock_data';
-
-const localVue = createLocalVue();
-localVue.use(Vuex);
 
 describe('Settings Form', () => {
   let wrapper;
   let store;
-  let saveSpy;
-  let resetSpy;
+  let dispatchSpy;
 
-  const findFormGroup = name => wrapper.find(`#expiration-policy-${name}-group`);
-  const findFormElements = (name, father = wrapper) => father.find(`#expiration-policy-${name}`);
+  const FORM_ELEMENTS_ID_PREFIX = '#expiration-policy';
+
+  const GlLoadingIcon = { name: 'gl-loading-icon-stub', template: '<svg></svg>' };
+
+  const findFormGroup = name => wrapper.find(`${FORM_ELEMENTS_ID_PREFIX}-${name}-group`);
+  const findFormElements = (name, parent = wrapper) =>
+    parent.find(`${FORM_ELEMENTS_ID_PREFIX}-${name}`);
   const findCancelButton = () => wrapper.find({ ref: 'cancel-button' });
   const findSaveButton = () => wrapper.find({ ref: 'save-button' });
   const findForm = () => wrapper.find({ ref: 'form-element' });
+  const findLoadingIcon = (parent = wrapper) => parent.find(GlLoadingIcon);
 
   const mountComponent = (options = {}) => {
-    saveSpy = jest.fn();
-    resetSpy = jest.fn();
     wrapper = mount(component, {
       stubs: {
         ...stubChildren(component),
         GlCard: false,
+        GlLoadingIcon,
+      },
+      mocks: {
+        $toast: {
+          show: jest.fn(),
+        },
       },
       store,
-      methods: {
-        saveSettings: saveSpy,
-        resetSettings: resetSpy,
-      },
       ...options,
     });
   };
@@ -41,6 +46,7 @@ describe('Settings Form', () => {
   beforeEach(() => {
     store = createStore();
     store.dispatch('setInitialState', stringifiedFormOptions);
+    dispatchSpy = jest.spyOn(store, 'dispatch');
     mountComponent();
   });
 
@@ -59,48 +65,53 @@ describe('Settings Form', () => {
     ${'schedule'}      | ${'cadence'}    | ${'foo'} | ${'disabled'}
     ${'latest'}        | ${'keep_n'}     | ${'foo'} | ${'disabled'}
     ${'name-matching'} | ${'name_regex'} | ${'foo'} | ${'disabled'}
-  `('$elementName form element', ({ elementName, modelName, value, disabledByToggle }) => {
-    let formGroup;
-    beforeEach(() => {
-      formGroup = findFormGroup(elementName);
-    });
-    it(`${elementName} form group exist in the dom`, () => {
-      expect(formGroup.exists()).toBe(true);
-    });
-
-    it(`${elementName} form group has a label-for property`, () => {
-      expect(formGroup.attributes('label-for')).toBe(`expiration-policy-${elementName}`);
-    });
-
-    it(`${elementName} form group has a label-cols property`, () => {
-      expect(formGroup.attributes('label-cols')).toBe(`${wrapper.vm.$options.labelsConfig.cols}`);
-    });
-
-    it(`${elementName} form group has a label-align property`, () => {
-      expect(formGroup.attributes('label-align')).toBe(`${wrapper.vm.$options.labelsConfig.align}`);
-    });
-
-    it(`${elementName} form group contains an input element`, () => {
-      expect(findFormElements(elementName, formGroup).exists()).toBe(true);
-    });
-
-    it(`${elementName} form element change updated ${modelName} with ${value}`, () => {
-      const element = findFormElements(elementName, formGroup);
-      const modelUpdateEvent = element.vm.$options.model
-        ? element.vm.$options.model.event
-        : 'input';
-      element.vm.$emit(modelUpdateEvent, value);
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.vm[modelName]).toBe(value);
+  `(
+    `${FORM_ELEMENTS_ID_PREFIX}-$elementName form element`,
+    ({ elementName, modelName, value, disabledByToggle }) => {
+      let formGroup;
+      beforeEach(() => {
+        formGroup = findFormGroup(elementName);
       });
-    });
+      it(`${elementName} form group exist in the dom`, () => {
+        expect(formGroup.exists()).toBe(true);
+      });
 
-    it(`${elementName} is ${disabledByToggle} by enabled set to false`, () => {
-      store.dispatch('updateSettings', { enabled: false });
-      const expectation = disabledByToggle === 'disabled' ? 'true' : undefined;
-      expect(findFormElements(elementName, formGroup).attributes('disabled')).toBe(expectation);
-    });
-  });
+      it(`${elementName} form group has a label-for property`, () => {
+        expect(formGroup.attributes('label-for')).toBe(`expiration-policy-${elementName}`);
+      });
+
+      it(`${elementName} form group has a label-cols property`, () => {
+        expect(formGroup.attributes('label-cols')).toBe(`${wrapper.vm.$options.labelsConfig.cols}`);
+      });
+
+      it(`${elementName} form group has a label-align property`, () => {
+        expect(formGroup.attributes('label-align')).toBe(
+          `${wrapper.vm.$options.labelsConfig.align}`,
+        );
+      });
+
+      it(`${elementName} form group contains an input element`, () => {
+        expect(findFormElements(elementName, formGroup).exists()).toBe(true);
+      });
+
+      it(`${elementName} form element change updated ${modelName} with ${value}`, () => {
+        const element = findFormElements(elementName, formGroup);
+        const modelUpdateEvent = element.vm.$options.model
+          ? element.vm.$options.model.event
+          : 'input';
+        element.vm.$emit(modelUpdateEvent, value);
+        return wrapper.vm.$nextTick().then(() => {
+          expect(wrapper.vm[modelName]).toBe(value);
+        });
+      });
+
+      it(`${elementName} is ${disabledByToggle} by enabled set to false`, () => {
+        store.dispatch('updateSettings', { enabled: false });
+        const expectation = disabledByToggle === 'disabled' ? 'true' : undefined;
+        expect(findFormElements(elementName, formGroup).attributes('disabled')).toBe(expectation);
+      });
+    },
+  );
 
   describe('form actions', () => {
     let form;
@@ -112,17 +123,79 @@ describe('Settings Form', () => {
     });
 
     it('form reset event call the appropriate function', () => {
+      dispatchSpy.mockReturnValue();
       form.trigger('reset');
-      expect(resetSpy).toHaveBeenCalled();
+      // expect.any(Object) is necessary because the event payload is passed to the function
+      expect(dispatchSpy).toHaveBeenCalledWith('resetSettings', expect.any(Object));
     });
 
     it('save has type submit', () => {
       expect(findSaveButton().attributes('type')).toBe('submit');
     });
 
-    it('form submit event call the appropriate function', () => {
-      form.trigger('submit');
-      expect(saveSpy).toHaveBeenCalled();
+    describe('when isLoading is true', () => {
+      beforeEach(() => {
+        store.dispatch('toggleLoading');
+      });
+
+      afterEach(() => {
+        store.dispatch('toggleLoading');
+      });
+
+      it.each`
+        elementName
+        ${'toggle'}
+        ${'interval'}
+        ${'schedule'}
+        ${'latest'}
+        ${'name-matching'}
+      `(`${FORM_ELEMENTS_ID_PREFIX}-$elementName is disabled`, ({ elementName }) => {
+        expect(findFormElements(elementName).attributes('disabled')).toBe('true');
+      });
+
+      it('submit button is disabled and shows a spinner', () => {
+        const button = findSaveButton();
+        expect(button.attributes('disabled')).toBeTruthy();
+        expect(findLoadingIcon(button)).toExist();
+      });
+
+      it('cancel button is disabled', () => {
+        expect(findCancelButton().attributes('disabled')).toBeTruthy();
+      });
+    });
+
+    describe('form submit event ', () => {
+      it('calls the appropriate function', () => {
+        dispatchSpy.mockResolvedValue();
+        form.trigger('submit');
+        expect(dispatchSpy).toHaveBeenCalled();
+      });
+
+      it('dispatches the saveSettings action', () => {
+        dispatchSpy.mockResolvedValue();
+        form.trigger('submit');
+        expect(dispatchSpy).toHaveBeenCalledWith('saveSettings');
+      });
+
+      it('show a success toast when submit succeed', () => {
+        dispatchSpy.mockResolvedValue();
+        form.trigger('submit');
+        return wrapper.vm.$nextTick().then(() => {
+          expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(UPDATE_SETTINGS_SUCCESS_MESSAGE, {
+            type: 'success',
+          });
+        });
+      });
+
+      it('show an error toast when submit fails', () => {
+        dispatchSpy.mockRejectedValue();
+        form.trigger('submit');
+        return wrapper.vm.$nextTick().then(() => {
+          expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(UPDATE_SETTINGS_ERROR_MESSAGE, {
+            type: 'error',
+          });
+        });
+      });
     });
   });
 
@@ -160,7 +233,7 @@ describe('Settings Form', () => {
     it('toggleDescriptionText text reflects enabled property', () => {
       const toggleHelpText = findFormGroup('toggle').find('span');
       expect(toggleHelpText.html()).toContain('disabled');
-      wrapper.vm.enabled = true;
+      wrapper.setData({ enabled: true });
       return wrapper.vm.$nextTick().then(() => {
         expect(toggleHelpText.html()).toContain('enabled');
       });

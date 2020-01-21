@@ -19,8 +19,7 @@
 module Gitlab
   module PhabricatorImport
     class BaseWorker
-      include ApplicationWorker
-      include ProjectImportOptions # This marks the project as failed after too many tries
+      include WorkerAttributes
       include Gitlab::ExclusiveLeaseHelpers
 
       feature_category :importers
