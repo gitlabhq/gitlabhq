@@ -1722,37 +1722,37 @@ msgstr ""
 msgid "An error occurred while validating username"
 msgstr ""
 
-msgid "An error occurred whilst committing your changes."
+msgid "An error occurred while committing your changes."
 msgstr ""
 
-msgid "An error occurred whilst fetching the job trace."
+msgid "An error occurred while fetching the job trace."
 msgstr ""
 
-msgid "An error occurred whilst fetching the latest pipeline."
+msgid "An error occurred while fetching the latest pipeline."
 msgstr ""
 
-msgid "An error occurred whilst getting files for - %{branchId}"
+msgid "An error occurred while getting files for - %{branchId}"
 msgstr ""
 
-msgid "An error occurred whilst loading all the files."
+msgid "An error occurred while loading all the files."
 msgstr ""
 
-msgid "An error occurred whilst loading the file content."
+msgid "An error occurred while loading the file content."
 msgstr ""
 
-msgid "An error occurred whilst loading the file."
+msgid "An error occurred while loading the file."
 msgstr ""
 
-msgid "An error occurred whilst loading the merge request changes."
+msgid "An error occurred while loading the merge request changes."
 msgstr ""
 
-msgid "An error occurred whilst loading the merge request version data."
+msgid "An error occurred while loading the merge request version data."
 msgstr ""
 
-msgid "An error occurred whilst loading the merge request."
+msgid "An error occurred while loading the merge request."
 msgstr ""
 
-msgid "An error occurred whilst loading the pipelines jobs."
+msgid "An error occurred while loading the pipelines jobs."
 msgstr ""
 
 msgid "An error occurred. Please try again."
@@ -19949,4 +19949,3 @@ msgstr[5] ""
 
 msgid "yaml invalid"
 msgstr ""
-

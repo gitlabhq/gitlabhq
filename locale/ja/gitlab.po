@@ -1497,37 +1497,37 @@ msgstr "コメントを更新中にエラーが発生しました。"
 msgid "An error occurred while validating username"
 msgstr "ユーザ名の検証中にエラーが発生しました"
 
-msgid "An error occurred whilst committing your changes."
+msgid "An error occurred while committing your changes."
 msgstr "変更のコミット中にエラーが発生しました。"
 
-msgid "An error occurred whilst fetching the job trace."
+msgid "An error occurred while fetching the job trace."
 msgstr "ジョブトレースの取得中にエラーが発生しました。"
 
-msgid "An error occurred whilst fetching the latest pipeline."
+msgid "An error occurred while fetching the latest pipeline."
 msgstr "最新のパイプラインの取得中にエラーが発生しました。"
 
-msgid "An error occurred whilst getting files for - %{branchId}"
+msgid "An error occurred while getting files for - %{branchId}"
 msgstr "%{branchId} のファイルを取得中にエラーが発生しました"
 
-msgid "An error occurred whilst loading all the files."
+msgid "An error occurred while loading all the files."
 msgstr "すべてのファイルの読込中にエラーが発生しました。"
 
-msgid "An error occurred whilst loading the file content."
+msgid "An error occurred while loading the file content."
 msgstr "ファイルの内容を読込中にエラーが発生しました。"
 
-msgid "An error occurred whilst loading the file."
+msgid "An error occurred while loading the file."
 msgstr "ファイルのロード中にエラーが発生しました。"
 
-msgid "An error occurred whilst loading the merge request changes."
+msgid "An error occurred while loading the merge request changes."
 msgstr "マージリクエストの変更を読込中にエラーが発生しました。"
 
-msgid "An error occurred whilst loading the merge request version data."
+msgid "An error occurred while loading the merge request version data."
 msgstr "マージリクエストのバージョン情報を読込中にエラーが発生しました。"
 
-msgid "An error occurred whilst loading the merge request."
+msgid "An error occurred while loading the merge request."
 msgstr "マージリクエストのロード中にエラーが発生しました。"
 
-msgid "An error occurred whilst loading the pipelines jobs."
+msgid "An error occurred while loading the pipelines jobs."
 msgstr "パイプラインジョブのロード中にエラーが発生しました。"
 
 msgid "An error occurred. Please try again."
@@ -19414,4 +19414,3 @@ msgstr[0] "%d 分以内"
 
 msgid "yaml invalid"
 msgstr "yaml が無効です"
-

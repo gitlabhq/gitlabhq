@@ -77,7 +77,7 @@ export const getFiles = ({ state, commit, dispatch }, payload = {}) =>
         })
         .catch(e => {
           dispatch('setErrorMessage', {
-            text: __('An error occurred whilst loading all the files.'),
+            text: __('An error occurred while loading all the files.'),
             action: actionPayload =>
               dispatch('getFiles', actionPayload).then(() => dispatch('setErrorMessage', null)),
             actionText: __('Please try again'),

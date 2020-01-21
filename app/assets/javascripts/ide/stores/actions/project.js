@@ -152,7 +152,7 @@ export const openBranch = ({ dispatch, state, getters }, { projectId, branchId, 
         () =>
           new Error(
             sprintf(
-              __('An error occurred whilst getting files for - %{branchId}'),
+              __('An error occurred while getting files for - %{branchId}'),
               {
                 branchId: `<strong>${_.escape(projectId)}/${_.escape(branchId)}</strong>`,
               },

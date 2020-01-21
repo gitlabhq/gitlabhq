@@ -1632,37 +1632,37 @@ msgstr "Під час оновлення коментаря сталася по�
 msgid "An error occurred while validating username"
 msgstr "Сталася помилка під час перевірки імені користувача"
 
-msgid "An error occurred whilst committing your changes."
+msgid "An error occurred while committing your changes."
 msgstr "Помилка при коміті ваших змін."
 
-msgid "An error occurred whilst fetching the job trace."
+msgid "An error occurred while fetching the job trace."
 msgstr "Помилка при отриманні логу завдання."
 
-msgid "An error occurred whilst fetching the latest pipeline."
+msgid "An error occurred while fetching the latest pipeline."
 msgstr "Помилка при отриманні останнього конвеєра."
 
-msgid "An error occurred whilst getting files for - %{branchId}"
+msgid "An error occurred while getting files for - %{branchId}"
 msgstr "Сталася помилка при отриманні файлів для - %{branchId}"
 
-msgid "An error occurred whilst loading all the files."
+msgid "An error occurred while loading all the files."
 msgstr "Помилка при завантаженні всіх файлів."
 
-msgid "An error occurred whilst loading the file content."
+msgid "An error occurred while loading the file content."
 msgstr "Помилка при завантаженні вмісту файлу."
 
-msgid "An error occurred whilst loading the file."
+msgid "An error occurred while loading the file."
 msgstr "Помилка при завантаженні файлу."
 
-msgid "An error occurred whilst loading the merge request changes."
+msgid "An error occurred while loading the merge request changes."
 msgstr "Помилка при завантаженні змін запиту на злиття."
 
-msgid "An error occurred whilst loading the merge request version data."
+msgid "An error occurred while loading the merge request version data."
 msgstr "Помилка при завантаженні даних версії запиту на злиття."
 
-msgid "An error occurred whilst loading the merge request."
+msgid "An error occurred while loading the merge request."
 msgstr "Помилка при завантаженні запиту на злиття."
 
-msgid "An error occurred whilst loading the pipelines jobs."
+msgid "An error occurred while loading the pipelines jobs."
 msgstr "Помилка при завантаженні завдань конвеєру."
 
 msgid "An error occurred. Please try again."
@@ -19735,4 +19735,3 @@ msgstr[3] "протягом %d хвилин "
 
 msgid "yaml invalid"
 msgstr "yaml недійсний"
-

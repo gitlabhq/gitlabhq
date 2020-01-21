@@ -105,7 +105,7 @@ ahead and select this one, but please choose the size which best meets your own 
 
 ![Azure - Create Virtual Machine - Size](img/azure-create-virtual-machine-size.png)
 
-> **Note:** be aware that whilst your VM is active (known as "allocated"), it will incur
+> **Note:** be aware that while your VM is active (known as "allocated"), it will incur
 "compute charges" which, ultimately, you will be billed for. So, even if you're using the
 free trial credits, you'll likely want to learn
 [how to properly shutdown an Azure VM to save money](https://buildazure.com/properly-shutdown-azure-vm-to-save-money/).

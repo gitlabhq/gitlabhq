@@ -125,7 +125,7 @@ describe('Multi-file store tree actions', () => {
           .then(done.fail)
           .catch(() => {
             expect(dispatch).toHaveBeenCalledWith('setErrorMessage', {
-              text: 'An error occurred whilst loading all the files.',
+              text: 'An error occurred while loading all the files.',
               action: jasmine.any(Function),
               actionText: 'Please try again',
               actionPayload: { projectId: 'abc/def', branchId: 'master-testing' },

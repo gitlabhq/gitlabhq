@@ -75,10 +75,10 @@ export default () => {
           class="text-center"
           v-if="error">
           <span v-if="loadError">
-            An error occurred whilst loading the file. Please try again later.
+            An error occurred while loading the file. Please try again later.
           </span>
           <span v-else>
-            An error occurred whilst parsing the file.
+            An error occurred while parsing the file.
           </span>
         </p>
       </div>

@@ -835,7 +835,7 @@ information on managing page-specific JavaScript within EE.
 
 To separate Vue template differences we should [async import the components](https://vuejs.org/v2/guide/components-dynamic-async.html#Async-Components).
 
-Doing this allows for us to load the correct component in EE whilst in CE
+Doing this allows for us to load the correct component in EE while in CE
 we can load a empty component that renders nothing. This code **should**
 exist in the CE repository as well as the EE repository.
 

@@ -275,13 +275,15 @@ RSpec.shared_examples 'thread comments' do |resource_name|
             find("#{menu_selector} li", match: :first)
             items = all("#{menu_selector} li")
 
-            expect(items.first).to have_content 'Comment'
-            expect(items.first).to have_selector '.fa-check'
-            expect(items.first['class']).to match 'droplab-item-selected'
+            aggregate_failures do
+              expect(items.first).to have_content 'Comment'
+              expect(items.first).to have_selector '.fa-check'
+              expect(items.first['class']).to match 'droplab-item-selected'
 
-            expect(items.last).to have_content 'Start thread'
-            expect(items.last).not_to have_selector '.fa-check'
-            expect(items.last['class']).not_to match 'droplab-item-selected'
+              expect(items.last).to have_content 'Start thread'
+              expect(items.last).not_to have_selector '.fa-check'
+              expect(items.last['class']).not_to match 'droplab-item-selected'
+            end
           end
         end
       end

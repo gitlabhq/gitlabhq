@@ -1542,37 +1542,37 @@ msgstr "Beim Aktualisieren des Kommentars ist ein Fehler aufgetreten"
 msgid "An error occurred while validating username"
 msgstr "Beim Validieren des Benutzernamens ist ein Fehler aufgetreten"
 
-msgid "An error occurred whilst committing your changes."
+msgid "An error occurred while committing your changes."
 msgstr "Beim Committen deiner Änderungen ist ein Fehler aufgetreten."
 
-msgid "An error occurred whilst fetching the job trace."
+msgid "An error occurred while fetching the job trace."
 msgstr ""
 
-msgid "An error occurred whilst fetching the latest pipeline."
+msgid "An error occurred while fetching the latest pipeline."
 msgstr "Beim Abrufen der neuesten Pipeline ist ein Fehler aufgetreten."
 
-msgid "An error occurred whilst getting files for - %{branchId}"
+msgid "An error occurred while getting files for - %{branchId}"
 msgstr "Beim Abrufen der Dateien für - %{branchId} ist ein Fehler aufgetreten"
 
-msgid "An error occurred whilst loading all the files."
+msgid "An error occurred while loading all the files."
 msgstr "Beim Laden aller Dateien ist ein Fehler aufgetreten."
 
-msgid "An error occurred whilst loading the file content."
+msgid "An error occurred while loading the file content."
 msgstr "Beim Laden des Dateiinhalts ist ein Fehler aufgetreten."
 
-msgid "An error occurred whilst loading the file."
+msgid "An error occurred while loading the file."
 msgstr "Beim Laden der Datei ist ein Fehler aufgetreten."
 
-msgid "An error occurred whilst loading the merge request changes."
+msgid "An error occurred while loading the merge request changes."
 msgstr "Beim Laden der Merge-Request-Änderungen ist ein Fehler aufgetreten."
 
-msgid "An error occurred whilst loading the merge request version data."
+msgid "An error occurred while loading the merge request version data."
 msgstr "Beim Laden der Versionsdaten des Merge-Requests ist ein Fehler aufgetreten."
 
-msgid "An error occurred whilst loading the merge request."
+msgid "An error occurred while loading the merge request."
 msgstr "Beim Laden des Merge-Requests ist ein Fehler aufgetreten."
 
-msgid "An error occurred whilst loading the pipelines jobs."
+msgid "An error occurred while loading the pipelines jobs."
 msgstr "Beim Laden der Pipeline-Jobs ist ein Fehler aufgetreten."
 
 msgid "An error occurred. Please try again."
@@ -19521,4 +19521,3 @@ msgstr[1] "innerhalb %d Minuten "
 
 msgid "yaml invalid"
 msgstr ""
-

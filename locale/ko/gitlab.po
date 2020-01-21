@@ -1497,37 +1497,37 @@ msgstr "댓글을 업데이트하는 중 오류가 발생했습니다."
 msgid "An error occurred while validating username"
 msgstr "사용자 이름을 확인하는 중 오류가 발생했습니다"
 
-msgid "An error occurred whilst committing your changes."
+msgid "An error occurred while committing your changes."
 msgstr "내 변경사항을 커밋하던 도중 오류가 발생했습니다."
 
-msgid "An error occurred whilst fetching the job trace."
+msgid "An error occurred while fetching the job trace."
 msgstr "작업 기록을 가져오는 도중 오류가 발생했습니다."
 
-msgid "An error occurred whilst fetching the latest pipeline."
+msgid "An error occurred while fetching the latest pipeline."
 msgstr "가장 최근의 파이프 라인을 가져오는 도중 오류가 발생했습니다."
 
-msgid "An error occurred whilst getting files for - %{branchId}"
+msgid "An error occurred while getting files for - %{branchId}"
 msgstr ""
 
-msgid "An error occurred whilst loading all the files."
+msgid "An error occurred while loading all the files."
 msgstr "모든 파일을 불러오는 도중에 오류가 발생했습니다."
 
-msgid "An error occurred whilst loading the file content."
+msgid "An error occurred while loading the file content."
 msgstr "파일 내용을 불러오는 도중 오류가 발생하였습니다."
 
-msgid "An error occurred whilst loading the file."
+msgid "An error occurred while loading the file."
 msgstr "파일을 불러오는 도중 오류가 발생하였습니다."
 
-msgid "An error occurred whilst loading the merge request changes."
+msgid "An error occurred while loading the merge request changes."
 msgstr "머지 리퀘스트의 변경 사항을 불러오는 도중 오류가 발생 하였습니다."
 
-msgid "An error occurred whilst loading the merge request version data."
+msgid "An error occurred while loading the merge request version data."
 msgstr "머지 리퀘스트의 버전 데이터를 불러오는 도중 오류가 발생하였습니다."
 
-msgid "An error occurred whilst loading the merge request."
+msgid "An error occurred while loading the merge request."
 msgstr "머지 리퀘스트를 불러오는 도중 오류가 발생하였습니다."
 
-msgid "An error occurred whilst loading the pipelines jobs."
+msgid "An error occurred while loading the pipelines jobs."
 msgstr "파이프 라인 작업을 불러오는 도중 오류가 발생하였습니다."
 
 msgid "An error occurred. Please try again."
@@ -19414,4 +19414,3 @@ msgstr[0] "%d 분 이내 "
 
 msgid "yaml invalid"
 msgstr ""
-

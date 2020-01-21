@@ -1497,37 +1497,37 @@ msgstr "更新评论时发生错误"
 msgid "An error occurred while validating username"
 msgstr "验证用户名时发生错误"
 
-msgid "An error occurred whilst committing your changes."
+msgid "An error occurred while committing your changes."
 msgstr "提交更改时发生错误。"
 
-msgid "An error occurred whilst fetching the job trace."
+msgid "An error occurred while fetching the job trace."
 msgstr "获取作业日志时发生错误。"
 
-msgid "An error occurred whilst fetching the latest pipeline."
+msgid "An error occurred while fetching the latest pipeline."
 msgstr "获取最新流水线时发生错误。"
 
-msgid "An error occurred whilst getting files for - %{branchId}"
+msgid "An error occurred while getting files for - %{branchId}"
 msgstr "获取文件 - %{branchId} 时出错"
 
-msgid "An error occurred whilst loading all the files."
+msgid "An error occurred while loading all the files."
 msgstr "加载所有文件时发生错误。"
 
-msgid "An error occurred whilst loading the file content."
+msgid "An error occurred while loading the file content."
 msgstr "加载文件内容时发生错误。"
 
-msgid "An error occurred whilst loading the file."
+msgid "An error occurred while loading the file."
 msgstr "加载文件时发生错误。"
 
-msgid "An error occurred whilst loading the merge request changes."
+msgid "An error occurred while loading the merge request changes."
 msgstr "加载合并请求的变更内容时发生错误。"
 
-msgid "An error occurred whilst loading the merge request version data."
+msgid "An error occurred while loading the merge request version data."
 msgstr "加载合并请求的版本数据时发生错误。"
 
-msgid "An error occurred whilst loading the merge request."
+msgid "An error occurred while loading the merge request."
 msgstr "加载合并请求时发生错误。"
 
-msgid "An error occurred whilst loading the pipelines jobs."
+msgid "An error occurred while loading the pipelines jobs."
 msgstr "加载流水线作业时发生错误。"
 
 msgid "An error occurred. Please try again."
@@ -19414,4 +19414,3 @@ msgstr[0] "在%d分钟内"
 
 msgid "yaml invalid"
 msgstr "yaml无效"
-

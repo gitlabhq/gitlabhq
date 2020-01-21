@@ -389,7 +389,7 @@ describe('IDE store file actions', () => {
           )
           .then(() => {
             expect(dispatch).toHaveBeenCalledWith('setErrorMessage', {
-              text: 'An error occurred whilst loading the file.',
+              text: 'An error occurred while loading the file.',
               action: expect.any(Function),
               actionText: 'Please try again',
               actionPayload: {
@@ -500,7 +500,7 @@ describe('IDE store file actions', () => {
           )
           .catch(() => {
             expect(dispatch).toHaveBeenCalledWith('setErrorMessage', {
-              text: 'An error occurred whilst loading the file content.',
+              text: 'An error occurred while loading the file content.',
               action: expect.any(Function),
               actionText: 'Please try again',
               actionPayload: {

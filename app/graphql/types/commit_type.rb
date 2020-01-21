@@ -12,7 +12,7 @@ module Types
           description: 'ID (global ID) of the commit'
     field :sha, type: GraphQL::STRING_TYPE, null: false,
           description: 'SHA1 ID of the commit'
-    field :title, type: GraphQL::STRING_TYPE, null: true,
+    field :title, type: GraphQL::STRING_TYPE, null: true, calls_gitaly: true,
           description: 'Title of the commit message'
     field :description, type: GraphQL::STRING_TYPE, null: true,
           description: 'Description of the commit message'

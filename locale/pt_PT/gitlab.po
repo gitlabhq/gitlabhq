@@ -1542,37 +1542,37 @@ msgstr "Ocorreu um erro ao atualizar o comentário"
 msgid "An error occurred while validating username"
 msgstr "Ocorreu um erro ao validar o nome de utilizador"
 
-msgid "An error occurred whilst committing your changes."
+msgid "An error occurred while committing your changes."
 msgstr "Ocorreu um erro ao enviar as tuas alterações."
 
-msgid "An error occurred whilst fetching the job trace."
+msgid "An error occurred while fetching the job trace."
 msgstr "Ocorreu um erro ao buscar a localização do trabalho."
 
-msgid "An error occurred whilst fetching the latest pipeline."
+msgid "An error occurred while fetching the latest pipeline."
 msgstr "Ocorreu um erro ao buscar o pipeline mais recente."
 
-msgid "An error occurred whilst getting files for - %{branchId}"
+msgid "An error occurred while getting files for - %{branchId}"
 msgstr "Ocorreu um erro ao obter ficheiros para - %{branchId}"
 
-msgid "An error occurred whilst loading all the files."
+msgid "An error occurred while loading all the files."
 msgstr "Ocorreu um erro durante o carregamento de todos os ficheiros."
 
-msgid "An error occurred whilst loading the file content."
+msgid "An error occurred while loading the file content."
 msgstr "Ocorreu um erro ao carregar o conteúdo do ficheiro."
 
-msgid "An error occurred whilst loading the file."
+msgid "An error occurred while loading the file."
 msgstr "Ocorreu um erro ao carregar o ficheiro."
 
-msgid "An error occurred whilst loading the merge request changes."
+msgid "An error occurred while loading the merge request changes."
 msgstr "Ocorreu um erro ao carregar as alterações do pedido de mesclagem."
 
-msgid "An error occurred whilst loading the merge request version data."
+msgid "An error occurred while loading the merge request version data."
 msgstr "Ocorreu um erro ao carregar os dados da versão do pedido de mesclagem."
 
-msgid "An error occurred whilst loading the merge request."
+msgid "An error occurred while loading the merge request."
 msgstr "Ocorreu um erro ao carregar o pedido de mesclagem."
 
-msgid "An error occurred whilst loading the pipelines jobs."
+msgid "An error occurred while loading the pipelines jobs."
 msgstr "Ocorreu um erro ao carregar os trabalhos das pipelines."
 
 msgid "An error occurred. Please try again."
@@ -19521,4 +19521,3 @@ msgstr[1] ""
 
 msgid "yaml invalid"
 msgstr ""
-
