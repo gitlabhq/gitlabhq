@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'set sort order from user preference' do
+RSpec.shared_examples 'set sort order from user preference' do
   describe '#set_sort_order_from_user_preference' do
     # There is no sorting_field defined in any CE controllers yet,
     # however any other field present in user_preferences table can be used for testing.

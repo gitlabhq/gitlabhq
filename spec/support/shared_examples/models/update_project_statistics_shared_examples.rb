@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
-shared_examples_for 'UpdateProjectStatistics' do
+RSpec.shared_examples 'UpdateProjectStatistics' do
   let(:project) { subject.project }
   let(:project_statistics_name) { described_class.project_statistics_name }
   let(:statistic_attribute) { described_class.statistic_attribute }

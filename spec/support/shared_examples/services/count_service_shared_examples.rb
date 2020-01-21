@@ -6,7 +6,7 @@
 #   describe MyCountService, :use_clean_rails_memory_store_caching do
 #     it_behaves_like 'a counter caching service'
 #   end
-shared_examples 'a counter caching service' do
+RSpec.shared_examples 'a counter caching service' do
   describe '#count' do
     it 'caches the count', :request_store do
       subject.delete_cache

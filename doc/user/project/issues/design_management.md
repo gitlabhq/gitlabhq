@@ -54,8 +54,8 @@ Design Management requires that projects are using
 - Design Management data [won't be moved](https://gitlab.com/gitlab-org/gitlab/issues/13426)
   when an issue is moved, nor [deleted](https://gitlab.com/gitlab-org/gitlab/issues/13427)
   when an issue is deleted.
-- Design Management
-  [isn't supported by Geo](https://gitlab.com/groups/gitlab-org/-/epics/1633) yet.
+- From GitLab 12.7, Design Management data [can be replicated](../../../administration/geo/replication/datatypes.md#limitations-on-replicationverification)
+  by Geo but [not verified](https://gitlab.com/gitlab-org/gitlab/issues/32467).
 - Only the latest version of the designs can be deleted.
 - Deleted designs cannot be recovered but you can see them on previous designs versions.
 

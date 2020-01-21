@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples_for 'inherited access level as a member of entity' do
+RSpec.shared_examples 'inherited access level as a member of entity' do
   let(:parent_entity) { create(:group) }
   let(:user) { create(:user) }
   let(:member) { entity.is_a?(Group) ? entity.group_member(user) : entity.project_member(user) }
@@ -57,7 +57,7 @@ shared_examples_for 'inherited access level as a member of entity' do
   end
 end
 
-shared_examples_for '#valid_level_roles' do |entity_name|
+RSpec.shared_examples '#valid_level_roles' do |entity_name|
   let(:member_user) { create(:user) }
   let(:group) { create(:group) }
   let(:entity) { create(entity_name) }

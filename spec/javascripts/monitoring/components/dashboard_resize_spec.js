@@ -6,7 +6,7 @@ import * as types from '~/monitoring/stores/mutation_types';
 import { createStore } from '~/monitoring/stores';
 import axios from '~/lib/utils/axios_utils';
 import {
-  metricsGroupsAPIResponse,
+  metricsDashboardPayload,
   mockedEmptyResult,
   mockedQueryResultPayload,
   mockedQueryResultPayloadCoresTotal,
@@ -41,7 +41,7 @@ function setupComponentStore(component) {
   // Load 2 panel groups
   component.$store.commit(
     `monitoringDashboard/${types.RECEIVE_METRICS_DATA_SUCCESS}`,
-    metricsGroupsAPIResponse,
+    metricsDashboardPayload,
   );
 
   // Load 3 panels to the dashboard, one with an empty result
@@ -98,7 +98,7 @@ describe('Dashboard', () => {
     let panelToggle;
     let chart;
     beforeEach(() => {
-      mock.onGet(mockApiEndpoint).reply(200, metricsGroupsAPIResponse);
+      mock.onGet(mockApiEndpoint).reply(200, metricsDashboardPayload);
 
       component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),

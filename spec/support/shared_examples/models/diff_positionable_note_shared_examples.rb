@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples_for 'a valid diff positionable note' do |factory_on_commit|
+RSpec.shared_examples 'a valid diff positionable note' do |factory_on_commit|
   context 'for commit' do
     let(:project) { create(:project, :repository) }
     let(:commit) { project.commit(sample_commit.id) }

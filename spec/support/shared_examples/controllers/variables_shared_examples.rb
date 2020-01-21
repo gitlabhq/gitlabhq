@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'GET #show lists all variables' do
+RSpec.shared_examples 'GET #show lists all variables' do
   it 'renders the variables as json' do
     subject
 
@@ -14,7 +14,7 @@ shared_examples 'GET #show lists all variables' do
   end
 end
 
-shared_examples 'PATCH #update updates variables' do
+RSpec.shared_examples 'PATCH #update updates variables' do
   let(:variable_attributes) do
     { id: variable.id,
       key: variable.key,

@@ -5,6 +5,14 @@ require 'spec_helper'
 describe Gitlab::Email::Receiver do
   include_context :email_shared_context
 
+  shared_examples 'correctly finds the mail key' do
+    specify do
+      expect(Gitlab::Email::Handler).to receive(:for).with(an_instance_of(Mail::Message), 'gitlabhq/gitlabhq+auth_token').and_return(handler)
+
+      receiver.execute
+    end
+  end
+
   context 'when the email contains a valid email address in a header' do
     let(:handler) { double(:handler) }
 

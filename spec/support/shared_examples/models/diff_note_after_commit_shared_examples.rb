@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'a valid diff note with after commit callback' do
+RSpec.shared_examples 'a valid diff note with after commit callback' do
   context 'when diff file is fetched from repository' do
     before do
       allow_any_instance_of(::Gitlab::Diff::Position).to receive(:diff_file).with(project.repository).and_return(diff_file_from_repository)

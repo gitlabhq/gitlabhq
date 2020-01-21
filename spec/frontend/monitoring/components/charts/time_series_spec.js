@@ -8,7 +8,7 @@ import TimeSeries from '~/monitoring/components/charts/time_series.vue';
 import * as types from '~/monitoring/stores/mutation_types';
 import {
   deploymentData,
-  metricsGroupsAPIResponse,
+  metricsDashboardPayload,
   mockedQueryResultPayload,
   mockProjectDir,
   mockHost,
@@ -34,7 +34,7 @@ describe('Time series component', () => {
 
     store.commit(
       `monitoringDashboard/${types.RECEIVE_METRICS_DATA_SUCCESS}`,
-      metricsGroupsAPIResponse,
+      metricsDashboardPayload,
     );
 
     store.commit(`monitoringDashboard/${types.RECEIVE_DEPLOYMENTS_DATA_SUCCESS}`, deploymentData);

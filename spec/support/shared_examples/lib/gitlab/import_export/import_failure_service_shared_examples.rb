@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'log import failure' do |importable_column|
+RSpec.shared_examples 'log import failure' do |importable_column|
   it 'tracks error' do
     extra = {
               relation_key: relation_key,

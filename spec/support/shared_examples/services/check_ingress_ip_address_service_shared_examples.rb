@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'check ingress ip executions' do |app_name|
+RSpec.shared_examples 'check ingress ip executions' do |app_name|
   describe '#execute' do
     let(:application) { create(app_name, :installed) }
     let(:service) { described_class.new(application) }

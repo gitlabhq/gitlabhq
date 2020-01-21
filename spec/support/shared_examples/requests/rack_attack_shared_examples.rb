@@ -8,7 +8,7 @@
 # * requests_per_period
 # * period_in_seconds
 # * period
-shared_examples_for 'rate-limited token-authenticated requests' do
+RSpec.shared_examples 'rate-limited token-authenticated requests' do
   let(:throttle_types) do
     {
       "throttle_protected_paths" => "throttle_authenticated_protected_paths_api",
@@ -134,7 +134,7 @@ end
 # * requests_per_period
 # * period_in_seconds
 # * period
-shared_examples_for 'rate-limited web authenticated requests' do
+RSpec.shared_examples 'rate-limited web authenticated requests' do
   let(:throttle_types) do
     {
       "throttle_protected_paths" => "throttle_authenticated_protected_paths_web",

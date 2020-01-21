@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples_for 'multiple issue boards' do
+RSpec.shared_examples 'multiple issue boards' do
   context 'authorized user' do
     before do
       parent.add_maintainer(user)

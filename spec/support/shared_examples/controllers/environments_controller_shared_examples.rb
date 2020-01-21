@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples_for 'successful response for #cancel_auto_stop' do
+RSpec.shared_examples 'successful response for #cancel_auto_stop' do
   include GitlabRoutingHelper
 
   context 'when request is html' do
@@ -42,7 +42,7 @@ shared_examples_for 'successful response for #cancel_auto_stop' do
   end
 end
 
-shared_examples_for 'failed response for #cancel_auto_stop' do
+RSpec.shared_examples 'failed response for #cancel_auto_stop' do
   context 'when request is html' do
     let(:params) { environment_params(format: :html) }
 

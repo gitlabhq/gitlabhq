@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'handle uploads' do
+RSpec.shared_examples 'handle uploads' do
   let(:user)  { create(:user) }
   let(:jpg)   { fixture_file_upload('spec/fixtures/rails_sample.jpg', 'image/jpg') }
   let(:txt)   { fixture_file_upload('spec/fixtures/doc_sample.txt', 'text/plain') }
@@ -287,7 +287,7 @@ shared_examples 'handle uploads' do
   end
 end
 
-shared_examples 'handle uploads authorize' do
+RSpec.shared_examples 'handle uploads authorize' do
   describe "POST #authorize" do
     context 'when a user is not authorized to upload a file' do
       it 'returns 404 status' do

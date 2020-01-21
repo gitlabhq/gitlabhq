@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'todos actions' do
+RSpec.shared_examples 'todos actions' do
   context 'when authorized' do
     before do
       sign_in(user)

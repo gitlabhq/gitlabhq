@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
-shared_examples 'a working graphql query' do
+RSpec.shared_examples 'a working graphql query' do
   include GraphqlHelpers
 
   it 'returns a successful response', :aggregate_failures do

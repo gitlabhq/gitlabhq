@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples_for 'misconfigured dashboard service response' do |status_code, message = nil|
+RSpec.shared_examples 'misconfigured dashboard service response' do |status_code, message = nil|
   it 'returns an appropriate message and status code', :aggregate_failures do
     result = service_call
 
@@ -11,7 +11,7 @@ shared_examples_for 'misconfigured dashboard service response' do |status_code, 
   end
 end
 
-shared_examples_for 'valid dashboard service response for schema' do
+RSpec.shared_examples 'valid dashboard service response for schema' do
   it 'returns a json representation of the dashboard' do
     result = service_call
 
@@ -22,13 +22,13 @@ shared_examples_for 'valid dashboard service response for schema' do
   end
 end
 
-shared_examples_for 'valid dashboard service response' do
+RSpec.shared_examples 'valid dashboard service response' do
   let(:dashboard_schema) { JSON.parse(fixture_file('lib/gitlab/metrics/dashboard/schemas/dashboard.json')) }
 
   it_behaves_like 'valid dashboard service response for schema'
 end
 
-shared_examples_for 'caches the unprocessed dashboard for subsequent calls' do
+RSpec.shared_examples 'caches the unprocessed dashboard for subsequent calls' do
   it do
     expect(YAML).to receive(:safe_load).once.and_call_original
 
@@ -37,13 +37,13 @@ shared_examples_for 'caches the unprocessed dashboard for subsequent calls' do
   end
 end
 
-shared_examples_for 'valid embedded dashboard service response' do
+RSpec.shared_examples 'valid embedded dashboard service response' do
   let(:dashboard_schema) { JSON.parse(fixture_file('lib/gitlab/metrics/dashboard/schemas/embedded_dashboard.json')) }
 
   it_behaves_like 'valid dashboard service response for schema'
 end
 
-shared_examples_for 'raises error for users with insufficient permissions' do
+RSpec.shared_examples 'raises error for users with insufficient permissions' do
   context 'when the user does not have sufficient access' do
     let(:user) { build(:user) }
 

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 RSpec.shared_context 'GroupProjectsFinder context' do
   let(:group) { create(:group) }
   let(:subgroup) { create(:group, parent: group) }

@@ -3,7 +3,7 @@
 # Note that we actually update the attribute on the target_project/group, rather than
 # using `allow`.  This is because there are some specs where, based on how the notification
 # is done, using an `allow` doesn't change the correct object.
-shared_examples 'project emails are disabled' do
+RSpec.shared_examples 'project emails are disabled' do
   let(:target_project) { notification_target.is_a?(Project) ? notification_target : notification_target.project }
 
   before do
@@ -28,7 +28,7 @@ shared_examples 'project emails are disabled' do
   end
 end
 
-shared_examples 'group emails are disabled' do
+RSpec.shared_examples 'group emails are disabled' do
   let(:target_group) { notification_target.is_a?(Group) ? notification_target : notification_target.project.group }
 
   before do
@@ -53,7 +53,7 @@ shared_examples 'group emails are disabled' do
   end
 end
 
-shared_examples 'sends notification only to a maximum of ten, most recently active group owners' do
+RSpec.shared_examples 'sends notification only to a maximum of ten, most recently active group owners' do
   let(:owners) { create_list(:user, 12, :with_sign_ins) }
 
   before do
@@ -75,7 +75,7 @@ shared_examples 'sends notification only to a maximum of ten, most recently acti
   end
 end
 
-shared_examples 'sends notification only to a maximum of ten, most recently active project maintainers' do
+RSpec.shared_examples 'sends notification only to a maximum of ten, most recently active project maintainers' do
   let(:maintainers) { create_list(:user, 12, :with_sign_ins) }
 
   before do

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'multiple assignees merge request' do |action, save_button_title|
+RSpec.shared_examples 'multiple assignees merge request' do |action, save_button_title|
   it "#{action} a MR with multiple assignees", :js do
     find('.js-assignee-search').click
     page.within '.dropdown-menu-user' do

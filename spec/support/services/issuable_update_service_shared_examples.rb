@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'issuable update service' do
+RSpec.shared_examples 'issuable update service' do
   def update_issuable(opts)
     described_class.new(project, user, opts).execute(open_issuable)
   end

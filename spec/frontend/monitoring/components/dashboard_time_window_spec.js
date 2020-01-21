@@ -6,7 +6,7 @@ import statusCodes from '~/lib/utils/http_status';
 import Dashboard from '~/monitoring/components/dashboard.vue';
 import { createStore } from '~/monitoring/stores';
 import { propsData, setupComponentStore } from '../init_utils';
-import { metricsGroupsAPIResponse, mockApiEndpoint } from '../mock_data';
+import { metricsDashboardPayload, mockApiEndpoint } from '../mock_data';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   getParameterValues: jest.fn().mockImplementation(param => {
@@ -43,7 +43,7 @@ describe('dashboard time window', () => {
   });
 
   it('shows an error message if invalid url parameters are passed', done => {
-    mock.onGet(mockApiEndpoint).reply(statusCodes.OK, metricsGroupsAPIResponse);
+    mock.onGet(mockApiEndpoint).reply(statusCodes.OK, metricsDashboardPayload);
 
     createComponentWrapperMounted({ hasMetrics: true }, { stubs: ['graph-group', 'panel-type'] });
 

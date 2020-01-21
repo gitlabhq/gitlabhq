@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'renders correct panels' do
+RSpec.shared_examples 'renders correct panels' do
   it 'renders correct action on error' do
     expect_next_instance_of(ApplicationSettings::UpdateService) do |service|
       allow(service).to receive(:execute).and_return(false)

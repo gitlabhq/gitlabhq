@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'zoom quick actions' do
+RSpec.shared_examples 'zoom quick actions' do
   let(:zoom_link) { 'https://zoom.us/j/123456789' }
   let(:existing_zoom_link) { 'https://zoom.us/j/123456780' }
   let(:invalid_zoom_link) { 'https://invalid-zoom' }

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
-shared_examples_for 'model with uploads' do |supports_fileuploads|
+RSpec.shared_examples 'model with uploads' do |supports_fileuploads|
   describe '.destroy' do
     before do
       stub_uploads_object_storage(uploader_class)

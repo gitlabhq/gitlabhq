@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'cluster application version specs' do |application_name|
+RSpec.shared_examples 'cluster application version specs' do |application_name|
   describe 'update_available?' do
     let(:version) { '0.0.0' }
 

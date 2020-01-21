@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Expects `worker_class` to be defined
-shared_examples_for 'reenqueuer' do
+RSpec.shared_examples 'reenqueuer' do
   subject(:job) { worker_class.new }
 
   before do
@@ -28,7 +28,7 @@ end
 #     let(:rate_limited_method) { subject.perform }
 #   end
 #
-shared_examples_for 'it is rate limited to 1 call per' do |minimum_duration|
+RSpec.shared_examples 'it is rate limited to 1 call per' do |minimum_duration|
   before do
     # Allow Timecop freeze and travel without the block form
     Timecop.safe_mode = false

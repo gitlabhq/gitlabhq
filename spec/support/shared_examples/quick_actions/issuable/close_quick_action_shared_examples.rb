@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'close quick action' do |issuable_type|
+RSpec.shared_examples 'close quick action' do |issuable_type|
   include Spec::Support::Helpers::Features::NotesHelpers
 
   before do

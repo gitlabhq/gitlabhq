@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'issuable participants endpoint' do
+RSpec.shared_examples 'issuable participants endpoint' do
   let(:area) { entity.class.name.underscore.pluralize }
 
   it 'returns participants' do

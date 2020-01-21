@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'archive download buttons' do
+RSpec.shared_examples 'archive download buttons' do
   let(:path_to_visit) { project_path(project) }
   let(:ref) { project.default_branch }
 

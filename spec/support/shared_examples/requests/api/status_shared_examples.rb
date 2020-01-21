@@ -4,7 +4,7 @@
 #
 # Requires an API request:
 #   let(:request) { get api("/projects/#{project.id}/repository/branches", user) }
-shared_examples_for '400 response' do
+RSpec.shared_examples '400 response' do
   let(:message) { nil }
 
   before do
@@ -21,7 +21,7 @@ shared_examples_for '400 response' do
   end
 end
 
-shared_examples_for '403 response' do
+RSpec.shared_examples '403 response' do
   before do
     # Fires the request
     request
@@ -32,7 +32,7 @@ shared_examples_for '403 response' do
   end
 end
 
-shared_examples_for '404 response' do
+RSpec.shared_examples '404 response' do
   let(:message) { nil }
 
   before do
@@ -50,7 +50,7 @@ shared_examples_for '404 response' do
   end
 end
 
-shared_examples_for '412 response' do
+RSpec.shared_examples '412 response' do
   let(:params) { nil }
   let(:success_status) { 204 }
 

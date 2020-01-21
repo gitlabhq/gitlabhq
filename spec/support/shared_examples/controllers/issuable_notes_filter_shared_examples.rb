@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'issuable notes filter' do
+RSpec.shared_examples 'issuable notes filter' do
   let(:params) do
     if issuable_parent.is_a?(Project)
       { namespace_id: issuable_parent.namespace, project_id: issuable_parent, id: issuable.iid }

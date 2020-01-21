@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
-shared_examples 'paginated collection' do
+RSpec.shared_examples 'paginated collection' do
   let(:collection) { nil }
   let(:last_page) { collection.page.total_pages }
   let(:action) { :index }

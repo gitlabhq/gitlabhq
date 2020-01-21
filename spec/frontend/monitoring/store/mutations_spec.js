@@ -5,7 +5,7 @@ import * as types from '~/monitoring/stores/mutation_types';
 import state from '~/monitoring/stores/state';
 import { metricStates } from '~/monitoring/constants';
 import {
-  metricsGroupsAPIResponse,
+  metricsDashboardPayload,
   deploymentData,
   metricsDashboardResponse,
   dashboardGitResponse,
@@ -23,7 +23,7 @@ describe('Monitoring mutations', () => {
 
     beforeEach(() => {
       stateCopy.dashboard.panel_groups = [];
-      payload = metricsGroupsAPIResponse;
+      payload = metricsDashboardPayload;
     });
     it('adds a key to the group', () => {
       mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, payload);

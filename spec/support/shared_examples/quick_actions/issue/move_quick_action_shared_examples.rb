@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'move quick action' do
+RSpec.shared_examples 'move quick action' do
   context 'move the issue to another project' do
     let(:target_project) { create(:project, :public) }
 

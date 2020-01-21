@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'cluster cleanup worker base specs' do
+RSpec.shared_examples 'cluster cleanup worker base specs' do
   it 'transitions to errored if sidekiq retries exhausted' do
     job = { 'args' => [cluster.id, 0], 'jid' => '123' }
 

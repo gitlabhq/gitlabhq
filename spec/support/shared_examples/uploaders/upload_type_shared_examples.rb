@@ -5,13 +5,13 @@ def check_content_matches_extension!(file = double(read: nil, path: ''))
   uploader.check_content_matches_extension!(magic_file)
 end
 
-shared_examples 'upload passes content type check' do
+RSpec.shared_examples 'upload passes content type check' do
   it 'does not raise error' do
     expect { check_content_matches_extension! }.not_to raise_error
   end
 end
 
-shared_examples 'upload fails content type check' do
+RSpec.shared_examples 'upload fails content type check' do
   it 'raises error' do
     expect { check_content_matches_extension! }.to raise_error(CarrierWave::IntegrityError)
   end
@@ -42,7 +42,7 @@ def upload_type_checked_fixtures(upload_fixtures)
   end
 end
 
-shared_examples 'type checked uploads' do |upload_fixtures = nil, filenames: nil|
+RSpec.shared_examples 'type checked uploads' do |upload_fixtures = nil, filenames: nil|
   it 'check type' do
     upload_fixtures = Array(upload_fixtures)
     filenames = Array(filenames)
@@ -55,7 +55,7 @@ shared_examples 'type checked uploads' do |upload_fixtures = nil, filenames: nil
   end
 end
 
-shared_examples 'skipped type checked uploads' do |upload_fixtures = nil, filenames: nil|
+RSpec.shared_examples 'skipped type checked uploads' do |upload_fixtures = nil, filenames: nil|
   it 'skip type check' do
     expect(uploader).not_to receive(:check_content_matches_extension!)
 

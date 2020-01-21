@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'logs kubernetes errors' do
+RSpec.shared_examples 'logs kubernetes errors' do
   let(:error_hash) do
     {
       service: service.class.name,

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'issuable quick actions' do
+RSpec.shared_examples 'issuable quick actions' do
   QuickAction = Struct.new(:action_text, :expectation, :before_action, keyword_init: true) do
     # Pass a block as :before_action if
     # issuable state needs to be changed before

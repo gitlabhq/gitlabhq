@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-shared_context 'with storage' do |store, **stub_params|
+RSpec.shared_context 'with storage' do |store, **stub_params|
   before do
     subject.object_store = store
   end
 end
 
-shared_examples "migrates" do |to_store:, from_store: nil|
+RSpec.shared_examples "migrates" do |to_store:, from_store: nil|
   let(:to) { to_store }
   let(:from) { from_store || subject.object_store }
 

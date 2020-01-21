@@ -2,7 +2,7 @@
 
 # Construct an `uploader` variable that is configured to `check_upload_type`
 # with `mime_types` and `extensions`.
-shared_context 'uploader with type check' do
+RSpec.shared_context 'uploader with type check' do
   let(:uploader_class) do
     Class.new(GitlabUploader) do
       include UploadTypeCheck::Concern
@@ -20,7 +20,7 @@ shared_context 'uploader with type check' do
   end
 end
 
-shared_context 'stubbed MimeMagic mime type detection' do
+RSpec.shared_context 'stubbed MimeMagic mime type detection' do
   let(:mime_type) { '' }
   let(:magic_mime) { mime_type }
   let(:ext_mime) { mime_type }
