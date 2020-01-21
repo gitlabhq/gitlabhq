@@ -15,14 +15,14 @@ describe('PerformanceBarStore', () => {
     });
 
     it('keeps the last two components of the path when the last component is numeric', () => {
-      store.addRequest('id', 'https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/1');
+      store.addRequest('id', 'https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/1');
       expect(findUrl('id')).toEqual('merge_requests/1');
     });
 
     it('uses the last component of the path', () => {
       store.addRequest(
         'id',
-        'https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/1.json?serializer=widget',
+        'https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/1.json?serializer=widget',
       );
       expect(findUrl('id')).toEqual('1.json?serializer=widget');
     });

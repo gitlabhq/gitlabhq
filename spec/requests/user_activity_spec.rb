@@ -26,8 +26,8 @@ describe 'Update of user activity' do
     '/dashboard/todos',
     '/group/project/issues',
     '/group/project/issues/10',
-    '/group/project/merge_requests',
-    '/group/project/merge_requests/15'
+    '/group/project/-/merge_requests',
+    '/group/project/-/merge_requests/15'
   ]
 
   context 'without an authenticated user' do

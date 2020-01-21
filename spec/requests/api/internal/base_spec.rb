@@ -858,7 +858,7 @@ describe API::Internal::Base do
 
       message = <<~MESSAGE.strip
         To create a merge request for #{branch_name}, visit:
-          http://#{Gitlab.config.gitlab.host}/#{project.full_path}/merge_requests/new?merge_request%5Bsource_branch%5D=#{branch_name}
+          http://#{Gitlab.config.gitlab.host}/#{project.full_path}/-/merge_requests/new?merge_request%5Bsource_branch%5D=#{branch_name}
       MESSAGE
 
       expect(json_response['messages']).to include(build_basic_message(message))
@@ -921,7 +921,7 @@ describe API::Internal::Base do
 
         message = <<~MESSAGE.strip
           View merge request for #{branch_name}:
-            http://#{Gitlab.config.gitlab.host}/#{project.full_path}/merge_requests/1
+            http://#{Gitlab.config.gitlab.host}/#{project.full_path}/-/merge_requests/1
         MESSAGE
 
         expect(json_response['messages']).to include(build_basic_message(message))

@@ -8,7 +8,7 @@ export default [
     short_commit_sha: 'de7a8f7f',
     version_path: '/gnuwget/wget2/merge_requests/6/diffs?diff_id=37',
     compare_path:
-      '/gnuwget/wget2/merge_requests/6/diffs?diff_id=37&start_sha=de7a8f7f20c3ea2e0bef3ba01cfd41c21f6b4995',
+      '/gnuwget/wget2/-/merge_requests/6/diffs?diff_id=37&start_sha=de7a8f7f20c3ea2e0bef3ba01cfd41c21f6b4995',
   },
   {
     base_version_path: '/gnuwget/wget2/merge_requests/6/diffs?diff_id=36',
@@ -19,7 +19,7 @@ export default [
     short_commit_sha: 'e78fc18f',
     version_path: '/gnuwget/wget2/merge_requests/6/diffs?diff_id=36',
     compare_path:
-      '/gnuwget/wget2/merge_requests/6/diffs?diff_id=37&start_sha=e78fc18fa37acb2185c59ca94d4a964464feb50e',
+      '/gnuwget/wget2/-/merge_requests/6/diffs?diff_id=37&start_sha=e78fc18fa37acb2185c59ca94d4a964464feb50e',
   },
   {
     base_version_path: '/gnuwget/wget2/merge_requests/6/diffs?diff_id=35',
@@ -30,7 +30,7 @@ export default [
     short_commit_sha: '48da7e7e',
     version_path: '/gnuwget/wget2/merge_requests/6/diffs?diff_id=35',
     compare_path:
-      '/gnuwget/wget2/merge_requests/6/diffs?diff_id=37&start_sha=48da7e7e9a99d41c852578bd9cb541ca4d864b3e',
+      '/gnuwget/wget2/-/merge_requests/6/diffs?diff_id=37&start_sha=48da7e7e9a99d41c852578bd9cb541ca4d864b3e',
   },
   {
     base_version_path: '/gnuwget/wget2/merge_requests/6/diffs?diff_id=20',
@@ -41,6 +41,6 @@ export default [
     short_commit_sha: '47bac2ed',
     version_path: '/gnuwget/wget2/merge_requests/6/diffs?diff_id=20',
     compare_path:
-      '/gnuwget/wget2/merge_requests/6/diffs?diff_id=37&start_sha=47bac2ed972c5bee344c1cea159a22cd7f711dc0',
+      '/gnuwget/wget2/-/merge_requests/6/diffs?diff_id=37&start_sha=47bac2ed972c5bee344c1cea159a22cd7f711dc0',
   },
 ];

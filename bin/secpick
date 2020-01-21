@@ -15,8 +15,8 @@ module Secpick
   DEFAULT_REMOTE = 'dev'.freeze
   SECURITY_REMOTE = 'security'.freeze
 
-  NEW_MR_URL = 'https://dev.gitlab.org/gitlab/gitlabhq/merge_requests/new'.freeze
-  SECURITY_MR_URL = 'https://gitlab.com/gitlab-org/security/gitlab/merge_requests/new'.freeze
+  NEW_MR_URL = 'https://dev.gitlab.org/gitlab/gitlabhq/-/merge_requests/new'.freeze
+  SECURITY_MR_URL = 'https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/new'.freeze
 
   class SecurityFix
     def initialize

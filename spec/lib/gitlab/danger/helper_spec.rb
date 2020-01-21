@@ -335,14 +335,14 @@ describe Gitlab::Danger::Helper do
 
     it 'returns false when on a normal merge request' do
       expect(fake_gitlab).to receive(:mr_json)
-        .and_return('web_url' => 'https://gitlab.com/gitlab-org/gitlab/merge_requests/1')
+        .and_return('web_url' => 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1')
 
       expect(helper).not_to be_security_mr
     end
 
     it 'returns true when on a security merge request' do
       expect(fake_gitlab).to receive(:mr_json)
-        .and_return('web_url' => 'https://gitlab.com/gitlab-org/security/gitlab/merge_requests/1')
+        .and_return('web_url' => 'https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/1')
 
       expect(helper).to be_security_mr
     end

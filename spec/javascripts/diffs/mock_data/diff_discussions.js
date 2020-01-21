@@ -59,9 +59,10 @@ export default {
       report_abuse_path:
         '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-test%2Fmerge_requests%2F20%23note_1749&user_id=1',
       path: '/gitlab-org/gitlab-test/notes/1749',
-      noteable_note_url: 'http://localhost:3000/gitlab-org/gitlab-test/merge_requests/20#note_1749',
+      noteable_note_url:
+        'http://localhost:3000/gitlab-org/gitlab-test/-/merge_requests/20#note_1749',
       resolve_path:
-        '/gitlab-org/gitlab-test/merge_requests/20/discussions/6b232e05bea388c6b043ccc243ba505faac04ea8/resolve',
+        '/gitlab-org/gitlab-test/-/merge_requests/20/discussions/6b232e05bea388c6b043ccc243ba505faac04ea8/resolve',
       resolve_with_issue_path:
         '/gitlab-org/gitlab-test/issues/new?discussion_to_resolve=6b232e05bea388c6b043ccc243ba505faac04ea8&merge_request_to_resolve_discussions_of=20',
     },
@@ -111,9 +112,10 @@ export default {
       report_abuse_path:
         '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-test%2Fmerge_requests%2F20%23note_1753&user_id=1',
       path: '/gitlab-org/gitlab-test/notes/1753',
-      noteable_note_url: 'http://localhost:3000/gitlab-org/gitlab-test/merge_requests/20#note_1753',
+      noteable_note_url:
+        'http://localhost:3000/gitlab-org/gitlab-test/-/merge_requests/20#note_1753',
       resolve_path:
-        '/gitlab-org/gitlab-test/merge_requests/20/discussions/6b232e05bea388c6b043ccc243ba505faac04ea8/resolve',
+        '/gitlab-org/gitlab-test/-/merge_requests/20/discussions/6b232e05bea388c6b043ccc243ba505faac04ea8/resolve',
       resolve_with_issue_path:
         '/gitlab-org/gitlab-test/issues/new?discussion_to_resolve=6b232e05bea388c6b043ccc243ba505faac04ea8&merge_request_to_resolve_discussions_of=20',
     },
@@ -153,9 +155,10 @@ export default {
       report_abuse_path:
         '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-test%2Fmerge_requests%2F20%23note_1754&user_id=1',
       path: '/gitlab-org/gitlab-test/notes/1754',
-      noteable_note_url: 'http://localhost:3000/gitlab-org/gitlab-test/merge_requests/20#note_1754',
+      noteable_note_url:
+        'http://localhost:3000/gitlab-org/gitlab-test/-/merge_requests/20#note_1754',
       resolve_path:
-        '/gitlab-org/gitlab-test/merge_requests/20/discussions/6b232e05bea388c6b043ccc243ba505faac04ea8/resolve',
+        '/gitlab-org/gitlab-test/-/merge_requests/20/discussions/6b232e05bea388c6b043ccc243ba505faac04ea8/resolve',
       resolve_with_issue_path:
         '/gitlab-org/gitlab-test/issues/new?discussion_to_resolve=6b232e05bea388c6b043ccc243ba505faac04ea8&merge_request_to_resolve_discussions_of=20',
     },
@@ -195,9 +198,10 @@ export default {
       report_abuse_path:
         '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-test%2Fmerge_requests%2F20%23note_1755&user_id=1',
       path: '/gitlab-org/gitlab-test/notes/1755',
-      noteable_note_url: 'http://localhost:3000/gitlab-org/gitlab-test/merge_requests/20#note_1755',
+      noteable_note_url:
+        'http://localhost:3000/gitlab-org/gitlab-test/-/merge_requests/20#note_1755',
       resolve_path:
-        '/gitlab-org/gitlab-test/merge_requests/20/discussions/6b232e05bea388c6b043ccc243ba505faac04ea8/resolve',
+        '/gitlab-org/gitlab-test/-/merge_requests/20/discussions/6b232e05bea388c6b043ccc243ba505faac04ea8/resolve',
       resolve_with_issue_path:
         '/gitlab-org/gitlab-test/issues/new?discussion_to_resolve=6b232e05bea388c6b043ccc243ba505faac04ea8&merge_request_to_resolve_discussions_of=20',
     },
@@ -237,9 +241,10 @@ export default {
       report_abuse_path:
         '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-test%2Fmerge_requests%2F20%23note_1756&user_id=1',
       path: '/gitlab-org/gitlab-test/notes/1756',
-      noteable_note_url: 'http://localhost:3000/gitlab-org/gitlab-test/merge_requests/20#note_1756',
+      noteable_note_url:
+        'http://localhost:3000/gitlab-org/gitlab-test/-/merge_requests/20#note_1756',
       resolve_path:
-        '/gitlab-org/gitlab-test/merge_requests/20/discussions/6b232e05bea388c6b043ccc243ba505faac04ea8/resolve',
+        '/gitlab-org/gitlab-test/-/merge_requests/20/discussions/6b232e05bea388c6b043ccc243ba505faac04ea8/resolve',
       resolve_with_issue_path:
         '/gitlab-org/gitlab-test/issues/new?discussion_to_resolve=6b232e05bea388c6b043ccc243ba505faac04ea8&merge_request_to_resolve_discussions_of=20',
     },
@@ -248,7 +253,7 @@ export default {
   resolvable: true,
   resolved: false,
   resolve_path:
-    '/gitlab-org/gitlab-test/merge_requests/20/discussions/6b232e05bea388c6b043ccc243ba505faac04ea8/resolve',
+    '/gitlab-org/gitlab-test/-/merge_requests/20/discussions/6b232e05bea388c6b043ccc243ba505faac04ea8/resolve',
   resolve_with_issue_path:
     '/gitlab-org/gitlab-test/issues/new?discussion_to_resolve=6b232e05bea388c6b043ccc243ba505faac04ea8&merge_request_to_resolve_discussions_of=20',
   diff_file: {

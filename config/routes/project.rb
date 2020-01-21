@@ -281,6 +281,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
+        draw :merge_requests
+
         # The wiki and repository routing contains wildcard characters so
         # its preferable to keep it below all other project routes
         draw :repository_scoped
@@ -337,17 +339,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         resources :metrics, constraints: { id: %r{[^\/]+} }, only: [:index, :new, :create, :edit, :update, :destroy] do
           get :active_common, on: :collection
         end
-      end
-
-      # Unscoped route. It will be replaced with redirect to /-/merge_requests/
-      # Issue https://gitlab.com/gitlab-org/gitlab/issues/118849
-      draw :merge_requests
-
-      # To ensure an old unscoped routing is used for the UI we need to
-      # add prefix 'as' to the scope routing and place it below original MR routing.
-      # Issue https://gitlab.com/gitlab-org/gitlab/issues/118849
-      scope '-', as: 'scoped' do
-        draw :merge_requests
       end
 
       resources :pipelines, only: [:index, :new, :create, :show, :destroy] do
@@ -510,7 +501,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
                                             :forks, :group_links, :import, :avatar, :mirror,
                                             :cycle_analytics, :mattermost, :variables, :triggers,
                                             :environments, :protected_environments, :error_tracking,
-                                            :serverless, :clusters, :audit_events, :wikis)
+                                            :serverless, :clusters, :audit_events, :wikis, :merge_requests)
     end
 
     # rubocop: disable Cop/PutProjectRoutesUnderScope

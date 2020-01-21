@@ -5,7 +5,7 @@ describe('request selector', () => {
   const requests = [
     {
       id: 'warningReq',
-      url: 'https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/1/discussions.json',
+      url: 'https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/1/discussions.json',
       truncatedUrl: 'discussions.json',
       hasWarnings: true,
     },

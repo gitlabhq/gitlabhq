@@ -56,12 +56,15 @@ possible.
 
 The GraphQL API includes the following queries at the root level:
 
-1. `project` : Project information, with many of its associations such as issues and merge requests also available.
+1. `project` : Project information, with many of its associations such as issues and merge requests.
 1. `group` : Basic group information and epics **(ULTIMATE)** are currently supported.
 1. `namespace` : Within a namespace it is also possible to fetch `projects`.
 1. `currentUser`: Information about the currently logged in user.
 1. `metaData`: Metadata about GitLab and the GraphQL API.
 1. `snippets`: Snippets visible to the currently logged in user.
+
+New associations and root level objects are constantly being added.
+See the [GraphQL API Reference](reference/index.md) for up-to-date information.
 
 Root-level queries are defined in
 [`app/graphql/types/query_type.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/app/graphql/types/query_type.rb).

@@ -53,11 +53,11 @@ Disallow: /*/*/milestones/new
 Disallow: /*/*/milestones/*/edit
 Disallow: /*/*/issues/new
 Disallow: /*/*/issues/*/edit
-Disallow: /*/*/merge_requests/new
-Disallow: /*/*/merge_requests/*.patch
-Disallow: /*/*/merge_requests/*.diff
-Disallow: /*/*/merge_requests/*/edit
-Disallow: /*/*/merge_requests/*/diffs
+Disallow: /*/*/-/merge_requests/new
+Disallow: /*/*/-/merge_requests/*.patch
+Disallow: /*/*/-/merge_requests/*.diff
+Disallow: /*/*/-/merge_requests/*/edit
+Disallow: /*/*/-/merge_requests/*/diffs
 Disallow: /*/*/project_members/import
 Disallow: /*/*/labels/new
 Disallow: /*/*/labels/*/edit
