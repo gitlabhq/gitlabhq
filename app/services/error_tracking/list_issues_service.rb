@@ -12,7 +12,7 @@ module ErrorTracking
 
     private
 
-    def fetch
+    def perform
       project_error_tracking_setting.list_sentry_issues(
         issue_status: issue_status,
         limit: limit,

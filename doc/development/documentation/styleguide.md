@@ -275,10 +275,10 @@ Do not include the same information in multiple places. [Link to a SSOT instead.
 - Do not use "may" and "might" interchangeably:
   - Use "might" to indicate the probability of something occurring. "If you skip this step, the import process might fail."
   - Use "may" to indicate giving permission for someone to do something, or consider using "can" instead. "You may select either option on this screen." Or, "you can select either option on this screen."
-- We recommend avoiding Latin abbreviations, such as "e.g.," "i.e.," or "etc.,"
+- We discourage use of Latin abbreviations, such as "e.g.," "i.e.," or "etc.,"
 as even native users of English might misunderstand them.
   - Instead of "i.e.", use "that is."
-  - Instead of "e.g.", use "for example."
+  - Instead of "e.g.", use "for example," "such as," "for instance," or "like."
   - Instead of "etc.", either use "and so on" or consider editing it out, since it can be vague.
 
 ## Text
