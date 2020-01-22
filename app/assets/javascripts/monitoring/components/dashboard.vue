@@ -342,7 +342,7 @@ export default {
 </script>
 
 <template>
-  <div class="prometheus-graphs">
+  <div class="prometheus-graphs" data-qa-selector="prometheus_graphs">
     <div class="prometheus-graphs-header gl-p-3 pb-0 border-bottom bg-gray-light">
       <div class="row">
         <template v-if="environmentsEndpoint">

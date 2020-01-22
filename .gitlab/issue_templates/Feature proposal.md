@@ -40,12 +40,12 @@ If this feature requires changing permissions, this document https://docs.gitlab
 
 <!-- What risks does this change pose to our availability? How might it affect the quality of the product? What additional test coverage or changes to tests will be needed? Will it require cross-browser testing? 
 
-Please list the test areas (unit, integration and end-to-end) that needs to be added or updated to ensure that this feature will work as intended. Plese use the list below as guidance.
+Please list the test areas (unit, integration and end-to-end) that needs to be added or updated to ensure that this feature will work as intended. Please use the list below as guidance.
 * Unit test changes
 * Integration test changes
 * End-to-end test change
 
-See the test engineering planning process and reach out to your counterpart Software Engineer in Test for assistance : https://about.gitlab.com/handbook/engineering/quality/test-engineering/#test-planning -->
+See the test engineering planning process and reach out to your counterpart Software Engineer in Test for assistance: https://about.gitlab.com/handbook/engineering/quality/test-engineering/#test-planning -->
 
 ### What does success look like, and how can we measure that?
 

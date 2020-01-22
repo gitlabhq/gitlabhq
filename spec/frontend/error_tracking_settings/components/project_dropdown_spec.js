@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import { pick, clone } from 'lodash';
 import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
@@ -15,7 +15,7 @@ describe('error tracking settings project dropdown', () => {
     wrapper = shallowMount(ProjectDropdown, {
       localVue,
       propsData: {
-        ..._.pick(
+        ...pick(
           defaultProps,
           'dropdownLabel',
           'invalidProjectLabel',
@@ -65,7 +65,7 @@ describe('error tracking settings project dropdown', () => {
 
   describe('populated project list', () => {
     beforeEach(() => {
-      wrapper.setProps({ projects: _.clone(projectList), hasProjects: true });
+      wrapper.setProps({ projects: clone(projectList), hasProjects: true });
 
       return wrapper.vm.$nextTick();
     });
@@ -82,10 +82,10 @@ describe('error tracking settings project dropdown', () => {
   });
 
   describe('selected project', () => {
-    const selectedProject = _.clone(projectList[0]);
+    const selectedProject = clone(projectList[0]);
 
     beforeEach(() => {
-      wrapper.setProps({ projects: _.clone(projectList), selectedProject, hasProjects: true });
+      wrapper.setProps({ projects: clone(projectList), selectedProject, hasProjects: true });
       return wrapper.vm.$nextTick();
     });
 
@@ -98,7 +98,7 @@ describe('error tracking settings project dropdown', () => {
   describe('invalid project selected', () => {
     beforeEach(() => {
       wrapper.setProps({
-        projects: _.clone(projectList),
+        projects: clone(projectList),
         selectedProject: staleProject,
         isProjectInvalid: true,
       });

@@ -21,9 +21,9 @@ module QA
           has_element?(:performance_bar)
         end
 
-        def has_detailed_metrics?(count)
+        def has_detailed_metrics?(minimum_count)
           retry_until(sleep_interval: 1) do
-            all_elements(:detailed_metric_content, count: count).all? do |metric|
+            all_elements(:detailed_metric_content, minimum: minimum_count).all? do |metric|
               metric.has_text?(%r{\d+})
             end
           end

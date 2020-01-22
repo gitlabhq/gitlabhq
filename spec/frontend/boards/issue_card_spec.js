@@ -1,6 +1,6 @@
 /* global ListAssignee, ListLabel, ListIssue */
 import { mount } from '@vue/test-utils';
-import _ from 'underscore';
+import { range } from 'lodash';
 import '~/boards/models/label';
 import '~/boards/models/assignee';
 import '~/boards/models/issue';
@@ -222,7 +222,7 @@ describe('Issue card component', () => {
       it('renders 99+ avatar counter', done => {
         const assignees = [
           ...wrapper.props('issue').assignees,
-          ..._.range(5, 103).map(
+          ...range(5, 103).map(
             i =>
               new ListAssignee({
                 id: i,

@@ -331,6 +331,7 @@ export default {
           :loading="isRetrying"
           :disabled="isRetrying"
           container-class="js-pipelines-retry-button btn btn-default btn-retry"
+          data-qa-selector="pipeline_retry_button"
           @click="handleRetryClick"
         >
           <icon name="repeat" />

@@ -22,6 +22,7 @@ const plugins = [
   '@babel/plugin-proposal-json-strings',
   '@babel/plugin-proposal-private-methods',
   '@babel/plugin-proposal-optional-chaining',
+  'lodash',
 ];
 
 // add code coverage tooling if necessary

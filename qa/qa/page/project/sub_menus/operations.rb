@@ -12,6 +12,7 @@ module QA
               view 'app/views/layouts/nav/sidebar/_project.html.haml' do
                 element :link_operations
                 element :operations_environments_link
+                element :operations_metrics_link
               end
             end
           end
@@ -20,6 +21,14 @@ module QA
             hover_operations do
               within_submenu do
                 click_element(:operations_environments_link)
+              end
+            end
+          end
+
+          def go_to_operations_metrics
+            hover_operations do
+              within_submenu do
+                click_element(:operations_metrics_link)
               end
             end
           end

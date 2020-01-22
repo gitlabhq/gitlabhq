@@ -232,7 +232,7 @@
 
             - if project_nav_tab? :environments
               = nav_link(controller: :environments, action: [:metrics, :metrics_redirect]) do
-                = link_to metrics_project_environments_path(@project), title: _('Metrics'), class: 'shortcuts-metrics' do
+                = link_to metrics_project_environments_path(@project), title: _('Metrics'), class: 'shortcuts-metrics', data: { qa_selector: 'operations_metrics_link' } do
                   %span
                     = _('Metrics')
 

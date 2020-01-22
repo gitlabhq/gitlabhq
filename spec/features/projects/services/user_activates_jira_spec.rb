@@ -9,8 +9,8 @@ describe 'User activates Jira', :js do
   let(:url) { 'http://jira.example.com' }
   let(:test_url) { 'http://jira.example.com/rest/api/2/serverInfo' }
 
-  def fill_form(active = true)
-    check 'Active' if active
+  def fill_form(disabled: false)
+    uncheck 'Active' if disabled
 
     fill_in 'service_url', with: url
     fill_in 'service_username', with: 'username'
@@ -83,10 +83,10 @@ describe 'User activates Jira', :js do
     end
   end
 
-  describe 'user sets Jira Service but keeps it disabled' do
+  describe 'user disables the Jira Service' do
     before do
       click_link('Jira')
-      fill_form(false)
+      fill_form(disabled: true)
       click_button('Save changes')
     end
 
