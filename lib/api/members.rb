@@ -19,6 +19,7 @@ module API
         params do
           optional :query, type: String, desc: 'A query string to search for members'
           optional :user_ids, type: Array[Integer], desc: 'Array of user ids to look up for membership'
+          optional :show_seat_info, type: Boolean, desc: 'Show seat information for members'
           use :optional_filter_params_ee
           use :pagination
         end
@@ -37,6 +38,7 @@ module API
         params do
           optional :query, type: String, desc: 'A query string to search for members'
           optional :user_ids, type: Array[Integer], desc: 'Array of user ids to look up for membership'
+          optional :show_seat_info, type: Boolean, desc: 'Show seat information for members'
           use :pagination
         end
 

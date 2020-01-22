@@ -188,4 +188,46 @@ describe API::Helpers do
       subject.track_event('my_event', category: nil)
     end
   end
+
+  describe '#order_options_with_tie_breaker' do
+    subject { Class.new.include(described_class).new.order_options_with_tie_breaker }
+
+    before do
+      allow_any_instance_of(described_class).to receive(:params).and_return(params)
+    end
+
+    context 'with non-id order given' do
+      context 'with ascending order' do
+        let(:params) { { order_by: 'name', sort: 'asc' } }
+
+        it 'adds id based ordering with same direction as primary order' do
+          is_expected.to eq({ 'name' => 'asc', 'id' => 'asc' })
+        end
+      end
+
+      context 'with descending order' do
+        let(:params) { { order_by: 'name', sort: 'desc' } }
+
+        it 'adds id based ordering with same direction as primary order' do
+          is_expected.to eq({ 'name' => 'desc', 'id' => 'desc' })
+        end
+      end
+    end
+
+    context 'with non-id order but no direction given' do
+      let(:params) { { order_by: 'name' } }
+
+      it 'adds ID ASC order' do
+        is_expected.to eq({ 'name' => nil, 'id' => 'asc' })
+      end
+    end
+
+    context 'with id order given' do
+      let(:params) { { order_by: 'id', sort: 'asc' } }
+
+      it 'does not add an additional order' do
+        is_expected.to eq({ 'id' => 'asc' })
+      end
+    end
+  end
 end

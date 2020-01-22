@@ -1,0 +1,5 @@
+---
+title: Expose is_using_seat attribute for Member in API
+merge_request: 21496
+author:
+type: added

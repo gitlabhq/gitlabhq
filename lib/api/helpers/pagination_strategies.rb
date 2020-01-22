@@ -26,7 +26,7 @@ module API
       private
 
       def keyset_pagination_enabled?
-        params[:pagination] == 'keyset' && Feature.enabled?(:api_keyset_pagination, default_enabled: true)
+        params[:pagination] == 'keyset'
       end
     end
   end

@@ -35,6 +35,8 @@ describe Projects::Registry::RepositoriesController do
           end
 
           it 'successfully renders container repositories' do
+            expect(Gitlab::Tracking).not_to receive(:event)
+
             go_to_index
 
             expect(response).to have_gitlab_http_status(:ok)
@@ -43,7 +45,7 @@ describe Projects::Registry::RepositoriesController do
           it 'tracks the event' do
             expect(Gitlab::Tracking).to receive(:event).with(anything, 'list_repositories', {})
 
-            go_to_index
+            go_to_index(format: :json)
           end
 
           it 'creates a root container repository' do

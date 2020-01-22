@@ -25,6 +25,7 @@ describe User, :do_not_mock_admin_mode do
   describe 'associations' do
     it { is_expected.to have_one(:namespace) }
     it { is_expected.to have_one(:status) }
+    it { is_expected.to have_one(:max_access_level_membership) }
     it { is_expected.to have_many(:snippets).dependent(:destroy) }
     it { is_expected.to have_many(:members) }
     it { is_expected.to have_many(:project_members) }
@@ -839,8 +840,35 @@ describe User, :do_not_mock_admin_mode do
 
   describe '#highest_role' do
     let(:user) { create(:user) }
-
     let(:group) { create(:group) }
+
+    context 'with association :max_access_level_membership' do
+      let(:another_user) { create(:user) }
+
+      before do
+        create(:project, group: group) do |project|
+          group.add_user(user, GroupMember::GUEST)
+          group.add_user(another_user, GroupMember::DEVELOPER)
+        end
+
+        create(:project, group: create(:group)) do |project|
+          project.add_guest(another_user)
+        end
+
+        create(:project, group: create(:group)) do |project|
+          project.add_maintainer(user)
+        end
+      end
+
+      it 'returns the correct highest role' do
+        users = User.includes(:max_access_level_membership).where(id: [user.id, another_user.id])
+
+        expect(users.collect { |u| [u.id, u.highest_role] }).to contain_exactly(
+          [user.id, Gitlab::Access::MAINTAINER],
+          [another_user.id, Gitlab::Access::DEVELOPER]
+        )
+      end
+    end
 
     it 'returns NO_ACCESS if none has been set' do
       expect(user.highest_role).to eq(Gitlab::Access::NO_ACCESS)

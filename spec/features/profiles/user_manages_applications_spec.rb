@@ -20,16 +20,19 @@ describe 'User manages applications' do
     expect(page).to have_content 'Application: test'
     expect(page).to have_content 'Application ID'
     expect(page).to have_content 'Secret'
+    expect(page).to have_content 'Confidential Yes'
 
     click_on 'Edit'
 
     expect(page).to have_content 'Edit application'
     fill_in :doorkeeper_application_name, with: 'test_changed'
+    uncheck :doorkeeper_application_confidential
     click_on 'Save application'
 
     expect(page).to have_content 'test_changed'
     expect(page).to have_content 'Application ID'
     expect(page).to have_content 'Secret'
+    expect(page).to have_content 'Confidential No'
 
     visit applications_profile_path
 

@@ -12,6 +12,7 @@
       %th Callback URL
       %th Clients
       %th Trusted
+      %th Confidential
       %th
       %th
   %tbody.oauth-applications
@@ -21,6 +22,7 @@
         %td= application.redirect_uri
         %td= @application_counts[application.id].to_i
         %td= application.trusted? ? 'Y': 'N'
+        %td= application.confidential? ? 'Y': 'N'
         %td= link_to 'Edit', edit_admin_application_path(application), class: 'btn btn-link'
         %td= render 'delete_form', application: application
 = paginate @applications, theme: 'gitlab'

@@ -46,7 +46,7 @@ module API
       end
 
       def present_members(members)
-        present members, with: Entities::Member, current_user: current_user
+        present members, with: Entities::Member, current_user: current_user, show_seat_info: params[:show_seat_info]
       end
     end
   end

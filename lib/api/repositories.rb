@@ -103,8 +103,13 @@ module API
         optional :straight, type: Boolean, desc: 'Comparison method, `true` for direct comparison between `from` and `to` (`from`..`to`), `false` to compare using merge base (`from`...`to`)', default: false
       end
       get ':id/repository/compare' do
-        compare = Gitlab::Git::Compare.new(user_project.repository.raw_repository, params[:from], params[:to], straight: params[:straight])
-        present compare, with: Entities::Compare
+        compare = CompareService.new(user_project, params[:to]).execute(user_project, params[:from], straight: params[:straight])
+
+        if compare
+          present compare, with: Entities::Compare
+        else
+          not_found!("Ref")
+        end
       end
 
       desc 'Get repository contributors' do

@@ -316,7 +316,7 @@ module API
 
     def order_options_with_tie_breaker
       order_options = { params[:order_by] => params[:sort] }
-      order_options['id'] ||= 'desc'
+      order_options['id'] ||= params[:sort] || 'asc'
       order_options
     end
 

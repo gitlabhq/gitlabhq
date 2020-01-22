@@ -101,6 +101,7 @@ class User < ApplicationRecord
 
   # Groups
   has_many :members
+  has_one  :max_access_level_membership, -> { select(:id, :user_id, :access_level).order(access_level: :desc).readonly }, class_name: 'Member'
   has_many :group_members, -> { where(requested_at: nil) }, source: 'GroupMember'
   has_many :groups, through: :group_members
   has_many :owned_groups, -> { where(members: { access_level: Gitlab::Access::OWNER }) }, through: :group_members, source: :group
@@ -1027,7 +1028,7 @@ class User < ApplicationRecord
   end
 
   def highest_role
-    members.maximum(:access_level) || Gitlab::Access::NO_ACCESS
+    max_access_level_membership&.access_level || Gitlab::Access::NO_ACCESS
   end
 
   def accessible_deploy_keys

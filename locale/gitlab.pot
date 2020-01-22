@@ -18420,6 +18420,9 @@ msgstr ""
 msgid "The amount of seconds after which a request to get a secondary node status will time out."
 msgstr ""
 
+msgid "The application will be used where the client secret can be kept confidential. Native mobile apps and Single Page Apps are considered non-confidential."
+msgstr ""
+
 msgid "The branch for this project has no active pipeline configuration."
 msgstr ""
 

@@ -284,32 +284,3 @@ command and not the PID(s) of the started Sidekiq processes.
 The Rails environment can be set by passing the `--environment` flag to the
 `sidekiq-cluster` command, or by setting `RAILS_ENV` to a non-empty value. The
 default value can be found in `/opt/gitlab/etc/gitlab-rails/env/RAILS_ENV`.
-
-### Using negation
-
-You're able to run all queues in the `all_queues.yml` file (or the equivalent EE
-file) on a single or multiple processes with exceptions using the `--negate`
-flag.
-
-For example, say you want to run a single process for all queues,
-except `process_commit` and `post_receive`:
-
-```bash
-/opt/gitlab/embedded/service/gitlab-rails/ee/bin/sidekiq-cluster process_commit,post_receive --negate
-```
-
-For multiple processes of all queues (except `process_commit` and `post_receive`):
-
-```bash
-/opt/gitlab/embedded/service/gitlab-rails/ee/bin/sidekiq-cluster process_commit,post_receive process_commit,post_receive --negate
-```
-
-### Limiting concurrency
-
-By default, `sidekiq-cluster` will spin up extra Sidekiq processes that use
-one thread per queue up to a maximum of 50. If you wish to change the cap, use
-the `-m N` option. For example, this would cap the maximum number of threads to 1:
-
-```bash
-/opt/gitlab/embedded/service/gitlab-rails/ee/bin/sidekiq-cluster process_commit,post_receive -m 1
-```

@@ -11,7 +11,7 @@ describe('self monitor component', () => {
     beforeEach(() => {
       store = createStore({
         projectEnabled: false,
-        selfMonitorProjectCreated: false,
+        selfMonitoringProjectExists: false,
         createSelfMonitoringProjectPath: '/create',
         deleteSelfMonitoringProjectPath: '/delete',
       });
@@ -69,7 +69,7 @@ describe('self monitor component', () => {
       it('renders the form description with a link', () => {
         store = createStore({
           projectEnabled: true,
-          selfMonitorProjectCreated: true,
+          selfMonitoringProjectExists: true,
           createSelfMonitoringProjectPath: '/create',
           deleteSelfMonitoringProjectPath: '/delete',
         });

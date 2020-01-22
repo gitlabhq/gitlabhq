@@ -21,18 +21,21 @@ RSpec.describe 'admin manage applications' do
     expect(page).to have_content('Application ID')
     expect(page).to have_content('Secret')
     expect(page).to have_content('Trusted Y')
+    expect(page).to have_content('Confidential Y')
 
     click_on 'Edit'
     expect(page).to have_content('Edit application')
 
     fill_in :doorkeeper_application_name, with: 'test_changed'
     uncheck :doorkeeper_application_trusted
+    uncheck :doorkeeper_application_confidential
 
     click_on 'Submit'
     expect(page).to have_content('test_changed')
     expect(page).to have_content('Application ID')
     expect(page).to have_content('Secret')
     expect(page).to have_content('Trusted N')
+    expect(page).to have_content('Confidential N')
 
     visit admin_applications_path
     page.within '.oauth-applications' do

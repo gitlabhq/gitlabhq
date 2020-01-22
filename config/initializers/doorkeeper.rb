@@ -118,8 +118,8 @@ end
 # app created does not match the complete list of scopes of the configured app.
 # It also prevents the OAuth authorize application window to appear every time.
 
-# Remove after we upgrade the doorkeeper gem from version 4.3.2
-if Doorkeeper.gem_version > Gem::Version.new('4.3.2')
+# Remove after we upgrade the doorkeeper gem from version 4.x
+if Doorkeeper.gem_version > Gem::Version.new('5.0.0')
   raise "Doorkeeper was upgraded, please remove the monkey patch in #{__FILE__}"
 end
 
