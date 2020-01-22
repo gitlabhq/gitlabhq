@@ -38,6 +38,8 @@ module Deployments
         .commits_between(from, to)
         .map(&:id)
 
+      track_mr_picking = Feature.enabled?(:track_mr_picking, project)
+
       # For some projects the list of commits to deploy may be very large. To
       # ensure we do not end up running SQL queries with thousands of WHERE IN
       # values, we run one query per a certain number of commits.
@@ -50,6 +52,13 @@ module Deployments
           project.merge_requests.merged.by_merge_commit_sha(slice)
 
         deployment.link_merge_requests(merge_requests)
+
+        next unless track_mr_picking
+
+        picked_merge_requests =
+          project.merge_requests.by_cherry_pick_sha(slice)
+
+        deployment.link_merge_requests(picked_merge_requests)
       end
     end
 

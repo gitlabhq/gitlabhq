@@ -29,6 +29,11 @@ FactoryBot.define do
       end
     end
 
+    factory :track_mr_picking_note, traits: [:on_merge_request, :system] do
+      association :system_note_metadata, action: 'cherry_pick'
+      commit_id { RepoHelpers.sample_commit.id }
+    end
+
     factory :discussion_note_on_issue, traits: [:on_issue], class: 'DiscussionNote'
 
     factory :discussion_note_on_commit, traits: [:on_commit], class: 'DiscussionNote'

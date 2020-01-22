@@ -1,6 +1,7 @@
 /* eslint-disable class-methods-use-this */
 
 import { Node } from 'tiptap';
+import { HIGHER_PARSE_RULE_PRIORITY } from '../constants';
 
 // Transforms generated HTML back to GFM for Banzai::Filter::ReferenceFilter and subclasses
 export default class Reference extends Node {
@@ -23,7 +24,7 @@ export default class Reference extends Node {
       parseDOM: [
         {
           tag: 'a.gfm:not([data-link=true])',
-          priority: 51,
+          priority: HIGHER_PARSE_RULE_PRIORITY,
           getAttrs: el => ({
             className: el.className,
             referenceType: el.dataset.referenceType,

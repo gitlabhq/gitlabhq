@@ -228,6 +228,9 @@ class MergeRequest < ApplicationRecord
   scope :by_merge_commit_sha, -> (sha) do
     where(merge_commit_sha: sha)
   end
+  scope :by_cherry_pick_sha, -> (sha) do
+    joins(:notes).where(notes: { commit_id: sha })
+  end
   scope :join_project, -> { joins(:target_project) }
   scope :references_project, -> { references(:target_project) }
   scope :with_api_entity_associations, -> {

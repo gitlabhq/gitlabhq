@@ -139,6 +139,17 @@ module SystemNotes
 
       create_note(NoteSummary.new(noteable, project, author, body, action: 'merge'))
     end
+
+    def picked_into_branch(branch_name, pick_commit)
+      link = url_helpers.project_tree_path(project, branch_name)
+
+      body = "picked this merge request into branch [`#{branch_name}`](#{link}) with commit #{pick_commit}"
+
+      summary = NoteSummary.new(noteable, project, author, body, action: 'cherry_pick')
+      summary.note[:commit_id] = pick_commit
+
+      create_note(summary)
+    end
   end
 end
 

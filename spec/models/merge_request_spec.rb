@@ -327,6 +327,16 @@ describe MergeRequest do
     end
   end
 
+  describe '.by_cherry_pick_sha' do
+    it 'returns merge requests that match the given merge commit' do
+      note = create(:track_mr_picking_note, commit_id: '456abc')
+
+      create(:track_mr_picking_note, commit_id: '456def')
+
+      expect(described_class.by_cherry_pick_sha('456abc')).to eq([note.noteable])
+    end
+  end
+
   describe '.in_projects' do
     it 'returns the merge requests for a set of projects' do
       expect(described_class.in_projects(Project.all)).to eq([subject])

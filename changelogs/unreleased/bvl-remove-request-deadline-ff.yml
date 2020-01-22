@@ -1,0 +1,5 @@
+---
+title: Don't allow Gitaly calls to exceed the worker timeout set for unicorn or puma
+merge_request: 23510
+author:
+type: performance

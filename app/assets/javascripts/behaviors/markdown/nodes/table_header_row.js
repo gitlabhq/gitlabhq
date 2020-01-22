@@ -1,6 +1,7 @@
 /* eslint-disable class-methods-use-this */
 
 import TableRow from './table_row';
+import { HIGHER_PARSE_RULE_PRIORITY } from '../constants';
 
 const CENTER_ALIGN = 'center';
 
@@ -16,7 +17,7 @@ export default class TableHeaderRow extends TableRow {
       parseDOM: [
         {
           tag: 'thead tr',
-          priority: 51,
+          priority: HIGHER_PARSE_RULE_PRIORITY,
         },
       ],
       toDOM: () => ['tr', 0],

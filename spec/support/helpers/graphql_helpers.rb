@@ -136,6 +136,7 @@ module GraphqlHelpers
     allow_unlimited_graphql_complexity
     allow_unlimited_graphql_depth
     allow_high_graphql_recursion
+    allow_high_graphql_transaction_threshold
 
     type = GitlabSchema.types[class_name.to_s]
     return "" unless type
@@ -293,6 +294,10 @@ module GraphqlHelpers
 
   def allow_high_graphql_recursion
     allow_any_instance_of(Gitlab::Graphql::QueryAnalyzers::RecursionAnalyzer).to receive(:recursion_threshold).and_return 1000
+  end
+
+  def allow_high_graphql_transaction_threshold
+    stub_const("Gitlab::QueryLimiting::Transaction::THRESHOLD", 1000)
   end
 
   def node_array(data, extract_attribute = nil)
