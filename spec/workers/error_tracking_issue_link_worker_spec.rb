@@ -40,14 +40,17 @@ describe ErrorTrackingIssueLinkWorker do
       end
     end
 
-    shared_examples_for 'terminates after one API request' do
+    shared_examples_for 'attempts to create a link via plugin' do
       it 'takes no action' do
         expect_next_instance_of(Sentry::Client) do |client|
           expect(client).to receive(:repos).with('sentry-org').and_return([repo])
+          expect(client)
+            .to receive(:create_issue_link)
+            .with(nil, sentry_issue.sentry_issue_identifier, issue)
+            .and_return(true)
         end
-        expect_any_instance_of(Sentry::Client).not_to receive(:create_issue_link)
 
-        expect(subject).to be nil
+        expect(subject).to be true
       end
     end
 
@@ -78,7 +81,7 @@ describe ErrorTrackingIssueLinkWorker do
         )
       end
 
-      it_behaves_like 'terminates after one API request'
+      it_behaves_like 'attempts to create a link via plugin'
     end
 
     context 'when Sentry the GitLab integration is for another project' do
@@ -90,7 +93,7 @@ describe ErrorTrackingIssueLinkWorker do
         )
       end
 
-      it_behaves_like 'terminates after one API request'
+      it_behaves_like 'attempts to create a link via plugin'
     end
   end
 end

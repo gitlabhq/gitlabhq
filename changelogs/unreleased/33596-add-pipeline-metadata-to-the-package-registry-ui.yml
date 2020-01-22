@@ -1,0 +1,6 @@
+---
+title: Packages published to the package registry via CI/CD with a CI_JOB_TOKEN will
+  display pipeline information on the details page
+merge_request: 22485
+author:
+type: added

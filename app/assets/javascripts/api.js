@@ -44,6 +44,7 @@ const Api = {
   releasePath: '/api/:version/projects/:id/releases/:tag_name',
   mergeRequestsPipeline: '/api/:version/projects/:id/merge_requests/:merge_request_iid/pipelines',
   adminStatisticsPath: '/api/:version/application/statistics',
+  pipelineSinglePath: '/api/:version/projects/:id/pipelines/:pipeline_id',
 
   group(groupId, callback) {
     const url = Api.buildUrl(Api.groupPath).replace(':id', groupId);
@@ -445,6 +446,14 @@ const Api = {
 
   adminStatistics() {
     const url = Api.buildUrl(this.adminStatisticsPath);
+    return axios.get(url);
+  },
+
+  pipelineSingle(id, pipelineId) {
+    const url = Api.buildUrl(this.pipelineSinglePath)
+      .replace(':id', encodeURIComponent(id))
+      .replace(':pipeline_id', encodeURIComponent(pipelineId));
+
     return axios.get(url);
   },
 

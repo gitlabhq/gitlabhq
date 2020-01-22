@@ -13026,6 +13026,12 @@ msgstr ""
 msgid "PackageRegistry|There was a problem fetching the details for this package."
 msgstr ""
 
+msgid "PackageRegistry|There was an error fetching the pipeline information."
+msgstr ""
+
+msgid "PackageRegistry|Unable to fetch pipeline information"
+msgstr ""
+
 msgid "PackageRegistry|Unable to load package"
 msgstr ""
 

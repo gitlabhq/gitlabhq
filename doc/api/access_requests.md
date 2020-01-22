@@ -2,7 +2,7 @@
 
  >**Note:** This feature was introduced in GitLab 8.11
 
- **Valid access levels**
+## Valid access levels
 
  The access levels are defined in the `Gitlab::Access` module. Currently, these levels are recognized:
 

@@ -124,9 +124,18 @@ number of threads that equals the number of queues, plus one spare thread.
 For example, a process that handles the `process_commit` and `post_receive`
 queues will use three threads in total.
 
-## Limiting concurrency
+## Managing concurrency
 
-To limit the concurrency of the Sidekiq process:
+When setting the maximum concurrency, keep in mind this normally should
+not exceed the number of CPU cores available. The values in the examples
+below are arbitrary and not particular recommendations.
+
+Each thread requires a Redis connection, so adding threads may increase Redis
+latency and potentially cause client timeouts. See the [Sidekiq documentation
+about Redis](https://github.com/mperham/sidekiq/wiki/Using-Redis) for more
+details.
+
+### When running a single Sidekiq process (default)
 
 1. Edit `/etc/gitlab/gitlab.rb` and add:
 
@@ -140,11 +149,14 @@ To limit the concurrency of the Sidekiq process:
    sudo gitlab-ctl reconfigure
    ```
 
-To limit the max concurrency of the Sidekiq cluster processes:
+This will set the concurrency (number of threads) for the Sidekiq process.
+
+### When running Sidekiq cluster
 
 1. Edit `/etc/gitlab/gitlab.rb` and add:
 
    ```ruby
+   sidekiq_cluster['min_concurrency'] = 15
    sidekiq_cluster['max_concurrency'] = 25
    ```
 
@@ -154,14 +166,21 @@ To limit the max concurrency of the Sidekiq cluster processes:
    sudo gitlab-ctl reconfigure
    ```
 
-For each queue group, the concurrency factor will be set to `min(number of queues, N)`.
-Setting the value to 0 will disable the limit. Keep in mind this normally would
-not exceed the number of CPU cores available.
+`min_concurrency` and `max_concurrency` are independent; one can be set without
+the other. Setting `min_concurrency` to 0 will disable the limit.
 
-Each thread requires a Redis connection, so adding threads may
-increase Redis latency and potentially cause client timeouts. See the [Sidekiq
-documentation about Redis](https://github.com/mperham/sidekiq/wiki/Using-Redis)
-for more details.
+For each queue group, let N be one more than the number of queues. The
+concurrency factor will be set to:
+
+1. `N`, if it's between `min_concurrency` and `max_concurrency`.
+1. `max_concurrency`, if `N` exceeds this value.
+1. `min_concurrency`, if `N` is less than this value.
+
+If `min_concurrency` is equal to `max_concurrency`, then this value will be used
+regardless of the number of queues.
+
+When `min_concurrency` is greater than `max_concurrency`, it is treated as
+being equal to `max_concurrency`.
 
 ## Modifying the check interval
 

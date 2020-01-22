@@ -54,6 +54,12 @@ module Sentry
       end
     end
 
+    def http_post(url, params = {})
+      http_request do
+        Gitlab::HTTP.post(url, **request_params.merge(body: params.to_json))
+      end
+    end
+
     def http_request
       response = handle_request_exceptions do
         yield

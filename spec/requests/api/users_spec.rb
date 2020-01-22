@@ -2100,6 +2100,83 @@ describe API::Users do
     end
   end
 
+  describe "GET /users/:id/memberships" do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:group) { create(:group) }
+    let(:requesting_user) { create(:user) }
+
+    before_all do
+      project.add_guest(user)
+      group.add_guest(user)
+    end
+
+    it "responses with 403" do
+      get api("/users/#{user.id}/memberships", requesting_user)
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+    end
+
+    context 'requested by admin user' do
+      let(:requesting_user) { create(:user, :admin) }
+
+      it "responses successfully" do
+        get api("/users/#{user.id}/memberships", requesting_user)
+
+        aggregate_failures 'expect successful response including groups and projects' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('public_api/v4/memberships')
+          expect(response).to include_pagination_headers
+          expect(json_response).to contain_exactly(
+            a_hash_including('source_type' => 'Project'),
+            a_hash_including('source_type' => 'Namespace')
+          )
+        end
+      end
+
+      it 'does not submit N+1 DB queries' do
+        # Avoid setup queries
+        get api("/users/#{user.id}/memberships", requesting_user)
+
+        control = ActiveRecord::QueryRecorder.new do
+          get api("/users/#{user.id}/memberships", requesting_user)
+        end
+
+        create_list(:project, 5).map { |project| project.add_guest(user) }
+
+        expect do
+          get api("/users/#{user.id}/memberships", requesting_user)
+        end.not_to exceed_query_limit(control)
+      end
+
+      context 'with type filter' do
+        it "only returns project memberships" do
+          get api("/users/#{user.id}/memberships?type=Project", requesting_user)
+
+          aggregate_failures do
+            expect(json_response).to contain_exactly(a_hash_including('source_type' => 'Project'))
+            expect(json_response).not_to include(a_hash_including('source_type' => 'Namespace'))
+          end
+        end
+
+        it "only returns group memberships" do
+          get api("/users/#{user.id}/memberships?type=Namespace", requesting_user)
+
+          aggregate_failures do
+            expect(json_response).to contain_exactly(a_hash_including('source_type' => 'Namespace'))
+            expect(json_response).not_to include(a_hash_including('source_type' => 'Project'))
+          end
+        end
+
+        it "recognizes unsupported types" do
+          get api("/users/#{user.id}/memberships?type=foo", requesting_user)
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
+    end
+  end
+
   context "user activities", :clean_gitlab_redis_shared_state do
     let!(:old_active_user) { create(:user, last_activity_on: Time.utc(2000, 1, 1)) }
     let!(:newly_active_user) { create(:user, last_activity_on: 2.days.ago.midday) }

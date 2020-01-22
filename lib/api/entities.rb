@@ -2,6 +2,15 @@
 
 module API
   module Entities
+    class Membership < Grape::Entity
+      expose :source_id
+      expose :source_name do |member|
+        member.source.name
+      end
+      expose :source_type
+      expose :access_level
+    end
+
     class BlameRangeCommit < Grape::Entity
       expose :id
       expose :parent_ids

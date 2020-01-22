@@ -533,6 +533,32 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
+      desc 'Get memberships' do
+        success Entities::Membership
+      end
+      params do
+        requires :user_id, type: Integer, desc: 'The ID of the user'
+        optional :type, type: String, values: %w[Project Namespace]
+        use :pagination
+      end
+      get ":user_id/memberships" do
+        authenticated_as_admin!
+        user = find_user_by_id(params)
+
+        members = case params[:type]
+                  when 'Project'
+                    user.project_members
+                  when 'Namespace'
+                    user.group_members
+                  else
+                    user.members
+                  end
+
+        members = members.including_source
+
+        present paginate(members), with: Entities::Membership
+      end
+
       params do
         requires :user_id, type: Integer, desc: 'The ID of the user'
       end

@@ -2435,6 +2435,11 @@ type GrafanaIntegration {
 
 type Group {
   """
+  Indicates whether Auto DevOps is enabled for all projects within this group
+  """
+  autoDevopsEnabled: Boolean
+
+  """
   Avatar URL of the group
   """
   avatarUrl: String
@@ -2448,6 +2453,11 @@ type Group {
   The GitLab Flavored Markdown rendering of `description`
   """
   descriptionHtml: String
+
+  """
+  Indicates if a group has email notifications disabled
+  """
+  emailsDisabled: Boolean
 
   """
   Find a single epic
@@ -2624,6 +2634,11 @@ type Group {
   path: String!
 
   """
+  The permission level required to create projects in the group
+  """
+  projectCreationLevel: String
+
+  """
   Projects within this namespace
   """
   projects(
@@ -2659,9 +2674,24 @@ type Group {
   requestAccessEnabled: Boolean
 
   """
+  Indicates if all users in this group are required to set up two-factor authentication
+  """
+  requireTwoFactorAuthentication: Boolean
+
+  """
   Aggregated storage statistics of the namespace. Only available for root namespaces
   """
   rootStorageStatistics: RootStorageStatistics
+
+  """
+  Indicates if sharing a project with another group within this group is prevented
+  """
+  shareWithGroupLock: Boolean
+
+  """
+  The permission level required to create subgroups within the group
+  """
+  subgroupCreationLevel: String
 
   """
   Time logged in issues by group members
@@ -2697,6 +2727,11 @@ type Group {
     """
     startDate: Time!
   ): TimelogConnection!
+
+  """
+  Time before two-factor authentication is enforced
+  """
+  twoFactorGracePeriod: Int
 
   """
   Permissions for the current user on the resource

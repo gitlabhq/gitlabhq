@@ -20,16 +20,10 @@ class ErrorTrackingIssueLinkWorker
   def perform(issue_id)
     @issue = Issue.find_by_id(issue_id)
 
-    return unless issue && error_tracking && sentry_issue_id
+    return unless valid?
 
     try_obtain_lease do
       logger.info("Linking Sentry issue #{sentry_issue_id} to GitLab issue #{issue.id}")
-
-      if integration_id.nil?
-        logger.info("Sentry integration unavailable for #{error_tracking.api_url}")
-
-        break
-      end
 
       sentry_client.create_issue_link(integration_id, sentry_issue_id, issue)
     rescue Sentry::Client::Error
@@ -38,6 +32,10 @@ class ErrorTrackingIssueLinkWorker
   end
 
   private
+
+  def valid?
+    issue && error_tracking && sentry_issue_id
+  end
 
   def error_tracking
     strong_memoize(:error_tracking) do

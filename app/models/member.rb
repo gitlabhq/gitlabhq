@@ -82,6 +82,7 @@ class Member < ApplicationRecord
   scope :with_user, -> (user) { where(user: user) }
 
   scope :with_source_id, ->(source_id) { where(source_id: source_id) }
+  scope :including_source, -> { includes(:source) }
 
   scope :order_name_asc, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.name', 'ASC')) }
   scope :order_name_desc, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.name', 'DESC')) }
