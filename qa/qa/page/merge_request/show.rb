@@ -155,6 +155,8 @@ module QA
         def merge!
           click_element :merge_button if ready_to_merge?
 
+          finished_loading?
+
           raise "Merge did not appear to be successful" unless merged?
         end
 

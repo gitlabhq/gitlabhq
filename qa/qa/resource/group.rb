@@ -16,6 +16,7 @@ module QA
 
       attribute :id
       attribute :name
+      attribute :runners_token
 
       def initialize
         @path = Runtime::Namespace.name

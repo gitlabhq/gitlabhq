@@ -31,6 +31,12 @@ module QA
         resource_web_url(api_post)
       end
 
+      def reload!
+        api_get
+
+        self
+      end
+
       def remove_via_api!
         api_delete
       end

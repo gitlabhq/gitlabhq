@@ -377,6 +377,11 @@ This operation is safe as there's no code using the table just yet.
 Dropping tables can be done safely using a post-deployment migration, but only
 if the application no longer uses the table.
 
+## Renaming Tables
+
+Renaming tables requires downtime as an application may continue
+using the old table name during/after a database migration.
+
 ## Adding Foreign Keys
 
 Adding foreign keys usually works in 3 steps:
