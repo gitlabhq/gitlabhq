@@ -40,6 +40,7 @@
     paths:
       - vendor/ruby
   before_script:
+    - '[ "$FOSS_ONLY" = "1" ] && rm -rf ee/'
     - cd qa/
     - bundle install --clean --jobs=$(nproc) --path=vendor --retry=3 --quiet
     - bundle check

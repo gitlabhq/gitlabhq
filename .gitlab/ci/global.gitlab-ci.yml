@@ -13,6 +13,7 @@
 .default-before_script:
   before_script:
     - date
+    - '[ "$FOSS_ONLY" = "1" ] && rm -rf ee/'
     - export GOPATH=$CI_PROJECT_DIR/.go
     - mkdir -p $GOPATH
     - source scripts/utils.sh

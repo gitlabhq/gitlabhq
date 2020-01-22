@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# This matcher checkes if one spam log with provided attributes was created
+# This matcher checks if one spam log with provided attributes was created
 #
 # Example:
 #

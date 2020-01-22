@@ -17,6 +17,8 @@ exports[`self monitor component When the self monitor project has not been creat
      
     <gl-button-stub
       class="js-settings-toggle"
+      size="md"
+      variant="secondary"
     >
       Expand
     </gl-button-stub>

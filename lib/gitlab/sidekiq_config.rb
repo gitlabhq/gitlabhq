@@ -4,6 +4,22 @@ require 'yaml'
 
 module Gitlab
   module SidekiqConfig
+    FOSS_QUEUE_CONFIG_PATH = 'app/workers/all_queues.yml'
+    EE_QUEUE_CONFIG_PATH = 'ee/app/workers/all_queues.yml'
+
+    QUEUE_CONFIG_PATHS = [
+      FOSS_QUEUE_CONFIG_PATH,
+      (EE_QUEUE_CONFIG_PATH if Gitlab.ee?)
+    ].compact.freeze
+
+    # For queues that don't have explicit workers - default and mailers
+    DummyWorker = Struct.new(:queue)
+
+    DEFAULT_WORKERS = [
+      Gitlab::SidekiqConfig::Worker.new(DummyWorker.new('default'), ee: false),
+      Gitlab::SidekiqConfig::Worker.new(DummyWorker.new('mailers'), ee: false)
+    ].freeze
+
     class << self
       include Gitlab::SidekiqConfig::CliMethods
 
@@ -25,28 +41,46 @@ module Gitlab
 
       def workers
         @workers ||= begin
-          result = find_workers(Rails.root.join('app', 'workers'))
-          result.concat(find_workers(Rails.root.join('ee', 'app', 'workers'))) if Gitlab.ee?
+          result = []
+          result.concat(DEFAULT_WORKERS)
+          result.concat(find_workers(Rails.root.join('app', 'workers'), ee: false))
+
+          if Gitlab.ee?
+            result.concat(find_workers(Rails.root.join('ee', 'app', 'workers'), ee: true))
+          end
+
           result
         end
       end
 
+      def workers_for_all_queues_yml
+        workers.partition(&:ee?).reverse.map(&:sort)
+      end
+
+      def all_queues_yml_outdated?
+        foss_workers, ee_workers = workers_for_all_queues_yml
+
+        return true if foss_workers != YAML.safe_load(File.read(FOSS_QUEUE_CONFIG_PATH))
+
+        Gitlab.ee? && ee_workers != YAML.safe_load(File.read(EE_QUEUE_CONFIG_PATH))
+      end
+
       private
 
-      def find_workers(root)
+      def find_workers(root, ee:)
         concerns = root.join('concerns').to_s
 
-        workers = Dir[root.join('**', '*.rb')]
+        Dir[root.join('**', '*.rb')]
           .reject { |path| path.start_with?(concerns) }
+          .map { |path| worker_from_path(path, root) }
+          .select { |worker| worker < Sidekiq::Worker }
+          .map { |worker| Gitlab::SidekiqConfig::Worker.new(worker, ee: ee) }
+      end
 
-        workers.map! do |path|
-          ns = Pathname.new(path).relative_path_from(root).to_s.gsub('.rb', '')
+      def worker_from_path(path, root)
+        ns = Pathname.new(path).relative_path_from(root).to_s.gsub('.rb', '')
 
-          ns.camelize.constantize
-        end
-
-        # Skip things that aren't workers
-        workers.select { |w| w < Sidekiq::Worker }
+        ns.camelize.constantize
       end
     end
   end

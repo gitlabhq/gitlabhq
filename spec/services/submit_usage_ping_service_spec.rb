@@ -5,65 +5,9 @@ require 'spec_helper'
 describe SubmitUsagePingService do
   include StubRequests
 
-  context 'when usage ping is disabled' do
-    before do
-      stub_application_setting(usage_ping_enabled: false)
-    end
-
-    it 'does not run' do
-      expect(HTTParty).not_to receive(:post)
-
-      result = subject.execute
-
-      expect(result).to eq false
-    end
-  end
-
-  context 'when usage ping is enabled' do
-    before do
-      stub_application_setting(usage_ping_enabled: true)
-    end
-
-    it 'sends a POST request' do
-      response = stub_response(without_conv_index_params)
-
-      subject.execute
-
-      expect(response).to have_been_requested
-    end
-
-    it 'refreshes usage data statistics before submitting' do
-      stub_response(without_conv_index_params)
-
-      expect(Gitlab::UsageData).to receive(:to_json)
-        .with(force_refresh: true)
-        .and_call_original
-
-      subject.execute
-    end
-
-    it 'saves DevOps Score data from the response' do
-      stub_response(with_conv_index_params)
-
-      expect { subject.execute }
-        .to change { DevOpsScore::Metric.count }
-        .by(1)
-
-      expect(DevOpsScore::Metric.last.leader_issues).to eq 10.2
-      expect(DevOpsScore::Metric.last.instance_issues).to eq 3.2
-      expect(DevOpsScore::Metric.last.percentage_issues).to eq 31.37
-    end
-  end
-
-  def without_conv_index_params
+  let(:score_params) do
     {
-      conv_index: {}
-    }
-  end
-
-  def with_conv_index_params
-    {
-      conv_index: {
+      score: {
         leader_issues: 10.2,
         instance_issues: 3.2,
         percentage_issues: 31.37,
@@ -98,6 +42,76 @@ describe SubmitUsagePingService do
         non_existing_column: 'value'
       }
     }
+  end
+
+  let(:with_dev_ops_score_params) { { dev_ops_score: score_params[:score] } }
+  let(:with_conv_index_params) { { conv_index: score_params[:score] } }
+  let(:without_dev_ops_score_params) { { dev_ops_score: {} } }
+
+  context 'when usage ping is disabled' do
+    before do
+      stub_application_setting(usage_ping_enabled: false)
+    end
+
+    it 'does not run' do
+      expect(HTTParty).not_to receive(:post)
+
+      result = subject.execute
+
+      expect(result).to eq false
+    end
+  end
+
+  shared_examples 'saves DevOps score data from the response' do
+    it do
+      expect { subject.execute }
+        .to change { DevOpsScore::Metric.count }
+        .by(1)
+
+      expect(DevOpsScore::Metric.last.leader_issues).to eq 10.2
+      expect(DevOpsScore::Metric.last.instance_issues).to eq 3.2
+      expect(DevOpsScore::Metric.last.percentage_issues).to eq 31.37
+    end
+  end
+
+  context 'when usage ping is enabled' do
+    before do
+      stub_application_setting(usage_ping_enabled: true)
+    end
+
+    it 'sends a POST request' do
+      response = stub_response(without_dev_ops_score_params)
+
+      subject.execute
+
+      expect(response).to have_been_requested
+    end
+
+    it 'refreshes usage data statistics before submitting' do
+      stub_response(without_dev_ops_score_params)
+
+      expect(Gitlab::UsageData).to receive(:to_json)
+        .with(force_refresh: true)
+        .and_call_original
+
+      subject.execute
+    end
+
+    context 'when conv_index data is passed' do
+      before do
+        stub_response(with_conv_index_params)
+      end
+
+      it_behaves_like 'saves DevOps score data from the response'
+    end
+
+    context 'when DevOps score data is passed' do
+      before do
+        stub_response(with_dev_ops_score_params)
+      end
+
+      it_behaves_like 'saves DevOps score data from the response'
+    end
   end
 
   def stub_response(body)

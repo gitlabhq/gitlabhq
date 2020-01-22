@@ -268,8 +268,9 @@ default value can be found in `/opt/gitlab/etc/gitlab-rails/env/RAILS_ENV`.
 
 ### Using negation
 
-You're able to run all queues in `sidekiq_queues.yml` file on a single or
-multiple processes with exceptions using the `--negate` flag.
+You're able to run all queues in the `all_queues.yml` file (or the equivalent EE
+file) on a single or multiple processes with exceptions using the `--negate`
+flag.
 
 For example, say you want to run a single process for all queues,
 except `process_commit` and `post_receive`:

@@ -1,23 +1,45 @@
-import Vue from 'vue';
-import noteAttachment from '~/notes/components/note_attachment.vue';
+import { shallowMount } from '@vue/test-utils';
+import NoteAttachment from '~/notes/components/note_attachment.vue';
 
-describe('issue note attachment', () => {
-  it('should render properly', () => {
-    const props = {
-      attachment: {
-        filename: 'dk.png',
-        image: true,
-        url: '/dk.png',
+describe('Issue note attachment', () => {
+  let wrapper;
+
+  const findImage = () => wrapper.find({ ref: 'attachmentImage' });
+  const findUrl = () => wrapper.find({ ref: 'attachmentUrl' });
+
+  const createComponent = attachment => {
+    wrapper = shallowMount(NoteAttachment, {
+      propsData: {
+        attachment,
       },
-    };
+    });
+  };
 
-    const Component = Vue.extend(noteAttachment);
-    const vm = new Component({
-      propsData: props,
-    }).$mount();
+  afterEach(() => {
+    wrapper.destroy();
+    wrapper = null;
+  });
 
-    expect(vm.$el.classList.contains('note-attachment')).toBeTruthy();
-    expect(vm.$el.querySelector('img').src).toContain(props.attachment.url);
-    expect(vm.$el.querySelector('a').href).toContain(props.attachment.url);
+  it('renders attachment image if it is passed in attachment prop', () => {
+    createComponent({
+      image: 'test-image',
+    });
+
+    expect(findImage().exists()).toBe(true);
+  });
+
+  it('renders attachment url if it is passed in attachment prop', () => {
+    createComponent({
+      url: 'test-url',
+    });
+
+    expect(findUrl().exists()).toBe(true);
+  });
+
+  it('does not render image and url if attachment object is empty', () => {
+    createComponent({});
+
+    expect(findImage().exists()).toBe(false);
+    expect(findUrl().exists()).toBe(false);
   });
 });

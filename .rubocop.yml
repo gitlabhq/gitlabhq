@@ -347,6 +347,7 @@ RSpec/HaveGitlabHttpStatus:
   Enabled: true
   Include:
     - 'spec/support/shared_examples/**/*'
+    - 'ee/spec/support/shared_examples/**/*'
 
 Style/MultilineWhenThen:
   Enabled: false

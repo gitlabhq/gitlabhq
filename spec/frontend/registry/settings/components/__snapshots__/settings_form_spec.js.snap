@@ -159,7 +159,9 @@ exports[`Settings Form renders 1`] = `
       >
         <glbutton-stub
           class="mr-2 d-block"
+          size="md"
           type="reset"
+          variant="secondary"
         >
           
           Cancel
@@ -168,6 +170,7 @@ exports[`Settings Form renders 1`] = `
          
         <glbutton-stub
           class="d-flex justify-content-center align-items-center js-no-auto-disable"
+          size="md"
           type="submit"
           variant="success"
         >

@@ -207,7 +207,8 @@ variables:
 
 If your project requires custom build configurations, it can be preferable to avoid
 compilation during your SAST execution and instead pass all job artifacts from an
-earlier stage within the pipeline.
+earlier stage within the pipeline. This is the current strategy when requiring
+a `before_script` execution to prepare your scan job.
 
 To pass your project's dependencies as artifacts, the dependencies must be included
 in the project's working directory and specified using the `artifacts:path` configuration.

@@ -12,7 +12,7 @@ describe('DateTimePicker', () => {
 
   const dropdownToggle = () => dateTimePicker.find('.dropdown-toggle');
   const dropdownMenu = () => dateTimePicker.find('.dropdown-menu');
-  const applyButtonElement = () => dateTimePicker.find('button[variant="success"]').element;
+  const applyButtonElement = () => dateTimePicker.find('button.btn-success').element;
   const cancelButtonElement = () => dateTimePicker.find('button.btn-secondary').element;
   const fillInputAndBlur = (input, val) => {
     dateTimePicker.find(input).setValue(val);

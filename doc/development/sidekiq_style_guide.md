@@ -17,8 +17,11 @@ would be `process_something`. If you're not sure what queue a worker uses,
 you can find it using `SomeWorker.queue`. There is almost never a reason to
 manually override the queue name using `sidekiq_options queue: :some_queue`.
 
-You must always add any new queues to `app/workers/all_queues.yml` or `ee/app/workers/all_queues.yml`
-otherwise your worker will not run.
+After adding a new queue, run `bin/rake
+gitlab:sidekiq:all_queues_yml:generate` to regenerate
+`app/workers/all_queues.yml` or `ee/app/workers/all_queues.yml` so that
+it can be picked up by
+[`sidekiq-cluster`](../administration/operations/extra_sidekiq_processes.md).
 
 ## Queue Namespaces
 

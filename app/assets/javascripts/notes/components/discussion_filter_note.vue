@@ -38,12 +38,12 @@ export default {
       <icon name="comment" />
     </div>
     <div class="timeline-content">
-      <div v-html="timelineContent"></div>
+      <div ref="timelineContent" v-html="timelineContent"></div>
       <div class="discussion-filter-actions mt-2">
-        <gl-button variant="default" @click="selectFilter(0)">
+        <gl-button ref="showAllActivity" variant="default" @click="selectFilter(0)">
           {{ __('Show all activity') }}
         </gl-button>
-        <gl-button variant="default" @click="selectFilter(1)">
+        <gl-button ref="showComments" variant="default" @click="selectFilter(1)">
           {{ __('Show comments only') }}
         </gl-button>
       </div>

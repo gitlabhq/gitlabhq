@@ -34,6 +34,7 @@ unless Rails.env.production?
         scss_lint
         gettext:lint
         lint:static_verification
+        gitlab:sidekiq:all_queues_yml:check
       ]
 
       if Gitlab.ee?

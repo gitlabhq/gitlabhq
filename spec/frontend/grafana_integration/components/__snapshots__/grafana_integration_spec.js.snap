@@ -18,6 +18,8 @@ exports[`grafana integration component default state to match the default snapsh
      
     <gl-button-stub
       class="js-settings-toggle"
+      size="md"
+      variant="secondary"
     >
       Expand
     </gl-button-stub>
@@ -89,6 +91,7 @@ exports[`grafana integration component default state to match the default snapsh
       </gl-form-group-stub>
        
       <gl-button-stub
+        size="md"
         variant="success"
       >
         

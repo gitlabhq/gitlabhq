@@ -1,9 +1,11 @@
 <script>
 import _ from 'underscore';
+import $ from 'jquery';
 import { slugify } from '~/lib/utils/text_utility';
 import { getLocationHash } from '~/lib/utils/url_utility';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import '~/behaviors/markdown/render_gfm';
 import EvidenceBlock from './evidence_block.vue';
 import ReleaseBlockAssets from './release_block_assets.vue';
 import ReleaseBlockFooter from './release_block_footer.vue';
@@ -65,7 +67,10 @@ export default {
       return Boolean(this.glFeatures.releaseIssueSummary && !_.isEmpty(this.release.milestones));
     },
   },
+
   mounted() {
+    this.renderGFM();
+
     const hash = getLocationHash();
     if (hash && slugify(hash) === this.id) {
       this.isHighlighted = true;
@@ -75,6 +80,11 @@ export default {
 
       scrollToElement(this.$el);
     }
+  },
+  methods: {
+    renderGFM() {
+      $(this.$refs['gfm-content']).renderGFM();
+    },
   },
 };
 </script>
@@ -91,7 +101,7 @@ export default {
       <release-block-assets v-if="shouldRenderAssets" :assets="assets" />
       <evidence-block v-if="hasEvidence && shouldShowEvidence" :release="release" />
 
-      <div class="card-text prepend-top-default">
+      <div ref="gfm-content" class="card-text prepend-top-default">
         <div v-html="release.description_html"></div>
       </div>
     </div>

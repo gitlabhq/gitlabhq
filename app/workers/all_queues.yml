@@ -1,93 +1,93 @@
+# This file is generated automatically by
+#   bin/rake gitlab:sidekiq:all_queues_yml:generate
+#
+# Do not edit it manually!
 ---
 - auto_devops:auto_devops_disable
-
 - auto_merge:auto_merge_process
-
 - chaos:chaos_cpu_spin
 - chaos:chaos_db_spin
 - chaos:chaos_kill
 - chaos:chaos_leak_mem
 - chaos:chaos_sleep
-
+- container_repository:cleanup_container_repository
+- container_repository:delete_container_repository
 - cronjob:admin_email
+- cronjob:ci_archive_traces_cron
 - cronjob:container_expiration_policy
 - cronjob:expire_build_artifacts
 - cronjob:gitlab_usage_ping
 - cronjob:import_export_project_cleanup
-- cronjob:pages_domain_verification_cron
+- cronjob:issue_due_scheduler
+- cronjob:namespaces_prune_aggregation_schedules
 - cronjob:pages_domain_removal_cron
 - cronjob:pages_domain_ssl_renewal_cron
+- cronjob:pages_domain_verification_cron
 - cronjob:personal_access_tokens_expiring
 - cronjob:pipeline_schedule
 - cronjob:prune_old_events
+- cronjob:prune_web_hook_logs
 - cronjob:remove_expired_group_links
 - cronjob:remove_expired_members
 - cronjob:remove_unreferenced_lfs_objects
 - cronjob:repository_archive_cache
 - cronjob:repository_check_dispatch
 - cronjob:requests_profiles
+- cronjob:schedule_migrate_external_diffs
 - cronjob:stuck_ci_jobs
 - cronjob:stuck_import_jobs
 - cronjob:stuck_merge_jobs
-- cronjob:ci_archive_traces_cron
 - cronjob:trending_projects
-- cronjob:issue_due_scheduler
-- cronjob:prune_web_hook_logs
-- cronjob:schedule_migrate_external_diffs
-- cronjob:namespaces_prune_aggregation_schedules
-
+- deployment:deployments_finished
+- deployment:deployments_success
+- gcp_cluster:cluster_configure
 - gcp_cluster:cluster_install_app
 - gcp_cluster:cluster_patch_app
-- gcp_cluster:cluster_upgrade_app
-- gcp_cluster:cluster_provision
-- gcp_cluster:clusters_cleanup_app
-- gcp_cluster:clusters_cleanup_project_namespace
-- gcp_cluster:clusters_cleanup_service_account
-- gcp_cluster:cluster_wait_for_app_installation
-- gcp_cluster:wait_for_cluster_creation
-- gcp_cluster:cluster_wait_for_ingress_ip_address
-- gcp_cluster:cluster_configure
 - gcp_cluster:cluster_project_configure
-- gcp_cluster:clusters_applications_wait_for_uninstall_app
-- gcp_cluster:clusters_applications_uninstall
-- gcp_cluster:clusters_cleanup_app
-- gcp_cluster:clusters_cleanup_project_namespace
-- gcp_cluster:clusters_cleanup_service_account
+- gcp_cluster:cluster_provision
+- gcp_cluster:cluster_upgrade_app
+- gcp_cluster:cluster_wait_for_app_installation
+- gcp_cluster:cluster_wait_for_ingress_ip_address
 - gcp_cluster:clusters_applications_activate_service
 - gcp_cluster:clusters_applications_deactivate_service
-
-- github_import_advance_stage
+- gcp_cluster:clusters_applications_uninstall
+- gcp_cluster:clusters_applications_wait_for_uninstall_app
+- gcp_cluster:clusters_cleanup_app
+- gcp_cluster:clusters_cleanup_project_namespace
+- gcp_cluster:clusters_cleanup_service_account
+- gcp_cluster:wait_for_cluster_creation
 - github_importer:github_import_import_diff_note
 - github_importer:github_import_import_issue
-- github_importer:github_import_import_note
 - github_importer:github_import_import_lfs_object
+- github_importer:github_import_import_note
 - github_importer:github_import_import_pull_request
 - github_importer:github_import_refresh_import_jid
 - github_importer:github_import_stage_finish_import
 - github_importer:github_import_stage_import_base_data
 - github_importer:github_import_stage_import_issues_and_diff_notes
-- github_importer:github_import_stage_import_notes
 - github_importer:github_import_stage_import_lfs_objects
+- github_importer:github_import_stage_import_notes
 - github_importer:github_import_stage_import_pull_requests
 - github_importer:github_import_stage_import_repository
-
 - hashed_storage:hashed_storage_migrator
-- hashed_storage:hashed_storage_rollbacker
 - hashed_storage:hashed_storage_project_migrate
 - hashed_storage:hashed_storage_project_rollback
-
+- hashed_storage:hashed_storage_rollbacker
 - mail_scheduler:mail_scheduler_issue_due
 - mail_scheduler:mail_scheduler_notification_service
-
+- notifications:new_release
+- object_pool:object_pool_create
+- object_pool:object_pool_destroy
+- object_pool:object_pool_join
+- object_pool:object_pool_schedule_join
 - object_storage:object_storage_background_move
 - object_storage:object_storage_migrate_uploads
-
+- pipeline_background:archive_trace
+- pipeline_background:ci_build_trace_chunk_flush
 - pipeline_cache:expire_job_cache
 - pipeline_cache:expire_pipeline_cache
 - pipeline_creation:create_pipeline
 - pipeline_creation:run_pipeline_schedule
-- pipeline_background:archive_trace
-- pipeline_background:ci_build_trace_chunk_flush
 - pipeline_default:build_coverage
 - pipeline_default:build_trace_sections
 - pipeline_default:pipeline_metrics
@@ -95,74 +95,67 @@
 - pipeline_hooks:build_hooks
 - pipeline_hooks:pipeline_hooks
 - pipeline_processing:build_finished
-- pipeline_processing:ci_build_prepare
 - pipeline_processing:build_queue
 - pipeline_processing:build_success
+- pipeline_processing:ci_build_prepare
+- pipeline_processing:ci_build_schedule
+- pipeline_processing:ci_resource_groups_assign_resource_from_resource_group
 - pipeline_processing:pipeline_process
 - pipeline_processing:pipeline_success
 - pipeline_processing:pipeline_update
 - pipeline_processing:stage_update
 - pipeline_processing:update_head_pipeline_for_merge_request
-- pipeline_processing:ci_build_schedule
-- pipeline_processing:ci_resource_groups_assign_resource_from_resource_group
-
-- deployment:deployments_success
-- deployment:deployments_finished
-
-- repository_check:repository_check_clear
 - repository_check:repository_check_batch
+- repository_check:repository_check_clear
 - repository_check:repository_check_single_repository
-
 - todos_destroyer:todos_destroyer_confidential_issue
 - todos_destroyer:todos_destroyer_entity_leave
 - todos_destroyer:todos_destroyer_group_private
-- todos_destroyer:todos_destroyer_project_private
 - todos_destroyer:todos_destroyer_private_features
-
-- update_namespace_statistics:namespaces_schedule_aggregation
+- todos_destroyer:todos_destroyer_project_private
 - update_namespace_statistics:namespaces_root_statistics
-
-- object_pool:object_pool_create
-- object_pool:object_pool_schedule_join
-- object_pool:object_pool_join
-- object_pool:object_pool_destroy
-
-- container_repository:delete_container_repository
-- container_repository:cleanup_container_repository
-
-- notifications:new_release
-
-- default
-- mailers # ActionMailer::DeliveryJob.queue_name
-
+- update_namespace_statistics:namespaces_schedule_aggregation
 - authorized_projects
 - background_migration
 - chat_notification
+- create_evidence
 - create_gpg_signature
+- create_note_diff_file
+- default
+- delete_diff_files
 - delete_merged_branches
+- delete_stored_files
 - delete_user
+- detect_repository_languages
 - email_receiver
 - emails_on_push
 - error_tracking_issue_link
 - expire_build_instance_artifacts
+- file_hook
 - git_garbage_collect
+- github_import_advance_stage
 - gitlab_shell
 - group_destroy
+- group_export
+- import_issues_csv
 - invalid_gpg_signature_update
 - irker
+- mailers
 - merge
+- merge_request_mergeability_check
 - migrate_external_diffs
 - namespaceless_project_destroy
 - new_issue
 - new_merge_request
 - new_note
 - pages
-- pages_domain_verification
 - pages_domain_ssl_renewal
-- file_hook
+- pages_domain_verification
+- phabricator_import_import_tasks
 - post_receive
 - process_commit
 - project_cache
+- project_daily_statistics
 - project_destroy
 - project_export
 - project_service
@@ -170,26 +163,16 @@
 - reactive_caching
 - rebase
 - remote_mirror_notification
+- repository_cleanup
 - repository_fork
 - repository_import
 - repository_remove_remote
+- repository_update_remote_mirror
+- self_monitoring_project_create
+- self_monitoring_project_delete
 - system_hook_push
 - update_external_pull_requests
 - update_merge_requests
 - update_project_statistics
 - upload_checksum
 - web_hook
-- repository_update_remote_mirror
-- create_note_diff_file
-- delete_diff_files
-- detect_repository_languages
-- repository_cleanup
-- delete_stored_files
-- import_issues_csv
-- project_daily_statistics
-- create_evidence
-- group_export
-- self_monitoring_project_create
-- self_monitoring_project_delete
-- merge_request_mergeability_check
-- phabricator_import_import_tasks

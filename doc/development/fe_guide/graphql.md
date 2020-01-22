@@ -312,7 +312,7 @@ function createComponent(props = {}) {
 `ApolloMutation` component exposes `mutate` method via scoped slot. If we want to test this method, we need to add it to mocks:
 
 ```javascript
-const mutate = jest.fn(() => Promise.resolve());
+const mutate = jest.fn().mockResolvedValue();
 const $apollo = {
   mutate,
 };

@@ -84,7 +84,7 @@ exports[`Registry Project Empty state to match the default snapshot 1`] = `
             class="input-group-append"
           >
             <button
-              class="btn input-group-text btn-secondary btn-default"
+              class="btn input-group-text btn-secondary btn-md btn-default"
               data-clipboard-text="docker login host"
               title="Copy login command"
               type="button"
@@ -122,7 +122,7 @@ exports[`Registry Project Empty state to match the default snapshot 1`] = `
             class="input-group-append"
           >
             <button
-              class="btn input-group-text btn-secondary btn-default"
+              class="btn input-group-text btn-secondary btn-md btn-default"
               data-clipboard-text="docker build -t url ."
               title="Copy build command"
               type="button"
@@ -152,7 +152,7 @@ exports[`Registry Project Empty state to match the default snapshot 1`] = `
             class="input-group-append"
           >
             <button
-              class="btn input-group-text btn-secondary btn-default"
+              class="btn input-group-text btn-secondary btn-md btn-default"
               data-clipboard-text="docker push url"
               title="Copy push command"
               type="button"

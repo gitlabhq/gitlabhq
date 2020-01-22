@@ -150,6 +150,15 @@ type BlobEdge {
   node: Blob
 }
 
+"""
+Types of blob viewers
+"""
+enum BlobViewersType {
+  auxiliary
+  rich
+  simple
+}
+
 type Commit {
   """
   Author of the commit
@@ -5934,9 +5943,9 @@ type Snippet implements Noteable {
   author: User!
 
   """
-  Content of the snippet
+  Snippet blob
   """
-  content: String!
+  blob: SnippetBlob!
 
   """
   Timestamp this snippet was created
@@ -6047,6 +6056,91 @@ type Snippet implements Noteable {
   Web URL of the snippet
   """
   webUrl: String!
+}
+
+"""
+Represents the snippet blob
+"""
+type SnippetBlob {
+  """
+  Shows whether the blob is binary
+  """
+  binary: Boolean!
+
+  """
+  Blob highlighted data
+  """
+  highlightedData: String
+
+  """
+  Blob name
+  """
+  name: String
+
+  """
+  Blob path
+  """
+  path: String
+
+  """
+  Blob raw content endpoint path
+  """
+  rawPath: String!
+
+  """
+  Blob content rich viewer
+  """
+  richViewer: SnippetBlobViewer
+
+  """
+  Blob content simple viewer
+  """
+  simpleViewer: SnippetBlobViewer!
+
+  """
+  Blob size
+  """
+  size: Int!
+}
+
+"""
+Represents how the blob content should be displayed
+"""
+type SnippetBlobViewer {
+  """
+  Shows whether the blob should be displayed collapsed
+  """
+  collapsed: Boolean!
+
+  """
+  Content file type
+  """
+  fileType: String!
+
+  """
+  Shows whether the blob content is loaded async
+  """
+  loadAsync: Boolean!
+
+  """
+  Loading partial name
+  """
+  loadingPartialName: String!
+
+  """
+  Error rendering the blob content
+  """
+  renderError: String
+
+  """
+  Shows whether the blob too large to be displayed
+  """
+  tooLarge: Boolean!
+
+  """
+  Type of blob viewer
+  """
+  type: BlobViewersType!
 }
 
 """

@@ -926,14 +926,43 @@ Represents a snippet entry
 | `project` | Project | The project the snippet is associated with |
 | `author` | User! | The owner of the snippet |
 | `fileName` | String | File Name of the snippet |
-| `content` | String! | Content of the snippet |
 | `description` | String | Description of the snippet |
 | `visibilityLevel` | VisibilityLevelsEnum! | Visibility Level of the snippet |
 | `createdAt` | Time! | Timestamp this snippet was created |
 | `updatedAt` | Time! | Timestamp this snippet was updated |
 | `webUrl` | String! | Web URL of the snippet |
 | `rawUrl` | String! | Raw URL of the snippet |
+| `blob` | SnippetBlob! | Snippet blob |
 | `descriptionHtml` | String | The GitLab Flavored Markdown rendering of `description` |
+
+## SnippetBlob
+
+Represents the snippet blob
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `highlightedData` | String | Blob highlighted data |
+| `rawPath` | String! | Blob raw content endpoint path |
+| `size` | Int! | Blob size |
+| `binary` | Boolean! | Shows whether the blob is binary |
+| `name` | String | Blob name |
+| `path` | String | Blob path |
+| `simpleViewer` | SnippetBlobViewer! | Blob content simple viewer |
+| `richViewer` | SnippetBlobViewer | Blob content rich viewer |
+
+## SnippetBlobViewer
+
+Represents how the blob content should be displayed
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `type` | BlobViewersType! | Type of blob viewer |
+| `loadAsync` | Boolean! | Shows whether the blob content is loaded async |
+| `collapsed` | Boolean! | Shows whether the blob should be displayed collapsed |
+| `tooLarge` | Boolean! | Shows whether the blob too large to be displayed |
+| `renderError` | String | Error rendering the blob content |
+| `fileType` | String! | Content file type |
+| `loadingPartialName` | String! | Loading partial name |
 
 ## SnippetPermissions
 
