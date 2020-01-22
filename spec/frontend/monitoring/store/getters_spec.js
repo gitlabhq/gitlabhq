@@ -3,6 +3,7 @@ import mutations from '~/monitoring/stores/mutations';
 import * as types from '~/monitoring/stores/mutation_types';
 import { metricStates } from '~/monitoring/constants';
 import {
+  environmentData,
   metricsDashboardPayload,
   mockedEmptyResult,
   mockedQueryResultPayload,
@@ -211,6 +212,60 @@ describe('Monitoring store Getters', () => {
           mockedQueryResultPayload.metricId,
           mockedQueryResultPayloadCoresTotal.metricId,
         ]);
+      });
+    });
+  });
+
+  describe('filteredEnvironments', () => {
+    let state;
+    const setupState = (initState = {}) => {
+      state = {
+        ...state,
+        ...initState,
+      };
+    };
+
+    beforeAll(() => {
+      setupState({
+        environments: environmentData,
+      });
+    });
+
+    afterAll(() => {
+      state = null;
+    });
+
+    [
+      {
+        input: '',
+        output: 17,
+      },
+      {
+        input: '     ',
+        output: 17,
+      },
+      {
+        input: null,
+        output: 17,
+      },
+      {
+        input: 'does-not-exist',
+        output: 0,
+      },
+      {
+        input: 'noop-branch-',
+        output: 15,
+      },
+      {
+        input: 'noop-branch-9',
+        output: 1,
+      },
+    ].forEach(({ input, output }) => {
+      it(`filteredEnvironments returns ${output} items for ${input}`, () => {
+        setupState({
+          environmentsSearchTerm: input,
+        });
+        expect(getters.filteredEnvironments(state).length).toBe(output);
       });
     });
   });

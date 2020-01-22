@@ -28,6 +28,15 @@ describe('Dashboard', () => {
   let wrapper;
   let mock;
 
+  const findEnvironmentsDropdown = () => wrapper.find({ ref: 'monitorEnvironmentsDropdown' });
+  const findAllEnvironmentsDropdownItems = () => findEnvironmentsDropdown().findAll(GlDropdownItem);
+  const setSearchTerm = searchTerm => {
+    wrapper.vm.$store.commit(
+      `monitoringDashboard/${types.SET_ENVIRONMENTS_SEARCH_TERM}`,
+      searchTerm,
+    );
+  };
+
   const createShallowWrapper = (props = {}, options = {}) => {
     wrapper = shallowMount(Dashboard, {
       localVue,
@@ -51,9 +60,6 @@ describe('Dashboard', () => {
       ...options,
     });
   };
-
-  const findEnvironmentsDropdown = () => wrapper.find({ ref: 'monitorEnvironmentsDropdown' });
-  const findAllEnvironmentsDropdownItems = () => findEnvironmentsDropdown().findAll(GlDropdownItem);
 
   beforeEach(() => {
     store = createStore();
@@ -155,12 +161,9 @@ describe('Dashboard', () => {
       wrapper.vm
         .$nextTick()
         .then(() => {
-          const environmentDropdownItems = findAllEnvironmentsDropdownItems();
+          expect(findAllEnvironmentsDropdownItems().length).toEqual(environmentData.length);
 
-          expect(wrapper.vm.environments.length).toEqual(environmentData.length);
-          expect(environmentDropdownItems.length).toEqual(wrapper.vm.environments.length);
-
-          environmentDropdownItems.wrappers.forEach((itemWrapper, index) => {
+          findAllEnvironmentsDropdownItems().wrappers.forEach((itemWrapper, index) => {
             const anchorEl = itemWrapper.find('a');
             if (anchorEl.exists() && environmentData[index].metrics_path) {
               const href = anchorEl.attributes('href');
@@ -245,6 +248,70 @@ describe('Dashboard', () => {
           .at(0)
           .props('selectedState'),
       ).toEqual(metricStates.NO_DATA);
+    });
+  });
+
+  describe('searchable environments dropdown', () => {
+    beforeEach(() => {
+      createMountedWrapper(
+        { hasMetrics: true },
+        {
+          attachToDocument: true,
+          stubs: ['graph-group', 'panel-type'],
+          provide: {
+            glFeatures: { searchableEnvironmentsDropdown: true },
+          },
+        },
+      );
+
+      setupComponentStore(wrapper);
+
+      return wrapper.vm.$nextTick();
+    });
+
+    afterEach(() => {
+      wrapper.destroy();
+    });
+
+    it('renders a search input', () => {
+      expect(wrapper.find({ ref: 'monitorEnvironmentsDropdownSearch' }).exists()).toBe(true);
+    });
+
+    it('renders dropdown items', () => {
+      findAllEnvironmentsDropdownItems().wrappers.forEach((itemWrapper, index) => {
+        const anchorEl = itemWrapper.find('a');
+        if (anchorEl.exists()) {
+          expect(anchorEl.text()).toBe(environmentData[index].name);
+        }
+      });
+    });
+
+    it('filters rendered dropdown items', () => {
+      const searchTerm = 'production';
+      const resultEnvs = environmentData.filter(({ name }) => name.indexOf(searchTerm) !== -1);
+      setSearchTerm(searchTerm);
+
+      return wrapper.vm.$nextTick(() => {
+        expect(findAllEnvironmentsDropdownItems().length).toEqual(resultEnvs.length);
+      });
+    });
+
+    it('does not filter dropdown items if search term is empty string', () => {
+      const searchTerm = '';
+      setSearchTerm(searchTerm);
+
+      return wrapper.vm.$nextTick(() => {
+        expect(findAllEnvironmentsDropdownItems().length).toEqual(environmentData.length);
+      });
+    });
+
+    it("shows error message if search term doesn't match", () => {
+      const searchTerm = 'does-not-exist';
+      setSearchTerm(searchTerm);
+
+      return wrapper.vm.$nextTick(() => {
+        expect(wrapper.find({ ref: 'monitorEnvironmentsDropdownMsg' }).isVisible()).toBe(true);
+      });
     });
   });
 

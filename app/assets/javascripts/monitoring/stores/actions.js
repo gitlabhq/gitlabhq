@@ -30,6 +30,10 @@ export const setEndpoints = ({ commit }, endpoints) => {
   commit(types.SET_ENDPOINTS, endpoints);
 };
 
+export const setEnvironmentsSearchTerm = ({ commit }, searchTerm) => {
+  commit(types.SET_ENVIRONMENTS_SEARCH_TERM, searchTerm);
+};
+
 export const setShowErrorBanner = ({ commit }, enabled) => {
   commit(types.SET_SHOW_ERROR_BANNER, enabled);
 };

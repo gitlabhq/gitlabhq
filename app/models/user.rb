@@ -394,6 +394,11 @@ class User < ApplicationRecord
       Gitlab::CurrentSettings.minimum_password_length..Devise.password_length.max
     end
 
+    # Generate a random password that conforms to the current password length settings
+    def random_password
+      Devise.friendly_token(password_length.max)
+    end
+
     # Devise method overridden to allow sign in with email or username
     def find_for_database_authentication(warden_conditions)
       conditions = warden_conditions.dup

@@ -8,6 +8,7 @@ import {
   GlDropdownItem,
   GlFormGroup,
   GlModal,
+  GlSearchBoxByType,
   GlModalDirective,
   GlTooltipDirective,
 } from '@gitlab/ui';
@@ -15,6 +16,7 @@ import PanelType from 'ee_else_ce/monitoring/components/panel_type.vue';
 import { s__ } from '~/locale';
 import createFlash from '~/flash';
 import Icon from '~/vue_shared/components/icon.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getParameterValues, mergeUrlParams, redirectTo } from '~/lib/utils/url_utility';
 import invalidUrl from '~/lib/utils/invalid_url';
 
@@ -38,6 +40,7 @@ export default {
     GlButton,
     GlDropdown,
     GlDropdownItem,
+    GlSearchBoxByType,
     GlFormGroup,
     GlModal,
 
@@ -52,6 +55,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     TrackEvent: TrackEventDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     externalDashboardUrl: {
       type: String,
@@ -198,13 +202,12 @@ export default {
       'dashboard',
       'emptyState',
       'showEmptyState',
-      'environments',
       'deploymentData',
       'useDashboardEndpoint',
       'allDashboards',
       'additionalPanelTypesEnabled',
     ]),
-    ...mapGetters('monitoringDashboard', ['getMetricStates']),
+    ...mapGetters('monitoringDashboard', ['getMetricStates', 'filteredEnvironments']),
     firstDashboard() {
       return this.environmentsEndpoint.length > 0 && this.allDashboards.length > 0
         ? this.allDashboards[0]
@@ -226,6 +229,9 @@ export default {
         this.selectedDashboard.can_edit ||
         this.externalDashboardUrl.length
       );
+    },
+    shouldRenderSearchableEnvironmentsDropdown() {
+      return this.glFeatures.searchableEnvironmentsDropdown;
     },
   },
   created() {
@@ -255,6 +261,7 @@ export default {
       'setGettingStartedEmptyState',
       'setEndpoints',
       'setPanelGroupMetrics',
+      'setEnvironmentsSearchTerm',
     ]),
     updatePanels(key, panels) {
       this.setPanelGroupMetrics({
@@ -296,6 +303,9 @@ export default {
     setFormValidity(isValid) {
       this.formIsValid = isValid;
     },
+    debouncedEnvironmentsSearch: _.debounce(function environmentsSearchOnInput(searchTerm) {
+      this.setEnvironmentsSearchTerm(searchTerm);
+    }, 500),
     submitCustomMetricsForm() {
       this.$refs.customMetricsForm.submit();
     },
@@ -374,17 +384,36 @@ export default {
               data-qa-selector="environments_dropdown"
               class="mb-0 d-flex"
               toggle-class="dropdown-menu-toggle"
+              menu-class="monitor-environment-dropdown-menu"
               :text="currentEnvironmentName"
-              :disabled="environments.length === 0"
+              :disabled="filteredEnvironments.length === 0"
             >
-              <gl-dropdown-item
-                v-for="environment in environments"
-                :key="environment.id"
-                :active="environment.name === currentEnvironmentName"
-                active-class="is-active"
-                :href="environment.metrics_path"
-                >{{ environment.name }}</gl-dropdown-item
-              >
+              <div class="d-flex flex-column overflow-hidden">
+                <gl-search-box-by-type
+                  v-if="shouldRenderSearchableEnvironmentsDropdown"
+                  ref="monitorEnvironmentsDropdownSearch"
+                  class="m-2"
+                  @input="debouncedEnvironmentsSearch"
+                />
+                <div class="flex-fill overflow-auto">
+                  <gl-dropdown-item
+                    v-for="environment in filteredEnvironments"
+                    :key="environment.id"
+                    :active="environment.name === currentEnvironmentName"
+                    active-class="is-active"
+                    :href="environment.metrics_path"
+                    >{{ environment.name }}</gl-dropdown-item
+                  >
+                </div>
+                <div
+                  v-if="shouldRenderSearchableEnvironmentsDropdown"
+                  v-show="filteredEnvironments.length === 0"
+                  ref="monitorEnvironmentsDropdownMsg"
+                  class="text-secondary no-matches-message"
+                >
+                  {{ s__('No matching results') }}
+                </div>
+              </div>
             </gl-dropdown>
           </gl-form-group>
 
@@ -415,18 +444,16 @@ export default {
               variant="default"
               class="mr-2 mt-1 js-rearrange-button"
               @click="toggleRearrangingPanels"
+              >{{ __('Arrange charts') }}</gl-button
             >
-              {{ __('Arrange charts') }}
-            </gl-button>
             <gl-button
               v-if="addingMetricsAvailable"
               ref="addMetricBtn"
               v-gl-modal="$options.addMetric.modalId"
               variant="outline-success"
               class="mr-2 mt-1"
+              >{{ $options.addMetric.title }}</gl-button
             >
-              {{ $options.addMetric.title }}
-            </gl-button>
             <gl-modal
               v-if="addingMetricsAvailable"
               ref="addMetricModal"
@@ -448,9 +475,8 @@ export default {
                   :disabled="!formIsValid"
                   variant="success"
                   @click="submitCustomMetricsForm"
+                  >{{ __('Save changes') }}</gl-button
                 >
-                  {{ __('Save changes') }}
-                </gl-button>
               </div>
             </gl-modal>
 
@@ -458,9 +484,8 @@ export default {
               v-if="selectedDashboard.can_edit"
               class="mt-1 js-edit-link"
               :href="selectedDashboard.project_blob_path"
+              >{{ __('Edit dashboard') }}</gl-button
             >
-              {{ __('Edit dashboard') }}
-            </gl-button>
 
             <gl-button
               v-if="externalDashboardUrl.length"
@@ -506,9 +531,9 @@ export default {
                   class="draggable-remove js-draggable-remove p-2 w-100 position-absolute d-flex justify-content-end"
                   @click="removePanel(groupData.key, groupData.panels, graphIndex)"
                 >
-                  <a class="mx-2 p-2 draggable-remove-link" :aria-label="__('Remove')"
-                    ><icon name="close"
-                  /></a>
+                  <a class="mx-2 p-2 draggable-remove-link" :aria-label="__('Remove')">
+                    <icon name="close" />
+                  </a>
                 </div>
 
                 <panel-type

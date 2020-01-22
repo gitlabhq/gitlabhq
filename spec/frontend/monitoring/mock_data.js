@@ -331,6 +331,14 @@ export const mockedQueryResultPayloadCoresTotal = {
   ],
 };
 
+const extraEnvironmentData = new Array(15).fill(null).map((_, idx) => ({
+  id: 136 + idx,
+  name: `no-deployment/noop-branch-${idx}`,
+  state: 'available',
+  created_at: '2018-07-04T18:39:41.702Z',
+  updated_at: '2018-07-04T18:44:54.010Z',
+}));
+
 export const environmentData = [
   {
     id: 34,
@@ -368,14 +376,7 @@ export const environmentData = [
       id: 128,
     },
   },
-  {
-    id: 36,
-    name: 'no-deployment/noop-branch',
-    state: 'available',
-    created_at: '2018-07-04T18:39:41.702Z',
-    updated_at: '2018-07-04T18:44:54.010Z',
-  },
-];
+].concat(extraEnvironmentData);
 
 export const metricsDashboardResponse = {
   dashboard: {

@@ -196,4 +196,7 @@ export default {
     const panelGroup = state.dashboard.panel_groups.find(pg => payload.key === pg.key);
     panelGroup.panels = payload.panels;
   },
+  [types.SET_ENVIRONMENTS_SEARCH_TERM](state, searchTerm) {
+    state.environmentsSearchTerm = searchTerm;
+  },
 };

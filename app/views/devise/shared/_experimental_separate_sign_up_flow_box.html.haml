@@ -41,3 +41,5 @@
         = recaptcha_tags
       .submit-container.mt-3
         = f.submit _("Register"), class: "btn-register btn btn-block btn-success mb-0 p-2", data: { qa_selector: 'new_user_register_button' }
+      - if omniauth_enabled? && button_based_providers_enabled?
+        = render 'devise/shared/experimental_separate_sign_up_flow_omniauth_box'

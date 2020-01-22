@@ -9,10 +9,10 @@
         = render "layouts/broadcast"
         .content
           = render "layouts/flash"
-          .row.mb-3
+          .row.mb-6
             .col-sm-8.offset-sm-2.col-md-6.offset-md-3.new-session-forms-container
               = render_if_exists 'layouts/devise_help_text'
-              .text-center.signup-heading.mt-3.mb-3
+              .text-center.signup-heading.mb-3
                 = image_tag(image_url('logo.svg'), class: 'gitlab-logo', alt: 'GitLab Logo')
                 - if content_for?(:page_title)
                   %h2= yield :page_title

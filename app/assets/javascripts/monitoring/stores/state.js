@@ -15,6 +15,7 @@ export default () => ({
 
   deploymentData: [],
   environments: [],
+  environmentsSearchTerm: '',
   allDashboards: [],
   currentDashboard: null,
   projectPath: null,

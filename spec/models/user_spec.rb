@@ -508,6 +508,20 @@ describe User, :do_not_mock_admin_mode do
       end
     end
 
+    describe '.random_password' do
+      let(:random_password) { described_class.random_password }
+
+      before do
+        expect(User).to receive(:password_length).and_return(88..128)
+      end
+
+      context 'length' do
+        it 'conforms to the current password length settings' do
+          expect(random_password.length).to eq(128)
+        end
+      end
+    end
+
     describe '.password_length' do
       let(:password_length) { described_class.password_length }
 

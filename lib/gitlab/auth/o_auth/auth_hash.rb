@@ -34,7 +34,7 @@ module Gitlab
         end
 
         def password
-          @password ||= Gitlab::Utils.force_utf8(Devise.friendly_token[0, 8].downcase)
+          @password ||= Gitlab::Utils.force_utf8(::User.random_password.downcase)
         end
 
         def location

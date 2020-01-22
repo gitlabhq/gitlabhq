@@ -5361,6 +5361,9 @@ msgstr ""
 msgid "Create a personal access token on your account to pull or push via %{protocol}."
 msgstr ""
 
+msgid "Create an account using:"
+msgstr ""
+
 msgid "Create an issue"
 msgstr ""
 
@@ -22719,6 +22722,9 @@ msgid "opened %{timeAgoString} by %{user}"
 msgstr ""
 
 msgid "opened %{timeAgo}"
+msgstr ""
+
+msgid "or"
 msgstr ""
 
 msgid "out of %d total test"
