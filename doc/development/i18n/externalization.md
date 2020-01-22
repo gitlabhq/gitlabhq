@@ -195,6 +195,31 @@ For example use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript. Make s
   // => When x == 2: 'Last 2 days'
   ```
 
+The `n_` method should only be used to fetch pluralized translations of the same
+string, not to control the logic of showing different strings for different
+quantities. Some languages have different quantities of target plural forms -
+Chinese (simplified), for example, has only one target plural form in our
+translation tool. This means the translator would have to choose to translate
+only one of the strings and the translation would not behave as intended in the
+other case.
+
+For example, prefer to use:
+
+```ruby
+if selected_projects.one?
+  selected_projects.first.name
+else
+  n__("Project selected", "%d projects selected", selected_projects.count)
+end
+```
+
+rather than:
+
+```ruby
+# incorrect usage example
+n_("%{project_name}", "%d projects selected", count) % { project_name: 'GitLab' }
+```
+
 ### Namespaces
 
 Sometimes you need to add some context to the text that you want to translate

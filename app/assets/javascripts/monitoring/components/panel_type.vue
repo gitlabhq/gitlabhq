@@ -138,7 +138,6 @@ export default {
         v-gl-tooltip
         class="ml-auto mx-3"
         toggle-class="btn btn-transparent border-0"
-        data-qa-selector="prometheus_widgets_dropdown"
         :right="true"
         :no-caret="true"
         :title="__('More actions')"
@@ -162,11 +161,7 @@ export default {
         >
           {{ __('Generate link to chart') }}
         </gl-dropdown-item>
-        <gl-dropdown-item
-          v-if="alertWidgetAvailable"
-          v-gl-modal="`alert-modal-${index}`"
-          data-qa-selector="alert_widget_menu_item"
-        >
+        <gl-dropdown-item v-if="alertWidgetAvailable" v-gl-modal="`alert-modal-${index}`">
           {{ __('Alerts') }}
         </gl-dropdown-item>
       </gl-dropdown>

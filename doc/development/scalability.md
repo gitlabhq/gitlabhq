@@ -104,10 +104,10 @@ GitLab.com](https://gitlab.com/gitlab-com/gl-infra/infrastructure/issues/7356).
 
 There are several strategies to provide high-availability and redundancy:
 
-1. Write-ahead logs (WAL) streamed to object storage (e.g. S3, Google Cloud
-   Storage).
-1. Read-replicas (hot backups)
-1. Delayed replicas
+- Write-ahead logs (WAL) streamed to object storage (e.g. S3, Google Cloud
+  Storage).
+- Read-replicas (hot backups).
+- Delayed replicas.
 
 To restore a database from a point in time, a base backup needs to have
 been taken prior to that incident. Once a database has restored from
@@ -145,9 +145,9 @@ saturate a single core, which can result in slower response times for
 background job and/or Web requests. There are two ways to address this
 limitation:
 
-1. Run multiple PgBouncer instances
-1. Use a multi-threaded connection pooler (e.g.
-   [Odyssey](https://gitlab.com/gitlab-com/gl-infra/infrastructure/issues/7776).
+- Run multiple PgBouncer instances.
+- Use a multi-threaded connection pooler (e.g.
+  [Odyssey](https://gitlab.com/gitlab-com/gl-infra/infrastructure/issues/7776).
 
 On some Linux systems, it's possible to run [multiple PgBouncer instances on
 the same port](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/4796).
@@ -158,9 +158,9 @@ avoid saturating a single core.
 In addition, the PgBouncer instances that communicate with the primary
 and secondaries are set up a bit differently:
 
-1. Multiple PgBouncer instances in different availability zones talk to the
-   PostgreSQL primary
-1. Multiple PgBouncer processes are colocated with PostgreSQL read replicas
+- Multiple PgBouncer instances in different availability zones talk to the
+  PostgreSQL primary.
+- Multiple PgBouncer processes are colocated with PostgreSQL read replicas.
 
 For replicas, colocating is advantageous because it reduces network hops
 and hence latency. However, for the primary, colocating is
@@ -211,10 +211,10 @@ Redis process.
 
 #### High availability/Risks
 
-1. Single-core: Like PgBouncer, a single Redis process can only use one
+Single-core: Like PgBouncer, a single Redis process can only use one
 core.  It does not support multi-threading.
 
-1. Dumb secondaries: Redis secondaries (aka slaves) don't actually
+Dumb secondaries: Redis secondaries (aka slaves) don't actually
 handle any load. Unlike PostgreSQL secondaries, they don't even serve
 read queries. They simply replicate data from the primary and take over
 only when the primary fails.
@@ -240,10 +240,10 @@ Sidekiq is a multi-threaded, background job processing system used in
 Ruby on Rails applications. In GitLab, Sidekiq performs the heavy
 lifting of many activities, including:
 
-1. Updating merge requests after a push
-1. Sending e-mails
-1. Updating user authorizations
-1. Processing CI builds and pipelines
+- Updating merge requests after a push.
+- Sending e-mails.
+- Updating user authorizations.
+- Processing CI builds and pipelines.
 
 The full list of jobs can be found in the
 [app/workers](https://gitlab.com/gitlab-org/gitlab/tree/master/app/workers)

@@ -634,6 +634,10 @@ before attempting to perform it in a production environment.
 You can only restore a backup to **exactly the same version and type (CE/EE)** of
 GitLab that you created it on, for example CE 9.1.0.
 
+If your backup is a different version than the current installation, you will
+need to [downgrade your GitLab installation](https://docs.gitlab.com/omnibus/update/README.html#downgrading)
+before restoring the backup.
+
 ### Restore prerequisites
 
 You need to have a working GitLab installation before you can perform

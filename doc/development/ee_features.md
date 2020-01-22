@@ -350,6 +350,55 @@ resolve when you add the indentation to the equation.
 EE-specific views should be placed in `ee/app/views/`, using extra
 sub-directories if appropriate.
 
+### Code in `lib/gitlab/background_migration/`
+
+When you create EE-only background migrations, you have to plan for users that
+downgrade GitLab EE to CE. In other words, every EE-only migration has to be present in
+CE code but with no implementation, instead you need to extend it on EE side.
+
+GitLab CE:
+
+```ruby
+# lib/gitlab/background_migration/prune_orphaned_geo_events.rb
+
+module Gitlab
+  module BackgroundMigration
+    class PruneOrphanedGeoEvents
+      def perform(table_name)
+      end
+    end
+  end
+end
+
+Gitlab::BackgroundMigration::PruneOrphanedGeoEvents.prepend_if_ee('EE::Gitlab::BackgroundMigration::PruneOrphanedGeoEvents')
+```
+
+GitLab EE:
+
+```ruby
+# ee/lib/ee/gitlab/background_migration/prune_orphaned_geo_events.rb
+
+module EE
+  module Gitlab
+    module BackgroundMigration
+      module PruneOrphanedGeoEvents
+        extend ::Gitlab::Utils::Override
+
+        override :perform
+        def perform(table_name = EVENT_TABLES.first)
+          return if ::Gitlab::Database.read_only?
+
+          deleted_rows = prune_orphaned_rows(table_name)
+          table_name   = next_table(table_name) if deleted_rows.zero?
+
+          ::BackgroundMigrationWorker.perform_in(RESCHEDULE_DELAY, self.class.name.demodulize, table_name) if table_name
+        end
+      end
+    end
+  end
+end
+```
+
 #### Using `render_if_exists`
 
 Instead of using regular `render`, we should use `render_if_exists`, which
