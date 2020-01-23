@@ -21,4 +21,16 @@ describe 'Logout/Sign out', :js do
 
     expect(page).not_to have_selector('.flash-notice')
   end
+
+  context 'on a read-only instance' do
+    before do
+      allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+    end
+
+    it 'sign out redirects to sign in page' do
+      gitlab_sign_out
+
+      expect(current_path).to eq new_user_session_path
+    end
+  end
 end

@@ -766,6 +766,7 @@ nicely on different mobile devices.
 - To display raw Markdown instead of rendered Markdown, you can use triple backticks
   with `md`, like the `Markdown code` example above, unless you want to include triple
   backticks in the code block as well. In that case, use triple tildes (`~~~`) instead.
+- [Syntax highlighting for code blocks](https://github.com/rouge-ruby/rouge/wiki/List-of-supported-languages-and-lexers) is available for many languages.
 - For a complete reference on code blocks, check the [Kramdown guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/#code-blocks).
 
 ## Alert boxes

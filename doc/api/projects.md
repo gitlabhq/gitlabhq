@@ -300,6 +300,15 @@ You can filter by [custom attributes](custom_attributes.md) with:
 GET /projects?custom_attributes[key]=value&custom_attributes[other_key]=other_value
 ```
 
+### Pagination limits
+
+From GitLab 12.10, [offset-based pagination](README.md#offset-based-pagination) will be
+[limited to 10,000 records](https://gitlab.com/gitlab-org/gitlab/issues/34565).
+[Keyset pagination](README.md#keyset-based-pagination) will be required to retrieve projects
+beyond this limit.
+
+Note that keyset pagination only supports `order_by=id`. Other sorting options are not available.
+
 ## List user projects
 
 Get a list of visible projects owned by the given user. When accessed without authentication, only public projects are returned.

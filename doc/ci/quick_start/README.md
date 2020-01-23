@@ -5,7 +5,7 @@ type: reference
 # Getting started with GitLab CI/CD
 
 NOTE: **Note:**
-Starting from version 8.0, GitLab [Continuous Integration][ci] (CI)
+Starting from version 8.0, GitLab [Continuous Integration](https://about.gitlab.com/product/continuous-integration/) (CI)
 is fully integrated into GitLab itself and is [enabled] by default on all
 projects.
 

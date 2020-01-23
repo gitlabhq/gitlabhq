@@ -1,0 +1,5 @@
+---
+title: Allow users to sign out on a read-only instance
+merge_request: 23545
+author:
+type: fixed

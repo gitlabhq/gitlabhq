@@ -403,13 +403,13 @@ If you need to manually remove ALL job artifacts associated with multiple jobs,
 
    ```ruby
    project = Project.find_by_full_path('path/to/project')
-   builds_with_artifacts =  project.builds.with_existing_job_artifacts
+   builds_with_artifacts =  project.builds.with_existing_job_artifacts(Ci::JobArtifact.trace)
    ```
 
    To select jobs with artifacts across the entire GitLab instance:
 
    ```ruby
-   builds_with_artifacts = Ci::Build.with_existing_job_artifacts
+   builds_with_artifacts = Ci::Build.with_existing_job_artifacts(Ci::JobArtifact.trace)
    ```
 
 1. Select the user which will be mentioned in the web UI as erasing the job:

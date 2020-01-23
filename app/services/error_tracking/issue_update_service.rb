@@ -2,6 +2,8 @@
 
 module ErrorTracking
   class IssueUpdateService < ErrorTracking::BaseService
+    include ::Gitlab::Utils::StrongMemoize
+
     private
 
     def perform
@@ -9,6 +11,7 @@ module ErrorTracking
 
       unless parse_errors(response).present?
         response[:closed_issue_iid] = update_related_issue&.iid
+        project_error_tracking_setting.expire_issues_cache
       end
 
       response
@@ -22,10 +25,9 @@ module ErrorTracking
     end
 
     def update_related_issue
-      issue = related_issue
-      return unless issue
+      return if related_issue.nil?
 
-      close_and_create_note(issue)
+      close_and_create_note(related_issue)
     end
 
     def close_and_create_note(issue)
@@ -49,10 +51,12 @@ module ErrorTracking
     end
 
     def related_issue
-      SentryIssueFinder
-        .new(project, current_user: current_user)
-        .execute(params[:issue_id])
-        &.issue
+      strong_memoize(:related_issue) do
+        SentryIssueFinder
+          .new(project, current_user: current_user)
+          .execute(params[:issue_id])
+          &.issue
+      end
     end
 
     def resolving?

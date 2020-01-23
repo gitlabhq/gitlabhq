@@ -118,10 +118,13 @@ To remove a child epic from a parent epic:
 To set a **Start date** and **Due date** for an epic, select one of the following:
 
 - **Fixed**: Enter a fixed value.
-- **From milestones**: Inherit a dynamic value from the issues added to the epic.
-- **Inherited**: Inherit a dynamic value from the issues added to the epic. ([Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7332) in GitLab 12.5 to replace **From milestones**).
+- **From milestones**: Inherit a dynamic value from the milestones currently assigned to the epic's issues.
+  Note that GitLab 12.5 replaced this option with **Inherited**.
+- **Inherited**: Inherit a dynamic value from the epic's issues, child epics, and milestones ([Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7332) in GitLab 12.5 to replace **From milestones**).
 
-### Milestones
+### From milestones
+
+> [Replaced](https://gitlab.com/gitlab-org/gitlab/issues/7332) in GitLab 12.5 by **Inherited**.
 
 If you select **From milestones** for the start date, GitLab will automatically set the date to be earliest
 start date across all milestones that are currently assigned to the issues that are added to the epic.
@@ -135,6 +138,8 @@ These are dynamic dates which are recalculated if any of the following occur:
 - Issues are added or removed from the epic.
 
 ### Inherited
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7332) in GitLab 12.5 to replace **From milestones**.
 
 If you select **Inherited** for the start date, GitLab will scan all child epics and issues assigned to the epic,
 and will set the start date to match the earliest found start date or milestone. Similarly, if you select
