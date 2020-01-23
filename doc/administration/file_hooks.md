@@ -105,7 +105,7 @@ bundle exec rake file_hooks:validate RAILS_ENV=production
 
 Example of output:
 
-```
+```plaintext
 Validating file hooks from /plugins directory
 * /home/git/gitlab/plugins/save_to_file.clj succeed (zero exit code)
 * /home/git/gitlab/plugins/save_to_file.rb failure (non-zero exit code)

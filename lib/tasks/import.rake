@@ -138,7 +138,7 @@ class GithubRepos
 end
 
 namespace :import do
-  desc 'Import a GitHub project - Example: import:github[ToKeN,root,root/blah,my/github_repo] (optional my/github_repo)'
+  desc 'GitLab | Import | Import a GitHub project - Example: import:github[ToKeN,root,root/blah,my/github_repo] (optional my/github_repo)'
   task :github, [:token, :gitlab_username, :project_path] => :environment do |_t, args|
     abort 'Project path must be: namespace(s)/project_name'.color(:red) unless args.project_path.include?('/')
 

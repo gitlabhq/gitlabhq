@@ -3,7 +3,7 @@ namespace :cache do
     REDIS_CLEAR_BATCH_SIZE = 1000 # There seems to be no speedup when pushing beyond 1,000
     REDIS_SCAN_START_STOP = '0'.freeze # Magic value, see http://redis.io/commands/scan
 
-    desc "GitLab | Clear redis cache"
+    desc "GitLab | Cache | Clear redis cache"
     task redis: :environment do
       Gitlab::Redis::Cache.with do |redis|
         cache_key_pattern = %W[#{Gitlab::Redis::Cache::CACHE_NAMESPACE}*

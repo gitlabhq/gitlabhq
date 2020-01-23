@@ -17,7 +17,7 @@ or through the GitLab UI.
 
 This document describes the several ways to create a merge request.
 
-When you start a new merge request, regarless of the method,
+When you start a new merge request, regardless of the method,
 you'll be taken to the [**New Merge Request** page](#new-merge-request-page)
 to fill it with information about the merge request.
 
@@ -29,9 +29,9 @@ button and start a merge request from there.
 
 On the **New Merge Request** page, start by filling in the title
 and description for the merge request. If there are are already
-commits on the branch, the title will be pre-filled with the first
+commits on the branch, the title will be prefilled with the first
 line of the first commit message, and the description will be
-pre-filled with any additional lines in the commit message.
+prefilled with any additional lines in the commit message.
 The title is the only field that is mandatory in all cases.
 
 From there, you can fill it with information (title, description,

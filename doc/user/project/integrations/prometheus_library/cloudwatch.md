@@ -12,9 +12,9 @@ The [Prometheus service](../prometheus.md) must be enabled.
 
 | Name | Query |
 | ---- | ----- |
-| Throughput (req/sec) | sum(aws_elb_request_count_sum{%{environment_filter}}) / 60 |
-| Latency (ms) | avg(aws_elb_latency_average{%{environment_filter}}) * 1000 |
-| HTTP Error Rate (%) | sum(aws_elb_httpcode_backend_5_xx_sum{%{environment_filter}}) / sum(aws_elb_request_count_sum{%{environment_filter}}) |
+| Throughput (req/sec) | `sum(aws_elb_request_count_sum{%{environment_filter}}) / 60` |
+| Latency (ms) | `avg(aws_elb_latency_average{%{environment_filter}}) * 1000` |
+| HTTP Error Rate (%) | `sum(aws_elb_httpcode_backend_5_xx_sum{%{environment_filter}}) / sum(aws_elb_request_count_sum{%{environment_filter}})` |
 
 ## Configuring Prometheus to monitor for Cloudwatch metrics
 

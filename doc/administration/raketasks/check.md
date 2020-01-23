@@ -33,7 +33,7 @@ integrity check described previously.
 
 **Omnibus Installation**
 
-```
+```bash
 sudo gitlab-rake gitlab:git:fsck
 ```
 
@@ -58,7 +58,7 @@ Currently, integrity checks are supported for the following types of file:
 
 **Omnibus Installation**
 
-```
+```bash
 sudo gitlab-rake gitlab:artifacts:check
 sudo gitlab-rake gitlab:lfs:check
 sudo gitlab-rake gitlab:uploads:check
@@ -90,7 +90,7 @@ sudo gitlab-rake gitlab:uploads:check BATCH=100 ID_FROM=50 ID_TO=250
 
 Example output:
 
-```
+```bash
 $ sudo gitlab-rake gitlab:uploads:check
 Checking integrity of Uploads
 - 1..1350: Failures: 0
@@ -107,7 +107,7 @@ Done!
 
 Example verbose output:
 
-```
+```bash
 $ sudo gitlab-rake gitlab:uploads:check VERBOSE=1
 Checking integrity of Uploads
 - 1..1350: Failures: 0

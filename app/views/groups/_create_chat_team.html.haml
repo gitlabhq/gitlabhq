@@ -6,7 +6,7 @@
       Mattermost
   .col-sm-10
     .form-check.js-toggle-container
-      .js-toggle-button.form-check-input= f.check_box(:create_chat_team, { checked: true }, true, false)
+      .js-toggle-button.form-check-input= f.check_box(:create_chat_team, { checked: false }, true, false)
       = f.label :create_chat_team, class: 'form-check-label' do
         = _('Create a Mattermost team for this group')
       %br

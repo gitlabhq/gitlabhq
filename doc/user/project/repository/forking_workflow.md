@@ -38,7 +38,7 @@ repository. There, you will have full [Owner](../../permissions.md)
 access, so you can set it up as you please.
 
 CAUTION: **CAUTION:**
-From GitLab 12.6 onwards, if the [visibility of an upstream project is reduced](../../../public_access/public_access.md#reducing-visibility)
+From GitLab 12.6 onward, if the [visibility of an upstream project is reduced](../../../public_access/public_access.md#reducing-visibility)
 in any way, the fork relationship with all its forks will be removed.
 
 CAUTION: **Caution:**

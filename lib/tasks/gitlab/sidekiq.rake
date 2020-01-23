@@ -16,7 +16,7 @@ namespace :gitlab do
         File.write(path, banner + YAML.dump(object))
       end
 
-      desc 'GitLab | Generate all_queues.yml based on worker definitions'
+      desc 'GitLab | Sidekiq | Generate all_queues.yml based on worker definitions'
       task generate: :environment do
         foss_workers, ee_workers = Gitlab::SidekiqConfig.workers_for_all_queues_yml
 
@@ -27,7 +27,7 @@ namespace :gitlab do
         end
       end
 
-      desc 'GitLab | Validate that all_queues.yml matches worker definitions'
+      desc 'GitLab | Sidekiq | Validate that all_queues.yml matches worker definitions'
       task check: :environment do
         if Gitlab::SidekiqConfig.all_queues_yml_outdated?
           raise <<~MSG

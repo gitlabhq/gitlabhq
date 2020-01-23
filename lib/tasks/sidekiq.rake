@@ -8,28 +8,28 @@ namespace :sidekiq do
     WARNING
   end
 
-  desc "[DEPRECATED] GitLab | Stop sidekiq"
+  desc '[DEPRECATED] GitLab | Sidekiq | Stop sidekiq'
   task :stop do
     deprecation_warning!
 
     system(*%w(bin/background_jobs stop))
   end
 
-  desc "[DEPRECATED] GitLab | Start sidekiq"
+  desc '[DEPRECATED] GitLab | Sidekiq | Start sidekiq'
   task :start do
     deprecation_warning!
 
     system(*%w(bin/background_jobs start))
   end
 
-  desc '[DEPRECATED] GitLab | Restart sidekiq'
+  desc '[DEPRECATED] GitLab | Sidekiq | Restart sidekiq'
   task :restart do
     deprecation_warning!
 
     system(*%w(bin/background_jobs restart))
   end
 
-  desc "[DEPRECATED] GitLab | Start sidekiq with launchd on Mac OS X"
+  desc '[DEPRECATED] GitLab | Sidekiq | Start sidekiq with launchd on Mac OS X'
   task :launchd do
     deprecation_warning!
 

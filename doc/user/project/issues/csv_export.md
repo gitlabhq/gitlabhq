@@ -62,8 +62,8 @@ Data will be encoded with a comma as the column delimiter, with `"` used to quot
 | Confidential | `Yes` or `No` |
 | Locked | `Yes` or `No` |
 | Due Date | Formated as `YYYY-MM-DD` |
-| Created At (UTC) | Formated as `YYYY-MM-DD HH:MM:SS` |
-| Updated At (UTC) | Formated as `YYYY-MM-DD HH:MM:SS` |
+| Created At (UTC) | Formatted as `YYYY-MM-DD HH:MM:SS` |
+| Updated At (UTC) | Formatted as `YYYY-MM-DD HH:MM:SS` |
 | Milestone | Title of the issue milestone |
 | Weight | Issue weight |
 | Labels | Title of any labels joined with a `,` |

@@ -11,7 +11,7 @@ This is equivalent of running `git repack -d` on a _bare_ repository.
 
 **Omnibus Installation**
 
-```
+```bash
 sudo gitlab-rake geo:git:housekeeping:incremental_repack
 ```
 
@@ -29,7 +29,7 @@ when this is enabled in GitLab.
 
 **Omnibus Installation**
 
-```
+```bash
 sudo gitlab-rake geo:git:housekeeping:full_repack
 ```
 
@@ -46,7 +46,7 @@ a reachability bitmap index when this is enabled in GitLab.
 
 **Omnibus Installation**
 
-```
+```bash
 sudo gitlab-rake geo:git:housekeeping:gc
 ```
 
@@ -63,7 +63,7 @@ can remove them using the rake task `geo:run_orphaned_project_registry_cleaner`:
 
 **Omnibus Installation**
 
-```
+```bash
 sudo gitlab-rake geo:run_orphaned_project_registry_cleaner
 ```
 

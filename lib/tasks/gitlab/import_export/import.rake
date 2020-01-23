@@ -11,7 +11,7 @@
 #
 namespace :gitlab do
   namespace :import_export do
-    desc 'EXPERIMENTAL | Import large project archives'
+    desc 'GitLab | Import/Export | EXPERIMENTAL | Import large project archives'
     task :import, [:username, :namespace_path, :project_path, :archive_path] => :gitlab_environment do |_t, args|
       # Load it here to avoid polluting Rake tasks with Sidekiq test warnings
       require 'sidekiq/testing'

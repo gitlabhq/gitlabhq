@@ -78,7 +78,7 @@ service: gitlab-example
 provider:
   name: aws
   runtime: nodejs10.x
-  
+
 functions:
   hello:
     handler: src/handler.hello
@@ -222,7 +222,7 @@ From there, you can reference them in your functions as well.
 Remember to add `A_VARIABLE` to your GitLab CI variables under **Settings > CI/CD > Variables**, and it will get picked up and deployed with your function.
 
 NOTE: **Note:**
-Anyone with access to the AWS environemnt may be able to see the values of those
+Anyone with access to the AWS environment may be able to see the values of those
 variables persisted in the lambda definition.
 
 ### Setting up CORS

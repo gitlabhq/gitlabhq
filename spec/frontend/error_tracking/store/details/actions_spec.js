@@ -4,27 +4,33 @@ import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';
 import * as actions from '~/error_tracking/store/details/actions';
 import * as types from '~/error_tracking/store/details/mutation_types';
+import Poll from '~/lib/utils/poll';
+
+let mockedAdapter;
+let mockedRestart;
 
 jest.mock('~/flash.js');
 jest.mock('~/lib/utils/url_utility');
 
-let mock;
-
 describe('Sentry error details store actions', () => {
   beforeEach(() => {
-    mock = new MockAdapter(axios);
+    mockedAdapter = new MockAdapter(axios);
   });
 
   afterEach(() => {
-    mock.restore();
+    mockedAdapter.restore();
     createFlash.mockClear();
+    if (mockedRestart) {
+      mockedRestart.mockRestore();
+      mockedRestart = null;
+    }
   });
 
   describe('startPollingDetails', () => {
     const endpoint = '123/details';
     it('should commit SET_ERROR with received response', done => {
       const payload = { error: { id: 1 } };
-      mock.onGet().reply(200, payload);
+      mockedAdapter.onGet().reply(200, payload);
       testAction(
         actions.startPollingDetails,
         { endpoint },
@@ -41,7 +47,7 @@ describe('Sentry error details store actions', () => {
     });
 
     it('should show flash on API error', done => {
-      mock.onGet().reply(400);
+      mockedAdapter.onGet().reply(400);
 
       testAction(
         actions.startPollingDetails,
@@ -55,13 +61,23 @@ describe('Sentry error details store actions', () => {
         },
       );
     });
+
+    it('should not restart polling when receiving an empty 204 response', done => {
+      mockedRestart = jest.spyOn(Poll.prototype, 'restart');
+      mockedAdapter.onGet().reply(204);
+
+      testAction(actions.startPollingDetails, { endpoint }, {}, [], [], () => {
+        expect(mockedRestart).toHaveBeenCalledTimes(0);
+        done();
+      });
+    });
   });
 
   describe('startPollingStacktrace', () => {
     const endpoint = '123/stacktrace';
     it('should commit SET_ERROR with received response', done => {
       const payload = { error: [1, 2, 3] };
-      mock.onGet().reply(200, payload);
+      mockedAdapter.onGet().reply(200, payload);
       testAction(
         actions.startPollingStacktrace,
         { endpoint },
@@ -78,7 +94,7 @@ describe('Sentry error details store actions', () => {
     });
 
     it('should show flash on API error', done => {
-      mock.onGet().reply(400);
+      mockedAdapter.onGet().reply(400);
 
       testAction(
         actions.startPollingStacktrace,
@@ -91,6 +107,17 @@ describe('Sentry error details store actions', () => {
           done();
         },
       );
+    });
+
+    it('should not restart polling when receiving an empty 204 response', done => {
+      mockedRestart = jest.spyOn(Poll.prototype, 'restart');
+      mockedAdapter.onGet().reply(204);
+
+      testAction(actions.startPollingStacktrace, { endpoint }, {}, [], [], () => {
+        mockedRestart = jest.spyOn(Poll.prototype, 'restart');
+        expect(mockedRestart).toHaveBeenCalledTimes(0);
+        done();
+      });
     });
   });
 });

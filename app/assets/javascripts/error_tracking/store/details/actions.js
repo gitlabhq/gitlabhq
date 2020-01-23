@@ -18,7 +18,6 @@ export function startPollingDetails({ commit }, endpoint) {
     data: { endpoint },
     successCallback: ({ data }) => {
       if (!data) {
-        detailPoll.restart();
         return;
       }
 
@@ -43,7 +42,6 @@ export function startPollingStacktrace({ commit }, endpoint) {
     data: { endpoint },
     successCallback: ({ data }) => {
       if (!data) {
-        stackTracePoll.restart();
         return;
       }
       commit(types.SET_STACKTRACE_DATA, data.error);

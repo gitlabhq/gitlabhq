@@ -4,7 +4,7 @@ unless Rails.env.production?
       ENV['STATIC_VERIFICATION'] = 'true'
     end
 
-    desc "GitLab | lint | Static verification"
+    desc "GitLab | Lint | Static verification"
     task static_verification: %w[
       lint:static_verification_env
       dev:load
@@ -12,19 +12,19 @@ unless Rails.env.production?
       Gitlab::Utils::Override.verify!
     end
 
-    desc "GitLab | lint | Lint JavaScript files using ESLint"
+    desc "GitLab | Lint | Lint JavaScript files using ESLint"
     task :javascript do
       Rake::Task['eslint'].invoke
     end
 
-    desc "GitLab | lint | Lint HAML files"
+    desc "GitLab | Lint | Lint HAML files"
     task :haml do
       Rake::Task['haml_lint'].invoke
     rescue RuntimeError # The haml_lint tasks raise a RuntimeError
       exit(1)
     end
 
-    desc "GitLab | lint | Run several lint checks"
+    desc "GitLab | Lint | Run several lint checks"
     task :all do
       status = 0
 

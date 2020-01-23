@@ -9,7 +9,7 @@ using the command below.
 
 **Omnibus Installation**
 
-```
+```bash
 sudo gitlab-rake gitlab:ldap:check
 ```
 
@@ -41,7 +41,7 @@ instead.
 
 **Omnibus Installation**
 
-```
+```bash
 sudo gitlab-rake gitlab:ldap:group_sync
 ```
 
@@ -101,7 +101,7 @@ sudo gitlab-rake gitlab:ldap:rename_provider[ldapmain,ldapmycompany]
 
 Example output:
 
-```
+```plaintext
 100 users with provider 'ldapmain' will be updated to 'ldapmycompany'.
 If the new provider is incorrect, users will be unable to sign in.
 Do you want to continue (yes/no)? yes
@@ -128,7 +128,7 @@ bundle exec rake gitlab:ldap:rename_provider RAILS_ENV=production
 
 **Example output:**
 
-```
+```plaintext
 What is the old provider? Ex. 'ldapmain': ldapmain
 What is the new provider? Ex. 'ldapcustom': ldapmycompany
 ```

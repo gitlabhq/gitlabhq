@@ -49,7 +49,7 @@ After making your changes, click the **Commit** button in the bottom left to
 review the list of changed files. If you're using GitLab 12.6 or older versions,
 click on each file to review the changes and tick the item to stage a file.
 
-From [GitLab 12.7 onwards](https://gitlab.com/gitlab-org/gitlab/issues/33441),
+From [GitLab 12.7 onward](https://gitlab.com/gitlab-org/gitlab/issues/33441),
 all your files will be automatically staged. You still have the option to unstage
 changes in case you want to submit them in multiple smaller commits. To unstage
 a change, simply click the **Unstage** button when a staged file is open, or click

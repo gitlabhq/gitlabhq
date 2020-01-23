@@ -6,19 +6,19 @@ This command gathers information about your GitLab installation and the System i
 
 **Omnibus Installation**
 
-```
+```bash
 sudo gitlab-rake gitlab:env:info
 ```
 
 **Source Installation**
 
-```
+```bash
 bundle exec rake gitlab:env:info RAILS_ENV=production
 ```
 
 Example output:
 
-```
+```plaintext
 System information
 System:           Debian 7.8
 Current User:     git
@@ -66,13 +66,13 @@ You may also have a look at our Troubleshooting Guides:
 
 **Omnibus Installation**
 
-```
+```bash
 sudo gitlab-rake gitlab:check
 ```
 
 **Source Installation**
 
-```
+```bash
 bundle exec rake gitlab:check RAILS_ENV=production
 ```
 
@@ -80,7 +80,7 @@ NOTE: Use `SANITIZE=true` for `gitlab:check` if you want to omit project names f
 
 Example output:
 
-```
+```plaintext
 Checking Environment ...
 
 Git configured for git user? ... yes
@@ -129,18 +129,18 @@ In some case it is necessary to rebuild the `authorized_keys` file.
 
 **Omnibus Installation**
 
-```
+```bash
 sudo gitlab-rake gitlab:shell:setup
 ```
 
 **Source Installation**
 
-```
+```bash
 cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:shell:setup RAILS_ENV=production
 ```
 
-```
+```plaintext
 This will rebuild an authorized_keys file.
 You will lose any data stored in authorized_keys file.
 Do you want to continue (yes/no)? yes
@@ -153,13 +153,13 @@ clear Redis' cache.
 
 **Omnibus Installation**
 
-```
+```bash
 sudo gitlab-rake cache:clear
 ```
 
 **Source Installation**
 
-```
+```bash
 cd /home/git/gitlab
 sudo -u git -H bundle exec rake cache:clear RAILS_ENV=production
 ```
@@ -174,7 +174,7 @@ Omnibus packages.
 
 **Source Installation**
 
-```
+```bash
 cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production
 ```
@@ -194,13 +194,13 @@ in the GitLab Performance Monitoring database.
 
 **Omnibus Installation**
 
-```
+```bash
 sudo gitlab-rake gitlab:track_deployment
 ```
 
 **Source Installation**
 
-```
+```bash
 cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:track_deployment RAILS_ENV=production
 ```
@@ -213,13 +213,13 @@ is included to help you with this:
 
 **Omnibus Installation**
 
-```
+```bash
 sudo gitlab-rake gitlab:tcp_check[example.com,80]
 ```
 
 **Source Installation**
 
-```
+```bash
 cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:tcp_check[example.com,80] RAILS_ENV=production
 ```
@@ -279,6 +279,6 @@ This could be as a result of [updating existing metrics](../../development/prome
 
 To re-import the metrics you can run:
 
-```sh
+```bash
 sudo gitlab-rake metrics:setup_common_metrics
 ```

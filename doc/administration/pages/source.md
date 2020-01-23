@@ -98,7 +98,7 @@ The Pages daemon doesn't listen to the outside world.
 
 1. Install the Pages daemon:
 
-   ```
+   ```bash
    cd /home/git
    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-pages.git
    cd gitlab-pages
@@ -160,7 +160,7 @@ outside world.
 
 1. Install the Pages daemon:
 
-   ```
+   ```bash
    cd /home/git
    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-pages.git
    cd gitlab-pages
@@ -225,7 +225,7 @@ world. Custom domains are supported, but no TLS.
 
 1. Install the Pages daemon:
 
-   ```
+   ```bash
    cd /home/git
    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-pages.git
    cd gitlab-pages
@@ -290,7 +290,7 @@ world. Custom domains and TLS are supported.
 
 1. Install the Pages daemon:
 
-   ```
+   ```bash
    cd /home/git
    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-pages.git
    cd gitlab-pages
@@ -353,20 +353,20 @@ not remove the backslashes.
 
 If your GitLab Pages domain is `example.io`, replace:
 
-```bash
+```nginx
 server_name ~^.*\.YOUR_GITLAB_PAGES\.DOMAIN$;
 ```
 
 with:
 
-```
+```nginx
 server_name ~^.*\.example\.io$;
 ```
 
 If you are using a subdomain, make sure to escape all dots (`.`) except from
 the first one with a backslash (\). For example `pages.example.io` would be:
 
-```
+```nginx
 server_name ~^.*\.pages\.example\.io$;
 ```
 

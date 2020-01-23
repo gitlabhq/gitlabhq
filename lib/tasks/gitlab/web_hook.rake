@@ -1,6 +1,6 @@
 namespace :gitlab do
   namespace :web_hook do
-    desc "GitLab | Adds a webhook to the projects"
+    desc "GitLab | Webhook | Adds a webhook to the projects"
     task add: :environment do
       web_hook_url = ENV['URL']
       namespace_path = ENV['NAMESPACE']
@@ -20,7 +20,7 @@ namespace :gitlab do
       end
     end
 
-    desc "GitLab | Remove a webhook from the projects"
+    desc "GitLab | Webhook | Remove a webhook from the projects"
     task rm: :environment do
       web_hook_url = ENV['URL']
       namespace_path = ENV['NAMESPACE']
@@ -44,7 +44,7 @@ namespace :gitlab do
       puts "#{count} webhooks were removed."
     end
 
-    desc "GitLab | List webhooks"
+    desc "GitLab | Webhook | List webhooks"
     task list: :environment do
       namespace_path = ENV['NAMESPACE']
 
