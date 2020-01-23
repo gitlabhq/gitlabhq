@@ -35,7 +35,7 @@ describe Gitlab::Gfm::ReferenceRewriter do
 
       context 'description with ignored elements' do
         let(:text) do
-          "Hi. This references #1, but not `#2`\n" +
+          "Hi. This references #1, but not `#2`\n" \
             '<pre>and not !1</pre>'
         end
 

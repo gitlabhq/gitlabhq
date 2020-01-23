@@ -2150,20 +2150,10 @@ describe MergeRequest do
         subject.mark_as_mergeable!
       end
 
-      context 'and merge_requests_conditional_mergeability_check feature flag is enabled' do
-        it 'does not call MergeabilityCheckService' do
-          expect(MergeRequests::MergeabilityCheckService).not_to receive(:new)
+      it 'does not call MergeabilityCheckService' do
+        expect(MergeRequests::MergeabilityCheckService).not_to receive(:new)
 
-          subject.check_mergeability
-        end
-      end
-
-      context 'and merge_requests_conditional_mergeability_check feature flag is disabled' do
-        before do
-          stub_feature_flags(merge_requests_conditional_mergeability_check: false)
-        end
-
-        it_behaves_like 'method that executes MergeabilityCheckService'
+        subject.check_mergeability
       end
     end
   end

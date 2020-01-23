@@ -454,6 +454,7 @@ class ApplicationController < ActionController::Base
       user: -> { auth_user },
       project: -> { @project },
       namespace: -> { @group },
+      caller_id: full_action_name,
       &block)
   end
 
@@ -549,6 +550,10 @@ class ApplicationController < ActionController::Base
     ::Gitlab::GitalyClient.allow_ref_name_caching do
       yield
     end
+  end
+
+  def full_action_name
+    "#{self.class.name}##{action_name}"
   end
 
   # A user requires a role and have the setup_for_company attribute set when they are part of the experimental signup

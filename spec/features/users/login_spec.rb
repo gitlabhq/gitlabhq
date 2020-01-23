@@ -152,7 +152,7 @@ describe 'Login' do
     end
   end
 
-  describe 'with two-factor authentication' do
+  describe 'with two-factor authentication', :js do
     def enter_code(code)
       fill_in 'user_otp_attempt', with: code
       click_button 'Verify code'

@@ -385,7 +385,7 @@ describe Issues::CreateService do
 
       context 'when recaptcha was not verified' do
         before do
-          expect_next_instance_of(SpamService) do |spam_service|
+          expect_next_instance_of(SpamCheckService) do |spam_service|
             expect(spam_service).to receive_messages(check_for_spam?: true)
           end
         end
@@ -408,7 +408,7 @@ describe Issues::CreateService do
 
             it 'creates a new spam_log' do
               expect { issue }
-                .to log_spam(title: issue.title, description: issue.description, user_id: user.id, noteable_type: 'Issue')
+                  .to have_spam_log(title: issue.title, description: issue.description, user_id: user.id, noteable_type: 'Issue')
             end
 
             it 'assigns a spam_log to an issue' do
@@ -431,7 +431,7 @@ describe Issues::CreateService do
 
             it 'creates a new spam_log' do
               expect { issue }
-                .to log_spam(title: issue.title, description: issue.description, user_id: user.id, noteable_type: 'Issue')
+                  .to have_spam_log(title: issue.title, description: issue.description, user_id: user.id, noteable_type: 'Issue')
             end
 
             it 'assigns a spam_log to an issue' do

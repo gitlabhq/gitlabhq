@@ -2,6 +2,8 @@
 
 module Gitlab
   module Marginalia
+    cattr_accessor :enabled, default: false
+
     MARGINALIA_FEATURE_FLAG = :marginalia
 
     def self.set_application_name
@@ -15,14 +17,14 @@ module Gitlab
     end
 
     def self.cached_feature_enabled?
-      !!@enabled
+      enabled
     end
 
     def self.set_feature_cache
       # During db:create and db:bootstrap skip feature query as DB is not available yet.
       return false unless ActiveRecord::Base.connected? && Gitlab::Database.cached_table_exists?('features')
 
-      @enabled = Feature.enabled?(MARGINALIA_FEATURE_FLAG)
+      self.enabled = Feature.enabled?(MARGINALIA_FEATURE_FLAG)
     end
   end
 end

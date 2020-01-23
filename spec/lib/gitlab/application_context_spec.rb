@@ -43,11 +43,11 @@ describe Gitlab::ApplicationContext do
   describe '#to_lazy_hash' do
     let(:user) { build(:user) }
     let(:project) { build(:project) }
-    let(:namespace) { build(:group) }
-    let(:subgroup) { build(:group, parent: namespace) }
+    let(:namespace) { create(:group) }
+    let(:subgroup) { create(:group, parent: namespace) }
 
     def result(context)
-      context.to_lazy_hash.transform_values { |v| v.call }
+      context.to_lazy_hash.transform_values { |v| v.respond_to?(:call) ? v.call : v }
     end
 
     it 'does not call the attributes until needed' do
@@ -77,28 +77,6 @@ describe Gitlab::ApplicationContext do
 
       expect(result(context))
         .to include(project: project.full_path, root_namespace: project.full_path_components.first)
-    end
-
-    context 'only include values for which an option was specified' do
-      using RSpec::Parameterized::TableSyntax
-
-      where(:provided_options, :expected_context_keys) do
-        [:user, :namespace, :project] | [:user, :project, :root_namespace]
-        [:user, :project]             | [:user, :project, :root_namespace]
-        [:user, :namespace]           | [:user, :root_namespace]
-        [:user]                       | [:user]
-        []                            | []
-      end
-
-      with_them do
-        it do
-          # Build a hash that has all `provided_options` as keys, and `nil` as value
-          provided_values = provided_options.map { |key| [key, nil] }.to_h
-          context = described_class.new(provided_values)
-
-          expect(context.to_lazy_hash.keys).to contain_exactly(*expected_context_keys)
-        end
-      end
     end
   end
 end

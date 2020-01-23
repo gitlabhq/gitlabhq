@@ -924,7 +924,7 @@ describe ApplicationController do
     end
 
     it 'sets the group if it was available' do
-      group = build_stubbed(:group)
+      group = build(:group)
       controller.instance_variable_set(:@group, group)
 
       get :index, format: :json
@@ -933,12 +933,18 @@ describe ApplicationController do
     end
 
     it 'sets the project if one was available' do
-      project = build_stubbed(:project)
+      project = build(:project)
       controller.instance_variable_set(:@project, project)
 
       get :index, format: :json
 
       expect(json_response['meta.project']).to eq(project.full_path)
+    end
+
+    it 'sets the caller_id as controller#action' do
+      get :index, format: :json
+
+      expect(json_response['meta.caller_id']).to eq('AnonymousController#index')
     end
   end
 end

@@ -9,7 +9,8 @@ module API
       before do
         Gitlab::ApplicationContext.push(
           user: -> { actor&.user },
-          project: -> { project }
+          project: -> { project },
+          caller_id: route.origin
         )
       end
 

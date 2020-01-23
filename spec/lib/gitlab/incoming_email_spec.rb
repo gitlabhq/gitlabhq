@@ -99,8 +99,8 @@ describe Gitlab::IncomingEmail do
 
   context 'self.scan_fallback_references' do
     let(:references) do
-      '<issue_1@localhost>' +
-        ' <reply-59d8df8370b7e95c5a49fbf86aeb2c93@localhost>' +
+      '<issue_1@localhost>' \
+        ' <reply-59d8df8370b7e95c5a49fbf86aeb2c93@localhost>' \
         ',<exchange@microsoft.com>'
     end
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class SpamService
+class SpamCheckService
   include AkismetMethods
 
   attr_accessor :spammable, :request, :options
@@ -21,14 +21,14 @@ class SpamService
     end
   end
 
-  def when_recaptcha_verified(recaptcha_verified, api = false)
-    # In case it's a request which is already verified through recaptcha, yield
-    # block.
+  def execute(api: false, recaptcha_verified:, spam_log_id:, user_id:)
     if recaptcha_verified
-      yield
+      # If it's a request which is already verified through recaptcha,
+      # update the spam log accordingly.
+      SpamLog.verify_recaptcha!(user_id: user_id, id: spam_log_id)
     else
-      # Otherwise, it goes to Akismet and check if it's a spam. If that's the
-      # case, it assigns spammable record as "spam" and create a SpamLog record.
+      # Otherwise, it goes to Akismet for spam check.
+      # If so, it assigns spammable object as "spam" and creates a SpamLog record.
       possible_spam = check(api)
       spammable.spam = possible_spam unless spammable.allow_possible_spam?
       spammable.spam_log = spam_log
@@ -38,9 +38,9 @@ class SpamService
   private
 
   def check(api)
-    return false unless request && check_for_spam?
-
-    return false unless akismet.spam?
+    return unless request
+    return unless check_for_spam?
+    return unless akismet.spam?
 
     create_spam_log(api)
     true

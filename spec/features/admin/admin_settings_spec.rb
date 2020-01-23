@@ -228,9 +228,7 @@ describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_not_moc
 
         click_link 'Slack notifications'
 
-        page.all('input[type=checkbox]').each do |checkbox|
-          expect(checkbox).to be_checked
-        end
+        expect(page.all('input[type=checkbox]')).to all(be_checked)
         expect(find_field('Webhook').value).to eq 'http://localhost'
         expect(find_field('Username').value).to eq 'test_user'
         expect(find('#service_push_channel').value).to eq '#test_channel'

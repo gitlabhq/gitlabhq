@@ -13,7 +13,7 @@ module UserLoginHelper
 
   def ensure_tab_pane_counts
     tabs_count = page.all('[role="tab"]').size
-    expect(page).to have_selector('[role="tabpanel"]', count: tabs_count)
+    expect(page).to have_selector('[role="tabpanel"]', visible: :all, count: tabs_count)
   end
 
   def ensure_one_active_tab

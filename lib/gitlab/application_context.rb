@@ -5,12 +5,13 @@ module Gitlab
   class ApplicationContext
     include Gitlab::Utils::LazyAttributes
 
-    Attribute = Struct.new(:name, :type)
+    Attribute = Struct.new(:name, :type, :evaluation)
 
     APPLICATION_ATTRIBUTES = [
       Attribute.new(:project, Project),
       Attribute.new(:namespace, Namespace),
-      Attribute.new(:user, User)
+      Attribute.new(:user, User),
+      Attribute.new(:caller_id, String)
     ].freeze
 
     def self.with_context(args, &block)
@@ -37,6 +38,7 @@ module Gitlab
         hash[:user] = -> { username } if set_values.include?(:user)
         hash[:project] = -> { project_path } if set_values.include?(:project)
         hash[:root_namespace] = -> { root_namespace_path } if include_namespace?
+        hash[:caller_id] = caller_id if set_values.include?(:caller_id)
       end
     end
 
@@ -75,3 +77,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::ApplicationContext.prepend_if_ee('EE::Gitlab::ApplicationContext')

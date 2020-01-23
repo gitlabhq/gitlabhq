@@ -32,11 +32,9 @@ module Gitlab
       end
 
       def catch_timeout(seconds, &block)
-        begin
-          Timeout.timeout(seconds.to_i, &block)
-        rescue Timeout::Error => ex
-          ex
-        end
+        Timeout.timeout(seconds.to_i, &block)
+      rescue Timeout::Error => ex
+        ex
       end
     end
   end

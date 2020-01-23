@@ -66,23 +66,21 @@ module Projects
     end
 
     def import_repository
-      begin
-        refmap = importer_class.try(:refmap) if has_importer?
+      refmap = importer_class.try(:refmap) if has_importer?
 
-        if refmap
-          project.ensure_repository
-          project.repository.fetch_as_mirror(project.import_url, refmap: refmap)
-        else
-          gitlab_shell.import_project_repository(project)
-        end
-      rescue Gitlab::Shell::Error => e
-        # Expire cache to prevent scenarios such as:
-        # 1. First import failed, but the repo was imported successfully, so +exists?+ returns true
-        # 2. Retried import, repo is broken or not imported but +exists?+ still returns true
-        project.repository.expire_content_cache if project.repository_exists?
-
-        raise Error, e.message
+      if refmap
+        project.ensure_repository
+        project.repository.fetch_as_mirror(project.import_url, refmap: refmap)
+      else
+        gitlab_shell.import_project_repository(project)
       end
+    rescue Gitlab::Shell::Error => e
+      # Expire cache to prevent scenarios such as:
+      # 1. First import failed, but the repo was imported successfully, so +exists?+ returns true
+      # 2. Retried import, repo is broken or not imported but +exists?+ still returns true
+      project.repository.expire_content_cache if project.repository_exists?
+
+      raise Error, e.message
     end
 
     def download_lfs_objects

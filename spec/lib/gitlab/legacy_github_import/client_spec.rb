@@ -13,9 +13,7 @@ describe Gitlab::LegacyGithubImport::Client do
   end
 
   it 'convert OAuth2 client options to symbols' do
-    client.client.options.keys.each do |key|
-      expect(key).to be_kind_of(Symbol)
-    end
+    expect(client.client.options.keys).to all(be_kind_of(Symbol))
   end
 
   it 'does not crash (e.g. Settingslogic::MissingSetting) when verify_ssl config is not present' do

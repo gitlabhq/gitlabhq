@@ -4,7 +4,6 @@ require 'spec_helper'
 
 describe MergeRequests::AddTodoWhenBuildFailsService do
   let(:user) { create(:user) }
-  let(:merge_request) { create(:merge_request) }
   let(:project) { create(:project, :repository) }
   let(:sha) { '1234567890abcdef1234567890abcdef12345678' }
   let(:ref) { merge_request.source_branch }

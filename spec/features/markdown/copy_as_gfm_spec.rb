@@ -624,7 +624,7 @@ describe 'Copy as GFM', :js do
         GFM
 
         # table with empty heading
-        <<~GFM,
+        <<~GFM
           |  | x | y |
           |--|---|---|
           | a | 1 | 0 |
@@ -784,7 +784,7 @@ describe 'Copy as GFM', :js do
           verify(
             '.line[id="LC9"], .line[id="LC10"]',
 
-            <<~GFM,
+            <<~GFM
               ```ruby
                     raise RuntimeError, "System commands must be given as an array of strings"
                   end
@@ -826,7 +826,7 @@ describe 'Copy as GFM', :js do
           verify(
             '.line[id="LC27"], .line[id="LC28"]',
 
-            <<~GFM,
+            <<~GFM
               ```json
                   "bio": null,
                   "skype": "",

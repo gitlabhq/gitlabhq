@@ -1322,11 +1322,6 @@ describe QuickActions::InterpretService do
         let(:issuable) { issue }
       end
 
-      it_behaves_like 'empty command', _('Failed to mark this issue as a duplicate because referenced issue was not found.') do
-        let(:content) { '/duplicate #{issue.to_reference}' }
-        let(:issuable) { issue }
-      end
-
       it_behaves_like 'empty command' do
         let(:content) { '/lock' }
         let(:issuable) { issue }

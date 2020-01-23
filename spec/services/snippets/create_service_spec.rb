@@ -86,7 +86,7 @@ describe Snippets::CreateService do
 
         it 'creates a new spam_log' do
           expect { snippet }
-            .to log_spam(title: snippet.title, noteable_type: snippet.class.name)
+            .to have_spam_log(title: snippet.title, noteable_type: snippet.class.name)
         end
 
         it 'assigns a spam_log to an issue' do

@@ -542,6 +542,20 @@ group = Group.find_by_full_path 'group'
 user.max_member_access_for_group group.id
 ```
 
+### Change user password
+
+```ruby
+password = "your password"
+user = User.find_by_username('your username')
+password_attributes = {
+  password: password,
+  password_confirmation: password,
+  password_automatically_set: false
+}
+
+result = Users::UpdateService.new(user, password_attributes.merge(user: user)).execute
+```
+
 ## Groups
 
 ### Count unique users in a group and sub-groups

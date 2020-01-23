@@ -172,12 +172,6 @@ Lint/DuplicateMethods:
     - 'lib/gitlab/git/tree.rb'
     - 'lib/gitlab/git/wiki_page.rb'
 
-# Offense count: 3
-Lint/InterpolationCheck:
-  Exclude:
-    - 'spec/features/issues/filtered_search/filter_issues_spec.rb'
-    - 'spec/services/quick_actions/interpret_service_spec.rb'
-
 # Offense count: 122
 # Configuration parameters: MaximumRangeSize.
 Lint/MissingCopEnableDirective:
@@ -275,13 +269,6 @@ RSpec/ItBehavesLike:
     - 'spec/lib/gitlab/git/repository_spec.rb'
     - 'spec/services/notification_service_spec.rb'
 
-# Offense count: 3
-RSpec/IteratedExpectation:
-  Exclude:
-    - 'spec/features/admin/admin_settings_spec.rb'
-    - 'spec/lib/gitlab/gitlab_import/client_spec.rb'
-    - 'spec/lib/gitlab/legacy_github_import/client_spec.rb'
-
 # Offense count: 68
 # Cop supports --auto-correct.
 RSpec/LetBeforeExamples:
@@ -302,13 +289,6 @@ RSpec/LetBeforeExamples:
 RSpec/MultipleSubjects:
   Exclude:
     - 'spec/services/merge_requests/create_from_issue_service_spec.rb'
-
-# Offense count: 3
-RSpec/OverwritingSetup:
-  Exclude:
-    - 'spec/models/email_spec.rb'
-    - 'spec/services/merge_requests/add_todo_when_build_fails_service_spec.rb'
-    - 'spec/services/notes/quick_actions_service_spec.rb'
 
 # Offense count: 2018
 # Cop supports --auto-correct.
@@ -556,13 +536,6 @@ Style/IfUnlessModifier:
 Style/Lambda:
   Enabled: false
 
-# Offense count: 3
-# Cop supports --auto-correct.
-Style/LineEndConcatenation:
-  Exclude:
-    - 'spec/lib/gitlab/gfm/reference_rewriter_spec.rb'
-    - 'spec/lib/gitlab/incoming_email_spec.rb'
-
 # Offense count: 17
 Style/MethodMissingSuper:
   Enabled: false
@@ -658,14 +631,6 @@ Style/PerlBackrefs:
 # SupportedStyles: compact, exploded
 Style/RaiseArgs:
   Enabled: false
-
-# Offense count: 3
-# Cop supports --auto-correct.
-Style/RedundantBegin:
-  Exclude:
-    - 'app/models/merge_request.rb'
-    - 'app/services/projects/import_service.rb'
-    - 'lib/gitlab/health_checks/base_abstract_check.rb'
 
 # Offense count: 1
 # Cop supports --auto-correct.
@@ -770,14 +735,6 @@ Style/TernaryParentheses:
     - 'lib/gitlab/ci/build/artifacts/metadata/entry.rb'
     - 'spec/requests/api/pipeline_schedules_spec.rb'
     - 'spec/support/capybara.rb'
-
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyleForMultiline.
-# SupportedStylesForMultiline: comma, consistent_comma, no_comma
-Style/TrailingCommaInArguments:
-  Exclude:
-    - 'spec/features/markdown/copy_as_gfm_spec.rb'
 
 # Offense count: 2
 # Cop supports --auto-correct.
