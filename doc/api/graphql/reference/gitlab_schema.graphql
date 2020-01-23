@@ -655,6 +655,16 @@ type Design implements DesignFields & Noteable {
     before: String
 
     """
+    The Global ID of the most recent acceptable version
+    """
+    earlierOrEqualToId: ID
+
+    """
+    The SHA256 of the most recent acceptable version
+    """
+    earlierOrEqualToSha: String
+
+    """
     Returns the first _n_ elements from the list.
     """
     first: Int
@@ -667,9 +677,129 @@ type Design implements DesignFields & Noteable {
 }
 
 """
+A design pinned to a specific version. The image field reflects the design as of the associated version.
+"""
+type DesignAtVersion implements DesignFields {
+  """
+  The underlying design.
+  """
+  design: Design!
+
+  """
+  The diff refs for this design
+  """
+  diffRefs: DiffRefs!
+
+  """
+  How this design was changed in the current version
+  """
+  event: DesignVersionEvent!
+
+  """
+  The filename of the design
+  """
+  filename: String!
+
+  """
+  The full path to the design file
+  """
+  fullPath: String!
+
+  """
+  The ID of this design
+  """
+  id: ID!
+
+  """
+  The URL of the image
+  """
+  image: String!
+
+  """
+  The issue the design belongs to
+  """
+  issue: Issue!
+
+  """
+  The total count of user-created notes for this design
+  """
+  notesCount: Int!
+
+  """
+  The project the design belongs to
+  """
+  project: Project!
+
+  """
+  The version this design-at-versions is pinned to
+  """
+  version: DesignVersion!
+}
+
+"""
+The connection type for DesignAtVersion.
+"""
+type DesignAtVersionConnection {
+  """
+  A list of edges.
+  """
+  edges: [DesignAtVersionEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [DesignAtVersion]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type DesignAtVersionEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: DesignAtVersion
+}
+
+"""
 A collection of designs.
 """
 type DesignCollection {
+  """
+  Find a specific design
+  """
+  design(
+    """
+    Find a design by its filename
+    """
+    filename: String
+
+    """
+    Find a design by its ID
+    """
+    id: ID
+  ): Design
+
+  """
+  Find a design as of a version
+  """
+  designAtVersion(
+    """
+    The Global ID of the design at this version
+    """
+    id: ID!
+  ): DesignAtVersion
+
   """
   All designs for the design collection
   """
@@ -722,6 +852,21 @@ type DesignCollection {
   project: Project!
 
   """
+  A specific version
+  """
+  version(
+    """
+    The Global ID of the version
+    """
+    id: ID
+
+    """
+    The SHA256 of a specific version
+    """
+    sha: String
+  ): DesignVersion
+
+  """
   All versions related to all designs, ordered newest first
   """
   versions(
@@ -734,6 +879,16 @@ type DesignCollection {
     Returns the elements in the list that come before the specified cursor.
     """
     before: String
+
+    """
+    The Global ID of the most recent acceptable version
+    """
+    earlierOrEqualToId: ID
+
+    """
+    The SHA256 of the most recent acceptable version
+    """
+    earlierOrEqualToSha: String
 
     """
     Returns the first _n_ elements from the list.
@@ -827,6 +982,28 @@ interface DesignFields {
   The project the design belongs to
   """
   project: Project!
+}
+
+type DesignManagement {
+  """
+  Find a design as of a version
+  """
+  designAtVersion(
+    """
+    The Global ID of the design at this version
+    """
+    id: ID!
+  ): DesignAtVersion
+
+  """
+  Find a version
+  """
+  version(
+    """
+    The Global ID of the version
+    """
+    id: ID!
+  ): DesignVersion
 }
 
 """
@@ -924,7 +1101,30 @@ type DesignManagementUploadPayload {
   skippedDesigns: [Design!]!
 }
 
+"""
+A specific version in which designs were added, modified or deleted
+"""
 type DesignVersion {
+  """
+  A particular design as of this version, provided it is visible at this version
+  """
+  designAtVersion(
+    """
+    The ID of a specific design
+    """
+    designId: ID
+
+    """
+    The filename of a specific design
+    """
+    filename: String
+
+    """
+    The ID of the DesignAtVersion
+    """
+    id: ID
+  ): DesignAtVersion!
+
   """
   All designs that were changed in the version
   """
@@ -949,6 +1149,41 @@ type DesignVersion {
     """
     last: Int
   ): DesignConnection!
+
+  """
+  All designs that are visible at this version, as of this version
+  """
+  designsAtVersion(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Filters designs by their filename
+    """
+    filenames: [String!]
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Filters designs by their ID
+    """
+    ids: [ID!]
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): DesignAtVersionConnection!
 
   """
   ID of the design version
@@ -5603,6 +5838,11 @@ type Query {
   Get information about current user
   """
   currentUser: User
+
+  """
+  Fields related to design management
+  """
+  designManagement: DesignManagement!
 
   """
   Text to echo back

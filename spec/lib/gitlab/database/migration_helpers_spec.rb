@@ -1518,4 +1518,17 @@ describe Gitlab::Database::MigrationHelpers do
       model.create_or_update_plan_limit('project_hooks', 'free', 10)
     end
   end
+
+  describe '#with_lock_retries' do
+    let(:buffer) { StringIO.new }
+    let(:in_memory_logger) { Gitlab::JsonLogger.new(buffer) }
+    let(:env) { { 'DISABLE_LOCK_RETRIES' => 'true' } }
+
+    it 'sets the migration class name in the logs' do
+      model.with_lock_retries(env: env, logger: in_memory_logger) { }
+
+      buffer.rewind
+      expect(buffer.read).to include("\"class\":\"#{model.class}\"")
+    end
+  end
 end

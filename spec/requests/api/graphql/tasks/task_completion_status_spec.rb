@@ -25,7 +25,7 @@ describe 'getting task completion status information' do
     graphql_query_for(
       'project',
         { 'fullPath' => project.full_path },
-        query_graphql_field(type, { iid: iid }, fields)
+        query_graphql_field(type, { iid: iid.to_s }, fields)
     )
   end
 

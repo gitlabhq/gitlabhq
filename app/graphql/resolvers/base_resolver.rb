@@ -58,5 +58,9 @@ module Resolvers
     def single?
       false
     end
+
+    def current_user
+      context[:current_user]
+    end
   end
 end
