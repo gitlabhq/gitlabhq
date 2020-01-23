@@ -27,7 +27,10 @@ module KubernetesHelpers
     WebMock.stub_request(:get, api_url + '/api/v1').to_return(kube_response(kube_v1_discovery_body))
     WebMock
       .stub_request(:get, api_url + '/apis/extensions/v1beta1')
-      .to_return(kube_response(kube_v1beta1_discovery_body))
+      .to_return(kube_response(kube_extensions_v1beta1_discovery_body))
+    WebMock
+      .stub_request(:get, api_url + '/apis/apps/v1')
+      .to_return(kube_response(kube_apps_v1_discovery_body))
     WebMock
       .stub_request(:get, api_url + '/apis/rbac.authorization.k8s.io/v1')
       .to_return(kube_response(kube_v1_rbac_authorization_discovery_body))
@@ -275,15 +278,33 @@ module KubernetesHelpers
     }
   end
 
-  def kube_v1beta1_discovery_body
+  # From Kubernetes 1.16+ Deployments are no longer served from apis/extensions
+  def kube_1_16_extensions_v1beta1_discovery_body
     {
       "kind" => "APIResourceList",
       "resources" => [
-        { "name" => "pods", "namespaced" => true, "kind" => "Pod" },
+        { "name" => "ingresses", "namespaced" => true, "kind" => "Deployment" }
+      ]
+    }
+  end
+
+  def kube_extensions_v1beta1_discovery_body
+    {
+      "kind" => "APIResourceList",
+      "resources" => [
         { "name" => "deployments", "namespaced" => true, "kind" => "Deployment" },
-        { "name" => "secrets", "namespaced" => true, "kind" => "Secret" },
-        { "name" => "serviceaccounts", "namespaced" => true, "kind" => "ServiceAccount" },
-        { "name" => "services", "namespaced" => true, "kind" => "Service" }
+        { "name" => "ingresses", "namespaced" => true, "kind" => "Ingress" }
+      ]
+    }
+  end
+
+  # Yes, deployments are defined in both apis/extensions/v1beta1 and apis/v1
+  # (for Kubernetes < 1.16). This matches what Kubenetes API server returns.
+  def kube_apps_v1_discovery_body
+    {
+      "kind" => "APIResourceList",
+      "resources" => [
+        { "name" => "deployments", "namespaced" => true, "kind" => "Deployment" }
       ]
     }
   end

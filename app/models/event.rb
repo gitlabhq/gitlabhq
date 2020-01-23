@@ -145,10 +145,8 @@ class Event < ApplicationRecord
       Ability.allowed?(user, :read_issue, note? ? note_target : target)
     elsif merge_request? || merge_request_note?
       Ability.allowed?(user, :read_merge_request, note? ? note_target : target)
-    elsif personal_snippet_note?
-      Ability.allowed?(user, :read_personal_snippet, note_target)
-    elsif project_snippet_note?
-      Ability.allowed?(user, :read_project_snippet, note_target)
+    elsif personal_snippet_note? || project_snippet_note?
+      Ability.allowed?(user, :read_snippet, note_target)
     elsif milestone?
       Ability.allowed?(user, :read_milestone, project)
     else

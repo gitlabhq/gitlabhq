@@ -167,8 +167,15 @@ end
 Normally, GitLab CE/EE tests use a local clone of Gitaly in
 `tmp/tests/gitaly` pinned at the version specified in
 `GITALY_SERVER_VERSION`. The `GITALY_SERVER_VERSION` file supports also
-branches and SHA to use a custom commit in <https://gitlab.com/gitlab-org/gitaly>. If
-you want to run tests locally against a modified version of Gitaly you
+branches and SHA to use a custom commit in <https://gitlab.com/gitlab-org/gitaly>.
+
+NOTE: **Note:**
+With the introduction of auto-deploy for Gitaly, the format of
+`GITALY_SERVER_VERSION` was aligned with Omnibus syntax.
+It no longer supports `=revision`, it will evaluate the file content as a Git
+reference (branch or SHA), only if it matches a semver it will prepend a `v`.
+
+If you want to run tests locally against a modified version of Gitaly you
 can replace `tmp/tests/gitaly` with a symlink. This is much faster
 because if will avoid a Gitaly re-install each time you run `rspec`.
 
@@ -185,8 +192,7 @@ to manually run `make` again.
 
 Note that CI tests will not use your locally modified version of
 Gitaly. To use a custom Gitaly version in CI you need to update
-GITALY_SERVER_VERSION. You can use the format `=revision` to use a
-non-tagged commit from <https://gitlab.com/gitlab-org/gitaly> in CI.
+GITALY_SERVER_VERSION as described at the beginning of this paragraph.
 
 To use a different Gitaly repository, e.g., if your changes are present
 on a fork, you can specify a `GITALY_REPO_URL` environment variable when

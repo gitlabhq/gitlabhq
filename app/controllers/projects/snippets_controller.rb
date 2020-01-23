@@ -15,17 +15,17 @@ class Projects::SnippetsController < Projects::ApplicationController
   before_action :check_snippets_available!
   before_action :snippet, only: [:show, :edit, :destroy, :update, :raw, :toggle_award_emoji, :mark_as_spam]
 
-  # Allow read any snippet
-  before_action :authorize_read_project_snippet!, except: [:new, :create, :index]
+  # Allow create snippet
+  before_action :authorize_create_snippet!, only: [:new, :create]
 
-  # Allow write(create) snippet
-  before_action :authorize_create_project_snippet!, only: [:new, :create]
+  # Allow read any snippet
+  before_action :authorize_read_snippet!, except: [:new, :create, :index]
 
   # Allow modify snippet
-  before_action :authorize_update_project_snippet!, only: [:edit, :update]
+  before_action :authorize_update_snippet!, only: [:edit, :update]
 
   # Allow destroy snippet
-  before_action :authorize_admin_project_snippet!, only: [:destroy]
+  before_action :authorize_admin_snippet!, only: [:destroy]
 
   respond_to :html
 
@@ -115,16 +115,16 @@ class Projects::SnippetsController < Projects::ApplicationController
     project_snippet_path(@project, @snippet)
   end
 
-  def authorize_read_project_snippet!
-    return render_404 unless can?(current_user, :read_project_snippet, @snippet)
+  def authorize_read_snippet!
+    return render_404 unless can?(current_user, :read_snippet, @snippet)
   end
 
-  def authorize_update_project_snippet!
-    return render_404 unless can?(current_user, :update_project_snippet, @snippet)
+  def authorize_update_snippet!
+    return render_404 unless can?(current_user, :update_snippet, @snippet)
   end
 
-  def authorize_admin_project_snippet!
-    return render_404 unless can?(current_user, :admin_project_snippet, @snippet)
+  def authorize_admin_snippet!
+    return render_404 unless can?(current_user, :admin_snippet, @snippet)
   end
 
   def snippet_params

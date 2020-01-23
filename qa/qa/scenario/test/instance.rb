@@ -20,7 +20,10 @@ module QA
         def self.do_perform(address, *rspec_options)
           Runtime::Scenario.define(:gitlab_address, address)
 
-          QA::Runtime::Browser.configure!
+          ##
+          # Perform before hooks, which are different for CE and EE
+          #
+          Runtime::Release.perform_before_hooks
 
           Specs::Runner.perform do |specs|
             specs.tty = true

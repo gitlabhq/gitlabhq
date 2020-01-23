@@ -138,8 +138,18 @@ describe MarkupHelper do
     describe 'without redacted attribute' do
       it 'renders the markdown value' do
         expect(Banzai).to receive(:render_field).with(commit, attribute, {}).and_call_original
+        expect(Banzai).to receive(:post_process)
 
         helper.markdown_field(commit, attribute)
+      end
+    end
+
+    context 'when post_process is false' do
+      it 'does not run Markdown post processing' do
+        expect(Banzai).to receive(:render_field).with(commit, attribute, {}).and_call_original
+        expect(Banzai).not_to receive(:post_process)
+
+        helper.markdown_field(commit, attribute, post_process: false)
       end
     end
   end
@@ -564,6 +574,14 @@ describe MarkupHelper do
         expect(doc.css('gl-emoji')[1].attr('data-name')).to eq 'grinning'
 
         expect(doc.content).to eq "foo 😉\nbar 😀"
+      end
+
+      it 'does not post-process truncated text', :request_store do
+        object = create_object("hello \n\n [Test](README.md)")
+
+        expect do
+          first_line_in_markdown(object, attribute, nil, project: project)
+        end.not_to change { Gitlab::GitalyClient.get_request_count }
       end
     end
 

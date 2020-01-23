@@ -3,7 +3,7 @@
 
   - if current_user && current_user.snippets.any? || @snippets.any?
     .page-title-controls
-      - if can?(current_user, :create_personal_snippet)
+      - if can?(current_user, :create_snippet)
         = link_to _("New snippet"), new_snippet_path, class: "btn btn-success", title: _("New snippet")
 
 .top-area

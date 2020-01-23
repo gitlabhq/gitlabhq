@@ -12,8 +12,8 @@ describe ProjectSnippetPolicy do
   let(:author) { other_user }
   let(:author_permissions) do
     [
-      :update_project_snippet,
-      :admin_project_snippet
+      :update_snippet,
+      :admin_snippet
     ]
   end
 
@@ -26,7 +26,7 @@ describe ProjectSnippetPolicy do
       end
 
       it do
-        expect_allowed(:read_project_snippet, :create_note)
+        expect_allowed(:read_snippet, :create_note)
         expect_disallowed(*author_permissions)
       end
     end
@@ -38,8 +38,8 @@ describe ProjectSnippetPolicy do
 
       context 'not snippet author' do
         it do
-          expect_allowed(:read_project_snippet, :create_note)
-          expect_disallowed(:admin_project_snippet)
+          expect_allowed(:read_snippet, :create_note)
+          expect_disallowed(:admin_snippet)
         end
       end
     end
@@ -53,7 +53,7 @@ describe ProjectSnippetPolicy do
         end
 
         it do
-          expect_allowed(:read_project_snippet, :create_note)
+          expect_allowed(:read_snippet, :create_note)
           expect_allowed(*author_permissions)
         end
       end
@@ -64,15 +64,15 @@ describe ProjectSnippetPolicy do
         end
 
         it do
-          expect_allowed(:read_project_snippet, :create_note)
-          expect_disallowed(:admin_project_snippet)
+          expect_allowed(:read_snippet, :create_note)
+          expect_disallowed(:admin_snippet)
         end
       end
 
       context 'not a project member' do
         it do
-          expect_allowed(:read_project_snippet, :create_note)
-          expect_disallowed(:admin_project_snippet)
+          expect_allowed(:read_snippet, :create_note)
+          expect_disallowed(:admin_snippet)
         end
       end
     end
@@ -85,7 +85,7 @@ describe ProjectSnippetPolicy do
       let(:current_user) { nil }
 
       it do
-        expect_allowed(:read_project_snippet)
+        expect_allowed(:read_snippet)
         expect_disallowed(*author_permissions)
       end
     end
@@ -94,7 +94,7 @@ describe ProjectSnippetPolicy do
       let(:current_user) { regular_user }
 
       it do
-        expect_allowed(:read_project_snippet, :create_note)
+        expect_allowed(:read_snippet, :create_note)
         expect_disallowed(*author_permissions)
       end
 
@@ -105,7 +105,7 @@ describe ProjectSnippetPolicy do
       let(:current_user) { external_user }
 
       it do
-        expect_allowed(:read_project_snippet, :create_note)
+        expect_allowed(:read_snippet, :create_note)
         expect_disallowed(*author_permissions)
       end
 
@@ -115,7 +115,7 @@ describe ProjectSnippetPolicy do
         end
 
         it do
-          expect_allowed(:read_project_snippet, :create_note)
+          expect_allowed(:read_snippet, :create_note)
           expect_disallowed(*author_permissions)
         end
       end
@@ -129,7 +129,7 @@ describe ProjectSnippetPolicy do
       let(:current_user) { nil }
 
       it do
-        expect_disallowed(:read_project_snippet)
+        expect_disallowed(:read_snippet)
         expect_disallowed(*author_permissions)
       end
     end
@@ -138,7 +138,7 @@ describe ProjectSnippetPolicy do
       let(:current_user) { regular_user }
 
       it do
-        expect_allowed(:read_project_snippet, :create_note)
+        expect_allowed(:read_snippet, :create_note)
         expect_disallowed(*author_permissions)
       end
 
@@ -149,7 +149,7 @@ describe ProjectSnippetPolicy do
       let(:current_user) { external_user }
 
       it do
-        expect_disallowed(:read_project_snippet, :create_note)
+        expect_disallowed(:read_snippet, :create_note)
         expect_disallowed(*author_permissions)
       end
 
@@ -159,7 +159,7 @@ describe ProjectSnippetPolicy do
         end
 
         it do
-          expect_allowed(:read_project_snippet, :create_note)
+          expect_allowed(:read_snippet, :create_note)
           expect_disallowed(*author_permissions)
         end
       end
@@ -173,7 +173,7 @@ describe ProjectSnippetPolicy do
       let(:current_user) { nil }
 
       it do
-        expect_disallowed(:read_project_snippet)
+        expect_disallowed(:read_snippet)
         expect_disallowed(*author_permissions)
       end
     end
@@ -182,7 +182,7 @@ describe ProjectSnippetPolicy do
       let(:current_user) { regular_user }
 
       it do
-        expect_disallowed(:read_project_snippet, :create_note)
+        expect_disallowed(:read_snippet, :create_note)
         expect_disallowed(*author_permissions)
       end
 
@@ -193,7 +193,7 @@ describe ProjectSnippetPolicy do
       let(:current_user) { external_user }
 
       it do
-        expect_disallowed(:read_project_snippet, :create_note)
+        expect_disallowed(:read_snippet, :create_note)
         expect_disallowed(*author_permissions)
       end
 
@@ -203,7 +203,7 @@ describe ProjectSnippetPolicy do
         end
 
         it do
-          expect_allowed(:read_project_snippet, :create_note)
+          expect_allowed(:read_snippet, :create_note)
           expect_disallowed(*author_permissions)
         end
       end
@@ -214,7 +214,7 @@ describe ProjectSnippetPolicy do
       let(:current_user) { create(:admin) }
 
       it do
-        expect_allowed(:read_project_snippet, :create_note)
+        expect_allowed(:read_snippet, :create_note)
         expect_allowed(*author_permissions)
       end
     end

@@ -215,9 +215,7 @@ class Snippet < ApplicationRecord
   end
 
   def embeddable?
-    ability = project_id? ? :read_project_snippet : :read_personal_snippet
-
-    Ability.allowed?(nil, ability, self)
+    Ability.allowed?(nil, :read_snippet, self)
   end
 
   def notes_with_associations
@@ -240,7 +238,7 @@ class Snippet < ApplicationRecord
   end
 
   def to_ability_name
-    model_name.singular
+    'snippet'
   end
 
   def valid_secret_token?(token)

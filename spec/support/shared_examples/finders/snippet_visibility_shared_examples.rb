@@ -234,8 +234,8 @@ RSpec.shared_examples 'snippet visibility' do
       end
 
       context "For #{params[:project_type]} project and #{params[:user_type]} users" do
-        it 'agrees with the read_project_snippet policy' do
-          expect(can?(user, :read_project_snippet, snippet)).to eq(outcome)
+        it 'agrees with the read_snippet policy' do
+          expect(can?(user, :read_snippet, snippet)).to eq(outcome)
         end
 
         it 'returns proper outcome' do
@@ -297,8 +297,8 @@ RSpec.shared_examples 'snippet visibility' do
       let!(:snippet) { create(:personal_snippet, visibility_level: snippet_visibility, author: author) }
 
       context "For personal and #{params[:snippet_visibility]} snippets with #{params[:user_type]} user" do
-        it 'agrees with read_personal_snippet policy' do
-          expect(can?(user, :read_personal_snippet, snippet)).to eq(outcome)
+        it 'agrees with read_snippet policy' do
+          expect(can?(user, :read_snippet, snippet)).to eq(outcome)
         end
 
         it 'returns proper outcome' do

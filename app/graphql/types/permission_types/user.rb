@@ -8,7 +8,7 @@ module Types
       permission_field :create_snippet
 
       def create_snippet
-        Ability.allowed?(context[:current_user], :create_personal_snippet)
+        Ability.allowed?(context[:current_user], :create_snippet)
       end
     end
   end

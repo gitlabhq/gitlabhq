@@ -367,7 +367,7 @@ class Note < ApplicationRecord
   end
 
   def noteable_ability_name
-    for_snippet? ? noteable.class.name.underscore : noteable_type.demodulize.underscore
+    for_snippet? ? 'snippet' : noteable_type.demodulize.underscore
   end
 
   def can_be_discussion_note?

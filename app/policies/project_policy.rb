@@ -9,7 +9,7 @@ class ProjectPolicy < BasePolicy
     merge_request
     label
     milestone
-    project_snippet
+    snippet
     wiki
     note
     pipeline
@@ -185,7 +185,7 @@ class ProjectPolicy < BasePolicy
     enable :read_issue
     enable :read_label
     enable :read_milestone
-    enable :read_project_snippet
+    enable :read_snippet
     enable :read_project_member
     enable :read_note
     enable :create_project
@@ -208,7 +208,7 @@ class ProjectPolicy < BasePolicy
     enable :download_code
     enable :read_statistics
     enable :download_wiki_code
-    enable :create_project_snippet
+    enable :create_snippet
     enable :update_issue
     enable :reopen_issue
     enable :admin_issue
@@ -286,8 +286,8 @@ class ProjectPolicy < BasePolicy
   rule { can?(:maintainer_access) }.policy do
     enable :admin_board
     enable :push_to_delete_protected_branch
-    enable :update_project_snippet
-    enable :admin_project_snippet
+    enable :update_snippet
+    enable :admin_snippet
     enable :admin_project_member
     enable :admin_note
     enable :admin_wiki
@@ -352,7 +352,7 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { snippets_disabled }.policy do
-    prevent(*create_read_update_admin_destroy(:project_snippet))
+    prevent(*create_read_update_admin_destroy(:snippet))
   end
 
   rule { wiki_disabled }.policy do
@@ -405,7 +405,7 @@ class ProjectPolicy < BasePolicy
     enable :read_wiki
     enable :read_label
     enable :read_milestone
-    enable :read_project_snippet
+    enable :read_snippet
     enable :read_project_member
     enable :read_merge_request
     enable :read_note

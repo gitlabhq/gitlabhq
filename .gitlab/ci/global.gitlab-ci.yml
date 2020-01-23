@@ -13,7 +13,7 @@
 .default-before_script:
   before_script:
     - date
-    - '[ "$FOSS_ONLY" = "1" ] && rm -rf ee/'
+    - '[ "$FOSS_ONLY" = "1" ] && rm -rf ee/ qa/spec/ee/ qa/qa/specs/features/ee/ qa/qa/ee/ qa/qa/ee.rb'
     - export GOPATH=$CI_PROJECT_DIR/.go
     - mkdir -p $GOPATH
     - source scripts/utils.sh

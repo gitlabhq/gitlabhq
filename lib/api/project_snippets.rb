@@ -60,7 +60,7 @@ module API
         mutually_exclusive :code, :content
       end
       post ":id/snippets" do
-        authorize! :create_project_snippet, user_project
+        authorize! :create_snippet, user_project
         snippet_params = declared_params(include_missing: false).merge(request: request, api: true)
         snippet_params[:content] = snippet_params.delete(:code) if snippet_params[:code].present?
 
@@ -97,7 +97,7 @@ module API
         snippet = snippets_for_current_user.find_by(id: params.delete(:snippet_id))
         not_found!('Snippet') unless snippet
 
-        authorize! :update_project_snippet, snippet
+        authorize! :update_snippet, snippet
 
         snippet_params = declared_params(include_missing: false)
           .merge(request: request, api: true)
@@ -126,7 +126,7 @@ module API
         snippet = snippets_for_current_user.find_by(id: params[:snippet_id])
         not_found!('Snippet') unless snippet
 
-        authorize! :admin_project_snippet, snippet
+        authorize! :admin_snippet, snippet
 
         destroy_conditionally!(snippet) do |snippet|
           service = ::Snippets::DestroyService.new(current_user, snippet)

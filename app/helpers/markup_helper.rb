@@ -76,13 +76,14 @@ module MarkupHelper
   # +max_chars+ limit.  If the length limit falls within a tag's contents, then
   # the tag contents are truncated without removing the closing tag.
   def first_line_in_markdown(object, attribute, max_chars = nil, options = {})
-    md = markdown_field(object, attribute, options)
+    md = markdown_field(object, attribute, options.merge(post_process: false))
     return unless md.present?
 
     tags = %w(a gl-emoji b pre code p span)
     tags << 'img' if options[:allow_images]
 
     text = truncate_visible(md, max_chars || md.length)
+    text = prepare_for_rendering(text, markdown_field_render_context(object, attribute, options))
     text = sanitize(
       text,
       tags: tags,
@@ -107,15 +108,12 @@ module MarkupHelper
 
   def markdown_field(object, field, context = {})
     object = object.for_display if object.respond_to?(:for_display)
-    redacted_field_html = object.try(:"redacted_#{field}_html")
-
     return '' unless object.present?
+
+    redacted_field_html = object.try(:"redacted_#{field}_html")
     return redacted_field_html if redacted_field_html
 
-    html = Banzai.render_field(object, field, context)
-    context.reverse_merge!(object.banzai_render_context(field)) if object.respond_to?(:banzai_render_context)
-
-    prepare_for_rendering(html, context)
+    render_markdown_field(object, field, context)
   end
 
   def markup(file_name, text, context = {})
@@ -275,6 +273,23 @@ module MarkupHelper
 
   def other_markup_unsafe(file_name, text, context = {})
     Gitlab::OtherMarkup.render(file_name, text, context)
+  end
+
+  def render_markdown_field(object, field, context = {})
+    post_process = context.delete(:post_process)
+    post_process = true if post_process.nil?
+
+    html = Banzai.render_field(object, field, context)
+
+    return html unless post_process
+
+    prepare_for_rendering(html, markdown_field_render_context(object, field, context))
+  end
+
+  def markdown_field_render_context(object, field, base_context = {})
+    return base_context unless object.respond_to?(:banzai_render_context)
+
+    base_context.reverse_merge(object.banzai_render_context(field))
   end
 
   def prepare_for_rendering(html, context = {})

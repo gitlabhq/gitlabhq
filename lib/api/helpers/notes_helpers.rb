@@ -72,7 +72,15 @@ module API
       end
 
       def noteable_read_ability_name(noteable)
-        "read_#{noteable.class.to_s.underscore}".to_sym
+        "read_#{ability_name(noteable)}".to_sym
+      end
+
+      def ability_name(noteable)
+        if noteable.respond_to?(:to_ability_name)
+          noteable.to_ability_name
+        else
+          noteable.class.to_s.underscore
+        end
       end
 
       def find_noteable(parent_type, parent_id, noteable_type, noteable_id)

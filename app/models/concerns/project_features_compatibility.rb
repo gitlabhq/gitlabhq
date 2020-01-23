@@ -62,6 +62,10 @@ module ProjectFeaturesCompatibility
     write_feature_attribute_string(:snippets_access_level, value)
   end
 
+  def pages_access_level=(value)
+    write_feature_attribute_string(:pages_access_level, value)
+  end
+
   private
 
   def write_feature_attribute_boolean(field, value)

@@ -41,6 +41,8 @@ class UploadsController < ApplicationController
       case model
       when Note
         can?(current_user, :read_project, model.project)
+      when Snippet, ProjectSnippet
+        can?(current_user, :read_snippet, model)
       when User
         # We validate the current user has enough (writing)
         # access to itself when a secret is given.

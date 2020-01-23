@@ -24,7 +24,7 @@ class Ability
     # read the given snippet.
     def users_that_can_read_personal_snippet(users, snippet)
       DeclarativePolicy.subject_scope do
-        users.select { |u| allowed?(u, :read_personal_snippet, snippet) }
+        users.select { |u| allowed?(u, :read_snippet, snippet) }
       end
     end
 

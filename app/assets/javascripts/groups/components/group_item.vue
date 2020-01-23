@@ -91,7 +91,7 @@ export default {
   <li :id="groupDomId" :class="rowClass" class="group-row" @click.stop="onClickRowGroup">
     <div
       :class="{ 'project-row-contents': !isGroup }"
-      class="group-row-contents d-flex align-items-center"
+      class="group-row-contents d-flex align-items-center py-2"
     >
       <div class="folder-toggle-wrap append-right-4 d-flex align-items-center">
         <item-caret :is-group-open="group.isOpen" />
@@ -104,7 +104,7 @@ export default {
       />
       <div
         :class="{ 'd-sm-flex': !group.isChildrenLoading }"
-        class="avatar-container rect-avatar s40 d-none flex-grow-0 flex-shrink-0 "
+        class="avatar-container rect-avatar s32 d-none flex-grow-0 flex-shrink-0 "
       >
         <a :href="group.relativePath" class="no-expand">
           <img v-if="hasAvatar" :src="group.avatarUrl" class="avatar s40" />

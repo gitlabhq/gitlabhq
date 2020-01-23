@@ -63,7 +63,7 @@ export default {
 
 <template>
   <li :id="name" class="group-row">
-    <div class="group-row-contents" role="button" @click="openDetails">
+    <div class="group-row-contents py-2" role="button" @click="openDetails">
       <p class="float-right text-right">
         <span>{{ image }}</span
         ><br />

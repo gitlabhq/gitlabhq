@@ -126,7 +126,7 @@ class SnippetsController < ApplicationController
   end
 
   def authorize_read_snippet!
-    return if can?(current_user, :read_personal_snippet, @snippet)
+    return if can?(current_user, :read_snippet, @snippet)
 
     if current_user
       render_404
@@ -136,15 +136,15 @@ class SnippetsController < ApplicationController
   end
 
   def authorize_update_snippet!
-    return render_404 unless can?(current_user, :update_personal_snippet, @snippet)
+    return render_404 unless can?(current_user, :update_snippet, @snippet)
   end
 
   def authorize_admin_snippet!
-    return render_404 unless can?(current_user, :admin_personal_snippet, @snippet)
+    return render_404 unless can?(current_user, :admin_snippet, @snippet)
   end
 
   def authorize_create_snippet!
-    return render_404 unless can?(current_user, :create_personal_snippet)
+    return render_404 unless can?(current_user, :create_snippet)
   end
 
   def snippet_params

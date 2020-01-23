@@ -33,7 +33,7 @@ class Snippets::NotesController < ApplicationController
   end
 
   def authorize_read_snippet!
-    return render_404 unless can?(current_user, :read_personal_snippet, snippet)
+    return render_404 unless can?(current_user, :read_snippet, snippet)
   end
 
   def authorize_create_note!

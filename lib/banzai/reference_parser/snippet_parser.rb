@@ -12,7 +12,7 @@ module Banzai
       private
 
       def can_read_reference?(user, ref_project, node)
-        can?(user, :read_project_snippet, referenced_by([node]).first)
+        can?(user, :read_snippet, referenced_by([node]).first)
       end
     end
   end

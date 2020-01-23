@@ -67,11 +67,11 @@ module Mutations
       end
 
       def authorized_resource?(project)
-        Ability.allowed?(context[:current_user], :create_project_snippet, project)
+        Ability.allowed?(context[:current_user], :create_snippet, project)
       end
 
       def can_create_personal_snippet?
-        Ability.allowed?(context[:current_user], :create_personal_snippet)
+        Ability.allowed?(context[:current_user], :create_snippet)
       end
     end
   end

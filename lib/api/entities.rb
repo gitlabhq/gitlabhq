@@ -311,6 +311,7 @@ module API
       expose(:wiki_access_level) { |project, options| project.project_feature.string_access_level(:wiki) }
       expose(:builds_access_level) { |project, options| project.project_feature.string_access_level(:builds) }
       expose(:snippets_access_level) { |project, options| project.project_feature.string_access_level(:snippets) }
+      expose(:pages_access_level) { |project, options| project.project_feature.string_access_level(:pages) }
 
       expose :shared_runners_enabled
       expose :lfs_enabled?, as: :lfs_enabled

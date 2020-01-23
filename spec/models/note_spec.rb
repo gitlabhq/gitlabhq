@@ -718,12 +718,12 @@ describe Note do
   end
 
   describe '#noteable_ability_name' do
-    it 'returns project_snippet for a project snippet note' do
-      expect(build(:note_on_project_snippet).noteable_ability_name).to eq('project_snippet')
+    it 'returns snippet for a project snippet note' do
+      expect(build(:note_on_project_snippet).noteable_ability_name).to eq('snippet')
     end
 
-    it 'returns personal_snippet for a personal snippet note' do
-      expect(build(:note_on_personal_snippet).noteable_ability_name).to eq('personal_snippet')
+    it 'returns snippet for a personal snippet note' do
+      expect(build(:note_on_personal_snippet).noteable_ability_name).to eq('snippet')
     end
 
     it 'returns merge_request for an MR note' do

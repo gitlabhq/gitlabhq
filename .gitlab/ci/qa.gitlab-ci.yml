@@ -40,13 +40,20 @@
     paths:
       - vendor/ruby
   before_script:
-    - '[ "$FOSS_ONLY" = "1" ] && rm -rf ee/'
+    - '[ "$FOSS_ONLY" = "1" ] && rm -rf ee/ qa/spec/ee/ qa/qa/specs/features/ee/ qa/qa/ee/ qa/qa/ee.rb'
     - cd qa/
     - bundle install --clean --jobs=$(nproc) --path=vendor --retry=3 --quiet
     - bundle check
 
 qa:internal:
   extends: .qa-job-base
+  script:
+    - bundle exec rspec
+
+qa:internal-foss:
+  extends:
+    - .qa-job-base
+    - .only-ee-as-if-foss
   script:
     - bundle exec rspec
 
