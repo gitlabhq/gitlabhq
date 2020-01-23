@@ -4,6 +4,7 @@ import { mapActions, mapState, mapGetters } from 'vuex';
 import store from 'ee_else_ce/mr_notes/stores';
 import notesApp from '../notes/components/notes_app.vue';
 import discussionKeyboardNavigator from '../notes/components/discussion_keyboard_navigator.vue';
+import initWidget from '../vue_merge_request_widget';
 
 export default () => {
   // eslint-disable-next-line no-new
@@ -32,10 +33,21 @@ export default () => {
       ...mapState({
         activeTab: state => state.page.activeTab,
       }),
+      isShowTabActive() {
+        return this.activeTab === 'show';
+      },
     },
     watch: {
       discussionTabCounter() {
         this.updateDiscussionTabCounter();
+      },
+      isShowTabActive: {
+        handler(newVal) {
+          if (newVal) {
+            initWidget();
+          }
+        },
+        immediate: true,
       },
     },
     created() {
@@ -69,7 +81,7 @@ export default () => {
             noteableData: this.noteableData,
             notesData: this.notesData,
             userData: this.currentUserData,
-            shouldShow: this.activeTab === 'show',
+            shouldShow: this.isShowTabActive,
             helpPagePath: this.helpPagePath,
           },
         }),

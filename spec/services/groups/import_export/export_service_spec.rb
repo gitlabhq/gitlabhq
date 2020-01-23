@@ -10,6 +10,10 @@ describe Groups::ImportExport::ExportService do
     let(:export_path) { shared.export_path }
     let(:service) { described_class.new(group: group, user: user, params: { shared: shared }) }
 
+    before do
+      group.add_owner(user)
+    end
+
     after do
       FileUtils.rm_rf(export_path)
     end
@@ -27,6 +31,18 @@ describe Groups::ImportExport::ExportService do
         expect(group.import_export_upload.export_file.file).not_to be_nil
         expect(File.directory?(export_path)).to eq(false)
         expect(File.exist?(shared.archive_path)).to eq(false)
+      end
+    end
+
+    context 'when user does not have admin_group permission' do
+      let!(:another_user) { create(:user) }
+      let(:service) { described_class.new(group: group, user: another_user, params: { shared: shared }) }
+
+      it 'fails' do
+        expected_message =
+          "User with ID: %s does not have permission to Group %s with ID: %s." %
+            [another_user.id, group.name, group.id]
+        expect { service.execute }.to raise_error(Gitlab::ImportExport::Error).with_message(expected_message)
       end
     end
 

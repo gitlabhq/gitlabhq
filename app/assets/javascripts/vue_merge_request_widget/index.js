@@ -5,6 +5,8 @@ import Translate from '../vue_shared/translate';
 Vue.use(Translate);
 
 export default () => {
+  if (gl.mrWidget) return;
+
   gl.mrWidgetData.gitlabLogo = gon.gitlab_logo;
 
   const vm = new Vue(MrWidgetOptions);

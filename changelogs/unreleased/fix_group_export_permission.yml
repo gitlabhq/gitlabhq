@@ -1,0 +1,5 @@
+---
+title: Groups::ImportExport::ExportService to require admin_group permission
+merge_request: 23434
+author:
+type: changed

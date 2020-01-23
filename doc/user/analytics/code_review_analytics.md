@@ -47,13 +47,3 @@ and trends between them. For example:
 
 - On [Starter or Bronze tier](https://about.gitlab.com/pricing/) and above.
 - By users with Reporter access and above.
-
-## Disable with feature flag
-
-Code Review Analytics is [currently enabled by a feature flag](https://gitlab.com/gitlab-org/gitlab/issues/194165)
-that defaults to ON, meaning the feature is available. If you experience performance problems or
-otherwise wish to disable the feature, a GitLab administrator can execute a command in a Rails console:
-
-```ruby
-Feature.disable(:code_review_analytics)
-```

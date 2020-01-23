@@ -89,7 +89,7 @@ Some filters can be added multiple times. These include but are not limited to a
 
 ![multiple assignees filtering](img/multiple_assignees.png)
 
-### Shortcut
+## Shortcut
 
 You'll also find a shortcut on the search field on the top-right of the project's dashboard to
 quickly access issues and merge requests created or assigned to you within that project:

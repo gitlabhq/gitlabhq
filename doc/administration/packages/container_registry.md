@@ -144,7 +144,7 @@ otherwise you will run into conflicts.
 
 1. Validate using:
 
-   ```sh
+   ```shell
    openssl s_client -showcerts -servername gitlab.example.com -connect gitlab.example.com:443 > cacert.pem
    ```
 
@@ -156,7 +156,7 @@ If your certificate provider provides the CA Bundle certificates, append them to
 1. Open `/home/git/gitlab/config/gitlab.yml`, find the `registry` entry and
    configure it with the following settings:
 
-   ```
+   ```yaml
    registry:
      enabled: true
      host: gitlab.example.com
@@ -408,7 +408,7 @@ when you [deployed your docker registry](https://docs.docker.com/registry/deploy
 
 `s3` storage driver example:
 
-```yml
+```yaml
 storage:
   s3:
     accesskey: 's3-access-key'
@@ -616,7 +616,7 @@ Before diving in to the following sections, here's some basic troubleshooting:
 If you're using a self-signed certificate with your Container Registry, you
 might encounter issues during the CI jobs like the following:
 
-```
+```plaintext
 Error response from daemon: Get registry.example.com/v1/users/: x509: certificate signed by unknown authority
 ```
 
@@ -666,7 +666,7 @@ Container Registry > Authorization token duration (minutes)**.
 When using AWS S3 with the GitLab registry, an error may occur when pushing
 large images. Look in the Registry log for the following error:
 
-```
+```plaintext
 level=error msg="response completed with error" err.code=unknown err.detail="unexpected EOF" err.message="unknown error"
 ```
 
@@ -813,7 +813,7 @@ diagnose a problem with the S3 setup.
 A user attempted to enable an S3-backed Registry. The `docker login` step went
 fine. However, when pushing an image, the output showed:
 
-```text
+```plaintext
 The push refers to a repository [s3-testing.myregistry.com:4567/root/docker-test/docker-image]
 dc5e59c14160: Pushing [==================================================>] 14.85 kB
 03c20c1a019a: Pushing [==================================================>] 2.048 kB
@@ -859,27 +859,27 @@ The following installation instructions assume you are running Ubuntu:
    Enter <kbd>CTRL</kbd>-<kbd>C</kbd> to quit.
 1. Install the certificate from `~/.mitmproxy` to your system:
 
-   ```sh
+   ```shell
    sudo cp ~/.mitmproxy/mitmproxy-ca-cert.pem /usr/local/share/ca-certificates/mitmproxy-ca-cert.crt
    sudo update-ca-certificates
    ```
 
 If successful, the output should indicate that a certificate was added:
 
-```sh
+```shell
 Updating certificates in /etc/ssl/certs... 1 added, 0 removed; done.
 Running hooks in /etc/ca-certificates/update.d....done.
 ```
 
 To verify that the certificates are properly installed, run:
 
-```sh
+```shell
 mitmproxy --port 9000
 ```
 
 This will run mitmproxy on port `9000`. In another window, run:
 
-```sh
+```shell
 curl --proxy http://localhost:9000 https://httpbin.org/status/200
 ```
 
@@ -892,7 +892,7 @@ For Docker to connect through a proxy, you must start the Docker daemon with the
 proper environment variables. The easiest way is to shutdown Docker (e.g. `sudo initctl stop docker`)
 and then run Docker by hand. As root, run:
 
-```sh
+```shell
 export HTTP_PROXY="http://localhost:9000"
 export HTTPS_PROXY="https://localhost:9000"
 docker daemon --debug
@@ -905,7 +905,7 @@ This will launch the Docker daemon and proxy all connections through mitmproxy.
 Now that we have mitmproxy and Docker running, we can attempt to login and push
 a container image. You may need to run as root to do this. For example:
 
-```sh
+```shell
 docker login s3-testing.myregistry.com:4567
 docker push s3-testing.myregistry.com:4567/root/docker-test/docker-image
 ```

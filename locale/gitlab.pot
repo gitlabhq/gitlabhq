@@ -6399,13 +6399,7 @@ msgstr ""
 msgid "Deselect all"
 msgstr ""
 
-msgid "Design Management"
-msgstr ""
-
 msgid "Design Management files and data"
-msgstr ""
-
-msgid "Design Sync Not Enabled"
 msgstr ""
 
 msgid "DesignManagement|%{current_design} of %{designs_count}"
@@ -8528,9 +8522,6 @@ msgstr ""
 msgid "Geo Settings"
 msgstr ""
 
-msgid "Geo Troubleshooting"
-msgstr ""
-
 msgid "Geo allows you to replicate your GitLab instance to other geographical locations."
 msgstr ""
 
@@ -10010,9 +10001,6 @@ msgid "If using GitHub, you’ll see pipeline statuses on GitHub for your commit
 msgstr ""
 
 msgid "If you believe this may be an error, please refer to the %{linkStart}Geo Troubleshooting%{linkEnd} documentation for more information."
-msgstr ""
-
-msgid "If you believe this page to be an error, check out the links below for more information."
 msgstr ""
 
 msgid "If you lose your recovery codes you can generate new ones, invalidating all previous codes."

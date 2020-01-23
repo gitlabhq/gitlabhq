@@ -54,6 +54,8 @@ this is enabled by default.
 Privileged mode is not necessary if you've [disabled Docker in Docker
 for SAST](#disabling-docker-in-docker-for-sast)
 
+CAUTION: **Caution:** Our SAST jobs currently expect a Linux container type. Windows containers are not yet supported.
+
 CAUTION: **Caution:**
 If you use your own Runners, make sure that the Docker version you have installed
 is **not** `19.03.00`. See [troubleshooting information](#error-response-from-daemon-error-processing-tar-file-docker-tar-relocation-error) for details.

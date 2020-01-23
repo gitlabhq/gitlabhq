@@ -79,6 +79,6 @@
       = s_('ClusterIntegration|Allow GitLab to manage namespace and service accounts for this cluster.')
       = link_to _('More information'), help_page_path('user/project/clusters/index.md', anchor: 'gitlab-managed-clusters'), target: '_blank'
 
-  .form-group
+  .form-group.js-gke-cluster-creation-submit-container
     = field.submit s_('ClusterIntegration|Create Kubernetes cluster'),
       class: 'js-gke-cluster-creation-submit btn btn-success', disabled: true

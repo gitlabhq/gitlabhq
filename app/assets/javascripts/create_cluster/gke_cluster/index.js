@@ -4,6 +4,10 @@ import Flash from '~/flash';
 import GkeProjectIdDropdown from './components/gke_project_id_dropdown.vue';
 import GkeZoneDropdown from './components/gke_zone_dropdown.vue';
 import GkeMachineTypeDropdown from './components/gke_machine_type_dropdown.vue';
+import GkeSubmitButton from './components/gke_submit_button.vue';
+
+import store from './store';
+
 import * as CONSTANTS from './constants';
 
 const mountComponent = (entryPoint, component, componentName, extraProps = {}) => {
@@ -14,6 +18,7 @@ const mountComponent = (entryPoint, component, componentName, extraProps = {}) =
 
   return new Vue({
     el,
+    store,
     components: {
       [componentName]: component,
     },
@@ -50,6 +55,10 @@ const mountGkeMachineTypeDropdown = () => {
   );
 };
 
+const mountGkeSubmitButton = () => {
+  mountComponent('.js-gke-cluster-creation-submit-container', GkeSubmitButton, 'gke-submit-button');
+};
+
 const gkeDropdownErrorHandler = () => {
   Flash(CONSTANTS.GCP_API_ERROR);
 };
@@ -72,6 +81,7 @@ const initializeGapiClient = () => {
       mountGkeProjectIdDropdown();
       mountGkeZoneDropdown();
       mountGkeMachineTypeDropdown();
+      mountGkeSubmitButton();
     })
     .catch(gkeDropdownErrorHandler);
 };
