@@ -27,10 +27,12 @@ import GroupEmptyState from './group_empty_state.vue';
 import DashboardsDropdown from './dashboards_dropdown.vue';
 
 import TrackEventDirective from '~/vue_shared/directives/track_event';
-import { getTimeDiff, getAddMetricTrackingOptions } from '../utils';
-import { metricStates } from '../constants';
+import { getAddMetricTrackingOptions } from '../utils';
+import { getTimeRange } from './date_time_picker/date_time_picker_lib';
 
-const defaultTimeDiff = getTimeDiff();
+import { datePickerTimeWindows, metricStates } from '../constants';
+
+const defaultTimeDiff = getTimeRange();
 
 export default {
   components: {
@@ -191,6 +193,7 @@ export default {
       startDate: getParameterValues('start')[0] || defaultTimeDiff.start,
       endDate: getParameterValues('end')[0] || defaultTimeDiff.end,
       hasValidDates: true,
+      datePickerTimeWindows,
       isRearrangingPanels: false,
     };
   },
@@ -426,6 +429,7 @@ export default {
             <date-time-picker
               :start="startDate"
               :end="endDate"
+              :time-windows="datePickerTimeWindows"
               @apply="onDateTimePickerApply"
               @invalid="onDateTimePickerInvalid"
             />

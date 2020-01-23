@@ -1,19 +1,18 @@
 <script>
 import { GlButton, GlDropdown, GlDropdownItem, GlFormGroup } from '@gitlab/ui';
-import { s__, sprintf } from '~/locale';
+import { __, sprintf } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import DateTimePickerInput from './date_time_picker_input.vue';
 import {
-  getTimeDiff,
+  defaultTimeWindows,
   isValidDate,
-  getTimeWindow,
+  getTimeRange,
+  getTimeWindowKey,
   stringToISODate,
   ISODateToString,
   truncateZerosInDateTime,
   isDateTimePickerInputValid,
-} from '~/monitoring/utils';
-
-import { timeWindows } from '~/monitoring/constants';
+} from './date_time_picker_lib';
 
 const events = {
   apply: 'apply',
@@ -41,7 +40,7 @@ export default {
     timeWindows: {
       type: Object,
       required: false,
-      default: () => timeWindows,
+      default: () => defaultTimeWindows,
     },
   },
   data() {
@@ -81,11 +80,11 @@ export default {
     },
 
     timeWindowText() {
-      const timeWindow = getTimeWindow({ start: this.start, end: this.end });
+      const timeWindow = getTimeWindowKey({ start: this.start, end: this.end }, this.timeWindows);
       if (timeWindow) {
-        return this.timeWindows[timeWindow];
+        return this.timeWindows[timeWindow].label;
       } else if (isValidDate(this.start) && isValidDate(this.end)) {
-        return sprintf(s__('%{start} to %{end}'), {
+        return sprintf(__('%{start} to %{end}'), {
           start: this.formatDate(this.start),
           end: this.formatDate(this.end),
         });
@@ -104,7 +103,7 @@ export default {
       return truncateZerosInDateTime(ISODateToString(date));
     },
     setTimeWindow(key) {
-      const { start, end } = getTimeDiff(key);
+      const { start, end } = getTimeRange(key, this.timeWindows);
       this.startDate = start;
       this.endDate = end;
 
@@ -161,18 +160,18 @@ export default {
         class="col-md-4 p-0 m-0"
       >
         <gl-dropdown-item
-          v-for="(value, key) in timeWindows"
+          v-for="(timeWindow, key) in timeWindows"
           :key="key"
-          :active="value === timeWindowText"
+          :active="timeWindow.label === timeWindowText"
           active-class="active"
           @click="setTimeWindow(key)"
         >
           <icon
             name="mobile-issue-close"
             class="align-bottom"
-            :class="{ invisible: value !== timeWindowText }"
+            :class="{ invisible: timeWindow.label !== timeWindowText }"
           />
-          {{ value }}
+          {{ timeWindow.label }}
         </gl-dropdown-item>
       </gl-form-group>
     </div>

@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import { createStore } from 'ee_else_ce/mr_notes/stores';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
+import { mockTracking, triggerEvent } from 'spec/helpers/tracking_helper';
 import DiffFileComponent from '~/diffs/components/diff_file.vue';
 import { diffViewerModes, diffViewerErrors } from '~/ide/constants';
 import diffFileMockDataReadable from '../mock_data/diff_file';
@@ -8,12 +9,14 @@ import diffFileMockDataUnreadable from '../mock_data/diff_file_unreadable';
 
 describe('DiffFile', () => {
   let vm;
+  let trackingSpy;
 
   beforeEach(() => {
     vm = createComponentWithStore(Vue.extend(DiffFileComponent), createStore(), {
       file: JSON.parse(JSON.stringify(diffFileMockDataReadable)),
       canCurrentUserFork: false,
     }).$mount();
+    trackingSpy = mockTracking('_category_', vm.$el, spyOn);
   });
 
   afterEach(() => {
@@ -30,6 +33,7 @@ describe('DiffFile', () => {
 
       expect(el.querySelectorAll('.diff-content.hidden').length).toEqual(0);
       expect(el.querySelector('.js-file-title')).toBeDefined();
+      expect(el.querySelector('.btn-clipboard')).toBeDefined();
       expect(el.querySelector('.file-title-name').innerText.indexOf(file_path)).toBeGreaterThan(-1);
       expect(el.querySelector('.js-syntax-highlight')).toBeDefined();
 
@@ -39,6 +43,25 @@ describe('DiffFile', () => {
         .then(() => {
           expect(el.querySelectorAll('.line_content').length).toBe(5);
           expect(el.querySelectorAll('.js-line-expansion-content').length).toBe(1);
+          triggerEvent('.btn-clipboard');
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('should track a click event on copy to clip board button', done => {
+      const el = vm.$el;
+
+      expect(el.querySelector('.btn-clipboard')).toBeDefined();
+      vm.file.renderIt = true;
+      vm.$nextTick()
+        .then(() => {
+          triggerEvent('.btn-clipboard');
+
+          expect(trackingSpy).toHaveBeenCalledWith('_category_', 'click_copy_file_button', {
+            label: 'diff_copy_file_path_button',
+            property: 'diff_copy_file',
+          });
         })
         .then(done)
         .catch(done.fail);

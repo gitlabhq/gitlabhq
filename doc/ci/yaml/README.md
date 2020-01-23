@@ -1342,8 +1342,7 @@ In its simplest form, the `environment` keyword can be defined like:
 deploy to production:
   stage: deploy
   script: git push production HEAD:master
-  environment:
-    name: production
+  environment: production
 ```
 
 In the above example, the `deploy to production` job will be marked as doing a

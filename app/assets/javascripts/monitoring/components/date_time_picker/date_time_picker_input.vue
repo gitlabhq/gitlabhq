@@ -1,14 +1,14 @@
 <script>
 import _ from 'underscore';
 import { GlFormGroup, GlFormInput } from '@gitlab/ui';
-import { s__, sprintf } from '~/locale';
-import { dateFormats } from '~/monitoring/constants';
+import { __, sprintf } from '~/locale';
+import { dateFormats } from './date_time_picker_lib';
 
 const inputGroupText = {
-  invalidFeedback: sprintf(s__('Format: %{dateFormat}'), {
-    dateFormat: dateFormats.dateTimePicker.format,
+  invalidFeedback: sprintf(__('Format: %{dateFormat}'), {
+    dateFormat: dateFormats.stringDate,
   }),
-  placeholder: dateFormats.dateTimePicker.format,
+  placeholder: dateFormats.stringDate,
 };
 
 export default {

@@ -6801,6 +6801,9 @@ msgstr ""
 msgid "Email address"
 msgstr ""
 
+msgid "Email display name"
+msgstr ""
+
 msgid "Email domain is not editable in subgroups. Value inherited from top-level parent group."
 msgstr ""
 
@@ -6844,6 +6847,9 @@ msgid "EmailToken|resetting..."
 msgstr ""
 
 msgid "Emails"
+msgstr ""
+
+msgid "Emails sent from Service Desk will have this name"
 msgstr ""
 
 msgid "Emails separated by comma"
@@ -8916,6 +8922,9 @@ msgid "GitLab Issue"
 msgstr ""
 
 msgid "GitLab Shared Runners execute code of different projects on the same Runner unless you configure GitLab Runner Autoscale with MaxBuilds 1 (which it is on GitLab.com)."
+msgstr ""
+
+msgid "GitLab Support Bot"
 msgstr ""
 
 msgid "GitLab User"

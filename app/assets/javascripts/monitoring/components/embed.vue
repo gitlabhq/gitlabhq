@@ -3,7 +3,7 @@ import { mapActions, mapState, mapGetters } from 'vuex';
 import PanelType from 'ee_else_ce/monitoring/components/panel_type.vue';
 import { getParameterValues, removeParams } from '~/lib/utils/url_utility';
 import { sidebarAnimationDuration } from '../constants';
-import { getTimeDiff } from '../utils';
+import { getTimeRange } from './date_time_picker/date_time_picker_lib';
 
 let sidebarMutationObserver;
 
@@ -18,7 +18,7 @@ export default {
     },
   },
   data() {
-    const defaultRange = getTimeDiff();
+    const defaultRange = getTimeRange();
     const start = getParameterValues('start', this.dashboardUrl)[0] || defaultRange.start;
     const end = getParameterValues('end', this.dashboardUrl)[0] || defaultRange.end;
 
