@@ -1,65 +1,105 @@
-import Vue from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
-import issueWarning from '~/vue_shared/components/issue/issue_warning.vue';
-
-const IssueWarning = Vue.extend(issueWarning);
-
-function formatWarning(string) {
-  // Replace newlines with a space then replace multiple spaces with one space
-  return string
-    .trim()
-    .replace(/\n/g, ' ')
-    .replace(/\s\s+/g, ' ');
-}
+import { shallowMount } from '@vue/test-utils';
+import IssueWarning from '~/vue_shared/components/issue/issue_warning.vue';
+import Icon from '~/vue_shared/components/icon.vue';
 
 describe('Issue Warning Component', () => {
-  describe('isLocked', () => {
-    it('should render locked issue warning information', () => {
-      const props = {
+  let wrapper;
+
+  const findIcon = () => wrapper.find(Icon);
+  const findLockedBlock = () => wrapper.find({ ref: 'locked' });
+  const findConfidentialBlock = () => wrapper.find({ ref: 'confidential' });
+  const findLockedAndConfidentialBlock = () => wrapper.find({ ref: 'lockedAndConfidential' });
+
+  const createComponent = props => {
+    wrapper = shallowMount(IssueWarning, {
+      propsData: {
+        ...props,
+      },
+    });
+  };
+
+  afterEach(() => {
+    wrapper.destroy();
+    wrapper = null;
+  });
+
+  describe('when issue is locked but not confidential', () => {
+    beforeEach(() => {
+      createComponent({
         isLocked: true,
-        lockedIssueDocsPath: 'docs/issues/locked',
-      };
-      const vm = mountComponent(IssueWarning, props);
+        lockedIssueDocsPath: 'locked-path',
+        isConfidential: false,
+      });
+    });
 
-      expect(
-        vm.$el.querySelector('.icon use').getAttributeNS('http://www.w3.org/1999/xlink', 'href'),
-      ).toMatch(/lock$/);
-      expect(formatWarning(vm.$el.querySelector('span').textContent)).toEqual(
-        'This issue is locked. Only project members can comment. Learn more',
-      );
-      expect(vm.$el.querySelector('a').href).toContain(props.lockedIssueDocsPath);
+    it('renders information about locked issue', () => {
+      expect(findLockedBlock().exists()).toBe(true);
+      expect(findLockedBlock().element).toMatchSnapshot();
+    });
+
+    it('renders warning icon', () => {
+      expect(findIcon().exists()).toBe(true);
+    });
+
+    it('does not render information about locked and confidential issue', () => {
+      expect(findLockedAndConfidentialBlock().exists()).toBe(false);
+    });
+
+    it('does not render information about confidential issue', () => {
+      expect(findConfidentialBlock().exists()).toBe(false);
     });
   });
 
-  describe('isConfidential', () => {
-    it('should render confidential issue warning information', () => {
-      const props = {
+  describe('when issue is confidential but not locked', () => {
+    beforeEach(() => {
+      createComponent({
+        isLocked: false,
         isConfidential: true,
-        confidentialIssueDocsPath: '/docs/issues/confidential',
-      };
-      const vm = mountComponent(IssueWarning, props);
+        confidentialIssueDocsPath: 'confidential-path',
+      });
+    });
 
-      expect(
-        vm.$el.querySelector('.icon use').getAttributeNS('http://www.w3.org/1999/xlink', 'href'),
-      ).toMatch(/eye-slash$/);
-      expect(formatWarning(vm.$el.querySelector('span').textContent)).toEqual(
-        'This is a confidential issue. People without permission will never get a notification. Learn more',
-      );
-      expect(vm.$el.querySelector('a').href).toContain(props.confidentialIssueDocsPath);
+    it('renders information about confidential issue', () => {
+      expect(findConfidentialBlock().exists()).toBe(true);
+      expect(findConfidentialBlock().element).toMatchSnapshot();
+    });
+
+    it('renders warning icon', () => {
+      expect(wrapper.find(Icon).exists()).toBe(true);
+    });
+
+    it('does not render information about locked issue', () => {
+      expect(findLockedBlock().exists()).toBe(false);
+    });
+
+    it('does not render information about locked and confidential issue', () => {
+      expect(findLockedAndConfidentialBlock().exists()).toBe(false);
     });
   });
 
-  describe('isLocked and isConfidential', () => {
-    it('should render locked and confidential issue warning information', () => {
-      const vm = mountComponent(IssueWarning, {
+  describe('when issue is locked and confidential', () => {
+    beforeEach(() => {
+      createComponent({
         isLocked: true,
         isConfidential: true,
       });
+    });
 
-      expect(vm.$el.querySelector('.icon')).toBeFalsy();
-      expect(formatWarning(vm.$el.querySelector('span').textContent)).toEqual(
-        "This issue is confidential and locked. People without permission will never get a notification and won't be able to comment.",
-      );
+    it('renders information about locked and confidential issue', () => {
+      expect(findLockedAndConfidentialBlock().exists()).toBe(true);
+      expect(findLockedAndConfidentialBlock().element).toMatchSnapshot();
+    });
+
+    it('does not render warning icon', () => {
+      expect(wrapper.find(Icon).exists()).toBe(false);
+    });
+
+    it('does not render information about locked issue', () => {
+      expect(findLockedBlock().exists()).toBe(false);
+    });
+
+    it('does not render information about confidential issue', () => {
+      expect(findConfidentialBlock().exists()).toBe(false);
     });
   });
 });

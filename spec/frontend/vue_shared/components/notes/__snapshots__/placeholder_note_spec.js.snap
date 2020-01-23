@@ -1,0 +1,62 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Issue placeholder note component matches snapshot 1`] = `
+<timeline-entry-item-stub
+  class="note note-wrapper being-posted fade-in-half"
+>
+  <div
+    class="timeline-icon"
+  >
+    <user-avatar-link-stub
+      imgalt=""
+      imgcssclasses=""
+      imgsize="40"
+      imgsrc="mock_path"
+      linkhref="/root"
+      tooltipplacement="top"
+      tooltiptext=""
+      username=""
+    />
+  </div>
+   
+  <div
+    class="timeline-content discussion"
+  >
+    <div
+      class="note-header"
+    >
+      <div
+        class="note-header-info"
+      >
+        <a
+          href="/root"
+        >
+          <span
+            class="d-none d-sm-inline-block bold"
+          >
+            Root
+          </span>
+           
+          <span
+            class="note-headline-light"
+          >
+            @root
+          </span>
+        </a>
+      </div>
+    </div>
+     
+    <div
+      class="note-body"
+    >
+      <div
+        class="note-text md"
+      >
+        <p>
+          Foo
+        </p>
+      </div>
+    </div>
+  </div>
+</timeline-entry-item-stub>
+`;

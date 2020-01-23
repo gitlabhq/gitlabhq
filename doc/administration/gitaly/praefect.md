@@ -260,6 +260,14 @@ git_data_dirs({
 
 For more information on Gitaly server configuration, see our [Gitaly documentation](index.md#3-gitaly-server-configuration).
 
+When all Gitaly servers are configured, you can run the Praefect connection
+checker to verify Praefect can connect to all Gitaly servers in the Praefect
+config:
+
+```shell
+sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dial-nodes
+```
+
 #### GitLab
 
 When Praefect is running, it should be exposed as a storage to GitLab. This
@@ -311,4 +319,5 @@ Here are common errors and potential causes:
   - **GRPC::Unavailable (14:failed to connect to all addresses)**
     - GitLab was unable to reach Praefect.
   - **GRPC::Unavailable (14:all SubCons are in TransientFailure...)**
-    - Praefect cannot reach one or more of its child Gitaly nodes.
+    - Praefect cannot reach one or more of its child Gitaly nodes. Try running
+      the Praefect connection checker to diagnose.

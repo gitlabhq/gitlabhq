@@ -1,201 +1,125 @@
-import Vue from 'vue';
+import { shallowMount } from '@vue/test-utils';
 import eventHub from '~/filtered_search/event_hub';
 import RecentSearchesDropdownContent from '~/filtered_search/components/recent_searches_dropdown_content.vue';
 import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
 
-const createComponent = propsData => {
-  const Component = Vue.extend(RecentSearchesDropdownContent);
+describe('Recent Searches Dropdown Content', () => {
+  let wrapper;
 
-  return new Component({
-    el: document.createElement('div'),
-    propsData,
-  });
-};
+  const findLocalStorageNote = () => wrapper.find({ ref: 'localStorageNote' });
+  const findDropdownItems = () => wrapper.findAll({ ref: 'dropdownItem' });
+  const findDropdownNote = () => wrapper.find({ ref: 'dropdownNote' });
 
-// Remove all the newlines and whitespace from the formatted markup
-const trimMarkupWhitespace = text => text.replace(/(\n|\s)+/gm, ' ').trim();
-
-describe('RecentSearchesDropdownContent', () => {
-  const propsDataWithoutItems = {
-    items: [],
-    allowedKeys: IssuableFilteredSearchTokenKeys.getKeys(),
-  };
-  const propsDataWithItems = {
-    items: ['foo', 'author:@root label:~foo bar'],
-    allowedKeys: IssuableFilteredSearchTokenKeys.getKeys(),
+  const createComponent = props => {
+    wrapper = shallowMount(RecentSearchesDropdownContent, {
+      propsData: {
+        allowedKeys: IssuableFilteredSearchTokenKeys.getKeys(),
+        items: [],
+        isLocalStorageAvailable: false,
+        ...props,
+      },
+    });
   };
 
-  let vm;
   afterEach(() => {
-    if (vm) {
-      vm.$destroy();
-    }
+    wrapper.destroy();
+    wrapper = null;
   });
 
-  describe('with no items', () => {
-    let el;
-
+  describe('when local storage is not available', () => {
     beforeEach(() => {
-      vm = createComponent(propsDataWithoutItems);
-      el = vm.$el;
+      createComponent();
     });
 
-    it('should render empty state', () => {
-      expect(el.querySelector('.dropdown-info-note')).toBeDefined();
+    it('renders a note about enabling local storage', () => {
+      expect(findLocalStorageNote().exists()).toBe(true);
+    });
 
-      const items = el.querySelectorAll('.filtered-search-history-dropdown-item');
+    it('does not render dropdown items', () => {
+      expect(findDropdownItems().exists()).toBe(false);
+    });
 
-      expect(items.length).toEqual(propsDataWithoutItems.items.length);
+    it('does not render dropdownNote', () => {
+      expect(findDropdownNote().exists()).toBe(false);
     });
   });
 
-  describe('with items', () => {
-    let el;
+  describe('when localStorage is available and items array is not empty', () => {
+    let onRecentSearchesItemSelectedSpy;
+    let onRequestClearRecentSearchesSpy;
+
+    beforeAll(() => {
+      onRecentSearchesItemSelectedSpy = jest.fn();
+      onRequestClearRecentSearchesSpy = jest.fn();
+      eventHub.$on('recentSearchesItemSelected', onRecentSearchesItemSelectedSpy);
+      eventHub.$on('requestClearRecentSearches', onRequestClearRecentSearchesSpy);
+    });
 
     beforeEach(() => {
-      vm = createComponent(propsDataWithItems);
-      el = vm.$el;
+      createComponent({
+        items: ['foo', 'author:@root label:~foo bar'],
+        isLocalStorageAvailable: true,
+      });
     });
 
-    it('should render clear recent searches button', () => {
-      expect(el.querySelector('.filtered-search-history-clear-button')).toBeDefined();
+    afterAll(() => {
+      eventHub.$off('recentSearchesItemSelected', onRecentSearchesItemSelectedSpy);
+      eventHub.$off('requestClearRecentSearchesSpy', onRequestClearRecentSearchesSpy);
     });
 
-    it('should render recent search items', () => {
-      const items = el.querySelectorAll('.filtered-search-history-dropdown-item');
+    it('does not render a note about enabling local storage', () => {
+      expect(findLocalStorageNote().exists()).toBe(false);
+    });
 
-      expect(items.length).toEqual(propsDataWithItems.items.length);
+    it('does not render dropdownNote', () => {
+      expect(findDropdownNote().exists()).toBe(false);
+    });
 
+    it('renders a correct amount of dropdown items', () => {
+      expect(findDropdownItems()).toHaveLength(2);
+    });
+
+    it('expect second dropdown to have 2 tokens', () => {
       expect(
-        trimMarkupWhitespace(
-          items[0].querySelector('.filtered-search-history-dropdown-search-token').textContent,
-        ),
-      ).toEqual('foo');
+        findDropdownItems()
+          .at(1)
+          .findAll('.js-dropdown-token'),
+      ).toHaveLength(2);
+    });
 
-      const item1Tokens = items[1].querySelectorAll('.filtered-search-history-dropdown-token');
+    it('emits recentSearchesItemSelected on dropdown item click', () => {
+      findDropdownItems()
+        .at(0)
+        .find('.js-dropdown-button')
+        .trigger('click');
 
-      expect(item1Tokens.length).toEqual(2);
-      expect(item1Tokens[0].querySelector('.name').textContent).toEqual('author:');
-      expect(item1Tokens[0].querySelector('.value').textContent).toEqual('@root');
-      expect(item1Tokens[1].querySelector('.name').textContent).toEqual('label:');
-      expect(item1Tokens[1].querySelector('.value').textContent).toEqual('~foo');
-      expect(
-        trimMarkupWhitespace(
-          items[1].querySelector('.filtered-search-history-dropdown-search-token').textContent,
-        ),
-      ).toEqual('bar');
+      expect(onRecentSearchesItemSelectedSpy).toHaveBeenCalledWith('foo');
+    });
+
+    it('emits requestClearRecentSearches on Clear resent searches button', () => {
+      wrapper.find({ ref: 'clearButton' }).trigger('click');
+
+      expect(onRequestClearRecentSearchesSpy).toHaveBeenCalled();
     });
   });
 
-  describe('if isLocalStorageAvailable is `false`', () => {
-    let el;
-
+  describe('when locale storage is available and items array is empty', () => {
     beforeEach(() => {
-      const props = Object.assign({ isLocalStorageAvailable: false }, propsDataWithItems);
-
-      vm = createComponent(props);
-      el = vm.$el;
-    });
-
-    it('should render an info note', () => {
-      const note = el.querySelector('.dropdown-info-note');
-      const items = el.querySelectorAll('.filtered-search-history-dropdown-item');
-
-      expect(note).toBeDefined();
-      expect(note.innerText.trim()).toBe('This feature requires local storage to be enabled');
-      expect(items.length).toEqual(propsDataWithoutItems.items.length);
-    });
-  });
-
-  describe('computed', () => {
-    describe('processedItems', () => {
-      it('with items', () => {
-        vm = createComponent(propsDataWithItems);
-        const { processedItems } = vm;
-
-        expect(processedItems.length).toEqual(2);
-
-        expect(processedItems[0].text).toEqual(propsDataWithItems.items[0]);
-        expect(processedItems[0].tokens).toEqual([]);
-        expect(processedItems[0].searchToken).toEqual('foo');
-
-        expect(processedItems[1].text).toEqual(propsDataWithItems.items[1]);
-        expect(processedItems[1].tokens.length).toEqual(2);
-        expect(processedItems[1].tokens[0].prefix).toEqual('author:');
-        expect(processedItems[1].tokens[0].suffix).toEqual('@root');
-        expect(processedItems[1].tokens[1].prefix).toEqual('label:');
-        expect(processedItems[1].tokens[1].suffix).toEqual('~foo');
-        expect(processedItems[1].searchToken).toEqual('bar');
-      });
-
-      it('with no items', () => {
-        vm = createComponent(propsDataWithoutItems);
-        const { processedItems } = vm;
-
-        expect(processedItems.length).toEqual(0);
+      createComponent({
+        isLocalStorageAvailable: true,
       });
     });
 
-    describe('hasItems', () => {
-      it('with items', () => {
-        vm = createComponent(propsDataWithItems);
-        const { hasItems } = vm;
-
-        expect(hasItems).toEqual(true);
-      });
-
-      it('with no items', () => {
-        vm = createComponent(propsDataWithoutItems);
-        const { hasItems } = vm;
-
-        expect(hasItems).toEqual(false);
-      });
-    });
-  });
-
-  describe('methods', () => {
-    describe('onItemActivated', () => {
-      let onRecentSearchesItemSelectedSpy;
-
-      beforeEach(() => {
-        onRecentSearchesItemSelectedSpy = jest.fn();
-        eventHub.$on('recentSearchesItemSelected', onRecentSearchesItemSelectedSpy);
-
-        vm = createComponent(propsDataWithItems);
-      });
-
-      afterEach(() => {
-        eventHub.$off('recentSearchesItemSelected', onRecentSearchesItemSelectedSpy);
-      });
-
-      it('emits event', () => {
-        expect(onRecentSearchesItemSelectedSpy).not.toHaveBeenCalled();
-        vm.onItemActivated('something');
-
-        expect(onRecentSearchesItemSelectedSpy).toHaveBeenCalledWith('something');
-      });
+    it('does not render a note about enabling local storage', () => {
+      expect(findLocalStorageNote().exists()).toBe(false);
     });
 
-    describe('onRequestClearRecentSearches', () => {
-      let onRequestClearRecentSearchesSpy;
+    it('does not render dropdown items', () => {
+      expect(findDropdownItems().exists()).toBe(false);
+    });
 
-      beforeEach(() => {
-        onRequestClearRecentSearchesSpy = jest.fn();
-        eventHub.$on('requestClearRecentSearches', onRequestClearRecentSearchesSpy);
-
-        vm = createComponent(propsDataWithItems);
-      });
-
-      afterEach(() => {
-        eventHub.$off('requestClearRecentSearches', onRequestClearRecentSearchesSpy);
-      });
-
-      it('emits event', () => {
-        expect(onRequestClearRecentSearchesSpy).not.toHaveBeenCalled();
-        vm.onRequestClearRecentSearches({ stopPropagation: () => {} });
-
-        expect(onRequestClearRecentSearchesSpy).toHaveBeenCalled();
-      });
+    it('renders dropdown note', () => {
+      expect(findDropdownNote().exists()).toBe(true);
     });
   });
 });

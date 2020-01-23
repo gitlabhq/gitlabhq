@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Suggestion Diff component matches snapshot 1`] = `
+<div
+  class="md-suggestion"
+>
+  <suggestion-diff-header-stub
+    class="qa-suggestion-diff-header js-suggestion-diff-header"
+    helppagepath="path_to_docs"
+  />
+   
+  <table
+    class="mb-3 md-suggestion-diff js-syntax-highlight code"
+  >
+    <tbody>
+      <suggestion-diff-row-stub
+        line="[object Object]"
+      />
+      <suggestion-diff-row-stub
+        line="[object Object]"
+      />
+      <suggestion-diff-row-stub
+        line="[object Object]"
+      />
+    </tbody>
+  </table>
+</div>
+`;

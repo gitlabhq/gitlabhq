@@ -84,6 +84,10 @@ Example response:
     "repos_max_capacity": 25,
     "container_repositories_max_capacity": 10,
     "verification_max_capacity": 100,
+    "selective_sync_type": "namespaces",
+    "selective_sync_shards": [],
+    "selective_sync_namespace_ids": [1, 25],
+    "minimum_reverification_interval": 7,
     "clone_protocol": "http",
     "web_edit_url": "https://primary.example.com/admin/geo/nodes/1/edit",
     "_links": {
@@ -104,6 +108,10 @@ Example response:
     "repos_max_capacity": 25,
     "container_repositories_max_capacity": 10,
     "verification_max_capacity": 100,
+    "selective_sync_type": "namespaces",
+    "selective_sync_shards": [],
+    "selective_sync_namespace_ids": [1, 25],
+    "minimum_reverification_interval": 7,
     "sync_object_storage": true,
     "clone_protocol": "http",
     "web_edit_url": "https://primary.example.com/admin/geo/nodes/2/edit",
@@ -142,6 +150,10 @@ Example response:
   "repos_max_capacity": 25,
   "container_repositories_max_capacity": 10,
   "verification_max_capacity": 100,
+  "selective_sync_type": "namespaces",
+  "selective_sync_shards": [],
+  "selective_sync_namespace_ids": [1, 25],
+  "minimum_reverification_interval": 7,
   "clone_protocol": "http",
   "web_edit_url": "https://primary.example.com/admin/geo/nodes/1/edit",
   "_links": {
@@ -174,6 +186,10 @@ PUT /geo_nodes/:id
 | `verification_max_capacity` | integer | no        | Control the maximum concurrency of verification for this node. |
 | `container_repositories_max_capacity` | integer | no | Control the maximum concurrency of container repository sync for this node. |
 | `sync_object_storage`       | boolean | no        | Flag indicating if the secondary Geo node will replicate blobs in Object Storage. |
+| `selective_sync_type`       | string  | no        | Limit syncing to only specific groups or shards. Valid values: `"namespaces"`, `"shards"`, or `null`. |
+| `selective_sync_shards`     | array   | no        | The repository storage for the projects synced if `selective_sync_type` == `shards`. |
+| `selective_sync_namespace_ids` | array | no       | The IDs of groups that should be synced, if `selective_sync_type` == `namespaces`. |
+| `minimum_reverification_interval` | integer | no | The interval (in days) in which the repository verification is valid. Once expired, it will be reverified. This has no effect when set on a secondary node. |
 
 Example response:
 
@@ -190,6 +206,10 @@ Example response:
   "repos_max_capacity": 25,
   "container_repositories_max_capacity": 10,
   "verification_max_capacity": 100,
+  "selective_sync_type": "namespaces",
+  "selective_sync_shards": [],
+  "selective_sync_namespace_ids": [1, 25],
+  "minimum_reverification_interval": 7,
   "sync_object_storage": true,
   "clone_protocol": "http",
   "web_edit_url": "https://primary.example.com/admin/geo/nodes/2/edit",

@@ -1,6 +1,13 @@
 import _ from 'underscore';
 import { spriteIcon } from './lib/utils/common_utils';
 
+const FLASH_TYPES = {
+  ALERT: 'alert',
+  NOTICE: 'notice',
+  SUCCESS: 'success',
+  WARNING: 'warning',
+};
+
 const hideFlash = (flashEl, fadeTransition = true) => {
   if (fadeTransition) {
     Object.assign(flashEl.style, {
@@ -59,7 +66,7 @@ const removeFlashClickListener = (flashEl, fadeTransition) => {
  *  additional action or link on banner next to message
  *
  *  @param {String} message           Flash message text
- *  @param {String} type              Type of Flash, it can be `notice` or `alert` (default)
+ *  @param {String} type              Type of Flash, it can be `notice`, `success`, `warning` or `alert` (default)
  *  @param {Object} parent            Reference to parent element under which Flash needs to appear
  *  @param {Object} actonConfig       Map of config to show action on banner
  *    @param {String} href            URL to which action config should point to (default: '#')
@@ -69,7 +76,7 @@ const removeFlashClickListener = (flashEl, fadeTransition) => {
  */
 const createFlash = function createFlash(
   message,
-  type = 'alert',
+  type = FLASH_TYPES.ALERT,
   parent = document,
   actionConfig = null,
   fadeTransition = true,
@@ -102,5 +109,12 @@ const createFlash = function createFlash(
   return flashContainer;
 };
 
-export { createFlash as default, createFlashEl, createAction, hideFlash, removeFlashClickListener };
+export {
+  createFlash as default,
+  createFlashEl,
+  createAction,
+  hideFlash,
+  removeFlashClickListener,
+  FLASH_TYPES,
+};
 window.Flash = createFlash;

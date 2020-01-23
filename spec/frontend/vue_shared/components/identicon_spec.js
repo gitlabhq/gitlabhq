@@ -1,65 +1,33 @@
-import Vue from 'vue';
-import identiconComponent from '~/vue_shared/components/identicon.vue';
+import { shallowMount } from '@vue/test-utils';
+import IdenticonComponent from '~/vue_shared/components/identicon.vue';
 
-const createComponent = sizeClass => {
-  const Component = Vue.extend(identiconComponent);
+describe('Identicon', () => {
+  let wrapper;
 
-  return new Component({
-    propsData: {
-      entityId: 1,
-      entityName: 'entity-name',
-      sizeClass,
-    },
-  }).$mount();
-};
-
-describe('IdenticonComponent', () => {
-  describe('computed', () => {
-    let vm;
-
-    beforeEach(() => {
-      vm = createComponent();
+  const createComponent = () => {
+    wrapper = shallowMount(IdenticonComponent, {
+      propsData: {
+        entityId: 1,
+        entityName: 'entity-name',
+        sizeClass: 's40',
+      },
     });
+  };
 
-    afterEach(() => {
-      vm.$destroy();
-    });
-
-    describe('identiconBackgroundClass', () => {
-      it('should return bg class based on entityId', () => {
-        vm.entityId = 4;
-
-        expect(vm.identiconBackgroundClass).toBeDefined();
-        expect(vm.identiconBackgroundClass).toBe('bg5');
-      });
-    });
-
-    describe('identiconTitle', () => {
-      it('should return first letter of entity title in uppercase', () => {
-        vm.entityName = 'dummy-group';
-
-        expect(vm.identiconTitle).toBeDefined();
-        expect(vm.identiconTitle).toBe('D');
-      });
-    });
+  afterEach(() => {
+    wrapper.destroy();
+    wrapper = null;
   });
 
-  describe('template', () => {
-    it('should render identicon', () => {
-      const vm = createComponent();
+  it('matches snapshot', () => {
+    createComponent();
 
-      expect(vm.$el.nodeName).toBe('DIV');
-      expect(vm.$el.classList.contains('identicon')).toBeTruthy();
-      expect(vm.$el.classList.contains('s40')).toBeTruthy();
-      expect(vm.$el.classList.contains('bg2')).toBeTruthy();
-      vm.$destroy();
-    });
+    expect(wrapper.element).toMatchSnapshot();
+  });
 
-    it('should render identicon with provided sizing class', () => {
-      const vm = createComponent('s32');
+  it('adds a correct class to identicon', () => {
+    createComponent();
 
-      expect(vm.$el.classList.contains('s32')).toBeTruthy();
-      vm.$destroy();
-    });
+    expect(wrapper.find({ ref: 'identicon' }).classes()).toContain('bg2');
   });
 });

@@ -1,0 +1,5 @@
+---
+title: Add selective sync support to Geo Nodes API update endpoint
+merge_request: 22828
+author: Rajendra Kadam
+type: added

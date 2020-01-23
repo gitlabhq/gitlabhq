@@ -1,51 +1,55 @@
-import Vue from 'vue';
-import issuePlaceholderNote from '~/vue_shared/components/notes/placeholder_note.vue';
-import createStore from '~/notes/stores';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
+import IssuePlaceholderNote from '~/vue_shared/components/notes/placeholder_note.vue';
 import { userDataMock } from '../../../notes/mock_data';
 
-describe('issue placeholder system note component', () => {
-  let store;
-  let vm;
+const localVue = createLocalVue();
+localVue.use(Vuex);
 
-  beforeEach(() => {
-    const Component = Vue.extend(issuePlaceholderNote);
-    store = createStore();
-    store.dispatch('setUserData', userDataMock);
-    vm = new Component({
-      store,
-      propsData: { note: { body: 'Foo' } },
-    }).$mount();
-  });
+const getters = {
+  getUserData: () => userDataMock,
+};
+
+describe('Issue placeholder note component', () => {
+  let wrapper;
+
+  const findNote = () => wrapper.find({ ref: 'note' });
+
+  const createComponent = (isIndividual = false) => {
+    wrapper = shallowMount(IssuePlaceholderNote, {
+      localVue,
+      store: new Vuex.Store({
+        getters,
+      }),
+      propsData: {
+        note: {
+          body: 'Foo',
+          individual_note: isIndividual,
+        },
+      },
+    });
+  };
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
+    wrapper = null;
   });
 
-  describe('user information', () => {
-    it('should render user avatar with link', () => {
-      expect(vm.$el.querySelector('.user-avatar-link').getAttribute('href')).toEqual(
-        userDataMock.path,
-      );
+  it('matches snapshot', () => {
+    createComponent();
 
-      expect(vm.$el.querySelector('.user-avatar-link img').getAttribute('src')).toEqual(
-        `${userDataMock.avatar_url}?width=40`,
-      );
-    });
+    expect(wrapper.element).toMatchSnapshot();
   });
 
-  describe('note content', () => {
-    it('should render note header information', () => {
-      expect(vm.$el.querySelector('.note-header-info a').getAttribute('href')).toEqual(
-        userDataMock.path,
-      );
+  it('does not add "discussion" class to individual notes', () => {
+    createComponent(true);
 
-      expect(
-        vm.$el.querySelector('.note-header-info .note-headline-light').textContent.trim(),
-      ).toEqual(`@${userDataMock.username}`);
-    });
+    expect(findNote().classes()).not.toContain('discussion');
+  });
 
-    it('should render note body', () => {
-      expect(vm.$el.querySelector('.note-text p').textContent.trim()).toEqual('Foo');
-    });
+  it('adds "discussion" class to non-individual notes', () => {
+    createComponent();
+
+    expect(findNote().classes()).toContain('discussion');
   });
 });

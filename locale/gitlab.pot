@@ -627,7 +627,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "1 user"
-msgid_plural "%d users"
+msgid_plural "%{num} users"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -770,6 +770,9 @@ msgid "A file with '%{file_name}' already exists in %{branch} branch"
 msgstr ""
 
 msgid "A fork is a copy of a project.<br />Forking a repository allows you to make changes without affecting the original project."
+msgstr ""
+
+msgid "A group represents your organization in GitLab."
 msgstr ""
 
 msgid "A member of the abuse team will review your report as soon as possible."
@@ -5406,6 +5409,9 @@ msgstr ""
 msgid "Create a Mattermost team for this group"
 msgstr ""
 
+msgid "Create a group for your organization"
+msgstr ""
+
 msgid "Create a local proxy for storing frequently used upstream images. %{link_start}Learn more%{link_end} about dependency proxies."
 msgstr ""
 
@@ -8930,6 +8936,9 @@ msgstr ""
 msgid "Get a free instance review"
 msgstr ""
 
+msgid "Get started"
+msgstr ""
+
 msgid "Get started with error tracking"
 msgstr ""
 
@@ -9393,6 +9402,9 @@ msgid "Group members"
 msgstr ""
 
 msgid "Group name"
+msgstr ""
+
+msgid "Group name (Your organization)"
 msgstr ""
 
 msgid "Group overview"
@@ -18463,6 +18475,9 @@ msgstr ""
 msgid "Thank you for your report. A GitLab administrator will look into it shortly."
 msgstr ""
 
+msgid "Thanks for your purchase!"
+msgstr ""
+
 msgid "Thanks! Don't show me this again"
 msgstr ""
 
@@ -21068,6 +21083,9 @@ msgstr ""
 msgid "Welcome to GitLab %{name}!"
 msgstr ""
 
+msgid "Welcome to GitLab, %{first_name}!"
+msgstr ""
+
 msgid "Welcome to the Guided GitLab Tour"
 msgstr ""
 
@@ -21382,6 +21400,9 @@ msgstr ""
 msgid "You can also upload existing files from your computer using the instructions below."
 msgstr ""
 
+msgid "You can always edit this later"
+msgstr ""
+
 msgid "You can apply your Trial to your Personal account or create a New Group."
 msgstr ""
 
@@ -21556,6 +21577,9 @@ msgstr ""
 msgid "You have reached your project limit"
 msgstr ""
 
+msgid "You have successfully purchased a %{plan} plan subscription for %{seats}. You’ll receive a receipt via email."
+msgstr ""
+
 msgid "You haven't added any issues to your project yet"
 msgstr ""
 
@@ -21713,6 +21737,9 @@ msgid "Your DevOps Score gives an overview of how you are using GitLab from a fe
 msgstr ""
 
 msgid "Your GPG keys (%{count})"
+msgstr ""
+
+msgid "Your GitLab group"
 msgstr ""
 
 msgid "Your Gitlab Gold trial will last 30 days after which point you can keep your free Gitlab account forever. We just need some additional information to activate your trial."
