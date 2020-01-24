@@ -2,6 +2,22 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.7.1
+
+### Fixed (6 changes)
+
+- Fix loading of sub-epics caused by wrong subscription check. !23184
+- Fix Bitbucket Server importer error handler. !23310
+- Fixes random passwords generated not conforming to minimum_password_length setting. !23387
+- Reverts MR diff redesign which fixes Web IDE visual bugs including file dropdown not showing up. !23428
+- Allow users to sign out on a read-only instance. !23545
+- Remove invalid data from jira_tracker_data table. !23621
+
+### Added (1 change)
+
+- Close Issue when resolving corresponding Sentry error. !22744
+
+
 ## 12.7.0
 
 ### Security (6 changes, 2 of them are from the community)

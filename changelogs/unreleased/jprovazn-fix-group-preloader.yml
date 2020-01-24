@@ -1,5 +1,0 @@
----
-title: Fix loading of sub-epics caused by wrong subscription check.
-merge_request: 23184
-author:
-type: fixed
