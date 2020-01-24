@@ -2,6 +2,10 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.7.1
+
+- No changes.
+
 ## 12.7.0
 
 ### Security (6 changes, 2 of them are from the community)
