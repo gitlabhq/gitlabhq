@@ -1,6 +1,39 @@
 import { omit } from 'lodash';
+import createGqClient from '~/lib/graphql';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+
+export const gqClient = createGqClient();
 
 export const uniqMetricsId = metric => `${metric.metric_id}_${metric.id}`;
+
+/**
+ * Project path has a leading slash that doesn't work well
+ * with project full path resolver here
+ * https://gitlab.com/gitlab-org/gitlab/blob/5cad4bd721ab91305af4505b2abc92b36a56ad6b/app/graphql/resolvers/full_path_resolver.rb#L10
+ *
+ * @param {String} str String with leading slash
+ * @returns {String}
+ */
+export const removeLeadingSlash = str => (str || '').replace(/^\/+/, '');
+
+/**
+ * GraphQL environments API returns only id and name.
+ * For the environments dropdown we need metrics_path.
+ * This method parses the results and add neccessart attrs
+ *
+ * @param {Array} response Environments API result
+ * @param {String} projectPath Current project path
+ * @returns {Array}
+ */
+export const parseEnvironmentsResponse = (response = [], projectPath) =>
+  (response || []).map(env => {
+    const id = getIdFromGraphQLId(env.id);
+    return {
+      ...env,
+      id,
+      metrics_path: `${projectPath}/environments/${id}/metrics`,
+    };
+  });
 
 /**
  * Metrics loaded from project-defined dashboards do not have a metric_id.

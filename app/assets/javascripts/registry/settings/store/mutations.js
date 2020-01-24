@@ -16,6 +16,9 @@ export default {
     state.settings = settings;
     state.original = Object.freeze(settings);
   },
+  [types.SET_IS_DISABLED](state, isDisabled) {
+    state.isDisabled = isDisabled;
+  },
   [types.RESET_SETTINGS](state) {
     state.settings = { ...state.original };
   },

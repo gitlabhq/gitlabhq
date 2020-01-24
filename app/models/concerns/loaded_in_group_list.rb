@@ -73,3 +73,5 @@ module LoadedInGroupList
     @member_count ||= try(:preloaded_member_count) || users.count
   end
 end
+
+LoadedInGroupList::ClassMethods.prepend_if_ee('EE::LoadedInGroupList::ClassMethods')

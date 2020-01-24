@@ -34,26 +34,55 @@ module Gitlab
       def extract_commands(content, only: nil)
         return [content, []] unless content
 
-        content = content.dup
+        content, commands = perform_regex(content, only: only)
 
-        commands = []
+        perform_substitutions(content, commands)
+      end
 
-        content.delete!("\r")
-        content.gsub!(commands_regex(only: only)) do
-          if $~[:cmd]
-            commands << [$~[:cmd].downcase, $~[:arg]].reject(&:blank?)
-            ''
-          else
-            $~[0]
-          end
-        end
+      # Encloses quick action commands into code span markdown
+      # avoiding them being executed, for example, when sent via email
+      # to GitLab service desk.
+      # Example: /label ~label1 becomes `/label ~label1`
+      def redact_commands(content)
+        return "" unless content
 
-        content, commands = perform_substitutions(content, commands)
+        content, _ = perform_regex(content, redact: true)
 
-        [content.rstrip, commands]
+        content
       end
 
       private
+
+      def perform_regex(content, only: nil, redact: false)
+        commands = []
+        content = content.dup
+        content.delete!("\r")
+
+        content.gsub!(commands_regex(only: only)) do
+          command, output = process_commands($~, redact)
+          commands << command
+          output
+        end
+
+        [content.rstrip, commands.reject(&:empty?)]
+      end
+
+      def process_commands(matched_text, redact)
+        output = matched_text[0]
+        command = []
+
+        if matched_text[:cmd]
+          command = [matched_text[:cmd].downcase, matched_text[:arg]].reject(&:blank?)
+          output = ''
+
+          if redact
+            output = "`/#{matched_text[:cmd]}#{" " + matched_text[:arg] if matched_text[:arg]}`"
+            output += "\n" if matched_text[0].include?("\n")
+          end
+        end
+
+        [command, output]
+      end
 
       # Builds a regular expression to match known commands.
       # First match group captures the command name and

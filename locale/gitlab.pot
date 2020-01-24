@@ -528,6 +528,9 @@ msgstr ""
 msgid "+ %{numberOfHiddenAssignees} more"
 msgstr ""
 
+msgid "+%{approvers} more approvers"
+msgstr ""
+
 msgid "+%{extraOptionCount} more"
 msgstr ""
 
@@ -5051,6 +5054,9 @@ msgid "ContainerRegistry|Copy login command"
 msgstr ""
 
 msgid "ContainerRegistry|Copy push command"
+msgstr ""
+
+msgid "ContainerRegistry|Currently, the Container Registry tag expiration feature is not available for projects created before GitLab version 12.8. For updates and more information, visit Issue %{linkStart}#196124%{linkEnd}"
 msgstr ""
 
 msgid "ContainerRegistry|Docker connection error"
@@ -9809,6 +9815,9 @@ msgstr ""
 msgid "Helps reduce request volume for protected paths"
 msgstr ""
 
+msgid "Here you will find recent merge request activity"
+msgstr ""
+
 msgid "Hi %{username}!"
 msgstr ""
 
@@ -12421,6 +12430,9 @@ msgstr ""
 msgid "No application_settings found"
 msgstr ""
 
+msgid "No approvers"
+msgstr ""
+
 msgid "No authentication methods configured."
 msgstr ""
 
@@ -13176,7 +13188,13 @@ msgstr ""
 msgid "Pagination|Last »"
 msgstr ""
 
+msgid "Pagination|Next"
+msgstr ""
+
 msgid "Pagination|Next ›"
+msgstr ""
+
+msgid "Pagination|Prev"
 msgstr ""
 
 msgid "Pagination|« First"
@@ -15947,7 +15965,13 @@ msgstr ""
 msgid "Restart Terminal"
 msgstr ""
 
+msgid "Restore group"
+msgstr ""
+
 msgid "Restore project"
+msgstr ""
+
+msgid "Restoring the group will prevent the group, its subgroups and projects from being removed on this date."
 msgstr ""
 
 msgid "Restoring the project will prevent the project from being removed on this date and restore people's ability to make changes to it."
@@ -18549,6 +18573,9 @@ msgstr ""
 msgid "The content of this page is not encoded in UTF-8. Edits can only be made via the Git repository."
 msgstr ""
 
+msgid "The contents of this group, its subgroups and projects will be permanently removed after %{deletion_adjourned_period} days on %{date}. After this point, your data cannot be recovered."
+msgstr ""
+
 msgid "The current issue"
 msgstr ""
 
@@ -18611,10 +18638,16 @@ msgstr ""
 msgid "The group and its projects can only be viewed by members."
 msgstr ""
 
+msgid "The group can be fully restored"
+msgstr ""
+
 msgid "The group has already been shared with this group"
 msgstr ""
 
 msgid "The group settings for %{group_links} require you to enable Two-Factor Authentication for your account. You can %{leave_group_links}."
+msgstr ""
+
+msgid "The group will be placed in 'pending removal' state"
 msgstr ""
 
 msgid "The import will time out after %{timeout}. For repositories that take longer, use a clone/push combination."
@@ -19100,7 +19133,16 @@ msgstr ""
 msgid "This group does not provide any group Runners yet."
 msgstr ""
 
+msgid "This group has been scheduled for permanent removal on %{date}"
+msgstr ""
+
 msgid "This group, including all subgroups, projects and git repositories, will only be reachable from the specified IP address range. Multiple addresses are supported with comma delimiters.<br>Example: <code>192.168.0.0/24,192.168.1.0/24</code>. %{read_more_link}."
+msgstr ""
+
+msgid "This group, its subgroups and projects has been scheduled for removal on %{date}."
+msgstr ""
+
+msgid "This group, its subgroups and projects will be removed on %{date} since its parent group '%{parent_group_name}'' has been scheduled for removal."
 msgstr ""
 
 msgid "This is a \"Ghost User\", created to hold all issues authored by users that have since been deleted. This user cannot be removed."
@@ -19272,6 +19314,9 @@ msgid "This project path either does not exist or is private."
 msgstr ""
 
 msgid "This project will be removed on %{date}"
+msgstr ""
+
+msgid "This project will be removed on %{date} since its parent group '%{parent_group_name}' has been scheduled for removal."
 msgstr ""
 
 msgid "This repository"
@@ -20284,6 +20329,9 @@ msgid "Uploading changes to terminal"
 msgstr ""
 
 msgid "Uploads"
+msgstr ""
+
+msgid "Upon performing this action, the contents of this group, its subgroup and projects will be permanently removed after %{deletion_adjourned_period} days on <strong>%{date}</strong>. Until that time:"
 msgstr ""
 
 msgid "Upstream"

@@ -314,6 +314,30 @@ If you want to retain ownership over the original namespace and
 protect the URL redirects, then instead of changing a group's path or renaming a
 username, you can create a new group and transfer projects to it.
 
+### Remove a group
+
+To remove a group and its contents:
+
+1. Navigate to your group's **{settings}** **Settings > General** page.
+1. Expand the **Path, transfer, remove** section.
+1. In the Remove group section, click the **Remove group** button.
+1. Confirm the action when asked to.
+
+This action either:
+
+- Removes the group, and also queues a background job to delete all projects in that group.
+- Since [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/issues/33257), on [Premium or Silver](https://about.gitlab.com/pricing/premium/) or higher tiers, marks a group for deletion. The deletion will happen 7 days later by default, but this can be changed in the [instance settings](../admin_area/settings/visibility_and_access_controls.md#default-deletion-adjourned-period-premium-only).
+
+### Restore a group **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/33257) in GitLab 12.8.
+
+To restore a group that is marked for deletion:
+
+1. Navigate to your group's **{settings}** **Settings > General** page.
+1. Expand the **Path, transfer, remove** section.
+1. In the Restore group section, click the **Restore group** button.
+
 #### Enforce 2FA to group members
 
 Add a security layer to your group by

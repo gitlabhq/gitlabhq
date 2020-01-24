@@ -294,4 +294,22 @@ describe Gitlab::QuickActions::Extractor do
       expect(msg).to eq expected_msg
     end
   end
+
+  describe '#redact_commands' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:text, :expected) do
+      "hello\n/labels ~label1 ~label2\nworld" | "hello\n`/labels ~label1 ~label2`\nworld"
+      "hello\n/open\n/labels ~label1\nworld"  | "hello\n`/open`\n`/labels ~label1`\nworld"
+      "hello\n/reopen\nworld"                 | "hello\n`/reopen`\nworld"
+      "/reopen\nworld"                        | "`/reopen`\nworld"
+      "hello\n/open"                          | "hello\n`/open`"
+    end
+
+    with_them do
+      it 'encloses quick actions with code span markdown' do
+        expect(extractor.redact_commands(text)).to eq(expected)
+      end
+    end
+  end
 end

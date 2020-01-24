@@ -32,6 +32,7 @@ describe('Mutations Registry Store', () => {
       expect(mockState.settings).toEqual(expectedState.settings);
     });
   });
+
   describe('SET_SETTINGS', () => {
     it('should set the settings and original', () => {
       const payload = { foo: 'baz' };
@@ -41,6 +42,7 @@ describe('Mutations Registry Store', () => {
       expect(mockState.original).toEqual(expectedState.settings);
     });
   });
+
   describe('RESET_SETTINGS', () => {
     it('should copy original over settings', () => {
       mockState.settings = { foo: 'bar' };
@@ -49,10 +51,18 @@ describe('Mutations Registry Store', () => {
       expect(mockState.settings).toEqual(mockState.original);
     });
   });
+
   describe('TOGGLE_LOADING', () => {
     it('should toggle the loading', () => {
       mutations[types.TOGGLE_LOADING](mockState);
       expect(mockState.isLoading).toEqual(true);
+    });
+  });
+
+  describe('SET_IS_DISABLED', () => {
+    it('should set isDisabled', () => {
+      mutations[types.SET_IS_DISABLED](mockState, true);
+      expect(mockState.isDisabled).toEqual(true);
     });
   });
 });

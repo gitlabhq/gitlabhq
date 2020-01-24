@@ -27,4 +27,5 @@ NOTE: **Note** We are especially interested in adding support for [PyPi](https:/
 
 Learning how to use the GitLab Package Registry will help you build your own custom package workflow.
 
-[Use a project as a package registry](./workflows/project_registry.md) to publish all of your packages to one project.
+- [Use a project as a package registry](./workflows/project_registry.md) to publish all of your packages to one project.
+- [Working with a monorepo](./workflows/monorepo.md): Learn how to publish multiple different packages from one monorepo project.

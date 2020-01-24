@@ -155,6 +155,35 @@ describe('GroupItemComponent', () => {
   });
 
   describe('template', () => {
+    let group = null;
+
+    describe('for a group pending deletion', () => {
+      beforeEach(() => {
+        group = { ...mockParentGroupItem, pendingRemoval: true };
+        vm = createComponent(group);
+      });
+
+      it('renders the group pending removal badge', () => {
+        const badgeEl = vm.$el.querySelector('.badge-warning');
+
+        expect(badgeEl).toBeDefined();
+        expect(badgeEl).toContainText('pending removal');
+      });
+    });
+
+    describe('for a group not scheduled for deletion', () => {
+      beforeEach(() => {
+        group = { ...mockParentGroupItem, pendingRemoval: false };
+        vm = createComponent(group);
+      });
+
+      it('does not render the group pending removal badge', () => {
+        const groupTextContainer = vm.$el.querySelector('.group-text-container');
+
+        expect(groupTextContainer).not.toContainText('pending removal');
+      });
+    });
+
     it('should render component template correctly', () => {
       const visibilityIconEl = vm.$el.querySelector('.item-visibility');
 

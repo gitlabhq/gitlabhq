@@ -348,10 +348,11 @@ RSpec/HaveGitlabHttpStatus:
   Include:
     - 'spec/support/shared_examples/**/*'
     - 'ee/spec/support/shared_examples/**/*'
+    - 'spec/features/**/*'
+    - 'ee/spec/features/**/*'
 
 Style/MultilineWhenThen:
   Enabled: false
 
 Style/FloatDivision:
   Enabled: false
-  

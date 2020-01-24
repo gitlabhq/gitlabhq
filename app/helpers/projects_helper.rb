@@ -709,4 +709,10 @@ module ProjectsHelper
   def show_visibility_confirm_modal?(project)
     project.unlink_forks_upon_visibility_decrease_enabled? && project.visibility_level > Gitlab::VisibilityLevel::PRIVATE && project.forks_count > 0
   end
+
+  def settings_container_registry_expiration_policy_available?(project)
+    Feature.enabled?(:registry_retention_policies_settings, project) &&
+      Gitlab.config.registry.enabled &&
+      can?(current_user, :read_container_image, project)
+  end
 end

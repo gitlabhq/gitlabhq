@@ -1,7 +1,9 @@
 import * as types from './mutation_types';
 import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';
+import { gqClient, parseEnvironmentsResponse, removeLeadingSlash } from './utils';
 import trackDashboardLoad from '../monitoring_tracking_helper';
+import getEnvironments from '../queries/getEnvironments.query.graphql';
 import statusCodes from '../../lib/utils/http_status';
 import { backOff } from '../../lib/utils/common_utils';
 import { s__, sprintf } from '../../locale';
@@ -187,26 +189,30 @@ export const fetchDeploymentsData = ({ state, dispatch }) => {
     });
 };
 
-export const fetchEnvironmentsData = ({ state, dispatch }) => {
-  if (!state.environmentsEndpoint) {
-    return Promise.resolve([]);
-  }
-  return axios
-    .get(state.environmentsEndpoint)
-    .then(resp => resp.data)
-    .then(response => {
-      if (!response || !response.environments) {
+export const fetchEnvironmentsData = ({ state, dispatch }) =>
+  gqClient
+    .mutate({
+      mutation: getEnvironments,
+      variables: {
+        projectPath: removeLeadingSlash(state.projectPath),
+        search: state.environmentsSearchTerm,
+      },
+    })
+    .then(resp =>
+      parseEnvironmentsResponse(resp.data?.project?.data?.environments, state.projectPath),
+    )
+    .then(environments => {
+      if (!environments) {
         createFlash(
           s__('Metrics|There was an error fetching the environments data, please try again'),
         );
       }
-      dispatch('receiveEnvironmentsDataSuccess', response.environments);
+      dispatch('receiveEnvironmentsDataSuccess', environments);
     })
     .catch(() => {
       dispatch('receiveEnvironmentsDataFailure');
       createFlash(s__('Metrics|There was an error getting environments information.'));
     });
-};
 
 /**
  * Set a new array of metrics to a panel group

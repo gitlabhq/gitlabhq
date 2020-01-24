@@ -467,6 +467,10 @@ class Group < Namespace
     import_export_upload&.export_file
   end
 
+  def adjourned_deletion?
+    false
+  end
+
   private
 
   def update_two_factor_requirement

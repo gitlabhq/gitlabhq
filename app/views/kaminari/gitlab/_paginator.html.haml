@@ -8,14 +8,10 @@
 = paginator.render do
   .gl-pagination.prepend-top-default
     %ul.pagination.justify-content-center
-      - unless current_page.first?
-        = first_page_tag unless total_pages < 5 # As kaminari will always show the first 5 pages
       = prev_page_tag
       - each_page do |page|
-        - if page.left_outer? || page.right_outer? || page.inside_window?
+        - if page.left_outer? || page.right_outer? || page.inside_window? || page.first? || page.last?
           = page_tag page
         - elsif !page.was_truncated?
           = gap_tag
       = next_page_tag
-      - unless current_page.last?
-        = last_page_tag unless total_pages < 5

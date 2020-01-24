@@ -4,20 +4,26 @@ require 'spec_helper'
 
 describe 'Project > Settings > CI/CD > Container registry tag expiration policy', :js do
   let(:user) { create(:user) }
-  let(:project) { create(:project, namespace: user.namespace) }
+  let(:project) { create(:project, namespace: user.namespace, container_registry_enabled: container_registry_enabled) }
+  let(:container_registry_enabled) { true }
+
+  before do
+    sign_in(user)
+    stub_container_registry_config(enabled: true)
+    stub_feature_flags(registry_retention_policies_settings: true)
+  end
 
   context 'as owner' do
     before do
-      sign_in(user)
       visit project_settings_ci_cd_path(project)
     end
 
-    it 'section is available' do
+    it 'shows available section' do
       settings_block = find('#js-registry-policies')
       expect(settings_block).to have_text 'Container Registry tag expiration policy'
     end
 
-    it 'Save expiration policy submit the form' do
+    it 'saves expiration policy submit the form' do
       within '#js-registry-policies' do
         within '.card-body' do
           find('#expiration-policy-toggle button:not(.is-disabled)').click
@@ -32,6 +38,40 @@ describe 'Project > Settings > CI/CD > Container registry tag expiration policy'
       end
       toast = find('.gl-toast')
       expect(toast).to have_content('Expiration policy successfully saved.')
+    end
+  end
+
+  context 'when registry is disabled' do
+    before do
+      stub_container_registry_config(enabled: false)
+      visit project_settings_ci_cd_path(project)
+    end
+
+    it 'does not exists' do
+      expect(page).not_to have_selector('#js-registry-policies')
+    end
+  end
+
+  context 'when container registry is disabled on project' do
+    let(:container_registry_enabled) { false }
+
+    before do
+      visit project_settings_ci_cd_path(project)
+    end
+
+    it 'does not exists' do
+      expect(page).not_to have_selector('#js-registry-policies')
+    end
+  end
+
+  context 'when feature flag is disabled' do
+    before do
+      stub_feature_flags(registry_retention_policies_settings: false)
+      visit project_settings_ci_cd_path(project)
+    end
+
+    it 'does not exists' do
+      expect(page).not_to have_selector('#js-registry-policies')
     end
   end
 end

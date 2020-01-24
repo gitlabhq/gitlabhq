@@ -62,6 +62,12 @@ The single docs version must be created before the release merge request, but
 this needs to happen when the stable branches for all products have been created.
 
 1. Make sure you're on the root path of the `gitlab-docs` repo.
+1. Make sure your `master` is updated:
+
+   ```sh
+   git pull origin master
+   ```
+
 1. Run the raketask to create the single version:
 
     ```sh
@@ -69,6 +75,17 @@ this needs to happen when the stable branches for all products have been created
     ```
 
     A new `Dockerfile.12.0` should have been created and committed to a new branch.
+
+1. Edit `.gitlab-ci.yml` and replace the `BRANCH_` variables with their respective
+   upstream stable branch. For example, 12.6 would look like:
+
+   ```yaml
+   variables:
+     BRANCH_EE: '12-6-stable-ee'
+     BRANCH_OMNIBUS: '12-6-stable'
+     BRANCH_RUNNER: '12-6-stable'
+     BRANCH_CHARTS: '2-6-stable'
+   ```
 
 1. Push the newly created branch, but **don't create a merge request**.
    Once you push, the `image:docker-singe` job will create a new Docker image
@@ -95,6 +112,7 @@ version and rotates the old one:
 1. Create a branch `release-X-Y`:
 
    ```sh
+   git checkout master
    git checkout -b release-12-0
    ```
 
@@ -143,16 +161,12 @@ version and rotates the old one:
 The versions dropdown is in a way "hardcoded". When the site is built, it looks
 at the contents of `content/_data/versions.yaml` and based on that, the dropdown
 is populated. So, older branches will have different content, which means the
-dropdown will be one or more releases behind. Remember that the new changes of
+dropdown will list one or more releases behind. Remember that the new changes of
 the dropdown are included in the unmerged `release-X-Y` branch.
 
 The content of `content/_data/versions.yaml` needs to change for all online
 versions:
 
-1. Before creating the merge request, [disable the scheduled pipeline](https://gitlab.com/gitlab-org/gitlab-docs/pipeline_schedules/228/edit)
-   by unchecking the "Active" option. Since all steps must run in sequence, we need
-   to do this to avoid race conditions in the event some previous versions are
-   updated before the release merge request is merged.
 1. Run the raketask that will create all the respective merge requests needed to
    update the dropdowns and will be set to automatically be merged when their
    pipelines succeed. The `release-X-Y` branch needs to be present locally,
@@ -162,7 +176,9 @@ versions:
    ./bin/rake release:dropdowns
    ```
 
-Once all are merged, proceed to the following and final step.
+1. [Visit the merge requests page](https://gitlab.com/gitlab-org/gitlab-docs/merge_requests?label_name%5B%5D=release>)
+   to check that their pipelines pass, and once all are merged, proceed to the
+   following and final step.
 
 TIP: **Tip:**
 In case a pipeline fails, see [troubleshooting](#troubleshooting).
@@ -176,8 +192,8 @@ you need to only babysit the pipelines and make sure they don't fail:
 1. Check the [pipelines page](https://gitlab.com/gitlab-org/gitlab-docs/pipelines)
    and make sure all stable branches have green pipelines.
 1. After all the pipelines of the online versions succeed, merge the release merge request.
-1. Finally, re-activate the [scheduled pipeline](https://gitlab.com/gitlab-org/gitlab-docs/pipeline_schedules/228/edit),
-   save it, and hit the play button to get it started.
+1. Finally, run the [Build docker images weekly](https://gitlab.com/gitlab-org/gitlab-docs/pipeline_schedules)
+   pipeline that will build the `:latest` and `:archives` Docker images.
 
 Once the scheduled pipeline succeeds, the docs site will be deployed with all
 new versions online.
@@ -214,6 +230,10 @@ Releasing a new version is a long process that involves many moving parts.
 
 ### `test_internal_links_and_anchors` failing on dropdown merge requests
 
+NOTE: **Note:**
+We now pin versions in the `.gitlab-ci.yml` of the respective branch,
+so the steps below are deprecated.
+
 When [updating the dropdown for the stable versions](#4-update-the-dropdown-for-all-online-versions),
 there may be cases where some links might fail. The process of how the
 dropdown MRs are created have a caveat, and that is that the tests run by
@@ -229,7 +249,7 @@ branches for 12.2 were used, this wouldn't have failed, but as we can see from
 the [`compile_dev` job](https://gitlab.com/gitlab-org/gitlab-docs/-/jobs/328042427),
 the `master` branches were pulled.
 
-To fix this, you need to [re-run the pipeline](https://gitlab.com/gitlab-org/gitlab-docs/pipelines/new)
+To fix this, [re-run the pipeline](https://gitlab.com/gitlab-org/gitlab-docs/pipelines/new)
 for the `update-12-2-for-release-12-4` branch, by including the following environment variables:
 
 - `BRANCH_CE` set to `12-2-stable`

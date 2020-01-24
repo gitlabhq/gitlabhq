@@ -5,15 +5,35 @@ import * as types from '~/registry/settings/store/mutation_types';
 
 describe('Actions Registry Store', () => {
   describe.each`
-    actionName                  | mutationName               | payload
-    ${'setInitialState'}        | ${types.SET_INITIAL_STATE} | ${'foo'}
-    ${'updateSettings'}         | ${types.UPDATE_SETTINGS}   | ${'foo'}
-    ${'receiveSettingsSuccess'} | ${types.SET_SETTINGS}      | ${'foo'}
-    ${'toggleLoading'}          | ${types.TOGGLE_LOADING}    | ${undefined}
-    ${'resetSettings'}          | ${types.RESET_SETTINGS}    | ${undefined}
+    actionName           | mutationName               | payload
+    ${'setInitialState'} | ${types.SET_INITIAL_STATE} | ${'foo'}
+    ${'updateSettings'}  | ${types.UPDATE_SETTINGS}   | ${'foo'}
+    ${'toggleLoading'}   | ${types.TOGGLE_LOADING}    | ${undefined}
+    ${'resetSettings'}   | ${types.RESET_SETTINGS}    | ${undefined}
   `('%s action invokes %s mutation with payload %s', ({ actionName, mutationName, payload }) => {
     it('should set the initial state', done => {
       testAction(actions[actionName], payload, {}, [{ type: mutationName, payload }], [], done);
+    });
+  });
+
+  describe('receiveSettingsSuccess', () => {
+    it('calls SET_SETTINGS when data is present', () => {
+      testAction(
+        actions.receiveSettingsSuccess,
+        'foo',
+        {},
+        [{ type: types.SET_SETTINGS, payload: 'foo' }],
+        [],
+      );
+    });
+    it('calls SET_IS_DISABLED when data is not present', () => {
+      testAction(
+        actions.receiveSettingsSuccess,
+        null,
+        {},
+        [{ type: types.SET_IS_DISABLED, payload: true }],
+        [],
+      );
     });
   });
 

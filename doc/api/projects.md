@@ -1767,7 +1767,7 @@ Example response:
 This endpoint either:
 
 - Removes a project including all associated resources (issues, merge requests etc).
-- From GitLab 12.6 on Premium or higher tiers, marks a project for deletion. Actual
+- From [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/issues/32935) on [Premium or Silver](https://about.gitlab.com/pricing/) or higher tiers, marks a project for deletion. Actual
   deletion happens after number of days specified in
   [instance settings](../user/admin_area/settings/visibility_and_access_controls.md#default-deletion-adjourned-period-premium-only).
 

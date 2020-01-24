@@ -2,7 +2,11 @@
   %ul.pagination.justify-content-center
     - if previous_path
       %li.page-item.prev
-        = link_to(t('views.pagination.previous'), previous_path, rel: 'prev', class: 'page-link')
+        = link_to previous_path, rel: 'prev', class: 'page-link' do
+          = sprite_icon('angle-left', size: 8)
+          = s_('Pagination|Prev')
     - if next_path
       %li.page-item.next
-        = link_to(t('views.pagination.next'), next_path, rel: 'next', class: 'page-link')
+        = link_to next_path, rel: 'next', class: 'page-link' do
+          = s_('Pagination|Next')
+          = sprite_icon('angle-right', size: 8)

@@ -20,6 +20,7 @@ import {
   setGettingStartedEmptyState,
   duplicateSystemDashboard,
 } from '~/monitoring/stores/actions';
+import { gqClient, parseEnvironmentsResponse } from '~/monitoring/stores/utils';
 import storeState from '~/monitoring/stores/state';
 import {
   deploymentData,
@@ -105,37 +106,46 @@ describe('Monitoring store actions', () => {
     });
   });
   describe('fetchEnvironmentsData', () => {
-    it('commits RECEIVE_ENVIRONMENTS_DATA_SUCCESS on error', done => {
+    it('commits RECEIVE_ENVIRONMENTS_DATA_SUCCESS on error', () => {
       const dispatch = jest.fn();
       const { state } = store;
-      state.environmentsEndpoint = '/success';
-      mock.onGet(state.environmentsEndpoint).reply(200, {
-        environments: environmentData,
+      state.projectPath = '/gitlab-org/gitlab-test';
+
+      jest.spyOn(gqClient, 'mutate').mockReturnValue(
+        Promise.resolve({
+          data: {
+            project: {
+              data: {
+                environments: environmentData,
+              },
+            },
+          },
+        }),
+      );
+
+      return fetchEnvironmentsData({
+        state,
+        dispatch,
+      }).then(() => {
+        expect(dispatch).toHaveBeenCalledWith(
+          'receiveEnvironmentsDataSuccess',
+          parseEnvironmentsResponse(environmentData, state.projectPath),
+        );
       });
-      fetchEnvironmentsData({
-        state,
-        dispatch,
-      })
-        .then(() => {
-          expect(dispatch).toHaveBeenCalledWith('receiveEnvironmentsDataSuccess', environmentData);
-          done();
-        })
-        .catch(done.fail);
     });
-    it('commits RECEIVE_ENVIRONMENTS_DATA_FAILURE on error', done => {
+
+    it('commits RECEIVE_ENVIRONMENTS_DATA_FAILURE on error', () => {
       const dispatch = jest.fn();
       const { state } = store;
-      state.environmentsEndpoint = '/error';
-      mock.onGet(state.environmentsEndpoint).reply(500);
-      fetchEnvironmentsData({
+      state.projectPath = '/gitlab-org/gitlab-test';
+      jest.spyOn(gqClient, 'mutate').mockReturnValue(Promise.reject());
+
+      return fetchEnvironmentsData({
         state,
         dispatch,
-      })
-        .then(() => {
-          expect(dispatch).toHaveBeenCalledWith('receiveEnvironmentsDataFailure');
-          done();
-        })
-        .catch(done.fail);
+      }).then(() => {
+        expect(dispatch).toHaveBeenCalledWith('receiveEnvironmentsDataFailure');
+      });
     });
   });
   describe('Set endpoints', () => {

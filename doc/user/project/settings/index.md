@@ -177,6 +177,31 @@ namespace if needed.
 
 [permissions]: ../../permissions.md#project-members-permissions
 
+#### Remove a project
+
+NOTE: **Note:**
+Only project owners and admins have [permissions]((../../permissions.md#project-members-permissions) to remove a project.
+
+To remove a project:
+
+1. Navigate to your project, and select **{settings}** **Settings > General > Advanced**.
+1. In the Remove project section, click the **Remove project** button.
+1. Confirm the action when asked to.
+
+This action either:
+
+- Removes a project including all associated resources (issues, merge requests etc).
+- Since [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/issues/32935), on [Premium or Silver](https://about.gitlab.com/pricing/) or higher tiers, marks a project for deletion. The deletion will happen 7 days later by default, but this can be changed in the [instance settings](../../admin_area/settings/visibility_and_access_controls.md#default-deletion-adjourned-period-premium-only).
+
+### Restore a project **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/32935) in GitLab 12.6.
+
+To restore a project that is marked for deletion:
+
+1. Navigate to your project, and select **{settings}** **Settings > General > Advanced**.
+1. In the Restore project section, click the **Restore project** button.
+
 ## Operations settings
 
 ### Error Tracking

@@ -138,6 +138,47 @@ Example of using a token:
 docker login registry.example.com -u <username> -p <token>
 ```
 
+## Expiration policy
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/15398) in GitLab 12.8.
+
+It is possible to create a per-project expiration policy, so that you can make sure that
+older tags and images are regularly removed from the Container Registry.
+
+### Managing project expiration policy through the API
+
+You can set, update, and disable the expiration policies using the GitLab API.
+
+Examples:
+
+- Select all tags, keep at least 1 tag per image, expire any tag older than 14 days, run once a month, and the policy is enabled:
+
+  ```bash
+  curl --request PUT --header 'Content-Type: application/json;charset=UTF-8' --header "PRIVATE-TOKEN: <your_access_token>" --data-binary '{"container_expiration_policy_attributes":{"cadence":"1month","enabled":true,"keep_n":1,"older_than":"14d","name_regex":".*"}' 'https://gitlab.example.com/api/v4/projects/2'
+  ```
+
+- Select only tags with a name that contains `stable`, keep at least 50 tag per image, expire any tag older than 7 days, run every day, and the policy is enabled:
+
+  ```bash
+  curl --request PUT --header 'Content-Type: application/json;charset=UTF-8' --header "PRIVATE-TOKEN: <your_access_token>" --data-binary '{"container_expiration_policy_attributes":{"cadence":"1day","enabled":true,"keep_n":50"older_than":"7d","name_regex":"*stable"}' 'https://gitlab.example.com/api/v4/projects/2'
+  ```
+
+See the API documentation for further details: [Edit project](../../../api/projects.md#edit-project).
+
+### Managing project expiration policy through the UI
+
+To manage project expiration policy, navigate to **Settings > CI/CD > Container Registry tag expiration policy**.
+
+![Expiration Policy App](img/expiration-policy-app.png)
+
+The UI allows you to configure the following:
+
+- **Expiration policy:** enable or disable the expiration policy.
+- **Expiration interval:** how long tags are exempt from being deleted.
+- **Expiration schedule:** how often the cron job checking the tags should run.
+- **Expiration latest:** how many tags to _always_ keep for each image.
+- **Expire Docker tags with regex matching:** the regex used to determine what tags should be expired. To qualify all tags for expiration, use the default value of `.*`.
+
 ## Troubleshooting the GitLab Container Registry
 
 ### Docker connection error

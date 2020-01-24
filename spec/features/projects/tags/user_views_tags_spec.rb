@@ -7,7 +7,7 @@ describe 'User views tags', :feature do
       it do
         visit project_tags_path(project, format: :atom)
 
-        expect(page).to have_gitlab_http_status(200)
+        expect(page).to have_gitlab_http_status(:ok)
       end
     end
 

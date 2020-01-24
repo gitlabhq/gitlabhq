@@ -338,3 +338,53 @@ The next time the `deploy` job runs, it will copy `ci_settings.xml` to the
 user's home location (in this case the user is `root` since it runs in a
 Docker container), and Maven will utilize the configured CI
 [environment variables](../../../ci/variables/README.md#predefined-environment-variables).
+
+## Troubleshooting
+
+### Useful Maven command line options
+
+There's some [maven command line options](https://maven.apache.org/ref/current/maven-embedder/cli.html)
+which maybe useful when doing tasks with GitLab CI.
+
+- File transfer progress can make the CI logs hard to read.
+  Option `-ntp,--no-transfer-progress` was added in
+  [3.6.1](https://maven.apache.org/docs/3.6.1/release-notes.html#User_visible_Changes).
+  Alternatively, look at `-B,--batch-mode`
+  [or lower level logging changes.](https://stackoverflow.com/questions/21638697/disable-maven-download-progress-indication)
+
+- Specify where to find the POM file (`-f,--file`):
+
+   ```yaml
+   package:
+     script:
+       - 'mvn --no-transfer-progress -f helloworld/pom.xml package'
+   ```
+
+- Specify where to find the user settings (`-s,--settings`) instead of
+  [the default location](https://maven.apache.org/settings.html). There's also a `-gs,--global-settings` option:
+
+   ```yaml
+   package:
+     script:
+       - 'mvn -s settings/ci.xml package'
+   ```
+
+### Verifying your Maven settings
+
+If you encounter issues within CI that relate to the `settings.xml` file, it might be useful
+to add an additional script task or job to
+[verify the effective settings](https://maven.apache.org/plugins/maven-help-plugin/effective-settings-mojo.html).
+
+The help plugin can also provide
+[system properties](https://maven.apache.org/plugins/maven-help-plugin/system-mojo.html), including environment variables:
+
+```yaml
+mvn-settings:
+  script:
+    - 'mvn help:effective-settings'
+
+package:
+  script:
+    - 'mvn help:system'
+    - 'mvn package'
+```

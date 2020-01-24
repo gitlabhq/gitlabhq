@@ -885,6 +885,12 @@ you are seeing Gitaly errors. You can control the log level of the
 gRPC client with the `GRPC_LOG_LEVEL` environment variable. The
 default level is `WARN`.
 
+You can run a GRPC trace with:
+
+```sh
+GRPC_TRACE=all GRPC_VERBOSITY=DEBUG sudo gitlab-rake gitlab:gitaly:check
+```
+
 ### Observing `gitaly-ruby` traffic
 
 [`gitaly-ruby`](#gitaly-ruby) is an internal implementation detail of Gitaly,
