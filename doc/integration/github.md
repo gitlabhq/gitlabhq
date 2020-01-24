@@ -59,7 +59,7 @@ Follow these steps to incorporate the GitHub OAuth 2 app in your GitLab server:
 
    **Replace `https://github.example.com/` with your GitHub URL.**
 
-1. Save the file and [reconfigure](../administration/restart_gitlab.html#omnibus-gitlab-reconfigure) GitLab for the changes to take effect.
+1. Save the file and [reconfigure](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) GitLab for the changes to take effect.
 
 ---
 
@@ -86,7 +86,7 @@ Follow these steps to incorporate the GitHub OAuth 2 app in your GitLab server:
 
    **Replace `https://github.example.com/` with your GitHub URL.**
 
-1. Save the file and [restart](../administration/restart_gitlab.html#installations-from-source) GitLab for the changes to take effect.
+1. Save the file and [restart](../administration/restart_gitlab.md#installations-from-source) GitLab for the changes to take effect.
 
 ---
 

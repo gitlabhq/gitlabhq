@@ -77,6 +77,24 @@ Or:
 hello = _("Hello world!")
 ```
 
+Be careful when translating strings at the class or module level since these would only be
+evaluated once at class load time.
+
+For example:
+
+```ruby
+validates :group_id, uniqueness: { scope: [:project_id], message: _("already shared with this group") }
+```
+
+This would be translated when the class is loaded and result in the error message
+always being in the default locale.
+
+Active Record's `:message` option accepts a `Proc`, so we can do this instead:
+
+```ruby
+validates :group_id, uniqueness: { scope: [:project_id], message: -> (object, data) { _("already shared with this group") } }
+```
+
 NOTE: **Note:** Messages in the API (`lib/api/` or `app/graphql`) do
 not need to be externalised.
 

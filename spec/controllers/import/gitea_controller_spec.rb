@@ -41,6 +41,8 @@ describe Import::GiteaController do
         assign_host_url
       end
     end
+
+    it_behaves_like 'project import rate limiter'
   end
 
   describe "GET realtime_changes" do

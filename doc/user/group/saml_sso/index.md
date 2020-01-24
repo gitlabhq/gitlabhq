@@ -6,7 +6,9 @@ type: reference, howto
 
 > Introduced in [GitLab.com Silver](https://about.gitlab.com/pricing/) 11.0.
 
-SAML on GitLab.com allows users to be automatically added to a group, and then allows those users to sign into GitLab.com. Users should already have an account on the GitLab instance, or can create one when logging in for the first time.
+SAML on GitLab.com allows users to be added to a group. Those users can then sign in to GitLab.com. If such users don't already have an account on the GitLab instance, they can create one when signing in for the first time.
+
+If you follow our guidance to automate user provisioning using [SCIM](scim_setup.md) or [group managed accounts](#group-managed-accounts), you do not need to create such accounts manually.
 
 User synchronization for GitLab.com is partially supported using [SCIM](scim_setup.md).
 
@@ -91,7 +93,7 @@ assertions to be able to create a user.
 | First Name      | `first_name`, `firstname`, `firstName` |
 | Last Name       | `last_name`, `lastname`, `lastName` |
 
-## Metadata configuration
+### Metadata configuration
 
 GitLab provides metadata XML that can be used to configure your Identity Provider.
 
@@ -110,6 +112,37 @@ Once you've set up your identity provider to work with GitLab, you'll need to co
 1. Click the **Save changes** button.
 
 ![Group SAML Settings for GitLab.com](img/group_saml_settings.png)
+
+## User access and management
+
+Once Group SSO is configured and enabled, users can access the GitLab.com group through the identity provider's dashboard. If [SCIM](scim_setup.md) is configured, please see the [user access and linking setup section on the SCIM page](scim_setup.md#user-access-and-linking-setup).
+
+When a user tries to sign in with Group SSO, they'll need an account that's configured with one of the following:
+
+- [SCIM](scim_setup.md).
+- [Group-managed accounts](#group-managed-accounts).
+- A GitLab.com account.
+
+1. Click on the GitLab app in the identity provider's dashboard, or visit the Group's GitLab SSO URL.
+1. Sign in to GitLab.com. The next time you connect on the same browser, you won't have to sign in again provided the active session has not expired.
+1. Click on the **Authorize** button.
+
+On subsequent visits, users can access the group through the identify provider's dashboard or by visiting links directly. With the **enforce SSO** option turned on, users will be redirected to log in through the identity provider as required.
+
+### Role
+
+Upon first sign in, a new user is added to the parent group with the Guest role. Existing members with an appropriate role will have to elevate users to a higher role where relevant.
+
+If a user is already a member of the group, linking the SAML identity does not change their role.
+
+### Blocking access
+
+To rescind access to the group:
+
+1. Remove the user from the identity provider or users list for the specific app.
+1. Remove the user from the GitLab.com group.
+
+Even when **enforce SSO** is active, we recommend removing the user from the group. Otherwise, the user can sign in through the identity provider if they do not have an active session.
 
 ## Providers
 

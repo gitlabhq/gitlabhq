@@ -94,6 +94,11 @@ describe 'lograge', type: :request do
     let(:logger) do
       Logger.new(log_output).tap { |logger| logger.formatter = ->(_, _, _, msg) { msg } }
     end
+    let(:log_data) { JSON.parse(log_output.string) }
+
+    before do
+      Lograge.logger = logger
+    end
 
     describe 'with an exception' do
       let(:exception) { RuntimeError.new('bad request') }
@@ -102,17 +107,28 @@ describe 'lograge', type: :request do
       before do
         allow(exception).to receive(:backtrace).and_return(backtrace)
         event.payload[:exception_object] = exception
-        Lograge.logger = logger
       end
 
       it 'adds exception data to log' do
         subscriber.process_action(event)
 
-        log_data = JSON.parse(log_output.string)
-
         expect(log_data['exception.class']).to eq('RuntimeError')
         expect(log_data['exception.message']).to eq('bad request')
         expect(log_data['exception.backtrace']).to eq(Gitlab::BacktraceCleaner.clean_backtrace(backtrace))
+      end
+    end
+
+    describe 'with etag_route' do
+      let(:etag_route) { 'etag route' }
+
+      before do
+        event.payload[:etag_route] = etag_route
+      end
+
+      it 'adds etag_route to log' do
+        subscriber.process_action(event)
+
+        expect(log_data['etag_route']).to eq(etag_route)
       end
     end
   end

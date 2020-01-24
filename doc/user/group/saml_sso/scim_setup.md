@@ -117,6 +117,28 @@ bottom of the **Provisioning** screen, together with a link to the audit logs.
 CAUTION: **Warning:**
 Once synchronized, changing the field mapped to `id` and `externalId` will likely cause provisioning errors, duplicate users, and prevent existing users from accessing the GitLab group.
 
+## User access and linking setup
+
+As long as [Group SAML](index.md) has been configured, prior to turning on sync, existing GitLab.com users can link to their accounts in one of the following ways, before synchronization is active:
+
+- By updating their *primary* email address in their GitLab.com user account to match their identity provider's user profile email address.
+- By following these steps:
+
+  1. Sign in to GitLab.com if needed.
+  1. Click on the GitLab app in the identity provider's dashboard or visit the **GitLab single sign on URL**.
+  1. Click on the **Authorize** button.
+
+New users and existing users on subsequent visits can access the group through the identify provider's dashboard or by visiting links directly.
+
+For role information, please see the [Group SAML page](index.md#user-access-and-management)
+
+### Blocking access
+
+To rescind access to the group, we recommend removing the user from the identity
+provider or users list for the specific app.
+
+Upon the next sync, the user will be deprovisioned, which means that the user will be removed from the group. The user account will not be deleted unless using [group managed accounts](index.md#group-managed-accounts).
+
 ## Troubleshooting
 
 This section contains possible solutions for problems you might encounter.

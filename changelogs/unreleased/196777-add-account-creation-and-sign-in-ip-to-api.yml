@@ -1,0 +1,5 @@
+---
+title: Expose current and last IPs to /users endpoint
+merge_request: 19781
+author:
+type: added

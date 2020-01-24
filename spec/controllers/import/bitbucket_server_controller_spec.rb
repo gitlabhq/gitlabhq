@@ -102,6 +102,8 @@ describe Import::BitbucketServerController do
 
       expect(response).to have_gitlab_http_status(422)
     end
+
+    it_behaves_like 'project import rate limiter'
   end
 
   describe 'POST configure' do

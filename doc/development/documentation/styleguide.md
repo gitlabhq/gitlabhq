@@ -769,6 +769,74 @@ nicely on different mobile devices.
 - [Syntax highlighting for code blocks](https://github.com/rouge-ruby/rouge/wiki/List-of-supported-languages-and-lexers) is available for many languages.
 - For a complete reference on code blocks, check the [Kramdown guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/#code-blocks).
 
+## GitLab SVG icons
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-docs/issues/384) in GitLab 12.7.
+
+You can use icons from the [GitLab SVG library](https://gitlab-org.gitlab.io/gitlab-svgs/) directly
+in the documentation.
+
+This way, you can achieve a consistent look when writing about interacting with GitLab UI elements.
+
+Usage examples:
+
+- Icon with default size (16px): `**{icon-name}**`
+
+  Example: `**{tanuki}**` renders as: **{tanuki}**.
+- Icon with custom size: `**{icon-name, size}**`
+
+  Available sizes (in px): 8, 10, 12, 14, 16, 18, 24, 32, 48, and 72
+
+  Example: `**{tanuki, 24}**` renders as: **{tanuki, 24}**.
+- Icon with custom size and class: `**{icon-name, size, class-name}**`.
+
+  You can access any class available to this element in GitLab docs CSS.
+
+  Example with `float-right`, a
+  [Bootstrap utility class](https://getbootstrap.com/docs/4.4/utilities/float/):
+  `**{tanuki, 32, float-right}**` renders as: **{tanuki, 32, float-right}**
+
+### Using GitLab SVGs to describe UI elements
+
+When using GitLab SVGs to describe screen elements, also include the name or tooltip of the element as text.
+
+For example, for references to the Admin Area:
+
+- Correct: `**{admin}** **Admin Area > Settings**` (**{admin}** **Admin Area > Settings**)
+- Incorrect: `**{admin}** **> Settings**` (**{admin}** **> Settings**)
+
+This will ensure that the source Markdown remains readable and should help with accessibility.
+
+The following are examples of source Markdown for menu items with their published output:
+
+```md
+1. Go to **{home}** **Project overview > Details**
+1. Go to **{doc-text}** **Repository > Branches**
+1. Go to **{issues}** **Issues > List**
+1. Go to **{merge-request}** **Merge Requests**
+1. Go to **{rocket}** **CI/CD > Pipelines**
+1. Go to **{shield}** **Security & Compliance > Configuration**
+1. Go to **{cloud-gear}** **Operations > Metrics**
+1. Go to **{package}** **Packages > Container Registry**
+1. Go to **{chart}** **Project Analytics > Code Review**
+1. Go to **{book}** **Wiki**
+1. Go to **{snippet}** **Snippets**
+1. Go to **{users}** **Members**
+```
+
+1. Go to **{home}** **Project overview > Details**
+1. Go to **{doc-text}** **Repository > Branches**
+1. Go to **{issues}** **Issues > List**
+1. Go to **{merge-request}** **Merge Requests**
+1. Go to **{rocket}** **CI/CD > Pipelines**
+1. Go to **{shield}** **Security & Compliance > Configuration**
+1. Go to **{cloud-gear}** **Operations > Metrics**
+1. Go to **{package}** **Packages > Container Registry**
+1. Go to **{chart}** **Project Analytics > Code Review**
+1. Go to **{book}** **Wiki**
+1. Go to **{snippet}** **Snippets**
+1. Go to **{users}** **Members**
+
 ## Alert boxes
 
 Whenever you need to call special attention to particular sentences,

@@ -58,4 +58,8 @@ describe Import::GoogleCodeController do
       expect(assigns(:incompatible_repos)).to eq([@repo])
     end
   end
+
+  describe "POST create" do
+    it_behaves_like 'project import rate limiter'
+  end
 end

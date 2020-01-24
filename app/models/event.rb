@@ -76,6 +76,7 @@ class Event < ApplicationRecord
   # Scopes
   scope :recent, -> { reorder(id: :desc) }
   scope :code_push, -> { where(action: PUSHED) }
+  scope :merged, -> { where(action: MERGED) }
 
   scope :with_associations, -> do
     # We're using preload for "push_event_payload" as otherwise the association

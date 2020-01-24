@@ -35,6 +35,7 @@ unless Gitlab::Runtime.sidekiq?
       ::Gitlab::InstrumentationHelper.add_instrumentation_data(payload)
 
       payload[:response] = event.payload[:response] if event.payload[:response]
+      payload[:etag_route] = event.payload[:etag_route] if event.payload[:etag_route]
       payload[Labkit::Correlation::CorrelationId::LOG_KEY] = Labkit::Correlation::CorrelationId.current_id
 
       if cpu_s = Gitlab::Metrics::System.thread_cpu_duration(::Gitlab::RequestContext.instance.start_thread_cpu_time)

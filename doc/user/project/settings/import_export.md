@@ -123,3 +123,13 @@ NOTE: **Note:**
 If use of the `Internal` visibility level
 [is restricted](../../../public_access/public_access.md#restricting-the-use-of-public-or-internal-projects),
 all imported projects are given the visibility of `Private`.
+
+## Rate limits
+
+To help avoid abuse, users are rate limited to:
+
+| Request Type     | Limit                       |
+| ---------------- | --------------------------- |
+| Export           | 1 project per 5 minutes     |
+| Download export  | 10 projects per 10 minutes  |
+| Import           | 30 projects per 10 minutes  |

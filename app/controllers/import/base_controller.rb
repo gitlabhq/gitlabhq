@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Import::BaseController < ApplicationController
+  before_action :import_rate_limit, only: [:create]
+
   private
 
   # rubocop: disable CodeReuse/ActiveRecord
@@ -36,5 +38,19 @@ class Import::BaseController < ApplicationController
   # deprecated: being replaced by app/services/import/base_service.rb
   def project_save_error(project)
     project.errors.full_messages.join(', ')
+  end
+
+  def import_rate_limit
+    key = "project_import".to_sym
+
+    if rate_limiter.throttled?(key, scope: [current_user, key])
+      rate_limiter.log_request(request, "#{key}_request_limit".to_sym, current_user)
+
+      redirect_back_or_default(options: { alert: _('This endpoint has been requested too many times. Try again later.') })
+    end
+  end
+
+  def rate_limiter
+    ::Gitlab::ApplicationRateLimiter
   end
 end

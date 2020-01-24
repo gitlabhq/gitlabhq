@@ -111,7 +111,9 @@ GET /users
     "can_create_project": true,
     "two_factor_enabled": true,
     "external": false,
-    "private_profile": false
+    "private_profile": false,
+    "current_sign_in_ip": "196.165.1.102",
+    "last_sign_in_ip": "172.127.2.22"
   },
   {
     "id": 2,
@@ -142,7 +144,9 @@ GET /users
     "can_create_project": true,
     "two_factor_enabled": true,
     "external": false,
-    "private_profile": false
+    "private_profile": false,
+    "current_sign_in_ip": "10.165.1.102",
+    "last_sign_in_ip": "172.127.2.22"
   }
 ]
 ```
@@ -294,7 +298,9 @@ Example Responses:
   "can_create_project": true,
   "two_factor_enabled": true,
   "external": false,
-  "private_profile": false
+  "private_profile": false,
+  "current_sign_in_ip": "196.165.1.102",
+  "last_sign_in_ip": "172.127.2.22"
 }
 ```
 
@@ -534,7 +540,9 @@ GET /user
   "can_create_project": true,
   "two_factor_enabled": true,
   "external": false,
-  "private_profile": false
+  "private_profile": false,
+  "current_sign_in_ip": "196.165.1.102",
+  "last_sign_in_ip": "172.127.2.22"
 }
 ```
 

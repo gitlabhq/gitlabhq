@@ -71,6 +71,8 @@ describe Import::GithubController do
 
   describe "POST create" do
     it_behaves_like 'a GitHub-ish import controller: POST create'
+
+    it_behaves_like 'project import rate limiter'
   end
 
   describe "GET realtime_changes" do

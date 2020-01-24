@@ -77,6 +77,14 @@ describe API::Users do
         expect(json_response.first.keys).not_to include 'highest_role'
       end
 
+      it "does not return the current or last sign-in ip addresses" do
+        get api("/users"), params: { username: user.username }
+
+        expect(response).to match_response_schema('public_api/v4/user/basics')
+        expect(json_response.first.keys).not_to include 'current_sign_in_ip'
+        expect(json_response.first.keys).not_to include 'last_sign_in_ip'
+      end
+
       context "when public level is restricted" do
         before do
           stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
@@ -314,6 +322,14 @@ describe API::Users do
       expect(json_response.keys).not_to include 'highest_role'
     end
 
+    it "does not return the user's sign in IPs" do
+      get api("/users/#{user.id}", user)
+
+      expect(response).to match_response_schema('public_api/v4/user/basic')
+      expect(json_response.keys).not_to include 'current_sign_in_ip'
+      expect(json_response.keys).not_to include 'last_sign_in_ip'
+    end
+
     context 'when authenticated as admin' do
       it 'includes the `is_admin` field' do
         get api("/users/#{user.id}", admin)
@@ -328,11 +344,33 @@ describe API::Users do
         expect(response).to match_response_schema('public_api/v4/user/admin')
         expect(json_response.keys).to include 'created_at'
       end
+
       it 'includes the `highest_role` field' do
         get api("/users/#{user.id}", admin)
 
         expect(response).to match_response_schema('public_api/v4/user/admin')
         expect(json_response['highest_role']).to be(0)
+      end
+
+      context 'when user has not logged in' do
+        it 'does not include the sign in IPs' do
+          get api("/users/#{user.id}", admin)
+
+          expect(response).to match_response_schema('public_api/v4/user/admin')
+          expect(json_response).to include('current_sign_in_ip' => nil, 'last_sign_in_ip' => nil)
+        end
+      end
+
+      context 'when user has logged in' do
+        let_it_be(:signed_in_user) { create(:user, :with_sign_ins) }
+
+        it 'includes the sign in IPs' do
+          get api("/users/#{signed_in_user.id}", admin)
+
+          expect(response).to match_response_schema('public_api/v4/user/admin')
+          expect(json_response['current_sign_in_ip']).to eq('127.0.0.1')
+          expect(json_response['last_sign_in_ip']).to eq('127.0.0.1')
+        end
       end
     end
 

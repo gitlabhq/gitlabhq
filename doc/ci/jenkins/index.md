@@ -62,7 +62,7 @@ rspec:
 
 Artifacts may work a bit differently than you've used them with Jenkins. In GitLab, any job can define
 a set of artifacts to be saved by using the `artifacts:` keyword. This can be configured to point to a file
-or set of files that can then be persisted from job to job. Read more on our detailed [artifacts documentation](../../user/project/pipelines/job_artifacts.html)
+or set of files that can then be persisted from job to job. Read more on our detailed [artifacts documentation](../../user/project/pipelines/job_artifacts.md)
 
 ```yaml
 pdf:
@@ -129,7 +129,7 @@ stages:
   - test
   - deploy
   - after_pipeline
-```  
+```
 
 Setting a step to be performed before and after any job can be done via the [`before_script` and `after_script` keywords](../yaml/README.md#before_script-and-after_script).
 

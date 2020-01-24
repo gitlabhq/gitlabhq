@@ -4,8 +4,6 @@ module Gitlab
   module Email
     module Smime
       class Certificate
-        include OpenSSL
-
         attr_reader :key, :cert
 
         def key_string
@@ -17,8 +15,8 @@ module Gitlab
         end
 
         def self.from_strings(key_string, cert_string)
-          key = PKey::RSA.new(key_string)
-          cert = X509::Certificate.new(cert_string)
+          key = OpenSSL::PKey::RSA.new(key_string)
+          cert = OpenSSL::X509::Certificate.new(cert_string)
           new(key, cert)
         end
 

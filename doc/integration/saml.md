@@ -549,7 +549,7 @@ GitLab will sign the request with the provided private key. GitLab will include 
 
 If you need to troubleshoot, [a complete GitLab+SAML testing environment using Docker compose](https://gitlab.com/gitlab-com/support/toolbox/replication/tree/master/compose_files) is available.
 
-If you only need a SAML provider for testing, a [quick start guide to start a Docker container](../administration/troubleshooting/test_environments.html#saml) with a plug and play SAML 2.0 Identity Provider (IdP) is available.
+If you only need a SAML provider for testing, a [quick start guide to start a Docker container](../administration/troubleshooting/test_environments.md#saml) with a plug and play SAML 2.0 Identity Provider (IdP) is available.
 
 ### 500 error after login
 

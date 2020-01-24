@@ -282,6 +282,8 @@ describe Import::GitlabController do
           expect(response).to have_gitlab_http_status(422)
         end
       end
+
+      it_behaves_like 'project import rate limiter'
     end
   end
 end

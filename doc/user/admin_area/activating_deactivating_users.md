@@ -38,7 +38,7 @@ Please note that for the deactivation option to be visible to an admin, the user
 - Must be currently active.
 - Should not have any activity in the last 180 days.
 
-Users can also be deactivated using the [GitLab API](../../api/users.html#deactivate-user).
+Users can also be deactivated using the [GitLab API](../../api/users.md#deactivate-user).
 
 NOTE: **Note:**
 A deactivated user does not consume a [seat](../../subscriptions/index.md#managing-subscriptions).
@@ -56,7 +56,7 @@ To do this:
 1. Select a user.
 1. Under the **Account** tab, click **Activate user**.
 
-Users can also be activated using the [GitLab API](../../api/users.html#activate-user).
+Users can also be activated using the [GitLab API](../../api/users.md#activate-user).
 
 NOTE: **Note:**
 Activating a user will change the user's state to active and it consumes a

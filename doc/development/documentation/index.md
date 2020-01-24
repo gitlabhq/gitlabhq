@@ -196,13 +196,12 @@ Every GitLab instance includes the documentation, which is available at `/help`
 There are [plans](https://gitlab.com/groups/gitlab-org/-/epics/693) to end this
 practice and instead link out from the GitLab application to <https://docs.gitlab.com> URLs.
 
-The documentation available online on <https://docs.gitlab.com> is continuously
-deployed every hour from the `master` branch of GitLab, Omnibus, and Runner. Therefore,
-once a merge request gets merged, it will be available online on the same day.
-However, they will be shipped (and available on `/help`) within the milestone assigned
+The documentation available online on <https://docs.gitlab.com> is deployed every four hours from the `master` branch of GitLab, Omnibus, and Runner. Therefore,
+after a merge request gets merged, it will be available online on the same day.
+However, it will be shipped (and available on `/help`) within the milestone assigned
 to the MR.
 
-For instance, let's say your merge request has a milestone set to 11.3, which
+For example, let's say your merge request has a milestone set to 11.3, which
 will be released on 2018-09-22. If it gets merged on 2018-09-15, it will be
 available online on 2018-09-15, but, as the feature freeze date has passed, if
 the MR does not have a "pick into 11.3" label, the milestone has to be changed

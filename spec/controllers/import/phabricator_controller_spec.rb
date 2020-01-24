@@ -88,5 +88,7 @@ describe Import::PhabricatorController do
         expect { post_create }.not_to change { current_user.namespace.projects.reload.size }
       end
     end
+
+    it_behaves_like 'project import rate limiter'
   end
 end

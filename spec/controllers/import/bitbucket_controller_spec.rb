@@ -136,6 +136,8 @@ describe Import::BitbucketController do
       expect(response).to have_gitlab_http_status(422)
     end
 
+    it_behaves_like 'project import rate limiter'
+
     context "when the repository owner is the Bitbucket user" do
       context "when the Bitbucket user and GitLab user's usernames match" do
         it "takes the current user's namespace" do

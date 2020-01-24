@@ -18,7 +18,7 @@ module Gitlab
         if_none_match = env['HTTP_IF_NONE_MATCH']
 
         if if_none_match == etag
-          handle_cache_hit(etag, route)
+          handle_cache_hit(etag, route, request)
         else
           track_cache_miss(if_none_match, cached_value_present, route)
 
@@ -47,10 +47,12 @@ module Gitlab
         %Q{W/"#{value}"}
       end
 
-      def handle_cache_hit(etag, route)
+      def handle_cache_hit(etag, route, request)
         track_event(:etag_caching_cache_hit, route)
 
         status_code = Gitlab::PollingInterval.polling_enabled? ? 304 : 429
+
+        add_instrument_for_cache_hit(status_code, route, request)
 
         [status_code, { 'ETag' => etag, 'X-Gitlab-From-Cache' => 'true' }, []]
       end
@@ -67,6 +69,21 @@ module Gitlab
 
       def track_event(name, route)
         Gitlab::Metrics.add_event(name, endpoint: route.name)
+      end
+
+      def add_instrument_for_cache_hit(status, route, request)
+        payload = {
+          etag_route: route.name,
+          params:     request.filtered_parameters,
+          headers:    request.headers,
+          format:     request.format.ref,
+          method:     request.request_method,
+          path:       request.filtered_path,
+          status:     status
+        }
+
+        ActiveSupport::Notifications.instrument(
+          "process_action.action_controller", payload)
       end
     end
   end
