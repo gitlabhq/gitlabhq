@@ -29,7 +29,7 @@ describe 'Merge request > User sees deployment widget', :js do
         wait_for_requests
 
         expect(page).to have_content("Deployed to #{environment.name}")
-        expect(find('.js-deploy-time')['data-original-title']).to eq(deployment.created_at.to_time.in_time_zone.to_s(:medium))
+        expect(find('.js-deploy-time')['title']).to eq(deployment.created_at.to_time.in_time_zone.to_s(:medium))
       end
 
       context 'when a user created a new merge request with the same SHA' do

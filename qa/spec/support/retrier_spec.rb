@@ -14,12 +14,12 @@ describe QA::Support::Retrier do
     context 'when the condition is true' do
       it 'logs max attempts (3 by default)' do
         expect { subject.retry_until { true } }
-          .to output(/with retry_until: max_attempts: 3; reload_page: ; sleep_interval: 0; raise_on_failure: false; retry_on_exception: false/).to_stdout_from_any_process
+          .to output(/with retry_until: max_attempts: 3; reload_page: ; sleep_interval: 0; raise_on_failure: true; retry_on_exception: false/).to_stdout_from_any_process
       end
 
       it 'logs max duration' do
         expect { subject.retry_until(max_duration: 1) { true } }
-          .to output(/with retry_until: max_duration: 1; reload_page: ; sleep_interval: 0; raise_on_failure: false; retry_on_exception: false/).to_stdout_from_any_process
+          .to output(/with retry_until: max_duration: 1; reload_page: ; sleep_interval: 0; raise_on_failure: true; retry_on_exception: false/).to_stdout_from_any_process
       end
 
       it 'logs the end' do
@@ -30,12 +30,12 @@ describe QA::Support::Retrier do
 
     context 'when the condition is false' do
       it 'logs the start' do
-        expect { subject.retry_until(max_duration: 0) { false } }
+        expect { subject.retry_until(max_duration: 0, raise_on_failure: false) { false } }
           .to output(/with retry_until: max_duration: 0; reload_page: ; sleep_interval: 0; raise_on_failure: false; retry_on_exception: false/).to_stdout_from_any_process
       end
 
       it 'logs the end' do
-        expect { subject.retry_until(max_duration: 0) { false } }
+        expect { subject.retry_until(max_duration: 0, raise_on_failure: false) { false } }
         .to output(/ended retry_until$/).to_stdout_from_any_process
       end
     end
@@ -54,8 +54,8 @@ describe QA::Support::Retrier do
       subject.retry_until
     end
 
-    it 'sets raise_on_failure to false by default' do
-      expect(subject).to receive(:repeat_until).with(hash_including(raise_on_failure: false))
+    it 'sets raise_on_failure to true by default' do
+      expect(subject).to receive(:repeat_until).with(hash_including(raise_on_failure: true))
 
       subject.retry_until
     end

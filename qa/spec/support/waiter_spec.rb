@@ -46,8 +46,8 @@ describe QA::Support::Waiter do
       subject.wait_until
     end
 
-    it 'sets raise_on_failure to false by default' do
-      expect(subject).to receive(:repeat_until).with(hash_including(raise_on_failure: false))
+    it 'sets raise_on_failure to true by default' do
+      expect(subject).to receive(:repeat_until).with(hash_including(raise_on_failure: true))
 
       subject.wait_until
     end

@@ -112,7 +112,7 @@ describe 'User comments on a diff', :js do
       changes = sample_compare(expanded_changes).changes.last(expanded_changes.size)
 
       page.within("[id='#{hash}']") do
-        find("button[data-original-title='Show full file']").click
+        find("button[title='Show full file']").click
         wait_for_requests
 
         click_diff_line(find("[id='#{changes.first[:line_code]}']"))

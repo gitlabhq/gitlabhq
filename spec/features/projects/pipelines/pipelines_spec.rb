@@ -270,7 +270,7 @@ describe 'Pipelines', :js do
         it 'contains badge with tooltip which contains error' do
           expect(pipeline).to have_yaml_errors
           expect(page).to have_selector(
-            %Q{span[data-original-title="#{pipeline.yaml_errors}"]})
+            %Q{span[title="#{pipeline.yaml_errors}"]})
         end
 
         it 'contains badge that indicates failure reason' do
@@ -280,7 +280,7 @@ describe 'Pipelines', :js do
         it 'contains badge with tooltip which contains failure reason' do
           expect(pipeline.failure_reason?).to eq true
           expect(page).to have_selector(
-            %Q{span[data-original-title="#{pipeline.present.failure_reason}"]})
+            %Q{span[title="#{pipeline.present.failure_reason}"]})
         end
       end
 
@@ -569,7 +569,7 @@ describe 'Pipelines', :js do
 
             within('.js-builds-dropdown-list') do
               build_element = page.find('.mini-pipeline-graph-dropdown-item')
-              expect(build_element['data-original-title']).to eq('build - failed - (unknown failure)')
+              expect(build_element['title']).to eq('build - failed - (unknown failure)')
             end
           end
         end

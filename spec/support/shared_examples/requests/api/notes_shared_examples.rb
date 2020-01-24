@@ -20,6 +20,14 @@ RSpec.shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
           expect(response_dates).to eq(response_dates.sort.reverse)
         end
 
+        it 'fetches notes using parent path as id paremeter' do
+          parent_id = CGI.escape(parent.full_path)
+
+          get api("/#{parent_type}/#{parent_id}/#{noteable_type}/#{noteable[id_name]}/notes", user)
+
+          expect(response.status).to eq(200)
+        end
+
         context '2 notes with equal created_at' do
           before do
             @first_note = Note.first

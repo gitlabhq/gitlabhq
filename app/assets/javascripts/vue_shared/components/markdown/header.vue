@@ -128,8 +128,8 @@ export default {
               @click="handleSuggestDismissed"
             />
             <gl-popover
-              v-if="showSuggestPopover"
-              :target="() => $refs.suggestButton"
+              v-if="showSuggestPopover && $refs.suggestButton"
+              :target="$refs.suggestButton"
               :css-classes="['diff-suggest-popover']"
               placement="bottom"
               :show="showSuggestPopover"

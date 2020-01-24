@@ -217,7 +217,7 @@ describe 'Pipeline', :js do
         it 'includes the failure reason' do
           page.within('#ci-badge-test') do
             build_link = page.find('.js-pipeline-graph-job-link')
-            expect(build_link['data-original-title']).to eq('test - failed - (unknown failure)')
+            expect(build_link['title']).to eq('test - failed - (unknown failure)')
           end
         end
       end

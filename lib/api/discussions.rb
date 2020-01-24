@@ -26,7 +26,7 @@ module API
         end
 
         get ":id/#{noteables_path}/:noteable_id/discussions" do
-          noteable = find_noteable(parent_type, params[:id], noteable_type, params[:noteable_id])
+          noteable = find_noteable(noteable_type, params[:noteable_id])
 
           notes = readable_discussion_notes(noteable)
           discussions = Kaminari.paginate_array(Discussion.build_collection(notes, noteable))
@@ -42,7 +42,7 @@ module API
           requires :noteable_id, types: [Integer, String], desc: 'The ID of the noteable'
         end
         get ":id/#{noteables_path}/:noteable_id/discussions/:discussion_id" do
-          noteable = find_noteable(parent_type, params[:id], noteable_type, params[:noteable_id])
+          noteable = find_noteable(noteable_type, params[:noteable_id])
           notes = readable_discussion_notes(noteable, params[:discussion_id])
 
           if notes.empty?
@@ -77,7 +77,7 @@ module API
           end
         end
         post ":id/#{noteables_path}/:noteable_id/discussions" do
-          noteable = find_noteable(parent_type, params[:id], noteable_type, params[:noteable_id])
+          noteable = find_noteable(noteable_type, params[:noteable_id])
           type = params[:position] ? 'DiffNote' : 'DiscussionNote'
           id_key = noteable.is_a?(Commit) ? :commit_id : :noteable_id
 
@@ -107,7 +107,7 @@ module API
           requires :noteable_id, types: [Integer, String], desc: 'The ID of the noteable'
         end
         get ":id/#{noteables_path}/:noteable_id/discussions/:discussion_id/notes" do
-          noteable = find_noteable(parent_type, params[:id], noteable_type, params[:noteable_id])
+          noteable = find_noteable(noteable_type, params[:noteable_id])
           notes = readable_discussion_notes(noteable, params[:discussion_id])
 
           if notes.empty?
@@ -127,7 +127,7 @@ module API
           optional :created_at, type: String, desc: 'The creation date of the note'
         end
         post ":id/#{noteables_path}/:noteable_id/discussions/:discussion_id/notes" do
-          noteable = find_noteable(parent_type, params[:id], noteable_type, params[:noteable_id])
+          noteable = find_noteable(noteable_type, params[:noteable_id])
           notes = readable_discussion_notes(noteable, params[:discussion_id])
           first_note = notes.first
 
@@ -161,7 +161,7 @@ module API
           requires :note_id, type: Integer, desc: 'The ID of a note'
         end
         get ":id/#{noteables_path}/:noteable_id/discussions/:discussion_id/notes/:note_id" do
-          noteable = find_noteable(parent_type, params[:id], noteable_type, params[:noteable_id])
+          noteable = find_noteable(noteable_type, params[:noteable_id])
 
           get_note(noteable, params[:note_id])
         end
@@ -178,7 +178,7 @@ module API
           exactly_one_of :body, :resolved
         end
         put ":id/#{noteables_path}/:noteable_id/discussions/:discussion_id/notes/:note_id" do
-          noteable = find_noteable(parent_type, params[:id], noteable_type, params[:noteable_id])
+          noteable = find_noteable(noteable_type, params[:noteable_id])
 
           if params[:resolved].nil?
             update_note(noteable, params[:note_id])
@@ -196,7 +196,7 @@ module API
           requires :note_id, type: Integer, desc: 'The ID of a note'
         end
         delete ":id/#{noteables_path}/:noteable_id/discussions/:discussion_id/notes/:note_id" do
-          noteable = find_noteable(parent_type, params[:id], noteable_type, params[:noteable_id])
+          noteable = find_noteable(noteable_type, params[:noteable_id])
 
           delete_note(noteable, params[:note_id])
         end
@@ -211,7 +211,7 @@ module API
             requires :resolved, type: Boolean, desc: 'Mark discussion resolved/unresolved'
           end
           put ":id/#{noteables_path}/:noteable_id/discussions/:discussion_id" do
-            noteable = find_noteable(parent_type, params[:id], noteable_type, params[:noteable_id])
+            noteable = find_noteable(noteable_type, params[:noteable_id])
 
             resolve_discussion(noteable, params[:discussion_id], params[:resolved])
           end

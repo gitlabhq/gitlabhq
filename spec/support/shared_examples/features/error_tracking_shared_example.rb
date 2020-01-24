@@ -8,7 +8,7 @@ shared_examples 'error tracking index page' do
     end
 
     within('div.error-list') do
-      expect(page).to have_content('Error')
+      expect(page).to have_content('Open errors')
       expect(page).to have_content('Events')
       expect(page).to have_content('Users')
       expect(page).to have_content('Last Seen')

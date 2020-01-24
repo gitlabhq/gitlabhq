@@ -7,7 +7,7 @@ module QA
 
       module_function
 
-      def wait_until(max_duration: singleton_class::DEFAULT_MAX_WAIT_TIME, reload_page: nil, sleep_interval: 0.1, raise_on_failure: false, retry_on_exception: false)
+      def wait_until(max_duration: singleton_class::DEFAULT_MAX_WAIT_TIME, reload_page: nil, sleep_interval: 0.1, raise_on_failure: true, retry_on_exception: false)
         QA::Runtime::Logger.debug(
           <<~MSG.tr("\n", ' ')
             with wait_until: max_duration: #{max_duration};

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::TcpChecker do
+describe Gitlab::TcpChecker, :permit_dns do
   before do
     @server = TCPServer.new('localhost', 0)
     _, @port, _, @ip = @server.addr
