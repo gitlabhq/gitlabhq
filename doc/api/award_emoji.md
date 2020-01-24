@@ -10,7 +10,7 @@ Emoji can be awarded on the following (known as "awardables"):
 - [Merge requests](../user/project/merge_requests/index.md) ([API](merge_requests.md)).
 - [Snippets](../user/snippets.md) ([API](snippets.md)).
 
-Emoji can also [be awarded](../user/award_emojis.html#award-emoji-for-comments) on comments (also known as notes). See also [Notes API](notes.md).
+Emoji can also [be awarded](../user/award_emojis.md#award-emoji-for-comments) on comments (also known as notes). See also [Notes API](notes.md).
 
 ## Issues, merge requests, and snippets
 

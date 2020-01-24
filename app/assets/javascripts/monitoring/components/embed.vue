@@ -3,7 +3,7 @@ import { mapActions, mapState, mapGetters } from 'vuex';
 import PanelType from 'ee_else_ce/monitoring/components/panel_type.vue';
 import { getParameterValues, removeParams } from '~/lib/utils/url_utility';
 import { sidebarAnimationDuration } from '../constants';
-import { getTimeRange } from './date_time_picker/date_time_picker_lib';
+import { getTimeRange } from '~/vue_shared/components/date_time_picker/date_time_picker_lib';
 
 let sidebarMutationObserver;
 

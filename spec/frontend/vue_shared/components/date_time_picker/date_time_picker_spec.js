@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
-import DateTimePicker from '~/monitoring/components/date_time_picker/date_time_picker.vue';
-import { defaultTimeWindows } from '~/monitoring/components/date_time_picker/date_time_picker_lib';
+import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
+import { defaultTimeWindows } from '~/vue_shared/components/date_time_picker/date_time_picker_lib';
 
 const timeWindowsCount = Object.entries(defaultTimeWindows).length;
 const start = '2019-10-10T07:00:00.000Z';

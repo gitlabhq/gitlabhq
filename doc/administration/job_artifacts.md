@@ -369,7 +369,7 @@ If you need to manually remove job artifacts associated with multiple jobs while
 
    NOTE: **NOTE:**
    This step will also erase artifacts that users have chosen to
-   ["keep"](../user/project/pipelines/job_artifacts.html#browsing-artifacts).
+   ["keep"](../user/project/pipelines/job_artifacts.md#browsing-artifacts).
 
    ```ruby
    builds_to_clear = builds_with_artifacts.where("finished_at < ?", 1.week.ago)

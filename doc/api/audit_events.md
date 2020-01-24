@@ -120,7 +120,7 @@ Example response:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/34078) in GitLab 12.5.
 
-The Group Audit Events API allows you to retrieve [group audit events](../administration/audit_events.html#group-events-starter).
+The Group Audit Events API allows you to retrieve [group audit events](../administration/audit_events.md#group-events-starter).
 
 To retrieve group audit events using the API, you must [authenticate yourself](README.html#authentication) as an Administrator or an owner of the group.
 

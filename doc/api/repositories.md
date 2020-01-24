@@ -128,7 +128,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.com/api/v4/pro
 ## Compare branches, tags or commits
 
 This endpoint can be accessed without authentication if the repository is
-publicly accessible. Note that diffs could have an empty diff string if [diff limits](../development/diffs.html#diff-limits) are reached.
+publicly accessible. Note that diffs could have an empty diff string if [diff limits](../development/diffs.md#diff-limits) are reached.
 
 ```
 GET /projects/:id/repository/compare

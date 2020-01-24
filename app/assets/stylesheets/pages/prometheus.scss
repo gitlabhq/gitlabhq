@@ -46,32 +46,6 @@
   }
 }
 
-.prometheus-graphs-header {
-  .time-window-dropdown-menu {
-    padding: $gl-padding $gl-padding 0 $gl-padding-12;
-  }
-
-  .time-window-dropdown-menu-container {
-    width: 360px;
-  }
-
-  .custom-time-range-form-group > label {
-    padding-bottom: $gl-padding;
-  }
-
-  .monitor-environment-dropdown-menu {
-    &.show {
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    .no-matches-message {
-      padding: $gl-padding-8 $gl-padding-12;
-    }
-  }
-}
-
 .prometheus-panel {
   margin-top: 20px;
 }

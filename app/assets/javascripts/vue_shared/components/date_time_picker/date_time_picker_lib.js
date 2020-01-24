@@ -8,6 +8,15 @@ import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
  */
 const dateTimePickerRegex = /^(\d{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])(?: (0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9]))?$/;
 
+/**
+ * A key-value pair of "time windows".
+ *
+ * A time window is a representation of period of time that starts
+ * some time in past until now. Keys are only used for easy reference.
+ *
+ * It is represented as user friendly `label` and number of `seconds`
+ * to be substracted from now.
+ */
 export const defaultTimeWindows = {
   thirtyMinutes: {
     label: __('30 minutes'),
@@ -58,6 +67,17 @@ export const isValidDate = dateString => {
   }
 };
 
+/**
+ * For a given time window key (e.g. `threeHours`) and key-value pair
+ * object of time windows.
+ *
+ * Returns a date time range with start and end.
+ *
+ * @param {String} timeWindowKey - A key in the object of time windows.
+ * @param {Object} timeWindows - A key-value pair of time windows,
+ * with a second duration and a label.
+ * @returns An object with time range, start and end dates, in ISO format.
+ */
 export const getTimeRange = (timeWindowKey, timeWindows = defaultTimeWindows) => {
   let difference;
   if (timeWindows[timeWindowKey]) {

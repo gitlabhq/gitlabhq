@@ -1,5 +1,5 @@
 <script>
-import _ from 'underscore';
+import { debounce, pickBy } from 'lodash';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import VueDraggable from 'vuedraggable';
 import {
@@ -15,12 +15,13 @@ import {
 import PanelType from 'ee_else_ce/monitoring/components/panel_type.vue';
 import { s__ } from '~/locale';
 import createFlash from '~/flash';
-import Icon from '~/vue_shared/components/icon.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getParameterValues, mergeUrlParams, redirectTo } from '~/lib/utils/url_utility';
 import invalidUrl from '~/lib/utils/invalid_url';
+import Icon from '~/vue_shared/components/icon.vue';
+import { getTimeRange } from '~/vue_shared/components/date_time_picker/date_time_picker_lib';
+import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
 
-import DateTimePicker from './date_time_picker/date_time_picker.vue';
 import GraphGroup from './graph_group.vue';
 import EmptyState from './empty_state.vue';
 import GroupEmptyState from './group_empty_state.vue';
@@ -28,11 +29,10 @@ import DashboardsDropdown from './dashboards_dropdown.vue';
 
 import TrackEventDirective from '~/vue_shared/directives/track_event';
 import { getAddMetricTrackingOptions } from '../utils';
-import { getTimeRange } from './date_time_picker/date_time_picker_lib';
 
 import { datePickerTimeWindows, metricStates } from '../constants';
 
-const defaultTimeDiff = getTimeRange();
+const defaultTimeRange = getTimeRange();
 
 export default {
   components: {
@@ -190,8 +190,8 @@ export default {
     return {
       state: 'gettingStarted',
       formIsValid: null,
-      startDate: getParameterValues('start')[0] || defaultTimeDiff.start,
-      endDate: getParameterValues('end')[0] || defaultTimeDiff.end,
+      startDate: getParameterValues('start')[0] || defaultTimeRange.start,
+      endDate: getParameterValues('end')[0] || defaultTimeRange.end,
       hasValidDates: true,
       datePickerTimeWindows,
       isRearrangingPanels: false,
@@ -288,13 +288,13 @@ export default {
           'Metrics|Link contains an invalid time window, please verify the link to see the requested time range.',
         ),
       );
-      this.startDate = defaultTimeDiff.start;
-      this.endDate = defaultTimeDiff.end;
+      this.startDate = defaultTimeRange.start;
+      this.endDate = defaultTimeRange.end;
     },
 
     generateLink(group, title, yLabel) {
       const dashboard = this.currentDashboard || this.firstDashboard.path;
-      const params = _.pick({ dashboard, group, title, y_label: yLabel }, value => value != null);
+      const params = pickBy({ dashboard, group, title, y_label: yLabel }, value => value != null);
       return mergeUrlParams(params, window.location.href);
     },
     hideAddMetricModal() {
@@ -306,7 +306,7 @@ export default {
     setFormValidity(isValid) {
       this.formIsValid = isValid;
     },
-    debouncedEnvironmentsSearch: _.debounce(function environmentsSearchOnInput(searchTerm) {
+    debouncedEnvironmentsSearch: debounce(function environmentsSearchOnInput(searchTerm) {
       this.setEnvironmentsSearchTerm(searchTerm);
     }, 500),
     submitCustomMetricsForm() {
@@ -427,6 +427,7 @@ export default {
             class="col-sm-6 col-md-6 col-lg-4"
           >
             <date-time-picker
+              ref="dateTimePicker"
               :start="startDate"
               :end="endDate"
               :time-windows="datePickerTimeWindows"

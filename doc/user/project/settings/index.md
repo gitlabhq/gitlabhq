@@ -86,7 +86,7 @@ related to the project by selecting the **Disable email notifications** checkbox
 
 Set up your project's merge request settings:
 
-- Set up the merge request method (merge commit, [fast-forward merge](../merge_requests/fast_forward_merge.html)).
+- Set up the merge request method (merge commit, [fast-forward merge](../merge_requests/fast_forward_merge.md)).
 - Add merge request [description templates](../description_templates.md#description-templates).
 - Enable [merge request approvals](../merge_requests/merge_request_approvals.md). **(STARTER)**
 - Enable [merge only if pipeline succeeds](../merge_requests/merge_when_pipeline_succeeds.md).

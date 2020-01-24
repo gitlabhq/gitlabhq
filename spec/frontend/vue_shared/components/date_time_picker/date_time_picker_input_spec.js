@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import DateTimePickerInput from '~/monitoring/components/date_time_picker/date_time_picker_input.vue';
+import DateTimePickerInput from '~/vue_shared/components/date_time_picker/date_time_picker_input.vue';
 
 const inputLabel = 'This is a label';
 const inputValue = 'something';

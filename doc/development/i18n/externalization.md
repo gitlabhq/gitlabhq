@@ -341,7 +341,7 @@ This also applies when using links in between translated sentences, otherwise th
   ```js
   {{
       sprintf(s__("ClusterIntegration|Learn more about %{linkStart}zones%{linkEnd}"), {
-          linkStart: '<a href="https://cloud.google.com/compute/docs/regions-zones/regions-zones" target="_blank" rel="noopener noreferrer">'
+          linkStart: '<a href="https://cloud.google.com/compute/docs/regions-zones/regions-zones" target="_blank" rel="noopener noreferrer">',
           linkEnd: '</a>',
       })
   }}

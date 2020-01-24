@@ -1,5 +1,5 @@
 <script>
-import _ from 'underscore';
+import { uniqueId } from 'lodash';
 import { GlFormGroup, GlFormInput } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import { dateFormats } from './date_time_picker_lib';
@@ -35,7 +35,7 @@ export default {
     id: {
       type: String,
       required: false,
-      default: () => _.uniqueId('dateTimePicker_'),
+      default: () => uniqueId('dateTimePicker_'),
     },
   },
   data() {

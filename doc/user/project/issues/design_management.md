@@ -34,7 +34,7 @@ to be enabled:
   and enable **Git Large File Storage**.
 
 Design Management requires that projects are using
-[hashed storage](../../../administration/repository_storage_types.html#hashed-storage)
+[hashed storage](../../../administration/repository_storage_types.md#hashed-storage)
 (the default storage type since v10.0).
 
 ### Feature Flags

@@ -482,6 +482,18 @@ describe Repository do
     end
   end
 
+  describe "#root_ref_sha" do
+    let(:commit) { double("commit", sha: "a94a8fe5ccb19ba61c4c0873d391e987982fbbd3") }
+
+    subject { repository.root_ref_sha }
+
+    before do
+      allow(repository).to receive(:commit).with(repository.root_ref) { commit }
+    end
+
+    it { is_expected.to eq(commit.sha) }
+  end
+
   describe '#can_be_merged?' do
     context 'mergeable branches' do
       subject { repository.can_be_merged?('0b4bc9a49b562e85de7cc9e834518ea6828729b9', 'master') }

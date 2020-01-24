@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import { omit } from 'lodash';
 
 export const uniqMetricsId = metric => `${metric.metric_id}_${metric.id}`;
 
@@ -11,7 +11,7 @@ export const uniqMetricsId = metric => `${metric.metric_id}_${metric.id}`;
  */
 
 export const normalizeMetric = (metric = {}) =>
-  _.omit(
+  omit(
     {
       ...metric,
       metric_id: uniqMetricsId(metric),

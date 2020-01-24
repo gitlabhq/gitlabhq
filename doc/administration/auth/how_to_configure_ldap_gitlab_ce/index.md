@@ -105,7 +105,7 @@ The initial configuration of LDAP in GitLab requires changes to the `gitlab.rb` 
 
 The two Active Directory specific values are `active_directory: true` and `uid: 'sAMAccountName'`. `sAMAccountName` is an attribute returned by Active Directory used for GitLab usernames. See the example output from `ldapsearch` for a full list of attributes a "person" object (user) has in **AD** - [`ldapsearch` example](#using-ldapsearch-unix)
 
-> Both group_base and admin_group configuration options are only available in GitLab Enterprise Edition. See [GitLab EE - LDAP Features](../how_to_configure_ldap_gitlab_ee/index.html#gitlab-enterprise-edition---ldap-features) **(STARTER ONLY)**
+> Both group_base and admin_group configuration options are only available in GitLab Enterprise Edition. See [GitLab EE - LDAP Features](../how_to_configure_ldap_gitlab_ee/index.md#gitlab-enterprise-edition---ldap-features) **(STARTER ONLY)**
 
 ### Example `gitlab.rb` LDAP
 

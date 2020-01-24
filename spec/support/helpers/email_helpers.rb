@@ -6,7 +6,12 @@ module EmailHelpers
   end
 
   def reset_delivered_emails!
+    # We shouldn't actually send the emails, but we keep the following line for
+    # back-compatibility until we only check the mailer jobs enqueued in Sidekiq
     ActionMailer::Base.deliveries.clear
+    # We should only check that the mailer jobs are enqueued in Sidekiq, hence
+    # clearing the background jobs queue
+    ActiveJob::Base.queue_adapter.enqueued_jobs.clear
   end
 
   def should_only_email(*users, kind: :to)

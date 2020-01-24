@@ -1,6 +1,6 @@
 <script>
 import { mapState } from 'vuex';
-import _ from 'underscore';
+import { pickBy } from 'lodash';
 import {
   GlDropdown,
   GlDropdownItem,
@@ -90,7 +90,7 @@ export default {
     getGraphAlerts(queries) {
       if (!this.allAlerts) return {};
       const metricIdsForChart = queries.map(q => q.metricId);
-      return _.pick(this.allAlerts, alert => metricIdsForChart.includes(alert.metricId));
+      return pickBy(this.allAlerts, alert => metricIdsForChart.includes(alert.metricId));
     },
     getGraphAlertValues(queries) {
       return Object.values(this.getGraphAlerts(queries));

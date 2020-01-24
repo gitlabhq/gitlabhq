@@ -133,7 +133,7 @@ To use an external Prometheus server:
    ```
 
 1. Install and set up a dedicated Prometheus instance, if necessary, using the [official installation instructions](https://prometheus.io/docs/prometheus/latest/installation/).
-1. Add the Prometheus server IP address to the [monitoring IP whitelist](../ip_whitelist.html). For example:
+1. Add the Prometheus server IP address to the [monitoring IP whitelist](../ip_whitelist.md). For example:
 
     ```ruby
     gitlab_rails['monitoring_whitelist'] = ['127.0.0.0/8', '192.168.0.1']

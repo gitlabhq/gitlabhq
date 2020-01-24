@@ -1,4 +1,4 @@
-import * as dateTimePickerLib from '~/monitoring/components/date_time_picker/date_time_picker_lib';
+import * as dateTimePickerLib from '~/vue_shared/components/date_time_picker/date_time_picker_lib';
 
 describe('date time picker lib', () => {
   describe('isValidDate', () => {

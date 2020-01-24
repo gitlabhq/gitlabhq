@@ -53,7 +53,7 @@ describe('dashboard time window', () => {
       .$nextTick()
       .then(() => {
         const timeWindowDropdownItems = wrapper
-          .find('.js-time-window-dropdown')
+          .find({ ref: 'dateTimePicker' })
           .findAll(GlDropdownItem);
 
         const activeItem = timeWindowDropdownItems.wrappers.filter(itemWrapper =>

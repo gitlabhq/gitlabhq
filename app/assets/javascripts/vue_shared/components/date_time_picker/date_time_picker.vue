@@ -122,30 +122,28 @@ export default {
 };
 </script>
 <template>
-  <gl-dropdown
-    ref="dropdown"
-    :text="timeWindowText"
-    menu-class="time-window-dropdown-menu"
-    class="js-time-window-dropdown"
-  >
-    <div class="d-flex justify-content-between time-window-dropdown-menu-container">
+  <gl-dropdown :text="timeWindowText" class="date-time-picker" menu-class="date-time-picker-menu">
+    <div class="d-flex justify-content-between gl-p-2">
       <gl-form-group
         :label="__('Custom range')"
         label-for="custom-from-time"
-        class="custom-time-range-form-group col-md-7 p-0 m-0"
+        label-class="gl-pb-1"
+        class="custom-time-range-form-group col-md-7 gl-pl-1 gl-pr-0 m-0"
       >
-        <date-time-picker-input
-          id="custom-time-from"
-          v-model="startInput"
-          :label="__('From')"
-          :state="startInputValid"
-        />
-        <date-time-picker-input
-          id="custom-time-to"
-          v-model="endInput"
-          :label="__('To')"
-          :state="endInputValid"
-        />
+        <div class="gl-pt-2">
+          <date-time-picker-input
+            id="custom-time-from"
+            v-model="startInput"
+            :label="__('From')"
+            :state="startInputValid"
+          />
+          <date-time-picker-input
+            id="custom-time-to"
+            v-model="endInput"
+            :label="__('To')"
+            :state="endInputValid"
+          />
+        </div>
         <gl-form-group>
           <gl-button @click="closeDropdown">{{ __('Cancel') }}</gl-button>
           <gl-button variant="success" :disabled="!isValid" @click="apply()">
@@ -153,12 +151,10 @@ export default {
           </gl-button>
         </gl-form-group>
       </gl-form-group>
-      <gl-form-group
-        :label="__('Quick range')"
-        label-for="group-id-dropdown"
-        label-align="center"
-        class="col-md-4 p-0 m-0"
-      >
+      <gl-form-group label-for="group-id-dropdown" class="col-md-5 gl-pl-1 gl-pr-1 m-0">
+        <template #label>
+          <span class="gl-pl-5">{{ __('Quick range') }}</span>
+        </template>
         <gl-dropdown-item
           v-for="(timeWindow, key) in timeWindows"
           :key="key"

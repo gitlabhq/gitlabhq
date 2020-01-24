@@ -3,7 +3,7 @@
 # Note that we actually update the attribute on the target_project/group, rather than
 # using `allow`.  This is because there are some specs where, based on how the notification
 # is done, using an `allow` doesn't change the correct object.
-RSpec.shared_examples 'project emails are disabled' do
+RSpec.shared_examples 'project emails are disabled' do |check_delivery_jobs_queue: false|
   let(:target_project) { notification_target.is_a?(Project) ? notification_target : notification_target.project }
 
   before do
@@ -16,7 +16,13 @@ RSpec.shared_examples 'project emails are disabled' do
 
     notification_trigger
 
-    should_not_email_anyone
+    if check_delivery_jobs_queue
+      # Only check enqueud jobs, not delivered emails
+      expect_no_delivery_jobs
+    else
+      # Deprecated: Check actual delivered emails
+      should_not_email_anyone
+    end
   end
 
   it 'sends emails to someone' do
@@ -24,7 +30,13 @@ RSpec.shared_examples 'project emails are disabled' do
 
     notification_trigger
 
-    should_email_anyone
+    if check_delivery_jobs_queue
+      # Only check enqueud jobs, not delivered emails
+      expect_any_delivery_jobs
+    else
+      # Deprecated: Check actual delivered emails
+      should_email_anyone
+    end
   end
 end
 

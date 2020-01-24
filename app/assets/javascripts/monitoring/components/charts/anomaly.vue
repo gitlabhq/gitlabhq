@@ -1,5 +1,5 @@
 <script>
-import { flatten, isNumber } from 'underscore';
+import { flattenDeep, isNumber } from 'lodash';
 import { GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import { roundOffFloat } from '~/lib/utils/common_utils';
 import { hexToRgb } from '~/lib/utils/color_utils';
@@ -77,7 +77,7 @@ export default {
      * This offset is the lowest value.
      */
     yOffset() {
-      const values = flatten(this.series.map(ser => ser.data.map(([, y]) => y)));
+      const values = flattenDeep(this.series.map(ser => ser.data.map(([, y]) => y)));
       const min = values.length ? Math.floor(Math.min(...values)) : 0;
       return min < 0 ? -min : 0;
     },

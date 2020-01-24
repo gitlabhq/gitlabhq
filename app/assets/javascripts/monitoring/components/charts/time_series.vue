@@ -1,5 +1,5 @@
 <script>
-import _ from 'underscore';
+import { omit } from 'lodash';
 import { GlLink, GlButton, GlTooltip, GlResizeObserverDirective } from '@gitlab/ui';
 import { GlAreaChart, GlLineChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import dateFormat from 'dateformat';
@@ -140,7 +140,7 @@ export default {
       return (this.option.series || []).concat(this.scatterSeries ? [this.scatterSeries] : []);
     },
     chartOptions() {
-      const option = _.omit(this.option, 'series');
+      const option = omit(this.option, 'series');
       return {
         series: this.chartOptionSeries,
         xAxis: {

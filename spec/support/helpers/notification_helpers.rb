@@ -36,4 +36,28 @@ module NotificationHelpers
     setting = user.notification_settings_for(resource)
     setting.update!(event => value)
   end
+
+  def expect_delivery_jobs_count(count)
+    expect(ActionMailer::DeliveryJob).to have_been_enqueued.exactly(count).times
+  end
+
+  def expect_no_delivery_jobs
+    expect(ActionMailer::DeliveryJob).not_to have_been_enqueued
+  end
+
+  def expect_any_delivery_jobs
+    expect(ActionMailer::DeliveryJob).to have_been_enqueued.at_least(:once)
+  end
+
+  def have_enqueued_email(*args, mailer: "Notify", mail: "", delivery: "deliver_now")
+    have_enqueued_job(ActionMailer::DeliveryJob).with(mailer, mail, delivery, *args)
+  end
+
+  def expect_enqueud_email(*args, mailer: "Notify", mail: "", delivery: "deliver_now")
+    expect(ActionMailer::DeliveryJob).to have_been_enqueued.with(mailer, mail, delivery, *args)
+  end
+
+  def expect_not_enqueud_email(*args, mailer: "Notify", mail: "", delivery: "deliver_now")
+    expect(ActionMailer::DeliveryJob).not_to have_been_enqueued.with(mailer, mail, *args, any_args)
+  end
 end

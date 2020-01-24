@@ -134,7 +134,7 @@ sudo gitlab-ctl reconfigure
 ```
 
 If you do not perform this step, you may find that two-factor authentication
-[is broken following DR](../disaster_recovery/index.html#i-followed-the-disaster-recovery-instructions-and-now-two-factor-auth-is-broken).
+[is broken following DR](../disaster_recovery/index.md#i-followed-the-disaster-recovery-instructions-and-now-two-factor-auth-is-broken).
 
 To prevent SSH requests to the newly promoted **primary** node from failing
 due to SSH host key mismatch when updating the **primary** node domain's DNS record
