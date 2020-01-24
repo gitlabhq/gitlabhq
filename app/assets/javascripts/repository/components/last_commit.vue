@@ -40,15 +40,18 @@ export default {
         };
       },
       update: data => {
-        const pipelines = data.project.repository.tree.lastCommit.pipelines.edges;
+        const pipelines = data.project?.repository?.tree?.lastCommit?.pipelines?.edges;
 
         return {
-          ...data.project.repository.tree.lastCommit,
-          pipeline: pipelines.length && pipelines[0].node,
+          ...data.project?.repository?.tree?.lastCommit,
+          pipeline: pipelines?.length && pipelines[0].node,
         };
       },
       context: {
         isSingleRequest: true,
+      },
+      error(error) {
+        throw error;
       },
     },
   },
@@ -62,7 +65,7 @@ export default {
   data() {
     return {
       projectPath: '',
-      commit: {},
+      commit: null,
       showDescription: false,
     };
   },
@@ -79,6 +82,11 @@ export default {
       return this.commit.sha.substr(0, 8);
     },
   },
+  watch: {
+    currentPath() {
+      this.commit = null;
+    },
+  },
   methods: {
     toggleShowDescription() {
       this.showDescription = !this.showDescription;
@@ -91,7 +99,7 @@ export default {
 <template>
   <div class="info-well d-none d-sm-flex project-last-commit commit p-3">
     <gl-loading-icon v-if="isLoading" size="md" color="dark" class="m-auto" />
-    <template v-else>
+    <template v-else-if="commit">
       <user-avatar-link
         v-if="commit.author"
         :link-href="commit.author.webUrl"

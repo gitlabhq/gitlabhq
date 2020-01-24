@@ -8,5 +8,6 @@ module CronjobQueue
   included do
     queue_namespace :cronjob
     sidekiq_options retry: false
+    worker_context project: nil, namespace: nil, user: nil
   end
 end

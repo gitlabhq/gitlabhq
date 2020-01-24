@@ -18,6 +18,7 @@ module Gitlab
         chain.add Labkit::Middleware::Sidekiq::Server
         chain.add Gitlab::SidekiqMiddleware::InstrumentationLogger
         chain.add Gitlab::SidekiqStatus::ServerMiddleware
+        chain.add Gitlab::SidekiqMiddleware::WorkerContext::Server
       end
     end
 

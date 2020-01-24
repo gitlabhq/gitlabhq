@@ -1,0 +1,16 @@
+- navbar_sub_item = project_analytics_navbar_links(@project, current_user).sort_by(&:title)
+- all_paths = navbar_sub_item.map(&:path)
+
+- if navbar_sub_item.any?
+  = nav_link(path: all_paths) do
+    = link_to navbar_sub_item.first.link, data: { qa_selector: 'project_analytics_link' } do
+      .nav-icon-container
+        = sprite_icon('chart')
+      %span.nav-item-name
+        = _('Analytics')
+
+    %ul.sidebar-sub-level-items
+      - navbar_sub_item.each do |menu_item|
+        = nav_link(path: menu_item.path) do
+          = link_to(menu_item.link, menu_item.link_to_options) do
+            %span= menu_item.title

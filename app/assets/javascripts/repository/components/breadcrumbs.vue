@@ -34,7 +34,10 @@ export default {
           projectPath: this.projectPath,
         };
       },
-      update: data => data.project.userPermissions,
+      update: data => data.project?.userPermissions,
+      error(error) {
+        throw error;
+      },
     },
   },
   mixins: [getRefMixin],
@@ -172,7 +175,7 @@ export default {
         );
       }
 
-      if (this.userPermissions.pushCode) {
+      if (this.userPermissions?.pushCode) {
         items.push(
           {
             type: ROW_TYPES.divider,

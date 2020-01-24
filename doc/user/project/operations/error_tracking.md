@@ -57,11 +57,11 @@ This page has:
 - Other details about the issue, including a full stack trace.
 - In [GitLab 12.7 and newer](https://gitlab.com/gitlab-org/gitlab/issues/36246), language and urgency are displayed.
 
-By default, a **Create issue** button is displayed. Once you have used it to create an issue, the button is hidden.
+By default, a **Create issue** button is displayed:
 
 ![Error Details without Issue Link](img/error_details_v12_7.png)
 
-If a link does exist, it will be shown in the details and the 'Create issue' button will change to a 'View issue' button:
+If you create a GitLab issue from the error, the **Create issue** button will change to a **View issue** button:
 
 ![Error Details with Issue Link](img/error_details_with_issue_v12_7.png)
 

@@ -63,6 +63,16 @@ describe SystemNoteService do
     end
   end
 
+  describe '.close_after_error_tracking_resolve' do
+    it 'calls IssuableService' do
+      expect_next_instance_of(::SystemNotes::IssuablesService) do |service|
+        expect(service).to receive(:close_after_error_tracking_resolve)
+      end
+
+      described_class.close_after_error_tracking_resolve(noteable, project, author)
+    end
+  end
+
   describe '.change_milestone' do
     let(:milestone) { double }
 

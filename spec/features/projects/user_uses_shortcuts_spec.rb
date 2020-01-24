@@ -7,6 +7,8 @@ describe 'User uses shortcuts', :js do
   let(:user) { create(:user) }
 
   before do
+    stub_feature_flags(analytics_pages_under_project_analytics_sidebar: { enabled: false, thing: project })
+
     project.add_maintainer(user)
     sign_in(user)
 
@@ -154,6 +156,20 @@ describe 'User uses shortcuts', :js do
       find('body').native.send_key('w')
 
       expect(page).to have_active_navigation('Wiki')
+    end
+  end
+
+  context 'when `analytics_pages_under_project_analytics_sidebar` feature flag is enabled' do
+    before do
+      stub_feature_flags(analytics_pages_under_project_analytics_sidebar: { enabled: true, thing: project })
+    end
+
+    it 'redirects to the repository charts page' do
+      find('body').native.send_key('g')
+      find('body').native.send_key('d')
+
+      expect(page).to have_active_navigation(_('Analytics'))
+      expect(page).to have_active_sub_navigation(_('Repository Analytics'))
     end
   end
 end

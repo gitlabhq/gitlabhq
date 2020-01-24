@@ -7,6 +7,8 @@ describe 'Project active tab' do
   let(:project) { create(:project, :repository) }
 
   before do
+    stub_feature_flags(analytics_pages_under_project_analytics_sidebar: { enabled: false, thing: project })
+
     project.add_maintainer(user)
     sign_in(user)
   end
@@ -14,21 +16,6 @@ describe 'Project active tab' do
   def click_tab(title)
     page.within '.sidebar-top-level-items > .active' do
       click_link(title)
-    end
-  end
-
-  shared_examples 'page has active tab' do |title|
-    it "activates #{title} tab" do
-      expect(page).to have_selector('.sidebar-top-level-items > li.active', count: 1)
-      expect(find('.sidebar-top-level-items > li.active')).to have_content(title)
-    end
-  end
-
-  shared_examples 'page has active sub tab' do |title|
-    it "activates #{title} sub tab" do
-      expect(page).to have_selector('.sidebar-sub-level-items  > li.active:not(.fly-out-top-item)', count: 1)
-      expect(find('.sidebar-sub-level-items > li.active:not(.fly-out-top-item)'))
-        .to have_content(title)
     end
   end
 
@@ -134,6 +121,37 @@ describe 'Project active tab' do
 
       it_behaves_like 'page has active tab', 'Settings'
       it_behaves_like 'page has active sub tab', 'Repository'
+    end
+  end
+
+  context 'when `analytics_pages_under_project_analytics_sidebar` feature flag is enabled' do
+    before do
+      stub_feature_flags(analytics_pages_under_project_analytics_sidebar: { enabled: true, thing: project })
+    end
+
+    context 'on project Analytics' do
+      before do
+        visit charts_project_graph_path(project, 'master')
+      end
+
+      context 'on project Analytics/Repository Analytics' do
+        it_behaves_like 'page has active tab', _('Analytics')
+        it_behaves_like 'page has active sub tab', _('Repository Analytics')
+      end
+
+      context 'on project Analytics/Repository Analytics' do
+        it_behaves_like 'page has active tab', _('Analytics')
+        it_behaves_like 'page has active sub tab', _('Repository Analytics')
+      end
+
+      context 'on project Analytics/Cycle Analytics' do
+        before do
+          click_tab(_('CI / CD Analytics'))
+        end
+
+        it_behaves_like 'page has active tab', _('Analytics')
+        it_behaves_like 'page has active sub tab', _('CI / CD Analytics')
+      end
     end
   end
 end

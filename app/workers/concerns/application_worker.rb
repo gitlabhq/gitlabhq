@@ -9,6 +9,7 @@ module ApplicationWorker
 
   include Sidekiq::Worker # rubocop:disable Cop/IncludeSidekiqWorker
   include WorkerAttributes
+  include WorkerContext
 
   included do
     set_queue

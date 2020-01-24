@@ -105,6 +105,7 @@ recorded:
 - Ask for password reset
 - Grant OAuth access
 - Started/stopped user impersonation
+- Changed username
 
 It is possible to filter particular actions by choosing an audit data type from
 the filter dropdown box. You can further filter by specific group, project or user

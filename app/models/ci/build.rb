@@ -172,6 +172,9 @@ module Ci
     scope :queued_before, ->(time) { where(arel_table[:queued_at].lt(time)) }
     scope :order_id_desc, -> { order('ci_builds.id DESC') }
 
+    PROJECT_ROUTE_AND_NAMESPACE_ROUTE = { project: [:project_feature, :route, { namespace: :route }] }.freeze
+    scope :preload_project_and_pipeline_project, -> { preload(PROJECT_ROUTE_AND_NAMESPACE_ROUTE, pipeline: PROJECT_ROUTE_AND_NAMESPACE_ROUTE) }
+
     acts_as_taggable
 
     add_authentication_token_field :token, encrypted: :optional

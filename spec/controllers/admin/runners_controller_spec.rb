@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe Admin::RunnersController do
-  let!(:runner) { create(:ci_runner) }
+  let_it_be(:runner) { create(:ci_runner) }
 
   before do
     sign_in(create(:admin))
@@ -36,6 +36,16 @@ describe Admin::RunnersController do
   end
 
   describe '#show' do
+    render_views
+
+    let_it_be(:project) { create(:project) }
+    let_it_be(:project_two) { create(:project) }
+
+    before_all do
+      create(:ci_build, runner: runner, project: project)
+      create(:ci_build, runner: runner, project: project_two)
+    end
+
     it 'shows a particular runner' do
       get :show, params: { id: runner.id }
 
@@ -46,6 +56,21 @@ describe Admin::RunnersController do
       get :show, params: { id: 0 }
 
       expect(response).to have_gitlab_http_status(404)
+    end
+
+    it 'avoids N+1 queries', :request_store do
+      get :show, params: { id: runner.id }
+
+      control_count = ActiveRecord::QueryRecorder.new { get :show, params: { id: runner.id } }.count
+
+      new_project = create(:project)
+      create(:ci_build, runner: runner, project: new_project)
+
+      # There is one additional query looking up subject.group in ProjectPolicy for the
+      # needs_new_sso_session permission
+      expect { get :show, params: { id: runner.id } }.not_to exceed_query_limit(control_count + 1)
+
+      expect(response).to have_gitlab_http_status(200)
     end
   end
 

@@ -100,9 +100,7 @@ module SystemNoteService
   end
 
   def close_after_error_tracking_resolve(issue, project, author)
-    body = _('resolved the corresponding error and closed the issue.')
-
-    create_note(NoteSummary.new(issue, project, author, body, action: 'closed'))
+    ::SystemNotes::IssuablesService.new(noteable: issue, project: project, author: author).close_after_error_tracking_resolve
   end
 
   def change_status(noteable, project, author, status, source = nil)
@@ -242,23 +240,6 @@ module SystemNoteService
 
   def zoom_link_removed(issue, project, author)
     ::SystemNotes::ZoomService.new(noteable: issue, project: project, author: author).zoom_link_removed
-  end
-
-  private
-
-  def create_note(note_summary)
-    note = Note.create(note_summary.note.merge(system: true))
-    note.system_note_metadata = SystemNoteMetadata.new(note_summary.metadata) if note_summary.metadata?
-
-    note
-  end
-
-  def url_helpers
-    @url_helpers ||= Gitlab::Routing.url_helpers
-  end
-
-  def content_tag(*args)
-    ActionController::Base.helpers.content_tag(*args)
   end
 end
 

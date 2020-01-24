@@ -3014,6 +3014,9 @@ msgstr ""
 msgid "CI / CD"
 msgstr ""
 
+msgid "CI / CD Analytics"
+msgstr ""
+
 msgid "CI / CD Charts"
 msgstr ""
 
@@ -14310,9 +14313,6 @@ msgstr ""
 msgid "Project '%{project_name}' will be deleted on %{date}"
 msgstr ""
 
-msgid "Project Analytics"
-msgstr ""
-
 msgid "Project Badges"
 msgstr ""
 
@@ -15767,6 +15767,9 @@ msgid "Reports|no changed test results"
 msgstr ""
 
 msgid "Repository"
+msgstr ""
+
+msgid "Repository Analytics"
 msgstr ""
 
 msgid "Repository Graph"

@@ -1,5 +1,12 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.7.1
+
+### Fixed (1 change)
+
+- Fix create/delete API calls for approval rules. !23107
+
+
 ## 12.7.0
 
 ### Removed (2 changes)

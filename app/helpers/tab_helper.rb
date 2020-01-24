@@ -12,6 +12,7 @@ module TabHelper
   #           :action       - One or more action names to check (optional).
   #           :path         - A shorthand path, such as 'dashboard#index', to check (optional).
   #           :html_options - Extra options to be passed to the list element (optional).
+  #           :unless       - Callable object to skip rendering the 'active' class on `li` element (optional).
   # block   - An optional block that will become the contents of the returned
   #           `li` element.
   #
@@ -56,6 +57,14 @@ module TabHelper
   #   nav_link(path: 'admin/appearances#show') { "Hello"}
   #   # => '<li class="active">Hello</li>'
   #
+  #   # Shorthand path + unless
+  #   # Add `active` class when TreeController is requested, except the `index` action.
+  #   nav_link(controller: 'tree', unless: -> { action_name?('index') }) { "Hello" }
+  #   # => '<li class="active">Hello</li>'
+  #
+  #   # When `TreeController#index` is requested
+  #   # => '<li>Hello</li>'
+  #
   # Returns a list item element String
   def nav_link(options = {}, &block)
     klass = active_nav_link?(options) ? 'active' : ''
@@ -73,6 +82,8 @@ module TabHelper
   end
 
   def active_nav_link?(options)
+    return false if options[:unless]&.call
+
     if path = options.delete(:path)
       unless path.respond_to?(:each)
         path = [path]

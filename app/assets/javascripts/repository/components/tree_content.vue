@@ -86,7 +86,8 @@ export default {
           },
         })
         .then(({ data }) => {
-          if (!data) return;
+          if (data.errors) throw data.errors;
+          if (!data?.project?.repository) return;
 
           const pageInfo = this.hasNextPage(data.project.repository.tree);
 
@@ -99,12 +100,15 @@ export default {
             {},
           );
 
-          if (pageInfo && pageInfo.hasNextPage) {
+          if (pageInfo?.hasNextPage) {
             this.nextPageCursor = pageInfo.endCursor;
             this.fetchFiles();
           }
         })
-        .catch(() => createFlash(__('An error occurred while fetching folder content.')));
+        .catch(error => {
+          createFlash(__('An error occurred while fetching folder content.'));
+          throw error;
+        });
     },
     normalizeData(key, data) {
       return this.entries[key].concat(data.map(({ node }) => node));

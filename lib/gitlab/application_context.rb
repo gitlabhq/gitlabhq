@@ -16,7 +16,7 @@ module Gitlab
 
     def self.with_context(args, &block)
       application_context = new(**args)
-      Labkit::Context.with_context(application_context.to_lazy_hash, &block)
+      application_context.use(&block)
     end
 
     def self.push(args)
@@ -40,6 +40,10 @@ module Gitlab
         hash[:root_namespace] = -> { root_namespace_path } if include_namespace?
         hash[:caller_id] = caller_id if set_values.include?(:caller_id)
       end
+    end
+
+    def use
+      Labkit::Context.with_context(to_lazy_hash) { yield }
     end
 
     private

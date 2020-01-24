@@ -87,7 +87,7 @@ class Import::ManifestController < Import::BaseController
     group.all_projects
       .where(import_type: 'manifest')
       .where(creator_id: current_user)
-      .includes(:import_state)
+      .with_import_state
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

@@ -23,7 +23,7 @@ export default function setupVueRepositoryList() {
       projectPath,
       projectShortPath,
       ref,
-      vueFileListLfsBadge: gon?.features?.vueFileListLfsBadge,
+      vueFileListLfsBadge: gon.features?.vueFileListLfsBadge || false,
       commits: [],
     },
   });

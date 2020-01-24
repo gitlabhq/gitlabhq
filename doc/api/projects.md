@@ -1769,7 +1769,7 @@ This endpoint either:
 - Removes a project including all associated resources (issues, merge requests etc).
 - From GitLab 12.6 on Premium or higher tiers, marks a project for deletion. Actual
   deletion happens after number of days specified in
-  [instance settings](../user/admin_area/settings/visibility_and_access_controls.md#project-deletion-adjourned-period-premium-only).
+  [instance settings](../user/admin_area/settings/visibility_and_access_controls.md#default-deletion-adjourned-period-premium-only).
 
 ```
 DELETE /projects/:id
@@ -1780,6 +1780,8 @@ DELETE /projects/:id
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
 ## Restore project marked for deletion **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/32935) in GitLab 12.6.
 
 Restores project marked for deletion.
 

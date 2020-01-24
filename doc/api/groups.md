@@ -628,7 +628,12 @@ Feature.disable(:limit_projects_in_groups_api)
 
 ## Remove group
 
-Removes group with all projects inside. Only available to group owners and administrators.
+Only available to group owners and administrators.
+
+This endpoint either:
+
+- Removes group, and queues a background job to delete all projects in the group as well.
+- Since GitLab 12.8, on [Premium](https://about.gitlab.com/pricing/premium/) or higher tiers, marks a group for deletion. The deletion will happen 7 days later by default, but this can be changed in the [instance settings](../user/admin_area/settings/visibility_and_access_controls.md#default-deletion-adjourned-period-premium-only).
 
 ```
 DELETE /groups/:id
@@ -636,10 +641,27 @@ DELETE /groups/:id
 
 Parameters:
 
-- `id` (required) - The ID or path of a user group
+| Attribute       | Type           | Required | Description |
+| --------------- | -------------- | -------- | ----------- |
+| `id`            | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
 
-This will queue a background job to delete all projects in the group. The
-response will be a 202 Accepted if the user has authorization.
+The response will be `202 Accepted` if the user has authorization.
+
+## Restore group marked for deletion **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/33257) in GitLab 12.8.
+
+Restores a group marked for deletion.
+
+```plaintext
+POST /groups/:id/restore
+```
+
+Parameters:
+
+| Attribute       | Type           | Required | Description |
+| --------------- | -------------- | -------- | ----------- |
+| `id`            | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
 
 ## Search for group
 
