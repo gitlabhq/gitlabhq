@@ -1,0 +1,5 @@
+---
+title: Remove invalid data from jira_tracker_data table
+merge_request: 23621
+author:
+type: fixed

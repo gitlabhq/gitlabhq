@@ -121,7 +121,9 @@ In this example we can see that server processed an HTTP request with URL
 
 ## `api_json.log`
 
-Introduced in GitLab 10.0, this file lives in
+> Introduced in GitLab 10.0.
+
+This file lives in
 `/var/log/gitlab/gitlab-rails/api_json.log` for Omnibus GitLab packages or in
 `/home/git/gitlab/log/api_json.log` for installations from source.
 
@@ -159,6 +161,21 @@ October 07, 2014 11:25: User "Claudie Hodkiewicz" (nasir_stehr@olson.co.uk)  was
 October 07, 2014 11:25: Project "project133" was removed
 ```
 
+## `application_json.log`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/22812) in GitLab 12.7.
+
+This file lives in `/var/log/gitlab/gitlab-rails/application_json.log` for
+Omnibus GitLab packages or in `/home/git/gitlab/log/application_json.log` for
+installations from source.
+
+It contains the JSON version of the logs in `application.log` like the example below:
+
+``` json
+{"severity":"INFO","time":"2020-01-14T13:35:15.466Z","correlation_id":"3823a1550b64417f9c9ed8ee0f48087e","message":"User \"Administrator\" (admin@example.com) was created"}
+{"severity":"INFO","time":"2020-01-14T13:35:15.466Z","correlation_id":"78e3df10c9a18745243d524540bd5be4","message":"Project \"project133\" was removed"}
+```
+
 ## `integrations_json.log`
 
 This file lives in `/var/log/gitlab/gitlab-rails/integrations_json.log` for
@@ -174,7 +191,9 @@ It contains information about [integrations](../user/project/integrations/projec
 
 ## `kubernetes.log`
 
-Introduced in GitLab 11.6. This file lives in
+> Introduced in GitLab 11.6.
+
+This file lives in
 `/var/log/gitlab/gitlab-rails/kubernetes.log` for Omnibus GitLab
 packages or in `/home/git/gitlab/log/kubernetes.log` for
 installations from source.
@@ -320,13 +339,17 @@ It logs information whenever a [repository check is run][repocheck] on a project
 
 ## `importer.log`
 
-Introduced in GitLab 11.3. This file lives in `/var/log/gitlab/gitlab-rails/importer.log` for
+> Introduced in GitLab 11.3.
+
+This file lives in `/var/log/gitlab/gitlab-rails/importer.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/importer.log` for
 installations from source.
 
 ## `auth.log`
 
-Introduced in GitLab 12.0. This file lives in `/var/log/gitlab/gitlab-rails/auth.log` for
+> Introduced in GitLab 12.0.
+
+This file lives in `/var/log/gitlab/gitlab-rails/auth.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/auth.log` for
 installations from source.
 
@@ -356,7 +379,9 @@ GraphQL queries are recorded in that file. For example:
 
 ## `migrations.log`
 
-Introduced in GitLab 12.3. This file lives in `/var/log/gitlab/gitlab-rails/migrations.log` for
+> Introduced in GitLab 12.3.
+
+This file lives in `/var/log/gitlab/gitlab-rails/migrations.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/migrations.log` for
 installations from source.
 
@@ -406,7 +431,9 @@ It is stored at:
 
 ## `elasticsearch.log`
 
-Introduced in GitLab 12.6. This file lives in
+> Introduced in GitLab 12.6.
+
+This file lives in
 `/var/log/gitlab/gitlab-rails/elasticsearch.log` for Omnibus GitLab
 packages or in `/home/git/gitlab/log/elasticsearch.log` for installations
 from source.

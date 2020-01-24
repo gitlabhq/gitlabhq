@@ -266,6 +266,8 @@ The GitLab Conan repository supports the following Conan CLI commands:
 
 ## Using GitLab CI with Conan packages
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/11678) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.7.
+
 To work with Conan commands within [GitLab CI](./../../../ci/README.md), you can use
 `CI_JOB_TOKEN` in place of the personal access token in your commands.
 

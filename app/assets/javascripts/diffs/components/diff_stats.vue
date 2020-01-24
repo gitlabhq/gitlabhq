@@ -1,7 +1,9 @@
 <script>
+import Icon from '~/vue_shared/components/icon.vue';
 import { n__ } from '~/locale';
 
 export default {
+  components: { Icon },
   props: {
     addedLines: {
       type: Number,
@@ -19,7 +21,7 @@ export default {
   },
   computed: {
     filesText() {
-      return n__('file', 'files', this.diffFilesLength);
+      return n__('File', 'Files', this.diffFilesLength);
     },
     isCompareVersionsHeader() {
       return Boolean(this.diffFilesLength);
@@ -37,21 +39,14 @@ export default {
     }"
   >
     <div v-if="diffFilesLength !== null" class="diff-stats-group">
-      <span class="text-secondary bold">{{ diffFilesLength }} {{ filesText }}</span>
+      <icon name="doc-code" class="diff-stats-icon text-secondary" />
+      <strong>{{ diffFilesLength }} {{ filesText }}</strong>
     </div>
-    <div
-      class="diff-stats-group cgreen d-flex align-items-center"
-      :class="{ bold: isCompareVersionsHeader }"
-    >
-      <span>+</span>
-      <span class="js-file-addition-line">{{ addedLines }}</span>
+    <div class="diff-stats-group cgreen">
+      <icon name="file-addition" class="diff-stats-icon" /> <strong>{{ addedLines }}</strong>
     </div>
-    <div
-      class="diff-stats-group cred d-flex align-items-center"
-      :class="{ bold: isCompareVersionsHeader }"
-    >
-      <span>-</span>
-      <span class="js-file-deletion-line">{{ removedLines }}</span>
+    <div class="diff-stats-group cred">
+      <icon name="file-deletion" class="diff-stats-icon" /> <strong>{{ removedLines }}</strong>
     </div>
   </div>
 </template>

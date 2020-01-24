@@ -67,6 +67,7 @@ describe Gitlab::BitbucketServerImport::Importer do
         author_email: project.owner.email,
         created_at: Time.now,
         updated_at: Time.now,
+        raw: {},
         merged?: true)
 
       allow(subject.client).to receive(:pull_requests).and_return([pull_request])
@@ -238,6 +239,13 @@ describe Gitlab::BitbucketServerImport::Importer do
 
       expect(notes.first.note).to start_with('*Comment on .gitmodules')
       expect(notes.second.note).to start_with('*Comment on .gitmodules')
+    end
+
+    it 'reports an error if an exception is raised' do
+      allow(subject).to receive(:import_bitbucket_pull_request).and_raise(RuntimeError)
+      expect(Gitlab::ErrorTracking).to receive(:log_exception)
+
+      subject.execute
     end
   end
 

@@ -1375,6 +1375,22 @@ to the sides of the "dash" lines in the second row. This will affect every cell 
 | Cell 1       | Cell 2   | Cell 3        | Cell 4       | Cell 5   | Cell 6        |
 | Cell 7       | Cell 8   | Cell 9        | Cell 10      | Cell 11  | Cell 12       |
 
+#### Copy from spreadsheet and paste in Markdown
+
+[Introduced](https://gitlab.com/gitlab-org/gitlab/issues/27205) in GitLab 12.7.
+
+If you're working in spreadsheet software (e.g. Microsoft Excel, Google
+Sheets, Apple Numbers), you can copy from a spreadsheet, and GitLab will
+paste it as a Markdown table. For example, suppose you have the
+following spreadsheet:
+
+![Copy from spreadsheet](img/markdown_copy_from_spreadsheet_v12_7.png)
+
+Select the cells and copy them to your clipboard. Open a GitLab Markdown
+entry and paste the spreadsheet:
+
+![Paste to Markdown table](img/markdown_paste_table_v12_7.png)
+
 ## References
 
 - This document leveraged heavily from the [Markdown-Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet).

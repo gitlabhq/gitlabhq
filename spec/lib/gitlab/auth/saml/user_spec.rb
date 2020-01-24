@@ -325,6 +325,18 @@ describe Gitlab::Auth::Saml::User do
           expect(gl_user).to be_confirmed
         end
       end
+
+      context 'when the current minimum password length is different from the default minimum password length' do
+        before do
+          stub_application_setting minimum_password_length: 21
+        end
+
+        it 'creates the user' do
+          saml_user.save
+
+          expect(gl_user).to be_persisted
+        end
+      end
     end
 
     describe 'blocking' do

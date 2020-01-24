@@ -4,7 +4,7 @@ module ErrorTracking
   class IssueDetailsService < ErrorTracking::BaseService
     private
 
-    def fetch
+    def perform
       project_error_tracking_setting.issue_details(issue_id: params[:issue_id])
     end
 

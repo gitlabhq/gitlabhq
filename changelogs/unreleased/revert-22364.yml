@@ -1,0 +1,6 @@
+---
+title: Reverts MR diff redesign which fixes Web IDE visual bugs including file dropdown
+  not showing up
+merge_request: 23428
+author:
+type: fixed

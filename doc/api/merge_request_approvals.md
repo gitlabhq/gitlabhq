@@ -63,7 +63,8 @@ POST /projects/:id/approvals
 
 ### Get project-level rules
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/11877) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/11877) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.3.
+> - `protected_branches` property was [introduced](https://gitlab.com/gitlab-org/gitlab/issues/460) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.7.
 
 You can request information about a project's approval rules using the following endpoint:
 
@@ -130,6 +131,31 @@ GET /projects/:id/approval_rules
         "ldap_access": null
       }
     ],
+    "protected_branches": [
+      {
+        "id": 1,
+        "name": "master",
+        "push_access_levels": [
+          {
+            "access_level": 30,
+            "access_level_description": "Developers + Maintainers"
+          }
+        ],
+        "merge_access_levels": [
+          {
+            "access_level": 30,
+            "access_level_description": "Developers + Maintainers"
+          }
+        ],
+        "unprotect_access_levels": [
+          {
+            "access_level": 40,
+            "access_level_description": "Maintainers"
+          }
+        ],
+        "code_owner_approval_required": "false"
+      }
+    ],
     "contains_hidden_groups": false
   }
 ]
@@ -147,13 +173,14 @@ POST /projects/:id/approval_rules
 
 **Parameters:**
 
-| Attribute            | Type    | Required | Description                                               |
-|----------------------|---------|----------|-----------------------------------------------------------|
-| `id`                 | integer | yes      | The ID of a project                                       |
-| `name`               | string  | yes      | The name of the approval rule                             |
-| `approvals_required` | integer | yes      | The number of required approvals for this rule            |
-| `user_ids`           | Array   | no       | The ids of users as approvers                             |
-| `group_ids`          | Array   | no       | The ids of groups as approvers                            |
+| Attribute              | Type    | Required | Description                                                      |
+|------------------------|---------|----------|------------------------------------------------------------------|
+| `id`                   | integer | yes      | The ID of a project                                              |
+| `name`                 | string  | yes      | The name of the approval rule                                    |
+| `approvals_required`   | integer | yes      | The number of required approvals for this rule                   |
+| `user_ids`             | Array   | no       | The ids of users as approvers                                    |
+| `group_ids`            | Array   | no       | The ids of groups as approvers                                   |
+| `protected_branch_ids` | Array   | no       | **(PREMIUM)** The ids of protected branches to scope the rule by |
 
 ```json
 {
@@ -205,6 +232,31 @@ POST /projects/:id/approval_rules
       "parent_id": null,
       "ldap_cn": null,
       "ldap_access": null
+    }
+  ],
+  "protected_branches": [
+    {
+      "id": 1,
+      "name": "master",
+      "push_access_levels": [
+        {
+          "access_level": 30,
+          "access_level_description": "Developers + Maintainers"
+        }
+      ],
+      "merge_access_levels": [
+        {
+          "access_level": 30,
+          "access_level_description": "Developers + Maintainers"
+        }
+      ],
+      "unprotect_access_levels": [
+        {
+          "access_level": 40,
+          "access_level_description": "Maintainers"
+        }
+      ],
+      "code_owner_approval_required": "false"
     }
   ],
   "contains_hidden_groups": false
@@ -225,14 +277,15 @@ PUT /projects/:id/approval_rules/:approval_rule_id
 
 **Parameters:**
 
-| Attribute            | Type    | Required | Description                                               |
-|----------------------|---------|----------|-----------------------------------------------------------|
-| `id`                 | integer | yes      | The ID of a project                                       |
-| `approval_rule_id`   | integer | yes      | The ID of a approval rule                                 |
-| `name`               | string  | yes      | The name of the approval rule                             |
-| `approvals_required` | integer | yes      | The number of required approvals for this rule            |
-| `user_ids`           | Array   | no       | The ids of users as approvers                             |
-| `group_ids`          | Array   | no       | The ids of groups as approvers                            |
+| Attribute              | Type    | Required | Description                                                      |
+|------------------------|---------|----------|------------------------------------------------------------------|
+| `id`                   | integer | yes      | The ID of a project                                              |
+| `approval_rule_id`     | integer | yes      | The ID of a approval rule                                        |
+| `name`                 | string  | yes      | The name of the approval rule                                    |
+| `approvals_required`   | integer | yes      | The number of required approvals for this rule                   |
+| `user_ids`             | Array   | no       | The ids of users as approvers                                    |
+| `group_ids`            | Array   | no       | The ids of groups as approvers                                   |
+| `protected_branch_ids` | Array   | no       | **(PREMIUM)** The ids of protected branches to scope the rule by |
 
 ```json
 {
@@ -284,6 +337,31 @@ PUT /projects/:id/approval_rules/:approval_rule_id
       "parent_id": null,
       "ldap_cn": null,
       "ldap_access": null
+    }
+  ],
+  "protected_branches": [
+    {
+      "id": 1,
+      "name": "master",
+      "push_access_levels": [
+        {
+          "access_level": 30,
+          "access_level_description": "Developers + Maintainers"
+        }
+      ],
+      "merge_access_levels": [
+        {
+          "access_level": 30,
+          "access_level_description": "Developers + Maintainers"
+        }
+      ],
+      "unprotect_access_levels": [
+        {
+          "access_level": 40,
+          "access_level_description": "Maintainers"
+        }
+      ],
+      "code_owner_approval_required": "false"
     }
   ],
   "contains_hidden_groups": false

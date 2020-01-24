@@ -16,11 +16,11 @@ Once enabled, click on **Analytics** from the top navigation bar.
 From the centralized analytics workspace, the following analytics are available:
 
 - [Code Review Analytics](code_review_analytics.md), enabled with the `code_review_analytics`
-  [feature flag](../../development/feature_flags/development.html#enabling-a-feature-flag-in-development). **(STARTER)**
+  [feature flag](../../development/feature_flags/development.md#enabling-a-feature-flag-in-development). **(STARTER)**
 - [Cycle Analytics](cycle_analytics.md), enabled with the `cycle_analytics`
-  [feature flag](../../development/feature_flags/development.html#enabling-a-feature-flag-in-development). **(PREMIUM)**
+  [feature flag](../../development/feature_flags/development.md#enabling-a-feature-flag-in-development). **(PREMIUM)**
 - [Productivity Analytics](productivity_analytics.md), enabled with the `productivity_analytics`
-  [feature flag](../../development/feature_flags/development.html#enabling-a-feature-flag-in-development). **(PREMIUM)**
+  [feature flag](../../development/feature_flags/development.md#enabling-a-feature-flag-in-development). **(PREMIUM)**
 
 NOTE: **Note:**
 Project-level Cycle Analytics are still available at a project's **Project > Cycle Analytics**.

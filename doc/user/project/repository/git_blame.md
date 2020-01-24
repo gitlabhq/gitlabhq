@@ -23,10 +23,14 @@ noted information:
 If you hover over a commit in the UI, you'll see a precise date and time
 for that commit.
 
-![Blame previous commit](img/file_blame_previous_commit_v12_7.png "Blame previous commit")
+## Blame previous commit
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/19299) in GitLab 12.7.
 
 To see earlier revisions of a specific line, click **View blame prior to this change**
-until you've found the changes you're interested in viewing.
+until you've found the changes you're interested in viewing:
+
+![Blame previous commit](img/file_blame_previous_commit_v12_7.png "Blame previous commit")
 
 ## Associated `git` command
 
