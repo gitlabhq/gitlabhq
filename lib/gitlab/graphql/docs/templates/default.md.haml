@@ -21,6 +21,6 @@ fields and methods on a model are available via GraphQL.
     \
     ~ "| Name  | Type  | Description |"
     ~ "| ---   |  ---- | ----------  |"
-    - type[:fields].each do |field|
+    - sorted_fields(type[:fields]).each do |field|
       = "| `#{field[:name]}` | #{render_field_type(field[:type][:info])} | #{field[:description]} |"
     \
