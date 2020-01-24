@@ -6,6 +6,7 @@ module Gitlab
   module SidekiqConfig
     FOSS_QUEUE_CONFIG_PATH = 'app/workers/all_queues.yml'
     EE_QUEUE_CONFIG_PATH = 'ee/app/workers/all_queues.yml'
+    SIDEKIQ_QUEUES_PATH = 'config/sidekiq_queues.yml'
 
     QUEUE_CONFIG_PATHS = [
       FOSS_QUEUE_CONFIG_PATH,
@@ -13,11 +14,19 @@ module Gitlab
     ].compact.freeze
 
     # For queues that don't have explicit workers - default and mailers
-    DummyWorker = Struct.new(:queue)
+    DummyWorker = Struct.new(:queue, :weight) do
+      def queue_namespace
+        nil
+      end
+
+      def get_weight
+        weight
+      end
+    end
 
     DEFAULT_WORKERS = [
-      Gitlab::SidekiqConfig::Worker.new(DummyWorker.new('default'), ee: false),
-      Gitlab::SidekiqConfig::Worker.new(DummyWorker.new('mailers'), ee: false)
+      Gitlab::SidekiqConfig::Worker.new(DummyWorker.new('default', 1), ee: false),
+      Gitlab::SidekiqConfig::Worker.new(DummyWorker.new('mailers', 2), ee: false)
     ].freeze
 
     class << self
@@ -30,7 +39,7 @@ module Gitlab
 
       def config_queues
         @config_queues ||= begin
-          config = YAML.load_file(Rails.root.join('config/sidekiq_queues.yml'))
+          config = YAML.load_file(Rails.root.join(SIDEKIQ_QUEUES_PATH))
           config[:queues].map(&:first)
         end
       end
@@ -63,6 +72,28 @@ module Gitlab
         return true if foss_workers != YAML.safe_load(File.read(FOSS_QUEUE_CONFIG_PATH))
 
         Gitlab.ee? && ee_workers != YAML.safe_load(File.read(EE_QUEUE_CONFIG_PATH))
+      end
+
+      def queues_for_sidekiq_queues_yml
+        namespaces_with_equal_weights =
+          workers
+            .group_by(&:queue_namespace)
+            .map(&:last)
+            .select { |workers| workers.map(&:get_weight).uniq.count == 1 }
+            .map(&:first)
+
+        namespaces = namespaces_with_equal_weights.map(&:queue_namespace).to_set
+        remaining_queues = workers.reject { |worker| namespaces.include?(worker.queue_namespace) }
+
+        (namespaces_with_equal_weights.map(&:namespace_and_weight) +
+         remaining_queues.map(&:queue_and_weight)).sort
+      end
+
+      def sidekiq_queues_yml_outdated?
+        # YAML.load is OK here as we control the file contents
+        config_queues = YAML.load(File.read(SIDEKIQ_QUEUES_PATH))[:queues] # rubocop:disable Security/YAMLLoad
+
+        queues_for_sidekiq_queues_yml != config_queues
       end
 
       private

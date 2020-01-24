@@ -12,6 +12,7 @@ class ProcessCommitWorker
 
   feature_category :source_code_management
   latency_sensitive_worker!
+  weight 3
 
   # project_id - The ID of the project this commit belongs to.
   # user_id - The ID of the user that pushed the commit.

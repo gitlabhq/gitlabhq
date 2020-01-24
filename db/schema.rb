@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_23_155929) do
+ActiveRecord::Schema.define(version: 2020_01_24_053531) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -2046,6 +2046,7 @@ ActiveRecord::Schema.define(version: 2020_01_23_155929) do
     t.string "exception_message", limit: 255
     t.integer "retry_count"
     t.integer "group_id"
+    t.string "source", limit: 128
     t.index ["correlation_id_value"], name: "index_import_failures_on_correlation_id_value"
     t.index ["group_id"], name: "index_import_failures_on_group_id_not_null", where: "(group_id IS NOT NULL)"
     t.index ["project_id"], name: "index_import_failures_on_project_id_not_null", where: "(project_id IS NOT NULL)"

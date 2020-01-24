@@ -108,7 +108,7 @@ describe 'Git HTTP requests' do
 
   shared_examples_for 'project path without .git suffix' do
     context "GET info/refs" do
-      let(:path) { "/#{project_path}/info/refs" }
+      let(:path) { "/#{repository_path}/info/refs" }
 
       context "when no params are added" do
         before do
@@ -116,7 +116,7 @@ describe 'Git HTTP requests' do
         end
 
         it "redirects to the .git suffix version" do
-          expect(response).to redirect_to("/#{project_path}.git/info/refs")
+          expect(response).to redirect_to("/#{repository_path}.git/info/refs")
         end
       end
 
@@ -128,7 +128,7 @@ describe 'Git HTTP requests' do
         end
 
         it "redirects to the .git suffix version" do
-          expect(response).to redirect_to("/#{project_path}.git/info/refs?service=#{params[:service]}")
+          expect(response).to redirect_to("/#{repository_path}.git/info/refs?service=#{params[:service]}")
         end
       end
 
@@ -140,7 +140,7 @@ describe 'Git HTTP requests' do
         end
 
         it "redirects to the .git suffix version" do
-          expect(response).to redirect_to("/#{project_path}.git/info/refs?service=#{params[:service]}")
+          expect(response).to redirect_to("/#{repository_path}.git/info/refs?service=#{params[:service]}")
         end
       end
 
@@ -159,13 +159,13 @@ describe 'Git HTTP requests' do
 
     context "POST git-upload-pack" do
       it "fails to find a route" do
-        expect { clone_post(project_path) }.to raise_error(ActionController::RoutingError)
+        expect { clone_post(repository_path) }.to raise_error(ActionController::RoutingError)
       end
     end
 
     context "POST git-receive-pack" do
       it "fails to find a route" do
-        expect { push_post(project_path) }.to raise_error(ActionController::RoutingError)
+        expect { push_post(repository_path) }.to raise_error(ActionController::RoutingError)
       end
     end
   end
@@ -211,7 +211,7 @@ describe 'Git HTTP requests' do
         end
 
         it_behaves_like 'project path without .git suffix' do
-          let(:project_path) { "#{user.namespace.path}/project.git-project" }
+          let(:repository_path) { "#{user.namespace.path}/project.git-project" }
         end
       end
     end
@@ -820,7 +820,7 @@ describe 'Git HTTP requests' do
       end
 
       it_behaves_like 'project path without .git suffix' do
-        let(:project_path) { create(:project, :repository, :public, path: 'project.git-project').full_path }
+        let(:repository_path) { create(:project, :repository, :public, path: 'project.git-project').full_path }
       end
 
       context "retrieving an info/refs file" do

@@ -387,6 +387,7 @@ class ProjectsController < Projects::ApplicationController
       :merge_method,
       :initialize_with_readme,
       :autoclose_referenced_issues,
+      :suggestion_commit_message,
 
       project_feature_attributes: %i[
         builds_access_level

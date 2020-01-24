@@ -4,7 +4,7 @@ module Constraints
   class ProjectUrlConstrainer
     def matches?(request, existence_check: true)
       namespace_path = request.params[:namespace_id]
-      project_path = request.params[:project_id] || request.params[:id]
+      project_path = request.params[:project_id] || request.params[:id] || request.params[:repository_id]
       full_path = [namespace_path, project_path].join('/')
 
       return false unless ProjectPathValidator.valid_path?(full_path)

@@ -66,6 +66,53 @@ describe Gitaly::Server do
     end
   end
 
+  context "when examining disk statistics for a given server" do
+    let(:disk_available) { 42 }
+    let(:disk_used) { 42 }
+    let(:storage_status) { double('storage_status') }
+
+    before do
+      allow(storage_status).to receive(:storage_name).and_return('default')
+      allow(storage_status).to receive(:available).and_return(disk_available)
+      allow(storage_status).to receive(:used).and_return(disk_used)
+      response = double("response")
+      allow(response).to receive(:storage_statuses).and_return([storage_status])
+      allow_next_instance_of(Gitlab::GitalyClient::ServerService) do |instance|
+        allow(instance).to receive(:disk_statistics).and_return(response)
+      end
+    end
+
+    describe '#disk_available' do
+      subject { server.disk_available }
+
+      it { is_expected.to be_present }
+
+      it "returns disk available for the storage of the instantiated server" do
+        is_expected.to eq(disk_available)
+      end
+    end
+
+    describe '#disk_used' do
+      subject { server.disk_used }
+
+      it { is_expected.to be_present }
+
+      it "returns disk used for the storage of the instantiated server" do
+        is_expected.to eq(disk_used)
+      end
+    end
+
+    describe '#disk_stats' do
+      subject { server.disk_stats }
+
+      it { is_expected.to be_present }
+
+      it "returns the storage of the instantiated server" do
+        is_expected.to eq(storage_status)
+      end
+    end
+  end
+
   describe '#expected_version?' do
     using RSpec::Parameterized::TableSyntax
 

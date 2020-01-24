@@ -13,6 +13,24 @@ module Gitlab
       def info
         GitalyClient.call(@storage, :server_service, :server_info, Gitaly::ServerInfoRequest.new, timeout: GitalyClient.fast_timeout)
       end
+
+      def disk_statistics
+        GitalyClient.call(@storage, :server_service, :disk_statistics, Gitaly::DiskStatisticsRequest.new, timeout: GitalyClient.fast_timeout)
+      end
+
+      def storage_info
+        storage_specific(info)
+      end
+
+      def storage_disk_statistics
+        storage_specific(disk_statistics)
+      end
+
+      private
+
+      def storage_specific(response)
+        response.storage_statuses.find { |status| status.storage_name == @storage }
+      end
     end
   end
 end

@@ -4,9 +4,6 @@ module API
   class BroadcastMessages < Grape::API
     include PaginationParams
 
-    before { authenticate! }
-    before { authenticated_as_admin! }
-
     resource :broadcast_messages do
       helpers do
         def find_message
@@ -40,6 +37,8 @@ module API
         optional :target_path, type: String, desc: 'Target path'
       end
       post do
+        authenticated_as_admin!
+
         message = BroadcastMessage.create(declared_params(include_missing: false))
 
         if message.persisted?
@@ -76,6 +75,8 @@ module API
         optional :target_path, type: String, desc: 'Target path'
       end
       put ':id' do
+        authenticated_as_admin!
+
         message = find_message
 
         if message.update(declared_params(include_missing: false))
@@ -93,6 +94,8 @@ module API
         requires :id, type: Integer, desc: 'Broadcast message ID'
       end
       delete ':id' do
+        authenticated_as_admin!
+
         message = find_message
 
         destroy_conditionally!(message)

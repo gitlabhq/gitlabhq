@@ -12,12 +12,12 @@ module Gitlab
         ERROR_MESSAGE = 'You cannot perform write operations on a read-only instance'
 
         WHITELISTED_GIT_ROUTES = {
-          'projects/git_http' => %w{git_upload_pack git_receive_pack}
+          'repositories/git_http' => %w{git_upload_pack git_receive_pack}
         }.freeze
 
         WHITELISTED_GIT_LFS_ROUTES = {
-          'projects/lfs_api' => %w{batch},
-          'projects/lfs_locks_api' => %w{verify create unlock}
+          'repositories/lfs_api' => %w{batch},
+          'repositories/lfs_locks_api' => %w{verify create unlock}
         }.freeze
 
         WHITELISTED_GIT_REVISION_ROUTES = {

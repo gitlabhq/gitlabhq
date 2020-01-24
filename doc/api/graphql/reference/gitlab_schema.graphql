@@ -6066,6 +6066,11 @@ type SentryDetailedError {
   culprit: String!
 
   """
+  External Base URL of the Sentry Instance
+  """
+  externalBaseUrl: String!
+
+  """
   External URL of the error
   """
   externalUrl: String!
@@ -6099,6 +6104,11 @@ type SentryDetailedError {
   Path to the GitLab page for the GitLab commit attributed to the error
   """
   gitlabCommitPath: String
+
+  """
+  URL of GitLab Issue
+  """
+  gitlabIssuePath: String
 
   """
   ID (global ID) of the error
@@ -6156,6 +6166,11 @@ type SentryDetailedError {
   status: SentryErrorStatus!
 
   """
+  Tags associated with the Sentry Error
+  """
+  tags: SentryErrorTags!
+
+  """
   Title of the error
   """
   title: String!
@@ -6206,6 +6221,21 @@ enum SentryErrorStatus {
   Error is unresolved
   """
   UNRESOLVED
+}
+
+"""
+State of a Sentry error
+"""
+type SentryErrorTags {
+  """
+  Severity level of the Sentry Error
+  """
+  level: String
+
+  """
+  Logger of the Sentry Error
+  """
+  logger: String
 }
 
 """

@@ -1,0 +1,5 @@
+---
+title: Add accidentally deleted project config for custom apply suggestions
+merge_request: 23687
+author: Fabio Huser
+type: fixed

@@ -439,6 +439,16 @@ Suggestions covering multiple lines are limited to 100 lines _above_ and 100
 lines _below_ the commented diff line, allowing up to 200 changed lines per
 suggestion.
 
+### Code block nested in Suggestions
+
+If you need to make a suggestion that involves a
+[fenced code block](../markdown.md#code-spans-and-blocks), wrap your suggestion in four backticks
+instead of the usual three.
+
+![A comment editor with a suggestion with a fenced code block](img/suggestion_code_block_editor_v12_8.png)
+
+![Ouput of a comment with a suggestion with a fenced code block](img/suggestion_code_block_output_v12_8.png)
+
 ### Configure the commit message for applied Suggestions
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/13086) in GitLab 12.7.

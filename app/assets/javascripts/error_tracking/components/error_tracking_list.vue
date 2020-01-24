@@ -20,6 +20,8 @@ import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { __ } from '~/locale';
 import _ from 'underscore';
 
+export const tableDataClass = 'table-col d-flex d-sm-table-cell';
+
 export default {
   FIRST_PAGE: 1,
   PREV_PAGE: 1,
@@ -29,37 +31,37 @@ export default {
       key: 'error',
       label: __('Error'),
       thClass: 'w-60p',
-      tdClass: 'table-col d-flex d-sm-table-cell px-3',
+      tdClass: `${tableDataClass} px-3`,
     },
     {
       key: 'events',
       label: __('Events'),
       thClass: 'text-right',
-      tdClass: 'table-col d-flex d-sm-table-cell',
+      tdClass: `${tableDataClass}`,
     },
     {
       key: 'users',
       label: __('Users'),
       thClass: 'text-right',
-      tdClass: 'table-col d-flex d-sm-table-cell',
+      tdClass: `${tableDataClass}`,
     },
     {
       key: 'lastSeen',
       label: __('Last seen'),
       thClass: '',
-      tdClass: 'table-col d-flex d-sm-table-cell',
+      tdClass: `${tableDataClass}`,
     },
     {
       key: 'ignore',
       label: '',
       thClass: 'w-3rem',
-      tdClass: 'table-col d-flex pl-0 d-sm-table-cell',
+      tdClass: `${tableDataClass} pl-0`,
     },
     {
       key: 'resolved',
       label: '',
       thClass: 'w-3rem',
-      tdClass: 'table-col d-flex pl-0 d-sm-table-cell',
+      tdClass: `${tableDataClass} pl-0`,
     },
     {
       key: 'details',

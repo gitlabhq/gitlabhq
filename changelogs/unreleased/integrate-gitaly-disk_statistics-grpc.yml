@@ -1,0 +1,5 @@
+---
+title: "Support retrieval of disk statistics from Gitaly"
+merge_request: 22226
+author: Nels Nelson
+type: added

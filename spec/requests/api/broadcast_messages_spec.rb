@@ -8,22 +8,10 @@ describe API::BroadcastMessages do
   set(:message) { create(:broadcast_message) }
 
   describe 'GET /broadcast_messages' do
-    it 'returns a 401 for anonymous users' do
-      get api('/broadcast_messages')
-
-      expect(response).to have_gitlab_http_status(401)
-    end
-
-    it 'returns a 403 for users' do
-      get api('/broadcast_messages', user)
-
-      expect(response).to have_gitlab_http_status(403)
-    end
-
-    it 'returns an Array of BroadcastMessages for admins' do
+    it 'returns an Array of BroadcastMessages' do
       create(:broadcast_message)
 
-      get api('/broadcast_messages', admin)
+      get api('/broadcast_messages')
 
       expect(response).to have_gitlab_http_status(200)
       expect(response).to include_pagination_headers
@@ -34,20 +22,8 @@ describe API::BroadcastMessages do
   end
 
   describe 'GET /broadcast_messages/:id' do
-    it 'returns a 401 for anonymous users' do
+    it 'returns the specified message' do
       get api("/broadcast_messages/#{message.id}")
-
-      expect(response).to have_gitlab_http_status(401)
-    end
-
-    it 'returns a 403 for users' do
-      get api("/broadcast_messages/#{message.id}", user)
-
-      expect(response).to have_gitlab_http_status(403)
-    end
-
-    it 'returns the specified message for admins' do
-      get api("/broadcast_messages/#{message.id}", admin)
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['id']).to eq message.id

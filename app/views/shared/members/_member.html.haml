@@ -22,6 +22,8 @@
         - if user == current_user
           %span.badge.badge-success.prepend-left-5= _("It's you")
 
+        = render_if_exists 'shared/members/ee/license_badge', user: user, group: @group
+
         - if user.blocked?
           %label.badge.badge-danger
             %strong= _("Blocked")

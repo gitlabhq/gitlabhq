@@ -9,7 +9,6 @@ class Feature
       %w[
         cache_invalidator
         inforef_uploadpack_cache
-        get_tag_messages_go
         filter_shas_with_signatures_go
         commit_without_batch_check
       ].freeze

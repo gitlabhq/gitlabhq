@@ -7,6 +7,7 @@ class NewMergeRequestWorker
   feature_category :source_code_management
   latency_sensitive_worker!
   worker_resource_boundary :cpu
+  weight 2
 
   def perform(merge_request_id, user_id)
     return unless objects_found?(merge_request_id, user_id)

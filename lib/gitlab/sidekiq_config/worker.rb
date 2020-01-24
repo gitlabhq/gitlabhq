@@ -7,8 +7,9 @@ module Gitlab
 
       attr_reader :klass
       delegate :feature_category_not_owned?, :get_feature_category,
-               :get_worker_resource_boundary, :latency_sensitive_worker?,
-               :queue, :worker_has_external_dependencies?,
+               :get_weight, :get_worker_resource_boundary,
+               :latency_sensitive_worker?, :queue, :queue_namespace,
+               :worker_has_external_dependencies?,
                to: :klass
 
       def initialize(klass, ee:)
@@ -35,7 +36,7 @@ module Gitlab
 
       # Put namespaced queues first
       def to_sort
-        [queue.include?(':') ? 0 : 1, queue]
+        [queue_namespace ? 0 : 1, queue]
       end
 
       # YAML representation
@@ -45,6 +46,14 @@ module Gitlab
 
       def to_yaml
         queue
+      end
+
+      def namespace_and_weight
+        [queue_namespace, get_weight]
+      end
+
+      def queue_and_weight
+        [queue, get_weight]
       end
     end
   end

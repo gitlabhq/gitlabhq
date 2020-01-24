@@ -73,13 +73,17 @@ module Gitlab
 
         relation_object.assign_attributes(importable_class_sym => @importable)
 
-        import_failure_service.with_retry(relation_key, relation_index) do
+        import_failure_service.with_retry(action: 'relation_object.save!', relation_key: relation_key, relation_index: relation_index) do
           relation_object.save!
         end
 
         save_id_mapping(relation_key, data_hash, relation_object)
       rescue => e
-        import_failure_service.log_import_failure(relation_key, relation_index, e)
+        import_failure_service.log_import_failure(
+          source: 'process_relation_item!',
+          relation_key: relation_key,
+          relation_index: relation_index,
+          exception: e)
       end
 
       def import_failure_service

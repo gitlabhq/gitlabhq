@@ -15,6 +15,10 @@ unless Gitlab::Runtime.sidekiq?
       data
     end
 
+    # This isn't a user-reachable controller; we use it to check for a
+    # valid CSRF token in the API
+    config.lograge.ignore_actions = ['Gitlab::RequestForgeryProtection::Controller#index']
+
     # Add request parameters to log output
     config.lograge.custom_options = lambda do |event|
       params = event.payload[:params]

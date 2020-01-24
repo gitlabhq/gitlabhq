@@ -3,8 +3,11 @@
 require 'fast_spec_helper'
 
 describe Gitlab::SidekiqConfig::Worker do
-  def worker_with_queue(queue)
-    described_class.new(double(queue: queue), ee: false)
+  def create_worker(queue:, weight: 0)
+    namespace = queue.include?(':') && queue.split(':').first
+    inner_worker = double(queue: queue, queue_namespace: namespace, get_weight: weight)
+
+    described_class.new(inner_worker, ee: false)
   end
 
   describe '#ee?' do
@@ -34,9 +37,9 @@ describe Gitlab::SidekiqConfig::Worker do
 
   describe 'delegations' do
     [
-      :feature_category_not_owned?, :get_feature_category,
+      :feature_category_not_owned?, :get_feature_category, :get_weight,
       :get_worker_resource_boundary, :latency_sensitive_worker?, :queue,
-      :worker_has_external_dependencies?
+      :queue_namespace, :worker_has_external_dependencies?
     ].each do |meth|
       it "delegates #{meth} to the worker class" do
         worker = double
@@ -50,8 +53,8 @@ describe Gitlab::SidekiqConfig::Worker do
 
   describe 'sorting' do
     it 'sorts queues with a namespace before those without a namespace' do
-      namespaced_worker = worker_with_queue('namespace:queue')
-      plain_worker = worker_with_queue('a_queue')
+      namespaced_worker = create_worker(queue: 'namespace:queue')
+      plain_worker = create_worker(queue: 'a_queue')
 
       expect([plain_worker, namespaced_worker].sort)
         .to eq([namespaced_worker, plain_worker])
@@ -59,12 +62,12 @@ describe Gitlab::SidekiqConfig::Worker do
 
     it 'sorts alphabetically by queue' do
       workers = [
-        worker_with_queue('namespace:a'),
-        worker_with_queue('namespace:b'),
-        worker_with_queue('other_namespace:a'),
-        worker_with_queue('other_namespace:b'),
-        worker_with_queue('a'),
-        worker_with_queue('b')
+        create_worker(queue: 'namespace:a'),
+        create_worker(queue: 'namespace:b'),
+        create_worker(queue: 'other_namespace:a'),
+        create_worker(queue: 'other_namespace:b'),
+        create_worker(queue: 'a'),
+        create_worker(queue: 'b')
       ]
 
       expect(workers.shuffle.sort).to eq(workers)
@@ -73,12 +76,26 @@ describe Gitlab::SidekiqConfig::Worker do
 
   describe 'YAML encoding' do
     it 'encodes the worker in YAML as a string of the queue' do
-      worker_a = worker_with_queue('a')
-      worker_b = worker_with_queue('b')
+      worker_a = create_worker(queue: 'a')
+      worker_b = create_worker(queue: 'b')
 
       expect(YAML.dump(worker_a)).to eq(YAML.dump('a'))
       expect(YAML.dump([worker_a, worker_b]))
         .to eq(YAML.dump(%w[a b]))
+    end
+  end
+
+  describe '#namespace_and_weight' do
+    it 'returns a namespace, weight pair for the worker' do
+      expect(create_worker(queue: 'namespace:a', weight: 2).namespace_and_weight)
+        .to eq(['namespace', 2])
+    end
+  end
+
+  describe '#queue_and_weight' do
+    it 'returns a queue, weight pair for the worker' do
+      expect(create_worker(queue: 'namespace:a', weight: 2).queue_and_weight)
+        .to eq(['namespace:a', 2])
     end
   end
 end

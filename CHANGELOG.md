@@ -2,10 +2,6 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
-## 12.7.2
-
-- No changes.
-
 ## 12.7.1
 
 ### Fixed (6 changes)

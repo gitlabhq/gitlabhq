@@ -5,7 +5,7 @@ require 'spec_helper'
 describe LfsRequest do
   include ProjectForksHelper
 
-  controller(Projects::GitHttpClientController) do
+  controller(Repositories::GitHttpClientController) do
     # `described_class` is not available in this context
     include LfsRequest
 

@@ -7,6 +7,24 @@ module WorkerAttributes
   # `worker_resource_boundary` attribute
   VALID_RESOURCE_BOUNDARIES = [:memory, :cpu, :unknown].freeze
 
+  NAMESPACE_WEIGHTS = {
+    auto_devops: 2,
+    auto_merge: 3,
+    chaos: 2,
+    deployment: 3,
+    mail_scheduler: 2,
+    notifications: 2,
+    pipeline_cache: 3,
+    pipeline_creation: 4,
+    pipeline_default: 3,
+    pipeline_hooks: 2,
+    pipeline_processing: 5,
+
+    # EE-specific
+    epics: 2,
+    incident_management: 2
+  }.stringify_keys.freeze
+
   class_methods do
     def feature_category(value)
       raise "Invalid category. Use `feature_category_not_owned!` to mark a worker as not owned" if value == :not_owned
@@ -68,6 +86,16 @@ module WorkerAttributes
 
     def get_worker_resource_boundary
       worker_attributes[:resource_boundary] || :unknown
+    end
+
+    def weight(value)
+      worker_attributes[:weight] = value
+    end
+
+    def get_weight
+      worker_attributes[:weight] ||
+        NAMESPACE_WEIGHTS[queue_namespace] ||
+        1
     end
 
     protected

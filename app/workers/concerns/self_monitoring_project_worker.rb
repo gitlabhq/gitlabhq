@@ -9,6 +9,7 @@ module SelfMonitoringProjectWorker
     # Other Functionality. Metrics seems to be the closest feature_category for
     # this worker.
     feature_category :metrics
+    weight 2
   end
 
   LEASE_TIMEOUT = 15.minutes.to_i

@@ -1,0 +1,5 @@
+---
+title: Add tags, external_base_url, gitlab_issue to Sentry Detailed Error graphql
+merge_request: 23483
+author:
+type: added

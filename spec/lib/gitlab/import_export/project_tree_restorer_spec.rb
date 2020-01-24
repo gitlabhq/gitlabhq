@@ -498,6 +498,58 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       end
     end
 
+    context 'when post import action throw non-retriable exception' do
+      let(:exception) { StandardError.new('post_import_error') }
+
+      before do
+        setup_import_export_config('light')
+        expect(project)
+          .to receive(:merge_requests)
+          .and_raise(exception)
+      end
+
+      it 'report post import error' do
+        expect(restored_project_json).to eq(false)
+        expect(shared.errors).to include('post_import_error')
+      end
+    end
+
+    context 'when post import action throw retriable exception one time' do
+      let(:exception) { GRPC::DeadlineExceeded.new }
+
+      before do
+        setup_import_export_config('light')
+        expect(project)
+          .to receive(:merge_requests)
+          .and_raise(exception)
+        expect(project)
+          .to receive(:merge_requests)
+          .and_call_original
+        expect(restored_project_json).to eq(true)
+      end
+
+      it_behaves_like 'restores project successfully',
+                      issues: 1,
+                      labels: 2,
+                      label_with_priorities: 'A project label',
+                      milestones: 1,
+                      first_issue_labels: 1,
+                      services: 1,
+                      import_failures: 1
+
+      it 'records the failures in the database' do
+        import_failure = ImportFailure.last
+
+        expect(import_failure.project_id).to eq(project.id)
+        expect(import_failure.relation_key).to be_nil
+        expect(import_failure.relation_index).to be_nil
+        expect(import_failure.exception_class).to eq('GRPC::DeadlineExceeded')
+        expect(import_failure.exception_message).to be_present
+        expect(import_failure.correlation_id_value).not_to be_empty
+        expect(import_failure.created_at).to be_present
+      end
+    end
+
     context 'when the project has overridden params in import data' do
       before do
         setup_import_export_config('light')

@@ -119,6 +119,7 @@ export default {
               :class="retryButtonClass"
               :href="job.retry_path"
               data-method="post"
+              data-qa-selector="retry_button"
               rel="nofollow"
               >{{ __('Retry') }}</gl-link
             >

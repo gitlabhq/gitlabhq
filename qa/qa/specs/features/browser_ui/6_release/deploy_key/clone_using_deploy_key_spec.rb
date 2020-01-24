@@ -46,12 +46,7 @@ module QA
 
           deploy_key_name = "DEPLOY_KEY_#{key.name}_#{key.bits}"
 
-          Resource::CiVariable.fabricate_via_browser_ui! do |resource|
-            resource.project = @project
-            resource.key = deploy_key_name
-            resource.value = key.private_key
-            resource.masked = false
-          end
+          make_ci_variable(deploy_key_name, key)
 
           gitlab_ci = <<~YAML
           cat-config:
@@ -88,6 +83,17 @@ module QA
           Page::Project::Job::Show.perform do |job|
             expect(job).to be_successful
             expect(job.output).to include(sha1sum)
+          end
+        end
+
+        private
+
+        def make_ci_variable(key_name, key)
+          Resource::CiVariable.fabricate_via_api! do |resource|
+            resource.project = @project
+            resource.key = key_name
+            resource.value = key.private_key
+            resource.masked = false
           end
         end
       end
