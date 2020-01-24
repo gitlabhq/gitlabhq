@@ -301,7 +301,7 @@ describe Projects::ErrorTrackingController do
       context 'update result is successful' do
         before do
           expect(issue_update_service).to receive(:execute)
-            .and_return(status: :success, updated: true, closed_issue_iid: 1234)
+            .and_return(status: :success, updated: true)
 
           update_issue
         end

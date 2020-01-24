@@ -6,15 +6,9 @@
   "properties" : {
     "result": {
       "type": "object",
-      "required" : [
-        "status",
-        "updated",
-        "closed_issue_iid"
-      ],
       "properties": {
         "status": { "type": "string" },
-        "updated": { "type": "boolean" },
-        "closed_issue_iid": { "type": ["integer", "null"] }
+        "updated": { "type": "boolean" }
       }
     }
   },

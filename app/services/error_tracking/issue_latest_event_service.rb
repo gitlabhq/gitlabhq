@@ -4,7 +4,7 @@ module ErrorTracking
   class IssueLatestEventService < ErrorTracking::BaseService
     private
 
-    def perform
+    def fetch
       project_error_tracking_setting.issue_latest_event(issue_id: params[:issue_id])
     end
 

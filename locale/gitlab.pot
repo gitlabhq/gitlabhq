@@ -22723,9 +22723,6 @@ msgstr[1] ""
 msgid "reset it."
 msgstr ""
 
-msgid "resolved the corresponding error and closed the issue."
-msgstr ""
-
 msgid "score"
 msgstr ""
 

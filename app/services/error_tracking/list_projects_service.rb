@@ -12,7 +12,7 @@ module ErrorTracking
 
     private
 
-    def perform
+    def fetch
       project_error_tracking_setting.list_sentry_projects
     end
 

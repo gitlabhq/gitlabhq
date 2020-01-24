@@ -4,7 +4,6 @@ entry.
 
 ## 12.7.1
 
-- No changes.
 ### Fixed (6 changes)
 
 - Fix loading of sub-epics caused by wrong subscription check. !23184

@@ -7,7 +7,7 @@ module ErrorTracking
       return unauthorized if unauthorized
 
       begin
-        response = perform
+        response = fetch
       rescue Sentry::Client::Error => e
         return error(e.message, :bad_request)
       rescue Sentry::Client::MissingKeysError => e
@@ -22,7 +22,7 @@ module ErrorTracking
 
     private
 
-    def perform
+    def fetch
       raise NotImplementedError,
           "#{self.class} does not implement #{__method__}"
     end
@@ -61,10 +61,6 @@ module ErrorTracking
 
     def can_read?
       can?(current_user, :read_sentry_issue, project)
-    end
-
-    def can_update?
-      can?(current_user, :update_sentry_issue, project)
     end
   end
 end

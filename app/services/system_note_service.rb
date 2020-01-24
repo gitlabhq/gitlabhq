@@ -99,12 +99,6 @@ module SystemNoteService
     ::SystemNotes::TimeTrackingService.new(noteable: noteable, project: project, author: author).change_time_spent
   end
 
-  def close_after_error_tracking_resolve(issue, project, author)
-    body = _('resolved the corresponding error and closed the issue.')
-
-    create_note(NoteSummary.new(issue, project, author, body, action: 'closed'))
-  end
-
   def change_status(noteable, project, author, status, source = nil)
     ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).change_status(status, source)
   end
