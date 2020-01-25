@@ -11,6 +11,12 @@ RSpec.shared_examples 'boards list service' do
 
       service.execute
     end
+
+    context 'when create_default_board is false' do
+      it 'does not create a new parent board' do
+        expect { service.execute(create_default_board: false) }.not_to change(parent.boards, :count)
+      end
+    end
   end
 
   context 'when parent has a board' do

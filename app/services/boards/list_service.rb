@@ -2,8 +2,8 @@
 
 module Boards
   class ListService < Boards::BaseService
-    def execute
-      create_board! if parent.boards.empty?
+    def execute(create_default_board: true)
+      create_board! if create_default_board && parent.boards.empty?
 
       if parent.multiple_issue_boards_available?
         boards
