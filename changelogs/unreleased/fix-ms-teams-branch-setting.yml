@@ -1,0 +1,5 @@
+---
+title: Fix missing API notification argument for Microsoft Teams
+merge_request: 23571
+author: Seiji Suenaga
+type: fixed
