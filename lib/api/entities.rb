@@ -11,67 +11,8 @@ module API
       expose :access_level
     end
 
-    class UserSafe < Grape::Entity
-      expose :id, :name, :username
-    end
-
-    class UserBasic < UserSafe
-      expose :state
-
-      expose :avatar_url do |user, options|
-        user.avatar_url(only_path: false)
-      end
-
-      expose :avatar_path, if: ->(user, options) { options.fetch(:only_path, false) && user.avatar_path }
-      expose :custom_attributes, using: 'API::Entities::CustomAttribute', if: :with_custom_attributes
-
-      expose :web_url do |user, options|
-        Gitlab::Routing.url_helpers.user_url(user)
-      end
-    end
-
-    class User < UserBasic
-      expose :created_at, if: ->(user, opts) { Ability.allowed?(opts[:current_user], :read_user_profile, user) }
-      expose :bio, :location, :public_email, :skype, :linkedin, :twitter, :website_url, :organization
-    end
-
-    class UserActivity < Grape::Entity
-      expose :username
-      expose :last_activity_on
-      expose :last_activity_on, as: :last_activity_at # Back-compat
-    end
-
-    class UserStarsProject < Grape::Entity
-      expose :starred_since
-      expose :user, using: Entities::UserBasic
-    end
-
     class Identity < Grape::Entity
       expose :provider, :extern_uid
-    end
-
-    class UserPublic < User
-      expose :last_sign_in_at
-      expose :confirmed_at
-      expose :last_activity_on
-      expose :email
-      expose :theme_id, :color_scheme_id, :projects_limit, :current_sign_in_at
-      expose :identities, using: Entities::Identity
-      expose :can_create_group?, as: :can_create_group
-      expose :can_create_project?, as: :can_create_project
-      expose :two_factor_enabled?, as: :two_factor_enabled
-      expose :external
-      expose :private_profile
-    end
-
-    class UserWithAdmin < UserPublic
-      expose :admin?, as: :is_admin
-    end
-
-    class UserDetailsWithAdmin < UserWithAdmin
-      expose :highest_role
-      expose :current_sign_in_ip
-      expose :last_sign_in_ip
     end
 
     class UserStatus < Grape::Entity
