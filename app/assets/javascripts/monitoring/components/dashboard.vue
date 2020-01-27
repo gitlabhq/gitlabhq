@@ -69,6 +69,11 @@ export default {
       required: false,
       default: true,
     },
+    showHeader: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
     showPanels: {
       type: Boolean,
       required: false,
@@ -129,7 +134,8 @@ export default {
     },
     environmentsEndpoint: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     currentEnvironmentName: {
       type: String,
@@ -356,86 +362,88 @@ export default {
 
 <template>
   <div class="prometheus-graphs">
-    <div class="prometheus-graphs-header gl-p-3 pb-0 border-bottom bg-gray-light">
+    <div
+      v-if="showHeader"
+      ref="prometheusGraphsHeader"
+      class="prometheus-graphs-header gl-p-3 pb-0 border-bottom bg-gray-light"
+    >
       <div class="row">
-        <template v-if="environmentsEndpoint">
-          <gl-form-group
-            :label="__('Dashboard')"
-            label-size="sm"
-            label-for="monitor-dashboards-dropdown"
-            class="col-sm-12 col-md-6 col-lg-2"
-          >
-            <dashboards-dropdown
-              id="monitor-dashboards-dropdown"
-              class="mb-0 d-flex"
-              toggle-class="dropdown-menu-toggle"
-              :default-branch="defaultBranch"
-              :selected-dashboard="selectedDashboard"
-              @selectDashboard="selectDashboard($event)"
-            />
-          </gl-form-group>
+        <gl-form-group
+          :label="__('Dashboard')"
+          label-size="sm"
+          label-for="monitor-dashboards-dropdown"
+          class="col-sm-12 col-md-6 col-lg-2"
+        >
+          <dashboards-dropdown
+            id="monitor-dashboards-dropdown"
+            class="mb-0 d-flex"
+            toggle-class="dropdown-menu-toggle"
+            :default-branch="defaultBranch"
+            :selected-dashboard="selectedDashboard"
+            @selectDashboard="selectDashboard($event)"
+          />
+        </gl-form-group>
 
-          <gl-form-group
-            :label="s__('Metrics|Environment')"
-            label-size="sm"
-            label-for="monitor-environments-dropdown"
-            class="col-sm-6 col-md-6 col-lg-2"
+        <gl-form-group
+          :label="s__('Metrics|Environment')"
+          label-size="sm"
+          label-for="monitor-environments-dropdown"
+          class="col-sm-6 col-md-6 col-lg-2"
+        >
+          <gl-dropdown
+            id="monitor-environments-dropdown"
+            ref="monitorEnvironmentsDropdown"
+            data-qa-selector="environments_dropdown"
+            class="mb-0 d-flex"
+            toggle-class="dropdown-menu-toggle"
+            menu-class="monitor-environment-dropdown-menu"
+            :text="currentEnvironmentName"
+            :disabled="filteredEnvironments.length === 0"
           >
-            <gl-dropdown
-              id="monitor-environments-dropdown"
-              ref="monitorEnvironmentsDropdown"
-              data-qa-selector="environments_dropdown"
-              class="mb-0 d-flex"
-              toggle-class="dropdown-menu-toggle"
-              menu-class="monitor-environment-dropdown-menu"
-              :text="currentEnvironmentName"
-              :disabled="filteredEnvironments.length === 0"
-            >
-              <div class="d-flex flex-column overflow-hidden">
-                <gl-search-box-by-type
-                  v-if="shouldRenderSearchableEnvironmentsDropdown"
-                  ref="monitorEnvironmentsDropdownSearch"
-                  class="m-2"
-                  @input="debouncedEnvironmentsSearch"
-                />
-                <div class="flex-fill overflow-auto">
-                  <gl-dropdown-item
-                    v-for="environment in filteredEnvironments"
-                    :key="environment.id"
-                    :active="environment.name === currentEnvironmentName"
-                    active-class="is-active"
-                    :href="environment.metrics_path"
-                    >{{ environment.name }}</gl-dropdown-item
-                  >
-                </div>
-                <div
-                  v-if="shouldRenderSearchableEnvironmentsDropdown"
-                  v-show="filteredEnvironments.length === 0"
-                  ref="monitorEnvironmentsDropdownMsg"
-                  class="text-secondary no-matches-message"
+            <div class="d-flex flex-column overflow-hidden">
+              <gl-search-box-by-type
+                v-if="shouldRenderSearchableEnvironmentsDropdown"
+                ref="monitorEnvironmentsDropdownSearch"
+                class="m-2"
+                @input="debouncedEnvironmentsSearch"
+              />
+              <div class="flex-fill overflow-auto">
+                <gl-dropdown-item
+                  v-for="environment in filteredEnvironments"
+                  :key="environment.id"
+                  :active="environment.name === currentEnvironmentName"
+                  active-class="is-active"
+                  :href="environment.metrics_path"
+                  >{{ environment.name }}</gl-dropdown-item
                 >
-                  {{ s__('No matching results') }}
-                </div>
               </div>
-            </gl-dropdown>
-          </gl-form-group>
+              <div
+                v-if="shouldRenderSearchableEnvironmentsDropdown"
+                v-show="filteredEnvironments.length === 0"
+                ref="monitorEnvironmentsDropdownMsg"
+                class="text-secondary no-matches-message"
+              >
+                {{ s__('No matching results') }}
+              </div>
+            </div>
+          </gl-dropdown>
+        </gl-form-group>
 
-          <gl-form-group
-            :label="s__('Metrics|Show last')"
-            label-size="sm"
-            label-for="monitor-time-window-dropdown"
-            class="col-sm-6 col-md-6 col-lg-4"
-          >
-            <date-time-picker
-              ref="dateTimePicker"
-              :start="startDate"
-              :end="endDate"
-              :time-windows="datePickerTimeWindows"
-              @apply="onDateTimePickerApply"
-              @invalid="onDateTimePickerInvalid"
-            />
-          </gl-form-group>
-        </template>
+        <gl-form-group
+          :label="s__('Metrics|Show last')"
+          label-size="sm"
+          label-for="monitor-time-window-dropdown"
+          class="col-sm-6 col-md-6 col-lg-4"
+        >
+          <date-time-picker
+            ref="dateTimePicker"
+            :start="startDate"
+            :end="endDate"
+            :time-windows="datePickerTimeWindows"
+            @apply="onDateTimePickerApply"
+            @invalid="onDateTimePickerInvalid"
+          />
+        </gl-form-group>
 
         <gl-form-group
           v-if="hasHeaderButtons"

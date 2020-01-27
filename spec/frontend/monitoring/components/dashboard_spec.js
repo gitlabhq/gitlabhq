@@ -412,11 +412,15 @@ describe('Dashboard', () => {
   describe('cluster health', () => {
     beforeEach(done => {
       mock.onGet(propsData.metricsEndpoint).reply(statusCodes.OK, JSON.stringify({}));
-      createShallowWrapper({ hasMetrics: true });
+      createShallowWrapper({ hasMetrics: true, showHeader: false });
 
       // all_dashboards is not defined in health dashboards
       wrapper.vm.$store.commit(`monitoringDashboard/${types.SET_ALL_DASHBOARDS}`, undefined);
       wrapper.vm.$nextTick(done);
+    });
+
+    it('hides dashboard header by default', () => {
+      expect(wrapper.find({ ref: 'prometheusGraphsHeader' }).exists()).toEqual(false);
     });
 
     it('renders correctly', () => {

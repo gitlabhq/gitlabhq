@@ -1,0 +1,6 @@
+---
+title: Fix Pipeline failed notification email not being delivered if the failed job
+  is a bridge job
+merge_request: 23668
+author:
+type: fixed

@@ -1,0 +1,6 @@
+extends: existence
+message: Use a comma before the last "and" in a list of three or more items.
+link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#punctuation
+level: warning
+tokens:
+  - '(?:[^,]+,){1,}\s\w+\sand'

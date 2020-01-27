@@ -420,6 +420,7 @@ The following are some suggested linters you can install locally and sample conf
 
 - [`proselint`](#proselint)
 - [markdownlint](#markdownlint), which is the same as the test run in [`docs-lint`](#testing)
+- [Vale](#vale), for English language grammar and syntax suggestions
 
 NOTE: **Note:**
 This list does not limit what other linters you can add to your local documentation writing toolchain.
@@ -518,6 +519,23 @@ rules, and also to configure optional parameters for enabled rules as needed. Yo
 also check [the issue](https://gitlab.com/gitlab-org/gitlab-foss/issues/64352) that
 tracked the changes required to implement these rules, and details which rules were
 on or off when markdownlint was enabled on the docs.
+
+#### `Vale`
+
+[Vale](https://errata-ai.github.io/vale/) is a grammar, style, and word usage linter
+for the English language. Vale's configuration is stored in the
+[`.vale.ini`](https://gitlab.com/gitlab-org/gitlab/blob/master/.vale.ini) file
+located in the root directory of the [GitLab repository](https://gitlab.com/gitlab-org/gitlab).
+
+Vale supports creating [custom tests](https://errata-ai.github.io/vale/styles/),
+stored in the `doc/.linting/vale/styles/gitlab` directory, that extend any of
+several types of checks.
+
+To view linting suggestions locally, you must install Vale on your own machine, and
+[configure the text editor of your choice](https://errata-ai.github.io/vale/#local-use-by-a-single-writer)
+to display the results.
+
+Vale's test results are not currently displayed in CI, but may be displayed in the future.
 
 ## Danger Bot
 

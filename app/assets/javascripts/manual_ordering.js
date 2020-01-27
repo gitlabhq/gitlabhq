@@ -29,6 +29,7 @@ const initManualOrdering = (draggableSelector = 'li.issue') => {
     issueList,
     getBoardSortableDefaultOptions({
       scroll: true,
+      fallbackTolerance: 1,
       dataIdAttr: 'data-id',
       fallbackOnBody: false,
       group: {
