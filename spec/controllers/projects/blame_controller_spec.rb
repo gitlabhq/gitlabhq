@@ -36,7 +36,7 @@ describe Projects::BlameController do
 
       it 'redirects' do
         expect(subject)
-            .to redirect_to("/#{project.full_path}/tree/master")
+            .to redirect_to("/#{project.full_path}/-/tree/master")
       end
     end
 

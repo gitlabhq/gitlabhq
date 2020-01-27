@@ -103,7 +103,7 @@ describe MarkupHelper do
         let(:requested_path) { 'files/images/README.md' }
 
         it 'returns the correct HTML for the image' do
-          expanded_path = "/#{project.full_path}/raw/master/files/images/#{image_file}"
+          expanded_path = "/#{project.full_path}/-/raw/master/files/images/#{image_file}"
 
           expect(subject.css('a')[0].attr('href')).to eq(expanded_path)
           expect(subject.css('img')[0].attr('data-src')).to eq(expanded_path)

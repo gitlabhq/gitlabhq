@@ -87,7 +87,7 @@ describe ProfilesController, :request_store do
       put :update, params: { user: { status: { message: 'Working hard!' } } }
 
       expect(user.reload.status.message).to eq('Working hard!')
-      expect(response).to have_gitlab_http_status(302)
+      expect(response).to have_gitlab_http_status(:found)
     end
   end
 

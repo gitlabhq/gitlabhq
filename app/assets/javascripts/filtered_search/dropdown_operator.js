@@ -45,13 +45,13 @@ export default class DropdownOperator extends FilteredSearchDropdown {
         tag: 'equal',
         type: 'string',
         title: '=',
-        help: __('Is'),
+        help: __('is'),
       },
       {
         tag: 'not-equal',
         type: 'string',
         title: '!=',
-        help: __('Is not'),
+        help: __('is not'),
       },
     ];
     this.droplab.changeHookList(this.hookId, this.dropdown, [Filter], this.config);

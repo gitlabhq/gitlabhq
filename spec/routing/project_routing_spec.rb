@@ -273,16 +273,16 @@ describe 'project routing' do
     end
 
     it 'to #logs_tree' do
-      expect(get('/gitlab/gitlabhq/refs/stable/logs_tree')).to route_to('projects/refs#logs_tree', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'stable')
-      expect(get('/gitlab/gitlabhq/refs/feature%2345/logs_tree')).to route_to('projects/refs#logs_tree', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature#45')
-      expect(get('/gitlab/gitlabhq/refs/feature%2B45/logs_tree')).to route_to('projects/refs#logs_tree', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature+45')
-      expect(get('/gitlab/gitlabhq/refs/feature@45/logs_tree')).to route_to('projects/refs#logs_tree', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature@45')
-      expect(get('/gitlab/gitlabhq/refs/stable/logs_tree/foo/bar/baz')).to route_to('projects/refs#logs_tree', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'stable', path: 'foo/bar/baz')
-      expect(get('/gitlab/gitlabhq/refs/feature%2345/logs_tree/foo/bar/baz')).to route_to('projects/refs#logs_tree', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature#45', path: 'foo/bar/baz')
-      expect(get('/gitlab/gitlabhq/refs/feature%2B45/logs_tree/foo/bar/baz')).to route_to('projects/refs#logs_tree', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature+45', path: 'foo/bar/baz')
-      expect(get('/gitlab/gitlabhq/refs/feature@45/logs_tree/foo/bar/baz')).to route_to('projects/refs#logs_tree', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature@45', path: 'foo/bar/baz')
-      expect(get('/gitlab/gitlabhq/refs/stable/logs_tree/files.scss')).to route_to('projects/refs#logs_tree', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'stable', path: 'files.scss')
-      assert_routing({ path: "/gitlab/gitlabhq/refs/stable/logs_tree/new%0A%0Aline.txt",
+      expect(get('/gitlab/gitlabhq/-/refs/stable/logs_tree')).to route_to('projects/refs#logs_tree', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'stable')
+      expect(get('/gitlab/gitlabhq/-/refs/feature%2345/logs_tree')).to route_to('projects/refs#logs_tree', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature#45')
+      expect(get('/gitlab/gitlabhq/-/refs/feature%2B45/logs_tree')).to route_to('projects/refs#logs_tree', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature+45')
+      expect(get('/gitlab/gitlabhq/-/refs/feature@45/logs_tree')).to route_to('projects/refs#logs_tree', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature@45')
+      expect(get('/gitlab/gitlabhq/-/refs/stable/logs_tree/foo/bar/baz')).to route_to('projects/refs#logs_tree', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'stable', path: 'foo/bar/baz')
+      expect(get('/gitlab/gitlabhq/-/refs/feature%2345/logs_tree/foo/bar/baz')).to route_to('projects/refs#logs_tree', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature#45', path: 'foo/bar/baz')
+      expect(get('/gitlab/gitlabhq/-/refs/feature%2B45/logs_tree/foo/bar/baz')).to route_to('projects/refs#logs_tree', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature+45', path: 'foo/bar/baz')
+      expect(get('/gitlab/gitlabhq/-/refs/feature@45/logs_tree/foo/bar/baz')).to route_to('projects/refs#logs_tree', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature@45', path: 'foo/bar/baz')
+      expect(get('/gitlab/gitlabhq/-/refs/stable/logs_tree/files.scss')).to route_to('projects/refs#logs_tree', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'stable', path: 'files.scss')
+      assert_routing({ path: "/gitlab/gitlabhq/-/refs/stable/logs_tree/new%0A%0Aline.txt",
                        method: :get },
                      { controller: 'projects/refs', action: 'logs_tree',
                        namespace_id: 'gitlab', project_id: 'gitlabhq',
@@ -460,9 +460,14 @@ describe 'project routing' do
     it_behaves_like 'RESTful project resources' do
       let(:actions)    { [:show] }
       let(:controller) { 'commits' }
+      let(:controller_path) { '/-/commits' }
     end
 
     it 'to #show' do
+      expect(get('/gitlab/gitlabhq/-/commits/master.atom')).to route_to('projects/commits#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master.atom')
+    end
+
+    it 'to #show unscoped routing' do
       expect(get('/gitlab/gitlabhq/commits/master.atom')).to route_to('projects/commits#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master.atom')
     end
   end
@@ -556,11 +561,11 @@ describe 'project routing' do
   # project_blame GET    /:project_id/blame/:id(.:format) blame#show {id: /[^\0]+/, project_id: /[^\/]+/}
   describe Projects::BlameController, 'routing' do
     it 'to #show' do
-      expect(get('/gitlab/gitlabhq/blame/master/app/models/project.rb')).to route_to('projects/blame#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
-      expect(get('/gitlab/gitlabhq/blame/master/files.scss')).to route_to('projects/blame#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/files.scss')
+      expect(get('/gitlab/gitlabhq/-/blame/master/app/models/project.rb')).to route_to('projects/blame#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
+      expect(get('/gitlab/gitlabhq/-/blame/master/files.scss')).to route_to('projects/blame#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/files.scss')
       newline_file = "new\n\nline.txt"
       url_encoded_newline_file = ERB::Util.url_encode(newline_file)
-      assert_routing({ path: "/gitlab/gitlabhq/blame/master/#{url_encoded_newline_file}",
+      assert_routing({ path: "/gitlab/gitlabhq/-/blame/master/#{url_encoded_newline_file}",
                         method: :get },
                     { controller: 'projects/blame', action: 'show',
                       namespace_id: 'gitlab', project_id: 'gitlabhq',
@@ -571,44 +576,44 @@ describe 'project routing' do
   # project_blob GET    /:project_id/blob/:id(.:format) blob#show {id: /[^\0]+/, project_id: /[^\/]+/}
   describe Projects::BlobController, 'routing' do
     it 'to #show' do
-      expect(get('/gitlab/gitlabhq/blob/master/app/models/project.rb')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
-      expect(get('/gitlab/gitlabhq/blob/master/app/models/compare.rb')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/compare.rb')
-      expect(get('/gitlab/gitlabhq/blob/master/app/models/diff.js')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/diff.js')
-      expect(get('/gitlab/gitlabhq/blob/master/files.scss')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/files.scss')
-      expect(get('/gitlab/gitlabhq/blob/master/blob/index.js')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/blob/index.js')
-      expect(get('/gitlab/gitlabhq/blob/blob/master/blob/index.js')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'blob/master/blob/index.js')
+      expect(get('/gitlab/gitlabhq/-/blob/master/app/models/project.rb')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
+      expect(get('/gitlab/gitlabhq/-/blob/master/app/models/compare.rb')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/compare.rb')
+      expect(get('/gitlab/gitlabhq/-/blob/master/app/models/diff.js')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/diff.js')
+      expect(get('/gitlab/gitlabhq/-/blob/master/files.scss')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/files.scss')
+      expect(get('/gitlab/gitlabhq/-/blob/master/blob/index.js')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/blob/index.js')
+      expect(get('/gitlab/gitlabhq/-/blob/blob/master/blob/index.js')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'blob/master/blob/index.js')
       newline_file = "new\n\nline.txt"
       url_encoded_newline_file = ERB::Util.url_encode(newline_file)
-      assert_routing({ path: "/gitlab/gitlabhq/blob/blob/master/blob/#{url_encoded_newline_file}",
+      assert_routing({ path: "/gitlab/gitlabhq/-/blob/blob/master/blob/#{url_encoded_newline_file}",
                         method: :get },
                     { controller: 'projects/blob', action: 'show',
                       namespace_id: 'gitlab', project_id: 'gitlabhq',
                       id: "blob/master/blob/#{newline_file}" })
     end
 
-    it 'to #show from scope routing' do
-      expect(get('/gitlab/gitlabhq/-/blob/master/app/models/project.rb')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
+    it 'to #show from unscoped routing' do
+      expect(get('/gitlab/gitlabhq/blob/master/app/models/project.rb')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
     end
   end
 
   # project_tree GET    /:project_id/tree/:id(.:format) tree#show {id: /[^\0]+/, project_id: /[^\/]+/}
   describe Projects::TreeController, 'routing' do
     it 'to #show' do
-      expect(get('/gitlab/gitlabhq/tree/master/app/models/project.rb')).to route_to('projects/tree#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
-      expect(get('/gitlab/gitlabhq/tree/master/files.scss')).to route_to('projects/tree#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/files.scss')
-      expect(get('/gitlab/gitlabhq/tree/master/tree/files')).to route_to('projects/tree#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/tree/files')
-      expect(get('/gitlab/gitlabhq/tree/tree/master/tree/files')).to route_to('projects/tree#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'tree/master/tree/files')
+      expect(get('/gitlab/gitlabhq/-/tree/master/app/models/project.rb')).to route_to('projects/tree#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
+      expect(get('/gitlab/gitlabhq/-/tree/master/files.scss')).to route_to('projects/tree#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/files.scss')
+      expect(get('/gitlab/gitlabhq/-/tree/master/tree/files')).to route_to('projects/tree#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/tree/files')
+      expect(get('/gitlab/gitlabhq/-/tree/tree/master/tree/files')).to route_to('projects/tree#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'tree/master/tree/files')
       newline_file = "new\n\nline.txt"
       url_encoded_newline_file = ERB::Util.url_encode(newline_file)
-      assert_routing({ path: "/gitlab/gitlabhq/tree/master/#{url_encoded_newline_file}",
+      assert_routing({ path: "/gitlab/gitlabhq/-/tree/master/#{url_encoded_newline_file}",
                         method: :get },
                     { controller: 'projects/tree', action: 'show',
                       namespace_id: 'gitlab', project_id: 'gitlabhq',
                       id: "master/#{newline_file}" })
     end
 
-    it 'to #show from scope routing' do
-      expect(get('/gitlab/gitlabhq/-/tree/master/app/models/project.rb')).to route_to('projects/tree#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
+    it 'to #show from unscoped routing' do
+      expect(get('/gitlab/gitlabhq/tree/master/app/models/project.rb')).to route_to('projects/tree#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
     end
   end
 
@@ -616,10 +621,10 @@ describe 'project routing' do
   # project_files     GET /:namespace_id/:project_id/files/*id(.:format)      projects/find_file#list {:id=>/(?:[^.]|\.(?!json$))+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :format=>/json/}
   describe Projects::FindFileController, 'routing' do
     it 'to #show' do
-      expect(get('/gitlab/gitlabhq/find_file/master')).to route_to('projects/find_file#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master')
+      expect(get('/gitlab/gitlabhq/-/find_file/master')).to route_to('projects/find_file#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master')
       newline_file = "new\n\nline.txt"
       url_encoded_newline_file = ERB::Util.url_encode(newline_file)
-      assert_routing({ path: "/gitlab/gitlabhq/find_file/#{url_encoded_newline_file}",
+      assert_routing({ path: "/gitlab/gitlabhq/-/find_file/#{url_encoded_newline_file}",
                         method: :get },
                     { controller: 'projects/find_file', action: 'show',
                       namespace_id: 'gitlab', project_id: 'gitlabhq',
@@ -627,10 +632,10 @@ describe 'project routing' do
     end
 
     it 'to #list' do
-      expect(get('/gitlab/gitlabhq/files/master.json')).to route_to('projects/find_file#list', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master.json')
+      expect(get('/gitlab/gitlabhq/-/files/master.json')).to route_to('projects/find_file#list', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master.json')
       newline_file = "new\n\nline.txt"
       url_encoded_newline_file = ERB::Util.url_encode(newline_file)
-      assert_routing({ path: "/gitlab/gitlabhq/files/#{url_encoded_newline_file}",
+      assert_routing({ path: "/gitlab/gitlabhq/-/files/#{url_encoded_newline_file}",
                         method: :get },
                     { controller: 'projects/find_file', action: 'list',
                       namespace_id: 'gitlab', project_id: 'gitlabhq',
@@ -640,13 +645,13 @@ describe 'project routing' do
 
   describe Projects::BlobController, 'routing' do
     it 'to #edit' do
-      expect(get('/gitlab/gitlabhq/edit/master/app/models/project.rb')).to(
+      expect(get('/gitlab/gitlabhq/-/edit/master/app/models/project.rb')).to(
         route_to('projects/blob#edit',
                  namespace_id: 'gitlab', project_id: 'gitlabhq',
                  id: 'master/app/models/project.rb'))
       newline_file = "new\n\nline.txt"
       url_encoded_newline_file = ERB::Util.url_encode(newline_file)
-      assert_routing({ path: "/gitlab/gitlabhq/edit/master/docs/#{url_encoded_newline_file}",
+      assert_routing({ path: "/gitlab/gitlabhq/-/edit/master/docs/#{url_encoded_newline_file}",
                         method: :get },
                       { controller: 'projects/blob', action: 'edit',
                         namespace_id: 'gitlab', project_id: 'gitlabhq',
@@ -654,13 +659,13 @@ describe 'project routing' do
     end
 
     it 'to #preview' do
-      expect(post('/gitlab/gitlabhq/preview/master/app/models/project.rb')).to(
+      expect(post('/gitlab/gitlabhq/-/preview/master/app/models/project.rb')).to(
         route_to('projects/blob#preview',
                  namespace_id: 'gitlab', project_id: 'gitlabhq',
                  id: 'master/app/models/project.rb'))
       newline_file = "new\n\nline.txt"
       url_encoded_newline_file = ERB::Util.url_encode(newline_file)
-      assert_routing({ path: "/gitlab/gitlabhq/edit/master/docs/#{url_encoded_newline_file}",
+      assert_routing({ path: "/gitlab/gitlabhq/-/edit/master/docs/#{url_encoded_newline_file}",
                         method: :get },
                       { controller: 'projects/blob', action: 'edit',
                         namespace_id: 'gitlab', project_id: 'gitlabhq',
@@ -673,11 +678,15 @@ describe 'project routing' do
     it 'to #show' do
       newline_file = "new\n\nline.txt"
       url_encoded_newline_file = ERB::Util.url_encode(newline_file)
-      assert_routing({ path: "/gitlab/gitlabhq/raw/master/#{url_encoded_newline_file}",
+      assert_routing({ path: "/gitlab/gitlabhq/-/raw/master/#{url_encoded_newline_file}",
                         method: :get },
                     { controller: 'projects/raw', action: 'show',
                       namespace_id: 'gitlab', project_id: 'gitlabhq',
                       id: "master/#{newline_file}" })
+    end
+
+    it 'to #show from unscoped routing' do
+      expect(get('/gitlab/gitlabhq/raw/master/app/models/project.rb')).to route_to('projects/raw#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
     end
   end
 

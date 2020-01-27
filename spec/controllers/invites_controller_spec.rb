@@ -17,7 +17,7 @@ describe InvitesController do
       get :accept, params: { id: token }
       member.reload
 
-      expect(response).to have_gitlab_http_status(302)
+      expect(response).to have_gitlab_http_status(:found)
       expect(member.user).to eq(user)
       expect(flash[:notice]).to include 'You have been granted'
     end
@@ -28,7 +28,7 @@ describe InvitesController do
       get :decline, params: { id: token }
       expect {member.reload}.to raise_error ActiveRecord::RecordNotFound
 
-      expect(response).to have_gitlab_http_status(302)
+      expect(response).to have_gitlab_http_status(:found)
       expect(flash[:notice]).to include 'You have declined the invitation to join'
     end
   end

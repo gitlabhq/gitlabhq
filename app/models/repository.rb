@@ -447,6 +447,8 @@ class Repository
   def after_import
     expire_content_cache
 
+    return unless repo_type.project?
+
     # This call is stubbed in tests due to being an expensive operation
     # It can be reenabled for specific tests via:
     #

@@ -532,20 +532,24 @@ This is especially useful whenever it's showing 500 internal server error.
 
 ### Shared contexts
 
-All shared contexts should be placed under `spec/support/shared_contexts/`.
-Shared contexts can be placed in subfolder if they apply to a certain type of
-specs only (e.g. features, requests etc.) but shouldn't be if they apply to
-multiple type of specs.
+Shared contexts only used in one spec file can be declared inline.
+Any shared contexts used by more than one spec file:
+
+- Should be placed under `spec/support/shared_contexts/`.
+- Can be placed in subfolder if they apply to a certain type of specs only
+  (e.g. features, requests etc.) but shouldn't be if they apply to multiple type of specs.
 
 Each file should include only one context and have a descriptive name, e.g.
 `spec/support/shared_contexts/controllers/githubish_import_controller_shared_context.rb`.
 
 ### Shared examples
 
-All shared examples should be placed under `spec/support/shared_examples/`.
-Shared examples can be placed in subfolder if they apply to a certain type of
-specs only (e.g. features, requests etc.) but shouldn't be if they apply to
-multiple type of specs.
+Shared examples only used in one spec file can be declared inline.
+Any shared examples used by more than one spec file:
+
+- Should be placed under `spec/support/shared_examples/`.
+- Can be placed in subfolder if they apply to a certain type of specs only
+  (e.g. features, requests etc.) but shouldn't be if they apply to multiple type of specs.
 
 Each file should include only one context and have a descriptive name, e.g.
 `spec/support/shared_examples/controllers/githubish_import_controller_shared_example.rb`.

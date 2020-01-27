@@ -39,7 +39,7 @@ describe GraphqlController do
       it 'returns 200 when user can access API' do
         post :execute
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       it 'returns access denied template when user cannot access API' do
@@ -59,7 +59,7 @@ describe GraphqlController do
       it 'returns 200' do
         post :execute
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
   end

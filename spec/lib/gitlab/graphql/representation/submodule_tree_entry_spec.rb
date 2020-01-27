@@ -21,7 +21,7 @@ describe Gitlab::Graphql::Representation::SubmoduleTreeEntry do
       )
 
       expect(entries.map(&:tree_url)).to contain_exactly(
-        "https://gitlab.com/gitlab-org/gitlab-grack/tree/645f6c4c82fd3f5e06f67134450a570b795e55a6",
+        "https://gitlab.com/gitlab-org/gitlab-grack/-/tree/645f6c4c82fd3f5e06f67134450a570b795e55a6",
         "https://github.com/gitlabhq/gitlab-shell/tree/79bceae69cb5750d6567b223597999bfa91cb3b9",
         "https://github.com/randx/six/tree/409f37c4f05865e4fb208c771485f211a22c4c2d"
       )

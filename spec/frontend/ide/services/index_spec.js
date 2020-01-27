@@ -97,7 +97,7 @@ describe('IDE services', () => {
 
           mock
             .onGet(
-              `${relativeUrlRoot}/${TEST_PROJECT_ID}/raw/${TEST_COMMIT_SHA}/${escapeFileUrl(
+              `${relativeUrlRoot}/${TEST_PROJECT_ID}/-/raw/${TEST_COMMIT_SHA}/${escapeFileUrl(
                 filePath,
               )}`,
             )

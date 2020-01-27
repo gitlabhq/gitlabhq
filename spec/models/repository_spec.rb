@@ -1817,10 +1817,28 @@ describe Repository do
   end
 
   describe '#after_import' do
+    subject { repository.after_import }
+
     it 'flushes and builds the cache' do
       expect(repository).to receive(:expire_content_cache)
 
-      repository.after_import
+      subject
+    end
+
+    it 'calls DetectRepositoryLanguagesWorker' do
+      expect(DetectRepositoryLanguagesWorker).to receive(:perform_async)
+
+      subject
+    end
+
+    context 'with a wiki repository' do
+      let(:repository) { project.wiki.repository }
+
+      it 'does not call DetectRepositoryLanguagesWorker' do
+        expect(DetectRepositoryLanguagesWorker).not_to receive(:perform_async)
+
+        subject
+      end
     end
   end
 

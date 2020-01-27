@@ -96,8 +96,7 @@ class Key < ApplicationRecord
   def remove_from_shell
     GitlabShellWorker.perform_async(
       :remove_key,
-      shell_id,
-      key
+      shell_id
     )
   end
 

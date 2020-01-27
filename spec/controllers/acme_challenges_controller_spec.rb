@@ -28,7 +28,7 @@ describe AcmeChallengesController do
       let(:token) { acme_order.challenge_token }
 
       it 'renders not found' do
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -37,7 +37,7 @@ describe AcmeChallengesController do
       let(:token) { 'wrongtoken' }
 
       it 'renders not found' do
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

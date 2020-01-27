@@ -301,12 +301,6 @@ RSpec/AnyInstanceOf:
   Enabled: false
 
 # Cops for upgrade to gitlab-styles 3.1.0
-RSpec/ReceiveCounts:
-  Enabled: false
-
-RSpec/ContextMethod:
-  Enabled: false
-
 RSpec/ImplicitSubject:
   Enabled: false
 
@@ -343,6 +337,7 @@ RSpec/MissingExampleGroupArgument:
 RSpec/UnspecifiedException:
   Enabled: false
 
+# Work in progress. See https://gitlab.com/gitlab-org/gitlab/issues/196163
 RSpec/HaveGitlabHttpStatus:
   Enabled: true
   Include:
@@ -350,6 +345,8 @@ RSpec/HaveGitlabHttpStatus:
     - 'ee/spec/support/shared_examples/**/*'
     - 'spec/features/**/*'
     - 'ee/spec/features/**/*'
+    - 'spec/controllers/*.rb'
+    - 'ee/spec/controllers/*.rb'
 
 Style/MultilineWhenThen:
   Enabled: false

@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<samlp:Response xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" ID="jVFQbyEpSfUwqhZtJtarIaGoshwuAQMDwLoiMhzJXsv" Version="2.0" IssueInstant="2020-01-23T06:12:41.896Z" Destination="https://gitlab-example.com/users/auth/saml/callback" Consent="urn:oasis:names:tc:SAML:2.0:consent:unspecified" InResponseTo="feooghajnhofcmogakmlhpkohnmikicnfhdnjlc">
+  <Issuer xmlns="urn:oasis:names:tc:SAML:2.0:assertion">https://example.com/adfs/services/trust</Issuer>
+  <samlp:Status>
+    <samlp:StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:Success"/>
+  </samlp:Status>
+  <Assertion xmlns="urn:oasis:names:tc:SAML:2.0:assertion" ID="emmCjammnYdAbMWDuMAJeZvQIMBayeeYqqwvQoDclKE" IssueInstant="2020-01-23T06:12:41.896Z" Version="2.0">
+    <Issuer>https://example.com/adfs/services/trust</Issuer>
+    <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+      <ds:SignedInfo>
+        <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+        <ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+        <ds:Reference URI="#jVFQbyEpSfUwqhZtJtarIaGoshwuAQMDwLoiMhzJXsv">
+          <ds:Transforms>
+            <ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+            <ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+          </ds:Transforms>
+          <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+          <ds:DigestValue>uHuSry39P16Yh7srS32xESmj4Lw</ds:DigestValue>
+        </ds:Reference>
+      </ds:SignedInfo>
+      <ds:SignatureValue>fdghdfggfd=</ds:SignatureValue>
+      <KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
+        <ds:X509Data>
+          <ds:X509Certificate>dfghjkl</ds:X509Certificate>
+        </ds:X509Data>
+      </KeyInfo>
+    </ds:Signature>
+    <Subject>
+      <NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:transient">example@example.com</NameID>
+      <SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:bearer">
+        <SubjectConfirmationData InResponseTo="cfeooghajnhofcmogakmlhpkohnmikicnfhdnjlc" NotOnOrAfter="2020-01-23T06:17:41.896Z" Recipient="https://gitlab-example.com/users/auth/saml/callback"/>
+      </SubjectConfirmation>
+    </Subject>
+    <Conditions NotBefore="2020-01-23T06:10:41.818Z" NotOnOrAfter="2020-01-23T07:10:41.818Z">
+      <AudienceRestriction>
+        <Audience>https://gitlab-example.com</Audience>
+      </AudienceRestriction>
+    </Conditions>
+    <AttributeStatement>
+      <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress">
+        <AttributeValue>example@example.com</AttributeValue>
+      </Attribute>
+      <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name">
+        <AttributeValue>Example User</AttributeValue>
+      </Attribute>
+      <Attribute Name="http://schemas.xmlsoap.org/claims/Group">
+        <AttributeValue>Group 1</AttributeValue>
+        <AttributeValue>Another Group</AttributeValue>
+      </Attribute>
+    </AttributeStatement>
+    <AuthnStatement AuthnInstant="2020-01-23T06:12:41.756Z" SessionIndex="perdkjfskdjfksdiertusfsdfsddeurtherukjdfgkdffg">
+      <AuthnContext>
+        <AuthnContextClassRef>urn:federation:authentication:windows</AuthnContextClassRef>
+      </AuthnContext>
+    </AuthnStatement>
+  </Assertion>
+</samlp:Response>

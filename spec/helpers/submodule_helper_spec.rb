@@ -100,34 +100,34 @@ describe SubmoduleHelper do
         allow(repo).to receive(:project).and_return(project)
 
         stub_url('./')
-        expect(subject).to eq(["/master-project/#{project.path}", "/master-project/#{project.path}/tree/hash"])
+        expect(subject).to eq(["/master-project/#{project.path}", "/master-project/#{project.path}/-/tree/hash"])
       end
     end
 
     context 'submodule on gitlab.com' do
       it 'detects ssh' do
         stub_url('git@gitlab.com:gitlab-org/gitlab-foss.git')
-        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/tree/hash'])
+        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/-/tree/hash'])
       end
 
       it 'detects http' do
         stub_url('http://gitlab.com/gitlab-org/gitlab-foss.git')
-        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/tree/hash'])
+        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/-/tree/hash'])
       end
 
       it 'detects https' do
         stub_url('https://gitlab.com/gitlab-org/gitlab-foss.git')
-        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/tree/hash'])
+        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/-/tree/hash'])
       end
 
       it 'handles urls with no .git on the end' do
         stub_url('http://gitlab.com/gitlab-org/gitlab-foss')
-        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/tree/hash'])
+        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/-/tree/hash'])
       end
 
       it 'handles urls with trailing whitespace' do
         stub_url('http://gitlab.com/gitlab-org/gitlab-foss.git  ')
-        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/tree/hash'])
+        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/-/tree/hash'])
       end
 
       it 'returns original with non-standard url' do
@@ -171,7 +171,7 @@ describe SubmoduleHelper do
         stub_url(relative_path)
         result = subject
 
-        expect(result).to eq([expected_path, "#{expected_path}/tree/#{submodule_item.id}"])
+        expect(result).to eq([expected_path, "#{expected_path}/-/tree/#{submodule_item.id}"])
       end
 
       it 'handles project under same group' do

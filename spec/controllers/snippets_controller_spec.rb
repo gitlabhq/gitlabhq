@@ -51,7 +51,7 @@ describe SnippetsController do
       it 'responds with status 200' do
         get :new
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       context 'when user is not allowed to create a personal snippet' do
@@ -60,7 +60,7 @@ describe SnippetsController do
         it 'responds with status 404' do
           get :new
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end
@@ -90,7 +90,7 @@ describe SnippetsController do
           it 'responds with status 404' do
             get :show, params: { id: other_personal_snippet.to_param }
 
-            expect(response).to have_gitlab_http_status(404)
+            expect(response).to have_gitlab_http_status(:not_found)
           end
         end
 
@@ -99,13 +99,13 @@ describe SnippetsController do
             get :show, params: { id: personal_snippet.to_param }
 
             expect(assigns(:snippet)).to eq(personal_snippet)
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
           end
 
           it 'responds with status 404 when embeddable content is requested' do
             get :show, params: { id: personal_snippet.to_param }, format: :js
 
-            expect(response).to have_gitlab_http_status(404)
+            expect(response).to have_gitlab_http_status(:not_found)
           end
         end
       end
@@ -131,13 +131,13 @@ describe SnippetsController do
           get :show, params: { id: personal_snippet.to_param }
 
           expect(assigns(:snippet)).to eq(personal_snippet)
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
 
         it 'responds with status 404 when embeddable content is requested' do
           get :show, params: { id: personal_snippet.to_param }, format: :js
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
@@ -162,14 +162,14 @@ describe SnippetsController do
           get :show, params: { id: personal_snippet.to_param }
 
           expect(assigns(:snippet)).to eq(personal_snippet)
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
 
         it 'responds with status 200 when embeddable content is requested' do
           get :show, params: { id: personal_snippet.to_param }, format: :js
 
           expect(assigns(:snippet)).to eq(personal_snippet)
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
 
@@ -178,7 +178,7 @@ describe SnippetsController do
           get :show, params: { id: personal_snippet.to_param }
 
           expect(assigns(:snippet)).to eq(personal_snippet)
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
     end
@@ -192,7 +192,7 @@ describe SnippetsController do
         it 'responds with status 404' do
           get :show, params: { id: 'doesntexist' }
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
@@ -234,7 +234,7 @@ describe SnippetsController do
             create_snippet(visibility_level: Snippet::PUBLIC)
           end.not_to change { Snippet.count }
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end
@@ -496,7 +496,7 @@ describe SnippetsController do
           it 'responds with status 404' do
             get :raw, params: { id: other_personal_snippet.to_param }
 
-            expect(response).to have_gitlab_http_status(404)
+            expect(response).to have_gitlab_http_status(:not_found)
           end
         end
 
@@ -507,7 +507,7 @@ describe SnippetsController do
 
           it 'responds with status 200' do
             expect(assigns(:snippet)).to eq(personal_snippet)
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
           end
 
           it 'has expected headers' do
@@ -517,7 +517,7 @@ describe SnippetsController do
           end
 
           it "sets #{Gitlab::Workhorse::DETECT_HEADER} header" do
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
             expect(response.header[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
           end
         end
@@ -544,7 +544,7 @@ describe SnippetsController do
           get :raw, params: { id: personal_snippet.to_param }
 
           expect(assigns(:snippet)).to eq(personal_snippet)
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
 
@@ -569,7 +569,7 @@ describe SnippetsController do
           get :raw, params: { id: personal_snippet.to_param }
 
           expect(assigns(:snippet)).to eq(personal_snippet)
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
 
         context 'CRLF line ending' do
@@ -596,7 +596,7 @@ describe SnippetsController do
           get :raw, params: { id: personal_snippet.to_param }
 
           expect(assigns(:snippet)).to eq(personal_snippet)
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
     end
@@ -610,7 +610,7 @@ describe SnippetsController do
         it 'responds with status 404' do
           get :raw, params: { id: 'doesntexist' }
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
@@ -712,7 +712,7 @@ describe SnippetsController do
       it 'responds with status 404' do
         delete :destroy, params: { id: snippet.to_param }
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

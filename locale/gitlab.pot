@@ -10407,13 +10407,7 @@ msgstr ""
 msgid "Invocations"
 msgstr ""
 
-msgid "Is"
-msgstr ""
-
 msgid "Is blocked by"
-msgstr ""
-
-msgid "Is not"
 msgstr ""
 
 msgid "Is using license seat:"
@@ -22464,6 +22458,9 @@ msgstr[1] ""
 msgid "invalid milestone state `%{state}`"
 msgstr ""
 
+msgid "is"
+msgstr ""
+
 msgid "is an invalid IP address range"
 msgstr ""
 
@@ -22477,6 +22474,9 @@ msgid "is invalid because there is downstream lock"
 msgstr ""
 
 msgid "is invalid because there is upstream lock"
+msgstr ""
+
+msgid "is not"
 msgstr ""
 
 msgid "is not a descendant of the Group owning the template"

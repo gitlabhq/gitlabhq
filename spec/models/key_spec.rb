@@ -189,7 +189,7 @@ describe Key, :mailer do
 
     it 'removes key from authorized_file' do
       key = create(:personal_key)
-      expect(GitlabShellWorker).to receive(:perform_async).with(:remove_key, key.shell_id, key.key)
+      expect(GitlabShellWorker).to receive(:perform_async).with(:remove_key, key.shell_id)
       key.destroy
     end
   end

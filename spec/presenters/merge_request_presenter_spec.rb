@@ -334,7 +334,7 @@ describe MergeRequestPresenter do
         allow(resource).to receive(:target_branch_exists?) { true }
 
         is_expected
-          .to eq("/#{resource.target_project.full_path}/commits/#{resource.target_branch}")
+          .to eq("/#{resource.target_project.full_path}/-/commits/#{resource.target_branch}")
       end
     end
 
@@ -358,7 +358,7 @@ describe MergeRequestPresenter do
         allow(resource).to receive(:source_branch_exists?) { true }
 
         is_expected
-          .to eq("/#{resource.source_project.full_path}/commits/#{resource.source_branch}")
+          .to eq("/#{resource.source_project.full_path}/-/commits/#{resource.source_branch}")
       end
     end
 
@@ -382,7 +382,7 @@ describe MergeRequestPresenter do
         allow(resource).to receive(:target_branch_exists?) { true }
 
         is_expected
-          .to eq("/#{resource.target_project.full_path}/tree/#{resource.target_branch}")
+          .to eq("/#{resource.target_project.full_path}/-/tree/#{resource.target_branch}")
       end
     end
 
@@ -496,7 +496,7 @@ describe MergeRequestPresenter do
       allow(resource).to receive(:source_branch_exists?) { true }
 
       is_expected
-        .to eq("<a href=\"/#{resource.source_project.full_path}/tree/#{resource.source_branch}\">#{resource.source_branch}</a>")
+        .to eq("<a href=\"/#{resource.source_project.full_path}/-/tree/#{resource.source_branch}\">#{resource.source_branch}</a>")
     end
 
     it 'escapes html, when source_branch does not exist' do

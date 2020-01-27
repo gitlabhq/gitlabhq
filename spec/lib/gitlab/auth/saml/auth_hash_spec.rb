@@ -95,6 +95,17 @@ describe Gitlab::Auth::Saml::AuthHash do
       end
     end
 
+    context 'with ADFS SAML response_object' do
+      before do
+        auth_hash_data[:extra][:response_object] = { document:
+                                                         saml_xml(File.read('spec/fixtures/authentication/adfs_saml_response.xml')) }
+      end
+
+      it 'can extract authn_context' do
+        expect(saml_auth_hash.authn_context).to eq 'urn:federation:authentication:windows'
+      end
+    end
+
     context 'without response_object' do
       it 'returns an empty string' do
         expect(saml_auth_hash.authn_context).to be_nil

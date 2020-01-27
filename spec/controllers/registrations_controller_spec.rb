@@ -30,7 +30,7 @@ describe RegistrationsController do
 
       it 'renders new template and sets the resource variable' do
         expect(subject).to render_template(:new)
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(assigns(:resource)).to be_a(User)
       end
     end
@@ -48,7 +48,7 @@ describe RegistrationsController do
 
       it 'renders new template and sets the resource variable' do
         subject
-        expect(response).to have_gitlab_http_status(302)
+        expect(response).to have_gitlab_http_status(:found)
         expect(response).to redirect_to(new_user_session_path(anchor: 'register-pane'))
       end
     end
@@ -200,7 +200,7 @@ describe RegistrationsController do
               .and_call_original
             expect(Gitlab::AuthLogger).to receive(:error).with(auth_log_attributes).once
             expect { post(:create, params: user_params, session: session_params) }.not_to change(User, :count)
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
             expect(response.body).to be_empty
           end
         end

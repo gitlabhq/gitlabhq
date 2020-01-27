@@ -125,7 +125,7 @@ describe NotificationSettingsController do
                notification_setting: { level: :participating }
              }
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -195,7 +195,7 @@ describe NotificationSettingsController do
               notification_setting: { level: :participating }
             }
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

@@ -28,52 +28,87 @@ You should then be able to see the **Packages** section on the left sidebar.
 Before proceeding to authenticating with the GitLab NPM Registry, you should
 get familiar with the package naming convention.
 
-## Package naming convention
+## Getting started
 
-**Packages must be scoped in the root namespace of the project**. The package
-name may be anything but it is preferred that the project name be used unless
-it is not possible due to a naming collision. For example:
+This section will cover installing NPM (or Yarn) and building a package for your
+JavaScript project. This is a quickstart if you are new to NPM packages. If you
+are already using NPM and understand how to build your own packages, move on to
+the [next section](#authenticating-to-the-gitlab-npm-registry).
 
-| Project                | Package                 | Supported |
-| ---------------------- | ----------------------- | --------- |
-| `foo/bar`              | `@foo/bar`              | Yes       |
-| `foo/bar/baz`          | `@foo/baz`              | Yes       |
-| `foo/bar/buz`          | `@foo/anything`         | Yes       |
-| `gitlab-org/gitlab`    | `@gitlab-org/gitlab`    | Yes       |
-| `gitlab-org/gitlab`    | `@foo/bar`              | No        |
+### Installing NPM
 
-The regex that is used for naming is validating all package names from all package managers:
+Follow the instructions at [npmjs.com](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) to download and install Node.JS and
+NPM to your local development environment.
+
+Once installation is complete, verify you can use NPM in your terminal by
+running:
+
+```sh
+npm --version
+```
+
+You should see the NPM version printed in the output:
 
 ```
-/\A\@?(([\w\-\.\+]*)\/)*([\w\-\.]+)@?(([\w\-\.\+]*)\/)*([\w\-\.]*)\z/
+6.10.3
 ```
 
-It allows for capital letters, while NPM does not, and allows for almost all of the
-characters NPM allows with a few exceptions (`~` is not allowed).
+### Installing Yarn
 
-NOTE: **Note:** Capital letters are needed because the scope is required to be
-identical to the top level namespace of the project. So, for example, if your
-project path is `My-Group/project-foo`, your package must be named `@My-Group/any-package-name`.
-`@my-group/any-package-name` will not work.
+You may want to install and use Yarn as an alternative to NPM. Follow the
+instructions at [yarnpkg.com](https://yarnpkg.com/en/docs/install) to install on
+your development environment.
 
-CAUTION: **When updating the path of a user/group or transferring a (sub)group/project:**
-If you update the root namespace of a project with NPM packages, your changes will be rejected. To be allowed to do that, make sure to remove any NPM package first. Don't forget to update your `.npmrc` files to follow the above naming convention and run `npm publish` if necessary.
+Once installed, you can verify that Yarn is available with the following command:
 
-Now, you can configure your project to authenticate with the GitLab NPM
-Registry.
+```sh
+yarn --version
+```
+
+You should see the version printed like so:
+
+```
+1.19.1
+```
+
+### Creating a project
+
+Understanding how to create a full JavaScript project is outside the scope of
+this guide but you can initialize a new empty package by creating and navigating
+to an empty directory and using the following command:
+
+```sh
+npm init
+```
+
+Or if you're using Yarn:
+
+```sh
+yarn init
+```
+
+This will take you through a series of questions to produce a `package.json`
+file, which is required for all NPM packages. The most important question is the
+package name. NPM packages must [follow the naming convention](#package-naming-convention)
+and be scoped to the project or group where the registry exists.
+
+Once you have completed the setup, you are now ready to upload your package to
+the GitLab registry. To get started, you will need to set up authentication then
+configure GitLab as a remote registry.
 
 ## Authenticating to the GitLab NPM Registry
 
 If a project is private or you want to upload an NPM package to GitLab,
-credentials will need to be provided for authentication. Support is available for [OAuth tokens](../../../api/oauth2.md#resource-owner-password-credentials-flow) or [personal access tokens](../../profile/personal_access_tokens.md).
+credentials will need to be provided for authentication. [Personal access tokens](../../profile/personal_access_tokens.md)
+are preferred, but support is available for [OAuth tokens](../../../api/oauth2.md#resource-owner-password-credentials-flow).
 
 CAUTION: **2FA is only supported with personal access tokens:**
 If you have 2FA enabled, you need to use a [personal access token](../../profile/personal_access_tokens.md) with OAuth headers with the scope set to `api`. Standard OAuth tokens won't be able to authenticate to the GitLab NPM Registry.
 
-### Authenticating with an OAuth token
+### Authenticating with a personal access token
 
-To authenticate with an [OAuth token](../../../api/oauth2.md#resource-owner-password-credentials-flow)
-or [personal access token](../../profile/personal_access_tokens.md), set your NPM configuration:
+To authenticate with a [personal access token](../../profile/personal_access_tokens.md),
+set your NPM configuration:
 
 ```bash
 # Set URL for your scoped packages.
@@ -90,7 +125,7 @@ npm config set '//gitlab.com/api/v4/packages/npm/:_authToken' "<your_token>"
 ```
 
 Replace `<your_project_id>` with your project ID which can be found on the home page
-of your project and `<your_token>` with your OAuth or personal access token.
+of your project and `<your_token>` with your personal access token.
 
 If you have a self-hosted GitLab installation, replace `gitlab.com` with your
 domain name.
@@ -142,9 +177,9 @@ Before you will be able to upload a package, you need to specify the registry
 for NPM. To do this, add the following section to the bottom of `package.json`:
 
 ```json
-  "publishConfig": {
-    "@foo:registry":"https://gitlab.com/api/v4/projects/<your_project_id>/packages/npm/"
-  }
+"publishConfig": {
+  "@foo:registry":"https://gitlab.com/api/v4/projects/<your_project_id>/packages/npm/"
+}
 ```
 
 Replace `<your_project_id>` with your project ID, which can be found on the home
@@ -173,6 +208,93 @@ delete the existing package first. This aligns with npmjs.org's behavior, with
 the exception that npmjs.org does not allow users to ever publish the same version
 more than once, even if it has been deleted.
 
+## Package naming convention
+
+**Packages must be scoped in the root namespace of the project**. The package
+name may be anything but it is preferred that the project name be used unless
+it is not possible due to a naming collision. For example:
+
+| Project                | Package                 | Supported |
+| ---------------------- | ----------------------- | --------- |
+| `foo/bar`              | `@foo/bar`              | Yes       |
+| `foo/bar/baz`          | `@foo/baz`              | Yes       |
+| `foo/bar/buz`          | `@foo/anything`         | Yes       |
+| `gitlab-org/gitlab`    | `@gitlab-org/gitlab`    | Yes       |
+| `gitlab-org/gitlab`    | `@foo/bar`              | No        |
+
+The regex that is used for naming is validating all package names from all package managers:
+
+```
+/\A\@?(([\w\-\.\+]*)\/)*([\w\-\.]+)@?(([\w\-\.\+]*)\/)*([\w\-\.]*)\z/
+```
+
+It allows for capital letters, while NPM does not, and allows for almost all of the
+characters NPM allows with a few exceptions (`~` is not allowed).
+
+NOTE: **Note:** Capital letters are needed because the scope is required to be
+identical to the top level namespace of the project. So, for example, if your
+project path is `My-Group/project-foo`, your package must be named `@My-Group/any-package-name`.
+`@my-group/any-package-name` will not work.
+
+CAUTION: **When updating the path of a user/group or transferring a (sub)group/project:**
+If you update the root namespace of a project with NPM packages, your changes will be rejected. To be allowed to do that, make sure to remove any NPM package first. Don't forget to update your `.npmrc` files to follow the above naming convention and run `npm publish` if necessary.
+
+Now, you can configure your project to authenticate with the GitLab NPM
+Registry.
+
+## Installing a package
+
+NPM packages are commonly installed using the the `npm` or `yarn` commands
+inside a JavaScript project. If you haven't already, you will need to set the
+URL for scoped packages. You can do this with the following command:
+
+```sh
+npm config set @foo:registry https://gitlab.com/api/v4/packages/npm/
+```
+
+You will need to replace `@foo` with your scope.
+
+Next, you will need to ensure [authentication](#authenticating-to-the-gitlab-npm-registry)
+is setup so you can successfully install the package. Once this has been
+completed, you can run the following command inside your project to install a
+package:
+
+```sh
+npm install @my-project-scope/my-package
+```
+
+Or if you're using Yarn:
+
+```sh
+yarn add @my-project-scope/my-package
+```
+
+## Removing a package
+
+In the packages view of your project page, you can delete packages by clicking
+the red trash icons or by clicking the **Delete** button on the package details
+page.
+
+## Publishing a package with CI/CD
+
+To work with NPM commands within [GitLab CI](./../../../ci/README.md), you can use
+`CI_JOB_TOKEN` in place of the personal access token in your commands.
+
+A simple example `gitlab-ci.yml` file for publishing NPM packages:
+
+```yml
+image: node:latest
+
+stages:
+  - deploy
+
+deploy:
+  stage: deploy
+  script:
+    - echo '//gitlab.com/api/v4/projects/<your_project_id>/packages/npm/:_authToken=${CI_JOB_TOKEN}'>.npmrc
+    - npm publish
+```
+
 ## Troubleshooting
 
 ### Error running yarn with NPM registry
@@ -192,11 +314,11 @@ info If you think this is a bug, please open a bug report with the information p
 info Visit https://yarnpkg.com/en/docs/cli/install for documentation about this command
 ```
 
-In this case, try adding this to your `.npmrc` file (and replace `<your_oauth_token>`
-with your OAuth or personal access token):
+In this case, try adding this to your `.npmrc` file (and replace `<your_token>`
+with your personal access token):
 
 ```text
-//gitlab.com/api/v4/projects/:_authToken=<your_oauth_token>
+//gitlab.com/api/v4/projects/:_authToken=<your_token>
 ```
 
 ### `npm publish` targets default NPM registry (`registry.npmjs.org`)
@@ -220,8 +342,8 @@ should look like:
 And the `.npmrc` file should look like:
 
 ```ini
-//gitlab.com/api/v4/projects/<your_project_id>/packages/npm/:_authToken=<your_oauth_token>
-//gitlab.com/api/v4/packages/npm/:_authToken=<your_oauth_token>
+//gitlab.com/api/v4/projects/<your_project_id>/packages/npm/:_authToken=<your_token>
+//gitlab.com/api/v4/packages/npm/:_authToken=<your_token>
 @foo:registry=https://gitlab.com/api/v4/packages/npm/
 ```
 

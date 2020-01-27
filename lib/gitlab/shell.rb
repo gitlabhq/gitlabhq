@@ -11,18 +11,26 @@ module Gitlab
     Error = Class.new(StandardError)
 
     class << self
+      # Retrieve GitLab Shell secret token
+      #
+      # @return [String] secret token
       def secret_token
         @secret_token ||= begin
           File.read(Gitlab.config.gitlab_shell.secret_file).chomp
         end
       end
 
+      # Ensure gitlab shell has a secret token stored in the secret_file
+      # if that was never generated, generate a new one
       def ensure_secret_token!
         return if File.exist?(File.join(Gitlab.config.gitlab_shell.path, '.gitlab_shell_secret'))
 
         generate_and_link_secret_token
       end
 
+      # Returns required GitLab shell version
+      #
+      # @return [String] version from the manifest file
       def version_required
         @version_required ||= File.read(Rails.root
                                         .join('GITLAB_SHELL_VERSION')).strip
@@ -48,24 +56,31 @@ module Gitlab
       end
     end
 
-    # Convenience methods for initializing a new repository with a Project model.
+    # Initialize a new project repository using a Project model
+    #
+    # @param [Project] project
+    # @return [Boolean] whether repository could be created
     def create_project_repository(project)
       create_repository(project.repository_storage, project.disk_path, project.full_path)
     end
 
+    # Initialize a new wiki repository using a Project model
+    #
+    # @param [Project] project
+    # @return [Boolean] whether repository could be created
     def create_wiki_repository(project)
       create_repository(project.repository_storage, project.wiki.disk_path, project.wiki.full_path)
     end
 
     # Init new repository
     #
-    # storage - the shard key
-    # disk_path - project disk path
-    # gl_project_path - project name
-    #
-    # Ex.
+    # @example Create a repository
     #   create_repository("default", "path/to/gitlab-ci", "gitlab/gitlab-ci")
     #
+    # @param [String] storage the shard key
+    # @param [String] disk_path project path on disk
+    # @param [String] gl_project_path project name
+    # @return [Boolean] whether repository could be created
     def create_repository(storage, disk_path, gl_project_path)
       relative_path = disk_path.dup
       relative_path << '.git' unless relative_path.end_with?('.git')
@@ -82,29 +97,39 @@ module Gitlab
       false
     end
 
+    # Import wiki repository from external service
+    #
+    # @param [Project] project
+    # @param [Gitlab::LegacyGithubImport::WikiFormatter, Gitlab::BitbucketImport::WikiFormatter] wiki_formatter
+    # @return [Boolean] whether repository could be imported
     def import_wiki_repository(project, wiki_formatter)
       import_repository(project.repository_storage, wiki_formatter.disk_path, wiki_formatter.import_url, project.wiki.full_path)
     end
 
+    # Import project repository from external service
+    #
+    # @param [Project] project
+    # @return [Boolean] whether repository could be imported
     def import_project_repository(project)
       import_repository(project.repository_storage, project.disk_path, project.import_url, project.full_path)
     end
 
     # Import repository
     #
-    # storage - project's storage name
-    # name - project disk path
-    # url - URL to import from
+    # @example Import a repository
+    #   import_repository("nfs-file06", "gitlab/gitlab-ci", "https://gitlab.com/gitlab-org/gitlab-test.git", "gitlab/gitlab-ci")
     #
-    # Ex.
-    #   import_repository("nfs-file06", "gitlab/gitlab-ci", "https://gitlab.com/gitlab-org/gitlab-test.git")
-    #
-    def import_repository(storage, name, url, gl_project_path)
+    # @param [String] storage  project's storage name
+    # @param [String] disk_path project path on disk
+    # @param [String] url from external resource to import from
+    # @param [String] gl_project_path project name
+    # @return [Boolean] whether repository could be imported
+    def import_repository(storage, disk_path, url, gl_project_path)
       if url.start_with?('.', '/')
         raise Error.new("don't use disk paths with import_repository: #{url.inspect}")
       end
 
-      relative_path = "#{name}.git"
+      relative_path = "#{disk_path}.git"
       cmd = GitalyGitlabProjects.new(storage, relative_path, gl_project_path)
 
       success = cmd.import_project(url, git_timeout)
@@ -113,27 +138,31 @@ module Gitlab
       success
     end
 
-    # storage - project's storage path
-    # path - project disk path
-    # new_path - new project disk path
+    # Move or rename a repository
     #
-    # Ex.
+    # @example Move/rename a repository
     #   mv_repository("/path/to/storage", "gitlab/gitlab-ci", "randx/gitlab-ci-new")
-    def mv_repository(storage, path, new_path)
-      return false if path.empty? || new_path.empty?
+    #
+    # @param [String] storage project's storage path
+    # @param [String] disk_path current project path on disk
+    # @param [String] new_disk_path new project path on disk
+    # @return [Boolean] whether repository could be moved/renamed on disk
+    def mv_repository(storage, disk_path, new_disk_path)
+      return false if disk_path.empty? || new_disk_path.empty?
 
-      Gitlab::Git::Repository.new(storage, "#{path}.git", nil, nil).rename("#{new_path}.git")
+      Gitlab::Git::Repository.new(storage, "#{disk_path}.git", nil, nil).rename("#{new_disk_path}.git")
 
       true
     rescue => e
-      Gitlab::ErrorTracking.track_exception(e, path: path, new_path: new_path, storage: storage)
+      Gitlab::ErrorTracking.track_exception(e, path: disk_path, new_path: new_disk_path, storage: storage)
 
       false
     end
 
     # Fork repository to new path
-    # source_project - forked-from Project
-    # target_project - forked-to Project
+    #
+    # @param [Project] source_project forked-from Project
+    # @param [Project] target_project forked-to Project
     def fork_repository(source_project, target_project)
       forked_from_relative_path = "#{source_project.disk_path}.git"
       fork_args = [target_project.repository_storage, "#{target_project.disk_path}.git", target_project.full_path]
@@ -145,29 +174,32 @@ module Gitlab
     # for rm_namespace. Given the underlying implementation removes the name
     # passed as second argument on the passed storage.
     #
-    # storage - project's storage path
-    # name - project disk path
-    #
-    # Ex.
+    # @example Remove a repository
     #   remove_repository("/path/to/storage", "gitlab/gitlab-ci")
-    def remove_repository(storage, name)
-      return false if name.empty?
+    #
+    # @param [String] storage project's storage path
+    # @param [String] disk_path current project path on disk
+    def remove_repository(storage, disk_path)
+      return false if disk_path.empty?
 
-      Gitlab::Git::Repository.new(storage, "#{name}.git", nil, nil).remove
+      Gitlab::Git::Repository.new(storage, "#{disk_path}.git", nil, nil).remove
 
       true
     rescue => e
-      Rails.logger.warn("Repository does not exist: #{e} at: #{name}.git") # rubocop:disable Gitlab/RailsLogger
-      Gitlab::ErrorTracking.track_exception(e, path: name, storage: storage)
+      Rails.logger.warn("Repository does not exist: #{e} at: #{disk_path}.git") # rubocop:disable Gitlab/RailsLogger
+      Gitlab::ErrorTracking.track_exception(e, path: disk_path, storage: storage)
 
       false
     end
 
     # Add new key to authorized_keys
     #
-    # Ex.
+    # @example Add new key
     #   add_key("key-42", "sha-rsa ...")
     #
+    # @param [String] key_id identifier of the key
+    # @param [String] key_content key content (public certificate)
+    # @return [Boolean] whether key could be added
     def add_key(key_id, key_content)
       return unless self.authorized_keys_enabled?
 
@@ -176,39 +208,45 @@ module Gitlab
 
     # Batch-add keys to authorized_keys
     #
-    # Ex.
+    # @example
     #   batch_add_keys(Key.all)
+    #
+    # @param [Array<Key>] keys
+    # @return [Boolean] whether keys could be added
     def batch_add_keys(keys)
       return unless self.authorized_keys_enabled?
 
       gitlab_authorized_keys.batch_add_keys(keys)
     end
 
-    # Remove ssh key from authorized_keys
+    # Remove SSH key from authorized_keys
     #
-    # Ex.
+    # @example Remove a key
     #   remove_key("key-342")
     #
-    def remove_key(id, _ = nil)
+    # @param [String] key_id
+    # @return [Boolean] whether key could be removed or not
+    def remove_key(key_id, _ = nil)
       return unless self.authorized_keys_enabled?
 
-      gitlab_authorized_keys.rm_key(id)
+      gitlab_authorized_keys.rm_key(key_id)
     end
 
-    # Remove all ssh keys from gitlab shell
+    # Remove all SSH keys from gitlab shell
     #
-    # Ex.
+    # @example Remove all keys
     #   remove_all_keys
     #
+    # @return [Boolean] whether keys could be removed or not
     def remove_all_keys
       return unless self.authorized_keys_enabled?
 
       gitlab_authorized_keys.clear
     end
 
-    # Remove ssh keys from gitlab shell that are not in the DB
+    # Remove SSH keys from gitlab shell that are not in the DB
     #
-    # Ex.
+    # @example Remove keys not on the database
     #   remove_keys_not_found_in_db
     #
     # rubocop: disable CodeReuse/ActiveRecord
@@ -234,11 +272,12 @@ module Gitlab
 
     # Add empty directory for storing repositories
     #
-    # Ex.
+    # @example Add new namespace directory
     #   add_namespace("default", "gitlab")
     #
+    # @param [String] storage project's storage path
+    # @param [String] name namespace name
     def add_namespace(storage, name)
-      # https://gitlab.com/gitlab-org/gitlab-foss/issues/58012
       Gitlab::GitalyClient.allow_n_plus_1_calls do
         Gitlab::GitalyClient::NamespaceService.new(storage).add(name)
       end
@@ -249,9 +288,11 @@ module Gitlab
     # Remove directory from repositories storage
     # Every repository inside this directory will be removed too
     #
-    # Ex.
+    # @example Remove namespace directory
     #   rm_namespace("default", "gitlab")
     #
+    # @param [String] storage project's storage path
+    # @param [String] name namespace name
     def rm_namespace(storage, name)
       Gitlab::GitalyClient::NamespaceService.new(storage).remove(name)
     rescue GRPC::InvalidArgument => e
@@ -261,9 +302,12 @@ module Gitlab
 
     # Move namespace directory inside repositories storage
     #
-    # Ex.
+    # @example Move/rename a namespace directory
     #   mv_namespace("/path/to/storage", "gitlab", "gitlabhq")
     #
+    # @param [String] storage project's storage path
+    # @param [String] old_name current namespace name
+    # @param [String] new_name new namespace name
     def mv_namespace(storage, old_name, new_name)
       Gitlab::GitalyClient::NamespaceService.new(storage).rename(old_name, new_name)
     rescue GRPC::InvalidArgument => e
@@ -272,11 +316,17 @@ module Gitlab
       false
     end
 
-    def url_to_repo(path)
-      Gitlab.config.gitlab_shell.ssh_path_prefix + "#{path}.git"
+    # Return a SSH url for a given project path
+    #
+    # @param [String] full_path project path (URL)
+    # @return [String] SSH URL
+    def url_to_repo(full_path)
+      Gitlab.config.gitlab_shell.ssh_path_prefix + "#{full_path}.git"
     end
 
     # Return GitLab shell version
+    #
+    # @return [String] version
     def version
       gitlab_shell_version_file = "#{gitlab_shell_path}/VERSION"
 
@@ -285,12 +335,23 @@ module Gitlab
       end
     end
 
+    # Check if repository exists on disk
+    #
+    # @example Check if repository exists
+    #   repository_exists?('default', 'gitlab-org/gitlab.git')
+    #
+    # @return [Boolean] whether repository exists or not
+    # @param [String] storage project's storage path
+    # @param [Object] dir_name repository dir name
     def repository_exists?(storage, dir_name)
       Gitlab::Git::Repository.new(storage, dir_name, nil, nil).exists?
     rescue GRPC::Internal
       false
     end
 
+    # Return hooks folder path used by projects
+    #
+    # @return [String] path
     def hooks_path
       File.join(gitlab_shell_path, 'hooks')
     end

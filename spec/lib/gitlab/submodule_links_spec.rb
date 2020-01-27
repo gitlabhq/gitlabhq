@@ -38,7 +38,7 @@ describe Gitlab::SubmoduleLinks do
       end
 
       it 'returns links and caches the by ref' do
-        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/tree/hash'])
+        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/-/tree/hash'])
 
         cache_store = links.instance_variable_get("@cache_store")
 
@@ -49,7 +49,7 @@ describe Gitlab::SubmoduleLinks do
         let(:ref) { 'signed-commits' }
 
         it 'returns links' do
-          expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/tree/hash'])
+          expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/-/tree/hash'])
         end
       end
     end

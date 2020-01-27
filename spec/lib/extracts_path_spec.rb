@@ -31,7 +31,7 @@ describe ExtractsPath do
 
     it "log tree path has no escape sequences" do
       assign_ref_vars
-      expect(@logs_path).to eq("/#{@project.full_path}/refs/#{ref}/logs_tree/files/ruby/popen.rb")
+      expect(@logs_path).to eq("/#{@project.full_path}/-/refs/#{ref}/logs_tree/files/ruby/popen.rb")
     end
 
     context 'ref contains %20' do
