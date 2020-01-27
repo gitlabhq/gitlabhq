@@ -66,6 +66,8 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
     @total_user_projects_count = ProjectsFinder.new(params: { non_public: true }, current_user: current_user).execute
     @total_starred_projects_count = ProjectsFinder.new(params: { starred: true }, current_user: current_user).execute
 
+    finder_params[:use_cte] = Feature.enabled?(:use_cte_for_projects_finder, default_enabled: true)
+
     projects = ProjectsFinder
                 .new(params: finder_params, current_user: current_user)
                 .execute

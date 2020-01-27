@@ -172,7 +172,6 @@ export default {
 
   [types.SET_ENDPOINTS](state, endpoints) {
     state.metricsEndpoint = endpoints.metricsEndpoint;
-    state.environmentsEndpoint = endpoints.environmentsEndpoint;
     state.deploymentsEndpoint = endpoints.deploymentsEndpoint;
     state.dashboardEndpoint = endpoints.dashboardEndpoint;
     state.dashboardsEndpoint = endpoints.dashboardsEndpoint;

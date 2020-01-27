@@ -397,6 +397,8 @@ class Project < ApplicationRecord
   scope :sorted_by_stars_desc, -> { reorder(star_count: :desc) }
   scope :sorted_by_stars_asc, -> { reorder(star_count: :asc) }
   scope :sorted_by_name_asc_limited, ->(limit) { reorder(name: :asc).limit(limit) }
+  # Sometimes queries (e.g. using CTEs) require explicit disambiguation with table name
+  scope :projects_order_id_desc, -> { reorder("#{table_name}.id DESC") }
 
   scope :in_namespace, ->(namespace_ids) { where(namespace_id: namespace_ids) }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
@@ -541,6 +543,11 @@ class Project < ApplicationRecord
         user,
         ProjectFeature.required_minimum_access_level_for_private_project(feature)
       )
+  end
+
+  def self.wrap_authorized_projects_with_cte(collection)
+    cte = Gitlab::SQL::CTE.new(:authorized_projects, collection)
+    Project.with(cte.to_arel).from(cte.alias_to(Project.arel_table))
   end
 
   scope :active, -> { joins(:issues, :notes, :merge_requests).order('issues.created_at, notes.created_at, merge_requests.created_at DESC') }

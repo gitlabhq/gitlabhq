@@ -81,13 +81,11 @@ describe('Monitoring mutations', () => {
     it('should set all the endpoints', () => {
       mutations[types.SET_ENDPOINTS](stateCopy, {
         metricsEndpoint: 'additional_metrics.json',
-        environmentsEndpoint: 'environments.json',
         deploymentsEndpoint: 'deployments.json',
         dashboardEndpoint: 'dashboard.json',
         projectPath: '/gitlab-org/gitlab-foss',
       });
       expect(stateCopy.metricsEndpoint).toEqual('additional_metrics.json');
-      expect(stateCopy.environmentsEndpoint).toEqual('environments.json');
       expect(stateCopy.deploymentsEndpoint).toEqual('deployments.json');
       expect(stateCopy.dashboardEndpoint).toEqual('dashboard.json');
       expect(stateCopy.projectPath).toEqual('/gitlab-org/gitlab-foss');

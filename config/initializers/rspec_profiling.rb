@@ -46,7 +46,7 @@ module RspecProfilingExt
     rescue => err
       return if @already_logged_example_finished_error # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
-      $stderr.puts "rspec_profiling couldn't collect an example: #{err}. Further warnings suppressed."
+      warn "rspec_profiling couldn't collect an example: #{err}. Further warnings suppressed."
       @already_logged_example_finished_error = true # rubocop:disable Gitlab/ModuleWithInstanceVariables
     end
 

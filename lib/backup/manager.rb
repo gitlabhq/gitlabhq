@@ -135,11 +135,11 @@ module Backup
 
         progress.print 'Unpacking backup ... '
 
-        unless Kernel.system(*%W(tar -xf #{tar_file}))
+        if Kernel.system(*%W(tar -xf #{tar_file}))
+          progress.puts 'done'.color(:green)
+        else
           progress.puts 'unpacking backup failed'.color(:red)
           exit 1
-        else
-          progress.puts 'done'.color(:green)
         end
 
         ENV["VERSION"] = "#{settings[:db_version]}" if settings[:db_version].to_i > 0

@@ -32,7 +32,7 @@ module Gitlab
     private
 
     def move(path_was, path, base_dir = nil)
-      base_dir = root_dir unless base_dir
+      base_dir ||= root_dir
       from = File.join(base_dir, path_was)
       to = File.join(base_dir, path)
       FileUtils.mv(from, to)

@@ -18,7 +18,7 @@ describe 'Marginalia spec' do
     end
   end
 
-  class MarginaliaTestMailer < BaseMailer
+  class MarginaliaTestMailer < ApplicationMailer
     def first_user
       User.first
     end

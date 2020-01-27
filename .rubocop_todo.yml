@@ -52,14 +52,6 @@ Layout/ClosingParenthesisIndentation:
     - 'spec/support/helpers/stub_object_storage.rb'
     - 'spec/workers/remove_unreferenced_lfs_objects_worker_spec.rb'
 
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: leading, trailing
-Layout/DotPosition:
-  Exclude:
-    - 'app/models/concerns/relative_positioning.rb'
-
 # Offense count: 69
 # Cop supports --auto-correct.
 Layout/EmptyLinesAroundArguments:
@@ -99,12 +91,6 @@ Layout/IndentFirstParameter:
     - 'lib/gitlab/data_builder/push.rb'
     - 'spec/support/helpers/repo_helpers.rb'
     - 'spec/support/helpers/stub_object_storage.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Layout/LeadingBlankLines:
-  Exclude:
-    - 'lib/tasks/yarn.rake'
 
 # Offense count: 54
 # Cop supports --auto-correct.
@@ -150,11 +136,6 @@ Layout/SpaceInsideBlockBraces:
 Layout/SpaceInsideParens:
   Enabled: false
 
-# Offense count: 1
-Lint/DisjunctiveAssignmentInConstructor:
-  Exclude:
-    - 'app/models/uploads/base.rb'
-
 # Offense count: 19
 Lint/DuplicateMethods:
   Exclude:
@@ -177,21 +158,6 @@ Lint/DuplicateMethods:
 Lint/MissingCopEnableDirective:
   Enabled: false
 
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: Whitelist.
-# Whitelist: present?, blank?, presence, try, try!
-Lint/SafeNavigationConsistency:
-  Exclude:
-    - 'lib/gitlab/gpg/commit.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-Lint/ToJSON:
-  Exclude:
-    - 'lib/gitlab/cycle_analytics/usage_data.rb'
-    - 'lib/gitlab/template/base_template.rb'
-
 # Offense count: 6
 Lint/UriEscapeUnescape:
   Exclude:
@@ -199,12 +165,6 @@ Lint/UriEscapeUnescape:
     - 'app/models/project_services/drone_ci_service.rb'
     - 'spec/lib/google_api/auth_spec.rb'
     - 'spec/requests/api/files_spec.rb'
-
-# Offense count: 1
-# Configuration parameters: CheckForMethodsWithNoSideEffects.
-Lint/Void:
-  Exclude:
-    - 'lib/gitlab/git/diff_collection.rb'
 
 # Offense count: 165
 # Cop supports --auto-correct.
@@ -284,12 +244,6 @@ RSpec/LetBeforeExamples:
     - 'spec/rubocop/cop/migration/update_column_in_batches_spec.rb'
     - 'spec/serializers/pipeline_details_entity_spec.rb'
 
-# Offense count: 1
-# Cop supports --auto-correct.
-RSpec/MultipleSubjects:
-  Exclude:
-    - 'spec/services/merge_requests/create_from_issue_service_spec.rb'
-
 # Offense count: 2018
 # Cop supports --auto-correct.
 # Configuration parameters: Strict, EnforcedStyle, AllowedExplicitMatchers.
@@ -319,12 +273,6 @@ RSpec/ScatteredSetup:
     - 'spec/requests/api/jobs_spec.rb'
     - 'spec/services/projects/create_service_spec.rb'
 
-# Offense count: 1
-# Cop supports --auto-correct.
-RSpec/SharedContext:
-  Exclude:
-    - 'spec/features/admin/admin_groups_spec.rb'
-
 # Offense count: 4
 RSpec/VoidExpect:
   Exclude:
@@ -347,12 +295,6 @@ Rails/ApplicationController:
     - 'lib/gitlab/request_forgery_protection.rb'
     - 'spec/controllers/concerns/continue_params_spec.rb'
     - 'spec/lib/marginalia_spec.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Rails/ApplicationMailer:
-  Exclude:
-    - 'app/mailers/base_mailer.rb'
 
 # Offense count: 8
 # Cop supports --auto-correct.
@@ -414,14 +356,6 @@ Rails/LinkToBlank:
 Rails/RakeEnvironment:
   Enabled: false
 
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: Include.
-# Include: app/models/**/*.rb
-Rails/RedundantAllowNil:
-  Exclude:
-    - 'app/models/application_setting.rb'
-
 # Offense count: 868
 # Configuration parameters: Blacklist, Whitelist.
 # Blacklist: decrement!, decrement_counter, increment!, increment_counter, toggle!, touch, update_all, update_attribute, update_column, update_columns, update_counters
@@ -456,12 +390,6 @@ Style/CommentedKeyword:
   Exclude:
     - 'lib/tasks/gitlab/backup.rake'
     - 'spec/tasks/gitlab/backup_rake_spec.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/Dir:
-  Exclude:
-    - 'qa/qa.rb'
 
 # Offense count: 6
 # Cop supports --auto-correct.
@@ -591,13 +519,6 @@ Style/NumericLiteralPrefix:
 Style/NumericPredicate:
   Enabled: false
 
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/OrAssignment:
-  Exclude:
-    - 'lib/api/commit_statuses.rb'
-    - 'lib/gitlab/project_transfer.rb'
-
 # Offense count: 106
 # Cop supports --auto-correct.
 Style/ParallelAssignment:
@@ -631,12 +552,6 @@ Style/PerlBackrefs:
 # SupportedStyles: compact, exploded
 Style/RaiseArgs:
   Enabled: false
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/RedundantConditional:
-  Exclude:
-    - 'lib/system_check/helpers.rb'
 
 # Offense count: 221
 # Cop supports --auto-correct.
@@ -704,12 +619,6 @@ Style/SingleLineMethods:
 Style/SpecialGlobalVars:
   EnforcedStyle: use_perl_names
 
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/StderrPuts:
-  Exclude:
-    - 'config/initializers/rspec_profiling.rb'
-
 # Offense count: 75
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
@@ -736,30 +645,6 @@ Style/TernaryParentheses:
     - 'spec/requests/api/pipeline_schedules_spec.rb'
     - 'spec/support/capybara.rb'
 
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyleForMultiline.
-# SupportedStylesForMultiline: comma, consistent_comma, no_comma
-Style/TrailingCommaInArrayLiteral:
-  Exclude:
-    - 'ee/spec/models/project_spec.rb'
-    - 'spec/lib/gitlab/metrics/dashboard/processor_spec.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyleForMultiline.
-# SupportedStylesForMultiline: comma, consistent_comma, no_comma
-Style/TrailingCommaInHashLiteral:
-  Exclude:
-    - 'lib/gitlab/ci/ansi2html.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/UnlessElse:
-  Exclude:
-    - 'lib/backup/manager.rb'
-    - 'lib/gitlab/project_search_results.rb'
-
 # Offense count: 8
 # Cop supports --auto-correct.
 Style/UnneededCondition:
@@ -775,13 +660,6 @@ Style/UnneededCondition:
 # Cop supports --auto-correct.
 Style/UnneededInterpolation:
   Enabled: false
-
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/UnneededSort:
-  Exclude:
-    - 'app/models/concerns/resolvable_discussion.rb'
-    - 'lib/gitlab/highlight.rb'
 
 RSpec/ReceiveCounts:
   Exclude:

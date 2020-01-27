@@ -63,7 +63,7 @@ module ResolvableDiscussion
     return unless resolved?
 
     strong_memoize(:last_resolved_note) do
-      resolved_notes.sort_by(&:resolved_at).last
+      resolved_notes.max_by(&:resolved_at)
     end
   end
 

@@ -11,10 +11,8 @@ describe MergeRequests::CreateFromIssueService do
   let(:milestone_id) { create(:milestone, project: project).id }
   let(:issue) { create(:issue, project: project, milestone_id: milestone_id) }
   let(:custom_source_branch) { 'custom-source-branch' }
-
-  subject(:service) { described_class.new(project, user, service_params) }
-
-  subject(:service_with_custom_source_branch) { described_class.new(project, user, branch_name: custom_source_branch, **service_params) }
+  let(:service) { described_class.new(project, user, service_params) }
+  let(:service_with_custom_source_branch) { described_class.new(project, user, branch_name: custom_source_branch, **service_params) }
 
   before do
     project.add_developer(user)

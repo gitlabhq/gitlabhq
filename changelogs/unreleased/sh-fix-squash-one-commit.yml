@@ -1,0 +1,5 @@
+---
+title: Skip squashing with only one commit in a merge request
+merge_request: 23744
+author:
+type: fixed

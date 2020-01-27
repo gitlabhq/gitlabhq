@@ -76,14 +76,12 @@ module API
 
         name = params[:name] || params[:context] || 'default'
 
-        unless pipeline
-          pipeline = user_project.ci_pipelines.create!(
-            source: :external,
-            sha: commit.sha,
-            ref: ref,
-            user: current_user,
-            protected: user_project.protected_for?(ref))
-        end
+        pipeline ||= user_project.ci_pipelines.create!(
+          source: :external,
+          sha: commit.sha,
+          ref: ref,
+          user: current_user,
+          protected: user_project.protected_for?(ref))
 
         status = GenericCommitStatus.running_or_pending.find_or_initialize_by(
           project: user_project,

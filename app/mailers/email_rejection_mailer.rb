@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class EmailRejectionMailer < BaseMailer
+class EmailRejectionMailer < ApplicationMailer
   layout 'empty_mailer'
 
   helper EmailsHelper

@@ -15,7 +15,7 @@ module Gitlab
         4 => 'blue',
         5 => 'magenta',
         6 => 'cyan',
-        7 => 'white', # not that this is gray in the dark (aka default) color table
+        7 => 'white' # not that this is gray in the dark (aka default) color table
       }.freeze
 
       STYLE_SWITCHES = {

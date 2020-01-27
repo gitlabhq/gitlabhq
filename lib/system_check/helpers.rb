@@ -57,11 +57,7 @@ module SystemCheck
     end
 
     def should_sanitize?
-      if ENV['SANITIZE'] == 'true'
-        true
-      else
-        false
-      end
+      ENV['SANITIZE'] == 'true'
     end
 
     def omnibus_gitlab?

@@ -159,7 +159,6 @@ describe('Monitoring store actions', () => {
         {
           metricsEndpoint: 'additional_metrics.json',
           deploymentsEndpoint: 'deployments.json',
-          environmentsEndpoint: 'deployments.json',
         },
         mockedState,
         [
@@ -168,7 +167,6 @@ describe('Monitoring store actions', () => {
             payload: {
               metricsEndpoint: 'additional_metrics.json',
               deploymentsEndpoint: 'deployments.json',
-              environmentsEndpoint: 'deployments.json',
             },
           },
         ],

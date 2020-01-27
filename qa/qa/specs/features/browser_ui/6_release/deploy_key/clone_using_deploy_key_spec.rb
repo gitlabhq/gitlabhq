@@ -3,7 +3,7 @@
 require 'digest/sha1'
 
 module QA
-  context 'Release', :docker, quarantine: 'https://gitlab.com/gitlab-org/gitlab/issues/196047' do
+  context 'Release', :docker do
     describe 'Git clone using a deploy key' do
       before do
         Flow::Login.sign_in

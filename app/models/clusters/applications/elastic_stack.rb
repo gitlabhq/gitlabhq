@@ -16,7 +16,7 @@ module Clusters
       include ::Gitlab::Utils::StrongMemoize
 
       include IgnorableColumns
-      ignore_column :kibana_hostname, remove_with: '12.8', remove_after: '2020-01-22'
+      ignore_column :kibana_hostname, remove_with: '12.9', remove_after: '2020-02-22'
 
       default_value_for :version, VERSION
 

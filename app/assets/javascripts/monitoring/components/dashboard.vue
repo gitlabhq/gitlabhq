@@ -132,11 +132,6 @@ export default {
       type: String,
       required: true,
     },
-    environmentsEndpoint: {
-      type: String,
-      required: false,
-      default: '',
-    },
     currentEnvironmentName: {
       type: String,
       required: true,
@@ -218,9 +213,7 @@ export default {
     ]),
     ...mapGetters('monitoringDashboard', ['getMetricStates', 'filteredEnvironments']),
     firstDashboard() {
-      return this.environmentsEndpoint.length > 0 && this.allDashboards.length > 0
-        ? this.allDashboards[0]
-        : {};
+      return this.allDashboards.length > 0 ? this.allDashboards[0] : {};
     },
     selectedDashboard() {
       return this.allDashboards.find(d => d.path === this.currentDashboard) || this.firstDashboard;
@@ -246,7 +239,6 @@ export default {
   created() {
     this.setEndpoints({
       metricsEndpoint: this.metricsEndpoint,
-      environmentsEndpoint: this.environmentsEndpoint,
       deploymentsEndpoint: this.deploymentsEndpoint,
       dashboardEndpoint: this.dashboardEndpoint,
       dashboardsEndpoint: this.dashboardsEndpoint,

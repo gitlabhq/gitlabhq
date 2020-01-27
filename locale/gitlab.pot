@@ -22014,9 +22014,6 @@ msgstr ""
 msgid "ciReport|%{linkStartTag}Learn more about codequality reports %{linkEndTag}"
 msgstr ""
 
-msgid "ciReport|%{namespace} is affected by %{vulnerability}."
-msgstr ""
-
 msgid "ciReport|%{remainingPackagesCount} more"
 msgstr ""
 
@@ -22073,9 +22070,6 @@ msgid "ciReport|%{reportType} is loading"
 msgstr ""
 
 msgid "ciReport|%{reportType}: Loading resulted in an error"
-msgstr ""
-
-msgid "ciReport|%{vulnerability} in %{featurename}"
 msgstr ""
 
 msgid "ciReport|(errors when loading results)"
@@ -22232,15 +22226,6 @@ msgid "ciReport|There was an error dismissing the vulnerability. Please try agai
 msgstr ""
 
 msgid "ciReport|There was an error reverting the dismissal. Please try again."
-msgstr ""
-
-msgid "ciReport|Upgrade %{name} from %{version} to %{fixed}."
-msgstr ""
-
-msgid "ciReport|Upgrade %{name} to %{fixed}."
-msgstr ""
-
-msgid "ciReport|Upgrade to %{fixed}."
 msgstr ""
 
 msgid "ciReport|Used by %{packagesString}"

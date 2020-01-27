@@ -6,6 +6,7 @@ describe 'User squashes a merge request', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:source_branch) { 'csv' }
+  let(:protected_source_branch) { false }
 
   let!(:original_head) { project.repository.commit('master') }
 
@@ -40,7 +41,7 @@ describe 'User squashes a merge request', :js do
   def accept_mr
     expect(page).to have_button('Merge')
 
-    uncheck 'Delete source branch'
+    uncheck 'Delete source branch' unless protected_source_branch
     click_on 'Merge'
   end
 
@@ -56,14 +57,34 @@ describe 'User squashes a merge request', :js do
   end
 
   context 'when the MR has only one commit' do
+    let(:source_branch) { 'master' }
+    let(:target_branch) { 'branch-merged' }
+    let(:protected_source_branch) { true }
+    let(:source_sha) { project.commit(source_branch).sha }
+    let(:target_sha) { project.commit(target_branch).sha }
+
     before do
-      merge_request = create(:merge_request, source_project: project, target_project: project, source_branch: 'master', target_branch: 'branch-merged')
+      merge_request = create(:merge_request, source_project: project, target_project: project, source_branch: source_branch, target_branch: target_branch, squash: true)
 
       visit project_merge_request_path(project, merge_request)
     end
 
-    it 'does not show the squash checkbox' do
+    it 'accepts the merge request without issuing a squash request', :sidekiq_inline do
+      expect_next_instance_of(Gitlab::GitalyClient::OperationService) do |instance|
+        expect(instance).not_to receive(:user_squash)
+      end
+
+      expect(project.repository.ancestor?(source_branch, target_branch)).to be_falsey
       expect(page).not_to have_field('squash')
+
+      accept_mr
+
+      expect(page).to have_content('Merged')
+
+      latest_target_commits = project.repository.commits_between(source_sha, target_sha).map(&:raw)
+
+      expect(latest_target_commits.count).to eq(1)
+      expect(project.repository.ancestor?(source_branch, target_branch)).to be_truthy
     end
   end
 

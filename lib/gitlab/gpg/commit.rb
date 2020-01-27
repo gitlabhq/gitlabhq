@@ -16,13 +16,13 @@ module Gitlab
 
       def signature_text
         strong_memoize(:signature_text) do
-          @signature_data&.itself && @signature_data[0]
+          @signature_data&.itself && @signature_data[0] # rubocop:disable Lint/SafeNavigationConsistency
         end
       end
 
       def signed_text
         strong_memoize(:signed_text) do
-          @signature_data&.itself && @signature_data[1]
+          @signature_data&.itself && @signature_data[1] # rubocop:disable Lint/SafeNavigationConsistency
         end
       end
 

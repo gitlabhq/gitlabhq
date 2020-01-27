@@ -62,7 +62,7 @@ describe Gitlab::Metrics::Dashboard::Processor do
           'metric_a1', # group priority 1, panel weight 1
           project_business_metric.id, # group priority 0, panel weight nil (0)
           project_response_metric.id, # group priority -5, panel weight nil (0)
-          project_system_metric.id, # group priority -10, panel weight nil (0)
+          project_system_metric.id # group priority -10, panel weight nil (0)
         ]
         actual_metrics_order = all_metrics.map { |m| m[:id] || m[:metric_id] }
 

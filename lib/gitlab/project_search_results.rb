@@ -106,10 +106,10 @@ module Gitlab
 
       @wiki_blobs ||= begin
         if project.wiki_enabled? && query.present?
-          unless project.wiki.empty?
-            Gitlab::WikiFileFinder.new(project, repository_wiki_ref).find(query)
-          else
+          if project.wiki.empty?
             []
+          else
+            Gitlab::WikiFileFinder.new(project, repository_wiki_ref).find(query)
           end
         else
           []
