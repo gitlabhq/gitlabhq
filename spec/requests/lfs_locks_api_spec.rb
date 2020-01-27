@@ -23,7 +23,7 @@ describe 'Git LFS File Locking API' do
       it 'returns a forbidden 403 response' do
         post_lfs_json url, body, headers
 
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
   end
@@ -51,7 +51,7 @@ describe 'Git LFS File Locking API' do
       it 'return an error message' do
         post_lfs_json url, body, headers
 
-        expect(response).to have_gitlab_http_status(409)
+        expect(response).to have_gitlab_http_status(:conflict)
 
         expect(json_response.keys).to match_array(%w(lock message documentation_url))
         expect(json_response['message']).to match(/already locked/)
@@ -68,7 +68,7 @@ describe 'Git LFS File Locking API' do
       it 'creates the lock' do
         post_lfs_json url, body, headers
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
 
         expect(json_response['lock'].keys).to match_array(%w(id path locked_at owner))
       end
@@ -87,7 +87,7 @@ describe 'Git LFS File Locking API' do
 
       do_get url, nil, headers
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
 
       expect(json_response['locks'].size).to eq(2)
       expect(json_response['locks'].first.keys).to match_array(%w(id path locked_at owner))
@@ -106,7 +106,7 @@ describe 'Git LFS File Locking API' do
 
       post_lfs_json url, nil, headers
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
 
       expect(json_response['ours'].size).to eq(1)
       expect(json_response['ours'].first['path']).to eq('README')
@@ -126,7 +126,7 @@ describe 'Git LFS File Locking API' do
       it 'deletes the lock' do
         post_lfs_json url, nil, headers
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       it 'returns the deleted lock' do
@@ -142,7 +142,7 @@ describe 'Git LFS File Locking API' do
           project.add_maintainer(maintainer)
           post_lfs_json url, { force: true }, headers
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
     end

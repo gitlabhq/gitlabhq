@@ -4,8 +4,9 @@ module Gitlab
   module RepoPath
     NotFoundError = Class.new(StandardError)
 
-    def self.parse(repo_path)
-      project_path = repo_path.sub(/\.git\z/, '').sub(%r{\A/}, '')
+    def self.parse(path)
+      repo_path = path.sub(/\.git\z/, '').sub(%r{\A/}, '')
+      redirected_path = nil
 
       # Detect the repo type based on the path, the first one tried is the project
       # type, which does not have a suffix.
@@ -14,10 +15,13 @@ module Gitlab
         # type.
         # We'll always try to find a project with an empty suffix (for the
         # `Gitlab::GlRepository::PROJECT` type.
-        next unless project_path.end_with?(type.path_suffix)
+        next unless type.valid?(repo_path)
 
-        project, was_redirected = find_project(project_path.chomp(type.path_suffix))
-        redirected_path = project_path if was_redirected
+        # Removing the suffix (.wiki, .design, ...) from the project path
+        full_path = repo_path.chomp(type.path_suffix)
+
+        project, was_redirected = find_project(full_path)
+        redirected_path = repo_path if was_redirected
 
         # If we found a matching project, then the type was matched, no need to
         # continue looking.

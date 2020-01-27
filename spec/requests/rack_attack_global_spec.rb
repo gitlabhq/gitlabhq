@@ -53,7 +53,7 @@ describe 'Rack Attack global throttles' do
         # At first, allow requests under the rate limit.
         requests_per_period.times do
           get url_that_does_not_require_authentication
-          expect(response).to have_http_status 200
+          expect(response).to have_gitlab_http_status(:ok)
         end
 
         # the last straw
@@ -63,7 +63,7 @@ describe 'Rack Attack global throttles' do
       it 'allows requests after throttling and then waiting for the next period' do
         requests_per_period.times do
           get url_that_does_not_require_authentication
-          expect(response).to have_http_status 200
+          expect(response).to have_gitlab_http_status(:ok)
         end
 
         expect_rejection { get url_that_does_not_require_authentication }
@@ -71,7 +71,7 @@ describe 'Rack Attack global throttles' do
         Timecop.travel(period.from_now) do
           requests_per_period.times do
             get url_that_does_not_require_authentication
-            expect(response).to have_http_status 200
+            expect(response).to have_gitlab_http_status(:ok)
           end
 
           expect_rejection { get url_that_does_not_require_authentication }
@@ -81,7 +81,7 @@ describe 'Rack Attack global throttles' do
       it 'counts requests from different IPs separately' do
         requests_per_period.times do
           get url_that_does_not_require_authentication
-          expect(response).to have_http_status 200
+          expect(response).to have_gitlab_http_status(:ok)
         end
 
         expect_next_instance_of(Rack::Attack::Request) do |instance|
@@ -90,14 +90,14 @@ describe 'Rack Attack global throttles' do
 
         # would be over limit for the same IP
         get url_that_does_not_require_authentication
-        expect(response).to have_http_status 200
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       context 'when the request is to the api internal endpoints' do
         it 'allows requests over the rate limit' do
           (1 + requests_per_period).times do
             get url_api_internal, params: { secret_token: Gitlab::Shell.secret_token }
-            expect(response).to have_http_status 200
+            expect(response).to have_gitlab_http_status(:ok)
           end
         end
       end
@@ -109,7 +109,7 @@ describe 'Rack Attack global throttles' do
         it 'does not cont as unauthenticated' do
           (1 + requests_per_period).times do
             post request_jobs_url, params: { token: runner.token }
-            expect(response).to have_http_status 204
+            expect(response).to have_gitlab_http_status(:no_content)
           end
         end
       end
@@ -117,7 +117,7 @@ describe 'Rack Attack global throttles' do
       it 'logs RackAttack info into structured logs' do
         requests_per_period.times do
           get url_that_does_not_require_authentication
-          expect(response).to have_http_status 200
+          expect(response).to have_gitlab_http_status(:ok)
         end
 
         arguments = {
@@ -143,7 +143,7 @@ describe 'Rack Attack global throttles' do
       it 'allows requests over the rate limit' do
         (1 + requests_per_period).times do
           get url_that_does_not_require_authentication
-          expect(response).to have_http_status 200
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
     end
@@ -243,7 +243,7 @@ describe 'Rack Attack global throttles' do
         it 'allows requests over the rate limit' do
           (1 + requests_per_period).times do
             post protected_path_that_does_not_require_authentication, params: post_params
-            expect(response).to have_http_status 200
+            expect(response).to have_gitlab_http_status(:ok)
           end
         end
       end
@@ -257,7 +257,7 @@ describe 'Rack Attack global throttles' do
         it 'rejects requests over the rate limit' do
           requests_per_period.times do
             post protected_path_that_does_not_require_authentication, params: post_params
-            expect(response).to have_http_status 200
+            expect(response).to have_gitlab_http_status(:ok)
           end
 
           expect_rejection { post protected_path_that_does_not_require_authentication, params: post_params }
@@ -272,7 +272,7 @@ describe 'Rack Attack global throttles' do
           it 'allows requests over the rate limit' do
             (1 + requests_per_period).times do
               post protected_path_that_does_not_require_authentication, params: post_params
-              expect(response).to have_http_status 200
+              expect(response).to have_gitlab_http_status(:ok)
             end
           end
         end
@@ -329,7 +329,7 @@ describe 'Rack Attack global throttles' do
         it 'allows requests over the rate limit' do
           (1 + requests_per_period).times do
             post(*request_args)
-            expect(response).not_to have_http_status 429
+            expect(response).not_to have_gitlab_http_status(:too_many_requests)
           end
         end
       end
@@ -369,7 +369,7 @@ describe 'Rack Attack global throttles' do
         it 'allows requests over the rate limit' do
           (1 + requests_per_period).times do
             post url_that_requires_authentication
-            expect(response).not_to have_http_status 429
+            expect(response).not_to have_gitlab_http_status(:too_many_requests)
           end
         end
       end

@@ -94,6 +94,19 @@ project.
 
 ![Releases list](img/releases.png)
 
+### Number of Releases
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/36667) in GitLab 12.8.
+
+The incremental number of Releases is displayed on the project's details page. When clicked,
+it takes you to the list of Releases.
+
+![Number of Releases](img/releases_count_v12_8.png "Incremental counter of Releases")
+
+For private projects, the number of Releases is displayed to users with Reporter
+[permissions](../../permissions.md#releases-permissions) or higher. For public projects,
+it is displayed to every user regardless of their permission level.
+
 ## Editing a release
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/26016) in GitLab 12.6.

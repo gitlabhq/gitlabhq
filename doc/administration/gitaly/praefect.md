@@ -173,9 +173,11 @@ praefect['virtual_storages'] = {
   }
 }
 
+# Replace POSTGRESQL_SERVER below with a real IP/host address of the database.
 praefect['database_host'] = 'POSTGRESQL_SERVER'
 praefect['database_port'] = 5432
 praefect['database_user'] = 'praefect'
+# Replace PRAEFECT_SQL_PASSWORD below with a real password of the database.
 praefect['database_password'] = 'PRAEFECT_SQL_PASSWORD'
 praefect['database_dbname'] = 'praefect_production'
 

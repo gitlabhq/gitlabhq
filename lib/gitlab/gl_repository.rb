@@ -7,12 +7,13 @@ module Gitlab
     PROJECT = RepoType.new(
       name: :project,
       access_checker_class: Gitlab::GitAccess,
-      repository_accessor: -> (project) { project.repository }
+      repository_resolver: -> (project) { project.repository }
     ).freeze
     WIKI = RepoType.new(
       name: :wiki,
       access_checker_class: Gitlab::GitAccessWiki,
-      repository_accessor: -> (project) { project.wiki.repository }
+      repository_resolver: -> (project) { project.wiki.repository },
+      suffix: :wiki
     ).freeze
 
     TYPES = {
@@ -27,15 +28,14 @@ module Gitlab
     def self.parse(gl_repository)
       type_name, _id = gl_repository.split('-').first
       type = types[type_name]
-      subject_id = type&.fetch_id(gl_repository)
 
-      unless subject_id
+      unless type
         raise ArgumentError, "Invalid GL Repository \"#{gl_repository}\""
       end
 
-      project = Project.find_by_id(subject_id)
+      container = type.fetch_container!(gl_repository)
 
-      [project, type]
+      [container, type]
     end
 
     def self.default_type

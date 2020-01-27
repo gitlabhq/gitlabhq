@@ -21,7 +21,7 @@ module PrometheusAdapter
       raise NotImplemented
     end
 
-    # This is a heavy-weight check if a prometheus is properly configured and accesible from GitLab.
+    # This is a heavy-weight check if a prometheus is properly configured and accessible from GitLab.
     # This actually sends a request to an external service and often it could take a long time,
     # Please consider using `configured?` instead if the process is running on unicorn/puma threads.
     def can_query?

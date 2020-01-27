@@ -15,6 +15,13 @@
 #
 # Uncomment the following lines to make the configuration take effect.
 
+# Make sure to run `cd tooling/overcommit && make && cd -`
+gemfile: 'tooling/overcommit/gems.rb'
+
+PostCheckout:
+  BundleInstall:
+    enabled: true
+
 PreCommit:
   AuthorName:
     enabled: false
@@ -35,6 +42,19 @@ PreCommit:
 #    on_warn: fail # Treat all warnings as failures
   ScssLint:
     enabled: true
+
+CommitMsg:
+  TextWidth:
+    enabled: true
+    min_subject_width: 8 # three 2-letter words with 2 spaces
+    max_subject_width: 72
+    quiet: false
+
+  EmptyMessage:
+    enabled: true
+    required: true
+    description: 'Checking for empty commit message'
+
 #PostCheckout:
 #  ALL: # Special hook name that customizes all hooks of this type
 #    quiet: true # Change all post-checkout hooks to only display output on failure

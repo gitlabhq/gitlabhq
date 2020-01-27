@@ -3992,7 +3992,7 @@ describe Project do
       end
 
       it 'schedules HashedStorage::ProjectMigrateWorker with delayed start when the project repo is in use' do
-        Gitlab::ReferenceCounter.new(Gitlab::GlRepository::PROJECT.identifier_for_repositorable(project)).increase
+        Gitlab::ReferenceCounter.new(Gitlab::GlRepository::PROJECT.identifier_for_container(project)).increase
 
         expect(HashedStorage::ProjectMigrateWorker).to receive(:perform_in)
 
@@ -4000,7 +4000,7 @@ describe Project do
       end
 
       it 'schedules HashedStorage::ProjectMigrateWorker with delayed start when the wiki repo is in use' do
-        Gitlab::ReferenceCounter.new(Gitlab::GlRepository::WIKI.identifier_for_repositorable(project)).increase
+        Gitlab::ReferenceCounter.new(Gitlab::GlRepository::WIKI.identifier_for_container(project)).increase
 
         expect(HashedStorage::ProjectMigrateWorker).to receive(:perform_in)
 

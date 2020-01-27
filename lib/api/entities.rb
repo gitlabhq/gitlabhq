@@ -2,31 +2,6 @@
 
 module API
   module Entities
-    class Membership < Grape::Entity
-      expose :source_id
-      expose :source_name do |member|
-        member.source.name
-      end
-      expose :source_type
-      expose :access_level
-    end
-
-    class Identity < Grape::Entity
-      expose :provider, :extern_uid
-    end
-
-    class UserStatus < Grape::Entity
-      expose :emoji
-      expose :message
-      expose :message_html do |entity|
-        MarkupHelper.markdown_field(entity, :message)
-      end
-    end
-
-    class Email < Grape::Entity
-      expose :id, :email
-    end
-
     class Hook < Grape::Entity
       expose :id, :url, :created_at, :push_events, :tag_push_events, :merge_requests_events, :repository_update_events
       expose :enable_ssl_verification

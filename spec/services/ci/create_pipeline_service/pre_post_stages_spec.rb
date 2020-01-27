@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 describe Ci::CreatePipelineService do
-  context '.pre/.post stages' do
+  describe '.pre/.post stages' do
     let_it_be(:user)    { create(:admin) }
     let_it_be(:project) { create(:project, :repository, creator: user) }
 

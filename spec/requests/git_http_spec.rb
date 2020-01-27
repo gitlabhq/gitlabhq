@@ -848,7 +848,7 @@ describe 'Git HTTP requests' do
           end
 
           it "redirects" do
-            expect(response).to have_gitlab_http_status(302)
+            expect(response).to have_gitlab_http_status(:found)
           end
         end
       end
@@ -890,7 +890,7 @@ describe 'Git HTTP requests' do
 
           it "responds with status 200" do
             clone_get(path, env) do |response|
-              expect(response).to have_gitlab_http_status(200)
+              expect(response).to have_gitlab_http_status(:ok)
             end
           end
 

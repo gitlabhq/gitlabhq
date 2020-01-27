@@ -1,0 +1,75 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    ast (2.4.0)
+    childprocess (3.0.0)
+    ffi (1.12.1)
+    gitlab-styles (3.1.0)
+      rubocop (~> 0.74.0)
+      rubocop-gitlab-security (~> 0.1.0)
+      rubocop-performance (~> 1.4.1)
+      rubocop-rails (~> 2.0)
+      rubocop-rspec (~> 1.36)
+    haml (5.1.2)
+      temple (>= 0.8.0)
+      tilt
+    haml_lint (0.34.1)
+      haml (>= 4.0, < 5.2)
+      rainbow
+      rubocop (>= 0.50.0)
+      sysexits (~> 1.1)
+    iniparse (1.4.4)
+    jaro_winkler (1.5.4)
+    overcommit (0.52.1)
+      childprocess (>= 0.6.3, < 4)
+      iniparse (~> 1.4)
+    parallel (1.19.1)
+    parser (2.7.0.2)
+      ast (~> 2.4.0)
+    rack (2.1.1)
+    rainbow (3.0.0)
+    rake (12.3.3)
+    rb-fsevent (0.10.3)
+    rb-inotify (0.10.1)
+      ffi (~> 1.0)
+    rubocop (0.74.0)
+      jaro_winkler (~> 1.5.1)
+      parallel (~> 1.10)
+      parser (>= 2.6)
+      rainbow (>= 2.2.2, < 4.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (>= 1.4.0, < 1.7)
+    rubocop-gitlab-security (0.1.1)
+      rubocop (>= 0.51)
+    rubocop-performance (1.4.1)
+      rubocop (>= 0.71.0)
+    rubocop-rails (2.4.1)
+      rack (>= 1.1)
+      rubocop (>= 0.72.0)
+    rubocop-rspec (1.37.1)
+      rubocop (>= 0.68.1)
+    ruby-progressbar (1.10.1)
+    sass (3.5.7)
+      sass-listen (~> 4.0.0)
+    sass-listen (4.0.0)
+      rb-fsevent (~> 0.9, >= 0.9.4)
+      rb-inotify (~> 0.9, >= 0.9.7)
+    scss_lint (0.56.0)
+      rake (>= 0.9, < 13)
+      sass (~> 3.5.3)
+    sysexits (1.2.0)
+    temple (0.8.2)
+    tilt (2.0.10)
+    unicode-display_width (1.6.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  gitlab-styles (~> 3.1.0)
+  haml_lint (~> 0.34.0)
+  overcommit
+  scss_lint (~> 0.56.0)
+
+BUNDLED WITH
+   2.1.2

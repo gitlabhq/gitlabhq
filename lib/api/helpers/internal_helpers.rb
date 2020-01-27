@@ -116,7 +116,7 @@ module API
       # Project id to pass between components that don't share/don't have
       # access to the same filesystem mounts
       def gl_repository
-        repo_type.identifier_for_repositorable(project)
+        repo_type.identifier_for_container(project)
       end
 
       def gl_project_path
