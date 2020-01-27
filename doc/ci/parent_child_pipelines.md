@@ -4,7 +4,7 @@ type: reference
 
 # Parent-child pipelines
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/16094) in GitLab Starter 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/16094) in GitLab 12.7.
 
 As pipelines grow more complex, a few related problems start to emerge:
 

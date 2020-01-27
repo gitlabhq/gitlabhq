@@ -18,6 +18,14 @@ module API
       def validate_file!
         render_api_error!('The file is invalid', 400) unless file_is_valid?
       end
+
+      def throttled?(key, scope)
+        rate_limiter.throttled?(key, scope: scope)
+      end
+
+      def rate_limiter
+        ::Gitlab::ApplicationRateLimiter
+      end
     end
 
     before do
@@ -43,6 +51,14 @@ module API
         success Entities::ProjectImportStatus
       end
       post 'import' do
+        key = "project_import".to_sym
+
+        if throttled?(key, [current_user, key])
+          rate_limiter.log_request(request, "#{key}_request_limit".to_sym, current_user)
+
+          render_api_error!({ error: _('This endpoint has been requested too many times. Try again later.') }, 429)
+        end
+
         validate_file!
 
         Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42437')

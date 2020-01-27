@@ -69,4 +69,20 @@ describe WebHookLog do
       it { expect(web_hook_log.success?).to be_falsey }
     end
   end
+
+  describe '#internal_error?' do
+    let(:web_hook_log) { build_stubbed(:web_hook_log, response_status: status) }
+
+    context 'when response status is not an internal error' do
+      let(:status) { '200' }
+
+      it { expect(web_hook_log.internal_error?).to be_falsey }
+    end
+
+    context 'when response status is an internal error' do
+      let(:status) { 'internal error' }
+
+      it { expect(web_hook_log.internal_error?).to be_truthy }
+    end
+  end
 end
