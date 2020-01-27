@@ -1076,6 +1076,7 @@ Auto DevOps can undo your changes.
 The following table lists variables related to the database.
 
 | **Variable**                            | **Description**                    |
+|-----------------------------------------|------------------------------------|
 | `DB_INITIALIZE`                         | From GitLab 11.4, used to specify the command to run to initialize the application's PostgreSQL database. Runs inside the application pod. |
 | `DB_MIGRATE`                            | From GitLab 11.4, used to specify the command to run to migrate the application's PostgreSQL database. Runs inside the application pod. |
 | `POSTGRES_ENABLED`                      | Whether PostgreSQL is enabled. Defaults to `"true"`. Set to `false` to disable the automatic deployment of PostgreSQL. |
@@ -1089,6 +1090,7 @@ The following table lists variables related to the database.
 The following table lists variables related to security tools.
 
 | **Variable**                            | **Description**                    |
+|-----------------------------------------|------------------------------------|
 | `SAST_CONFIDENCE_LEVEL`                 | Minimum confidence level of security issues you want to be reported; `1` for Low, `2` for Medium, `3` for High. Defaults to `3`. |
 
 #### Disable jobs
@@ -1096,6 +1098,7 @@ The following table lists variables related to security tools.
 The following table lists variables used to disable jobs.
 
 | **Variable**                            | **Description**                    |
+|-----------------------------------------|------------------------------------|
 | `CODE_QUALITY_DISABLED`                 | From GitLab 11.0, used to disable the `codequality` job. If the variable is present, the job will not be created. |
 | `CONTAINER_SCANNING_DISABLED`           | From GitLab 11.0, used to disable the `sast:container` job. If the variable is present, the job will not be created. |
 | `DAST_DISABLED`                         | From GitLab 11.0, used to disable the `dast` job. If the variable is present, the job will not be created. |
