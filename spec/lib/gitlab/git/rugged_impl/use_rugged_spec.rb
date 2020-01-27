@@ -122,6 +122,12 @@ describe Gitlab::Git::RuggedImpl::UseRugged, :seed_helper do
         allow(Gitlab::Runtime).to receive(:puma?).and_return(true)
       end
 
+      it "returns false when Puma doesn't support the cli_config method" do
+        allow(::Puma).to receive(:respond_to?).with(:cli_config).and_return(false)
+
+        expect(subject.running_puma_with_multiple_threads?).to be_falsey
+      end
+
       it 'returns false for single thread Puma' do
         allow(::Puma).to receive_message_chain(:cli_config, :options).and_return(max_threads: 1)
 

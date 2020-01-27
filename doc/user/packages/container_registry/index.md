@@ -177,7 +177,7 @@ The UI allows you to configure the following:
 - **Expiration interval:** how long tags are exempt from being deleted.
 - **Expiration schedule:** how often the cron job checking the tags should run.
 - **Expiration latest:** how many tags to _always_ keep for each image.
-- **Expire Docker tags with regex matching:** the regex used to determine what tags should be expired. To qualify all tags for expiration, use the default value of `.*`.
+- **Docker tags with names matching this regex pattern will expire:** the regex used to determine what tags should be expired. To qualify all tags for expiration, use the default value of `.*`.
 
 ## Troubleshooting the GitLab Container Registry
 

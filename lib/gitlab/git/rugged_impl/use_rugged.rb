@@ -16,7 +16,9 @@ module Gitlab
         end
 
         def running_puma_with_multiple_threads?
-          Gitlab::Runtime.puma? && ::Puma.cli_config.options[:max_threads] > 1
+          return false unless Gitlab::Runtime.puma?
+
+          ::Puma.respond_to?(:cli_config) && ::Puma.cli_config.options[:max_threads] > 1
         end
 
         def execute_rugged_call(method_name, *args)

@@ -5065,6 +5065,9 @@ msgstr ""
 msgid "ContainerRegistry|Docker tag expiration policy is %{toggleStatus}"
 msgstr ""
 
+msgid "ContainerRegistry|Docker tags with names matching this regex pattern will expire:"
+msgstr ""
+
 msgid "ContainerRegistry|Expiration interval:"
 msgstr ""
 
@@ -5075,9 +5078,6 @@ msgid "ContainerRegistry|Expiration policy:"
 msgstr ""
 
 msgid "ContainerRegistry|Expiration schedule:"
-msgstr ""
-
-msgid "ContainerRegistry|Expire Docker tags that match this regex:"
 msgstr ""
 
 msgid "ContainerRegistry|If you are not already logged in, you need to authenticate to the Container Registry by using your GitLab username and password. If you have %{twofaDocLinkStart}Two-Factor Authentication%{twofaDocLinkEnd} enabled, use a %{personalAccessTokensDocLinkStart}Personal Access Token%{personalAccessTokensDocLinkEnd} instead of a password."

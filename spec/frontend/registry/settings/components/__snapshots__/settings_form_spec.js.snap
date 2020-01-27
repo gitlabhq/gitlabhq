@@ -136,7 +136,7 @@ exports[`Settings Form renders 1`] = `
       <glformgroup-stub
         id="expiration-policy-name-matching-group"
         invalid-feedback="The value of this input should be less than 255 characters"
-        label="Expire Docker tags that match this regex:"
+        label="Docker tags with names matching this regex pattern will expire:"
         label-align="right"
         label-cols="3"
         label-for="expiration-policy-name-matching"

@@ -11,6 +11,7 @@ import Stacktrace from './stacktrace.vue';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { trackClickErrorLinkToSentryOptions } from '../utils';
+import { severityLevel, severityLevelVariant } from './constants';
 
 import query from '../queries/details.query.graphql';
 
@@ -147,6 +148,11 @@ export default {
     errorLevel() {
       return sprintf(__('level: %{level}'), { level: this.error.tags.level });
     },
+    errorSeverityVariant() {
+      return (
+        severityLevelVariant[this.error.tags.level] || severityLevelVariant[severityLevel.ERROR]
+      );
+    },
   },
   mounted() {
     this.startPollingDetails(this.issueDetailsPath);
@@ -228,8 +234,12 @@ export default {
           <h2 class="text-truncate">{{ GQLerror.title }}</h2>
         </tooltip-on-truncate>
         <template v-if="error.tags">
-          <gl-badge v-if="error.tags.level" variant="danger" class="rounded-pill mr-2"
-            >{{ errorLevel }}
+          <gl-badge
+            v-if="error.tags.level"
+            :variant="errorSeverityVariant"
+            class="rounded-pill mr-2"
+          >
+            {{ errorLevel }}
           </gl-badge>
           <gl-badge v-if="error.tags.logger" variant="light" class="rounded-pill"
             >{{ error.tags.logger }}

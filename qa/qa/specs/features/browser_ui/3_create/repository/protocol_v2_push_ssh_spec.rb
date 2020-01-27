@@ -2,8 +2,7 @@
 
 module QA
   # Git protocol v2 is temporarily disabled
-  # BUG_IN_CODE
-  context 'Create', quarantine: 'https://gitlab.com/gitlab-org/gitlab/issues/27828' do
+  context 'Create', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/issues/27828', type: :bug } do
     describe 'Push over SSH using Git protocol version 2', :requires_git_protocol_v2 do
       # Note: If you run this test against GDK make sure you've enabled sshd and
       # enabled setting the Git protocol by adding `AcceptEnv GIT_PROTOCOL` to

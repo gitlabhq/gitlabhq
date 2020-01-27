@@ -4,6 +4,7 @@ import { GlLoadingIcon, GlLink, GlBadge, GlFormInput } from '@gitlab/ui';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import Stacktrace from '~/error_tracking/components/stacktrace.vue';
 import ErrorDetails from '~/error_tracking/components/error_details.vue';
+import { severityLevel, severityLevelVariant } from '~/error_tracking/components/constants';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -142,6 +143,29 @@ describe('ErrorDetails', () => {
         mountComponent();
         return wrapper.vm.$nextTick().then(() => {
           expect(wrapper.findAll(GlBadge).length).toBe(1);
+        });
+      });
+
+      it.each(Object.keys(severityLevel))(
+        'should set correct severity level variant for %s badge',
+        level => {
+          store.state.details.error.tags = { level: severityLevel[level] };
+          mountComponent();
+          return wrapper.vm.$nextTick().then(() => {
+            expect(wrapper.find(GlBadge).attributes('variant')).toEqual(
+              severityLevelVariant[severityLevel[level]],
+            );
+          });
+        },
+      );
+
+      it('should fallback for ERROR severityLevelVariant when severityLevel is unknown', () => {
+        store.state.details.error.tags = { level: 'someNewErrorLevel' };
+        mountComponent();
+        return wrapper.vm.$nextTick().then(() => {
+          expect(wrapper.find(GlBadge).attributes('variant')).toEqual(
+            severityLevelVariant[severityLevel.ERROR],
+          );
         });
       });
     });

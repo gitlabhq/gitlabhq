@@ -2,52 +2,6 @@
 
 module API
   module Entities
-    class Hook < Grape::Entity
-      expose :id, :url, :created_at, :push_events, :tag_push_events, :merge_requests_events, :repository_update_events
-      expose :enable_ssl_verification
-    end
-
-    class ProjectHook < Hook
-      expose :project_id, :issues_events, :confidential_issues_events
-      expose :note_events, :confidential_note_events, :pipeline_events, :wiki_page_events
-      expose :job_events
-      expose :push_events_branch_filter
-    end
-
-    class SharedGroup < Grape::Entity
-      expose :group_id
-      expose :group_name do |group_link, options|
-        group_link.group.name
-      end
-      expose :group_full_path do |group_link, options|
-        group_link.group.full_path
-      end
-      expose :group_access, as: :group_access_level
-      expose :expires_at
-    end
-
-    class ProjectIdentity < Grape::Entity
-      expose :id, :description
-      expose :name, :name_with_namespace
-      expose :path, :path_with_namespace
-      expose :created_at
-    end
-
-    class ProjectExportStatus < ProjectIdentity
-      include ::API::Helpers::RelatedResourcesHelpers
-
-      expose :export_status
-      expose :_links, if: lambda { |project, _options| project.export_status == :finished } do
-        expose :api_url do |project|
-          expose_url(api_v4_projects_export_download_path(id: project.id))
-        end
-
-        expose :web_url do |project|
-          Gitlab::Routing.url_helpers.download_export_project_url(project)
-        end
-      end
-    end
-
     class RemoteMirror < Grape::Entity
       expose :id
       expose :enabled

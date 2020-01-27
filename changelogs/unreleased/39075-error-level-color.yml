@@ -1,0 +1,5 @@
+---
+title: Indicate Sentry error severity in GitLab
+merge_request: 23346
+author:
+type: added

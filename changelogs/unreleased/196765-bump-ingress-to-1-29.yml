@@ -1,0 +1,5 @@
+---
+title: Bump ingress managed app chart to 1.29.3
+merge_request: 23461
+author:
+type: changed

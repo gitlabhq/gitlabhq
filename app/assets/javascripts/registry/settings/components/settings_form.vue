@@ -174,7 +174,9 @@ export default {
           :label-cols="$options.labelsConfig.cols"
           :label-align="$options.labelsConfig.align"
           label-for="expiration-policy-name-matching"
-          :label="s__('ContainerRegistry|Expire Docker tags that match this regex:')"
+          :label="
+            s__('ContainerRegistry|Docker tags with names matching this regex pattern will expire:')
+          "
           :state="nameRegexState"
           :invalid-feedback="
             s__('ContainerRegistry|The value of this input should be less than 255 characters')
