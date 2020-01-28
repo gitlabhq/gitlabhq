@@ -121,8 +121,14 @@ export default {
       );
     },
     mergeError() {
+      let { mergeError } = this.mr;
+
+      if (mergeError && mergeError.slice(-1) === '.') {
+        mergeError = mergeError.slice(0, -1);
+      }
+
       return sprintf(s__('mrWidget|Merge failed: %{mergeError}. Please try again.'), {
-        mergeError: this.mr.mergeError,
+        mergeError,
       });
     },
   },

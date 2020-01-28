@@ -34,6 +34,8 @@ methods:
     - :type
   notes:
     - :type
+  events:
+    - :action
 
 preloads:
 
@@ -44,8 +46,12 @@ ee:
     group:
       - epics:
           - :parent
+          - events:
+              - :push_event_payload
           - notes:
               - :author
+              - events:
+                  - :push_event_payload
       - boards:
           - :board_assignee
           - labels:
