@@ -1,5 +1,0 @@
----
-title: Protect internal CI builds from external overrides
-merge_request:
-author:
-type: security

@@ -2,6 +2,29 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.7.3
+
+### Security (17 changes, 1 of them is from the community)
+
+- Fix xss on frequent groups dropdown. !50
+- Bump rubyzip to 2.0.0. (Utkarsh Gupta)
+- Disable access to last_pipeline in commits API for users without read permissions.
+- Add constraint to group dependency proxy endpoint param.
+- Limit number of AsciiDoc includes per document.
+- Prevent API access for unconfirmed users.
+- Enforce permission check when counting activity events.
+- Prevent gafana integration token from being displayed as a plain text to other project maintainers, by only displaying a masked version of it. GraphQL api deprecate token field in GrafanaIntegration type.
+- Cleanup todos for users from a removed linked group.
+- Fix XSS vulnerability on custom project templates form.
+- Protect internal CI builds from external overrides.
+- ImportExport::ExportService to require admin_project permission.
+- Make sure that only system notes where all references are visible to user are exposed in GraphQL API.
+- Disable caching of repository/files/:file_path/raw API endpoint.
+- Make cross-repository comparisons happen in the source repository.
+- Update excon to 0.71.1 to fix CVE-2019-16779.
+- Add workhorse request verification to package upload endpoints.
+
+
 ## 12.7.2
 
 - No changes.

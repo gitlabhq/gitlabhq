@@ -1,5 +1,0 @@
----
-title: Fix xss on frequent groups dropdown
-merge_request: 50
-author:
-type: security
