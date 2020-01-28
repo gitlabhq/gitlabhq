@@ -87,10 +87,14 @@ must disable the **primary** node.
 
 ### Step 3. Promoting a **secondary** node
 
-NOTE: **Note:**
-A new **secondary** should not be added at this time. If you want to add a new
-**secondary**, do this after you have completed the entire process of promoting
-the **secondary** to the **primary**.
+Note the following when promoting a secondary:
+
+- A new **secondary** should not be added at this time. If you want to add a new
+  **secondary**, do this after you have completed the entire process of promoting
+  the **secondary** to the **primary**.
+- If you encounter an `ActiveRecord::RecordInvalid: Validation failed: Name has already been taken`
+  error during this process, please read
+  [the troubleshooting advice](../replication/troubleshooting.md#fixing-errors-during-a-failover-or-when-promoting-a-secondary-to-a-primary-node).
 
 #### Promoting a **secondary** node running on a single machine
 

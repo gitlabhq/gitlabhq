@@ -1,9 +1,11 @@
 # Adding and removing Kubernetes clusters
 
-GitLab can integrate with the following Kubernetes providers:
+GitLab offers integrated cluster creation for the following Kubernetes providers:
 
 - Google Kubernetes Engine (GKE).
 - Amazon Elastic Kubernetes Service (EKS).
+
+In addition, GitLab can integrate with any standard Kubernetes provider, either on-premise or hosted.
 
 TIP: **Tip:**
 Every new Google Cloud Platform (GCP) account receives [$300 in credit upon sign up](https://console.cloud.google.com/freetrial),
@@ -360,18 +362,20 @@ to install some [pre-defined applications](index.md#installing-applications).
 
 ## Add existing cluster
 
-If you have either of the following types of clusters already, you can add them to a project:
+If you have an existing Kubernetes cluster, you can add it to a project, group, or instance.
 
-- [Google Kubernetes Engine cluster](#existing-gke-cluster).
-- [Amazon Elastic Kubernetes Service](#existing-eks-cluster).
+For more information, see information for adding an:
+
+- [Existing Kubernetes cluster](#existing-kubernetes-cluster).
+- [Existing Elastic Kubernetes Service cluster](#existing-eks-cluster).
 
 NOTE: **Note:**
 Kubernetes integration is not supported for arm64 clusters. See the issue
 [Helm Tiller fails to install on arm64 cluster](https://gitlab.com/gitlab-org/gitlab-foss/issues/64044) for details.
 
-### Existing GKE cluster
+### Existing Kubernetes cluster
 
-To add an existing GKE cluster to your project, group, or instance:
+To add a Kubernetes cluster to your project, group, or instance:
 
 1. Navigate to your:
    - Project's **Operations > Kubernetes** page, for a project-level cluster.

@@ -6,9 +6,6 @@ module Projects
 
     DestroyError = Class.new(StandardError)
 
-    DELETED_FLAG = '+deleted'
-    REPO_REMOVAL_DELAY = 5.minutes.to_i
-
     def async_execute
       project.update_attribute(:pending_delete, true)
 
@@ -18,7 +15,7 @@ module Projects
       schedule_stale_repos_removal
 
       job_id = ProjectDestroyWorker.perform_async(project.id, current_user.id, params)
-      Rails.logger.info("User #{current_user.id} scheduled destruction of project #{project.full_path} with job ID #{job_id}") # rubocop:disable Gitlab/RailsLogger
+      log_info("User #{current_user.id} scheduled destruction of project #{project.full_path} with job ID #{job_id}")
     end
 
     def execute
@@ -48,82 +45,34 @@ module Projects
       raise
     end
 
-    def attempt_repositories_rollback
-      return unless @project
-
-      flush_caches(@project)
-
-      unless rollback_repository(removal_path(repo_path), repo_path)
-        raise_error(s_('DeleteProject|Failed to restore project repository. Please contact the administrator.'))
-      end
-
-      unless rollback_repository(removal_path(wiki_path), wiki_path)
-        raise_error(s_('DeleteProject|Failed to restore wiki repository. Please contact the administrator.'))
-      end
-    end
-
     private
 
-    def repo_path
-      project.disk_path
-    end
-
-    def wiki_path
-      project.wiki.disk_path
-    end
-
     def trash_repositories!
-      unless remove_repository(repo_path)
+      unless remove_repository(project.repository)
         raise_error(s_('DeleteProject|Failed to remove project repository. Please try again or contact administrator.'))
       end
 
-      unless remove_repository(wiki_path)
+      unless remove_repository(project.wiki.repository)
         raise_error(s_('DeleteProject|Failed to remove wiki repository. Please try again or contact administrator.'))
       end
     end
 
-    def remove_repository(path)
-      # There is a possibility project does not have repository or wiki
-      return true unless repo_exists?(path)
+    def remove_repository(repository)
+      return true unless repository
 
-      new_path = removal_path(path)
+      result = Repositories::DestroyService.new(repository).execute
 
-      if mv_repository(path, new_path)
-        log_info(%Q{Repository "#{path}" moved to "#{new_path}" for project "#{project.full_path}"})
-
-        project.run_after_commit do
-          GitlabShellWorker.perform_in(REPO_REMOVAL_DELAY, :remove_repository, self.repository_storage, new_path)
-        end
-      else
-        false
-      end
+      result[:status] == :success
     end
 
     def schedule_stale_repos_removal
-      repo_paths = [removal_path(repo_path), removal_path(wiki_path)]
+      repos = [project.repository, project.wiki.repository]
 
-      # Ideally it should wait until the regular removal phase finishes,
-      # so let's delay it a bit further.
-      repo_paths.each do |path|
-        GitlabShellWorker.perform_in(REPO_REMOVAL_DELAY * 2, :remove_repository, project.repository_storage, path)
+      repos.each do |repository|
+        next unless repository
+
+        Repositories::ShellDestroyService.new(repository).execute(Repositories::ShellDestroyService::STALE_REMOVAL_DELAY)
       end
-    end
-
-    def rollback_repository(old_path, new_path)
-      # There is a possibility project does not have repository or wiki
-      return true unless repo_exists?(old_path)
-
-      mv_repository(old_path, new_path)
-    end
-
-    def repo_exists?(path)
-      gitlab_shell.repository_exists?(project.repository_storage, path + '.git')
-    end
-
-    def mv_repository(from_path, to_path)
-      return true unless repo_exists?(from_path)
-
-      gitlab_shell.mv_repository(project.repository_storage, from_path, to_path)
     end
 
     def attempt_rollback(project, message)
@@ -191,31 +140,8 @@ module Projects
       raise DestroyError.new(message)
     end
 
-    # Build a path for removing repositories
-    # We use `+` because its not allowed by GitLab so user can not create
-    # project with name cookies+119+deleted and capture someone stalled repository
-    #
-    # gitlab/cookies.git -> gitlab/cookies+119+deleted.git
-    #
-    def removal_path(path)
-      "#{path}+#{project.id}#{DELETED_FLAG}"
-    end
-
     def flush_caches(project)
-      ignore_git_errors(repo_path) { project.repository.before_delete }
-
-      ignore_git_errors(wiki_path) { Repository.new(wiki_path, project, disk_path: repo_path).before_delete }
-
       Projects::ForksCountService.new(project).delete_cache
-    end
-
-    # If we get a Gitaly error, the repository may be corrupted. We can
-    # ignore these errors since we're going to trash the repositories
-    # anyway.
-    def ignore_git_errors(disk_path, &block)
-      yield
-    rescue Gitlab::Git::CommandError => e
-      Gitlab::GitLogger.warn(class: self.class.name, project_id: project.id, disk_path: disk_path, message: e.to_s)
     end
   end
 end

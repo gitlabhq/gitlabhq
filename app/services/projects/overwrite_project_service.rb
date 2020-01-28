@@ -55,7 +55,7 @@ module Projects
     end
 
     def attempt_restore_repositories(project)
-      ::Projects::DestroyService.new(project, @current_user).attempt_repositories_rollback
+      ::Projects::DestroyRollbackService.new(project, @current_user).execute
     end
 
     def add_source_project_to_fork_network(source_project)

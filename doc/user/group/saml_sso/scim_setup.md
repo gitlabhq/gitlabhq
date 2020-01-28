@@ -143,6 +143,19 @@ Upon the next sync, the user will be deprovisioned, which means that the user wi
 
 This section contains possible solutions for problems you might encounter.
 
+### How do I verify my SCIM configuration is correct?
+
+Review the following:
+
+- Ensure that the SCIM value for `id` matches the SAML value for `NameId`.
+- Ensure that the SCIM value for `externalId` matches the SAML value for `NameId`.
+
+Review the following SCIM parameters for sensible values:
+
+- `userName`
+- `displayName`
+- `emails[type eq "work"].value`
+
 ### Testing Azure connection: invalid credentials
 
 When testing the connection, you may encounter an error: **You appear to have entered invalid credentials. Please confirm you are using the correct information for an administrative account**. If `Tenant URL` and `secret token` are correct, check whether your group path contains characters that may be considered invalid JSON primitives (such as `.`). Removing such characters from the group path typically resolves the error.
@@ -159,3 +172,43 @@ As a workaround, try an alternate mapping:
 1. Follow the Azure mapping instructions from above.
 1. Delete the `name.formatted` target attribute entry.
 1. Change the `displayName` source attribute to have `name.formatted` target attribute.
+
+### How do I diagnose why a user is unable to sign in
+
+The **Identity** (`extern_uid`) value stored by GitLab is updated by SCIM whenever `id` or `externalId` changes. Users won't be able to sign in unless the GitLab Identity (`extern_uid`) value matches the `NameId` sent by SAML.
+
+This value is also used by SCIM to match users on the `id`, and is updated by SCIM whenever the `id` or `externalId` values change.
+
+It is important that this SCIM `id` and SCIM `externalId` are configured to the same value as the SAML `NameId`. SAML responses can be traced using [debugging tools](./index.md#saml-debugging-tools), and any errors can be checked against our [SAML troubleshooting docs](./index.md#troubleshooting).
+
+### How do I verify user's SAML NameId matches the SCIM externalId
+
+Group owners can see the list of users and the `externalId` stored for each user in the group SAML SSO Settings page.
+
+Alternatively, the [SCIM API](../../../api/scim.md#get-a-list-of-saml-users) can be used to manually retrieve the `externalId` we have stored for users, also called the `external_uid` or `NameId`.
+
+For example:
+
+```sh
+curl 'https://example.gitlab.com/api/scim/v2/groups/GROUP_NAME/Users?startIndex=1"' --header "Authorization: Bearer <your_scim_token>" --header "Content-Type: application/scim+json"
+```
+
+To see how this compares to the value returned as the SAML NameId, you can have the user use a [SAML Tracer](index.md#saml-debugging-tools).
+
+### Fix mismatched SCIM externalId and SAML NameId
+
+If GitLab's `externalId` doesn't match the SAML NameId, it will need to be updated in order for the user to log in. Ideally your identity provider will be configured to do such an update, but in some cases it may be unable to do so, such as when looking up a user fails due to an ID change.
+
+Fixing the fields your SCIM identity provider sends as `id` and `externalId` can correct this, however we use these IDs to look up users so if the identity provider is unaware of the current values for these it may try to create new duplicate users instead.
+
+If the `externalId` we have stored for a user has an incorrect value that doesn't match the SAML NameId, then it can be corrected with the manual use of the SCIM API.
+
+The [SCIM API](../../../api/scim.md#update-a-single-saml-user) can be used to manually correct the `externalId` stored for users so that it matches the SAML NameId. You'll need to know the desired value that matches the `NameId` as well as the current `externalId` to look up the user.
+
+It is then possible to issue a manual SCIM#update request, for example:
+
+```sh
+curl --verbose --request PATCH 'https://gitlab.com/api/scim/v2/groups/YOUR_GROUP/Users/OLD_EXTERNAL_UID' --data '{ "Operations": [{"op":"Replace","path":"externalId","value":"NEW_EXTERNAL_UID"}] }' --header "Authorization: Bearer <your_scim_token>" --header "Content-Type: application/scim+json"
+```
+
+It is important not to update these to incorrect values, since this will cause users to be unable to sign in. It is also important not to assign a value to the wrong user, as this would cause users to get signed into the wrong account.

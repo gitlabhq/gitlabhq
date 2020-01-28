@@ -465,6 +465,47 @@ to start again from scratch, there are a few steps that can help you:
    gitlab-ctl start
    ```
 
+## Fixing errors during a failover or when promoting a secondary to a primary node
+
+The following are possible errors that might be encountered during failover or
+when promoting a secondary to a primary node with strategies to resolve them.
+
+### Message: ActiveRecord::RecordInvalid: Validation failed: Name has already been taken
+
+When [promoting a **secondary** node](../disaster_recovery/index.md#step-3-promoting-a-secondary-node),
+you might encounter the following error:
+
+```text
+Running gitlab-rake geo:set_secondary_as_primary...
+
+rake aborted!
+ActiveRecord::RecordInvalid: Validation failed: Name has already been taken
+/opt/gitlab/embedded/service/gitlab-rails/ee/lib/tasks/geo.rake:236:in `block (3 levels) in <top (required)>'
+/opt/gitlab/embedded/service/gitlab-rails/ee/lib/tasks/geo.rake:221:in `block (2 levels) in <top (required)>'
+/opt/gitlab/embedded/bin/bundle:23:in `load'
+/opt/gitlab/embedded/bin/bundle:23:in `<main>'
+Tasks: TOP => geo:set_secondary_as_primary
+(See full trace by running task with --trace)
+
+You successfully promoted this node!
+```
+
+If you encounter this message when running `gitlab-rake geo:set_secondary_as_primary`
+or `gitlab-ctl promote-to-primary-node`, either:
+
+- Enter a Rails console and run:
+  
+  ```ruby
+  Rails.application.load_tasks; nil
+  Gitlab::Geo.expire_cache_keys!([:primary_node, :current_node])
+  Rake::Task['geo:set_secondary_as_primary'].invoke
+  ```
+
+- Upgrade to GitLab 12.6.3 or newer if it is safe to do so. For example,
+  if the failover was just a test. A [caching-related
+  bug](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22021) was
+  fixed.
+
 ## Fixing Foreign Data Wrapper errors
 
 This section documents ways to fix potential Foreign Data Wrapper errors.

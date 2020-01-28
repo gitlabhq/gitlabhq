@@ -96,8 +96,12 @@ to the first container in the first pod of your environment.
 
 ## Adding and removing clusters
 
-See [Adding and removing Kubernetes clusters](add_remove_clusters.md) for details on how to
-set up integrations with Google Cloud Platform (GCP) and Amazon Elastic Kubernetes Service (EKS).
+See [Adding and removing Kubernetes clusters](add_remove_clusters.md) for details on how
+to:
+
+- Create a cluster in Google Cloud Platform (GCP) or Amazon Elastic Kubernetes Service
+  (EKS) using GitLab's UI.
+- Add an integration to an existing cluster from any Kubernetes platform.
 
 ## Cluster configuration
 
