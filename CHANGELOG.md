@@ -804,6 +804,35 @@ entry.
 - Replace Font Awesome bullhorn icon with GitLab bullhorn icon.
 
 
+## 12.5.8
+
+### Security (19 changes, 1 of them is from the community)
+
+- Prevent gafana integration token from being displayed as a plain text to other project maintainers, by only displaying a masked version of it.
+- Update rdoc to 6.1.2.
+- Bump rubyzip to 2.0.0. (Utkarsh Gupta)
+- Cleanup todos for users from a removed linked group.
+- Disable access to last_pipeline in commits API for users without read permissions.
+- Add constraint to group dependency proxy endpoint param.
+- Limit number of AsciiDoc includes per document.
+- Prevent API access for unconfirmed users.
+- Enforce permission check when counting activity events.
+- Update rack-cors to 1.0.6.
+- Fix xss on frequent groups dropdown.
+- Fix XSS vulnerability on custom project templates form.
+- Protect internal CI builds from external overrides.
+- ImportExport::ExportService to require admin_project permission.
+- Make sure that only system notes where all references are visible to user are exposed in GraphQL API.
+- Disable caching of repository/files/:file_path/raw API endpoint.
+- Make cross-repository comparisons happen in the source repository.
+- Update excon to 0.71.1 to fix CVE-2019-16779.
+- Add workhorse request verification to package upload endpoints.
+
+### Changed (1 change, 1 of them is from the community)
+
+- Add template repository usage to the usage ping. !20126 (minghuan lei)
+
+
 ## 12.5.5
 
 ### Security (1 change)
