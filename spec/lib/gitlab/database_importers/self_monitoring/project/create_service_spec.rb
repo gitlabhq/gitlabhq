@@ -103,7 +103,7 @@ describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService do
       end
 
       it 'creates project with correct name and description' do
-        path = 'administration/monitoring/gitlab_instance_administration_project/index'
+        path = 'administration/monitoring/gitlab_self_monitoring_project/index'
         docs_path = Rails.application.routes.url_helpers.help_page_path(path)
 
         expect(result[:status]).to eq(:success)
@@ -122,13 +122,13 @@ describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService do
 
       it 'saves the project id' do
         expect(result[:status]).to eq(:success)
-        expect(application_setting.instance_administration_project_id).to eq(project.id)
+        expect(application_setting.self_monitoring_project_id).to eq(project.id)
       end
 
       it 'returns error when saving project ID fails' do
         allow(application_setting).to receive(:update).and_call_original
         allow(application_setting).to receive(:update)
-          .with(instance_administration_project_id: anything)
+          .with(self_monitoring_project_id: anything)
           .and_return(false)
 
         expect(result).to eq(
@@ -144,7 +144,7 @@ describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService do
 
         before do
           application_setting.instance_administrators_group_id = existing_group.id
-          application_setting.instance_administration_project_id = existing_project.id
+          application_setting.self_monitoring_project_id = existing_project.id
         end
 
         it 'returns success' do

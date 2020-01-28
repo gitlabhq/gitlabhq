@@ -13,21 +13,10 @@ module Gitlab
       (EE_QUEUE_CONFIG_PATH if Gitlab.ee?)
     ].compact.freeze
 
-    # For queues that don't have explicit workers - default and mailers
-    DummyWorker = Struct.new(:queue, :weight) do
-      def queue_namespace
-        nil
-      end
-
-      def get_weight
-        weight
-      end
-    end
-
     DEFAULT_WORKERS = [
-      Gitlab::SidekiqConfig::Worker.new(DummyWorker.new('default', 1), ee: false),
-      Gitlab::SidekiqConfig::Worker.new(DummyWorker.new('mailers', 2), ee: false)
-    ].freeze
+      DummyWorker.new('default', weight: 1),
+      DummyWorker.new('mailers', weight: 2)
+    ].map { |worker| Gitlab::SidekiqConfig::Worker.new(worker, ee: false) }.freeze
 
     class << self
       include Gitlab::SidekiqConfig::CliMethods
@@ -66,12 +55,13 @@ module Gitlab
         workers.partition(&:ee?).reverse.map(&:sort)
       end
 
+      # YAML.load_file is OK here as we control the file contents
       def all_queues_yml_outdated?
         foss_workers, ee_workers = workers_for_all_queues_yml
 
-        return true if foss_workers != YAML.safe_load(File.read(FOSS_QUEUE_CONFIG_PATH))
+        return true if foss_workers != YAML.load_file(FOSS_QUEUE_CONFIG_PATH)
 
-        Gitlab.ee? && ee_workers != YAML.safe_load(File.read(EE_QUEUE_CONFIG_PATH))
+        Gitlab.ee? && ee_workers != YAML.load_file(EE_QUEUE_CONFIG_PATH)
       end
 
       def queues_for_sidekiq_queues_yml
@@ -89,9 +79,9 @@ module Gitlab
          remaining_queues.map(&:queue_and_weight)).sort
       end
 
+      # YAML.load_file is OK here as we control the file contents
       def sidekiq_queues_yml_outdated?
-        # YAML.load is OK here as we control the file contents
-        config_queues = YAML.load(File.read(SIDEKIQ_QUEUES_PATH))[:queues] # rubocop:disable Security/YAMLLoad
+        config_queues = YAML.load_file(SIDEKIQ_QUEUES_PATH)[:queues]
 
         queues_for_sidekiq_queues_yml != config_queues
       end

@@ -3,9 +3,17 @@
 require 'fast_spec_helper'
 
 describe Gitlab::SidekiqConfig::Worker do
-  def create_worker(queue:, weight: 0)
+  def create_worker(queue:, **attributes)
     namespace = queue.include?(':') && queue.split(':').first
-    inner_worker = double(queue: queue, queue_namespace: namespace, get_weight: weight)
+    inner_worker = double(
+      queue: queue,
+      queue_namespace: namespace,
+      get_feature_category: attributes[:feature_category],
+      get_weight: attributes[:weight],
+      get_worker_resource_boundary: attributes[:resource_boundary],
+      latency_sensitive_worker?: attributes[:latency_sensitive],
+      worker_has_external_dependencies?: attributes[:has_external_dependencies]
+    )
 
     described_class.new(inner_worker, ee: false)
   end
@@ -75,13 +83,32 @@ describe Gitlab::SidekiqConfig::Worker do
   end
 
   describe 'YAML encoding' do
-    it 'encodes the worker in YAML as a string of the queue' do
-      worker_a = create_worker(queue: 'a')
-      worker_b = create_worker(queue: 'b')
+    it 'encodes the worker in YAML as a hash of the queue' do
+      attributes_a = {
+        feature_category: :source_code_management,
+        has_external_dependencies: false,
+        latency_sensitive: false,
+        resource_boundary: :memory,
+        weight: 2
+      }
 
-      expect(YAML.dump(worker_a)).to eq(YAML.dump('a'))
+      attributes_b = {
+        feature_category: :not_owned,
+        has_external_dependencies: true,
+        latency_sensitive: true,
+        resource_boundary: :unknown,
+        weight: 1
+      }
+
+      worker_a = create_worker(queue: 'a', **attributes_a)
+      worker_b = create_worker(queue: 'b', **attributes_b)
+
+      expect(YAML.dump(worker_a))
+        .to eq(YAML.dump(attributes_a.reverse_merge(name: 'a')))
+
       expect(YAML.dump([worker_a, worker_b]))
-        .to eq(YAML.dump(%w[a b]))
+        .to eq(YAML.dump([attributes_a.reverse_merge(name: 'a'),
+                          attributes_b.reverse_merge(name: 'b')]))
     end
   end
 

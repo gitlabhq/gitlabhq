@@ -13,11 +13,11 @@ module Gitlab
         end
 
         def self_monitoring_project
-          application_settings.instance_administration_project
+          application_settings.self_monitoring_project
         end
 
         def self_monitoring_project_id
-          application_settings.instance_administration_project_id
+          application_settings.self_monitoring_project_id
         end
       end
     end

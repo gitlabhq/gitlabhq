@@ -9,7 +9,7 @@ module Gitlab
           include SelfMonitoring::Helpers
 
           VISIBILITY_LEVEL = Gitlab::VisibilityLevel::INTERNAL
-          PROJECT_NAME = 'GitLab Instance Administration'
+          PROJECT_NAME = 'GitLab self monitoring'
 
           steps :validate_application_settings,
             :create_group,
@@ -69,7 +69,7 @@ module Gitlab
             return success(result) if project_created?
 
             response = application_settings.update(
-              instance_administration_project_id: result[:project].id
+              self_monitoring_project_id: result[:project].id
             )
 
             if response
@@ -115,7 +115,7 @@ module Gitlab
 
           def docs_path
             Rails.application.routes.url_helpers.help_page_path(
-              'administration/monitoring/gitlab_instance_administration_project/index'
+              'administration/monitoring/gitlab_self_monitoring_project/index'
             )
           end
 

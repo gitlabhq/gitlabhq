@@ -15,5 +15,7 @@ module Serverless
               format: { with: HEX_REGEXP, message: 'only allows hex characters' }
 
     default_value_for(:uuid, allows_nil: false) { Gitlab::Serverless::Domain.generate_uuid }
+
+    delegate :domain, to: :pages_domain
   end
 end

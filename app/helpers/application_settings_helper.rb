@@ -351,10 +351,10 @@ module ApplicationSettingsHelper
         status_delete_self_monitoring_project_admin_application_settings_path,
 
       'self_monitoring_project_exists' =>
-        Gitlab::CurrentSettings.instance_administration_project.present?.to_s,
+        Gitlab::CurrentSettings.self_monitoring_project.present?.to_s,
 
       'self_monitoring_project_full_path' =>
-        Gitlab::CurrentSettings.instance_administration_project&.full_path
+        Gitlab::CurrentSettings.self_monitoring_project&.full_path
     }
   end
 end

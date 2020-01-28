@@ -24,27 +24,6 @@ describe Gitlab::SidekiqConfig do
     end
   end
 
-  describe '.expand_queues' do
-    it 'expands queue namespaces to concrete queue names' do
-      queues = described_class.expand_queues(%w[cronjob])
-
-      expect(queues).to include('cronjob:stuck_import_jobs')
-      expect(queues).to include('cronjob:stuck_merge_jobs')
-    end
-
-    it 'lets concrete queue names pass through' do
-      queues = described_class.expand_queues(%w[post_receive])
-
-      expect(queues).to include('post_receive')
-    end
-
-    it 'lets unknown queues pass through' do
-      queues = described_class.expand_queues(%w[unknown])
-
-      expect(queues).to include('unknown')
-    end
-  end
-
   describe '.workers_for_all_queues_yml' do
     it 'returns a tuple with FOSS workers first' do
       expect(described_class.workers_for_all_queues_yml.first)
@@ -53,29 +32,31 @@ describe Gitlab::SidekiqConfig do
   end
 
   describe '.all_queues_yml_outdated?' do
-    before do
-      workers = [
-        PostReceive,
+    let(:workers) do
+      [
         MergeWorker,
+        PostReceive,
         ProcessCommitWorker
       ].map { |worker| described_class::Worker.new(worker, ee: false) }
+    end
 
+    before do
       allow(described_class).to receive(:workers).and_return(workers)
       allow(Gitlab).to receive(:ee?).and_return(false)
     end
 
-    it 'returns true if the YAML file does not match the application code' do
-      allow(File).to receive(:read)
+    it 'returns true if the YAML file does not matcph the application code' do
+      allow(YAML).to receive(:load_file)
                        .with(described_class::FOSS_QUEUE_CONFIG_PATH)
-                       .and_return(YAML.dump(%w[post_receive merge]))
+                       .and_return(workers.first(2).map(&:to_yaml))
 
       expect(described_class.all_queues_yml_outdated?).to be(true)
     end
 
     it 'returns false if the YAML file matches the application code' do
-      allow(File).to receive(:read)
+      allow(YAML).to receive(:load_file)
                        .with(described_class::FOSS_QUEUE_CONFIG_PATH)
-                       .and_return(YAML.dump(%w[merge post_receive process_commit]))
+                       .and_return(workers.map(&:to_yaml))
 
       expect(described_class.all_queues_yml_outdated?).to be(false)
     end
@@ -125,17 +106,17 @@ describe Gitlab::SidekiqConfig do
     end
 
     it 'returns true if the YAML file does not match the application code' do
-      allow(File).to receive(:read)
+      allow(YAML).to receive(:load_file)
                        .with(described_class::SIDEKIQ_QUEUES_PATH)
-                       .and_return(YAML.dump(queues: expected_queues.reverse))
+                       .and_return(queues: expected_queues.reverse)
 
       expect(described_class.sidekiq_queues_yml_outdated?).to be(true)
     end
 
     it 'returns false if the YAML file matches the application code' do
-      allow(File).to receive(:read)
+      allow(YAML).to receive(:load_file)
                        .with(described_class::SIDEKIQ_QUEUES_PATH)
-                       .and_return(YAML.dump(queues: expected_queues))
+                       .and_return(queues: expected_queues)
 
       expect(described_class.sidekiq_queues_yml_outdated?).to be(false)
     end

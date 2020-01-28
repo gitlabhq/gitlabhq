@@ -1260,12 +1260,6 @@ msgstr ""
 msgid "AdminArea|You’re about to stop all jobs.This will halt all current jobs that are running."
 msgstr ""
 
-msgid "AdminCredentials|Personal Access Tokens"
-msgstr ""
-
-msgid "AdminCredentials|SSH Keys"
-msgstr ""
-
 msgid "AdminDashboard|Error loading the statistics. Please try again"
 msgstr ""
 
@@ -1411,9 +1405,6 @@ msgid "AdminUsers|It's you!"
 msgstr ""
 
 msgid "AdminUsers|New user"
-msgstr ""
-
-msgid "AdminUsers|No credentials found"
 msgstr ""
 
 msgid "AdminUsers|No users found"
@@ -5620,6 +5611,15 @@ msgid "Creation date"
 msgstr ""
 
 msgid "Credentials"
+msgstr ""
+
+msgid "CredentialsInventory|No credentials found"
+msgstr ""
+
+msgid "CredentialsInventory|Personal Access Tokens"
+msgstr ""
+
+msgid "CredentialsInventory|SSH Keys"
 msgstr ""
 
 msgid "Critical vulnerabilities present"

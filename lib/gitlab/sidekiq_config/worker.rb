@@ -41,11 +41,18 @@ module Gitlab
 
       # YAML representation
       def encode_with(coder)
-        coder.represent_scalar(nil, to_yaml)
+        coder.represent_map(nil, to_yaml)
       end
 
       def to_yaml
-        queue
+        {
+          name: queue,
+          feature_category: get_feature_category,
+          has_external_dependencies: worker_has_external_dependencies?,
+          latency_sensitive: latency_sensitive_worker?,
+          resource_boundary: get_worker_resource_boundary,
+          weight: get_weight
+        }
       end
 
       def namespace_and_weight

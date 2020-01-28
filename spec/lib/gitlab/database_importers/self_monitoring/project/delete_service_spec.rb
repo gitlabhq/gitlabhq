@@ -24,7 +24,7 @@ describe Gitlab::DatabaseImporters::SelfMonitoring::Project::DeleteService do
       let(:application_setting) do
         create(
           :application_setting,
-          instance_administration_project_id: project.id,
+          self_monitoring_project_id: project.id,
           instance_administrators_group_id: group.id
         )
       end
@@ -38,7 +38,7 @@ describe Gitlab::DatabaseImporters::SelfMonitoring::Project::DeleteService do
       it 'deletes project ID from application settings' do
         subject.execute
 
-        expect(application_setting.reload.instance_administration_project_id).to be_nil
+        expect(application_setting.reload.self_monitoring_project_id).to be_nil
       end
 
       it 'does not delete group' do

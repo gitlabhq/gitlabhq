@@ -374,5 +374,10 @@ x6zG6WoibsbsJMj70nwseUnPTBQNDP+j61RJjC/r
 -----END EC PRIVATE KEY-----'
       end
     end
+
+    trait :instance_serverless do
+      wildcard { true }
+      domain_type { :instance }
+    end
   end
 end

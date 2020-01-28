@@ -12,7 +12,7 @@ RSpec.shared_examples 'not accessible if feature flag is disabled' do
       expect(response).to have_gitlab_http_status(:not_implemented)
       expect(json_response).to eq(
         'message' => _('Self-monitoring is not enabled on this GitLab server, contact your administrator.'),
-        'documentation_url' => help_page_path('administration/monitoring/gitlab_instance_administration_project/index')
+        'documentation_url' => help_page_path('administration/monitoring/gitlab_self_monitoring_project/index')
       )
     end
   end

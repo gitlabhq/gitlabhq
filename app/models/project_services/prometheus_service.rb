@@ -102,7 +102,7 @@ class PrometheusService < MonitoringService
   private
 
   def self_monitoring_project?
-    project && project.id == current_settings.instance_administration_project_id
+    project && project.id == current_settings.self_monitoring_project_id
   end
 
   def internal_prometheus_url?

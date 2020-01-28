@@ -33,17 +33,22 @@ describe IssuesFinder do
 
           before do
             project2.add_developer(user3)
-            issue3.assignees = [user2, user3]
+            issue2.assignees = [user2]
+            issue3.assignees = [user3]
           end
 
           it_behaves_like 'assignee username filter' do
-            let(:params) { { assignee_username: [user2.username, user3.username] } }
-            let(:expected_issuables) { [issue3] }
+            let(:params) { { assignee_username: [user2.username] } }
+            let(:expected_issuables) { [issue2] }
           end
 
           it_behaves_like 'assignee NOT username filter' do
-            let(:params) { { not: { assignee_username: [user2.username, user3.username] } } }
-            let(:expected_issuables) { [issue1, issue2, issue4] }
+            before do
+              issue2.assignees = [user2]
+            end
+
+            let(:params) { { not: { assignee_username: [user.username, user2.username] } } }
+            let(:expected_issuables) { [issue3, issue4] }
           end
         end
 
@@ -395,8 +400,8 @@ describe IssuesFinder do
         context 'using NOT' do
           let(:params) { { not: { label_name: [label.title, label2.title].join(',') } } }
 
-          it 'returns issues that do not have ALL labels provided' do
-            expect(issues).to contain_exactly(issue1, issue3, issue4)
+          it 'returns issues that do not have any of the labels provided' do
+            expect(issues).to contain_exactly(issue1, issue4)
           end
         end
       end
@@ -417,8 +422,8 @@ describe IssuesFinder do
         context 'using NOT' do
           let(:params) { { not: { label_name: [label.title, label2.title].join(',') } } }
 
-          it 'returns issues that do not have ALL labels provided' do
-            expect(issues).to contain_exactly(issue1, issue3, issue4)
+          it 'returns issues that do not have ANY ONE of the labels provided' do
+            expect(issues).to contain_exactly(issue1, issue4)
           end
         end
       end

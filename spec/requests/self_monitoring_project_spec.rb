@@ -84,8 +84,8 @@ describe 'Self-Monitoring project requests' do
           let(:project) { build(:project) }
 
           before do
-            stub_application_setting(instance_administration_project_id: 1)
-            stub_application_setting(instance_administration_project: project)
+            stub_application_setting(self_monitoring_project_id: 1)
+            stub_application_setting(self_monitoring_project: project)
           end
 
           it 'does not need job_id' do
@@ -169,7 +169,7 @@ describe 'Self-Monitoring project requests' do
               .with(job_id)
               .and_return(true)
 
-            stub_application_setting(instance_administration_project_id: 1)
+            stub_application_setting(self_monitoring_project_id: 1)
           end
 
           it_behaves_like 'sets polling header and returns accepted' do
@@ -179,7 +179,7 @@ describe 'Self-Monitoring project requests' do
 
         context 'when self-monitoring project exists and job does not exist' do
           before do
-            stub_application_setting(instance_administration_project_id: 1)
+            stub_application_setting(self_monitoring_project_id: 1)
           end
 
           it 'returns bad_request' do

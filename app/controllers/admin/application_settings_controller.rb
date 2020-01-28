@@ -98,7 +98,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       }
     end
 
-    if Gitlab::CurrentSettings.instance_administration_project_id.present?
+    if Gitlab::CurrentSettings.self_monitoring_project_id.present?
       return render status: :ok, json: self_monitoring_data
 
     elsif SelfMonitoringProjectCreateWorker.in_progress?(job_id)
@@ -134,7 +134,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       }
     end
 
-    if Gitlab::CurrentSettings.instance_administration_project_id.nil?
+    if Gitlab::CurrentSettings.self_monitoring_project_id.nil?
       return render status: :ok, json: {
         message: _('Self-monitoring project has been successfully deleted')
       }
@@ -161,8 +161,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
   def self_monitoring_data
     {
-      project_id: Gitlab::CurrentSettings.instance_administration_project_id,
-      project_full_path: Gitlab::CurrentSettings.instance_administration_project&.full_path
+      project_id: Gitlab::CurrentSettings.self_monitoring_project_id,
+      project_full_path: Gitlab::CurrentSettings.self_monitoring_project&.full_path
     }
   end
 
@@ -171,7 +171,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       status: :not_implemented,
       json: {
         message: _('Self-monitoring is not enabled on this GitLab server, contact your administrator.'),
-        documentation_url: help_page_path('administration/monitoring/gitlab_instance_administration_project/index')
+        documentation_url: help_page_path('administration/monitoring/gitlab_self_monitoring_project/index')
       }
     )
   end
