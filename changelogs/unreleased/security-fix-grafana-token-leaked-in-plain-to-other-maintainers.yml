@@ -1,5 +1,0 @@
----
-title: Prevent gafana integration token from being displayed as a plain text to other project maintainers, by only displaying a masked version of it.
-merge_request:
-author:
-type: security
