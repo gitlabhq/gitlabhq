@@ -156,7 +156,7 @@ describe Projects::ArtifactsController do
         it 'returns 404' do
           download_artifact(file_type: file_type)
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
@@ -236,7 +236,7 @@ describe Projects::ArtifactsController do
         it 'renders the file view' do
           get :file, params: { namespace_id: project.namespace, project_id: project, job_id: job, path: 'ci_artifacts.txt' }
 
-          expect(response).to have_gitlab_http_status(302)
+          expect(response).to have_gitlab_http_status(:found)
         end
       end
 
@@ -302,7 +302,7 @@ describe Projects::ArtifactsController do
       it 'renders the file view' do
         get :file, params: { namespace_id: private_project.namespace, project_id: private_project, job_id: job, path: 'ci_artifacts.txt' }
 
-        expect(response).to have_gitlab_http_status(302)
+        expect(response).to have_gitlab_http_status(:found)
       end
     end
   end
@@ -317,7 +317,7 @@ describe Projects::ArtifactsController do
         it 'serves the file using workhorse' do
           subject
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(send_data).to start_with('artifacts-entry:')
 
           expect(params.keys).to eq(%w(Archive Entry))

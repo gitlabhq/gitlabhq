@@ -33,7 +33,7 @@ describe Projects::GroupLinksController do
       include_context 'link project to group'
 
       it 'responds with status 404' do
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 

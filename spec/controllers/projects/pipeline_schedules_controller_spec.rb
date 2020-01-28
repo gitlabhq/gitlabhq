@@ -396,7 +396,7 @@ describe Projects::PipelineSchedulesController do
 
         post :play, params: { namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id }
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -407,7 +407,7 @@ describe Projects::PipelineSchedulesController do
         post :play, params: { namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id }
 
         expect(flash[:notice]).to start_with 'Successfully scheduled a pipeline to run'
-        expect(response).to have_gitlab_http_status(302)
+        expect(response).to have_gitlab_http_status(:found)
       end
 
       it 'prevents users from scheduling the same pipeline repeatedly' do
@@ -417,7 +417,7 @@ describe Projects::PipelineSchedulesController do
 
         expect(flash.to_a.size).to eq(2)
         expect(flash[:alert]).to eq _('You cannot play this scheduled pipeline at the moment. Please wait a minute.')
-        expect(response).to have_gitlab_http_status(302)
+        expect(response).to have_gitlab_http_status(:found)
       end
     end
 
@@ -430,7 +430,7 @@ describe Projects::PipelineSchedulesController do
 
         post :play, params: { namespace_id: project.namespace.to_param, project_id: project, id: protected_schedule.id }
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -460,7 +460,7 @@ describe Projects::PipelineSchedulesController do
           delete :destroy, params: { namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id }
         end.to change { project.pipeline_schedules.count }.by(-1)
 
-        expect(response).to have_gitlab_http_status(302)
+        expect(response).to have_gitlab_http_status(:found)
       end
     end
   end

@@ -3,6 +3,8 @@
 module API
   class GroupExport < Grape::API
     before do
+      not_found! unless Feature.enabled?(:group_import_export, user_group, default_enabled: true)
+
       authorize! :admin_group, user_group
     end
 

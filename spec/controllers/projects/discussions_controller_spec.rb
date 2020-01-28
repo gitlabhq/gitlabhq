@@ -27,7 +27,7 @@ describe Projects::DiscussionsController do
       it 'returns 404' do
         get :show, params: request_params, session: { format: :json }
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -39,7 +39,7 @@ describe Projects::DiscussionsController do
       it 'returns status 200' do
         get :show, params: request_params, session: { format: :json }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       it 'returns status 404 if MR does not exists' do
@@ -47,7 +47,7 @@ describe Projects::DiscussionsController do
 
         get :show, params: request_params, session: { format: :json }
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -60,7 +60,7 @@ describe Projects::DiscussionsController do
       it 'returns status 200' do
         get :show, params: request_params, session: { format: :json }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
   end
@@ -74,7 +74,7 @@ describe Projects::DiscussionsController do
       it "returns status 404" do
         post :resolve, params: request_params
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -91,7 +91,7 @@ describe Projects::DiscussionsController do
         it "returns status 404" do
           post :resolve, params: request_params
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
@@ -120,7 +120,7 @@ describe Projects::DiscussionsController do
         it "returns status 200" do
           post :resolve, params: request_params
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
 
         it "renders discussion with serializer" do
@@ -157,7 +157,7 @@ describe Projects::DiscussionsController do
       it "returns status 404" do
         delete :unresolve, params: request_params
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -174,7 +174,7 @@ describe Projects::DiscussionsController do
         it "returns status 404" do
           delete :unresolve, params: request_params
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
@@ -188,7 +188,7 @@ describe Projects::DiscussionsController do
         it "returns status 200" do
           delete :unresolve, params: request_params
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
 
         context "when vue_mr_discussions cookie is present" do

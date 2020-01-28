@@ -152,7 +152,7 @@ describe Projects::NotesController do
           it 'renders 404' do
             get :index, params: params
 
-            expect(response).to have_gitlab_http_status(404)
+            expect(response).to have_gitlab_http_status(:not_found)
           end
         end
       end
@@ -246,7 +246,7 @@ describe Projects::NotesController do
       context 'the project is publically available' do
         context 'for HTML' do
           it "returns status 302" do
-            expect(response).to have_gitlab_http_status(302)
+            expect(response).to have_gitlab_http_status(:found)
           end
         end
 
@@ -254,7 +254,7 @@ describe Projects::NotesController do
           let(:extra_request_params) { { format: :json } }
 
           it "returns status 200 for json" do
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
           end
         end
       end
@@ -265,7 +265,7 @@ describe Projects::NotesController do
           let(:extra_request_params) { { format: :json } }
 
           it "returns status 422 for json" do
-            expect(response).to have_gitlab_http_status(422)
+            expect(response).to have_gitlab_http_status(:unprocessable_entity)
           end
         end
       end
@@ -278,7 +278,7 @@ describe Projects::NotesController do
             let(:extra_request_params) { extra }
 
             it "returns status 404" do
-              expect(response).to have_gitlab_http_status(404)
+              expect(response).to have_gitlab_http_status(:not_found)
             end
           end
         end
@@ -296,7 +296,7 @@ describe Projects::NotesController do
         it "returns status 302 (redirect)" do
           create!
 
-          expect(response).to have_gitlab_http_status(302)
+          expect(response).to have_gitlab_http_status(:found)
         end
       end
 
@@ -306,7 +306,7 @@ describe Projects::NotesController do
         it "returns status 200" do
           create!
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
 
@@ -316,7 +316,7 @@ describe Projects::NotesController do
         it 'returns discussion JSON when the return_discussion param is set' do
           create!
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to have_key 'discussion'
           expect(json_response.dig('discussion', 'notes', 0, 'note')).to eq(request_params[:note][:note])
         end
@@ -330,7 +330,7 @@ describe Projects::NotesController do
           it 'includes changes in commands_changes ' do
             create!
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
             expect(json_response['commands_changes']).to include('emoji_award', 'time_estimate', 'spend_time')
             expect(json_response['commands_changes']).not_to include('target_project', 'title')
           end
@@ -349,7 +349,7 @@ describe Projects::NotesController do
           it 'does not include changes in commands_changes' do
             create!
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
             expect(json_response['commands_changes']).not_to include('target_project', 'title')
           end
         end
@@ -363,7 +363,7 @@ describe Projects::NotesController do
       it "prevents a non-member user from creating a note on one of the project's merge requests" do
         create!
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
 
       context 'when the user is a team member' do
@@ -424,7 +424,7 @@ describe Projects::NotesController do
 
         it 'returns an error to the user' do
           create!
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end
@@ -436,7 +436,7 @@ describe Projects::NotesController do
       it "prevents a non-member user from creating a note on one of the project's merge requests" do
         create!
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
 
       context 'when the user is a team member' do
@@ -467,7 +467,7 @@ describe Projects::NotesController do
       it "returns status 302 for html" do
         create!
 
-        expect(response).to have_gitlab_http_status(302)
+        expect(response).to have_gitlab_http_status(:found)
       end
     end
 
@@ -531,7 +531,7 @@ describe Projects::NotesController do
 
         it 'returns a 404', :sidekiq_might_not_need_inline do
           create!
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
@@ -540,7 +540,7 @@ describe Projects::NotesController do
 
         it 'returns a 404', :sidekiq_might_not_need_inline do
           create!
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
@@ -550,7 +550,7 @@ describe Projects::NotesController do
 
         it 'is successful' do
           create!
-          expect(response).to have_gitlab_http_status(302)
+          expect(response).to have_gitlab_http_status(:found)
         end
 
         it 'creates the note' do
@@ -574,7 +574,7 @@ describe Projects::NotesController do
 
         expect { post :create, params: request_params }.to change { issue.notes.count }.by(1)
           .and change { locked_issue.notes.count }.by(0)
-        expect(response).to have_gitlab_http_status(302)
+        expect(response).to have_gitlab_http_status(:found)
       end
     end
 
@@ -588,7 +588,7 @@ describe Projects::NotesController do
           request_params[:target_id] = 9999
           post :create, params: request_params.merge(format: :json)
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
@@ -600,13 +600,13 @@ describe Projects::NotesController do
         it 'returns 302 status for html' do
           post :create, params: request_params
 
-          expect(response).to have_gitlab_http_status(302)
+          expect(response).to have_gitlab_http_status(:found)
         end
 
         it 'returns 200 status for json' do
           post :create, params: request_params.merge(format: :json)
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
 
         it 'creates a new note' do
@@ -618,7 +618,7 @@ describe Projects::NotesController do
         it 'returns 404 status' do
           post :create, params: request_params
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
 
         it 'does not create a new note' do
@@ -671,7 +671,7 @@ describe Projects::NotesController do
           }
         }
         expect { put :update, params: request_params }.not_to change { note.reload.note }
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -695,7 +695,7 @@ describe Projects::NotesController do
       it "returns status 200 for html" do
         delete :destroy, params: request_params
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       it "deletes the note" do
@@ -712,7 +712,7 @@ describe Projects::NotesController do
       it "returns status 404" do
         delete :destroy, params: request_params
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -732,7 +732,7 @@ describe Projects::NotesController do
         subject
       end.to change { note.award_emoji.count }.by(1)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
 
     it "removes the already awarded emoji" do
@@ -740,7 +740,7 @@ describe Projects::NotesController do
 
       expect { subject }.to change { AwardEmoji.count }.by(-1)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
 
     it 'marks Todos on the Noteable as done' do
@@ -766,7 +766,7 @@ describe Projects::NotesController do
         it "returns status 404" do
           post :resolve, params: request_params
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
@@ -783,7 +783,7 @@ describe Projects::NotesController do
           it "returns status 404" do
             post :resolve, params: request_params
 
-            expect(response).to have_gitlab_http_status(404)
+            expect(response).to have_gitlab_http_status(:not_found)
           end
         end
 
@@ -812,7 +812,7 @@ describe Projects::NotesController do
           it "returns status 200" do
             post :resolve, params: request_params
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
           end
         end
       end
@@ -829,7 +829,7 @@ describe Projects::NotesController do
         it "returns status 404" do
           delete :unresolve, params: request_params
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
@@ -846,7 +846,7 @@ describe Projects::NotesController do
           it "returns status 404" do
             delete :unresolve, params: request_params
 
-            expect(response).to have_gitlab_http_status(404)
+            expect(response).to have_gitlab_http_status(:not_found)
           end
         end
 
@@ -860,7 +860,7 @@ describe Projects::NotesController do
           it "returns status 200" do
             delete :unresolve, params: request_params
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
           end
         end
       end

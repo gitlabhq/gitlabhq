@@ -35,7 +35,7 @@ describe Projects::SnippetsController do
           get :index, params: { namespace_id: project.namespace, project_id: project }
 
           expect(assigns(:snippets)).not_to include(project_snippet)
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
 
@@ -48,7 +48,7 @@ describe Projects::SnippetsController do
           get :index, params: { namespace_id: project.namespace, project_id: project }
 
           expect(assigns(:snippets)).to include(project_snippet)
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
 
@@ -61,7 +61,7 @@ describe Projects::SnippetsController do
           get :index, params: { namespace_id: project.namespace, project_id: project }
 
           expect(assigns(:snippets)).to include(project_snippet)
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
     end
@@ -318,7 +318,7 @@ describe Projects::SnippetsController do
           it 'responds with status 404' do
             get action, params: { namespace_id: project.namespace, project_id: project, id: project_snippet.to_param }
 
-            expect(response).to have_gitlab_http_status(404)
+            expect(response).to have_gitlab_http_status(:not_found)
           end
         end
 
@@ -331,7 +331,7 @@ describe Projects::SnippetsController do
             get action, params: { namespace_id: project.namespace, project_id: project, id: project_snippet.to_param }
 
             expect(assigns(:snippet)).to eq(project_snippet)
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
           end
         end
 
@@ -344,7 +344,7 @@ describe Projects::SnippetsController do
             get action, params: { namespace_id: project.namespace, project_id: project, id: project_snippet.to_param }
 
             expect(assigns(:snippet)).to eq(project_snippet)
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
           end
         end
       end
@@ -354,7 +354,7 @@ describe Projects::SnippetsController do
           it 'responds with status 404' do
             get action, params: { namespace_id: project.namespace, project_id: project, id: 42 }
 
-            expect(response).to have_gitlab_http_status(404)
+            expect(response).to have_gitlab_http_status(:not_found)
           end
         end
 
@@ -366,7 +366,7 @@ describe Projects::SnippetsController do
           it 'responds with status 404' do
             get action, params: { namespace_id: project.namespace, project_id: project, id: 42 }
 
-            expect(response).to have_gitlab_http_status(404)
+            expect(response).to have_gitlab_http_status(:not_found)
           end
         end
       end
@@ -386,7 +386,7 @@ describe Projects::SnippetsController do
       let(:snippet_permission) { :private }
 
       it 'responds with status 404' do
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -395,7 +395,7 @@ describe Projects::SnippetsController do
 
       it 'responds with status 200' do
         expect(assigns(:snippet)).to eq(project_snippet)
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 
@@ -407,7 +407,7 @@ describe Projects::SnippetsController do
 
         it 'responds with status 404' do
           expect(assigns(:snippet)).to eq(project_snippet)
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end
@@ -501,7 +501,7 @@ describe Projects::SnippetsController do
       it 'responds with status 404' do
         delete :destroy, params: params
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

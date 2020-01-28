@@ -108,7 +108,7 @@ describe Projects::CompareController do
         show_request
 
         expect(flash[:alert]).to eq('Invalid branch name')
-        expect(response).to have_http_status(302)
+        expect(response).to have_gitlab_http_status(:found)
       end
     end
 
@@ -120,7 +120,7 @@ describe Projects::CompareController do
         show_request
 
         expect(flash[:alert]).to eq('Invalid branch name')
-        expect(response).to have_http_status(302)
+        expect(response).to have_gitlab_http_status(:found)
       end
     end
   end
@@ -164,7 +164,7 @@ describe Projects::CompareController do
           end
 
           it 'returns a 404' do
-            expect(response).to have_gitlab_http_status(404)
+            expect(response).to have_gitlab_http_status(:not_found)
           end
         end
       end
@@ -176,7 +176,7 @@ describe Projects::CompareController do
         end
 
         it 'returns a 404' do
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end
@@ -187,7 +187,7 @@ describe Projects::CompareController do
       end
 
       it 'returns a 404' do
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -197,7 +197,7 @@ describe Projects::CompareController do
       end
 
       it 'returns a 404' do
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -301,7 +301,7 @@ describe Projects::CompareController do
         it 'returns only the commit with a signature' do
           signatures_request
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
           signatures = json_response['signatures']
 
           expect(signatures.size).to eq(1)
@@ -318,7 +318,7 @@ describe Projects::CompareController do
         it 'returns a 404' do
           signatures_request
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end
@@ -330,7 +330,7 @@ describe Projects::CompareController do
       it 'returns no signatures' do
         signatures_request
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['signatures']).to be_empty
       end
     end
@@ -342,7 +342,7 @@ describe Projects::CompareController do
       it 'returns no signatures' do
         signatures_request
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['signatures']).to be_empty
       end
     end

@@ -42,7 +42,7 @@ describe Projects::HooksController do
 
       post :create, params: { namespace_id: project.namespace, project_id: project, hook: hook_params }
 
-      expect(response).to have_http_status(302)
+      expect(response).to have_gitlab_http_status(:found)
       expect(ProjectHook.all.size).to eq(1)
       expect(ProjectHook.first).to have_attributes(hook_params)
     end

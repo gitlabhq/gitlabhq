@@ -85,7 +85,7 @@ describe Projects::TreeController do
     context "valid SHA commit ID with path" do
       let(:id) { '6d39438/.gitignore' }
 
-      it { expect(response).to have_gitlab_http_status(302) }
+      it { expect(response).to have_gitlab_http_status(:found) }
     end
   end
 

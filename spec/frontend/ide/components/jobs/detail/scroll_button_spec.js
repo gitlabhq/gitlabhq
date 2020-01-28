@@ -1,59 +1,50 @@
-import Vue from 'vue';
+import { shallowMount } from '@vue/test-utils';
+import Icon from '~/vue_shared/components/icon.vue';
 import ScrollButton from '~/ide/components/jobs/detail/scroll_button.vue';
-import mountComponent from '../../../../helpers/vue_mount_component_helper';
 
 describe('IDE job log scroll button', () => {
-  const Component = Vue.extend(ScrollButton);
-  let vm;
+  let wrapper;
 
-  beforeEach(() => {
-    vm = mountComponent(Component, {
-      direction: 'up',
-      disabled: false,
+  const createComponent = props => {
+    wrapper = shallowMount(ScrollButton, {
+      propsData: {
+        direction: 'up',
+        disabled: false,
+        ...props,
+      },
     });
-  });
+  };
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
-  describe('iconName', () => {
-    ['up', 'down'].forEach(direction => {
-      it(`returns icon name for ${direction}`, () => {
-        vm.direction = direction;
+  describe.each`
+    direction | icon             | title
+    ${'up'}   | ${'scroll_up'}   | ${'Scroll to top'}
+    ${'down'} | ${'scroll_down'} | ${'Scroll to bottom'}
+  `('for $direction direction', ({ direction, icon, title }) => {
+    beforeEach(() => createComponent({ direction }));
 
-        expect(vm.iconName).toBe(`scroll_${direction}`);
-      });
-    });
-  });
-
-  describe('tooltipTitle', () => {
-    it('returns title for up', () => {
-      expect(vm.tooltipTitle).toBe('Scroll to top');
+    it('returns proper icon name', () => {
+      expect(wrapper.find(Icon).props('name')).toBe(icon);
     });
 
-    it('returns title for down', () => {
-      vm.direction = 'down';
-
-      expect(vm.tooltipTitle).toBe('Scroll to bottom');
+    it('returns proper title', () => {
+      expect(wrapper.attributes('data-original-title')).toBe(title);
     });
   });
 
   it('emits click event on click', () => {
-    jest.spyOn(vm, '$emit').mockImplementation(() => {});
+    createComponent();
 
-    vm.$el.querySelector('.btn-scroll').click();
-
-    expect(vm.$emit).toHaveBeenCalledWith('click');
+    wrapper.find('button').trigger('click');
+    expect(wrapper.emitted().click).toBeDefined();
   });
 
-  it('disables button when disabled is true', done => {
-    vm.disabled = true;
+  it('disables button when disabled is true', () => {
+    createComponent({ disabled: true });
 
-    vm.$nextTick(() => {
-      expect(vm.$el.querySelector('.btn-scroll').hasAttribute('disabled')).toBe(true);
-
-      done();
-    });
+    expect(wrapper.find('button').attributes('disabled')).toBe('disabled');
   });
 });

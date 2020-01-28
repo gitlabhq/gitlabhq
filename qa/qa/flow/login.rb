@@ -12,12 +12,6 @@ module QA
 
         yield
 
-        # Workaround for a bug preventing sign out from secondary nodes
-        # See https://gitlab.com/gitlab-org/gitlab/issues/198289
-        if address == :geo_secondary
-          Runtime::Browser.visit(:geo_primary, Page::Dashboard::Projects)
-        end
-
         Page::Main::Menu.perform(&:sign_out)
       end
 

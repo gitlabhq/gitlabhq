@@ -49,7 +49,7 @@ describe Projects::UploadsController do
     it "responds with status internal_server_error" do
       post_authorize
 
-      expect(response).to have_gitlab_http_status(500)
+      expect(response).to have_gitlab_http_status(:internal_server_error)
       expect(response.body).to eq(_('Error uploading file'))
     end
   end

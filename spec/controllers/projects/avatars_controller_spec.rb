@@ -16,7 +16,7 @@ describe Projects::AvatarsController do
       it 'shows 404' do
         subject
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -31,7 +31,7 @@ describe Projects::AvatarsController do
         it 'sends the avatar' do
           subject
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(response.header['Content-Disposition']).to eq('inline')
           expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with('git-blob:')
           expect(response.header[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"

@@ -232,7 +232,7 @@ describe Projects::BlobController do
       end
 
       it 'redirects to blob show' do
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 
@@ -246,7 +246,7 @@ describe Projects::BlobController do
       end
 
       it 'redirects to blob show' do
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
   end

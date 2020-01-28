@@ -23,7 +23,7 @@ describe Projects::PagesController do
     it 'returns 200 status' do
       get :show, params: request_params
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
 
     context 'when the project is in a subgroup' do
@@ -33,7 +33,7 @@ describe Projects::PagesController do
       it 'returns a 200 status code' do
         get :show, params: request_params
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
   end
@@ -42,7 +42,7 @@ describe Projects::PagesController do
     it 'returns 302 status' do
       delete :destroy, params: request_params
 
-      expect(response).to have_gitlab_http_status(302)
+      expect(response).to have_gitlab_http_status(:found)
     end
 
     context 'when user is developer' do
@@ -53,7 +53,7 @@ describe Projects::PagesController do
       it 'returns 404 status' do
         delete :destroy, params: request_params
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -67,7 +67,7 @@ describe Projects::PagesController do
       it 'returns 404 status' do
         get :show, params: request_params
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -75,7 +75,7 @@ describe Projects::PagesController do
       it 'returns 404 status' do
         delete :destroy, params: request_params
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

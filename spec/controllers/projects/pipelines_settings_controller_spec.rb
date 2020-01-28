@@ -17,7 +17,7 @@ describe Projects::PipelinesSettingsController do
     it 'redirects with 302 status code' do
       get :show, params: { namespace_id: project.namespace, project_id: project }
 
-      expect(response).to have_gitlab_http_status(302)
+      expect(response).to have_gitlab_http_status(:found)
     end
   end
 end

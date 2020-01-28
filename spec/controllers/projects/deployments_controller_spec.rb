@@ -61,7 +61,7 @@ describe Projects::DeploymentsController do
 
         it 'returns a empty response 204 resposne' do
           get :metrics, params: deployment_params(id: deployment.to_param)
-          expect(response).to have_gitlab_http_status(204)
+          expect(response).to have_gitlab_http_status(:no_content)
           expect(response.body).to eq('')
         end
       end
@@ -100,7 +100,7 @@ describe Projects::DeploymentsController do
 
           get :metrics, params: deployment_params(id: failed_deployment.to_param)
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end
@@ -129,7 +129,7 @@ describe Projects::DeploymentsController do
 
         it 'returns a empty response 204 response' do
           get :additional_metrics, params: deployment_params(id: deployment.to_param, format: :json)
-          expect(response).to have_gitlab_http_status(204)
+          expect(response).to have_gitlab_http_status(:no_content)
           expect(response.body).to eq('')
         end
       end
