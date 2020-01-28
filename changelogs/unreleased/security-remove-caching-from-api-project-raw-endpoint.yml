@@ -1,5 +1,0 @@
----
-title: Disable caching of repository/files/:file_path/raw API endpoint
-merge_request:
-author:
-type: security
