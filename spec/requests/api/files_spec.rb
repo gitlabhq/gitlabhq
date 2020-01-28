@@ -447,6 +447,18 @@ describe API::Files do
         expect(response).to have_gitlab_http_status(200)
       end
 
+      it 'sets no-cache headers' do
+        url = route('.gitignore') + "/raw"
+        expect(Gitlab::Workhorse).to receive(:send_git_blob)
+
+        get api(url, current_user), params: params
+
+        expect(response.headers["Cache-Control"]).to include("no-store")
+        expect(response.headers["Cache-Control"]).to include("no-cache")
+        expect(response.headers["Pragma"]).to eq("no-cache")
+        expect(response.headers["Expires"]).to eq("Fri, 01 Jan 1990 00:00:00 GMT")
+      end
+
       context 'when mandatory params are not given' do
         it_behaves_like '400 response' do
           let(:request) { get api(route("any%2Ffile"), current_user) }

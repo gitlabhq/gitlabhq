@@ -350,12 +350,12 @@ describe Note do
   end
 
   describe "cross_reference_not_visible_for?" do
-    let(:private_user)    { create(:user) }
-    let(:private_project) { create(:project, namespace: private_user.namespace) { |p| p.add_maintainer(private_user) } }
-    let(:private_issue)   { create(:issue, project: private_project) }
+    let_it_be(:private_user)    { create(:user) }
+    let_it_be(:private_project) { create(:project, namespace: private_user.namespace) { |p| p.add_maintainer(private_user) } }
+    let_it_be(:private_issue)   { create(:issue, project: private_project) }
 
-    let(:ext_proj)  { create(:project, :public) }
-    let(:ext_issue) { create(:issue, project: ext_proj) }
+    let_it_be(:ext_proj)  { create(:project, :public) }
+    let_it_be(:ext_issue) { create(:issue, project: ext_proj) }
 
     shared_examples "checks references" do
       it "returns true" do
@@ -393,10 +393,24 @@ describe Note do
       it_behaves_like "checks references"
     end
 
-    context "when there are two references in note" do
+    context "when there is a reference to a label" do
+      let_it_be(:private_label) { create(:label, project: private_project) }
       let(:note) do
         create :note,
           noteable: ext_issue, project: ext_proj,
+          note: "added label #{private_label.to_reference(ext_proj)}",
+          system: true
+      end
+      let!(:system_note_metadata) { create(:system_note_metadata, note: note, action: :label) }
+
+      it_behaves_like "checks references"
+    end
+
+    context "when there are two references in note" do
+      let_it_be(:ext_issue2) { create(:issue, project: ext_proj) }
+      let(:note) do
+        create :note,
+          noteable: ext_issue2, project: ext_proj,
           note: "mentioned in issue #{private_issue.to_reference(ext_proj)} and " \
                 "public issue #{ext_issue.to_reference(ext_proj)}",
           system: true

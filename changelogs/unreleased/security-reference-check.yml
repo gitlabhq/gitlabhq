@@ -1,0 +1,5 @@
+---
+title: Make sure that only system notes where all references are visible to user are exposed in GraphQL API.
+merge_request:
+author:
+type: security

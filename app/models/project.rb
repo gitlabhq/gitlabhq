@@ -2274,6 +2274,10 @@ class Project < ApplicationRecord
     end
   end
 
+  def template_source?
+    false
+  end
+
   private
 
   def closest_namespace_setting(name)

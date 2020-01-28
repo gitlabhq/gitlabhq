@@ -1,6 +1,7 @@
 <script>
 import FrequentItemsListItem from './frequent_items_list_item.vue';
 import frequentItemsMixin from './frequent_items_mixin';
+import { sanitizeItem } from '../utils';
 
 export default {
   components: {
@@ -48,6 +49,9 @@ export default {
         ? this.translations.itemListErrorMessage
         : this.translations.itemListEmptyMessage;
     },
+    sanitizedItems() {
+      return this.items.map(sanitizeItem);
+    },
   },
 };
 </script>
@@ -59,7 +63,7 @@ export default {
         {{ listEmptyMessage }}
       </li>
       <frequent-items-list-item
-        v-for="item in items"
+        v-for="item in sanitizedItems"
         v-else
         :key="item.id"
         :item-id="item.id"
