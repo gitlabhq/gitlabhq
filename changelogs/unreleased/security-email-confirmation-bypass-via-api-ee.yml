@@ -1,0 +1,5 @@
+---
+title: Prevent API access for unconfirmed users
+merge_request:
+author:
+type: security
