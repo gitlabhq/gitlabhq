@@ -222,6 +222,7 @@ who are aware of the risks.
 - [Troubleshooting PostgreSQL](troubleshooting/postgresql.md)
 - [Guide to test environments](troubleshooting/test_environments.md) (for Support Engineers)
 - [GitLab Rails console commands](troubleshooting/gitlab_rails_cheat_sheet.md) (for Support Engineers)
+- [Troubleshooting SSL](troubleshooting/ssl.md)
 - Useful links:
   - [GitLab Developer Docs](../development/README.md)
   - [Repairing and recovering broken Git repositories](https://git.seveas.net/repairing-and-recovering-broken-git-repositories.html)

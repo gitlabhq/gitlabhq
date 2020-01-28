@@ -137,6 +137,7 @@
 - gitlab_shell
 - group_destroy
 - group_export
+- group_import
 - import_issues_csv
 - invalid_gpg_signature_update
 - irker

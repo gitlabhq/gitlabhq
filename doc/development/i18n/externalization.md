@@ -161,7 +161,11 @@ For example use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript. Make s
   _("Hello %{name}") % { name: 'Joe' } => 'Hello Joe'
   ```
 
-- In JavaScript:
+- In Vue:
+
+  See the section on [Vue component interpolation](#vue-components-interpolation).
+
+- In JavaScript (when Vue cannot be used):
 
   ```js
   import { __, sprintf } from '~/locale';
@@ -169,14 +173,30 @@ For example use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript. Make s
   sprintf(__('Hello %{username}'), { username: 'Joe' }); // => 'Hello Joe'
   ```
 
-  By default, `sprintf` escapes the placeholder values.
-  If you want to take care of that yourself, you can pass `false` as third argument.
+  If you want to use markup within the translation and are using Vue, you
+  **must** use the [`gl-sprintf`](#vue-components-interpolation) component. If
+  for some reason you cannot use Vue, use `sprintf` and stop it from escaping
+  placeholder values by passing `false` as its third argument. You **must**
+  escape any interpolated dynamic values yourself, for instance using
+  `escape` from `lodash`.
 
   ```js
+  import { escape } from 'lodash';
   import { __, sprintf } from '~/locale';
 
-  sprintf(__('This is %{value}'), { value: '<strong>bold</strong>' }); // => 'This is &lt;strong&gt;bold&lt;/strong&gt;'
-  sprintf(__('This is %{value}'), { value: '<strong>bold</strong>' }, false); // => 'This is <strong>bold</strong>'
+  let someDynamicValue = '<script>alert("evil")</script>';
+
+  // Dangerous:
+  sprintf(__('This is %{value}'), { value: `<strong>${someDynamicValue}</strong>`, false);
+  // => 'This is <strong><script>alert('evil')</script></strong>'
+
+  // Incorrect:
+  sprintf(__('This is %{value}'), { value: `<strong>${someDynamicValue}</strong>` });
+  // => 'This is &lt;strong&gt;&lt;script&gt;alert(&#x27;evil&#x27;)&lt;/script&gt;&lt;/strong&gt;'
+
+  // OK:
+  sprintf(__('This is %{value}'), { value: `<strong>${escape(someDynamicValue)}</strong>`, false);
+  // => 'This is <strong>&lt;script&gt;alert(&#x27;evil&#x27;)&lt;/script&gt;</strong>'
   ```
 
 ### Plurals
@@ -326,7 +346,41 @@ This also applies when using links in between translated sentences, otherwise th
   = s_('ClusterIntegration|Learn more about %{zones_link_start}zones%{zones_link_end}').html_safe % { zones_link_start: zones_link_start, zones_link_end: '</a>'.html_safe }
   ```
 
-- In JavaScript, instead of:
+- In Vue, instead of:
+
+  ```html
+  <template>
+    <div>
+      <gl-sprintf :message="s__('ClusterIntegration|Learn more about %{link}')">
+        <template #link>
+          <gl-link
+            href="https://cloud.google.com/compute/docs/regions-zones/regions-zones"
+            target="_blank"
+          >zones</gl-link>
+        </template>
+      </gl-sprintf>
+    </div>
+  </template>
+  ```
+
+  Set the link starting and ending HTML fragments as placeholders like so:
+
+  ```html
+  <template>
+    <div>
+      <gl-sprintf :message="s__('ClusterIntegration|Learn more about %{linkStart}zones%{linkEnd}')">
+        <template #link="{ content }">
+          <gl-link
+            href="https://cloud.google.com/compute/docs/regions-zones/regions-zones"
+            target="_blank"
+          >{{ content }}</gl-link>
+        </template>
+      </gl-sprintf>
+    </div>
+  </template>
+  ```
+
+- In JavaScript (when Vue cannot be used), instead of:
 
   ```js
   {{
@@ -336,7 +390,7 @@ This also applies when using links in between translated sentences, otherwise th
   }}
   ```
 
-  Set the link starting and ending HTML fragments as variables like so:
+  Set the link starting and ending HTML fragments as placeholders like so:
 
   ```js
   {{

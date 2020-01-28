@@ -25,6 +25,7 @@ export default () => {
   new ShortcutsBlob({
     skipResetBindings: true,
     fileBlobPermalinkUrl,
+    fileBlobPermalinkUrlElement,
   });
 
   new BlobForkSuggestion({

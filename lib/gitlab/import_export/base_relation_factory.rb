@@ -24,7 +24,8 @@ module Gitlab
          last_edited_by_id
          merge_user_id
          resolved_by_id
-         closed_by_id owner_id
+         closed_by_id
+         owner_id
        ].freeze
 
       TOKEN_RESET_MODELS = %i[Project Namespace Group Ci::Trigger Ci::Build Ci::Runner ProjectHook].freeze

@@ -578,7 +578,7 @@ module Ci
     # Manually set the notes for a Ci::Pipeline
     # There is no ActiveRecord relation between Ci::Pipeline and notes
     # as they are related to a commit sha. This method helps importing
-    # them using the +Gitlab::ImportExport::RelationFactory+ class.
+    # them using the +Gitlab::ImportExport::ProjectRelationFactory+ class.
     def notes=(notes)
       notes.each do |note|
         note[:id] = nil

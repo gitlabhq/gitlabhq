@@ -9,7 +9,7 @@ module Gitlab
         @importable = importable
 
         # This needs to run first, as second call would be from #map
-        # which means project members already exist.
+        # which means Project/Group members already exist.
         ensure_default_member!
       end
 
@@ -47,11 +47,19 @@ module Gitlab
       end
 
       def ensure_default_member!
+        return if user_already_member?
+
         @importable.members.destroy_all # rubocop: disable DestroyAll
 
         relation_class.create!(user: @user, access_level: relation_class::MAINTAINER, source_id: @importable.id, importing: true)
       rescue => e
         raise e, "Error adding importer user to #{@importable.class} members. #{e.message}"
+      end
+
+      def user_already_member?
+        member = @importable.members&.first
+
+        member&.user == @user && member.access_level >= relation_class::MAINTAINER
       end
 
       def add_team_member(member, existing_user = nil)

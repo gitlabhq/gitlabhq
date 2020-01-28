@@ -110,6 +110,8 @@
   - 1
 - - group_export
   - 1
+- - group_import
+  - 1
 - - hashed_storage
   - 1
 - - import_issues_csv

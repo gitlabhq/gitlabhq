@@ -16,6 +16,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
+msgid " %{start} to %{end}"
+msgstr ""
+
 msgid " (from %{timeoutSource})"
 msgstr ""
 
@@ -992,6 +995,9 @@ msgid "Active %{type} Tokens (%{token_length})"
 msgstr ""
 
 msgid "Active Sessions"
+msgstr ""
+
+msgid "Active Users:"
 msgstr ""
 
 msgid "Activity"
@@ -6594,6 +6600,30 @@ msgstr ""
 msgid "Discover projects, groups and snippets. Share your projects with others"
 msgstr ""
 
+msgid "Discover|Check your application for security vulnerabilities that may lead to unauthorized access, data leaks, and denial of services."
+msgstr ""
+
+msgid "Discover|For code that's already live in production, our dashboards give you an easy way to prioritize any issues that are found, empowering your team to ship quickly and securely."
+msgstr ""
+
+msgid "Discover|GitLab will perform static and dynamic tests on the code of your application, looking for known flaws and report them in the merge request so you can fix them before merging."
+msgstr ""
+
+msgid "Discover|Give feedback for this page"
+msgstr ""
+
+msgid "Discover|Security capabilities, integrated into your development lifecycle"
+msgstr ""
+
+msgid "Discover|See the other features of the %{linkStart}gold plan%{linkEnd}"
+msgstr ""
+
+msgid "Discover|Start a free trial"
+msgstr ""
+
+msgid "Discover|Upgrade now"
+msgstr ""
+
 msgid "Discuss a specific suggestion or question"
 msgstr ""
 
@@ -11548,6 +11578,9 @@ msgid "Max access level"
 msgstr ""
 
 msgid "Max seats used"
+msgstr ""
+
+msgid "Maximum Users:"
 msgstr ""
 
 msgid "Maximum allowable lifetime for personal access token (days)"
@@ -18508,6 +18541,12 @@ msgstr ""
 msgid "The \"Require approval from CODEOWNERS\" setting was moved to %{banner_link_start}Protected Branches%{banner_link_end}"
 msgstr ""
 
+msgid "The %{link_start}true-up model%{link_end} allows having more users, and additional users will incur a retroactive charge on renewal."
+msgstr ""
+
+msgid "The %{true_up_link_start}true-up model%{link_end} has a retroactive charge for these users at the next renewal. If you want to update your license sooner to prevent this, %{support_link_start}please contact our Support team%{link_end}."
+msgstr ""
+
 msgid "The %{type} contains the following error:"
 msgid_plural "The %{type} contains the following errors:"
 msgstr[0] ""
@@ -19163,7 +19202,13 @@ msgstr ""
 msgid "This is the author's first Merge Request to this project."
 msgstr ""
 
+msgid "This is the highest peak of users on your installation since the license started."
+msgstr ""
+
 msgid "This is the maximum number of users that have existed at the same time since the license started. This is the minimum number of seats you will need to buy when you renew your license."
+msgstr ""
+
+msgid "This is the number of currently active users on your installation, and this is the minimum number you need to purchase when you renew your license."
 msgstr ""
 
 msgid "This is your current session"
@@ -20754,10 +20799,16 @@ msgstr ""
 msgid "Users"
 msgstr ""
 
+msgid "Users in License:"
+msgstr ""
+
 msgid "Users or groups set as approvers in the project's or merge request's settings."
 msgstr ""
 
 msgid "Users outside of license"
+msgstr ""
+
+msgid "Users over License:"
 msgstr ""
 
 msgid "Users requesting access to"
@@ -21881,6 +21932,9 @@ msgid "Your issues are being imported. Once finished, you'll get a confirmation 
 msgstr ""
 
 msgid "Your issues will be imported in the background. Once finished, you'll get a confirmation email."
+msgstr ""
+
+msgid "Your license is valid from"
 msgstr ""
 
 msgid "Your message here"
