@@ -13,9 +13,7 @@ module Gitlab
         super(logger: Gitlab::AppLogger)
 
         @context = context
-        @repository = context[:repository] || context[:project].try(:repository)
-        @max_includes = context[:max_includes].to_i
-        @included = []
+        @repository = context[:project].try(:repository)
 
         # Note: Asciidoctor calls #freeze on extensions, so we can't set new
         # instance variables after initialization.
@@ -30,11 +28,8 @@ module Gitlab
       def include_allowed?(target, reader)
         doc = reader.document
 
-        max_include_depth = doc.attributes.fetch('max-include-depth').to_i
-
-        return false if max_include_depth < 1
+        return false if doc.attributes.fetch('max-include-depth').to_i < 1
         return false if target_uri?(target)
-        return false if included.size >= max_includes
 
         true
       end
@@ -67,7 +62,7 @@ module Gitlab
 
       private
 
-      attr_reader :context, :repository, :cache, :max_includes, :included
+      attr_accessor :context, :repository, :cache
 
       # Gets a Blob at a path for a specific revision.
       # This method will check that the Blob exists and contains readable text.
@@ -81,8 +76,6 @@ module Gitlab
 
         raise 'Blob not found' unless blob
         raise 'File is not readable' unless blob.readable_text?
-
-        included << filename
 
         blob
       end
