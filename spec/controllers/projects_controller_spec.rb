@@ -64,6 +64,46 @@ describe ProjectsController do
     end
   end
 
+  describe "GET #activity as JSON" do
+    render_views
+
+    let(:project) { create(:project, :public, issues_access_level: ProjectFeature::PRIVATE) }
+
+    before do
+      create(:event, :created, project: project, target: create(:issue))
+
+      sign_in(user)
+
+      request.cookies[:event_filter] = 'all'
+    end
+
+    context 'when user has permission to see the event' do
+      before do
+        project.add_developer(user)
+      end
+
+      it 'returns count' do
+        get :activity, params: { namespace_id: project.namespace, id: project, format: :json }
+
+        expect(json_response['count']).to eq(1)
+      end
+    end
+
+    context 'when user has no permission to see the event' do
+      it 'filters out invisible event' do
+        get :activity, params: { namespace_id: project.namespace, id: project, format: :json }
+
+        expect(json_response['html']).to eq("\n")
+      end
+
+      it 'filters out invisible event when calculating the count' do
+        get :activity, params: { namespace_id: project.namespace, id: project, format: :json }
+
+        expect(json_response['count']).to eq(0)
+      end
+    end
+  end
+
   describe "GET show" do
     context "user not project member" do
       before do

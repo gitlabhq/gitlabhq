@@ -1,0 +1,5 @@
+---
+title: Disable access to last_pipeline in commits API for users without read permissions
+merge_request:
+author:
+type: security
