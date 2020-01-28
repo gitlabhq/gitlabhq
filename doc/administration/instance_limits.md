@@ -43,6 +43,18 @@ A maximum number of project webhooks applies to each GitLab.com tier. Check the
 [Maximum number of webhooks (per tier)](../user/project/integrations/webhooks.md#maximum-number-of-webhooks-per-tier)
 section in the Webhooks page.
 
+To set this limit on a self-hosted installation, run the following in the
+[GitLab Rails console](https://docs.gitlab.com/omnibus/maintenance/#starting-a-rails-console-session):
+
+```ruby
+# If limits don't exist for the default plan, you can create one with:
+# Plan.default.create_limits!
+
+Plan.default.limits.update!(project_hooks: 100)
+```
+
+NOTE: **Note:** Set the limit to `0` to disable it.
+
 ## CI/CD limits
 
 ### Number of jobs in active pipelines
@@ -73,4 +85,4 @@ To set this limit on a self-hosted installation, run the following in the
 Plan.default.limits.update!(ci_active_jobs: 500)
 ```
 
-Set the limit to `0` to disable it.
+NOTE: **Note:** Set the limit to `0` to disable it.

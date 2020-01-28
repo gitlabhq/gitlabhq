@@ -732,10 +732,10 @@
   dependencies:
     vue-eslint-parser "^6.0.4"
 
-"@gitlab/svgs@^1.90.0":
-  version "1.90.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.90.0.tgz#e6fe0ca3d353fcdbd792c10d82444383c33f539d"
-  integrity sha512-6UikaIMGosmrDAd6Lf3QIJWDM4FwhoGIN+CJuFcWeHDMbZT69LnTabuGfvOQmp2+nlI68baRTSDufaux7m9Ajw==
+"@gitlab/svgs@^1.91.0":
+  version "1.91.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.91.0.tgz#cf7b28e43779a929a438dcc0c51f39f92551e58e"
+  integrity sha512-Sz8aaaNnUUtlrk/FPf6FNceu4XsDLBh6g/c6nmzDVGF9kHrfiXfWL0tYAax8vhkrld5vewGHE0bRpq2ZILq0pw==
 
 "@gitlab/ui@^9.0.0":
   version "9.0.0"
