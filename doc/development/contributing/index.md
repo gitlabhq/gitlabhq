@@ -118,6 +118,11 @@ This [documentation](merge_request_workflow.md) outlines the current merge reque
 
 This [documentation](style_guides.md) outlines the current style guidelines.
 
+## Implement design & UI elements
+
+This [design documentation](design.md) outlines the current process for implementing
+design & UI elements.
+
 ## Getting an Enterprise Edition License
 
 If you need a license for contributing to an EE-feature, please [follow these instructions](https://about.gitlab.com/handbook/marketing/community-relations/code-contributor-program/#for-contributors-to-the-gitlab-enterprise-edition-ee).

@@ -3,17 +3,22 @@
 - snippet_chunks = snippet_blob[:snippet_chunks]
 - snippet_path = gitlab_snippet_path(snippet)
 
-.search-result-row
-  %span
-    = snippet.title
+.search-result-row.snippet-row
+  = image_tag avatar_icon_for_user(snippet.author), class: "avatar s40 d-none d-sm-block", alt: ''
+  .title
+    = link_to gitlab_snippet_path(snippet) do
+      = snippet.title
+  .snippet-info
+    = snippet.to_reference
+    &middot;
+    authored
+    = time_ago_with_tooltip(snippet.created_at)
     by
     = link_to user_snippets_path(snippet.author) do
-      = image_tag avatar_icon_for_user(snippet.author), class: "avatar avatar-inline s16", alt: ''
       = snippet.author_name
-    %span.light= time_ago_with_tooltip(snippet.created_at)
-  %h4.snippet-title
-  .file-holder
-    .js-file-title.file-title
+
+  .file-holder.my-2
+    .js-file-title.file-title-flex-parent
       = link_to snippet_path do
         %i.fa.fa-file
         %strong= snippet.file_name

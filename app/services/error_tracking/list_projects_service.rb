@@ -2,18 +2,16 @@
 
 module ErrorTracking
   class ListProjectsService < ErrorTracking::BaseService
-    def execute
+    private
+
+    def perform
       unless project_error_tracking_setting.valid?
         return error(project_error_tracking_setting.errors.full_messages.join(', '), :bad_request)
       end
 
-      super
-    end
+      response = project_error_tracking_setting.list_sentry_projects
 
-    private
-
-    def perform
-      project_error_tracking_setting.list_sentry_projects
+      compose_response(response)
     end
 
     def parse_response(response)

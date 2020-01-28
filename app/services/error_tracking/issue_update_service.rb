@@ -7,21 +7,15 @@ module ErrorTracking
     private
 
     def perform
-      response = fetch
-
-      unless parse_errors(response).present?
-        response[:closed_issue_iid] = update_related_issue&.iid
-        project_error_tracking_setting.expire_issues_cache
-      end
-
-      response
-    end
-
-    def fetch
-      project_error_tracking_setting.update_issue(
+      response = project_error_tracking_setting.update_issue(
         issue_id: params[:issue_id],
         params: update_params
       )
+
+      compose_response(response) do
+        response[:closed_issue_iid] = update_related_issue&.iid
+        project_error_tracking_setting.expire_issues_cache
+      end
     end
 
     def update_related_issue
@@ -74,7 +68,7 @@ module ErrorTracking
       }
     end
 
-    def check_permissions
+    def unauthorized
       return error('Error Tracking is not enabled') unless enabled?
       return error('Access denied', :unauthorized) unless can_update?
     end

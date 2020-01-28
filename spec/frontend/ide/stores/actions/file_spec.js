@@ -251,7 +251,7 @@ describe('IDE store file actions', () => {
 
     describe('success', () => {
       beforeEach(() => {
-        mock.onGet(`${RELATIVE_URL_ROOT}/test/test/7297abc/${localFile.path}`).replyOnce(
+        mock.onGet(`${RELATIVE_URL_ROOT}/test/test/-/7297abc/${localFile.path}`).replyOnce(
           200,
           {
             blame_path: 'blame_path',
@@ -273,7 +273,7 @@ describe('IDE store file actions', () => {
           .dispatch('getFileData', { path: localFile.path })
           .then(() => {
             expect(service.getFileData).toHaveBeenCalledWith(
-              `${RELATIVE_URL_ROOT}/test/test/7297abc/${localFile.path}`,
+              `${RELATIVE_URL_ROOT}/test/test/-/7297abc/${localFile.path}`,
             );
 
             done();
@@ -345,7 +345,7 @@ describe('IDE store file actions', () => {
         localFile.path = 'new-shiny-file';
         store.state.entries[localFile.path] = localFile;
 
-        mock.onGet(`${RELATIVE_URL_ROOT}/test/test/7297abc/old-dull-file`).replyOnce(
+        mock.onGet(`${RELATIVE_URL_ROOT}/test/test/-/7297abc/old-dull-file`).replyOnce(
           200,
           {
             blame_path: 'blame_path',
@@ -376,7 +376,7 @@ describe('IDE store file actions', () => {
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onGet(`${RELATIVE_URL_ROOT}/test/test/7297abc/${localFile.path}`).networkError();
+        mock.onGet(`${RELATIVE_URL_ROOT}/test/test/-/7297abc/${localFile.path}`).networkError();
       });
 
       it('dispatches error action', () => {

@@ -71,6 +71,7 @@ export const getFileData = (
   const url = joinPaths(
     gon.relative_url_root || '/',
     state.currentProjectId,
+    '-',
     file.type,
     getters.lastCommit && getters.lastCommit.id,
     escapeFileUrl(file.prevPath || file.path),
