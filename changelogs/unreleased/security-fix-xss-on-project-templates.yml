@@ -1,0 +1,5 @@
+---
+title: Fix XSS vulnerability on custom project templates form
+merge_request:
+author:
+type: security

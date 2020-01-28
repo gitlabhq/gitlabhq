@@ -11,6 +11,7 @@ module Gitlab
   # the resulting HTML through HTML pipeline filters.
   module Asciidoc
     MAX_INCLUDE_DEPTH = 5
+    MAX_INCLUDES = 32
     DEFAULT_ADOC_ATTRS = {
         'showtitle' => true,
         'sectanchors' => true,
@@ -40,6 +41,7 @@ module Gitlab
                         extensions: extensions }
 
       context[:pipeline] = :ascii_doc
+      context[:max_includes] = [MAX_INCLUDES, context[:max_includes]].compact.min
 
       plantuml_setup
 

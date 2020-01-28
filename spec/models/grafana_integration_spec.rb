@@ -9,7 +9,7 @@ describe GrafanaIntegration do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:project) }
-    it { is_expected.to validate_presence_of(:token) }
+    it { is_expected.to validate_presence_of(:encrypted_token) }
 
     it 'disallows invalid urls for grafana_url' do
       unsafe_url = %{https://replaceme.com/'><script>alert(document.cookie)</script>}
@@ -63,6 +63,26 @@ describe GrafanaIntegration do
         grafana_integration.update(enabled: false)
 
         expect(grafana_integration.client).to be(nil)
+      end
+    end
+  end
+
+  describe 'attribute encryption' do
+    subject(:grafana_integration) { create(:grafana_integration, token: 'super-secret') }
+
+    context 'token' do
+      it 'encrypts original value into encrypted_token attribute' do
+        expect(grafana_integration.encrypted_token).not_to be_nil
+      end
+
+      it 'locks access to raw value in private method', :aggregate_failures do
+        expect { grafana_integration.token }.to raise_error(NoMethodError, /private method .token. called/)
+        expect(grafana_integration.send(:token)).to eql('super-secret')
+      end
+
+      it 'prevents overriding token value with its encrypted or masked version', :aggregate_failures do
+        expect { grafana_integration.update(token: grafana_integration.encrypted_token) }.not_to change { grafana_integration.reload.send(:token) }
+        expect { grafana_integration.update(token: grafana_integration.masked_token) }.not_to change { grafana_integration.reload.send(:token) }
       end
     end
   end

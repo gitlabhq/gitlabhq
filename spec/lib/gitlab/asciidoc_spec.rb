@@ -425,6 +425,24 @@ module Gitlab
           create_file(current_file, "= AsciiDoc\n")
         end
 
+        def many_includes(target)
+          Array.new(10, "include::#{target}[]").join("\n")
+        end
+
+        context 'cyclic imports' do
+          before do
+            create_file('doc/api/a.adoc', many_includes('b.adoc'))
+            create_file('doc/api/b.adoc', many_includes('a.adoc'))
+          end
+
+          let(:include_path) { 'a.adoc' }
+          let(:requested_path) { 'doc/api/README.md' }
+
+          it 'completes successfully' do
+            is_expected.to include('<p>Include this:</p>')
+          end
+        end
+
         context 'with path to non-existing file' do
           let(:include_path) { 'not-exists.adoc' }
 

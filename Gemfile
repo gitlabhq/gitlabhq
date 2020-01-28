@@ -65,7 +65,7 @@ gem 'u2f', '~> 0.2.1'
 
 # GitLab Pages
 gem 'validates_hostname', '~> 1.0.6'
-gem 'rubyzip', '~> 1.3.0', require: 'zip'
+gem 'rubyzip', '~> 2.0.0', require: 'zip'
 # GitLab Pages letsencrypt support
 gem 'acme-client', '~> 2.0.2'
 
@@ -142,7 +142,7 @@ gem 'gitlab-markup', '~> 1.7.0'
 gem 'github-markup', '~> 1.7.0', require: 'github/markup'
 gem 'commonmarker', '~> 0.20'
 gem 'RedCloth', '~> 4.3.2'
-gem 'rdoc', '~> 6.0'
+gem 'rdoc', '~> 6.1.2'
 gem 'org-ruby', '~> 0.9.12'
 gem 'creole', '~> 0.5.0'
 gem 'wikicloth', '0.8.1'

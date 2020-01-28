@@ -210,7 +210,7 @@ describe Projects::Operations::UpdateService do
           integration = project.reload.grafana_integration
 
           expect(integration.grafana_url).to eq(expected_attrs[:grafana_url])
-          expect(integration.token).to eq(expected_attrs[:token])
+          expect(integration.send(:token)).to eq(expected_attrs[:token])
         end
       end
 
@@ -226,7 +226,7 @@ describe Projects::Operations::UpdateService do
           integration = project.reload.grafana_integration
 
           expect(integration.grafana_url).to eq(expected_attrs[:grafana_url])
-          expect(integration.token).to eq(expected_attrs[:token])
+          expect(integration.send(:token)).to eq(expected_attrs[:token])
         end
 
         context 'with all grafana attributes blank in params' do
