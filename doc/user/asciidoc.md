@@ -221,6 +221,11 @@ include::basics.adoc[]
 include::https://example.org/installation.adoc[]
 ```
 
+To guarantee good system performance and prevent malicious documents causing
+problems, GitLab enforces a **maximum limit** on the number of include directives
+processed in any one document. Currently a total of 32 documents can be
+included, a number that is inclusive of transitive dependencies.
+
 ### Blocks
 
 ```asciidoc

@@ -1,0 +1,5 @@
+---
+title: Add workhorse request verification to package upload endpoints
+merge_request:
+author:
+type: security

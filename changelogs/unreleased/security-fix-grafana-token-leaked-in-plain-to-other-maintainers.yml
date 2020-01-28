@@ -1,0 +1,5 @@
+---
+title: Prevent gafana integration token from being displayed as a plain text to other project maintainers, by only displaying a masked version of it. GraphQL api deprecate token field in GrafanaIntegration type.
+merge_request:
+author:
+type: security

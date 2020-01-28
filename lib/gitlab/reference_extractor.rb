@@ -6,11 +6,16 @@ module Gitlab
     REFERABLES = %i(user issue label milestone mentioned_user mentioned_group mentioned_project
                     merge_request snippet commit commit_range directly_addressed_user epic).freeze
     attr_accessor :project, :current_user, :author
+    # This counter is increased by a number of references filtered out by
+    # banzai reference exctractor. Note that this counter is stateful and
+    # not idempotent and is increased whenever you call `references`.
+    attr_reader :stateful_not_visible_counter
 
     def initialize(project, current_user = nil)
       @project = project
       @current_user = current_user
       @references = {}
+      @stateful_not_visible_counter = 0
 
       super()
     end
@@ -20,11 +25,15 @@ module Gitlab
     end
 
     def references(type)
-      super(type, project, current_user)
+      refs = super(type, project, current_user)
+      @stateful_not_visible_counter += refs[:not_visible].count
+
+      refs[:visible]
     end
 
     def reset_memoized_values
       @references = {}
+      @stateful_not_visible_counter = 0
       super()
     end
 

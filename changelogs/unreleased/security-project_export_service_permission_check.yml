@@ -1,0 +1,5 @@
+---
+title: ImportExport::ExportService to require admin_project permission
+merge_request:
+author:
+type: security
