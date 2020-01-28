@@ -1,11 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop: disable Cop/PutGroupRoutesUnderScope
-resources :groups, only: [:index, :new, :create] do
-  post :preview_markdown
-end
-# rubocop: enable Cop/PutGroupRoutesUnderScope
-
 constraints(::Constraints::GroupUrlConstrainer.new) do
   scope(path: 'groups/*id',
         controller: :groups,

@@ -27,7 +27,7 @@ module AtomicInternalId
   extend ActiveSupport::Concern
 
   class_methods do
-    def has_internal_id(column, scope:, init:, ensure_if: nil, track_if: nil, presence: true) # rubocop:disable Naming/PredicateName
+    def has_internal_id(column, scope:, init:, ensure_if: nil, track_if: nil, presence: true, backfill: false) # rubocop:disable Naming/PredicateName
       # We require init here to retain the ability to recalculate in the absence of a
       # InternalId record (we may delete records in `internal_ids` for example).
       raise "has_internal_id requires a init block, none given." unless init
@@ -38,6 +38,8 @@ module AtomicInternalId
       validates column, presence: presence
 
       define_method("ensure_#{scope}_#{column}!") do
+        return if backfill && self.class.where(column => nil).exists?
+
         scope_value = internal_id_read_scope(scope)
         value = read_attribute(column)
         return value unless scope_value

@@ -1,14 +1,18 @@
 # Make sure to update all the similar conditions in other CI config files if you modify these conditions
-.if-default: &if-default
-  if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\// || $CI_MERGE_REQUEST_IID || $CI_COMMIT_TAG'
+.if-not-canonical-namespace: &if-not-canonical-namespace
+  if: '$CI_PROJECT_NAMESPACE !~ /^gitlab(-org)?($|\/)/'
 
 # Make sure to update all the similar conditions in other CI config files if you modify these conditions
-.if-default-ee: &if-default-ee
-  if: '($CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\// || $CI_MERGE_REQUEST_IID || $CI_COMMIT_TAG) && $CI_PROJECT_NAME =~ /^gitlab(-ee)?$/'
+.if-not-ee: &if-not-ee
+  if: '$CI_PROJECT_NAME !~ /^gitlab(-ee)?$/'
 
 # Make sure to update all the similar conditions in other CI config files if you modify these conditions
-.if-master: &if-master
+.if-master-refs: &if-master-refs
   if: '$CI_COMMIT_REF_NAME == "master"'
+
+# Make sure to update all the similar conditions in other CI config files if you modify these conditions
+.if-default-refs: &if-default-refs
+  if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\// || $CI_MERGE_REQUEST_IID || $CI_COMMIT_TAG'
 
 # Make sure to update all the similar patterns in other CI config files if you modify these patterns
 .code-backstage-patterns: &code-backstage-patterns
@@ -33,6 +37,32 @@
   - "{,ee/}spec/**/*"
   - "doc/README.md"  # Some RSpec test rely on this file
 
+# Make sure to update all the similar patterns in other CI config files if you modify these patterns
+.code-backstage-patterns-qa: &code-backstage-patterns-qa
+  - ".gitlab/ci/**/*"
+  - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo,scss-lint}.yml"
+  - ".csscomb.json"
+  - "Dockerfile.assets"
+  - "*_VERSION"
+  - "Gemfile{,.lock}"
+  - "Rakefile"
+  - "{babel.config,jest.config}.js"
+  - "config.ru"
+  - "{package.json,yarn.lock}"
+  - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+  - "doc/api/graphql/reference/*" # Files in this folder are auto-generated
+  # Backstage changes
+  - "Dangerfile"
+  - "danger/**/*"
+  - "{,ee/}fixtures/**/*"
+  - "{,ee/}rubocop/**/*"
+  - "{,ee/}spec/**/*"
+  - "doc/README.md"  # Some RSpec test rely on this file
+  # QA changes
+  - ".dockerignore"
+  - "qa/**/*"
+
 .assets-compile-cache:
   cache:
     paths:
@@ -46,10 +76,8 @@
   extends:
     - .default-tags
     - .default-retry
-    - .default-only
     - .default-before_script
     - .assets-compile-cache
-    - .only:changes-code-backstage-qa
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.5-git-2.24-lfs-2.9-chrome-73.0-node-12.x-yarn-1.16-graphicsmagick-1.3.33-docker-19.03.1
   stage: prepare
   services:
@@ -80,24 +108,29 @@
     - time scripts/build_assets_image
     - scripts/clean-old-cached-assets
     - rm -f /etc/apt/sources.list.d/google*.list  # We don't need to update Chrome here
-  only:
-    variables:
-      - $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/)/  # Matches the gitlab-org group and its subgroups
-      - $CI_SERVER_HOST == "dev.gitlab.org"
   tags:
     - gitlab-org
     - docker
 
 gitlab:assets:compile pull-push-cache:
   extends: .gitlab:assets:compile-metadata
-  only:
-    refs:
-      - master
+  rules:
+    - <<: *if-not-canonical-namespace
+      when: never
+    - <<: *if-master-refs
+      changes: *code-backstage-patterns-qa
+      when: on_success
   cache:
     policy: pull-push
 
 gitlab:assets:compile pull-cache:
   extends: .gitlab:assets:compile-metadata
+  rules:
+    - <<: *if-not-canonical-namespace
+      when: never
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns-qa
+      when: on_success
   cache:
     policy: pull
 
@@ -105,10 +138,8 @@ gitlab:assets:compile pull-cache:
   extends:
     - .default-tags
     - .default-retry
-    - .default-only
     - .default-before_script
     - .assets-compile-cache
-    - .only:changes-code-backstage-qa
   stage: prepare
   script:
     - node --version
@@ -130,28 +161,46 @@ gitlab:assets:compile pull-cache:
 
 compile-assets pull-push-cache:
   extends: .compile-assets-metadata
-  only:
-    refs:
-      - master
+  rules:
+    - <<: *if-master-refs
+      changes: *code-backstage-patterns-qa
+      when: on_success
   cache:
     policy: pull-push
 
 compile-assets pull-push-cache foss:
-  extends: [".compile-assets-metadata", ".only-ee-as-if-foss"]
-  only:
-    refs:
-      - master
+  extends:
+    - .compile-assets-metadata
+    - .as-if-foss
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-master-refs
+      changes: *code-backstage-patterns-qa
+      when: on_success
   cache:
     policy: pull-push
     key: "assets-compile:v8:foss"
 
 compile-assets pull-cache:
   extends: .compile-assets-metadata
+  rules:
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns-qa
+      when: on_success
   cache:
     policy: pull
 
 compile-assets pull-cache foss:
-  extends: [".compile-assets-metadata", ".only-ee-as-if-foss"]
+  extends:
+    - .compile-assets-metadata
+    - .as-if-foss
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns-qa
+      when: on_success
   cache:
     policy: pull
     key: "assets-compile:v8:foss"
@@ -240,7 +289,7 @@ jest-foss:
     - .default-cache
   stage: test
   rules:
-    - <<: *if-master
+    - <<: *if-master-refs
       when: on_success
   dependencies: []
   cache:
@@ -274,7 +323,7 @@ webpack-dev-server:
     - .default-cache
   stage: test
   rules:
-    - <<: *if-default
+    - <<: *if-default-refs
       changes: *code-backstage-patterns
       when: on_success
   needs: ["setup-test-env", "compile-assets pull-cache"]

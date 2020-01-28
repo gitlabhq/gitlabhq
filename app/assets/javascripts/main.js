@@ -35,6 +35,7 @@ import initPerformanceBar from './performance_bar';
 import initSearchAutocomplete from './search_autocomplete';
 import GlFieldErrors from './gl_field_errors';
 import initUserPopovers from './user_popovers';
+import initBroadcastNotifications from './broadcast_notification';
 import { initUserTracking } from './tracking';
 import { __ } from './locale';
 
@@ -105,6 +106,7 @@ function deferredInitialisation() {
   initUsagePingConsent();
   initUserPopovers();
   initUserTracking();
+  initBroadcastNotifications();
 
   if (document.querySelector('.search')) initSearchAutocomplete();
 

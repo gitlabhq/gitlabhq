@@ -75,6 +75,32 @@ describe Gitlab::GitAccess do
     end
   end
 
+  describe '#check_namespace!' do
+    context 'when namespace exists' do
+      before do
+        project.add_maintainer(user)
+      end
+
+      it 'allows push and pull access' do
+        aggregate_failures do
+          expect { push_access_check }.not_to raise_error
+          expect { pull_access_check }.not_to raise_error
+        end
+      end
+    end
+
+    context 'when namespace does not exist' do
+      let(:namespace_path) { nil }
+
+      it 'does not allow push and pull access' do
+        aggregate_failures do
+          expect { push_access_check }.to raise_not_found
+          expect { pull_access_check }.to raise_not_found
+        end
+      end
+    end
+  end
+
   describe '#check_project_accessibility!' do
     context 'when the project exists' do
       context 'when actor exists' do

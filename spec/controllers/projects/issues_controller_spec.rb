@@ -1129,8 +1129,9 @@ describe Projects::IssuesController do
         sign_in(user)
       end
 
-      it "rejects a developer to destroy an issue" do
+      it "does not delete the issue, returning :not_found" do
         delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
+
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end

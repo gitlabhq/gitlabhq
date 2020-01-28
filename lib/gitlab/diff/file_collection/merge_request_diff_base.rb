@@ -47,11 +47,7 @@ module Gitlab
         private
 
         def cache
-          @cache ||= if Feature.enabled?(:hset_redis_diff_caching, project, default_enabled: true)
-                       Gitlab::Diff::HighlightCache.new(self)
-                     else
-                       Gitlab::Diff::DeprecatedHighlightCache.new(self)
-                     end
+          @cache ||= Gitlab::Diff::HighlightCache.new(self)
         end
       end
     end

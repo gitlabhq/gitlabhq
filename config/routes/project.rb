@@ -1,13 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop: disable Cop/PutProjectRoutesUnderScope
-resources :projects, only: [:index, :new, :create]
-
-draw :git_http
-
-get '/projects/:id' => 'projects#resolve'
-# rubocop: enable Cop/PutProjectRoutesUnderScope
-
 constraints(::Constraints::ProjectUrlConstrainer.new) do
   # If the route has a wildcard segment, the segment has a regex constraint,
   # the segment is potentially followed by _another_ wildcard segment, and

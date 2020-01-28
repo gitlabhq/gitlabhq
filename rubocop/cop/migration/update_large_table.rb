@@ -34,6 +34,7 @@ module RuboCop
           namespaces
           notes
           projects
+          project_ci_cd_settings
           routes
           users
         ].freeze

@@ -1,0 +1,8 @@
+%div{ class: "broadcast-#{message.broadcast_type}-message #{opts[:preview] && 'preview'} js-broadcast-notification-#{message.id} d-flex",
+  style: broadcast_message_style(message), dir: 'auto' }
+  %div
+    = sprite_icon('bullhorn', size: 16, css_class: 'vertical-align-text-top')
+    = render_broadcast_message(message)
+  - if message.notification? && opts[:preview].blank?
+    %button.js-dismiss-current-broadcast-notification.btn.btn-link.text-dark.pl-2.pr-2{ 'aria-label' => _('Close'), :type => 'button', data: { id: message.id } }
+      %i.fa.fa-times

@@ -50,8 +50,8 @@ module Gitlab
       @project  = project
       @protocol = protocol
       @authentication_abilities = authentication_abilities
-      @namespace_path = namespace_path
-      @project_path = project_path
+      @namespace_path = namespace_path || project&.namespace&.full_path
+      @project_path = project_path || project&.path
       @redirected_path = redirected_path
       @auth_result_type = auth_result_type
     end
@@ -60,6 +60,7 @@ module Gitlab
       @logger = Checks::TimedLogger.new(timeout: INTERNAL_TIMEOUT, header: LOG_HEADER)
       @changes = changes
 
+      check_namespace!
       check_protocol!
       check_valid_actor!
       check_active_user!
@@ -134,6 +135,12 @@ module Gitlab
       unless protocol_allowed?
         raise UnauthorizedError, "Git access over #{protocol.upcase} is not allowed"
       end
+    end
+
+    def check_namespace!
+      return if namespace_path.present?
+
+      raise NotFoundError, ERROR_MESSAGES[:project_not_found]
     end
 
     def check_active_user!

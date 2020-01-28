@@ -120,9 +120,7 @@ Rails.application.routes.draw do
       draw :country
       draw :country_state
       draw :subscription
-    end
 
-    Gitlab.ee do
       constraints(-> (*) { Gitlab::Analytics.any_features_enabled? }) do
         draw :analytics
       end
@@ -168,11 +166,6 @@ Rails.application.routes.draw do
     end
   end
 
-  draw :api
-  draw :sidekiq
-  draw :help
-  draw :snippets
-
   # Invites
   resources :invites, only: [:show], constraints: { id: /[A-Za-z0-9_-]+/ } do
     member do
@@ -193,6 +186,25 @@ Rails.application.routes.draw do
   # Notification settings
   resources :notification_settings, only: [:create, :update]
 
+  resources :groups, only: [:index, :new, :create] do
+    post :preview_markdown
+  end
+
+  resources :projects, only: [:index, :new, :create]
+
+  get '/projects/:id' => 'projects#resolve'
+
+  Gitlab.ee do
+    scope '/-/push_from_secondary/:geo_node_id' do
+      draw :git_http
+    end
+  end
+
+  draw :git_http
+  draw :api
+  draw :sidekiq
+  draw :help
+  draw :snippets
   draw :google_api
   draw :import
   draw :uploads

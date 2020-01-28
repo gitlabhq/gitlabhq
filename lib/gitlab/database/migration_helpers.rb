@@ -1119,6 +1119,20 @@ into similar problems in the future (e.g. when new tables are created).
         SQL
       end
 
+      # Note this should only be used with very small tables
+      def backfill_iids(table)
+        sql = <<-END
+          UPDATE #{table}
+          SET iid = #{table}_with_calculated_iid.iid_num
+          FROM (
+            SELECT id, ROW_NUMBER() OVER (PARTITION BY project_id ORDER BY id ASC) AS iid_num FROM #{table}
+          ) AS #{table}_with_calculated_iid
+          WHERE #{table}.id = #{table}_with_calculated_iid.id
+        END
+
+        execute(sql)
+      end
+
       private
 
       def tables_match?(target_table, foreign_key_table)

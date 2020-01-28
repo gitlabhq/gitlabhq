@@ -2450,15 +2450,6 @@ describe Repository do
         2.times { repository.ancestor?(commit.id, ancestor.id) }
       end
 
-      it 'increments a counter with cache hits' do
-        counter = Gitlab::Metrics.counter(:repository_ancestor_calls_total, 'Repository ancestor calls')
-
-        expect do
-          2.times { repository.ancestor?(commit.id, ancestor.id) }
-        end.to change { counter.get(cache_hit: 'true') }.by(1)
-                 .and change { counter.get(cache_hit: 'false') }.by(1)
-      end
-
       it 'returns the value from the request store' do
         repository.__send__(:request_store_cache).write(cache_key, "it's apparent")
 

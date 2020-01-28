@@ -327,7 +327,7 @@ On different cloud vendors a best effort like for like can be used.
 | Service                     | Nodes | Configuration         | GCP type      |
 | ----------------------------|-------|-----------------------|---------------|
 | GitLab Rails[^1]            | 15    | 32 vCPU, 28.8GB Memory | n1-highcpu-32 |
-| PostgreSQL                  | 3     | 8 vCPU, 30GB Memory   | n1-standard-8 |
+| PostgreSQL                  | 3     | 16 vCPU, 60GB Memory  | n1-standard-16 |
 | PgBouncer                   | 3     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
 | Gitaly[^2] [^7]             | X     | 64 vCPU, 240GB Memory | n1-standard-64 |
 | Redis[^3] - Cache           | 3     | 4 vCPU, 15GB Memory   | n1-standard-4 |

@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Manage', :orchestrated, :oauth, quarantine: 'https://gitlab.com/gitlab-org/gitlab/issues/196517' do
+  # This test is skipped instead of quarantine because continuously running
+  # this test may cause the user to hit GitHub's rate limits thus blocking the user.
+  # Related issue: https://gitlab.com/gitlab-org/gitlab/issues/196517
+  context 'Manage', :orchestrated, :oauth, :skip do
     describe 'OAuth login' do
       it 'User logs in to GitLab with GitHub OAuth' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)

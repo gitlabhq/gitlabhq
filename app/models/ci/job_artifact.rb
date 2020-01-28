@@ -27,7 +27,8 @@ module Ci
       license_management: 'gl-license-management-report.json',
       license_scanning: 'gl-license-scanning-report.json',
       performance: 'performance.json',
-      metrics: 'metrics.txt'
+      metrics: 'metrics.txt',
+      lsif: 'lsif.sqlite3'
     }.freeze
 
     INTERNAL_TYPES = {
@@ -52,7 +53,8 @@ module Ci
       dast: :raw,
       license_management: :raw,
       license_scanning: :raw,
-      performance: :raw
+      performance: :raw,
+      lsif: :raw
     }.freeze
 
     TYPE_AND_FORMAT_PAIRS = INTERNAL_TYPES.merge(REPORT_TYPES).freeze
@@ -114,7 +116,8 @@ module Ci
       performance: 11, ## EE-specific
       metrics: 12, ## EE-specific
       metrics_referee: 13, ## runner referees
-      network_referee: 14 ## runner referees
+      network_referee: 14, ## runner referees
+      lsif: 15 # LSIF dump for code navigation
     }
 
     enum file_format: {

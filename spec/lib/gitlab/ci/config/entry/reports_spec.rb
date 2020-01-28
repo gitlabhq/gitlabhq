@@ -43,6 +43,7 @@ describe Gitlab::Ci::Config::Entry::Reports do
         :license_management | 'gl-license-management-report.json'
         :license_scanning | 'gl-license-scanning-report.json'
         :performance | 'performance.json'
+        :lsif | 'lsif.sqlite3'
       end
 
       with_them do
